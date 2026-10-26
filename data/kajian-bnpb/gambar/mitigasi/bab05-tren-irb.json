@@ -1,0 +1,1643 @@
+{
+ "nama": "bab05-tren-irb",
+ "keterangan": "Indeks Risiko Bencana nasional dan rerata kab/kota per pulau di Indonesia, 2015–2024 (indeks)",
+ "sumber": "InaRISK BNPB, IRBI 2015–2024; Renstra BNPB 2025–2029 Tabel 1.6; pengolahan data Pantau Bencana (batas tetap indeks, pilihan penyusun)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  232.2
+ ],
+ "ukuran_cm": [
+  16.5,
+  8.19
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 130",
+   "jenis": "kotak",
+   "warna": "#FBE7D6"
+  },
+  {
+   "label": "130–140",
+   "jenis": "kotak",
+   "warna": "#F4C3A0"
+  },
+  {
+   "label": "140–150",
+   "jenis": "kotak",
+   "warna": "#E8894A"
+  },
+  {
+   "label": "150–160",
+   "jenis": "kotak",
+   "warna": "#D9600B"
+  },
+  {
+   "label": "> 160",
+   "jenis": "kotak",
+   "warna": "#8F3F07"
+  }
+ ],
+ "hex": {
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "garis"
+  ],
+  "#D9600B": [
+   "skala",
+   "legenda"
+  ],
+  "#E8894A": [
+   "skala",
+   "legenda"
+  ],
+  "#F4C3A0": [
+   "skala",
+   "legenda"
+  ],
+  "#FBE7D6": [
+   "skala",
+   "legenda"
+  ],
+  "#8F3F07": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 102.5,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp0",
+   "teks": "2015"
+  },
+  {
+   "x": 139.78,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp1",
+   "teks": "2016"
+  },
+  {
+   "x": 177.07,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp2",
+   "teks": "2017"
+  },
+  {
+   "x": 214.36,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp3",
+   "teks": "2018"
+  },
+  {
+   "x": 251.65,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp4",
+   "teks": "2019"
+  },
+  {
+   "x": 288.94,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp5",
+   "teks": "2020"
+  },
+  {
+   "x": 326.22,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp6",
+   "teks": "2021"
+  },
+  {
+   "x": 363.51,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp7",
+   "teks": "2022"
+  },
+  {
+   "x": 400.8,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp8",
+   "teks": "2023"
+  },
+  {
+   "x": 438.09,
+   "y": 2,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kp9",
+   "teks": "2024"
+  },
+  {
+   "x": 2,
+   "y": 22.7,
+   "w": 31.39,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Nasional"
+  },
+  {
+   "x": 104.32,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-0",
+   "teks": "156"
+  },
+  {
+   "x": 141.61,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-1",
+   "teks": "151"
+  },
+  {
+   "x": 178.9,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-2",
+   "teks": "149"
+  },
+  {
+   "x": 216.18,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-3",
+   "teks": "146"
+  },
+  {
+   "x": 253.47,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-4",
+   "teks": "144"
+  },
+  {
+   "x": 290.76,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-5",
+   "teks": "142"
+  },
+  {
+   "x": 328.05,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-6",
+   "teks": "139"
+  },
+  {
+   "x": 365.34,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-7",
+   "teks": "136"
+  },
+  {
+   "x": 402.63,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-8",
+   "teks": "132"
+  },
+  {
+   "x": 439.91,
+   "y": 22.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel0-9",
+   "teks": "129"
+  },
+  {
+   "x": 2,
+   "y": 47.7,
+   "w": 30.19,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra"
+  },
+  {
+   "x": 104.32,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-0",
+   "teks": "151"
+  },
+  {
+   "x": 141.61,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-1",
+   "teks": "149"
+  },
+  {
+   "x": 178.9,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-2",
+   "teks": "148"
+  },
+  {
+   "x": 216.18,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-3",
+   "teks": "148"
+  },
+  {
+   "x": 253.47,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-4",
+   "teks": "147"
+  },
+  {
+   "x": 290.76,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-5",
+   "teks": "146"
+  },
+  {
+   "x": 328.05,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-6",
+   "teks": "144"
+  },
+  {
+   "x": 365.34,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-7",
+   "teks": "142"
+  },
+  {
+   "x": 402.63,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-8",
+   "teks": "140"
+  },
+  {
+   "x": 439.91,
+   "y": 47.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel1-9",
+   "teks": "138"
+  },
+  {
+   "x": 2,
+   "y": 72.7,
+   "w": 19.13,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jawa"
+  },
+  {
+   "x": 104.32,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-0",
+   "teks": "164"
+  },
+  {
+   "x": 141.61,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-1",
+   "teks": "158"
+  },
+  {
+   "x": 178.9,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-2",
+   "teks": "155"
+  },
+  {
+   "x": 216.18,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-3",
+   "teks": "148"
+  },
+  {
+   "x": 253.47,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-4",
+   "teks": "143"
+  },
+  {
+   "x": 290.76,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-5",
+   "teks": "135"
+  },
+  {
+   "x": 328.05,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-6",
+   "teks": "126"
+  },
+  {
+   "x": 365.34,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-7",
+   "teks": "121"
+  },
+  {
+   "x": 402.63,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-8",
+   "teks": "114"
+  },
+  {
+   "x": 439.91,
+   "y": 72.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel2-9",
+   "teks": "107"
+  },
+  {
+   "x": 2,
+   "y": 97.7,
+   "w": 40.41,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kalimantan"
+  },
+  {
+   "x": 104.32,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-0",
+   "teks": "153"
+  },
+  {
+   "x": 141.61,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-1",
+   "teks": "146"
+  },
+  {
+   "x": 178.9,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-2",
+   "teks": "145"
+  },
+  {
+   "x": 216.18,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-3",
+   "teks": "143"
+  },
+  {
+   "x": 253.47,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-4",
+   "teks": "143"
+  },
+  {
+   "x": 290.76,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-5",
+   "teks": "142"
+  },
+  {
+   "x": 328.05,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-6",
+   "teks": "142"
+  },
+  {
+   "x": 365.34,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-7",
+   "teks": "135"
+  },
+  {
+   "x": 402.63,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-8",
+   "teks": "134"
+  },
+  {
+   "x": 439.91,
+   "y": 97.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel3-9",
+   "teks": "127"
+  },
+  {
+   "x": 2,
+   "y": 122.7,
+   "w": 31.77,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sulawesi"
+  },
+  {
+   "x": 104.32,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-0",
+   "teks": "162"
+  },
+  {
+   "x": 141.61,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-1",
+   "teks": "157"
+  },
+  {
+   "x": 178.9,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-2",
+   "teks": "154"
+  },
+  {
+   "x": 216.18,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-3",
+   "teks": "152"
+  },
+  {
+   "x": 253.47,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-4",
+   "teks": "150"
+  },
+  {
+   "x": 290.76,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-5",
+   "teks": "150"
+  },
+  {
+   "x": 328.05,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-6",
+   "teks": "148"
+  },
+  {
+   "x": 365.34,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-7",
+   "teks": "145"
+  },
+  {
+   "x": 402.63,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-8",
+   "teks": "142"
+  },
+  {
+   "x": 439.91,
+   "y": 122.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel4-9",
+   "teks": "139"
+  },
+  {
+   "x": 2,
+   "y": 147.7,
+   "w": 84.84,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Bali dan Nusa Tenggara"
+  },
+  {
+   "x": 104.32,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-0",
+   "teks": "163"
+  },
+  {
+   "x": 141.61,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-1",
+   "teks": "148"
+  },
+  {
+   "x": 178.9,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-2",
+   "teks": "146"
+  },
+  {
+   "x": 216.18,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-3",
+   "teks": "142"
+  },
+  {
+   "x": 253.47,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-4",
+   "teks": "136"
+  },
+  {
+   "x": 290.76,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-5",
+   "teks": "135"
+  },
+  {
+   "x": 328.05,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-6",
+   "teks": "134"
+  },
+  {
+   "x": 365.34,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-7",
+   "teks": "131"
+  },
+  {
+   "x": 402.63,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-8",
+   "teks": "126"
+  },
+  {
+   "x": 439.91,
+   "y": 147.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel5-9",
+   "teks": "123"
+  },
+  {
+   "x": 2,
+   "y": 172.7,
+   "w": 26.15,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Maluku"
+  },
+  {
+   "x": 104.32,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-0",
+   "teks": "175"
+  },
+  {
+   "x": 141.61,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-1",
+   "teks": "158"
+  },
+  {
+   "x": 178.9,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-2",
+   "teks": "157"
+  },
+  {
+   "x": 216.18,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-3",
+   "teks": "154"
+  },
+  {
+   "x": 253.47,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-4",
+   "teks": "153"
+  },
+  {
+   "x": 290.76,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-5",
+   "teks": "153"
+  },
+  {
+   "x": 328.05,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-6",
+   "teks": "154"
+  },
+  {
+   "x": 365.34,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-7",
+   "teks": "156"
+  },
+  {
+   "x": 402.63,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-8",
+   "teks": "154"
+  },
+  {
+   "x": 439.91,
+   "y": 172.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel6-9",
+   "teks": "154"
+  },
+  {
+   "x": 2,
+   "y": 197.7,
+   "w": 22.65,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Papua"
+  },
+  {
+   "x": 104.32,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-0",
+   "teks": "133"
+  },
+  {
+   "x": 141.61,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-1",
+   "teks": "129"
+  },
+  {
+   "x": 178.9,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-2",
+   "teks": "129"
+  },
+  {
+   "x": 216.18,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-3",
+   "teks": "128"
+  },
+  {
+   "x": 253.47,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-4",
+   "teks": "128"
+  },
+  {
+   "x": 290.76,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-5",
+   "teks": "128"
+  },
+  {
+   "x": 328.05,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-6",
+   "teks": "130"
+  },
+  {
+   "x": 365.34,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-7",
+   "teks": "130"
+  },
+  {
+   "x": 402.63,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-8",
+   "teks": "130"
+  },
+  {
+   "x": 439.91,
+   "y": 197.45,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "sel7-9",
+   "teks": "130"
+  },
+  {
+   "x": 65.27,
+   "y": 221.2,
+   "w": 81.41,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-65",
+   "teks": "Indeks Risiko Bencana"
+  },
+  {
+   "x": 65.27,
+   "y": 220.2,
+   "w": 81.41,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-65",
+   "teks": "Indeks Risiko Bencana"
+  },
+  {
+   "x": 170.68,
+   "y": 221.2,
+   "w": 19.52,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-156",
+   "teks": "≤ 130"
+  },
+  {
+   "x": 156.68,
+   "y": 220.2,
+   "w": 33.52,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-156",
+   "teks": "≤ 130"
+  },
+  {
+   "x": 214.2,
+   "y": 221.2,
+   "w": 32.2,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-200",
+   "teks": "130–140"
+  },
+  {
+   "x": 200.2,
+   "y": 220.2,
+   "w": 46.2,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-200",
+   "teks": "130–140"
+  },
+  {
+   "x": 270.41,
+   "y": 221.2,
+   "w": 32.2,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-256",
+   "teks": "140–150"
+  },
+  {
+   "x": 256.41,
+   "y": 220.2,
+   "w": 46.2,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-256",
+   "teks": "140–150"
+  },
+  {
+   "x": 326.61,
+   "y": 221.2,
+   "w": 32.2,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-312",
+   "teks": "150–160"
+  },
+  {
+   "x": 312.61,
+   "y": 220.2,
+   "w": 46.2,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-312",
+   "teks": "150–160"
+  },
+  {
+   "x": 382.81,
+   "y": 221.2,
+   "w": 19.64,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-368",
+   "teks": "> 160"
+  },
+  {
+   "x": 368.81,
+   "y": 220.2,
+   "w": 33.64,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-368",
+   "teks": "> 160"
+  }
+ ],
+ "jenis": "matriks-titik",
+ "pesan": "G16",
+ "sumbu_y": false,
+ "pil": 0,
+ "kelas": {
+  "ramp": "api",
+  "batas": [
+   130,
+   140,
+   150,
+   160
+  ],
+  "label": [
+   "≤ 130",
+   "130–140",
+   "140–150",
+   "150–160",
+   "> 160"
+  ],
+  "rumus": "batas tetap indeks, pilihan penyusun"
+ },
+ "kontras_teks_min": 4.66,
+ "sel_kosong": 0,
+ "sel": [
+  {
+   "baris": "Nasional",
+   "kolom": "2015",
+   "nilai": 156.4305,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2016",
+   "nilai": 150.5846,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2017",
+   "nilai": 148.8228,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2018",
+   "nilai": 145.8508,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2019",
+   "nilai": 144.0181,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2020",
+   "nilai": 141.652,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2021",
+   "nilai": 138.8086,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2022",
+   "nilai": 135.5592,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2023",
+   "nilai": 132.2472,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Nasional",
+   "kolom": "2024",
+   "nilai": 128.524,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2015",
+   "nilai": 151.1947,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2016",
+   "nilai": 149.045,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2017",
+   "nilai": 147.9692,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2018",
+   "nilai": 147.5287,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2019",
+   "nilai": 147.0928,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2020",
+   "nilai": 146.3537,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2021",
+   "nilai": 144.2239,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2022",
+   "nilai": 142.064,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2023",
+   "nilai": 139.6511,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Sumatra",
+   "kolom": "2024",
+   "nilai": 137.6689,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2015",
+   "nilai": 163.5227,
+   "kelas": "> 160",
+   "warna": "skala.api.5"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2016",
+   "nilai": 157.7255,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2017",
+   "nilai": 154.7956,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2018",
+   "nilai": 147.5492,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2019",
+   "nilai": 143.0904,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2020",
+   "nilai": 134.6723,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2021",
+   "nilai": 126.1646,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2022",
+   "nilai": 120.5549,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2023",
+   "nilai": 114.402,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Jawa",
+   "kolom": "2024",
+   "nilai": 107.4643,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2015",
+   "nilai": 153.3164,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2016",
+   "nilai": 145.6301,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2017",
+   "nilai": 144.5432,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2018",
+   "nilai": 142.8595,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2019",
+   "nilai": 142.6556,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2020",
+   "nilai": 142.3825,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2021",
+   "nilai": 141.6373,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2022",
+   "nilai": 135.224,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2023",
+   "nilai": 134.2266,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Kalimantan",
+   "kolom": "2024",
+   "nilai": 126.71,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2015",
+   "nilai": 162.0219,
+   "kelas": "> 160",
+   "warna": "skala.api.5"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2016",
+   "nilai": 156.9904,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2017",
+   "nilai": 154.2772,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2018",
+   "nilai": 151.5367,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2019",
+   "nilai": 150.3786,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2020",
+   "nilai": 150.3786,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2021",
+   "nilai": 148.4807,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2022",
+   "nilai": 145.3573,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2023",
+   "nilai": 141.6998,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Sulawesi",
+   "kolom": "2024",
+   "nilai": 139.0312,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2015",
+   "nilai": 163.13,
+   "kelas": "> 160",
+   "warna": "skala.api.5"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2016",
+   "nilai": 147.6058,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2017",
+   "nilai": 146.1309,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2018",
+   "nilai": 141.5297,
+   "kelas": "140–150",
+   "warna": "skala.api.3"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2019",
+   "nilai": 136.4674,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2020",
+   "nilai": 135.2191,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2021",
+   "nilai": 133.5713,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2022",
+   "nilai": 131.1503,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2023",
+   "nilai": 125.7767,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Bali dan Nusa Tenggara",
+   "kolom": "2024",
+   "nilai": 122.89,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2015",
+   "nilai": 174.76,
+   "kelas": "> 160",
+   "warna": "skala.api.5"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2016",
+   "nilai": 158.4291,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2017",
+   "nilai": 156.56,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2018",
+   "nilai": 154.2621,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2019",
+   "nilai": 153.3609,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2020",
+   "nilai": 153.3609,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2021",
+   "nilai": 154.0747,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2022",
+   "nilai": 156.1624,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2023",
+   "nilai": 154.4909,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Maluku",
+   "kolom": "2024",
+   "nilai": 153.6828,
+   "kelas": "150–160",
+   "warna": "skala.api.4"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2015",
+   "nilai": 133.31,
+   "kelas": "130–140",
+   "warna": "skala.api.2"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2016",
+   "nilai": 129.3308,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2017",
+   "nilai": 129.0297,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2018",
+   "nilai": 128.3156,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2019",
+   "nilai": 128.3156,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2020",
+   "nilai": 128.3156,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2021",
+   "nilai": 129.8321,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2022",
+   "nilai": 129.7731,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2023",
+   "nilai": 129.9865,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  },
+  {
+   "baris": "Papua",
+   "kolom": "2024",
+   "nilai": 129.7373,
+   "kelas": "≤ 130",
+   "warna": "skala.api.1"
+  }
+ ]
+}

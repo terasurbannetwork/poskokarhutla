@@ -1,0 +1,301 @@
+{
+ "nama": "bab07-hm-longsor",
+ "keterangan": "Nilai IRBI tanah longsor per kab/kota di Indonesia, 2025",
+ "sumber": "InaRISK BNPB, IRBI 2025 (kuintil dari 455 nilai, batas atas inklusif)",
+ "mode": "docx",
+ "ukuran_pt": [
+  228.19,
+  165.65
+ ],
+ "ukuran_cm": [
+  8.05,
+  5.84
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 7,0 (92)",
+   "jenis": "kotak",
+   "warna": "#FBE7D6"
+  },
+  {
+   "label": "7,0–11,0 (98)",
+   "jenis": "kotak",
+   "warna": "#F4C3A0"
+  },
+  {
+   "label": "11,0–15,0 (96)",
+   "jenis": "kotak",
+   "warna": "#E8894A"
+  },
+  {
+   "label": "15,0–20,0 (85)",
+   "jenis": "kotak",
+   "warna": "#D9600B"
+  },
+  {
+   "label": "> 20,0 (84)",
+   "jenis": "kotak",
+   "warna": "#8F3F07"
+  },
+  {
+   "label": "Belum terdata (59)",
+   "jenis": "arsir",
+   "warna": "arsir"
+  }
+ ],
+ "hex": {
+  "#8F3F07": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "batas"
+  ],
+  "#F1F3F6": [
+   "tanpa-data"
+  ],
+  "#A9B4C2": [
+   "tanpa-data",
+   "batas",
+   "garis"
+  ],
+  "#D9600B": [
+   "skala",
+   "legenda"
+  ],
+  "#FBE7D6": [
+   "skala",
+   "legenda"
+  ],
+  "#E8894A": [
+   "skala",
+   "legenda"
+  ],
+  "#F4C3A0": [
+   "skala",
+   "legenda"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 10.91,
+   "y": 95.85,
+   "w": 77.96,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-10",
+   "teks": "Tanah longsor, kuintil"
+  },
+  {
+   "x": 10.91,
+   "y": 94.85,
+   "w": 77.96,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-10",
+   "teks": "Tanah longsor, kuintil"
+  },
+  {
+   "x": 112.87,
+   "y": 95.85,
+   "w": 33.08,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-98",
+   "teks": "≤ 7,0 (92)"
+  },
+  {
+   "x": 98.87,
+   "y": 94.85,
+   "w": 47.08,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-98",
+   "teks": "≤ 7,0 (92)"
+  },
+  {
+   "x": 169.95,
+   "y": 95.85,
+   "w": 47.33,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-155",
+   "teks": "7,0–11,0 (98)"
+  },
+  {
+   "x": 155.95,
+   "y": 94.85,
+   "w": 61.33,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-155",
+   "teks": "7,0–11,0 (98)"
+  },
+  {
+   "x": 26.43,
+   "y": 108.85,
+   "w": 51.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-12",
+   "teks": "11,0–15,0 (96)"
+  },
+  {
+   "x": 12.43,
+   "y": 107.85,
+   "w": 65.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-12",
+   "teks": "11,0–15,0 (96)"
+  },
+  {
+   "x": 102.25,
+   "y": 108.85,
+   "w": 51.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-88",
+   "teks": "15,0–20,0 (85)"
+  },
+  {
+   "x": 88.25,
+   "y": 107.85,
+   "w": 65.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-88",
+   "teks": "15,0–20,0 (85)"
+  },
+  {
+   "x": 178.07,
+   "y": 108.85,
+   "w": 37.69,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-164",
+   "teks": "> 20,0 (84)"
+  },
+  {
+   "x": 164.07,
+   "y": 107.85,
+   "w": 51.69,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-164",
+   "teks": "> 20,0 (84)"
+  },
+  {
+   "x": 87.88,
+   "y": 121.85,
+   "w": 66.43,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg2-73",
+   "teks": "Belum terdata (59)"
+  },
+  {
+   "x": 73.88,
+   "y": 120.85,
+   "w": 80.43,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg2-73",
+   "teks": "Belum terdata (59)"
+  },
+  {
+   "x": 3,
+   "y": 133.85,
+   "w": 205.84,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau"
+  },
+  {
+   "x": 3,
+   "y": 143.45,
+   "w": 198.4,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Bencana, asal belum terdokumentasi; WGS84 geografis;"
+  },
+  {
+   "x": 3,
+   "y": 153.05,
+   "w": 162.32,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "proyeksi ekuirektangular, paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "indeks",
+ "cakupan": "nasional",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "api",
+  "batas": [
+   7,
+   11,
+   15,
+   20
+  ],
+  "label": [
+   "≤ 7,0",
+   "7,0–11,0",
+   "11,0–15,0",
+   "15,0–20,0",
+   "> 20,0"
+  ],
+  "warna": [
+   "skala.api.1",
+   "skala.api.2",
+   "skala.api.3",
+   "skala.api.4",
+   "skala.api.5"
+  ],
+  "rumus": "kuintil dari 455 nilai, batas atas inklusif",
+  "resmi": false,
+  "jumlah": [
+   92,
+   98,
+   96,
+   85,
+   84
+  ],
+  "tanpa_data": 59
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 2,5° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

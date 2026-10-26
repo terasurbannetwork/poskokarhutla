@@ -3,7 +3,7 @@ kajian: mitigasi
 bab: 1
 judul: Pendahuluan
 pertanyaan: Mengapa korban bencana 2025 menuntut Grand Design sekarang, meskipun nilai IRB 2024 turun? Bagaimana kajian ini menjadi masukan peninjauan Renas PB 2025–2029? Jenis bencana apa yang dicakup, dan apa arti kerusuhan sosial dan mitigasi dalam kajian ini?
-status: draf
+status: final
 target_halaman: 7
 ---
 
@@ -31,6 +31,18 @@ target_halaman: 7
 - @rek:r-m09 Laporkan realisasi Renas PB 1.a dan 1.b tahunan (Sudah ada, perlu dikembangkan; Direktorat Pengembangan Strategi Penanggulangan Bencana dengan Pusat Data, Informasi, dan Komunikasi Kebencanaan; internal BNPB; 2026–2027).
 :::
 
+::: gambar {#gbr:foto-m01-longsor-agam}
+berkas: gambar/foto/mit-b01-longsor-agam.jpg
+jenis: foto
+judul: Longsoran tebing di Kabupaten Agam, dilihat warga dan petugas, Agam, Sumatera Barat, 1 Desember 2025
+pengarang: Badan Nasional Penanggulangan Bencana (BNPB)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Landslides_in_Agam_Regency,_West_Sumatra.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 ## Latar Belakang {#sub:latar}
 
 **Data dan Informasi Bencana Indonesia (DIBI) BNPB mencatat {{angka:dibi.alam.meninggal.2025}} meninggal dan {{angka:dibi.alam.hilang.2025}} hilang akibat bencana alam pada 2025, jumlah tertinggi sejak 2018.** Jumlah keduanya, {{angka:dibi.alam.meninggal_hilang.2025}} jiwa, setara {{angka:dibi.alam.rasio_median.2025|fmt=1}} kali median 2015–2024 ({{angka:dibi.alam.meninggal_hilang.median_2015_2024|fmt=1}} jiwa) dan hanya dilampaui 2018, yang mencatat {{angka:dibi.alam.meninggal_hilang.2018}} jiwa ({{angka:dibi.alam.meninggal.2018}} meninggal) [@bnpb-dibi]. LKIP BNPB 2025, yang terbit Februari 2026 dari data terverifikasi, mencatat {{angka:bnpb.lkip2025.meninggal.2025}} meninggal dan {{angka:bnpb.lkip2025.hilang.2025}} hilang untuk tahun yang sama [@bnpb-2026-lkip2025, hlm. 7]. Kedua angka resmi itu ditulis berdampingan dengan tanggal datanya, keduanya tertinggi sejak 2018, dan selisihnya menjadi permintaan data kepada Pusat Data, Informasi, dan Komunikasi Kebencanaan (Bab 13). Angka utama bab ini memakai seri bencana alam (kode 101–109, cakupan kejadian bencana), karena hanya seri itu yang sebanding antartahun. Seri DIBI patah pada 2024, ketika jenis di luar bencana alam mulai tercatat dan penanda kejadian bencana mulai dipakai. Sebaran sebelas tahun itu tampil pada @gbr:korban-alam.
@@ -45,7 +57,7 @@ sumber: Pengolahan data Pantau Bencana dari DIBI BNPB, kejadian bencana alam kod
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Garis tegak menandai patahan pencatatan DIBI 2024. Versi semua klasifikasi 2025 ({{angka:dibi.nasional.meninggal.2025}} meninggal dan {{angka:dibi.nasional.hilang.2025}} hilang) memuat jenis yang baru tercatat sejak 2024 dan tidak digambar.
+catatan: Warna batang 2024–2025 menandai saringan ambang Juklak 7/2023 yang berlaku sejak data 2024. Versi semua klasifikasi 2025 ({{angka:dibi.nasional.meninggal.2025}} meninggal dan {{angka:dibi.nasional.hilang.2025}} hilang) memuat jenis yang baru tercatat sejak 2024 dan tidak digambar.
 
 Tiap batang memisahkan meninggal dari hilang dan mencantumkan nilainya di atas batang. Anotasi 2018 menandai gempa dan tsunami Sulawesi Tengah, gempa Lombok, dan tsunami Selat Sunda; anotasi 2025 menandai banjir dan longsor Sumatra.
 :::
@@ -63,6 +75,18 @@ Tiap batang memisahkan meninggal dari hilang dan mencantumkan nilainya di atas b
 **Renas PB 2025–2029 ditetapkan 6 Januari 2025, ditinjau berkala tiap dua tahun, dan dapat ditinjau sewaktu-waktu bila terjadi bencana (Perban BNPB 1/2025 Pasal 7 ayat (1) dan (2)) [@bnpb-2025-renas, hlm. 4–5].** Pasal 7 ayat (3) menjadikan pemantauan dan evaluasi Renas PB bagian dari pemantauan dan evaluasi Rencana Induk Penanggulangan Bencana (RIPB) 2020–2044. RIPB dilaporkan tiap tahun kepada Presiden melalui menteri koordinator bidang pembangunan manusia dan kebudayaan dan ditinjau tiap lima tahun atau sewaktu-waktu (Perpres 87/2020 Pasal 6 dan Pasal 7 ayat (1)) [@ri-2020-perpres87]; PP 21/2008 Pasal 6 menetapkan peninjauan rencana penanggulangan bencana tiap dua tahun [@ri-2008-pp21]. Tahap pertama RIPB berakhir 2024 dan pelaksanaan peninjauannya tidak ditemukan, sehingga kajian ini dapat menjadi masukan peninjauan Renas PB dan juga RIPB.
 
 **Kajian ini menyentuh enam indikator Renas PB Tabel 2.8, yaitu 1.a, 1.b, 1.c, 2.a, 3.a, dan 4.c, dan dua di antaranya punya angka resmi yang bertentangan [@bnpb-2025-renas, hlm. 32].** Renas PB 1.c menargetkan penduduk daerah berisiko yang tercakup peringatan dini naik dari {{angka:renas.indikator_1c.2025}} menjadi {{angka:renas.indikator_1c.2029|satuan}}, sedangkan indikator Kegiatan Prioritas (KP) 08.04.02 RPJMN bergerak dari {{angka:rpjmn.kp080402.peringatan_dini_baseline|fmt=2|persen}} ke {{angka:rpjmn.kp080402.peringatan_dini_2029|fmt=2|persen}} pada 2029 [@ri-2025-perpres12-rpjmn, hlm. 913]. LKIP BNPB 2025 menghitung capaian Indikator Kinerja Program (IKP) peringatan dini Renstra BNPB 2025, {{angka:bnpb.lkip2025.pd.rerata_persen.2025|fmt=2|persen}}, sebagai rerata sederhana cakupan tsunami ({{angka:bnpb.lkip2025.pd.tsunami_persen.2025|fmt=2|persen}}) dan banjir ({{angka:bnpb.lkip2025.pd.banjir_persen.2025|fmt=2|persen}}) [@bnpb-2026-lkip2025, hlm. 35], sedangkan definisi tercakup dan penyebut Renas PB 1.c tidak tertulis. Untuk daerah berkapasitas minimal sedang, RPJMN memakai baseline {{angka:rpjmn.kp_kapasitas.baseline_2023|persen}} (2023) dan Renstra BNPB memakai titik awal {{angka:renstra.iks_kapasitas_minimal_sedang.awal|persen}} [@bnpb-2025-renstra]. LKIP BNPB 2025 mencatat {{angka:bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025|persen}} provinsi berkategori Indeks Ketahanan Daerah (IKD) sedang atau tinggi pada 2025 menurut Manual IKU (Kepka BNPB 318/2025) [@bnpb-2026-lkip2025, hlm. 15–16, 20], sedangkan kelas kapasitas ringkasan KRB 2022–2026 untuk bahaya COVID-19 memberi {{angka:krb.nasional.kab_kapasitas_minimal_sedang_persen|persen}} kab/kota [@bnpb-2026-krb]. Penyebut dan alat ukurnya berbeda, dan pilihannya dibahas di Bab 5.
+
+
+::: gambar {#gbr:foto-m01-banjir-gorontalo}
+berkas: gambar/foto/mit-b01-banjir-gorontalo.jpg
+jenis: foto
+judul: Rumah warga masih terendam air setelah banjir bandang, Gorontalo, 14 Juli 2024
+pengarang: Sandy Syafrudin Nina
+lisensi: CC BY 4.0
+url: https://commons.wikimedia.org/wiki/File:Rumah-rumah_warga_masih_terendam_air_paska_banjir_bandang_Gorontalo_2024.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
 
 ## Tujuan {#sub:tujuan}
 

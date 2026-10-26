@@ -37,7 +37,9 @@ target_halaman: 9
 
 **Sejak Agustus 2023 satu kejadian epidemi di Indonesia dapat memperoleh status dari dua undang-undang dengan penetap yang berbeda.** UU 24/2007 Pasal 1 angka 3 menggolongkan epidemi dan wabah penyakit sebagai bencana nonalam [@ri-2007-uu24]. Kepala daerah atau Menteri wajib menetapkan KLB bila kriterianya terpenuhi dan mencabutnya bila tidak lagi terpenuhi, serta segera menanggulanginya (UU 17/2023 tentang Kesehatan Pasal 353–354); penetapan Daerah Terjangkit Wabah ada pada Menteri (Pasal 368) [@ri-2023-uu17]. Status keadaan darurat bencana ditetapkan menurut skala, oleh Presiden sampai bupati/wali kota, dan mencakup siaga darurat sampai transisi darurat ke pemulihan [@ri-2007-uu24; @ri-2018-perpres17]. Pasal 454 UU 17/2023 mencabut UU 4/1984 tentang Wabah Penyakit Menular dan UU 6/2018 tentang Kekarantinaan Kesehatan. Dengan pencabutan itu, kedaruratan kesehatan masyarakat bukan lagi status yang berlaku; istilah itu melekat pada penetapan COVID-19 tahun 2020.
 
-**Pengait status kesehatan dengan status bencana hanya tertulis untuk skala nasional, dalam UU 17/2023 Pasal 369–370.** Bila Wabah berdampak luas, Menteri mengusulkan penetapannya sebagai bencana nasional nonalam dan Presiden menetapkannya [@ri-2023-uu17]. Teks lengkap UU 17/2023, Perpres 17/2018 jo. Perpres 46/2026, dan teks rancangan Permenkes 1/2026 tidak memuat norma yang mengaitkan KLB atau Daerah Terjangkit Wabah dengan status keadaan darurat bencana provinsi atau kab/kota[^ocr]. Permenkes 1/2026 justru menambahkan status lain, yaitu Krisis Kesehatan, yang ditetapkan kepala dinas kesehatan atau Menteri. Peraturan itu memasukkan klaster kesehatan ke dalam klaster bencana dan perencanaan krisis kesehatan ke dalam perencanaan PB, tetapi tidak mengaitkan penetapan status [@kemenkes-2026-pmk1]. PP 28/2024 sebagai peraturan pelaksana UU 17/2023 belum dibaca. Simpulan bab ini karena itu terbatas: pengait skala daerah tidak ditemukan pada peraturan yang dibaca, bukan tidak ada.
+**Pengait status kesehatan dengan status bencana hanya tertulis untuk skala nasional, dalam UU 17/2023 Pasal 369–370.** Bila Wabah berdampak luas, Menteri mengusulkan penetapannya sebagai bencana nasional nonalam dan Presiden menetapkannya [@ri-2023-uu17]. Teks lengkap UU 17/2023, Perpres 17/2018 jo. Perpres 46/2026, dan teks rancangan Permenkes 1/2026 tidak memuat norma yang mengaitkan KLB atau Daerah Terjangkit Wabah dengan status keadaan darurat bencana provinsi atau kab/kota[^ocr].
+
+Permenkes 1/2026 justru menambahkan status lain, yaitu Krisis Kesehatan, yang ditetapkan kepala dinas kesehatan atau Menteri. Peraturan itu memasukkan klaster kesehatan ke dalam klaster bencana dan perencanaan krisis kesehatan ke dalam perencanaan PB, tetapi tidak mengaitkan penetapan status [@kemenkes-2026-pmk1]. PP 28/2024 sebagai peraturan pelaksana UU 17/2023 belum dibaca. Simpulan bab ini karena itu terbatas: pengait skala daerah tidak ditemukan pada peraturan yang dibaca, bukan tidak ada.
 
 ::: koreksi
 Paket kelembagaan kajian ini semula menyimpulkan tidak ada norma yang mengaitkan penetapan KLB atau wabah dengan status keadaan darurat bencana (celah C09), dari salinan UU 17/2023 yang tidak lengkap. Teks lengkap memuat pengait skala nasional pada Pasal 369–370; yang tetap tidak ditemukan adalah pengait skala provinsi dan kab/kota. Skor *Joint External Evaluation* (JEE) 2023 untuk keterkaitan otoritas kesehatan masyarakat dan keamanan, {{angka:nonalam.jee2023.r2_1}} dari 5, menilai hubungan dengan otoritas keamanan, bukan dengan rezim status bencana, sehingga tidak dapat dipakai sebagai bukti adanya pengait [@who-2024-jee-idn].
@@ -67,12 +69,12 @@ catatan: Satu jalur per rezim. Penghubung jalur kesehatan ke jalur bencana hanya
 ::: gambar {#gbr:kematian-covid19}
 berkas: gambar/mitigasi/bab08-g11-kematian-covid19-pekan.png
 jenis: grafik
-judul: Kematian COVID-19 terlapor per pekan, 2020–2023, dan kematian berlebih tahunan menurut model WHO, 2020–2021, di Indonesia (jiwa)
-sumber: Satuan Tugas Penanganan COVID-19, data.covid19.go.id; WHO, data global COVID-19; WHO (2023), estimasi kematian berlebih
+judul: Kematian COVID-19 terlapor per pekan di Indonesia, Maret 2020–Juni 2023 (jiwa)
+sumber: WHO, data global COVID-19 (laporan Kementerian Kesehatan)
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Garis mingguan adalah kematian terlapor. Panel tahunan membandingkan kematian terlapor dengan rentang kematian berlebih berpil estimasi model; estimasi WHO bersifat tahunan dan tidak digambar sebagai pita mingguan.
+catatan: Garis mingguan adalah kematian terlapor. Kematian berlebih tahunan menurut model WHO ditulis di teks dan tidak digambar, karena estimasinya tahunan.
 :::
 
 **Cakupan imunisasi DTP3 (vaksin difteri-tetanus-pertusis dosis ketiga) anak usia satu tahun di Indonesia turun dari {{angka:nonalam.covid19.dtp3.2019|persen}} pada 2019 menjadi {{angka:nonalam.covid19.dtp3.2021|persen}} pada 2021.** Pada periode yang sama cakupan campak dosis pertama (MCV1) turun dari {{angka:nonalam.covid19.mcv1.2019|persen}} menjadi {{angka:nonalam.covid19.mcv1.2021|persen}}, dan notifikasi tuberkulosis turun dari {{angka:nonalam.covid19.tb_notifikasi.2019}} kasus pada 2019 menjadi {{angka:nonalam.covid19.tb_notifikasi.2020}} pada 2020 [@who-gho-imunisasi-tb]. DTP3 naik pada 2022 lalu turun lagi pada 2023 dan 2024, sehingga cakupannya belum dapat disebut pulih. Sumber data tidak menyatakan sebab penurunan; kaitannya dengan pandemi adalah penilaian kajian ini, dan penurunan 2023–2024 tidak dikaitkan.
@@ -196,7 +198,7 @@ data_per: 24 Okt 2026
 Di luar persyaratan itu, peran BNPB berlaku setelah kejadian dinyatakan bencana nonalam, lewat komando bersama BPBD atau keadaan tertentu menurut Perpres 46/2026 [@ri-2026-perpres46]. Pemadaman tetap urusan pemerintah kab/kota [@ri-2014-uu23]. Oleh sebab itu, BNPB bukan regulator keselamatan industri; pembagian mandat tertulis per fase tampil pada @tbl:mandat-nonalam.
 
 ::: matriks-lembaga {#tbl:mandat-nonalam}
-judul: Mandat tertulis kebakaran industri dan kebakaran TPA menurut lembaga dan fase
+judul: Mandat tertulis kebakaran industri dan kebakaran TPA menurut lembaga dan fase, 2026
 sumber: UU 1/1970; PP 11/1979; UU 24/2007; UU 18/2008; UU 3/2014; UU 23/2014; Permen ESDM 32/2021; PP 22/2021 dikutip Pergub Jawa Tengah 7/2024; pengolahan kajian ini
 keyakinan: resmi
 

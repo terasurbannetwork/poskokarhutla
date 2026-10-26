@@ -42,6 +42,11 @@ Port Python `simfisika.py` sudah memakai 50 (`efek_bui`). Bila index.html diperb
 
 - `python3 scripts/sebaran/uji_js.py` — kesetaraan Python ↔ JS (fitur & peluang hari-1 pada titik awal nyata, selisih
   maks harus < 1e-4) + penolakan masukan di luar jangkauan.
+- `python3 scripts/sebaran/{sensor,prospektif,jejak,gerbang}.py uji` — sensor utama, pra-registrasi/vonis/kesehatan prospektif, kontrak jejak, gerbang pembanding.
+- Pra-registrasi prospektif: angka beku dikunci `KRITERIA_SHA256` (dicek `uji` dan `ringkas()`, tanpa jalan pintas env); selang AUC bootstrap 2000 ulangan berkelompok
+  per (tanggal, sel 0,5 derajat); `vonis_akhir` ditetapkan sekali saat n_dinilai >= 200 dan n_lolos >= 20 (tersimpan di `vonis.jsonl`, ikut arsip), `vonis_berjalan` hanya tampilan.
+- `python3 scripts/sebaran/gerbang.py` menulis `public/data/gerbang_model.json` (boleh_tampil per keluaran: model_sel, mesin_fisika, jejak_api, lolos). Jalankan ulang
+  setiap `sebaran_kasus.json`/`model_sebaran.json`/`prospektif.json` berubah. Pembaca gagal-tertutup (hilang/rusak = sembunyikan).
 - `public/_uji_model.html` dipakai sekali di peramban lalu dihapus (lihat RISET-SEBARAN.md).
 
 ## 4. Memperbarui model
@@ -69,35 +74,22 @@ python3 scripts/sebaran/prospektif.py     # uji prospektif (CI tiap 3 jam, titik
 Mesin 8 GB: `lolos.py` berjalan satu proses (LOLOS_PROSES=1) dan memakai 5% negatif (bobot 20); selang memakai 2 proses.
 Tiap skrip punya `uji` (asersi invarian) kecuali tahap berat.
 
-## 5. Per jam sungguhan: Himawari-9 (JAXA P-Tree) — belum dipasang
+## 5. Himawari-9 (JAXA P-Tree): terpasang, belum diarsip
 
-VIIRS S-NPP melihat Indonesia ± 2 kali sehari (13:30 & 01:30 waktu setempat). Arsip FIRMS di repo ini HANYA S-NPP
-(NOAA-20/21 belum diunduh); menambah NOAA-20 (`VIIRS_NOAA20_NRT`/`_SP`) dan NOAA-21 lewat `scripts/data/firms.py`
-memberi 4–6 lintasan, masih bukan per jam. Per jam (10 menit) butuh satelit geostasioner Himawari-9.
+Per jam (10 menit) butuh satelit geostasioner. Sudah terpasang: `scripts/data/himawari.py` (L2 WLF v010, `ftplib`, secret `PTREE_USER`/`PTREE_PASS` di
+GitHub Actions) dijalankan `.github/workflows/himawari.yml` tiap 30 menit (menit 7 dan 37), jendela 3 jam terhadap pindaian terbaru (`HIMAWARI_JAM`),
+keluaran `public/data/himawari.json` diunggah langsung ke R2 (tidak dikomit, tidak ada di `public/data` lokal). Belum diarsip: tiap putaran menimpa jendela 3 jam,
+jadi riwayat per jam TIDAK ADA untuk melatih apa pun. Atribusi: "Himawari data supplied by P-Tree System, JAXA". Piksel ±2 km, `Reliability 1` dan titik
+gunung api dibuang oleh parser.
 
-Yang harus dibuat pemilik (sekali, gratis, tidak bisa diwakilkan):
-1. Daftar di JAXA Himawari Monitor P-Tree: https://www.eorc.jaxa.jp/ptree/registration_top.html — isi nama, email,
-   afiliasi, tujuan (non-komersial/riset/kebencanaan), setujui ketentuan (atribusi "Himawari data supplied by P-Tree
-   System, JAXA").
-2. JAXA mengirim akun FTP lewat email (ID = alamat email dengan `@` diganti `_`, plus kata sandi).
-3. Simpan sebagai rahasia: `PTREE_USER`, `PTREE_PASS` di `.env` lokal (sudah di-.gitignore) dan GitHub Actions secrets.
-   Jangan pernah di-commit.
+Belum dikerjakan (rancangan; butuh arsip dulu, lalu persetujuan pemilik):
+- Arsip bergulir `himawari.json` (mis. gz per hari ke R2/git) supaya ada riwayat 10 menit.
+- Pelacak: `lacak.hubungkan(t, lat, lon, jarak=2000, jeda=3*60)` untuk Himawari saja; peristiwa VIIRS dicocokkan bila ≤ 2 km & ≤ 1 jam.
+- Model langkah 1 jam (`calon` dari piksel Himawari aktif; evaluator JS sudah menerima `hari` 1-3, cukup `langkah_jam`) dilatih hanya setelah arsip cukup panjang
+  dan melewati uji prospektif pra-registrasi yang sama (`prospektif.json` `kriteria`).
+- Alternatif tanpa akun: Himawari L1b di AWS Open Data (`noaa-himawari9`), tetapi radiansi mentah; deteksi api harus dibangun sendiri. Tidak disarankan.
 
-Produk yang dipakai: Himawari L2 Wild Fire (`/pub/himawari/L2/WLF/` di `ftp.ptree.jaxa.jp`, 10 menit, piksel ±2 km,
-CSV per pindaian berisi lat, lon, FRP, keyakinan). Periksa nama versi direktori setelah login; strukturnya
-`.../YYYYMM/DD/HH/` per jam.
-
-Rancangan colokan (belum ditulis karena butuh kredensial):
-- `scripts/sebaran/himawari.py`: `ftplib` (stdlib) + `PTREE_USER/PASS` dari lingkungan → unduh CSV 10 menit untuk N jam
-  terakhir → saring kotak Indonesia → baris dengan skema yang sama dengan `muat_viirs()` (`t` menit, `lat`, `lon`, `frp`,
-  `dn`) tetapi `sumber="H9"` dan piksel 2 km.
-- Pelacak: `lacak.hubungkan(t, lat, lon, jarak=2000, jeda=3*60)` untuk Himawari saja; peristiwa VIIRS dicocokkan ke
-  peristiwa Himawari bila ≤ 2 km & ≤ 1 jam, jadi tiap peristiwa punya urutan per 10 menit (awal lebih presisi) dan sel
-  375 m dari VIIRS.
-- Model: tambah langkah 1 jam (`calon` dari piksel Himawari aktif, target = sel VIIRS/ Himawari baru dalam 1 jam) dan fitur
-  `jam_lokal`; evaluator JS sudah menerima `hari` 1–3, cukup ditambah `langkah_jam`.
-- Alternatif tanpa pendaftaran: data mentah Himawari L1b di AWS Open Data (`noaa-himawari9`), tetapi itu radiansi; deteksi
-  api harus dibangun sendiri (algoritme kontekstual 3,9/11 µm). Lebih berat, tidak disarankan.
+NOAA-20 sudah ada di arsip latih (`data/raw/firms/viirs_noaa20.csv`, fitur `n20_0`/`n20_14`); NOAA-21 belum diarsip untuk pelatihan.
 
 ## Melanjutkan di perangkat lain
 

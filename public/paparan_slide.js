@@ -7,7 +7,8 @@
 const W = 13.333, H = 7.5;
 const C = {navy: "0B1F33", jingga: "D9650B", biru: "0B4EA2", teks: "1A1A1A", abu: "F1F1F1", abu2: "777777", garis: "C9CDD2", putih: "FFFFFF", kremJ: "FBEFE3"};
 const BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-const LEVEL = ["Pencegahan rutin", "Patroli terpadu", "Siaga pemadaman awal", "Prioritas pemadaman"];
+/* tingkat perhatian platform; "Siaga" milik penetapan resmi BMKG/BNPB/SK (audit 21 Okt 2026) */
+const LEVEL = ["Pencegahan rutin", "Patroli terpadu", "Pemadaman awal", "Prioritas pemadaman"];
 const JENIS = {sawit: "Sawit", hph: "HPH", hti: "HTI", tambang: "Tambang"};
 
 /* ------------------------------------------------------------ format */
@@ -252,26 +253,29 @@ slide("nasional", "Kondisi nasional", "situasi", c => c.D.laporan.luas_banding &
   /* satu definisi: titik VIIRS S-NPP. Luas 2018 dst = pipeline (titik x ha_titik); 2015-2017 = titik x ha_titik (pipeline belum punya seri itu);
      2026 = titik arsip s.d. batas sejarah x ha_titik + luas harian laporan sesudahnya s.d. c.tgl (rumus laporan.py, dipotong ke c.tgl) */
   const L = c.D.laporan, lb = L.luas_banding.sumber[0], tb = L.tahun_berjalan, S = c.D.sejarah, th = S.tahun, tn = nasionalS(c), hat = tb.ha_titik, g = luasNas(c);
-  const luas = th.map((y, i) => y === th.at(-1) ? g.ha : lb.ha[y] ?? Math.round(tn[i] * hat)), lain = luas.slice(0, -1);
-  const rank = [g.rendah, g.ha, g.tinggi].map(v => 1 + lain.filter(o => o > v).length), rmax = Math.max(...rank), kata = ["", "satu", "dua", "tiga", "empat", "lima", "enam"];
-  const klaim = rank.every(r => r === rank[0]) ? (rmax === 1 ? `terluas sejak ${th[0]}` : `terluas ke-${rmax} sejak ${th[0]}`) : `termasuk ${kata[rmax] || rmax} terluas sejak ${th[0]}`;
+  /* 2015-2017: angka resmi BNPB (factsheet) bila ada, bukan titik x 4,3 (2015 jadi 3,49 juta ha padahal resmi 2,61 juta; audit 21 Okt 2026 §2.3).
+     Peringkat hanya untuk titik panas S-NPP (teramati); peringkat luas perkiraan tidak diklaim karena rentangnya melintasi angka resmi tahun lain */
+  const resmi = Object.fromEntries((c.D.fs?.nasional || []).map(r => [r[0], r[1]]));
+  const luas = th.map(y => y === th.at(-1) ? g.ha : lb.ha[y] ?? resmi[y] ?? null), dariResmi = th.map(y => y !== th.at(-1) && lb.ha[y] == null && resmi[y] != null);
+  const rkT = 1 + tn.slice(0, -1).filter(v => v > tn.at(-1)).length;
+  const klaim = `titik panas S-NPP ${rkT === 1 ? "tertinggi" : "tertinggi ke-" + rkT} sejak ${th[0]}`;
   const prov26 = Object.entries(S.prov).map(([p, v]) => [p, jum(v[th.at(-1)])]).sort((a, b) => b[1] - a[1]), top = prov26.slice(0, 8), me = prov26.find(x => x[0] === c.prov)?.[1] || 0;
   const t26 = tn.at(-1), i19 = th.indexOf("2019"), m26 = Object.values(S.prov).reduce((a, v) => a.map((x, i) => x + (v[th.at(-1)][i] || 0)), Array(12).fill(0)), agsep = m26[7] + m26[8];
   const uji = (L.sumber?.luas || "").match(/uji balik tahunan meleset sampai ([^;]+)/)?.[1]?.replace(/%/g, " persen").replace(/\u2212/g, "-");
-  const tambah = g.extra ? `, ditambah luas harian ${tglK(g.awal)} sampai ${tglK(c.tgl)}` : "";
+  const tambah = g.extra ? `, ditambah perkiraan nasional ${tglK(g.awal)} sampai ${tglK(c.tgl)}` : "";
   rangka(k, c, {
     panel: [
-      {a: `sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, k: `perkiraan: ${fmt(g.titik)} titik S-NPP s.d. ${tglK(g.batas)} x ${fmt(hat, 1)} ha${tambah} (${fmt(g.ha)} ha); rentang ${fmt(g.rendah / 1e6, 1)} sampai ${fmt(g.tinggi / 1e6, 1)} juta ha`, tinggi: 1.45},
+      {a: `sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, k: `perkiraan: ${fmt(g.titik)} titik S-NPP s.d. ${tglK(g.batas)} x ${fmt(hat, 1)} ha${tambah}; rentang ${fmt(g.rendah / 1e6, 1)} sampai ${fmt(g.tinggi / 1e6, 1)} juta ha`, tinggi: 1.45},
       {a: fmt(t26), k: `titik panas VIIRS S-NPP 2026 s.d. ${tglP(g.batas)}`},
       ...(i19 >= 0 ? [{a: selisih(t26, tn[i19]), k: `titik 2026 s.d. ${tglK(g.batas)} dibanding setahun penuh 2019 (${fmt(tn[i19])} titik)`}] : []),
       ...(t26 ? [{a: `${pct(agsep, t26)} persen`, k: `titik 2026 (s.d. ${tglK(g.batas)}) terjadi pada Agustus sampai September (${fmt(agsep)} titik)`}] : []),
     ],
-    judul: [R(`Sampai ${tglP(c.tgl)}, perkiraan luas lahan terbakar nasional `), R(`sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, C.jingga), R(", " + klaim)],
+    judul: [R(`Sampai ${tglP(c.tgl)}, perkiraan luas lahan terbakar nasional `), R(`sekitar ${fmt(g.ha / 1e6, 1)} juta ha`, C.jingga), R(` (rentang ${fmt(g.rendah / 1e6, 1)} sampai ${fmt(g.tinggi / 1e6, 1)} juta ha, bukan angka resmi); ` + klaim)],
     sub: [R(c.namaProv, C.biru, true), R(" menyumbang "), R(pct(me, t26) + " persen", C.jingga, true), R(` titik panas nasional (${fmt(me)} titik s.d. ${tglP(g.batas)})`)],
-    sumber: `NASA FIRMS VIIRS S-NPP 2015 sampai ${tglP(g.batas)} (arsip ${c.merek}); luas = titik x ${fmt(hat, 1)} ha${uji ? `; uji balik tahunan meleset sampai ${uji}` : ""}; 2015-2017 dihitung dengan faktor yang sama`,
+    sumber: `NASA FIRMS VIIRS S-NPP 2015 sampai ${tglP(g.batas)} (arsip ${c.merek}); luas = titik x ${fmt(hat, 1)} ha${uji ? `; uji balik tahunan meleset sampai ${uji}` : ""}; batang bertanda * (2015-2017) = angka resmi BNPB, bukan perkiraan; perkiraan dan angka resmi berbeda definisi`,
   });
   judulBagian(k, 0.6, 1.6, 4.2, "Perkiraan luas terbakar per tahun (ha)");
-  batangV(k, 0.6, 2.1, 4.3, 4.6, th.map((y, i) => ({l: "'" + y.slice(2), v: luas[i], on: i === th.length - 1, lab: i === th.length - 1 ? fmt(luas[i]) : undefined})));
+  batangV(k, 0.6, 2.1, 4.3, 4.6, th.map((y, i) => ({l: "'" + y.slice(2) + (dariResmi[i] ? "*" : ""), v: luas[i], on: i === th.length - 1, lab: i === th.length - 1 ? "sekitar " + fmt(luas[i] / 1e6, 1) + " juta" : undefined})));
   judulBagian(k, 5.2, 1.6, 4.15, "Titik panas 2026, delapan provinsi teratas");
   batangH(k, 5.2, 2.1, 4.15, 4.5, top.map(([p, v]) => ({l: namaProv(c, p), v, on: p === c.prov})), {lw: 1.55});
 });
@@ -289,8 +293,8 @@ slide("provinsi", "Kondisi {prov}", "situasi", c => c.D.sejarah.prov[c.prov] ? n
       {a: fmt(lp.luas_kompleks) + " ha", k: `luas ${fmt(lp.kompleks)} kejadian api yang terdeteksi satelit (cluster titik, posisi laporan ${tglK(cut)})`},
     ],
     judul: [R("Titik panas "), R(c.namaProv, C.biru), R(` sampai ${tglK(b)} 2026 sudah `), R(i19 >= 0 ? selisih(ini, tt[i19]).replace(/^[+-]/, "") + (ini >= tt[i19] ? " di atas" : " di bawah") : "", C.jingga), R(" tahun penuh 2019 dan setara "), R(pct(ini, tt[ip]) + " persen", C.jingga), R(" tahun penuh " + th[ip])],
-    sub: [R(fmt(lp.kompleks), C.jingga, true), R(` kejadian api di `), R(fmt(aktif), C.jingga, true), R(` kab/kota; status `), R(levelProv(c), C.biru, true), R(` (posisi laporan ${tglK(cut)})`)],
-    sumber: `NASA FIRMS VIIRS S-NPP per tahun, arsip s.d. ${tglP(b)}; luas resmi KLHK SiPongi; kejadian api dan status dari laporan harian ${c.merek} posisi ${tglP(cut)}`,
+    sub: [R(fmt(lp.kompleks), C.jingga, true), R(` kejadian api di `), R(fmt(aktif), C.jingga, true), R(` kab/kota; tingkat perhatian `), R(levelProv(c), C.biru, true), R(` (posisi laporan ${tglK(cut)})`)],
+    sumber: `NASA FIRMS VIIRS S-NPP per tahun, arsip s.d. ${tglP(b)}; luas resmi KLHK SiPongi; kejadian api dan tingkat perhatian dari laporan harian ${c.merek} posisi ${tglP(cut)}`,
   });
   judulBagian(k, 0.6, 1.6, 4.2, "Titik panas per tahun");
   batangV(k, 0.6, 2.1, 4.3, 4.6, th.map((y, i) => ({l: "'" + y.slice(2), v: tt[i], on: y === thIni, lab: y === thIni ? fmt(tt[i]) : undefined})));
@@ -315,7 +319,7 @@ slide("harian", "Laporan harian nasional dan {prov}", "situasi", c => c.D.lapora
   const L = c.D.laporan, nas = irisan(c, L.nasional.titik), pv = irisan(c, L.prov[c.prov].titik), hr = irisan(c, L.hari);
   const lab = hr.map(tglK), n7 = nas.slice(-7), rata = Math.round(jum(n7) / n7.length), tujuh = jum(pv.slice(-7));
   const mx = (a, i) => a[i] === Math.max(...a);
-  const kab = kabProv(c).map(x => ({...x, t7: jum(irisan(c, x.titik).slice(-7)), l7: jum(irisan(c, x.luas).slice(-7))})).sort((a, b) => b.t7 - a.t7).slice(0, 13);
+  const kab = kabProv(c).map(x => ({...x, t7: jum(irisan(c, x.titik).slice(-7))})).sort((a, b) => b.t7 - a.t7).slice(0, 13);
   rangka(k, c, {
     judul: [R(`Dalam 7 hari terakhir, rata-rata titik panas nasional `), R(fmt(rata) + " titik per hari", C.jingga), R("; "), R(c.namaProv + " ", C.biru), R(fmt(tujuh) + " titik", C.jingga), R(" dalam 7 hari")],
     sumber: `Laporan harian ${c.merek} ${tglP(L.hari[Math.max(0, hariIdx(c) - 11)])} sampai ${tglP(c.tgl)} (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21; lokasi unik per hari); kejadian api, status, dan FWI posisi laporan ${tglP(L.cutoff.slice(0, 10))} (status dari aturan ${c.merek}; FWI dari Open-Meteo)`,
@@ -326,8 +330,8 @@ slide("harian", "Laporan harian nasional dan {prov}", "situasi", c => c.D.lapora
   batangV(k, 0.6, 4.65, 5.3, 1.95, pv.map((v, i) => ({l: lab[i], v, on: mx(pv, i)})));
   k.garis(6.1, 1.6, 6.1, 6.6, {c: "D5D5D5", w: 0.75});
   judulBagian(k, 6.3, 1.55, 6.45, `${c.namaProv}: kab/kota, 7 hari terakhir`);
-  tabel(k, 6.3, 2.0, 6.45, [{j: "Kab/kota", w: 2.0}, {j: "Titik", w: 0.8, a: "r"}, {j: "Luas (ha)", w: 1.0, a: "r"}, {j: "Kejadian", w: 0.9, a: "r"}, {j: "FWI", w: 0.6, a: "r"}, {j: "Status", w: 2.0}],
-    kab.map(x => [{t: x.nama, b: x.level === 3}, {t: fmt(x.t7), b: x.level === 3}, fmt(x.l7), fmt(x.kompleks), fmt(x.fwi_maks), {t: LEVEL[x.level ?? 0], c: x.level === 3 ? C.jingga : C.teks, b: x.level === 3}]), {rh: 0.33, s: 8});
+  tabel(k, 6.3, 2.0, 6.45, [{j: "Kab/kota", w: 2.8}, {j: "Titik", w: 0.9, a: "r"}, {j: "Kejadian", w: 0.9, a: "r"}, {j: "FWI", w: 0.7, a: "r"}, {j: "Tingkat perhatian", w: 2.2}],
+    kab.map(x => [{t: x.nama, b: x.level === 3}, {t: fmt(x.t7), b: x.level === 3}, fmt(x.kompleks), fmt(x.fwi_maks), {t: LEVEL[x.level ?? 0], c: x.level === 3 ? C.jingga : C.teks, b: x.level === 3}]), {rh: 0.33, s: 8});
 });
 
 const stale = (c, per) => !per || (Date.parse(c.tgl) - Date.parse(per)) / 864e5 > 3;

@@ -30,6 +30,18 @@ target_halaman: 8
 - @rek:r-m19 Agenda evaluasi dampak Destana, SPAB, dan hilir *Indonesia Tsunami Early Warning System* (InaTEWS) dijalankan Direktorat Mitigasi Bencana bersama Badan Meteorologi, Klimatologi, dan Geofisika (BMKG) dan Kementerian Pendidikan Dasar dan Menengah; Sudah ada, perlu dikembangkan; 2028–2030.
 :::
 
+::: gambar {#gbr:foto-m02-bkt}
+berkas: gambar/foto/air-b09-bkt.jpg
+jenis: foto
+judul: Banjir Kanal Timur, Jakarta Timur, 2012
+pengarang: Akhmad Fauzi
+lisensi: CC BY 3.0
+url: https://commons.wikimedia.org/wiki/File:Banjir_Kanal_Timur_BKT_-_panoramio.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 ## Risiko, Ketangguhan, dan Kerangka Sendai {#sub:risiko-sendai}
 
 Kerangka konseptual kajian ini bertumpu pada rumusan risiko BNPB. Lampiran Perka BNPB 2/2012 tentang Pedoman Umum Pengkajian Risiko Bencana menuliskan risiko sebagai hubungan ancaman dengan kerentanan dan kapasitas, dengan catatan bahwa pendekatan itu tidak dapat disamakan dengan rumus matematika [@bnpb-2012-pengkajian-risiko-lampiran]. Rumus R = H \* V / C dalam analisis semi-kuantitatif masih dipakai, tetapi berisi nilai indeks, bukan nilai riil. Kajian risiko berlaku {{angka:perka2012.krb.masa_berlaku_tahun|satuan}} dan dapat ditinjau tiap {{angka:perka2012.krb.tinjau_tahun|satuan}} atau sewaktu-waktu bila terjadi bencana. Indeks Risiko Bencana Indonesia (IRBI) dihitung dari bahaya, kerentanan, dan kapasitas untuk sembilan bahaya alam [@bnpb-2025-renstra, hlm. 5]. Kajian ini memakai rumusan itu dan tidak membangun indeks risiko gabungan sendiri.

@@ -31,6 +31,18 @@ target_halaman: 11
 - @rek:r-m18 Tambahkan syarat analisis manfaat-biaya untuk usulan prabencana Dana Bersama lewat perubahan Perban BNPB 1/2026 (Usulan baru; Direktorat Pengembangan Strategi Penanggulangan Bencana; Kementerian Keuangan (Kemenkeu), Badan Perencanaan Pembangunan Nasional (Bappenas), Kemendagri, dan Kemenko PMK; 2028–2030).
 :::
 
+::: gambar {#gbr:foto-m12-pasca-gambut}
+berkas: gambar/foto/mit-b12-pasca-gambut.jpg
+jenis: foto
+judul: Hutan rawa gambut setelah terbakar, Taman Nasional Sebangau, Kalimantan Tengah, 2019
+pengarang: DenY Krisbiyantoro
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Batlefield.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 ## Matriks Mandat Tertulis per Jenis dan Fase {#sub:mandat-mitigasi}
 
 **Paket lembaga Pantau Bencana memuat {{angka:lembaga.peran.baris_total}} baris peran bersumber peraturan; {{angka:lembaga.peran.baris_tertulis}} menyebut lembaganya di norma dan {{angka:lembaga.peran.baris_pemetaan}} pelakunya dipetakan penyusun.** Baris itu tersebar di {{angka:lembaga.peran.lembaga_n}} kode lembaga, tetapi hanya {{angka:lembaga.peran.lembaga_tertulis_n}} lembaga yang punya paling sedikit satu peran tertulis; sembilan lembaga lain, antara lain Badan Riset dan Inovasi Nasional (BRIN) dan Kementerian Pekerjaan Umum (Kementerian PU), hanya muncul lewat pemetaan [@pantaubencana-2026-paket-lembaga]. Norma lintas jenis bencana mengisi {{angka:lembaga.peran.semua.baris}} baris ({{angka:lembaga.peran.semua.tertulis}} tertulis) dan norma khusus jenis {{angka:lembaga.peran.spesifik.baris}} baris ({{angka:lembaga.peran.spesifik.tertulis}} tertulis). Kode peran mengikuti paket itu: K untuk koordinator atau penanggung jawab utama; P untuk pelaksana atau pendukung; R untuk penetap status atau izin dan pembuat norma; I untuk penyedia informasi dan peringatan dini.
@@ -71,7 +83,7 @@ catatan: K koordinator atau penanggung jawab utama; P pelaksana atau pendukung; 
 **Lima peran belum tertulis di norma mana pun; empat diusulkan ditetapkan dengan instrumen yang berpijak pada dasar yang sudah berlaku, dan satu dicatat sebagai sel kosong beralasan (@tbl:usulan-mitigasi).** Peran yang tertulis dengan pelaku umum tetap berada di @tbl:mandat-mitigasi bertanda bintang, dan peran BNPB sebagai kontributor aksi Renas 2.4.4.a tidak dimuat karena sudah tertulis di Renas PB [@bnpb-2025-renas, hlm. 86]. Paket lembaga mencatat {{angka:lembaga.celah.n}} celah kewenangan, antara lain dua rezim status epidemi dan dua rezim konflik sosial [@pantaubencana-2026-paket-lembaga].
 
 ::: tabel {#tbl:usulan-mitigasi}
-judul: Usulan penugasan yang belum tertulis di norma dan instrumen untuk menetapkannya
+judul: Usulan penugasan yang belum tertulis di norma dan instrumen untuk menetapkannya, 2026
 sumber: Perpres 46/2026; UU 24/2007; UU 17/2023; UU 17/2019; PP 30/2024; Perpres 1/2019; Perban BNPB 2/2024; Putusan MK 261/PUU-XXIII/2025; paket lembaga Pantau Bencana; analisis kajian ini
 keyakinan: asumsi-kebijakan
 data_per: 24 Okt 2026
@@ -87,6 +99,18 @@ catatan: Dasar yang ada berlabel resmi; pilihan instrumen dan penugasan adalah u
 :::
 
 **Tiga dari lima usulan berada di luar kewenangan BNPB untuk menetapkannya sendiri.** Sistem peringatan dini per wilayah sungai adalah pengaturan pengelola sumber daya air (PP 30/2024 Pasal 96 ayat (1) huruf b) dalam pola pengelolaan yang dipimpin Kementerian PU (UU 17/2019 Pasal 35 ayat (2)) [@ri-2024-pp30; @ri-2019-uu17]. Oleh sebab itu, penunjukan penyedia peringatan dini kekeringan hidrologis dibahas di Dewan SDA Nasional, dan BNPB hanya mengatur sambungannya ke platform lewat perubahan Perban BNPB 2/2024. Status "kejadian luar biasa" (KLB) ditetapkan kepala daerah atau Menteri Kesehatan (UU 17/2023 Pasal 353) dan daerah terjangkit wabah oleh Menteri Kesehatan (Pasal 368), sedangkan status darurat bencana ditetapkan Presiden atau kepala daerah (UU 24/2007 Pasal 51) [@ri-2023-uu17; @ri-2007-uu24]. Norma pengait keduanya tidak ditemukan pada teks yang dibaca, dan rancangan Permenkes 1/2026 menambah status krisis kesehatan [@kemenkes-2026-pmk1]. Pemrakarsa pengait itu Kementerian Kesehatan (Kemenkes), dengan BNPB sebagai mitra lewat rakor Kemenko PMK. Perpres status dan tingkatan bencana ditetapkan Presiden; BNPB menginisiasinya lewat Kemenko PMK sesuai rekomendasi Badan Pemeriksa Keuangan (BPK) kepada Kepala BNPB [@bpk-2025-ihps2-2024].
+
+
+::: gambar {#gbr:foto-m12-bkt-cipinang}
+berkas: gambar/foto/air-bkt-cipinang.jpg
+jenis: foto
+judul: Banjir Kanal Timur ruas Cipinang Muara, Jakarta Timur, Juni 2024
+pengarang: Irvan Ary Maulana
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Jakarta_East_Flood_Canal,_Cipinang_Muara_Section,_June_2024.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
 
 ## Forum Koordinasi dan Jalur Adopsi {#sub:forum-mitigasi}
 
@@ -151,17 +175,17 @@ catatan: Jalur B berkala (paling lambat 2027); D bencana (paling lambat 2028); K
 Gempa dengan korban jiwa terbanyak tidak otomatis menjadi gempa dengan kebutuhan rumah terbesar. Dengan ukuran stimulan yang sama, gempa Lombok 2018 ({{angka:kerugian.lombok2018.stimulan_batas_bawah|rupiah}}) hampir dua kali Sulawesi Tengah 2018 ({{angka:kerugian.nasional.ekstrem_sulteng2018|rupiah}}), sehingga lantai kejadian tunggal untuk kebutuhan rumah adalah Lombok 2018 [@bnpb-dibi]. Sulawesi Tengah 2018 tetap analog korban jiwa, bukan analog kebutuhan rumah.
 :::
 
-**Angka kerusakan dan kerugian resmi per kejadian lebih besar daripada ukuran stimulan untuk kejadian yang sama, dan keduanya ditulis berdampingan pada @gbr:profil-kerugian.** Penilaian sementara BNPB untuk Sulawesi Tengah 2018 mencatat {{angka:bnpb.sulteng2018.kerusakan_kerugian|rupiah}}, lawan batas tinggi stimulan {{angka:kerugian.nasional.ekstrem_sulteng2018|tinggi|rupiah}} [@bnpb-2018-kerugian-sulteng]. Kebutuhan R3P Lombok 2018 sebesar {{angka:kemenkopmk.lombok2018.kebutuhan_r3p|rupiah}} menurut Kemenko PMK, atau {{angka:kerugian.pengali.lombok2018_kemenkopmk|satuan}} batas tinggi stimulan [@kemenkopmk-2024-rehabrekon-lombok]. Sektor perumahan R3P Cianjur 2022 sebesar {{angka:r3p.cianjur2022.perumahan|rupiah}}, {{angka:r3p.cianjur2022.rasio_perumahan_stimulan|fmt=2}} kali stimulan dengan jumlah rumah R3P [@cianjur-2022-r3p]. Kerugian Yogyakarta 2006 tertulis {{angka:kemenkeu.parb2018.yogya2006_kerugian|rupiah}} menurut Strategi Pembiayaan dan Asuransi Risiko Bencana (PARB) Kemenkeu, lawan {{angka:bappenas.yogya2006.kerusakan_kerugian|rupiah}} menurut penilaian awal Bappenas; kedua angka itu bertentangan dan ditulis berdampingan [@kemenkeu-bkf-2018-parb; @bappenas-2006-dala-yogya]. Lantai kerugian kejadian tercatat dalam 30 tahun adalah Aceh 2004 dengan {{angka:kemenkeu.parb2018.aceh2004_kerugian|rupiah}} menurut Strategi PARB [@kemenkeu-bkf-2018-parb].
+**Angka kerusakan dan kerugian resmi per kejadian lebih besar daripada ukuran stimulan untuk kejadian yang sama, dan keduanya ditulis berdampingan di bawah ini.** Penilaian sementara BNPB untuk Sulawesi Tengah 2018 mencatat {{angka:bnpb.sulteng2018.kerusakan_kerugian|rupiah}}, lawan batas tinggi stimulan {{angka:kerugian.nasional.ekstrem_sulteng2018|tinggi|rupiah}} [@bnpb-2018-kerugian-sulteng]. Kebutuhan R3P Lombok 2018 sebesar {{angka:kemenkopmk.lombok2018.kebutuhan_r3p|rupiah}} menurut Kemenko PMK, atau {{angka:kerugian.pengali.lombok2018_kemenkopmk|satuan}} batas tinggi stimulan [@kemenkopmk-2024-rehabrekon-lombok]. Sektor perumahan R3P Cianjur 2022 sebesar {{angka:r3p.cianjur2022.perumahan|rupiah}}, {{angka:r3p.cianjur2022.rasio_perumahan_stimulan|fmt=2}} kali stimulan dengan jumlah rumah R3P [@cianjur-2022-r3p]. Kerugian Yogyakarta 2006 tertulis {{angka:kemenkeu.parb2018.yogya2006_kerugian|rupiah}} menurut Strategi Pembiayaan dan Asuransi Risiko Bencana (PARB) Kemenkeu, lawan {{angka:bappenas.yogya2006.kerusakan_kerugian|rupiah}} menurut penilaian awal Bappenas; kedua angka itu bertentangan dan ditulis berdampingan [@kemenkeu-bkf-2018-parb; @bappenas-2006-dala-yogya]. Lantai kerugian kejadian tercatat dalam 30 tahun adalah Aceh 2004 dengan {{angka:kemenkeu.parb2018.aceh2004_kerugian|rupiah}} menurut Strategi PARB [@kemenkeu-bkf-2018-parb].
 
 ::: gambar {#gbr:profil-kerugian}
 berkas: gambar/mitigasi/bab12-profil-kerugian.png
 jenis: grafik
-judul: Kebutuhan stimulan rumah tahunan batas bawah, 2015–2025, dengan kejadian tunggal dan pembanding kerugian resmi
+judul: Kebutuhan stimulan rumah tahunan batas bawah, 2015–2025, dengan lapisan dan kejadian tunggal (Rp triliun)
 sumber: Pengolahan data Pantau Bencana dari DIBI BNPB (rumah rusak, kejadian besar) dan siaran Kemenko PMK 22 November 2023 (besaran stimulan); Strategi PARB Kemenkeu; BNPB (2018); Kemenko PMK (2024); R3P Cianjur 2022; Bappenas (2006)
 keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Batang per tahun menunjukkan rentang batas rendah sampai batas tinggi; garis median dan persentil 90. Penanda kejadian tunggal Lombok 2018 dan Sumatra 2025 di samping. Batas bawah kebutuhan rumah, bukan kerugian ekonomi; pembanding kerugian resmi berlabel resmi dan tidak dikalikan ke profil.
+catatan: Garis per baris menunjukkan rentang besaran stimulan 2010 sampai besaran 2023. Lapisan median dan persentil 90 serta kejadian tunggal Sulawesi Tengah 2018 dan Sumatra 2025 ditulis di bawah seri tahun. Batas bawah kebutuhan rumah, bukan kerugian ekonomi; pembanding kerugian resmi ditulis di teks dan tidak dikalikan ke profil.
 :::
 
 **Rata-rata kebutuhan stimulan rumah per tahun hanya sekitar seperdelapan sampai seperenam rata-rata kerugian ekonomi langsung menurut Strategi PARB, yaitu {{angka:kemenkeu.parb2018.kerugian_rerata_2000_2016|rupiah}} per tahun pada 2000–2016, dengan periode dan cakupan yang berbeda [@kemenkeu-bkf-2018-parb].** Dokumen yang sama mengutip perkiraan Bank Dunia bahwa kerugian yang dapat diidentifikasi hanya sekitar {{angka:kemenkeu.parb2018.kerugian_teridentifikasi_porsi|persen}} dari kerugian sebenarnya.
@@ -186,7 +210,7 @@ sumber: Strategi PARB Kemenkeu; PP 22/2008; PP 12/2019; UU 7/2012; Perpres 75/20
 keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Bagian A menyusun lima lapis (prabencana, sering, berat, ekstrem, konflik sosial) dengan dasar ukuran, sumber dana, pemicu, dan pengguna; bagian B merinci tiap sumber dana dengan dasar hukum, pemicu pencairan, dan pengelola. Tanpa nominal anggaran; lebar lapis tidak sebanding besaran. Pelapisan berjangkar Strategi PARB (resmi); penempatan sumber dana ke lapis oleh penyusun. DAK tidak dimuat karena dasar 2026 belum diverifikasi.
+catatan: Lima lapis (prabencana, sering, berat, ekstrem, konflik sosial) dengan sumber dana utama, tambahan, dan lain beserta dasar hukumnya. Tanpa nominal anggaran; tinggi lapis tidak sebanding besaran. Pelapisan berjangkar Strategi PARB (resmi); penempatan sumber dana ke lapis oleh penyusun. DAK tidak dimuat karena dasar 2026 belum diverifikasi.
 :::
 
 **Kompendium program kajian ini tidak memuat satu pun program kelembagaan atau pembiayaan berkekuatan bukti kuat, sehingga tidak ada program pembiayaan yang disebut terbukti [@pantaubencana-2026-program-terbukti].** Asuransi risiko dan *pooling* seperti Caribbean Catastrophe Risk Insurance Facility (CCRIF) dan African Risk Capacity (ARC) berposisi program dengan syarat (bukti sedang): pemicu parametrik harus cocok dengan kerugian nyata dan rencana penggunaan dana disiapkan sebelum bencana. Hibah mitigasi Federal Emergency Management Agency (FEMA) dengan syarat analisis manfaat-biaya berposisi rujukan tata kelola, karena rasio manfaatnya hasil pemodelan tanpa angka tercatat Indonesia yang dapat disandingkan [@fema-2018-mitsaves]. Rehabilitasi rumah pascagempa Lombok 2018 berkekuatan lemah dan berposisi pelajaran, bukan teladan. Syarat manfaat-biaya Dana Bersama (@rek:r-m18) diusulkan sebagai perbaikan tata kelola, tanpa klaim bahwa Dana Bersama akan lebih efektif.
@@ -202,7 +226,7 @@ catatan: Bagian A menyusun lima lapis (prabencana, sering, berat, ekstrem, konfl
 **Perpres penetapan status dan tingkatan bencana diperintahkan UU 24/2007 Pasal 7 ayat (3) sejak 2007 dan belum ditemukan terbit per 24 Oktober 2026.** Pemerintah di persidangan Mahkamah Konstitusi (MK) menyatakan Perpres itu belum dibentuk secara tersendiri, dan BPK mencatat hal yang sama dengan rekomendasi agar Kepala BNPB menginisiasinya [@mk-2026-putusan261; @bpk-2025-ihps2-2024]. Putusan MK 261/PUU-XXIII/2025, diucapkan 28 Agustus 2026, memaknai Pasal 7 ayat (2): status dan tingkat bencana nasional didasarkan pada sekurang-kurangnya {{angka:mk.putusan261_2025.indikator_minimal|satuan}} dari {{angka:uu24.pasal7.indikator|satuan}}, dengan jumlah korban sebagai indikator utama yang harus dipenuhi [@mk-2026-putusan261, hlm. 240]. Putusan itu tidak menetapkan ambang angka, sehingga kajian ini menyajikan sebaran indikator dari DIBI sebagai bahan Perpres tanpa mengusulkan ambang. Renas PB sudah mendaftar substansi status tingkatan bencana di Tabel 4.1, tetapi tanpa aksi berkode [@bnpb-2025-renas, hlm. 94–99, 118–119].
 
 ::: tabel {#tbl:instrumen-mitigasi}
-judul: Instrumen hukum untuk rekomendasi kajian mitigasi, pemrakarsa, horizon, dan posisinya di lima dokumen perencanaan
+judul: Instrumen hukum untuk rekomendasi kajian mitigasi, pemrakarsa, horizon, dan posisinya di lima dokumen perencanaan, 2026
 sumber: Kepka BNPB 327/2025; Perka BNPB 6/2014; Perpres 87/2020; Renas PB 2025–2029; Renstra BNPB 2025–2029; RPJMN 2025–2029; UU 24/2007; Perpres 46/2026; Putusan MK 261/PUU-XXIII/2025; analisis kajian ini
 keyakinan: asumsi-kebijakan
 data_per: 24 Okt 2026

@@ -1,0 +1,3659 @@
+{
+ "spek": "deck",
+ "pesan_kunci": "Korban bencana alam 2025 tertinggi sejak 2018 walau indeks risiko turun; Grand Design 2026–2030 mengukur keberhasilan dengan indikator korban Renas PB, dan keputusan Kepala BNPB dalam November 2026 menjaga jalur berkala yang berakhir 2027.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "deck#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    126,
+    446.4,
+    120,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: Ungkeito, CC BY-SA 4.0, Wikimedia Commons",
+    "Minggu, 25 Oktober 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "8C9AA8",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "F6B26B",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ]
+  },
+  {
+   "nomor": 2,
+   "jenis": "kartu-angka",
+   "asal": "deck#2",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "2",
+    "DIBI BNPB 2015–2026; InaRISK BNPB, IRBI 2019–2025; Renas PB 2025–2029; Renstra BNPB 2025–2029; kompendium program Pantau Bencana"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F4C3A0",
+     "garis"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "Pesan Kunci: korban jiwa sebagai ukuran keberhasilan Grand Design, tiga keputusan Kepala BNPB",
+   "pesan": "Tesis, tiga keputusan yang diminta, dan satu temuan per bagian A sampai E",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 3,
+   "jenis": "temuan-grafik",
+   "asal": "deck#3",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "3",
+    "DIBI BNPB 2015–2025 (tarik 23 Okt 2026); LKIP BNPB 2025; Renas PB 2025–2029"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "arah"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "AEBBCB",
+     "skala.netral"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "arah"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A1. Bencana alam 2025 menelan {{angka:dibi.alam.meninggal_hilang.2025}} jiwa meninggal dan hilang, tertinggi sejak 2018 dan {{angka:dibi.alam.rasio_median.2025|fmt=1}} kali median 2015–2024",
+   "pesan": "Korban naik meskipun indeks turun",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 4,
+   "jenis": "temuan-peta",
+   "asal": "deck#4",
+   "keluarga": [
+    "api"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "public/geo Pantau Bencana (asal belum terdokumentasi)",
+     "sistem_referensi": "WGS84 geografis",
+     "proyeksi": "Ekuirektangular",
+     "catatan": "Batas wilayah bukan rujukan resmi"
+    },
+    "resmi": false,
+    "batas": [
+     43.2,
+     216.70311499999997,
+     574.0320000000002,
+     416.09688500000004
+    ],
+    "label": [
+     {
+      "teks": "Sumatra",
+      "kotak": [
+       51.166826375000014,
+       311.29575639,
+       94.68635762500001,
+       324.29575639
+      ]
+     },
+     {
+      "teks": "Kalimantan",
+      "kotak": [
+       212.71916812500007,
+       243.10308704999997,
+       266.49651187500007,
+       256.10308705
+      ]
+     },
+     {
+      "teks": "Jawa",
+      "kotak": [
+       206.12749337500003,
+       384.47326998,
+       238.05327462500003,
+       397.47326998
+      ]
+     },
+     {
+      "teks": "Sulawesi",
+      "kotak": [
+       317.31399425000006,
+       258.65580110999997,
+       362.55618175000006,
+       271.65580110999997
+      ]
+     },
+     {
+      "teks": "Bali dan Nusa Tenggara",
+      "kotak": [
+       226.83485737500007,
+       401.42174043,
+       325.63563862500007,
+       414.42174043
+      ]
+     },
+     {
+      "teks": "Maluku",
+      "kotak": [
+       410.88509437500005,
+       332.83028355,
+       450.52962562500005,
+       345.83028355
+      ]
+     },
+     {
+      "teks": "Papua",
+      "kotak": [
+       476.54782500000005,
+       393.6453834,
+       512.2665750000001,
+       406.6453834
+      ]
+     }
+    ],
+    "ukuran_label_pt": 8
+   },
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "4",
+    "Sumber batas: public/geo Pantau Bencana (asal belum terdokumentasi); WGS84 geografis; Ekuirektangular; Batas wilayah bukan rujukan resmi",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "InaRISK BNPB, IRBI 2025; DIBI BNPB 2015–2025 (olah Pantau Bencana)"
+   ],
+   "warna": [
+    [
+     "00499D",
+     "aksen"
+    ],
+    [
+     "051C2C",
+     "angka-judul"
+    ],
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "8F3F07",
+     "skala.api"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E8894A",
+     "skala.api"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "B1. {{angka:irbi.kab.tinggi.2025}} dari {{angka:irbi.kab.dinilai.2025}} kab/kota berstatus Tinggi pada IRBI 2025, terbanyak di {{tempat:Sumatra}} dengan {{angka:irbi.pulau.sumatra.kab_tinggi.2025}} kab/kota",
+   "pesan": "Sebaran risiko dari pulau ke kab/kota",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 5,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#5",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "5",
+    "DIBI BNPB 2008–2025; PuSGeN 2024; Cabinet Office, NRR; NOAA CPC; olah Pantau Bencana"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "B2. {{angka:matriks.mitigasi.kelas5_fatalitas}} dari {{angka:matriks.mitigasi.jenis_lingkup}} jenis bencana berkelas fatalitas tertinggi; peluang lima tahun hanya dapat dinilai untuk {{angka:matriks.mitigasi.kemungkinan_dinilai|satuan}}",
+   "pesan": "Penilaian terbanding semua jenis bencana",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 6,
+   "jenis": "skenario",
+   "asal": "deck#6",
+   "keluarga": [
+    "geologi"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "6",
+    "1",
+    "< 0,2%",
+    "2",
+    "0,2–1%",
+    "3",
+    "1–5%",
+    "4",
+    "5–25%",
+    "5",
+    "> 25%",
+    "KRB BNPB 2022–2026; Renas PB 2025–2029; PuSGeN 2024; Widiyantoro dkk. (2020); USGS; DIBI BNPB; BRR NAD-Nias (2009)"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "5B7A99",
+     "pil"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "8A4B2A",
+     "kategori.geologi"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "arah"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F1E2D6",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "C1. Penduduk terpapar tsunami mencapai {{angka:renas.krb.terpapar_tsunami}} jiwa menurut KRB 2022–2026; korban skenario belum dihitung dari genangan resmi",
+   "pesan": "Skenario geologi dinyatakan dengan paparan; korban tsunami belum dapat dihitung",
+   "jenis_slide": "kartu-skenario",
+   "judul_bentuk": "temuan",
+   "seri": "skenario-terburuk",
+   "visual": [
+    "grafik",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 7,
+   "jenis": "skenario",
+   "asal": "deck#7",
+   "keluarga": [
+    "basah"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "7",
+    "1",
+    "< 0,2%",
+    "2",
+    "0,2–1%",
+    "3",
+    "1–5%",
+    "4",
+    "5–25%",
+    "5",
+    "> 25%",
+    "DIBI BNPB 2008–2026; BMKG, prakiraan musim hujan 2026/2027; NOAA CPC (ONI); Renas PB 2025–2029; UNDRR-WMO 2022"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "arah"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "kategori.basah"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "DCEBF8",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "C2. Musim hujan 2025/2026 mencatat {{angka:hidromet.nasional.lantai.meninggal_hilang}} meninggal dan hilang, lantai skenario terburuk hidrometeorologi nasional",
+   "pesan": "Lantai hidrometeorologi dari kejadian nyata, bukan dari pita model",
+   "jenis_slide": "kartu-skenario",
+   "judul_bentuk": "temuan",
+   "seri": "skenario-terburuk",
+   "visual": [
+    "grafik",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 8,
+   "jenis": "temuan-grafik",
+   "asal": "deck#8",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "8",
+    "Kemenkes dikutip Renstra BNPB 2025–2029; WHO; ICG (2002); BPBD DKI; KLH/BPLH; BNPB; Keppres 12/2020 dan 17/2023"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "arah"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "5B7A99",
+     "pil"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "AEBBCB",
+     "skala.netral"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "aksen"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "arah"
+    ],
+    [
+     "D9600B",
+     "pil"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "F8DDE0",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "C3. Pandemi COVID menjadi analog nonalam terburuk dengan {{angka:nonalam.covid19.meninggal}} kematian tercatat resmi; konflik Maluku sedikitnya {{angka:sosial.maluku.meninggal_bawah}} meninggal",
+   "pesan": "Nonalam dan sosial dikuantifikasi dari analog tanpa perkalian",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": "skenario-terburuk",
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 9,
+   "jenis": "kartu-angka",
+   "asal": "deck#9",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "9",
+    "Renstra BNPB 2025–2029; Renas PB 2025–2029; LKIP BNPB 2025; BPK IHPS II 2024; Putusan MK Agustus 2026; paket lembaga dan kompendium Pantau Bencana"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "D1. Target cakupan peringatan dini 2029: Renstra {{angka:renstra.ikp_peringatan_dini.2029|fmt=2|persen}} lawan Renas PB {{angka:renas.indikator_1c.2029|satuan}}; {{angka:lembaga.celah.n}} celah kewenangan tercatat",
+   "pesan": "Kesenjangan yang menuntut keputusan",
+   "jenis_slide": "panel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 10,
+   "jenis": "strategi-tiga-fase",
+   "asal": "deck#10",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "10",
+    "R-A02",
+    "R-A06",
+    "R-M05",
+    "R-M12",
+    "R-M19",
+    "R-A01",
+    "R-A04",
+    "R-M03",
+    "R-M07",
+    "R-M17",
+    "R-M09",
+    "R-M08"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "E1. Langkah Grand Design per Fase, Bertaut ke Kode Rekomendasi 2026–2030",
+   "pesan": "Langkah per fase yang bertaut ke rekomendasi berkode",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "grafik"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 11,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#11",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "11",
+    "BMKG, prakiraan musim hujan 2026/2027; DIBI BNPB 2008–2026; Perban BNPB 11/2025; analisis kajian ini"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "5B7A99",
+     "pil"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "EEF5FC",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "E2. Kalender Rencana Aksi Musim Hujan 2026/2027 Tingkat Nasional dan Kesiapan Kemarau 2027",
+   "pesan": "Apa yang dikerjakan per bulan selama musim hujan dan menjelang kemarau",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 12,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#12",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "12",
+    "Paket lembaga Pantau Bencana dari peraturan perundang-undangan; UU 24/2007"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "E3. {{angka:lembaga.peran.baris_tertulis}} dari {{angka:lembaga.peran.baris_total}} baris peran lembaga tertulis di norma; {{angka:lembaga.peran.ancaman_tanpa_tertulis}} dari {{angka:lembaga.matriks.ancaman_n|satuan}} tanpa baris khusus jenis",
+   "pesan": "Siapa mengerjakan apa per fase menurut mandat tertulis",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 13,
+   "jenis": "rekomendasi",
+   "asal": "deck#13",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "13",
+    "R-A01",
+    "R-A02",
+    "R-A03",
+    "R-A04",
+    "R-A05",
+    "R-A06",
+    "R-A08",
+    "R-M01"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "E4. Rekomendasi {{sorot:100 hari}} pertama: keputusan empat belas hari dan langkah sebelum puncak musim hujan",
+   "pesan": "Delapan dari dua belas rekomendasi 100 hari pertama",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "rekomendasi",
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 14,
+   "jenis": "rekomendasi",
+   "asal": "deck#14",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "14",
+    "R-M02",
+    "R-M03",
+    "R-M22",
+    "R-A09",
+    "R-A10",
+    "R-M04",
+    "R-M06",
+    "R-M05"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "E5. Rekomendasi penutup {{sorot:100 hari}} dan awal peta jalan 2026–2027",
+   "pesan": "Rekomendasi 100 hari sisanya dan awal horizon 2026–2027",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "rekomendasi",
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 15,
+   "jenis": "rekomendasi",
+   "asal": "deck#15",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "15",
+    "R-M07",
+    "R-M08",
+    "R-M09",
+    "R-M12",
+    "R-M17",
+    "R-A18",
+    "R-M18",
+    "R-M19"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "E6. Rekomendasi lanjutan peta jalan {{sorot:2026–2027}} dan arah 2028–2030",
+   "pesan": "Rekomendasi lanjutan horizon 2026–2027 dan arah 2028–2030",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "rekomendasi",
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 16,
+   "jenis": "kesimpulan",
+   "asal": "deck#16",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "23 Okt 2026, 23.59 WIB",
+    "16",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "DIBI BNPB 2015–2026; InaRISK BNPB, IRBI 2019–2025; PuSGeN 2024; Renstra BNPB 2025–2029; Renas PB 2025–2029; BPK IHPS II 2024; kompendium Pantau Bencana"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "aksen"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "DCEBF8",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Kesimpulan: delapan temuan berangka tentang bencana Indonesia dan keputusan yang diminta",
+   "pesan": "Delapan kesimpulan berangka dan keputusan yang sama dengan slide Pesan Kunci",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 17,
+   "jenis": "penutup",
+   "asal": "deck#17",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "Foto: USGS, Public domain, Wikimedia Commons",
+    "Grand Design Mitigasi Bencana Indonesia 2026–2030, Minggu, 25 Oktober 2026"
+   ],
+   "warna": [
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "F28C28",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ]
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "dibi.alam.meninggal_hilang.2025",
+   "opsi": "|",
+   "tampil": "1.956",
+   "nilai": 1956,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "irbi.nasional.persen_2019_2024",
+   "opsi": "|fmt=2|persen|arah",
+   "tampil": "turun 10,76%",
+   "nilai": -10.7584,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019 dan 2024",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "dibi.alam.meninggal.2025",
+   "opsi": "|",
+   "tampil": "1.735",
+   "nilai": 1735,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "dibi.alam.hilang.2025",
+   "opsi": "|",
+   "tampil": "221",
+   "nilai": 221,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "dibi.sumatra2025.porsi_meninggal_hilang_2025",
+   "opsi": "|fmt=1|persen",
+   "tampil": "68,6%",
+   "nilai": 68.6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "irbi.kab.tinggi.2025",
+   "opsi": "|",
+   "tampil": "169",
+   "nilai": 169.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "irbi.kab.dinilai.2025",
+   "opsi": "|",
+   "tampil": "514",
+   "nilai": 514.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "dibi.pulau.jawa.porsi_kejadian_2015_2025",
+   "opsi": "|fmt=1|persen",
+   "tampil": "47,2%",
+   "nilai": 47.2,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.meninggal_hilang",
+   "opsi": "|",
+   "tampil": "1.692",
+   "nilai": 1692,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "renstra.ikp_peringatan_dini.kenaikan_poin_2025_2029",
+   "opsi": "|fmt=2",
+   "tampil": "0,22",
+   "nilai": 0.22,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029, hlm. 133",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "renas.indikator_1c.kelipatan_2025_2029",
+   "opsi": "|fmt=1",
+   "tampil": "4,7",
+   "nilai": 4.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029, Tabel 2.8, hlm. 32",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "mitigasi.sel_program.tanpa_kuat_sedang",
+   "opsi": "|",
+   "tampil": "24",
+   "nilai": 24,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "mitigasi.sel_program.total",
+   "opsi": "|",
+   "tampil": "39",
+   "nilai": 39,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "dibi.alam.meninggal_hilang.2025",
+   "opsi": "|",
+   "tampil": "1.956",
+   "nilai": 1956,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "dibi.alam.rasio_median.2025",
+   "opsi": "|fmt=1",
+   "tampil": "3,4",
+   "nilai": 3.35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "dibi.alam.meninggal.2025",
+   "opsi": "|",
+   "tampil": "1.735",
+   "nilai": 1735,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "dibi.alam.hilang.2025",
+   "opsi": "|",
+   "tampil": "221",
+   "nilai": 221,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "dibi.sumatra2025.meninggal_hilang",
+   "opsi": "|",
+   "tampil": "1.342",
+   "nilai": 1342,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "dibi.sumatra2025.porsi_meninggal_hilang_2025",
+   "opsi": "|fmt=1|persen",
+   "tampil": "68,6%",
+   "nilai": 68.6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "276",
+   "nilai": 276.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "578",
+   "nilai": 578.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "378",
+   "nilai": 378.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "6.240",
+   "nilai": 6240.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "589",
+   "nilai": 589.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "418",
+   "nilai": 418.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "815",
+   "nilai": 815.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "895",
+   "nilai": 895.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "308",
+   "nilai": 308.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "603",
+   "nilai": 603.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "csv:naskah/mitigasi/deck_korban_alam.csv#meninggal_hilang",
+   "tampil": "1.956",
+   "nilai": 1956.0,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam"
+  },
+  {
+   "kunci": "turunan:deck#3#ubah",
+   "tampil": "naik 608,7%",
+   "nilai": 608.6956521739131,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2016",
+   "tampil": "109,4%",
+   "nilai": 109.42028985507247,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2017",
+   "tampil": "34,6%",
+   "nilai": -34.602076124567475,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2018",
+   "tampil": "1.550,8%",
+   "nilai": 1550.7936507936508,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2019",
+   "tampil": "90,6%",
+   "nilai": -90.56089743589743,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2020",
+   "tampil": "29,0%",
+   "nilai": -29.03225806451613,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2021",
+   "tampil": "95,0%",
+   "nilai": 94.97607655502392,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2022",
+   "tampil": "9,8%",
+   "nilai": 9.815950920245399,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2023",
+   "tampil": "65,6%",
+   "nilai": -65.58659217877096,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2024",
+   "tampil": "95,8%",
+   "nilai": 95.77922077922078,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#3#persen:2025",
+   "tampil": "224,4%",
+   "nilai": 224.3781094527363,
+   "naskah": "deck#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025, bencana alam",
+   "dari": []
+  },
+  {
+   "kunci": "dibi.nasional.meninggal.2025",
+   "opsi": "|",
+   "tampil": "2.030",
+   "nilai": 2030.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "bnpb.lkip2025.meninggal.2025",
+   "opsi": "|",
+   "tampil": "1.666",
+   "nilai": 1666,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "bnpb.lkip2025.hilang.2025",
+   "opsi": "|",
+   "tampil": "214",
+   "nilai": 214,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "dibi.alam.rasio_proyeksi_1a.2025",
+   "opsi": "|fmt=1",
+   "tampil": "3,1",
+   "nilai": 3.1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan Renas PB 2025–2029 Tabel 2.8",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "irbi.kab.tinggi.2025",
+   "opsi": "|",
+   "tampil": "169",
+   "nilai": 169.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "irbi.kab.dinilai.2025",
+   "opsi": "|",
+   "tampil": "514",
+   "nilai": 514.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "irbi.pulau.sumatra.kab_tinggi.2025",
+   "opsi": "|",
+   "tampil": "50",
+   "nilai": 50.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "irbi.kab.tinggi.2025",
+   "opsi": "|",
+   "tampil": "169",
+   "nilai": 169.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "irbi.pulau.papua.kab_tinggi.2025",
+   "opsi": "|",
+   "tampil": "37",
+   "nilai": 37.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "dibi.pulau.jawa.porsi_kejadian_2015_2025",
+   "opsi": "|fmt=1|persen",
+   "tampil": "47,2%",
+   "nilai": 47.2,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2015–2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "irbi_dibi.nasional.spearman.total_kejadian",
+   "opsi": "|fmt=2",
+   "tampil": "-0,38",
+   "nilai": -0.38,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; analisis penyusun atas data resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB dan DIBI BNPB",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_tinggi",
+   "tampil": "50",
+   "nilai": 50.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_kab",
+   "tampil": "154",
+   "nilai": 154.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_tinggi",
+   "tampil": "40",
+   "nilai": 40.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_kab",
+   "tampil": "81",
+   "nilai": 81.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_tinggi",
+   "tampil": "37",
+   "nilai": 37.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_kab",
+   "tampil": "42",
+   "nilai": 42.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_tinggi",
+   "tampil": "21",
+   "nilai": 21.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_kab",
+   "tampil": "41",
+   "nilai": 41.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_tinggi",
+   "tampil": "19",
+   "nilai": 19.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_kab",
+   "tampil": "21",
+   "nilai": 21.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_tinggi",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_kab",
+   "tampil": "119",
+   "nilai": 119.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_tinggi",
+   "tampil": "1",
+   "nilai": 1.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "csv:data/irbi/irbi_agregat_pulau.csv#n_kab",
+   "tampil": "56",
+   "nilai": 56.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025"
+  },
+  {
+   "kunci": "turunan:deck#4#jumlah:n_tinggi",
+   "tampil": "169",
+   "nilai": 169.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#4#jumlah:n_kab",
+   "tampil": "514",
+   "nilai": 514.0,
+   "naskah": "deck#4",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025",
+   "dari": []
+  },
+  {
+   "kunci": "matriks.mitigasi.kelas5_fatalitas",
+   "opsi": "|",
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "matriks.mitigasi.jenis_lingkup",
+   "opsi": "|",
+   "tampil": "15",
+   "nilai": 15,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "KERANGKA §5 BAB 5 (baris 1226), slide B2 (baris 1583), keputusan V05/V08",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "matriks.mitigasi.kemungkinan_dinilai",
+   "opsi": "|satuan",
+   "tampil": "3 jenis",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "matriks.mitigasi.kelas5_fatalitas",
+   "opsi": "|",
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "matriks.mitigasi.kelas5_fatalitas_atau_mengungsi",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, paket skenario-geologi dan nonalam-sosial",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "geologi.jawa_gabungan.peluang_5th",
+   "opsi": "|fmt=2|persen",
+   "tampil": "0,83%",
+   "nilai": 0.83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; turunan",
+   "sumber": "Pengolahan dari periode ulang PuSGeN 2024 (asumsi Poisson)",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.peluang_5_musim",
+   "opsi": "|fmt=1|persen",
+   "tampil": "23,7%",
+   "nilai": 23.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, 18 musim hujan 2008/2009–2025/2026",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "renas.krb.terpapar_tsunami",
+   "opsi": "|",
+   "tampil": "5.341.282",
+   "nilai": 5341282,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "renas.krb.terpapar_tsunami",
+   "opsi": "|satuan",
+   "tampil": "5.341.282 jiwa",
+   "nilai": 5341282,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kajian Risiko Bencana 2022–2026, dikutip Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.5 hlm. 24",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "usgs.pangandaran2006.meninggal",
+   "opsi": "|satuan",
+   "tampil": "665 jiwa",
+   "nilai": 665,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "USGS usp000ensm impact-text",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "dibi.mentawai2010.meninggal",
+   "opsi": "|satuan",
+   "tampil": "447 jiwa",
+   "nilai": 447.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "dibi.selatsunda2018.meninggal",
+   "opsi": "|satuan",
+   "tampil": "437 jiwa",
+   "nilai": 437.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "brr.aceh2004.meninggal",
+   "opsi": "|satuan",
+   "tampil": "127.720 jiwa",
+   "nilai": 127720,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias (2009), halaman capaian 4 tahun",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "widiyantoro.jawa_barat.tinggi_tsunami",
+   "opsi": "|satuan",
+   "tampil": "20 m",
+   "nilai": 20,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Widiyantoro dkk. (2020), Scientific Reports 10:15274",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "krb.tsunami.sekolah_kelas_tinggi",
+   "opsi": "|",
+   "tampil": "59.839",
+   "nilai": 59839,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; arti field dari nama API",
+   "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "renas.diseminasi_gempa_tsunami.unit_2024",
+   "opsi": "|",
+   "tampil": "480",
+   "nilai": 480,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029, matriks kegiatan",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "renas.diseminasi_gempa_tsunami.unit_2029",
+   "opsi": "|",
+   "tampil": "530",
+   "nilai": 530,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029, matriks kegiatan",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "turunan:deck#6#kebijakan",
+   "tampil": "naik 10%",
+   "nilai": 10.416666666666668,
+   "naskah": "deck#6",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari Renas PB 2025–2029, matriks kegiatan",
+   "dari": [
+    "renas.diseminasi_gempa_tsunami.unit_2024",
+    "renas.diseminasi_gempa_tsunami.unit_2029"
+   ]
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.meninggal_hilang",
+   "opsi": "|",
+   "tampil": "1.692",
+   "nilai": 1692,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.meninggal_hilang",
+   "opsi": "|satuan",
+   "tampil": "1.692 jiwa",
+   "nilai": 1692,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "dibi.sumatra2025.meninggal_hilang",
+   "opsi": "|satuan",
+   "tampil": "1.342 jiwa",
+   "nilai": 1342,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.pasca_elnino.meninggal_hilang_2015",
+   "opsi": "|",
+   "tampil": "199",
+   "nilai": 199.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.pasca_elnino.meninggal_hilang_2009",
+   "opsi": "|satuan",
+   "tampil": "373 jiwa",
+   "nilai": 373.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.musim_2025.mengungsi",
+   "opsi": "|satuan",
+   "tampil": "1.043.740 jiwa",
+   "nilai": 1043740.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2025/2026",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.musim_2025.menderita",
+   "opsi": "|satuan",
+   "tampil": "8.242.120 jiwa",
+   "nilai": 8242120.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.musim_2025.rumah_rb",
+   "opsi": "|satuan",
+   "tampil": "65.929 unit",
+   "nilai": 65929.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2025/2026",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "bmkg.musim_2026.zom_awal_mundur",
+   "opsi": "|satuan",
+   "tampil": "529 ZOM",
+   "nilai": 529,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BMKG, siaran pers Prediksi Musim Hujan 2026/2027 (22 September 2026)",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai_tanpa_longsor.meninggal_hilang",
+   "opsi": "|",
+   "tampil": "1.490",
+   "nilai": 1490,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai_tanpa_longsor.pd_renas.korban_jiwa",
+   "opsi": "|fmt=0",
+   "tampil": "899",
+   "nilai": 899.1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan Pantau Bencana",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "turunan:deck#7#kebijakan",
+   "tampil": "turun 40%",
+   "nilai": -39.65771812080537,
+   "naskah": "deck#7",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB; Pengolahan data Pantau Bencana dari Pengolahan Pantau Bencana",
+   "dari": [
+    "hidromet.nasional.lantai_tanpa_longsor.meninggal_hilang",
+    "hidromet.nasional.lantai_tanpa_longsor.pd_renas.korban_jiwa"
+   ]
+  },
+  {
+   "kunci": "nonalam.covid19.meninggal",
+   "opsi": "|",
+   "tampil": "161.870",
+   "nilai": 161870.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "sosial.maluku.meninggal_bawah",
+   "opsi": "|",
+   "tampil": "5.000",
+   "nilai": 5000.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "ICG Asia Report N°31, 2002",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "nonalam.covid19.meninggal",
+   "opsi": "|",
+   "tampil": "161.870",
+   "nilai": 161870.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Kesehatan (2024), dikutip Renstra BNPB 2025–2029",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "nonalam.covid19.kematian_berlebih",
+   "opsi": "|rentang|ringkas",
+   "tampil": "0,8–1,3 juta",
+   "nilai": null,
+   "rendah": 806815.0,
+   "tinggi": 1343849.0,
+   "keyakinan": "estimasi-model",
+   "sumber": "WHO, estimasi kematian berlebih COVID-19 2020–2021",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "sosial.maluku.meninggal_bawah",
+   "opsi": "|",
+   "tampil": "5.000",
+   "nilai": 5000.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "ICG Asia Report N°31, 2002",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "csv:data/nonalam-sosial/covid19_nasional.csv#nilai",
+   "tampil": "21.237",
+   "nilai": 21237.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, dasbor COVID menurut tanggal laporan"
+  },
+  {
+   "kunci": "csv:data/nonalam-sosial/covid19_nasional.csv#nilai",
+   "tampil": "122.818",
+   "nilai": 122818.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, dasbor COVID menurut tanggal laporan"
+  },
+  {
+   "kunci": "csv:data/nonalam-sosial/covid19_nasional.csv#nilai",
+   "tampil": "16.482",
+   "nilai": 16482.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, dasbor COVID menurut tanggal laporan"
+  },
+  {
+   "kunci": "csv:data/nonalam-sosial/covid19_nasional.csv#nilai",
+   "tampil": "1.435",
+   "nilai": 1435.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, dasbor COVID menurut tanggal laporan"
+  },
+  {
+   "kunci": "csv:data/nonalam-sosial/covid19_nasional.csv#nilai",
+   "tampil": "87",
+   "nilai": 87.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, dasbor COVID menurut tanggal laporan"
+  },
+  {
+   "kunci": "csv:data/nonalam-sosial/covid19_nasional.csv#nilai",
+   "tampil": "0",
+   "nilai": 0.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "WHO, dasbor COVID menurut tanggal laporan"
+  },
+  {
+   "kunci": "turunan:deck#8#ubah",
+   "tampil": "turun 100,0%",
+   "nilai": -100.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari WHO, dasbor COVID menurut tanggal laporan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#8#persen:2021",
+   "tampil": "478,3%",
+   "nilai": 478.3208551113622,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari WHO, dasbor COVID menurut tanggal laporan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#8#persen:2022",
+   "tampil": "86,6%",
+   "nilai": -86.58014297578531,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari WHO, dasbor COVID menurut tanggal laporan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#8#persen:2023",
+   "tampil": "91,3%",
+   "nilai": -91.29353233830845,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari WHO, dasbor COVID menurut tanggal laporan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#8#persen:2024",
+   "tampil": "93,9%",
+   "nilai": -93.93728222996516,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari WHO, dasbor COVID menurut tanggal laporan",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#8#persen:2025",
+   "tampil": "100,0%",
+   "nilai": -100.0,
+   "naskah": "deck#8",
+   "keyakinan": "terverifikasi",
+   "sumber": "Pengolahan data Pantau Bencana dari WHO, dasbor COVID menurut tanggal laporan",
+   "dari": []
+  },
+  {
+   "kunci": "nonalam.plumpang2023.meninggal",
+   "opsi": "|",
+   "tampil": "17",
+   "nilai": 17.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kepala BNPB, dikutip Setkab 5 Mar 2023",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "nonalam.tpa.terbakar_2026_tercatat",
+   "opsi": "|satuan",
+   "tampil": "4 TPA",
+   "nilai": 4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "olah(resmi): Jatiwaringin, Galuga, Putri Cempo, Jatibarang (BNPB dan KLH, sampai 23 Okt 2026)",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "nonalam.tpa.open_dumping",
+   "opsi": "|",
+   "tampil": "369",
+   "nilai": 369.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "KLH/BPLH, siaran pers 17 Apr 2026",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "nonalam.tpa.jumlah",
+   "opsi": "|",
+   "tampil": "485",
+   "nilai": 485.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "KLH/BPLH, siaran pers 17 Apr 2026",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "nonalam.covid19.durasi_status_hari",
+   "opsi": "|satuan",
+   "tampil": "1.165 hari",
+   "nilai": 1165.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Keppres 12/2020 (13 Apr 2020) dan Keppres 17/2023 (berlaku 21 Jun 2023)",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "renstra.ikp_peringatan_dini.2029",
+   "opsi": "|fmt=2|persen",
+   "tampil": "6,32%",
+   "nilai": 6.32,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "renas.indikator_1c.2029",
+   "opsi": "|satuan",
+   "tampil": "52.000 per 100.000 penduduk",
+   "nilai": 52000,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "lembaga.celah.n",
+   "opsi": "|",
+   "tampil": "17",
+   "nilai": 17,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; 14 dari 17 disimpulkan penyusun dari teks resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "renstra.ikp_peringatan_dini.2029",
+   "opsi": "|fmt=2|persen",
+   "tampil": "6,32%",
+   "nilai": 6.32,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), hlm. 133",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "renas.indikator_1c.2029",
+   "opsi": "|",
+   "tampil": "52.000",
+   "nilai": 52000,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029 (Perban BNPB 1/2025), Tabel 2.8",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "bpk.ihps2_2024.bnpb.peraturan_belum_disahkan",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "bpk.ihps2_2024.bnpb.peraturan_belum_diinisiasi",
+   "opsi": "|",
+   "tampil": "11",
+   "nilai": 11,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "bnpb.lkip2025.pd.rerata_persen.2025",
+   "opsi": "|fmt=2|persen",
+   "tampil": "6,10%",
+   "nilai": 6.1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025, IKP Direktorat Peringatan Dini",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "bnpb.lkip2025.pd.tsunami_persen.2025",
+   "opsi": "|fmt=2|persen",
+   "tampil": "12,19%",
+   "nilai": 12.19,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "bnpb.lkip2025.pd.banjir_persen.2025",
+   "opsi": "|fmt=2|persen",
+   "tampil": "0,01%",
+   "nilai": 0.01,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "mk.putusan261_2025.indikator_minimal",
+   "opsi": "|",
+   "tampil": "3",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Putusan MK 261/PUU-XXIII/2025 (diucapkan 28 Agustus 2026)",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "mitigasi.sel_program.nonalam_sosial_tanpa",
+   "opsi": "|",
+   "tampil": "12",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "bmkg.musim_2026.zom_awal_mundur",
+   "opsi": "|",
+   "tampil": "529",
+   "nilai": 529,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BMKG, siaran pers Prediksi Musim Hujan 2026/2027 (22 September 2026)",
+   "naskah": "deck#11"
+  },
+  {
+   "kunci": "bmkg.musim_2026.zom_puncak_desember",
+   "opsi": "|",
+   "tampil": "155",
+   "nilai": 155,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BMKG, siaran pers prakiraan musim hujan 2026/2027 (22 Sep 2026)",
+   "naskah": "deck#11"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.meninggal_hilang",
+   "opsi": "|",
+   "tampil": "1.692",
+   "nilai": 1692,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
+   "naskah": "deck#11"
+  },
+  {
+   "kunci": "respons.nasional.hidromet_puncak30",
+   "opsi": "|",
+   "tampil": "981.483",
+   "nilai": 981483,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB (tarik 23 Okt 2026)",
+   "naskah": "deck#11"
+  },
+  {
+   "kunci": "lembaga.peran.baris_tertulis",
+   "opsi": "|",
+   "tampil": "76",
+   "nilai": 76,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck#12"
+  },
+  {
+   "kunci": "lembaga.peran.baris_total",
+   "opsi": "|",
+   "tampil": "129",
+   "nilai": 129,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck#12"
+  },
+  {
+   "kunci": "lembaga.peran.ancaman_tanpa_tertulis",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "idem",
+   "naskah": "deck#12"
+  },
+  {
+   "kunci": "lembaga.matriks.ancaman_n",
+   "opsi": "|satuan",
+   "tampil": "13 ancaman",
+   "nilai": 13,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan Pantau Bencana dari peraturan yang dikutip paket lembaga",
+   "naskah": "deck#12"
+  },
+  {
+   "kunci": "lembaga.peran.baris_tertulis",
+   "opsi": "|",
+   "tampil": "76",
+   "nilai": 76,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck#12"
+  },
+  {
+   "kunci": "lembaga.peran.lembaga_n",
+   "opsi": "|",
+   "tampil": "35",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan Pantau Bencana dari peraturan yang dikutip paket lembaga",
+   "naskah": "deck#12"
+  },
+  {
+   "kunci": "lembaga.peran.ancaman_tanpa_tertulis",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "idem",
+   "naskah": "deck#12"
+  },
+  {
+   "kunci": "hidromet.nasional.musim_2025.mengungsi",
+   "opsi": "|satuan",
+   "tampil": "1.043.740 jiwa",
+   "nilai": 1043740.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2025/2026",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.meninggal_hilang",
+   "opsi": "|satuan",
+   "tampil": "1.692 jiwa",
+   "nilai": 1692,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "hidromet.nasional.kekeringan.dibi_terdampak_2018",
+   "opsi": "|satuan",
+   "tampil": "7.798.763 jiwa",
+   "nilai": 7798763.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck#14"
+  },
+  {
+   "kunci": "renstra.evaluasi_tahun_ke3.tahun",
+   "opsi": "|tahun",
+   "tampil": "2027",
+   "nilai": 2027,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perpres 80/2025 Pasal 51 ayat (5); Renstra BNPB 2025–2029",
+   "naskah": "deck#14"
+  },
+  {
+   "kunci": "pusgen.jawa.mmaks",
+   "opsi": "|fmt=1",
+   "tampil": "9,1",
+   "nilai": 9.1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+   "naskah": "deck#14"
+  },
+  {
+   "kunci": "dibi.alam.meninggal_hilang.2025",
+   "opsi": "|satuan",
+   "tampil": "1.956 jiwa",
+   "nilai": 1956,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam (kode 101–109)",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "dibi.alam.rasio_proyeksi_1a.2025",
+   "opsi": "|fmt=1",
+   "tampil": "3,1",
+   "nilai": 3.1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025 dan Renas PB 2025–2029 Tabel 2.8",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "irbi.nasional.persen_2019_2024",
+   "opsi": "|fmt=2|persen|arah",
+   "tampil": "turun 10,76%",
+   "nilai": -10.7584,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2019 dan 2024",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "irbi.kab.tinggi.2025",
+   "opsi": "|satuan",
+   "tampil": "169 kab/kota",
+   "nilai": 169.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "irbi.pulau.papua.kab_tinggi.2025",
+   "opsi": "|",
+   "tampil": "37",
+   "nilai": 37.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "InaRISK BNPB, IRBI 2025 (kolom status)",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.meninggal_hilang",
+   "opsi": "|satuan",
+   "tampil": "1.692 jiwa",
+   "nilai": 1692,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, musim hujan 2008/2009–2025/2026",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "pusgen.jawa.mmaks",
+   "opsi": "|fmt=1",
+   "tampil": "9,1",
+   "nilai": 9.1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "PuSGeN (2024), Peta Sumber dan Bahaya Gempa Indonesia Tahun 2024",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "renstra.ikp_peringatan_dini.kenaikan_poin_2025_2029",
+   "opsi": "|fmt=2",
+   "tampil": "0,22",
+   "nilai": 0.22,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029, hlm. 133",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "renas.indikator_1c.kelipatan_2025_2029",
+   "opsi": "|fmt=1",
+   "tampil": "4,7",
+   "nilai": 4.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Renas PB 2025–2029, Tabel 2.8, hlm. 32",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "bpk.ihps2_2024.bnpb.peraturan_belum_disahkan",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "bpk.ihps2_2024.bnpb.peraturan_belum_diinisiasi",
+   "opsi": "|",
+   "tampil": "11",
+   "nilai": 11,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BPK, Ikhtisar Hasil Pemeriksaan Semester II Tahun 2024",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "mitigasi.sel_program.tanpa_kuat_sedang",
+   "opsi": "|",
+   "tampil": "24",
+   "nilai": 24,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "naskah": "deck#16"
+  },
+  {
+   "kunci": "mitigasi.sel_program.total",
+   "opsi": "|",
+   "tampil": "39",
+   "nilai": 39,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; pemetaan penyusun",
+   "sumber": "Pengolahan data Pantau Bencana: pemetaan program kompendium ke 13 jenis x 3 fase (berkas bukti mitigasi bab-10, P5)",
+   "naskah": "deck#16"
+  }
+ ],
+ "catatan": [
+  [
+   "deck#1",
+   "judul_baris",
+   3
+  ],
+  [
+   "deck#2",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#3",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#4",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#5",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#6",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#7",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#8",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#9",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#10",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#11",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#12",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#13",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#14",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#15",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#16",
+   "judul_baris",
+   2
+  ]
+ ],
+ "masukan": {
+  "data/kajian-bnpb/bangun/pptx/templat/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
+  "data/kajian-bnpb/data/angka.json": "d0746e74395421653865ac32aaca73d6e221f96de8d0fbac9d67d37b828c3835",
+  "data/kajian-bnpb/data/dibi/kejadian_besar.csv": "c7dfb4b3ad8a79011b331de694652e834ce98c10256e03bd1af8a5dd6c14d7cc",
+  "data/kajian-bnpb/data/dibi/rekap_nasional_tahunan.csv": "8ac3f6779a14d7139aae4e1a77dfad9be3fb81e34715f77864c732d46807acdd",
+  "data/kajian-bnpb/data/irbi/irbi.json": "4f47bcc12903a0686f2a2661e3856abd8ed0907469b90f9673eb787ac54b660c",
+  "data/kajian-bnpb/data/irbi/irbi_agregat_pulau.csv": "5b4c5b88da625f230b2a998dd3943131aaeb567824966ac433cdee07048a4191",
+  "data/kajian-bnpb/data/irbi/irbi_hitung_kelas.csv": "9d389e149a456cdf31d147c96aff8ba23a42aa3fb2b4130aabd765502b96a224",
+  "data/kajian-bnpb/data/lembaga/celah.csv": "2bb0666d2008edd082545edfb82bdc347f5c50630a2e283885eeb7e43ad41aa8",
+  "data/kajian-bnpb/data/lembaga/matriks_bencana.csv": "08bd1c2f3c4ef80e7cc0ffee12d71bb1ab5101ffee6899e7811b084f1f13a634",
+  "data/kajian-bnpb/data/nonalam-sosial/covid19_nasional.csv": "65b604404fc51ce39fd57fb685c051c119a18f481f1b486cf0ddbdac42f97e89",
+  "data/kajian-bnpb/data/nonalam-sosial/skenario_terburuk.csv": "fa56db05a1eaf38434479fd95c0c4e7da075186d6a91a07c2ca09b1e4238d50b",
+  "data/kajian-bnpb/data/skenario-hidromet/kartu_skenario.csv": "3e3e0d44fc6f22aa9145768d49f8097762a5817cdb4ddb29cf46d682b908ac14",
+  "data/kajian-bnpb/data/skenario-hidromet/kartu_skenario.json": "3bc29bdd4eb77a167cb892437667e64dbb9c96562fe03c11a81c1686f7358ab7",
+  "data/kajian-bnpb/data/skenario-hidromet/musim_hujan.csv": "fe1075bc42e6db84f75278a290a5fb52631eb2a2719b69437102e63f15f01a9b",
+  "data/kajian-bnpb/gambar/mitigasi/deck-peta-irbi-2025.json": "ddb145a1c698bc217c959083e9400a2aacd93aed736733dafdd56f09c0ee45d2",
+  "data/kajian-bnpb/gambar/mitigasi/deck-peta-irbi-2025.png": "033f397a6dbb47fdd0f3855a797b0e32eee05350ad23286893305be83ab78641",
+  "data/kajian-bnpb/naskah/mitigasi/deck.json": "86574381de3a7b921f7e8759fd790fe82698a0ffed69ba192b50c23ac2ab4c4a",
+  "data/kajian-bnpb/naskah/mitigasi/deck_kalender_rencana_aksi.csv": "64c434e82bfc6a050da2237cd216cd384f9ceeb7dacda240153d13a96dc511b2",
+  "data/kajian-bnpb/naskah/mitigasi/deck_kelas_dampak.csv": "0ffa45b319f922bb2ea7118c78aaf51687e0362f75c0fea7dbbca556b7331991",
+  "data/kajian-bnpb/naskah/mitigasi/deck_korban_alam.csv": "1f1f61acc6e9ffdf1c52802e8735b845dfccd59869f86744ce6972867790c333",
+  "data/kajian-bnpb/tema.json": "6ad556cb1612847e65e954ec2b721d437bbcb5acbe57014ffebc675c36ff45c8",
+  "public/img/bencana-gempa.jpg": "db3e3b66b8c825821f2b493d4586bb98878b4a764ce45b5d16d7a3db2efe4a22",
+  "public/img/bencana-tsunami.jpg": "5cbdea8d0711e90f85b20401f8bd4413826ac6c672935d8ac4a16e6eea1776d4",
+  "public/img/lembaga/sumber-bnpb.png": "eb6f78ed04ce137b12676b4ac674ad81e93f90251023c28e17c6a7ea3981f2c2"
+ }
+}

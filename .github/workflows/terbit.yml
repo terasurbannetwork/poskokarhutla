@@ -61,6 +61,15 @@ jobs:
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
+      # arsip cluster hari LAMPAU yang di-commit (dibangun ulang, mis. definisi kolom berubah) menang atas cache: cache hanya
+      # menyimpan apa yang ditulis jalan sebelumnya. Arsip hari ini tetap dari cache/harian.py (25 Okt 2026: FS jadi titik).
+      - name: Arsip cluster hari lampau dari repo
+        run: |
+          kini=$(TZ=Asia/Jakarta date +%F)
+          for f in $(git ls-files 'public/data/kluster_hari/*.json'); do
+            [[ "$(basename "$f" .json)" < "$kini" ]] && git checkout HEAD -- "$f"
+          done; true
+
       # aktor_karhutla.json dari repo menunjuk ID kompleks saat dibuat; samakan dengan kluster.json cache yang ikut terbit
       - name: Aktor WALHI x kompleks terkini (boleh gagal)
         continue-on-error: true

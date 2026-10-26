@@ -1,0 +1,26 @@
+id,nama,kelompok,lokasi,periode,kekuatan,posisi,status,kajian
+P01,Desa dan Kelurahan Tangguh Bencana (Destana),Dalam negeri,"Indonesia, nasional",2012–sekarang,belum terbukti,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",keduanya
+P02,Satuan Pendidikan Aman Bencana (SPAB),Dalam negeri,"Indonesia, nasional",2012–sekarang,belum terbukti,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",mitigasi
+P03,Sistem Peringatan Dini Tsunami Indonesia (InaTEWS),Dalam negeri,"Indonesia, pesisir rawan tsunami",2008–sekarang,sedang,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",mitigasi
+P04,Sekolah Lapang Iklim (SLI) BMKG,Dalam negeri,"Indonesia, sentra pangan",2011–sekarang,lemah,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",air
+P05,Masyarakat Peduli Api dan Desa Bebas Api (Fire Free Village Programme),Dalam negeri,Riau (konsesi APRIL/RAPP),2014–sekarang,lemah,Uji coba terukur,"Sudah ada, perlu dikembangkan",mitigasi
+P06,Restorasi gambut melalui sekat kanal (pembasahan),Dalam negeri,"Sumatra dan Kalimantan, lahan gambut",2016–sekarang,lemah,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",mitigasi
+P07,"Rekompak: rekonstruksi rumah berbasis komunitas, gempa Yogyakarta-Jawa Tengah 2006",Dalam negeri,"DIY, Jawa Tengah, Jawa Barat",2006–2012,lemah,Rujukan tata kelola,"Sudah ada, perlu dikembangkan",mitigasi
+P08,BRR Aceh-Nias: badan rekonstruksi berbatas waktu,Dalam negeri,Aceh dan Nias,2005–2009,lemah,Rujukan tata kelola,"Sudah ada, perlu dikembangkan",mitigasi
+P09,"Rehabilitasi-rekonstruksi rumah pascagempa Lombok 2018 (stimulan, pokmas, RISHA)",Dalam negeri,NTB,2018–2020,lemah,"Pelajaran, bukan teladan","Sudah ada, perlu dikembangkan",mitigasi
+P10,Embung dan panen air hujan,Dalam negeri,"Indonesia, lahan tadah hujan",2015–sekarang,belum terbukti,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",air
+P11,Sumur resapan dan lubang resapan biopori,Dalam negeri,DKI Jakarta dan kota lain,2010–sekarang,lemah,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",air
+P12,Citarum Harum (pemulihan DAS Citarum),Dalam negeri,"DAS Citarum, Jawa Barat",2018–2025,lemah,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",air
+P13,PAMSIMAS (penyediaan air minum dan sanitasi berbasis masyarakat),Dalam negeri,"Indonesia, perdesaan",2008–2023,sedang,Program dengan syarat (bukti sedang),"Sudah ada, perlu dikembangkan",air
+P14,Sodetan dan bendungan kering Ciliwung,Dalam negeri,"DAS Ciliwung, Jabodetabek",2023–sekarang,lemah,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",air
+P15,Sistem polder dan pompa kota pesisir,Dalam negeri,"Jakarta, Semarang, Pekalongan",2009–sekarang,belum terbukti,"Program berjalan, wajib evaluasi dampak","Sudah ada, perlu dikembangkan",air
+P16,"Pengendalian pengambilan air tanah untuk menghentikan penurunan tanah (Tokyo, Osaka, Bangkok)",Luar negeri,"Jepang (Tokyo, Osaka); Thailand (Bangkok)",1956–1990–an,kuat,Program (bukti kuat),–,air
+P17,"Delta Programme Belanda (UU, dana, komisaris, laporan tahunan)",Luar negeri,Belanda,2010–2050,lemah,Rujukan tata kelola,–,air
+P18,Room for the River (ruang untuk sungai),Luar negeri,"Belanda (Rhine, Waal, Meuse)",2006–2019,sedang,Uji coba terukur,–,air
+P19,"Kesiapsiagaan siklon Bangladesh: Cyclone Preparedness Programme (CPP), shelter, dan tanggul pesisir",Luar negeri,Pesisir Bangladesh,1972–sekarang,kuat,Program (bukti kuat),–,mitigasi
+P20,Kesiapsiagaan siklon Odisha (OSDMA): evakuasi preemptif dan shelter,Luar negeri,"Odisha, India",1999–sekarang,sedang,Program dengan syarat (bukti sedang),–,mitigasi
+P21,Pendidikan kebencanaan Kamaishi (Jepang),Luar negeri,"Kota Kamaishi, Iwate, Jepang",2004–2011,sedang,Program dengan syarat (bukti sedang),–,mitigasi
+P22,Kode bangunan tahan gempa Chile (NCh433) dan penegakannya,Luar negeri,Chile,1972–sekarang,sedang,Program dengan syarat (bukti sedang),–,mitigasi
+P23,"Asuransi risiko bencana dan pooling regional (CCRIF, ARC; Asuransi BMN dan Dana Bersama PB)",Luar negeri,"Karibia, Afrika; Indonesia",2007–sekarang,sedang,Program dengan syarat (bukti sedang),–,mitigasi
+P24,"Hibah mitigasi FEMA (HMGP, BRIC) dengan syarat analisis manfaat-biaya",Luar negeri,Amerika Serikat,1993–sekarang,sedang,Rujukan tata kelola,–,keduanya
+P25,"Evakuasi preemptif topan di Filipina (Albay, NDRRMC)",Luar negeri,Filipina,2010–sekarang,lemah,"Pelajaran, bukan teladan",–,mitigasi

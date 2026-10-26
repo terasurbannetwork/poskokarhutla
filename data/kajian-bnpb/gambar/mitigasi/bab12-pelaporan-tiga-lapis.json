@@ -1,0 +1,370 @@
+{
+ "nama": "bab12-pelaporan-tiga-lapis",
+ "keterangan": "Tata kelola dan pelaporan rekomendasi kajian mitigasi dalam tiga lapis, 2026–2030",
+ "sumber": "Perpres 1/2019; Perpres 87/2020; Perban BNPB 1/2023, 1/2025, 1/2026, 4/2020, dan 6/2025; Kepka BNPB 327/2025",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  185
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.53
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Lapis internal BNPB",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Lapis lintas K/L",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Lapis daerah dan data",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 70.5,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis internal BNPB"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 84.5,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis internal BNPB"
+  },
+  {
+   "x": 110.5,
+   "y": 3,
+   "w": 55.18,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-96",
+   "teks": "Lapis lintas K/L"
+  },
+  {
+   "x": 96.5,
+   "y": 2,
+   "w": 69.18,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-96",
+   "teks": "Lapis lintas K/L"
+  },
+  {
+   "x": 189.68,
+   "y": 3,
+   "w": 78.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-175",
+   "teks": "Lapis daerah dan data"
+  },
+  {
+   "x": 175.68,
+   "y": 2,
+   "w": 92.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-175",
+   "teks": "Lapis daerah dan data"
+  },
+  {
+   "x": 61.16,
+   "y": 20,
+   "w": 29.58,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Pelapor"
+  },
+  {
+   "x": 202.13,
+   "y": 20,
+   "w": 63.45,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Isi dan penerima"
+  },
+  {
+   "x": 367.6,
+   "y": 20,
+   "w": 48.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Tempat data"
+  },
+  {
+   "x": 27,
+   "y": 44.8,
+   "w": 97.91,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "i1",
+   "teks": "Kepala BNPB ke Presiden"
+  },
+  {
+   "x": 8.06,
+   "y": 56.4,
+   "w": 135.79,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "i1",
+   "teks": "sebulan sekali; setiap saat bila darurat"
+  },
+  {
+   "x": 31.42,
+   "y": 66,
+   "w": 89.07,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "i1",
+   "teks": "(Perpres 1/2019 Pasal 3)"
+  },
+  {
+   "x": 184.74,
+   "y": 40,
+   "w": 98.24,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "i2",
+   "teks": "Pemantauan dan evaluasi"
+  },
+  {
+   "x": 176.28,
+   "y": 51.6,
+   "w": 115.16,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "i2",
+   "teks": "Biro Perencanaan dan Direktorat"
+  },
+  {
+   "x": 164.72,
+   "y": 61.2,
+   "w": 138.28,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "i2",
+   "teks": "Pengembangan Strategi (Perban BNPB"
+  },
+  {
+   "x": 219.59,
+   "y": 70.8,
+   "w": 28.54,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "i2",
+   "teks": "6/2025)"
+  },
+  {
+   "x": 375.7,
+   "y": 44.8,
+   "w": 32.13,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "i3",
+   "teks": "Progsun"
+  },
+  {
+   "x": 331.62,
+   "y": 56.4,
+   "w": 120.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "i3",
+   "teks": "Biro Hukum, Organisasi, dan Kerja"
+  },
+  {
+   "x": 324.69,
+   "y": 66,
+   "w": 134.14,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "i3",
+   "teks": "Sama, tiap triwulan (Kepka 327/2025)"
+  },
+  {
+   "x": 40.62,
+   "y": 103.8,
+   "w": 70.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k1",
+   "teks": "Evaluasi Renas PB"
+  },
+  {
+   "x": 31.07,
+   "y": 115.4,
+   "w": 89.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k1",
+   "teks": "bagian pemantauan RIPB"
+  },
+  {
+   "x": 199.27,
+   "y": 99,
+   "w": 69.18,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k2",
+   "teks": "Pemantauan RIPB"
+  },
+  {
+   "x": 176.57,
+   "y": 110.6,
+   "w": 114.57,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k2",
+   "teks": "ke Presiden melalui Menko PMK"
+  },
+  {
+   "x": 201.21,
+   "y": 120.2,
+   "w": 65.3,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k2",
+   "teks": "(Perpres 87/2020)"
+  },
+  {
+   "x": 328.41,
+   "y": 103.8,
+   "w": 126.71,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k3",
+   "teks": "Metadata indikator Renas 4.7.1.c"
+  },
+  {
+   "x": 338.25,
+   "y": 115.4,
+   "w": 107.03,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k3",
+   "teks": "tempat indikator usulan kajian"
+  },
+  {
+   "x": 51.19,
+   "y": 148.4,
+   "w": 49.52,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d1",
+   "teks": "Laporan DSP"
+  },
+  {
+   "x": 10.67,
+   "y": 160,
+   "w": 130.56,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d1",
+   "teks": "bulanan (Perban BNPB 4/2020 Pasal"
+  },
+  {
+   "x": 70.07,
+   "y": 169.6,
+   "w": 11.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d1",
+   "teks": "21)"
+  },
+  {
+   "x": 178.81,
+   "y": 153.2,
+   "w": 110.09,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d2",
+   "teks": "Laporan akhir Dana Bersama"
+  },
+  {
+   "x": 179.64,
+   "y": 164.8,
+   "w": 108.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d2",
+   "teks": "Perban BNPB 1/2026 Pasal 32"
+  },
+  {
+   "x": 355.64,
+   "y": 148.4,
+   "w": 72.24,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d3",
+   "teks": "Satu Data Bencana"
+  },
+  {
+   "x": 325.35,
+   "y": 160,
+   "w": 132.84,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d3",
+   "teks": "Walidata Pusdatinkom (Perban BNPB"
+  },
+  {
+   "x": 377.49,
+   "y": 169.6,
+   "w": 28.54,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d3",
+   "teks": "1/2023)"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Bagan lapis pelaporan berfrekuensi; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 9
+}

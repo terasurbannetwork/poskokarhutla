@@ -25,6 +25,18 @@ target_halaman: 15
 **Rekomendasi:** @rek:r-m05, @rek:r-m17, @rek:r-m19
 :::
 
+::: gambar {#gbr:foto-m06-palu}
+berkas: gambar/foto/mit-b06-palu.jpg
+jenis: foto
+judul: Puing bangunan setelah gempa dan tsunami Palu, Palu, Sulawesi Tengah, Oktober 2018
+pengarang: Ungkeito
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Bencana_Tsunami_Palu.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 **Paparan resmi geologi terbesar adalah gempa bumi dengan {{angka:renas.krb.terpapar_gempa}} jiwa, disusul likuefaksi {{angka:renas.krb.terpapar_likuefaksi}}, gunung api {{angka:renas.krb.terpapar_gunungapi}}, dan tsunami {{angka:renas.krb.terpapar_tsunami}} jiwa.** Angka paparan gempa itu melampaui jumlah penduduk wilayah di basis data yang sama, sehingga mencakup praktis seluruh penduduk dan tidak membedakan wilayah [@bnpb-2026-krb-geologi]. Potensi kerugian fisik dan ekonomi per bahaya dari KRB yang sama, mulai dari {{angka:renas.krb.kerugian_gempa|rupiah}} untuk gempa, adalah nilai aset terpapar yang tidak dijumlah antarbahaya [@bnpb-2025-renas, hlm. 24–25]. Status resmi tiap bahaya tampil pada @tbl:status-geologi.
 
 ::: tabel {#tbl:status-geologi}
@@ -237,6 +249,18 @@ Magnitudo maksimum resmi Sesar Opak Mw {{angka:pusgen.opak.mmaks}} dan Sesar Lem
 :::
 ::::
 
+
+::: gambar {#gbr:foto-m06-aceh}
+berkas: gambar/foto/mit-b06-aceh.jpg
+jenis: foto
+judul: Masjid yang tetap berdiri di antara puing setelah tsunami Aceh, Banda Aceh, Januari 2005
+pengarang: USGS
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Aceh_2004_tsunami_standing_mosque_USGS.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
+
 ## Tsunami {#sub:tsunami}
 
 **KRB 2022–2026 mencatat {{angka:renas.krb.terpapar_tsunami}} jiwa terpapar tsunami dan {{angka:renas.krb.luas_tinggi_tsunami|satuan}} kelas bahaya tinggi, termasuk {{angka:renas.krb.tsunami.terpapar_umur_rentan}} jiwa umur rentan dan {{angka:renas.krb.tsunami.terpapar_disabilitas}} penyandang disabilitas.** Di kelas bahaya tinggi tsunami tercatat {{angka:krb.tsunami.sekolah_kelas_tinggi}} sekolah, {{angka:krb.tsunami.puskesmas_kelas_tinggi}} puskesmas, dan {{angka:krb.tsunami.rs_kelas_tinggi}} rumah sakit secara nasional [@bnpb-2025-renas, hlm. 22, 24; @bnpb-2026-krb-geologi]. Angka aset itu dibaca dari nama medan data KRB karena dokumentasinya tidak dibuka.
@@ -250,12 +274,12 @@ Magnitudo maksimum resmi Sesar Opak Mw {{angka:pusgen.opak.mmaks}} dan Sesar Lem
 ::: gambar {#gbr:tsunami-30mnt}
 berkas: gambar/mitigasi/bab06-peta-tsunami-30mnt.png
 jenis: peta
-judul: Jiwa kecamatan pesisir rendah dengan tiba tsunami {{angka:geologi.ambang.tiba_menit}} menit atau kurang dan panjang pantai tiba kurang dari {{angka:geologi.ambang.tiba_menit}} menit, skenario megathrust Jawa Mw 9,1 dan Mentawai Mw 8,9 (jiwa)
+judul: Jiwa kecamatan pesisir rendah dengan tiba tsunami {{angka:geologi.ambang.tiba_menit}} menit atau kurang dan panjang pantai tiba kurang dari {{angka:geologi.ambang.tiba_menit}} menit, skenario megathrust Jawa Mw 9,1 dan Mentawai Mw 8,9, 2026 (jiwa)
 sumber: Simulasi skenario Pantau Bencana, belum divalidasi; magnitudo maksimum dari PuSGeN 2024
 keyakinan: estimasi-model; belum diuji balik
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Paparan, bukan genangan; skenario Jawa termasuk Bali dan Nusa Tenggara Barat; daftar kab/kota yang luput dari proksi tercetak di samping peta; tinggi indikatif tidak ditampilkan.
+catatan: Paparan, bukan genangan; skenario Jawa termasuk Bali dan Nusa Tenggara Barat; kab/kota bertiba kurang dari 30 menit yang luput dari proksi diberi garis sorot; tinggi indikatif tidak ditampilkan.
 :::
 
 **Kejadian tsunami tercatat menunjukkan waktu tiba yang pendek: tsunami Palu 2018 tiba {{angka:widiyanto.palu2018.waktu_tiba|rentang|satuan}} setelah guncangan dengan *run-up* terukur tertinggi {{angka:widiyanto.palu2018.runup_maks|fmt=2|satuan}}.** Stasiun pasang surut Pantoloan di dalam Teluk Palu tetap merekam, tetapi pengiriman datanya terhenti karena jaringan komunikasi putus [@widiyanto-2019-palu]. Survei warga Donggala dan Palu mencatat {{angka:harnantyari.palu2018.evakuasi_melihat_orang_lain|fmt=1|persen}} responden mengungsi setelah melihat orang lain mengungsi, dan tidak ada peringatan resmi yang diterima sebelum tsunami tiba [@harnantyari-2020-palu]. Lantai tsunami Selat Sunda adalah kejadian 2018 dengan {{angka:dibi.selatsunda2018.meninggal}} meninggal dan {{angka:dibi.selatsunda2018.hilang}} hilang [@bnpb-dibi], dan lantai nasional adalah Aceh 2004 dengan {{angka:brr.aceh2004.meninggal}} meninggal dan {{angka:brr.aceh2004.hilang}} hilang menurut Badan Rehabilitasi dan Rekonstruksi (BRR) Aceh dan Nias [@brr-2009-nias]. Kartu tsunami (@tbl:kartu-tsunami) memakai lantai per wilayah itu.
@@ -264,7 +288,7 @@ catatan: Paparan, bukan genangan; skenario Jawa termasuk Bali dan Nusa Tenggara 
 
 :::: skenario {#tbl:kartu-tsunami}
 jenis: tsunami
-judul: Tsunami dekat sumber dari megathrust selatan Jawa dan barat Sumatra
+judul: Tsunami dekat sumber dari megathrust selatan Jawa dan barat Sumatra, 2026
 dasar: Kartu per jenis; paparan resmi KRB 2022–2026, tinggi tsunami model terbitan bertinjauan, dan lantai tercatat per wilayah; korban tsunami skenario tidak dikuantifikasi sampai genangan resmi InaRISK dipakai.
 kemungkinan: 2
 peta: gambar/mitigasi/bab06-kartu-tsunami.png
@@ -456,18 +480,18 @@ Kerusakan dan kerugian sementara Sulawesi Tengah {{angka:geologi.pembanding.sult
 ::: gambar {#gbr:tuas-geologi}
 berkas: gambar/mitigasi/bab06-tuas-evakuasi-bangunan.png
 jenis: grafik
-judul: Faktor kematian tsunami menurut porsi evakuasi segera dan faktor korban guncangan menurut kepatuhan bangunan, empat skenario megathrust (kali dasar)
+judul: Faktor kematian tsunami menurut porsi evakuasi segera dan faktor korban guncangan menurut kepatuhan bangunan, empat skenario megathrust, 2026 (kali dasar)
 sumber: Cabinet Office Jepang 2025 [@cao-japan-2025-nankai]; simulasi skenario Pantau Bencana, belum divalidasi [@pantaubencana-2026-skenario-geologi]
 keyakinan: estimasi-model; belum diuji balik
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Faktor evakuasi berpil asumsi kebijakan dan diterapkan pada paparan, bukan pada korban tsunami; faktor bangunan berpil estimasi model.
+catatan: Tabel peta panas. Faktor evakuasi adalah asumsi kebijakan dan diterapkan pada paparan, bukan pada korban tsunami; faktor bangunan adalah estimasi model.
 :::
 
 **Dari delapan program terkait geologi di kompendium kajian ini, tidak satu pun berbukti kuat, dan keterpenuhan peringatan dini menurut Renstra 2025–2029 baru {{angka:renstra.peringatan_dini.keterpenuhan_persen|persen}}.** InaTEWS terukur di hulu, yaitu kecepatan terbit peringatan, tetapi dampaknya terhadap korban belum dievaluasi, dan pada Palu 2018 rantai hilirnya gagal [@pantaubencana-2026-program-terbukti; @harnantyari-2020-palu]. Desa dan Kelurahan Tangguh Bencana (Destana) dan Satuan Pendidikan Aman Bencana (SPAB) belum terbukti, artinya bukti dampaknya tidak ditemukan, sedangkan tiga program rehabilitasi pascabencana berbukti lemah, termasuk Rehabilitasi dan Rekonstruksi Masyarakat dan Permukiman Berbasis Komunitas (Rekompak) Yogyakarta dan Jawa Tengah 2006 (@tbl:program-geologi). Bukti luar negeri berkekuatan sedang hanya dipakai lewat padanannya di Indonesia: kode bangunan Chile mencatat kegagalan {{angka:bukti.p22.gagal_3lantai_persen|fmt=1|persen}} pada {{angka:bukti.p22.bangunan_3lantai}} bangunan tiga lantai atau lebih pada gempa Maule 2010, dengan padanan pengawasan standar bangunan Renas PB 2.3.4.a.
 
 ::: tabel {#tbl:program-geologi}
-judul: Posisi bukti delapan program terkait bencana geologi dalam kompendium program kajian ini
+judul: Posisi bukti delapan program terkait bencana geologi dalam kompendium program kajian ini, 2026
 sumber: Kompendium program kajian ini [@pantaubencana-2026-program-terbukti]
 keyakinan: campuran
 catatan: Belum terbukti berarti bukti dampak tidak ditemukan, bukan program tidak bermanfaat; program luar negeri hanya dipakai lewat padanannya di Indonesia.
@@ -491,7 +515,7 @@ catatan: Belum terbukti berarti bukti dampak tidak ditemukan, bukan program tida
 **Delapan kesenjangan data menahan kuantifikasi skenario geologi, dan yang paling menentukan adalah genangan tsunami resmi InaRISK yang belum dipakai.** Akibatnya korban tsunami skenario di kartu megathrust dan kartu tsunami tidak dikuantifikasi. Kesenjangan lain berupa skenario korban resmi pusat yang tidak ada, mesin korban gempa yang meleset {{angka:geologi.mesin.faktor_loo|fmt=1}} kali pada uji silang, dan evaluasi dampak program yang tidak ditemukan (@tbl:kesenjangan-geologi). Tiap kesenjangan ditulis sebagai kebutuhan data dengan pemegang datanya, dan strateginya diuraikan di Bab 11 dan Bab 13 [@pantaubencana-2026-skenario-geologi; @bnpb-2023-renkon].
 
 ::: tabel {#tbl:kesenjangan-geologi}
-judul: Kesenjangan data bencana geologi, kebutuhan datanya, dan pemegang data
+judul: Kesenjangan data bencana geologi, kebutuhan datanya, dan pemegang data, 2026
 sumber: Analisis kajian ini
 keyakinan: asumsi-kebijakan
 

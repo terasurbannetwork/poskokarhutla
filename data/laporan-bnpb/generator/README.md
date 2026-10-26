@@ -47,15 +47,24 @@ website menghentikan generator dengan pesan jelas.
 
 ## Penanganan
 
-`Laporan Penanganan Pengendalian Karhutla DDMMYY` (3 slide). Aturan pemilik 24 Okt 2026: cut-off **15.00 WIB** hari laporan; kolom D-2, D-1, D
-dengan D = hari laporan, angka D sementara s.d. 15.00 (catatan kaki "Angka D sementara, data s.d. 15.00 WIB.").
+`Laporan Penanganan Pengendalian Karhutla DDMMYY` (2 slide: peta, tabel). Aturan pemilik 25 Okt 2026: cut-off **17.00 WIB**
+hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara s.d. 17.00 (catatan kaki "Angka D sementara,
+data s.d. 17.00 WIB."); tabel punya **empat** kelompok berbintang FIRESPOT, HOTSPOT, LUAS TERBAKAR, BELUM PADAM, tiga hari
+masing-masing; halaman "Operasi Penanganan Karhutla" **dibuang** (sumbernya teks WA satgas, tidak ada untuk hari lampau).
 
     cd data/laporan-bnpb/generator
-    python3 penanganan.py --tanggal 2026-10-25 --wa wa_operasi.txt --bmkg bmkg.txt          # --jam 15:00 bawaan, --out ~/Downloads bawaan
+    python3 penanganan.py --tanggal 2026-10-25                      # --jam 17:00 bawaan, --out ~/Downloads bawaan
+    python3 penanganan.py --tanggal 2026-10-25 --bmkg bmkg.txt      # pil PM2,5 + cuaca dari WA BMKG hari itu
 
-- `wa_operasi.txt` = teks WA "LAPORAN UPAYA PEMADAMAN KARHUTLA OLEH SATGAS ..." apa adanya (slide 3, data hari sebelumnya).
-- `bmkg.txt` = teks WA "Laporan Meteorologi dan Klimatologi (BMKG)" (PM2.5 tertinggi + potensi cuaca) apa adanya (pil slide 2).
-- Angka satelit: `satelit.py` (mesin website, FIRMS ditarik ulang; uji `python3 satelit.py --uji`). Pengurai WA: `wa_operasi.py` (uji `python3 wa_operasi.py`).
-- Skrip deck di `penanganan/` (turunan satelit-2026-10-24): `ganti.py` (tabel, baca param.json), `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil + operasi), `sementara.py`, `cek6.py`.
+- Angka satelit: `satelit.py` (mesin website, FIRMS ditarik ulang; uji `python3 satelit.py --uji`).
+- Firespot per provinsi per hari: `firespot_hari.py` (mesin `scripts/data/harian.py` dengan jam dibekukan; uji
+  `python3 firespot_hari.py --uji` membandingkannya dengan arsip `public/data/kluster_hari/` indeks 4, FWI dikunci ke
+  fwi.json pipeline supaya yang diuji algoritmanya). Hasil per hari dicache di `cache/firespot-17.00.json`.
+  **Satuannya titik, sama dengan hotspot** (keputusan pemilik 25 Okt 2026): lokasi unik ~375 m hari itu yang berada di
+  cluster lolos syarat firespot, jadi firespot <= hotspot. Jumlah cluster-nya tidak dipakai di deck ini.
+- Cuaca/FWI hari lampau: `cuaca_riwayat.py` (ERA5 300 hari + forecast; uji `python3 cuaca_riwayat.py --uji`).
+- Pil PM2,5 + cuaca tanpa `--bmkg`: `pil_sendiri.py` (rata-rata provinsi CAMS + ambang P.14/2020, hujan/angin Open-Meteo
+  dengan kelas BMKG; uji `python3 pil_sendiri.py`). Dengan `--bmkg`: `wa_operasi.py` (uji `python3 wa_operasi.py`).
+- Skrip deck di `penanganan/`: `kisi.py` (geometri kolom, dipakai bersama), `ganti.py` (tabel, baca param.json),
+  `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil), `sementara.py`, `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
 - Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) butuh `penanganan/logo/<kode>.png`; tanpa itu generator berhenti dengan pesan jelas.
-- Slide 3: OMC selalu 4 baris templat (Kalbar, Kalteng, Sumsel, Kalsel); hujan dihitung hanya bila tanggalnya = hari data. Semai = 2 provinsi berbahan terbanyak.

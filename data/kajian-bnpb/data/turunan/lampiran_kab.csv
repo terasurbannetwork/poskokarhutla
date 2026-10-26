@@ -1,0 +1,515 @@
+kode,nama,prov_nama,pulau,penduduk_2026,irb_2025,status_2025,daftar_perhatian,n_bahaya_perhatian
+1101,Kab. Aceh Selatan,Aceh,Sumatra,244677,246.384,Tinggi,"tanah longsor (a, b); cuaca ekstrem (a, b, c); gelombang ekstrem dan abrasi (a, b)",3
+1102,Kab. Aceh Tenggara,Aceh,Sumatra,233549,163.716342147592,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+1103,Kab. Aceh Timur,Aceh,Sumatra,456472,175.680196954647,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+1104,Kab. Aceh Tengah,Aceh,Sumatra,229623,181.389864957744,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gempa bumi (a, c)",4
+1105,Kab. Aceh Barat,Aceh,Sumatra,209680,164.865292123238,Sedang,"banjir (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+1106,Kab. Aceh Besar,Aceh,Sumatra,420672,244.632244883123,Tinggi,"banjir (a, b, c); tanah longsor (a, b, c); cuaca ekstrem (a, b, c); karhutla (a, b); tsunami (a, c)",5
+1107,Kab. Pidie,Aceh,Sumatra,471672,224.663568664081,Tinggi,"banjir (a, b, c); tanah longsor (a, b); cuaca ekstrem (a, b); gempa bumi (a, c)",4
+1108,Kab. Aceh Utara,Aceh,Sumatra,629379,233.576902083515,Tinggi,"banjir (b, c); cuaca ekstrem (a, b, c)",2
+1109,Kab. Simeulue,Aceh,Sumatra,98489,232.913901786347,Tinggi,"banjir (a, b); tanah longsor (b, c); gempa bumi (a, c); tsunami (a, b)",4
+1110,Kab. Aceh Singkil,Aceh,Sumatra,132786,235.344,Tinggi,"banjir (a, b, c); cuaca ekstrem (a, b, c); gempa bumi (a, c)",3
+1111,Kab. Bireuen,Aceh,Sumatra,465541,204.481173300651,Tinggi,"banjir (b, c); cuaca ekstrem (b, c)",2
+1112,Kab. Aceh Barat Daya,Aceh,Sumatra,161537,229.104,Tinggi,"banjir (a, b); cuaca ekstrem (a, b); gelombang ekstrem dan abrasi (a, b, c); karhutla (a, b); tsunami (a, c)",5
+1113,Kab. Gayo Lues,Aceh,Sumatra,105190,170.290848634282,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+1114,Kab. Aceh Jaya,Aceh,Sumatra,99450,181.318921261236,Tinggi,"banjir (b, c)",1
+1115,Kab. Nagan Raya,Aceh,Sumatra,180144,197.806228235838,Tinggi,"banjir (b, c); cuaca ekstrem (a, b, c)",2
+1116,Kab. Aceh Tamiang,Aceh,Sumatra,309133,144.791972299168,Sedang,"banjir (b, c)",1
+1117,Kab. Bener Meriah,Aceh,Sumatra,171026,170.554544004391,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+1118,Kab. Pidie Jaya,Aceh,Sumatra,159101,256.128,Tinggi,"banjir (a, b, c); cuaca ekstrem (a, b)",2
+1171,Kota Banda Aceh,Aceh,Sumatra,280246,129.3960776093,Sedang,"cuaca ekstrem (b, c)",1
+1172,Kota Sabang,Aceh,Sumatra,43816,191.704017204301,Tinggi,,0
+1173,Kota Lhokseumawe,Aceh,Sumatra,202574,168.970999187446,Sedang,"banjir (b, c); cuaca ekstrem (a, b); tsunami (a, c)",3
+1174,Kota Langsa,Aceh,Sumatra,201239,119.683218901861,Sedang,"banjir (b, c); cuaca ekstrem (a, b)",2
+1175,Kota Subulussalam,Aceh,Sumatra,96635,165.776712699408,Sedang,"banjir (b, c); tanah longsor (a, c); cuaca ekstrem (a, b); gempa bumi (a, c)",4
+1201,Kab. Tapanuli Tengah,Sumatera Utara,Sumatra,423643,230.41809310251,Tinggi,"banjir (b, c); cuaca ekstrem (a, b)",2
+1202,Kab. Tapanuli Utara,Sumatera Utara,Sumatra,331091,144.418801635278,Sedang,"banjir (a, b, c); tanah longsor (a, b, c); cuaca ekstrem (a, b, c); gempa bumi (a, c)",4
+1203,Kab. Tapanuli Selatan,Sumatera Utara,Sumatra,314456,177.413186581708,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+1204,Kab. Nias,Sumatera Utara,Sumatra,145606,202.82383015436,Tinggi,"gempa bumi (a, c)",1
+1205,Kab. Langkat,Sumatera Utara,Sumatra,1139418,231.473980778204,Tinggi,"banjir (b, c); tanah longsor (a, b, c); cuaca ekstrem (a, b, c)",3
+1206,Kab. Karo,Sumatera Utara,Sumatra,433093,124.686891902882,Sedang,"tanah longsor (a, b, c); gunung api (b, c)",2
+1207,Kab. Deli Serdang,Sumatera Utara,Sumatra,2060289,209.686955259513,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+1208,Kab. Simalungun,Sumatera Utara,Sumatra,1096512,129.112092988174,Sedang,"banjir (a, b, c); tanah longsor (a, b, c); cuaca ekstrem (a, b)",3
+1209,Kab. Asahan,Sumatera Utara,Sumatra,825709,148.935869219189,Sedang,"cuaca ekstrem (b, c)",1
+1210,Kab. Labuhanbatu,Sumatera Utara,Sumatra,532771,175.168,Sedang,"banjir (a, b); cuaca ekstrem (a, b, c); karhutla (a, b)",3
+1211,Kab. Dairi,Sumatera Utara,Sumatra,328132,119.092543448863,Sedang,"banjir (b, c); cuaca ekstrem (b, c); gempa bumi (a, c)",3
+1212,Kab. Toba,Sumatera Utara,Sumatra,220518,130.616795038102,Sedang,"banjir (a, b); tanah longsor (a, b, c); cuaca ekstrem (a, b, c)",3
+1213,Kab. Mandailing Natal,Sumatera Utara,Sumatra,505566,274.825169303598,Tinggi,"banjir (b, c); tanah longsor (a, b, c); cuaca ekstrem (a, b); karhutla (b, c)",4
+1214,Kab. Nias Selatan,Sumatera Utara,Sumatra,388438,206.988179091434,Tinggi,"tanah longsor (a, c)",1
+1215,Kab. Pakpak Bharat,Sumatera Utara,Sumatra,55744,122.855114023516,Sedang,"tanah longsor (a, b)",1
+1216,Kab. Humbang Hasundutan,Sumatera Utara,Sumatra,215796,190.619870175347,Tinggi,"banjir (b, c); tanah longsor (a, c); cuaca ekstrem (a, b)",3
+1217,Kab. Samosir,Sumatera Utara,Sumatra,147269,185.365412578951,Tinggi,"banjir (a, b); tanah longsor (a, b); cuaca ekstrem (a, b, c); karhutla (a, b)",4
+1218,Kab. Serdang Bedagai,Sumatera Utara,Sumatra,724015,140.287622366533,Sedang,"cuaca ekstrem (b, c)",1
+1219,Kab. Batu Bara,Sumatera Utara,Sumatra,424460,103.248,Sedang,"banjir (a, b, c); cuaca ekstrem (a, b, c)",2
+1220,Kab. Padang Lawas Utara,Sumatera Utara,Sumatra,276827,170.361895996318,Sedang,"banjir (a, b); karhutla (a, b)",2
+1221,Kab. Padang Lawas,Sumatera Utara,Sumatra,277749,170.531821370326,Sedang,"tanah longsor (a, c); cuaca ekstrem (b, c); karhutla (a, b)",3
+1222,Kab. Labuhanbatu Selatan,Sumatera Utara,Sumatra,322857,169.888,Sedang,"banjir (a, b)",1
+1223,Kab. Labuhanbatu Utara,Sumatera Utara,Sumatra,409120,194.688,Tinggi,"banjir (a, b, c); cuaca ekstrem (b, c); karhutla (a, b)",3
+1224,Kab. Nias Utara,Sumatera Utara,Sumatra,157835,202.288,Tinggi,"banjir (a, b); tsunami (a, b)",2
+1225,Kab. Nias Barat,Sumatera Utara,Sumatra,94947,181.648,Tinggi,"banjir (a, b); tsunami (a, b)",2
+1271,Kota Medan,Sumatera Utara,Sumatra,2567030,103.671584558907,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+1272,Kota Pematangsiantar,Sumatera Utara,Sumatra,256219,93.168,Sedang,"banjir (a, b); cuaca ekstrem (a, b, c)",2
+1273,Kota Sibolga,Sumatera Utara,Sumatra,61985,191.346475283451,Tinggi,"banjir (b, c); tanah longsor (a, b, c); cuaca ekstrem (a, b); gelombang ekstrem dan abrasi (a, c)",4
+1274,Kota Tanjungbalai,Sumatera Utara,Sumatra,165515,68.0574130254073,Sedang,"banjir (a, b)",1
+1275,Kota Binjai,Sumatera Utara,Sumatra,263924,154.848,Sedang,"banjir (b, c); cuaca ekstrem (a, b)",2
+1276,Kota Tebing Tinggi,Sumatera Utara,Sumatra,168710,57.9915038967331,Sedang,,0
+1277,Kota Padangsidimpuan,Sumatera Utara,Sumatra,239255,166.446884601533,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+1278,Kota Gunungsitoli,Sumatera Utara,Sumatra,145492,181.354821287751,Tinggi,"tanah longsor (a, b); cuaca ekstrem (a, b)",2
+1301,Kab. Pesisir Selatan,Sumatera Barat,Sumatra,535959,158.287834361614,Sedang,"banjir (b, c); cuaca ekstrem (b, c); gempa bumi (a, c)",3
+1302,Kab. Solok,Sumatera Barat,Sumatra,445136,183.20912589919,Tinggi,"banjir (a, b); tanah longsor (a, b, c); cuaca ekstrem (a, b, c); gempa bumi (a, c)",4
+1303,Kab. Sijunjung,Sumatera Barat,Sumatra,250873,166.034517445688,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+1304,Kab. Tanah Datar,Sumatera Barat,Sumatra,422583,219.488,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (a, b, c); gunung api (a, b, c)",4
+1305,Kab. Padang Pariaman,Sumatera Barat,Sumatra,486557,163.655440315048,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c); gempa bumi (a, c); tsunami (b, c)",6
+1306,Kab. Agam,Sumatera Barat,Sumatra,576392,240.301374772588,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gempa bumi (a, c)",4
+1307,Kab. Lima Puluh Kota,Sumatera Barat,Sumatra,406729,197.517229443859,Tinggi,"banjir (a, b, c); tanah longsor (a, b); cuaca ekstrem (a, b, c)",3
+1308,Kab. Pasaman,Sumatera Barat,Sumatra,319962,213.87214749512,Tinggi,"tanah longsor (a, b, c); cuaca ekstrem (a, b); gempa bumi (a, c)",3
+1309,Kab. Kepulauan Mentawai,Sumatera Barat,Sumatra,92831,201.406438102107,Tinggi,"cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c); gempa bumi (a, c); tsunami (b, c)",4
+1310,Kab. Dharmasraya,Sumatera Barat,Sumatra,240693,150.610492716624,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+1311,Kab. Solok Selatan,Sumatera Barat,Sumatra,192175,172.248674103329,Sedang,"banjir (a, b); tanah longsor (a, b, c); cuaca ekstrem (b, c)",3
+1312,Kab. Pasaman Barat,Sumatera Barat,Sumatra,456467,254.235513437472,Tinggi,"banjir (a, b, c); tanah longsor (a, b, c); cuaca ekstrem (a, b, c); tsunami (a, b)",4
+1371,Kota Padang,Sumatera Barat,Sumatra,948308,185.52681511622,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (a, b); gempa bumi (a, c)",4
+1372,Kota Solok,Sumatera Barat,Sumatra,51856,159.114975243221,Sedang,"gempa bumi (a, c)",1
+1373,Kota Sawahlunto,Sumatera Barat,Sumatra,68285,162.898204262879,Sedang,"tanah longsor (b, c)",1
+1374,Kota Padang Panjang,Sumatera Barat,Sumatra,26657,117.31759144483,Sedang,"banjir (b, c)",1
+1375,Kota Bukittinggi,Sumatera Barat,Sumatra,107227,137.201929584603,Sedang,"cuaca ekstrem (b, c)",1
+1376,Kota Payakumbuh,Sumatera Barat,Sumatra,152331,130.128,Sedang,"banjir (a, b); cuaca ekstrem (a, b)",2
+1377,Kota Pariaman,Sumatera Barat,Sumatra,101184,146.483211056976,Sedang,"cuaca ekstrem (a, b); tsunami (a, b)",2
+1401,Kab. Kampar,Riau,Sumatra,906421,145.796233079371,Sedang,"banjir (b, c)",1
+1402,Kab. Indragiri Hulu,Riau,Sumatra,468538,127.550502523422,Sedang,"banjir (b, c); karhutla (a, b)",2
+1403,Kab. Bengkalis,Riau,Sumatra,602530,85.761371520893,Sedang,"banjir (b, c)",1
+1404,Kab. Indragiri Hilir,Riau,Sumatra,691590,157.488,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c); karhutla (a, b)",4
+1405,Kab. Pelalawan,Riau,Sumatra,422194,141.981945662546,Sedang,"banjir (b, c); karhutla (a, b)",2
+1406,Kab. Rokan Hulu,Riau,Sumatra,588898,136.181236122489,Sedang,"banjir (a, b); cuaca ekstrem (a, b, c); karhutla (a, b)",3
+1407,Kab. Rokan Hilir,Riau,Sumatra,679747,120.8544467003,Sedang,"banjir (b, c)",1
+1408,Kab. Siak,Riau,Sumatra,484868,80.9019249522693,Sedang,,0
+1409,Kab. Kuantan Singingi,Riau,Sumatra,357336,176.928,Tinggi,"karhutla (a, b)",1
+1410,Kab. Kepulauan Meranti,Riau,Sumatra,217397,86.7615311407956,Sedang,"karhutla (a, b)",1
+1471,Kota Pekanbaru,Riau,Sumatra,1027469,96.4988307315222,Sedang,"banjir (a, b); cuaca ekstrem (a, b, c); karhutla (a, b, c)",3
+1472,Kota Dumai,Riau,Sumatra,335356,61.1307113675858,Sedang,"karhutla (a, b)",1
+1501,Kab. Kerinci,Jambi,Sumatra,266568,189.855824932661,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gempa bumi (a, c)",4
+1502,Kab. Merangin,Jambi,Sumatra,376852,186.864,Tinggi,"banjir (a, b); tanah longsor (a, b, c); cuaca ekstrem (a, b); karhutla (a, b)",4
+1503,Kab. Sarolangun,Jambi,Sumatra,307641,141.428140523191,Sedang,,0
+1504,Kab. Batanghari,Jambi,Sumatra,322380,115.984,Sedang,"cuaca ekstrem (b, c); karhutla (a, b)",2
+1505,Kab. Muaro Jambi,Jambi,Sumatra,383881,90.0271829359284,Sedang,"karhutla (a, b)",1
+1506,Kab. Tanjung Jabung Barat,Jambi,Sumatra,336121,97.516211579099,Sedang,,0
+1507,Kab. Tanjung Jabung Timur,Jambi,Sumatra,245636,99.8405131636704,Sedang,"banjir (a, b); karhutla (a, b)",2
+1508,Kab. Bungo,Jambi,Sumatra,388906,148.188796557669,Sedang,,0
+1509,Kab. Tebo,Jambi,Sumatra,354502,176.144,Tinggi,"banjir (a, b, c); karhutla (a, b)",2
+1571,Kota Jambi,Jambi,Sumatra,678445,92.2741060616636,Sedang,"cuaca ekstrem (a, b, c)",1
+1572,Kota Sungai Penuh,Jambi,Sumatra,101698,118.841971983402,Sedang,"banjir (b, c)",1
+1601,Kab. Ogan Komering Ulu,Sumatera Selatan,Sumatra,387388,185.339629657341,Tinggi,"banjir (b, c)",1
+1602,Kab. Ogan Komering Ilir,Sumatera Selatan,Sumatra,810629,135.502720179781,Sedang,"cuaca ekstrem (b, c)",1
+1603,Kab. Muara Enim,Sumatera Selatan,Sumatra,655658,168.352464682867,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+1604,Kab. Lahat,Sumatera Selatan,Sumatra,456207,196.392349232124,Tinggi,"gempa bumi (a, c)",1
+1605,Kab. Musi Rawas,Sumatera Selatan,Sumatra,430499,151.716074267024,Sedang,,0
+1606,Kab. Musi Banyuasin,Sumatera Selatan,Sumatra,661705,108.175831962203,Sedang,"banjir (b, c)",1
+1607,Kab. Banyuasin,Sumatera Selatan,Sumatra,935021,102.815062707134,Sedang,"karhutla (a, b, c)",1
+1608,Kab. Ogan Komering Ulu Timur,Sumatera Selatan,Sumatra,699794,139.073580030934,Sedang,,0
+1609,Kab. Ogan Komering Ulu Selatan,Sumatera Selatan,Sumatra,436570,113.634352255081,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+1610,Kab. Ogan Ilir,Sumatera Selatan,Sumatra,451006,85.6021680564278,Sedang,"cuaca ekstrem (b, c)",1
+1611,Kab. Empat Lawang,Sumatera Selatan,Sumatra,349148,193.271316919354,Tinggi,,0
+1612,Kab. Penukal Abab Lematang Ilir,Sumatera Selatan,Sumatra,208064,121.69557865825,Sedang,,0
+1613,Kab. Musi Rawas Utara,Sumatera Selatan,Sumatra,202136,133.51444481325,Sedang,"banjir (b, c); cuaca ekstrem (b, c); karhutla (a, b)",3
+1671,Kota Palembang,Sumatera Selatan,Sumatra,1715970,105.168,Sedang,"banjir (a, b); cuaca ekstrem (a, b); karhutla (a, b, c)",3
+1672,Kota Pagar Alam,Sumatera Selatan,Sumatra,152205,161.610411130677,Sedang,"cuaca ekstrem (b, c)",1
+1673,Kota Lubuk Linggau,Sumatera Selatan,Sumatra,242671,151.44480616439,Sedang,"banjir (a, b); cuaca ekstrem (a, b)",2
+1674,Kota Prabumulih,Sumatera Selatan,Sumatra,202769,121.008,Sedang,"banjir (a, b); cuaca ekstrem (a, b)",2
+1701,Kab. Bengkulu Selatan,Bengkulu,Sumatra,180891,174.11417293556,Sedang,,0
+1702,Kab. Rejang Lebong,Bengkulu,Sumatra,281924,163.139703984539,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+1703,Kab. Bengkulu Utara,Bengkulu,Sumatra,316333,220.491522400177,Tinggi,"tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c)",3
+1704,Kab. Kaur,Bengkulu,Sumatra,136567,195.196888919686,Tinggi,"banjir (b, c)",1
+1705,Kab. Seluma,Bengkulu,Sumatra,215244,156.143915822098,Sedang,,0
+1706,Kab. Mukomuko,Bengkulu,Sumatra,201154,228.275857994124,Tinggi,,0
+1707,Kab. Lebong,Bengkulu,Sumatra,113923,155.67091936832,Sedang,"tanah longsor (b, c)",1
+1708,Kab. Kepahiang,Bengkulu,Sumatra,167490,125.656857743598,Sedang,"cuaca ekstrem (b, c)",1
+1709,Kab. Bengkulu Tengah,Bengkulu,Sumatra,118796,215.057429200877,Tinggi,"banjir (b, c)",1
+1771,Kota Bengkulu,Bengkulu,Sumatra,401395,202.247384697119,Tinggi,"banjir (a, b, c); cuaca ekstrem (a, b, c); tsunami (a, b)",3
+1801,Kab. Lampung Selatan,Lampung,Sumatra,1178120,205.358160684771,Tinggi,"banjir (b, c); cuaca ekstrem (b, c)",2
+1802,Kab. Lampung Tengah,Lampung,Sumatra,1539679,115.148038834292,Sedang,"banjir (b, c)",1
+1803,Kab. Lampung Utara,Lampung,Sumatra,678756,161.968,Sedang,"cuaca ekstrem (a, b)",1
+1804,Kab. Lampung Barat,Lampung,Sumatra,296651,132.893681900788,Sedang,,0
+1805,Kab. Tulang Bawang,Lampung,Sumatra,453426,90.013756187084,Sedang,"cuaca ekstrem (b, c)",1
+1806,Kab. Tanggamus,Lampung,Sumatra,688392,126.175424737913,Sedang,"banjir (b, c)",1
+1807,Kab. Lampung Timur,Lampung,Sumatra,1152456,106.134347363045,Sedang,"banjir (a, b); cuaca ekstrem (a, b, c)",2
+1808,Kab. Way Kanan,Lampung,Sumatra,503240,103.469790371623,Sedang,"cuaca ekstrem (b, c)",1
+1809,Kab. Pesawaran,Lampung,Sumatra,519889,176.769218723579,Tinggi,,0
+1810,Kab. Pringsewu,Lampung,Sumatra,420261,135.14884343781,Sedang,"banjir (a, b); cuaca ekstrem (a, b)",2
+1811,Kab. Mesuji,Lampung,Sumatra,244487,75.5891188740659,Sedang,"cuaca ekstrem (b, c)",1
+1812,Kab. Tulang Bawang Barat,Lampung,Sumatra,304002,85.2482274687787,Sedang,"cuaca ekstrem (a, b)",1
+1813,Kab. Pesisir Barat,Lampung,Sumatra,174946,199.539998992271,Tinggi,"tanah longsor (a, c); cuaca ekstrem (a, b); gelombang ekstrem dan abrasi (a, b); tsunami (a, b)",4
+1871,Kota Bandar Lampung,Lampung,Sumatra,1199897,115.991041708218,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+1872,Kota Metro,Lampung,Sumatra,205342,39.4341360996963,Sedang,,0
+1901,Kab. Bangka,Kep. Bangka Belitung,Sumatra,348459,100.025921423395,Sedang,"tanah longsor (b, c)",1
+1902,Kab. Belitung,Kep. Bangka Belitung,Sumatra,192339,98.9683986654172,Sedang,,0
+1903,Kab. Bangka Selatan,Kep. Bangka Belitung,Sumatra,209786,159.486516379454,Sedang,"cuaca ekstrem (a, b)",1
+1904,Kab. Bangka Tengah,Kep. Bangka Belitung,Sumatra,218132,140.124853004309,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (a, b); karhutla (a, b)",4
+1905,Kab. Bangka Barat,Kep. Bangka Belitung,Sumatra,217119,96.6643427609957,Sedang,,0
+1906,Kab. Belitung Timur,Kep. Bangka Belitung,Sumatra,134592,112.3616779458,Sedang,"cuaca ekstrem (a, b); karhutla (b, c)",2
+1971,Kota Pangkal Pinang,Kep. Bangka Belitung,Sumatra,221190,84.2638384943149,Sedang,"cuaca ekstrem (a, b)",1
+2101,Kab. Bintan,Kepulauan Riau,Sumatra,165515,117.22407956813,Sedang,"cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",2
+2102,Kab. Karimun,Kepulauan Riau,Sumatra,268236,153.168,Sedang,"banjir (a, b); cuaca ekstrem (a, b, c); karhutla (a, b)",3
+2103,Kab. Natuna,Kepulauan Riau,Sumatra,85821,140.343581383213,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+2104,Kab. Lingga,Kepulauan Riau,Sumatra,102971,138.269905944677,Sedang,"cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, b, c)",2
+2105,Kab. Kepulauan Anambas,Kepulauan Riau,Sumatra,49816,114.82446282238,Sedang,"cuaca ekstrem (b, c)",1
+2171,Kota Batam,Kepulauan Riau,Sumatra,1256320,147.203683108413,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+2172,Kota Tanjung Pinang,Kepulauan Riau,Sumatra,244501,117.744,Sedang,"cuaca ekstrem (a, b, c); karhutla (a, b)",2
+3101,Kab. Administrasi Kepulauan Seribu,DKI Jakarta,Jawa,5689,40.8440881403717,Sedang,"cuaca ekstrem (b, c)",1
+3171,Kota Administrasi Jakarta Pusat,DKI Jakarta,Jawa,1039730,54.8521298942957,Sedang,"banjir (b, c)",1
+3172,Kota Administrasi Jakarta Utara,DKI Jakarta,Jawa,2057774,85.2577944091559,Sedang,"banjir (b, c)",1
+3173,Kota Administrasi Jakarta Barat,DKI Jakarta,Jawa,2494927,54.8521298942957,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3174,Kota Administrasi Jakarta Selatan,DKI Jakarta,Jawa,2345448,54.8521298942957,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3175,Kota Administrasi Jakarta Timur,DKI Jakarta,Jawa,3203632,54.8521298942957,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3201,Kab. Bogor,Jawa Barat,Jawa,5964481,122.642336150042,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3202,Kab. Sukabumi,Jawa Barat,Jawa,2930871,198.857906089386,Tinggi,"banjir (b, c); tanah longsor (b, c); kekeringan (a, b); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c); gempa bumi (a, c)",6
+3203,Kab. Cianjur,Jawa Barat,Jawa,2630626,136.31253554541,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3204,Kab. Bandung,Jawa Barat,Jawa,3755528,112.324816585868,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3205,Kab. Garut,Jawa Barat,Jawa,2762991,133.79032643858,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3206,Kab. Tasikmalaya,Jawa Barat,Jawa,1977508,156.203355475208,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3207,Kab. Ciamis,Jawa Barat,Jawa,1290179,85.5221670286182,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3208,Kab. Kuningan,Jawa Barat,Jawa,1239663,93.6590478646467,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3209,Kab. Cirebon,Jawa Barat,Jawa,2395666,109.723898614594,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (a, b, c)",3
+3210,Kab. Majalengka,Jawa Barat,Jawa,1385298,100.634179168751,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3211,Kab. Sumedang,Jawa Barat,Jawa,1270326,102.911819232369,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3212,Kab. Indramayu,Jawa Barat,Jawa,1938627,83.8982563398678,Sedang,"banjir (b, c)",1
+3213,Kab. Subang,Jawa Barat,Jawa,1706899,165.512723356885,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3214,Kab. Purwakarta,Jawa Barat,Jawa,1036204,102.683387022551,Sedang,"tanah longsor (b, c); cuaca ekstrem (a, b, c)",2
+3215,Kab. Karawang,Jawa Barat,Jawa,2568344,147.421954472105,Sedang,"banjir (b, c); kekeringan (a, b); cuaca ekstrem (a, b, c); gelombang ekstrem dan abrasi (a, b, c)",4
+3216,Kab. Bekasi,Jawa Barat,Jawa,3317430,105.452748700408,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+3217,Kab. Bandung Barat,Jawa Barat,Jawa,1993454,124.44731562472,Sedang,"tanah longsor (a, b, c); cuaca ekstrem (a, b, c)",2
+3218,Kab. Pangandaran,Jawa Barat,Jawa,446889,118.176392446696,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c)",4
+3271,Kota Bogor,Jawa Barat,Jawa,1069415,54.5854442876727,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3272,Kota Sukabumi,Jawa Barat,Jawa,314355,61.1144114622968,Sedang,,0
+3273,Kota Bandung,Jawa Barat,Jawa,2635928,76.4729734877145,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gempa bumi (a, c)",3
+3274,Kota Cirebon,Jawa Barat,Jawa,385993,93.3066670100582,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3275,Kota Bekasi,Jawa Barat,Jawa,2545113,67.7937014980082,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3276,Kota Depok,Jawa Barat,Jawa,1984199,59.9743510999832,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3277,Kota Cimahi,Jawa Barat,Jawa,492926,57.6092763871887,Sedang,"tanah longsor (b, c)",1
+3278,Kota Tasikmalaya,Jawa Barat,Jawa,755376,90.7775220052235,Sedang,"cuaca ekstrem (a, b, c); gempa bumi (a, c)",2
+3279,Kota Banjar,Jawa Barat,Jawa,208161,100.798961507497,Sedang,"cuaca ekstrem (b, c)",1
+3301,Kab. Cilacap,Jawa Tengah,Jawa,2063051,108.741426788226,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",4
+3302,Kab. Banyumas,Jawa Tengah,Jawa,1882056,82.8707445377853,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3303,Kab. Purbalingga,Jawa Tengah,Jawa,1079550,130.206378467132,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3304,Kab. Banjarnegara,Jawa Tengah,Jawa,1065819,87.5626900571752,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3305,Kab. Kebumen,Jawa Tengah,Jawa,1443425,78.8789601294606,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3306,Kab. Purworejo,Jawa Tengah,Jawa,816325,86.4542941229517,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c)",4
+3307,Kab. Wonosobo,Jawa Tengah,Jawa,949943,74.5604139835092,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3308,Kab. Magelang,Jawa Tengah,Jawa,1401756,76.9006953288744,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c); gunung api (b, c)",5
+3309,Kab. Boyolali,Jawa Tengah,Jawa,1134097,71.4419885643063,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3310,Kab. Klaten,Jawa Tengah,Jawa,1337767,74.2818983132575,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gunung api (b, c)",3
+3311,Kab. Sukoharjo,Jawa Tengah,Jawa,1059775,87.0295996229115,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3312,Kab. Wonogiri,Jawa Tengah,Jawa,1128384,83.3829723204262,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c)",3
+3313,Kab. Karanganyar,Jawa Tengah,Jawa,1060008,82.140719071874,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3314,Kab. Sragen,Jawa Tengah,Jawa,1039914,97.4465797583749,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c)",3
+3315,Kab. Grobogan,Jawa Tengah,Jawa,1554094,65.5927669088595,Sedang,"banjir (b, c); tanah longsor (b, c); karhutla (b, c)",3
+3316,Kab. Blora,Jawa Tengah,Jawa,934292,82.5239787024721,Sedang,"cuaca ekstrem (b, c)",1
+3317,Kab. Rembang,Jawa Tengah,Jawa,696695,81.9741189914421,Sedang,"tanah longsor (b, c); gelombang ekstrem dan abrasi (b, c)",2
+3318,Kab. Pati,Jawa Tengah,Jawa,1397194,125.780905052474,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3319,Kab. Kudus,Jawa Tengah,Jawa,904771,69.1437675766986,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+3320,Kab. Jepara,Jawa Tengah,Jawa,1264350,121.22393817429,Sedang,"tanah longsor (b, c); kekeringan (a, b); cuaca ekstrem (b, c); karhutla (b, c)",4
+3321,Kab. Demak,Jawa Tengah,Jawa,1263207,85.9985827593221,Sedang,"banjir (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+3322,Kab. Semarang,Jawa Tengah,Jawa,1129845,83.4428366407358,Sedang,"tanah longsor (b, c); karhutla (b, c)",2
+3323,Kab. Temanggung,Jawa Tengah,Jawa,839804,113.277953007013,Sedang,"tanah longsor (b, c); kekeringan (a, b); cuaca ekstrem (a, b, c); karhutla (b, c)",4
+3324,Kab. Kendal,Jawa Tengah,Jawa,1072302,109.793963265847,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+3325,Kab. Batang,Jawa Tengah,Jawa,856939,140.604177876717,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+3326,Kab. Pekalongan,Jawa Tengah,Jawa,1103256,102.142026505388,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+3327,Kab. Pemalang,Jawa Tengah,Jawa,1550131,97.4865732832915,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3328,Kab. Tegal,Jawa Tengah,Jawa,1654229,110.85193320353,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3329,Kab. Brebes,Jawa Tengah,Jawa,2105951,131.590644188841,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",4
+3371,Kota Magelang,Jawa Tengah,Jawa,104192,92.3047227800974,Sedang,,0
+3372,Kota Surakarta,Jawa Tengah,Jawa,377759,51.0838097235693,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3373,Kota Salatiga,Jawa Tengah,Jawa,204575,98.794952458754,Sedang,,0
+3374,Kota Semarang,Jawa Tengah,Jawa,1726629,82.7647149538627,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",4
+3375,Kota Pekalongan,Jawa Tengah,Jawa,255801,81.1825183888788,Sedang,"banjir (b, c); gelombang ekstrem dan abrasi (b, c)",2
+3376,Kota Tegal,Jawa Tengah,Jawa,312640,83.6568384470911,Sedang,"gelombang ekstrem dan abrasi (b, c)",1
+3401,Kab. Kulon Progo,DI Yogyakarta,Jawa,470913,107.515273821586,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3402,Kab. Bantul,DI Yogyakarta,Jawa,1208541,96.0221050503964,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3403,Kab. Gunungkidul,DI Yogyakarta,Jawa,810910,86.9368180788007,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3404,Kab. Sleman,DI Yogyakarta,Jawa,1249372,102.263901184367,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gunung api (b, c)",3
+3471,Kota Yogyakarta,DI Yogyakarta,Jawa,174017,51.7921900855827,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3501,Kab. Pacitan,Jawa Timur,Jawa,620553,103.92390761209,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3502,Kab. Ponorogo,Jawa Timur,Jawa,1037355,111.462290439423,Sedang,"tanah longsor (b, c); cuaca ekstrem (a, b, c); karhutla (b, c)",3
+3503,Kab. Trenggalek,Jawa Timur,Jawa,771853,120.854765792227,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3504,Kab. Tulungagung,Jawa Timur,Jawa,1161072,132.300278730097,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3505,Kab. Blitar,Jawa Timur,Jawa,1337793,130.220380452412,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3506,Kab. Kediri,Jawa Timur,Jawa,1689129,103.846084580391,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3507,Kab. Malang,Jawa Timur,Jawa,2871534,142.20518382452,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3508,Kab. Lumajang,Jawa Timur,Jawa,1180661,116.867395783158,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gunung api (b, c)",3
+3509,Kab. Jember,Jawa Timur,Jawa,2714752,161.941555676538,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c)",4
+3510,Kab. Banyuwangi,Jawa Timur,Jawa,1819039,126.230319377931,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+3511,Kab. Bondowoso,Jawa Timur,Jawa,812538,104.15945445648,Sedang,,0
+3512,Kab. Situbondo,Jawa Timur,Jawa,733518,138.425823773379,Sedang,"cuaca ekstrem (b, c)",1
+3513,Kab. Probolinggo,Jawa Timur,Jawa,1183546,142.930400131284,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3514,Kab. Pasuruan,Jawa Timur,Jawa,1738876,116.752999359818,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3515,Kab. Sidoarjo,Jawa Timur,Jawa,2236675,91.6806701408354,Sedang,"cuaca ekstrem (b, c)",1
+3516,Kab. Mojokerto,Jawa Timur,Jawa,1219471,97.2296086176663,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3517,Kab. Jombang,Jawa Timur,Jawa,1403699,118.74547583567,Sedang,"banjir (a, b); tanah longsor (a, b); cuaca ekstrem (a, b, c); karhutla (a, b)",4
+3518,Kab. Nganjuk,Jawa Timur,Jawa,1171411,95.5827778700064,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3519,Kab. Madiun,Jawa Timur,Jawa,759708,114.332405646481,Sedang,,0
+3520,Kab. Magetan,Jawa Timur,Jawa,736501,95.8409980190544,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); karhutla (b, c)",3
+3521,Kab. Ngawi,Jawa Timur,Jawa,924016,129.326604329062,Sedang,"cuaca ekstrem (b, c)",1
+3522,Kab. Bojonegoro,Jawa Timur,Jawa,1386844,97.3465332713183,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3523,Kab. Tuban,Jawa Timur,Jawa,1263996,104.801293163862,Sedang,"cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",2
+3524,Kab. Lamongan,Jawa Timur,Jawa,1423186,136.245882337021,Sedang,"tanah longsor (b, c)",1
+3525,Kab. Gresik,Jawa Timur,Jawa,1380228,119.660357422556,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+3526,Kab. Bangkalan,Jawa Timur,Jawa,1124346,98.870438679368,Sedang,"cuaca ekstrem (b, c)",1
+3527,Kab. Sampang,Jawa Timur,Jawa,1030392,89.8655275694167,Sedang,"banjir (b, c)",1
+3528,Kab. Pamekasan,Jawa Timur,Jawa,909188,86.4958695799251,Sedang,"tanah longsor (b, c); karhutla (b, c)",2
+3529,Kab. Sumenep,Jawa Timur,Jawa,1179478,112.674492347995,Sedang,,0
+3571,Kota Kediri,Jawa Timur,Jawa,310024,75.096509464213,Sedang,"cuaca ekstrem (b, c)",1
+3572,Kota Blitar,Jawa Timur,Jawa,140608,69.6593807283611,Sedang,"cuaca ekstrem (a, b)",1
+3573,Kota Malang,Jawa Timur,Jawa,855305,67.6709571593804,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+3574,Kota Probolinggo,Jawa Timur,Jawa,276824,110.557255192946,Sedang,"cuaca ekstrem (a, c)",1
+3575,Kota Pasuruan,Jawa Timur,Jawa,206135,90.488976216938,Sedang,,0
+3576,Kota Mojokerto,Jawa Timur,Jawa,153871,116.304,Sedang,,0
+3577,Kota Madiun,Jawa Timur,Jawa,215264,66.7849086558988,Sedang,"cuaca ekstrem (a, b)",1
+3578,Kota Surabaya,Jawa Timur,Jawa,3007494,96.7587536517132,Sedang,"cuaca ekstrem (b, c)",1
+3579,Kota Batu,Jawa Timur,Jawa,224884,83.619517722764,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3601,Kab. Pandeglang,Banten,Jawa,1367727,116.815595534783,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); tsunami (b, c)",4
+3602,Kab. Lebak,Banten,Jawa,1440420,145.976354546915,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3603,Kab. Tangerang,Banten,Jawa,3374527,73.1232123897806,Sedang,,0
+3604,Kab. Serang,Banten,Jawa,1729201,138.440079767367,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+3671,Kota Tangerang,Banten,Jawa,2054134,68.0087214557142,Sedang,"banjir (b, c)",1
+3672,Kota Cilegon,Banten,Jawa,445707,112.941929061711,Sedang,,0
+3673,Kota Serang,Banten,Jawa,745813,109.515203757162,Sedang,"banjir (b, c)",1
+3674,Kota Tangerang Selatan,Banten,Jawa,1627394,63.828981783797,Sedang,,0
+5101,Kab. Jembrana,Bali,Bali dan Nusa Tenggara,324797,153.463751625954,Sedang,"banjir (b, c); tanah longsor (a, b); cuaca ekstrem (a, b, c); gelombang ekstrem dan abrasi (a, b, c); tsunami (a, b)",5
+5102,Kab. Tabanan,Bali,Bali dan Nusa Tenggara,493497,116.723247840441,Sedang,"tanah longsor (b, c); cuaca ekstrem (a, b, c)",2
+5103,Kab. Badung,Bali,Bali dan Nusa Tenggara,616277,114.523140185844,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+5104,Kab. Gianyar,Bali,Bali dan Nusa Tenggara,548956,120.050016078145,Sedang,"tanah longsor (b, c); cuaca ekstrem (a, b, c)",2
+5105,Kab. Klungkung,Bali,Bali dan Nusa Tenggara,218743,149.496201885879,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+5106,Kab. Bangli,Bali,Bali dan Nusa Tenggara,277249,102.836294474505,Sedang,"tanah longsor (b, c)",1
+5107,Kab. Karangasem,Bali,Bali dan Nusa Tenggara,533001,131.437816273947,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+5108,Kab. Buleleng,Bali,Bali dan Nusa Tenggara,847925,118.307161904047,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+5171,Kota Denpasar,Bali,Bali dan Nusa Tenggara,730574,103.312052220657,Sedang,"tanah longsor (b, c)",1
+5201,Kab. Lombok Barat,Nusa Tenggara Barat,Bali dan Nusa Tenggara,753200,119.666601048392,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+5202,Kab. Lombok Tengah,Nusa Tenggara Barat,Bali dan Nusa Tenggara,1124011,165.069090396162,Sedang,"cuaca ekstrem (a, b, c)",1
+5203,Kab. Lombok Timur,Nusa Tenggara Barat,Bali dan Nusa Tenggara,1408364,172.845630532339,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+5204,Kab. Sumbawa,Nusa Tenggara Barat,Bali dan Nusa Tenggara,540875,195.072138062689,Tinggi,"banjir (b, c)",1
+5205,Kab. Dompu,Nusa Tenggara Barat,Bali dan Nusa Tenggara,254030,169.006440060441,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+5206,Kab. Bima,Nusa Tenggara Barat,Bali dan Nusa Tenggara,539401,194.282892115766,Tinggi,"banjir (b, c)",1
+5207,Kab. Sumbawa Barat,Nusa Tenggara Barat,Bali dan Nusa Tenggara,155455,144.20310018618,Sedang,,0
+5208,Kab. Lombok Utara,Nusa Tenggara Barat,Bali dan Nusa Tenggara,252004,118.392054714669,Sedang,,0
+5271,Kota Mataram,Nusa Tenggara Barat,Bali dan Nusa Tenggara,445067,133.461586388761,Sedang,"banjir (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c); gempa bumi (a, c)",4
+5272,Kota Bima,Nusa Tenggara Barat,Bali dan Nusa Tenggara,169654,148.171508899321,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+5301,Kab. Kupang,Nusa Tenggara Timur,Bali dan Nusa Tenggara,399335,215.800499423249,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+5302,Kab. Timor Tengah Selatan,Nusa Tenggara Timur,Bali dan Nusa Tenggara,484152,111.603785408627,Sedang,,0
+5303,Kab. Timor Tengah Utara,Nusa Tenggara Timur,Bali dan Nusa Tenggara,279696,194.015525694006,Tinggi,"banjir (a, b, c); tanah longsor (b, c); kekeringan (a, b); cuaca ekstrem (a, b)",4
+5304,Kab. Belu,Nusa Tenggara Timur,Bali dan Nusa Tenggara,232406,190.436875305366,Tinggi,"cuaca ekstrem (b, c)",1
+5305,Kab. Alor,Nusa Tenggara Timur,Bali dan Nusa Tenggara,226062,196.257351817155,Tinggi,"banjir (b, c)",1
+5306,Kab. Flores Timur,Nusa Tenggara Timur,Bali dan Nusa Tenggara,295999,200.853696296788,Tinggi,"banjir (a, b, c); cuaca ekstrem (b, c); gunung api (a, b, c)",3
+5307,Kab. Sikka,Nusa Tenggara Timur,Bali dan Nusa Tenggara,341499,180.093261667917,Tinggi,"cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, b, c); gunung api (a, c)",3
+5308,Kab. Ende,Nusa Tenggara Timur,Bali dan Nusa Tenggara,285817,205.712508066334,Tinggi,"tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+5309,Kab. Ngada,Nusa Tenggara Timur,Bali dan Nusa Tenggara,177735,240.260146954356,Tinggi,,0
+5310,Kab. Manggarai,Nusa Tenggara Timur,Bali dan Nusa Tenggara,328377,241.901366372506,Tinggi,"tanah longsor (a, b, c); cuaca ekstrem (b, c)",2
+5311,Kab. Sumba Timur,Nusa Tenggara Timur,Bali dan Nusa Tenggara,260611,174.640008069456,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+5312,Kab. Sumba Barat,Nusa Tenggara Timur,Bali dan Nusa Tenggara,153189,193.310500779697,Tinggi,,0
+5313,Kab. Lembata,Nusa Tenggara Timur,Bali dan Nusa Tenggara,145821,205.273931499213,Tinggi,"banjir (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+5314,Kab. Rote Ndao,Nusa Tenggara Timur,Bali dan Nusa Tenggara,153674,188.13687688308,Tinggi,"banjir (b, c); cuaca ekstrem (b, c)",2
+5315,Kab. Manggarai Barat,Nusa Tenggara Timur,Bali dan Nusa Tenggara,270961,188.819782769981,Tinggi,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+5316,Kab. Nagekeo,Nusa Tenggara Timur,Bali dan Nusa Tenggara,171197,206.639121994232,Tinggi,"banjir (a, b); tanah longsor (a, c)",2
+5317,Kab. Sumba Tengah,Nusa Tenggara Timur,Bali dan Nusa Tenggara,91420,197.58281893537,Tinggi,,0
+5318,Kab. Sumba Barat Daya,Nusa Tenggara Timur,Bali dan Nusa Tenggara,326211,220.455953120102,Tinggi,"cuaca ekstrem (b, c)",1
+5319,Kab. Manggarai Timur,Nusa Tenggara Timur,Bali dan Nusa Tenggara,298572,172.937534353947,Sedang,,0
+5320,Kab. Sabu Raijua,Nusa Tenggara Timur,Bali dan Nusa Tenggara,95748,198.049045627148,Tinggi,"banjir (b, c); kekeringan (a, b); tsunami (a, b)",3
+5321,Kab. Malaka,Nusa Tenggara Timur,Bali dan Nusa Tenggara,192961,233.072184276095,Tinggi,"banjir (b, c)",1
+5371,Kota Kupang,Nusa Tenggara Timur,Bali dan Nusa Tenggara,458951,187.537257914946,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (a, b, c)",3
+6101,Kab. Sambas,Kalimantan Barat,Kalimantan,666289,109.614396115013,Sedang,"banjir (b, c); karhutla (b, c)",2
+6102,Kab. Mempawah,Kalimantan Barat,Kalimantan,306788,90.3347579260295,Sedang,"banjir (b, c); cuaca ekstrem (b, c); karhutla (a, b, c)",3
+6103,Kab. Sanggau,Kalimantan Barat,Kalimantan,511514,113.392549733471,Sedang,"banjir (b, c); karhutla (b, c)",2
+6104,Kab. Ketapang,Kalimantan Barat,Kalimantan,614433,101.107677116695,Sedang,"banjir (b, c); cuaca ekstrem (b, c); karhutla (a, b, c)",3
+6105,Kab. Sintang,Kalimantan Barat,Kalimantan,448448,107.753210479365,Sedang,"banjir (b, c)",1
+6106,Kab. Kapuas Hulu,Kalimantan Barat,Kalimantan,267978,137.626881844519,Sedang,"banjir (b, c); tanah longsor (b, c); karhutla (b, c)",3
+6107,Kab. Bengkayang,Kalimantan Barat,Kalimantan,308313,103.093198132901,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+6108,Kab. Landak,Kalimantan Barat,Kalimantan,423146,140.64004162847,Sedang,"banjir (b, c)",1
+6109,Kab. Sekadau,Kalimantan Barat,Kalimantan,223415,105.554598296474,Sedang,"banjir (b, c)",1
+6110,Kab. Melawi,Kalimantan Barat,Kalimantan,240451,137.808,Sedang,"banjir (a, b, c); cuaca ekstrem (a, b); karhutla (a, b, c)",3
+6111,Kab. Kayong Utara,Kalimantan Barat,Kalimantan,133856,127.93492953924,Sedang,,0
+6112,Kab. Kubu Raya,Kalimantan Barat,Kalimantan,642542,117.870145565123,Sedang,"cuaca ekstrem (a, b, c); karhutla (a, b)",2
+6171,Kota Pontianak,Kalimantan Barat,Kalimantan,711260,50.0921609742384,Sedang,"cuaca ekstrem (a, b); karhutla (b, c)",2
+6172,Kota Singkawang,Kalimantan Barat,Kalimantan,252270,143.648,Sedang,"banjir (a, b); cuaca ekstrem (a, b, c); karhutla (a, b)",3
+6201,Kab. Kotawaringin Barat,Kalimantan Tengah,Kalimantan,285869,85.1386300582605,Sedang,"tanah longsor (b, c)",1
+6202,Kab. Kotawaringin Timur,Kalimantan Tengah,Kalimantan,456236,85.8379899895707,Sedang,,0
+6203,Kab. Kapuas,Kalimantan Tengah,Kalimantan,438180,126.274907837495,Sedang,,0
+6204,Kab. Barito Selatan,Kalimantan Tengah,Kalimantan,138568,117.502492889944,Sedang,,0
+6205,Kab. Barito Utara,Kalimantan Tengah,Kalimantan,163933,103.87960040313,Sedang,,0
+6206,Kab. Katingan,Kalimantan Tengah,Kalimantan,171166,131.846921117287,Sedang,"karhutla (a, b)",1
+6207,Kab. Seruyan,Kalimantan Tengah,Kalimantan,171252,117.867514631143,Sedang,,0
+6208,Kab. Sukamara,Kalimantan Tengah,Kalimantan,57711,106.232135834323,Sedang,,0
+6209,Kab. Lamandau,Kalimantan Tengah,Kalimantan,103321,102.394159233087,Sedang,"banjir (b, c)",1
+6210,Kab. Gunung Mas,Kalimantan Tengah,Kalimantan,143494,115.531241664937,Sedang,"banjir (b, c)",1
+6211,Kab. Pulang Pisau,Kalimantan Tengah,Kalimantan,143415,71.0683995032006,Sedang,"banjir (b, c)",1
+6212,Kab. Murung Raya,Kalimantan Tengah,Kalimantan,118377,135.888,Sedang,,0
+6213,Kab. Barito Timur,Kalimantan Tengah,Kalimantan,121134,102.552544492776,Sedang,,0
+6271,Kota Palangkaraya,Kalimantan Tengah,Kalimantan,310917,64.6782771991044,Sedang,"banjir (b, c); karhutla (b, c)",2
+6301,Kab. Tanah Laut,Kalimantan Selatan,Kalimantan,371260,131.76390807433,Sedang,,0
+6302,Kab. Kotabaru,Kalimantan Selatan,Kalimantan,343128,108.018250888139,Sedang,"tanah longsor (b, c)",1
+6303,Kab. Banjar,Kalimantan Selatan,Kalimantan,607367,75.6591130966703,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+6304,Kab. Barito Kuala,Kalimantan Selatan,Kalimantan,363271,67.5972715816808,Sedang,"banjir (b, c)",1
+6305,Kab. Tapin,Kalimantan Selatan,Kalimantan,200385,79.5973475953778,Sedang,,0
+6306,Kab. Hulu Sungai Selatan,Kalimantan Selatan,Kalimantan,245200,93.5273935431149,Sedang,"cuaca ekstrem (b, c)",1
+6307,Kab. Hulu Sungai Tengah,Kalimantan Selatan,Kalimantan,273292,105.231412692282,Sedang,"banjir (b, c); karhutla (a, b)",2
+6308,Kab. Hulu Sungai Utara,Kalimantan Selatan,Kalimantan,234642,52.6269412431135,Sedang,,0
+6309,Kab. Tabalong,Kalimantan Selatan,Kalimantan,270597,97.0362788487805,Sedang,,0
+6310,Kab. Tanah Bumbu,Kalimantan Selatan,Kalimantan,342403,77.5861872877868,Sedang,,0
+6311,Kab. Balangan,Kalimantan Selatan,Kalimantan,140232,63.5644246897836,Sedang,"banjir (b, c)",1
+6371,Kota Banjarmasin,Kalimantan Selatan,Kalimantan,683411,47.9590498449219,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+6372,Kota Banjarbaru,Kalimantan Selatan,Kalimantan,242466,87.6481422228847,Sedang,"banjir (b, c)",1
+6401,Kab. Paser,Kalimantan Timur,Kalimantan,289501,136.600453161432,Sedang,"cuaca ekstrem (a, b); karhutla (a, b)",2
+6402,Kab. Kutai Kartanegara,Kalimantan Timur,Kalimantan,756520,106.395868410401,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+6403,Kab. Berau,Kalimantan Timur,Kalimantan,260041,155.266656472344,Sedang,"banjir (b, c); karhutla (b, c)",2
+6407,Kab. Kutai Barat,Kalimantan Timur,Kalimantan,182385,140.505575647214,Sedang,"karhutla (a, b)",1
+6408,Kab. Kutai Timur,Kalimantan Timur,Kalimantan,454568,200.096622494626,Tinggi,"karhutla (a, b)",1
+6409,Kab. Penajam Paser Utara,Kalimantan Timur,Kalimantan,191110,88.5380631863022,Sedang,"tanah longsor (b, c)",1
+6411,Kab. Mahakam Ulu,Kalimantan Timur,Kalimantan,34433,103.735264080872,Sedang,"tanah longsor (b, c)",1
+6471,Kota Balikpapan,Kalimantan Timur,Kalimantan,730426,89.4335798512719,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c)",3
+6472,Kota Samarinda,Kalimantan Timur,Kalimantan,896341,71.48073952786,Sedang,"banjir (b, c); tanah longsor (b, c); karhutla (b, c)",3
+6474,Kota Bontang,Kalimantan Timur,Kalimantan,192187,85.2537311793211,Sedang,,0
+6501,Kab. Bulungan,Kalimantan Utara,Kalimantan,160536,135.479100250884,Sedang,"banjir (a, b); karhutla (a, b)",2
+6502,Kab. Malinau,Kalimantan Utara,Kalimantan,87596,127.512312674496,Sedang,"banjir (a, b)",1
+6503,Kab. Nunukan,Kalimantan Utara,Kalimantan,209024,134.361384461466,Sedang,"banjir (a, b, c); tanah longsor (a, b); gelombang ekstrem dan abrasi (a, c); karhutla (a, b)",4
+6504,Kab. Tana Tidung,Kalimantan Utara,Kalimantan,29261,106.765787537712,Sedang,,0
+6571,Kota Tarakan,Kalimantan Utara,Kalimantan,257102,102.619784295252,Sedang,"tanah longsor (b, c)",1
+7101,Kab. Bolaang Mongondow,Sulawesi Utara,Sulawesi,261966,132.358260833502,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+7102,Kab. Minahasa,Sulawesi Utara,Sulawesi,348008,231.859934837487,Tinggi,"banjir (b, c); tanah longsor (b, c)",2
+7103,Kab. Kepulauan Sangihe,Sulawesi Utara,Sulawesi,142867,250.266993916654,Tinggi,"banjir (b, c); gelombang ekstrem dan abrasi (a, c)",2
+7104,Kab. Kepulauan Talaud,Sulawesi Utara,Sulawesi,99594,204.373877055549,Tinggi,"gempa bumi (a, c)",1
+7105,Kab. Minahasa Selatan,Sulawesi Utara,Sulawesi,249883,186.761543507324,Tinggi,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+7106,Kab. Minahasa Utara,Sulawesi Utara,Sulawesi,235781,197.697295740443,Tinggi,"banjir (b, c); tanah longsor (b, c)",2
+7107,Kab. Minahasa Tenggara,Sulawesi Utara,Sulawesi,125122,215.773092293646,Tinggi,,0
+7108,Kab. Bolaang Mongondow Utara,Sulawesi Utara,Sulawesi,94817,221.664,Tinggi,"banjir (a, b)",1
+7109,Kab. Kep. Siau Tagulandang Biaro,Sulawesi Utara,Sulawesi,74649,113.118093814819,Sedang,"cuaca ekstrem (b, c); gunung api (b, c)",2
+7110,Kab. Bolaang Mongondow Timur,Sulawesi Utara,Sulawesi,89813,167.414465589068,Sedang,,0
+7111,Kab. Bolaang Mongondow Selatan,Sulawesi Utara,Sulawesi,74996,201.823037423323,Tinggi,,0
+7171,Kota Manado,Sulawesi Utara,Sulawesi,493575,119.449282473109,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+7172,Kota Bitung,Sulawesi Utara,Sulawesi,241146,140.76739594783,Sedang,"banjir (b, c)",1
+7173,Kota Tomohon,Sulawesi Utara,Sulawesi,113522,146.999140690436,Sedang,"gunung api (a, b)",1
+7174,Kota Kotamobagu,Sulawesi Utara,Sulawesi,138453,153.242980264694,Sedang,,0
+7201,Kab. Banggai,Sulawesi Tengah,Sulawesi,384086,249.332722907902,Tinggi,"banjir (b, c); tanah longsor (a, b)",2
+7202,Kab. Poso,Sulawesi Tengah,Sulawesi,258280,159.085195281318,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+7203,Kab. Donggala,Sulawesi Tengah,Sulawesi,304869,199.735704922686,Tinggi,"banjir (b, c); tanah longsor (b, c); gelombang ekstrem dan abrasi (a, c); gempa bumi (a, c)",4
+7204,Kab. Toli-Toli,Sulawesi Tengah,Sulawesi,244715,189.164523778316,Tinggi,"banjir (b, c)",1
+7205,Kab. Buol,Sulawesi Tengah,Sulawesi,153929,242.928,Tinggi,"banjir (a, b); cuaca ekstrem (a, b); gelombang ekstrem dan abrasi (a, b, c); gempa bumi (a, c)",4
+7206,Kab. Morowali,Sulawesi Tengah,Sulawesi,170059,230.07545706657,Tinggi,"banjir (a, b); cuaca ekstrem (a, b, c)",2
+7207,Kab. Banggai Kepulauan,Sulawesi Tengah,Sulawesi,128154,197.454650591294,Tinggi,,0
+7208,Kab. Parigi Moutong,Sulawesi Tengah,Sulawesi,468074,121.080482861467,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+7209,Kab. Tojo Una Una,Sulawesi Tengah,Sulawesi,174435,264.048,Tinggi,"banjir (a, b); cuaca ekstrem (b, c)",2
+7210,Kab. Sigi,Sulawesi Tengah,Sulawesi,285997,126.739766018288,Sedang,"banjir (b, c); gempa bumi (a, c)",2
+7211,Kab. Banggai Laut,Sulawesi Tengah,Sulawesi,72775,209.984,Tinggi,"banjir (a, b); tanah longsor (b, c); gelombang ekstrem dan abrasi (a, c)",3
+7212,Kab. Morowali Utara,Sulawesi Tengah,Sulawesi,129783,232.944,Tinggi,"banjir (a, b); cuaca ekstrem (a, b, c)",2
+7271,Kota Palu,Sulawesi Tengah,Sulawesi,389625,132.577555473955,Sedang,,0
+7301,Kab. Kepulauan Selayar,Sulawesi Selatan,Sulawesi,141245,155.417737191535,Sedang,,0
+7302,Kab. Bulukumba,Sulawesi Selatan,Sulawesi,456469,146.167553264644,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+7303,Kab. Bantaeng,Sulawesi Selatan,Sulawesi,218009,93.748275384244,Sedang,,0
+7304,Kab. Jeneponto,Sulawesi Selatan,Sulawesi,419863,165.504,Sedang,"banjir (b, c); tanah longsor (a, c); kekeringan (a, b); cuaca ekstrem (a, b, c)",4
+7305,Kab. Takalar,Sulawesi Selatan,Sulawesi,302057,171.249566106778,Sedang,"cuaca ekstrem (a, b); gelombang ekstrem dan abrasi (a, b)",2
+7306,Kab. Gowa,Sulawesi Selatan,Sulawesi,877197,138.193370066023,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+7307,Kab. Sinjai,Sulawesi Selatan,Sulawesi,268399,183.984,Tinggi,"tanah longsor (a, b, c); cuaca ekstrem (a, b)",2
+7308,Kab. Bone,Sulawesi Selatan,Sulawesi,860889,131.314635492,Sedang,"tanah longsor (b, c)",1
+7309,Kab. Maros,Sulawesi Selatan,Sulawesi,453462,150.743073579241,Sedang,"banjir (b, c)",1
+7310,Kab. Pangkajene dan Kepulauan,Sulawesi Selatan,Sulawesi,347457,201.662845632252,Tinggi,"banjir (a, b); tanah longsor (a, b); cuaca ekstrem (a, b, c)",3
+7311,Kab. Barru,Sulawesi Selatan,Sulawesi,198235,153.592818157756,Sedang,"banjir (b, c); tanah longsor (b, c)",2
+7312,Kab. Soppeng,Sulawesi Selatan,Sulawesi,250954,157.584,Sedang,"cuaca ekstrem (a, b, c)",1
+7313,Kab. Wajo,Sulawesi Selatan,Sulawesi,405562,125.427341763905,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+7314,Kab. Sidenreng Rappang,Sulawesi Selatan,Sulawesi,345522,159.504,Sedang,"banjir (a, b); tanah longsor (a, b); cuaca ekstrem (a, b, c)",3
+7315,Kab. Pinrang,Sulawesi Selatan,Sulawesi,417821,181.347743021502,Tinggi,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+7316,Kab. Enrekang,Sulawesi Selatan,Sulawesi,235183,140.690263318184,Sedang,"tanah longsor (b, c)",1
+7317,Kab. Luwu,Sulawesi Selatan,Sulawesi,398736,147.482178043795,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+7318,Kab. Tana Toraja,Sulawesi Selatan,Sulawesi,302265,135.408,Sedang,"banjir (a, b); tanah longsor (a, b, c); cuaca ekstrem (b, c)",3
+7322,Kab. Luwu Utara,Sulawesi Selatan,Sulawesi,339939,127.914107869272,Sedang,"banjir (b, c)",1
+7324,Kab. Luwu Timur,Sulawesi Selatan,Sulawesi,315940,117.324219046962,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+7326,Kab. Toraja Utara,Sulawesi Selatan,Sulawesi,274699,144.970587491907,Sedang,"tanah longsor (a, b, c); cuaca ekstrem (a, b)",2
+7371,Kota Makassar,Sulawesi Selatan,Sulawesi,1431959,91.4415328856761,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+7372,Kota Parepare,Sulawesi Selatan,Sulawesi,168768,178.869271015795,Tinggi,"cuaca ekstrem (a, b)",1
+7373,Kota Palopo,Sulawesi Selatan,Sulawesi,190917,153.732590931736,Sedang,"tanah longsor (b, c)",1
+7401,Kab. Kolaka,Sulawesi Tenggara,Sulawesi,251750,182.822499288721,Tinggi,,0
+7402,Kab. Konawe,Sulawesi Tenggara,Sulawesi,272756,252.288,Tinggi,"banjir (a, b, c); kekeringan (a, c); cuaca ekstrem (a, b, c)",3
+7403,Kab. Muna,Sulawesi Tenggara,Sulawesi,228512,235.888,Tinggi,,0
+7404,Kab. Buton,Sulawesi Tenggara,Sulawesi,123102,180.21585025511,Tinggi,,0
+7405,Kab. Konawe Selatan,Sulawesi Tenggara,Sulawesi,324148,209.833118132689,Tinggi,"banjir (b, c)",1
+7406,Kab. Bombana,Sulawesi Tenggara,Sulawesi,159954,164.121240816768,Sedang,,0
+7407,Kab. Wakatobi,Sulawesi Tenggara,Sulawesi,118177,174.78086165942,Sedang,"cuaca ekstrem (b, c)",1
+7408,Kab. Kolaka Utara,Sulawesi Tenggara,Sulawesi,145879,198.365539275735,Tinggi,"tanah longsor (b, c)",1
+7409,Kab. Konawe Utara,Sulawesi Tenggara,Sulawesi,72338,188.800217362424,Tinggi,"banjir (b, c)",1
+7410,Kab. Buton Utara,Sulawesi Tenggara,Sulawesi,71106,208.238429818695,Tinggi,"cuaca ekstrem (b, c)",1
+7411,Kab. Kolaka Timur,Sulawesi Tenggara,Sulawesi,126881,167.184,Sedang,"cuaca ekstrem (a, b)",1
+7412,Kab. Konawe Kepulauan,Sulawesi Tenggara,Sulawesi,39294,230.928,Tinggi,,0
+7413,Kab. Muna Barat,Sulawesi Tenggara,Sulawesi,89718,167.568,Sedang,"banjir (a, b)",1
+7414,Kab. Buton Tengah,Sulawesi Tenggara,Sulawesi,150377,200.056519517328,Tinggi,,0
+7415,Kab. Buton Selatan,Sulawesi Tenggara,Sulawesi,101932,236.128,Tinggi,"banjir (a, b)",1
+7471,Kota Kendari,Sulawesi Tenggara,Sulawesi,369586,115.399282237525,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+7472,Kota Bau Bau,Sulawesi Tenggara,Sulawesi,140532,215.584,Tinggi,"banjir (a, b)",1
+7501,Kab. Gorontalo,Gorontalo,Sulawesi,397179,128.977889800564,Sedang,"banjir (b, c); cuaca ekstrem (b, c)",2
+7502,Kab. Boalemo,Gorontalo,Sulawesi,156037,167.693665357352,Sedang,"banjir (b, c)",1
+7503,Kab. Bone Bolango,Gorontalo,Sulawesi,183041,175.652181118055,Sedang,"banjir (b, c)",1
+7504,Kab. Pohuwato,Gorontalo,Sulawesi,154675,182.481714378343,Tinggi,"banjir (a, b); tanah longsor (a, c)",2
+7505,Kab. Gorontalo Utara,Gorontalo,Sulawesi,125130,204.519375225542,Tinggi,,0
+7571,Kota Gorontalo,Gorontalo,Sulawesi,217275,126.872230567821,Sedang,"banjir (b, c)",1
+7601,Kab. Pasangkayu,Sulawesi Barat,Sulawesi,202135,229.584,Tinggi,"banjir (a, b); tanah longsor (a, b); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, c); tsunami (a, c)",5
+7602,Kab. Mamuju,Sulawesi Barat,Sulawesi,296665,233.731844582115,Tinggi,"tanah longsor (a, b, c); cuaca ekstrem (a, c)",2
+7603,Kab. Mamasa,Sulawesi Barat,Sulawesi,173797,152.775722444566,Sedang,"tanah longsor (b, c)",1
+7604,Kab. Polewali Mandar,Sulawesi Barat,Sulawesi,506924,202.151940150441,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c)",3
+7605,Kab. Majene,Sulawesi Barat,Sulawesi,184928,228.319747426754,Tinggi,,0
+7606,Kab. Mamuju Tengah,Sulawesi Barat,Sulawesi,146161,222.176495685239,Tinggi,"cuaca ekstrem (b, c)",1
+8101,Kab. Maluku Tengah,Maluku,Maluku,452378,186.423051937234,Tinggi,"gunung api (a, b)",1
+8102,Kab. Maluku Tenggara,Maluku,Maluku,86730,204.528,Tinggi,"cuaca ekstrem (b, c)",1
+8103,Kab. Kepulauan Tanimbar,Maluku,Maluku,130460,195.685154824314,Tinggi,"banjir (a, b); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, b)",3
+8104,Kab. Buru,Maluku,Maluku,143534,192.979067614359,Tinggi,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, c)",4
+8105,Kab. Seram Bagian Timur,Maluku,Maluku,144725,244.528,Tinggi,"banjir (a, b, c); gelombang ekstrem dan abrasi (a, c)",2
+8106,Kab. Seram Bagian Barat,Maluku,Maluku,225600,200.962078466389,Tinggi,"tanah longsor (b, c)",1
+8107,Kab. Kepulauan Aru,Maluku,Maluku,108089,183.868109492761,Tinggi,"banjir (a, b)",1
+8108,Kab. Maluku Barat Daya,Maluku,Maluku,87251,246.316542945535,Tinggi,"cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, c)",2
+8109,Kab. Buru Selatan,Maluku,Maluku,80030,220.561169803174,Tinggi,,0
+8171,Kota Ambon,Maluku,Maluku,364071,159.487837020228,Sedang,"tanah longsor (b, c); cuaca ekstrem (b, c)",2
+8172,Kota Tual,Maluku,Maluku,135633,207.984,Tinggi,"gelombang ekstrem dan abrasi (b, c)",1
+8201,Kab. Halmahera Barat,Maluku Utara,Maluku,141439,254.448,Tinggi,"banjir (a, b); tanah longsor (a, b); cuaca ekstrem (b, c)",3
+8202,Kab. Halmahera Tengah,Maluku Utara,Maluku,59267,251.088,Tinggi,"banjir (a, b, c)",1
+8203,Kab. Halmahera Utara,Maluku Utara,Maluku,206837,236.170829243615,Tinggi,"banjir (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (b, c); gunung api (a, c)",4
+8204,Kab. Halmahera Selatan,Maluku Utara,Maluku,261384,278.507756306277,Tinggi,"banjir (b, c); tanah longsor (b, c)",2
+8205,Kab. Kepulauan Sula,Maluku Utara,Maluku,108775,186.21906116643,Tinggi,,0
+8206,Kab. Halmahera Timur,Maluku Utara,Maluku,99775,240.528,Tinggi,"banjir (a, b); cuaca ekstrem (a, b)",2
+8207,Kab. Pulau Morotai,Maluku Utara,Maluku,77950,182.098504158908,Tinggi,"banjir (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, b, c); gempa bumi (a, c)",4
+8208,Kab. Pulau Taliabu,Maluku Utara,Maluku,62746,223.41472688172,Tinggi,"banjir (b, c)",1
+8271,Kota Ternate,Maluku Utara,Maluku,217123,109.577018355795,Sedang,"banjir (b, c); tanah longsor (b, c); cuaca ekstrem (b, c); gelombang ekstrem dan abrasi (a, c)",4
+8272,Kota Tidore Kepulauan,Maluku Utara,Maluku,121459,241.248,Tinggi,"banjir (a, b); tanah longsor (a, b); cuaca ekstrem (a, b)",3
+9103,Kab. Jayapura,Papua,Papua,179193,244.104,Tinggi,"banjir (a, b, c); tanah longsor (a, c); cuaca ekstrem (a, c)",3
+9105,Kab. Kepulauan Yapen,Papua,Papua,120214,219.188547258286,Tinggi,,0
+9106,Kab. Biak Numfor,Papua,Papua,142838,228.504,Tinggi,"gempa bumi (a, c)",1
+9110,Kab. Sarmi,Papua,Papua,43555,232.019726227336,Tinggi,"banjir (a, b)",1
+9111,Kab. Keerom,Papua,Papua,66251,204.024,Tinggi,"banjir (a, b, c); tanah longsor (a, c)",2
+9115,Kab. Waropen,Papua,Papua,37588,239.544,Tinggi,"banjir (a, b); gelombang ekstrem dan abrasi (a, b, c)",2
+9119,Kab. Supiori,Papua,Papua,23761,239.624,Tinggi,,0
+9120,Kab. Mamberamo Raya,Papua,Papua,38313,231.384,Tinggi,"banjir (a, b)",1
+9171,Kota Jayapura,Papua,Papua,420645,128.259095198504,Sedang,"banjir (b, c); tanah longsor (b, c); gempa bumi (a, c)",3
+9202,Kab. Manokwari,Papua Barat,Papua,204242,218.89707309921,Tinggi,"gempa bumi (a, c)",1
+9203,Kab. Fak Fak,Papua Barat,Papua,90053,206.973383469596,Tinggi,,0
+9206,Kab. Teluk Bintuni,Papua Barat,Papua,93339,241.488,Tinggi,"banjir (a, b)",1
+9207,Kab. Teluk Wondama,Papua Barat,Papua,43865,219.544040953021,Tinggi,,0
+9208,Kab. Kaimana,Papua Barat,Papua,65542,225.984,Tinggi,,0
+9211,Kab. Manokwari Selatan,Papua Barat,Papua,37050,221.424,Tinggi,"banjir (a, b)",1
+9212,Kab. Pegunungan Arfak,Papua Barat,Papua,40122,192.048,Tinggi,"banjir (a, b, c); tanah longsor (a, c)",2
+9301,Kab. Merauke,Papua Selatan,Papua,247519,120.984,Sedang,"gelombang ekstrem dan abrasi (a, b, c)",1
+9302,Kab. Boven Digoel,Papua Selatan,Papua,67587,192.504,Tinggi,,0
+9303,Kab. Mappi,Papua Selatan,Papua,117016,159.144,Sedang,,0
+9304,Kab. Asmat,Papua Selatan,Papua,116472,188.964,Tinggi,,0
+9401,Kab. Nabire,Papua Tengah,Papua,180380,203.454045417139,Tinggi,,0
+9402,Kab. Puncak Jaya,Papua Tengah,Papua,240651,200.248,Tinggi,,0
+9403,Kab. Paniai,Papua Tengah,Papua,230694,193.464,Tinggi,"banjir (a, b); tanah longsor (a, c)",2
+9404,Kab. Mimika,Papua Tengah,Papua,341571,203.544,Tinggi,"banjir (a, b, c); tanah longsor (a, c)",2
+9405,Kab. Puncak,Papua Tengah,Papua,105275,188.664,Tinggi,"kekeringan (a, c)",1
+9406,Kab. Dogiyai,Papua Tengah,Papua,122100,188.664,Tinggi,"banjir (a, c)",1
+9407,Kab. Intan Jaya,Papua Tengah,Papua,155506,175.544,Sedang,,0
+9408,Kab. Deiyai,Papua Tengah,Papua,108869,194.104,Tinggi,,0
+9501,Kab. Jayawijaya,Papua Pegunungan,Papua,302517,194.424,Tinggi,"tanah longsor (a, c)",1
+9502,Kab. Pegunungan Bintang,Papua Pegunungan,Papua,84783,206.808,Tinggi,"banjir (a, c); tanah longsor (a, c)",2
+9503,Kab. Yahukimo,Papua Pegunungan,Papua,365006,197.944,Tinggi,,0
+9504,Kab. Tolikara,Papua Pegunungan,Papua,215247,194.264,Tinggi,"banjir (a, c); tanah longsor (a, c)",2
+9505,Kab. Mamberamo Tengah,Papua Pegunungan,Papua,55463,197.944,Tinggi,"tanah longsor (a, c)",1
+9506,Kab. Yalimo,Papua Pegunungan,Papua,103407,197.944,Tinggi,,0
+9507,Kab. Lanny Jaya,Papua Pegunungan,Papua,212091,167.064,Sedang,,0
+9508,Kab. Nduga,Papua Pegunungan,Papua,108194,188.344,Tinggi,"banjir (a, c)",1
+9601,Kab. Sorong,Papua Barat Daya,Papua,128219,240.528,Tinggi,"banjir (a, b); gelombang ekstrem dan abrasi (a, c)",2
+9602,Kab. Sorong Selatan,Papua Barat Daya,Papua,55898,221.328,Tinggi,,0
+9603,Kab. Raja Ampat,Papua Barat Daya,Papua,64028,245.969026356074,Tinggi,,0
+9604,Kab. Tambrauw,Papua Barat Daya,Papua,29945,226.368,Tinggi,"banjir (a, b)",1
+9605,Kab. Maybrat,Papua Barat Daya,Papua,44371,197.088,Tinggi,,0
+9671,Kota Sorong,Papua Barat Daya,Papua,297034,253.412286828609,Tinggi,"tanah longsor (b, c)",1

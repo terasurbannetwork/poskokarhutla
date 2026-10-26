@@ -31,6 +31,18 @@ target_halaman: 9
 - @rek:r-m13 Lengkapi dokumen dasar daerah berkapasitas rendah (Sudah ada, perlu dikembangkan; Direktorat Kesiapsiagaan dengan Direktorat Pemetaan dan Evaluasi Risiko Bencana; Kementerian Dalam Negeri (Kemendagri) untuk SPM; 2026–2027).
 :::
 
+::: gambar {#gbr:foto-m10-pemadam}
+berkas: gambar/foto/mit-b10-pemadam.jpg
+jenis: foto
+judul: Petugas menyemprot bara di lahan gambut, Taman Nasional Sebangau, Kalimantan Tengah, 2019
+pengarang: DenY Krisbiyantoro
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Marking_the_Fire.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 **Analisis SWOT Renstra BNPB 2025–2029 memuat {{angka:renstra.swot.kelemahan}} kelemahan dan {{angka:renstra.swot.ancaman}} ancaman, dan kelemahan pertamanya adalah peraturan yang tidak harmonis.** Renstra menulis bahwa masih terdapat peraturan perundang-undangan dan peraturan internal BNPB yang tidak harmonis atau saling bertentangan, dan mengutip National Assessment Report 2023 bahwa ketidakjelasan regulasi dan pembagian kewenangan mengakibatkan tumpang tindih penanganan bencana [@bnpb-2025-renstra, hlm. 24, 73–76]. Badan Pemeriksa Keuangan (BPK) memeriksa kinerja penanggulangan bencana atas {{angka:bpk.ihps2_2024.pb.objek|satuan}}, terdiri atas {{angka:bpk.ihps2_2024.pb.objek_pusat}} objek pusat dan {{angka:bpk.ihps2_2024.pb.objek_pemda}} pemerintah daerah [@bpk-2025-ihps2-2024, hlm. 11–12]. Temuan BPK dalam bab ini dikutip dengan atribusi IHPS II 2024, dan laporan hasil pemeriksaan per entitas tidak dibuka.
 
 ## Regulasi {#sub:kj-regulasi}
@@ -110,7 +122,9 @@ catatan: Kolom versi lama (Kepka 173, tahun 2014 atau 2015 menurut sumber) beras
 
 **Perban BNPB 11/2025 tanggal 30 Desember 2025 membagi Deputi Bidang Penanganan Darurat menjadi satu direktorat koordinasi dan tiga direktorat wilayah; Renstra 2025–2029 masih menyebut unit lama, begitu pula Perban 2/2024.** Perban yang sama mengganti Pusat Pengendalian Operasi dengan Pusat Pembinaan Jabatan Fungsional Kebencanaan [@bnpb-2025-otk-ubah]. Indikator aktivasi pos komando Renstra, dari {{angka:renstra.ikk_posko_status.2025|persen}} pada 2025 ke {{angka:renstra.ikk_posko_status.2029|persen}} pada 2029, masih dipegang Pusat Pengendalian Operasi, dan Perban 2/2024 Pasal 12, 14, dan 19 menyebut unit yang sama [@bnpb-2025-renstra; @bnpb-2024-peringatan-dini; @pantaubencana-2026-program-terbukti]. Perban 11/2025 juga tidak mengubah Pasal 104 dan 106 Perban 6/2025. Kajian menilai Sistem Komando Penanganan Darurat Bencana dalam Perka BNPB 3/2016 sendiri tidak usang, karena peraturan itu masih berlaku dan memuat klaster dalam struktur komando [@bnpb-2016-skpdb, hlm. 6, 12]. Yang usang adalah dokumen yang menempelkan unit ke rantai itu, sehingga penanggung jawab indikator posko tidak dapat dibaca langsung dari organisasi dan tata kerja berlaku.
 
-**Renstra BNPB 2025–2029 mencatat empat kelemahan komando pada halaman 73, termasuk peran unit dalam setiap fase darurat yang belum terdefinisi dan fase tanggap darurat yang belum terkoordinasi baik.** Dua kelemahan lainnya adalah definisi status siaga darurat dan peran BNPB sebagai pendukung di daerah yang belum jelas [@bnpb-2025-renstra, hlm. 73, 75]. Renas mencatat belum adanya peraturan dan petunjuk pelaksanaan untuk pembentukan dan operasi Tim Reaksi Cepat Penanggulangan Bencana (TRC PB) multisektor, serta "kurang optimalnya koordinasi multisektor dalam penerapan Sistem Komando Penanganan Kedaruratan Bencana (SKPDB)" [@bnpb-2025-renas, hlm. 26–27]. Aturan TRC yang berlaku, Perka BNPB 9/2008, hanya untuk TRC BNPB [@bnpb-2008-protap-trc]. Indeks Jaringan Dokumentasi dan Informasi Hukum (JDIH) lokal hanya memuat petunjuk pelaksanaan SKPDB untuk status kabupaten/kota, Juklak 10/2023; petunjuk untuk status provinsi dan nasional tidak ditemukan di indeks itu [@bnpb-2023-juklak-skpdb].
+**Renstra BNPB 2025–2029 mencatat empat kelemahan komando pada halaman 73, termasuk peran unit dalam setiap fase darurat yang belum terdefinisi dan fase tanggap darurat yang belum terkoordinasi baik.** Dua kelemahan lainnya adalah definisi status siaga darurat dan peran BNPB sebagai pendukung di daerah yang belum jelas [@bnpb-2025-renstra, hlm. 73, 75]. Renas mencatat belum adanya peraturan dan petunjuk pelaksanaan untuk pembentukan dan operasi Tim Reaksi Cepat Penanggulangan Bencana (TRC PB) multisektor, serta "kurang optimalnya koordinasi multisektor dalam penerapan Sistem Komando Penanganan Kedaruratan Bencana (SKPDB)" [@bnpb-2025-renas, hlm. 26–27].
+
+Aturan TRC yang berlaku, Perka BNPB 9/2008, hanya untuk TRC BNPB [@bnpb-2008-protap-trc]. Indeks Jaringan Dokumentasi dan Informasi Hukum (JDIH) lokal hanya memuat petunjuk pelaksanaan SKPDB untuk status kabupaten/kota, Juklak 10/2023; petunjuk untuk status provinsi dan nasional tidak ditemukan di indeks itu [@bnpb-2023-juklak-skpdb].
 
 **Rantai peringatan dini dan pertolongan melintasi tiga kementerian koordinator, dan kesiapan sarana Badan Nasional Pencarian dan Pertolongan (Basarnas) {{angka:bpk.ihps2_2024.basarnas.kesiapan_sarpras_persen|fmt=2|persen}} terhadap target {{angka:bpk.ihps2_2024.basarnas.kesiapan_sarpras_target_persen|fmt=2|persen}} menurut IHPS II 2024.** BMKG bertanggung jawab kepada Presiden melalui menteri bidang transportasi. Basarnas serta Kementerian PU berada di bawah koordinasi Kementerian Koordinator Bidang Infrastruktur dan Pembangunan Kewilayahan (Kemenko IPK), Badan Geologi di bawah Kemenko Perekonomian, dan BNPB dikoordinasikan Kemenko PMK[^menko] [@ri-2019-perpres1, hlm. 4; @pantaubencana-2026-paket-lembaga]. BPK juga mencatat Basarnas belum menyusun peta jalan sarana dan prasarana secara memadai dan sistem informasinya belum terhubung dengan instansi kebencanaan [@bpk-2025-ihps2-2024, hlm. 182, 187–188]. Penyelenggaraan dalam keadaan tertentu kini memerlukan rapat koordinasi menteri koordinator yang membidangi penanggulangan bencana [@ri-2026-perpres46].
 
@@ -123,6 +137,18 @@ sifat: fakta
 **Dampak:** Penanggung jawab indikator posko dan klaster di tingkat pusat tidak dapat dibaca dari dokumen yang berlaku, dan klaster kesehatan untuk epidemi belum dipastikan terbentuk.
 
 **Pembuka:** Deputi Bidang Penanganan Darurat melalui Direktorat Koordinasi Pengendalian Operasi Darurat; Biro Hukum, Organisasi, dan Kerja Sama (@rek:r-m10); koordinator enam klaster, yaitu Basarnas, Kementerian Sosial, BNPB, Kementerian Kesehatan, Kementerian Pendidikan Dasar dan Menengah (Kemendikdasmen), dan Kemendagri; Kemenko PMK.
+:::
+
+
+::: gambar {#gbr:foto-m10-heli}
+berkas: gambar/foto/mit-b10-heli.jpg
+jenis: foto
+judul: Helikopter menjatuhkan air di atas lahan terbakar, Indonesia, 2019
+pengarang: DenY Krisbiyantoro
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Water_Bombing.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
 :::
 
 ## Data dan Peringatan Dini {#sub:kj-data}

@@ -1,0 +1,71 @@
+{
+ "tahun": 2023,
+ "sel_derajat": 0.003375,
+ "radius_B_m": 2000,
+ "titik_nh_tersaring": 484881,
+ "titik_di_luar_daratan": 55503,
+ "n20_tersaring": 241279,
+ "n20_mentah": 264784,
+ "metode_web_ha": 994069,
+ "resmi_ha": 1161193,
+ "sel_A_unik": 285563,
+ "provinsi_tanpa_deteksi": [],
+ "strata": [
+  {
+   "strata": "A",
+   "gambut": 0,
+   "sel": 196114,
+   "luas_ha": 2748225.5,
+   "n": 275
+  },
+  {
+   "strata": "A",
+   "gambut": 1,
+   "sel": 89449,
+   "luas_ha": 1255729.0,
+   "n": 125
+  },
+  {
+   "strata": "B",
+   "gambut": 0,
+   "sel": 3082567,
+   "luas_ha": 43260089.7,
+   "n": 245
+  },
+  {
+   "strata": "B",
+   "gambut": 1,
+   "sel": 697781,
+   "luas_ha": 9804739.6,
+   "n": 55
+  },
+  {
+   "strata": "C",
+   "gambut": 0,
+   "sel": 7843389,
+   "luas_ha": 110239312.0,
+   "n": 249
+  },
+  {
+   "strata": "C",
+   "gambut": 1,
+   "sel": 1599593,
+   "luas_ha": 22486631.9,
+   "n": 51
+  },
+  {
+   "strata": "D",
+   "gambut": 0,
+   "sel": 0,
+   "luas_ha": 0.0,
+   "n": 0
+  },
+  {
+   "strata": "D",
+   "gambut": 1,
+   "sel": 0,
+   "luas_ha": 0.0,
+   "n": 0
+  }
+ ]
+}

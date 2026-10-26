@@ -1,0 +1,508 @@
+{
+ "nama": "bab08-g23-garis-waktu-status-epidemi",
+ "keterangan": "Garis waktu penetapan status epidemi menurut rezim bencana, rezim kesehatan, dan krisis kesehatan di Indonesia, 2018–2026",
+ "sumber": "Keppres 11/2020, 12/2020, dan 17/2023; Perpres 17/2018, 82/2020, 48/2023, dan 46/2026; UU 17/2023; Permenkes 1/2026 (teks rancangan)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  224.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.92
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Rezim bencana (UU 24/2007)",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Rezim kesehatan",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Krisis kesehatan, teks rancangan",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ],
+  "#2E3440": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 104.61,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Rezim bencana (UU 24/2007)"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 118.61,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Rezim bencana (UU 24/2007)"
+  },
+  {
+   "x": 144.61,
+   "y": 3,
+   "w": 60.86,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-130",
+   "teks": "Rezim kesehatan"
+  },
+  {
+   "x": 130.61,
+   "y": 2,
+   "w": 74.86,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-130",
+   "teks": "Rezim kesehatan"
+  },
+  {
+   "x": 229.46,
+   "y": 3,
+   "w": 116.87,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-215",
+   "teks": "Krisis kesehatan, teks rancangan"
+  },
+  {
+   "x": 215.46,
+   "y": 2,
+   "w": 130.87,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-215",
+   "teks": "Krisis kesehatan, teks rancangan"
+  },
+  {
+   "x": 86.5,
+   "y": 20,
+   "w": 44.38,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "2018–2019"
+  },
+  {
+   "x": 179.39,
+   "y": 20,
+   "w": 19.51,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "2020"
+  },
+  {
+   "x": 247.4,
+   "y": 20,
+   "w": 44.38,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "2021–2022"
+  },
+  {
+   "x": 327.85,
+   "y": 20,
+   "w": 44.38,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk3",
+   "teks": "2023–2025"
+  },
+  {
+   "x": 420.74,
+   "y": 20,
+   "w": 19.51,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk4",
+   "teks": "2026"
+  },
+  {
+   "x": 2,
+   "y": 65.35,
+   "w": 33.09,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Bencana"
+  },
+  {
+   "x": 2,
+   "y": 129.45,
+   "w": 40.46,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Kesehatan"
+  },
+  {
+   "x": 2,
+   "y": 188.75,
+   "w": 63.46,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Krisis kesehatan"
+  },
+  {
+   "x": 93.67,
+   "y": 44.8,
+   "w": 30.03,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b0",
+   "teks": "Perpres"
+  },
+  {
+   "x": 92.47,
+   "y": 55,
+   "w": 32.44,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b0",
+   "teks": "17/2018"
+  },
+  {
+   "x": 81.44,
+   "y": 66.6,
+   "w": 54.49,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b0",
+   "teks": "status keadaan"
+  },
+  {
+   "x": 79.97,
+   "y": 76.2,
+   "w": 57.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b0",
+   "teks": "darurat menurut"
+  },
+  {
+   "x": 99.28,
+   "y": 85.8,
+   "w": 18.82,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b0",
+   "teks": "skala"
+  },
+  {
+   "x": 196.28,
+   "y": 54.7,
+   "w": 66.18,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "Keppres 12/2020"
+  },
+  {
+   "x": 162.55,
+   "y": 66.3,
+   "w": 133.64,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "bencana nasional nonalam COVID-19;"
+  },
+  {
+   "x": 173.98,
+   "y": 75.9,
+   "w": 110.78,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "Perpres 82/2020 Satuan Tugas"
+  },
+  {
+   "x": 334.23,
+   "y": 40,
+   "w": 31.63,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "Keppres"
+  },
+  {
+   "x": 333.82,
+   "y": 50.2,
+   "w": 32.44,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "17/2023"
+  },
+  {
+   "x": 323.83,
+   "y": 61.8,
+   "w": 52.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "status dicabut;"
+  },
+  {
+   "x": 320.15,
+   "y": 71.4,
+   "w": 59.78,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "Perpres 48/2023"
+  },
+  {
+   "x": 330.26,
+   "y": 81,
+   "w": 39.55,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "mengakhiri"
+  },
+  {
+   "x": 325.53,
+   "y": 90.6,
+   "w": 49.02,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "Satuan Tugas"
+  },
+  {
+   "x": 415.48,
+   "y": 40,
+   "w": 30.03,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "Perpres"
+  },
+  {
+   "x": 414.27,
+   "y": 50.2,
+   "w": 32.44,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "46/2026"
+  },
+  {
+   "x": 400.44,
+   "y": 61.8,
+   "w": 60.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "keadaan tertentu"
+  },
+  {
+   "x": 405.23,
+   "y": 71.4,
+   "w": 50.53,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "sesudah rakor"
+  },
+  {
+   "x": 416.91,
+   "y": 81,
+   "w": 27.16,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "menteri"
+  },
+  {
+   "x": 410,
+   "y": 90.6,
+   "w": 40.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b4",
+   "teks": "koordinator"
+  },
+  {
+   "x": 88.26,
+   "y": 118.8,
+   "w": 40.86,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h0",
+   "teks": "UU 6/2018"
+  },
+  {
+   "x": 83.56,
+   "y": 130.4,
+   "w": 50.26,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "h0",
+   "teks": "kekarantinaan"
+  },
+  {
+   "x": 90.29,
+   "y": 140,
+   "w": 36.79,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "h0",
+   "teks": "kesehatan"
+  },
+  {
+   "x": 196.28,
+   "y": 118.8,
+   "w": 66.18,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h1",
+   "teks": "Keppres 11/2020"
+  },
+  {
+   "x": 160.51,
+   "y": 130.4,
+   "w": 137.7,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "h1",
+   "teks": "kedaruratan kesehatan masyarakat, 31"
+  },
+  {
+   "x": 208.94,
+   "y": 140,
+   "w": 40.84,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "h1",
+   "teks": "Maret 2020"
+  },
+  {
+   "x": 367.4,
+   "y": 118.8,
+   "w": 45.74,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h3",
+   "teks": "UU 17/2023"
+  },
+  {
+   "x": 324.32,
+   "y": 130.4,
+   "w": 131.9,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "h3",
+   "teks": "KLB oleh kepala daerah atau Menteri;"
+  },
+  {
+   "x": 322.42,
+   "y": 140,
+   "w": 135.7,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "h3",
+   "teks": "Daerah Terjangkit Wabah oleh Menteri"
+  },
+  {
+   "x": 408.79,
+   "y": 168.2,
+   "w": 43.4,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "Permenkes"
+  },
+  {
+   "x": 416.71,
+   "y": 178.4,
+   "w": 27.56,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "1/2026"
+  },
+  {
+   "x": 400.7,
+   "y": 190,
+   "w": 59.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "Krisis Kesehatan"
+  },
+  {
+   "x": 399.55,
+   "y": 199.6,
+   "w": 61.88,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "oleh kepala dinas"
+  },
+  {
+   "x": 408.07,
+   "y": 209.2,
+   "w": 44.84,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "k4",
+   "teks": "atau Menteri"
+  },
+  {
+   "x": 353.04,
+   "y": 105.92,
+   "w": 87.65,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p-h3-b3",
+   "teks": "Pasal 369–370, nasional"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Garis waktu status berlajur per rezim; tabel pilih grafik B5.10 tidak memuat garis waktu",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 8
+}

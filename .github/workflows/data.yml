@@ -52,6 +52,15 @@ jobs:
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
+      # arsip cluster hari LAMPAU yang di-commit (dibangun ulang, mis. definisi kolom berubah) menang atas cache: cache hanya
+      # menyimpan apa yang ditulis jalan sebelumnya. Arsip hari ini tetap dari cache/harian.py (25 Okt 2026: FS jadi titik).
+      - name: Arsip cluster hari lampau dari repo
+        run: |
+          kini=$(TZ=Asia/Jakarta date +%F)
+          for f in $(git ls-files 'public/data/kluster_hari/*.json'); do
+            [[ "$(basename "$f" .json)" < "$kini" ]] && git checkout HEAD -- "$f"
+          done; true
+
       # sekali jalan: musim_harian.json dibangun ulang (latar median; 25 Okt 2026: lokasi unik 4 satelit, titik_unik.py); cache data- lama
       # (latar atau definisi lain) tidak boleh menang. Cache yang sudah baru -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache baru.
       - name: Pulihkan musim_harian dari repo bila cache berdefinisi lama

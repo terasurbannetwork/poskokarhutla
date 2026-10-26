@@ -1,0 +1,312 @@
+{
+ "_catatan": [
+  "Kunci angka baru Bab 2 kajian rehab (berkas bukti naskah/rehab/bukti/bab-02.md). Format sama dengan data/angka.json; tidak menyunting data/angka.json.",
+  "Kunci yang sudah ada di data/angka.json tidak diulang: perban2017_5.r3p_hari_maks, perban2017_5.r3p_masa_tahun, perban2024_4.hibah_tahapan, perban2024_4.laporan_berkala_bulan, perka_2008.air_bersih_awal_liter_hari, perka_2008.air_bersih_liter_hari, juklak2023_1.dth_rp_bulan, juklak2023_1.dth_bulan.",
+  "Entri nilai + pustaka merujuk id di bab-02.pustaka.json. Angka sekunder (Haiyan 31%, Turki 455.357, Nepal NRA 611.241, rencana induk Sumatra Rp100,1 T) tidak didaftarkan (KEPUTUSAN-AWAL R3)."
+ ],
+ "angka": {
+  "rehab.hukum.pp21_apbd_tidak_memadai_persen": {
+   "nilai": 20,
+   "pustaka": "ri-2008-pp21",
+   "satuan": "persen APBD",
+   "keyakinan": "resmi",
+   "sumber": "PP 21/2008",
+   "lokasi": "Penjelasan Pasal 57 dan Pasal 58 ayat (2), hlm. 68 PDF JDIH BPK",
+   "catatan": "APBD tidak memadai bila dana rehabilitasi menurut analisis kerusakan dan kerugian mencapai 20% APBD; tidak ditemukan ambang serupa untuk rekonstruksi"
+  },
+  "rehab.hukum.pokja_rr_tahun_maks": {
+   "nilai": 3,
+   "pustaka": "bnpb-2017-rr",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 6/2017",
+   "lokasi": "Pasal 12 ayat (4), hlm. 12",
+   "catatan": "kelompok kerja koordinatif sementara RR"
+  },
+  "rehab.hukum.hibah_rr_tambah_volume_maks_persen": {
+   "nilai": 10,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "persen volume aset rusak",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 3 huruf a, hlm. 4",
+   "catatan": "atau berdasarkan telaahan tim teknis pemda"
+  },
+  "rehab.hukum.hibah_rr_ubah_rka_bulan_maks": {
+   "nilai": 6,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "bulan sejak PHD",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 26 ayat (3), hlm. 11",
+   "catatan": "perubahan RKA tidak boleh mengubah jenis atau lokasi kegiatan (Pasal 26 ayat (2))"
+  },
+  "rehab.hukum.hibah_rr_larangan_pembiayaan_huruf": {
+   "nilai": 7,
+   "pustaka": "bnpb-2024-hibah-rr",
+   "satuan": "jenis pembiayaan yang dikecualikan",
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "lokasi": "Pasal 5 huruf a sampai g, hlm. 4",
+   "catatan": "termasuk perencanaan-pengawasan-operasional-pemeliharaan, penanganan darurat, pembelian lahan, aset rusak milik pemerintah desa"
+  },
+  "rehab.hukum.dana_bersama_sektor_r3p": {
+   "nilai": 5,
+   "pustaka": "bnpb-2025-juklak-dana-bersama",
+   "satuan": "sektor",
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 1/2025",
+   "lokasi": "hlm. 3",
+   "catatan": "induknya Perban BNPB 1/2024 dicabut Perban BNPB 1/2026 (10 Mar 2026); katalog masih BERLAKU; norma terkini Perban 1/2026 Pasal 14 ayat (5)"
+  },
+  "rehab.hukum.jitupasna_komponen_akibat": {
+   "nilai": 5,
+   "pustaka": "bnpb-2011-pdna",
+   "satuan": "komponen",
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 15/2011",
+   "lokasi": "Diagram 2.1, hlm. 11",
+   "catatan": "kerusakan, kerugian, gangguan akses, gangguan fungsi, naiknya risiko"
+  },
+  "rehab.hukum.keppres1_2026_bidang_tim_pelaksana": {
+   "nilai": 10,
+   "pustaka": "ri-2026-keppres1",
+   "satuan": "bidang",
+   "keyakinan": "resmi",
+   "sumber": "Keppres 1/2026",
+   "lokasi": "Pasal 4 ayat (2) huruf f sampai o, hlm. 4–5",
+   "catatan": "Bidang Infrastruktur dikoordinasi Menteri PU; Kepala BNPB Wakil Ketua II Tim Pelaksana"
+  },
+  "rehab.hukum.keppres1_2026_lapor_bulan": {
+   "nilai": 2,
+   "pustaka": "ri-2026-keppres1",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Keppres 1/2026",
+   "lokasi": "Pasal 10, hlm. 7",
+   "catatan": "Ketua Tim Pengarah melapor ke Presiden setiap 2 bulan"
+  },
+  "rehab.pembanding.scirt_biaya_nzd_miliar": {
+   "nilai": 2.2,
+   "pustaka": "scirt-2018-value",
+   "satuan": "miliar NZ$",
+   "keyakinan": "terverifikasi",
+   "sumber": "SCIRT Learning Legacy 2018",
+   "lokasi": "ringkasan",
+   "catatan": "dokumen aliansi sendiri; dari riset E [35], tidak dibuka ulang"
+  },
+  "rehab.pembanding.scirt_proyek": {
+   "nilai": 600,
+   "pustaka": "scirt-2018-value",
+   "satuan": "proyek (lebih dari)",
+   "keyakinan": "terverifikasi",
+   "sumber": "SCIRT Learning Legacy 2018",
+   "lokasi": "ringkasan",
+   "catatan": "riset E [35]"
+  },
+  "rehab.pembanding.scirt_kepastian_dana_bulan_maks": {
+   "nilai": 19,
+   "pustaka": "oag-2016-scirt",
+   "satuan": "bulan",
+   "keyakinan": "terverifikasi",
+   "sumber": "Controller and Auditor-General Selandia Baru 2016",
+   "lokasi": "laman audit",
+   "catatan": "dibuka 25 Okt 2026; pengaturan dana pusat dan dewan kota took up to 19 months to confirm"
+  },
+  "rehab.pembanding.scirt_proyek_dana_tertahan": {
+   "nilai": 30,
+   "pustaka": "oag-2016-scirt",
+   "satuan": "proyek (sekitar)",
+   "keyakinan": "terverifikasi",
+   "sumber": "Controller and Auditor-General Selandia Baru 2016",
+   "lokasi": "laman audit",
+   "catatan": "audit: funding uncertainty for about 30 wastewater and stormwater projects for more than eight months; nama kunci lama, maknanya tidak pasti dana, bukan tertahan"
+  },
+  "rehab.pembanding.nepal_hibah_npr": {
+   "nilai": 300000,
+   "pustaka": "worldbank-2020-nepal",
+   "satuan": "NPR per rumah",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia Results Brief 2020",
+   "lokasi": "laman"
+  },
+  "rehab.pembanding.nepal_termin": {
+   "nilai": 3,
+   "pustaka": "worldbank-2020-nepal",
+   "satuan": "termin",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia Results Brief 2020",
+   "lokasi": "laman",
+   "catatan": "NPR 50.000, 150.000, 100.000; termin 2 dan 3 setelah inspeksi"
+  },
+  "rehab.pembanding.nepal_insinyur": {
+   "nilai": 3000,
+   "pustaka": "worldbank-2020-nepal",
+   "satuan": "insinyur (lebih dari), nasional",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia Results Brief 2020",
+   "lokasi": "laman, bagian Results",
+   "catatan": "angka nasional untuk rekonstruksi perumahan ('Nationwide ... employed for housing reconstruction'), bukan angka proyek EHRP; laporan mitra pembiaya, kekuatan lemah"
+  },
+  "rehab.pembanding.nepal_rumah_sep2020": {
+   "nilai": 211985,
+   "pustaka": "worldbank-2020-nepal",
+   "satuan": "rumah",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia Results Brief 2020",
+   "lokasi": "laman",
+   "catatan": "proyek Bank Dunia; angka NRA nasional 611.241 per Jul 2021 sekunder (media), tidak didaftarkan"
+  },
+  "rehab.pembanding.nepal_target_proyek": {
+   "nilai": 335700,
+   "pustaka": "worldbank-2020-nepal",
+   "satuan": "rumah",
+   "keyakinan": "terverifikasi",
+   "sumber": "Bank Dunia Results Brief 2020",
+   "lokasi": "laman"
+  },
+  "rehab.pipa.pulih.kobe_90": {
+   "nilai": 38,
+   "pustaka": "jsce-2011-lifeline",
+   "satuan": "hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE, Nojima 2011",
+   "lokasi": "tabel pemulihan lifeline",
+   "catatan": "95% 43 hari"
+  },
+  "rehab.pipa.pulih.kobe_100": {
+   "nilai": 81,
+   "pustaka": "jsce-2011-lifeline",
+   "satuan": "hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE, Nojima 2011",
+   "lokasi": "tabel pemulihan lifeline",
+   "catatan": "selaras abstrak KAKEN 'about three months'"
+  },
+  "rehab.pipa.pulih.tohoku_90": {
+   "nilai": 36,
+   "pustaka": "jsce-2011-lifeline",
+   "satuan": "hari",
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE, Nojima 2011",
+   "lokasi": "tabel pemulihan lifeline",
+   "catatan": "95% 41 hari; 100% belum tercapai Juni 2011"
+  },
+  "rehab.pembanding.nicaragua_turun_pendapatan_banjir_persen": {
+   "nilai": 18,
+   "pustaka": "brooks-2020-nicaragua",
+   "satuan": "persen",
+   "keyakinan": "terverifikasi",
+   "sumber": "Brooks dan Donovan, Econometrica 2020",
+   "lokasi": "abstrak",
+   "catatan": "pendapatan pasar kerja turun saat banjir bila tanpa jembatan"
+  },
+  "rehab.pembanding.rwanda_jembatan_rct": {
+   "nilai": 97,
+   "pustaka": "jpal-2026-rwanda",
+   "satuan": "jembatan",
+   "keyakinan": "terverifikasi",
+   "sumber": "J-PAL/CEGA 2026",
+   "lokasi": "laman",
+   "catatan": "registri AEA AEARCTR-0013478 menyebut 94; ditulis berdampingan; sumber ringkasan sekunder, makalah hasil belum dibuka, registri didaftarkan retrospektif 23 Mei 2024; kekuatan belum dapat dinilai"
+  },
+  "rehab.pembanding.rwanda_biaya_usd": {
+   "nilai": 100000,
+   "pustaka": "jpal-2026-rwanda",
+   "satuan": "US$ per jembatan (sekitar)",
+   "keyakinan": "terverifikasi",
+   "sumber": "J-PAL/CEGA 2026",
+   "lokasi": "laman"
+  },
+  "rehab.pembanding.rwanda_imbal_hasil_bawah_persen": {
+   "nilai": 78,
+   "pustaka": "jpal-2026-rwanda",
+   "satuan": "persen",
+   "keyakinan": "estimasi-model",
+   "sumber": "J-PAL/CEGA 2026",
+   "lokasi": "laman",
+   "catatan": "atas umur jembatan sekitar 40 tahun; makalah hasil belum dibuka"
+  },
+  "rehab.pembanding.rwanda_imbal_hasil_atas_persen": {
+   "nilai": 98,
+   "pustaka": "jpal-2026-rwanda",
+   "satuan": "persen",
+   "keyakinan": "estimasi-model",
+   "sumber": "J-PAL/CEGA 2026",
+   "lokasi": "laman",
+   "catatan": "idem"
+  },
+  "rehab.pembanding.chile_target_unit": {
+   "nilai": 220000,
+   "pustaka": "comerio-2013-chile",
+   "satuan": "unit dalam 4 tahun",
+   "keyakinan": "terverifikasi",
+   "sumber": "PEER Report 2013-01",
+   "lokasi": "ringkasan",
+   "catatan": "riset E [39], tidak dibuka ulang"
+  },
+  "rehab.pembanding.chile_selesai_dihuni_persen": {
+   "nilai": 54,
+   "pustaka": "comerio-2013-chile",
+   "satuan": "persen, Oktober 2012",
+   "keyakinan": "terverifikasi",
+   "sumber": "PEER Report 2013-01",
+   "lokasi": "ringkasan",
+   "catatan": "riset E [39]"
+  },
+  "rehab.lantai.tsunami.aceh2004.rumah_brr": {
+   "nilai": 140304,
+   "pustaka": "brr-2009-scattered-beads",
+   "satuan": "rumah",
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD-Nias 2009 (T14)",
+   "lokasi": "ringkasan",
+   "catatan": "keluaran dilaporkan BRR sendiri; kekuatan lemah (kompendium P08)"
+  },
+  "rehab.pelajaran.aceh.mdf_sumur": {
+   "nilai": 8000,
+   "pustaka": "mdf-2011-progress",
+   "satuan": "sumur atau sumber air (hampir)",
+   "keyakinan": "terverifikasi",
+   "sumber": "Multi Donor Fund Aceh-Nias",
+   "lokasi": "laporan Des 2011",
+   "catatan": "laporan pengelola dana; riset E [4]"
+  },
+  "rehab.pelajaran.sulteng.huntap_target": {
+   "nilai": 5598,
+   "pustaka": "kemenkopmk-2024-huntap-sulteng",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK 15 Jun 2024",
+   "lokasi": "laman",
+   "catatan": "riset E [14]"
+  },
+  "rehab.pelajaran.sulteng.huntap_sisa_jun2024": {
+   "nilai": 382,
+   "pustaka": "kemenkopmk-2024-huntap-sulteng",
+   "satuan": "unit",
+   "keyakinan": "resmi",
+   "sumber": "Kemenko PMK 15 Jun 2024",
+   "lokasi": "laman",
+   "catatan": "riset E [14]"
+  },
+  "rehab.pelajaran.sulteng.palu4_panjang": {
+   "nilai": 250,
+   "pustaka": "ocg-2026-palu4",
+   "satuan": "m",
+   "keyakinan": "terverifikasi",
+   "sumber": "Oriental Consultants Global 2026",
+   "lokasi": "laman",
+   "catatan": "dibuka 13 Feb 2026; riset E [18]"
+  },
+  "rehab.pembanding.rwanda_jembatan_registri": {
+   "nilai": 94,
+   "pustaka": "aea-2024-rwanda",
+   "satuan": "jembatan",
+   "keyakinan": "terverifikasi",
+   "sumber": "AEA RCT Registry AEARCTR-0013478",
+   "lokasi": "laman registri",
+   "catatan": "versi registri; J-PAL menyebut 97 (rehab.pembanding.rwanda_jembatan_rct); ditulis berdampingan; entri sama dengan bab-05.angka.json"
+  }
+ }
+}

@@ -1,0 +1,305 @@
+{
+ "nama": "bab06-kartu-megathrust-jawa",
+ "keterangan": "Persen penduduk kab/kota terpapar MMI VII atau lebih, megathrust Jawa Mw 9,1, 2026",
+ "sumber": "Simulasi skenario Pantau Bencana, belum divalidasi (batas tetap persen penduduk)",
+ "mode": "docx",
+ "ukuran_pt": [
+  148.25,
+  159.35
+ ],
+ "ukuran_cm": [
+  5.23,
+  5.62
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 25 (8)",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "25–50 (5)",
+   "jenis": "kotak",
+   "warna": "#DCC79C"
+  },
+  {
+   "label": "50–75 (3)",
+   "jenis": "kotak",
+   "warna": "#A07A32"
+  },
+  {
+   "label": "> 75 (61)",
+   "jenis": "kotak",
+   "warna": "#6E5424"
+  },
+  {
+   "label": "Belum terdata (51)",
+   "jenis": "arsir",
+   "warna": "arsir"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar"
+  ],
+  "#A9B4C2": [
+   "batas",
+   "tanpa-data",
+   "garis"
+  ],
+  "#F1F3F6": [
+   "tanpa-data"
+  ],
+  "#6E5424": [
+   "skala",
+   "legenda"
+  ],
+  "#F4ECDC": [
+   "skala",
+   "legenda"
+  ],
+  "#DCC79C": [
+   "skala",
+   "legenda"
+  ],
+  "#A07A32": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 25.4,
+   "y": 57.35,
+   "w": 97.46,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-25",
+   "teks": "Persen penduduk MMI VII+"
+  },
+  {
+   "x": 25.4,
+   "y": 56.35,
+   "w": 97.46,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-25",
+   "teks": "Persen penduduk MMI VII+"
+  },
+  {
+   "x": 38.01,
+   "y": 70.35,
+   "w": 27.02,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-24",
+   "teks": "≤ 25 (8)"
+  },
+  {
+   "x": 24.01,
+   "y": 69.35,
+   "w": 41.02,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-24",
+   "teks": "≤ 25 (8)"
+  },
+  {
+   "x": 89.03,
+   "y": 70.35,
+   "w": 35.21,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-75",
+   "teks": "25–50 (5)"
+  },
+  {
+   "x": 75.03,
+   "y": 69.35,
+   "w": 49.21,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-75",
+   "teks": "25–50 (5)"
+  },
+  {
+   "x": 35.71,
+   "y": 83.35,
+   "w": 35.21,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg2-21",
+   "teks": "50–75 (3)"
+  },
+  {
+   "x": 21.71,
+   "y": 82.35,
+   "w": 49.21,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg2-21",
+   "teks": "50–75 (3)"
+  },
+  {
+   "x": 94.92,
+   "y": 83.35,
+   "w": 31.63,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg2-80",
+   "teks": "> 75 (61)"
+  },
+  {
+   "x": 80.92,
+   "y": 82.35,
+   "w": 45.63,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg2-80",
+   "teks": "> 75 (61)"
+  },
+  {
+   "x": 47.91,
+   "y": 96.35,
+   "w": 66.43,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg3-33",
+   "teks": "Belum terdata (51)"
+  },
+  {
+   "x": 33.91,
+   "y": 95.35,
+   "w": 80.43,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg3-33",
+   "teks": "Belum terdata (51)"
+  },
+  {
+   "x": 3,
+   "y": 108.35,
+   "w": 125.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi."
+  },
+  {
+   "x": 3,
+   "y": 117.95,
+   "w": 129.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Sumber batas: Pantau Bencana, asal"
+  },
+  {
+   "x": 3,
+   "y": 127.55,
+   "w": 109.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "belum terdokumentasi; WGS84"
+  },
+  {
+   "x": 3,
+   "y": 137.15,
+   "w": 125.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "geografis; proyeksi ekuirektangular,"
+  },
+  {
+   "x": 3,
+   "y": 146.75,
+   "w": 71.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "rasio",
+ "cakupan": [
+  "31",
+  "32",
+  "33",
+  "34",
+  "35",
+  "36",
+  "51"
+ ],
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "emas",
+  "batas": [
+   25,
+   50,
+   75
+  ],
+  "label": [
+   "≤ 25",
+   "25–50",
+   "50–75",
+   "> 75"
+  ],
+  "warna": [
+   "skala.emas.1",
+   "skala.emas.2",
+   "skala.emas.4",
+   "skala.emas.5"
+  ],
+  "rumus": "batas tetap persen penduduk",
+  "resmi": false,
+  "jumlah": [
+   8,
+   5,
+   3,
+   61
+  ],
+  "tanpa_data": 51
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

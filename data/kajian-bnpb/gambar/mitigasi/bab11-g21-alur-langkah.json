@@ -1,0 +1,568 @@
+{
+ "nama": "bab11-g21-alur-langkah",
+ "keterangan": "Alur langkah penanggulangan bencana dari peringatan dini sampai hibah rehabilitasi dan rekonstruksi, dengan pemicu dan tenggat tiap tahap, 2026",
+ "sumber": "UU 24/2007; PP 21/2008; Perpres 17/2018 jo. Perpres 46/2026; Perka BNPB 3/2016 dan 15/2011; Perban BNPB 4/2020, 5/2017, 4/2024, dan 2/2024; Juklak BNPB 3/2022, 4/2023",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  190.8
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.73
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Tahap",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Pemicu dan tenggat tertulis",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Jalur tanpa penetapan status",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 22.37,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Tahap"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 36.37,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Tahap"
+  },
+  {
+   "x": 62.37,
+   "y": 3,
+   "w": 97.85,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-48",
+   "teks": "Pemicu dan tenggat tertulis"
+  },
+  {
+   "x": 48.37,
+   "y": 2,
+   "w": 111.85,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-48",
+   "teks": "Pemicu dan tenggat tertulis"
+  },
+  {
+   "x": 184.22,
+   "y": 3,
+   "w": 103.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-170",
+   "teks": "Jalur tanpa penetapan status"
+  },
+  {
+   "x": 170.22,
+   "y": 2,
+   "w": 117.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-170",
+   "teks": "Jalur tanpa penetapan status"
+  },
+  {
+   "x": 2,
+   "y": 40.55,
+   "w": 23.91,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Tahap"
+  },
+  {
+   "x": 2,
+   "y": 110.05,
+   "w": 28.88,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Pemicu"
+  },
+  {
+   "x": 2,
+   "y": 169.65,
+   "w": 35.36,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Jalur lain"
+  },
+  {
+   "x": 54.41,
+   "y": 29.9,
+   "w": 57.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t1",
+   "teks": "Peringatan dini"
+  },
+  {
+   "x": 60.26,
+   "y": 41.5,
+   "w": 46.26,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t1",
+   "teks": "K/L teknis ke"
+  },
+  {
+   "x": 56.82,
+   "y": 51.1,
+   "w": 53.14,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t1",
+   "teks": "platform BNPB"
+  },
+  {
+   "x": 141.86,
+   "y": 24.8,
+   "w": 55.2,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t2",
+   "teks": "Penilaian awal"
+  },
+  {
+   "x": 142.89,
+   "y": 35,
+   "w": 53.14,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t2",
+   "teks": "dan kaji cepat"
+  },
+  {
+   "x": 141.94,
+   "y": 46.6,
+   "w": 55.05,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t2",
+   "teks": "warga, relawan,"
+  },
+  {
+   "x": 156.01,
+   "y": 56.2,
+   "w": 26.91,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t2",
+   "teks": "TRC PB"
+  },
+  {
+   "x": 225.97,
+   "y": 24.8,
+   "w": 59.13,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t3",
+   "teks": "Status keadaan"
+  },
+  {
+   "x": 241.67,
+   "y": 35,
+   "w": 27.73,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t3",
+   "teks": "darurat"
+  },
+  {
+   "x": 228.75,
+   "y": 46.6,
+   "w": 53.57,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t3",
+   "teks": "siaga, tanggap,"
+  },
+  {
+   "x": 242.43,
+   "y": 56.2,
+   "w": 26.22,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t3",
+   "teks": "transisi"
+  },
+  {
+   "x": 315.26,
+   "y": 24.8,
+   "w": 52.7,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t4",
+   "teks": "Komando dan"
+  },
+  {
+   "x": 333.49,
+   "y": 35,
+   "w": 16.23,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t4",
+   "teks": "DSP"
+  },
+  {
+   "x": 320.23,
+   "y": 46.6,
+   "w": 42.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t4",
+   "teks": "SKPDB aktif"
+  },
+  {
+   "x": 314.42,
+   "y": 56.2,
+   "w": 54.39,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t4",
+   "teks": "sesudah status"
+  },
+  {
+   "x": 400.06,
+   "y": 29.9,
+   "w": 55.23,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t5",
+   "teks": "R3P dan hibah"
+  },
+  {
+   "x": 400.53,
+   "y": 41.5,
+   "w": 54.3,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t5",
+   "teks": "rehabilitasi dan"
+  },
+  {
+   "x": 405.7,
+   "y": 51.1,
+   "w": 43.95,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t5",
+   "teks": "rekonstruksi"
+  },
+  {
+   "x": 57.37,
+   "y": 89.5,
+   "w": 52.05,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "Rekomendasi"
+  },
+  {
+   "x": 75.53,
+   "y": 99.7,
+   "w": 15.72,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "aksi"
+  },
+  {
+   "x": 59.42,
+   "y": 111.3,
+   "w": 47.94,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "Perban BNPB"
+  },
+  {
+   "x": 59.62,
+   "y": 120.9,
+   "w": 47.55,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "2/2024 Pasal"
+  },
+  {
+   "x": 71.78,
+   "y": 130.5,
+   "w": 23.22,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "14–16"
+  },
+  {
+   "x": 143.22,
+   "y": 89.2,
+   "w": 52.49,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "TRC bergerak"
+  },
+  {
+   "x": 137.55,
+   "y": 99.4,
+   "w": 63.83,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "paling lambat 24"
+  },
+  {
+   "x": 162.4,
+   "y": 109.6,
+   "w": 14.12,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "jam"
+  },
+  {
+   "x": 139.11,
+   "y": 121.2,
+   "w": 60.71,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "laporan awal dan"
+  },
+  {
+   "x": 141.92,
+   "y": 130.8,
+   "w": 55.09,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "lanjutan berjam"
+  },
+  {
+   "x": 222.56,
+   "y": 84.4,
+   "w": 65.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "Penetap menurut"
+  },
+  {
+   "x": 242.18,
+   "y": 94.6,
+   "w": 26.71,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "tingkat"
+  },
+  {
+   "x": 229.06,
+   "y": 104.8,
+   "w": 52.95,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "pemerintahan"
+  },
+  {
+   "x": 225.65,
+   "y": 116.4,
+   "w": 59.78,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "Perpres 17/2018"
+  },
+  {
+   "x": 235.51,
+   "y": 126,
+   "w": 40.05,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "Pasal 2; PP"
+  },
+  {
+   "x": 224.03,
+   "y": 135.6,
+   "w": 63.01,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "21/2008 Pasal 23"
+  },
+  {
+   "x": 301.05,
+   "y": 89.5,
+   "w": 81.11,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "Pertanggungjawaban"
+  },
+  {
+   "x": 333.49,
+   "y": 99.7,
+   "w": 16.23,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "DSP"
+  },
+  {
+   "x": 317.64,
+   "y": 111.3,
+   "w": 47.94,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "Perban BNPB"
+  },
+  {
+   "x": 317.83,
+   "y": 120.9,
+   "w": 47.55,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "4/2020 Pasal"
+  },
+  {
+   "x": 330,
+   "y": 130.5,
+   "w": 23.22,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p4",
+   "teks": "20–21"
+  },
+  {
+   "x": 395.38,
+   "y": 84.7,
+   "w": 64.6,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "R3P dimulai saat"
+  },
+  {
+   "x": 397.14,
+   "y": 94.9,
+   "w": 61.09,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "tanggap darurat"
+  },
+  {
+   "x": 403.71,
+   "y": 106.5,
+   "w": 47.94,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "Perban BNPB"
+  },
+  {
+   "x": 403.17,
+   "y": 116.1,
+   "w": 49.02,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "5/2017; hibah"
+  },
+  {
+   "x": 403.71,
+   "y": 125.7,
+   "w": 47.94,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "Perban BNPB"
+  },
+  {
+   "x": 414.8,
+   "y": 135.3,
+   "w": 25.76,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p5",
+   "teks": "4/2024"
+  },
+  {
+   "x": 189.31,
+   "y": 163.8,
+   "w": 132.45,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "j1",
+   "teks": "Keadaan tertentu Perpres 46/2026"
+  },
+  {
+   "x": 152.03,
+   "y": 175.4,
+   "w": 207,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j1",
+   "teks": "Kepala BNPB bertindak sesudah rakor menteri koordinator"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Bagan alur tahap berpemicu dan bertenggat; tabel pilih grafik B5.10 tidak memuat bagan alur",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 11
+}

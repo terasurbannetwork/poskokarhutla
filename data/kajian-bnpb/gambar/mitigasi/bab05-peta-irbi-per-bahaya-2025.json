@@ -1,0 +1,62 @@
+{
+ "nama": "bab05-peta-irbi-per-bahaya-2025",
+ "jenis": "peta",
+ "panel": [
+  "bab05-irbi-banjir",
+  "bab05-irbi-longsor",
+  "bab05-irbi-kekeringan",
+  "bab05-irbi-cuaca_ekstrem",
+  "bab05-irbi-abrasi",
+  "bab05-irbi-gempabumi",
+  "bab05-irbi-tsunami",
+  "bab05-irbi-karlahut",
+  "bab05-irbi-gunungapi"
+ ],
+ "teks_min_pt": 8.0,
+ "ukuran_cm": [
+  16.09,
+  19.04
+ ],
+ "hex": {
+  "#8F3F07": [
+   "legenda",
+   "skala"
+  ],
+  "#FFFFFF": [
+   "batas"
+  ],
+  "#D9600B": [
+   "legenda",
+   "skala"
+  ],
+  "#FBE7D6": [
+   "legenda",
+   "skala"
+  ],
+  "#F4C3A0": [
+   "legenda",
+   "skala"
+  ],
+  "#E8894A": [
+   "legenda",
+   "skala"
+  ],
+  "#F1F3F6": [
+   "tanpa-data"
+  ],
+  "#A9B4C2": [
+   "batas",
+   "garis",
+   "tanpa-data"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ }
+}

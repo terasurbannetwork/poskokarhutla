@@ -1,0 +1,1515 @@
+[
+ {
+  "id": "keppres-2011-cat",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia",
+    "singkatan": "RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     9,
+     13
+    ]
+   ]
+  },
+  "title": "Keputusan Presiden Nomor 26 Tahun 2011 tentang Penetapan Cekungan Air Tanah",
+  "URL": "https://jdih.esdm.go.id/storage/document/Keppres%20No.%2026%20Thn%202011.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Salinan JDIH Kementerian ESDM (pindaian, dibaca lewat pdftotext). Lampiran I: Total Keseluruhan CAT 421 (205, 176, 36, 4); CAT Jawa no. 66 (Labuan) sampai 145 (Toranggo), hlm. 12-25; Serang-Tangerang 68, Jakarta 70, Bogor 71, Bekasi-Karawang 75, Bandung-Soreang 80, Pekalongan-Pemalang 103, Semarang-Demak 116"
+ },
+ {
+  "id": "badangeologi-2024-cat",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Geologi, Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Badan Geologi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     1,
+     22
+    ]
+   ]
+  },
+  "title": "Tanah Pantura Jawa alami penurunan, ini mitigasi Badan Geologi",
+  "container-title": "Media Center Badan Geologi",
+  "URL": "https://geologi.esdm.go.id/media-center/tanah-pantura-jawa-alami-penurunan-ini-mitigasi-badan-geologi",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka ulang 25 Okt 2026. Rubrik berita Humas PATGL; teks dibuka dengan 'Jakarta, CNBC Indonesia' (tulisan media dimuat ulang). Daftar CAT rusak (narasi artikel atas pernyataan Plt. Kepala Badan Geologi Muhammad Wafid, konferensi pers 13 November 2023, 'Ini semua termasuk yang dalam kondisi mengalami kerusakan'): Jakarta, Karawang Bekasi, Semarang, Bandung-Soreang, Bogor, Serang-Tangerang, Palangkaraya. Pekalongan disebut terpisah hanya sebagai contoh implikasi subsiden. Pernyataan instansi, bukan dokumen penetapan status"
+ },
+ {
+  "id": "badangeologi-2025-capaian",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Geologi, Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Badan Geologi"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     10,
+     27
+    ]
+   ]
+  },
+  "title": "Badan Geologi tebar jejak prestasi capaian kapasitas survei dan pelayanan 2025",
+  "URL": "https://geologi.esdm.go.id/media-center/badan-geologi-tebar-jejak-prestasi-capaian-kapasitas-survei-dan-pelayanan-2025",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Zona konservasi seluruh CAT 2045, prioritas 2029; 161 sumur pantau (131 + 37 = 168 di artikel yang sama); hanya 100.000 karakter pertama halaman yang dibaca. Angka 421 CAT dirujuk ke keppres-2011-cat"
+ },
+ {
+  "id": "esdm-2009-cat-jakarta",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2009,
+     8,
+     18
+    ]
+   ]
+  },
+  "title": "Cekungan air tanah Jakarta kritis",
+  "container-title": "Arsip berita Kementerian ESDM",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/cekungan-air-tanah-jakarta-kritis",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Pernyataan Kepala Badan Geologi (13 Agustus 2009): CAT Jakarta zona kritis hingga rusak; pengambilan air tanah dalam 21 juta m3 per tahun dari potensi 52 juta m3 per tahun (40%, anjuran maksimum 20%)"
+ },
+ {
+  "id": "esdm-2023-air-tanah",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     12,
+     21
+    ]
+   ]
+  },
+  "title": "Kementerian ESDM lakukan penyesuaian Kepmen penyelenggaraan persetujuan penggunaan air tanah",
+  "genre": "Siaran pers",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/kementerian-esdm-lakukan-penyesuaian-kepmen-penyelenggaraan-persetujuan-penggunaan-air-tanah-",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "siaran pers No. 652.Pers/04/SJI/2023 dibuka 23 Okt 2026; judul mengikuti slug URL; Kepmen 291.K/GL.01/MEM.G/2023 dan 443.K/GL.01/MEM.G/2023 sendiri tidak dibuka; instansi penerbit persetujuan tidak disebut"
+ },
+ {
+  "id": "esdm-2025-perizinan-air-tanah",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     1,
+     8
+    ]
+   ]
+  },
+  "title": "Dukung pengelolaan air tanah berkelanjutan, Kementerian ESDM beri kemudahan perizinan",
+  "container-title": "Arsip berita Kementerian ESDM",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/dukung-pengelolaan-air-tanah-berkelanjutan-kementerian-esdm-beri-kemudahan-perizinan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Menyebut daerah rawan, kritis, rusak tanpa nama; dasar Permen ESDM 14/2024"
+ },
+ {
+  "id": "esdm-2023-pengendalian-air-tanah",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     11,
+     10
+    ]
+   ]
+  },
+  "title": "Perbaiki kondisi air tanah, pemerintah optimalkan upaya pengendalian penggunaannya",
+  "number": "541.Pers/04/SJI/2023",
+  "container-title": "Siaran pers Kementerian ESDM",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/perbaiki-kondisi-air-tanah-pemerintah-optimalkan-upaya-pengendalian-penggunaannya",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "CAT Jakarta 2015–2022: 0,04–6,30 cm/th; pemantauan 220 lokasi per tahun; tidak menyebut daftar CAT rusak"
+ },
+ {
+  "id": "ri-2019-uu17",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Undang-Undang Nomor 17 Tahun 2019 tentang Sumber Daya Air",
+  "container-title": "Lembaran Negara Republik Indonesia Tahun 2019 Nomor 190",
+  "URL": "https://peraturan.bpk.go.id/Download/113525/UU%20Nomor%2017%20Tahun%202019.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "PDF pindaian sha1 7bdc8862f8bf44ae3e5e2aea857799e076dc3df5; Pasal 1 angka 16, 17, 27 (hlm. 4–5), Pasal 31 dan 35 (hlm. 23–24), Pasal 39 (hlm. 25), Penjelasan Pasal 35 (hlm. PDF 72–73, dilihat langsung pada pindaian 23 Okt 2026). Diubah UU 6/2023; dicabut sebagian UU 32/2024 (Pasal 33 dan 69 huruf c); Penjelasan (TLN 6405) dibuka di https://peraturan.go.id/files/uu17-2019pjl.pdf 25 Okt 2026, hlm. 29: 'sumur bor berdiameter lebih dari 2 (dua) inci atau lebih dari 5 (lima) sentimeter atau lebih dari 25 (dua puluh lima) meter kubik per bulan per kepala keluarga' (Penjelasan Pasal 45 huruf a angka 2 menurut riset C [7])"
+ },
+ {
+  "id": "bps-2024-sumber-air-minum-prov",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Pusat Statistik",
+    "singkatan": "BPS"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     2,
+     15
+    ]
+   ]
+  },
+  "title": "Distribusi persentase rumah tangga menurut provinsi dan sumber air minum, 2023",
+  "publisher": "Badan Pusat Statistik",
+  "URL": "https://www.bps.go.id/id/statistics-table/3/YzBaMlduSlFVbTVrUnpWeU9YRTJka0pVTTFkU1FUMDkjMw==/distribusi-persentase-rumah-tangga-menurut-provinsi-dan-sumber-air-minum--2020.html?year=2023",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Tabel daring Susenas, terakhir diperbarui 15 Februari 2024; salinan teks data/air-jawa/mentah/bps/sumber_air_minum_prov_2023.txt. Baris memuat 8 nilai untuk 11 judul kolom; kolom 1, 2, 4, 6 dicek dengan Kompas 13 Feb 2024; kolom 3, 5, 7 dinamai menurut urutan judul (belum dicek ke publikasi BPS); kolom 8 gabungan air permukaan, air hujan, lainnya"
+ },
+ {
+  "id": "esdm-2019-sumur-750",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     6,
+     27
+    ]
+   ]
+  },
+  "title": "Atasi Krisis Air Bersih, 750 Sumur Bor Terbangun di Tahun 2020",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/atasi-krisis-air-bersih-750-sumur-bor-terbangun-di-tahun-2020",
+  "verifikasi": "primer",
+  "note": "dari riset C [15], tidak dibuka ulang sesi ini: 750 sumur Rp429,1 miliar (rencana 2020); sekitar 2.000 jiwa per sumur; dipakai Bab 3 hanya sebagai contoh aturan biaya satuan; dibuka ulang 25 Okt 2026 untuk Bab 7 rehab",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  }
+ },
+ {
+  "id": "pu-2026-spam-sumatera-feb",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum",
+    "singkatan": "Kementerian PU"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     2,
+     5
+    ]
+   ]
+  },
+  "title": "Update Pemulihan Layanan Air Bersih Pascabencana Sumatera, Kementerian PU Fungsionalkan 142 SPAM",
+  "container-title": "ePPID Kementerian Pekerjaan Umum",
+  "URL": "https://sahabat.pu.go.id/eppid/berita/detail/update-pemulihan-layanan-air-bersih-pascabencana-sumatera-kementerian-pu-fungsionalkan-142-spam",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "data per 2 Feb 2026: 143 dari 176 SPAM berfungsi (judul 142); >5.300 l/detik; 537 sarana darurat; SDA 25 sumur bor air dalam, Cipta Karya 103 (17 dangkal, 86 dalam); permanen Sumbar bertahap hingga Agustus 2028. Riset D [21]; dibuka ulang 25 Okt 2026 untuk Bab 7 rehab"
+ },
+ {
+  "id": "kemenpupr-2019-satgas-lombok",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+    "singkatan": "Kementerian PUPR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Buku Satgas Penanganan Gempa Lombok",
+  "publisher": "Kementerian Pekerjaan Umum dan Perumahan Rakyat",
+  "URL": "https://data.pu.go.id/sites/default/files/Buku%20Satgas%20Penanganan%20Gempa%20Lombok.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca utuh oleh riset D [10] 25 Okt 2026, tidak dibuka ulang di bab ini; data sampai 31 Mar 2019; 37 titik SPAM rusak; halaman tim penyusun berisi nama pengganti (tanda draf)"
+ },
+ {
+  "id": "setkab-2018-pupr-lombok",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Sekretariat Kabinet Republik Indonesia",
+    "singkatan": "Setkab"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     8,
+     10
+    ]
+   ]
+  },
+  "title": "Inilah Langkah Kementerian PUPR Perbaiki Fasilitas yang Rusak Akibat Gempa di Lombok",
+  "URL": "https://setkab.go.id/inilah-langkah-kementerian-pupr-perbaikii-fasilitas-yang-rusak-akibat-gempa-di-lombok/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "riset D [11]; dibuka 25 Okt 2026: Menteri PUPR Basuki Hadimuljono, 'contoh di Lombok Utara khususnya itu ada 12 sumur bor yang sekarang, sudah diaktifkan semua'; baru atau eksisting tidak disebut ('diaktifkan' menyiratkan eksisting); juga sekitar 13 mobil tangki"
+ },
+ {
+  "id": "setneg-2026-jembatan-tni-polri",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Sekretariat Negara Republik Indonesia"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     8,
+     13
+    ]
+   ]
+  },
+  "title": "Resmikan 3.395 Jembatan TNI-Polri dan 3.000 Sumber Air Bersih TNI AD, Presiden Prabowo: Misi Bakti kepada Rakyat",
+  "container-title": "Kementerian Sekretariat Negara",
+  "URL": "https://www.setneg.go.id/baca/index/resmikan_3395_jembatan_tni_polri_dan_3000_sumber_air_bersih_tni_ad_presiden_prabowo_misi_bakti_kepada_rakyat",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka ulang 25 Okt 2026 (pemeriksaan kedua). Angka 3.008 titik, 2.500 selesai, 508 proses, 798 titik di daerah bencana adalah JEMBATAN TNI AD (kutipan KSAD Maruli Simanjuntak), bukan sumber air; Polri 895 jembatan Merah Putih Presisi. Untuk air artikel hanya menulis '3.000 sumber air bersih TNI Angkatan Darat' tanpa jenis, lokasi, atau kaitan bencana; tidak tentu sumur bor. 3.395 di judul = 2.500 + 895 (hitungan penyusun). Riset B [1]"
+ },
+ {
+  "id": "mdf-2011-progress",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Multi Donor Fund for Aceh and Nias Secretariat"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011,
+     12
+    ]
+   ]
+  },
+  "title": "Partnerships for Sustainability: MDF Progress Report December 2011",
+  "URL": "https://www.locjkt.or.id/application/docliblcjkt/upload/MDF-Progress-Report-2011.pdf",
+  "verifikasi": "primer",
+  "note": "dari riset E [4]; laporan pengelola dana"
+ },
+ {
+  "id": "bnpb-2008-kebutuhan-dasar",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Kepala Badan Nasional Penanggulangan Bencana Nomor 7 Tahun 2008 tentang Pedoman Tata Cara Pemberian Bantuan Pemenuhan Kebutuhan Dasar",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2014 Nomor 1407",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2008pbbnpb007.pdf",
+  "verifikasi": "primer",
+  "note": "standar air bersih 7 liter tiga hari pertama lalu 15 liter per orang per hari dan air minum 2,5 liter per orang per hari, halaman PDF 12 (tercetak hlm. 10), korpus data/raw/hukum/teks/perka-nomor-7-tahun-2008.json"
+ },
+ {
+  "id": "bnpb-2024-hibah-rr",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024,
+     9,
+     10
+    ]
+   ]
+  },
+  "title": "Peraturan Badan Nasional Penanggulangan Bencana Nomor 4 Tahun 2024 tentang Penyelenggaraan Hibah Rehabilitasi dan Rekonstruksi Pascabencana",
+  "URL": "https://jdih.bnpb.go.id/storage/file/2024pbbnpb004.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     24
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca dari data/raw/hukum/teks/perban-nomor-4-tahun-2024.json (Pasal 6–8 hlm. 5; Pasal 28 hlm. 11; penetapan hlm. 14)",
+  "container-title": "Berita Negara Republik Indonesia Tahun 2024 Nomor 546"
+ },
+ {
+  "id": "aditiya-2023-semarang",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Aditiya",
+    "given": "Arif"
+   },
+   {
+    "family": "Ito",
+    "given": "Takeo"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023
+    ]
+   ]
+  },
+  "title": "Present-day land subsidence over Semarang revealed by time series InSAR new small baseline subset technique",
+  "container-title": "International Journal of Applied Earth Observation and Geoinformation",
+  "volume": "125",
+  "page": "103579",
+  "DOI": "10.1016/j.jag.2023.103579",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak (riset B lewat DOAJ; metadata dicek OpenAlex 23 Okt 2026); abstrak dibuka ulang lewat OpenAlex 24 Okt 2026 untuk Bab 2 (korelasi 0,86; laju maksimum 100–120 mm/tahun)"
+ },
+ {
+  "id": "widodo-2024-pekalongan",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Widodo",
+    "given": "Joko"
+   },
+   {
+    "family": "Trihatmoko",
+    "given": "Edy"
+   },
+   {
+    "family": "Khomarudin",
+    "given": "Muhammad Rokhis"
+   },
+   {
+    "family": "Ardha",
+    "given": "Mohammad"
+   },
+   {
+    "family": "Nugroho",
+    "given": "Udhi Catur"
+   },
+   {
+    "family": "Setyaningrum",
+    "given": "Nugraheni"
+   },
+   {
+    "family": "Dinanta",
+    "given": "Galih Prasetya"
+   },
+   {
+    "family": "Arief",
+    "given": "Rahmat"
+   },
+   {
+    "family": "Setiyoko",
+    "given": "Andie"
+   },
+   {
+    "family": "Novresiandi",
+    "given": "Dandy Aditya"
+   },
+   {
+    "family": "Handika",
+    "given": "Rendi"
+   },
+   {
+    "family": "Priyatna",
+    "given": "Muhammad"
+   },
+   {
+    "family": "Sobue",
+    "given": "Shinichi"
+   },
+   {
+    "family": "Sarah",
+    "given": "Dwi"
+   },
+   {
+    "family": "Hermawan",
+    "given": "Wawan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2024
+    ]
+   ]
+  },
+  "title": "Dynamic geo-visualization of urban land subsidence and land cover data using PS-InSAR and Google Earth Engine (GEE) for spatial planning assessment",
+  "container-title": "Urban Science",
+  "volume": "8",
+  "issue": "4",
+  "page": "234",
+  "DOI": "10.3390/urbansci8040234",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Abstrak lewat OpenAlex. Angka 10–19 cm/th di kalimat latar; hasil studi: sampai 100 cm kumulatif 2014–2022"
+ },
+ {
+  "id": "esdm-2019-sumur-sulteng",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     2,
+     12
+    ]
+   ]
+  },
+  "title": "Atasi krisis air bersih di wilayah pascagempa, Kementerian ESDM hadirkan sumur bor",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/atasi-krisis-air-bersih-di-wilayah-pascagempa-kementerian-esdm-hadirkan-sumur-bor-",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "SP No. 0117.Pers/04/SJI/2019; dibuka ulang 25 Okt 2026: 8 titik diserahkan 12 Feb 2019, kedalaman 78–125 m, debit rata-rata 1,9 l/detik, Pombewe 2.500 jiwa; biaya tidak disebut"
+ },
+ {
+  "id": "esdm-2019-sumur-1000",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     9,
+     6
+    ]
+   ]
+  },
+  "title": "Tahun 2020, Kementerian ESDM akan bangun 1.000 sarana air bersih",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/tahun-2020-kementerian-esdm-akan-bangun-1000-sarana-air-bersih",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "SP No. 557.Pers/04/SJI/2019; dari riset C [16], tidak dibuka ulang: tambahan 250 titik Rp125 miliar, anggaran Rp554,08 miliar"
+ },
+ {
+  "id": "esdm-2023-hibah-bmn",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     3,
+     13
+    ]
+   ]
+  },
+  "title": "Badan Geologi dan Ditjen EBTKE serahkan hibah BMN kepada pemerintah daerah",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/badan-geologi-dan-ditjen-ebtke-serahkan-hibah-bmn-kepada-pemerintah-daerah",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset C [17], tidak dibuka ulang: 18 sumur bor air tanah dalam, nilai perolehan Rp8,5 miliar; rincian per kabupaten berjumlah 17"
+ },
+ {
+  "id": "esdm-2022-sumur-cianjur",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     11,
+     29
+    ]
+   ]
+  },
+  "title": "Tim ESDM Siaga Bencana bangun 19 sumur bor untuk korban gempa Cianjur",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/tim-esdm-siaga-bencana-bangun-19-sumur-bor-untuk-korban-gempa-cianjur",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "SP No. 493.Pers/04/SJI/2022; dari riset C [21]: 19 titik, 4 dicadangkan untuk relokasi; kedalaman, debit, biaya tidak disebut"
+ },
+ {
+  "id": "esdm-2018-sumur-lombok",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018,
+     8,
+     11
+    ]
+   ]
+  },
+  "title": "Atasi krisis air bersih, Kementerian ESDM bantu suplai sumur bor di dekat lokasi pengungsian",
+  "URL": "https://www.esdm.go.id/id/media-center/arsip-berita/atasi-krisis-air-bersih-kementerian-esdm-bantu-suplai-sumur-bor-di-dekat-lokasi-pengungsian",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset C [20]: Lombok Utara 7 titik, 2 beroperasi (Rempek; posko Tanjung, sumur gali direvitalisasi)"
+ },
+ {
+  "id": "esdm-2016-sumur-pidiejaya",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     12,
+     12
+    ]
+   ]
+  },
+  "title": "Pemboran air bersih pengungsi Pidie Jaya, 2 siap pakai, 4 tahap konstruksi",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/pemboran-air-bersih-pengungsi-pidie-jaya-2-siap-pakai-4-tahap-konstruksi",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dari riset C [22]"
+ },
+ {
+  "id": "esdm-2020-penurunan-pantura",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020,
+     12,
+     2
+    ]
+   ]
+  },
+  "title": "Ini penyebab terjadinya penurunan tanah di pesisir utara Jawa Tengah",
+  "URL": "https://esdm.go.id/id/media-center/arsip-berita/ini-penyebab-terjadinya-penurunan-tanah-di-pesisir-utara-jawa-tengah",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "SP No. 378.Pers/04/SJI/2020; dibuka ulang 25 Okt 2026: pesisir utara Jateng 6–10 cm/tahun, Semarang lebih dari 10, Pekalongan 0,5 cm/bulan sejak Mei 2020; penyebab utama lempung muda; peran air tanah belum terbukti ilmiah"
+ },
+ {
+  "id": "esdm-2017-permen2-cat",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2017,
+     1,
+     9
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri ESDM Nomor 2 Tahun 2017 tentang Cekungan Air Tanah di Indonesia",
+  "URL": "https://peraturan.bpk.go.id/Download/134402/Permen%20ESDM%20Nomor%202%20Tahun%202017.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "BN 2017 No. 56; dibaca langsung riset C [3]: Pasal 6; lampiran pindaian"
+ },
+ {
+  "id": "esdm-2018-permen31-zona",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Energi dan Sumber Daya Mineral",
+    "singkatan": "Kementerian ESDM"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri ESDM Nomor 31 Tahun 2018 tentang Pedoman Penetapan Zona Konservasi Air Tanah",
+  "URL": "https://jdih.esdm.go.id/storage/document/Permen%20ESDM%20Nomor%2031%20Tahun%202018.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [5]; teks belum dibaca langsung (cuplikan)"
+ },
+ {
+  "id": "ri-2008-pp43",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Republik Indonesia",
+    "singkatan": "RI"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2008
+    ]
+   ]
+  },
+  "title": "Peraturan Pemerintah Nomor 43 Tahun 2008 tentang Air Tanah",
+  "URL": "https://jdih.esdm.go.id/storage/document/PP%20No.%2043%20Thn%202008.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "dibaca langsung riset C [6]: Pasal 65 tindakan darurat; pencabutan tidak ditemukan (metadata BPK PP 30/2024)"
+ },
+ {
+  "id": "kemenkes-2023-permenkes2",
+  "type": "legislation",
+  "author": [
+   {
+    "literal": "Kementerian Kesehatan"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2023,
+     1,
+     4
+    ]
+   ]
+  },
+  "title": "Peraturan Menteri Kesehatan Nomor 2 Tahun 2023 tentang Peraturan Pelaksanaan PP 66/2014 tentang Kesehatan Lingkungan",
+  "URL": "https://peraturan.bpk.go.id/Download/301587/Permenkes%20Nomor%202%20Tahun%202023.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "BN 2023 No. 55; dibaca riset C [25] lewat OCR; nomor pasal penyehatan air saat bencana belum dicatat"
+ },
+ {
+  "id": "setneg-2022-huntap-tondo",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Kementerian Sekretariat Negara"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2022,
+     1,
+     6
+    ]
+   ]
+  },
+  "title": "Tinjau Huntap Tondo I dan II, Wapres harap dapat segera diselesaikan",
+  "URL": "https://setneg.go.id/baca/index/tinjau_huntap_tondo_i_dan_ii_wapres_harap_dapat_segera_diselesaikan",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "Dibuka ulang 25 Okt 2026 (pemeriksaan kedua): Sahabuddin, Kepala Balai Prasarana Permukiman Wilayah Sulawesi Tengah: '65,3 hektar akan dibangun huntap 1.102 unit' (rencana, bukan huntap jadi). Suko Wiyono, Kepala Balai P2P Sulawesi II, Ditjen Perumahan PUPR: 'Di sini kapasitasnya agak kurang', 'selama ini masih pakai sumur bor', instalasi pengolahan air dari Sungai Lewara. Teks menulis kunjungan (6/7/22)"
+ },
+ {
+  "id": "sphere-2018",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Sphere Association"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2018
+    ]
+   ]
+  },
+  "title": "The Sphere Handbook: Humanitarian Charter and Minimum Standards in Humanitarian Response",
+  "URL": "https://reliefweb.int/sites/reliefweb.int/files/resources/Sphere-Handbook-2018-EN.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "edisi 2018; dibaca langsung riset C [24]",
+  "publisher": "Sphere Association"
+ },
+ {
+  "id": "marohn-2012-aceh",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Marohn",
+    "given": "C."
+   },
+   {
+    "family": "Distel",
+    "given": "A."
+   },
+   {
+    "family": "Dercon",
+    "given": "G."
+   },
+   {
+    "literal": "Wahyunto"
+   },
+   {
+    "family": "Tomlinson",
+    "given": "R."
+   },
+   {
+    "family": "van Noordwijk",
+    "given": "M."
+   },
+   {
+    "family": "Cadisch",
+    "given": "G."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2012
+    ]
+   ]
+  },
+  "title": "Impacts of soil and groundwater salinization on tree crop performance in post-tsunami Aceh Barat, Indonesia",
+  "container-title": "Natural Hazards and Earth System Sciences",
+  "URL": "https://nhess.copernicus.org/articles/12/2879/2012/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "abstrak dibuka ulang 25 Okt 2026: salinitas air tanah dari lebih dari 10 ke kurang dari 2 mS/cm dalam dua tahun, hujan lebih dari 3.000 mm/tahun; 48 titik, 10 transek, 40 km, 2006–2008",
+  "volume": "12",
+  "page": "2879-2891"
+ },
+ {
+  "id": "villholth-2011-srilanka",
+  "type": "chapter",
+  "author": [
+   {
+    "family": "Villholth",
+    "given": "K. G."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2011
+    ]
+   ]
+  },
+  "title": "Tsunami impacts and rehabilitation of groundwater supply: lessons learned from Eastern Sri Lanka",
+  "container-title": "UNESCO IHP-VII Series on Groundwater No. 3",
+  "URL": "https://pub.geus.dk/en/publications/tsunami-impacts-and-rehabilitation-of-groundwater-supply-lessons--2/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "riset C [27]; bab buku; analog luar negeri"
+ },
+ {
+  "id": "bgr-2005-help-aceh",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Bundesanstalt für Geowissenschaften und Rohstoffe",
+    "singkatan": "BGR"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2005
+    ]
+   ]
+  },
+  "title": "HELP-ACEH: Helicopter Project Aceh",
+  "URL": "https://www.bgr.bund.de/EN/Themen/GG_Geophysik/Aerogeophysik/Projekte/abgeschlossen/HELP-ACEH/HELP-ACEH_Helicopter_Project_Aceh_en.html",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [28]; halaman HTTP 400, isi dari cuplikan"
+ },
+ {
+  "id": "usk-2007-banda-aceh",
+  "type": "article-journal",
+  "author": [
+   {
+    "literal": "Universitas Syiah Kuala"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2007
+    ]
+   ]
+  },
+  "title": "Water quality assessment in the tsunami areas of Banda Aceh",
+  "container-title": "Jurnal Rekayasa Kimia dan Lingkungan",
+  "URL": "https://jurnal.usk.ac.id/RKL/article/view/59",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [30]; cuplikan; tahun sekitar 2007"
+ },
+ {
+  "id": "bradley-2019-palu",
+  "type": "article-journal",
+  "author": [
+   {
+    "family": "Bradley",
+    "given": "Kyle"
+   },
+   {
+    "family": "Mallick",
+    "given": "Rishav"
+   },
+   {
+    "literal": "dkk."
+   },
+   {
+    "family": "Hill",
+    "given": "Emma M."
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019,
+     11
+    ]
+   ]
+  },
+  "title": "Earthquake-triggered 2018 Palu Valley landslides enabled by wet rice cultivation",
+  "container-title": "Nature Geoscience",
+  "page": "935",
+  "DOI": "10.1038/s41561-019-0444-1",
+  "URL": "https://doi.org/10.1038/s41561-019-0444-1",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "abstrak",
+  "note": "Makalah asli (menggantikan rilis NTU 8 Okt 2019 sebagai rujukan). Abstrak dibaca 25 Okt 2026 lewat indeks ospro.usk.ac.id/article/wos/70843 dan cuplikan ScienceDaily; teks penuh di nature.com berbayar (303 ke idp). Abstrak: budidaya sawah bersaluran akuaduk menaikkan muka air tanah hampir ke permukaan, menjenuhkan aluvium pasir yang melikuefaksi; penulis menilai kerusakan 'probably' tidak terjadi tanpa muka air tanah yang dinaikkan. Daftar penulis lengkap dan halaman akhir belum diverifikasi"
+ },
+ {
+  "id": "itb-palu-flowslide",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "LPPM Institut Teknologi Bandung",
+    "singkatan": "LPPM ITB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Ringkasan riset flowslide Palu",
+  "URL": "https://lppm.itb.ac.id/?p=58246",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [34]; cuplikan; tanggal tidak tercantum (tahun perkiraan)"
+ },
+ {
+  "id": "ugm-gumbasa",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Universitas Gadjah Mada"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Liquefaction potential analysis on Gumbasa Irrigation Area after 2018 earthquake",
+  "URL": "https://ir.lib.ugm.ac.id/id/eprint/3791",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [35]; cuplikan; tanggal tidak tercantum (tahun perkiraan)"
+ },
+ {
+  "id": "worldbank-p169403",
+  "type": "report",
+  "author": [
+   {
+    "literal": "World Bank"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2019
+    ]
+   ]
+  },
+  "title": "Central Sulawesi Rehabilitation and Reconstruction Project (P169403), dokumen proyek",
+  "URL": "https://ewsdata.rightsindevelopment.org/files/documents/03/WB-P169403_ryc4CK1.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [39]; cuplikan; zona merah termasuk likuefaksi buffer 100 m"
+ },
+ {
+  "id": "itb-2021-wash-palu",
+  "type": "report",
+  "author": [
+   {
+    "literal": "FTSL Institut Teknologi Bandung"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2021,
+     11
+    ]
+   ]
+  },
+  "title": "Water and sanitation status under emergency situation after Palu Sigi Donggala disaster",
+  "URL": "https://ftsl.itb.ac.id/wp-content/uploads/sites/8/2021/11/Water-And-Sanitation-Status-Under-Emergency-Situation-After-Palu-Sigi-Donggala-Disaster.pdf",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [37]; unduhan gagal, angka dari cuplikan"
+ },
+ {
+  "id": "atmaja-2025-palu-femn",
+  "type": "article-journal",
+  "author": [
+   {
+    "literal": "Atmaja"
+   },
+   {
+    "literal": "Wilopo"
+   },
+   {
+    "literal": "Warmada"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025
+    ]
+   ]
+  },
+  "title": "Pencemaran besi dan mangan pada airtanah di Kota Palu",
+  "container-title": "Jambura Geoscience Review",
+  "URL": "https://ejurnal.ung.ac.id/index.php/jage/article/view/31239",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [36]; cuplikan"
+ },
+ {
+  "id": "brin-arsen",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Badan Riset dan Inovasi Nasional",
+    "singkatan": "BRIN"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Is arsenic a potential threat for human health in Indonesia?",
+  "URL": "https://karya.brin.go.id/id/eprint/12090/",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [56]; cuplikan; tahun tidak tercantum (perkiraan)"
+ },
+ {
+  "id": "ugm-lombok-air",
+  "type": "webpage",
+  "author": [
+   {
+    "literal": "Universitas Gadjah Mada"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "The impact of earthquake on clean water demand and supply at North Lombok regency",
+  "URL": "https://ir.lib.ugm.ac.id/id/eprint/14435",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     25
+    ]
+   ]
+  },
+  "verifikasi": "cuplikan",
+  "note": "riset C [41]; cuplikan; dua versi penurunan PDAM (17,71 dan 19,03); tahun perkiraan"
+ },
+ {
+  "id": "pantau-program-terbukti",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Pantau Bencana"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2026,
+     10
+    ]
+   ]
+  },
+  "title": "Paket program-terbukti: kompendium program dan bukti dampak",
+  "URL": "data/kajian-bnpb/data/program-terbukti/kompendium_program.csv",
+  "verifikasi": "olah",
+  "note": "baris P13 (PAMSIMAS, kekuatan sedang) dan P16 (pengendalian air tanah Tokyo, Osaka, Bangkok, kekuatan kuat)"
+ },
+ {
+  "id": "bnpb-dibi",
+  "type": "dataset",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "title": "Data dan Informasi Bencana Indonesia (DIBI)",
+  "URL": "https://dibi.bnpb.go.id",
+  "accessed": {
+   "date-parts": [
+    [
+     2026,
+     10,
+     23
+    ]
+   ]
+  },
+  "verifikasi": "primer",
+  "note": "paket data/dibi, tarik 23 Okt 2026; kejadian_besar.csv metrik mengungsi"
+ }
+]

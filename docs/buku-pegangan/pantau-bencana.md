@@ -15,6 +15,9 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 25 Okt 2026
+   - **Skill PPT METI dan PNRE dinilai terhadap bab Selera presentasi.** Palet, font Poppins dan Arial, stabilo kuning, dan kotak keypoint tidak dipakai karena hanya ada satu gaya rumah. Pemilik memutuskan dua unsur METI boleh masuk: *"peta 3D, dan slot foto untuk slide bisa dimasukkan"*, dengan peta yang *"betul dimiringin"*. Aturannya di [Komponen](#komponen), butir Peta dan Slot foto.
+
 1. 24 Okt 2026
    - **Jam cut off ditetapkan dan generator dibuat**: *"tiap laporan harian bencana di jam 12 cut off nya dan laporan harian karhutla cut off jam 15"*. Kolom terakhir = hari laporan itu sendiri, angka sementara sampai jam cut off; teks WA Koordalops, BMKG, dan laporan operasi ditempel apa adanya lalu diurai generator `data/laporan-bnpb/generator/`.
    - **Laporan harian 241026 dirombak bersama pemilik.** Status karhutla ikut sisa website (Kaltim, Luwu Timur, Arjuno kembali dalam penanganan walau BPBD melapor padam), perlu perhatian mencakup semua jenis (13: 12 karhutla dan TPA Supit Urang), daftar panel status hanya yang perlu perhatian, batang status `4 selesai | 15 karhutla ditangani | 3 lainnya` supaya tally sama dengan tabel, panel kekeringan dan bencana lainnya dipadatkan, pita aksi tanpa rujukan BMKG.
@@ -529,6 +532,7 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
   - Peta harian: penanda shape 17/22/24 pt (untuk 1/2/≥3 kejadian) bergaris putih 1,25 pt, ditambah badge "!" merah 11 pt di provinsi yang punya karhutla perlu perhatian. Provinsi itu juga bergaris merah di peta dasar, dan aturannya satu sumber dengan kartu PERLU PERHATIAN. Badge jumlah dan badge ! duduk di pinggir lingkaran (0,42 diameter dari pusat), jangan sampai menutupi angka.
   - **Tidak boleh ada yang bertumpuk**: *"Ini situbondo tumpang tindih"*.
   - **Wajib ada legenda** yang menerangkan arti bulatan dan warna: *"Ya apa itu lingkaran dan warnanya isinya apa legendanya"*. Teks legenda 7–7,5 pt.
+  - **Peta 3D timbul boleh dipakai** (keputusan pemilik 25 Okt 2026, diambil dari skill `ppt-format-meti`, `scripts/peta.js`). Tiap provinsi digambar sebagai shape freeform native bernama `Provinsi - <Nama>`, jadi warnanya bisa diganti di PowerPoint lewat Shape Fill. Kesan timbul dibuat dari tiga lapis sisi yang digeser turun (tebal sekitar 9 pt, makin ke bawah makin gelap) dan bayangan kabur di bawahnya. Proyeksinya **wajib dimiringkan** (tinggi dikali 0,8, seperti `tilt: 0.8` METI; dikonfirmasi pemilik: *"betul dimiringin"*). Warnanya tetap palet rumah: permukaan dasar E6EAF0 bergaris tipis A9B4C2, sisi bertingkat dari slate 5B7A99, provinsi sorot memakai warna makna (D9600B api, C8102E perlu perhatian, 2F86D1 air), dan provinsi berwarna bergaris putih. Label berupa pil putih bergaris abu dengan pin. Provinsi di Jawa sampai Nusa Tenggara diberi label di laut selatan supaya tidak bertumpuk. Cincin hiasan METI tidak dipakai karena tidak membawa informasi. Latar tetap putih, tanpa laut biru. Peta 3D dipakai untuk peta sebaran nasional atau provinsi di paparan dan deck kajian. Laporan Harian dan Penanganan tetap memakai peta deck acuannya (d3, d6) sampai pemilik memintanya. Aturan legenda dan larangan bertumpuk tetap berlaku.
 - **Grafik batang harian.**
   - Pola: *"Tiru model selama ini di laporan bencana harian dan laporan harian karhutla"*.
   - Batang berujung atas membulat (round2SameRect adj 22000) di atas garis dasar 0,75 pt BFC5CC, tanpa sumbu Y.
@@ -558,6 +562,12 @@ Nama berkas memakai pola `<Judul deck> DDMMYY`, dengan DDMMYY = tanggal paparan.
   - Ikon putih di atas lingkaran solid, ikon berwarna di atas lingkaran tint warnanya sendiri.
   - Ukuran ikon 55–62% diameter lingkaran (14/26, 14/23, 7/12).
   - Ikon wajib ada di kepala tabel, kartu angka, dan chip: *"Kasih icon"*.
+- **Slot foto** (keputusan pemilik 25 Okt 2026, diambil dari skill `ppt-format-meti`, `photo` dan `sectionDivider`).
+  - Dipakai bila isi slide tidak mengisi area y≈101–500. Sisa ruangnya diisi foto, bukan panel yang direntangkan. Aturan "panel setinggi isinya" tetap berlaku: foto mengisi ruang slide yang tersisa, bukan ruang kosong di dalam kontainer.
+  - Bentuknya kotak membulat dengan radius yang sama dengan panel (≈4,3 pt). Foto dipotong *cover*, tidak digepengkan. Kredit foto 7 pt di pojok, sama dengan sampul harian.
+  - Keterangan foto (opsional) berupa pita navy 051C2C transparan 20% di bawah foto, berisi teks putih 9 pt bold rata tengah.
+  - Fotonya harus relevan dengan isi slide: lokasi kejadian, operasi, atau dampak. Sumbernya foto dari pemilik, BPBD/BNPB, atau Wikimedia Commons berlisensi bebas.
+  - Kalau foto belum ada, tanyakan ke pemilik dan sebut slide serta posisinya. Deck tidak dikirim dengan placeholder foto.
 
 ### Isi dan sumber data
 

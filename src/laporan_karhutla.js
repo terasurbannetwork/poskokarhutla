@@ -99,12 +99,14 @@ async function drafProvinsi(env, tanggal, kode, dummy) {
   let baru = 0;
   try {   // FS baru: tugas api yang dikonfirmasi api_ada pada jendela cut-off 24 jam sebelum 07.00 WIB hari laporan, belum tertaut ke FS mana pun
     const mulai = WIB_07(tanggal) - HARI, akhir = WIB_07(tanggal);
+    /* sampel KONTROL uji lapangan (0054) bukan api prioritas: bukan 'api terkonfirmasi' untuk laporan. Tabel belum ada = tanpa saringan. */
+    const tanpaKontrol = await env.DB.prepare("SELECT 1 FROM uji_tugas LIMIT 1").first().then(() => " AND NOT EXISTS (SELECT 1 FROM uji_tugas u WHERE u.tugas_id = t.id AND u.sampel = 'kontrol')", e => { if (!/no such table: (main\.)?uji_tugas/i.test(String(e?.message || e))) throw e; return ""; });
     const T = (await env.DB.prepare(`SELECT t.id, t.kab, t.kec, t.lat, t.lon, t.luas_ha,
         (SELECT x.luas_ha FROM tugas_isian x WHERE x.tugas_id = t.id AND x.langkah = 'tindakan' ORDER BY x.dibuat DESC LIMIT 1) luas_kabar,
         (SELECT x.padam_ha FROM tugas_isian x WHERE x.tugas_id = t.id AND x.langkah = 'tindakan' ORDER BY x.dibuat DESC LIMIT 1) padam_kabar,
         (SELECT x.status_api FROM tugas_isian x WHERE x.tugas_id = t.id AND x.langkah = 'tindakan' ORDER BY x.dibuat DESC LIMIT 1) status_kabar
       FROM tugas_api t JOIN tugas_isian i ON i.tugas_id = t.id AND i.langkah = 'konfirmasi' AND i.hasil = 'api_ada'
-      WHERE t.prov = ?1 AND t.dummy = ?2 AND i.dibuat >= ?3 AND i.dibuat < ?4 AND NOT EXISTS (SELECT 1 FROM lk_fs f WHERE f.tugas_id = t.id) ORDER BY i.dibuat LIMIT 200`).bind(kode, dummy, mulai, akhir).all()).results;
+      WHERE t.prov = ?1 AND t.dummy = ?2 AND i.dibuat >= ?3 AND i.dibuat < ?4 AND NOT EXISTS (SELECT 1 FROM lk_fs f WHERE f.tugas_id = t.id)${tanpaKontrol} ORDER BY i.dibuat LIMIT 200`).bind(kode, dummy, mulai, akhir).all()).results;
     const ada = new Set(fs.map(f => f.fs_id)); let n = 0;
     for (const t of T) {
       let id; do { n++; id = `FS-${kode}-${td.replace(/-/g, "")}-${String(n).padStart(3, "0")}`; } while (ada.has(id));

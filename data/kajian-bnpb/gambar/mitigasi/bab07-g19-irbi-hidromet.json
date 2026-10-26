@@ -1,0 +1,57 @@
+{
+ "nama": "bab07-g19-irbi-hidromet",
+ "jenis": "peta",
+ "panel": [
+  "bab07-hm-banjir",
+  "bab07-hm-longsor",
+  "bab07-hm-kekeringan",
+  "bab07-hm-karlahut"
+ ],
+ "teks_min_pt": 8.0,
+ "ukuran_cm": [
+  16.3,
+  11.87
+ ],
+ "hex": {
+  "#8F3F07": [
+   "legenda",
+   "skala"
+  ],
+  "#FFFFFF": [
+   "batas"
+  ],
+  "#FBE7D6": [
+   "legenda",
+   "skala"
+  ],
+  "#D9600B": [
+   "legenda",
+   "skala"
+  ],
+  "#F4C3A0": [
+   "legenda",
+   "skala"
+  ],
+  "#E8894A": [
+   "legenda",
+   "skala"
+  ],
+  "#F1F3F6": [
+   "tanpa-data"
+  ],
+  "#A9B4C2": [
+   "batas",
+   "garis",
+   "tanpa-data"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ }
+}

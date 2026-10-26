@@ -1,0 +1,230 @@
+{
+ "nama": "bab05-peta-kapasitas-krb",
+ "keterangan": "Kelas kapasitas penanggulangan bencana kab/kota menurut Kajian Risiko Bencana 2022–2026",
+ "sumber": "InaRISK BNPB, Kajian Risiko Bencana 2022–2026, kelas kapasitas kab/kota",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  220.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.78
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Rendah (315)",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Sedang (190)",
+   "jenis": "kotak",
+   "warna": "#68A8E0"
+  },
+  {
+   "label": "Tinggi (3)",
+   "jenis": "kotak",
+   "warna": "#1B5A93"
+  },
+  {
+   "label": "Belum terdata (6)",
+   "jenis": "arsir",
+   "warna": "arsir"
+  }
+ ],
+ "hex": {
+  "#DCEBF8": [
+   "skala",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "batas"
+  ],
+  "#68A8E0": [
+   "skala",
+   "legenda"
+  ],
+  "#F1F3F6": [
+   "tanpa-data"
+  ],
+  "#A9B4C2": [
+   "tanpa-data",
+   "batas",
+   "garis"
+  ],
+  "#1B5A93": [
+   "skala",
+   "legenda"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 33.42,
+   "y": 186.24,
+   "w": 113.36,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-33",
+   "teks": "Kelas kapasitas KRB (kab/kota)"
+  },
+  {
+   "x": 33.42,
+   "y": 185.24,
+   "w": 113.36,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-33",
+   "teks": "Kelas kapasitas KRB (kab/kota)"
+  },
+  {
+   "x": 170.78,
+   "y": 186.24,
+   "w": 47.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-156",
+   "teks": "Rendah (315)"
+  },
+  {
+   "x": 156.78,
+   "y": 185.24,
+   "w": 61.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-156",
+   "teks": "Rendah (315)"
+  },
+  {
+   "x": 242.6,
+   "y": 186.24,
+   "w": 47.72,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-228",
+   "teks": "Sedang (190)"
+  },
+  {
+   "x": 228.6,
+   "y": 185.24,
+   "w": 61.72,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-228",
+   "teks": "Sedang (190)"
+  },
+  {
+   "x": 314.32,
+   "y": 186.24,
+   "w": 34.04,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-300",
+   "teks": "Tinggi (3)"
+  },
+  {
+   "x": 300.32,
+   "y": 185.24,
+   "w": 48.04,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-300",
+   "teks": "Tinggi (3)"
+  },
+  {
+   "x": 372.36,
+   "y": 186.24,
+   "w": 61.94,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-358",
+   "teks": "Belum terdata (6)"
+  },
+  {
+   "x": 358.36,
+   "y": 185.24,
+   "w": 75.94,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-358",
+   "teks": "Belum terdata (6)"
+  },
+  {
+   "x": 3,
+   "y": 198.24,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 207.84,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "indeks",
+ "cakupan": "nasional",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "air",
+  "batas": [
+   1,
+   2
+  ],
+  "label": [
+   "Rendah",
+   "Sedang",
+   "Tinggi"
+  ],
+  "warna": [
+   "skala.air.1",
+   "skala.air.3",
+   "skala.air.5"
+  ],
+  "rumus": "kelas resmi KRB",
+  "resmi": false,
+  "jumlah": [
+   315,
+   190,
+   3
+  ],
+  "tanpa_data": 6
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 2,5° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

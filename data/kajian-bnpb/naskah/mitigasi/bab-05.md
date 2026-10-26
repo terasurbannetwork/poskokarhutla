@@ -3,7 +3,7 @@ kajian: mitigasi
 bab: 5
 judul: Profil Risiko Nasional
 pertanyaan: Di wilayah mana, dari pulau sampai kab/kota, risiko terkonsentrasi menurut IRBI dan DIBI, dan berapa daerah berkapasitas minimal sedang menurut dua ukuran resmi? Mengapa capaian IRB tidak diikuti penurunan korban? Jenis bencana apa yang berada di kelas dampak tertinggi, dan untuk jenis mana kemungkinan lima tahun dapat dinilai?
-status: draf
+status: final
 target_halaman: 15
 ---
 
@@ -29,6 +29,18 @@ target_halaman: 15
 - @rek:r-m20 Perbarui daftar perhatian kab/kota dan lantai skenario (Usulan baru; Direktorat Pemetaan dan Evaluasi Risiko Bencana bersama Pusat Data, Informasi, dan Komunikasi Kebencanaan; internal BNPB; 2028–2030).
 :::
 
+::: gambar {#gbr:foto-m05-muara-citarum}
+berkas: gambar/foto/air-muara-citarum.jpg
+jenis: foto
+judul: Muara Sungai Citarum di pesisir utara Jawa Barat, Oktober 2021
+pengarang: Dasnusantara
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Muara_sungai_Citarum.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
+
+
 ## Capaian IRB 2015–2024 {#sub:capaian-irb}
 
 **IRB nasional turun dari {{angka:irbi.nasional.2019|fmt=2}} pada 2019 menjadi {{angka:irbi.nasional.2024|fmt=2}} pada 2024, atau {{angka:irbi.nasional.persen_2019_2024|fmt=2|persen|arah}}, dan Rencana Strategis (Renstra) BNPB 2025–2029 menyatakan target penurunannya tercapai.** Renstra memuat seri itu dalam Tabel 1.6 dengan 2019 sebagai baseline [@bnpb-2025-renstra, hlm. 52]. Seri 2015–2018, yang dimulai dari {{angka:irbi.nasional.2015|fmt=2}} pada 2015, adalah rerata kab/kota yang dihitung penyusun dari data InaRISK tanpa angka terbit, sehingga berlabel asumsi kebijakan dan digambar dengan gaya garis berbeda pada @gbr:tren-irb [@bnpb-irbi]. Nilai IRBI 2025 tidak disambungkan ke seri ini karena skalanya berubah (@sub:potret-2025).
@@ -43,7 +55,7 @@ sumber: InaRISK BNPB, IRBI 2015–2024; Renstra BNPB 2025–2029 Tabel 1.6; peng
 keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Garis nasional 2019–2024 berlabel resmi; garis nasional 2015–2018 dan tujuh garis pulau adalah rerata sederhana kab/kota pilihan penyusun. Papua memakai batas provinsi 2025. Titik 2025 tidak digambar karena skalanya berbeda.
+catatan: Tabel peta panas. Baris nasional 2019–2024 berlabel resmi; nasional 2015–2018 dan tujuh baris pulau adalah rerata sederhana kab/kota pilihan penyusun, dan batas kelas warna pilihan penyusun. Papua memakai batas provinsi 2025. Nilai 2025 tidak ditampilkan karena skalanya berbeda.
 :::
 
 **Median nilai IRB per kab/kota turun pada kesembilan bahaya dari 2019 ke 2024, termasuk gempa bumi dari {{angka:irbi.bahaya.gempabumi.median_2019|fmt=2}} menjadi {{angka:irbi.bahaya.gempabumi.median_2024|fmt=2}}, padahal bahaya fisik gempa tidak berubah dalam lima tahun.** Median banjir turun dari {{angka:irbi.bahaya.banjir.median_2019|fmt=2}} menjadi {{angka:irbi.bahaya.banjir.median_2024|fmt=2}} pada periode yang sama [@bnpb-irbi]. Kesembilan median itu bukan sembilan pengamatan bebas. Dari {{angka:irbi.kab.berubah_2019_2024}} kab/kota yang nilainya berubah, {{angka:irbi.kab.satu_pengali_2019_2024}} menggeser semua kolom bahaya dengan satu rasio yang identik, sehingga penurunan per bahaya umumnya berasal dari satu pengali per kab/kota. Renstra menyebut IRBI tersusun dari komponen bahaya, kerentanan, dan kapasitas [@bnpb-2025-renstra, hlm. 5]. Rumus risiko sebagai hasil kali bahaya dan kerentanan yang dibagi kapasitas berada di lampiran Perka BNPB 2/2012 yang tidak terbuka dan hanya terverifikasi dari sumber sekunder [@bnpb-2012-pengkajian-risiko].
@@ -92,7 +104,7 @@ sumber: InaRISK BNPB, IRBI 2025, kolom status
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Dua kelas resmi, Tinggi dan Sedang; pil per pulau berisi jumlah kab/kota Tinggi dari jumlah kab/kota. Skala 2025 tidak sebanding dengan 2015–2024, dan peta tidak memeringkat kab/kota.
+catatan: Dua kelas resmi, Tinggi dan Sedang. Skala 2025 tidak sebanding dengan 2015–2024, dan peta tidak memeringkat kab/kota.
 :::
 
 **Total IRBI 2025 tidak sama dengan jumlah kolom bahaya di satu pun dari {{angka:irbi.kab.dinilai.2025}} kab/kota, dan nilai per bahaya berupa bilangan bulat** [@bnpb-irbi]. Akibatnya nilai kembar per bahaya lazim, sehingga nilai itu tidak dipakai untuk memeringkat kab/kota. @gbr:peta-bahaya-2025 memakai lima kelas kuintil per bahaya pilihan penyusun, dan kelas teratasnya ditulis "≥ batas" agar sama dengan syarat nilai teratas pada aturan daftar perhatian di @sub:daftar-perhatian. Sel tanpa nilai ditulis tidak dinilai, bukan nol.
@@ -105,11 +117,23 @@ sumber: InaRISK BNPB, IRBI 2025, kolom per bahaya; pengelompokan kuintil oleh Pa
 keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Sembilan panel; nilai per bahaya berlabel resmi, kelas kuintil pilihan penyusun. Kab/kota tanpa nilai untuk suatu bahaya diberi arsir tidak dinilai.
+catatan: Sembilan panel; nilai per bahaya berlabel resmi, kelas kuintil per panel pilihan penyusun. Kab/kota yang tidak dinilai untuk suatu bahaya diberi arsir Belum terdata.
 :::
 
 ::: catatan
 IRBI 2025 tidak sebanding dengan seri 2015–2024. Korelasi peringkat kab/kota 2024 dan 2025 hanya {{angka:irbi.skala.spearman_2025|fmt=2}}, dan rerata kab/kota 2025 sebesar {{angka:irbi.nasional.2025_rerata|fmt=2}} memberi kenaikan semu {{angka:irbi.nasional.persen_naif_2024_2025|fmt=1|persen}} bila dibandingkan langsung dengan 2024 [@bnpb-irbi]. LKIP BNPB 2025 menetapkan rerata itu, {{angka:bnpb.lkip2025.irb.baseline_2026_2029|fmt=2}}, sebagai baseline 2026–2029, lalu menilai target 2025 dengan menghitung ulang IRB memakai kerentanan 2021: penurunan {{angka:bnpb.lkip2025.irb.penurunan_persen.2025|fmt=2|persen}} terhadap target {{angka:rpjmn.iks_penurunan_irb_persen|fmt=1|persen}}, sehingga target dinyatakan tidak tercapai [@bnpb-2026-lkip2025, hlm. x, 19]. Hitungan ulang itu memberi IRB 2024 sebesar {{angka:bnpb.lkip2025.irb.nasional_2024_krb2021|fmt=2}}, berdampingan dengan {{angka:irbi.nasional.2024|fmt=2}} pada seri Renstra; kedua angka resmi itu dihitung dari komponen berbeda dan tidak dirata-rata. Bobot komponen dan cara agregasi kab/kota untuk baseline baru belum terbit, sehingga capaian 2026–2029 belum dapat diperiksa pihak lain (@rek:r-m01).
+:::
+
+
+::: gambar {#gbr:foto-m05-bengawan-surut}
+berkas: gambar/foto/air-bengawan-solo-surut.jpg
+jenis: foto
+judul: Tepian Bengawan Solo yang surut pada musim kemarau, Juli 2015
+pengarang: Crisco 1492
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Bengawan_Solo_River_during_dry_season,_2015-07-31_04.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
 :::
 
 ## Sebaran per Pulau {#sub:pulau}
@@ -233,13 +257,13 @@ sumber: InaRISK BNPB, Kajian Risiko Bencana 2022–2026, kelas kapasitas kab/kot
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Tiga kelas resmi, rendah, sedang, dan tinggi; kelas kapasitas sama untuk semua bahaya. Enam kab/kota lama yang bukan unit KRB diberi arsir tidak dinilai. Pengelompokan pulau pada pil adalah pilihan penyusun.
+catatan: Tiga kelas resmi, rendah, sedang, dan tinggi, dari ringkasan KRB COVID-19; kelas kapasitas sama untuk semua bahaya. Kab/kota tanpa kelas KRB diberi arsir Belum terdata.
 :::
 
 **Persentase daerah berkapasitas minimal sedang berkisar dari {{angka:krb.nasional.kab_kapasitas_minimal_sedang_persen|fmt=1|persen}} sampai {{angka:krb.prov.kapasitas_minimal_sedang_persen|fmt=1|persen}} menurut alat ukur dan unit wilayah yang dipakai, sehingga angka-angka itu tidak dibandingkan langsung dan ditampilkan berdampingan pada @tbl:kapasitas-dua-alat.** Hasil IKD 2025 per kab/kota menempatkan {{angka:bnpb.lkip2025.ikd.kab_sedang.2025}} kab/kota pada kategori sedang dan {{angka:bnpb.lkip2025.ikd.kab_tinggi.2025}} pada kategori tinggi, atau {{angka:bnpb.lkip2025.ikd.kab_minimal_sedang_persen.2025|fmt=1|persen}} dari seluruh kab/kota, tetapi hanya {{angka:bnpb.lkip2025.ikd.kab_menilai.2025}} kab/kota yang menilai pada 2025 [@bnpb-2026-lkip2025, hlm. 22]. Dengan penyebut provinsi menurut Manual IKU, jarak ke target 2029 adalah {{angka:kapasitas.jarak_90.lkip_prov_poin|satuan}}. Dengan penyebut kab/kota, IKD 2025 masih kurang {{angka:kapasitas.jarak_90.ikd_kab_tambahan|satuan}}, sedangkan kelas kapasitas KRB kurang {{angka:kapasitas.krb.kab_tambahan_2029}} kab/kota untuk mencapai {{angka:kapasitas.krb.kab_target_2029|satuan}}. Angka provinsi KRB {{angka:krb.prov.kapasitas_minimal_sedang_persen|fmt=1|persen}} menunjukkan besarnya pengaruh pilihan unit, karena rerata provinsi dapat menutupi kab/kota berkapasitas rendah. Kelas KRB dapat diperiksa per kab/kota dari InaRISK, sedangkan IKD belum diisi semua daerah: menurut pejabat Kementerian Dalam Negeri dalam rapat 4 September 2025, {{angka:kemenkopmk.daerah_belum_ikd_2024|satuan}} belum menyusun IKD 2024 [@kemenkopmk-2025-sinkronisasi-irb]. Siaran yang sama mencatat {{angka:kemenkopmk.daerah_belum_krb|satuan}} belum mengaktifkan KRB dan {{angka:kemenkopmk.daerah_belum_spm_bencana|satuan}} belum menuntaskan standar pelayanan minimal sub-urusan bencana.
 
 ::: tabel {#tbl:kapasitas-dua-alat}
-judul: Persentase daerah berkapasitas penanggulangan bencana minimal sedang menurut alat ukur, unit, dan tahun, Indonesia (persen)
+judul: Persentase daerah berkapasitas penanggulangan bencana minimal sedang menurut alat ukur dan unit, Indonesia, 2022–2029 (persen)
 sumber: RPJMN 2025–2029 Lampiran III; Renstra BNPB 2025–2029; LKIP BNPB 2025; Renas PB 2025–2029 Tabel 2.7; InaRISK BNPB, KRB 2022–2026; Kemenko PMK, siaran 12 September 2025
 keyakinan: campuran
 data_per: 24 Okt 2026
@@ -308,7 +332,7 @@ catatan: Kerugian adalah nilai aset terpapar, batas atas, dan tidak dijumlah ant
 **COVID-19, dengan {{angka:nonalam.covid19.meninggal}} meninggal, berada dua orde di atas ambang kelas lima, setara orde dengan tsunami Aceh 2004.** Kelas lima adalah kelas terbuka, sehingga kelima jenis berfatalitas kelas lima berada di kelas yang sama walau besarnya berbeda dua orde; @tbl:kelas-dampak karena itu menulis angka di samping kelas. Angka estimasi model tidak menentukan kelas dan hanya tampil berdampingan. Kematian berlebih COVID-19 2020–2021 menurut model World Health Organization (WHO) berkisar {{angka:nonalam.covid19.kematian_berlebih}} jiwa [@who-2023-kematian-berlebih], dan kematian berlebih akibat asap karhutla September–Oktober 2015 menurut model Koplitz dkk. {{angka:koplitz.asap2015.kematian_berlebih}} jiwa, sedangkan DIBI 2015 mencatat {{angka:dibi.alam.karhutla.meninggal_hilang_maks_tahun}} meninggal dan hilang akibat karhutla [@koplitz-2016-haze; @bnpb-dibi]. Untuk megathrust selatan Jawa, lantai tercatat adalah tsunami Pangandaran 2006 dengan {{angka:usgs.pangandaran2006.meninggal}} meninggal dan {{angka:usgs.pangandaran2006.hilang}} hilang [@usgs-usp000ensm], kelas empat, sedangkan korban guncangan analog skenario magnitudo {{angka:pusgen.jawa.mmaks|fmt=1}} berkisar {{angka:geologi.jawa_mmaks.korban_guncangan}} jiwa dengan pita lebih dari satu orde.
 
 ::: tabel {#tbl:kelas-dampak}
-judul: Kelas dampak aspek kependudukan dan dasar kemungkinan lima tahun per jenis bencana, Indonesia (kelas)
+judul: Kelas dampak aspek kependudukan dan dasar kemungkinan lima tahun per jenis bencana, Indonesia, 1996–2025 (kelas)
 sumber: DIBI BNPB 2008–2025; BRR NAD-Nias (2009); USGS; International Crisis Group (2002); Kementerian Kesehatan via Renstra BNPB; PuSGeN (2024); pita NRR Cabinet Office; pengolahan data Pantau Bencana
 keyakinan: campuran
 data_per: 24 Okt 2026
@@ -341,10 +365,10 @@ catatan: Kelas memakai pita fatalitas dan mengungsi usulan Bab 3 dan dihitung ul
 ::: gambar {#gbr:matriks-risiko}
 berkas: gambar/mitigasi/bab05-matriks-kemungkinan-dampak.png
 jenis: diagram
-judul: Matriks kemungkinan lima tahun dan kelas dampak per jenis bencana, dengan panel jenis tanpa dasar kemungkinan, Indonesia
+judul: Matriks kemungkinan lima tahun dan kelas fatalitas per jenis bencana, dengan kolom jenis tanpa dasar kemungkinan, Indonesia 2026
 sumber: Pita kemungkinan dan fatalitas NRR Cabinet Office; DIBI BNPB 2008–2025; PuSGeN (2024); NOAA CPC; pengolahan data Pantau Bencana
 keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Satu titik per kartu per jenis; angka tercatat ditulis di samping kelas. Titik gempa bumi dan tsunami memakai lantai Pangandaran 2006 (kelas empat), sedangkan kelas jenisnya lima dari kartu yang kemungkinannya tidak dinilai. Kelas dan pita bergantung pada ambang Bab 3 yang belum dikunci.
+catatan: Satu titik per jenis; likuefaksi digabung dengan gempa bumi dan kebakaran TPA tidak digambar karena tanpa korban jiwa tercatat. Titik megathrust memakai lantai Pangandaran 2006 (kelas empat), sedangkan kelas jenis gempa bumi dan tsunami lima dari kartu yang kemungkinannya tidak dinilai. Kelas dan pita bergantung pada ambang Bab 3 yang belum dikunci.
 :::

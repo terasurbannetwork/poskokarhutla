@@ -1,0 +1,657 @@
+{
+ "nama": "rantai-metode",
+ "keterangan": "Rantai metode dari sumber data ke daftar perhatian dan rekomendasi, kajian mitigasi bencana Indonesia 2026",
+ "sumber": "Analisis kajian ini atas DIBI BNPB, InaRISK BNPB, NOAA CPC, PuSGeN 2024, SiPongi, dan BPS",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  297.4
+ ],
+ "ukuran_cm": [
+  16.5,
+  10.49
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Sumber data resmi atau terverifikasi",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Paket data dan registri angka",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Aturan kajian",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Estimasi model, bukan Data Bencana",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Keluaran kajian",
+   "jenis": "kotak",
+   "warna": "#FFFFFF"
+  }
+ ],
+ "hex": {
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks",
+   "garis"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "legenda",
+   "teks",
+   "seri",
+   "latar"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 128.61,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Sumber data resmi atau terverifikasi"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 142.61,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Sumber data resmi atau terverifikasi"
+  },
+  {
+   "x": 168.61,
+   "y": 3,
+   "w": 103.75,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-154",
+   "teks": "Paket data dan registri angka"
+  },
+  {
+   "x": 154.61,
+   "y": 2,
+   "w": 117.75,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-154",
+   "teks": "Paket data dan registri angka"
+  },
+  {
+   "x": 296.37,
+   "y": 3,
+   "w": 46.72,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-282",
+   "teks": "Aturan kajian"
+  },
+  {
+   "x": 282.37,
+   "y": 2,
+   "w": 60.72,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-282",
+   "teks": "Aturan kajian"
+  },
+  {
+   "x": 16,
+   "y": 16,
+   "w": 131.63,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-2",
+   "teks": "Estimasi model, bukan Data Bencana"
+  },
+  {
+   "x": 2,
+   "y": 15,
+   "w": 145.63,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-2",
+   "teks": "Estimasi model, bukan Data Bencana"
+  },
+  {
+   "x": 171.63,
+   "y": 16,
+   "w": 54.43,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-157",
+   "teks": "Keluaran kajian"
+  },
+  {
+   "x": 157.63,
+   "y": 15,
+   "w": 68.43,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-157",
+   "teks": "Keluaran kajian"
+  },
+  {
+   "x": 31.86,
+   "y": 33,
+   "w": 48.71,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Sumber data"
+  },
+  {
+   "x": 154.17,
+   "y": 33,
+   "w": 40.94,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Paket data"
+  },
+  {
+   "x": 267.69,
+   "y": 33,
+   "w": 50.76,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Aturan kajian"
+  },
+  {
+   "x": 394.51,
+   "y": 33,
+   "w": 33.98,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk3",
+   "teks": "Keluaran"
+  },
+  {
+   "x": 12.79,
+   "y": 53,
+   "w": 86.86,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "DIBI BNPB 2008–2026"
+  },
+  {
+   "x": 13.71,
+   "y": 64.6,
+   "w": 85,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "kejadian dan korban per"
+  },
+  {
+   "x": 40.33,
+   "y": 74.2,
+   "w": 31.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "kab/kota"
+  },
+  {
+   "x": 154.61,
+   "y": 53,
+   "w": 40.07,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d1",
+   "teks": "Paket DIBI"
+  },
+  {
+   "x": 126.36,
+   "y": 64.6,
+   "w": 96.56,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d1",
+   "teks": "seri tahun, musim, kejadian"
+  },
+  {
+   "x": 164.69,
+   "y": 74.2,
+   "w": 19.91,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d1",
+   "teks": "besar"
+  },
+  {
+   "x": 263.72,
+   "y": 57.8,
+   "w": 58.7,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "Lantai skenario"
+  },
+  {
+   "x": 247.55,
+   "y": 69.4,
+   "w": 91.04,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "kejadian tercatat terburuk"
+  },
+  {
+   "x": 383.61,
+   "y": 57.8,
+   "w": 55.78,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "c1",
+   "teks": "Kartu skenario"
+  },
+  {
+   "x": 383.99,
+   "y": 69.4,
+   "w": 55.02,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c1",
+   "teks": "Bab 6 sampai 9"
+  },
+  {
+   "x": 28.83,
+   "y": 102.4,
+   "w": 54.77,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "InaRISK BNPB"
+  },
+  {
+   "x": 11.42,
+   "y": 114,
+   "w": 89.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "IRBI 2015–2025 dan KRB"
+  },
+  {
+   "x": 35.62,
+   "y": 123.6,
+   "w": 41.19,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "2022–2026"
+  },
+  {
+   "x": 154.66,
+   "y": 107.2,
+   "w": 39.97,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d2",
+   "teks": "Paket IRBI"
+  },
+  {
+   "x": 124.66,
+   "y": 118.8,
+   "w": 99.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d2",
+   "teks": "kelas resmi dan kelas kuintil"
+  },
+  {
+   "x": 262.07,
+   "y": 107.2,
+   "w": 62.01,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "Daftar perhatian"
+  },
+  {
+   "x": 244.58,
+   "y": 118.8,
+   "w": 96.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "syarat IRBI, DIBI, dan proksi"
+  },
+  {
+   "x": 380.5,
+   "y": 107.2,
+   "w": 62.01,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "c2",
+   "teks": "Daftar perhatian"
+  },
+  {
+   "x": 375.95,
+   "y": 118.8,
+   "w": 71.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c2",
+   "teks": "Bab 5 dan Lampiran"
+  },
+  {
+   "x": 16.14,
+   "y": 151.8,
+   "w": 80.15,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s3",
+   "teks": "NOAA CPC, PuSGeN,"
+  },
+  {
+   "x": 31.24,
+   "y": 162,
+   "w": 49.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s3",
+   "teks": "SiPongi, BPS"
+  },
+  {
+   "x": 19.41,
+   "y": 173.6,
+   "w": 73.61,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s3",
+   "teks": "ONI, magnitudo, luas"
+  },
+  {
+   "x": 28.44,
+   "y": 183.2,
+   "w": 55.55,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s3",
+   "teks": "terbakar, Podes"
+  },
+  {
+   "x": 147.09,
+   "y": 161.7,
+   "w": 55.1,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d3",
+   "teks": "Registri angka"
+  },
+  {
+   "x": 131.85,
+   "y": 173.3,
+   "w": 85.58,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d3",
+   "teks": "satu angka satu sumber"
+  },
+  {
+   "x": 258.67,
+   "y": 151.8,
+   "w": 68.81,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "Kemungkinan dan"
+  },
+  {
+   "x": 258,
+   "y": 162,
+   "w": 70.15,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "dampak per aspek"
+  },
+  {
+   "x": 255.54,
+   "y": 173.6,
+   "w": 75.06,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "pita lima tahun, kelas"
+  },
+  {
+   "x": 278.69,
+   "y": 183.2,
+   "w": 28.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "dampak"
+  },
+  {
+   "x": 383.37,
+   "y": 161.7,
+   "w": 56.27,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "c3",
+   "teks": "Kelas skenario"
+  },
+  {
+   "x": 386.96,
+   "y": 173.3,
+   "w": 49.08,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c3",
+   "teks": "matriks Bab 5"
+  },
+  {
+   "x": 15.89,
+   "y": 216.2,
+   "w": 80.66,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s4",
+   "teks": "Literatur terverifikasi"
+  },
+  {
+   "x": 25.45,
+   "y": 227.8,
+   "w": 61.53,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s4",
+   "teks": "evaluasi program"
+  },
+  {
+   "x": 146.28,
+   "y": 216.2,
+   "w": 56.72,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d4",
+   "teks": "Paket program"
+  },
+  {
+   "x": 150.42,
+   "y": 227.8,
+   "w": 48.45,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d4",
+   "teks": "kategori bukti"
+  },
+  {
+   "x": 266.19,
+   "y": 211.4,
+   "w": 53.76,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a4",
+   "teks": "Kategori bukti"
+  },
+  {
+   "x": 244.95,
+   "y": 223,
+   "w": 96.25,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a4",
+   "teks": "kuat, sedang, lemah, belum"
+  },
+  {
+   "x": 279.54,
+   "y": 232.6,
+   "w": 27.07,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a4",
+   "teks": "terbukti"
+  },
+  {
+   "x": 385.48,
+   "y": 216.2,
+   "w": 52.05,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "c4",
+   "teks": "Rekomendasi"
+  },
+  {
+   "x": 379.5,
+   "y": 227.8,
+   "w": 64,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c4",
+   "teks": "Bab 10 sampai 13"
+  },
+  {
+   "x": 7.32,
+   "y": 260.8,
+   "w": 97.78,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s5",
+   "teks": "Platform Pantau Bencana"
+  },
+  {
+   "x": 19.56,
+   "y": 272.4,
+   "w": 73.31,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s5",
+   "teks": "simulasi geologi dan"
+  },
+  {
+   "x": 25.72,
+   "y": 282,
+   "w": 61,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s5",
+   "teks": "hidrometeorologi"
+  },
+  {
+   "x": 146.07,
+   "y": 265.6,
+   "w": 57.15,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "d5",
+   "teks": "Paket skenario"
+  },
+  {
+   "x": 132.6,
+   "y": 277.2,
+   "w": 84.08,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "d5",
+   "teks": "keluaran simulasi berpil"
+  },
+  {
+   "x": 274.18,
+   "y": 260.8,
+   "w": 37.79,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a5",
+   "teks": "Kepekaan"
+  },
+  {
+   "x": 248.44,
+   "y": 272.4,
+   "w": 89.27,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a5",
+   "teks": "peringatan dini, evakuasi,"
+  },
+  {
+   "x": 275.41,
+   "y": 282,
+   "w": 35.33,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a5",
+   "teks": "bangunan"
+  },
+  {
+   "x": 376.71,
+   "y": 265.6,
+   "w": 69.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "c5",
+   "teks": "Analisis kepekaan"
+  },
+  {
+   "x": 377.03,
+   "y": 277.2,
+   "w": 68.95,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "c5",
+   "teks": "kartu dan Lampiran"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Alur dari sumber data ke paket, aturan kajian, dan keluaran; tabel pilih grafik B5.10 tidak memuat bagan alur",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 20
+}

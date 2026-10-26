@@ -3,7 +3,7 @@ kajian: mitigasi
 bab: 3
 judul: Metodologi
 pertanyaan: Bagaimana IRBI dan DIBI dibaca tanpa membandingkan skala yang patah? Bagaimana skenario terburuk, lantai, kemungkinan, dampak, dan kerugian didefinisikan untuk semua jenis bencana, dan dengan label keyakinan apa? Angka mana yang berbeda versi, dan versi mana yang dipakai?
-status: draf
+status: final
 target_halaman: 9
 ---
 
@@ -24,6 +24,18 @@ target_halaman: 9
 
 **Rekomendasi:** @rek:r-m01, @rek:r-m08, @rek:r-m20
 :::
+
+::: gambar {#gbr:foto-m03-citra-asap}
+berkas: gambar/foto/mit-b03-citra-asap.jpg
+jenis: foto
+judul: Citra satelit asap kebakaran di atas Kalimantan, Kalimantan, 15 September 2019
+pengarang: NASA Earth Observatory, Joshua Stevens (LANCE MODIS Rapid Response)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Satellite_image_of_2019_Southeast_Asian_haze_in_Borneo_-_20190915.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
 
 ## Data, Produsen, dan Label Keyakinan {#sub:data-label}
 
@@ -61,7 +73,7 @@ keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 23 Okt 2026
 
-Alur bergerak dari sumber resmi ke paket data dan registri angka, lalu ke lantai, kemungkinan, dampak per aspek, kelas skenario, daftar perhatian, dan rekomendasi; simpul berpil Estimasi model memuat pernyataan produsen.
+Alur bergerak dari sumber resmi ke paket data dan registri angka, lalu ke lantai, kemungkinan, dampak per aspek, kelas skenario, daftar perhatian, dan rekomendasi; simpul berwarna Estimasi model memuat pernyataan produsen.
 :::
 
 ## IRBI: Patahan Skala 2025 dan Aturan Pakai {#sub:irbi}
@@ -208,7 +220,7 @@ catatan: Profil biaya rehabilitasi rumah adalah dasar lapisan pembiayaan, bukan 
 
 ## Aturan Daftar Perhatian dan Provinsi Utama {#sub:daftar-perhatian}
 
-Kab/kota masuk daftar perhatian suatu bahaya bila memenuhi paling sedikit dua syarat kelompok bahayanya [@bnpb-irbi; @bnpb-dibi]. Syarat tidak dijumlah menjadi skor, daftar tampil menurut kode wilayah, dan aturannya berlabel Asumsi kebijakan.
+Kab/kota masuk daftar perhatian suatu bahaya bila memenuhi paling sedikit dua syarat kelompok bahayanya [@bnpb-irbi; @bnpb-dibi]. Syarat tidak dijumlah menjadi skor, daftar tampil menurut kode wilayah, dan aturannya berlabel Asumsi kebijakan. Jumlah kab/kota per bahaya dan per varian aturan tampil pada @tbl:daftar-perhatian.
 
 - Hidrometeorologi: (a) IRBI 2025 bahaya itu di kelas nilai teratas nasional; (b) kejadian tercatat paling sedikit tiga dari sebelas tahun 2015–2025; (c) meninggal dan hilang atau mengungsi DIBI di kuartil atas.
 - Geologi: (a) sama dengan hidrometeorologi; (b) paparan KRB atau jiwa pesisir rendah dengan waktu tiba tsunami paling lama tiga puluh menit (Estimasi model) di kuartil atas; (c) kejadian berkorban sejak 2008.

@@ -1,0 +1,111 @@
+skenario,butir,rendah,tengah,tinggi,satuan,label
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",jiwa terpapar MMI ≥ VI,,17425600,,jiwa,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",jiwa terpapar MMI ≥ VII,0,0,5545446,jiwa,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",luas MMI ≥ VI,,17481,,km²,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",rumah rusak berat,2554,24991,218417,unit,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",rumah rusak sedang,10226,86503,660038,unit,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",rumah rusak ringan,25437,197943,1400906,unit,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum","korban jiwa guncangan, pita mesin",29,312,2979,jiwa,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum","korban jiwa guncangan, rasio analog",0,0,2602,jiwa,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",pengungsi (penghuni rumah rusak berat dan sedang),,434828,,jiwa,asumsi-kebijakan
+"Megathrust selatan Jawa, di bawah magnitudo maksimum","jiwa evakuasi tsunami (pesisir rendah, tiba ≤ 30 menit)",,2862544,,jiwa,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",panjang pantai tiba ≤ 30 menit,851,,1389,km,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",kerugian materiil batas bawah (stimulan rumah),841608000000,7063712000000,53919772000000,Rp,asumsi-kebijakan
+"Megathrust selatan Jawa, di bawah magnitudo maksimum","kerugian materiil batas bawah, skema lama 50/25/10",,5391568000000,,Rp,asumsi-kebijakan
+"Megathrust selatan Jawa, di bawah magnitudo maksimum","tahun hidup hilang (YLL), guncangan analog",0,0,117100,tahun,asumsi-kebijakan
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",hari-mengungsi guncangan (7 hari),,3043797,,jiwa-hari,asumsi-kebijakan
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",hari-mengungsi guncangan (30 hari),,13044844,,jiwa-hari,asumsi-kebijakan
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",hari-mengungsi guncangan (90 hari),,39134533,,jiwa-hari,asumsi-kebijakan
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,134,,kab/kota,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,5.6,,22.3,m,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",jiwa terpapar MMI ≥ VI,,9623934,,jiwa,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",jiwa terpapar MMI ≥ VII,1208127,3911944,7535100,jiwa,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",luas MMI ≥ VI,,80637,,km²,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",rumah rusak berat,6807,50378,350761,unit,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",rumah rusak sedang,13984,94160,599681,unit,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",rumah rusak ringan,23913,153172,934859,unit,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum","korban jiwa guncangan, pita mesin",116,902,6574,jiwa,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum","korban jiwa guncangan, rasio analog",567,1836,7708,jiwa,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",pengungsi (penghuni rumah rusak berat dan sedang),,563696,,jiwa,asumsi-kebijakan
+"Megathrust Mentawai, di bawah magnitudo maksimum","jiwa evakuasi tsunami (pesisir rendah, tiba ≤ 30 menit)",,930750,,jiwa,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",panjang pantai tiba ≤ 30 menit,1440,,2061,km,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",kerugian materiil batas bawah (stimulan rumah),1186621000000,8145033000000,53058961000000,Rp,asumsi-kebijakan
+"Megathrust Mentawai, di bawah magnitudo maksimum","kerugian materiil batas bawah, skema lama 50/25/10",,6404598000000,,Rp,asumsi-kebijakan
+"Megathrust Mentawai, di bawah magnitudo maksimum","tahun hidup hilang (YLL), guncangan analog",14173,64249,346860,tahun,asumsi-kebijakan
+"Megathrust Mentawai, di bawah magnitudo maksimum",hari-mengungsi guncangan (7 hari),,3945871,,jiwa-hari,asumsi-kebijakan
+"Megathrust Mentawai, di bawah magnitudo maksimum",hari-mengungsi guncangan (30 hari),,16910876,,jiwa-hari,asumsi-kebijakan
+"Megathrust Mentawai, di bawah magnitudo maksimum",hari-mengungsi guncangan (90 hari),,50732629,,jiwa-hari,asumsi-kebijakan
+"Megathrust Mentawai, di bawah magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,95,,kab/kota,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,9.4,,37.8,m,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",jiwa terpapar MMI ≥ VI,,0,,jiwa,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",jiwa terpapar MMI ≥ VII,0,0,0,jiwa,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",luas MMI ≥ VI,,122,,km²,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",rumah rusak berat,81,928,9300,unit,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",rumah rusak sedang,435,4237,36398,unit,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",rumah rusak ringan,1296,11458,90016,unit,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber","korban jiwa guncangan, pita mesin",1,10,107,jiwa,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber","korban jiwa guncangan, rasio analog",0,0,0,jiwa,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",pengungsi (penghuni rumah rusak berat dan sedang),,20142,,jiwa,asumsi-kebijakan
+"Megathrust Sumba, magnitudo tanpa sumber","jiwa evakuasi tsunami (pesisir rendah, tiba ≤ 30 menit)",,1350831,,jiwa,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",panjang pantai tiba ≤ 30 menit,1261,,2031,km,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",kerugian materiil batas bawah (stimulan rumah),37353000000,354628000000,3000220000000,Rp,asumsi-kebijakan
+"Megathrust Sumba, magnitudo tanpa sumber","kerugian materiil batas bawah, skema lama 50/25/10",,266879000000,,Rp,asumsi-kebijakan
+"Megathrust Sumba, magnitudo tanpa sumber","tahun hidup hilang (YLL), guncangan analog",0,0,0,tahun,asumsi-kebijakan
+"Megathrust Sumba, magnitudo tanpa sumber",hari-mengungsi guncangan (7 hari),,140991,,jiwa-hari,asumsi-kebijakan
+"Megathrust Sumba, magnitudo tanpa sumber",hari-mengungsi guncangan (30 hari),,604246,,jiwa-hari,asumsi-kebijakan
+"Megathrust Sumba, magnitudo tanpa sumber",hari-mengungsi guncangan (90 hari),,1812739,,jiwa-hari,asumsi-kebijakan
+"Megathrust Sumba, magnitudo tanpa sumber",tsunami: kab/kota tercapai ≤ 180 menit,,150,,kab/kota,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",tsunami: tinggi indikatif maksimum di pantai,2.7,,10.6,m,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",jiwa terpapar MMI ≥ VI,,129704396,,jiwa,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",jiwa terpapar MMI ≥ VII,30227545,69038814,110448354,jiwa,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",luas MMI ≥ VI,,120796,,km²,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",rumah rusak berat,121057,896686,6161572,unit,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",rumah rusak sedang,242560,1599561,9907394,unit,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",rumah rusak ringan,391428,2437050,14415928,unit,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum","korban jiwa guncangan, pita mesin",2036,16132,117107,jiwa,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum","korban jiwa guncangan, rasio analog",10720,32397,136032,jiwa,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",pengungsi (penghuni rumah rusak berat dan sedang),,9735362,,jiwa,asumsi-kebijakan
+"Megathrust selatan Jawa, magnitudo maksimum","jiwa evakuasi tsunami (pesisir rendah, tiba ≤ 30 menit)",,3442456,,jiwa,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",panjang pantai tiba ≤ 30 menit,1585,,2175,km,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",kerugian materiil batas bawah (stimulan rumah),20411610000000,138343725000000,883155063000000,Rp,asumsi-kebijakan
+"Megathrust selatan Jawa, magnitudo maksimum","kerugian materiil batas bawah, skema lama 50/25/10",,109193814000000,,Rp,asumsi-kebijakan
+"Megathrust selatan Jawa, magnitudo maksimum","tahun hidup hilang (YLL), guncangan analog",267996,1133881,6121458,tahun,asumsi-kebijakan
+"Megathrust selatan Jawa, magnitudo maksimum",hari-mengungsi guncangan (7 hari),,68147537,,jiwa-hari,asumsi-kebijakan
+"Megathrust selatan Jawa, magnitudo maksimum",hari-mengungsi guncangan (30 hari),,292060874,,jiwa-hari,asumsi-kebijakan
+"Megathrust selatan Jawa, magnitudo maksimum",hari-mengungsi guncangan (90 hari),,876182623,,jiwa-hari,asumsi-kebijakan
+"Megathrust selatan Jawa, magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,160,,kab/kota,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,13.3,,53.3,m,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",jiwa terpapar MMI ≥ VI,,11670866,,jiwa,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",jiwa terpapar MMI ≥ VII,2184065,5803334,9697878,jiwa,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",luas MMI ≥ VI,,107023,,km²,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",rumah rusak berat,11657,84335,573253,unit,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",rumah rusak sedang,22027,144339,897670,unit,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",rumah rusak ringan,35420,221188,1323974,unit,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum","korban jiwa guncangan, pita mesin",205,1566,11135,jiwa,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum","korban jiwa guncangan, rasio analog",901,2723,11435,jiwa,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",pengungsi (penghuni rumah rusak berat dan sedang),,891831,,jiwa,asumsi-kebijakan
+"Megathrust Mentawai, magnitudo maksimum","jiwa evakuasi tsunami (pesisir rendah, tiba ≤ 30 menit)",,930750,,jiwa,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",panjang pantai tiba ≤ 30 menit,1622,,2193,km,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",kerugian materiil batas bawah (stimulan rumah),1891524000000,12708114000000,81184879000000,Rp,asumsi-kebijakan
+"Megathrust Mentawai, magnitudo maksimum","kerugian materiil batas bawah, skema lama 50/25/10",,10037125000000,,Rp,asumsi-kebijakan
+"Megathrust Mentawai, magnitudo maksimum","tahun hidup hilang (YLL), guncangan analog",22528,95313,514564,tahun,asumsi-kebijakan
+"Megathrust Mentawai, magnitudo maksimum",hari-mengungsi guncangan (7 hari),,6242814,,jiwa-hari,asumsi-kebijakan
+"Megathrust Mentawai, magnitudo maksimum",hari-mengungsi guncangan (30 hari),,26754915,,jiwa-hari,asumsi-kebijakan
+"Megathrust Mentawai, magnitudo maksimum",hari-mengungsi guncangan (90 hari),,80264745,,jiwa-hari,asumsi-kebijakan
+"Megathrust Mentawai, magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,97,,kab/kota,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,10.6,,42.4,m,estimasi-model
+Erupsi setara Merapi 2010,jiwa di area sapuan awan panas + lahar tanpa evakuasi,,89707,,jiwa,estimasi-model
+Erupsi setara Merapi 2010,luas sapuan,,7993,,ha,estimasi-model
+Erupsi setara Merapi 2010,korban jiwa (pola evakuasi 2010),347,,386,jiwa,resmi
+Erupsi setara Merapi 2010,pengungsi (radius 20 km seperti 2010),,1552098,,jiwa,estimasi-model
+Erupsi setara Merapi 2010,rumah rusak berat (analog 2010),,2465,,unit,resmi
+Erupsi setara Merapi 2010,rumah rusak sedang (analog 2010),,158,,unit,resmi
+Erupsi setara Merapi 2010,rumah rusak ringan (analog 2010),,296,,unit,resmi
+Erupsi setara Merapi 2010,kerugian materiil batas bawah (stimulan),,157080000000,,Rp,asumsi-kebijakan
+Erupsi setara Merapi 2010,tahun hidup hilang (YLL),8675,12828,17370,tahun,asumsi-kebijakan
+"Erupsi besar tiga puluh gunung api, pola historis","jiwa KRB III (jumlah 30 gunung, piksel ≤ 20 km)",,86615,,jiwa,resmi
+"Erupsi besar tiga puluh gunung api, pola historis","jiwa KRB II (jumlah 30 gunung, piksel ≤ 20 km)",,297012,,jiwa,resmi
+"Erupsi besar tiga puluh gunung api, pola historis","jiwa KRB I (jumlah 30 gunung, piksel ≤ 20 km)",,482762,,jiwa,resmi
+"Erupsi besar tiga puluh gunung api, pola historis",korban jiwa erupsi besar pola historis,596,,967,jiwa,estimasi-model
+"Erupsi besar tiga puluh gunung api, pola historis",rumah rusak berat pola historis,6174,,8769,unit,estimasi-model
+"Erupsi besar tiga puluh gunung api, pola historis",pengungsi pola historis (batas atas),98353,,1122021,jiwa,estimasi-model
