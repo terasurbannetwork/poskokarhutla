@@ -3,19 +3,21 @@
 Pakai:  python3 scripts/scrape/lahan.py            # unduh (kalau belum ada) + bangun
         python3 scripts/scrape/lahan.py --uji      # cek cepat hasil di public/data/lahan
 
-Mentah  -> data/raw/lahan/   (zip shapefile + ubin PNG gambut; tidak di-commit)
+Mentah  -> data/raw/lahan/   (zip shapefile + GeoJSON gambut PRIMS; tidak di-commit)
 Hasil   -> public/data/lahan/{gambut,konsesi,kawasan}.geojson
 
 Sumber (semua publik tanpa login):
-- Gambut: GFW "Global peatland extent" v20230315 (CC BY 4.0), ubin raster z8 ~600 m.
-  Indonesia = Miettinen dkk. 2016 + Gumbricht dkk. 2017 (CIFOR).
+- Gambut: peta gambut 1:250.000 Kementan (BBSDLP) lewat PRIMS BRGM, WFS prims:gambut_250k
+  (12,93 jt ha). Dulu GFW "Global peatland extent" yang di Indonesia menumpuk Gumbricht 2017
+  (mangrove + rawa sungai/banjir ikut dihitung gambut): ~2,5x angka resmi, Papua Selatan
+  hampir seluruhnya gambut.
 - Konsesi: tautan unduh resmi GFW (dicantumkan GFW di katalog ArcGIS-nya): sawit
   (v20191031, data KLHK ~2014) dan HPH/PBPH-HA. Data Indonesia berasal dari KLHK; GFW
   mengecualikan Indonesia dari CC BY 4.0. HTI belum ada (lihat konsesi()).
 - Kawasan hutan: shapefile "Kawasan hutan Indonesia" dari akun GFW di ArcGIS Online
   (KLHK, versi 2017).
 """
-import io, json, math, os, struct, sys, time, urllib.request, zipfile, zlib
+import io, json, math, os, struct, sys, time, urllib.request, zipfile
 from concurrent.futures import ThreadPoolExecutor
 
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
@@ -31,9 +33,10 @@ UNDUH = {
     "gfw_oil_palm.zip": GFW.format("gfw_oil_palm/v20191031"),
     "gfw_logging_download.zip": GFW.format("gfw_logging_download/latest"),
     "idn_forest_area.zip": "https://www.arcgis.com/sharing/rest/content/items/1dd7ef31c3924d7cbcf918bd97a7f985/data",
+    "gambut_250k.geojson": "https://prims.brgm.go.id/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature"
+                           "&typeNames=prims:gambut_250k&outputFormat=application/json&srsName=EPSG:4326",
 }
-UBIN = "https://tiles.globalforestwatch.org/gfw_peatlands/v20230315/is/8/{x}/{y}.png"
-Z = 8
+Z = 8  # kisi keluaran tetap kisi lama: sel 2x2 piksel ubin z8 (~1,2 km)
 X0, X1, Y0, Y1 = 195, 228, 123, 136  # ubin z8 yang menutup 94..141.5 BT, 6.5 LU..11.5 LS
 
 
@@ -54,46 +57,10 @@ def ambil(url, tujuan, coba=4):
 
 
 def unduh():
-    os.makedirs(os.path.join(MENTAH, "gambut"), exist_ok=True)
+    os.makedirs(MENTAH, exist_ok=True)
     tugas = [(u, os.path.join(MENTAH, n)) for n, u in UNDUH.items()]
-    tugas += [(UBIN.format(x=x, y=y), os.path.join(MENTAH, "gambut", f"{x}_{y}.png"))
-              for x in range(X0, X1 + 1) for y in range(Y0, Y1 + 1)]
     with ThreadPoolExecutor(8) as ex:
         list(ex.map(lambda t: ambil(*t), tugas))
-
-
-# ---------- PNG (RGBA 8-bit, tanpa interlace: format ubin GFW) ----------
-def png_alfa(data):
-    """Kanal alfa sebagai list baris bytes; piksel gambut = alfa > 0."""
-    assert data[:8] == b"\x89PNG\r\n\x1a\n"
-    i, idat = 8, b""
-    while i < len(data):
-        n, jenis = struct.unpack(">I4s", data[i:i + 8])
-        isi = data[i + 8:i + 8 + n]
-        if jenis == b"IHDR":
-            w, h, kedalaman, warna = struct.unpack(">IIBB", isi[:10])
-            assert (kedalaman, warna) == (8, 6), "ubin bukan RGBA 8-bit"
-        elif jenis == b"IDAT":
-            idat += isi
-        i += 12 + n
-    mentah, bpp, stride = zlib.decompress(idat), 4, w * 4
-    sebelum, baris = bytearray(stride), []
-    for r in range(h):
-        f, s = mentah[r * (stride + 1)], bytearray(mentah[r * (stride + 1) + 1:(r + 1) * (stride + 1)])
-        for c in range(stride):
-            a = s[c - bpp] if c >= bpp else 0
-            b = sebelum[c]
-            if f == 1: s[c] = (s[c] + a) & 255
-            elif f == 2: s[c] = (s[c] + b) & 255
-            elif f == 3: s[c] = (s[c] + (a + b) // 2) & 255
-            elif f == 4:
-                cc = sebelum[c - bpp] if c >= bpp else 0
-                p = a + b - cc
-                pa, pb, pc = abs(p - a), abs(p - b), abs(p - cc)
-                s[c] = (s[c] + (a if pa <= pb and pa <= pc else b if pb <= pc else cc)) & 255
-        baris.append(bytes(s[3::4]))
-        sebelum = s
-    return baris
 
 
 def lon(px):  # px global pada z8 (256 px/ubin)
@@ -104,23 +71,40 @@ def lat(py):
     return math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * py / (256 << Z)))))
 
 
+def baris(la):  # lintang -> indeks baris sel kontinu (pusat sel = bilangan bulat)
+    py = (1 - math.asinh(math.tan(math.radians(la))) / math.pi) / 2 * (256 << Z)
+    return (py - Y0 * 256 - 1) / 2
+
+
+def kolom(lo):
+    return ((lo + 180) / 360 * (256 << Z) - X0 * 256 - 1) / 2
+
+
 def gambut():
-    """Sel 2x2 piksel z8 (~1,2 km) jadi gambut kalau >=2 dari 4 piksel gambut.
-    Sel dalam satu baris digabung jadi persegi; persegi identik di baris bawahnya ikut digabung."""
+    """Sel 2x2 piksel z8 (~1,2 km) jadi gambut kalau pusatnya di poligon PRIMS (scanline genap-ganjil
+    per fitur, lubang ikut). Sel dalam satu baris digabung jadi persegi; persegi identik di baris
+    bawahnya ikut digabung."""
     from wilayah import PRIORITAS, Wilayah
     w = Wilayah()
     lebar, tinggi = (X1 - X0 + 1) * 128, (Y1 - Y0 + 1) * 128
     grid = [bytearray(lebar) for _ in range(tinggi)]
-    for x in range(X0, X1 + 1):
-        for y in range(Y0, Y1 + 1):
-            a = png_alfa(open(os.path.join(MENTAH, "gambut", f"{x}_{y}.png"), "rb").read())
-            for r in range(128):
-                b0, b1, g = a[2 * r], a[2 * r + 1], grid[(y - Y0) * 128 + r]
-                for c in range(128):
-                    if (b0[2 * c] > 0) + (b0[2 * c + 1] > 0) + (b1[2 * c] > 0) + (b1[2 * c + 1] > 0) >= 2:
-                        g[(x - X0) * 128 + c] = 1
+    for f in json.load(open(os.path.join(MENTAH, "gambut_250k.geojson")))["features"]:
+        g = f["geometry"]
+        potong = {}  # baris -> kolom kontinu tempat tepi memotong pusat baris
+        for poli in (g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]):
+            for cincin in poli:
+                for (x1, y1), (x2, y2) in zip(cincin, cincin[1:] + cincin[:1]):
+                    r1, r2 = baris(y1), baris(y2)
+                    for r in range(max(0, math.ceil(min(r1, r2))), min(tinggi - 1, math.floor(max(r1, r2))) + 1):
+                        if (r1 > r) != (r2 > r):
+                            potong.setdefault(r, []).append(kolom(x1 + (r - r1) / (r2 - r1) * (x2 - x1)))
+        for r, xs in potong.items():
+            xs.sort()
+            for a, b in zip(xs[::2], xs[1::2]):
+                for c in range(max(0, math.ceil(a)), min(lebar - 1, math.floor(b)) + 1):
+                    grid[r][c] = 1
     # Buang sel di luar 9 provinsi pantauan (juga Malaysia/PNG/laut) dan sel yang
-    # 8 tetangganya kosong (bintik Gumbricht). ponytail: nasional penuh = ~12 MB; buka
+    # 8 tetangganya kosong (bintik tunggal). ponytail: nasional penuh = ~12 MB; buka
     # PRIORITAS kalau perlu, tapi pecah per provinsi supaya tiap berkas tetap kecil.
     prov = {}
     for r in range(tinggi):
