@@ -44,6 +44,10 @@ const DASAR = {
   sippa_foto: () => ({id: id16(), mime: "image/jpeg", ukuran: 1000, waktu: T0, oleh: "tester"}),
   sippa_jalan_cek: () => ({id: id16(), kompleks_id: "K1", prov: "62", musim: "kemarau", hasil: "lolos", oleh: "tester", waktu: T0}),
   sippa_aoi_usul: () => ({id: id16(), kompleks_id: "K1", prov: "62", alasan: "gambut tebal", oleh: "tester", waktu: T0}),
+  sippa_ab_unggah: () => ({id: id16(), sha: id16().repeat(4), n_baris: 10, oleh: "tester", waktu: T0}),
+  sippa_petak: () => ({id: id16(), petak_id: `P${n}-x`, aoi: `A${n}`, lengan: "lance", tanggal_perlakuan: "2026-10-05", luas_m2: 100, sumber: "unggah"}),
+  sippa_skenario: () => ({id: id16(), nama: "Skenario uji", state: "{}", versi_mesin: "mesin-1", oleh: "tester", waktu: T0}),
+  sippa_laporan: () => ({id: id16(), jenis: "pilot", parameter: "{}", oleh: "tester", waktu: T0}),
 };
 const sah = (tabel, u = {}) => masuk(tabel, {...DASAR[tabel](u), ...u});
 const tolak = (tabel, u, pola) => {
@@ -229,4 +233,141 @@ uji("sippa_aoi_usul: status dan kompleks atau sel", () => {
   const A = "sippa_aoi_usul";
   tolak(A, {status: "disetujui"}); for (const s of ["usul", "survei", "terpilih", "ditolak"]) lolos(A, {status: s});
   tolak(A, {kompleks_id: null}, /CHECK constraint failed: .*kompleks_id IS NOT NULL OR sel/s); lolos(A, {kompleks_id: null, sel: "s12_34"});
+});
+
+uji("sippa 0057: migrasi idempoten, 4 tabel, tanpa INSERT OR IGNORE", () => {
+  const sql = readFileSync(path.join(AKAR, "migrations/0057_sippa_ab_skenario.sql"), "utf8");
+  for (let i = 0; i < 2; i++) for (const s of pecah(sql)) db.exec(s);
+  for (const t of ["sippa_ab_unggah", "sippa_petak", "sippa_skenario", "sippa_laporan"]) {
+    const c = db.prepare(`SELECT * FROM pragma_table_info('${t}') WHERE name='dummy'`).get();
+    assert.ok(c && c.notnull === 1 && String(c.dflt_value) === "0", `${t}.dummy tidak NOT NULL DEFAULT 0: ${JSON.stringify(c)}`);
+  }
+  assert.ok(!/INSERT OR IGNORE/i.test(sql), "0057 memakai INSERT OR IGNORE; harus ON CONFLICT(id) DO NOTHING");
+});
+
+uji("sippa_ab_unggah: status, sha UNIQUE, n_baris 1-2000", () => {
+  const U = "sippa_ab_unggah";
+  tolak(U, {status: "final"}); lolos(U, {status: "ditinjau_evaluator"}); lolos(U, {status: "draf"});
+  tolak(U, {sha: heks(63)}); lolos(U, {sha: heks(64)});
+  assert.throws(() => sah(U, {sha: heks(64)}), /UNIQUE constraint failed: sippa_ab_unggah.sha/, "sha unggahan kembar DITERIMA (rute harus 409)");
+  tolak(U, {n_baris: 0}); tolak(U, {n_baris: 2001}); lolos(U, {n_baris: 2000}); lolos(U, {n_baris: 1});
+  tolak(U, {nama_berkas: heks(121)}); lolos(U, {nama_berkas: heks(120)});
+});
+
+uji("sippa_petak: lengan, tanggal, luas, surfaktan, biaya, biner, sumber, unik (aoi, petak_id)", () => {
+  const P = "sippa_petak";
+  tolak(P, {lengan: "heli"}); for (const l of ["konvensional", "lance", "lance_surfaktan", "sekat_rewetting", "lance_dalam"]) lolos(P, {lengan: l});
+  tolak(P, {tanggal_perlakuan: "2026-1-5"}); tolak(P, {tanggal_perlakuan: "26-10-05"}); lolos(P, {tanggal_perlakuan: "2026-10-05"});
+  tolak(P, {luas_m2: 0.5}); tolak(P, {luas_m2: 100001}); lolos(P, {luas_m2: 1}); lolos(P, {luas_m2: 100000});
+  tolak(P, {surfaktan_l: -1});
+  assert.throws(() => sah(P, {lengan: "lance", surfaktan_l: 2}), /CHECK constraint failed: .*surfaktan_l = 0 OR lengan/s, "surfaktan > 0 di lengan bukan surfaktan DITERIMA");
+  lolos(P, {lengan: "lance_surfaktan", surfaktan_l: 2}); lolos(P, {lengan: "lance", surfaktan_l: 0});
+  tolak(P, {biaya_rp: -1}); lolos(P, {biaya_rp: null});
+  for (const k of ["dingin_24j", "dingin_72j", "nyala_7h", "nyala_30h", "nyala_90h"]) { tolak(P, {[k]: 2}); for (const v of [null, 0, 1]) lolos(P, {[k]: v}); }
+  tolak(P, {sumber: "email"}); lolos(P, {sumber: "lapangan"});
+  sah(P, {aoi: "AX", petak_id: "P-001"});
+  assert.throws(() => sah(P, {aoi: "AX", petak_id: "P-001"}), /UNIQUE constraint failed: sippa_petak.aoi, sippa_petak.petak_id/, "(aoi, petak_id) ganda DITERIMA");
+  lolos(P, {aoi: "AY", petak_id: "P-001"});
+});
+
+uji("sippa_skenario: nama 3-80, state objek JSON <= 32 KB, ringkas JSON", () => {
+  const S = "sippa_skenario", isi = k => `{"a":"${"x".repeat(k - 8)}"}`;
+  tolak(S, {nama: "ab"}); tolak(S, {nama: heks(81)}); lolos(S, {nama: "abc"}); lolos(S, {nama: heks(80)});
+  tolak(S, {state: "{bukan json"}); tolak(S, {state: "[1]"}); tolak(S, {state: "123"}); tolak(S, {state: isi(32769)}); lolos(S, {state: isi(32768)});
+  tolak(S, {ringkas: "x"}); lolos(S, {ringkas: null}); lolos(S, {ringkas: "{}"});
+  tolak(S, {versi_mesin: "v1"});
+});
+
+uji("sippa_laporan: jenis, parameter JSON, ukuran, ada_berkas wajib sha dan ukuran", () => {
+  const L = "sippa_laporan";
+  tolak(L, {jenis: "harian"}); for (const j of ["pilot", "kejadian", "mingguan", "musim", "skenario"]) lolos(L, {jenis: j});
+  tolak(L, {parameter: "x"});
+  tolak(L, {ukuran: 10485761}); lolos(L, {ukuran: 10485760});
+  assert.throws(() => sah(L, {ada_berkas: 1, sha: null}), /CHECK constraint failed: .*ada_berkas = 0 OR/s, "ada_berkas = 1 tanpa sha DITERIMA");
+  assert.throws(() => sah(L, {ada_berkas: 1, sha: heks(64), ukuran: null}), /CHECK constraint failed/, "ada_berkas = 1 tanpa ukuran DITERIMA");
+  lolos(L, {ada_berkas: 1, sha: heks(64), ukuran: 10}); lolos(L, {ada_berkas: 0});
+  tolak(L, {ada_berkas: 2});
+});
+
+/* ===== 0059_sippa_aset_pelihara.sql (RENCANA-UJI §3.6, keputusan 56) ===== */
+const MIG59 = () => readFileSync(path.join(AKAR, "migrations/0059_sippa_aset_pelihara.sql"), "utf8");
+const kodeAs = () => `AS-${String(n % 9000).padStart(4, "0")}`;
+Object.assign(DASAR, {
+  sippa_aset: () => ({id: id16(), kode: kodeAs(), kelas: "sumur_bor", nama: "Sumur A", sumber: "bpbd", pemilik_aset: "BPBD Kalteng", prov: "62", keyakinan: "resmi", dibuat: T0, diubah: T0, oleh: "tester"}),
+  sippa_inspeksi: u => ({id: id16(), sasaran_jenis: "aset", sasaran_id: id16(), jenis: "berkala", skor: 0, prov: "62", oleh: "tester", waktu: T0, ...(u.sasaran_jenis === "komponen" ? {kit_id: kit()} : {})}),
+  sippa_stok_gerak: () => ({id: id16(), gudang: "Gudang Palangka", kode_bom: "P-01", nama: "Pompa", delta: 1, satuan: "unit", alasan: "terima", oleh: "tester", waktu: T0}),
+});
+const STOK = (gudang, kode_bom, delta) => sah("sippa_stok_gerak", {gudang, kode_bom, delta, alasan: delta > 0 ? "terima" : "pakai"});
+
+uji("sippa umum: migrasi 0059 idempoten dua kali, tiga tabel, tujuh trigger, kolom dummy", () => {
+  for (let i = 0; i < 2; i++) for (const s of pecah(MIG59())) db.exec(s);
+  const tabel = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'sippa\\_%' ESCAPE '\\'").all().map(r => r.name);
+  for (const t of ["sippa_aset", "sippa_inspeksi", "sippa_stok_gerak"]) assert.ok(tabel.includes(t), `${t} tidak ada sesudah 0059; tabel ada: ${tabel.join(",")}`);
+  const trg = db.prepare("SELECT name FROM sqlite_master WHERE type='trigger' AND name LIKE 'sippa\\_%' ESCAPE '\\'").all().map(r => r.name);
+  for (const t of ["sippa_insp_komp_cek", "sippa_insp_komp_terapkan", "sippa_insp_tetap", "sippa_insp_hapus", "sippa_stok_cek", "sippa_stok_tetap", "sippa_stok_hapus"]) assert.ok(trg.includes(t), `trigger ${t} tidak ada`);
+  for (const t of ["sippa_aset", "sippa_inspeksi", "sippa_stok_gerak"]) {
+    const c = db.prepare(`SELECT * FROM pragma_table_info('${t}') WHERE name='dummy'`).get();
+    assert.ok(c && c.notnull === 1 && String(c.dflt_value) === "0", `${t}.dummy tidak NOT NULL DEFAULT 0: ${JSON.stringify(c)}`);
+    tolak(t, {dummy: 2});
+  }
+});
+
+uji("sippa_aset: kelas, kode, pemilik aset, atribut, rehab Q10", () => {
+  const A = "sippa_aset";
+  tolak(A, {kelas: "sumur"});
+  for (const k of ["sumur_bor", "pompa_sumur", "pipa_sementara", "tandon_hidran", "pipa_koridor", "jembatan_darurat", "jembatan_permanen"]) lolos(A, {kelas: k});
+  for (const kode of ["AS-1", "AS-12345", "as-0001"]) tolak(A, {kode});
+  tolak(A, {kode: "AS-9001", dummy: 0}, /CHECK constraint failed: .*AS-9000/s); lolos(A, {kode: "AS-9001", dummy: 1}); lolos(A, {kode: "AS-0001"});
+  assert.throws(() => sah(A, {kode: "AS-0001"}), /UNIQUE constraint failed: sippa_aset.kode/, "kode kembar DITERIMA");
+  tolak(A, {pemilik_aset: null}, /NOT NULL constraint failed: sippa_aset.pemilik_aset/); tolak(A, {pemilik_aset: "ab"}); lolos(A, {pemilik_aset: "abc"}); lolos(A, {pemilik_aset: heks(120)}); tolak(A, {pemilik_aset: heks(121)});
+  tolak(A, {atribut: "[]"}); tolak(A, {atribut: "x"}); lolos(A, {atribut: "{}"});
+  const obj = k => JSON.stringify({x: "a".repeat(k - 8)});
+  assert.equal(obj(4097).length, 4097); tolak(A, {atribut: obj(4097)}); lolos(A, {atribut: obj(4096)});
+  for (const z of ["kritis", "rusak"]) {
+    tolak(A, {atribut: JSON.stringify({zona_konservasi: z})}, /CHECK constraint failed: .*rekomendasi_bg/s);
+    lolos(A, {atribut: JSON.stringify({zona_konservasi: z, rekomendasi_bg: "BG-1"})});
+    lolos(A, {kelas: "pompa_sumur", atribut: JSON.stringify({zona_konservasi: z})});
+  }
+  lolos(A, {atribut: JSON.stringify({zona_konservasi: "aman"})});
+  tolak(A, {lat: 7}); tolak(A, {lon: 142}); lolos(A, {lat: -2.2, lon: 113.9}); tolak(A, {keyakinan: "estimasi-model"}); tolak(A, {status: "baru"});
+});
+
+uji("sippa_inspeksi: skor, sasaran, hasil uji, tambah-saja, trigger kondisi", () => {
+  const I = "sippa_inspeksi";
+  tolak(I, {skor: 4}); tolak(I, {skor: -1}); for (const s of [0, 1, 2, 3]) lolos(I, {skor: s});
+  tolak(I, {sasaran_jenis: "komponen", kit_id: null}, /sippa_insp_komp_cek|CHECK constraint failed: .*kit_id IS NOT NULL/s);   // BEFORE INSERT jalan lebih dulu dari CHECK; salah satu cukup
+  const k1 = kit(), k2 = kit();
+  const komp = sah("sippa_komponen", {kit_id: k1}).id;
+  galat(`INSERT INTO sippa_inspeksi (id,sasaran_jenis,sasaran_id,kit_id,jenis,skor,prov,oleh,waktu) VALUES ('${id16()}','komponen','${komp}','${k2}','berkala',0,'62','tester',${T0})`, /sippa_insp_komp_cek/, "komponen milik kit lain DITERIMA");
+  lolos(I, {sasaran_jenis: "komponen", sasaran_id: komp, kit_id: k1, skor: 2, waktu: T0 + 5});
+  const kd = db.prepare("SELECT kondisi, dicek FROM sippa_komponen WHERE id=?").get(komp);
+  assert.deepEqual({...kd}, {kondisi: "rusak_berat", dicek: T0 + 5}, `skor 2 harus menulis kondisi='rusak_berat' dan dicek=waktu, hasil ${JSON.stringify(kd)}`);
+  for (const [s, k] of [[0, "baik"], [1, "rusak_ringan"], [3, "hilang"]]) {
+    lolos(I, {sasaran_jenis: "komponen", sasaran_id: komp, kit_id: k1, skor: s, waktu: T0 + 10 + s});
+    assert.equal(db.prepare("SELECT kondisi FROM sippa_komponen WHERE id=?").get(komp).kondisi, k, `skor ${s} bukan ${k}`);
+  }
+  tolak(I, {jenis: "mutu_air"}, /CHECK constraint failed: .*e_coli_cfu/s); lolos(I, {jenis: "mutu_air", hasil: '{"e_coli_cfu":0}'});
+  tolak(I, {jenis: "uji_tekanan"}, /CHECK constraint failed: .*tekanan_bar/s); lolos(I, {jenis: "uji_tekanan", hasil: '{"tekanan_bar":6}'});
+  const a = sah(I, {}).id;
+  galat(`UPDATE sippa_inspeksi SET skor=1 WHERE id='${a}'`, /sippa_insp_tetap/, "UPDATE inspeksi DITERIMA");
+  galat(`DELETE FROM sippa_inspeksi WHERE id='${a}'`, /sippa_insp_hapus/, "DELETE inspeksi nyata DITERIMA");
+  const d = sah(I, {dummy: 1}).id;
+  assert.doesNotThrow(() => db.exec(`DELETE FROM sippa_inspeksi WHERE id='${d}'`), "DELETE inspeksi dummy DITOLAK");
+  lolos(I, {id: "a".repeat(36)}); tolak(I, {id: "a".repeat(20)});
+});
+
+uji("sippa_stok_gerak: delta, saldo, tambah-saja", () => {
+  const S = "sippa_stok_gerak";
+  tolak(S, {delta: 0}); lolos(S, {delta: 1}); tolak(S, {delta: 100001}); tolak(S, {satuan: "kg"}); tolak(S, {alasan: "hilang"}); tolak(S, {kode_bom: "p01"});
+  galat(`INSERT INTO sippa_stok_gerak (id,gudang,kode_bom,nama,delta,satuan,alasan,oleh,waktu) VALUES ('${id16()}','G-kosong','P-01','Pompa',-1,'unit','pakai','tester',${T0})`, /sippa_stok_cek/, "saldo negatif DITERIMA");
+  STOK("G-uji", "P-01", 3); STOK("G-uji", "P-01", -2);
+  assert.throws(() => STOK("G-uji", "P-01", -2), /sippa_stok_cek/, "keluar melebihi saldo (1) DITERIMA");
+  assert.doesNotThrow(() => STOK("G-uji", "P-01", -1), "saldo tepat 0 DITOLAK");
+  assert.throws(() => STOK("G-uji", "P-01", -1), /sippa_stok_cek/, "saldo 0 lalu keluar DITERIMA");
+  assert.throws(() => STOK("G-lain", "P-01", -1), /sippa_stok_cek/, "saldo gudang lain tercampur");
+  const a = sah(S, {}).id;
+  galat(`UPDATE sippa_stok_gerak SET delta=2 WHERE id='${a}'`, /sippa_stok_tetap/, "UPDATE stok DITERIMA");
+  galat(`DELETE FROM sippa_stok_gerak WHERE id='${a}'`, /sippa_stok_hapus/, "DELETE stok nyata DITERIMA");
+  const d = sah(S, {dummy: 1}).id;
+  assert.doesNotThrow(() => db.exec(`DELETE FROM sippa_stok_gerak WHERE id='${d}'`), "DELETE stok dummy DITOLAK");
 });

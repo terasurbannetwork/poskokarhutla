@@ -114,6 +114,8 @@
     "py:bersama.py": "uji:bersama",
     "py:hidraulika.py": "uji:hidraulika",
     "py:kembar_cli.py": "uji:kembar_cli",
+    "py:nasional.py": "uji:nasional",
+    "py:pemicu.py": "uji:pemicu",
     "py:pilot_cek.py": "uji:pilot_cek",
     "py:respons.py": "uji:respons",
     "py:sel22.py": "uji:sel22",

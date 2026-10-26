@@ -30,7 +30,8 @@
     "H-TEKANAN"
    ],
    "vonis": "NO-GO"
-  }
+  },
+  "kembar": true
  },
  {
   "id": "H2",
@@ -60,7 +61,8 @@
     "H-TEKANAN"
    ],
    "vonis": "KONDISIONAL"
-  }
+  },
+  "kembar": true
  },
  {
   "id": "H3",
@@ -90,7 +92,8 @@
    "kw": 33.711,
    "hp": 45.207,
    "bbm_l_jam": 10.033
-  }
+  },
+  "kembar": true
  },
  {
   "id": "H4",
@@ -110,7 +113,8 @@
   },
   "harap": {
    "hf_m": 19.061
-  }
+  },
+  "kembar": true
  },
  {
   "id": "H5",
@@ -127,7 +131,8 @@
   "harap": {
    "v_isi_m3": 7.854,
    "t_tiba_menit": 13.09
-  }
+  },
+  "kembar": true
  },
  {
   "id": "H6",
@@ -151,7 +156,8 @@
   "harap": {
    "tdh_m": 130.909,
    "p_pompa_bar": 12.838
-  }
+  },
+  "kembar": true
  },
  {
   "id": "H7",
@@ -183,7 +189,8 @@
    "t_tiba_menit": 24.13,
    "gerbang": [],
    "vonis": "KONDISIONAL"
-  }
+  },
+  "kembar": true
  },
  {
   "id": "H8",
@@ -210,7 +217,8 @@
     "H-SERAP"
    ],
    "vonis": "NO-GO"
-  }
+  },
+  "kembar": true
  },
  {
   "id": "Z1",
@@ -219,7 +227,8 @@
    "air": 0.4,
    "jalan": 2
   },
-  "harap": "A"
+  "harap": "A",
+  "kembar": true
  },
  {
   "id": "Z2",
@@ -228,7 +237,8 @@
    "air": 1.31,
    "jalan": null
   },
-  "harap": "B"
+  "harap": "B",
+  "kembar": true
  },
  {
   "id": "Z3",
@@ -237,7 +247,8 @@
    "air": 2.49,
    "jalan": 5
   },
-  "harap": "B"
+  "harap": "B",
+  "kembar": true
  },
  {
   "id": "Z4",
@@ -246,7 +257,8 @@
    "air": 2.5,
    "jalan": 4.99
   },
-  "harap": "C"
+  "harap": "C",
+  "kembar": true
  },
  {
   "id": "Z5",
@@ -255,7 +267,8 @@
    "air": 3,
    "jalan": null
   },
-  "harap": "D"
+  "harap": "D",
+  "kembar": true
  },
  {
   "id": "F1",
@@ -263,7 +276,8 @@
   "masukan": {
    "suhu_c": 15
   },
-  "harap": 1
+  "harap": 1,
+  "kembar": true
  },
  {
   "id": "F2",
@@ -271,7 +285,8 @@
   "masukan": {
    "suhu_c": 35
   },
-  "harap": 0.79
+  "harap": 0.79,
+  "kembar": true
  },
  {
   "id": "F3",
@@ -279,7 +294,8 @@
   "masukan": {
    "suhu_c": 50
   },
-  "harap": 0.58
+  "harap": 0.58,
+  "kembar": true
  },
  {
   "id": "F4",
@@ -287,7 +303,8 @@
   "masukan": {
    "suhu_c": 60
   },
-  "harap": 0.58
+  "harap": 0.58,
+  "kembar": true
  },
  {
   "id": "Q1",
@@ -304,7 +321,8 @@
    ],
    "p": 0.5
   },
-  "harap": 3.1
+  "harap": 3.1,
+  "kembar": true
  },
  {
   "id": "Q1b",
@@ -321,7 +339,8 @@
    ],
    "p": 0.9
   },
-  "harap": 4.48
+  "harap": 4.48,
+  "kembar": true
  },
  {
   "id": "V1",
@@ -774,7 +793,8 @@
   "harap": {
    "vonis": "DAPAT DIPAKAI",
    "gagal": []
-  }
+  },
+  "kembar": true
  },
  {
   "id": "V2",
@@ -1205,7 +1225,8 @@
    "gagal": [
     5
    ]
-  }
+  },
+  "kembar": true
  },
  {
   "id": "V3",
@@ -1660,7 +1681,8 @@
    "gagal": [
     6
    ]
-  }
+  },
+  "kembar": true
  },
  {
   "id": "W1",
@@ -1698,7 +1720,8 @@
     0.2551
    ]
   },
-  "toleransi": 0.005
+  "toleransi": 0.005,
+  "kembar": true
  },
  {
   "id": "P1",
@@ -1716,7 +1739,8 @@
     0.0402
    ]
   },
-  "toleransi": 0.005
+  "toleransi": 0.005,
+  "kembar": true
  },
  {
   "id": "N1",
@@ -1735,7 +1759,8 @@
    "impas": 350456455,
    "crf": 0.250456
   },
-  "toleransi": 0.0005
+  "toleransi": 0.0005,
+  "kembar": true
  },
  {
   "id": "N2",
@@ -1750,7 +1775,8 @@
   "harap": {
    "impas": 3194959655
   },
-  "toleransi": 0.0005
+  "toleransi": 0.0005,
+  "kembar": true
  },
  {
   "id": "A1",
@@ -1771,7 +1797,8 @@
    ],
    "habis_hari": null,
    "g1_ok": false
-  }
+  },
+  "kembar": true
  },
  {
   "id": "T1",
@@ -1783,7 +1810,8 @@
    "basi_ansambel": false,
    "basi_titik": false
   },
-  "harap": "PRA-POSISI"
+  "harap": "PRA-POSISI",
+  "kembar": true
  },
  {
   "id": "T2",
@@ -1795,7 +1823,8 @@
    "basi_ansambel": false,
    "basi_titik": false
   },
-  "harap": "GELAR"
+  "harap": "GELAR",
+  "kembar": true
  },
  {
   "id": "T3",
@@ -1807,7 +1836,8 @@
    "basi_ansambel": true,
    "basi_titik": false
   },
-  "harap": "SIAGA"
+  "harap": "SIAGA",
+  "kembar": true
  },
  {
   "id": "T4",
@@ -1819,7 +1849,8 @@
    "basi_ansambel": false,
    "basi_titik": false
   },
-  "harap": "NORMAL"
+  "harap": "NORMAL",
+  "kembar": true
  },
  {
   "id": "V4",
@@ -2202,6 +2233,7 @@
    "gagal": [
     5
    ]
-  }
+  },
+  "kembar": true
  }
 ]
