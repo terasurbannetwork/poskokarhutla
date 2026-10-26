@@ -185,8 +185,9 @@ Urutan baris = urutan pengambilan yang disarankan. Gelombang: lihat §5. Status:
 | SP-096 | Dummy tiga layar R4 dan uji alur pemeliharaan | `warga-api` | 18 | M | belum |
 | SP-097 | Tinjauan R4 | pemeriksa | 18 | S | belum |
 | SP-098 | [induk] Commit dan deploy R4 | sesi induk | 18 | S | belum |
+| SP-099 | Akses 865 kompleks Kalteng (rute jalan/perahu, menit, air, zona) | `pipa-data` | 6 | M | selesai (berkas; menunggu pemeriksa) |
 
-Jumlah: 98 tiket (86 semula, 12 dari keputusan 55 dan 56).
+Jumlah: 99 tiket (86 semula, 12 dari keputusan 55 dan 56, 1 dari keputusan 57).
 
 ---
 
@@ -1265,6 +1266,16 @@ Perintah bersama (dari `data/kajian-bnpb/`): kontrak `python3 bangun/kontrak/nas
 - **Selesai bila:** migrasi 0059 remote; jalur PRD §10.6; uji asap RU §8.3 ditambah `/pipa/pelihara`, `/pipa/air`, `/pipa/akses` 200 dengan sesi dan `GET /api/sippa/data/cat` 200 atau 404 `belum_ada`.
 - **Bukti:** log deploy.
 - **Rujukan:** PRD §10.2 W-21, §10.6. **Ukuran:** S
+
+#### SP-099 Akses 865 kompleks Kalteng: posko/Daops terdekat, rute, menit, air, zona
+- **Berkas:** `scripts/data/sippa/akses_sippa.py` (baru), `data/sippa/keluaran/akses_kompleks.json` (keluaran), DT §3.1.11.
+- **Tujuan:** keputusan pemilik 57. Per kompleks api prov 62 (865, koordinat `operasi.json`): posko/Daops terdekat menurut waktu tempuh lewat graf OSM (termasuk `track`), menit per kelas jalan dengan laju yang dinyatakan, ruas ujung (jalan kaki di gambut atau perahu di sungai/kanal bila lebih cepat), polyline Douglas-Peucker <= 40 titik, titik air terdekat dengan kelas JRC GSW, zona A-D tiga versi (`<` ketat, keputusan 51), `track_perlu_cek`, `kaki_tak_realistis` (jalan kaki > 5 km: batas atas, tak ikut median). Laju selaras `akses.py`. Semua berlabel `estimasi-model`; asumsi dan sumbernya ada di berkas keluaran.
+- **Pengerja / pemeriksa:** `pipa-data` / `validasi-model`, `selera-angka` (angka menit yang tampil).
+- **Model:** sonnet.
+- **Dependensi:** `data/kajian-bnpb/pipa/data/*.csv` (`pipa_data.py`); mentah `data/raw/pipa/osm/` (gitignore, env `SIPPA_OSM`). **Paralel dengan:** SP-023. **Isolasi:** worktree ya.
+- **Selesai bila:** `python3 scripts/data/sippa/akses_sippa.py uji` hijau (865 kompleks, total = jumlah ruas, tanpa NaN, zona A188/B418/C89/D170, A198/B429/C81/D157, A469/B158/C167/D71); SP-029 mendaftarkan `akses_kompleks` ke `DATA_SIPPA` dan SP-032 memakainya (rute, menit, `track_perlu_cek`).
+- **Bukti:** keluaran perintah `uji`; blok `ringkas` di berkas keluaran.
+- **Rujukan:** keputusan 51, 57; DT §3.1.11. **Ukuran:** M
 
 ---
 
