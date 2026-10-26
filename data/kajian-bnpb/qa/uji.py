@@ -705,6 +705,8 @@ def tema_pustaka(bab_min, kajian_min, resmi_persen):
 def kasus_negatif(dp, dman, info, pp, pman, pinfo, pdf_d):
     """[(nama, jenis, parts, harap, ekstra)]; ekstra.pesan = potongan khas cabang yang wajib muncul di temuan kodenya."""
     D, PP, H1, F1 = 'word/document.xml', 'ppt/slides/slide1.xml', 'word/header1.xml', 'word/footer1.xml'
+    # sufiks a/b/c kutipan BNPB bergeser tiap pustaka tumbuh: pakai kutipan yang sudah ada di fixture bersih (terdaftar di Daftar Pustaka)
+    KUTIPAN_BNPB = re.search(r'\(BNPB, \d{4}[a-z]?\)', dp[D])[0]
     run_sisip = f'<w:r><w:t xml:space="preserve">{SISIP}</w:t></w:r>'
     sisip = lambda teks: ganti(dp, D, SISIP, esc(teks))
     tambah_slide = lambda xml: ganti(pp, PP, '</p:spTree>', xml + '</p:spTree>')
@@ -901,6 +903,8 @@ def kasus_negatif(dp, dman, info, pp, pman, pinfo, pdf_d):
         ('d15-lisensi-nc', 'docx', ganti(dp, D, FOTO_SUMBER, f'Wikimedia Commons, {FOTO["pengarang"]}, CC BY-NC 4.0'), {'D-15'}, {'pesan': ['tidak sah']}),
         ('d15-pengarang', 'docx', ganti(dp, D, FOTO_SUMBER, f'Wikimedia Commons, Fulan Fulani, {FOTO["lisensi"]}'), {'D-15'},
          {'pesan': ['tidak ada di Lampiran Atribusi']}),
+        ('d15-lisensi-nc-pengarang-koma', 'docx', ganti(dp, D, FOTO_SUMBER, 'Wikimedia Commons, Fulan Fulani, Budi Budiman (Proyek X), CC BY-NC 4.0'), {'D-15'},
+         {'pesan': ['lisensi "CC BY-NC 4.0" tidak sah']}),
         ('d15-pola', 'docx', ganti(dp, D, FOTO_SUMBER, f'Wikimedia Commons oleh {FOTO["pengarang"]}'), {'D-15'},
          {'pesan': ['harus "Wikimedia Commons, pengarang, lisensi"']}),
         ('d16-desimal-titik', 'docx', sisip('Kajian ini memakai 3.5 juta data.'), {'D-16', 'D-22'}, {'pesan': ['desimal titik']}),
@@ -916,6 +920,7 @@ def kasus_negatif(dp, dman, info, pp, pman, pinfo, pdf_d):
          {'pesan': ['(perkiraan lebar teks) > 2']}),
         # kata terpotong juga bukan kata kamus: T-10 ikut menolak (penanda yang sama dari dua arah)
         ('d17-elipsis-docx', 'docx', sisip('Kajian ini memakai data resmi lemb\u2026'), {'D-17', 'T-10'}, {'pesan': ['teks terpotong', '"lemb"']}),
+        ('d17-tiga-titik-docx', 'docx', sisip('Kajian ini memakai data resmi lemb... dan lainnya.'), {'D-17', 'T-10'}, {'pesan': ['teks terpotong']}),
         ('d17-judul-docx', 'docx', ganti(dp, D, p(rt('1.2\tSkenario Musim Hujan'), 'Heading2'),
                                          p(rt('1.2\tSkenario Musim Hujan Terburuk yang Masuk Akal untuk Seluruh Kabupaten dan Kota di Pulau Jawa '
                                               'Bagian Selatan dan Utara beserta Pulau Kecil di Sekitarnya'), 'Heading2')), {'D-17'},
@@ -927,7 +932,15 @@ def kasus_negatif(dp, dman, info, pp, pman, pinfo, pdf_d):
          {'D-17'}, {'pesan': ['keterangan 3 baris (perkiraan) > 2']}),
         ('d19-pustaka-yatim', 'docx', pustaka_sisip(p(r('Badan Pusat Statistik. (2024). Statistik Indonesia. BPS.'), 'Pustaka')), {'D-19'},
          {'pesan': ['entri pustaka "Badan Pusat Statistik (2024)" tidak dikutip']}),
+        ('d19-dkk-entri-dan-kutipan-cocok', 'docx', ganti(pustaka_sisip(p(r('Fulan dkk. (2024). Judul contoh. Penerbit Uji.'), 'Pustaka')), D, SISIP,
+                                                          esc('Kajian ini memakai data resmi lembaga (Fulan dkk., 2024).')), set()),
+        ('d19-dkk-tahun-beda', 'docx', ganti(pustaka_sisip(p(r('Fulan dkk. (2024). Judul contoh. Penerbit Uji.'), 'Pustaka')), D, SISIP,
+                                             esc('Kajian ini memakai data resmi lembaga (Fulan dkk., 2023).')), {'D-19'},
+         {'pesan': ['kutipan "Fulan dkk., 2023" tidak ada di Daftar Pustaka', 'entri pustaka "Fulan (2024)" tidak dikutip']}),
         ('d19-path-internal', 'docx', sisip('Kajian ini memakai data/irbi/irbi.json sebagai sumber.'), {'D-19'}, {'pesan': ['path internal']}),
+        ('d19-url-terpatah-pdf-boleh', 'docx+pdf', dp, set(), {'pdf_dari': sisip('Kajian ini memakai arsip https://contoh.example.org/arsip/uji/satu/dua/tiga/empat/lima/enam/tujuh/delapan/sembilan/sepuluh/sebelas/dua-belas/tiga-belas/empat-belas/data.json sebagai sumber.')}),
+        ('d19-path-internal-pdf', 'docx+pdf', dp, {'D-19'}, {'pdf_dari': sisip('Kajian ini memakai data/irbi/irbi.json sebagai sumber.'),
+                                                              'pesan': ['path internal']}),
         ('d19-kutipan-tanpa-entri', 'docx', sisip('Kajian ini memakai data resmi lembaga (Badan Pusat Statistik, 2024).'), {'D-19'},
          {'pesan': ['kutipan "Badan Pusat Statistik, 2024" tidak ada di Daftar Pustaka']}),
         ('d19-entri-tanpa-pola', 'docx', pustaka_sisip(p(r('Catatan lapangan tim tanpa tahun terbit.'), 'Pustaka')), {'D-19'},
@@ -967,7 +980,7 @@ def kasus_negatif(dp, dman, info, pp, pman, pinfo, pdf_d):
         ('t9-nama-lama', 'docx', sisip('Data irigasi 2015 diterbitkan Kementerian PUPR.'), {'T-9'}, {'pesan': ['nama K/L lama']}),
         # kutipan APA singkat "(BNPB, 2025a)" sebelum kepanjangan di prosa: bukan pemakaian singkatan (L66 menghitung prosa)
         ('t9-kutipan-boleh', 'docx', ganti(dp, D, '>Rerata indeks risiko bencana Indonesia ',
-                                            '>Sejak 2019 lembaga mencatat penurunan (BNPB, 2025b). Rerata indeks risiko bencana Indonesia '), set()),
+                                            f'>Sejak 2019 lembaga mencatat penurunan {KUTIPAN_BNPB}. Rerata indeks risiko bencana Indonesia '), set()),
         ('t9-dahulu-boleh', 'docx', sisip('Data irigasi 2015 diterbitkan Kementerian PUPR (kini Kementerian Pekerjaan Umum).'), set()),
         ('t10-ejaan', 'docx', sisip('Kajian ini mencatat genangan yang meluaz pada 2024.'), {'T-10'}, {'pesan': ['"meluaz"']}),
         ('t10-singkatan-asing', 'docx', sisip('Data XYZQ mencatat genangan pada 2024.'), {'T-10'},
@@ -983,6 +996,12 @@ def kasus_negatif(dp, dman, info, pp, pman, pinfo, pdf_d):
         ('d22-sel-tabel', 'docx', ganti(dp, D, '>2026–2027<', '>245<'), {'D-22', 'D-20'}, {'pesan': ['angka "245" diketik']}),
         ('d22-tahun-cacah', 'docx', sisip('Kajian ini mencatat 1987 kejadian banjir.'), {'D-22'}, {'pesan': ['angka "1987" diketik']}),
         ('d22-kurung', 'docx', sisip('Kajian ini mencatat (312) desa terdampak.'), {'D-22'}, {'pesan': ['angka "312" diketik']}),
+        ('d22-angka-dekat-nama', 'docx', sisip('Kode bangunan Chile NCh433 mencatat 433 gedung rusak.'), {'D-22'}, {'pesan': ['angka "433" diketik']}),
+        ('d22-nama-diri-boleh', 'docx', sisip('Foto: Wikimedia Commons, Crisco 1492, CC BY-SA 4.0; kode bangunan Chile NCh433 berlaku.'), set()),
+        ('d22-nomor-pertimbangan-boleh', 'docx', sisip('Pertimbangan Hukum nomor 3.13.6 memberi rambu.'), set()),
+        ('d22-nomor-pertimbangan-angka-lain', 'docx', sisip('Pertimbangan Hukum nomor 3.13.6 mencatat 312 desa terdampak.'), {'D-22'}, {'pesan': ['angka "312" diketik']}),
+        ('d22-nama-pengguna-lepas-boleh', 'docx', sisip('Crisco 1492'), set()),
+        ('d22-nama-pengguna-angka-lain', 'docx', sisip('Crisco 1492 mencatat 1492 gedung rusak.'), {'D-22'}, {'pesan': ['angka "1492" diketik']}),
         ('d22-pptx', 'pptx', tambah_slide(a_sp(45, 'Catatan cakupan', 480, 140, 200, 16, [a_run('Pantauan 37 provinsi', 8)])), {'D-22'},
          {'pesan': ['angka "37" diketik']}),
         ('d23-panah', 'docx', sisip('Kajian ini memakai data \u2192 lembaga.'), {'D-23'}, {'pesan': ['U+2192']}),
@@ -1153,7 +1172,7 @@ POSITIF_PALSU = [
     ('D-11', re.compile(r'Label Bagian|KERUSAKAN DAN KERUGIAN|PEMICU DAN POLA')),
     ('D-13', re.compile(r'tidak ada di Daftar Isi|harus romawi|tidak tercetak di Daftar Isi PDF|"LAMPIRAN" tertulis halaman')),
     ('D-15', re.compile(r'tanggal akses')),
-    ('D-19', re.compile(r'"BNPB, 2025a" tidak ada di Daftar Pustaka|tanpa pola "Penulis \(Tahun\)": "(LAMPIRAN|Lampiran)')),
+    ('D-19', re.compile(r'"BNPB, 2025[a-z]?" tidak ada di Daftar Pustaka|tanpa pola "Penulis \(Tahun\)": "(LAMPIRAN|Lampiran)')),
     ('D-31', re.compile(r'LANGKAH \d+ kata > 8: "Perluas peringatan dini banjir kab/kota kelas Tinggi Sud')),
     ('D-7', re.compile(r'gambar selebar 21\.0 cm')),
     ('D-10', re.compile(r'"TIDAK DITEMUKAN" dalam "[^"]*tidak ditemukan')),

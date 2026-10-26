@@ -375,7 +375,7 @@ Bagian: A Beban, B Akses dan Air, C Skenario, D Kesenjangan, E Grand Design. Sli
 | - | Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses Pascabencana 2026–2030 | Sampul | sampul | Subjudul |
 | 1 | Pesan Kunci | Tesis, 3 keputusan, 5 temuan penopang | navigasi; deskriptif | Pita KD-R1 sampai KD-R3; kartu temuan berchip (S1, S2) |
 | 2 | A1. Bencana alam merusak {a} jembatan pada 2018–2025, {b} di antaranya pada 2025 | Beban akses naik tajam | grafik; temuan | G1 jembatan rusak per tahun; 3 kartu angka (porsi banjir, Aceh, Sumbar); `dibi/rekap_nasional_tahunan.csv` |
-| 3 | A2. Lima kejadian besar merusak {a} rumah dan memaksa relokasi bertahun-tahun | Preseden RR | tabel; temuan | Tabel preseden (L55); `dibi/kejadian_besar.csv`, riset E |
+| 3 | A2. Enam kejadian besar merusak {a} rumah dan memaksa relokasi bertahun-tahun | Preseden RR | tabel; temuan | Tabel preseden (L55); `dibi/kejadian_besar.csv`, riset E |
 | 4 | A3. {a} provinsi menanggung separuh jembatan rusak 2018–2025 | Sebaran | peta; temuan | Peta bulatan per provinsi (G20); pil Aceh, Sumbar |
 | 5 | B1. Satgas TNI AD menyelesaikan {a} jembatan, {b} titik di daerah bencana | Program akses yang ada | tabel; temuan | Chip AKSES. Tabel program per pemilik termasuk Jembatan Merah Putih Presisi; kotak status nama; [B1][B15][B25] |
 | 6 | B2. SPAM Sumatra pulih {a}% dalam enam bulan, permanen baru {b} | Pemulihan air perpipaan | grafik; temuan | Chip AIR PERPIPAAN. G24 kurva Sumatra, Kobe, Tohoku; [D21][D22][D36] |

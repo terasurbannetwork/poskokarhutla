@@ -423,8 +423,8 @@ class _Pengurai:
         else:
             self.galat(0, 'front matter tidak ditutup ---')
         kos, kaj = self.k.tema['kosakata'], self.k.tema['kajian']
-        if meta.get('kajian') not in ('air', 'mitigasi'):
-            self.galat(0, f'kajian harus air atau mitigasi, bukan "{meta.get("kajian")}"')
+        if meta.get('kajian') not in ('air', 'mitigasi', 'rehab'):
+            self.galat(0, f'kajian harus air, mitigasi, atau rehab, bukan "{meta.get("kajian")}"')
         jenis = [x for x in ('bab', 'lampiran', 'bagian') if x in meta]
         if len(jenis) != 1:
             self.galat(0, 'front matter wajib tepat satu dari bab, lampiran, bagian')

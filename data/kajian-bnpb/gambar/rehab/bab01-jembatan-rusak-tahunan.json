@@ -1,0 +1,260 @@
+{
+ "nama": "bab01-jembatan-rusak-tahunan",
+ "keterangan": "Jembatan rusak akibat bencana alam per tahun di Indonesia, 2018–2025 (unit)",
+ "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan kejadian bencana",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  196.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.93
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Rerata 2018–2024",
+   "jenis": "kotak",
+   "warna": "#DCE1E7"
+  },
+  {
+   "label": "2018–2024",
+   "jenis": "kotak",
+   "warna": "#B7B0A6"
+  },
+  {
+   "label": "2025",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#DCE1E7": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#B7B0A6": [
+   "legenda",
+   "seri"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 66.36,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Rerata 2018–2024"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 80.36,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Rerata 2018–2024"
+  },
+  {
+   "x": 106.36,
+   "y": 3,
+   "w": 41.19,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-92",
+   "teks": "2018–2024"
+  },
+  {
+   "x": 92.36,
+   "y": 2,
+   "w": 55.19,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-92",
+   "teks": "2018–2024"
+  },
+  {
+   "x": 171.54,
+   "y": 3,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-157",
+   "teks": "2025"
+  },
+  {
+   "x": 157.54,
+   "y": 2,
+   "w": 31.97,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-157",
+   "teks": "2025"
+  },
+  {
+   "x": 20.45,
+   "y": 118.52,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "392"
+  },
+  {
+   "x": 16.17,
+   "y": 186.44,
+   "w": 23.19,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Rerata"
+  },
+  {
+   "x": 71.97,
+   "y": 135.07,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "275"
+  },
+  {
+   "x": 70.3,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018"
+  },
+  {
+   "x": 123.5,
+   "y": 112.72,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "433"
+  },
+  {
+   "x": 121.83,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2019"
+  },
+  {
+   "x": 175.02,
+   "y": 105.08,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "487"
+  },
+  {
+   "x": 173.35,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020"
+  },
+  {
+   "x": 226.54,
+   "y": 102.53,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "505"
+  },
+  {
+   "x": 224.87,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2021"
+  },
+  {
+   "x": 278.07,
+   "y": 125.59,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "342"
+  },
+  {
+   "x": 276.4,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022"
+  },
+  {
+   "x": 329.59,
+   "y": 137.48,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "258"
+  },
+  {
+   "x": 327.92,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023"
+  },
+  {
+   "x": 381.12,
+   "y": 111.02,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "445"
+  },
+  {
+   "x": 379.45,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024"
+  },
+  {
+   "x": 428.97,
+   "y": 20.04,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1.088"
+  },
+  {
+   "x": 430.97,
+   "y": 186.44,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2025"
+  }
+ ],
+ "jenis": "batang",
+ "pesan": "G1",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 9
+}

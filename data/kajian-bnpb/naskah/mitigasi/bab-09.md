@@ -43,7 +43,7 @@ sumber: BPS, Statistik Potensi Desa Indonesia 2024 Tabel 18.1; penandaan lingkup
 keyakinan: resmi
 angka: 2
 data_per: 24 Okt 2026
-catatan: Jenis tidak saling lepas, sehingga kolom desa tidak dijumlahkan; jumlah desa dengan perkelahian massal semua jenis {{angka:sosial.desa_perkelahian.2024}}. Kolom lingkup adalah penandaan penyusun menurut definisi operasional kajian (asumsi kebijakan), bukan klasifikasi BPS.
+catatan: Jenis tidak saling lepas, sehingga kolom desa tidak dijumlahkan.
 
 | JENIS PERKELAHIAN | DESA | LINGKUP KAJIAN |
 | --- | ---: | --- |
@@ -56,7 +56,9 @@ catatan: Jenis tidak saling lepas, sehingga kolom desa tidak dijumlahkan; jumlah
 | Masyarakat dengan aparat pemerintah | {{angka:sosial.podes.jenis.vs_aparat_pemerintah.2024}} | di luar lingkup; urusan keamanan dan ketertiban |
 :::
 
-**Kerusuhan Wamena 2019 diperlakukan sebagai kasus batas karena dua penggolongan resmi atas kejadian itu bertentangan.** DIBI mencatatnya sebagai konflik sosial dengan {{angka:dibi.wamena2019.meninggal}} meninggal [@bnpb-dibi], sedangkan Presiden menyatakan kejadian itu bukan konflik etnis dan menyebut pelakunya "kelompok kriminal bersenjata", dengan {{angka:sosial.wamena2019.meninggal_presiden}} meninggal [@setkab-2019-wamena]. Menurut penggolongan Presiden, kejadian itu masuk kekerasan bersenjata yang menjadi urusan aparat, sehingga Wamena 2019 tidak dipakai sebagai analog lantai skenario. Kedua angka dan kedua penggolongan ditulis berdampingan pada Kartu 9.1 (@tbl:kartu-sosial).
+Jumlah desa dengan perkelahian massal semua jenis pada @tbl:jenis-perkelahian adalah {{angka:sosial.desa_perkelahian.2024}}. Kolom lingkup adalah penandaan penyusun menurut definisi operasional kajian (asumsi kebijakan), bukan klasifikasi BPS.
+
+**Kerusuhan Wamena 2019 diperlakukan sebagai kasus batas karena dua penggolongan resmi atas kejadian itu bertentangan.** Data dan Informasi Bencana Indonesia (DIBI) mencatatnya sebagai konflik sosial dengan {{angka:dibi.wamena2019.meninggal}} meninggal [@bnpb-dibi], sedangkan Presiden menyatakan kejadian itu bukan konflik etnis dan menyebut pelakunya "kelompok kriminal bersenjata", dengan {{angka:sosial.wamena2019.meninggal_presiden}} meninggal [@setkab-2019-wamena]. Menurut penggolongan Presiden, kejadian itu masuk kekerasan bersenjata yang menjadi urusan aparat, sehingga Wamena 2019 tidak dipakai sebagai analog lantai skenario. Kedua angka dan kedua penggolongan ditulis berdampingan pada Kartu 9.1 (@tbl:kartu-sosial).
 
 ## Sebaran Konflik Antarkelompok {#sub:sebaran-sosial}
 
@@ -76,7 +78,7 @@ sumber: Pengolahan data Pantau Bencana dari BPS, Statistik Potensi Desa Indonesi
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Lima kelas kuintil provinsi. Satuan desa/kelurahan, periode setahun sebelum pencacahan; persen dihitung penyusun dari jumlah desa jenis antarkelompok masyarakat dibagi jumlah desa/kelurahan.
+catatan: Lima kelas kuintil provinsi; satuan desa/kelurahan, periode setahun sebelum pencacahan.
 :::
 
 **DIBI tidak memuat satu pun baris konflik sosial pada 2020–2024, sehingga kajian ini tidak memakai DIBI sebagai seri konflik.** DIBI mencatat {{angka:dibi.konflik.2019.kejadian}} kejadian konflik sosial dengan {{angka:dibi.konflik.2019.meninggal}} meninggal dan {{angka:dibi.konflik.2019.mengungsi}} mengungsi pada 2019, {{angka:dibi.konflik.2025.kejadian}} kejadian dengan {{angka:dibi.konflik.2025.meninggal}} meninggal dan {{angka:dibi.konflik.2025.mengungsi}} mengungsi pada 2025, dan {{angka:dibi.konflik.2026.kejadian}} kejadian sementara dengan {{angka:dibi.konflik.2026.meninggal}} meninggal dan {{angka:dibi.konflik.2026.mengungsi}} mengungsi pada 2026 [@bnpb-dibi]. Mutu baris yang ada juga diragukan, seperti diuraikan di kotak berikut. Kerusuhan akhir Agustus 2025 berada di luar lingkup bab ini. DIBI hanya memuat satu baris konflik sosial dalam jendela itu, yaitu Manokwari 28 Agustus 2025 dengan {{angka:sosial.kerusuhan2025.meninggal_dibi}} meninggal. Angka korban Komisi Nasional Hak Asasi Manusia (Komnas HAM) yang lebih besar hanya ditemukan melalui pemberitaan dan tidak dipakai. Selisih itu dicatat sebagai celah pencatatan DIBI.
@@ -88,6 +90,18 @@ catatan: Lima kelas kuintil provinsi. Satuan desa/kelurahan, periode setahun seb
 ## Kejadian Analog {#sub:analog-sosial}
 
 **Konflik Maluku dan Maluku Utara 1999–2002 adalah analog terburuk dalam jendela 1996–2026, dengan sedikitnya {{angka:sosial.maluku.meninggal_bawah}} meninggal, mungkin sampai {{angka:sosial.maluku.meninggal_atas}}, dan hampir {{angka:sosial.maluku.pengungsi}} pengungsi atau hampir sepertiga penduduk kedua provinsi.** Darurat sipil berlaku di kedua provinsi sejak Juni 2000 [@icg-2002-maluku]. Konflik Poso 1998–2002 menelan sekitar {{angka:sosial.poso.meninggal}} jiwa dan membuat lebih dari {{angka:sosial.poso.pengungsi}} orang mengungsi [@hrw-2002-poso]. Kekerasan Sampit 2001 menewaskan sekitar {{angka:sosial.sampit.meninggal}} orang dan sekitar {{angka:sosial.sampit.pengungsi}} pengungsi meninggalkan Kalimantan Tengah sampai pertengahan April 2001; di Sambas korban 1996–1997 disimpulkan sekitar {{angka:sosial.sambas1997.meninggal}} jiwa[^sambas], dan hitungan resmi kekerasan 1999 mencatat {{angka:sosial.sambas1999.meninggal}} orang terbunuh dalam tiga bulan pertama [@icg-2001-kalimantan]. Analog ini memakai laporan International Crisis Group (ICG), Human Rights Watch (HRW), dan seminar pengungsi 2001 berlabel terverifikasi; angka pemerintah untuk keempat kejadian itu, termasuk arsip Badan Koordinasi Nasional Penanggulangan Bencana dan Penanganan Pengungsi (Bakornas PBP), tidak dibuka.
+
+::: gambar {#gbr:foto-m09-gong-ambon}
+berkas: gambar/foto/mit-b09-gong-ambon.jpg
+jenis: foto
+judul: Monumen Gong Perdamaian Dunia, Kota Ambon, Maluku, April 2015
+pengarang: IndonesiaKaya.com
+lisensi: CC0
+url: https://commons.wikimedia.org/wiki/File:Gong_Perdamaian_Dunia_Ambon.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
+
 
 **Pengungsi internal yang tercatat resmi di Indonesia pada 2001 lebih dari {{angka:sosial.pengungsi_nasional_2001.tercatat_resmi|ringkas}} jiwa, dan kelompok kerja koordinasi pengungsi menyebut {{angka:sosial.pengungsi_nasional_2001.kelompok_kerja|ringkas}}.** Pada tahun yang sama tugas koordinasi pengungsi diberikan kepada Badan Koordinasi Nasional Penanggulangan Bencana (Bakornas PB), yang menjadi Bakornas PBP melalui Keppres 3/2001 [@brookings-2001-pengungsi]. Angka nasional ini melampaui pengungsi Maluku. Oleh sebab itu, lantai skenario kajian ini ditulis dua: lantai kejadian regional dari Maluku 1999–2002, dan rujukan konflik serentak multiwilayah yang tidak boleh memakai pengungsi di bawah angka tercatat 2001. Korban meninggal tercatat terbesar dalam jendela itu tetap Maluku.
 
@@ -102,7 +116,7 @@ dasar: Analog terbesar dalam jendela 1996–2026 menurut korban meninggal; rujuk
 analog: Konflik antarkelompok Maluku dan Maluku Utara, 1999–2002
 kemungkinan: tidak dinilai: tidak ada dasar peluang untuk konflik setara Maluku dalam 2026–2030, dan kenaikan Podes 2021–2024 bukan dasar peluang
 lembaga: Kepolisian Negara Republik Indonesia; Kementerian Dalam Negeri; Kementerian Sosial; Deputi Bidang Penanganan Darurat
-sumber: ICG (2001, 2002); HRW (2002); laporan seminar pengungsi internal 2001; DIBI BNPB; Sekretariat Kabinet (2019); UU 7/2012; PP 2/2015; Perpres 46/2026
+sumber: ICG (2001); ICG (2002); HRW (2002); laporan seminar pengungsi internal 2001; DIBI BNPB; Sekretariat Kabinet (2019); UU 7/2012; PP 2/2015; Perpres 46/2026
 keyakinan: terverifikasi
 kaki: Kejadian analog, bukan proyeksi model. Kerusuhan Mei 1998 dan Agustus 2025 disisihkan dari analog karena berhadapan dengan aparat atau negara.
 data_per: 24 Okt 2026
@@ -143,9 +157,9 @@ Status keadaan konflik ditetapkan kepala daerah atau Presiden menurut UU 7/2012,
 
 ## Instrumen yang Belum Ada {#sub:instrumen-sosial}
 
-**UU 7/2012 Pasal 49 ayat (2) huruf l menyebut BNPB sebagai satu dari {{angka:uu7_2012.satgas_nasional.unsur_pemerintah|satuan}} Pemerintah dalam Satgas Penyelesaian Konflik Sosial skala nasional, dan itu satu-satunya penyebutan BNPB dalam undang-undang tersebut.** Satgas bersifat ad hoc dan dibentuk bila pranata adat atau sosial tidak berfungsi, musyawarah tidak mencapai kesepakatan, dan status keadaan konflik telah ditetapkan (Pasal 42); Satgas skala nasional diusulkan Menteri Koordinator Bidang Politik, Hukum, dan Keamanan (Menko Polhukam) kepada Presiden (Pasal 45 huruf c) [@ri-2012-uu7]. Fungsi koordinasi Polhukam kini terbagi ke Kementerian Koordinator Bidang Politik dan Keamanan (Kemenko Polkam) dan Kementerian Koordinator Bidang Hukum, Hak Asasi Manusia, Imigrasi, dan Pemasyarakatan (Kemenko Kumham Imipas) menurut Perpres 90/2025, sedangkan Deputi Bidang Koordinasi Penanggulangan Bencana dan Konflik Sosial berada di Kemenko PMK [@ri-2024-perpres144]. Dokumen pembentukan Satgas nasional sejak 2012 tidak ditemukan, sehingga yang ditulis adalah mandatnya, bukan keberadaannya.
+**UU 7/2012 Pasal 49 ayat (2) huruf l menyebut Badan Nasional Penanggulangan Bencana (BNPB) sebagai satu dari {{angka:uu7_2012.satgas_nasional.unsur_pemerintah|satuan}} Pemerintah dalam Satgas Penyelesaian Konflik Sosial skala nasional, dan itu satu-satunya penyebutan BNPB dalam undang-undang tersebut.** Satgas bersifat ad hoc dan dibentuk bila pranata adat atau sosial tidak berfungsi, musyawarah tidak mencapai kesepakatan, dan status keadaan konflik telah ditetapkan (Pasal 42); Satgas skala nasional diusulkan Menteri Koordinator Bidang Politik, Hukum, dan Keamanan (Menko Polhukam) kepada Presiden (Pasal 45 huruf c) [@ri-2012-uu7]. Fungsi koordinasi Polhukam kini terbagi ke Kementerian Koordinator Bidang Politik dan Keamanan (Kemenko Polkam) dan Kementerian Koordinator Bidang Hukum, Hak Asasi Manusia, Imigrasi, dan Pemasyarakatan (Kemenko Kumham Imipas) menurut Perpres 90/2025, sedangkan Deputi Bidang Koordinasi Penanggulangan Bencana dan Konflik Sosial berada di Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK) [@ri-2024-perpres144]. Dokumen pembentukan Satgas nasional sejak 2012 tidak ditemukan, sehingga yang ditulis adalah mandatnya, bukan keberadaannya.
 
-**Rezim penanganan konflik di bawah UU 7/2012 dibangun tanpa BNPB: PP 2/2015 tidak memuat kata bencana, dan Permendagri 42/2015 tidak menyebut BNPB atau Badan Penanggulangan Bencana Daerah (BPBD).** PP 2/2015 Pasal 97 menaruh koordinasi penanganan konflik pada menteri urusan dalam negeri, Pasal 98 membuka penunjukan Menko Polhukam untuk skala nasional, dan Pasal 5 ayat (4) menaruh koordinasi hasil pemetaan wilayah potensi konflik pada kementerian dalam negeri [@ri-2015-pp2]. Tim Terpadu Penanganan Konflik Sosial tingkat nasional diketuai Menteri Dalam Negeri, dan tingkat kab/kota diketuai bupati/wali kota dengan sekretariat di Badan Kesatuan Bangsa dan Politik [@kemendagri-2015-permendagri42]. Peraturan organisasi dan tata kerja BNPB tidak memuat kata konflik, dan Rencana Strategis (Renstra) BNPB 2025–2029 hanya sekali menyebutnya, tentang bantuan kemanusiaan ke Palestina [@bnpb-2025-otk; @bnpb-2025-otk-ubah; @bnpb-2025-renstra, hlm. 49]. Renas PB menaruh pengembangan jaringan pengamatan konflik sosial (kegiatan 1.1.2.j, target {{angka:renas.1_1_2_j.target_2029|satuan}} pada 2029) pada Kementerian Sosial tanpa BNPB, dan menyebut BNPB sebagai salah satu penanggung jawab riset jaringan itu (kegiatan 1.2.4.c, target {{angka:renas.1_2_4_c.target_2029|satuan}}) [@bnpb-2025-renas, hlm. 55, 62]. Kaitan tertulis rezim PB dengan pascakonflik ada di UU 24/2007: Pasal 58 ayat (1) huruf f memasukkan rekonsiliasi dan resolusi konflik ke kegiatan rehabilitasi [@ri-2007-uu24]. Kaitan itu belum diturunkan ke unit BNPB.
+**Rezim penanganan konflik di bawah UU 7/2012 dibangun tanpa BNPB: PP 2/2015 tidak memuat kata bencana, dan Permendagri 42/2015 tidak menyebut BNPB atau Badan Penanggulangan Bencana Daerah (BPBD).** PP 2/2015 Pasal 97 menaruh koordinasi penanganan konflik pada menteri urusan dalam negeri, Pasal 98 membuka penunjukan Menko Polhukam untuk skala nasional, dan Pasal 5 ayat (4) menaruh koordinasi hasil pemetaan wilayah potensi konflik pada kementerian dalam negeri [@ri-2015-pp2]. Tim Terpadu Penanganan Konflik Sosial tingkat nasional diketuai Menteri Dalam Negeri, dan tingkat kab/kota diketuai bupati/wali kota dengan sekretariat di Badan Kesatuan Bangsa dan Politik [@kemendagri-2015-permendagri42]. Peraturan organisasi dan tata kerja BNPB tidak memuat kata konflik, dan Rencana Strategis (Renstra) BNPB 2025–2029 hanya sekali menyebutnya, tentang bantuan kemanusiaan ke Palestina [@bnpb-2025-otk; @bnpb-2025-otk-ubah; @bnpb-2025-renstra, hlm. 49]. Rencana Nasional Penanggulangan Bencana (Renas PB) menaruh pengembangan jaringan pengamatan konflik sosial (kegiatan 1.1.2.j, target {{angka:renas.1_1_2_j.target_2029|satuan}} pada 2029) pada Kementerian Sosial tanpa BNPB, dan menyebut BNPB sebagai salah satu penanggung jawab riset jaringan itu (kegiatan 1.2.4.c, target {{angka:renas.1_2_4_c.target_2029|satuan}}) [@bnpb-2025-renas, hlm. 55, 62]. Kaitan tertulis rezim PB dengan pascakonflik ada di UU 24/2007: Pasal 58 ayat (1) huruf f memasukkan rekonsiliasi dan resolusi konflik ke kegiatan rehabilitasi [@ri-2007-uu24]. Kaitan itu belum diturunkan ke unit BNPB.
 
 ::: koreksi
 Rancangan kajian ini menempatkan penanganan pengungsi konflik pada BNPB bersama Kementerian Sosial atas dasar PP 2/2015. Teks PP 2/2015 tidak memuat kata bencana: Pasal 21 menugaskan pemenuhan kebutuhan dasar pengungsi konflik kepada menteri sosial, sebagian kepada menteri pendidikan dan kebudayaan serta menteri kesehatan, dan BNPB tidak disebut [@ri-2015-pp2]. Peran BNPB atas pengungsi konflik terbuka hanya bila penanganan berada dalam rezim PB, yaitu status keadaan darurat bencana atau keadaan tertentu.
@@ -156,7 +170,7 @@ judul: Batas mandat dan sumber dana penanganan konflik sosial per fase menurut p
 sumber: UU 7/2012; UU 24/2007; UU 2/2002; PP 2/2015; Permendagri 42/2015; Perpres 144/2024; Perpres 46/2026; Renas PB 2025–2029
 keyakinan: resmi
 data_per: 24 Okt 2026
-catatan: Isi sel adalah mandat tertulis berpasal; "–" berarti peraturan yang dibaca tidak memuat mandat lembaga itu pada fase tersebut. Penempatan pasal ke fase adalah pemetaan penyusun.
+catatan: Isi sel adalah mandat tertulis berpasal; "–": peraturan yang dibaca tidak memuat mandat itu.
 
 | LEMBAGA | PRABENCANA | TANGGAP DARURAT | PASCABENCANA |
 | --- | --- | --- | --- |
@@ -170,6 +184,8 @@ catatan: Isi sel adalah mandat tertulis berpasal; "–" berarti peraturan yang d
 | BNPB | salah satu penanggung jawab riset jaringan pengamatan konflik (Renas PB 1.2.4.c) | unsur Satgas nasional (UU 7/2012 Pasal 49 ayat (2) huruf l); keadaan tertentu (Perpres 46/2026 Pasal 3) | rehabilitasi yang memuat rekonsiliasi dan resolusi konflik (UU 24/2007 Pasal 58 ayat (1) huruf f) |
 :::
 
+Penempatan pasal ke fase pada @tbl:mandat-sosial adalah pemetaan penyusun.
+
 **Perpres 46/2026, yang ditetapkan 16 Juli 2026, membuka penyelenggaraan PB dalam keadaan tertentu pada {{angka:perpres46_2026.kondisi_keadaan_tertentu|satuan}}, termasuk pemerintah daerah yang wilayahnya dalam proses rekonsiliasi pascakonflik sosial dan berkapasitas fiskal sangat rendah atau rendah.** Kondisi pertama adalah potensi bencana dengan ancaman maksimum akibat faktor alam, nonalam, dan/atau sosial. Kondisi kedua adalah evakuasi atau pengungsian yang telah terjadi atau gangguan layanan umum yang berdampak luas. Ketiga kondisi dihubungkan dengan "dan/atau", dan pelaksanaannya menunggu keputusan rapat koordinasi antar-K/L yang dikoordinasikan menteri koordinator (Pasal 3 ayat (1) dan ayat (2)). Pasal 3 ayat (4) memerintahkan kondisi dan tata caranya diatur dalam pedoman Kepala BNPB, dan konsiderans menyebut Perpres 17/2018 belum lengkap mengatur PB pada kondisi wilayah yang terkena dampak konflik sosial [@ri-2026-perpres46]. Pedoman itu belum ditetapkan per Oktober 2026 menurut katalog Jaringan Dokumentasi dan Informasi Hukum (JDIH) BNPB, dan rapat koordinasi yang pernah memakai kondisi ketiga tidak ditemukan.
 
 **Pedoman yang berlaku masih Perban BNPB 5/2018, yang memuat {{angka:perban5_2018.jenis_ancaman|satuan}} ancaman tanpa ancaman sosial dan mensyaratkan ancaman maksimum dan evakuasi secara kumulatif.** Kata konflik dan rekonsiliasi tidak muncul dalam peraturan itu, begitu pula rujukan kapasitas fiskal. Rapat koordinasinya beranggotakan {{angka:perban5_2018.anggota_rakor|satuan}} dengan nomenklatur lama; Kementerian Agama, Kementerian Pertahanan, Kejaksaan Agung, dan Komnas HAM, yang menjadi unsur Satgas nasional UU 7/2012, tidak disebut namanya dan hanya dapat masuk lewat butir kementerian/lembaga terkait lainnya [@bnpb-2018-perban5]. Keputusan Kepala BNPB 327/2025 tentang Program Penyusunan Peraturan 2026 memuat {{angka:progsun.2026.jumlah_rancangan|satuan}} dan tidak satu pun mengubah Perban 5/2018 [@bnpb-2025-progsun]. Keputusan itu ditetapkan 31 Desember 2025, sebelum Perpres 46/2026 terbit. Ketiadaan perubahan itu mencerminkan urutan waktu, dan perubahan Perban 5/2018 untuk melaksanakan Perpres 46/2026 Pasal 3 ayat (4) hanya dapat disusun di luar program tahunan itu melalui izin prakarsa (@rek:r-m02). Perbandingan kedua peraturan tampil pada @tbl:syarat-keadaan-tertentu.
@@ -179,7 +195,7 @@ judul: Syarat penyelenggaraan PB dalam keadaan tertentu menurut Perpres 46/2026 
 sumber: Perpres 46/2026 Pasal 3; Perban BNPB 5/2018 Pasal 3, Pasal 4, dan Pasal 6; PMK 97/2025
 keyakinan: resmi
 data_per: 24 Okt 2026
-catatan: Perban BNPB 5/2018 ditetapkan untuk melaksanakan Perpres 17/2018 Pasal 3 ayat (4) dan berstatus berlaku di katalog JDIH BNPB.
+catatan: Perban BNPB 5/2018 melaksanakan Perpres 17/2018 Pasal 3 ayat (4) dan berlaku menurut JDIH BNPB.
 
 | ASPEK | PERPRES 46/2026 | PERBAN BNPB 5/2018 |
 | --- | --- | --- |
@@ -213,6 +229,18 @@ sifat: fakta
 ## Implikasi {#sub:implikasi-sosial}
 
 **Perpres 46/2026 menambah kewenangan BNPB di wilayah pascakonflik, sementara rezim UU 7/2012 dan PP 2/2015 menaruh koordinasi pada Menteri Dalam Negeri, pengungsi pada Menteri Sosial, dan penghentian kekerasan pada Polri.** Pedoman Kepala BNPB yang tidak menyebut hubungannya dengan Tim Terpadu Permendagri 42/2015 dan Satgas UU 7/2012 berisiko menciptakan jalur komando ketiga di wilayah yang sama [@ri-2015-pp2; @kemendagri-2015-permendagri42]. Pengungsian konflik terbesar dalam jendela kajian, lebih dari {{angka:sosial.pengungsi_nasional_2001.tercatat_resmi|ringkas}} jiwa pada 2001, dikoordinasikan pendahulu BNPB, Bakornas PBP [@brookings-2001-pengungsi]. Peraturan yang berlaku kini tidak menaruh koordinasi pengungsian konflik skala nasional pada BNPB; apakah itu kesenjangan atau pembagian kerja yang disengaja bukan keputusan bab ini dan menjadi bahan Bab 10 dan Bab 12. Kesenjangan yang langsung menjadi rekomendasi:
+
+::: gambar {#gbr:foto-m09-tugu-sampit}
+berkas: gambar/foto/mit-b09-tugu-sampit.jpg
+jenis: foto
+judul: Tugu Perdamaian di Bundaran Balanga, Sampit, Kalimantan Tengah, Agustus 2025
+pengarang: Ilham Mufti Laksono
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Tugu_Perdamaian_Sampit_001.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
+
 
 - Pedoman keadaan tertentu untuk faktor sosial dan pascakonflik belum ada, dan perubahan Perban 5/2018 tidak termuat di Program Penyusunan Peraturan 2026 (@rek:r-m03, @rek:r-m02).
 - DIBI tidak memuat baris konflik sosial 2020–2024, memuat dugaan entri ganda, dan tidak membedakan konflik antarkelompok dari unjuk rasa (@rek:r-m08).

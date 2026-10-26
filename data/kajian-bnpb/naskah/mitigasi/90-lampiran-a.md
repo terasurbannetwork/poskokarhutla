@@ -7,9 +7,9 @@ status: final
 
 # IRBI 2025 dan Daftar Perhatian per Kab/Kota {#lamp:kab}
 
-Ketiga tabel lampiran ini memuat seluruh {{angka:irbi.kab.dinilai.2025}} kab/kota dari katalog wilayah IRBI 2025, dikelompokkan per provinsi menurut urutan kode wilayah. Nilai dan status IRBI berasal dari InaRISK [@bnpb-irbi], sedangkan syarat kejadian dan korban berasal dari DIBI [@bnpb-dibi]. Nilai per bahaya berupa bilangan bulat dengan banyak nilai kembar, sehingga tabel tidak dipakai untuk memeringkat kab/kota, dan skala 2025 tidak dibandingkan dengan seri 2015–2024 (@sub:irbi). Sel "–" berarti bahaya itu tidak dinilai di kab/kota tersebut, bukan nol.
+Ketiga tabel lampiran ini memuat seluruh {{angka:irbi.kab.dinilai.2025}} kab/kota dari katalog wilayah IRBI 2025, dikelompokkan per provinsi menurut urutan kode wilayah. Nilai dan status IRBI berasal dari InaRISK [@bnpb-irbi], sedangkan syarat kejadian dan korban berasal dari DIBI [@bnpb-dibi]. Nilai per bahaya berupa bilangan bulat dengan banyak nilai kembar, sehingga tabel tidak dipakai untuk memeringkat kab/kota, dan skala 2025 tidak dibandingkan dengan seri 2015–2024 (@sub:irbi). Sel "–" berarti bahaya itu tidak dinilai di kab/kota tersebut, bukan nol. Kejadian per kab/kota memakai cakupan semua laporan DIBI.
 
-**Pernyataan produsen.** Tabel disusun platform Pantau Bencana dari data produsen tersebut, bukan oleh unit kerja BNPB, sehingga bukan Data Bencana menurut Perban BNPB 1/2023 [@bnpb-2023-satudata]. Kolom daftar perhatian adalah hasil aturan syarat @sub:daftar-perhatian yang berlabel Asumsi kebijakan. Huruf dalam kurung menyebut syarat yang dipenuhi: untuk hidrometeorologi, (a) IRBI 2025 di kelas nilai teratas, (b) kejadian tercatat paling sedikit tiga dari sebelas tahun 2015–2025, dan (c) korban atau pengungsi DIBI di kuartil atas. Untuk geologi, (a) sama, (b) paparan di kuartil atas, dan (c) kejadian berkorban sejak 2008.
+**Pernyataan produsen.** Tabel disusun platform Pantau Bencana dari data produsen tersebut, bukan oleh unit kerja BNPB, sehingga bukan Data Bencana menurut Perban BNPB 1/2023 [@bnpb-2023-satudata]. Kolom daftar perhatian adalah hasil aturan syarat @sub:daftar-perhatian yang berlabel Asumsi kebijakan. Huruf dalam kurung menyebut syarat yang dipenuhi: untuk hidrometeorologi, (a) IRBI 2025 di kelas nilai teratas, (b) kejadian tercatat paling sedikit tiga dari sebelas tahun 2015–2025, dan (c) korban atau pengungsi DIBI di kuartil atas. Untuk geologi, (a) sama, (b) paparan di kuartil atas, dan (c) kejadian berkorban sejak 2008. Kelas per bahaya tidak ada di sumber mana pun, sehingga batas kelas teratas dipakai hanya untuk syarat (a) daftar perhatian. Nilai total IRBI 2025 bukan jumlah kolom bahaya, dan kolom bahaya dinilai adalah jumlah dari sembilan bahaya yang bernilai di kab/kota itu.
 
 Daftar perhatian memuat {{angka:perhatian.mitigasi.pasangan|satuan}} di {{angka:perhatian.mitigasi.kab_unik}} kab/kota (@tbl:a-kab). Daftar itu bukan daftar prioritas: ukurannya ditentukan sifat data, dan aturannya dihitung ulang setelah catatan metode IRBI 2025 terbit (@rek:r-m20).
 
@@ -21,7 +21,7 @@ grup: PROVINSI
 sumber: InaRISK BNPB, IRBI 2025; DIBI BNPB 2008–2025; WorldPop 2026; pengolahan Pantau Bencana
 keyakinan: asumsi-kebijakan
 data_per: 23 Okt 2026
-catatan: IRB dan status resmi; penduduk WorldPop berlabel estimasi model; daftar perhatian asumsi kebijakan. Kejadian per kab/kota memakai cakupan semua laporan DIBI.
+catatan: IRB dan status resmi; penduduk WorldPop estimasi model; daftar perhatian asumsi kebijakan.
 :::
 
 ::: tabel {#tbl:a-hidromet}
@@ -32,7 +32,7 @@ grup: PROVINSI
 sumber: InaRISK BNPB, IRBI 2025, kolom per bahaya
 keyakinan: resmi
 data_per: 23 Okt 2026
-catatan: Kolom abrasi memuat gelombang ekstrem dan abrasi. Kelas per bahaya tidak ada di sumber mana pun; batas kelas teratas dipakai hanya untuk syarat (a) daftar perhatian.
+catatan: Kolom abrasi memuat gelombang ekstrem dan abrasi.
 :::
 
 ::: tabel {#tbl:a-geologi}
@@ -43,5 +43,5 @@ grup: PROVINSI
 sumber: InaRISK BNPB, IRBI 2025, kolom per bahaya dan total
 keyakinan: resmi
 data_per: 23 Okt 2026
-catatan: Nilai total IRBI 2025 bukan jumlah kolom bahaya; bahaya dinilai adalah jumlah dari sembilan bahaya yang bernilai di kab/kota itu.
+catatan: Nilai total IRBI 2025 bukan jumlah kolom bahaya.
 :::

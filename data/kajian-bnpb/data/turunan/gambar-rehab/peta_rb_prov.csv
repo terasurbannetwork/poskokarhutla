@@ -1,0 +1,39 @@
+kode,nama,lat,lon,nilai
+11,Aceh,4.2838,96.9444,58932
+12,Sumatera Utara,2.3014,99.1603,10556
+13,Sumatera Barat,-0.6824,100.6521,7773
+14,Riau,0.4494,101.7714,661
+15,Jambi,-1.6988,102.7154,3402
+16,Sumatera Selatan,-3.2154,104.1702,1975
+17,Bengkulu,-3.5189,102.3451,748
+18,Lampung,-4.9133,105.0203,2252
+19,Kep. Bangka Belitung,-2.2527,105.9867,208
+21,Kepulauan Riau,3.9157,108.202,435
+31,DKI Jakarta,-6.2089,106.8382,340
+32,Jawa Barat,-6.9201,107.6032,29384
+33,Jawa Tengah,-7.2588,110.2059,6695
+34,DI Yogyakarta,-7.8947,110.4459,143
+35,Jawa Timur,-7.8163,112.614,12673
+36,Banten,-6.4542,106.1223,4300
+51,Bali,-8.3533,115.1149,1866
+52,Nusa Tenggara Barat,-8.6303,117.8581,78167
+53,Nusa Tenggara Timur,-8.6046,121.1424,12118
+61,Kalimantan Barat,-0.0707,111.1536,626
+62,Kalimantan Tengah,-1.6055,113.4181,188
+63,Kalimantan Selatan,-2.9568,115.3878,1427
+64,Kalimantan Timur,0.4602,116.4363,892
+65,Kalimantan Utara,2.886,116.1749,879
+71,Sulawesi Utara,0.8831,124.2685,1458
+72,Sulawesi Tengah,-0.9966,121.0846,35921
+73,Sulawesi Selatan,-3.6506,120.1511,5840
+74,Sulawesi Tenggara,-3.8065,121.8228,1891
+75,Gorontalo,0.6859,122.3747,1192
+76,Sulawesi Barat,-2.4652,119.3479,4534
+81,Maluku,-3.2012,129.4627,6893
+82,Maluku Utara,0.8701,128.0149,2105
+91,Papua,-2.7102,138.7323,1326
+92,Papua Barat,-2.6697,133.6687,251
+93,Papua Selatan,-6.5182,139.6865,7
+94,Papua Tengah,-3.8981,136.6587,28
+95,Papua Pegunungan,-4.2376,139.4513,1743
+96,Papua Barat Daya,-1.1741,132.3168,1482

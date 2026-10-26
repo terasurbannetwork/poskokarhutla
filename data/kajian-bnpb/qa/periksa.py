@@ -844,7 +844,9 @@ def kolom_kepala(t, tema):
     """Indeks kolom tabel DOCX yang kepalanya ada di tema.json qa.kolom_tanpa_rata_kanan (No, peringkat, kode)."""
     kep = next((b for b in t['baris'] if b['kepala']), t['baris'][0] if t['baris'] else None)  # tanpa tblHeader: baris pertama
     boleh = {k.upper() for k in tema['qa']['kolom_tanpa_rata_kanan']}
-    return {i for i, s in enumerate(kep['sel']) if norm(s['teks']).upper() in boleh} if kep else set()
+    # kolom kode dan peringkat sering bernama "KODE JUKLAK", "PERINGKAT DAFTAR": kata pertama menentukan jenis kolomnya
+    awal = {'KODE', 'PERINGKAT'}
+    return {i for i, s in enumerate(kep['sel']) if (h := norm(s['teks']).upper()) in boleh or h.split(' ')[0] in awal} if kep else set()
 
 
 # ---------------------------------------------------------------- gerbang
@@ -1282,7 +1284,7 @@ def _kajian(ctx):
     if ctx.kajian:
         return ctx.kajian
     teks = ' '.join(p['teks'] for p in ctx.docx.par_semua()) if ctx.docx else ''
-    for k in ('air', 'mitigasi'):
+    for k in ('air', 'mitigasi', 'rehab'):
         kj = ctx.tema['kajian'][k]
         if kj['judul_pendek'] in teks or kj['judul'] in teks:
             return k
@@ -1302,7 +1304,7 @@ def d12(ctx):
     butuh(ctx.pdf)
     kj = _kajian(ctx)
     if not kj:
-        raise Lewat('kajian (air/mitigasi) tidak terdeteksi; pakai --kajian')
+        raise Lewat('kajian (air/mitigasi/rehab) tidak terdeteksi; pakai --kajian')
     if ctx.tema['kajian'][kj].get('batas_halaman_isi') is None:  # KEPUTUSAN P18: batas halaman dicabut pemilik 24 Okt 2026
         return []  # null = tidak ada batas; D-12 lolos tanpa membatasi (fixture d12-melebihi-batas tetap menguji batas angka)
     batas = int(ctx.tema['kajian'][kj]['batas_halaman_isi'] * (1 - CADANGAN_PAGINASI))
@@ -1399,7 +1401,10 @@ def _cek_halaman_indeks(d, pdf):
     for i in range(1, len(label)):  # halaman tanpa nomor tercetak (pembatas) melanjutkan nomor arab halaman sebelumnya
         if label[i] is None and label[i - 1] and label[i - 1].isdigit():
             label[i] = str(int(label[i - 1]) + 1)
-    hal, teks, out = {}, [norm(h).upper() for h in pdf.hal], []
+    # spasi diabaikan di kedua sisi: baris judul yang putus sesudah tanda pisah ("2011–" / "2025", "KAB/" / "KOTA") atau nomor
+    # dua angka yang menempel pada judulnya ("11.10Agenda") tetap judul yang sama; yang dicari tetap urutan hurufnya
+    tanpa = lambda x: re.sub(r'\s+', '', x)
+    hal, teks, out = {}, [tanpa(norm(h).upper()) for h in pdf.hal], []
     for i, lb in enumerate(label):
         if lb:
             hal.setdefault(lb, []).append(i)
@@ -1409,9 +1414,10 @@ def _cek_halaman_indeks(d, pdf):
             if not m:
                 continue
             judul, no = norm(m[1]).upper(), m[2]
-            if any(judul in teks[i] for i in hal.get(no, [])):
+            cari = tanpa(judul)
+            if any(cari in teks[i] for i in hal.get(no, [])):
                 continue
-            ada = [label[i] or f'PDF {i + 1}' for i, x in enumerate(teks) if judul in x and i not in hal.get(no, [])]
+            ada = [label[i] or f'PDF {i + 1}' for i, x in enumerate(teks) if cari in x and i not in hal.get(no, [])]
             out.append((pdf.nama, _nama_daftar(t), f'entri "{potong(judul, 40)}" tertulis halaman {no}, tetapi judulnya tidak tercetak '
                         f'di halaman {no}' + (f' (tercetak di: {", ".join(ada[:3])})' if ada else '') + '; perbarui indeks'))
     return out
@@ -1526,7 +1532,7 @@ def d15(ctx):
         t = norm(p['teks']) if j == 'p' else ''
         if not (t.startswith('Sumber:') and 'Commons' in t) or i == 0 or d.blok[i - 1][0] != 'p' or not d.blok[i - 1][1]['gambar']:
             continue
-        m = re.search(r'Wikimedia Commons,\s*([^,;]+),\s*(.+?)\.?\s*(?:;|$)', t)
+        m = re.search(r'Wikimedia Commons,\s*([^;]+),\s*([^,;]+?)\.?\s*(?:;|$)', t)  # pengarang boleh memuat koma ("NASA Earth Observatory, Joshua Stevens"); lisensi = segmen terakhir
         if not m:
             out.append((d.nama, p['lok'], f'atribusi foto harus "Wikimedia Commons, pengarang, lisensi": "{potong(t)}"'))
             continue
@@ -1542,14 +1548,21 @@ RE_D16 = [(re.compile(r'\d,\d{3}\b'), 'pemisah ribuan koma (pakai titik)'),
           (re.compile(r'\d\.\d{1,2}\b'), 'desimal titik (pakai koma)'),
           (re.compile(r'\b\d{4}-\d{2}-\d{2}\b'), 'tanggal ISO'),
           (re.compile(r'\b\d{1,2}:\d{2}\b'), 'jam bertitik dua (pakai titik)')]
-# nama yang memuat angka, bukan angka data: versi lisensi foto (B5.15), polutan, nomor standar
-RE_NAMA = (r'\bCC0\s+\d\.\d\b|\b(?:CC[ -]?)?BY(?:-?(?:SA|NC|ND))*\s+\d\.\d\b|\bPM ?(?:2[.,]5|10)\b'
+# nama yang memuat angka, bukan angka data: versi lisensi foto (B5.15), polutan, nomor standar, nama pengarang foto di
+# atribusi "Wikimedia Commons, pengarang, lisensi" (akun "Crisco 1492" tidak boleh diubah), norma Chile NCh433
+RE_NAMA = (r'Wikimedia Commons,\s*[^;]+?,\s*(?:CC BY|CC0|PD)[^;]*|\bNCh\s?\d+\b|\bCC0\s+\d\.\d\b|\b(?:CC[ -]?)?BY(?:-?(?:SA|NC|ND))*\s+\d\.\d\b|\bPM ?(?:2[.,]5|10)\b'
+           r'|\bCrisco 1492\b|\bNasution007\b'  # nama pengguna Wikimedia (CC BY: nama pencipta ditulis persis); sel PENGARANG lampiran atribusi berdiri tanpa kata Wikimedia
            r'|\b(?:CAP|ISO|SNI|IEC|IEEE)\s?\d+(?:[.:-]\d+)*\b|\bWGS ?84\b|\bEPSG:? ?\d+\b')
 # kode resmi bertitik, bukan desimal: aksi Renas PB (2.4.4.a, 1.1.2.a), kegiatan prioritas RPJMN (08.04.02), nama indeks
 # (Niño 3.4, HadISST1.1), jam "pukul 15.23", dan bagian dokumen bertanda § (D-16 dan D-22 memakai daftar yang sama)
-RE_KODE = (r'\b(?:Renas(?: PB)?|aksi)\s+(?:aksi\s+)?\d+(?:\.\d+)+(?:\.[a-z])?\b|\b\d+(?:\.\d+){2,}\.[a-z]\b|\b\d+(?:\.\d+)+\.[a-z]\b|\b\d{2}\.\d{2}\.\d{2}\b|\b0\d\.\d{2}\b|\bNiño ?3\.4\b|\bHadISST ?\d\.\d\b'
+RE_KODE = (r'\b(?:Renas(?: PB)?|aksi)\s+(?:aksi\s+)?\d+(?:\.\d+)+(?:\.[a-z])?\b(?:;\s*\d+(?:\.\d+)+(?:\.[a-z])?\b)*|\b\d+(?:\.\d+){2,}\.[a-z]\b|\b\d+(?:\.\d+)+\.[a-z]\b|\b\d+(?:\.\d+){2,}\.(?=\s|$)|\b\d{2}\.\d{2}\.\d{2}\b|\b0\d\.\d{2}\b|\bNiño ?3\.4\b|\bHadISST ?\d\.\d\b'
            r'|\bhlm\.\s*\d+(?:[\u2013-]\d+)?(?:,\s*\d+(?:[\u2013-]\d+)?)+|\bTabel [IVX]+\.\d+\b|\bpukul \d{1,2}\.\d{2}\b|§ ?\d+(?:\.\d+)*(?:[\u2013-]\d+(?:\.\d+)*)?')
-RE_D16_KECUALI = re.compile(RE_NAMA + '|' + RE_KODE + r'|\b(?:Tabel|Gambar|Bab|Lampiran|Subbab|Kartu)\s+(?:RE|[A-Z]|\d+)(?:\.\d+)*'
+# rujukan objek: "Tabel 2.5 dan 2.6", "Tabel 2.2, 2.5, dan 2.6", "Subbab 7.1 sampai 7.9", "Program 4.1.1", dan pertimbangan putusan "[3.13.6]"
+# adalah nomor bagian, bukan desimal; daftar nomor hanya terbaca rujukan bila diawali kata label
+RE_D16_KECUALI = re.compile(RE_NAMA + '|' + RE_KODE + r'|\[\d+(?:\.\d+)+\]'
+                            r'|\bnomor\s+\d+(?:\.\d+){2,}\b'
+                            r'|\b(?:Tabel|Gambar|Bab|Lampiran|Subbab|Kartu|Kotak|butir|Program)\s+(?:RE|[A-Z]|\d+)(?![A-Za-z])(?:\.\d+)*'
+                            r'(?:(?:,\s*(?:dan\s+)?|\s+(?:dan|sampai|atau)\s+)\d+(?:\.\d+)*)*'
                             r'|\b\d{2}\.\d{2} (?:WIB|WITA|WIT)\b|\b[A-C]\.\d+\b')
 
 
@@ -1585,13 +1598,16 @@ def _teks_angka(ctx, luas=False):
         for lok, t in _teks_lain(f):
             yield f.name, lok, norm(t), None
     for f in (ctx.pdf, ctx.pptx_pdf):
-        pustaka = False
+        pustaka, prev = False, ''
         for i, h in enumerate(f.hal if f else [], 1):
             for b in h.splitlines():
                 if norm(b).upper() in ('DAFTAR PUSTAKA', 'LAMPIRAN'):  # entri pustaka dikecualikan, seperti di DOCX
                     pustaka = norm(b).upper() == 'DAFTAR PUSTAKA'
                 if not pustaka and norm(b):
-                    yield f.nama, f'hlm. {i}', norm(b), None
+                    # rujukan terpecah baris ("(Tabel" / "2.4)") dibaca utuh: kata label baris sebelumnya ikut
+                    lab = re.search(r'\b(?:Tabel|Gambar|Subbab|Bab|Lampiran|Kartu|Program)$', prev)
+                    yield f.nama, f'hlm. {i}', (lab[0] + ' ' if lab else '') + norm(b), None
+                prev = norm(b)
 
 
 def _teks_lain(f):
@@ -1612,7 +1628,7 @@ def d16(ctx):
     out = []
     for b, lok, t, _ in _teks_angka(ctx, luas=True):
         t2 = RE_D16_KECUALI.sub(' ', _masker(RE_URL.sub(' ', t), man))
-        t2 = re.sub(r'^\d+(\.\d+)+(\s|$)', ' ', t2)  # nomor subbab di awal paragraf atau baris PDF
+        t2 = re.sub(r'^\d+(\.\d+)+(\s|$|;)', ' ', t2)  # nomor subbab di awal paragraf atau baris PDF
         for pl, apa in RE_D16:
             m = pl.search(t2)
             if m:
@@ -1634,7 +1650,8 @@ def _judul_slide(ctx, s):
 def d17(ctx):
     out = []
     for b, lok, t in teks_tampil(ctx):
-        t2 = re.sub(r'\[\u2026\]|\.{4,}|(?:\. ){3,}|\u2026{2,}', ' ', t)  # kutipan terpotong resmi dan titik penuntun TOC
+        # kutipan terpotong resmi dan titik penuntun TOC; judul panjang menyisakan penuntun 3 titik, sah hanya bila ujungnya nomor halaman
+        t2 = re.sub(r'\[\u2026\]|\.{4,}|(?:\. ){3,}|\u2026{2,}|\.{3}(?=\s*(?:\d+|[ivxlc]+)\s*(?:\n|$))', ' ', t)
         if '\u2026' in t2 or '...' in t2:
             out.append((b, lok, f'teks terpotong "\u2026" atau "...": "{potong(t)}"'))
     if ctx.pptx:
@@ -1675,14 +1692,14 @@ def _pustaka_kunci(entri):
         return None
     a = m[1]
     nama = a.split(',')[0].strip() if re.search(r',\s*[A-Z]\.', a) else a.strip()
-    return nama, m[2]
+    return re.sub(r' dkk$', '', nama), m[2]  # entri "Harnantyari dkk. (2020)" (nama depan penulis tak tercatat) dikutip "Harnantyari dkk., 2020"
 
 
 @gerbang('D-19', 'Pustaka dikutip dua arah, tanpa path internal')
 def d19(ctx):
     out = []
     for b, lok, t in teks_tampil(ctx):
-        t2 = RE_URL.sub(' ', t)
+        t2 = RE_URL.sub(' ', re.sub(r'(https?://\S*[/-])\n(?=\S)', r'\1', t))  # URL terpatah di ujung baris PDF ("api/\nupdate.json") tetap satu URL
         m = re.search(r'/Users/|[A-Za-z]:\\|\b(?:data|public|scripts|bangun|src)/[\w.-]+/|\b[\w-]+\.(?:json|csv|py|mjs|geojson)\b', t2)
         if m:
             out.append((b, lok, f'path internal "{m[0]}" dalam "{potong(t)}"'))
@@ -1783,9 +1800,17 @@ def d20(ctx):
         if len(fill) >= 4 and all(fill[i] != fill[i + 1] for i in range(len(fill) - 1)):
             out.append((d.nama, t['lok'], f'{nm}: pita selang-seling ({", ".join(str(f) for f in fill[:4])})'))
         bebas = kolom_kepala(t, ctx.tema)  # kolom No, peringkat, kode: rata tengah sah (PEDOMAN B5.7)
+        # kolom campuran (teks bebas dengan sesekali angka, mis. "ARAH 2030", "PITA") rata kiri; hanya kolom yang mayoritas
+        # selnya angka wajib rata kanan
+        mayoritas = set()
+        for i in range(max((len(b['sel']) for b in isi), default=0)):
+            isi_i = [norm(b['sel'][i]['teks']) for b in isi if i < len(b['sel'])]
+            isi_i = [x for x in isi_i if x not in ('', '-', '\u2013')]
+            if isi_i and sum(angka_id(x) is not None for x in isi_i) * 2 > len(isi_i):
+                mayoritas.add(i)
         for b in isi:
             for i, s in enumerate(b['sel']):
-                if i not in bebas and angka_id(s['teks']) is not None and s['jc'] and s['jc'][0] not in ('right', 'end'):
+                if i not in bebas and i in mayoritas and angka_id(s['teks']) is not None and s['jc'] and s['jc'][0] not in ('right', 'end'):
                     out.append((d.nama, t['lok'], f'{nm}: angka "{s["teks"]}" rata {s["jc"][0] or "kiri"}, harus kanan'))
                     break
             else:
@@ -1857,7 +1882,7 @@ def d32(ctx):
 RE_D22_KECUALI = re.compile(
     RE_NAMA + '|' + RE_KODE + r'|\b\d{1,2}(?:\u2013\d{1,2})?\s' + BULAN + r'\b'
     r'|\b\d{2}\.\d{2}(?:\u2013\d{2}\.\d{2})? (?:WIB|WITA|WIT)\b'
-    r'|\b(?:Tabel|Gambar|Bab|Lampiran|Subbab|Kartu|Pasal|ayat|Nomor|No\.|hlm\.|halaman|Perban|Perpres|Perka|Perda|Pergub|'
+    r'|\b(?:Tabel|Gambar|Bab|Lampiran|Subbab|Kartu|Kotak|butir|Pasal|ayat|Nomor|No\.|hlm\.|halaman|Perban|Perpres|Perka|Perda|Pergub|'
     r'Inpres|Keppres|Kepres|PP|UU|SE|Permen\w*|Kepmen\w*|Kep|Renas PB|Renstra)\s*\(?(?:RE|[A-Z]|\d+)(?:[./\u2013]\d+)*[a-z]?\)?'
     r'|\b(?:Butuh|Membuka)\s+\d{2}(?:,\s*\d{2})*'  # relasi antar rekomendasi (PEDOMAN B5.13)
     r'|\b0\d\b'  # kode rekomendasi berangka nol di depan ("01", "(02)"); cacah tidak pernah ditulis begitu
@@ -1865,7 +1890,8 @@ RE_D22_KECUALI = re.compile(
     # label dan nomor rujukan, bukan angka data: hari ke-n peta jalan, kode temuan deck (A1.), kode rekomendasi (R-A21),
     # kode baris paket (C05, P16, B095), daftar halaman (hlm. 70, 133), nomor Kepmen ESDM, tabel bernomor romawi sumber
     r'|\bhari ke-\d+\b|\b[A-E]\d\.(?=\s)|\bR-[A-Z]\d{2}\b|\b[A-Z]{1,2}\d{2,3}\b'
-    r'|\b\d+\.K/\S+')
+    r'|\b\d+\.K/\S+'
+    r'|\bnomor\s+\d+(?:\.\d+){2,}\b')  # nomor pertimbangan putusan MK (3.13.6): label bagian, sama dengan pengecualian D-16
 RE_TAHUN = re.compile(r'(?<![\d.,])((?:19|20)\d{2})([a-z]?)((?:[\u2013/](?:19|20)?\d{2,4})?)(?![\d.,]?\d)')
 
 
@@ -2088,7 +2114,7 @@ def t5(ctx):
     butuh(ctx.docx)
     d, t, out = ctx.docx, ctx.tema, []
     gp, hf, td = t['garis_pt'], t['header_footer'], t['tipografi_docx']
-    judul = {t['kajian'][k]['judul_pendek'] for k in ('air', 'mitigasi')}
+    judul = {t['kajian'][k]['judul_pendek'] for k in ('air', 'mitigasi', 'rehab')}
     baris2 = hf['header']['baris2'].format(terbit=t['kajian']['terbit'])
     logo_mm, tol = t['objek']['logo_header_tinggi_mm'], t['qa']['logo_toleransi_mm']
     sama = lambda daftar, tebal, warna: any(abs(a - tebal) < 0.01 and b == hex_token(t, warna) for a, b in daftar)
@@ -2328,7 +2354,8 @@ def t8(ctx):
 def t9(ctx):
     butuh(ctx.docx)
     g, d, out = glosarium(), ctx.docx, []
-    singk = [x for x in g['singkatan'] if x.get('periksa', True)]
+    kj = _kajian(ctx)  # entri berkolom kajian (IPA air lawan rehab) hanya diperiksa di kajian itu
+    singk = [x for x in g['singkatan'] if x.get('periksa', True) and (kj is None or kj in x.get('kajian', [kj]))]
     for judul, paras in bab_prosa(d.path):
         if BUKAN_BAB_ISI.match(judul):  # L66 "tiap bab": BAB n; bagian depan dan lampiran tidak diperiksa singkatannya
             continue
@@ -2527,7 +2554,7 @@ def main(argv=None):
     ap.add_argument('--pptx-pdf', help='PDF dari PPTX')
     ap.add_argument('--manifest-docx')
     ap.add_argument('--manifest-pptx')
-    ap.add_argument('--kajian', choices=['air', 'mitigasi'])
+    ap.add_argument('--kajian', choices=['air', 'mitigasi', 'rehab'])
     ap.add_argument('--lain', nargs='*', default=[], help='SVG, HTML, CSS, JSON gaya untuk D-1..D-4, D-9, D-10, D-23; teks SVG/HTML juga D-16')
     ap.add_argument('--semua', action='store_true', help='jalankan semua gerbang walau ada yang gagal')
     ap.add_argument('--ketat', action='store_true', help='LEWAT dihitung gagal (untuk build kirim)')

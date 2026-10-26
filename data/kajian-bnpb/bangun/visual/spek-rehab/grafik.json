@@ -1,0 +1,748 @@
+[
+ {
+  "nama": "bab01-jembatan-rusak-tahunan",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "penuh",
+  "keterangan": "Jembatan rusak akibat bencana alam per tahun di Indonesia, 2018–2025 (unit)",
+  "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan kejadian bencana",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/jembatan_tahun.csv"
+   },
+   "x": "label",
+   "y": "jumlah",
+   "label_x": {
+    "Rerata 2018–2024": "Rerata"
+   }
+  },
+  "pembanding": 0,
+  "tekan": [
+   8
+  ],
+  "legenda": {
+   "pembanding": "Rerata 2018–2024",
+   "lama": "2018–2024",
+   "tekan": "2025"
+  }
+ },
+ {
+  "nama": "bab03-jembatan-per-kejadian",
+  "jenis": "horizontal",
+  "pesan": "G4",
+  "ukuran": "penuh",
+  "keterangan": "Jembatan rusak tercatat DIBI per kejadian besar 2018–2025, dengan pembanding Kementerian Pekerjaan Umum untuk Sumatra 2025",
+  "sumber": "Pengolahan data DIBI BNPB per kejadian, ditarik 23 Oktober 2026; Kementerian Pekerjaan Umum, data 7 Mei 2026",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/jembatan_kejadian.csv"
+   },
+   "x": "kejadian",
+   "y": "jembatan"
+  },
+  "urut": false,
+  "desimal": 0,
+  "seri_label": "Jembatan rusak menurut DIBI dan pembanding Kementerian PU",
+  "sorot": [
+   "Sumatra 2025, jembatan daerah terdampak menurut Kementerian PU"
+  ],
+  "sorot_label": "pembanding Kementerian PU",
+  "judul_kolom": {
+   "nama": "KEJADIAN",
+   "nilai": "JEMBATAN"
+  }
+ },
+ {
+  "nama": "bab04-rumah-rb-tahunan",
+  "jenis": "garis",
+  "pesan": "G3",
+  "ukuran": "penuh",
+  "keterangan": "Rumah rusak berat akibat bencana alam per tahun menurut kelompok geologi dan hidrometeorologi di Indonesia, 2015–2025 (unit)",
+  "sumber": "BNPB, DIBI dasbor publik, rekap nasional tahunan, klasifikasi bencana alam, cakupan kejadian bencana; pengolahan kajian ini",
+  "seri": [
+   {
+    "label": "Hidrometeorologi",
+    "warna": "kategori.basah",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/rb_tahun_kelompok.csv",
+      "saring": {
+       "kelompok": "hidromet"
+      }
+     },
+     "x": "tahun",
+     "y": "rb"
+    }
+   },
+   {
+    "label": "Geologi",
+    "warna": "kategori.geologi",
+    "data": {
+     "sumber": {
+      "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/rb_tahun_kelompok.csv",
+      "saring": {
+       "kelompok": "geologi"
+      }
+     },
+     "x": "tahun",
+     "y": "rb"
+    }
+   }
+  ],
+  "anotasi": [
+   {
+    "x": "2024",
+    "teks": "saringan Juklak 7/2023"
+   }
+  ],
+  "desimal": 0
+ },
+ {
+  "nama": "bab04-jembatan-jenis",
+  "jenis": "bertumpuk",
+  "pesan": "G9",
+  "ukuran": "penuh",
+  "keterangan": "Jembatan rusak akibat bencana alam per tahun menurut jenis bencana di Indonesia, 2018–2025 (unit)",
+  "sumber": "BNPB, DIBI dasbor publik, rekap nasional tahunan, klasifikasi bencana alam, cakupan kejadian bencana; pengolahan kajian ini",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/jembatan_jenis.csv"
+   },
+   "x": "tahun",
+   "seri": "kategori",
+   "nilai": "jembatan",
+   "kelompok": {
+    "banjir": [
+     "Banjir"
+    ],
+    "longsor": [
+     "Longsor"
+    ]
+   },
+   "urutan_x": [
+    "2018",
+    "2019",
+    "2020",
+    "2021",
+    "2022",
+    "2023",
+    "2024",
+    "2025"
+   ]
+  },
+  "seri": [
+   {
+    "id": "banjir",
+    "label": "Banjir",
+    "warna": "kategori.basah"
+   },
+   {
+    "id": "longsor",
+    "label": "Tanah longsor",
+    "warna": "biru-abu"
+   },
+   {
+    "id": "lainnya",
+    "label": "Gempa, erupsi, cuaca ekstrem, gelombang"
+   }
+  ]
+ },
+ {
+  "nama": "bab04-peta-jembatan-provinsi",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "penuh",
+  "keterangan": "Jembatan rusak akibat bencana alam per provinsi di Indonesia, 2018–2025 (unit)",
+  "sumber": "BNPB, DIBI dasbor publik, rekap provinsi tahunan, klasifikasi bencana alam, cakupan kejadian bencana; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "jembatan",
+    "judul_legenda": "Jembatan rusak 2018–2025",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_jembatan_prov.csv"
+    },
+    "nilai": "nilai",
+    "label": "nama",
+    "label_teratas": 3
+   }
+  ],
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab04-pulih-sumatra-pemilik-aset",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "penuh",
+  "keterangan": "Persentase aset terdampak yang kembali fungsional menurut kelas dan pemilik aset pascabanjir Sumatra 2025, 2 Februari dan 7 Mei 2026 (persen)",
+  "sumber": "Kementerian Pekerjaan Umum, rilis ePPID 5 Februari 2026 dan 11 Mei 2026; pengolahan kajian ini",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/pulih_sumatra.csv"
+   },
+   "x": "label",
+   "y": "persen"
+  },
+  "desimal": 1,
+  "tekan": [
+   4
+  ],
+  "legenda": {
+   "lama": "SPAM, jalan, dan jembatan nasional atau daerah",
+   "tekan": "Jembatan daerah, capaian terendah"
+  }
+ },
+ {
+  "nama": "bab05-program-lawan-rusak",
+  "jenis": "horizontal",
+  "pesan": "G4",
+  "ukuran": "penuh",
+  "keterangan": "Titik program jembatan di daerah bencana dan jembatan rusak atau terdampak menurut DIBI dan Kementerian PU, 2025–2026 (jembatan atau titik)",
+  "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026; Polri, 14 Januari 2026; DIBI BNPB 2025; Kementerian Pekerjaan Umum, 11 Mei 2026",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/program_rusak.csv"
+   },
+   "x": "label",
+   "y": "jumlah"
+  },
+  "urut": false,
+  "desimal": 0,
+  "seri_label": "Titik program atau jembatan rusak (satuan berbeda)",
+  "judul_kolom": {
+   "nama": "UKURAN",
+   "nilai": "JUMLAH"
+  }
+ },
+ {
+  "nama": "bab06-garis-pulih-air",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "penuh",
+  "keterangan": "Pemulihan layanan air menurut hari sejak kejadian, Kobe 1995, Tohoku 2011, dan Sumatra 2025 (persen)",
+  "sumber": "Nojima, JSCE 2011; Kementerian PU; DIBI BNPB",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/pulih_air_hari.csv"
+   },
+   "x": "label",
+   "y": "hari"
+  },
+  "tekan": [
+   5,
+   6
+  ],
+  "legenda": {
+   "lama": "Kobe dan Tohoku, rasio pemulihan layanan",
+   "tekan": "Sumatra, unit SPAM berfungsi (hari estimasi model)"
+  }
+ },
+ {
+  "nama": "bab06-biaya-renk",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "dua-kolom",
+  "keterangan": "Biaya air per meter kubik di kamp Renk, Sudan Selatan, 2025 (USD)",
+  "sumber": "United Nations South Sudan; Perbup Hulu Sungai Utara 3/2022",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/biaya_renk.csv"
+   },
+   "x": "label",
+   "y": "usd"
+  },
+  "tekan": [
+   0
+  ],
+  "legenda": {
+   "lama": "Perpipaan",
+   "tekan": "Truk tangki"
+  }
+ },
+ {
+  "nama": "bab06-biaya-hsu",
+  "jenis": "batang",
+  "pesan": "G1",
+  "ukuran": "dua-kolom",
+  "keterangan": "Tarif mobil tangki PDAM Hulu Sungai Utara per meter kubik, 2022 (Rp)",
+  "sumber": "United Nations South Sudan; Perbup Hulu Sungai Utara 3/2022",
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/biaya_hsu.csv"
+   },
+   "x": "label",
+   "y": "rp"
+  },
+  "tekan": [
+   0
+  ],
+  "seri_label": "Tarif layanan biasa"
+ },
+ {
+  "nama": "bab07-g9-rumah-tangga-air-tanah",
+  "jenis": "bertumpuk",
+  "pesan": "G9",
+  "ukuran": "penuh",
+  "keterangan": "Rumah tangga menurut sumber air minum di enam provinsi kejadian besar dan Indonesia, 2023 (persen), dengan tujuh CAT yang dinyatakan rusak",
+  "sumber": "Pengolahan dari BPS, Susenas 2023; Badan Geologi, pernyataan 13 November 2023",
+  "desimal": 1,
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/air_minum_prov_panjang.csv"
+   },
+   "x": "provinsi",
+   "seri": "sumber",
+   "nilai": "persen",
+   "urutan_x": [
+    "Nusa Tenggara Barat",
+    "Aceh",
+    "Jawa Barat",
+    "Sumatera Utara",
+    "Sumatera Barat",
+    "Sulawesi Tengah",
+    "Indonesia"
+   ]
+  },
+  "seri": [
+   {
+    "id": "air_tanah",
+    "label": "Sumur bor atau pompa dan sumur terlindung",
+    "warna": "kategori.basah"
+   },
+   {
+    "id": "leding",
+    "label": "Leding",
+    "warna": "navy"
+   },
+   {
+    "id": "lainnya",
+    "label": "Sumber lain"
+   }
+  ]
+ },
+ {
+  "nama": "bab07-g9-kebutuhan-sumur-model-tercatat",
+  "jenis": "rentang",
+  "pesan": "G12",
+  "ukuran": "penuh",
+  "keterangan": "Kebutuhan sumur menurut model lawan sumur tercatat, Sumatra 2025 dan Lombok 2018 (sumur)",
+  "sumber": "Pengolahan dari DIBI BNPB (pengungsi); Kementerian ESDM (2019); Perka BNPB 7/2008; Kementerian PU (2026; 2019, dahulu PUPR); Sekretariat Kabinet (2018)",
+  "pil": {
+   "keyakinan": "estimasi-model"
+  },
+  "data": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/kebutuhan_sumur.csv"
+   },
+   "kategori": "id",
+   "rendah": "rendah",
+   "tinggi": "tinggi",
+   "tercatat": {
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/kebutuhan_sumur.csv"
+    },
+    "kategori": "id",
+    "nilai": "tercatat",
+    "label": "tercatat"
+   },
+   "warna_kategori": {},
+   "legenda_warna": {
+    "biru-abu": "model kebutuhan sumur"
+   }
+  },
+  "satuan": "sumur",
+  "desimal": 0,
+  "warna": "biru-abu"
+ },
+ {
+  "nama": "bab08-sebaran-a",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Jembatan rusak per provinsi, 2018–2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "jembatan",
+    "judul_legenda": "Jembatan rusak",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_jembatan_prov.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-sebaran-b",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat per provinsi, 2015–2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_rb_prov.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-sebaran-c",
+  "jenis": "peta",
+  "pesan": "G19",
+  "besaran": "indeks",
+  "ukuran": "tiga-kolom",
+  "skala": false,
+  "keterangan": "Jumlah tahun berumah rusak per provinsi, 2015–2025 (tahun)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam ({rumus_kelas})",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "koroplet": {
+   "sumber": {
+    "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/tahun_rusak_prov.csv",
+    "kunci": "kode",
+    "nilai": "tahun_rusak"
+   },
+   "kelas": {
+    "ramp": "api",
+    "batas": [
+     5,
+     8,
+     10
+    ],
+    "rumus": "batas tetap jumlah tahun",
+    "desimal": 0
+   },
+   "judul_legenda": "Tahun berumah rusak"
+  },
+  "label": {
+   "provinsi": false
+  }
+ },
+ {
+  "nama": "bab08-matriks-kemungkinan-dampak",
+  "jenis": "matriks",
+  "pesan": "G17",
+  "ukuran": "penuh",
+  "tinggi_sel_pt": 84,
+  "keterangan": "Posisi jenis bencana pada matriks kemungkinan lima tahun dan kelas dampak RR di Indonesia, 2026",
+  "sumber": "DIBI BNPB; PuSGeN 2024; pengolahan kajian ini",
+  "kolom": {
+   "judul": "KEMUNGKINAN LIMA TAHUN",
+   "label": [
+    "Pita 1",
+    "Pita 2",
+    "Pita 3",
+    "Pita 4",
+    "Pita 5",
+    "Tidak dinilai"
+   ]
+  },
+  "baris": {
+   "judul": "KELAS DAMPAK RR",
+   "label": [
+    "Kelas 1",
+    "Kelas 2",
+    "Kelas 3",
+    "Kelas 4",
+    "Kelas 5"
+   ]
+  },
+  "butir": [
+   {
+    "nama": "Musim hujan setara lantai 2025/2026",
+    "kolom": 3,
+    "baris": 4
+   },
+   {
+    "nama": "Megathrust Jawa, gabungan",
+    "kolom": 1,
+    "baris": 4
+   },
+   {
+    "nama": "Megathrust Jawa, per segmen",
+    "kolom": 2,
+    "baris": 4
+   },
+   {
+    "nama": "Gempa di luar megathrust",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Tsunami",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Banjir dan banjir bandang",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Likuefaksi, batas atas",
+    "kolom": 5,
+    "baris": 4
+   },
+   {
+    "nama": "Erupsi gunung api",
+    "kolom": 5,
+    "baris": 3
+   },
+   {
+    "nama": "Cuaca ekstrem",
+    "kolom": 5,
+    "baris": 3
+   },
+   {
+    "nama": "Tanah longsor",
+    "kolom": 5,
+    "baris": 2
+   }
+  ]
+ },
+ {
+  "nama": "bab08-kartu-gempa",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat akibat gempa bumi per provinsi, 2015–2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.geologi",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-gempa.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-kartu-tsunami",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat akibat tsunami per provinsi, 2008–2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.geologi",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-tsunami.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-kartu-likuefaksi",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat akibat gempa bumi dan tsunami per provinsi, 2018 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.geologi",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-likuefaksi.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-kartu-banjir",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat akibat banjir per provinsi, 2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-banjir.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-kartu-longsor",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat akibat tanah longsor per provinsi, 2015–2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-longsor.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-kartu-erupsi",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat akibat erupsi gunung api per provinsi, 2008–2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.geologi",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-erupsi.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-kartu-cuaca-ekstrem",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Rumah rusak berat akibat cuaca ekstrem per provinsi, 2015–2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "rumah",
+    "judul_legenda": "Rumah rusak berat",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-cuaca-ekstrem.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ },
+ {
+  "nama": "bab08-kartu-musim-hujan",
+  "jenis": "peta",
+  "pesan": "G20",
+  "besaran": "total",
+  "ukuran": "tiga-kolom",
+  "keterangan": "Jembatan rusak akibat banjir, longsor, dan cuaca ekstrem per provinsi, 2025 (unit)",
+  "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+  "cakupan": "nasional",
+  "tingkat": "provinsi",
+  "titik": [
+   {
+    "nama": "jembatan",
+    "judul_legenda": "Jembatan rusak",
+    "bentuk": "lingkaran",
+    "warna": "kategori.basah",
+    "sumber": {
+     "berkas": "data/kajian-bnpb/data/turunan/gambar-rehab/peta_kartu-musim-hujan.csv"
+    },
+    "nilai": "nilai"
+   }
+  ],
+  "label": {
+   "provinsi": false
+  },
+  "skala": false
+ }
+]

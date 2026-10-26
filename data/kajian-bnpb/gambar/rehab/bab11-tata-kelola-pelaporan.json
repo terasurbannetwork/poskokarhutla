@@ -1,0 +1,233 @@
+{
+ "nama": "bab11-tata-kelola-pelaporan",
+ "keterangan": "Tata kelola dan siklus pelaporan rehabilitasi dan rekonstruksi air dan akses, 2026–2030, 2026",
+ "sumber": "Perban BNPB 4/2020 Pasal 21; Perban BNPB 4/2024 Pasal 28 dan 30; Perban BNPB 6/2017 Pasal 14; Keppres 1/2026 Pasal 10; Keputusan Kepala BNPB 327/2025 Diktum KETIGA",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  101.2
+ ],
+ "ukuran_cm": [
+  16.5,
+  3.57
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Pelaporan berpasal",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Alur usulan kajian",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  }
+ ],
+ "hex": {
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 68.77,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Pelaporan berpasal"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 82.77,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Pelaporan berpasal"
+  },
+  {
+   "x": 108.77,
+   "y": 3,
+   "w": 62.91,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-94",
+   "teks": "Alur usulan kajian"
+  },
+  {
+   "x": 94.77,
+   "y": 2,
+   "w": 76.91,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-94",
+   "teks": "Alur usulan kajian"
+  },
+  {
+   "x": 31.46,
+   "y": 24.8,
+   "w": 49.52,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "Laporan DSP"
+  },
+  {
+   "x": 13.7,
+   "y": 36.4,
+   "w": 85.03,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "bulanan; Perban 4/2020"
+  },
+  {
+   "x": 40.82,
+   "y": 46,
+   "w": 30.78,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "Pasal 21"
+  },
+  {
+   "x": 140.96,
+   "y": 24.8,
+   "w": 67.36,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "Laporan hibah RR"
+  },
+  {
+   "x": 124.44,
+   "y": 36.4,
+   "w": 100.4,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "tiga bulanan; Perban 4/2024"
+  },
+  {
+   "x": 146.14,
+   "y": 46,
+   "w": 57,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r2",
+   "teks": "Pasal 28 dan 30"
+  },
+  {
+   "x": 279.86,
+   "y": 24.8,
+   "w": 26.43,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r3",
+   "teks": "Satgas"
+  },
+  {
+   "x": 254.77,
+   "y": 36.4,
+   "w": 76.6,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r3",
+   "teks": "dua bulanan; Keppres"
+  },
+  {
+   "x": 263.81,
+   "y": 46,
+   "w": 58.52,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r3",
+   "teks": "1/2026 Pasal 10"
+  },
+  {
+   "x": 395.44,
+   "y": 24.8,
+   "w": 32.13,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r4",
+   "teks": "Progsun"
+  },
+  {
+   "x": 373.05,
+   "y": 36.4,
+   "w": 76.9,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r4",
+   "teks": "triwulan; Kepka BNPB"
+  },
+  {
+   "x": 394.13,
+   "y": 46,
+   "w": 34.74,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r4",
+   "teks": "327/2025"
+  },
+  {
+   "x": 55.35,
+   "y": 74.2,
+   "w": 120.17,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "u1",
+   "teks": "Pelaksana jembatan dan sumur"
+  },
+  {
+   "x": 50.94,
+   "y": 85.8,
+   "w": 128.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "u1",
+   "teks": "usulan: laporan ke BNPB sesuai R3P"
+  },
+  {
+   "x": 319.21,
+   "y": 74.2,
+   "w": 66.16,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "u2",
+   "teks": "Pemantauan R3P"
+  },
+  {
+   "x": 309.41,
+   "y": 85.8,
+   "w": 85.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "u2",
+   "teks": "Perban 6/2017 Pasal 14"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Siklus pelaporan berfrekuensi; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 6
+}

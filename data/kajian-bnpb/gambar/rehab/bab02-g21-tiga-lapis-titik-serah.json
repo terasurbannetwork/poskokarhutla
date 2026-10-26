@@ -1,0 +1,586 @@
+{
+ "nama": "bab02-g21-tiga-lapis-titik-serah",
+ "keterangan": "Tiga lapis waktu rehabilitasi dan rekonstruksi air dan akses beserta titik serahnya menurut peraturan BNPB, 2026",
+ "sumber": "UU 24/2007; PP 21/2008; Perka BNPB 7/2008; Perka BNPB 12/2010; Perban BNPB 5/2017 Pasal 2 dan 10; Perban BNPB 6/2017 Pasal 13 ayat (6); Perban BNPB 4/2020; Perban BNPB 4/2024; Perban BNPB 1/2026 Pasal 14 ayat (5); analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  248.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  8.77
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Lapis waktu",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Titik serah",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Aturan atau pelaksana berpasal",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Jalur sektor",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 42.63,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 56.63,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 82.63,
+   "y": 3,
+   "w": 37.13,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 68.63,
+   "y": 2,
+   "w": 51.13,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 143.77,
+   "y": 3,
+   "w": 112.39,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-129",
+   "teks": "Aturan atau pelaksana berpasal"
+  },
+  {
+   "x": 129.77,
+   "y": 2,
+   "w": 126.39,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-129",
+   "teks": "Aturan atau pelaksana berpasal"
+  },
+  {
+   "x": 280.16,
+   "y": 3,
+   "w": 42.11,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-266",
+   "teks": "Jalur sektor"
+  },
+  {
+   "x": 266.16,
+   "y": 2,
+   "w": 56.11,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-266",
+   "teks": "Jalur sektor"
+  },
+  {
+   "x": 2,
+   "y": 45.05,
+   "w": 20.57,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Lapis"
+  },
+  {
+   "x": 2,
+   "y": 109.15,
+   "w": 22.11,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Dasar"
+  },
+  {
+   "x": 2,
+   "y": 168.45,
+   "w": 23.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Akses"
+  },
+  {
+   "x": 2,
+   "y": 222.65,
+   "w": 11.07,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb3",
+   "teks": "Air"
+  },
+  {
+   "x": 58.57,
+   "y": 34.4,
+   "w": 28.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "Darurat"
+  },
+  {
+   "x": 46.1,
+   "y": 46,
+   "w": 53.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "status tanggap"
+  },
+  {
+   "x": 59.98,
+   "y": 55.6,
+   "w": 25.65,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "darurat"
+  },
+  {
+   "x": 137.4,
+   "y": 24.8,
+   "w": 47.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "Titik serah 1"
+  },
+  {
+   "x": 139.55,
+   "y": 36.4,
+   "w": 43.37,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "akhir status;"
+  },
+  {
+   "x": 140.68,
+   "y": 46,
+   "w": 41.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "penunjukan"
+  },
+  {
+   "x": 130.79,
+   "y": 55.6,
+   "w": 60.88,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "langsung sampai"
+  },
+  {
+   "x": 148.12,
+   "y": 65.2,
+   "w": 26.22,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "transisi"
+  },
+  {
+   "x": 228.85,
+   "y": 34.4,
+   "w": 41.62,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "Sementara"
+  },
+  {
+   "x": 222.42,
+   "y": 46,
+   "w": 54.47,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "transisi sampai"
+  },
+  {
+   "x": 227.23,
+   "y": 55.6,
+   "w": 44.85,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "R3P berjalan"
+  },
+  {
+   "x": 314.25,
+   "y": 39.2,
+   "w": 47.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "Titik serah 2"
+  },
+  {
+   "x": 311.07,
+   "y": 50.8,
+   "w": 54.02,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "R3P ditetapkan"
+  },
+  {
+   "x": 406.9,
+   "y": 29.6,
+   "w": 39.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "Permanen"
+  },
+  {
+   "x": 396.79,
+   "y": 41.2,
+   "w": 59.43,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "masa R3P, hibah"
+  },
+  {
+   "x": 403.78,
+   "y": 50.8,
+   "w": 45.45,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "RR dan Dana"
+  },
+  {
+   "x": 410.62,
+   "y": 60.4,
+   "w": 31.77,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "Bersama"
+  },
+  {
+   "x": 38.72,
+   "y": 93.4,
+   "w": 68.17,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "Perka 7/2008 dan"
+  },
+  {
+   "x": 56.59,
+   "y": 103.6,
+   "w": 32.44,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "12/2010"
+  },
+  {
+   "x": 42.25,
+   "y": 115.2,
+   "w": 61.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "kebutuhan dasar;"
+  },
+  {
+   "x": 41.47,
+   "y": 124.8,
+   "w": 62.67,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "perbaikan darurat"
+  },
+  {
+   "x": 221.18,
+   "y": 98.5,
+   "w": 56.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "Perban 4/2020"
+  },
+  {
+   "x": 231.19,
+   "y": 110.1,
+   "w": 36.92,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "DSP untuk"
+  },
+  {
+   "x": 217.99,
+   "y": 119.7,
+   "w": 63.33,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "pemulihan segera"
+  },
+  {
+   "x": 398.03,
+   "y": 93.4,
+   "w": 56.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "Perban 5/2017"
+  },
+  {
+   "x": 404.61,
+   "y": 103.6,
+   "w": 43.78,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "dan 4/2024"
+  },
+  {
+   "x": 394.41,
+   "y": 115.2,
+   "w": 64.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "R3P paling lama 3"
+  },
+  {
+   "x": 398.86,
+   "y": 124.8,
+   "w": 55.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "tahun; hibah RR"
+  },
+  {
+   "x": 61.01,
+   "y": 162.6,
+   "w": 23.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "j1",
+   "teks": "Akses"
+  },
+  {
+   "x": 62.43,
+   "y": 174.2,
+   "w": 20.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j1",
+   "teks": "bailey"
+  },
+  {
+   "x": 237.86,
+   "y": 153,
+   "w": 23.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "j2",
+   "teks": "Akses"
+  },
+  {
+   "x": 232.97,
+   "y": 164.6,
+   "w": 33.38,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j2",
+   "teks": "jembatan"
+  },
+  {
+   "x": 217.09,
+   "y": 174.2,
+   "w": 65.13,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j2",
+   "teks": "sementara TNI AD"
+  },
+  {
+   "x": 233.93,
+   "y": 183.8,
+   "w": 31.46,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j2",
+   "teks": "dan Polri"
+  },
+  {
+   "x": 414.71,
+   "y": 157.8,
+   "w": 23.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "j3",
+   "teks": "Akses"
+  },
+  {
+   "x": 409.81,
+   "y": 169.4,
+   "w": 33.38,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j3",
+   "teks": "jembatan"
+  },
+  {
+   "x": 408.57,
+   "y": 179,
+   "w": 35.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j3",
+   "teks": "permanen"
+  },
+  {
+   "x": 67.27,
+   "y": 212,
+   "w": 11.07,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "w1",
+   "teks": "Air"
+  },
+  {
+   "x": 46.36,
+   "y": 223.6,
+   "w": 52.89,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w1",
+   "teks": "truk tangki dan"
+  },
+  {
+   "x": 47.66,
+   "y": 233.2,
+   "w": 50.3,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w1",
+   "teks": "sumur darurat"
+  },
+  {
+   "x": 244.12,
+   "y": 212,
+   "w": 11.07,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "w2",
+   "teks": "Air"
+  },
+  {
+   "x": 222.01,
+   "y": 223.6,
+   "w": 55.3,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w2",
+   "teks": "pipa sementara"
+  },
+  {
+   "x": 230.86,
+   "y": 233.2,
+   "w": 37.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w2",
+   "teks": "dan hidran"
+  },
+  {
+   "x": 420.97,
+   "y": 216.8,
+   "w": 11.07,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "w3",
+   "teks": "Air"
+  },
+  {
+   "x": 396.58,
+   "y": 228.4,
+   "w": 59.84,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w3",
+   "teks": "SPAM permanen"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 14
+}

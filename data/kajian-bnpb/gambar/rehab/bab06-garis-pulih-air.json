@@ -1,0 +1,201 @@
+{
+ "nama": "bab06-garis-pulih-air",
+ "keterangan": "Pemulihan layanan air menurut hari sejak kejadian, Kobe 1995, Tohoku 2011, dan Sumatra 2025 (persen)",
+ "sumber": "Nojima, JSCE 2011; Kementerian PU; DIBI BNPB",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  196.44
+ ],
+ "ukuran_cm": [
+  16.5,
+  6.93
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Kobe dan Tohoku, rasio pemulihan layanan",
+   "jenis": "kotak",
+   "warna": "#B7B0A6"
+  },
+  {
+   "label": "Sumatra, unit SPAM berfungsi (hari estimasi model)",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#B7B0A6": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 152.32,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Kobe dan Tohoku, rasio pemulihan layanan"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 166.32,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Kobe dan Tohoku, rasio pemulihan layanan"
+  },
+  {
+   "x": 192.32,
+   "y": 3,
+   "w": 184.14,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-178",
+   "teks": "Sumatra, unit SPAM berfungsi (hari estimasi model)"
+  },
+  {
+   "x": 178.32,
+   "y": 2,
+   "w": 198.14,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-178",
+   "teks": "Sumatra, unit SPAM berfungsi (hari estimasi model)"
+  },
+  {
+   "x": 30.25,
+   "y": 138.74,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "38"
+  },
+  {
+   "x": 17.56,
+   "y": 186.44,
+   "w": 35.13,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kobe 90%"
+  },
+  {
+   "x": 96.49,
+   "y": 134.1,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "43"
+  },
+  {
+   "x": 83.8,
+   "y": 186.44,
+   "w": 35.13,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kobe 95%"
+  },
+  {
+   "x": 162.74,
+   "y": 98.87,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "81"
+  },
+  {
+   "x": 147.8,
+   "y": 186.44,
+   "w": 39.62,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kobe 100%"
+  },
+  {
+   "x": 228.98,
+   "y": 140.6,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "36"
+  },
+  {
+   "x": 212.06,
+   "y": 186.44,
+   "w": 43.59,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tohoku 90%"
+  },
+  {
+   "x": 295.23,
+   "y": 135.96,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "41"
+  },
+  {
+   "x": 278.31,
+   "y": 186.44,
+   "w": 43.59,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tohoku 95%"
+  },
+  {
+   "x": 361.47,
+   "y": 107.21,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "72"
+  },
+  {
+   "x": 342.84,
+   "y": 186.44,
+   "w": 47.02,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra 81%"
+  },
+  {
+   "x": 425.28,
+   "y": 20.04,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "166"
+  },
+  {
+   "x": 406.05,
+   "y": 186.44,
+   "w": 53.08,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra 95,5%"
+  }
+ ],
+ "jenis": "batang",
+ "pesan": "G1",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 7
+}

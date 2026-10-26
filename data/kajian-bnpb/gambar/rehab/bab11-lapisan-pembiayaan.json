@@ -1,0 +1,334 @@
+{
+ "nama": "bab11-lapisan-pembiayaan",
+ "keterangan": "Aliran sumber dana per lapis waktu ke aset nasional, daerah, dan desa, Oktober 2026, 2026",
+ "sumber": "PP 22/2008; PP 12/2019; Perpres 75/2021; Perban BNPB 4/2020, 4/2024, dan 1/2026; Permendes PDT 16/2025; UU 2/2022 Pasal 16A; analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  139.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  4.92
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Lapis waktu",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Sumber dana berpasal",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Sel kosong",
+   "jenis": "kotak",
+   "warna": "#F8DDE0"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#F8DDE0": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 42.63,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 56.63,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 82.63,
+   "y": 3,
+   "w": 79.88,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Sumber dana berpasal"
+  },
+  {
+   "x": 68.63,
+   "y": 2,
+   "w": 93.88,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Sumber dana berpasal"
+  },
+  {
+   "x": 186.52,
+   "y": 3,
+   "w": 39.11,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-172",
+   "teks": "Sel kosong"
+  },
+  {
+   "x": 172.52,
+   "y": 2,
+   "w": 53.11,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-172",
+   "teks": "Sel kosong"
+  },
+  {
+   "x": 2,
+   "y": 24.85,
+   "w": 20.57,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Lapis"
+  },
+  {
+   "x": 2,
+   "y": 63.65,
+   "w": 28.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Darurat"
+  },
+  {
+   "x": 2,
+   "y": 113.35,
+   "w": 39.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Permanen"
+  },
+  {
+   "x": 178.15,
+   "y": 24.85,
+   "w": 51.99,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h0",
+   "teks": "Aset nasional"
+  },
+  {
+   "x": 287.76,
+   "y": 24.85,
+   "w": 46.03,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h1",
+   "teks": "Aset daerah"
+  },
+  {
+   "x": 398.41,
+   "y": 24.85,
+   "w": 37.98,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "h2",
+   "teks": "Aset desa"
+  },
+  {
+   "x": 83.29,
+   "y": 57.8,
+   "w": 28.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "Darurat"
+  },
+  {
+   "x": 90,
+   "y": 69.4,
+   "w": 15.04,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "DSP"
+  },
+  {
+   "x": 167.9,
+   "y": 57.8,
+   "w": 72.49,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "DSP dan APBN K/L"
+  },
+  {
+   "x": 177.66,
+   "y": 69.4,
+   "w": 52.98,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "Perban 4/2020"
+  },
+  {
+   "x": 280.46,
+   "y": 57.8,
+   "w": 60.63,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "DSP, BTT APBD"
+  },
+  {
+   "x": 289.61,
+   "y": 69.4,
+   "w": 42.32,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "PP 12/2019"
+  },
+  {
+   "x": 387.64,
+   "y": 53,
+   "w": 59.52,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "DSP, dana desa"
+  },
+  {
+   "x": 388.61,
+   "y": 64.6,
+   "w": 57.58,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "Permendes PDT"
+  },
+  {
+   "x": 402.28,
+   "y": 74.2,
+   "w": 30.25,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "16/2025"
+  },
+  {
+   "x": 77.92,
+   "y": 107.5,
+   "w": 39.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "Permanen"
+  },
+  {
+   "x": 81.81,
+   "y": 119.1,
+   "w": 31.43,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "hibah RR"
+  },
+  {
+   "x": 185.19,
+   "y": 107.5,
+   "w": 37.92,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "APBN K/L"
+  },
+  {
+   "x": 175.45,
+   "y": 119.1,
+   "w": 57.4,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b1",
+   "teks": "Kementerian PU"
+  },
+  {
+   "x": 274.24,
+   "y": 102.4,
+   "w": 73.06,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "Hibah RR dan Dana"
+  },
+  {
+   "x": 293.79,
+   "y": 112.6,
+   "w": 33.96,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "Bersama"
+  },
+  {
+   "x": 269.57,
+   "y": 124.2,
+   "w": 82.41,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b2",
+   "teks": "Perban 4/2024; 1/2026"
+  },
+  {
+   "x": 375.74,
+   "y": 107.5,
+   "w": 83.34,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "Aset desa di hibah RR"
+  },
+  {
+   "x": 390.8,
+   "y": 119.1,
+   "w": 53.2,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "b3",
+   "teks": "Pasal 5 huruf e"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Aliran sumber dana per lapis waktu ke jenis aset tanpa nominal; tabel pilih grafik B5.10 tidak memuat bagan lapisan",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 11
+}

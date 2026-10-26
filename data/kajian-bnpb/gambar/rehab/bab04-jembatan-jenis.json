@@ -1,0 +1,524 @@
+{
+ "nama": "bab04-jembatan-jenis",
+ "keterangan": "Jembatan rusak akibat bencana alam per tahun menurut jenis bencana di Indonesia, 2018–2025 (unit)",
+ "sumber": "BNPB, DIBI dasbor publik, rekap nasional tahunan, klasifikasi bencana alam, cakupan kejadian bencana; pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  243.21
+ ],
+ "ukuran_cm": [
+  16.5,
+  8.58
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Banjir",
+   "jenis": "kotak",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "Tanah longsor",
+   "jenis": "kotak",
+   "warna": "#3F5F80"
+  },
+  {
+   "label": "Gempa, erupsi, cuaca ekstrem, gelombang",
+   "jenis": "kotak",
+   "warna": "#8F877D"
+  }
+ ],
+ "hex": {
+  "#2F86D1": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#3F5F80": [
+   "legenda",
+   "seri"
+  ],
+  "#8F877D": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "garis",
+   "latar"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 20.3,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Banjir"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 34.3,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Banjir"
+  },
+  {
+   "x": 60.3,
+   "y": 3,
+   "w": 51.08,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-46",
+   "teks": "Tanah longsor"
+  },
+  {
+   "x": 46.3,
+   "y": 2,
+   "w": 65.08,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-46",
+   "teks": "Tanah longsor"
+  },
+  {
+   "x": 135.38,
+   "y": 3,
+   "w": 150.54,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-121",
+   "teks": "Gempa, erupsi, cuaca ekstrem, gelombang"
+  },
+  {
+   "x": 121.38,
+   "y": 2,
+   "w": 164.54,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-121",
+   "teks": "Gempa, erupsi, cuaca ekstrem, gelombang"
+  },
+  {
+   "x": 23.82,
+   "y": 205.39,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg0",
+   "teks": "223"
+  },
+  {
+   "x": 56.47,
+   "y": 181.69,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "34"
+  },
+  {
+   "x": 56.47,
+   "y": 171.91,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "18"
+  },
+  {
+   "x": 23.67,
+   "y": 170.02,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "275"
+  },
+  {
+   "x": 22,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018"
+  },
+  {
+   "x": 81.79,
+   "y": 191.37,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg1",
+   "teks": "375"
+  },
+  {
+   "x": 114.44,
+   "y": 154.11,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "29"
+  },
+  {
+   "x": 114.44,
+   "y": 144.33,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "29"
+  },
+  {
+   "x": 81.63,
+   "y": 140.87,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "433"
+  },
+  {
+   "x": 79.96,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2019"
+  },
+  {
+   "x": 139.75,
+   "y": 187.41,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg2",
+   "teks": "418"
+  },
+  {
+   "x": 172.4,
+   "y": 143.22,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "61"
+  },
+  {
+   "x": 172.4,
+   "y": 133.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "8"
+  },
+  {
+   "x": 139.6,
+   "y": 130.91,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "487"
+  },
+  {
+   "x": 137.93,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020"
+  },
+  {
+   "x": 197.72,
+   "y": 185.56,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg3",
+   "teks": "438"
+  },
+  {
+   "x": 230.37,
+   "y": 141.66,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "38"
+  },
+  {
+   "x": 230.37,
+   "y": 131.88,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "29"
+  },
+  {
+   "x": 197.56,
+   "y": 127.59,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "505"
+  },
+  {
+   "x": 195.89,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2021"
+  },
+  {
+   "x": 255.68,
+   "y": 197.09,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg4",
+   "teks": "313"
+  },
+  {
+   "x": 288.33,
+   "y": 166.75,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "16"
+  },
+  {
+   "x": 288.33,
+   "y": 156.97,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "13"
+  },
+  {
+   "x": 255.53,
+   "y": 157.66,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "342"
+  },
+  {
+   "x": 253.86,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022"
+  },
+  {
+   "x": 313.65,
+   "y": 204.38,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg5",
+   "teks": "234"
+  },
+  {
+   "x": 346.3,
+   "y": 181.23,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "17"
+  },
+  {
+   "x": 346.3,
+   "y": 171.45,
+   "w": 4.77,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "7"
+  },
+  {
+   "x": 313.49,
+   "y": 173.16,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "258"
+  },
+  {
+   "x": 311.82,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023"
+  },
+  {
+   "x": 371.61,
+   "y": 189.34,
+   "w": 14.32,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg6",
+   "teks": "397"
+  },
+  {
+   "x": 404.26,
+   "y": 151.62,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "12"
+  },
+  {
+   "x": 404.26,
+   "y": 141.84,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "36"
+  },
+  {
+   "x": 371.45,
+   "y": 138.66,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "445"
+  },
+  {
+   "x": 369.79,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024"
+  },
+  {
+   "x": 426.07,
+   "y": 131.79,
+   "w": 21.33,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "seg7",
+   "teks": "1.021"
+  },
+  {
+   "x": 462.23,
+   "y": 34.01,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "39"
+  },
+  {
+   "x": 462.23,
+   "y": 24.24,
+   "w": 9.55,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "28"
+  },
+  {
+   "x": 425.75,
+   "y": 20.04,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1.088"
+  },
+  {
+   "x": 427.75,
+   "y": 233.21,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2025"
+  }
+ ],
+ "jenis": "bertumpuk",
+ "pesan": "G9",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 8,
+ "segmen": 3,
+ "nilai_tak_tertulis": 0,
+ "kontras_teks_min": 4.52,
+ "baris_dibuang": 0,
+ "cacah_pecahan": 0,
+ "jumlah_per_batang": [
+  {
+   "x": "2018",
+   "segmen": [
+    223,
+    34,
+    18
+   ],
+   "total": 275
+  },
+  {
+   "x": "2019",
+   "segmen": [
+    375,
+    29,
+    29
+   ],
+   "total": 433
+  },
+  {
+   "x": "2020",
+   "segmen": [
+    418,
+    61,
+    8
+   ],
+   "total": 487
+  },
+  {
+   "x": "2021",
+   "segmen": [
+    438,
+    38,
+    29
+   ],
+   "total": 505
+  },
+  {
+   "x": "2022",
+   "segmen": [
+    313,
+    16,
+    13
+   ],
+   "total": 342
+  },
+  {
+   "x": "2023",
+   "segmen": [
+    234,
+    17,
+    7
+   ],
+   "total": 258
+  },
+  {
+   "x": "2024",
+   "segmen": [
+    397,
+    12,
+    36
+   ],
+   "total": 445
+  },
+  {
+   "x": "2025",
+   "segmen": [
+    1021,
+    39,
+    28
+   ],
+   "total": 1088
+  }
+ ]
+}

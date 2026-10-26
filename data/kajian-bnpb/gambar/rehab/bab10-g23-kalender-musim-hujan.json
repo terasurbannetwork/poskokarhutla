@@ -1,0 +1,342 @@
+{
+ "nama": "bab10-g23-kalender-musim-hujan",
+ "keterangan": "Kalender kesiapan rehabilitasi dan rekonstruksi musim hujan 2026/2027: puncak per bulan, tugas empat belas hari, tugas 100 hari, dan pemutakhiran R3P Sumatra, 2026",
+ "sumber": "BMKG (2026); DIBI BNPB; analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  156.2
+ ],
+ "ukuran_cm": [
+  16.5,
+  5.51
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Puncak musim hujan (BMKG)",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Tugas berlabel asumsi kebijakan",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Pemutakhiran R3P Sumatra",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  }
+ ],
+ "hex": {
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 104.34,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Puncak musim hujan (BMKG)"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 118.34,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Puncak musim hujan (BMKG)"
+  },
+  {
+   "x": 144.34,
+   "y": 3,
+   "w": 116.25,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-130",
+   "teks": "Tugas berlabel asumsi kebijakan"
+  },
+  {
+   "x": 130.34,
+   "y": 2,
+   "w": 130.25,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-130",
+   "teks": "Tugas berlabel asumsi kebijakan"
+  },
+  {
+   "x": 284.6,
+   "y": 3,
+   "w": 98.16,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-270",
+   "teks": "Pemutakhiran R3P Sumatra"
+  },
+  {
+   "x": 270.6,
+   "y": 2,
+   "w": 112.16,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-270",
+   "teks": "Pemutakhiran R3P Sumatra"
+  },
+  {
+   "x": 47.31,
+   "y": 20,
+   "w": 34.9,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Okt 2026"
+  },
+  {
+   "x": 119.66,
+   "y": 20,
+   "w": 15.1,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Nov"
+  },
+  {
+   "x": 182.42,
+   "y": 20,
+   "w": 14.49,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Des"
+  },
+  {
+   "x": 234.28,
+   "y": 20,
+   "w": 35.69,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk3",
+   "teks": "Jan 2027"
+  },
+  {
+   "x": 307.56,
+   "y": 20,
+   "w": 14.04,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk4",
+   "teks": "Feb"
+  },
+  {
+   "x": 369.48,
+   "y": 20,
+   "w": 15.1,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk5",
+   "teks": "Mar"
+  },
+  {
+   "x": 432.69,
+   "y": 20,
+   "w": 13.6,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk6",
+   "teks": "Apr"
+  },
+  {
+   "x": 2,
+   "y": 50.65,
+   "w": 28.53,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Puncak"
+  },
+  {
+   "x": 2,
+   "y": 95.25,
+   "w": 23.79,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Tugas"
+  },
+  {
+   "x": 2,
+   "y": 135.05,
+   "w": 15.78,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "R3P"
+  },
+  {
+   "x": 295.12,
+   "y": 40,
+   "w": 38.92,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "Desember"
+  },
+  {
+   "x": 298.2,
+   "y": 51.6,
+   "w": 32.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "155 zona"
+  },
+  {
+   "x": 302.33,
+   "y": 61.2,
+   "w": 24.5,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p1",
+   "teks": "musim"
+  },
+  {
+   "x": 362.67,
+   "y": 40,
+   "w": 28.73,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "Januari"
+  },
+  {
+   "x": 360.66,
+   "y": 51.6,
+   "w": 32.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "162 zona"
+  },
+  {
+   "x": 364.78,
+   "y": 61.2,
+   "w": 24.5,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p2",
+   "teks": "musim"
+  },
+  {
+   "x": 423.59,
+   "y": 40,
+   "w": 31.8,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "Februari"
+  },
+  {
+   "x": 423.11,
+   "y": 51.6,
+   "w": 32.75,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "190 zona"
+  },
+  {
+   "x": 427.24,
+   "y": 61.2,
+   "w": 24.5,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "p3",
+   "teks": "musim"
+  },
+  {
+   "x": 64.08,
+   "y": 89.4,
+   "w": 63.82,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t1",
+   "teks": "Empat belas hari"
+  },
+  {
+   "x": 49.17,
+   "y": 101,
+   "w": 93.63,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t1",
+   "teks": "keputusan dan penugasan"
+  },
+  {
+   "x": 228.99,
+   "y": 89.4,
+   "w": 46.26,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "t2",
+   "teks": "Seratus hari"
+  },
+  {
+   "x": 185.63,
+   "y": 101,
+   "w": 132.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "t2",
+   "teks": "baseline dan penunjukan pemilik aset"
+  },
+  {
+   "x": 216.38,
+   "y": 129.2,
+   "w": 71.49,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "Pemutakhiran R3P"
+  },
+  {
+   "x": 184.03,
+   "y": 140.8,
+   "w": 136.19,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "r1",
+   "teks": "Aceh, Sumatera Utara, Sumatera Barat"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Garis waktu kesiapan berlajur per bulan; tabel pilih grafik B5.10 tidak memuat kalender tugas",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 6
+}

@@ -1,1141 +1,1814 @@
 {
-  "_catatan": [
-    "Glosarium dua kajian BNPB (PEDOMAN B5.18, Buku Pegangan L66 dan L67). Dibaca bangun/docx (Daftar Singkatan, Lampiran Glosarium), qa/periksa.py D-10 (terlarang), T-9 (singkatan pertama per bab dan varian berkonteks), dan T-10 (ejaan id_ID: kata di sini dianggap dikenal).",
-    "singkatan: periksa=false untuk bentuk rujukan peraturan dan singkatan yang bertabrakan; kepanjangan_lain menerima arti kedua. Kepanjangan lembaga mengikuti data/lembaga/lembaga.csv (nomenklatur Oktober 2026).",
-    "terlarang: dicari di seluruh teks tampil (kata utuh, tanpa beda huruf; tag riset peka huruf). varian_konteks: hanya di prosa bab, dengan pengecualian kalimat bertanda \"dahulu\"/\"kini\".",
-    "kata_tambahan: kata baku KBBI atau istilah peraturan yang tidak ada di kamus hunspell id_ID repositori kamus LibreOffice (bangun/kamus/id); ditambah hanya sesudah dicek ke KBBI daring atau teks peraturan."
-  ],
-  "versi": "2026-10-24",
-  "istilah": [
-    {
-      "istilah": "prabencana",
-      "definisi": "tahap penyelenggaraan penanggulangan bencana dalam situasi tidak terjadi bencana dan terdapat potensi bencana",
-      "sumber": "UU 24/2007 Pasal 33, 34; KEPUTUSAN T10"
-    },
-    {
-      "istilah": "tanggap darurat",
-      "definisi": "serangkaian kegiatan yang dilakukan segera pada saat kejadian bencana",
-      "sumber": "UU 24/2007 Pasal 1 angka 10"
-    },
-    {
-      "istilah": "pascabencana",
-      "definisi": "tahap rehabilitasi dan rekonstruksi sesudah bencana",
-      "sumber": "UU 24/2007 Pasal 33, 57; KEPUTUSAN T10"
-    },
-    {
-      "istilah": "siaga darurat",
-      "definisi": "status keadaan darurat sebelum bencana terjadi bila ancaman meningkat",
-      "sumber": "Perban 4/2020"
-    },
-    {
-      "istilah": "transisi darurat ke pemulihan",
-      "definisi": "status keadaan darurat sesudah tanggap darurat sebelum rehabilitasi",
-      "sumber": "Perban 4/2020"
-    },
-    {
-      "istilah": "titik panas",
-      "definisi": "piksel citra satelit bersuhu tinggi; bukan titik api dan bukan kebakaran",
-      "sumber": "Buku Pegangan Angka & copy",
-      "varian_terlarang": [
-        "titik api",
-        "hotspot di prosa"
-      ]
-    },
-    {
-      "istilah": "hitungan satelit",
-      "definisi": "luas yang dihitung dari citra satelit; bukan luas resmi",
-      "sumber": "Buku Pegangan Angka & copy",
-      "varian_terlarang": [
-        "perkiraan satelit"
-      ]
-    },
-    {
-      "istilah": "penurunan muka tanah",
-      "definisi": "turunnya permukaan tanah; termasuk daya rusak air",
-      "sumber": "UU 17/2019 Penjelasan Pasal 35 ayat (3) huruf i",
-      "varian_terlarang": [
-        "subsiden",
-        "amblesan"
-      ]
-    },
-    {
-      "istilah": "skenario terburuk yang masuk akal",
-      "definisi": "versi terburuk yang masuk akal setelah ekstrem yang sangat tidak mungkin disisihkan (reasonable worst case)",
-      "sumber": "KERANGKA prinsip 9"
-    },
-    {
-      "istilah": "lantai skenario",
-      "definisi": "korban atau dampak tercatat terburuk dalam periode acuan untuk jenis dan wilayah yang sama; skenario terburuk tidak boleh lebih ringan",
-      "sumber": "KERANGKA prinsip 9"
-    },
-    {
-      "istilah": "daftar perhatian",
-      "definisi": "kab/kota yang memenuhi paling sedikit dua syarat per bahaya; bukan peringkat",
-      "sumber": "KERANGKA prinsip 8",
-      "varian_terlarang": [
-        "provinsi prioritas",
-        "kab/kota prioritas (IRBI)"
-      ]
-    },
-    {
-      "istilah": "kebutuhan respons",
-      "definisi": "kebutuhan minimum logistik dan layanan dari standar Perka BNPB 7/2008 dan Perban 3/2018",
-      "sumber": "KERANGKA prinsip 9"
-    },
-    {
-      "istilah": "pengungsi-hari",
-      "definisi": "jumlah pengungsi dikali lama mengungsi; satuan kerugian imateriil fisik",
-      "sumber": "KERANGKA prinsip 9"
-    },
-    {
-      "istilah": "kerugian materiil",
-      "definisi": "nilai aset terpapar, kerugian kejadian analog, atau kebutuhan stimulan rumah, berlabel dan tidak dijumlah",
-      "sumber": "KERANGKA prinsip 9"
-    },
-    {
-      "istilah": "kerugian imateriil",
-      "definisi": "meninggal dan hilang, pengungsi dan pengungsi-hari, YLL; rupiah imateriil hanya di lampiran metode",
-      "sumber": "KERANGKA prinsip 9"
-    },
-    {
-      "istilah": "rencana kontinjensi",
-      "definisi": "rencana penanggulangan keadaan darurat untuk ancaman tertentu",
-      "sumber": "Perban 2/2023",
-      "varian_terlarang": [
-        "rencana kontingensi"
-      ]
-    },
-    {
-      "istilah": "peringatan dini",
-      "definisi": "serangkaian kegiatan pemberian peringatan sesegera mungkin kepada masyarakat",
-      "sumber": "UU 24/2007 Pasal 1 angka 8; Perban 2/2024"
-    },
-    {
-      "istilah": "kab/kota",
-      "definisi": "kabupaten/kota",
-      "sumber": "PEDOMAN C3"
-    },
-    {
-      "istilah": "karhutla",
-      "definisi": "kebakaran hutan dan lahan; ditulis huruf kecil di tengah kalimat",
-      "sumber": "Buku Pegangan L66"
-    },
-    {
-      "istilah": "rob",
-      "definisi": "banjir pasang air laut di pesisir",
-      "sumber": "KERANGKA §4"
-    },
-    {
-      "istilah": "likuefaksi",
-      "definisi": "hilangnya kekuatan tanah jenuh air akibat guncangan gempa",
-      "sumber": "KRB BNPB"
-    },
-    {
-      "istilah": "keterpaparan",
-      "definisi": "jumlah penduduk atau aset di wilayah bahaya",
-      "sumber": "KRB BNPB"
-    },
-    {
-      "istilah": "megathrust",
-      "definisi": "bidang pertemuan lempeng di zona subduksi; istilah teknis tanpa padanan, ditulis miring bila asing",
-      "sumber": "ANTI-SLOP bagian 3",
-      "asing": true
-    },
-    {
-      "istilah": "reasonable worst case",
-      "definisi": "padanan Inggris skenario terburuk yang masuk akal; sekali per bab, miring",
-      "sumber": "KERANGKA prinsip 9",
-      "asing": true
-    },
-    {
-      "istilah": "El Niño",
-      "definisi": "fase hangat ENSO di Pasifik tengah dan timur",
-      "sumber": "BMKG"
-    },
-    {
-      "istilah": "La Niña",
-      "definisi": "fase dingin ENSO",
-      "sumber": "BMKG"
-    },
-    {
-      "istilah": "nonalam",
-      "definisi": "bencana yang diakibatkan peristiwa nonalam: gagal teknologi, gagal modernisasi, epidemi, wabah penyakit",
-      "sumber": "UU 24/2007 Pasal 1 angka 3"
-    },
-    {
-      "istilah": "kesiapsiagaan",
-      "definisi": "serangkaian kegiatan untuk mengantisipasi bencana melalui pengorganisasian serta langkah yang tepat guna dan berdaya guna",
-      "sumber": "UU 24/2007 Pasal 1 angka 7"
-    }
-  ],
-  "singkatan": [
-    {
-      "singkatan": "APBD",
-      "kepanjangan": "Anggaran Pendapatan dan Belanja Daerah"
-    },
-    {
-      "singkatan": "APBN",
-      "kepanjangan": "Anggaran Pendapatan dan Belanja Negara"
-    },
-    {
-      "singkatan": "ARC",
-      "kepanjangan": "African Risk Capacity",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "ATR/BPN",
-      "kepanjangan": "Kementerian Agraria dan Tata Ruang/Badan Pertanahan Nasional"
-    },
-    {
-      "singkatan": "Bappenas",
-      "kepanjangan": "Badan Perencanaan Pembangunan Nasional"
-    },
-    {
-      "singkatan": "Basarnas",
-      "kepanjangan": "Badan Nasional Pencarian dan Pertolongan"
-    },
-    {
-      "singkatan": "BBM",
-      "kepanjangan": "Bahan Bakar Minyak",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "BBWS",
-      "kepanjangan": "Balai Besar Wilayah Sungai"
-    },
-    {
-      "singkatan": "BIG",
-      "kepanjangan": "Badan Informasi Geospasial"
-    },
-    {
-      "singkatan": "BMKG",
-      "kepanjangan": "Badan Meteorologi, Klimatologi, dan Geofisika"
-    },
-    {
-      "singkatan": "BMN",
-      "kepanjangan": "Barang Milik Negara"
-    },
-    {
-      "singkatan": "BNPB",
-      "kepanjangan": "Badan Nasional Penanggulangan Bencana"
-    },
-    {
-      "singkatan": "BOP",
-      "kepanjangan": "Badan Otorita Pengelola"
-    },
-    {
-      "singkatan": "BPBD",
-      "kepanjangan": "Badan Penanggulangan Bencana Daerah"
-    },
-    {
-      "singkatan": "BPK",
-      "kepanjangan": "Badan Pemeriksa Keuangan"
-    },
-    {
-      "singkatan": "BPS",
-      "kepanjangan": "Badan Pusat Statistik"
-    },
-    {
-      "singkatan": "BRIN",
-      "kepanjangan": "Badan Riset dan Inovasi Nasional"
-    },
-    {
-      "singkatan": "BRR",
-      "kepanjangan": "Badan Rehabilitasi dan Rekonstruksi Wilayah dan Kehidupan Masyarakat Provinsi Nanggroe Aceh Darussalam dan Kepulauan Nias Provinsi Sumatera Utara",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "BTT",
-      "kepanjangan": "Belanja Tidak Terduga"
-    },
-    {
-      "singkatan": "BUMD",
-      "kepanjangan": "Badan Usaha Milik Daerah"
-    },
-    {
-      "singkatan": "BUMN",
-      "kepanjangan": "Badan Usaha Milik Negara"
-    },
-    {
-      "singkatan": "BWS",
-      "kepanjangan": "Balai Wilayah Sungai"
-    },
-    {
-      "singkatan": "CAT",
-      "kepanjangan": "Cekungan Air Tanah"
-    },
-    {
-      "singkatan": "CC BY",
-      "kepanjangan": "Creative Commons Attribution",
-      "periksa": false,
-      "alasan": "nama lisensi foto (PEDOMAN C6.5)"
-    },
-    {
-      "singkatan": "CC BY-SA",
-      "kepanjangan": "Creative Commons Attribution-ShareAlike",
-      "periksa": false,
-      "alasan": "nama lisensi foto (PEDOMAN C6.5)"
-    },
-    {
-      "singkatan": "CCRIF",
-      "kepanjangan": "Caribbean Catastrophe Risk Insurance Facility",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "COVID-19",
-      "kepanjangan": "Coronavirus Disease 2019",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "CPC",
-      "kepanjangan": "Climate Prediction Center",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "DAK",
-      "kepanjangan": "Dana Alokasi Khusus"
-    },
-    {
-      "singkatan": "DaLA",
-      "kepanjangan": "Damage and Loss Assessment"
-    },
-    {
-      "singkatan": "DAS",
-      "kepanjangan": "Daerah Aliran Sungai"
-    },
-    {
-      "singkatan": "Destana",
-      "kepanjangan": "Desa dan Kelurahan Tangguh Bencana",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "DI",
-      "kepanjangan": "Daerah Irigasi",
-      "periksa": false,
-      "alasan": "bertabrakan dengan DI Yogyakarta (Daerah Istimewa)"
-    },
-    {
-      "singkatan": "DIBI",
-      "kepanjangan": "Data dan Informasi Bencana Indonesia"
-    },
-    {
-      "singkatan": "DIY",
-      "kepanjangan": "Daerah Istimewa Yogyakarta",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "DPR",
-      "kepanjangan": "Dewan Perwakilan Rakyat",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "DPRD",
-      "kepanjangan": "Dewan Perwakilan Rakyat Daerah",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "DSP",
-      "kepanjangan": "Dana Siap Pakai"
-    },
-    {
-      "singkatan": "DTH",
-      "kepanjangan": "Dana Tunggu Hunian",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "ENSO",
-      "kepanjangan": "El Niño-Southern Oscillation"
-    },
-    {
-      "singkatan": "ESDM",
-      "kepanjangan": "Energi dan Sumber Daya Mineral"
-    },
-    {
-      "singkatan": "FEMA",
-      "kepanjangan": "Federal Emergency Management Agency",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "GNSS",
-      "kepanjangan": "Global Navigation Satellite System"
-    },
-    {
-      "singkatan": "HRW",
-      "kepanjangan": "Human Rights Watch",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "HTH",
-      "kepanjangan": "Hari Tanpa Hujan"
-    },
-    {
-      "singkatan": "ICG",
-      "kepanjangan": "International Crisis Group",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "IHPS",
-      "kepanjangan": "Ikhtisar Hasil Pemeriksaan Semester",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "IHR",
-      "kepanjangan": "International Health Regulations"
-    },
-    {
-      "singkatan": "IKD",
-      "kepanjangan": "Indeks Ketahanan Daerah"
-    },
-    {
-      "singkatan": "IKP",
-      "kepanjangan": "Indikator Kinerja Program"
-    },
-    {
-      "singkatan": "IKS",
-      "kepanjangan": "Indikator Kinerja Sasaran"
-    },
-    {
-      "singkatan": "IKU",
-      "kepanjangan": "Indikator Kinerja Utama",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "InaTEWS",
-      "kepanjangan": "Indonesia Tsunami Early Warning System"
-    },
-    {
-      "singkatan": "Inpres",
-      "kepanjangan": "Instruksi Presiden",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "InSAR",
-      "kepanjangan": "Interferometric Synthetic Aperture Radar"
-    },
-    {
-      "singkatan": "IOD",
-      "kepanjangan": "Indian Ocean Dipole"
-    },
-    {
-      "singkatan": "IPA",
-      "kepanjangan": "Indeks Pemakaian Air"
-    },
-    {
-      "singkatan": "IRB",
-      "kepanjangan": "Indeks Risiko Bencana"
-    },
-    {
-      "singkatan": "IRBI",
-      "kepanjangan": "Indeks Risiko Bencana Indonesia"
-    },
-    {
-      "singkatan": "ISPA",
-      "kepanjangan": "Infeksi Saluran Pernapasan Akut"
-    },
-    {
-      "singkatan": "JDIH",
-      "kepanjangan": "Jaringan Dokumentasi dan Informasi Hukum"
-    },
-    {
-      "singkatan": "JEE",
-      "kepanjangan": "Joint External Evaluation"
-    },
-    {
-      "singkatan": "Jitupasna",
-      "kepanjangan": "Pengkajian Kebutuhan Pascabencana",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "Juklak",
-      "kepanjangan": "Petunjuk Pelaksanaan",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Juknis",
-      "kepanjangan": "Petunjuk Teknis",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "K/L",
-      "kepanjangan": "Kementerian/Lembaga",
-      "periksa": false,
-      "alasan": "bentuk baku di peraturan, dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Kemenag",
-      "kepanjangan": "Kementerian Agama"
-    },
-    {
-      "singkatan": "Kemendagri",
-      "kepanjangan": "Kementerian Dalam Negeri"
-    },
-    {
-      "singkatan": "Kemendikdasmen",
-      "kepanjangan": "Kementerian Pendidikan Dasar dan Menengah"
-    },
-    {
-      "singkatan": "Kemenhub",
-      "kepanjangan": "Kementerian Perhubungan"
-    },
-    {
-      "singkatan": "Kemenhut",
-      "kepanjangan": "Kementerian Kehutanan"
-    },
-    {
-      "singkatan": "Kemenkes",
-      "kepanjangan": "Kementerian Kesehatan"
-    },
-    {
-      "singkatan": "Kemenkeu",
-      "kepanjangan": "Kementerian Keuangan"
-    },
-    {
-      "singkatan": "Kemenko IPK",
-      "kepanjangan": "Kementerian Koordinator Bidang Infrastruktur dan Pembangunan Kewilayahan"
-    },
-    {
-      "singkatan": "Kemenko PMK",
-      "kepanjangan": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan"
-    },
-    {
-      "singkatan": "Kemensos",
-      "kepanjangan": "Kementerian Sosial"
-    },
-    {
-      "singkatan": "Kementan",
-      "kepanjangan": "Kementerian Pertanian"
-    },
-    {
-      "singkatan": "Kepka",
-      "kepanjangan": "Keputusan Kepala",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Kepmen",
-      "kepanjangan": "Keputusan Menteri",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Keppres",
-      "kepanjangan": "Keputusan Presiden",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "KKP",
-      "kepanjangan": "Kementerian Kelautan dan Perikanan"
-    },
-    {
-      "singkatan": "KLB",
-      "kepanjangan": "Kejadian Luar Biasa"
-    },
-    {
-      "singkatan": "KLH/BPLH",
-      "kepanjangan": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup"
-    },
-    {
-      "singkatan": "Komdigi",
-      "kepanjangan": "Kementerian Komunikasi dan Digital"
-    },
-    {
-      "singkatan": "KP",
-      "kepanjangan": "Kegiatan Prioritas",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "KPBU",
-      "kepanjangan": "Kerja Sama Pemerintah dengan Badan Usaha"
-    },
-    {
-      "singkatan": "KRB",
-      "kepanjangan": "Kajian Risiko Bencana",
-      "kepanjangan_lain": [
-        "Kawasan Rawan Bencana"
-      ],
-      "alasan": "dua arti: kajian risiko (BNPB) dan kawasan rawan bencana (gunung api, PVMBG)"
-    },
-    {
-      "singkatan": "LKIP",
-      "kepanjangan": "Laporan Kinerja Instansi Pemerintah",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "MHEWS",
-      "kepanjangan": "Multi Hazard Early Warning System",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "MK",
-      "kepanjangan": "Mahkamah Konstitusi",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "MMI",
-      "kepanjangan": "Modified Mercalli Intensity"
-    },
-    {
-      "singkatan": "NCICD",
-      "kepanjangan": "National Capital Integrated Coastal Development"
-    },
-    {
-      "singkatan": "NOAA",
-      "kepanjangan": "National Oceanic and Atmospheric Administration",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "NRR",
-      "kepanjangan": "National Risk Register"
-    },
-    {
-      "singkatan": "NSPK",
-      "kepanjangan": "Norma, Standar, Prosedur, dan Kriteria"
-    },
-    {
-      "singkatan": "OMC",
-      "kepanjangan": "Operasi Modifikasi Cuaca"
-    },
-    {
-      "singkatan": "ONI",
-      "kepanjangan": "Oceanic Niño Index"
-    },
-    {
-      "singkatan": "OTK",
-      "kepanjangan": "Organisasi dan Tata Kerja"
-    },
-    {
-      "singkatan": "PAMSIMAS",
-      "kepanjangan": "Penyediaan Air Minum dan Sanitasi Berbasis Masyarakat"
-    },
-    {
-      "singkatan": "PARB",
-      "kepanjangan": "Pembiayaan dan Asuransi Risiko Bencana",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "PB",
-      "kepanjangan": "Penanggulangan Bencana"
-    },
-    {
-      "singkatan": "PDAM",
-      "kepanjangan": "Perusahaan Daerah Air Minum"
-    },
-    {
-      "singkatan": "PDB",
-      "kepanjangan": "Produk Domestik Bruto",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "PDKM",
-      "kepanjangan": "Peringatan Dini Kekeringan Meteorologis"
-    },
-    {
-      "singkatan": "PDNA",
-      "kepanjangan": "Post-Disaster Needs Assessment"
-    },
-    {
-      "singkatan": "Perban",
-      "kepanjangan": "Peraturan Badan",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Perda",
-      "kepanjangan": "Peraturan Daerah",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Perka",
-      "kepanjangan": "Peraturan Kepala",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Permen",
-      "kepanjangan": "Peraturan Menteri",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Permenko",
-      "kepanjangan": "Peraturan Menteri Koordinator",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Perpres",
-      "kepanjangan": "Peraturan Presiden",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "PJT",
-      "kepanjangan": "Perum Jasa Tirta"
-    },
-    {
-      "singkatan": "PKP",
-      "kepanjangan": "Perumahan dan Kawasan Permukiman"
-    },
-    {
-      "singkatan": "Polri",
-      "kepanjangan": "Kepolisian Negara Republik Indonesia"
-    },
-    {
-      "singkatan": "PP",
-      "kepanjangan": "Peraturan Pemerintah",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "Progsun",
-      "kepanjangan": "Program Penyusunan Peraturan",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "PSDA",
-      "kepanjangan": "Pengelolaan Sumber Daya Air"
-    },
-    {
-      "singkatan": "PSN",
-      "kepanjangan": "Proyek Strategis Nasional"
-    },
-    {
-      "singkatan": "PU",
-      "kepanjangan": "Pekerjaan Umum"
-    },
-    {
-      "singkatan": "PUPR",
-      "kepanjangan": "Pekerjaan Umum dan Perumahan Rakyat",
-      "periksa": false,
-      "alasan": "hanya di nama peraturan lama (Permen PUPR); nama kementerian kini Kementerian PU"
-    },
-    {
-      "singkatan": "Pusdalops",
-      "kepanjangan": "Pusat Pengendalian Operasi",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "Pusdatinkom",
-      "kepanjangan": "Pusat Data, Informasi, dan Komunikasi Kebencanaan",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "PuSGeN",
-      "kepanjangan": "Pusat Studi Gempa Nasional"
-    },
-    {
-      "singkatan": "PVMBG",
-      "kepanjangan": "Pusat Vulkanologi dan Mitigasi Bencana Geologi"
-    },
-    {
-      "singkatan": "R3P",
-      "kepanjangan": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana"
-    },
-    {
-      "singkatan": "RBI",
-      "kepanjangan": "Risiko Bencana Indonesia",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "Renas",
-      "kepanjangan": "Rencana Nasional"
-    },
-    {
-      "singkatan": "Renstra",
-      "kepanjangan": "Rencana Strategis"
-    },
-    {
-      "singkatan": "RIPB",
-      "kepanjangan": "Rencana Induk Penanggulangan Bencana"
-    },
-    {
-      "singkatan": "RPBD",
-      "kepanjangan": "Rencana Penanggulangan Bencana Daerah"
-    },
-    {
-      "singkatan": "RPJMN",
-      "kepanjangan": "Rencana Pembangunan Jangka Menengah Nasional"
-    },
-    {
-      "singkatan": "RPKB",
-      "kepanjangan": "Rencana Penanggulangan Kedaruratan Bencana"
-    },
-    {
-      "singkatan": "RPSDA",
-      "kepanjangan": "Rencana Pengelolaan Sumber Daya Air"
-    },
-    {
-      "singkatan": "RTD",
-      "kepanjangan": "Rencana Tindak Darurat"
-    },
-    {
-      "singkatan": "RWCS",
-      "kepanjangan": "Reasonable Worst Case Scenario"
-    },
-    {
-      "singkatan": "SDA",
-      "kepanjangan": "Sumber Daya Air"
-    },
-    {
-      "singkatan": "SKPDB",
-      "kepanjangan": "Sistem Komando Penanganan Darurat Bencana"
-    },
-    {
-      "singkatan": "SNI",
-      "kepanjangan": "Standar Nasional Indonesia",
-      "periksa": false,
-      "alasan": "bentuk rujukan standar (\"SNI 1726:2019\"), dipakai tanpa kepanjangan seperti nomor peraturan"
-    },
-    {
-      "singkatan": "SNPK",
-      "kepanjangan": "Sistem Nasional Pemantauan Kekerasan",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "SPAB",
-      "kepanjangan": "Satuan Pendidikan Aman Bencana"
-    },
-    {
-      "singkatan": "SPAM",
-      "kepanjangan": "Sistem Penyediaan Air Minum"
-    },
-    {
-      "singkatan": "SPM",
-      "kepanjangan": "Standar Pelayanan Minimal"
-    },
-    {
-      "singkatan": "SUPAS",
-      "kepanjangan": "Survei Penduduk Antar Sensus",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "TNI",
-      "kepanjangan": "Tentara Nasional Indonesia"
-    },
-    {
-      "singkatan": "TPA",
-      "kepanjangan": "Tempat Pemrosesan Akhir"
-    },
-    {
-      "singkatan": "TPST",
-      "kepanjangan": "Tempat Pengolahan Sampah Terpadu",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "USGS",
-      "kepanjangan": "United States Geological Survey",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "UU",
-      "kepanjangan": "Undang-Undang",
-      "periksa": false,
-      "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
-    },
-    {
-      "singkatan": "WHO",
-      "kepanjangan": "World Health Organization"
-    },
-    {
-      "singkatan": "WIB",
-      "kepanjangan": "Waktu Indonesia Barat",
-      "periksa": false,
-      "alasan": "penanda zona waktu baku"
-    },
-    {
-      "singkatan": "WMO",
-      "kepanjangan": "World Meteorological Organization",
-      "periksa": false,
-      "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
-    },
-    {
-      "singkatan": "WS",
-      "kepanjangan": "Wilayah Sungai"
-    },
-    {
-      "singkatan": "YLL",
-      "kepanjangan": "Years of Life Lost"
-    },
-    {
-      "singkatan": "ZOM",
-      "kepanjangan": "Zona Musim"
-    }
-  ],
-  "terlarang": [
-    {
-      "istilah": "titik api",
-      "alasan": "data satelit ditulis \"titik panas\" (Buku Pegangan Angka & copy)"
-    },
-    {
-      "istilah": "perkiraan satelit",
-      "alasan": "luas dari satelit ditulis \"hitungan satelit\" (Buku Pegangan Angka & copy)"
-    },
-    {
-      "istilah": "provinsi prioritas",
-      "alasan": "\"provinsi yang sering mengalami karhutla\" (Buku Pegangan Angka & copy)"
-    },
-    {
-      "istilah": "hujan pertama",
-      "alasan": "\"musim hujan\" (Buku Pegangan Judul)"
-    },
-    {
-      "istilah": "kamu",
-      "alasan": "tanpa sapaan di kajian (PEDOMAN C1)"
-    },
-    {
-      "istilah": "Anda",
-      "alasan": "tanpa sapaan di kajian (PEDOMAN C1)"
-    },
-    {
-      "istilah": "pra bencana",
-      "alasan": "\"prabencana\" (UU 24/2007, KEPUTUSAN T10)"
-    },
-    {
-      "istilah": "pra-bencana",
-      "alasan": "\"prabencana\" (UU 24/2007, KEPUTUSAN T10)"
-    },
-    {
-      "istilah": "pasca bencana",
-      "alasan": "\"pascabencana\" (UU 24/2007, KEPUTUSAN T10)"
-    },
-    {
-      "istilah": "pasca-bencana",
-      "alasan": "\"pascabencana\" (UU 24/2007, KEPUTUSAN T10)"
-    },
-    {
-      "istilah": "subsiden",
-      "alasan": "\"penurunan muka tanah\" (KERANGKA prinsip 4)"
-    },
-    {
-      "istilah": "amblesan",
-      "alasan": "\"penurunan muka tanah\" (KERANGKA prinsip 4)"
-    },
-    {
-      "istilah": "Bali–Nusa Tenggara",
-      "alasan": "\"Bali dan Nusa Tenggara\" (KERANGKA prinsip 4)"
-    },
-    {
-      "istilah": "rencana kontingensi",
-      "alasan": "\"rencana kontinjensi\" (Perban 2/2023)"
-    },
-    {
-      "istilah": "[SEKUNDER]",
-      "alasan": "tag riset tidak masuk keluaran (PEDOMAN C8)"
-    },
-    {
-      "istilah": "TIDAK DITEMUKAN",
-      "alasan": "tag riset tidak masuk keluaran (PEDOMAN C8)"
-    }
-  ],
-  "varian_konteks": [
-    {
-      "nama": "nama K/L lama",
-      "pola": "(?<!\\w)(?:Kementerian PUPR|Kementerian Pekerjaan Umum dan Perumahan Rakyat|KLHK|Kementerian Lingkungan Hidup dan Kehutanan|Kemendikbudristek|Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi|Kemendes PDTT|Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi|Kemenkumham|Kementerian Hukum dan Hak Asasi Manusia|Kemenristek|Kementerian Riset dan Teknologi|BPPT|LAPAN)(?!\\w)",
-      "kecuali": "\\b(kini|sekarang|dahulu|semula|sebelum \\d{4}|nama lama)\\b",
-      "ganti": "nomenklatur lembaga.csv (Perpres 90/2025)",
-      "alasan": "nama K/L lama hanya untuk rujukan historis bertanda \"dahulu\" atau \"kini\" (KERANGKA prinsip 14, Buku Pegangan L66); judul peraturan dan Daftar Pustaka tidak diperiksa"
-    },
-    {
-      "nama": "Karhutla berhuruf besar",
-      "pola": "(?<=[a-z0-9,;)] )Karhutla\\b",
-      "ganti": "karhutla",
-      "alasan": "Buku Pegangan L66"
-    }
-  ],
-  "kata_tambahan": [
-    "dirujuk",
-    "dkk",
-    "dll",
-    "dsb",
-    "hlm",
-    "kab",
-    "kebencanaan",
-    "kec",
-    "keterpaparan",
-    "kontinjensi",
-    "megathrust",
-    "mis",
-    "pascabencana",
-    "pemutakhiran",
-    "prabencana",
-    "prov",
-    "terdampak",
-    "terdokumentasi",
-    "bkf",
-    "bmd",
-    "bpdlh",
-    "cjkt",
-    "cnbc",
-    "cpkl",
-    "crol",
-    "csem",
-    "ctgl",
-    "design",
-    "dfat",
-    "dki",
-    "dmi",
-    "dpr",
-    "gl",
-    "grand",
-    "ii",
-    "iii",
-    "itb",
-    "iv",
-    "jawa",
-    "kd",
-    "lhp",
-    "lpnk",
-    "mem",
-    "noaa",
-    "pdt",
-    "pfb",
-    "ppn",
-    "psl",
-    "ri",
-    "rwsn",
-    "tkpsda",
-    "wmo",
-    "antarbahaya",
-    "antarbaris",
-    "antardokumen",
-    "antarhuruf",
-    "antarrekomendasi",
-    "antartahun",
-    "ber-dmi",
-    "ber-oni",
-    "bercakupan",
-    "berisiko",
-    "berizin",
-    "berjangka",
-    "berjenis",
-    "berkejadian",
-    "berketahanan",
-    "berkondisi",
-    "bermandat",
-    "bernorma",
-    "berpasal",
-    "berpatahan",
-    "berpembanding",
-    "berposisi",
-    "bersarana",
-    "bertarget",
-    "bertenggat",
-    "bertoken",
-    "cekungan",
-    "diatribusi",
-    "diaudit",
-    "digeneralisasi",
-    "dijabarkan",
-    "dijumlah",
-    "dikaji",
-    "dikali",
-    "dikategorikan",
-    "dikelaskan",
-    "dikonsultasikan",
-    "dikoordinasikan",
-    "dikuantifikasi",
-    "diposisikan",
-    "diprakarsai",
-    "diprakirakan",
-    "diprioritaskan",
-    "diproyeksikan",
-    "dirangkum",
-    "dirata-rata",
-    "direkomendasikan",
-    "dirinci",
-    "disandingkan",
-    "ditarget",
-    "ditelaah",
-    "diurai",
-    "diurutkan",
-    "dugaan",
-    "eksisting",
-    "hidrologis",
-    "jo",
-    "kedaruratan",
-    "keparahan",
-    "kependudukan",
-    "kesebelas",
-    "kesepuluh",
-    "kesepuluhnya",
-    "kesiapan",
-    "keterpenuhan",
-    "ketidakjelasan",
-    "ketidakpastian",
-    "kuantil",
-    "memeringkat",
-    "memvalidasi",
-    "merekomendasikan",
-    "merinci",
-    "multiancaman",
-    "multisektor",
-    "m³",
-    "nonkementerian",
-    "nya",
-    "pascakonflik",
-    "pemrakarsanya",
-    "pencilan",
-    "pengoordinasi",
-    "prapelaksanaan",
-    "registri",
-    "reviu",
-    "rincian",
-    "rinciannya",
-    "sub-urusan",
-    "subtotal",
-    "suburusan",
-    "swapenilaian",
-    "tampungan",
-    "tampungannya",
-    "terairi",
-    "teratribusi",
-    "terberat",
-    "tercetak",
-    "termodelkan",
-    "terpapar",
-    "terstandar",
-    "tertaut",
-    "terukur",
-    "terverifikasi",
-    "trase",
-    "walidata",
-    "bergaris"
-  ]
+ "_catatan": [
+  "Glosarium dua kajian BNPB (PEDOMAN B5.18, Buku Pegangan L66 dan L67). Dibaca bangun/docx (Daftar Singkatan, Lampiran Glosarium), qa/periksa.py D-10 (terlarang), T-9 (singkatan pertama per bab dan varian berkonteks), dan T-10 (ejaan id_ID: kata di sini dianggap dikenal).",
+  "singkatan: periksa=false untuk bentuk rujukan peraturan dan singkatan yang bertabrakan; kepanjangan_lain menerima arti kedua. Kepanjangan lembaga mengikuti data/lembaga/lembaga.csv (nomenklatur Oktober 2026).",
+  "terlarang: dicari di seluruh teks tampil (kata utuh, tanpa beda huruf; tag riset peka huruf). varian_konteks: hanya di prosa bab, dengan pengecualian kalimat bertanda \"dahulu\"/\"kini\".",
+  "kata_tambahan: kata baku KBBI atau istilah peraturan yang tidak ada di kamus hunspell id_ID repositori kamus LibreOffice (bangun/kamus/id); ditambah hanya sesudah dicek ke KBBI daring atau teks peraturan."
+ ],
+ "versi": "2026-10-24",
+ "istilah": [
+  {
+   "istilah": "prabencana",
+   "definisi": "tahap penyelenggaraan penanggulangan bencana dalam situasi tidak terjadi bencana dan terdapat potensi bencana",
+   "sumber": "UU 24/2007 Pasal 33, 34; KEPUTUSAN T10"
+  },
+  {
+   "istilah": "tanggap darurat",
+   "definisi": "serangkaian kegiatan yang dilakukan segera pada saat kejadian bencana",
+   "sumber": "UU 24/2007 Pasal 1 angka 10"
+  },
+  {
+   "istilah": "pascabencana",
+   "definisi": "tahap rehabilitasi dan rekonstruksi sesudah bencana",
+   "sumber": "UU 24/2007 Pasal 33, 57; KEPUTUSAN T10"
+  },
+  {
+   "istilah": "siaga darurat",
+   "definisi": "status keadaan darurat sebelum bencana terjadi bila ancaman meningkat",
+   "sumber": "Perban 4/2020"
+  },
+  {
+   "istilah": "transisi darurat ke pemulihan",
+   "definisi": "status keadaan darurat sesudah tanggap darurat sebelum rehabilitasi",
+   "sumber": "Perban 4/2020"
+  },
+  {
+   "istilah": "titik panas",
+   "definisi": "piksel citra satelit bersuhu tinggi; bukan titik api dan bukan kebakaran",
+   "sumber": "Buku Pegangan Angka & copy",
+   "varian_terlarang": [
+    "titik api",
+    "hotspot di prosa"
+   ]
+  },
+  {
+   "istilah": "hitungan satelit",
+   "definisi": "luas yang dihitung dari citra satelit; bukan luas resmi",
+   "sumber": "Buku Pegangan Angka & copy",
+   "varian_terlarang": [
+    "perkiraan satelit"
+   ]
+  },
+  {
+   "istilah": "penurunan muka tanah",
+   "definisi": "turunnya permukaan tanah; termasuk daya rusak air",
+   "sumber": "UU 17/2019 Penjelasan Pasal 35 ayat (3) huruf i",
+   "varian_terlarang": [
+    "subsiden",
+    "amblesan"
+   ]
+  },
+  {
+   "istilah": "skenario terburuk yang masuk akal",
+   "definisi": "versi terburuk yang masuk akal setelah ekstrem yang sangat tidak mungkin disisihkan (reasonable worst case)",
+   "sumber": "KERANGKA prinsip 9"
+  },
+  {
+   "istilah": "lantai skenario",
+   "definisi": "korban atau dampak tercatat terburuk dalam periode acuan untuk jenis dan wilayah yang sama; skenario terburuk tidak boleh lebih ringan",
+   "sumber": "KERANGKA prinsip 9"
+  },
+  {
+   "istilah": "daftar perhatian",
+   "definisi": "kab/kota yang memenuhi paling sedikit dua syarat per bahaya; bukan peringkat",
+   "sumber": "KERANGKA prinsip 8",
+   "varian_terlarang": [
+    "provinsi prioritas",
+    "kab/kota prioritas (IRBI)"
+   ]
+  },
+  {
+   "istilah": "kebutuhan respons",
+   "definisi": "kebutuhan minimum logistik dan layanan dari standar Perka BNPB 7/2008 dan Perban 3/2018",
+   "sumber": "KERANGKA prinsip 9"
+  },
+  {
+   "istilah": "pengungsi-hari",
+   "definisi": "jumlah pengungsi dikali lama mengungsi; satuan kerugian imateriil fisik",
+   "sumber": "KERANGKA prinsip 9"
+  },
+  {
+   "istilah": "kerugian materiil",
+   "definisi": "nilai aset terpapar, kerugian kejadian analog, atau kebutuhan stimulan rumah, berlabel dan tidak dijumlah",
+   "sumber": "KERANGKA prinsip 9"
+  },
+  {
+   "istilah": "kerugian imateriil",
+   "definisi": "meninggal dan hilang, pengungsi dan pengungsi-hari, YLL; rupiah imateriil hanya di lampiran metode",
+   "sumber": "KERANGKA prinsip 9"
+  },
+  {
+   "istilah": "rencana kontinjensi",
+   "definisi": "rencana penanggulangan keadaan darurat untuk ancaman tertentu",
+   "sumber": "Perban 2/2023",
+   "varian_terlarang": [
+    "rencana kontingensi"
+   ]
+  },
+  {
+   "istilah": "peringatan dini",
+   "definisi": "serangkaian kegiatan pemberian peringatan sesegera mungkin kepada masyarakat",
+   "sumber": "UU 24/2007 Pasal 1 angka 8; Perban 2/2024"
+  },
+  {
+   "istilah": "kab/kota",
+   "definisi": "kabupaten/kota",
+   "sumber": "PEDOMAN C3"
+  },
+  {
+   "istilah": "karhutla",
+   "definisi": "kebakaran hutan dan lahan; ditulis huruf kecil di tengah kalimat",
+   "sumber": "Buku Pegangan L66"
+  },
+  {
+   "istilah": "rob",
+   "definisi": "banjir pasang air laut di pesisir",
+   "sumber": "KERANGKA §4"
+  },
+  {
+   "istilah": "likuefaksi",
+   "definisi": "hilangnya kekuatan tanah jenuh air akibat guncangan gempa",
+   "sumber": "KRB BNPB"
+  },
+  {
+   "istilah": "keterpaparan",
+   "definisi": "jumlah penduduk atau aset di wilayah bahaya",
+   "sumber": "KRB BNPB"
+  },
+  {
+   "istilah": "megathrust",
+   "definisi": "bidang pertemuan lempeng di zona subduksi; istilah teknis tanpa padanan, ditulis miring bila asing",
+   "sumber": "ANTI-SLOP bagian 3",
+   "asing": true
+  },
+  {
+   "istilah": "reasonable worst case",
+   "definisi": "padanan Inggris skenario terburuk yang masuk akal; sekali per bab, miring",
+   "sumber": "KERANGKA prinsip 9",
+   "asing": true
+  },
+  {
+   "istilah": "El Niño",
+   "definisi": "fase hangat ENSO di Pasifik tengah dan timur",
+   "sumber": "BMKG"
+  },
+  {
+   "istilah": "La Niña",
+   "definisi": "fase dingin ENSO",
+   "sumber": "BMKG"
+  },
+  {
+   "istilah": "nonalam",
+   "definisi": "bencana yang diakibatkan peristiwa nonalam: gagal teknologi, gagal modernisasi, epidemi, wabah penyakit",
+   "sumber": "UU 24/2007 Pasal 1 angka 3"
+  },
+  {
+   "istilah": "kesiapsiagaan",
+   "definisi": "serangkaian kegiatan untuk mengantisipasi bencana melalui pengorganisasian serta langkah yang tepat guna dan berdaya guna",
+   "sumber": "UU 24/2007 Pasal 1 angka 7"
+  }
+ ],
+ "singkatan": [
+  {
+   "singkatan": "APBD",
+   "kepanjangan": "Anggaran Pendapatan dan Belanja Daerah"
+  },
+  {
+   "singkatan": "APBN",
+   "kepanjangan": "Anggaran Pendapatan dan Belanja Negara"
+  },
+  {
+   "singkatan": "ARC",
+   "kepanjangan": "African Risk Capacity",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "ATR/BPN",
+   "kepanjangan": "Kementerian Agraria dan Tata Ruang/Badan Pertanahan Nasional"
+  },
+  {
+   "singkatan": "AW",
+   "kepanjangan": "Aksi Wajib",
+   "periksa": false,
+   "alasan": "kode kolom JENIS di Tabel 11.4; kode legenda tabel, bukan singkatan lembaga (25 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "Bappenas",
+   "kepanjangan": "Badan Perencanaan Pembangunan Nasional"
+  },
+  {
+   "singkatan": "Basarnas",
+   "kepanjangan": "Badan Nasional Pencarian dan Pertolongan"
+  },
+  {
+   "singkatan": "BBM",
+   "kepanjangan": "Bahan Bakar Minyak",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "BBWS",
+   "kepanjangan": "Balai Besar Wilayah Sungai"
+  },
+  {
+   "singkatan": "BIG",
+   "kepanjangan": "Badan Informasi Geospasial"
+  },
+  {
+   "singkatan": "BMKG",
+   "kepanjangan": "Badan Meteorologi, Klimatologi, dan Geofisika"
+  },
+  {
+   "singkatan": "BMN",
+   "kepanjangan": "Barang Milik Negara"
+  },
+  {
+   "singkatan": "BNPB",
+   "kepanjangan": "Badan Nasional Penanggulangan Bencana"
+  },
+  {
+   "singkatan": "BOP",
+   "kepanjangan": "Badan Otorita Pengelola"
+  },
+  {
+   "singkatan": "BPBD",
+   "kepanjangan": "Badan Penanggulangan Bencana Daerah"
+  },
+  {
+   "singkatan": "BPK",
+   "kepanjangan": "Badan Pemeriksa Keuangan"
+  },
+  {
+   "singkatan": "BPS",
+   "kepanjangan": "Badan Pusat Statistik"
+  },
+  {
+   "singkatan": "BRIN",
+   "kepanjangan": "Badan Riset dan Inovasi Nasional"
+  },
+  {
+   "singkatan": "BRR",
+   "kepanjangan": "Badan Rehabilitasi dan Rekonstruksi Wilayah dan Kehidupan Masyarakat Provinsi Nanggroe Aceh Darussalam dan Kepulauan Nias Provinsi Sumatera Utara",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "BTT",
+   "kepanjangan": "Belanja Tidak Terduga"
+  },
+  {
+   "singkatan": "BUMD",
+   "kepanjangan": "Badan Usaha Milik Daerah"
+  },
+  {
+   "singkatan": "BUMN",
+   "kepanjangan": "Badan Usaha Milik Negara"
+  },
+  {
+   "singkatan": "BWS",
+   "kepanjangan": "Balai Wilayah Sungai"
+  },
+  {
+   "singkatan": "CAT",
+   "kepanjangan": "Cekungan Air Tanah"
+  },
+  {
+   "singkatan": "CC BY",
+   "kepanjangan": "Creative Commons Attribution",
+   "periksa": false,
+   "alasan": "nama lisensi foto (PEDOMAN C6.5)"
+  },
+  {
+   "singkatan": "CC BY-SA",
+   "kepanjangan": "Creative Commons Attribution-ShareAlike",
+   "periksa": false,
+   "alasan": "nama lisensi foto (PEDOMAN C6.5)"
+  },
+  {
+   "singkatan": "CCRIF",
+   "kepanjangan": "Caribbean Catastrophe Risk Insurance Facility",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "COVID",
+   "kepanjangan": "Coronavirus Disease",
+   "periksa": false,
+   "alasan": "didaftarkan untuk naskah Bab 9 sampai 13 (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "COVID-19",
+   "kepanjangan": "Coronavirus Disease 2019",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "CPC",
+   "kepanjangan": "Climate Prediction Center",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "DAK",
+   "kepanjangan": "Dana Alokasi Khusus"
+  },
+  {
+   "singkatan": "DaLA",
+   "kepanjangan": "Damage and Loss Assessment",
+   "kepanjangan_lain": [
+    "Penilaian Kerusakan dan Kerugian"
+   ]
+  },
+  {
+   "singkatan": "DAS",
+   "kepanjangan": "Daerah Aliran Sungai"
+  },
+  {
+   "singkatan": "Destana",
+   "kepanjangan": "Desa dan Kelurahan Tangguh Bencana",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "DI",
+   "kepanjangan": "Daerah Irigasi",
+   "periksa": false,
+   "alasan": "bertabrakan dengan DI Yogyakarta (Daerah Istimewa)"
+  },
+  {
+   "singkatan": "DIBI",
+   "kepanjangan": "Data dan Informasi Bencana Indonesia"
+  },
+  {
+   "singkatan": "DIY",
+   "kepanjangan": "Daerah Istimewa Yogyakarta",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "DPR",
+   "kepanjangan": "Dewan Perwakilan Rakyat",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "DPRD",
+   "kepanjangan": "Dewan Perwakilan Rakyat Daerah",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "DSP",
+   "kepanjangan": "Dana Siap Pakai"
+  },
+  {
+   "singkatan": "DTH",
+   "kepanjangan": "Dana Tunggu Hunian",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "ENSO",
+   "kepanjangan": "El Niño-Southern Oscillation"
+  },
+  {
+   "singkatan": "EPW",
+   "kepanjangan": "Evaluasi Paruh Waktu",
+   "periksa": false,
+   "alasan": "kode baris jalur berkala di Tabel 12.3; kode legenda tabel, bukan singkatan lembaga (25 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "ESDM",
+   "kepanjangan": "Energi dan Sumber Daya Mineral"
+  },
+  {
+   "singkatan": "ET",
+   "kepanjangan": "Evaluasi Tahunan",
+   "periksa": false,
+   "alasan": "kode baris jalur berkala di Tabel 12.3; kode legenda tabel, bukan singkatan lembaga (25 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "FEMA",
+   "kepanjangan": "Federal Emergency Management Agency",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "GNSS",
+   "kepanjangan": "Global Navigation Satellite System"
+  },
+  {
+   "singkatan": "HRNA",
+   "kepanjangan": "Human Recovery Needs Assessment",
+   "kepanjangan_lain": [
+    "Human Recovery Need Assessment"
+   ]
+  },
+  {
+   "singkatan": "HRW",
+   "kepanjangan": "Human Rights Watch",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "HTH",
+   "kepanjangan": "Hari Tanpa Hujan"
+  },
+  {
+   "singkatan": "ICG",
+   "kepanjangan": "International Crisis Group",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "IHPS",
+   "kepanjangan": "Ikhtisar Hasil Pemeriksaan Semester",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "IHR",
+   "kepanjangan": "International Health Regulations"
+  },
+  {
+   "singkatan": "IKD",
+   "kepanjangan": "Indeks Ketahanan Daerah"
+  },
+  {
+   "singkatan": "IKP",
+   "kepanjangan": "Indikator Kinerja Program"
+  },
+  {
+   "singkatan": "IKS",
+   "kepanjangan": "Indikator Kinerja Sasaran"
+  },
+  {
+   "singkatan": "IKU",
+   "kepanjangan": "Indikator Kinerja Utama",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "InaTEWS",
+   "kepanjangan": "Indonesia Tsunami Early Warning System"
+  },
+  {
+   "singkatan": "Inpres",
+   "kepanjangan": "Instruksi Presiden",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "InSAR",
+   "kepanjangan": "Interferometric Synthetic Aperture Radar"
+  },
+  {
+   "singkatan": "IOD",
+   "kepanjangan": "Indian Ocean Dipole"
+  },
+  {
+   "singkatan": "IPA",
+   "kepanjangan": "Indeks Pemakaian Air",
+   "kajian": [
+    "air",
+    "mitigasi"
+   ]
+  },
+  {
+   "singkatan": "IRB",
+   "kepanjangan": "Indeks Risiko Bencana"
+  },
+  {
+   "singkatan": "IRBI",
+   "kepanjangan": "Indeks Risiko Bencana Indonesia"
+  },
+  {
+   "singkatan": "ISPA",
+   "kepanjangan": "Infeksi Saluran Pernapasan Akut"
+  },
+  {
+   "singkatan": "JDIH",
+   "kepanjangan": "Jaringan Dokumentasi dan Informasi Hukum"
+  },
+  {
+   "singkatan": "JEE",
+   "kepanjangan": "Joint External Evaluation"
+  },
+  {
+   "singkatan": "Jitupasna",
+   "kepanjangan": "Pengkajian Kebutuhan Pascabencana",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "Juklak",
+   "kepanjangan": "Petunjuk Pelaksanaan",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Juknis",
+   "kepanjangan": "Petunjuk Teknis",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "K/L",
+   "kepanjangan": "Kementerian/Lembaga",
+   "periksa": false,
+   "alasan": "bentuk baku di peraturan, dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Kemenag",
+   "kepanjangan": "Kementerian Agama"
+  },
+  {
+   "singkatan": "Kemendagri",
+   "kepanjangan": "Kementerian Dalam Negeri"
+  },
+  {
+   "singkatan": "Kemendikdasmen",
+   "kepanjangan": "Kementerian Pendidikan Dasar dan Menengah"
+  },
+  {
+   "singkatan": "Kemenhub",
+   "kepanjangan": "Kementerian Perhubungan"
+  },
+  {
+   "singkatan": "Kemenhut",
+   "kepanjangan": "Kementerian Kehutanan"
+  },
+  {
+   "singkatan": "Kemenkes",
+   "kepanjangan": "Kementerian Kesehatan"
+  },
+  {
+   "singkatan": "Kemenkeu",
+   "kepanjangan": "Kementerian Keuangan"
+  },
+  {
+   "singkatan": "Kemenko IPK",
+   "kepanjangan": "Kementerian Koordinator Bidang Infrastruktur dan Pembangunan Kewilayahan"
+  },
+  {
+   "singkatan": "Kemenko PMK",
+   "kepanjangan": "Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan"
+  },
+  {
+   "singkatan": "Kemensos",
+   "kepanjangan": "Kementerian Sosial"
+  },
+  {
+   "singkatan": "Kementan",
+   "kepanjangan": "Kementerian Pertanian"
+  },
+  {
+   "singkatan": "Kepka",
+   "kepanjangan": "Keputusan Kepala",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Kepmen",
+   "kepanjangan": "Keputusan Menteri",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Keppres",
+   "kepanjangan": "Keputusan Presiden",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "KKP",
+   "kepanjangan": "Kementerian Kelautan dan Perikanan"
+  },
+  {
+   "singkatan": "KLB",
+   "kepanjangan": "Kejadian Luar Biasa"
+  },
+  {
+   "singkatan": "KLH/BPLH",
+   "kepanjangan": "Kementerian Lingkungan Hidup/Badan Pengendalian Lingkungan Hidup"
+  },
+  {
+   "singkatan": "Komdigi",
+   "kepanjangan": "Kementerian Komunikasi dan Digital"
+  },
+  {
+   "singkatan": "KP",
+   "kepanjangan": "Kegiatan Prioritas",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "KPBU",
+   "kepanjangan": "Kerja Sama Pemerintah dengan Badan Usaha"
+  },
+  {
+   "singkatan": "KRB",
+   "kepanjangan": "Kajian Risiko Bencana",
+   "kepanjangan_lain": [
+    "Kawasan Rawan Bencana"
+   ],
+   "alasan": "dua arti: kajian risiko (BNPB) dan kawasan rawan bencana (gunung api, PVMBG)"
+  },
+  {
+   "singkatan": "LKIP",
+   "kepanjangan": "Laporan Kinerja Instansi Pemerintah",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "LN",
+   "kepanjangan": "Padanan Luar Negeri",
+   "periksa": false,
+   "alasan": "kode kolom JENIS di Tabel 11.4; kode legenda tabel, bukan singkatan lembaga (25 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "MHEWS",
+   "kepanjangan": "Multi Hazard Early Warning System",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "MK",
+   "kepanjangan": "Mahkamah Konstitusi",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "MMI",
+   "kepanjangan": "Modified Mercalli Intensity"
+  },
+  {
+   "singkatan": "NAD",
+   "kepanjangan": "Nanggroe Aceh Darussalam",
+   "periksa": false,
+   "alasan": "didaftarkan untuk naskah Bab 9 sampai 13 (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "NAR",
+   "kepanjangan": "National Assessment Report"
+  },
+  {
+   "singkatan": "NCICD",
+   "kepanjangan": "National Capital Integrated Coastal Development"
+  },
+  {
+   "singkatan": "NOAA",
+   "kepanjangan": "National Oceanic and Atmospheric Administration",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kepanjangan_lain": [
+    "Administrasi Kelautan dan Atmosfer Nasional Amerika Serikat"
+   ]
+  },
+  {
+   "singkatan": "NRR",
+   "kepanjangan": "National Risk Register"
+  },
+  {
+   "singkatan": "NSPK",
+   "kepanjangan": "Norma, Standar, Prosedur, dan Kriteria"
+  },
+  {
+   "singkatan": "OMC",
+   "kepanjangan": "Operasi Modifikasi Cuaca"
+  },
+  {
+   "singkatan": "ONI",
+   "kepanjangan": "Oceanic Niño Index"
+  },
+  {
+   "singkatan": "OTK",
+   "kepanjangan": "Organisasi dan Tata Kerja"
+  },
+  {
+   "singkatan": "PAMSIMAS",
+   "kepanjangan": "Penyediaan Air Minum dan Sanitasi Berbasis Masyarakat"
+  },
+  {
+   "singkatan": "PARB",
+   "kepanjangan": "Pembiayaan dan Asuransi Risiko Bencana",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "PB",
+   "kepanjangan": "Penanggulangan Bencana"
+  },
+  {
+   "singkatan": "PBP",
+   "kepanjangan": "Penanggulangan Bencana dan Penanganan Pengungsi",
+   "periksa": false,
+   "alasan": "didaftarkan untuk naskah Bab 9 sampai 13 (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "PDAM",
+   "kepanjangan": "Perusahaan Daerah Air Minum"
+  },
+  {
+   "singkatan": "PDB",
+   "kepanjangan": "Produk Domestik Bruto",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "PDKM",
+   "kepanjangan": "Peringatan Dini Kekeringan Meteorologis"
+  },
+  {
+   "singkatan": "PDNA",
+   "kepanjangan": "Post-Disaster Needs Assessment"
+  },
+  {
+   "singkatan": "Perban",
+   "kepanjangan": "Peraturan Badan",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Perda",
+   "kepanjangan": "Peraturan Daerah",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Perka",
+   "kepanjangan": "Peraturan Kepala",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Permen",
+   "kepanjangan": "Peraturan Menteri",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Permenko",
+   "kepanjangan": "Peraturan Menteri Koordinator",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "Perpres",
+   "kepanjangan": "Peraturan Presiden",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "PJT",
+   "kepanjangan": "Perum Jasa Tirta"
+  },
+  {
+   "singkatan": "PKP",
+   "kepanjangan": "Perumahan dan Kawasan Permukiman"
+  },
+  {
+   "singkatan": "Polri",
+   "kepanjangan": "Kepolisian Negara Republik Indonesia"
+  },
+  {
+   "singkatan": "PP",
+   "kepanjangan": "Peraturan Pemerintah",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "PPP",
+   "kepanjangan": "Pemantauan Sebelum Pelaksanaan",
+   "periksa": false,
+   "alasan": "kode baris jalur berkala di Tabel 12.3; kode legenda tabel, bukan singkatan lembaga (25 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "Progsun",
+   "kepanjangan": "Program Penyusunan Peraturan",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "PS",
+   "kepanjangan": "Program dengan Syarat",
+   "periksa": false,
+   "alasan": "kode kolom JENIS di Tabel 11.4; kode legenda tabel, bukan singkatan lembaga (25 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "PSDA",
+   "kepanjangan": "Pengelolaan Sumber Daya Air"
+  },
+  {
+   "singkatan": "PSN",
+   "kepanjangan": "Proyek Strategis Nasional"
+  },
+  {
+   "singkatan": "PU",
+   "kepanjangan": "Pekerjaan Umum"
+  },
+  {
+   "singkatan": "PUPR",
+   "kepanjangan": "Pekerjaan Umum dan Perumahan Rakyat",
+   "periksa": false,
+   "alasan": "hanya di nama peraturan lama (Permen PUPR); nama kementerian kini Kementerian PU"
+  },
+  {
+   "singkatan": "Pusdalops",
+   "kepanjangan": "Pusat Pengendalian Operasi",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "Pusdatinkom",
+   "kepanjangan": "Pusat Data, Informasi, dan Komunikasi Kebencanaan",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "PuSGeN",
+   "kepanjangan": "Pusat Studi Gempa Nasional"
+  },
+  {
+   "singkatan": "PVMBG",
+   "kepanjangan": "Pusat Vulkanologi dan Mitigasi Bencana Geologi"
+  },
+  {
+   "singkatan": "R3P",
+   "kepanjangan": "Rencana Rehabilitasi dan Rekonstruksi Pascabencana"
+  },
+  {
+   "singkatan": "RBI",
+   "kepanjangan": "Risiko Bencana Indonesia",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "Renas",
+   "kepanjangan": "Rencana Nasional"
+  },
+  {
+   "singkatan": "Renstra",
+   "kepanjangan": "Rencana Strategis"
+  },
+  {
+   "singkatan": "RIPB",
+   "kepanjangan": "Rencana Induk Penanggulangan Bencana"
+  },
+  {
+   "singkatan": "RKPD",
+   "kepanjangan": "Rencana Kerja Pemerintah Daerah",
+   "periksa": false,
+   "alasan": "didaftarkan untuk naskah Bab 9 sampai 13 (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "RPBD",
+   "kepanjangan": "Rencana Penanggulangan Bencana Daerah"
+  },
+  {
+   "singkatan": "RPJMN",
+   "kepanjangan": "Rencana Pembangunan Jangka Menengah Nasional"
+  },
+  {
+   "singkatan": "RPKB",
+   "kepanjangan": "Rencana Penanggulangan Kedaruratan Bencana"
+  },
+  {
+   "singkatan": "RPSDA",
+   "kepanjangan": "Rencana Pengelolaan Sumber Daya Air"
+  },
+  {
+   "singkatan": "RT",
+   "kepanjangan": "Rujukan Tata Kelola",
+   "periksa": false,
+   "alasan": "kode kolom JENIS di Tabel 11.4; kode legenda tabel, bukan singkatan lembaga (25 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "RTD",
+   "kepanjangan": "Rencana Tindak Darurat"
+  },
+  {
+   "singkatan": "RWCS",
+   "kepanjangan": "Reasonable Worst Case Scenario",
+   "kepanjangan_lain": [
+    "Skenario Terburuk yang Masuk Akal"
+   ]
+  },
+  {
+   "singkatan": "SDA",
+   "kepanjangan": "Sumber Daya Air"
+  },
+  {
+   "singkatan": "SDM",
+   "kepanjangan": "Sumber Daya Manusia",
+   "periksa": false,
+   "alasan": "didaftarkan untuk naskah Bab 9 sampai 13 (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "SKPDB",
+   "kepanjangan": "Sistem Komando Penanganan Darurat Bencana"
+  },
+  {
+   "singkatan": "SNI",
+   "kepanjangan": "Standar Nasional Indonesia",
+   "periksa": false,
+   "alasan": "bentuk rujukan standar (\"SNI 1726:2019\"), dipakai tanpa kepanjangan seperti nomor peraturan"
+  },
+  {
+   "singkatan": "SNPK",
+   "kepanjangan": "Sistem Nasional Pemantauan Kekerasan",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "SPAB",
+   "kepanjangan": "Satuan Pendidikan Aman Bencana"
+  },
+  {
+   "singkatan": "SPAM",
+   "kepanjangan": "Sistem Penyediaan Air Minum"
+  },
+  {
+   "singkatan": "SPAR",
+   "kepanjangan": "State Party Self-Assessment Annual Reporting"
+  },
+  {
+   "singkatan": "SPM",
+   "kepanjangan": "Standar Pelayanan Minimal"
+  },
+  {
+   "singkatan": "SUPAS",
+   "kepanjangan": "Survei Penduduk Antar Sensus",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "SWOT",
+   "kepanjangan": "Strengths, Weaknesses, Opportunities, Threats",
+   "periksa": false,
+   "alasan": "didaftarkan untuk naskah Bab 9 sampai 13 (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kepanjangan_lain": [
+    "kekuatan dan kelemahan serta peluang dan ancaman"
+   ]
+  },
+  {
+   "singkatan": "TNI",
+   "kepanjangan": "Tentara Nasional Indonesia"
+  },
+  {
+   "singkatan": "TPA",
+   "kepanjangan": "Tempat Pemrosesan Akhir"
+  },
+  {
+   "singkatan": "TPST",
+   "kepanjangan": "Tempat Pengolahan Sampah Terpadu",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "TRC",
+   "kepanjangan": "Tim Reaksi Cepat",
+   "periksa": false,
+   "alasan": "didaftarkan untuk naskah Bab 9 sampai 13 (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "UNDRR",
+   "kepanjangan": "United Nations Office for Disaster Risk Reduction",
+   "kepanjangan_lain": [
+    "Kantor Perserikatan Bangsa-Bangsa untuk Pengurangan Risiko Bencana"
+   ]
+  },
+  {
+   "singkatan": "USGS",
+   "kepanjangan": "United States Geological Survey",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "UU",
+   "kepanjangan": "Undang-Undang",
+   "periksa": false,
+   "alasan": "bentuk rujukan peraturan (\"UU 24/2007\"), dipakai tanpa kepanjangan"
+  },
+  {
+   "singkatan": "WHO",
+   "kepanjangan": "World Health Organization"
+  },
+  {
+   "singkatan": "WIB",
+   "kepanjangan": "Waktu Indonesia Barat",
+   "periksa": false,
+   "alasan": "penanda zona waktu baku"
+  },
+  {
+   "singkatan": "WMO",
+   "kepanjangan": "World Meteorological Organization",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian mitigasi (25 Okt 2026); ejaan pertama per bab belum diperiksa T-9"
+  },
+  {
+   "singkatan": "WS",
+   "kepanjangan": "Wilayah Sungai"
+  },
+  {
+   "singkatan": "YLL",
+   "kepanjangan": "Years of Life Lost"
+  },
+  {
+   "singkatan": "ZOM",
+   "kepanjangan": "Zona Musim"
+  },
+  {
+   "singkatan": "RR",
+   "kepanjangan": "Rehabilitasi dan Rekonstruksi",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "HDPE",
+   "kepanjangan": "High-Density Polyethylene (polietilena densitas tinggi)",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "TNI AD",
+   "kepanjangan": "Tentara Nasional Indonesia Angkatan Darat",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "RKA",
+   "kepanjangan": "Rencana Kerja dan Anggaran",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "PHD",
+   "kepanjangan": "Perjanjian Hibah Daerah",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "SCIRT",
+   "kepanjangan": "Stronger Christchurch Infrastructure Rebuild Team",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "BPKP",
+   "kepanjangan": "Badan Pengawasan Keuangan dan Pembangunan",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "huntap",
+   "kepanjangan": "hunian tetap",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "huntara",
+   "kepanjangan": "hunian sementara",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "Satgas",
+   "kepanjangan": "Satuan Tugas",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "MDF",
+   "kepanjangan": "Multi Donor Fund",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "APBDes",
+   "kepanjangan": "Anggaran Pendapatan dan Belanja Desa",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "KSAD",
+   "kepanjangan": "Kepala Staf Angkatan Darat",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "BPJN",
+   "kepanjangan": "Balai Pelaksanaan Jalan Nasional",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "RB",
+   "kepanjangan": "rusak berat",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "RS",
+   "kepanjangan": "rusak sedang",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "JIAT",
+   "kepanjangan": "Jaringan Irigasi Air Tanah",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "Renas PB",
+   "kepanjangan": "Rencana Nasional Penanggulangan Bencana",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "ERRA",
+   "kepanjangan": "Earthquake Reconstruction and Rehabilitation Authority",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "CSRRP",
+   "kepanjangan": "Central Sulawesi Rehabilitation and Reconstruction Project",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "IPA",
+   "kepanjangan": "Instalasi Pengolahan Air",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "KK",
+   "kepanjangan": "kepala keluarga",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "CFU",
+   "kepanjangan": "colony forming unit",
+   "periksa": false,
+   "alasan": "didaftarkan untuk Daftar Singkatan kajian rehab (26 Okt 2026); ejaan pertama per bab belum diperiksa T-9",
+   "kajian": [
+    "rehab"
+   ]
+  },
+  {
+   "singkatan": "BBPJN",
+   "kepanjangan": "Balai Besar Pelaksanaan Jalan Nasional",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "BPPW",
+   "kepanjangan": "Balai Prasarana Permukiman Wilayah",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "FTSL",
+   "kepanjangan": "Fakultas Teknik Sipil dan Lingkungan",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "NTB",
+   "kepanjangan": "Nusa Tenggara Barat",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "NTU",
+   "kepanjangan": "Nephelometric Turbidity Unit (satuan kekeruhan)",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "OCR",
+   "kepanjangan": "Optical Character Recognition (pengenalan teks dari citra)",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "PDF",
+   "kepanjangan": "Portable Document Format",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "PT",
+   "kepanjangan": "Perseroan Terbatas",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "SDG",
+   "kepanjangan": "Sustainable Development Goals (Tujuan Pembangunan Berkelanjutan)",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "SIPPA",
+   "kepanjangan": "Sistem Pipa Portabel Karhutla dan Banjir",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "UNSD",
+   "kepanjangan": "United Nations Statistics Division",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "KD-R",
+   "kepanjangan": "Keputusan Kepala BNPB yang diminta kajian rehabilitasi dan rekonstruksi",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "R-RR",
+   "kepanjangan": "Register Rekomendasi Rehabilitasi dan Rekonstruksi",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "NZ",
+   "kepanjangan": "New Zealand (Selandia Baru)",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "J-PAL",
+   "kepanjangan": "Abdul Latif Jameel Poverty Action Lab",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "PVC",
+   "kepanjangan": "Polyvinyl Chloride",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "MHLW",
+   "kepanjangan": "Ministry of Health, Labour and Welfare (Jepang)",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "USD",
+   "kepanjangan": "United States Dollar",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "UNICEF",
+   "kepanjangan": "United Nations Children's Fund",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "NZD",
+   "kepanjangan": "New Zealand Dollar",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "TDS",
+   "kepanjangan": "Total Dissolved Solids (total padatan terlarut)",
+   "periksa": false,
+   "kajian": [
+    "rehab"
+   ],
+   "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  }
+ ],
+ "terlarang": [
+  {
+   "istilah": "titik api",
+   "alasan": "data satelit ditulis \"titik panas\" (Buku Pegangan Angka & copy)"
+  },
+  {
+   "istilah": "perkiraan satelit",
+   "alasan": "luas dari satelit ditulis \"hitungan satelit\" (Buku Pegangan Angka & copy)"
+  },
+  {
+   "istilah": "provinsi prioritas",
+   "alasan": "\"provinsi yang sering mengalami karhutla\" (Buku Pegangan Angka & copy)"
+  },
+  {
+   "istilah": "hujan pertama",
+   "alasan": "\"musim hujan\" (Buku Pegangan Judul)"
+  },
+  {
+   "istilah": "kamu",
+   "alasan": "tanpa sapaan di kajian (PEDOMAN C1)"
+  },
+  {
+   "istilah": "Anda",
+   "alasan": "tanpa sapaan di kajian (PEDOMAN C1)"
+  },
+  {
+   "istilah": "pra bencana",
+   "alasan": "\"prabencana\" (UU 24/2007, KEPUTUSAN T10)"
+  },
+  {
+   "istilah": "pra-bencana",
+   "alasan": "\"prabencana\" (UU 24/2007, KEPUTUSAN T10)"
+  },
+  {
+   "istilah": "pasca bencana",
+   "alasan": "\"pascabencana\" (UU 24/2007, KEPUTUSAN T10)"
+  },
+  {
+   "istilah": "pasca-bencana",
+   "alasan": "\"pascabencana\" (UU 24/2007, KEPUTUSAN T10)"
+  },
+  {
+   "istilah": "subsiden",
+   "alasan": "\"penurunan muka tanah\" (KERANGKA prinsip 4)"
+  },
+  {
+   "istilah": "amblesan",
+   "alasan": "\"penurunan muka tanah\" (KERANGKA prinsip 4)"
+  },
+  {
+   "istilah": "Bali–Nusa Tenggara",
+   "alasan": "\"Bali dan Nusa Tenggara\" (KERANGKA prinsip 4)"
+  },
+  {
+   "istilah": "rencana kontingensi",
+   "alasan": "\"rencana kontinjensi\" (Perban 2/2023)"
+  },
+  {
+   "istilah": "[SEKUNDER]",
+   "alasan": "tag riset tidak masuk keluaran (PEDOMAN C8)"
+  },
+  {
+   "istilah": "TIDAK DITEMUKAN",
+   "alasan": "tag riset tidak masuk keluaran (PEDOMAN C8)"
+  }
+ ],
+ "varian_konteks": [
+  {
+   "nama": "nama K/L lama",
+   "pola": "(?<!\\w)(?:Kementerian PUPR|Kementerian Pekerjaan Umum dan Perumahan Rakyat|KLHK|Kementerian Lingkungan Hidup dan Kehutanan|Kemendikbudristek|Kementerian Pendidikan, Kebudayaan, Riset, dan Teknologi|Kemendes PDTT|Kementerian Desa, Pembangunan Daerah Tertinggal, dan Transmigrasi|Kemenkumham|Kementerian Hukum dan Hak Asasi Manusia|Kemenristek|Kementerian Riset dan Teknologi|BPPT|LAPAN)(?!\\w)",
+   "kecuali": "\\b(kini|sekarang|dahulu|semula|sebelum \\d{4}|nama lama)\\b",
+   "ganti": "nomenklatur lembaga.csv (Perpres 90/2025)",
+   "alasan": "nama K/L lama hanya untuk rujukan historis bertanda \"dahulu\" atau \"kini\" (KERANGKA prinsip 14, Buku Pegangan L66); judul peraturan dan Daftar Pustaka tidak diperiksa"
+  },
+  {
+   "nama": "Karhutla berhuruf besar",
+   "pola": "(?<=[a-z0-9,;)] )Karhutla\\b",
+   "ganti": "karhutla",
+   "alasan": "Buku Pegangan L66"
+  }
+ ],
+ "kata_tambahan": [
+  "dirujuk",
+  "dkk",
+  "dll",
+  "dsb",
+  "hlm",
+  "kab",
+  "kebencanaan",
+  "kec",
+  "keterpaparan",
+  "kontinjensi",
+  "megathrust",
+  "mis",
+  "pascabencana",
+  "pemutakhiran",
+  "prabencana",
+  "prov",
+  "terdampak",
+  "terdokumentasi",
+  "bkf",
+  "bmd",
+  "bpdlh",
+  "cjkt",
+  "cnbc",
+  "cpkl",
+  "crol",
+  "csem",
+  "ctgl",
+  "design",
+  "dfat",
+  "dki",
+  "dmi",
+  "dpr",
+  "gl",
+  "grand",
+  "ii",
+  "iii",
+  "itb",
+  "iv",
+  "jawa",
+  "kd",
+  "lhp",
+  "lpnk",
+  "mem",
+  "noaa",
+  "pdt",
+  "pfb",
+  "ppn",
+  "psl",
+  "ri",
+  "rwsn",
+  "tkpsda",
+  "wmo",
+  "antarbahaya",
+  "antarbaris",
+  "antardokumen",
+  "antarhuruf",
+  "antarrekomendasi",
+  "antartahun",
+  "ber-dmi",
+  "ber-oni",
+  "bercakupan",
+  "berisiko",
+  "berizin",
+  "berjangka",
+  "berjenis",
+  "berkejadian",
+  "berketahanan",
+  "berkondisi",
+  "bermandat",
+  "bernorma",
+  "berpasal",
+  "berpatahan",
+  "berpembanding",
+  "berposisi",
+  "bersarana",
+  "bertarget",
+  "bertenggat",
+  "bertoken",
+  "cekungan",
+  "diatribusi",
+  "diaudit",
+  "digeneralisasi",
+  "dijabarkan",
+  "dijumlah",
+  "dikaji",
+  "dikali",
+  "dikategorikan",
+  "dikelaskan",
+  "dikonsultasikan",
+  "dikoordinasikan",
+  "dikuantifikasi",
+  "diposisikan",
+  "diprakarsai",
+  "diprakirakan",
+  "diprioritaskan",
+  "diproyeksikan",
+  "dirangkum",
+  "dirata-rata",
+  "direkomendasikan",
+  "dirinci",
+  "disandingkan",
+  "ditarget",
+  "ditelaah",
+  "diurai",
+  "diurutkan",
+  "dugaan",
+  "eksisting",
+  "hidrologis",
+  "jo",
+  "kedaruratan",
+  "keparahan",
+  "kependudukan",
+  "kesebelas",
+  "kesepuluh",
+  "kesepuluhnya",
+  "kesiapan",
+  "keterpenuhan",
+  "ketidakjelasan",
+  "ketidakpastian",
+  "kuantil",
+  "memeringkat",
+  "memvalidasi",
+  "merekomendasikan",
+  "merinci",
+  "multiancaman",
+  "multisektor",
+  "m³",
+  "nonkementerian",
+  "nya",
+  "pascakonflik",
+  "pemrakarsanya",
+  "pencilan",
+  "pengoordinasi",
+  "prapelaksanaan",
+  "registri",
+  "reviu",
+  "rincian",
+  "rinciannya",
+  "sub-urusan",
+  "subtotal",
+  "suburusan",
+  "swapenilaian",
+  "tampungan",
+  "tampungannya",
+  "terairi",
+  "teratribusi",
+  "terberat",
+  "tercetak",
+  "termodelkan",
+  "terpapar",
+  "terstandar",
+  "tertaut",
+  "terukur",
+  "terverifikasi",
+  "trase",
+  "walidata",
+  "bergaris",
+  "tertampung",
+  "dimutakhirkan",
+  "covid",
+  "multibahaya",
+  "subkegiatan",
+  "difinalkan",
+  "xiii",
+  "dipicu",
+  "dipisah",
+  "seabad",
+  "terselamatkan",
+  "terselamatkannya",
+  "dibakukan",
+  "terkonsentrasi",
+  "terdata",
+  "dipasangkan",
+  "multiwilayah",
+  "tulangan",
+  "sependek",
+  "dikalibrasi",
+  "divalidasi",
+  "renkon",
+  "vi",
+  "vii",
+  "nad",
+  "longsoran",
+  "semusim",
+  "direkonsiliasi",
+  "antarlintasan",
+  "berpenyebut",
+  "katastrofik",
+  "terkonfirmasi",
+  "terlapor",
+  "memodelkan",
+  "berbahan",
+  "diperbesar",
+  "pemungkinnya",
+  "kesepahaman",
+  "diperparah",
+  "bertransformasi",
+  "dipercepat",
+  "tersulut",
+  "subjenis",
+  "dtp",
+  "mcv",
+  "us",
+  "antarkomunitas",
+  "antarumat",
+  "antardesa",
+  "antartingkat",
+  "hoc",
+  "perpanjangan",
+  "disengaja",
+  "dielaborasi",
+  "memaknai",
+  "memutakhirkan",
+  "difasilitasi",
+  "ketidaksesuaian",
+  "dimutasi",
+  "berprogram",
+  "terjangkit",
+  "dijabat",
+  "dianggarkan",
+  "parametrik",
+  "pascagempa",
+  "dicek",
+  "pemrakarsa",
+  "diulang",
+  "inalogpal",
+  "kk",
+  "antardepartemen",
+  "antarkartu",
+  "antarkejadian",
+  "antarlapis",
+  "bailey",
+  "berakses",
+  "berbentang",
+  "berdana",
+  "berdiameter",
+  "berdokumen",
+  "berjembatan",
+  "berjendela",
+  "berkode",
+  "berversi",
+  "dibagipakaikan",
+  "dicakup",
+  "digelar",
+  "diklaim",
+  "dikonfirmasi",
+  "dikurangkan",
+  "dipasangi",
+  "diputus",
+  "direhabilitasi",
+  "direvitalisasi",
+  "disangga",
+  "disaring",
+  "disiagakan",
+  "ditabulasi",
+  "ditatausahakan",
+  "ditelusuri",
+  "dolken",
+  "dt",
+  "keberlanjutan",
+  "keketatan",
+  "lonjakan",
+  "menganggarkan",
+  "merevitalisasi",
+  "nonkonstruksi",
+  "oprit",
+  "opritnya",
+  "pascabanjir",
+  "pascatsunami",
+  "pemilahan",
+  "pendekat",
+  "royong",
+  "sebatas",
+  "sub-indikator",
+  "terkuantifikasi",
+  "terlayani",
+  "termurah",
+  "terpendek",
+  "tersambung",
+  "tertata",
+  "toren",
+  "pooling",
+  "mobile",
+  "for",
+  "and",
+  "high-density",
+  "polyethylene",
+  "nephelometric",
+  "turbidity",
+  "ms",
+  "diserahterimakan",
+  "dimodelkan",
+  "pra",
+  "pasca",
+  "bertinjauan",
+  "polietilen",
+  "dipadankan",
+  "terekonsiliasi",
+  "of",
+  "multi-tahun",
+  "pembiaya",
+  "berbesi",
+  "pemulih",
+  "bercurah",
+  "melikuefaksi",
+  "terealisasi",
+  "berpil",
+  "berfase",
+  "armco",
+  "bertermin",
+  "ketidakselarasan",
+  "non-bnpb"
+ ]
 }

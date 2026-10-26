@@ -1,0 +1,30 @@
+kode,nama,lat,lon,nilai
+11,Aceh,4.2838,96.9444,480
+12,Sumatera Utara,2.3014,99.1603,82
+13,Sumatera Barat,-0.6824,100.6521,182
+15,Jambi,-1.6988,102.7154,8
+16,Sumatera Selatan,-3.2154,104.1702,1
+17,Bengkulu,-3.5189,102.3451,2
+18,Lampung,-4.9133,105.0203,16
+32,Jawa Barat,-6.9201,107.6032,33
+33,Jawa Tengah,-7.2588,110.2059,54
+34,DI Yogyakarta,-7.8947,110.4459,2
+35,Jawa Timur,-7.8163,112.614,33
+36,Banten,-6.4542,106.1223,1
+51,Bali,-8.3533,115.1149,8
+52,Nusa Tenggara Barat,-8.6303,117.8581,22
+53,Nusa Tenggara Timur,-8.6046,121.1424,8
+61,Kalimantan Barat,-0.0707,111.1536,5
+63,Kalimantan Selatan,-2.9568,115.3878,20
+64,Kalimantan Timur,0.4602,116.4363,9
+65,Kalimantan Utara,2.886,116.1749,5
+71,Sulawesi Utara,0.8831,124.2685,3
+72,Sulawesi Tengah,-0.9966,121.0846,25
+73,Sulawesi Selatan,-3.6506,120.1511,1
+74,Sulawesi Tenggara,-3.8065,121.8228,2
+75,Gorontalo,0.6859,122.3747,9
+76,Sulawesi Barat,-2.4652,119.3479,1
+81,Maluku,-3.2012,129.4627,6
+82,Maluku Utara,0.8701,128.0149,21
+91,Papua,-2.7102,138.7323,6
+95,Papua Pegunungan,-4.2376,139.4513,27

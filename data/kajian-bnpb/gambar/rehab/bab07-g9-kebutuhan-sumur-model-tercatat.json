@@ -1,0 +1,253 @@
+{
+ "nama": "bab07-g9-kebutuhan-sumur-model-tercatat",
+ "keterangan": "Kebutuhan sumur menurut model lawan sumur tercatat, Sumatra 2025 dan Lombok 2018 (sumur)",
+ "sumber": "Pengolahan dari DIBI BNPB (pengungsi); Kementerian ESDM (2019); Perka BNPB 7/2008; Kementerian PU (2026; 2019, dahulu PUPR); Sekretariat Kabinet (2018)",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  132.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  4.68
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "model kebutuhan sumur",
+   "jenis": "garis",
+   "warna": "#3F5F80"
+  },
+  {
+   "label": "tercatat",
+   "jenis": "tegak",
+   "warna": "#1A1A1A"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "pil-isi",
+   "latar"
+  ],
+  "#D9600B": [
+   "pil"
+  ],
+  "#1A1A1A": [
+   "teks",
+   "legenda",
+   "tercatat"
+  ],
+  "#3F5F80": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 400.44,
+   "y": 2,
+   "w": 65.28,
+   "h": 14,
+   "jenis": "pil",
+   "grup": "pil",
+   "teks": "Estimasi model"
+  },
+  {
+   "x": 16,
+   "y": 21,
+   "w": 86.28,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "model kebutuhan sumur"
+  },
+  {
+   "x": 2,
+   "y": 20,
+   "w": 100.28,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "model kebutuhan sumur"
+  },
+  {
+   "x": 120.28,
+   "y": 21,
+   "w": 27.68,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-112",
+   "teks": "tercatat"
+  },
+  {
+   "x": 112.28,
+   "y": 20,
+   "w": 35.68,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-112",
+   "teks": "tercatat"
+  },
+  {
+   "x": 137.77,
+   "y": 122.6,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0"
+  },
+  {
+   "x": 205.31,
+   "y": 122.6,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "200"
+  },
+  {
+   "x": 277.34,
+   "y": 122.6,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "400"
+  },
+  {
+   "x": 349.36,
+   "y": 122.6,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "600"
+  },
+  {
+   "x": 2,
+   "y": 44.2,
+   "w": 106.92,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra 2025, takaran 15 liter"
+  },
+  {
+   "x": 207.28,
+   "y": 43.95,
+   "w": 56.21,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "70–170 sumur"
+  },
+  {
+   "x": 2,
+   "y": 64.6,
+   "w": 128.02,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra 2025, 2.000 jiwa per sumur"
+  },
+  {
+   "x": 321.09,
+   "y": 64.35,
+   "w": 61.09,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "490–490 sumur"
+  },
+  {
+   "x": 2,
+   "y": 85,
+   "w": 105.71,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Lombok 2018, takaran 15 liter"
+  },
+  {
+   "x": 176.31,
+   "y": 84.75,
+   "w": 101.61,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "≥ 83 sumur (model 29–71)"
+  },
+  {
+   "x": 2,
+   "y": 105.4,
+   "w": 126.81,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Lombok 2018, 2.000 jiwa per sumur"
+  },
+  {
+   "x": 219.53,
+   "y": 105.15,
+   "w": 61.09,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "200–200 sumur"
+  }
+ ],
+ "jenis": "rentang",
+ "pesan": "G12",
+ "sumbu_y": false,
+ "pil": 1,
+ "n_baris": 4,
+ "baris_rentang": [
+  {
+   "id": "Sumatra 2025, takaran 15 liter",
+   "rendah": 70,
+   "tinggi": 169,
+   "median": null,
+   "tercatat": 128,
+   "geser": false,
+   "tampil": [
+    70,
+    169
+   ],
+   "label": "70–170 sumur"
+  },
+  {
+   "id": "Sumatra 2025, 2.000 jiwa per sumur",
+   "rendah": 485,
+   "tinggi": 485,
+   "median": null,
+   "tercatat": 128,
+   "geser": false,
+   "tampil": [
+    485,
+    485
+   ],
+   "label": "490–490 sumur"
+  },
+  {
+   "id": "Lombok 2018, takaran 15 liter",
+   "rendah": 29,
+   "tinggi": 71,
+   "median": null,
+   "tercatat": 83,
+   "geser": true,
+   "tampil": [
+    83,
+    null
+   ],
+   "label": "≥ 83 sumur (model 29–71)"
+  },
+  {
+   "id": "Lombok 2018, 2.000 jiwa per sumur",
+   "rendah": 203,
+   "tinggi": 203,
+   "median": null,
+   "tercatat": 83,
+   "geser": false,
+   "tampil": [
+    203,
+    203
+   ],
+   "label": "200–200 sumur"
+  }
+ ]
+}

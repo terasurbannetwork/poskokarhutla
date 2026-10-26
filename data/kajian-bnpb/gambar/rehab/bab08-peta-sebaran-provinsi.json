@@ -1,0 +1,55 @@
+{
+ "nama": "bab08-peta-sebaran-provinsi",
+ "jenis": "peta",
+ "panel": [
+  "bab08-sebaran-a",
+  "bab08-sebaran-b",
+  "bab08-sebaran-c"
+ ],
+ "teks_min_pt": 8.0,
+ "ukuran_cm": [
+  16.09,
+  5.46
+ ],
+ "hex": {
+  "#D3DBE5": [
+   "daratan-netral"
+  ],
+  "#FFFFFF": [
+   "batas",
+   "garis"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#2F86D1": [
+   "legenda",
+   "simbol"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#8F3F07": [
+   "legenda",
+   "skala"
+  ],
+  "#D9600B": [
+   "legenda",
+   "skala"
+  ],
+  "#FBE7D6": [
+   "legenda",
+   "skala"
+  ],
+  "#F4C3A0": [
+   "legenda",
+   "skala"
+  ]
+ }
+}

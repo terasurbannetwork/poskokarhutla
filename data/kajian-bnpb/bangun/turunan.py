@@ -274,6 +274,12 @@ ANCAMAN_TAMPIL = dict(BAHAYA_TAMPIL, semua="semua jenis", epidemi="epidemi", gag
 KEKUATAN_TAMPIL = {"kuat": "kuat", "sedang": "sedang", "lemah": "lemah", "belum-terbukti": "belum terbukti"}
 
 
+def bahaya_pulau_2025():
+    """Baris IRBI 2025 per pulau untuk tabel Bab 5, nama pulau memakai tampilan baku (glosarium terlarang: Bali–Nusa Tenggara)."""
+    kol = list(baca("irbi", "irbi_agregat_pulau.csv")[0])
+    return kol, [dict(r, pulau_nama=PULAU_TAMPIL.get(r["pulau_nama"], r["pulau_nama"])) for r in baca("irbi", "irbi_agregat_pulau.csv") if r["tahun"] == "2025"]
+
+
 def nama_peraturan(sid):
     """sid paket lembaga -> bentuk rujukan baku: uu-24-2007 -> UU 24/2007; jdih:perban-nomor-1-tahun-2025 -> Perban BNPB 1/2025."""
     m = re.match(r"jdih:(\w+)-nomor-(\d+)-tahun-(\d{4})$", sid)
@@ -336,15 +342,16 @@ def lampiran_mitigasi(semua, prov_utama):
             continue
         k = 1e6 if r["satuan"] == "juta Rp" else 1
         bersih = (r["butir"].replace(">=", "≥").replace("<=", "≤").replace(" < ", " ≤ ").replace("RB + RS", "rumah rusak berat dan sedang")
-                  .replace("(H/L 0,15)", "").strip())
+                  .replace("(H/L 0,15)", "").replace("≤ 180 menit", "dalam tiga jam").strip())
         geo.append({"skenario": SKENARIO_GEO[r["skenario"]], "butir": bersih, **{c: (f(r[c]) * k if f(r[c]) is not None else None)
                                                                                   for c in ("rendah", "tengah", "tinggi")},
                     "satuan": {"juta Rp": "Rp", "km2": "km²"}.get(r["satuan"], r["satuan"]), "label": r["label"].split(" (")[0].split(";")[0]})
     kep = [{"skenario": SKENARIO_GEO[r["skenario"]], "tuas": "kepatuhan bangunan" if r["tuas"].startswith("kepatuhan") else "jam kejadian",
-            "nilai_tuas": r["nilai_tuas"], **{c: f(r[c]) for c in ("korban_rendah", "korban_tengah", "korban_tinggi", "rb_tengah", "faktor_terhadap_dasar")}}
+            "nilai_tuas": re.sub(r"malam \(\d,\d+\) vs rata-rata \(\d,\d+\)", "okupansi malam dibanding rata-rata", r["nilai_tuas"]),
+            **{c: f(r[c]) for c in ("korban_rendah", "korban_tengah", "korban_tinggi", "rb_tengah", "faktor_terhadap_dasar")}}
            for r in baca("skenario-geologi", "kepekaan.csv") if not r["tuas"].startswith("porsi evakuasi")]
     peran = [{"lembaga": r["nama_lembaga"], "ancaman": ANCAMAN_TAMPIL[r["ancaman"]], "fase": FASE_TAMPIL[r["fase"]], "peran": r["peran"],
-              "uraian": r["uraian"], "dasar": f'{nama_peraturan(r["sid"])}, hlm. {r["hlm"]}', "jenis_bukti": r["jenis_bukti"]}
+              "uraian": r["uraian"], "dasar": f'{nama_peraturan(r["sid"])}, hlm. {r["hlm"].replace("-", "–")}', "jenis_bukti": r["jenis_bukti"]}
              for r in baca("lembaga", "peran.csv")]
     urut = {x: i for i, x in reversed(list(enumerate(r["lembaga"] for r in peran)))}   # baris satu lembaga bersambung (grup LEMBAGA)
     peran.sort(key=lambda r: urut[r["lembaga"]])
@@ -429,6 +436,8 @@ def main():
     tulis("provinsi_utama.csv", ["prov", "n_kab_daftar_perhatian", "peringkat_daftar", "meninggal_hilang_2015_2025", "peringkat_korban", "label"], prov)
     tulis("profil_kerugian.csv", ["lapisan", "tahun", "rumah_rb", "rumah_rs", "rumah_rr", "rp_tinggi", "rp_rendah", "sumber", "label"], prof)
     tulis("angka_tesis.csv", ["kajian", "besaran", "nilai", "sumber", "label"], tesis)
+    kol_p, baris_p = bahaya_pulau_2025()
+    tulis("bahaya_pulau_2025.csv", kol_p, baris_p)
     lamp = lampiran_mitigasi(semua, prov)
     cek_lampiran(*lamp, semua)
     for nama, baris in zip(("lampiran_kab", "lampiran_prov", "lampiran_dibi_tahun", "lampiran_dibi_jenis", "lampiran_geologi_model",

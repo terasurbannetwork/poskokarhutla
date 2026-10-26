@@ -453,11 +453,14 @@ def muat_dokumen(folder):
 # ---------------------------------------------------------------- perakit
 
 class Perakit:
-    def __init__(self, dok, halaman=None, n_hal=None, hal_baru=frozenset()):
+    def __init__(self, dok, halaman=None, n_hal=None, hal_baru=frozenset(), kartu_besar=frozenset()):
         """halaman, n_hal: label halaman penanda dan jumlah halaman lintasan sebelumnya. hal_baru: id objek yang
-        keterangannya dipaksa mulai halaman baru (kartu yang terbelah dari keterangan atau Sumber-nya di lintasan lalu)."""
+        keterangannya dipaksa mulai halaman baru (kartu yang terbelah dari keterangan atau Sumber-nya di lintasan lalu).
+        kartu_besar: id kartu yang masih terbelah walau sudah mulai di halaman baru (lebih tinggi dari satu halaman):
+        baris luarnya boleh terbelah, sebab baris cantSplit lebih tinggi dari halaman ditumpuk LibreOffice di atas isi
+        berikutnya sehingga judul subbab dan keterangan sesudahnya hilang dari halamannya."""
         self.dok, self.k, self.kajian = dok, dok['konteks'], dok['kajian']
-        self.halaman, self.n_hal, self.hal_baru = halaman or {}, n_hal, hal_baru
+        self.halaman, self.n_hal, self.hal_baru, self.kartu_besar = halaman or {}, n_hal, hal_baru, kartu_besar
         self.d = Document()
         self.bm_id, self.docpr, self.kaki_id, self.n_toc = 0, 0, 0, 0
         self.kaki, self.toc, self.lamp, self.foto = [], [], [], []
@@ -837,10 +840,16 @@ class Perakit:
             else:
                 al = [tw(x, ip) for x in sel]
             kata = [tw(w, ip) for x in sel for w in x.split()[:40]]
+            if c in kanan and c not in pil:  # kolom rata kanan: hanya sel angka yang tak boleh patah; sel teks di kolom itu patah per kata
+                al = [tw(x, ip) if self._angka(x) is not None else max([tw(w, ip) for w in x.split()] + [pad]) for x in sel]
             m = max([tw(w, kp['ukuran_pt'], True, kp['spasi_huruf_pt']) for w in h.split()] + (al if c in kanan or c in pil else kata) + [pad])
             mn.append(min(m, LEBAR * 0.3))  # kata sangat panjang (URL) boleh patah
             alami.append(sorted(al))
+        if sum(mn) >= LEBAR and sum(mn) - 30 * len(mn) <= LEBAR:  # lebih sedikit dari jarak aman 30 twip per kolom: buang jarak aman, kata tetap utuh
+            mn = [m - 30 for m in mn]
+            return bagi_lebar([m + (LEBAR - sum(mn)) / len(mn) for m in mn])
         if sum(mn) >= LEBAR:
+            print(f'PERINGATAN lebar kolom: kata terpanjang tidak muat ({sum(mn) / LEBAR:.2f}x lebar isi): ' + ' | '.join(f'{h} [{m / LEBAR:.2f}]' for h, m in zip(kepala, mn)), file=sys.stderr)
             return bagi_lebar([m * LEBAR / sum(mn) for m in mn])
         w, sisa = list(mn), LEBAR - sum(mn)
         while True:
@@ -1241,7 +1250,8 @@ class Perakit:
         if 'kaki' in t:  # kaki kartu (B5.11 butir 9) di dalam kartu, supaya "Sumber:" tetap paragraf pertama sesudahnya
             blok.append(p(self.runs(t['kaki'], pt=TY['sumber']['ukuran_pt'], warna='teks-2', i=True), gaya='IsiTabel', sebelum=4))
         blok.append(self.p_legenda(legenda) or p(gaya='Jarak'))
-        kartu = tbl([tahan(tr([tc(''.join(blok), LEBAR)]))], [LEBAR], mar=(0, 0, 0, 0), caption='skenario')
+        baris_kartu = tr([tc(''.join(blok), LEBAR)], utuh=d['id'] not in self.kartu_besar)
+        kartu = tbl([baris_kartu if d['id'] in self.kartu_besar else tahan(baris_kartu)], [LEBAR], mar=(0, 0, 0, 0), caption='skenario')
         return out + [kartu] + self.baris_sumber(d, tanda=akhir)
 
     def chip_lembaga(self, teks, pemimpin=True, sebaris=False):
@@ -1528,7 +1538,7 @@ class Perakit:
                             lb, shd='kertas')])], [lb], mar=(m, m, m, m), jc='center')
         baris = T['header_footer']['sampul_belakang']
         isi = [kotak] + [
-            p(r(x, pt=s['baris_pt'] + (1 if i == 0 else 0), b=i == 0, warna='kertas'), jc='center', sebelum=12 if i == 0 else 0, sesudah=2)
+            p(r(x, pt=s['baris_pt'] + (1 if i == 0 else 0), b=i == 0, warna='kertas'), gaya='Sampul', jc='center', sebelum=12 if i == 0 else 0, sesudah=2)
             for i, x in enumerate(baris)]
         # satu paragraf ringkas kajian: judul, kalimat tesis dari registri (token, D-6/D-22), cakupan (PEDOMAN B5.24, L70)
         tesis = ''
@@ -1539,7 +1549,7 @@ class Perakit:
         ring = ' '.join(x for x in (tesis, self.kj.get('cakupan_sampul', '')) if x)
         if ring:
             kp = {'pt': s['ringkas_pt'], 'warna': 'kertas'}
-            isi.append(p(r(self.kj['judul'], b=True, **kp), jc='center', sebelum=s['ringkas_sebelum_pt'], sesudah=4, kiri=tw_cm(1.5), kanan=tw_cm(1.5)))
+            isi.append(p(r(self.kj['judul'], b=True, **kp), gaya='Sampul', jc='center', sebelum=s['ringkas_sebelum_pt'], sesudah=4, kiri=tw_cm(1.5), kanan=tw_cm(1.5)))
             isi.append(p(r(ring, **kp), jc='both', sesudah=0, baris=1.15, kiri=tw_cm(1.5), kanan=tw_cm(1.5)))
         return {'isi': isi, 'sect': ('polos', None, margin, hdr)}
 
@@ -1553,8 +1563,8 @@ class Perakit:
         isi = [p(self.tanda(bm, r(LABEL['pembatas'])), gaya='JudulPembatas')]
         for n in self.dok['naskah']:
             if 'lampiran' in n['meta']:
-                isi.append(p(r(f'Lampiran {n["meta"]["lampiran"]}. {n["meta"]["judul"]}', pt=s['daftar_pt'], warna=warna_j), sesudah=4))
-        isi += [p(r(x, pt=s['daftar_pt'], warna=warna_j), sesudah=4) for x in tambahan]
+                isi.append(p(r(f'Lampiran {n["meta"]["lampiran"]}. {n["meta"]["judul"]}', pt=s['daftar_pt'], warna=warna_j), gaya='Sampul', sesudah=4))
+        isi += [p(r(x, pt=s['daftar_pt'], warna=warna_j), gaya='Sampul', sesudah=4) for x in tambahan]
         return {'isi': isi, 'sect': ('polos', None, margin, hdr)}
 
     def versi(self):
@@ -1572,11 +1582,11 @@ class Perakit:
             ('JUDUL', [self.kj['judul'], self.kj['subjudul']]),
             ('PENERBIT', T['header_footer']['sampul_belakang'][:2]),
             ('DITUJUKAN KEPADA', [kf['ditujukan']]),
-            ('DASAR PENYUSUNAN', kf['dasar']),
+            ('DASAR PENYUSUNAN', kf.get('dasar_kajian', {}).get(self.kajian, kf['dasar'])),
             ('VERSI', [f'{self.versi()}, {T["kajian"]["terbit"]}']),
             ('TAHUN TERBIT', [re.search(r'\d{4}', T['kajian']['terbit'])[0]]),
             ('BAHASA', ['Indonesia']),
-            ('BATAS DATA', [kf['batas_data']]),
+            ('BATAS DATA', [kf.get('batas_data_kajian', {}).get(self.kajian, kf['batas_data'])]),
             ('FOTO SAMPUL', [f'{foto["judul"]}. Wikimedia Commons, {foto["pengarang"]}, {foto["lisensi"]}. {foto["url"]}']),
         ]
         g = garis(T['garis_pt']['baris_tabel']['tebal_pt'], T['garis_pt']['baris_tabel']['warna'])
@@ -1624,8 +1634,12 @@ class Perakit:
             g = json.loads(f.read_text(encoding='utf-8'))
             # hanya singkatan yang benar-benar muncul di naskah (PEDOMAN B5.18); glosarium memuat singkatan kedua kajian
             isi = json.dumps([n['blok'] for n in self.dok['naskah']], ensure_ascii=False)
-            pasang = sorted((x['singkatan'], x['kepanjangan']) for x in g.get('singkatan', [])
-                            if re.search(r'(?<![\w/])' + re.escape(x['singkatan']) + r'(?![\w/])', isi))
+            # entri berkolom kajian hanya untuk kajian itu dan menimpa entri umum bersingkatan sama (IPA air lawan rehab)
+            sk = {}
+            for x in sorted(g.get('singkatan', []), key=lambda x: 'kajian' in x):
+                if self.kajian in x.get('kajian', [self.kajian]):
+                    sk[x['singkatan']] = x['kepanjangan']
+            pasang = sorted((s_, k_) for s_, k_ in sk.items() if re.search(r'(?<![\w/])' + re.escape(s_) + r'(?![\w/])', isi))
         else:
             self.galat('data/glosarium.json belum ada; Daftar Singkatan diisi sementara dari singkatan pengarang pustaka')
             pasang = sorted({(a['singkatan'], a['literal']) for it in self.k.pustaka.values() for a in it.get('author', [])
@@ -1972,9 +1986,9 @@ def bangun(folder, keluar):
     pk0 = Perakit(dok).rakit()
     peringatan = pk0.peringatan + render_ikon(pk0.ikon_perlu, pk0.final)
     tmp_docx, tmp_pdf = KERJA / f'_kerja-{keluar.stem}.docx', KERJA / f'_kerja-{keluar.stem}.pdf'
-    halaman, n_lalu, hal_baru, riwayat = None, None, frozenset(), []
-    for lintas in range(1, 7):
-        pk = Perakit(dok, halaman, n_lalu, hal_baru).rakit()
+    halaman, n_lalu, hal_baru, besar, riwayat = None, None, frozenset(), frozenset(), []
+    for lintas in range(1, 9):
+        pk = Perakit(dok, halaman, n_lalu, hal_baru, besar).rakit()
         pk.d.save(tmp_docx)
         ekspor_pdf(tmp_docx, tmp_pdf)
         baru, n = baca_halaman(tmp_pdf, pk)
@@ -1982,12 +1996,14 @@ def bangun(folder, keluar):
         # LibreOffice tidak menahan tabel bersama paragraf sesudahnya: kartu yang terbelah dari keterangan atau baris
         # Sumber-nya mulai halaman baru di lintasan berikut (kartu sendiri satu baris cantSplit, muat satu halaman)
         tj = halaman_penanda(tmp_pdf)
-        pisah = hal_baru | {i for i, *bm in pk.kartu if len({tj.get(x) for x in bm}) > 1}
-        if baru == halaman and n == n_lalu and pisah == hal_baru:
+        terbelah = {i for i, *bm in pk.kartu if len({tj.get(x) for x in bm}) > 1}
+        pisah = hal_baru | terbelah
+        besar_baru = besar | (terbelah & hal_baru)  # sudah mulai di halaman baru dan masih terbelah: lebih tinggi dari satu halaman
+        if baru == halaman and n == n_lalu and pisah == hal_baru and besar_baru == besar:
             break
-        halaman, n_lalu, hal_baru = baru, n, frozenset(pisah)
+        halaman, n_lalu, hal_baru, besar = baru, n, frozenset(pisah), frozenset(besar_baru)
     else:
-        raise SystemExit(f'nomor halaman tidak mencapai titik tetap dalam 6 lintasan: {riwayat}')
+        raise SystemExit(f'nomor halaman tidak mencapai titik tetap dalam 8 lintasan: {riwayat}')
     shutil.copy(tmp_docx, keluar)
     shutil.copy(tmp_pdf, keluar.with_suffix('.pdf'))
     tujuan = halaman_penanda(tmp_pdf)
@@ -2018,10 +2034,10 @@ def bangun(folder, keluar):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('kajian', nargs='?', choices=['air', 'mitigasi'])
+    ap.add_argument('kajian', nargs='?', choices=['air', 'mitigasi', 'rehab'])
     ap.add_argument('--naskah', help='folder naskah (bawaan naskah/<kajian>)')
     ap.add_argument('--keluar', help='berkas .docx keluaran (bawaan keluaran/<kajian>.docx)')
     x = ap.parse_args()
     if not (x.kajian or x.naskah):
-        ap.error('sebut kajian (air|mitigasi) atau --naskah')
+        ap.error('sebut kajian (air|mitigasi|rehab) atau --naskah')
     bangun(x.naskah or AKAR / 'naskah' / x.kajian, x.keluar or AKAR / 'keluaran' / f'{x.kajian}.docx')

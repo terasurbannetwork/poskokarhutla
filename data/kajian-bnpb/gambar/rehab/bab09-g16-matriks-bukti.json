@@ -1,0 +1,362 @@
+{
+ "nama": "bab09-g16-matriks-bukti",
+ "keterangan": "Kategori bukti program terkuat per lapis waktu dan sektor air dan akses, 2026",
+ "sumber": "Kompendium program terbukti Pantau Bencana; Perka BNPB 12/2010; Perka BNPB 7/2008; analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  146.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  5.17
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Aksi wajib menurut peraturan",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Sedang",
+   "jenis": "kotak",
+   "warna": "#3F5F80"
+  },
+  {
+   "label": "Lemah",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Belum ada",
+   "jenis": "kotak",
+   "warna": "#FFFFFF"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#3F5F80": [
+   "legenda",
+   "seri"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "legenda",
+   "teks",
+   "seri",
+   "latar"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 104.07,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Aksi wajib menurut peraturan"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 118.07,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Aksi wajib menurut peraturan"
+  },
+  {
+   "x": 144.07,
+   "y": 3,
+   "w": 26.75,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-130",
+   "teks": "Sedang"
+  },
+  {
+   "x": 130.07,
+   "y": 2,
+   "w": 40.75,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-130",
+   "teks": "Sedang"
+  },
+  {
+   "x": 194.82,
+   "y": 3,
+   "w": 24.31,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-180",
+   "teks": "Lemah"
+  },
+  {
+   "x": 180.82,
+   "y": 2,
+   "w": 38.31,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-180",
+   "teks": "Lemah"
+  },
+  {
+   "x": 243.13,
+   "y": 3,
+   "w": 37.78,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-229",
+   "teks": "Belum ada"
+  },
+  {
+   "x": 229.13,
+   "y": 2,
+   "w": 51.78,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-229",
+   "teks": "Belum ada"
+  },
+  {
+   "x": 111.19,
+   "y": 20,
+   "w": 28.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk0",
+   "teks": "Darurat"
+  },
+  {
+   "x": 242.73,
+   "y": 20,
+   "w": 41.62,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk1",
+   "teks": "Sementara"
+  },
+  {
+   "x": 382.05,
+   "y": 20,
+   "w": 39.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kk2",
+   "teks": "Permanen"
+  },
+  {
+   "x": 2,
+   "y": 45.85,
+   "w": 23.59,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Akses"
+  },
+  {
+   "x": 2,
+   "y": 85.65,
+   "w": 51.37,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Air perpipaan"
+  },
+  {
+   "x": 2,
+   "y": 125.45,
+   "w": 34.69,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Air tanah"
+  },
+  {
+   "x": 97.01,
+   "y": 40,
+   "w": 56.83,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a0",
+   "teks": "Perka 12/2010"
+  },
+  {
+   "x": 85.71,
+   "y": 51.6,
+   "w": 79.43,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a0",
+   "teks": "bailey dan rangka baja"
+  },
+  {
+   "x": 225.94,
+   "y": 40,
+   "w": 75.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "SCIRT Christchurch"
+  },
+  {
+   "x": 244.83,
+   "y": 51.6,
+   "w": 37.42,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "luar negeri"
+  },
+  {
+   "x": 377.83,
+   "y": 40,
+   "w": 47.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "Palu IV, BRR"
+  },
+  {
+   "x": 371.31,
+   "y": 51.6,
+   "w": 60.7,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "evaluasi terbatas"
+  },
+  {
+   "x": 99.45,
+   "y": 79.8,
+   "w": 51.95,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "w0",
+   "teks": "Perka 7/2008"
+  },
+  {
+   "x": 90.23,
+   "y": 91.4,
+   "w": 70.39,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w0",
+   "teks": "kebutuhan dasar air"
+  },
+  {
+   "x": 243.73,
+   "y": 79.8,
+   "w": 39.63,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "w1",
+   "teks": "Satgas PU"
+  },
+  {
+   "x": 214.92,
+   "y": 91.4,
+   "w": 97.25,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w1",
+   "teks": "penilaian riset, bukan rubrik"
+  },
+  {
+   "x": 368.24,
+   "y": 79.8,
+   "w": 66.85,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "w2",
+   "teks": "Kobe dan Tohoku"
+  },
+  {
+   "x": 369.1,
+   "y": 91.4,
+   "w": 65.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "w2",
+   "teks": "laporan pelaksana"
+  },
+  {
+   "x": 97.9,
+   "y": 119.6,
+   "w": 55.05,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "g0",
+   "teks": "Sumur darurat"
+  },
+  {
+   "x": 106.78,
+   "y": 131.2,
+   "w": 37.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "g0",
+   "teks": "belum ada"
+  },
+  {
+   "x": 247.58,
+   "y": 119.6,
+   "w": 31.92,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "g1",
+   "teks": "Uji mutu"
+  },
+  {
+   "x": 244.9,
+   "y": 131.2,
+   "w": 37.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "g1",
+   "teks": "belum ada"
+  },
+  {
+   "x": 371.3,
+   "y": 119.6,
+   "w": 60.72,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "g2",
+   "teks": "Sumur produksi"
+  },
+  {
+   "x": 383.02,
+   "y": 131.2,
+   "w": 37.29,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "g2",
+   "teks": "belum ada"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat matriks kategori bukti",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 9
+}

@@ -25,7 +25,7 @@ target_halaman: 6
 **Rekomendasi:**
 
 - @rek:r-rr-01 Tambah kolom air dan jembatan di DIBI (Sudah ada, perlu dikembangkan; Pusat Data, Informasi, dan Komunikasi Kebencanaan; Kementerian Pekerjaan Umum, BPBD; 100 hari).
-- @rek:r-rr-02 Tetapkan baseline waktu pulih air dan akses (Usulan baru; Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; Kementerian Pekerjaan Umum; 2026–2027).
+- @rek:r-rr-02 Tetapkan garis dasar waktu pulih air dan akses (Usulan baru; Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; Kementerian Pekerjaan Umum; 2026–2027).
 - @rek:r-rr-04 Ikat jembatan TNI AD dan Polri ke R3P (Usulan baru; Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; TNI AD, Polri, Kementerian Pekerjaan Umum, Kemenko PMK; 100 hari).
 - @rek:r-rr-07 Buka jalur dana jembatan dan SPAM desa (Usulan baru; Biro Hukum, Organisasi, dan Kerja Sama bersama Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; Kementerian Desa, Kementerian Dalam Negeri, Kementerian Keuangan; 2026–2027).
 - @rek:r-rr-15 Selaraskan Perban 6/2017, Perka 12/2010, dan katalog JDIH (Sudah ada, perlu dikembangkan; Biro Hukum, Organisasi, dan Kerja Sama; tanpa K/L lain; 2026–2027).
@@ -33,7 +33,7 @@ target_halaman: 6
 
 ## Latar Belakang {#sub:rr-latar}
 
-**DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan rusak akibat bencana alam di Indonesia pada 2018–2025, dan {{angka:rehab.dibi.jembatan_rusak.2025}} di antaranya terjadi pada 2025.** Angka 2025 setara {{angka:rehab.dibi.jembatan_rusak.porsi_2025_persen|fmt=1|persen}} dari total delapan tahun dan {{angka:rehab.dibi.jembatan_rusak.rasio_2025_rerata|fmt=1}} kali rerata {{angka:rehab.dibi.jembatan_rusak.rerata_2018_2024|fmt=1}} jembatan per tahun pada 2018–2024 [@bnpb-dibi]. Kolom jembatan rusak bernilai nol pada semua tahun 2008–2017 dan tidak memisahkan status jalan, sehingga seri baru dapat dibaca sejak 2018. Sejak data 2024 laporan DIBI disaring dengan ambang Juklak BNPB 7/2023 tentang Standar Data Kejadian dan Dampak Bencana [@bnpb-2023-standar-data]. Perbandingan 2025 dengan tahun sebelumnya karena itu dibaca dengan catatan patahan seri (@gbr:rr-jembatan-tahunan). Bila kebakaran permukiman ikut dihitung, jembatan rusak 2025 menjadi {{angka:rehab.dibi.jembatan_rusak.semua_klasifikasi.2025}}.
+**Data dan Informasi Bencana Indonesia (DIBI) mencatat {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan rusak akibat bencana alam di Indonesia pada 2018–2025, dan {{angka:rehab.dibi.jembatan_rusak.2025}} di antaranya terjadi pada 2025.** Angka 2025 setara {{angka:rehab.dibi.jembatan_rusak.porsi_2025_persen|fmt=1|persen}} dari total delapan tahun dan {{angka:rehab.dibi.jembatan_rusak.rasio_2025_rerata|fmt=1}} kali rerata {{angka:rehab.dibi.jembatan_rusak.rerata_2018_2024|fmt=1}} jembatan per tahun pada 2018–2024 [@bnpb-dibi]. Kolom jembatan rusak bernilai nol pada semua tahun 2008–2017 dan tidak memisahkan status jalan, sehingga seri baru dapat dibaca sejak 2018. Sejak data 2024 laporan DIBI disaring dengan ambang Juklak Badan Nasional Penanggulangan Bencana (BNPB) 7/2023 tentang Standar Data Kejadian dan Dampak Bencana [@bnpb-2023-standar-data]. Perbandingan 2025 dengan tahun sebelumnya karena itu dibaca dengan catatan patahan seri (@gbr:rr-jembatan-tahunan). Bila kebakaran permukiman ikut dihitung, jembatan rusak 2025 menjadi {{angka:rehab.dibi.jembatan_rusak.semua_klasifikasi.2025}}.
 
 ::: gambar {#gbr:rr-jembatan-tahunan}
 berkas: gambar/rehab/bab01-jembatan-rusak-tahunan.png
@@ -43,14 +43,24 @@ sumber: Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan kej
 keyakinan: resmi
 lebar: penuh
 data_per: 25 Okt 2026
-catatan: Garis mendatar menandai rerata 2018–2024. Sejak data 2024 laporan disaring ambang Juklak BNPB 7/2023 (patahan seri). Kolom jembatan rusak bernilai nol untuk 2008–2017.
 :::
 
-**Banjir menyumbang {{angka:rehab.dibi.jembatan_rusak.banjir.2018_2025}} jembatan rusak pada 2018–2025, atau {{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} dari total nasional.** Longsor menyumbang {{angka:rehab.dibi.jembatan_rusak.longsor.2018_2025}} jembatan; rincian jenis lain ada di @tbl:rr-lingkup. Pada 2025 Aceh mencatat {{angka:rehab.dibi.jembatan_rusak.prov.aceh.2025}} jembatan rusak, dan bersama Sumatera Utara dan Sumatera Barat mencatat {{angka:rehab.dibi.jembatan_rusak.sumatra3prov.2025}} jembatan [@bnpb-dibi]. Angka tiga provinsi itu memuat semua kejadian alam 2025 di sana, termasuk rangkaian banjir dan longsor November.
+**Banjir menyumbang {{angka:rehab.dibi.jembatan_rusak.banjir.2018_2025}} jembatan rusak pada 2018–2025, atau {{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} dari total nasional.** Longsor menyumbang {{angka:rehab.dibi.jembatan_rusak.longsor.2018_2025}} jembatan; rincian jenis lain ada di @tbl:rr-lingkup. Pada 2025 Aceh mencatat {{angka:rehab.dibi.jembatan_rusak.prov.aceh.2025}} jembatan rusak, dan bersama Sumatera Utara dan Sumatera Barat mencatat {{angka:rehab.dibi.jembatan_rusak.sumatra3prov.2025}} jembatan [@bnpb-dibi]. Angka tiga provinsi itu memuat semua kejadian alam 2025 di sana, termasuk rangkaian banjir dan longsor November. Catatan atas @gbr:rr-jembatan-tahunan. Batang abu-abu pertama menandai rerata 2018–2024. Sejak data 2024 laporan disaring ambang Juklak BNPB 7/2023 (patahan seri). Kolom jembatan rusak bernilai nol untuk 2008–2017.
 
 **Banjir dan longsor di Aceh, Sumatera Utara, dan Sumatera Barat pada 15 November sampai 31 Desember 2025 merusak berat {{angka:dibi.sumatra2025.rumah_rusak_berat}} rumah dan memaksa {{angka:dibi.sumatra2025.mengungsi}} orang mengungsi.** Pada jendela yang sama DIBI mencatat {{angka:rehab.lantai.banjir.sumatra2025.rumah_rusak}} rumah rusak semua tingkat, {{angka:dibi.sumatra2025.meninggal}} orang meninggal, dan {{angka:dibi.sumatra2025.hilang}} orang hilang di {{angka:dibi.sumatra2025.kab_terdampak}} kab/kota [@bnpb-dibi]. Jendela tanggal itu dipilih penyusun dan memakai seluruh laporan DIBI, sedangkan angka jembatan tahunan memakai saringan kejadian bencana. Kedua jenis angka karena itu tidak dijumlahkan atau dibagi satu sama lain. Badan Keahlian DPR RI mencatat angka rumah rusak versi BNPB dan Kementerian Perumahan dan Kawasan Permukiman belum sepenuhnya sinkron [@dpr-2026-infosingkat-rumah-sumatra]; kedua versi dicatat di Lampiran D.
 
-**Per 7 Mei 2026 jalan dan jembatan nasional terdampak di Pulau Sumatera sudah {{angka:rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026|persen}} fungsional, sedangkan jembatan daerah baru sekitar {{angka:rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026|persen}} dari {{angka:rehab.akses.sumatra2025.jembatan_daerah_terdampak}} unit.** Ruas jalan daerah yang kembali fungsional sekitar {{angka:rehab.akses.sumatra2025.jalan_daerah_persen_fungsi_mei2026|persen}} dari {{angka:rehab.akses.sumatra2025.jalan_daerah_ruas_terdampak}} ruas [@pu-2026-infrastruktur-sumatera-mei]. Rilis yang sama mencatat sekitar {{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} dari {{angka:rehab.pipa.sumatra2025.spam_terdampak}} SPAM terdampak kembali fungsional tanpa menyebut pemiliknya, sehingga angka air tidak dipakai untuk membandingkan aset nasional dan daerah. Kata "fungsional" juga tidak didefinisikan dan tidak disamakan dengan pulih permanen. Menurut analisis kajian ini, aset daerah pulih lebih lambat pada kejadian ini, tetapi satu kejadian belum cukup untuk menetapkan pola.
+::: gambar {#gbr:foto-rr-jembatan-putus-tapanuli}
+berkas: gambar/foto/rehab-b01-jembatan-putus-tapanuli.jpg
+jenis: foto
+judul: Jembatan rangka baja yang putus diterjang banjir bandang di Kabupaten Tapanuli Utara, Sumatra Utara, 25 November 2025
+pengarang: Badan Nasional Penanggulangan Bencana (BNPB)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Bridge_broken_due_to_flash_flooding_in_North_Sumatra.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+**Per 7 Mei 2026 jalan dan jembatan nasional terdampak di Pulau Sumatera sudah {{angka:rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026|persen}} fungsional, sedangkan jembatan daerah baru sekitar {{angka:rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026|persen}} dari {{angka:rehab.akses.sumatra2025.jembatan_daerah_terdampak}} unit.** Ruas jalan daerah yang kembali fungsional sekitar {{angka:rehab.akses.sumatra2025.jalan_daerah_persen_fungsi_mei2026|persen}} dari {{angka:rehab.akses.sumatra2025.jalan_daerah_ruas_terdampak}} ruas [@pu-2026-infrastruktur-sumatera-mei]. Rilis yang sama mencatat sekitar {{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} dari {{angka:rehab.pipa.sumatra2025.spam_terdampak}} Sistem Penyediaan Air Minum (SPAM) terdampak kembali fungsional tanpa menyebut pemiliknya, sehingga angka air tidak dipakai untuk membandingkan aset nasional dan daerah. Kata "fungsional" juga tidak didefinisikan dan tidak disamakan dengan pulih permanen. Menurut analisis kajian ini, aset daerah pulih lebih lambat pada kejadian ini, tetapi satu kejadian belum cukup untuk menetapkan pola.
 
 ::: catatan
 **Jembatan Sumatra 2025 menurut sumber resmi:** DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.sumatra3prov.2025}} jembatan rusak di tiga provinsi untuk semua kejadian alam 2025 [@bnpb-dibi]. Kementerian Pekerjaan Umum mencatat {{angka:rehab.akses.sumatra2025.jembatan_daerah_terdampak}} jembatan daerah terdampak di Pulau Sumatera per 7 Mei 2026, tanpa rincian provinsi [@pu-2026-infrastruktur-sumatera-mei]. Inspeksi Balai Pelaksanaan Jalan Nasional Aceh mencatat {{angka:rehab.akses.aceh.jembatan_putus_des2025}} jembatan roboh atau terputus di Aceh per 1 Desember 2025 [@binamarga-2025-jembatan-aceh]. Cakupan ketiganya berbeda, sehingga selisihnya tidak ditafsirkan sebagai kekurangan catat salah satu pihak.
@@ -60,7 +70,7 @@ catatan: Garis mendatar menandai rerata 2018–2024. Sejak data 2024 laporan dis
 
 **Per 2 Februari 2026 Kementerian Pekerjaan Umum mencatat {{angka:rehab.pipa.sumatra2025.spam_berfungsi_feb2026}} dari {{angka:rehab.pipa.sumatra2025.spam_terdampak_feb2026}} SPAM terdampak di Sumatra kembali berfungsi, dengan {{angka:rehab.pipa.sumatra2025.sarana_darurat_feb2026}} unit sarana darurat disiagakan.** Dari {{angka:rehab.pipa.sumatra2025.sumur_bor_feb2026}} sumur bor yang direncanakan atau dikerjakan, {{angka:rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026}} sudah selesai, semuanya di Aceh [@pu-2026-spam-sumatera-feb]. Penanganan permanen SPAM Sumatera Barat ditargetkan selesai bertahap hingga {{angka:rehab.pipa.sumbar.target_permanen|teks}}; target Aceh dan Sumatera Utara tidak disebut. Angka SPAM berfungsi menghitung unit, sehingga tidak menjawab berapa warga masih bergantung pada sarana darurat (@rek:r-rr-09).
 
-**DIBI 2015–2025 tidak memiliki kolom kerusakan SPAM, pipa, sumur, maupun waktu pulih layanan.** Bila tercatat, kerusakan sistem air tercampur dalam kategori fasilitas umum rusak, yang berjumlah {{angka:rehab.dibi.fasum_rusak.2015_2025}} unit akibat bencana alam pada periode itu [@bnpb-dibi]. Catatan kerusakan air per kejadian datang dari pemilik aset, misalnya {{angka:rehab.pipa.lombok.spam_rusak}} titik SPAM rusak pada gempa Lombok 2018 [@kemenpupr-2019-satgas-lombok] dan {{angka:rehab.pipa.cianjur.titik_kerusakan_pipa}} titik area kerusakan pipa pada gempa Cianjur 2022 [@kemenpupr-2023-cianjur]. Tanpa kolom itu, sasaran waktu pulih air berangka belum dapat ditetapkan; yang dapat ditetapkan sekarang adalah baseline paling lambat 2027 (@rek:r-rr-01; @rek:r-rr-02).
+**DIBI 2015–2025 tidak memiliki kolom kerusakan SPAM, pipa, sumur, maupun waktu pulih layanan.** Bila tercatat, kerusakan sistem air tercampur dalam kategori fasilitas umum rusak, yang berjumlah {{angka:rehab.dibi.fasum_rusak.2015_2025}} unit akibat bencana alam pada periode itu [@bnpb-dibi]. Catatan kerusakan air per kejadian datang dari pemilik aset, misalnya {{angka:rehab.pipa.lombok.spam_rusak}} titik SPAM rusak pada gempa Lombok 2018 [@kemenpupr-2019-satgas-lombok] dan {{angka:rehab.pipa.cianjur.titik_kerusakan_pipa}} titik area kerusakan pipa pada gempa Cianjur 2022 [@kemenpupr-2023-cianjur]. Tanpa kolom itu, sasaran waktu pulih air berangka belum dapat ditetapkan; yang dapat ditetapkan sekarang adalah garis dasar paling lambat 2027 (@rek:r-rr-01; @rek:r-rr-02).
 
 **Per 13 Agustus 2026 Satgas Pembangunan Jembatan Tentara Nasional Indonesia Angkatan Darat (TNI AD) telah menyelesaikan {{angka:rehab.jembatan.garuda.selesai_2026_08}} dari {{angka:rehab.jembatan.garuda.titik_2026_08}} titik jembatan.** Kepolisian Negara Republik Indonesia (Polri) menyelesaikan {{angka:rehab.jembatan.polri_mpp.selesai_2026_08}} dari {{angka:rehab.jembatan.polri_mpp.jumlah_total_2026_08}} Jembatan Merah Putih Presisi. Rilis yang sama menyebut {{angka:rehab.jembatan.garuda.titik_wilayah_bencana_2026_08}} titik TNI AD di daerah bencana tanpa menjelaskan apakah titik itu bagian dari total atau tambahan [@setneg-2026-jembatan-tni-polri]. Angka program dan angka kerusakan tidak dapat dicocokkan per lokasi, sehingga belum diketahui berapa jembatan rusak akibat bencana yang sudah diganti oleh program mana. Program jembatan dibahas di Bab 5, dan pengikatannya ke Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) diusulkan di @rek:r-rr-04.
 
@@ -84,7 +94,7 @@ catatan: Garis mendatar menandai rerata 2018–2024. Sejak data 2024 laporan dis
 
 Kajian ini menjelaskan mengapa air dan akses menjadi pokok RR 2026–2030 dan menyusun langkah BNPB untuk keduanya. Tujuannya:
 
-1. Menjadikan waktu pulih layanan air dan akses ukuran keberhasilan RR, dimulai dari baseline per kab/kota paling lambat 2027.
+1. Menjadikan waktu pulih layanan air dan akses ukuran keberhasilan RR, dimulai dari garis dasar per kab/kota paling lambat 2027.
 2. Menghitung beban RR air dan akses 2015–2025 dan skenario terburuk yang masuk akal per jenis bencana, dengan lantai kejadian tercatat terburuk.
 3. Menulis rantai lapis waktu beserta titik serahnya untuk setiap sektor.
 4. Mengusulkan cara mengikat program jembatan dan sumur bor K/L ke R3P serta jalur dana aset desa.
@@ -95,19 +105,29 @@ Tiga keputusan yang diminta dari Kepala BNPB bertumpu pada bab ini. Keputusan wa
 
 Kajian ini mencakup bencana alam yang merusak fisik menurut @tbl:rr-lingkup; kekeringan hanya menjadi konteks akuifer. Bencana nonalam dan bencana sosial tidak dicakup. Sektor akses meliputi jembatan dan ruas jalan penghubung. Sektor air perpipaan meliputi SPAM beserta jaringan transmisi dan distribusinya, sedangkan sektor air tanah meliputi sumur dan mata air sebagai sumber SPAM. Perumahan dibahas sebagai beban RR dan pengikat lokasi, karena huntap memerlukan sumber air dan akses.
 
+::: gambar {#gbr:foto-rr-banjir-aceh-tenggara}
+berkas: gambar/foto/rehab-b01-banjir-aceh-tenggara.jpg
+jenis: foto
+judul: Banjir merendam permukiman di Kabupaten Aceh Tenggara, Aceh, 29 November 2025
+pengarang: Badan Nasional Penanggulangan Bencana (BNPB)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Flood_in_Southeast_Aceh_Regency,_Sumatra.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
 ::: tabel {#tbl:rr-lingkup}
 judul: Lingkup jenis bencana dan sektor kajian dengan jembatan rusak tercatat DIBI, Indonesia, 2018–2025
 sumber: Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025; Kementerian PUPR, Buku Satgas Penanganan Gempa Lombok (2019) dan Penanganan Gempa Cianjur 2022 (2023)
 keyakinan: resmi
 data_per: 25 Okt 2026
 angka: 2
-catatan: Likuefaksi tidak dipisahkan dari gempa bumi di kolom jembatan DIBI; kekeringan tidak dicakup untuk akses. Perumahan dibahas untuk semua jenis sebagai beban dan pengikat lokasi.
 
 | JENIS BENCANA | JEMBATAN RUSAK (unit) | AIR PERPIPAAN DAN AIR TANAH | KEDUDUKAN DALAM KAJIAN |
 | --- | ---: | --- | --- |
 | Banjir dan banjir bandang | {{angka:rehab.dibi.jembatan_rusak.banjir.2018_2025}} | tidak tercatat terpisah di DIBI; Sumatra 2025 dari rilis Kementerian PU | lingkup utama |
 | Tanah longsor | {{angka:rehab.dibi.jembatan_rusak.longsor.2018_2025}} | tidak tercatat terpisah di DIBI | lingkup utama |
-| Gempa bumi | {{angka:rehab.dibi.jembatan_rusak.gempa.2018_2025}} | tidak tercatat terpisah di DIBI; Lombok 2018 {{angka:rehab.pipa.lombok.spam_rusak}} titik SPAM, Cianjur 2022 {{angka:rehab.pipa.cianjur.titik_kerusakan_pipa}} titik pipa | lingkup utama |
+| Gempa bumi | {{angka:rehab.dibi.jembatan_rusak.gempa.2018_2025}} | tidak tercatat terpisah di DIBI; Lombok 2018, {{angka:rehab.pipa.lombok.spam_rusak}} titik SPAM, Cianjur 2022, {{angka:rehab.pipa.cianjur.titik_kerusakan_pipa}} titik pipa | lingkup utama |
 | Likuefaksi | – | tidak tercatat terpisah di DIBI | lingkup utama |
 | Tsunami | {{angka:rehab.dibi.jembatan_rusak.tsunami.2018_2025}} | tidak tercatat terpisah di DIBI | lingkup utama |
 | Erupsi gunung api | {{angka:rehab.dibi.jembatan_rusak.erupsi.2018_2025}} | tidak tercatat terpisah di DIBI | lingkup utama |
@@ -116,7 +136,7 @@ catatan: Likuefaksi tidak dipisahkan dari gempa bumi di kolom jembatan DIBI; kek
 | Kekeringan | – | konteks pemanfaatan akuifer | konteks akuifer |
 :::
 
-**Tiga lapis waktu kajian ini dipetakan ke status hukum yang sudah ada dan tidak menciptakan status baru.** Lapis darurat berada pada status tanggap darurat dan transisi darurat ke pemulihan menurut Perban BNPB 4/2020 [@bnpb-2020-dsp]. Standar air lapis ini {{angka:perka_2008.air_bersih_3hari_liter}} liter per orang per hari pada tiga hari pertama, lalu {{angka:perka_2008.air_bersih_liter_hari}} liter, dengan jarak terjauh ke titik air {{angka:perka_2008.jarak_sumber_air_m|satuan}} [@bnpb-2008-kebutuhan-dasar]. Untuk akses, Perka BNPB 12/2010 mengharapkan jalan dan jembatan berfungsi kembali secara minimal, dengan jembatan penghubung berupa rangka baja [@bnpb-2010-perka12-perbaikan-darurat, hlm. 3, 9]. Perka itu belum memuat standar hari maupun titik serah ke jembatan permanen (@rek:r-rr-05). Lapis sementara berlangsung dari transisi sampai R3P berjalan, dan lapis permanen berada pada masa R3P. Status transisi masih dapat dibiayai Dana Siap Pakai (DSP), sehingga garis antara lapis sementara dan permanen adalah garis sumber dana, dan titik serahnya perlu ditulis dalam R3P. Lapis darurat diukur dalam liter per orang per hari dan hari sampai akses darurat terbuka. Lapis sementara dan permanen diukur dalam jiwa atau sambungan terlayani dan desa yang tersambung kembali.
+**Tiga lapis waktu kajian ini dipetakan ke status hukum yang sudah ada dan tidak menciptakan status baru.** Lapis darurat berada pada status tanggap darurat dan transisi darurat ke pemulihan menurut Perban BNPB 4/2020 [@bnpb-2020-dsp]. Standar air lapis ini {{angka:perka_2008.air_bersih_3hari_liter}} liter per orang per hari pada tiga hari pertama, lalu {{angka:perka_2008.air_bersih_liter_hari}} liter, dengan jarak terjauh ke titik air {{angka:perka_2008.jarak_sumber_air_m|satuan}} [@bnpb-2008-kebutuhan-dasar]. Untuk akses, Perka BNPB 12/2010 mengharapkan jalan dan jembatan berfungsi kembali secara minimal, dengan jembatan penghubung berupa rangka baja [@bnpb-2010-perka12-perbaikan-darurat, hlm. 3, 9]. Perka itu belum memuat standar hari maupun titik serah ke jembatan permanen (@rek:r-rr-05). Lapis sementara berlangsung dari transisi sampai R3P berjalan, dan lapis permanen berada pada masa R3P. Status transisi masih dapat dibiayai Dana Siap Pakai (DSP), sehingga garis antara lapis sementara dan permanen adalah garis sumber dana, dan titik serahnya perlu ditulis dalam R3P. Lapis darurat diukur dalam liter per orang per hari dan hari sampai akses darurat terbuka. Lapis sementara dan permanen diukur dalam jiwa atau sambungan terlayani dan desa yang tersambung kembali. Catatan atas @tbl:rr-lingkup. Likuefaksi tidak dipisahkan dari gempa bumi di kolom jembatan DIBI; kekeringan tidak dicakup untuk akses. Perumahan dibahas untuk semua jenis sebagai beban dan pengikat lokasi.
 
 ::: catatan
 **Rehabilitasi:** perbaikan dan pemulihan semua aspek pelayanan publik atau masyarakat sampai tingkat yang memadai pada wilayah pascabencana, dengan sasaran utama normalisasi atau berjalannya secara wajar semua aspek pemerintahan dan kehidupan masyarakat (UU 24/2007 Pasal 1 angka 11) [@ri-2007-uu24]. Perban BNPB 6/2017 Pasal 1 angka 3 menambahkan penghidupan masyarakat [@bnpb-2017-rr]; kajian ini memakai rumusan undang-undang.
