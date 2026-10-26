@@ -1895,7 +1895,7 @@ RE_D22_KECUALI = re.compile(
     r'|\b(?:Butuh|Membuka)\s+\d{2}(?:,\s*\d{2})*'  # relasi antar rekomendasi (PEDOMAN B5.13)
     r'|\b0\d\b'  # kode rekomendasi berangka nol di depan ("01", "(02)"); cacah tidak pernah ditulis begitu
     r'|\b\d+/\d{4}\b|\b[A-E]\.\d+\b'
-    r'|\b[A-Z]{1,3}-\d{1,4}[A-Z]{0,2}\b|\bBell \d{3}\b|\bPM2[.,]5\b'  # nama tipe pesawat dan polutan, bukan besaran (26 Okt)
+    r'|\b[A-Z][A-Za-z]{0,2}-\d{1,4}[A-Z]{0,2}\b|\bBell \d{3}\b|\bPM2[.,]5\b'  # nama tipe pesawat dan polutan, bukan besaran (26 Okt)
     # label dan nomor rujukan, bukan angka data: hari ke-n peta jalan, kode temuan deck (A1.), kode rekomendasi (R-A21),
     # kode baris paket (C05, P16, B095), daftar halaman (hlm. 70, 133), nomor Kepmen ESDM, tabel bernomor romawi sumber
     r'|\bhari ke-\d+\b|\b[A-E]\d\.(?=\s)|\bR-[A-Z]\d{2}\b|\b[A-Z]{1,2}\d{2,3}\b'

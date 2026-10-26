@@ -162,9 +162,11 @@
   let terikat = false;   /* peta baru ada setelah init; ikat saat pertama dipakai */
 
   /* ---------- kartu info ---------- */
-  function kartu() { let k = document.getElementById("cariKartu"); if (!k) { k = document.createElement("div"); k.id = "cariKartu"; k.className = "box"; k.hidden = true;
+  function kartu() { let k = document.getElementById("cariKartu"); if (!k) { k = document.createElement("div"); k.id = "cariKartu"; k.className = "card laci on"; k.hidden = true;   /* bentuk laci cluster di kanan (pemilik, 26 Okt 2026) */
     k.onclick = e => { const kb = e.target.closest("[data-kom]"); if (kb) return Laci.buka(kb.dataset.kom);
       if (e.target.closest("[data-hapus]")) hapusGaris(); else if (e.target.closest("[data-timelapse]") && terpilih) { const T = terpilih, b = TITIK.has(T.i.t) ? [tujuan(T.i.c[1], T.i.c[0], 25, 270)[0], tujuan(T.i.c[1], T.i.c[0], 25, 180)[1], tujuan(T.i.c[1], T.i.c[0], 25, 90)[0], tujuan(T.i.c[1], T.i.c[0], 25, 0)[1]] : (T.bb || T.i.b); b ? window.Timelapse?.buka({bbox: b, nama: T.i.n}) : window.Timelapse?.buka(); } }; $("#p-peta").appendChild(k); } return k; }
+  const lipat = (judul, isi) => `<details class="lipat" open><summary>${judul}</summary><div class="isi">${isi}</div></details>`;
+  const tb2 = baris => `<table class="tb2"><tbody>${baris.map(([k, v]) => `<tr><td>${k}</td><td class="n">${v}</td></tr>`).join("")}</tbody></table>`;
   const tab = (judul, kolom, baris) => `<table class="ck-t"><thead><tr><th>${judul}</th>${kolom.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>${baris.map(r => `<tr>${r.map((c, k) => k ? `<td>${c}</td>` : `<th>${c}</th>`).join("")}</tr>`).join("")}</tbody></table>`;
   function statistik() {
     const T = terpilih; if (!T || (!TITIK.has(T.i.t) && T.poli === undefined)) return; const k = kartu(); let bd = "";
@@ -173,14 +175,14 @@
       const dl = .5, dlo = .5 / Math.max(.2, Math.cos(la * rad));
       for (const b of S.titik) { if (Math.abs(b[0] - la) > dl || Math.abs(b[1] - lo) > dlo || !S.dihitung(b) || !masuk(b)) continue; const d = jarak(la, lo, b[0], b[1]); BUF.forEach((km, j) => d <= km && t[j]++); }
       for (const f of S.kluster.features) { const p = f.properties; if (Math.abs(p.lat - la) > dl || Math.abs(p.lon - lo) > dlo) continue; const d = jarak(la, lo, p.lat, p.lon); BUF.forEach((km, j) => d <= km && kp[j]++); }
-      bd = tab("Radius", [`Titik panas ${ren}`, "Cluster aktif (72 jam, tak ikut hari terpilih)"], BUF.map((km, j) => [km + " km", fmt(t[j]) + " titik", fmt(kp[j]) + " cluster"])); }
+      bd = lipat("Di sekitar", tab("Radius", [`Titik panas ${ren}`, "Cluster aktif (72 jam, tak ikut hari terpilih)"], BUF.map((km, j) => [km + " km", fmt(t[j]) + " titik", fmt(kp[j]) + " cluster"]))); }
     else if (T.poli) { const P = polys(T.poli.geometry), b = T.bb, di = (x, y) => x >= b[0] && x <= b[2] && y >= b[1] && y <= b[3] && dalamPoli(x, y, P);
       /* mesin yang sama dengan Luas terbakar / Belum padam panel peta (peta_karhutla.py), dihitung di dalam batas ini */
       const a = AngkaKawasan.hitung(S.titik, b, (x, y) => dalamPoli(x, y, P), S.dihitung, S.hariPilih);
       const KL = S.kluster.features.map(f => f.properties).filter(p => di(p.lon, p.lat)), kp = KL.length;
       const tl = `<span title="(Titik NOAA-20 × 4,22 ha + titik NOAA-21 × 4,36 ha) ÷ 2, per hari kalender WIB. Bukan angka regu darat">`;
-      bd = tab("Di dalam batas", [ren[0].toUpperCase() + ren.slice(1)], [[`Titik panas`, fmt(a.hot) + " titik"], [`${tl}Luas terbakar</span>`, fmt(a.luas) + " ha"],
-        [`<span title="Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya">Belum padam</span>`, S.titikPenuh ? fmt(a.belum) + " ha" : "memuat…"], ["Cluster aktif (72 jam)", fmt(kp) + " cluster"]])
+      bd = lipat(`Di dalam batas, ${ren}`, tb2([[`Titik panas`, fmt(a.hot) + " titik"], [`${tl}Luas terbakar</span>`, fmt(a.luas) + " ha"],
+        [`<span title="Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya">Belum padam</span>`, S.titikPenuh ? fmt(a.belum) + " ha" : "memuat…"], ["Cluster aktif (72 jam)", fmt(kp) + " cluster"]]))
         + apiKawasan(KL, di)
         + (catatan && !KAW.has(T.i.t) ? `<p class="ck-n">${esc(catatan.split(". Batas")[0].replace("; ini bukan", "; bukan"))}.</p>` : ""); }
     else bd = `<p class="ck-n">Poligon konsesi tidak ditemukan di data.</p>`;
@@ -188,28 +190,30 @@
   /* isi setara laci cluster ("Api saat ini") untuk satu poligon: jumlah dari cluster di dalam batas, tren titik 7 hari, daftar cluster yang membuka lacinya
      (citra satelit ada di laci). Tren = lokasi unik yang dihitung (S.dihitung) per hari WIB, butuh hotspot.json 7 hari (S.titikPenuh) */
   function apiKawasan(KL, di) {
-    const lj = (judul, isi) => `<div class="ck-sj">${judul}</div>${isi}`;
     let h = "";
     if (KL.length) { const j = k => KL.reduce((s, p) => s + (p[k] || 0), 0), ini = j("ini"), kmrn = j("kmrn"), luas = j("luas");
       const awal = KL.reduce((m, p) => p.awal < m ? p.awal : m, KL[0].awal), akhir = KL.reduce((m, p) => p.akhir > m ? p.akhir : m, KL[0].akhir);
       const vs = kmrn ? (ini >= kmrn ? "+" : "") + Math.round((ini / kmrn - 1) * 100) + "%" : ini ? "baru" : "–", lalu = Math.round((Date.now() - new Date(akhir)) / 36e5 * 10) / 10;
-      h += lj("Api saat ini", `<div class="kv"><div><b>${fmt(j("px24"))}</b><span>piksel aktif 24 jam</span></div><div><b>${fmt(Math.max(...KL.map(p => p.hari || 0)))}</b><span>hari menyala (terlama)</span></div><div><b>${vs}</b><span>deteksi vs kemarin</span></div></div>`
-        + tab("Jumlah cluster di dalam batas", [""], [["Luas indikatif", `${fmt(Math.round(luas * .3))}–${fmt(Math.round(luas))} ha`], ["Deteksi VIIRS (7 hari)", fmt(j("n"))], ["Daya radiasi api (FRP)", fmt(Math.round(j("frp"))) + " MW"],
-          ["Pertama terdeteksi", jamWIB(awal)], ["Terakhir terdeteksi", `${jamWIB(akhir)}, ${fmt(lalu)} jam lalu`]]).replace("<th></th>", "")); }
+      h += lipat("Api saat ini", `<div class="kv"><div><b>${fmt(j("px24"))}</b><span>piksel aktif 24 jam</span></div><div><b>${fmt(Math.max(...KL.map(p => p.hari || 0)))}</b><span>hari menyala (terlama)</span></div><div><b>${vs}</b><span>deteksi vs kemarin</span></div></div>`
+        + tb2([["Luas indikatif", `${fmt(Math.round(luas * .3))}–${fmt(Math.round(luas))} ha`], ["Deteksi VIIRS (7 hari)", fmt(j("n"))], ["Daya radiasi api (FRP)", fmt(Math.round(j("frp"))) + " MW"],
+          ["Pertama terdeteksi", jamWIB(awal)], ["Terakhir terdeteksi", `${jamWIB(akhir)}, ${fmt(lalu)} jam lalu`]]) + `<p class="ck-n">Jumlah dari ${fmt(KL.length)} cluster di dalam batas.</p>`); }
     if (S.titikPenuh) { const hr = [...hariLain().reverse(), hariSebelum(S.meta.hari_wib), S.meta.hari_wib], n = new Map(hr.map(t => [t.slice(5), 0]));
       for (const r of S.titik) if (n.has(r[7]) && di(r[1], r[0]) && S.dihitung(r)) n.set(r[7], n.get(r[7]) + 1);
       const v = hr.map(t => n.get(t.slice(5))), m = Math.max(...v, 1), bw = 100 / v.length;
-      h += lj(`Titik panas ${v.length} hari`, `<svg viewBox="0 0 100 34" width="100%" role="img" aria-label="Titik panas per hari di dalam batas">${v.map((x, k) => { const hh = Math.max(.6, x / m * 18);
+      h += lipat(`Titik panas ${v.length} hari`, `<svg viewBox="0 0 100 34" width="100%" role="img" aria-label="Titik panas per hari di dalam batas">${v.map((x, k) => { const hh = Math.max(.6, x / m * 18);
         return `<rect x="${k * bw + bw * .15}" y="${24 - hh}" width="${bw * .7}" height="${hh}" rx=".8" fill="${k === v.length - 1 ? "#c9503a" : "#e58a45"}"/><text x="${k * bw + bw / 2}" y="${22 - hh}" text-anchor="middle" font-size="3.2" font-weight="700" fill="var(--ink2)">${fmt(x)}</text><text x="${k * bw + bw / 2}" y="31" text-anchor="middle" font-size="3" fill="var(--ink2)">${+hr[k].slice(8)}</text>`; }).join("")}</svg>`
         + `<p class="ck-n">Hari ini belum sehari penuh.</p>`); }
     if (KL.length) { const urut = [...KL].sort((x, y) => y.level - x.level || (y.px24 || 0) - (x.px24 || 0)), tampil = urut.slice(0, 8);
-      h += lj(`Cluster di dalam batas`, `<div class="ck-kl">${tampil.map(p => `<button type="button" data-kom="${esc(p.id)}"><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span><b>${esc(p.kec || p.id)}</b><small>${esc(p.id)}, ${fmt(p.px24 || 0)} piksel 24 jam</small></button>`).join("")}</div>`
+      h += lipat(`Cluster di dalam batas`, `<div class="ck-kl">${tampil.map(p => `<button type="button" data-kom="${esc(p.id)}"><b>${esc(p.kec || p.id)}</b><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span><small>${esc(p.id)}, ${fmt(p.px24 || 0)} piksel 24 jam</small></button>`).join("")}</div>`
         + `<p class="ck-n">${urut.length > 8 ? `8 teratas dari ${fmt(urut.length)} cluster. ` : ""}Klik cluster untuk rincian lengkap dan citra satelit terbaru.</p>`); }
     return h; }
+  /* kepala dan tombol ikon sama dengan laci cluster: jenis sebagai eyebrow, nama, baris profil sebagai label; isi per bagian lipat */
   function bukaKartu(judul, baris, atr) {
-    const k = kartu(); k.hidden = false;
-    k.innerHTML = `<div class="ck-h"><b>${esc(judul)}</b><button type="button" data-hapus aria-label="Hapus buffer dan tutup" title="${TITIK.has(terpilih.i.t) ? "Hapus buffer" : "Tutup"}"><span class="ck-tx">${TITIK.has(terpilih.i.t) ? "Hapus buffer" : "Tutup"}</span><span class="ck-x" aria-hidden="true">&times;</span></button></div>`
-      + `<dl class="ck-d">${baris.filter(r => r[1]).map(([a, b]) => `<dt>${a}</dt><dd>${esc(String(b))}</dd>`).join("")}</dl><div class="ck-b"></div><button type="button" class="ck-tl" data-timelapse>Timelapse citra harian</button><div class="hs-atr">${atr}</div>`; }
+    const k = kartu(); k.hidden = false; const jenis = baris.find(r => r[0] === "Jenis")?.[1] || "", lain = baris.filter(r => r[1] && r[0] !== "Jenis"), buf = TITIK.has(terpilih.i.t) ? "Hapus buffer dan tutup" : "Tutup";
+    k.innerHTML = `<div class="hd"><div class="hd-isi">${jenis ? `<span class="hd-ey">${esc(jenis)}</span>` : ""}<h2 title="${esc(judul)}">${esc(judul)}</h2>${lain.length ? `<div class="hd-meta">${lain.map(([a, b]) => `<span class="hd-ko" title="${esc(a)}">${esc(String(b))}</span>`).join("")}</div>` : ""}</div>
+      <div class="hd-aksi"><button class="ik-btn" type="button" data-timelapse title="Timelapse citra harian" aria-label="Timelapse citra harian"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M10 8.5v7l6-3.5z"/></svg></button>
+        <button class="tutup ik-btn" type="button" data-hapus title="${buf}" aria-label="${buf}"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
+      <div class="bd" style="display:grid;gap:10px"><div class="ck-b" style="display:grid;gap:10px"></div><p class="fnd">${atr}</p></div>`; }
 
   async function pilih(i) {
     $("#hasil").hidden = true; $("#cari").value = ""; terpilih = {i};

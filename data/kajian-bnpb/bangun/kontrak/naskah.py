@@ -288,7 +288,7 @@ class Konteks:
         for ks in grup.values():
             if len(ks) > 1:
                 for i, k in enumerate(sorted(ks, key=lambda k: self.pustaka[k]['title'])):
-                    akh[k] = 'abcdefghijklmnopqrstuvwxyz'[i]
+                    akh[k] = ('abcdefghijklmnopqrstuvwxyz'[i // 26 - 1] if i >= 26 else '') + 'abcdefghijklmnopqrstuvwxyz'[i % 26]  # lewat z: aa, ab, ...
         return akh
 
     @staticmethod

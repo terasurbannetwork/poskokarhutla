@@ -49,7 +49,7 @@ RE_SISA = re.compile(r'\{\{|\}\}')
 # angka yang boleh tertulis di spek tanpa token (D-22): tahun, rentang tahun, kode temuan/lampiran, urutan "ke-7", horizon
 RE_BOLEH = re.compile(r'\b(?:19|20)\d{2}(?:/\d{4})?\b|\b[A-I]\.?\d{1,2}\b|\bke-\d+\b|\b100 hari\b'
                      # nama tipe, bukan besaran: kode pesawat C-17A, KC-30A, L-100, kode tindak lanjut T-1, Bell 412, PM2.5 (26 Okt)
-                     r'|\b[A-Z]{1,3}-\d{1,4}[A-Z]{0,2}\b|\bBell \d{3}\b|\bPM2[.,]5\b'
+                     r'|\b[A-Z][A-Za-z]{0,2}-\d{1,4}[A-Z]{0,2}\b|\bBell \d{3}\b|\bPM2[.,]5\b'
                      # tanggal kalender "7 Sep 2026", "23 Oktober": label waktu, bukan besaran
                      r'|\b\d{1,2}(?:[–-]\d{1,2})? (?:Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Agt|Sep|Okt|Nov|Des)[a-z]*\b')
 DILARANG = {'\u2014': 'em dash', '\u00b7': 'titik tengah', '\u2026': 'elipsis', '\u25b2': 'segitiga', '\u25bc': 'segitiga',
@@ -1380,7 +1380,10 @@ class Deck:
             tambah.append(tb['sumber'])
         if samping:
             sx = self.X0 + uw + (0 if jenis == 'temuan-peta' else jarak)
-            tambah += self.panel_isi(kv, sx, y, self.X1 - sx, bawah - y, samping, asal)
+            daftar_p = samping if isinstance(samping, list) else [samping]  # beberapa panel berdampingan, satu topik satu kontainer
+            pw = (self.X1 - sx - jarak * (len(daftar_p) - 1)) / len(daftar_p)
+            for n, p_ in enumerate(daftar_p):
+                tambah += self.panel_isi(kv, sx + n * (pw + jarak), y, pw, bawah - y, p_, asal)
         self.catatan_sumber(kv, j, tambah)
 
     def panel_isi(self, kv, x, y, w, h, p, asal):
