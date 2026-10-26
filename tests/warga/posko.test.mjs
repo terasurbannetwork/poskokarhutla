@@ -638,7 +638,8 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   /* /presiden: panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026) */
   /* /daftar-kontak: registrasi kontak pemangku kepentingan yang tak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu */
   /* /pendataan: staf direktorat BNPB membuat akun pendataan sendiri (keputusan pemilik 26 Okt 2026); akun menunggu persetujuan Super Admin */
-  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/daftar-kontak", "/presiden", "/instansi", "/pendataan"], "daftar putih persis lima halaman, masing-masing bersama alasan");
+  /* /uji-pilot: regu uji pilot SIPPA membuka dossier dan melapor lewat tautan bertoken (keputusan SIPPA 59); token dicek di tiap API */
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/daftar-kontak", "/uji-pilot", "/presiden", "/instansi", "/pendataan"], "daftar putih persis enam halaman, masing-masing bersama alasan");
   assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
   const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
   assert.equal((await buka("/lapangan")).status, 200);
