@@ -51,3 +51,4 @@ Di luar wilayahmu: `src/sippa.js`, `migrations/0055-0057` (warga-api); `scripts/
 
 - 2026-10-25 · Agent dibuat lewat SP-003 sebelum berkas pertama; ilmu awal dari PRD §9.12, DT §2.1-§2.2, RU §7.
 - 2026-10-26 · formulir.js tidak boleh impor fmt (skrip klasik berDOM); pesan galat pakai toLocaleString id-ID. hitung.js belum ada saat SP-007, jadi kesamaan batas 5 m dengan KONST dijaga uji bersyarat (skip sampai SP-010). Trigger sippa_log_urut TIDAK membandingkan t_mulai_injeksi dengan t_selesai/t_bongkar_selesai; URUTAN_WAKTU meniru persis.
+- 2026-10-26 · Global const dari skrip klasik public/inti (fmt, jamWIB, Kartu, PilihCantik) BUKAN properti globalThis: modul ES harus memakai typeof fmt === function atau nama telanjang, bukan globalThis.fmt (SP-010: PilihCantik sempat tidak terpasang diam-diam). Cek di browser, bukan hanya node --test.
