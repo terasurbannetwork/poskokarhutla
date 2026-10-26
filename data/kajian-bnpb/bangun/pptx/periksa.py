@@ -197,6 +197,46 @@ def font_pdf(pdf):
 RUANG_MATI_MAKS = 25  # persen; kalibrasi pustaka ppt-konsultan: deck mutu 5 bermedian 7%, deck rujukan pemilik sampai 43%
 
 
+PANEL_MATI_MAKS = 10  # persen ruang mati di badan satu panel (D-40); pemilik 26 Okt: panel separuh kosong "jelek banget"
+GRAFIK_MATI_MAKS = 45  # panel grafik batang: ruang di atas batang pendek bagian dari encoding; lebih dari ini tambah baris pendamping
+
+
+def _grid_mati(im, x0, x1, y0, y1, latar, radius=2):
+    from PIL import ImageStat
+    W, H = im.size
+    bw, bh = max(4, W // 100), max(4, H // 100)
+    grid = []
+    for y in range(y0, y1 - bh, bh):
+        grid.append([(lambda st: max(st.stddev) < 4 and sum(abs(a - b) for a, b in zip(st.mean, latar)) < 18)(ImageStat.Stat(im.crop((x, y, x + bw, y + bh))))
+                     for x in range(x0, x1 - bw, bw)])
+    R, C = len(grid), len(grid[0]) if grid else 0
+    mati = sum(all(grid[rr][cc] for rr in range(max(0, r - radius), min(R, r + radius + 1)) for cc in range(max(0, c - radius), min(C, c + radius + 1)))
+               for r in range(R) for c in range(C))
+    return 100 * mati / max(1, R * C)
+
+
+def render_halaman(page):
+    import tempfile
+    from PIL import Image
+    with tempfile.TemporaryDirectory() as tmp:
+        n = page.number + 1
+        subprocess.run(['pdftoppm', '-png', '-f', str(n), '-l', str(n), '-singlefile', '-scale-to', '1600', page.parent.name, f'{tmp}/h'], check=True)
+        return Image.open(f'{tmp}/h.png').convert('RGB')
+
+
+def panel_mati(page, panel, im=None):
+    """[(judul, persen, batas)] ruang mati di badan tiap panel; koordinat panel dalam pt dari manifest."""
+    im = im or render_halaman(page)
+    k = im.size[0] / page.rect.width
+    hasil = []
+    for x, y, w, h, judul, *jenis in panel:
+        if h < 40 or w < 60:
+            continue
+        x0, y0, x1, y1 = int((x + 4) * k), int((y + 2) * k), int((x + w - 4) * k), int((y + h - 4) * k)
+        hasil.append((judul, _grid_mati(im, x0, x1, y0, y1, (255, 255, 255)), GRAFIK_MATI_MAKS if jenis == ['grafik'] else PANEL_MATI_MAKS))
+    return hasil
+
+
 def ruang_mati(page, radius=2):
     """Persen ruang mati di zona isi (x 4-96%, y 15-92%) dari render, sama persis dengan rupa.py skill ppt-konsultan:
     blok 1% x 1% yang hampir seragam (simpangan < 4) dan sewarna latar (selisih < 18), dan sekelilingnya (radius 2 blok)
@@ -233,7 +273,7 @@ def periksa_pdf(pdf, t, hal):
     font = font_pdf(pdf)
     asing = [f for f in font if t['font']['keluarga'] not in f.split('+')[-1]]
     assert font and not asing, f'D-4 pdffonts: font {asing} di PDF; hanya Roboto (font tersubstitusi saat render)'
-    judul, mati = [], []
+    judul, mati, kosong = [], [], []  # kosong: semua temuan D-39/D-40 dilaporkan sekaligus, tidak berhenti di yang pertama
     for n, (page, h) in enumerate(zip(doc, hal), start=1):
         lok = f'PDF hlm {n} ({h["jenis"]}, {h["asal"]})'
         teks = page.get_text()
@@ -245,9 +285,15 @@ def periksa_pdf(pdf, t, hal):
             assert 1 <= nb <= maks, f'D-17 {lok}: judul {nb} baris di render PDF, batas {maks}'
             judul.append(nb)
         if h['jenis'] not in ('sampul', 'penutup', 'pembatas-lampiran'):  # hanya slide isi yang diukur
+            im = render_halaman(page)
+            for judul_p, pm, batas in panel_mati(page, h.get('panel', []), im):
+                if pm > batas:
+                    kosong.append(f'D-40 {lok}: panel "{judul_p}" {pm:.0f}% kosong (batas {batas}%); tambah baris, kolom, atau angka di panel itu, atau perkecil panel dan isi sisa slide dengan data')
             rm = ruang_mati(page)
-            assert rm <= RUANG_MATI_MAKS, f'D-39 {lok}: ruang mati {rm:.0f}% (batas {RUANG_MATI_MAKS}%); tambah data atau pita bawah, jangan regangkan panel'
+            if rm > RUANG_MATI_MAKS:
+                kosong.append(f'D-39 {lok}: ruang mati {rm:.0f}% (batas {RUANG_MATI_MAKS}%); tambah data atau pita bawah, jangan regangkan panel')
             mati.append(round(rm))
+    assert not kosong, f'{len(kosong)} ruang kosong:\n' + '\n'.join(kosong)
     return {'pdf_halaman': len(doc), 'pdf_font': sorted({f.split('+')[-1] for f in font}), 'judul_baris_pdf': judul, 'ruang_mati_pct': mati}
 
 
@@ -341,7 +387,8 @@ def laporan(pptx, t, pdf, ke=None):
         urut.append((h.get('jenis_slide'), h.get('seri')))
     tambah('Tata letak', 'Dua slide isi berurutan tidak berjenis sama, kecuali seri dan lampiran (S35)', bool(kembar),
            ', '.join(kembar) or ' > '.join(j for j, _ in urut))
-    bersih = lambda s: re.sub(r'\s+', ' ', re.sub(r'\{\{[^}]*\}\}|\d+([.,]\d+)*', '', s)).strip().lower()
+    # nama tempat dan frasa sorot tetap dihitung: judul seri wilayah berpola sama hanya beda tempatnya (format paparan wilayah)
+    bersih = lambda s: re.sub(r'\s+', ' ', re.sub(r'\{\{[^}]*\}\}|\d+([.,]\d+)*', '', re.sub(r'\{\{(?:tempat|sorot):([^}]*)\}\}', r'\1', s))).strip().lower()
     judul = [bersih(h.get('judul_spek') or '') for h in isi if h.get('jenis_slide') != 'lampiran']  # lampiran lanjutan berjudul sama
     dua = sorted({j for j in judul if j and judul.count(j) > 1})
     tambah('Tata letak', 'Judul slide isi tidak kembar setelah angka dibuang (S6)', bool(dua), '; '.join(dua))
@@ -455,6 +502,12 @@ def _uji_diri():
         assert 'D-39' in str(e), f'fixture ruang mati ditolak dengan pesan lain: {e}'
     else:
         raise AssertionError('fixture ruang mati lolos, gerbang D-39 rusak')
+    # fixture D-40: badan panel separuh terisi harus terbaca sekitar separuh kosong, panel penuh nol
+    from PIL import Image, ImageDraw
+    im = Image.new('RGB', (1600, 900), 'white')
+    ImageDraw.Draw(im).rectangle((100, 100, 500, 300), fill=(5, 28, 44))
+    separuh, penuh = _grid_mati(im, 100, 900, 100, 300, (255, 255, 255)), _grid_mati(im, 100, 500, 100, 300, (255, 255, 255))
+    assert 35 < separuh < 60 and penuh == 0, f'D-40 rusak: separuh {separuh:.0f}%, penuh {penuh:.0f}%'
     # fixture XML dan manifest: periksa() harus menolak PPTX yang dirusak sesudah dibangun
     asli = keluar / 'spek-mitigasi.pptx'
     man0 = manifest(asli)

@@ -47,7 +47,11 @@ EMU = 12700
 RE_TOK = re.compile(r'\{\{(angka|tempat|sorot):([^{}]*)\}\}|\*\*(.+?)\*\*')
 RE_SISA = re.compile(r'\{\{|\}\}')
 # angka yang boleh tertulis di spek tanpa token (D-22): tahun, rentang tahun, kode temuan/lampiran, urutan "ke-7", horizon
-RE_BOLEH = re.compile(r'\b(?:19|20)\d{2}(?:/\d{4})?\b|\b[A-I]\.?\d{1,2}\b|\bke-\d+\b|\b100 hari\b')
+RE_BOLEH = re.compile(r'\b(?:19|20)\d{2}(?:/\d{4})?\b|\b[A-I]\.?\d{1,2}\b|\bke-\d+\b|\b100 hari\b'
+                     # nama tipe, bukan besaran: kode pesawat C-17A, KC-30A, L-100, kode tindak lanjut T-1, Bell 412, PM2.5 (26 Okt)
+                     r'|\b[A-Z]{1,3}-\d{1,4}[A-Z]{0,2}\b|\bBell \d{3}\b|\bPM2[.,]5\b'
+                     # tanggal kalender "7 Sep 2026", "23 Oktober": label waktu, bukan besaran
+                     r'|\b\d{1,2}(?:[–-]\d{1,2})? (?:Jan|Feb|Mar|Apr|Mei|Jun|Jul|Agu|Agt|Sep|Okt|Nov|Des)[a-z]*\b')
 DILARANG = {'\u2014': 'em dash', '\u00b7': 'titik tengah', '\u2026': 'elipsis', '\u25b2': 'segitiga', '\u25bc': 'segitiga',
             '\u2192': 'panah', '\u2713': 'centang'}
 RE_EMOJI = re.compile('[\U0001F300-\U0001FAFF\u2600-\u27bf]')
@@ -179,6 +183,20 @@ class Kanvas:
         return s
 
     def isi_teks(self, tf, paras, rata='l', jangkar='t', bungkus=True, spasi=None, kiri=0, kanan=0):
+        lebar_bentuk = getattr(tf._parent, 'width', None)
+        if not bungkus and lebar_bentuk:  # teks tanpa bungkus tidak boleh lebih lebar dari bentuknya (pil R-M03 terpotong, 26 Okt)
+            ruang = lebar_bentuk / 12700 - kiri - kanan
+            for runs in paras:
+                baris = [[]]
+                for r in runs:
+                    if r[0] == '\n':
+                        baris.append([])
+                    else:
+                        baris[-1].append(r)
+                for b in baris:
+                    lb = self.d.u.lebar(b)
+                    if lb > ruang + 0.5:
+                        raise DeckGalat(f'teks "{"".join(r[0] for r in b)[:40]}" {lb:.1f} pt lebih lebar dari bentuknya {ruang:.1f} pt; lebarkan bentuk dari ukuran teks (dari {" < ".join(f.function for f in __import__("inspect").stack()[1:4])})')
         tf.word_wrap = bungkus
         tf.auto_size = MSO_AUTO_SIZE.NONE
         bp = tf._txBody.find(qn('a:bodyPr'))
@@ -566,6 +584,8 @@ class Deck:
         if kyk not in self.t['kosakata']['keyakinan']:
             raise DeckGalat(f'keyakinan "{kyk}" bukan salah satu dari lima label (D-14)')
         v = self.t['kosakata']['keyakinan'][kyk]
+        if not self.S.get('pil_keyakinan', False):  # pemilik 26 Okt 2026: pil Resmi/Terverifikasi tidak ditampilkan; label tetap di manifest
+            return 0
         return self.pil_nada(kv, x_kanan, y, v['label'] + (', ' + tamb[0] if tamb else ''), self.T['chip'], h, v, kanan=True)
 
     def pil_bagian(self, kv, x, y, teks, ikon, nada):
@@ -624,6 +644,8 @@ class Deck:
         """Panel putih berpita kepala; kembalikan kotak isi (x, y, w, h)."""
         P = self.K['panel']
         N, pita = P['nada'][nada], P['pita_pt']
+        if self.hal is not None:  # D-40: badan panel (di bawah pita kepala) diukur ruang kosongnya dari render
+            self.hal.setdefault('panel', []).append([round(x, 1), round(y + pita, 1), round(w, 1), round(h - pita, 1), str(judul)[:60]])
         kv.bentuk('bulat', x, y, w, h, 'kertas', radius=P['radius_pt'])
         kv.bentuk('bulat', x, y, w, pita, N['warna_pita'], radius=P['radius_pt'])
         kv.bentuk('kotak', x, y + pita / 2, w, pita / 2, N['warna_pita'])
@@ -647,7 +669,9 @@ class Deck:
 
     def pita(self, kv, x, y, w, p, asal):
         PB = self.K['pita_bawah']
-        N, h = PB['nada'][p.get('nada', 'data')], PB['tinggi_baku_pt']
+        f = p.get('skala', 1)  # pita yang ditonjolkan (Purpose of the meeting): huruf, ikon, dan tinggi ikut diperbesar
+        N, h = PB['nada'][p.get('nada', 'data')], PB['tinggi_baku_pt'] * f
+        PB = {k: (v * f if isinstance(v, (int, float)) and k.endswith('_pt') and k not in ('radius_pt', 'pad_pt') else v) for k, v in PB.items()}
         kv.bentuk('bulat', x, y, w, h, N['warna_latar'], radius=PB['radius_pt'])
         kv.teks(x + PB['pad_pt'], y + PB['label_dy_pt'], w / 2, PB['label_tinggi_pt'],
                 [self.R(p['label'].upper(), self.T['label_bagian'], N['warna_label'])], bungkus=False)
@@ -661,12 +685,15 @@ class Deck:
                          N['warna_pemisah'] + '@garis')  # garis hias, bukan kelas skala
             kv.bulat_ikon(cx, y + PB['lingkaran_dy_pt'], d, N['warna_ikon'], c['ikon'], 'kertas', PB['ikon_pt'] / d)
             tx, tw = cx + PB['teks_dx_pt'], cw - PB['teks_dx_pt'] - PB['pad_pt']
-            jr = self.runs(c['judul'], self.T['judul_kolom_pita'], asal)
-            ir = self.runs(c['isi'], self.T['isi_pita'], asal)
+            gj, gi = self.T['judul_kolom_pita'], self.T['isi_pita']
+            if f != 1:
+                gj, gi = dict(gj, ukuran_pt=round(gj['ukuran_pt'] * f, 1)), dict(gi, ukuran_pt=round(gi['ukuran_pt'] * f, 1))
+            jr = self.runs(c['judul'], gj, asal)
+            ir = self.runs(c['isi'], gi, asal)
             self.muat(jr, tw, 1, asal, 'judul kolom pita')
             self.muat(ir, tw, 2, asal, 'isi kolom pita')
             kv.teks(tx, y + PB['judul_dy_pt'], tw, PB['judul_tinggi_pt'], jr, bungkus=False)
-            kv.teks(tx, y + PB['isi_dy_pt'], tw, h - PB['isi_dy_pt'] - 4, ir)
+            kv.teks(tx, y + PB['isi_dy_pt'], tw, h - PB['isi_dy_pt'] - 4, ir, rata='j')  # teks 2-3 baris rata kanan-kiri
         return h
 
     def daftar_temuan(self, kv, x, y, w, h, items, asal, kolom=2):
@@ -684,10 +711,14 @@ class Deck:
         y += (h - rh * nb) / 2
         cw = (w - (kolom - 1) * TM['jarak_kolom_pt']) / kolom
         d, g, gk = TM['lingkaran_pt'], self.T['temuan_isi'], self.T['temuan_kode']
-        kode_w = max(self.u.lebar([self.R(it['kode'], gk)]) for it in items) + TM['jarak_pt']
+        # kode "Temuan A.1" tetap di spek untuk lacak, tidak ditampilkan bila tema slide.kode_temuan false (pemilik 26 Okt 2026)
+        tampil_kode = self.S.get('kode_temuan', False)
+        kode_w = max(self.u.lebar([self.R(it['kode'], gk)]) for it in items) + TM['jarak_pt'] if tampil_kode else 0
         yakin = lambda kyk: self.t['kosakata']['keyakinan'][kyk.split(';')[0].strip()]['label'] + (
             ', ' + kyk.split(';')[1].strip() if ';' in kyk else '')
         pil_w = max(self.lebar_pil([self.R(yakin(it['keyakinan']), self.T['chip'])], C['tinggi_pt']) for it in items)
+        if not self.S.get('pil_keyakinan', False):
+            pil_w = 0
         for i, it in enumerate(items):
             cx, ry = x + (i // nb) * (cw + TM['jarak_kolom_pt']), y + (i % nb) * rh
             if i % nb:
@@ -705,8 +736,10 @@ class Deck:
             th = nbar * pt_dari(g) * TM['tinggi_baris']
             iy = ry + (rh - max(d, th)) / 2
             kv.bulat_ikon(cx, iy, d, TM['warna_lingkaran'], it['ikon'], 'kertas', TM['ikon_rasio'])
-            kv.teks(kx, iy, kode_w, d, [self.R(it['kode'], gk)], jangkar='m', bungkus=False)
-            kv.teks(tx, iy + max(0, (d - th) / 2), tw, th + 2, r)
+            if tampil_kode:
+                kv.teks(kx, iy, kode_w, d, [self.R(it['kode'], gk)], jangkar='m', bungkus=False)
+            hh_ = max(th + 2, d)  # teks temuan rata tengah vertikal terhadap ikon dan kodenya (pemilik 26 Okt 2026)
+            kv.teks(tx, iy + d / 2 - hh_ / 2, tw, hh_, r, jangkar='m')
             self.pil_keyakinan(kv, cx + cw, iy + (d - C['tinggi_pt']) / 2, C['tinggi_pt'], it['keyakinan'])
 
     def paras_daftar(self, butir, g, asal):
@@ -723,15 +756,23 @@ class Deck:
         tinggi = self.tinggi_daftar(paras, g, w)
         if tinggi > h:
             raise DeckGalat(f'{asal}: daftar setinggi {tinggi:.0f} pt tidak muat di {h:.0f} pt; kurangi butir')
-        tb = kv.teks(x, y, w, h, paras)
+        tb = kv.teks(x, y, w, h, paras, rata='j')  # butir 2-3 baris rata kanan-kiri; baris terakhir tetap kiri (pemilik 26 Okt 2026)
         gantung = E(self.u.lebar([paras[0][0]]))
         for i, p in enumerate(tb.text_frame.paragraphs):  # inden gantung: baris lanjutan sejajar teks, bukan butir
-            p._p.get_or_add_pPr().set('marL', str(gantung))
-            p._p.get_or_add_pPr().set('indent', str(-gantung))
             if i:
                 p.space_before = Pt(pt_dari(g) * 0.5)
+            ppr = p._p.get_or_add_pPr()
+            ppr.set('marL', str(gantung))
+            ppr.set('indent', str(-gantung))
+            # butir asli PowerPoint, bukan teks "•  ": spasi setelah butir tidak ikut melebar saat rata kanan-kiri
+            p._p.remove(p.runs[0]._r)
+            clr = ppr.makeelement(qn('a:buClr'), {})
+            clr.append(clr.makeelement(qn('a:srgbClr'), {'val': str(self.rgb('teks-3'))}))
+            ppr.append(clr)
+            ppr.append(ppr.makeelement(qn('a:buFont'), {'typeface': self.t['font']['keluarga']}))  # Roboto, bukan OpenSymbol (D-4)
+            ppr.append(ppr.makeelement(qn('a:buChar'), {'char': self.t['font']['butir_1']}))
 
-    def peringkat(self, kv, x, y, w, h, tb, asal, nomor=True, total=False):
+    def peringkat(self, kv, x, y, w, h, tb, asal, nomor=True, total=False, ikon_baris=None):
         """Tabel peringkat native (d5 s1): nomor dalam bulatan navy, kolom metrik berpil, baris sorot, baris total navy."""
         TP = self.K['tabel_peringkat']
         kol, rows = tb['kolom'], tb['baris']
@@ -745,28 +786,26 @@ class Deck:
         lm = []
         for j in range(n_label, len(kol)):
             c = kol[j]
-            isi = max(self.u.lebar([self.R(r[j]['teks'], self.T['nilai_tabel'])]) for r in rows) + (TP['segitiga_pt'] + 3 if 'arah' in str(c['fmt']) else 0)
-            if c.get('warna'):
-                kep = max(self.lebar_pil([self.R(c['kepala'].upper(), self.T['pil_bagian'])], TP['pil_tinggi_pt'], bool(c.get('ikon'))), TP['pil_lebar_min_pt'])
-            else:
-                kep = self.u.lebar([self.R(c.get('kepala', '').upper(), self.T['kepala_kolom'])])
+            isi = max(self.u.lebar([self.R(r[j]['teks'], self.T['nilai_tabel'])]) for r in rows) + (TP['segitiga_pt'] + 3 if 'arah' in str(c.get('fmt', '')) else 0)
+            # kepala kolom teks biasa, tanpa pil berlabel (pemilik 26 Okt 2026); warna kolom tetap untuk isi
+            kep = self.u.lebar([self.R(c.get('kepala', '').upper(), self.T['kepala_kolom'])])
             lm.append(max(isi, kep) + TP['kolom_jarak_pt'])
         x_label = x + (d + TP['kolom_jarak_pt'] if nomor else 0)
+        # label yang menyisakan ruang lebih dari 40% lebar membuat angka bertumpuk di kanan; sisanya dibagi ke kolom metrik
+        lebar_isi_label = max([self.u.lebar([self.R(r[j]['teks'], self.T['label_tabel_utama'])]) for r in rows for j in range(n_label)] + [0]) + 12
+        sisa_label = (x + w - sum(lm) - x_label) - max(lebar_isi_label * n_label, 0.4 * w)
+        if lm and sisa_label > 0:
+            lm = [v + sisa_label / len(lm) for v in lm]
         x_metrik = x + w - sum(lm)
         lebar_label = (x_metrik - x_label) / max(n_label, 1)
-        # kepala
+        # kepala: semua rata tengah di atas kolomnya (pemilik 26 Okt 2026)
         gk = self.T['kepala_kolom']
         for j in range(n_label):
-            kv.teks(x_label + j * lebar_label, y, lebar_label, hk, [self.R(kol[j].get('kepala', '').upper(), gk)], jangkar='m', bungkus=False)
+            kv.teks(x_label + j * lebar_label, y, lebar_label - 4, hk, [self.R(kol[j].get('kepala', '').upper(), gk)], rata='c', jangkar='m', bungkus=False)
         xm = x_metrik
         for j, lw in zip(range(n_label, len(kol)), lm):
             c = kol[j]
-            if c.get('warna'):
-                self.pil(kv, xm + lw - TP['kolom_jarak_pt'], y + (hk - TP['pil_tinggi_pt']) / 2,
-                         [self.R(c['kepala'].upper(), self.T['pil_bagian'], 'kertas')], TP['pil_tinggi_pt'], c['warna'],
-                         ikon=c.get('ikon'), warna_ikon='kertas', kanan=True)
-            else:
-                kv.teks(xm, y, lw - TP['kolom_jarak_pt'], hk, [self.R(c.get('kepala', '').upper(), gk)], rata='r', jangkar='m', bungkus=False)
+            kv.teks(xm, y, lw - TP['kolom_jarak_pt'], hk, [self.R(c.get('kepala', '').upper(), gk)], rata='c', jangkar='m', bungkus=False)
             xm += lw
         y0 = y + hk
         kv.garis(x, y0, x + w, y0, TP['warna_garis_kepala'], 0.75)
@@ -779,18 +818,29 @@ class Deck:
                 kv.garis(x, ry, x + w, ry, TP['warna_pemisah'], 0.5)
             if nomor:
                 dd = min(d, rh - 3)
-                s = kv.bentuk('elips', x, ry + (rh - dd) / 2, dd, dd, TP['warna_nomor'])
-                kv.isi_teks(s.text_frame, [[self.R(self.st(str(i + 1)), self.T['nomor_peringkat'])]], 'c', 'm', False)
+                if ikon_baris and ikon_baris.get(label_teks):  # ikon jenis per baris menggantikan nomor urut (pemilik 26 Okt 2026)
+                    kv.bulat_ikon(x, ry + (rh - dd) / 2, dd, TP['warna_nomor'], ikon_baris[label_teks], 'kertas', 0.62)
+                else:
+                    s = kv.bentuk('elips', x, ry + (rh - dd) / 2, dd, dd, TP['warna_nomor'])
+                    kv.isi_teks(s.text_frame, [[self.R(self.st(str(i + 1)), self.T['nomor_peringkat'])]], 'c', 'm', False)
             for j in range(n_label):
                 g = self.T['label_tabel_utama'] if j == 0 else self.T['isi_tabel']
+                pil_kol = (kol[j].get('pil') or {}).get(r[j]['teks'])
+                if pil_kol:  # label status berbentuk pil: {"nilai": ["isi", "garis", "warna teks"]} (pemilik 26 Okt 2026)
+                    isi_p, garis_p, teks_p = pil_kol
+                    rr = [self.R(r[j]['teks'], self.T['chip'], teks_p)]
+                    ph = min(self.K['chip']['tinggi_pt'] + 2, rh - 3)
+                    pw = self.lebar_pil(rr, ph)
+                    self.pil(kv, x_label + j * lebar_label + (lebar_label - 4 - pw) / 2, ry + (rh - ph) / 2, rr, ph, isi_p, garis_p, w=pw)
+                    continue
                 rr = [self.R(r[j]['teks'], g)]
                 self.muat(rr, lebar_label - 4, 1, asal, 'label peringkat')
-                kv.teks(x_label + j * lebar_label, ry, lebar_label - 4, rh, rr, jangkar='m', bungkus=False)
+                kv.teks(x_label + j * lebar_label, ry, lebar_label - 4, rh, rr, rata='c' if j else 'l', jangkar='m', bungkus=False)  # kolom teks lanjutan sejajar kepala tengah
             xm = x_metrik
             for j, lw in zip(range(n_label, len(kol)), lm):
                 c, sel = kol[j], r[j]
                 xr = xm + lw - TP['kolom_jarak_pt']
-                if 'arah' in str(c['fmt']) and sel['nilai'] is not None:
+                if 'arah' in str(c.get('fmt', '')) and sel['nilai'] is not None:
                     naik = sel['nilai'] > 0
                     wt = self.arah(sel['nilai'])
                     rr = [self.R(sel['teks'], self.T['nilai_tabel'], wt)]
@@ -800,7 +850,7 @@ class Deck:
                         s_ = TP['segitiga_pt']
                         kv.segitiga(xr - tw - 3 - s_, ry + (rh - s_ * 0.8) / 2, s_, naik, wt)
                 else:
-                    kv.teks(xm, ry, lw - TP['kolom_jarak_pt'], rh, [self.R(sel['teks'], self.T['nilai_tabel'])], rata='r', jangkar='m', bungkus=False)
+                    kv.teks(xm, ry, lw - TP['kolom_jarak_pt'], rh, [self.R(sel['teks'], self.T['nilai_tabel'])], rata='c', jangkar='m', bungkus=False)  # sejajar kepala rata tengah
                 xm += lw
         bawah = y0 + len(rows) * rh
         if total:
@@ -811,8 +861,10 @@ class Deck:
             for j, lw in zip(range(n_label, len(kol)), lm):
                 if 'arah' not in str(kol[j]['fmt']) and 'persen' not in str(kol[j]['fmt']):
                     jml = sum(r[j]['nilai'] or 0 for r in rows)
-                    self.turunan(f'jumlah:{kol[j]["nama"]}', fmt_id(jml), jml, asal, tb['keyakinan'], tb['sumber'])
-                    kv.teks(xm, ty, lw - TP['kolom_jarak_pt'], TP['total_pt'], [self.R(fmt_id(jml), self.T['total_tabel'])], rata='r', jangkar='m', bungkus=False)
+                    d_ = str(kol[j]['fmt']).split('|')[0]
+                    tj = fmt_id(jml, int(d_) if d_.isdigit() else None)  # jumlah berdesimal sama dengan kolomnya
+                    self.turunan(f'jumlah:{kol[j]["nama"]}', tj, jml, asal, tb['keyakinan'], tb['sumber'])
+                    kv.teks(xm, ty, lw - TP['kolom_jarak_pt'], TP['total_pt'], [self.R(tj, self.T['total_tabel'])], rata='c', jangkar='m', bungkus=False)
                 xm += lw
             bawah = ty + TP['total_pt']
         return bawah
@@ -836,7 +888,8 @@ class Deck:
         # kepala: nama metrik kiri, perubahan neto kanan (segitiga vektor + kata)
         jr = self.runs(g['judul'], self.T['judul_grafik'], asal)
         kv.teks(x, y, w * 0.6, GB['kepala_tinggi_pt'], jr, jangkar='m', bungkus=False)
-        if vals[0]:
+        # batang kategori (provinsi, jenis): tanpa perubahan neto dan persen antarbatang, karena urutannya bukan waktu
+        if vals[0] and g.get('ubah', True):
             ubah = (vals[-1] - vals[0]) / vals[0] * 100
             naik = ubah > 0
             wt = self.arah(ubah)
@@ -863,7 +916,7 @@ class Deck:
             kv.teks(x + i * slot, dasar - bh - GB['nilai_tinggi_pt'] - 1, slot, GB['nilai_tinggi_pt'],
                     [self.R(sel['teks'], self.T['nilai_batang'])], rata='c', jangkar='b', bungkus=False)
             kv.teks(x + i * slot, dasar + 2, slot, GB['label_tinggi_pt'], [self.R(lab, self.T['tanggal_batang'])], rata='c', jangkar='t', bungkus=False)
-            if i and vals[i - 1]:
+            if i and vals[i - 1] and g.get('persen_batang', True):
                 p = (vals[i] - vals[i - 1]) / vals[i - 1] * 100
                 naik = p > 0
                 wt = self.arah(round(p, 1))
@@ -1007,8 +1060,9 @@ class Deck:
             u -= langkah
         raise DeckGalat(f'{asal}: judul lebih dari {maks} baris pada {lo} pt; pendekkan judul (Buku Pegangan: paling banyak dua baris)')
 
-    def seimbang_runs(self, runs, w):
-        """Judul dua baris: pindahkan patah baris ke titik yang membuat kedua baris paling seimbang (tanpa yatim)."""
+    def seimbang_runs(self, runs, w, penuh=False):
+        """Judul dua baris: pindahkan patah baris ke titik yang membuat kedua baris paling seimbang (tanpa yatim).
+        penuh=True: baris pertama sepanjang mungkin, baris kedua paling sedikit dua kata (judul slide isi)."""
         kata, cur = [], []
         for r in runs:
             for bag in re.split(r'( )', r[0]):
@@ -1035,6 +1089,9 @@ class Deck:
             la, lb = self.u.lebar(a), self.u.lebar(b)
             if max(la, lb) <= w * 0.98:
                 calon.append((max(la, lb), a, b))
+        if penuh:
+            calon = [(-self.u.lebar(a), a, b) for _, a, b in calon if len(''.join(c[0] for c in b).split()) >= 2
+                     and self.u.lebar(a) <= w * 0.995]
         if not calon:
             return runs
         _, a, b = min(calon, key=lambda c: c[0])
@@ -1063,8 +1120,9 @@ class Deck:
                                  + ([self.R(akhir, g, ukuran=u, tebal=True)] if akhir else []), w, g, asal)
         m1 = len(self.k.manifest)
         del self.k.manifest[m0:m1 - len(re.findall(r'\{\{angka:', judul))]  # pas_judul mencoba beberapa ukuran; angka judul dicatat sekali
+        # judul slide isi: baris pertama diisi penuh sampai tepi kotak, baris kedua tanpa kata yatim (pemilik 26 Okt 2026)
         if self.catatan[-1][2] == 2:
-            runs = self.seimbang_runs(runs, w)
+            runs = self.seimbang_runs(runs, w, penuh=True)
         kv.teks(jk['x_pt'], jk['y_pt'], w, h, runs, jangkar='b', spasi=B['spasi_baris_judul'])
         self.hal['judul'] = [jk['x_pt'], jk['y_pt'], w, h, g['maks_baris']]  # D-17 diukur dari PDF di kotak ini
         if sp.get('subjudul'):
@@ -1152,7 +1210,7 @@ class Deck:
         a0, a1, ujung = alpha
         baris = bytes(int(255 * (a0 + (a1 - a0) * min(1.0, i / max(pix.width * ujung, 1)))) for i in range(pix.width))
         pix.set_alpha(baris * pix.height)
-        out = self.keluaran / 'foto' / f'{nama}-{src.stem}.png'
+        out = self.keluaran / 'foto' / f'{self.nama}-{nama}-{src.stem}.png'  # per deck: bangun paralel di folder sama tidak saling timpa
         out.parent.mkdir(parents=True, exist_ok=True)
         pix.save(out)
         return out
@@ -1206,6 +1264,28 @@ class Deck:
             kv.teks(x, y, w, hh, r)
             y += hh + SM['jarak_pt'][berikut]
         kv.garis(x, y, x + SM['garis_lebar_pt'], y, Wn['warna_garis'], 0.75)
+        if sp.get('penyaji'):  # paparan pejabat: DISAMPAIKAN OLEH, nama dan gelar, jabatan (pola laporan harian, pemilik 26 Okt)
+            y += SM['jarak_pt']['garis']
+            # warna pola laporan harian: label oranye kapital, nama warna judul tebal, jabatan warna subjudul
+            for gaya, teks, wt, tebal in (('kepada_sampul', 'DISAMPAIKAN OLEH', Wn['warna_lembaga'] if gelap else 'oranye', True),
+                                          ('kepada_sampul', sp['penyaji']['nama'], Wn['warna_judul'], True),
+                                          ('kepada_sampul', sp['penyaji']['jabatan'], Wn['warna_subjudul'], False)):
+                gg = dict(self.T[gaya], warna=wt)
+                r = [self.R(self.st(teks), gg, tebal=tebal)]
+                nb = self.muat(r, w, 2, j['asal'], 'penyaji')  # nama dan gelar lengkap tidak dipendekkan
+                hh = pt_dari(gg) * 1.25 * nb
+                kv.teks(x, y, w, hh, r)
+                y += hh + 2
+        if sp.get('logo_kanan'):  # logo pendamping (BerAKHLAK) di kotak putih kanan atas foto, proporsi asli
+            from PIL import Image
+            src = (self.akar / sp['logo_kanan']).resolve()
+            self.masukan.add(src)
+            lw_, lh_ = Image.open(src).size
+            bw_, pad_ = 176.0, 8.0
+            bh_ = bw_ * lh_ / lw_
+            bx_ = self.S['lebar_pt'] - 43.2 - bw_ - 2 * pad_
+            kv.bentuk('bulat', bx_, 40, bw_ + 2 * pad_, bh_ + 2 * pad_, 'kertas', radius=8)
+            kv.gambar(src, bx_ + pad_, 40 + pad_, bw_, bh_, 'logo')
         TG = SM['tanggal']
         g = dict(self.T['tanggal_sampul'], warna=Wn['warna_tanggal_teks'])
         self.pil(kv, x, TG['y_pt'], [self.R(self.st(self.tanggal_panjang()), g)], TG['tinggi_pt'], Wn['warna_tanggal_isi'], w=TG['lebar_pt'])
@@ -1223,7 +1303,7 @@ class Deck:
         G = PN['garis']
         kv.bentuk('kotak', x, G['y_pt'] - G['tebal_pt'] / 2, G['lebar_pt'], G['tebal_pt'], G['warna'])
         kv.teks(x, PN['lembaga_y_pt'], w, PN['lembaga_tinggi_pt'], [self.R(self.t['kajian']['penerbit'], self.T['lembaga_penutup'])], jangkar='m', bungkus=False)
-        laporan = self.st(f'{self.kaj["judul"]}, {self.tanggal_panjang()}')
+        laporan = self.st(sp.get('laporan') or f'{self.kaj["judul"]}, {self.tanggal_panjang()}')  # spek boleh menulis baris pendek
         r = [self.R(laporan, self.T['laporan_penutup'])]
         self.muat(r, w, 1, j['asal'], 'baris laporan penutup')
         kv.teks(x, PN['laporan_y_pt'], w, PN['laporan_tinggi_pt'], r, jangkar='m', bungkus=False)
@@ -1265,7 +1345,7 @@ class Deck:
             y = self.grup_kartu(kv, sp['grup'], y, asal) + jarak
         bawah = self.bawah(sp.get('sumber') is not False)
         if sp.get('pita'):
-            h = self.K['pita_bawah']['tinggi_baku_pt']
+            h = self.K['pita_bawah']['tinggi_baku_pt'] * sp['pita'].get('skala', 1)
             self.pita(kv, self.X0, bawah - h, self.W, sp['pita'], asal)
             bawah -= h + jarak
         samping = sp.get('panel')
@@ -1292,10 +1372,11 @@ class Deck:
             bx = self.panel(kv, self.X0, y, uw, bawah - y, utama['judul_panel'], utama.get('ikon', 'data'),
                             utama.get('nada', 'netral'), utama.get('hitungan'), kyk, asal)
             if jenis == 'temuan-grafik':
+                self.hal['panel'][-1].append('grafik')  # D-40: ruang di atas batang pendek adalah encoding, batasnya lebih longgar
                 tb = self.grafik_batang(kv, *bx, utama, asal)
             else:
                 tb = self.data(utama['data'], asal)
-                self.peringkat(kv, *bx, tb, asal, utama.get('peringkat', True), utama.get('total', False))
+                self.peringkat(kv, *bx, tb, asal, utama.get('peringkat', True), utama.get('total', False), utama.get('ikon_baris'))
             tambah.append(tb['sumber'])
         if samping:
             sx = self.X0 + uw + (0 if jenis == 'temuan-peta' else jarak)
@@ -1312,7 +1393,7 @@ class Deck:
             if 'daftar' in p:  # tabel di atas, butir catatan di bawahnya dalam panel yang sama (satu topik satu kontainer)
                 g = self.T['isi_daftar']
                 tinggi = bh - self.tinggi_daftar(self.paras_daftar(p['daftar'], g, asal), g, bw) - self.K['panel']['pad_pt'] * 2
-            akhir = self.peringkat(kv, bx, by, bw, tinggi, tb, asal, p.get('peringkat', True), p.get('total', False))
+            akhir = self.peringkat(kv, bx, by, bw, tinggi, tb, asal, p.get('peringkat', True), p.get('total', False), p.get('ikon_baris'))
             bh -= akhir - by + self.K['panel']['pad_pt']
             by = akhir + self.K['panel']['pad_pt']
             sumber.append(tb['sumber'])
@@ -1375,6 +1456,8 @@ class Deck:
                 x, y, n = x0, y + h + C['jarak_pt'], n + 1
                 if n > baris_maks:
                     raise DeckGalat(f'{asal}: chip lembaga lebih dari {baris_maks} baris; kurangi lembaga')
+            if x + lebar > maks_x + 0.5:  # chip pertama di baris yang tetap keluar dari panel (26 Okt, Pascabencana R-A21)
+                raise DeckGalat(f'{asal}: chip "{nama}" {lebar:.0f} pt keluar {x + lebar - maks_x:.0f} pt dari tepi panel; pakai nama unit yang lebih pendek')
             self.pil(kv, x, y, r, h, C['warna_pemimpin'] if i == 0 else 'kertas', None if i == 0 else C['warna_garis'],
                      'lembaga', 'kertas' if i == 0 else C['warna_ikon'])
             x += lebar + C['jarak_pt']
@@ -1398,7 +1481,7 @@ class Deck:
         ada_sumber = bool(sp.get('sumber'))  # baris rekomendasi tanpa kaki (d5), kecuali spek menulis sumbernya
         bawah = self.bawah(ada_sumber)
         if sp.get('pita'):  # slide lanjutan dengan sedikit baris: sisa ruang diisi pita bawah, bukan baris yang diregangkan
-            h = self.K['pita_bawah']['tinggi_baku_pt']
+            h = self.K['pita_bawah']['tinggi_baku_pt'] * sp['pita'].get('skala', 1)
             self.pita(kv, self.X0, bawah - h, self.W, sp['pita'], asal)
             bawah -= h + self.K['bingkai']['jarak_blok_pt']
         rh = max(RK['tinggi_pt'], min(RK['tinggi_maks_pt'], (bawah - yk) / len(rows)))
@@ -1416,7 +1499,8 @@ class Deck:
             lx = self.X0 + d + RK['jarak_pt']
             lw = xs[1] - lx - RK['jarak_pt']
             oy = ry + (rh - RK['tinggi_pt']) / 2  # blok langkah di tengah baris
-            jr = [self.R(self.st(r['kode']) + '  ', self.T['langkah'], RK['warna_kode'])] + self.runs(r['langkah'], self.T['langkah'], asal)
+            kode_r = [self.R(self.st(r['kode']) + '  ', self.T['langkah'], RK['warna_kode'])] if self.S.get('kode_temuan', False) else []  # kode R-A01 tidak tampil (pemilik 26 Okt)
+            jr = kode_r + self.runs(r['langkah'], self.T['langkah'], asal)
             self.muat(jr, lw, 1, asal, f'langkah {r["kode"]}')
             kv.teks(lx, oy + RK['langkah_dy_pt'], lw, 14, jr, jangkar='m', bungkus=False)
             cx = lx
@@ -1445,11 +1529,14 @@ class Deck:
         y = self.S['area_isi_y_pt'][0]
         bawah = self.bawah(False)
         if sp.get('pita'):
-            h = self.K['pita_bawah']['tinggi_baku_pt']
+            h = self.K['pita_bawah']['tinggi_baku_pt'] * sp['pita'].get('skala', 1)
             self.pita(kv, self.X0, bawah - h, self.W, sp['pita'], asal)
             bawah -= h + jarak
         fase = self.t['kosakata']['fase']
         cw = (self.W - 2 * jarak) / 3
+        # lebar pil kode dari teks terlebar di slide (R-M03 lebih lebar dari A1), sama untuk semua supaya kolom aksi rata
+        kw = max([TF['kode_lebar_pt']] + [self.u.lebar([self.R(self.st(a['kode']), self.T['kode_aksi'])]) + 8
+                                         for f in j['fase'].values() for a in f])
         for i, kode in enumerate(('prabencana', 'tanggap-darurat', 'pascabencana')):
             aksi = j['fase'][kode]  # waktu dan pemimpin diturunkan dari matriks rekomendasi di siapkan()
             x = self.X0 + i * (cw + jarak)
@@ -1461,9 +1548,9 @@ class Deck:
                 if n:
                     kv.garis(bx, ay, bx + bw, ay, TF['warna_pemisah'], 0.5)
                 ay += (ah - isi_h) / 2
-                s = kv.bentuk('bulat', bx, ay + 1, TF['kode_lebar_pt'], TF['kode_tinggi_pt'], TF['warna_kode'], radius=3)
+                s = kv.bentuk('bulat', bx, ay + 1, kw, TF['kode_tinggi_pt'], TF['warna_kode'], radius=3)
                 kv.isi_teks(s.text_frame, [[self.R(self.st(a['kode']), self.T['kode_aksi'])]], 'c', 'm', False)
-                tx = bx + TF['kode_lebar_pt'] + 6
+                tx = bx + kw + 6
                 r = self.runs(a['aksi'], self.T['aksi_fase'], asal)
                 self.muat(r, bx + bw - tx, 2, asal, f'aksi {a["kode"]}')
                 kv.teks(tx, ay, bx + bw - tx, TF['aksi_teks_tinggi_pt'], r)
@@ -1653,7 +1740,7 @@ class Deck:
             tc.append(tc.makeelement(qn('a:noFill'), {}))
 
         for i, c in enumerate(kol):
-            sel(t.cell(0, i), [self.R(c.get('kepala', c['nama']).upper(), gk)], 'r' if c.get('fmt') else 'l', TL['warna_garis_kepala'], TL['tebal_kepala_pt'])
+            sel(t.cell(0, i), [self.R(c.get('kepala', c['nama']).upper(), gk)], 'c', TL['warna_garis_kepala'], TL['tebal_kepala_pt'])  # kepala rata tengah (pemilik 26 Okt)
         for r, row in enumerate(rows, start=1):
             for i, c in enumerate(kol):
                 g = dict(gi, bobot='bold') if i == 0 else gi
@@ -1836,7 +1923,8 @@ class Deck:
                                  'judul': self.hal.get('judul'), 'peta': self.hal.get('peta'), 'struktur': self.hal['struktur'],
                                  'warna': sorted(self.hal['warna']), 'judul_spek': (kj.get('judul') or sp.get('judul', '')) + kj.get('judul_akhir', ''),
                                  'pesan': sp.get('pesan'), 'jenis_slide': sp.get('jenis_slide'), 'judul_bentuk': sp.get('judul_bentuk'),
-                                 'seri': sp.get('seri'), 'visual': sorted(self.hal.get('visual', ())), 'gambar': self.hal.get('gambar', [])})
+                                 'seri': sp.get('seri'), 'visual': sorted(self.hal.get('visual', ())), 'gambar': self.hal.get('gambar', []),
+                                 'panel': self.hal.get('panel', [])})
         self.hal = None
         keluar = Path(keluar)
         keluar.parent.mkdir(parents=True, exist_ok=True)

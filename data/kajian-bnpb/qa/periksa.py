@@ -1452,7 +1452,7 @@ def d14(ctx):
                 if not cek(_pars_blok('tbl', t) + ([nxt] if nxt else [])):
                     out.append((d.nama, t['lok'], f'{t["caption"]} tanpa label keyakinan; harus {syarat}'))
         out += _pil_docx(d, tema)
-    if ctx.pptx:
+    if ctx.pptx and tema['slide'].get('pil_keyakinan', False):  # pil keyakinan dimatikan pemilik 26 Okt 2026 (tema slide.pil_keyakinan)
         for s in ctx.pptx.slide:
             if any(b['jenis'] == 'tbl' for b in s['bentuk']):
                 teks = [''.join(r['teks'] for r in p) for b in s['bentuk'] for p in b['par']]
@@ -1629,6 +1629,8 @@ def _teks_lain(f):
 @gerbang('D-16', 'Format angka id-ID')
 def d16(ctx):
     butuh(ctx.docx, ctx.pptx, ctx.lain, ctx.pdf, ctx.pptx_pdf)
+    if ctx.tema.get('bahasa') == 'en':  # deck berbahasa Inggris: koma ribuan, titik desimal (fmt_id LOKAL en)
+        return []
     man = [m for v in ctx.man.values() for m in v]
     out = []
     for b, lok, t, _ in _teks_angka(ctx, luas=True):
@@ -1886,12 +1888,14 @@ def d32(ctx):
 
 RE_D22_KECUALI = re.compile(
     RE_NAMA + '|' + RE_KODE + r'|\b\d{1,2}(?:\u2013\d{1,2})?\s' + BULAN + r'\b'
+    + r'|\b\d{1,2}(?:\u2013\d{1,2})?\s' + BULAN.upper() + r'\b'  # tanggal di kepala kolom dan label berhuruf kapital ("26 OKT")
     r'|\b\d{2}\.\d{2}(?:\u2013\d{2}\.\d{2})? (?:WIB|WITA|WIT)\b'
     r'|\b(?:Tabel|Gambar|Bab|Lampiran|Subbab|Kartu|Kotak|butir|Pasal|ayat|Nomor|No\.|hlm\.|halaman|Perban|Perpres|Perka|Perda|Pergub|'
     r'Inpres|Keppres|Kepres|PP|UU|SE|Permen\w*|Kepmen\w*|Kep|Renas PB|Renstra)\s*\(?(?:RE|[A-Z]|\d+)(?:[./\u2013]\d+)*[a-z]?\)?'
     r'|\b(?:Butuh|Membuka)\s+\d{2}(?:,\s*\d{2})*'  # relasi antar rekomendasi (PEDOMAN B5.13)
     r'|\b0\d\b'  # kode rekomendasi berangka nol di depan ("01", "(02)"); cacah tidak pernah ditulis begitu
-    r'|\b\d+/\d{4}\b|\b[A-C]\.\d+\b'
+    r'|\b\d+/\d{4}\b|\b[A-E]\.\d+\b'
+    r'|\b[A-Z]{1,3}-\d{1,4}[A-Z]{0,2}\b|\bBell \d{3}\b|\bPM2[.,]5\b'  # nama tipe pesawat dan polutan, bukan besaran (26 Okt)
     # label dan nomor rujukan, bukan angka data: hari ke-n peta jalan, kode temuan deck (A1.), kode rekomendasi (R-A21),
     # kode baris paket (C05, P16, B095), daftar halaman (hlm. 70, 133), nomor Kepmen ESDM, tabel bernomor romawi sumber
     r'|\bhari ke-\d+\b|\b[A-E]\d\.(?=\s)|\bR-[A-Z]\d{2}\b|\b[A-Z]{1,2}\d{2,3}\b'
@@ -2242,7 +2246,8 @@ def t6(ctx):
         # nomor halaman di pita footer bukan angka data walau sama dengan nilai CSV (slide 7 pembatas, nilai tabel 7)
         data = any(b['jenis'] == 'tbl' for b in s['bentuk']) or any(t in csv_tampil for b, t in teks if b not in no)
         pil = [b for b, t in teks if t.startswith(cut)]
-        if data and not pil:
+        # tema slide.cut_off_wajib false: pemilik melarang pil CUT OFF untuk deck proyek itu (paparan pertemuan, 26 Okt)
+        if data and not pil and sl.get('cut_off_wajib', True):
             out.append((x.nama, lok, f'slide data (tabel atau angka CSV) tanpa pil "{cut}" (Buku Pegangan: dipasang di setiap slide data)'))
         if pil:
             for b in _judul_slide(ctx, s):

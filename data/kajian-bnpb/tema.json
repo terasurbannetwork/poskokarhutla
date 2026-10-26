@@ -668,7 +668,7 @@
     "area_isi_y_pt": [101, 500],
     "kata_per_slide": [180, 290],
     "blok_per_slide": [3, 4],
-    "judul_kotak": {"x_pt": 43.2, "y_pt": 21.6, "tinggi_pt": [47.5, 65], "lebar_pt": 823, "lebar_dengan_pil_pt": 644, "anchor": "bawah"},
+    "judul_kotak": {"x_pt": 43.2, "y_pt": 21.6, "tinggi_pt": [47.5, 65], "lebar_pt": 838, "lebar_dengan_pil_pt": 644, "anchor": "bawah"},
     "garis": {"y_pt": [95, 507.6], "tebal_pt": 0.75, "warna": "garis-kuat"},
     "logo": {"x_pt": 889.4, "y_pt": 28.8, "lebar_pt": 27.4, "tinggi_pt": 34.6},
     "footer": {"teks": "Badan Nasional Penanggulangan Bencana  |  Copyright 2026", "y_pt": 512.6, "ukuran_pt": 8.5, "warna": "teks"},
