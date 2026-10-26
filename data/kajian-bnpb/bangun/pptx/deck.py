@@ -1396,8 +1396,13 @@ class Deck:
         yk = y0 + RK['kepala_tinggi_pt'] + 2
         kv.garis(self.X0, yk, self.X1, yk, RK['warna_garis_kepala'], 0.75)
         ada_sumber = bool(sp.get('sumber'))  # baris rekomendasi tanpa kaki (d5), kecuali spek menulis sumbernya
-        rh = max(RK['tinggi_pt'], min(RK['tinggi_maks_pt'], (self.bawah(ada_sumber) - yk) / len(rows)))
-        if yk + len(rows) * rh > self.bawah(ada_sumber):
+        bawah = self.bawah(ada_sumber)
+        if sp.get('pita'):  # slide lanjutan dengan sedikit baris: sisa ruang diisi pita bawah, bukan baris yang diregangkan
+            h = self.K['pita_bawah']['tinggi_baku_pt']
+            self.pita(kv, self.X0, bawah - h, self.W, sp['pita'], asal)
+            bawah -= h + self.K['bingkai']['jarak_blok_pt']
+        rh = max(RK['tinggi_pt'], min(RK['tinggi_maks_pt'], (bawah - yk) / len(rows)))
+        if yk + len(rows) * rh > bawah:
             raise DeckGalat(f'{asal}: {len(rows)} rekomendasi tidak muat satu slide; pecah ke slide berikut')
         d = RK['lingkaran_pt']
         st = self.t['kosakata']['status_usulan']

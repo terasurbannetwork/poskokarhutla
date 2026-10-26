@@ -699,6 +699,8 @@ class Ctx:
         self.lain = [Path(x) for x in lain]
         self.kajian, self.render = kajian, render
         fb = self.tema['font']['berkas']
+        if os.environ.get('ROBOTO_DIR'):  # sama dengan bangun/pptx/deck.py: ROBOTO_DIR menimpa folder font di mesin lain
+            fb = {k: str(Path(os.environ['ROBOTO_DIR']) / Path(v).name) for k, v in fb.items()}
         self.fon = {k: Fon(v) for k, v in fb.items()}
 
     def fon_untuk(self, tebal):
