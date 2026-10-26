@@ -284,7 +284,7 @@ Sel 2,2 km = kisi 0,02 derajat (pola `SEL = 0.02` scripts/data/citra.py:37). Ind
 
 #### 3.1.4 `sel22.json`
 
-`{"...", "kolom":["sel","tahun_aktif","per_tahun"], "baris":[["s413_880",9,[0,3,0,12,...]]], "ringkas":{"ge3":n,"ge5":n,"ge7":n,"ge10":n}}`; `per_tahun` 14 bilangan (2012–2025).
+`{"skema":"sel22/2", "data_hingga":"YYYY-MM-DD", "kolom":["sel","tahun_aktif","per_tahun","tahun_aktif_semua"], "baris":[["s413_880",9,[0,3,0,12,...],10]], "ringkas":{"ge3":n,"ge5":n,"ge7":n,"ge10":n}, "n_baris_firms":{"nilai":n,"label":"... bukan kejadian"}, "porsi_berulang_ge3_tahun":{"2019":p,"2023":p}, ...}`. `per_tahun` 14 bilangan (2012–2025) = hari api per sel per tahun (`acq_date` berbeda), hanya S-NPP (satelit `N`, sebanding sepanjang 2012–2025). `tahun_aktif` dan `ringkas` dihitung dari `per_tahun` (S-NPP). `tahun_aktif_semua` = tahun dengan deteksi satelit VIIRS mana pun, "batas atas, tidak sebanding antar-era" (NOAA-20 sejak 2018, NOAA-21 sejak 2023). `n_baris_firms` = baris FIRMS semua satelit tersaring, bukan kejadian. Tanpa cap waktu pembuatan: `data_hingga` = `acq_date` terakhir, supaya lari ulang identik byte demi byte. Porsi berulang = porsi hari api tahun itu yang jatuh di sel dengan `tahun_aktif` ≥ 3 pada tahun-tahun sebelumnya; rentang di skrip adalah penjaga regresi (±3 poin), bukan verifikasi KD §1.
 
 #### 3.1.5 `kit_nasional.json`
 
