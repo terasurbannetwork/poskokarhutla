@@ -155,7 +155,7 @@ async function kitDaftar(env, req, url, kini) {
     return {id: k.id, kode: k.kode, jenis: k.jenis, status: k.status, lokasi: k.lokasi, lat: k.lat, lon: k.lon, prov: k.prov, kab: k.kab, pemilik_asal: k.pemilik_asal, diubah: k.diubah, dummy: k.dummy,
       komponen_kurang: c?.kurang ?? 0, jam_pompa_musim: p?.jam ?? 0, banjir_m3_musim: p?.banjir ?? 0, gerak_buka: g ? {ke_status: g.ke_status, eta_jam: g.eta_jam, waktu: g.waktu} : null};
   });
-  return json({kit: out, kehilangan: {musim_pct: persen(hAwal, nAwal), per_kit: perKit}});
+  return json({kit: await kasar(env, req, out), kehilangan: {musim_pct: persen(hAwal, nAwal), per_kit: perKit}});
 }
 async function kitRincian(env, req, url, kini, ctx, id) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;
@@ -166,7 +166,8 @@ async function kitRincian(env, req, url, kini, ctx, id) {
     q("SELECT id, prov, jenis, kelas_medan, t_tiba, t_air_mengalir, t_selesai, jam_pompa, bbm_l, air_m3, banjir_m3, petak_id FROM sippa_log_gelar WHERE kit_id = ? AND dummy <= ? ORDER BY coalesce(t_tiba, waktu_klien) DESC LIMIT 200", id, lihat),
     q("SELECT * FROM sippa_bbm WHERE kit_id = ? AND dummy <= ? ORDER BY waktu DESC LIMIT 200", id, lihat),
     q("SELECT id, kit_id, nama_regu, unsur, prov, kab, kompleks_id, lengan_dalam, mulai, berakhir, dicabut, oleh, dummy FROM sippa_tugas WHERE kit_id = ? AND dummy <= ? ORDER BY mulai DESC LIMIT 100", id, lihat)]);
-  return json({kit: k, komponen, gerak, pemakaian: pemakaian.filter(l => dalam(req, l.prov)), bbm, tugas});
+  const [kk, gg] = await Promise.all([kasar(env, req, [k]), kasar(env, req, gerak)]);
+  return json({kit: kk[0], komponen, gerak: gg, pemakaian: pemakaian.filter(l => dalam(req, l.prov)), bbm, tugas});
 }
 async function kitBuat(env, req, url, kini) {
   const a = await akses(env, req, "M"); if (a.res) return a.res;
@@ -183,9 +184,9 @@ async function kitBuat(env, req, url, kini) {
   if (o.prov != null && !dalam(req, o.prov)) return tdk("wilayah tidak tersedia");
   if (await env.DB.prepare("SELECT 1 FROM sippa_kit WHERE kode = ?").bind(o.kode).first()) return gagal(409, "kode kit sudah dipakai");
   const id = acak(8), dm = dummyStaf(req, a.oleh);
-  const stm = [env.DB.prepare("INSERT INTO sippa_kit (id, kode, jenis, status, lokasi, prov, kab, pemilik_asal, catatan, dibuat, diubah, dummy) VALUES (?, ?, ?, 'gudang', ?, ?, ?, ?, ?, ?, ?, 0)")
-    .bind(id, o.kode, o.jenis, lokasi || null, o.prov ?? null, kab || null, pemilik, catatan || null, kini, kini),
-    ...TEMPLAT_BOM[templat].map(k => env.DB.prepare("INSERT INTO sippa_komponen (id, kit_id, kode_bom, nama, jumlah, satuan, dummy) VALUES (?, ?, ?, ?, ?, ?, 0)").bind(acak(8), id, k.kode_bom, k.nama, k.jumlah, k.satuan)),
+  const stm = [env.DB.prepare("INSERT INTO sippa_kit (id, kode, jenis, status, lokasi, prov, kab, pemilik_asal, catatan, dibuat, diubah, dummy) VALUES (?, ?, ?, 'gudang', ?, ?, ?, ?, ?, ?, ?, ?)")
+    .bind(id, o.kode, o.jenis, lokasi || null, o.prov ?? null, kab || null, pemilik, catatan || null, kini, kini, dm),
+    ...TEMPLAT_BOM[templat].map(k => env.DB.prepare("INSERT INTO sippa_komponen (id, kit_id, kode_bom, nama, jumlah, satuan, dummy) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(acak(8), id, k.kode_bom, k.nama, k.jumlah, k.satuan, dm)),
     jejakStmt(env, a.oleh, "sippa_kit:" + id, "buat", o.kode, `templat ${templat}`, kini, dm)];
   try { await env.DB.batch(stm); } catch (e) { if (/UNIQUE constraint failed: sippa_kit\.kode/.test(String(e?.message || e))) return gagal(409, "kode kit sudah dipakai"); throw e; }
   return json({kit: await env.DB.prepare("SELECT * FROM sippa_kit WHERE id = ?").bind(id).first(), komponen: TEMPLAT_BOM[templat].length}, 201);
@@ -277,6 +278,7 @@ async function gerakRute(env, req, url, kini, ctx, kitId) {
   if (alasan === "pindah_banjir" && (!butir.pengangkut || !teksOK(butir.permintaan_dari, 2, 120))) return gagal(400, "pindah_banjir wajib pengangkut dan permintaan_dari");
   if (butir.rencana === 1 && !RENCANA_BOLEH.includes(alasan)) return gagal(400, "gerak terencana hanya untuk pra_posisi dan pindah_banjir");
   if (butir.prov != null && !dalam(req, butir.prov)) return tdk("wilayah tidak tersedia");
+  if (tugas) { if (butir.prov != null && butir.prov !== tugas.prov) return gagal(403, "operator hanya boleh bergerak di provinsi tugasnya"); if (butir.prov != null) butir.kab = tugas.kab; else delete butir.kab; }   // prov sama dengan tugas; kab dari tugas, bukan klien; tanpa prov lokasi kit tidak disentuh
   if (await env.DB.prepare("SELECT 1 FROM sippa_gerak WHERE kit_id = ? AND tiba IS NULL").bind(kitId).first()) return gagal(409, "kit masih punya gerak terencana yang belum tiba");
   const dm = tugas ? tugas.dummy : dummyStaf(req, oleh) || kit.dummy;
   const stm = tulisButir(env, "gerak", butir, {kit_id: kitId, tugas_id: tugas?.id ?? null, oleh, dummy: kit.dummy});
@@ -379,11 +381,12 @@ async function lapanganKirim(env, req, url, kini) {
       if (!t.kit_id) { tolak(id, "tugas ini tidak punya kit"); continue; }
       if (!OPERATOR.includes(isi.alasan)) { tolak(id, `alasan ${isi.alasan} hanya untuk staf; operator memakai gelar, bongkar, atau kembali`); continue; }
       if (isi.rencana === 1) { tolak(id, "gerak terencana hanya untuk staf"); continue; }
+      if (isi.prov != null && isi.prov !== t.prov) { tolak(id, "operator hanya boleh bergerak di provinsi tugasnya"); continue; }
       if (await env.DB.prepare("SELECT 1 FROM sippa_gerak WHERE id = ?").bind(id).first()) { ganda.push(id); continue; }   // kirim ulang: trigger sippa_gerak_cek akan menolaknya padahal sudah tercatat
       kursor ??= await statusKit();
       if (!ALASAN_TRANSISI[isi.alasan].includes(`${kursor}>${isi.ke_status}`)) { tolak(id, `transisi ${kursor} ke ${isi.ke_status} tidak sah untuk alasan ${isi.alasan}`); continue; }
       const dari = kursor; kursor = isi.ke_status;
-      daftar.push({id, jenis, dari, buat: d => tulisButir(env, "gerak", {...isi, tiba: isi.tiba ?? null, rencana: isi.rencana ?? 0}, {dari_status: d, kit_id: t.kit_id, tugas_id: t.id, oleh, dummy: t.dummy})});
+      daftar.push({id, jenis, dari, buat: d => tulisButir(env, "gerak", {...isi, tiba: isi.tiba ?? null, rencana: isi.rencana ?? 0}, {dari_status: d, kit_id: t.kit_id, tugas_id: t.id, oleh, prov: isi.prov ?? null, kab: isi.prov != null ? t.kab : null, dummy: t.dummy})});
     } else if (jenis === "log") {
       const m = meleset || isi.waktu_klien > kini + MELESET_MS ? 1 : 0;
       daftar.push({id, jenis, buat: () => tulisButir(env, "log", isi, {tugas_id: t.id, kit_id: t.kit_id, kompleks_id: t.kompleks_id, prov: t.prov, foto_id: foto, jam_klien_meleset: m, diterima: kini, oleh, dummy: t.dummy})});
@@ -457,11 +460,14 @@ async function ambilLog(env, req, f) {
   const baris = r.results, terpotong = baris.length > MAKS_LOG;
   return {baris: baris.slice(0, MAKS_LOG).filter(x => dalam(req, x.prov) && (x.kit_id == null || dalam(req, x.kit_prov))).reverse(), terpotong};   // urut waktu naik; yang terbaru dipertahankan bila terpotong
 }
+/* peran baca saja melihat lat/lon dibulatkan 0,01 (sama dengan CSV tanpa presisi=penuh); peran tulis penuh */
+const bulat = v => typeof v === "number" ? Math.round(v * 100) / 100 : v;
+const kasar = async (env, req, baris) => await adminAtauStaf(env, req, P_SIPPA_TULIS) ? baris : baris.map(r => "lat" in r ? {...r, lat: bulat(r.lat), lon: bulat(r.lon)} : r);
 async function logDaftar(env, req, url) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;
   const f = filterLog(url.searchParams); if (f.galat) return gagal(400, f.galat);
   const {baris, terpotong} = await ambilLog(env, req, f);
-  return json({log: baris, n: baris.length, terpotong});
+  return json({log: await kasar(env, req, baris), n: baris.length, terpotong});
 }
 const KOLOM_LOG = ["id", "tugas_id", "kit_id", "kompleks_id", "prov", "jenis", "kelas_medan", "panjang_m", "n_orang", "t_tiba", "t_mulai_gelar", "t_air_mengalir", "t_mulai_injeksi", "t_selesai", "t_bongkar_selesai", "jam_pompa", "bbm_l", "air_m3", "banjir_m3",
   "lat", "lon", "catatan", "foto_id", "petak_id", "air_sampai_lance", "p_ujung_bar", "p_ujung_menit", "p_ujung_sumber", "kecelakaan", "bocor_henti_menit", "konfigurasi", "koreksi_dari", "jam_klien_meleset", "waktu_klien", "diterima", "oleh", "dummy"];
@@ -477,7 +483,7 @@ async function logCsv(env, req, url, kini) {
   const presisi = url.searchParams.get("presisi"); if (presisi !== null && presisi !== "penuh") return gagal(400, "presisi hanya boleh penuh");
   if (presisi === "penuh" && !await adminAtauStaf(env, req, P_SIPPA_TULIS)) return gagal(403, "koordinat penuh hanya untuk staf yang boleh menulis");
   const l = await batasJam(env, a.oleh, "sippa.csv", 60, kini); if (l) return l;
-  const {baris} = await ambilLog(env, req, f), bulat = v => typeof v === "number" ? Math.round(v * 100) / 100 : v;
+  const {baris} = await ambilLog(env, req, f);
   return berkasCsv("log", csv(KOLOM_LOG, presisi === "penuh" ? baris : baris.map(r => ({...r, lat: bulat(r.lat), lon: bulat(r.lon)}))), kini);
 }
 async function probeCsv(env, req, url, kini) {

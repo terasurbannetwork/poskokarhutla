@@ -583,6 +583,42 @@ uji("GET /admin/pipa: selalu 303 ke /pipa untuk tamu, staf, admin, dan akun gerb
   for (const h of [{}, pus.g, ver.g, ADMIN, GERBANG]) { const r = await man("/admin/pipa", h); assert.equal(r.s, 303); assert.equal(r.h.get("location"), "/pipa"); assert.equal(r.t, ""); }
 });
 
+/* ---------------------------------------------------------------- SP-015: temuan keamanan */
+uji("SP-015: operator (x-kode) tidak bisa memindah kit ke provinsi lain lewat /gerak maupun /lapangan/kirim; prov dan kab dipaksa dari tugas", async () => {
+  await DB.prepare("DELETE FROM laju_bnpb WHERE aksi = 'sippa.kit_buat'").run();
+  const k = await sip("POST", "/kit", {kode: "SIPPA-160", jenis: "gambut", prov: "62", kab: "Kab Asal"}, MOD2); assert.equal(k.s, 201, k.t);
+  const kid = k.j.kit.id, t = await tugasBaru({kit_id: kid, prov: "62", kab: "Kab Tugas"}); assert.equal(t.s, 201, t.t);
+  const kodeT = t.j.kode, provKit = async () => (await DB.prepare("SELECT prov, kab FROM sippa_kit WHERE id = ?").bind(kid).first());
+  const x = await sip("POST", "/gerak/" + kid, {alasan: "gelar", ke_status: "gelar", prov: "61", kab: "Kab Lain"}, {"x-kode": kodeT});
+  assert.equal(x.s, 403, x.t); assert.deepEqual(await provKit(), {prov: "62", kab: "Kab Asal"}, "kit tidak berpindah provinsi"); assert.equal(await statusKit(kid), "gudang");
+  const g = gerakB({alasan: "gelar", ke_status: "gelar", prov: "61"}), r = await kirim(kodeT, {gerak: [g]}); assert.equal(r.s, 200, r.t);
+  assert.deepEqual(r.j.ditolak.map(d => d.id), [g.id], JSON.stringify(r.j)); assert.deepEqual(await provKit(), {prov: "62", kab: "Kab Asal"}); assert.equal(await statusKit(kid), "gudang");
+  const ok = await sip("POST", "/gerak/" + kid, {alasan: "gelar", ke_status: "gelar", kab: "Kab Bebas"}, {"x-kode": kodeT}); assert.equal(ok.s, 201, ok.t);
+  assert.deepEqual(await provKit(), {prov: "62", kab: "Kab Asal"}, "tanpa prov, lokasi kit tidak disentuh (kab klien dibuang)");
+  const ok2 = await sip("POST", "/gerak/" + kid, {alasan: "bongkar", ke_status: "depot", prov: "62", kab: "Kab Bebas"}, {"x-kode": kodeT}); assert.equal(ok2.s, 201, ok2.t);
+  assert.deepEqual(await provKit(), {prov: "62", kab: "Kab Tugas"}, "dengan prov sama, kab dipaksa dari tugas");
+  const g2 = gerakB({alasan: "kembali", ke_status: "gudang", prov: "62", kab: "Kab Bebas"}), r2 = await kirim(kodeT, {gerak: [g2]}); assert.deepEqual(r2.j.diterima, [g2.id], JSON.stringify(r2.j));
+  assert.deepEqual(await provKit(), {prov: "62", kab: "Kab Tugas"}, "kirim lapangan: kab dari tugas");
+});
+uji("SP-015: lat/lon pada GET /log, /kit, /kit/:id dibulatkan 0,01 untuk peran baca saja; peran tulis melihat penuh", async () => {
+  const kid = (await DB.prepare("SELECT id FROM sippa_kit WHERE kode = 'SIPPA-160'").first()).id;
+  const g = await gerak(kid, {alasan: "pra_posisi", ke_status: "depot", lat: -2.12345, lon: 113.98765}); assert.equal(g.s, 201, g.t);
+  const lg = await sip("POST", "/log", {jenis: "latihan", prov: "62", lat: -2.12345, lon: 113.98765, kit_id: kid}, pus.h); assert.equal(lg.s, 201, lg.t);
+  const semua = (j, f) => { assert.ok(j.length, "ada baris"); return j.every(f); };
+  const lp = (await sip("GET", "/log?kit=" + kid, undefined, pim.h)).j.log, lw = (await sip("GET", "/log?kit=" + kid, undefined, pus.h)).j.log;
+  assert.ok(semua(lp, l => l.lat === -2.12 && l.lon === 113.99), JSON.stringify(lp.map(l => [l.lat, l.lon]))); assert.ok(semua(lw, l => l.lat === -2.12345 && l.lon === 113.98765));
+  const kp = (await sip("GET", "/kit", undefined, pim.h)).j.kit.find(k => k.id === kid), kw = (await sip("GET", "/kit", undefined, pus.h)).j.kit.find(k => k.id === kid);
+  assert.deepEqual([kp.lat, kp.lon], [-2.12, 113.99]); assert.deepEqual([kw.lat, kw.lon], [-2.12345, 113.98765]);
+  const rp = (await sip("GET", "/kit/" + kid, undefined, pim.h)).j, rw = (await sip("GET", "/kit/" + kid, undefined, pus.h)).j;
+  assert.deepEqual([rp.kit.lat, rp.kit.lon], [-2.12, 113.99]); assert.deepEqual([rw.kit.lat, rw.kit.lon], [-2.12345, 113.98765]);
+  assert.ok(rp.gerak.every(x => x.lat == null || x.lat === -2.12), "gerak ikut dibulatkan");
+});
+uji("SP-015: kitBuat memakai dummyStaf, bukan literal 0, pada INSERT kit dan komponen (penjaga teks)", () => {
+  const src = teks("src", "sippa.js"), mulai = src.indexOf("async function kitBuat"), isi = src.slice(mulai, src.indexOf("async function kitUbah"));
+  for (const t of ["INSERT INTO sippa_kit (", "INSERT INTO sippa_komponen ("]) { const i = isi.indexOf(t); assert.ok(i > 0, t); const s = isi.slice(i, isi.indexOf(")\")", i) + 3); assert.doesNotMatch(s, /, 0\)"\)$/, `${t} menulis dummy 0 literal`); assert.match(s, /dummy\) VALUES/, t); }
+  assert.ok((isi.match(/\bdm\b/g) || []).length >= 4, "dm (dummyStaf) dipakai di INSERT kit, komponen, dan jejak");
+});
+
 /* ---------------------------------------------------------------- tanpa migrasi, rute lama utuh, tulis/baca peran tanpa penjaga */
 uji("tanpa tabel sippa_*: semua rute /api/sippa menjawab 503 sopan; rute lain repo tetap 200", async () => {
   const T = await siapkan("uji-sippa-tanpa-migrasi", {r2: true});
