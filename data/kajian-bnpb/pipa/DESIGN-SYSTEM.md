@@ -116,6 +116,7 @@ Kelas `sp-` tidak dihapus diam-diam; yang diganti ditandai usang satu rilis lebi
 | Versi | Tanggal | Isi |
 | --- | --- | --- |
 | 1 | 25 Okt 2026 | versi awal dari PRD §8–§9 dan token repo; validator warna dan kontras dijalankan |
+| 1.1 | 26 Okt 2026 | keputusan 56: kelompok rel PASCABENCANA, butir Pemeliharaan di OPERASI, wireframe §4.15–§4.18 (Pemeliharaan, Air tanah, Akses, rincian aset); tanpa token warna baru: status jadwal memakai pil status §3.3 yang ada (terlambat `--bad`, segera `--warn`, aman `--ok`, belum pernah netral) selalu bersama teks |
 
 ---
 ## 2. Token
@@ -1250,9 +1251,13 @@ di bawah hanya menggambar isi `main.sp-isi`. Nama dalam kurung siku `[ ]` adalah
 |   3D         |                                                                          |
 |  OPERASI     |                                                                          |
 |   Kit        |                                                                          |
+|   Pelihara   |                                                                          |
 |   Log        |                                                                          |
 |   A/B        |                                                                          |
 |   Telemetri  |                                                                          |
+|  PASCABENCANA|                                                                          |
+|   Air tanah  |                                                                          |
+|   Akses      |                                                                          |
 |  KELUARAN    |                                                                          |
 |   Laporan    |                                                                          |
 |   Data       |                                                                          |
@@ -1276,7 +1281,8 @@ Kerangka bersama HP (< 768px):
 ```
 
 Di HP Versi zona menjadi `PilihCantik` ringkas di bilah konteks. "Lainnya" membuka
-`.sp-lainnya` (lembar bawah) berisi Hitung, Pemicu, Studio, 3D, A/B, Telemetri, Laporan, Data.
+`.sp-lainnya` (lembar bawah) berisi Hitung, Pemicu, Studio, 3D, A/B, Telemetri, Pemeliharaan, Air tanah, Akses,
+Laporan, Data.
 
 ### 4.1 Ringkas `/pipa`
 
@@ -1914,6 +1920,121 @@ kotaknya sendiri, bukan halaman.
 ```
 
 ---
+### 4.15 Pemeliharaan `/pipa/pelihara` (keputusan 56)
+
+Desktop:
+
+```
+ h1 Pemeliharaan                                        [Unduh pelihara.csv] [Catat stok]
++-----------------------------------------------------------------------------------------+
+|[3.2.1 kartu] (Pemeliharaan) [Asumsi kebijakan: interval]                                |
+|12 butir terlambat, 3 kit tidak laik gelar, 2 suku cadang di bawah minimum               |
+|Sumber: SIPPA D1 (inspeksi, komponen, log, stok), per 14.30 WIB                          |
++-----------------------------------------------------------------------------------------+
+| [3.5 chip kelas] (Semua)(K1 Pompa)(K2 Selang)(K3 Hidraulik)(K4 Sensor)(K5 APD)(K6 Koridor)|
+|                  (K7 Sumur)(K8 Pipa sementara)(K9 Jembatan darurat)(K10 Jembatan pantau) |
+| [3.5 chip status] (Terlambat 12)(Segera 9)(Aman 140)(Belum pernah 6)                    |
+| [3.4 tabel] Butir | Kelas | Kit atau lokasi | Inspeksi terakhir | Skor | Jatuh tempo |    |
+|             Status [pil teks] | Pemelihara | [Catat inspeksi]          [3.4 .pgn 50]    |
++--------------------------------------------+--------------------------------------------+
+|[3.11 kalender 12 bulan] jatuh tempo pra-   |[3.2.1] (Stok) 2 kode di bawah minimum      |
+| musim di atas pita musim karhutla (Mei–Okt)| [3.4 tabel] Gudang | Kode | Saldo | Min |   |
+| dan banjir (Nov–Apr)                       |  pil "di bawah minimum"                    |
++--------------------------------------------+--------------------------------------------+
+|[3.2.2 kisi kartu angka] Biaya pemeliharaan per tahun per kelas  [pil Estimasi model]    |
+| K1 Rp.. | K2 Rp.. | K3 Rp.. | K4 Rp.. | total; rumus PRD §6.10.7 di tip `rapikanTip`     |
++-----------------------------------------------------------------------------------------+
+```
+
+HP: kartu judul, chip status bergulir (Terlambat dulu), daftar kartu butir (nama, kit, pil status, jatuh tempo,
+tombol "Catat inspeksi" 56 px). Dialog inspeksi (§3.16 lembar bawah): skor 0–3 sebagai segmen berlabel kata
+(Baik, Rusak ringan, Rusak berat, Hilang atau afkir), jam operasi (K1), temuan, tindakan, hasil uji (E. coli untuk K7,
+tekanan untuk K2), foto opsional; tombol simpan 56 px.
+
+```
++----------------------------------+
+|[3.2.1] 12 terlambat, 3 kit tidak |
+|laik gelar                        |
++----------------------------------+
+|(Terlambat 12)(Segera 9)(Aman) -> |
++----------------------------------+
+|Pompa P-101 SIPPA-001 [terlambat] |
+|servis 50 jam, lewat 6 hari       |
+|           [Catat inspeksi]       |
++----------------------------------+
+```
+
+### 4.16 Air tanah pascabencana `/pipa/air` (keputusan 56)
+
+Desktop (peta 60%, panel 40%):
+
+```
+ h1 Air tanah pascabencana                                        [+ Catat sumur]
++------------------------------------------------------+-----------------------------------+
+|[3.6 peta provinsi] status zona konservasi CAT         |[3.2.1] (Air tanah) [Resmi]        |
+| (aman)(rawan)(kritis)(rusak)(belum ditetapkan)        |38 sumur darurat tercatat, 9 belum |
+| berpola + label kata, bukan warna saja                |diuji mutu                         |
+| titik sumur: (o) laik (x) tidak laik minum (?) belum  |Sumber: SIPPA D1; CAT Badan Geologi|
+| diuji                                                 +-----------------------------------+
+| [Daftar] = tabel alternatif peta                      |Rincian sumur AS-0012              |
+|                                                       | kedalaman, debit, CAT, zona,      |
+|                                                       | rekomendasi Badan Geologi, uji    |
+|                                                       | mutu terakhir, serah terima       |
+|                                                       | [Catat uji mutu] [Buka rincian]   |
++------------------------------------------------------+-----------------------------------+
+| [3.4 tabel] Kode | Pelaksana | Kejadian | Kedalaman | Debit | CAT | Zona | Rek. BG |      |
+|             Uji mutu [pil] | Serah terima | Pengelola                                    |
++-----------------------------------------------------------------------------------------+
+```
+
+Form "Catat sumur" (§3.7.1): bila zona `kritis` atau `rusak` dipilih, medan "Nomor rekomendasi teknis Badan Geologi"
+menjadi wajib dan pesan galat server ditampilkan di bawah medan (`aria-describedby`). Kawasan penurunan muka tanah
+berpita kuning "Utamakan air permukaan dan perpipaan". HP: daftar kartu sumur, peta di balik tombol "Peta".
+
+### 4.17 Akses pascabencana `/pipa/akses` (keputusan 56)
+
+Desktop:
+
+```
+ h1 Akses pascabencana                                           [+ Catat jembatan]
++----------------------------------------+------------------------------------------------+
+|[3.2.1] (Akses) [Resmi]                 |[3.6 peta bulatan per provinsi] jembatan rusak  |
+|3.833 jembatan rusak 2018–2025, 1.088   | 2018–2025, ukuran sebanding tiga kelas legenda |
+|pada 2025                               | per kab/kota setelah DIBI per kab ditarik      |
+| [3.11 batang] per tahun 2018–2025      |                                                |
+|Sumber: DIBI BNPB, olahan Pantau Bencana|                                                |
++----------------------------------------+------------------------------------------------+
+| [3.4 tabel] Program per pemilik: Pemilik | Program | Titik | Selesai | Di wilayah bencana|
+|             | Biaya satuan | Sumber, tanggal  (baris: Satgas Pembangunan Jembatan TNI AD;|
+|             Jembatan Merah Putih Presisi Polri; Jembatan gantung Kementerian PU; Bailey DSP)|
++-----------------------------------------------------------------------------------------+
+| [3.5 chip] (Darurat)(Permanen dipantau)(Tanpa jadwal ganti 4)                           |
+| [3.4 tabel] Kode | Nama | Program | Pemilik aset | Status | Rencana ganti | Inspeksi |   |
++-----------------------------------------------------------------------------------------+
+```
+
+Nama program selalu bersama pemiliknya; sel biaya satuan kosong tampil "–, tidak diumumkan". HP: kartu judul, grafik
+batang, daftar kartu program, daftar kartu jembatan dengan pil "tanpa jadwal ganti".
+
+### 4.18 Rincian aset `/pipa/aset/:id` (keputusan 56)
+
+Pola §4.5 rincian kit:
+
+```
+ [< Air tanah]  atau  [< Akses]
++-----------------------------------------------------------------------------------------+
+| AS-0012  Sumur bor  [pil berfungsi]  Kab. Aceh Barat  Pemilik: Pemkab  Pemelihara: PDAM  |
+| [3.2.2] skor terakhir 1 | 42 hari sejak inspeksi | jatuh tempo 18 Feb                     |
++-----------------------------------------------------------------------------------------+
+| [.ad-tabs] Inspeksi | Mutu air | Serah terima | Peta                                     |
+| [3.13 lini masa] o 12 Okt mutu_air skor 2 E. coli 3 CFU/100 ml [tidak laik minum]       |
+|                  o 01 Okt serah_terima ke PDAM                                          |
+|                                    [Catat inspeksi] [Ubah status]                       |
++-----------------------------------------------------------------------------------------+
+```
+
+HP: kepala ringkas, kartu angka dua kolom, tab dua baris, lini masa vertikal.
+
 ## 5. Visual buku dan deck
 
 Semua gambar buku dan deck dirender dari `kajian/bangun/visual/` (peta `peta.mjs`, grafik
