@@ -54,5 +54,6 @@
   "0050_pembasah_alat.sql": "9424806af297c22cc0c4b5eed473cde1bd32aceece20d2866def875d0b4f5cbd",
   "0052_hukum.sql": "0226fb1c23e0c9afee54e4c953c8cc7385bf71906a314cab1768b19dd46eb1cf",
   "0053_kontak.sql": "3cfb426606181666b61a590b697c970b138add4a50ba169a76fe7499593b7200",
-  "0054_kunci_api_konsesi.sql": "27dec5186d40151ef7d22be859bce214cf310291f4e203cfc758ebf8a1ebc5f2"
+  "0054_kunci_api_konsesi.sql": "27dec5186d40151ef7d22be859bce214cf310291f4e203cfc758ebf8a1ebc5f2",
+  "0056_sippa_inti.sql": "661fec5e8e6a02b180de29b16330dc1fd7889c52e2dac2bb68afda10e5377c2a"
 }
