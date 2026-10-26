@@ -5,7 +5,7 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
 Disegarkan 26 Okt 2026\
-commit c2032a0b
+commit 311cf865
 
 [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -16,6 +16,19 @@ Terbaru di atas
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
 1. 26 Okt 2026
+   - **Revisi RR lanjutan, menuju pembuat PPT terbaik BNPB** (27 Okt dini hari; pemilik: *"Catat semua ya"*). Butir 34 sampai 41: pil halaman daftar isi, penanda bagian di atas, logo PNG transparan, pil persen di kartu, kepala tabel dua tingkat, satu slide per provinsi, pil warna capaian, label tahap foto, tidak ada yang menempel, ikon putih tebal, bayangan tipis kontainer, pita abu kolom utama, baris berikon tanpa garis, rata kanan-kiri selalu, kaki slide pola MBB bergradien.
+   - **Deck RR Sumatera dan navigasi deck** (larut malam). Semua isi bahan masuk (*"Jangan ada yang lewat"*); kartu "M" sebaris angka dengan konteks pembanding; panel Capaian hijau; judul panel Title Case; pil warna realisasi; kolom lembaga penerbit; daftar isi, pembatas bagian, dan penanda bagian di kaki slide. Aturannya butir 26 sampai 33 di [Keputusan final selera PPT](#keputusan-final-selera-ppt-26-okt-malam).
+   - **Revisi lanjutan deck Malaysia** (larut malam). Hotspot disebut sebelum firespot. Istilah asing dimiringkan (*"untuk istilah asing dimiringkan. Catat."*). Judul dan isi baris berikon dipisah (*"judul dan isi dipisahkan. Dengan label dan enter"*). Angka 26 Okt ditulis pasti (*"sudah angka pasti lah"*). Huruf kecil di ruang lega diperbesar (*"Banyak whitespace di bawah tapi kenapa tulisannya kecil"*). Pil "100 hari" dibuang. Aturannya butir 16 sampai 22 di [Keputusan final selera PPT](#keputusan-final-selera-ppt-26-okt-malam).
+   - **Selera PPT final disepakati** (malam): 288 masukan pemilik dari semua sesi ditelusuri jadi 238 aturan, lalu pemilik memutus bentroknya. Ringkasnya:
+     - kalimat dikte dibuat formal tanpa dikembangkan (*"Ya lu buat formal lah. Tapi jangan kembangkan berlebihan"*);
+     - batas ruang kosong 5%, diukur sebagai area kosong yang terlihat;
+     - bahan tiap halaman dihitung lebih dulu, lalu ruang diisi dengan bahan, ikon, figur, tabel, atau huruf lebih besar (*"Silakan lu yang pilih"*);
+     - sampul dan penutup ditentukan pemilik (*"ini aku yang netukan aja"*);
+     - pil CUT OFF hanya untuk data yang diperbarui harian;
+     - hotspot dan firespot sebagai label data, tanpa "titik api";
+     - semua latar terang (*"Semua terang"*);
+     - label sampul "Dipresentasikan oleh".
+     Mesin skill `ppt-konsultan` sudah mengikuti semuanya. Rinciannya di [Keputusan final selera PPT](#keputusan-final-selera-ppt-26-okt-malam) dan [Katalog lengkap selera PPT](#katalog-lengkap-selera-ppt).
    - **Merek situs jadi Centurisk97 di seluruh situs** (`c2032a0b`): teks tampil di `src` dan `public`, i18n EN, JSON data, generator, `EMAIL_FROM`, dan uji. Tagar #PantauBencana jadi #Centurisk97, nama unduhan `pantau-bencana-*` jadi `centurisk97-*`. Penulisan ulang merek per alamat di `layaniHTML` dibuang karena sumbernya sudah seragam. Nilai sumber peringatan di D1 tetap "Deteksi Pantau Bencana" (CHECK migrasi 0010, tanpa migrasi produksi); API dan CAP menampilkannya sebagai "Deteksi Centurisk97". Judul buku ini belum diganti.
    - **Aturan tabel dan judul deck BNPB**. Header tabel teks kapital polos rata tengah, tidak berbentuk pil: *"Catat agar semua header rata tengah"*. Pil keyakinan Resmi dan Terverifikasi tidak lagi tampil: *"Ga perlu ada ini ya Resmi dan Terverifikasi ke depan"*. Kode temuan dan awalan "A1." di judul dicabut: *"Gw ga pengen deh ada Finding gini gini"*. Judul mengisi baris pertama sampai tepi kotak (*"kanan tuh kosong"*). Teks 2 sampai 3 baris rata kiri-kanan, teks di samping ikon rata tengah tegak (*"harusnya rata middle"*). Panel yang kosong 13 sampai 15% masih terbaca kosong, jadi batas ruang kosong turun ke 10%. Rinciannya di [Aturan deck 26 Okt](#aturan-deck-26-okt).
    - **Deck yang dikirim pemilik disunting di berkasnya, bukan dibangun ulang**: *"ngapain lu ulang dari awal? Udah gerak dari sini aja"*. Paparan Kepala BNPB kepada Presiden 3 halaman tanpa sampul dan penutup, jam terbang armada BNPB masuk kolom slide Operasi, "Pantau Bencana" tidak pernah ditulis di deck BNPB. Pertanyaan "berapa lama" dijawab dengan menit, dan berkas antara dikirim begitu ada.
@@ -157,7 +170,14 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 | Paparan kepada Presiden tanpa sampul dan penutup | 26 Okt 2026 | Format Laporan Penanganan Pengendalian Karhutla 3 halaman (peta hotspot, tabel penanganan, operasi), jam terbang armada di kolom slide Operasi, tanpa nama PIC atau nomor telepon |
 | Deck BNPB tanpa "Pantau Bencana" | 26 Okt 2026 | Nama situs tidak pernah ditulis di deck BNPB |
 | Deck mitra asing | 26 Okt 2026 | Bahasa Inggris sampai kaki halaman, tanpa tanda kelemahan Indonesia atau BNPB, data bukan naskah ucapan; "bantuan" bukan "aset", Indonesia memegang kendali |
-| Penyaji di sampul deck pejabat | 26 Okt 2026 | DISAMPAIKAN OLEH, nama lengkap bergelar, lalu jabatan; tidak hanya "Disampaikan oleh Kepala BNPB" |
+| Kalimat dikte pemilik | 26 Okt 2026 | Dibuat formal, tidak dikembangkan berlebihan |
+| Ruang kosong 5% | 26 Okt 2026 | Batas 5% area kosong yang terlihat di tiap panel (menggantikan 10%); sela antarbaris tidak dihitung |
+| Rencanakan bahan per halaman | 26 Okt 2026 | Ruang yang akan kosong diisi bahan, ikon, figur, tabel, atau huruf lebih besar; huruf dikecilkan hanya agar judul tetap 2 baris |
+| Sampul dan penutup | 26 Okt 2026 | Ditentukan pemilik per deck |
+| Pil CUT OFF hanya untuk data harian | 26 Okt 2026 | Slide tanpa data yang diperbarui harian tidak memakai pil |
+| Istilah satelit di deck | 26 Okt 2026 | Hotspot dan firespot sebagai label data; "titik api" tidak dipakai |
+| Semua latar deck terang | 26 Okt 2026 | Termasuk penutup; pembatas lampiran dibuat terang saat dipakai lagi |
+| Penyaji di sampul deck pejabat | 26 Okt 2026 | "Dipresentasikan oleh" (huruf biasa), nama lengkap bergelar, lalu jabatan; tidak hanya "Disampaikan oleh Kepala BNPB" |
 | Cut off Laporan Penanganan Karhutla 17.00 | 25 Okt 2026 | Menggantikan 15.00; tabel 4 kelompok × 3 hari, halaman operasi dibuang, deck 2 halaman |
 | Cut off laporan harian 12.00, laporan karhutla 15.00 (karhutla jadi 17.00 sejak 25 Okt) | 24 Okt 2026 | Laporan Kejadian Bencana Harian dipotong pukul 12.00 WIB dan Laporan Penanganan Pengendalian Karhutla pukul 15.00 WIB; kolom terakhir = hari laporan itu sendiri, angka sementara sampai jam cut off. Data lapangan ditempel apa adanya dari WA, generator `data/laporan-bnpb/generator/` yang mengurai |
 | Laporan harian 4 slide lagi | 24 Okt 2026 | Sampul dan penutup dipasang kembali (*"tetap kasih cover dan penutup"*); batang status cukup selesai dan belum selesai |
@@ -808,6 +828,88 @@ Ditambahkan ke langkah 4 [Alur kerja](#alur-kerja) untuk deck kajian. Gerbang me
 - Lingkaran langkah rekomendasi deck kajian: navy bernomor dengan chip jenis aksi (bawaan, S28) atau berwarna jenis aksi seperti d5.
 - Peta jalan sebagai pita grup horizon di slide rekomendasi (bawaan) atau satu slide tiga panel horizon tanpa batang.
 
+### Keputusan final selera PPT (26 Okt malam)
+
+Disepakati pemilik setelah katalog di bawah ditelusuri. Menang atas butir mana pun di bab ini yang berbeda, termasuk [Aturan deck 26 Okt](#aturan-deck-26-okt). Salinan untuk mesin ada di skill `ppt-konsultan`, `bnpb/references/selera-pemilik.md`.
+
+1. **Kalimat dikte pemilik**: dibuat formal, tetapi tidak dikembangkan berlebihan. Pertahankan isi dan urutannya; perbaiki hanya ejaan, tata bahasa, dan kebakuan.
+2. **Ruang kosong**: batas 5% untuk area kosong yang terlihat. Sela antarbaris dan sisa kanan kalimat pendek tidak dihitung.
+   - Gerbang D-40 di `scripts/periksa.py`: `PANEL_MATI_MAKS = 5`, `PANEL_RADIUS = 4`.
+3. **Merencanakan halaman**: hitung dulu banyaknya bahan, baru atur tata letak.
+   - Kalau akan tersisa ruang kosong, pilih salah satu: tambah bahan yang relevan, beri ikon, tambah figur atau tabel, atau besarkan huruf.
+   - Huruf diperbesar dengan `skala_huruf` (level slide, panel, atau tabel).
+   - Huruf hanya dikecilkan supaya judul tetap 2 baris.
+4. **Sampul dan penutup**: pemilik yang menentukan per deck. Ikuti instruksinya. Kalau tidak disebut, tanyakan sekali, atau ikuti jenis deck di katalog bagian 10.
+5. **Pil CUT OFF**: hanya di slide yang datanya diperbarui harian, misalnya laporan harian, Penanganan, dan data satelit. Slide tanpa data harian tidak memakai pil.
+6. **Istilah satelit**: "firespot" dan "hotspot" sebagai label data. "Titik api" tidak dipakai. "Titik panas" tidak lagi dipakai sebagai label.
+7. **Latar**: semua terang, termasuk penutup.
+   - Penutup memakai `s_penutup_terang`: foto di kanan memudar ke putih, teks gelap.
+   - Pembatas lampiran masih gelap di mesin dan harus dibuat terang saat pertama kali dipakai lagi.
+8. **Label penyaji di sampul**: "Dipresentasikan oleh", huruf biasa, tidak kapital.
+9. **Tabel**: kepala kolom selalu rata tengah. Isi kolom teks rata kiri (`rata: 'l'`), lebar kolom diatur dengan `bobot`.
+10. **Judul satu baris** sejajar tengah logo (`slide.judul_satu_baris_tengah_logo`), tidak menempel di garis bawah. Ukuran judul tetap sama di semua slide.
+11. **Baris berikon**: tinggi baris mengikuti jumlah baris teks. Ikon dan teks berada di tengah baris, tidak menabrak garis pemisah.
+12. **Rata kanan-kiri**: teks 2–3 baris selalu rata kanan-kiri, termasuk kolom sempit (diperbarui butir 40).
+13. **Slide yang isinya berulang digabung**. Contoh deck Malaysia: tawaran, kebutuhan, dan hal yang dibahas dijadikan satu slide.
+14. **Daftar topik atau langkah** memakai model "Enam langkah tindak lanjut" (jenis `rekomendasi`): ikon, pil waktu dan status, chip penanggung jawab.
+15. **Penomoran butir di dalam kalimat** ("1. Bantuan ... 2. Kerja sama ...") diizinkan; gerbang D-22 tidak menganggapnya angka ketikan.
+16. **Urutan hotspot dan firespot**: hotspot disebut dulu, baru firespot ("2.935 hotspot dan 1.650 firespot").
+17. **Istilah asing dicetak miring** (hotspot, firespot, *water bombing*, *focal point*, *in situ*, *Counsellor*, dan lain-lain). Mesin memiringkannya otomatis lewat daftar `ASING` di `deck.py`, atau `kosakata.asing` di tema.
+18. **Baris berikon**: judul tebal di baris sendiri, isinya di baris bawah (`slide.temuan_judul_baris: true`). Butir bernomor dalam satu baris ("1. Bantuan ... 2. Kerja sama ...") dipecah per baris dengan `\n`.
+19. **Angka hari laporan dianggap pasti**. Jangan menulis "angka sementara" kecuali pemilik memintanya.
+20. **Huruf kecil di panel yang lega dilarang**. Besarkan dengan `skala_huruf`. Tabel berbaris sedikit boleh memakai sel dua baris (`sel_dua_baris`) supaya hurufnya bisa besar.
+21. **Pil waktu** ("100 hari", "2026–2027") di slide langkah hanya dipasang bila jangka waktunya memang diputus. Tanpa keputusan, kosongkan `waktu`.
+22. **Tabel kolom hari**: kolom yang tidak diminta dibuang. Contoh: kolom "Hotspot 26 Okt" di tabel firespot dihapus pemilik.
+23. **Sapaan tamu asing** memakai sapaan negaranya. Untuk Malaysia: "Encik" bagi laki-laki dan "Puan" bagi perempuan, bukan "Bapak" atau "Ibu".
+24. **Rencanakan dulu tiap deck baru.** Tetapkan poin tiap slide, baru pilih tata letaknya. Pakai pustaka 3.325 slide rujukan (`pustaka/cari.py`) dan komponen mesin yang ada: kartu, panel ganda, tabel, peta, langkah, galeri foto. Jangan menyalin format deck sebelumnya, misalnya Executive Summary tidak harus berupa daftar baris (*"Lu bisa bebas berkreasi sih setiap slidenya ... Setiap bikin ppt baru lu harus ya planning dulu"*).
+25. **Foto dokumentasi dari bahan pemilik boleh dan dianjurkan dipakai.** Contohnya slide galeri dan panel foto (`jenis: galeri`, panel `foto`). Foto sampul dan penutup dipilih yang cerah dan jelas, bukan yang pucat.
+
+26. **Semua isi bahan pemilik masuk.** Saat menggabung atau membuat ulang deck, tiap poin, tabel, dan foto sumber dicek satu per satu (*"Jangan ada yang lewat"*). Foto dipotong persis seperti di deck sumber (`klip` di galeri, dibaca dari potongan gambar PPTX asli).
+27. **Kartu angka**: satuan "M" sebaris dengan angka, tebal dan besar ("Rp1.751,1 M"). Label kartu menjelaskan angka itu dari mana dan dibandingkan dengan apa ("850 dari berapa?").
+28. **Panel berwarna per makna**: Capaian hijau, Kendala dan Tindak lanjut berwarna lain (`nada` panel), supaya tidak monoton.
+29. **Judul panel Title Case** ("Peraturan yang Menjadi Dasar Pelaksanaan"); kata sambung tetap kecil (`slide.judul_panel_kapital`).
+30. **Garis di bawah judul satu baris dinaikkan** mendekati judul, isi ikut naik (manifest `naik`).
+31. **Kolom Realisasi jadi pil berwarna**: hijau ≥90%, oranye 70–90%, merah <70% (`pil_ambang`), supaya langsung terlihat mana yang baik dan mana yang tertinggal.
+32. **Tabel peraturan punya kolom Lembaga penerbit.** Baris Jumlah diberi jarak dari tepi kotak membulat.
+33. **Daftar isi, pembatas bagian, dan penanda bagian** (pemilik minta 26 Okt larut malam, dari contoh McKinsey, Accenture, Deloitte):
+    - `daftar-isi`: panel kiri tint netral berjudul "Daftar Isi", kanan baris bernomor 01, 02, ... dengan judul bagian dan halamannya;
+    - `pembatas-seksi` (`bagian: n`): daftar isi yang sama, bagian aktif disorot (tint, bilah oranye, nomor oranye), bagian lain abu; panel kiri memuat nomor bagian besar dan judulnya;
+    - penanda di kaki tiap slide isi: tab bagian, yang aktif tebal navy dengan bilah oranye di garis kaki;
+    - spek deck memuat `bagian: [{judul, label}]`; `label` nama pendek untuk penanda kaki. Halaman dihitung mesin.
+
+34. **Revisi RR larut malam:**
+    - nomor halaman daftar isi berupa pil seragam rata kanan tanpa "hlm"; pembatas tanpa kata "Bagian"; penanda bagian di pita paling atas slide;
+    - logo BNPB PNG berlatar transparan;
+    - kartu angka boleh berpil persen di kanan nilai ("850" dengan pil "2,2%"); "dibangun" ditulis "proses pembangunan";
+    - pil berwarna diberi jarak kiri-kanan 1 em, teks tidak mepet;
+    - kepala tabel dua tingkat (`grup`): "Ke daerah" di atas, "Unit" dan "Rp" di bawahnya;
+    - provinsi sejajar dibuat satu bentuk dan satu slide tiap provinsi (Aceh, Sumut, Sumbar), untuk stimulan maupun huntap;
+    - persen capaian selalu berpil warna supaya progres lambat terlihat (huntap selesai: ≥2% oranye, <2% merah);
+    - keterangan tahap foto berupa label warna: Kondisi awal merah, Pengerjaan oranye, Selesai hijau.
+
+35. **Tidak ada yang menempel.** Pil, label, dan teks selalu berjarak dari tepi kotak, sorotan, atau pil di sekitarnya (minimal 1 em atau 16 pt). Contoh: pil halaman daftar isi berjarak 16 pt dari tepi kanan sorotan.
+36. **Ikon putih di lingkaran gelap harus terbaca**: glif minimal 64% diameter lingkaran, garis 2,6 (bukan 2). Ikon tipis kecil yang *"samsek ga keliatan"* dilarang.
+
+37. **Kontainer membulat (panel dan kartu angka) diberi bayangan tipis**: turun 1,5 pt, blur 5 pt, gelap 14%. Otomatis di mesin (`bentuk(..., bayang=True)` pada panel dan kartu).
+
+38. **Kolom pertama tabel = parameter utama**: diberi pita abu muda di belakangnya (`tint.netral.pita`), supaya terbaca bahwa data di kanannya milik baris itu. Otomatis di semua tabel peringkat.
+39. **Baris berikon tanpa garis pemisah horizontal.** Jarak antarbaris saja yang memisahkan.
+40. **Teks 2–3 baris selalu rata kanan-kiri**, berapa pun lebar kolomnya (*"udah gw tetapkan"*). Butir 12 yang mengecualikan kolom sempit tidak berlaku lagi.
+41. **Kaki slide pola MBB**: baris sumber pindah ke baris kaki rata kiri dengan label **Sumber:** tebal; "© 2026 Badan Nasional Penanggulangan Bencana" rata kanan dekat nomor halaman. Ruang isi bertambah sekitar 20 pt. Pita kaki bergradien biru muda (`tint.basah.pita`) yang memudar transparan ke kiri. Sumber ditulis ringkas supaya muat satu baris ("Kedeputian Bidang RR BNPB, 24 Oktober 2026").
+
+Disusun 26 Okt 2026 dari tiga sumber: (1) pesan mentah pemilik `masukan_ppt.txt` (15 Sep sampai 26 Okt, 288 baris, sebagian besar situs/kode dan dibuang), (2) memori `ppt-*`, `aturan-deck-26-okt-rinci`, `deck-urgen-kerjakan-di-berkas`, `selera-deck-malaysia`, `tanpa-titik-*`, `laporan-harian-bnpb`, (3) skill `ppt-konsultan` (`keputusan-pemilik.md`, `selera-presentasi.md`, `deck-operasional.md`, `gaya.md`, `gaya-bnpb.md`, `nada.md`, `angka-dan-copy.md`).
+
+Cara baca:
+- Satu aturan satu baris: `ID aturan [tanggal: "kutipan pemilik"]`.
+- Tanggal bertanda mentah mengikuti stempel transkrip (UTC; tambah 7 jam untuk WIB, jadi pesan larut malam jatuh di hari berikutnya). Tanggal dari memori/skill mengikuti sumbernya (WIB).
+- `(baru)` = ada di pesan mentah pemilik tetapi TIDAK ada di memori atau skill mana pun.
+- `⚠` = pemilik bertentangan dengan dirinya sendiri, atau dua sumber bentrok. Kedua sisi ditulis di barisnya.
+- Kutipan tanpa tanggal mentah berarti kutipannya hanya ada di memori/skill (pesan mentah tidak memuatnya; ekstraksi mentah berhenti 26 Okt 13:32 UTC).
+- Bukti `(web)` = pesan tentang situs, dipakai hanya sebagai penguat selera umum.
+- Urutan otoritas bila bentrok (dari skill): kata pemilik terbaru, lalu Buku Pegangan, lalu `KEPUTUSAN.md`, lalu pedoman desain.
+
+---
+
 ### Aturan deck 26 Okt
 
 Dari memori pemilik `ppt-tabel-dan-cutoff`, `deck-urgen-kerjakan-di-berkas`, `aturan-deck-26-okt-rinci`, `ppt-audiens-asing`, `selera-deck-malaysia`, `ppt-keputusan-selera`, `ppt-gaya-kajian-bnpb`. Semua deck kini lewat skill `ppt-konsultan`.
@@ -815,10 +917,10 @@ Dari memori pemilik `ppt-tabel-dan-cutoff`, `deck-urgen-kerjakan-di-berkas`, `at
 - **Tabel**: header teks kapital polos rata tengah, bukan pil. Kolom label rata kiri, kolom lain rata tengah; bila kolom label menyisakan lebih dari 40% kosong, lebar dibagi ke kolom angka. Status di tabel berupa pil berlabel. Tabel jenis bencana memakai ikon baris, bukan nomor peringkat.
 - **Judul**: baris pertama penuh sampai tepi, baris kedua paling sedikit dua kata. Tanpa kode "A1." dan tanpa label "Pesan Kunci: ...". Deck mitra memakai judul yang didikte pemilik apa adanya.
 - **Teks**: 2 sampai 3 baris rata kiri-kanan dengan baris terakhir rata kiri; butir memakai bullet bawaan PowerPoint dalam Roboto. Teks di samping ikon rata tengah tegak. Tidak menulis "dashboard" atau "today"; tulis tanggalnya. Sumber data bukan pelaku: "Berdasarkan data DIBI, terdapat ...", bukan "DIBI mencatat".
-- **Ruang kosong**: batas kosong panel 10% (panel grafik batang 45%). Huruf kecil boleh (7 pt di gaya kajian); yang ditambah data, bukan ukuran huruf. Tanpa kotak anotasi melayang di atas grafik.
+- **Ruang kosong**: batas kosong panel 5% area kosong terlihat sejak 26 Okt malam (panel grafik batang 45%). Ruang diisi bahan, ikon, figur, tabel, atau huruf lebih besar. Tanpa kotak anotasi melayang di atas grafik.
 - **Sampul**: deck pejabat menulis penyaji lengkap. Paparan kepada Presiden tanpa sampul dan penutup.
 - **Pil**: tanpa pil Resmi dan Terverifikasi; pil CUT OFF bisa dimatikan per proyek (`slide.cut_off_wajib: false`). Label cut off mengikuti pemilik; jam data sebenarnya disebut sekali.
-- **Mitra asing**: bahasa Inggris seluruhnya, tanpa celah, target meleset, hambatan, atau "pending verification"; "casualties", bukan "deaths"; firespot, bukan hotspot. Delegasi hanya anggota asing.
+- **Mitra asing**: bahasa Inggris seluruhnya, tanpa celah, target meleset, hambatan, atau "pending verification"; "casualties", bukan "deaths"; hotspot dan firespot sebagai label data. Delegasi hanya anggota asing.
 - **Kecepatan**: saat waktu sempit, pakai data yang sudah ada di web atau cache; jangan tarik ulang satelit dan cuaca. Jalur cepat generator Penanganan sekitar 10 detik lewat `penanganan_web.py` dan arsip `kluster_hari`.
 
 ### Yang dilarang atau sudah dihapus
@@ -871,6 +973,346 @@ Dari memori pemilik `ppt-tabel-dan-cutoff`, `deck-urgen-kerjakan-di-berkas`, `at
 - Penutup Presiden (d9 s7) masih memuat nama penyaji dan kartu kontak, padahal d3 menghapusnya dari laporan harian.
 - Generator `/laporan-bnpb` disesuaikan ke d3 atau tidak.
 - Belum padam: merah (deck wilayah) atau oranye (templat BNPB) disatukan atau tidak.
+
+### Katalog lengkap selera PPT
+
+Ditelusuri 26 Okt 2026 dari 288 masukan pemilik (15 Sep sampai 26 Okt), memori, dan skill `ppt-konsultan`. Satu baris satu aturan, dengan tanggal dan kutipan pemilik. Tanda ⚠ menandai butir yang bentrok; bentrok yang sudah diputus ada di [Keputusan final selera PPT](#keputusan-final-selera-ppt-26-okt-malam). Tanda (baru) menandai aturan yang sebelumnya belum tercatat di mana pun.
+
+#### 1. Cara kerja dan kecepatan
+
+- 1.01 Kerjakan di berkas yang dikirim pemilik: slide dan tata letaknya tetap, data diganti, slide baru dibuat bergaya sama. Jangan bangun ulang dengan mesin lain. [26 Okt: "Bro ngapain lu ulang dari awal? Udah gerak dari sini aja anjing. Ubah data yang disini dan tambahkan slied 4 dan 5"]
+- 1.02 Perubahan langsung dikerjakan tanpa minta konfirmasi, dan hanya bagian yang diminta yang diganti. [21 Okt: "Oke langsung diubah ya."; 21 Okt: "CEPETIN dong gw cuma mau ganti yang di slide 1 dan 2 aja"]
+- 1.03 Pertanyaan "berapa lama" dijawab dengan menit, dan berkas sementara dikirim begitu ada lalu diperbaiki. [26 Okt, memori: dipakai pemilik sekitar 10 kali dalam sehari]
+- 1.04 PPT didahulukan dari pekerjaan situs, dan berkasnya langsung dikirim. [21 Okt: "Oke fokus ke ppt dulu ya. Kasih ppt nya mana"; 22 Okt: "Halo mana bro kasih dong ppt dan pdf nya dengan data terbaru"]
+- 1.05 Serahkan PPTX dan PDF. [18 Okt: "oke sip kirim versi pdf dan ppt nya ya"; 19 Okt: "Mana bagi pdf dan ppt nya"]
+- 1.06 Sediakan versi tanpa lampiran dan versi lengkap berlampiran bila decknya berlampiran. [19 Okt: "Kasih yang tanpa lampiran pdf dan ppt"]
+- 1.07 "Data terbaru" berarti data hari ini. [26 Okt: "Pakai data update hari ini"; 24 Okt: "pakai data yang hari ini"]
+- 1.08 Waktu sempit: pakai data web atau cache yang sudah ada, jangan tarik ulang satelit atau cuaca. [26 Okt, memori `deck-urgen`]
+- 1.09 Jam cut-off ditentukan pemilik walau data lebih awal; lakukan, lalu sebut jam data sebenarnya sekali di jawaban. [26 Okt: "Buat cut off nya 15.00 ya di web walaupun datanya 08.05. Di slide maksudnya"]
+- 1.10 Bila pemilik menyerahkan keputusan ("Lu tentukan"), putuskan sendiri dengan pegangan best practice dan catat pilihan itu. [21 Okt: "Lu tentukan deh. Ikuti best practice"]
+- 1.11 Hasil harus benar, valid, mendekati kebenaran; metode hitung ikut dievaluasi karena dikirim ke Presiden. [21 Okt: "pastikan benar ya. Dan valid datanya. Dan lebih mendekati kebenaran"; "Karena ini data yang mau dikasih ke Presiden"]
+- 1.12 Deck yang ditunjuk pemilik sebagai model yang disalin, bukan generator lama; gaya BNPB tetap, deck lain hanya sumber isi. [21 Okt: "Bukannya modelnya gini ya bro... crosscheck"; 22 Okt: "Lu tau kan format nya dan selera gw seperti apa"; 19 Okt: "Gayanya tetap pakai gini cuma yang Kalteng itu untuk referensi tambahan informasi"]
+- 1.13 Bila pemilik mengirim deck pembanding, daftarkan semua informasi yang belum ada di deck kita, masukkan semuanya sesuai penempatan, dan buat peta penunjuk "info ini ada di slide mana". (baru) [19 Okt: "Gw mau lu masukin semua ya... kasih pointer informasi di tiap slidenya sekarang ada di slide mana"]
+- 1.14 Slide yang pemilik minta dibiarkan tidak disentuh. (baru) [26 Okt: "Slide 8 biarkan dulu seperti sekarang"]
+- 1.15 Simpan semua hasil di repo (deck, data mentah, skrip, verifikasi). [21 Okt: "Simpan semua ya hasilnya"]
+- 1.16 Tujuan akhir: PPT final tanpa revisi dari pemilik. [25 Okt: "Gw langsung bisa dapat ppt final ga perlu gw ubah-ubah revisi lagi"]
+- 1.17 Hanya satu skill pembangun PPT yang komprehensif, dan harus bisa dipanggil untuk PPT berikutnya. [26 Okt: "Intinya nanti di akhir hanya ada satu ppt builder skill nya yang komprehensif"; "next ppt agar lu panggil bisa lu panggil ya"]
+- 1.18 Tiap koreksi pemilik dicatat ke skill, artifact, dan Buku Pegangan; deck Penanganan jadi pedoman yang terus diperbarui. [22 Okt: "Lu catat sebagai kitab suci yang bakal gw update terus"; 26 Okt: "lu catat di skill dan lu catat di Artifacts"]
+- 1.19 Pertanyaan terbuka diputus sebagai bawaan, jangan tanya pemilik berulang. [23 Okt, `KEPUTUSAN.md`: pemilik meminta tidak ada pertanyaan lagi]
+- 1.20 Render dan lihat sendiri semua halaman sebelum kirim; verifier berkonteks bersih menghitung ulang tiap angka. [skill `selera-presentasi` alur kerja; memori `ppt-konsultan`: verifier menangkap 7 salah substansi pada deck uji]
+- 1.21 Nama berkas `<Judul deck> DDMMYY` dengan tanggal paparan. [skill `selera-presentasi`]
+- 1.22 Riset sebanyak mungkin dulu untuk paparan baru, lalu ringkas. [18 Okt: "Lakukan riset maksimum. Lu tambahin kalo perlu apa pun itu. Buat sekomprehensif mungkin"]
+
+#### 2. Struktur deck (sampul, penutup, urutan, jumlah halaman)
+
+- 2.01 Hanya satu gaya rumah (kerangka BNPB) untuk semua deck BNPB. [skill: "Satu gaya rumah deck", 23 Okt]
+- 2.02 Sampul paparan bernama acara lengkap ("Rapat Koordinasi Penanganan dan Pengendalian Darurat Karhutla Provinsi ... Tahun 2026"), kota dan tanggal di bawah, nama lembaga di bawah judul, dan label "Dipresentasikan oleh". (baru) [19 Okt: "Judulnya agar Rapat Koordinasi ... Tambahin di di kanan atas... Agar ada tulisan Dipresentasikan Oleh... di bawah judul agar ada Badan nasional penanggulangan Bencana"]
+- 2.03 ⚠ Label penyaji: pemilik menulis "Dipresentasikan Oleh" (19 Okt, deck Kalteng) sedangkan templat dan memori memakai "DISAMPAIKAN OLEH" lalu nama lengkap dengan gelar (26 Okt). Belum ada vonis mana yang baku.
+- 2.04 Sampul pejabat menyebut nama lengkap dengan semua gelar (dua gelar magister memang ada), lalu jabatan; bukan "Disampaikan oleh Kepala BNPB". [18 Okt: "Ada dua gelar magisternya memang"; 26 Okt, memori `ppt-tabel-dan-cutoff`]
+- 2.05 Sampul memuat sasaran paparan ("Ditujukan kepada seluruh stakeholder pengendalian Karhutla Kalimantan Selatan"). (baru) [18 Okt]
+- 2.06 Foto sampul paparan karhutla: orang yang sedang memadamkan api. (baru) [18 Okt: "Gambarnya adalah orang yang memadamkan api"]
+- 2.07 ⚠ Sampul dan penutup, empat sisi: (a) paparan Kalsel/Kalteng 18 Okt wajib Cover, Daftar Isi, dan slide penutup ("Mana slide penutup nya terimakasih. Baru apa gitu ada closingnya"); (b) 2 slide lepas dijadikan satu file dengan "cover depan dan belakang" (20 Okt); (c) laporan harian 23 Okt dibuang sampul dan penutupnya ("Hilangkan cover dan terimakasih kirim ppt dan pdf"), lalu 24 Okt dipasang lagi ("tetap kasih cover dan penutup"); (d) paparan Presiden 26 Okt: "Gausah ada cover gausah ada penutup". Yang berlaku mengikuti jenis deck (bagian 10), dan kata terbaru menang.
+- 2.08 Slide terima kasih satu slide saja, bukan dua. (baru) [20 Okt: "Yang slide terima kasih juga gausah jadi 2 slide aja ya"]
+- 2.09 ⚠ Isi penutup: nada.md dan penutup Presiden d9 memuat "Terima kasih" plus kontak kelembagaan dan nama penyaji; keputusan harian 23 Okt membuang nama pejabat dan kartu kontak dari penutup ("Tanpa kartu kontak"). Belum diputus untuk penutup Presiden.
+- 2.10 Sampul dan penutup tanpa footer dan tanpa nomor halaman. [skill `selera-presentasi`]
+- 2.11 Daftar Isi ada di paparan wilayah/stakeholder besar; deck progres boleh tanpa. [18 Okt: "2. Daftar Isi"; skill `gaya.md` keputusan pembanding 8]
+- 2.12 ⚠ Jumlah halaman: "Maksimal paparan 10 halaman" (18 Okt, paparan Kalsel/Kalteng) lawan "Tidak ada batas" (24 Okt, batas halaman kajian dicabut, foto boleh sebanyak yang relevan) lawan Presiden 10 sampai 15 slide (nada.md) lawan kajian "±12 slide isi + lampiran" (P14). Sebagian beda jenis deck, belum ada aturan umum. (baru)
+- 2.13 Detail rinci dipindah ke lampiran, paparan utama hanya garis besar; bagian yang sudah ada di slide utama dipindah ke lampiran bila diminta. [19 Okt: "Kasih ini ya. Tapi di lampiran. DI paparan kasih lah garis besarnya"; 20 Okt: "Yang saat ini ada agar dimasukin ke lampiran"]
+- 2.14 Penunjuk lampiran ("Lampiran hal x sampai y") dipasang hanya di deck yang memang berlampiran dan nomor halamannya benar; di laporan harian 4 slide dibuang. [18 Okt: "Tambahkan Lampiran hal berapa sampai berapa"; 23 Okt: "Hilangkan"]
+- 2.15 Bagian yang berdiri sendiri dilebur ke slide yang relevan, jangan satu slide tersendiri; slide yang jadi redundan dihapus dan datanya dipindah. [18 Okt: "Ini gausah satu slide sendiri tapi bagian" slide ini harus ada di slide yang relevan"; 21 Okt: "Ini slide 2 dihaus dong. Tapi data ini dimasukin ke sini sama sini"; 23 Okt: "Slide 5 buang"]
+- 2.16 Materi penting yang tadinya terpisah masuk "slide inti" (bukan lampiran). [19 Okt: "Ini masukin di slide inti"]
+- 2.17 Kelompokkan isi per provinsi dengan judul grup bagus di atas tiap kelompok. (baru) [20 Okt: "Kelompokkan per provinsi buat judul atas. Bagusin"; "Kasih atasnya judul header bagus"]
+- 2.18 Dua slide yang dikerjakan terpisah boleh dibuat satu berkas mandiri, lengkap dengan cover depan dan belakang. (baru) [20 Okt: "Oke dua slide ini tolong dibuat 1 file sendiri ya. Tambahkan cover depan dan belakang"]
+- Catatan: Slide 2 deck kajian memakai "Pesan Kunci" sebagai peta deck, tetapi deck bilateral menamainya "Executive Summary". Lihat ⚠ di 3.09.
+- 2.20 Jawaban dulu: ringkasan eksekutif di depan, bukti sesudahnya; kerangka baku sampul, ringkasan, daftar isi, isi, kesimpulan, rekomendasi, penutup, lampiran. [skill `gaya.md` bagian 4]
+- 2.21 Ritme: arketipe sama tidak tiga kali berturut-turut, tiap 4 sampai 6 slide ada satu slide visual berat, template tiap halaman dibedakan supaya tidak membosankan. [25 Okt: "Bagaimana membuat ppt tidak membosankan gitu template tiap halamannya berbeda"; skill `gaya.md` bagian 12]
+- 2.22 Tidak ada elemen yang keluar dari kanvas slide. [18 Okt: "Ini kenapa ada bagian di luar ppt?"; 25 Okt: "Tidak ada yang keluar halaman ppt"]
+- 2.23 Konten slide wajib mencakup laporan yang sudah dilakukan daerah prioritas (data dari Direktorat), keefektifannya, dan kendalanya (untuk deck internal/domestik). (baru) [19 Okt: "Ada ga slide yang menceritakan Laporan yg sudah dilakukan daerah prioritas (data dri dir) dan keefektifannya serta kendala"]
+
+#### 3. Judul
+
+- 3.01 Judul paling banyak dua baris di semua deck; bila tidak muat huruf dikecilkan, jangan turun ke baris ketiga. [skill: "Ukuran disesuaikan lah intinya cuma 2 baris"]
+- 3.02 Baris pertama judul diisi sampai ujung kotak; jangan diseimbangkan kiri-kanan; baris kedua minimal dua kata. [26 Okt: "kanan tuh kosong"]
+- 3.03 ⚠ Ukuran judul: pemilik minta judul dikecilkan agar tetap dua baris (23 Okt), tetapi juga "judul mungkin agak digedein. Atas terlalu banyak white space" (20 Okt) dan "Btw semua font gedein" (26 Okt). Pegangan: besarkan bila ada ruang kosong di atas, kecilkan hanya untuk menghindari baris ketiga. (baru)
+- 3.04 Tidak ada ruang kosong antara judul dan subjudul. (baru) [20 Okt: "Ini kenapa ada whitespace antara judul dan subjudul"]
+- 3.05 Judul = fakta + angka + sumber; tanpa personifikasi, slogan, kontras "X bukan Y", "mulai besok", tiga-serangkai; label = kata benda polos. [19 Okt, deck Kepala BNPB "ditolak keras karena kalimat bergaya"]
+- 3.06 Angka kunci di depan dan berwarna oranye D9600B; satu frasa sorot (wilayah atau periode). [20 Okt, memori `tanpa-titik-pemisah`: "Key number first, colored orange"]
+- 3.07 ⚠ Warna sorot nama tempat: tabel judul skill menyebut deck Wilayah "Biru tidak dipakai", sedangkan templat, Presiden, dan kajian menyorot provinsi/tempat dengan biru lembaga 00499D. Belum diseragamkan.
+- 3.08 ⚠ Bentuk judul: "Judul deskriptif menang atas judul data" (harian/wilayah, 23 Okt) lawan T11 kajian "kalimat temuan berangka" lawan Malaysia "pendek, datar, formal, dipakai persis seperti didiktekan" (26 Okt) lawan gaya rumah "judul adalah kesimpulan, bukan topik" (`gaya.md`). Berlaku per jenis deck, tidak ada satu aturan umum.
+- 3.09 ⚠ "Pesan Kunci": pemilik menyebut judul "Pesan Kunci: ..., empat keputusan ..." sebagai AI slop (26 Okt, kajian), BNPB skill tetap memakai "Pesan Kunci" sebagai slide 2 (peta deck, diputus: slide dipertahankan, judulnya kalimat temuan), sedangkan deck Malaysia melarangnya dan menamai slide 2 "Executive Summary".
+- 3.10 ⚠ Kode di judul: pemilik "Gw ga pengen deh ada Finding gini gini" dan melarang "A1." di judul dan "Finding A.1" (26 Okt), tetapi T12 (23 Okt) dan lampiran Presiden d9 memakai kode bagian berwarna "A1.", "B2.", "R-E01" di depan judul. Kata 26 Okt lebih baru, tetapi skill belum seragam.
+- 3.11 Judul acuan Penanganan: `<Topik> per Tanggal 22 Oktober 2026`; slide operasi "Operasi Penanganan Karhutla yang Dilakukan per Tanggal 20 Oktober 2026", satu baris, huruf sedikit dikecilkan. [21 Okt: "Operasi Penanganan Karhutla yang Dilakukan per Tanggal 20"]
+- 3.12 Kalimat di bawah judul slide peta tanpa tanggal, pola "Terbanyak di <provinsi> (<n> titik). Total: <n> titik, <n> ha terbakar, <n> ha belum padam". [21 Okt: "Provinsi dengan hotspot terbanyak bla bla bla. Total hotspot, Total lahan terbakar, total belum padam"]
+- 3.13 Subjudul 12 pt satu baris, selesai sebelum x 690 pt supaya tidak menabrak pil cut-off, dan tidak mencampur kohort dengan total. [skill `selera-presentasi`]
+- 3.14 Gunakan "musim hujan", bukan "hujan pertama". [skill `selera-presentasi`]
+- 3.15 Judul pendek, datar, formal; kalimat yang didiktekan pemilik dipakai persis, tanpa ekor tafsiran. Contoh: "Area terdampak kebakaran di 2026"; "Kerja sama teknologi kedua belah pihak mencakup 7 topik". [26 Okt, memori `selera-deck-malaysia`; 26 Okt 03:36: "Catat ya tadi yang judul ya"]
+- 3.16 Judul halaman musim hujan: "Musim hujan 2026/2027 menjadi fokus selanjutnya", tidak lebih panjang. [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 3.17 Judul kolom tabel satu baris, berikon, bersatuan dan bintang ("HOTSPOT* (titik)"); kolom PROVINSI tanpa tanggal. [21 Okt: "Bagusin. Itu kalo bisa sebaris ya"; "Hilangkan 20 Okt."]
+
+#### 4. Bahasa dan nada (lembaga negara, audiens asing, diplomatik, kata terlarang)
+
+- 4.01 Nada resmi, tenang, berbasis bukti, netral, menghormati hierarki, karena ini lembaga negara. [25 Okt: "Set the tone juga untuk setiap presentasi karena ini kan lembaga negara"; skill `nada.md`]
+- 4.02 Bahasa Indonesia baku sebagai bawaan, kecuali pemilik minta lain; peningkatan kemampuan bahasa Indonesia ikut dilatih. [26 Okt, memori `ppt-keputusan-selera`; 25 Okt: "kemampuan berbahasa Indonesia nya juga harus ditingkatkan"]
+- 4.03 Tanpa titik tengah (U+00B7) di teks mana pun; pakai koma, label sendiri, atau baris baru. [20 Okt: "Gw ga pernah suka dipisahin titik gini. Catet."]
+- 4.04 Tanpa em dash; en dash untuk rentang. [16 Okt, `angka-dan-copy`]
+- 4.05 Tidak ada kata "Pantau Bencana" di deck BNPB mana pun, termasuk baris sumber. [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 4.06 Tidak menulis "dashboard" atau "today"/"hari ini" di teks deck; tulis tanggalnya. [26 Okt, memori `ppt-tabel-dan-cutoff`]
+- 4.07 Istilah "cluster" seperti aplikasi, bukan "kompleks (api)"; label cluster tanpa "24 jam". [22 Okt: "Yang pengelompokan kita pakai istilah cluster ya jangan kompleks api"; 24 Okt]
+- 4.08 ⚠ Istilah titik satelit: "titik panas" (deck wilayah/harian, "titik api" tidak dipakai untuk data satelit), "hotspot" (label templat Penanganan/d6/d8), "firespot" (deck Australia: "Firespot instead of hotspot"; deck Malaysia: "terdapat X firespot di Y provinsi"), dan Penanganan 25 Okt punya kelompok FIRESPOT dan HOTSPOT terpisah. Empat istilah hidup berdampingan; pemilik belum menyatukan.
+- 4.09 Luas dari satelit ditulis "hitungan satelit"; "perkiraan satelit" dilarang; kalimat catatan "luas terbakar dan belum padam adalah perkiraan" dihapus. [22 Okt, `keputusan`; 21 Okt: "luas terbakar bla bla bla itu hilangkan aja"]
+- 4.10 Kata "padam" tetap dipakai, jangan diganti "tidak terdeteksi lagi". [21 Okt: "Ga apa pakai padam aja."]
+- 4.11 Sumber bukan pelaku: "Berdasarkan data DIBI, terdapat ...", bukan "DIBI mencatat". [26 Okt, memori `ppt-gaya-kajian-bnpb`]
+- 4.12 Diplomatik: Indonesia memegang kendali dan tidak terlihat butuh. "bantuan", bukan "aset"; "berada dalam kewenangan Pemerintah Indonesia", bukan "di bawah komando"; tawaran "dipertimbangkan sesuai kebutuhan aktual". [26 Okt: "Jangan aset dong tapi bantuan"]
+- 4.13 Deck bilateral tanpa status darurat, "siap 3 hari", "landasan kerja sama", "butir wicara"; delegasi hanya pihak asing. [26 Okt, memori `selera-deck-malaysia`]
+- 4.14 ⚠ Butir wicara: pemilik menempelkan "BUTIR WICARA KEPALA BNPB" (sambutan, pertukaran pengalaman, rencana tindak lanjut) dan berkata "Ini ya slide-slide nya bro yang penting" (26 Okt 03:39), tetapi aturan 26 Okt kemudian melarang kalimat bicara/butir wicara tampil di slide ("content, not script"). Pegangan: butir wicara adalah bahan isi, bukan teks slide. (baru)
+- 4.15 ⚠ Kebutuhan Indonesia di deck Malaysia: pemilik minta slide "potensi apa yang perlu dijajaki untuk menerima tawaran bantuan dari Malaysia serta yang kita lebih perlukan daripada yang ditawarkan; mereka menawarkan pesawat kecil kita butuhnya besar" (26 Okt 13:23), padahal aturan nada melarang Indonesia terlihat butuh. Harus dirumuskan sebagai "kebutuhan aktual" dan kemampuan yang dipertimbangkan, bukan permintaan. (baru)
+- 4.16 Deck untuk audiens asing berbahasa Inggris penuh sampai footer, sumber, kredit foto, dan satuan. [26 Okt: "Inggris aja", "Semuanya sampai ke bawah"; 26 Okt 06:09: "Kasih yang bahasa inggris ya"]
+- 4.17 Deck asing tidak menampakkan kelemahan Indonesia/BNPB: tanpa celah, target tak tercapai, hambatan, "pending verification", asap menghalangi penerbangan; bingkai sebagai respons (dilacak, diaktifkan, dicakup regu). [26 Okt, memori `ppt-audiens-asing`]
+- 4.18 Deck asing berisi konten, bukan ucapan; tidak ada kalimat sambutan di slide. [26 Okt, memori `ppt-audiens-asing`]
+- 4.19 Pilihan kata Inggris: "casualties", bukan "deaths"; "Kementerian Sekretariat Negara"; "units" jamak tetapi "1 unit"; "firespot", bukan "hotspot". [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 4.20 Diksi dilarang: informal (gak, banget, aja, kalo, udah, bro, sih, dong), hiperbola pemasaran, kata menyalahkan, tanda seru, huruf kapital penuh untuk penekanan, emoji; hindari "Anda" di slide. [skill `nada.md`]
+- 4.21 Anti-slop: tidak ada hedging ("perlu dicatat bahwa", "tampaknya"), pembuka klise, atau kata khas AI. [skill `angka-dan-copy` S-12; 26 Okt "AI slop"]
+- 4.22 Konsesi netral: tanpa tuduhan pembakar; nama perusahaan konsesi boleh tampil; tanpa laporan atau angka WALHI; tanpa nomor izin dan kasus sanksi. [18 Okt: "Jangan ada Laporan WALHI nya"; 14 dan 17 Okt, `keputusan`]
+- 4.23 Data sensitif tidak masuk slide: nama PIC dan nomor HP dari rekap jam terbang, NIK, rekening. [26 Okt, `keputusan`; 25 Okt: "memastikan bahwa hal-hal yang ga perlu dan sensitif ga dimasukin ke slide"]
+- 4.24 Kinerja lembaga lain disebut dengan data, bukan sifat; tafsir dengan beberapa kemungkinan ditulis sebagai beberapa kemungkinan. [skill `nada.md` bagian 1 dan 7]
+- 4.25 Nomenklatur terkini: KLHK sudah dipecah (Kementerian Lingkungan Hidup dan Kementerian Kehutanan); data olahan platform sendiri ditulis "diolah tim". [skill `nada.md` bagian 7; verifier 26 Okt menangkap nama lama KLHK]
+- 4.26 Istilah teknis lazim tetap Inggris dan dimiringkan (*baseline*, *offtaker*). [skill `gaya.md` bagian 2]
+
+#### 5. Angka, data, sumber, cut-off
+
+- 5.01 Semua angka karhutla dari data situs sendiri: hotspot dari tabel Real Time, luas terbakar dan belum padam dari lapisan peta. [21 Okt: "Oke sekarang pakai data kita aja ya. Luas terbakar ganti semua pakai data kita."; "Loh data hotspot bukan pakai data kita?"; 23 Okt: "Karhutla udah pasti pakai data kita"]
+- 5.02 Fakta lapangan (status, korban, kekeringan, gempa, operasi) dari laporan BPBD atau Koordalops. [23 Okt: "laporan lapangan BPBD aja"]
+- 5.03 Status karhutla di laporan harian ikut sisa belum padam situs: sisa 0 ha selesai; 10 ha atau lebih dalam penanganan walau BPBD melapor padam; kurang dari 10 ha selesai kecuali BPBD melapor belum padam. [23 Okt: "Bro ini Maluku Utara udah nol ya masuk selesai dong"; 24 Okt: "Ini dua gausah deh kan dikit aja"]
+- 5.04 "Perlu perhatian" mencakup semua jenis (sisa 100 ha atau lebih atau BPBD belum padam, ditambah kejadian lain yang belum tertangani); daftar status hanya berisi yang perlu perhatian. [23 Okt: "Emang semua perlu perhatian ya?"; 24 Okt: "jangan hanya karhutla tulisannya tapi semua yang butuh perhatian"]
+- 5.05 Tally sama di seluruh deck: angka di judul = kartu = batang = tabel = jumlah ikon. [24 Okt: "kalo 15 yang masih dalam penanganan ya 15"]
+- 5.06 Provinsi berstatus Prioritas di situs wajib masuk laporan harian walau tidak ada di laporan Koordalops. [24 Okt: "pedoman ya yang dimasukin yang prioritas"]
+- 5.07 ⚠ Jumlah provinsi prioritas berubah-ubah dan harus diselaraskan antar slide: 6 provinsi + Riau (19 Okt), "Riau tetap masuk, jadi 9 provinsi" (20 Okt), 5 tetap + 3 tambahan (21 Okt 05:20), 6 provinsi teratas urut peta (21 Okt 22:55 WIB), 7 provinsi (Koordalops 21 Okt). Dan frasa situs "provinsi yang sering mengalami karhutla", tidak pernah "9 provinsi prioritas". Tiap slide harus memakai daftar yang sama. [20 Okt: "Selaraskan slide prioritas: Riau tetap masuk, jadi 9 provinsi."]
+- 5.08 Slide data memasang pil CUT OFF DATA (navy, kanan atas, tanggal dan jam WIB tarikan). [21 Okt: "Cut off data terbaru update dong."; 23 Okt: "Tambahkan data cut off"]
+- 5.09 ⚠ Pil CUT OFF: wajib di tiap slide data (23 Okt, QA T-6) lawan "Cut off gini: gausah ada ya" (26 Okt, deck Australia) dan deck Malaysia tanpa pil. Dikendalikan sakelar per proyek (`cut_off_wajib` di tema.json).
+- 5.10 ⚠ Jam cut-off baku: laporan harian 12.00 WIB dan laporan karhutla 15.00 WIB (24 Okt: "tiap laporan harian bencana di jam 12 cut off nya dan laporan harian karhutla cut off jam 15"), tetapi README Penanganan 25 Okt menulis 17.00 WIB, dan 26 Okt pemilik kembali ke 15.00 untuk Paparan Presiden.
+- 5.11 Kolom hari: D-2, D-1, D dengan D = hari laporan (angka sementara sampai jam cut-off, dengan catatan kaki "Angka D sementara"); tanggal kolom digeser mengikuti data terbaru. [21 Okt: "18 19 20 jadi 19 20 21"; 24 dan 25 Okt]
+- 5.12 Kolom cut-off berwaktu pada tabel provinsi prioritas (pagi/malam) dengan tabel dan grafik batang. (baru) [19 Okt: "tambahin slide Cut off data pagi 17 18 19 malam dan 20 pagi / 6 provinsi prioritas (hotspot dan luasan lahan terbakar) / Tabel dan grafik batang"]
+- 5.13 ⚠ Urutan kolom: pemilik minta "Luas terbakar paling kanan" (21 Okt 22:01) lalu berubah "Belum padam paling kanan deh" (21 Okt 22:40), jadi Hotspot, Luas terbakar, Belum padam. Versi 25 Okt menambah dua kelompok FIRESPOT dan HOTSPOT di depan. Vonis terbaru: belum padam paling kanan.
+- 5.14 Sel NA harus terisi semua. [21 Okt: "yang NA NA harusnya keiisi semua kan ya?"]
+- 5.15 ⚠ NA: `selera-presentasi` menulis "Data lapangan yang belum ada ditulis NA dan dijelaskan di catatan kaki", sementara vonis 21 Okt menuntut semua NA terisi. Yang tetap kosong harus dijelaskan.
+- 5.16 Persentase naik/turun di samping tiap angka kolom; tanpa progress bar; tanpa tanda ± di kotak angka; keterangan kecil di bawah angka kotak dibuang. [21 Okt: "Masing" ada percentagenya ya. Dibuat di sampingnya naik atau turun"; "Gausah ada progress barnya."; "Gausah pakai lebih kurang"; "Hilangkan keterangan ini"]
+- 5.17 ⚠ Tanda ±: "Gausah pakai lebih kurang" (21 Okt, deck peta), tetapi laporan harian memakai "± 635.296 ha" dan templat dengan data lapangan "±502,08 ha"; deck wilayah tanpa ±. Aturannya per jenis deck.
+- 5.18 Format id-ID: titik ribuan, koma desimal (paling banyak satu), satuan tertulis; bulan penuh di judul, disingkat di isi, rentang pakai en dash, jam ditulis dengan titik (22.33 WIB). [skill `angka-dan-copy`, `selera-presentasi`]
+- 5.19 Catatan kaki slide hanya kalimat standar tanpa tambahan; label "data satelit" di grafik dan "24 jam" di label cluster dibuang. [24 Okt: "Hilangkan"; 21 Okt 23:05: "Date berdasarkan Geographic Information System dengan satelit Nasa bla bla bla"]
+- 5.20 ⚠ Bunyi catatan kaki satelit: "*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS)." (21 dan 24 Okt) lawan "*Berdasarkan data satelit NASA FIRMS (VIIRS dan MODIS)" (26 Okt, Malaysia) dan batas dua baris di pita kaki. Dua redaksi hidup.
+- 5.21 ⚠ Sumber per slide: `gaya.md` mewajibkan baris sumber di setiap slide berangka, sedangkan pemilik menghapus baris sumber di bawah grafik dan catatan kaki tentang luas (d5) dan menetapkan hanya kalimat standar. Pegangan: sumber lewat catatan kaki standar atau pita kaki.
+- 5.22 Kalimat data bertanggal: "Berdasarkan data 26 Oktober 2026, terdapat X firespot di Y provinsi utama"; angka satelit diberi bintang. [26 Okt, memori `selera-deck-malaysia`]
+- 5.23 Jumlah titik panas dari data satelit ditambahkan di slide sebagai angka eksplisit. (baru) [18 Okt: "Tambahin data jumlah titik panasnya berdasarkan data satelit"]
+- 5.24 Padam = 48 jam tanpa titik (hanya di deck); belum padam = api yang bertahan satu hari penuh; satuan firespot adalah titik sama dengan hotspot (firespot tidak melebihi hotspot). [21 Okt: "Oke berarti 48 jam tanpa titik berarti padam ya"; 25 Okt]
+- 5.25 Angka harus cocok di seluruh deck, total dihitung ulang (`cekJumlah`), peta di deck sama dengan peta app. [skill `selera-presentasi`, `qa`]
+- 5.26 Tabel historis berlabel "berdasarkan data historis"; proyeksi berlabel "proyeksi/perkiraan" dengan asumsinya. [26 Okt, memori `aturan-deck-26-okt-rinci`; skill `nada.md`]
+- 5.27 Label RSPO pada perusahaan sawit di slide konsesi bila ada sertifikasi. (baru) [19 Okt: "Ini dia ada RSPO nya ga kasih label"]
+- 5.28 Slide konsesi memuat perusahaan yang konsesinya terbakar, tanpa kolom catatan. (baru) [18 Okt: "termasuk perusahaan yang konsesinya terbakar"; "Hilangkan kolom catatan"]
+- 5.29 Data basi diberi tanda atau tanggal; kartu basi diredupkan dan menampilkan tanggal datanya. [22 Okt, `keputusan`; 22 Okt: "Kartu basi diredupkan dan menampilkan tanggal datanya"]
+- 5.30 Rekap jam terbang heli patroli dan water bombing: total 1.821 jam, masuk sebagai kolom "Jam terbang". [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 5.31 Angka ringkasan di slide pesan kunci disamakan dengan slide operasi (39 heli water bombing, ±71.878 personel, 18 sorti OMC; 1.135.000 liter per hari tetap). [26 Okt, memori `aturan-deck-26-okt-rinci`]
+
+#### 6. Tabel
+
+- 6.01 ⚠ Header kolom: rata tengah, teks huruf kapital polos, bukan pil atau label berwarna. [26 Okt: "Gw ga mau header dibuat label gini ... tidak dalam bentuk pil", "Catat agar semua header rata tengah"; 13, 14, 17 Okt (web): "Agar semua tabel rata tengah ya", "Header tabel harus center"]. Bentrok dengan skill: `selera-presentasi` (tabel peringkat d5 s1: "Kepala metrik berupa pil berikon"), `gaya-bnpb.md` ("kolom angka berkepala pil navy berikon"), dan `gaya.md` ("header isi warna gelap teks putih"). Vonis 26 Okt menang; dokumen skill belum diperbarui.
+- 6.02 ⚠ Perataan isi sel: label kolom pertama rata kiri, kolom lain rata tengah, sisa lebar disebar bila kolom label menyisakan lebih dari 40% kosong (26 Okt); lawan angka rata kanan dengan panah dan persen rata kiri "lurus seragam ke bawah" (21 Okt) dan `gaya.md`; lawan deck Malaysia "kolom teks rata kiri" (`rata: 'l'`, `bobot`). Tiga perataan hidup; pemilik belum menyatukan.
+- 6.03 Nomor peringkat berupa bulatan biru gelap berangka putih, bukan bulatan bergaris oranye; tabel jenis bencana memakai ikon baris, bukan nomor. [21 Okt: "Pake yang biru gelap ini aja angkanya"; 26 Okt]
+- 6.04 Judul kolom berikon, satuan, dan bintang, satu baris, serupa antara slide peta dan slide tabel. [21 Okt: "Samain sama ini"]
+- 6.05 Status dalam tabel berupa pil berlabel (Response merah, Alert oranye bergaris). [26 Okt, memori `ppt-tabel-dan-cutoff`]
+- 6.06 Tabel diakhiri baris total (kotak navy) dan memuat persentase; tabel satu baris tanpa baris TOTAL; hanya metrik yang relevan (Aktif saja, tanpa Terbakar). [26 Okt, memori `selera-deck-malaysia`; 24 Okt]
+- 6.07 Tabel kekeringan ditutup baris TOTAL berikon (rumah untuk KK, orang untuk jiwa, tetes untuk air). [23 Okt: "Buat icon"]
+- 6.08 Tanpa garis vertikal; garis bawah tipis; judul kolom tidak lebih dari satu baris. [skill `selera-presentasi`; 21 Okt]
+- 6.09 ⚠ Batas baris: maksimal 24 baris per slide untuk tabel lampiran (`selera-presentasi`) lawan 12 baris dan 9 kolom angka (`gaya.md`, mesin menolak di atas 12). Tabel panjang dipecah "(lanjutan 2/5)" dengan baris dibagi rata; potongan 3 baris dianggap cacat.
+- 6.10 Kolom "Catatan" dibuang dari tabel. (baru) [18 Okt: "Hilangkan kolom catatan"]
+- 6.11 Slide 1 deck Presiden hanya berupa tabel; topik penanganan dan modifikasi cuaca yang ada dipindah ke lampiran. (baru) [20 Okt: "Slide 1 nya agar hanya tabel gini ya... Sama penanganan dan modifikasi cuaca. Yang saat ini ada agar dimasukin ke lampiran"]
+- 6.12 Ruang kosong di atas/bawah gambar diisi tabel. [14 Okt (web): "Di bawah gambar di kasih tabel"; "Lu kasih aja tabel"]
+- 6.13 Tabel konsesi (untuk laporan): nomor, nama PT, luas, jenis (HTI/sawit), RSPO, HGU (ha), hotspot, cluster, bertahan lebih dari 2 hari, bertahan 7 hari, kecamatan/kabupaten, tautan ke data lengkap, indikasi terbakar. [18 Okt (web, laporan konsesi): rincian kolom dari pemilik]
+- 6.14 ⚠ Sudut tabel: "semua tabel agar ujung atas kanan dan kirinya dibuat rounded rectangle" (14 Okt, web). Belum diketahui berlaku ke tabel native PPT atau hanya situs.
+- 6.15 Tabel rekomendasi: kolom LANGKAH, RINCIAN, PENANGGUNG JAWAB, rincian satu kalimat rata kiri-kanan (justify), penanggung jawab berupa chip lembaga berikon. [23 Okt: "Justify"; "Pakai ikon saja"]
+
+#### 7. Kartu, pita, panel, ruang kosong
+
+- 7.01 Tidak ada ruang kosong di dalam kontainer: panel setinggi isinya, panel berikutnya langsung menyusul; batas ruang mati panel 10% (13 sampai 15% tetap terbaca "white space banyak banget"). [24 Okt: "Gw ga suka white space banyak gini"; 26 Okt, memori `ppt-tabel-dan-cutoff`]
+- 7.02 ⚠ Cara mengisi ruang kosong: banyakin data (kajian: "ukuran hurufnya juga ga masalah kecil tapi white spacenya ga banyak... banyakin aja datanya", 26 Okt pagi), besarkan peta (21 Okt: "Besarin aja mapsnya ini white spacenya banyak banget"), isi foto (25 Okt), digedein judul (20 Okt), tetapi juga "Btw semua font gedein" (26 Okt siang). Jalur mana yang dipakai bergantung konteks; lihat 9.09.
+- 7.03 Satu topik satu kontainer; panel gelap di samping dibuang dan isinya digabung ke panel putih; topik berbeda tetap kontainer berbeda. [23 Okt: "JANGAN DIPISAHIN DONG CONTAINERNYA KAN SAMA"; 26 Okt, Malaysia]
+- 7.04 Isi tidak menempel tepi bawah panel (jarak 7 pt atau lebih), tidak berhimpitan, angka tidak menempel. [23 Okt: "Jangan ada yang nempel ke bawah gitu"; 21 Okt: "Ini jangan himpitan"; 20 Okt: "Ini angka 1 nya nempel ke dua"]
+- 7.05 Setiap panel punya kepala (pita kepala berikon); keterangan ditulis sebagai chip/label pendek, bukan kalimat. [23 Okt: "Kasih header"; "Ini keterangan dibuat label aja"]
+- 7.06 Kartu angka: lingkaran tint berikon, nilai besar, label kecil; kotak angka nasional kecil, berikon, di atas peta. [21 Okt: "Kecilin Buat bagus ada icon dan buat di atas peta."]
+- 7.07 Grup kartu berupa kontainer tint dengan pil bagian (DATA SATELIT, PERLU PERHATIAN); KPI tidak satu deret datar. [23 Okt, skill `selera-presentasi`]
+- 7.08 Tidak ada kotak anotasi mengambang di atas grafik; komentar masuk panel samping, kolom kanan, atau tabel pil sejajar kategori. [26 Okt: "aneh banget kesimpulan letaknya di atas chart"]
+- 7.09 Ubin sorotan memakai tint dari warna angkanya sendiri; angka oranye di atas tint biru dilarang. [26 Okt, memori `ppt-keputusan-selera`]
+- 7.10 Catatan dan sumber paling banyak dua baris di dalam pita kaki; logo tidak boleh berubah proporsi, pakai gambar lambang asli. [26 Okt, memori `ppt-keputusan-selera`; 14 Okt: "logo pakai ini" (Logo PPT.pptx)]
+- 7.11 ⚠ Pita bawah dan strip kartu: dihapus bila tidak menambah data (Malaysia, 26 Okt: "Pita bawah, KPI card strips, 'tertinggi' callouts ... removed when they add nothing"), tetapi laporan harian mempertahankan pita grafik harian ("Eh ini tetap ada aja", 23 Okt) dan pita YANG AKAN DILAKUKAN BNPB. Aturan per jenis deck.
+- 7.12 ⚠ Pil keyakinan data (Resmi, Terverifikasi, Estimasi model): tidak tampil di slide sejak 26 Okt ("Ga perlu ada ini ya Resmi dan Terverifikasi ke depan"), padahal `gaya-bnpb.md` menyebutnya "ciri terkuat deck ini" dan `selera-presentasi` masih memuat pil status keyakinan. Skill sudah punya sakelar `pil_keyakinan: false`.
+- 7.13 Tidak ada kode tampil: tanpa "Finding A.1", "Temuan B.1", "A1." di judul; kode boleh tinggal di spek. [26 Okt: "Gw ga pengen deh ada Finding gini gini"]
+- 7.14 Teks di samping ikon atau kode rata tengah vertikal terhadap ikon, bukan rata atas. [26 Okt: "harusnya rata middle"]
+- 7.15 Teks dua sampai tiga baris di-justify dengan baris terakhir rata kiri; butir memakai bullet native Roboto. [26 Okt: "kalo dia 2-3 baris ... justify"]
+- 7.16 Kartu dan konten deck mengikuti tampilan kartu Insight di situs (pil kategori, satu kalimat temuan, grafik), karena deck awal dinilai kaku. (baru) [18 Okt: "kaku banget sumpah. Ga visually appealing dan susah untuk mengkonsumsinya... Tampilan insightnya kan oke"]
+- 7.17 Slot foto membulat diisi bila isi slide tidak memenuhi area; panel tidak diregangkan; foto relevan, kredit 7 pt; deck tidak dikirim dengan foto placeholder. [25 Okt: "slot foto untuk slide bisa dimasukkan"]
+- 7.18 Slide memberi tabel/data pada ruang yang kosong, bukan kotak kosong. [14 Okt (web): "dia misal di bawahnya dan atasnya kosong banget. Lu kasih aja tabel"]
+- 7.19 Daftar status satu baris: lingkaran ikon, nama tempat tebal, ", lokasi", pil status di kanan; daftar diurutkan menurut sisa ha terbesar. [skill `selera-presentasi`]
+
+#### 8. Peta dan grafik
+
+- 8.01 ⚠ Latar peta: deck wilayah putih atau abu sangat muda tanpa laut biru ("petanya belakangnya jangan biru", 23 Okt); templat Penanganan memakai daratan biru tua dengan bulatan oranye ("Warnanya sesuaikan ya sama format ppt", 21 Okt). Beda jenis deck: daratan biru tua hanya di templat Penanganan.
+- 8.02 Label dan bulatan peta tidak boleh bertumpuk. [21 Okt: "Tumpang tindih"; 23 Okt: "Ini situbondo tumpang tindih"]
+- 8.03 Setiap bulatan dan warna punya legenda; legenda menjelaskan naik/turun; legenda hanya memuat kelas yang muncul beserta ambangnya (tanpa butir "Kelas peta"). [23 Okt: "Ya apa itu lingkaran dan warnanya isinya apa legendanya"; 21 Okt: "Tambahin ini di slide 1 sebagai lagenda"; 26 Okt, Malaysia]
+- 8.04 Nomor peringkat 1 sampai 7 di peta berupa label kecil putih bergaris oranye (bukan biru gelap yang "nyaru"). [21 Okt: "Tandain nomor 1 2 3 4 5 6 7 paling banyak. Pakai label kecil aja"; "Warna label jangan biru gelap juga. Nyaru"]
+- 8.05 Semua provinsi berwarna di peta diberi label. [26 Okt, memori `selera-deck-malaysia`]
+- 8.06 Peta diperbesar untuk mengurangi ruang kosong. [21 Okt: "Besarin aja mapsnya ini white spacenya banyak banget"]
+- 8.07 Data sebaran geografis disajikan sebagai peta, kalau perlu dua slide. [20 Okt: "Bagusan dibuat kaya map gitu atau gimana? Bisa dibuat dalam 2 slide ga atau gimana? Intinya buat paling bagus"]
+- 8.08 ⚠ Peta 3D timbul boleh dan wajib dimiringkan (25 Okt: "peta 3D, dan slot foto untuk slide bisa dimasukkan"; "betul dimiringin"), padahal `gaya.md` dan G25 melarang 3D (pie 3D, bayangan berat, efek 3D). Pengecualian hanya untuk peta; Laporan Harian dan Penanganan tetap peta acuannya sampai pemilik minta.
+- 8.09 Grafik batang harian meniru laporan bencana harian: nilai di atas batang, tanggal dan persen di bawah, naik ▲ oranye D9600B, turun ▼ biru 2F86D1, batang pertama abu, tiga terakhir pekat, ujung atas membulat, tanpa sumbu Y; selebar pitanya. [23 Okt: "Tiru model selama ini di laporan bencana harian dan laporan harian karhutla"; 24 Okt: "Bagusin"]
+- 8.10 Bar chart diberi angka (jumlah hotspot) di atas batang. [14 Okt (web): "yang bar chartnya agar di atasnya kasih dong angka" angka ya berapa jumlah hotspot"]
+- 8.11 Pakai model grafik yang pemilik tunjuk pada slide lain untuk menyusun ulang slide yang tidak disukai. (baru) [21 Okt: "model visualisasinya diganti datanya ditampilin Tapi dengan model grafik yang saat ini ada di slide kedua... slide 1 di recreate semua"]
+- 8.12 ⚠ Pai: pemilik ingin "pie chart tapi diisi bendera" sebagai contoh grafik menarik (25 Okt) dan kolom negara pakai bendera (13 Okt, web); `gaya.md` mengizinkan pai datar hanya 2 sampai 4 irisan dan G25 melarang pai lebih dari satu pangsa dan donat. (baru)
+- 8.13 Gabungkan beberapa jenis chart/figur sehingga slide kompleks tetapi mudah dibaca; pilih jenis chart menurut pesan (kapan matriks, kapan peta). [25 Okt: "Membuat slide menjadi sangat kompleks tapi juga sangat mudah untuk dibaca"; "Kapan penggunaan matrik" begini"]
+- 8.14 Grafik native dan bisa disunting (bukan gambar tempelan), tanpa gridline, tanpa 3D; label seri di ujung; maksimal 2 grafik per slide. [skill `gaya.md` bagian 3]
+- 8.15 Panel Armada Udara: batang bertumpuk navy = patroli, oranye = water bombing, "N unit" di ujung batang; "Jam terbang" jadi kolom di sampingnya. [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 8.16 Peta pemilih warna untuk jumlah kecil: warna terang, dan wilayah tanpa data tetap putih agar tidak tampak semua berbahaya. (baru) [13 Okt (web): "Bro kalo jumlahnya dikit ya warnanya terang aja lah. Agak banting banget ya soalnya yang ga ada samsek warna putih"]
+- 8.17 Peta provinsi/kabupaten dengan penanda nama (pin), jumlah penanda = jumlah provinsi di judul, peta di deck sama dengan peta app. [skill `selera-presentasi`]
+- 8.18 Peta overview Pulau Papua lalu detail provinsi dengan kebakaran terbanyak (Papua Selatan dan satu lagi). [26 Okt: "Yang overview Pulau Papua / Yang detailnya Papua selatan dan papua yang mengalami kebakaran paling banyak"]
+
+#### 9. Ikon, huruf, warna, latar
+
+- 9.01 Setiap bagian yang berupa teks label diberi ikon: "Kasih icon" berulang di hampir semua koreksi deck. [18 Okt: "Kasih icon."; 19 Okt: "Dibagusin dikategoriin dikasih icon biar bagus"; 22 Okt: "Kasih icon maksudnya"; 26 Okt: "Buat bagus kasih icon"; 3 Okt (web): "Gw gamau ada label yang bentuknya tulisan. Agar semua pakai icon"]
+- 9.02 Daftar butir dikelompokkan menjadi baris berikon (tebal pendek + teks pendek), bukan paragraf butir. [19 Okt: "Ini dikategoriin lah dibuat icon" gitu"; 26 Okt, Malaysia: "bagusin, kasih icon"]
+- 9.03 Ikon menggantikan logo lembaga pada chip penanggung jawab dan kepala tabel. [23 Okt: "Pakai ikon saja"]
+- 9.04 Ikon jenis bencana konsisten antar halaman; tiap status ikon berbeda. [20 Okt: "Ikut icon yang di halaman selanjutnya"; 24 Okt: "Dikirim bedain dong iconnya"]
+- 9.05 Jangan ada ikon duplikat tak perlu (ikon gempa muncul dua kali). (baru) [20 Okt: "Itu icon gempanya kenapa ada lagi"]
+- 9.06 Ikon ditaruh di sebelah nama daerah, seperti baris lain. (baru) [20 Okt: "Ini agar seperti yang lain icon di sebelah daerah"]
+- 9.07 Ikon sorot: lingkaran gelap dengan ikon putih; tulisan putih di atas gelap. [20 Okt: "kasih iconnya ini highlight gelap belakang dan icon putih"; 21 Okt: "Tulisan putih. Agar icon lebih bagus"]
+- 9.08 Garis ikon putih ditebalkan supaya terlihat. (baru) [21 Okt: "Icon putihnya tolong ditebelin biar keliatan"]
+- 9.09 ⚠ Ukuran huruf: lantai berlainan hidup bersamaan: 10 pt (`gaya.md`, mesin menolak), 7 pt (gaya kajian), 6 pt (BNPB `selera-presentasi`, "teks yang dibaca"), plus "ukuran hurufnya juga ga masalah kecil" (26 Okt pagi) lawan "Btw semua font gedein" (26 Okt siang). Deck mana yang dimaksud "gedein" belum jelas.
+- 9.10 Roboto saja, termasuk font tema; tanpa emoji. [18 Okt: "Font tetap ROboto"; 26 Okt, memori `ppt-keputusan-selera`]
+- 9.11 Tidak semua teks tebal; bold hanya untuk frasa/angka kunci, dan dua warna dipakai untuk menyorot kata tertentu. [19 Okt: "Ini kenapa bold semua"; 18 Okt: "Agar ada dua warna warna ya untuk menghighlight kata" tertentu"; 25 Okt: "kapan membuat bold di tulisan"]
+- 9.12 ⚠ Latar gelap: "Latar gelap ga boleh", termasuk gaya navy McKinsey, sampul dan penutup juga terang (26 Okt); tetapi kerangka BNPB memakai GELAP 051C2C untuk penutup, pembatas Lampiran, dan pembatas bab kajian (T13), sampul harian memakai gradasi navy, dan skill METI/PNRE punya slide gelap. Mesin kajian memakai sampul terang sampai pemilik memutus lain.
+- 9.13 Kontras selalu terbaca: tidak ada teks gelap di latar gelap atau teks terang di latar terang; teks pada pil kuning putih. [25 Okt: "background gelap tulisan gelap highlight belakang terang tulisan terang"; 21 Okt: "Ini harusnya tulisan putih"]
+- 9.14 Warna bermakna: oranye D9600B = angka kunci, api, naik; navy 051C2C = netral, peringkat, selesai; biru 2F86D1 = turun, air; merah C8102E = hanya perlu perhatian/bahaya; "dalam penanganan" oranye. Palet generator lama (D9650B, 0F1E2D, 0B4EA2) dilarang. [skill `selera-presentasi`]
+- 9.15 ⚠ Dua palet BNPB: kerangka rumah D9600B/051C2C/2F86D1 lawan merek BNPB `00499D/EF8200/E50012` (ppt-merek-bnpb, draf 26 Okt, belum resmi dan logo masih raster). Belum diputus mana yang jadi palet BNPB resmi.
+- 9.16 ⚠ Belum padam: merah (deck wilayah) lawan oranye (templat BNPB). [skill `selera-presentasi`, "Belum pasti"]
+- 9.17 Satu keluarga ikon garis, seragam (PNG 256, satu warna, selalu di dalam lingkaran; ukuran 55 sampai 62% lingkaran). Rujukan set: Lucide/Tabler (skill `selera-presentasi`) dan Phosphor MIT (disetujui 26 Okt). [26 Okt, memori `ppt-keputusan-selera`]
+- 9.18 Logo tidak distorsi; footer `Badan Nasional Penanggulangan Bencana | Copyright 2026`, nomor halaman kanan; logo BNPB kanan atas. [skill `selera-presentasi`]
+- 9.19 Gradien hanya untuk foto yang dipudarkan dan pita urutan; bayangan lembut; tidak ada efek berat. [skill `gaya.md` bagian 10]
+- 9.20 Tampilan harus penuh dan modern ("full"), kartu berbeda tiap halaman, bukan template flat monoton. [25 Okt: "Bagaimana membuat ppt terlihat full"]
+- 9.21 Warna label dan teks pada elemen status: kuning TIDAK SEHAT bertulisan putih; PM2.5 angka masuk ke dalam pil, pil seukuran pil cuaca. [21 Okt: "Ini harusnya tulisan putih"; "Ini kecilin lah biar atas sama bawah lebarnya sama. Angkanya masuk"]
+
+#### 10. Per jenis deck
+
+##### 10a. Paparan Kepala BNPB kepada Presiden
+
+- 10a.01 Tanpa sampul dan tanpa penutup. [26 Okt: "Gausah ada cover gausah ada penutup"]
+- 10a.02 Halaman baku tiga slide Laporan Penanganan Pengendalian Karhutla (peta hotspot, tabel penanganan per tanggal, operasi penanganan), ditambah halaman tambahan dengan jenis yang sama. [26 Okt: "Tambahin halaman 1-3 nya jenis nya kaya gini ya. Pakai data terbaru"]
+- 10a.03 Berkas final 3 halaman: Peta hotspot 26 Okt, Tabel penanganan (kolom 24/25/26 Okt), Operasi penanganan 25 Okt dengan kolom "Jam terbang" (total 1.821 jam). Versi 4 halaman dengan halaman musim hujan disimpan terpisah; halaman musim hujan juga ada sendiri. [26 Okt: "Keluarin slide 4"]
+- 10a.04 ⚠ Rekap jam terbang: pemilik menulis "tambahin satu slide terkait data ini" (26 Okt 07:10), tetapi hasil akhir menjadi kolom di slide Operasi, bukan halaman terpisah (diminta digabung). Nama PIC dan nomor HP tidak tampil.
+- 10a.05 Cut-off Presiden berlabel "26 Okt 2026, 15.00 WIB" walau data FIRMS 14.15 dan firespot web 08.05. [26 Okt: "Buat cut off nya 15.00 ya di web walaupun datanya 08.05"]
+- 10a.06 Halaman musim hujan: khusus banjir, rencana aksi berwilayah dan berangka, tabel berlabel "berdasarkan data historis", tanpa "Kepala BNPB" sebagai pelaku, tanpa 1.043.740 pengungsi, tanpa kartu "Musim 2025/2026"; isi umum ditolak "sangat general". [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 10a.07 Banjir terkini bersumber WA Koordalops (Solok, Tapanuli Tengah, Bone). [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 10a.08 ⚠ Acuan Presiden lama (d9, 20 Okt): Utama 7 slide dengan sampul, 4 temuan, Kesimpulan 8 kartu 4x2 plus pita ARAHAN, Terima kasih; Lengkap dengan pembatas Lampiran dan lampiran A/B. Ditandai "satu-satunya acuan deck Presiden", padahal 26 Okt versi baku diganti 3 slide tanpa sampul/penutup.
+- 10a.09 Mulai dari berkas yang pemilik unggah, mesin saat ini dipakai untuk mempercantik, bagian lama yang bagus dilengkapi sistem saat ini. [26 Okt: "Pakai konteks dan mesin saat ini ya yang membuat bagus. Btw kalo ada bagian dari ppt yang sebelumnya ini bagus bisa dilengkapi sistem sampai saat ini"]
+- 10a.10 Versi Presiden Utama/Lengkap sebelumnya dan halaman mitigasi lama ditolak sebagai terlalu umum. [26 Okt, memori]
+- 10a.11 Pada 20 Okt pemilik meminta sebagian isi dihilangkan dari paparan Presiden, dan memakai sumber "laporan Mensesneg". [20 Okt: "Hilangkan ini yang untuk paparan presiden karhutla"; "Pakai yang laporan mensesneg"] Belum jelas bagian apa yang dimaksud (lihat Belum pasti).
+
+##### 10b. Laporan harian, Penanganan, dan paparan wilayah
+
+- 10b.01 Laporan Kejadian Bencana Harian: 4 slide (sampul, ringkasan + peta, rincian per jenis, penutup), cut-off 12.00 WIB, format deck 221026 sebagai acuan. [24 Okt: "tetap kasih cover dan penutup"; 22 Okt: "Ini format terakhirnya yang kemarin"]
+- 10b.02 ⚠ Jumlah slide harian: 4 slide (24 Okt) lawan 2 slide (23 Okt: sampul/penutup dibuang; 21 Okt: "Slide 3 hilangkan" untuk varian Koordalops). Vonis terbaru 4 slide.
+- 10b.03 Bencana lainnya dipisah per jenis dengan kepala, ikon, dan warna sendiri (gempa slate, kebakaran TPA, banjir); panel kosong tidak dipasang. [23 Okt: "Dipisahin dong ... jadi orang tau mana gempa bumi mana bla bla bla"]
+- 10b.04 Sampul harian: foto kanan dengan fade putih, pil PERIODE, DISAMPAIKAN OLEH berikut nama dan gelar, pil tanggal navy. Penutup: foto gradasi navy, "Terima kasih" 54 pt, nama lembaga, tanpa kartu kontak. [skill `selera-presentasi`]
+- 10b.05 Deck harian: pita KPI berkelompok, panel STATUS PENANGANAN, pita YANG AKAN DILAKUKAN BNPB tanpa rujukan BMKG, batang status `selesai | karhutla ditangani | lainnya`. [24 Okt, `keputusan`]
+- 10b.06 Penanganan: slide peta dan tabel berpil CUT OFF, slide operasi tanpa pil sehingga tanggal data ada di judul. [skill `selera-presentasi`]
+- 10b.07 ⚠ Jumlah slide Penanganan: "Oke cukup 3 slide ya" (21 Okt), lalu README 25 Okt: 2 slide (peta, tabel), halaman Operasi dibuang karena sumbernya WA satgas; 26 Okt Presiden kembali ke 3 slide dengan Operasi.
+- 10b.08 Tabel Penanganan memuat 6 provinsi dengan hotspot terbanyak, urutan sama dengan nomor di peta; bukan 6 provinsi prioritas BNPB; peringkat di peta mengikuti data (10 teratas). [21 Okt: "Bukan yang di slide 2 juga yang paling banyak titiknya ya. samain sama depan"]
+- 10b.09 ⚠ Slide tambahan provinsi: "Slide ketiga hilangkan" dan "jadikan 6 provinsi prioritas" (21 Okt malam) lawan "munculin 5 provinsi yang Tetap" di slide 2 dan "Di slide ke 3 tampilin 3 provinsi yang tambahan" (21 Okt siang). Yang malam menggantikan.
+- 10b.10 Varian Koordalops: tanpa pil status darurat (TD/Siaga), tanpa strip KUMULATIF 2026, armada tetap "N unit", sumber Koordalops tidak disebut di catatan kaki, pil PM2.5 berikon dengan angka di dalam, pil angin kencang dan hujan berikon. [21 Okt: "Hilangkan"; "Berbahaya kasih icon"; "Jambi, dan Sulawesi Tengah dari Laporan Harian Dit. Koordalops BNPB 20 ini gausah ada"]
+- 10b.11 Paparan wilayah: 5 slide yang makin menyempit (provinsi, kabupaten fokus, cluster, risiko lanjutan, RTL 7 hari), tanpa sampul dan penutup; slide 1 sampai 3 berpola judul sama; slide risiko dan rekomendasi tanpa pil cut-off; acuan Jatim d5 sudah dikoreksi berkali-kali ("Bagusin. Sumpah jelek banget"). [skill `selera-presentasi`]
+- 10b.12 Paparan Pulau Papua: tanpa sampul, 5 halaman (ikhtisar, peta Papua Selatan, tren Papua Selatan, Papua Barat, rencana tindak lanjut 7 hari). [26 Okt, memori `aturan-deck-26-okt-rinci`]
+- 10b.13 Paparan stakeholder tingkat provinsi (Kalsel dan Kalteng, 18 Okt) mengikuti butir: Cover, Daftar Isi, summary nasional dan provinsi, laporan harian nasional dan provinsi, laporan konsesi (3 halaman), himbauan perkebunan sawit, kerja sama lintas sektoral, penanganan gambut, penutup. (baru) [18 Okt, daftar 1 sampai 10]
+- 10b.14 Himbauan perkebunan sawit: cek status ISPO dan RSPO (prinsip dan kriteria), kesiapan regu pemadam, sarana prasarana, pendekatan hukum dan edukasi. (baru) [18 Okt: "cek status: ispo dan rspo (kementrian ... ) tidak membakar hutan... Kasih prinsip dan kriteria / cek regu pemadaman mereka apakah siap atau nggak"]
+- 10b.15 Kerja sama lintas sektoral: DSI (Danantara Sumberdaya Indonesia), BPN (HGU), KLHK dan pemilik data konsesi lain, Dir Dalkarhut KLHK. (baru) [18 Okt]
+- 10b.16 Penanganan gambut: mesin bor, pompa, akses listrik; air disedot sampai area hidrologi gambut tergenang; bor di gambut berbara tidak perlu terlalu dalam. (baru) [18 Okt]
+- 10b.17 Deck wilayah baru dibuat bersama pembanding (deck rakor Kalteng/Kalsel 19 Okt): data pembanding dimasukkan semua dan diperbarui lintas provinsi. [19 Okt: "Kalimanta Selatan agar diupdate juga dengan data ini"; "Lu cek lagi ada yang berbeda ga?"]
+
+##### 10c. Kajian BNPB (Grand Design)
+
+- 10c.01 Gaya dari empat deck Grand Design yang pemilik sukai: navy 051C2C + oranye D9600B, panel berkepala, strip KPI, tabel rekomendasi berkode, grid kesimpulan 2x4 dengan pita ARAHAN; satu-satunya keluhan white space. [26 Okt: "stylenya udah lumayan oke cuma masalah di white space aja"]
+- 10c.02 Huruf kecil boleh (lantai 7 pt), ruang kosong diisi lebih banyak data. [26 Okt: "ukuran hurufnya juga ga masalah kecil tapi white spacenya ga banyak... banyakin aja datanya"]
+- 10c.03 Deck kajian ±12 slide isi + lampiran; batas halaman dicabut ("Tidak ada batas"), foto boleh sebanyak yang relevan. [23 dan 24 Okt, P14 dan P18]
+- 10c.04 Penerbit BNPB saja, tanpa tim penyusun dan tanpa memo Presiden; pembaca utama Kepala BNPB; tanpa pagu dan biaya proyek; program hanya yang terbukti dengan sumber dampak; status usulan tiga kelas. [23 Okt, P1, P5, P6, P7]
+- 10c.05 Meniru deck konsultan kelas dunia (McKinsey, BCG, Bain, Big Four) bila tidak bentrok dengan aturan tertulis pemilik. [23 Okt: "ppt mckinsey bcg dan konsultan big four management juga ditiru ya"]
+- Catatan: Kode bagian/rekomendasi dan pil keyakinan di deck kajian bentrok dengan vonis 26 Okt; lihat ⚠ di 3.10, 6.01, dan 7.12.
+
+##### 10d. Bilateral dan mitra asing (Australia, Malaysia)
+
+- 10d.01 Australia (NSW RFS dan Dubes): slide 7 memakai slide "Operasi Penanganan" dari Laporan Penanganan Pengendalian Karhutla 25 Okt dalam tata letak aslinya; EN diterjemahkan semua teks (label C/W/S Kalimantan dan S Sumatra dikecilkan agar satu baris), ID tetap asli. [26 Okt: "Yang slide 7 diganti agar sesuai dengan data di laporangn pengendalian karhutla ini. Kasih yang bahasa inggris ya. Sesuaikan dengan design sekarang"]
+- 10d.02 Australia: pil CUT OFF dihapus. [26 Okt: "Cut off gini: gausah ada ya"] (lihat ⚠ 5.09)
+- 10d.03 Australia: gagasan isi dari butir wicara (sambutan, pertukaran pengalaman NSW RFS: manajemen insiden, komando, informasi situasi, integrasi darat-udara; tindak lanjut: tenaga ahli tambahan atas tawaran pesawat, spesifikasi, skema operasional, kebutuhan aktual); tetapi tidak sebagai ucapan di slide (lihat ⚠ 4.14). [26 Okt 03:39]
+- 10d.04 Malaysia (Kepala BNPB dengan Timbalan Ketua Perwakilan Malaysia, 27 Okt): bahan tambahan dari progres stimulan rumah dan RTM Sumatera; isi: potensi yang dijajaki dari tawaran Malaysia dan kebutuhan Indonesia; "Esensinya sama. Tidak perlu diubah" dibanding Australia. [26 Okt 13:23: "Mirip" yang kaya Australia tadi... Esensinya sama. Tidak perlu diubah"] (lihat ⚠ 4.15)
+- 10d.05 Malaysia: slide 2 bernama "Executive Summary"; judul pendek formal persis dikte pemilik; hapus pita bawah, strip KPI, callout "tertinggi", dan butir penjelasan yang tidak menambah data; kartu hanya bila membawa data nyata. [26 Okt, memori `selera-deck-malaysia`]
+- 10d.06 Malaysia: tabel dengan persentase dan baris total, hanya metrik relevan, kolom teks rata kiri; daftar butir menjadi baris berikon; peta dengan label semua provinsi berwarna dan legenda berambang. [26 Okt, memori `selera-deck-malaysia`]
+- 10d.07 Delegasi yang dicantumkan hanya pihak asing. [26 Okt, memori `selera-deck-malaysia`]
+- 10d.08 Deck asing diperiksa pembaca berkonteks bersih untuk mencari bingkai kelemahan sebelum dikirim. [26 Okt, memori `ppt-audiens-asing`]
+
+##### 10e. Pertamina NRE x Danantara (PNRE)
+
+- 10e.01 Format PNRE dipasang sebagai `format/pnre` di dalam skill tunggal; PNRE mengizinkan stabilo kuning, sedangkan BNPB melarang. [26 Okt, memori `ppt-format-lembaga`]
+- 10e.02 ⚠ Font dan palet PNRE: panduan PNRE memakai Poppins dan Arial dengan teal; keputusan 25 Okt di Buku Pegangan menyatakan "Palet, font Poppins dan Arial, stabilo kuning, dan kotak keypoint tidak dipakai karena hanya ada satu gaya rumah", sedangkan memori `ppt-format-lembaga` menyatakan format lembaga harus menang atas gaya rumah Roboto-only untuk deck atas nama lembaganya. Pemilik belum memutus. Pesan pemilik hanya "Lu juga cek skill ini deh integrasikan mana yang bisa untuk menambah" (26 Okt).
+- 10e.03 Aset gambar PNRE belum ada di skill (perlu folder aset pemilik). [26 Okt, memori `ppt-format-lembaga`]
+- Catatan: Tidak ada aturan PNRE langsung dari pemilik di pesan mentah selain perintah integrasi.
+
+##### 10f. METI
+
+- 10f.01 METI v3 (Midnight Energy, slide "Tentang METI" wajib) dipasang sebagai `format/meti`; dua unsur METI diadopsi ke gaya BNPB: peta 3D dimiringkan dan slot foto. [25 Okt: "peta 3D, dan slot foto untuk slide bisa dimasukkan"]
+- 10f.02 ⚠ Kotak kesimpulan: METI mensyaratkan kotak kesimpulan setelah tiap grafik, sedangkan BNPB melarang takeaway box terpisah; kotak keypoint METI tidak dipakai (25 Okt). Latar gelap Midnight Energy juga bentrok dengan "Latar gelap ga boleh". [26 Okt, memori `ppt-format-lembaga`]
+- 10f.03 Deck METI HYDRO v1 PDF termasuk contoh format yang dipakai pemilik untuk menyarikan template terbaik. [18 Okt: "Terlampir contoh" ppt. Tolong agar contoh dari format" ini dan sarikan dan kasih template terbaik yang professional look"]
+- Catatan: Tidak ada aturan METI langsung dari pemilik di pesan mentah selain perintah integrasi (26 Okt 00:43).
+
+---
+
+#### Belum pasti (perlu konfirmasi pemilik)
+
+- Q01 Jumlah halaman maksimum: 10 halaman (paparan Kalsel/Kalteng), tanpa batas (kajian), 3 halaman (Presiden), atau jenis lain? Perlu batas per jenis deck.
+- Q02 "Semua font gedein" (26 Okt 04:55 UTC) ditujukan ke deck apa (laporan harian, butir Australia, semua)? Lantai huruf mana yang berlaku (6, 7, atau 10 pt)?
+- Q03 Header tabel polos tengah (26 Okt): berlaku juga ke tabel peringkat, templat Penanganan (kepala berpil), dan kajian? Skill masih mendokumentasikan pil.
+- Q04 Perataan isi tabel: tengah, kanan untuk angka, atau kiri untuk teks (Malaysia)? Perlu satu aturan.
+- Q05 Latar gelap: apakah penutup, pembatas Lampiran, dan pembatas bab kajian (GELAP 051C2C), sampul gradasi navy, dan slide gelap METI/PNRE tetap dikecualikan dari larangan "Latar gelap ga boleh"?
+- Q06 Pil CUT OFF DATA: wajib di tiap slide data atau dimatikan di deck pertemuan (Australia/Malaysia)? Dan jam baku Penanganan: 15.00 atau 17.00?
+- Q07 Istilah titik satelit: satu istilah baku untuk titik panas / hotspot / firespot / titik api per jenis deck.
+- Q08 Palet BNPB resmi: D9600B/051C2C (rumah) atau 00499D/EF8200/E50012 (merek, draf)? Logo vektor dari Humas BNPB masih diminta.
+- Q09 PNRE dan METI: pakai font dan palet lembaga (Poppins/Arial, teal, Midnight Energy) atau digabung ke gaya rumah Roboto?
+- Q10 Label penyaji di sampul: "DISAMPAIKAN OLEH" atau "Dipresentasikan oleh"? Kartu kontak dan nama penyaji di penutup Presiden dipertahankan atau dibuang?
+- Q11 "Hilangkan ini yang untuk paparan presiden karhutla" (20 Okt 04:12) dan "Pakai yang laporan mensesneg" (20 Okt 02:57): bagian mana tepatnya?
+- Q12 "Catat ya tadi yang judul ya" (26 Okt 03:36): judul yang mana dan aturan apa yang dicatat? (Diasumsikan butir judul laporan harian/Australia.)
+- Q13 Daftar provinsi prioritas di deck (6, 7, 9, 5+3, 10): satu aturan pemilihan, mengikuti situs (cluster level 3) atau daftar BNPB?
+- Q14 Pai berbendera dan peta 3D: boleh keluar dari larangan 3D dan pai G25 di deck apa saja?
+- Q15 Sudut tabel membulat (14 Okt, situs) dan label peta warna terang untuk jumlah kecil (13 Okt, situs): berlaku ke PPT?
+- Q16 Panah ▲ ▼ dipakai di grafik harian (selera), tetapi aturan anotasi L43 menyatakan karakter itu tidak ada di Roboto; pakai ikon vektor atau karakter?
+- Q17 Tampilan deck harus meniru kartu Insight situs (18 Okt): bagian mana yang dipinjam (pil kategori, kalimat temuan, kontrol)?
+- Q18 Konten deck Malaysia tentang "kebutuhan pesawat besar" (4.15): rumusan diplomatik yang disetujui.
+- Q19 Pengungsi gempa masa transisi tidak masuk laporan harian; inferensi belum dikonfirmasi pemilik. [skill `selera-presentasi`, Belum pasti]
+- Q20 Generator `/laporan-bnpb` disesuaikan ke format d3 atau terus menyalin deck pemilik?
+- Q21 Penunjuk "Lampiran hal x sampai y": dipasang di deck berlampiran (18 Okt) tetapi dihapus dari harian 4 slide (23 Okt): konfirmasi bahwa ini aturan per jenis deck.
+- Q22 Deck Presiden: apakah halaman tambahan (armada, musim hujan) selalu dilampirkan sebagai berkas terpisah, atau digabung pada kondisi tertentu?
+
+---
+
+#### Hitungan
+
+| Heading | Aturan | (baru) | ⚠ |
+|---|---|---|---|
+| 1. Cara kerja dan kecepatan | 22 | 2 | 0 |
+| 2. Struktur deck | 22 | 8 | 4 |
+| 3. Judul | 17 | 2 | 5 |
+| 4. Bahasa dan nada | 26 | 2 | 3 |
+| 5. Angka, data, sumber, cut-off | 31 | 4 | 8 |
+| 6. Tabel | 15 | 2 | 4 |
+| 7. Kartu, pita, panel, ruang kosong | 19 | 1 | 3 |
+| 8. Peta dan grafik | 18 | 3 | 3 |
+| 9. Ikon, huruf, warna, latar | 21 | 3 | 4 |
+| 10. Per jenis deck | 47 | 4 | 10 |
+| Total | 238 | 31 | 44 |
+
+Catatan hitung: baris bertanda ⚠ dihitung sebagai satu aturan; aturan yang bertanda (baru) dan ⚠ sekaligus dihitung di kedua kolom. Bagian "Belum pasti" memuat 22 pertanyaan (Q01 sampai Q22).
 
 ## Selera laporan (DOCX/PDF) dan visualisasi data
 

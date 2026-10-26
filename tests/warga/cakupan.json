@@ -698,6 +698,7 @@
     "POST /api/sippa/dummy/isi": "dummy: Super Admin mengisi layar log",
     "POST /api/sippa/dummy/hapus": "dummy: Super Admin mengisi layar log",
     "table pdt_akun": "migrasi 0060 idempoten",
+    "table uji_pilot_lapor": "uji pilot: migrasi 0061 idempoten, CHECK tahap dan petak sama dengan modul aturan",
     "table pdt_sesi": "migrasi 0060 idempoten",
     "table pdt_isian": "migrasi 0060 idempoten",
     "table pdt_berkas": "migrasi 0060 idempoten",

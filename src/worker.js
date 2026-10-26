@@ -30,6 +30,7 @@ import {RUTE_PENGINGAT, buatPengingat, buatPengingatPrioritas} from "./pengingat
 import {RUTE_OPS, nilaiDropTertunda} from "./operasi_lapangan.js";
 import {RUTE_INSTANSI, tugasBaruDariBerkas, bersihkanInstansi} from "./instansi.js";
 import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
+import {RUTE_UJI_PILOT} from "./uji_pilot.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
@@ -542,6 +543,7 @@ const RUTE = {
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
   ...RUTE_SIPPA,   // SIPPA: web /pipa staf BNPB, kit, tugas, log gelar, lapangan berkode (src/sippa.js; awalan /api/sippa/*, bukan /api/pipa/*)
   ...RUTE_PUSH,   // Web Push akun instansi: langganan perangkat, status, uji (src/push.js)
+  ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
@@ -620,6 +622,7 @@ export const HTML_RUTE = [
    BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
 export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"],
   ["/daftar-kontak", "registrasi kontak pemangku kepentingan (kepala daerah, BPBD, TNI, Polri) yang tidak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu, tidak membaca apa pun"],
+  ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
   ["/presiden", "panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026)"],
   ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"],
   ["/pendataan", "pendataan Satu Data BNPB: staf direktorat membuat akun sendiri tanpa akun situs (keputusan pemilik 26 Okt 2026); akun baru menunggu persetujuan Super Admin, sesi dan status aktif dicek di tiap panggilan API"]]);
