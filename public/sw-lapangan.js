@@ -1,19 +1,20 @@
 /* Service worker regu lapangan: halaman /lapangan (kode regu) dan /lacak (token tugas) tetap terbuka tanpa sinyal.
-   Satu skrip, didaftarkan dua kali (scope /lapangan oleh lapangan.js, scope /lacak oleh lacak.js). Terpisah dari sw-instansi.js (scope /instansi, hanya push).
+   Satu skrip, didaftarkan tiga kali (scope /lapangan oleh lapangan.js, scope /lacak oleh lacak.js, scope /pipa/lapangan oleh pipa/lapangan.js; cangkang dipilih dari jalur scope, peta TAMBAHAN). Terpisah dari sw-instansi.js (scope /instansi, hanya push).
    - Cangkang: HTML + JS + CSS (+ MapLibre lokal) disimpan saat pasang. Halaman network-first (batas 4 dtk) lalu simpanan; berkas ber-?v= cache-first; tanpa ?v= stale-while-revalidate.
-   - API: HANYA GET /api/lapangan/saya, /api/lapangan/tugas, /api/lacak/info, network-first (batas 7 dtk), simpanan terakhir sebagai cadangan.
+   - API: HANYA GET /api/lapangan/saya, /api/lapangan/tugas, /api/lacak/info, /api/sippa/lapangan/saya (header x-kode), network-first (batas 7 dtk), simpanan terakhir sebagai cadangan.
      Kunci simpanan = sha256(kode/token) + jalur, jadi tiap akun terpisah; hanya satu akun per jalur yang disimpan (yang lama dibuang). Hanya jawaban 200; 403/404/410 membuang simpanannya.
      Tanpa kode/token di header = tidak disimpan. POST tidak pernah disentuh (antrean draf ada di localStorage lapangan.js).
    - Peta luring: cache "pb-peta-luring" diisi lapangan_tugas.js ("Simpan peta area ini"); di sini hanya DIBACA (cache-first untuk tiles.openfreemap.org) dan TIDAK ikut dibersihkan saat versi naik.
    Naikkan VERSI bila logika berubah; cache cangkang/API versi lama dihapus saat aktif. */
 "use strict";
-const VERSI = 2, CANGKANG = `pb-lapangan-cangkang-v${VERSI}`, API = `pb-lapangan-api-v${VERSI}`, PETA = "pb-peta-luring-v1";
+const VERSI = 3, CANGKANG = `pb-lapangan-cangkang-v${VERSI}`, API = `pb-lapangan-api-v${VERSI}`, PETA = "pb-peta-luring-v1";
 const TAWAR_MS = {halaman: 4000, api: 7000};
-const JALUR_API = new Set(["/api/lapangan/saya", "/api/lapangan/tugas", "/api/lacak/info"]);
-const KUNCI_KREDENSIAL = {"/api/lapangan/saya": "x-kode-regu", "/api/lapangan/tugas": "x-kode-regu", "/api/lacak/info": "x-lacak"};
-const HALAMAN = {"/lapangan": "/lapangan", "/lapangan/": "/lapangan", "/lapangan.html": "/lapangan", "/lacak": "/lacak", "/lacak/": "/lacak"};
+const JALUR_API = new Set(["/api/lapangan/saya", "/api/lapangan/tugas", "/api/lacak/info", "/api/sippa/lapangan/saya"]);
+const KUNCI_KREDENSIAL = {"/api/lapangan/saya": "x-kode-regu", "/api/lapangan/tugas": "x-kode-regu", "/api/lacak/info": "x-lacak", "/api/sippa/lapangan/saya": "x-kode"};
+const HALAMAN = {"/lapangan": "/lapangan", "/lapangan/": "/lapangan", "/lapangan.html": "/lapangan", "/lacak": "/lacak", "/lacak/": "/lacak", "/pipa/lapangan": "/pipa/lapangan", "/pipa/lapangan/": "/pipa/lapangan"};
 /* berkas yang dimuat belakangan (formulir rumah rusak, Kartu Api, peta): dipasang di muka supaya ada saat luring. URL persis sama dengan yang dimuat lapangan.js. */
 const TAMBAHAN_LAPANGAN = ["/vendor/maplibre/maplibre-gl.js?v=4.7.1", "/vendor/maplibre/maplibre-gl.css?v=4.7.1", "/rumah_rusak.js?v=1", "/rumah_rusak.css?v=1", "/inti/lapor-gelap.css?v=1&k=2", "/img/logo.svg"];
+const TAMBAHAN = {"/lapangan": TAMBAHAN_LAPANGAN, "/lacak": ["/img/logo.svg"], "/pipa/lapangan": ["/img/logo.svg", "/vendor/qrcode/qrcode.min.js?v=1"]};
 
 /* src/href lokal .js/.css/.svg dari teks HTML (fungsi murni; diuji di Node lewat vm) */
 function acuanLokal(html) {
@@ -26,11 +27,11 @@ const ujung = a => new Promise((_, no) => setTimeout(() => no(new Error("lambat"
 const jaringan = (req, ms) => Promise.race([fetch(req), ujung(ms)]);
 
 self.addEventListener("install", e => e.waitUntil((async () => {
-  const lapangan = self.registration.scope.replace(/\/$/, "").endsWith("/lapangan"), halaman = lapangan ? "/lapangan" : "/lacak";
+  const halaman = new URL(self.registration.scope).pathname.replace(/\/$/, "");   // /lapangan, /lacak, atau /pipa/lapangan (bukan endsWith: /pipa/lapangan juga berakhiran /lapangan)
   const c = await caches.open(CANGKANG), r = await fetch(halaman, {cache: "reload"});
   if (!r.ok) throw new Error("halaman tidak termuat");   // gagal pasang = dicoba lagi pada kunjungan berikut
   const html = await r.clone().text(); await c.put(halaman, r);
-  await Promise.allSettled([...acuanLokal(html), ...(lapangan ? TAMBAHAN_LAPANGAN : ["/img/logo.svg"])].map(async u => { const x = await fetch(u); if (x.ok) await c.put(u, x); }));
+  await Promise.allSettled([...acuanLokal(html), ...(TAMBAHAN[halaman] || ["/img/logo.svg"])].map(async u => { const x = await fetch(u); if (x.ok) await c.put(u, x); }));
   await self.skipWaiting();
 })()));
 self.addEventListener("activate", e => e.waitUntil((async () => {

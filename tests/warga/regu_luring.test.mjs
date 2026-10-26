@@ -69,5 +69,39 @@ test("lapangan: modul api hanya untuk karhutla, tanpa kamus salinan, ?v= dinaikk
   assert.match(h, /id="hKondisi"/); assert.match(h, /lapangan_tugas\.js\?v=2/); assert.match(h, /instansi_kartu\.js\?v=2/); assert.match(h, /lapangan\.js\?v=2/);
   assert.match(j, /mulai\(\{bentuk: atur,/); assert.match(t, /bt\.api && window\.AksesKartu/); assert.match(t, /bt\.api && cara\.length/);
   assert.doesNotMatch(j + t, /Banjir sudah surut|Mulai surut|Masih tergenang/, "kamus tidak boleh disalin");
-  assert.match(baca("sw-lapangan.js"), /VERSI = 2,/);
+  assert.match(baca("sw-lapangan.js"), /VERSI = 3,/);
+});
+/* install service worker per scope: /pipa/lapangan berakhiran /lapangan tapi tidak boleh memasang cangkang Posko */
+const pasang = async scope => {
+  const diambil = [], simpan = [];
+  const cache = {put: async u => { simpan.push(u); }};
+  let pasangFn; const self = {registration: {scope}, addEventListener: (n, f) => { if (n === "install") pasangFn = f; }, skipWaiting: async () => {}};
+  const c = vm.createContext({self, URL, Set, RegExp, Promise, setTimeout, caches: {open: async () => cache, keys: async () => []},
+    fetch: async u => { diambil.push(String(u)); return {ok: true, clone() { return this; }, text: async () => '<script src="/pipa/lapangan.js?v=1"></script>'}; }});
+  vm.runInContext(baca("sw-lapangan.js"), c);
+  let tunggu; pasangFn({waitUntil: p => { tunggu = p; }}); await tunggu;
+  return {diambil, simpan};
+};
+test("install: scope /pipa/lapangan mengambil /pipa/lapangan dan QR, bukan cangkang /lapangan", async () => {
+  const {diambil, simpan} = await pasang("https://x/pipa/lapangan/");
+  assert.equal(diambil[0], "/pipa/lapangan");
+  assert.ok(diambil.includes("/vendor/qrcode/qrcode.min.js?v=1"));
+  assert.ok(!diambil.includes("/lapangan") && !diambil.some(u => u.includes("maplibre") || u.includes("rumah_rusak")), diambil.join(","));
+  assert.ok(simpan.includes("/pipa/lapangan"));
+});
+test("install: scope /lapangan dan /lacak tetap seperti semula", async () => {
+  const a = await pasang("https://x/lapangan/"), b = await pasang("https://x/lacak/");
+  assert.equal(a.diambil[0], "/lapangan"); assert.ok(a.diambil.some(u => u.includes("maplibre-gl.js")) && a.diambil.includes("/rumah_rusak.js?v=1"));
+  assert.equal(b.diambil[0], "/lacak"); assert.ok(!b.diambil.includes("/vendor/qrcode/qrcode.min.js?v=1") && b.diambil.includes("/img/logo.svg"));
+});
+test("sw-lapangan: VERSI 3, jalur API SIPPA memakai x-kode, POST tidak disentuh", () => {
+  const s = baca("sw-lapangan.js");
+  assert.match(s, /VERSI = 3,/);
+  assert.match(s, /"\/api\/sippa\/lapangan\/saya": "x-kode"/); assert.match(s, /JALUR_API = new Set\(\[[^\]]*"\/api\/sippa\/lapangan\/saya"/);
+  assert.match(s, /req\.method !== "GET"\) return/);
+});
+test("vendor qrcode: globalThis.qrcode menghasilkan matriks QR", () => {
+  const c = vm.createContext({}); vm.runInContext(baca("vendor/qrcode/qrcode.min.js"), c);
+  const q = c.qrcode(0, "M"); q.addData("https://x/y"); q.make(); assert.ok(q.getModuleCount() >= 21);
+  assert.match(baca("vendor/qrcode/LICENSE"), /MIT License/);
 });
