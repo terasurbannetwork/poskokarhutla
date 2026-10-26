@@ -7,6 +7,7 @@ import {cekButir} from "./formulir.js";
 const NAMA_DB = "sippa-antre", LS_ANTRE = "sippa.antre", LS_KODE = "sippa.kode";
 const BATAS_LS = 200, BATAS_KIRIM = 200, FOTO_MAKS = 8388608;
 const BUKA_MAKS_MS = 3000, DASAR_MS = 60000, TUTUP_MS = 30 * 60000;
+const UMUR_MAKS_MS = 14 * 86400000, JALUR_SAYA = "/api/sippa/lapangan/saya";
 const LS_TERKIRIM = "sippa.terkirim", LS_DRAF = "sippa.draf.";
 const PESAN_KODE ={401: "Tautan penugasan tidak berlaku. Minta tautan baru dari Pusdalops", 403: "Kode penugasan sudah dicabut"};
 const MIME_FOTO = ["image/jpeg", "image/webp"];   // jenisBerkas server (ADR-09); PNG tidak dikenali
@@ -174,19 +175,40 @@ async function jalan(sekarang, tugas_id, kodeOpsi) {
 /* "Keluar dari tugas": butir belum terkirim (menunggu, ditolak, foto) mencegah keluar; sisanya kode dihapus. */
 export async function keluar({tugas_id} = {}) {
   if ((await jumlah()).total || (await semuaFoto()).length) return {ok: false, pesan: "Masih ada isian yang belum terkirim"};
-  bersihkanJejak(tugas_id);
+  await bersihkanJejak(tugas_id);
   return {ok: true};
 }
 
 /* kode, penanda terkirim, dan draf stopwatch tugas itu ikut hilang: ponsel bersama tidak membawa jejak regu sebelumnya */
-function bersihkanJejak(tugas_id) {
-  try { const s = simpan(); s.removeItem(LS_KODE); s.removeItem(LS_TERKIRIM); if (tugas_id != null) s.removeItem(LS_DRAF + tugas_id); } catch { /* penyimpanan diblokir */ }
+async function bersihkanJejak(tugas_id, semuaDraf = false) {
+  try {
+    const s = simpan(); s.removeItem(LS_KODE); s.removeItem(LS_TERKIRIM);
+    if (tugas_id != null) s.removeItem(LS_DRAF + tugas_id);
+    if (semuaDraf) for (let i = s.length - 1; i >= 0; i--) { const k = s.key(i); if (k?.startsWith(LS_DRAF)) s.removeItem(k); }
+  } catch { /* penyimpanan diblokir */ }
+  /* simpanan API service worker (/api/sippa/lapangan/saya: tugas, regu, kit) ikut dibuang; cangkang dan jalur lain tidak disentuh */
+  try {
+    for (const n of await globalThis.caches.keys()) {
+      if (!/^pb-lapangan-api-/.test(n)) continue;
+      const c = await globalThis.caches.open(n);
+      for (const r of await c.keys()) if (new URL(r.url).pathname === JALUR_SAYA) await c.delete(r);
+    }
+  } catch { /* tanpa Cache API */ }
+}
+
+/* Antrean milik kode yang sudah mati tidak pernah terkirim: butir lebih tua 14 hari (dan fotonya) dibuang saat layar mulai.
+   hanyaHitung = hanya menghitung, supaya layar bisa memberi tahu jumlahnya sebelum membuang. */
+export async function buangKadaluarsa({sekarang = Date.now(), hanyaHitung = false} = {}) {
+  const batas = sekarang - UMUR_MAKS_MS, tua = (await semuaButir()).filter(b => b.dibuat < batas), ids = new Set(tua.map(b => b.id));
+  const foto = (await pakaiDb()) ? (await semuaFoto()).filter(f => ids.has(f.butir_id)) : [];
+  if (!hanyaHitung) { for (const b of tua) await buangButir(b.id); for (const f of foto) await op("foto", "delete", f.id); }
+  return {butir: tua.length, foto: foto.length};
 }
 
 /* Jalan keluar bila kode sudah tidak berlaku dan butir tidak mungkin terkirim: buang seluruh antrean (layar meminta konfirmasi dua langkah). */
 export async function buangSemua({tugas_id} = {}) {
   for (const b of await semuaButir()) await buangButir(b.id);
   if (await pakaiDb()) for (const f of await semuaFoto()) await op("foto", "delete", f.id);
-  bersihkanJejak(tugas_id);
+  await bersihkanJejak(tugas_id, true);
   return {ok: true};
 }

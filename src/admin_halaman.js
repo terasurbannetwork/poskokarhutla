@@ -210,7 +210,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>
 <noscript><p>Form lapangan butuh JavaScript aktif.</p></noscript>
-<script type="module" src="/pipa/lapangan.js?v=1"></script>
+<script type="module" src="/pipa/lapangan.js?v=2"></script>
 </body></html>`;
 
 /* halaman publik /statistik (tanpa login). Data dari /api/publik. */

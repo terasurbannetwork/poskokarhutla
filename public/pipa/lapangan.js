@@ -4,7 +4,7 @@
    INP: ketukan stopwatch dan Kirim sekarang mengubah tombol seketika, simpan dan kirim lewat nanti() (anggaran form lapangan < 100 ms). */
 import {ikon} from "./ikon.js";
 import {cekButir, MEDAN, KEDALAMAN_CM} from "./formulir.js";
-import {tambah, tambahFoto, jumlah, daftar, perbaiki, kirimSemua, keluar, buangSemua, kodeTersimpan, idbSiap} from "./antre.js";
+import {tambah, tambahFoto, jumlah, daftar, perbaiki, kirimSemua, keluar, buangSemua, kodeTersimpan, idbSiap, buangKadaluarsa} from "./antre.js";
 
 const LS_KODE = "sippa.kode", LS_TERKIRIM = "sippa.terkirim", LS_DRAF = "sippa.draf.";
 const MELESET_MS = 10 * 60000, KIRIM_BERKALA_MS = 60000;
@@ -423,7 +423,8 @@ export function pasang(akar) {
   addEventListener("online", () => tunda(kirim));
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") tunda(kirim); });
   pasang.lepas = () => clearInterval(berkala);
-  tunda(mulai);
+  /* isian lebih dari 14 hari milik kode yang mustahil terkirim: dibuang dan jumlahnya diberitahukan (SP-015) */
+  tunda(async () => { const k = await buangKadaluarsa().catch(() => null); if (k?.butir) pitaTulis(`${angka(k.butir)} isian lebih dari 14 hari dibuang dari antrean karena tidak mungkin terkirim lagi.`); await mulai(); });
 }
 
 export const lepas = () => pasang.lepas?.();

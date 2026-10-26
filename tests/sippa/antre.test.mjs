@@ -27,7 +27,7 @@ const idbRusak = () => ({open: () => { throw new Error("IndexedDB diblokir"); }}
 
 function simpananPalsu() {
   const m = new Map();
-  return {getItem: k => m.has(k) ? m.get(k) : null, setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k), m};
+  return {getItem: k => m.has(k) ? m.get(k) : null, setItem: (k, v) => m.set(k, String(v)), removeItem: k => m.delete(k), key: i => [...m.keys()][i] ?? null, get length() { return m.size; }, m};
 }
 
 /* muat antre.js segar (keadaan modul bersih) dengan global peramban tiruan */
@@ -327,6 +327,48 @@ test("keluar(): butir belum terkirim mencegah keluar; antrean kosong menghapus k
   assert.equal((await A.keluar()).ok, false); assert.equal(globalThis.localStorage.getItem("sippa.kode"), KODE);
   await A.kirimSemua(T1);
   assert.equal((await A.keluar()).ok, true); assert.equal(globalThis.localStorage.getItem("sippa.kode"), null);
+});
+
+/* SP-015: ponsel bersama. caches tiruan meniru cache SW API (kunci = URL jalur + ?k=hash) */
+function cachesPalsu() {
+  const toko = new Map([["pb-lapangan-api-v3", new Map([
+    ["http://x/api/sippa/lapangan/saya?k=aaa", 1], ["http://x/api/lapangan/saya?k=bbb", 1]])], ["pb-lapangan-cangkang-v3", new Map([["/lapangan", 1]])]]);
+  const buka = async n => ({keys: async () => [...toko.get(n).keys()].map(url => ({url})), delete: async r => toko.get(n).delete(r.url)});
+  return {toko, keys: async () => [...toko.keys()], open: buka};
+}
+
+test("SP-015 keluar() dan buangSemua() juga membuang simpanan API SW /api/sippa/lapangan/saya (jalur lain dan cangkang utuh)", async () => {
+  for (const fn of ["keluar", "buangSemua"]) {
+    const {A} = await siap({balas: semuaDiterima});
+    const c = globalThis.caches = cachesPalsu();
+    await A[fn]({tugas_id: "T1"});
+    assert.deepEqual([...c.toko.get("pb-lapangan-api-v3").keys()], ["http://x/api/lapangan/saya?k=bbb"], `${fn}: hanya jalur sippa dibuang`);
+    assert.equal(c.toko.get("pb-lapangan-cangkang-v3").size, 1, "cangkang tidak disentuh");
+  }
+  delete globalThis.caches;
+});
+
+test("SP-015 buangSemua() tanpa tugas_id menghapus SEMUA draf sippa.draf.*, kunci lain tetap", async () => {
+  const {A} = await siap({balas: semuaDiterima});
+  for (const k of ["sippa.draf.T1", "sippa.draf.T2", "lain"]) globalThis.localStorage.setItem(k, "{}");
+  await A.buangSemua();
+  assert.equal(globalThis.localStorage.getItem("sippa.draf.T1"), null); assert.equal(globalThis.localStorage.getItem("sippa.draf.T2"), null);
+  assert.equal(globalThis.localStorage.getItem("lain"), "{}", "kunci non-draf tidak disentuh");
+});
+
+test("SP-015 buangKadaluarsa(): butir dan fotonya lebih tua 14 hari dibuang dengan hitungan; yang baru tetap; hanyaHitung tidak membuang", async () => {
+  const {A, idb} = await siap({balas: semuaDiterima});
+  const hari = 86400000, now = Date.now();
+  await A.tambah(bbm(1)); await A.tambah(bbm(2)); await A.tambah(bbm(3));
+  const [a, b, c] = [...idb.isi.butir.values()];
+  a.dibuat = now - 15 * hari; b.dibuat = now - 14 * hari + 60000; c.dibuat = now - 20 * hari; c.keadaan = "ditolak";
+  for (const x of [a, b, c]) idb.isi.butir.set(x.id, x);
+  idb.isi.foto.set("f1", {id: "f1", butir_id: a.id, keadaan: "menunggu"}); idb.isi.foto.set("f2", {id: "f2", butir_id: b.id, keadaan: "menunggu"});
+  assert.deepEqual(await A.buangKadaluarsa({sekarang: now, hanyaHitung: true}), {butir: 2, foto: 1}, "hitungan sebelum buang");
+  assert.equal(idb.isi.butir.size, 3, "hanyaHitung tidak membuang");
+  assert.deepEqual(await A.buangKadaluarsa({sekarang: now}), {butir: 2, foto: 1});
+  assert.deepEqual([...idb.isi.butir.keys()], [b.id], "butir 14 hari kurang semenit tetap");
+  assert.deepEqual([...idb.isi.foto.keys()], ["f2"]);
 });
 
 test("antre.js tidak menulis markup; teks tanpa em dash atau titik tengah", async () => {

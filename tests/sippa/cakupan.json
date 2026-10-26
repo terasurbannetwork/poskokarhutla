@@ -82,6 +82,7 @@
     "antre.tambahFoto": "foto: PNG ditolak",
     "antre.keluar": "keluar(): butir belum terkirim",
     "antre.buangSemua": "keluar() dan buangSemua() membersihkan kode",
+    "antre.buangKadaluarsa": "SP-015 buangKadaluarsa",
     "antre.kodeTersimpan": "tanpa kode tersimpan",
     "antre.idbSiap": "IndexedDB yang menggantung",
     "lapangan.ambilKode": "ambilKode: fragmen #k= 26 heks",
