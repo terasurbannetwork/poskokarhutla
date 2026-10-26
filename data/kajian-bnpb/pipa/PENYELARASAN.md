@@ -261,3 +261,8 @@ Didaftar sekali di PRD §2.2, kode sama di semua dokumen. Semuanya punya bawaan 
 2. `naskah-kajian.js` dan `rakit-kajian.js` belum bercabang `sippa` (TIKET SP-005); sampai selesai, workflow tidak dijalankan untuk SIPPA.
 3. Agent `sippa` dan `penulis-kajian` belum ada di roster (TIKET SP-003, SP-085).
 4. Penyelaras tidak meng-commit. Selama penyelarasan berjalan, sesi lain meng-commit keenam dokumen dalam keadaan setengah jadi (`fee28d48`, `727c412e`, `699585fe`, pesan "gas"); keadaan akhir sekarang sama dengan HEAD untuk keenam dokumen, dan `PENYELARASAN.md` belum dilacak git.
+
+
+## Penyelarasan 26 Okt 2026: nomor migrasi
+
+`migrations/0055_uji_lapangan.sql` (halaman /uji-lapangan) sudah memakai nomor 0055. Migrasi SIPPA digeser: 0056_sippa_inti, 0057_sippa_ab_skenario, 0058_sippa_telemetri, di PRD, DESAIN-TEKNIS, RENCANA-UJI, dan TIKET. Catatan lama di dokumen ini yang menyebut 0055–0057 dibaca sebagai 0056–0058.

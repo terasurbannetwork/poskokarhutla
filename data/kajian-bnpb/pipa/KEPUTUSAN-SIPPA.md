@@ -79,3 +79,4 @@ Jawaban pemilik atas 50 pertanyaan pra-PRD. Dokumen ini menang atas KRITIK-DAN-K
     7. Kit kembali dari lapangan dengan ≥ 95% komponen lengkap dan berfungsi.
 
     Vonis: semua terpenuhi = **dapat dipakai**; satu butir gagal di luar butir 1 dan 6 = **dapat dipakai bersyarat** (perbaikan tertulis sebelum dipakai untuk banjir); butir 1 atau butir 6 gagal = **belum dapat dipakai**. Vonis "lebih baik dari cara konvensional" tidak diputus dari pilot ini (n < 8 per lengan).
+54. **T-B dan T-C memakai bawaan PRD §2.2** (pemilik, 26 Okt 2026). Pilot lapangan 28 Okt–1 Nov 2026 di AOI mudah Palangka Raya (Bukit Batu atau Jekan Raya) atau kompleks aktif terdekat Daops Palangka Raya; alat: pompa yang sudah ada di lapangan, 2 lance pipa SS atau galvanis, 2 termometer tusuk gambut; pemilik pompa (Manggala Agni atau BPBD) dicatat di `sippa_komponen.pemilik_asal`; tanpa dokumen pinjam pakai formal untuk pilot.

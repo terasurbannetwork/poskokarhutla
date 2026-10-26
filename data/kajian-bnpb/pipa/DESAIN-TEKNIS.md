@@ -34,7 +34,7 @@ Daftar isi: (1) arsitektur; (2) struktur berkas; (3) model data; (4) kontrak API
                       sippa/<nama>.json   sippa-foto/<id16>   sippa-laporan/<id16>.pdf
                                          |
                                          v
- Cloudflare Worker centurisk97 (src/worker.js + src/sippa.js, D1 poskowarga: sippa_* 0055-0057, pantau_jejak, laju_bnpb)
+ Cloudflare Worker centurisk97 (src/worker.js + src/sippa.js, D1 poskowarga: sippa_* 0056-0058, pantau_jejak, laju_bnpb)
    GET  /pipa, /pipa/<layar>, /pipa/kit/:id  -> cangkang HTML staf (cek sesi di rute; CSP_SIPPA)
    GET  /pipa/lapangan                       -> cangkang form luring (tanpa sesi; CSP_LAPANGAN)
    *    /api/sippa/*                          -> JSON; R2 dialirkan apa adanya; D1 lewat bind
@@ -93,16 +93,16 @@ Pemilik dari `node scripts/agents/ilmu.mjs pemilik <berkas>` (diperiksa 25 Okt 2
 | `src/posko.js` | ubah | `export` pada `CSP_LAPANGAN` (posko.js:666), tanpa mengubah isinya | warga-api |
 | `src/pantau.js` | ubah | `JENIS.sippa_alarm`, `JENIS.sippa_mingguan`, detektor di `DETEKTOR` (pantau.js:131), `sippa_` di regex tabel-belum (pantau.js:137) | warga-api |
 | `public/admin/pantau.js` | ubah | `JENIS` sama dengan server; pengalihan `ke` ke `/pipa*` sesudah masuk staf | warga-api |
-| `migrations/0055_sippa_inti.sql` | baru | §3.2 | warga-api |
-| `migrations/0056_sippa_ab_skenario.sql` | baru | §3.3 | warga-api |
-| `migrations/0057_sippa_telemetri.sql` | baru | §3.4 | warga-api |
-| `tests/warga/sippa_skema.test.mjs` | baru | CHECK/trigger 0055–0057 (Miniflare, D1 lokal) | warga-api |
+| `migrations/0056_sippa_inti.sql` | baru | §3.2 | warga-api |
+| `migrations/0057_sippa_ab_skenario.sql` | baru | §3.3 | warga-api |
+| `migrations/0058_sippa_telemetri.sql` | baru | §3.4 | warga-api |
+| `tests/warga/sippa_skema.test.mjs` | baru | CHECK/trigger 0056–0058 (Miniflare, D1 lokal) | warga-api |
 | `tests/warga/sippa.test.mjs` | baru | rute, hak, gerbang host, dummy | warga-api |
 | `tests/warga/sippa_alur.test.mjs` | baru | alur lintas-tabel ujung ke ujung | warga-api |
 | `tests/warga/cakupan.json` | ubah | tiap rute dan tabel/trigger baru di `diuji` | warga-api |
 | `tests/warga/posko.test.mjs` | ubah | regex pemindai baris 647 ditambah `pipa` | warga-api |
 | `tests/warga/admin-403-pantul.test.mjs` | ubah | juga memindai `public/pipa/*.js` | warga-api |
-| `tests/warga/migrasi_beku.json` | ubah sesudah deploy | sha256 0055–0057 | warga-api |
+| `tests/warga/migrasi_beku.json` | ubah sesudah deploy | sha256 0056–0058 | warga-api |
 | `tests/warga/gerbang.test.mjs` | ubah | `"sippa"` ditambah ke daftar modul `bn` (RENCANA-UJI §0.4) | warga-api |
 | `tests/warga/regu_luring.test.mjs` | ubah | kasus scope `/pipa/lapangan` (§6.1.1) | warga-api |
 | `.github/workflows/terbit.yml` | ubah | langkah `npm run uji:sippa` sesudah `uji:warga`, sebelum terbit | mekanik-mesin |
@@ -162,7 +162,7 @@ Medan mengikuti `_catatan` scripts/agents/roster.json (nama, kelas, model, ringk
 }
 ```
 
-Baris baru AGENTS.md §2: `| SIPPA /pipa | public/pipa/**, tests/sippa/** (layar); src/sippa.js, migrations/0055-0057 (warga-api); scripts/data/sippa/** (pipa-data) | R2 sippa/, D1 sippa_*; pemicu harian di data.yml | sippa |`.
+Baris baru AGENTS.md §2: `| SIPPA /pipa | public/pipa/**, tests/sippa/** (layar); src/sippa.js, migrations/0056-0058 (warga-api); scripts/data/sippa/** (pipa-data) | R2 sippa/, D1 sippa_*; pemicu harian di data.yml | sippa |`.
 
 ### 2.3 Entri roster `penulis-kajian`
 
@@ -293,9 +293,9 @@ Sel 2,2 km = kisi 0,02 derajat (pola `SEL = 0.02` scripts/data/citra.py:37). Ind
 
 `baris`: `{id, kab, kec, lat, lon, kekerapan, median_air_km, zona, kaw, catatan}`; `id` = id kompleks atau sel. Dibuat `aoi.py` saat diminta.
 
-### 3.2 Migrasi `0055_sippa_inti.sql`
+### 3.2 Migrasi `0056_sippa_inti.sql`
 
-Nomor: migrasi terakhir di repo dan di `migrasi_beku.json` adalah `0054_kunci_api_konsesi.sql`; tidak ada `0055*`–`0057*` di cabang mana pun (`git log --all -- migrations/0055*` kosong). `0051` memang kosong dan tidak perlu diisi. Berkas nyasar `migrations/0053_kontak 2.sql` ikut terbaca `migrasi()` tests/warga/_bantu.mjs:7 (filter hanya `.sql`); laporkan ke `higiene-repo`, jangan disunting.
+Nomor: migrasi terakhir di repo dan di `migrasi_beku.json` adalah `0054_kunci_api_konsesi.sql`; tidak ada `0056*`–`0058*` di cabang mana pun (`git log --all -- migrations/0056*` kosong). `0051` memang kosong dan tidak perlu diisi. Berkas nyasar `migrations/0053_kontak 2.sql` ikut terbaca `migrasi()` tests/warga/_bantu.mjs:7 (filter hanya `.sql`); laporkan ke `higiene-repo`, jangan disunting.
 
 Gaya yang diikuti: `CREATE ... IF NOT EXISTS`, CHECK di kolom, trigger `BEFORE ... WHEN ... RAISE(ABORT, ...)` (migrations/0036_pemirsa.sql:21-32), append-only dengan pengecualian baris dummy (migrations/0030_staf.sql:86-94). Waktu = milidetik epoch UTC. Id = 16 heks dari `acak(8)` (worker.js:72) kecuali id butir lapangan (UUID v4 klien).
 
@@ -565,7 +565,7 @@ CREATE TABLE IF NOT EXISTS sippa_aoi_usul (
 
 Catatan: kolom `prov` ditambahkan di `sippa_log_gelar`, `sippa_jalan_cek`, `sippa_aoi_usul`, `sippa_foto` (tidak ada di PRD) supaya penyaringan staf berwilayah satu klausa `WHERE prov IN (...)` tanpa gabung tabel; diisi server dari tugas atau kompleks, tidak pernah dari klien. `sippa_foto` adalah tabel kecil baru (pengganti kolom bebas `foto_kunci`) supaya kunci R2 selalu dibuat server dan foto bisa diperiksa hak wilayahnya (ADR-09).
 
-### 3.3 Migrasi `0056_sippa_ab_skenario.sql`
+### 3.3 Migrasi `0057_sippa_ab_skenario.sql`
 
 ```sql
 CREATE TABLE IF NOT EXISTS sippa_ab_unggah (
@@ -631,7 +631,7 @@ CREATE TABLE IF NOT EXISTS sippa_laporan (
 CREATE INDEX IF NOT EXISTS idx_sippa_laporan_jenis ON sippa_laporan (jenis, waktu);
 ```
 
-### 3.4 Migrasi `0057_sippa_telemetri.sql`
+### 3.4 Migrasi `0058_sippa_telemetri.sql`
 
 Bentuk penyimpanan diubah dari PRD (satu baris per bacaan) menjadi satu baris per pesan, karena kuota tulis D1 (ADR-07).
 
@@ -693,7 +693,7 @@ CREATE UNIQUE INDEX IF NOT EXISTS uq_sippa_alarm_buka ON sippa_alarm (perangkat_
 
 | Lapis | Mekanisme |
 | --- | --- |
-| Migrasi | `IF NOT EXISTS` untuk tabel, indeks, trigger; tidak ada `ALTER`/`DROP` di 0055–0057; dijalankan dua kali di uji skema tanpa galat |
+| Migrasi | `IF NOT EXISTS` untuk tabel, indeks, trigger; tidak ada `ALTER`/`DROP` di 0056–0058; dijalankan dua kali di uji skema tanpa galat |
 | Butir lapangan | id UUID v4 klien; `INSERT ... ON CONFLICT(id) DO NOTHING`, `meta.changes = 0` = `ganda` |
 | Telemetri | id = 32 heks sha256(`token_sha` + badan mentah); `ON CONFLICT(id) DO NOTHING` |
 | Unggah A/B | `sippa_ab_unggah.sha UNIQUE`; bentrok = 409 |
@@ -1151,7 +1151,7 @@ Status antrean di layar Tugas: "3 isian menunggu sinyal" dengan `aria-live="poli
    meleset_kiriman = b.jam_kirim == null || |b.jam_kirim - kini| > 600000   // jam perangkat beda > 10 menit dari jam server saat kirim
 4. untuk tiap butir: cekButir(jenis, butir, {lengan_dalam: tugas.lengan_dalam}) dari public/pipa/formulir.js
       salah -> ditolak[] dengan alasan per medan
-      jam_klien_meleset = (meleset_kiriman || butir.waktu_klien > kini + 600000) ? 1 : 0   (tetap diterima; disimpan di kolom 0055)
+      jam_klien_meleset = (meleset_kiriman || butir.waktu_klien > kini + 600000) ? 1 : 0   (tetap diterima; disimpan di kolom 0056)
       (waktu_klien jauh di belakang kini BUKAN meleset: butir luring memang bisa mengantre berjam-jam)
       gerak -> hanya kit tugas.kit_id, alasan gelar/bongkar/kembali, dari_status = status kit sekarang
 5. pernyataan INSERT ... ON CONFLICT(id) DO NOTHING untuk butir sah (log: oleh = "tugas:<id>", prov = tugas.prov, diterima = kini)
@@ -1377,7 +1377,7 @@ Pola persis unggah risiko (data.yml:137-151): langkah boleh gagal, unggah hanya 
 | Privasi | data pribadi operator | tidak ada NIK, nomor WA, atau nama orang; hanya nama regu dan unsur; koordinat penuh hanya untuk staf; CSV bawaan membulatkan 0,01 derajat; nama perusahaan konsesi tidak pernah ada di R2 maupun layar (dibuang di `zona.py`) |
 | Log | rahasia di log | tidak pernah `console.log` badan permintaan, kode, atau token; log hanya jumlah (`{sippa_kirim: {diterima, ganda, ditolak}}`) |
 
-Pengulas wajib sesuai AGENTS.md §6: `guard-api` dan `security-reviewer` untuk `src/sippa.js` dan perubahan worker; `migrasi-idempoten` untuk 0055–0057.
+Pengulas wajib sesuai AGENTS.md §6: `guard-api` dan `security-reviewer` untuk `src/sippa.js` dan perubahan worker; `migrasi-idempoten` untuk 0056–0058.
 
 ### 8.2 Performa dan INP
 
@@ -1410,13 +1410,13 @@ Ukur sebelum klaim: angka INP diambil dengan rekaman Performance Chrome lewat `p
 
 Subagent tidak pernah deploy, commit, atau push (AGENTS.md §9). Jalur terbit repo adalah `.github/workflows/terbit.yml` (komentar kepala workflow: tampilan terbit lewat sini, bukan `wrangler deploy` dari laptop), urutan sesi induk sama dengan PRD §10.6:
 
-1. Migrasi lebih dulu: `npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote` (hanya 0055–0057 baru). Kode yang tiba sebelum migrasi tetap aman karena `bungkusSippa` menjawab 503 sopan.
+1. Migrasi lebih dulu: `npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote` (hanya 0056–0058 baru). Kode yang tiba sebelum migrasi tetap aman karena `bungkusSippa` menjawab 503 sopan.
 2. Push ke cabang `staging`: terbit.yml menjalankan `uji:agen`, `uji:warga`, `uji:sippa`, lalu `wrangler versions upload --preview-alias staging` (pratinjau, tidak dipromosikan). Staging memakai D1/R2 produksi, jadi semua tulisan uji asap di sana memakai baris dummy lalu `POST /api/sippa/dummy/hapus`.
 3. Uji asap di URL pratinjau, lalu merge ke `main`: terbit.yml menguji ulang dan menjalankan `wrangler deploy`.
 4. **Peringatan:** `main` juga di-deploy ulang otomatis oleh `titik.yml` (cron `40 */3 * * *`, titik.yml:259), `banjir.yml` (`20 0 * * *` = 07.20 WIB, banjir.yml:160), dan `data.yml` (`20 14 * * *` = 21.20 WIB, data.yml:502). Artinya kode SIPPA yang masuk `main` tayang dalam hitungan menit lewat terbit.yml, dan paling lambat pada jadwal deploy berikutnya (paling lambat 21.20 WIB hari itu) walau terbit.yml gagal. Merge ke `main` hanya setelah `npm run uji` dan `npm run uji:sippa` hijau di commit yang sama.
 5. Uji asap produksi (PRD §10.6 langkah 6) ditambah: `/pipa` di `centurisk97.id` tanpa sesi = 303 ke `/admin/pantau?ke=%2Fpipa`.
 6. Rollback: `npx --yes wrangler@4.42.0 rollback` untuk worker, LALU revert commit di `main` (tanpa revert, deploy terjadwal berikutnya menayangkan ulang kode rusak). Migrasi tidak dibalik: tabel `sippa_*` tidak dibaca modul lain. Berkas R2 `sippa/` bisa ditimpa ulang dari `data/sippa/keluaran/` yang di-commit.
-7. Sesudah deploy: sha256 0055–0057 dicatat ke `tests/warga/migrasi_beku.json` (dijaga tests/warga/migrasi_beku.test.mjs).
+7. Sesudah deploy: sha256 0056–0058 dicatat ke `tests/warga/migrasi_beku.json` (dijaga tests/warga/migrasi_beku.test.mjs).
 
 ### 8.5 Data dummy
 

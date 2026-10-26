@@ -36,7 +36,7 @@ Yang tidak dihitung sebagai bukti: unit test bermock untuk perilaku di luar JS (
 | Hal | Keadaan | Akibat untuk rencana ini |
 | --- | --- | --- |
 | `tests/sippa/`, `public/pipa/`, `scripts/data/sippa/`, `data/sippa/` | belum ada | semua berkas uji di bawah ini baru |
-| `migrations/0055–0057` | belum ada; migrasi terakhir `0054_kunci_api_konsesi.sql` | uji skema §3 ditulis bersamaan dengan migrasinya (P0-04) |
+| `migrations/0056–0058` | belum ada; migrasi terakhir `0054_kunci_api_konsesi.sql` | uji skema §3 ditulis bersamaan dengan migrasinya (P0-04) |
 | Skrip `uji:sippa` di `package.json` | belum ada; yang ada `uji:agen`, `uji:warga`, `uji:banjir`, `uji:udara`, `uji:layar`, `uji` | `mekanik-mesin` menambah `"uji:sippa": "node --test --test-concurrency=1 tests/sippa/*.test.mjs"` dan merangkainya ke `uji` |
 | `tests/warga/gerbang.test.mjs` | daftar modul yang dipindai (`const bn = [...]`) memuat `"pipa"` tetapi tidak `"sippa"` | tanpa menambah `"sippa"`, rute `src/sippa.js` lolos dari gerbang cakupan tanpa satu pun peringatan; ini butir pertama P0-05 (TIKET SP-008) |
 | `.github/workflows/terbit.yml` | menjalankan `npm run uji:agen` dan `npm run uji:warga` sebelum `wrangler deploy` | langkah `npm run uji:sippa` ditambahkan di antara keduanya dan langkah terbit |
@@ -56,7 +56,7 @@ Yang tidak dihitung sebagai bukti: unit test bermock untuk perilaku di luar JS (
 | L1 | Fungsi murni JS | `public/pipa/hitung.js` (`globalThis.SippaHitung`), `formulir.js`, `keadaan.js`, logika atas `adegan.js`, `isiLaporan`, `studio_mesin.js` | `node:test` + `node:vm`, pola `tests/warga/regu_luring.test.mjs` | `tests/sippa/hitung.test.mjs`, `formulir.test.mjs`, `adegan_logika.test.mjs`, `laporan_isi.test.mjs`, `studio_mesin.test.mjs`, `keadaan.test.mjs` | `npm run uji:sippa` | tiap perubahan `public/pipa/**`; di `terbit.yml` sebelum deploy |
 | L2 | Kembar JS–Python | rumus yang sama di `hitung.js` dan `scripts/data/sippa/hidraulika.py` | `node:test` memanggil `python3 -I` lewat `child_process.execFileSync` | `tests/sippa/kembar.test.mjs` + `tests/sippa/fixtures/acuan.json` | `npm run uji:sippa` | sama dengan L1 |
 | L3 | Self-check Python | `zona.py`, `sel22.py`, `nasional.py`, `respons.py`, `hidraulika.py`, `pemicu.py` | `def uji()` dengan `assert`, dipanggil `python3 <skrip> uji`, pola `scripts/data/operasi.py` | di dalam skrip | `for s in bersama zona sel22 nasional respons hidraulika pemicu aoi pilot_cek; do python3 scripts/data/sippa/$s.py uji \|\| exit 1; done` | di `data.yml` sebelum skripnya menulis keluaran; lokal sebelum commit data |
-| L4 | Skema D1 (CHECK, trigger, PK, UNIQUE) | `migrations/0055_sippa_inti.sql`, `0056_sippa_ab_skenario.sql`, `0057_sippa_telemetri.sql` | `node:sqlite` `DatabaseSync(":memory:")`, migrasi apa adanya lewat `migrasi()` dan `pecah()` dari `tests/warga/_bantu.mjs`, `PRAGMA foreign_keys = ON`, tiap uji dibungkus `BEGIN … ROLLBACK` oleh runner (bukan oleh uji), pola `tests/warga/skema.test.mjs` | `tests/warga/sippa_skema.test.mjs` | `node --test tests/warga/sippa_skema.test.mjs` (juga lewat `npm run uji:warga`) | tiap perubahan `migrations/**` |
+| L4 | Skema D1 (CHECK, trigger, PK, UNIQUE) | `migrations/0056_sippa_inti.sql`, `0057_sippa_ab_skenario.sql`, `0058_sippa_telemetri.sql` | `node:sqlite` `DatabaseSync(":memory:")`, migrasi apa adanya lewat `migrasi()` dan `pecah()` dari `tests/warga/_bantu.mjs`, `PRAGMA foreign_keys = ON`, tiap uji dibungkus `BEGIN … ROLLBACK` oleh runner (bukan oleh uji), pola `tests/warga/skema.test.mjs` | `tests/warga/sippa_skema.test.mjs` | `node --test tests/warga/sippa_skema.test.mjs` (juga lewat `npm run uji:warga`) | tiap perubahan `migrations/**` |
 | L5 | Rute dan hak | `src/sippa.js` (mengimpor `public/pipa/formulir.js`), perubahan `src/worker.js`, `src/admin_halaman.js`, `src/pantau.js` | Miniflare (workerd) dengan D1 dan R2 lokal sungguhan lewat `siapkan()` dari `tests/warga/_bnpb.mjs`, akun staf dibuat lewat rute sungguhan (`/api/staf/admin/buat`, `/api/staf/masuk`), pola `tests/warga/inventaris.test.mjs` | `tests/warga/sippa.test.mjs` | `npm run uji:warga` | tiap perubahan `src/**` |
 | L6 | Alur lintas-tabel | kit → tugas → log → gerak → banjir → komponen hilang → rekap → laporan | Miniflare, satu basis data, langkah berurutan dengan `berantai()` | `tests/warga/sippa_alur.test.mjs` | `npm run uji:warga` | tiap perubahan `src/sippa.js` atau migrasi SIPPA |
 | L7 | Gerbang tanpa basis data | registri cakupan, larangan teks, INP per handler, kesamaan formulir, pemilik berkas | `node:test` membaca berkas | `tests/warga/gerbang.test.mjs` (sudah ada, ditambah `"sippa"`), `tests/sippa/gerbang-cakupan.test.mjs`, `tests/sippa/gerbang-sippa.test.mjs`, `tests/agen/gerbang-ilmu-agent.test.mjs` (sudah ada) | `npm run uji:agen && npm run uji:sippa && node --test tests/warga/gerbang.test.mjs` | tiap commit yang menyentuh `public/pipa/**`, `src/**`, `migrations/**`, `scripts/data/sippa/**` |
@@ -287,7 +287,7 @@ Peran uji dibuat lewat rute sungguhan: admin (`x-admin-token`), admin moderator 
 | `POST /api/sippa/telemetri` | D 202 `{diterima, ditandai, ganda}`; bentuk datar pemilik lewat `dariDatar()` sama dengan bentuk bersarang | token salah 401; token dicabut 401; > 300 token salah per jam per hash IP 429; tag milik kit lain atau tanpa padanan `tag_datar` ditandai `tag_asing` dan tidak disimpan | waktu 6 menit di depan ditolak; 31 hari lalu ditolak; satuan tidak cocok ditolak; nilai di luar `min_sah`–`maks_sah` **disimpan** dengan mutu 2; pesan sama dikirim ulang = `ganda` | 501 bacaan 400; badan 65.537 byte 413 | 120 pesan per pengirim (pesan ke-121 dalam sejam 429, dihitung dari baris `sippa_telemetri`) |
 | `GET /api/sippa/telemetri`, `perangkat`, `alarm`; `POST /api/sippa/perangkat`, `/perangkat-cabut/:id`, `/alarm-tutup/:id` | B 200; M 201 + token sekali; W 200 tutup | pusdalops daftar perangkat 403 | `sejak` 31 hari lalu 400; tag `pt-101` huruf kecil 400; gateway tanpa token 400 | | tidak, tidak, tidak, 60, 60, 600 |
 | `POST /api/sippa/dummy/isi`, `/dummy/hapus` | SA 200 dengan hitungan per tabel; isi kedua untuk periode sama 409 | admin biasa 403 | `layar` di luar `LAYAR_SIPPA` + `ringkas`, `lapangan` 400 | | 30 |
-| Semua `/api/sippa/*` tanpa tabel 0055–0057 | 503 "Migrasi SIPPA belum diterapkan di basis data"; rute lain repo (contoh `/api/titik`, `/api/pipa/lapangan`) tetap 200 | | | | |
+| Semua `/api/sippa/*` tanpa tabel 0056–0058 | 503 "Migrasi SIPPA belum diterapkan di basis data"; rute lain repo (contoh `/api/titik`, `/api/pipa/lapangan`) tetap 200 | | | | |
 | `/api/pipa/lapangan`, `/api/pipa/jejak` (milik `src/pipa.js`) | tidak berubah perilakunya; uji lama tetap hijau | | | | |
 
 Invarian lintas rute (satu uji masing-masing):
@@ -382,9 +382,9 @@ Uji umum (satu kali untuk semua tabel SIPPA, ditemukan dari `sqlite_master` deng
 | Idempoten | `for (const s of pecah(migrasi())) db.exec(s)` dijalankan dua kali tanpa galat |
 | Kolom dummy | tiap tabel `sippa_*` (termasuk `sippa_telemetri` dan `sippa_telemetri_harian`, DESAIN-TEKNIS §3.4) punya `dummy INTEGER NOT NULL DEFAULT 0` dengan CHECK `(0,1)`; sisipan `dummy = 2` gagal |
 | Waktu milidetik | sisipan waktu dalam detik (10 digit) untuk kolom `waktu`, `dibuat` tidak ditolak skema, jadi diuji di rute: `src/sippa.js` selalu menulis `Date.now()`; uji rute memeriksa nilai > 1e12 |
-| Migrasi beku | `tests/warga/migrasi_beku.test.mjs` hijau sesudah hash 0055–0057 dicatat |
+| Migrasi beku | `tests/warga/migrasi_beku.test.mjs` hijau sesudah hash 0056–0058 dicatat |
 
-### 3.2 `0055_sippa_inti.sql`
+### 3.2 `0056_sippa_inti.sql`
 
 | Tabel | Aturan | SQL atau sisipan yang WAJIB GAGAL | Kembar yang WAJIB LOLOS |
 | --- | --- | --- | --- |
@@ -445,7 +445,7 @@ Uji umum (satu kali untuk semua tabel SIPPA, ditemukan dari `sqlite_master` deng
 | `sippa_aoi_usul` | status | `status = 'disetujui'` | empat status |
 | | kompleks atau sel | keduanya NULL | salah satu terisi |
 
-### 3.3 `0056_sippa_ab_skenario.sql`
+### 3.3 `0057_sippa_ab_skenario.sql`
 
 | Tabel | Aturan | WAJIB GAGAL | WAJIB LOLOS |
 | --- | --- | --- | --- |
@@ -469,7 +469,7 @@ Uji umum (satu kali untuk semua tabel SIPPA, ditemukan dari `sqlite_master` deng
 | | ukuran ≤ 10 MB | `ukuran = 10485761` | `10485760` |
 | | `ada_berkas = 1` wajib sha dan ukuran | `ada_berkas = 1, sha = NULL` | `ada_berkas = 0` tanpa sha |
 
-### 3.4 `0057_sippa_telemetri.sql`
+### 3.4 `0058_sippa_telemetri.sql`
 
 | Tabel | Aturan | WAJIB GAGAL | WAJIB LOLOS |
 | --- | --- | --- | --- |
@@ -643,7 +643,7 @@ Pemeriksa: `scripts/data/sippa/pilot_cek.py` (pemilik `pipa-data`, self-check `u
 
 | Cek | Perintah | Lulus bila |
 | --- | --- | --- |
-| Formulir klien = server = skema | `tests/sippa/formulir.test.mjs` | `src/sippa.js` mengimpor `public/pipa/formulir.js` (satu berkas, ADR-03; uji teks memastikan tidak ada `src/sippa_formulir.js`); tiap batas medan sama dengan CHECK migrasi 0055 yang dibaca dari berkas SQL |
+| Formulir klien = server = skema | `tests/sippa/formulir.test.mjs` | `src/sippa.js` mengimpor `public/pipa/formulir.js` (satu berkas, ADR-03; uji teks memastikan tidak ada `src/sippa_formulir.js`); tiap batas medan sama dengan CHECK migrasi 0056 yang dibaca dari berkas SQL |
 | Kertas G3-lite = formulir | `tests/sippa/formulir.test.mjs` membaca daftar medan yang dipakai pembangkit `G3-lite.pdf` (data JSON yang sama, bukan PDF) | tiap medan kertas ada di formulir dan sebaliknya; batas sama |
 | PDF tercetak | sesi induk membuka `G3-lite.pdf` | satu halaman per sesi, satu halaman per petak probe (P0-06) |
 
@@ -673,7 +673,7 @@ Vonis "lebih baik" tidak pernah diputus dari pilot (n < 8 per lengan): `bandingR
 
 | Registri | Isi | Gerbang | Status |
 | --- | --- | --- | --- |
-| `tests/warga/cakupan.json` | tiap rute `src/sippa.js` (kunci "METODE /jalur"), tiap tabel dan trigger 0055–0057 (kunci "table x", "trigger x"), cron ringkas telemetri | `tests/warga/gerbang.test.mjs` (sudah ada; `BATAS_ANTRE = 2`, hanya boleh turun) | ada; wajib ditambah `"sippa"` ke daftar modul `bn` |
+| `tests/warga/cakupan.json` | tiap rute `src/sippa.js` (kunci "METODE /jalur"), tiap tabel dan trigger 0056–0058 (kunci "table x", "trigger x"), cron ringkas telemetri | `tests/warga/gerbang.test.mjs` (sudah ada; `BATAS_ANTRE = 2`, hanya boleh turun) | ada; wajib ditambah `"sippa"` ke daftar modul `bn` |
 | `tests/sippa/cakupan.json` | logika klien dan pipeline yang tidak tinggal di worker atau D1 | `tests/sippa/gerbang-cakupan.test.mjs` | baru, dibuat di P0-03 sebelum berkas `public/pipa/**` pertama |
 | `data/kajian-bnpb/qa/cakupan.json` | gerbang buku dan deck, termasuk T-12 | `qa/uji.py` | ada; ditambah T-12 |
 
@@ -750,7 +750,7 @@ Pengulas melapor, tidak membetulkan (AGENTS.md §6). Tiap pengulas adalah subage
 | --- | --- | --- | --- | --- | --- | --- | --- | --- |
 | Rute baru atau berubah di `src/sippa.js`, `src/worker.js`, `src/admin_halaman.js` | wajib | wajib | | | | | | `npm run uji:warga` hijau; tabel §2.4 lengkap untuk rute itu; entri `tests/warga/cakupan.json` |
 | Kode penugasan, token perangkat, unggah foto/CSV/PDF, CSP | wajib | wajib | | | | | | uji 413, 429, 401/403, EXIF, injeksi CSV; nol string kode di jawaban |
-| Migrasi 0055–0057 atau migrasi SIPPA baru | | | wajib | | | | | `node --test tests/warga/sippa_skema.test.mjs tests/warga/migrasi_beku.test.mjs`; nomor urut; tidak menyunting migrasi yang sudah diterapkan |
+| Migrasi 0056–0058 atau migrasi SIPPA baru | | | wajib | | | | | `node --test tests/warga/sippa_skema.test.mjs tests/warga/migrasi_beku.test.mjs`; nomor urut; tidak menyunting migrasi yang sudah diterapkan |
 | Handler klik/input/tab/geser di `public/pipa/**`, `sw-lapangan.js` | | bila menyisipkan HTML | | wajib | | | | `gerbang-sippa.test.mjs` butir INP; angka Event Timing §2.6 |
 | Kartu, tabel, pop-up, laporan PDF, teks berangka | | | | | wajib | | | format id-ID, satuan, sumber dan waktu, pil keyakinan, tanpa presisi palsu, tanpa "100%" |
 | `hitung.js`, `studio_mesin.js`, `scripts/data/sippa/*.py`, ambang zona, pemicu, matriks respons, vonis A/B | | | | | | wajib | | `npm run uji:sippa`; self-check Python; reproduksi §4.1; ambang berlabel `asumsi-kebijakan`; tidak ada klaim "diuji" atau "terbukti" |
@@ -815,7 +815,7 @@ Semua butir di bawah diselesaikan pada penyelarasan 25 Okt 2026 (rincian di `PEN
 | 2 | Label "konservatif = jalan utama" tidak cocok dengan data | tiga versi berlabel benar: versi `kendala.json` (A188), jalan utama OSM (A198), semua jalan OSM (A469); PRD §5.1, DESAIN-TEKNIS §3.1, KERANGKA Bab 4 |
 | 3 | K2 dan K4 tidak cocok 1% | angka hitung dipakai di `acuan.json` dan PRD §6.2, §9.3, KERANGKA Bab 7, DESIGN-SYSTEM slide C2 |
 | 4 | Tanda `hisap` tidak tertulis | ditulis eksplisit di tiap kasus (PRD §9.3, DESAIN-TEKNIS §5.8) |
-| 5 | `jam_klien_meleset` tanpa kolom | kolom ada di 0055; penurunan dari `jam_kirim` dan `waktu_klien` di DESAIN-TEKNIS §6.1.5; uji G5, PL7 |
+| 5 | `jam_klien_meleset` tanpa kolom | kolom ada di 0056; penurunan dari `jam_kirim` dan `waktu_klien` di DESAIN-TEKNIS §6.1.5; uji G5, PL7 |
 | 6 | Tidak ada rute ekspor probe | `GET /api/sippa/probe.csv` (B, 60/jam) di DESAIN-TEKNIS §4.3 dan rencana ini §2.4; TIKET SP-008 |
 | 7 | "Dapat dipakai" tanpa definisi berangka | keputusan 53; §6.3; `vonisPilot` |
 | 8 | Kolom `dummy` telemetri | ada di kedua tabel (DESAIN-TEKNIS §3.4); §3.1 tanpa pengecualian |

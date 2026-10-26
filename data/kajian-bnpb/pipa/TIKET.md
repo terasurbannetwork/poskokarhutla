@@ -14,7 +14,7 @@ Singkatan: PRD = `PRD.md`; DS = `DESIGN-SYSTEM.md`; DT = `DESAIN-TEKNIS.md`; KB 
 
 **Tujuan:** SIPPA siap pilot 27 Okt 2026, siap dipakai operasi banjir Nov–Des 2026, web `/pipa` lengkap di produksi dan buku serta deck versi serah paling lambat 6 Des 2026.
 
-**Arsitektur:** aplikasi staf vanilla JS tanpa build step di `public/pipa/**` (kode dan teks saja, tanpa data), dilayani Cloudflare Worker (`src/sippa.js`) di balik sesi admin/staf, data operasi di D1 (`sippa_*`, migrasi 0055–0057), data turunan dari skrip Python stdlib di `scripts/data/sippa/` lewat R2 `sippa/`; buku dibangun pipeline `data/kajian-bnpb/bangun/` dari naskah Markdown bertoken angka.
+**Arsitektur:** aplikasi staf vanilla JS tanpa build step di `public/pipa/**` (kode dan teks saja, tanpa data), dilayani Cloudflare Worker (`src/sippa.js`) di balik sesi admin/staf, data operasi di D1 (`sippa_*`, migrasi 0056–0058), data turunan dari skrip Python stdlib di `scripts/data/sippa/` lewat R2 `sippa/`; buku dibangun pipeline `data/kajian-bnpb/bangun/` dari naskah Markdown bertoken angka.
 
 **Teknologi:** Cloudflare Worker + D1 + R2, Miniflare 3 untuk uji, `node:test`, Python 3.12 stdlib, MapLibre/jsPDF/Roboto (sudah divendor), qrcode-generator dan three 0.169.0 (divendor baru), python-docx/pptx di `.venv` kajian.
 
@@ -27,7 +27,7 @@ Singkatan: PRD = `PRD.md`; DS = `DESIGN-SYSTEM.md`; DT = `DESAIN-TEKNIS.md`; KB 
 | Rute halaman / rute API | `/pipa` dan `/pipa/:layar` dengan `LAYAR_SIPPA = ["peta","hitung","pemicu","kit","log","ab","studio","3d","telemetri","laporan","data"]`, `/pipa/kit/:id`, `/pipa/lapangan`; API `/api/sippa/*` dengan aksi sebelum id (`/api/sippa/gerak/:id`, DT §4.3, ADR-04); awalan `/api/pipa/*` milik `src/pipa.js` tidak disentuh |
 | Akses | hanya staf BNPB: admin (`adminOK`) atau staf berperan `pusdalops`, `koordalops` (tulis) dan `pimpinan` (baca); tamu `/pipa*` 303 ke `/admin/pantau?ke=<jalur>`; satu-satunya pintu tanpa akun `/pipa/lapangan` dengan kode penugasan 26 heks di header `x-kode`, kedaluwarsa ≤ 30 hari, hanya sha256 disimpan |
 | Data | tidak ada data SIPPA di `public/`; data turunan hanya lewat `GET /api/sippa/data/<nama>` bersesi (tamu 401 identik untuk ada dan tidak ada) |
-| Migrasi | `0055_sippa_inti.sql`, `0056_sippa_ab_skenario.sql`, `0057_sippa_telemetri.sql` persis DT §3.2–§3.4; idempoten; `ON CONFLICT(id) DO NOTHING`, tidak pernah `INSERT OR IGNORE`; tidak disunting setelah diterapkan; tiap tabel punya kolom `dummy` |
+| Migrasi | `0056_sippa_inti.sql`, `0057_sippa_ab_skenario.sql`, `0058_sippa_telemetri.sql` persis DT §3.2–§3.4; idempoten; `ON CONFLICT(id) DO NOTHING`, tidak pernah `INSERT OR IGNORE`; tidak disunting setelah diterapkan; tiap tabel punya kolom `dummy` |
 | Batas tulis D1 | batas laju hanya di rute tulis dan kegagalan autentikasi (ADR-06); telemetri satu baris per pesan (ADR-07, T-J) |
 | Batas injeksi | kedalaman lance 0–5 m; > 5 m ditolak di semua masukan (kalkulator, Studio, 3D, form, CHECK D1 `kedalaman_cm` ≤ 500); angka 5 m hanya di `KONST.dalam_maks_m` (DT §5.2); 3–5 m berpil "lengan uji" |
 | Ambang zona | air < 2,5 km, jalan < 5 km (keputusan 30 dan 51; tepat 2,50 atau 5,00 km = jauh); tiga versi: `kendala.json` A188/B418/C89/D170, jalan utama OSM A198/B429/C81/D157, semua jalan OSM A469/B158/C167/D71 |
@@ -51,7 +51,7 @@ Singkatan: PRD = `PRD.md`; DS = `DESIGN-SYSTEM.md`; DT = `DESAIN-TEKNIS.md`; KB 
 
 1. **Gerbang konteks dulu** (AGENTS.md §0): `node scripts/agents/ilmu.mjs pemilik <berkas>`, `node scripts/agents/ilmu.mjs baca <agent>`, lalu ucapkan kontrak CAKUPAN (kolom "Berkas"), DI LUAR (kolom "Di luar"), BUKTI SIAP (kolom "Bukti").
 2. **Satu pengerja, satu sampai tiga pemeriksa, pemeriksa tidak pernah pengerja yang sama** (AGENTS.md §1.5, §3.2). Pemeriksa adalah subagent baru berkonteks bersih yang memeriksa sinyal nyata (perintah bukti hijau), bukan klaim. Pemeriksa melapor, tidak membetulkan (AGENTS.md §6); temuan dibetulkan pengerja tiket asal, lalu tiket asal dibuka ulang sampai bukti hijau lagi.
-3. **Model** (AGENTS.md §1.3): pengerja `sonnet`; pemindaian berpola (`guard-api`, `migrasi-idempoten`, `higiene-repo`, `selera-angka`, pindai slop, salin berkas) `haiku`; `opus` hanya sesi induk (kontrak, rakitan, keputusan deploy). Tidak ada tiket subagent yang dinaikkan ke opus: tidak ada model risiko baru, dan migrasi 0055–0057 hanya menambah tabel tanpa mengubah tabel yang ada.
+3. **Model** (AGENTS.md §1.3): pengerja `sonnet`; pemindaian berpola (`guard-api`, `migrasi-idempoten`, `higiene-repo`, `selera-angka`, pindai slop, salin berkas) `haiku`; `opus` hanya sesi induk (kontrak, rakitan, keputusan deploy). Tidak ada tiket subagent yang dinaikkan ke opus: tidak ada model risiko baru, dan migrasi 0056–0058 hanya menambah tabel tanpa mengubah tabel yang ada.
 4. **Isolasi** (AGENTS.md §3.3): tiket yang menulis dan berjalan bersamaan dengan tiket menulis lain dikerjakan dengan `isolation: "worktree"`. Tiket baca saja (pemeriksa) dan tiket sesi induk tidak memakai worktree. Paling banyak 4–5 pengerja menulis bersamaan.
 5. **Batas mati** (AGENTS.md §9): subagent tidak commit, tidak push, tidak `wrangler deploy`, tidak melonggarkan gerbang, tidak menyunting berkas `* 2.*` (mis. `migrations/0053_kontak 2.sql` yang sudah ada), tidak menaruh secret di berkas terlacak. Commit dan deploy hanya di tiket bertanda **[induk]**.
 6. **Prompt subagent** memuat baris: "You are a subagent. Don't run memo. Do not commit, push, or deploy." dan menyebut berkas/glob, bukan domain.
@@ -90,7 +90,7 @@ Urutan baris = urutan pengambilan yang disarankan. Gelombang: lihat §5. Status:
 | SP-003 | Agent baru `sippa`, pemilik berkas, skrip `uji:sippa` | `mekanik-mesin` | 1 | S | belum |
 | SP-004 | Mesin buku menerima kajian `sippa` | `pipa-data` | 1 | M | belum |
 | SP-005 | Workflow naskah dan rakit bercabang `sippa` | `mekanik-mesin` | 2 | S | belum |
-| SP-006 | Migrasi 0055 SIPPA inti dan uji skema | `warga-api` | 1 | M | belum |
+| SP-006 | Migrasi 0056 SIPPA inti dan uji skema | `warga-api` | 1 | M | belum |
 | SP-007 | Daftar medan formulir lapangan | `sippa` | 2 | S | belum |
 | SP-008 | Worker SIPPA P0: cangkang, gerbang host, rute kit, tugas, lapangan, log | `warga-api` | 3 | L | belum |
 | SP-009 | Formulir kertas G3-lite dan probe | `pipa-data` | 3 | S | belum |
@@ -118,7 +118,7 @@ Urutan baris = urutan pengambilan yang disarankan. Gelombang: lihat §5. Status:
 | SP-031 | Layar Ringkas dan Data | `sippa` | 7 | M | belum |
 | SP-032 | Layar Peta kelayakan dan saran sarana | `sippa` | 7 | L | belum |
 | SP-033 | Layar Hitung | `sippa` | 7 | M | belum |
-| SP-034 | Migrasi 0056 A/B, skenario, laporan dan uji skema | `warga-api` | 6 | S | belum |
+| SP-034 | Migrasi 0057 A/B, skenario, laporan dan uji skema | `warga-api` | 6 | S | belum |
 | SP-035 | Rute A/B, skenario, laporan | `warga-api` | 7 | M | belum |
 | SP-036 | Layar A/B | `sippa` | 8 | M | belum |
 | SP-037 | Layar Laporan dan templat Laporan pilot | `sippa` | 8 | M | belum |
@@ -134,7 +134,7 @@ Urutan baris = urutan pengambilan yang disarankan. Gelombang: lihat §5. Status:
 | SP-047 | [induk] Commit dan deploy R2 | sesi induk | 12 | S | belum |
 | SP-048 | Vendor three 0.169.0 | `layar-peta` | 10 | S | belum |
 | SP-049 | Layar 3D | `sippa` | 13 | L | belum |
-| SP-050 | Migrasi 0057 dan rute telemetri, alarm, ringkas harian | `warga-api` | 12 | M | belum |
+| SP-050 | Migrasi 0058 dan rute telemetri, alarm, ringkas harian | `warga-api` | 12 | M | belum |
 | SP-051 | Layar Telemetri | `sippa` | 13 | S | belum |
 | SP-052 | Rantai dummy semua layar | `warga-api` | 14 | M | belum |
 | SP-053 | Tombol isi dan hapus dummy di semua layar | `sippa` | 14 | S | belum |
@@ -253,34 +253,34 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 
 ### 3.B P0 siap pilot (25–27 Okt)
 
-#### SP-006 Migrasi 0055 SIPPA inti dan uji skema
+#### SP-006 Migrasi 0056 SIPPA inti dan uji skema
 - **Tujuan:** sepuluh tabel P0 (`sippa_kit`, `sippa_komponen`, `sippa_gerak`, `sippa_tugas`, `sippa_log_gelar`, `sippa_probe`, `sippa_bbm`, `sippa_foto`, `sippa_jalan_cek`, `sippa_aoi_usul`) dengan CHECK, indeks, dan trigger persis DT §3.2; idempoten.
-- **Berkas:** `migrations/0055_sippa_inti.sql`, `tests/warga/sippa_skema.test.mjs`, `tests/warga/cakupan.json`.
+- **Berkas:** `migrations/0056_sippa_inti.sql`, `tests/warga/sippa_skema.test.mjs`, `tests/warga/cakupan.json`.
 - **Antarmuka:** Hasil: tabel dan kolom persis DT §3.2 (termasuk medan vonis pilot keputusan 53, `jam_klien_meleset`, `prov`, tahap probe `sesudah`); semua tabel punya `dummy INTEGER NOT NULL DEFAULT 0`. Dipakai SP-007 (batas CHECK), SP-008, SP-034, SP-050.
-- **Di luar:** rute; 0056 dan 0057; menyunting migrasi lama atau `migrations/0053_kontak 2.sql`.
+- **Di luar:** rute; 0057 dan 0058; menyunting migrasi lama atau `migrations/0053_kontak 2.sql`.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`, `penulis-gerbang` (bentuk uji: yang salah ditolak).
 - **Model:** sonnet; `migrasi-idempoten` haiku.
 - **Dependensi:** SP-002, DT §3.2–§3.5. **Paralel dengan:** SP-003, SP-004, SP-020. **Isolasi:** worktree ya.
 - **Selesai bila:** semua baris RU §3.1 dan §3.2 hijau: migrasi dijalankan dua kali tanpa galat; CHECK menolak status kit liar, pasangan transisi tidak sah, kode `SIPPA-9xx` bukan dummy, kedalaman probe 600 cm, suhu 1.000 °C, tugas > 30 hari, foto PNG; trigger menolak `dari_status` basi dan gerak saat rencana terbuka, UPDATE/DELETE `sippa_gerak`, `sippa_log_gelar`, `sippa_bbm` (kecuali hapus dummy dan isi `tiba` dari kosong), urutan waktu log terbalik, dan `banjir_m3` pada jenis bukan banjir; semua tabel dan trigger di `cakupan.json`.
 - **Bukti:** `node --test tests/warga/sippa_skema.test.mjs`; `node --test tests/warga/migrasi_beku.test.mjs`.
-- **Rujukan:** PRD §9.7.2 (0055), §9.12.2 baris skema D1, §10.1 P0-04; DT §3.2–§3.5; RU §3. **Ukuran:** M
+- **Rujukan:** PRD §9.7.2 (0056), §9.12.2 baris skema D1, §10.1 P0-04; DT §3.2–§3.5; RU §3. **Ukuran:** M
 
 #### SP-007 Daftar medan formulir lapangan
 - **Tujuan:** satu sumber medan dan batas untuk form lapangan, validasi server, dan formulir kertas.
-- **Berkas:** `public/pipa/formulir.js` (ES module tanpa DOM, diimpor langsung oleh `src/sippa.js`, ADR-03; data medan: log gelar 6 tahap, angka sesi, medan vonis pilot keputusan 53, probe tahap `sebelum`/`sesudah`/`24j`/`72j`/`7h`/`30h`/`90h` di 10/30/50/100 cm dan 150–500 cm hanya `lengan_dalam`, BBM, gerak; fungsi `cekButir(jenis, butir, {lengan_dalam})`; batas sama dengan CHECK 0055), `tests/sippa/formulir.test.mjs` (batas = CHECK; kedalaman > 500 cm tidak ada di daftar).
-- **Antarmuka:** Konsumsi: CHECK `migrations/0055_sippa_inti.sql`. Hasil: modul ES `public/pipa/formulir.js` mengekspor `MEDAN` (objek per jenis butir `log`, `probe`, `bbm`, `gerak`; tiap medan `{nama, tipe, min, maks, pilihan, wajib}`), `cekButir`, dan `FORMULIR_VERSI`; batas kedalaman diturunkan dari `KONST.dalam_maks_m` (`hitung.js`), bukan konstanta kedua. Dipakai SP-008, SP-009, SP-011.
+- **Berkas:** `public/pipa/formulir.js` (ES module tanpa DOM, diimpor langsung oleh `src/sippa.js`, ADR-03; data medan: log gelar 6 tahap, angka sesi, medan vonis pilot keputusan 53, probe tahap `sebelum`/`sesudah`/`24j`/`72j`/`7h`/`30h`/`90h` di 10/30/50/100 cm dan 150–500 cm hanya `lengan_dalam`, BBM, gerak; fungsi `cekButir(jenis, butir, {lengan_dalam})`; batas sama dengan CHECK 0056), `tests/sippa/formulir.test.mjs` (batas = CHECK; kedalaman > 500 cm tidak ada di daftar).
+- **Antarmuka:** Konsumsi: CHECK `migrations/0056_sippa_inti.sql`. Hasil: modul ES `public/pipa/formulir.js` mengekspor `MEDAN` (objek per jenis butir `log`, `probe`, `bbm`, `gerak`; tiap medan `{nama, tipe, min, maks, pilihan, wajib}`), `cekButir`, dan `FORMULIR_VERSI`; batas kedalaman diturunkan dari `KONST.dalam_maks_m` (`hitung.js`), bukan konstanta kedua. Dipakai SP-008, SP-009, SP-011.
 - **Di luar:** UI form (SP-011); rute (SP-008). Tidak ada salinan `src/sippa_formulir.js`.
 - **Pengerja / pemeriksa:** `sippa` / `penulis-gerbang`.
 - **Model:** sonnet.
 - **Dependensi:** SP-003, SP-006 (batas CHECK). **Paralel dengan:** SP-005, SP-013, SP-021. **Isolasi:** worktree ya.
-- **Selesai bila:** daftar medan lengkap sesuai PRD §9.9 dan DT §5.5.2; uji memastikan tiap batas sama dengan CHECK migrasi 0055 (dibaca dari berkas SQL, bukan disalin) dan berkas tidak menyentuh DOM atau global peramban.
+- **Selesai bila:** daftar medan lengkap sesuai PRD §9.9 dan DT §5.5.2; uji memastikan tiap batas sama dengan CHECK migrasi 0056 (dibaca dari berkas SQL, bukan disalin) dan berkas tidak menyentuh DOM atau global peramban.
 - **Bukti:** `node --test tests/sippa/formulir.test.mjs`.
 - **Rujukan:** PRD §9.9 (validasi klien = server), §9.12.2 baris formulir; DT §5.5.2, §6.1, ADR-03; RU §6.2. **Ukuran:** S
 
 #### SP-008 Worker SIPPA P0: cangkang, gerbang host, rute kit, tugas, lapangan, log
 - **Tujuan:** semua rute yang dibutuhkan pilot, di balik sesi, dengan kode penugasan untuk operator.
 - **Berkas:** `src/sippa.js` (baru: `RUTE_SIPPA` P0, `bungkusSippa` 503 sopan, `P_SIPPA_BACA`, `P_SIPPA_TULIS`, `LAYAR_SIPPA`, `ALASAN_TRANSISI`, `RANTAI_DUMMY` untuk Kit, Log, Lapangan; impor `public/pipa/formulir.js`), `src/worker.js` (spread `RUTE_SIPPA` di `RUTE`; regex pengecualian `halamanTerkunci` ditambah `pipa`, DT §1.4; `PUBLIK_TANPA_SESI` tidak diubah), `src/admin_halaman.js` (`HAL.pipa`, `HALAMAN_STAF.pipa`, `halamanSippa(layar, ctx)`, `halamanSippaLapangan()`, `CSP_SIPPA`, `GET /admin/pipa` 303), `src/posko.js` (`export` pada `CSP_LAPANGAN` saja), `public/admin/pantau.js` (sesudah masuk staf, `ke` yang cocok `^/pipa(/|$)` dialihkan; ADR-05), `tests/warga/sippa.test.mjs` (bagian P0), `tests/warga/staf_halaman.test.mjs` (`HALAMAN_STAF.pipa` = `P_SIPPA_BACA`), `tests/warga/posko.test.mjs` (regex pemindai baris 647 ditambah `pipa`), `tests/warga/admin-403-pantul.test.mjs` (juga memindai `public/pipa/*.js`), `tests/warga/gerbang.test.mjs` (`"sippa"` ditambah ke daftar modul `bn`), `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: tabel 0055, `MEDAN` dan `cekButir` (SP-007), `stafOK`, `jejakStmt`, `dalamWilayahStaf`, `stafNyata` (`src/staf.js`), `laju()`, `kodeBaru`, `pemegangKode` (`src/bnpb.js`), `modOK`, `superOK` (`src/posko.js`), `bersihMedia`, `jenisBerkas`, `gagal`, `bacaBody`. Hasil: `RUTE_SIPPA`, `P_SIPPA_BACA = ["pusdalops","koordalops","pimpinan"]`, `P_SIPPA_TULIS = ["pusdalops","koordalops"]`, `LAYAR_SIPPA` (11 nama), `RANTAI_DUMMY`, `halamanSippa`; bentuk jawaban `POST /api/sippa/lapangan/kirim` = `{diterima:[id], ganda:[id], ditolak:[{id, alasan}], jam_server}`. Dipakai SP-010 s.d. SP-012, SP-029, SP-035, SP-050, SP-052.
+- **Antarmuka:** Konsumsi: tabel 0056, `MEDAN` dan `cekButir` (SP-007), `stafOK`, `jejakStmt`, `dalamWilayahStaf`, `stafNyata` (`src/staf.js`), `laju()`, `kodeBaru`, `pemegangKode` (`src/bnpb.js`), `modOK`, `superOK` (`src/posko.js`), `bersihMedia`, `jenisBerkas`, `gagal`, `bacaBody`. Hasil: `RUTE_SIPPA`, `P_SIPPA_BACA = ["pusdalops","koordalops","pimpinan"]`, `P_SIPPA_TULIS = ["pusdalops","koordalops"]`, `LAYAR_SIPPA` (11 nama), `RANTAI_DUMMY`, `halamanSippa`; bentuk jawaban `POST /api/sippa/lapangan/kirim` = `{diterima:[id], ganda:[id], ditolak:[{id, alasan}], jam_server}`. Dipakai SP-010 s.d. SP-012, SP-029, SP-035, SP-050, SP-052.
 - **Rute (DT §4.2, §4.3):** `GET /pipa`, `/pipa/<layar>`, `/pipa/kit/:id`, `/pipa/lapangan`, `/admin/pipa`; `GET /api/sippa/kit`, `GET /api/sippa/kit/:id`, `POST /api/sippa/kit`, `POST /api/sippa/kit/:id`, `POST /api/sippa/komponen/:id`, `POST /api/sippa/gerak/:id`, `POST /api/sippa/tiba/:id`; `POST /api/sippa/tugas`, `POST /api/sippa/tugas-cabut/:id`; `GET /api/sippa/lapangan/saya`, `POST /api/sippa/lapangan/kirim` (dengan `jam_kirim` dan penurunan `jam_klien_meleset`, DT §6.1.5), `POST /api/sippa/lapangan/foto` (tabel `sippa_foto`, JPEG/WebP), `GET /api/sippa/foto/:id`; `GET /api/sippa/log`, `GET /api/sippa/log.csv`, `GET /api/sippa/probe.csv`, `POST /api/sippa/log`; `POST /api/sippa/dummy/isi` (layar `kit`, `log`, `lapangan`), `POST /api/sippa/dummy/hapus`.
 - **Di luar:** rute data R2, A/B, skenario, laporan, telemetri (SP-029, SP-035, SP-050); `src/pipa.js` dan awalan `/api/pipa/*` (milik pipeline Python, tidak disentuh).
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer`.
@@ -386,7 +386,7 @@ Bentuk tiap tiket: **Tujuan**; **Berkas** (path persis; hanya ini yang boleh dis
 
 #### SP-017 [induk] Deploy P0, uji asap, kit SIPPA-001, kode regu pilot
 - **Tujuan:** `/pipa/lapangan` siap di ponsel regu pilot.
-- **Berkas:** `tests/warga/migrasi_beku.json` (0055 dicatat lewat `warga-api` sesudah diterapkan, masuk commit berikutnya).
+- **Berkas:** `tests/warga/migrasi_beku.json` (0056 dicatat lewat `warga-api` sesudah diterapkan, masuk commit berikutnya).
 - **Langkah:** PRD §10.6 langkah 1–8 dan RU §8.2: `npm run uji`; `npm run uji:sippa`; `npx --yes wrangler@4.42.0 d1 migrations apply poskowarga --remote`; push ke `staging` (terbit.yml pratinjau) dan uji asap di URL pratinjau dengan baris dummy; merge ke `main` (terbit.yml `wrangler deploy`; merge = tayang); uji asap produksi RU §8.3 A1–A12 (`/pipa` tamu 303 ke `/admin/pantau?ke=%2Fpipa`, staf pusdalops 200, `/pipa/lapangan` 200, `GET /api/sippa/kit` tamu 401); buat kit `SIPPA-001` jenis `pinjam_pilot` dengan `pemilik_asal` dari T-C; buat kode penugasan regu pilot dan serahkan tautan ke pemilik; satu kiriman dummy lalu `dummy/hapus`.
 - **Di luar:** rute selain P0.
 - **Pengerja / pemeriksa:** sesi induk / pemilik (menerima tautan regu).
@@ -531,7 +531,7 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 
 #### SP-029 Rute data, ringkas, cek jalan, usul AOI
 - **Berkas:** `src/sippa.js` (rute `GET /api/sippa/data/<nama>` dengan hak dicek sebelum R2 dan daftar nama tetap `DATA_SIPPA`, `GET /api/sippa/ringkas`, `GET/POST /api/sippa/jalan-cek`, `POST /api/sippa/aoi`; dummy layar `peta`, `ringkas`), `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: R2 `sippa/`, tabel 0055. Hasil: `GET /api/sippa/data/<nama>` (nama ∈ `kelayakan_kompleks`, `kelayakan_sel`, `zona`, `sel22`, `kit_nasional`, `pemicu`, `aoi_calon`), `GET /api/sippa/ringkas`.
+- **Antarmuka:** Konsumsi: R2 `sippa/`, tabel 0056. Hasil: `GET /api/sippa/data/<nama>` (nama ∈ `kelayakan_kompleks`, `kelayakan_sel`, `zona`, `sel22`, `kit_nasional`, `pemicu`, `aoi_calon`), `GET /api/sippa/ringkas`.
 - **Tujuan:** data turunan R2 hanya lewat sesi; tamu tidak tahu berkas ada atau tidak.
 - **Di luar:** layar.
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer`.
@@ -586,20 +586,20 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Bukti:** `npm run uji:sippa`.
 - **Rujukan:** PRD §9.4.3, §6.4; DS §4.3. **Ukuran:** M
 
-#### SP-034 Migrasi 0056 A/B, skenario, laporan dan uji skema
-- **Berkas:** `migrations/0056_sippa_ab_skenario.sql`, `tests/warga/sippa_skema.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Hasil: tabel 0056 persis DT §3.3. Dipakai SP-035.
+#### SP-034 Migrasi 0057 A/B, skenario, laporan dan uji skema
+- **Berkas:** `migrations/0057_sippa_ab_skenario.sql`, `tests/warga/sippa_skema.test.mjs`, `tests/warga/cakupan.json`.
+- **Antarmuka:** Hasil: tabel 0057 persis DT §3.3. Dipakai SP-035.
 - **Tujuan:** `sippa_ab_unggah`, `sippa_petak`, `sippa_skenario`, `sippa_laporan`.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`, `penulis-gerbang`.
 - **Model:** sonnet; `migrasi-idempoten` haiku.
 - **Dependensi:** SP-006. **Paralel dengan:** SP-029, SP-030, SP-058, SP-062. **Isolasi:** worktree ya.
 - **Selesai bila:** RU §3.3 hijau: idempoten; CHECK menolak surfaktan > 0 di lengan bukan surfaktan, state skenario bukan objek JSON atau > 32 KB, tanggal bukan YYYY-MM-DD, `UNIQUE (aoi, petak_id)` ganda, sha unggahan ganda, `ada_berkas = 1` tanpa sha.
 - **Bukti:** `node --test tests/warga/sippa_skema.test.mjs`.
-- **Rujukan:** PRD §9.7.2 (0056), §10.2 W-06; DT §3.2–§3.5; RU §3. **Ukuran:** S
+- **Rujukan:** PRD §9.7.2 (0057), §10.2 W-06; DT §3.2–§3.5; RU §3. **Ukuran:** S
 
 #### SP-035 Rute A/B, skenario, laporan
 - **Berkas:** `src/sippa.js` (`GET /api/sippa/ab`, `POST /api/sippa/ab/unggah`, `POST /api/sippa/ab-status/:id`, `GET /api/sippa/ab.csv`, `GET/POST /api/sippa/skenario`, `POST /api/sippa/skenario-hapus/:id`, `GET/POST /api/sippa/laporan`, `GET /api/sippa/laporan-berkas/:id`; dummy layar `ab`, `studio`, `laporan`), `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: tabel 0056, `SippaHitung.bandingRerata`/`bandingProporsi` hanya di klien (server tidak menghitung statistik). Hasil: rute A/B, skenario, laporan DT §4.3.
+- **Antarmuka:** Konsumsi: tabel 0057, `SippaHitung.bandingRerata`/`bandingProporsi` hanya di klien (server tidak menghitung statistik). Hasil: rute A/B, skenario, laporan DT §4.3.
 - **Tujuan:** unggah CSV petak dengan tolak-semua bila satu baris salah; arsip PDF di R2 `sippa-laporan/`.
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer` (unggah CSV dan PDF, injeksi rumus).
 - **Model:** sonnet.
@@ -641,7 +641,7 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 
 #### SP-039 [induk] Commit dan deploy R1
 - **Tujuan:** R1 di produksi paling lambat 8 Nov; Laporan pilot bisa dibuat minggu 46.
-- **Berkas:** berkas SP-019 s.d. SP-037; commit data turunan `data/sippa/keluaran/*.json` terpisah dari kode; `tests/warga/migrasi_beku.json` (0055 dari SP-017, 0056 sesudah diterapkan).
+- **Berkas:** berkas SP-019 s.d. SP-037; commit data turunan `data/sippa/keluaran/*.json` terpisah dari kode; `tests/warga/migrasi_beku.json` (0056 dari SP-017, 0057 sesudah diterapkan).
 - **Langkah:** PRD §10.6 lengkap; jalankan `workflow_dispatch` `data.yml` sekali dan periksa R2 `sippa/`; uji asap `/api/sippa/data/zona` dengan sesi = 200.
 - **Pengerja / pemeriksa:** sesi induk / `higiene-repo`.
 - **Model:** opus. **Dependensi:** SP-038. **Paralel dengan:** tidak. **Isolasi:** tidak.
@@ -757,9 +757,9 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Bukti:** `node --test tests/sippa/adegan_logika.test.mjs`.
 - **Rujukan:** PRD §9.6, §10.2 W-10; DS §3.17, §4.10; RU §2.3 (D1–D3). **Ukuran:** L
 
-#### SP-050 Migrasi 0057 dan rute telemetri, alarm, ringkas harian
-- **Berkas:** `migrations/0057_sippa_telemetri.sql` (persis DT §3.4: satu baris per pesan, T-J), `src/sippa.js` (`POST/GET /api/sippa/telemetri`, `GET/POST /api/sippa/perangkat`, `POST /api/sippa/perangkat-cabut/:id`, `GET /api/sippa/alarm`, `POST /api/sippa/alarm-tutup/:id`, `dariDatar()` dengan `tag_datar`, `AMBANG_ALARM`, `bersihkanSippa`; dummy layar `telemetri`), `src/worker.js` (`bersihkanSippa` di `bersihSemua` cron menit 17 yang ada), `src/pantau.js` (`JENIS.sippa_alarm` dan detektornya), `public/admin/pantau.js` (`JENIS` sama), `tests/warga/sippa_skema.test.mjs`, `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
-- **Antarmuka:** Konsumsi: tabel 0055, cron menit 17 yang ada. Hasil: tabel 0057 DT §3.4; `dariDatar(o)`; rute telemetri DT §4.3; butir Meja Pantau `sippa_alarm`.
+#### SP-050 Migrasi 0058 dan rute telemetri, alarm, ringkas harian
+- **Berkas:** `migrations/0058_sippa_telemetri.sql` (persis DT §3.4: satu baris per pesan, T-J), `src/sippa.js` (`POST/GET /api/sippa/telemetri`, `GET/POST /api/sippa/perangkat`, `POST /api/sippa/perangkat-cabut/:id`, `GET /api/sippa/alarm`, `POST /api/sippa/alarm-tutup/:id`, `dariDatar()` dengan `tag_datar`, `AMBANG_ALARM`, `bersihkanSippa`; dummy layar `telemetri`), `src/worker.js` (`bersihkanSippa` di `bersihSemua` cron menit 17 yang ada), `src/pantau.js` (`JENIS.sippa_alarm` dan detektornya), `public/admin/pantau.js` (`JENIS` sama), `tests/warga/sippa_skema.test.mjs`, `tests/warga/sippa.test.mjs`, `tests/warga/cakupan.json`.
+- **Antarmuka:** Konsumsi: tabel 0056, cron menit 17 yang ada. Hasil: tabel 0058 DT §3.4; `dariDatar(o)`; rute telemetri DT §4.3; butir Meja Pantau `sippa_alarm`.
 - **Tujuan:** kerangka telemetri siap menerima data (keputusan 38).
 - **Di luar:** jadwal cron baru (batas 5 jadwal akun Free).
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`, `guard-api`, `security-reviewer` (token perangkat).
@@ -767,7 +767,7 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 - **Dependensi:** SP-006, SP-008. **Paralel dengan:** SP-045, SP-071, SP-072, SP-073. **Isolasi:** worktree ya.
 - **Selesai bila:** RU §2.3 E1–E3, §2.4 baris telemetri, dan §3.4 hijau: token salah 401; > 300 token salah per jam 429; pesan ke-121 dalam sejam 429 (dihitung dari baris tabel, tanpa tulisan tambahan); nilai di luar rentang tersimpan mutu 2; waktu 6 menit di depan ditolak; pesan sama dikirim ulang = `ganda`; > 500 bacaan atau > 65.536 byte ditolak; token tampil sekali dan hanya sha256 tersimpan; tiap kode alarm terbuka sekali dan tertutup saat pulih; ringkas harian dan hapus > 30 hari jalan di cron yang ada.
 - **Bukti:** `npm run uji:warga`.
-- **Rujukan:** PRD §9.7.2 (0057), §9.11, §10.2 W-11; DT §3.4, §6.3, ADR-07; RU §2.4, §3.4; PRD §2.2 T-J, T-K. **Ukuran:** M
+- **Rujukan:** PRD §9.7.2 (0058), §9.11, §10.2 W-11; DT §3.4, §6.3, ADR-07; RU §2.4, §3.4; PRD §2.2 T-J, T-K. **Ukuran:** M
 
 #### SP-051 Layar Telemetri
 - **Berkas:** `public/pipa/layar_telemetri.js`.
@@ -781,7 +781,7 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 
 #### SP-052 Rantai dummy semua layar
 - **Berkas:** `src/sippa.js` (`RANTAI_DUMMY` untuk semua layar persis DT §8.5: kit `SIPPA-901` s.d. `SIPPA-907` satu per status, periode dari layar, A/B tiga vonis, satu log `jam_klien_meleset`, alarm aktif dan tertutup), `tests/warga/sippa.test.mjs`.
-- **Antarmuka:** Konsumsi: semua tabel 0055–0057. Hasil: `RANTAI_DUMMY[layar]` untuk 13 kunci (11 `LAYAR_SIPPA` + `ringkas` + `lapangan`).
+- **Antarmuka:** Konsumsi: semua tabel 0056–0058. Hasil: `RANTAI_DUMMY[layar]` untuk 13 kunci (11 `LAYAR_SIPPA` + `ringkas` + `lapangan`).
 - **Tujuan:** tiap layar terisi tanpa nol palsu; vonis A/B tiga nilai muncul; hapus tidak menyentuh baris nyata.
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `penulis-gerbang`.
 - **Model:** sonnet. Baca `~/.claude/DUMMY.md` dulu.
@@ -821,7 +821,7 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 
 #### SP-056 Tinjauan penuh rilis lengkap
 - **Pengerja / pemeriksa:** `guard-api`, `migrasi-idempoten`, `selera-angka`, `higiene-repo` (haiku); `security-reviewer`, `inp-reviewer`, `validasi-model` (sonnet).
-- **Berkas:** tidak ada. **Tujuan:** sapuan seluruh `/pipa`, `src/sippa*.js`, migrasi 0055–0057, `scripts/data/sippa/**`. **Model:** haiku/sonnet.
+- **Berkas:** tidak ada. **Tujuan:** sapuan seluruh `/pipa`, `src/sippa*.js`, migrasi 0056–0058, `scripts/data/sippa/**`. **Model:** haiku/sonnet.
 - **Dependensi:** SP-048 s.d. SP-055. **Paralel dengan:** satu sama lain. **Isolasi:** tidak.
 - **Selesai bila:** nol temuan kritis; daftar periksa serah PRD §12.3 bagian web tercentang.
 - **Bukti:** laporan; `npm run uji`; `npm run uji:sippa`.
@@ -829,7 +829,7 @@ R1 menggabungkan P1 PRD (W-04, W-05) dengan W-06 dan templat Laporan pilot dari 
 
 #### SP-057 [induk] Commit dan deploy R3 (rilis lengkap)
 - **Tujuan:** semua layar PRD §9.1.1 di produksi paling lambat 6 Des (U5).
-- **Berkas:** berkas SP-048 s.d. SP-055; `tests/warga/migrasi_beku.json` (0057).
+- **Berkas:** berkas SP-048 s.d. SP-055; `tests/warga/migrasi_beku.json` (0058).
 - **Pengerja / pemeriksa:** sesi induk / `higiene-repo`. **Model:** opus.
 - **Dependensi:** SP-056. **Paralel dengan:** SP-077, SP-078. **Isolasi:** tidak.
 - **Selesai bila:** jalur PRD §10.6 (staging lalu `main`); uji asap RU §8.3 dan tiap rute halaman `LAYAR_SIPPA` 200 dengan sesi; satu pesan telemetri uji diterima dan ditandai di luar rentang lalu dihapus.
@@ -1300,7 +1300,7 @@ Kebutuhan banjir yang sudah dipenuhi P0: status `banjir`, alasan `pindah_banjir`
 | T-G | Penanda tangan Kata Pengantar dan kolofon | SP-074, SP-080 | sama dengan deck BNPB 21 Okt 2026, draf berpenanda periksa pemilik |
 | T-H | `/pipa` untuk akun instansi | SP-008 (hak akses) | hanya admin dan staf BNPB; operator memakai kode penugasan; bila berubah, tiket baru setelah SP-057 |
 | T-I | Deep Research pemilik | tidak ada | tidak dirujuk |
-| T-J | Telemetri satu baris per pesan | SP-050 (skema 0057) | satu baris per pesan, interval 60 detik (DT ADR-07) |
+| T-J | Telemetri satu baris per pesan | SP-050 (skema 0058) | satu baris per pesan, interval 60 detik (DT ADR-07) |
 | T-K | Paket D1 berbayar sebelum telemetri > 30 kit | tidak ada tiket 2026 (kerangka saja); keputusan 2027 | interval 60 detik sampai 30 kit |
 
 Penghambat lain di luar T-A s.d. T-K:
@@ -1319,10 +1319,10 @@ Penghambat lain di luar T-A s.d. T-K:
 | Tiket | Isi | Kapan | Syarat |
 | --- | --- | --- | --- |
 | SP-016 | commit P0 (SP-003, SP-004, SP-006 s.d. SP-014, SP-085) | 27 Okt | SP-015 bersih |
-| SP-017 | migrasi 0055 remote, deploy P0, uji asap, kit SIPPA-001, kode regu | 27 Okt malam | SP-016; `npm run uji` dan `uji:sippa` hijau |
-| SP-039 | commit R1 + data turunan terpisah + `migrasi_beku.json` (0055, 0056); migrasi 0056; deploy; `workflow_dispatch` `data.yml` | 8 Nov | SP-038 bersih |
+| SP-017 | migrasi 0056 remote, deploy P0, uji asap, kit SIPPA-001, kode regu | 27 Okt malam | SP-016; `npm run uji` dan `uji:sippa` hijau |
+| SP-039 | commit R1 + data turunan terpisah + `migrasi_beku.json` (0056, 0057); migrasi 0057; deploy; `workflow_dispatch` `data.yml` | 8 Nov | SP-038 bersih |
 | SP-047 | commit dan deploy R2 | 22 Nov | SP-046 bersih |
-| SP-057 | commit R3 + `migrasi_beku.json` (0057); migrasi 0057; deploy rilis lengkap | 6 Des | SP-056 bersih |
+| SP-057 | commit R3 + `migrasi_beku.json` (0058); migrasi 0058; deploy rilis lengkap | 6 Des | SP-056 bersih |
 | SP-080 | commit buku dan deck per tiket; serah | 6 Des | SP-079 bersih |
 | SP-018, SP-081 | entri staf, ekspor D1, pemantauan operasi | 28 Okt–3 Jan | tidak ada commit kode |
 | SP-084 | penyelarasan berkas ini; penutupan | 25 Okt dan 3 Jan | commit `data/kajian-bnpb/pipa/TIKET.md` saja |
@@ -1355,7 +1355,7 @@ Matriks lintas dokumen (fitur dan bab terhadap PRD, DS, DT, KB, RU, TIKET) ada d
 | §9.5 | Simulator keputusan (mesin, `gerbangSippa`, semua skenario, NPV/BCR/MC) | SP-040, SP-041, SP-042, SP-062 |
 | §9.6 | Simulasi 3D | SP-048, SP-049 |
 | §9.7.1 | data turunan R2 | SP-019 s.d. SP-025, SP-028 |
-| §9.7.2 | skema D1 0055–0057 | SP-006, SP-034, SP-050 |
+| §9.7.2 | skema D1 0056–0058 | SP-006, SP-034, SP-050 |
 | §9.7.3 | rute worker (termasuk `probe.csv`, `foto/:id`) | SP-008, SP-029, SP-035, SP-050, SP-052 |
 | §9.8 | akses, peran, CSP, privasi | SP-008, SP-015, SP-038, SP-046, SP-056 |
 | §9.9 | form lapangan luring, `jam_klien_meleset`, medan vonis pilot | SP-007, SP-008, SP-009, SP-011, SP-013 |
