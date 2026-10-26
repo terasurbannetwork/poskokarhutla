@@ -24,7 +24,8 @@
         "scripts/statistik/**",
         "scripts/*.py",
         "scripts/pasang-kunci.sh",
-        "data/**"
+        "data/**",
+        "data/sippa/**"
       ]
     },
     {
@@ -198,6 +199,27 @@
       "milik": [
         "scripts/umum/**",
         "scripts/berita/**"
+      ]
+    },
+    {
+      "nama": "sippa",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja layar staf SIPPA /pipa: cangkang klien, layar perencanaan dan operasi, form lapangan luring, fungsi hitung murni, Studio, 3D, laporan PDF, dan uji tanpa DB-nya.",
+      "kapan": "public/pipa/**, tests/sippa/** disentuh atau rusak, atau rumus hidraulika/zona/pemicu di sisi klien berubah",
+      "fokus": [
+        "public/pipa/** terbit sebagai aset publik: hanya kode dan teks antarmuka, tidak pernah data; data dari /api/sippa/* dan R2 sippa/",
+        "hitung.js = satu sumber rumus; kembar Python scripts/data/sippa/*.py dijaga tests/sippa/kembar.test.mjs terhadap fixtures/acuan.json",
+        "Mesin Studio disalin apa adanya dari berkas pemilik; perubahan hanya tiga jenis bertanda komentar SIPPA:, gerbangSippa hanya menambah hambatan",
+        "INP: chrome kontrol urgent di handler, kerja berat lewat nanti() atau Web Worker; sakelar peta setLayoutProperty/setFilter",
+        "Angka lewat fmt (public/inti/format.js), tanpa toFixed di teks tampil; tiap angka bersumber dan berpil keyakinan; tanpa kata terbukti"
+      ],
+      "larangan": "Jangan menyentuh src/**, migrations/** (minta ke warga-api) atau scripts/data/** (minta ke pipa-data). Jangan menyalin modul public/inti ke public/pipa. Jangan deploy, commit, push, atau melonggarkan gerbang.",
+      "bisa": "membangun dan membetulkan layar /pipa, fungsi hitung murni JS, mesin Studio, adegan 3D, laporan PDF, dan uji tests/sippa",
+      "tidak": "worker dan D1; pipeline Python; vendor pustaka (layar-peta); memeriksa kerjanya sendiri",
+      "milik": [
+        "public/pipa/**",
+        "tests/sippa/**"
       ]
     },
     {

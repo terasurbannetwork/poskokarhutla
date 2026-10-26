@@ -80,3 +80,5 @@ data/jejak_regu.json
 data/jejak_regu.tmp
 # kabar api per kabupaten (scripts/data/kabar_kab.py): dibuat ulang tiap putaran titik.yml/data.yml, terbit lewat cache data-, bukan git
 public/data/kabar/
+# SIPPA: buku besar, ringkasan, dan laporan tiket (TIKET.md §1.1), tidak pernah ter-commit
+.superpowers/

@@ -1,0 +1,6 @@
+{
+  "_catatan": "Registri cakupan SIPPA di luar worker dan D1 (TEST.md). Tiap fungsi SippaHitung, tiap ekspor modul public/pipa yang berlogika, tiap layar, dan tiap skrip scripts/data/sippa WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada di tests/sippa/*.test.mjs, atau 'uji:<skrip>' untuk self-check Python) atau 'dikecualikan' (nilai = alasan >= 15 huruf). 'antre' hanya boleh menyusut. Berkas dibuat kosong di SP-003 sebelum berkas public/pipa/** pertama; gerbang-cakupan.test.mjs menyusul.",
+  "diuji": {},
+  "dikecualikan": {},
+  "antre": {}
+}
