@@ -1138,7 +1138,7 @@ section[hidden],[hidden]{display:none!important}
     <ol class="alur">
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--biru)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v12c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg></i><em>Tahap 1</em></div><h3>Sumber</h3><p>Satelit NASA, model cuaca dan asap Copernicus, BMKG, BNPB, KLHK/Kemenhut, OpenStreetMap, media.</p></li>
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--oranye)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.6 1.6 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.6 1.6 0 0 0-2.7 1.1V21a2 2 0 1 1-4 0v-.1a1.6 1.6 0 0 0-2.7-1.1l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1A1.6 1.6 0 0 0 3.1 14H3a2 2 0 1 1 0-4h.1a1.6 1.6 0 0 0 1.1-2.7l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1A1.6 1.6 0 0 0 10 3.1V3a2 2 0 1 1 4 0v.1a1.6 1.6 0 0 0 2.7 1.1l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.6 1.6 0 0 0 1.1 2.7H21a2 2 0 1 1 0 4h-.1a1.6 1.6 0 0 0-1.5 1.3Z"/></svg></i><em>Tahap 2</em></div><h3>Olah otomatis</h3><p>Skrip terbuka di GitHub Actions menggabungkan titik jadi cluster, menghitung bahaya cuaca, dampak, dan kebutuhan.</p></li>
-    <li class="kartu" data-muncul style="background:var(--card);--c:var(--nila)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></i><em>Tahap 3</em></div><h3>Uji &amp; validasi</h3><p>Uji otomatis memeriksa kelengkapan dan kewajaran angka; model diuji pada kejadian yang tidak dipakai melatihnya.</p></li>
+    <li class="kartu" data-muncul style="background:var(--card);--c:var(--nila)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3 4 6v6c0 4.5 3.4 8.3 8 9 4.6-.7 8-4.5 8-9V6z"/><path d="m9 12 2 2 4-4"/></svg></i><em>Tahap 3</em></div><h3>Uji &amp; validasi</h3><p>Uji otomatis memeriksa kelengkapan dan kewajaran angka; model diuji pada kejadian yang disisihkan dari pelatihan, terutama musim 2026 (belum teruji lintas musim).</p></li>
     <li class="kartu" data-muncul style="background:var(--card);--c:var(--hijau)"><div class="tahap"><i><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg></i><em>Tahap 4</em></div><h3>Terbit</h3><p>Data lolos uji langsung terbit di situs. Umur tiap sumber dipantau; sumber yang basi ditandai.</p></li>
     </ol>
     <div class="batas" hidden>
@@ -1146,7 +1146,7 @@ section[hidden],[hidden]{display:none!important}
       <div><h3>Batas dan kejujuran</h3>
         <ul>
           <li>Titik panas adalah <b>deteksi panas satelit</b>, bukan konfirmasi lapangan; api di bawah awan atau asap tebal bisa terlewat.</li>
-          <li>Model penyebaran diuji pada kejadian yang tidak dipakai melatihnya; arah sebar <b>belum bisa diramal andal</b>.</li>
+          <li>Model penyebaran diuji terutama pada musim 2026 (belum teruji lintas musim); arah sebar <b>belum bisa diramal andal</b>.</li>
           <li>Setiap angka diberi label asalnya: <b>resmi</b> (instansi), <b>satelit</b> (deteksi), atau <b>model</b> (perkiraan).</li>
         </ul>
       </div>
@@ -1234,7 +1234,7 @@ section[hidden],[hidden]{display:none!important}
 <section class="seksi kertas berband faq-sek" id="faq" aria-labelledby="h-faq">
   <div class="band" style="--foto:url(/img/bencana-gunungapi.jpg?v=3);--pos:50% 50%"><div class="wrap"><div class="faq-band"><header class="kepala" data-muncul><h2 class="h2" id="h-faq">Pertanyaan yang sering diajukan</h2></header>    <div class="faq">
     <details name="faq"><summary>Apakah ini situs resmi pemerintah?</summary><div class="isi"><p>Tidak. Pantau Bencana dibangun secara independen oleh Teras Urban. Angka resmi tetap berasal dari BNPB, KLHK/Kemenhut, BMKG, dan BPBD; di situs ini angka resmi selalu diberi label <b>resmi</b> dan dibedakan dari hasil deteksi satelit atau perkiraan model.</p></div></details>
-    <details name="faq"><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji pada kejadian 2024–2026 yang tidak dipakai melatihnya; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>.</p></div></details>
+    <details name="faq"><summary>Seberapa akurat datanya?</summary><div class="isi"><p>Titik panas adalah deteksi panas oleh satelit, bukan konfirmasi lapangan: sebagian bisa berasal dari suar gas atau pembakaran terkendali, dan api di bawah awan atau asap tebal bisa terlewat. Model penyebaran diuji terutama pada musim 2026, jadi belum teruji lintas musim; <span id="akurasiFaq">angka kinerjanya ditampilkan di tab Insight</span>.</p></div></details>
     <details name="faq"><summary>Seberapa sering diperbarui?</summary><div class="isi"><p>Titik panas diperbarui tiap 3 jam mengikuti lintasan satelit. Analisis lengkap (cluster, cuaca, asap, operasi) berjalan setiap hari pukul 21.20 WIB, berita setiap hari, dan lapisan tetap seperti gambut atau konsesi saat sumbernya merilis versi baru.</p></div></details>
     <!-- FAQ "Bisakah saya memakai datanya?" disembunyikan (pemilik, 14 Okt 2026) -->
     <!-- FAQ "Bagaimana cara melapor kejadian di lapangan?" disembunyikan (pemilik, 14 Okt 2026) -->
@@ -1302,16 +1302,17 @@ section[hidden],[hidden]{display:none!important}
   const nanti = f => (window.requestIdleCallback || setTimeout)(f, {timeout: 2500});
   nanti(() => j("/data/berita.json").then(b => isi("berita", fmt(b.artikel.length), `artikel media dipantau, ${b.jendela_hari} hari terakhir`)).catch(() => isi("berita", "–", "belum tersedia")));
 
-  /* ---------- 3. akurasi model penyebaran (model_sebaran.json kinerja_uji: [nilai, bawah, atas, n]) ---------- */
+  /* ---------- 3. akurasi model penyebaran: dibaca dari model_sebaran.json, tanpa angka ketikan tangan ----------
+     AUC = lolos.kinerja.uji.auc (uji yang dibuka sekali) saja; uji2_auc (set uji dibuka kedua kali) sengaja tidak ditampilkan. Belum ada = tanpa angka AUC.
+     Arah = kinerja_uji.arah_24 [galat DERAJAT, bawah, atas, n]. Tidak ada klaim unggul atas model negara lain: pembanding port buatan sendiri, dan persistensi lebih baik di IoU dan galat luas. */
   j("/data/model_sebaran.json").then(m => {
-    /* arah_24 = galat arah dalam DERAJAT (bukan persen benar); lepas_auc = kemampuan menebak api akan membesar */
-    const K = m.kinerja_uji || {}, f1 = K.f1_24, ar = K.arah_24, auc = K.lepas_auc; if (!f1) return;
+    const K = m.lolos?.kinerja || {}, ar = m.kinerja_uji?.arah_24, auc = K.uji?.auc; if (auc == null && !ar) return;
     const d2 = x => x.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
-    const teks = `Diuji jujur pada data 2024–2026 yang tidak dipakai melatih: model data mengalahkan model kebakaran Kanada, AS, dan Australia. `
-      + (auc ? `Kemampuan membedakan api yang akan membesar dari yang tetap kecil: AUC <b>${d2(auc)}</b> (1 = sempurna, 0,5 = tebakan). ` : "")
-      + (ar ? `Arah sebar belum bisa diramal andal (meleset rata-rata ±${Math.round(ar[0])}°).` : "");
+    const teks = "Diuji terutama pada musim 2026, jadi belum teruji lintas musim. "
+      + (auc != null ? `Kemampuan membedakan titik api baru yang akan membesar dari yang tetap kecil: AUC <b>${d2(auc)}</b> (1 = sempurna, 0,5 = tebakan). ` : "")
+      + (ar ? `Arah sebar belum bisa diramal andal (meleset rata-rata ${Math.round(ar[0])}°).` : "");
     $("#akurasi").innerHTML = teks;
-    $("#akurasiFaq").innerHTML = `cukup untuk menentukan prioritas (titik mana yang berpeluang membesar${auc ? `, AUC ${d2(auc)}` : ""}), tetapi belum untuk memastikan batas dan arah api${ar ? ` (arah meleset rata-rata ±${Math.round(ar[0])}°)` : ""}. Hasil uji lengkap ada di tab Insight`;
+    $("#akurasiFaq").innerHTML = `cukup untuk menentukan prioritas (titik mana yang berpeluang membesar${auc != null ? `, AUC ${d2(auc)}` : ""}), tetapi belum untuk memastikan batas dan arah api${ar ? ` (arah meleset rata-rata ${Math.round(ar[0])}°)` : ""}. Hasil uji lengkap ada di tab Insight`;
   }).catch(() => $("#akurasi").textContent = "Angka kinerja model ada di tab Insight.");
 
   /* ---------- 6. tim: public/data/tim.json ----------

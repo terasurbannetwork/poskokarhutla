@@ -1,0 +1,2639 @@
+{
+ "_catatan": "LAB, bukan produksi. Kriteria ditulis SEBELUM angka dihitung.",
+ "dibuat": "2026-10-23T11:45Z",
+ "tahap": "aturan_selesai",
+ "kriteria_sha": "d3987163dce3678ffe7cec988be04d754cf7a50c1039b14a0dc5edb1814e9bb8",
+ "kriteria": {
+  "_catatan": "Semua kriteria/ambang lab_padam.py. Ditulis TANPA melihat hasil nyata. Mengubah angka di sini mengubah kriteria_sha yang tercatat di jalan.jsonl dan padam.json. Kunci yang HANYA dokumentasi (tidak dibaca kode, tetapi ikut sha): versi, pemilihan, arah_sebaliknya_hanya_kepekaan (kode menegakkannya: arah sebaliknya tidak pernah memilih), aturan_batas, ci_metode, klaster (kode menegakkannya tetap: maks(Wilson, bootstrap klaster sel x tahun)), alasan, definisi, label_proksi_awan, _catatan. Uji menegakkan: setiap kunci yang tidak dibaca kode harus disebut di sini.",
+  "akhir_data": [
+   12,
+   20
+  ],
+  "akhir_kejadian": [
+   11,
+   30
+  ],
+  "alasan": {
+   "n_min": "Dengan n=60 dan 0 kejadian, batas atas Wilson 95% = 6,0%, jadi ambang 10% baru dapat dicapai; n lebih kecil membuat ambang mustahil atau kebetulan.",
+   "pembaruan": "Pengamatan = celah antar-deteksi dalam radius muncul ulang (proses pembaruan kausal), tersensor bila tak ada deteksi sampai akhir jendela. Tidak boleh ada pengelompokan kejadian dengan DBSCAN waktu yang mengondisikan 'tidak muncul ulang dalam 48 jam'.",
+   "tak_dinyatakan": "Aturan yang tak menyatakan padam dalam cap_jam untuk > 20% pengamatan tak berguna untuk luas masih terdeteksi dan akan tampak aman secara palsu (laju muncul ulang rendah karena hampir tak pernah menyatakan). Ditetapkan sebelum hasil. Penyebut: pengamatan tanpa muncul ulang sampai cap_jam (yang seharusnya bisa dinyatakan padam). Gerbang di setel DAN uji, gambut DAN mineral.",
+   "uji_murni": "Setel di tahun setel, pilih aturan HANYA dari data setel, uji SEKALI di tahun uji. Arah sebaliknya hanya kepekaan, tidak dipakai memilih.",
+   "wilson": "Titik taksiran dengan n kecil menipu: 0/30 tampak 0% padahal batas atas Wilson 95% = 11,4%. Pengamatan satu sel berkorelasi, jadi batas atas = maks(Wilson, bootstrap klaster sel x tahun, B=1000, persentil 97,5); strata wajib punya >= n_klaster_min klaster. Setel dan uji memakai metode sama dengan batas 10% dan 15%. Keduanya dipra-tulis supaya k tidak dipilih untuk kebetulan."
+  },
+  "ambang_awan_awal": 80,
+  "ambang_awan_disetel": [
+   60,
+   80,
+   90
+  ],
+  "arah_sebaliknya_hanya_kepekaan": true,
+  "aturan_batas": "maks(batas atas Wilson, batas atas bootstrap klaster) <= wilson_batas_atas_*_maks",
+  "awal_cuaca": [
+   3,
+   1
+  ],
+  "benih": 20261023,
+  "bootstrap": 100,
+  "bootstrap_klaster_B": 1000,
+  "cap_jam": 240,
+  "ci_batas_atas_kuantil": 0.975,
+  "ci_metode": "bootstrap_klaster_rasio",
+  "definisi": {
+   "A0": "72 jam; 168 jam bila gambut dan DC > 350 (harian.py)",
+   "A1": "48 jam (src/instansi.js)",
+   "A2": "k lintasan bersih berturut-turut tanpa deteksi, k sama untuk semua (k=2..8)",
+   "A3": "k_gambut dan k_mineral berbeda (k=2..12)",
+   "A4": "A3 + k per kelas DC (<200, 200-350, >350) x gambut/mineral",
+   "AJ": "aturan jam tetap (hanya pembanding dan uji sintetis)",
+   "lintasan_bersih": "PROKSI AWAN ERA5 (cloud_cover pada titik tengah sel 0,5 derajat, jam lintas) < ambang; tidak menangkap asap",
+   "muncul_ulang": "deteksi pertama sesudah deteksi terakhir dalam <= R km dari jejak, lalu terjadi <= 168 jam sesudah aturan menyatakan padam; bisa api baru di dekatnya",
+   "pengamatan": "celah antar-deteksi (lintasan terakhir yang berdeteksi dalam sebuah lokasi); aturan dinilai pada setiap celah memakai hanya informasi sampai waktu itu",
+   "populasi_utama": "berlaku untuk kejadian >= 3 piksel unik (sampai waktu pengamatan); semua ukuran hanya kepekaan"
+  },
+  "horizon_muncul_ulang_jam": 168,
+  "k_a2_maks": 8,
+  "k_a2_min": 2,
+  "k_maks": 12,
+  "k_min_setel": 2,
+  "keterlambatan_maks_vs_A0_jam": 24,
+  "klaster": "sel_05 x tahun",
+  "kuota_bobot_per_jalan": 4600,
+  "label_proksi_awan": "Aturan berlaku untuk PROKSI AWAN ERA5 (titik tengah sel 0,5 derajat) dan tidak menangkap asap. Tidak boleh dikutip sebagai 'k lintasan satelit bersih' operasional sebelum divalidasi dengan masker VIIRS.",
+  "laporan_pembanding": [
+   "A0",
+   "A1"
+  ],
+  "lintas_min_jam": 1.5,
+  "maks_pengamatan_per_tahun": 30000,
+  "n_klaster_min": 20,
+  "n_min_per_strata": 60,
+  "pemilihan": "Dari parameter yang disetel pada tahun setel (tiap k = k terkecil dengan aturan_batas <= wilson_batas_atas_setel_maks di gambut DAN mineral, n >= n_min_per_strata, >= n_klaster_min klaster, tak_dinyatakan <= tak_dinyatakan_maks): keterlambatan setel terkecil; seri: A2 < A3 < A4. Satu aturan lalu diuji SEKALI di tahun uji; lolos bila aturan_batas <= wilson_batas_atas_uji_maks di gambut DAN mineral (n >= n_min_per_strata, >= n_klaster_min klaster); dan tak_dinyatakan <= tak_dinyatakan_maks; A0/A1 hanya laporan_pembanding, bukan gerbang dan keterlambatan berpasangan vs A0 <= keterlambatan_maks_vs_A0_jam.",
+  "peristiwa_rantai_jam": 3.0,
+  "px_utama_min": 3,
+  "radius_km_kepekaan": [
+   0.5,
+   2.0
+  ],
+  "radius_km_utama": 1.0,
+  "sel_gambut": 26,
+  "sel_mineral": 26,
+  "sel_n_min_titik": 200,
+  "snapshot": [
+   [
+    9,
+    15
+   ],
+   [
+    10,
+    1
+   ],
+   [
+    10,
+    15
+   ]
+  ],
+  "tahun": {
+   "2019": "kering",
+   "2020": "basah",
+   "2022": "basah",
+   "2023": "kering"
+  },
+  "tahun_setel": [
+   2019,
+   2020
+  ],
+  "tahun_uji": [
+   2022,
+   2023
+  ],
+  "tak_dinyatakan_maks": 0.2,
+  "versi": 2,
+  "vonis_bila_cuaca_terpotong": "tidak_dapat_dinilai",
+  "wilson_batas_atas_setel_maks": 0.1,
+  "wilson_batas_atas_uji_maks": 0.15,
+  "wilson_z": 1.959964
+ },
+ "batasan": [
+  "Aturan berlaku untuk PROKSI AWAN ERA5 (cloud_cover total di titik tengah sel 0,5 derajat pada jam lintas), BUKAN masker VIIRS VNP14IMG; proksi ini tidak menangkap asap/kabut tebal (dominan Agu-Okt). Tidak boleh dikutip sebagai 'k lintasan satelit bersih' operasional sebelum divalidasi dengan masker VIIRS.",
+  "'Lintasan bersih' tidak menjamin api terdeteksi: api kecil/dingin di bawah kanopi, di bawah ambang piksel 375 m, atau di tepi sapuan bisa lolos. Jadi laju muncul ulang di sini BATAS BAWAH.",
+  "Bara gambut bawah permukaan tak terlihat satelit mana pun; 'tak muncul ulang' tidak membuktikan padam. Kebenaran akhir = konfirmasi lapangan (/uji-lapangan Q5), yang belum dipakai di sini.",
+  "'Muncul ulang dalam R km' diukur dengan deteksi FIRMS yang sama (satu sumber): deteksi baru dalam R km bisa API BARU di dekatnya, bukan kebangkitan api lama. Radius 0,5/1/2 km disajikan sebagai kepekaan.",
+  "Pengamatan = celah antar-deteksi (proses pembaruan) dan pengamatan satu sel berkorelasi: batas atas = maks(Wilson, bootstrap klaster sel x tahun B=1000 persentil 97.5), strata wajib >= 20 klaster (setel DAN uji). Lokasi besar yang terbakar lama tetap menyumbang lebih banyak celah.",
+  "DC dihitung dari cuaca jam 12 setempat pada tanggal t_i; untuk lintasan malam (sekitar 10 jam sebelumnya) DC itu adalah hari yang sama dan tidak berisi informasi sesudah t_i yang bocor ke vonis, tetapi kasar sekitar setengah hari.",
+  "Bootstrap 20 klaster sempit untuk rasio langka (persentil 97,5 dari 20 sel kasar): sebab itu ditambal dengan maks(Wilson, bootstrap), dan 'tidak_ada_aturan' adalah hasil sah.",
+  "Jam lintas diidealkan (satu lintasan siang + satu malam per satelit, jam surya median dari acq_time); tumpang-tindih sapuan di khatulistiwa dan bukan-lintasan diabaikan.",
+  "Cuaca hanya untuk SEL SAMPEL (acak berstrata, benih tetap, dipilih dari titik tahun SETEL saja): luas di tiga angka adalah luas di sel sampel, BUKAN nasional. Pengamatan di sel tanpa cuaca dibuang.",
+  "Dua tahun kering + dua basah: kesimpulan musiman bergantung pada empat musim saja; strata dengan n < 60 dinyatakan tak cukup.",
+  "Luas = piksel unik sampai waktu snapshot x faktor ha/piksel: LUAS PIKSEL, bukan luas terbakar.",
+  "Populasi utama: berlaku untuk kejadian >= 3 piksel unik; semua ukuran hanya kepekaan."
+ ],
+ "tahun": {
+  "2019": "kering",
+  "2020": "basah",
+  "2022": "basah",
+  "2023": "kering"
+ },
+ "firms_status": {
+  "2019": "cache",
+  "2020": "cache",
+  "2022": "cache",
+  "2023": "cache"
+ },
+ "tahun_lengkap": [
+  2019,
+  2020,
+  2022,
+  2023
+ ],
+ "tahun_belum_lengkap": [],
+ "lintasan_jam_surya": {
+  "N_D": 13.52,
+  "N_N": 1.36,
+  "N20_D": 13.52,
+  "N20_N": 1.35
+ },
+ "sel_sampel": {
+  "n": 52,
+  "gambut": 26,
+  "dipilih_dari_tahun": [
+   2019,
+   2020
+  ],
+  "cara": "acak berstrata gambut/mineral, benih 20261023, sel dengan >= 200 titik; semua sel bila kuota cukup",
+  "cakupan_luas": "tiga angka hanya untuk sel sampel ini, BUKAN nasional"
+ },
+ "cuaca": {
+  "bobot_terpakai": 0,
+  "kuota_bobot_per_jalan": 4600,
+  "terpotong_kuota_atau_waktu": false,
+  "terpotong": false
+ },
+ "vonis_bila_cuaca_terpotong": "tidak_dapat_dinilai",
+ "luas": {
+  "ha_per_piksel": 14.0625,
+  "sumber": "garis_api.PIKSEL_HA (luas piksel, bukan luas terbakar; lab/luas.json belum ada atau tanpa ha_per_piksel)",
+  "catatan": "luas piksel, bukan luas terbakar"
+ },
+ "kejadian": {
+  "per_tahun": {
+   "2019": {
+    "lokasi": 17570,
+    "di_luar_jendela": 568,
+    "pengamatan_calon": 27863,
+    "di_luar_negeri_atau_laut": 942,
+    "pengamatan_dipakai": 26921,
+    "snapshot_tanpa_cuaca": 0,
+    "titik_di_sel_dengan_cuaca": 140998,
+    "sel_dengan_cuaca": 52
+   },
+   "2020": {
+    "lokasi": 5646,
+    "di_luar_jendela": 58,
+    "pengamatan_calon": 6091,
+    "di_luar_negeri_atau_laut": 354,
+    "pengamatan_dipakai": 5737,
+    "snapshot_tanpa_cuaca": 0,
+    "titik_di_sel_dengan_cuaca": 10136,
+    "sel_dengan_cuaca": 52
+   },
+   "2022": {
+    "lokasi": 2940,
+    "di_luar_jendela": 60,
+    "pengamatan_calon": 3055,
+    "di_luar_negeri_atau_laut": 146,
+    "pengamatan_dipakai": 2909,
+    "snapshot_tanpa_cuaca": 0,
+    "titik_di_sel_dengan_cuaca": 4806,
+    "sel_dengan_cuaca": 52
+   },
+   "2023": {
+    "lokasi": 15742,
+    "di_luar_jendela": 235,
+    "pengamatan_calon": 21730,
+    "di_luar_negeri_atau_laut": 745,
+    "pengamatan_dipakai": 20985,
+    "snapshot_tanpa_cuaca": 0,
+    "titik_di_sel_dengan_cuaca": 70710,
+    "sel_dengan_cuaca": 52
+   }
+  },
+  "total_pengamatan": 56552,
+  "gambut": 27514,
+  "satuan": "pengamatan = celah antar-deteksi (proses pembaruan), bukan kejadian utuh"
+ },
+ "survival_km": {
+  "label": "deskriptif, semua tahun yang diolah",
+  "populasi": "berlaku untuk kejadian >= 3 piksel (sampai t_i)",
+  "B": 100,
+  "strata": {
+   "semua": {
+    "n": 19411,
+    "n_muncul_ulang": 16018,
+    "g": {
+     "24": {
+      "p": 0.465,
+      "selang": [
+       0.4543,
+       0.4729
+      ]
+     },
+     "48": {
+      "p": 0.3844,
+      "selang": [
+       0.3731,
+       0.3957
+      ]
+     },
+     "72": {
+      "p": 0.2976,
+      "selang": [
+       0.2862,
+       0.3079
+      ]
+     },
+     "120": {
+      "p": 0.2637,
+      "selang": [
+       0.2524,
+       0.2755
+      ]
+     },
+     "168": {
+      "p": 0.2297,
+      "selang": [
+       0.22,
+       0.2405
+      ]
+     }
+    },
+    "k": {
+     "60": {
+      "1": {
+       "n": 9802,
+       "p": 0.5345,
+       "selang": [
+        0.5255,
+        0.5422
+       ]
+      },
+      "2": {
+       "n": 9795,
+       "p": 0.5342,
+       "selang": [
+        0.524,
+        0.5421
+       ]
+      },
+      "3": {
+       "n": 6573,
+       "p": 0.3771,
+       "selang": [
+        0.3659,
+        0.3902
+       ]
+      },
+      "4": {
+       "n": 6571,
+       "p": 0.377,
+       "selang": [
+        0.3666,
+        0.3885
+       ]
+      },
+      "6": {
+       "n": 5344,
+       "p": 0.3211,
+       "selang": [
+        0.3109,
+        0.3336
+       ]
+      },
+      "8": {
+       "n": 4348,
+       "p": 0.2974,
+       "selang": [
+        0.2834,
+        0.3091
+       ]
+      }
+     },
+     "80": {
+      "1": {
+       "n": 10836,
+       "p": 0.5637,
+       "selang": [
+        0.5537,
+        0.5727
+       ]
+      },
+      "2": {
+       "n": 10804,
+       "p": 0.5624,
+       "selang": [
+        0.5539,
+        0.5711
+       ]
+      },
+      "3": {
+       "n": 7466,
+       "p": 0.4077,
+       "selang": [
+        0.3963,
+        0.4189
+       ]
+      },
+      "4": {
+       "n": 7461,
+       "p": 0.4073,
+       "selang": [
+        0.3967,
+        0.4164
+       ]
+      },
+      "6": {
+       "n": 6269,
+       "p": 0.3407,
+       "selang": [
+        0.33,
+        0.3519
+       ]
+      },
+      "8": {
+       "n": 5462,
+       "p": 0.3114,
+       "selang": [
+        0.2999,
+        0.3226
+       ]
+      }
+     },
+     "90": {
+      "1": {
+       "n": 11735,
+       "p": 0.59,
+       "selang": [
+        0.5824,
+        0.5972
+       ]
+      },
+      "2": {
+       "n": 11695,
+       "p": 0.5886,
+       "selang": [
+        0.581,
+        0.596
+       ]
+      },
+      "3": {
+       "n": 8082,
+       "p": 0.4302,
+       "selang": [
+        0.4223,
+        0.4415
+       ]
+      },
+      "4": {
+       "n": 8076,
+       "p": 0.4298,
+       "selang": [
+        0.4197,
+        0.4391
+       ]
+      },
+      "6": {
+       "n": 6845,
+       "p": 0.3619,
+       "selang": [
+        0.3506,
+        0.373
+       ]
+      },
+      "8": {
+       "n": 6152,
+       "p": 0.3275,
+       "selang": [
+        0.3156,
+        0.3373
+       ]
+      }
+     }
+    }
+   },
+   "gambut": {
+    "n": 13516,
+    "n_muncul_ulang": 11892,
+    "g": {
+     "24": {
+      "p": 0.5362,
+      "selang": [
+       0.5236,
+       0.5514
+      ]
+     },
+     "48": {
+      "p": 0.4403,
+      "selang": [
+       0.4267,
+       0.4542
+      ]
+     },
+     "72": {
+      "p": 0.3443,
+      "selang": [
+       0.3312,
+       0.3606
+      ]
+     },
+     "120": {
+      "p": 0.2999,
+      "selang": [
+       0.2852,
+       0.3159
+      ]
+     },
+     "168": {
+      "p": 0.2644,
+      "selang": [
+       0.2477,
+       0.279
+      ]
+     }
+    },
+    "k": {
+     "60": {
+      "1": {
+       "n": 5841,
+       "p": 0.6071,
+       "selang": [
+        0.5943,
+        0.6174
+       ]
+      },
+      "2": {
+       "n": 5836,
+       "p": 0.6068,
+       "selang": [
+        0.593,
+        0.6185
+       ]
+      },
+      "3": {
+       "n": 3524,
+       "p": 0.4305,
+       "selang": [
+        0.4148,
+        0.4453
+       ]
+      },
+      "4": {
+       "n": 3524,
+       "p": 0.4305,
+       "selang": [
+        0.4147,
+        0.4444
+       ]
+      },
+      "6": {
+       "n": 2723,
+       "p": 0.3654,
+       "selang": [
+        0.3498,
+        0.3843
+       ]
+      },
+      "8": {
+       "n": 2096,
+       "p": 0.3421,
+       "selang": [
+        0.3208,
+        0.3638
+       ]
+      }
+     },
+     "80": {
+      "1": {
+       "n": 6592,
+       "p": 0.6393,
+       "selang": [
+        0.6284,
+        0.649
+       ]
+      },
+      "2": {
+       "n": 6577,
+       "p": 0.6384,
+       "selang": [
+        0.6295,
+        0.6509
+       ]
+      },
+      "3": {
+       "n": 4092,
+       "p": 0.4646,
+       "selang": [
+        0.4533,
+        0.4789
+       ]
+      },
+      "4": {
+       "n": 4092,
+       "p": 0.4646,
+       "selang": [
+        0.451,
+        0.4794
+       ]
+      },
+      "6": {
+       "n": 3296,
+       "p": 0.3865,
+       "selang": [
+        0.372,
+        0.4009
+       ]
+      },
+      "8": {
+       "n": 2810,
+       "p": 0.3552,
+       "selang": [
+        0.3377,
+        0.3701
+       ]
+      }
+     },
+     "90": {
+      "1": {
+       "n": 7282,
+       "p": 0.6668,
+       "selang": [
+        0.6561,
+        0.678
+       ]
+      },
+      "2": {
+       "n": 7262,
+       "p": 0.6659,
+       "selang": [
+        0.6548,
+        0.6754
+       ]
+      },
+      "3": {
+       "n": 4548,
+       "p": 0.4943,
+       "selang": [
+        0.4795,
+        0.5067
+       ]
+      },
+      "4": {
+       "n": 4547,
+       "p": 0.4942,
+       "selang": [
+        0.4814,
+        0.5058
+       ]
+      },
+      "6": {
+       "n": 3680,
+       "p": 0.4103,
+       "selang": [
+        0.3961,
+        0.4265
+       ]
+      },
+      "8": {
+       "n": 3242,
+       "p": 0.3705,
+       "selang": [
+        0.3516,
+        0.3868
+       ]
+      }
+     }
+    }
+   },
+   "mineral": {
+    "n": 5895,
+    "n_muncul_ulang": 4126,
+    "g": {
+     "24": {
+      "p": 0.366,
+      "selang": [
+       0.3521,
+       0.3822
+      ]
+     },
+     "48": {
+      "p": 0.3155,
+      "selang": [
+       0.3033,
+       0.3287
+      ]
+     },
+     "72": {
+      "p": 0.2442,
+      "selang": [
+       0.2278,
+       0.256
+      ]
+     },
+     "120": {
+      "p": 0.2246,
+      "selang": [
+       0.2111,
+       0.2393
+      ]
+     },
+     "168": {
+      "p": 0.1936,
+      "selang": [
+       0.1814,
+       0.2084
+      ]
+     }
+    },
+    "k": {
+     "60": {
+      "1": {
+       "n": 3961,
+       "p": 0.4274,
+       "selang": [
+        0.4134,
+        0.444
+       ]
+      },
+      "2": {
+       "n": 3959,
+       "p": 0.4271,
+       "selang": [
+        0.4122,
+        0.4412
+       ]
+      },
+      "3": {
+       "n": 3049,
+       "p": 0.3155,
+       "selang": [
+        0.3022,
+        0.3302
+       ]
+      },
+      "4": {
+       "n": 3047,
+       "p": 0.3151,
+       "selang": [
+        0.2962,
+        0.3269
+       ]
+      },
+      "6": {
+       "n": 2621,
+       "p": 0.2751,
+       "selang": [
+        0.2599,
+        0.294
+       ]
+      },
+      "8": {
+       "n": 2252,
+       "p": 0.2558,
+       "selang": [
+        0.2373,
+        0.2733
+       ]
+      }
+     },
+     "80": {
+      "1": {
+       "n": 4244,
+       "p": 0.4463,
+       "selang": [
+        0.4291,
+        0.457
+       ]
+      },
+      "2": {
+       "n": 4227,
+       "p": 0.4441,
+       "selang": [
+        0.4276,
+        0.4573
+       ]
+      },
+      "3": {
+       "n": 3374,
+       "p": 0.3388,
+       "selang": [
+        0.3236,
+        0.3526
+       ]
+      },
+      "4": {
+       "n": 3369,
+       "p": 0.3378,
+       "selang": [
+        0.3238,
+        0.3532
+       ]
+      },
+      "6": {
+       "n": 2973,
+       "p": 0.2899,
+       "selang": [
+        0.2731,
+        0.3079
+       ]
+      },
+      "8": {
+       "n": 2652,
+       "p": 0.2651,
+       "selang": [
+        0.2496,
+        0.2819
+       ]
+      }
+     },
+     "90": {
+      "1": {
+       "n": 4453,
+       "p": 0.4644,
+       "selang": [
+        0.4505,
+        0.4786
+       ]
+      },
+      "2": {
+       "n": 4433,
+       "p": 0.462,
+       "selang": [
+        0.4473,
+        0.477
+       ]
+      },
+      "3": {
+       "n": 3534,
+       "p": 0.3478,
+       "selang": [
+        0.3338,
+        0.3651
+       ]
+      },
+      "4": {
+       "n": 3529,
+       "p": 0.3468,
+       "selang": [
+        0.3349,
+        0.3627
+       ]
+      },
+      "6": {
+       "n": 3165,
+       "p": 0.3055,
+       "selang": [
+        0.2916,
+        0.3183
+       ]
+      },
+      "8": {
+       "n": 2910,
+       "p": 0.2797,
+       "selang": [
+        0.2665,
+        0.2948
+       ]
+      }
+     }
+    }
+   },
+   "tahun_kering": {
+    "n": 18328,
+    "n_muncul_ulang": 15491,
+    "g": {
+     "24": {
+      "p": 0.4884,
+      "selang": [
+       0.4795,
+       0.4982
+      ]
+     },
+     "48": {
+      "p": 0.4041,
+      "selang": [
+       0.3928,
+       0.4154
+      ]
+     },
+     "72": {
+      "p": 0.313,
+      "selang": [
+       0.3024,
+       0.322
+      ]
+     },
+     "120": {
+      "p": 0.2786,
+      "selang": [
+       0.2679,
+       0.2915
+      ]
+     },
+     "168": {
+      "p": 0.2431,
+      "selang": [
+       0.2302,
+       0.2549
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 9888,
+       "p": 0.5877,
+       "selang": [
+        0.5798,
+        0.5958
+       ]
+      },
+      "2": {
+       "n": 9856,
+       "p": 0.5863,
+       "selang": [
+        0.5768,
+        0.5961
+       ]
+      },
+      "3": {
+       "n": 6676,
+       "p": 0.4262,
+       "selang": [
+        0.4126,
+        0.4347
+       ]
+      },
+      "4": {
+       "n": 6671,
+       "p": 0.4257,
+       "selang": [
+        0.4141,
+        0.4382
+       ]
+      },
+      "6": {
+       "n": 5568,
+       "p": 0.3549,
+       "selang": [
+        0.3434,
+        0.3675
+       ]
+      },
+      "8": {
+       "n": 4848,
+       "p": 0.3243,
+       "selang": [
+        0.3124,
+        0.3352
+       ]
+      }
+     }
+    }
+   },
+   "tahun_basah": {
+    "n": 1083,
+    "n_muncul_ulang": 527,
+    "g": {
+     "24": {
+      "p": 0.2611,
+      "selang": [
+       0.2348,
+       0.2886
+      ]
+     },
+     "48": {
+      "p": 0.2344,
+      "selang": [
+       0.2115,
+       0.2624
+      ]
+     },
+     "72": {
+      "p": 0.1903,
+      "selang": [
+       0.1642,
+       0.2189
+      ]
+     },
+     "120": {
+      "p": 0.1669,
+      "selang": [
+       0.1408,
+       0.1952
+      ]
+     },
+     "168": {
+      "p": 0.1473,
+      "selang": [
+       0.1185,
+       0.1748
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 948,
+       "p": 0.3133,
+       "selang": [
+        0.289,
+        0.3382
+       ]
+      },
+      "2": {
+       "n": 948,
+       "p": 0.3133,
+       "selang": [
+        0.2837,
+        0.335
+       ]
+      },
+      "3": {
+       "n": 790,
+       "p": 0.2519,
+       "selang": [
+        0.2233,
+        0.2824
+       ]
+      },
+      "4": {
+       "n": 790,
+       "p": 0.2519,
+       "selang": [
+        0.2272,
+        0.2855
+       ]
+      },
+      "6": {
+       "n": 701,
+       "p": 0.2282,
+       "selang": [
+        0.1997,
+        0.2468
+       ]
+      },
+      "8": {
+       "n": 614,
+       "p": 0.2101,
+       "selang": [
+        0.1823,
+        0.242
+       ]
+      }
+     }
+    }
+   },
+   "dc<200": {
+    "n": 3608,
+    "n_muncul_ulang": 2635,
+    "g": {
+     "24": {
+      "p": 0.3842,
+      "selang": [
+       0.3631,
+       0.4042
+      ]
+     },
+     "48": {
+      "p": 0.3141,
+      "selang": [
+       0.2943,
+       0.3349
+      ]
+     },
+     "72": {
+      "p": 0.2334,
+      "selang": [
+       0.2156,
+       0.258
+      ]
+     },
+     "120": {
+      "p": 0.2134,
+      "selang": [
+       0.1879,
+       0.2341
+      ]
+     },
+     "168": {
+      "p": 0.1774,
+      "selang": [
+       0.1533,
+       0.1939
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 2240,
+       "p": 0.4625,
+       "selang": [
+        0.4437,
+        0.4837
+       ]
+      },
+      "2": {
+       "n": 2222,
+       "p": 0.4581,
+       "selang": [
+        0.4406,
+        0.4796
+       ]
+      },
+      "3": {
+       "n": 1664,
+       "p": 0.3371,
+       "selang": [
+        0.3107,
+        0.3537
+       ]
+      },
+      "4": {
+       "n": 1659,
+       "p": 0.3351,
+       "selang": [
+        0.304,
+        0.3566
+       ]
+      },
+      "6": {
+       "n": 1401,
+       "p": 0.2777,
+       "selang": [
+        0.2584,
+        0.3019
+       ]
+      },
+      "8": {
+       "n": 1186,
+       "p": 0.247,
+       "selang": [
+        0.2272,
+        0.2669
+       ]
+      }
+     }
+    }
+   },
+   "gambut_dc<200": {
+    "n": 1587,
+    "n_muncul_ulang": 1305,
+    "g": {
+     "24": {
+      "p": 0.4667,
+      "selang": [
+       0.4326,
+       0.5086
+      ]
+     },
+     "48": {
+      "p": 0.3705,
+      "selang": [
+       0.3354,
+       0.4073
+      ]
+     },
+     "72": {
+      "p": 0.2688,
+      "selang": [
+       0.228,
+       0.2991
+      ]
+     },
+     "120": {
+      "p": 0.2472,
+      "selang": [
+       0.2174,
+       0.2898
+      ]
+     },
+     "168": {
+      "p": 0.2065,
+      "selang": [
+       0.1703,
+       0.2494
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 812,
+       "p": 0.5468,
+       "selang": [
+        0.5079,
+        0.5776
+       ]
+      },
+      "2": {
+       "n": 810,
+       "p": 0.5457,
+       "selang": [
+        0.5123,
+        0.5773
+       ]
+      },
+      "3": {
+       "n": 541,
+       "p": 0.3919,
+       "selang": [
+        0.35,
+        0.4214
+       ]
+      },
+      "4": {
+       "n": 541,
+       "p": 0.3919,
+       "selang": [
+        0.3483,
+        0.4317
+       ]
+      },
+      "6": {
+       "n": 442,
+       "p": 0.3235,
+       "selang": [
+        0.2715,
+        0.37
+       ]
+      },
+      "8": {
+       "n": 362,
+       "p": 0.2735,
+       "selang": [
+        0.2278,
+        0.3122
+       ]
+      }
+     }
+    }
+   },
+   "mineral_dc<200": {
+    "n": 2021,
+    "n_muncul_ulang": 1330,
+    "g": {
+     "24": {
+      "p": 0.3404,
+      "selang": [
+       0.3183,
+       0.3654
+      ]
+     },
+     "48": {
+      "p": 0.2863,
+      "selang": [
+       0.2601,
+       0.3065
+      ]
+     },
+     "72": {
+      "p": 0.2171,
+      "selang": [
+       0.1995,
+       0.2484
+      ]
+     },
+     "120": {
+      "p": 0.1982,
+      "selang": [
+       0.1746,
+       0.2197
+      ]
+     },
+     "168": {
+      "p": 0.1646,
+      "selang": [
+       0.1403,
+       0.1927
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 1428,
+       "p": 0.4146,
+       "selang": [
+        0.3943,
+        0.4398
+       ]
+      },
+      "2": {
+       "n": 1412,
+       "p": 0.4079,
+       "selang": [
+        0.381,
+        0.4384
+       ]
+      },
+      "3": {
+       "n": 1123,
+       "p": 0.3108,
+       "selang": [
+        0.2853,
+        0.342
+       ]
+      },
+      "4": {
+       "n": 1118,
+       "p": 0.3077,
+       "selang": [
+        0.2884,
+        0.3356
+       ]
+      },
+      "6": {
+       "n": 959,
+       "p": 0.2565,
+       "selang": [
+        0.232,
+        0.2863
+       ]
+      },
+      "8": {
+       "n": 824,
+       "p": 0.2354,
+       "selang": [
+        0.202,
+        0.264
+       ]
+      }
+     }
+    }
+   },
+   "dc200-350": {
+    "n": 4577,
+    "n_muncul_ulang": 4041,
+    "g": {
+     "24": {
+      "p": 0.521,
+      "selang": [
+       0.4956,
+       0.5404
+      ]
+     },
+     "48": {
+      "p": 0.428,
+      "selang": [
+       0.4054,
+       0.4527
+      ]
+     },
+     "72": {
+      "p": 0.3278,
+      "selang": [
+       0.295,
+       0.3488
+      ]
+     },
+     "120": {
+      "p": 0.3027,
+      "selang": [
+       0.2737,
+       0.3289
+      ]
+     },
+     "168": {
+      "p": 0.2371,
+      "selang": [
+       0.2098,
+       0.2672
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 2093,
+       "p": 0.6312,
+       "selang": [
+        0.6132,
+        0.6486
+       ]
+      },
+      "2": {
+       "n": 2090,
+       "p": 0.6306,
+       "selang": [
+        0.6092,
+        0.6536
+       ]
+      },
+      "3": {
+       "n": 1354,
+       "p": 0.4542,
+       "selang": [
+        0.4257,
+        0.4816
+       ]
+      },
+      "4": {
+       "n": 1354,
+       "p": 0.4542,
+       "selang": [
+        0.4331,
+        0.4768
+       ]
+      },
+      "6": {
+       "n": 1096,
+       "p": 0.3586,
+       "selang": [
+        0.3289,
+        0.3873
+       ]
+      },
+      "8": {
+       "n": 963,
+       "p": 0.325,
+       "selang": [
+        0.2991,
+        0.3521
+       ]
+      }
+     }
+    }
+   },
+   "gambut_dc200-350": {
+    "n": 3677,
+    "n_muncul_ulang": 3324,
+    "g": {
+     "24": {
+      "p": 0.5581,
+      "selang": [
+       0.5337,
+       0.5852
+      ]
+     },
+     "48": {
+      "p": 0.4576,
+      "selang": [
+       0.435,
+       0.4817
+      ]
+     },
+     "72": {
+      "p": 0.3507,
+      "selang": [
+       0.3219,
+       0.383
+      ]
+     },
+     "120": {
+      "p": 0.317,
+      "selang": [
+       0.2801,
+       0.3516
+      ]
+     },
+     "168": {
+      "p": 0.2562,
+      "selang": [
+       0.2255,
+       0.2852
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 1578,
+       "p": 0.666,
+       "selang": [
+        0.6457,
+        0.6892
+       ]
+      },
+      "2": {
+       "n": 1576,
+       "p": 0.6656,
+       "selang": [
+        0.6421,
+        0.6859
+       ]
+      },
+      "3": {
+       "n": 969,
+       "p": 0.483,
+       "selang": [
+        0.4546,
+        0.5068
+       ]
+      },
+      "4": {
+       "n": 969,
+       "p": 0.483,
+       "selang": [
+        0.4561,
+        0.5089
+       ]
+      },
+      "6": {
+       "n": 777,
+       "p": 0.3925,
+       "selang": [
+        0.3545,
+        0.4236
+       ]
+      },
+      "8": {
+       "n": 672,
+       "p": 0.3527,
+       "selang": [
+        0.3198,
+        0.3818
+       ]
+      }
+     }
+    }
+   },
+   "mineral_dc200-350": {
+    "n": 900,
+    "n_muncul_ulang": 717,
+    "g": {
+     "24": {
+      "p": 0.4157,
+      "selang": [
+       0.3821,
+       0.464
+      ]
+     },
+     "48": {
+      "p": 0.3547,
+      "selang": [
+       0.3062,
+       0.3987
+      ]
+     },
+     "72": {
+      "p": 0.2752,
+      "selang": [
+       0.2299,
+       0.3207
+      ]
+     },
+     "120": {
+      "p": 0.2712,
+      "selang": [
+       0.2233,
+       0.3276
+      ]
+     },
+     "168": {
+      "p": 0.1944,
+      "selang": [
+       0.154,
+       0.2393
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 515,
+       "p": 0.5243,
+       "selang": [
+        0.4873,
+        0.5583
+       ]
+      },
+      "2": {
+       "n": 514,
+       "p": 0.5233,
+       "selang": [
+        0.4882,
+        0.5613
+       ]
+      },
+      "3": {
+       "n": 385,
+       "p": 0.3818,
+       "selang": [
+        0.3273,
+        0.4391
+       ]
+      },
+      "4": {
+       "n": 385,
+       "p": 0.3818,
+       "selang": [
+        0.3311,
+        0.4247
+       ]
+      },
+      "6": {
+       "n": 319,
+       "p": 0.2759,
+       "selang": [
+        0.2288,
+        0.3229
+       ]
+      },
+      "8": {
+       "n": 291,
+       "p": 0.2612,
+       "selang": [
+        0.2216,
+        0.3111
+       ]
+      }
+     }
+    }
+   },
+   "dc>350": {
+    "n": 11226,
+    "n_muncul_ulang": 9342,
+    "g": {
+     "24": {
+      "p": 0.4788,
+      "selang": [
+       0.464,
+       0.4908
+      ]
+     },
+     "48": {
+      "p": 0.3997,
+      "selang": [
+       0.3867,
+       0.4182
+      ]
+     },
+     "72": {
+      "p": 0.3155,
+      "selang": [
+       0.2997,
+       0.3291
+      ]
+     },
+     "120": {
+      "p": 0.2744,
+      "selang": [
+       0.2618,
+       0.2887
+      ]
+     },
+     "168": {
+      "p": 0.2509,
+      "selang": [
+       0.2391,
+       0.2666
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 6503,
+       "p": 0.5768,
+       "selang": [
+        0.5628,
+        0.5878
+       ]
+      },
+      "2": {
+       "n": 6492,
+       "p": 0.5761,
+       "selang": [
+        0.5673,
+        0.5895
+       ]
+      },
+      "3": {
+       "n": 4448,
+       "p": 0.42,
+       "selang": [
+        0.4076,
+        0.4325
+       ]
+      },
+      "4": {
+       "n": 4448,
+       "p": 0.42,
+       "selang": [
+        0.4091,
+        0.4361
+       ]
+      },
+      "6": {
+       "n": 3772,
+       "p": 0.359,
+       "selang": [
+        0.3458,
+        0.3706
+       ]
+      },
+      "8": {
+       "n": 3313,
+       "p": 0.3305,
+       "selang": [
+        0.3137,
+        0.3457
+       ]
+      }
+     }
+    }
+   },
+   "gambut_dc>350": {
+    "n": 8252,
+    "n_muncul_ulang": 7263,
+    "g": {
+     "24": {
+      "p": 0.5432,
+      "selang": [
+       0.5259,
+       0.5611
+      ]
+     },
+     "48": {
+      "p": 0.4498,
+      "selang": [
+       0.4341,
+       0.47
+      ]
+     },
+     "72": {
+      "p": 0.3592,
+      "selang": [
+       0.3397,
+       0.3783
+      ]
+     },
+     "120": {
+      "p": 0.3066,
+      "selang": [
+       0.2875,
+       0.3281
+      ]
+     },
+     "168": {
+      "p": 0.2815,
+      "selang": [
+       0.259,
+       0.3035
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 4202,
+       "p": 0.6471,
+       "selang": [
+        0.6347,
+        0.6614
+       ]
+      },
+      "2": {
+       "n": 4191,
+       "p": 0.6461,
+       "selang": [
+        0.6308,
+        0.662
+       ]
+      },
+      "3": {
+       "n": 2582,
+       "p": 0.4729,
+       "selang": [
+        0.4579,
+        0.4904
+       ]
+      },
+      "4": {
+       "n": 2582,
+       "p": 0.4729,
+       "selang": [
+        0.4572,
+        0.4873
+       ]
+      },
+      "6": {
+       "n": 2077,
+       "p": 0.3977,
+       "selang": [
+        0.3789,
+        0.4158
+       ]
+      },
+      "8": {
+       "n": 1776,
+       "p": 0.3727,
+       "selang": [
+        0.3428,
+        0.3958
+       ]
+      }
+     }
+    }
+   },
+   "mineral_dc>350": {
+    "n": 2974,
+    "n_muncul_ulang": 2079,
+    "g": {
+     "24": {
+      "p": 0.3725,
+      "selang": [
+       0.352,
+       0.3936
+      ]
+     },
+     "48": {
+      "p": 0.3266,
+      "selang": [
+       0.3074,
+       0.3446
+      ]
+     },
+     "72": {
+      "p": 0.256,
+      "selang": [
+       0.238,
+       0.2806
+      ]
+     },
+     "120": {
+      "p": 0.2332,
+      "selang": [
+       0.2079,
+       0.2545
+      ]
+     },
+     "168": {
+      "p": 0.2134,
+      "selang": [
+       0.1871,
+       0.2371
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 2301,
+       "p": 0.4485,
+       "selang": [
+        0.4294,
+        0.4679
+       ]
+      },
+      "2": {
+       "n": 2301,
+       "p": 0.4485,
+       "selang": [
+        0.427,
+        0.4701
+       ]
+      },
+      "3": {
+       "n": 1866,
+       "p": 0.3467,
+       "selang": [
+        0.3268,
+        0.3655
+       ]
+      },
+      "4": {
+       "n": 1866,
+       "p": 0.3467,
+       "selang": [
+        0.3301,
+        0.3695
+       ]
+      },
+      "6": {
+       "n": 1695,
+       "p": 0.3115,
+       "selang": [
+        0.2894,
+        0.331
+       ]
+      },
+      "8": {
+       "n": 1537,
+       "p": 0.2817,
+       "selang": [
+        0.2573,
+        0.3072
+       ]
+      }
+     }
+    }
+   },
+   "ukuran1": {
+    "n": 0,
+    "catatan": "n < 20: tak dihitung"
+   },
+   "ukuran2-4": {
+    "n": 6651,
+    "n_muncul_ulang": 4552,
+    "g": {
+     "24": {
+      "p": 0.3846,
+      "selang": [
+       0.3671,
+       0.398
+      ]
+     },
+     "48": {
+      "p": 0.3336,
+      "selang": [
+       0.3183,
+       0.3469
+      ]
+     },
+     "72": {
+      "p": 0.2597,
+      "selang": [
+       0.2442,
+       0.2736
+      ]
+     },
+     "120": {
+      "p": 0.2382,
+      "selang": [
+       0.2255,
+       0.253
+      ]
+     },
+     "168": {
+      "p": 0.2051,
+      "selang": [
+       0.1938,
+       0.2213
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 5095,
+       "p": 0.4516,
+       "selang": [
+        0.4385,
+        0.4646
+       ]
+      },
+      "2": {
+       "n": 5087,
+       "p": 0.4508,
+       "selang": [
+        0.4404,
+        0.4672
+       ]
+      },
+      "3": {
+       "n": 4025,
+       "p": 0.3451,
+       "selang": [
+        0.3329,
+        0.3607
+       ]
+      },
+      "4": {
+       "n": 4022,
+       "p": 0.3446,
+       "selang": [
+        0.3321,
+        0.3578
+       ]
+      },
+      "6": {
+       "n": 3519,
+       "p": 0.2958,
+       "selang": [
+        0.2819,
+        0.3071
+       ]
+      },
+      "8": {
+       "n": 3131,
+       "p": 0.276,
+       "selang": [
+        0.2623,
+        0.2927
+       ]
+      }
+     }
+    }
+   },
+   "ukuran5-19": {
+    "n": 8121,
+    "n_muncul_ulang": 6998,
+    "g": {
+     "24": {
+      "p": 0.5146,
+      "selang": [
+       0.501,
+       0.5327
+      ]
+     },
+     "48": {
+      "p": 0.4235,
+      "selang": [
+       0.4056,
+       0.4391
+      ]
+     },
+     "72": {
+      "p": 0.3316,
+      "selang": [
+       0.3153,
+       0.3492
+      ]
+     },
+     "120": {
+      "p": 0.2887,
+      "selang": [
+       0.2679,
+       0.3053
+      ]
+     },
+     "168": {
+      "p": 0.2552,
+      "selang": [
+       0.2336,
+       0.2782
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 4463,
+       "p": 0.6251,
+       "selang": [
+        0.6126,
+        0.637
+       ]
+      },
+      "2": {
+       "n": 4449,
+       "p": 0.624,
+       "selang": [
+        0.6104,
+        0.6392
+       ]
+      },
+      "3": {
+       "n": 2870,
+       "p": 0.4624,
+       "selang": [
+        0.4463,
+        0.4826
+       ]
+      },
+      "4": {
+       "n": 2868,
+       "p": 0.462,
+       "selang": [
+        0.4431,
+        0.4826
+       ]
+      },
+      "6": {
+       "n": 2342,
+       "p": 0.3873,
+       "selang": [
+        0.3665,
+        0.405
+       ]
+      },
+      "8": {
+       "n": 2005,
+       "p": 0.3526,
+       "selang": [
+        0.3342,
+        0.3718
+       ]
+      }
+     }
+    }
+   },
+   "ukuran>=20": {
+    "n": 4639,
+    "n_muncul_ulang": 4468,
+    "g": {
+     "24": {
+      "p": 0.6909,
+      "selang": [
+       0.6563,
+       0.7171
+      ]
+     },
+     "48": {
+      "p": 0.5567,
+      "selang": [
+       0.5088,
+       0.5919
+      ]
+     },
+     "72": {
+      "p": 0.4319,
+      "selang": [
+       0.3845,
+       0.4742
+      ]
+     },
+     "120": {
+      "p": 0.3607,
+      "selang": [
+       0.3103,
+       0.4064
+      ]
+     },
+     "168": {
+      "p": 0.3231,
+      "selang": [
+       0.2781,
+       0.3784
+      ]
+     }
+    },
+    "k": {
+     "80": {
+      "1": {
+       "n": 1278,
+       "p": 0.7958,
+       "selang": [
+        0.7676,
+        0.8157
+       ]
+      },
+      "2": {
+       "n": 1268,
+       "p": 0.7942,
+       "selang": [
+        0.7712,
+        0.8143
+       ]
+      },
+      "3": {
+       "n": 571,
+       "p": 0.5744,
+       "selang": [
+        0.5261,
+        0.6112
+       ]
+      },
+      "4": {
+       "n": 571,
+       "p": 0.5744,
+       "selang": [
+        0.5341,
+        0.6042
+       ]
+      },
+      "6": {
+       "n": 408,
+       "p": 0.4608,
+       "selang": [
+        0.4031,
+        0.5086
+       ]
+      },
+      "8": {
+       "n": 326,
+       "p": 0.3988,
+       "selang": [
+        0.3436,
+        0.4588
+       ]
+      }
+     }
+    }
+   }
+  }
+ },
+ "vonis_aturan": {
+  "terpilih": null,
+  "vonis": "tidak_ada_aturan"
+ },
+ "aturan": {
+  "label": "UJI MURNI: parameter disetel dan aturan dipilih HANYA dari tahun setel; diuji SEKALI di tahun uji. Populasi: berlaku untuk kejadian >= 3 piksel.",
+  "kriteria_sha": "d3987163dce3678ffe7cec988be04d754cf7a50c1039b14a0dc5edb1814e9bb8",
+  "tahun_setel": [
+   2019,
+   2020
+  ],
+  "tahun_uji": [
+   2022,
+   2023
+  ],
+  "uji_murni": {
+   "n_setel": 12142,
+   "n_uji": 7269,
+   "parameter_dari_setel": {
+    "A2": null,
+    "A3": null,
+    "A4": null
+   },
+   "pemilihan_dari": "data setel saja",
+   "terpilih": null,
+   "vonis": "tidak_ada_aturan",
+   "uji_hasil": {
+    "A0": {
+     "param": {
+      "tipe": "A0"
+     },
+     "metrik": {
+      "semua": {
+       "n": 7269,
+       "n_dinyatakan": 2532,
+       "n_muncul_ulang": 696,
+       "laju_muncul_ulang": 0.2749,
+       "muncul_ulang_wilson": [
+        0.2578,
+        0.2926
+       ],
+       "n_muncul_sebelum_dinyatakan": 4737,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 95.6,
+       "aktif_tanpa_bersih": 0.0666,
+       "n_aktif_dinyatakan_dalam_cap": 7269,
+       "n_klaster": 79,
+       "muncul_ulang_bootstrap_klaster": 0.3004,
+       "n_klaster_sel": 48,
+       "muncul_ulang_bootstrap_sel_saja": 0.3012,
+       "batas_atas_gabungan": 0.3004,
+       "n_penyebut_tak_dinyatakan": 1935,
+       "tak_dinyatakan": 0.0
+      },
+      "gambut": {
+       "n": 5009,
+       "n_dinyatakan": 1246,
+       "n_muncul_ulang": 379,
+       "laju_muncul_ulang": 0.3042,
+       "muncul_ulang_wilson": [
+        0.2793,
+        0.3303
+       ],
+       "n_muncul_sebelum_dinyatakan": 3763,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 121.9,
+       "aktif_tanpa_bersih": 0.0589,
+       "n_aktif_dinyatakan_dalam_cap": 5009,
+       "n_klaster": 45,
+       "muncul_ulang_bootstrap_klaster": 0.3344,
+       "n_klaster_sel": 31,
+       "muncul_ulang_bootstrap_sel_saja": 0.3327,
+       "batas_atas_gabungan": 0.3344,
+       "n_penyebut_tak_dinyatakan": 966,
+       "tak_dinyatakan": 0.0
+      },
+      "mineral": {
+       "n": 2260,
+       "n_dinyatakan": 1286,
+       "n_muncul_ulang": 317,
+       "laju_muncul_ulang": 0.2465,
+       "muncul_ulang_wilson": [
+        0.2237,
+        0.2708
+       ],
+       "n_muncul_sebelum_dinyatakan": 974,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 72.0,
+       "aktif_tanpa_bersih": 0.0836,
+       "n_aktif_dinyatakan_dalam_cap": 2260,
+       "n_klaster": 68,
+       "muncul_ulang_bootstrap_klaster": 0.2865,
+       "n_klaster_sel": 43,
+       "muncul_ulang_bootstrap_sel_saja": 0.2869,
+       "batas_atas_gabungan": 0.2865,
+       "n_penyebut_tak_dinyatakan": 969,
+       "tak_dinyatakan": 0.0
+      }
+     },
+     "data_cukup": true,
+     "lolos_muncul_ulang": false,
+     "selisih_telat_vs_A0_jam": 0.0,
+     "n_berpasangan": 1836,
+     "lolos_telat": true,
+     "lolos_tak_dinyatakan": true,
+     "lolos": false,
+     "selisih_telat_label": "bersyarat pada hasil (evaluasi): hanya pengamatan yang kedua aturannya menyatakan padam benar",
+     "laporan_saja": true
+    },
+    "A1": {
+     "param": {
+      "tipe": "A1"
+     },
+     "metrik": {
+      "semua": {
+       "n": 7269,
+       "n_dinyatakan": 3178,
+       "n_muncul_ulang": 1199,
+       "laju_muncul_ulang": 0.3773,
+       "muncul_ulang_wilson": [
+        0.3606,
+        0.3943
+       ],
+       "n_muncul_sebelum_dinyatakan": 4091,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 48.0,
+       "aktif_tanpa_bersih": 0.1621,
+       "n_aktif_dinyatakan_dalam_cap": 7269,
+       "n_klaster": 80,
+       "muncul_ulang_bootstrap_klaster": 0.4117,
+       "n_klaster_sel": 48,
+       "muncul_ulang_bootstrap_sel_saja": 0.418,
+       "batas_atas_gabungan": 0.4117,
+       "n_penyebut_tak_dinyatakan": 1935,
+       "tak_dinyatakan": 0.0
+      },
+      "gambut": {
+       "n": 5009,
+       "n_dinyatakan": 1759,
+       "n_muncul_ulang": 760,
+       "laju_muncul_ulang": 0.4321,
+       "muncul_ulang_wilson": [
+        0.4091,
+        0.4553
+       ],
+       "n_muncul_sebelum_dinyatakan": 3250,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 48.0,
+       "aktif_tanpa_bersih": 0.1757,
+       "n_aktif_dinyatakan_dalam_cap": 5009,
+       "n_klaster": 45,
+       "muncul_ulang_bootstrap_klaster": 0.47,
+       "n_klaster_sel": 31,
+       "muncul_ulang_bootstrap_sel_saja": 0.4697,
+       "batas_atas_gabungan": 0.47,
+       "n_penyebut_tak_dinyatakan": 966,
+       "tak_dinyatakan": 0.0
+      },
+      "mineral": {
+       "n": 2260,
+       "n_dinyatakan": 1419,
+       "n_muncul_ulang": 439,
+       "laju_muncul_ulang": 0.3094,
+       "muncul_ulang_wilson": [
+        0.2859,
+        0.3339
+       ],
+       "n_muncul_sebelum_dinyatakan": 841,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 48.0,
+       "aktif_tanpa_bersih": 0.1319,
+       "n_aktif_dinyatakan_dalam_cap": 2260,
+       "n_klaster": 70,
+       "muncul_ulang_bootstrap_klaster": 0.35,
+       "n_klaster_sel": 44,
+       "muncul_ulang_bootstrap_sel_saja": 0.3533,
+       "batas_atas_gabungan": 0.35,
+       "n_penyebut_tak_dinyatakan": 969,
+       "tak_dinyatakan": 0.0
+      }
+     },
+     "data_cukup": true,
+     "lolos_muncul_ulang": false,
+     "selisih_telat_vs_A0_jam": -47.6,
+     "n_berpasangan": 1836,
+     "lolos_telat": true,
+     "lolos_tak_dinyatakan": true,
+     "lolos": false,
+     "selisih_telat_label": "bersyarat pada hasil (evaluasi): hanya pengamatan yang kedua aturannya menyatakan padam benar",
+     "laporan_saja": true
+    },
+    "A2": {
+     "param": null,
+     "lolos": false,
+     "alasan": "tak ada k <= 12 yang memenuhi batas atas Wilson di data setel"
+    },
+    "A3": {
+     "param": null,
+     "lolos": false,
+     "alasan": "tak ada k <= 12 yang memenuhi batas atas Wilson di data setel"
+    },
+    "A4": {
+     "param": null,
+     "lolos": false,
+     "alasan": "tak ada k <= 12 yang memenuhi batas atas Wilson di data setel"
+    }
+   },
+   "kepekaan_radius_muncul_ulang": {
+    "terpilih": null,
+    "A0": {
+     "muncul_ulang_dalam_0.5_km": {
+      "gambut": {
+       "n_dinyatakan": 1676,
+       "n_muncul_ulang": 325,
+       "laju_muncul_ulang": 0.1939,
+       "muncul_ulang_wilson": [
+        0.1757,
+        0.2135
+       ],
+       "muncul_ulang_bootstrap_klaster": 0.2248,
+       "muncul_ulang_bootstrap_sel_saja": 0.2228,
+       "batas_atas_gabungan": 0.2248,
+       "tak_dinyatakan": 0.0
+      },
+      "mineral": {
+       "n_dinyatakan": 1493,
+       "n_muncul_ulang": 221,
+       "laju_muncul_ulang": 0.148,
+       "muncul_ulang_wilson": [
+        0.1309,
+        0.1669
+       ],
+       "muncul_ulang_bootstrap_klaster": 0.1733,
+       "muncul_ulang_bootstrap_sel_saja": 0.1753,
+       "batas_atas_gabungan": 0.1733,
+       "tak_dinyatakan": 0.0
+      }
+     },
+     "muncul_ulang_dalam_1_km": {
+      "gambut": {
+       "n_dinyatakan": 1246,
+       "n_muncul_ulang": 379,
+       "laju_muncul_ulang": 0.3042,
+       "muncul_ulang_wilson": [
+        0.2793,
+        0.3303
+       ],
+       "muncul_ulang_bootstrap_klaster": 0.3344,
+       "muncul_ulang_bootstrap_sel_saja": 0.3327,
+       "batas_atas_gabungan": 0.3344,
+       "tak_dinyatakan": 0.0
+      },
+      "mineral": {
+       "n_dinyatakan": 1286,
+       "n_muncul_ulang": 317,
+       "laju_muncul_ulang": 0.2465,
+       "muncul_ulang_wilson": [
+        0.2237,
+        0.2708
+       ],
+       "muncul_ulang_bootstrap_klaster": 0.2865,
+       "muncul_ulang_bootstrap_sel_saja": 0.2869,
+       "batas_atas_gabungan": 0.2865,
+       "tak_dinyatakan": 0.0
+      }
+     },
+     "muncul_ulang_dalam_2_km": {
+      "gambut": {
+       "n_dinyatakan": 902,
+       "n_muncul_ulang": 350,
+       "laju_muncul_ulang": 0.388,
+       "muncul_ulang_wilson": [
+        0.3568,
+        0.4202
+       ],
+       "muncul_ulang_bootstrap_klaster": 0.4316,
+       "muncul_ulang_bootstrap_sel_saja": 0.4372,
+       "batas_atas_gabungan": 0.4316,
+       "tak_dinyatakan": 0.0
+      },
+      "mineral": {
+       "n_dinyatakan": 1063,
+       "n_muncul_ulang": 363,
+       "laju_muncul_ulang": 0.3415,
+       "muncul_ulang_wilson": [
+        0.3136,
+        0.3705
+       ],
+       "muncul_ulang_bootstrap_klaster": 0.3809,
+       "muncul_ulang_bootstrap_sel_saja": 0.3775,
+       "batas_atas_gabungan": 0.3809,
+       "tak_dinyatakan": 0.0
+      }
+     }
+    }
+   },
+   "aturan_berlaku_untuk": "PROKSI AWAN ERA5 (titik tengah sel 0,5 derajat), tidak menangkap asap; bukan 'k lintasan satelit bersih' operasional sebelum divalidasi dengan masker VIIRS"
+  },
+  "kepekaan_arah_sebaliknya": {
+   "label": "KEPEKAAN saja, tidak dipakai memilih: setel di [2022, 2023], uji di [2019, 2020]",
+   "parameter": {
+    "A2": null,
+    "A3": null,
+    "A4": null
+   },
+   "uji_hasil": {
+    "A0": {
+     "param": {
+      "tipe": "A0"
+     },
+     "metrik": {
+      "semua": {
+       "n": 12142,
+       "n_dinyatakan": 3299,
+       "n_muncul_ulang": 880,
+       "laju_muncul_ulang": 0.2667,
+       "muncul_ulang_wilson": [
+        0.2519,
+        0.2821
+       ],
+       "n_muncul_sebelum_dinyatakan": 8843,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 100.0,
+       "aktif_tanpa_bersih": 0.0507,
+       "n_aktif_dinyatakan_dalam_cap": 12142,
+       "n_klaster": 85,
+       "muncul_ulang_bootstrap_klaster": 0.3031,
+       "n_klaster_sel": 49,
+       "muncul_ulang_bootstrap_sel_saja": 0.3058,
+       "batas_atas_gabungan": 0.3031,
+       "n_penyebut_tak_dinyatakan": 2550,
+       "tak_dinyatakan": 0.0
+      },
+      "gambut": {
+       "n": 8507,
+       "n_dinyatakan": 1604,
+       "n_muncul_ulang": 469,
+       "laju_muncul_ulang": 0.2924,
+       "muncul_ulang_wilson": [
+        0.2707,
+        0.3151
+       ],
+       "n_muncul_sebelum_dinyatakan": 6903,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 131.6,
+       "aktif_tanpa_bersih": 0.0413,
+       "n_aktif_dinyatakan_dalam_cap": 8507,
+       "n_klaster": 48,
+       "muncul_ulang_bootstrap_klaster": 0.3456,
+       "n_klaster_sel": 31,
+       "muncul_ulang_bootstrap_sel_saja": 0.3487,
+       "batas_atas_gabungan": 0.3456,
+       "n_penyebut_tak_dinyatakan": 1266,
+       "tak_dinyatakan": 0.0
+      },
+      "mineral": {
+       "n": 3635,
+       "n_dinyatakan": 1695,
+       "n_muncul_ulang": 411,
+       "laju_muncul_ulang": 0.2425,
+       "muncul_ulang_wilson": [
+        0.2227,
+        0.2634
+       ],
+       "n_muncul_sebelum_dinyatakan": 1940,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 72.0,
+       "aktif_tanpa_bersih": 0.0726,
+       "n_aktif_dinyatakan_dalam_cap": 3635,
+       "n_klaster": 79,
+       "muncul_ulang_bootstrap_klaster": 0.2767,
+       "n_klaster_sel": 48,
+       "muncul_ulang_bootstrap_sel_saja": 0.2849,
+       "batas_atas_gabungan": 0.2767,
+       "n_penyebut_tak_dinyatakan": 1284,
+       "tak_dinyatakan": 0.0
+      }
+     },
+     "data_cukup": true,
+     "lolos_muncul_ulang": false,
+     "selisih_telat_vs_A0_jam": 0.0,
+     "n_berpasangan": 2419,
+     "lolos_telat": true,
+     "lolos_tak_dinyatakan": true,
+     "lolos": false,
+     "selisih_telat_label": "bersyarat pada hasil (evaluasi): hanya pengamatan yang kedua aturannya menyatakan padam benar",
+     "laporan_saja": true
+    },
+    "A1": {
+     "param": {
+      "tipe": "A1"
+     },
+     "metrik": {
+      "semua": {
+       "n": 12142,
+       "n_dinyatakan": 4303,
+       "n_muncul_ulang": 1677,
+       "laju_muncul_ulang": 0.3897,
+       "muncul_ulang_wilson": [
+        0.3753,
+        0.4044
+       ],
+       "n_muncul_sebelum_dinyatakan": 7839,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 48.0,
+       "aktif_tanpa_bersih": 0.1721,
+       "n_aktif_dinyatakan_dalam_cap": 12142,
+       "n_klaster": 85,
+       "muncul_ulang_bootstrap_klaster": 0.4312,
+       "n_klaster_sel": 49,
+       "muncul_ulang_bootstrap_sel_saja": 0.4325,
+       "batas_atas_gabungan": 0.4312,
+       "n_penyebut_tak_dinyatakan": 2550,
+       "tak_dinyatakan": 0.0
+      },
+      "gambut": {
+       "n": 8507,
+       "n_dinyatakan": 2372,
+       "n_muncul_ulang": 1059,
+       "laju_muncul_ulang": 0.4465,
+       "muncul_ulang_wilson": [
+        0.4266,
+        0.4665
+       ],
+       "n_muncul_sebelum_dinyatakan": 6135,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 48.0,
+       "aktif_tanpa_bersih": 0.1847,
+       "n_aktif_dinyatakan_dalam_cap": 8507,
+       "n_klaster": 48,
+       "muncul_ulang_bootstrap_klaster": 0.4912,
+       "n_klaster_sel": 31,
+       "muncul_ulang_bootstrap_sel_saja": 0.4945,
+       "batas_atas_gabungan": 0.4912,
+       "n_penyebut_tak_dinyatakan": 1266,
+       "tak_dinyatakan": 0.0
+      },
+      "mineral": {
+       "n": 3635,
+       "n_dinyatakan": 1931,
+       "n_muncul_ulang": 618,
+       "laju_muncul_ulang": 0.32,
+       "muncul_ulang_wilson": [
+        0.2996,
+        0.3412
+       ],
+       "n_muncul_sebelum_dinyatakan": 1704,
+       "n_tak_dinyatakan": 0,
+       "telat_jam": 48.0,
+       "aktif_tanpa_bersih": 0.1428,
+       "n_aktif_dinyatakan_dalam_cap": 3635,
+       "n_klaster": 79,
+       "muncul_ulang_bootstrap_klaster": 0.3616,
+       "n_klaster_sel": 48,
+       "muncul_ulang_bootstrap_sel_saja": 0.3674,
+       "batas_atas_gabungan": 0.3616,
+       "n_penyebut_tak_dinyatakan": 1284,
+       "tak_dinyatakan": 0.0
+      }
+     },
+     "data_cukup": true,
+     "lolos_muncul_ulang": false,
+     "selisih_telat_vs_A0_jam": -52.0,
+     "n_berpasangan": 2419,
+     "lolos_telat": true,
+     "lolos_tak_dinyatakan": true,
+     "lolos": false,
+     "selisih_telat_label": "bersyarat pada hasil (evaluasi): hanya pengamatan yang kedua aturannya menyatakan padam benar",
+     "laporan_saja": true
+    },
+    "A2": {
+     "param": null,
+     "lolos": false,
+     "alasan": "tak ada k <= 12 yang memenuhi batas atas Wilson di data setel"
+    },
+    "A3": {
+     "param": null,
+     "lolos": false,
+     "alasan": "tak ada k <= 12 yang memenuhi batas atas Wilson di data setel"
+    },
+    "A4": {
+     "param": null,
+     "lolos": false,
+     "alasan": "tak ada k <= 12 yang memenuhi batas atas Wilson di data setel"
+    }
+   }
+  },
+  "kepekaan_semua_ukuran": {
+   "label": "parameter dari set SETEL (bukan in-sample), dinilai di tahun UJI [2022, 2023] untuk semua ukuran (1+ piksel)",
+   "hasil": {
+    "A0": {
+     "muncul_ulang_wilson_gambut": [
+      0.2074,
+      0.2302
+     ],
+     "muncul_ulang_wilson_mineral": [
+      0.1496,
+      0.1636
+     ],
+     "telat_vs_A0": 0.0
+    },
+    "A1": {
+     "muncul_ulang_wilson_gambut": [
+      0.3075,
+      0.3305
+     ],
+     "muncul_ulang_wilson_mineral": [
+      0.1876,
+      0.2024
+     ],
+     "telat_vs_A0": -37.4
+    }
+   }
+  },
+  "parameter_akhir_gabungan": {
+   "label": "IN-SAMPLE: disetel di SEMUA tahun, bukan bukti kinerja; hanya rujukan bentuk parameter",
+   "parameter": {
+    "A2": null,
+    "A3": null,
+    "A4": null
+   }
+  }
+ }
+}

@@ -298,6 +298,13 @@ function ramal(o) {
     p1: [...p1].map(([k, p]) => ({k, p})), deterministik: [...det.baru], kena, n_mc: nmc, iklim};
 }
 
+/* Gerbang "harus menang lawan pembanding sederhana" (scripts/sebaran/gerbang.py -> data/gerbang_model.json), GAGAL-TERTUTUP: berkas hilang/rusak/kunci tak ada
+   atau boleh_tampil bukan true persis = false. kunci: model_sel | mesin_fisika | jejak_api | lolos. */
+async function muatGerbang(url = "data/gerbang_model.json") { try { const r = await fetch(url); if (!r.ok) return null; const g = await r.json(); return g && typeof g === "object" ? g : null; } catch (e) { return null; } }
+const gerbangBoleh = (g, kunci) => !!g && typeof g === "object" && g[kunci]?.boleh_tampil === true;
+const gerbangAlasan = (g, kunci) => g?.[kunci]?.alasan || "gerbang model tidak terbaca: disembunyikan";
+const LABEL_EKSPERIMENTAL = "eksperimental, belum mengalahkan pembanding";
+
 /* peluang lolos Monte Carlo dikalibrasi (Platt, titik awal validasi 2023) */
 function kalLepas(M, p) { const K = M.kal_lepas; if (!K) return p; const q = Math.min(Math.max(p, .01), .99), z = Math.log(q / (1 - q));
   return 1 / (1 + Math.exp(-(K.b[0] + K.b[1] * (z - K.mu[0]) / K.sd[0]))); }

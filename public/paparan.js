@@ -162,9 +162,9 @@ async function awal() {
     S.prov = S.SB.pilihPrioritas(laporan, S.tgl, 1)[0] || Object.keys(laporan.prov)[0];
     document.title = `Paparan Rakor ${S.namaB} · ${merek}`; $("#p-paparan h1").textContent = `Paparan Rakor ${S.namaB}`;
   } else {
-    let kumulatif, sejarah, kompleks, operasi;
-    [laporan, kumulatif, sejarah, kompleks, operasi, templat] = await Promise.all([muatJSON("/data/laporan.json"), opsi("/data/kumulatif.json"), muatJSON("/data/sejarah.json"), muatJSON("/data/kompleks_konsesi.json"), opsi("/data/operasi_resmi.json"), muatTemplat(), muatLogo(), muatFoto()]);
-    S.D = {laporan, kumulatif, sejarah, kompleks, operasi}; S.templat = templat; S.susunan = susun(templat);
+    let kumulatif, sejarah, kompleks, operasi, fs;
+    [laporan, kumulatif, sejarah, kompleks, operasi, templat, , , fs] = await Promise.all([muatJSON("/data/laporan.json"), opsi("/data/kumulatif.json"), muatJSON("/data/sejarah.json"), muatJSON("/data/kompleks_konsesi.json"), opsi("/data/operasi_resmi.json"), muatTemplat(), muatLogo(), muatFoto(), opsi("/data/factsheet_karhutla.json")]);
+    S.D = {laporan, kumulatif, sejarah, kompleks, operasi, fs};   /* fs = angka resmi BNPB per tahun (2015-2017 dipakai grafik nasional) */ S.templat = templat; S.susunan = susun(templat);
     /* satu tanggal potong untuk seluruh deck; pilihan dimulai dari batas arsip sejarah.json (titik arsip tidak bisa dipotong lebih awal) */
     const batas = new Date(Date.parse(sejarah.dibuat.slice(0, 10)) - 864e5).toISOString().slice(0, 10), pilihan = laporan.hari.filter(h => h >= batas);
     laporan.hari_pilihan = pilihan.length ? pilihan : laporan.hari;

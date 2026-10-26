@@ -1,0 +1,110 @@
+{
+ "_catatan": "Semua kriteria/ambang lab_padam.py. Ditulis TANPA melihat hasil nyata. Mengubah angka di sini mengubah kriteria_sha yang tercatat di jalan.jsonl dan padam.json. Kunci yang HANYA dokumentasi (tidak dibaca kode, tetapi ikut sha): versi, pemilihan, arah_sebaliknya_hanya_kepekaan (kode menegakkannya: arah sebaliknya tidak pernah memilih), aturan_batas, ci_metode, klaster (kode menegakkannya tetap: maks(Wilson, bootstrap klaster sel x tahun)), alasan, definisi, label_proksi_awan, _catatan. Uji menegakkan: setiap kunci yang tidak dibaca kode harus disebut di sini.",
+ "akhir_data": [
+  12,
+  20
+ ],
+ "akhir_kejadian": [
+  11,
+  30
+ ],
+ "alasan": {
+  "n_min": "Dengan n=60 dan 0 kejadian, batas atas Wilson 95% = 6,0%, jadi ambang 10% baru dapat dicapai; n lebih kecil membuat ambang mustahil atau kebetulan.",
+  "pembaruan": "Pengamatan = celah antar-deteksi dalam radius muncul ulang (proses pembaruan kausal), tersensor bila tak ada deteksi sampai akhir jendela. Tidak boleh ada pengelompokan kejadian dengan DBSCAN waktu yang mengondisikan 'tidak muncul ulang dalam 48 jam'.",
+  "tak_dinyatakan": "Aturan yang tak menyatakan padam dalam cap_jam untuk > 20% pengamatan tak berguna untuk luas masih terdeteksi dan akan tampak aman secara palsu (laju muncul ulang rendah karena hampir tak pernah menyatakan). Ditetapkan sebelum hasil. Penyebut: pengamatan tanpa muncul ulang sampai cap_jam (yang seharusnya bisa dinyatakan padam). Gerbang di setel DAN uji, gambut DAN mineral.",
+  "uji_murni": "Setel di tahun setel, pilih aturan HANYA dari data setel, uji SEKALI di tahun uji. Arah sebaliknya hanya kepekaan, tidak dipakai memilih.",
+  "wilson": "Titik taksiran dengan n kecil menipu: 0/30 tampak 0% padahal batas atas Wilson 95% = 11,4%. Pengamatan satu sel berkorelasi, jadi batas atas = maks(Wilson, bootstrap klaster sel x tahun, B=1000, persentil 97,5); strata wajib punya >= n_klaster_min klaster. Setel dan uji memakai metode sama dengan batas 10% dan 15%. Keduanya dipra-tulis supaya k tidak dipilih untuk kebetulan."
+ },
+ "ambang_awan_awal": 80,
+ "ambang_awan_disetel": [
+  60,
+  80,
+  90
+ ],
+ "arah_sebaliknya_hanya_kepekaan": true,
+ "aturan_batas": "maks(batas atas Wilson, batas atas bootstrap klaster) <= wilson_batas_atas_*_maks",
+ "awal_cuaca": [
+  3,
+  1
+ ],
+ "benih": 20261023,
+ "bootstrap": 100,
+ "bootstrap_klaster_B": 1000,
+ "cap_jam": 240,
+ "ci_batas_atas_kuantil": 0.975,
+ "ci_metode": "bootstrap_klaster_rasio",
+ "definisi": {
+  "A0": "72 jam; 168 jam bila gambut dan DC > 350 (harian.py)",
+  "A1": "48 jam (src/instansi.js)",
+  "A2": "k lintasan bersih berturut-turut tanpa deteksi, k sama untuk semua (k=2..8)",
+  "A3": "k_gambut dan k_mineral berbeda (k=2..12)",
+  "A4": "A3 + k per kelas DC (<200, 200-350, >350) x gambut/mineral",
+  "AJ": "aturan jam tetap (hanya pembanding dan uji sintetis)",
+  "lintasan_bersih": "PROKSI AWAN ERA5 (cloud_cover pada titik tengah sel 0,5 derajat, jam lintas) < ambang; tidak menangkap asap",
+  "muncul_ulang": "deteksi pertama sesudah deteksi terakhir dalam <= R km dari jejak, lalu terjadi <= 168 jam sesudah aturan menyatakan padam; bisa api baru di dekatnya",
+  "pengamatan": "celah antar-deteksi (lintasan terakhir yang berdeteksi dalam sebuah lokasi); aturan dinilai pada setiap celah memakai hanya informasi sampai waktu itu",
+  "populasi_utama": "berlaku untuk kejadian >= 3 piksel unik (sampai waktu pengamatan); semua ukuran hanya kepekaan"
+ },
+ "horizon_muncul_ulang_jam": 168,
+ "k_a2_maks": 8,
+ "k_a2_min": 2,
+ "k_maks": 12,
+ "k_min_setel": 2,
+ "keterlambatan_maks_vs_A0_jam": 24,
+ "klaster": "sel_05 x tahun",
+ "kuota_bobot_per_jalan": 4600,
+ "label_proksi_awan": "Aturan berlaku untuk PROKSI AWAN ERA5 (titik tengah sel 0,5 derajat) dan tidak menangkap asap. Tidak boleh dikutip sebagai 'k lintasan satelit bersih' operasional sebelum divalidasi dengan masker VIIRS.",
+ "laporan_pembanding": [
+  "A0",
+  "A1"
+ ],
+ "lintas_min_jam": 1.5,
+ "maks_pengamatan_per_tahun": 30000,
+ "n_klaster_min": 20,
+ "n_min_per_strata": 60,
+ "pemilihan": "Dari parameter yang disetel pada tahun setel (tiap k = k terkecil dengan aturan_batas <= wilson_batas_atas_setel_maks di gambut DAN mineral, n >= n_min_per_strata, >= n_klaster_min klaster, tak_dinyatakan <= tak_dinyatakan_maks): keterlambatan setel terkecil; seri: A2 < A3 < A4. Satu aturan lalu diuji SEKALI di tahun uji; lolos bila aturan_batas <= wilson_batas_atas_uji_maks di gambut DAN mineral (n >= n_min_per_strata, >= n_klaster_min klaster); dan tak_dinyatakan <= tak_dinyatakan_maks; A0/A1 hanya laporan_pembanding, bukan gerbang dan keterlambatan berpasangan vs A0 <= keterlambatan_maks_vs_A0_jam.",
+ "peristiwa_rantai_jam": 3.0,
+ "px_utama_min": 3,
+ "radius_km_kepekaan": [
+  0.5,
+  2.0
+ ],
+ "radius_km_utama": 1.0,
+ "sel_gambut": 26,
+ "sel_mineral": 26,
+ "sel_n_min_titik": 200,
+ "snapshot": [
+  [
+   9,
+   15
+  ],
+  [
+   10,
+   1
+  ],
+  [
+   10,
+   15
+  ]
+ ],
+ "tahun": {
+  "2019": "kering",
+  "2020": "basah",
+  "2022": "basah",
+  "2023": "kering"
+ },
+ "tahun_setel": [
+  2019,
+  2020
+ ],
+ "tahun_uji": [
+  2022,
+  2023
+ ],
+ "tak_dinyatakan_maks": 0.2,
+ "versi": 2,
+ "vonis_bila_cuaca_terpotong": "tidak_dapat_dinilai",
+ "wilson_batas_atas_setel_maks": 0.1,
+ "wilson_batas_atas_uji_maks": 0.15,
+ "wilson_z": 1.959964
+}
