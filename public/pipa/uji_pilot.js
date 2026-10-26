@@ -21,15 +21,17 @@ function h(tag, a = {}, ...anak) {
   for (const c of anak.flat(Infinity)) if (c != null && c !== false) el.append(c instanceof Node ? c : document.createTextNode(String(c)));
   return el;
 }
+/* koordinat: titik desimal tetap (Google Maps dan salinan koordinat), bukan format angka Indonesia */
+const dec = (v, n) => Number(v).toLocaleString("en-US", {minimumFractionDigits: n, maximumFractionDigits: n, useGrouping: false});
 const ang = (x, n = 0) => x == null ? "–" : Number(x).toLocaleString("id-ID", {minimumFractionDigits: n, maximumFractionDigits: n});
 const wib = ms => new Date(ms).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(/\./g, ".") + " WIB";
-const gmaps = (p, jalan) => `https://www.google.com/maps/dir/?api=1&destination=${p[0].toFixed(5)},${p[1].toFixed(5)}&travelmode=${jalan ? "walking" : "driving"}`;
+const gmaps = (p, jalan) => `https://www.google.com/maps/dir/?api=1&destination=${dec(p[0], 5)},${dec(p[1], 5)}&travelmode=${jalan ? "walking" : "driving"}`;
 /* rute lengkap: posisi sekarang -> semua titik bernomor sebagai perhentian -> titik terakhir (Google Maps menerima beberapa waypoints dipisah |) */
 function gRute(titik) {
-  const k = p => `${p[0].toFixed(5)},${p[1].toFixed(5)}`, akhir = titik.at(-1), antara = titik.slice(0, -1);
+  const k = p => `${dec(p[0], 5)},${dec(p[1], 5)}`, akhir = titik.at(-1), antara = titik.slice(0, -1);
   return `https://www.google.com/maps/dir/?api=1&destination=${k(akhir)}${antara.length ? "&waypoints=" + encodeURIComponent(antara.map(k).join("|")) : ""}&travelmode=driving`;
 }
-const gtitik = p => `https://www.google.com/maps/search/?api=1&query=${p[0].toFixed(5)},${p[1].toFixed(5)}`;
+const gtitik = p => `https://www.google.com/maps/search/?api=1&query=${dec(p[0], 5)},${dec(p[1], 5)}`;
 const tahapDari = id => TAHAP.find(t => t.id === id);
 function toast(t, lama = 3500) { const x = $("#toast"); x.textContent = t; x.hidden = false; clearTimeout(toast.t); toast.t = setTimeout(() => { x.hidden = true; }, lama); }
 const tunda = f => { let sudah = 0; const jalan = () => { if (!sudah) { sudah = 1; f(); } }; requestAnimationFrame(() => requestAnimationFrame(jalan)); setTimeout(jalan, 120); };   // pola nanti() index.html: cat dulu, kerja kemudian
@@ -119,7 +121,7 @@ function layarBeranda() {
       h("h2", {}, "Pilih lokasi uji"),
       h("p", {}, "Tiap lokasi berisi navigasi Google Maps, peta lapangan, cara pasang pompa dan selang, tips, dan tempat melapor bukti foto."),
       h("div", {class: "up-kpi"},
-        h("div", {}, h("b", {class: "oranye"}, ang(D.kalteng)), h("span", {}, "titik api Kalteng 25–26 Okt")),
+        h("div", {}, h("b", {class: "oranye"}, ang(D.kalteng)), h("span", {}, "titik panas Kalteng 25–26 Okt")),
         h("div", {}, h("b", {}, "10"), h("span", {}, "lokasi, semua di peta gambut")))),
     h("h3", {class: "up-bag"}, h("span", {class: "up-bag-tanda a"}, "A"), "Selang pendek, pompa dekat api"),
     h("div", {class: "up-daftar"}, A.map(kartuLokasi)),
@@ -199,7 +201,7 @@ function bagNavigasi(l) {
       x.titik ? h("div", {class: "up-langkah-aksi"},
         h("a", {class: "up-tombol kecil utama", href: gmaps(x.titik, /kaki|petak|pompa/i.test(x.judul)), target: "_blank", rel: "noopener"}, "🧭 Arahkan"),
         h("a", {class: "up-tombol kecil", href: gtitik(x.titik), target: "_blank", rel: "noopener"}, "📍 Lihat titik"),
-        h("button", {class: "up-tombol kecil", type: "button", onclick: () => salin(`${x.titik[0].toFixed(5)}, ${x.titik[1].toFixed(5)}`)}, `${x.titik[0].toFixed(4)}, ${x.titik[1].toFixed(4)}`)) : null)));
+        h("button", {class: "up-tombol kecil", type: "button", onclick: () => salin(`${dec(x.titik[0], 5)}, ${dec(x.titik[1], 5)}`)}, `${dec(x.titik[0], 4)}, ${dec(x.titik[1], 4)}`)) : null)));
   return h("section", {class: "up-bagian", id: "bg-navigasi", "aria-labelledby": "jd-navigasi"},
     kepalaBagian("navigasi", "Alur perjalanan", `± ${l.menit_total} menit dari ${l.dari} sampai petak. Aktifkan GPS untuk panduan langkah demi langkah.`),
     kartuPandu(l),
@@ -314,7 +316,7 @@ function salin(t) { (navigator.clipboard?.writeText(t) || Promise.reject()).then
 function bagPeta(l) {
   const warna = h("div", {class: "up-warna"}, D.warna.map(([c, a, b]) => h("span", {}, h("i", {class: "sw bg-" + c.slice(1), "aria-hidden": "true"}), h("b", {}, a), ` ${b}`)));
   return h("section", {class: "up-bagian", id: "bg-peta", "aria-labelledby": "jd-peta"},
-    kepalaBagian("peta", "Peta lapangan", `Citra ${l.citra.satelit}, ${l.citra.tgl} pukul ${l.citra.jam} WIB. Ketuk titik api atau penanda untuk membuka Google Maps.`),
+    kepalaBagian("peta", "Peta lapangan", `Citra ${l.citra.satelit}, ${l.citra.tgl} pukul ${l.citra.jam} WIB. Ketuk titik panas atau penanda untuk membuka Google Maps.`),
     h("figure", {class: "up-peta"}, petaSvg(l.svg.detail), h("figcaption", {html: `<div class="up-legenda">${l.legenda}</div>`})),
     h("div", {class: "up-kartu"}, h("h3", {}, "Cara baca warna citra"), warna,
       h("p", {class: "up-ket"}, "Garis selang dan jalan kaki hanya menunjukkan arah; di lapangan ikuti tanggul atau setapak.")));
@@ -328,9 +330,9 @@ function bagInfo(l) {
   return h("section", {class: "up-bagian", id: "bg-info", "aria-labelledby": "jd-info"},
     kepalaBagian("info", "Informasi lokasi"),
     h("div", {class: "up-kpi tiga"},
-      h("div", {}, h("b", {class: "oranye"}, a.n24), h("span", {}, "titik api 24 jam (5 km)")),
-      h("div", {}, h("b", {}, a.n48), h("span", {}, "titik api 48 jam")),
-      h("div", {}, h("b", {}, ang(a.terdekat_km, 1)), h("span", {}, "km titik api terdekat"))),
+      h("div", {}, h("b", {class: "oranye"}, a.n24), h("span", {}, "titik panas 24 jam (5 km)")),
+      h("div", {}, h("b", {}, a.n48), h("span", {}, "titik panas 48 jam")),
+      h("div", {}, h("b", {}, ang(a.terdekat_km, 1)), h("span", {}, "km titik panas terdekat"))),
     h("div", {class: "up-kartu"}, h("h3", {}, "Api dan cuaca"), kv([
       a.kebakaran && ["Kebakaran terdekat", `${ang(a.kebakaran.km, 1)} km, Kec. ${a.kebakaran.kec || "–"}, sudah ${a.kebakaran.hari || "–"} hari${a.kebakaran.ha ? `, ± ${ang(a.kebakaran.ha)} ha` : ""}`],
       a.kebakaran?.kawasan && ["Kawasan", a.kebakaran.kawasan],
@@ -349,7 +351,7 @@ function bagPasang(l) {
   return h("section", {class: "up-bagian", id: "bg-pasang", "aria-labelledby": "jd-pasang"},
     kepalaBagian("pasang", "Pemasangan"),
     h("figure", {class: "up-peta"}, petaSvg(l.svg.tata),
-      h("figcaption", {class: "up-ket"}, "Pompa di tepi air, satu jalur selang, Y-pembagi, lalu 4 petak: L1 dan L2 disuntik lance, K1 dan K2 disemprot biasa. Titik api satelit bisa meleset sampai ± 375 m; pasang petak di tanah yang berasap.")),
+      h("figcaption", {class: "up-ket"}, "Pompa di tepi air, satu jalur selang, Y-pembagi, lalu 4 petak: L1 dan L2 disuntik lance, K1 dan K2 disemprot biasa. Titik panas satelit bisa meleset sampai ± 375 m; pasang petak di tanah yang berasap.")),
     h("div", {class: "up-kartu sorot", html: l.pompa_html}),
     h("div", {class: "up-kartu"}, h("h3", {}, "Hitungan pompa dan selang"), h("div", {class: "up-geser", html: l.hid_html}),
       h("p", {class: "up-ket"}, "Kalkulator SIPPA untuk pompa 1.000–1.300 liter/menit dan selang 2,5 inci. Layak = lolos batas tekanan; tetap dicek di lapangan.")),
@@ -423,7 +425,7 @@ async function pompaKecil() {
 }
 async function lihatFoto(x) {
   const d = h("dialog", {class: "up-foto"}, h("button", {type: "button", class: "up-tutup", "aria-label": "Tutup", onclick: () => d.close()}, "✕"));
-  const img = h("img", {alt: "Foto bukti"}); d.append(img, h("p", {}, `${wib(x.diambil)}, ${x.lat.toFixed(5)}, ${x.lon.toFixed(5)}`));
+  const img = h("img", {alt: "Foto bukti"}); d.append(img, h("p", {}, `${wib(x.diambil)}, ${dec(x.lat, 5)}, ${dec(x.lon, 5)}`));
   d.addEventListener("close", () => { if (img.src.startsWith("blob:")) URL.revokeObjectURL(img.src); d.remove(); });
   document.body.append(d); d.showModal();
   if (x.dummy) { img.src = `/pipa/uji_pilot/img/${D.lokasi.find(l => l.no === x.lokasi).id}_s2.jpg`; return; }

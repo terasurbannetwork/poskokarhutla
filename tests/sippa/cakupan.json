@@ -146,7 +146,16 @@
     "layar_kit.lepas": "pembersih DOM layar; dibuktikan di peramban",
     "antre.hapus": "pembungkus satu baris atas buangButir; jalurnya (diterima = dihapus dari antrean) dijalankan uji kirimSemua",
     "lapangan.pasang": "perakit DOM layar; dibuktikan di peramban mode ponsel dan dicatat di laporan SP-011, logikanya diuji lewat ekspor murni di atas",
-    "lapangan.lepas": "satu baris pembersih interval layar; hanya bermakna di peramban"
+    "lapangan.lepas": "satu baris pembersih interval layar; hanya bermakna di peramban",
+    "uji_pilot.js": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.KEDALAMAN": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.MAKS": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.PETAK": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.TAHAP": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.TAHAP_ID": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.TITIK": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.cekIsi": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login",
+    "uji_pilot_spek.ringkasSuhu": "diuji di tests/warga/uji_pilot.test.mjs (Miniflare, D1, R2 sungguhan): aturan isian, worker, dan laporan uji pilot tanpa login"
   },
   "antre": {}
 }
