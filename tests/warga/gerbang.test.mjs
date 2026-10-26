@@ -19,7 +19,7 @@ function temukan() {
   const f = readFileSync(path.join(AKAR, "src/foto.js"), "utf8");   // RUTE_FOTO digabung ke RUTE
   const e = readFileSync(path.join(AKAR, "src/ews.js"), "utf8") + readFileSync(path.join(AKAR, "src/sosmed.js"), "utf8") + readFileSync(path.join(AKAR, "src/posko.js"), "utf8");   // RUTE_EWS + RUTE_SOSMED + RUTE_POSKO digabung ke RUTE
   /* Ruang Koordinasi BNPB: RUTE_BNPB, RUTE_RELAWAN, RUTE_ALUN, RUTE_RISET, RUTE_MEJA digabung ke RUTE */
-  const bn = ["bnpb", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan", "push", "sla", "pipa", "kontak", "uji_lapangan"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
+  const bn = ["bnpb", "relawan", "alun", "riset", "meja", "sitrep", "pengingat", "instansi", "penugasan", "staf", "pantau", "inventaris", "korban", "laporan_karhutla", "omc", "operasi_lapangan", "push", "sla", "pipa", "kontak", "uji_lapangan", "sippa"].map(m => readFileSync(path.join(AKAR, `src/${m}.js`), "utf8")).join("\n");
   if (/bersihkanBnpb\(env/.test(w)) out.add("cron bersihkanBnpb");
   if (/arsipkanSitrep\(env/.test(w)) out.add("cron arsipkanSitrep");
   if (/buatTugas\(env/.test(w)) out.add("cron buatTugas");
