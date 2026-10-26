@@ -898,8 +898,10 @@ Disepakati pemilik setelah katalog di bawah ditelusuri. Menang atas butir mana p
 41. **Kaki slide pola MBB**: baris sumber pindah ke baris kaki rata kiri dengan label **Sumber:** tebal; "© 2026 Badan Nasional Penanggulangan Bencana" rata kanan dekat nomor halaman. Ruang isi bertambah sekitar 20 pt. Pita kaki biru sangat muda (`tint.basah.muda`), terisi penuh tanpa gradien. Teks sumber hitam: **Sumber:** tebal, isinya miring. Semua teks kaki sejajar tengah baris. Sumber ditulis ringkas supaya muat satu baris ("Kedeputian Bidang RR BNPB, 24 Oktober 2026").
 
 42. **Kepala tabel berlatar navy, tulisan putih**, termasuk label grup dua tingkat (garis bawah grup putih). Garis hitam paling bawah tabel tetap.
-43. **Sel berulang digabung.** Isi kolom pertama yang sama berturut-turut (misalnya dua baris "Peraturan BNPB") ditulis sekali di tengah sel gabungan; garis baris di dalam sel gabungan tidak melintasi kolom pertama.
+43. **Sel berulang digabung.** Isi kolom pertama yang sama berturut-turut (misalnya dua baris "Peraturan BNPB") ditulis sekali di tengah sel gabungan, dengan satu nomor urut; nomor dihitung per kelompok (1, 2, 3, ...), bukan per baris. Garis baris di dalam sel gabungan tidak melintasi kolom pertama. Garis pemisah baris berwarna abu sedang (`garis`, #BFC5CC, 0,6 pt), tidak terlalu muda.
 44. **Sampul tidak mengulang nama lembaga.** Bila nama BNPB sudah tertulis di baris lembaga, penyaji cukup nama unitnya ("Kedeputian Bidang Rehabilitasi dan Rekonstruksi") tanpa baris jabatan "Badan Nasional Penanggulangan Bencana".
+
+45. **Jumlah disebut, isinya disebut juga.** Judul yang menyebut "tiga provinsi" (atau jumlah lain) langsung menyebut namanya, dengan pola daftar titik dua: "berjalan di tiga provinsi: Aceh, Sumatera Utara, Sumatera Barat".
 
 Disusun 26 Okt 2026 dari tiga sumber: (1) pesan mentah pemilik `masukan_ppt.txt` (15 Sep sampai 26 Okt, 288 baris, sebagian besar situs/kode dan dibuang), (2) memori `ppt-*`, `aturan-deck-26-okt-rinci`, `deck-urgen-kerjakan-di-berkas`, `selera-deck-malaysia`, `tanpa-titik-*`, `laporan-harian-bnpb`, (3) skill `ppt-konsultan` (`keputusan-pemilik.md`, `selera-presentasi.md`, `deck-operasional.md`, `gaya.md`, `gaya-bnpb.md`, `nada.md`, `angka-dan-copy.md`).
 
