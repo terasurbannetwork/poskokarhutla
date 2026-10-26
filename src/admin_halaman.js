@@ -204,7 +204,8 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
 <title>SIPPA Lapangan, Pantau Bencana</title>
-<link href="/pipa/lapangan.css?v=1" rel="stylesheet">
+<link href="/admin/admin.css?v=7" rel="stylesheet">
+<link href="/pipa/pipa.css?v=1" rel="stylesheet">
 </head>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>

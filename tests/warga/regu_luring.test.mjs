@@ -89,6 +89,19 @@ test("install: scope /pipa/lapangan mengambil /pipa/lapangan dan QR, bukan cangk
   assert.ok(!diambil.includes("/lapangan") && !diambil.some(u => u.includes("maplibre") || u.includes("rumah_rusak")), diambil.join(","));
   assert.ok(simpan.includes("/pipa/lapangan"));
 });
+test("install: scope /pipa/lapangan menyimpan semua modul yang di-import lapangan.js (diurai, bukan daftar tangan)", async () => {
+  const modul = new Set(), antre = ["pipa/lapangan.js"];
+  while (antre.length) {
+    const b = antre.pop();
+    for (const m of baca(b).matchAll(/^\s*(?:import|export)\s[^"']*?from\s*["'](\.[^"']+)["']|^\s*import\s*["'](\.[^"']+)["']/gm)) {
+      const u = new URL(m[1] || m[2], "https://x/" + b).pathname.slice(1);
+      if (!modul.has(u)) { modul.add(u); antre.push(u); }
+    }
+  }
+  assert.ok(modul.size >= 3, "parser import tak menemukan modul: " + [...modul]);
+  const {simpan} = await pasang("https://x/pipa/lapangan/");
+  for (const u of modul) assert.ok(simpan.includes("/" + u), `modul /${u} tidak dicache; tersimpan: ${simpan.join(",")}`);
+});
 test("install: scope /lapangan dan /lacak tetap seperti semula", async () => {
   const a = await pasang("https://x/lapangan/"), b = await pasang("https://x/lacak/");
   assert.equal(a.diambil[0], "/lapangan"); assert.ok(a.diambil.some(u => u.includes("maplibre-gl.js")) && a.diambil.includes("/rumah_rusak.js?v=1"));

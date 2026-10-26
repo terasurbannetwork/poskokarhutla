@@ -14,7 +14,7 @@ const KUNCI_KREDENSIAL = {"/api/lapangan/saya": "x-kode-regu", "/api/lapangan/tu
 const HALAMAN = {"/lapangan": "/lapangan", "/lapangan/": "/lapangan", "/lapangan.html": "/lapangan", "/lacak": "/lacak", "/lacak/": "/lacak", "/pipa/lapangan": "/pipa/lapangan", "/pipa/lapangan/": "/pipa/lapangan"};
 /* berkas yang dimuat belakangan (formulir rumah rusak, Kartu Api, peta): dipasang di muka supaya ada saat luring. URL persis sama dengan yang dimuat lapangan.js. */
 const TAMBAHAN_LAPANGAN = ["/vendor/maplibre/maplibre-gl.js?v=4.7.1", "/vendor/maplibre/maplibre-gl.css?v=4.7.1", "/rumah_rusak.js?v=1", "/rumah_rusak.css?v=1", "/inti/lapor-gelap.css?v=1&k=2", "/img/logo.svg"];
-const TAMBAHAN = {"/lapangan": TAMBAHAN_LAPANGAN, "/lacak": ["/img/logo.svg"], "/pipa/lapangan": ["/img/logo.svg", "/vendor/qrcode/qrcode.min.js?v=1"]};
+const TAMBAHAN = {"/lapangan": TAMBAHAN_LAPANGAN, "/lacak": ["/img/logo.svg"], "/pipa/lapangan": ["/img/logo.svg", "/vendor/qrcode/qrcode.min.js?v=1", "/pipa/ikon.js", "/pipa/formulir.js", "/pipa/antre.js"]}   // modul ES yang di-import lapangan.js (acuanLokal hanya membaca <script src>); diuji terhadap import sebenarnya;
 
 /* src/href lokal .js/.css/.svg dari teks HTML (fungsi murni; diuji di Node lewat vm) */
 function acuanLokal(html) {
