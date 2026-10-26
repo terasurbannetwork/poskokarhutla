@@ -562,10 +562,13 @@ const RUTE = {
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
 /* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
-   ditolak, karena SameSite=Lax tidak menahannya. Peramban selalu mengirim Origin pada POST sama-situs. Tanpa cookie sesi (publik, token header): seperti semula. */
+   ditolak, karena SameSite=Lax tidak menahannya. Tanpa cookie sesi (publik, token header): seperti semula.
+   Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
+   Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
   const o = req.headers.get("origin"), sesi = /(?:^|;\s*)sesi_admin=/.test(req.headers.get("cookie") || "");
-  if (sesi ? (!o || o === "null" || !URL.canParse(o) || new URL(o).host !== url.host) : (o && o !== "null" && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
+  const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
+  if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
 };
 async function rute(env, req, url, ctx) {

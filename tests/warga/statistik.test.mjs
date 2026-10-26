@@ -236,6 +236,11 @@ uji("keluar: cookie dihapus, POST dari origin lain ditolak", async () => {
   const r = await panggil("POST", "/admin/keluar", "");
   assert.equal(r.status, 303); assert.match(r.h.get("set-cookie"), /sesi_admin=;.*Max-Age=0/);
   assert.equal((await panggil("POST", "/admin/keluar", "", {h: {origin: "https://jahat.contoh"}})).status, 403);
+  /* halaman admin ber-Referrer-Policy no-referrer: form sama-situs datang dengan Origin "null"; sah hanya bila Sec-Fetch-Site same-origin */
+  const kue = {cookie: "sesi_admin=apa.saja", origin: "null"};
+  assert.equal((await panggil("POST", "/admin/keluar", "", {h: {...kue, "sec-fetch-site": "same-origin"}})).status, 303, "Keluar dari halaman admin sendiri");
+  assert.equal((await panggil("POST", "/admin/keluar", "", {h: {...kue, "sec-fetch-site": "cross-site"}})).status, 403, "Origin null lintas situs");
+  assert.equal((await panggil("POST", "/admin/keluar", "", {h: kue})).status, 403, "Origin null tanpa Sec-Fetch-Site");
 });
 
 /* ================================================================ kotak pesan */
