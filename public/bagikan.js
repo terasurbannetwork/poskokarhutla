@@ -304,7 +304,7 @@ const Bagikan = {
   slug: s => String(s).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
   tglPanjang() { return new Date(this.tanggal() + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"}); },
   /* alamat yang dicetak di gambar: domain publik, bukan localhost/pratinjau */
-  situs() { const h = /^(localhost|127\.|\[::1\])/.test(location.host) || location.host.endsWith(".pages.dev") ? "pantau.terasurban.com" : location.host;
+  situs() { const h = /^(localhost|127\.|\[::1\])/.test(location.host) || location.host.endsWith(".pages.dev") ? "centurisk97.id" : location.host;
     return h; /* cukup domain, tanpa /insight dsb. (pemilik, 14 Okt 2026) */ },
   tautan() {
     if (this._urlKhusus) return this._urlKhusus; /* dibuka dari laci kompleks: tautan langsung /k/K0001 */
@@ -783,7 +783,7 @@ const Bagikan = {
     else if (k === "rek") this.rek(x, a, b, w, h, d.rek);
     else if (k === "peta") await this.petaBlok(x, a, b, w, h, d);
     else if (k === "ex") { const img = f => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = this.dasar + f; });
-      /* QR langsung ke https://pantau.terasurban.com (koreksi galat H, jadi logo di tengah tetap terbaca) */
+      /* QR langsung ke https://centurisk97.id (koreksi galat H, jadi logo di tengah tetap terbaca) */
       this._qr ||= Promise.all([img("img/qr-pantau.png"), img("img/teras-urban-mark-navy.png"), img("img/logo.svg?v=2")]); this.exBlok(x, a, b, w, h, d, ...(SITUS_W ? [null, null, (await this._qr)[2]] : await this._qr)); }   /* QR & logo Teras Urban tidak tampil di *.workers.dev */
   },
   /* ubin KPI gaya Oyenza: panel abu tanpa garis, ikon dalam lingkaran lembut, label kecil, angka besar, keterangan sebagai pil (pemilik, 15 Okt 2026) */

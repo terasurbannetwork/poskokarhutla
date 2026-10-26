@@ -3,7 +3,7 @@
 Hari = 60 hari terakhir WIB (hari ini = berjalan). Sumber:
   USGS FDSN M >= 4 kotak umum.BBOX, disaring ke Indonesia (umum.provinsi_gempa). Kabupaten: poligon kecamatan, atau pusat
     kecamatan terdekat <= 30 km di provinsi yang sama; gempa laut lebih jauh hanya masuk provinsi + nasional.
-  Arsip BMKG Centurisk97 (https://pantau.terasurban.com/api/gempa/terbaru?jam=720, 30 hari): dirasakan, MMI, status
+  Arsip BMKG Centurisk97 (https://centurisk97.id/api/gempa/terbaru?jam=720, 30 hari): dirasakan, MMI, status
     tsunami BMKG. Boleh gagal: metrik dirasakan lalu null semua dan sorot tsunami tidak ada.
 Metrik: kejadian M >= 4 (utama, jumlah), M >= 5 (jumlah), dirasakan BMKG (jumlah; null sebelum arsip mulai), M terbesar (maks, netral).
 Sorot (7 hari terakhir): status tsunami BMKG (tingkat = kode BMKG 1 waspada, 2 siaga, 3 awas; berlabel "BMKG"), gempa M >= 6,
@@ -27,7 +27,7 @@ _s.loader.exec_module(LP)
 
 WIB = dt.timezone(dt.timedelta(hours=7))
 N_HARI = 60
-BMKG_URL = "https://pantau.terasurban.com/api/gempa/terbaru?jam=720"
+BMKG_URL = "https://centurisk97.id/api/gempa/terbaru?jam=720"
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 P_MIN_HARIAN = 0.005  # baris prakiraan dibuang bila semua peluang harian di bawah ini
 TINGKAT_TSUNAMI = {1: "waspada", 2: "siaga", 3: "awas"}

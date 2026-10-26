@@ -12,7 +12,7 @@ import pathlib
 import sys
 
 AKAR = pathlib.Path(__file__).resolve().parents[2]
-SITUS = "https://pantau.terasurban.com"
+SITUS = "https://centurisk97.id"
 TANDA = "i18n.js"
 
 

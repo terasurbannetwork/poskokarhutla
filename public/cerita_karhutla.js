@@ -463,7 +463,7 @@ Cerita.rekamVideo = async function (onProg) {
     const ov = q("#ct-ovl"), d = tx(ov?.querySelector(".ct-ov-d")?.textContent), n = tx(ov?.querySelector(".ct-ov-n")?.textContent);
     x.fillStyle = "rgba(255,255,255,.94)"; x.beginPath(); x.roundRect(bx + 24, by + 24, 360, 150, 18); x.fill();
     x.fillStyle = "#0b2545"; x.font = "800 56px Inter, sans-serif"; x.fillText(d, bx + 48, by + 98); x.font = "600 24px Inter, sans-serif"; x.fillStyle = "#4a5a72"; x.fillText(n, bx + 48, by + 144);
-    x.fillStyle = "#0b2545"; x.font = "700 28px Inter, sans-serif"; x.fillText("pantau.terasurban.com", 60, H - 70);
+    x.fillStyle = "#0b2545"; x.font = "700 28px Inter, sans-serif"; x.fillText("centurisk97.id", 60, H - 70);
     x.fillStyle = "#4a5a72"; x.font = "500 22px Inter, sans-serif"; x.textAlign = "right"; x.fillText("Sumber: NASA FIRMS VIIRS", W - 60, H - 70); x.textAlign = "left";
   };
   const [lo] = this.rentang(); this.henti(); this.set(lo); await new Promise(r => setTimeout(r, 600));

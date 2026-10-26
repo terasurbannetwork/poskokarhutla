@@ -1,7 +1,7 @@
 name: Perbarui data gempa
 
 # Sekali sehari 08.10 WIB: catatan prospektif susulan (append-only) dan laporan harian gempa (USGS FDSN tanpa kunci;
-# arsip BMKG pantau.terasurban.com boleh gagal di dalam skripnya).
+# arsip BMKG centurisk97.id boleh gagal di dalam skripnya).
 # Keluaran di-commit ke main. TIDAK deploy: titik.yml/terbit.yml mengambil public/gempa/data dari checkout (= main),
 # karena tidak ada workflow yang memulihkan atau menimpa folder itu dari cache.
 on:

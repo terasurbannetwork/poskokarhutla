@@ -5,7 +5,7 @@ import {test} from "node:test";
 import assert from "node:assert/strict";
 import {metaRute} from "../../src/og_meta.js";
 
-const S = "https://pantau.terasurban.com";
+const S = "https://centurisk97.id";
 const M = {situs: S, v: "2026-10-14", nama: {"62": "Kalimantan Tengah", "11": "Aceh"},
   halaman: {"/": {judul: "Nasional", desk: "desk nasional", gambar: "ringkasan"}, "/peta": {judul: "Peta", desk: "desk peta", gambar: "peta"},
     "/banjir/": {judul: "Banjir", desk: "desk banjir", gambar: "banjir"}},

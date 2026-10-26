@@ -510,5 +510,5 @@ if __name__ == "__main__":
         fitur = json.load(open(KONSESI))["features"]
         P = gabung()
         baru = cek_silang(P, fitur)
-        a = sys.argv[1:]  # --titik <berkas>: salinan https://pantau.terasurban.com/api/titik (titik panas putaran terakhir)
+        a = sys.argv[1:]  # --titik <berkas>: salinan https://centurisk97.id/api/titik (titik panas putaran terakhir)
         tulis(P, fitur, baru, cek_terkini(P, fitur, a[a.index("--titik") + 1]) if "--titik" in a else cek_terkini(P, fitur))

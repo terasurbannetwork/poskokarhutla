@@ -3,4 +3,4 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-Sitemap: https://pantau.terasurban.com/sitemap.xml
+Sitemap: https://centurisk97.id/sitemap.xml

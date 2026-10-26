@@ -18,7 +18,7 @@ from pathlib import Path
 AKAR = Path(__file__).resolve().parents[2]
 PUB = AKAR / "public"
 OG = PUB / "data" / "og"
-SITUS = os.environ.get("SITUS", "https://pantau.terasurban.com")
+SITUS = os.environ.get("SITUS", "https://centurisk97.id")
 LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"]
 BULAN = "Januari Februari Maret April Mei Juni Juli Agustus September Oktober November Desember".split()
 HARI = "Senin Selasa Rabu Kamis Jumat Sabtu Minggu".split()
