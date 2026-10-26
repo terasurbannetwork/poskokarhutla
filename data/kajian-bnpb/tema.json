@@ -97,6 +97,13 @@
       },
       "tanpa_data": {"isi": "tanpa-data", "arsir": "arsir-tanpa-data", "label": "Belum terdata"}
     },
+    "zona": {
+      "_aturan": "DS 2.1.3, keputusan 52: zona kelayakan A-D di buku dan deck = rona dimensi air (biru dekat, emas jauh) + pola dimensi jalan + huruf; warna tidak pernah satu-satunya pembawa makna",
+      "A": {"isi": "biru", "pola": "penuh", "arti": "air < 2,5 km, jalan < 5 km"},
+      "B": {"isi": "biru", "pola": "cincin", "arti": "air < 2,5 km, jalan >= 5 km atau tanpa data"},
+      "C": {"isi": "skala.emas.4", "pola": "setengah", "arti": "air >= 2,5 km, jalan < 5 km"},
+      "D": {"isi": "skala.emas.4", "pola": "silang", "arti": "air >= 2,5 km, jalan >= 5 km atau tanpa data"}
+    },
     "terlarang": [
       "#D9650B", "#0F1E2D", "#0B4EA2", "#A88A3C", "#FBEBDD", "#D5D9DE",
       "#2F6FB5", "#4F6D8C", "#2E7D8C", "#6B4A2B", "#7A2E1E", "#A23B2A", "#F7F8FA",
@@ -145,6 +152,16 @@
       "lampiran": "ABCDEFGHIJKLMN",
       "kata_kunci": ["BNPB", "penanggulangan bencana", "rehabilitasi dan rekonstruksi", "pascabencana", "grand design", "jembatan", "air tanah", "sistem penyediaan air minum"],
       "cakupan_sampul": "Cakupan: 38 provinsi dan 514 kabupaten/kota, akses (jembatan), air perpipaan, dan air tanah pada tiga lapis waktu pemulihan."
+    },
+    "sippa": {
+      "judul": "Sistem Pipa Portabel Karhutla dan Banjir (SIPPA) 2026–2030",
+      "subjudul": "Desain, Uji Lapangan, dan Peta Jalan Kit Relay Portabel untuk Pemadaman Bara Gambut dan Pemakaian Ganda Banjir",
+      "judul_pendek": "Kajian SIPPA",
+      "nama_berkas": "Kajian SIPPA {DDMMYY}",
+      "batas_halaman_isi": null,
+      "lampiran": "ABCDEFGHIJKLMN",
+      "kata_kunci": ["BNPB", "kebakaran hutan dan lahan", "gambut", "kit relay portabel", "injeksi bawah permukaan", "banjir", "SIPPA"],
+      "cakupan_sampul": "Cakupan: 865 kompleks api Kalimantan Tengah dan 18 provinsi rawan kebakaran hutan dan lahan, dengan pemakaian ganda pada musim banjir."
     },
     "penerbit": "Badan Nasional Penanggulangan Bencana",
     "terbit": "Oktober 2026"
@@ -529,7 +546,9 @@
       "terverifikasi": {"label": "Terverifikasi", "pil_garis": "slate", "pil_teks": "teks"},
       "estimasi-model": {"label": "Estimasi model", "pil_garis": "oranye", "pil_teks": "teks", "tambahan": ["belum diuji balik", "uji balik gagal"]},
       "asumsi-kebijakan": {"label": "Asumsi kebijakan", "pil_garis": "teks-3", "pil_teks": "teks"},
-      "penilaian-pakar": {"label": "Penilaian pakar", "pil_garis": "teks-3", "pil_teks": "teks"}
+      "penilaian-pakar": {"label": "Penilaian pakar", "pil_garis": "teks-3", "pil_teks": "teks"},
+      "menunggu": {"label": "Menunggu", "pil_garis": "teks-3", "pil_teks": "teks"},
+      "hipotesis": {"label": "Hipotesis", "pil_garis": "slate", "pil_teks": "teks"}
     },
     "aspek_dampak": {
       "_aturan": "Perban BNPB 2/2023 Pasal 7 ayat (5): asumsi dampak kartu skenario diproyeksikan ke lima aspek ini (KERANGKA prinsip 9, PEDOMAN B5.11)",
@@ -863,7 +882,7 @@
     }
   },
   "qa": {
-    "pustaka": {"_catatan": "L65 Buku Pegangan: ambang kajian final (manifest pustaka.status final); draf hanya diperiksa keutuhan kunci", "bab_min": 8, "kajian_min": {"air": 50, "mitigasi": 80, "rehab": 50}, "resmi_primer_min_persen": 50},
+    "pustaka": {"_catatan": "L65 Buku Pegangan: ambang kajian final (manifest pustaka.status final); draf hanya diperiksa keutuhan kunci", "bab_min": 8, "kajian_min": {"air": 50, "mitigasi": 80, "rehab": 50, "sippa": 50}, "resmi_primer_min_persen": 50},
     "_catatan": "Kenop gerbang qa/periksa.py yang bukan token desain. Nama gaya dicocokkan ke rantai gaya Word tanpa beda huruf; kepala kolom ke teks kepala yang dikapitalkan.",
     "gaya_kapital_boleh": ["Label Bagian", "Kepala Tabel", "Pil", "Label Pita", "Judul Bagian Depan", "Judul Daftar Isi"],
     "gaya_pustaka": ["Pustaka", "Bibliography"],

@@ -166,6 +166,182 @@
    "istilah": "kesiapsiagaan",
    "definisi": "serangkaian kegiatan untuk mengantisipasi bencana melalui pengorganisasian serta langkah yang tepat guna dan berdaya guna",
    "sumber": "UU 24/2007 Pasal 1 angka 7"
+  },
+  {
+   "istilah": "layflat",
+   "definisi": "selang pipih yang menggembung saat berisi air dan melipat saat kosong",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "lance",
+   "definisi": "batang injeksi yang ditancapkan ke gambut untuk mengalirkan air ke bawah permukaan",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "manifold",
+   "definisi": "pipa pembagi yang membagi satu aliran ke beberapa lance",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "relay",
+   "definisi": "rangkaian pompa berurutan yang meneruskan air dari sumber ke lokasi kerja",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "booster",
+   "definisi": "pompa penguat tekanan di tengah jalur relay",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "kopling Storz",
+   "definisi": "kopling selang tanpa ulir yang dikunci dengan putaran seperempat",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "foot valve",
+   "definisi": "katup searah di ujung selang isap yang menahan air agar pompa tidak kehilangan isapan",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "totalizer",
+   "definisi": "alat ukur yang menjumlahkan volume air yang lewat",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "piezometer",
+   "definisi": "pipa pengamat tinggi muka air tanah",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "dingin terverifikasi",
+   "definisi": "keadaan titik yang sudah dicek lapangan tidak lagi membara",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "kompleks api",
+   "definisi": "kelompok titik panas yang berdekatan dan diperlakukan sebagai satu lokasi kerja",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "sel 2,2 km",
+   "definisi": "kotak grid berukuran sekitar 2,2 km sebagai satuan hitung kekerapan api",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "zona A–D",
+   "definisi": "empat kelas kelayakan kit menurut jarak ke sumber air dan jalan",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "modul banjir",
+   "definisi": "pemakaian ganda kit untuk memompa genangan pada musim banjir",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "depot depan",
+   "definisi": "gudang kit yang ditaruh dekat wilayah rawan",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "gudang induk",
+   "definisi": "gudang pusat tempat kit disimpan dan dirawat",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "pra-posisi",
+   "definisi": "penempatan kit di depot depan sebelum musim api",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "nyala ulang",
+   "definisi": "bara yang menyala lagi sesudah dinyatakan padam",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "head gesek",
+   "definisi": "kehilangan tekanan akibat gesekan air di dalam pipa",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "head minor",
+   "definisi": "kehilangan tekanan di sambungan, katup, dan belokan",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "derating suhu",
+   "definisi": "penurunan kemampuan peralatan pada suhu tinggi",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "istilah": "lonjakan tekanan",
+   "definisi": "kenaikan tekanan sesaat akibat aliran dihentikan mendadak",
+   "sumber": "KERANGKA-BUKU SIPPA 3.6",
+   "kajian": [
+    "sippa"
+   ]
   }
  ],
  "singkatan": [
@@ -1414,6 +1590,290 @@
     "rehab"
    ],
    "alasan": "didaftarkan untuk kajian rehab (26 Okt 2026); ejaan pertama per bab tidak diperiksa T-9"
+  },
+  {
+   "singkatan": "AOI",
+   "kepanjangan": "Area of Interest",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "A/B",
+   "kepanjangan": "uji banding dua lengan",
+   "periksa": false,
+   "alasan": "bentuk A/B bukan singkatan berkepanjangan tetap; ejaan pertama per bab tidak diperiksa T-9",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "BCR",
+   "kepanjangan": "Benefit-Cost Ratio",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "BOM",
+   "kepanjangan": "Bill of Materials",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "BRGM",
+   "kepanjangan": "Badan Restorasi Gambut dan Mangrove",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "CAPEX",
+   "kepanjangan": "Capital Expenditure",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "CHIRPS",
+   "kepanjangan": "Climate Hazards Group InfraRed Precipitation with Station data",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "DEM",
+   "kepanjangan": "Digital Elevation Model",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "DEMNAS",
+   "kepanjangan": "Digital Elevation Model Nasional",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "DN",
+   "kepanjangan": "Diameter Nominal",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "DSM",
+   "kepanjangan": "Digital Surface Model",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "FAT",
+   "kepanjangan": "Factory Acceptance Test",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "FEED",
+   "kepanjangan": "Front-End Engineering Design",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "FRP",
+   "kepanjangan": "Fire Radiative Power",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "FWI",
+   "kepanjangan": "Fire Weather Index",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "GA",
+   "kepanjangan": "Gambar Susunan",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "GSW",
+   "kepanjangan": "Global Surface Water",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "HDPE",
+   "kepanjangan": "High-Density Polyethylene",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "KHG",
+   "kepanjangan": "Kesatuan Hidrologis Gambut",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "LKPP",
+   "kepanjangan": "Lembaga Kebijakan Pengadaan Barang/Jasa Pemerintah",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "MCD64A1",
+   "kepanjangan": "Produk Area Terbakar Bulanan MODIS",
+   "periksa": false,
+   "alasan": "kode produk data; ejaan pertama per bab tidak diperiksa T-9",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "NPSH",
+   "kepanjangan": "Net Positive Suction Head",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "NPV",
+   "kepanjangan": "Net Present Value",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "OD",
+   "kepanjangan": "Outside Diameter",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "OPEX",
+   "kepanjangan": "Operational Expenditure",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "OSM",
+   "kepanjangan": "OpenStreetMap",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "P&ID",
+   "kepanjangan": "Piping and Instrumentation Diagram",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "PFAS",
+   "kepanjangan": "Per- and Polyfluoroalkyl Substances",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "PN",
+   "kepanjangan": "Pressure Nominal",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "RAB",
+   "kepanjangan": "Rencana Anggaran Biaya",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "RACI",
+   "kepanjangan": "Responsible, Accountable, Consulted, Informed",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "RFQ",
+   "kepanjangan": "Request for Quotation",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "SDR",
+   "kepanjangan": "Standard Dimension Ratio",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "SIPPA",
+   "kepanjangan": "Sistem Pipa Portabel Karhutla dan Banjir",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "SOP",
+   "kepanjangan": "Standar Operasional Prosedur",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "TCO",
+   "kepanjangan": "Total Cost of Ownership",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "TDH",
+   "kepanjangan": "Total Dynamic Head",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "TMA",
+   "kepanjangan": "Tinggi Muka Air",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "VIIRS",
+   "kepanjangan": "Visible Infrared Imaging Radiometer Suite",
+   "kajian": [
+    "sippa"
+   ]
+  },
+  {
+   "singkatan": "YonTP",
+   "kepanjangan": "Batalyon Teritorial Pembangunan",
+   "kajian": [
+    "sippa"
+   ]
   }
  ],
  "terlarang": [
@@ -1810,5 +2270,22 @@
   "bertermin",
   "ketidakselarasan",
   "non-bnpb"
+ ],
+ "terlarang_kajian": [
+  {
+   "kajian": "sippa",
+   "istilah": "terbukti efektif",
+   "alasan": "\"terbukti\" hanya dengan uji yang dikutip; SIPPA berstatus usulan baru yang diuji (keputusan 50, KB 2 butir 3)"
+  },
+  {
+   "kajian": "sippa",
+   "istilah": "sudah terbukti",
+   "alasan": "\"terbukti\" hanya dengan uji yang dikutip; SIPPA berstatus usulan baru yang diuji (keputusan 50, KB 2 butir 3)"
+  },
+  {
+   "kajian": "sippa",
+   "istilah": "jaringan pipa nasional",
+   "alasan": "tanpa jaringan permanen nasional (keputusan 50); tulis \"kit relay portabel\""
+  }
  ]
 }

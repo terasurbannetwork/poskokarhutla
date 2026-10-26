@@ -35,6 +35,7 @@ QA = Path(__file__).resolve().parent
 AKAR = QA.parent  # data/kajian-bnpb
 sys.path.insert(0, str(AKAR / 'bangun/kontrak'))
 import naskah  # noqa: E402  Konteks, format angka id-ID
+from tema import kajian_sah  # noqa: E402  kode kajian sah dari tema.json
 
 W = '{http://schemas.openxmlformats.org/wordprocessingml/2006/main}'
 A = '{http://schemas.openxmlformats.org/drawingml/2006/main}'
@@ -1205,12 +1206,14 @@ def _warna_skema(pk, parts, tema_part, pola, sah, larang):
             for k in sorted(rujuk) if k in skema and skema[k] not in sah]
 
 
-def daftar_terlarang(tema):
-    """glosarium.json {"terlarang": [...]} bila ada; bila belum, tema.json kosakata.istilah.terlarang."""
+def daftar_terlarang(tema, kajian=None):
+    """glosarium.json {"terlarang": [...]} bila ada; bila belum, tema.json kosakata.istilah.terlarang.
+    `terlarang_kajian` ([{kajian, istilah, alasan}]) hanya berlaku di kajian yang disebut (KB SIPPA M7)."""
     g = AKAR / 'data' / 'glosarium.json'
     if g.exists():
         d = json.loads(g.read_text(encoding='utf-8'))
-        return [x if isinstance(x, str) else x['istilah'] for x in d.get('terlarang', [])]
+        return ([x if isinstance(x, str) else x['istilah'] for x in d.get('terlarang', [])]
+                + [x['istilah'] for x in d.get('terlarang_kajian', []) if kajian and x['kajian'] == kajian])
     return tema['kosakata']['istilah']['terlarang']
 
 
@@ -1225,7 +1228,7 @@ def _pola_terlarang(t):
 
 @gerbang('D-10', 'Istilah terlarang nol')
 def d10(ctx):
-    pola = [(t, _pola_terlarang(t)) for t in daftar_terlarang(ctx.tema)]
+    pola = [(t, _pola_terlarang(t)) for t in daftar_terlarang(ctx.tema, _kajian(ctx))]
     pola.append(('"100%" pada peluang', re.compile(r'(?i)(peluang|kemungkinan|probabilitas)[^.]{0,60}?\b100\s?%')))
     out = []
     # judul dokumen sumber di entri Daftar Pustaka ditulis persis seperti terbitannya ("Pasca Bencana" Bappenas 2007);
@@ -1284,7 +1287,7 @@ def _kajian(ctx):
     if ctx.kajian:
         return ctx.kajian
     teks = ' '.join(p['teks'] for p in ctx.docx.par_semua()) if ctx.docx else ''
-    for k in ('air', 'mitigasi', 'rehab'):
+    for k in kajian_sah(ctx.tema):
         kj = ctx.tema['kajian'][k]
         if kj['judul_pendek'] in teks or kj['judul'] in teks:
             return k
@@ -1304,7 +1307,7 @@ def d12(ctx):
     butuh(ctx.pdf)
     kj = _kajian(ctx)
     if not kj:
-        raise Lewat('kajian (air/mitigasi/rehab) tidak terdeteksi; pakai --kajian')
+        raise Lewat('kajian (' + '/'.join(kajian_sah(ctx.tema)) + ') tidak terdeteksi; pakai --kajian')
     if ctx.tema['kajian'][kj].get('batas_halaman_isi') is None:  # KEPUTUSAN P18: batas halaman dicabut pemilik 24 Okt 2026
         return []  # null = tidak ada batas; D-12 lolos tanpa membatasi (fixture d12-melebihi-batas tetap menguji batas angka)
     batas = int(ctx.tema['kajian'][kj]['batas_halaman_isi'] * (1 - CADANGAN_PAGINASI))
@@ -2114,7 +2117,7 @@ def t5(ctx):
     butuh(ctx.docx)
     d, t, out = ctx.docx, ctx.tema, []
     gp, hf, td = t['garis_pt'], t['header_footer'], t['tipografi_docx']
-    judul = {t['kajian'][k]['judul_pendek'] for k in ('air', 'mitigasi', 'rehab')}
+    judul = {t['kajian'][k]['judul_pendek'] for k in kajian_sah(t)}
     baris2 = hf['header']['baris2'].format(terbit=t['kajian']['terbit'])
     logo_mm, tol = t['objek']['logo_header_tinggi_mm'], t['qa']['logo_toleransi_mm']
     sama = lambda daftar, tebal, warna: any(abs(a - tebal) < 0.01 and b == hex_token(t, warna) for a, b in daftar)
@@ -2401,9 +2404,12 @@ def t10(ctx):
     butuh(ctx.docx)
     g, kamus, d, out = glosarium(), _kamus_id(), ctx.docx, []
     kenal = {w.lower() for w in g.get('kata_tambahan', [])}
+    kj = _kajian(ctx)  # tak terdeteksi = entri berkunci kajian tidak dihitung (lebih ketat, bukan lebih longgar)
+    sah = lambda x: not x.get('kajian') or kj in x['kajian']
     for x in g['istilah']:
-        kenal |= {w.lower() for w in RE_KATA_EJA.findall(x['istilah'])}
-    singk = {w for x in g['singkatan'] for w in re.split(r'[\s/]+', x['singkatan'])}
+        if sah(x):
+            kenal |= {w.lower() for w in RE_KATA_EJA.findall(x['istilah'])}
+    singk = {w for x in g['singkatan'] if sah(x) for w in re.split(r'[\s/]+', x['singkatan'])}
     cache = {}
 
     def dikenal(w):
@@ -2554,7 +2560,7 @@ def main(argv=None):
     ap.add_argument('--pptx-pdf', help='PDF dari PPTX')
     ap.add_argument('--manifest-docx')
     ap.add_argument('--manifest-pptx')
-    ap.add_argument('--kajian', choices=['air', 'mitigasi', 'rehab'])
+    ap.add_argument('--kajian', choices=kajian_sah(muat_tema()))
     ap.add_argument('--lain', nargs='*', default=[], help='SVG, HTML, CSS, JSON gaya untuk D-1..D-4, D-9, D-10, D-23; teks SVG/HTML juga D-16')
     ap.add_argument('--semua', action='store_true', help='jalankan semua gerbang walau ada yang gagal')
     ap.add_argument('--ketat', action='store_true', help='LEWAT dihitung gagal (untuk build kirim)')

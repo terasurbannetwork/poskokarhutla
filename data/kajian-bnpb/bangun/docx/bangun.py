@@ -34,7 +34,7 @@ SINI = Path(__file__).resolve().parent
 AKAR = SINI.parents[1]  # data/kajian-bnpb
 sys.path.insert(0, str(SINI.parent / 'kontrak'))
 import naskah as N  # noqa: E402
-from tema import muat, warna  # noqa: E402
+from tema import kajian_sah, muat, warna  # noqa: E402
 
 T = muat()
 TY, DX, KOS = T['tipografi_docx'], T['docx'], T['kosakata']
@@ -2034,10 +2034,10 @@ def bangun(folder, keluar):
 
 if __name__ == '__main__':
     ap = argparse.ArgumentParser(description=__doc__.split('\n')[0])
-    ap.add_argument('kajian', nargs='?', choices=['air', 'mitigasi', 'rehab'])
+    ap.add_argument('kajian', nargs='?', choices=kajian_sah(T))
     ap.add_argument('--naskah', help='folder naskah (bawaan naskah/<kajian>)')
     ap.add_argument('--keluar', help='berkas .docx keluaran (bawaan keluaran/<kajian>.docx)')
     x = ap.parse_args()
     if not (x.kajian or x.naskah):
-        ap.error('sebut kajian (air|mitigasi|rehab) atau --naskah')
+        ap.error('sebut kajian (' + '|'.join(kajian_sah(T)) + ') atau --naskah')
     bangun(x.naskah or AKAR / 'naskah' / x.kajian, x.keluar or AKAR / 'keluaran' / f'{x.kajian}.docx')
