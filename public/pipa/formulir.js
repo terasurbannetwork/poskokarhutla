@@ -67,7 +67,7 @@ export const MEDAN = {
     teks("titik", "Kode titik", 1, 20, { wajib: true }),
     pilih("tahap", "Tahap", ["sebelum", "sesudah", "24j", "72j", "7h", "30h", "90h"], { wajib: true }),
     pilih("kedalaman_cm", "Kedalaman (cm)", [...KEDALAMAN_CM.biasa, ...KEDALAMAN_CM.lengan_dalam], { wajib: true }),
-    angka("suhu_c", "Suhu (C)", -10, 900, { wajib: true }),
+    angka("suhu_c", "Suhu (°C)", -10, 900, { wajib: true }),
     waktu("waktu", "Waktu ukur", { wajib: true }),
   ),
   /* sippa_bbm: buku BBM, hanya ditambah. */

@@ -71,7 +71,28 @@
     "layar_kit.tabGerakHtml": "Konfirmasi tiba hanya untuk gerak terencana",
     "layar_kit.tabPemakaianHtml": "teks data di-escape",
     "layar_kit.tabBbmHtml": "teks data di-escape",
-    "layar_kit.tabTugasHtml": "tanpa kode atau hash penugasan"
+    "layar_kit.tabTugasHtml": "tanpa kode atau hash penugasan",
+    "layar:lapangan": "semua tombol Simpan, Masuk, Coba lagi, pindai QR, Keluar dan Kirim sekarang lewat urgentLalu",
+    "antre.tambah": "F1 mode pesawat",
+    "antre.jumlah": "F1 mode pesawat",
+    "antre.daftar": "F3/F4 butir ditolak",
+    "antre.perbaiki": "F3/F4 butir ditolak",
+    "antre.kirimSemua": "F2 sinyal kembali",
+    "antre.tundaUlang": "5xx dan jaringan putus",
+    "antre.tambahFoto": "foto: PNG ditolak",
+    "antre.keluar": "keluar(): butir belum terkirim",
+    "antre.buangSemua": "keluar() dan buangSemua() membersihkan kode",
+    "antre.kodeTersimpan": "tanpa kode tersimpan",
+    "antre.idbSiap": "IndexedDB yang menggantung",
+    "lapangan.ambilKode": "ambilKode: fragmen #k= 26 heks",
+    "lapangan.kodeDariTeks": "kodeDariTeks: hasil pindai QR",
+    "lapangan.kalimatSinkron": "kalimatSinkron: empat keadaan",
+    "lapangan.TAHAP": "stopwatch F7",
+    "lapangan.tahapAktif": "stopwatch F7",
+    "lapangan.tekanTahap": "stopwatch F7",
+    "lapangan.bangunLog": "bangunLog: sesi gelar lengkap",
+    "lapangan.daftarSW": "daftarSW: mendaftarkan /sw-lapangan.js",
+    "lapangan.urgentLalu": "urgentLalu: tombol mati dan berlabel seketika"
   },
   "dikecualikan": {
     "ikon.js": "sprite SVG tanpa logika; gerbang-sippa menolak warna tertanam, tampilannya diperiksa di peramban preview",
@@ -81,7 +102,10 @@
     "layar_kit.formGerak": "pembangun form DOM; aturannya diuji lewat cekGerak dan opsiGerak, tampilannya di peramban",
     "layar_kit.pastikanQR": "pemuat skrip peramban; hasilnya diuji lewat buatQR dengan pustaka asli",
     "layar_kit.pasang": "layar DOM dan jaringan; dibuktikan di peramban dan dijaga uji logika murninya",
-    "layar_kit.lepas": "pembersih DOM layar; dibuktikan di peramban"
+    "layar_kit.lepas": "pembersih DOM layar; dibuktikan di peramban",
+    "antre.hapus": "pembungkus satu baris atas buangButir; jalurnya (diterima = dihapus dari antrean) dijalankan uji kirimSemua",
+    "lapangan.pasang": "perakit DOM layar; dibuktikan di peramban mode ponsel dan dicatat di laporan SP-011, logikanya diuji lewat ekspor murni di atas",
+    "lapangan.lepas": "satu baris pembersih interval layar; hanya bermakna di peramban"
   },
   "antre": {}
 }

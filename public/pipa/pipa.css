@@ -167,3 +167,34 @@
 }
 @media (max-width:560px){.sp-cangkang{gap:var(--sp-3)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
+
+/* form lapangan luring /pipa/lapangan (SP-011; DS §3.7.2). Satu tangan, kontras tinggi, sentuh >= 56px. Token lapangan.css dengan cadangan; gelap mengikuti prefers-color-scheme. */
+.sp-lapangan{--paper:#f5f7fb;--card:#fff;--ink:#0b2545;--ink2:#4c5873;--line:#d6dce8;--navy:#0b2545;min-height:100vh;background:var(--paper);color:var(--ink)}
+@media (prefers-color-scheme:dark){.sp-lapangan{--paper:#0b1220;--card:#131c30;--ink:#eef1f7;--ink2:#b8c2d6;--line:#2a3550;--navy:#4f8fc4;color-scheme:dark}}
+.sp-lapangan input,.sp-lapangan select,.sp-lapangan textarea{min-height:54px;font-size:18px}
+.sp-lapangan .lp-tombol{min-height:58px}
+.sp-lapangan .lp-tombol.besar{min-height:66px}
+.sp-lapangan .lp-tombol.kecil{min-height:56px;width:auto}
+.sp-lapangan .lp-tombol.tautan{border:0;background:none;text-decoration:underline;font-size:16px}
+.sp-sinkron{position:sticky;top:0;z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3,12px);padding:10px 14px;background:var(--card);border-bottom:3px solid var(--w,var(--line));font-weight:700;font-size:16px}
+.sp-sinkron .lp-tombol{flex:none;width:auto}
+.sp-sinkron-ikon .sp-ikon{width:22px;height:22px}
+.sp-sinkron.terkirim{--w:var(--ok,#2f7d52)}
+.sp-sinkron.tunggu{--w:var(--warn,#c9a227)}
+.sp-sinkron.kirim{--w:var(--info,#1d4e89)}
+.sp-sinkron.tolak{--w:var(--bad,#c9503a)}
+.sp-pita-lp:empty{display:none}
+.sp-pita-lp{max-width:560px;margin:8px auto 0;padding:0 14px}
+.sp-stopwatch{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.sp-stopwatch li{display:flex;flex-wrap:wrap;align-items:center;gap:10px;min-height:66px}
+.sp-stopwatch button{flex:1;min-height:66px;font-weight:700;font-size:18px;line-height:1.2;font-family:inherit;border-radius:14px;border:2px solid var(--navy);background:var(--navy);color:#fff;cursor:pointer}
+.sp-stopwatch button[aria-disabled="true"]{background:transparent;color:var(--ink2);border-color:var(--line)}
+.sp-stopwatch li.sudah{justify-content:space-between;padding:0 12px;border-radius:14px;background:var(--paper);box-shadow:0 0 0 1px var(--line);font-weight:700}
+.sp-stopwatch li.sudah time{font-variant-numeric:tabular-nums;font-size:20px}
+.sp-probe{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+.sp-probe input{font-size:24px}
+.sp-probe .sp-yakin{grid-column:1/-1}
+.sp-antre{display:grid;gap:10px}
+.sp-antre:empty{display:none}
+.sp-antre-butir{display:grid;gap:8px;padding:12px;border-radius:14px;box-shadow:0 0 0 2px var(--bad,#c9503a);background:var(--card)}
+.sp-antre-butir p{margin:0;font-weight:700}
