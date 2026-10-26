@@ -18,6 +18,8 @@ import {PROV} from "./instansi.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, DANGKAL_KM = 60, DARAT_KM = 100, TEKS_MAKS = 600;
 const SUMBER_BMKG = "https://www.bmkg.go.id/gempabumi/gempabumi-terkini.html", SUMBER_INATEWS = "https://inatews.bmkg.go.id/", SUMBER_CUACA = "https://www.bmkg.go.id/alerts/nowcast/id";
+/* nilai sumber di D1 tetap "Deteksi Pantau Bencana" (CHECK di migrations/0010); yang tampil di API dan CAP "Deteksi Centurisk97" (merek, 26 Okt 2026) */
+const DETEKSI_D1 = "Deteksi Pantau Bencana", DETEKSI = "Deteksi Centurisk97";
 const KOLOM = ["kunci", "jenis", "tingkat", "prov", "kab", "lat", "lon", "judul", "teks", "sumber", "sumber_url", "dibuat", "berlaku_hingga"];
 
 const potong = (s, n) => String(s ?? "").slice(0, n);
@@ -59,7 +61,7 @@ async function aturanGempa(env, kini) {
     ada.add(k);
     const dalam = r.dalam == null ? "" : ` Kedalaman ${Math.round(r.dalam)} km.`, rasa = r.dirasakan ? ` Dirasakan: ${potong(r.dirasakan, 200)}.` : "";
     st.push([k, "gempa", tingkat, r, `Gempa M${koma(r.m.toFixed(1))}${tingkat === "Siaga" ? " dangkal" : ""}`, `${potong(r.wilayah, 200)}.${dalam}${rasa}`,
-      r.sumber === "usgs" ? "Deteksi Pantau Bencana" : "BMKG", r.sumber === "usgs" && r.usgs_id ? "https://earthquake.usgs.gov/earthquakes/eventpage/" + encodeURIComponent(r.usgs_id) : SUMBER_BMKG,
+      r.sumber === "usgs" ? DETEKSI_D1 : "BMKG", r.sumber === "usgs" && r.usgs_id ? "https://earthquake.usgs.gov/earthquakes/eventpage/" + encodeURIComponent(r.usgs_id) : SUMBER_BMKG,
       r.t + (tingkat === "Siaga" ? 12 : 6) * JAM]);
   }
   return tulis(st.map(([k, jenis, tingkat, r, judul, teks, sumber, url, hingga]) => {
@@ -96,7 +98,7 @@ async function aturanKarhutla(env, kini) {
     const lat = Math.round(r.lat * 100) / 100, lon = Math.round(r.lon * 100) / 100, ok = lat >= -11.5 && lat <= 6.5 && lon >= 94 && lon <= 142;   // 0,01 derajat (~1 km): bukan titik tepat
     return env.DB.prepare(MASUK).bind(`karhutla:${kunci[i]}:siaga`, "karhutla", "Siaga", r.prov, potong(r.kab, 80), ok ? lat : null, ok ? lon : null, potong(`Api level 3 baru di ${nama(r)}`, 200),
       potong(`Cluster titik api level 3 (${r.n24} titik panas 24 jam${r.luas_ha ? `, perkiraan ${Math.round(r.luas_ha)} ha` : ""}) terdeteksi satelit di ${nama(r)}. Perlu konfirmasi lapangan; lokasi dibulatkan 0,01 derajat.`, TEKS_MAKS),
-      "Deteksi Pantau Bencana", null, kini, r.dibuat + BERLAKU_KARHUTLA);
+      DETEKSI_D1, null, kini, r.dibuat + BERLAKU_KARHUTLA);
   }));
 }
 
@@ -118,7 +120,7 @@ export const bersihkanPeringatan = (env, kini = Date.now()) =>
 /* ---------------- API ---------------- */
 const iso = t => new Date(t).toISOString();
 const bentuk = r => ({kunci: r.kunci, jenis: r.jenis, tingkat: r.tingkat, prov: r.prov, kab: r.kab, lat: r.lat, lon: r.lon, judul: r.judul, teks: r.teks,
-  sumber: r.sumber, sumber_url: r.sumber_url, dibuat: iso(r.dibuat), berlaku_hingga: iso(r.berlaku_hingga)});
+  sumber: r.sumber === DETEKSI_D1 ? DETEKSI : r.sumber, sumber_url: r.sumber_url, dibuat: iso(r.dibuat), berlaku_hingga: iso(r.berlaku_hingga)});
 
 async function muatAktif(env, sejak) {
   const kini = Date.now();
@@ -154,7 +156,7 @@ export function bentukCap(daftar, kini) {
     <certainty>${CAP_PASTI[p.jenis] ?? "Unknown"}</certainty>
     <effective>${capWaktu(Date.parse(p.dibuat))}</effective>
     <expires>${capWaktu(Date.parse(p.berlaku_hingga))}</expires>
-    <senderName>Pantau Bencana (${xml(p.sumber)})</senderName>
+    <senderName>Centurisk97 (${xml(p.sumber)})</senderName>
     <headline>${xml(p.judul)}</headline>
     <description>${xml(p.teks)}</description>${p.sumber_url ? `\n    <web>${xml(p.sumber_url)}</web>` : ""}
     <parameter><valueName>kunci</valueName><value>${xml(p.kunci)}</value></parameter>
@@ -171,7 +173,7 @@ export function bentukCap(daftar, kini) {
   <status>Actual</status>
   <msgType>Alert</msgType>
   <scope>Public</scope>
-  <note>Peringatan aktif Pantau Bencana (gempa, tsunami, cuaca BMKG, karhutla). ${daftar.length} peringatan. Satu blok info per peringatan.</note>
+  <note>Peringatan aktif Centurisk97 (gempa, tsunami, cuaca BMKG, karhutla). ${daftar.length} peringatan. Satu blok info per peringatan.</note>
 ${daftar.map(info).join("\n")}
 </alert>
 `;

@@ -94,7 +94,7 @@ def bangun(grid, penduduk, pusat, bpbd, embung, hari):
         p = prov.setdefault(y["prov"], {"kab": 0, "posko": 0, "jiwa": 0, "liter": 0, "tangki": 0})
         p["kab"] += 1; p["posko"] += len(y["posko"]); p["jiwa"] += y["jiwa"]; p["liter"] += y["liter"]; p["tangki"] += y["tangki"]
     jiwa = sum(y["jiwa"] for y in kab)
-    return {"dibuat": dt.datetime.now(H.WIB).isoformat(timespec="minutes"), "hari": hari, "label": "Deteksi Pantau Bencana",
+    return {"dibuat": dt.datetime.now(H.WIB).isoformat(timespec="minutes"), "hari": hari, "label": "Deteksi Centurisk97",
             "param": {"liter_orang_hari": LITER_ORANG_HARI, "kap_tangki_l": KAP_TANGKI_L, "gabung_km": GABUNG_KM, "kelok": BP.KELOK, "laju_kmj": BP.LAJU},
             "nasional": {"kab": len(kab), "posko": len(lap), "kec": sum(p["kec_n"] for p in lap), "jiwa": jiwa, "liter": jiwa * LITER_ORANG_HARI, "tangki": sum(y["tangki"] for y in kab),
                          "tangki_posko": sum(p["tangki"] for p in lap)},

@@ -59,7 +59,7 @@ Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 ## Yang wajib kamu pegang
 
 - Halaman meniru karhutla persis: kepala, peta, legenda dock bawah, kartu Insight, tab URL bersih, bagikan, i18n
-- Status resmi BMKG tampil apa adanya, berlabel lembaga dan jam terbit; deteksi sendiri berlabel Pantau Bencana
+- Status resmi BMKG tampil apa adanya, berlabel lembaga dan jam terbit; deteksi sendiri berlabel Centurisk97
 - Data yang tidak bisa diakses dibuang, bukan ditampilkan kosong
 
 ## Batas

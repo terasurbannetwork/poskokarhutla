@@ -33,18 +33,18 @@ export const aksesStaf = peran => Object.keys(HALAMAN_STAF).filter(k => bolehSta
 const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null || peran.some(p => HALAMAN_STAF[k].includes(p)));
 const subNav = (aktif, ctx) => SUB.includes(aktif) && !ctx ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${SUB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
 const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
-  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep staf">Staf</span>
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep staf">Staf</span>
   <nav aria-label="Halaman staf">${Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, ctx.peran)).map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>
   ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span><button class="ad-keluar" type="button" data-staf-keluar>Keluar</button>` : ""}
 </header>` : `<header class="ad-top">
-  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Pantau Bencana</a><span class="ad-sep">Admin</span>
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">Admin</span>
   <nav>${Object.entries(HAL).filter(([k]) => !BNPB.includes(k) || k === BNPB[0]).map(([k, [ik, l]]) => BNPB.includes(k)
     ? `<a href="/admin/${k}" ${BNPB.includes(aktif) || aktif === "instansi" ? 'aria-current="page"' : ""}>🏛️ Ruang Koordinasi</a>`
     : `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
-const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Pantau Bencana`)}
+const halaman = (k, memuat, ekor, ctx) => `${kepala(`${HAL[k][1]} · Centurisk97`)}
 <body${ctx ? ` data-staf="1" data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
 ${atas(k, ctx)}
 <main class="ad-wrap">
@@ -55,7 +55,7 @@ ${atas(k, ctx)}
 ${ekor}
 </body></html>`;
 
-export const halamanMasuk = (galat, ke = "", merek = "Pantau Bencana") => `${kepala("Masuk admin · " + merek)}
+export const halamanMasuk = (galat, ke = "", merek = "Centurisk97") => `${kepala("Masuk admin · " + merek)}
 <body class="ad-masuk">
 <div class="ad-cahaya" aria-hidden="true"><i></i><i></i><i></i></div>
 <main class="ad-kartu-masuk">
@@ -179,7 +179,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>SIPPA, Pantau Bencana</title>
+<title>SIPPA, Centurisk97</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -203,7 +203,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <meta name="robots" content="noindex,nofollow">
-<title>SIPPA Lapangan, Pantau Bencana</title>
+<title>SIPPA Lapangan, Centurisk97</title>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
 <link href="/pipa/pipa.css?v=1" rel="stylesheet">
 </head>
@@ -221,14 +221,14 @@ export const halamanPublik = () => new Response(`<!doctype html>
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>Statistik pengunjung · Centurisk97</title>
 <script src="/i18n.js"></script>
-<meta name="description" content="Berapa orang membaca Pantau Bencana, dan berapa kali asisten AI serta perayap membuka halamannya, dihitung terpisah.">
+<meta name="description" content="Berapa orang membaca Centurisk97, dan berapa kali asisten AI serta perayap membuka halamannya, dihitung terpisah.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/admin/admin.css?v=7" rel="stylesheet">
 </head>
 <body class="pb">
-<header class="ad-top"><a class="ad-logo" href="/">Pantau Bencana</a><span class="ad-sep">Statistik</span>
+<header class="ad-top"><a class="ad-logo" href="/">Centurisk97</a><span class="ad-sep">Statistik</span>
   <nav>${hidup(REGISTRY).map(b => `<a href="${esc(b.rute)}">${esc(b.nama)}</a>`).join("")}<a href="/privasi.html">Privasi</a></nav></header>
 <main class="ad-wrap pb-wrap" id="app"><p class="ad-redup">Memuat statistik…</p></main>
 <script src="/statistik_publik.js?v=1"></script>

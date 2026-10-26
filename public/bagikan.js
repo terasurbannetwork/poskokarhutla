@@ -24,22 +24,17 @@ const Bagikan = {
   get T() { return this.tema[this.hal]; },
   siap() { return this.T ? !!this.T.siap() : typeof S !== "undefined" && !!S.meta; },
   acuan() { return this.T ? this.T.acuan() : S.acuan || S.meta.dibuat; },
-  get K() {
-    let k = this._K();
-    /* *.workers.dev bermerek Centurisk97 (pemilik, 17 Okt 2026) */
-    if (SITUS_W) k = {...k, nama: k.nama.replace("Pantau Bencana", "Centurisk97"), pendek: "Centurisk97", akhir: "#Centurisk97"};
-    return this.en() ? {...k, nama: k.nama.replace("Pantau Bencana", "Disaster Monitoring"), pendek: "Disaster Monitoring", akhir: "#DisasterMonitoring"} : k;
-  },
+  get K() { return this._K(); },
   /* tema dari registry (medan `bagikan`); literal di bawah hanya cadangan sebelum bencana.json terbaca */
   /* nama pendek bencana untuk label ekspor ("Insight karhutla", "Tren banjir", ...): id halaman, kecuali yang namanya lebih dari satu kata */
   namaBencana() { return {cuaca: "cuaca ekstrem", udara: "kualitas udara", gunungapi: "gunung api"}[this.hal] || this.hal; },
   _K() {
     const r = this.reg?.[this.hal]?.bagikan, a = this.hal === "banjir"
-      ? {nama: "Pantau Bencana · Banjir, Longsor & Rob", pendek: "Pantau Bencana", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
-        tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#PantauBencana"}
-      : this.T ? {nama: "Pantau Bencana", pendek: "Pantau Bencana", sumber: "", tagar: [], akhir: "#PantauBencana"}
-      : {nama: "Pantau Bencana · Karhutla", pendek: "Pantau Bencana", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
-        tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#PantauBencana"};
+      ? {nama: "Centurisk97 · Banjir, Longsor & Rob", pendek: "Centurisk97", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
+        tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#Centurisk97"}
+      : this.T ? {nama: "Centurisk97", pendek: "Centurisk97", sumber: "", tagar: [], akhir: "#Centurisk97"}
+      : {nama: "Centurisk97 · Karhutla", pendek: "Centurisk97", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
+        tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#Centurisk97"};
     return r ? {...a, nama: r.nama, sumber: "Sumber: " + r.sumber, tagar: r.tagar} : a;
   },
 
@@ -690,7 +685,7 @@ const Bagikan = {
   },
   /* panel di kertas putih: abu netral sangat muda, tanpa bayangan (pemilik, 15 Okt 2026) */
   kartu(x, a, b, w, h, r = 26) { x.fillStyle = "#f5f6f8"; x.beginPath(); x.roundRect(a, b, w, h, r); x.fill(); },
-  /* logo Pantau Bencana (radar), sama dengan img/logo.svg; polos = siluet putih untuk watermark */
+  /* logo Centurisk97 (radar), sama dengan img/logo.svg; polos = siluet putih untuk watermark */
   logo(x, a, b, s, polos) {
     x.save(); x.translate(a, b); x.scale(s / 64, s / 64);
     if (!polos) { const g = x.createLinearGradient(0, 0, 64, 64); g.addColorStop(0, "#ff9a3d"); g.addColorStop(1, "#d63c2a"); x.fillStyle = g; x.beginPath(); x.roundRect(0, 0, 64, 64, 16); x.fill(); }

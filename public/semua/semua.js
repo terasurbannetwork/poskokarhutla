@@ -73,10 +73,10 @@ H.then(daftar => {
 /* ---------- bagikan (ikon saja, lembar bersama public/bagi.js) dan tema */
 function bagikan(url, nama, kampanye) {
   const u = new URL(url, location.origin).href;
-  if (window.Bagi) Bagi.buka({judul: nama, teks: nama + ". Pantau Bencana:", url: u, kampanye}); else toast("Bagikan belum siap, coba lagi.");
+  if (window.Bagi) Bagi.buka({judul: nama, teks: nama + ". Centurisk97:", url: u, kampanye}); else toast("Bagikan belum siap, coba lagi.");
 }
-$("#bagikan").onclick = () => bagikan("/semua", "Semua bencana · Pantau Bencana", "semua");
-$("#kartu").addEventListener("click", e => { const b = e.target.closest("[data-bagi]"); if (b) bagikan(b.dataset.bagi, b.dataset.nama + " · Pantau Bencana", "semua-" + b.closest("article").dataset.h); });
+$("#bagikan").onclick = () => bagikan("/semua", "Semua bencana · Centurisk97", "semua");
+$("#kartu").addEventListener("click", e => { const b = e.target.closest("[data-bagi]"); if (b) bagikan(b.dataset.bagi, b.dataset.nama + " · Centurisk97", "semua-" + b.closest("article").dataset.h); });
 $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.documentElement.dataset.theme = t; try { localStorage.setItem("pb-tema", t); } catch (e) {} nanti(() => peta.setStyle(DASAR(), {diff: false})); };
 
 /* ---------- outlook iklim, bahaya 12 bulan, bencana berantai: di bawah kartu situasi, dimuat setelah cat pertama */

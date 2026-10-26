@@ -2,7 +2,7 @@
 /* ================================================================ tab Kejadian udara dan laci /udara/k/U0001 */
 /* Data: ../banjir/data/kejadian_udara_awal.json (atribut ringan) dan kejadian_udara_geo.json (geometri, dimuat saat satu kejadian dibuka),
    ditulis scripts/umum/kejadian.py: gugus kabupaten/kota bersebelahan yang PM2,5 rata-rata 24 jamnya di atas 55,4 µg/m³ pada prakiraan CAMS.
-   SEMUA angka perkiraan model CAMS tanpa stasiun ukur dan belum dikoreksi: pil PIL_MODEL dipasang di tabel dan laci. Deteksi Pantau Bencana, bukan pernyataan resmi.
+   SEMUA angka perkiraan model CAMS tanpa stasiun ukur dan belum dikoreksi: pil PIL_MODEL dipasang di tabel dan laci. Deteksi Centurisk97, bukan pernyataan resmi.
    Tanpa berkas, kosong, atau basi lebih dari 1 hari: tab dan kartunya dibuang (A18). Saran kesehatan per kategori TIDAK ditulis: belum ada teks resmi (Kemenkes/KLHK) yang bisa dikutip.
    Pola klik/keydown, paginasi urgent, token _n, dan laci di nanti mengikuti Kejadian cuaca dan gempa. */
 const tglSgk = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
@@ -26,7 +26,7 @@ const Kejadian = {
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / this.PER) - 1));
     return `<p class="fnd">${PIL_MODEL}</p><div class="tw"><table><thead><tr>${this.KOL.map(([c, n, num]) => `<th class="${num ? "n" : ""}" aria-sort="${st.urut === c ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c}">${n}<i>${st.urut === c ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
       <tbody>${R.slice(st.hal * this.PER, (st.hal + 1) * this.PER).map(k => `<tr class="klik" data-kode="${esc(k.kode)}" tabindex="0">${this.KOL.map(([c, , num]) => `<td${num ? ' class="n"' : ""}>${this.sel(k, c)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, this.PER, "kejadian")}
-      <p class="fnd">Sumber: Deteksi Pantau Bencana dari prakiraan Copernicus CAMS lewat Open-Meteo (kabupaten/kota bersebelahan dengan PM2,5 rata-rata 24 jam di atas 55,4 µg/m³), bukan pernyataan resmi. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`; },
+      <p class="fnd">Sumber: Deteksi Centurisk97 dari prakiraan Copernicus CAMS lewat Open-Meteo (kabupaten/kota bersebelahan dengan PM2,5 rata-rata 24 jam di atas 55,4 µg/m³), bukan pernyataan resmi. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`; },
   gambarTabel() { const el = $("#kejadian"); el.innerHTML = this.tabel(); pengurutKepala(this.st, el.querySelector("thead"), () => nanti(() => this.gambarTabel())); },
   async render() {
     const el = $("#kejadian"); if (!el) return;
@@ -62,7 +62,7 @@ const Kejadian = {
       ${k.jiwa ? `<p class="fnd">Penduduk di kabupaten/kota ini: ${jiwa(k.jiwa)}</p>` : ""}
       <p class="fnd" translate="no"><b>${esc(kab.join(", "))}${lain ? ` dan ${fmt(lain)} lainnya` : ""}</b></p>
       <p class="fnd">Mulai ${this.tgl(k.mulai)}${k.aktif ? "" : `, terakhir terlihat ${this.tgl(k.terakhir)}`}</p>
-      <p class="fnd">Sumber: Deteksi Pantau Bencana dari prakiraan Copernicus CAMS lewat Open-Meteo, WorldPop; bukan pernyataan resmi, tanpa stasiun ukur. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`;
+      <p class="fnd">Sumber: Deteksi Centurisk97 dari prakiraan Copernicus CAMS lewat Open-Meteo, WorldPop; bukan pernyataan resmi, tanpa stasiun ukur. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`;
     this._buka = true; Laci.buka("Udara tidak sehat", `<span translate="no">${esc(k.nama)}</span>`, `${this.status(k)} ${PIL_MODEL} <span translate="no">${esc(k.kode)}</span>`, isi); this._buka = false;
     const el = $("#laci"); el.dataset.kej = k.kode;
     el.querySelector(".hd-aksi")?.insertAdjacentHTML("afterbegin", `<button class="bagikan ik-btn" aria-label="Bagikan" title="Bagikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>`);

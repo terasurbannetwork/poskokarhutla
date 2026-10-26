@@ -9,7 +9,7 @@ const S = "https://pantau.terasurban.com";
 const M = {situs: S, v: "2026-10-14", nama: {"62": "Kalimantan Tengah", "11": "Aceh"},
   halaman: {"/": {judul: "Nasional", desk: "desk nasional", gambar: "ringkasan"}, "/peta": {judul: "Peta", desk: "desk peta", gambar: "peta"},
     "/banjir/": {judul: "Banjir", desk: "desk banjir", gambar: "banjir"}},
-  prov: {"62": {judul: "Kalteng · Pantau Bencana", desk: "desk kalteng", gambar: "prov-62"}},
+  prov: {"62": {judul: "Kalteng · Centurisk97", desk: "desk kalteng", gambar: "prov-62"}},
   kompleks: {K0001: ["Seruyan, Kalimantan Tengah: prioritas pemadaman, 725 titik panas 24 jam (12 Okt)", "62"]}};
 const u = s => new URL(S + s);
 const img = g => `${S}/data/og/${g}.png?v=2026-10-14`;

@@ -11,7 +11,7 @@
   const num = v => typeof v === "number" && Number.isFinite(v);
   const W = window.Wilayah, K = window.KartuApi;
   const SIMPAN = "pk-kabar-kab", STATUS = {3: "Prioritas", 2: "Siaga"};
-  const SUMBER = "Sumber: deteksi satelit (VIIRS, MODIS, Himawari) dan hitungan Pantau Bencana. Belum divalidasi lapangan.";
+  const SUMBER = "Sumber: deteksi satelit (VIIRS, MODIS, Himawari) dan hitungan Centurisk97. Belum divalidasi lapangan.";
   const waktu = s => { const d = new Date(s); return isNaN(d) ? "" : d.toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB"; };
   const navUrl = p => `https://www.google.com/maps/dir/?api=1&destination=${p.lat},${p.lon}`;
   const titik = o => o && num(o.lat) && num(o.lon) ? o : null;

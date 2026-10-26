@@ -1,7 +1,7 @@
 "use strict";
 /* ================================================================ kejadian banjir aktif: lapisan peta + laci + tautan /banjir/k/B0007 */
 /* Data (scripts/banjir/kejadian_aktif.py): data/kejadian_aktif_awal.json (atribut ringan, dimuat sekali) dan kejadian_aktif_geo.json (poligon gabungan,
-   dimuat malas saat peta siap). Kejadian = gugus kecamatan BERSEBELAHAN berstatus banjir >= Siaga hari ini: deteksi Pantau Bencana dari prakiraan model,
+   dimuat malas saat peta siap). Kejadian = gugus kecamatan BERSEBELAHAN berstatus banjir >= Siaga hari ini: deteksi Centurisk97 dari prakiraan model,
    BUKAN pernyataan resmi. Berkas basi lebih dari 1 hari atau kosong: lapisan tidak digambar (A18).
    Respons terdekat (data/unit_respons.json, OSM + BNPB, scripts/banjir/unit_respons.py) dibuat tetapi disembunyikan lewat kejadian.css (A24), seperti karhutla. */
 const KejAktif = {

@@ -1,4 +1,4 @@
-"""Status kekeringan "Deteksi Pantau Bencana" -> public/data/kekeringan_{meta,grid,wilayah,tren}.json
+"""Status kekeringan "Deteksi Centurisk97" -> public/data/kekeringan_{meta,grid,wilayah,tren}.json
 
 Bahan (semuanya sudah ada di repo, tanpa kuota Open-Meteo tambahan):
   tanah.json      persentil kelembapan tanah 7-28 cm (pct1; pct0 bila pct1 kosong) terhadap ERA5-Land 2015-2025 dasarian sama
@@ -13,7 +13,7 @@ Tingkat sel (hipotesis, belum diuji balik; docs/multi-bencana/bencana/kekeringan
   (persentil tanah baru ada di segelintir sel, jadi SPI-3 sendirian tidak cukup untuk Awas).
   DC TIDAK masuk tingkat: DC tinggi di NTT musim kemarau itu wajar; DC dipakai sebagai lapisan peta saja.
 Tingkat kecamatan = tingkat sel terdekat (<= ~0,5 derajat). Tingkat kabupaten/provinsi = tingkat tertinggi L yang dialami
->= 30% penduduknya. Status resmi lembaga tidak dibuat di sini; semua keluaran berlabel "Deteksi Pantau Bencana".
+>= 30% penduduknya. Status resmi lembaga tidak dibuat di sini; semua keluaran berlabel "Deteksi Centurisk97".
 
 Pakai:  python3 scripts/kekeringan/status.py      |  python3 scripts/kekeringan/status.py uji
 """
@@ -180,7 +180,7 @@ def bangun(tanah, fwi, penduduk, pusat, iklim, hujan, hari_ini, lama_tren=None):
     riw = sorted(riw, key=lambda r: r["id"])[-108:]  # 3 tahun
     tren = {"spi_bulanan": spi_bln, "dc_harian": dc_harian, "dasarian": riw}
     grid = [[k[0], k[1], s["prov"], s["p0"], s["p1"], s["dc"], tampil(s["spi3"]), s["lv"], tampil(s["spi6"]), s["mm3"], s["q3"]] for k, s in sorted(sel.items())]
-    meta = {"hari_ini": hari_ini.isoformat(), "dasarian": dasarian(hari_ini.isoformat()), "label": "Deteksi Pantau Bencana",
+    meta = {"hari_ini": hari_ini.isoformat(), "dasarian": dasarian(hari_ini.isoformat()), "label": "Deteksi Centurisk97",
             "spi": {"bulan": f"{ym[0]}-{ym[1]:02d}", "k": 3, "sel": sum(1 for s in sel.values() if s["spi3"] is not None)} if ym else None,
             "tanah": {"tgl": tanah.get("hari_ini"), "sel": sum(1 for s in sel.values() if s["p1"] is not None or s["p0"] is not None)},
             "dc": {"tgl": fwi.get("hari_ini")}, "enso": teks_enso(iklim), "nasional": nas,

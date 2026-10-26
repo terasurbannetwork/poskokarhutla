@@ -108,7 +108,7 @@
     sel.addEventListener("change", tampil); tampil();
     const setuju = h("input", {type: "checkbox", name: "sitasi", required: true});
     f.append(isian("Data", sel), petunjuk, isian("Untuk usulan (opsional)", pilihOpsi("usulan_id", D.usulan.map(u => [u.id, u.judul]), "", "Tanpa usulan")), isian("Tujuan pemakaian", area("tujuan", "", 500, 10)),
-      h("label", {class: "bn-setuju"}, setuju, `Aku berjanji mencantumkan sitasi BNPB dan Pantau Bencana pada setiap luaran yang memakai data ini (lisensi ${D.katalog[0].lisensi}).`), pesan,
+      h("label", {class: "bn-setuju"}, setuju, `Aku berjanji mencantumkan sitasi BNPB dan Centurisk97 pada setiap luaran yang memakai data ini (lisensi ${D.katalog[0].lisensi}).`), pesan,
       h("div", {class: "mt-aksi"}, h("button", {class: "bn-tombol", type: "submit"}, svg("kirim"), "Kirim permintaan")));
     f.addEventListener("submit", async e => { e.preventDefault(); const v = Object.fromEntries(new FormData(f));
       try { const r = await api("POST", "/api/riset/mitra/permintaan", {dataset: v.dataset, tujuan: v.tujuan, sitasi: setuju.checked, usulan_id: v.usulan_id || undefined});

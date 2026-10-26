@@ -101,9 +101,8 @@ uji("situs Centurisk97 (*.workers.dev): semua halaman Tentang dialihkan ke peta;
 });
 
 uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
-  /* selain *.workers.dev, worker (layaniHTML) mengganti merek HANYA di <title>, meta content, title/alt/aria-label, .lp-kop b.
-     Kata di komentar skrip/badan tidak disentuh, jadi uji meniru penggantian yang sama (bukan seluruh berkas). */
-  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8").replace(/(<title>[^<]*?)Centurisk97/, "$1Pantau Bencana");
+  /* merek tidak lagi ditulis ulang per alamat (semua berkas sudah "Centurisk97"), jadi isinya sama persis dengan berkas */
+  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8");
   for (const j of ["/peta", "/kompleks/", "/k/K0001", "/sim/K0123", "/prioritas"]) {
     const r = await panggil("GET", j);
     assert.equal(r.status, 200, `GET ${j} = ${r.status}`);
@@ -554,7 +553,7 @@ uji("titik panas 3 jam: CSV rusak dibuang, keyakinan dikodekan, kembar dihapus, 
 });
 
 uji("GET /cuaca/simulasi menyajikan public/cuaca/simulasi.html, /udara/simulasi index.html udara, /cuaca/peta index.html cuaca (registry `halaman`)", async () => {
-  const baca = f => readFileSync(path.join(AKAR, "public", f), "utf8"), judul = t => t.match(/<title>[^<]*<\/title>/)?.[0].replace("Centurisk97", "Pantau Bencana");   // worker menukar merek di <title>
+  const baca = f => readFileSync(path.join(AKAR, "public", f), "utf8"), judul = t => t.match(/<title>[^<]*<\/title>/)?.[0];
   const sim = await panggil("GET", "/cuaca/simulasi");
   assert.equal(sim.status, 200); assert.equal(judul(sim.teks), judul(baca("cuaca/simulasi.html")), "judul halaman simulasi cuaca");
   assert.ok(sim.teks.length > 1000 && sim.teks.includes("sim_layar.js"), "isi simulasi.html, bukan index.html");

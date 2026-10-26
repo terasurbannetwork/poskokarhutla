@@ -263,7 +263,7 @@
     return kwGeo.features.find(f => f.properties.id === i.id) || null;
   }
   const desaGeo = {};
-  const ATR = {daops: "Daops: SiPongi opsroom KLHK", posko: "Posko: rancangan posko Pantau Bencana (scripts/data/posko.py)", bpbd: "Kantor BPBD: gis.bnpb.go.id",
+  const ATR = {daops: "Daops: SiPongi opsroom KLHK", posko: "Posko: rancangan posko Centurisk97 (scripts/data/posko.py)", bpbd: "Kantor BPBD: gis.bnpb.go.id",
     faskes: "Faskes: OpenStreetMap (ODbL)", sekolah: "Sekolah: Dapodik Kemendikbud, EMIS Kemenag", bandara: "Bandara dan jarak pandang: METAR (NOAA AWC)"};
   function kartuMuat(i) { bukaKartu(i.n, [["Jenis", JENIS[i.t]], ["Lokasi", [i.k, namaProv(i.p)].filter(Boolean).join(", ")]], ""); kartu().querySelector(".ck-b").innerHTML = `<p class="ck-n">Memuat…</p>`; }
 })();

@@ -70,13 +70,13 @@ def og_banjir(nama):
                    "angka": [[angka(ns), "kecamatan waspada ke atas", LV[2]], [angka(nb[2] + nb[3]), "kecamatan siaga/awas", LV[3]], [angka(h3) + " mm", "hujan 3 hari maksimum", "#4f8fc4"]],
                    "lvProv": lvb, "titik": False, "daftarJudul": "Kecamatan berstatus per provinsi",
                    "daftar": [[nm.get(k, k), v, angka(v) + " kec.", lvb.get(k, 0)] for k, v in sorted(nkp.items(), key=lambda x: -x[1])[:5]], "legenda": [[LV[3], "Awas"], [LV[2], "Siaga"], [LV[1], "Waspada"]]}
-    hb = {"judul": "Pantau Bencana · Banjir, longsor & rob hari ini", "gambar": "banjir",
+    hb = {"judul": "Centurisk97 · Banjir, longsor & rob hari ini", "gambar": "banjir",
                      "desk": f"{tb}: {angka(ns)} kecamatan berstatus banjir ({angka(nb[3])} awas, {angka(nb[2])} siaga), hujan 3 hari hingga {angka(h3)} mm. Prakiraan per kecamatan untuk 38 provinsi."}
     tabs = next((b["tab"] for b in baca("bencana.json")["bencana"] if b["id"] == "banjir"), [])
     halaman = {"/banjir/": hb}
     for tb_ in tabs:
         j, d = TAB_BANJIR.get(tb_, (tb_.capitalize(), hb["desk"]))
-        halaman["/banjir/" + tb_] = {"judul": f"{j} · Pantau Bencana Banjir, Longsor & Rob", "gambar": "banjir", "desk": f"{tb}: {d}"}
+        halaman["/banjir/" + tb_] = {"judul": f"{j} · Centurisk97 Banjir, Longsor & Rob", "gambar": "banjir", "desk": f"{tb}: {d}"}
     return {"gambar": {"banjir": gb}, "halaman": halaman}
 
 
@@ -113,7 +113,7 @@ def og_gempa(nama):
           "titik": False, "pts": [[e["lo"], e["la"], lv(e["m"])] for e in reversed(E)], "legenda": [[LV[3], "M 6,5+"], [LV[2], "M 6+"], [LV[1], "M 5,5+"], [LV[0], "M 5+"]],
           "daftarJudul": "Gempa terkuat (BMKG)", "daftar": [[e["w"], e["m"] - 4, "M " + mk(e["m"]), lv(e["m"])] for e in E[:5]]}
     ws = f"{top['w']}, {dr(top).day} {BULAN[dr(top).month - 1][:3]}"
-    return _og("gempa", gb, "Pantau Bencana · Gempa bumi M 5+ terbaru",
+    return _og("gempa", gb, "Centurisk97 · Gempa bumi M 5+ terbaru",
                f"{t0}: {angka(len(E))} gempa M 5+ tercatat BMKG, terkuat M {mk(top['m'])} ({ws}, kedalaman {top['d']}). Peta, riwayat sejak 1900, dan guncangan per wilayah. Sumber: BMKG.")
 
 
@@ -128,7 +128,7 @@ def og_gunungapi(nama):
           "titik": False, "pts": [[x["lon"], x["lat"], x["level"] - 1] for x in sorted(g["gunung"], key=lambda x: x["level"]) if x["level"] >= 2],
           "legenda": [[LV[3], "Awas"], [LV[2], "Siaga"], [LV[1], "Waspada"]], "daftarJudul": "Siaga/awas, jiwa dalam radius bahaya",
           "daftar": [[x["nama"], x.get("penduduk_radius") or 0, (jiwa(x["penduduk_radius"]) if x.get("penduduk_radius") else "Siaga" if x["level"] == 3 else "Awas"), x["level"] - 1] for x in kuat[:5]]}
-    return _og("gunungapi", gb, "Pantau Bencana · Status gunung api hari ini",
+    return _og("gunungapi", gb, "Centurisk97 · Status gunung api hari ini",
                f"{tb}: {angka(n4)} gunung api awas, {angka(n3)} siaga, {angka(n2)} waspada" + (f" ({', '.join(x['nama'] for x in kuat[:3])})" if kuat else "") + ". Sumber: MAGMA Indonesia, PVMBG (Badan Geologi).")
 
 
@@ -141,8 +141,8 @@ def og_kekeringan(nama):
           "angka": [[angka(awas), "kabupaten/kota awas", LV[3]], [angka(siaga), "kabupaten/kota siaga", LV[2]], [jiwa(ja), "jiwa di kecamatan awas", "#5f6fb0"]],
           "lvProv": {p: v.get("lv") or 0 for p, v in w.items()}, "titik": False, "legenda": [[LV[3], "Awas"], [LV[2], "Siaga"], [LV[1], "Waspada"]], "daftarJudul": "Jiwa di kecamatan awas per provinsi",
           "daftar": [[m["provinsi"].get(p, p), v["jiwa"][2], jiwa(v["jiwa"][2]), v.get("lv") or 0] for p, v in sorted(w.items(), key=lambda x: -x[1]["jiwa"][2])[:5] if v["jiwa"][2] > 0]}
-    return _og("kekeringan", gb, "Pantau Bencana · Kekeringan hari ini",
-               f"{tb}: {angka(awas)} kabupaten/kota awas, {angka(siaga)} siaga, {angka(waspada)} waspada kekeringan; sekitar {jiwa(ja)} jiwa tinggal di kecamatan awas. Sumber: Deteksi Pantau Bencana dari hujan (SPI), tanah, dan indeks kekeringan.")
+    return _og("kekeringan", gb, "Centurisk97 · Kekeringan hari ini",
+               f"{tb}: {angka(awas)} kabupaten/kota awas, {angka(siaga)} siaga, {angka(waspada)} waspada kekeringan; sekitar {jiwa(ja)} jiwa tinggal di kecamatan awas. Sumber: Deteksi Centurisk97 dari hujan (SPI), tanah, dan indeks kekeringan.")
 
 
 def og_cuaca(nama):
@@ -160,7 +160,7 @@ def og_cuaca(nama):
           "angka": [[angka(nh), f"provinsi hujan lebat (≥ {ah[0]} mm)", LV[2]], [angka(nc), "peringatan nowcast BMKG aktif", LV[3]], [angka(ang) + " km/j", "embusan angin terkuat", BIRU]],
           "lvProv": {k: lvh(p[0]) for k, p in P.items()}, "titik": False, "legenda": [[LV[3], f"≥ {ah[2]} mm"], [LV[2], f"≥ {ah[1]} mm"], [LV[1], f"≥ {ah[0]} mm"]], "daftarJudul": "Hujan terderas per provinsi (mm/hari)",
           "daftar": [[m["prov"].get(k, k), p[0], angka(p[0]) + " mm", lvh(p[0])] for k, p in sorted(P.items(), key=lambda x: -x[1][0])[:5]]}
-    return _og("cuaca", gb, "Pantau Bencana · Cuaca ekstrem hari ini",
+    return _og("cuaca", gb, "Centurisk97 · Cuaca ekstrem hari ini",
                f"{tb}: {angka(nh)} provinsi berpotensi hujan lebat (≥ {ah[0]} mm), embusan angin hingga {angka(ang)} km/jam, {angka(nc)} peringatan nowcast BMKG aktif. Sumber: prakiraan model Open-Meteo, peringatan BMKG.")
 
 
@@ -177,13 +177,13 @@ def og_udara(nama):
           "angka": [[jiwa(nj), "jiwa udara tidak sehat (perkiraan)", LV[2]], [jiwa(nb), "jiwa sangat tidak sehat/berbahaya", LV[3]], [angka(rata) + " µg/m³", "PM2,5 rata-rata (model)", BIRU]],
           "lvProv": {k: lvu(r) for k, r in R.items()}, "titik": False, "legenda": [[LV[3], "Berbahaya"], [LV[2], "Sangat tidak sehat"], [LV[1], "Tidak sehat"]], "daftarJudul": "Jiwa udara tidak sehat per provinsi (perkiraan)",
           "daftar": [[u["nama_prov"].get(k, k), sum(r[2:5]), jiwa(sum(r[2:5])), lvu(r)] for k, r in sorted(R.items(), key=lambda x: -sum(x[1][2:5]))[:5]]}
-    return _og("udara", gb, "Pantau Bencana · Perkiraan kualitas udara hari ini",
+    return _og("udara", gb, "Centurisk97 · Perkiraan kualitas udara hari ini",
                f"{tb}: perkiraan model, sekitar {jiwa(nj)} jiwa menghirup udara tidak sehat (PM2,5 rata-rata {angka(rata)} µg/m³). Sumber: model CAMS (Copernicus) lewat Open-Meteo, belum dikoreksi stasiun.")
 
 
 def og_umum():
     """Gambar netral (tanpa angka bahaya mana pun) untuk bencana yang belum punya gambar sendiri; dipakai src/og_meta.js sebagai cadangan."""
-    gb = {"sub": "Peta, peringatan & data bencana Indonesia", "tgl": "Sumber resmi dicantumkan di tiap halaman", "lv": 0, "eyebrow": "Karhutla · banjir · gempa · gunung api · cuaca", "judul": "Pantau bencana di seluruh Indonesia, langsung dari data resmi",
+    gb = {"sub": "Peta, peringatan & data bencana Indonesia", "tgl": "Sumber resmi dicantumkan di tiap halaman", "lv": 0, "eyebrow": "Karhutla · banjir · gempa · gunung api · cuaca", "judul": "Centurisk97 di seluruh Indonesia, langsung dari data resmi",
           "angka": [["38", "provinsi dipantau", BIRU], ["Peta", "dan peringatan langsung", LV[2]], ["Resmi", "BMKG, PVMBG, BNPB", LV[0]]], "titik": False, "legenda": []}
     return gb
 
@@ -220,13 +220,13 @@ def hitung():
                           "judul": f"{nama[k]}: {angka(p3.get(k, 0))} kompleks api prioritas" + (f", {jiwa(jw[k])} jiwa terpapar asap" if jw.get(k) else ""),
                           "angka": [[angka(titik.get(k)), f"titik panas {tp}", LV[3]], [angka(p3.get(k, 0)), "kompleks api prioritas", LV[2]], [jiwa(jw.get(k, 0)), "jiwa terpapar asap", "#5f6fb0"]],
                           "titik": True, "legenda": LEG_API}
-        P[k] = {"nama": nama[k], "judul": f"{nama[k]} · Pantau Bencana", "gambar": "prov-" + k,
+        P[k] = {"nama": nama[k], "judul": f"{nama[k]} · Centurisk97", "gambar": "prov-" + k,
                 "desk": f"{nama[k]}, {tp}: {angka(p3.get(k, 0))} kompleks api prioritas, {angka(titik.get(k))} titik panas" + (f", {jiwa(jw[k])} jiwa terpapar asap" if jw.get(k) else "") + ". Peta langsung dan rekomendasi pemadaman."}
     K = {p["id"]: [f"{p.get('kab', '')}, {nama.get(p['prov'], p['prov'])}: {m['status'][3].lower()}, {angka(p.get('n24'))} titik panas 24 jam ({tp})", p["prov"]]
          for p in (f["properties"] for f in kl) if p.get("level") == 3}
-    H = {"/": {"judul": "Pantau Bencana · Karhutla: titik panas, kompleks api & asap hari ini", "gambar": "ringkasan",
+    H = {"/": {"judul": "Centurisk97 · Karhutla: titik panas, kompleks api & asap hari ini", "gambar": "ringkasan",
                "desk": f"{tp}: {angka(nt)} titik panas, {angka(n3)} kompleks api prioritas, {jiwa(nj)} jiwa terpapar asap. Peta langsung, bahaya cuaca kebakaran, dan simulasi penjalaran api 72 jam untuk 38 provinsi."},
-         "/peta": {"judul": "Peta karhutla langsung · Pantau Bencana", "gambar": "peta",
+         "/peta": {"judul": "Peta karhutla langsung · Centurisk97", "gambar": "peta",
                    "desk": f"{tp}: {angka(len(kl))} kompleks api aktif dan {angka(nt)} titik panas di peta Indonesia; klik provinsi atau kompleks untuk rincian."}}
     try:
         ob = og_banjir(nama)
@@ -283,7 +283,7 @@ def blok(jalur, judul, desk, gambar, M):
     img = f"{SITUS}/data/og/{gambar}.png?v={M['v']}"
     e = lambda s: html.escape(s, quote=True)
     return "\n".join(["<!-- og -->", f'<link rel="canonical" href="{e(SITUS + jalur)}">', '<meta name="theme-color" content="#0b2545">',
-        '<meta property="og:type" content="website">', '<meta property="og:site_name" content="Pantau Bencana">', '<meta property="og:locale" content="id_ID">',
+        '<meta property="og:type" content="website">', '<meta property="og:site_name" content="Centurisk97">', '<meta property="og:locale" content="id_ID">',
         f'<meta property="og:title" content="{e(judul)}">', f'<meta property="og:description" content="{e(desk)}">', f'<meta property="og:url" content="{e(SITUS + jalur)}">',
         f'<meta property="og:image" content="{e(img)}">', '<meta property="og:image:width" content="1200">', '<meta property="og:image:height" content="630">',
         f'<meta property="og:image:alt" content="{e(desk[:200])}">', '<meta name="twitter:card" content="summary_large_image">',
@@ -304,7 +304,7 @@ def stempel(M):
         else:
             t = re.search(r"<title>(.*?)</title>", s, re.S); d = re.search(r'<meta name="description" content="([^"]*)"', s)
             jalur = "/" + re.sub(r"\.html$", "", re.sub(r"(^|/)index\.html$", r"\1", rel))   # /privasi.html -> /privasi (HTML_RUTE)
-            judul = html.unescape(t.group(1).strip()) if t else "Pantau Bencana"
+            judul = html.unescape(t.group(1).strip()) if t else "Centurisk97"
             desk, gbr = html.unescape(d.group(1)) if d else M["halaman"]["/"]["desk"], "umum" if "umum" in M["gambar"] else "ringkasan"   # bukan gambar karhutla untuk halaman tanpa baris meta
         b = blok(jalur, judul, desk, gbr, M)
         if RE_BLOK.search(s): s2 = RE_BLOK.sub(lambda _: b, s, count=1)

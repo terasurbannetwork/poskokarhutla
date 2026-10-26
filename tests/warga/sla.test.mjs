@@ -17,7 +17,7 @@ const uji = berantai();
 const b64 = b => Buffer.from(b).toString("base64url");
 const {privateKey} = generateKeyPairSync("ec", {namedCurve: "prime256v1"}), jwk = privateKey.export({format: "jwk"});
 const KUNCI = {VAPID_PUBLIK: b64(Buffer.concat([Buffer.from([4]), Buffer.from(jwk.x, "base64url"), Buffer.from(jwk.y, "base64url")])), VAPID_PRIVAT: jwk.d, VAPID_SUBJEK: "mailto:pemilik@contoh.id"};
-const IKAT = {...KUNCI, FIRMS_MAP_KEY: "kunci-firms", EMAIL_API_KEY: "re_uji", EMAIL_FROM: "Pantau Bencana <kabar@centurisk97.id>", EMAIL_TO: "pos@contoh.id", PIPA_TOKEN: "token-pipa-uji"};
+const IKAT = {...KUNCI, FIRMS_MAP_KEY: "kunci-firms", EMAIL_API_KEY: "re_uji", EMAIL_FROM: "Centurisk97 <kabar@centurisk97.id>", EMAIL_TO: "pos@contoh.id", PIPA_TOKEN: "token-pipa-uji"};
 
 /* jaringan luar: FIRMS, Resend, layanan push */
 let CSV = {}; const surel = [], dorong = [];

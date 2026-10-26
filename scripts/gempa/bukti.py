@@ -495,7 +495,7 @@ def main():
     syarat_aktif = [x for x in SYARAT if (dem is not None or x not in ("genangan", "tanpa_evakuasi")) and (bnpb is not None or x != "genangan_bnpb")]
     dinilai = sorted({kp for t in ringkas.values() for kp in t})
     out = {"dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"),
-           "sumber": ["Dapodik Kemendikbudristek dan EMIS Kemenag (sekolah, 9 provinsi)", "Data RS dan puskesmas Pantau Bencana (9 provinsi)",
+           "sumber": ["Dapodik Kemendikbudristek dan EMIS Kemenag (sekolah, 9 provinsi)", "Data RS dan puskesmas Centurisk97 (9 provinsi)",
                       "OpenStreetMap, (c) kontributor OpenStreetMap, ODbL 1.0 (2026)", "GEM Global Active Faults Database, Styron & Pagani 2020, CC BY-SA 4.0",
                       "InaRISK BNPB, genangan tsunami skenario (2026)", "AWS Terrain Tiles, Mapzen/Tilezen (SRTM, GMTED2010, ETOPO1)",
                       "Wells & Coppersmith 1994", "Boore dkk. 2014; Worden dkk. 2012"],

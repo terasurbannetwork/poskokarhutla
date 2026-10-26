@@ -21,7 +21,7 @@ const host = location.hostname;
 /* sama dengan situsCenturisk() di src/worker.js: data perusahaan hanya di alamat Centurisk97 */
 const situsW = host.endsWith(".workers.dev") || host === "centurisk97.id" || host === "www.centurisk97.id";
 const izinPerusahaan = situsW || host === "localhost" || host === "127.0.0.1";
-const merek = situsW ? "Centurisk97" : "Pantau Bencana";
+const merek = "Centurisk97";
 
 const S = {bencana: BENC, namaB: "Karhutla", B: null, SB: null, draf: false, foto: null, D: null, prov: "62", tgl: null, templat: null, susunan: [], gambar: Object.create(null), logo: null, gen: 0, sibuk: false};
 const perusahaan = {};

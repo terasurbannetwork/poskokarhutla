@@ -10,7 +10,7 @@ const LABEL = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren",
 const label = t => LABEL[t] || t[0].toUpperCase() + t.slice(1);
 
 /* Profil pratinjau satu bencana: baris meta.json bila ada, kalau tidak turunan registry (og.judul + sumber), supaya tiap modul punya pratinjau sendiri tanpa menunggu generator OG. */
-const profil = (b, M) => M.halaman[b.rute] || {judul: b.og?.judul || `${b.nama} · Pantau Bencana`, desk: `Pantau ${b.nama.toLowerCase()} di seluruh Indonesia.${b.bagikan?.sumber ? " Sumber: " + b.bagikan.sumber + "." : ""}`, gambar: M.gambar?.umum ? "umum" : M.halaman["/"].gambar};   // tanpa baris sendiri: gambar netral, bukan gambar karhutla
+const profil = (b, M) => M.halaman[b.rute] || {judul: b.og?.judul || `${b.nama} · Centurisk97`, desk: `Pantau ${b.nama.toLowerCase()} di seluruh Indonesia.${b.bagikan?.sumber ? " Sumber: " + b.bagikan.sumber + "." : ""}`, gambar: M.gambar?.umum ? "umum" : M.halaman["/"].gambar};   // tanpa baris sendiri: gambar netral, bukan gambar karhutla
 
 /* murni: jalur + meta.json (+ registry) -> {judul, desk, gambar, url} atau null (tidak diubah) */
 export function metaRute(url, M, B = REGISTRY) {
@@ -21,20 +21,20 @@ export function metaRute(url, M, B = REGISTRY) {
     const aw = b.kejadian?.awalan, k = aw && p.match(new RegExp(`^${akar(b) ? "" : dasar(b)}/(${akar(b) || !b.warisan ? "k|sim" : "k"})/(${aw}\\d+)$`));
     if (!k) continue;
     const [d, prov] = [].concat(M.kompleks?.[k[2]] || []), sim = k[1] === "sim", g = !akar(b) ? profil(b, M).gambar : prov && M.prov?.[prov] ? "prov-" + prov : "ringkasan"   /* gambar provinsi hanya milik karhutla (akar); modul lain memakai gambarnya sendiri walau kodenya terdaftar di kompleks */, api = aw === "K";
-    return {judul: `${sim ? (api ? "Simulasi penjalaran api" : "Simulasi " + b.kejadian.nama.toLowerCase()) : b.kejadian.nama} ${k[2]} · Pantau Bencana`,
+    return {judul: `${sim ? (api ? "Simulasi penjalaran api" : "Simulasi " + b.kejadian.nama.toLowerCase()) : b.kejadian.nama} ${k[2]} · Centurisk97`,
       desk: !d && !akar(b) ? profil(b, M).desk : d ? `${d}.${api ? " " + (sim ? "Simulasi penjalaran api 72 jam dan pilihan pemadaman." : "Lokasi, cuaca, akses regu, dan rekomendasi pemadaman di peta.") : ""}` : dasarH.desk,
       gambar: gbr(g), url: S + p};
   }
   const wil = (url.searchParams.get("wil") || "").slice(0, 2);
   if (/^\d{2}$/.test(wil) && M.nama?.[wil]) {
     const pv = M.prov?.[wil];
-    return {judul: pv ? pv.judul : `${M.nama[wil]} · Pantau Bencana`, desk: pv ? pv.desk : dasarH.desk, gambar: gbr(pv ? pv.gambar : "ringkasan"), url: `${S}${p === "/" ? "/" : p}?wil=${wil}`};
+    return {judul: pv ? pv.judul : `${M.nama[wil]} · Centurisk97`, desk: pv ? pv.desk : dasarH.desk, gambar: gbr(pv ? pv.gambar : "ringkasan"), url: `${S}${p === "/" ? "/" : p}?wil=${wil}`};
   }
   const h = M.halaman[p === "/index.html" ? "/" : p];
   if (h) return {judul: h.judul, desk: h.desk, gambar: gbr(h.gambar), url: S + (p === "/index.html" ? "/" : p)};
   for (const b of bs) {
     const pre = akar(b) ? "" : dasar(b), t = p.startsWith(pre + "/") ? p.slice(pre.length + 1) : "";
-    if (t && tabRute(b).includes(t)) { const h = akar(b) ? dasarH : profil(b, M); return {judul: `${label(t)} · Pantau Bencana ${b.nama}`, desk: h.desk, gambar: gbr(h.gambar), url: S + p}; }
+    if (t && tabRute(b).includes(t)) { const h = akar(b) ? dasarH : profil(b, M); return {judul: `${label(t)} · Centurisk97 ${b.nama}`, desk: h.desk, gambar: gbr(h.gambar), url: S + p}; }
   }
   return null;
 }

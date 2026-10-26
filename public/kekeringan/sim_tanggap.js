@@ -3,7 +3,7 @@
    biaya kandidat perlakuan, dan peringkat. Fungsi murni; bisa dimuat node (require) untuk uji. Hitungan neraca air ada di simulasi.js. */
 (() => {
 /* Parameter jalan dan air bersih sama dengan scripts/kekeringan/posko.py (kelok 1,4; 40 km/jam; 15 L/orang/hari Sphere; tangki 5.000 L).
-   Sisanya ASUMSI perencanaan Pantau Bencana, bukan harga satuan resmi: ganti bila ada e-katalog/DIPA. */
+   Sisanya ASUMSI perencanaan Centurisk97, bukan harga satuan resmi: ganti bila ada e-katalog/DIPA. */
 const ASUMSI = {
   liter_orang_hari: 15, kap_tangki_l: 5000, kelok: 1.4, laju_kmj: 40, jam_kerja: 10, jam_isi: 1, pangkalan_n: 3, jarak_dalam_sel_km: 20,
   sewa_tangki_hari: 1.5e6,          /* Rp per truk per hari: sewa + sopir + BBM */

@@ -1,4 +1,4 @@
-"""Prakiraan kekeringan 1-3 bulan "Deteksi Pantau Bencana" -> public/data/kekeringan_prakiraan.json + cache data/raw/kekeringan/musiman.json
+"""Prakiraan kekeringan 1-3 bulan "Deteksi Centurisk97" -> public/data/kekeringan_prakiraan.json + cache data/raw/kekeringan/musiman.json
 
 Sumber utama: ensemble musiman ECMWF SEAS5 (51 anggota) lewat https://seasonal-api.open-meteo.com/v1/seasonal, terbit bulanan.
 Cadangan (sel tanpa data SEAS5, atau SEAS5 mati): prospek bersyarat fase ENSO dari tahun-tahun sefase 1991-2025 (label "enso" di medan `sumber`).
@@ -483,7 +483,7 @@ def bangun(pow_sel, harian, musiman, iklim, oni, penduduk, pusat, sekarang):
     rasio = [statistics.median([r["rasio"][i] for r in titik_hasil.values() if r["rasio"][i] is not None]) if any(r["rasio"][i] is not None for r in titik_hasil.values()) else None for i in range(LEAD)] if titik_hasil else None
     enso = {"status": iklim.get("status"), "cpc": iklim.get("cpc_status"), "oni": (iklim.get("oni_terakhir") or {}).get("nilai"),
             "musim": mus_pred, "iod": iklim.get("iod_status"), "dmi": iklim.get("dmi_8_minggu")}
-    return {"dibuat": sekarang.isoformat(timespec="minutes"), "label": "Deteksi Pantau Bencana", "terbit": musiman["terbit"] if musiman else None,
+    return {"dibuat": sekarang.isoformat(timespec="minutes"), "label": "Deteksi Centurisk97", "terbit": musiman["terbit"] if musiman else None,
             "sumber": ("ECMWF SEAS5 (51 anggota) lewat Open-Meteo, bulan +1 sampai +3" if titik_hasil else "Prospek bersyarat fase ENSO 1991-2025 (cadangan)"),
             "bulan": bulan, "enso": enso, "tanah_musiman": {"ada": False, "alasan": "variabel soil_moisture_0_to_10cm_mean ada di daftar API seasonal tetapi nilainya kosong semua (dicek 18 Okt 2026)"},
             "bias": {"rasio_hujan_klim": rasio, "label": label_bias(rasio, bulan), "per_bulan": bias_per_bulan(rasio, bulan),

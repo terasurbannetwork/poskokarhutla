@@ -118,7 +118,7 @@ function mulai(akar) {
     const c = cocokkanJalur(location.pathname);
     if (!c) { tandaiAktif(null); isi.replaceChildren(kosong("Halaman tidak ada. Pilih layar dari menu SIPPA.")); return; }
     const x = SEMUA.find(y => y.k === c.layar);
-    tandaiAktif(c.layar); document.title = `${x.n} | SIPPA | Pantau Bencana`;
+    tandaiAktif(c.layar); document.title = `${x.n} | SIPPA | Centurisk97`;
     isi.replaceChildren(memuat());
     let m;
     try { m = await import(`./layar_${c.layar}.js`); }

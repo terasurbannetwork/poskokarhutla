@@ -20,9 +20,9 @@ const Metode = {
         ["Level dan nama gunung", "Halaman Tingkat Aktivitas Gunung Api, dibaca ulang tiap kali data diperbarui. Level tampil persis seperti yang diterbitkan PVMBG."],
         ["Radius rekomendasi", "Angka kilometer pada kalimat radius di laporan aktivitas harian gunung berstatus Level II ke atas. Jarak sektor (aliran awan panas dan lahar) dicatat terpisah dan tidak digambar sebagai lingkaran."],
         ["Erupsi terbaru", "Halaman Informasi Letusan MAGMA: waktu, gunung, dan tinggi kolom abu bila disebut."],
-        ["Perubahan level", "Pantau Bencana membandingkan level tiap pembaruan dengan pembaruan sebelumnya. Catatannya dimulai sejak halaman ini berjalan, bukan riwayat PVMBG."],
+        ["Perubahan level", "Centurisk97 membandingkan level tiap pembaruan dengan pembaruan sebelumnya. Catatannya dimulai sejak halaman ini berjalan, bukan riwayat PVMBG."],
         ["Jiwa dalam radius", "Perkiraan WorldPop 1 km (R2025A 2026): jumlah piksel yang pusatnya masuk lingkaran radius. Galat tepi sekitar 1 km, jadi angkanya perkiraan, bukan hitungan per desa."]], "Sumber: MAGMA Indonesia, WorldPop", "Sumber data"),
-      this.daftar("Jejak abu adalah skenario Pantau Bencana, bukan advisory VAAC", [
+      this.daftar("Jejak abu adalah skenario Centurisk97, bukan advisory VAAC", [
         ["Skenario", "Gunung Level II ke atas diandaikan meletus sekarang. Tinggi kolom dari letusan MAGMA 48 jam terakhir bila ada; bila tidak, asumsi per level: Level II 1 km, Level III 2 km, Level IV 5 km di atas puncak."],
         ["Model Lagrangian", `${fmt(nP)} partikel dilepas sepanjang kolom (profil Suzuki A = 4, k = 5) selama ${fmt(lepas)} jam, digeser angin per jam ECMWF IFS 0,25° di lapisan 1000 sampai 200 hPa dari Open-Meteo, langkah 15 menit, ditambah gerak acak horizontal dengan K_h = ${fmt(kh)} m²/dtk. Bilangan acak tetap (seed) supaya hasilnya bisa diulang.`],
         ["Massa abu", `MER = 2.500 × (H / 2)^(1 / 0,241) kg/dtk dengan H tinggi kolom di atas puncak dalam km (Mastin dkk. 2009). Massa total = MER × lama pelepasan; seluruhnya dianggap abu halus yang terbawa, tanpa penggumpalan. Empat kelas butir: ${butir}.`],
@@ -42,7 +42,7 @@ const Metode = {
         ["Evakuasi", "Dijkstra berganda di jaringan jalan OSM (motorway sampai residential) dari titik aman: jalan tersier ke atas di luar KRB III dan II dan di luar radius rekomendasi ditambah 2 km. Kecepatan per kelas jalan: 50, 40, 35, 30, 25, 18, dan 15 km/jam. Hasilnya waktu tempuh arus bebas, tanpa antrean evakuasi massal, dan di tampilan hanya desa KRB III dan II yang dihitung. Titik kumpul bertanda OSM (assembly point atau shelter) diutamakan bila selisihnya tak lebih dari 10 menit. Bila tak ada desa KRB III atau II yang tersambung ke jalan, rute cadangan dihitung dari desa KRB I terdekat dan ditandai di peta."],
         ["Citra", "Sentinel-2 (Copernicus/ESA) bebas awan terbaik sebelum dan sesudah kejadian besar yang tercatat."]], "Sumber: ESDM, WorldPop, OpenStreetMap, Copernicus", "Paparan"),
       this.daftar("Batas model dan yang sengaja tidak dilakukan", [
-        ["Bukan prakiraan letusan", "Pantau Bencana tidak meramal letusan dan tidak menentukan level sendiri. Untuk keputusan, ikuti rekomendasi PVMBG dan BPBD setempat; Level I Normal bukan jaminan tidak ada bahaya."],
+        ["Bukan prakiraan letusan", "Centurisk97 tidak meramal letusan dan tidak menentukan level sendiri. Untuk keputusan, ikuti rekomendasi PVMBG dan BPBD setempat; Level I Normal bukan jaminan tidak ada bahaya."],
         ["Bukan informasi penerbangan", "Informasi abu vulkanik untuk penerbangan (VONA, VAAC) tetap bersumber dari PVMBG dan BMKG."],
         ["Angin dan jarak", "Angin dari prakiraan, bukan pengukuran; satu skenario kolom tetap selama pelepasan. Jarak jangkauan belum teruji."],
         ["Data tidak lengkap", "Tanpa data zona, desa, atau rute untuk suatu gunung, bagian itu dibuang, bukan ditulis kosong. Nol di OSM bukan bukti tidak ada."]], "Sumber: PVMBG, Badan Geologi", "Batas"),

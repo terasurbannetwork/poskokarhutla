@@ -56,7 +56,7 @@ const Insight = {
   exPel() {
     if (typeof Peluang === "undefined" || !this.PL) return "";
     this.st.pelW ??= Object.entries(this.PL.wilayah).map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];   /* awal: kota dengan peluang tertinggi */
-    return Peluang.kartu(this.PL, {ey: this.eyIk("pel", "Peluang PM2,5"), st: this.st, kunci: "pel", kejadian: "PM2,5", sumber: "Copernicus CAMS lewat Open-Meteo, sebaran asumsi Pantau Bencana"}).replace("</span>", "</span>" + PIL_MODEL); },
+    return Peluang.kartu(this.PL, {ey: this.eyIk("pel", "Peluang PM2,5"), st: this.st, kunci: "pel", kejadian: "PM2,5", sumber: "Copernicus CAMS lewat Open-Meteo, sebaran asumsi Centurisk97"}).replace("</span>", "</span>" + PIL_MODEL); },
 
   /* 2c. asal asap per kota (asal.json): batang mendatar persen per provinsi asal dari lintasan angin mundur */
   exAsal() {
@@ -71,7 +71,7 @@ const Insight = {
         + `<g class="gf" style="--i:${i}">${Kartu.pil(L + bw + 8, y + 5, v + "%", "#c9503a", "#fff")[0]}</g></g>`; }).join("");
     const judul = esc(k.kalimat).replace(/\d+%/g, Kartu.hl);
     return this.exM("asal", "Asal asap", judul, "", "", `<svg viewBox="0 0 ${W} ${pv.length * rh + 6}" role="img" aria-label="Asal asap ${esc(k.nama)} per provinsi">${g}</svg>`,
-      "Sumber: Open-Meteo (angin), NASA FIRMS VIIRS, perkiraan Pantau Bencana", Kartu.selProv("asalK", "Kota paling tercemar", kode, c => A[c].nama, {asalK: pilih === teratas && !this.st.asalK ? "" : pilih})); },
+      "Sumber: Open-Meteo (angin), NASA FIRMS VIIRS, perkiraan Centurisk97", Kartu.selProv("asalK", "Kota paling tercemar", kode, c => A[c].nama, {asalK: pilih === teratas && !this.st.asalK ? "" : pilih})); },
 
   /* 3. jarak pandang bandara; tanpa laporan segar atau semuanya jernih = kartu dibuang */
   exJarak() {

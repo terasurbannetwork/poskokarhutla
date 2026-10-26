@@ -45,7 +45,7 @@
     const kanal = Object.fromEntries(D.kanal || []), dariAI = kanal["Dari jawaban AI"] || 0;
     const sampel = [t7, ts].some(x => x.sampel != null && x.sampel < 1);
     app.innerHTML = `
-    <section class="pb-hero"><span class="ad-ey">Statistik pengunjung · Pantau Bencana</span>
+    <section class="pb-hero"><span class="ad-ey">Statistik pengunjung · Centurisk97</span>
       <h1>Manusia dan AI, dihitung terpisah.</h1>
       <p>Halaman ini dibuka oleh orang, oleh asisten AI yang sedang menjawab pertanyaan seseorang (ChatGPT, Claude, Perplexity), dan oleh perayap yang mengindeks atau mengumpulkan halaman untuk mesin pencari dan pelatihan AI. Ketiganya kami hitung terpisah, supaya angka "pembaca" benar-benar orang.${sampel ? " <b>Sebagian angka adalah perkiraan (sampel)</b> karena lalu lintas hari itu melewati batas pencatatan gratis." : ""}</p></section>
 

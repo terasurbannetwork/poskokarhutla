@@ -13,7 +13,7 @@ const LIB = {
 const BATAS = {pdf: 400, docx: 400, pptx: 48};
 const PER_SLIDE = 12;
 const S = {pilih: null, prov: "", json: new Map(), dok: null};
-const MERK = document.documentElement.dataset.situs === "w" || /centurisk97/.test(location.hostname) ? "Centurisk97" : "Pantau Bencana";
+const MERK = "Centurisk97";
 
 const muatLib = (() => { const p = {}; return k => p[k] ||= new Promise((ok, no) => { const s = document.createElement("script"); s.src = LIB[k]; s.onload = ok; s.onerror = () => { delete p[k]; no(new Error("Pustaka gagal dimuat, periksa koneksi")); }; document.head.append(s); }); })();
 const ambil = u => { if (!S.json.has(u)) S.json.set(u, fetch(u, {cache: "no-cache"}).then(r => { if (!r.ok) throw new Error(`${u} tidak tersedia (${r.status})`); return r.json(); }).catch(e => { S.json.delete(u); throw e; })); return S.json.get(u); };

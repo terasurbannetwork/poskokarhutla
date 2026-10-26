@@ -98,14 +98,14 @@
   }
   function sitasi() {
     const t = new Date().toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"});
-    const teks = `[Nama data]. BNPB dan Pantau Bencana. ${D.lisensi}. Diakses ${t}. ${location.origin}`;
+    const teks = `[Nama data]. BNPB dan Centurisk97. ${D.lisensi}. Diakses ${t}. ${location.origin}`;
     const salin = h("button", {type: "button", class: "bn-tombol sekunder"}, svg("salin"), "Salin sitasi");
     salin.onclick = async () => { try { await navigator.clipboard.writeText(teks); salin.lastChild.textContent = "Tersalin"; } catch (e) { salin.lastChild.textContent = "Salin manual"; } };
     $("sitasi").replaceChildren(h("h2", null, pil("kunci", "Aturan sitasi " + D.lisensi, "hijau")), h("p", {class: "rs-kutip", teks}), salin);
   }
   function ajak() {
     $("hAjak").replaceChildren(svg("topi"), "Kampusmu mau bermitra?");
-    $("ajakTeks").replaceChildren("Hubungi admin lewat kotak pesan di ", h("a", {href: "/"}, "Pantau Bencana"), " dengan kategori Kerja sama. Admin yang mencatat institusimu dan memberi kode mitra pribadi. Kamu yang sudah punya kode buka ",
+    $("ajakTeks").replaceChildren("Hubungi admin lewat kotak pesan di ", h("a", {href: "/"}, "Centurisk97"), " dengan kategori Kerja sama. Admin yang mencatat institusimu dan memberi kode mitra pribadi. Kamu yang sudah punya kode buka ",
       h("a", {href: "/riset/mitra"}, "halaman mitra"), ".");
   }
   muat();

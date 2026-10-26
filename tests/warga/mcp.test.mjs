@@ -26,7 +26,7 @@ uji("initialize: membalas versi yang diminta bila didukung, jatuh ke terbaru bil
   for (const v of ["2025-06-18", "2025-03-26", "2024-11-05"]) {
     const r = await rpc("initialize", {protocolVersion: v, capabilities: {}, clientInfo: {name: "uji", version: "1"}});
     assert.equal(r.s, 200, r.t); assert.equal(r.j.id, id); assert.equal(r.j.jsonrpc, "2.0");
-    assert.equal(r.j.result.protocolVersion, v); assert.deepEqual(r.j.result.capabilities, {tools: {}}); assert.equal(r.j.result.serverInfo.name, "pantau-bencana");
+    assert.equal(r.j.result.protocolVersion, v); assert.deepEqual(r.j.result.capabilities, {tools: {}}); assert.equal(r.j.result.serverInfo.name, "centurisk97");
   }
   assert.equal((await rpc("initialize", {protocolVersion: "1999-01-01"})).j.result.protocolVersion, "2025-06-18");
   assert.deepEqual((await rpc("ping")).j.result, {});

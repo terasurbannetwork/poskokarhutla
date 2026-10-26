@@ -1,5 +1,5 @@
 "use strict";
-/* ================================================================ status 72 jam (deteksi Pantau Bencana, BUKAN peringatan resmi BMKG)
+/* ================================================================ status 72 jam (deteksi Centurisk97, BUKAN peringatan resmi BMKG)
    Data: ../banjir/data/cuaca_{kec,gelombang,siklon,sarana,dampak}.json lewat S.kec/gel/sik/sar/dmp (cuaca.js muatTambahan). Berkas yang tak ada = bagian dibuang, tanpa galat.
    Semua lapisan baru hidup di peta.js lewat Status.pasang() dan Status.segarkan(); kontrol tambahan hanya dibuat bila datanya ada. */
 const Status = (() => {
@@ -102,13 +102,13 @@ const Status = (() => {
   function barisPanel(q) { const j = k();
     const R = urutProv(j).filter(([p]) => !q || namaProv(p).toLowerCase().includes(q));
     return R.map(([p, o]) => `<button class="rw" data-st="${p}"><span class="rw-hd">${pilT(o.t[j])}<b translate="no">${esc(namaProv(p))}</b></span><span class="rw-wil">${ringkasN(o.n[j])}</span></button>`).join("")
-      || `<p class="kosong">${q ? "Tidak ada yang cocok." : `Tidak ada kecamatan di atas ambang Waspada ${kapan3(j)}, menurut deteksi Pantau Bencana dari prakiraan model.`}</p>`; }
+      || `<p class="kosong">${q ? "Tidak ada yang cocok." : `Tidak ada kecamatan di atas ambang Waspada ${kapan3(j)}, menurut deteksi Centurisk97 dari prakiraan model.`}</p>`; }
   function fokusProv(p) { const f = S.geo.features.find(x => x.properties.kode === p), o = S.kec.prov[p]; if (!f || !o) return;
     S.pilih = {jenis: "st", k: p}; renderCrumb(); peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); laciProv(p); }
   function laciProv(p) { const o = S.kec?.prov[p]; if (!o) return;
-    Laci.buka("Status 72 jam", `<span translate="no">${esc(namaProv(p))}</span>`, `${pilT(Math.max(...o.t))} · deteksi Pantau Bencana`,
+    Laci.buka("Status 72 jam", `<span translate="no">${esc(namaProv(p))}</span>`, `${pilT(Math.max(...o.t))} · deteksi Centurisk97`,
       `<div class="grid g3">${o.t.map((t, j) => kot(lbl3(j), pilT(t), t ? ringkasN(o.n[j]) : "tidak ada")).join("")}</div>
-      <p class="fnd">Sumber: Deteksi Pantau Bencana dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.</p>`); }
+      <p class="fnd">Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.</p>`); }
 
   /* ---------- rincian kecamatan, gelombang, sarana, siklon ---------- */
   const rowKec = i => { const r = S.kecBaris?.get(i); return r; };
@@ -119,7 +119,7 @@ const Status = (() => {
     const hari = r[1].map((t, d) => `<p class="fnd">${pilT(t)} <b>${lbl3(d)}</b>: hujan ${fmt(r[4][d] ?? 0)} mm (peluang 50 mm atau lebih ${fmt(r[2][d] ?? 0)}%, 100 mm atau lebih ${fmt(r[3][d] ?? 0)}%), embusan ${fmt(r[5][d] ?? 0)} km/jam${r[6]?.[d] != null ? `, gelombang ${fmt(r[6][d] / 10)} m` : ""}</p>`).join("");
     Laci.buka("Status 72 jam", `<span translate="no">${esc(n.kec)}</span>`, `${pilT(r[1][j])} · <span translate="no">${esc(n.kab)}, ${esc(namaProv(n.p))}</span>`,
       `<div class="grid g4">${kot("Hujan", fmt(r[4][j] ?? 0), "mm")}${kot("Embusan", fmt(r[5][j] ?? 0), "km/jam")}${kot("Peluang 50 mm", fmt(r[2][j] ?? 0) + "%", "atau lebih")}${r[6]?.[j] != null ? kot("Gelombang", fmt(r[6][j] / 10), "m") : kot("Peluang 100 mm", fmt(r[3][j] ?? 0) + "%", "atau lebih")}</div>${pemicu(r, j).length ? `<p class="fnd">Pemicu ${kapan3(j)}: ${pemicu(r, j).join(", ")}</p>` : ""}${hari}
-      <p class="fnd">Sumber: Deteksi Pantau Bencana dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.</p>`); }
+      <p class="fnd">Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${jamWIB(S.kec.dibuat)}.</p>`); }
   function tipKec(i) { const r = rowKec(i), n = nmKec(i), j = k(); if (!r) return "";
     return PI.kartuTip({judul: `<span translate="no">${esc(n.kec)}</span>`, sub: `<small>${esc(namaT(r[1][j]))}</small>`, stat: [["hujan", fmt(r[4][j] ?? 0) + " mm", "hujan", "#3f7fb8", r[4][j] >= AMB().hujan[0]], ["angin", fmt(r[5][j] ?? 0) + " km/jam", "embusan", "#2b8c86", r[5][j] >= AMB().angin_kmj[0]], ...(r[6]?.[j] != null ? [["ombak", fmt(r[6][j] / 10) + " m", "gelombang", "#16405c", r[6][j] / 10 >= HS()[0]]] : [])]}); }
   const sarInfo = p => p.j === "pelabuhan" ? {nama: S.sar.pelabuhan[p.n][0], prov: S.sar.pelabuhan[p.n][3], ket: S.sar.pelabuhan[p.n][4], v: fmt(p.x / 10) + " m", lb: "gelombang"} : {nama: S.sar.bandara[p.n][1], prov: S.sar.bandara[p.n][4], ket: S.sar.bandara[p.n][0], v: fmt(p.x) + " mm", lb: "hujan"};
@@ -127,7 +127,7 @@ const Status = (() => {
   function laciSar(p) { const s = sarInfo(p);
     Laci.buka(p.j === "pelabuhan" ? "Pelabuhan" : "Bandara", `<span translate="no">${esc(s.nama)}</span>`, `${pilT(p["t" + k()])} · <span translate="no">${esc(namaProv(s.prov))}</span>`,
       `<div class="grid g4">${kot(s.lb === "hujan" ? "Hujan" : "Gelombang", s.v.split(" ")[0], s.v.split(" ")[1])}${kot("Embusan", fmt(p.g), "km/jam")}</div>
-      ${[0, 1, 2].map(d => `<p class="fnd">${pilT(p["t" + d])} <b>${lbl3(d)}</b></p>`).join("")}<p class="fnd">Angka tertinggi dalam 72 jam. Sumber: Deteksi Pantau Bencana dari prakiraan model; sarana dari data terbuka. Bukan peringatan resmi.</p>`); }
+      ${[0, 1, 2].map(d => `<p class="fnd">${pilT(p["t" + d])} <b>${lbl3(d)}</b></p>`).join("")}<p class="fnd">Angka tertinggi dalam 72 jam. Sumber: Deteksi Centurisk97 dari prakiraan model; sarana dari data terbuka. Bukan peringatan resmi.</p>`); }
   function tipGel(p) { const r = S.gel.titik[p.n]; return PI.kartuTip({judul: `<span translate="no">${esc(r[3] || namaProv(r[2]))}</span>`, sub: `<small>${esc(namaT(p.t))}</small>`, stat: [["ombak", fmt(p.hs / 10) + " m", "gelombang tertinggi", "#16405c", p.t >= 2]]}); }
   function laciSik(id) { const s = S.sik.aktif.find(x => x.id === id); if (!s) return;
     Laci.buka("Siklon tropis", `<span translate="no">${esc(s.nama || s.id)}</span>`, `<span translate="no">${esc(s.kategori || "")}</span>`,
@@ -151,7 +151,7 @@ const Status = (() => {
 
   /* ---------- legenda ---------- */
   function legenda() { let h = "";
-    if (S.mode === "status" && ada.kec()) h += `<div class="lbl">Status 72 jam (deteksi Pantau Bencana, ${AMBANG_PIL().toLowerCase()})</div><div class="leg" style="margin:4px 0 8px">${[1, 2, 3].map(t => `<span><i class="sw" style="background:${warnaT(t)}"></i>${namaT(t)}</span>`).join("")}</div>`;
+    if (S.mode === "status" && ada.kec()) h += `<div class="lbl">Status 72 jam (deteksi Centurisk97, ${AMBANG_PIL().toLowerCase()})</div><div class="leg" style="margin:4px 0 8px">${[1, 2, 3].map(t => `<span><i class="sw" style="background:${warnaT(t)}"></i>${namaT(t)}</span>`).join("")}</div>`;
     if (lihat("s-sik") && ada.sik()) h += `<div class="lbl">Siklon tropis</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#7a1f2b"></i>Lintasan amatan</span><span><i class="sw" style="background:#fff;border:2px solid #7a1f2b"></i>Prakiraan</span></div>`;
     return h; }
 

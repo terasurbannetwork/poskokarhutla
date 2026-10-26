@@ -22,7 +22,7 @@ const Insight = {
   st: {},   /* state kontrol kartu peluang (wilayah, ambang) */
   PL: null,
   ih: 0, lead: "1",   /* hari kartu Status: indeks di kontrak 72 jam */
-  LABEL: {peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Pantau Bencana", nowcast: "Nowcast BMKG", gelombang: "Gelombang", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
+  LABEL: {peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", nowcast: "Nowcast BMKG", gelombang: "Gelombang", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
   /* 10b. peluang hujan ekstrem per kab/provinsi (../banjir/data/cuaca_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Tanpa berkas = dibuang. */
   exPeluang() { if (typeof Peluang === "undefined" || !this.PL) return ""; this.st.pelW ??= Object.entries(this.PL.wilayah).filter(([, w]) => w.tingkat === "provinsi").map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];
     return Peluang.kartu(this.PL, {ey: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK.peluang}</svg>${this.LABEL.peluang}`, st: this.st, kejadian: "hujan ekstrem", sumber: "ECMWF IFS 51 anggota via Open-Meteo, dibuat " + jamWIB(this.PL?.dibuat)}); },
@@ -55,7 +55,7 @@ const Insight = {
   /* prakiraan per hari: terbesar dari semua sel */
   maksHari(idx, col) { let m = {v: 0, r: null}; for (const r of S.pr.sel) { const v = r[col][idx]; if (v != null && v > m.v) m = {v, r}; } return m; },
 
-  /* status 72 jam: deteksi Pantau Bencana dari prakiraan model; berkas cuaca_kec.json tak ada = kartu dibuang */
+  /* status 72 jam: deteksi Centurisk97 dari prakiraan model; berkas cuaca_kec.json tak ada = kartu dibuang */
   exStatus() {
     if (!S.kec) return ""; const j = Math.min(this.ih, S.kec.hari.length - 1), W = [1, 2, 3];
     const R = Status.urutProv(j).slice(0, 15), n = [0, 1, 2].map(i => Object.values(S.kec.prov).reduce((a, o) => a + (o.n[j][i] || 0), 0)), tot = n[0] + n[1] + n[2];
@@ -65,7 +65,7 @@ const Insight = {
     return this.ex(tot ? `${this.hl(fmt(tot) + " kecamatan")} diprakirakan berstatus Waspada atau lebih ${kapan}, ${this.hl(fmt(n[1] + n[2]) + " kecamatan")} Siaga atau Awas`
       : `Tidak ada kecamatan yang diprakirakan melewati ambang Waspada ${kapan}`, "", "",
       tot ? this.tumpukH(R.map(([p, o]) => ({label: namaProv(p), warna: warnaT(o.t[j]), seg: [2, 1, 0].map(i => ({nilai: o.n[j][i], warna: warnaT(i + 1), tip: `<b>${esc(namaProv(p))}</b><br>${namaT(i + 1)}: ${fmt(o.n[j][i])} kecamatan`}))})), this.uk()) : "",
-      `Sumber: Deteksi Pantau Bencana dari prakiraan Open-Meteo, dibuat ${jamWIB(S.kec.dibuat)}`, ctl); },
+      `Sumber: Deteksi Centurisk97 dari prakiraan Open-Meteo, dibuat ${jamWIB(S.kec.dibuat)}`, ctl); },
   /* siklon aktif dari JTWC/GDACS; "aktif: []" = kartu dibuang, bukan "aman" */
   exSiklon() {
     const A = S.sik?.aktif; if (!A?.length) return ""; const kmj = v => Math.round(v * 1.852), U = this.uk();
@@ -97,7 +97,7 @@ const Insight = {
     /* kita.prov[kode] = {"1": {...}, "2": ..., "3": ...}; bentuk lama (lead dalam .lead, atau satu objek) tetap terbaca */
     const g = o => o?.[l] ?? o?.lead?.[l] ?? (o?.a != null ? o : null);
     const R = [["ID", n], ...Object.entries(K.prov || {}).map(([k, o]) => [k, g(o)]).filter(([, o]) => o && o.a + o.b + o.c).sort((a, b) => (b[1].a + b[1].b + b[1].c) - (a[1].a + a[1].b + a[1].c)).slice(0, 12)];
-    return this.kartuBukti(`Prakiraan ${l} hari sebelumnya: ${this.buktiIsi(n, mulai, nmin, K.periode?.[1])}`, n, R, n.a + n.b + n.c ? `<p class="fnd">Hujan ${fmt(K.ambang_mm)} mm atau lebih dalam sehari.</p>` : "", `Pantau Bencana, ${esc(K.acuan || "DIBI BNPB")}`, ctl); },
+    return this.kartuBukti(`Prakiraan ${l} hari sebelumnya: ${this.buktiIsi(n, mulai, nmin, K.periode?.[1])}`, n, R, n.a + n.b + n.c ? `<p class="fnd">Hujan ${fmt(K.ambang_mm)} mm atau lebih dalam sehari.</p>` : "", `Centurisk97, ${esc(K.acuan || "DIBI BNPB")}`, ctl); },
   /* pelabuhan dan bandara dengan status Waspada atau lebih pada hari ini (hari pertama kontrak 72 jam) */
   exSarana() {
     if (!S.sar || !S.dmp) return ""; const j = Math.max(0, kIdx()), pel = (S.dmp.pelabuhan || []).filter(r => r[1][j] > 0).sort((a, b) => b[1][j] - a[1][j] || b[2] - a[2]),
@@ -106,7 +106,7 @@ const Insight = {
       B = ban.slice(0, 10).map(r => { const s = S.sar.bandara[r[0]]; return {label: s[1], nilai: Math.max(1, r[2]), warna: warnaT(r[1][j]), teks: fmt(r[2]) + " mm", tip: `<b>${esc(s[1])}</b><br>${namaT(r[1][j])}<br>Hujan ${fmt(r[2])} mm, embusan ${fmt(r[3])} km/jam`}; });
     Kartu.leg([1, 2, 3].map(t => [warnaT(t), namaT(t)]));
     return this.ex(`${this.hl(fmt(pel.length) + " pelabuhan")} dan ${this.hl(fmt(ban.length) + " bandara")} diprakirakan berstatus Waspada atau lebih ${kapan3(j)}`, "", "",
-      (P.length ? this.batangH(P, U) : "") + (B.length ? this.batangH(B, U) : ""), `Sumber: Deteksi Pantau Bencana dari prakiraan Open-Meteo dan Open-Meteo Marine, dibuat ${jamWIB(S.dmp.dibuat || S.kec?.dibuat || S.meta.dibuat)}`); },
+      (P.length ? this.batangH(P, U) : "") + (B.length ? this.batangH(B, U) : ""), `Sumber: Deteksi Centurisk97 dari prakiraan Open-Meteo dan Open-Meteo Marine, dibuat ${jamWIB(S.dmp.dibuat || S.kec?.dibuat || S.meta.dibuat)}`); },
   exNowcast() {
     const A = [...S.nc].sort((a, b) => b.n - a.n).slice(0, 12); if (!S.per) return "";
     const nProv = new Set(S.nc.flatMap(a => a.prov)).size, nKec = S.nc.reduce((a, x) => a + x.n, 0);

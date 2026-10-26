@@ -242,7 +242,7 @@
     d.innerHTML = `<h1>Rencana aksi periode operasi</h1><p>${esc([t.kec, t.kab].filter(Boolean).join(", "))}, lintang ${ang(t.lat, 4)}, bujur ${ang(t.lon, 4)}. Status periode: ${esc(kapital(p.status))}.</p>
       <table><tbody>${r("Periode", `${tgl(p.mulai)} sampai ${tgl(p.selesai)}`)}${r("Sasaran", p.sasaran)}${r("Penanggung jawab", p.pj)}${r("Sektor", p.sektor.join(", "))}${r("Regu", p.regu.join(", "))}${r("Alat", p.alat)}${r("Cuaca", p.cuaca)}${r("Komunikasi", p.komunikasi)}${r("Keselamatan", p.keselamatan)}</tbody></table>
       <h2>Serah terima</h2>${serah.length ? `<table><tbody>${serah.map(x => `<tr><td>${esc(tgl(x.waktu))}</td><td>Dari ${esc(x.dari)} ke ${esc(x.ke)}</td><td>${esc(x.catatan || "")}</td></tr>`).join("")}</tbody></table>` : `<p>Belum ada serah terima.</p>`}
-      <div class="op-ttd"><div>Disusun oleh<br><br><br>(.......................)</div><div>Disetujui oleh<br><br><br>(.......................)</div></div><p class="op-kecil">Dicetak ${esc(tgl(Date.now()))} dari Pantau Bencana. Isi mengikuti data saat dicetak.</p>`;
+      <div class="op-ttd"><div>Disusun oleh<br><br><br>(.......................)</div><div>Disetujui oleh<br><br><br>(.......................)</div></div><p class="op-kecil">Dicetak ${esc(tgl(Date.now()))} dari Centurisk97. Isi mengikuti data saat dicetak.</p>`;
     document.body.append(d); window.addEventListener("afterprint", () => d.remove(), {once: true}); window.print();
   }
 

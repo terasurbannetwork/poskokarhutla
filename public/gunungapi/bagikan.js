@@ -22,7 +22,7 @@
     /* satu gunung dari pop-up peta: Bagikan.bagi({...Bagikan.konteks("gunung", g), lainnya: () => Bagikan.buka()}) */
     konteks(jenis, g, {o}) {
       if (jenis !== "gunung") return null;
-      return {judul: g.nama + " · Pantau Bencana", teks: `${g.nama} (${g.prov}): ${lv(g)} menurut PVMBG. Pantau gunung api di Pantau Bencana:`, url: o + (Kejadian.kode(g) ? "/gunungapi/k/" + Kejadian.kode(g) : "/gunungapi/peta"), kampanye: "gunungapi-gunung"};
+      return {judul: g.nama + " · Centurisk97", teks: `${g.nama} (${g.prov}): ${lv(g)} menurut PVMBG. Pantau gunung api di Centurisk97:`, url: o + (Kejadian.kode(g) ? "/gunungapi/k/" + Kejadian.kode(g) : "/gunungapi/peta"), kampanye: "gunungapi-gunung"};
     },
     data() {
       const n = S.n, A = aktif();

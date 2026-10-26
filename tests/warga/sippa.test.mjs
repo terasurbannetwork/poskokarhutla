@@ -73,7 +73,7 @@ uji("GET /pipa dan layar: pusdalops 200 berkepala lengkap; tamu 303 ke /admin/pa
   assert.equal(a.h.get("x-robots-tag"), "noindex, nofollow"); assert.equal(a.h.get("referrer-policy"), "same-origin"); assert.match(a.h.get("content-type"), /^text\/html; charset=utf-8/);
   const csp = a.h.get("content-security-policy");
   assert.match(csp, /openfreemap\.org/); assert.doesNotMatch(csp, /unsafe-inline|cdn|unpkg|jsdelivr/i); assert.match(csp, /script-src 'self'(;|$)/); assert.match(csp, /worker-src 'self' blob:/);
-  assert.match(a.t, /<html lang="id">/); assert.match(a.t, /<title>SIPPA, Pantau Bencana<\/title>/); assert.match(a.t, /<script type="module" src="\/pipa\/app\.js\?v=\d+"><\/script>/);
+  assert.match(a.t, /<html lang="id">/); assert.match(a.t, /<title>SIPPA, Centurisk97<\/title>/); assert.match(a.t, /<script type="module" src="\/pipa\/app\.js\?v=\d+"><\/script>/);
   assert.match(a.t, /data-staf="1"/); assert.match(a.t, /data-peran="pusdalops"/); assert.match(a.t, /data-layar="peta"/); assert.match(a.t, /data-tulis="1"/); assert.match(a.t, /data-super="0"/);
   assert.doesNotMatch(a.t, /—|·/, "tanpa em dash atau titik tengah di cangkang");
   for (const l of LAYAR_SIPPA) { const r = await man("/pipa/" + l, pus.g); assert.equal(r.s, 200, `/pipa/${l}`); assert.match(r.t, new RegExp(`data-layar="${l}"`)); }

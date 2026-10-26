@@ -113,7 +113,7 @@ async function uji(env, req, kini) {
   const subs = (await env.DB.prepare("SELECT id, endpoint, p256dh, auth FROM push_langganan WHERE akun_id = ?").bind(a.id).all()).results;
   if (!subs.length) return gagal(404, "belum ada perangkat yang menyalakan notifikasi");
   const batas = await laju(env, "push:" + a.id, "push.uji", [[JAM, 5]], kini); if (batas) return batas;
-  let hasil; try { hasil = await kirimKe(env, subs, {judul: "Notifikasi uji", isi: "Notifikasi Pantau Bencana berfungsi di perangkat ini.", tag: "pb-uji", url: "/instansi"}, "uji" + a.id.slice(0, 12), kini); }
+  let hasil; try { hasil = await kirimKe(env, subs, {judul: "Notifikasi uji", isi: "Notifikasi Centurisk97 berfungsi di perangkat ini.", tag: "pb-uji", url: "/instansi"}, "uji" + a.id.slice(0, 12), kini); }
   catch (e) { return tolakNyala(); }   // kunci VAPID cacat
   await env.DB.batch(catatHasil(env, hasil, kini));
   return json({terkirim: hasil.filter(h => h.status >= 200 && h.status < 300).length, dari: subs.length});

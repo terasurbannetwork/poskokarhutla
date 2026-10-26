@@ -2,7 +2,7 @@
 
   public/data/kekeringan_resmi.json  SK status keadaan darurat 2025 (resource 5599c3f4...) yang menyebut kekeringan. `tipe`: "khusus" = judul SK menyebut kekeringan,
                                      "multi" = SK hidrometeorologi umum yang daftar bencananya memuat kekeringan. Label "BNPB"; tampil terpisah dan didahulukan dari
-                                     "Deteksi Pantau Bencana". Satu-satunya dataset SK di CKAN (dicek 18 Okt 2026) hanya tahun 2025, jadi `aktif` hampir pasti kosong.
+                                     "Deteksi Centurisk97". Satu-satunya dataset SK di CKAN (dicek 18 Okt 2026) hanya tahun 2025, jadi `aktif` hampir pasti kosong.
   public/data/kekeringan_bnpb.json   sawah/lahan: seri ha rusak akibat kekeringan per tahun (nasional, 2010-2024; resource cda5f236... dan 1e489e0a...);
                                      irbi: indeks risiko kekeringan per kab 2015-2025 (InaRISK /data-irbi-full). Dibaca bukti.py dan dampak.py.
 IRBI: 2025 dihitung dengan metode baru (skala berbeda: 12 -> 7), jadi `arah` hanya memakai 2015-2024 dan v25 berdiri sendiri. Lisensi InaRISK tak tertulis: sebut "Sumber: InaRISK BNPB".

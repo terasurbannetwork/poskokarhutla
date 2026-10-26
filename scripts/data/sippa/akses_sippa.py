@@ -331,7 +331,7 @@ def tulis(ks):
     doc = {"dibuat": wib, "per": "2026-10-24", "versi": "sippa_akses/1", "keyakinan": "estimasi-model",
            "ambang": {"air_km": AMBANG_AIR, "jalan_km": AMBANG_JALAN, "aturan": "strict <, keputusan 51"},
            "sumber": [{"nama": "OpenStreetMap (Overpass) jalan dan waterway, ubin 0,5 derajat", "lisensi": "ODbL", "tarik": "2026-10-24"},
-                      {"nama": "posko.json, daops.json, kendala.json, operasi.json (Pantau Bencana)", "lisensi": "internal", "tarik": "2026-10-26"},
+                      {"nama": "posko.json, daops.json, kendala.json, operasi.json (Centurisk97)", "lisensi": "internal", "tarik": "2026-10-26"},
                       {"nama": "JRC Global Surface Water v1.4 (kelas titik air)", "lisensi": "CC-BY 4.0", "tarik": "2026-10-25"}],
            "catatan": "Estimasi model untuk perencanaan, bukan navigasi. Jalan kelas track belum tentu dapat dilalui saat hujan (track_perlu_cek). "
                       "Ruas 'celah' adalah jalan kebun tak terpeta yang diasumsikan. Waktu tidak memuat penugasan, antre, atau banjir. "

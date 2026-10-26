@@ -226,7 +226,7 @@ def bangun(musiman, pow_sel, penduduk, pusat, sekarang):
                   "tanam": tanam.isoformat(), "klim_pct": round(rata(d, lambda r: r["klim_pct"])),
                   "fase_terberat": FASE[max(range(4), key=lambda f: fd[f])][0], "defisit_fase": [round(100 * x) for x in fd], "data_sawah": False}
     tg = sorted(r["tanam"] for r in sel.values())
-    return {"dibuat": sekarang.isoformat(timespec="minutes"), "label": "Deteksi Pantau Bencana", "terbit": musiman["terbit"],
+    return {"dibuat": sekarang.isoformat(timespec="minutes"), "label": "Deteksi Centurisk97", "terbit": musiman["terbit"],
             "tanam": {"rentang": [tg[0].isoformat(), tg[-1].isoformat()], "definisi": f"onset hujan klimatologi POWER 1991-2020 per sel: bulan pertama dengan hujan >= {ONSET_MM:g} mm dan bulan berikutnya juga; tanam tanggal {TANGGAL_TANAM} bulan itu, paling awal tanggal terbit"},
             "fase": [{"nama": n, "hari": h} for n, h in FASE], "umur": UMUR,
             "ambang": {"gagal_pct": int(100 * AMBANG_GAGAL), "turun_pct": int(100 * AMBANG_TURUN)},

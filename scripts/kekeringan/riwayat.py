@@ -103,7 +103,7 @@ def bangun(pow_sel, prov_sel, oni, penduduk, pusat, kej, hari):
     for k, a in per.items():
         r, f, tot, tr = indeks(a, mx)
         kab[k] = {"risiko": r, "kekerapan": f, "bulan_siaga": tot, "tren": tr, "dibi": dibi.get(k, 0)}
-    return {"dibuat": dt.datetime.now(H.WIB).isoformat(timespec="minutes"), "hari": hari, "label": "Deteksi Pantau Bencana", "tahun": [TAHUN[0], TAHUN[-1]],
+    return {"dibuat": dt.datetime.now(H.WIB).isoformat(timespec="minutes"), "hari": hari, "label": "Deteksi Centurisk97", "tahun": [TAHUN[0], TAHUN[-1]],
             "tahun_el_nino": sorted(el), "bulan_kering_mm": BULAN_KERING_MM, "bobot": {"kekerapan": BOBOT[0], "besaran": BOBOT[1], "tren": BOBOT[2]}, "maks_bulan_siaga": mx,
             "catatan": "Indeks 0-100: 50% kekerapan tahun bersiaga, 30% besaran, 20% tren (paruh akhir vs paruh awal seri). SPI berbaku 1991-2020 sehingga porsi bulan Siaga rata-rata nasional ditetapkan definisi; "
                        "yang bermakna adalah perbedaan antar kabupaten. Kejadian DIBI 2023-2026 hanya pembanding.",

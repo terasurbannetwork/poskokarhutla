@@ -90,7 +90,7 @@ const galatKeadaan = e => /sippa_gerak_(cek|tetap)/.test(String(e?.message || e)
 /* ================================================================ halaman */
 const H_HAL = {"content-type": "text/html; charset=utf-8", "cache-control": "private, no-store", vary: "cookie", "content-security-policy": CSP_SIPPA, "x-robots-tag": "noindex, nofollow", "referrer-policy": "same-origin",
   "x-content-type-options": "nosniff", "x-frame-options": "DENY"};
-const polos403 = () => new Response(`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>SIPPA, Pantau Bencana</title></head><body><p>Akunmu tidak punya akses SIPPA.</p></body></html>`, {status: 403, headers: H_HAL});
+const polos403 = () => new Response(`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>SIPPA, Centurisk97</title></head><body><p>Akunmu tidak punya akses SIPPA.</p></body></html>`, {status: 403, headers: H_HAL});
 /* admin (token, akun gerbang, sesi) atau staf berperan P_SIPPA_BACA; sesi sah tanpa peran = 403 polos tanpa pengalihan (cegah pantulan tanpa akhir); tamu = 303 ke Meja Pantau dengan ?ke= */
 async function halaman(env, req, url, layar) {
   let ctx;

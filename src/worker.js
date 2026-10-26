@@ -652,20 +652,12 @@ async function layaniHTML(req, env, ctx, url) {
   const situsW = situsCenturisk(url.hostname);
   /* akun pemirsa: tab yang boleh dilihat ditulis di <html data-pemirsa-tab>, public/index.html menyembunyikan tab lain (admin tidak dibatasi) */
   const pm = await pemirsaSesi(env, req), pmTab = pm && !await adminOK(env, req) ? pm.tab.join(",") : null;
-  /* merek: situs Centurisk97 (*.workers.dev, centurisk97.id) semua "Centurisk97"; selain itu "Pantau Bencana" di judul, meta, logo, dan kop laporan */
-  const [dari, ke] = situsW ? ["Pantau Bencana", "Centurisk97"] : ["Centurisk97", "Pantau Bencana"];
-  const ganti = t => t.replaceAll(dari, ke);
-  const rw = new HTMLRewriter().on("html", {element: el => {
+  /* merek: semua berkas sudah bertulisan "Centurisk97" di sumbernya (pemilik, 26 Okt 2026), jadi tidak ada penulisan ulang merek per alamat */
+  const keluaran = new HTMLRewriter().on("html", {element: el => {
     if (a) { el.setAttribute("data-pb-online", String(a.online)); el.setAttribute("data-pb-tampil", String(a.tampilan)); }
     if (situsW) el.setAttribute("data-situs", "w");
     if (pmTab) el.setAttribute("data-pemirsa-tab", pmTab);
-  }});
-  let buf = "";   // teks <title>/<b> bisa terpecah antar potongan: kumpulkan lalu tulis sekali di potongan terakhir
-  const teks = {text(t) { buf += t.text; if (t.lastInTextNode) { t.replace(ganti(buf), {html: true}); buf = ""; } else t.remove(); }};
-  const atr = n => ({element: el => el.setAttribute(n, ganti(el.getAttribute(n)))});
-  rw.on("title", teks).on(".lp-kop b", teks).on(`meta[content*="${dari}"]`, atr("content"))
-    .on(`[title*="${dari}"]`, atr("title")).on(`img[alt*="${dari}"]`, atr("alt")).on(`[aria-label*="${dari}"]`, atr("aria-label"));
-  const keluaran = rw.transform(aset);
+  }}).transform(aset);
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
   if (pmTab || HOST_TERKUNCI.has(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   return keluaran;

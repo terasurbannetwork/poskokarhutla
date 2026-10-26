@@ -167,7 +167,7 @@ export function susunEmail(rows, kini = Date.now(), asal = "") {
   const FONT = "font:14px/1.55 Arial,sans-serif;color:#1d2733";
   const html = `<div style="${FONT}"><p>Ringkasan pengingat Ruang Koordinasi (${rows.length}):</p>` + per.map(([j, a]) => `<h3 style="margin:14px 0 4px;font:700 15px Arial,sans-serif">${esc(JENIS[j])} (${a.length})</h3><ul style="margin:0;padding-left:18px">` +
     a.map(r => `<li>${esc(r.judul)}${r.rincian ? ` <span style="color:#5b6773">| ${esc(r.rincian)}</span>` : ""}${w(r) ? ` <span style="color:#5b6773">| ${esc(w(r))}</span>` : ""}</li>`).join("") + "</ul>").join("") + "</div>";
-  return {subject: `[Pantau Bencana] ${rows.length} pengingat Ruang Koordinasi`, teks: `Ringkasan pengingat Ruang Koordinasi (${rows.length}):\n\n${teks}`, html};
+  return {subject: `[Centurisk97] ${rows.length} pengingat Ruang Koordinasi`, teks: `Ringkasan pengingat Ruang Koordinasi (${rows.length}):\n\n${teks}`, html};
 }
 async function kirim(env, req, kini) {
   const mod = await modOK(env, req); if (!mod) return tolakMod();

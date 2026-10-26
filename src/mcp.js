@@ -82,7 +82,7 @@ async function statusKabupaten(env, url, {prov, urut, limit}) {
   const baris = l.kab.filter(k => !prov || k.prov === prov).map(k => ({nama: k.nama, prov: k.prov, titik: k.titik[i] ?? 0, titik_total: k.titik.reduce((a, b) => a + b, 0), luas_ha: k.luas[i] ?? 0, level: k.level ?? null, fwi_maks: k.fwi_maks ?? null, kompleks: k.kompleks ?? null}));
   const kunci = {titik: "titik", luas: "luas_ha", level: "level", fwi: "fwi_maks"}[urut];
   return {tanggal: l.hari_lengkap, dibuat: l.dibuat, jumlah_kabupaten: baris.length, urut: kunci + " menurun", kabupaten: lima(baris, (a, b) => (b[kunci] ?? -1) - (a[kunci] ?? -1), limit),
-    catatan: `titik = titik panas pada ${l.hari_lengkap} (hari lengkap terakhir); titik_total = jumlah ${l.hari.length} hari (${l.hari[0]} s.d. ${l.hari.at(-1)}); luas_ha = indikasi luas terbakar dari titik panas, bukan citra; level dan fwi_maks (indeks cuaca kebakaran) makin besar makin berisiko. Sumber: NASA FIRMS, olahan Pantau Bencana.`};
+    catatan: `titik = titik panas pada ${l.hari_lengkap} (hari lengkap terakhir); titik_total = jumlah ${l.hari.length} hari (${l.hari[0]} s.d. ${l.hari.at(-1)}); luas_ha = indikasi luas terbakar dari titik panas, bukan citra; level dan fwi_maks (indeks cuaca kebakaran) makin besar makin berisiko. Sumber: NASA FIRMS, olahan Centurisk97.`};
 }
 async function laporanHarian(env, url, {tanggal}) {
   const l = await data(env, url, "laporan"), t = tanggal ?? l.hari_lengkap, i = l.hari.indexOf(t);
@@ -90,7 +90,7 @@ async function laporanHarian(env, url, {tanggal}) {
   const prov = Object.entries(l.prov).map(([kode, p]) => ({kode, nama: p.nama, titik: p.titik[i] ?? 0, luas_ha: p.luas[i] ?? 0})).sort((a, b) => b.titik - a.titik);
   return {tanggal: t, hari_lengkap: l.hari_lengkap, lengkap: t <= l.hari_lengkap, dibuat: l.dibuat, jadwal: l.jadwal, nasional: {titik: l.nasional.titik[i], luas_ha: l.nasional.luas[i], luas_baru_ha: l.nasional.baru[i], kabupaten_bertitik: l.nasional.kab[i]},
     tahun_berjalan: {luas_ha: l.tahun_berjalan.ha, rentang_ha: [l.tahun_berjalan.rendah, l.tahun_berjalan.tinggi], sampai: l.tahun_berjalan.sd}, provinsi: prov,
-    catatan: "Titik panas = lokasi unik ~375 m per hari laporan dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21. luas_ha = indikasi dari titik panas, bukan citra. Sumber: NASA FIRMS, KLHK SiPongi, BNPB, olahan Pantau Bencana."};
+    catatan: "Titik panas = lokasi unik ~375 m per hari laporan dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21. luas_ha = indikasi dari titik panas, bukan citra. Sumber: NASA FIRMS, KLHK SiPongi, BNPB, olahan Centurisk97."};
 }
 async function kualitasUdara(env, url, {prov}) {
   const u = await data(env, url, "udara_kualitas"), kol = u.kolom_prov;
@@ -186,9 +186,9 @@ async function relasiPeraturan(env, url, a) { return hukumOk(await bacaRelasi(en
 const TOOLS = [
   {nama: "titik_api_terkini", deskripsi: "Titik panas (hotspot) satelit di Indonesia dalam 24 atau 72 jam terakhir, terurut dari daya api (FRP, megawatt) terbesar. Bisa disaring per provinsi dan kabupaten/kota. Sumber NASA FIRMS (MODIS, VIIRS S-NPP, VIIRS NOAA-20), diperbarui tiap 3 jam. Titik panas adalah indikasi, belum tentu kebakaran.",
     skema: {properties: {prov: P_PROV, kab: {type: "string", maxLength: 80, description: "Nama kabupaten/kota persis (tak peka huruf besar), mis. Kapuas."}, jam: {type: "integer", enum: [24, 72], default: 24, description: "Rentang jam ke belakang dari waktu data terakhir: 24 atau 72."}, limit: P_LIMIT(200, 50)}}, jalan: titikApi},
-  {nama: "status_kabupaten", deskripsi: "Peringkat kabupaten/kota menurut titik panas hari lengkap terakhir, indikasi luas terbakar (hektare), tingkat kewaspadaan (level), dan indeks cuaca kebakaran (FWI) maksimum. Sumber laporan harian karhutla Pantau Bencana (olahan NASA FIRMS dan data cuaca), diperbarui tiap 3 jam.",
+  {nama: "status_kabupaten", deskripsi: "Peringkat kabupaten/kota menurut titik panas hari lengkap terakhir, indikasi luas terbakar (hektare), tingkat kewaspadaan (level), dan indeks cuaca kebakaran (FWI) maksimum. Sumber laporan harian karhutla Centurisk97 (olahan NASA FIRMS dan data cuaca), diperbarui tiap 3 jam.",
     skema: {properties: {prov: P_PROV, urut: {type: "string", enum: ["titik", "luas", "level", "fwi"], default: "titik", description: "Urut menurun menurut: titik (jumlah titik panas), luas (hektare), level, atau fwi."}, limit: P_LIMIT(100, 20)}}, jalan: statusKabupaten},
-  {nama: "laporan_harian", deskripsi: "Ringkasan laporan harian karhutla nasional untuk satu tanggal: jumlah titik panas, indikasi luas (hektare), dan rincian per provinsi, ditambah akumulasi tahun berjalan. Rentang tanggal sekitar dua minggu terakhir. Sumber NASA FIRMS, KLHK SiPongi, BNPB; olahan Pantau Bencana, jadwal tiap 3 jam.",
+  {nama: "laporan_harian", deskripsi: "Ringkasan laporan harian karhutla nasional untuk satu tanggal: jumlah titik panas, indikasi luas (hektare), dan rincian per provinsi, ditambah akumulasi tahun berjalan. Rentang tanggal sekitar dua minggu terakhir. Sumber NASA FIRMS, KLHK SiPongi, BNPB; olahan Centurisk97, jadwal tiap 3 jam.",
     skema: {properties: {tanggal: P_TGL("Tanggal WIB YYYY-MM-DD; kosong = hari lengkap terakhir.")}}, jalan: laporanHarian},
   {nama: "kualitas_udara", deskripsi: "Prakiraan kualitas udara PM2,5 (µg/m³) untuk beberapa hari ke depan per provinsi, beserta jumlah penduduk terpapar kategori tidak sehat. Prakiraan model CAMS (Copernicus) via Open-Meteo, belum divalidasi stasiun; diperbarui dua kali sehari.",
     skema: {properties: {prov: P_PROV}}, jalan: kualitasUdara},
@@ -240,7 +240,7 @@ async function proses(env, url, kunci, m, kini) {
   switch (m.method) {
     case "initialize": {
       const minta = m.params?.protocolVersion;
-      return hasil(id, {protocolVersion: PROTOKOL.includes(minta) ? minta : PROTOKOL[0], capabilities: {tools: {}}, serverInfo: {name: "pantau-bencana", version: VERSI_SERVER},
+      return hasil(id, {protocolVersion: PROTOKOL.includes(minta) ? minta : PROTOKOL[0], capabilities: {tools: {}}, serverInfo: {name: "centurisk97", version: VERSI_SERVER},
         instructions: "Data bencana Indonesia (karhutla, cuaca, kualitas udara). Tool publik tanpa kunci; tool rumah_rusak, bangunan, laporan BNPB, konsesi butuh header X-API-Key dari admin. Dokumentasi: /api."});
     }
     case "ping": return hasil(id, {});

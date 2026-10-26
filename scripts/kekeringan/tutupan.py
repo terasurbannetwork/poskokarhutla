@@ -114,7 +114,7 @@ def main():
     lbs = json.load(open(LBS_PROV)) if os.path.exists(LBS_PROV) else None
     kol, f = hitung(sel, baca("public/geo/provinsi.json")["features"], baca("public/data/lahan/kawasan.geojson")["features"],
                     baca("public/data/lahan/konsesi.geojson")["features"], ner["gb"], lbs["prov"] if lbs else None)
-    out = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).strftime("%Y-%m-%dT%H:%M+07:00"), "label": "Deteksi Pantau Bencana", "piksel_derajat": PX,
+    out = {"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).strftime("%Y-%m-%dT%H:%M+07:00"), "label": "Deteksi Centurisk97", "piksel_derajat": PX,
            "lbs_ha": sum(lbs["prov"].values()) if lbs else LBS_HA, "lbs_dari": f"per provinsi, {lbs['sumber']} ({lbs['tahun']})" if lbs else "satu angka nasional, belum per provinsi", "f_sawah": round(f, 4) if not lbs else None,
            "sumber": {"darat": "public/geo/provinsi.json", "hutan": "kawasan hutan KLHK (HL, HK, THR, HP, HPT) dan konsesi HPH, public/data/lahan", "kebun": "konsesi sawit dan HTI, public/data/lahan/konsesi.geojson",
                       "sawah": "BUKAN pengamatan. Lahan budidaya (daratan dikurangi hutan, konsesi, gambut) dikali faktor " + (f"tiap provinsi supaya jumlahnya = LBS provinsi ({lbs['sumber']}, {lbs['tahun']})" if lbs else f"tunggal f={f:.3f} supaya jumlah nasional = {LBS_HA:,} ha (acuan LBS ATR/BPN ~7,4 juta ha dari ingatan penulis, belum diverifikasi dan belum per provinsi); sebaran merata") + "."},

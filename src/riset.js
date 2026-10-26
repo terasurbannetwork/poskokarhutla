@@ -246,7 +246,7 @@ async function permintaanBaru(env, req, kini) {
   const tujuan = teks(b.o.tujuan, 10, 500);
   if (typeof b.o.dataset !== "string" || !ID_KATALOG.has(b.o.dataset)) return gagal(400, "dataset tidak ada di katalog");
   if (!tujuan) return gagal(400, "tujuan 10-500 karakter");
-  if (b.o.sitasi !== true) return gagal(400, `centang janji sitasi: data berlisensi ${LISENSI}, wajib mencantumkan BNPB dan Pantau Bencana sebagai sumber`);
+  if (b.o.sitasi !== true) return gagal(400, `centang janji sitasi: data berlisensi ${LISENSI}, wajib mencantumkan BNPB dan Centurisk97 sebagai sumber`);
   if (b.o.usulan_id != null) { if (typeof b.o.usulan_id !== "string") return gagal(400, "usulan_id tidak sah"); const u = await usulanMilik(env, m, b.o.usulan_id); if (u instanceof Response) return u; }
   if (await env.DB.prepare("SELECT 1 FROM riset_permintaan WHERE mitra_id = ? AND dataset = ? AND status = 'diminta'").bind(m.id, b.o.dataset).first()) return gagal(409, "permintaan untuk dataset ini masih menunggu keputusan");
   const l = await laju(env, m.id, "riset.permintaan", [[HARI, 10]], kini) || await lajuIP(env, req, "riset.permintaan", [[HARI, 30]], kini); if (l) return l;

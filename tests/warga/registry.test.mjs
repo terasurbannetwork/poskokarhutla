@@ -62,11 +62,11 @@ test("OG: tab, kejadian, dan halaman utama bencana baru dari registry", () => {
   const B = salinan(); B.bencana.push(baru);
   const u = s => new URL(S + s);
   assert.equal(metaRute(u("/uji1/"), M, B).judul, "Baru");
-  assert.equal(metaRute(u("/uji1/tren"), M, B).judul, "Tren · Pantau Bencana Bencana Baru");
+  assert.equal(metaRute(u("/uji1/tren"), M, B).judul, "Tren · Centurisk97 Bencana Baru");
   assert.equal(metaRute(u("/uji1/k/X0001"), M, B).url, S + "/uji1/k/X0001");
-  assert.equal(metaRute(u("/peta"), M, B).judul, "Peta · Pantau Bencana Karhutla");
+  assert.equal(metaRute(u("/peta"), M, B).judul, "Peta · Centurisk97 Karhutla");
   assert.equal(metaRute(u("/uji1/tren"), M), null, "registry asli tidak mengenalnya");
-  assert.equal(metaRute(u("/gempa/peta"), M, B).judul, "Peta · Pantau Bencana Gempa & Tsunami", "gempa (aktif) punya OG");
+  assert.equal(metaRute(u("/gempa/peta"), M, B).judul, "Peta · Centurisk97 Gempa & Tsunami", "gempa (aktif) punya OG");
   const MATI = salinan(); MATI.bencana.find(b => b.id === "gempa").status = "mati";
   assert.equal(metaRute(u("/gempa/peta"), M, MATI), null, "gempa mati tidak punya OG");
 });

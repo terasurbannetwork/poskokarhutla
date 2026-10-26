@@ -232,7 +232,7 @@ def jalankan(berkas=BERKAS, sekarang=None, masukan=None):
     for nama in ok:
         arsip["sumber"][nama].pop("galat", None)
     arsip["diperbarui"] = sekarang.strftime("%Y-%m-%dT%H:%M:%SZ")
-    arsip["label"] = {"pm25": "BMKG", "metar": "METAR (diolah IEM)", "titik": "Pantau Bencana (titik panas)"}
+    arsip["label"] = {"pm25": "BMKG", "metar": "METAR (diolah IEM)", "titik": "Centurisk97 (titik panas)"}
     arsip["gagal"] = gagal
     kb = alat.simpan(berkas, arsip)
     alat.log(f"omc_arsip: ok {','.join(ok)}; gagal {','.join(gagal) or '-'}; {kb / 1024:.0f} KB")

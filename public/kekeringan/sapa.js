@@ -33,7 +33,7 @@
           h.kab.length && ["Kabupaten/kota status tertinggi", "ks", h.kab.map((x, i) => { const p = x.k.split("|");
             return Sapa.item(esc(x.k), i + 1, esc(p[1]), esc(namaProv(p[0])), `<em class="sp-p ${x.lv === 3 ? "merah" : "oranye"}">${LEVEL[x.lv]}</em>`, `<em class="sp-p prov">${rb(x.jiwa[2])} jiwa</em>`); }).join("")],
           (hthKartu || pekan || depan || perhatian) && ["Perlu perhatian", "cs", [hthKartu, pekan, depan, perhatian, lap].filter(Boolean).join("")]],
-        sumber: "Deteksi Pantau Bencana"});
+        sumber: "Deteksi Centurisk97"});
     },
     saatKlik(e, d) { const b = e.target.closest("[data-k]"); if (!b) return; d.close(); const k = b.dataset.k; S.jalur = [k.split("|")[0]]; bukaTab("peta"); Peta.aturWilayah().then(() => Analisa.wilayah(k)); return true; },
   });

@@ -12,8 +12,8 @@ let D = null;
 /* klik beruntun pada kontrol yang sama digabung: fn yang sudah antre tidak diantre lagi (st sudah mutakhir saat fn jalan) */
 const antre = new Set();
 const nanti = fn => { if (antre.has(fn)) return; antre.add(fn); let ok = false; const go = () => { if (!ok) { ok = true; antre.delete(fn); fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
-/* merek per alamat: *.workers.dev = Centurisk97, selain itu Pantau Bencana (pemilik, 17 Okt 2026); data laporan.json ikut diganti di tt() */
-const MEREK = document.documentElement.dataset.situs === "w" ? "Centurisk97" : "Pantau Bencana";
+/* merek per alamat: *.workers.dev = Centurisk97, selain itu Centurisk97 (pemilik, 17 Okt 2026); data laporan.json ikut diganti di tt() */
+const MEREK = "Centurisk97";
 const tt = s => String(s ?? "").replace(/\s*[—–]\s*/g, ", ").replace(/Centurisk97/g, MEREK);
 const tgl = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"});
 const tglPanjang = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC"});

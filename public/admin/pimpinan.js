@@ -53,7 +53,7 @@
       const tren = r.ubah.ikon ? `<span class="pm-tren ${r.ubah.kelas || ""}">${IK[r.ubah.ikon]}${esc(r.ubah.t)}</span>` : "";
       return `<div class="pm-bc"><h3>${titik}${esc(r.b.nama)}</h3><div class="pm-angka"><b>${esc(RingkasBencana.F(r.angka, r.utama?.desimal | 0))}</b><small>${esc(r.satuan || "")}</small></div>
         <div class="pm-bc-baris">${r.tingkat ? pil(r.tingkat.nama, "perisai", null, r.tingkat.warna) : `<span class="pm-redup">tanpa tingkat</span>`}${tren}</div></div>`;
-    }).join("")}</div>${sumber("laporan harian tiap bencana (hari lengkap terakhir), registry tingkat Pantau Bencana")}`);
+    }).join("")}</div>${sumber("laporan harian tiap bencana (hari lengkap terakhir), registry tingkat Centurisk97")}`);
   }
 
   /* ---------- 2. prioritas dampak ---------- */
@@ -105,7 +105,7 @@
     const kurang = buka.reduce((a, p) => a + Math.max(0, (p.dibutuhkan || 0) - (p.ditugaskan || 0)), 0);
     isi("rel", `<div class="pm-ukurbaris">${R ? ukur(N0.format(R.siap_tugas), "siap tugas") + ukur(N0.format(R.bertugas), "bertugas") : ""}${pm.j ? ukur(N0.format(buka.length), "permintaan terbuka", buka.length ? "tunggu" : "") : ""}</div>
       ${pm.j && buka.length ? `<p class="pm-catat">${IK.info}Masih kurang ${N0.format(kurang)} orang dari kebutuhan permintaan terbuka.</p><ul class="pm-daftar">${buka.slice(0, 2).map(p => `<li><b>${esc(p.judul)}</b><small>${esc(p.kab)}</small></li>`).join("")}</ul>` : ""}
-      ${sumber("Relawan Pantau Bencana (siap tugas dan bertugas dari ringkasan, permintaan dari admin)")}`);
+      ${sumber("Relawan Centurisk97 (siap tugas dan bertugas dari ringkasan, permintaan dari admin)")}`);
   }
 
   /* ---------- 6. alun-alun ---------- */
@@ -165,7 +165,7 @@
 
   /* ---------- mulai ---------- */
   app.className = "ad-isi pm";
-  app.innerHTML = `<p class="pm-kop-cetak">Layar Pimpinan · Pantau Bencana · Ruang Koordinasi</p>
+  app.innerHTML = `<p class="pm-kop-cetak">Layar Pimpinan · Centurisk97 · Ruang Koordinasi</p>
     <div class="pm-grid">${KARTU.slice(0, 4).map(kartuHtml).join("")}<div class="pm-baris3">${KARTU.slice(4).map(kartuHtml).join("")}</div></div>
     <div class="pm-bar"><p id="pmWaktu" class="pm-redup"></p>${dummy() ? pil("memuat data dummy", "info", "tunggu") : ""}<p id="pmPesan" class="pm-pesan" role="status"></p></div>`;
   document.getElementById("pmWaktu").textContent = "Diperbarui " + wib(Date.now());

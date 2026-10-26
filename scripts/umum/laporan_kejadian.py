@@ -69,7 +69,7 @@ MODUL["kekeringan"]["kata"] = lambda kab, i, r=None: (f"Status {NL[(r or {}).get
                                                       + (f", {rb(r['jiwa'][1])} jiwa di wilayah Siaga atau lebih" if r and r.get("jiwa") else ""))
 NL = {0: "Normal", 1: "Waspada", 2: "Siaga", 3: "Awas"}
 BATASAN_UMUM = ["Laporan ini dirakit otomatis dari data modul yang sudah terbit; tidak ada angka yang ditambahkan tangan.",
-                "Status Siaga adalah keluaran model Pantau Bencana, bukan penetapan status darurat oleh BNPB/BPBD."]
+                "Status Siaga adalah keluaran model Centurisk97, bukan penetapan status darurat oleh BNPB/BPBD."]
 
 
 def _baca(rel):
