@@ -1,0 +1,2 @@
+{"t":"2026-10-26T07:24:26.119+07:00","berkas":"public/pipa/formulir.js","blob":"fffe5a0da622a651b4fb32c272caa97238e9895b","aturan":"0f24e5d28cd4","vonis":"dikerjakan","ringkas":"SP-007 MEDAN log/probe/bbm/gerak, cekButir, URUTAN_WAKTU; batas dibaca dari 0056","sha":"4fba475d"}
+{"t":"2026-10-26T07:24:27.802+07:00","berkas":"tests/sippa/formulir.test.mjs","blob":"58ee8a3d78e584707b09da93e62b49304c87e192","aturan":"0f24e5d28cd4","vonis":"dikerjakan","ringkas":"SP-007 uji batas = CHECK 0056 (parser SQL), cekButir menolak yang salah","sha":"4fba475d"}

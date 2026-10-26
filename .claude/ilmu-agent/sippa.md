@@ -50,3 +50,4 @@ Di luar wilayahmu: `src/sippa.js`, `migrations/0055-0057` (warga-api); `scripts/
 ## Kasus
 
 - 2026-10-25 · Agent dibuat lewat SP-003 sebelum berkas pertama; ilmu awal dari PRD §9.12, DT §2.1-§2.2, RU §7.
+- 2026-10-26 · formulir.js tidak boleh impor fmt (skrip klasik berDOM); pesan galat pakai toLocaleString id-ID. hitung.js belum ada saat SP-007, jadi kesamaan batas 5 m dengan KONST dijaga uji bersyarat (skip sampai SP-010). Trigger sippa_log_urut TIDAK membandingkan t_mulai_injeksi dengan t_selesai/t_bongkar_selesai; URUTAN_WAKTU meniru persis.
