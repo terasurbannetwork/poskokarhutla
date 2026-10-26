@@ -119,7 +119,21 @@
     "py:pilot_cek.py": "uji:pilot_cek",
     "py:respons.py": "uji:respons",
     "py:sel22.py": "uji:sel22",
-    "py:zona.py": "uji:zona"
+    "py:zona.py": "uji:zona",
+    "pelihara.KELAS": "P1 pelihara: KELAS K1 sampai K10 lengkap",
+    "pelihara.KELAS_BOM": "P1 pelihara: tiap awalan TEMPLAT_BOM tepat satu kelas",
+    "pelihara.KELAS_ASET": "P1 pelihara: KELAS K1 sampai K10 lengkap",
+    "pelihara.KRITIS": "P1 pelihara: KELAS K1 sampai K10 lengkap",
+    "pelihara.STOK_LAJU": "P6 stokMin: gasket kopling 20 unit",
+    "pelihara.kelasDari": "P1 pelihara: kelasDari mencocokkan awalan utuh",
+    "pelihara.skorKeKondisi": "P4 skorKeKondisi: skor 0-3 sama persis dengan enum CHECK",
+    "pelihara.jadwal": "P2 jadwal: inspeksi 0, 166, 180, 200 hari lalu",
+    "pelihara.laikGelar": "P4 laikGelar: komponen kritis rusak_berat",
+    "pelihara.stokMin": "P6 stokMin: gasket kopling 20 unit",
+    "pelihara.biayaTahun": "P6 biayaTahun: laju tertimbang kit gambut dalam 5-8%",
+    "pelihara.cekAset": "P5 cekAset: sumur zona kritis tanpa rekomendasi_bg ditolak",
+    "pelihara.keCsv": "keCsv: satu baris per kelas K1-K10",
+    "pelihara.SippaPelihara": "SippaPelihara: globalThis memuat semua fungsi ekspor"
   },
   "dikecualikan": {
     "ikon.js": "sprite SVG tanpa logika; gerbang-sippa menolak warna tertanam, tampilannya diperiksa di peramban preview",
