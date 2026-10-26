@@ -144,18 +144,18 @@ export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link h
 <script src="/admin/omc.js?v=2"></script>`, ctx);
 
 /* Akun (/admin/akun): buat akun staf, daftar semua akun dan halaman yang dibukanya. Data dari /api/staf/admin/daftar (Super Admin). */
-export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=2" rel="stylesheet">
+export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=3" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/admin/bersama.js?v=4"></script>
-<script src="/admin/akun.js?v=2"></script>`);
+<script src="/admin/akun.js?v=3"></script>`);
 
 /* Kunci API mitra (/admin/kunci-api): terbitkan, salin sekali, daftar, cabut. Data dari /api/kunci-api/admin/*. */
-export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci…", `<link href="/admin/akun.css?v=2" rel="stylesheet">
+export const halamanKunciApi = () => halaman("kunci-api", "Memuat daftar kunci…", `<link href="/admin/akun.css?v=3" rel="stylesheet">
 <script src="/admin/bersama.js?v=4"></script>
 <script src="/admin/kunci_api.js?v=1"></script>`);
 
 /* Buku kontak pemangku kepentingan (/admin/kontak): kepala daerah, BPBD, TNI, Polri, dll. Data dari /api/kontak/admin (src/kontak.js). */
-export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<link href="/admin/akun.css?v=2" rel="stylesheet">
+export const halamanKontak = () => halaman("kontak", "Memuat buku kontak…", `<link href="/admin/akun.css?v=3" rel="stylesheet">
 <link href="/admin/kontak.css?v=1" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
 <script src="/admin/bersama.js?v=4"></script>
