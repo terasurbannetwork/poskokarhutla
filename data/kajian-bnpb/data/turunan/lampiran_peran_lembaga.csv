@@ -25,13 +25,13 @@ Pemerintah daerah provinsi dan kabupaten/kota,banjir,lintas tahap,K,Pengelolaan 
 Pemerintah daerah provinsi dan kabupaten/kota,banjir,prabencana,R,Gubernur/bupati menetapkan kawasan daya rusak air pada WS kewenangannya,"PP 30/2024, hlm. 66",tertulis
 Pemerintah daerah provinsi dan kabupaten/kota,kekeringan,lintas tahap,K,Kab/kota memenuhi kebutuhan pokok minimal air warganya,"UU 17/2019, hlm. 14",tertulis
 Pemerintah daerah provinsi dan kabupaten/kota,banjir,prabencana,I,Penetapan sistem peringatan dini pada setiap WS kewenangan provinsi dan kab/kota,"PP 30/2024, hlm. 65",dipetakan penyusun
-Pemerintah daerah provinsi dan kabupaten/kota,karhutla,tanggap darurat,K,Gubernur dan bupati/wali kota sebagai komandan satuan tugas karhutla,"Inpres 3/2020, hlm. 11-12",tertulis
-Pemerintah daerah provinsi dan kabupaten/kota,epidemi,tanggap darurat,R,"Bupati/wali kota, gubernur (atau Menteri) menetapkan KLB dan wajib menanggulanginya","UU 17/2023, hlm. 155-156",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,karhutla,tanggap darurat,K,Gubernur dan bupati/wali kota sebagai komandan satuan tugas karhutla,"Inpres 3/2020, hlm. 11–12",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,epidemi,tanggap darurat,R,"Bupati/wali kota, gubernur (atau Menteri) menetapkan KLB dan wajib menanggulanginya","UU 17/2023, hlm. 155–156",tertulis
 Pemerintah daerah provinsi dan kabupaten/kota,gagal teknologi,lintas tahap,K,"Damkar kab/kota: pencegahan, pemadaman, penyelamatan, penanganan B3 kebakaran","UU 23/2014, hlm. 333",tertulis
 Pemerintah daerah provinsi dan kabupaten/kota,kebakaran TPA,prabencana,K,Kab/kota menyusun sistem tanggap darurat pengelolaan sampah dan memantau TPA,"UU 18/2008, hlm. 7",dipetakan penyusun
 Pemerintah daerah provinsi dan kabupaten/kota,kebakaran TPA,tanggap darurat,K,Pemadaman oleh damkar kab/kota,"UU 23/2014, hlm. 333",dipetakan penyusun
 Pemerintah daerah provinsi dan kabupaten/kota,kebakaran TPA,prabencana,K,Penanganan sampah di TPA/TPST regional (provinsi) dan pengelolaan sampah (kab/kota),"UU 23/2014, hlm. 361",dipetakan penyusun
-Pemerintah daerah provinsi dan kabupaten/kota,konflik sosial,tanggap darurat,R,Bupati/wali kota dan gubernur menetapkan status keadaan konflik,"UU 7/2012, hlm. 10-11",tertulis
+Pemerintah daerah provinsi dan kabupaten/kota,konflik sosial,tanggap darurat,R,Bupati/wali kota dan gubernur menetapkan status keadaan konflik,"UU 7/2012, hlm. 10–11",tertulis
 Pemerintah daerah provinsi dan kabupaten/kota,konflik sosial,pascabencana,K,Pemulihan pascakonflik (bersama Pemerintah),"UU 7/2012, hlm. 16",tertulis
 Presiden Republik Indonesia,semua jenis,tanggap darurat,R,Menetapkan status keadaan darurat bencana tingkat nasional,"Perpres 17/2018, hlm. 3",tertulis
 Presiden Republik Indonesia,konflik sosial,tanggap darurat,R,Presiden menetapkan status keadaan konflik skala nasional,"UU 7/2012, hlm. 11",tertulis
@@ -93,7 +93,7 @@ Kementerian Energi dan Sumber Daya Mineral,semua jenis,tanggap darurat,P,Bantuan
 Kementerian Energi dan Sumber Daya Mineral,gempa bumi,prabencana,R,Penetapan kawasan rawan bencana geologi; mitigasi bencana geologi (Badan Geologi),"UU 23/2014, hlm. 436",dipetakan penyusun
 Kementerian Energi dan Sumber Daya Mineral,tsunami,prabencana,R,Penetapan kawasan rawan bencana geologi,"UU 23/2014, hlm. 436",dipetakan penyusun
 Kementerian Energi dan Sumber Daya Mineral,gunung api,prabencana,I,Penetapan status dan peringatan dini bahaya gunung api (Badan Geologi),"UU 23/2014, hlm. 435",dipetakan penyusun
-Kementerian Energi dan Sumber Daya Mineral,tanah longsor,prabencana,I,Peringatan dini potensi gerakan tanah,"UU 23/2014, hlm. 435-436",dipetakan penyusun
+Kementerian Energi dan Sumber Daya Mineral,tanah longsor,prabencana,I,Peringatan dini potensi gerakan tanah,"UU 23/2014, hlm. 435–436",dipetakan penyusun
 Badan Informasi Geospasial,semua jenis,prabencana,I,Informasi geospasial dasar dan tematik,"Perpres 128/2022, hlm. 3",tertulis
 Badan Informasi Geospasial,semua jenis,tanggap darurat,I,Bantuan internasional: data geospasial pendukung penanganan darurat (huruf w),"Perban BNPB 6/2018, hlm. 20",tertulis
 Badan Informasi Geospasial,karhutla,prabencana,I,Peta dasar dan tematik untuk pemadaman dan analisis tutupan lahan,"Inpres 3/2020, hlm. 10",tertulis

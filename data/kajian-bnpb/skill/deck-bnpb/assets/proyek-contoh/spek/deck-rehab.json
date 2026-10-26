@@ -1,0 +1,1050 @@
+{
+ "_catatan": "Spek deck final kajian rehabilitasi dan rekonstruksi air dan akses (KERANGKA bagian 7, Buku Pegangan S1 sampai S39). Isi dari naskah/rehab/bab-*.md; angka hanya token registri yang dipakai naskah DOCX; tabel dari CSV turunan data/turunan/deck-rehab. Penyimpangan dari KERANGKA: B2 dan B3 tanpa grafik karena grafik batang mesin menghitung persen perubahan antarbatang (tak bermakna untuk Kobe, Tohoku, Sumatra); E1 tabel program karena label fase mesin tetap prabencana, tanggap darurat, pascabencana; C2 tabel matriks karena G17 belum punya perender slide; keputusan empat (KD-R4) menurut bab-12.",
+ "pesan_kunci": "Waktu pulih air dan akses diusulkan menjadi ukuran keberhasilan rehabilitasi dan rekonstruksi; program jembatan diikat ke rencana RR dan baseline layanan air dibentuk paling lambat 2027.",
+ "judul_dokumen": "Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses Pascabencana 2026–2030",
+ "subjek_dokumen": "Pemulihan air dan akses daerah terdampak bencana",
+ "kajian": "rehab",
+ "tanggal": "2026-10-26",
+ "cut_off": "25 Okt 2026",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "gelap",
+   "foto": "foto/sampul-rehab.jpg",
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+   "kredit": "Foto: masjid yang tetap berdiri setelah tsunami Aceh, Banda Aceh, 2005; USGS, domain publik, Wikimedia Commons"
+  },
+  {
+   "jenis": "kartu-angka",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Tesis dan empat keputusan Kepala BNPB dengan temuan penopang",
+   "judul": "Pesan Kunci: waktu pulih air dan akses sebagai ukuran keberhasilan rehabilitasi dan rekonstruksi, empat keputusan Kepala BNPB",
+   "cut_off": true,
+   "judul_panel": "Pesan kunci",
+   "tesis": "DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan rusak pada 2018–2025, {{angka:rehab.dibi.jembatan_rusak.2025}} pada 2025 saja, tanpa satu pun kolom air; Grand Design 2026–2030 menjadikan waktu pulih akses dan air ukuran keberhasilan rehabilitasi dan rekonstruksi.",
+   "temuan": [
+    {
+     "kode": "Temuan A.1",
+     "keyakinan": "resmi",
+     "ikon": "infrastruktur",
+     "teks": "**Beban akses.** DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan rusak pada 2018–2025, {{angka:rehab.dibi.jembatan_rusak.2025}} pada 2025 saja."
+    },
+    {
+     "kode": "Temuan A.2",
+     "keyakinan": "resmi",
+     "ikon": "rumah",
+     "teks": "**Beban rumah.** {{angka:rehab.dibi.rumah_rb.porsi_2018_2025_persen|fmt=1|persen}} rumah rusak berat 2015–2025 jatuh pada 2018 dan 2025 saja."
+    },
+    {
+     "kode": "Temuan B.1",
+     "keyakinan": "resmi",
+     "ikon": "infrastruktur",
+     "teks": "**Akses daerah.** {{angka:rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026|persen}} jembatan daerah Sumatra berfungsi per Mei 2026, lawan {{angka:rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026|persen}} jalan dan jembatan nasional."
+    },
+    {
+     "kode": "Temuan B.2",
+     "keyakinan": "resmi",
+     "ikon": "air-baku",
+     "teks": "**Air perpipaan.** {{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} dari {{angka:rehab.pipa.sumatra2025.spam_terdampak}} SPAM Sumatra berfungsi pada Mei 2026, dihitung sebagai unit; jumlah jiwa yang menerima air tidak terukur."
+    },
+    {
+     "kode": "Temuan C.1",
+     "keyakinan": "resmi",
+     "ikon": "wilayah",
+     "teks": "**Program jembatan.** TNI AD mengerjakan {{angka:rehab.jembatan.garuda.titik_2026_08}} titik dan Polri {{angka:rehab.jembatan.polri_mpp.jumlah_total_2026_08}} unit; biaya satuan dan tautan ke rencana RR tidak diumumkan."
+    },
+    {
+     "kode": "Temuan C.2",
+     "keyakinan": "resmi",
+     "ikon": "regulasi",
+     "teks": "**Kesenjangan.** Hibah RR mengecualikan {{angka:rehab.hukum.hibah_rr_larangan_pembiayaan_huruf}} jenis pembiayaan termasuk aset desa; DIBI punya {{angka:rehab.dibi.kolom_air_n}} kolom air dari {{angka:rehab.dibi.kolom_dampak_n}} kolom dampak."
+    }
+   ],
+   "pita": {
+    "label": "Keputusan yang diminta dari Kepala BNPB",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "data",
+      "judul": "Ukuran waktu pulih",
+      "isi": "Tetapkan waktu pulih air dan akses sebagai ukuran RR; baseline 2027."
+     },
+     {
+      "ikon": "pembiayaan",
+      "judul": "Jalur dana aset desa",
+      "isi": "Usulkan jalur dana jembatan dan SPAM desa bersama Kemenkeu dan Kemendes."
+     },
+     {
+      "ikon": "lembaga",
+      "judul": "Ikat jembatan ke rencana RR",
+      "isi": "Ikat jembatan TNI AD dan Polri ke rencana RR lewat Satgas dan rakor."
+     },
+     {
+      "ikon": "air-tanah",
+      "judul": "Protokol sumur bor",
+      "isi": "Tugaskan protokol sumur bor RR bersama Badan Geologi, 100 hari."
+     }
+    ]
+   },
+   "sumber": "DIBI BNPB 2018–2025; Kementerian PU (rilis Februari dan Mei 2026); Kementerian Sekretariat Negara, Agustus 2026; Perban BNPB tentang hibah RR"
+  },
+  {
+   "jenis": "temuan-grafik",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Beban akses naik tajam pada 2025",
+   "cut_off": true,
+   "judul": "A1. Bencana alam merusak {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan pada 2018–2025, {{angka:rehab.dibi.jembatan_rusak.2025}} di antaranya pada 2025",
+   "grup": [
+    {
+     "pil": "Penyebab dan sebaran",
+     "nada": "data",
+     "ikon": "infrastruktur",
+     "kartu": [
+      {
+       "nilai": "{{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}}",
+       "label": "jembatan rusak karena banjir",
+       "ikon": "banjir",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.dibi.jembatan_rusak.prov.aceh.2025}}",
+       "label": "jembatan rusak di Aceh, 2025",
+       "ikon": "wilayah",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.dibi.jembatan_rusak.sumatra3prov.2025}}",
+       "label": "tiga provinsi Sumatra, 2025",
+       "ikon": "wilayah",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "grafik": {
+    "judul_panel": "Jembatan rusak akibat bencana alam per tahun, 2018–2025",
+    "ikon": "infrastruktur",
+    "judul": "Unit jembatan",
+    "keluarga": "netral",
+    "data": {
+     "csv": "data/turunan/gambar-rehab/jembatan_tahun.csv",
+     "kolom": [
+      {
+       "nama": "label",
+       "kepala": "Tahun"
+      },
+      {
+       "nama": "jumlah",
+       "kepala": "Jembatan",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+    }
+   },
+   "sumber": "DIBI BNPB 2018–2025 (olah Pantau Bencana); seri jembatan baru terisi sejak 2018"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Enam kejadian besar sebagai preseden beban RR",
+   "cut_off": true,
+   "judul": "A2. Enam kejadian besar sejak 2009 masing-masing merusak lebih dari {{angka:rehab.preseden.ambang_rumah_rusak}} rumah menurut DIBI",
+   "tabel": {
+    "judul_panel": "Kejadian besar menurut DIBI, jendela kejadian pilihan penyusun",
+    "ikon": "rumah",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/preseden.csv",
+     "kolom": [
+      {
+       "nama": "kejadian",
+       "kepala": "Kejadian"
+      },
+      {
+       "nama": "jenis",
+       "kepala": "Jenis"
+      },
+      {
+       "nama": "rusak",
+       "kepala": "Rumah rusak",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "rumah"
+      },
+      {
+       "nama": "rb",
+       "kepala": "Rusak berat",
+       "fmt": "0",
+       "warna": "navy"
+      },
+      {
+       "nama": "mengungsi",
+       "kepala": "Mengungsi",
+       "fmt": "0",
+       "warna": "biru-abu",
+       "ikon": "pengungsi"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "DIBI BNPB, kejadian besar"
+    }
+   },
+   "panel": {
+    "judul": "Cara membaca",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Padang 2009 mencatat rusak sedang nol, sehingga rusak berat dapat memuat rusak sedang.",
+     "Cianjur 2022 punya tiga angka resmi rumah rusak yang berbeda antardokumen.",
+     "Aceh 2004 tidak ada di DIBI; angkanya dari laporan BRR pada kajian.",
+     "Tidak satu pun program RR preseden berbukti kuat."
+    ]
+   },
+   "sumber": "DIBI BNPB, kejadian besar; BRR NAD–Nias (2009); rencana RR Kabupaten Cianjur"
+  },
+  {
+   "jenis": "temuan-peta",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "pesan": "Jembatan rusak terkonsentrasi di enam provinsi",
+   "cut_off": true,
+   "judul": "A3. Enam provinsi menanggung {{angka:rehab.dibi.jembatan_rusak.porsi_6prov_persen|fmt=1|persen}} jembatan rusak pada 2018–2025",
+   "peta": {
+    "png": "peta/peta-jembatan-provinsi.png",
+    "legenda": {
+     "judul": "Jembatan rusak 2018–2025",
+     "item": [
+      {
+       "warna": "biru",
+       "label": "bulatan sebanding jumlah jembatan rusak"
+      }
+     ]
+    },
+    "keyakinan": "resmi",
+    "sumber": "DIBI BNPB, rekap provinsi tahunan"
+   },
+   "rasio": 0.74,
+   "panel": {
+    "judul": "Provinsi teratas",
+    "ikon": "wilayah",
+    "data": {
+     "csv": "data/turunan/gambar-rehab/peta_jembatan_prov.csv",
+     "urut": "-nilai",
+     "batas": 6,
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Provinsi"
+      },
+      {
+       "nama": "nilai",
+       "kepala": "Jembatan",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "infrastruktur"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+    },
+    "daftar": [
+     "Tujuh belas provinsi kehilangan jembatan di kedelapan tahun, sehingga akses darurat adalah kebutuhan rutin."
+    ]
+   },
+   "sumber": "DIBI BNPB 2018–2025 (olah Pantau Bencana)"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Program jembatan yang ada tidak terikat ke rencana RR",
+   "cut_off": true,
+   "judul": "B1. Program jembatan TNI AD mengerjakan {{angka:rehab.jembatan.garuda.titik_2026_08}} titik, {{angka:rehab.jembatan.garuda.titik_wilayah_bencana_2026_08}} di daerah bencana; biaya satuan dan tautan ke rencana RR tidak diumumkan",
+   "grup": [
+    {
+     "pil": "AKSES",
+     "nada": "data",
+     "ikon": "infrastruktur",
+     "kartu": [
+      {
+       "nilai": "{{angka:rehab.jembatan.garuda.selesai_2026_08}}",
+       "label": "titik TNI AD selesai, Agt 2026",
+       "ikon": "infrastruktur",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.jembatan.polri_mpp.selesai_2026_08}}",
+       "label": "unit Polri selesai, Agt 2026",
+       "ikon": "infrastruktur",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.jembatan.pu.gantung_2025_unit}}",
+       "label": "paket jembatan gantung PU, 2025",
+       "ikon": "infrastruktur",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Program jembatan menurut pemilik dan wilayah bencana",
+    "ikon": "infrastruktur",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/program_jembatan.csv",
+     "kolom": [
+      {
+       "nama": "program",
+       "kepala": "Program"
+      },
+      {
+       "nama": "pemilik",
+       "kepala": "Pemilik"
+      },
+      {
+       "nama": "bencana",
+       "kepala": "Wilayah"
+      },
+      {
+       "nama": "biaya",
+       "kepala": "Biaya satuan"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "Kementerian Sekretariat Negara, Agustus 2026; Kementerian PU; BNPB"
+    }
+   },
+   "panel": {
+    "judul": "Status nama Jembatan Merah Putih",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Satu-satunya pemakaian resmi yang dibuka adalah Jembatan Merah Putih Presisi Polri.",
+     "Rilis resmi TNI AD tidak memakai nama satgas atau Jembatan Garuda.",
+     "Tidak ada program nasional tunggal bernama Jembatan Merah Putih."
+    ]
+   },
+   "sumber": "Kementerian Sekretariat Negara, Agustus 2026; Sekretariat Kabinet, Maret 2026; Polri; Kementerian PU"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "SPAM Sumatra pulih sebagai unit; jiwa terlayani tidak diketahui",
+   "cut_off": true,
+   "judul": "B2. {{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} dari {{angka:rehab.pipa.sumatra2025.spam_terdampak}} SPAM Sumatra berfungsi pada Mei 2026, tetapi jiwa yang kembali mendapat air tidak tercatat",
+   "grup": [
+    {
+     "pil": "AIR PERPIPAAN",
+     "nada": "data",
+     "ikon": "air-baku",
+     "kartu": [
+      {
+       "nilai": "{{angka:rehab.pipa.pulih.kobe_90}}",
+       "label": "hari Kobe sampai sembilan puluh persen layanan",
+       "ikon": "kalender",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.pipa.pulih.tohoku_90}}",
+       "label": "hari Tohoku sampai sembilan puluh persen layanan",
+       "ikon": "kalender",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.pipa.cianjur.hidran_puncak}}",
+       "label": "hidran umum Cianjur pada puncak",
+       "ikon": "air-baku",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Aset terdampak yang kembali fungsional, Sumatra 2025",
+    "ikon": "air-baku",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/pulih_sumatra.csv",
+     "kolom": [
+      {
+       "nama": "aset",
+       "kepala": "Aset"
+      },
+      {
+       "nama": "persen",
+       "kepala": "Fungsional",
+       "fmt": "1|persen",
+       "warna": "navy",
+       "ikon": "data"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "Kementerian PU (rilis Februari dan Mei 2026)"
+    }
+   },
+   "panel": {
+    "judul": "Cara membaca",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Unit SPAM berfungsi tidak sama dengan jiwa yang kembali terlayani.",
+     "Satuan Jepang adalah rasio layanan, sehingga hanya arahnya yang dibandingkan.",
+     "Peralihan truk dan hidran ke pipa belum punya pemicu atau pemutus tertulis."
+    ]
+   },
+   "sumber": "Kementerian PU (rilis Februari dan Mei 2026); JSCE (2011); Kementerian PUPR (2023)"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Air tanah: sumur Sumatra belum selesai dan mutu tidak dilaporkan",
+   "cut_off": true,
+   "judul": "B3. Baru {{angka:rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026}} dari {{angka:rehab.pipa.sumatra2025.sumur_bor_feb2026}} sumur bor Kementerian PU untuk Sumatra 2025 selesai per Februari 2026, tanpa data E. coli sumur darurat",
+   "grup": [
+    {
+     "pil": "AIR TANAH",
+     "nada": "data",
+     "ikon": "air-tanah",
+     "kartu": [
+      {
+       "nilai": "{{angka:airjawa.nasional.cat_jumlah}}",
+       "label": "cekungan air tanah ditetapkan",
+       "ikon": "air-tanah",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.akuifer.sumur_bg_jiwa_per_sumur}}",
+       "label": "jiwa per sumur Badan Geologi",
+       "ikon": "jiwa",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:rehab.akuifer.permenkes_ecoli_maks}}",
+       "label": "ambang E. coli, CFU",
+       "ikon": "kesehatan",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Pelaksana sumur bor di daerah bencana",
+    "ikon": "air-tanah",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/sumur.csv",
+     "kolom": [
+      {
+       "nama": "pelaksana",
+       "kepala": "Pelaksana"
+      },
+      {
+       "nama": "catatan",
+       "kepala": "Yang tercatat"
+      },
+      {
+       "nama": "status",
+       "kepala": "Status"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "Kementerian PU; Kementerian ESDM; Setneg, Agustus 2026"
+    }
+   },
+   "panel": {
+    "judul": "Batas air tanah",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Sumur RR mengikuti zona konservasi dan rekomendasi Badan Geologi.",
+     "Di pesisir utara Jawa Tengah, air permukaan didahulukan karena muka tanah turun.",
+     "Salinitas air tanah Aceh Barat pulih dalam dua tahun setelah tsunami."
+    ]
+   },
+   "sumber": "Kementerian PU, Februari 2026; Kementerian ESDM; Permenkes air minum; Keppres cekungan air tanah"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Kartu ringkas beban RR tujuh jenis bencana",
+   "cut_off": true,
+   "judul": "C1. Lantai skenario tertinggi: gempa Padang 2009 merusak {{angka:rehab.lantai.gempa.padang2009.rumah_rusak}} rumah dan banjir Sumatra 2025 {{angka:rehab.lantai.banjir.sumatra2025.rumah_rusak}}",
+   "tabel": {
+    "judul_panel": "Lantai tercatat per jenis menurut besaran RR",
+    "ikon": "rumah",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/lantai.csv",
+     "kolom": [
+      {
+       "nama": "kartu",
+       "kepala": "Jenis"
+      },
+      {
+       "nama": "lantai",
+       "kepala": "Lantai"
+      },
+      {
+       "nama": "jembatan",
+       "kepala": "Jembatan atau akses"
+      },
+      {
+       "nama": "air",
+       "kepala": "Layanan air"
+      },
+      {
+       "nama": "rumah",
+       "kepala": "Rumah",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "rumah"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+    }
+   },
+   "panel": {
+    "judul": "Aturan kartu",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Lantai adalah kejadian tercatat terburuk untuk jenis yang sama.",
+     "Periode acuan: geologi 1996–2025, hidrometeorologi 2008–2025, jembatan 2018–2025.",
+     "Sel tanpa sumber ditulis tidak dikuantifikasi; nol hanya bila sumber menyebutnya.",
+     "Jumlah setahun adalah batas atas satu kejadian, tidak dibandingkan antarkartu."
+    ]
+   },
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias; pengolahan kajian ini"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Dampak RR dinilai untuk semua jenis, kemungkinan hanya untuk dua",
+   "cut_off": true,
+   "judul": "C2. Kemungkinan lima tahun hanya dinilai untuk musim hujan setara lantai ({{angka:hidromet.nasional.lantai.peluang_5_musim|fmt=1|persen}}) dan megathrust Jawa ({{angka:geologi.jawa_gabungan.peluang_5th|fmt=2|persen}})",
+   "tabel": {
+    "judul_panel": "Posisi jenis bencana menurut kelas dampak RR",
+    "ikon": "data",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/matriks.csv",
+     "kolom": [
+      {
+       "nama": "jenis",
+       "kepala": "Jenis"
+      },
+      {
+       "nama": "dampak",
+       "kepala": "Kelas dampak RR",
+       "warna": "navy"
+      },
+      {
+       "nama": "kemungkinan",
+       "kepala": "Kemungkinan lima tahun"
+      }
+     ],
+     "keyakinan": "asumsi-kebijakan",
+     "sumber": "DIBI BNPB; PuSGeN 2024; pengolahan kajian ini"
+    }
+   },
+   "panel": {
+    "judul": "Dampak dinilai, kemungkinan tidak dinilai",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Jenis tanpa dasar peluang tidak diberi kelas kemungkinan.",
+     "Kemungkinan dan dampak tidak dikalikan menjadi skor.",
+     "Kelas dampak memakai ambang rumah rusak usulan kajian."
+    ]
+   },
+   "sumber": "DIBI BNPB; PuSGeN 2024; pengolahan kajian ini"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Hibah RR tidak menjangkau aset desa dan lahan",
+   "cut_off": true,
+   "judul": "D1. Hibah RR mengecualikan {{angka:rehab.hukum.hibah_rr_larangan_pembiayaan_huruf}} jenis pembiayaan, termasuk aset rusak milik pemerintah desa dan lahan",
+   "tabel": {
+    "judul_panel": "Jangkauan instrumen dana menurut jenis aset",
+    "ikon": "pembiayaan",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/celah_dana.csv",
+     "kolom": [
+      {
+       "nama": "aset",
+       "kepala": "Jenis aset"
+      },
+      {
+       "nama": "hibah",
+       "kepala": "Hibah RR"
+      },
+      {
+       "nama": "bersama",
+       "kepala": "Dana Bersama"
+      },
+      {
+       "nama": "desa",
+       "kepala": "Dana Desa 2026"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "Perban BNPB tentang hibah RR dan Dana Bersama; Juklak Dana Bersama; Permendes PDT tentang Dana Desa 2026"
+    }
+   },
+   "rasio": 0.72,
+   "panel": {
+    "judul": "Akibatnya",
+    "ikon": "regulasi",
+    "daftar": [
+     "Jembatan dan SPAM desa tidak punya jalur hibah RR.",
+     "Lokasi kegiatan terkunci sejak perjanjian hibah.",
+     "Usulan: ubah larangan aset desa, atau cantumkan aset desa di rencana RR."
+    ]
+   },
+   "sumber": "Perban BNPB tentang hibah RR dan Dana Bersama; Juklak Dana Bersama; Permendes PDT tentang Dana Desa 2026"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "DIBI tidak mencatat air dan status jalan",
+   "cut_off": true,
+   "judul": "D2. DIBI memuat {{angka:rehab.dibi.kolom_dampak_n}} kolom dampak dan {{angka:rehab.dibi.kolom_air_n}} kolom air, sehingga pemulihan air tidak dapat diukur dari data BNPB",
+   "tabel": {
+    "judul_panel": "Data pemulihan yang belum ada dan pemiliknya",
+    "ikon": "data",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/data_hilang.csv",
+     "kolom": [
+      {
+       "nama": "data",
+       "kepala": "Data tidak ada di DIBI"
+      },
+      {
+       "nama": "pemilik",
+       "kepala": "Pemilik"
+      },
+      {
+       "nama": "jalur",
+       "kepala": "Jalur"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "DIBI BNPB, ditarik Oktober 2026; Juklak BNPB standar data"
+    }
+   },
+   "panel": {
+    "judul": "Akibatnya",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Juklak BNPB standar data sudah mendaftar jaringan air bersih sebagai prasarana vital.",
+     "Standar waktu pulih air dan akses belum ada di peraturan BNPB.",
+     "Baseline waktu pulih belum dapat dibentuk."
+    ]
+   },
+   "sumber": "DIBI BNPB; Juklak BNPB standar data dan hibah RR; Perban BNPB penyelenggaraan RR"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Sebelas program dalam lima pilar dengan status",
+   "cut_off": true,
+   "judul": "E1. Kerangka Program dan Alur Tiga Lapis: Sebelas Program dalam Lima Pilar, Tiga Berstatus Sudah Ada",
+   "tabel": {
+    "judul_panel": "Program berkode menurut lapis dan status",
+    "ikon": "prabencana",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/program.csv",
+     "kolom": [
+      {
+       "nama": "pilar",
+       "kepala": "Pilar"
+      },
+      {
+       "nama": "program",
+       "kepala": "Program"
+      },
+      {
+       "nama": "lapis",
+       "kepala": "Lapis"
+      },
+      {
+       "nama": "status",
+       "kepala": "Status"
+      }
+     ],
+     "keyakinan": "asumsi-kebijakan",
+     "sumber": "Perban BNPB tentang rencana RR dan hibah RR; analisis kajian ini"
+    }
+   },
+   "rasio": 0.7,
+   "panel": {
+    "judul": "Titik serah",
+    "ikon": "kalender",
+    "daftar": [
+     "Air: truk dan hidran ke pipa sementara, diputus kepala daerah lewat BPBD.",
+     "Akses: bailey ke jembatan permanen, dicatat di rencana RR oleh pemilik aset.",
+     "Sumur: sumur darurat ke pengelola tetap setelah uji mutu lolos.",
+     "Ambang angka ditetapkan setelah baseline 2027."
+    ]
+   },
+   "sumber": "Perban BNPB tentang rencana RR dan hibah RR; Perka BNPB kebutuhan dasar dan perbaikan darurat; analisis kajian ini"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Mandat tertulis lembaga per lapis dan sektor",
+   "cut_off": true,
+   "judul": "E2. Tugas per Lapis: K Koordinasi, P Pelaksana, R Regulator, I Informasi",
+   "tabel": {
+    "judul_panel": "Mandat tertulis per lapis; usulan berkode program",
+    "ikon": "lembaga",
+    "peringkat": false,
+    "data": {
+     "csv": "data/turunan/deck-rehab/mandat.csv",
+     "kolom": [
+      {
+       "nama": "lembaga",
+       "kepala": "Lembaga"
+      },
+      {
+       "nama": "darurat",
+       "kepala": "Darurat"
+      },
+      {
+       "nama": "sementara",
+       "kepala": "Sementara"
+      },
+      {
+       "nama": "permanen",
+       "kepala": "Permanen"
+      },
+      {
+       "nama": "tanah",
+       "kepala": "Air tanah"
+      }
+     ],
+     "keyakinan": "resmi",
+     "sumber": "PP penanggulangan bencana; PP SPAM; UU jalan; UU sumber daya air; Perban BNPB tentang rencana RR dan DSP"
+    }
+   },
+   "rasio": 0.72,
+   "panel": {
+    "judul": "Belum bermandat",
+    "ikon": "regulasi",
+    "daftar": [
+     "Jembatan TNI AD dan Polri di luar rencana RR.",
+     "Serah terima aset darurat ke pemilik.",
+     "Protokol sumur bor RR bersama Badan Geologi.",
+     "Standar waktu pulih layanan."
+    ]
+   },
+   "sumber": "PP penanggulangan bencana; PP SPAM; UU jalan; UU sumber daya air; Perban BNPB; analisis kajian ini"
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "rekomendasi",
+   "pesan": "Delapan rekomendasi pertama: empat dalam 100 hari",
+   "cut_off": true,
+   "judul": "E3. Rekomendasi {{sorot:100 hari}} dan awal peta jalan {{sorot:2026–2027}}: langkah, rincian, penanggung jawab",
+   "rekomendasi": [
+    {
+     "kode": "R-E01",
+     "jenis": "data",
+     "langkah": "Tambah kolom air dan jembatan di DIBI",
+     "waktu": "100-hari",
+     "status": "dikembangkan",
+     "rincian": "Tabel publik DIBI memuat kolom SPAM terdampak dan hari pulih serta jembatan per status jalan.",
+     "lembaga": [
+      "Pusdatinkom",
+      "Kementerian PU",
+      "BPBD"
+     ]
+    },
+    {
+     "kode": "R-E04",
+     "jenis": "infrastruktur",
+     "langkah": "Ikat jembatan TNI AD dan Polri",
+     "waktu": "100-hari",
+     "status": "baru",
+     "rincian": "Jembatan di daerah bencana tercantum di rencana RR dan DIBI dengan pemilik aset dan jadwal ganti permanen.",
+     "lembaga": [
+      "Dir. RR Infrastruktur",
+      "TNI AD",
+      "Polri",
+      "Kemenko PMK"
+     ]
+    },
+    {
+     "kode": "R-E06",
+     "jenis": "kapasitas",
+     "langkah": "Hitung stok bailey per wilayah",
+     "waktu": "100-hari",
+     "status": "baru",
+     "rincian": "Daftar persediaan bailey dan rangka baja tersusun dalam empat belas hari pertama.",
+     "lembaga": [
+      "Deputi Logistik",
+      "Kementerian PU",
+      "TNI"
+     ]
+    },
+    {
+     "kode": "R-E11",
+     "jenis": "data",
+     "langkah": "Satukan daftar sumur darurat",
+     "waktu": "100-hari",
+     "status": "baru",
+     "rincian": "Satu daftar sumur berlokasi dan berpelaksana untuk Sumatra 2025 dan sesudahnya.",
+     "lembaga": [
+      "Pusdatinkom",
+      "Badan Geologi",
+      "TNI AD",
+      "Polri"
+     ]
+    },
+    {
+     "kode": "R-E02",
+     "jenis": "data",
+     "langkah": "Tetapkan baseline waktu pulih",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Baseline hari pulih air dan akses per kab/kota terbit paling lambat 2027.",
+     "lembaga": [
+      "Dir. RR Infrastruktur",
+      "Kementerian PU"
+     ]
+    },
+    {
+     "kode": "R-E03",
+     "jenis": "regulasi",
+     "langkah": "Tambah baris waktu pulih di templat",
+     "waktu": "2026-2027",
+     "status": "dikembangkan",
+     "rincian": "Templat rencana RR memuat baris waktu pulih dan daftar jembatan darurat yang harus diganti.",
+     "lembaga": [
+      "Deputi RR",
+      "Bappenas",
+      "Kemendagri"
+     ]
+    },
+    {
+     "kode": "R-E05",
+     "jenis": "regulasi",
+     "langkah": "Tetapkan standar hari akses darurat",
+     "waktu": "2026-2027",
+     "status": "dikembangkan",
+     "rincian": "Perubahan Perka BNPB perbaikan darurat memuat standar hari sampai akses darurat terbuka.",
+     "lembaga": [
+      "Deputi Penanganan Darurat",
+      "Kementerian PU",
+      "TNI"
+     ]
+    },
+    {
+     "kode": "R-E07",
+     "jenis": "pembiayaan",
+     "langkah": "Buka jalur dana jembatan dan SPAM desa",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Usulan ubah larangan aset desa dalam Perban hibah RR atau permohonan Dana Bersama untuk aset desa di rencana RR.",
+     "lembaga": [
+      "Biro Hukum",
+      "Dir. RR Infrastruktur",
+      "Kemendesa",
+      "Kemenkeu"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "rekomendasi",
+   "pesan": "Tujuh rekomendasi lanjutan sampai 2030",
+   "cut_off": true,
+   "judul": "E4. Rekomendasi lanjutan peta jalan {{sorot:2026–2027}} dan arah {{sorot:2028–2030}} (lanjutan)",
+   "rekomendasi": [
+    {
+     "kode": "R-E08",
+     "jenis": "regulasi",
+     "langkah": "Tulis pemicu peralihan truk ke pipa",
+     "waktu": "2026-2027",
+     "status": "dikembangkan",
+     "rincian": "Pedoman peralihan truk tangki ke perpipaan sementara memuat pemicu tertulis dan pemutusnya.",
+     "lembaga": [
+      "Deputi Penanganan Darurat",
+      "Kementerian PU",
+      "PDAM"
+     ]
+    },
+    {
+     "kode": "R-E09",
+     "jenis": "data",
+     "langkah": "Ukur pemulihan air dalam jiwa",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Laporan pemulihan air memuat jiwa atau sambungan terlayani dan liter per orang per hari.",
+     "lembaga": [
+      "Dir. RR Infrastruktur",
+      "Kementerian PU"
+     ]
+    },
+    {
+     "kode": "R-E10",
+     "jenis": "regulasi",
+     "langkah": "Susun protokol sumur bor RR",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Protokol memuat lokasi menurut zona konservasi, uji mutu E. coli, dan serah terima pengelola.",
+     "lembaga": [
+      "Dir. RR Infrastruktur",
+      "Kementerian ESDM"
+     ]
+    },
+    {
+     "kode": "R-E12",
+     "jenis": "regulasi",
+     "langkah": "Syaratkan sumber air sebelum huntap",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Penetapan lokasi huntap mensyaratkan sumber air dan akses yang tertulis.",
+     "lembaga": [
+      "Dir. RR Perumahan",
+      "Kementerian PKP",
+      "Pemda"
+     ]
+    },
+    {
+     "kode": "R-E14",
+     "jenis": "infrastruktur",
+     "langkah": "Uji coba paket air dan akses",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Satu kabupaten Sumatra menjalankan paket air dan akses dengan garis dasar dan pembanding.",
+     "lembaga": [
+      "Deputi RR",
+      "Satgas Keppres Sumatra",
+      "Kementerian PU"
+     ]
+    },
+    {
+     "kode": "R-E15",
+     "jenis": "regulasi",
+     "langkah": "Selaraskan peraturan dan JDIH",
+     "waktu": "2026-2027",
+     "status": "dikembangkan",
+     "rincian": "Katalog JDIH menandai status berlaku yang benar dan perubahan Perka BNPB perbaikan darurat ditetapkan.",
+     "lembaga": [
+      "Biro Hukum"
+     ]
+    },
+    {
+     "kode": "R-E13",
+     "jenis": "data",
+     "langkah": "Evaluasi dampak jembatan pedesaan",
+     "waktu": "2028-2030",
+     "status": "baru",
+     "rincian": "Evaluasi dampak independen atas desa tersambung dan waktu tempuh ke sekolah dan pasar.",
+     "lembaga": [
+      "Dir. Pengembangan Strategi PB",
+      "TNI AD",
+      "Polri",
+      "Bappenas"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "kesimpulan",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Delapan kesimpulan berangka dan keputusan yang sama dengan Pesan Kunci",
+   "cut_off": true,
+   "judul": "Kesimpulan: delapan temuan berangka tentang air dan akses pascabencana dan keputusan yang diminta",
+   "kartu": [
+    {
+     "label": "Beban",
+     "ikon": "infrastruktur",
+     "warna": "navy",
+     "judul": "Jembatan rusak",
+     "isi": "{{angka:rehab.dibi.jembatan_rusak.2018_2025}} pada 2018–2025, {{angka:rehab.dibi.jembatan_rusak.2025}} pada 2025."
+    },
+    {
+     "label": "Beban",
+     "ikon": "banjir",
+     "warna": "navy",
+     "judul": "Penyebab",
+     "isi": "{{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} jembatan rusak karena banjir."
+    },
+    {
+     "label": "Akses",
+     "ikon": "wilayah",
+     "warna": "navy",
+     "judul": "Program jembatan",
+     "isi": "TNI AD {{angka:rehab.jembatan.garuda.titik_2026_08}} titik dan Polri {{angka:rehab.jembatan.polri_mpp.jumlah_total_2026_08}} unit, tanpa biaya satuan."
+    },
+    {
+     "label": "Air perpipaan",
+     "ikon": "air-baku",
+     "warna": "navy",
+     "judul": "SPAM Sumatra",
+     "isi": "{{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} dari {{angka:rehab.pipa.sumatra2025.spam_terdampak}} berfungsi, diukur dalam unit; jiwa tidak terukur."
+    },
+    {
+     "label": "Air tanah",
+     "ikon": "air-tanah",
+     "warna": "navy",
+     "judul": "Sumur bor",
+     "isi": "{{angka:rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026}} dari {{angka:rehab.pipa.sumatra2025.sumur_bor_feb2026}} sumur PU selesai per Februari 2026."
+    },
+    {
+     "label": "Kesenjangan",
+     "ikon": "regulasi",
+     "warna": "oranye",
+     "judul": "Hibah RR",
+     "isi": "{{angka:rehab.hukum.hibah_rr_larangan_pembiayaan_huruf}} jenis pembiayaan dikecualikan, termasuk aset desa."
+    },
+    {
+     "label": "Kesenjangan",
+     "ikon": "data",
+     "warna": "oranye",
+     "judul": "DIBI",
+     "isi": "{{angka:rehab.dibi.kolom_air_n}} kolom air dari {{angka:rehab.dibi.kolom_dampak_n}} kolom dampak."
+    },
+    {
+     "label": "Kelembagaan",
+     "ikon": "lembaga",
+     "warna": "biru",
+     "judul": "Tenggat rencana RR",
+     "isi": "Rencana RR disusun paling lama {{angka:perban2017_5.r3p_hari_maks}} hari dan berlaku paling lama {{angka:perban2017_5.r3p_masa_tahun}} tahun."
+    }
+   ],
+   "sumber": "DIBI BNPB 2018–2025; Kementerian PU (Februari dan Mei 2026); Kementerian Sekretariat Negara, Agustus 2026; Perban BNPB",
+   "arahan": {
+    "label": "Arahan yang diminta",
+    "ikon": "peringatan",
+    "teks": "Tetapkan waktu pulih sebagai ukuran RR; usulkan jalur dana aset desa; ajukan pengikatan jembatan TNI AD dan Polri ke rencana RR; tugaskan protokol sumur bor"
+   }
+  },
+  {
+   "jenis": "penutup",
+   "foto": "foto/sampul-rehab.jpg",
+   "kredit": "Foto: masjid yang tetap berdiri setelah tsunami Aceh, Banda Aceh, 2005; USGS, domain publik, Wikimedia Commons"
+  }
+ ]
+}

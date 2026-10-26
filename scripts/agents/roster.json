@@ -1,5 +1,5 @@
 {
-  "_catatan": "Manifest SELURUH armada agent Pantau Bencana / poskokarhutla (pola gemah-ripah, 15 Okt 2026). SATU agent = SATU wilayah kerja. Tiap entri WAJIB: nama, kelas (pengerja|platform|pemeriksa|lapangan), model, ringkas, kapan, fokus, larangan, bisa, tidak. Pengerja WAJIB `milik` (glob berkas wilayahnya; paling spesifik menang). Tambah agent = tambah entri lalu `npm run agents:build`, isi .claude/ilmu-agent/<nama>.md dari kode nyata (AGENTS.md §1.5).",
+  "_catatan": "Manifest SELURUH armada agent Centurisk97 / poskokarhutla (pola gemah-ripah, 15 Okt 2026). SATU agent = SATU wilayah kerja. Tiap entri WAJIB: nama, kelas (pengerja|platform|pemeriksa|lapangan), model, ringkas, kapan, fokus, larangan, bisa, tidak. Pengerja WAJIB `milik` (glob berkas wilayahnya; paling spesifik menang). Tambah agent = tambah entri lalu `npm run agents:build`, isi .claude/ilmu-agent/<nama>.md dari kode nyata (AGENTS.md §1.5).",
   "agents": [
     {
       "nama": "pipa-data",
@@ -24,7 +24,8 @@
         "scripts/statistik/**",
         "scripts/*.py",
         "scripts/pasang-kunci.sh",
-        "data/**"
+        "data/**",
+        "data/sippa/**"
       ]
     },
     {
@@ -78,7 +79,7 @@
       "ringkas": "Pengerja modul gempa & tsunami: pipeline riwayat/risiko, model guncangan (GMPE+MMI) dan susulan, layar public/gempa.",
       "kapan": "scripts/gempa/** atau public/gempa/** disentuh atau rusak",
       "fokus": [
-        "Status resmi tsunami BMKG/PTWC tampil apa adanya dan terpisah dari Tingkat Pantau Bencana; Potensi tanpa kata tsunami = null, bukan aman",
+        "Status resmi tsunami BMKG/PTWC tampil apa adanya dan terpisah dari Tingkat Centurisk97; Potensi tanpa kata tsunami = null, bukan aman",
         "Gempa data hidup (cron Worker + D1 milik warga-api); pipa Python hanya riwayat USGS, risiko, berita; keluaran CI ke public/data, yang di-commit ke public/gempa/data",
         "Model mengikuti PELATIHAN-MODEL: uji dibuka sekali, pembanding sederhana, kesetaraan Python-JS, prospektif append-only; tidak ada prakiraan gempa utama"
       ],
@@ -127,7 +128,7 @@
       "nama": "layar-peta",
       "kelas": "pengerja",
       "model": "sonnet",
-      "ringkas": "Pengerja layar publik Pantau Bencana: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis.",
+      "ringkas": "Pengerja layar publik Centurisk97: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis.",
       "kapan": "public/index.html, public/*.js|css|html di luar modul sebaran/warga, i18n, gambar bagikan/OG, atau tampilan kartu disentuh atau rusak",
       "fokus": [
         "Vanilla JS tanpa build step; tiap modul layar berkas .js + .css sendiri di public/",
@@ -198,6 +199,27 @@
       "milik": [
         "scripts/umum/**",
         "scripts/berita/**"
+      ]
+    },
+    {
+      "nama": "sippa",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja layar staf SIPPA /pipa: cangkang klien, layar perencanaan dan operasi, form lapangan luring, fungsi hitung murni, Studio, 3D, laporan PDF, dan uji tanpa DB-nya.",
+      "kapan": "public/pipa/**, tests/sippa/** disentuh atau rusak, atau rumus hidraulika/zona/pemicu di sisi klien berubah",
+      "fokus": [
+        "public/pipa/** terbit sebagai aset publik: hanya kode dan teks antarmuka, tidak pernah data; data dari /api/sippa/* dan R2 sippa/",
+        "hitung.js = satu sumber rumus; kembar Python scripts/data/sippa/*.py dijaga tests/sippa/kembar.test.mjs terhadap fixtures/acuan.json",
+        "Mesin Studio disalin apa adanya dari berkas pemilik; perubahan hanya tiga jenis bertanda komentar SIPPA:, gerbangSippa hanya menambah hambatan",
+        "INP: chrome kontrol urgent di handler, kerja berat lewat nanti() atau Web Worker; sakelar peta setLayoutProperty/setFilter",
+        "Angka lewat fmt (public/inti/format.js), tanpa toFixed di teks tampil; tiap angka bersumber dan berpil keyakinan; tanpa kata terbukti"
+      ],
+      "larangan": "Jangan menyentuh src/**, migrations/** (minta ke warga-api) atau scripts/data/** (minta ke pipa-data). Jangan menyalin modul public/inti ke public/pipa. Jangan deploy, commit, push, atau melonggarkan gerbang.",
+      "bisa": "membangun dan membetulkan layar /pipa, fungsi hitung murni JS, mesin Studio, adegan 3D, laporan PDF, dan uji tests/sippa",
+      "tidak": "worker dan D1; pipeline Python; vendor pustaka (layar-peta); memeriksa kerjanya sendiri",
+      "milik": [
+        "public/pipa/**",
+        "tests/sippa/**"
       ]
     },
     {
@@ -360,7 +382,7 @@
       "kapan": "scripts/cuaca/**, scripts/udara/**, public/cuaca/** atau public/udara/** disentuh atau rusak",
       "fokus": [
         "Halaman meniru karhutla persis: kepala, peta, legenda dock bawah, kartu Insight, tab URL bersih, bagikan, i18n",
-        "Status resmi BMKG tampil apa adanya, berlabel lembaga dan jam terbit; deteksi sendiri berlabel Pantau Bencana",
+        "Status resmi BMKG tampil apa adanya, berlabel lembaga dan jam terbit; deteksi sendiri berlabel Centurisk97",
         "Data yang tidak bisa diakses dibuang, bukan ditampilkan kosong"
       ],
       "larangan": "Jangan menyentuh worker/D1 (src, migrations), karhutla inline, banjir, gempa, atau .github/workflows (token tanpa scope workflow).",

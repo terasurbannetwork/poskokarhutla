@@ -37,6 +37,10 @@ Rujukan
 
 [34Resep: langkah demi langkah](#b34) [35Kamus: semua yang pernah dibuat](#b35) [36Riwayat keputusan dan perkara terbuka](#b36)
 
+Presentasi
+
+[37Presentasi dan deck PPT](#b37)
+
 Mulai di sini
 
 Bab 01
@@ -4267,3 +4271,100 @@ Jangan ditebak. Tanyakan pemilik, lalu catat vonisnya di bab yang cocok dan di B
 - Peraturan kunci MBG tumbuh dari 10 jadi 79 lalu 136 butir; nomor tidak didaur ulang. Insiden yang melahirkan tiap aturan dicatat sebagai kalimat "Sebab:" di bab terkait.
 
 Sumber: Buku Pegangan tiap proyek, yang tetap jadi rumah aturannya dan diperbarui routine tiap malam. Pedoman ini dihimpun ulang dari keempatnya oleh routine `pembaru-buku-pegangan-utama` pukul 22.30 WIB. Kalau pedoman ini dan buku proyek berbeda, buku proyek yang menang.
+
+Presentasi
+
+Bab 37
+
+## Presentasi dan deck PPT
+
+Semua deck dibangun lewat satu skill: `ppt-konsultan` (`~/.claude/skills/ppt-konsultan`). Target pemilik: deck langsung final tanpa revisi (*"Gw langsung bisa dapat ppt final ga perlu gw ubah"*). Skill ini menggabungkan cara berpikir konsultan, pustaka 3.325 slide rujukan, mesin deck BNPB yang membangun empat deck Grand Design Oktober 2026, format Pertamina NRE dan METI, basis data repo poskokarhutla, dan gerbang mekanis. Bab ini ringkasan aturannya; sumber lengkap ada di skill, dan bila berbeda, skill yang menang.
+
+### Urutan otoritas
+
+1. Kata pemilik, langsung atau tercatat bertanggal.
+2. Format lembaga untuk deck atas nama lembaganya: BNPB (`bnpb/PANDUAN.md`, Buku Pegangan Pantau Bencana bab Selera presentasi), Pertamina NRE x Danantara (`format/pnre`), METI (`format/meti`).
+3. `alfatehan-pptx-rules`.
+4. Gaya rumah skill (`references/gaya.md`, Roboto, latar terang).
+
+### Pintu per lembaga
+
+| Deck atas nama | Mesin | Ciri gaya |
+| --- | --- | --- |
+| BNPB kajian, Grand Design, pembaruan, paparan Presiden | `bnpb/scripts/deck.py` di templat deck pemilik, spek JSON, angka bertoken | navy 051C2C, oranye D9600B, Roboto, judul temuan berkode A1, pil keyakinan data, strip KPI, tabel rekomendasi berkode, kesimpulan 8 kartu + pita ARAHAN |
+| BNPB harian, penanganan, paparan wilayah | generator repo `data/laporan-bnpb/generator/` | pil CUT OFF DATA, peta 3D miring, slot foto untuk sisa ruang |
+| Pertamina NRE x Danantara | `format/pnre/scripts/pnre.js` | Poppins + Arial, teal, sidebar, dua gaya (Rapat Direksi, materi eksternal) |
+| METI | `format/meti/scripts/meti.js` v3 | Poppins, Midnight Energy, slide Tentang METI wajib, peta METI Wilayah |
+| Lainnya | `mesin/bangun.js` | Roboto, arketipe K01 sampai K96 |
+
+### Alur kerja satu deck
+
+1. Brief sekali jalan: cari dulu bahan di dokumen, memori, lampiran; tanya hanya yang belum ada (TOR, audiens dan yang hadir, logo penyelenggara, foto, angka dari pemilik).
+2. Petakan ruangan: catat apa yang menjadi milik tiap pihak yang hadir dan jangan menjelaskan ulang kebijakan kepada pembuatnya.
+3. Berpikir dulu: definisi masalah, issue tree MECE, hipotesis, lalu ghost deck berisi judul saja yang dibaca berurutan harus menjadi ringkasan.
+4. Riset dan bukti: tiap angka punya sumber, tanggal, dan label keyakinan (Resmi, Terverifikasi, Estimasi model, Asumsi kebijakan, Penilaian pakar); angka kunci dua sumber.
+5. Untuk BNPB, ambil bahan dari basis data repo: `cari_data.py angka|hukum|pustaka|tabel|riset`. Angka masuk spek sebagai token `{{angka:kunci}}`, tidak diketik.
+6. Pilih rujukan tata letak dan grafik dari pustaka (`pustaka/cari.py`, `references/panduan-grafik.md`).
+7. Bangun, lalu gerbang sampai 0 GAGAL, render, baca tiap halaman.
+8. Pemeriksa berkonteks bersih menghitung ulang setiap angka dari data mentah dan menyerang tiap slide; perbaiki, bangun ulang.
+9. Serahkan PPTX dan PDF; laporkan yang masih placeholder atau menunggu konfirmasi.
+
+### Isi dan judul
+
+- Judul slide isi adalah satu kalimat temuan berangka, paling banyak dua baris; bila tidak muat, huruf judul dikecilkan sampai 19 pt, tidak turun ke baris ketiga. Judul berlabel umum seperti "Pesan Kunci: ..., empat keputusan ..." dilarang karena terbaca buatan mesin; slide pesan kunci tetap ada, judulnya kalimat temuan.
+- Angka di judul dibuktikan di slide yang sama dan harus sama di seluruh deck.
+- Jawaban dulu: pesan kunci di depan, isi dari masalah ke tindakan, kesimpulan 8 kartu, rekomendasi bernomor dengan pelaku, waktu, dan dasar data.
+- Satu klaim per judul; tafsir yang punya beberapa kemungkinan disajikan sebagai beberapa kemungkinan.
+
+### Bahasa
+
+- Bahasa Indonesia baku, lugas, faktual; angka di depan.
+- Sumber data bukan pelaku: "Berdasarkan data DIBI, terdapat 3.833 jembatan rusak", bukan "DIBI mencatat ...".
+- Dilarang: em dash, titik tengah sebagai pemisah, elipsis, emoji, kontras "X, bukan Y", tiga-serangkai, personifikasi, slogan, pembuka klise ("Di era", "Dalam lanskap"), kata khas AI (krusial, esensial, menavigasi, mendalami, komprehensif sebagai hiasan), huruf kapital penuh untuk penekanan, tanda seru.
+- Istilah: "titik panas" untuk data satelit, "hitungan satelit", "cluster"; rentang memakai en dash (otomatis di mesin).
+- Nomenklatur lembaga terbaru: KLHK sudah dipecah menjadi Kementerian Lingkungan Hidup dan Kementerian Kehutanan (SiPongi milik Kementerian Kehutanan); Badan Komunikasi Pemerintah RI ditulis lengkap.
+- Nada lembaga negara: tenang, berbasis bukti, netral, empatik untuk korban; angka korban hanya dari sumber resmi bertanggal.
+
+### Tata letak dan ruang
+
+- Vonis pemilik 26 Okt 2026 atas empat deck Grand Design: "ukuran hurufnya ga masalah kecil tapi white spacenya ga banyak ... banyakin aja datanya". Huruf kecil boleh (gaya kajian BNPB sampai 6 pt untuk teks yang dibaca); ruang kosong tidak.
+- Panel setinggi isinya; sisa ruang diisi data (baris, kolom, kartu angka, pita bawah, grafik kedua) atau slot foto, tidak dengan meregangkan panel atau memperbesar huruf.
+- Gerbang ruang mati (`rupa.py` di skill, D-39 di mesin BNPB dan pembangun repo): blok 1% yang kosong dan sekelilingnya kosong, batas 25% per slide isi. Lima deck Grand Design Oktober 2026 dibangun ulang 26 Okt di atas registri repo: 16 slide yang tadinya 25 sampai 43% kosong kini 1 sampai 22%, diisi pita bawah, kartu, dan baris dari registri.
+- Kotak keterangan mengambang di atas grafik dilarang ("out of place"); keterangan masuk panel samping, baris data sejajar kategori di bawah sumbu, atau pita.
+- Ubin sorotan memakai tint warna angkanya sendiri; catatan dan sumber paling banyak dua baris di pita kaki.
+
+### Grafik, tabel, ikon, gambar
+
+- Pilih grafik dari kata kerja judul: tren ke kolom atau garis, peringkat ke batang horizontal terurut (terbesar di atas), komposisi ke kolom 100%, dekomposisi ke waterfall, deviasi ke batang berpasangan, sebaran ke rentang, lokasi ke peta. Pie hanya untuk dua sampai tiga irisan.
+- Satu warna sorot per grafik; naik oranye, turun biru; sorot dengan bingkai, bukan warna baru.
+- Semua yang bisa disunting dibuat native: teks, tabel, grafik, pil, penanda dan label peta. Gambar hanya untuk foto, logo, peta dasar, ikon.
+- Ikon garis dalam lingkaran, wajib di kepala tabel, kartu angka, dan chip; lembaga ditulis sebagai chip berikon, bukan logo.
+- Logo tidak boleh berubah proporsi; elemen grafis merek memakai gambar asli lambang, bukan gambar ulang.
+- Foto relevan berlisensi bebas dengan atribusi; tanpa ilustrasi AI, foto stok, atau placeholder.
+
+### Basis data BNPB
+
+Satu sumber: repo poskokarhutla. `bnpb/scripts/sinkron_repo.py` menarik ke skill:
+- registri 2.285 angka bertoken (DIBI, Renas, Renstra, IRBI, air Jawa, skenario, lembaga, program terbukti);
+- CSV DIBI per kabupaten, provinsi, dan nasional;
+- `pustaka.json`.
+
+`bnpb/scripts/cari_data.py` mencari di semua sumber itu, ditambah teks penuh JDIH BNPB (233 dokumen, 9.294 segmen pasal) dan catatan riset kajian. Peraturan dikutip dengan jenis, nomor, tahun, pasal, dan URL JDIH.
+
+### Gerbang
+
+- Mesin BNPB: QA D-1 sampai D-39, anti-slop S-1 sampai S-43, uji diri 44 fixture plus fixture ruang mati; laporan QA harus LOLOS dan jumlah halaman PDF sama dengan slide.
+- Gerbang umum `scripts/periksa.py`:
+  - huruf, sumber, sisa kerja;
+  - tata letak (keluar halaman, bertumpuk, meluap, kontras WCAG, perataan);
+  - bahasa, nada, dan data sensitif;
+  - judul (berlabel umum, titik koma, terpotong, kembar);
+  - gambar terdistorsi;
+  - angka judul terbukti di slide.
+- Aturan tanpa gerbang mekanis dianggap belum jadi; pemeriksa berkonteks bersih tetap wajib karena gerbang tidak menangkap cacat substansi (sensor satelit bercampur, definisi angka berbeda, tafsir tunggal).
+
+### Perkara terbuka
+
+- Latar gelap: format BNPB, METI, dan PNRE memakai penutup atau pembatas gelap, sedangkan vonis umum pemilik melarang latar gelap. Menunggu keputusan pemilik; sementara terang.
+- Aset gambar PNRE (sidebar, header, footer, logo, foto sampul) belum ada di skill.
+- Logo BNPB masih raster 250 px; berkas vektor resmi perlu dari Humas BNPB.

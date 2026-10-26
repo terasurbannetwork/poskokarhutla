@@ -45,7 +45,7 @@ const Laci = {
     /* 6. bandara di zona guncangan MMI VI atau lebih (A35, model guncangan yang sama) */
     if (g.m >= 5 && typeof GempaGuncangan !== "undefined") Guncang.bandara(g).then(B => { if (!B?.length) return;
       tambah(6, `<h4 class="lc-h">Bandara di zona guncangan</h4><table class="tb2"><tbody>${B.slice(0, 5).map(b => baris(`<span translate="no">${esc(b.nama.replace(/ (International )?Airport$/, ""))}</span>`, `<span class="lc-mmi" style="--w:${MMI_WARNA[Math.round(b.mmi)]};color:${b.mmi < 3.5 ? "#3b3320" : "#fff"}">MMI ${rom(b.mmi)}</span>`)).join("")}</tbody></table>
-        <p class="fnd">${B.length > 5 ? `${fmt(B.length)} bandara diperkirakan MMI VI atau lebih, lima teratas ditampilkan. ` : ""}Perkiraan model guncangan, bukan laporan kerusakan. Sumber: OurAirports, model guncangan Pantau Bencana</p>`); }).catch(() => {});
+        <p class="fnd">${B.length > 5 ? `${fmt(B.length)} bandara diperkirakan MMI VI atau lebih, lima teratas ditampilkan. ` : ""}Perkiraan model guncangan, bukan laporan kerusakan. Sumber: OurAirports, model guncangan Centurisk97</p>`); }).catch(() => {});
     /* 7. citra Sentinel-2 sebelum dan sesudah, hanya gempa M 6,5+ dangkal di darat yang sudah diproses citra.py */
     if (g.m >= 6.5) Citra.untuk(g).then(k => { if (!k?.citra?.length) return;
       const tg = c => KG.tgl(c.tgl + "T12:00:00+07:00", {day: "numeric", month: "short", year: "numeric"}), ar = {sebelum: "Sebelum", sesudah: "Sesudah"};

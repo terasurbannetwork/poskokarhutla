@@ -90,7 +90,7 @@
   function tampil(nama) {
     for (const n of ["Cari", "Tanya", "Relasi", "Dok"]) $("p" + n).hidden = n !== nama;
     for (const b of $("tab").children) b.setAttribute("aria-pressed", String(nama !== "Dok" && b.dataset.t === tabAktif));
-    if (nama !== "Dok") document.title = "Pustaka Hukum BNPB · Pantau Bencana";
+    if (nama !== "Dok") document.title = "Pustaka Hukum BNPB · Centurisk97";
   }
 
   /* =================== CARI =================== */

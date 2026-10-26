@@ -105,7 +105,7 @@ uji("indeks /api/v1 mencantumkan semua endpoint beserta kebutuhan kuncinya; /api
   for (const nama of Object.keys(DATA)) assert.ok(j.includes(`/api/v1/data/${nama}`), nama);
   for (const x of ["/api/v1/rumah-rusak", "/api/v1/rumah-rusak/rekap", "/api/v1/bangunan/terpapar", "/api/v1/bangunan/kec", "/api/v1/bangunan/grid", "/api/v1/laporan-bnpb"]) assert.equal(r.j.endpoint.find(e => e.jalur === x)?.kunci, true, x);
   assert.equal(r.j.endpoint.find(e => e.jalur === "/api/v1/data/meta").kunci, false);
-  const d = await api("GET", "/api"); assert.equal(d.s, 200); assert.match(d.t, /API data Pantau Bencana/); assert.match(d.h.get("content-type"), /text\/html/);
+  const d = await api("GET", "/api"); assert.equal(d.s, 200); assert.match(d.t, /API data Centurisk97/); assert.match(d.h.get("content-type"), /text\/html/);
   assert.equal((await api("GET", "/api/v1/tidak-ada")).s, 404);
   assert.equal((await api("POST", "/api/v1/data/meta", {})).s, 405);
 });

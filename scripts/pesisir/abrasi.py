@@ -546,7 +546,7 @@ def main(pilih=None):
                       "rujukan": "Bishop-Taylor dkk. 2021, DEA Coastlines, doi:10.1016/j.rse.2021.112734"},
            "catatan": CATATAN, "situs": situs_out, "transek": transek_out,
            "sumber": "Landsat Collection 2 Level-2 (USGS), via Microsoft Planetary Computer. Garis dasar transek: OpenStreetMap (ODbL). "
-                     "Deteksi Pantau Bencana."}
+                     "Deteksi Centurisk97."}
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
     with open(KELUAR + ".tmp", "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))
@@ -587,7 +587,7 @@ RUJUKAN = [
 
 def validasi():
     J = json.load(open(KELUAR))
-    print("| Situs | Desa | Periode | Rujukan | Angka rujukan | Pantau Bencana: transek terbaca, mundur/maju nyata, "
+    print("| Situs | Desa | Periode | Rujukan | Angka rujukan | Centurisk97: transek terbaca, mundur/maju nyata, "
           "median laju, rerata transek mundur, rerata transek maju, mundur terparah (m/th) |")
     print("| --- | --- | --- | --- | --- | --- |")
     for situs, ds, y1, y2, ruj, angka in RUJUKAN:

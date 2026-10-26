@@ -12,7 +12,7 @@ uji("teks WA lengkap: angka kunci, rentang terkoreksi, navigasi ke titik masuk, 
   assert.doesNotMatch(s.split("Front aktif")[0], /\b40 ha|\b30 ha/, "luas_aktif tidak pernah jadi luas terbakar");
   assert.match(s, /destination=-2\.5,113\.9/, "navigasi ke titik masuk");
   assert.match(s, /ukuran piksel sekitar 380 m, posisi bisa meleset lebih jauh/); assert.match(s, /konsesi HTI PT Contoh Lestari \(pemegang Grup Contoh\)/);
-  assert.match(s, /regu 3 \(rentang 2 sampai 5\)/); assert.match(s, /Sumber: deteksi satelit \(VIIRS, MODIS, Himawari\) dan hitungan Pantau Bencana\. Belum divalidasi lapangan\./);
+  assert.match(s, /regu 3 \(rentang 2 sampai 5\)/); assert.match(s, /Sumber: deteksi satelit \(VIIRS, MODIS, Himawari\) dan hitungan Centurisk97\. Belum divalidasi lapangan\./);
   assert.doesNotMatch(s, /·|NaN|undefined|null|—/);
 });
 uji("teks WA tanpa kartu atau kartu kosong: yang ada saja, tanpa galat", () => {

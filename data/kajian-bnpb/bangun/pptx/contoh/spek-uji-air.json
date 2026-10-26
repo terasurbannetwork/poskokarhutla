@@ -375,7 +375,28 @@
             "Kemenkeu"
           ]
         }
-      ]
+      ],
+      "pita": {
+        "label": "Horizon peta jalan",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "kalender",
+            "judul": "100 hari",
+            "isi": "Aksi yang bisa dimulai dengan anggaran dan aturan yang sudah ada."
+          },
+          {
+            "ikon": "kalender",
+            "judul": "2026–2027",
+            "isi": "Aksi yang butuh penyesuaian program dan koordinasi lintas K/L."
+          },
+          {
+            "ikon": "kalender",
+            "judul": "2028–2030",
+            "isi": "Aksi yang butuh regulasi baru atau pembangunan fisik."
+          }
+        ]
+      }
     }
   ]
 }

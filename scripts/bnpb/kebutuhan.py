@@ -34,17 +34,17 @@ RONI_EL_NINO = 0.5   # ambang RONI untuk menandai skenario analog sebagai yang r
 UH = {"14": 370e3, "15": 370e3, "16": 380e3, "61": 380e3, "62": 360e3, "63": 380e3, "64": 430e3, "53": 430e3, "93": 580e3}
 UH_BAWAAN = 380e3
 TARIF = {
-    "heli_jam": {"nilai": 150e6, "satuan": "Rp/jam terbang", "sumber": "asumsi kerja tim Pantau Bencana: sewa helikopter water bombing, acuan Dana Siap Pakai BNPB"},
+    "heli_jam": {"nilai": 150e6, "satuan": "Rp/jam terbang", "sumber": "asumsi kerja tim Centurisk97: sewa helikopter water bombing, acuan Dana Siap Pakai BNPB"},
     "uang_harian": {"nilai": UH, "bawaan": UH_BAWAAN, "satuan": "Rp/orang/hari", "sumber": "SBM 2026 (Kemenkeu), uang harian luar kota per provinsi; provinsi lain memakai nilai bawaan (asumsi)"},
-    "porsi_bko": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "asumsi kerja tim Pantau Bencana: porsi personel yang dibayar uang harian penuh"},
-    "porsi_mpa": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "asumsi kerja tim Pantau Bencana: porsi Masyarakat Peduli Api"},
-    "honor_mpa": {"nilai": 100e3, "satuan": "Rp/orang/hari", "sumber": "asumsi kerja tim Pantau Bencana"},
-    "konsumsi": {"nilai": 150e3, "satuan": "Rp/orang/hari", "sumber": "asumsi kerja tim Pantau Bencana"},
-    "harga_masker": {"nilai": 15e3, "satuan": "Rp/masker N95", "sumber": "estimasi harga pasar, asumsi kerja tim Pantau Bencana"},
+    "porsi_bko": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "asumsi kerja tim Centurisk97: porsi personel yang dibayar uang harian penuh"},
+    "porsi_mpa": {"nilai": 0.4, "satuan": "porsi personel", "sumber": "asumsi kerja tim Centurisk97: porsi Masyarakat Peduli Api"},
+    "honor_mpa": {"nilai": 100e3, "satuan": "Rp/orang/hari", "sumber": "asumsi kerja tim Centurisk97"},
+    "konsumsi": {"nilai": 150e3, "satuan": "Rp/orang/hari", "sumber": "asumsi kerja tim Centurisk97"},
+    "harga_masker": {"nilai": 15e3, "satuan": "Rp/masker N95", "sumber": "estimasi harga pasar, asumsi kerja tim Centurisk97"},
 }
 KOEF = {
     "orang_per_regu": {"nilai": 15, "satuan": "orang/regu", "sumber": "Permen LHK P.32/2016"},
-    "jam_heli_per_api": {"nilai": 3, "rendah": 1.5, "tinggi": 6, "satuan": "jam terbang/cluster prioritas", "sumber": "asumsi kerja tim Pantau Bencana; rentang rendah 1,5 dan tinggi 6 dipakai untuk batas rupiah"},
+    "jam_heli_per_api": {"nilai": 3, "rendah": 1.5, "tinggi": 6, "satuan": "jam terbang/cluster prioritas", "sumber": "asumsi kerja tim Centurisk97; rentang rendah 1,5 dan tinggi 6 dipakai untuk batas rupiah"},
     "rotasi": {"nilai": 1.5, "satuan": "kali", "sumber": "skenario tengah rencana operasi: tiga giliran, dua regu bekerja"},
     "masker_per_orang": {"nilai": 2, "satuan": "masker/orang terdampak", "sumber": "ASUMSI platform: dua masker per orang untuk satu episode asap"},
 }

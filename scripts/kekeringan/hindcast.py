@@ -27,7 +27,7 @@ def main():
     ner = json.load(open(os.path.join(N.AKAR, "public/data/kekeringan_neraca.json")))["sel_data"]
     kunci = [f"{la:g},{lo:g}" for la, lo in zip(ner["lat"], ner["lon"])]
     iklim = json.load(open(N.IKLIM))
-    o = {"label": "Deteksi Pantau Bencana", "lat": ner["lat"], "lon": ner["lon"], "tahun": bangun(iklim, kunci, TAHUN),
+    o = {"label": "Deteksi Centurisk97", "lat": ner["lat"], "lon": ner["lon"], "tahun": bangun(iklim, kunci, TAHUN),
          "catatan": "NASA POWER bulanan tahun nyata, mulai 1 Juni, simpanan penuh. 2019 tidak ada di bahan iklim."}
     json.dump(o, open(KELUAR, "w"), separators=(",", ":"))
     print(f"hindcast: {os.path.getsize(KELUAR) / 1000:.0f} KB; tahun {list(o['tahun'])}")

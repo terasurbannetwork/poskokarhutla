@@ -18,7 +18,7 @@ judul: Asumsi mesin simulasi dan kartu skenario, nilai, pemakaian, dan label key
 sumber: Perka BNPB 7/2008; Cabinet Office (2025); Cabinet Office Jepang (2025); paket skenario geologi dan hidrometeorologi Pantau Bencana; Bab 3 dan Bab 11 kajian ini
 keyakinan: campuran
 data_per: 23 Okt 2026
-catatan: Faktor evakuasi tsunami adalah tuas kepekaan, bukan perkiraan korban; korban tsunami tidak dihitung sampai genangan resmi InaRISK dipakai.
+catatan: Faktor evakuasi tsunami adalah tuas kepekaan, bukan perkiraan korban.
 
 | ASUMSI | NILAI | DIPAKAI DI | KEYAKINAN |
 | --- | --- | --- | --- |
@@ -36,11 +36,11 @@ catatan: Faktor evakuasi tsunami adalah tuas kepekaan, bukan perkiraan korban; k
 | Rasio mortalitas cakupan peringatan dini lintas negara | {{angka:wmo.2022.rasio_mortalitas|satuan}} | kepekaan peringatan dini hidrometeorologi selain tanah longsor | asumsi-kebijakan |
 :::
 
-**Rasio mortalitas lintas negara adalah rasio asosiasi antarnegara yang belum diuji untuk Indonesia, bukan efek kausal** [@wmo-2022-peringatan-dini]. Angkanya tidak dipakai sebagai dasar tesis atau keputusan, dan hanya tampil di kartu dan grafik kepekaan berlabel (@sub:hm-peringatan). Uji kepekaan aturan daftar perhatian dimuat di @tbl:daftar-perhatian.
+**Rasio mortalitas lintas negara adalah rasio asosiasi antarnegara yang belum diuji untuk Indonesia, bukan efek kausal** [@wmo-2022-peringatan-dini]. Angkanya tidak dipakai sebagai dasar tesis atau keputusan, dan hanya tampil di kartu dan grafik kepekaan berlabel (@sub:hm-peringatan). Uji kepekaan aturan daftar perhatian dimuat di @tbl:daftar-perhatian. Korban tsunami tidak dihitung sampai genangan resmi InaRISK dipakai.
 
 ## Kepekaan Model Gempa {#sub:f-kepekaan}
 
-**Kepatuhan bangunan adalah tuas korban guncangan yang dihitung model: tanpa tembok tanpa tulangan, korban model megathrust selatan Jawa bermagnitudo maksimum menjadi {{angka:geologi.kepekaan.bangunan_penuh.jawa_mmaks}} kali dasar** (@tbl:f-kepekaan). Besar efek tuas itu belum diukur di Indonesia, sehingga faktor kepekaan dibaca sebagai arah, bukan perkiraan korban yang dapat dicegah (@sub:tuas).
+**Kepatuhan bangunan adalah tuas korban guncangan yang dihitung model: tanpa tembok tanpa tulangan, korban model megathrust selatan Jawa pada magnitudo maksimum menjadi {{angka:geologi.kepekaan.bangunan_penuh.jawa_mmaks}} kali dasar** (@tbl:f-kepekaan). Besar efek tuas itu belum diukur di Indonesia, sehingga faktor kepekaan dibaca sebagai arah, bukan perkiraan korban yang dapat dicegah (@sub:tuas). Jam kejadian membandingkan okupansi rumah malam hari ({{angka:geologi.okupansi.malam|fmt=2}}) dengan rata-rata ({{angka:geologi.okupansi.rata|fmt=2}}), dan tuas evakuasi tsunami tidak dimuat.
 
 ::: tabel {#tbl:f-kepekaan}
 judul: Kepekaan korban guncangan dan rumah rusak berat model terhadap kepatuhan bangunan dan jam kejadian per skenario gempa, estimasi 2026
@@ -50,7 +50,7 @@ grup: SKENARIO
 sumber: Platform Pantau Bencana, mesin guncangan dan kerusakan; WorldPop 2026
 keyakinan: estimasi-model; belum diuji balik
 data_per: 23 Okt 2026
-catatan: Nilai tuas kepatuhan bangunan adalah porsi tembok tanpa tulangan, beton terkekang, dan kayu; jam kejadian membandingkan okupansi malam dengan rata-rata. Tuas evakuasi tsunami tidak dimuat.
+catatan: Tuas kepatuhan bangunan adalah porsi tembok tanpa tulangan, beton terkekang, dan kayu.
 :::
 
 ## Celah Data yang Tertutup {#sub:f-celah}

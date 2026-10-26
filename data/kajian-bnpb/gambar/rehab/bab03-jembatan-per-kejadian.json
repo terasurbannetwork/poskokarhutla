@@ -1,0 +1,286 @@
+{
+ "nama": "bab03-jembatan-per-kejadian",
+ "keterangan": "Jembatan rusak tercatat DIBI per kejadian besar 2018–2025, dengan pembanding Kementerian Pekerjaan Umum untuk Sumatra 2025",
+ "sumber": "Pengolahan data DIBI BNPB per kejadian, ditarik 23 Oktober 2026; Kementerian Pekerjaan Umum, data 7 Mei 2026",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  218.5
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.71
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Jembatan rusak menurut DIBI dan pembanding Kementerian PU",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "pembanding Kementerian PU",
+   "jenis": "kotak",
+   "warna": "#FDF1E8"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "identitas",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#FDF1E8": [
+   "legenda",
+   "sorot-baris"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ],
+  "#E6EAF0": [
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 226.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Jembatan rusak menurut DIBI dan pembanding Kementerian PU"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 240.82,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Jembatan rusak menurut DIBI dan pembanding Kementerian PU"
+  },
+  {
+   "x": 266.82,
+   "y": 3,
+   "w": 103.73,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-252",
+   "teks": "pembanding Kementerian PU"
+  },
+  {
+   "x": 252.82,
+   "y": 2,
+   "w": 117.73,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-252",
+   "teks": "pembanding Kementerian PU"
+  },
+  {
+   "x": 21,
+   "y": 18,
+   "w": 40.37,
+   "h": 8.5,
+   "jenis": "teks",
+   "teks": "KEJADIAN"
+  },
+  {
+   "x": 274.09,
+   "y": 18,
+   "w": 45.1,
+   "h": 8.5,
+   "jenis": "teks",
+   "teks": "JEMBATAN"
+  },
+  {
+   "x": 21,
+   "y": 34,
+   "w": 116.46,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Banjir dan longsor Sumatra 2025"
+  },
+  {
+   "x": 379.54,
+   "y": 33.75,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "726"
+  },
+  {
+   "x": 21,
+   "y": 51,
+   "w": 83.34,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Siklon Seroja NTT 2021"
+  },
+  {
+   "x": 290.5,
+   "y": 50.75,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "95"
+  },
+  {
+   "x": 21,
+   "y": 68,
+   "w": 88.55,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Banjir Jabodetabek 2020"
+  },
+  {
+   "x": 281.75,
+   "y": 67.75,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "33"
+  },
+  {
+   "x": 21,
+   "y": 85,
+   "w": 67.93,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Banjir Ambon 2019"
+  },
+  {
+   "x": 278.5,
+   "y": 84.75,
+   "w": 9.75,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "10"
+  },
+  {
+   "x": 21,
+   "y": 102,
+   "w": 71.5,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Erupsi Semeru 2021"
+  },
+  {
+   "x": 278.36,
+   "y": 101.75,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "9"
+  },
+  {
+   "x": 21,
+   "y": 119,
+   "w": 107.89,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Gempa Sulawesi Tengah 2018"
+  },
+  {
+   "x": 278.08,
+   "y": 118.75,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "7"
+  },
+  {
+   "x": 21,
+   "y": 136,
+   "w": 100.22,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Gempa Sulawesi Barat 2021"
+  },
+  {
+   "x": 278.08,
+   "y": 135.75,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "7"
+  },
+  {
+   "x": 21,
+   "y": 153,
+   "w": 72.41,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Gempa Cianjur 2022"
+  },
+  {
+   "x": 277.59,
+   "y": 152.75,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "2"
+  },
+  {
+   "x": 21,
+   "y": 170,
+   "w": 121.76,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Banjir Demak 2024 (tidak tercatat)"
+  },
+  {
+   "x": 277.59,
+   "y": 169.75,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0"
+  },
+  {
+   "x": 21,
+   "y": 187,
+   "w": 131.08,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Gempa Lombok 2018 (tidak tercatat)"
+  },
+  {
+   "x": 277.59,
+   "y": 186.75,
+   "w": 4.88,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "0"
+  },
+  {
+   "x": 21,
+   "y": 204,
+   "w": 245.09,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sumatra 2025, jembatan daerah terdampak menurut Kementerian PU"
+  },
+  {
+   "x": 443.74,
+   "y": 203.75,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1.181"
+  }
+ ],
+ "jenis": "horizontal",
+ "pesan": "G4",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 11
+}

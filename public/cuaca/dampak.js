@@ -43,7 +43,7 @@ const Dampak = (() => {
     const judul = `${Kartu.hl(fmt(v(akhir)) + " " + sat)} ${nm.toLowerCase()} akibat cuaca ekstrem sepanjang ${akhir}${penuh ? "" : " (belum penuh)"}${d != null && penuh ? `, ${Kartu.hl((d >= 0 ? "naik " : "turun ") + fmt(Math.abs(d)) + "%")} dari ${lalu}` : ""}; tertinggi pada ${Kartu.hl(pk)} dengan ${fmt(v(pk))}`;
     const ctl = `<div class="seg" role="group">${ada.map(x => `<button data-dks="k" data-v="${x}" aria-pressed="${st.k === x}">${BNPB[x][0]}</button>`).join("")}</div>`;
     return bag("hist", judul, `<svg class="dk-svg" viewBox="0 0 ${W2} ${B + 22}" role="img" aria-label="${nm} per tahun">${g}</svg>`, `Sumber: ${sumber.BNPB} dan ${sumber.dibi}, kejadian cuaca ekstrem ${th[0]}–${akhir}; hanya angka yang tercatat`, ctl); }
-  /* prakiraan 72 jam Pantau Bencana (cuaca_dampak.json: zona, pelabuhan, bandara, pesisir); angka nol di semua hari = bagian dibuang, bukan "0" */
+  /* prakiraan 72 jam Centurisk97 (cuaca_dampak.json: zona, pelabuhan, bandara, pesisir); angka nol di semua hari = bagian dibuang, bukan "0" */
   const hari3 = () => (D.hari || []).map((_, i) => lbl3(i));
   const ZM = {jiwa: ["Penduduk", "jiwa"], sekolah: ["Sekolah", "sekolah"], faskes: ["Fasilitas kesehatan", "fasilitas kesehatan"]};
   function zona() {
@@ -52,14 +52,14 @@ const Dampak = (() => {
     const v = Z[st.zm], mx = v.indexOf(Math.max(...v)), ctl = ada.length > 1 ? `<div class="seg" role="group">${ada.map(m => `<button data-dks="zm" data-v="${m}" aria-pressed="${st.zm === m}">${ZM[m][0]}</button>`).join("")}</div>` : "";
     return bag("zona", `${Kartu.hl(fmt(v[mx]) + " " + ZM[st.zm][1])} berada di kecamatan yang diprakirakan hujan lebat (Siaga atau lebih) ${kapan3(mx)}`,
       hbar(v.map((x, i) => ({n: lbl3(i), v: x, txt: fmt(x) + " " + ZM[st.zm][1], tip: `<b>${lbl3(i)}</b><br>${fmt(x)} ${ZM[st.zm][1]}<br>${fmt(Z.kec?.[i] ?? 0)} kecamatan`})), W.merah),
-      `Prakiraan, bukan yang sudah terdampak. Sumber: Deteksi Pantau Bencana dari Open-Meteo; penduduk WorldPop 2026`, ctl); }
+      `Prakiraan, bukan yang sudah terdampak. Sumber: Deteksi Centurisk97 dari Open-Meteo; penduduk WorldPop 2026`, ctl); }
   function sarana() {
     if (!S.sar || !D.hari) return ""; const j = Math.min(st.sh, D.hari.length - 1), nama = {pelabuhan: r => S.sar.pelabuhan[r[0]], bandara: r => S.sar.bandara[r[0]]};
     const B = [...(D.pelabuhan || []).map(r => ({j: "Pelabuhan", s: nama.pelabuhan(r), t: r[1][j], v: fmt(r[2] / 10) + " m", g: r[3]})), ...(D.bandara || []).map(r => ({j: "Bandara", s: nama.bandara(r), t: r[1][j], v: fmt(r[2]) + " mm", g: r[3]}))]
       .filter(x => x.s && x.t > 0).sort((a, b) => b.t - a.t); if (!B.length && !D.hari.some((_, i) => [...(D.pelabuhan || []), ...(D.bandara || [])].some(r => r[1][i] > 0))) return "";
     const np = B.filter(x => x.j === "Pelabuhan").length, nb = B.length - np, ctl = `<div class="seg" role="group">${D.hari.map((_, i) => `<button data-dks="sh" data-v="${i}" aria-pressed="${j === i}">${lbl3(i)}</button>`).join("")}</div>`;
     const tab = B.length ? `<div class="tw"><table><thead><tr><th>Nama</th><th>Jenis</th><th>Tingkat</th><th class="n">Gelombang atau hujan</th><th class="n">Embusan (km/jam)</th></tr></thead><tbody>${B.slice(0, 15).map(x => `<tr><td translate="no">${esc(x.j === "Bandara" ? x.s[1] : x.s[0])}</td><td>${x.j}</td><td>${pilT(x.t)}</td><td class="n">${x.v}</td><td class="n">${fmt(x.g)}</td></tr>`).join("")}</tbody></table></div>` : "";
-    return bag("sarana", `${Kartu.hl(fmt(np) + " pelabuhan")} dan ${Kartu.hl(fmt(nb) + " bandara")} diprakirakan berstatus Waspada atau lebih ${kapan3(j)}`, tab, `Prakiraan. Sumber: Deteksi Pantau Bencana dari Open-Meteo dan Open-Meteo Marine`, ctl); }
+    return bag("sarana", `${Kartu.hl(fmt(np) + " pelabuhan")} dan ${Kartu.hl(fmt(nb) + " bandara")} diprakirakan berstatus Waspada atau lebih ${kapan3(j)}`, tab, `Prakiraan. Sumber: Deteksi Centurisk97 dari Open-Meteo dan Open-Meteo Marine`, ctl); }
   function pesisir() {
     const v = D.pesisir?.jiwa; if (!v || !D.hari || !v.some(x => x > 0)) return ""; const mx = v.indexOf(Math.max(...v));
     return bag("pesisir", `${Kartu.hl(jt(v[mx]) + " jiwa")} tinggal di kecamatan pesisir dengan gelombang 2,5 m atau lebih ${kapan3(mx)}`,

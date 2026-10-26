@@ -96,3 +96,23 @@ uji("pemirsa: ubah tab berlaku untuk sesi yang hidup; cabut mengakhiri sesi; kel
   assert.equal((await masuk(A.username, rs.j.sandi)).status, 401, "akun dicabut tidak bisa masuk");
   assert.equal((await api("POST", `/api/pemirsa/admin/${A.id}`, {aksi: "ubah", tab: ["peta"]}, ADMIN)).s, 409);
 });
+
+uji("sandi awal pilihan Super Admin: buat dan reset memakai sandi itu; isian salah ditolak tanpa menulis; kosong tetap acak", async () => {
+  const awal = await n("pemirsa");
+  for (const sandi of ["pendek7", "x".repeat(65), " berspasi1", "berspasi1 ", 12345678])
+    assert.equal((await api("POST", "/api/pemirsa/admin/buat", {nama: "Tamu Sandi", tab: ["peta"], sandi}, ADMIN)).s, 400, `sandi ${JSON.stringify(sandi)}`);
+  assert.equal(await n("pemirsa"), awal, "isian salah tidak membuat akun");
+  const r = await api("POST", "/api/pemirsa/admin/buat", {nama: "Tamu Sandi", tab: ["peta"], sandi: "Kolteguh#2026"}, ADMIN);
+  assert.equal(r.s, 201); assert.equal(r.j.sandi, "Kolteguh#2026");
+  assert.equal((await masuk(r.j.username, "Kolteguh#2026")).status, 303, "masuk dengan sandi awal");
+  const id = r.j.pemirsa.id;
+  assert.equal((await api("POST", `/api/pemirsa/admin/${id}`, {aksi: "reset", sandi: "pendek"}, ADMIN)).s, 400);
+  assert.equal((await masuk(r.j.username, "Kolteguh#2026")).status, 303, "reset yang ditolak tidak mengubah sandi");
+  const rs = await api("POST", `/api/pemirsa/admin/${id}`, {aksi: "reset", sandi: "SandiBaru-2026"}, ADMIN);
+  assert.equal(rs.s, 200); assert.equal(rs.j.sandi, "SandiBaru-2026");
+  assert.equal((await masuk(r.j.username, "Kolteguh#2026")).status, 401, "sandi lama mati");
+  assert.equal((await masuk(r.j.username, "SandiBaru-2026")).status, 303);
+  const acak = await api("POST", `/api/pemirsa/admin/${id}`, {aksi: "reset", sandi: ""}, ADMIN);
+  assert.equal(acak.s, 200); assert.notEqual(acak.j.sandi, "SandiBaru-2026"); assert.ok(acak.j.sandi.length >= 12, "kosong = sandi acak");
+  assert.equal((await api("POST", "/api/pemirsa/admin/buat", {nama: "Tamu Sandi", tab: ["peta"], sandi: "Kolteguh#2026"}, MOD2)).s, 403, "moderator biasa tetap ditolak");
+});

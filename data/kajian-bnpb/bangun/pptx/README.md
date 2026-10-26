@@ -35,12 +35,21 @@ Tanpa argumen keluaran, nama berkas mengikuti `tema.json` `kajian.<k>.nama_berka
 | --- | --- | --- |
 | Python 3.15 + `requirements.txt` | python-pptx, PyMuPDF (metrik, raster ikon, foto, PDF) | `data/kajian-bnpb/.venv`: `python3 -m venv .venv && .venv/bin/pip install -r bangun/pptx/requirements.txt` |
 | LibreOffice 26.2 | PPTX ke PDF | `SOFFICE`, lalu `soffice`/`libreoffice` di PATH, lalu `/opt/homebrew/bin`, lalu `/Applications/LibreOffice.app` |
-| poppler 26.10 (`pdffonts`, `pdftoppm`) | D-4 di PDF, PNG bukti | PATH |
+| poppler 26.10 (`pdffonts`, `pdftoppm`) | D-4 di PDF, D-39 ruang mati, PNG bukti | PATH |
 | Node 22 | membaca `GLIF` dari `bangun/visual/ikon.mjs` (Lucide yang disalin ke repo, glif deck, glif khusus) | `NODE`, lalu PATH |
 | Roboto Regular dan Bold | metrik pas judul dan muat baris; font sistem juga dipakai soffice | `ROBOTO_DIR`, lalu `tema.json` `font.berkas`, lalu `public/vendor/roboto`. Bila soffice tidak menemukan Roboto, pdffonts di `periksa.py` menolak PDF-nya |
 
 Kunci cache ikon (`keluaran/ikon/<konsep>-<hex>-<hash glif>.png`) memuat isi glif, jadi glif yang berubah di komponen ikon
 tidak memakai PNG lama.
+
+## Gerbang ruang mati (D-39)
+
+`periksa()` merender tiap halaman PDF berkaki (slide isi) dengan `pdftoppm` dan mengukur ruang mati di zona isi: blok
+1% x 1% yang seragam sewarna latar dan sekelilingnya juga kosong. Batas 25% (`RUANG_MATI_MAKS`); algoritmanya sama
+dengan `rupa.py` skill ppt-konsultan. Vonis pemilik 26 Okt 2026 atas empat deck Grand Design: huruf kecil boleh,
+ruang kosong tidak; panel yang direntangkan setinggi slide padahal isinya pendek diisi data atau pita bawah, bukan
+diregangkan. Slide `rekomendasi` lanjutan dengan sedikit baris memakai kunci `pita` (sama dengan `temuan`). Fixture
+uji diri membangun lanjutan rekomendasi tanpa pita dan harus ditolak D-39.
 
 ## Menyetel tampilan
 

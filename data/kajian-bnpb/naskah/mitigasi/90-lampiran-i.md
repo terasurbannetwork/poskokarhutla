@@ -7,7 +7,7 @@ status: final
 
 # Register Rekomendasi dan Tabel Silang Kajian Ketahanan Air {#lamp:register}
 
-Register rekomendasi kedua kajian BNPB memakai satu daftar kode: kode berawalan R-A dipakai Grand Design Ketahanan Air Pulau Jawa 2026–2030 dan kajian ini, sedangkan kode berawalan R-M khusus kajian mitigasi. Nomor dua digit di kolom REK adalah nomor rekomendasi di dokumen ini; rincian dan indikator selesai tiap baris ada di @tbl:rek-internal dan @tbl:rek-lintas. Nama unit mengikuti Perban BNPB 6/2025 jo. 11/2025 [@bnpb-2025-otk; @bnpb-2025-otk-ubah].
+Register rekomendasi kedua kajian BNPB memakai satu daftar kode, dan tiap kode berawalan huruf R. Kode seri A dipakai Grand Design Ketahanan Air Pulau Jawa 2026–2030 dan kajian ini, sedangkan kode seri M khusus kajian mitigasi. Nomor dua digit di kolom REK adalah nomor rekomendasi di dokumen ini; rincian dan indikator selesai tiap baris ada di @tbl:rek-internal dan @tbl:rek-lintas. Nama unit mengikuti Perban BNPB 6/2025 jo. 11/2025 [@bnpb-2025-otk; @bnpb-2025-otk-ubah].
 
 **Tiga puluh enam rekomendasi kajian ini terdiri atas dua puluh tujuh rekomendasi internal BNPB dan sembilan rekomendasi lintas K/L, dan dua belas di antaranya berjangka 100 hari** (@tbl:i-register). Daftar 100 hari dan daftar keputusan empat belas hari pertama hanya satu untuk kedua kajian (@tbl:keputusan-14-hari). Jangkar waktu dan instrumen per horizon tercantum di @tbl:peta-jalan-mitigasi.
 
@@ -15,7 +15,7 @@ Register rekomendasi kedua kajian BNPB memakai satu daftar kode: kode berawalan 
 judul: Register rekomendasi kajian mitigasi menurut horizon, unit pemimpin, dan K/L, 2026–2030
 sumber: Register rekomendasi kajian ini (Bab 13); Perban BNPB 6/2025 jo. 11/2025
 keyakinan: asumsi-kebijakan
-catatan: Unit pemimpin adalah unit pertama pada rekomendasi; unit pendukung tercantum di Bab 13. "–" berarti tanpa K/L. Kode R-A dipakai kedua kajian dengan langkah yang sama.
+catatan: Unit pemimpin adalah unit pertama; unit pendukung tercantum di Bab 13. "–" berarti tanpa K/L.
 
 | REK | KODE | LANGKAH | UNIT PEMIMPIN | K/L | WAKTU |
 | --- | --- | --- | --- | --- | --- |
@@ -57,7 +57,7 @@ catatan: Unit pemimpin adalah unit pertama pada rekomendasi; unit pendukung terc
 | @rek:r-m21 | R-M21 | Sampaikan masukan peninjauan RIPB | Direktorat Pengembangan Strategi Penanggulangan Bencana | Kemenko PMK | 2028–2030 |
 :::
 
-**Sembilan kode register hanya dipakai kajian ketahanan air karena menyangkut sistem air Pulau Jawa** (@tbl:i-silang). R-A12 menjalankan peran BNPB yang sudah tercantum sebagai kontributor aksi Renas PB 2.4.4.a tentang penurunan muka tanah, dengan isi kontribusi berupa telaah risiko bencana [@bnpb-2025-renas, hlm. 86].
+**Sembilan kode register hanya dipakai kajian ketahanan air karena menyangkut sistem air Pulau Jawa** (@tbl:i-silang). Kode A12 menjalankan peran BNPB yang sudah tercantum sebagai kontributor aksi Renas PB 2.4.4.a tentang penurunan muka tanah, dengan isi kontribusi berupa telaah risiko bencana [@bnpb-2025-renas, hlm. 86].
 
 ::: tabel {#tbl:i-silang}
 judul: Kode register yang hanya dipakai Grand Design Ketahanan Air Pulau Jawa 2026–2030

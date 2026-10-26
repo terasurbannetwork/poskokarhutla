@@ -9,14 +9,14 @@ status: final
 
 Lampiran ini melengkapi kronologi regulasi di @tbl:regulasi dan matriks mandat ringkas di @tbl:mandat-mitigasi. @tbl:e-matriks memetakan regulasi yang dirujuk kajian per jenis bencana dan tahap, @tbl:e-nonalam-sosial memuat pasal rezim nonalam dan sosial, dan @tbl:e-peran memuat seluruh {{angka:lembaga.peran.baris_total}} baris peran lembaga dalam paket lembaga [@pantaubencana-2026-paket-lembaga]. Status peraturan dicek di basis data peraturan Badan Pemeriksa Keuangan per 24 Oktober 2026 [@ri-2007-uu24; @ri-2008-pp21; @ri-2008-pp22].
 
-**Kerangka umum penanggulangan bencana berlaku untuk semua jenis di ketiga tahap, sedangkan rezim per jenis untuk empat jenis nonalam dan sosial berjalan di luar UU 24/2007** (@sub:regulasi). Peraturan presiden tentang status dan tingkatan bencana yang diamanatkan UU 24/2007 Pasal 7 ayat (3) belum terbit, sehingga sel komando nasional pada semua jenis bergantung pada instrumen yang belum ada (@rek:r-m06).
+**Kerangka umum penanggulangan bencana berlaku untuk semua jenis di ketiga tahap, sedangkan rezim per jenis untuk empat jenis nonalam dan sosial berjalan di luar UU 24/2007** (@sub:regulasi). Peraturan presiden tentang status dan tingkatan bencana yang diamanatkan UU 24/2007 Pasal 7 ayat (3) belum terbit, sehingga sel komando nasional pada semua jenis bergantung pada instrumen yang belum ada (@rek:r-m06). Sel baris jenis hanya memuat norma khusus di peraturan yang dibaca, dan penggolongan kebakaran TPA ke UU 18/2008 adalah tafsiran penyusun. Kutipan di @tbl:e-nonalam-sosial ditulis apa adanya dari teks peraturan; Keppres 3/2001 di dalamnya adalah preseden historis lembaga pendahulu BNPB dan tidak berlaku lagi.
 
 ::: tabel {#tbl:e-matriks}
 judul: Regulasi yang dirujuk kajian menurut jenis bencana dan tahap penanggulangan, status Oktober 2026
 sumber: Teks peraturan dan metadata status JDIH BPK, dicek 24 Okt 2026; indeks JDIH BNPB; analisis kajian ini (Bab 2, Bab 8, Bab 9, dan Bab 12)
 keyakinan: resmi
 data_per: 24 Okt 2026
-catatan: Baris semua jenis berlaku juga untuk tiap baris jenis; sel baris jenis hanya memuat norma khusus. "–" berarti tidak ada norma khusus jenis di peraturan yang dibaca. Penggolongan kebakaran TPA ke UU 18/2008 adalah tafsiran penyusun.
+catatan: Baris semua jenis berlaku juga untuk tiap jenis; "–" berarti tanpa norma khusus jenis.
 
 | JENIS | PRABENCANA | TANGGAP DARURAT | PASCABENCANA |
 | --- | --- | --- | --- |
@@ -39,20 +39,20 @@ kolom: regulasi="REGULASI"; pasal="PASAL"; pokok="POKOK PENGATURAN"; relevansi_b
 sumber: Teks peraturan yang tercatat per baris di paket nonalam dan sosial Pantau Bencana, diakses 23 Oktober 2026
 keyakinan: campuran
 data_per: 23 Okt 2026
-catatan: Kutipan ditulis apa adanya dari teks peraturan; Keppres 3/2001 adalah preseden historis lembaga pendahulu BNPB dan tidak berlaku lagi.
+catatan: Kutipan ditulis apa adanya dari teks peraturan.
 :::
 
 ## Matriks Mandat Lembaga Lengkap {#sub:e-mandat}
 
-**{{angka:lembaga.peran.baris_tertulis}} dari {{angka:lembaga.peran.baris_total}} baris peran menyebut lembaganya di norma, dan {{angka:lembaga.peran.baris_pemetaan}} baris pelakunya dipetakan penyusun** (@tbl:e-peran). Arti keempat kode peran tertulis di catatan @tbl:e-peran, sama dengan @tbl:mandat-mitigasi. Nama lembaga mengikuti nomenklatur Oktober 2026, dan halaman merujuk berkas teks peraturan yang dibuka penyusun.
+**{{angka:lembaga.peran.baris_tertulis}} dari {{angka:lembaga.peran.baris_total}} baris peran menyebut lembaganya di norma, dan {{angka:lembaga.peran.baris_pemetaan}} baris pelakunya dipetakan penyusun** (@tbl:e-peran). Peran K adalah koordinator atau penanggung jawab utama. Peran P adalah pelaksana atau pendukung, peran R penetap status atau izin dan pembuat norma, dan peran I penyedia informasi dan peringatan dini, sama dengan @tbl:mandat-mitigasi. Bukti tertulis berarti norma menyebut lembaga itu, sedangkan dipetakan penyusun berarti norma menyebut pelaku umum ("Badan", "Menteri", "Pemerintah Pusat") yang dipetakan ke lembaga. Kementerian Perindustrian dan Kementerian Ketenagakerjaan belum dimuat paket lembaga. Nama lembaga mengikuti nomenklatur Oktober 2026, dan halaman merujuk berkas teks peraturan yang dibuka penyusun.
 
 ::: tabel {#tbl:e-peran}
 judul: Peran lembaga menurut jenis bencana, tahap, kode peran, dan dasar peraturan, status Oktober 2026
 csv: data/turunan/lampiran_peran_lembaga.csv
 kolom: lembaga="LEMBAGA"; ancaman="JENIS"; fase="TAHAP"; peran="PERAN"; uraian="URAIAN"; dasar="DASAR"; jenis_bukti="BUKTI"
 grup: LEMBAGA
-sumber: Paket lembaga Pantau Bencana (peran.csv) dari teks peraturan di JDIH BNPB dan JDIH BPK
+sumber: Paket lembaga Pantau Bencana (matriks peran) dari teks peraturan di JDIH BNPB dan JDIH BPK
 keyakinan: resmi
 data_per: 24 Okt 2026
-catatan: K koordinator atau penanggung jawab utama; P pelaksana atau pendukung; R penetap status atau izin dan pembuat norma; I penyedia informasi dan peringatan dini. Bukti tertulis berarti norma menyebut lembaga itu; dipetakan penyusun berarti norma menyebut pelaku umum ("Badan", "Menteri", "Pemerintah Pusat") yang dipetakan ke lembaga. Kementerian Perindustrian dan Kementerian Ketenagakerjaan belum dimuat paket lembaga.
+catatan: Arti kode peran K, P, R, dan I ada di teks subbab ini.
 :::

@@ -85,7 +85,7 @@ window.KatalogDok = (() => {
           angka: baris.map(r => ({label: `${r[0]}: ${r[1]}`, nilai: r[2], satuan: r[3]})),
           bagian: [{judul: "Indikator utama per bencana", kolom: [K("Bencana"), K("Indikator"), K("Nilai", "angka"), K("Satuan"), K("Per"), K("Temuan teratas")], baris},
             {judul: "Sorotan tiap bencana", kolom: [K("Bencana"), K("Tingkat"), K("Temuan"), K("Provinsi")], baris: sorot, prov}],
-          sumber: [{nama: "Laporan harian tiap bencana di Pantau Bencana", catatan: "angka asli tiap laporan, tanggal datanya bisa berbeda per bencana"}]};
+          sumber: [{nama: "Laporan harian tiap bencana di Centurisk97", catatan: "angka asli tiap laporan, tanggal datanya bisa berbeda per bencana"}]};
       }},
     {id: "karhutla", kelompok: "Laporan harian", bencana: "karhutla", judul: "Laporan situasi karhutla", sumber: ["/data/presiden/semua.json"],
       ket: "Situasi, provinsi mendesak, kejadian api, konsesi, gambut, cuaca, asap, penerbangan, sumber daya, dampak, luas, dan pencegahan.", bangun: ([d]) => dariPresiden(d)},
@@ -121,7 +121,7 @@ window.KatalogDok = (() => {
         return tabelDok("Daftar Posko Karhutla", `Radius layanan posko lapangan ${fmtId(d.radius_km)} km`, null,
           {judul: "Posko", kolom: [K("ID"), K("Tingkat"), K("Provinsi"), K("Kabupaten/kota"), K("Nama / lokasi"), K("Lintang", "angka"), K("Bujur", "angka"), K("Titik panas riwayat", "angka"), K("Prioritas", "angka"), K("Daops terdekat"), K("Induk")],
             baris: r.map(([t, x]) => [x.id, t, P(x.prov), W.kab(x.kab || ""), x.nama, x.lat, x.lon, x.titik ?? null, x.prioritas ?? null, x.daops ? `${x.daops.nama} (${x.daops.km} km)` : "", x.induk || ""]), prov: r.map(([, x]) => x.prov)},
-          [{nama: "Penempatan posko Pantau Bencana dari riwayat titik panas NASA FIRMS", catatan: "usulan perencanaan, bukan posko resmi"}],
+          [{nama: "Penempatan posko Centurisk97 dari riwayat titik panas NASA FIRMS", catatan: "usulan perencanaan, bukan posko resmi"}],
           [{label: "Posko lapangan", nilai: (d.posko || []).length, satuan: "posko"}, {label: "Posko menengah", nilai: (d.menengah || []).length, satuan: "posko"}, {label: "Posko pusat", nilai: (d.pusat || []).length, satuan: "posko"}]); }},
     {id: "posko-banjir", kelompok: "Data", bencana: "banjir", judul: "Daftar posko banjir dan longsor", sumber: ["/banjir/data/posko.json"],
       ket: "Posko lapangan banjir dan longsor dengan riwayat kejadian dan jarak ke induk.",
@@ -129,7 +129,7 @@ window.KatalogDok = (() => {
         return tabelDok("Daftar Posko Banjir dan Longsor", `Dibuat ${tgl(d.dibuat)}`, d.dibuat,
           {judul: "Posko lapangan", kolom: [K("ID"), K("Jenis"), K("Bahaya"), K("Provinsi"), K("Kabupaten/kota"), K("Kecamatan"), K("Lintang", "angka"), K("Bujur", "angka"), K("Kejadian tercatat", "angka"), K("Induk"), K("Jarak induk (km)", "angka")],
             baris: r.map(x => [x.id, kap(x.jenis), kap(x.bahaya), P(x.prov), W.kab(x.kab), x.kec, x.lat, x.lon, x.kejadian ?? null, x.induk || "", x.km_induk ?? null]), prov: r.map(x => x.prov)},
-          [{nama: "Penempatan posko Pantau Bencana dari riwayat kejadian BNPB", catatan: "usulan perencanaan, bukan posko resmi"}], [{label: "Posko lapangan", nilai: r.length, satuan: "posko"}]); }},
+          [{nama: "Penempatan posko Centurisk97 dari riwayat kejadian BNPB", catatan: "usulan perencanaan, bukan posko resmi"}], [{label: "Posko lapangan", nilai: r.length, satuan: "posko"}]); }},
     {id: "gunungapi-status", kelompok: "Data", bencana: "gunungapi", judul: "Status gunung api", sumber: ["/banjir/data/gunungapi_status.json"],
       ket: "Level aktivitas tiap gunung api, radius bahaya, periode laporan, dan rekomendasi PVMBG.",
       bangun([d]) { const LV = ["", "Normal", "Waspada", "Siaga", "Awas"], r = [...d.gunung].sort((a, b) => b.level - a.level || a.nama.localeCompare(b.nama));

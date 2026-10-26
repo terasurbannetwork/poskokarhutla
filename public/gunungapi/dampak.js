@@ -76,14 +76,14 @@ const Dampak = (() => {
     const n = L.reduce((a, x) => a + x.r.n, 0), R = [...L].sort((a, b) => b.r.maks_menit - a.r.maks_menit), tl = evakTerlama(R[0].g);
     return bag("evak", `${Kartu.hl(fmt(n) + " desa")} di KRB III dan II ${fmt(L.length)} gunung api punya rute evakuasi; waktu tempuh arus bebas terlama ${Kartu.hl(mnt5(R[0].r.maks_menit))}${tl ? ` dari ${esc(tl.desa)}` : ""} (${esc(R[0].g.nama)})`,
       hbar(R.slice(0, 12).map(x => ({n: x.g.nama, v: x.r.maks_menit, txt: "terlama " + mnt5(x.r.maks_menit), w: "#2fb36a", tip: `<b>${esc(x.g.nama)}</b><br>${fmt(x.r.n)} desa KRB III dan II<br>Median ${mnt5(x.r.median_menit)}, terlama ${mnt5(x.r.maks_menit)}`})), 190),
-      "Hanya desa di KRB III dan II. Waktu tempuh arus bebas kendaraan di jalan OpenStreetMap (tanpa antrean evakuasi massal), dibulatkan ke 5 menit, bukan jalan kaki. Sumber: OpenStreetMap, perhitungan Pantau Bencana"); }
+      "Hanya desa di KRB III dan II. Waktu tempuh arus bebas kendaraan di jalan OpenStreetMap (tanpa antrean evakuasi massal), dibulatkan ke 5 menit, bukan jalan kaki. Sumber: OpenStreetMap, perhitungan Centurisk97"); }
   /* bandara di jalur abu skenario */
   function band() {
     const B = (A?.bandara_terdampak || []).filter(b => b.jam_tiba != null).sort((a, b) => a.jam_tiba - b.jam_tiba); if (!B.length) return "";
     const nmG = id => S.st.gunung.find(g => idGn(g.nama) === id)?.nama || id;
     return bag("band", `${Kartu.hl(fmt(B.length) + " bandara")} berada di jalur abu skenario 72 jam; tercepat ${esc(B[0].iata || B[0].icao)} dalam ${Kartu.hl(fmt(B[0].jam_tiba) + " jam")}`,
       hbar(B.slice(0, 12).map(b => ({n: `${b.iata || b.icao} · ${nmG(b.gunung)}`, v: b.jam_tiba, txt: "jam ke-" + fmt(b.jam_tiba), w: b.jam_tiba <= 6 ? "#d64545" : b.jam_tiba <= 24 ? "#e8743b" : "#e0b400", tip: `<b>${esc(b.nama)}</b><br>Abu dari ${esc(nmG(b.gunung))} tiba jam ke-${fmt(b.jam_tiba)}`}))),
-      "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Pantau Bencana, OurAirports"); }
+      "Skenario jika meletus sekarang, bukan prakiraan letusan dan bukan advisory VAAC. Sumber: model abu Centurisk97, OurAirports"); }
   const gambar = () => [terpapar(), krb(), fas(), evak(), band(), hist()].filter(Boolean).join("");
   const BAGIAN = {krb, hist};
   /* kontrol (segmen, pilihan gunung) tetap di tempat: hanya judul, isi, dan kaki yang diganti; pekerjaan berat sesudah paint */

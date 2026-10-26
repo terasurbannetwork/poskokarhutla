@@ -1,0 +1,382 @@
+{
+ "nama": "bab08-matriks-kemungkinan-dampak",
+ "keterangan": "Posisi jenis bencana pada matriks kemungkinan lima tahun dan kelas dampak RR di Indonesia, 2026",
+ "sumber": "DIBI BNPB; PuSGeN 2024; pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  471
+ ],
+ "ukuran_cm": [
+  16.5,
+  16.62
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "1 Musim hujan setara lantai 2025/2026",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "2 Megathrust Jawa, gabungan",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "3 Megathrust Jawa, per segmen",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "4 Gempa di luar megathrust",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "5 Tsunami",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "6 Banjir dan banjir bandang",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "7 Likuefaksi, batas atas",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "8 Erupsi gunung api",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "9 Cuaca ekstrem",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "10 Tanah longsor",
+   "jenis": "nomor",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#6B7280": [
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#E6EAF0": [
+   "permukaan"
+  ],
+  "#051C2C": [
+   "nomor",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 2,
+   "y": 2,
+   "w": 76.09,
+   "h": 8.5,
+   "jenis": "teks",
+   "teks": "KELAS DAMPAK RR"
+  },
+  {
+   "x": 2,
+   "y": 400.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 1"
+  },
+  {
+   "x": 2,
+   "y": 313.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 2"
+  },
+  {
+   "x": 2,
+   "y": 226.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 3"
+  },
+  {
+   "x": 270.47,
+   "y": 226.5,
+   "w": 9.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-2",
+   "teks": "10"
+  },
+  {
+   "x": 2,
+   "y": 139.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 4"
+  },
+  {
+   "x": 272.76,
+   "y": 130,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-3",
+   "teks": "8"
+  },
+  {
+   "x": 272.76,
+   "y": 149,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m1-5-3",
+   "teks": "9"
+  },
+  {
+   "x": 2,
+   "y": 52.5,
+   "w": 26.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Kelas 5"
+  },
+  {
+   "x": 96.46,
+   "y": 52.5,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-1-4",
+   "teks": "2"
+  },
+  {
+   "x": 140.54,
+   "y": 52.5,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-2-4",
+   "teks": "3"
+  },
+  {
+   "x": 184.61,
+   "y": 52.5,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-3-4",
+   "teks": "1"
+  },
+  {
+   "x": 272.76,
+   "y": 24,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m0-5-4",
+   "teks": "4"
+  },
+  {
+   "x": 272.76,
+   "y": 43,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m1-5-4",
+   "teks": "5"
+  },
+  {
+   "x": 272.76,
+   "y": 62,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m2-5-4",
+   "teks": "6"
+  },
+  {
+   "x": 272.76,
+   "y": 81,
+   "w": 4.59,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "m3-5-4",
+   "teks": "7"
+  },
+  {
+   "x": 44.47,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 1"
+  },
+  {
+   "x": 88.54,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 2"
+  },
+  {
+   "x": 132.62,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 3"
+  },
+  {
+   "x": 176.69,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 4"
+  },
+  {
+   "x": 220.77,
+   "y": 449.5,
+   "w": 20.43,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Pita 5"
+  },
+  {
+   "x": 253.73,
+   "y": 449.5,
+   "w": 42.66,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Tidak dinilai"
+  },
+  {
+   "x": 108.04,
+   "y": 460.5,
+   "w": 113.66,
+   "h": 8.5,
+   "jenis": "teks",
+   "teks": "KEMUNGKINAN LIMA TAHUN"
+  },
+  {
+   "x": 332.6,
+   "y": 18,
+   "w": 133.12,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar0",
+   "teks": "Musim hujan setara lantai 2025/2026"
+  },
+  {
+   "x": 332.6,
+   "y": 37,
+   "w": 101,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar1",
+   "teks": "Megathrust Jawa, gabungan"
+  },
+  {
+   "x": 332.6,
+   "y": 56,
+   "w": 107.53,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar2",
+   "teks": "Megathrust Jawa, per segmen"
+  },
+  {
+   "x": 332.6,
+   "y": 75,
+   "w": 92.31,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar3",
+   "teks": "Gempa di luar megathrust"
+  },
+  {
+   "x": 332.6,
+   "y": 94,
+   "w": 31.03,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar4",
+   "teks": "Tsunami"
+  },
+  {
+   "x": 332.6,
+   "y": 113,
+   "w": 90.36,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar5",
+   "teks": "Banjir dan banjir bandang"
+  },
+  {
+   "x": 332.6,
+   "y": 132,
+   "w": 77.1,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar6",
+   "teks": "Likuefaksi, batas atas"
+  },
+  {
+   "x": 332.6,
+   "y": 151,
+   "w": 63.59,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar7",
+   "teks": "Erupsi gunung api"
+  },
+  {
+   "x": 332.6,
+   "y": 170,
+   "w": 53.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar8",
+   "teks": "Cuaca ekstrem"
+  },
+  {
+   "x": 332.6,
+   "y": 189,
+   "w": 51.08,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "daftar9",
+   "teks": "Tanah longsor"
+  }
+ ],
+ "jenis": "matriks",
+ "pesan": "G17",
+ "sumbu_y": false,
+ "pil": 0,
+ "ukuran_matriks": [
+  5,
+  6
+ ],
+ "butir": 10,
+ "ambang": null
+}

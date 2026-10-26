@@ -37,7 +37,7 @@ lebar: penuh
 :::
 
 
-**Paparan resmi geologi terbesar adalah gempa bumi dengan {{angka:renas.krb.terpapar_gempa}} jiwa, disusul likuefaksi {{angka:renas.krb.terpapar_likuefaksi}}, gunung api {{angka:renas.krb.terpapar_gunungapi}}, dan tsunami {{angka:renas.krb.terpapar_tsunami}} jiwa.** Angka paparan gempa itu melampaui jumlah penduduk wilayah di basis data yang sama, sehingga mencakup praktis seluruh penduduk dan tidak membedakan wilayah [@bnpb-2026-krb-geologi]. Potensi kerugian fisik dan ekonomi per bahaya dari KRB yang sama, mulai dari {{angka:renas.krb.kerugian_gempa|rupiah}} untuk gempa, adalah nilai aset terpapar yang tidak dijumlah antarbahaya [@bnpb-2025-renas, hlm. 24–25]. Status resmi tiap bahaya tampil pada @tbl:status-geologi.
+**Paparan resmi geologi terbesar adalah gempa bumi dengan {{angka:renas.krb.terpapar_gempa}} jiwa, disusul likuefaksi {{angka:renas.krb.terpapar_likuefaksi}}, gunung api {{angka:renas.krb.terpapar_gunungapi}}, dan tsunami {{angka:renas.krb.terpapar_tsunami}} jiwa.** Angka paparan gempa itu melampaui jumlah penduduk wilayah di basis data yang sama, sehingga mencakup praktis seluruh penduduk dan tidak membedakan wilayah [@bnpb-2026-krb-geologi]. Potensi kerugian fisik dan ekonomi per bahaya dari Kajian Risiko Bencana (KRB) yang sama, mulai dari {{angka:renas.krb.kerugian_gempa|rupiah}} untuk gempa, adalah nilai aset terpapar yang tidak dijumlah antarbahaya [@bnpb-2025-renas, hlm. 24–25]. Status resmi tiap bahaya tampil pada @tbl:status-geologi.
 
 ::: tabel {#tbl:status-geologi}
 judul: Paparan, aset di kelas bahaya tinggi, dan kelas IRBI per bahaya geologi di Indonesia, KRB 2022–2026 dan IRBI 2025
@@ -45,7 +45,7 @@ sumber: Renas PB 2025–2029 dari KRB 2022–2026 [@bnpb-2025-renas, hlm. 24–2
 keyakinan: resmi
 angka: 2; 3; 4; 5; 6; 7
 data_per: 24 Okt 2026
-catatan: Kelas nilai teratas adalah kuintil teratas nilai kab/kota per bahaya, pilihan penyusun; likuefaksi tidak punya nilai IRBI per kab/kota; arti kolom aset dibaca dari nama medan data KRB.
+catatan: Kelas teratas adalah kuintil teratas nilai kab/kota per bahaya, pilihan penyusun.
 
 | BAHAYA | TERPAPAR (jiwa) | POTENSI KERUGIAN | SEKOLAH KELAS TINGGI | PUSKESMAS KELAS TINGGI | KAB/KOTA BERNILAI IRBI | KAB/KOTA KELAS TERATAS |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -55,13 +55,15 @@ catatan: Kelas nilai teratas adalah kuintil teratas nilai kab/kota per bahaya, p
 | Tsunami | {{angka:renas.krb.terpapar_tsunami}} | {{angka:renas.krb.kerugian_tsunami_rp|rupiah}} | {{angka:krb.tsunami.sekolah_kelas_tinggi}} | {{angka:krb.tsunami.puskesmas_kelas_tinggi}} | {{angka:irbi.tsunami.kab_dinilai.2025}} | {{angka:irbi.tsunami.kab_kelas_atas.2025}} |
 :::
 
+Likuefaksi tidak punya nilai Indeks Risiko Bencana Indonesia (IRBI) per kab/kota, dan arti kolom aset pada @tbl:status-geologi dibaca dari nama medan data KRB.
+
 **Peringkat IRBI 2025 per kab/kota berkorelasi hanya {{angka:irbi_dibi.nasional.spearman.gempa|fmt=2}} dengan jumlah laporan kejadian gempa 2015–2025 dan {{angka:irbi_dibi.nasional.spearman.gunungapi|fmt=2}} untuk gunung api, sedangkan KRB per kab/kota untuk keempat bahaya geologi tidak tersedia dalam bahan kajian.** Karena itu, paparan resmi ditulis pada tingkat nasional, dan sebaran per kab/kota memakai nilai IRBI 2025 sebagai status resmi serta keluaran skenario platform sebagai estimasi model [@bnpb-irbi; @bnpb-dibi]. Catatan metode IRBI 2025 belum terbit, sehingga sebab rendahnya kesesuaian itu tidak dapat dipastikan.
 
 ## Gempa Bumi Megathrust {#sub:megathrust}
 
 ### Bahaya dan Status Resmi
 
-**Pusat Studi Gempa Nasional (PuSGeN) 2024 menetapkan magnitudo maksimum segmen gabungan megathrust Jawa Mw {{angka:pusgen.jawa.mmaks}}, sepanjang {{angka:pusgen.jawa.panjang|satuan}}, dengan periode ulang {{angka:pusgen.jawa.periode_ulang|satuan}}.** Segmen Jawa bagian barat dan timur masing-masing bermagnitudo maksimum Mw {{angka:pusgen.jawa_segmen.mmaks}} dengan periode ulang {{angka:pusgen.jawa_segmen.periode_ulang|satuan}}, sedangkan segmen Mentawai-Siberut, Mentawai-Pagai, dan Enggano masing-masing Mw {{angka:pusgen.mentawai.mmaks}} dengan periode ulang {{angka:pusgen.mentawai.periode_ulang|satuan}} [@pusgen-2024-peta-gempa, hlm. 342–343]. Segmen Sumba bermagnitudo maksimum Mw {{angka:pusgen.sumba.mmaks}} tanpa data periode ulang. Buku PuSGeN memuat bahaya dan tidak memuat skenario korban. Rencana Nasional Penanggulangan Bencana (Renas PB) 2025–2029 mencatat bahwa zona sumber bahaya dan kawasan rawan bencana gempa bumi dan tsunami belum teridentifikasi lengkap karena metode identifikasinya belum memadai [@bnpb-2025-renas, hlm. 27–28].
+**Pusat Studi Gempa Nasional (PuSGeN) 2024 menetapkan magnitudo maksimum segmen gabungan megathrust Jawa Mw {{angka:pusgen.jawa.mmaks}}, sepanjang {{angka:pusgen.jawa.panjang|satuan}}, dengan periode ulang {{angka:pusgen.jawa.periode_ulang|satuan}}.** Segmen Jawa bagian barat dan timur masing-masing dengan magnitudo maksimum Mw {{angka:pusgen.jawa_segmen.mmaks}} dengan periode ulang {{angka:pusgen.jawa_segmen.periode_ulang|satuan}}, sedangkan segmen Mentawai-Siberut, Mentawai-Pagai, dan Enggano masing-masing Mw {{angka:pusgen.mentawai.mmaks}} dengan periode ulang {{angka:pusgen.mentawai.periode_ulang|satuan}} [@pusgen-2024-peta-gempa, hlm. 342–343]. Segmen Sumba dengan magnitudo maksimum Mw {{angka:pusgen.sumba.mmaks}} tanpa data periode ulang. Buku PuSGeN memuat bahaya dan tidak memuat skenario korban. Rencana Nasional Penanggulangan Bencana (Renas PB) 2025–2029 mencatat bahwa zona sumber bahaya dan kawasan rawan bencana gempa bumi dan tsunami belum teridentifikasi lengkap karena metode identifikasinya belum memadai [@bnpb-2025-renas, hlm. 27–28].
 
 **Bila periode ulang resmi dibaca dengan asumsi Poisson, peluang gempa Mw {{angka:pusgen.jawa.mmaks}} di selatan Jawa dalam lima tahun adalah {{angka:geologi.jawa_gabungan.peluang_5th|fmt=2|persen}}.** Peluang gempa Mw {{angka:pusgen.jawa_segmen.mmaks}} per segmen Jawa adalah {{angka:geologi.jawa_segmen.peluang_5th|fmt=2|persen}}, dan per segmen Mentawai-Siberut, Mentawai-Pagai, atau Enggano {{angka:geologi.mentawai_segmen.peluang_5th|fmt=2|persen}}. Ketiganya merupakan turunan penyusun dan berada di atas ambang penyisihan, sehingga tidak ada skenario yang disisihkan; peluang segmen Sumba tidak dinilai.
 
@@ -79,12 +81,12 @@ sumber: Simulasi skenario Pantau Bencana, belum divalidasi; magnitudo maksimum d
 keyakinan: estimasi-model; belum diuji balik
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Nilai tengah per kab/kota; bidang patahan platform lebih pendek dari segmen resmi, sehingga guncangan di ujung barat dan timur kemungkinan kurang.
+catatan: Nilai tengah per kab/kota; guncangan di ujung barat dan timur kemungkinan kurang.
 :::
 
-**Mesin korban gempa platform menghitung {{angka:geologi.mesin.yogya2006_model|satuan}} untuk gempa Yogyakarta 2006, sedangkan Survei Geologi Amerika Serikat (USGS) mencatat {{angka:usgs.yogya2006.meninggal}} meninggal.** Model itu dikalibrasi pada delapan gempa kerak dengan faktor galat uji silang {{angka:geologi.mesin.faktor_loo|fmt=1}} kali, dan untuk Padang 2009 di luar sampel model memberi angka di atas {{angka:dibi.padang2009.meninggal}} meninggal yang tercatat di Data dan Informasi Bencana Indonesia (DIBI) [@usgs-usp000ej1c; @bnpb-dibi]. Rasio korban per jiwa terpapar yang dipakai mesin, dengan median {{angka:geologi.analog_guncangan.rasio|persen}}, berasal dari enam gempa kerak dan slab, tanpa satu pun analog megathrust. Akibatnya, pita korban guncangan skenario Mw {{angka:pusgen.jawa.mmaks}} melebar lebih dari satu orde; pita itu hanya tampil di lampiran, dan kartu memakai lantai tercatat.
+**Mesin korban gempa platform menghitung {{angka:geologi.mesin.yogya2006_model|satuan}} untuk gempa Yogyakarta 2006, sedangkan Survei Geologi Amerika Serikat (USGS) mencatat {{angka:usgs.yogya2006.meninggal}} meninggal.** Model itu dikalibrasi pada delapan gempa kerak dengan faktor galat uji silang {{angka:geologi.mesin.faktor_loo|fmt=1}} kali, dan untuk Padang 2009 di luar sampel model memberi angka di atas {{angka:dibi.padang2009.meninggal}} meninggal yang tercatat di Data dan Informasi Bencana Indonesia (DIBI) [@usgs-usp000ej1c; @bnpb-dibi]. Rasio korban per jiwa terpapar yang dipakai mesin, dengan median {{angka:geologi.analog_guncangan.rasio|persen}}, berasal dari enam gempa kerak dan gempa di dalam lempeng yang menunjam, tanpa satu pun analog megathrust. Akibatnya, pita korban guncangan skenario Mw {{angka:pusgen.jawa.mmaks}} melebar lebih dari satu orde; pita itu hanya tampil di lampiran, dan kartu memakai lantai tercatat.
 
-**Lantai korban guncangan kartu megathrust adalah Yogyakarta 2006 dengan {{angka:usgs.yogya2006.meninggal}} meninggal untuk Jawa dan Padang 2009 dengan {{angka:dibi.padang2009.meninggal}} meninggal untuk Sumatra bagian barat.** Keduanya kejadian gempa bumi tercatat terburuk pada periode acuan 1996–2025 di wilayah masing-masing, tetapi bukan gempa megathrust: Yogyakarta 2006 berasal dari sesar darat dan Padang 2009 dari gempa intraslab. Lantai tsunami adalah Pangandaran 2006 dengan {{angka:usgs.pangandaran2006.meninggal}} meninggal dan {{angka:usgs.pangandaran2006.hilang}} hilang untuk selatan Jawa, serta Mentawai 2010 dengan {{angka:dibi.mentawai2010.meninggal}} meninggal dan {{angka:dibi.mentawai2010.hilang}} hilang untuk Sumatra bagian barat [@usgs-usp000ensm; @bnpb-dibi]. Batas bawah pita korban model Mentawai berada di bawah lantai Padang 2009, tetapi tidak dinaikkan karena lantai itu merupakan kejadian dari sumber lain, bukan ketidakpastian model. Untuk segmen ini pun kartu hanya menulis lantai tercatat.
+**Lantai korban guncangan kartu megathrust adalah Yogyakarta 2006 dengan {{angka:usgs.yogya2006.meninggal}} meninggal untuk Jawa dan Padang 2009 dengan {{angka:dibi.padang2009.meninggal}} meninggal untuk Sumatra bagian barat.** Keduanya kejadian gempa bumi tercatat terburuk pada periode acuan 1996–2025 di wilayah masing-masing, tetapi bukan gempa megathrust: Yogyakarta 2006 berasal dari sesar darat dan Padang 2009 dari gempa di dalam lempeng yang menunjam. Lantai tsunami adalah Pangandaran 2006 dengan {{angka:usgs.pangandaran2006.meninggal}} meninggal dan {{angka:usgs.pangandaran2006.hilang}} hilang untuk selatan Jawa, serta Mentawai 2010 dengan {{angka:dibi.mentawai2010.meninggal}} meninggal dan {{angka:dibi.mentawai2010.hilang}} hilang untuk Sumatra bagian barat [@usgs-usp000ensm; @bnpb-dibi]. Batas bawah pita korban model Mentawai berada di bawah lantai Padang 2009, tetapi tidak dinaikkan karena lantai itu merupakan kejadian dari sumber lain, bukan ketidakpastian model. Untuk segmen ini pun kartu hanya menulis lantai tercatat.
 
 :::: skenario {#tbl:kartu-megathrust-jawa}
 jenis: gempa
@@ -128,7 +130,7 @@ Pada model platform, korban guncangan menjadi {{angka:geologi.kepekaan.bangunan_
 ::: respons
 - Evakuasi mandiri saat guncangan kuat di pantai yang dicapai tsunami kurang dari {{angka:geologi.ambang.tiba_menit}} menit.
 - Pengungsian disiapkan dari jumlah rumah rusak berat dan sedang yang terdata, bukan dari angka skenario.
-- Rencana kontingensi tsunami provinsi memakai Mw {{angka:pusgen.jawa.mmaks}} dan lantai Pangandaran 2006 (@rek:r-m05).
+- Rencana kontinjensi tsunami provinsi memakai Mw {{angka:pusgen.jawa.mmaks}} dan lantai Pangandaran 2006 (@rek:r-m05).
 :::
 
 ::: pemulihan
@@ -164,7 +166,7 @@ data_per: 24 Okt 2026
 :::
 
 ::: kebijakan
-Bila seluruh tembok tanpa tulangan diganti beton terkekang, korban guncangan model menjadi {{angka:geologi.kepekaan.bangunan_penuh.mentawai_mmaks}} kali korban dasar; angka tinggi tsunami terbitan bertinjauan untuk segmen ini tidak tersedia di bahan kajian.
+Bila seluruh tembok tanpa tulangan diganti beton terkekang, korban guncangan model menjadi {{angka:geologi.kepekaan.bangunan_penuh.mentawai_mmaks}} kali korban dasar; angka tinggi tsunami terbitan yang ditinjau sejawat untuk segmen ini tidak tersedia di bahan kajian.
 :::
 
 ::: kepekaan
@@ -176,7 +178,7 @@ Bila seluruh tembok tanpa tulangan diganti beton terkekang, korban guncangan mod
 
 ::: respons
 - Evakuasi mandiri saat guncangan kuat di pesisir Kota Padang dan Kota Bengkulu.
-- Rencana kontingensi tsunami Sumatera Barat dan Bengkulu memakai lantai Mentawai 2010 (@rek:r-m05).
+- Rencana kontinjensi tsunami Sumatera Barat dan Bengkulu memakai lantai Mentawai 2010 (@rek:r-m05).
 - Pengungsian dihitung dari rumah rusak yang terdata.
 :::
 
@@ -191,11 +193,11 @@ Bila seluruh tembok tanpa tulangan diganti beton terkekang, korban guncangan mod
 
 **Gempa sesar darat Yogyakarta 2006 menewaskan {{angka:usgs.yogya2006.meninggal}} orang menurut USGS, dan penilaian awal pemerintah menaksir kerusakan serta kerugiannya {{angka:bappenas.yogya2006.kerusakan_kerugian|rupiah}}.** Penilaian awal Badan Perencanaan Pembangunan Nasional (Bappenas) itu mencatat {{angka:bappenas.yogya2006.meninggal}} meninggal. Sektor perumahan menyumbang {{angka:bappenas.yogya2006.perumahan|rupiah}}, lebih dari separuh total, dan rumah hancur tercatat {{angka:bappenas.yogya2006.rumah_hancur|rentang}} unit karena dokumen yang sama memuat dua versi [@bappenas-2006-dala-yogya; @usgs-usp000ej1c]. Dokumen itu menilai teknik membangun yang buruk dan bahan bangunan bermutu rendah sebagai penyumbang besar jumlah korban. Gempa ini menjadi lantai kartu sesar darat karena korbannya terbesar di antara gempa darat Jawa sejak 1996, sedangkan dasbor publik DIBI tidak memuat kejadian sebelum 2008.
 
-**Gempa Cianjur 2022 tercatat {{angka:dibi.cianjur2022.meninggal}} meninggal, {{angka:dibi.cianjur2022.hilang}} hilang, {{angka:dibi.cianjur2022.mengungsi}} pengungsi, dan {{angka:dibi.cianjur2022.rumah_rusak}} rumah rusak di DIBI untuk lima kab/kota.** R3P Kabupaten Cianjur mencatat {{angka:r3p.cianjur2022.rumah_rusak}} rumah rusak menurut surat keputusan bupati tahap II hasil reviu BNPB. Kerusakan dan kerugiannya {{angka:r3p.cianjur2022.kerusakan_kerugian_rp|rupiah}}, termasuk perumahan {{angka:r3p.cianjur2022.perumahan|rupiah}} [@bnpb-dibi; @cianjur-2022-r3p]. Baris Kab. Cianjur saja di DIBI memuat {{angka:dibi.cianjur2022.mengungsi_kab_cianjur}} pengungsi. Selisih rumah rusak DIBI dan R3P tidak dijelaskan kedua sumber, sehingga keduanya ditulis berdampingan.
+**Gempa Cianjur 2022 tercatat {{angka:dibi.cianjur2022.meninggal}} meninggal, {{angka:dibi.cianjur2022.hilang}} hilang, {{angka:dibi.cianjur2022.mengungsi}} pengungsi, dan {{angka:dibi.cianjur2022.rumah_rusak}} rumah rusak di DIBI untuk lima kab/kota.** Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) Kabupaten Cianjur mencatat {{angka:r3p.cianjur2022.rumah_rusak}} rumah rusak menurut surat keputusan bupati tahap II hasil reviu BNPB. Kerusakan dan kerugiannya {{angka:r3p.cianjur2022.kerusakan_kerugian_rp|rupiah}}, termasuk perumahan {{angka:r3p.cianjur2022.perumahan|rupiah}} [@bnpb-dibi; @cianjur-2022-r3p]. Baris Kab. Cianjur saja di DIBI memuat {{angka:dibi.cianjur2022.mengungsi_kab_cianjur}} pengungsi. Selisih rumah rusak DIBI dan R3P tidak dijelaskan kedua sumber, sehingga keduanya ditulis berdampingan.
 
 **R3P Cianjur mengosongkan {{angka:r3p.cianjur2022.desa_dikosongkan|satuan}} di jalur Sesar Cugenang dari permukiman.** Evaluasi dampak penataan itu tidak ditemukan [@cianjur-2022-r3p].
 
-**PuSGeN 2024 memberi magnitudo maksimum Mw {{angka:pusgen.lembang.mmaks}} untuk Sesar Lembang, Mw {{angka:pusgen.cimandiri.mmaks|rentang}} untuk empat segmen Cimandiri, dan Mw {{angka:pusgen.opak.mmaks}} untuk Sesar Opak.** Segmen Cianjur bermagnitudo maksimum Mw {{angka:pusgen.cianjur.mmaks}} [@pusgen-2024-peta-gempa, hlm. 368–371]. Magnitudo maksimum Sesar Opak di atas magnitudo gempa Yogyakarta 2006, dan magnitudo maksimum Sesar Lembang dan Cimandiri di atas gempa Cianjur 2022 [@usgs-usp000ej1c], sehingga kartu sesar darat menulis kedua kejadian sebagai lantai, bukan skenario terburuk. Gempa Cianjur 2022 sudah setara magnitudo maksimum segmennya; kajian ini menilai, tanpa pengujian, bahwa besar korbannya lebih banyak dijelaskan oleh mutu bangunan dan letak permukiman.
+**PuSGeN 2024 memberi magnitudo maksimum Mw {{angka:pusgen.lembang.mmaks}} untuk Sesar Lembang, Mw {{angka:pusgen.cimandiri.mmaks|rentang}} untuk empat segmen Cimandiri, dan Mw {{angka:pusgen.opak.mmaks}} untuk Sesar Opak.** Segmen Cianjur dengan magnitudo maksimum Mw {{angka:pusgen.cianjur.mmaks}} [@pusgen-2024-peta-gempa, hlm. 368–371]. Magnitudo maksimum Sesar Opak di atas magnitudo gempa Yogyakarta 2006, dan magnitudo maksimum Sesar Lembang dan Cimandiri di atas gempa Cianjur 2022 [@usgs-usp000ej1c], sehingga kartu sesar darat menulis kedua kejadian sebagai lantai, bukan skenario terburuk. Gempa Cianjur 2022 sudah setara magnitudo maksimum segmennya; kajian ini menilai, tanpa pengujian, bahwa besar korbannya lebih banyak dijelaskan oleh mutu bangunan dan letak permukiman.
 
 **Gempa Laut Flores Agustus 2026 menambah analog gempa dan tsunami di Nusa Tenggara Timur, dengan {{angka:dibi.ntt2026.gempa.meninggal}} meninggal tercatat sementara di DIBI dan sedikitnya {{angka:usgs.flores2026.meninggal}} menurut USGS.** USGS mencatat {{angka:usgs.flores2026.rumah_hancur}} rumah hancur dan tsunami tercatat maksimum {{angka:usgs.flores2026.tsunami_maks|satuan}}, dari sesar naik dangkal di dalam lempeng Sunda, bukan dari zona subduksi [@usgs-us6000tkt2]. DIBI mencatat {{angka:dibi.ntt2026.gempa.mengungsi}} pengungsi di provinsi itu [@bnpb-dibi]. Kejadian ini di luar periode acuan 1996–2025, sehingga belum dibuatkan kartu.
 
@@ -267,9 +269,9 @@ lebar: dua-kolom
 
 **IRBI 2025 memberi nilai tsunami untuk {{angka:irbi.tsunami.kab_dinilai.2025}} kab/kota, dan tidak satu pun dari {{angka:irbi.tsunami.kab_kelas_atas.2025}} kab/kota kelas nilai teratasnya berada di Pulau Jawa.** Kab. Sukabumi dan Kab. Pangandaran memiliki nilai tsunami tertinggi di Jawa, tetapi di bawah batas kelas teratas [@bnpb-irbi]. Dari Pulau Jawa, daftar perhatian tsunami kajian ini ({{angka:perhatian.mitigasi.tsunami.n|satuan}}) hanya memuat Kab. Pandeglang. Kab/kota pantai selatan Jawa Tengah, DI Yogyakarta, dan Jawa Timur hanya memenuhi syarat proksi pesisir rendah. Lima kab pantai selatan Jawa Barat tidak memenuhi satu pun syarat: tidak ada yang di kelas IRBI teratas, proksi luput di sana, dan Pangandaran 2006 berada di luar jendela kejadian sejak 2008. Daftar itu dibaca dengan keterbatasan tersebut sampai genangan resmi tersedia.
 
-**Tinggi tsunami model terbitan bertinjauan untuk Mw {{angka:pusgen.jawa.mmaks}} di selatan Jawa mencapai sekitar {{angka:widiyantoro.jawa_barat.tinggi_tsunami|satuan}} di pulau-pulau kecil selatan Banten dan sekitar {{angka:widiyantoro.jawa_timur.tinggi_tsunami|satuan}} di Jawa Timur.** Rata-rata tinggi maksimum sepanjang pantai selatan Jawa {{angka:widiyantoro.jawa.tinggi_rerata_maks|satuan}}; ketiganya keluaran model, bukan *run-up* terukur [@widiyantoro-2020-tsunami]. Skenario dengan sesar naik belakang memberi hingga {{angka:supendi.ujung_kulon.tinggi_tsunami|satuan}} dekat Ujung Kulon, tidak berlaku untuk segmen Mentawai dan Enggano [@supendi-2022-megathrust].
+**Tinggi tsunami model terbitan yang ditinjau sejawat untuk Mw {{angka:pusgen.jawa.mmaks}} di selatan Jawa mencapai sekitar {{angka:widiyantoro.jawa_barat.tinggi_tsunami|satuan}} di pulau-pulau kecil selatan Banten dan sekitar {{angka:widiyantoro.jawa_timur.tinggi_tsunami|satuan}} di Jawa Timur.** Rata-rata tinggi maksimum sepanjang pantai selatan Jawa {{angka:widiyantoro.jawa.tinggi_rerata_maks|satuan}}; ketiganya keluaran model, bukan tinggi maksimum terukur di daratan [@widiyantoro-2020-tsunami]. Skenario dengan sesar naik belakang memberi hingga {{angka:supendi.ujung_kulon.tinggi_tsunami|satuan}} dekat Ujung Kulon, tidak berlaku untuk segmen Mentawai dan Enggano [@supendi-2022-megathrust].
 
-**Korban tsunami skenario tidak dikuantifikasi karena genangan resmi InaRISK belum dipakai; proksi platform memberi {{angka:geologi.jawa_mmaks.jiwa_pesisir_30mnt_pulau_jawa|ringkas}} jiwa pesisir rendah Pulau Jawa.** Angka itu jiwa kecamatan pesisir rendah dengan tiba tsunami {{angka:geologi.ambang.tiba_menit}} menit atau kurang pada Mw {{angka:pusgen.jawa.mmaks}}. Untuk skenario megathrust Jawa termasuk Bali dan Nusa Tenggara Barat, angkanya {{angka:geologi.jawa_mmaks.jiwa_pesisir_30mnt|ringkas}} jiwa, dan untuk Mentawai {{angka:geologi.mentawai.jiwa_pesisir_30mnt}} jiwa [@pantaubencana-2026-skenario-geologi]. Proksi menghitung seluruh penduduk kecamatan berpusat rendah dan luput di {{angka:geologi.jawa_mmaks.lubang_proksi_kab|satuan}} yang tiba tsunaminya kurang dari {{angka:geologi.ambang.tiba_menit}} menit, termasuk Kab. Malang, Kab. Tasikmalaya, Kab. Garut, Kab. Cianjur, dan Kab. Sukabumi (@gbr:tsunami-30mnt). Pembandingnya contoh renkon Jawa Timur 2021 yang mencatat {{angka:renkon.jatim2021.banyuwangi_terpapar}} jiwa terpapar di Banyuwangi tanpa batas waktu tiba, dengan definisi yang berbeda dari proksi [@bnpb-2023-renkon, hlm. 17].
+**Korban tsunami skenario tidak dikuantifikasi karena genangan resmi InaRISK belum dipakai; proksi platform memberi {{angka:geologi.jawa_mmaks.jiwa_pesisir_30mnt_pulau_jawa|ringkas}} jiwa pesisir rendah Pulau Jawa.** Angka itu jiwa kecamatan pesisir rendah dengan tiba tsunami {{angka:geologi.ambang.tiba_menit}} menit atau kurang pada Mw {{angka:pusgen.jawa.mmaks}}. Untuk skenario megathrust Jawa termasuk Bali dan Nusa Tenggara Barat, angkanya {{angka:geologi.jawa_mmaks.jiwa_pesisir_30mnt|ringkas}} jiwa, dan untuk Mentawai {{angka:geologi.mentawai.jiwa_pesisir_30mnt}} jiwa [@pantaubencana-2026-skenario-geologi]. Proksi menghitung seluruh penduduk kecamatan berpusat rendah dan luput di {{angka:geologi.jawa_mmaks.lubang_proksi_kab|satuan}} yang tiba tsunaminya kurang dari {{angka:geologi.ambang.tiba_menit}} menit, termasuk Kab. Malang, Kab. Tasikmalaya, Kab. Garut, Kab. Cianjur, dan Kab. Sukabumi (@gbr:tsunami-30mnt). Pembandingnya contoh renkon Jawa Timur 2021 yang mencatat {{angka:renkon.jatim2021.banyuwangi_terpapar}} jiwa terpapar di Banyuwangi tanpa batas waktu tiba, dengan definisi yang berbeda dari proksi [@bnpb-2023-renkon, hlm. 17]. Pada @gbr:tsunami-30mnt, kab/kota dengan tiba tsunami kurang dari {{angka:geologi.ambang.tiba_menit}} menit yang luput dari proksi diberi garis sorot.
 
 ::: gambar {#gbr:tsunami-30mnt}
 berkas: gambar/mitigasi/bab06-peta-tsunami-30mnt.png
@@ -279,17 +281,17 @@ sumber: Simulasi skenario Pantau Bencana, belum divalidasi; magnitudo maksimum d
 keyakinan: estimasi-model; belum diuji balik
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Paparan, bukan genangan; skenario Jawa termasuk Bali dan Nusa Tenggara Barat; kab/kota bertiba kurang dari 30 menit yang luput dari proksi diberi garis sorot; tinggi indikatif tidak ditampilkan.
+catatan: Paparan, bukan genangan; tinggi indikatif tidak ditampilkan.
 :::
 
-**Kejadian tsunami tercatat menunjukkan waktu tiba yang pendek: tsunami Palu 2018 tiba {{angka:widiyanto.palu2018.waktu_tiba|rentang|satuan}} setelah guncangan dengan *run-up* terukur tertinggi {{angka:widiyanto.palu2018.runup_maks|fmt=2|satuan}}.** Stasiun pasang surut Pantoloan di dalam Teluk Palu tetap merekam, tetapi pengiriman datanya terhenti karena jaringan komunikasi putus [@widiyanto-2019-palu]. Survei warga Donggala dan Palu mencatat {{angka:harnantyari.palu2018.evakuasi_melihat_orang_lain|fmt=1|persen}} responden mengungsi setelah melihat orang lain mengungsi, dan tidak ada peringatan resmi yang diterima sebelum tsunami tiba [@harnantyari-2020-palu]. Lantai tsunami Selat Sunda adalah kejadian 2018 dengan {{angka:dibi.selatsunda2018.meninggal}} meninggal dan {{angka:dibi.selatsunda2018.hilang}} hilang [@bnpb-dibi], dan lantai nasional adalah Aceh 2004 dengan {{angka:brr.aceh2004.meninggal}} meninggal dan {{angka:brr.aceh2004.hilang}} hilang menurut Badan Rehabilitasi dan Rekonstruksi (BRR) Aceh dan Nias [@brr-2009-nias]. Kartu tsunami (@tbl:kartu-tsunami) memakai lantai per wilayah itu.
+**Kejadian tsunami tercatat menunjukkan waktu tiba yang pendek: tsunami Palu 2018 tiba {{angka:widiyanto.palu2018.waktu_tiba|rentang|satuan}} setelah guncangan dengan tinggi maksimum terukur di daratan {{angka:widiyanto.palu2018.runup_maks|fmt=2|satuan}}.** Stasiun pasang surut Pantoloan di dalam Teluk Palu tetap merekam, tetapi pengiriman datanya terhenti karena jaringan komunikasi putus [@widiyanto-2019-palu]. Survei warga Donggala dan Palu mencatat {{angka:harnantyari.palu2018.evakuasi_melihat_orang_lain|fmt=1|persen}} responden mengungsi setelah melihat orang lain mengungsi, dan tidak ada peringatan resmi yang diterima sebelum tsunami tiba [@harnantyari-2020-palu]. Lantai tsunami Selat Sunda adalah kejadian 2018 dengan {{angka:dibi.selatsunda2018.meninggal}} meninggal dan {{angka:dibi.selatsunda2018.hilang}} hilang [@bnpb-dibi], dan lantai nasional adalah Aceh 2004 dengan {{angka:brr.aceh2004.meninggal}} meninggal dan {{angka:brr.aceh2004.hilang}} hilang menurut Badan Rehabilitasi dan Rekonstruksi (BRR) Aceh dan Nias [@brr-2009-nias]. Kartu tsunami (@tbl:kartu-tsunami) memakai lantai per wilayah itu.
 
 **Renas PB menargetkan sarana diseminasi informasi gempa dan tsunami naik dari {{angka:renas.diseminasi_gempa_tsunami.unit_2024|satuan}} pada 2024 menjadi {{angka:renas.diseminasi_gempa_tsunami.unit_2029|satuan}} pada 2029, dengan BMKG sebagai penanggung jawab.** Stasiun pasang surut ditargetkan naik dari {{angka:renas.pasut.unit_2024}} menjadi {{angka:renas.pasut.unit_2029}} unit [@bnpb-2025-renas, hlm. 52–53]. Rencana Strategis (Renstra) BNPB mencatat keterpenuhan peringatan dini {{angka:renstra.peringatan_dini.keterpenuhan_persen|persen}} dari masyarakat terpapar di kawasan berisiko tinggi [@bnpb-2025-renstra, hlm. 70]. Target Renas mengukur alat dan keluaran. Untuk pantai yang dicapai tsunami dalam hitungan menit, data kajian ini tidak menunjukkan bahwa penambahan alat saja menekan korban; waktu terbit peringatan *Indonesia Tsunami Early Warning System* (InaTEWS) pada tsunami Palu 2018 belum dapat dikutip dari sumber primer.
 
 :::: skenario {#tbl:kartu-tsunami}
 jenis: tsunami
 judul: Tsunami dekat sumber dari megathrust selatan Jawa dan barat Sumatra, 2026
-dasar: Kartu per jenis; paparan resmi KRB 2022–2026, tinggi tsunami model terbitan bertinjauan, dan lantai tercatat per wilayah; korban tsunami skenario tidak dikuantifikasi sampai genangan resmi InaRISK dipakai.
+dasar: Kartu per jenis; paparan resmi KRB 2022–2026, tinggi tsunami model terbitan yang ditinjau sejawat, dan lantai tercatat per wilayah; korban tsunami skenario tidak dikuantifikasi sampai genangan resmi InaRISK dipakai.
 kemungkinan: 2
 peta: gambar/mitigasi/bab06-kartu-tsunami.png
 lembaga: BMKG; Deputi Bidang Penanganan Darurat; Direktorat Kesiapsiagaan; BPBD provinsi pesisir
@@ -305,7 +307,7 @@ data_per: 24 Okt 2026
 | Kependudukan, korban jiwa barat Sumatra (lantai Mentawai 2010) | {{angka:dibi.mentawai2010.meninggal}} | – | resmi | DIBI BNPB, ditambah {{angka:dibi.mentawai2010.hilang}} hilang |
 | Kependudukan, korban jiwa Selat Sunda (lantai 2018) | {{angka:dibi.selatsunda2018.meninggal}} | – | resmi | DIBI BNPB, ditambah {{angka:dibi.selatsunda2018.hilang}} hilang |
 | Kependudukan, korban jiwa nasional (lantai Aceh 2004) | {{angka:brr.aceh2004.meninggal}} | – | resmi | BRR, ditambah {{angka:brr.aceh2004.hilang}} hilang |
-| Lingkungan, tinggi tsunami model selatan Jawa (m) | {{angka:widiyantoro.jawa.tinggi_rerata_maks}} | {{angka:widiyantoro.jawa_barat.tinggi_tsunami}} | terverifikasi | Widiyantoro dkk. (2020): rendah rata-rata maksimum, tinggi pulau kecil selatan Banten; bukan *run-up* terukur |
+| Lingkungan, tinggi tsunami model selatan Jawa (m) | {{angka:widiyantoro.jawa.tinggi_rerata_maks}} | {{angka:widiyantoro.jawa_barat.tinggi_tsunami}} | terverifikasi | Widiyantoro dkk. (2020): rendah rata-rata maksimum, tinggi pulau kecil selatan Banten; bukan tinggi maksimum terukur di daratan |
 | Lingkungan, luas kelas bahaya tinggi tsunami (ha) | {{angka:renas.krb.luas_tinggi_tsunami}} | – | resmi | KRB 2022–2026 |
 | Ekonomi, potensi kerugian fisik dan ekonomi | {{angka:renas.krb.kerugian_tsunami_rp|rupiah}} | – | resmi | KRB 2022–2026; nilai aset terpapar, bukan kerugian kejadian |
 | Infrastruktur/fisik, rumah rusak | – | – | – | genangan resmi belum dipakai dan data bangunan tidak ada |
@@ -344,7 +346,31 @@ Faktor evakuasi dari estimasi model Cabinet Office Jepang 2025 diterapkan pada p
 
 **Erupsi Merapi 2010 tercatat {{angka:dibi.merapi2010.meninggal}} meninggal, {{angka:dibi.merapi2010.mengungsi}} pengungsi, dan {{angka:dibi.merapi2010.rumah_rusak}} rumah rusak di DIBI, korban erupsi terbesar di DIBI sejak 2008.** Surono dkk. memperkirakan bahwa prakiraan PVMBG yang tepat waktu menyelamatkan {{angka:surono.merapi2010.jiwa_terselamatkan|rentang}} jiwa; angka itu perkiraan penulis, bukan hasil evaluasi berpembanding [@surono-2012-merapi; @bnpb-dibi]. Erupsi Semeru 2021 tercatat {{angka:dibi.semeru2021.meninggal}} meninggal dan {{angka:dibi.semeru2021.hilang}} hilang. Penilaian kerusakan dan kerugian Merapi 2010 tidak ditemukan.
 
+::: gambar {#gbr:foto-m06-merapi}
+berkas: gambar/foto/mit-b06-merapi-2010.jpg
+jenis: foto
+judul: Lereng Merapi tertutup abu erupsi, Yogyakarta dan Jawa Tengah, 29 Oktober 2010
+pengarang: Robert Friedman, USAID Indonesia (OFDA)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Mount_Merapi_Eruption_(5134086587).jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+
 **Model sapuan awan panas dan lahar setara Merapi 2010 memberi {{angka:geologi.merapi2010.jiwa_sapuan}} jiwa di area sapuan tanpa evakuasi dan {{angka:geologi.merapi2010.pengungsi_radius20|ringkas}} pengungsi pada radius 2010.** Sebaran model tidak cocok dengan kejadian, karena paparan sapuan model terbesar jatuh di Magelang, sedangkan korban nyata terbanyak berada di Sleman [@pantaubencana-2026-skenario-geologi]. Oleh sebab itu, angka sapuan hanya menjadi konteks paparan dan tidak dibagi dengan korban tercatat. Kartu gunung api memakai Merapi 2010 sebagai analog dan menyebut Agung sebagai paparan zona KRB III terbesar kedua tanpa skenario.
+
+::: gambar {#gbr:foto-m06-semeru-sar}
+berkas: gambar/foto/mit-b06-semeru-sar.jpg
+jenis: foto
+judul: Petugas gabungan mencari korban di lahan tertimbun abu erupsi Semeru, Lumajang, Jawa Timur, Desember 2021
+pengarang: Badan Nasional Penanggulangan Bencana (BNPB)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Search_and_rescue_efforts_of_the_2021_Semeru_eruption.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
 
 :::: skenario {#tbl:kartu-gunungapi}
 jenis: gunungapi
@@ -409,7 +435,7 @@ sumber: R3P Cianjur [@cianjur-2022-r3p]; BNPB 22 Oktober 2018 [@bnpb-2018-kerugi
 keyakinan: campuran
 angka: 2; 3; 4
 data_per: 24 Okt 2026
-catatan: Stimulan adalah rumah rusak berat, sedang, dan ringan dikali nilai stimulan per unit skema BNPB terbaru; stimulan dan rasio hitungan kajian ini (asumsi kebijakan). Angka Lombok berupa kebutuhan R3P, bukan kerusakan dan kerugian. Sel "–" karena rumah tercatat Yogyakarta 2006 tidak ada di DIBI dan penilaian kerugian Merapi 2010 tidak ditemukan.
+catatan: Stimulan dan rasio hitungan kajian ini (asumsi kebijakan); Lombok berupa kebutuhan R3P.
 
 | KEJADIAN | ANGKA KERUGIAN RESMI | STIMULAN RUMAH | RASIO | KEYAKINAN |
 | --- | ---: | ---: | ---: | --- |
@@ -421,6 +447,8 @@ catatan: Stimulan adalah rumah rusak berat, sedang, dan ringan dikali nilai stim
 | Yogyakarta 2006, total (penilaian awal) | {{angka:bappenas.yogya2006.kerusakan_kerugian|rupiah}} | – | – | resmi |
 | Merapi 2010 | – | {{angka:stimulan.merapi2010.rumah_dibi|rupiah}} | – | asumsi-kebijakan |
 :::
+
+Stimulan pada @tbl:pembanding-kerugian adalah jumlah rumah rusak pada tiga tingkat kerusakan dikali nilai stimulan per unit skema BNPB terbaru. Stimulan dan rasionya adalah hitungan kajian ini berlabel asumsi kebijakan. Angka Lombok berupa kebutuhan R3P. Angka itu bukan kerusakan dan kerugian. Sel "–" muncul karena rumah tercatat Yogyakarta 2006 tidak ada di DIBI dan penilaian kerugian Merapi 2010 tidak ditemukan.
 
 :::: skenario {#tbl:kartu-majemuk}
 jenis: likuefaksi
@@ -440,7 +468,7 @@ data_per: 24 Okt 2026
 | Kependudukan, korban jiwa menurut USGS | {{angka:usgs.sulteng2018.meninggal}} | – | terverifikasi | USGS, ditambah {{angka:usgs.sulteng2018.hilang}} hilang |
 | Kependudukan, pengungsi tercatat | {{angka:dibi.sulteng2018.mengungsi}} | – | resmi | DIBI BNPB |
 | Kependudukan, jiwa terpapar likuefaksi (nasional) | {{angka:renas.krb.terpapar_likuefaksi|ringkas}} | – | resmi | KRB 2022–2026 |
-| Lingkungan, *run-up* tsunami terukur tertinggi (m) | {{angka:widiyanto.palu2018.runup_maks|fmt=2}} | – | terverifikasi | Widiyanto dkk. (2019), Tondo |
+| Lingkungan, tinggi tsunami terukur tertinggi di daratan (m) | {{angka:widiyanto.palu2018.runup_maks|fmt=2}} | – | terverifikasi | Widiyanto dkk. (2019), Tondo |
 | Ekonomi, kerusakan dan kerugian sementara | {{angka:bnpb.sulteng2018.kerusakan_kerugian|rupiah}} | – | resmi | BNPB, per 20 Oktober 2018 |
 | Infrastruktur/fisik, rumah rusak | {{angka:dibi.sulteng2018.rumah_rusak}} | – | resmi | DIBI BNPB |
 | Layanan sipil, sekolah di kelas bahaya tinggi likuefaksi (nasional) | {{angka:krb.likuefaksi.sekolah_kelas_tinggi}} | – | resmi | InaRISK KRB |
@@ -475,7 +503,7 @@ Kerusakan dan kerugian sementara Sulawesi Tengah {{angka:geologi.pembanding.sult
 
 ### Tuas Penekan Korban {#sub:tuas}
 
-**Data yang ada menunjuk dua tuas menurut jenis bahaya pada empat skenario megathrust platform: mutu bangunan untuk korban guncangan dan evakuasi segera untuk kematian tsunami.** Pada model platform yang belum diuji balik, korban guncangan turun bila kepatuhan bangunan naik. Pada estimasi model Cabinet Office Jepang 2025, kematian tsunami turun bila porsi evakuasi segera naik, dan faktor yang dipakai kajian ini adalah yang paling hati-hati dari delapan kombinasi kasusnya [@cao-japan-2025-nankai; @pantaubencana-2026-skenario-geologi]. Besar kedua faktor hanya tampil di kartu dan @gbr:tuas-geologi dengan labelnya masing-masing. Kedua tuas tidak diperingkat dengan satu angka nasional, karena paparan guncangan Jawa jauh lebih besar daripada proksi pesisir rendah, sedangkan kematian per jiwa terpapar tsunami pada Mentawai 2010 sekitar dua orde lebih tinggi daripada guncangan.
+**Data yang ada menunjuk dua tuas menurut jenis bahaya pada empat skenario megathrust platform: mutu bangunan untuk korban guncangan dan evakuasi segera untuk kematian tsunami.** Pada model platform yang belum diuji balik, korban guncangan turun bila kepatuhan bangunan naik. Pada estimasi model Cabinet Office Jepang 2025, kematian tsunami turun bila porsi evakuasi segera naik, dan faktor yang dipakai kajian ini adalah yang paling hati-hati dari delapan kombinasi kasusnya [@cao-japan-2025-nankai; @pantaubencana-2026-skenario-geologi]. Besar kedua faktor hanya tampil di kartu dan @gbr:tuas-geologi dengan labelnya masing-masing, dan faktor evakuasi diterapkan pada paparan, bukan pada korban tsunami. Kedua tuas tidak diberi peringkat dengan satu angka nasional, karena paparan guncangan Jawa jauh lebih besar daripada proksi pesisir rendah, sedangkan kematian per jiwa terpapar tsunami pada Mentawai 2010 sekitar dua orde lebih tinggi daripada guncangan.
 
 ::: gambar {#gbr:tuas-geologi}
 berkas: gambar/mitigasi/bab06-tuas-evakuasi-bangunan.png
@@ -485,7 +513,7 @@ sumber: Cabinet Office Jepang 2025 [@cao-japan-2025-nankai]; simulasi skenario P
 keyakinan: estimasi-model; belum diuji balik
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Tabel peta panas. Faktor evakuasi adalah asumsi kebijakan dan diterapkan pada paparan, bukan pada korban tsunami; faktor bangunan adalah estimasi model.
+catatan: Tabel peta panas; faktor evakuasi asumsi kebijakan, faktor bangunan estimasi model.
 :::
 
 **Dari delapan program terkait geologi di kompendium kajian ini, tidak satu pun berbukti kuat, dan keterpenuhan peringatan dini menurut Renstra 2025–2029 baru {{angka:renstra.peringatan_dini.keterpenuhan_persen|persen}}.** InaTEWS terukur di hulu, yaitu kecepatan terbit peringatan, tetapi dampaknya terhadap korban belum dievaluasi, dan pada Palu 2018 rantai hilirnya gagal [@pantaubencana-2026-program-terbukti; @harnantyari-2020-palu]. Desa dan Kelurahan Tangguh Bencana (Destana) dan Satuan Pendidikan Aman Bencana (SPAB) belum terbukti, artinya bukti dampaknya tidak ditemukan, sedangkan tiga program rehabilitasi pascabencana berbukti lemah, termasuk Rehabilitasi dan Rekonstruksi Masyarakat dan Permukiman Berbasis Komunitas (Rekompak) Yogyakarta dan Jawa Tengah 2006 (@tbl:program-geologi). Bukti luar negeri berkekuatan sedang hanya dipakai lewat padanannya di Indonesia: kode bangunan Chile mencatat kegagalan {{angka:bukti.p22.gagal_3lantai_persen|fmt=1|persen}} pada {{angka:bukti.p22.bangunan_3lantai}} bangunan tiga lantai atau lebih pada gempa Maule 2010, dengan padanan pengawasan standar bangunan Renas PB 2.3.4.a.
@@ -494,7 +522,7 @@ catatan: Tabel peta panas. Faktor evakuasi adalah asumsi kebijakan dan diterapka
 judul: Posisi bukti delapan program terkait bencana geologi dalam kompendium program kajian ini, 2026
 sumber: Kompendium program kajian ini [@pantaubencana-2026-program-terbukti]
 keyakinan: campuran
-catatan: Belum terbukti berarti bukti dampak tidak ditemukan, bukan program tidak bermanfaat; program luar negeri hanya dipakai lewat padanannya di Indonesia.
+catatan: Belum terbukti berarti bukti dampak tidak ditemukan, bukan program tidak bermanfaat.
 
 | PROGRAM | KEKUATAN BUKTI | POSISI | CATATAN | KEYAKINAN |
 | --- | --- | --- | --- | --- |

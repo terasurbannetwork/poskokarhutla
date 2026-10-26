@@ -1,6 +1,6 @@
 # PRD SIPPA: Sistem Pipa Portabel Karhutla dan Banjir
 
-Dokumen arah tunggal untuk dua keluaran: (a) buku kajian formal DOCX/PDF berikut deck PPTX/PDF, dan (b) aplikasi web khusus staf BNPB di `/pipa` pada repo Pantau Bencana. Versi 1.1, 25 Oktober 2026 (diselaraskan dengan dokumen turunan; rincian di `PENYELARASAN.md`), disusun dari `KEPUTUSAN-SIPPA.md` (keputusan pemilik 1–50 dan §H 51–53, menang atas semua), `KRITIK-DAN-KEPUTUSAN.md` (disingkat KD), `baca-A.md`, `baca-B.md`, `baca-C.md` (28 celah G01–G28), data yang sudah ditarik di `pipa/data/`, serta aturan repo (`AGENTS.md`, `docs/buku-pegangan/pantau-bencana.md`, `~/.claude/TEST.md`, `KERANGKA.md`, `bangun/NASKAH-SPEK.md`).
+Dokumen arah tunggal untuk dua keluaran: (a) buku kajian formal DOCX/PDF berikut deck PPTX/PDF, dan (b) aplikasi web khusus staf BNPB di `/pipa` pada repo Pantau Bencana. Versi 1.2, 26 Oktober 2026 (penggabungan Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses ke SIPPA menurut keputusan 55, dan perluasan web ke air tanah, akses, dan pemeliharaan menurut keputusan 56; rincian di `PENYELARASAN.md` bagian 26 Okt 2026), disusun dari `KEPUTUSAN-SIPPA.md` (keputusan pemilik 1–50, §H 51–53, dan 54–56, menang atas semua), bahan kajian `rehab` (`kajian/rehab/KERANGKA.md`, `rehab/KEPUTUSAN-AWAL.md` Q1–Q20 sejauh tidak bertentangan dengan keputusan SIPPA 1–56, `rehab/riset/A`–`F`, `kajian/naskah/rehab/` beserta bukti dan kunci `rehab.*`), `KRITIK-DAN-KEPUTUSAN.md` (disingkat KD), `baca-A.md`, `baca-B.md`, `baca-C.md` (28 celah G01–G28), data yang sudah ditarik di `pipa/data/`, serta aturan repo (`AGENTS.md`, `docs/buku-pegangan/pantau-bencana.md`, `~/.claude/TEST.md`, `KERANGKA.md`, `bangun/NASKAH-SPEK.md`).
 
 Konvensi berkas ini:
 
@@ -35,12 +35,14 @@ Daftar isi
 
 SIPPA adalah sistem kit pompa, selang layflat, manifold, dan lance injeksi dangkal yang disimpan di gudang, dipindahkan ke lokasi yang sudah bisa ditebak dari riwayat api, dan dipakai untuk membasahi bara gambut dari bawah permukaan (0–1,5 m, lengan uji 3–5 m), lalu dipindah ke daerah banjir pada musim hujan dengan modul pompa banjir terpisah. Kit bukan jaringan permanen. Argumen dasarnya tiga, semuanya dari data repo [terverifikasi, KD §1]: api Kalteng episodik dalam waktu tetapi berulang dalam ruang (85% deteksi 2023 jatuh di sel 2,2 km yang sudah terbakar 3 tahun atau lebih sebelumnya); air jarang jadi kendala utama (63% kompleks 2026 dalam 2 km dari sungai atau kanal besar; median 1,02 km bila parit dan kanal kecil OSM ikut dihitung, §5.1); bara berada di 0,3–0,5 m, bukan 5–15 m.
 
+Sejak keputusan 55 (26 Okt 2026) SIPPA adalah **satu grand design terintegrasi**, satu dari tiga grand design BNPB (Air Jawa, Mitigasi, SIPPA terintegrasi). Di samping kit pipa bergerak untuk karhutla, banjir, dan irigasi dari sumber lain, cakupannya ditambah tiga bagian: (a) air pascabencana, yaitu peralihan perpipaan dari darurat ke permanen dan pemanfaatan akuifer dalam batas penetapan cekungan air tanah dan zona konservasi Badan Geologi; (b) rehabilitasi dan rekonstruksi akses, yaitu jembatan menurut pemilik programnya (Satgas Pembangunan Jembatan TNI AD atau Jembatan Garuda, Jembatan Merah Putih Presisi Polri, jembatan gantung Kementerian PU, dan jembatan bailey DSP BNPB); dan (c) model pemeliharaan aset terpadu untuk kit, pipa, sumur, pompa, dan jembatan (§6.10). Kajian `rehab` menjadi bahan bukti; berkas finalnya tidak dihapus dan tidak diserahkan sebagai grand design terpisah. Keputusan 56 menaruh air tanah, akses, dan jadwal pemeliharaan juga di web `/pipa` (§9.4.9–§9.4.12).
+
 Keluaran PRD ini dua, dikerjakan paralel setelah PRD disetujui (keputusan 46):
 
 | Keluaran | Bentuk | Pembaca | Berkas akhir |
 | --- | --- | --- | --- |
-| Buku kajian SIPPA 2026–2030 | DOCX A4 + PDF, tanpa batas halaman (keputusan 11); deck sekitar 15 slide PPTX + PDF (keputusan 19) | Kepala BNPB (keputusan 3) | `kajian/keluaran/sippa.docx`, `sippa.pdf`, `sippa-deck.pptx`, `sippa-deck.pdf` |
-| Aplikasi web `/pipa` | Halaman staf di balik login admin Pantau Bencana (keputusan 31, 32), Bahasa Indonesia, mode gelap, desktop untuk perencanaan dan ponsel untuk lapangan | Staf BNPB, Satgas, operator lapangan | `public/pipa/**`, `src/sippa.js`, `migrations/0055_sippa_inti.sql` s.d. `0057_sippa_telemetri.sql`, `data/sippa/keluaran/*.json` (diunggah ke R2 `sippa/`, dibaca hanya lewat rute berlogin, §9.7) |
+| Buku Grand Design SIPPA Terintegrasi 2026–2030 (judul usulan, T-L) | DOCX A4 + PDF, tanpa batas halaman (keputusan 11), 22 bab; deck 18 slide isi PPTX + PDF (keputusan 19, T-M) | Kepala BNPB (keputusan 3) | `kajian/keluaran/sippa.docx`, `sippa.pdf`, `sippa-deck.pptx`, `sippa-deck.pdf` |
+| Aplikasi web `/pipa` | Halaman staf di balik login admin Pantau Bencana (keputusan 31, 32), Bahasa Indonesia, mode gelap, desktop untuk perencanaan dan ponsel untuk lapangan | Staf BNPB, Satgas, operator lapangan | `public/pipa/**`, `src/sippa.js`, `migrations/0056_sippa_inti.sql` s.d. `0059_sippa_aset_pelihara.sql`, `data/sippa/keluaran/*.json` (diunggah ke R2 `sippa/`, dibaca hanya lewat rute berlogin, §9.7) |
 
 ### 1.2 Tujuan
 
@@ -48,6 +50,8 @@ Keluaran PRD ini dua, dikerjakan paralel setelah PRD disetujui (keputusan 46):
 2. Menjalankan pilot Oktober 2026 di Kalteng dengan peralatan yang sudah ada di lapangan (pompa dan selang Manggala Agni/BPBD) ditambah lance sederhana dan termometer gambut, memisahkan dua vonis: "dapat dipakai" dan "lebih baik dari cara konvensional". Bila "dapat dipakai", kit dipakai untuk banjir November–Desember 2026 (keputusan 4).
 3. Menyediakan alat kerja staf BNPB di `/pipa` yang menjawab pertanyaan perencanaan (lokasi kit, hidraulika, sarana, pemicu pra-posisi) dan pertanyaan operasi (log gelar, inventaris, lacak kit antar-daerah, dashboard A/B), dengan kerangka telemetri yang siap menerima data sensor (keputusan 38) dan laporan PDF otomatis (keputusan 39).
 4. Menyiapkan ekstrapolasi nasional 18 provinsi dan 81 kit sebagai rencana bersyarat 2027–2030 yang hanya dieksekusi setelah gerbang (§4.3), bukan pembelian massal (keputusan 50).
+5. Menyatakan arah rehabilitasi dan rekonstruksi air dan akses dalam buku yang sama (keputusan 55): waktu pulih layanan air dan akses sebagai ukuran keberhasilan, air tanah dalam batas Badan Geologi, program jembatan ditulis menurut pemiliknya dan diikat ke R3P, dan jalur dana aset desa (Perban BNPB 4/2024 Pasal 5 huruf e).
+6. Menetapkan model pemeliharaan aset terpadu (§6.10) dengan data kondisi yang dicatat di `/pipa` sejak pilot, supaya kit, sumur, pompa, dan jembatan darurat tidak menjadi aset tanpa pemelihara.
 
 ### 1.3 Ukuran keberhasilan (terukur)
 
@@ -63,6 +67,8 @@ Keluaran PRD ini dua, dikerjakan paralel setelah PRD disetujui (keputusan 46):
 | U8 | Keutuhan aset | kehilangan komponen < 5% per musim per kit | `sippa_komponen` dan jejak | tiap musim |
 | U9 | Pemakaian ganda banjir | tiap kit yang dipindah ke banjir punya catatan waktu pindah, lokasi, jam pompa, m3 terpompa | `sippa_gerak`, `sippa_log_gelar` | Des 2026 |
 | U10 | INP layar | tidak ada interaksi > 200 ms di `/pipa` pada laptop uji; kerja berat lewat `nanti()` | `inp-reviewer` | tiap rilis |
+| U11 | Inspeksi tepat waktu (keputusan 55, 56) | ≥ 90% butir pemeliharaan terjadwal per musim tercatat di `sippa_inspeksi` paling lambat 30 hari sesudah jatuh tempo | `/pipa/pelihara`, `GET /api/sippa/pelihara` | tiap musim mulai 2027 |
+| U12 | Kit laik gelar saat pemicu | saat kabupaten naik ke PRA-POSISI, kit yang dipra-posisikan tidak punya komponen kritis (kelas K1–K3 §6.10) berskor kondisi ≥ 2 | `/pipa/pelihara`, `sippa_komponen` | tiap pemicu mulai 2027 |
 
 ### 1.4 Non-tujuan
 
@@ -71,6 +77,8 @@ Keluaran PRD ini dua, dikerjakan paralel setelah PRD disetujui (keputusan 46):
 - Bukan pengganti keputusan OMC (BMKG/Kemenhut) atau keputusan heli water bombing; keduanya tetap untuk front yang tidak dicapai regu darat dalam 6 jam (`jam_tiba`).
 - Tidak membangun bab dasar hukum TNI (keputusan 22). Peran YonTP ditulis sebagai gudang, tenaga gelar, dan transport antar-daerah dengan komando di Satgas dan operator inti Manggala Agni (keputusan 21).
 - Web bukan halaman publik; tidak ada lapisan SIPPA di peta publik `/`.
+- BNPB tidak membangun jembatan atau SPAM permanen sendiri di luar pemilik aset, dan buku tidak memerintah program jembatan dan sumur K/L (rehab Q8). Untuk akses dan air tanah, buku memuat biaya satuan berlabel sebagai pembanding, tanpa pagu, total program, NPV, atau BCR (rehab Q4; RAB, NPV, BCR, dan Monte Carlo keputusan 13 dan 15 berlaku untuk kit dan model pemeliharaan; T-N).
+- Peta air tanah dan akses tidak terbit sebagai halaman publik `public/kajian/rehab/` (rehab T3); semuanya di `/pipa` berlogin (keputusan 32, 56; T-O).
 - Kajian mitigasi ditunda sampai PRD dan buku SIPPA selesai (keputusan 47); PRD ini tidak menyentuhnya.
 
 ### 1.5 Yang TIDAK boleh ada (keputusan 50)
@@ -99,7 +107,7 @@ Nomor mengacu `KEPUTUSAN-SIPPA.md`. Kolom "bagian PRD" adalah tempat keputusan i
 | 3 | Pembaca buku Kepala BNPB | §8.1 |
 | 4 | Pilot Oktober 2026 minggu ini; bila berhasil, kit untuk banjir Nov–Des 2026 | §4.1, §5.6 |
 | 5 | Horizon 2026–2030 | §4 |
-| 6 | Provinsi lain dibahas penuh | §5.2, §8.2 Bab 5 |
+| 6 | Provinsi lain dibahas penuh | §5.2, §8.2 Bab 6 |
 | 7 | Pemakaian ganda banjir masuk biaya-manfaat | §5.6, §6.3, §11.1 |
 | 8 | Irigasi masuk, air dari sumber lain | §5.7 |
 | 9 | Injeksi 1,5 m pilot; 3–5 m lengan uji kedua | §5.3, §6.5 |
@@ -108,10 +116,10 @@ Nomor mengacu `KEPUTUSAN-SIPPA.md`. Kolom "bagian PRD" adalah tempat keputusan i
 | 12 | Gambar teknik tingkat konstruksi, blok pengesahan insinyur kosong | §6.9 |
 | 13 | RAB dihitung ulang | §11.1 |
 | 14 | Harga heli angka BNPB, menyusul | §2.2, §7.4 |
-| 15 | NPV, BCR, Monte Carlo | §8.2 Bab 13, §9.5 |
+| 15 | NPV, BCR, Monte Carlo | §8.2 Bab 18, §9.5 |
 | 16, 17 | Matriks respons FRP dan luas | §5.4 |
 | 18 | Simulasi Three.js di web, pola `sim_*` | §9.6 |
-| 19 | Deck sekitar 15 slide | §8.5 |
+| 19 | Deck sekitar 15 slide (18 slide isi sesudah keputusan 55, T-M) | §8.5 |
 | 20 | Tanpa bab kritik | §8.2 |
 | 21 | YonTP gudang, tenaga gelar, transport; komando Satgas; operator inti Manggala Agni | §3.3, §5.5 |
 | 22 | Tanpa dasar hukum TNI | §1.4 |
@@ -146,6 +154,9 @@ Nomor mengacu `KEPUTUSAN-SIPPA.md`. Kolom "bagian PRD" adalah tempat keputusan i
 | 51 | Ambang zona memakai "<"; jarak tepat 2,50 atau 5,00 km = jauh | §5.1, §9.3, §9.12.2 |
 | 52 | Warna zona buku dan deck biru dan emas dengan huruf A–D dan pola sama dengan web; web palet PRD + huruf + pola wajib | §8.1, §9.4.2, §9.13 |
 | 53 | Definisi vonis pilot "dapat dipakai" tujuh butir | §1.3 U3, §4.1 minggu 44, §9.10, §11.3 |
+| 54 | T-B dan T-C memakai bawaan §2.2 (pilot 28 Okt–1 Nov 2026, AOI mudah Palangka Raya) | §2.2, §4.1, §10.1 |
+| 55 | GD SIPPA menyerap GD Rehabilitasi dan Rekonstruksi Air dan Akses: pipa + air tanah + akses jembatan + model pemeliharaan; tiga GD BNPB; Q1–Q20 rehab berlaku untuk air tanah dan akses kecuali bertentangan dengan 1–54 | §1.1, §1.2, §6.10, §8, §12.2 |
+| 56 | Air tanah dan akses juga di web `/pipa` (bukan buku saja); layar jadwal pemeliharaan untuk kit, pipa, sumur, pompa, dan jembatan | §9.1.1, §9.4.9–§9.4.12, §9.7, §9.12, §9.14, §10.2 |
 
 ### 2.2 Pertanyaan terbuka dengan pemilik
 
@@ -153,19 +164,25 @@ Tidak menghalangi mulai kerja; tiap butir punya nilai bawaan yang dipakai sampai
 
 | Kode | Pertanyaan | Bawaan sementara | Dampak bila berubah |
 | --- | --- | --- | --- |
-| T-A | Harga helikopter water bombing (kontrak BNPB per jam dan per sorti) | slot `{{angka:sippa.heli.biaya_jam}}` kosong; perbandingan biaya memakai hanya pernyataan BNPB Sept 2023 "> Rp200 juta per sorti satu jam" [resmi, pernyataan] | tabel pembanding Bab 13 dan slide E1 |
+| T-A | Harga helikopter water bombing (kontrak BNPB per jam dan per sorti) | slot `{{angka:sippa.heli.biaya_jam}}` kosong; perbandingan biaya memakai hanya pernyataan BNPB Sept 2023 "> Rp200 juta per sorti satu jam" [resmi, pernyataan] | tabel pembanding Bab 18 dan slide E1 |
 | T-B | Lokasi dan tanggal pasti pilot minggu ini, siapa yang membawa pompa, dan jumlah lance yang tersedia | AOI mudah Palangka Raya (Bukit Batu/Jekan Raya) atau kompleks aktif terdekat Daops Palangka Raya; 2 lance pipa SS atau galvanis, 2 termometer tusuk | §4.1 minggu 44 |
 | T-C | Apakah kit pilot Oktober memakai pompa Manggala Agni atau BPBD, dan siapa menandatangani pinjam pakai sementara | catat pemilik alat di `sippa_komponen.pemilik_asal`; tanpa dokumen formal untuk pilot | §5.5 |
 | T-D | Daftar provinsi dan kabupaten banjir Nov–Des 2026 yang akan menerima kit | belum ada; layar Kit menyediakan tujuan bebas | §5.6 |
 | T-E | Angka OPEX regu konvensional dari log Manggala Agni Kalteng 2026 (orang, jam, liter) | koefisien `bara_regu` 0,5–2,8 ha/regu/hari dari `operasi.json` | garis dasar A/B |
-| T-F | Nilai manfaat (kerugian terhindar per ha) untuk NPV/BCR | manfaat 0 sebagai bawaan (seperti Studio pemilik), lalu dua skenario berlabel asumsi-kebijakan: biaya regu konvensional terhindar, dan biaya heli-hari terhindar | Bab 13 |
+| T-F | Nilai manfaat (kerugian terhindar per ha) untuk NPV/BCR | manfaat 0 sebagai bawaan (seperti Studio pemilik), lalu dua skenario berlabel asumsi-kebijakan: biaya regu konvensional terhindar, dan biaya heli-hari terhindar | Bab 18 |
 | T-G | Nama tanda tangan Kata Pengantar (Kepala BNPB) dan kolofon | sama dengan deck BNPB 21 Okt 2026 (KEPUTUSAN kajian T7), draf berpenanda periksa pemilik | bagian depan |
 | T-H | Apakah `/pipa` dibuka juga untuk akun instansi (BPBD, Manggala Agni) atau hanya sesi admin dan staf | hanya admin dan staf BNPB (keputusan 32); form lapangan memakai kode regu ala `/lapangan` yang dibuat staf | §9.8 |
 | T-I | Keluaran Deep Research ChatGPT pemilik (G27) | tidak diaudit; tidak dirujuk | tidak ada |
-| T-J | Setuju telemetri disimpan satu baris per pesan (larik bacaan), bukan satu baris per bacaan, karena kuota tulis D1 gratis 100 rb baris per hari dipakai bersama seluruh situs (DESAIN-TEKNIS ADR-07) | satu baris per pesan, gateway mengirim tiap 60 detik (1.440 tulisan per kit per hari) | §9.11; skema 0057 |
+| T-J | Setuju telemetri disimpan satu baris per pesan (larik bacaan), bukan satu baris per bacaan, karena kuota tulis D1 gratis 100 rb baris per hari dipakai bersama seluruh situs (DESAIN-TEKNIS ADR-07) | satu baris per pesan, gateway mengirim tiap 60 detik (1.440 tulisan per kit per hari) | §9.11; skema 0058 |
 | T-K | Paket D1 berbayar atau interval kirim 5 menit sebelum telemetri terpasang di lebih dari 30 kit (81 kit x 1.440 = 117 rb tulisan per hari) | diputus 2027 sebelum kit ke-31 dipasang sensor | §9.11, §11.1 baris Platform web |
+| T-L | Judul buku gabungan | **Grand Design Sistem Pipa Portabel Karhutla dan Banjir (SIPPA) Terintegrasi 2026–2030**, subjudul *Kit Pipa Bergerak, Air Pascabencana, Akses Jembatan, dan Pemeliharaan Aset*; nama SIPPA tetap (keputusan 1); berkas serah "Kajian SIPPA Terintegrasi {DDMMYY}" | sampul, kolofon, `tema.json` |
+| T-M | Deck 18 slide isi (pipa, air, akses, pemeliharaan) melebihi "sekitar 15" keputusan 19 | 18 slide isi; gerbang deck 17–19 | KERANGKA-BUKU §11, RENCANA-UJI §5.3 |
+| T-N | RAB, NPV, BCR untuk air tanah dan akses (keputusan 13 dan 15) atau hanya biaya satuan (rehab Q4) | hanya biaya satuan berlabel untuk air tanah dan akses; RAB, NPV, BCR, Monte Carlo untuk kit dan model pemeliharaan | Bab 18 |
+| T-O | Peta publik `public/kajian/rehab/` (rehab T3) dicabut | dicabut; semua peta air tanah dan akses di `/pipa` berlogin | §9.4.10, §9.4.11 |
+| T-P | Kit dengan komponen kritis berskor ≥ 2 atau inspeksi terlambat diblokir dari gerak `depot`/`gelar` | tidak diblokir; pil peringatan "tidak laik gelar" dan butir ringkas (pilot memakai alat pinjam; blokir dibuka lagi 2027 bila U12 gagal) | §6.10.4, §9.4.12 |
+| T-Q | Jadwal: buku 22 bab tetap serah minggu 49, web R4 (air, akses, pemeliharaan) 7–20 Des 2026 | ya | §10, TIKET Sprint 4 |
 
-Kode T-A sampai T-K dipakai identik di semua dokumen SIPPA. Butir teknis yang diputus sesi induk memakai kode BT (DESAIN-TEKNIS §9.2) atau O (KERANGKA-BUKU §10), bukan T.
+Kode T-A sampai T-Q dipakai identik di semua dokumen SIPPA. Butir teknis yang diputus sesi induk memakai kode BT (DESAIN-TEKNIS §9.2) atau O (KERANGKA-BUKU §10), bukan T.
 
 ---
 
@@ -190,7 +207,7 @@ BNPB (pemilik program dan BMN), Satgas Karhutla provinsi (komando operasi), Mang
 
 ### 3.3 Matriks RACI per tahap (keputusan 24)
 
-R = bertanggung jawab mengerjakan, A = akuntabel memutus, C = dikonsultasikan, I = diberi tahu. Satu A per baris. Matriks ini masuk buku Bab 10.2 sebagai `matriks-lembaga` dan deck slide 12 (D3).
+R = bertanggung jawab mengerjakan, A = akuntabel memutus, C = dikonsultasikan, I = diberi tahu. Satu A per baris. Matriks ini masuk buku Bab 17.2 sebagai `matriks-lembaga` dan deck slide 15 (D3).
 
 | Tahap | BNPB | Satgas prov | Manggala Agni | BPBD | YonTP | BRGM | Kemenhut | Konsesi/pemegang hak | BWS/BIG/BMKG |
 | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -213,7 +230,7 @@ Catatan: baris sekat kanal dipegang BRGM/KLHK sesuai prosedur yang ada (KD K-12)
 
 ### 3.4 Peran swasta dan konsesi (keputusan 25)
 
-Ditulis sebagai opsi kebijakan di buku Bab 10.5, bukan bagian desain: (a) konsesi menyediakan akses trase, air kanal, dan tenaga MPA di wilayahnya dengan kit milik BNPB; (b) konsesi membeli kit sendiri mengikuti spesifikasi SIPPA dan mendaftarkannya ke inventaris; (c) konsesi menanggung OPEX bila kit dipakai di konsesinya. Tiap opsi diberi syarat: persetujuan tertulis sebelum survei, tidak ada kewajiban hukum baru yang diklaim, dan tidak ada nama/logo perusahaan di keluaran BNPB (keputusan 50).
+Ditulis sebagai opsi kebijakan di buku Bab 17.5, bukan bagian desain: (a) konsesi menyediakan akses trase, air kanal, dan tenaga MPA di wilayahnya dengan kit milik BNPB; (b) konsesi membeli kit sendiri mengikuti spesifikasi SIPPA dan mendaftarkannya ke inventaris; (c) konsesi menanggung OPEX bila kit dipakai di konsesinya. Tiap opsi diberi syarat: persetujuan tertulis sebelum survei, tidak ada kewajiban hukum baru yang diklaim, dan tidak ada nama/logo perusahaan di keluaran BNPB (keputusan 50).
 
 ---
 
@@ -228,7 +245,7 @@ Minggu ISO. Hari ke-0 = 25 Oktober 2026 (PRD). Pekerjaan repo (buku, web) dicata
 | 43 | 24–25 Okt | PRD disetujui pemilik; T-B dan T-C dijawab | `PRD.md` |
 | 44 | 26 Okt–1 Nov | **Pilot lapangan Okt 2026**: 2–3 sesi gelar di AOI mudah dengan pompa dan selang Manggala Agni/BPBD yang ada, 2 lance sederhana, termometer tusuk 0,1/0,3/0,5/1,0 m. Tiap sesi: catat tiba, mulai gelar, air mengalir, bongkar; petak probe sebelum dan 24 jam sesudah. Bila ada api aktif: 1 petak lance, 1 petak konvensional berdampingan. Vonis "dapat dipakai" pada 1 Nov menurut tujuh butir keputusan 53 (air sampai ujung lance ≥ 2 sesi di ≥ 2 petak; tiba-sampai-air ≤ 4 jam dengan lima waktu lengkap; tekanan ujung ≥ 2 bar ≥ 30 menit; tanpa gerbang keras; probe ≥ 90% lengkap; nol kecelakaan dan tanpa henti bocor > 30 menit; ≥ 95% komponen kembali berfungsi) | `/pipa/log` form luring dan `sippa_log_gelar` jalan (prioritas P0 §10.1); formulir kertas cadangan `kajian/pipa/formulir/G3-lite.pdf` |
 | 45 | 2–8 Nov | Keputusan pemilik: lanjut ke banjir atau tidak. Bila ya: daftar tujuan banjir (T-D), pinjam pakai modul pompa banjir dari BPBD (pompa debit besar yang sudah ada), kit dicatat di inventaris | `/pipa/kit` inventaris dan gerak; `/pipa/ab` menampilkan hasil pilot dengan label "n kecil" |
-| 46 | 9–15 Nov | Laporan pilot Okt (PDF otomatis dari `/pipa/laporan`) ke pimpinan; nota putusan: setuju studi + pilot 2027, tolak pembelian massal (KD §6 no 1) | `/pipa/laporan` templat "Laporan pilot"; buku Bab 12 draf |
+| 46 | 9–15 Nov | Laporan pilot Okt (PDF otomatis dari `/pipa/laporan`) ke pimpinan; nota putusan: setuju studi + pilot 2027, tolak pembelian massal (KD §6 no 1) | `/pipa/laporan` templat "Laporan pilot"; buku Bab 16 draf |
 | 47 | 16–22 Nov | Surat permintaan data terkirim (BIG, BWS Kalimantan II, walidata KHG/BRGM, BMKG, BPBD Kalteng, Manggala Agni, LKPP) memakai draf Lampiran I | `kajian/pipa/surat/*.md` |
 | 48 | 23–29 Nov | Kit (alat pinjam) mulai dipindah ke daerah banjir sesuai T-D; YonTP transport dicatat | `/pipa/kit` status `banjir`, `sippa_gerak` |
 | 49 | 30 Nov–6 Des | Operasi banjir pertama: log jam pompa, m3, lokasi; **buku kajian versi serah** (semua bab, QA lima lapis) | `sippa.docx/pdf`, `sippa-deck.pptx/pdf` |
@@ -314,11 +331,11 @@ Tiga temuan data tambahan yang mengubah doktrin (semua [terverifikasi] dengan ke
 | C | air jauh, jalan dekat | sumur bor dangkal pra-posisi (Rp1,5–6 juta per titik, sekitar 3 jam per titik) sebagai sumber; tanker sebagai cadangan; kit dipakai dari sumur ke bara | pompa jinjing, sumur dangkal, mobil tangki pinjam | sumur dalam 50–100 m sebagai default |
 | D | air jauh, jalan jauh | pencegahan (rewetting, sekat kanal, patroli), deteksi (satelit, drone termal), heli hanya darurat untuk menahan front; kit tidak dipra-posisikan | drone termal, pemantauan, heli bila `jam_tiba` > 6 | kit relay; klaim kit menggantikan heli |
 
-Zona D 34% di sembilan provinsi dan 53% di Papua Selatan berarti kit tidak menjawab sepertiga sampai separuh kompleks; buku menulis angka ini di muka (Bab 4) supaya tidak ada klaim cakupan berlebih.
+Zona D 34% di sembilan provinsi dan 53% di Papua Selatan berarti kit tidak menjawab sepertiga sampai separuh kompleks; buku menulis angka ini di muka (Bab 5) supaya tidak ada klaim cakupan berlebih.
 
 ### 5.2 Lingkup nasional 18 provinsi dan 81 kit
 
-Jumlah kit per provinsi = luas terbakar puncak SiPongi (maksimum 2019 atau 2023, `public/data/luas_resmi.json`) dibagi sekitar 22.700 ha per kit [asumsi-kebijakan: satu kit melayani 1 musim puncak dengan beban yang masih bisa ditangani; angka ini wajib ditulis sebagai asumsi dan diuji kepekaannya ±50% di Bab 13.7]. Pembulatan ke bilangan bulat terdekat, minimal 1 bila provinsi memakai gambut atau sabana dengan luas puncak ≥ 10.000 ha.
+Jumlah kit per provinsi = luas terbakar puncak SiPongi (maksimum 2019 atau 2023, `public/data/luas_resmi.json`) dibagi sekitar 22.700 ha per kit [asumsi-kebijakan: satu kit melayani 1 musim puncak dengan beban yang masih bisa ditangani; angka ini wajib ditulis sebagai asumsi dan diuji kepekaannya ±50% di Bab 18.7]. Pembulatan ke bilangan bulat terdekat, minimal 1 bila provinsi memakai gambut atau sabana dengan luas puncak ≥ 10.000 ha.
 
 | Kelompok | Provinsi dan kit | Jumlah |
 | --- | --- | --- |
@@ -352,7 +369,7 @@ Angka regu dan hari dihitung oleh fungsi murni `matriksRespons(frp, luasHa, zona
 
 ### 5.5 Daftar SOP
 
-Enam keluarga SOP, ditulis di buku Bab 9 dan Lampiran G sebagai prosedur bernomor, bukan narasi. Tiap SOP memuat: tujuan, pelaku (RACI), prasyarat, langkah bernomor, titik berhenti (stop-work), formulir yang dipakai, dan rujukan.
+Enam keluarga SOP, ditulis di buku Bab 10 dan Lampiran G sebagai prosedur bernomor, bukan narasi. Tiap SOP memuat: tujuan, pelaku (RACI), prasyarat, langkah bernomor, titik berhenti (stop-work), formulir yang dipakai, dan rujukan.
 
 | Kode | SOP | Titik berhenti wajib |
 | --- | --- | --- |
@@ -373,7 +390,7 @@ Enam keluarga SOP, ditulis di buku Bab 9 dan Lampiran G sebagai prosedur bernomo
 
 ### 5.7 Irigasi (keputusan 8)
 
-Irigasi masuk sebagai pemakaian musim peralihan dengan syarat keras yang sama dengan dashboard pemilik: tidak boleh menurunkan muka air gambut, tidak boleh menambah drainase gambut, dan air berasal dari sumber lain (sungai besar, embung, waduk di luar kubah gambut), bukan air yang dipakai pemadaman atau kanal gambut. Bentuknya: pompa banjir dan layflat dipinjamkan ke kelompok tani di luar KHG pada Maret–April, dengan biaya BBM ditanggung peminjam. Manfaatnya dihitung di Bab 11 dan Bab 13 sebagai skenario BCR tersendiri berlabel asumsi-kebijakan (BCR inti, BCR + banjir, BCR + banjir + irigasi ditampilkan berdampingan), karena KD K-14 dan Studio pemilik keduanya menandai risiko de-watering; bila syarat keras irigasi tidak terpenuhi di satu kabupaten, manfaat irigasinya nol.
+Irigasi masuk sebagai pemakaian musim peralihan dengan syarat keras yang sama dengan dashboard pemilik: tidak boleh menurunkan muka air gambut, tidak boleh menambah drainase gambut, dan air berasal dari sumber lain (sungai besar, embung, waduk di luar kubah gambut), bukan air yang dipakai pemadaman atau kanal gambut. Bentuknya: pompa banjir dan layflat dipinjamkan ke kelompok tani di luar KHG pada Maret–April, dengan biaya BBM ditanggung peminjam. Manfaatnya dihitung di Bab 11 dan Bab 18 sebagai skenario BCR tersendiri berlabel asumsi-kebijakan (BCR inti, BCR + banjir, BCR + banjir + irigasi ditampilkan berdampingan), karena KD K-14 dan Studio pemilik keduanya menandai risiko de-watering; bila syarat keras irigasi tidak terpenuhi di satu kabupaten, manfaat irigasinya nol.
 
 ### 5.8 Pelatihan dan latihan tahunan
 
@@ -491,6 +508,116 @@ Tingkat konstruksi dengan blok judul standar: nomor gambar, revisi, skala, satua
 | SIPPA-G-11 | Diagram zona A–D dan alur keputusan sarana | | identik dengan aturan `saranSarana` |
 | SIPPA-G-12 | Peta tata letak petak A/B dan grid probe | | sesuai protokol A/B |
 
+### 6.10 Model pemeliharaan aset terpadu (keputusan 55, 56)
+
+Satu model untuk semua aset yang dipegang atau dicatat SIPPA: kit dan komponennya, pipa koridor, sumur bor dan pompanya, perpipaan sementara pascabencana, serta jembatan darurat dan jembatan permanen yang dipantau. Model ini menggantikan "interval pemeliharaan per shift, mingguan, bulanan, triwulan, tahunan" yang dulu ada di Bab 8.6 buku. Semua interval, laju, dan persen di bawah berlabel **[asumsi-kebijakan]** sampai diganti interval lembar data pabrikan, pedoman pemilik aset (Bina Marga untuk jembatan, Cipta Karya untuk SPAM, Badan Geologi untuk sumur), atau data musim 2027 dari `sippa_inspeksi` dan `sippa_stok_gerak`; kecuali disebut lain. Konstanta tinggal di satu modul murni `public/pipa/pelihara.js` (diimpor layar, worker, dan pembangun buku lewat `data/sippa/pelihara.csv` yang dibangkitkan dari modul itu; DESAIN-TEKNIS §5.10).
+
+#### 6.10.1 Sepuluh kelas aset
+
+| Kelas | Aset | Sumber data di `/pipa` | Pemilik aset | Pemelihara tingkat 1 (rutin) | Pemelihara tingkat 2 (bengkel, uji) |
+| --- | --- | --- | --- | --- | --- |
+| K1 | Pompa api, pompa banjir, booster (kode BOM `P-`, `E-`) | `sippa_komponen` + jam pompa dari `sippa_log_gelar` | BNPB (BMN) | operator Manggala Agni/BPBD saat gelar; YonTP di gudang | penyedia servis kontrak BNPB; FAT kurva Q-H |
+| K2 | Selang layflat, selang serang, selang hisap (`H-`, `ST-`) | `sippa_komponen` | BNPB (BMN) | operator (bilas, kering, gulung) | YonTP atau penyedia (uji tekanan 1,5 kali) |
+| K3 | Manifold, kopling, katup, filter, lance (`M-`, `C-`, `V-`, `SF-`, `I-`, `G-`) | `sippa_komponen` | BNPB (BMN) | operator | YonTP atau penyedia (uji relief, uji debit lance) |
+| K4 | Sensor dan telemetri (`FT-`, `PT-`, `LT-`, `T-`, `GWT-`, `U-`) | `sippa_komponen`, `sippa_perangkat`, alarm `diam` | BNPB (BMN) | operator (baterai, bersih) | penyedia kalibrasi |
+| K5 | APD, gas monitor, kontainer depot, tangki BBM, baut (`Q-`, `S-`, `B-`) | `sippa_komponen` | BNPB (BMN) | YonTP | penyedia kalibrasi gas monitor |
+| K6 | Pipa HDPE koridor semi-permanen dan rumah pompa panggung (paling banyak 2 koridor, hanya setelah musim pilot pertama) | `sippa_aset` kelas `pipa_koridor` | BNPB (BMN) | BPBD/Daops setempat | penyedia (uji kebocoran) |
+| K7 | Sumur bor darurat atau produksi beserta pompa sumur dan panel | `sippa_aset` kelas `sumur_bor`, `pompa_sumur` | pelaksana sampai serah terima (BNPB/BPBD, Badan Geologi, Kementerian PU, TNI AD, Polri), lalu pemda, desa, atau PDAM | pengelola setempat | Badan Geologi (rekomendasi teknis, muka air), dinas kesehatan atau laboratorium (mutu air) |
+| K8 | Perpipaan sementara, tandon, hidran umum pascabencana | `sippa_aset` kelas `pipa_sementara`, `tandon_hidran` | BPBD, PDAM, atau Kementerian PU (Cipta Karya) | PDAM atau BPBD | Cipta Karya |
+| K9 | Jembatan darurat bailey atau rangka baja DSP BNPB, terpasang atau di gudang | `sippa_aset` kelas `jembatan_darurat` | penerima hibah barang DSP sesudah serah terima (pemda); stok gudang BNPB | penerima (pemda/BPBD) | Kementerian PU (Bina Marga) atau TNI (Zeni) |
+| K10 | Jembatan permanen dan jembatan gantung yang dipantau (program Kementerian PU, Satgas Pembangunan Jembatan TNI AD, Jembatan Merah Putih Presisi Polri, pemda, desa) | `sippa_aset` kelas `jembatan_permanen` | pemilik program lalu pemda atau desa | pemilik aset | pemilik aset; **BNPB hanya mencatat kondisi dari sumber pemilik dan cek cepat pascabencana bersama BPBD** |
+
+Pemetaan awalan kode BOM ke kelas K1–K5 dikunci di `pelihara.js` `KELAS_BOM`; uji menolak awalan `TEMPLAT_BOM` yang tidak berkelas atau berkelas ganda (RENCANA-UJI §2.3 Pemeliharaan).
+
+#### 6.10.2 Siklus inspeksi
+
+| Kelas | Tiap pakai | Berkala | Pra-musim (April karhutla, Oktober banjir) | Tahunan dan sesudah kejadian |
+| --- | --- | --- | --- | --- |
+| K1 | pra-gelar dan pasca-gelar (oli, bahan bakar, kebocoran, nyala) | nyala uji 15 menit tiap 30 hari di gudang; servis oli, filter, busi tiap 50 jam operasi atau 180 hari, mana lebih dulu | uji kurva Q-H tiga titik terhadap FAT | overhaul tiap 500 jam operasi |
+| K2 | pasca-gelar: bilas, kering, periksa lecet, catat tambalan | | | uji tekanan 1,5 kali tekanan kerja tiap 12 bulan dan sesudah tiap tambalan; afkir bila lebih dari 3 tambalan per gulung 100 m atau gagal uji |
+| K3 | pasca-gelar: filter dibersihkan, gasket kopling diperiksa | | gasket kopling diganti; uji debit lance 15–40 L/min pada 2–4 bar (§6.5) | uji set relief ≤ 88% PN |
+| K4 | pasca-gelar: bersih, kering | baterai tiap pra-musim | uji fungsi dan alarm | kalibrasi (FT ±1–2%, PT ±0,5% FS) |
+| K5 | | gas monitor CO kalibrasi tiap 6 bulan; tangki BBM dan kontainer periksa bocor tiap 6 bulan | APD diperiksa masa pakai | inventaris |
+| K6 | | patroli tiap 30 hari selama kemarau | uji kebocoran | inspeksi wajib sesudah tiap kebakaran di koridor sebelum dipakai lagi (derating suhu §6.4) |
+| K7 | | ukur muka air statis dan debit tiap 6 bulan; pompa sumur servis tiap 250 jam atau 6 bulan | | uji mutu air (E. coli, arsen, salinitas di pesisir) saat serah terima, hari ke-30, lalu tiap 6 bulan selama dikelola BPBD; evaluasi fungsi 12 bulan sesudah serah terima |
+| K8 | harian selama tanggap darurat (bocor, klorin sisa), mingguan sesudahnya | | | titik serah ke PDAM atau pemda dicatat |
+| K9 | inspeksi sesudah pasang | bulanan selama musim hujan; sesudah tiap banjir | | inventaris panel dan baut stok gudang tiap tahun (rekomendasi rehab R-RR-06) |
+| K10 | | | | inspeksi tahunan oleh pemilik dicatat sebagai sumber; cek cepat pascabencana bersama BPBD |
+
+Jadwal **dihitung, tidak disimpan**: jatuh tempo = waktu inspeksi terakhir + interval kelas, atau jam operasi sejak servis terakhir ≥ batas jam (`SippaPelihara.jadwal()`). Status butir: **aman** (> 14 hari sebelum jatuh tempo), **segera** (≤ 14 hari), **terlambat** (lewat jatuh tempo), **belum pernah** (tanpa inspeksi tercatat).
+
+#### 6.10.3 Skor kondisi
+
+Satu skala 0–3 untuk semua kelas, sama dengan enum `sippa_komponen.kondisi` yang sudah ada sehingga tidak ada kolom baru di 0056:
+
+| Skor | `kondisi` | Arti | Tindakan |
+| --- | --- | --- | --- |
+| 0 | `baik` | laik pakai | tidak ada |
+| 1 | `rusak_ringan` | laik pakai dengan catatan | perbaikan dijadwalkan ≤ 30 hari |
+| 2 | `rusak_berat` | tidak laik pakai | keluar dari kit atau aset ditandai; kit dengan komponen kritis K1–K3 berskor 2 berpil "tidak laik gelar" dan dipindah ke `servis` oleh staf |
+| 3 | `hilang` | hilang atau afkir | masuk hitungan kehilangan (U8, < 5% per musim); ganti dari stok |
+
+Padanan untuk kelas lain [asumsi-kebijakan, dicek ke pedoman pemilik sebelum buku `final`]: jembatan memakai nilai kondisi pemilik bila ada (skala 0–5 Bina Marga dipetakan 0–1 ke 0, 2 ke 1, 3–4 ke 2, 5 ke 3); sumur yang gagal uji mutu air minum (E. coli > 0 CFU/100 ml menurut Permenkes 2/2023) berskor 2 "tidak laik minum" walau fisiknya baik.
+
+#### 6.10.4 Ambang tindakan dan peringatan
+
+- Kit dengan ≥ 1 komponen kritis (K1–K3) berskor 2, atau dengan butir K1 "terlambat", tampil dengan pil **tidak laik gelar** di layar Kit, Pemicu, dan Pemeliharaan. Bawaan T-P: peringatan, bukan blokir gerak.
+- Butir terlambat > 30 hari masuk hitungan U11.
+- Sumur berskor 2 karena mutu air tampil dengan pil **tidak laik minum** di layar Air tanah sampai uji ulang lolos.
+- Jembatan darurat terpasang tanpa `pemilik_aset` tidak bisa dibuat (NOT NULL); tanpa `rencana_ganti` tampil berpil **tanpa jadwal ganti** (rehab A3, R-RR-04).
+
+#### 6.10.5 Stok suku cadang
+
+Stok dicatat sebagai buku besar tambah-saja per gudang (`sippa_stok_gerak`, saldo = jumlah delta; saldo negatif ditolak trigger). Stok minimum per gudang per musim:
+
+`stok_min(kode) = ceil(laju_pakai(kode) x n_satuan_dilayani x (1 + waktu_tunggu_hari / 180))`, waktu tunggu bawaan 60 hari (e-katalog).
+
+| Suku cadang | Laju pakai bawaan per musim |
+| --- | --- |
+| gasket kopling Storz | 1 set per 10 kopling |
+| elemen filter servis | 2 per pompa |
+| oli, filter oli, busi | 2 servis per pompa |
+| impeller | 1 per 4 pompa |
+| layflat cadangan | 10% panjang per kit (DN100 100 m, DN65 50 m) |
+| lance | 1 per 4 lance |
+| baterai sensor | 1 set per node |
+| respirator P100 | 2 per orang (20 orang per kit) |
+| baut dan pelat lantai bailey | menurut daftar komponen panel per bentang terpasang (menunggu data DSP, R-RR-06) |
+
+Laju pakai dikalibrasi dari gerak `pakai` musim 2027. Saldo di bawah stok minimum berpil **di bawah minimum** di layar Pemeliharaan.
+
+#### 6.10.6 Siapa memelihara dan baris anggarannya
+
+| Pelaku | Memelihara | Baris anggaran |
+| --- | --- | --- |
+| BNPB, Direktorat Pengelolaan Logistik dan Peralatan | pemilik BMN kit (K1–K6); stok suku cadang; kontrak servis tingkat 2; data kondisi | belanja pemeliharaan APBN BNPB (kode akun dicek Biro Keuangan) |
+| YonTP (TNI AD) lewat MoU pinjam pakai BMN | gudang, nyala uji bulanan, servis ringan, gulung dan simpan | biaya BBM, oli, dan suku cadang dari BNPB menurut MoU [asumsi-kebijakan] |
+| Manggala Agni dan BPBD (operator) | inspeksi pra-gelar dan pasca-gelar lewat `/pipa/lapangan` | dalam biaya operasi gelar |
+| BPBD | sumur darurat sampai serah terima; jembatan bailey yang diterima sebagai hibah barang DSP | APBD, BTT |
+| Kementerian PU | jembatan nasional (Bina Marga), SPAM (Cipta Karya), air baku (SDA) | APBN K/L |
+| Pemda dan PDAM | jalan, jembatan, SPAM daerah; sumur sesudah serah terima | APBD; tarif PDAM |
+| Desa | jembatan desa, sumur desa | APBDes; Padat Karya Tunai Desa |
+| Badan Geologi | rekomendasi teknis sumur, pemantauan muka air tanah | APBN Kementerian ESDM |
+
+Celah yang dinyatakan buku: hibah RR tidak dapat membiayai biaya operasional dan pemeliharaan (Perban BNPB 4/2024 Pasal 5 huruf b) dan aset rusak milik pemerintah desa (huruf e), sehingga pemeliharaan sesudah RR selalu jatuh ke APBN K/L, APBD, atau APBDes (kunci `rehab.hukum.hibah_rr_larangan_pembiayaan_huruf`; naskah rehab Bab 9 dan 11).
+
+#### 6.10.7 Biaya pemeliharaan per tahun
+
+`B_tahun = Σ_kelas (NG_kelas x r_kelas) + Σ_pompa (jam_pompa x c_jam) + n_inspeksi_lab x c_lab`
+
+NG = nilai ganti dari `harga.csv`; c_jam = biaya servis 50 jam dibagi 50 (dari RFQ); c_lab = biaya satu sampel uji mutu air. Laju r bawaan: K1 8%, K2 6%, K3 5%, K4 8%, K5 10%, K6 2%, K7 3% nilai bangun, K9 2% nilai komponen terpasang; K8 dan K10 bukan beban BNPB (r = 0, hanya dicatat). Rata-rata tertimbang satu kit gambut dengan laju ini sekitar 7% dari CAPEX kit (hitungan dari BOM §6.1, estimasi-model), di dalam rentang "servis 5–8% CAPEX" §11.1; self-check `sippa_keuangan.py` gagal bila rata-rata tertimbang kit keluar dari 5–8%. Hasilnya masuk OPEX tahun kering dan tahun basah Bab 18 dan kunci `sippa.pelihara.biaya_tahun.*`.
+
+#### 6.10.8 Data kondisi di `/pipa`
+
+| Data | Tempat | Siapa mencatat |
+| --- | --- | --- |
+| kondisi dan waktu cek komponen kit | `sippa_komponen.kondisi`, `dicek` (diisi trigger dari `sippa_inspeksi`) | staf (W) atau operator kit tugasnya (K) |
+| riwayat inspeksi semua kelas, termasuk uji mutu air dan uji tekanan | `sippa_inspeksi` (tambah-saja) | staf (W); operator hanya pra-gelar dan pasca-gelar kit tugasnya |
+| aset bukan kit (sumur, pompa sumur, pipa sementara, tandon, jembatan) | `sippa_aset` | staf (W) |
+| jam operasi pompa | `sippa_log_gelar.jam_pompa` sejak inspeksi `servis` terakhir | otomatis |
+| status kit | `sippa_kit.status` (`servis` sudah ada di 0056) | staf lewat `sippa_gerak` |
+| stok suku cadang | `sippa_stok_gerak` | staf (W) |
+
 ---
 
 ## 7. Data
@@ -579,35 +706,40 @@ Templat dari paket pemilik (sheet FORM dan Lamp E-2) diadaptasi ke kop BNPB; sat
 
 ### 8.1 Posisi dan pembaca
 
-Judul: **Sistem Pipa Portabel Karhutla dan Banjir (SIPPA) 2026–2030** (subjudul dan identitas lengkap di KERANGKA-BUKU §1). Penerbit BNPB saja, pembaca Kepala BNPB, A4 tegak Roboto, logo BNPB, foto Commons beratribusi, tanpa ilustrasi AI (KEPUTUSAN kajian P1, P12). Bentuk buku keputusan: BLUF (L59), pita keputusan KD-1 sampai KD-7 di Pesan Kunci, Bab 17, dan deck. Tanpa batas halaman (keputusan 11). Warna zona di buku dan deck biru dan emas dengan huruf A–D dan pola arsiran yang sama dengan web (keputusan 52; DESIGN-SYSTEM §2.1.3). Roboto hanya untuk buku, deck, dan PDF; layar web memakai Inter dan Plus Jakarta Sans (DESIGN-SYSTEM §2.2).
+Judul usulan: **Grand Design Sistem Pipa Portabel Karhutla dan Banjir (SIPPA) Terintegrasi 2026–2030** (T-L; subjudul dan identitas lengkap di KERANGKA-BUKU §1). Buku ini adalah satu dari tiga grand design BNPB (keputusan 55) dan menyerap kajian `rehab` sebagai bahan bukti. Penerbit BNPB saja, pembaca Kepala BNPB, A4 tegak Roboto, logo BNPB, foto Commons beratribusi, tanpa ilustrasi AI (KEPUTUSAN kajian P1, P12). Bentuk buku keputusan: BLUF (L59), pita keputusan KD-1 sampai KD-12 di Pesan Kunci (pita ringkas KD-1, KD-2, KD-3, KD-8), Bab 22, dan deck. Tanpa batas halaman (keputusan 11). Warna zona di buku dan deck biru dan emas dengan huruf A–D dan pola arsiran yang sama dengan web (keputusan 52; DESIGN-SYSTEM §2.1.3). Roboto hanya untuk buku, deck, dan PDF; layar web memakai Inter dan Plus Jakarta Sans (DESIGN-SYSTEM §2.2).
 
-Rincian urutan bab, pertanyaan kunci, angka wajib dan kuncinya, objek bernomor, lampiran, register rekomendasi, deck, dan urutan produksi ada di KERANGKA-BUKU.md; bagian 8.2–8.6 di bawah adalah ringkasan yang isinya sama (17 bab, Lampiran A–N, kode `sippa`).
+Rincian urutan bab, pertanyaan kunci, angka wajib dan kuncinya, objek bernomor, lampiran, register rekomendasi, deck, dan urutan produksi ada di KERANGKA-BUKU.md; bagian 8.2–8.6 di bawah adalah ringkasan yang isinya sama (22 bab, Lampiran A–S, kode `sippa`; kode `rehab` dan berkas bangunnya tetap ada sebagai sumber saja).
 
 ### 8.2 Kerangka bab (ringkasan KERANGKA-BUKU §4 dan §5)
 
 Tanpa bab kritik (keputusan 20): temuan KD §2 dilebur ke "dasar desain" tiap bab. Tiap bab memakai dialek `NASKAH-SPEK.md` dengan front matter `kajian: sippa`, token `{{angka:sippa.*}}`, pustaka APA 7. Berkas bukti `kajian/naskah/sippa/bukti/bab-NN.md` ditulis dulu (L56, L57).
 
-| Bab | Judul | Rincian |
-| --- | --- | --- |
-| 1 | Pendahuluan | KERANGKA §4 BAB 1 |
-| 2 | Bara Gambut dan Cara Memadamkannya | BAB 2 |
-| 3 | Pola Api: Kapan dan Di Mana | BAB 3 |
-| 4 | Kelayakan Kit di Kalimantan Tengah (tiga versi zona, §5.1) | BAB 4 |
-| 5 | Kebutuhan Kit 18 Provinsi (81 kit "rencana bersyarat, bukan pengadaan") | BAB 5 |
-| 6 | Desain SIPPA | BAB 6 |
-| 7 | Hidraulika dan Titik Kerja (debit bawaan 300 L/min, kasus ajar 600 L/min NO-GO) | BAB 7 |
-| 8 | Spesifikasi Komponen dan Gambar Teknik | BAB 8 |
-| 9 | Operasi: Pemicu, Respons, SOP, K3, Logistik, dan Pelatihan | BAB 9 |
-| 10 | Kelembagaan dan Tata Kelola Aset (RACI §3.3, opsi konsesi §3.4) | BAB 10 |
-| 11 | Pemakaian Ganda: Banjir dan Irigasi | BAB 11 |
-| 12 | Pilot 2026 dan Program Uji 2027–2028 (vonis keputusan 53) | BAB 12 |
-| 13 | Anggaran, NPV, BCR, dan Monte Carlo | BAB 13 |
-| 14 | Risiko dan Mitigasi | BAB 14 |
-| 15 | Sistem Data dan Pemantauan (web `/pipa`, telemetri) | BAB 15 |
-| 16 | Peta Jalan 2026–2030 | BAB 16 |
-| 17 | Kesimpulan dan Keputusan yang Diminta | BAB 17 |
+| Bab | Judul | Rincian | Bahan `rehab` yang dipakai ulang |
+| --- | --- | --- | --- |
+| 1 | Pendahuluan | KERANGKA §4 BAB 1 | Bab 1, 2 |
+| 2 | Bara Gambut dan Cara Memadamkannya | BAB 2 | |
+| 3 | Pola Api: Kapan dan Di Mana | BAB 3 | |
+| 4 | Beban Pascabencana: Jembatan, Air, dan Rumah 2015–2025 (baru) | BAB 4 | Bab 3, 4, 8 |
+| 5 | Kelayakan Kit di Kalimantan Tengah (tiga versi zona, §5.1) | BAB 5 | |
+| 6 | Kebutuhan Kit 18 Provinsi (81 kit "rencana bersyarat, bukan pengadaan") | BAB 6 | |
+| 7 | Desain SIPPA Terintegrasi | BAB 7 | Bab 2.1, 10.1–10.4 |
+| 8 | Hidraulika dan Titik Kerja (debit bawaan 300 L/min, kasus ajar 600 L/min NO-GO) | BAB 8 | |
+| 9 | Spesifikasi Komponen dan Gambar Teknik | BAB 9 | |
+| 10 | Operasi: Pemicu, Respons, SOP, K3, Logistik, dan Pelatihan | BAB 10 | |
+| 11 | Pemakaian Ganda: Banjir dan Irigasi | BAB 11 | |
+| 12 | Air Pascabencana: Perpipaan dari Darurat ke Permanen (baru) | BAB 12 | Bab 6, 10.6, 10.8 |
+| 13 | Air Tanah Pascabencana dalam Batas Badan Geologi (baru) | BAB 13 | Bab 7, 9.5, 10.7 |
+| 14 | Akses Pascabencana: Jembatan menurut Pemilik Program (baru) | BAB 14 | Bab 5, 9.1, 9.2, 10.5 |
+| 15 | Model Pemeliharaan Aset Terpadu (baru, §6.10) | BAB 15 | Bab 9.4, 11.5 |
+| 16 | Pilot 2026 dan Program Uji 2027–2028 (vonis keputusan 53; agenda bukti air dan akses) | BAB 16 | Bab 10.10 |
+| 17 | Kelembagaan dan Tata Kelola Aset (RACI §3.3, opsi konsesi §3.4, mandat air dan akses) | BAB 17 | Bab 9.2, 9.7, 11.1–11.4, 11.6 |
+| 18 | Anggaran, Pembiayaan, NPV, BCR, dan Monte Carlo | BAB 18 | Bab 3.5, 11.5 |
+| 19 | Risiko dan Mitigasi | BAB 19 | Bab 9 |
+| 20 | Sistem Data dan Pemantauan (web `/pipa`, telemetri, data kondisi) | BAB 20 | Bab 9.3 |
+| 21 | Peta Jalan 2026–2030 | BAB 21 | Bab 10.9, 11.7–11.9 |
+| 22 | Kesimpulan dan Keputusan yang Diminta | BAB 22 | Bab 12 |
 
-Lampiran A–N (KERANGKA §5): A Metode, Data, dan Rekonsiliasi; B Kelayakan per Kompleks Kalteng; C Dasbor 18 Provinsi; D Daftar Bahan sampai Baut dan Kriteria Terima; E RAB Rinci; F Gambar Teknik SIPPA-G-01 sampai G-12; G SOP dan Formulir; H Protokol Pilot dan Uji A/B; I Draf Surat Permintaan Data; J Rumus dan Uji Invarian Hidraulika; K Rujukan Praktik Luar Negeri; L Batas Pemakaian Alat `/pipa`; M Glosarium; N Atribusi Foto.
+Lampiran A–S (KERANGKA §5): A Metode, Data, dan Rekonsiliasi; B Kelayakan per Kompleks Kalteng; C Dasbor 18 Provinsi; D Daftar Bahan sampai Baut dan Kriteria Terima; E RAB Rinci; F Gambar Teknik SIPPA-G-01 sampai G-12; G SOP dan Formulir; H Protokol Pilot dan Uji A/B; I Draf Surat Permintaan Data; J Rumus dan Uji Invarian Hidraulika; K Rujukan Praktik dan Katalog Program menurut Posisi Bukti; L Batas Pemakaian Alat `/pipa`; M Beban Pascabencana per Provinsi dan Kab/Kota, Kartu Skenario, dan Daftar Perhatian; N Program Jembatan per Pemilik dan Sumur Bor per Kejadian; O Biaya Satuan Berlabel Air, Air Tanah, dan Jembatan; P Kronologi Regulasi RR, Penyelarasan Dokumen BNPB, dan Irisan Register; Q Jadwal Pemeliharaan Rinci dan Kartu Inspeksi; R Glosarium; S Atribusi Foto.
 
 ### 8.3 Aturan angka dan sumber di buku
 
@@ -619,16 +751,18 @@ Lampiran A–N (KERANGKA §5): A Metode, Data, dan Rekonsiliasi; B Kelayakan per
 
 Urutan produksi S1–S14, perubahan mesin M1–M19, dan QA lima lapis ada di KERANGKA §8 dan §9. Perintah inti (dari `data/kajian-bnpb/`): `.venv/bin/python bangun/docx/bangun.py sippa` (keluaran `keluaran/sippa.docx`, `sippa.pdf`, `sippa.manifest.json`); `.venv/bin/python bangun/pptx/deck.py naskah/sippa/deck.json keluaran/sippa-deck.pptx --pdf`; `python3 qa/periksa.py --docx keluaran/sippa.docx --pdf keluaran/sippa.pdf --pptx keluaran/sippa-deck.pptx --pptx-pdf keluaran/sippa-deck.pdf --visual bangun/visual/keluaran --kajian sippa --ketat`; `python3 qa/slop.py --ambang --laporan keluaran/qa/slop-sippa.md naskah/sippa/*.md`. Naskah ditulis agent `penulis-kajian` (TIKET SP-085) lewat workflow `naskah-kajian.js` dan `rakit-kajian.js` cabang `sippa` (TIKET SP-005).
 
-### 8.5 Deck sekitar 15 slide (keputusan 19)
+### 8.5 Deck 18 slide isi (keputusan 19, T-M)
 
-Spek `kajian/naskah/sippa/deck.json`, 15 slide isi ditambah sampul, penutup, dan lampiran L1–L4 (KERANGKA §11). Semua judul slide isi berbentuk temuan berangka kecuali slide 1 Pesan Kunci (navigasi); bagian A Pola api, B Kelayakan, C Desain, D Operasi dan lembaga, E Biaya dan jalan; pil CUT OFF `23 Okt 2026, 23.59 WIB`; angka deck = angka DOCX lewat token yang sama.
+Spek `kajian/naskah/sippa/deck.json`, 18 slide isi (T-M) ditambah sampul, penutup, dan lampiran L1–L7 (KERANGKA §11). Semua judul slide isi berbentuk temuan berangka kecuali slide 1 Pesan Kunci (navigasi); bagian A Pola api dan beban, B Kelayakan dan desain kit, C Air dan akses pascabencana, D Pemeliharaan dan lembaga, E Biaya dan jalan; pil CUT OFF `23 Okt 2026, 23.59 WIB`; angka deck = angka DOCX lewat token yang sama.
 
 ### 8.6 Nama berkas dan lokasi
+
+Berkas `kajian/naskah/rehab/**`, `kajian/rehab/**`, `kajian/keluaran/rehab*`, `bangun/rehab_angka.py`, `bangun/visual/spek-rehab/**`, dan kunci `rehab.*` di `angka.json` tetap di tempatnya sebagai **sumber**: naskah `sippa` memakai token `{{angka:rehab.*}}` dan kunci pustaka rehab apa adanya (tidak disalin ke `sippa.*`), dan berkas bukti `naskah/sippa/bukti/bab-NN.md` untuk bab yang memakai ulang bahan rehab memuat rujukan baris ke `naskah/rehab/bukti/bab-NN.md` ditambah delta, bukan salinan.
 
 | Berkas | Isi |
 | --- | --- |
 | `kajian/naskah/sippa/bukti/bab-NN.md` (+ `.angka.json`, `.pustaka.json`) | berkas bukti |
-| `kajian/naskah/sippa/00-depan-kata-pengantar.md`, `00-depan-ringkasan-eksekutif.md`, `bab-01.md` s.d. `bab-17.md`, `90-lampiran-a.md` s.d. `90-lampiran-l.md`, `deck.json` | naskah (satu front matter per berkas; `bangun/docx/bangun.py:430` mengurutkan dari front matter; Lampiran M dan N dibangkitkan pembangun) |
+| `kajian/naskah/sippa/00-depan-kata-pengantar.md`, `00-depan-ringkasan-eksekutif.md`, `bab-01.md` s.d. `bab-22.md`, `90-lampiran-a.md` s.d. `90-lampiran-q.md`, `deck.json` | naskah (satu front matter per berkas; `bangun/docx/bangun.py:430` mengurutkan dari front matter; Lampiran R dan S dibangkitkan pembangun) |
 | `kajian/data/sippa/` | paket data buku (KERANGKA §8.2 M10) |
 | `kajian/bangun/sippa_angka.py`, `sippa_keuangan.py`, `sippa_pilot.py`, `sippa_formulir.py` | registri angka `sippa.*`, RAB dan NPV, impor ekspor D1 pilot, pembangkit formulir kertas |
 | `kajian/bangun/visual/spek-sippa/*.json`, `kajian/bangun/visual/teknik/*.mjs` | spek peta dan grafik, gambar teknik |
@@ -664,10 +798,14 @@ Penamaan: rute halaman memakai `/pipa` (keputusan 31), rute API memakai `/api/si
 | `/pipa/telemetri` | Telemetri | Perangkat mana yang hidup dan alarm apa yang menyala? | perencana, Admin (daftar perangkat) | desktop | telemetri (keputusan 38) |
 | `/pipa/laporan` | Laporan PDF | Laporan pilot, kejadian, mingguan, musim, skenario | perencana (buat), pemantau (unduh) | desktop | laporan PDF (keputusan 39) |
 | `/pipa/data` | Data dan metode | Dari mana angka berasal, kapan ditarik, keyakinannya, dan batas alat | semua peran staf | desktop dan ponsel | Lampiran L buku |
+| `/pipa/pelihara` | Pemeliharaan (keputusan 56) | Butir mana jatuh tempo atau terlambat, kit mana tidak laik gelar, stok mana di bawah minimum, berapa biaya pemeliharaan per tahun? | perencana (tulis inspeksi, stok), pemantau (baca) | desktop dan ponsel | model pemeliharaan §6.10 |
+| `/pipa/air` | Air tanah pascabencana (keputusan 56) | Di CAT dan zona mana sumur aman dibangun, sumur mana belum diuji mutu atau belum diserahkan? | perencana (tulis aset), pemantau | desktop | Bab 12–13 buku |
+| `/pipa/akses` | Akses pascabencana (keputusan 56) | Berapa jembatan rusak per provinsi, program jembatan mana milik siapa, jembatan darurat mana tanpa pemilik aset atau jadwal ganti? | perencana (tulis aset), pemantau | desktop | Bab 4, 14 buku |
+| `/pipa/aset/:id` | Rincian aset | Riwayat inspeksi, kondisi, mutu air, dan serah terima satu sumur, pipa, atau jembatan | perencana, pemantau | desktop dan ponsel | model pemeliharaan §6.10 |
 
 #### 9.1.2 Cara halaman dilayani
 
-- Worker melayani satu cangkang `halamanSippa(ctx)` (fungsi baru di `src/admin_halaman.js`, pola `halaman()` yang ada) untuk `GET /pipa` dan `GET /pipa/:layar`, dengan `:layar` dari daftar tetap `LAYAR_SIPPA = ["peta","hitung","pemicu","kit","log","ab","studio","3d","telemetri","laporan","data"]` dan `GET /pipa/kit/:id` (`:id` 16 heks). Jalur lain di bawah `/pipa/` dijawab 404.
+- Worker melayani satu cangkang `halamanSippa(ctx)` (fungsi baru di `src/admin_halaman.js`, pola `halaman()` yang ada) untuk `GET /pipa` dan `GET /pipa/:layar`, dengan `:layar` dari daftar tetap `LAYAR_SIPPA = ["peta","hitung","pemicu","kit","log","ab","studio","3d","telemetri","laporan","data","pelihara","air","akses"]` (tiga terakhir dari keputusan 56), `GET /pipa/kit/:id`, dan `GET /pipa/aset/:id` (`:id` 16 heks). Jalur lain di bawah `/pipa/` dijawab 404.
 - Router klien `public/pipa/app.js` memakai History API; tiap layar adalah modul `public/pipa/layar_<nama>.js` yang dimuat malas (dynamic `import()`), jadi membuka Ringkas tidak memuat MapLibre atau Three.js.
 - Gerbang host terkunci di `src/worker.js` (`halamanTerkunci`) hanya mengenal `adminOK`, sehingga staf bersesi `sesi_staf` akan dipantulkan ke halaman masuk. Karena itu regex pengecualian diperluas dari `^/(api|admin|ews|ubin)(\/|$)` menjadi `^/(api|admin|ews|ubin|pipa)(\/|$)`, dan rute `/pipa*` memeriksa sesinya sendiri: tamu 303 ke `/admin/pantau?ke=<jalur>` (layar masuk staf di Meja Pantau; `/admin/masuk` hanya menerima akun admin; `public/admin/pantau.js` meneruskan `ke` yang cocok `^/pipa(/|$)` sesudah masuk, DESAIN-TEKNIS §1.4 dan ADR-05); sesi sah tanpa peran SIPPA dijawab 403 halaman polos "Akunmu tidak punya akses SIPPA" tanpa pengalihan (mencegah pantulan tanpa akhir seperti yang diperbaiki commit `c24a3c2a`).
 - `/pipa/lapangan` adalah satu-satunya halaman tanpa sesi. `PUBLIK_TANPA_SESI` tidak diubah, karena seluruh `/pipa*` sudah dikecualikan dari gerbang host dan tiap rute `/pipa*` menjaga dirinya sendiri; kode penugasan dicek di tiap panggilan API (keputusan pemilik 24 Okt 2026, T-H). Cangkangnya tidak memuat data apa pun.
@@ -677,9 +815,9 @@ Penamaan: rute halaman memakai `/pipa` (keputusan 31), rute API memakai `/api/si
 
 | Lebar | Bentuk | Isi |
 | --- | --- | --- |
-| ≥ 1280 px | header `ad-top` (pola admin) + rel kiri 232 px berlabel | tiga kelompok: **Rencana** (Peta, Hitung, Pemicu, Studio, 3D), **Operasi** (Kit, Log, A/B, Telemetri), **Keluaran** (Laporan, Data); Ringkas di atas rel |
+| ≥ 1280 px | header `ad-top` (pola admin) + rel kiri 232 px berlabel | empat kelompok: **Rencana** (Peta, Hitung, Pemicu, Studio, 3D), **Operasi** (Kit, Pemeliharaan, Log, A/B, Telemetri), **Pascabencana** (Air tanah, Akses), **Keluaran** (Laporan, Data); Ringkas di atas rel |
 | 768–1279 px | rel kiri menyusut ke ikon 64 px, label di tooltip `rapikanTip` | sama |
-| < 768 px | bilah bawah lima tombol 56 px: Ringkas, Peta, Kit, Log, Lainnya; "Lainnya" membuka lembar bawah berisi sisanya | form lapangan tidak memakai bilah ini (layar penuh) |
+| < 768 px | bilah bawah lima tombol 56 px: Ringkas, Peta, Kit, Log, Lainnya; "Lainnya" membuka lembar bawah berisi sisanya, termasuk Pemeliharaan, Air tanah, Akses | form lapangan tidak memakai bilah ini (layar penuh) |
 
 Bilah konteks di bawah header memuat dua kontrol yang berlaku di semua layar: **Provinsi** (`PilihCantik`, bawaan 62 Kalteng; staf berwilayah hanya melihat provinsinya) dan **Versi zona** (segmen tiga pilihan: Konservatif = versi `kendala.json`, Optimistis = semua jalan OSM, Terverifikasi; versi jalan utama OSM tampil sebagai kolom pembanding di ringkasan zona; §5.1, §9.4.2). Keduanya ditulis ke query (`?prov=62&zona=k`) supaya tautan bisa dibagikan, dan diingat di `localStorage` dalam `try/catch` (halaman tetap benar bila penyimpanan kosong). Bilah konteks menampilkan pil batas data "Data per 23 Okt 2026, 23.59 WIB" untuk data buku, dan "per <waktu>" untuk data harian.
 
@@ -730,6 +868,8 @@ Semua rumus tinggal di fungsi murni, satu sumber untuk kalkulator, peta, simulat
 | `crf(r, n)` | | | r / (1 - (1+r)^-n) |
 | `biayaPerHa(p)` | CAPEX, umur, r, OPEX musim, biaya regu, ha terverifikasi | Rp/ha | (CAPEX x crf + OPEX + regu) / ha dingin terverifikasi 30 hari (definisi KD §4.4, CAPEX masuk) |
 | `npv(p)`, `bcr(p)`, `impas(p)` | CAPEX, OPEX/th, manfaat/th, r, H | | NPV = Σ_{t=1..H} (B_t - O_t)/(1+r)^t - CAPEX; BCR = PV(B) / (CAPEX + PV(O)); impas B* = O + CAPEX / AF, AF = (1 - (1+r)^-H)/r; r bawaan 8%, H bawaan 5 tahun (dapat diubah 1–15) |
+
+Fungsi pemeliharaan dan aset (keputusan 56) tinggal di modul murni kedua `public/pipa/pelihara.js` (ES module tanpa DOM, juga mengisi `globalThis.SippaPelihara`, diimpor worker untuk validasi seperti `formulir.js`; DESAIN-TEKNIS §5.10): `kelasDari(kodeBom)`, `skorKeKondisi(skor)`, `jadwal(butir, inspeksiTerakhir, jamSejakServis, kini)` → `{jatuh_tempo, status, alasan}`, `laikGelar(komponen[])`, `stokMin(kode, nSatuan, waktuTungguHari)`, `biayaTahun(aset[], harga, param)`, `cekAset(kelas, atribut)` → larik galat (sumur di zona `kritis` atau `rusak` tanpa `rekomendasi_bg` = galat, rehab Q10). Konstanta interval, laju, dan stok §6.10 hanya di modul ini.
 
 Gerbang kalkulator (G04, G05, G22), semuanya juga dijalankan Studio sebagai lapisan tambahan (§9.5):
 
@@ -841,7 +981,7 @@ Nilai acuan wajib di `acuan.json` (dicocokkan JS dan Python, toleransi 1%; dafta
 
 - **Tujuan:** keputusan 35 (lacak kit dan logistik antar-daerah karhutla ke banjir), U8 (kehilangan < 5%), U9 (catatan pemakaian banjir), K-15 (QR, gudang terkunci).
 - **Daftar (`/pipa/kit`):** kartu judul ("3 kit: 2 di gudang Palangka Raya, 1 di banjir Kapuas; kehilangan komponen musim ini 1,2%"); peta kecil lokasi kit terakhir (titik per kit, garis gerak 30 hari); tabel kit (kolom: kode, jenis gambut/mineral/banjir/pinjam pilot, status sebagai pil, lokasi, provinsi, sejak, komponen lengkap/kurang, jam pompa musim ini, m3 banjir musim ini, pemilik asal). Filter status dan jenis. Ponsel: daftar kartu dengan tombol "Pindai QR".
-- **Status kit dan transisi sah** (pasangan sah ditegakkan CHECK `sippa_gerak` di migrasi 0055; siapa boleh per transisi, yaitu staf tulis, operator kit tugasnya, atau moderator admin untuk `hilang`, `ditemukan`, `pensiun`, `koreksi`, ditegakkan `src/sippa.js`; tabel mengikat di DESAIN-TEKNIS §6.2):
+- **Status kit dan transisi sah** (pasangan sah ditegakkan CHECK `sippa_gerak` di migrasi 0056; siapa boleh per transisi, yaitu staf tulis, operator kit tugasnya, atau moderator admin untuk `hilang`, `ditemukan`, `pensiun`, `koreksi`, ditegakkan `src/sippa.js`; tabel mengikat di DESAIN-TEKNIS §6.2):
 
 | Dari \ ke | gudang | depot | gelar | banjir | servis | hilang | pensiun |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -895,6 +1035,29 @@ Nilai acuan wajib di `acuan.json` (dicocokkan JS dan Python, toleransi 1%; dafta
 #### 9.4.8 Data dan metode (`/pipa/data`)
 
 Daftar tiap dataset §7.1 (nama, berkas, sumber dan lisensi, tanggal tarik, batas data, keterbatasan, keyakinan), tabel rumus §9.3, daftar gerbang, dan "Batas pemakaian alat" (G22, G23): simulator tidak membuktikan efektivitas; manfaat bawaan 0; skor tidak meluluskan NO-GO; pompa dinilai dengan rating, bukan kurva Q-H terukur sebelum G2; jam pompa dan hari regu tahunan di Studio dianggap terjadi tiap tahun, sedangkan KD memakai 40% tahun kering. Teksnya sama dengan Lampiran L buku dan dibaca dari satu berkas `public/pipa/batas.js` supaya tidak bercabang.
+
+#### 9.4.9 Pemeliharaan (`/pipa/pelihara`, keputusan 56)
+
+- **Tujuan:** jadwal pemeliharaan semua kelas aset §6.10 dalam satu tempat, dari data `sippa_komponen`, `sippa_aset`, `sippa_inspeksi`, `sippa_log_gelar`, dan `sippa_stok_gerak`.
+- **Isi desktop:** kartu Insight "12 butir terlambat, 3 kit tidak laik gelar, 2 suku cadang di bawah minimum" (`Sumber: SIPPA D1, per <waktu>`); chip kelas K1–K10 dan chip status (terlambat, segera, aman, belum pernah); tabel jadwal (aset atau komponen, kelas, kit atau lokasi, inspeksi terakhir, skor, jatuh tempo, status, pemelihara, tombol "Catat inspeksi"); kalender 12 bulan yang menumpangkan jatuh tempo pra-musim pada pita musim karhutla dan banjir; panel stok (gudang, kode, saldo, stok minimum, pil "di bawah minimum", tombol "Catat stok"); kartu biaya per tahun per kelas dengan pil **asumsi-kebijakan** dan rumus §6.10.7; tombol unduh `pelihara.csv` untuk penyusunan anggaran.
+- **Ponsel:** daftar kartu butir terurut status (terlambat dulu), tombol "Catat inspeksi" 56 px; dialog inspeksi berisi skor 0–3 sebagai segmen berlabel kata, jam operasi (K1), temuan, tindakan, hasil uji (mutu air untuk K7, tekanan untuk K2), foto opsional.
+- **Aturan:** jadwal dihitung klien dengan `SippaPelihara.jadwal()`; inspeksi komponen kit memperbarui `sippa_komponen.kondisi` dan `dicek` lewat trigger, jadi layar Kit langsung sama; pil "tidak laik gelar" mengikuti §6.10.4 (peringatan, T-P).
+
+#### 9.4.10 Air tanah pascabencana (`/pipa/air`, keputusan 56)
+
+- **Tujuan:** daftar bersama sumur darurat dan produksi semua pelaksana (rehab R-RR-11) dengan batas Badan Geologi (rehab Q10) dan rantai lokasi, uji mutu, serah terima, pengelola.
+- **Isi:** kartu "421 CAT ditetapkan; 38 sumur darurat tercatat, 9 belum diuji mutu" (angka dari `cat.json` dan `sippa_aset`); peta provinsi berwarna status zona konservasi CAT (tabel provinsi bila poligon belum diterima dari Badan Geologi; T2 tidak dipakai karena bukan data naik-turun) dengan titik sumur berpil status; tabel sumur (kode, pelaksana, kejadian, kedalaman, debit, CAT, zona, rekomendasi Badan Geologi, uji mutu terakhir, status serah terima, pengelola); tombol "Catat sumur" dan "Catat uji mutu".
+- **Aturan:** sumur di zona `kritis` atau `rusak` tanpa nomor rekomendasi teknis Badan Geologi ditolak (rute 400 dan CHECK); sumur gagal uji mutu berpil "tidak laik minum"; kawasan penurunan muka tanah pesisir utara Jawa ditandai kehati-hatian (rehab prinsip 6); data sumur dari TNI AD, Polri, dan Kementerian PU dicatat dengan `sumber` dan `rujukan`, label keyakinan sesuai sumbernya.
+
+#### 9.4.11 Akses pascabencana (`/pipa/akses`, keputusan 56)
+
+- **Tujuan:** beban kerusakan jembatan, program jembatan menurut pemiliknya (rehab R2), dan jembatan darurat yang harus diganti permanen.
+- **Isi:** kartu "3.833 jembatan rusak 2018–2025, 1.088 pada 2025" dari `jembatan_dibi.json` (DIBI, resmi); grafik batang per tahun dan peta bulatan per provinsi (per kab/kota setelah tarikan DIBI per kab tersedia); tabel program per pemilik dari `program_jembatan.json` (Satgas Pembangunan Jembatan TNI AD, Jembatan Merah Putih Presisi Polri, jembatan gantung Kementerian PU, bailey DSP BNPB: jumlah, selesai, di wilayah bencana, biaya satuan bila diumumkan, sumber, tanggal); tabel jembatan tercatat (`sippa_aset` kelas `jembatan_darurat` dan `jembatan_permanen`: kode, nama, sumber program, pemilik aset, status, rencana ganti, inspeksi terakhir) dengan pil "tanpa jadwal ganti"; tombol "Catat jembatan".
+- **Aturan:** nama "Jembatan Merah Putih" selalu bersama pemiliknya; tidak ada nama program tanpa sumber; BNPB tidak menyunting kondisi jembatan milik pihak lain tanpa `rujukan` sumber pemilik; angka sekunder (media) tidak tampil (rehab Q16).
+
+#### 9.4.12 Rincian aset (`/pipa/aset/:id`)
+
+Pola rincian kit (§9.4.5): kepala aset (kode `AS-####`, kelas, status, pemilik aset, pemelihara, lokasi), kartu angka (skor terakhir, hari sejak inspeksi, jatuh tempo), tab Inspeksi (lini masa tambah-saja), Mutu air (K7), Serah terima, Peta kecil. Ubah status dan pemelihara oleh perencana; jejak di `pantau_jejak`.
 
 ### 9.5 Simulator keputusan (`/pipa/studio`)
 
@@ -960,16 +1123,20 @@ Dibuat skrip `scripts/data/sippa/*.py` (Python 3.12 stdlib, self-check `python3 
 | `kit_nasional.json` | 18 provinsi dan jumlah kit | `prov, kelompok, luas_puncak_ha, tahun_puncak, kit, musim_banjir_pasangan` + `ha_per_kit` 22.700 berlabel asumsi | saat `luas_resmi.json` berubah |
 | `pemicu.json` | tingkat pemicu per kabupaten | `prov, kab, tingkat, wilayah_iklim, musim, anom_pct, anom_p10, anom_p90, hari_ps50, titik_panas_zona_ab, alasan[]` | harian |
 | `aoi_calon.json` | calon AOI G0 dari saringan KD §3.2 dan usulan staf (`aoi.py`) | `id, kab, kec, lat, lon, kekerapan, median_air_km, zona, kaw, catatan` | saat diminta |
+| `cat.json` (keputusan 56) | cekungan air tanah dan status zona konservasi per CAT dan per provinsi, dari Badan Geologi (lampiran Permen ESDM 2/2017 dan surat Lampiran I) | `cat_kode, nama, prov[], zona_status (aman/rawan/kritis/rusak/belum_ditetapkan), penurunan_tanah (bool), sumber, tarik` | saat data Badan Geologi diterima |
+| `jembatan_dibi.json` (keputusan 56) | jembatan rusak DIBI per provinsi per tahun 2018–2025 (per kab/kota setelah ditarik) dan per jenis bencana | `prov, kab|null, tahun, jenis, jembatan_rusak` + ringkasan nasional | tahunan + saat DIBI per kab ditarik |
+| `program_jembatan.json` (keputusan 56) | program jembatan per pemilik dari rilis resmi dan daftar per titik bila diterima | `pemilik, program, tanggal, titik, selesai, wilayah_bencana, biaya_satuan|null, keyakinan, rujukan` | saat rilis atau surat diterima |
 
 #### 9.7.2 Skema D1
 
-Tiga migrasi baru, bernomor urut sesudah `0054_kunci_api_konsesi.sql`, idempoten (`IF NOT EXISTS` untuk tabel, indeks, trigger; tanpa `ALTER`/`DROP`), tidak pernah disunting setelah diterapkan di produksi (dicatat ke `tests/warga/migrasi_beku.json`). Semua tabel `sippa_*` punya kolom `dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0,1))`, termasuk `sippa_telemetri` dan `sippa_telemetri_harian`. Jejak memakai `pantau_jejak` lewat `jejakStmt` (`src/staf.js`). Waktu = milidetik epoch UTC. **SQL lengkap yang mengikat ada di DESAIN-TEKNIS §3.2–§3.4**; ringkasannya:
+Empat migrasi baru (0056–0058, ditambah 0059 dari keputusan 56), bernomor urut sesudah `0055_uji_lapangan.sql`, idempoten (`IF NOT EXISTS` untuk tabel, indeks, trigger; tanpa `ALTER`/`DROP`), tidak pernah disunting setelah diterapkan di produksi (dicatat ke `tests/warga/migrasi_beku.json`). Semua tabel `sippa_*` punya kolom `dummy INTEGER NOT NULL DEFAULT 0 CHECK (dummy IN (0,1))`, termasuk `sippa_telemetri` dan `sippa_telemetri_harian`. Jejak memakai `pantau_jejak` lewat `jejakStmt` (`src/staf.js`). Waktu = milidetik epoch UTC. **SQL lengkap yang mengikat ada di DESAIN-TEKNIS §3.2–§3.4 dan §3.6**; ringkasannya:
 
 | Migrasi | Tabel | Pokok aturan |
 | --- | --- | --- |
-| `0055_sippa_inti.sql` (pilot minggu ini) | `sippa_kit`, `sippa_komponen`, `sippa_gerak`, `sippa_tugas`, `sippa_log_gelar`, `sippa_probe`, `sippa_bbm`, `sippa_foto`, `sippa_jalan_cek`, `sippa_aoi_usul` | kode kit `SIPPA-###` (900–999 khusus dummy); pasangan transisi status sah sebagai CHECK di `sippa_gerak`, trigger konkurensi optimistis dan append-only; tugas ≤ 30 hari, hanya `kode_sha`; log gelar append-only (koreksi = baris baru `koreksi_dari`), trigger urutan waktu, medan vonis pilot keputusan 53 (`petak_id`, `air_sampai_lance`, `p_ujung_bar`, `p_ujung_menit`, `p_ujung_sumber`, `kecelakaan`, `bocor_henti_menit`, `konfigurasi`), `jam_klien_meleset`; probe tahap `sebelum`, `sesudah`, `24j`, `72j`, `7h`, `30h`, `90h`, kedalaman hanya 10/30/50/100/150/300/400/500 cm (keputusan 50); foto lewat `sippa_foto` (JPEG/WebP saja, kunci R2 dari server); kolom `prov` diisi server untuk saring wilayah |
-| `0056_sippa_ab_skenario.sql` | `sippa_ab_unggah`, `sippa_petak`, `sippa_skenario`, `sippa_laporan` | `sha` unggahan UNIQUE (409); lima lengan; surfaktan > 0 hanya lengan surfaktan; `UNIQUE (aoi, petak_id)`; state skenario JSON objek ≤ 32 KB; arsip laporan dengan `ada_berkas`, kunci R2 `sippa-laporan/<id>.pdf` dari server |
-| `0057_sippa_telemetri.sql` | `sippa_perangkat`, `sippa_telemetri`, `sippa_telemetri_harian`, `sippa_alarm` | telemetri **satu baris per pesan** (larik bacaan JSON, id = 32 heks sha256 token + badan; T-J); token hanya sha256; satu alarm terbuka per (perangkat, kode) |
+| `0056_sippa_inti.sql` (pilot minggu ini) | `sippa_kit`, `sippa_komponen`, `sippa_gerak`, `sippa_tugas`, `sippa_log_gelar`, `sippa_probe`, `sippa_bbm`, `sippa_foto`, `sippa_jalan_cek`, `sippa_aoi_usul` | kode kit `SIPPA-###` (900–999 khusus dummy); pasangan transisi status sah sebagai CHECK di `sippa_gerak`, trigger konkurensi optimistis dan append-only; tugas ≤ 30 hari, hanya `kode_sha`; log gelar append-only (koreksi = baris baru `koreksi_dari`), trigger urutan waktu, medan vonis pilot keputusan 53 (`petak_id`, `air_sampai_lance`, `p_ujung_bar`, `p_ujung_menit`, `p_ujung_sumber`, `kecelakaan`, `bocor_henti_menit`, `konfigurasi`), `jam_klien_meleset`; probe tahap `sebelum`, `sesudah`, `24j`, `72j`, `7h`, `30h`, `90h`, kedalaman hanya 10/30/50/100/150/300/400/500 cm (keputusan 50); foto lewat `sippa_foto` (JPEG/WebP saja, kunci R2 dari server); kolom `prov` diisi server untuk saring wilayah |
+| `0057_sippa_ab_skenario.sql` | `sippa_ab_unggah`, `sippa_petak`, `sippa_skenario`, `sippa_laporan` | `sha` unggahan UNIQUE (409); lima lengan; surfaktan > 0 hanya lengan surfaktan; `UNIQUE (aoi, petak_id)`; state skenario JSON objek ≤ 32 KB; arsip laporan dengan `ada_berkas`, kunci R2 `sippa-laporan/<id>.pdf` dari server |
+| `0058_sippa_telemetri.sql` | `sippa_perangkat`, `sippa_telemetri`, `sippa_telemetri_harian`, `sippa_alarm` | telemetri **satu baris per pesan** (larik bacaan JSON, id = 32 heks sha256 token + badan; T-J); token hanya sha256; satu alarm terbuka per (perangkat, kode) |
+| `0059_sippa_aset_pelihara.sql` (keputusan 56) | `sippa_aset`, `sippa_inspeksi`, `sippa_stok_gerak` | aset bukan kit tujuh kelas (`sumur_bor`, `pompa_sumur`, `pipa_sementara`, `tandon_hidran`, `pipa_koridor`, `jembatan_darurat`, `jembatan_permanen`), kode `AS-####` (9000–9999 khusus dummy), `pemilik_aset` wajib, atribut per kelas sebagai objek JSON ≤ 4 KB, CHECK sumur zona kritis/rusak wajib `rekomendasi_bg`; inspeksi tambah-saja dengan skor 0–3, uji mutu air wajib `e_coli_cfu`, trigger mengisi `sippa_komponen.kondisi` dan `dicek`; stok buku besar tambah-saja, saldo negatif ditolak trigger |
 
 #### 9.7.3 Rute worker (`src/sippa.js`, `RUTE_SIPPA` digabung ke `RUTE` di `src/worker.js`)
 
@@ -977,10 +1144,10 @@ Router worker hanya mengenali `:id` 16 heks di ujung jalur, jadi aksi ditulis se
 
 | Metode dan jalur | Hak | Laju per jam |
 | --- | --- | --- |
-| `GET /pipa`, `GET /pipa/<layar>` (`LAYAR_SIPPA`), `GET /pipa/kit/:id` | B; tamu 303 ke `/admin/pantau?ke=<jalur>`; sesi lain 403 polos | tidak |
+| `GET /pipa`, `GET /pipa/<layar>` (`LAYAR_SIPPA`), `GET /pipa/kit/:id`, `GET /pipa/aset/:id` | B; tamu 303 ke `/admin/pantau?ke=<jalur>`; sesi lain 403 polos | tidak |
 | `GET /pipa/lapangan` | T | tidak |
 | `GET /admin/pipa` | B (303 ke `/pipa`) | tidak |
-| `GET /api/sippa/data/<nama>` (7 nama tetap §9.7.1) | B; hak dicek sebelum R2, tamu 401 identik untuk nama ada dan tidak ada | tidak |
+| `GET /api/sippa/data/<nama>` (10 nama tetap §9.7.1) | B; hak dicek sebelum R2, tamu 401 identik untuk nama ada dan tidak ada | tidak |
 | `GET /api/sippa/ringkas`, `GET /api/sippa/kit`, `GET /api/sippa/kit/:id` | B | tidak |
 | `POST /api/sippa/kit` | M | 60 |
 | `POST /api/sippa/kit/:id` (lokasi, catatan) | W | 600 |
@@ -1000,9 +1167,14 @@ Router worker hanya mengenali `:id` 16 heks di ujung jalur, jadi aksi ditulis se
 | `POST /api/sippa/telemetri` | D | 120 pesan per pengirim (dihitung dari baris `sippa_telemetri`, tanpa tulisan tambahan) |
 | `GET /api/sippa/telemetri`, `GET /api/sippa/perangkat`, `GET /api/sippa/alarm` | B | tidak |
 | `POST /api/sippa/perangkat`; `POST /api/sippa/perangkat-cabut/:id`; `POST /api/sippa/alarm-tutup/:id` | M; M; W | 60; 60; 600 |
+| `GET /api/sippa/aset`, `GET /api/sippa/aset/:id` (keputusan 56) | B (saring wilayah dari `prov`) | tidak |
+| `POST /api/sippa/aset`; `POST /api/sippa/aset/:id` (status, pemelihara, atribut, rujukan) | W | 120; 600 |
+| `POST /api/sippa/inspeksi` | W; K hanya lewat `lapangan/kirim` butir `inspeksi` jenis pra-gelar/pasca-gelar untuk komponen kit tugasnya | 600 |
+| `GET /api/sippa/pelihara`; `GET /api/sippa/pelihara.csv` | B | tidak; 60 |
+| `GET /api/sippa/stok`; `POST /api/sippa/stok` | B; W | tidak; 600 |
 | `POST /api/sippa/dummy/isi`, `POST /api/sippa/dummy/hapus` | SA | 30 |
 
-Tabel 0055–0057 belum ada = semua rute `/api/sippa/*` menjawab 503 sopan "Migrasi SIPPA belum diterapkan di basis data" (`bungkusSippa`), dan rute lain repo tidak terganggu. Semua jawaban galat memakai `gagal(status, pesan)`.
+Tabel 0056–0059 belum ada = semua rute `/api/sippa/*` yang memakainya menjawab 503 sopan "Migrasi SIPPA belum diterapkan di basis data" (`bungkusSippa`), dan rute lain repo tidak terganggu. Semua jawaban galat memakai `gagal(status, pesan)`.
 
 ### 9.8 Akses, peran, keamanan, privasi
 
@@ -1049,7 +1221,7 @@ Aturan isi (dijaga `tests/sippa/laporan_isi.test.mjs` pada fungsi murni `isiLapo
 
 Keputusan 38: kerangka siap menerima data sensor sekarang, walau sensor baru dipasang 2027 (§6.6). Tag perangkat identik dengan P&ID SIPPA-G-02 dan BOM §6.1.
 
-**Tabel (`0057_sippa_telemetri.sql`, SQL mengikat di DESAIN-TEKNIS §3.4):**
+**Tabel (`0058_sippa_telemetri.sql`, SQL mengikat di DESAIN-TEKNIS §3.4):**
 
 | Tabel | Kolom pokok |
 | --- | --- |
@@ -1083,12 +1255,12 @@ Bentuk datar paket pemilik (`{site_id, utc_time, PT102_bar, FT101_m3h, GWT01_m, 
 | Berkas | Pemilik | Pengulas wajib |
 | --- | --- | --- |
 | `src/sippa.js`, perubahan `src/worker.js`, `src/admin_halaman.js`, `src/posko.js` (ekspor `CSP_LAPANGAN`), `src/pantau.js`, `public/admin/pantau.js` | `warga-api` | `guard-api`, `security-reviewer` |
-| `migrations/0055_sippa_inti.sql`, `0056_sippa_ab_skenario.sql`, `0057_sippa_telemetri.sql` | `warga-api` | `migrasi-idempoten` |
+| `migrations/0056_sippa_inti.sql`, `0057_sippa_ab_skenario.sql`, `0058_sippa_telemetri.sql`, `0059_sippa_aset_pelihara.sql` | `warga-api` | `migrasi-idempoten` |
 | `tests/warga/sippa*.test.mjs`, `tests/warga/cakupan.json`, `migrasi_beku.json` | `warga-api` | `penulis-gerbang` (bentuk uji) |
-| `public/pipa/**` (app, layar, hitung, studio_mesin, studio_pekerja, adegan, antre, formulir, keadaan, batas, ikon, css) | `sippa` (baru) | `inp-reviewer`, `selera-angka`, `security-reviewer` (penyisipan HTML) |
+| `public/pipa/**` (app, layar, hitung, pelihara, studio_mesin, studio_pekerja, adegan, antre, formulir, keadaan, batas, ikon, css) | `sippa` (baru) | `inp-reviewer`, `selera-angka`, `security-reviewer` (penyisipan HTML) |
 | `public/sw-lapangan.js` (tambahan scope) | `layar-peta` | `inp-reviewer`, `security-reviewer` |
 | `public/vendor/three/**`, `public/vendor/qrcode/**` | `layar-peta` | `higiene-repo` (lisensi, ukuran) |
-| `scripts/data/sippa/*.py`, `data/sippa/keluaran/*.json`, `data/kajian-bnpb/**` kecuali naskah | `pipa-data` | `validasi-model` (zona, pemicu, respons) |
+| `scripts/data/sippa/*.py` (termasuk `cat.py`, `jembatan.py` dari keputusan 56), `data/sippa/keluaran/*.json`, `data/kajian-bnpb/**` kecuali naskah | `pipa-data` | `validasi-model` (zona, pemicu, respons, angka jembatan dan CAT) |
 | `data/kajian-bnpb/naskah/**` (bukti, naskah, depan, lampiran tertulis, `deck.json`) | `penulis-kajian` (baru) | penyunting agent lain, `validasi-model`, `selera-angka` |
 | langkah `data.yml` (skrip SIPPA, unggah R2) | `mekanik-mesin` | `higiene-repo` |
 | `tests/sippa/**` | `sippa` (baru) | `penulis-gerbang` |
@@ -1099,14 +1271,15 @@ Bentuk datar paket pemilik (`{site_id, utc_time, PT102_bar, FT101_m3h, GWT01_m, 
 | Logika di | Uji | Berkas | Yang dibuktikan (termasuk yang salah DITOLAK) |
 | --- | --- | --- | --- |
 | fungsi murni JS | unit `node:test` + `vm` | `tests/sippa/hitung.test.mjs` | nilai acuan §9.3 dan DESAIN-TEKNIS §5.8 (tanda `hisap` eksplisit); gerbang: OD160 NO-GO, sisa < 1 bar NO-GO, 600 L/min dengan 8 lance NO-GO H-SERAP dan bawaan 300 L/min lolos, kedalaman 5,1 m ditolak; zona tepat di ambang (2,5 km atau 5,0 km = jauh, aturan "<", keputusan 51); `vonisPilot` tiga kasus V1–V3; `saranSarana` enam aturan; `matriksRespons` empat tingkat; `kuantil` sama dengan nilai numpy; `bandingRerata` cocok dengan contoh hitung tangan; n < 8 = belum bisa diputus; NPV/BCR/impas cocok dengan baca-C (impas semi Rp3,19 M) |
+| fungsi pemeliharaan JS (keputusan 56) | unit `node:test` | `tests/sippa/pelihara.test.mjs` | tiap awalan `TEMPLAT_BOM` tepat satu kelas; `jadwal` memberi terlambat, segera, aman, belum pernah pada batas hari dan batas 50 jam; `skorKeKondisi` sama dengan enum CHECK 0056 (dibaca dari berkas SQL); `cekAset` menolak sumur zona `kritis` tanpa `rekomendasi_bg` dan menerima zona `aman`; `stokMin` contoh hitung tangan; rata-rata tertimbang laju kit dalam 5–8% |
 | mesin Studio | unit | `tests/sippa/studio_mesin.test.mjs` | angka jalan-ulang baca-C C1.4 (toleransi 0,5%); `gerbangSippa` tidak pernah mengurangi hambatan keras; MC deterministik untuk keadaan sama |
-| logika 3D, laporan, formulir | unit | `tests/sippa/adegan_logika.test.mjs`, `laporan_isi.test.mjs`, `formulir.test.mjs` | §9.6, §9.10; batas medan `formulir.js` = CHECK migrasi 0055 (dibaca dari berkas SQL) dan = medan kertas G3-lite |
+| logika 3D, laporan, formulir | unit | `tests/sippa/adegan_logika.test.mjs`, `laporan_isi.test.mjs`, `formulir.test.mjs` | §9.6, §9.10; batas medan `formulir.js` = CHECK migrasi 0056 (dibaca dari berkas SQL) dan = medan kertas G3-lite |
 | kembar JS–Python | unit (memanggil `python3 -I`) | `tests/sippa/kembar.test.mjs` | `hitung.js` dan `scripts/data/sippa/*.py` memberi hasil sama (toleransi 1%) untuk semua kasus `acuan.json` |
 | skrip Python | self-check `__main__` | `scripts/data/sippa/zona.py`, `pemicu.py`, `nasional.py`, `respons.py`, `hidraulika.py`, `sel22.py` | `zona.py` mereproduksi tiga versi dengan `<`: A188/B418/C89/D170 (`kendala.json`), A198/B429/C81/D157 (jalan utama OSM), A469/B158/C167/D71 (semua jalan OSM) (invarian: jumlah zona = 865, tiap kompleks tepat satu zona per versi); `pemicu.py`: tingkat tidak naik bila data ansambel basi; `nasional.py`: total 81 dan 56 gambut dari `luas_resmi.json` saat ini, porsi tiap provinsi ≥ 0 |
-| skema D1 (CHECK, trigger) | SQL langsung di `node:sqlite` dengan migrasi apa adanya, tiap uji dibungkus `BEGIN … ROLLBACK` oleh runner (RENCANA-UJI §1.2, §3); rute tetap di Miniflare | `tests/warga/sippa_skema.test.mjs` | migrasi dijalankan dua kali tanpa galat (idempoten); CHECK menolak status kit liar, kedalaman probe 600 cm, suhu 1.000 °C, surfaktan > 0 di lengan bukan surfaktan, state skenario bukan JSON, berakhir tugas > 30 hari; trigger menolak UPDATE/DELETE `sippa_gerak`, `sippa_log_gelar`, `sippa_bbm` (kecuali hapus dummy), transisi status tidak sah, gerak saat rencana masih terbuka, dan urutan waktu log terbalik; id pesan telemetri ganda diabaikan |
+| skema D1 (CHECK, trigger) | SQL langsung di `node:sqlite` dengan migrasi apa adanya, tiap uji dibungkus `BEGIN … ROLLBACK` oleh runner (RENCANA-UJI §1.2, §3); rute tetap di Miniflare | `tests/warga/sippa_skema.test.mjs` | migrasi dijalankan dua kali tanpa galat (idempoten); CHECK 0059 menolak kelas aset liar, aset tanpa `pemilik_aset`, sumur zona `rusak` tanpa `rekomendasi_bg`, skor 4, uji `mutu_air` tanpa `e_coli_cfu`, delta stok 0; trigger 0059 menolak UPDATE/DELETE `sippa_inspeksi` dan `sippa_stok_gerak` nyata dan saldo stok negatif, dan mengisi `sippa_komponen.kondisi`; CHECK menolak status kit liar, kedalaman probe 600 cm, suhu 1.000 °C, surfaktan > 0 di lengan bukan surfaktan, state skenario bukan JSON, berakhir tugas > 30 hari; trigger menolak UPDATE/DELETE `sippa_gerak`, `sippa_log_gelar`, `sippa_bbm` (kecuali hapus dummy), transisi status tidak sah, gerak saat rencana masih terbuka, dan urutan waktu log terbalik; id pesan telemetri ganda diabaikan |
 | rute dan hak | integrasi rute (panggil handler worker di Miniflare, bukan mock klien) | `tests/warga/sippa.test.mjs` | matriks hak: tamu 303 ke `/admin/pantau?ke=` di halaman dan 401 di API; staf `verifikator` 403; `pimpinan` POST 403; perencana tulis 201; kode penugasan salah 403 dan dihitung, > 300/jam 429, dicabut 403, kedaluwarsa 403; kode hanya bisa menggerakkan kit tugasnya; `/api/sippa/data/<nama>` tamu tidak tahu berkas ada (401 identik untuk ada dan tidak ada); kirim lapangan dua kali = satu baris; badan 300 KB = 413; CSV satu baris salah = 400 dengan nomor baris dan 0 baris tersimpan; sha berkas sama = 409; telemetri token salah 401, nilai di luar rentang tersimpan mutu 2, waktu 6 menit di depan ditolak, pesan ke-121 dalam sejam 429; laju hanya di rute tulis; staf berwilayah 61 tidak melihat kit 62; staf nyata tidak melihat dummy; tanpa migrasi = 503 sopan |
 | alur lintas-tabel | satu uji ujung ke ujung | `tests/warga/sippa_alur.test.mjs` | Admin membuat kit → perencana menugaskan (kode) → operator kirim log gelar luring (sesi lengkap 6 tahap) + probe sebelum dan 24 jam + BBM → gerak `gelar` lalu `kembali` → staf memindah kit `pindah_banjir` (YonTP, ETA) → operator konfirmasi tiba → log banjir dengan m3 → kembali ke gudang → cek komponen dengan satu hilang → rekap log memuat sesi itu, kehilangan musim = 1/n, laporan mingguan `isiLaporan` memuat jam pompa, m3 banjir, dan kehilangan yang sama persis dengan tabel; tiap langkah tercatat di `pantau_jejak` |
-| registri cakupan | gerbang tanpa basis data | `tests/warga/cakupan.json` (sudah ada) | tiap rute baru §9.7.3 dan tiap tabel/trigger 0055–0057 ada di `diuji` atau `dikecualikan` (dengan alasan); `antre` tidak bertambah |
+| registri cakupan | gerbang tanpa basis data | `tests/warga/cakupan.json` (sudah ada) | tiap rute baru §9.7.3 dan tiap tabel/trigger 0056–0058 ada di `diuji` atau `dikecualikan` (dengan alasan); `antre` tidak bertambah |
 | gerbang SIPPA | gerbang tanpa basis data | `tests/sippa/gerbang-sippa.test.mjs` | (1) tidak ada "terbukti" di `public/pipa/**` dan templat laporan; (2) tidak ada em dash atau titik tengah (U+00B7) di teks antarmuka; (3) batas kedalaman 5 m tertulis di satu konstanta dan dipakai kalkulator, Studio, 3D, formulir; (4) tidak ada `toFixed(` di teks tampil `public/pipa/**` (pakai `fmt`); (5) tidak ada URL CDN di `public/pipa/**`; (6) tiap handler `click`/`input` di `public/pipa/layar_*.js` yang memanggil fungsi gambar berat terdaftar memanggilnya lewat `nanti(` (daftar fungsi berat di gerbang, diperiksa per handler, bukan per berkas, sesuai INP.md) |
 
 Perintah bukti: `npm run uji:warga` (memuat `tests/warga/sippa*.test.mjs`), `node --test tests/sippa/*.test.mjs` (skrip baru `"uji:sippa"` di `package.json` oleh `mekanik-mesin`, dirangkai ke `npm run uji`), `npm run uji:agen`, `python3 scripts/data/sippa/<skrip>.py uji` (self-check). Gerbang lengkap dan kriteria terima per fitur di RENCANA-UJI. Uji yang menyentuh D1 sungguhan jalan di `uji:warga` seperti uji worker lain; tidak ada workflow CI baru tiap push (TEST.md butir 4).
@@ -1130,6 +1303,9 @@ Mengikuti `~/.claude/DUMMY.md`: dua ikon Super Admin di tempat yang sama di tiap
 | Studio | skenario (3) | |
 | Telemetri | kit → perangkat (PT-102, FT-101, T-103) → telemetri 24 jam → harian → alarm (satu aktif, satu ditutup) | |
 | Laporan | semua di atas → laporan (arsip 2) | |
+| Pemeliharaan (keputusan 56) | kit → komponen → log (jam pompa) → aset → inspeksi (butir terlambat, segera, aman, belum pernah; satu komponen K1 skor 2) → stok_gerak (satu kode di bawah minimum) | keempat status jadwal dan pil "tidak laik gelar" muncul; biaya per tahun bukan nol |
+| Air tanah | aset `sumur_bor` (AS-9001 s.d. AS-9006: zona aman, rawan, kritis dengan rekomendasi Badan Geologi) → inspeksi `mutu_air` (satu lolos, satu gagal E. coli, satu belum diuji) | pil "tidak laik minum" dan "belum diuji" muncul; `cat.json` dari R2, bukan dummy |
+| Akses | aset `jembatan_darurat` (satu dengan rencana ganti, satu tanpa) dan `jembatan_permanen` (dua sumber program berbeda) → inspeksi | pil "tanpa jadwal ganti" muncul; `jembatan_dibi.json` dan `program_jembatan.json` dari R2, bukan dummy |
 
 Uji `tests/warga/sippa.test.mjs` memanggil `POST /api/sippa/dummy/isi?layar=<tiap layar>` lalu endpoint yang menyuapi layar itu dan memastikan tiap kolom angka bukan nol; `hapus` lalu memastikan nol baris dummy tersisa dan baris nyata tidak tersentuh.
 
@@ -1146,7 +1322,7 @@ Hari ke-0 = Minggu 25 Oktober 2026. Buku dan web dikerjakan paralel setelah PRD 
 | P0-01 | Persetujuan PRD, jawaban T-B (lokasi, tanggal, alat) dan T-C (pemilik pompa) | pemilik | | | | pemilik menyetujui di sesi | catatan sesi |
 | P0-02 | Kontrak kerja dan rakitan armada untuk P0 (siapa mengerjakan, siapa memeriksa) | sesi induk | opus | P0-01 | | rakitan tertulis di `ilmu.mjs kasus orkestrator` | `node scripts/agents/ilmu.mjs baca orkestrator` |
 | P0-03 | Agent baru `sippa`: entri roster, `agents:build`, ilmu awal, baris AGENTS.md §2, skrip `uji:sippa` di `package.json` dan di `terbit.yml` | `mekanik-mesin` | sonnet | P0-02 | P0-04, P0-06 | katalog segar, tiap berkas `public/pipa/**` dan `tests/sippa/**` punya tepat satu pemilik | `npm run uji:agen` |
-| P0-04 | `migrations/0055_sippa_inti.sql` + `tests/warga/sippa_skema.test.mjs` + entri `cakupan.json` | `warga-api` | sonnet | P0-02 | P0-03, P0-06 | semua CHECK/trigger §9.7.2 terbukti menolak yang salah; migrasi dijalankan dua kali tanpa galat | `node --test tests/warga/sippa_skema.test.mjs` |
+| P0-04 | `migrations/0056_sippa_inti.sql` + `tests/warga/sippa_skema.test.mjs` + entri `cakupan.json` | `warga-api` | sonnet | P0-02 | P0-03, P0-06 | semua CHECK/trigger §9.7.2 terbukti menolak yang salah; migrasi dijalankan dua kali tanpa galat | `node --test tests/warga/sippa_skema.test.mjs` |
 | P0-05 | `src/sippa.js` P0: cangkang `/pipa` dan `/pipa/lapangan`, gerbang host (`pipa` di regex pengecualian; `PUBLIK_TANPA_SESI` tidak diubah), pengalihan tamu ke `/admin/pantau?ke=`, `/admin/pipa`, `HAL.pipa`, `HALAMAN_STAF.pipa`, rute kit, komponen, gerak, tugas, lapangan saya/kirim/foto, log GET/POST/CSV, dummy isi/hapus untuk Kit dan Log; `tests/warga/sippa.test.mjs` bagian P0 | `warga-api` | sonnet | P0-04 | P0-07 | matriks hak §9.12.2 bagian P0 hijau; kirim ulang idempoten; 503 sopan tanpa migrasi | `npm run uji:warga` |
 | P0-06 | Formulir kertas G3-lite dan probe (PDF A4, medan sama dengan `formulir.js`), cadangan bila web terlambat | `pipa-data` | sonnet | P0-01 | P0-03, P0-04 | PDF tercetak satu halaman per sesi dan satu per petak probe; medan identik dengan daftar §9.9 | `kajian/pipa/formulir/G3-lite.pdf` diperiksa sesi induk |
 | P0-07 | `public/pipa/` P0: `app.js`, `keadaan.js`, `formulir.js`, `antre.js`, `hitung.js` (kuantil, zona, hidraulika dasar), layar Lapangan, Kit (daftar, rincian, tugaskan, QR), Log (rekap p50/p90); vendor QR; tambahan scope `sw-lapangan.js`; `tests/sippa/hitung.test.mjs`, `formulir.test.mjs` | `sippa` (+ `layar-peta` untuk `sw-lapangan.js` dan vendor) | sonnet | P0-03, kontrak rute P0-05 | P0-05 | form lapangan jalan luring di ponsel uji (mode pesawat → isi → online → terkirim satu kali); QR terbaca `BarcodeDetector`; semua keadaan §9.2.1 tampil | `node --test tests/sippa/*.test.mjs`; uji tangan lewat `preview_start` mode ponsel |
@@ -1165,18 +1341,25 @@ Bila P0-09 belum lolos uji pada 27 Okt malam, pilot memakai kertas (P0-06) dan i
 | W-03 | Langkah `data.yml`: jalankan skrip SIPPA, unggah R2 `sippa/` | `mekanik-mesin` | sonnet | W-01 | berkas muncul di R2 setelah satu jalan manual (`workflow_dispatch`) | log Actions |
 | W-04 | Rute `/api/sippa/data/:nama`, `jalan-cek`, `aoi`, `ringkas` | `warga-api` | sonnet | P0-05, W-03 | tamu tidak tahu berkas ada; cakupan terdaftar | `npm run uji:warga` |
 | W-05 | Layar Ringkas, Peta (dua satuan, tiga versi zona, saran sarana, daftar alternatif), Hitung, Data | `sippa` | sonnet | W-04 | §9.4.1–9.4.3, §9.4.8; INP < 200 ms | `node --test tests/sippa/*.test.mjs`; `inp-reviewer` |
-| W-06 | `0056_sippa_ab_skenario.sql` + rute A/B, skenario, laporan + uji | `warga-api` | sonnet | P0-04 | §9.7.2, §9.7.3; CSV satu baris salah = tolak semua | `npm run uji:warga` |
+| W-06 | `0057_sippa_ab_skenario.sql` + rute A/B, skenario, laporan + uji | `warga-api` | sonnet | P0-04 | §9.7.2, §9.7.3; CSV satu baris salah = tolak semua | `npm run uji:warga` |
 | W-07 | Layar A/B dan Laporan (templat pilot dulu, lalu kejadian, mingguan) | `sippa` | sonnet | W-06 | laporan pilot Okt terbit dari data nyata pada minggu 46 | `tests/sippa/laporan_isi.test.mjs` |
 | W-08 | Studio: port mesin, `gerbangSippa`, Web Worker, tab Bandingkan semua, simpan D1 | `sippa` | sonnet | W-06 | angka jalan-ulang baca-C cocok 0,5%; gerbang hanya menambah | `node --test tests/sippa/studio_mesin.test.mjs` |
 | W-09 | Pemicu (layar) dan rencana pra-posisi | `sippa` | sonnet | W-03, P0-05 | §9.4.4 | uji fungsi + tangan |
 | W-10 | Vendor three 0.169.0 + layar 3D + uji logika | `layar-peta` (vendor), `sippa` (layar) | sonnet | W-05 | tiga adegan; tanpa WebGL jatuh ke SVG | `node --test tests/sippa/adegan_logika.test.mjs` |
-| W-11 | `0057_sippa_telemetri.sql`, rute ingest, alarm, ringkas harian di cron menit 17, layar Telemetri | `warga-api`, `sippa` | sonnet | P0-04 | §9.11; token salah 401; mutu 2 tersimpan | `npm run uji:warga` |
+| W-11 | `0058_sippa_telemetri.sql`, rute ingest, alarm, ringkas harian di cron menit 17, layar Telemetri | `warga-api`, `sippa` | sonnet | P0-04 | §9.11; token salah 401; mutu 2 tersimpan | `npm run uji:warga` |
 | W-12 | Dummy semua layar + uji tiap kolom bukan nol | `warga-api` | sonnet | W-04–W-11 | §9.14 | `npm run uji:warga` |
 | W-13 | Uji alur lintas-tabel `sippa_alur.test.mjs` dan gerbang `gerbang-sippa.test.mjs` | `penulis-gerbang` (bentuk), `warga-api`, `sippa` | sonnet | W-11 | §9.12.2 dua baris terakhir | `npm run uji` |
 | W-14 | Sapuan tinjauan penuh sebelum rilis lengkap: `guard-api`, `migrasi-idempoten`, `selera-angka`, `higiene-repo` (haiku); `security-reviewer`, `inp-reviewer` (sonnet) | pengulas | haiku/sonnet | W-13 | nol temuan kritis | laporan |
 | W-15 | Deploy rilis lengkap | sesi induk | opus | W-14 | semua layar §9.1.1 tersedia di produksi (U5) | log deploy |
 
-Urutan rilis: P1 (W-01–W-05) target 8 Nov; P2 (W-06–W-09) target 22 Nov; P3 (W-10–W-15) target 6 Des. Rilis bertahap boleh dideploy tiap kali uji hijau.
+| W-16 | Skrip `scripts/data/sippa/cat.py`, `jembatan.py` + `cat.json`, `jembatan_dibi.json`, `program_jembatan.json`; unggah R2 di langkah `data.yml` yang ada (keputusan 56) | `pipa-data`, `mekanik-mesin` (langkah) | sonnet | W-03 | self-check: jembatan 2018–2025 = 3.833 dan 2025 = 1.088 dari `dibi/rekap_*` (sama dengan `rehab.dibi.*`); CAT tanpa angka tebakan | `python3 scripts/data/sippa/jembatan.py uji` |
+| W-17 | `0059_sippa_aset_pelihara.sql` + uji skema | `warga-api` | sonnet | P0-04, W-11 | §9.7.2 baris 0059; CHECK dan trigger menolak yang salah | `npm run uji:warga` |
+| W-18 | `public/pipa/pelihara.js` + `tests/sippa/pelihara.test.mjs` | `sippa` | sonnet | P0-07 | §6.10, §9.3; konstanta hanya di modul ini | `npm run uji:sippa` |
+| W-19 | Rute aset, inspeksi, pelihara, stok, butir `inspeksi` di `lapangan/kirim`, 3 nama data baru, dummy tiga layar | `warga-api` | sonnet | W-17, W-18 | §9.7.3; wilayah, hak, laju; rantai dummy §9.14 | `npm run uji:warga` |
+| W-20 | Layar Pemeliharaan, Air tanah, Akses, rincian aset | `sippa` | sonnet | W-16, W-19 | §9.4.9–§9.4.12; INP < 200 ms | `npm run uji:sippa`; `inp-reviewer` |
+| W-21 | Tinjauan dan deploy R4 | pengulas, sesi induk | haiku/sonnet, opus | W-20 | nol temuan kritis; uji asap tiga layar baru | log deploy |
+
+Urutan rilis: P1 (W-01–W-05) target 8 Nov; P2 (W-06–W-09) target 22 Nov; P3 (W-10–W-15) target 6 Des; R4 (W-16–W-21, keputusan 56) target 20 Des 2026 (T-Q). Rilis bertahap boleh dideploy tiap kali uji hijau.
 
 ### 10.3 Tugas buku dan deck (28 Okt–6 Des 2026)
 
@@ -1185,19 +1368,19 @@ Pipeline §8.4. Semua berkas di `data/kajian-bnpb/**` dimiliki `pipa-data`; tuga
 | ID | Tugas | Pengerja | Model | Bergantung pada | Paralel dengan | Selesai bila | Bukti |
 | --- | --- | --- | --- | --- | --- | --- | --- |
 | B-00 | Agent baru `penulis-kajian` (roster, `agents:build`, ilmu awal) sebelum naskah pertama | `mekanik-mesin` | sonnet | P0-02 | B-01 | `ilmu.mjs pemilik data/kajian-bnpb/naskah/sippa/bab-01.md` menjawab `penulis-kajian` | `npm run uji:agen` |
-| B-01 | `tema.json` entri `kajian.sippa` (lampiran A–N, pustaka minimum 50), daftar kajian sah di `bangun/kontrak/naskah.py`, `bangun/docx/bangun.py`, `qa/periksa.py` dibaca dari `tema.json` (KERANGKA §8.1 M1–M5) | `pipa-data` | sonnet | P0-01 | P0 web | kontrak naskah menerima `kajian: sippa`; QA kajian lain tetap hijau | `cd data/kajian-bnpb/bangun/kontrak && python3 tema.py && python3 naskah.py`; `cd data/kajian-bnpb && .venv/bin/python qa/uji.py` |
-| B-02 | Berkas bukti `naskah/sippa/bukti/bab-01..17.md` (tiga kelompok paralel: bab 1–5, 6–11, 12–17) | `penulis-kajian` | sonnet | B-00, B-01 | B-03, B-04 | tiap bab punya Inti, Temuan bersumber, Inferensi, Celah, `.angka.json`, `.pustaka.json` | QA lapis 1 |
+| B-01 | `tema.json` entri `kajian.sippa` (judul T-L, lampiran A–S, pustaka minimum 50; entri `kajian.rehab` tetap sebagai sumber), daftar kajian sah di `bangun/kontrak/naskah.py`, `bangun/docx/bangun.py`, `qa/periksa.py` dibaca dari `tema.json` (KERANGKA §8.1 M1–M5) | `pipa-data` | sonnet | P0-01 | P0 web | kontrak naskah menerima `kajian: sippa`; QA kajian lain tetap hijau | `cd data/kajian-bnpb/bangun/kontrak && python3 tema.py && python3 naskah.py`; `cd data/kajian-bnpb && .venv/bin/python qa/uji.py` |
+| B-02 | Berkas bukti `naskah/sippa/bukti/bab-01..22.md` (empat kelompok paralel: bab 1–6, 7–11, 12–15 dari bahan `rehab`, 16–22) | `penulis-kajian` | sonnet | B-00, B-01 | B-03, B-04 | tiap bab punya Inti, Temuan bersumber, Inferensi, Celah, `.angka.json`, `.pustaka.json` | QA lapis 1 |
 | B-03 | Paket data `kajian/data/sippa/` dan registri angka `kajian/bangun/sippa_angka.py` kunci `sippa.*` (tiga versi zona, jarak, DEM, GSW, MCD64A1, CHIRPS, VIIRS, kit, hidraulika) | `pipa-data` | sonnet | W-01 | B-02 | tiap angka berlabel keyakinan dan sumber; self-check | `.venv/bin/python bangun/pipa_data.py paket`; `.venv/bin/python bangun/sippa_angka.py uji` |
 | B-04 | Pustaka: sumber KERANGKA §8.1 M8 dicek ke naskah asli dan ditambah ke `pustaka.json`; sumber berita ditandai | penulis riset (`penulis-kajian`) | sonnet | B-01 | B-02, B-03 | ≥ 50 sumber, separuh resmi/primer | `qa/periksa.py --kajian sippa` bagian pustaka |
 | B-05 | Peta dan grafik buku: spek `bangun/visual/spek-sippa/sippa-01` s.d. `sippa-18` dan `sippa-p-<kode>` (KERANGKA §7.2), zona biru dan emas dengan huruf dan pola (keputusan 52) | `pipa-data` | sonnet | B-03 | B-06 | PNG 300 dpi di `kajian/gambar/sippa/` | render manifest; `qa/periksa.py --visual` |
 | B-06 | Gambar teknik SIPPA-G-01 s.d. G-12 (`bangun/visual/teknik/*.mjs`, SVG ke PNG dan PDF A3) dengan blok pengesahan insinyur kosong | `pipa-data` | sonnet | P0-01 | B-02–B-05 | tiap gambar memenuhi kriteria terima §6.9 dan gerbang T-12 | daftar periksa §6.9 diisi pengulas |
-| B-07 | Naskah bab 1–17, bagian depan, lampiran tertulis A–L (paling banyak empat penulis paralel) | `penulis-kajian` | sonnet | B-02, B-03, B-04 | B-05, B-06 | dialek `NASKAH-SPEK.md`, token angka saja | `python3 bangun/kontrak/naskah.py naskah/sippa/*.md`; `qa/slop.py --ambang --laporan` per bab |
+| B-07 | Naskah bab 1–22, bagian depan, lampiran tertulis A–Q (paling banyak empat penulis paralel; bab 4, 12–15 dan Lampiran M–Q mengadaptasi naskah final `rehab`) | `penulis-kajian` | sonnet | B-02, B-03, B-04 | B-05, B-06 | dialek `NASKAH-SPEK.md`, token angka saja | `python3 bangun/kontrak/naskah.py naskah/sippa/*.md`; `qa/slop.py --ambang --laporan` per bab |
 | B-08 | Sunting substansi (angka ke `angka.json`, klaim ke sumber) | penyunting (agent baru per bab, bukan penulisnya) | sonnet | B-07 | antar bab | nol angka ketikan | QA lapis 2 |
 | B-09 | Sunting bahasa dan anti-slop sampai LULUS | penyunting bahasa (agent baru) | sonnet (tulis ulang), haiku (pindai) | B-08 | antar bab | semua bab LULUS, laporan `keluaran/qa/slop-sippa.md` | `qa/slop.py --ambang --laporan` |
-| B-10 | Bab 12.3 hasil pilot dari ekspor D1 (`/api/sippa/log.csv`, `/api/sippa/probe.csv`) lewat `bangun/sippa_pilot.py` | `penulis-kajian` + `pipa-data` (kunci) | sonnet | P0-10, W-07 | B-07 | angka pilot lewat `angka.json`, pil "pilot, n kecil", vonis keputusan 53 | QA lapis 2 |
-| B-11 | Lampiran I surat permintaan data (10 surat) | `penulis-kajian` | sonnet | B-01 | B-02 | siap kirim minggu 47 | `kajian/pipa/surat/*.md` |
+| B-10 | Bab 16.3 hasil pilot dari ekspor D1 (`/api/sippa/log.csv`, `/api/sippa/probe.csv`) lewat `bangun/sippa_pilot.py` | `penulis-kajian` + `pipa-data` (kunci) | sonnet | P0-10, W-07 | B-07 | angka pilot lewat `angka.json`, pil "pilot, n kecil", vonis keputusan 53 | QA lapis 2 |
+| B-11 | Lampiran I surat permintaan data (13 surat: 10 semula + Kementerian PU, TNI AD, Polri untuk data jembatan, sumur, dan SPAM) | `penulis-kajian` | sonnet | B-01 | B-02 | siap kirim minggu 47 | `kajian/pipa/surat/*.md` |
 | B-12 | Bangun DOCX/PDF | `pipa-data` | sonnet | B-09, B-05, B-06 | | `qa/periksa.py --ketat` nol gagal | `cd data/kajian-bnpb && .venv/bin/python bangun/docx/bangun.py sippa` lalu `qa/periksa.py --docx --pdf --visual --kajian sippa --ketat` |
-| B-13 | Deck: spek `naskah/sippa/deck.json` (15 slide isi, judul temuan), bangun PPTX/PDF | `penulis-kajian` (spek), `pipa-data` (bangun) | sonnet | B-03, B-05 | B-12 | S1–S39 lolos, stem berbeda dari DOCX | `.venv/bin/python bangun/pptx/deck.py naskah/sippa/deck.json keluaran/sippa-deck.pptx --pdf` lalu `qa/periksa.py --pptx --pptx-pdf --kajian sippa --ketat` |
+| B-13 | Deck: spek `naskah/sippa/deck.json` (18 slide isi, judul temuan, T-M), bangun PPTX/PDF | `penulis-kajian` (spek), `pipa-data` (bangun) | sonnet | B-03, B-05 | B-12 | S1–S39 lolos, stem berbeda dari DOCX | `.venv/bin/python bangun/pptx/deck.py naskah/sippa/deck.json keluaran/sippa-deck.pptx --pdf` lalu `qa/periksa.py --pptx --pptx-pdf --kajian sippa --ketat` |
 | B-14 | QA lima lapis akhir (pemindai, substansi, bahasa, proofread render, gerbang mekanis) | pengulas berbeda | sonnet/haiku | B-12, B-13 | | U1, U2 terpenuhi | `keluaran/qa/sippa.md`, `keluaran/qa/sippa-deck.md` |
 | B-15 | Serah buku dan deck versi serah (minggu 49) | sesi induk | opus | B-14 | | berkas di `kajian/keluaran/` | manifest |
 | B-16 | Protokol A/B pra-registrasi dan KAK pilot 2027 (minggu 51) | `penulis-kajian` | sonnet | B-15 | | `kajian/pipa/protokol-ab.md` | QA lapis 1–3 |
@@ -1241,7 +1424,7 @@ Subagent tidak pernah deploy, commit, atau push (AGENTS.md §9). Jalur terbit re
 ### 10.7 Aturan commit
 
 - Commit dari sesi induk saja, dengan path spesifik: `git commit -m "<pesan>" -- <berkas1> <berkas2> …`; tidak pernah `git add -A` atau `git add .` (index dipakai bersama beberapa sesi, AGENTS.md §3.3).
-- Satu commit per tugas ID (mis. "SIPPA P0-04: migrasi 0055 sippa inti + uji skema"), pesan Bahasa Indonesia, diakhiri baris atribusi yang berlaku di sesi.
+- Satu commit per tugas ID (mis. "SIPPA P0-04: migrasi 0056 sippa inti + uji skema"), pesan Bahasa Indonesia, diakhiri baris atribusi yang berlaku di sesi.
 - Berkas data turunan (`data/sippa/keluaran/*.json`) di-commit terpisah dari kode.
 - Berkas `* 2.*` hasil sinkron iCloud tidak pernah di-commit atau disunting; dihapus setelah dipastikan salinan.
 - Tidak ada secret di berkas terlacak; token perangkat dan kode penugasan hanya tampil sekali di layar.
@@ -1300,7 +1483,7 @@ RAB buku dihitung ulang oleh skrip `kajian/bangun/sippa_keuangan.py` (pemilik `p
 
 ### 11.2 Risiko dan mitigasi
 
-Skala kemungkinan (K) dan dampak (D) 1–5; skor = K x D. Register lengkap masuk buku Bab 14 (gabungan KD §7.2, FMEA pemilik A2, risiko web).
+Skala kemungkinan (K) dan dampak (D) 1–5; skor = K x D. Register lengkap masuk buku Bab 19 (gabungan KD §7.2, FMEA pemilik A2, risiko web, dan risiko air dan akses R21–R26 dari keputusan 55).
 
 | No | Risiko | K | D | Skor | Pemilik | Mitigasi | Pemicu pantau |
 | --- | --- | --- | --- | --- | --- | --- | --- |
@@ -1324,12 +1507,18 @@ Skala kemungkinan (K) dan dampak (D) 1–5; skor = K x D. Register lengkap masuk
 | R18 | Batas akun Cloudflare Free (D1, cron) terlampaui oleh telemetri | 2 | 3 | 6 | `warga-api` | sampling 1/menit, ringkas harian, simpan mentah 30 hari, tanpa cron baru | ukuran D1 |
 | R19 | Mesin Studio dipakai menyimpulkan kelayakan jaringan | 3 | 4 | 12 | BNPB | gerbang H-SERAP, batas alat G22/G23 di layar dan Lampiran L, manfaat bawaan 0 | |
 | R20 | Sesi Claude paralel bertabrakan di index git | 3 | 2 | 6 | sesi induk | worktree untuk fan-out menulis; commit path spesifik | `git status` asing |
+| R21 | Jembatan darurat menjadi aset tanpa pemilik dan tanpa jadwal ganti (keputusan 55) | 3 | 4 | 12 | BNPB/Kementerian PU | `pemilik_aset` wajib di `sippa_aset`; pil "tanpa jadwal ganti"; rekomendasi SR-24 | jumlah jembatan darurat tanpa `rencana_ganti` |
+| R22 | Sumur darurat tanpa uji mutu dan pengelola sesudah status berakhir | 3 | 4 | 12 | BPBD/Badan Geologi | uji mutu wajib saat serah terima (K7); daftar bersama `/pipa/air`; SR-30, SR-31 | sumur tanpa `mutu_air` > 30 hari |
+| R23 | Pengambilan air tanah memperparah zona kritis atau penurunan muka tanah | 2 | 4 | 8 | Badan Geologi | CHECK dan rute menolak sumur zona kritis/rusak tanpa rekomendasi; air permukaan diutamakan di pesisir utara Jawa | sumur baru di zona rawan |
+| R24 | Angka program jembatan dan sumur K/L hanya ada di media | 4 | 2 | 8 | BNPB | angka sekunder hanya Lampiran A (gerbang D-40); surat Lampiran I | kunci `rehab.sekunder.*` di badan teks |
+| R25 | Pemeliharaan tidak berdana karena hibah RR menutup operasi dan pemeliharaan (Perban 4/2024 Pasal 5 huruf b) | 4 | 3 | 12 | BNPB/pemda | baris anggaran per pelaku §6.10.6; SR-38 | butir terlambat (U11) |
+| R26 | Data kondisi tidak diisi sehingga jadwal tidak dipercaya | 3 | 3 | 9 | `sippa`/Satgas | inspeksi pra/pasca-gelar di form lapangan; status "belum pernah" terlihat | U11 < 90% |
 
 ### 11.3 Asumsi
 
 | Kode | Asumsi | Label | Diuji atau diganti oleh |
 | --- | --- | --- | --- |
-| AS-01 | Satu kit melayani sekitar 22.700 ha luas terbakar puncak provinsi | asumsi-kebijakan | kepekaan ±50% Bab 13.7; data pemakaian kit 2027–2028 |
+| AS-01 | Satu kit melayani sekitar 22.700 ha luas terbakar puncak provinsi | asumsi-kebijakan | kepekaan ±50% Bab 18.7; data pemakaian kit 2027–2028 |
 | AS-02 | Kit mineral/sabana = 75% biaya kit gambut | asumsi-kebijakan | RFQ 2027 |
 | AS-03 | Kendaraan dan perahu dipinjam dari BPBD/Daops/YonTP | asumsi-kebijakan | surat pinjam per AOI |
 | AS-04 | 40% tahun kering dalam horizon | asumsi-kebijakan | CHIRPS 2001–2025 (empat tahun terkering 2006, 2015, 2002, 2019) dan prakiraan |
@@ -1411,12 +1600,12 @@ Skala kemungkinan (K) dan dampak (D) 1–5; skor = K x D. Register lengkap masuk
 | G11 | Tiga set bobot skor | §9.5.1 | skor tidak meluluskan NO-GO; gerbang dulu |
 | G12 | Bahan dan trase yang tidak dibahas (baja, tertanam, SDR17) | §6.8, §9.4.3 masukan Bahan | baja/tertanam tidak ditawarkan untuk kit; SDR17/PN10 ada di kalkulator |
 | G13 | Harga heli Studio Rp130 juta/jam | §9.5.1 butir 3, §11.1 aturan 8 | diganti slot menunggu BNPB; pembanding resmi > Rp200 juta per sorti |
-| G14 | Pemilik minta bobot lebih besar untuk banjir, pertanian, YonTP | §5.6, §5.7, §6.3, §8.2 Bab 10–11, §11.1 | keputusan 7 dan 8 dieksekusi dengan syarat keras anti de-watering; bab tersendiri |
+| G14 | Pemilik minta bobot lebih besar untuk banjir, pertanian, YonTP | §5.6, §5.7, §6.3, §8.2 Bab 11 dan 17, §11.1 | keputusan 7 dan 8 dieksekusi dengan syarat keras anti de-watering; bab tersendiri |
 | G15 | Bentuk keluaran: buku besar, gambar teknik, RAB, Three.js, dashboard | §8, §6.9, §9.5, §9.6 | keputusan 11, 12, 13, 18, 34 menang atas saran KD; gambar tetap wajib pengesahan insinyur |
 | G16 | Cakupan nasional | §5.2, §11.1 T4 | 81 kit bersyarat G5; tidak memakai Rp364 M |
 | G17 | Matriks respons FRP dan luas | §5.4, §9.3 `matriksRespons` | FRP hanya penanda permukaan |
 | G18 | Benchmark luar negeri | §8.2 Lampiran K | label "belum diverifikasi" sampai dikutip dari aslinya |
-| G19 | Pertanyaan rinci (SDM per ha, APD, T/lurus, nozzle, filter, valve, gudang) | §6.1, §6.9, §8.2 Bab 8 dan Lampiran D | BOM berkode dengan kriteria terima dan interval pemeliharaan |
+| G19 | Pertanyaan rinci (SDM per ha, APD, T/lurus, nozzle, filter, valve, gudang) | §6.1, §6.9, §6.10, §8.2 Bab 9, Bab 15, Lampiran D dan Q | BOM berkode dengan kriteria terima; interval pemeliharaan di model §6.10 |
 | G20 | Izin pengambilan air | §4.4 G0/G1, §7.5 | syarat tertulis BWS di G0 dan G1 |
 | G21 | Sensor, IoT, kode, drone, deteksi dini | §6.6, §9.11 | kerangka telemetri dibangun sekarang (keputusan 38), sensor 2027; probe multi-kedalaman tetap wajib G4 |
 | G22 | Hal yang Studio tidak modelkan (serap lance, utilisasi, kedalaman, air per ha) | §9.3 H-SERAP/H-DALAM, §9.5.1 `gerbangSippa`, §9.4.8, §11.1 aturan 5 | gerbang tambahan; batas alat di layar dan Lampiran L |
@@ -1429,7 +1618,7 @@ Skala kemungkinan (K) dan dampak (D) 1–5; skor = K x D. Register lengkap masuk
 
 Tidak ada celah tanpa tempat.
 
-### 12.2 Keputusan pemilik 1–53
+### 12.2 Keputusan pemilik 1–56
 
 | No | Keputusan | Ditangani di |
 | --- | --- | --- |
@@ -1437,9 +1626,9 @@ Tidak ada celah tanpa tempat.
 | 2 | Pemilik program BNPB | §3.2, §3.3 RACI kolom BNPB (A) |
 | 3 | Pembaca buku Kepala BNPB | §8.1 |
 | 4 | Pilot Okt 2026 minggu ini; berhasil = banjir Nov–Des | §4.1, §10.1 P0, §11.1 T0/T0B, §9.10 templat pilot |
-| 5 | Horizon 2026–2030 | §4.1–4.3, §8.2 Bab 16 |
-| 6 | Provinsi lain dibahas penuh | §5.1 (9 provinsi), §5.2, §8.2 Bab 5, §11.1 T4 |
-| 7 | Pemakaian ganda banjir masuk biaya-manfaat | §5.6, §6.3, §8.2 Bab 11 dan 13, §9.5.2 S0B, §9.5.3 varian BCR + banjir, §11.1 modul banjir |
+| 5 | Horizon 2026–2030 | §4.1–4.3, §8.2 Bab 21 |
+| 6 | Provinsi lain dibahas penuh | §5.1 (9 provinsi), §5.2, §8.2 Bab 6, §11.1 T4 |
+| 7 | Pemakaian ganda banjir masuk biaya-manfaat | §5.6, §6.3, §8.2 Bab 11 dan 18, §9.5.2 S0B, §9.5.3 varian BCR + banjir, §11.1 modul banjir |
 | 8 | Irigasi masuk, air dari tempat lain | §5.7, §8.2 Bab 11, §9.5.3 manfaat (d), §11.1 baris irigasi |
 | 9 | Injeksi 1,5 m pilot; 3–5 m lengan uji kedua | §5.3, §6.5, §9.4.7 lengan `lance_dalam`, §9.9 probe 150–500 cm hanya `lengan_dalam` |
 | 10 | Surfaktan bebas PFAS sebagai lengan uji | §5.3, §6.7, §9.4.7 lengan `lance_surfaktan`, CHECK `surfaktan_l` §9.7.2 |
@@ -1447,10 +1636,10 @@ Tidak ada celah tanpa tempat.
 | 12 | Gambar teknik tingkat konstruksi + pengesahan insinyur | §6.9, §10.3 B-06 |
 | 13 | RAB dihitung ulang | §11.1 |
 | 14 | Harga heli angka BNPB menyusul | §2.2 T-A, §9.5.1, §11.1 aturan 8 |
-| 15 | NPV, BCR, Monte Carlo | §8.2 Bab 13, §9.3, §9.5, §11.1 |
+| 15 | NPV, BCR, Monte Carlo | §8.2 Bab 18, §9.3, §9.5, §11.1 |
 | 16, 17 | Matriks respons FRP dan luas | §5.4, §9.3 |
 | 18 | Simulasi Three.js pola simulasi karhutla | §9.6 |
-| 19 | Deck sekitar 15 slide | §8.5, §10.3 B-13 |
+| 19 | Deck sekitar 15 slide (18 sesudah keputusan 55, T-M) | §8.5, §10.3 B-13 |
 | 20 | Tanpa bab kritik | §8.2 |
 | 21 | YonTP gudang, tenaga gelar, transport; komando Satgas; operator inti Manggala Agni | §3.3, §5.6, §5.8, §9.7.2 `pengangkut` |
 | 22 | Tanpa dasar hukum TNI | §1.4 |
@@ -1485,8 +1674,11 @@ Tidak ada celah tanpa tempat.
 | 51 | Ambang zona "<" | §5.1, §9.3 `zona`, §9.12.2, §11.3 AS-13 |
 | 52 | Warna zona buku/deck biru dan emas; web palet + huruf + pola | §8.1, §9.4.2 lapisan, §9.13 |
 | 53 | Vonis pilot "dapat dipakai" tujuh butir | §1.3 U3, §4.1 minggu 44, §9.4.7, §9.9 medan sesi, §9.10 templat pilot |
+| 54 | T-B dan T-C memakai bawaan | §2.1, §2.2, §10.1 |
+| 55 | GD SIPPA terintegrasi (pipa + air tanah + akses + pemeliharaan) | §1.1, §1.2 butir 5–6, §1.3 U11–U12, §1.4, §6.10, §8, §11.2 R21–R26 |
+| 56 | Air tanah, akses, dan jadwal pemeliharaan di web `/pipa` | §9.1.1, §9.1.2, §9.3, §9.4.9–§9.4.12, §9.7, §9.12, §9.14, §10.2 W-16–W-21 |
 
-Tidak ada keputusan tanpa tempat (1–53).
+Tidak ada keputusan tanpa tempat (1–56).
 
 ### 12.3 Daftar periksa serah
 

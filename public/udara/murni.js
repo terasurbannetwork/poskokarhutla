@@ -4,7 +4,7 @@
 (function (root) {
   const POTONG = [55.4, 150.4, 250.4];
   const ST = ["normal", "waspada", "siaga", "awas"];
-  /* dua skala berdampingan (docs/multi-bencana/bencana/udara.md §2): tingkat Pantau Bencana + kategori ISPU. Provinsi tetap kategori ISPU saja. */
+  /* dua skala berdampingan (docs/multi-bencana/bencana/udara.md §2): tingkat Centurisk97 + kategori ISPU. Provinsi tetap kategori ISPU saja. */
   const ST_NAMA = {normal: "Normal (Baik/Sedang)", waspada: "Waspada (Tidak sehat)", siaga: "Siaga (Sangat tidak sehat)", awas: "Awas (Berbahaya)"};
   const labelStatus = s => ST_NAMA[s] || "–";
   const ST_WARNA = {normal: "#5a9e74", waspada: "#e8743b", siaga: "#d64545", awas: "#8a2be2"};

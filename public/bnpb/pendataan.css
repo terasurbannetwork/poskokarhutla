@@ -1,0 +1,76 @@
+/* Pendataan Satu Data BNPB (/pendataan). Token, tabel, tab, tombol, pil dari bnpb.css dan admin.css; di sini hanya tambahan layar ini. */
+.pd-kepala{display:flex;align-items:center;gap:10px;flex-wrap:wrap;margin:6px 0 14px}
+.pd-kepala h1{font-size:20px;font-weight:800}
+.pd-kepala .bn-aksi{margin-left:auto;display:flex;gap:8px;flex-wrap:wrap}
+.pd-tab{margin-bottom:14px}
+.pd-tombol{display:inline-flex;align-items:center;gap:6px}
+.pd-bagian h2 svg,.pd-berkas h3 svg,.pd-berkas li svg,.bn-pil svg,.pd-tombol svg,.ad-tombol svg,.pd-urut svg{width:15px;height:15px;flex:none}
+.pd-auth{max-width:560px;margin:0 auto}
+.pd-auth .bn-blok{margin-top:14px}
+.pd-bagian{margin-top:22px}
+.pd-bagian h2{font-size:15px;font-weight:800;display:flex;align-items:center;gap:8px;margin:0 0 10px}
+.pd-bagian .ad-tombol{margin-bottom:10px}
+.pd-urut{all:unset;cursor:pointer;color:#fff;display:inline-flex;gap:4px;align-items:center}
+.pd-urut:focus-visible{outline:2px solid #fff;outline-offset:2px}
+.pd-judul{all:unset;cursor:pointer;font-weight:700;color:var(--ink);text-align:left}
+.pd-judul:hover{text-decoration:underline}
+.pd-judul:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.pd-hal{display:flex;gap:10px;align-items:center;justify-content:center;margin-top:10px;font-size:12.5px;font-weight:700;color:var(--ink2)}
+.pd-kosong{color:var(--ink2);padding:14px;text-align:center;font-weight:600}
+.pd-draf{--pil:var(--c3)}.pd-terkirim{--pil:var(--c4)}.pd-unit{--pil:var(--c5)}.pd-menunggu{--pil:var(--c2)}.pd-info{--pil:var(--c6)}
+.ad-tabel td.pd-aksi{text-align:right;white-space:nowrap}
+.ad-tabel td.pd-aksi .ad-tombol{margin:0 0 0 6px}
+
+/* pop-up lebar */
+dialog.pd-dlg{border:0;border-radius:18px;padding:0;width:min(1100px,96vw);max-height:94dvh;background:var(--paper);color:var(--ink);box-shadow:0 30px 80px -20px rgb(11 37 69 / .6);overflow:hidden}
+dialog.pd-dlg[open]{display:flex;flex-direction:column}
+dialog.pd-dlg::backdrop{background:rgb(11 37 69 / .55)}
+dialog.pd-kecil{width:min(460px,94vw)}
+.pd-dlg-kepala{display:flex;align-items:center;gap:10px;padding:14px 18px;background:var(--gradien);color:#fff}
+.pd-dlg-kepala h2{font-size:16px;font-weight:800;flex:1;min-width:0}
+.pd-dlg-kepala button{border:0;background:rgb(255 255 255 / .15);color:#fff;border-radius:999px;width:34px;height:34px;cursor:pointer;display:grid;place-items:center}
+.pd-dlg-kepala svg{width:16px;height:16px}
+.pd-dlg-isi{padding:16px 18px;overflow:auto;display:grid;gap:14px;align-content:start}
+.pd-dlg-kaki{padding:12px 18px;display:flex;gap:10px;align-items:center;flex-wrap:wrap;border-top:1px solid var(--line);background:var(--card)}
+.pd-dlg-kaki .bn-pesan{flex:1;min-width:200px;padding:7px 12px}
+.pd-dlg-kaki .bn-pesan:empty{display:none}
+
+/* form kolom */
+.pd-form{display:grid;gap:14px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.pd-kolom{display:grid;gap:6px;min-width:0;border:0;padding:0;margin:0;align-content:start}
+.pd-kolom[hidden]{display:none}
+.pd-kolom.lebar{grid-column:1/-1}
+.pd-kolom>label,.pd-kolom>legend{font-size:13px;font-weight:700;color:var(--ink2);padding:0}
+.pd-kolom input[type=text],.pd-kolom input[type=number],.pd-kolom input[type=time],.pd-kolom input[type=url],.pd-kolom textarea,.pd-auth input,.pd-auth select{width:100%;border:1px solid var(--line);background:var(--card);border-radius:10px;padding:10px 12px;font:500 14.5px var(--font);color:var(--ink)}
+.pd-kolom textarea{min-height:84px;resize:vertical}
+.pd-kolom input:focus-visible,.pd-kolom textarea:focus-visible,.pd-auth input:focus-visible,.pd-auth select:focus-visible{outline:2px solid var(--c5);outline-offset:1px;border-color:transparent}
+.pd-wajib{color:var(--c1);font-weight:800;margin-left:3px}
+.pd-kolom.galat input[type=text],.pd-kolom.galat input[type=number],.pd-kolom.galat input[type=time],.pd-kolom.galat input[type=url],.pd-kolom.galat textarea,.pd-kolom.galat .bn-pilihan{border-color:var(--c1);box-shadow:0 0 0 2px color-mix(in srgb,var(--c1) 22%,transparent)}
+.pd-kolom.galat .bn-pilihan{border:1px solid var(--c1);border-radius:14px;padding:6px}
+.pd-lain[hidden]{display:none}
+.bn-pilihan input[type=radio],.bn-pilihan input[type=checkbox]{position:absolute;opacity:0;pointer-events:none}
+.bn-pilihan label{position:relative}
+.bn-pilihan label:has(input:focus-visible){outline:2px solid var(--c5);outline-offset:2px}
+.pd-berkas{grid-column:1/-1;border-top:1px solid var(--line);padding-top:12px;display:grid;gap:8px}
+.pd-berkas h3{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px}
+.pd-berkas input[type=file]{position:absolute;opacity:0;width:1px;height:1px}
+.pd-berkas label.ad-tombol:has(input:focus-visible){outline:2px solid var(--c5);outline-offset:2px}
+.pd-berkas ul{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.pd-berkas li{display:flex;gap:10px;align-items:center;background:var(--card);border-radius:10px;padding:7px 12px;box-shadow:var(--ring);font-size:13px;font-weight:600}
+.pd-berkas li a{flex:1;min-width:0;overflow-wrap:anywhere;color:var(--ink)}
+.pd-berkas li span{color:var(--ink2);font-variant-numeric:tabular-nums;white-space:nowrap}
+.pd-lihat{display:grid;gap:10px;grid-template-columns:repeat(auto-fill,minmax(300px,1fr))}
+.pd-lihat div{background:var(--card);border-radius:12px;padding:10px 14px;box-shadow:var(--ring);min-width:0}
+.pd-lihat dt{font-size:12px;font-weight:700;color:var(--ink2);margin-bottom:3px}
+.pd-lihat dd{margin:0;font-weight:600;white-space:pre-wrap;overflow-wrap:anywhere}
+.pd-inline{background:var(--card);border-radius:16px;box-shadow:var(--bayang);padding:16px 18px;display:grid;gap:14px}
+.pd-inline .pd-dlg-kaki{padding:12px 0 0;background:none}
+
+@media (max-width:640px){
+  dialog.pd-dlg{width:100vw;max-width:100vw;height:100dvh;max-height:100dvh;border-radius:0}
+  dialog.pd-kecil{width:94vw;height:auto;max-height:90dvh;border-radius:18px}
+  .pd-form,.pd-lihat{grid-template-columns:1fr}
+  .pd-kepala .bn-aksi{margin-left:0;width:100%}
+}
+.bn-isian[hidden]{display:none}
+@media (max-width:560px){.pd-tab{grid-auto-flow:column;grid-template-columns:none;grid-auto-columns:1fr}.pd-tab button{white-space:normal;height:auto;min-height:44px;padding:6px 8px;line-height:1.2;flex-wrap:wrap}}

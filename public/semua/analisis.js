@@ -118,7 +118,7 @@ function kartuKejadian(L, st) {
     : `Tidak ada kab/kota Siaga${nb} hari ini; ${ang(arsip)} laporan kejadian terakhir masih bisa dibuka`;
   const seg = ada.length > 1 ? Kartu.seg("kjb", [["", `Semua (${ang(L.length)})`], ...ada.map(m => [m, `${MODUL_KJ[m]} (${ang(L.filter(e => e.modul === m).length)})`])], {kjb: st.b}) : "";
   return Kartu.kartu("Laporan kejadian", jd, `<div class="tw kj-tw"><table class="kj-tb"><thead><tr><th>Kab/kota</th><th>Bencana</th><th>Status</th><th class="n">Mulai</th><th class="n">Terakhir</th><th>Pemicu</th><th>Provinsi</th></tr></thead><tbody>${baris}</tbody></table></div>${typeof paginasi === "function" ? paginasi(hal, F.length, PER_KJ, "laporan") : ""}`,
-    "laporan harian modul Pantau Bencana (banjir, cuaca, kualitas udara, kekeringan)", seg);
+    "laporan harian modul Centurisk97 (banjir, cuaca, kualitas udara, kekeringan)", seg);
 }
 
 /* ---------- 4. Cara hitung dan batasan: satu blok terlipat */

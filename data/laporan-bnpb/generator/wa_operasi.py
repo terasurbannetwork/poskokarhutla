@@ -38,7 +38,7 @@ def bmkg(teks):
             raise SystemExit(f'BMKG: provinsi tak dikenal "{nama}"')
         return k
     pm, nilai = {}, []
-    for m in re.finditer(r'^[\s*\-•]*([A-Z][A-Z0-9 .]+?):?\s+([\d.,]+)\s*µg/m³\s*\(([^)]+)\)', teks, re.M):
+    for m in re.finditer(r'^[\s*\-•]*([A-Z][A-Z0-9 .]+?):?\s+([\d.,]+)\s*(?:µg/m³)?\s*\(([^)]+)\)', teks, re.M):
         st, v, kat = m.group(1).strip(), float(m.group(2).replace(',', '.')), m.group(3).strip().lower()
         nilai.append(v)
         k = next((c for kw, c in STASIUN.items() if kw in st.upper()), None)

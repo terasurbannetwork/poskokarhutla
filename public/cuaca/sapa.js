@@ -17,7 +17,7 @@
     },
     html(h) {
       const ini = basi() ? "pada " + tglSgk(S.pr.hari[S.h0]) : "hari ini", prov = namaProv, mm = v => fmt(Math.round(v)), kec = S.nc.reduce((s, x) => s + x.n, 0);
-      /* wilayah Siaga/Awas besok (deteksi Pantau Bencana, cuaca_kec.json) dan siklon aktif; keduanya dibuang bila datanya tak ada */
+      /* wilayah Siaga/Awas besok (deteksi Centurisk97, cuaca_kec.json) dan siklon aktif; keduanya dibuang bila datanya tak ada */
       const jb = S.kec ? S.kec.hari.indexOf(S.pr.hari[S.h0 + 1]) : -1, bs = jb < 0 ? [] : Object.entries(S.kec.prov).map(([k, o]) => [k, o.n[jb][1] + o.n[jb][2]]).filter(x => x[1]).sort((a, b) => b[1] - a[1]),
         besok = bs.length && Sapa.kartu("hujan", warnaT(2), lbl3(1), `<b>${fmt(bs.reduce((a, x) => a + x[1], 0))}</b> kecamatan diprakirakan Siaga atau Awas, terbanyak di <span translate="no">${esc(prov(bs[0][0]))}</span>`),
         sik = S.sik?.aktif?.length && Sapa.kartu("siklon", "#7a1f2b", "Siklon tropis", S.sik.aktif.slice(0, 2).map(c => `<span translate="no">${esc(c.nama || c.id)}</span>${c.angin_kt != null ? ` (angin ${fmt(Math.round(c.angin_kt * 1.852))} km/jam)` : ""}`).join(", "));

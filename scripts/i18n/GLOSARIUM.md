@@ -1,4 +1,4 @@
-# Glosarium EN / ID — Pantau Bencana
+# Glosarium EN / ID — Centurisk97
 
 Satu istilah, satu padanan, di semua tab, PDF, dan gambar bagikan. Kamus: `public/i18n/en.json`.
 Menambah entri: jalankan `node scripts/i18n/kumpul.mjs --dump`, lihat `scripts/i18n/laporan.json` → `hilang` (kunci kamus yang belum ada),

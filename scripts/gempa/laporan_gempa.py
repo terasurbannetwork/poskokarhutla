@@ -3,7 +3,7 @@
 Hari = 60 hari terakhir WIB (hari ini = berjalan). Sumber:
   USGS FDSN M >= 4 kotak umum.BBOX, disaring ke Indonesia (umum.provinsi_gempa). Kabupaten: poligon kecamatan, atau pusat
     kecamatan terdekat <= 30 km di provinsi yang sama; gempa laut lebih jauh hanya masuk provinsi + nasional.
-  Arsip BMKG Pantau Bencana (https://pantau.terasurban.com/api/gempa/terbaru?jam=720, 30 hari): dirasakan, MMI, status
+  Arsip BMKG Centurisk97 (https://centurisk97.id/api/gempa/terbaru?jam=720, 30 hari): dirasakan, MMI, status
     tsunami BMKG. Boleh gagal: metrik dirasakan lalu null semua dan sorot tsunami tidak ada.
 Metrik: kejadian M >= 4 (utama, jumlah), M >= 5 (jumlah), dirasakan BMKG (jumlah; null sebelum arsip mulai), M terbesar (maks, netral).
 Sorot (7 hari terakhir): status tsunami BMKG (tingkat = kode BMKG 1 waspada, 2 siaga, 3 awas; berlabel "BMKG"), gempa M >= 6,
@@ -27,7 +27,7 @@ _s.loader.exec_module(LP)
 
 WIB = dt.timezone(dt.timedelta(hours=7))
 N_HARI = 60
-BMKG_URL = "https://pantau.terasurban.com/api/gempa/terbaru?jam=720"
+BMKG_URL = "https://centurisk97.id/api/gempa/terbaru?jam=720"
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
 P_MIN_HARIAN = 0.005  # baris prakiraan dibuang bila semua peluang harian di bawah ini
 TINGKAT_TSUNAMI = {1: "waspada", 2: "siaga", 3: "awas"}
@@ -215,7 +215,7 @@ def bangun(feats, bmkg, ev, model, kini, wil):
     cutoff = max([r["waktu"] for r in us] + [g["waktu"] for g in bm], default=kini).astimezone(WIB).strftime("%Y-%m-%dT%H:%M+07:00")
     sumber = [{"nama": "USGS", "url": "https://earthquake.usgs.gov/fdsnws/event/1/", "catatan": "katalog gempa M≥4, domain publik"}]
     if bmkg is not None:
-        sumber.append({"nama": "BMKG", "url": "https://data.bmkg.go.id/gempabumi/", "catatan": "gempa dirasakan dan status tsunami, arsip Pantau Bencana 30 hari"})
+        sumber.append({"nama": "BMKG", "url": "https://data.bmkg.go.id/gempabumi/", "catatan": "gempa dirasakan dan status tsunami, arsip Centurisk97 30 hari"})
     spec = [{k: v for k, v in m.items() if k != "dari"} for m in METRIK]
     return LP.susun("gempa", "Laporan Harian Gempa Bumi", hari, spec, nas, prov, kab, cutoff=cutoff, hari_lengkap=hari[-2],
                     sorot=sorot, prakiraan=prakiraan(ev, model, kini, wil), tambahan=tambahan, sumber=sumber,

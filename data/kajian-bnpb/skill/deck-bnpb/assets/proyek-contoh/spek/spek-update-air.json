@@ -1,0 +1,830 @@
+{
+  "_catatan": "Deck PEMBARUAN 23 Okt 2026 kajian air, bukan deck final. Angka dari data/angka.json dan CSV paket data; bagian yang belum siap ditulis 'dalam penyusunan'. Peta dasar dari keluaran/update-231026/peta_jawa.py. Salinan skill 26 Okt 2026: lintasan perbaikan devil's advocate terhadap gerbang terkini (T-8 tiga-serangkai); isi lain tidak diubah.",
+  "pesan_kunci": "Tekanan air Jawa bersifat struktural, dan musim hujan 2026/2027 datang sesudah kemarau El Niño sangat kuat; Grand Design disusun untuk satu siklus kemarau dan hujan.",
+  "judul_dokumen": "Update Grand Design Ketahanan Air Pulau Jawa 2026–2030",
+  "subjek_dokumen": "Pembaruan penyusunan, 23 Oktober 2026",
+  "kajian": "air",
+  "tanggal": "2026-10-23",
+  "cut_off": "23 Okt 2026, 15.23 WIB",
+  "slide": [
+    {
+      "jenis": "sampul",
+      "layout": "gelap",
+      "foto": "foto/bencana-rob.jpg",
+      "subjudul": "Pembaruan penyusunan, 23 Oktober 2026",
+      "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+      "kredit": "Foto: rob di Desa Bedono, Demak, Jawa Tengah; Tim LindungiHutan, CC BY 4.0, Wikimedia Commons"
+    },
+    {
+      "jenis": "kartu-angka",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Lima temuan kunci sejauh ini",
+      "judul": "Pesan Kunci: lima temuan kajian air Pulau Jawa sejauh ini",
+      "cut_off": true,
+      "judul_panel": "Pesan kunci sementara",
+      "tesis": "Porsi air permukaan Jawa jauh di bawah porsi penduduknya dan waduk BBWS Pemali-Juana kehilangan tampungan. Kemarau dan musim hujan perlu dikelola sebagai satu siklus risiko.",
+      "temuan": [
+        {
+          "kode": "Temuan A.1",
+          "keyakinan": "estimasi-model",
+          "ikon": "air-baku",
+          "teks": "Jawa dihuni {{angka:airjawa.jawa.porsi_penduduk_persen|persen}} penduduk Indonesia, tetapi hanya memiliki {{angka:airjawa.jawa.porsi_air_permukaan_persen|persen}} air permukaan nasional."
+        },
+        {
+          "kode": "Temuan A.2",
+          "keyakinan": "resmi",
+          "ikon": "bendungan",
+          "teks": "Di BBWS Pemali-Juana, Waduk Cacaban kehilangan {{angka:airjawa.bendungan.cacaban.kehilangan_persen|fmt=1|persen}} tampungan desain, sedangkan Kedungombo {{angka:airjawa.bendungan.kedungombo.kehilangan_persen|fmt=1|persen}}."
+        },
+        {
+          "kode": "Temuan B.1",
+          "keyakinan": "resmi",
+          "ikon": "kekeringan",
+          "teks": "Kekeringan 2018 berdampak pada {{angka:hidromet.jawa.kekeringan.dibi_terdampak_2018|ringkas}} jiwa di Jawa dalam {{angka:hidromet.jawa.kekeringan.dibi_kejadian_2018}} kejadian tercatat DIBI."
+        },
+        {
+          "kode": "Temuan C.1",
+          "keyakinan": "terverifikasi",
+          "ikon": "penurunan-muka-tanah",
+          "teks": "Muka tanah turun sampai {{angka:airjawa.turun_tanah.semarang_demak.aditiya2023|satuan}} di Semarang utara-timur dan Demak; Pekalongan {{angka:airjawa.turun_tanah.pekalongan.sidiq2023}} dan {{angka:airjawa.turun_tanah.pekalongan.widodo2024}} cm (dua studi)."
+        },
+        {
+          "kode": "Temuan C.2",
+          "keyakinan": "resmi",
+          "ikon": "banjir",
+          "teks": "Musim hujan 2025/2026 mencatat {{angka:hidromet.jawa.musim_2025.kejadian}} kejadian dan {{angka:hidromet.jawa.musim_2025.meninggal}} korban meninggal di Jawa, terbanyak sejak 2008/2009."
+        }
+      ],
+      "sumber": "WorldPop R2025A; BPS (2020) mengutip Radhika dkk. (2017); BBWS Pemali-Juana 2021; DIBI BNPB; Aditiya dan Ito (2023); Sidiq dkk. (2023); Widodo dkk. (2024)"
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Posisi BNPB dan dasar kebijakan",
+      "judul": "Posisi BNPB: kajian air memakai IRBI dan kajian risiko BNPB sebagai rujukan utama dan merujuk Pola serta Rencana PSDA Kementerian PU",
+      "cut_off": true,
+      "grup": [
+        {
+          "pil": "Renas PB 2025–2029",
+          "nada": "data",
+          "ikon": "regulasi",
+          "kartu": [
+            {
+              "nilai": "{{angka:hidromet.jawa.lanina.pd_renas.cakupan_2025|persen}}",
+              "label": "cakupan peringatan dini 2025",
+              "ikon": "peringatan",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:hidromet.jawa.lanina.pd_renas.cakupan_2029|persen}}",
+              "label": "target cakupan 2029",
+              "ikon": "kalender",
+              "warna": "biru"
+            }
+          ]
+        },
+        {
+          "pil": "Risiko Pulau Jawa",
+          "nada": "data",
+          "ikon": "wilayah",
+          "kartu": [
+            {
+              "nilai": "{{angka:irbi.jawa.2024|fmt=2}}",
+              "label": "IRB Jawa, rerata kab/kota 2024",
+              "ikon": "data",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:irbi.jawa.persen_2015_2024|fmt=1|persen|arah}}",
+              "label": "perubahan sejak 2015",
+              "ikon": "kalender",
+              "warna": "biru"
+            }
+          ]
+        }
+      ],
+      "grafik": {
+        "judul_panel": "IRB Pulau Jawa 2015–2024",
+        "ikon": "data",
+        "judul": "Rerata sederhana kab/kota",
+        "keluarga": "netral",
+        "data": {
+          "csv": "data/irbi/irbi_tren_2015_2024.csv",
+          "saring": "tingkat=pulau; kode=JAW; metode=rerata_sederhana",
+          "seri": "kolom",
+          "kolom": [
+            {
+              "nama": "y2015",
+              "kepala": "2015",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2016",
+              "kepala": "2016",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2017",
+              "kepala": "2017",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2018",
+              "kepala": "2018",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2019",
+              "kepala": "2019",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2020",
+              "kepala": "2020",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2021",
+              "kepala": "2021",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2022",
+              "kepala": "2022",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2023",
+              "kepala": "2023",
+              "fmt": "2"
+            },
+            {
+              "nama": "y2024",
+              "kepala": "2024",
+              "fmt": "2"
+            }
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2015–2024"
+        },
+        "seragam": true
+      },
+      "panel": {
+        "judul": "Posisi dan dasar",
+        "ikon": "lembaga",
+        "daftar": [
+          "Kajian risiko BNPB: air dibaca dari bahaya, keterpaparan, kerentanan, dan kapasitas per kab/kota.",
+          "RIPB 2020–2044 dan Renas PB 2025–2029 menjadi pijakan sasaran dan indikator.",
+          "RPJMN 2025–2029 dan Renstra BNPB menargetkan IRB nasional turun setiap tahun.",
+          "Pola dan Rencana PSDA Kementerian PU dirujuk sebagai rencana pengelolaan air.",
+          "Indeks dan simulasi platform hanya pendukung dan selalu berlabel keyakinan."
+        ]
+      },
+      "sumber": "InaRISK BNPB, IRBI 2015–2024 (olah Pantau Bencana); Renas PB 2025–2029; RIPB 2020–2044; RPJMN 2025–2029"
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "temuan",
+      "pesan": "Neraca air dan sedimentasi waduk",
+      "judul": "Jawa dihuni {{angka:airjawa.jawa.porsi_penduduk_persen|persen}} penduduk dengan {{angka:airjawa.jawa.porsi_air_permukaan_persen|persen}} air permukaan nasional; Waduk Cacaban kehilangan {{angka:airjawa.bendungan.cacaban.kehilangan_persen|fmt=1|persen}} tampungan",
+      "cut_off": true,
+      "sumber": "WorldPop R2025A; BPS (2020) mengutip PT SMI (2017) dan Radhika dkk. (2017); KLH 2008; inventaris BBWS Pemali-Juana 2021; olah Pantau Bencana",
+      "grup": [
+        {
+          "pil": "Neraca air Jawa",
+          "nada": "data",
+          "ikon": "air-baku",
+          "kartu": [
+            {
+              "nilai": "{{angka:airjawa.jawa.porsi_penduduk_persen|persen}}",
+              "label": "porsi penduduk nasional",
+              "ikon": "jiwa",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:airjawa.jawa.porsi_air_permukaan_persen|persen}}",
+              "label": "porsi air permukaan nasional",
+              "ikon": "air-baku",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:airjawa.jawa.per_kapita_2030}}",
+              "label": "m³/kapita/tahun, proyeksi 2030 (terbit 2017)",
+              "ikon": "kalender",
+              "warna": "navy"
+            }
+          ]
+        },
+        {
+          "pil": "Air tanah",
+          "nada": "data",
+          "ikon": "air-tanah",
+          "kartu": [
+            {
+              "nilai": "{{angka:airjawa.jawa.cat_jumlah}}",
+              "label": "cekungan air tanah",
+              "ikon": "air-tanah",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "tabel": {
+        "judul_panel": "Bendungan dengan kehilangan tampungan terbesar di BBWS Pemali-Juana",
+        "ikon": "bendungan",
+        "nada": "air",
+        "data": {
+          "csv": "data/air-jawa/bendungan.csv",
+          "saring": "label_kehilangan=olah(resmi)",
+          "urut": "-kehilangan_tampungan_persen",
+          "batas": 7,
+          "sorot": [
+            "Cacaban"
+          ],
+          "kolom": [
+            {
+              "nama": "nama",
+              "kepala": "Bendungan"
+            },
+            {
+              "nama": "kab_nama",
+              "kepala": "Kab/kota"
+            },
+            {
+              "nama": "kapasitas_desain_juta_m3",
+              "kepala": "Desain",
+              "fmt": "2",
+              "warna": "navy",
+              "ikon": "bendungan"
+            },
+            {
+              "nama": "tampungan_terukur_juta_m3",
+              "kepala": "Terukur",
+              "fmt": "2",
+              "warna": "biru-abu",
+              "ikon": "data"
+            },
+            {
+              "nama": "kehilangan_tampungan_persen",
+              "kepala": "Hilang",
+              "fmt": "1|persen",
+              "warna": "oranye",
+              "ikon": "peringatan"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "Pengolahan data Pantau Bencana dari inventaris BBWS Pemali-Juana 2021"
+        }
+      },
+      "panel": {
+        "judul": "Cara membaca",
+        "ikon": "ringkasan",
+        "daftar": [
+          "Desain dan terukur dalam juta m³; hilang = porsi kapasitas desain yang sudah tidak tersedia.",
+          "Inventaris baru mencakup bendungan BBWS Pemali-Juana; wilayah sungai lain dalam penyusunan.",
+          "Waduk kecil di Grobogan kehilangan tampungan paling besar secara persen.",
+          "Neraca air adalah keluaran model hujan-limpasan; galatnya tidak dilaporkan sumber."
+        ]
+      }
+    },
+    {
+      "jenis": "temuan-peta",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "pesan": "Risiko kekeringan per kab/kota dan El Niño 2026",
+      "judul": "Kekeringan 2018 berdampak pada {{angka:hidromet.jawa.kekeringan.dibi_terdampak_2018|ringkas}} jiwa di Jawa; {{tempat:Jawa Barat}} mencatat kejadian kekeringan terbanyak 2015–2025 ({{angka:airjawa.jabar.dibi1525_kekeringan}})",
+      "cut_off": true,
+      "grup": [
+        {
+          "pil": "Kemarau di Jawa",
+          "nada": "perhatian",
+          "ikon": "kekeringan",
+          "kartu": [
+            {
+              "nilai": "{{angka:hidromet.jawa.kekeringan.dibi_kejadian_2018}}",
+              "label": "kejadian kekeringan 2018",
+              "ikon": "kekeringan",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:hidromet.jawa.kekeringan.dibi_terdampak_2018|ringkas}}",
+              "label": "jiwa terdampak 2018",
+              "ikon": "jiwa",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:hidromet.jawa.kekeringan.luas_bahaya_tinggi|ringkas}}",
+              "label": "ha bahaya kekeringan tinggi",
+              "ikon": "luas",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "peta": {
+        "png": "peta/peta-irbi-kekeringan-2025-jawa.png",
+        "legenda": {
+          "dari_manifest": true,
+          "judul": "IRBI kekeringan 2025, kelas nilai"
+        },
+        "keyakinan": "resmi",
+        "sumber": "InaRISK BNPB, IRBI 2025"
+      },
+      "panel": {
+        "judul": "Rerata per provinsi",
+        "ikon": "wilayah",
+        "data": {
+          "csv": "data/air-jawa/provinsi.csv",
+          "urut": "-dibi1525_kejadian_kekeringan",
+          "sorot": [
+            "Jawa Barat"
+          ],
+          "kolom": [
+            {
+              "nama": "prov_nama",
+              "kepala": "Provinsi"
+            },
+            {
+              "nama": "dibi1525_kejadian_kekeringan",
+              "kepala": "Kejadian",
+              "fmt": "0",
+              "warna": "biru-abu",
+              "ikon": "data"
+            },
+            {
+              "nama": "irbi2025_kekeringan_rerata",
+              "kepala": "IRBI",
+              "fmt": "1",
+              "warna": "navy",
+              "ikon": "kekeringan"
+            }
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025, dan DIBI BNPB 2015–2025"
+        },
+        "daftar": [
+          "IRBI provinsi di sini adalah rerata sederhana kab/kota olahan penyusun; dengan bobot penduduk, Jawa Barat di atas Jawa Tengah."
+        ]
+      },
+      "pita": {
+        "label": "Musim kemarau dan awal musim hujan 2026",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "kekeringan",
+            "judul": "El Niño sangat kuat",
+            "isi": "Rilis BMKG September 2026; IOD menuju positif."
+          },
+          {
+            "ikon": "kalender",
+            "judul": "Awal musim hujan",
+            "isi": "BMKG: awal musim hujan Jawa November sampai Desember 2026, puncak sampai Februari 2027."
+          },
+          {
+            "ikon": "data",
+            "judul": "El Niño sampai 2027",
+            "isi": "Konferensi pers BMKG Oktober 2026 (sekunder): bertahan sampai awal 2027."
+          },
+          {
+            "ikon": "peringatan",
+            "judul": "Analisis penyusun",
+            "isi": "Hujan awal jatuh di tanah kering; siapkan banjir mendadak."
+          }
+        ]
+      },
+      "sumber": "DIBI BNPB 2015–2025; InaRISK BNPB, IRBI 2025 (olah Pantau Bencana); BMKG, rilis September 2026 dan konferensi pers Oktober 2026 (sekunder)"
+    },
+    {
+      "jenis": "temuan-grafik",
+      "jenis_slide": "grafik",
+      "judul_bentuk": "temuan",
+      "pesan": "Musim hujan di Jawa makin padat kejadian",
+      "judul": "Musim hujan 2025/2026: {{angka:hidromet.jawa.musim_2025.kejadian}} kejadian dan {{angka:hidromet.jawa.musim_2025.meninggal}} korban meninggal di Jawa; BMKG memperkirakan musim berikutnya mulai Desember",
+      "cut_off": true,
+      "grafik": {
+        "judul_panel": "Kejadian bencana musim hujan di Pulau Jawa",
+        "ikon": "banjir",
+        "nada": "air",
+        "judul": "Kejadian DIBI per musim hujan, Oktober sampai April",
+        "keluarga": "air",
+        "data": {
+          "csv": "data/skenario-hidromet/musim_hujan.csv",
+          "saring": "wilayah=jawa; tahun_awal!=2008; tahun_awal!=2009; tahun_awal!=2010; tahun_awal!=2011; tahun_awal!=2012; tahun_awal!=2013; tahun_awal!=2014",
+          "kolom": [
+            {
+              "nama": "musim",
+              "kepala": "Musim"
+            },
+            {
+              "nama": "kejadian",
+              "kepala": "Kejadian",
+              "fmt": "0"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, musim hujan 2015/2016 sampai 2025/2026"
+        },
+        "seragam": true
+      },
+      "panel": {
+        "judul": "Lima musim, meninggal terbanyak",
+        "ikon": "kalender",
+        "data": {
+          "csv": "data/skenario-hidromet/musim_hujan.csv",
+          "saring": "wilayah=jawa; tahun_awal!=2008; tahun_awal!=2009; tahun_awal!=2010; tahun_awal!=2011; tahun_awal!=2012; tahun_awal!=2013; tahun_awal!=2014",
+          "urut": "-meninggal",
+          "batas": 5,
+          "kolom": [
+            {
+              "nama": "musim",
+              "kepala": "Musim"
+            },
+            {
+              "nama": "la_nina",
+              "kepala": "La Niña",
+              "ganti": {
+                "true": "Ya",
+                "false": "Tidak"
+              }
+            },
+            {
+              "nama": "meninggal",
+              "kepala": "Meninggal",
+              "fmt": "0",
+              "warna": "navy",
+              "ikon": "jiwa"
+            },
+            {
+              "nama": "mengungsi",
+              "kepala": "Mengungsi",
+              "fmt": "0",
+              "warna": "biru",
+              "ikon": "pengungsi"
+            }
+          ],
+          "keyakinan": "resmi",
+          "sumber": "DIBI BNPB, musim hujan 2015/2016 sampai 2025/2026"
+        },
+        "daftar": [
+          "Sejak 2015/2016; hanya 2017/2018 dan 2020/2021 berstatus La Niña menurut ONI NOAA CPC.",
+          "Analog skenario: musim La Niña dengan peringkat gabungan terkecil atas lima besaran dampak."
+        ]
+      },
+      "pita": {
+        "label": "Yang disiapkan sebelum Desember",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "peringatan",
+            "judul": "Peringatan dini",
+            "isi": "Uji jalur peringatan dini BMKG sampai desa di bantaran sungai utama."
+          },
+          {
+            "ikon": "banjir",
+            "judul": "Kab/kota rawan",
+            "isi": "Siagakan pompa bergerak dan perahu di kab/kota bernilai banjir tertinggi."
+          },
+          {
+            "ikon": "pengungsi",
+            "judul": "Tempat evakuasi",
+            "isi": "Data tempat evakuasi sementara yang aman dari genangan."
+          }
+        ]
+      },
+      "sumber": "DIBI BNPB, musim hujan 2015/2016 sampai 2025/2026 (olah Pantau Bencana); BMKG, rilis September 2026"
+    },
+    {
+      "jenis": "temuan-peta",
+      "jenis_slide": "peta",
+      "judul_bentuk": "temuan",
+      "pesan": "Risiko banjir per kab/kota dan penurunan muka tanah Pantura",
+      "judul": "Rerata IRBI banjir 2025 tertinggi di {{tempat:Jawa Timur}} ({{angka:airjawa.jatim.irbi2025_banjir_rerata|fmt=1}}); dua studi InSAR mencatat muka tanah Pekalongan turun {{angka:airjawa.turun_tanah.pekalongan.sidiq2023}} dan {{angka:airjawa.turun_tanah.pekalongan.widodo2024}} cm per tahun",
+      "cut_off": true,
+      "grup": [
+        {
+          "pil": "Penurunan muka tanah, InSAR",
+          "nada": "perhatian",
+          "ikon": "penurunan-muka-tanah",
+          "kartu": [
+            {
+              "nilai": "{{angka:airjawa.turun_tanah.pekalongan.widodo2024}}",
+              "label": "cm/tahun, Pekalongan, Widodo dkk.",
+              "ikon": "penurunan-muka-tanah",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:airjawa.turun_tanah.pekalongan.sidiq2023}}",
+              "label": "cm/tahun, Pekalongan, Sidiq dkk.",
+              "ikon": "penurunan-muka-tanah",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:airjawa.turun_tanah.semarang_demak.aditiya2023}}",
+              "label": "cm/th maks., Semarang utara-timur, Demak",
+              "ikon": "penurunan-muka-tanah",
+              "warna": "navy"
+            },
+            {
+              "nilai": "{{angka:airjawa.turun_tanah.kendal.aditiya2023}}",
+              "label": "cm/tahun maks., Kendal",
+              "ikon": "penurunan-muka-tanah",
+              "warna": "navy"
+            }
+          ]
+        }
+      ],
+      "peta": {
+        "png": "peta/peta-irbi-banjir-2025-jawa.png",
+        "legenda": {
+          "dari_manifest": true,
+          "judul": "IRBI banjir 2025, kelas nilai"
+        },
+        "keyakinan": "resmi",
+        "sumber": "InaRISK BNPB, IRBI 2025"
+      },
+      "panel": {
+        "judul": "Rerata per provinsi",
+        "ikon": "wilayah",
+        "data": {
+          "csv": "data/air-jawa/provinsi.csv",
+          "urut": "-irbi2025_banjir_rerata",
+          "sorot": [
+            "Jawa Timur"
+          ],
+          "kolom": [
+            {
+              "nama": "prov_nama",
+              "kepala": "Provinsi"
+            },
+            {
+              "nama": "irbi2025_banjir_rerata",
+              "kepala": "IRBI",
+              "fmt": "1",
+              "warna": "navy",
+              "ikon": "banjir"
+            },
+            {
+              "nama": "dibi1525_kejadian_banjir",
+              "kepala": "Kejadian",
+              "fmt": "0",
+              "warna": "biru-abu",
+              "ikon": "data"
+            }
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2025, dan DIBI BNPB 2015–2025"
+        },
+        "daftar": [
+          "IRBI provinsi di sini adalah rerata sederhana kab/kota olahan penyusun; kejadian DIBI 2015–2025."
+        ]
+      },
+      "sumber": "InaRISK BNPB, IRBI 2025; DIBI BNPB 2015–2025 (olah Pantau Bencana); Widodo dkk. (2024); Sidiq dkk. (2023); Aditiya dan Ito (2023)"
+    },
+    {
+      "jenis": "skenario",
+      "jenis_slide": "kartu-skenario",
+      "judul_bentuk": "temuan",
+      "pesan": "Skenario musim hujan terburuk",
+      "sumber": "DIBI BNPB 2008–2026; InaRISK BNPB; NOAA CPC, indeks ONI; Renas PB 2025–2029; UNDRR-WMO 2022; simulasi Pantau Bencana",
+      "judul": "Skenario La Niña analog {{angka:hidromet.jawa.lanina.tahun_analog|tahun}}/2021 belum lolos uji balik: model {{angka:hidromet.jawa.lanina.korban_jiwa|rentang}} korban jiwa, tercatat {{angka:hidromet.jawa.lanina.meninggal_tercatat}} meninggal dan {{angka:hidromet.jawa.lanina.hilang_tercatat}} hilang",
+      "cut_off": true,
+      "skenario": {
+        "jenis": "banjir",
+        "judul": "musim hujan La Niña, analog 2020/2021",
+        "keyakinan": "estimasi-model; belum diuji balik",
+        "kemungkinan": null,
+        "kerusakan": [
+          {
+            "besaran": "Korban jiwa, model",
+            "nilai": "{{angka:hidromet.jawa.lanina.korban_jiwa|rentang|satuan}}"
+          },
+          {
+            "besaran": "Tercatat musim analog",
+            "nilai": "{{angka:hidromet.jawa.lanina.meninggal_tercatat}} meninggal, {{angka:hidromet.jawa.lanina.hilang_tercatat}} hilang"
+          },
+          {
+            "besaran": "Pengungsi tercatat",
+            "nilai": "{{angka:hidromet.jawa.lanina.mengungsi|satuan}}"
+          },
+          {
+            "besaran": "Rumah rusak berat",
+            "nilai": "{{angka:hidromet.jawa.lanina.rumah_rusak_berat|satuan}}"
+          },
+          {
+            "besaran": "Rumah rusak sedang",
+            "nilai": "{{angka:hidromet.jawa.lanina.rumah_rusak_sedang|satuan}}"
+          },
+          {
+            "besaran": "Rumah rusak ringan",
+            "nilai": "{{angka:hidromet.jawa.lanina.rumah_rusak_ringan|satuan}}"
+          },
+          {
+            "besaran": "Luas bahaya banjir tinggi",
+            "nilai": "{{angka:hidromet.jawa.lanina.luas_bahaya_tinggi_banjir|ringkas}} ha"
+          },
+          {
+            "besaran": "Biaya stimulan rehab rumah, batas bawah",
+            "nilai": "{{angka:hidromet.jawa.lanina.materiil_batas_bawah|rentang|rupiah}}"
+          },
+          {
+            "besaran": "Hari mengungsi, rentang asumsi",
+            "nilai": "{{angka:hidromet.jawa.lanina.hari_mengungsi|rentang|ringkas}} jiwa-hari"
+          }
+        ],
+        "kebijakan": {
+          "sekarang": {
+            "label": "Cakupan peringatan dini {{angka:hidromet.jawa.lanina.pd_renas.cakupan_2025|persen}}",
+            "nilai": "{{angka:hidromet.jawa.lanina.korban_jiwa|rentang}}"
+          },
+          "target": {
+            "label": "Bila naik ke {{angka:hidromet.jawa.lanina.pd_renas.cakupan_2029|persen}}",
+            "nilai": "{{angka:hidromet.jawa.lanina.pd_renas.korban_jiwa|rentang|fmt=0}}"
+          },
+          "keterangan": "korban jiwa bila target Renas PB 2029 tercapai"
+        },
+        "respons": [
+          "Evakuasi dini warga bantaran sungai berdasar peringatan BMKG.",
+          "Pompa bergerak dan perahu karet di kab/kota bernilai banjir tertinggi.",
+          "Layanan kesehatan dan air bersih di tempat evakuasi."
+        ],
+        "pemulihan": [
+          "Kaji kebutuhan pascabencana untuk rumah rusak berat dan sedang.",
+          "Perbaikan tanggul dan alur sungai bersama BBWS.",
+          "Pemulihan layanan air bersih di permukiman terdampak."
+        ],
+        "lembaga": [
+          "BNPB",
+          "BMKG",
+          "Kementerian PU",
+          "BPBD provinsi",
+          "BPBD kab/kota"
+        ],
+        "kemungkinan_catatan": "Dalam penyusunan, belum dihitung dari data",
+        "catatan": [
+          "Model: rasio korban per kejadian median 2010–2025 dikali kejadian musim analog; longsor menyumbang porsi terbesar.",
+          "Angka kebijakan: asosiasi lintas negara UNDRR-WMO yang belum terbukti kausal; manfaat untuk longsor lebih kecil.",
+          "Skenario kemarau setara El Niño dalam penyusunan."
+        ]
+      }
+    },
+    {
+      "jenis": "tabel-peringkat",
+      "jenis_slide": "tabel",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Kerangka Grand Design 2026–2030",
+      "judul": "Kerangka Grand Design 2026–2030: pilar sementara dalam tiga fase, dengan kompendium program air dan kekuatan buktinya",
+      "cut_off": true,
+      "tabel": {
+        "judul_panel": "Kompendium program air dan kekuatan buktinya, sementara",
+        "ikon": "prabencana",
+        "peringkat": true,
+        "data": {
+          "csv": "data/program-terbukti/kompendium_program.csv",
+          "saring": "kajian!=mitigasi",
+          "kolom": [
+            {
+              "nama": "nama",
+              "kepala": "Program",
+              "ganti": {
+                "PAMSIMAS (penyediaan air minum dan sanitasi berbasis masyarakat)": "PAMSIMAS, air minum berbasis masyarakat",
+                "Desa dan Kelurahan Tangguh Bencana (Destana)": "Desa dan Kelurahan Tangguh Bencana",
+                "Pengendalian pengambilan air tanah untuk menghentikan penurunan tanah (Tokyo, Osaka, Bangkok)": "Pengendalian pengambilan air tanah",
+                "Hibah mitigasi FEMA (HMGP, BRIC) dengan syarat analisis manfaat-biaya": "Hibah mitigasi FEMA bersyarat manfaat-biaya",
+                "Delta Programme Belanda (UU, dana, komisaris, laporan tahunan)": "Delta Programme Belanda",
+                "Sumur resapan dan lubang resapan biopori": "Sumur resapan dan biopori",
+                "Citarum Harum (pemulihan DAS Citarum)": "Citarum Harum, pemulihan DAS",
+                "Room for the River (ruang untuk sungai)": "Room for the River, Belanda"
+              }
+            },
+            {
+              "nama": "kekuatan",
+              "kepala": "Kekuatan bukti",
+              "ganti": {
+                "kuat": "Kuat",
+                "sedang": "Sedang",
+                "lemah": "Lemah",
+                "belum-terbukti": "Belum terbukti"
+              }
+            },
+            {
+              "nama": "status_label",
+              "kepala": "Status usulan"
+            }
+          ],
+          "keyakinan": "asumsi-kebijakan",
+          "sumber": "Kompendium program Pantau Bencana; kekuatan bukti menurut jenis evaluasi dampak terbuka"
+        }
+      },
+      "panel": {
+        "judul": "Pilar sementara, belum final",
+        "ikon": "ringkasan",
+        "daftar": [
+          "Tampungan dan pasokan air baku untuk musim kemarau.",
+          "Pengendalian banjir pesisir dan penurunan muka tanah.",
+          "Peringatan dini dan kesiapsiagaan masyarakat.",
+          "Tata kelola lintas lembaga dan arsitektur pembiayaan."
+        ]
+      },
+      "pita": {
+        "label": "Tiga fase dan status usulan",
+        "nada": "data",
+        "kolom": [
+          {
+            "ikon": "prabencana",
+            "judul": "Prabencana",
+            "isi": "Seluruh program kompendium berada di fase ini; empat berbukti kuat atau sedang."
+          },
+          {
+            "ikon": "tanggap-darurat",
+            "judul": "Tanggap darurat",
+            "isi": "Belum ada program air di kompendium untuk fase ini; dalam penyusunan."
+          },
+          {
+            "ikon": "pascabencana",
+            "judul": "Pascabencana",
+            "isi": "Belum ada program air di kompendium untuk fase ini; dalam penyusunan."
+          }
+        ]
+      },
+      "rasio": 0.7
+    },
+    {
+      "jenis": "kesimpulan",
+      "jenis_slide": "navigasi",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Status penyusunan dan jadwal",
+      "judul": "Status penyusunan dan jadwal penyelesaian kajian",
+      "cut_off": true,
+      "kartu": [
+        {
+          "label": "Selesai",
+          "ikon": "data",
+          "warna": "navy",
+          "judul": "Riset dokumen dan literatur",
+          "isi": "Riset dokumen BNPB dan riset air Jawa selesai, tiap angka berlabel keyakinan."
+        },
+        {
+          "label": "Selesai",
+          "ikon": "wilayah",
+          "warna": "navy",
+          "judul": "Paket data air Jawa",
+          "isi": "IRBI, DIBI, irigasi, bendungan, penurunan tanah, dan wilayah sungai per kab/kota."
+        },
+        {
+          "label": "Selesai",
+          "ikon": "data",
+          "warna": "navy",
+          "judul": "Rekonsiliasi angka",
+          "isi": "Angka paket data dicocokkan dengan angka terbit; selisih dicatat."
+        },
+        {
+          "label": "Berjalan",
+          "ikon": "banjir",
+          "warna": "oranye",
+          "judul": "Skenario musim hujan",
+          "isi": "Uji balik berjalan: rentang model belum mencakup angka tercatat musim analog."
+        },
+        {
+          "label": "Berjalan",
+          "ikon": "ringkasan",
+          "warna": "oranye",
+          "judul": "Naskah kajian",
+          "isi": "Naskah bab temuan dan Grand Design sedang ditulis dari paket data."
+        },
+        {
+          "label": "Berjalan",
+          "ikon": "kekeringan",
+          "warna": "oranye",
+          "judul": "Skenario kemarau",
+          "isi": "Skenario kemarau setara El Niño dan lampiran model kekeringan."
+        },
+        {
+          "label": "Berjalan",
+          "ikon": "lembaga",
+          "warna": "oranye",
+          "judul": "Pemetaan lembaga",
+          "isi": "Rekomendasi dipetakan ke unit BNPB dan K/L bernomenklatur terkini."
+        },
+        {
+          "label": "Target",
+          "ikon": "kalender",
+          "warna": "biru",
+          "judul": "Paket final",
+          "isi": "Naskah dan deck final beserta PDF-nya; tanggal serah menunggu arahan."
+        }
+      ],
+      "arahan": {
+        "label": "Yang diminta",
+        "ikon": "peringatan",
+        "teks": "Arahan atas pilar sementara dan posisi BNPB sebelum naskah Grand Design dikunci"
+      }
+    },
+    {
+      "jenis": "penutup"
+    }
+  ],
+  "pil_draf": "DRAF PEMBARUAN|23 Okt 2026"
+}

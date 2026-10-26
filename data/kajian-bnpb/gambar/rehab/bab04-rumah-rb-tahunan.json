@@ -1,0 +1,237 @@
+{
+ "nama": "bab04-rumah-rb-tahunan",
+ "keterangan": "Rumah rusak berat akibat bencana alam per tahun menurut kelompok geologi dan hidrometeorologi di Indonesia, 2015–2025 (unit)",
+ "sumber": "BNPB, DIBI dasbor publik, rekap nasional tahunan, klasifikasi bencana alam, cakupan kejadian bencana; pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  224.5
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.92
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Hidrometeorologi",
+   "jenis": "label-ujung",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "Geologi",
+   "jenis": "label-ujung",
+   "warna": "#8A4B2A"
+  }
+ ],
+ "hex": {
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#2E3440": [
+   "anotasi",
+   "teks"
+  ],
+  "#FFFFFF": [
+   "latar",
+   "garis"
+  ],
+  "#2F86D1": [
+   "seri",
+   "legenda"
+  ],
+  "#8A4B2A": [
+   "seri",
+   "legenda"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 27.57,
+   "y": 193.31,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0"
+  },
+  {
+   "x": 7.49,
+   "y": 114.97,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "50.000"
+  },
+  {
+   "x": 3,
+   "y": 36.63,
+   "w": 29.06,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "100.000"
+  },
+  {
+   "x": 28.07,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2015"
+  },
+  {
+   "x": 60.43,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2016"
+  },
+  {
+   "x": 92.78,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2017"
+  },
+  {
+   "x": 125.13,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2018"
+  },
+  {
+   "x": 157.49,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2019"
+  },
+  {
+   "x": 189.84,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2020"
+  },
+  {
+   "x": 222.19,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2021"
+  },
+  {
+   "x": 254.55,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2022"
+  },
+  {
+   "x": 286.9,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2023"
+  },
+  {
+   "x": 319.25,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2024"
+  },
+  {
+   "x": 351.61,
+   "y": 214.5,
+   "w": 17.97,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "2025"
+  },
+  {
+   "x": 331.24,
+   "y": 8,
+   "w": 83.74,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "saringan Juklak 7/2023"
+  },
+  {
+   "x": 372.99,
+   "y": 83.85,
+   "w": 62.29,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-Hidrometeorologi",
+   "teks": "Hidrometeorologi"
+  },
+  {
+   "x": 437.26,
+   "y": 83.6,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-Hidrometeorologi",
+   "teks": "69.864"
+  },
+  {
+   "x": 372.99,
+   "y": 192.48,
+   "w": 27.18,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-Geologi",
+   "teks": "Geologi"
+  },
+  {
+   "x": 402.15,
+   "y": 192.23,
+   "w": 14.63,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-Geologi",
+   "teks": "527"
+  },
+  {
+   "x": 37.06,
+   "y": 180.46,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "3.186"
+  },
+  {
+   "x": 37.06,
+   "y": 199.53,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "2.031"
+  }
+ ],
+ "jenis": "garis",
+ "pesan": "G3",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_periode": 11,
+ "acuan": 3,
+ "anotasi": 1,
+ "pita": false,
+ "label_ujung": true
+}

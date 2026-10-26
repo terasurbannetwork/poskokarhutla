@@ -52,7 +52,7 @@ def csv_hari(src, u, cutoff, kunci):
         if t >= akhir + PK.TRUST or t >= cutoff:
             return open(f).read()
     url = f'https://firms.modaps.eosdis.nasa.gov/api/area/csv/{kunci}/{src}/{PK.BBOX}/1/{u.isoformat()}'
-    teks = urllib.request.urlopen(url, timeout=180).read().decode()
+    teks = urllib.request.urlopen(url, timeout=600).read().decode()
     if not teks.startswith('latitude'):
         sys.exit(f'FIRMS {src} {u}: jawaban bukan CSV ({teks[:60]!r})')
     open(f, 'w').write(teks)

@@ -1,0 +1,32 @@
+{
+ "nama": "bab06-batang-biaya-truk-pipa",
+ "jenis": "batang",
+ "panel": [
+  "bab06-biaya-renk",
+  "bab06-biaya-hsu"
+ ],
+ "teks_min_pt": 8.0,
+ "ukuran_cm": [
+  16.3,
+  3.38
+ ],
+ "hex": {
+  "#B7B0A6": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ }
+}

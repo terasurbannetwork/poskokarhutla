@@ -1,0 +1,1204 @@
+[
+ {
+  "nama": "bab02-g21-tiga-lapis-titik-serah",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Tiga lapis waktu rehabilitasi dan rekonstruksi air dan akses beserta titik serahnya menurut peraturan BNPB, 2026",
+  "sumber": "UU 24/2007; PP 21/2008; Perka BNPB 7/2008; Perka BNPB 12/2010; Perban BNPB 5/2017 Pasal 2 dan 10; Perban BNPB 6/2017 Pasal 13 ayat (6); Perban BNPB 4/2020; Perban BNPB 4/2024; Perban BNPB 1/2026 Pasal 14 ayat (5); analisis kajian ini",
+  "kolom": 5,
+  "baris": 4,
+  "kelas": {
+   "lapis": {
+    "label": "Lapis waktu",
+    "warna": "navy"
+   },
+   "serah": {
+    "label": "Titik serah",
+    "warna": "tint.kering.pita"
+   },
+   "aturan": {
+    "label": "Aturan atau pelaksana berpasal",
+    "warna": "tint.netral.pita"
+   },
+   "tak": {
+    "label": "Tidak diatur atau tanpa data",
+    "warna": "tint.bahaya.pita"
+   },
+   "jalur": {
+    "label": "Jalur sektor",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "l1",
+    "k": 0,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Darurat",
+    "isi": "status tanggap darurat"
+   },
+   {
+    "id": "s1",
+    "k": 1,
+    "b": 0,
+    "kelas": "serah",
+    "judul": "Titik serah 1",
+    "isi": "akhir status; penunjukan langsung sampai transisi"
+   },
+   {
+    "id": "l2",
+    "k": 2,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Sementara",
+    "isi": "transisi sampai R3P berjalan"
+   },
+   {
+    "id": "s2",
+    "k": 3,
+    "b": 0,
+    "kelas": "serah",
+    "judul": "Titik serah 2",
+    "isi": "R3P ditetapkan"
+   },
+   {
+    "id": "l3",
+    "k": 4,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Permanen",
+    "isi": "masa R3P, hibah RR dan Dana Bersama"
+   },
+   {
+    "id": "a1",
+    "k": 0,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Perka 7/2008 dan 12/2010",
+    "isi": "kebutuhan dasar; perbaikan darurat"
+   },
+   {
+    "id": "a2",
+    "k": 2,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Perban 4/2020",
+    "isi": "DSP untuk pemulihan segera"
+   },
+   {
+    "id": "a3",
+    "k": 4,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Perban 5/2017 dan 4/2024",
+    "isi": "R3P paling lama 3 tahun; hibah RR"
+   },
+   {
+    "id": "j1",
+    "k": 0,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Akses",
+    "isi": "bailey"
+   },
+   {
+    "id": "j2",
+    "k": 2,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Akses",
+    "isi": "jembatan sementara TNI AD dan Polri"
+   },
+   {
+    "id": "j3",
+    "k": 4,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Akses",
+    "isi": "jembatan permanen"
+   },
+   {
+    "id": "w1",
+    "k": 0,
+    "b": 3,
+    "kelas": "jalur",
+    "judul": "Air",
+    "isi": "truk tangki dan sumur darurat"
+   },
+   {
+    "id": "w2",
+    "k": 2,
+    "b": 3,
+    "kelas": "jalur",
+    "judul": "Air",
+    "isi": "pipa sementara dan hidran"
+   },
+   {
+    "id": "w3",
+    "k": 4,
+    "b": 3,
+    "kelas": "jalur",
+    "judul": "Air",
+    "isi": "SPAM permanen"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "l1",
+    "ke": "s1"
+   },
+   {
+    "dari": "s1",
+    "ke": "l2"
+   },
+   {
+    "dari": "l2",
+    "ke": "s2"
+   },
+   {
+    "dari": "s2",
+    "ke": "l3"
+   }
+  ],
+  "judul_baris": [
+   "Lapis",
+   "Dasar",
+   "Akses",
+   "Air"
+  ]
+ },
+ {
+  "nama": "bab05-rantai-jembatan",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Rantai jembatan pascabencana dari lapis darurat ke lapis permanen dan titik serahnya, 2026",
+  "sumber": "Perka BNPB 12/2010; Perban BNPB 4/2020 Pasal 13 dan 14; Perban BNPB 4/2024 Pasal 5 huruf b, e, f dan Pasal 27; Perban BNPB 6/2017 Pasal 13 ayat (6); Perban BNPB 5/2017 Pasal 10; analisis kajian ini",
+  "kolom": 3,
+  "baris": 3,
+  "kelas": {
+   "lapis": {
+    "label": "Lapis waktu",
+    "warna": "navy"
+   },
+   "serah": {
+    "label": "Titik serah",
+    "warna": "tint.kering.pita"
+   },
+   "aturan": {
+    "label": "Aturan atau pelaksana berpasal",
+    "warna": "tint.netral.pita"
+   },
+   "tak": {
+    "label": "Tidak diatur atau tanpa data",
+    "warna": "tint.bahaya.pita"
+   },
+   "jalur": {
+    "label": "Jalur sektor",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "l1",
+    "k": 0,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Darurat",
+    "isi": "bailey DSP dan Kementerian PU, rangka baja"
+   },
+   {
+    "id": "l2",
+    "k": 1,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Sementara",
+    "isi": "jembatan TNI AD dan Polri"
+   },
+   {
+    "id": "l3",
+    "k": 2,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Permanen",
+    "isi": "Kementerian PU, pemda, desa"
+   },
+   {
+    "id": "a1",
+    "k": 0,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Perban 4/2020 Pasal 13 dan 14",
+    "isi": "DSP untuk bailey; Perka 12/2010"
+   },
+   {
+    "id": "a2",
+    "k": 1,
+    "b": 1,
+    "kelas": "tak",
+    "judul": "Status R3P tidak diumumkan",
+    "isi": "serah terima jembatan TNI AD dan Polri tanpa data"
+   },
+   {
+    "id": "a3",
+    "k": 2,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Perban 5/2017 Pasal 10",
+    "isi": "masa R3P paling lama 3 tahun"
+   },
+   {
+    "id": "s1",
+    "k": 0,
+    "b": 2,
+    "kelas": "tak",
+    "judul": "Serah ke aset desa",
+    "isi": "tanpa jalur hibah RR (Perban 4/2024 Pasal 5 huruf b dan e)",
+    "lk": 2
+   },
+   {
+    "id": "s2",
+    "k": 2,
+    "b": 2,
+    "kelas": "serah",
+    "judul": "Hibah RR",
+    "isi": "Pasal 5 huruf f dan Pasal 27"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "l1",
+    "ke": "l2"
+   },
+   {
+    "dari": "l2",
+    "ke": "l3"
+   }
+  ],
+  "judul_baris": [
+   "Lapis",
+   "Dasar dan pelaksana",
+   "Titik serah"
+  ]
+ },
+ {
+  "nama": "bab06-rantai-lapis-air",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Rantai lapis darurat, sementara, dan permanen air perpipaan pascabencana dengan titik serah dan pemutusnya, 2026",
+  "sumber": "PP 21/2008; Perka BNPB 7/2008; PP 122/2015; Kementerian PUPR, Penanganan Gempa Cianjur 2022",
+  "kolom": 3,
+  "baris": 3,
+  "kelas": {
+   "lapis": {
+    "label": "Lapis waktu",
+    "warna": "navy"
+   },
+   "serah": {
+    "label": "Titik serah",
+    "warna": "tint.kering.pita"
+   },
+   "aturan": {
+    "label": "Aturan atau pelaksana berpasal",
+    "warna": "tint.netral.pita"
+   },
+   "tak": {
+    "label": "Tidak diatur atau tanpa data",
+    "warna": "tint.bahaya.pita"
+   },
+   "jalur": {
+    "label": "Jalur sektor",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "l1",
+    "k": 0,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Darurat",
+    "isi": "truk tangki, hidran, sumur darurat"
+   },
+   {
+    "id": "l2",
+    "k": 1,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Sementara",
+    "isi": "pipa sementara"
+   },
+   {
+    "id": "l3",
+    "k": 2,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Permanen",
+    "isi": "SPAM pulih"
+   },
+   {
+    "id": "a1",
+    "k": 0,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "PP 21/2008 dan Perka 7/2008",
+    "isi": "7 lalu 15 liter per orang per hari"
+   },
+   {
+    "id": "a2",
+    "k": 1,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "Penarikan hidran",
+    "isi": "survei posko Cipta Karya dan BPPW, Bupati mendukung distribusi PDAM"
+   },
+   {
+    "id": "a3",
+    "k": 2,
+    "b": 1,
+    "kelas": "aturan",
+    "judul": "PP 122/2015",
+    "isi": "penyelenggara SPAM: pemerintah, pemda, badan usaha"
+   },
+   {
+    "id": "s1",
+    "k": 0,
+    "b": 2,
+    "kelas": "tak",
+    "judul": "Pemutus serah 1",
+    "isi": "tidak diatur: peralihan truk ke pipa"
+   },
+   {
+    "id": "s2",
+    "k": 1,
+    "b": 2,
+    "kelas": "tak",
+    "judul": "Pemutus serah 2",
+    "isi": "tidak diatur: pipa sementara ke SPAM"
+   },
+   {
+    "id": "s3",
+    "k": 2,
+    "b": 2,
+    "kelas": "serah",
+    "judul": "Titik serah",
+    "isi": "SPAM permanen kepada pengelola"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "l1",
+    "ke": "l2"
+   },
+   {
+    "dari": "l2",
+    "ke": "l3"
+   }
+  ],
+  "judul_baris": [
+   "Lapis",
+   "Dasar",
+   "Titik serah dan pemutus"
+  ]
+ },
+ {
+  "nama": "bab07-g21-rantai-sumur-darurat",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Rantai sumur bor darurat ke sumur produksi: lokasi, uji mutu, serah terima, dan pengelola, dengan titik putus yang ditemukan, 2026",
+  "sumber": "Perban BNPB 4/2024 Pasal 5; Permenkes 2/2023; Kementerian ESDM (2023); Permen ESDM 2/2017; analisis kajian ini",
+  "kolom": 4,
+  "baris": 2,
+  "kelas": {
+   "lapis": {
+    "label": "Lapis waktu",
+    "warna": "navy"
+   },
+   "serah": {
+    "label": "Titik serah",
+    "warna": "tint.kering.pita"
+   },
+   "aturan": {
+    "label": "Aturan atau pelaksana berpasal",
+    "warna": "tint.netral.pita"
+   },
+   "tak": {
+    "label": "Tidak diatur atau tanpa data",
+    "warna": "tint.bahaya.pita"
+   },
+   "jalur": {
+    "label": "Jalur sektor",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "n1",
+    "k": 0,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Lokasi",
+    "isi": "rekomendasi titik Badan Geologi"
+   },
+   {
+    "id": "n2",
+    "k": 1,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Uji mutu",
+    "isi": "Permenkes 2/2023"
+   },
+   {
+    "id": "n3",
+    "k": 2,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Serah terima",
+    "isi": "hibah BMN Badan Geologi"
+   },
+   {
+    "id": "n4",
+    "k": 3,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Pengelola",
+    "isi": "pemda, desa, atau kelompok"
+   },
+   {
+    "id": "p1",
+    "k": 0,
+    "b": 1,
+    "kelas": "tak",
+    "judul": "Titik putus",
+    "isi": "rekomendasi belum berbatas waktu"
+   },
+   {
+    "id": "p2",
+    "k": 1,
+    "b": 1,
+    "kelas": "tak",
+    "judul": "Titik putus",
+    "isi": "protokol uji mutu sumur darurat tidak ada"
+   },
+   {
+    "id": "p3",
+    "k": 2,
+    "b": 1,
+    "kelas": "tak",
+    "judul": "Titik putus",
+    "isi": "jalur serah hanya untuk hibah BMN"
+   },
+   {
+    "id": "p4",
+    "k": 3,
+    "b": 1,
+    "kelas": "tak",
+    "judul": "Titik putus",
+    "isi": "hibah RR menutup pemeliharaan, pekerjaan darurat, dan aset desa"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "n1",
+    "ke": "n2"
+   },
+   {
+    "dari": "n2",
+    "ke": "n3"
+   },
+   {
+    "dari": "n3",
+    "ke": "n4"
+   }
+  ],
+  "judul_baris": [
+   "Simpul",
+   "Titik putus"
+  ]
+ },
+ {
+  "nama": "bab09-g16-matriks-bukti",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat matriks kategori bukti",
+  "keterangan": "Kategori bukti program terkuat per lapis waktu dan sektor air dan akses, 2026",
+  "sumber": "Kompendium program terbukti Pantau Bencana; Perka BNPB 12/2010; Perka BNPB 7/2008; analisis kajian ini",
+  "kolom": 3,
+  "baris": 3,
+  "kelas": {
+   "kuat": {
+    "label": "Aksi wajib menurut peraturan",
+    "warna": "navy"
+   },
+   "sedang": {
+    "label": "Sedang",
+    "warna": "biru-abu"
+   },
+   "lemah": {
+    "label": "Lemah",
+    "warna": "tint.kering.pita"
+   },
+   "kosong": {
+    "label": "Belum ada",
+    "warna": "kertas",
+    "garis": "garis"
+   }
+  },
+  "kotak": [
+   {
+    "id": "a0",
+    "k": 0,
+    "b": 0,
+    "kelas": "kuat",
+    "judul": "Perka 12/2010",
+    "isi": "bailey dan rangka baja"
+   },
+   {
+    "id": "a1",
+    "k": 1,
+    "b": 0,
+    "kelas": "sedang",
+    "judul": "SCIRT Christchurch",
+    "isi": "luar negeri"
+   },
+   {
+    "id": "a2",
+    "k": 2,
+    "b": 0,
+    "kelas": "lemah",
+    "judul": "Palu IV, BRR",
+    "isi": "evaluasi terbatas"
+   },
+   {
+    "id": "w0",
+    "k": 0,
+    "b": 1,
+    "kelas": "kuat",
+    "judul": "Perka 7/2008",
+    "isi": "kebutuhan dasar air"
+   },
+   {
+    "id": "w1",
+    "k": 1,
+    "b": 1,
+    "kelas": "sedang",
+    "judul": "Satgas PU",
+    "isi": "penilaian riset, bukan rubrik"
+   },
+   {
+    "id": "w2",
+    "k": 2,
+    "b": 1,
+    "kelas": "lemah",
+    "judul": "Kobe dan Tohoku",
+    "isi": "laporan pelaksana"
+   },
+   {
+    "id": "g0",
+    "k": 0,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "Sumur darurat",
+    "isi": "belum ada"
+   },
+   {
+    "id": "g1",
+    "k": 1,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "Uji mutu",
+    "isi": "belum ada"
+   },
+   {
+    "id": "g2",
+    "k": 2,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "Sumur produksi",
+    "isi": "belum ada"
+   }
+  ],
+  "panah": [],
+  "judul_kolom": [
+   "Darurat",
+   "Sementara",
+   "Permanen"
+  ],
+  "judul_baris": [
+   "Akses",
+   "Air perpipaan",
+   "Air tanah"
+  ]
+ },
+ {
+  "nama": "bab10-g21-alur-tiga-lapis",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+  "keterangan": "Alur langkah tiga lapis rehabilitasi dan rekonstruksi air dan akses dengan tiga titik serah layanan, pemutus, dan pemicu, 2026",
+  "sumber": "UU 24/2007; PP 21/2008; Perka BNPB 12/2010; Perka BNPB 15/2011; Perban BNPB 5/2017, 6/2017, 4/2020, 4/2024, 1/2026; analisis kajian ini",
+  "kolom": 4,
+  "baris": 4,
+  "kelas": {
+   "lapis": {
+    "label": "Lapis waktu",
+    "warna": "navy"
+   },
+   "serah": {
+    "label": "Titik serah",
+    "warna": "tint.kering.pita"
+   },
+   "aturan": {
+    "label": "Aturan atau pelaksana berpasal",
+    "warna": "tint.netral.pita"
+   },
+   "tak": {
+    "label": "Tidak diatur atau tanpa data",
+    "warna": "tint.bahaya.pita"
+   },
+   "jalur": {
+    "label": "Jalur sektor",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "t1",
+    "k": 0,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Kaji cepat",
+    "isi": "UU 24/2007"
+   },
+   {
+    "id": "t2",
+    "k": 1,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Status tanggap darurat dan DSP",
+    "isi": "PP 21/2008; Perban 4/2020"
+   },
+   {
+    "id": "t3",
+    "k": 2,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Pemulihan segera",
+    "isi": "Perka 12/2010"
+   },
+   {
+    "id": "t4",
+    "k": 3,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Jitupasna dan R3P",
+    "isi": "sejak tanggap darurat"
+   },
+   {
+    "id": "t5",
+    "k": 0,
+    "b": 1,
+    "kelas": "lapis",
+    "judul": "Status transisi",
+    "isi": "Perban 6/2017"
+   },
+   {
+    "id": "t6",
+    "k": 1,
+    "b": 1,
+    "kelas": "lapis",
+    "judul": "Penetapan R3P",
+    "isi": "Perban 5/2017"
+   },
+   {
+    "id": "t7",
+    "k": 2,
+    "b": 1,
+    "kelas": "lapis",
+    "judul": "Hibah RR atau Dana Bersama",
+    "isi": "Perban 4/2024; 1/2026"
+   },
+   {
+    "id": "t8",
+    "k": 3,
+    "b": 1,
+    "kelas": "lapis",
+    "judul": "Pemantauan dan evaluasi",
+    "isi": "atas R3P"
+   },
+   {
+    "id": "s1",
+    "k": 0,
+    "b": 2,
+    "kelas": "serah",
+    "judul": "TS-1 air",
+    "isi": "tanpa pemutus tertulis",
+    "lk": 2
+   },
+   {
+    "id": "s2",
+    "k": 2,
+    "b": 2,
+    "kelas": "serah",
+    "judul": "TS-2 akses",
+    "isi": "tanpa pemutus tertulis"
+   },
+   {
+    "id": "s3",
+    "k": 3,
+    "b": 2,
+    "kelas": "serah",
+    "judul": "TS-3 sumur",
+    "isi": "tanpa pemutus tertulis"
+   },
+   {
+    "id": "p1",
+    "k": 0,
+    "b": 3,
+    "kelas": "aturan",
+    "judul": "Pemicu",
+    "isi": "asumsi kebijakan: penetapan status, R3P, dan permohonan pemda",
+    "lk": 4
+   }
+  ],
+  "panah": [
+   {
+    "dari": "t1",
+    "ke": "t2"
+   },
+   {
+    "dari": "t2",
+    "ke": "t3"
+   },
+   {
+    "dari": "t3",
+    "ke": "t4"
+   },
+   {
+    "dari": "t4",
+    "ke": "t8"
+   },
+   {
+    "dari": "t5",
+    "ke": "t6"
+   },
+   {
+    "dari": "t6",
+    "ke": "t7"
+   }
+  ],
+  "judul_baris": [
+   "Langkah 1 sampai 4",
+   "Langkah 5 sampai 8",
+   "Titik serah",
+   "Pemicu"
+  ]
+ },
+ {
+  "nama": "bab10-g23-kalender-musim-hujan",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Garis waktu kesiapan berlajur per bulan; tabel pilih grafik B5.10 tidak memuat kalender tugas",
+  "keterangan": "Kalender kesiapan rehabilitasi dan rekonstruksi musim hujan 2026/2027: puncak per bulan, tugas empat belas hari, tugas 100 hari, dan pemutakhiran R3P Sumatra, 2026",
+  "sumber": "BMKG (2026); DIBI BNPB; analisis kajian ini",
+  "kolom": 7,
+  "baris": 3,
+  "kelas": {
+   "puncak": {
+    "label": "Puncak musim hujan (BMKG)",
+    "warna": "tint.basah.pita"
+   },
+   "tugas": {
+    "label": "Tugas berlabel asumsi kebijakan",
+    "warna": "tint.netral.pita"
+   },
+   "r3p": {
+    "label": "Pemutakhiran R3P Sumatra",
+    "warna": "tint.kering.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "p1",
+    "k": 4,
+    "b": 0,
+    "kelas": "puncak",
+    "judul": "Desember",
+    "isi": "155 zona musim"
+   },
+   {
+    "id": "p2",
+    "k": 5,
+    "b": 0,
+    "kelas": "puncak",
+    "judul": "Januari",
+    "isi": "162 zona musim"
+   },
+   {
+    "id": "p3",
+    "k": 6,
+    "b": 0,
+    "kelas": "puncak",
+    "judul": "Februari",
+    "isi": "190 zona musim"
+   },
+   {
+    "id": "t1",
+    "k": 0,
+    "b": 1,
+    "kelas": "tugas",
+    "judul": "Empat belas hari",
+    "isi": "keputusan dan penugasan",
+    "lk": 2
+   },
+   {
+    "id": "t2",
+    "k": 2,
+    "b": 1,
+    "kelas": "tugas",
+    "judul": "Seratus hari",
+    "isi": "baseline dan penunjukan pemilik aset",
+    "lk": 3
+   },
+   {
+    "id": "r1",
+    "k": 0,
+    "b": 2,
+    "kelas": "r3p",
+    "judul": "Pemutakhiran R3P",
+    "isi": "Aceh, Sumatera Utara, Sumatera Barat",
+    "lk": 7
+   }
+  ],
+  "panah": [],
+  "judul_kolom": [
+   "Okt 2026",
+   "Nov",
+   "Des",
+   "Jan 2027",
+   "Feb",
+   "Mar",
+   "Apr"
+  ],
+  "judul_baris": [
+   "Puncak",
+   "Tugas",
+   "R3P"
+  ]
+ },
+ {
+  "nama": "bab11-forum-jalur-adopsi",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Bagan forum dan jalur adopsi bertenggat; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+  "keterangan": "Forum koordinasi dan jalur adopsi rekomendasi rehabilitasi dan rekonstruksi air dan akses, 2026–2030, 2026",
+  "sumber": "Perpres 75/2021 Pasal 8; Perban BNPB 1/2026 Pasal 7; Perban BNPB 6/2017 Pasal 12–14; Keppres 1/2026; Renas PB 2025–2029 aksi 3.1.2.a; analisis kajian ini",
+  "kolom": 3,
+  "baris": 3,
+  "kelas": {
+   "forum": {
+    "label": "Forum berdasar peraturan",
+    "warna": "tint.netral.pita"
+   },
+   "kd": {
+    "label": "Keputusan Kepala BNPB",
+    "warna": "navy"
+   },
+   "jalur": {
+    "label": "Jalur adopsi usulan kajian",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "f1",
+    "k": 0,
+    "b": 0,
+    "kelas": "forum",
+    "judul": "Rakor Kemenko PMK",
+    "isi": "Perpres 75/2021 Pasal 8"
+   },
+   {
+    "id": "f2",
+    "k": 1,
+    "b": 0,
+    "kelas": "forum",
+    "judul": "Satgas per kejadian",
+    "isi": "Keppres 1/2026"
+   },
+   {
+    "id": "f3",
+    "k": 2,
+    "b": 0,
+    "kelas": "forum",
+    "judul": "BNPB dan BPBD",
+    "isi": "Perban 6/2017 Pasal 12 sampai 14"
+   },
+   {
+    "id": "kd",
+    "k": 0,
+    "b": 1,
+    "kelas": "kd",
+    "judul": "Keputusan Kepala BNPB",
+    "isi": "KD-R1 sampai KD-R4",
+    "lk": 3
+   },
+   {
+    "id": "j1",
+    "k": 0,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Renas PB aksi 3.1.2.a",
+    "isi": "peninjauan berkala"
+   },
+   {
+    "id": "j2",
+    "k": 1,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "Perban 1/2026 Pasal 7",
+    "isi": "Dana Bersama"
+   },
+   {
+    "id": "j3",
+    "k": 2,
+    "b": 2,
+    "kelas": "jalur",
+    "judul": "R3P Sumatra",
+    "isi": "pemutakhiran"
+   }
+  ],
+  "panah": [
+   {
+    "dari": "f1",
+    "ke": "kd"
+   },
+   {
+    "dari": "f2",
+    "ke": "kd"
+   },
+   {
+    "dari": "f3",
+    "ke": "kd"
+   },
+   {
+    "dari": "kd",
+    "ke": "j1"
+   },
+   {
+    "dari": "kd",
+    "ke": "j2"
+   },
+   {
+    "dari": "kd",
+    "ke": "j3"
+   }
+  ]
+ },
+ {
+  "nama": "bab11-lapisan-pembiayaan",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Aliran sumber dana per lapis waktu ke jenis aset tanpa nominal; tabel pilih grafik B5.10 tidak memuat bagan lapisan",
+  "keterangan": "Aliran sumber dana per lapis waktu ke aset nasional, daerah, dan desa, Oktober 2026, 2026",
+  "sumber": "PP 22/2008; PP 12/2019; Perpres 75/2021; Perban BNPB 4/2020, 4/2024, dan 1/2026; Permendes PDT 16/2025; UU 2/2022 Pasal 16A; analisis kajian ini",
+  "kolom": 4,
+  "baris": 3,
+  "kelas": {
+   "lapis": {
+    "label": "Lapis waktu",
+    "warna": "navy"
+   },
+   "ada": {
+    "label": "Sumber dana berpasal",
+    "warna": "tint.basah.pita"
+   },
+   "kosong": {
+    "label": "Sel kosong",
+    "warna": "tint.bahaya.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "h0",
+    "k": 1,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Aset nasional",
+    "isi": ""
+   },
+   {
+    "id": "h1",
+    "k": 2,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Aset daerah",
+    "isi": ""
+   },
+   {
+    "id": "h2",
+    "k": 3,
+    "b": 0,
+    "kelas": "lapis",
+    "judul": "Aset desa",
+    "isi": ""
+   },
+   {
+    "id": "l1",
+    "k": 0,
+    "b": 1,
+    "kelas": "lapis",
+    "judul": "Darurat",
+    "isi": "DSP"
+   },
+   {
+    "id": "a1",
+    "k": 1,
+    "b": 1,
+    "kelas": "ada",
+    "judul": "DSP dan APBN K/L",
+    "isi": "Perban 4/2020"
+   },
+   {
+    "id": "a2",
+    "k": 2,
+    "b": 1,
+    "kelas": "ada",
+    "judul": "DSP, BTT APBD",
+    "isi": "PP 12/2019"
+   },
+   {
+    "id": "a3",
+    "k": 3,
+    "b": 1,
+    "kelas": "ada",
+    "judul": "DSP, dana desa",
+    "isi": "Permendes PDT 16/2025"
+   },
+   {
+    "id": "l2",
+    "k": 0,
+    "b": 2,
+    "kelas": "lapis",
+    "judul": "Permanen",
+    "isi": "hibah RR"
+   },
+   {
+    "id": "b1",
+    "k": 1,
+    "b": 2,
+    "kelas": "ada",
+    "judul": "APBN K/L",
+    "isi": "Kementerian PU"
+   },
+   {
+    "id": "b2",
+    "k": 2,
+    "b": 2,
+    "kelas": "ada",
+    "judul": "Hibah RR dan Dana Bersama",
+    "isi": "Perban 4/2024; 1/2026"
+   },
+   {
+    "id": "b3",
+    "k": 3,
+    "b": 2,
+    "kelas": "kosong",
+    "judul": "Aset desa di hibah RR",
+    "isi": "Pasal 5 huruf e"
+   }
+  ],
+  "panah": [],
+  "judul_baris": [
+   "Lapis",
+   "Darurat",
+   "Permanen"
+  ]
+ },
+ {
+  "nama": "bab11-tata-kelola-pelaporan",
+  "jenis": "diagram",
+  "ukuran": "penuh",
+  "alasan": "Siklus pelaporan berfrekuensi; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+  "keterangan": "Tata kelola dan siklus pelaporan rehabilitasi dan rekonstruksi air dan akses, 2026–2030, 2026",
+  "sumber": "Perban BNPB 4/2020 Pasal 21; Perban BNPB 4/2024 Pasal 28 dan 30; Perban BNPB 6/2017 Pasal 14; Keppres 1/2026 Pasal 10; Keputusan Kepala BNPB 327/2025 Diktum KETIGA",
+  "kolom": 4,
+  "baris": 2,
+  "kelas": {
+   "lapor": {
+    "label": "Pelaporan berpasal",
+    "warna": "tint.netral.pita"
+   },
+   "usul": {
+    "label": "Alur usulan kajian",
+    "warna": "tint.basah.pita"
+   }
+  },
+  "kotak": [
+   {
+    "id": "r1",
+    "k": 0,
+    "b": 0,
+    "kelas": "lapor",
+    "judul": "Laporan DSP",
+    "isi": "bulanan; Perban 4/2020 Pasal 21"
+   },
+   {
+    "id": "r2",
+    "k": 1,
+    "b": 0,
+    "kelas": "lapor",
+    "judul": "Laporan hibah RR",
+    "isi": "tiga bulanan; Perban 4/2024 Pasal 28 dan 30"
+   },
+   {
+    "id": "r3",
+    "k": 2,
+    "b": 0,
+    "kelas": "lapor",
+    "judul": "Satgas",
+    "isi": "dua bulanan; Keppres 1/2026 Pasal 10"
+   },
+   {
+    "id": "r4",
+    "k": 3,
+    "b": 0,
+    "kelas": "lapor",
+    "judul": "Progsun",
+    "isi": "triwulan; Kepka BNPB 327/2025"
+   },
+   {
+    "id": "u1",
+    "k": 0,
+    "b": 1,
+    "kelas": "usul",
+    "judul": "Pelaksana jembatan dan sumur",
+    "isi": "usulan: laporan ke BNPB sesuai R3P",
+    "lk": 2
+   },
+   {
+    "id": "u2",
+    "k": 2,
+    "b": 1,
+    "kelas": "usul",
+    "judul": "Pemantauan R3P",
+    "isi": "Perban 6/2017 Pasal 14",
+    "lk": 2
+   }
+  ],
+  "panah": [
+   {
+    "dari": "u1",
+    "ke": "r2"
+   },
+   {
+    "dari": "u2",
+    "ke": "r3"
+   }
+  ]
+ }
+]

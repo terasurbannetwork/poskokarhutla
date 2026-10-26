@@ -190,7 +190,7 @@ def bangun(st, abu, lama, cari):
             g = next((g for g in gun if slug(g["nama"]) == b["gunung"]), None)
             jam = f"sekitar {b['jam_tiba']} jam lagi"
             sorot.append({"tingkat": "waspada", "judul": f"Skenario: abu G. {g['nama'] if g else b['gunung']} bisa tiba di {b.get('iata') or b['icao']}",
-                          "teks": f"{b['nama']}: pada skenario bila gunung meletus sekarang, abu di atas ambang penerbangan 2 mg/m³ tiba {jam}. Skenario Pantau Bencana, bukan prakiraan letusan dan bukan VAAC.", "prov": g and g["_p"], "tautan": "/gunungapi/"})
+                          "teks": f"{b['nama']}: pada skenario bila gunung meletus sekarang, abu di atas ambang penerbangan 2 mg/m³ tiba {jam}. Skenario Centurisk97, bukan prakiraan letusan dan bukan VAAC.", "prov": g and g["_p"], "tautan": "/gunungapi/"})
     sorot.sort(key=lambda s: URUT[s["tingkat"]])
     sorot = sorot[:8]
 
@@ -222,7 +222,7 @@ def bangun(st, abu, lama, cari):
 
     sumber = [{"nama": "MAGMA Indonesia, PVMBG (Badan Geologi)", "url": "https://magma.esdm.go.id/", "catatan": "level, radius rekomendasi, erupsi"}]
     if ada_abu:
-        sumber.append({"nama": "Open-Meteo", "url": "https://open-meteo.com/", "catatan": "angin untuk skenario jangkauan abu (Pantau Bencana, bukan VAAC)"})
+        sumber.append({"nama": "Open-Meteo", "url": "https://open-meteo.com/", "catatan": "angin untuk skenario jangkauan abu (Centurisk97, bukan VAAC)"})
     for g in gun:
         g.pop("_p", None)
     d = U.susun("gunungapi", "Laporan Harian Gunung Api", hari, metrik, nasional, prov, [], cutoff=now.strftime("%Y-%m-%dT%H:%M+07:00"),

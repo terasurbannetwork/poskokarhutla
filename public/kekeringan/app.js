@@ -1,6 +1,6 @@
 "use strict";
 /* Halaman Kekeringan: keadaan bersama, tab, pemuatan data. Mesin kartu/tip/tabel dari public/inti; data dari scripts/kekeringan/status.py
-   (public/data/kekeringan_{meta,grid,wilayah,tren}.json). Semua angka berlabel "Deteksi Pantau Bencana": BMKG hanya menerbitkan peta gambar. */
+   (public/data/kekeringan_{meta,grid,wilayah,tren}.json). Semua angka berlabel "Deteksi Centurisk97": BMKG hanya menerbitkan peta gambar. */
 const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const toast = msg => { const t = $("#toast"); t.textContent = msg; t.classList.add("on"); clearTimeout(t._h); t._h = setTimeout(() => t.classList.remove("on"), 2600); };
 const simpanLokal = (k, v) => { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} };

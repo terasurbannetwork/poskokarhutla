@@ -30,7 +30,7 @@
   const navUrl = (lat, lon) => `https://www.google.com/maps/dir/?api=1&destination=${lat},${lon}&travelmode=driving`;
   const JENIS = {jalan: "jalan", sungai: "sungai", kanal: "kanal", jalan_utama: "jalan utama", jalan_desa: "jalan desa"};
   const TREN = {tumbuh: "tumbuh", stabil: "stabil", menyusut: "menyusut", sedikit: "titik panas sedikit, tren belum terbaca"};
-  const KONS = {hti: "HTI", hph: "HPH", hgu: "HGU", hpt: "HPT", ipk: "IPK", sawit: "perkebunan sawit", tambang: "pertambangan"}, SUMBER = "Sumber: deteksi satelit (VIIRS, MODIS, Himawari) dan hitungan Pantau Bencana. Belum divalidasi lapangan.";
+  const KONS = {hti: "HTI", hph: "HPH", hgu: "HGU", hpt: "HPT", ipk: "IPK", sawit: "perkebunan sawit", tambang: "pertambangan"}, SUMBER = "Sumber: deteksi satelit (VIIRS, MODIS, Himawari) dan hitungan Centurisk97. Belum divalidasi lapangan.";
   const DASAR_LUAS = "kisaran antartahun, perkiraan dari titik panas, bukan pengukuran", DASAR_AKTIF = "piksel satelit aktif 12 jam terakhir";
   const kata = s => String(s).replace(/_/g, " ");
 
@@ -88,8 +88,8 @@
     udara: {nama: "Kualitas udara", sebut: "Kualitas udara", titik: "lokasi terdampak", selesai: "membaik", tutup: "udara membaik", kondisi: "Kondisi udara", st: {menyala: "Masih buruk", bara: "Mulai membaik", padam: "Sudah membaik", bukan_api: "Tidak terjadi"}}};
   const idBencana = t => Object.hasOwn(KAMUS, t?.bencana) ? t.bencana : "karhutla";
   const LEVEL_GA = {1: "Normal", 2: "Waspada", 3: "Siaga", 4: "Awas"};
-  const SUMBER_B = {banjir: "Sumber: data hujan, peringatan banjir, dan hitungan Pantau Bencana.", gempa: "Sumber: BMKG dan hitungan Pantau Bencana (penduduk WorldPop).", gunungapi: "Sumber: PVMBG (MAGMA Indonesia) dan hitungan Pantau Bencana.",
-    cuaca: "Sumber: peringatan dini BMKG.", kekeringan: "Sumber: indeks kekeringan (SPI) dan hitungan Pantau Bencana.", udara: "Sumber: data kualitas udara dan hitungan Pantau Bencana."};
+  const SUMBER_B = {banjir: "Sumber: data hujan, peringatan banjir, dan hitungan Centurisk97.", gempa: "Sumber: BMKG dan hitungan Centurisk97 (penduduk WorldPop).", gunungapi: "Sumber: PVMBG (MAGMA Indonesia) dan hitungan Centurisk97.",
+    cuaca: "Sumber: peringatan dini BMKG.", kekeringan: "Sumber: indeks kekeringan (SPI) dan hitungan Centurisk97.", udara: "Sumber: data kualitas udara dan hitungan Centurisk97."};
   const str = v => typeof v === "string" && v.trim() ? v.trim().slice(0, 300) : null;
   /* [kunci kartu, label, pemformat, satuan]; baris pertama yang terisi menjadi angka kunci (oranye) */
   const KARTU_B = {

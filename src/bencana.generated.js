@@ -123,7 +123,7 @@ export default {
       "workflow": "data.yml",
       "pengerja": "pipa-data",
       "bagikan": {
-        "nama": "Pantau Bencana · Karhutla",
+        "nama": "Centurisk97 · Karhutla",
         "sumber": "NASA FIRMS, BMKG/Open-Meteo, BNPB",
         "tagar": [
           "#karhutla",
@@ -133,7 +133,7 @@ export default {
         ]
       },
       "og": {
-        "judul": "Karhutla hari ini · Pantau Bencana",
+        "judul": "Karhutla hari ini · Centurisk97",
         "desk_templat": "{tgl}: {n} titik panas, {jiwa} jiwa terpapar asap."
       },
       "kata": {
@@ -303,7 +303,7 @@ export default {
       "workflow": "banjir.yml",
       "pengerja": "banjir",
       "bagikan": {
-        "nama": "Pantau Bencana · Banjir, Longsor & Rob",
+        "nama": "Centurisk97 · Banjir, Longsor & Rob",
         "sumber": "Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
         "tagar": [
           "#banjir",
@@ -314,7 +314,7 @@ export default {
         ]
       },
       "og": {
-        "judul": "Banjir, longsor & rob hari ini · Pantau Bencana",
+        "judul": "Banjir, longsor & rob hari ini · Centurisk97",
         "desk_templat": "{tgl}: {n} kecamatan berstatus banjir, {jiwa} jiwa terdampak."
       },
       "kata": {
@@ -452,7 +452,7 @@ export default {
       "workflow": "gempa.yml",
       "pengerja": "gempa",
       "bagikan": {
-        "nama": "Pantau Bencana · Gempa",
+        "nama": "Centurisk97 · Gempa",
         "sumber": "BMKG, USGS",
         "tagar": [
           "#gempa",
@@ -461,7 +461,7 @@ export default {
         ]
       },
       "og": {
-        "judul": "Gempa bumi hari ini · Pantau Bencana",
+        "judul": "Gempa bumi hari ini · Centurisk97",
         "desk_templat": "{tgl}: {n} gempa M ≥ 5, {jiwa} jiwa terpapar guncangan."
       },
       "kata": {
@@ -595,7 +595,7 @@ export default {
       "workflow": "lintas.yml",
       "pengerja": "cuaca-udara",
       "bagikan": {
-        "nama": "Pantau Bencana · Cuaca Ekstrem",
+        "nama": "Centurisk97 · Cuaca Ekstrem",
         "sumber": "BMKG, Open-Meteo, ECMWF",
         "tagar": [
           "#cuacaekstrem",
@@ -603,7 +603,7 @@ export default {
         ]
       },
       "og": {
-        "judul": "Cuaca ekstrem hari ini · Pantau Bencana",
+        "judul": "Cuaca ekstrem hari ini · Centurisk97",
         "desk_templat": "{tgl}: {n} wilayah berstatus peringatan dini, {jiwa} jiwa terdampak."
       },
       "kata": {
@@ -724,7 +724,7 @@ export default {
       "workflow": "udara.yml",
       "pengerja": "cuaca-udara",
       "bagikan": {
-        "nama": "Pantau Bencana · Kualitas Udara",
+        "nama": "Centurisk97 · Kualitas Udara",
         "sumber": "Copernicus CAMS via Open-Meteo, NOAA METAR, WorldPop (perkiraan model)",
         "tagar": [
           "#kualitasudara",
@@ -732,7 +732,7 @@ export default {
         ]
       },
       "og": {
-        "judul": "Kualitas udara hari ini · Pantau Bencana",
+        "judul": "Kualitas udara hari ini · Centurisk97",
         "desk_templat": "{tgl}: sekitar {jiwa} jiwa menghirup udara tidak sehat (perkiraan model CAMS, belum dikoreksi)."
       },
       "kata": {
@@ -851,7 +851,7 @@ export default {
       "workflow": "lintas.yml",
       "pengerja": "gunungapi-kering",
       "bagikan": {
-        "nama": "Pantau Bencana · Gunung Api",
+        "nama": "Centurisk97 · Gunung Api",
         "sumber": "PVMBG (MAGMA Indonesia)",
         "tagar": [
           "#gunungapi",
@@ -859,7 +859,7 @@ export default {
         ]
       },
       "og": {
-        "judul": "Gunung api hari ini · Pantau Bencana",
+        "judul": "Gunung api hari ini · Centurisk97",
         "desk_templat": "{tgl}: {n} gunung api berstatus Waspada atau lebih tinggi, {jiwa} jiwa berada di zona rawan."
       },
       "kata": {
@@ -980,15 +980,15 @@ export default {
       "workflow": "lintas.yml",
       "pengerja": "gunungapi-kering",
       "bagikan": {
-        "nama": "Pantau Bencana · Kekeringan",
-        "sumber": "Deteksi Pantau Bencana",
+        "nama": "Centurisk97 · Kekeringan",
+        "sumber": "Deteksi Centurisk97",
         "tagar": [
           "#kekeringan",
           "#krisisair"
         ]
       },
       "og": {
-        "judul": "Kekeringan hari ini · Pantau Bencana",
+        "judul": "Kekeringan hari ini · Centurisk97",
         "desk_templat": "{tgl}: {n} wilayah berstatus kekeringan, {jiwa} jiwa kesulitan air bersih."
       },
       "kata": {

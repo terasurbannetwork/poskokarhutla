@@ -33,7 +33,7 @@ BATASAN = [
     "Hutan hilang dan konsesi adalah keadaan hulu (Hansen 2001 s.d. 2025, daftar konsesi repo yang belum lengkap), bukan penyebab banjir hari ini yang terbukti.",
 ]
 SUMBER = {"hujan": "Open-Meteo (ECMWF IFS dan model global lain), hujan harian per sel 0,25 derajat",
-          "das": "HydroBASINS v1c level 9 (HydroSHEDS)", "status": "status banjir Pantau Bencana per kecamatan",
+          "das": "HydroBASINS v1c level 9 (HydroSHEDS)", "status": "status banjir Centurisk97 per kecamatan",
           "hutan": "Hansen/UMD/Google/USGS/NASA Global Forest Change v1.13", "konsesi": "GFW/Kemenhut 2014, Trase 2026, PPKH Jan 2026"}
 
 

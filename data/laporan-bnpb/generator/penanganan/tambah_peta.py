@@ -3,7 +3,7 @@ Pakai: python3 -I tambah_peta.py <deck.pptx> <peta.png> <angka_nasional.json>  (
 import json, math, re, sys, zipfile
 DECK, PNG, AN = sys.argv[1], sys.argv[2], sys.argv[3]
 A = json.load(open(AN))['prov']
-NAMA = {k: v['nama'] for k, v in json.load(open('/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla/public/data/laporan.json'))['prov'].items()}
+NAMA = {k: v['nama'] for k, v in json.load(open('/Users/priyankaalfatehan28/Documents/GitHub/poskokarhutla/public/data/laporan.json'))['prov'].items()}
 I, IP = 3, 2
 def bul(v): return int(math.floor(v + 0.5))
 def f0(v): return f"{bul(v):,}".replace(',', '.')

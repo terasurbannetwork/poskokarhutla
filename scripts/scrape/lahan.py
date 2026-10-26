@@ -3,12 +3,16 @@
 Pakai:  python3 scripts/scrape/lahan.py            # unduh (kalau belum ada) + bangun
         python3 scripts/scrape/lahan.py --uji      # cek cepat hasil di public/data/lahan
 
-Mentah  -> data/raw/lahan/   (zip shapefile + ubin PNG gambut; tidak di-commit)
+Mentah  -> data/raw/lahan/   (zip shapefile + GeoJSON gambut PRIMS + ubin PNG GFW; tidak di-commit)
 Hasil   -> public/data/lahan/{gambut,konsesi,kawasan}.geojson
 
 Sumber (semua publik tanpa login):
-- Gambut: GFW "Global peatland extent" v20230315 (CC BY 4.0), ubin raster z8 ~600 m.
-  Indonesia = Miettinen dkk. 2016 + Gumbricht dkk. 2017 (CIFOR).
+- Gambut: peta gambut 1:250.000 Kementan (BBSDLP) lewat PRIMS BRGM, WFS prims:gambut_250k
+  (12,93 jt ha; Sumatra, Kalimantan minus Kaltim/Kaltara, Papua). Dulu seluruhnya GFW "Global
+  peatland extent" v20230315, yang di Indonesia menumpuk Gumbricht 2017 (mangrove + rawa
+  sungai/banjir ikut dihitung gambut): 33,8 jt ha di 9 provinsi, Papua Selatan 7,8 jt ha.
+  GFW tinggal untuk Kaltim (PRIMS tak memuatnya). ponytail: Kaltim masih ~2,5 jt ha vs
+  ~0,3 jt resmi; ganti bila peta BBSDLP Kaltim didapat.
 - Konsesi: tautan unduh resmi GFW (dicantumkan GFW di katalog ArcGIS-nya): sawit
   (v20191031, data KLHK ~2014) dan HPH/PBPH-HA. Data Indonesia berasal dari KLHK; GFW
   mengecualikan Indonesia dari CC BY 4.0. HTI belum ada (lihat konsesi()).
@@ -31,7 +35,10 @@ UNDUH = {
     "gfw_oil_palm.zip": GFW.format("gfw_oil_palm/v20191031"),
     "gfw_logging_download.zip": GFW.format("gfw_logging_download/latest"),
     "idn_forest_area.zip": "https://www.arcgis.com/sharing/rest/content/items/1dd7ef31c3924d7cbcf918bd97a7f985/data",
+    "gambut_250k.geojson": "https://prims.brgm.go.id/geoserver/ows?service=WFS&version=2.0.0&request=GetFeature"
+                           "&typeNames=prims:gambut_250k&outputFormat=application/json&srsName=EPSG:4326",
 }
+GFW_SAJA = {"64"}  # provinsi yang tak ada di prims:gambut_250k
 UBIN = "https://tiles.globalforestwatch.org/gfw_peatlands/v20230315/is/8/{x}/{y}.png"
 Z = 8
 X0, X1, Y0, Y1 = 195, 228, 123, 136  # ubin z8 yang menutup 94..141.5 BT, 6.5 LU..11.5 LS
@@ -104,13 +111,42 @@ def lat(py):
     return math.degrees(math.atan(math.sinh(math.pi * (1 - 2 * py / (256 << Z)))))
 
 
+def baris(la):  # lintang -> indeks baris sel kontinu (pusat sel = bilangan bulat)
+    py = (1 - math.asinh(math.tan(math.radians(la))) / math.pi) / 2 * (256 << Z)
+    return (py - Y0 * 256 - 1) / 2
+
+
+def kolom(lo):
+    return ((lo + 180) / 360 * (256 << Z) - X0 * 256 - 1) / 2
+
+
+def isi_prims(grid):
+    """Sel yang pusatnya di poligon PRIMS = 2 (scanline genap-ganjil per fitur, lubang ikut)."""
+    tinggi, lebar = len(grid), len(grid[0])
+    for f in json.load(open(os.path.join(MENTAH, "gambut_250k.geojson")))["features"]:
+        g, potong = f["geometry"], {}  # baris -> kolom kontinu tempat tepi memotong pusat baris
+        for poli in (g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]):
+            for cincin in poli:
+                for (x1, y1), (x2, y2) in zip(cincin, cincin[1:] + cincin[:1]):
+                    r1, r2 = baris(y1), baris(y2)
+                    for r in range(max(0, math.ceil(min(r1, r2))), min(tinggi - 1, math.floor(max(r1, r2))) + 1):
+                        if (r1 > r) != (r2 > r):
+                            potong.setdefault(r, []).append(kolom(x1 + (r - r1) / (r2 - r1) * (x2 - x1)))
+        for r, xs in potong.items():
+            xs.sort()
+            for a, b in zip(xs[::2], xs[1::2]):
+                for c in range(max(0, math.ceil(a)), min(lebar - 1, math.floor(b)) + 1):
+                    grid[r][c] = 2
+
+
 def gambut():
-    """Sel 2x2 piksel z8 (~1,2 km) jadi gambut kalau >=2 dari 4 piksel gambut.
-    Sel dalam satu baris digabung jadi persegi; persegi identik di baris bawahnya ikut digabung."""
+    """Sel 2x2 piksel z8 (~1,2 km): gambut kalau pusatnya di poligon PRIMS, atau (hanya GFW_SAJA)
+    >=2 dari 4 piksel GFW gambut. Sel dalam satu baris digabung jadi persegi; persegi identik di
+    baris bawahnya ikut digabung."""
     from wilayah import PRIORITAS, Wilayah
     w = Wilayah()
     lebar, tinggi = (X1 - X0 + 1) * 128, (Y1 - Y0 + 1) * 128
-    grid = [bytearray(lebar) for _ in range(tinggi)]
+    grid = [bytearray(lebar) for _ in range(tinggi)]  # 1 = GFW, 2 = PRIMS
     for x in range(X0, X1 + 1):
         for y in range(Y0, Y1 + 1):
             a = png_alfa(open(os.path.join(MENTAH, "gambut", f"{x}_{y}.png"), "rb").read())
@@ -119,8 +155,9 @@ def gambut():
                 for c in range(128):
                     if (b0[2 * c] > 0) + (b0[2 * c + 1] > 0) + (b1[2 * c] > 0) + (b1[2 * c + 1] > 0) >= 2:
                         g[(x - X0) * 128 + c] = 1
+    isi_prims(grid)
     # Buang sel di luar 9 provinsi pantauan (juga Malaysia/PNG/laut) dan sel yang
-    # 8 tetangganya kosong (bintik Gumbricht). ponytail: nasional penuh = ~12 MB; buka
+    # 8 tetangganya kosong (bintik tunggal); sel GFW hanya di GFW_SAJA. ponytail: nasional penuh = ~12 MB; buka
     # PRIORITAS kalau perlu, tapi pecah per provinsi supaya tiap berkas tetap kecil.
     prov = {}
     for r in range(tinggi):
@@ -131,7 +168,7 @@ def gambut():
             tetangga = sum(grid[rr][cc] for rr in (r - 1, r, r + 1) for cc in (c - 1, c, c + 1)
                            if 0 <= rr < tinggi and 0 <= cc < lebar) - 1
             hit = w.cari(lon(X0 * 256 + 2 * c + 1), la) if tetangga else None
-            if hit and hit[0] in PRIORITAS:
+            if hit and hit[0] in PRIORITAS and (grid[r][c] == 2 or hit[0] in GFW_SAJA):
                 prov[r, c] = hit[0]
     for r in range(tinggi):
         for c in range(lebar):
@@ -336,6 +373,8 @@ def uji():
     assert any(p["fungsi"] == "HK" for p in kena("kawasan.geojson", 113.75, -2.55)), kena("kawasan.geojson", 113.75, -2.55)
     # Kota Palangka Raya: bukan gambut tebal, tapi pusat kota APL -> tidak ada kawasan hutan
     assert not kena("kawasan.geojson", 113.92, -2.21)
+    # Merauke timur (sabana Wasur) dan Boven Digoel tengah: tanah mineral, dulu ikut gambut versi Gumbricht
+    assert not kena("gambut.geojson", 140.6, -8.3) and not kena("gambut.geojson", 140.4, -6.3)
     # Puncak Jaya Wijaya (Papua Tengah) bukan gambut
     assert not kena("gambut.geojson", 137.16, -4.08)
     jenis = {f["properties"]["jenis"] for f in json.load(open(os.path.join(KELUAR, "konsesi.geojson")))["features"]}

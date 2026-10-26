@@ -16,6 +16,11 @@
   const tautanKerja = b => { const sumber = b.id.split(":")[1] ?? "", tab = b.jenis.startsWith("api_") ? "pantau" : b.jenis === "akun_menunggu" ? "validasi" : b.jenis === "usulan_kontak" ? "kontak" : "";
     return b.tautan + (tab && sumber ? `#${tab}/${sumber}` : ""); };
   const waktu = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "";
+  /* ?ke= dari halaman SIPPA (/pipa*, ADR-05): sesudah masuk staf, hanya jalur yang cocok ^/pipa(/|$) diikuti (alamat sama asal; URL penuh atau jalur lain diabaikan) */
+  const KE_PIPA = /^\/pipa(\/|$)/;
+  const keAsal = new URLSearchParams(location.search).get("ke") || "";
+  const ke = KE_PIPA.test(keAsal) ? keAsal : null;
+  const pergiPipa = () => { if (ke == null) return false; location.href = ke; return true; };
   /* kiriman lewat sesi staf wajib x-pb: 1 (rute menolak tanpa itu); balasan non-JSON tidak melempar */
   const kirim = async (url, body) => { try { const r = await fetch(url, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(body || {})}); return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))}; }
     catch (e) { return {ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}}; } };
@@ -33,15 +38,15 @@
     const f = h("form", {class: "pt-form"}, h("label", {for: "ptUser", teks: "Username staf"}), u, h("label", {for: "ptSandi", teks: "Kata sandi"}), p,
       h("p", {id: "ptGalat", class: "pt-pesan galat", role: "alert", teks: galat || ""}), tombol("Masuk", {type: "submit"}, "utama"));
     f.addEventListener("submit", async e => { e.preventDefault(); const r = await kirim("/api/staf/masuk", {username: u.value, sandi: p.value});
-      if (r.ok) return muat(); document.getElementById("ptGalat").textContent = r.j.galat || `Gagal (${r.status})`; });
+      if (r.ok) return pergiPipa() || muat(); document.getElementById("ptGalat").textContent = r.j.galat || `Gagal (${r.status})`; });
     kartuMasuk(h("h2", {teks: "Masuk staf BNPB"}), h("p", {class: "pt-redup", teks: "Akun staf dibuat Super Admin. Admin yang sudah punya akun admin masuk lewat halaman admin."}), f,
-      h("a", {class: "pt-btn", href: "/admin/masuk?ke=%2Fadmin%2Fpantau", teks: "Masuk sebagai admin"}));
+      h("a", {class: "pt-btn", href: "/admin/masuk?ke=" + encodeURIComponent(ke ?? "/admin/pantau"), teks: "Masuk sebagai admin"}));
   }
   function layarGanti(staf) {
     const kotak = h("div"), b = tombol("Buat sandi baru", {}, "utama");
     b.addEventListener("click", async () => { b.disabled = true; const r = await kirim("/api/staf/gantisandi", {});
       if (!r.ok) { b.disabled = false; kotak.replaceChildren(h("p", {class: "pt-pesan galat", teks: r.j.galat || `Gagal (${r.status})`})); return; }
-      b.remove(); kotak.replaceChildren(h("p", {teks: "Sandi baru Anda, tampil sekali. Simpan sekarang, lalu lanjut."}), h("code", {class: "pt-rahasia", teks: r.j.sandi}), tombol("Lanjut", {}, "utama")); kotak.querySelector("button").addEventListener("click", () => muat()); });
+      b.remove(); kotak.replaceChildren(h("p", {teks: "Sandi baru Anda, tampil sekali. Simpan sekarang, lalu lanjut."}), h("code", {class: "pt-rahasia", teks: r.j.sandi}), tombol("Lanjut", {}, "utama")); kotak.querySelector("button").addEventListener("click", () => pergiPipa() || muat()); });
     kartuMasuk(h("h2", {teks: `Halo ${staf.nama}`}), h("p", {teks: "Sandi awal diketahui admin. Buat sandi baru acak sebelum memakai Meja Pantau."}), b, kotak);
   }
 

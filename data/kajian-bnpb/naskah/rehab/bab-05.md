@@ -24,18 +24,29 @@ target_halaman: 12
 
 **Rekomendasi:**
 
-- @rek:r-rr04 Ikat jembatan TNI AD dan Polri ke R3P (Usulan baru; Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; TNI AD, Polri, Kementerian Pekerjaan Umum, Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan; 100 hari).
-- @rek:r-rr06 Hitung stok bailey per Direktorat Penanganan Darurat Wilayah (Usulan baru; Deputi Bidang Logistik dan Peralatan; Kementerian Pekerjaan Umum, TNI; 14 hari dalam horizon 100 hari).
-- @rek:r-rr05 Tetapkan standar hari pemasangan akses darurat (Sudah ada, perlu dikembangkan; Deputi Bidang Penanganan Darurat; Kementerian Pekerjaan Umum, TNI; 2026–2027).
-- @rek:r-rr07 Buka jalur dana jembatan dan Sistem Penyediaan Air Minum (SPAM) desa (Usulan baru; Biro Hukum, Organisasi, dan Kerja Sama bersama Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; Kementerian Desa, Kementerian Dalam Negeri, Kementerian Keuangan; 2026–2027).
-- @rek:r-rr13 Evaluasi dampak program jembatan pedesaan (Usulan baru; Direktorat Pengembangan Strategi Penanggulangan Bencana; TNI AD, Polri, Kementerian Pekerjaan Umum, Bappenas; 2028–2030).
+- @rek:r-rr-04 Ikat jembatan TNI AD dan Polri ke R3P (Usulan baru; Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; TNI AD, Polri, Kementerian Pekerjaan Umum, Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan; 100 hari).
+- @rek:r-rr-06 Hitung stok bailey per Direktorat Penanganan Darurat Wilayah (Usulan baru; Deputi Bidang Logistik dan Peralatan; Kementerian Pekerjaan Umum, TNI; 14 hari dalam horizon 100 hari).
+- @rek:r-rr-05 Tetapkan standar hari pemasangan akses darurat (Sudah ada, perlu dikembangkan; Deputi Bidang Penanganan Darurat; Kementerian Pekerjaan Umum, TNI; 2026–2027).
+- @rek:r-rr-07 Buka jalur dana jembatan dan Sistem Penyediaan Air Minum (SPAM) desa (Usulan baru; Biro Hukum, Organisasi, dan Kerja Sama bersama Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur; Kementerian Desa, Kementerian Dalam Negeri, Kementerian Keuangan; 2026–2027).
+- @rek:r-rr-13 Evaluasi dampak program jembatan pedesaan (Usulan baru; Direktorat Pengembangan Strategi Penanggulangan Bencana; TNI AD, Polri, Kementerian Pekerjaan Umum, Bappenas; 2028–2030).
 :::
 
 ## Kerusakan Jembatan dan Desa Terputus {#sub:rusak-jembatan}
 
-**Bencana alam merusak {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan pada 2018–2025 menurut DIBI, dan {{angka:rehab.dibi.jembatan_rusak.2025}} di antaranya pada 2025.** Angka 2025 hampir tiga kali rerata {{angka:rehab.dibi.jembatan_rusak.rerata_2018_2024}} jembatan per tahun pada 2018–2024, dan banjir menyumbang {{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} dari seluruh jembatan rusak periode itu [@bnpb-dibi]. Kolom jembatan rusak DIBI bernilai nol untuk semua tahun 2008–2017, sehingga seri jembatan baru dapat dibaca sejak 2018 dan periode acuan akses kajian ini adalah 2018–2025, sama dengan Bab 4 dan Bab 8.
+**Bencana alam merusak {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan pada 2018–2025 menurut Data dan Informasi Bencana Indonesia (DIBI), dan {{angka:rehab.dibi.jembatan_rusak.2025}} di antaranya pada 2025.** Angka 2025 hampir tiga kali rerata {{angka:rehab.dibi.jembatan_rusak.rerata_2018_2024}} jembatan per tahun pada 2018–2024, dan banjir menyumbang {{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} dari seluruh jembatan rusak periode itu [@bnpb-dibi]. Kolom jembatan rusak DIBI bernilai nol untuk semua tahun 2008–2017, sehingga seri jembatan baru dapat dibaca sejak 2018 dan periode acuan akses kajian ini adalah 2018–2025, sama dengan Bab 4 dan Bab 8.
 
-Sejak data 2024 laporan DIBI disaring ambang Juklak BNPB 7/2023, sehingga lonjakan 2025 dibaca sebagai selisih lintas patahan seri, bukan perbandingan sebanding.
+::: gambar {#gbr:foto-rr-jembatan-putus-sumbar}
+berkas: gambar/foto/rehab-b05-jembatan-putus-sumbar.jpg
+jenis: foto
+judul: Jembatan yang rusak diterjang banjir akibat Siklon Senyar di Sumatra Barat, 9 Desember 2025
+pengarang: Badan Nasional Penanggulangan Bencana (BNPB)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Jembatan_putus_akibat_banjir_di_Sumbar_091225.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+Sejak data 2024 laporan DIBI disaring ambang Juklak Badan Nasional Penanggulangan Bencana (BNPB) 7/2023, sehingga lonjakan 2025 dibaca sebagai selisih lintas patahan seri, bukan perbandingan sebanding.
 
 **Per kejadian besar, DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.sumatra2025_jendela}} jembatan rusak pada banjir Sumatra 15 November sampai 31 Desember 2025, tetapi hanya {{angka:rehab.dibi.jembatan_rusak.sulteng2018}} pada gempa Sulawesi Tengah 2018.** Banjir Seroja April 2021 tercatat {{angka:rehab.dibi.jembatan_rusak.seroja2021}} jembatan, gempa Cianjur 2022 {{angka:rehab.dibi.jembatan_rusak.cianjur2022}}, dan gempa Lombok 2018 {{angka:rehab.dibi.jembatan_rusak.lombok2018}} [@bnpb-dibi]. Angka Lombok adalah nol tercatat, tidak berarti tidak ada jembatan yang rusak. Jembatan Palu IV runtuh pada kejadian Sulawesi Tengah 2018 [@ocg-2026-palu4], sehingga angka tujuh jembatan rusak untuk kejadian itu menunjukkan batas cara pencatatan, bukan besar kerusakan. Menurut analisis kajian ini, DIBI berfungsi sebagai pencatat kejadian: ia menangkap jembatan rusak pada banjir yang tersebar di banyak kabupaten, tetapi hampir tidak menangkapnya pada gempa besar.
 
@@ -46,7 +57,6 @@ judul: Jembatan rusak, terputus, atau terdampak banjir Sumatra 2025 menurut sumb
 sumber: DIBI BNPB, ditarik 23 Oktober 2026; Ditjen Bina Marga BPJN Aceh, 3 Desember 2025; Kementerian Pekerjaan Umum, 11 Mei 2026
 keyakinan: resmi
 data_per: 25 Okt 2026
-catatan: Definisi berbeda per sumber; angka tidak dijumlahkan. Angka BNPB dari media dan versi lain dicatat di Lampiran D.
 
 | SUMBER | DEFINISI | CAKUPAN | TANGGAL DATA | JEMBATAN |
 | --- | --- | --- | --- | ---: |
@@ -56,20 +66,30 @@ catatan: Definisi berbeda per sumber; angka tidak dijumlahkan. Angka BNPB dari m
 | Kementerian Pekerjaan Umum | jembatan daerah terdampak | wilayah Pulau Sumatra; provinsi dan jendela kejadian tidak dirinci | 7 Mei 2026 | {{angka:rehab.akses.sumatra2025.jembatan_daerah_terdampak}} |
 :::
 
-**Desa terputus akibat jembatan atau jalan rusak tidak ditemukan di DIBI, rilis Kementerian Pekerjaan Umum, maupun rilis BNPB untuk kejadian mana pun pada 2018–2025.** Dalam pedoman pengkajian kebutuhan pascabencana, gangguan akses berarti akses warga terhadap kebutuhan dasar (Perka BNPB 15/2011 Tabel 3.6), bukan akses fisik jalan. Satu-satunya baris yang menyentuh jembatan adalah formulir sektor transportasi, yang meminta jumlah unit dan biaya pemasangan infrastruktur darurat seperti jembatan bailey [@bnpb-2011-pdna, hlm. 69]. Desa terputus karena itu ditulis sebagai data yang tidak tercatat, tidak diperkirakan dari jumlah jembatan rusak, dan diusulkan menjadi kolom DIBI (@rek:r-rr01).
+**Desa terputus akibat jembatan atau jalan rusak tidak ditemukan di DIBI, rilis Kementerian Pekerjaan Umum, maupun rilis BNPB untuk kejadian mana pun pada 2018–2025.** Dalam pedoman pengkajian kebutuhan pascabencana, gangguan akses berarti akses warga terhadap kebutuhan dasar (Perka BNPB 15/2011 Tabel 3.6), bukan akses fisik jalan. Satu-satunya baris yang menyentuh jembatan adalah formulir sektor transportasi, yang meminta jumlah unit dan biaya pemasangan infrastruktur darurat seperti jembatan bailey [@bnpb-2011-pdna, hlm. 69]. Desa terputus karena itu ditulis sebagai data yang tidak tercatat, tidak diperkirakan dari jumlah jembatan rusak, dan diusulkan menjadi kolom DIBI (@rek:r-rr-01). Catatan atas @tbl:sumatra-sumber. Definisi berbeda per sumber; angka tidak dijumlahkan. Angka BNPB dari media dan versi lain dicatat di Lampiran D.
 
 ## Lapis Darurat: Bailey dan Rangka Baja {#sub:lapis-darurat}
 
 **Bailey Krueng Beutong di Nagan Raya, Aceh, difungsikan 9 Januari 2026, paling sedikit {{angka:rehab.akses.sumatra2025.krueng_beutong_hari_ke_fungsi}} hari setelah opritnya tercatat putus.** Kementerian Pekerjaan Umum menyebut bentangnya {{angka:rehab.akses.sumatra2025.krueng_beutong_bentang_m}} m dengan beban maksimum {{angka:rehab.akses.sumatra2025.krueng_beutong_beban_ton}} ton dan menempatkannya di antara bailey yang berfungsi di sembilan kabupaten Aceh per 18 Januari 2026, sementara menunggu jembatan permanen yang dibangun bertahap [@pu-2026-bailey-odol]. Yang tercatat putus per 1 Desember 2025 adalah oprit, yaitu jalan pendekat jembatan [@binamarga-2025-jembatan-aceh]. Selisih hari dihitung penyusun dari dua tanggal resmi dan merupakan batas bawah dari satu jembatan, sehingga tidak mewakili rata-rata Sumatra; versi beban lain dicatat di Lampiran D.
 
-**Jembatan Kalijaran di Temanggung belum terbuka {{angka:rehab.akses.temanggung2026.hari_putus_ke_laporan_rakit}} hari setelah putus pada Mei 2026, sedangkan bailey Sungai Garoga di Tapanuli Selatan selesai 31 Desember 2025.** Bailey Garoga sepanjang {{angka:rehab.akses.sumatra2025.garoga_bentang_m}} m berkapasitas {{angka:rehab.akses.sumatra2025.garoga_beban_ton}} ton, dikerjakan Kementerian Pekerjaan Umum bersama TNI dan PT Nindya Karya, dan tanggal putus jembatan lamanya tidak disebut [@pu-2026-bailey-garoga]. Jembatan Kalijaran di Desa Plosogaden putus total 16 Mei 2026; bupati menetapkan status tanggap darurat kurang dari sehari setelah kejadian sambil mengirim permohonan bailey ke pusat, dan per 11 Juni 2026 perakitan oleh Yonzipur 4/Tanpa Kawandya baru berjalan sekitar dua minggu [@jatengprov-2026-bailey-plosogaden]. Di Gladak Perak, Lumajang, yang runtuh akibat erupsi Semeru 4 Desember 2021, bentang {{angka:rehab.akses.semeru2021.gladak_perak_bentang_m}} m dan tinggi {{angka:rehab.akses.semeru2021.gladak_perak_tinggi_m}} m membutuhkan pilar tengah yang tidak mungkin dibangun, sehingga bailey dinilai tidak memungkinkan dan kendaraan dialihkan lewat Probolinggo [@kemenkopmk-2021-gladak-perak]. @tbl:hari-akses merangkum keempat titik.
+::: gambar {#gbr:foto-rr-bailey-reunion}
+berkas: gambar/foto/rehab-b05-bailey-reunion.jpg
+jenis: foto
+judul: Jembatan Bailey terpasang tetap di Route de Cilaos, La Réunion, Mei 2026 (contoh bentuk jembatan, bukan di Indonesia)
+pengarang: MathiasEllpunkt
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Bailey_Bridge_La_Reunion.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
+
+**Jembatan Kalijaran di Temanggung belum terbuka {{angka:rehab.akses.temanggung2026.hari_putus_ke_laporan_rakit}} hari setelah putus pada Mei 2026, sedangkan bailey Sungai Garoga di Tapanuli Selatan selesai 31 Desember 2025.** Bailey Garoga sepanjang {{angka:rehab.akses.sumatra2025.garoga_bentang_m}} m berkapasitas {{angka:rehab.akses.sumatra2025.garoga_beban_ton}} ton, dikerjakan Kementerian Pekerjaan Umum bersama Tentara Nasional Indonesia (TNI) dan PT Nindya Karya, dan tanggal putus jembatan lamanya tidak disebut [@pu-2026-bailey-garoga]. Jembatan Kalijaran di Desa Plosogaden putus total 16 Mei 2026; bupati menetapkan status tanggap darurat kurang dari sehari setelah kejadian sambil mengirim permohonan bailey ke pusat, dan per 11 Juni 2026 perakitan oleh Yonzipur 4/Tanpa Kawandya baru berjalan sekitar dua minggu [@jatengprov-2026-bailey-plosogaden]. Di Gladak Perak, Lumajang, yang runtuh akibat erupsi Semeru 4 Desember 2021, bentang {{angka:rehab.akses.semeru2021.gladak_perak_bentang_m}} m dan tinggi {{angka:rehab.akses.semeru2021.gladak_perak_tinggi_m}} m membutuhkan pilar tengah yang tidak mungkin dibangun, sehingga bailey dinilai tidak memungkinkan dan kendaraan dialihkan lewat Probolinggo [@kemenkopmk-2021-gladak-perak]. @tbl:hari-akses merangkum keempat titik.
 
 ::: tabel {#tbl:hari-akses}
 judul: Status akses darurat pada empat jembatan pascabencana, 2021–2026, dengan hari sampai terbuka bila tercatat
 sumber: Ditjen Bina Marga BPJN Aceh, 3 Desember 2025; Kementerian Pekerjaan Umum, 6 dan 19 Januari 2026; Pemprov Jawa Tengah, 12 Juni 2026; Kemenko PMK, 6 Desember 2021; hitungan hari oleh penyusun
 keyakinan: resmi
 data_per: 25 Okt 2026
-catatan: Kolom HARI dihitung dari dua tanggal resmi; pada Kalijaran angka itu adalah hari sampai tanggal laporan, bukan hari sampai terbuka. Sel kosong berarti salah satu tanggal tidak disebut sumber (Garoga) atau bailey tidak dapat dipasang (Gladak Perak).
 
 | JEMBATAN | KEJADIAN | BENTANG (m) | TANGGAL AWAL | TANGGAL AKSES DARURAT | HARI |
 | --- | --- | ---: | --- | --- | ---: |
@@ -79,15 +99,26 @@ catatan: Kolom HARI dihitung dari dua tanggal resmi; pada Kalijaran angka itu ad
 | Gladak Perak, Lumajang | erupsi Semeru 2021 | {{angka:rehab.akses.semeru2021.gladak_perak_bentang_m}} | runtuh 4 Desember 2021 | bailey tidak memungkinkan; lalu lintas dialihkan | – |
 :::
 
-**Empat titik pada @tbl:hari-akses memberi dugaan yang belum teruji bahwa waktu buka akses darurat berbeda menurut kelas jalan dan bentang.** Menurut analisis kajian ini, akses darurat pada ruas yang ditangani langsung Kementerian Pekerjaan Umum terbuka dalam hitungan minggu, sedangkan jembatan desa yang menunggu permohonan bailey ke pusat butuh lebih dari {{angka:rehab.akses.temanggung2026.hari_putus_ke_laporan_rakit}} hari hanya sampai perakitan berjalan. Bentang panjang di lembah dalam seperti Gladak Perak tidak punya opsi bailey dan bergantung pada jalur alternatif. Kelas jalan Krueng Beutong hanya tersirat sebagai jalan nasional di rilis resmi [@pu-2026-bailey-odol], dan jumlah titiknya terlalu sedikit untuk kesimpulan. Bila pola ini bertahan setelah data hari buka akses dikumpulkan (@rek:r-rr01), standar hari pemasangan akses darurat (@rek:r-rr05) perlu dibedakan menurut kelas jalan dan bentang, tidak satu angka untuk semua jembatan.
+**Empat titik pada @tbl:hari-akses memberi dugaan yang belum teruji bahwa waktu buka akses darurat berbeda menurut kelas jalan dan bentang.** Menurut analisis kajian ini, akses darurat pada ruas yang ditangani langsung Kementerian Pekerjaan Umum terbuka dalam hitungan minggu, sedangkan jembatan desa yang menunggu permohonan bailey ke pusat butuh lebih dari {{angka:rehab.akses.temanggung2026.hari_putus_ke_laporan_rakit}} hari hanya sampai perakitan berjalan. Bentang panjang di lembah dalam seperti Gladak Perak tidak punya opsi bailey dan bergantung pada jalur alternatif. Kelas jalan Krueng Beutong hanya tersirat sebagai jalan nasional di rilis resmi [@pu-2026-bailey-odol], dan jumlah titiknya terlalu sedikit untuk kesimpulan. Bila pola ini bertahan setelah data hari buka akses dikumpulkan (@rek:r-rr-01), standar hari pemasangan akses darurat (@rek:r-rr-05) perlu dibedakan menurut kelas jalan dan bentang, tidak satu angka untuk semua jembatan. Catatan atas @tbl:hari-akses. Kolom HARI dihitung dari dua tanggal resmi; pada Kalijaran angka itu adalah hari sampai tanggal laporan, bukan hari sampai terbuka. Sel kosong berarti salah satu tanggal tidak disebut sumber (Garoga) atau bailey tidak dapat dipasang (Gladak Perak).
 
-**Perka BNPB 12/2010 mengatur perbaikan darurat jembatan penghubung berupa bantuan rangka baja dan struktur dari kementerian pekerjaan umum dengan penutup kayu dolken.** Hasil yang diharapkan adalah berfungsinya kembali secara minimal jalan, jembatan, dermaga, irigasi, dan utilitas air minum [@bnpb-2010-perka12-perbaikan-darurat, hlm. 3, 9]. Perka itu masih memakai nomenklatur kementerian lama dan tidak memuat batas hari pemasangan, sehingga standar hari pemasangan (@rek:r-rr05) termasuk penyelarasan dokumen yang tercatat di register rekomendasi.
+**Perka BNPB 12/2010 mengatur perbaikan darurat jembatan penghubung berupa bantuan rangka baja dan struktur dari kementerian pekerjaan umum dengan penutup kayu dolken.** Hasil yang diharapkan adalah berfungsinya kembali secara minimal jalan, jembatan, dermaga, irigasi, dan utilitas air minum [@bnpb-2010-perka12-perbaikan-darurat, hlm. 3, 9]. Perka itu masih memakai nomenklatur kementerian lama dan tidak memuat batas hari pemasangan, sehingga standar hari pemasangan (@rek:r-rr-05) termasuk penyelarasan dokumen yang tercatat di register rekomendasi.
 
-**Dana Siap Pakai (DSP) BNPB membiayai bailey sebagai barang yang dihibahkan ke daerah, dengan pembayaran setelah Badan Pengawasan Keuangan dan Pembangunan (BPKP) mengaudit kelaikan harga.** BNPB mencatat penggantian bailey yang dipakai saat tanggap darurat sebanyak {{angka:rehab.jembatan.bnpb.bailey_penggantian_2024}} unit pada 2024 dan {{angka:rehab.jembatan.bnpb.bailey_penggantian_2025}} unit pada 2025 di luar Aceh, Sumatera Utara, dan Sumatera Barat, sementara DSP untuk Sumatra yang sudah masuk BNPB per 30 Desember 2025 sebesar {{angka:rehab.jembatan.bnpb.dsp_sumatra_masuk_2025_12|rupiah}} triliun [@bnpb-2025-bailey-dsp]. TNI dan Polri adalah pengguna DSP yang sah (Perban BNPB 4/2020 Pasal 14 huruf c); penyaluran kepada keduanya ditandatangani komandan tertinggi di daerah terdampak, sedangkan permohonan pejabat eselon I wajib disertai kajian teknis [@bnpb-2020-dsp, hlm. 10, 12, 14]. Stok bailey nasional dan harga satuan pengadaannya tidak ditemukan di sumber resmi. Kebutuhan bailey kejadian besar hanya tersedia dari sumber sekunder yang dicatat di Lampiran D. Inventaris stok per Direktorat Penanganan Darurat Wilayah (@rek:r-rr06) menjadi langkah 14 hari pertama.
+**Dana Siap Pakai (DSP) BNPB membiayai bailey sebagai barang yang dihibahkan ke daerah, dengan pembayaran setelah Badan Pengawasan Keuangan dan Pembangunan (BPKP) mengaudit kelaikan harga.** BNPB mencatat penggantian bailey yang dipakai saat tanggap darurat sebanyak {{angka:rehab.jembatan.bnpb.bailey_penggantian_2024}} unit pada 2024 dan {{angka:rehab.jembatan.bnpb.bailey_penggantian_2025}} unit pada 2025 di luar Aceh, Sumatera Utara, dan Sumatera Barat, sementara DSP untuk Sumatra yang sudah masuk BNPB per 30 Desember 2025 sebesar {{angka:rehab.jembatan.bnpb.dsp_sumatra_masuk_2025_12|rupiah}} triliun [@bnpb-2025-bailey-dsp]. TNI dan Kepolisian Negara Republik Indonesia (Polri) adalah pengguna DSP yang sah (Perban BNPB 4/2020 Pasal 14 huruf c); penyaluran kepada keduanya ditandatangani komandan tertinggi di daerah terdampak, sedangkan permohonan pejabat eselon I wajib disertai kajian teknis [@bnpb-2020-dsp, hlm. 10, 12, 14]. Stok bailey nasional dan harga satuan pengadaannya tidak ditemukan di sumber resmi. Kebutuhan bailey kejadian besar hanya tersedia dari sumber sekunder yang dicatat di Lampiran D. Inventaris stok per Direktorat Penanganan Darurat Wilayah (@rek:r-rr-06) menjadi langkah 14 hari pertama.
 
 ## Program Jembatan TNI AD, Jembatan Merah Putih Presisi Polri, dan Jembatan Gantung Kementerian PU {#sub:program-jembatan}
 
 **Per 13 Agustus 2026 empat jalur jembatan berjalan bersamaan dengan pemilik dan sumber dana yang berbeda, dan program TNI AD adalah yang terbesar dengan {{angka:rehab.jembatan.garuda.titik_2026_08}} titik.** @tbl:program-jembatan merinci pemilik, jenis, jumlah, porsi di wilayah bencana, dan biaya satuan tiap jalur. Biaya per unit hanya terbuka untuk jembatan gantung Kementerian Pekerjaan Umum.
+
+::: gambar {#gbr:foto-rr-gantung-rambipuji-2016}
+berkas: gambar/foto/rehab-b05-gantung-rambipuji-2016.jpg
+jenis: foto
+judul: Jembatan gantung desa di Sungai Dinoyo, Rambipuji, Kabupaten Jember, Januari 2016
+pengarang: boy
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Jembatan_Gantung_Curahancar_Rambipuji_Jember_East_Java.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
 
 ### Program Jembatan TNI AD yang Dipimpin KSAD {#sub:program-tniad}
 
@@ -112,7 +143,6 @@ judul: Program jembatan menurut pemilik, jenis, jumlah, wilayah bencana, dan bia
 sumber: Kementerian Sekretariat Negara, 13 Agustus 2026; Sekretariat Kabinet, 9 Maret 2026; Polri, 14 Januari 2026; Kementerian Pekerjaan Umum, 16 Oktober 2025, 6 dan 19 Januari 2026; Ditjen Bina Marga BBPJN Jawa Tengah dan DIY, 1 September 2026; BNPB, 31 Desember 2025
 keyakinan: campuran
 data_per: 25 Okt 2026
-catatan: Titik program TNI AD dapat berupa jembatan baru di lokasi yang belum pernah berjembatan. Rincian jenis dan biaya dari media dicatat di Lampiran F.
 
 | PROGRAM | PEMILIK DAN DANA | JENIS | JUMLAH TERAKHIR | DI WILAYAH BENCANA | BIAYA SATUAN | KEYAKINAN |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -124,7 +154,7 @@ catatan: Titik program TNI AD dapat berupa jembatan baru di lokasi yang belum pe
 | Bailey Kementerian PU | Kementerian Pekerjaan Umum; APBN | bailey | Krueng Beutong {{angka:rehab.akses.sumatra2025.krueng_beutong_bentang_m}} m, Garoga {{angka:rehab.akses.sumatra2025.garoga_bentang_m}} m | jalan terdampak banjir Sumatra 2025 | tidak diumumkan | resmi |
 :::
 
-**@gbr:program-rusak menyandingkan {{angka:rehab.jembatan.garuda.titik_wilayah_bencana_2026_08}} titik program TNI AD di daerah bencana dengan {{angka:rehab.dibi.jembatan_rusak.2025}} jembatan rusak DIBI 2025.** Batang ketiga adalah {{angka:rehab.akses.sumatra2025.jembatan_daerah_terdampak}} jembatan daerah terdampak di Sumatra menurut Kementerian Pekerjaan Umum. Satuan ketiga batang berbeda, sehingga gambar tidak menumpuk jembatan program di atas jembatan rusak seolah yang satu menutup yang lain. Titik program bukan pengganti jembatan rusak satu banding satu, dan daftar titik di daerah bencana belum diperoleh dari TNI AD maupun Polri.
+**@gbr:program-rusak menyandingkan {{angka:rehab.jembatan.garuda.titik_wilayah_bencana_2026_08}} titik program TNI AD di daerah bencana dengan {{angka:rehab.dibi.jembatan_rusak.2025}} jembatan rusak DIBI 2025.** Batang ketiga adalah {{angka:rehab.akses.sumatra2025.jembatan_daerah_terdampak}} jembatan daerah terdampak di Sumatra menurut Kementerian Pekerjaan Umum. Satuan ketiga batang berbeda, sehingga gambar tidak menumpuk jembatan program di atas jembatan rusak seolah yang satu menutup yang lain. Titik program bukan pengganti jembatan rusak satu banding satu, dan daftar titik di daerah bencana belum diperoleh dari TNI AD maupun Polri. Catatan atas @tbl:program-jembatan. Titik program TNI AD dapat berupa jembatan baru di lokasi yang belum pernah berjembatan. Rincian jenis dan biaya dari media dicatat di Lampiran F. Catatan atas @gbr:program-rusak. Batang berdampingan berbeda satuan; titik program bukan pengganti jembatan rusak satu banding satu.
 
 ::: gambar {#gbr:program-rusak}
 berkas: gambar/rehab/bab05-program-lawan-rusak.png
@@ -134,7 +164,6 @@ sumber: Kementerian Sekretariat Negara, 13 Agustus 2026; Polri, 14 Januari 2026;
 keyakinan: resmi
 lebar: penuh
 data_per: 25 Okt 2026
-catatan: Batang berdampingan berbeda satuan; titik program bukan pengganti jembatan rusak satu banding satu.
 :::
 
 ::: temuan
@@ -145,7 +174,7 @@ sifat: penilaian
 
 **Dampak:** Bagi rehabilitasi dan rekonstruksi, keduanya adalah kapasitas pelaksana yang besar dan cepat, tetapi pencatatannya berada di luar sistem yang dipakai BNPB untuk menyusun dan memantau pemulihan. Satu jembatan dapat diresmikan sebagai jembatan TNI AD tanpa masuk daftar aset daerah. Pemeliharanya pun tidak tertulis.
 
-**Pembuka:** Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur mengajukan pengikatan kedua program ke R3P lewat rapat koordinasi Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (@rek:r-rr04); BNPB berperan koordinasi dan pencatatan, tidak memerintah program kementerian atau lembaga lain.
+**Pembuka:** Direktorat Rehabilitasi dan Rekonstruksi Infrastruktur mengajukan pengikatan kedua program ke R3P lewat rapat koordinasi Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (@rek:r-rr-04); BNPB berperan koordinasi dan pencatatan, tidak memerintah program kementerian atau lembaga lain.
 :::
 
 **Jembatan gantung Kementerian Pekerjaan Umum dengan {{angka:rehab.jembatan.pu.gantung_biaya_rata2_2025|fmt=2|rupiah}} miliar per paket pada 2025 adalah satu-satunya pembanding biaya berlabel resmi di dalam negeri.** Tanpa biaya terbuka untuk program TNI AD dan Polri, kajian ini tidak dapat menilai efisiensi program mana pun dan tidak menyatakan salah satunya lebih murah. Biaya satuan dipakai sebagai pembanding berlabel dengan tahun harga, tidak dijumlahkan menjadi pagu atau total program [@pu-2025-jembatan-gantung].
@@ -155,31 +184,41 @@ sifat: penilaian
 **Dari tiga rilis resmi 2026 yang diperiksa, nama "Merah Putih" hanya dipakai untuk program Polri, Jembatan Merah Putih Presisi.** Rilis Kementerian Sekretariat Negara memakai nama itu dalam kutipan Kapolri tentang {{angka:rehab.jembatan.polri_mpp.jumlah_total_2026_08}} jembatan swadaya [@setneg-2026-jembatan-tni-polri], dan Polri memakainya sejak laporan 14 Januari 2026 [@tribratanews-2026-mpp-januari]. Rilis Sekretariat Kabinet tentang {{angka:rehab.jembatan.tniad.diresmikan_2026_03}} jembatan TNI AD tidak memuat kata "Garuda", "Merah Putih", maupun "Satgas" [@setkab-2026-218-jembatan]. Sesuai keputusan pemilik kajian, nama itu tidak dipakai sebagai nama program generik, dan tiap program ditulis menurut pemiliknya.
 
 ::: catatan
-**Kotak 5.1 Status nama "Jembatan Merah Putih".** Tidak ada satu program nasional bernama "Jembatan Merah Putih". Di sumber resmi, nama itu hanya muncul sebagai Jembatan Merah Putih Presisi milik Polri, {{angka:rehab.jembatan.polri_mpp.jumlah_total_2026_08}} unit swadaya per 13 Agustus 2026 [@setneg-2026-jembatan-tni-polri]. Media juga memakai nama itu untuk jembatan TNI AD saat peluncuran di Aceh Utara. Pemakaian lain oleh satuan kewilayahan TNI AD dan pemerintah daerah untuk jembatan setempat bersumber media dan dicatat tanpa angka di Lampiran F. Program TNI AD sendiri tidak bernama "Garuda" maupun "Merah Putih" di rilis Sekretariat Kabinet 9 Maret 2026 [@setkab-2026-218-jembatan]. Akibatnya, satu jembatan di daerah bencana dapat tercatat dengan nama berbeda di tiap laporan. Daftar jembatan pascabencana per kabupaten dengan kolom pemilik dan pembangun karena itu menjadi bagian @rek:r-rr04.
+**Kotak 5.1 Status nama "Jembatan Merah Putih".** Tidak ada satu program nasional bernama "Jembatan Merah Putih". Di sumber resmi, nama itu hanya muncul sebagai Jembatan Merah Putih Presisi milik Polri, {{angka:rehab.jembatan.polri_mpp.jumlah_total_2026_08}} unit swadaya per 13 Agustus 2026 [@setneg-2026-jembatan-tni-polri]. Media juga memakai nama itu untuk jembatan TNI AD saat peluncuran di Aceh Utara. Pemakaian lain oleh satuan kewilayahan TNI AD dan pemerintah daerah untuk jembatan setempat bersumber media dan dicatat tanpa angka di Lampiran F. Program TNI AD sendiri tidak bernama "Garuda" maupun "Merah Putih" di rilis Sekretariat Kabinet 9 Maret 2026 [@setkab-2026-218-jembatan]. Akibatnya, satu jembatan di daerah bencana dapat tercatat dengan nama berbeda di tiap laporan. Daftar jembatan pascabencana per kabupaten dengan kolom pemilik dan pembangun karena itu menjadi bagian @rek:r-rr-04.
 :::
 
 ## Lapis Permanen dan Membangun Kembali Lebih Baik {#sub:lapis-permanen}
 
 **Perban BNPB 4/2024 Pasal 5 memuat {{angka:rehab.hukum.hibah_rr_larangan_pembiayaan_huruf}} jenis pembiayaan yang tidak dapat dibiayai hibah rehabilitasi dan rekonstruksi, tiga di antaranya langsung menyentuh jembatan.** Huruf b menutup biaya operasional dan pemeliharaan, huruf e aset rusak milik pemerintah desa, dan huruf f aset hasil hibah sebelumnya yang rusak lagi; jenis lain mencakup penanganan darurat dan pembelian lahan [@bnpb-2024-hibah-rr, hlm. 4]. Jembatan milik desa karena itu tidak punya jalur hibah. Jembatan milik kabupaten di jalan desa tidak terkena huruf e. Bila pemda tidak menyelesaikan kegiatan hibah dalam jangka waktunya, pemda menyelesaikannya lewat Anggaran Pendapatan dan Belanja Daerah (APBD) (Pasal 27), dan perubahan rencana kegiatan tidak boleh mengubah jenis atau lokasi kegiatan (Pasal 26 ayat (2)). Jalur APBD, Dana Desa, dan Dana Alokasi Khusus untuk jembatan milik desa belum diperiksa kajian ini.
 
-**R3P berlaku paling lama {{angka:rehab.hukum.r3p_tahun_maks}} tahun, dan tidak satu pun aturan yang dibuka menetapkan jadwal penggantian bailey ke jembatan permanen.** Aturan yang ada hanya menetapkan pemilik hasil rehabilitasi dan rekonstruksi serta penanggung barang DSP. Hasil kegiatan rehabilitasi dan rekonstruksi menjadi aset negara atau masyarakat yang ditatausahakan menurut peraturan (Perban BNPB 6/2017 Pasal 13 ayat (6)) [@bnpb-2017-rr, hlm. 12]. Kegiatan DSP yang sudah diserahterimakan sepenuhnya menjadi tanggung jawab penerima (Perban BNPB 4/2020 Pasal 13) [@bnpb-2020-dsp, hlm. 12]. R3P memuat sektor transportasi darat (Perban BNPB 5/2017 Pasal 8 ayat (2) huruf b) tanpa baris wajib untuk jembatan sementara yang harus diganti permanen [@bnpb-2017-r3p]. Kementerian Pekerjaan Umum menyebut bailey Aceh bersifat sementara sambil menunggu jembatan permanen yang dibangun bertahap, tanpa menyebut jadwalnya [@pu-2026-bailey-odol]. Pola pemulihan Sumatra per Mei 2026, {{angka:rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026|persen}} untuk aset nasional lawan {{angka:rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026|persen}} untuk jembatan daerah [@pu-2026-infrastruktur-sumatera-mei], sejalan dengan celah ini.
+::: gambar {#gbr:foto-rr-gantung-kebumen-2022}
+berkas: gambar/foto/rehab-b05-gantung-kebumen-2022.jpg
+jenis: foto
+judul: Jembatan gantung akses Desa Taman Winangun, Kabupaten Kebumen, Mei 2022
+pengarang: DARMAS SB
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Akses_jembatan_gantung_tamanwinangun_kebumen_jateng.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
+
+**Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) berlaku paling lama {{angka:rehab.hukum.r3p_tahun_maks}} tahun, dan tidak satu pun aturan yang dibuka menetapkan jadwal penggantian bailey ke jembatan permanen.** Aturan yang ada hanya menetapkan pemilik hasil rehabilitasi dan rekonstruksi serta penanggung barang DSP. Hasil kegiatan rehabilitasi dan rekonstruksi menjadi aset negara atau masyarakat yang ditatausahakan menurut peraturan (Perban BNPB 6/2017 Pasal 13 ayat (6)) [@bnpb-2017-rr, hlm. 12]. Kegiatan DSP yang sudah diserahterimakan sepenuhnya menjadi tanggung jawab penerima (Perban BNPB 4/2020 Pasal 13) [@bnpb-2020-dsp, hlm. 12]. R3P memuat sektor transportasi darat (Perban BNPB 5/2017 Pasal 8 ayat (2) huruf b) tanpa baris wajib untuk jembatan sementara yang harus diganti permanen [@bnpb-2017-r3p]. Kementerian Pekerjaan Umum menyebut bailey Aceh bersifat sementara sambil menunggu jembatan permanen yang dibangun bertahap, tanpa menyebut jadwalnya [@pu-2026-bailey-odol]. Pola pemulihan Sumatra per Mei 2026, {{angka:rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026|persen}} untuk aset nasional lawan {{angka:rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026|persen}} untuk jembatan daerah [@pu-2026-infrastruktur-sumatera-mei], sejalan dengan celah ini.
 
 **Menurut analisis kajian ini, jembatan pascabencana dapat menjadi aset tanpa pemilik di tiga simpul pada @gbr:rantai-jembatan.** Pada simpul pertama, yang tertulis, barang DSP menjadi tanggung jawab penerima setelah serah terima, padahal hibah tidak dapat membiayai pengganti jembatan milik desa (huruf e) maupun pemeliharaannya (huruf b). Status R3P dan serah terima jembatan TNI AD dan Polri, simpul kedua, belum terverifikasi karena tidak ditemukan, dan Perban BNPB 6/2017 Pasal 13 ayat (6) tidak mengatur daftar aset yang diserahterimakan. Simpul terakhir juga tertulis: R3P berlaku paling lama {{angka:rehab.hukum.r3p_tahun_maks}} tahun (Perban BNPB 5/2017 Pasal 10), sedangkan jembatan permanen bentang besar seperti Palu IV butuh {{angka:rehab.akses.palu4.tahun_runtuh_ke_buka|fmt=1}} tahun.
 
 ::: gambar {#gbr:rantai-jembatan}
 berkas: gambar/rehab/bab05-rantai-jembatan.png
 jenis: diagram
-judul: Rantai jembatan pascabencana dari lapis darurat ke lapis permanen dan titik serahnya
+judul: Rantai jembatan pascabencana dari lapis darurat ke lapis permanen dan titik serahnya, 2026
 sumber: Perka BNPB 12/2010; Perban BNPB 4/2020 Pasal 13 dan 14; Perban BNPB 4/2024 Pasal 5 huruf b, e, f dan Pasal 27; Perban BNPB 6/2017 Pasal 13 ayat (6); Perban BNPB 5/2017 Pasal 10; analisis kajian ini
 keyakinan: resmi
 lebar: penuh
 data_per: 25 Okt 2026
-catatan: Darurat: bailey DSP dan Kementerian PU, rangka baja. Sementara: jembatan TNI AD dan Polri. Permanen: PU, pemda, desa.
 :::
 
-**Kajian ini mengusulkan penggantian bailey ke jembatan permanen diputus dalam tiga langkah; usulan ini asumsi kebijakan dan belum diuji ke pemilik aset.** Pertama, daftar: tiap bailey dan jembatan sementara pascabencana dicatat per kabupaten dengan kolom pemilik aset, pembangun, tanggal pasang, dan kapasitas, berangkat dari hitungan stok bailey dalam 14 hari pertama (@rek:r-rr06) dan diikat ke R3P dalam 100 hari (@rek:r-rr04). Serah terima tertulis menjadi langkah kedua: R3P memuat baris wajib jembatan sementara yang harus diganti permanen per titik, dan pemda penerima menandatangani serah terima dengan nama pemilik aset. Bailey yang ditarik ke stok dicatat di daftar yang sama. Untuk dana, jalurnya mengikuti pemilik: aset nasional lewat APBN Kementerian Pekerjaan Umum; aset provinsi dan kabupaten lewat hibah rehabilitasi dan rekonstruksi di luar huruf b dan f atau APBD; aset milik desa lewat jalur di luar hibah (@rek:r-rr07). Bailey Krueng Beutong yang difungsikan 9 Januari 2026 sambil menunggu jembatan permanen bertahap [@pu-2026-bailey-odol] menunjukkan kebutuhan ketiga langkah itu; status lanjutannya hanya tersedia dari media dan dicatat di Lampiran D.
+**Kajian ini mengusulkan penggantian bailey ke jembatan permanen diputus dalam tiga langkah; usulan ini asumsi kebijakan dan belum diuji ke pemilik aset.** Pertama, daftar: tiap bailey dan jembatan sementara pascabencana dicatat per kabupaten dengan kolom pemilik aset, pembangun, tanggal pasang, dan kapasitas, berangkat dari hitungan stok bailey dalam 14 hari pertama (@rek:r-rr-06) dan diikat ke R3P dalam 100 hari (@rek:r-rr-04). Serah terima tertulis menjadi langkah kedua: R3P memuat baris wajib jembatan sementara yang harus diganti permanen per titik, dan pemda penerima menandatangani serah terima dengan nama pemilik aset. Bailey yang ditarik ke stok dicatat di daftar yang sama. Untuk dana, jalurnya mengikuti pemilik: aset nasional lewat APBN Kementerian Pekerjaan Umum; aset provinsi dan kabupaten lewat hibah rehabilitasi dan rekonstruksi di luar huruf b dan f atau APBD; aset milik desa lewat jalur di luar hibah (@rek:r-rr-07). Bailey Krueng Beutong yang difungsikan 9 Januari 2026 sambil menunggu jembatan permanen bertahap [@pu-2026-bailey-odol] menunjukkan kebutuhan ketiga langkah itu; status lanjutannya hanya tersedia dari media dan dicatat di Lampiran D. Catatan atas @gbr:rantai-jembatan. Darurat: bailey DSP dan Kementerian PU, rangka baja. Sementara: jembatan TNI AD dan Polri. Permanen: PU, pemda, desa.
 
-**Argumen tandingannya, {{angka:rehab.jembatan.garuda.selesai_2026_08}} titik jembatan TNI AD yang selesai per Agustus 2026 mempercepat akses, dan syarat pencatatan dapat memperlambatnya.** Tanpa standar desain terbuka dan pemilik aset yang tertulis, jembatan yang dibangun cepat dapat menjadi beban pemeliharaan daerah atau rusak lagi pada banjir berikutnya, sementara Perban BNPB 4/2024 Pasal 5 menutup jalur hibah untuk pemeliharaan dan perbaikan ulang [@bnpb-2024-hibah-rr, hlm. 4]. Posisi kajian ini adalah mempertahankan kedua program sebagai kapasitas pelaksana yang diikat ke R3P. Dampaknya kemudian dievaluasi (@rek:r-rr13), dan kajian ini tidak mengusulkan program dihentikan atau diambil alih BNPB.
+**Argumen tandingannya, {{angka:rehab.jembatan.garuda.selesai_2026_08}} titik jembatan TNI AD yang selesai per Agustus 2026 mempercepat akses, dan syarat pencatatan dapat memperlambatnya.** Tanpa standar desain terbuka dan pemilik aset yang tertulis, jembatan yang dibangun cepat dapat menjadi beban pemeliharaan daerah atau rusak lagi pada banjir berikutnya, sementara Perban BNPB 4/2024 Pasal 5 menutup jalur hibah untuk pemeliharaan dan perbaikan ulang [@bnpb-2024-hibah-rr, hlm. 4]. Posisi kajian ini adalah mempertahankan kedua program sebagai kapasitas pelaksana yang diikat ke R3P. Dampaknya kemudian dievaluasi (@rek:r-rr-13), dan kajian ini tidak mengusulkan program dihentikan atau diambil alih BNPB.
 
 {{halaman-baru}}
 
@@ -212,26 +251,37 @@ jenis: uji-coba
 
 **Di Nicaragua, banjir menurunkan pendapatan pasar kerja {{angka:rehab.pembanding.nicaragua_turun_pendapatan_persen|persen}} di desa tanpa jembatan, dan jembatan menghapus efek itu.** Studi @brooks-2020-nicaragua adalah satu-satunya bukti yang dibuka yang langsung menyentuh banjir: nilai jembatan muncul saat banjir memutus akses. Temuan ini argumen paling dekat untuk mendahulukan jembatan desa di daerah banjir berulang, dengan catatan sampelnya kecil dan berasal dari luar negeri. Banjir menyumbang {{angka:rehab.dibi.jembatan_rusak.porsi_banjir_persen|fmt=1|persen}} jembatan rusak di Indonesia pada 2018–2025 [@bnpb-dibi].
 
-**Paket program terbukti kajian ini tidak memuat satu pun program jembatan, dan evaluasi dampak untuk program jembatan Indonesia mana pun belum ditemukan.** Rubrik kajian memberi kelas kuat hanya untuk deret pra dan pasca resmi atau studi bertinjauan dengan paling sedikit dua angka dibuka, dan laporan pelaksana paling tinggi lemah. Program jembatan TNI AD, Jembatan Merah Putih Presisi, dan jembatan gantung Kementerian Pekerjaan Umum hanya punya laporan pelaksana tanpa pembanding. Ketiganya karena itu berposisi "Program berjalan, wajib evaluasi dampak". Tidak satu pun ditulis sebagai program yang terbukti. Rancangan acak bertahap Rwanda dipakai sebagai cetakan evaluasi dampak program Indonesia (@rek:r-rr13), tidak sebagai bukti bahwa program Indonesia berhasil.
+**Paket program terbukti kajian ini tidak memuat satu pun program jembatan, dan evaluasi dampak untuk program jembatan Indonesia mana pun belum ditemukan.** Rubrik kajian memberi kelas kuat hanya untuk deret pra dan pasca resmi atau studi bertinjauan dengan paling sedikit dua angka dibuka, dan laporan pelaksana paling tinggi lemah. Program jembatan TNI AD, Jembatan Merah Putih Presisi, dan jembatan gantung Kementerian Pekerjaan Umum hanya punya laporan pelaksana tanpa pembanding. Ketiganya karena itu berposisi "Program berjalan, wajib evaluasi dampak". Tidak satu pun ditulis sebagai program yang terbukti. Rancangan acak bertahap Rwanda dipakai sebagai cetakan evaluasi dampak program Indonesia (@rek:r-rr-13), tidak sebagai bukti bahwa program Indonesia berhasil.
 
 ## Kesenjangan Spesifik Akses {#sub:kesenjangan-akses}
 
 **Dari {{angka:rehab.dibi.jembatan_rusak.2025}} jembatan rusak DIBI pada 2025, tidak satu pun dapat ditelusuri ke pemilik aset, tanggal akses darurat terbuka, atau jembatan pengganti permanennya.** DIBI tidak memisah jembatan menurut status jalan (nasional, provinsi, kabupaten atau kota, desa) maupun jenis, dan jembatan per kabupaten hanya tersedia untuk jendela kejadian, tidak untuk 2018–2025 penuh [@bnpb-dibi]. @tbl:celah-akses mencatat data yang belum ada beserta pemegang dan rekomendasi penutupnya. Tiap celah ditulis sebagai ketiadaan data, tidak diisi dengan perkiraan.
 
+::: gambar {#gbr:foto-rr-gantung-lokop}
+berkas: gambar/foto/rehab-b05-gantung-lokop.jpg
+jenis: foto
+judul: Sungai dan tiang jembatan gantung Lokop, Aceh Timur, setelah banjir Aceh, foto 2026
+pengarang: Gayo musara
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Poto_Sungai_dan_tiang_jembatan_gantung_lokop.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
 ::: tabel {#tbl:celah-akses}
-judul: Data akses pascabencana yang belum tersedia, pemegang data, dan rekomendasi penutupnya
+judul: Data akses pascabencana yang belum tersedia, pemegang data, dan rekomendasi penutupnya, 2026
 sumber: Berkas bukti Bab 5 kajian ini; DIBI BNPB; Perban BNPB 4/2024; Perban BNPB 5/2017
 keyakinan: asumsi-kebijakan
 data_per: 25 Okt 2026
 
-| DATA YANG BELUM ADA | AKIBAT BAGI PEMULIHAN | PEMEGANG DATA | REKOMENDASI |
+| DATA YANG BELUM ADA | AKIBAT BAGI PEMULIHAN | PEMEGANG DATA | REK |
 | --- | --- | --- | --- |
-| Desa terputus dan tanggal akses darurat terbuka per kejadian | baseline waktu pulih akses tidak dapat dibentuk | BPBD; Pusat Data, Informasi, dan Komunikasi Kebencanaan | @rek:r-rr01 |
-| Status jalan dan pemilik aset tiap jembatan rusak | jalur dana per pemilik tidak dapat dipilih | Kementerian Pekerjaan Umum; pemda; desa | @rek:r-rr01; @rek:r-rr07 |
-| Stok bailey nasional dan harga satuan pengadaan | kebutuhan kejadian besar tidak dapat dibandingkan dengan stok | Kementerian Pekerjaan Umum; TNI; BNPB | @rek:r-rr06 |
-| Daftar titik, jenis, biaya, standar desain, dan serah terima jembatan TNI AD dan Polri | jembatan berada di luar R3P dan daftar aset daerah | TNI AD; Polri; Kementerian Sekretariat Negara | @rek:r-rr04 |
-| Daftar bailey yang sudah diganti permanen dan batas waktu pakainya | jembatan sementara dapat bertahan tanpa jadwal | Direktorat Jembatan Ditjen Bina Marga | @rek:r-rr05 |
-| Evaluasi dampak program jembatan Indonesia | program tidak dapat dinilai terbukti | Bappenas; TNI AD; Polri; Kementerian Pekerjaan Umum | @rek:r-rr13 |
+| Desa terputus dan tanggal akses darurat terbuka per kejadian | garis dasar waktu pulih akses tidak dapat dibentuk | BPBD; Pusat Data, Informasi, dan Komunikasi Kebencanaan | @rek:r-rr-01 |
+| Status jalan dan pemilik aset tiap jembatan rusak | jalur dana per pemilik tidak dapat dipilih | Kementerian Pekerjaan Umum; pemda; desa | @rek:r-rr-01; @rek:r-rr-07 |
+| Stok bailey nasional dan harga satuan pengadaan | kebutuhan kejadian besar tidak dapat dibandingkan dengan stok | Kementerian Pekerjaan Umum; TNI; BNPB | @rek:r-rr-06 |
+| Daftar titik, jenis, biaya, standar desain, dan serah terima jembatan TNI AD dan Polri | jembatan berada di luar R3P dan daftar aset daerah | TNI AD; Polri; Kementerian Sekretariat Negara | @rek:r-rr-04 |
+| Daftar bailey yang sudah diganti permanen dan batas waktu pakainya | jembatan sementara dapat bertahan tanpa jadwal | Direktorat Jembatan Ditjen Bina Marga | @rek:r-rr-05 |
+| Evaluasi dampak program jembatan Indonesia | program tidak dapat dinilai terbukti | Bappenas; TNI AD; Polri; Kementerian Pekerjaan Umum | @rek:r-rr-13 |
 :::
 
 **Tiga dokumen primer yang belum dibuka per Oktober 2026 membatasi kesimpulan bab ini.** Ketiganya adalah rencana induk rehabilitasi dan rekonstruksi Sumatra 2026–2028, R3P Aceh, Sumatera Utara, dan Sumatera Barat, serta dokumen dasar program jembatan TNI AD, yang memuat daftar jembatan permanen dan dasar program yang menentukan apakah {{angka:rehab.jembatan.garuda.titik_wilayah_bencana_2026_08}} titik di daerah bencana sudah masuk perencanaan pemulihan. Progres program sesudah 13 Agustus 2026 juga tidak ditemukan dari sumber resmi. Permintaan datanya ke Kementerian Pekerjaan Umum, TNI AD, Polri, dan Kementerian Sekretariat Negara masuk keputusan 14 hari pertama Grand Design.

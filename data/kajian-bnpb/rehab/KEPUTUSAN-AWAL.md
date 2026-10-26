@@ -86,3 +86,7 @@ Tiap pertanyaan punya bawaan. Bila pemilik tidak menjawab, produksi berjalan den
 ## 5. Jawaban pemilik (25 Okt 2026)
 
 Pemilik menyetujui SEMUA bawaan Q1–Q20 ("Gas semua"). Bawaan di tabel §4 kini berstatus keputusan.
+
+## 6. Status (26 Okt 2026)
+
+Digabung ke GD SIPPA (KEPUTUSAN-SIPPA no. 55). Kajian ini tidak lagi diterbitkan sebagai grand design terpisah; naskah, bukti, dan registri rehab.* menjadi bahan buku SIPPA.

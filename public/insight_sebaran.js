@@ -67,7 +67,7 @@ Insight.exSebDorong = function () {
   return this.ex(mode === "lahan" ? `Titik panas di ${this.hl(esc(top?.l.split(" vs ")[0].toLowerCase() || ""))} ${this.hl(kali(top?.v))} lebih mungkin membesar` : `Cuaca: ${this.hl(esc(top?.l || ""))} menaikkan peluang membesar ${this.hl(kali(top?.v))}`,
     `Dari ${fmt(P.n_peristiwa)} titik panas baru (9 provinsi, Jul–Nov), ${pc(P.laju_dasar, 1)} membesar menjadi ${esc(P.definisi_lolos)}`,
     "rasio peluang membesar, skala log · garis = selang 95% bootstrap · arahkan kursor untuk luas & jarak menjalar per hari", svg,
-    `Variabel terpenting di model boosting (penurunan AUC bila diacak): ${esc(imp)}. Rasio dari tabel silang: variabel saling terkait (sawit di gambut juga jauh dari jalan), jadi ini hubungan, bukan sebab. Sanksi dihitung hanya bila sudah dijatuhkan pada tahun api. Sumber: NASA FIRMS, ERA5, olahan Pantau Bencana.`,
+    `Variabel terpenting di model boosting (penurunan AUC bila diacak): ${esc(imp)}. Rasio dari tabel silang: variabel saling terkait (sawit di gambut juga jauh dari jalan), jadi ini hubungan, bukan sebab. Sanksi dihitung hanya bila sudah dijatuhkan pada tahun api. Sumber: NASA FIRMS, ERA5, olahan Centurisk97.`,
     this.seg("sebDorong", [["lahan", "Lahan & konsesi"], ["cuaca", "Cuaca & api"]]));
 };
 
@@ -89,7 +89,7 @@ Insight.exSebUji = function () {
   const LB = R.lolos_baru, akBaru = LB ? (LB.tp + LB.tn) / R.n : null;
   return this.ex(`Diuji pada ${this.hl(R.n + " kejadian lalu")}: tebakan "akan membesar atau padam" benar ${this.hl(pc(akBaru ?? R.lepas_akurasi?.[0]))}${LB ? ` (dulu ${pc(R.lepas_akurasi?.[0])}); ${this.hl(pc(LB.recall))} api yang membesar ditandai WASPADA` : ""}`,
     eks("model_sel") + "Tiap kasus mulai dari deteksi pertama saja, cuaca hari itu, model yang tidak pernah melihat tahun kasus", "klik baris untuk melihat ramalan vs yang dilihat satelit", tabel,
-    `IoU = irisan/gabungan sel terbakar (termasuk sel awal); F1 = ketepatan sel baru saja. Luas 72 jam jatuh di rentang P10–P90 Monte Carlo pada ${pc(R.cakupan_72)} kasus${R.cakupan_kalibrasi ? `, di rentang terkalibrasi (konformal) ${pc(R.cakupan_kalibrasi[2])}` : ""} (ideal 80%). "P baru" = model khusus membesar (⚠ = WASPADA); lihat exhibit "Peringatan dini". Cuaca = reanalisis ERA5 (seolah prakiraan sempurna). Sumber: NASA FIRMS, ERA5, olahan Pantau Bencana.`,
+    `IoU = irisan/gabungan sel terbakar (termasuk sel awal); F1 = ketepatan sel baru saja. Luas 72 jam jatuh di rentang P10–P90 Monte Carlo pada ${pc(R.cakupan_72)} kasus${R.cakupan_kalibrasi ? `, di rentang terkalibrasi (konformal) ${pc(R.cakupan_kalibrasi[2])}` : ""} (ideal 80%). "P baru" = model khusus membesar (⚠ = WASPADA); lihat exhibit "Peringatan dini". Cuaca = reanalisis ERA5 (seolah prakiraan sempurna). Sumber: NASA FIRMS, ERA5, olahan Centurisk97.`,
     this.seg("sebUjiKelas", [["", "Semua"], ["besar", "Besar"], ["sedang", "Sedang"], ["kecil", "Tetap kecil"]]));
 };
 /* dialog kasus: dua kanvas sel (teramati per hari vs peluang ramalan) */
@@ -128,7 +128,7 @@ Insight.exSebLolos = function () {
   return this.ex(`Model khusus "akan membesar" menangkap ${this.hl(pc(baru?.recall))} api besar di 123 kejadian lalu (dulu ${pc(lama?.recall)})`,
     eks("lolos") + `WASPADA dipasang bila peluang ≥ ${fmt(Math.round(L.ambang * 1000) / 10)}%: ambang dipilih di 2015–2023 agar ≥ 70% api yang membesar (≥ ${fmt((M.lepas_sel || 10) * 14)} ha dalam 72 jam) tertangkap`,
     "harga recall tinggi = banyak alarm palsu; baris pudar = cara lama (porsi Monte Carlo model sel)", tabel,
-    `Model gradient boosting terpisah per titik panas baru: cuaca 24 jam & FWI, lahan/konsesi, ukuran & FRP lintasan pertama, titik lain dalam 5–10 km 3 hari terakhir, dan deteksi NOAA-20 ±3 jam. Disetel hanya dengan validasi silang tinggal-satu-tahun 2015–2023; uji 2024–2026 sudah pernah dilihat sekali sebelumnya, jadi angkanya sedikit optimistis. Baris prospektif dihitung otomatis tiap 3 jam dari titik baru sungguhan dengan cuaca prakiraan${Pr ? ` (diperbarui ${esc(SEB.d.prospektif.diperbarui)} UTC)` : " (belum ada yang dinilai)"}. Sumber: NASA FIRMS, ERA5, olahan Pantau Bencana.`);
+    `Model gradient boosting terpisah per titik panas baru: cuaca 24 jam & FWI, lahan/konsesi, ukuran & FRP lintasan pertama, titik lain dalam 5–10 km 3 hari terakhir, dan deteksi NOAA-20 ±3 jam. Disetel hanya dengan validasi silang tinggal-satu-tahun 2015–2023; uji 2024–2026 sudah pernah dilihat sekali sebelumnya, jadi angkanya sedikit optimistis. Baris prospektif dihitung otomatis tiap 3 jam dari titik baru sungguhan dengan cuaca prakiraan${Pr ? ` (diperbarui ${esc(SEB.d.prospektif.diperbarui)} UTC)` : " (belum ada yang dinilai)"}. Sumber: NASA FIRMS, ERA5, olahan Centurisk97.`);
 };
 
 /* ---------- Di mana model masih keliru ---------- */
@@ -148,7 +148,7 @@ Insight.exSebGalat = function () {
   return this.ex(`Sebelum diperbaiki model melebihkan luas 72 jam ${this.hl(persen(r.bias_rata))} (validasi 2023)${u ? `; sesudah kalibrasi ulang per strata, di uji 2024–2026 ${this.hl(persen(u.bias_rata))}` : ""}. Yang masih terlewat: api tertutup awan/asap dan api yang 'meloncat'`,
     `${fmt(G.val.n)} titik awal validasi; ${pc(r.porsi_celah_2, 1)} kehilangan ≥ 2 lintasan VIIRS, ${pc(r.porsi_lompat_20, 1)} tumbuh lewat loncatan > 1,9 km`,
     "merah = ramalan terlalu besar, biru = terlalu kecil · pilih variabel", isi,
-    "Perbaikan yang diterapkan dari analisis ini: pergeseran logit per strata (gambut/mineral/sabana) agar bias luas validasi ≈ 0, dan pemilihan model per strata (sabana memakai McArthur bila lebih baik di validasi). Yang belum bisa diperbaiki dengan data ini: pemadaman (tidak ada data operasi), awan/asap (butuh Himawari), api yang dinyalakan baru di dekatnya. Sumber: NASA FIRMS, ERA5, olahan Pantau Bencana.",
+    "Perbaikan yang diterapkan dari analisis ini: pergeseran logit per strata (gambut/mineral/sabana) agar bias luas validasi ≈ 0, dan pemilihan model per strata (sabana memakai McArthur bila lebih baik di validasi). Yang belum bisa diperbaiki dengan data ini: pemadaman (tidak ada data operasi), awan/asap (butuh Himawari), api yang dinyalakan baru di dekatnya. Sumber: NASA FIRMS, ERA5, olahan Centurisk97.",
     this.seg("sebGalat", [["prov", "Provinsi"], ["gambut", "Gambut"], ["konsesi", "Konsesi"], ["celah", "Awan/asap"], ["lompat", "Loncat"], ["awal", "Ukuran awal"], ["dc", "DC"], ["ws", "Angin"], ["hujan24", "Hujan"]]));
 };
 const PROV_N = n => typeof n === "string" && /^\d+$/.test(n) ? namaProv(n) : n;

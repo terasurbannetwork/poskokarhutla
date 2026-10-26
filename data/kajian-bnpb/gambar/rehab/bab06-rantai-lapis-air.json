@@ -1,0 +1,397 @@
+{
+ "nama": "bab06-rantai-lapis-air",
+ "keterangan": "Rantai lapis darurat, sementara, dan permanen air perpipaan pascabencana dengan titik serah dan pemutusnya, 2026",
+ "sumber": "PP 21/2008; Perka BNPB 7/2008; PP 122/2015; Kementerian PUPR, Penanganan Gempa Cianjur 2022",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  160.2
+ ],
+ "ukuran_cm": [
+  16.5,
+  5.65
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Lapis waktu",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Titik serah",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Aturan atau pelaksana berpasal",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Tidak diatur atau tanpa data",
+   "jenis": "kotak",
+   "warna": "#F8DDE0"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#F8DDE0": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 42.63,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 56.63,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 82.63,
+   "y": 3,
+   "w": 37.13,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 68.63,
+   "y": 2,
+   "w": 51.13,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 143.77,
+   "y": 3,
+   "w": 112.39,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-129",
+   "teks": "Aturan atau pelaksana berpasal"
+  },
+  {
+   "x": 129.77,
+   "y": 2,
+   "w": 126.39,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-129",
+   "teks": "Aturan atau pelaksana berpasal"
+  },
+  {
+   "x": 280.16,
+   "y": 3,
+   "w": 99.86,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-266",
+   "teks": "Tidak diatur atau tanpa data"
+  },
+  {
+   "x": 266.16,
+   "y": 2,
+   "w": 113.86,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-266",
+   "teks": "Tidak diatur atau tanpa data"
+  },
+  {
+   "x": 2,
+   "y": 30.65,
+   "w": 20.57,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Lapis"
+  },
+  {
+   "x": 2,
+   "y": 80.05,
+   "w": 22.11,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Dasar"
+  },
+  {
+   "x": 2,
+   "y": 129.15,
+   "w": 56.9,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Titik serah dan"
+  },
+  {
+   "x": 2,
+   "y": 139.35,
+   "w": 33.49,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "pemutus"
+  },
+  {
+   "x": 115.8,
+   "y": 24.8,
+   "w": 28.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "Darurat"
+  },
+  {
+   "x": 71.35,
+   "y": 36.4,
+   "w": 117.36,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "truk tangki, hidran, sumur darurat"
+  },
+  {
+   "x": 245.5,
+   "y": 24.8,
+   "w": 41.62,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "Sementara"
+  },
+  {
+   "x": 238.66,
+   "y": 36.4,
+   "w": 55.3,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "pipa sementara"
+  },
+  {
+   "x": 382.98,
+   "y": 24.8,
+   "w": 39.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "Permanen"
+  },
+  {
+   "x": 382,
+   "y": 36.4,
+   "w": 41.16,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "SPAM pulih"
+  },
+  {
+   "x": 72.13,
+   "y": 74.2,
+   "w": 115.81,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "PP 21/2008 dan Perka 7/2008"
+  },
+  {
+   "x": 74.92,
+   "y": 85.8,
+   "w": 110.22,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "7 lalu 15 liter per orang per hari"
+  },
+  {
+   "x": 233.84,
+   "y": 64.6,
+   "w": 64.94,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "Penarikan hidran"
+  },
+  {
+   "x": 214.76,
+   "y": 76.2,
+   "w": 103.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "survei posko Cipta Karya dan"
+  },
+  {
+   "x": 220.09,
+   "y": 85.8,
+   "w": 92.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "BPPW, Bupati mendukung"
+  },
+  {
+   "x": 237.67,
+   "y": 95.4,
+   "w": 57.28,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "distribusi PDAM"
+  },
+  {
+   "x": 377.38,
+   "y": 69.4,
+   "w": 50.39,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "PP 122/2015"
+  },
+  {
+   "x": 363.55,
+   "y": 81,
+   "w": 78.06,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "penyelenggara SPAM:"
+  },
+  {
+   "x": 343.65,
+   "y": 90.6,
+   "w": 117.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "pemerintah, pemda, badan usaha"
+  },
+  {
+   "x": 97.69,
+   "y": 123.6,
+   "w": 64.68,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "Pemutus serah 1"
+  },
+  {
+   "x": 78.64,
+   "y": 135.2,
+   "w": 102.79,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "tidak diatur: peralihan truk ke"
+  },
+  {
+   "x": 122.4,
+   "y": 144.8,
+   "w": 15.27,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "pipa"
+  },
+  {
+   "x": 233.97,
+   "y": 123.6,
+   "w": 64.68,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "Pemutus serah 2"
+  },
+  {
+   "x": 211.57,
+   "y": 135.2,
+   "w": 109.48,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "tidak diatur: pipa sementara ke"
+  },
+  {
+   "x": 255.31,
+   "y": 144.8,
+   "w": 22,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "SPAM"
+  },
+  {
+   "x": 382.24,
+   "y": 123.6,
+   "w": 40.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s3",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 358.67,
+   "y": 135.2,
+   "w": 87.82,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s3",
+   "teks": "SPAM permanen kepada"
+  },
+  {
+   "x": 385.25,
+   "y": 144.8,
+   "w": 34.66,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s3",
+   "teks": "pengelola"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 9
+}

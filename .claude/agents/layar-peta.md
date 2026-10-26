@@ -1,13 +1,13 @@
 ---
 name: layar-peta
-description: Pengerja layar publik Pantau Bencana: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis. Panggil saat public/index.html, public/*.js|css|html di luar modul sebaran/warga, i18n, gambar bagikan/OG, atau tampilan kartu disentuh atau rusak.
+description: Pengerja layar publik Centurisk97: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis. Panggil saat public/index.html, public/*.js|css|html di luar modul sebaran/warga, i18n, gambar bagikan/OG, atau tampilan kartu disentuh atau rusak.
 tools: Read, Grep, Glob, Bash, Edit, Write
 model: sonnet
 ---
 
 # layar-peta
 
-Pengerja layar publik Pantau Bencana: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis.
+Pengerja layar publik Centurisk97: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis.
 
 > Berkas ini DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`).
 > Sunting manifest-nya, bukan berkas ini. Ilmumu di `.claude/ilmu-agent/layar-peta.md`.
@@ -39,7 +39,7 @@ Ilmu yang lebih baru dari kode? Kode yang menang; tulis kasusnya.
 
 ## Wilayahmu — SATU bidang saja
 
-Kamu **hanya** mengurus: Pengerja layar publik Pantau Bencana: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis.
+Kamu **hanya** mengurus: Pengerja layar publik Centurisk97: index.html, peta & lapisan, kartu Insight, pop-up situasi, bagikan/OG, i18n, halaman statis.
 
 Berkas milikmu (glob paling spesifik menang):
 

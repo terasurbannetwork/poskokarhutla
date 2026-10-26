@@ -84,7 +84,8 @@
         "daftar": [
           "Semua pulau turun sejak 2015; Jawa serta Bali dan Nusa Tenggara turun paling cepat.",
           "Papua dan Sumatra turun paling lambat, sehingga kini berada di atas Kalimantan.",
-          "Urutan memakai IRB 2024, tahun terakhir yang sebanding dengan 2015."
+          "Urutan memakai IRB 2024, tahun terakhir yang sebanding dengan 2015.",
+          "Perubahan 2015–2024: Jawa {{angka:irbi.jawa.persen_2015_2024|fmt=1|persen|arah}}, Maluku {{angka:irbi.maluku.persen_2015_2024|fmt=1|persen|arah}}, Papua {{angka:irbi.papua.persen_2015_2024|fmt=1|persen|arah}}; nasional sejak 2019 {{angka:irbi.nasional.persen_2019_2024|fmt=1|persen|arah}}."
         ]
       },
       "pita": {
@@ -93,7 +94,7 @@
         "kolom": [
           {"ikon": "data", "judul": "Rerata sederhana", "isi": "Nilai nasional dan pulau adalah rerata kab/kota, cara yang mereproduksi angka resmi Renstra BNPB."},
           {"ikon": "kalender", "judul": "Skala 2025 berbeda", "isi": "IRBI 2025 memakai skala baru dan tidak dibandingkan dengan seri 2015–2024."},
-          {"ikon": "wilayah", "judul": "Pengelompokan pulau", "isi": "Tujuh pulau adalah pengelompokan penyusun, bukan wilayah administrasi resmi."}
+          {"ikon": "wilayah", "judul": "Pengelompokan pulau", "isi": "Tujuh pulau adalah pengelompokan penyusun kajian; BNPB tidak menerbitkan indeks per pulau."}
         ]
       }
     },
@@ -145,7 +146,8 @@
           ],
           "keyakinan": "asumsi-kebijakan",
           "sumber": "Pengolahan data Pantau Bencana dari InaRISK BNPB, IRBI 2023"
-        }
+        },
+        "daftar": ["Sumatra memuat {{angka:irbi.sumatra.kab_tinggi.2023}} dari {{angka:irbi.kab.tinggi.2023}} kab/kota kelas Tinggi pada 2023; pada 2015 jumlah nasionalnya {{angka:irbi.kab.tinggi.2015}}."]
       }
     },
     {

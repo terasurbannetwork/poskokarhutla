@@ -49,7 +49,7 @@ NAMA = {
     'S-37': 'paragraf tanpa angka dan sumber', 'S-38': 'kata Inggris berpadanan',
     'S-39': 'gugus pola dalam satu paragraf',
     'S-40': 'titik dua di atas ambang', 'S-41': 'hedging di atas ambang', 'S-42': 'pembuka klise bab atau subbab',
-    'S-43': 'kata terlarang khas AI',
+    'S-43': 'kata terlarang khas AI', 'S-44': 'sumber data sebagai pelaku',
 }
 
 SARAN = {
@@ -98,6 +98,7 @@ SARAN = {
     'S-41': 'Paling banyak 2 penanda ragu per 1.500 kata; tulis besarnya ketidakpastian (rentang) dan sumbernya.',
     'S-42': 'Buka bab dan subbab dengan temuan berangka: siapa, di mana, berapa, kapan, sumbernya.',
     'S-43': 'Ganti dengan kata kerja yang bisa diamati; daftar pemilik riset/anti-slop/banned-ai-words.txt dan padanan Indonesianya.',
+    'S-44': 'Tulis "Berdasarkan data DIBI, terdapat ..."; sumber disebut sebagai dasar, pelakunya kejadian atau lembaga.',
 }
 
 
@@ -257,7 +258,9 @@ POLA = [
                        r'|\bbukan lagi (?!(sebuah )?pilihan)[^.;]{1,60}?,? (tetapi|melainkan|namun)\b'
                        r'|(?:^|[.!?] )(tak|tidak|bukan) hanya itu\b'),
     # Buku Pegangan melarang kontras "X, bukan Y" di slide tanpa pengecualian; di DOCX penyunting menilainya (M-10)
-    _r('S-19', SEDANG, r'(?<=[^\W\d_]), bukan (?!hanya|sekadar|semata|cuma|lagi)[^\W\d_]', 'slide'),
+    _r('S-19', TINGGI, r'(?<=[^\W\d_]), bukan (?!hanya|sekadar|semata|cuma|lagi)[^\W\d_]', 'slide'),  # pemilik 26 Okt: "lantai musim, bukan pita model" lolos saat SEDANG
+    # sumber data bukan pelaku: "Berdasarkan data DIBI, terdapat ...", bukan "DIBI mencatat ..." (pemilik 26 Okt)
+    _r('S-44', TINGGI, r'\b(DIBI|BPS|BMKG|BNPB|BPBD|SiPongi|FIRMS|IRBI|InaRISK|Kemenkes|WHO|PUPR|Kementerian PU|data|registri)\s+(mencatat|mencatatkan|merekam|menunjukkan|menyebut|melaporkan)\b', 'slide'),
     _r('S-19', TINGGI, r"\bnot (just|only|merely) [^.;]{1,60}?, but\b|\bit'?s not (just )?(about )?[^.;]{1,40}?[,;] it'?s\b"
                        r"|\bmore than just\b|\bnot because [^.;]{1,40}?, but because\b"),
     # S-20 simpulan moral dan aforisme
@@ -435,7 +438,9 @@ KATA_AI_RX = {
     if KATA_AI_EN else None,
 }
 # set tiga istilah resmi yang dihitung faktual seperti nama diri: tahap penyelenggaraan UU 24/2007 Pasal 33 (T10) dan komponen IRBI
-TIGA_RESMI = ({'prabencana', 'tanggap darurat', 'pascabencana'}, {'bahaya', 'kerentanan', 'kapasitas'})
+TIGA_RESMI = ({'prabencana', 'tanggap darurat', 'pascabencana'}, {'bahaya', 'kerentanan', 'kapasitas'},
+              {'perpipaan', 'air tanah', 'jembatan'},  # subjudul Grand Design RR (rehab/KEPUTUSAN-AWAL Q1)
+              {'hukum', 'organisasi', 'kerja sama'}, {'law', 'organisation', 'cooperation'})
 LABEL_TITIK_DUA = re.compile(r'^\s*(sumber|catatan|keterangan|keyakinan|catatan kaki)\s*:', re.I)
 
 JENIS_PROSA = {'isi', 'butir', 'kotak', 'catatan', 'slide'}

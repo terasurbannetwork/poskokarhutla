@@ -145,12 +145,12 @@ def sorot_dari(kec, siklon, nowcast_aktif, dampak=None, sarana=None):
             w, s, a = v["n"][0]
             if a or s:
                 t = "awas" if a else "siaga"
-                out.append({"tingkat": t, "judul": f"{PROVINSI.get(p, p)}: {a} kecamatan Awas, {s} kecamatan Siaga", "teks": f"Prakiraan model Pantau Bencana untuk hari ini: {a} kecamatan Awas, {s} kecamatan Siaga, {w} kecamatan Waspada.", "prov": p})
+                out.append({"tingkat": t, "judul": f"{PROVINSI.get(p, p)}: {a} kecamatan Awas, {s} kecamatan Siaga", "teks": f"Prakiraan model Centurisk97 untuk hari ini: {a} kecamatan Awas, {s} kecamatan Siaga, {w} kecamatan Waspada.", "prov": p})
     if kec and len(kec["hari"]) > 1:
         b = [(p, v["n"][1]) for p, v in kec["prov"].items() if v["n"][1][1] + v["n"][1][2]]
         b.sort(key=lambda x: -(x[1][2] * 1000 + x[1][1]))
         for p, (w, si, aw) in b[:2]:
-            out.append({"tingkat": "awas" if aw else "siaga", "judul": f"Besok, {PROVINSI.get(p, p)}: {aw} kecamatan Awas, {si} kecamatan Siaga", "teks": f"Prakiraan model Pantau Bencana untuk {tgl_id(kec['hari'][1])}.", "prov": p})
+            out.append({"tingkat": "awas" if aw else "siaga", "judul": f"Besok, {PROVINSI.get(p, p)}: {aw} kecamatan Awas, {si} kecamatan Siaga", "teks": f"Prakiraan model Centurisk97 untuk {tgl_id(kec['hari'][1])}.", "prov": p})
     if dampak and sarana:
         t = [(sarana["pelabuhan"][r[0]][0], r[2]) for r in dampak.get("pelabuhan", []) if max(r[1]) >= 2]
         if t:

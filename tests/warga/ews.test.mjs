@@ -57,7 +57,7 @@ const aset = async req => {
   return existsSync(f) && f.startsWith(path.join(AKAR, "public")) && !f.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
 const opsi = (nama, ikat = {}) => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
-  compatibilityDate: "2024-09-23", d1Databases: {DB: nama}, bindings: {IP_SALT: "garam-uji", TURNSTILE_SITEKEY: "kunci-situs", TURNSTILE_SECRET: "rahasia-ts", EMAIL_API_KEY: "kunci-resend", EMAIL_FROM: "Pantau Bencana <peringatan@contoh.id>", ...ikat},
+  compatibilityDate: "2024-09-23", d1Databases: {DB: nama}, bindings: {IP_SALT: "garam-uji", TURNSTILE_SITEKEY: "kunci-situs", TURNSTILE_SECRET: "rahasia-ts", EMAIL_API_KEY: "kunci-resend", EMAIL_FROM: "Centurisk97 <peringatan@contoh.id>", ...ikat},
   serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
 
 let mf, DB, mf2, DB2, mf3, DB3, mf4, DB4, mf5, DB5;
@@ -65,7 +65,7 @@ before(async () => {
   muat(T0);
   mf = new Miniflare(opsi("uji-ews")); DB = await mf.getD1Database("DB");
   await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));
-  mf2 = new Miniflare(opsi("uji-ews-resenddev", {TURNSTILE_SITEKEY: "", TURNSTILE_SECRET: "", EMAIL_FROM: "Pantau Bencana <onboarding@resend.dev>"})); DB2 = await mf2.getD1Database("DB");
+  mf2 = new Miniflare(opsi("uji-ews-resenddev", {TURNSTILE_SITEKEY: "", TURNSTILE_SECRET: "", EMAIL_FROM: "Centurisk97 <onboarding@resend.dev>"})); DB2 = await mf2.getD1Database("DB");
   await DB2.batch(pecah(migrasi()).map(s => DB2.prepare(s)));
   mf3 = new Miniflare(opsi("uji-ews-tanpats", {TURNSTILE_SITEKEY: "", TURNSTILE_SECRET: ""}));   // email aktif, Turnstile tidak dipasang
   DB3 = await mf3.getD1Database("DB"); await DB3.batch(pecah(migrasi()).map(s => DB3.prepare(s)));

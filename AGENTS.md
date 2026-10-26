@@ -23,6 +23,7 @@ tidak) · BUKTI SIAP (perintah yang membuktikan selesai).
 | Route worker, unggah foto, form warga              | `warga-api` → `guard-api` + `security-reviewer` |
 | Migrasi D1                                         | `warga-api` → `migrasi-idempoten`           |
 | Kartu, pop-up, angka di layar                      | `layar-peta` → `selera-angka` + `inp-reviewer` |
+| Layar `/pipa` (SIPPA), uji `tests/sippa`           | `sippa` → `inp-reviewer` + `selera-angka`   |
 | Aturan baru butuh gerbang / uji integrasi          | `penulis-gerbang`                           |
 | Workflow, package.json, settings, mesin agent      | `mekanik-mesin`                             |
 | Sebelum commit besar                               | `higiene-repo`                              |
@@ -91,6 +92,7 @@ ulang yang berubah.
 | Worker & warga      | `src/**`, `migrations/**`, `public/warga`, `public/admin`     | D1 + R2; satu cron `* * * * *` (batas 5 jadwal akun Free): FIRMS → D1 menit 15 tiap 3 jam UTC, bersih-bersih menit 17           | `warga-api`     |
 | Layar publik        | `public/index.html`, `public/*.js/css`, i18n, OG              | Cloudflare static assets; `terbit.yml`              | `layar-peta`    |
 | Modifikasi cuaca    | `scripts/omc/**`, `public/omc/**`                             | `public/udara/data/omc_*.json`; dirantai di `udara.yml` | `cuaca-udara`   |
+| SIPPA `/pipa`       | `public/pipa/**`, `tests/sippa/**` (layar); `src/sippa.js`, `migrations/0055-0057` (warga-api); `scripts/data/sippa/**` (pipa-data) | R2 `sippa/`, D1 `sippa_*`; pemicu harian di `data.yml` | `sippa`         |
 | Mesin repo          | `.github/workflows/**`, `package.json`, `scripts/agents/**`   | —                                                   | `mekanik-mesin` |
 | Gerbang             | `tests/agen/**`, `tests/beban/**`                             | `npm run uji:agen`                                  | `penulis-gerbang` |
 

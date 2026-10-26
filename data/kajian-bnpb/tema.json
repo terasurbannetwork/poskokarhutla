@@ -97,6 +97,13 @@
       },
       "tanpa_data": {"isi": "tanpa-data", "arsir": "arsir-tanpa-data", "label": "Belum terdata"}
     },
+    "zona": {
+      "_aturan": "DS 2.1.3, keputusan 52: zona kelayakan A-D di buku dan deck = rona dimensi air (biru dekat, emas jauh) + pola dimensi jalan + huruf; warna tidak pernah satu-satunya pembawa makna",
+      "A": {"isi": "biru", "pola": "penuh", "arti": "air < 2,5 km, jalan < 5 km"},
+      "B": {"isi": "biru", "pola": "cincin", "arti": "air < 2,5 km, jalan >= 5 km atau tanpa data"},
+      "C": {"isi": "skala.emas.4", "pola": "setengah", "arti": "air >= 2,5 km, jalan < 5 km"},
+      "D": {"isi": "skala.emas.4", "pola": "silang", "arti": "air >= 2,5 km, jalan >= 5 km atau tanpa data"}
+    },
     "terlarang": [
       "#D9650B", "#0F1E2D", "#0B4EA2", "#A88A3C", "#FBEBDD", "#D5D9DE",
       "#2F6FB5", "#4F6D8C", "#2E7D8C", "#6B4A2B", "#7A2E1E", "#A23B2A", "#F7F8FA",
@@ -135,6 +142,26 @@
       "lampiran": "ABCDEFGHIJKL",
       "kata_kunci": ["BNPB", "penanggulangan bencana", "mitigasi bencana", "Indonesia", "grand design", "skenario terburuk", "prabencana"],
       "cakupan_sampul": "Cakupan: seluruh kabupaten/kota di Indonesia dan seluruh jenis bencana menurut UU 24/2007 pada tiga tahap penanggulangan."
+    },
+    "rehab": {
+      "judul": "Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses Pascabencana 2026–2030",
+      "subjudul": "Sistem Perpipaan, Pemanfaatan Air Tanah, dan Jembatan untuk Pemulihan Daerah Terdampak Bencana",
+      "judul_pendek": "Kajian Rehabilitasi dan Rekonstruksi Air dan Akses",
+      "nama_berkas": "Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses Pascabencana 2026-2030",
+      "batas_halaman_isi": null,
+      "lampiran": "ABCDEFGHIJKLMN",
+      "kata_kunci": ["BNPB", "penanggulangan bencana", "rehabilitasi dan rekonstruksi", "pascabencana", "grand design", "jembatan", "air tanah", "sistem penyediaan air minum"],
+      "cakupan_sampul": "Cakupan: 38 provinsi dan 514 kabupaten/kota, akses (jembatan), air perpipaan, dan air tanah pada tiga lapis waktu pemulihan."
+    },
+    "sippa": {
+      "judul": "Sistem Pipa Portabel Karhutla dan Banjir (SIPPA) 2026–2030",
+      "subjudul": "Desain, Uji Lapangan, dan Peta Jalan Kit Relay Portabel untuk Pemadaman Bara Gambut dan Pemakaian Ganda Banjir",
+      "judul_pendek": "Kajian SIPPA",
+      "nama_berkas": "Kajian SIPPA {DDMMYY}",
+      "batas_halaman_isi": null,
+      "lampiran": "ABCDEFGHIJKLMN",
+      "kata_kunci": ["BNPB", "kebakaran hutan dan lahan", "gambut", "kit relay portabel", "injeksi bawah permukaan", "banjir", "SIPPA"],
+      "cakupan_sampul": "Cakupan: 865 kompleks api Kalimantan Tengah dan 18 provinsi rawan kebakaran hutan dan lahan, dengan pemakaian ganda pada musim banjir."
     },
     "penerbit": "Badan Nasional Penanggulangan Bencana",
     "terbit": "Oktober 2026"
@@ -519,7 +546,9 @@
       "terverifikasi": {"label": "Terverifikasi", "pil_garis": "slate", "pil_teks": "teks"},
       "estimasi-model": {"label": "Estimasi model", "pil_garis": "oranye", "pil_teks": "teks", "tambahan": ["belum diuji balik", "uji balik gagal"]},
       "asumsi-kebijakan": {"label": "Asumsi kebijakan", "pil_garis": "teks-3", "pil_teks": "teks"},
-      "penilaian-pakar": {"label": "Penilaian pakar", "pil_garis": "teks-3", "pil_teks": "teks"}
+      "penilaian-pakar": {"label": "Penilaian pakar", "pil_garis": "teks-3", "pil_teks": "teks"},
+      "menunggu": {"label": "Menunggu", "pil_garis": "teks-3", "pil_teks": "teks"},
+      "hipotesis": {"label": "Hipotesis", "pil_garis": "slate", "pil_teks": "teks"}
     },
     "aspek_dampak": {
       "_aturan": "Perban BNPB 2/2023 Pasal 7 ayat (5): asumsi dampak kartu skenario diproyeksikan ke lima aspek ini (KERANGKA prinsip 9, PEDOMAN B5.11)",
@@ -639,7 +668,7 @@
     "area_isi_y_pt": [101, 500],
     "kata_per_slide": [180, 290],
     "blok_per_slide": [3, 4],
-    "judul_kotak": {"x_pt": 43.2, "y_pt": 21.6, "tinggi_pt": [47.5, 65], "lebar_pt": 823, "lebar_dengan_pil_pt": 644, "anchor": "bawah"},
+    "judul_kotak": {"x_pt": 43.2, "y_pt": 21.6, "tinggi_pt": [47.5, 65], "lebar_pt": 838, "lebar_dengan_pil_pt": 644, "anchor": "bawah"},
     "garis": {"y_pt": [95, 507.6], "tebal_pt": 0.75, "warna": "garis-kuat"},
     "logo": {"x_pt": 889.4, "y_pt": 28.8, "lebar_pt": 27.4, "tinggi_pt": 34.6},
     "footer": {"teks": "Badan Nasional Penanggulangan Bencana  |  Copyright 2026", "y_pt": 512.6, "ukuran_pt": 8.5, "warna": "teks"},
@@ -829,6 +858,7 @@
     "pembatas_lampiran": {"judul_dari_atas_cm": 9, "daftar_pt": 10.5},
     "sampul_foto": {
       "air": {"berkas": "gambar/foto/sampul-air.jpg", "judul": "Waduk Jatiluhur, Purwakarta", "pengarang": "Cep Budhi Darma", "lisensi": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Jatiluhur_12.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"},
+      "rehab": {"berkas": "gambar/foto/sampul-rehab.jpg", "judul": "Masjid yang tetap berdiri di antara puing setelah tsunami Aceh, Banda Aceh, Januari 2005", "pengarang": "USGS", "lisensi": "PD", "url": "https://commons.wikimedia.org/wiki/File:Aceh_2004_tsunami_standing_mosque_USGS.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"},
       "mitigasi": {"berkas": "gambar/foto/sampul-mitigasi-raung.jpg", "judul": "Gunung Raung menyemburkan abu, dilihat dari Selat Bali, Banyuwangi, 2015", "pengarang": "consigliere ivan from Bontang, Indonesia", "lisensi": "CC BY 2.0", "url": "https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(2015)_from_Bali_strait_at_dawn.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"}
     },
     "kolofon": {
@@ -838,15 +868,25 @@
         "Peraturan Presiden Nomor 87 Tahun 2020 tentang Rencana Induk Penanggulangan Bencana Tahun 2020–2044",
         "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029"
       ],
-      "batas_data": "23 Oktober 2026"
+      "batas_data": "23 Oktober 2026",
+      "dasar_kajian": {
+        "rehab": [
+          "Undang-Undang Nomor 24 Tahun 2007 tentang Penanggulangan Bencana",
+          "Peraturan Pemerintah Nomor 21 Tahun 2008 tentang Penyelenggaraan Penanggulangan Bencana",
+          "Peraturan Badan Nasional Penanggulangan Bencana Nomor 5 Tahun 2017 tentang Penyusunan Rencana Rehabilitasi dan Rekonstruksi Pascabencana",
+          "Peraturan Badan Nasional Penanggulangan Bencana Nomor 6 Tahun 2017 tentang Penyelenggaraan Rehabilitasi dan Rekonstruksi Pascabencana",
+          "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029"
+        ]
+      },
+      "batas_data_kajian": {"rehab": "25 Oktober 2026"}
     }
   },
   "qa": {
-    "pustaka": {"_catatan": "L65 Buku Pegangan: ambang kajian final (manifest pustaka.status final); draf hanya diperiksa keutuhan kunci", "bab_min": 8, "kajian_min": {"air": 50, "mitigasi": 80}, "resmi_primer_min_persen": 50},
+    "pustaka": {"_catatan": "L65 Buku Pegangan: ambang kajian final (manifest pustaka.status final); draf hanya diperiksa keutuhan kunci", "bab_min": 8, "kajian_min": {"air": 50, "mitigasi": 80, "rehab": 50, "sippa": 50}, "resmi_primer_min_persen": 50},
     "_catatan": "Kenop gerbang qa/periksa.py yang bukan token desain. Nama gaya dicocokkan ke rantai gaya Word tanpa beda huruf; kepala kolom ke teks kepala yang dikapitalkan.",
     "gaya_kapital_boleh": ["Label Bagian", "Kepala Tabel", "Pil", "Label Pita", "Judul Bagian Depan", "Judul Daftar Isi"],
     "gaya_pustaka": ["Pustaka", "Bibliography"],
-    "kolom_tanpa_rata_kanan": ["NO", "NO.", "PERINGKAT", "KODE", "REK", "REGISTER", "REK KAJIAN AIR", "TINDAK LANJUT", "LAPIS"],
+    "kolom_tanpa_rata_kanan": ["NO", "NO.", "PERINGKAT", "KODE", "BAB", "REK", "REGISTER", "REK KAJIAN AIR", "TINDAK LANJUT", "LAPIS"],
     "kata_cacah": ["kejadian", "jiwa", "orang", "KK", "desa", "kab/kota", "kabupaten", "kota", "provinsi", "rumah", "unit", "ha", "km", "km²", "titik", "korban", "pengungsi", "sekolah", "faskes", "kasus", "liter", "tangki", "banjir", "longsor", "gempa", "kebakaran", "letusan"],
     "cut_off_teks": "CUT OFF DATA",
     "panel_tinggi_min_pt": 48,

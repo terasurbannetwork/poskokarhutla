@@ -73,18 +73,35 @@ def jalan(akar=AKAR, maks=100):
              for d, _, fs in os.walk(akar) for f in fs]
     blok, kecuali = [TANDA], []
     for ujung in (".js", ".css"):
-        asing = sorted(w for w in semua if w.endswith(ujung) and w not in ada)
-        if len(asing) < len([w for w in semua if w.endswith(ujung)]):
+        sama = [w for w in semua if w.endswith(ujung)]
+        asing = sorted(w for w in sama if w not in ada)
+        if len(asing) < len(sama):
             blok += [f"/*{ujung}", "  Cache-Control: public, max-age=31536000, immutable"]
-        sisa = set(asing)
+        # Pola pengecualian: nama persis, awalan ("/gempa/si*.js") atau akhiran ("/*kejadian.js"); aman = tak mengena satu pun
+        # berkas immutable (splat rakus, "*" mencocokkan "/" juga). Pilih serakah: yang menutup pengecualian terbanyak, lalu terpendek.
+        # Akhiran menggabung nama yang sama di banyak folder jadi satu aturan (jumlah aturan tak tumbuh per folder).
+        cand = {}
+        def tambah(q, ok):
+            if q not in cand:
+                kena = {x for x in sama if ok(x)}
+                if kena and not (kena & ada):
+                    cand[q] = kena
         for w in asing:
-            if w not in sisa:
-                continue
-            for awal in ["/"] + [w[:i] for i in range(2, len(w) - len(ujung) + 1)] + [w]:   # awalan terpendek yang sah; terakhir nama persis
-                kena = [x for x in semua if x.startswith(awal) and x.endswith(ujung)] if awal != w else [w]
-                if all(x not in ada for x in kena):
-                    kecuali.append(w if awal == w else f"{awal}*{ujung}"); sisa -= set(kena)
-                    break
+            tambah(w, lambda x, w=w: x == w)
+            for i in range(1, len(w) - len(ujung)):                       # awalan: "/gempa/si*.js"
+                tambah(w[:i] + "*" + ujung, lambda x, a=w[:i]: x.startswith(a))
+            nm = w.rsplit("/", 1)[1]
+            for i in range(0, len(nm) - len(ujung) - 1):                   # akhiran nama: "/*kejadian.js", "/*sim.js"
+                t = nm[i:]
+                tambah("/*" + t, lambda x, t=t: x.endswith(t) and len(x) > len(t))
+            for i in range(0, len(nm) - len(ujung) - 2):                   # potongan nama: "/*sim_*.js"
+                for j in range(i + 3, len(nm) - len(ujung) + 1):
+                    t = nm[i:j]
+                    tambah("/*" + t + "*" + ujung, lambda x, t=t: t in x[1:] and x.endswith(ujung))
+        sisa = set(asing)
+        while sisa:
+            q = max(cand, key=lambda k: (len(cand[k] & sisa), -len(k)))
+            kecuali.append(q); sisa -= cand[q]
     for pola in kecuali:
         blok += [pola, "  ! Cache-Control", "  Cache-Control: public, max-age=0, must-revalidate"]
     if halaman:
@@ -121,7 +138,7 @@ def uji():
         assert "/*.js\n  Cache-Control: public, max-age=31536000, immutable" in h and "/*.html\n  Cache-Control: no-cache" in h, h
         w("d.js", "y=1"); w("e.html", '<script src="d.js"></script><script>"d.js"</script>')   # d.js juga dimuat tanpa ?v
         jalan(t); h = open(os.path.join(t, "_headers")).read()
-        assert "/*.js\n  Cache-Control: public, max-age=31536000, immutable" in h and "/d*.js\n  ! Cache-Control" in h and "/a" not in h.split(TANDA)[1], h  # d.js jadi pengecualian
+        assert "/*.js\n  Cache-Control: public, max-age=31536000, immutable" in h and "/d.js\n  ! Cache-Control" in h and "/a" not in h.split(TANDA)[1], h  # d.js jadi pengecualian
         try:
             jalan(t, maks=2); raise AssertionError("harus gagal bila aturan > maks")
         except SystemExit:

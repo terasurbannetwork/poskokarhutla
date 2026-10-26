@@ -38,6 +38,8 @@ jobs:
         run: npm run uji:agen
       - name: Uji worker (D1, route, foto)
         run: npm run uji:warga
+      - name: Uji SIPPA (klien dan gerbang)
+        run: npm run uji:sippa
 
       - name: Pulihkan data karhutla terakhir
         uses: actions/cache/restore@v4

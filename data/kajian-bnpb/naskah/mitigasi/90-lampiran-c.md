@@ -7,7 +7,7 @@ status: final
 
 # Kartu Skenario dan Keluaran Model per Jenis {#lamp:skenario}
 
-Kartu skenario terburuk yang masuk akal untuk kelima belas jenis bencana dimuat lengkap di Bab 6 sampai Bab 9; @tbl:c-indeks menunjukkan letak tiap kartu dan variannya. Lampiran ini menambahkan keluaran model yang tidak dipakai sebagai angka utama di kartu: pita korban dan kerugian skenario gempa dan gunung api dari platform Pantau Bencana, serta keluaran mesin hidrometeorologi per musim [@pantaubencana-2026-skenario-geologi; @bnpb-dibi]. Pita ditulis utuh tanpa dipotong ke lantai tercatat; lantai tercatat tetap angka utama di kartu (@sub:skenario).
+Kartu skenario terburuk yang masuk akal untuk kelima belas jenis bencana dimuat lengkap di Bab 6 sampai Bab 9; @tbl:c-indeks menunjukkan letak tiap kartu dan variannya. Lampiran ini menambahkan keluaran model yang tidak dipakai sebagai angka utama di kartu: pita korban dan kerugian skenario gempa dan gunung api dari platform Pantau Bencana, serta keluaran mesin hidrometeorologi per musim [@pantaubencana-2026-skenario-geologi; @bnpb-dibi]. Pita ditulis utuh tanpa dipotong ke lantai tercatat; lantai tercatat tetap angka utama di kartu (@sub:skenario). Varian a memodelkan jenis alam dengan kemungkinan dan kepekaan. Varian b dan c memakai kejadian analog berangka tanpa perkalian. Rob dimuat dalam kartu gelombang ekstrem dan abrasi.
 
 **Pernyataan produsen.** Keluaran di lampiran ini dihasilkan platform Pantau Bencana dari data terbuka, bukan oleh unit kerja BNPB, sehingga bukan Data Bencana menurut Perban BNPB 1/2023 [@bnpb-2023-satudata]. Galat validasi silang mesin korban gempa {{angka:geologi.mesin.faktor_loo|fmt=1}} kali, dan model memberi {{angka:geologi.mesin.yogya2006_model}} korban untuk Yogyakarta 2006, padahal tercatat {{angka:usgs.yogya2006.meninggal}} [@usgs-usp000ej1c]. Korban tsunami model dan faktor evakuasi interpolasi paket tidak dimuat, karena korban tsunami belum dapat dihitung dari genangan resmi (@sub:rekonsiliasi). Rumah terdampak gempa dihitung dari jiwa dibagi {{angka:geologi.asumsi.jiwa_per_rumah|fmt=1}} jiwa per rumah, bukan dari data bangunan.
 
@@ -15,7 +15,7 @@ Kartu skenario terburuk yang masuk akal untuk kelima belas jenis bencana dimuat 
 judul: Letak kartu skenario terburuk per jenis bencana dan sumber keluaran model, kajian mitigasi 2026
 sumber: Bab 6 sampai Bab 9 kajian ini; NASKAH-SPEK varian kartu skenario
 keyakinan: asumsi-kebijakan
-catatan: Varian a alam dimodelkan dengan kemungkinan dan kepekaan; b nonalam dan c sosial memakai kejadian analog berangka tanpa perkalian. Rob dimuat dalam kartu gelombang ekstrem dan abrasi.
+catatan: Varian a alam dimodelkan; b nonalam dan c sosial memakai kejadian analog tanpa perkalian.
 
 | JENIS | KARTU | VARIAN | KELUARAN MODEL DI LAMPIRAN INI |
 | --- | --- | --- | --- |
@@ -39,7 +39,7 @@ catatan: Varian a alam dimodelkan dengan kemungkinan dan kepekaan; b nonalam dan
 
 ## Keluaran Model Geologi {#sub:c-geologi}
 
-**Pita korban dan kerugian megathrust dari platform semuanya lebih lebar dari satu orde besaran, sehingga angkanya hanya tampil di lampiran ini** (@tbl:c-geologi). Skenario ilustratif megathrust Jawa di bawah magnitudo maksimum tidak menghasilkan intensitas VII di pusat kecamatan mana pun, dan skenario Sumba tidak memiliki sumber magnitudo. Baris erupsi memakai pola historis Merapi 2010 dan Semeru 2021.
+**Pita korban dan kerugian megathrust dari platform semuanya lebih lebar dari satu orde besaran, sehingga angkanya hanya tampil di lampiran ini** (@tbl:c-geologi). Skenario ilustratif megathrust Jawa di bawah magnitudo maksimum tidak menghasilkan intensitas VII di pusat kecamatan mana pun, dan skenario Sumba tidak memiliki sumber magnitudo. Baris erupsi memakai pola historis Merapi 2010 dan Semeru 2021. Kerugian materiil batas bawah memakai stimulan rumah dan berlabel asumsi kebijakan.
 
 ::: tabel {#tbl:c-geologi}
 judul: Keluaran model skenario gempa dan gunung api platform Pantau Bencana menurut skenario dan butir, estimasi 2026
@@ -49,7 +49,7 @@ grup: SKENARIO
 sumber: Platform Pantau Bencana, mesin guncangan, kerusakan, dan sapuan erupsi; WorldPop 2026; KRB PVMBG; DIBI BNPB
 keyakinan: campuran
 data_per: 23 Okt 2026
-catatan: Rendah, tengah, dan tinggi adalah pita model; sel "–" tidak dihitung. Kerugian materiil batas bawah memakai stimulan rumah dan berlabel asumsi kebijakan. Korban tsunami model tidak dimuat.
+catatan: Rendah, tengah, dan tinggi adalah pita model; sel "–" tidak dihitung.
 :::
 
 ## Keluaran Mesin Hidrometeorologi {#sub:c-hidromet}
@@ -130,5 +130,5 @@ kolom: metrik="METRIK (NAMA DI PAKET DATA)"; nilai="NILAI" fmt=ringkas; rendah="
 sumber: SiPongi Kementerian Kehutanan; DIBI BNPB; Renas PB 2025–2029 (KRB 2022–2026); Bank Dunia (2016)
 keyakinan: campuran
 data_per: 23 Okt 2026
-catatan: Angka Bank Dunia terverifikasi; kerugian dalam dolar Amerika Serikat dan rupiah adalah dua satuan satu angka dan tidak dijumlah.
+catatan: Angka Bank Dunia terverifikasi; dolar Amerika Serikat dan rupiah dua satuan, tidak dijumlah.
 :::

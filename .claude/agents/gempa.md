@@ -52,7 +52,7 @@ Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 
 ## Yang wajib kamu pegang
 
-- Status resmi tsunami BMKG/PTWC tampil apa adanya dan terpisah dari Tingkat Pantau Bencana; Potensi tanpa kata tsunami = null, bukan aman
+- Status resmi tsunami BMKG/PTWC tampil apa adanya dan terpisah dari Tingkat Centurisk97; Potensi tanpa kata tsunami = null, bukan aman
 - Gempa data hidup (cron Worker + D1 milik warga-api); pipa Python hanya riwayat USGS, risiko, berita; keluaran CI ke public/data, yang di-commit ke public/gempa/data
 - Model mengikuti PELATIHAN-MODEL: uji dibuka sekali, pembanding sederhana, kesetaraan Python-JS, prospektif append-only; tidak ada prakiraan gempa utama
 

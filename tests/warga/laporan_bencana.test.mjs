@@ -181,7 +181,7 @@ uji("deck bahaya dari snapshot: slide mengikuti data, angka dan sumber tercetak,
 });
 
 uji("paparan ?bencana=: slide karhutla khusus karhutla, slide b_* hanya bencana lain dengan bahan dari spek, sampul memakai nama bahaya, karhutla tetap utuh", async () => {
-  const L = FX.banjir(), td = "2026-10-19", B = SB.dariLaporan(L, td), dasar = {D: {laporan: L}, B, prov: "72", namaProv: "Sulawesi Tengah", tgl: td, merek: "Pantau Bencana", templat: {sampul: {}}, gambar: {}};
+  const L = FX.banjir(), td = "2026-10-19", B = SB.dariLaporan(L, td), dasar = {D: {laporan: L}, B, prov: "72", namaProv: "Sulawesi Tengah", tgl: td, merek: "Centurisk97", templat: {sampul: {}}, gambar: {}};
   const c = {...dasar, bencana: "banjir", namaB: "Banjir, longsor dan rob"}, karhutla = {...dasar, bencana: undefined, B: null};
   const reg = PS.REGISTRI, khusus = reg.filter(s => s.khusus === "karhutla").map(s => s.id), bahaya = reg.filter(s => s.khusus === "bahaya").map(s => s.id);
   assert.deepEqual(ar(khusus), ["nasional", "provinsi", "harian", "operasi", "konsesi", "konsesi12", "profil3", "lampiran_kab"]); assert.deepEqual(ar(bahaya), ["b_nasional", "b_provinsi", "b_peringkat", "b_sorot", "b_prakiraan", "b_sumber"]);
@@ -374,7 +374,7 @@ uji("tanggal ditulis 'd Bulan yyyy' di kesimpulan, WA, slide, dan paparan (tanpa
   /* slide dan paparan memakai judul, tanda –, waktu terformat, desimal data, tanpa kata teknis */
   const d = BS.deck(sn), t = d.slide.map((x, i) => isiSlide(x, {no: i + 1, aset: {}, s: sn, ex: {lewat: Object.fromEntries(d.dilewati.map(y => [y.id, y.alasan]))}, tahun: "2026"})).join("\n");
   assert.doesNotMatch(t, /JSON|\bNA\b|provinsi prioritas|\d{4}-\d{2}-\d{2}/); assert.ok(t.includes("0,12") && t.includes("–") && t.includes("40") && !t.includes("40,00"), "prakiraan: desimal data, sel kosong –");
-  const c = {D: {laporan: L}, B: SB.dariLaporan(L, "2026-10-19"), bencana: "banjir", namaB: "Banjir, longsor dan rob", prov: "72", namaProv: "Sulawesi Tengah", tgl: "2026-10-19", merek: "Pantau Bencana", templat: {sampul: {}}, gambar: {}};
+  const c = {D: {laporan: L}, B: SB.dariLaporan(L, "2026-10-19"), bencana: "banjir", namaB: "Banjir, longsor dan rob", prov: "72", namaProv: "Sulawesi Tengah", tgl: "2026-10-19", merek: "Centurisk97", templat: {sampul: {}}, gambar: {}};
   const p = ["b_nasional", "b_peringkat", "b_prakiraan", "b_sumber"].map(id => isiSlide(PS.REGISTRI.find(x => x.id === id), {...c, no: 1, urutan: []})).join("\n");
   assert.ok(p.includes("20 Okt 2026, 02.30 WIB") && p.includes("0,12") && p.includes("–") && p.includes("Arti tanda –") && p.includes("fwi") === false, p); assert.doesNotMatch(p, /\bNA\b|\d{4}-\d{2}-\d{2}/);
   assert.ok(isiSlide(PS.REGISTRI.find(x => x.id === "b_nasional"), {...c, B: SB.dariLaporan(L, "2026-10-19")}).includes("siaga atau awas banjir pada 19 Oktober 2026"));

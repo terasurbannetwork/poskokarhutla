@@ -2,7 +2,7 @@
 
 BMKG hanya menerbitkan peta SPI/HTH sebagai gambar JPG (diperiksa 16 Okt 2026: halaman /iklim/?p=hari-tanpa-hujan dan
 /iklim/indeks-presipitasi-terstandarisasi 200 tanpa data terstruktur; /iklim/informasi-hari-tanpa-hujan 404), jadi SPI
-dihitung sendiri dan diberi label "Deteksi Pantau Bencana".
+dihitung sendiri dan diberi label "Deteksi Centurisk97".
 
 Metode: jumlah hujan k bulan yang berakhir di bulan e, tiap tahun 1991-2020 -> sebaran gamma (MLE pendekatan Thom) ->
 peluang kumulatif (fungsi gamma tak-lengkap ditulis sendiri; stdlib tak punya) dengan koreksi bulan nol hujan -> normal baku.

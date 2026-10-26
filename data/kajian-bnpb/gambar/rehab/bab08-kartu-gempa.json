@@ -1,0 +1,416 @@
+{
+ "nama": "bab08-kartu-gempa",
+ "keterangan": "Rumah rusak berat akibat gempa bumi per provinsi, 2015–2025 (unit)",
+ "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  148.25,
+  145.11
+ ],
+ "ukuran_cm": [
+  5.23,
+  5.12
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "7.000",
+   "jenis": "simbol",
+   "warna": "#8A4B2A"
+  },
+  {
+   "label": "20.000",
+   "jenis": "simbol",
+   "warna": "#8A4B2A"
+  },
+  {
+   "label": "70.000",
+   "jenis": "simbol",
+   "warna": "#8A4B2A"
+  }
+ ],
+ "hex": {
+  "#D3DBE5": [
+   "daratan-netral"
+  ],
+  "#FFFFFF": [
+   "batas",
+   "garis"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#8A4B2A": [
+   "simbol",
+   "legenda"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 67.1,
+   "y": 41.22,
+   "w": 14,
+   "h": 14,
+   "jenis": "simbol",
+   "grup": "sim0",
+   "teks": "rumah"
+  },
+  {
+   "x": 79.67,
+   "y": 20.56,
+   "w": 9.41,
+   "h": 9.41,
+   "jenis": "simbol",
+   "grup": "sim1",
+   "teks": "rumah"
+  },
+  {
+   "x": 40.25,
+   "y": 39.8,
+   "w": 6.56,
+   "h": 6.56,
+   "jenis": "simbol",
+   "grup": "sim2",
+   "teks": "rumah"
+  },
+  {
+   "x": 106.42,
+   "y": 29.86,
+   "w": 4.07,
+   "h": 4.07,
+   "jenis": "simbol",
+   "grup": "sim3",
+   "teks": "rumah"
+  },
+  {
+   "x": 8.94,
+   "y": 7.58,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim4",
+   "teks": "rumah"
+  },
+  {
+   "x": 15.6,
+   "y": 13.54,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim5",
+   "teks": "rumah"
+  },
+  {
+   "x": 20.08,
+   "y": 22.52,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim6",
+   "teks": "rumah"
+  },
+  {
+   "x": 26.28,
+   "y": 25.57,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim7",
+   "teks": "rumah"
+  },
+  {
+   "x": 25.17,
+   "y": 31.05,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim8",
+   "teks": "rumah"
+  },
+  {
+   "x": 48.79,
+   "y": 41,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim9",
+   "teks": "rumah"
+  },
+  {
+   "x": 49.51,
+   "y": 45.5,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim10",
+   "teks": "rumah"
+  },
+  {
+   "x": 56.02,
+   "y": 43.97,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim11",
+   "teks": "rumah"
+  },
+  {
+   "x": 35.75,
+   "y": 39.88,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim12",
+   "teks": "rumah"
+  },
+  {
+   "x": 62.67,
+   "y": 45.59,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim13",
+   "teks": "rumah"
+  },
+  {
+   "x": 82,
+   "y": 46.34,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim14",
+   "teks": "rumah"
+  },
+  {
+   "x": 66.72,
+   "y": 11.78,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim15",
+   "teks": "rumah"
+  },
+  {
+   "x": 91.04,
+   "y": 17.81,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim16",
+   "teks": "rumah"
+  },
+  {
+   "x": 78.67,
+   "y": 31.91,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim17",
+   "teks": "rumah"
+  },
+  {
+   "x": 83.7,
+   "y": 31.91,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim18",
+   "teks": "rumah"
+  },
+  {
+   "x": 75.17,
+   "y": 27.41,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim19",
+   "teks": "rumah"
+  },
+  {
+   "x": 102.3,
+   "y": 17.85,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim20",
+   "teks": "rumah"
+  },
+  {
+   "x": 134.51,
+   "y": 28.62,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim21",
+   "teks": "rumah"
+  },
+  {
+   "x": 136.67,
+   "y": 33.21,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim22",
+   "teks": "rumah"
+  },
+  {
+   "x": 115.23,
+   "y": 24,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim23",
+   "teks": "rumah"
+  },
+  {
+   "x": 20.93,
+   "y": 65.68,
+   "w": 68.07,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-20",
+   "teks": "Rumah rusak berat"
+  },
+  {
+   "x": 20.93,
+   "y": 64.68,
+   "w": 68.07,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-20",
+   "teks": "Rumah rusak berat"
+  },
+  {
+   "x": 107.25,
+   "y": 65.68,
+   "w": 20.07,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-98",
+   "teks": "7.000"
+  },
+  {
+   "x": 99,
+   "y": 64.68,
+   "w": 28.32,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-98",
+   "teks": "7.000"
+  },
+  {
+   "x": 41.43,
+   "y": 80.39,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-30",
+   "teks": "20.000"
+  },
+  {
+   "x": 30.26,
+   "y": 79.39,
+   "w": 35.74,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-30",
+   "teks": "20.000"
+  },
+  {
+   "x": 93.43,
+   "y": 80.39,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-76",
+   "teks": "70.000"
+  },
+  {
+   "x": 76,
+   "y": 77.68,
+   "w": 41.99,
+   "h": 13.43,
+   "jenis": "legenda",
+   "grup": "leg1-76",
+   "teks": "70.000"
+  },
+  {
+   "x": 3,
+   "y": 94.11,
+   "w": 125.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi."
+  },
+  {
+   "x": 3,
+   "y": 103.71,
+   "w": 129.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Sumber batas: Pantau Bencana, asal"
+  },
+  {
+   "x": 3,
+   "y": 113.31,
+   "w": 109.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "belum terdokumentasi; WGS84"
+  },
+  {
+   "x": 3,
+   "y": 122.91,
+   "w": 125.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "geografis; proyeksi ekuirektangular,"
+  },
+  {
+   "x": 3,
+   "y": 132.51,
+   "w": 71.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G20",
+ "besaran": "total",
+ "cakupan": "nasional",
+ "tingkat": "provinsi",
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 2,5° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 24,
+ "simbol_digeser": 8,
+ "putaran_geser": 2
+}

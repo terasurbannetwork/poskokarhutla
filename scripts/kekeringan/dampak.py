@@ -126,7 +126,7 @@ def tulis():
         sf = sekolah_fasilitas(wil, json.load(open(sp))["baris"], json.load(open(fp)), w.cari)
         if sf:
             out["sekolah_fasilitas"] = sf
-    out["sumber"] = {"terpapar": "Deteksi Pantau Bencana (NASA POWER, ECMWF, ERA5-Land); penduduk WorldPop 2026", "tahunan": "BNPB, data.bnpb.go.id (Data Bencana Indonesia 2010-2024)",
+    out["sumber"] = {"terpapar": "Deteksi Centurisk97 (NASA POWER, ECMWF, ERA5-Land); penduduk WorldPop 2026", "tahunan": "BNPB, data.bnpb.go.id (Data Bencana Indonesia 2010-2024)",
                      "sekolah_fasilitas": "Sekolah Dapodik/Kemendikbud dan EMIS Kemenag; puskesmas, klinik, rumah sakit OpenStreetMap; data baru tersedia untuk 9 provinsi"}
     with open(KELUAR, "w") as f:
         json.dump(out, f, ensure_ascii=False, separators=(",", ":"))

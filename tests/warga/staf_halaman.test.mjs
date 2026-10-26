@@ -10,6 +10,7 @@ import "../../src/worker.js";
 import {PROV, durasi} from "../../src/instansi.js";
 import {P_VALIDASI, P_KONSESI} from "../../src/staf.js";
 import {PERAN_BACA} from "../../src/omc.js";
+import {P_SIPPA_BACA} from "../../src/sippa.js";
 import {HALAMAN_STAF} from "../../src/admin_halaman.js";
 import * as S from "../../public/laporan_karhutla_spek.js";
 import {cariChrome, bukaPeramban} from "../bnpb/_peramban.mjs";
@@ -47,6 +48,7 @@ uji("hak halaman staf sama dengan hak API-nya (satu sumber)", () => {
   assert.deepEqual([...HALAMAN_STAF.omc].sort(), [...PERAN_BACA].sort());
   assert.deepEqual([...HALAMAN_STAF.instansi].sort(), [...new Set([...P_VALIDASI, ...P_KONSESI])].sort());
   assert.deepEqual(HALAMAN_STAF.posko, P_KONSESI);
+  assert.deepEqual(HALAMAN_STAF.pipa, P_SIPPA_BACA, "SIPPA: hak halaman = hak baca API (src/sippa.js)");
   const kl = teks("public/admin/instansi.js"); assert.match(kl, /TAB_PERAN = \{validasi: \["verifikator", "pusdalops"\], akun: \[\], pantau: \["pusdalops"\], kontak: \["analis_konsesi"\]\}/);
 });
 uji("S3 dan R9: fmt.durasi = durasi Worker; PROV klien = server; ejaan resmi Palangka Raya", () => {

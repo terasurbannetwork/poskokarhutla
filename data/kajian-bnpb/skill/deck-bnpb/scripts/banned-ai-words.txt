@@ -1,0 +1,182 @@
+# Banned AI words — 150+ terms
+# Format: one word per line, comments with #
+# Hook pre-deliver-scan.sh reads this file
+# Source: Titan voice guide + @rubenhassid anti-AI research + GPT detector corpora
+
+# === HIGH-FREQUENCY AI TELLS ===
+delve
+tapestry
+furthermore
+moreover
+nuanced
+myriad
+plethora
+harness
+leverage
+robust
+seamless
+landscape
+realm
+embark
+navigate
+foster
+pivotal
+transformative
+paradigm
+holistic
+synergy
+underscore
+unveil
+bustling
+testament
+crucial
+unwavering
+multifaceted
+ever-evolving
+ever-changing
+rapidly-evolving
+cutting-edge
+state-of-the-art
+
+# === HEDGING / WEASEL WORDS ===
+arguably
+essentially
+fundamentally
+notably
+importantly
+significantly
+substantially
+relatively
+particularly
+specifically
+effectively
+ultimately
+eventually
+increasingly
+emerging
+
+# === STRUCTURAL TELLS ===
+additionally
+consequently
+subsequently
+nevertheless
+nonetheless
+accordingly
+thereby
+whereby
+wherein
+heretofore
+
+# === OVERUSED INTENSIFIERS ===
+incredibly
+remarkably
+extraordinarily
+profoundly
+tremendously
+immensely
+extensively
+
+# === CORPORATE-SPEAK ===
+stakeholder
+actionable
+scalable
+synergize
+optimize
+streamline
+facilitate
+mitigate
+incentivize
+operationalize
+strategize
+prioritize
+capitalize
+maximize
+
+# === AI-ESSAY OPENERS ===
+# (not banned as words, but flagged as phrase-starters)
+# "In the realm of"
+# "In today's"
+# "In an era"
+# "As we navigate"
+# "In the ever-evolving"
+# "It is important to note"
+# "It is worth considering"
+# "When it comes to"
+# "At its core"
+# "At the heart of"
+
+# === BOMBASTIC / EMPTY ===
+vibrant
+thriving
+flourishing
+burgeoning
+meticulous
+meticulously
+intricate
+intricately
+elaborate
+sophisticated
+remarkable
+exceptional
+unprecedented
+groundbreaking
+revolutionary
+game-changing
+paradigm-shifting
+transformative
+
+# === JOURNALISTIC FILLER ===
+amid
+amidst
+against-the-backdrop
+in-light-of
+given-that
+inasmuch
+insofar
+
+# === BUSINESS BS ===
+low-hanging-fruit
+move-the-needle
+circle-back
+touch-base
+deep-dive
+unpack
+pivot
+ideate
+iterate
+disrupt
+disruption
+disruptive
+
+# === GENERIC BOOSTERS ===
+comprehensive
+extensive
+thorough
+exhaustive
+complete
+absolute
+total
+
+# === OVERUSED VERBS ===
+curate
+curated
+craft
+crafted
+empower
+empowered
+elevate
+elevated
+amplify
+amplified
+unlock
+unlocked
+unleash
+unleashed
+
+# === SOFT TRANSITIONS ===
+meanwhile
+likewise
+similarly
+conversely
+alternatively
+however-that-said

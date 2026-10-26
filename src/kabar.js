@@ -37,7 +37,7 @@ async function kirimSatu(env, p, pesan, kanal, kini) {
   } catch (e) { console.error("kabar email", e?.message); o.gagal.push("email"); }
   return o;
 }
-const htmlKabar = pesan => `<p style="font:700 16px Arial,sans-serif;margin:0 0 8px">${esc(pesan.judul)}</p><p style="font:14px/1.5 Arial,sans-serif;margin:0 0 12px">${esc(pesan.isi)}</p><p style="font:14px Arial,sans-serif;margin:0"><a href="${esc(ASAL + (pesan.url || "/instansi"))}">Buka Pantau Bencana</a></p>`;
+const htmlKabar = pesan => `<p style="font:700 16px Arial,sans-serif;margin:0 0 8px">${esc(pesan.judul)}</p><p style="font:14px/1.5 Arial,sans-serif;margin:0 0 12px">${esc(pesan.isi)}</p><p style="font:14px Arial,sans-serif;margin:0"><a href="${esc(ASAL + (pesan.url || "/instansi"))}">Buka Centurisk97</a></p>`;
 const adaTerkirim = async (env, kunci, penerima) => !!await env.DB.prepare("SELECT 1 x FROM kabar_terkirim WHERE kunci = ? AND penerima = ?").bind(kunci, penerima).first();
 const selesai = (env, kunci, penerima, kini) => env.DB.prepare("INSERT OR IGNORE INTO kabar_terkirim (kunci, penerima, waktu) VALUES (?, ?, ?)").bind(kunci, penerima, kini);
 

@@ -1,0 +1,78 @@
+{
+ "nama": "bab06-biaya-hsu",
+ "keterangan": "Tarif mobil tangki PDAM Hulu Sungai Utara per meter kubik, 2022 (Rp)",
+ "sumber": "United Nations South Sudan; Perbup Hulu Sungai Utara 3/2022",
+ "mode": "docx",
+ "ukuran_pt": [
+  228.19,
+  95.84
+ ],
+ "ukuran_cm": [
+  8.05,
+  3.38
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Tarif layanan biasa",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#FFFFFF": [
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 67.38,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Tarif layanan biasa"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 81.38,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Tarif layanan biasa"
+  },
+  {
+   "x": 100.67,
+   "y": 20.04,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "19.000"
+  },
+  {
+   "x": 79.98,
+   "y": 85.84,
+   "w": 68.24,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Mobil tangki PDAM"
+  }
+ ],
+ "jenis": "batang",
+ "pesan": "G1",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_batang": 1
+}

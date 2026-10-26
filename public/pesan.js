@@ -74,7 +74,7 @@ html[data-situs=w] .ps-fab{display:none} /* tidak tampil di *.workers.dev (pemil
   function buka() {
     if (!dlg) {
       D.body.insertAdjacentHTML("beforeend", `<dialog class="ps-dlg" aria-labelledby="psJudul"><form method="dialog" novalidate>
-        <div class="ps-hd"><span class="ps-ik">${IKON}</span><div><h2 id="psJudul">Chat Admin</h2><p class="ps-hp2">Tim Pantau Bencana membaca setiap pesan dan membalas lewat email.</p></div><button type="button" class="ps-x" data-tutup aria-label="Tutup">×</button></div>
+        <div class="ps-hd"><span class="ps-ik">${IKON}</span><div><h2 id="psJudul">Chat Admin</h2><p class="ps-hp2">Tim Centurisk97 membaca setiap pesan dan membalas lewat email.</p></div><button type="button" class="ps-x" data-tutup aria-label="Tutup">×</button></div>
         <div class="ps-bd">
         <div class="ps-kat" role="radiogroup" aria-label="Topik pesan"><span class="ps-l">Topik</span><div>${KAT.map(([k, n], i) => `<label class="ps-chip"><input type="radio" name="kategori" value="${k}" ${i ? "" : "checked"}><span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_KAT[k]}</svg>${n}</span></label>`).join("")}</div></div>
         <div class="ps-2"><label><span class="ps-l">Nama <small>opsional</small></span><input name="nama" maxlength="100" autocomplete="name" placeholder="Nama kamu"></label>

@@ -1,7 +1,7 @@
 // Peta titik panas per provinsi 20 Okt 2026, port dari public/laporan.js kartuPeta() (algoritma label sama).
 import fs from 'node:fs';
-import { chromium } from '/Users/alfatehanseptianta/Developer/worth-it/node_modules/playwright/index.mjs';
-const REPO = '/Users/alfatehanseptianta/Documents/GitHub/poskokarhutla';
+import { chromium } from '/Users/priyankaalfatehan28/Developer/worth-it/node_modules/playwright/index.mjs';
+const REPO = '/Users/priyankaalfatehan28/Documents/GitHub/poskokarhutla';
 const g = JSON.parse(fs.readFileSync(REPO + '/public/geo/provinsi.json'));
 const A = JSON.parse(fs.readFileSync('angka_nasional.json')).prov;
 const I = 3, IP = 2;  // 20 Okt, pembanding 19 Okt
@@ -68,7 +68,7 @@ const css = `.pp{fill:#DCE1E7;stroke:#fff;stroke-width:.6}.pp-on{fill:#051C2C;st
 .pk{fill:#fff;stroke:#A9B4C2;stroke-width:.8}.pt-t{font:10px Roboto}.pt-n{font-weight:600;fill:#6B7280}.pt-v{font-weight:800;fill:#1A1A1A}\n.rk{fill:#fff;stroke:#D9600B;stroke-width:1.8}.rk-t{font:800 9.5px Roboto;fill:#1A1A1A;text-anchor:middle}`;
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -8 ${PW + 36} ${PH + 16}" width="${PW + 36}" height="${PH + 16}"><style>${css}</style>${s}</svg>`;
 fs.writeFileSync('peta-20okt.svg', svg);
-const b = await chromium.launch({executablePath: '/Users/alfatehanseptianta/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'}); const pg = await b.newPage({viewport: {width: PW + 36, height: PH + 16}, deviceScaleFactor: 4});
+const b = await chromium.launch({executablePath: '/Users/priyankaalfatehan28/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'}); const pg = await b.newPage({viewport: {width: PW + 36, height: PH + 16}, deviceScaleFactor: 4});
 await pg.setContent(`<html><body style="margin:0;background:transparent">${svg}</body></html>`);
 await pg.evaluate(() => document.fonts.ready);
 await (await pg.$('svg')).screenshot({path: 'peta-20okt.png', omitBackground: true});

@@ -1,0 +1,243 @@
+{
+ "nama": "bab11-forum-jalur-adopsi",
+ "keterangan": "Forum koordinasi dan jalur adopsi rekomendasi rehabilitasi dan rekonstruksi air dan akses, 2026–2030, 2026",
+ "sumber": "Perpres 75/2021 Pasal 8; Perban BNPB 1/2026 Pasal 7; Perban BNPB 6/2017 Pasal 12–14; Keppres 1/2026; Renas PB 2025–2029 aksi 3.1.2.a; analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  131.4
+ ],
+ "ukuran_cm": [
+  16.5,
+  4.64
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Forum berdasar peraturan",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Keputusan Kepala BNPB",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Jalur adopsi usulan kajian",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  }
+ ],
+ "hex": {
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#DCEBF8": [
+   "legenda",
+   "seri"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ],
+  "#6B7280": [
+   "garis"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 92.84,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Forum berdasar peraturan"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 106.84,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Forum berdasar peraturan"
+  },
+  {
+   "x": 132.84,
+   "y": 3,
+   "w": 87.13,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-118",
+   "teks": "Keputusan Kepala BNPB"
+  },
+  {
+   "x": 118.84,
+   "y": 2,
+   "w": 101.13,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-118",
+   "teks": "Keputusan Kepala BNPB"
+  },
+  {
+   "x": 243.96,
+   "y": 3,
+   "w": 92.42,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-229",
+   "teks": "Jalur adopsi usulan kajian"
+  },
+  {
+   "x": 229.96,
+   "y": 2,
+   "w": 106.42,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-229",
+   "teks": "Jalur adopsi usulan kajian"
+  },
+  {
+   "x": 35.43,
+   "y": 24.8,
+   "w": 81.04,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "f1",
+   "teks": "Rakor Kemenko PMK"
+  },
+  {
+   "x": 31.93,
+   "y": 36.4,
+   "w": 88.05,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "f1",
+   "teks": "Perpres 75/2021 Pasal 8"
+  },
+  {
+   "x": 196.15,
+   "y": 24.8,
+   "w": 75.41,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "f2",
+   "teks": "Satgas per kejadian"
+  },
+  {
+   "x": 205.34,
+   "y": 36.4,
+   "w": 57.04,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "f2",
+   "teks": "Keppres 1/2026"
+  },
+  {
+   "x": 360.5,
+   "y": 24.8,
+   "w": 62.53,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "f3",
+   "teks": "BNPB dan BPBD"
+  },
+  {
+   "x": 329.28,
+   "y": 36.4,
+   "w": 124.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "f3",
+   "teks": "Perban 6/2017 Pasal 12 sampai 14"
+  },
+  {
+   "x": 187.08,
+   "y": 64.6,
+   "w": 93.56,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "kd",
+   "teks": "Keputusan Kepala BNPB"
+  },
+  {
+   "x": 196.86,
+   "y": 76.2,
+   "w": 74,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kd",
+   "teks": "KD-R1 sampai KD-R4"
+  },
+  {
+   "x": 34.31,
+   "y": 104.4,
+   "w": 83.28,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "j1",
+   "teks": "Renas PB aksi 3.1.2.a"
+  },
+  {
+   "x": 42.43,
+   "y": 116,
+   "w": 67.05,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j1",
+   "teks": "peninjauan berkala"
+  },
+  {
+   "x": 190.21,
+   "y": 104.4,
+   "w": 87.29,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "j2",
+   "teks": "Perban 1/2026 Pasal 7"
+  },
+  {
+   "x": 207.8,
+   "y": 116,
+   "w": 52.11,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j2",
+   "teks": "Dana Bersama"
+  },
+  {
+   "x": 366.6,
+   "y": 104.4,
+   "w": 50.33,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "j3",
+   "teks": "R3P Sumatra"
+  },
+  {
+   "x": 367.27,
+   "y": 116,
+   "w": 48.99,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "j3",
+   "teks": "pemutakhiran"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Bagan forum dan jalur adopsi bertenggat; tabel pilih grafik B5.10 tidak memuat bagan lembaga",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 7
+}

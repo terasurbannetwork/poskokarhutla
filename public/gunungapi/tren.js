@@ -39,16 +39,16 @@ const Tren = {
     const v = r.map(x => { if (x.kosong) return x; const n = x.level; return {n: (n[2] || 0) + (n[3] || 0) + (n[4] || 0), n2: (n[3] || 0) + (n[4] || 0), t: this.tgl(x.tgl),
       tip: `<b>${this.tgl(x.tgl)}</b><br>Waspada ke atas: ${fmt((n[2] || 0) + (n[3] || 0) + (n[4] || 0))} gunung<br>Siaga atau Awas: ${fmt((n[3] || 0) + (n[4] || 0))} gunung`}; }), a = v.at(-1), b = v[0];
     return this.kartu("Status harian", `${Kartu.hl(fmt(a.n) + " gunung")} berstatus Waspada ke atas pada ${a.t}, ${a.n > b.n ? "naik" : a.n < b.n ? "turun" : "sama"} ${a.n === b.n ? "dengan" : "dari"} ${fmt(b.n)} gunung pada ${b.t}`,
-      this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[3], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Pantau Bencana tiap pembaruan" + (bolong.length ? `. Tidak tercatat: ${bolong.join(" dan ")} (pekerjaan harian terhenti; arsip MAGMA hari itu tidak lengkap)` : ""), [[WARNA_LV[2], "Waspada ke atas"], [WARNA_LV[3], "Siaga atau Awas"]]); },
+      this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[3], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Centurisk97 tiap pembaruan" + (bolong.length ? `. Tidak tercatat: ${bolong.join(" dan ")} (pekerjaan harian terhenti; arsip MAGMA hari itu tidak lengkap)` : ""), [[WARNA_LV[2], "Waspada ke atas"], [WARNA_LV[3], "Siaga atau Awas"]]); },
 
   /* 3. erupsi 24 jam per hari (hanya hari dengan daftar MAGMA yang mencapai 24 jam) */
   kErupsi() {
     const r = (S.st?.riwayat || []).filter(x => x.erupsi != null); if (r.length < 2) return "";
     const v = r.map(x => ({n: x.erupsi, t: this.tgl(x.tgl), tip: `<b>${this.tgl(x.tgl)}</b><br>Erupsi 24 jam: ${fmt(x.erupsi)}`})), pk = v.reduce((a, x, i) => x.n > v[a].n ? i : a, 0);
     return this.kartu("Erupsi harian", `${Kartu.hl(fmt(v.at(-1).n) + " erupsi")} dalam 24 jam terakhir; terbanyak ${Kartu.hl(fmt(v[pk].n) + " erupsi")} pada ${v[pk].t}`,
-      this.batang(v, {warna: BATA}), "MAGMA Indonesia, informasi letusan; dicatat Pantau Bencana tiap pembaruan", [[BATA, "erupsi dalam 24 jam"], ["#c9503a", "terbanyak"]]); },
+      this.batang(v, {warna: BATA}), "MAGMA Indonesia, informasi letusan; dicatat Centurisk97 tiap pembaruan", [[BATA, "erupsi dalam 24 jam"], ["#c9503a", "terbanyak"]]); },
 
-  /* 4. gunung naik atau turun level per hari (perubahan yang dicatat Pantau Bencana + tren di abu_gunungapi.json); dibuang bila belum ada perubahan */
+  /* 4. gunung naik atau turun level per hari (perubahan yang dicatat Centurisk97 + tren di abu_gunungapi.json); dibuang bila belum ada perubahan */
   kNaik() {
     const ev = new Map(), tambah = (nm, tgl, dari, ke) => ev.set(nm + tgl + dari + ke, {nm, tgl, dari, ke});
     (S.st?.perubahan || []).forEach(p => tambah(p.nama, p.tgl, p.dari, p.ke));
@@ -59,7 +59,7 @@ const Tren = {
     const v = hari.map(t => { const d = E.filter(e => e.tgl === t), n = d.filter(e => e.ke > e.dari).length;
       return {n: d.length, n2: n, t: this.tgl(t), tip: `<b>${this.tgl(t)}</b><br>Naik level: ${fmt(n)} gunung<br>Turun level: ${fmt(d.length - n)} gunung${d.length ? "<br>" + esc(d.map(e => e.nm).join(", ")) : ""}`}; });
     return this.kartu("Naik turun level", `${Kartu.hl(fmt(naik) + " gunung")} naik level dan ${Kartu.hl(fmt(turun) + " gunung")} turun dalam ${fmt(hari.length)} hari terakhir`,
-      this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[4], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Pantau Bencana tiap pembaruan", [[WARNA_LV[2], "perubahan level"], [WARNA_LV[4], "naik"]]); },
+      this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[4], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Centurisk97 tiap pembaruan", [[WARNA_LV[2], "perubahan level"], [WARNA_LV[4], "naik"]]); },
 
   /* baris mendatar: rows [{nama, v, warna, pil: [[teks, bg, fg]], tip, gn?}]; batang sepanjang v, pil berderet sesudahnya (kartu Kartu.pil dari inti) */
   mendatar(rows, akhir) {

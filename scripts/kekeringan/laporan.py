@@ -35,10 +35,10 @@ METRIK = [
 ]
 PROV_NAMA = H._st.PROVINSI
 SUMBER = [
-    {"nama": "Open-Meteo", "url": "https://open-meteo.com/en/docs", "catatan": "hujan dan ET0 harian model gabungan; HTH = hari berturut-turut dengan hujan < 1 mm, dihitung Pantau Bencana"},
+    {"nama": "Open-Meteo", "url": "https://open-meteo.com/en/docs", "catatan": "hujan dan ET0 harian model gabungan; HTH = hari berturut-turut dengan hujan < 1 mm, dihitung Centurisk97"},
     {"nama": "ECMWF SEAS5 via Open-Meteo", "url": "https://open-meteo.com/en/docs/seasonal-forecast-api", "catatan": "ensemble musiman 51 anggota untuk peluang SPI-3 dan cekaman air padi"},
     {"nama": "NASA POWER", "url": "https://power.larc.nasa.gov/", "catatan": "hujan bulanan 1991\u20132020 untuk SPI"},
-    {"nama": "Kelas HTH BMKG", "url": "https://www.bmkg.go.id/iklim/", "catatan": "kelas sangat pendek sampai ekstrem; angka di sini deteksi Pantau Bencana, bukan peta BMKG"},
+    {"nama": "Kelas HTH BMKG", "url": "https://www.bmkg.go.id/iklim/", "catatan": "kelas sangat pendek sampai ekstrem; angka di sini deteksi Centurisk97, bukan peta BMKG"},
 ]
 
 
@@ -80,7 +80,7 @@ def sorot(ag, kab_seri, wilayah, n):
         if ks:
             top = ", ".join(nama_kab(k) for _, k in ks[:3])
             out.append({"tingkat": tingkat, "judul": f"{len(ks)} kabupaten berstatus {nama}",
-                        "teks": f"Terbanyak penduduknya: {top}. Status gabungan SPI-3 dan kelembapan tanah, deteksi Pantau Bencana.", "prov": ks[0][1].split("|")[0]})
+                        "teks": f"Terbanyak penduduknya: {top}. Status gabungan SPI-3 dan kelembapan tanah, deteksi Centurisk97.", "prov": ks[0][1].split("|")[0]})
     maks = [(h, k) for k, h, _ in H.urut_terpanjang([(k, w["maks"][-1], w["total"]) for k, w in ag["kab"].items() if w["maks"][-1] is not None])[:3]]   # aturan seri bersama dengan layar
     if maks and maks[0][0] >= 1:
         out.append({"tingkat": "waspada" if maks[0][0] >= 31 else "info", "judul": f"HTH terpanjang {maks[0][0]} hari di {nama_kab(maks[0][1])}",

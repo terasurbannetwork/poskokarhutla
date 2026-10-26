@@ -1,5 +1,6 @@
 /* Akun pemirsa: orang yang hanya boleh MELIHAT tab tertentu situs Centurisk97 (mis. hanya Berita). Skema: migrations/0036_pemirsa.sql. Aturan pemilik (22 Okt 2026):
-   - Dibuat HANYA oleh Super Admin di /admin/akun: cukup nama + tab. Sandi acak 16 huruf tampil SEKALI (mesin sandi akun staf, src/staf.js).
+   - Dibuat HANYA oleh Super Admin di /admin/akun: cukup nama + tab. Sandi acak 16 huruf tampil SEKALI (mesin sandi akun staf, src/staf.js);
+     sejak 26 Okt Super Admin boleh mengisi sandi awal sendiri saat buat/reset (cekSandiAwal).
    - Masuk lewat form /admin/masuk yang sama (dicoba sesudah akun admin gagal). Sesi = cookie sesi_pemirsa (hanya hash di D1), 30 hari.
    - Gerbang centurisk97.id (src/worker.js): halaman yang bukan tab miliknya dialihkan ke tab pertamanya; layaniHTML menulis data-pemirsa-tab di <html>
      dan public/index.html menyembunyikan tab lain. Berkas data JSON tetap aset statis (keputusan pemilik): pembatas tampilan, bukan pengaman data. */
@@ -58,13 +59,17 @@ const tolakSuper = () => gagal(403, "akun pemirsa hanya dikelola Super Admin");
 const slug = s => String(s).normalize("NFKD").replace(/[̀-ͯ]/g, "").toLowerCase().replace(/[^a-z0-9]/g, "");
 /* murni: larik tab dari isian -> larik atau null */
 export const cekTab = v => Array.isArray(v) && v.length >= 1 && v.length <= 7 && v.every(x => typeof x === "string" && Object.hasOwn(TAB, x)) && new Set(v).size === v.length ? v : null;
+/* murni: sandi awal pilihan Super Admin (opsional; kosong = acak). 8 sampai 64 karakter, tanpa spasi di ujung (form masuk tidak memangkas sandi). */
+export const cekSandiAwal = v => v == null || v === "" ? {v: undefined} : typeof v === "string" && v.length >= 8 && v.length <= 64 && v === v.trim() ? {v}
+  : {g: "sandi awal 8 sampai 64 karakter, tanpa spasi di awal atau akhir; kosongkan untuk sandi acak"};
 async function buat(env, req, kini) {
   const mod = await superOK(env, req); if (!mod) return tolakSuper();
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   const nama = tx(b.o.nama, 100), tab = cekTab(b.o.tab);
   if (!nama || nama.length < 2) return gagal(400, "nama wajib diisi, 2 sampai 100 karakter");
   if (!tab) return gagal(400, `pilih minimal satu tab dari: ${Object.keys(TAB).join(", ")}`);
-  const s = await sandiBaru(), id = acak(8), dasar = "lihat" + (slug(nama.split(/\s+/)[0]) || "tamu").slice(0, 16);
+  const sa = cekSandiAwal(b.o.sandi); if (sa.g) return gagal(400, sa.g);
+  const s = await sandiBaru(sa.v), id = acak(8), dasar = "lihat" + (slug(nama.split(/\s+/)[0]) || "tamu").slice(0, 16);
   for (let i = 0; i < 5; i++) {
     const username = dasar + String(Math.floor(Math.random() * 900) + 100);
     try {
@@ -90,7 +95,8 @@ async function ubah(env, req, id, kini) {
     return json({id, status: "dicabut"});
   }
   if (b.o.aksi === "reset") {
-    const n = await sandiBaru();
+    const sa = cekSandiAwal(b.o.sandi); if (sa.g) return gagal(400, sa.g);
+    const n = await sandiBaru(sa.v);
     await env.DB.batch([env.DB.prepare("UPDATE pemirsa SET garam = ?, sandi_sha = ? WHERE id = ?").bind(n.garam, n.sandi_sha, id), cabutSesi]);
     return json({id, sandi: n.sandi});   // tampil sekali
   }

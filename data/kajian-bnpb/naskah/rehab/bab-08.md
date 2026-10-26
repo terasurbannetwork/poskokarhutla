@@ -25,13 +25,13 @@ target_halaman: 14
 **Rekomendasi:**
 
 - @rek:r-rr-06 Hitung stok bailey per Direktorat PD Wilayah (Usulan baru; Deputi Bidang Logistik dan Peralatan; Kementerian Pekerjaan Umum (PU) dan Tentara Nasional Indonesia (TNI); empat belas hari pertama).
-- @rek:r-rr-01 Tambah kolom air dan jembatan di Data dan Informasi Bencana Indonesia (DIBI) (Usulan baru; Pusat Data, Informasi, dan Komunikasi Kebencanaan; Kementerian PU dan Badan Penanggulangan Bencana Daerah (BPBD); 100 hari).
+- @rek:r-rr-01 Tambah kolom air dan jembatan di Data dan Informasi Bencana Indonesia (DIBI) (Sudah ada, perlu dikembangkan; Pusat Data, Informasi, dan Komunikasi Kebencanaan; Kementerian PU dan Badan Penanggulangan Bencana Daerah (BPBD); 100 hari).
 - @rek:r-rr-05 Tetapkan standar hari pemasangan akses darurat (Sudah ada, perlu dikembangkan; Deputi Bidang Penanganan Darurat; Kementerian PU dan TNI; 2026–2027).
 :::
 
 ## Aturan Kartu {#sub:aturan-kartu}
 
-**Tiap kartu memakai lantai, yaitu kejadian tercatat terburuk untuk jenis yang sama, dengan periode acuan geologi 1996–2025, hidrometeorologi 2008–2025, dan jembatan 2018–2025.** DIBI baru mengisi kolom jembatan sejak 2018, sehingga lantai akses lebih pendek daripada lantai rumah [@bnpb-dibi]. Skenario tidak boleh lebih ringan daripada lantai untuk wilayah yang sama. Kartu memuat empat besaran rehabilitasi dan rekonstruksi (RR) yang kolomnya tampil pada @tbl:ketersediaan; korban jiwa menjadi baris konteks. Gempa Flores 15 Agustus 2026 berada di luar periode acuan, tetapi masuk kartu gempa karena DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.prov.ntt.gempa.2026}} jembatan rusak karena gempa di Nusa Tenggara Timur pada 2026, lebih dari tiga kali lantai provinsi-tahun gempa 2018–2025. Angka itu sementara dan mencakup semua gempa di provinsi itu pada 2026.
+**Tiap kartu memakai lantai, yaitu kejadian tercatat terburuk untuk jenis yang sama, dengan periode acuan geologi 1996–2025, hidrometeorologi 2008–2025, dan jembatan 2018–2025.** Data dan Informasi Bencana Indonesia (DIBI) baru mengisi kolom jembatan sejak 2018, sehingga lantai akses lebih pendek daripada lantai rumah [@bnpb-dibi]. Skenario tidak boleh lebih ringan daripada lantai untuk wilayah yang sama. Kartu memuat empat besaran rehabilitasi dan rekonstruksi (RR) yang kolomnya tampil pada @tbl:ketersediaan; korban jiwa menjadi baris konteks. Gempa Flores 15 Agustus 2026 berada di luar periode acuan, tetapi masuk kartu gempa karena DIBI mencatat {{angka:rehab.dibi.jembatan_rusak.prov.ntt.gempa.2026}} jembatan rusak karena gempa di Nusa Tenggara Timur pada 2026, lebih dari tiga kali lantai provinsi-tahun gempa 2018–2025. Angka itu sementara dan mencakup semua gempa di provinsi itu pada 2026.
 
 **Lantai rumah cuaca ekstrem memakai tahun nasional, yaitu {{angka:rehab.dibi.rumah_rusak.cuaca_ekstrem.tahun_maks}} rumah rusak pada 2019; longsor memakai kab-tahun atau tahun nasional.** Lima kartu lain memakai satu kejadian. Jumlah setahun adalah batas atas satu kejadian, sehingga sel antarkartu tidak dibandingkan langsung. Lantai jembatan juga memakai provinsi-tahun, karena DIBI tidak mencatat jembatan per kejadian dan per status jalan [@bnpb-dibi]. Paket skenario model geologi tidak dipakai sebagai angka kartu, sebab skenario dasarnya di bawah magnitudo maksimum dan rumah modelnya diturunkan dari jiwa, bukan dari data bangunan.
 
@@ -40,7 +40,6 @@ judul: Ketersediaan kuantifikasi lantai per jenis bencana dan besaran RR di Indo
 sumber: DIBI BNPB; Kementerian PU; Kementerian PUPR; BRR NAD-Nias; Kemenko PMK; pengolahan kajian ini
 keyakinan: resmi
 data_per: 23 Okt 2026
-catatan: "Setahun" berarti lantai dari jumlah kab-tahun atau tahun nasional, batas atas satu kejadian. Sel tanpa sumber ditulis "tidak dikuantifikasi", bukan nol.
 
 | JENIS | RUMAH | JEMBATAN ATAU AKSES | LAYANAN AIR | DURASI PULIH |
 | --- | --- | --- | --- | --- |
@@ -53,15 +52,14 @@ catatan: "Setahun" berarti lantai dari jumlah kab-tahun atau tahun nasional, bat
 | Cuaca ekstrem | setahun | provinsi-tahun | tidak dikuantifikasi | tidak dikuantifikasi |
 :::
 
-**Kebutuhan lapis darurat air dihitung dari standar Perka BNPB 7/2008, yaitu {{angka:perka_2008.air_bersih_awal_liter_hari}} liter per orang per hari pada tiga hari pertama dan {{angka:perka_2008.air_bersih_liter_hari}} liter sesudahnya.** Titik air paling jauh {{angka:perka_2008.jarak_sumber_air_m}} meter dari pengungsi [@bnpb-2008-kebutuhan-dasar]. Rasio satuan yang dipakai adalah {{angka:rehab.darurat.asumsi.orang_per_keran}} orang per keran [@sphere-2018], sekitar {{angka:rehab.darurat.asumsi.jiwa_per_sumur}} jiwa per sumur Badan Geologi [@esdm-2019-sumur-bor], dan {{angka:rehab.darurat.asumsi.truk_m3_hari}} m³ per truk tangki per hari, hasil kali kapasitas truk Lombok dengan lima rit per hari di Cianjur [@pupr-2019-satgas-lombok; @pupr-2023-cianjur]. Basis jiwa adalah pengungsi tercatat atau jiwa kehilangan hunian, yaitu rumah rusak berat dan sedang dikali {{angka:rehab.darurat.asumsi.jiwa_per_rumah|fmt=1}} jiwa per rumah. Basis Padang 2009 hanya memuat rusak berat, karena DIBI tidak mencatat rusak sedang 2008–2009 secara terpisah. Truk dan sumur adalah dua jalan alternatif dan tidak dijumlah (@tbl:lapis-darurat).
+**Kebutuhan lapis darurat air dihitung dari standar Perka Badan Nasional Penanggulangan Bencana (BNPB) 7/2008, yaitu {{angka:perka_2008.air_bersih_awal_liter_hari}} liter per orang per hari pada tiga hari pertama dan {{angka:perka_2008.air_bersih_liter_hari}} liter sesudahnya.** Titik air paling jauh {{angka:perka_2008.jarak_sumber_air_m}} meter dari pengungsi [@bnpb-2008-kebutuhan-dasar]. Rasio satuan yang dipakai adalah {{angka:rehab.darurat.asumsi.orang_per_keran}} orang per keran [@sphere-2018], sekitar {{angka:rehab.darurat.asumsi.jiwa_per_sumur}} jiwa per sumur Badan Geologi [@esdm-2019-sumur-bor], dan {{angka:rehab.darurat.asumsi.truk_m3_hari}} m³ per truk tangki per hari, hasil kali kapasitas truk Lombok dengan lima rit per hari di Cianjur [@pupr-2019-satgas-lombok; @pupr-2023-cianjur]. Basis jiwa adalah pengungsi tercatat atau jiwa kehilangan hunian, yaitu rumah rusak berat dan sedang dikali {{angka:rehab.darurat.asumsi.jiwa_per_rumah|fmt=1}} jiwa per rumah. Basis Padang 2009 hanya memuat rusak berat, karena DIBI tidak mencatat rusak sedang 2008–2009 secara terpisah. Truk dan sumur adalah dua jalan alternatif dan tidak dijumlah (@tbl:lapis-darurat). Catatan atas @tbl:ketersediaan. "Setahun" berarti lantai dari jumlah kab-tahun atau tahun nasional, batas atas satu kejadian. Sel tanpa sumber ditulis "tidak dikuantifikasi", bukan nol.
 
 ::: tabel {#tbl:lapis-darurat}
-judul: Kebutuhan lapis darurat air setara per kartu skenario RR di Indonesia (unit setara)
+judul: Kebutuhan lapis darurat air setara per kartu skenario RR di Indonesia (unit setara), 2026
 sumber: Perka BNPB 7/2008; Sphere 2018; Kementerian ESDM 2019; Kementerian PUPR 2019 dan 2023; DIBI BNPB; BRR NAD-Nias; pengolahan kajian ini
 keyakinan: asumsi-kebijakan
 angka: 2; 3; 4; 5; 6; 7
 data_per: 25 Okt 2026
-catatan: Truk setara dan sumur setara adalah alternatif, tidak dijumlah. Basis tsunami memakai definisi kehilangan tempat tinggal BRR; basis longsor dan cuaca ekstrem adalah jumlah setahun nasional.
 
 | KARTU | BASIS (jiwa) | AIR HARI 1–3 (m³/hari) | AIR SESUDAHNYA (m³/hari) | TRUK SETARA | KERAN | SUMUR SETARA |
 | --- | ---: | ---: | ---: | ---: | ---: | ---: |
@@ -75,7 +73,7 @@ catatan: Truk setara dan sumur setara adalah alternatif, tidak dijumlah. Basis t
 | Musim hujan 2025/2026 | {{angka:rehab.musim.2025_26.mengungsi}} | {{angka:rehab.darurat.musim.air_m3_hari_awal}} | {{angka:rehab.darurat.musim.air_m3_hari}} | {{angka:rehab.darurat.musim.truk_setara}} | {{angka:rehab.darurat.musim.keran}} | {{angka:rehab.darurat.musim.sumur_setara}} |
 :::
 
-**Respons tercatat di Sumatra 2025, yaitu {{angka:rehab.pipa.sumatra2025.sarana_darurat}} sarana darurat dan {{angka:rehab.pipa.sumatra2025.sumur_bor_pu}} sumur bor Kementerian PU per 2 Februari 2026, sama-sama berjumlah ratusan unit seperti hitungan {{angka:rehab.darurat.banjir.sumur_setara}} sumur setara.** Sarana darurat mencakup instalasi pengolah air bergerak dan mobil tangki, juga hidran umum, sehingga tidak sebanding satu lawan satu dengan sumur [@pu-2026-spam-februari]. Hitungan itu hanya mencakup pengungsi tercatat, padahal pelanggan perusahaan air minum yang jaringannya terputus dapat beralih ke sumur; angka itu karena itu batas bawah kebutuhan air permukiman. Angka yang sama juga batas atas kebutuhan pengungsi serentak, karena DIBI menjumlah pengungsi per laporan. Kolom sumur dibaca sebagai setara kapasitas, bukan janji layanan, sebab hari sampai sumur berfungsi tidak tercatat sistematis; tingkat sumur kering dan uji mutu airnya juga belum tercatat.
+**Respons tercatat di Sumatra 2025, yaitu {{angka:rehab.pipa.sumatra2025.sarana_darurat}} sarana darurat dan {{angka:rehab.pipa.sumatra2025.sumur_bor_pu}} sumur bor Kementerian Pekerjaan Umum (PU) per 2 Februari 2026, sama-sama berjumlah ratusan unit seperti hitungan {{angka:rehab.darurat.banjir.sumur_setara}} sumur setara.** Sarana darurat mencakup instalasi pengolah air bergerak dan mobil tangki, juga hidran umum, sehingga tidak sebanding satu lawan satu dengan sumur [@pu-2026-spam-februari]. Hitungan itu hanya mencakup pengungsi tercatat, padahal pelanggan perusahaan air minum yang jaringannya terputus dapat beralih ke sumur; angka itu karena itu batas bawah kebutuhan air permukiman. Angka yang sama juga batas atas kebutuhan pengungsi serentak, karena DIBI menjumlah pengungsi per laporan. Kolom sumur dibaca sebagai setara kapasitas, bukan janji layanan, sebab hari sampai sumur berfungsi tidak tercatat sistematis; tingkat sumur kering dan uji mutu airnya juga belum tercatat. Catatan atas @tbl:lapis-darurat. Truk setara dan sumur setara adalah alternatif, tidak dijumlah. Basis tsunami memakai definisi kehilangan tempat tinggal BRR; basis longsor dan cuaca ekstrem adalah jumlah setahun nasional.
 
 **Biaya satuan lapis darurat berlabel estimasi model ada di Bab 6 dan Bab 7 dan tidak dijumlah ke kartu, sehingga kartu tidak menjadi anggaran program.** 
 
@@ -83,11 +81,22 @@ catatan: Truk setara dan sumur setara adalah alternatif, tidak dijumlah. Basis t
 
 ## Gempa Bumi {#sub:gempa}
 
-**Gempa Padang 2009 adalah lantai rumah gempa dengan {{angka:dibi.padang2009.rumah_rb}} rumah rusak berat dan {{angka:rehab.lantai.gempa.padang2009.rumah_rusak}} rumah rusak di enam belas kab/kota.** Pengungsi tercatat hanya {{angka:dibi.padang2009.mengungsi}} jiwa karena pencatatan pengungsi 2009 tidak lengkap, sedangkan jiwa kehilangan hunian setara {{angka:rehab.lantai.gempa.padang2009.jiwa_kehilangan_hunian}} [@bnpb-dibi]. Lantai pengungsi gempa adalah Lombok 2018 dengan {{angka:dibi.lombok2018.mengungsi}} jiwa. Gempa Tasikmalaya 2 September 2009 merusak {{angka:rehab.lantai.gempa.jabar2009.rumah_rusak}} rumah di Jawa Barat, lebih banyak daripada Lombok 2018 ({{angka:dibi.lombok2018.rumah_rusak}}). Untuk Cianjur 2022, DIBI mencatat {{angka:dibi.cianjur2022.rumah_rusak}} rumah rusak. R3P Cianjur mencatat {{angka:r3p.cianjur2022.rumah_rusak}}; keduanya resmi dan ditulis berdampingan.
+**Gempa Padang 2009 adalah lantai rumah gempa dengan {{angka:dibi.padang2009.rumah_rb}} rumah rusak berat dan {{angka:rehab.lantai.gempa.padang2009.rumah_rusak}} rumah rusak di enam belas kab/kota.** Pengungsi tercatat hanya {{angka:dibi.padang2009.mengungsi}} jiwa karena pencatatan pengungsi 2009 tidak lengkap, sedangkan jiwa kehilangan hunian setara {{angka:rehab.lantai.gempa.padang2009.jiwa_kehilangan_hunian}} [@bnpb-dibi]. Lantai pengungsi gempa adalah Lombok 2018 dengan {{angka:dibi.lombok2018.mengungsi}} jiwa. Gempa Tasikmalaya 2 September 2009 merusak {{angka:rehab.lantai.gempa.jabar2009.rumah_rusak}} rumah di Jawa Barat, lebih banyak daripada Lombok 2018 ({{angka:dibi.lombok2018.rumah_rusak}}). Untuk Cianjur 2022, DIBI mencatat {{angka:dibi.cianjur2022.rumah_rusak}} rumah rusak. Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) Cianjur mencatat {{angka:r3p.cianjur2022.rumah_rusak}}; keduanya resmi dan ditulis berdampingan.
+
+::: gambar {#gbr:foto-rr-masjid-lombok-2018}
+berkas: gambar/foto/rehab-b08-masjid-lombok-2018.jpg
+jenis: foto
+judul: Alat berat Badan SAR Nasional di masjid yang runtuh di Lading-Lading, Lombok Utara, 6 Agustus 2018
+pengarang: Badan Nasional Penanggulangan Bencana (BNPB)
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:Lombok_earthquake_mosque_ruin_evacuation.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
 
 **Jembatan rusak karena gempa berjumlah {{angka:rehab.dibi.jembatan_rusak.gempa.2018_2025}} unit secara nasional pada 2018–2025, dengan provinsi-tahun terberat {{angka:rehab.dibi.jembatan_rusak.gempa.prov_tahun_maks_2018_2025}} jembatan di Maluku 2019.** Gempa Flores Mw {{angka:rehab.lantai.gempa.flores2026.magnitudo_bmkg|fmt=1}} pada Sesar Naik Flores [@bmkg-2026-flores] menggeser lantai itu menjadi {{angka:rehab.dibi.jembatan_rusak.prov.ntt.gempa.2026}} jembatan di Nusa Tenggara Timur pada 2026, angka sementara tahun berjalan [@bnpb-dibi].
 
-**Layanan air gempa terkuantifikasi di dua kejadian: {{angka:rehab.pipa.lombok.spam_rusak}} titik SPAM rusak di Lombok 2018 dan {{angka:rehab.pipa.cianjur.titik_spam_rusak}} titik di Cianjur 2022 [@pupr-2019-satgas-lombok; @pupr-2023-cianjur].** Kerusakan Lombok umumnya pada pipa polietilena densitas tinggi (HDPE). Kerusakan air Flores 2026 tidak disebut di rilis BNPB yang dibuka.
+**Layanan air gempa terkuantifikasi di dua kejadian: {{angka:rehab.pipa.lombok.spam_rusak}} titik Sistem Penyediaan Air Minum (SPAM) rusak di Lombok 2018 dan {{angka:rehab.pipa.cianjur.titik_spam_rusak}} titik di Cianjur 2022 [@pupr-2019-satgas-lombok; @pupr-2023-cianjur].** Kerusakan Lombok umumnya pada pipa polietilena densitas tinggi (HDPE). Kerusakan air Flores 2026 tidak disebut di rilis BNPB yang dibuka.
 
 **Untuk gempa Flores 2026, versi DIBI sebesar {{angka:rehab.lantai.gempa.flores2026.rumah_rusak_dibi}} rumah rusak di sebelas kab/kota melampaui data awal BNPB {{angka:rehab.lantai.gempa.flores2026.rumah_data_awal}}, dan verifikasi mendapati {{angka:rehab.lantai.gempa.flores2026.rumah_tidak_rusak_terverifikasi}} rumah tidak rusak.** Dari {{angka:rehab.lantai.gempa.flores2026.rumah_terverifikasi}} rumah yang terverifikasi per 7 September 2026, rusak berat hanya {{angka:rehab.lantai.gempa.flores2026.rumah_rb_terverifikasi}} [@bnpb-2026-flores-verifikasi]. Versi DIBI karena itu dibaca sebagai batas atas yang dibantah verifikasi, dan Flores belum menjadi lantai rumah. Keempat versi tampil berdampingan pada @tbl:flores-versi, dan BNPB menyebut data verifikasi masih dinamis.
 
@@ -97,7 +106,6 @@ sumber: DIBI BNPB per 23 Okt 2026; BNPB 23 Agu dan 7 Sep 2026; USGS 2026
 keyakinan: campuran
 angka: 3; 4
 data_per: 25 Okt 2026
-catatan: Semua angka sementara. Angka BNPB 7 September adalah data awal yang diverifikasi, bukan jumlah rumah rusak; rusak berat terverifikasi dihitung dari separuh data.
 
 | VERSI | TANGGAL DATA | RUMAH RUSAK | RUSAK BERAT | KEYAKINAN |
 | --- | --- | ---: | ---: | --- |
@@ -107,7 +115,7 @@ catatan: Semua angka sementara. Angka BNPB 7 September adalah data awal yang div
 | USGS, rumah hancur | Agu 2026 | – | {{angka:usgs.flores2026.rumah_hancur}} | terverifikasi |
 :::
 
-**Rumah Lombok selesai {{angka:rehab.pulih.lombok2018.persen_selesai_2020_03|fmt=1|persen}} dari {{angka:rehab.pulih.lombok2018.rumah_sasaran}} sasaran per Maret 2020, sekitar sembilan belas bulan setelah gempa.** Realisasi R3P Lombok mencapai {{angka:kemenkopmk.lombok2018.realisasi_persen|fmt=2|persen}} per 11 September 2023 [@kemenkopmk-2024-rehabrekon-lombok]. Perbaikan SPAM reguler dan swadaya Lombok selesai akhir 2018 [@pupr-2019-satgas-lombok], dan rehabilitasi lima SPAM Cianjur mencapai {{angka:rehab.pipa.cianjur.spam_rehab_realisasi_fisik_2023_09|fmt=2|persen}} progres fisik per September 2023 terhadap rencana {{angka:rehab.pipa.cianjur.spam_rehab_rencana_fisik_2023_09|fmt=2|persen}}, sekitar sepuluh bulan setelah gempa [@pupr-2023-cianjur]. Sebagai pembanding, sembilan per sepuluh layanan air Kobe 1995 pulih dalam {{angka:rehab.pipa.pulih.kobe_90}} hari [@jsce-2011-nojima].
+**Rumah Lombok selesai {{angka:rehab.pulih.lombok2018.persen_selesai_2020_03|fmt=1|persen}} dari {{angka:rehab.pulih.lombok2018.rumah_sasaran}} sasaran per Maret 2020, sekitar sembilan belas bulan setelah gempa.** Realisasi R3P Lombok mencapai {{angka:kemenkopmk.lombok2018.realisasi_persen|fmt=2|persen}} per 11 September 2023 [@kemenkopmk-2024-rehabrekon-lombok]. Perbaikan SPAM reguler dan swadaya Lombok selesai akhir 2018 [@pupr-2019-satgas-lombok], dan rehabilitasi lima SPAM Cianjur mencapai {{angka:rehab.pipa.cianjur.spam_rehab_realisasi_fisik_2023_09|fmt=2|persen}} progres fisik per September 2023 terhadap rencana {{angka:rehab.pipa.cianjur.spam_rehab_rencana_fisik_2023_09|fmt=2|persen}}, sekitar sepuluh bulan setelah gempa [@pupr-2023-cianjur]. Sebagai pembanding, sembilan per sepuluh layanan air Kobe 1995 pulih dalam {{angka:rehab.pipa.pulih.kobe_90}} hari [@jsce-2011-nojima]. Catatan atas @tbl:flores-versi. Semua angka sementara. Angka BNPB 7 September adalah data awal yang diverifikasi, bukan jumlah rumah rusak; rusak berat terverifikasi dihitung dari separuh data.
 
 :::: skenario {#tbl:kartu-gempa}
 jenis: gempa
@@ -137,7 +145,7 @@ data_per: 23 Okt 2026
 :::
 
 ::: kebijakan
-Basis Padang 2009 sebesar {{angka:rehab.lantai.gempa.padang2009.jiwa_kehilangan_hunian}} jiwa membutuhkan {{angka:rehab.darurat.gempa.air_m3_hari}} m³ air per hari setelah hari ketiga. Respons Lombok 2018 mengaktifkan {{angka:rehab.pipa.lombok.sumur_bor_darurat}} sumur irigasi air tanah berkapasitas total {{angka:rehab.pipa.lombok.sumur_jiat_kapasitas_lps}} liter per detik, bersama {{angka:rehab.pipa.lombok.truk_tangki}} truk tangki dan {{angka:rehab.pipa.lombok.ipa_darurat}} instalasi pengolah air, untuk {{angka:dibi.lombok2018.mengungsi}} pengungsi. Jumlah sumur dan truk lebih kecil daripada hitungan setara, tetapi debit tiap sumur yang diaktifkan jauh melampaui sumur Badan Geologi; hitungan itu kapasitas pembanding, bukan kebutuhan terukur.
+Basis Padang 2009 sebesar {{angka:rehab.lantai.gempa.padang2009.jiwa_kehilangan_hunian}} jiwa membutuhkan {{angka:rehab.darurat.gempa.air_m3_hari}} m³ air per hari setelah hari ketiga. Respons Lombok 2018 mengaktifkan {{angka:rehab.pipa.lombok.sumur_jiat_diaktifkan}} sumur irigasi air tanah berkapasitas total {{angka:rehab.pipa.lombok.sumur_jiat_kapasitas_lps}} liter per detik, bersama {{angka:rehab.pipa.lombok.truk_tangki}} truk tangki dan {{angka:rehab.pipa.lombok.ipa_darurat}} instalasi pengolah air, untuk {{angka:dibi.lombok2018.mengungsi}} pengungsi. Jumlah sumur dan truk lebih kecil daripada hitungan setara, tetapi debit tiap sumur yang diaktifkan jauh melampaui sumur Badan Geologi; hitungan itu kapasitas pembanding, bukan kebutuhan terukur.
 :::
 
 ::: kepekaan
@@ -163,9 +171,20 @@ Basis Padang 2009 sebesar {{angka:rehab.lantai.gempa.padang2009.jiwa_kehilangan_
 
 ## Tsunami {#sub:tsunami}
 
-**Tsunami Aceh dan Nias 2004 menghancurkan atau merusak berat {{angka:rehab.lantai.tsunami.aceh2004.rumah_rusak_brr}} rumah dan merusak {{angka:rehab.lantai.tsunami.aceh2004.jalan_rusak_km}} km jalan menurut Badan Rehabilitasi dan Rekonstruksi (BRR) NAD-Nias.** Dalam masa kerja empat tahun, BRR membangun {{angka:rehab.lantai.tsunami.aceh2004.rumah_brr}} rumah dan {{angka:rehab.lantai.tsunami.aceh2004.jalan_dibangun_km}} km jalan [@brr-2009-scattered-beads, hlm. x, xiii]. Angka itu laporan pelaksana sendiri dan berlabel resmi. Sebanyak {{angka:brr.aceh2004.kehilangan_tempat_tinggal}} orang kehilangan tempat tinggal di Aceh dan Nias tanpa pemilahan [@brr-2009-nias]; definisinya berbeda dari pengungsi tercatat DIBI. Jumlah jembatan rusak Aceh 2004 tidak ditemukan di buku BRR, sehingga sel akses memuat panjang jalan saja.
+**Tsunami Aceh dan Nias 2004 menghancurkan atau merusak berat {{angka:rehab.lantai.tsunami.aceh2004.rumah_rusak_brr}} rumah dan merusak {{angka:rehab.lantai.tsunami.aceh2004.jalan_rusak_km}} km jalan menurut Badan Rehabilitasi dan Rekonstruksi (BRR) NAD-Nias.** Dalam masa kerja empat tahun, BRR membangun {{angka:rehab.keluaran.aceh2004.rumah_dibangun}} rumah dan {{angka:rehab.lantai.tsunami.aceh2004.jalan_dibangun_km}} km jalan [@brr-2009-scattered-beads, hlm. x, xiii]. Angka itu laporan pelaksana sendiri dan berlabel resmi. Sebanyak {{angka:brr.aceh2004.kehilangan_tempat_tinggal}} orang kehilangan tempat tinggal di Aceh dan Nias tanpa pemilahan [@brr-2009-nias]; definisinya berbeda dari pengungsi tercatat DIBI. Jumlah jembatan rusak Aceh 2004 tidak ditemukan di buku BRR, sehingga sel akses memuat panjang jalan saja.
 
-**Lantai tsunami di DIBI adalah Selat Sunda 22 Desember 2018 dengan {{angka:rehab.lantai.tsunami.selatsunda2018.rumah_rb}} rumah rusak berat dan {{angka:rehab.lantai.tsunami.selatsunda2018.mengungsi}} pengungsi, tanpa jembatan rusak tercatat.** Tsunami Palu 2018 dan Mentawai 2010 tercatat dalam kategori gabungan [@bnpb-dibi]. Kerusakan layanan air tsunami tidak dikuantifikasi. Proksi yang tersedia adalah keluaran RR, yaitu hampir {{angka:rehab.lantai.tsunami.aceh2004.sumur_mdf}} sumur atau sumber air yang dibangun Multi Donor Fund (MDF) di Aceh dan Nias menurut laporan pengelola dana sendiri [@mdf-2011-progress]. Salinitas air tanah Aceh Barat turun dari lebih dari {{angka:rehab.akuifer.aceh_barat_salinitas_awal}} menjadi kurang dari {{angka:rehab.akuifer.aceh_barat_salinitas_akhir}} mS/cm dalam {{angka:rehab.akuifer.aceh_barat_waktu_pulih_salinitas}} tahun pada curah hujan tinggi [@marohn-2012-aceh-barat], sehingga sumur darurat pascatsunami memerlukan rekomendasi Badan Geologi.
+::: gambar {#gbr:foto-rr-palu-talise-2018}
+berkas: gambar/foto/rehab-b08-palu-talise-2018.jpg
+jenis: foto
+judul: Kerusakan di pesisir Pantai Talise, Palu, setelah tsunami 28 September 2018
+pengarang: Ungkeito
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Bencana_Tsunami_Palu.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
+**Lantai tsunami di DIBI adalah Selat Sunda 22 Desember 2018 dengan {{angka:rehab.lantai.tsunami.selatsunda2018.rumah_rb}} rumah rusak berat dan {{angka:rehab.lantai.tsunami.selatsunda2018.mengungsi}} pengungsi, tanpa jembatan rusak tercatat.** Tsunami Palu 2018 dan Mentawai 2010 tercatat dalam kategori gabungan [@bnpb-dibi]. Kerusakan layanan air tsunami tidak dikuantifikasi. Proksi yang tersedia adalah keluaran RR, yaitu hampir {{angka:rehab.lantai.tsunami.aceh2004.sumur_mdf}} sumur atau sumber air yang dibangun Multi Donor Fund (MDF) di Aceh dan Nias menurut laporan pengelola dana sendiri [@mdf-2011-progress]. Salinitas air tanah Aceh Barat turun dari lebih dari {{angka:rehab.akuifer.aceh_barat_salinitas_awal}} menjadi kurang dari {{angka:rehab.akuifer.aceh_barat_salinitas_akhir}} mS/cm dalam {{angka:rehab.akuifer.aceh_barat_waktu_pulih_salinitas}} tahun pada curah hujan tinggi [@marohn-2012-aceh], sehingga sumur darurat pascatsunami memerlukan rekomendasi Badan Geologi.
 
 :::: skenario {#tbl:kartu-tsunami}
 jenis: tsunami
@@ -174,7 +193,7 @@ dasar: Lantai rumah dan akses dari laporan BRR untuk Aceh dan Nias 2004, karena 
 kemungkinan: tidak dinilai: tsunami selain megathrust Jawa tidak punya dasar peluang lima tahun di bahan kajian
 peta: gambar/rehab/bab08-kartu-tsunami.png
 lembaga: Deputi Bidang Rehabilitasi dan Rekonstruksi; Kementerian Pekerjaan Umum; Kementerian Energi dan Sumber Daya Mineral; BPBD provinsi
-sumber: BRR NAD-Nias [@brr-2009-scattered-beads; @brr-2009-nias]; DIBI BNPB [@bnpb-dibi]; MDF [@mdf-2011-progress]; Marohn dkk. [@marohn-2012-aceh-barat]
+sumber: BRR NAD-Nias [@brr-2009-scattered-beads; @brr-2009-nias]; DIBI BNPB [@bnpb-dibi]; MDF [@mdf-2011-progress]; Marohn dkk. [@marohn-2012-aceh]
 kaki: Angka tercatat dan laporan pelaksana, bukan proyeksi model; kolom korban jiwa kepekaan tidak dihitung karena kartu memuat beban RR.
 data_per: 23 Okt 2026
 
@@ -210,7 +229,7 @@ Basis {{angka:brr.aceh2004.kehilangan_tempat_tinggal}} jiwa membutuhkan {{angka:
 
 ::: pemulihan
 - Rencana Induk RR Aceh dan Nias berlaku empat tahun menurut Perpres 30/2005.
-- BRR membangun {{angka:rehab.lantai.tsunami.aceh2004.rumah_brr}} rumah dalam masa kerja empat tahun.
+- BRR membangun {{angka:rehab.keluaran.aceh2004.rumah_dibangun}} rumah dalam masa kerja empat tahun.
 - Salinitas air tanah pulih sekitar {{angka:rehab.akuifer.aceh_barat_waktu_pulih_salinitas}} tahun pada curah hujan tinggi.
 :::
 ::::
@@ -270,7 +289,7 @@ Basis {{angka:rehab.lantai.likuefaksi.sulteng2018.jiwa_kehilangan_hunian}} jiwa 
 
 ## Banjir dan Banjir Bandang {#sub:banjir}
 
-**Banjir dan longsor Sumatra 15 November–31 Desember 2025 merusak {{angka:rehab.lantai.banjir.sumatra2025.rumah_rusak}} rumah, termasuk {{angka:rehab.lantai.banjir.sumatra2025.rumah_rb}} rusak berat, di Aceh, Sumatera Utara, dan Sumatera Barat.** DIBI mencatat {{angka:dibi.sumatra2025.mengungsi}} pengungsi dengan menjumlah tiap laporan [@bnpb-dibi]. Untuk Aceh, jumlah per laporan itu {{angka:rehab.lantai.banjir.sumatra2025.mengungsi_aceh_dibi}}, sedangkan Buletin Info Bencana menulis stok {{angka:dibi.sumatra2025.mengungsi_aceh_buletin}} per 31 Desember 2025, sehingga angka DIBI adalah batas atas pengungsi serentak. Versi rumah juga berbeda, yaitu sekitar {{angka:rehab.pulih.sumatra2025.rumah_rusak_bnpb_2025_12}} menurut BNPB dan {{angka:rehab.pulih.sumatra2025.rumah_terdampak_pkp_2026_01}} rumah terdampak menurut Kementerian Perumahan dan Kawasan Permukiman (PKP) [@dpr-2026-info-singkat-sumatra].
+**Banjir dan longsor Sumatra 15 November–31 Desember 2025 merusak {{angka:rehab.lantai.banjir.sumatra2025.rumah_rusak}} rumah, termasuk {{angka:rehab.lantai.banjir.sumatra2025.rumah_rb}} rusak berat, di Aceh, Sumatera Utara, dan Sumatera Barat.** DIBI mencatat {{angka:dibi.sumatra2025.mengungsi}} pengungsi dengan menjumlah tiap laporan [@bnpb-dibi]. Untuk Aceh, jumlah per laporan itu {{angka:rehab.lantai.banjir.sumatra2025.mengungsi_aceh_dibi}}, sedangkan Buletin Info Bencana menulis stok {{angka:dibi.sumatra2025.mengungsi_aceh_buletin}} per 31 Desember 2025, sehingga angka DIBI adalah batas atas pengungsi serentak. Versi rumah BNPB dan Kementerian Perumahan dan Kawasan Permukiman (PKP) hanya terbaca dari kutipan pihak lain, sehingga dicatat sebagai angka sekunder di @lamp:dibi [@dpr-2026-info-singkat-sumatra].
 
 **Jembatan adalah besaran banjir: {{angka:rehab.dibi.jembatan_rusak.banjir.2025}} jembatan rusak karena banjir pada 2025 secara nasional, dan {{angka:rehab.dibi.jembatan_rusak.banjir.prov_tahun_maks}} di Aceh saja.** Tiga provinsi Sumatra mencatat {{angka:rehab.dibi.jembatan_rusak.banjir.sumatra3prov.2025}} jembatan rusak kategori banjir pada 2025 [@bnpb-dibi]. Kementerian PU mencatat {{angka:rehab.pulih.sumatra2025.jembatan_daerah_terdampak}} jembatan daerah terdampak per 7 Mei 2026, definisi yang lebih luas daripada rusak [@pu-2026-pemulihan-sumatera-mei], dan Bina Marga mencatat {{angka:rehab.pulih.sumatra2025.jembatan_nasional_putus_aceh_2025_12}} jembatan nasional putus di Aceh per 1 Desember 2025 [@binamarga-2025-jembatan-aceh]. Ketiga angka ditulis berdampingan karena definisi dan status jalannya berbeda.
 
@@ -311,7 +330,7 @@ Pengungsi tercatat {{angka:dibi.sumatra2025.mengungsi}} jiwa membutuhkan {{angka
 ::: kepekaan
 | TUAS | NILAI DASAR | NILAI DIGESER | KORBAN JIWA | KERUGIAN MATERIIL |
 | --- | ---: | ---: | ---: | --- |
-| Versi rumah rusak, DIBI lawan BNPB | {{angka:rehab.lantai.banjir.sumatra2025.rumah_rusak}} | {{angka:rehab.pulih.sumatra2025.rumah_rusak_bnpb_2025_12}} | – | rumah terdampak menurut Kementerian PKP {{angka:rehab.pulih.sumatra2025.rumah_terdampak_pkp_2026_01}} |
+| Versi rumah rusak, DIBI lawan versi BNPB dan Kementerian PKP | {{angka:rehab.lantai.banjir.sumatra2025.rumah_rusak}} | – | – | versi BNPB dan Kementerian PKP sekunder, dicatat di Lampiran D |
 | Pengungsi Aceh, jumlah per laporan lawan stok Buletin | {{angka:rehab.lantai.banjir.sumatra2025.mengungsi_aceh_dibi}} | {{angka:dibi.sumatra2025.mengungsi_aceh_buletin}} | – | kebutuhan air darurat Aceh turun bila memakai stok |
 | Jembatan, DIBI tiga provinsi lawan Kementerian PU | {{angka:rehab.dibi.jembatan_rusak.banjir.sumatra3prov.2025}} | {{angka:rehab.pulih.sumatra2025.jembatan_daerah_terdampak}} | – | definisi berbeda: rusak lawan terdampak |
 :::
@@ -376,13 +395,24 @@ Pengungsi longsor setahun {{angka:rehab.dibi.mengungsi.longsor.tahun_maks}} jiwa
 
 ::: pemulihan
 - Durasi pulih longsor tidak dikuantifikasi di sumber mana pun.
-- Baseline waktu pulih akses dan air dibentuk paling lambat 2027 (@rek:r-rr-02).
+- Garis dasar waktu pulih akses dan air dibentuk paling lambat 2027 (@rek:r-rr-02).
 :::
 ::::
 
 ## Erupsi Gunung Api {#sub:erupsi}
 
 **Lantai rumah erupsi adalah Kelud 13–14 Februari 2014 dengan {{angka:rehab.lantai.erupsi.kelud2014.rumah_rb}} rumah rusak berat di Kab. Kediri dan Kab. Malang.** Angka itu lima kali Merapi 2010 ({{angka:rehab.lantai.erupsi.merapi2010.rumah_rb}} rumah rusak berat), sedangkan Merapi tetap lantai pengungsi erupsi dengan {{angka:dibi.merapi2010.mengungsi}} jiwa [@bnpb-dibi]. Kelud mencatat {{angka:rehab.lantai.erupsi.kelud2014.mengungsi}} pengungsi. Jembatan rusak kategori erupsi gunung api mencapai {{angka:rehab.dibi.jembatan_rusak.erupsi.prov_tahun_maks}} unit di Sumatera Barat pada 2024. Gladak Perak, jembatan bentang {{angka:rehab.akses.semeru2021.gladak_perak_bentang_m}} m yang terdampak erupsi Semeru 2021, dinilai Kementerian Koordinator Bidang Pembangunan Manusia dan Kebudayaan (Kemenko PMK) tidak memungkinkan dipasangi bailey. Kerusakan air erupsi tidak dikuantifikasi; mata air dan pipa gravitasi di lereng menjadi risiko yang hanya dapat ditulis kualitatif.
+
+::: gambar {#gbr:foto-rr-merapi-cangkringan-2010}
+berkas: gambar/foto/rehab-b08-merapi-cangkringan-2010.jpg
+jenis: foto
+judul: Rumah di Cangkringan, Sleman, yang hancur diterjang awan panas Merapi, Desember 2010
+pengarang: Crisco 1492
+lisensi: CC BY-SA 3.0
+url: https://commons.wikimedia.org/wiki/File:Destroyed_house_in_Cangkringan_Village_after_the_2010_Eruptions_of_Mount_Merapi.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
 
 :::: skenario {#tbl:kartu-erupsi}
 jenis: gunungapi
@@ -552,12 +582,11 @@ sumber: DIBI BNPB, rekap provinsi tahunan bencana alam 2015–2026; pengolahan k
 keyakinan: resmi
 lebar: penuh
 data_per: 23 Okt 2026
-catatan: Panel (a) jembatan dan (b) rumah memakai bulatan sebanding; panel (c) menghitung tahun berkerusakan. Sisipan NTT 2026 bertanda sementara.
 :::
 
-**Kab/kota penanggung beban puncak berbeda dari kab/kota penanggung beban berulang: Kota Padang mencatat {{angka:rehab.sebaran.kab.gempa.kota_padang}} rumah rusak gempa 2008–2026, sedangkan Kab. Sukabumi mencatat rumah rusak gempa di {{angka:rehab.sebaran.kab.gempa.sukabumi_tahun}} tahun berbeda.** Sebanyak {{angka:rehab.sebaran.kab.gempa.n_kab}} kab/kota mencatat rumah rusak gempa [@bnpb-dibi]. Untuk longsor 2015–2025, {{angka:rehab.sebaran.kab.longsor.n_kab_tiap_tahun}} dari {{angka:rehab.sebaran.kab.longsor.n_kab}} kab/kota mencatat rumah rusak di setiap tahun; untuk cuaca ekstrem, {{angka:rehab.sebaran.kab.cuaca_ekstrem.n_kab_tiap_tahun}} dari {{angka:rehab.sebaran.kab.cuaca_ekstrem.n_kab}}. Hanya {{angka:rehab.sebaran.kab.berulang3.n_kab}} kab/kota, yaitu Kab. Bogor dan Kab. Sukabumi, mencatat rumah rusak karena gempa maupun longsor dan cuaca ekstrem di paling sedikit {{angka:rehab.sebaran.kab.berulang3.min_tahun}} tahun pada 2015–2025, walau jembatan per kab/kota belum terhitung.
+**Kab/kota penanggung beban puncak berbeda dari kab/kota penanggung beban berulang: Kota Padang mencatat {{angka:rehab.sebaran.kab.gempa.kota_padang}} rumah rusak gempa 2008–2026, sedangkan Kab. Sukabumi mencatat rumah rusak gempa di {{angka:rehab.sebaran.kab.gempa.sukabumi_tahun}} tahun berbeda.** Sebanyak {{angka:rehab.sebaran.kab.gempa.n_kab}} kab/kota mencatat rumah rusak gempa [@bnpb-dibi]. Untuk longsor 2015–2025, {{angka:rehab.sebaran.kab.longsor.n_kab_tiap_tahun}} dari {{angka:rehab.sebaran.kab.longsor.n_kab}} kab/kota mencatat rumah rusak di setiap tahun; untuk cuaca ekstrem, {{angka:rehab.sebaran.kab.cuaca_ekstrem.n_kab_tiap_tahun}} dari {{angka:rehab.sebaran.kab.cuaca_ekstrem.n_kab}}. Hanya {{angka:rehab.sebaran.kab.berulang3.n_kab}} kab/kota, yaitu Kab. Bogor dan Kab. Sukabumi, mencatat rumah rusak karena gempa maupun longsor dan cuaca ekstrem di paling sedikit {{angka:rehab.sebaran.kab.berulang3.min_tahun}} tahun pada 2015–2025, walau jembatan per kab/kota belum terhitung. Catatan atas @gbr:peta-sebaran. Panel (a) jembatan dan (b) rumah memakai bulatan sebanding; panel (c) menghitung tahun berumah rusak.
 
-**Kab. Aceh Utara mencatat {{angka:rehab.sebaran.kab.banjir.aceh_utara_2025.rumah_rusak}} rumah rusak karena banjir pada 2025 dengan {{angka:rehab.sebaran.kab.banjir.aceh_utara_2025.mengungsi}} pengungsi.** Aceh memegang lantai banjir untuk rumah dan jembatan, dan menanggung bagian terbesar SPAM terdampak. Kab. Aceh Tamiang memegang rumah rusak berat banjir terbanyak 2008–2026, yaitu {{angka:rehab.sebaran.kab.banjir.aceh_tamiang.rb}} [@bnpb-dibi]. Aceh karena itu calon terkuat uji coba paket air dan akses (@rek:r-rr-14). Kab. Nagekeo tidak dimasukkan ke @tbl:kab-beban, karena versi DIBI sebesar {{angka:rehab.lantai.gempa.flores2026.nagekeo_rusak_dibi}} rumah rusak melebihi data awal BNPB {{angka:rehab.lantai.gempa.flores2026.nagekeo_data_awal}}, dan verifikasi mendapati {{angka:rehab.lantai.gempa.flores2026.nagekeo_tidak_rusak_terverifikasi}} rumah tidak rusak [@bnpb-2026-flores-verifikasi].
+**Kab. Aceh Utara mencatat {{angka:rehab.sebaran.kab.banjir.aceh_utara_2025.rumah_rusak}} rumah rusak karena banjir pada 2025 dengan {{angka:rehab.sebaran.kab.banjir.aceh_utara_2025.mengungsi}} pengungsi.** Aceh memegang lantai banjir untuk rumah dan jembatan, dan menanggung bagian terbesar SPAM terdampak. Kab. Aceh Tamiang memegang rumah rusak berat banjir terbanyak 2008–2026, yaitu {{angka:rehab.sebaran.kab.banjir.aceh_tamiang.rb}} [@bnpb-dibi]. Aceh karena itu calon terkuat uji coba paket air dan akses (@rek:r-rr-14). Kab. Nagekeo tidak dimasukkan ke @tbl:kab-beban, karena versi DIBI sebesar {{angka:rehab.lantai.gempa.flores2026.nagekeo_rusak_dibi}} rumah rusak melebihi data awal BNPB {{angka:rehab.lantai.gempa.flores2026.nagekeo_data_awal}}, dan verifikasi mendapati {{angka:rehab.lantai.gempa.flores2026.nagekeo_tidak_rusak_terverifikasi}} rumah tidak rusak [@bnpb-2026-flores-verifikasi]. Catatan atas @tbl:kab-beban. Daftar penanda frekuensi dan puncak, bukan daftar perhatian RR. Rumah rusak mencakup rusak berat dan sedang serta ringan kecuali disebut rusak berat.
 
 ::: tabel {#tbl:kab-beban}
 judul: Kab/kota penanggung beban puncak dan beban berulang per jenis bencana di Indonesia, 2008–2026 (unit)
@@ -565,7 +594,6 @@ sumber: DIBI BNPB, rekap kab/kota tahunan bencana alam 2008–2026; pengolahan k
 keyakinan: resmi
 angka: 4
 data_per: 23 Okt 2026
-catatan: Daftar penanda frekuensi dan puncak, bukan daftar perhatian RR. Rumah rusak mencakup rusak berat, sedang, dan ringan kecuali disebut rusak berat.
 
 | JENIS | KAB/KOTA | BESARAN | NILAI | PERIODE |
 | --- | --- | --- | ---: | --- |
@@ -586,15 +614,14 @@ catatan: Daftar penanda frekuensi dan puncak, bukan daftar perhatian RR. Rumah r
 
 **Hanya dua kelompok ancaman yang punya dasar peluang lima tahun: musim hujan setara lantai ({{angka:hidromet.nasional.lantai.peluang_5_musim|fmt=1|persen}}, pita 4) dan megathrust Jawa ({{angka:geologi.jawa_gabungan.peluang_5th|fmt=2|persen}} untuk Mw {{angka:pusgen.jawa.mmaks|fmt=1}} gabungan, pita 2).** Megathrust Jawa per segmen berpeluang {{angka:geologi.jawa_segmen.peluang_5th|fmt=2|persen}} dalam lima tahun, pita 3 [@pusgen-2024-peta-gempa]. Kedua peluang megathrust adalah turunan Poisson kajian dari periode ulang Pusat Studi Gempa Nasional (PuSGeN) 2024, bukan angka PuSGeN, dan berlabel asumsi kebijakan. Jenis lain, termasuk gempa di luar megathrust Jawa, tidak punya dasar peluang dan ditempatkan di panel "dampak dinilai, kemungkinan tidak dinilai" pada @gbr:matriks-rr.
 
-**Kelas dampak RR memakai lantai rumah rusak: kelas 5 untuk paling sedikit {{angka:rehab.kelas_dampak_rr.ambang_5}} rumah, kelas 4 untuk {{angka:rehab.kelas_dampak_rr.ambang_4}} sampai di bawahnya, dan kelas 3 mulai {{angka:rehab.kelas_dampak_rr.ambang_3}}.** Ambang itu usulan kajian dan dihitung ulang bila Bab 3 menetapkan ambang lain. Lantai gempa dan lantai tsunami berada di kelas 5, begitu pula banjir. Erupsi berada di kelas 4, karena tahun Kelud 2014 mencatat {{angka:rehab.dibi.rumah_rusak.erupsi.2014}} rumah rusak [@bnpb-dibi]. Cuaca ekstrem berada di kelas 4 dengan {{angka:rehab.dibi.rumah_rusak.cuaca_ekstrem.tahun_maks}} rumah rusak setahun, dan longsor di kelas 3 dengan {{angka:rehab.dibi.rumah_rusak.longsor.tahun_maks}}; keduanya jumlah setahun, bukan satu kejadian. Likuefaksi ditulis gabungan dan batas atas, tidak sejajar dengan gempa dan tsunami. Titik megathrust Jawa berada di kelas 5, karena skenario tidak boleh lebih ringan daripada lantai tsunami Aceh dan Nias 2004; Pangandaran 2006 di kajian mitigasi hanya memberi lantai korban jiwa dan tidak memuat jumlah rumah. Kemungkinan dan dampak tidak dikalikan menjadi skor.
+**Kelas dampak RR memakai lantai rumah rusak: kelas 5 untuk paling sedikit {{angka:rehab.kelas_dampak_rr.ambang_5}} rumah, kelas 4 untuk {{angka:rehab.kelas_dampak_rr.ambang_4}} sampai di bawahnya, dan kelas 3 mulai {{angka:rehab.kelas_dampak_rr.ambang_3}}.** Ambang itu usulan kajian dan dihitung ulang bila Bab 3 menetapkan ambang lain. Lantai gempa dan lantai tsunami berada di kelas 5, begitu pula banjir. Erupsi berada di kelas 4, karena tahun Kelud 2014 mencatat {{angka:rehab.dibi.rumah_rusak.erupsi.2014}} rumah rusak [@bnpb-dibi]. Cuaca ekstrem berada di kelas 4 dengan {{angka:rehab.dibi.rumah_rusak.cuaca_ekstrem.tahun_maks}} rumah rusak setahun, dan longsor di kelas 3 dengan {{angka:rehab.dibi.rumah_rusak.longsor.tahun_maks}}; keduanya jumlah setahun, bukan satu kejadian. Likuefaksi ditulis gabungan dan batas atas, tidak sejajar dengan gempa dan tsunami. Titik megathrust Jawa berada di kelas 5, karena skenario tidak boleh lebih ringan daripada lantai tsunami Aceh dan Nias 2004; Pangandaran 2006 di kajian mitigasi hanya memberi lantai korban jiwa dan tidak memuat jumlah rumah. Kemungkinan dan dampak tidak dikalikan menjadi skor. Catatan atas @gbr:matriks-rr. Posisi, bukan peringkat; panel kanan memuat jenis yang dampaknya dinilai tanpa kelas kemungkinan.
 
 ::: gambar {#gbr:matriks-rr}
 berkas: gambar/rehab/bab08-matriks-kemungkinan-dampak.png
 jenis: diagram
-judul: Posisi jenis bencana pada matriks kemungkinan lima tahun dan kelas dampak RR di Indonesia
+judul: Posisi jenis bencana pada matriks kemungkinan lima tahun dan kelas dampak RR di Indonesia, 2026
 sumber: DIBI BNPB; PuSGeN 2024; pengolahan kajian ini
 keyakinan: asumsi-kebijakan
 lebar: penuh
 data_per: 25 Okt 2026
-catatan: Posisi, bukan peringkat; panel kanan memuat jenis yang dampaknya dinilai tanpa kelas kemungkinan.
 :::

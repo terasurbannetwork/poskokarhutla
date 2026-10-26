@@ -19,7 +19,7 @@ const Tren = {
     const v = s.map(x => ({n: x.kering, n2: x.ekstrem, t: BLN[+x.bln.slice(5) - 1] + (x.bln.endsWith("-01") || x === s[0] ? " " + x.bln.slice(2, 4) : ""),
       tip: `<b>${bulanPanjang(x.bln)}</b><br>Kering (SPI-3 ≤ −1): ${fmt(x.kering)}% wilayah<br>Kering ekstrem (curah hujan, ≤ −2): ${fmt(x.ekstrem)}% wilayah`})), a = s.at(-1), mx = Math.max(...s.map(x => x.kering)), tertinggi = a.kering >= mx;
     return this.kartu("Hujan", `${Kartu.hl(fmt(a.kering) + "%")} wilayah kering pada ${bulanPanjang(a.bln)}, ${fmt(a.ekstrem)}% kering ekstrem (curah hujan)${tertinggi ? `, tertinggi dalam ${s.length} bulan` : ""}`,
-      this.batang(v, {fmtN: x => fmt(Math.round(x * 10) / 10), w2: true}), "Deteksi Pantau Bencana (SPI-3 dari NASA POWER 1991–2020)", [[JINGGA, "agak kering atau lebih (SPI-3 ≤ −1)"], [MERAH, "kering ekstrem (curah hujan, ≤ −2)"]]); },
+      this.batang(v, {fmtN: x => fmt(Math.round(x * 10) / 10), w2: true}), "Deteksi Centurisk97 (SPI-3 dari NASA POWER 1991–2020)", [[JINGGA, "agak kering atau lebih (SPI-3 ≤ −1)"], [MERAH, "kering ekstrem (curah hujan, ≤ −2)"]]); },
 
   /* 2. kode kekeringan (DC) harian: median dan persentil ke-90 seluruh sel */
   kDc() {
@@ -33,19 +33,19 @@ const Tren = {
     const r = S.tren?.dasarian; if (!r || r.length < 2) return "";
     const v = r.map(x => ({n: x.jiwa[2], n2: 0, t: DAS(x.das), tip: `<b>${DAS(x.das)} ${x.id.slice(0, 4)}</b><br>${rb(x.jiwa[2])} jiwa di kecamatan Awas<br>${fmt(x.kab_n[2])} kabupaten/kota Awas`})), a = r.at(-1);
     return this.kartu("Dasarian", `${Kartu.hl(jt(a.jiwa[2]) + " jiwa")} di kecamatan Awas pada dasarian ${DAS(a.das)}, ${fmt(a.kab_n[2])} kabupaten/kota`,
-      this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Pantau Bencana", [[MERAH, "jiwa di kecamatan Awas"]]); },
+      this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Centurisk97", [[MERAH, "jiwa di kecamatan Awas"]]); },
 
   /* 4-5. HTH 30 hari: jiwa di wilayah HTH 31 hari atau lebih, dan HTH terpanjang nasional */
   kHth() {
     const H = S.hth, r = H?.nasional?.seri, tg = H?.tgl30; if (!r?.j31?.length || r.j31.length !== tg?.length) return "";
     const v = tg.map((t, i) => ({n: r.j31[i], t: tglPendek(t), tip: `<b>${tglPendek(t)}</b><br>${rb(r.j31[i])} jiwa di wilayah HTH 31 hari atau lebih<br>${fmt(r.kab31[i])} kabupaten/kota`})), n = v.length - 1, d = v[n].n - v[Math.max(0, n - 7)].n;
     return this.kartu("HTH", `${Kartu.hl(jt(v[n].n) + " jiwa")} tinggal di wilayah HTH 31 hari atau lebih, ${d === 0 ? "sama dengan" : Kartu.hl((d > 0 ? "naik " : "turun ") + jt(Math.abs(d)) + " jiwa") + " dari"} 7 hari lalu`,
-      this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Pantau Bencana (hujan Open-Meteo, ambang " + fmt(H.ambang_mm) + " mm)", [[MERAH, "jiwa di wilayah HTH 31 hari atau lebih"]]); },
+      this.batang(v, {fmtN: rb, warna: MERAH}), "Deteksi Centurisk97 (hujan Open-Meteo, ambang " + fmt(H.ambang_mm) + " mm)", [[MERAH, "jiwa di wilayah HTH 31 hari atau lebih"]]); },
   kHthMaks() {
     const H = S.hth, r = H?.nasional?.seri, tg = H?.tgl30; if (!r?.maks?.length || r.maks.length !== tg?.length) return "";
     const v = tg.map((t, i) => ({n: r.maks[i], t: tglPendek(t), tip: `<b>${tglPendek(t)}</b><br>HTH terpanjang: ${fmt(r.maks[i])} hari`})), a = v.at(-1).n;
     return this.kartu("HTH terpanjang", `HTH terpanjang nasional ${Kartu.hl(fmt(a) + " hari")} pada ${tglPendek(tg.at(-1))}, kelas ${esc((KELAS_HTH()[klsHth(a)] || "").toLowerCase())} menurut BMKG`,
-      this.batang(v, {warna: JINGGA}), "Deteksi Pantau Bencana (hujan Open-Meteo; batas kelas BMKG, angka bukan peta BMKG)", [[JINGGA, "hari tanpa hujan berturut-turut, nilai terbesar di seluruh sel"]]); },
+      this.batang(v, {warna: JINGGA}), "Deteksi Centurisk97 (hujan Open-Meteo; batas kelas BMKG, angka bukan peta BMKG)", [[JINGGA, "hari tanpa hujan berturut-turut, nilai terbesar di seluruh sel"]]); },
 
   /* 6. kalender musim: curah hujan bulanan rata-rata 1991-2025, nasional dan musim kering per provinsi (riwayat.py) */
   kKalender() {

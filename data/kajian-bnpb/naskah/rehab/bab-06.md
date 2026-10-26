@@ -25,11 +25,11 @@ target_halaman: 12
 **Rekomendasi:** @rek:r-rr-08, @rek:r-rr-09, @rek:r-rr-02
 :::
 
-**Untuk empat kejadian besar 2018–2025, yang tercatat resmi tentang air minum adalah jumlah titik atau unit SPAM rusak, tanpa satu pun angka jiwa atau sambungan yang kehilangan air.** Pemulihan air perpipaan pascabencana dibahas dalam tiga lapis waktu rehabilitasi dan rekonstruksi (RR): lapis darurat dengan truk tangki dan hidran umum serta sumur; lapis sementara dengan transmisi dan sistem gravitasi; dan lapis permanen dengan rehabilitasi SPAM. Bukti per lapis berasal dari dua buku Satuan Tugas (Satgas) Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR), dua rilis Kementerian PU tentang Sumatra 2025, Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) Kabupaten Cianjur, serta peraturan Badan Nasional Penanggulangan Bencana (BNPB) dan sektor air [@kemenpupr-2019-satgas-lombok; @kemenpupr-2023-cianjur; @cianjur-2022-r3p].
+**Untuk empat kejadian besar 2018–2025, yang tercatat resmi tentang air minum adalah jumlah titik atau unit Sistem Penyediaan Air Minum (SPAM) rusak, tanpa satu pun angka jiwa atau sambungan yang kehilangan air.** Pemulihan air perpipaan pascabencana dibahas dalam tiga lapis waktu rehabilitasi dan rekonstruksi (RR): lapis darurat dengan truk tangki dan hidran umum serta sumur; lapis sementara dengan transmisi dan sistem gravitasi; dan lapis permanen dengan rehabilitasi SPAM. Bukti per lapis berasal dari dua buku Satuan Tugas (Satgas) Kementerian Pekerjaan Umum dan Perumahan Rakyat (PUPR, kini Kementerian Pekerjaan Umum), dua rilis Kementerian PU tentang Sumatra 2025, Rencana Rehabilitasi dan Rekonstruksi Pascabencana (R3P) Kabupaten Cianjur, serta peraturan Badan Nasional Penanggulangan Bencana (BNPB) dan sektor air [@kemenpupr-2019-satgas-lombok; @kemenpupr-2023-cianjur; @cianjur-2022-r3p].
 
 ## Kerusakan Sistem Air Minum pada Kejadian Besar {#sub:kerusakan-air}
 
-**DIBI tidak mencatat kerusakan prasarana air minum maupun waktu pulih layanan untuk kejadian 2008–2025 mana pun.** Kolom fasilitas yang paling dekat adalah fasilitas umum rusak, yang tidak memisahkan prasarana air [@bnpb-dibi]. Angka kerusakan air minum karena itu hanya tersedia dari laporan pelaksana dan R3P, dengan satuan yang berbeda per kejadian, sebagaimana dirangkum pada @tbl:kerusakan-air.
+**Data dan Informasi Bencana Indonesia (DIBI) tidak mencatat kerusakan prasarana air minum maupun waktu pulih layanan untuk kejadian 2008–2025 mana pun.** Kolom fasilitas yang paling dekat adalah fasilitas umum rusak, yang tidak memisahkan prasarana air [@bnpb-dibi]. Angka kerusakan air minum karena itu hanya tersedia dari laporan pelaksana dan R3P, dengan satuan yang berbeda per kejadian, sebagaimana dirangkum pada @tbl:kerusakan-air.
 
 **Gempa Lombok 2018 merusak {{angka:rehab.pipa.lombok.spam_rusak}} titik pipa SPAM, {{angka:rehab.pipa.lombok.titik_pipa_rusak_lombok}} di Lombok Utara dan Lombok Timur serta {{angka:rehab.pipa.lombok.titik_pipa_rusak_sumbawa}} di Kabupaten Sumbawa dan Sumbawa Barat.** Teks buku Satgas menyebut titik itu mencakup SPAM reguler dan swadaya serta sistem Penyediaan Air Minum dan Sanitasi Berbasis Masyarakat (PAMSIMAS), umumnya pada pipa *high-density polyethylene* (HDPE). Teks itu hanya menyebut Lombok Utara serta Lombok Timur, sedangkan lampirannya merinci tiap titik sebagai satu lokasi kerusakan pipa per desa, termasuk lima titik di Pulau Sumbawa [@kemenpupr-2019-satgas-lombok, hlm. 11, 139–140]. Satu titik kerusakan pipa tidak setara dengan satu unit SPAM, sehingga angka Lombok tidak dapat dibandingkan langsung dengan hitungan unit Sumatra.
 
@@ -57,7 +57,6 @@ judul: Kerusakan sistem air minum dan sarana darurat pada empat kejadian besar, 
 sumber: Kementerian PUPR, Buku Satgas Lombok [@kemenpupr-2019-satgas-lombok] dan Penanganan Gempa Cianjur 2022 [@kemenpupr-2023-cianjur]; R3P Kabupaten Cianjur [@cianjur-2022-r3p]; Kementerian ESDM [@esdm-2018-air-siap-minum]; Kementerian PU [@pu-2026-spam-sumatera-feb; @pu-2026-infrastruktur-sumatera-mei]
 keyakinan: campuran
 data_per: 7 Mei 2026
-catatan: "Tidak dilaporkan" berarti sumber resmi tidak menyebut jiwa atau sambungan; "–" berarti tidak ada angka resmi yang ditemukan.
 
 | BESARAN | LOMBOK 2018 | PALU 2018 | CIANJUR 2022 | SUMATRA 2025 | KEYAKINAN |
 | --- | --- | --- | --- | --- | --- |
@@ -69,7 +68,7 @@ catatan: "Tidak dilaporkan" berarti sumber resmi tidak menyebut jiwa atau sambun
 | Kerusakan dan kerugian air dalam rupiah | – | – | air dan sanitasi {{angka:rehab.rekon.cianjur2022.r3p_air_sanitasi_kerusakan_rp|rupiah}} (kerusakan); SPAM perkotaan {{angka:rehab.rekon.cianjur2022.r3p_spam_perkotaan_rp|rupiah}} | – | resmi |
 :::
 
-**Angka tercatat itu menjadi lantai skenario air di Bab 8: {{angka:rehab.pipa.sumatra2025.spam_terdampak}} SPAM terdampak untuk kartu banjir dan {{angka:rehab.pipa.lombok.spam_rusak}} titik kerusakan pipa untuk kartu gempa.** Lantai gempa bersifat sementara dan batas bawah, karena kerusakan air Palu 2018 kemungkinan lebih berat tetapi tidak punya angka resmi; data Jitupasna sektor air Palu menjadi syarat sebelum kartu gempa dikunci. Skenario air tidak boleh lebih ringan dari angka tercatat untuk wilayah yang sama, dan karena satuan kedua kartu berbeda (unit SPAM lawan titik kerusakan pipa), keduanya tidak dijumlah dan tidak dibandingkan [@pu-2026-infrastruktur-sumatera-mei; @kemenpupr-2019-satgas-lombok].
+**Angka tercatat itu menjadi lantai skenario air di Bab 8: {{angka:rehab.pipa.sumatra2025.spam_terdampak}} SPAM terdampak untuk kartu banjir dan {{angka:rehab.pipa.lombok.spam_rusak}} titik kerusakan pipa untuk kartu gempa.** Lantai gempa bersifat sementara dan batas bawah, karena kerusakan air Palu 2018 kemungkinan lebih berat tetapi tidak punya angka resmi; data Jitupasna sektor air Palu menjadi syarat sebelum kartu gempa dikunci. Skenario air tidak boleh lebih ringan dari angka tercatat untuk wilayah yang sama, dan karena satuan kedua kartu berbeda (unit SPAM lawan titik kerusakan pipa), keduanya tidak dijumlah dan tidak dibandingkan [@pu-2026-infrastruktur-sumatera-mei; @kemenpupr-2019-satgas-lombok]. Catatan atas @tbl:kerusakan-air. "Tidak dilaporkan" berarti sumber resmi tidak menyebut jiwa atau sambungan; "–" berarti tidak ada angka resmi yang ditemukan.
 
 ## Lapis Darurat: Truk Tangki, Hidran Umum, IPA Mobile, dan Kit Pipa Bergerak {#sub:lapis-darurat}
 
@@ -77,7 +76,7 @@ catatan: "Tidak dilaporkan" berarti sumber resmi tidak menyebut jiwa atau sambun
 
 **Perban BNPB 2/2018 memuat "jaringan air bersih" dan "perbaikan sumber air baku" sebagai kegiatan yang dapat dibiayai Dana Siap Pakai (DSP), tetapi peraturan itu dicabut Perban BNPB 4/2020 Pasal 27.** Pasal 11 peraturan pengganti menyerahkan daftar kegiatan DSP kepada keputusan Kepala BNPB yang tidak ditemukan di korpus hukum BNPB [@bnpb-2018-dsp-dicabut, hlm. 12–13; @bnpb-2020-dsp, hlm. 11]. Akibatnya BPBD tidak punya rujukan tertulis bahwa pipa sementara dapat dibiayai DSP, walau tidak ada pula larangannya.
 
-**Di Lombok 2018, Satgas PUPR mengaktifkan {{angka:rehab.pipa.lombok.sumur_jiat_diaktifkan}} sumur bor JIAT berkapasitas {{angka:rehab.pipa.lombok.sumur_jiat_kapasitas_lps}} l/dt dan menyiapkan {{angka:rehab.pipa.lombok.hidran_2000l}} hidran {{angka:rehab.pipa.lombok.kapasitas_hidran_besar_l|satuan}} serta {{angka:rehab.pipa.lombok.mobil_tangki_4000l}} mobil tangki {{angka:rehab.pipa.lombok.kapasitas_mobil_tangki_l|satuan}}.** Sumur JIAT adalah sumur irigasi yang sudah ada sebelum gempa, {{angka:rehab.pipa.lombok.sumur_jiat_klu}} di antaranya dengan {{angka:rehab.pipa.lombok.sumur_jiat_klu_lps}} l/dt di Lombok Utara; {{angka:rehab.pipa.lombok.hidran_1000l}} hidran {{angka:rehab.pipa.lombok.kapasitas_hidran_kecil_l|satuan}} ditempatkan di daerah yang tidak dapat dibangun sumur. Mobil tangki dari Balai Teknik Air Minum Bekasi mengangkut air dari Instalasi Pengolahan Air (IPA) dan PDAM ke hidran setelah sumber air dan pipa layanan diperbaiki, dengan tujuan masyarakat berangsur kembali ke sumber airnya sendiri [@kemenpupr-2019-satgas-lombok, hlm. 50–53]. Tabel status 7 Oktober 2018 memisahkan {{angka:rehab.pipa.lombok.gudang_mobil_tangki}} mobil tangki dan {{angka:rehab.pipa.lombok.gudang_hidran_2000l}} hidran besar yang masih di gudang regional dari armada yang sudah di kabupaten. Di kabupaten tercatat {{angka:rehab.pipa.lombok.kab_mobil_tangki}} mobil tangki dan {{angka:rehab.pipa.lombok.kab_hidran_1000l}} hidran kecil. Untuk hidran besar, total dikurangi stok gudang memberi {{angka:rehab.pipa.lombok.hidran_2000l_total_kurang_gudang}} unit, sedangkan baris kabupaten pada tabel yang sama hanya berjumlah {{angka:rehab.pipa.lombok.hidran_2000l_baris_kab}}; kedua angka ditulis berdampingan karena sumbernya sama [@kemenpupr-2019-satgas-lombok, hlm. 52].
+**Di Lombok 2018, Satgas PUPR mengaktifkan {{angka:rehab.pipa.lombok.sumur_jiat_diaktifkan}} sumur bor JIAT berkapasitas {{angka:rehab.pipa.lombok.sumur_jiat_kapasitas_lps}} l/dt dan menyiapkan {{angka:rehab.pipa.lombok.hidran_2000l}} hidran {{angka:rehab.pipa.lombok.kapasitas_hidran_besar_l|satuan}} serta {{angka:rehab.pipa.lombok.mobil_tangki_4000l}} mobil tangki {{angka:rehab.pipa.lombok.kapasitas_mobil_tangki_l|satuan}}.** Sumur JIAT adalah sumur irigasi yang sudah ada sebelum gempa, {{angka:rehab.pipa.lombok.sumur_jiat_klu}} di antaranya dengan {{angka:rehab.pipa.lombok.sumur_jiat_klu_lps}} l/dt di Lombok Utara; {{angka:rehab.pipa.lombok.hidran_1000l}} hidran {{angka:rehab.pipa.lombok.kapasitas_hidran_kecil_l|satuan}} ditempatkan di daerah yang tidak dapat dibangun sumur. Mobil tangki dari Balai Teknik Air Minum Bekasi mengangkut air dari Instalasi Pengolahan Air (IPA) dan Perusahaan Daerah Air Minum (PDAM) ke hidran setelah sumber air dan pipa layanan diperbaiki, dengan tujuan masyarakat berangsur kembali ke sumber airnya sendiri [@kemenpupr-2019-satgas-lombok, hlm. 50–53]. Tabel status 7 Oktober 2018 memisahkan {{angka:rehab.pipa.lombok.gudang_mobil_tangki}} mobil tangki dan {{angka:rehab.pipa.lombok.gudang_hidran_2000l}} hidran besar yang masih di gudang regional dari armada yang sudah di kabupaten. Di kabupaten tercatat {{angka:rehab.pipa.lombok.kab_mobil_tangki}} mobil tangki dan {{angka:rehab.pipa.lombok.kab_hidran_1000l}} hidran kecil. Untuk hidran besar, total dikurangi stok gudang memberi {{angka:rehab.pipa.lombok.hidran_2000l_total_kurang_gudang}} unit, sedangkan baris kabupaten pada tabel yang sama hanya berjumlah {{angka:rehab.pipa.lombok.hidran_2000l_baris_kab}}; kedua angka ditulis berdampingan karena sumbernya sama [@kemenpupr-2019-satgas-lombok, hlm. 52].
 
 **Buku Satgas Lombok juga mencatat {{angka:rehab.pipa.lombok.ipa_unit}} IPA berproduksi {{angka:rehab.pipa.lombok.ipa_kapasitas_lps}} l/dt di seluruh Nusa Tenggara Barat, termasuk kabupaten yang tidak terdampak gempa.** IPA tersebut dicatat sebagai sumber produksi provinsi, tidak sebagai sarana darurat di wilayah terdampak. Mutu pasokan dipantau Dinas Kesehatan Provinsi Nusa Tenggara Barat bersama Balai Besar Kesehatan Lingkungan Surabaya pada sumber air baku dan titik distribusi, termasuk parameter *E. coli* [@kemenpupr-2019-satgas-lombok, hlm. 59].
 
@@ -87,18 +86,17 @@ catatan: "Tidak dilaporkan" berarti sumber resmi tidak menyebut jiwa atau sambun
 
 **Di Sumatra 2025, Kementerian PU memasang {{angka:rehab.pipa.sumatra2025.sarana_darurat_feb2026}} unit sarana darurat dan {{angka:rehab.pipa.sumatra2025.sumur_bor_feb2026}} sumur bor per 2 Februari 2026, tanpa rincian per jenis sarana.** Sarana itu mencakup IPA *mobile*, mobil tangki, hidran umum, toren, unit pengolahan air siap minum, dan toilet darurat, sedangkan sumur bor dikerjakan Ditjen Sumber Daya Air dan Ditjen Cipta Karya di ketiga provinsi, sebagian di Sumatera Barat masih pada tahap survei geolistrik [@pu-2026-spam-sumatera-feb]. Karena jenisnya tidak dirinci, jumlah hidran yang masih beroperasi dan liter yang diterima pengungsi tidak dapat dihitung.
 
-**Pada hari ke-{{angka:rehab.pipa.cianjur.hari_ke_2023_03}} di Cianjur, {{angka:rehab.pipa.cianjur.sumber_daya_kembali_2023_03}} dari {{angka:rehab.pipa.cianjur.sumber_daya_puncak}} unit sumber daya PUPR sudah kembali, sehingga sekitar separuhnya masih terpasang ketika pengungsian memasuki tahap tiga sampai enam bulan.** Untuk tahap itu, pedoman Organisasi Kesehatan Dunia (World Health Organization, WHO) menaikkan kebutuhan menjadi {{angka:rehab.pipa.standar.who_bulan3_6}} liter per orang per hari dalam jarak {{angka:rehab.pipa.standar.who_jarak_bulan3_6_km|satuan}}, dari {{angka:rehab.pipa.standar.who_minggu2_4}} liter pada dua minggu sampai sebulan pertama dan {{angka:rehab.pipa.standar.who_bulan1_3}} liter pada bulan pertama sampai ketiga [@who-2013-tn9]. Analisis kajian ini membaca rentang itu sebagai titik wajar meninjau peralihan ke perpipaan sementara, tetapi satu kejadian belum cukup untuk dijadikan aturan. Rekomendasi @rek:r-rr-08 mengusulkan pemicu tertulis di rencana operasi darurat. Contohnya jarak tempuh truk melebihi ambang tertentu, rit per truk tidak cukup memenuhi {{angka:perka_2008.air_bersih_liter_hari}} liter per orang per hari, atau pengungsian diperkirakan melebihi jumlah minggu tertentu. Ambang jarak dan lama pengungsian itu belum punya dasar data dan berlabel asumsi kebijakan. Rantai lapis dan titik serahnya tampil pada @gbr:rantai-lapis-air.
+**Pada hari ke-{{angka:rehab.pipa.cianjur.hari_ke_2023_03}} di Cianjur, {{angka:rehab.pipa.cianjur.sumber_daya_kembali_2023_03}} dari {{angka:rehab.pipa.cianjur.sumber_daya_puncak}} unit sumber daya PUPR sudah kembali, sehingga sekitar separuhnya masih terpasang ketika pengungsian memasuki tahap tiga sampai enam bulan.** Untuk tahap itu, pedoman Organisasi Kesehatan Dunia (World Health Organization, WHO) menaikkan kebutuhan menjadi {{angka:rehab.pipa.standar.who_bulan3_6}} liter per orang per hari dalam jarak {{angka:rehab.pipa.standar.who_jarak_bulan3_6_km|satuan}}, dari {{angka:rehab.pipa.standar.who_minggu2_4}} liter pada dua minggu sampai sebulan pertama dan {{angka:rehab.pipa.standar.who_bulan1_3}} liter pada bulan pertama sampai ketiga [@who-2013-tn9]. Analisis kajian ini membaca rentang itu sebagai titik wajar meninjau peralihan ke perpipaan sementara, tetapi satu kejadian belum cukup untuk dijadikan aturan. Rekomendasi @rek:r-rr-08 mengusulkan pemicu tertulis di rencana operasi darurat. Contohnya jarak tempuh truk melebihi ambang tertentu, rit per truk tidak cukup memenuhi {{angka:perka_2008.air_bersih_liter_hari}} liter per orang per hari, atau pengungsian diperkirakan melebihi jumlah minggu tertentu. Ambang jarak dan lama pengungsian itu belum punya dasar data dan berlabel asumsi kebijakan. Rantai lapis dan titik serahnya tampil pada @gbr:rantai-lapis-air. Catatan atas @gbr:rantai-lapis-air. Kotak "tidak diatur" berarti tidak ada peraturan yang ditemukan menetapkan pemicu atau pemutus serah itu.
 
 ::: gambar {#gbr:rantai-lapis-air}
 berkas: gambar/rehab/bab06-rantai-lapis-air.png
 jenis: diagram
-judul: Rantai lapis darurat, sementara, dan permanen air perpipaan pascabencana dengan titik serah dan pemutusnya
+judul: Rantai lapis darurat, sementara, dan permanen air perpipaan pascabencana dengan titik serah dan pemutusnya, 2026
 sumber: PP 21/2008 [@ri-2008-pp21]; Perka BNPB 7/2008 [@bnpb-2008-kebutuhan-dasar]; PP 122/2015 [@ri-2015-pp122]; Kementerian PUPR, Penanganan Gempa Cianjur 2022 [@kemenpupr-2023-cianjur]
 keyakinan: resmi
 lebar: penuh
-catatan: Kotak "tidak diatur" berarti tidak ada peraturan yang ditemukan menetapkan pemicu atau pemutus serah itu.
 
-Tiga kotak lapis tersusun dari kiri ke kanan. Titik serah pertama (hidran ditarik, pipa sementara dipasang) diberi pemutus "tidak diatur" dengan catatan praktik Cianjur: penarikan hidran lewat survei tim posko Cipta Karya dan BPPW, Bupati mendukung distribusi PDAM. Titik serah kedua (pipa sementara ke SPAM permanen) memuat dasar PP 122/2015 Pasal 38 dan Pasal 40.
+Tiga kotak lapis dari kiri ke kanan; titik serah pertama dan kedua diberi pemutusnya.
 :::
 
 ::: catatan
@@ -109,15 +107,25 @@ Tiga kotak lapis tersusun dari kiri ke kanan. Titik serah pertama (hidran ditari
 
 **Data Indonesia tentang panjang dan waktu gelar pipa transmisi HDPE sementara pengganti truk tangki tidak ditemukan untuk kejadian 2018–2025 mana pun.** Kedua buku Satgas PUPR mencatat sarana titik seperti sumur dan hidran, tetapi tidak mencatat pipa yang digelar dari sumber air yang selamat ke klaster hidran [@kemenpupr-2019-satgas-lombok; @kemenpupr-2023-cianjur]. Pedoman Sphere menyebut air permukaan dapat menjadi jalan tercepat walau butuh pengolahan lebih. Air tanah dan aliran gravitasi dari mata air lebih disukai karena butuh pengolahan lebih sedikit, dan aliran gravitasi tidak memerlukan pompa [@sphere-2018-handbook, hlm. 105–106].
 
+::: gambar {#gbr:foto-rr-pipa-kebumen-2022}
+berkas: gambar/foto/rehab-b06-pipa-kebumen-2022.jpg
+jenis: foto
+judul: Pemasangan pipa air PDAM di Kabupaten Kebumen, Agustus 2022
+pengarang: SATELITBM
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Pekerjaan_Pemasangan_Pipa_Air_PDAM_Kab.Kebumen.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
 **SPAM Cianjur yang direhabilitasi setelah gempa 2022 bersumber Mata Air Cirumput dan dialirkan lewat tiga pipa transmisi baja ke Munjul; R3P menganggarkan rekonstruksi ketiganya {{angka:rehab.pipa.cianjur.r3p_transmisi_paket1_rp|rupiah}}, {{angka:rehab.pipa.cianjur.r3p_transmisi_paket2_rp|rupiah}}, dan {{angka:rehab.pipa.cianjur.r3p_transmisi_paket2_rp|rupiah}}.** Ketiga paket bersumber dana kabupaten, tanpa panjang pipa [@cianjur-2022-r3p, hlm. 106–107; @kemenpupr-2023-cianjur, hlm. 59–60]. Transmisi dari mata air ini adalah satu-satunya contoh domestik bersumber resmi tentang transmisi yang dipulihkan, dan statusnya permanen, tidak sementara.
 
 **Lapis darurat diikat Perka BNPB 7/2008 yang masih berlaku: {{angka:perka_2008.air_bersih_awal_liter_hari}} liter per orang per hari pada tiga hari pertama, lalu {{angka:perka_2008.air_bersih_liter_hari}} liter, dengan titik air paling jauh {{angka:perka_2008.jarak_sumber_air_m|satuan}}.** Perka yang sama menetapkan air minum {{angka:perka_2008.air_minum_liter_hari|fmt=1}} liter per orang per hari [@bnpb-2008-kebutuhan-dasar, hlm. 10]. Sphere 2018 sejalan untuk kuantitas dan jarak, lalu menambah dua ukuran yang tidak ada di Perka, yaitu {{angka:rehab.pipa.standar.sphere_orang_per_keran}} orang per keran dan antre paling lama {{angka:rehab.pipa.standar.sphere_antre_menit|satuan}} [@sphere-2018-handbook, hlm. 105–106]. Kedua ukuran itu membedakan air yang tersedia dari air yang terjangkau di pengungsian padat; di @tbl:standar-lapis, Sphere dicantumkan sebagai pelengkap berlabel terverifikasi, tidak sebagai kewajiban hukum.
 
 ::: tabel {#tbl:standar-lapis}
-judul: Standar kuantitas dan akses air per lapis pemulihan pascabencana menurut peraturan Indonesia dan pedoman internasional
+judul: Standar kuantitas dan akses air per lapis pemulihan pascabencana menurut peraturan Indonesia dan pedoman internasional, 2026
 sumber: Perka BNPB 7/2008 [@bnpb-2008-kebutuhan-dasar]; Sphere Handbook 2018 [@sphere-2018-handbook]; WHO/WEDC Technical Note 9 [@who-2013-tn9]; Permen PUPR 13/2023 [@kemenpupr-2023-permen13-spm]; PP 122/2015 [@ri-2015-pp122]
 keyakinan: campuran
-catatan: "Tidak diatur" berarti tidak ada peraturan Indonesia yang ditemukan memuat ukuran itu; WHO dan Sphere adalah pembanding.
 
 | LAPIS | AIR (liter/orang/hari) | JARAK KE TITIK AIR | ORANG PER KERAN | ANTRE | DASAR | KEYAKINAN |
 | --- | --- | --- | --- | --- | --- | --- |
@@ -128,15 +136,26 @@ catatan: "Tidak diatur" berarti tidak ada peraturan Indonesia yang ditemukan mem
 | Permanen, mengikat | {{angka:rehab.pipa.standar.spm_kuantitas}} melalui SPAM | tidak diatur | tidak diatur | tidak diatur | Permen PUPR 13/2023 Pasal 6 ayat (2); PP 122/2015 | resmi |
 :::
 
-**Peraturan yang ditemukan tidak mengatur kuantitas air masa peralihan, sehingga kebutuhan melompat dari {{angka:perka_2008.air_bersih_liter_hari}} liter di lapis darurat ke {{angka:rehab.pipa.standar.spm_kuantitas}} liter di lapis permanen.** Jarak ke titik air untuk masa itu juga tidak diatur, sehingga tidak ada anak tangga di antara kedua lapis. Tangga WHO ({{angka:rehab.pipa.standar.who_minggu2_4}}, {{angka:rehab.pipa.standar.who_bulan1_3}}, lalu {{angka:rehab.pipa.standar.who_bulan3_6}} liter) dan catatan Sphere bahwa {{angka:rehab.pipa.standar.sphere_urban_liter}} liter dapat menjadi batas minimum di perkotaan berpendapatan menengah dapat menjadi rancangan anak tangga lapis sementara [@who-2013-tn9; @sphere-2018-handbook, hlm. 106]. Rancangan itu berlabel asumsi kebijakan sampai baseline waktu pulih terbentuk pada 2027 (@rek:r-rr-02). Untuk bahan pipa, Perban BNPB 6/2017 mewajibkan rujukan pada SNI [@bnpb-2017-rr]; menurut skema sertifikasi lembaga penguji, pipa polietilen air minum dipadankan dengan SNI 4829:2015 dan pipa PVC air minum dengan SNI 06-0084-2002. Teks kedua standar tidak dikaji dalam bab ini, sehingga kelas tekanan tidak tercatat, dan spesifikasi selang bermutu pangan untuk pemasangan sementara tidak ditemukan.
+**Peraturan yang ditemukan tidak mengatur kuantitas air masa peralihan, sehingga kebutuhan melompat dari {{angka:perka_2008.air_bersih_liter_hari}} liter di lapis darurat ke {{angka:rehab.pipa.standar.spm_kuantitas}} liter di lapis permanen.** Jarak ke titik air untuk masa itu juga tidak diatur, sehingga tidak ada anak tangga di antara kedua lapis. Tangga WHO ({{angka:rehab.pipa.standar.who_minggu2_4}}, {{angka:rehab.pipa.standar.who_bulan1_3}}, lalu {{angka:rehab.pipa.standar.who_bulan3_6}} liter) dan catatan Sphere bahwa {{angka:rehab.pipa.standar.sphere_urban_liter}} liter dapat menjadi batas minimum di perkotaan berpendapatan menengah dapat menjadi rancangan anak tangga lapis sementara [@who-2013-tn9; @sphere-2018-handbook, hlm. 106]. Rancangan itu berlabel asumsi kebijakan sampai garis dasar waktu pulih terbentuk pada 2027 (@rek:r-rr-02). Untuk bahan pipa, Perban BNPB 6/2017 mewajibkan rujukan pada SNI [@bnpb-2017-rr]; menurut skema sertifikasi lembaga penguji, pipa polietilen air minum dipadankan dengan SNI 4829:2015 dan pipa PVC air minum dengan SNI 06-0084-2002. Teks kedua standar tidak dikaji dalam bab ini, sehingga kelas tekanan tidak tercatat, dan spesifikasi selang bermutu pangan untuk pemasangan sementara tidak ditemukan. Catatan atas @tbl:standar-lapis. "Tidak diatur" berarti tidak ada peraturan Indonesia yang ditemukan memuat ukuran itu; WHO dan Sphere adalah pembanding.
 
 ## Lapis Permanen: Rehabilitasi SPAM dan Membangun Kembali Lebih Baik {#sub:lapis-permanen}
 
-**PP 122/2015 Pasal 40 menjadikan pemerintah kabupaten/kota pelaksana SPAM dan penjamin air baku di wilayahnya; pusat dan provinsi dapat menyelenggarakan SPAM bersifat khusus, termasuk untuk bencana alam.** Pasal 38 huruf d dan Pasal 39 huruf c memberi wewenang itu kepada pusat dan provinsi, dan penjelasannya menyebut penanganan bencana alam sebagai salah satu bentuk SPAM bersifat khusus. Penyelenggaraan SPAM terbuka bagi empat jenis penyelenggara menurut Pasal 42 ayat (1), dari badan usaha milik negara atau daerah sampai kelompok masyarakat, dan dana Anggaran Pendapatan dan Belanja Negara (APBN) untuk SPAM boleh dipakai dalam keadaan darurat menurut Pasal 54 ayat (5) huruf a [@ri-2015-pp122, hlm. 17–19, 26, 43]. Rumusan "bersifat khusus" bersifat dapat, sehingga tidak menjadi mandat pusat otomatis. Teks mendukung tiga pembagian kerja. Pemerintah daerah dan PDAM menyelenggarakan SPAM dan menjamin air baku. Direktorat Jenderal (Ditjen) Cipta Karya atau provinsi melaksanakan bila SPAM pascabencana ditetapkan bersifat khusus. BNPB mengoordinasikan pemulihan menurut PP 21/2008 Pasal 54 ayat (2), dan pengukurannya baru usulan kajian ini. Undang-Undang 17/2019 Pasal 15 huruf i menugasi kabupaten/kota memenuhi kebutuhan pokok minimal air sehari-hari [@ri-2019-uu17]. Perban BNPB 6/2017 Pasal 7 ayat (4) mewajibkan rehabilitasi dan rekonstruksi berpedoman pada SNI dan SPM [@bnpb-2017-rr].
+**PP 122/2015 Pasal 40 menjadikan pemerintah kabupaten/kota pelaksana SPAM dan penjamin air baku di wilayahnya; pusat dan provinsi dapat menyelenggarakan SPAM bersifat khusus, termasuk untuk bencana alam.** Pasal 38 huruf d dan Pasal 39 huruf c memberi wewenang itu kepada pusat dan provinsi, dan penjelasannya menyebut penanganan bencana alam sebagai salah satu bentuk SPAM bersifat khusus. Penyelenggaraan SPAM terbuka bagi empat jenis penyelenggara menurut Pasal 42 ayat (1), dari badan usaha milik negara atau daerah sampai kelompok masyarakat, dan dana Anggaran Pendapatan dan Belanja Negara (APBN) untuk SPAM boleh dipakai dalam keadaan darurat menurut Pasal 54 ayat (5) huruf a [@ri-2015-pp122, hlm. 17–19, 26, 43]. Rumusan "bersifat khusus" bersifat dapat, sehingga tidak menjadi mandat pusat otomatis. Teks mendukung tiga pembagian kerja. Pemerintah daerah dan PDAM menyelenggarakan SPAM dan menjamin air baku. Direktorat Jenderal (Ditjen) Cipta Karya atau provinsi melaksanakan bila SPAM pascabencana ditetapkan bersifat khusus. BNPB mengoordinasikan pemulihan menurut PP 21/2008 Pasal 54 ayat (2), dan pengukurannya baru usulan kajian ini. Undang-Undang 17/2019 Pasal 15 huruf i menugasi kabupaten/kota memenuhi kebutuhan pokok minimal air sehari-hari [@ri-2019-uu17]. Perban BNPB 6/2017 Pasal 7 ayat (4) mewajibkan rehabilitasi dan rekonstruksi berpedoman pada SNI dan Standar Pelayanan Minimal (SPM) [@bnpb-2017-rr].
+
+::: gambar {#gbr:foto-rr-galian-pipa-kebumen}
+berkas: gambar/foto/rehab-b06-galian-pipa-kebumen.jpg
+jenis: foto
+judul: Penggalian tanah untuk jalur pipa air PDAM di Kabupaten Kebumen, Agustus 2022
+pengarang: SATELITBM
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Pekerjaan_Penggalian_Tanah_Untuk_Pipa_Air_PDAM_Kab.Kebumen.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
 
 **Perka BNPB 15/2011 sudah meminta perkiraan jangka waktu rehabilitasi dan rekonstruksi sarana air minum dalam bulan pada formulir pengumpulan data Jitupasna.** Formulir itu memuat komponen pengambilan air, instalasi pemurnian, perpipaan, penyimpanan, dan sumur, serta kehilangan pendapatan PDAM per bulan; kriteria kerusakannya membedakan rusak berat yang tidak dapat berfungsi sama sekali dan ditangani rekonstruksi dari rusak sedang yang relatif masih berfungsi dan ditangani rehabilitasi [@bnpb-2011-pdna, hlm. 72–73, 93]. Baris waktu pulih yang diusulkan untuk templat R3P (@rek:r-rr-03) karena itu memperluas formulir yang sudah ada; yang belum ada adalah kewajiban melaporkannya kembali setelah R3P berjalan.
 
-**Per 25 September 2023, sekitar sepuluh bulan setelah gempa, lima SPAM yang direhabilitasi Kementerian PUPR di Cianjur mencapai realisasi fisik {{angka:rehab.pipa.cianjur.spam_rehab_realisasi_fisik_2023_09|fmt=2|persen}} dari rencana {{angka:rehab.pipa.cianjur.spam_rehab_rencana_fisik_2023_09|fmt=2|persen}}.** SPAM eksisting bersumber Mata Air Cirumput mencapai {{angka:rehab.pipa.cianjur.spam_cirumput_realisasi_2023_09|fmt=2|persen}}, sedangkan dua SPAM baru untuk hunian tetap di Desa Sirnagalih dan Desa Murnisari baru {{angka:rehab.pipa.cianjur.spam_huntap_sirnagalih_realisasi_2023_09|fmt=2|persen}} dan {{angka:rehab.pipa.cianjur.spam_huntap_murnisari_realisasi_2023_09|fmt=2|persen}} [@kemenpupr-2023-cianjur, hlm. 59–60]. Angka {{angka:rehab.pipa.cianjur.spam_rehab_progres_mk_2023_09|fmt=2|persen}} di tabel yang sama adalah progres kontrak konsultan manajemen konstruksi, tidak menggambarkan progres fisik SPAM. Rinciannya tampil pada @tbl:progres-spam-cianjur.
+**Per 25 September 2023, sekitar sepuluh bulan setelah gempa, lima SPAM yang direhabilitasi Kementerian PU (dahulu PUPR) di Cianjur mencapai realisasi fisik {{angka:rehab.pipa.cianjur.spam_rehab_realisasi_fisik_2023_09|fmt=2|persen}} dari rencana {{angka:rehab.pipa.cianjur.spam_rehab_rencana_fisik_2023_09|fmt=2|persen}}.** SPAM eksisting bersumber Mata Air Cirumput mencapai {{angka:rehab.pipa.cianjur.spam_cirumput_realisasi_2023_09|fmt=2|persen}}, sedangkan dua SPAM baru untuk hunian tetap di Desa Sirnagalih dan Desa Murnisari baru {{angka:rehab.pipa.cianjur.spam_huntap_sirnagalih_realisasi_2023_09|fmt=2|persen}} dan {{angka:rehab.pipa.cianjur.spam_huntap_murnisari_realisasi_2023_09|fmt=2|persen}} [@kemenpupr-2023-cianjur, hlm. 59–60]. Angka {{angka:rehab.pipa.cianjur.spam_rehab_progres_mk_2023_09|fmt=2|persen}} di tabel yang sama adalah progres kontrak konsultan manajemen konstruksi, tidak menggambarkan progres fisik SPAM. Rinciannya tampil pada @tbl:progres-spam-cianjur.
 
 ::: tabel {#tbl:progres-spam-cianjur}
 judul: Progres fisik rehabilitasi lima SPAM pascagempa di Kabupaten Cianjur, September 2023 (persen)
@@ -144,7 +163,6 @@ sumber: Kementerian PUPR, Penanganan Gempa Cianjur 2022 [@kemenpupr-2023-cianjur
 keyakinan: resmi
 angka: 2; 3
 data_per: 25 Sep 2023
-catatan: Rencana tiga SPAM tidak dirinci buku; progres manajemen konstruksi {{angka:rehab.pipa.cianjur.spam_rehab_progres_mk_2023_09|fmt=2|persen}} tidak dimasukkan karena bukan progres fisik.
 
 | SPAM | RENCANA (%) | REALISASI (%) | KETERANGAN |
 | --- | ---: | ---: | --- |
@@ -156,7 +174,7 @@ catatan: Rencana tiga SPAM tidak dirinci buku; progres manajemen konstruksi {{an
 | Progres fisik lima SPAM | {{angka:rehab.pipa.cianjur.spam_rehab_rencana_fisik_2023_09|fmt=2}} | {{angka:rehab.pipa.cianjur.spam_rehab_realisasi_fisik_2023_09|fmt=2}} | deviasi {{angka:rehab.pipa.cianjur.spam_rehab_deviasi_2023_09|fmt=2}} poin |
 :::
 
-**R3P Cianjur menghitung kebutuhan SPAM perkotaan {{angka:rehab.pipa.cianjur.r3p_kebutuhan_spam_perkotaan_rp|rupiah}}, termasuk penanganan lima SPAM yang sama {{angka:rehab.pipa.cianjur.r3p_penanganan_spam_5lokasi_rp|rupiah}}, dan menulis seluruhnya bersumber dana kabupaten.** Buku PUPR menyebut Kementerian PUPR sebagai pelaksana fisik dengan kontraktor badan usaha milik negara, sehingga sumber dana di R3P dan pelaksana di lapangan ditulis apa adanya dan belum terekonsiliasi [@cianjur-2022-r3p, hlm. 106–107; @kemenpupr-2023-cianjur, hlm. 59–60]. Rekonstruksi sambungan rumah dianggarkan {{angka:rehab.pipa.cianjur.r3p_sambungan_rumah_rp|rupiah}} tanpa jumlah sambungan, sehingga biaya per sambungan tidak dapat diturunkan.
+**R3P Cianjur menghitung kebutuhan SPAM perkotaan {{angka:rehab.pipa.cianjur.r3p_kebutuhan_spam_perkotaan_rp|rupiah}}, termasuk penanganan lima SPAM yang sama {{angka:rehab.pipa.cianjur.r3p_penanganan_spam_5lokasi_rp|rupiah}}, dan menulis seluruhnya bersumber dana kabupaten.** Buku PUPR menyebut Kementerian PU (dahulu PUPR) sebagai pelaksana fisik dengan kontraktor badan usaha milik negara, sehingga sumber dana di R3P dan pelaksana di lapangan ditulis apa adanya dan belum terekonsiliasi [@cianjur-2022-r3p, hlm. 106–107; @kemenpupr-2023-cianjur, hlm. 59–60]. Rekonstruksi sambungan rumah dianggarkan {{angka:rehab.pipa.cianjur.r3p_sambungan_rumah_rp|rupiah}} tanpa jumlah sambungan, sehingga biaya per sambungan tidak dapat diturunkan. Catatan atas @tbl:progres-spam-cianjur. Rencana tiga SPAM tidak dirinci buku; progres manajemen konstruksi {{angka:rehab.pipa.cianjur.spam_rehab_progres_mk_2023_09|fmt=2|persen}} tidak dimasukkan karena bukan progres fisik.
 
 **Dua SPAM hunian tetap Cianjur tertinggal jauh dari SPAM eksisting Cirumput pada September 2023, sejalan dengan pola lintas kasus bahwa layanan untuk lokasi relokasi pulih paling lambat.** Air untuk hunian tetap adalah pekerjaan baru, mulai dari sumber sampai sambungan, sedangkan SPAM eksisting hanya diperbaiki [@kemenpupr-2023-cianjur, hlm. 59–60]. Temuan ini menjadi bukti domestik untuk @rek:r-rr-12, yang mensyaratkan sumber air sebelum lokasi hunian tetap ditetapkan. Evaluasi membangun kembali lebih baik untuk utilitas air pascabencana di Indonesia, termasuk PDAM Palu setelah 2018 dan Cianjur setelah 2023, tidak ditemukan.
 
@@ -169,16 +187,15 @@ catatan: Rencana tiga SPAM tidak dirinci buku; progres manajemen konstruksi {{an
 ::: gambar {#gbr:pulih-air}
 berkas: gambar/rehab/bab06-garis-pulih-air.png
 jenis: grafik
-judul: Pemulihan layanan air menurut hari sejak kejadian, Kobe 1995, Tohoku 2011, dan Sumatra 2025 (persen)
+judul: Hari sejak kejadian sampai layanan air pulih pada ambang tercatat, Kobe 1995, Tohoku 2011, dan Sumatra 2025 (hari)
 sumber: Nojima, JSCE 2011 [@jsce-2011-nojima]; Kementerian PU [@pu-2026-spam-sumatera-feb; @pu-2026-infrastruktur-sumatera-mei]; DIBI BNPB [@bnpb-dibi]
 keyakinan: terverifikasi
 lebar: penuh
-catatan: Satuan berbeda: rasio layanan untuk Jepang, unit SPAM untuk Sumatra; hari Sumatra estimasi model.
 :::
 
-**Kurva pemulihan domestik dalam persen pelanggan PDAM terlayani per hari tidak ditemukan untuk satu pun bencana di Indonesia, termasuk Yogyakarta 2006 dan Padang 2009.** Ukuran yang ada adalah unit SPAM berfungsi, yang tidak sama dengan warga kembali mendapat air (@sub:bukti-program).
+**Kurva pemulihan domestik dalam persen pelanggan PDAM terlayani per hari tidak ditemukan untuk satu pun bencana di Indonesia, termasuk Yogyakarta 2006 dan Padang 2009.** Ukuran yang ada adalah unit SPAM berfungsi, yang tidak sama dengan warga kembali mendapat air (@sub:bukti-program). Catatan atas @gbr:pulih-air. Satuan berbeda: rasio layanan untuk Jepang, unit SPAM untuk Sumatra; hari Sumatra estimasi model.
 
-Kekuatan bukti kurva Jepang sedang sampai lemah: data pemulihannya rinci dan konsisten, tetapi bersumber satu paparan konferensi dan dua dokumen pendukung (laporan pelaksana dan abstrak), bukan evaluasi independen. Sasaran waktu pulih air karena itu ditetapkan setelah baseline 2027 sebagai asumsi kebijakan dengan Kobe, Tohoku, dan Sumatra sebagai pembanding (@rek:r-rr-02).
+Kekuatan bukti kurva Jepang sedang sampai lemah: data pemulihannya rinci dan konsisten, tetapi bersumber satu paparan konferensi dan dua dokumen pendukung (laporan pelaksana dan abstrak), bukan evaluasi independen. Sasaran waktu pulih air karena itu ditetapkan setelah garis dasar 2027 sebagai asumsi kebijakan dengan Kobe, Tohoku, dan Sumatra sebagai pembanding (@rek:r-rr-02).
 
 ## Biaya Satuan sebagai Pembanding {#sub:biaya-satuan}
 
@@ -193,16 +210,14 @@ judul: Biaya air per meter kubik dengan truk dan dengan perpipaan di Renk 2025, 
 sumber: United Nations South Sudan [@unss-2025-renk]; Perbup Hulu Sungai Utara 3/2022 [@hsu-2022-perbup-tarif]
 keyakinan: terverifikasi
 lebar: penuh
-catatan: Panel (a) kamp pengungsian jangka panjang; panel (b) tarif layanan biasa per m³, estimasi model.
 :::
 
-**Biaya per kapasitas tiga proyek SPAM permanen Kementerian PU berada antara {{angka:rehab.pipa.biaya.per_lps_jatiluhur1}} dan {{angka:rehab.pipa.biaya.per_lps_banjarbakula}} miliar rupiah per l/dt, untuk proyek berkapasitas {{angka:rehab.pipa.biaya.kapasitas_banjarbakula_lps}} sampai {{angka:rehab.pipa.biaya.kapasitas_jatiluhur1_lps}} l/dt.** Angka itu hitungan dari nilai proyek dan kapasitas di rilis resmi, bukan anggaran, dengan tahun harga 2017–2025 [@setkab-2023-banjarbakula; @pu-2025-jatiluhur1; @pupr-2023-semarang-barat]. Proyek regional berskala ratusan sampai ribuan l/dt tidak dapat dipakai menaksir SPAM perdesaan pascabencana berkapasitas kecil, dan angka di @tbl:biaya-air tidak dijumlah menjadi total program. Biaya resmi pipa HDPE per kilometer per diameter tidak ditemukan, begitu pula biaya pengadaan dan operasi sarana darurat Kementerian PU; sumber yang perlu dibuka adalah harga satuan pokok kegiatan daerah atau katalog elektronik Lembaga Kebijakan Pengadaan Barang/Jasa Pemerintah.
+**Biaya per kapasitas tiga proyek SPAM permanen Kementerian PU berada antara {{angka:rehab.pipa.biaya.per_lps_jatiluhur1}} dan {{angka:rehab.pipa.biaya.per_lps_banjarbakula}} miliar rupiah per l/dt, untuk proyek berkapasitas {{angka:rehab.pipa.biaya.kapasitas_banjarbakula_lps}} sampai {{angka:rehab.pipa.biaya.kapasitas_jatiluhur1_lps}} l/dt.** Angka itu hitungan dari nilai proyek dan kapasitas di rilis resmi, bukan anggaran, dengan tahun harga 2017–2025 [@setkab-2023-banjarbakula; @pu-2025-jatiluhur1; @pupr-2023-semarang-barat]. Proyek regional berskala ratusan sampai ribuan l/dt tidak dapat dipakai menaksir SPAM perdesaan pascabencana berkapasitas kecil, dan angka di @tbl:biaya-air tidak dijumlah menjadi total program. Biaya resmi pipa HDPE per kilometer per diameter tidak ditemukan, begitu pula biaya pengadaan dan operasi sarana darurat Kementerian PU; sumber yang perlu dibuka adalah harga satuan pokok kegiatan daerah atau katalog elektronik Lembaga Kebijakan Pengadaan Barang/Jasa Pemerintah. Catatan atas @gbr:biaya-truk-pipa. Panel (a) kamp pengungsian jangka panjang; panel (b) tarif layanan biasa per m³, estimasi model. Catatan atas @tbl:biaya-air. Hitungan per kapasitas dan per sambungan memakai nilai proyek dibagi kapasitas atau sambungan di rilis; tidak dijumlah.
 
 ::: tabel {#tbl:biaya-air}
 judul: Biaya satuan air perpipaan dan truk sebagai pembanding, 2017–2025
 sumber: Setkab [@setkab-2023-banjarbakula]; Kementerian PU [@pu-2025-jatiluhur1]; Kementerian PUPR [@pupr-2023-semarang-barat]; Perbup Hulu Sungai Utara 3/2022 [@hsu-2022-perbup-tarif]; R3P Kabupaten Cianjur [@cianjur-2022-r3p, hlm. 106–107]
 keyakinan: campuran
-catatan: Hitungan per kapasitas dan per sambungan memakai nilai proyek dibagi kapasitas atau sambungan di rilis; tidak dijumlah.
 
 | BIAYA SATUAN | NILAI | SKALA | KEYAKINAN |
 | --- | ---: | --- | --- |
@@ -220,6 +235,17 @@ catatan: Hitungan per kapasitas dan per sambungan memakai nilai proyek dibagi ka
 ## Bukti Program {#sub:bukti-program}
 
 **Tidak ada program pemulihan SPAM pascabencana di Indonesia yang punya evaluasi dampak independen; program air berbukti tertinggi adalah PAMSIMAS dengan bukti sedang, dan program itu tidak dirancang untuk darurat.** Laporan penyelesaian Bank Dunia 2023 mencatat layanan air berkelanjutan untuk {{angka:rehab.pipa.pamsimas.jiwa_layanan_icr2023|satuan}} di lebih dari {{angka:rehab.pipa.pamsimas.desa_icr2023}} desa, dengan {{angka:rehab.pipa.pamsimas.persen_berfungsi_icr2023|persen}} sistem berfungsi baik [@rwsn-2023-pamsimas]; versi lain mencatat {{angka:rehab.pipa.pamsimas.orang_akses_2021|satuan}} berakses air per Desember 2021 [@wb-2023-pamsimas-brief]. Evaluasi independen Australia pada Januari 2023 menilai data sistem informasi PAMSIMAS terlalu optimistis, karena banyak sistem yang tercatat berfungsi kekurangan air saat jam puncak atau kemarau [@dfat-2023-pamsimas]. Temuan itu berlaku juga untuk Sumatra: {{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} SPAM berfungsi belum dapat dibaca sebagai {{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} warga kembali mendapat air (@rek:r-rr-09).
+
+::: gambar {#gbr:foto-rr-bron-pincuran-gadang}
+berkas: gambar/foto/rehab-b06-bron-pincuran-gadang.jpg
+jenis: foto
+judul: Bangunan penangkap mata air Pincuran Gadang, Kabupaten Solok, dibangun 1923, foto Maret 2015
+pengarang: Bramadia
+lisensi: CC BY-SA 4.0
+url: https://commons.wikimedia.org/wiki/File:Bron_Captering_Pincuran_Gadang_Solok.jpg
+potong: dipotong tengah ke rasio 4:3
+lebar: dua-kolom
+:::
 
 **Satgas PUPR di Lombok 2018 dan Cianjur 2022 mendokumentasikan sumur, hidran, truk, dan titik SPAM secara rinci, tetapi tidak satu pun buku mencatat liter per orang per hari yang diterima pengungsi.** Dokumentasi itu rinci tetapi tanpa ukuran dampak, sehingga kekuatan buktinya sedang; di Grand Design ini keduanya diperlakukan sebagai praktik terdokumentasi yang belum terbukti berdampak [@kemenpupr-2019-satgas-lombok; @kemenpupr-2023-cianjur]. Pembanding luar negeri dengan tata kelola pemulihan pipa yang diaudit negara adalah aliansi Stronger Christchurch Infrastructure Rebuild Team (SCIRT) di Christchurch.
 
@@ -250,24 +276,34 @@ jenis: uji-coba
 
 **Tujuh kesenjangan air perpipaan bermuara pada satu ukuran yang hilang, yaitu jumlah jiwa yang kembali mendapat air, yang tidak tercatat untuk kejadian 2018–2025.** Ukuran itu tidak ada di DIBI, di rilis Kementerian PU, maupun di R3P. Tiap kesenjangan dipetakan ke rekomendasi register bersama kajian ini pada @tbl:kesenjangan-air; rincian tiap rekomendasi ada di bab rekomendasi [@bnpb-dibi; @pu-2026-infrastruktur-sumatera-mei; @cianjur-2022-r3p].
 
+::: gambar {#gbr:foto-rr-spam-sepaku-2024}
+berkas: gambar/foto/rehab-b06-spam-sepaku-2024.jpg
+jenis: foto
+judul: Instalasi air minum SPAM Sepaku, Kalimantan Timur, Agustus 2024
+pengarang: Kantor Otorita Ibu Kota Nusantara
+lisensi: PD
+url: https://commons.wikimedia.org/wiki/File:SPAM_Sepaku_IKN.jpg
+potong: dipotong tengah ke rasio 2:1
+lebar: penuh
+:::
+
 ::: tabel {#tbl:kesenjangan-air}
 judul: Kesenjangan air perpipaan pascabencana dan rekomendasi register kajian, 2026–2030
 sumber: Analisis kajian ini; register rekomendasi Grand Design rehabilitasi dan rekonstruksi
 keyakinan: asumsi-kebijakan
-catatan: Status mengikuti tiga rumusan baku; "–" pada kolom Kementerian/Lembaga (K/L) berarti langkah hanya di tingkat pusat BNPB.
 
 | KESENJANGAN | REK | STATUS | UNIT BNPB PEMIMPIN | K/L | HORIZON |
 | --- | --- | --- | --- | --- | --- |
-| DIBI tanpa kolom kerusakan SPAM, pipa, dan sumur | @rek:r-rr-01 | Usulan baru | Pusat Data, Informasi, dan Komunikasi Kebencanaan | Kementerian PU; BPBD | 100 hari |
+| DIBI tanpa kolom kerusakan SPAM, pipa, dan sumur | @rek:r-rr-01 | Sudah ada, perlu dikembangkan | Pusat Data, Informasi, dan Komunikasi Kebencanaan | Kementerian PU; BPBD | 100 hari |
 | Pemulihan diukur dalam unit berfungsi, tidak dalam jiwa terlayani | @rek:r-rr-09 | Usulan baru | Direktorat RR Infrastruktur | Kementerian PU | 2026–2027 |
-| Belum ada baseline waktu pulih layanan air | @rek:r-rr-02 | Usulan baru | Direktorat RR Infrastruktur | Kementerian PU | 2026–2027 |
+| Belum ada garis dasar waktu pulih layanan air | @rek:r-rr-02 | Usulan baru | Direktorat RR Infrastruktur | Kementerian PU | 2026–2027 |
 | Perkiraan waktu pulih Jitupasna tidak dilaporkan kembali | @rek:r-rr-03 | Sudah ada, perlu dikembangkan | Deputi Bidang RR | Bappenas; Kementerian Dalam Negeri | 2026–2027 |
 | Pemicu dan pemutus peralihan truk ke pipa tidak tertulis | @rek:r-rr-08 | Sudah ada, perlu dikembangkan | Deputi Bidang Penanganan Darurat | Kementerian PU; PDAM | 2026–2027 |
 | Daftar kegiatan air DSP tidak berlaku sejak 2020 | @rek:r-rr-15 | Sudah ada, perlu dikembangkan | Biro Hukum, Organisasi, dan Kerja Sama | – | 2026–2027 |
 | SPAM hunian tetap tertinggal dari SPAM eksisting | @rek:r-rr-12 | Usulan baru | Direktorat RR Perumahan | Kementerian Perumahan dan Kawasan Permukiman; pemerintah daerah | 2026–2027 |
 :::
 
-**Lima permintaan data menahan penguncian angka air Grand Design, dimulai dari Jitupasna sektor air Palu 2018 yang menentukan lantai skenario gempa.** Daftarnya:
+**Lima permintaan data menahan penguncian angka air Grand Design, dimulai dari Jitupasna sektor air Palu 2018 yang menentukan lantai skenario gempa.** Daftarnya: Catatan atas @tbl:kesenjangan-air. Status mengikuti tiga rumusan baku; "–" pada kolom Kementerian/Lembaga (K/L) berarti langkah hanya di tingkat pusat BNPB.
 
 - Jitupasna atau kajian kebutuhan pascabencana sektor air Palu 2018 dan R3P Aceh, Sumatera Utara, serta Sumatera Barat, dari BNPB dan pemerintah daerah.
 - Data SPAM Sumatra setelah 7 Mei 2026 per kabupaten/kota, termasuk jiwa atau sambungan terlayani, dari Kementerian PU.

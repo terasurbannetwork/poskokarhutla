@@ -637,14 +637,16 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   /* /instansi masuk daftar putih atas keputusan pemilik 21 Okt 2026: pemda, polisi, dan TNI memakai akun instansi sendiri (bukan sesi admin); sesi, status aktif, dan cakupan dicek di API */
   /* /presiden: panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026) */
   /* /daftar-kontak: registrasi kontak pemangku kepentingan yang tak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu */
-  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/daftar-kontak", "/presiden", "/instansi"], "daftar putih persis empat halaman, masing-masing bersama alasan");
+  /* /pendataan: staf direktorat BNPB membuat akun pendataan sendiri (keputusan pemilik 26 Okt 2026); akun menunggu persetujuan Super Admin */
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/daftar-kontak", "/presiden", "/instansi", "/pendataan"], "daftar putih persis lima halaman, masing-masing bersama alasan");
   assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
   const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
   assert.equal((await buka("/lapangan")).status, 200);
+  assert.equal((await buka("/pendataan")).status, 200);
   const a = await buka("/admin/posko"); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/admin\/masuk/);
   const halaman = new Set(["/", "/peringatan", "/privasi", "/laporan", "/f/0123456789abcdef"]);
   for (const f of ["worker.js", "foto.js", "sosmed.js", "posko.js", "ews.js", "gempa.js", "statistik.js"])
-    for (const [, x] of readFileSync(path.join(AKAR, "src", f), "utf8").matchAll(/^\s*"GET (\/[\w\/:]*)":/gm)) if (!/^\/(api|admin|ews|ubin)(\/|$)/.test(x) && x !== "/lapangan") halaman.add(x.replace(":id", "0123456789abcdef"));
+    for (const [, x] of readFileSync(path.join(AKAR, "src", f), "utf8").matchAll(/^\s*"GET (\/[\w\/:]*)":/gm)) if (!/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(x) && x !== "/lapangan") halaman.add(x.replace(":id", "0123456789abcdef"));
   assert.ok(halaman.has("/statistik"), "pemindai menemukan rute halaman");
   for (const j of halaman) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id harus terkunci tanpa sesi, dapat ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/); }
   /* berkas HTML statis dibuka langsung lewat nama (run_worker_first ["/*.html"] di wrangler*.jsonc memanggil Worker HANYA untuk pola ini) */
