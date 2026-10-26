@@ -16,7 +16,7 @@ skenario,butir,rendah,tengah,tinggi,satuan,label
 "Megathrust selatan Jawa, di bawah magnitudo maksimum",hari-mengungsi guncangan (7 hari),,3043797,,jiwa-hari,asumsi-kebijakan
 "Megathrust selatan Jawa, di bawah magnitudo maksimum",hari-mengungsi guncangan (30 hari),,13044844,,jiwa-hari,asumsi-kebijakan
 "Megathrust selatan Jawa, di bawah magnitudo maksimum",hari-mengungsi guncangan (90 hari),,39134533,,jiwa-hari,asumsi-kebijakan
-"Megathrust selatan Jawa, di bawah magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,134,,kab/kota,estimasi-model
+"Megathrust selatan Jawa, di bawah magnitudo maksimum",tsunami: kab/kota tercapai dalam tiga jam,,134,,kab/kota,estimasi-model
 "Megathrust selatan Jawa, di bawah magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,5.6,,22.3,m,estimasi-model
 "Megathrust Mentawai, di bawah magnitudo maksimum",jiwa terpapar MMI ≥ VI,,9623934,,jiwa,estimasi-model
 "Megathrust Mentawai, di bawah magnitudo maksimum",jiwa terpapar MMI ≥ VII,1208127,3911944,7535100,jiwa,estimasi-model
@@ -35,7 +35,7 @@ skenario,butir,rendah,tengah,tinggi,satuan,label
 "Megathrust Mentawai, di bawah magnitudo maksimum",hari-mengungsi guncangan (7 hari),,3945871,,jiwa-hari,asumsi-kebijakan
 "Megathrust Mentawai, di bawah magnitudo maksimum",hari-mengungsi guncangan (30 hari),,16910876,,jiwa-hari,asumsi-kebijakan
 "Megathrust Mentawai, di bawah magnitudo maksimum",hari-mengungsi guncangan (90 hari),,50732629,,jiwa-hari,asumsi-kebijakan
-"Megathrust Mentawai, di bawah magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,95,,kab/kota,estimasi-model
+"Megathrust Mentawai, di bawah magnitudo maksimum",tsunami: kab/kota tercapai dalam tiga jam,,95,,kab/kota,estimasi-model
 "Megathrust Mentawai, di bawah magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,9.4,,37.8,m,estimasi-model
 "Megathrust Sumba, magnitudo tanpa sumber",jiwa terpapar MMI ≥ VI,,0,,jiwa,estimasi-model
 "Megathrust Sumba, magnitudo tanpa sumber",jiwa terpapar MMI ≥ VII,0,0,0,jiwa,estimasi-model
@@ -54,7 +54,7 @@ skenario,butir,rendah,tengah,tinggi,satuan,label
 "Megathrust Sumba, magnitudo tanpa sumber",hari-mengungsi guncangan (7 hari),,140991,,jiwa-hari,asumsi-kebijakan
 "Megathrust Sumba, magnitudo tanpa sumber",hari-mengungsi guncangan (30 hari),,604246,,jiwa-hari,asumsi-kebijakan
 "Megathrust Sumba, magnitudo tanpa sumber",hari-mengungsi guncangan (90 hari),,1812739,,jiwa-hari,asumsi-kebijakan
-"Megathrust Sumba, magnitudo tanpa sumber",tsunami: kab/kota tercapai ≤ 180 menit,,150,,kab/kota,estimasi-model
+"Megathrust Sumba, magnitudo tanpa sumber",tsunami: kab/kota tercapai dalam tiga jam,,150,,kab/kota,estimasi-model
 "Megathrust Sumba, magnitudo tanpa sumber",tsunami: tinggi indikatif maksimum di pantai,2.7,,10.6,m,estimasi-model
 "Megathrust selatan Jawa, magnitudo maksimum",jiwa terpapar MMI ≥ VI,,129704396,,jiwa,estimasi-model
 "Megathrust selatan Jawa, magnitudo maksimum",jiwa terpapar MMI ≥ VII,30227545,69038814,110448354,jiwa,estimasi-model
@@ -73,7 +73,7 @@ skenario,butir,rendah,tengah,tinggi,satuan,label
 "Megathrust selatan Jawa, magnitudo maksimum",hari-mengungsi guncangan (7 hari),,68147537,,jiwa-hari,asumsi-kebijakan
 "Megathrust selatan Jawa, magnitudo maksimum",hari-mengungsi guncangan (30 hari),,292060874,,jiwa-hari,asumsi-kebijakan
 "Megathrust selatan Jawa, magnitudo maksimum",hari-mengungsi guncangan (90 hari),,876182623,,jiwa-hari,asumsi-kebijakan
-"Megathrust selatan Jawa, magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,160,,kab/kota,estimasi-model
+"Megathrust selatan Jawa, magnitudo maksimum",tsunami: kab/kota tercapai dalam tiga jam,,160,,kab/kota,estimasi-model
 "Megathrust selatan Jawa, magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,13.3,,53.3,m,estimasi-model
 "Megathrust Mentawai, magnitudo maksimum",jiwa terpapar MMI ≥ VI,,11670866,,jiwa,estimasi-model
 "Megathrust Mentawai, magnitudo maksimum",jiwa terpapar MMI ≥ VII,2184065,5803334,9697878,jiwa,estimasi-model
@@ -92,7 +92,7 @@ skenario,butir,rendah,tengah,tinggi,satuan,label
 "Megathrust Mentawai, magnitudo maksimum",hari-mengungsi guncangan (7 hari),,6242814,,jiwa-hari,asumsi-kebijakan
 "Megathrust Mentawai, magnitudo maksimum",hari-mengungsi guncangan (30 hari),,26754915,,jiwa-hari,asumsi-kebijakan
 "Megathrust Mentawai, magnitudo maksimum",hari-mengungsi guncangan (90 hari),,80264745,,jiwa-hari,asumsi-kebijakan
-"Megathrust Mentawai, magnitudo maksimum",tsunami: kab/kota tercapai ≤ 180 menit,,97,,kab/kota,estimasi-model
+"Megathrust Mentawai, magnitudo maksimum",tsunami: kab/kota tercapai dalam tiga jam,,97,,kab/kota,estimasi-model
 "Megathrust Mentawai, magnitudo maksimum",tsunami: tinggi indikatif maksimum di pantai,10.6,,42.4,m,estimasi-model
 Erupsi setara Merapi 2010,jiwa di area sapuan awan panas + lahar tanpa evakuasi,,89707,,jiwa,estimasi-model
 Erupsi setara Merapi 2010,luas sapuan,,7993,,ha,estimasi-model

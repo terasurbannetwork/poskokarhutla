@@ -50,6 +50,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/*.py`
 - `scripts/pasang-kunci.sh`
 - `data/**`
+- `data/sippa/**`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

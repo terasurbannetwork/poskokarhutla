@@ -644,7 +644,7 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   const a = await buka("/admin/posko"); assert.equal(a.status, 303); assert.match(a.headers.get("location"), /\/admin\/masuk/);
   const halaman = new Set(["/", "/peringatan", "/privasi", "/laporan", "/f/0123456789abcdef"]);
   for (const f of ["worker.js", "foto.js", "sosmed.js", "posko.js", "ews.js", "gempa.js", "statistik.js"])
-    for (const [, x] of readFileSync(path.join(AKAR, "src", f), "utf8").matchAll(/^\s*"GET (\/[\w\/:]*)":/gm)) if (!/^\/(api|admin|ews|ubin)(\/|$)/.test(x) && x !== "/lapangan") halaman.add(x.replace(":id", "0123456789abcdef"));
+    for (const [, x] of readFileSync(path.join(AKAR, "src", f), "utf8").matchAll(/^\s*"GET (\/[\w\/:]*)":/gm)) if (!/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(x) && x !== "/lapangan") halaman.add(x.replace(":id", "0123456789abcdef"));
   assert.ok(halaman.has("/statistik"), "pemindai menemukan rute halaman");
   for (const j of halaman) { const r = await buka(j); assert.equal(r.status, 303, `${j} di centurisk97.id harus terkunci tanpa sesi, dapat ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/); }
   /* berkas HTML statis dibuka langsung lewat nama (run_worker_first ["/*.html"] di wrangler*.jsonc memanggil Worker HANYA untuk pola ini) */

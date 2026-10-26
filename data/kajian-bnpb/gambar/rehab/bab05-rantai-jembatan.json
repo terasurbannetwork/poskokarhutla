@@ -1,0 +1,343 @@
+{
+ "nama": "bab05-rantai-jembatan",
+ "keterangan": "Rantai jembatan pascabencana dari lapis darurat ke lapis permanen dan titik serahnya, 2026",
+ "sumber": "Perka BNPB 12/2010; Perban BNPB 4/2020 Pasal 13 dan 14; Perban BNPB 4/2024 Pasal 5 huruf b, e, f dan Pasal 27; Perban BNPB 6/2017 Pasal 13 ayat (6); Perban BNPB 5/2017 Pasal 10; analisis kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  150.6
+ ],
+ "ukuran_cm": [
+  16.5,
+  5.31
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Lapis waktu",
+   "jenis": "kotak",
+   "warna": "#051C2C"
+  },
+  {
+   "label": "Titik serah",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "Aturan atau pelaksana berpasal",
+   "jenis": "kotak",
+   "warna": "#E6EAF0"
+  },
+  {
+   "label": "Tidak diatur atau tanpa data",
+   "jenis": "kotak",
+   "warna": "#F8DDE0"
+  }
+ ],
+ "hex": {
+  "#051C2C": [
+   "legenda",
+   "seri"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#F4ECDC": [
+   "legenda",
+   "seri"
+  ],
+  "#E6EAF0": [
+   "legenda",
+   "seri"
+  ],
+  "#F8DDE0": [
+   "legenda",
+   "seri"
+  ],
+  "#6B7280": [
+   "teks",
+   "garis"
+  ],
+  "#FFFFFF": [
+   "teks",
+   "latar"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 16,
+   "y": 3,
+   "w": 42.63,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 2,
+   "y": 2,
+   "w": 56.63,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-2",
+   "teks": "Lapis waktu"
+  },
+  {
+   "x": 82.63,
+   "y": 3,
+   "w": 37.13,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 68.63,
+   "y": 2,
+   "w": 51.13,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-68",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 143.77,
+   "y": 3,
+   "w": 112.39,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-129",
+   "teks": "Aturan atau pelaksana berpasal"
+  },
+  {
+   "x": 129.77,
+   "y": 2,
+   "w": 126.39,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-129",
+   "teks": "Aturan atau pelaksana berpasal"
+  },
+  {
+   "x": 280.16,
+   "y": 3,
+   "w": 99.86,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-266",
+   "teks": "Tidak diatur atau tanpa data"
+  },
+  {
+   "x": 266.16,
+   "y": 2,
+   "w": 113.86,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-266",
+   "teks": "Tidak diatur atau tanpa data"
+  },
+  {
+   "x": 2,
+   "y": 35.45,
+   "w": 20.57,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb0",
+   "teks": "Lapis"
+  },
+  {
+   "x": 2,
+   "y": 79.75,
+   "w": 38.33,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "Dasar dan"
+  },
+  {
+   "x": 2,
+   "y": 89.95,
+   "w": 38.98,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb1",
+   "teks": "pelaksana"
+  },
+  {
+   "x": 2,
+   "y": 129.45,
+   "w": 40.67,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "jb2",
+   "teks": "Titik serah"
+  },
+  {
+   "x": 102.28,
+   "y": 24.8,
+   "w": 28.47,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "Darurat"
+  },
+  {
+   "x": 59.53,
+   "y": 36.4,
+   "w": 113.97,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "bailey DSP dan Kementerian PU,"
+  },
+  {
+   "x": 95.79,
+   "y": 46,
+   "w": 41.45,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l1",
+   "teks": "rangka baja"
+  },
+  {
+   "x": 237.39,
+   "y": 29.6,
+   "w": 41.62,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "Sementara"
+  },
+  {
+   "x": 211.25,
+   "y": 41.2,
+   "w": 93.89,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l2",
+   "teks": "jembatan TNI AD dan Polri"
+  },
+  {
+   "x": 380.27,
+   "y": 29.6,
+   "w": 39.21,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "Permanen"
+  },
+  {
+   "x": 346.71,
+   "y": 41.2,
+   "w": 106.33,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "l3",
+   "teks": "Kementerian PU, pemda, desa"
+  },
+  {
+   "x": 56.39,
+   "y": 79,
+   "w": 120.26,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "Perban 4/2020 Pasal 13 dan 14"
+  },
+  {
+   "x": 58.54,
+   "y": 90.6,
+   "w": 115.95,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a1",
+   "teks": "DSP untuk bailey; Perka 12/2010"
+  },
+  {
+   "x": 202.73,
+   "y": 74.2,
+   "w": 110.93,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "Status R3P tidak diumumkan"
+  },
+  {
+   "x": 197.01,
+   "y": 85.8,
+   "w": 122.37,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "serah terima jembatan TNI AD dan"
+  },
+  {
+   "x": 230.09,
+   "y": 95.4,
+   "w": 56.21,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a2",
+   "teks": "Polri tanpa data"
+  },
+  {
+   "x": 353.79,
+   "y": 79,
+   "w": 92.16,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "Perban 5/2017 Pasal 10"
+  },
+  {
+   "x": 345.79,
+   "y": 90.6,
+   "w": 108.18,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "a3",
+   "teks": "masa R3P paling lama 3 tahun"
+  },
+  {
+   "x": 151.14,
+   "y": 123.6,
+   "w": 72.42,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "Serah ke aset desa"
+  },
+  {
+   "x": 83.2,
+   "y": 135.2,
+   "w": 208.31,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s1",
+   "teks": "tanpa jalur hibah RR (Perban 4/2024 Pasal 5 huruf b dan e)"
+  },
+  {
+   "x": 382.21,
+   "y": 123.6,
+   "w": 35.32,
+   "h": 8.5,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "Hibah RR"
+  },
+  {
+   "x": 350,
+   "y": 135.2,
+   "w": 99.76,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "s2",
+   "teks": "Pasal 5 huruf f dan Pasal 27"
+  }
+ ],
+ "jenis": "diagram",
+ "alasan": "Rantai tiga lapis berpasal dengan titik serah dan pemutus; tabel pilih grafik B5.10 tidak memuat bagan alur",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_kotak": 8
+}

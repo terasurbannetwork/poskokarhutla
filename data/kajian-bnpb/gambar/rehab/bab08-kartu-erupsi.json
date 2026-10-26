@@ -1,0 +1,254 @@
+{
+ "nama": "bab08-kartu-erupsi",
+ "keterangan": "Rumah rusak berat akibat erupsi gunung api per provinsi, 2008–2025 (unit)",
+ "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  148.25,
+  143.74
+ ],
+ "ukuran_cm": [
+  5.23,
+  5.07
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "1.000",
+   "jenis": "simbol",
+   "warna": "#8A4B2A"
+  },
+  {
+   "label": "3.000",
+   "jenis": "simbol",
+   "warna": "#8A4B2A"
+  },
+  {
+   "label": "10.000",
+   "jenis": "simbol",
+   "warna": "#8A4B2A"
+  }
+ ],
+ "hex": {
+  "#D3DBE5": [
+   "daratan-netral"
+  ],
+  "#FFFFFF": [
+   "batas",
+   "garis"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#8A4B2A": [
+   "simbol",
+   "legenda"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 53.13,
+   "y": 38.77,
+   "w": 14,
+   "h": 14,
+   "jenis": "simbol",
+   "grup": "sim0",
+   "teks": "rumah"
+  },
+  {
+   "x": 80.51,
+   "y": 45.2,
+   "w": 5.89,
+   "h": 5.89,
+   "jenis": "simbol",
+   "grup": "sim1",
+   "teks": "rumah"
+  },
+  {
+   "x": 46.24,
+   "y": 44.94,
+   "w": 5.84,
+   "h": 5.84,
+   "jenis": "simbol",
+   "grup": "sim2",
+   "teks": "rumah"
+  },
+  {
+   "x": 20.08,
+   "y": 22.52,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim3",
+   "teks": "rumah"
+  },
+  {
+   "x": 48.63,
+   "y": 40.44,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim4",
+   "teks": "rumah"
+  },
+  {
+   "x": 91.04,
+   "y": 17.81,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim5",
+   "teks": "rumah"
+  },
+  {
+   "x": 21.15,
+   "y": 65.68,
+   "w": 68.07,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-21",
+   "teks": "Rumah rusak berat"
+  },
+  {
+   "x": 21.15,
+   "y": 64.68,
+   "w": 68.07,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-21",
+   "teks": "Rumah rusak berat"
+  },
+  {
+   "x": 107.03,
+   "y": 65.68,
+   "w": 20.07,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-99",
+   "teks": "1.000"
+  },
+  {
+   "x": 99.22,
+   "y": 64.68,
+   "w": 27.89,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-99",
+   "teks": "1.000"
+  },
+  {
+   "x": 44.08,
+   "y": 79.71,
+   "w": 20.07,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-33",
+   "teks": "3.000"
+  },
+  {
+   "x": 33.48,
+   "y": 78.71,
+   "w": 30.68,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-33",
+   "teks": "3.000"
+  },
+  {
+   "x": 90.21,
+   "y": 79.71,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-74",
+   "teks": "10.000"
+  },
+  {
+   "x": 74.15,
+   "y": 77.68,
+   "w": 40.62,
+   "h": 12.06,
+   "jenis": "legenda",
+   "grup": "leg1-74",
+   "teks": "10.000"
+  },
+  {
+   "x": 3,
+   "y": 92.74,
+   "w": 125.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi."
+  },
+  {
+   "x": 3,
+   "y": 102.34,
+   "w": 129.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Sumber batas: Pantau Bencana, asal"
+  },
+  {
+   "x": 3,
+   "y": 111.94,
+   "w": 109.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "belum terdokumentasi; WGS84"
+  },
+  {
+   "x": 3,
+   "y": 121.54,
+   "w": 125.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "geografis; proyeksi ekuirektangular,"
+  },
+  {
+   "x": 3,
+   "y": 131.14,
+   "w": 71.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G20",
+ "besaran": "total",
+ "cakupan": "nasional",
+ "tingkat": "provinsi",
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 2,5° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 6,
+ "simbol_digeser": 3,
+ "putaran_geser": 1
+}

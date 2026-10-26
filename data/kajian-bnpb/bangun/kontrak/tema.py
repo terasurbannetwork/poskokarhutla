@@ -21,6 +21,11 @@ def muat(path=None):
     return json.loads(Path(path or AKAR / 'tema.json').read_text(encoding='utf-8'))
 
 
+def kajian_sah(t):
+    """Kode kajian sah = kunci berisi objek di tema.json `kajian` (penerbit dan terbit adalah teks)."""
+    return tuple(k for k, v in t['kajian'].items() if isinstance(v, dict))
+
+
 def warna(t, nama):
     """Nama token -> hex. 'navy', 'tint.api.pita', 'kategori.api', 'skala.air.4', 'arah.naik'."""
     w = t['warna']
@@ -145,6 +150,16 @@ def periksa(t):
             assert j in t['ikon'], f'jenis {j} (kategori {kel}) tidak punya ikon di registri'
             assert j in t['kosakata']['jenis_bencana'], f'jenis {j} tidak punya label di kosakata.jenis_bencana'
 
+    # zona A-D (DS 2.1.3): isi menunjuk token yang ada; empat pola berbeda (warna bukan satu-satunya pembawa makna)
+    zona = {k: x for k, x in w.get('zona', {}).items() if not k.startswith('_')}
+    assert sorted(zona) == list('ABCD'), f'warna.zona harus tepat A, B, C, D, bukan {sorted(zona)}'
+    assert len({x['pola'] for x in zona.values()}) == 4, 'warna.zona: empat zona wajib empat pola berbeda'
+    for k, x in zona.items():
+        try:
+            warna(t, x['isi'])
+        except (KeyError, IndexError, ValueError) as e:
+            raise AssertionError(f'warna.zona.{k}.isi "{x["isi"]}" tidak terurai ({e})')
+
     # 3. kategori: beda warna dan kontras grafis (PEDOMAN B1.3)
     kat = {k: x['hex'] for k, x in w['kategori'].items() if not k.startswith('_')}
     kat['merah'], kat['navy'] = warna(t, 'merah'), warna(t, 'navy')
@@ -253,6 +268,8 @@ def _uji_diri():
         (lambda x: x['grafik'].update(warna_rata_rata='#D9650B'), 'terlarang'),
         (lambda x: x['kajian']['air'].update(subjudul='A \u2014 B'), 'em dash'),
         (lambda x: x['ikon'].update(sekolah='lucide:sun'), 'glif'),
+        (lambda x: x['warna']['zona']['B'].update(pola='penuh'), 'empat pola'),
+        (lambda x: x['warna']['zona']['C'].update(isi='skala.emas.9'), 'tidak terurai'),
     ):
         x = copy.deepcopy(t)
         rusak(x)

@@ -1,0 +1,538 @@
+{
+ "nama": "bab04-peta-jembatan-provinsi",
+ "keterangan": "Jembatan rusak akibat bencana alam per provinsi di Indonesia, 2018–2025 (unit)",
+ "sumber": "BNPB, DIBI dasbor publik, rekap provinsi tahunan, klasifikasi bencana alam, cakupan kejadian bencana; pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  224.07
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.9
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "60",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "200",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "600",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  }
+ ],
+ "hex": {
+  "#D3DBE5": [
+   "daratan-netral"
+  ],
+  "#FFFFFF": [
+   "batas",
+   "garis",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#2F86D1": [
+   "simbol",
+   "legenda"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 21.12,
+   "y": 16.71,
+   "w": 14,
+   "h": 14,
+   "jenis": "simbol",
+   "grup": "sim0",
+   "teks": "Aceh"
+  },
+  {
+   "x": 57.93,
+   "y": 65.84,
+   "w": 12.7,
+   "h": 12.7,
+   "jenis": "simbol",
+   "grup": "sim1",
+   "teks": "Sumatera Barat"
+  },
+  {
+   "x": 249.8,
+   "y": 96.51,
+   "w": 9.31,
+   "h": 9.31,
+   "jenis": "simbol",
+   "grup": "sim2",
+   "teks": "Sulawesi Selatan"
+  },
+  {
+   "x": 127.8,
+   "y": 128.81,
+   "w": 8.55,
+   "h": 8.55,
+   "jenis": "simbol",
+   "grup": "sim3",
+   "teks": "Jawa Barat"
+  },
+  {
+   "x": 153.38,
+   "y": 132.02,
+   "w": 8.16,
+   "h": 8.16,
+   "jenis": "simbol",
+   "grup": "sim4",
+   "teks": "Jawa Tengah"
+  },
+  {
+   "x": 176.98,
+   "y": 137.86,
+   "w": 7.95,
+   "h": 7.95,
+   "jenis": "simbol",
+   "grup": "sim5",
+   "teks": "Jawa Timur"
+  },
+  {
+   "x": 45.86,
+   "y": 39.18,
+   "w": 7.75,
+   "h": 7.75,
+   "jenis": "simbol",
+   "grup": "sim6",
+   "teks": "Sumatera Utara"
+  },
+  {
+   "x": 162.85,
+   "y": 62.36,
+   "w": 7.71,
+   "h": 7.71,
+   "jenis": "simbol",
+   "grup": "sim7",
+   "teks": "Kalimantan Barat"
+  },
+  {
+   "x": 260.88,
+   "y": 146.28,
+   "w": 6.49,
+   "h": 6.49,
+   "jenis": "simbol",
+   "grup": "sim8",
+   "teks": "Nusa Tenggara Timur"
+  },
+  {
+   "x": 95.51,
+   "y": 93.83,
+   "w": 6.17,
+   "h": 6.17,
+   "jenis": "simbol",
+   "grup": "sim9",
+   "teks": "Sumatera Selatan"
+  },
+  {
+   "x": 229.02,
+   "y": 146.71,
+   "w": 6.15,
+   "h": 6.15,
+   "jenis": "simbol",
+   "grup": "sim10",
+   "teks": "Nusa Tenggara Barat"
+  },
+  {
+   "x": 260.57,
+   "y": 72.26,
+   "w": 5.99,
+   "h": 5.99,
+   "jenis": "simbol",
+   "grup": "sim11",
+   "teks": "Sulawesi Tengah"
+  },
+  {
+   "x": 77.85,
+   "y": 96.93,
+   "w": 5.89,
+   "h": 5.89,
+   "jenis": "simbol",
+   "grup": "sim12",
+   "teks": "Bengkulu"
+  },
+  {
+   "x": 205.36,
+   "y": 91.75,
+   "w": 5.28,
+   "h": 5.28,
+   "jenis": "simbol",
+   "grup": "sim13",
+   "teks": "Kalimantan Selatan"
+  },
+  {
+   "x": 104.38,
+   "y": 110.99,
+   "w": 5.01,
+   "h": 5.01,
+   "jenis": "simbol",
+   "grup": "sim14",
+   "teks": "Lampung"
+  },
+  {
+   "x": 328.83,
+   "y": 54.7,
+   "w": 4.66,
+   "h": 4.66,
+   "jenis": "simbol",
+   "grup": "sim15",
+   "teks": "Maluku Utara"
+  },
+  {
+   "x": 274.08,
+   "y": 56.77,
+   "w": 4.13,
+   "h": 4.13,
+   "jenis": "simbol",
+   "grup": "sim16",
+   "teks": "Gorontalo"
+  },
+  {
+   "x": 244.82,
+   "y": 87.79,
+   "w": 3.61,
+   "h": 3.61,
+   "jenis": "simbol",
+   "grup": "sim17",
+   "teks": "Sulawesi Barat"
+  },
+  {
+   "x": 73.4,
+   "y": 59.34,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim18",
+   "teks": "Riau"
+  },
+  {
+   "x": 82.61,
+   "y": 80.31,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim19",
+   "teks": "Jambi"
+  },
+  {
+   "x": 114.51,
+   "y": 85.72,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim20",
+   "teks": "Kep. Bangka Belitung"
+  },
+  {
+   "x": 136.12,
+   "y": 25.5,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim21",
+   "teks": "Kepulauan Riau"
+  },
+  {
+   "x": 158,
+   "y": 141.08,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim22",
+   "teks": "DI Yogyakarta"
+  },
+  {
+   "x": 115.84,
+   "y": 126.73,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim23",
+   "teks": "Banten"
+  },
+  {
+   "x": 203.54,
+   "y": 145.27,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim24",
+   "teks": "Bali"
+  },
+  {
+   "x": 186.99,
+   "y": 79.4,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim25",
+   "teks": "Kalimantan Tengah"
+  },
+  {
+   "x": 216.43,
+   "y": 59.23,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim26",
+   "teks": "Kalimantan Timur"
+  },
+  {
+   "x": 213.88,
+   "y": 35.55,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim27",
+   "teks": "Kalimantan Utara"
+  },
+  {
+   "x": 292.81,
+   "y": 55.1,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim28",
+   "teks": "Sulawesi Utara"
+  },
+  {
+   "x": 268.96,
+   "y": 100.89,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim29",
+   "teks": "Sulawesi Tenggara"
+  },
+  {
+   "x": 343.47,
+   "y": 94.98,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim30",
+   "teks": "Maluku"
+  },
+  {
+   "x": 433.88,
+   "y": 90.18,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim31",
+   "teks": "Papua"
+  },
+  {
+   "x": 384.49,
+   "y": 89.79,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim32",
+   "teks": "Papua Barat"
+  },
+  {
+   "x": 443.19,
+   "y": 127.36,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim33",
+   "teks": "Papua Selatan"
+  },
+  {
+   "x": 413.66,
+   "y": 101.78,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim34",
+   "teks": "Papua Tengah"
+  },
+  {
+   "x": 440.89,
+   "y": 105.09,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim35",
+   "teks": "Papua Pegunungan"
+  },
+  {
+   "x": 371.31,
+   "y": 75.19,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim36",
+   "teks": "Papua Barat Daya"
+  },
+  {
+   "x": 260.11,
+   "y": 107.56,
+   "w": 68.4,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-jembatan:Sulawesi Selatan",
+   "teks": "Sulawesi Selatan"
+  },
+  {
+   "x": 75.64,
+   "y": 65.79,
+   "w": 63.41,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-jembatan:Sumatera Barat",
+   "teks": "Sumatera Barat"
+  },
+  {
+   "x": 40.12,
+   "y": 17.31,
+   "w": 26.05,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-jembatan:Aceh",
+   "teks": "Aceh"
+  },
+  {
+   "x": 131.08,
+   "y": 188.05,
+   "w": 101.81,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-131",
+   "teks": "Jembatan rusak 2018–2025"
+  },
+  {
+   "x": 131.08,
+   "y": 187.05,
+   "w": 101.81,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-131",
+   "teks": "Jembatan rusak 2018–2025"
+  },
+  {
+   "x": 251.2,
+   "y": 188.05,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-242",
+   "teks": "60"
+  },
+  {
+   "x": 242.89,
+   "y": 187.05,
+   "w": 17.29,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-242",
+   "teks": "60"
+  },
+  {
+   "x": 282.05,
+   "y": 188.05,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-270",
+   "teks": "200"
+  },
+  {
+   "x": 270.19,
+   "y": 187.05,
+   "w": 25.35,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-270",
+   "teks": "200"
+  },
+  {
+   "x": 323.16,
+   "y": 188.05,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-305",
+   "teks": "600"
+  },
+  {
+   "x": 305.53,
+   "y": 185.24,
+   "w": 31.11,
+   "h": 13.63,
+   "jenis": "legenda",
+   "grup": "leg0-305",
+   "teks": "600"
+  },
+  {
+   "x": 3,
+   "y": 201.87,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 211.47,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G20",
+ "besaran": "total",
+ "cakupan": "nasional",
+ "tingkat": "provinsi",
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 3,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 37,
+ "simbol_digeser": 0,
+ "putaran_geser": 1,
+ "png": "peta-jembatan-provinsi.png"
+}

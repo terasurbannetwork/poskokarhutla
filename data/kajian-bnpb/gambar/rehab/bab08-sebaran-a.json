@@ -1,0 +1,533 @@
+{
+ "nama": "bab08-sebaran-a",
+ "keterangan": "Jembatan rusak per provinsi, 2018–2025 (unit)",
+ "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam; pengolahan kajian ini",
+ "mode": "docx",
+ "ukuran_pt": [
+  148.25,
+  145.31
+ ],
+ "ukuran_cm": [
+  5.23,
+  5.13
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "60",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "200",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "600",
+   "jenis": "simbol",
+   "warna": "#2F86D1"
+  }
+ ],
+ "hex": {
+  "#D3DBE5": [
+   "daratan-netral"
+  ],
+  "#FFFFFF": [
+   "batas",
+   "garis"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#2E3440": [
+   "pemandu"
+  ],
+  "#2F86D1": [
+   "simbol",
+   "legenda"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#6B7280": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 1.18,
+   "y": 2.38,
+   "w": 14,
+   "h": 14,
+   "jenis": "simbol",
+   "grup": "sim0",
+   "teks": "jembatan"
+  },
+  {
+   "x": 12.17,
+   "y": 18.1,
+   "w": 12.7,
+   "h": 12.7,
+   "jenis": "simbol",
+   "grup": "sim1",
+   "teks": "jembatan"
+  },
+  {
+   "x": 74.65,
+   "y": 30.63,
+   "w": 9.31,
+   "h": 9.31,
+   "jenis": "simbol",
+   "grup": "sim2",
+   "teks": "jembatan"
+  },
+  {
+   "x": 37.82,
+   "y": 38.8,
+   "w": 8.55,
+   "h": 8.55,
+   "jenis": "simbol",
+   "grup": "sim3",
+   "teks": "jembatan"
+  },
+  {
+   "x": 47.21,
+   "y": 37.58,
+   "w": 8.16,
+   "h": 8.16,
+   "jenis": "simbol",
+   "grup": "sim4",
+   "teks": "jembatan"
+  },
+  {
+   "x": 56.2,
+   "y": 41.8,
+   "w": 7.95,
+   "h": 7.95,
+   "jenis": "simbol",
+   "grup": "sim5",
+   "teks": "jembatan"
+  },
+  {
+   "x": 16.08,
+   "y": 9.53,
+   "w": 7.75,
+   "h": 7.75,
+   "jenis": "simbol",
+   "grup": "sim6",
+   "teks": "jembatan"
+  },
+  {
+   "x": 49.58,
+   "y": 18.62,
+   "w": 7.71,
+   "h": 7.71,
+   "jenis": "simbol",
+   "grup": "sim7",
+   "teks": "jembatan"
+  },
+  {
+   "x": 80.21,
+   "y": 44.9,
+   "w": 6.49,
+   "h": 6.49,
+   "jenis": "simbol",
+   "grup": "sim8",
+   "teks": "jembatan"
+  },
+  {
+   "x": 30.22,
+   "y": 27.76,
+   "w": 6.17,
+   "h": 6.17,
+   "jenis": "simbol",
+   "grup": "sim9",
+   "teks": "jembatan"
+  },
+  {
+   "x": 70.51,
+   "y": 45.15,
+   "w": 6.15,
+   "h": 6.15,
+   "jenis": "simbol",
+   "grup": "sim10",
+   "teks": "jembatan"
+  },
+  {
+   "x": 80.52,
+   "y": 22.57,
+   "w": 5.99,
+   "h": 5.99,
+   "jenis": "simbol",
+   "grup": "sim11",
+   "teks": "jembatan"
+  },
+  {
+   "x": 23.12,
+   "y": 31.7,
+   "w": 5.89,
+   "h": 5.89,
+   "jenis": "simbol",
+   "grup": "sim12",
+   "teks": "jembatan"
+  },
+  {
+   "x": 63.52,
+   "y": 28.52,
+   "w": 5.28,
+   "h": 5.28,
+   "jenis": "simbol",
+   "grup": "sim13",
+   "teks": "jembatan"
+  },
+  {
+   "x": 31.91,
+   "y": 34.84,
+   "w": 5.01,
+   "h": 5.01,
+   "jenis": "simbol",
+   "grup": "sim14",
+   "teks": "jembatan"
+  },
+  {
+   "x": 101.77,
+   "y": 17.32,
+   "w": 4.66,
+   "h": 4.66,
+   "jenis": "simbol",
+   "grup": "sim15",
+   "teks": "jembatan"
+  },
+  {
+   "x": 85.09,
+   "y": 17.55,
+   "w": 4.13,
+   "h": 4.13,
+   "jenis": "simbol",
+   "grup": "sim16",
+   "teks": "jembatan"
+  },
+  {
+   "x": 76.02,
+   "y": 26.12,
+   "w": 3.61,
+   "h": 3.61,
+   "jenis": "simbol",
+   "grup": "sim17",
+   "teks": "jembatan"
+  },
+  {
+   "x": 26.29,
+   "y": 19.11,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim18",
+   "teks": "jembatan"
+  },
+  {
+   "x": 25.72,
+   "y": 25.57,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim19",
+   "teks": "jembatan"
+  },
+  {
+   "x": 37.24,
+   "y": 27.24,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim20",
+   "teks": "jembatan"
+  },
+  {
+   "x": 42.77,
+   "y": 8.69,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim21",
+   "teks": "jembatan"
+  },
+  {
+   "x": 49.51,
+   "y": 46.64,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim22",
+   "teks": "jembatan"
+  },
+  {
+   "x": 33.33,
+   "y": 40.66,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim23",
+   "teks": "jembatan"
+  },
+  {
+   "x": 64.96,
+   "y": 45.59,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim24",
+   "teks": "jembatan"
+  },
+  {
+   "x": 58.44,
+   "y": 25.29,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim25",
+   "teks": "jembatan"
+  },
+  {
+   "x": 67.51,
+   "y": 19.08,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim26",
+   "teks": "jembatan"
+  },
+  {
+   "x": 66.72,
+   "y": 11.78,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim27",
+   "teks": "jembatan"
+  },
+  {
+   "x": 91.04,
+   "y": 17.81,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim28",
+   "teks": "jembatan"
+  },
+  {
+   "x": 84.86,
+   "y": 31.91,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim29",
+   "teks": "jembatan"
+  },
+  {
+   "x": 106.65,
+   "y": 30.09,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim30",
+   "teks": "jembatan"
+  },
+  {
+   "x": 134.51,
+   "y": 28.62,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim31",
+   "teks": "jembatan"
+  },
+  {
+   "x": 119.29,
+   "y": 28.49,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim32",
+   "teks": "jembatan"
+  },
+  {
+   "x": 137.37,
+   "y": 40.07,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim33",
+   "teks": "jembatan"
+  },
+  {
+   "x": 128.28,
+   "y": 32.19,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim34",
+   "teks": "jembatan"
+  },
+  {
+   "x": 136.67,
+   "y": 33.21,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim35",
+   "teks": "jembatan"
+  },
+  {
+   "x": 115.23,
+   "y": 24,
+   "w": 3.6,
+   "h": 3.6,
+   "jenis": "simbol",
+   "grup": "sim36",
+   "teks": "jembatan"
+  },
+  {
+   "x": 13.78,
+   "y": 65.68,
+   "w": 58.05,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-13",
+   "teks": "Jembatan rusak"
+  },
+  {
+   "x": 13.78,
+   "y": 64.68,
+   "w": 58.05,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-13",
+   "teks": "Jembatan rusak"
+  },
+  {
+   "x": 90.14,
+   "y": 65.68,
+   "w": 8.98,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-81",
+   "teks": "60"
+  },
+  {
+   "x": 81.83,
+   "y": 64.68,
+   "w": 17.29,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-81",
+   "teks": "60"
+  },
+  {
+   "x": 120.99,
+   "y": 65.68,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-109",
+   "teks": "200"
+  },
+  {
+   "x": 109.12,
+   "y": 64.68,
+   "w": 25.35,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-109",
+   "teks": "200"
+  },
+  {
+   "x": 76.2,
+   "y": 80.5,
+   "w": 13.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-58",
+   "teks": "600"
+  },
+  {
+   "x": 58.57,
+   "y": 77.68,
+   "w": 31.11,
+   "h": 13.63,
+   "jenis": "legenda",
+   "grup": "leg1-58",
+   "teks": "600"
+  },
+  {
+   "x": 3,
+   "y": 94.31,
+   "w": 125.24,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi."
+  },
+  {
+   "x": 3,
+   "y": 103.91,
+   "w": 129.86,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Sumber batas: Pantau Bencana, asal"
+  },
+  {
+   "x": 3,
+   "y": 113.51,
+   "w": 109.81,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "belum terdokumentasi; WGS84"
+  },
+  {
+   "x": 3,
+   "y": 123.11,
+   "w": 125.73,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "geografis; proyeksi ekuirektangular,"
+  },
+  {
+   "x": 3,
+   "y": 132.71,
+   "w": 71.96,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "paralel baku 2,5° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G20",
+ "besaran": "total",
+ "cakupan": "nasional",
+ "tingkat": "provinsi",
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 2,5° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": false,
+  "skala_batang": false,
+  "skala_pojok": null,
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 0,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 37,
+ "simbol_digeser": 19,
+ "putaran_geser": 9
+}

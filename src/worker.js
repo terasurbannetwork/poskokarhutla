@@ -32,6 +32,7 @@ import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
+import {RUTE_SIPPA} from "./sippa.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
@@ -538,6 +539,7 @@ const RUTE = {
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
+  ...RUTE_SIPPA,   // SIPPA: web /pipa staf BNPB, kit, tugas, log gelar, lapangan berkode (src/sippa.js; awalan /api/sippa/*, bukan /api/pipa/*)
   ...RUTE_PUSH,   // Web Push akun instansi: langganan perangkat, status, uji (src/push.js)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
@@ -621,7 +623,7 @@ function halamanTerkunci(url) {
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
-  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin)(\/|$)/.test(jalur);
+  return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/pantau?ke=, bukan ke /admin/masuk
 }
 function catatHTML(env, req, jalur, ctx) {
   if (env.DB) ctx?.waitUntil?.(Pub.catatHit(env, req, jalur).catch(e => console.error("hit", e)));

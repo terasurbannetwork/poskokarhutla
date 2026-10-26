@@ -134,7 +134,9 @@
       "path-internal": "d19-path-internal",
       "kutipan-ada-entri": "d19-kutipan-tanpa-entri",
       "pola-entri": "d19-entri-tanpa-pola",
-      "gaya-pustaka": "d19-pustaka-tanpa-gaya"
+      "gaya-pustaka": "d19-pustaka-tanpa-gaya",
+      "dkk-tahun-beda": "d19-dkk-tahun-beda",
+      "path-internal-di-pdf": "d19-path-internal-pdf"
     },
     "D-20": {
       "garis-vertikal": "d20-garis-vertikal",
@@ -157,6 +159,9 @@
       "sel-tabel-bukan-no": "d22-sel-tabel",
       "empat-digit-cacah": "d22-tahun-cacah",
       "kurung-bukan-butir": "d22-kurung",
+      "angka-lepas-di-samping-nama-diri": "d22-angka-dekat-nama",
+      "angka-lepas-di-samping-nama-pengguna": "d22-nama-pengguna-angka-lain",
+      "angka-lepas-di-samping-nomor-pertimbangan": "d22-nomor-pertimbangan-angka-lain",
       "pptx": "d22-pptx"
     },
     "D-23": {
@@ -243,6 +248,11 @@
     "D-7/D-13 sampul, pembatas Lampiran, sampul belakang tanpa kepala, kaki, nomor": "bersih",
     "D-11/D-13 Heading 1 bernomor otomatis lvlText \"BAB %1\"": "bersih",
     "D-20/D-22 kolom NO rata tengah dan kode rekomendasi \"01\"": "bersih",
+    "D-22 nama pengarang foto bernomor dan norma NCh433": "d22-nama-diri-boleh",
+    "D-22 nama pengguna Wikimedia bernomor di sel atribusi": "d22-nama-pengguna-lepas-boleh",
+    "D-19 entri penulis tanpa nama depan (dkk.) cocok dengan kutipan dkk.": "d19-dkk-entri-dan-kutipan-cocok",
+    "D-19 URL panjang terpatah antarbaris PDF": "d19-url-terpatah-pdf-boleh",
+    "D-22 nomor pertimbangan putusan MK bertitik tiga ruas": "d22-nomor-pertimbangan-boleh",
     "D-11 label pita kapital bergaya Label Bagian": "bersih",
     "D-7/D-14/D-20 kartu skenario majemuk (w:tblCaption skenario)": "bersih",
     "D-14 grup kartu angka dengan label di baris kaki": "bersih",

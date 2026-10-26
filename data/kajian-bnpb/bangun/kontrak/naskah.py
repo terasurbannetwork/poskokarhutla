@@ -20,7 +20,7 @@ from math import floor, log10
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parent))
-from tema import warna  # noqa: E402
+from tema import kajian_sah, warna  # noqa: E402
 
 AKAR = Path(__file__).resolve().parents[2]  # data/kajian-bnpb
 BULAN = 'Januari Februari Maret April Mei Juni Juli Agustus September Oktober November Desember'.split()
@@ -229,6 +229,10 @@ class Konteks:
         for w in ('keyakinan', 'sumber', 'satuan'):
             if w not in e:
                 raise KeyError(f'entri "{kunci}" tanpa {w}')
+        if e['keyakinan'].split(';')[0].strip() == 'menunggu':  # M14: belum ada nilai; wajib alasan, tampil "–"
+            if not str(e.get('catatan') or '').strip():
+                raise KeyError(f'entri "{kunci}" berstatus menunggu tanpa catatan alasan')
+            return None, None, None, e
         if 'berkas' in e:
             data = self._muat(e['berkas'])
             got = [ikuti(data, e[j]) if j in e else None for j in ('jalur', 'jalur_rendah', 'jalur_tinggi')]
@@ -259,8 +263,8 @@ class Konteks:
             raise KeyError(f'opsi token tidak dikenal: {sorted(tak_dikenal) or sorted(set(opsi) - {"flag", "fmt"})}')
         kyk = e['keyakinan'].split(';')[0].strip()
         if kyk not in self.tema['kosakata']['keyakinan']:
-            raise KeyError(f'entri "{kunci}": keyakinan "{kyk}" bukan salah satu dari lima label (tema.json kosakata.keyakinan)')
-        tampil = format_angka(nilai, rendah, tinggi, e['satuan'], kyk, opsi)
+            raise KeyError(f'entri "{kunci}": keyakinan "{kyk}" bukan salah satu label (tema.json kosakata.keyakinan)')
+        tampil = '–' if kyk == 'menunggu' else format_angka(nilai, rendah, tinggi, e['satuan'], kyk, opsi)
         if 'teks' in opsi['flag'] and '{{angka:' in tampil and kedalaman == 0:
             tampil = RE_INLINE.sub(lambda m: self.suntik(m['kunci'], m['opsi'], asal, 1) if m['kunci'] else m[0], tampil)
         self.manifest.append({'kunci': kunci, 'opsi': opsi_teks, 'tampil': tampil, 'nilai': nilai,
@@ -423,8 +427,9 @@ class _Pengurai:
         else:
             self.galat(0, 'front matter tidak ditutup ---')
         kos, kaj = self.k.tema['kosakata'], self.k.tema['kajian']
-        if meta.get('kajian') not in ('air', 'mitigasi'):
-            self.galat(0, f'kajian harus air atau mitigasi, bukan "{meta.get("kajian")}"')
+        sah = kajian_sah(self.k.tema)
+        if meta.get('kajian') not in sah:
+            self.galat(0, f'kajian harus {", ".join(sah[:-1])}, atau {sah[-1]}, bukan "{meta.get("kajian")}"')
         jenis = [x for x in ('bab', 'lampiran', 'bagian') if x in meta]
         if len(jenis) != 1:
             self.galat(0, 'front matter wajib tepat satu dari bab, lampiran, bagian')
@@ -1103,6 +1108,25 @@ def _uji_diri():
             assert harap in str(e), f'fixture "{harap}" ditolak dengan pesan lain: {e}'
         else:
             raise AssertionError(f'fixture negatif "{harap}" lolos, pembaca rusak')
+    # SP-004: kajian dikenali dari tema.json; sippa sah, kode tak dikenal ditolak; angka menunggu tampil "–" dan wajib catatan
+    assert {'air', 'mitigasi', 'sippa'} <= set(kajian_sah(k.tema)), kajian_sah(k.tema)
+    baca_teks(FM.replace('mitigasi', 'sippa') + 'Isi.', Konteks(), 'fixture-sippa')
+    try:
+        baca_teks(FM.replace('mitigasi', 'tidakada') + 'Isi.', Konteks(), 'fixture')
+    except NaskahGalat as e:
+        assert 'kajian harus' in str(e) and 'sippa' in str(e), e
+    else:
+        raise AssertionError('kajian tak dikenal lolos')
+    tunggu = {'uji.tunggu': {'nilai': None, 'satuan': 'unit', 'keyakinan': 'menunggu', 'sumber': 'x', 'pustaka': 'bnpb-2025-renas',
+                             'catatan': 'menunggu hasil pilot'}}
+    assert Konteks(angka=tunggu).suntik('uji.tunggu', '', 'uji') == '–'
+    del tunggu['uji.tunggu']['catatan']
+    try:
+        Konteks(angka=tunggu).suntik('uji.tunggu', '', 'uji')
+    except KeyError as e:
+        assert 'tanpa catatan alasan' in str(e), e
+    else:
+        raise AssertionError('angka menunggu tanpa catatan lolos')
     # kartu skenario varian a tanpa kepekaan ditolak
     tanpa = re.sub(r'::: kepekaan\n.*?\n:::\n', '', lengkap, flags=re.S)
     try:

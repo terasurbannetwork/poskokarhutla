@@ -7,7 +7,7 @@ status: final
 
 # Ringkasan Eksekutif
 
-{{angka:tesis.mitigasi.alam|teks}}
+{{angka:tesis.mitigasi|teks}}
 
 **Temuan A.1:** {{angka:dibi.alam.meninggal.2025}} meninggal dan {{angka:dibi.alam.hilang.2025}} hilang akibat bencana alam pada 2025, {{angka:dibi.alam.rasio_proyeksi_1a.2025|fmt=1}} kali proyeksi Renas PB 1.a, padahal Indeks Risiko Bencana (IRB) nasional {{angka:irbi.nasional.persen_2019_2024|fmt=2|persen|arah}} dari 2019 ke 2024. Capaian indeks tidak memberi tahu apakah korban turun. (Resmi, Bab 1, Bab 4, dan Bab 5)
 
@@ -120,7 +120,7 @@ keyakinan: asumsi-kebijakan
 
 ## Peta Risiko {#sub:re-peta}
 
-**IRBI 2025 menempatkan {{angka:irbi.kab.tinggi.2025}} dari {{angka:irbi.kab.dinilai.2025}} kab/kota pada status Tinggi** (@gbr:re-status-irbi). Peta yang sama dipakai di Bab 5; status per kab/kota dan daftar perhatian dengan syaratnya tercantum di @lamp:kab.
+**IRBI 2025 menempatkan {{angka:irbi.kab.tinggi.2025}} dari {{angka:irbi.kab.dinilai.2025}} kab/kota pada status Tinggi** (@gbr:re-status-irbi). Peta yang sama dipakai di Bab 5 dan tidak memeringkat kab/kota; status per kab/kota dan daftar perhatian dengan syaratnya tercantum di @lamp:kab.
 
 ::: gambar {#gbr:re-status-irbi}
 berkas: gambar/mitigasi/bab05-peta-status-irbi-2025.png
@@ -130,12 +130,12 @@ sumber: InaRISK BNPB, IRBI 2025, kolom status
 keyakinan: resmi
 lebar: penuh
 data_per: 24 Okt 2026
-catatan: Dua kelas resmi, Tinggi dan Sedang. Skala 2025 tidak sebanding dengan 2015–2024, dan peta tidak memeringkat kab/kota.
+catatan: Dua kelas resmi, Tinggi dan Sedang; skala 2025 tidak sebanding dengan 2015–2024.
 :::
 
 ## Tiga Risiko Teratas dan Tiga Kapasitas yang Sudah Ada {#sub:re-risiko}
 
-**Tiga risiko teratas bersumber dari catatan kejadian DIBI dan dokumen resmi BNPB serta PuSGeN** (@tbl:re-risiko). Tiga kapasitas yang sudah berjalan menjadi titik tumpu rekomendasi, dan ketiganya dipertahankan tanpa diklaim terbukti menurunkan korban.
+**Tiga risiko teratas bersumber dari catatan kejadian DIBI dan dokumen resmi BNPB serta PuSGeN** (@tbl:re-risiko). Tiga kapasitas yang sudah berjalan menjadi titik tumpu rekomendasi, dan ketiganya dipertahankan tanpa menyatakan bahwa ketiganya terbukti menurunkan korban.
 
 ::: tabel {#tbl:re-risiko}
 judul: Tiga risiko teratas dan tiga kapasitas yang sudah ada untuk mitigasi bencana Indonesia, 2026
@@ -159,13 +159,13 @@ keyakinan: campuran
 
 ## Perubahan yang Diusulkan terhadap Renas PB {#sub:re-renas}
 
-**Sebelas butir Renas PB 2025–2029 dan Renstra BNPB diusulkan berubah atau dilaksanakan dengan cara baru, dan enam di antaranya memakai jalur berkala yang tertutup sesudah {{angka:renas.perubahan_berkala.tahun_maks|tahun}}** (@tbl:renas-mitigasi). Lima butir yang menyangkut keputusan yang diminta dan indikator korban tercantum di @tbl:re-renas.
+**Sebelas butir Renas PB 2025–2029 dan Renstra BNPB diusulkan berubah atau dilaksanakan dengan cara baru, dan enam di antaranya memakai jalur berkala yang tertutup sesudah {{angka:renas.perubahan_berkala.tahun_maks|tahun}}** (@tbl:renas-mitigasi). Lima butir yang menyangkut keputusan yang diminta dan indikator korban tercantum di @tbl:re-renas. Jalur bencana terbatas pada program dan kegiatan rencana aksi, dan pengendalian memberi saran lokasi tanpa mengubah Renas PB.
 
 ::: tabel {#tbl:re-renas}
 judul: Butir Renas PB 2025–2029 yang diusulkan berubah menurut jalur dan rekomendasi, 2026–2030
 sumber: Renas PB 2025–2029 hlm. 32–33, 47–48, 90, 125; Renstra BNPB 2025–2029; Manual IKU BNPB; register rekomendasi kajian ini (Bab 12)
 keyakinan: asumsi-kebijakan
-catatan: Jalur berkala paling lambat 2027; jalur bencana paling lambat 2028 dan terbatas pada program dan kegiatan rencana aksi; pengendalian memberi saran lokasi tanpa mengubah Renas PB.
+catatan: Batas jalur berkala 2027 dan jalur bencana 2028; pengendalian hanya memberi saran lokasi.
 
 | BUTIR RENAS PB | YANG TERTULIS | USULAN | JALUR | REK |
 | --- | --- | --- | --- | --- |

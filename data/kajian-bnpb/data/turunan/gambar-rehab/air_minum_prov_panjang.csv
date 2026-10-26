@@ -1,0 +1,22 @@
+provinsi,sumber,persen
+Nusa Tenggara Barat,air_tanah,42.33
+Nusa Tenggara Barat,leding,12.8
+Nusa Tenggara Barat,lainnya,44.87
+Aceh,air_tanah,33.77
+Aceh,leding,7.79
+Aceh,lainnya,58.44
+Jawa Barat,air_tanah,33.68
+Jawa Barat,leding,4.66
+Jawa Barat,lainnya,61.66
+Sumatera Utara,air_tanah,33.0
+Sumatera Utara,leding,11.66
+Sumatera Utara,lainnya,55.34
+Sumatera Barat,air_tanah,23.35
+Sumatera Barat,leding,11.42
+Sumatera Barat,lainnya,65.23
+Sulawesi Tengah,air_tanah,19.75
+Sulawesi Tengah,leding,7.76
+Sulawesi Tengah,lainnya,72.49
+Indonesia,air_tanah,32.33
+Indonesia,leding,8.92
+Indonesia,lainnya,58.75

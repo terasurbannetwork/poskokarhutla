@@ -261,3 +261,64 @@ Didaftar sekali di PRD §2.2, kode sama di semua dokumen. Semuanya punya bawaan 
 2. `naskah-kajian.js` dan `rakit-kajian.js` belum bercabang `sippa` (TIKET SP-005); sampai selesai, workflow tidak dijalankan untuk SIPPA.
 3. Agent `sippa` dan `penulis-kajian` belum ada di roster (TIKET SP-003, SP-085).
 4. Penyelaras tidak meng-commit. Selama penyelarasan berjalan, sesi lain meng-commit keenam dokumen dalam keadaan setengah jadi (`fee28d48`, `727c412e`, `699585fe`, pesan "gas"); keadaan akhir sekarang sama dengan HEAD untuk keenam dokumen, dan `PENYELARASAN.md` belum dilacak git.
+
+
+## Penyelarasan 26 Okt 2026: nomor migrasi
+
+`migrations/0055_uji_lapangan.sql` (halaman /uji-lapangan) sudah memakai nomor 0055. Migrasi SIPPA digeser: 0056_sippa_inti, 0057_sippa_ab_skenario, 0058_sippa_telemetri, di PRD, DESAIN-TEKNIS, RENCANA-UJI, dan TIKET. Catatan lama di dokumen ini yang menyebut 0055–0057 dibaca sebagai 0056–0058.
+
+## Penyelarasan 26 Okt 2026: keputusan 55 dan 56 (GD terintegrasi; air tanah, akses, dan pemeliharaan di web)
+
+Dasar: `KEPUTUSAN-SIPPA.md` keputusan 55 (GD Rehabilitasi dan Rekonstruksi Air dan Akses digabung ke SIPPA) dan 56 (air tanah, akses, dan jadwal pemeliharaan juga di web `/pipa`), ditambah arahan pemilik 26 Okt 2026: prioritas web, restrukturisasi buku penuh ditunda. Bahan yang dibaca: `rehab/KERANGKA.md`, `rehab/KEPUTUSAN-AWAL.md` (Q1–Q20, R1–R5), `naskah/rehab/` (12 bab final, lampiran A–M, `bukti/`, `deck.json`), 715 kunci `rehab.*` di `data/angka.json`, `bangun/visual/spek-rehab/`. Penyelaras tidak meng-commit.
+
+Fakta yang diperiksa:
+
+| Fakta | Cara periksa | Hasil |
+| --- | --- | --- |
+| Porsi banjir jembatan rusak | `data/angka.json` `rehab.dibi.jembatan_rusak.porsi_banjir_persen` | 89,2% (draf `rehab/KERANGKA.md` menulis "sekitar 91%"; dipakai 89,2) |
+| Kunci rehab yang dirujuk ada | skrip baca `angka.json` | ada: jembatan, pipa, akuifer, hukum, pulih, `perka_2008.*`; tidak ada dengan nama draf: `rehab.akuifer.jumlah_cat`, `rehab.hukum.air_darurat_*`, `rehab.pipa.biaya.per_lps` (diganti `perka_2008.*`, `rehab.pipa.biaya.per_lps_*`, kunci baru `sippa.cat.n`) |
+| Perban BNPB 4/2024 Pasal 5 | naskah rehab Bab 9 | huruf b (operasi dan pemeliharaan), c (darurat), d (lahan), e (aset desa); 7 jenis (`rehab.hukum.hibah_rr_larangan_pembiayaan_huruf`) |
+| Kode BOM untuk kelas pemeliharaan | PRD §6.1 | P, E, H, C, G, V, ST, SF, FT, PT, LT, T, GWT, M, I, U, S, B, Q |
+| Kolom kondisi kit | DESAIN-TEKNIS §3.2 | `sippa_komponen.kondisi` (baik, rusak_ringan, rusak_berat, hilang), `dicek`; status kit `servis` sudah ada |
+| Nomor migrasi | `migrations/`, dokumen | 0056 ada; 0057, 0058 direncanakan; migrasi baru 0059 |
+| SQL 0059 | `sqlite3` Python atas SQL DESAIN-TEKNIS §3.2 dan §3.6 | dua kali jalan tanpa galat; CHECK Q10, skor, mutu air, delta, saldo negatif menolak; trigger kondisi bekerja |
+| Huruf lampiran yang dibangkitkan | `bangun/docx/bangun.py:1704` | diambil dari ujung string `lampiran`; A–S aman |
+| Token kunci kajian lain di naskah | `bangun/kontrak/naskah.py:40` | pola token menerima kunci apa pun yang ada di registri; `rehab.*` dipakai apa adanya |
+
+### Daftar perubahan
+
+| Berkas | Bagian | Perubahan |
+| --- | --- | --- |
+| PRD.md | kepala, §1.1, §1.2, §1.3, §1.4 | versi 1.2; SIPPA satu GD terintegrasi; tujuan 5–6; U11 inspeksi tepat waktu, U12 kit laik gelar; non-tujuan: BNPB tidak membangun jembatan/SPAM permanen, biaya satuan saja untuk air tanah dan akses, peta rehab publik dicabut |
+| PRD.md | §2.1, §2.2 | baris keputusan 54–56; pertanyaan pemilik T-L sampai T-Q |
+| PRD.md | §6.10 baru | model pemeliharaan: 10 kelas, siklus inspeksi, skor 0–3 = enum `kondisi`, ambang, stok minimum, pemelihara dan baris anggaran, biaya per tahun (laju tertimbang kit sekitar 7%, di rentang 5–8%), data kondisi di `/pipa` |
+| PRD.md | §8 | judul usulan, 22 bab dengan kolom bahan rehab, lampiran A–S, deck 18 slide, berkas rehab sebagai sumber |
+| PRD.md | §9.1, §9.3, §9.4.9–§9.4.12, §9.7, §9.12, §9.14 | layar Pemeliharaan, Air tanah, Akses, rincian aset; `LAYAR_SIPPA` + 3; `pelihara.js`; tiga berkas R2 baru; migrasi 0059; rute aset, inspeksi, pelihara, stok; uji; dummy |
+| PRD.md | §10.2, §10.3, §11.2, §12.2 | W-16 sampai W-21 (rilis R4, 20 Des); B-02, B-07, B-11, B-13 disesuaikan; risiko R21–R26; keterlacakan 54–56; rujukan bab lama dinomori ulang (19 baris) |
+| DESIGN-SYSTEM.md | §1.4, §4 kerangka, §4.15–§4.18 | versi 1.1; rel OPERASI + Pelihara, kelompok PASCABENCANA; wireframe desktop dan ponsel empat layar baru; tanpa token warna baru |
+| DESAIN-TEKNIS.md | kepala, §2.1, §3.1.8–§3.1.10, §3.5, §3.6, §4.2, §4.3, §5.10, §6.6, §7.2, §8.5, ADR-14–16 | versi 1.1; `cat.json`, `jembatan_dibi.json`, `program_jembatan.json`; SQL 0059 lengkap; rute dan hak; modul `pelihara.js`; alur inspeksi; skrip `cat.py`, `jembatan.py`; dummy R4; ADR satu tabel aset, jadwal dihitung, stok buku besar |
+| RENCANA-UJI.md | kepala, §2.3, §2.4, §2.5, §3.6, §4.1, §5.3, §8.3 | kriteria P1–P10, A1–A4, K1–K4; matriks rute baru; alur langkah 11–14; tabel WAJIB GAGAL/LOLOS 0059; self-check `jembatan.py`, `cat.py`; gerbang buku D-39, D-40, deck 17–19, struktur 22 bab, konstanta pemeliharaan buku = web, kajian rehab tetap hijau; uji asap A13–A14 |
+| TIKET.md | kepala, §0, §1, §2, §3, §4, §5, §9 | versi 1.2; batasan baru; 98 tiket (SP-087 sampai SP-098); tiket buku dan gerbang disesuaikan ke 22 bab; seksi 3.I rilis R4; grafik dependensi; gelombang 16–18; matriks kelengkapan |
+| KERANGKA-BUKU.md | seluruh berkas | versi 2: §0.1 baris 54–56, §0.4 status Q1–Q20 dan R1–R5, §1 identitas dan `tema.json`, §2 butir 18–22, §3.4 tesis dan 8 temuan, §3.5 KD-8 sampai KD-12, §4.0 peta bahan rehab, 22 bab (baru: 4, 12–15; tambahan di 1, 7, 9, 10, 16–22), §5 lampiran M–S, §6 SR-21 sampai SR-38 dengan padanan R-RR, §7 foto F10–F13 dan spek `sippa-19` s.d. `sippa-30`, §8 M20–M22, §9 D-39, D-40, §10 O11–O14, §11 deck 18 slide. **Status: restrukturisasi penuh ditunda atas arahan pemilik**; nomor gambar dan rujukan silang hasil penomoran ulang otomatis belum ditinjau (catatan di kepala berkas) |
+
+### Konflik rehab lawan keputusan SIPPA dan putusannya
+
+| Rehab | SIPPA | Putusan |
+| --- | --- | --- |
+| Q4 tanpa NPV, BCR, total program | 13, 15 RAB, NPV, BCR, Monte Carlo | keduanya berlaku menurut cakupan: kit dan pemeliharaan memakai 13 dan 15; air tanah dan akses biaya satuan saja (T-N) |
+| Q15 tanpa draf surat (P17) | 27 draf surat sebagai lampiran | 27 menang; 13 surat |
+| T3 peta web publik | 32 staf saja; 56 | peta di `/pipa` berlogin (T-O) |
+| R1 SIPPA satu kotak | 55 | integrasi penuh |
+| Q13 kode R-RR | satu register SR | SR-21 sampai SR-35, kode R-RR sebagai padanan |
+| Q18 deck 15 | 19 sekitar 15 | 18 slide isi untuk buku gabungan (T-M) |
+| nama program TNI AD dan Polri | 50 nama/logo pihak lain; 22 tanpa dasar hukum TNI | nama program lembaga pemerintah boleh di badan teks bersama pemiliknya; logo hanya BNPB; dasar hukum Satgas TNI AD tidak diuraikan |
+
+### Pertanyaan pemilik baru (PRD §2.2)
+
+T-L judul buku; T-M deck 18 slide; T-N RAB untuk air tanah dan akses; T-O peta publik rehab dicabut; T-P blokir kit tidak laik gelar; T-Q jadwal R4 20 Des dan buku tetap minggu 49.
+
+### Tindak lanjut di luar dokumen (sesi induk)
+
+1. `AGENTS.md` §2 peta modul: tambah `scripts/data/sippa/cat.py`, `jembatan.py` dan migrasi 0059 di baris SIPPA saat SP-003/SP-091 jalan.
+2. `scripts/agents/roster.json`: pemilik `data/kajian-bnpb/rehab/**` masih jatuh ke `pipa-data` (rehab KERANGKA §12); tidak perlu agent baru.
+3. Salinan kerja: penyunting bekerja di checkout utama sesudah worktree agen dipindah; PRD.md di worktree `agent-ad4ac88e32aba27fa` memuat suntingan yang sama dan boleh dibuang.

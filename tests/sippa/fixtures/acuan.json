@@ -1,0 +1,2239 @@
+[
+ {
+  "id": "H1",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "bahan": "hdpe",
+   "od_mm": 160,
+   "sdr": 11,
+   "q_lpm": 2000,
+   "L_m": 2000,
+   "dz_m": 10,
+   "K": 5,
+   "sisa_bar": 2,
+   "C": 130,
+   "suhu_c": 35,
+   "hisap": false,
+   "pompa": null,
+   "n_lance": 0,
+   "serap_lain_lpm": 2000
+  },
+  "harap": {
+   "id_mm": 130.909,
+   "v_ms": 2.4766,
+   "hf_m": 95.452,
+   "hm_m": 1.563,
+   "tdh_m": 127.409,
+   "p_pompa_bar": 12.495,
+   "p_batas_bar": 11.123,
+   "gerbang": [
+    "H-TEKANAN"
+   ],
+   "vonis": "NO-GO"
+  },
+  "kembar": true
+ },
+ {
+  "id": "H2",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "bahan": "hdpe",
+   "od_mm": 200,
+   "sdr": 11,
+   "q_lpm": 2000,
+   "L_m": 2000,
+   "dz_m": 10,
+   "K": 5,
+   "sisa_bar": 2,
+   "C": 130,
+   "suhu_c": 35,
+   "hisap": false,
+   "pompa": null,
+   "n_lance": 0,
+   "serap_lain_lpm": 2000
+  },
+  "harap": {
+   "id_mm": 163.636,
+   "hf_m": 32.191,
+   "tdh_m": 63.225,
+   "p_pompa_bar": 6.2,
+   "gerbang_tanpa": [
+    "H-TEKANAN"
+   ],
+   "vonis": "KONDISIONAL"
+  },
+  "kembar": true
+ },
+ {
+  "id": "H3",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "bahan": "layflat",
+   "id_datasheet_mm": 160,
+   "q_lpm": 2000,
+   "L_m": 2000,
+   "dz_m": 10,
+   "K": 5,
+   "sisa_bar": 2,
+   "C": 130,
+   "eta": 0.65,
+   "hisap": false,
+   "jenis_bbm": "solar",
+   "jam": 1,
+   "pompa": null,
+   "n_lance": 0,
+   "serap_lain_lpm": 2000
+  },
+  "harap": {
+   "hf_m": 35.915,
+   "hm_m": 0.7,
+   "tdh_m": 67.009,
+   "p_pompa_bar": 6.571,
+   "kw": 33.711,
+   "hp": 45.207,
+   "bbm_l_jam": 10.033
+  },
+  "kembar": true
+ },
+ {
+  "id": "H4",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "id_datasheet_mm": 100,
+   "q_lpm": 600,
+   "L_m": 1000,
+   "dz_m": 0,
+   "K": 0,
+   "sisa_bar": 0,
+   "C": 130,
+   "hisap": false,
+   "pompa": null,
+   "n_lance": 0,
+   "serap_lain_lpm": 600
+  },
+  "harap": {
+   "hf_m": 19.061
+  },
+  "kembar": true
+ },
+ {
+  "id": "H5",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "id_datasheet_mm": 100,
+   "q_lpm": 600,
+   "L_m": 1000,
+   "hisap": false,
+   "pompa": null,
+   "n_lance": 0,
+   "serap_lain_lpm": 600
+  },
+  "harap": {
+   "v_isi_m3": 7.854,
+   "t_tiba_menit": 13.09
+  },
+  "kembar": true
+ },
+ {
+  "id": "H6",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "bahan": "hdpe",
+   "od_mm": 160,
+   "sdr": 11,
+   "q_lpm": 2000,
+   "L_m": 2000,
+   "dz_m": 10,
+   "K": 5,
+   "sisa_bar": 2,
+   "C": 130,
+   "suhu_c": 35,
+   "hisap": true,
+   "pompa": null,
+   "n_lance": 0,
+   "serap_lain_lpm": 2000
+  },
+  "harap": {
+   "tdh_m": 130.909,
+   "p_pompa_bar": 12.838
+  },
+  "kembar": true
+ },
+ {
+  "id": "H7",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "bahan": "layflat",
+   "dn_mm": 100,
+   "id_datasheet_mm": null,
+   "q_lpm": 300,
+   "L_m": 1000,
+   "dz_m": 2,
+   "K": 5,
+   "sisa_bar": 3,
+   "C": 130,
+   "hisap": true,
+   "pompa": "ve1500",
+   "n_pompa": 1,
+   "n_lance": 8
+  },
+  "harap": {
+   "id_asumsi": true,
+   "v_ms": 0.691,
+   "hf_m": 6.442,
+   "tdh_m": 42.654,
+   "p_pompa_bar": 4.183,
+   "p_tersedia_bar": 10,
+   "p_ujung_bar": 8.817,
+   "serap_lpm": 320,
+   "t_tiba_menit": 24.13,
+   "gerbang": [],
+   "vonis": "KONDISIONAL"
+  },
+  "kembar": true
+ },
+ {
+  "id": "H8",
+  "fungsi": "hidraulika",
+  "masukan": {
+   "bahan": "layflat",
+   "dn_mm": 100,
+   "id_datasheet_mm": null,
+   "q_lpm": 600,
+   "L_m": 1000,
+   "dz_m": 2,
+   "K": 5,
+   "sisa_bar": 3,
+   "C": 130,
+   "hisap": true,
+   "pompa": "ve1500",
+   "n_pompa": 1,
+   "n_lance": 8
+  },
+  "harap": {
+   "p_pompa_bar": 5.868,
+   "p_ujung_bar": 7.132,
+   "gerbang": [
+    "H-SERAP"
+   ],
+   "vonis": "NO-GO"
+  },
+  "kembar": true
+ },
+ {
+  "id": "Z1",
+  "fungsi": "zona",
+  "masukan": {
+   "air": 0.4,
+   "jalan": 2
+  },
+  "harap": "A",
+  "kembar": true
+ },
+ {
+  "id": "Z2",
+  "fungsi": "zona",
+  "masukan": {
+   "air": 1.31,
+   "jalan": null
+  },
+  "harap": "B",
+  "kembar": true
+ },
+ {
+  "id": "Z3",
+  "fungsi": "zona",
+  "masukan": {
+   "air": 2.49,
+   "jalan": 5
+  },
+  "harap": "B",
+  "kembar": true
+ },
+ {
+  "id": "Z4",
+  "fungsi": "zona",
+  "masukan": {
+   "air": 2.5,
+   "jalan": 4.99
+  },
+  "harap": "C",
+  "kembar": true
+ },
+ {
+  "id": "Z5",
+  "fungsi": "zona",
+  "masukan": {
+   "air": 3,
+   "jalan": null
+  },
+  "harap": "D",
+  "kembar": true
+ },
+ {
+  "id": "F1",
+  "fungsi": "fSuhu",
+  "masukan": {
+   "suhu_c": 15
+  },
+  "harap": 1,
+  "kembar": true
+ },
+ {
+  "id": "F2",
+  "fungsi": "fSuhu",
+  "masukan": {
+   "suhu_c": 35
+  },
+  "harap": 0.79,
+  "kembar": true
+ },
+ {
+  "id": "F3",
+  "fungsi": "fSuhu",
+  "masukan": {
+   "suhu_c": 50
+  },
+  "harap": 0.58,
+  "kembar": true
+ },
+ {
+  "id": "F4",
+  "fungsi": "fSuhu",
+  "masukan": {
+   "suhu_c": 60
+  },
+  "harap": 0.58,
+  "kembar": true
+ },
+ {
+  "id": "Q1",
+  "fungsi": "kuantil",
+  "masukan": {
+   "xs": [
+    2.1,
+    3.4,
+    2.8,
+    4,
+    3.1,
+    5.2,
+    2.6
+   ],
+   "p": 0.5
+  },
+  "harap": 3.1,
+  "kembar": true
+ },
+ {
+  "id": "Q1b",
+  "fungsi": "kuantil",
+  "masukan": {
+   "xs": [
+    2.1,
+    3.4,
+    2.8,
+    4,
+    3.1,
+    5.2,
+    2.6
+   ],
+   "p": 0.9
+  },
+  "harap": 4.48,
+  "kembar": true
+ },
+ {
+  "id": "V1",
+  "fungsi": "vonisPilot",
+  "masukan": {
+   "log": [
+    {
+     "id": "L0",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793149200000,
+     "t_mulai_gelar": 1793151000000,
+     "t_air_mengalir": 1793161440000,
+     "t_selesai": 1793168640000,
+     "t_bongkar_selesai": 1793172240000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L1",
+     "petak_id": "P-02",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793235600000,
+     "t_mulai_gelar": 1793237400000,
+     "t_air_mengalir": 1793252160000,
+     "t_selesai": 1793259360000,
+     "t_bongkar_selesai": 1793262960000,
+     "p_ujung_bar": 2.6,
+     "p_ujung_menit": 45,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L2",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793322000000,
+     "t_mulai_gelar": 1793323800000,
+     "t_air_mengalir": 1793340360000,
+     "t_selesai": 1793347560000,
+     "t_bongkar_selesai": 1793351160000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    }
+   ],
+   "probe": [
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 100
+    }
+   ],
+   "komponen_kembali": [
+    {
+     "id": "C0",
+     "kondisi": "hilang",
+     "musim_awal": 1
+    },
+    {
+     "id": "C1",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C2",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C3",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C4",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C5",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C6",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C7",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C8",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C9",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C10",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C11",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C12",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C13",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C14",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C15",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C16",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C17",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C18",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C19",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C20",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C21",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C22",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C23",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C24",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C25",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C26",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C27",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C28",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C29",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C30",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C31",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C32",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C33",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C34",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C35",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C36",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C37",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C38",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C39",
+     "kondisi": "baik",
+     "musim_awal": 1
+    }
+   ],
+   "kit": {
+    "bahan": "layflat"
+   }
+  },
+  "harap": {
+   "vonis": "DAPAT DIPAKAI",
+   "gagal": []
+  },
+  "kembar": true
+ },
+ {
+  "id": "V2",
+  "fungsi": "vonisPilot",
+  "masukan": {
+   "log": [
+    {
+     "id": "L0",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793149200000,
+     "t_mulai_gelar": 1793151000000,
+     "t_air_mengalir": 1793161440000,
+     "t_selesai": 1793168640000,
+     "t_bongkar_selesai": 1793172240000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L1",
+     "petak_id": "P-02",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793235600000,
+     "t_mulai_gelar": 1793237400000,
+     "t_air_mengalir": 1793252160000,
+     "t_selesai": 1793259360000,
+     "t_bongkar_selesai": 1793262960000,
+     "p_ujung_bar": 2.6,
+     "p_ujung_menit": 45,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L2",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793322000000,
+     "t_mulai_gelar": 1793323800000,
+     "t_air_mengalir": 1793340360000,
+     "t_selesai": 1793347560000,
+     "t_bongkar_selesai": 1793351160000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    }
+   ],
+   "probe": [
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 100
+    }
+   ],
+   "komponen_kembali": [
+    {
+     "id": "C0",
+     "kondisi": "hilang",
+     "musim_awal": 1
+    },
+    {
+     "id": "C1",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C2",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C3",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C4",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C5",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C6",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C7",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C8",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C9",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C10",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C11",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C12",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C13",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C14",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C15",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C16",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C17",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C18",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C19",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C20",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C21",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C22",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C23",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C24",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C25",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C26",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C27",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C28",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C29",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C30",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C31",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C32",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C33",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C34",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C35",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C36",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C37",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C38",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C39",
+     "kondisi": "baik",
+     "musim_awal": 1
+    }
+   ],
+   "kit": {
+    "bahan": "layflat"
+   }
+  },
+  "harap": {
+   "vonis": "DAPAT DIPAKAI BERSYARAT",
+   "gagal": [
+    5
+   ]
+  },
+  "kembar": true
+ },
+ {
+  "id": "V3",
+  "fungsi": "vonisPilot",
+  "masukan": {
+   "log": [
+    {
+     "id": "L0",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793149200000,
+     "t_mulai_gelar": 1793151000000,
+     "t_air_mengalir": 1793161440000,
+     "t_selesai": 1793168640000,
+     "t_bongkar_selesai": 1793172240000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L1",
+     "petak_id": "P-02",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793235600000,
+     "t_mulai_gelar": 1793237400000,
+     "t_air_mengalir": 1793252160000,
+     "t_selesai": 1793259360000,
+     "t_bongkar_selesai": 1793262960000,
+     "p_ujung_bar": 2.6,
+     "p_ujung_menit": 45,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 45,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L2",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793322000000,
+     "t_mulai_gelar": 1793323800000,
+     "t_air_mengalir": 1793340360000,
+     "t_selesai": 1793347560000,
+     "t_bongkar_selesai": 1793351160000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    }
+   ],
+   "probe": [
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-01",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 100
+    }
+   ],
+   "komponen_kembali": [
+    {
+     "id": "C0",
+     "kondisi": "hilang",
+     "musim_awal": 1
+    },
+    {
+     "id": "C1",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C2",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C3",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C4",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C5",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C6",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C7",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C8",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C9",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C10",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C11",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C12",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C13",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C14",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C15",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C16",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C17",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C18",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C19",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C20",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C21",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C22",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C23",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C24",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C25",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C26",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C27",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C28",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C29",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C30",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C31",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C32",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C33",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C34",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C35",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C36",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C37",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C38",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C39",
+     "kondisi": "baik",
+     "musim_awal": 1
+    }
+   ],
+   "kit": {
+    "bahan": "layflat"
+   }
+  },
+  "harap": {
+   "vonis": "BELUM DAPAT DIPAKAI",
+   "gagal": [
+    6
+   ]
+  },
+  "kembar": true
+ },
+ {
+  "id": "W1",
+  "fungsi": "bandingRerata",
+  "masukan": {
+   "a": [
+    0.42,
+    0.55,
+    0.61,
+    0.48,
+    0.7,
+    0.66,
+    0.52,
+    0.59,
+    0.63,
+    0.57
+   ],
+   "b": [
+    0.35,
+    0.41,
+    0.38,
+    0.44,
+    0.3,
+    0.47,
+    0.39,
+    0.36
+   ]
+  },
+  "harap": {
+   "selisih": 0.1855,
+   "df": 15.33,
+   "t": 2.131,
+   "ci": [
+    0.1159,
+    0.2551
+   ]
+  },
+  "toleransi": 0.005,
+  "kembar": true
+ },
+ {
+  "id": "P1",
+  "fungsi": "bandingProporsi",
+  "masukan": {
+   "xa": 2,
+   "na": 10,
+   "xb": 5,
+   "nb": 8
+  },
+  "harap": {
+   "selisih": -0.35,
+   "ci": [
+    -0.7402,
+    0.0402
+   ]
+  },
+  "toleransi": 0.005,
+  "kembar": true
+ },
+ {
+  "id": "N1",
+  "fungsi": "keuangan",
+  "masukan": {
+   "capex": 1000000000,
+   "opex": 100000000,
+   "manfaat": 300000000,
+   "r": 0.08,
+   "H": 5
+  },
+  "harap": {
+   "af": 3.99271,
+   "npv": -201457993,
+   "bcr": 0.856,
+   "impas": 350456455,
+   "crf": 0.250456
+  },
+  "toleransi": 0.0005,
+  "kembar": true
+ },
+ {
+  "id": "N2",
+  "fungsi": "keuangan",
+  "masukan": {
+   "capex": 9688192331,
+   "opex": 768489352,
+   "manfaat": 0,
+   "r": 0.08,
+   "H": 5
+  },
+  "harap": {
+   "impas": 3194959655
+  },
+  "toleransi": 0.0005,
+  "kembar": true
+ },
+ {
+  "id": "A1",
+  "fungsi": "neracaAir",
+  "masukan": {
+   "stok_m3": 500,
+   "q95_ls": 12,
+   "qeko_ls": 2,
+   "q_api_ls": 10,
+   "evap_m3_hari": 5,
+   "hari": 3
+  },
+  "harap": {
+   "hari": [
+    495,
+    490,
+    485
+   ],
+   "habis_hari": null,
+   "g1_ok": false
+  },
+  "kembar": true
+ },
+ {
+  "id": "T1",
+  "fungsi": "tingkatPemicu",
+  "masukan": {
+   "anom_pct": -29.5,
+   "hari_ps50": 4,
+   "titik_ab": 0,
+   "basi_ansambel": false,
+   "basi_titik": false
+  },
+  "harap": "PRA-POSISI",
+  "kembar": true
+ },
+ {
+  "id": "T2",
+  "fungsi": "tingkatPemicu",
+  "masukan": {
+   "anom_pct": -29.5,
+   "hari_ps50": 4,
+   "titik_ab": 2,
+   "basi_ansambel": false,
+   "basi_titik": false
+  },
+  "harap": "GELAR",
+  "kembar": true
+ },
+ {
+  "id": "T3",
+  "fungsi": "tingkatPemicu",
+  "masukan": {
+   "anom_pct": -29.5,
+   "hari_ps50": 4,
+   "titik_ab": 2,
+   "basi_ansambel": true,
+   "basi_titik": false
+  },
+  "harap": "SIAGA",
+  "kembar": true
+ },
+ {
+  "id": "T4",
+  "fungsi": "tingkatPemicu",
+  "masukan": {
+   "anom_pct": -12,
+   "hari_ps50": 7,
+   "titik_ab": 5,
+   "basi_ansambel": false,
+   "basi_titik": false
+  },
+  "harap": "NORMAL",
+  "kembar": true
+ },
+ {
+  "id": "V4",
+  "fungsi": "vonisPilot",
+  "masukan": {
+   "log": [
+    {
+     "id": "L0",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793149200000,
+     "t_mulai_gelar": 1793151000000,
+     "t_air_mengalir": 1793161440000,
+     "t_selesai": 1793168640000,
+     "t_bongkar_selesai": 1793172240000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L1",
+     "petak_id": "P-02",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793235600000,
+     "t_mulai_gelar": 1793237400000,
+     "t_air_mengalir": 1793252160000,
+     "t_selesai": 1793259360000,
+     "t_bongkar_selesai": 1793262960000,
+     "p_ujung_bar": 2.6,
+     "p_ujung_menit": 45,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    },
+    {
+     "id": "L2",
+     "petak_id": "P-01",
+     "air_sampai_lance": 1,
+     "t_tiba": 1793322000000,
+     "t_mulai_gelar": 1793323800000,
+     "t_air_mengalir": 1793340360000,
+     "t_selesai": 1793347560000,
+     "t_bongkar_selesai": 1793351160000,
+     "p_ujung_bar": 1.8,
+     "p_ujung_menit": 20,
+     "p_ujung_sumber": "gauge",
+     "kecelakaan": 0,
+     "bocor_henti_menit": 0,
+     "konfigurasi": {
+      "bahan": "layflat",
+      "dn_mm": 100,
+      "id_datasheet_mm": null,
+      "q_lpm": 300,
+      "L_m": 1000,
+      "dz_m": 2,
+      "K": 5,
+      "sisa_bar": 3,
+      "C": 130,
+      "hisap": true,
+      "pompa": "ve1500",
+      "n_pompa": 1,
+      "n_lance": 8
+     }
+    }
+   ],
+   "probe": [
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sebelum",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "sesudah",
+     "kedalaman_cm": 100
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 10
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 30
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 50
+    },
+    {
+     "petak_id": "P-02",
+     "titik": "T1",
+     "tahap": "24j",
+     "kedalaman_cm": 100
+    }
+   ],
+   "komponen_kembali": [
+    {
+     "id": "C0",
+     "kondisi": "hilang",
+     "musim_awal": 1
+    },
+    {
+     "id": "C1",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C2",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C3",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C4",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C5",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C6",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C7",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C8",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C9",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C10",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C11",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C12",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C13",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C14",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C15",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C16",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C17",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C18",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C19",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C20",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C21",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C22",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C23",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C24",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C25",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C26",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C27",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C28",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C29",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C30",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C31",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C32",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C33",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C34",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C35",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C36",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C37",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C38",
+     "kondisi": "baik",
+     "musim_awal": 1
+    },
+    {
+     "id": "C39",
+     "kondisi": "baik",
+     "musim_awal": 1
+    }
+   ],
+   "kit": {
+    "bahan": "layflat"
+   }
+  },
+  "harap": {
+   "vonis": "DAPAT DIPAKAI BERSYARAT",
+   "gagal": [
+    5
+   ]
+  },
+  "kembar": true
+ }
+]

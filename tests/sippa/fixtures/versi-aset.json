@@ -1,0 +1,30 @@
+{
+  "_catatan": "Potret rilis aset /pipa/lapangan. Kunci = nilai ?v= di src/admin_halaman.js. Isi satu kunci TIDAK BOLEH berubah setelah dirilis: berkas berubah berarti naikkan ?v= lalu TAMBAH entri baru (jangan timpa). js = lapangan.js + antre.js + formulir.js + ikon.js (kunci = ?v= lapangan.js, dan sw = VERSI sw-lapangan.js saat itu); css = pipa.css (kunci = ?v= pipa.css). Dijaga tests/sippa/gerbang-versi.test.mjs.",
+  "js": {
+    "1": {
+      "sw": 3,
+      "sha256": {
+        "lapangan.js": "58c91910173a28a05f350c1879a1ff34acbef10ccd9da4d39e111d75cf082c6c",
+        "antre.js": "7db4fabdb89418e68362b70ba047ee343972c3c80240794b567bccea209667e4",
+        "formulir.js": "551a6583ba1a23b3e9da28e48776131989188b1983722a4ee7e5eb651aaf4c72",
+        "ikon.js": "fbdac9779e625dbca876cf2dfc9b4a6babb678ace5e139645e8f9367230d8b60"
+      }
+    },
+    "2": {
+      "sw": 3,
+      "sha256": {
+        "lapangan.js": "8a96912fb91b2b7395a7b8f975563675d1e39b8fc519e2f411677870c5871863",
+        "antre.js": "178c04563df7503cb4893d2d45ba61208e97d7f48f2a419d35bc53f834bc2721",
+        "formulir.js": "551a6583ba1a23b3e9da28e48776131989188b1983722a4ee7e5eb651aaf4c72",
+        "ikon.js": "fbdac9779e625dbca876cf2dfc9b4a6babb678ace5e139645e8f9367230d8b60"
+      }
+    }
+  },
+  "css": {
+    "1": {
+      "sha256": {
+        "pipa.css": "3e309318ef811a2f615b89df044179711aec7ca2ce5bca44ef6735cf2d510b80"
+      }
+    }
+  }
+}

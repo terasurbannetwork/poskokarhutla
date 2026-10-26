@@ -435,7 +435,8 @@ KATA_AI_RX = {
     if KATA_AI_EN else None,
 }
 # set tiga istilah resmi yang dihitung faktual seperti nama diri: tahap penyelenggaraan UU 24/2007 Pasal 33 (T10) dan komponen IRBI
-TIGA_RESMI = ({'prabencana', 'tanggap darurat', 'pascabencana'}, {'bahaya', 'kerentanan', 'kapasitas'})
+TIGA_RESMI = ({'prabencana', 'tanggap darurat', 'pascabencana'}, {'bahaya', 'kerentanan', 'kapasitas'},
+              {'perpipaan', 'air tanah', 'jembatan'})  # subjudul Grand Design RR (rehab/KEPUTUSAN-AWAL Q1)
 LABEL_TITIK_DUA = re.compile(r'^\s*(sumber|catatan|keterangan|keyakinan|catatan kaki)\s*:', re.I)
 
 JENIS_PROSA = {'isi', 'butir', 'kotak', 'catatan', 'slide'}

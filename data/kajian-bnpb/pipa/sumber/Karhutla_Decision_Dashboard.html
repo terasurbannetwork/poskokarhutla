@@ -1,0 +1,1363 @@
+<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><meta name="color-scheme" content="light"><title>Karhutla Decision Studio | Grand Design</title><style>:root{--ink:#143044;--dark:#102939;--dark2:#183d50;--teal:#086c75;--blue:#277ea0;--mint:#daedea;--paper:#f6f8f9;--card:#fff;--border:#dce6e9;--sub:#677d87;--warn:#ad6426;--good:#1f7758;--bad:#b23f4b;--amber:#fcf4e7;--radius:17px;--shadow:0 13px 34px rgba(22,45,63,.065)}*{box-sizing:border-box}html{scroll-behavior:smooth}body{margin:0;color:var(--ink);background:var(--paper);font-family:Inter,system-ui,-apple-system,'Segoe UI',Arial,sans-serif;font-size:14px;line-height:1.5}button,input,select{font:inherit}button{cursor:pointer}a{color:#076d82}small{color:var(--sub)}.shell{display:grid;grid-template-columns:365px minmax(0,1fr);min-height:100vh}.sidebar{background:var(--dark);color:#eefbfc;position:sticky;top:0;height:100vh;display:flex;flex-direction:column;min-width:0}.side-top{padding:22px 19px 18px;border-bottom:1px solid #345565}.logo{display:flex;align-items:center;gap:12px}.logo-icon{width:42px;height:42px;border-radius:13px;background:#d9eee8;color:#0c5762;display:grid;place-items:center;font-weight:900;font-size:23px}.eyebrow{font-weight:750;letter-spacing:1.65px;text-transform:uppercase;font-size:9px;color:#91bccc}.logo b{display:block;font-size:18px;line-height:1.15}.side-summary{margin-top:12px;color:#b5d2dc;font-size:12px}.side-actions{display:flex;gap:7px;margin-top:15px;flex-wrap:wrap}.btn{border-radius:9px;padding:10px 12px;border:1px solid #bdcdd2;background:white;color:var(--ink);font-weight:650;font-size:12px;transition:filter .15s}.btn:hover{filter:brightness(.95)}.btn.primary{background:#0d7b82;color:white;border-color:#0d7b82}.btn.ghost{border-color:#537080;color:#d7e9ef;background:transparent}.btn.tiny{padding:7px 9px;font-size:11px}.side-controls{overflow:auto;flex:1;padding:0 16px 30px;scrollbar-color:#477080 transparent}.side-controls details{border-bottom:1px solid #385766}.side-controls summary{padding:15px 7px;list-style:none;display:flex;justify-content:space-between;align-items:center;font-size:12px;font-weight:780;letter-spacing:.4px;cursor:pointer}.side-controls summary::after{content:'⌄';color:#83a9b8;font-size:18px}.side-controls details[open] summary::after{content:'⌃'}.input-field{margin:0 0 15px;padding:0 4px}.input-field label{display:flex;justify-content:space-between;align-items:baseline;gap:5px;font-weight:680;font-size:11.5px;color:#d9eaf0;margin-bottom:6px}.input-field select,.input-field input{width:100%;color:#f4feff;background:#1b4356;border:1px solid #456578;border-radius:8px;padding:9px;min-height:37px;outline-color:#7cc2c2}.input-field select option{background:#1b4356}.input-field input::placeholder{color:#92b0c1}.input-help{font-size:10.5px;line-height:1.5;color:#a2bfca;margin-top:5px}.input-field[title]{cursor:help}.mini-legend{font-size:11px;color:#b3ced9;margin-top:10px}.content{padding:30px 34px 45px;min-width:0;max-width:1800px;width:100%;margin:0 auto}.topbar{display:flex;gap:16px;justify-content:space-between;align-items:flex-start;margin-bottom:18px}.hero-left h1{margin:0;font-size:29px;line-height:1.2;letter-spacing:-.6px}.hero-left p{margin:8px 0 0;color:#617682;max-width:850px;line-height:1.6}.top-actions{display:flex;flex-wrap:wrap;gap:7px;justify-content:flex-end}.top-actions .btn{white-space:nowrap}.scenario-row{display:flex;align-items:center;gap:7px;margin-top:18px;flex-wrap:wrap}.sbtn{border:1px solid #cddcde;background:white;color:#395665;border-radius:50px;padding:8px 14px;font-size:12px;font-weight:690}.sbtn.active{border-color:#0b727b;background:#d9efed;color:#075862}.metadata{font-size:11px;color:#7d9099}.alert{border:1px solid #e8d5ba;background:#fcf8f0;border-radius:12px;padding:12px 16px;color:#7b5631;font-size:12px;margin-bottom:18px}.alert strong{color:#80501f}.navtabs{display:flex;gap:5px;overflow:auto;border-bottom:1px solid #d6e0e3;margin-bottom:17px;padding:0 0 8px}.navtab{background:none;border:0;padding:8px 12px;white-space:nowrap;font-size:12px;font-weight:730;color:#748691;border-radius:9px}.navtab.active{color:#0d606e;background:#dceeed}.cards{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:13px}.kpi{background:white;border:1px solid var(--border);border-radius:14px;padding:17px;box-shadow:var(--shadow);min-width:0}.kpi .label{font-size:10px;text-transform:uppercase;letter-spacing:1.2px;color:#708693;font-weight:740}.kpi strong{display:block;margin:7px 0 2px;font-size:23px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;letter-spacing:-.45px}.kpi small{display:block;font-size:11px}.grid2{display:grid;grid-template-columns:1.05fr .95fr;gap:13px}.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:13px}.panel{background:white;border:1px solid var(--border);border-radius:var(--radius);padding:19px 21px;margin-bottom:14px;box-shadow:var(--shadow);min-width:0}.panel h2{font-size:16px;margin:0 0 7px;letter-spacing:-.2px}.panel h3{font-size:13px;margin:0 0 7px}.panel p{color:#536a76;margin:7px 0 10px;font-size:12px;line-height:1.65}.statline{display:flex;justify-content:space-between;border-bottom:1px dashed #e3e9eb;padding:10px 0;gap:12px;font-size:12px}.statline:last-child{border-bottom:0}.statline b{color:#153544;text-align:right}.section-intro{padding:2px 2px 12px;color:#5a7480;line-height:1.7;font-size:12px}.chip{display:inline-flex;gap:5px;align-items:center;padding:4px 9px;border-radius:50px;font-size:10px;font-weight:810;letter-spacing:.25px}.chip.good{background:#e2f4e9;color:#246548}.chip.warn{background:#fcefdc;color:#925721}.chip.bad{background:#ffe8e8;color:#aa3a47}.chip.neutral{background:#e9eff2;color:#4c6373}.rowline{display:flex;gap:8px;flex-wrap:wrap;align-items:center}.status-banner{border-left:5px solid #df9341;background:#fdf6eb;padding:17px 20px;border-radius:10px;margin-bottom:13px;display:flex;justify-content:space-between;gap:15px;align-items:center}.status-banner.bad{border-left-color:var(--bad);background:#fff1f2}.status-banner.good{border-left-color:var(--good);background:#effaf2}.status-banner h2{margin:0 0 5px;font-size:16px}.status-banner p{margin:0;color:#6a665b;font-size:12px}.bar{height:9px;border-radius:99px;background:#e9f0f1;overflow:hidden}.bar span{height:100%;display:block;border-radius:99px;background:#27848a}.bar.small{height:6px}.barlist{margin-top:13px}.baritem{display:grid;grid-template-columns:145px 1fr 83px;align-items:center;gap:12px;padding:8px 0;font-size:11px}.baritem b{text-align:right}.risklist{margin:0;padding:0;list-style:none}.risklist li{display:flex;align-items:flex-start;gap:8px;border-bottom:1px solid #f1f4f5;padding:10px 0;font-size:12px;line-height:1.55}.risklist li:last-child{border:0}.bullet{min-width:8px;height:8px;border-radius:2px;background:#d6923b;margin-top:5px}.bullet.red{background:#c24b59}.bullet.gray{background:#9fb6bb}.tablewrap{width:100%;overflow:auto;border:1px solid #e0e9eb;border-radius:12px}.datatable{border-collapse:collapse;width:100%;font-size:11.5px}.datatable th{color:#476777;text-align:left;background:#eff5f6;padding:10px 12px;font-weight:770;white-space:nowrap}.datatable td{padding:10px 12px;border-top:1px solid #edf1f2;vertical-align:top}.datatable tbody tr:nth-child(2n){background:#fbfcfc}.datatable td.right,.datatable th.right{text-align:right;white-space:nowrap}.datatable b{color:#143545}.datatable button{border:1px solid #bddadb;background:#eff9f8;color:#0c6872;border-radius:7px;padding:6px 9px;font-size:11px;font-weight:bold}.delta.plus{color:#af4c38}.delta.minus{color:#19816e}.delta.same{color:#80939e}.scenario-comparison .best{background:#e8f6f2!important}.scenario-comparison td{min-width:125px}.explain-card{padding:12px 15px;border:1px solid #e3ebed;border-radius:11px;background:#fbfdfd;margin-bottom:10px}.explain-card h3{margin:0 0 4px;color:#204450;font-size:13px}.procon{display:grid;grid-template-columns:1fr 1fr;gap:9px;margin-top:7px}.pro,.con{font-size:11px;padding:9px;border-radius:8px}.pro{background:#e9f5f0;color:#23694f}.con{background:#fff0eb;color:#91533d}.metricgroup{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px}.metric{border:1px solid #dce9ea;background:#fbfdfd;border-radius:11px;padding:12px}.metric small{display:block;font-size:10px}.metric b{font-size:18px}.svg-wrap{border:1px solid #e8edef;background:#f9fbfb;border-radius:13px;overflow:hidden}.svg-wrap svg{display:block;width:100%;height:auto}.flowbox{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin:12px 0}.flownode{background:#ecf5f5;border:1px solid #c9dfe0;border-radius:9px;text-align:center;font-size:10.5px;font-weight:700;padding:12px 5px}.trace{border-left:2px solid #b4ced0;padding:1px 0 1px 16px;margin:11px 5px;position:relative}.trace:before{content:'';position:absolute;left:-5px;top:11px;width:8px;height:8px;border-radius:50%;background:#09838a}.trace h3{font-size:12px;margin:0 0 4px}.trace p{margin:0}.subdued{color:#617785;font-size:11px}.footer{text-align:center;color:#8da0a9;font-size:11px;padding:25px}.empty{color:#778b93;padding:22px}.input-file{display:none}.warning-box{padding:14px 18px;background:#fff8ef;border:1px solid #f2dfbb;color:#805a31;border-radius:11px;font-size:12px;line-height:1.7}.two-figures{display:flex;justify-content:space-between;gap:10px;padding:10px 0;font-size:11px}.two-figures b{white-space:nowrap}.mini-label{font-size:10px;text-transform:uppercase;letter-spacing:1px;color:#718995;font-weight:800}.phase{padding:12px 14px;border:1px solid #e2e9ea;background:#fff;border-radius:12px}.phase b{display:block;margin:0 0 6px}.phase p{margin:0;font-size:11px}.footer a{color:#597987}.sheet-link{display:inline-flex;margin-top:9px;gap:6px}.badge-source{border:1px solid #cedbdc;border-radius:6px;padding:3px 6px;font-size:10px;color:#78909a}.modeltag{font-size:11px;color:#8a9ba4}.mobile-side-toggle{display:none}.none{display:none!important}code{color:#0f6681;background:#ecf3f4;padding:1px 4px;border-radius:4px}.consequence{display:flex;gap:10px;justify-content:space-between;align-items:center;padding:10px 0;border-bottom:1px solid #e8eff0}.consequence label{font-size:11px;line-height:1.4;flex:1}.consequence span{font-size:11px;text-align:right;white-space:nowrap}.weight-grid{display:grid;grid-template-columns:repeat(5,1fr);gap:10px}.weight-grid label{display:flex;flex-direction:column;font-size:11px;gap:5px}.weight-grid input{width:100%;accent-color:#0a858b}.search{width:100%;min-width:160px;max-width:350px;padding:10px 11px;border:1px solid #d4e1e5;border-radius:8px}.emptybox{height:8px}.tabpage{display:none}.tabpage.active{display:block}@media(max-width:1300px){.cards{grid-template-columns:repeat(2,minmax(0,1fr))}.content{padding:26px 22px}.shell{grid-template-columns:335px minmax(0,1fr)}}@media(max-width:900px){.shell{display:block}.sidebar{height:auto;position:static}.side-controls{max-height:430px;overflow:auto}.content{padding:20px 15px}.grid2,.grid3{grid-template-columns:1fr}.topbar{display:block}.top-actions{justify-content:flex-start;margin-top:13px}.weight-grid{grid-template-columns:repeat(2,1fr)}}@media(max-width:520px){.cards{grid-template-columns:1fr 1fr}.kpi strong{font-size:17px}.content{padding:16px 10px}.hero-left h1{font-size:22px}.panel{padding:14px}.baritem{grid-template-columns:100px 1fr 66px}.procon{grid-template-columns:1fr}.metricgroup{grid-template-columns:1fr 1fr}}@media print{.sidebar,.top-actions,.navtabs,.scenario-row,.footer,.btn{display:none!important}.shell{display:block}.content{padding:0}.tabpage{display:block!important}.panel{box-shadow:none;break-inside:avoid}.status-banner{break-inside:avoid}body{background:#fff}.alert{color:#333}}
+</style></head><body>
+<div class="shell">
+ <aside class="sidebar"><div class="side-top"><div class="logo"><span class="logo-icon">≈</span><div><div class="eyebrow">Grand Design Karhutla</div><b>Decision Studio</b></div></div><div class="side-summary">Pilihan di kiri → rekayasa, anggaran, logistik dan risiko di kanan. <span id="sideCounts"></span></div><div class="side-actions"><button class="btn primary tiny" data-action="export">Simpan JSON</button><button class="btn ghost tiny" data-action="load">Impor</button><button class="btn ghost tiny" data-action="expand">Buka/tutup grup</button></div></div><div class="side-controls" id="sideControls"></div></aside>
+ <main class="content"><div class="topbar"><div class="hero-left"><div class="eyebrow" style="color:#0c7880;margin-bottom:8px">PERENCANAAN TERINTEGRASI • KALIMANTAN TENGAH</div><h1>Karhutla <span style="color:#0a7b7b">Decision Studio</span> <span class="chip neutral" id="tag"></span></h1><p>Alat bantu keputusan untuk pipa, pompa, rewetting, deteksi dini, BBM, logistik, SDM dan investasi. <b>Perubahan pilihan langsung memperbarui hasil.</b></p><div class="scenario-row"><span class="mini-label">Preset arsitektur</span><span id="scenarioBtns"></span></div></div><div class="top-actions"><button class="btn primary" data-action="saveA">Simpan konfigurasi A</button><button class="btn" data-action="print">Cetak PDF</button><button class="btn" data-action="csv">BOQ CSV</button><button class="btn" data-action="matrixCSV">Matriks 100 opsi CSV</button><button class="btn" data-action="reset">Reset</button></div></div>
+ <div class="alert"><strong>Mode studi pra-FEED.</strong> Parameter lokasi yang ditampilkan adalah <b>asumsi skenario</b>, bukan hasil survei koordinat di Kalimantan Tengah. Model berisi hitungan konseptual dan <b>tidak boleh digunakan langsung sebagai DED, dokumen pengadaan final, izin operasi, atau pengganti uji pompa.</b></div>
+ <nav class="navtabs" id="tabs" aria-label="Navigasi halaman"></nav><div id="body"></div><div class="footer" id="updateAt"></div>
+ </main></div><input id="fileLoad" type="file" accept="application/json,.json" class="input-file">
+<script>/* Karhutla Decision Studio, v1.0 — transparent pre-FEED planning model.
+   No value below is field-verified, a vendor duty curve, or an award price.
+   Designed to run offline with bundled data; no network requests. */
+(function(root){
+ 'use strict';
+ const G=9.81, RHO=1000;
+ const BASES=[
+   {id:'portable', name:'Portable', baseline:'S1', main:800, branches:400, hdpe:0, crewBase:8, mobilization:0.8},
+   {id:'semi', name:'Semi-permanen', baseline:'S2', main:1500, branches:500, hdpe:1500, crewBase:10, mobilization:1.5},
+   {id:'backbone', name:'Backbone permanen', baseline:'S3', main:5000, branches:900, hdpe:5000, crewBase:12, mobilization:2.5}
+ ];
+ const PIPE={
+   hdpe:{name:'HDPE PE100',c:140, factor:1, install:'bantalan/penanaman berizin; butt/electrofusion; fitting transisi',heat:'Tidak boleh dibiarkan terpapar api/bara', flexibility:.55},
+   layflat:{name:'Layflat kelas pemadam',c:120,factor:.45,install:'gelar sementara, coupling terkunci, inspeksi sebelum isi',heat:'Harus diamankan dari panas langsung',flexibility:1},
+   steel:{name:'Pipa baja berlapis',c:120,factor:2.6,install:'spool/flensa dan proteksi korosi; dudukan',heat:'Tahan suhu relatif lebih baik, namun perlu inspeksi sambungan',flexibility:.15},
+   hybrid:{name:'HDPE + layflat + spools logam',c:138,factor:1.05,install:'HDPE backbone, layflat untuk cabang; segmen baja di hotspot',heat:'Jaga HDPE tetap terlindung; logam pada ujung panas',flexibility:.8}
+ };
+ const COST={hdpe200:1162050,hdpe110:351350,layflat100:275000,layflat65:165000,steel160:3100000,adapter:2400000,metalHot:9000000,burial:225000,raised:880000,security:110000000,
+  dieselPump:450000000,gasPump:190781250,electricPump:420000000,backupGenset:270000000,trashPump:250000000,
+  thermalDrone:111217000,rgbDrone:53000000,droneBattery:42000000,
+  canopy:400000000,post:600000000,container:100000000,fuelSafe:50000000,
+  sensor:12000000, gateway:25000000,waterGauge:18000000,solarPack:30000000,
+  canalBlock:65000000,spillway:125000000,agri:140000000,
+  manifold:25000000,coupling:2400000,lance:4200000,nozzle:6500000,suction:28000000,filter:19000000,kitValve:13500000,flowmeter:18000000,pressure:8500000,
+  survey:180000000,permit:160000000,installation:260000000,mobilization:210000000,boat:230000000,truck:440000000,ppe:140000000,tools:120000000,abTrial:250000000,training:85000000, communications:38000000};
+ const QBASE = [
+  {id:'GAS',name:'Pompa pemadam portable bensin',qty:[2,1,2], unit:'unit', p:COST.gasPump,origin:'Penawaran publik terdahulu; reconfirm RFQ'},
+  {id:'DIESEL',name:'Pompa diesel utama skid + panel',qty:[0,1,2],unit:'unit',p:COST.dieselPump,origin:'Asumsi engineering'},
+  {id:'HD200',name:'HDPE OD200 PN16 SDR11',qty:[0,1500,5000],unit:'m',p:COST.hdpe200,origin:'Harga pemasok terdahulu, tidak final'},
+  {id:'HD110',name:'HDPE OD110 PN16 SDR11 cabang',qty:[0,500,2000],unit:'m',p:COST.hdpe110,origin:'Harga pemasok terdahulu, tidak final'},
+  {id:'LAY100',name:'Layflat DN100',qty:[800,400,500],unit:'m',p:COST.layflat100,origin:'Asumsi engineering'},
+  {id:'LAY65',name:'Layflat DN65',qty:[400,500,900],unit:'m',p:COST.layflat65,origin:'Asumsi engineering'},
+  {id:'MAN',name:'Manifold multioutlet',qty:[2,4,10],unit:'set',p:COST.manifold,origin:'Asumsi engineering'},
+  {id:'COU',name:'Coupling/adaptor',qty:[20,25,45],unit:'set',p:COST.coupling,origin:'Asumsi engineering'},
+  {id:'LAN',name:'Lance injeksi (uji desain)',qty:[6,12,24],unit:'unit',p:COST.lance,origin:'Asumsi engineering'},
+  {id:'NOZ',name:'Nozzle pemadam',qty:[6,12,24],unit:'unit',p:COST.nozzle,origin:'Asumsi engineering'},
+  {id:'SUC',name:'Suction, foot valve, strainer',qty:[2,2,4],unit:'set',p:COST.suction,origin:'Asumsi engineering'},
+  {id:'FIL',name:'Filter/maintenance bypass',qty:[2,2,4],unit:'unit',p:COST.filter,origin:'Asumsi engineering'},
+  {id:'VAL',name:'Check/isolation/air-release',qty:[2,8,20],unit:'set',p:COST.kitValve,origin:'Asumsi engineering'},
+  {id:'FLO',name:'Flowmeter totalizer',qty:[2,4,10],unit:'unit',p:COST.flowmeter,origin:'Asumsi engineering'},
+  {id:'PRS',name:'Sensor tekanan/vakum',qty:[4,8,20],unit:'unit',p:COST.pressure,origin:'Asumsi engineering'},
+  {id:'WTD',name:'Node WTD dan suhu multi-kedalaman',qty:[8,20,50],unit:'unit',p:COST.sensor,origin:'Asumsi engineering'},
+  {id:'GAT',name:'Gateway telemetri',qty:[1,2,4],unit:'unit',p:COST.gateway,origin:'Asumsi engineering'},
+  {id:'DRONE',name:'Drone kamera termal enterprise',qty:[1,1,2],unit:'unit',p:COST.thermalDrone,origin:'Harga publik terdahulu; RFQ'},
+  {id:'DBAT',name:'Baterai/charger/transport drone',qty:[1,1,2],unit:'set',p:COST.droneBattery,origin:'Asumsi engineering'},
+  {id:'SOLAR',name:'PV + baterai sistem sensor',qty:[1,3,7],unit:'set',p:COST.solarPack,origin:'Asumsi engineering'},
+  {id:'PUMPHS',name:'Rumah pompa elevasi aman',qty:[0,1,2],unit:'unit',p:COST.canopy,origin:'Asumsi engineering'},
+  {id:'POST',name:'Pos pemadam + gudang',qty:[0,1,2],unit:'unit',p:COST.post,origin:'Asumsi engineering'},
+  {id:'CONT',name:'Kontainer terkunci',qty:[1,1,1],unit:'unit',p:COST.container,origin:'Asumsi engineering'},
+  {id:'TANK',name:'Penyimpanan BBM bunding',qty:[1,2,3],unit:'set',p:COST.fuelSafe,origin:'Asumsi engineering'},
+  {id:'COM',name:'Radio / komunikasi backhaul',qty:[1,2,3],unit:'paket',p:COST.communications,origin:'Asumsi engineering'},
+  {id:'CANAL',name:'Sekat kanal disetujui',qty:[2,6,12],unit:'unit',p:COST.canalBlock,origin:'Asumsi engineering'},
+  {id:'SPILL',name:'Spillway/struktur air terkendali',qty:[0,2,6],unit:'unit',p:COST.spillway,origin:'Asumsi engineering'},
+  {id:'FLOOD',name:'Sensor tinggi banjir',qty:[2,5,10],unit:'unit',p:COST.waterGauge,origin:'Asumsi engineering'},
+  {id:'AGRI',name:'Pilot pertanian tanpa bakar',qty:[0,1,3],unit:'paket',p:COST.agri,origin:'Asumsi engineering'},
+  {id:'SURV',name:'Survei GIS/gambut/topografi',qty:[1,1,2],unit:'paket',p:COST.survey,origin:'Asumsi engineering'},
+  {id:'PERM',name:'Kajian lingkungan/izin',qty:[1,1,2],unit:'paket',p:COST.permit,origin:'Asumsi engineering'},
+  {id:'INST',name:'Instalasi dan pengujian jaringan',qty:[1,2,6],unit:'paket',p:COST.installation,origin:'Asumsi engineering'},
+  {id:'MOB',name:'Mobilisasi ke lokasi',qty:[1,2,5],unit:'paket',p:COST.mobilization,origin:'Asumsi engineering'},
+  {id:'BOAT',name:'Perahu rescue/logistik',qty:[1,1,2],unit:'unit',p:COST.boat,origin:'Asumsi engineering'},
+  {id:'TRUCK',name:'Pickup 4×4 pendukung',qty:[1,1,2],unit:'unit',p:COST.truck,origin:'Asumsi engineering'},
+  {id:'PPE',name:'Paket APD dan P3K regu',qty:[1,2,3],unit:'paket',p:COST.ppe,origin:'Asumsi engineering'},
+  {id:'TOOL',name:'Tools/spares awal',qty:[1,2,4],unit:'paket',p:COST.tools,origin:'Asumsi engineering'},
+  {id:'AB',name:'Pilot A/B test dan sensor uji',qty:[1,2,3],unit:'paket',p:COST.abTrial,origin:'Asumsi engineering'},
+  {id:'TRAIN',name:'Commissioning dan latihan awal',qty:[1,2,3],unit:'paket',p:COST.training,origin:'Asumsi engineering'}
+ ];
+ const clamp=(x,a,b)=>Math.min(b,Math.max(a,x));
+ const N=x=>Number.isFinite(+x)?+x:0;
+ function money(v){return 'Rp'+Math.round(v).toLocaleString('id-ID');}
+ function pct(v){return (v*100).toFixed(1)+'%';}
+ function getBase(id){return BASES.find(b=>b.id===id)||BASES[1];}
+ function defaultState(){return {site:'kanal',strategy:'semi',tactic:'hybrid',airSupport:'none',waterSource:'canal',waterRights:'pending',ecoPermit:'pending',flood:'seasonal',fireType:'peat',fireLevel:'medium',peatDepth:'deep',wtd:'dry',access:'mixed',waterQ:70,envReserve:10,area:5,waterPerHa:600,flowLPM:2000,pipeTemp:35,operationHours:240,daysPerYear:35,networkLength:1500,branchLength:500,pipe:'hybrid',od:200,sdr:11,alignment:'protected',heat:'moderate',elevation:10,minorK:5,pressureEnd:2,hasBooster:false,pump:'diesel',pumpCount:1,redundancy:'cold',pumpEff:0.65,crew:10,wage:250000,shiftHours:8,crewSpeed:75,security:'high',tenure:'pending',rewetting:'yes',canalBlocks:6,agriculture:'none',floodUse:'monitor',drone:'thermal',detection:'integrated',telemetry:'lora',sensorTier:'extended',logistics:'split',maint:'preventive',drill:'annual',hotend:'metal',horizon:5,discountRate:8,annualAvoidedLoss:0,verifiedHaAnnual:0,helicopterHours:0,contingency:20,priceFactor:1,fuelPrice:14500,petrolPrice:15500,electricPrice:1800,weightCost:25,weightSafety:30,weightEffectiveness:25,weightAccess:10,weightEnvironment:10};}
+ function buildBoQ(s){
+  const base=getBase(s.strategy), idx=BASES.indexOf(base), o={};
+  const set=(id,q,p,why)=>{ if(q<=0){delete o[id];return;} if(q>0) o[id]={id,name:(QBASE.find(x=>x.id===id)||{}).name||id,q,price:p,origin:why||'Estimasi engineering / configurable'};};
+  for (const x of QBASE) set(x.id,x.qty[idx],x.p,x.origin);
+  let L=clamp(N(s.networkLength),0,50000), br=clamp(N(s.branchLength),0,20000);
+  const ratio = Math.pow(N(s.od)/200,2)* (s.sdr==='17'?0.68:1), priceHD=COST.hdpe200*ratio;
+  const hp=L*(s.pipe==='hybrid'?.78:s.pipe==='hdpe'?1:0);
+  const lay=L*(s.pipe==='hybrid'?.22:s.pipe==='layflat'?1:0);
+  const steel=L*(s.pipe==='steel'?1:0);
+  set('HD200',hp,priceHD,'Model pengali luas material vs OD200; BUKAN harga pasar');
+  set('LAY100',lay,COST.layflat100*Math.pow(N(s.od)/100,1.15),'Asumsi harga berbasis DN100 dikalikan diameter; perlu vendor untuk ukuran yang dipilih');
+  if(o.LAY100)o.LAY100.name=`Layflat nominal ~${N(s.od)} mm (ukuran & rating wajib OEM)`;
+  set('STEEL',steel,COST.steel160*Math.pow(N(s.od)/160,1.6),'Asumsi pengali diameter; hanya pendekatan');
+  set('HD110',s.strategy==='portable'?0:br*.45,COST.hdpe110,'Harga publik terdahulu untuk OD110 (asumsi quantity)');
+  set('LAY65',br*(s.strategy==='portable'?1:.55),COST.layflat65,'Estimasi engineer');
+  const pumpCt=Math.max(1,Math.round(N(s.pumpCount)));
+  set('GAS',s.pump==='gas'?pumpCt:s.pump==='hybrid'?1:0,COST.gasPump,'Harga publik VE1500W (duty curve berbeda)');
+  set('DIESEL',s.pump==='diesel'?pumpCt:s.pump==='hybrid'?Math.max(1,pumpCt-1):0,COST.dieselPump,'Asumsi pompa diesel, vendor Q-H diperlukan');
+  set('ELEC',s.pump==='electric'?pumpCt:0,COST.electricPump,'Asumsi pompa elektrik, daya listrik harus ada');
+  set('GEN',s.pump==='electric'&&s.site==='remote'?1:0,COST.backupGenset,'Asumsi genset pendukung lokasi terpencil');
+  if(s.hasBooster)set('BOOST',1,390000000,'Booster & controls konsep; kurva series hydraulic wajib');
+  const emergency=s.redundancy==='installed'?1:s.redundancy==='cold'&&pumpCt===1?1:0;
+  set('SPARE',emergency,s.pump==='gas'?COST.gasPump: s.pump==='electric'?COST.electricPump:COST.dieselPump,'Pompa cadangan; belum tentu ready for duty');
+  const branches=Math.max(1,Math.ceil(br/125));
+  set('MAN',branches,COST.manifold,'Asumsi 1 manifold/125 m total cabang');
+  set('COU',Math.max(4,Math.ceil(lay/100)+Math.ceil(hp/100)+branches*2),COST.coupling,'Tergantung tipe coupling; QTY konsep bukan detail baut');
+  set('LAN',s.tactic==='surface'||s.tactic==='rewetonly'?0:Math.max(2,Math.ceil(N(s.crew)/2))*(s.tactic==='injection'?1.3:1),COST.lance);
+  set('NOZ',s.tactic==='rewetonly'?0:Math.max(2,Math.ceil(N(s.crew)/2)),COST.nozzle);
+  set('SUC',pumpCt,COST.suction);
+  set('FIL',pumpCt,COST.filter);
+  set('VAL',Math.max(3,Math.ceil(L/300)+branches),COST.kitValve);
+  set('FLO',Math.max(1,pumpCt),COST.flowmeter);
+  set('PRS',Math.max(2,2*pumpCt+Math.ceil(L/1000)),COST.pressure);
+  set('WTD',s.sensorTier==='none'?0:s.sensorTier==='basic'?Math.max(4,Math.ceil(L/350)):Math.max(8,Math.ceil(L/150)),COST.sensor);
+  set('GAT',s.telemetry==='none'?0:Math.max(1,Math.ceil(L/2000)),COST.gateway);
+  set('DRONE',s.drone==='thermal'?1:0,COST.thermalDrone);
+  set('RGB',s.drone==='rgb'?1:0,COST.rgbDrone);
+  set('DBAT',s.drone==='none'?0:1,COST.droneBattery);
+  set('SOLAR',s.telemetry==='none'?0:Math.max(1,Math.ceil(L/850)),COST.solarPack);
+  set('PUMPHS',s.strategy==='portable'?0:Math.max(1,Math.ceil(L/3500)),COST.canopy);
+  set('POST',s.strategy==='portable'?0:Math.max(1,Math.ceil(L/4500)),COST.post);
+  set('CONT',1,COST.container);
+  set('TANK',Math.max(1,Math.ceil(pumpCt/2)),COST.fuelSafe);
+  set('COM',s.telemetry==='satellite'?2:s.telemetry==='none'?1:1,COST.communications);
+  set('CANAL',s.rewetting==='yes'?Math.max(0,Math.round(N(s.canalBlocks))):0,COST.canalBlock);
+  set('SPILL',s.rewetting==='yes'?Math.ceil(Math.max(0,N(s.canalBlocks))/3):0,COST.spillway);
+  set('FLOOD',s.flood==='high'||s.floodUse!=='none'?Math.max(2,Math.ceil(L/600)):0,COST.waterGauge);
+  set('AGRI',s.agriculture==='pilot'?1:s.agriculture==='network'?3:0,COST.agri);
+  set('SURV',1,COST.survey);
+  set('PERM',1,COST.permit);
+  const groundFactor=s.access==='road'?0.8:s.access==='boat'?1.15:s.access==='remote'?1.75:1;
+  const peatFactor=s.peatDepth==='deep'?1.2:s.peatDepth==='mid'?1.07:1;
+  const installRatio=(L/2000*.55+br/800*.2+.25);
+  set('INST',installRatio*groundFactor*peatFactor,COST.installation,'Asumsi instalasi bergantung panjang, akses & ketebalan gambut');
+  set('MOB',base.mobilization*groundFactor,COST.mobilization);
+  set('BOAT',s.access==='boat'||s.access==='mixed'?1:s.access==='remote'?2:0,COST.boat);
+  set('TRUCK',s.access==='road'?1:s.access==='mixed'?1:s.access==='remote'?1:0,COST.truck);
+  set('PPE',Math.max(1,Math.ceil(N(s.crew)/20)),COST.ppe);
+  set('TOOL',s.strategy==='backbone'?3:s.strategy==='semi'?2:1,COST.tools);
+  set('AB',1,COST.abTrial);
+  set('TRAIN',s.drill==='quarterly'?2:1,COST.training);
+  if(s.alignment==='buried')set('BURIAL',L,COST.burial*groundFactor*peatFactor,'Biaya tanam dengan proteksi, survei izin dan geoteknik perlu DED');
+  if(s.alignment==='raised')set('RAISED',L,COST.raised*peatFactor,'Elevated supports/fondasi gabungan; desain beban banjir');
+  if(s.alignment==='protected')set('ARMOR',Math.min(L,Math.max(25,L*.10)),COST.burial*1.35,'Proteksi lokal segmen kritis, bukan otomatis semua pipa');
+  if(s.hotend==='metal')set('HOT',Math.max(10,5*Math.ceil(N(s.crew)/2)),COST.metalHot,'Spool ujung panas dan insulasi lokal; desain termal wajib');
+  if(s.hotend==='hdpe')set('HOT',0,COST.metalHot);
+  if(s.hotend==='remote')set('HOTREMOTE',60,COST.layflat65,'Selang tambahan menjauh dari titik panas, harga asumsi');
+  if(s.security==='high')set('SEC',1,COST.security,'Kunci, CCTV/asset tag/anchor dan fence; asumsi');
+  if(s.waterSource==='well')set('WELL',1,950000000,'Asumsi survei+sumur; kajian hidrogeologi dan izin wajib');
+  if(s.waterSource==='embung')set('POND',1,540000000,'Asumsi tampungan tambahan; butuh desain hidrologi');
+  if(s.waterSource==='river')set('INTAKE',1,160000000,'Asumsi intake sungai terlindung');
+  if(s.floodUse==='pump')set('TRASH',1,COST.trashPump,'Pompa banjir berbeda duty point; izin pelepasan air');
+  if(s.logistics==='forward')set('FORWARD',1,320000000,'Gudang depan keamanan/stock area; asumsi');
+  if(s.logistics==='split')set('HUB',1,150000000,'Hub & transfer air/darat; asumsi');
+  if(s.maint==='predictive')set('TOOLS2',1,115000000,'CBM tambahan, inspeksi berkala dan perangkat');
+  if(s.airSupport!=='none')set('AIRCTRL',1,55000000,'Koordinasi udara dan komunikasi, asumsi sekali pengadaan');
+  if(s.drill==='quarterly')set('DRILL2',1,120000000,'Peralatan latihan tambahan; bukan OPEX');
+  return Object.values(o).filter(x=>x.q>0).map(x=>({...x, total:x.q*x.price*N(s.priceFactor)})).sort((a,b)=>b.total-a.total);
+ }
+ function assess(s){
+  s={...defaultState(),...s};
+  const base=getBase(s.strategy);
+  const L=N(s.networkLength), Q=N(s.waterQ), eQ=N(s.envReserve), qTarget=N(s.area)*N(s.waterPerHa);
+  const pumpQ=N(s.flowLPM||2000), flow=pumpQ/60000; // m3/s
+  let od=N(s.od)/1000, sdr=N(s.sdr);
+  const idHD=clamp(N(s.od)*(1-2/sdr)/1000,.018,.95), idLay=clamp(N(s.od)*.96/1000,.018,.95),idSteel=clamp(N(s.od)*.91/1000,.018,.95);
+  const di=s.pipe==='layflat'?idLay:s.pipe==='steel'?idSteel:idHD;
+  const areaPipe=Math.PI*di*di/4, vel=flow/areaPipe;
+  const C=s.pipe==='layflat'?120:s.pipe==='steel'?120:135;
+  const tempDerate= s.pipe==='hdpe'||s.pipe==='hybrid'?clamp(1-.014*(N(s.pipeTemp)-20),.58,1):1;
+  const fLoss=(len,coef,d)=>10.67*len*Math.pow(flow,1.852)/(Math.pow(coef,1.852)*Math.pow(d,4.871));
+  const hf=s.pipe==='hybrid'?fLoss(L*.78,135,idHD)+fLoss(L*.22,120,idLay):fLoss(L,C,di);
+  const hm=N(s.minorK)*vel*vel/(2*G);
+  const staticH=N(s.elevation), endpoint=N(s.pressureEnd)*1e5/(RHO*G);
+  const tdh=staticH+hf+hm+endpoint+3.5; // 3.5 m intake/filter/suction allowance, may vary
+  const pressBar=RHO*G*tdh/1e5;
+  const shaftKw=(RHO*G*flow*tdh)/1000/clamp(N(s.pumpEff),.35,.9);
+  const hp=shaftKw/0.7457;
+  const dailyQ=(pumpQ/1000)*60,waterHours=qTarget/(pumpQ/1000*60);
+  const sourceAvail=Math.max(0,Q-eQ); const availableLPMin=sourceAvail*60;
+  const waterOK=availableLPMin>=pumpQ;
+  const branches=N(s.branchLength);
+  const logisticMult=s.access==='road'?1:s.access==='mixed'?1.5:s.access==='boat'?1.9:2.8;
+  const groundMult=s.peatDepth==='deep'?1.65:s.peatDepth==='mid'?1.25:1;
+  const pipeMult=(s.pipe==='steel'?0.30:s.pipe==='hdpe'?.72:s.pipe==='hybrid'?.8:1.15)*(s.alignment==='buried'?.48:s.alignment==='raised'?.4:1);
+  const installedMPerHour=Math.max(1,N(s.crewSpeed)*pipeMult/logisticMult/groundMult*(N(s.crew)/8)**.45);
+  const installHours=L/installedMPerHour+8+branches/Math.max(10,installedMPerHour*.8);
+  const installDays=installHours/clamp(N(s.shiftHours),1,16);
+  const pumpUnits=Math.max(1,Math.round(N(s.pumpCount)));
+  const estimatedPumpHp=s.pump==='gas'?75:s.pump==='electric'?100:s.pump==='hybrid'?85:110; // ASSUMED sizing placeholder, not p-Q curve
+  const pumpRatingOK=hp<=pumpUnits*estimatedPumpHp*.85;
+  let hard=[], conditional=[], soft=[];
+  if(!waterOK)hard.push(`Sumber air setelah cadangan ekologis hanya ${availableLPMin.toFixed(0)} LPM; target operasi ${pumpQ.toFixed(0)} LPM.`);
+  if(s.waterRights==='no')hard.push('Izin pengambilan air ditolak/tidak sah.'); else if(s.waterRights==='pending')conditional.push('Izin/kuota pengambilan air belum terbit.');
+  if(s.tenure==='disputed')hard.push('Hak lintasan/pemanfaatan lahan disengketakan.');else if(s.tenure==='pending')conditional.push('Hak lahan, ROW, dan persetujuan masyarakat belum diverifikasi.');
+  if(s.ecoPermit==='rejected')hard.push('Persetujuan lingkungan tidak tersedia/ditolak.');else if(s.ecoPermit==='pending')conditional.push('Kajian dan persetujuan lingkungan belum disetujui.');
+  if(s.waterSource==='well')conditional.push('Sumur memerlukan uji debit, hidrogeologi dan izin; akuifer produktif belum terbukti.');
+  if(s.floodUse==='pump')conditional.push('Fungsi banjir memerlukan analisis pelepasan air dan larangan pengeringan gambut.');
+  if(s.heat==='severe' && s.alignment==='surface' && s.pipe!=='steel')hard.push('Pipa termoplastik terbuka pada zona panas ekstrem: proteksi/perubahan rute diperlukan.');
+  if(s.tactic==='rewetonly'&&s.fireType!=='none')hard.push('Rewetting saja tidak memenuhi fungsi respons terhadap titik api yang sedang aktif; wajib punya rencana pemadaman.');
+  if(s.tactic==='injection'&&s.sensorTier==='none')conditional.push('Injeksi bawah permukaan tanpa instrumentasi suhu/kedalaman sulit diverifikasi; uji alat dan core verification.');
+  if(s.hotend==='hdpe'&&s.fireType!=='surface')hard.push('Ujung pemadaman bara tidak boleh diakhiri HDPE yang terekspos panas tanpa analisis termal.');
+  if(s.hasBooster)conditional.push('Pompa seri/booster wajib mengecek tekanan antar-node, NPSH, relief, transien, dan dua kurva Q–H vendor.');
+  if(s.pump==='electric'&&s.site==='remote')conditional.push('Pompa listrik lokasi terpencil harus membuktikan ketersediaan listrik/genset dan jalur cadangan.');
+  if(s.pump==='gas')conditional.push('Rating daya bensin adalah placeholder; kapasitas debit pada head target wajib kurva OEM dan uji acceptance.');
+  if(!pumpRatingOK)hard.push('Daya poros melebihi perkiraan rating pompa terpasang, perlu kurva Q–H vendor dan redesign.');
+  const nominalPN=s.sdr==='17'?10:16;
+  if(['hdpe','hybrid'].includes(s.pipe) && pressBar>nominalPN*tempDerate*.88)hard.push(`Tekanan perhitungan ${pressBar.toFixed(1)} bar melampaui ambang screening 88% × PN${nominalPN} × derating suhu (~${tempDerate.toFixed(2)}); perlu perubahan diameter/PN/pump & transien.`);
+  if(['hdpe','hybrid'].includes(s.pipe)&&N(s.pipeTemp)>45)conditional.push('Temperatur air/pipa tinggi; derating PE100 pada suhu aktual harus diverifikasi dengan datasheet.');
+  if(vel>3)conditional.push(`Kecepatan ${vel.toFixed(2)} m/s tinggi; cek water hammer dan opsi diameter lebih besar.`);
+  if(s.wtd==='dry')conditional.push('Muka air tanah sangat rendah; prioritas rewetting dan pengendalian kebakaran berulang.');
+  if(s.peatDepth==='deep' && s.alignment==='buried')conditional.push('Penanaman pipa pada gambut dalam perlu investigasi subsiden, amblesan, dan gangguan hidrologi.');
+  if(s.security==='high'&&s.alignment==='surface'&&s.strategy==='backbone')conditional.push('Backbone terbuka di daerah rawan pencurian: pengamanan dan proteksi aset harus diperkuat.');
+  if(s.flood==='high'&&s.alignment==='buried')conditional.push('Flotasi, erosi dan stabilitas trench saat banjir memerlukan desain khusus.');
+  if(s.airSupport==='helicopter')conditional.push('Dukungan helikopter adalah kontrak terpisah, dibatasi cuaca/jarak/izin; angka biaya per jam hanya placeholder.');
+  if(s.rewetting==='no'&&s.wtd==='dry')soft.push('Desain belum menyelesaikan penyebab keringnya gambut; potensi kebakaran berulang tinggi.');
+  if(s.drone==='thermal')soft.push('Drone termal membantu target dan prioritas patroli, bukan konfirmasi padam pada kedalaman gambut.');
+  if(s.drone==='none')soft.push('Tanpa drone, intensitas patroli darat dan pengambilan sampel suhu perlu ditingkatkan.');
+  if(s.maint==='basic')soft.push('Maintenance reaktif meningkatkan kemungkinan downtime dan kerusakan tersembunyi.');
+  if(s.alignment==='surface'&&s.pipe==='hdpe')soft.push('HDPE terbuka sensitif terhadap panas setempat; perlindungan/monitoring suhu diperlukan.');
+  if(s.strategy==='backbone'&&s.fireType==='surface'&&N(s.area)<=2)soft.push('Backbone permanen berpotensi overinvestment untuk api kecil dan berpindah-pindah.');
+  if(s.agriculture!=='none'&&s.wtd==='dry')conditional.push('Dukungan pertanian tidak boleh menambah drainase gambut; harus kompatibel KHG.');
+  if(s.site==='dome' && s.strategy==='backbone')conditional.push('Backbone pada puncak kubah gambut dapat berdampak hidrologis; prioritaskan evaluasi ekologi/rute penghindaran.');
+  if(s.site==='remote' && s.strategy==='backbone')conditional.push('OPEX inspeksi dan mobilisasi backbone remote harus diuji dengan rute nyata.');
+  if(s.waterSource==='canal'&&s.wtd==='dry')conditional.push('Pasokan dari kanal perlu diukur kemarau dan neraca air KHG; jangan mengandalkan level musim hujan.');
+  if(N(s.pressureEnd)<1.0)conditional.push('Tekanan residual ujung mungkin kurang untuk alat/aplikator; cek OEM lance/nozzle.');
+  if(s.heat==='severe'&&s.pipe==='steel')soft.push('Baja tahan paparan panas relatif lebih baik, tapi tetap perlu proteksi korosi dan kestabilan fondasi.');
+  const boq=buildBoQ(s); const direct=boq.reduce((a,b)=>a+b.total,0);
+  const contingency=direct*clamp(N(s.contingency)/100,0,.75); const capex=direct+contingency;
+  const engineHours=N(s.operationHours), diesel=s.pump==='diesel'||s.pump==='hybrid', gas=s.pump==='gas'||s.pump==='hybrid';
+  const fuelDieselHr=diesel?shaftKw*.27/.84:0; // kg/kWh -> litre/h
+  const fuelPetrolHr=gas?22*(s.pump==='hybrid'?1:pumpUnits):0; // OEM example for VE1500W; not proportional model
+  const gridKWhHr=s.pump==='electric'?shaftKw/.91:0;
+  const energyAnnual=engineHours*(fuelDieselHr*N(s.fuelPrice)+fuelPetrolHr*N(s.petrolPrice)+gridKWhHr*N(s.electricPrice));
+  const wageAnnual= N(s.crew)*N(s.wage)*N(s.daysPerYear);
+  const serviceAnnual=direct*(s.maint==='basic'?.025:s.maint==='predictive'?.055:.042);
+  const detectionMult=s.detection==='manual'?1.32:s.detection==='satellite'?.82:1;
+  const patrolling=(s.drone==='thermal'?85000000:s.drone==='rgb'?53000000:36000000)*detectionMult;
+  const monitor=s.telemetry==='satellite'?110000000:s.telemetry==='none'?12000000:34000000;
+  const protection=s.security==='high'?65000000:s.security==='mid'?29000000:10000000;
+  const logistics= (s.access==='remote'?160000000:s.access==='boat'?110000000:s.access==='mixed'?75000000:40000000) *(s.logistics==='forward'?.92:1.0);
+  const drill=s.drill==='quarterly'?95000000:s.drill==='annual'?52000000:22000000;
+  const airAnnual=s.airSupport==='none'?0:s.airSupport==='oncall'?30000000:30000000+N(s.helicopterHours)*130000000; // hypothesis, NOT BNPB contract rate
+  const opex=energyAnnual+wageAnnual+serviceAnnual+patrolling+monitor+protection+logistics+drill+airAnnual;
+  const horizon=clamp(N(s.horizon),1,30), tco=capex+opex*horizon;const perHa=qTarget?capex/N(s.area):null;
+  const annualBenefit=N(s.annualAvoidedLoss), discountRate=clamp(N(s.discountRate)/100,0,.3);
+  const annuityFactor=Array.from({length:horizon},(_,i)=>1/Math.pow(1+discountRate,i+1)).reduce((a,b)=>a+b,0);
+  const npv=(annualBenefit-opex)*annuityFactor-capex;
+  const bcr=annualBenefit*annuityFactor/(capex+opex*annuityFactor||1);
+  const breakevenAnnual=opex+capex/(annuityFactor||1);
+  const costVerifiedHa=N(s.verifiedHaAnnual)>0?opex/N(s.verifiedHaAnnual):null;
+  const fuelLitresYear=(fuelDieselHr+fuelPetrolHr)*engineHours;
+  const operationalEmissionsKg=(fuelDieselHr*2.68+fuelPetrolHr*2.31)*engineHours; // Illustrative fuel-only combustion CO2, excluding peat & life-cycle.
+  const dispatchHours=(s.access==='remote'?16:s.access==='boat'?9:s.access==='mixed'?6:3)*(s.logistics==='forward'?.72:s.logistics==='split'?.9:1);
+  const deployProd=Math.max(10,N(s.crewSpeed)*.8/logisticMult/groundMult*(N(s.crew)/8)**.45);
+  const incidentDeployHours=s.strategy==='portable'?installHours:s.strategy==='semi'?3+Math.min(branches,300)/deployProd:1+Math.min(branches,100)/deployProd; // Assumes fixed portions are already built, inspected and operable.
+  const readyHours=incidentDeployHours+dispatchHours; 
+  let reliab=.97-(s.maint==='basic'?.12:s.maint==='predictive'?.02:.055)-(s.redundancy==='none'?.08:s.redundancy==='installed'?.005:.035)-(s.access==='remote'?.06:0)-(s.flood==='high'?.045:0);
+  reliab=clamp(reliab,.4,.995);
+  const riskRisk= Math.min(100, Math.round((hard.length*20 + conditional.length*6 + soft.length*2 + (s.access==='remote'?8:0) + (s.security==='high'?6:0))));
+  const decision=hard.length?'NO-GO':conditional.length?'HOLD / VALIDASI':'KONDISIONAL';
+  const profileScores={
+    capital:100/(1+capex/6e9),
+    safety:clamp(94-hard.length*24-conditional.length*5-(s.heat==='severe'?9:0),0,100),
+    ops:clamp(100-readyHours/2-(s.access==='remote'?20:0)+(s.redundancy==='installed'?10:0),0,100),
+    ecology:clamp(78+(s.rewetting==='yes'?15:-20)-(s.waterSource==='well'?20:0)-(s.floodUse==='pump'?18:0)-(s.alignment==='buried'&&s.peatDepth==='deep'?10:0),0,100),
+    effectiveness:clamp((waterOK?80:15) + (s.drone==='thermal'?5:0)+(s.sensorTier==='extended'?5:0)-(s.fireType==='peat'?6:0)-(hard.length?20:0),0,100)
+  };
+  const wCost=N(s.weightCost),wSafety=N(s.weightSafety),wEff=N(s.weightEffectiveness),wAccess=N(s.weightAccess),wEnvironment=N(s.weightEnvironment); const wt=Math.max(1,wCost+wSafety+wEff+wAccess+wEnvironment);
+  const score=(profileScores.capital*wCost+profileScores.safety*wSafety+profileScores.effectiveness*wEff+profileScores.ops*wAccess+profileScores.ecology*wEnvironment)/wt;
+  const dependencies=[
+    {from:'Sumber air',out:'Debit bersih, izin, keandalan saat kemarau, pemilihan intake',impact:waterOK?'lulus debit nominal; tetap perlu Q90/Q95 lapangan':'GAGAL debit minimum'},
+    {from:'Topografi + diameter',out:'Δz → TDH → daya pompa → biaya energi dan rating pipa',impact:`Head ${tdh.toFixed(1)} m; ${pressBar.toFixed(2)} bar; ${hp.toFixed(1)} HP`},
+    {from:'Material + trase',out:'Investasi per meter, waktu pemasangan, tahan panas, pencurian',impact:`${PIPE[s.pipe].name}; ${s.alignment}; ${installedMPerHour.toFixed(0)} m/jam tim`},
+    {from:'Penggerak & cadangan',out:'Peralatan pompa, BBM/listrik, reliability, maintenance',impact:`${s.pump}; ${s.redundancy}; ${money(energyAnnual)}/tahun energi`},
+    {from:'Banjir & gambut',out:'Fondasi, struktur air, akses, monitoring WTD, risiko ekologis',impact:`Banjir ${s.flood}; WTD ${s.wtd}; sekat kanal ${s.rewetting==='yes'?s.canalBlocks:0}`},
+    {from:'Drone + sensor',out:'Biaya/false alarm/kecepatan penemuan titik panas dan bukti padam',impact:`${s.drone}; ${s.telemetry}; ${s.sensorTier}`},
+    {from:'Logistik + personel',out:'Jam pemasangan, stok BBM, staging, gaji, kesiapan regu',impact:`${N(s.crew)} orang; ${installHours.toFixed(1)} jam instalasi; ${money(wageAnnual)}/tahun upah`},
+    {from:'Pemeliharaan + latihan',out:'Reliability, kesiapsiagaan, suku cadang dan OPEX',impact:`Availability ilustratif ${(reliab*100).toFixed(0)}%; bukan estimasi statistik teruji`}
+  ];
+  return {s,base,boq,hyd:{flow,di,od,tempDerate,nominalPN,vel,hf,hm,staticH,endpoint,tdh,pressBar,shaftKw,hp,waterHours,waterVolume:qTarget,sourceAvail,waterOK,pumpRatingOK,installedMPerHour,installHours,installDays,readyHours,availableLPMin},fin:{direct,contingency,capex,opex,tco,perHa,operationalEmissionsKg,annualBenefit,discountRate,annuityFactor,npv,bcr,breakevenAnnual,costVerifiedHa,airAnnual,energyAnnual,wageAnnual,serviceAnnual,patrolling,monitor,protection,logistics,drill,fuelDieselHr,fuelPetrolHr,gridKWhHr,fuelLitresYear,horizon},hard,conditional,soft,decision,score,profileScores,riskRisk,reliab,dependencies};
+ }
+ function compare(s){return BASES.map(b=>{let t={...s,strategy:b.id,networkLength:b.main,branchLength:b.branches};if(b.id==='portable'){t.pipe='layflat';t.alignment='surface';t.pump='gas';t.pumpCount=2;t.rewetting='no';}if(b.id==='semi'){t.pipe='hybrid';t.pump='diesel';t.pumpCount=1;t.alignment='protected';}if(b.id==='backbone'){t.pipe='hdpe';t.pump='diesel';t.pumpCount=2;t.alignment='buried';}return assess(t);});}
+ function drawRiskMC(s, iterations=800){
+  const initial=assess(s);let seed=2166136261;const state=JSON.stringify(s);for(let i=0;i<state.length;i++) seed=((seed^state.charCodeAt(i))*16777619)>>>0;
+  const rng=()=>{seed^=seed<<13;seed^=seed>>>17;seed^=seed<<5;return (seed>>>0)/4294967296;};
+  const out=[];for(let i=0;i<iterations;i++){
+   const c=.78+rng()*.50, fuel=.65+rng()*.75, labor=.7+rng()*.75, ops=.75+rng()*.60;
+   const capex=initial.fin.capex*c;
+   const opex=(initial.fin.energyAnnual*fuel+initial.fin.wageAnnual*labor+(initial.fin.opex-initial.fin.energyAnnual-initial.fin.wageAnnual)*ops);
+   out.push(capex+opex*initial.fin.horizon);
+  }
+  out.sort((a,b)=>a-b);const at=p=>out[Math.floor((out.length-1)*p)];
+  return {low:at(.1),mid:at(.5),high:at(.9),samples:out.length, note:'Ilustrasi 800 skenario dengan rentang distribusi asumsi; bukan distribusi biaya empiris.'};
+ }
+ const API={BASES,PIPE,COST,QBASE,defaultState,assess,compare,drawRiskMC,money,pct,clamp};
+ if(typeof module!=='undefined' && module.exports) module.exports=API;
+ root.KarhutlaEngine=API;
+})(typeof window!=='undefined'?window:globalThis);
+</script><script>window.KARHUTLA_SCHEMA=[
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "site",
+    "label": "Tipologi lokasi",
+    "options": [
+      {
+        "value": "kanal",
+        "label": "Koridor kanal",
+        "pro": "Air & akses kanal potensial",
+        "con": "Debit musim kering sering tidak pasti"
+      },
+      {
+        "value": "road",
+        "label": "Dekat jalan",
+        "pro": "Logistik mudah",
+        "con": "Risiko pembukaan trase & akses sosial"
+      },
+      {
+        "value": "dome",
+        "label": "Puncak kubah gambut",
+        "pro": "Prioritas perlindungan hidrologi",
+        "con": "Sumber air dan geoteknik lebih menantang"
+      },
+      {
+        "value": "remote",
+        "label": "Terpencil",
+        "pro": "Menjangkau spot tanpa jalan",
+        "con": "Biaya dan evakuasi tinggi"
+      }
+    ],
+    "help": "Tipologi adalah kategori hipotesis Kalimantan Tengah, bukan profil survei lokasi nyata.",
+    "metric": "Lokasi, tenaga listrik, risiko"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "access",
+    "label": "Akses angkut",
+    "options": [
+      {
+        "value": "road",
+        "label": "Jalan 4×4",
+        "pro": "Termurah untuk mobilisasi",
+        "con": "Gantung kualitas jalan"
+      },
+      {
+        "value": "mixed",
+        "label": "Darat + sungai",
+        "pro": "Jalur alternatif",
+        "con": "Transshipment menambah biaya"
+      },
+      {
+        "value": "boat",
+        "label": "Perahu / kanal",
+        "pro": "Akses area tergenang",
+        "con": "Rentan muka air surut"
+      },
+      {
+        "value": "remote",
+        "label": "Portage/udara",
+        "pro": "Menjangkau daerah terpencil",
+        "con": "Biaya dan risiko tertinggi"
+      }
+    ],
+    "help": "Pengaruhi waktu mobilisasi dan biaya unit barang berat.",
+    "metric": "Mobilisasi, waktu, alat angkut"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "peatDepth",
+    "label": "Kelas ketebalan gambut",
+    "options": [
+      {
+        "value": "shallow",
+        "label": "Dangkal/terverifikasi",
+        "pro": "Fondasi relatif lebih sederhana",
+        "con": "Tetap perlu dukung geoteknik"
+      },
+      {
+        "value": "mid",
+        "label": "Menengah",
+        "pro": "Risiko sedang",
+        "con": "Butuh sondir dan monitoring subsiden"
+      },
+      {
+        "value": "deep",
+        "label": "Dalam/berisiko",
+        "pro": "Menggambarkan risiko konservatif",
+        "con": "Penanaman dan akses lebih mahal"
+      }
+    ],
+    "help": "Tidak otomatis berarti lokasi tertentu tebal gambut tertentu; ukur dengan auger dan survey.",
+    "metric": "Konstruksi, hidrologi, keselamatan"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "wtd",
+    "label": "Kondisi muka air gambut",
+    "options": [
+      {
+        "value": "wet",
+        "label": "Basah",
+        "pro": "Risiko bara dapat lebih rendah",
+        "con": "Instalasi bisa tergenang"
+      },
+      {
+        "value": "variable",
+        "label": "Fluktuatif",
+        "pro": "Fleksibilitas musiman",
+        "con": "Butuh kontrol dan rekaman sensor"
+      },
+      {
+        "value": "dry",
+        "label": "Kering kritis",
+        "pro": "Mendorong prioritas pencegahan",
+        "con": "Risiko kebakaran bawah permukaan berulang"
+      }
+    ],
+    "help": "Gunakan piezometer berulang dan datum elevasi yang konsisten; bukan estimasi dari satu citra.",
+    "metric": "Rewetting, risiko berulang"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "flood",
+    "label": "Paparan banjir",
+    "options": [
+      {
+        "value": "low",
+        "label": "Rendah",
+        "pro": "Bangunan standar lebih sederhana",
+        "con": "Tetap perlu banjir rencana"
+      },
+      {
+        "value": "seasonal",
+        "label": "Musiman",
+        "pro": "Bisa operasi multi-musim",
+        "con": "Platform, akses dan anchoring perlu adaptasi"
+      },
+      {
+        "value": "high",
+        "label": "Tinggi",
+        "pro": "Memicu desain ketahanan lebih kuat",
+        "con": "Flotasi/erosi/perendaman"
+      }
+    ],
+    "help": "Ketinggian banjir rencana memerlukan data historis + hidraulika lokasi.",
+    "metric": "Bangunan, pipa, HSE"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "heat",
+    "label": "Paparan panas di trase",
+    "options": [
+      {
+        "value": "low",
+        "label": "Jauh dari api",
+        "pro": "Pilihan termoplastik lebih leluasa",
+        "con": "Butuh validasi perubahan perimeter"
+      },
+      {
+        "value": "moderate",
+        "label": "Berisiko lokal",
+        "pro": "Proteksi parsial dimungkinkan",
+        "con": "Rute berubah saat kebakaran"
+      },
+      {
+        "value": "severe",
+        "label": "Terpapar langsung",
+        "pro": "Memicu redesain/rute aman",
+        "con": "HDPE/layflat terbuka tak layak"
+      }
+    ],
+    "help": "Bukan sama dengan suhu bara; perlu termokopel dan penilaian paparan lokasi.",
+    "metric": "Batas material, stop-work"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "fireType",
+    "label": "Tipe ancaman dominan",
+    "options": [
+      {
+        "value": "surface",
+        "label": "Api permukaan",
+        "pro": "Pompa portable sering responsif",
+        "con": "Risiko salah klasifikasi"
+      },
+      {
+        "value": "peat",
+        "label": "Bara dalam gambut",
+        "pro": "Perlu core verification dan sensor dalam",
+        "con": "Sulit dideteksi oleh drone saja"
+      },
+      {
+        "value": "mixed",
+        "label": "Campuran",
+        "pro": "Pakai pendekatan hibrida",
+        "con": "Personel dan kebutuhan air bervariasi"
+      }
+    ],
+    "help": "Aturan pemadaman dinilai terpisah; ini tidak mensimulasikan perilaku bara.",
+    "metric": "Strategi pemadaman, HSE"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "waterRights",
+    "label": "Status akses/pengambilan air",
+    "options": [
+      {
+        "value": "approved",
+        "label": "Terizin/terverifikasi",
+        "pro": "Prasyarat administratif terpenuhi",
+        "con": "Volume musim kemarau tetap perlu uji"
+      },
+      {
+        "value": "pending",
+        "label": "Sedang diperiksa",
+        "pro": "Masih dapat studi konsep",
+        "con": "Tidak boleh dinyatakan siap dibangun"
+      },
+      {
+        "value": "no",
+        "label": "Tidak berizin/ditolak",
+        "pro": "Mencegah pembangunan ilegal",
+        "con": "NO-GO sampai alternatif ditemukan"
+      }
+    ],
+    "help": "Status harus disertai bukti izin, hak air dan prioritas konservasi.",
+    "metric": "Gate perizinan"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "tenure",
+    "label": "Status hak lahan / ROW",
+    "options": [
+      {
+        "value": "approved",
+        "label": "Disetujui sah",
+        "pro": "Trase boleh dikaji lanjut",
+        "con": "Perlu persetujuan tiap pemilik"
+      },
+      {
+        "value": "pending",
+        "label": "Belum jelas",
+        "pro": "Tahap studi tetap berjalan",
+        "con": "Jangan konstruksi"
+      },
+      {
+        "value": "disputed",
+        "label": "Sengketa",
+        "pro": "Memicu stop go",
+        "con": "NO-GO permanen"
+      }
+    ],
+    "help": "Sertakan persetujuan komunitas adat yang terdampak.",
+    "metric": "Gate sosial/lahan"
+  },
+  {
+    "group": "Wilayah & kelayakan",
+    "key": "ecoPermit",
+    "label": "Persetujuan lingkungan",
+    "options": [
+      {
+        "value": "approved",
+        "label": "Disetujui",
+        "pro": "Memenuhi prasyarat formal",
+        "con": "Tetap monitoring nyata"
+      },
+      {
+        "value": "pending",
+        "label": "Belum final",
+        "pro": "Masih bisa simulasi",
+        "con": "Tidak siap implementasi"
+      },
+      {
+        "value": "rejected",
+        "label": "Ditolak",
+        "pro": "Memicu alternatif",
+        "con": "NO-GO untuk opsi berdampak"
+      }
+    ],
+    "help": "Asumsikan perlu verifikasi kategori dokumen lingkungan untuk setiap lokasi.",
+    "metric": "Gate lingkungan"
+  },
+  {
+    "group": "Sumber air & hidrologi",
+    "key": "waterSource",
+    "label": "Sumber air utama",
+    "options": [
+      {
+        "value": "canal",
+        "label": "Kanal",
+        "pro": "Dekat trase jaringan",
+        "con": "Risiko kemarau dan ekologi"
+      },
+      {
+        "value": "river",
+        "label": "Sungai",
+        "pro": "Ketersediaan bisa relatif besar",
+        "con": "Intake/backwater dan debit perlu data"
+      },
+      {
+        "value": "embung",
+        "label": "Embung/tampungan",
+        "pro": "Cadangan dekat lokasi",
+        "con": "Butuh konstruksi dan pengelolaan sedimentasi"
+      },
+      {
+        "value": "well",
+        "label": "Sumur dalam",
+        "pro": "Mungkin tidak bergantung kanal",
+        "con": "Hidrogeologi, izin dan dampak akuifer"
+      }
+    ],
+    "help": "Debit andal wajib diukur puncak kemarau; sumber alternatif untuk redundansi.",
+    "metric": "CAPEX intake, water balance"
+  },
+  {
+    "group": "Arsitektur",
+    "key": "tactic",
+    "label": "Taktik penanganan api",
+    "options": [
+      {
+        "value": "surface",
+        "label": "Serangan permukaan",
+        "pro": "Cocok untuk api permukaan yang dapat dijangkau",
+        "con": "Sulit menjamin bara dalam padam"
+      },
+      {
+        "value": "injection",
+        "label": "Injeksi terarah",
+        "pro": "Dapat diuji untuk bara dalam",
+        "con": "Harus validasi penetration dan core-depth"
+      },
+      {
+        "value": "hybrid",
+        "label": "Permukaan + injeksi",
+        "pro": "Fleksibel antara api atas dan bawah",
+        "con": "Komponen dan SOP lebih kompleks"
+      },
+      {
+        "value": "rewetonly",
+        "label": "Pencegahan rewetting saja",
+        "pro": "Fokus hidrologi jangka panjang",
+        "con": "BUKAN substitusi pemadaman api aktif"
+      }
+    ],
+    "help": "Taktik tidak mengubah konsumsi air baku/ha secara otomatis; ukur di pilot A/B.",
+    "metric": "Jumlah lance, syarat verifikasi, respons"
+  },
+  {
+    "group": "Pemantauan & respon",
+    "key": "airSupport",
+    "label": "Dukungan udara",
+    "options": [
+      {
+        "value": "none",
+        "label": "Tidak",
+        "pro": "Tanpa biaya penerbangan",
+        "con": "Akses api remote terbatas"
+      },
+      {
+        "value": "oncall",
+        "label": "Kesiapan koordinasi udara",
+        "pro": "Mekanisme dispatch tersedia",
+        "con": "Belum memiliki jam penerbangan"
+      },
+      {
+        "value": "helicopter",
+        "label": "Helikopter pelengkap",
+        "pro": "Membantu area yang tak terjangkau darat",
+        "con": "Biaya tinggi & ketergantungan cuaca"
+      }
+    ],
+    "help": "Harga jam helikopter adalah placeholder, bukan rate kontrak BNPB.",
+    "metric": "OPEX, izin, armada"
+  },
+  {
+    "group": "Arsitektur",
+    "key": "strategy",
+    "label": "Tipe arsitektur",
+    "options": [
+      {
+        "value": "portable",
+        "label": "Portable",
+        "pro": "Pindah cepat, CAPEX jalur rendah",
+        "con": "Waktu gelar berulang & pencurian selang"
+      },
+      {
+        "value": "semi",
+        "label": "Semi-permanen",
+        "pro": "Balance backbone dan mobilitas",
+        "con": "Butuh maintenance aset tetap"
+      },
+      {
+        "value": "backbone",
+        "label": "Backbone permanen",
+        "pro": "Siap disalurkan berulang",
+        "con": "CAPEX mahal; risiko oversizing"
+      }
+    ],
+    "help": "Skenario tidak membuktikan keefektifan pemadaman.",
+    "metric": "CAPEX, WBS, mobilisasi"
+  },
+  {
+    "group": "Arsitektur",
+    "key": "pipe",
+    "label": "Bahan jaringan utama",
+    "options": [
+      {
+        "value": "hdpe",
+        "label": "HDPE PE100",
+        "pro": "Anti korosi dan umur desain panjang pada kondisi tepat",
+        "con": "Tak tahan paparan api langsung"
+      },
+      {
+        "value": "layflat",
+        "label": "Layflat bersertifikat",
+        "pro": "Ringkas dan fleksibel",
+        "con": "Degradasi/kehilangan serta keterbatasan rating"
+      },
+      {
+        "value": "steel",
+        "label": "Baja lapis anti korosi",
+        "pro": "Relatif lebih tahan panas",
+        "con": "Berat, korosi, biaya & fondasi"
+      },
+      {
+        "value": "hybrid",
+        "label": "Hibrida HDPE + layflat + baja",
+        "pro": "Tiap segmen sesuai fungsi",
+        "con": "Kompleksitas adaptor dan inventory"
+      }
+    ],
+    "help": "Diameter dalam, rating pipa dan suhu kerja wajib dicocokkan.",
+    "metric": "Tekanan, biaya, pemasangan"
+  },
+  {
+    "group": "Arsitektur",
+    "key": "sdr",
+    "label": "SDR/kelas pipa PE",
+    "options": [
+      {
+        "value": "11",
+        "label": "SDR11 — PE100 PN16",
+        "pro": "Rating nominal lebih tinggi",
+        "con": "ID lebih kecil dan friksi lebih besar"
+      },
+      {
+        "value": "17",
+        "label": "SDR17 — PE100 PN10",
+        "pro": "Dinding lebih tipis dan murah",
+        "con": "Rating tekanan lebih rendah"
+      }
+    ],
+    "help": "PN rujukan 20°C; lakukan derating menurut temperatur dan transien. Tidak digunakan untuk selang/baja.",
+    "metric": "Diameter dalam, kehilangan tekan"
+  },
+  {
+    "group": "Arsitektur",
+    "key": "alignment",
+    "label": "Penempatan pipa",
+    "options": [
+      {
+        "value": "surface",
+        "label": "Atas tanah",
+        "pro": "Pemasangan cepat dan mudah inspeksi",
+        "con": "Api, pencurian, UV, lalu lintas"
+      },
+      {
+        "value": "protected",
+        "label": "Proteksi lokal",
+        "pro": "Biaya lebih rendah dibanding menanam semua",
+        "con": "Bagian lain masih terpapar"
+      },
+      {
+        "value": "buried",
+        "label": "Ditanam berizin",
+        "pro": "Perlindungan aset, UV & lalu lintas",
+        "con": "Merusak hidrologi/tepi gambut bila keliru"
+      },
+      {
+        "value": "raised",
+        "label": "Dudukan elevasi",
+        "pro": "Melewati genangan dengan kontrol",
+        "con": "Fondasi mahal, stabilitas geoteknik"
+      }
+    ],
+    "help": "Penanaman bukan otomatis solusi pada gambut dalam / kanal aktif.",
+    "metric": "Material, umur aset, biaya, risiko"
+  },
+  {
+    "group": "Arsitektur",
+    "key": "hotend",
+    "label": "Segmen ujung panas",
+    "options": [
+      {
+        "value": "metal",
+        "label": "Spool logam + lance",
+        "pro": "Pisahkan polimer dari panas",
+        "con": "Butuh sambungan dan perawatan"
+      },
+      {
+        "value": "hdpe",
+        "label": "HDPE hingga ujung",
+        "pro": "Terlihat murah",
+        "con": "DILARANG tanpa bukti suhu aman untuk bara"
+      },
+      {
+        "value": "remote",
+        "label": "Ujung jauh dari panas",
+        "pro": "Minimalkan eksposur",
+        "con": "Butuh selang pemadam tambahan"
+      }
+    ],
+    "help": "Tipe remote belum otomatis menambah item biaya lapangan, verifikasi harga.",
+    "metric": "Safety, detail ujung"
+  },
+  {
+    "group": "Pompa & tenaga",
+    "key": "pump",
+    "label": "Jenis pompa penggerak",
+    "options": [
+      {
+        "value": "diesel",
+        "label": "Diesel skid",
+        "pro": "Torsi dan pasokan BBM relatif fleksibel",
+        "con": "Berat, kebisingan, emisi"
+      },
+      {
+        "value": "gas",
+        "label": "Bensin portable",
+        "pro": "Ringan dan mobilisasi lebih cepat",
+        "con": "Konsumsi bensin & duty curve perlu cek"
+      },
+      {
+        "value": "electric",
+        "label": "Electric pump",
+        "pro": "Kontrol halus, emisi lokal rendah",
+        "con": "Butuh listrik andal/backup"
+      },
+      {
+        "value": "hybrid",
+        "label": "Diesel + portable bensin",
+        "pro": "Redundansi jenis mesin",
+        "con": "Inventory dua BBM & spare berbeda"
+      }
+    ],
+    "help": "Bukan jet pump rumah tangga; harus fire-duty Q–H rated.",
+    "metric": "CAPEX, energi, listrik, servis"
+  },
+  {
+    "group": "Pompa & tenaga",
+    "key": "redundancy",
+    "label": "Redundansi",
+    "options": [
+      {
+        "value": "none",
+        "label": "Tidak ada",
+        "pro": "CAPEX terendah",
+        "con": "Single point of failure"
+      },
+      {
+        "value": "cold",
+        "label": "Cold standby (gudang)",
+        "pro": "Cadangan fisik",
+        "con": "Butuh waktu penggantian"
+      },
+      {
+        "value": "installed",
+        "label": "Siap paralel/staged",
+        "pro": "Respon kegagalan lebih cepat",
+        "con": "Investasi dan valve kontrol tambahan"
+      }
+    ],
+    "help": "Kapasitas dua pompa harus divalidasi di kurva aktual; rating HP bukan pengganti.",
+    "metric": "Reliability, CAPEX"
+  },
+  {
+    "group": "Pompa & tenaga",
+    "key": "hasBooster",
+    "label": "Pompa booster seri",
+    "options": [
+      {
+        "value": "false",
+        "label": "Tidak",
+        "pro": "Rangkaian sederhana",
+        "con": "TDH mungkin tidak terpenuhi"
+      },
+      {
+        "value": "true",
+        "label": "Ya (uji kurva)",
+        "pro": "Peluang bagi head antar-stage",
+        "con": "Transien, NPSH, biaya tambahan"
+      }
+    ],
+    "help": "Booster memindahkan kontribusi head, bukan mengurangi total energi hidraulik.",
+    "metric": "Biaya, kewajiban kurva"
+  },
+  {
+    "group": "Pemantauan & respon",
+    "key": "drone",
+    "label": "Paket drone",
+    "options": [
+      {
+        "value": "none",
+        "label": "Tanpa drone",
+        "pro": "Hemat CAPEX",
+        "con": "Patroli manual meningkat"
+      },
+      {
+        "value": "rgb",
+        "label": "Drone RGB",
+        "pro": "Peta kondisi & akses",
+        "con": "Tidak bisa ukur suhu"
+      },
+      {
+        "value": "thermal",
+        "label": "Drone termal radiometrik",
+        "pro": "Anomali termal dan lokasi sasaran",
+        "con": "Asap tebal, emissivity dan bara dalam"
+      }
+    ],
+    "help": "Drone tidak boleh diterbangkan ke plume; kamera termal tidak membaca suhu bara di bawah tanah.",
+    "metric": "Deteksi, investasi"
+  },
+  {
+    "group": "Pemantauan & respon",
+    "key": "sensorTier",
+    "label": "Kepadatan sensor",
+    "options": [
+      {
+        "value": "none",
+        "label": "Manual saja",
+        "pro": "Hemat perangkat",
+        "con": "Data tidak kontinu"
+      },
+      {
+        "value": "basic",
+        "label": "WTD & suhu dasar",
+        "pro": "Alarm dasar",
+        "con": "Area tak tercakup"
+      },
+      {
+        "value": "extended",
+        "label": "Multi-depth dan tekanan",
+        "pro": "Lebih baik untuk core verification",
+        "con": "CAPEX, kalibrasi, maintenance"
+      }
+    ],
+    "help": "WTD, suhu tiap kedalaman, debit/tekanan dan data logger.",
+    "metric": "Biaya data, pemantauan"
+  },
+  {
+    "group": "Pemantauan & respon",
+    "key": "telemetry",
+    "label": "Jaringan telemetri",
+    "options": [
+      {
+        "value": "none",
+        "label": "Offline log",
+        "pro": "Tidak butuh sinyal",
+        "con": "Respon alarm lambat"
+      },
+      {
+        "value": "lora",
+        "label": "LoRa + gateway",
+        "pro": "Daya rendah, biaya sedang",
+        "con": "Site survey radio diperlukan"
+      },
+      {
+        "value": "satellite",
+        "label": "Satelit / radio cadangan",
+        "pro": "Lebih andal di remote bila coverage cocok",
+        "con": "Langganan & energi lebih mahal"
+      }
+    ],
+    "help": "Sensor alarm harus fail-safe: putus koneksi bukan berarti kondisi aman.",
+    "metric": "Sinyal, OPEX, telemetry"
+  },
+  {
+    "group": "Pemantauan & respon",
+    "key": "detection",
+    "label": "Rantai deteksi dini",
+    "options": [
+      {
+        "value": "manual",
+        "label": "Patroli regu",
+        "pro": "Teruji secara organisasi",
+        "con": "Skala coverage terbatas"
+      },
+      {
+        "value": "satellite",
+        "label": "Hotspot satelit + verifikasi",
+        "pro": "Cakupan luas",
+        "con": "Keterlambatan dan false positives"
+      },
+      {
+        "value": "integrated",
+        "label": "Satelit + drone + tanah",
+        "pro": "Triangulasi bukti lebih baik",
+        "con": "Data fusion serta SOP kompleks"
+      }
+    ],
+    "help": "Klasifikasi awal bukan pengganti observasi petugas lapangan.",
+    "metric": "Alert latency, staff, respons"
+  },
+  {
+    "group": "Multi-guna & ekologi",
+    "key": "rewetting",
+    "label": "Rewetting/sekat kanal",
+    "options": [
+      {
+        "value": "no",
+        "label": "Tidak",
+        "pro": "CAPEX struktur lebih rendah",
+        "con": "Kekeringan gambut belum ditangani"
+      },
+      {
+        "value": "yes",
+        "label": "Ya, dengan izin",
+        "pro": "Fokus pencegahan jangka panjang",
+        "con": "Backwater, pemeliharaan struktur, adaptasi sosial"
+      }
+    ],
+    "help": "Sekat kanal bukan membuat air baru; manfaat hanya jika neraca air dan jaringan kanal mendukung.",
+    "metric": "Dampak ekologis, CAPEX"
+  },
+  {
+    "group": "Multi-guna & ekologi",
+    "key": "agriculture",
+    "label": "Dukungan pertanian",
+    "options": [
+      {
+        "value": "none",
+        "label": "Tidak",
+        "pro": "Fokus respons karhutla",
+        "con": "Tidak ada co-benefit pertanian"
+      },
+      {
+        "value": "pilot",
+        "label": "Pilot pertanian tanpa bakar",
+        "pro": "Uji irigasi dan vegetasi adaptif",
+        "con": "Butuh izin, alokasi air"
+      },
+      {
+        "value": "network",
+        "label": "Jaringan pertanian luas",
+        "pro": "Potensi manfaat musim lain",
+        "con": "Risiko konflik air dan drainase"
+      }
+    ],
+    "help": "Tidak boleh meningkatkan drainase gambut; mandat YonTP perlu dasar surat tugas.",
+    "metric": "Investasi pertanian, hak air"
+  },
+  {
+    "group": "Multi-guna & ekologi",
+    "key": "floodUse",
+    "label": "Fungsi banjir",
+    "options": [
+      {
+        "value": "none",
+        "label": "Tidak ada",
+        "pro": "Tidak mencampur tujuan",
+        "con": "Kurang optimalisasi aset"
+      },
+      {
+        "value": "monitor",
+        "label": "Sensor WTD/banjir",
+        "pro": "Monitoring sepanjang tahun",
+        "con": "Belum memindahkan air banjir"
+      },
+      {
+        "value": "pump",
+        "label": "Pompa banjir terpisah",
+        "pro": "Fleksibel saat genangan kritis tertentu",
+        "con": "De-watering berbahaya bagi gambut"
+      }
+    ],
+    "help": "Jangan memakai pompa pemadam tekanan tinggi untuk mengeringkan gambut.",
+    "metric": "Investasi, persetujuan hidrologi"
+  },
+  {
+    "group": "Logistik & pemeliharaan",
+    "key": "logistics",
+    "label": "Konfigurasi gudang",
+    "options": [
+      {
+        "value": "hub",
+        "label": "Depo pusat",
+        "pro": "Pengawasan mudah",
+        "con": "Dispatch panjang"
+      },
+      {
+        "value": "split",
+        "label": "Hub + staging air/darat",
+        "pro": "Mendukung akses campuran",
+        "con": "Transfer tambahan"
+      },
+      {
+        "value": "forward",
+        "label": "Forward base dekat risiko",
+        "pro": "Respons lebih singkat",
+        "con": "Biaya dan pencurian"
+      }
+    ],
+    "help": "Rancang hub-spoke dan reorder point berdasarkan lead time aktual.",
+    "metric": "Biaya, respon dan stok"
+  },
+  {
+    "group": "Logistik & pemeliharaan",
+    "key": "security",
+    "label": "Risiko kehilangan aset",
+    "options": [
+      {
+        "value": "low",
+        "label": "Rendah",
+        "pro": "Pengamanan standar",
+        "con": "Tetap butuh inventaris"
+      },
+      {
+        "value": "mid",
+        "label": "Sedang",
+        "pro": "Perlu seal/kunci rutin",
+        "con": "Penjagaan menambah OPEX"
+      },
+      {
+        "value": "high",
+        "label": "Tinggi",
+        "pro": "Memicu proteksi dan asset tagging",
+        "con": "Biaya fence/CCTV/penjagaan"
+      }
+    ],
+    "help": "Nilai di sini adalah tingkat ancaman lokasi, bukan opsi untuk menghilangkan ancaman.",
+    "metric": "Proteksi, OPEX"
+  },
+  {
+    "group": "Logistik & pemeliharaan",
+    "key": "maint",
+    "label": "Kebijakan maintenance",
+    "options": [
+      {
+        "value": "basic",
+        "label": "Reaktif / minimal",
+        "pro": "OPEX servis tampak rendah",
+        "con": "Downtime dan kehilangan umur"
+      },
+      {
+        "value": "preventive",
+        "label": "Preventive terjadwal",
+        "pro": "Reliability lebih baik",
+        "con": "Inspeksi rutin memerlukan kru"
+      },
+      {
+        "value": "predictive",
+        "label": "Condition based + preventive",
+        "pro": "Early failure detection",
+        "con": "Sensor, analitik dan investasi"
+      }
+    ],
+    "help": "Interval OEM dan jam operasi mengalahkan interval ilustratif dashboard.",
+    "metric": "Service CAPEX/OPEX, risiko"
+  },
+  {
+    "group": "Logistik & pemeliharaan",
+    "key": "drill",
+    "label": "Latihan gabungan TNI/mitra",
+    "options": [
+      {
+        "value": "basic",
+        "label": "Orientasi dasar",
+        "pro": "Jam personel kecil",
+        "con": "Kesiapan belum terbukti"
+      },
+      {
+        "value": "annual",
+        "label": "Wet drill tahunan",
+        "pro": "Minimal 1 simulasi per tahun sebagai usulan",
+        "con": "Perlu after-action review"
+      },
+      {
+        "value": "quarterly",
+        "label": "Tabletop & wet drill triwulan",
+        "pro": "Lebih sering menemukan kegagalan",
+        "con": "Biaya dan waktu personel"
+      }
+    ],
+    "help": "Simulasi tanpa memantik kebakaran baru, melibatkan BPBD/Manggala Agni/TNI sesuai mandat.",
+    "metric": "Kesiapsiagaan, anggaran"
+  }
+];</script><script>(function(){
+ 'use strict';
+ const M=window.KarhutlaEngine, SCHEMA=window.KARHUTLA_SCHEMA;
+ const NUMERIC=[
+  {group:'Sumber air & hidrologi',key:'waterQ',label:'Debit sumber andal (L/detik)',min:0,max:1000,step:1,unit:'L/s',help:'Asumsi skenario. Harus diganti Q90/Q95 musim kemarau dari pengukuran BWS.'},
+  {group:'Sumber air & hidrologi',key:'envReserve',label:'Debit tersisa untuk ekologi & pengguna (L/s)',min:0,max:1000,step:1,unit:'L/s',help:'Bukan nilai baku; tetapkan melalui kajian KHG dan izin alokasi air.'},
+  {group:'Sumber air & hidrologi',key:'area',label:'Luas sasaran operasi (ha)',min:.1,max:1000,step:.1,unit:'ha',help:'Luas terbakar bukan selalu sama dengan luas terancam/bara aktif.'},
+  {group:'Sumber air & hidrologi',key:'waterPerHa',label:'Asumsi air per hektare (m³/ha)',min:50,max:6000,step:25,unit:'m³/ha',help:'Angka pra-FEED, WAJIB diverifikasi pilot; bukan konsumsi air baku standar.'},
+  {group:'Arsitektur',key:'networkLength',label:'Jaringan utama (m)',min:50,max:50000,step:50,unit:'m',help:'Jarak sepanjang trase, bukan jarak lurus. Profil hidraulik butuh node/elevasi.'},
+  {group:'Arsitektur',key:'branchLength',label:'Total cabang (m)',min:0,max:20000,step:25,unit:'m',help:'Asumsi total panjang jalur cabang, tidak mensimulasikan split tiap node.'},
+  {group:'Arsitektur',key:'od',label:'Diameter nominal/OD (mm)',min:90,max:400,step:10,unit:'mm',help:'HDPE menggunakan OD. Untuk selang layflat nilai dianggap pendekatan ID setelah faktor.'},
+  {group:'Arsitektur',key:'elevation',label:'Δ elevasi intake–ujung (m)',min:-25,max:120,step:1,unit:'m',help:'Naik 10 m ≈ +0,981 bar statis; turun 10m sebaliknya. Perlu profil lengkap, bukan satu Δz.'},
+  {group:'Arsitektur',key:'minorK',label:'Jumlah koefisien K minor loss',min:0,max:100,step:1,unit:'ΣK',help:'Jumlah kontribusi siku, valve, entry, dan penyempitan dalam sistem utama.'},
+  {group:'Arsitektur',key:'pressureEnd',label:'Tekanan sisa aplikator (bar)',min:.5,max:10,step:.1,unit:'bar',help:'Harus sesuai titik kerja lance/nozzle dan daya penetrasi; tidak boleh diasumsikan 10 bar tanpa data.'},
+  {group:'Arsitektur',key:'pipeTemp',label:'Temperatur air/pipa desain (°C)',min:10,max:60,step:1,unit:'°C',help:'Untuk derating HDPE skrining linear saja; verifikasi tabel/sertifikat pabrikan.'},
+  {group:'Pompa & tenaga',key:'flowLPM',label:'Target debit sistem (L/menit)',min:100,max:12000,step:100,unit:'LPM',help:'Model hanya satu trunk, bukan semua pompa cabang. Input menentukan TDH dan kebutuhan sumber.'},
+  {group:'Pompa & tenaga',key:'pumpCount',label:'Unit pompa operasi (buah)',min:1,max:8,step:1,unit:'unit',help:'Angka HP screening total, BUKAN pembuktian kapasitas paralel/seri.'},
+  {group:'Pompa & tenaga',key:'pumpEff',label:'Efisiensi pompa (0–1)',min:.35,max:.9,step:.01,unit:'rasio',help:'Gunakan dari duty point actual pump curve; asumsi default 0.65.'},
+  {group:'Logistik & pemeliharaan',key:'crew',label:'Jumlah personel regu (orang)',min:2,max:80,step:1,unit:'orang',help:'Belum memperhitungkan fatigue/handover shift ganda.'},
+  {group:'Logistik & pemeliharaan',key:'crewSpeed',label:'Produktivitas regu dasar (m/jam)',min:5,max:250,step:5,unit:'m/jam',help:'Default 75 m/jam pada asumsi medium lapangan; faktor akses dan metode diterapkan.'},
+  {group:'Logistik & pemeliharaan',key:'shiftHours',label:'Jam kerja efektif per shift (jam)',min:4,max:12,step:1,unit:'jam',help:'Beda dengan durasi kalender nyata dan waktu kerja lembur.'},
+  {group:'Logistik & pemeliharaan',key:'wage',label:'Upah per personel per hari (Rp)',min:100000,max:800000,step:10000,unit:'Rp/hari',help:'Asumsi; kontraktor/daerah/kontrak harus diverifikasi.'},
+  {group:'Logistik & pemeliharaan',key:'daysPerYear',label:'Hari operasi/regu per tahun',min:0,max:365,step:1,unit:'hari',help:'Pakai roster dan kalender risiko aktual.'},
+  {group:'Logistik & pemeliharaan',key:'operationHours',label:'Total jam pemompaan/tahun',min:0,max:8000,step:10,unit:'jam',help:'BBM estimasi akan berubah linear terhadap jam ini.'},
+  {group:'Multi-guna & ekologi',key:'canalBlocks',label:'Jumlah sekat kanal (buah)',min:0,max:50,step:1,unit:'buah',help:'Jumlah hasil layout hidrologi/izin; bukan berarti semakin banyak selalu baik.'},
+  {group:'Anggaran & horizon',key:'annualAvoidedLoss',label:'Manfaat ekonomi terverifikasi/tahun (Rp)',min:0,max:100000000000,step:100000000,unit:'Rp/tahun',help:'Default nol. Hanya masukkan biaya kerusakan yang benar-benar dapat diatribusikan/dibandingkan dengan baseline.'},
+  {group:'Anggaran & horizon',key:'verifiedHaAnnual',label:'Luas TERBUKTI padam/tahun (ha)',min:0,max:10000,step:1,unit:'ha',help:'Harus dari pemeriksaan perimeter–core–verify independen, bukan luas yang disiram.'},
+  {group:'Anggaran & horizon',key:'discountRate',label:'Diskonto NPV/BCR (%)',min:0,max:30,step:1,unit:'%',help:'Hanya skenario diskonto, sesuaikan kebijakan lembaga.'},
+  {group:'Pemantauan & respon',key:'helicopterHours',label:'Jam helikopter per tahun (jam)',min:0,max:400,step:1,unit:'jam',help:'Dihitung hanya untuk airSupport=helicopter, Rp130 juta/jam sebagai asumsi placeholder; perlu kontrak resmi.'},
+  {group:'Anggaran & horizon',key:'weightCost',label:'Bobot prioritas: biaya',min:0,max:100,step:5,unit:'skor',help:'Bobot preferensi bukan data lapangan; normalisasi otomatis.'},
+  {group:'Anggaran & horizon',key:'weightSafety',label:'Bobot: keselamatan & izin',min:0,max:100,step:5,unit:'skor',help:'Tidak dapat meluluskan NO-GO meski bobot diubah.'},
+  {group:'Anggaran & horizon',key:'weightEffectiveness',label:'Bobot: respons/efektivitas hipotesis',min:0,max:100,step:5,unit:'skor',help:'Bukan bukti extinction, diuji lewat matched pilot.'},
+  {group:'Anggaran & horizon',key:'weightAccess',label:'Bobot: kemudahan mobilisasi',min:0,max:100,step:5,unit:'skor',help:'Turunkan jika lokasi punya akses permanen andal.'},
+  {group:'Anggaran & horizon',key:'weightEnvironment',label:'Bobot: konservasi gambut',min:0,max:100,step:5,unit:'skor',help:'Tidak menghapus kewajiban persetujuan lingkungan.'},
+  {group:'Anggaran & horizon',key:'horizon',label:'Periode perhitungan TCO (tahun)',min:1,max:30,step:1,unit:'tahun',help:'TCO sederhana nominal, tanpa diskonto, residual, eskalasi.'},
+  {group:'Anggaran & horizon',key:'contingency',label:'Kontingensi CAPEX (%)',min:0,max:50,step:1,unit:'%',help:'Cadangan tidak menggantikan investigasi lokasi atau RFQ.'},
+  {group:'Anggaran & horizon',key:'priceFactor',label:'Pengali harga semua komponen',min:.5,max:2,step:.05,unit:'×',help:'Skenario inflasi/akses/vendor; belum merupakan eskalasi tahun.'},
+  {group:'Anggaran & horizon',key:'fuelPrice',label:'Harga solar asumsi (Rp/L)',min:6000,max:35000,step:500,unit:'Rp/L',help:'Jenis solar sesuai OEM dan ketentuan pengadaan; bukan kutipan harga harian.'},
+  {group:'Anggaran & horizon',key:'petrolPrice',label:'Harga bensin asumsi (Rp/L)',min:6000,max:35000,step:500,unit:'Rp/L',help:'Kebutuhan RON minimal mengikuti OEM, harga lokal diverifikasi.'},
+  {group:'Anggaran & horizon',key:'electricPrice',label:'Tarif listrik asumsi (Rp/kWh)',min:500,max:5000,step:100,unit:'Rp/kWh',help:'Tidak termasuk sambungan listrik baru dan demand charge.'}
+ ];
+ const GROUPS=['Wilayah & kelayakan','Sumber air & hidrologi','Arsitektur','Pompa & tenaga','Pemantauan & respon','Multi-guna & ekologi','Logistik & pemeliharaan','Anggaran & horizon'];
+ const LABELS={}; SCHEMA.forEach(d=>{LABELS[d.key]=d;});
+ const defaults=M.defaultState();let s=restore();let tab='ringkasan';let snapshotA=restoreSlot();let previous=null;let changed='';let filter='';let openGroups=new Set(['Wilayah & kelayakan','Arsitektur']);
+ function restore(){try{const j=JSON.parse(localStorage.getItem('karhutla-decision-v1'));return j&&typeof j==='object'?{...defaults,...clean(j)}:{...defaults};}catch(e){return {...defaults};}}
+ function clean(x){let out={};for(const key of Object.keys(defaults)){if(!(key in x))continue;let v=x[key];if(typeof defaults[key]==='number'){if(Number.isFinite(Number(v)))out[key]=Number(v);}else if(typeof defaults[key]==='boolean'){out[key]=!!v;}else if(typeof v==='string')out[key]=v;}return out;}
+ function save(){try{localStorage.setItem('karhutla-decision-v1',JSON.stringify(s));}catch(e){}}
+ function restoreSlot(){try{const o=JSON.parse(localStorage.getItem('karhutla-decision-slot-A'));return o&&typeof o==='object'?{...defaults,...clean(o)}:null;}catch(e){return null;}}
+ const el=id=>document.getElementById(id);
+ const escape=x=>String(x==null?'':x).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+ const fmt=x=>isFinite(x)?Number(x).toLocaleString('id-ID',{maximumFractionDigits:2}):'—';
+ const rup=x=>M.money(x);
+ const shrt=x=>!Number.isFinite(x)?'—':Math.abs(x)>=1e12?'Rp'+(x/1e12).toFixed(2)+' T':Math.abs(x)>=1e9?'Rp'+(x/1e9).toFixed(2)+' M':Math.abs(x)>=1e6?'Rp'+(x/1e6).toFixed(1)+' jt':rup(x);
+ const numericLabel=(v,unit)=>unit==='Rp/hari'||unit==='Rp/L'?rup(v):fmt(v)+(unit==='%'?'%':' '+unit);
+ function setValue(key,value){let before=M.assess(s);if(key==='hasBooster')value=value==='true';else if(NUMERIC.some(x=>x.key===key))value=Number(value);s[key]=value;
+  if(key==='strategy'){
+   const p=M.BASES.find(z=>z.id===value);if(p){s.networkLength=p.main;s.branchLength=p.branches;s.crew=p.crewBase; if(value==='portable'){s.pipe='layflat';s.pump='gas';s.pumpCount=2;s.alignment='surface';} if(value==='semi'){s.pipe='hybrid';s.pump='diesel';s.pumpCount=1;s.alignment='protected';}if(value==='backbone'){s.pipe='hdpe';s.pump='diesel';s.pumpCount=2;s.alignment='buried';}}}
+  if(key==='site'){const p={road:{access:'road',peatDepth:'mid',flood:'low'},kanal:{access:'mixed',peatDepth:'deep',flood:'seasonal'},dome:{access:'remote',peatDepth:'deep',flood:'seasonal'},remote:{access:'remote',peatDepth:'deep',flood:'high'}}[value];if(p)Object.assign(s,p);}
+  if(key==='waterSource'&&value==='well'){s.waterRights='pending';}
+  changed=key;previous=before;save();renderAll(key==='strategy'||key==='site'||key==='waterSource');
+ }
+ function createControls(){let out='';for(const group of GROUPS){let controls='';let list=[...SCHEMA.filter(d=>d.group===group),...NUMERIC.filter(d=>d.group===group)];for(const d of list){if(d.options){controls+=`<div class="input-field" title="${escape(d.help)}"><label for="f_${d.key}">${escape(d.label)}</label><select data-key="${d.key}" id="f_${d.key}">${d.options.map(o=>`<option value="${escape(o.value)}" ${String(s[d.key])===o.value?'selected':''}>${escape(o.label)}</option>`).join('')}</select><div class="input-help">${escape(d.metric)} · <span>${escape(d.help)}</span></div></div>`;
+ }else{controls+=`<div class="input-field"><label for="f_${d.key}">${escape(d.label)} <small>${escape(numericLabel(s[d.key],d.unit))}</small></label><input id="f_${d.key}" data-key="${d.key}" type="number" value="${escape(s[d.key])}" min="${d.min}" max="${d.max}" step="${d.step}"><div class="input-help">${escape(d.help)}</div></div>`;}}
+  out+=`<details ${openGroups.has(group)?'open':''} data-group="${escape(group)}"><summary>${escape(group)} <small>${list.length} parameter</small></summary>${controls}</details>`;
+ }
+ el('sideControls').innerHTML=out; el('sideCounts').textContent=`${SCHEMA.length} dimensi • ${SCHEMA.reduce((a,x)=>a+x.options.length,0)} pilihan • ${NUMERIC.length} parameter numerik`;}
+ function badges(status){let klass=status==='NO-GO'?'bad':status==='HOLD / VALIDASI'?'warn':'good';return `<span class="chip ${klass}">${escape(status)}</span>`;}
+ function kpi(label,value,desc){return `<div class="kpi"><div class="label">${escape(label)}</div><strong>${escape(value)}</strong><small>${escape(desc)}</small></div>`;}
+ function stats(rows){return rows.map(r=>`<div class="statline"><span>${escape(r[0])}</span><b>${escape(r[1])}</b></div>`).join('');}
+ function ul(rows,cls='red'){return `<ul class="risklist">${rows.map(x=>`<li><span class="bullet ${cls}"></span><span>${escape(x)}</span></li>`).join('')}</ul>`;}
+ function section(t,p,inner){return `<section class="panel"><h2>${t}</h2>${p?`<p>${p}</p>`:''}${inner}</section>`;}
+ function headerStatus(r){const c=r.decision==='NO-GO'?'bad':r.decision==='KONDISIONAL'?'good':''; return `<div class="status-banner ${c}"><div><div class="mini-label">Keputusan screening terkini</div><h2>${r.decision==='NO-GO'?'Rancangan belum memenuhi syarat minimum':r.decision==='HOLD / VALIDASI'?'Perlu validasi sebelum implementasi':'Dapat dilanjutkan ke tahap verifikasi FEED'}</h2><p>${r.hard.length} hambatan kritis • ${r.conditional.length} syarat belum terpenuhi • ${r.soft.length} catatan penyeimbang.</p></div>${badges(r.decision)}</div>`;}
+ function showChange(r){if(!previous||!changed)return '';const pctDiff=(a,b)=>b?100*(a-b)/b:0;let ds=r.fin.capex-previous.fin.capex,dt=r.fin.tco-previous.fin.tco,dh=r.hyd.tdh-previous.hyd.tdh,dl=r.hyd.readyHours-previous.hyd.readyHours;
+ return `<div class="panel" style="padding:12px 17px;border-color:#bcdedb;background:#f5fbfa"><div class="mini-label">Perubahan terakhir: ${escape(LABELS[changed]?.label||NUMERIC.find(n=>n.key===changed)?.label||changed)}</div><div class="rowline" style="margin-top:5px;justify-content:space-between"><span><b>Δ CAPEX</b> ${deltaMoney(ds)}</span><span><b>Δ TCO</b> ${deltaMoney(dt)}</span><span><b>Δ TDH</b> ${dh>=0?'+':''}${dh.toFixed(1)} m</span><span><b>Δ kesiapan</b> ${dl>=0?'+':''}${dl.toFixed(1)} jam</span></div></div>`;}
+ function deltaMoney(x){return `<span class="delta ${x>1000?'plus':x< -1000?'minus':'same'}">${x>=0?'+':'−'}${shrt(Math.abs(x))}</span>`;}
+ function chartBars(r){const vals=[['Biaya kontruksi/pengadaan',r.fin.direct],['Kontingensi',r.fin.contingency],['Operasi & BBM / tahun',r.fin.opex],['TCO nominal (5Y*)',r.fin.tco]];const mx=Math.max(...vals.map(x=>x[1]));return `<div class="barlist">${vals.map(x=>`<div class="baritem"><span>${x[0]}</span><div class="bar"><span style="width:${100*x[1]/mx}%"></span></div><b>${shrt(x[1])}</b></div>`).join('')}</div><small>*TCO mengikuti horizon terpilih, bukan selalu lima tahun.</small>`;}
+ function pipePlot(r){const h=r.hyd,max=Math.max(h.staticH+h.hf+h.hm+h.endpoint+4,10);const y=x=>200-x/max*135;const colors=['#196778','#2f8d87','#e29e4b'];const vals=[0,Math.max(0,h.staticH),Math.max(0,h.staticH+h.hf),Math.max(0,h.staticH+h.hf+h.hm)];
+ return `<div class="svg-wrap"><svg role="img" aria-label="Skema jalur pompa dan tekanan berbasis head satu segmen" viewBox="0 0 770 235"><rect x="0" y="0" width="770" height="235" fill="#f7fbfc"/><path d="M38 195H735" stroke="#d9e6e9" stroke-width="1"/><path d="M38 147H735 M38 99H735" stroke="#dfe8ea" stroke-width="1" stroke-dasharray="5 6"/><path d="M75 183L225 183L360 174L485 147L620 130L700 116" fill="none" stroke="#bed9cb" stroke-width="7" stroke-linecap="round"/><path d="M75 183L225 183L360 174L485 147L620 130L700 116" fill="none" stroke="#157e8c" stroke-width="3" stroke-dasharray="7 3"/><circle cx="85" cy="181" r="17" fill="#154d61"/><text x="85" y="186" text-anchor="middle" font-size="11" fill="white">P</text><circle cx="700" cy="116" r="7" fill="#ca7042"/><text x="72" y="210" font-size="12" fill="#386375">INTAKE</text><text x="635" y="94" font-size="12" fill="#386375">APLIKATOR</text><text x="45" y="28" font-size="12" font-weight="700" fill="#1b4f64">Head jalur: ${fmt(h.tdh)} m ≈ ${fmt(h.pressBar)} bar</text><text x="46" y="48" font-size="10" fill="#6d8491">Static ${fmt(h.staticH)} m  ·  friction ${fmt(h.hf)} m  ·  minor ${fmt(h.hm)} m  ·  residual ${fmt(h.endpoint)} m</text><rect x="470" y="16" width="9" height="9" rx="2" fill="#157e8c"/><text x="484" y="24" font-size="10" fill="#6d8491">Trase skematis — BUKAN kontur hasil survey</text><path d="M85 168V70H697V108" fill="none" stroke="#e0a259" stroke-width="2" stroke-dasharray="4 5"/><text x="380" y="63" font-size="10" text-anchor="middle" fill="#9b703d">Permukaan hidraulik skematis (bukan HGL terkalibrasi)</text></svg></div>`;}
+ function renderRingkasan(r){let m=r.hyd,f=r.fin;let exp=SCHEMA.filter(d=>['strategy','pipe','alignment','pump','waterSource'].includes(d.key)).map(d=>{let o=d.options.find(x=>x.value===String(s[d.key]));return `<div class="explain-card"><h3>${escape(d.label)} — ${escape(o.label)}</h3><div class="procon"><div class="pro"><b>Keuntungan</b> ${escape(o.pro)}</div><div class="con"><b>Kelemahan</b> ${escape(o.con)}</div></div><small>${escape(d.metric)}</small></div>`;}).join('');
+ const cards=`<div class="cards">${kpi('Total investasi awal',shrt(f.capex),'Termasuk kontingensi '+s.contingency+'%')}${kpi('Operasi tahunan',shrt(f.opex),'BBM, maintenance, SDM & logistik')}${kpi('TCO '+s.horizon+' tahun',shrt(f.tco),'Nominal, tanpa diskonto')}${kpi('Tekanan awal dibutuhkan',m.pressBar.toFixed(2)+' bar','Pada '+fmt(s.flowLPM)+' LPM, OD '+s.od+' mm')}</div>`;
+ let water=f.waterVolume;
+ return `${headerStatus(r)}${showChange(r)}${cards}<div class="grid2"><section class="panel"><h2>Audit kelayakan dan data wajib</h2><p>Gates <b>tidak diganti</b> oleh total skor. Ini screening, bukan persetujuan desain.</p>${r.hard.length?'<h3>Hambatan kritis</h3>'+ul(r.hard,'red'):''}${r.conditional.length?'<h3>Perlu divalidasi</h3>'+ul(r.conditional,''):'<div class="chip good">Tidak ada hambatan administratif dalam input</div>'}</section><section class="panel"><h2>Hasil operasional instan</h2>${stats([['Debit sumber bersih',fmt(m.availableLPMin)+' LPM'],['Target pompa',fmt(s.flowLPM)+' LPM'],['Kebutuhan air per operasi',fmt(water)+' m³'],['Durasi pemompaan teoritis',fmt(m.waterHours)+' jam'],['Daya poros screening',fmt(m.hp)+' HP'],['BBM diesel / jam',fmt(f.fuelDieselHr)+' L'],['BBM bensin / jam',fmt(f.fuelPetrolHr)+' L'],['Gelar+instalasi ilustratif',fmt(m.installDays)+' shift'],['Waktu awal siap ilustratif',fmt(m.readyHours)+' jam']])}</section></div><div class="grid2"><section class="panel"><h2>Pembentuk biaya</h2>${chartBars(r)}</section><section class="panel"><h2>Profil jalur & head loss</h2>${pipePlot(r)}</section></div>${section('Pengaruh pilihan desain','Bila material, akses, atau pompa diganti, semua keluaran di atas dihitung ulang saat itu juga.',exp)}
+ ${section('Kesimpulan sementara','Penerapan hanya boleh setelah field survey, water balance, izin, vendor duty point, desain thermal dan verifikasi independen.',`<div class="rowline"><span class="chip neutral">Kesiapan heuristik ${(r.reliab*100).toFixed(0)}%</span><span class="chip neutral">Skor preferensi ${r.score.toFixed(0)}/100</span><span class="chip neutral">Risiko screening ${r.riskRisk}/100</span></div><p><b>Ketiga nilai bukan probabilitas empiris.</b> Gunakan untuk memilah opsi yang patut diuji, bukan untuk menyatakan teknologi pasti unggul.</p>`)} `;
+ }
+ function renderAlternatif(r){const comps=M.compare(s).sort((a,b)=>b.score-a.score);const winner=comps.find(x=>!x.hard.length);const table=`<div class="tablewrap"><table class="datatable scenario-comparison"><thead><tr><th>Konfigurasi hipotetis</th><th class="right">CAPEX</th><th class="right">OPEX / th</th><th class="right">TCO</th><th class="right">Instalasi jam</th><th class="right">Head bar</th><th class="right">Skor*</th><th>Gate</th><th>Ubah ke preset</th></tr></thead><tbody>${comps.map(x=>`<tr class="${winner?.base.id===x.base.id?'best':''}"><td><b>${escape(x.base.name)}</b></td><td class="right">${shrt(x.fin.capex)}</td><td class="right">${shrt(x.fin.opex)}</td><td class="right">${shrt(x.fin.tco)}</td><td class="right">${fmt(x.hyd.installHours)}</td><td class="right">${fmt(x.hyd.pressBar)}</td><td class="right">${x.score.toFixed(1)}</td><td>${badges(x.decision)}</td><td><button data-scenario="${x.base.id}">Pilih</button></td></tr>`).join('')}</tbody></table></div>`;
+ const pipeRows=[['hdpe','HDPE PE100','Koridor tetap, sumber andal','Rencana nominal min 50 tahun*','Panas ekstrem/pekat, perlindungan wajib'],['layflat','Layflat fire hose','Api berpindah, pemasangan sementara','Uji dan penggantian berdasarkan OEM','Pencurian, aus dan paparan panas'],['steel','Baja dilapisi','Segmen pendek dekat panas/struktur','Perlu program coating & inspeksi','Berat, korosi, fondasi'],['hybrid','Hibrida PE+layflat+baja','Lokasi kombinasi tetap dan dinamis','Umur campuran tiap komponen','Adapters, stok dan QC kompleks']].map(([id,label,where,life,warning])=>{let x=M.assess({...s,pipe:id});return `<tr ${s.pipe===id?'style="background:#e8f4f0"':''}><td><b>${label}</b></td><td>${where}</td><td>${life}</td><td>${warning}</td><td class="right">${shrt(x.fin.capex)}</td><td class="right">${fmt(x.hyd.pressBar)} bar</td><td>${badges(x.decision)}</td><td><button data-choose="pipe" data-option="${id}">Coba</button></td></tr>`;}).join('');
+ const materialsPanel=section('HDPE vs layflat vs baja — pada kondisi input sama','*Umur referensi PE100 50 tahun dalam desain tekanan/suhu konvensional, BUKAN umur jaminan gambut terbakar. Perbandingan biaya mengikuti quantity/material model dan harus RFQ.',`<div class="tablewrap"><table class="datatable"><thead><tr><th>Material</th><th>Penggunaan paling logis</th><th>Ketahanan / maintenance</th><th>Risiko utama</th><th class="right">CAPEX</th><th class="right">Bar</th><th>Gate</th><th>Uji</th></tr></thead><tbody>${pipeRows}</tbody></table></div>`);
+ const scoreBars=r=>Object.entries(r.profileScores).map(([k,v])=>`<div class="baritem"><span>${({capital:'Biaya awal',safety:'Kelayakan/safety',ops:'Mobilisasi',ecology:'Ekologi',effectiveness:'Kelengkapan respons'})[k]}</span><div class="bar"><span style="width:${v}%"></span></div><b>${v.toFixed(0)}</b></div>`).join('');
+ return `${headerStatus(r)}${materialsPanel}${section('Bandingkan tiga arsitektur','Perbandingan memakai asumsi lokasi, debit sumber, kedalaman gambut, dan tingkat risiko yang sama. Panjang jaringan berbeda sesuai preset konseptual. Tanda skor tidak membuktikan efektivitas lapangan.',table)}<div class="grid2">${section('Skor keputusan pilihan aktif','Skor ini sekadar pembobotan asumsi dan tidak boleh membatalkan NO-GO.',`<div class="barlist">${scoreBars(r)}</div>`)}${section('Apa yang membuat rekomendasi berubah?','Contoh hipotesis keputusan:',`<ul class="risklist"><li><span class="bullet gray"></span> Api kecil berpindah dan akses baik → portable sering lebih fleksibel.</li><li><span class="bullet gray"></span> Kebakaran berulang dengan sumber andal → semi-permanen mungkin masuk akal.</li><li><span class="bullet gray"></span> Koridor berisiko persisten dan hak lahan jelas → backbone layak dianalisis TCO.</li><li><span class="bullet gray"></span> Pada gambut kering, pemadaman saja tidak menyelesaikan masalah; rewetting harus diuji.</li></ul>`)} </div>${section('Semua kombinasi tidak bisa dianggap independen','Mesin menguji ulang seluruh 30 dimensi dan 93 pilihan, tetapi setiap pilihan saling terkait melalui syarat fisik, legal, dan hidrologi. Perbandingan otomatis adalah skrining pra-FEED, bukan klaim Pareto optimum global.',`<div class="warning-box"><b>Metode validasi final:</b> time-motion deployment, hydraulic flow test, water drawdown, keterjadian menyala kembali 7–90 hari, biaya total operasional, ecological impact dan BACI/A-B comparison. Jangan memilih pemenang dari skor prediksi saja.</div>`)} `;
+ }
+ function renderTeknis(r){let h=r.hyd,s=r.s;let hft=10.67*s.networkLength*Math.pow(s.flowLPM/60000,1.852)/(Math.pow(h.di,4.871)*Math.pow(s.pipe==='layflat'?120:s.pipe==='steel'?120:135,1.852));return `${headerStatus(r)}<div class="grid2">${section('Hidraulika utama (Hazen–Williams)','Satu trunk ekuivalen. Cabang paralel dan kurva pompa belum diselesaikan melalui EPANET.',stats([['Diameter dalam',fmt(h.di*1000)+' mm'],['Kecepatan air',fmt(h.vel)+' m/s'],['Rugi friksi',fmt(h.hf)+' m'],['Rugi minor',fmt(h.hm)+' m'],['Head elevasi',fmt(h.staticH)+' m'],['Head residual',fmt(h.endpoint)+' m'],['Asumsi suction/filter', '3,50 m'],['TDH',fmt(h.tdh)+' m'],['Tekanan',fmt(h.pressBar)+' bar'],['Daya poros',fmt(h.shaftKw)+' kW']]))}${section('Perhitungan contoh & interpretasi','Perubahan angka kiri langsung terpropagasi.',`<div class="metricgroup"><div class="metric"><small>ΔP jika +10 m naik</small><b>0,981 bar</b></div><div class="metric"><small>Derating suhu screening</small><b>${fmt(h.tempDerate*100)}%</b></div><div class="metric"><small>PN nominal PE</small><b>PN${h.nominalPN}</b></div></div><p>Hydraulic horsepower = ρgQH / η. Jika pipa HDPE, nominal OD diperbaiki menggunakan <code>ID ≈ OD × (1 − 2/SDR)</code>. Jangan memaksa 2.000 LPM dengan menyebutnya pipa 6 inci tanpa ID.</p><p>Pipa dua kilometer dengan elevasi naik memerlukan head statis + head friksi + minor losses + residual; booster tidak mengurangi energi total, hanya membagi tekanan dan posisi pemompaan.</p>`)} </div>${section('Sistem alir & elevasi — skema','Skema menunjukkan ketergantungan, bukan peta/topografi hasil survei.',pipePlot(r))}${section('Formula yang dipakai mesin simulasi','Beberapa persamaan sederhana digunakan untuk kalkulasi pra-FEED. Rumus final jaringan harus menyelesaikan semua node dan tiap duty point.',`<div class="tablewrap"><table class="datatable"><thead><tr><th>Model</th><th>Rumus</th><th>Syarat/ketelitian</th></tr></thead><tbody>${[
+  ['Debit','Q [m³/s] = LPM / 60.000','Target dari kebutuhan aplikasi, diverifikasi nozzle'],
+  ['Kecepatan','v = 4Q /(π Dᵢ²)','Dᵢ aktual, bukan OD'],
+  ['Hazen–Williams','hƒ = 10,67 × L × Q^1,852 /(C^1,852 × Dᵢ^4,871)','SI; penyederhanaan untuk kondisi stasioner'],
+  ['Head minor','hₘ = ΣK × v²/(2g)','Fitting/valve harus diinvetarisasi'],
+  ['Head statis','ΔP = ρ g Δz → 0,0981 bar/m','Elevasi naik 10 m = ~0,981 bar'],
+  ['Total dynamic head','TDH = Δz + hƒ + hₘ + h_res + h_intake','Node kritis butuh EPANET'],
+  ['Daya poros','Pshaft = ρ g Q TDH / ηpump','Motor perlu tambahan derating/margin dan duty Q–H'],
+  ['Volume aplikasi','V = A [ha] × kebutuhan m³/ha','Nilai input hanya hipotesis'],
+  ['Debit sumber bersih','Qnet = Qandal − Qekologi','Perlu kurva andalan kemarau dan izin'],
+  ['Solar diesel','L/jam ≈ Pshaft[kW] × 0,27 / 0,84','BSFC kg/kWh dan massa jenis kg/L asumsi'],
+  ['Biaya pengadaan','CAPEX = Σ(qty × harga) × (1 + kontingensi)','PPN belum seragam; vendor RFQ dibutuhkan'],
+  ['Biaya total','TCO = CAPEX + horizon × OPEX','Nominal tanpa discount rate & disposal'],
+  ['Kinerja A/B','Δ = E[Y│B] − E[Y│A]','Perlu replikasi, matching, endpoint terukur']
+ ].map(x=>`<tr><td><b>${escape(x[0])}</b></td><td><code>${escape(x[1])}</code></td><td>${escape(x[2])}</td></tr>`).join('')}</tbody></table></div>`)} `;
+ }
+ function renderBiaya(r){let f=r.fin, names=[['Energi/BBM',f.energyAnnual],['Upah operasi',f.wageAnnual],['Servis & suku cadang',f.serviceAnnual],['Patroli & drone',f.patrolling],['Telemetri',f.monitor],['Keamanan',f.protection],['Logistik',f.logistics],['Latihan & AAR',f.drill],['Dukungan udara',f.airAnnual]];return `<div class="cards">${kpi('Pengadaan + konstruksi',shrt(f.direct),'subtotal BOQ')}${kpi('Kontingensi',shrt(f.contingency),s.contingency+'% dari direct')}${kpi('CAPEX lengkap',shrt(f.capex),'total estimasi skenario')}${kpi('TCO nominal',shrt(f.tco),s.horizon+' tahun tanpa diskonto')}</div><div class="grid2">${section('OPEX tahunan per jenis biaya','Biaya dirinci dan dijumlahkan dari semua subkomponen. Asumsi jam operasi & SDM dapat diedit.',stats([...names.map(x=>[x[0],rup(x[1])]),['TOTAL OPEX',rup(f.opex)]]))}${section('Biaya operasional terhubung ke desain','Pompa, jalur akses, drone, dan pemeliharaan mengubah biaya.',`<div class="metricgroup"><div class="metric"><small>Solar diesel</small><b>${fmt(f.fuelDieselHr)} L/j</b></div><div class="metric"><small>Bensin</small><b>${fmt(f.fuelPetrolHr)} L/j</b></div><div class="metric"><small>Tenaga listrik</small><b>${fmt(f.gridKWhHr)} kWh/j</b></div></div>${chartBars(r)}<p>Kebutuhan solar dibentuk dari BSFC dan daya poros; bensin memakai contoh konsumsi OEM pada titik operasi tertentu sehingga tidak proporsional terhadap semua Q–H.</p>`)} </div>${section('Cost–benefit analysis (CBA) & ambang impas','Nilai manfaat di kiri default nol sampai ada bukti. Ini bukan estimasi otomatis pengurangan kebakaran.',stats([['Manfaat ekonomi/tahun input',rup(f.annualBenefit)],['Manfaat minimum/tahun agar impas',rup(f.breakevenAnnual)],['NPV neto '+s.horizon+' tahun',rup(f.npv)],['Benefit-cost ratio (BCR)',f.bcr.toFixed(2)+'×'],['Biaya operasi / ha BENAR-BENAR padam',f.costVerifiedHa==null?'Belum ada data':rup(f.costVerifiedHa)+'/ha']])+`<p>NPV = −CAPEX + Σ (Manfaat tahunan − OPEX)/(1 + diskonto)^t. BCR = PV manfaat / PV biaya. Keputusan CBA tidak sah sampai manfaat relatif terhadap baseline terbukti dan dihindari penghitungan ganda.</p>`)}${section('Bill of Quantities — seluruh komponen','Tabel diurutkan dari komponen termahal. Harga dan kuantitas berasal dari basis RAB sebelumnya, lalu diubah dengan aturan pilihan. Kuantitas sambungan/flensa/baut BELUM menjadi DED. Gunakan ekspor CSV untuk RFQ.',`<div class="rowline" style="justify-content:space-between;margin:9px 0 13px"><input class="search" id="boqSearch" placeholder="Cari peralatan, bahan, sumber harga…" value="${escape(filter)}"><button class="btn" data-action="csv">Ekspor BOQ CSV</button></div><div id="boqTable">${renderBoqTable(r)}</div>`)} `;}
+ function renderBoqTable(r){let ls=r.boq.filter(x=>(x.name+' '+x.origin).toLowerCase().includes(filter.toLowerCase()));return `<div class="tablewrap"><table class="datatable"><thead><tr><th>ID</th><th>Komponen (spesifikasi dasar)</th><th class="right">Qty</th><th class="right">Harga unit*</th><th class="right">Jumlah*</th><th>Status asal angka</th></tr></thead><tbody>${ls.map(x=>`<tr><td><b>${escape(x.id)}</b></td><td>${escape(x.name)}</td><td class="right">${fmt(x.q)}</td><td class="right">${rup(x.price*s.priceFactor)}</td><td class="right"><b>${rup(x.total)}</b></td><td>${escape(x.origin)}</td></tr>`).join('')}</tbody></table></div><div class="subdued" style="padding:12px">${ls.length} jenis komponen tampil • *Estimasi pra-FEED, belum termasuk pengujian kontrak/PPN final. RAB 40 baris awal disesuaikan pilihan & kebutuhan perlengkapan.</div>`;}
+ function renderRisiko(r){return `${headerStatus(r)}<div class="grid2">${section('NO-GO / STOP WORK','Aturan ini tidak boleh dihapus hanya untuk menaikkan skor.',r.hard.length?ul(r.hard,'red'):'<span class="chip good">Tidak ada NO-GO terdeteksi pada input sekarang (bukan bukti lapangan)</span>')}${section('Syarat bersyarat / gap bukti','Jika data belum diukur, status HOLD dan jangan menyimpulkan siap konstruksi.',r.conditional.length?ul(r.conditional,''):'<span class="chip good">Tidak ada gap tersurat, audit independen tetap wajib.</span>')} </div>${section('Risiko operasional dan eksternalitas','Kelemahan pilihan saat ini dan cara mitigasi yang relevan.',ul(r.soft,'gray'))}${section('Gate sebelum kontrak dan sebelum operasi','Gating tetap independen dari scoring biaya.',`<div class="tablewrap"><table class="datatable"><thead><tr><th>Gate</th><th>Data / verifikasi minimum</th><th>Instansi / reviewer</th></tr></thead><tbody>${[
+ ['G0 Hukum & masyarakat','Hak penggunaan lahan, alokasi air, persetujuan KHG/lingkungan','Pemda, KLH/Kemenhut, BWS, masyarakat adat'],
+ ['G1 Sumber air','Q90/Q95, neraca ekologi, kualitas air, dry season, alternatif pasokan','BWS, DLH, laboratorium'],
+ ['G2 Topografi','DEMNAS + RTK/leveling + profil trase, akses logistik & banjir rencana','BIG, surveyor, BWS'],
+ ['G3 Peat ground truth','Auger peat thickness, WTD multi-well, geoteknik, suhu multi-depth','Pakar gambut, universitas, lab'],
+ ['G4 Design equipment','Pump vendor Q–H/NPSH, SDR, surge, pressure test, chemical compatibility','Engineer lisensi, OEM, QA'],
+ ['G5 Field effectiveness','Matched A/B; depth verified, reignition 7/30/90d, water/ha, cost/verified hectare','Evaluator independen'],
+ ['G6 Preparedness','Annual TNI/YonTP–BPBD–Manggala Agni wet drill, log BBM dan maintenance','Komandan & HSE']
+ ].map(x=>`<tr><td><b>${x[0]}</b></td><td>${x[1]}</td><td>${x[2]}</td></tr>`).join('')}</tbody></table></div>`)} `;}
+ function renderSimulasi(r){const mc=M.drawRiskMC(s,800); const originals=['od','flowLPM','elevation','waterQ','networkLength','waterPerHa'];let sens=[];for(let key of originals){let v=Number(s[key]);let step=key==='od'?40:key==='waterQ'?20:key==='elevation'?10:key==='flowLPM'?500:key==='networkLength'?500:200;let lower={...s,[key]:Math.max(key==='elevation'?-25:key==='waterQ'?0:1,v-step)},upper={...s,[key]:v+step};let l=M.assess(lower),u=M.assess(upper);sens.push({key,step,lo:l,hi:u});}
+ let labs={od:'Diameter pipa',flowLPM:'Target debit',elevation:'Naik-turun elevasi',waterQ:'Debit sumber',networkLength:'Panjang trase',waterPerHa:'Kebutuhan air/ha'};
+ let chart=`<div class="barlist">${[['P10 rendah',mc.low],['P50 median',mc.mid],['P90 tinggi',mc.high]].map(x=>`<div class="baritem"><span>${x[0]}</span><div class="bar"><span style="width:${x[1]/mc.high*100}%;background:${x[0].startsWith('P90')?'#d39c4e':'#2a8c91'}"></span></div><b>${shrt(x[1])}</b></div>`).join('')}</div>`;
+ return `${section('Uncertainty Monte Carlo | '+mc.samples+' contoh','Uji rentang biaya berdasarkan variasi asumsi unit cost, energi, gaji dan OPEX. Bukan probabilitas empiris harga tender.',`${chart}${stats([['TCO deterministik',shrt(r.fin.tco)],['P10',rup(mc.low)],['P50',rup(mc.mid)],['P90',rup(mc.high)]])}`)}${section('Sensitivity: enam variabel utama','Perhitungan otomatis ketika satu parameter diturunkan/dinaikkan sementara yang lain tetap.',`<div class="tablewrap"><table class="datatable"><thead><tr><th>Input & perubahan</th><th class="right">CAPEX bawah</th><th class="right">CAPEX atas</th><th class="right">TDH bawah</th><th class="right">TDH atas</th><th>Gate</th></tr></thead><tbody>${sens.map(x=>`<tr><td><b>${labs[x.key]}</b> ±${fmt(x.step)}</td><td class="right">${shrt(x.lo.fin.capex)}</td><td class="right">${shrt(x.hi.fin.capex)}</td><td class="right">${fmt(x.lo.hyd.tdh)} m</td><td class="right">${fmt(x.hi.hyd.tdh)} m</td><td>${badges(x.hi.decision)}</td></tr>`).join('')}</tbody></table></div>`)}${section('Model berikutnya yang harus dikalibrasi','Aplikasi ini baru kalkulator aliran tunak, BoQ dan heuristic decision gates; validasi fisik belum dilakukan.',`<div class="grid3">${[
+ ['EPANET / WaterGEMS','Network multi-node: pressure profile, loop, demand zones, valve losses, fire duty. Input: node elevation, length, ID, fitting, pump Q–H.'],
+ ['MODFLOW + KHG','Groundwater recharge, drawdown, canal water balance, seasonal WTD dan dampak rewetting. Input: K, transmissivity, boundaries, rain/ET.'],
+ ['Surge transient','Water hammer saat stop/start, pressure class, check valve dan relief. Input: wave speed, closing time, node.'],
+ ['Drone / spatial analytics','Hotspot FRP + thermal anomaly + RGB ground truth, thermal correction, patrol route. Input: emissivity, GSD, cloud/smoke, WTD.'],
+ ['Logistics discrete event','Distribusi pompa, roll selang, perahu, personel, kecepatan pemasangan pada medan berbeda. Input: distribusi waktu nyata.'],
+ ['BACI / matched A-B pilot','Pemadaman permukaan, injeksi/hibrida, rewetting; outcome extinction-depth, reignition, m³/ha dan cost/verified ha.']
+ ].map(x=>`<div class="phase"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('')}</div>`)} `;}
+ function renderJejak(r){let choices=SCHEMA.map(d=>({d,option:d.options.find(o=>o.value===String(s[d.key]))}));return `${section('Jejak keputusan sebab-akibat','Pilihan di kiri menciptakan beberapa konsekuensi sekaligus. Model menampilkannya dalam rantai dependensi ini.',`<div class="flowbox"><div class="flownode">Lokasi & izin</div><div class="flownode">Teknologi & kapasitas</div><div class="flownode">Hidraulik + logistik</div><div class="flownode">Biaya & gate</div></div>${r.dependencies.map(x=>`<div class="trace"><h3>${escape(x.from)} → ${escape(x.out)}</h3><p>${escape(x.impact)}</p></div>`).join('')}`)}${section('Matriks pilihan lengkap — 93 opsi untuk 30 dimensi','Pada setiap baris, sistem menjalankan ulang satu pilihan terhadap kondisi aktif saat ini dan menampilkan dampak CAPEX, TCO serta keputusan. Perbandingan satu-variabel-berubah, bukan seluruh kombinasi silang.',`<div class="tablewrap"><table class="datatable"><thead><tr><th>Dimensi</th><th>Alternatif</th><th>Plus</th><th>Minus</th><th class="right">ΔCAPEX</th><th class="right">ΔTCO</th><th>Gate</th><th>Jalankan</th></tr></thead><tbody>${SCHEMA.map(d=>d.options.map(o=>{let ns={...s,[d.key]:d.key==='hasBooster'?o.value==='true':o.value},rr=M.assess(ns), active=String(s[d.key])===o.value;return `<tr ${active?'style="background:#edf7f4"':''}><td><b>${escape(d.label)}</b></td><td>${escape(o.label)}</td><td>${escape(o.pro)}</td><td>${escape(o.con)}</td><td class="right">${deltaMoney(rr.fin.capex-r.fin.capex)}</td><td class="right">${deltaMoney(rr.fin.tco-r.fin.tco)}</td><td>${badges(rr.decision)}</td><td><button data-choose="${escape(d.key)}" data-option="${escape(o.value)}" ${active?'disabled':''}>${active?'Aktif':'Pilih'}</button></td></tr>`;}).join('')).join('')}</tbody></table></div>`)} `;}
+ function renderDocs(r){return `${section('Petunjuk pengambilan keputusan','Pengaturan setiap opsi langsung menghitung ulang tanpa server; ideal untuk workshop lintas instansi. Eksport JSON sebagai jejak audit.',`<div class="grid3">${[
+ ['1. Masukkan lokasi','Gunakan tipologi, kemudian isi data pengukuran aktual Q90/Q95, WTD, profil elevasi dan akses. Default contoh bukan nilai Kalimantan Tengah.'],
+ ['2. Saring syarat wajib','Pastikan izin air, status lingkungan, hak lahan, risiko panas, sumber air, dan kapasitas pompa tidak berstatus NO-GO.'],
+ ['3. Pilih arsitektur','Coba portable, semi-permanen, backbone; pilih bahan pipa, OD, SDR, rute, pompa dan segmen ujung yang aman.'],
+ ['4. Audit TCO & risiko','Bandingkan CAPEX, OPEX, ton material, BBM, crew-days, risiko banjir, pencurian, ekologi dan maintenance.'],
+ ['5. Uji sensitivitas','Jalankan Monte Carlo & ± variasi, periksa desain untuk keadaan terburuk dan harga lokal.'],
+ ['6. Simpan keputusan','Ekspor JSON/CSV lalu revisi DED, uji lapangan A/B dan RFQ vendor sebelum pengadaan.']
+ ].map(x=>`<div class="phase"><b>${x[0]}</b><p>${x[1]}</p></div>`).join('')}</div>`)}${section('Data publik dan lembaga yang harus memberi data','Agar hasil dashboard beralih dari pra-FEED ke FEED.',`<div class="tablewrap"><table class="datatable"><thead><tr><th>Data</th><th>Lembaga</th><th>Data wajib</th><th>Akses awal</th></tr></thead><tbody>${[
+ ['DEMNAS, elevasi','BIG','DSM/DTM/benchmark elevasi + RTK','https://geoservices.big.go.id'],
+ ['Debit andalan sumber air','BWS Kalimantan II / PU','Q90/Q95, water permit, debit musim kering','https://sda.pu.go.id'],
+ ['KHG & ekologi gambut','KLH/Kemenhut/DLH provinsi','KHG, tutupan, water table, fungsi lindung','https://geoportal.menlhk.go.id'],
+ ['Hotspot FRP','NASA FIRMS','Time-stamped MODIS/VIIRS, confidence, FRP','https://firms.modaps.eosdis.nasa.gov/api/'],
+ ['Cuaca & iklim','BMKG','Hujan, angin, FWI/kekeringan, kondisi kemarau','https://data.bmkg.go.id'],
+ ['Risiko bencana','BNPB/BPBD','InaRISK, kejadian historis, kapasitas satgas','https://inarisk.bnpb.go.id'],
+ ['Jalan/permukiman','BIG/Pemda/OSM terverifikasi','Trase aktual, hak lahan, jembatan, akses','https://tanahair.indonesia.go.id'],
+ ['Koordinasi YonTP & TNI','Unit komando sesuai kewenangan','Penugasan, pelatihan dan rantai komando','Permohonan resmi lintas instansi']
+ ].map(x=>`<tr><td><b>${x[0]}</b></td><td>${x[1]}</td><td>${x[2]}</td><td>${x[3].startsWith('https')?`<a href="${x[3]}" target="_blank" rel="noopener">Portal ↗</a>`:'Permohonan resmi'}</td></tr>`).join('')}</tbody></table></div>`)}${section('Batas validasi — wajib dicantumkan saat presentasi','Seluruh angka adalah perkiraan untuk membantu keputusan studi, bukan desain legal untuk konstruksi.',`<div class="warning-box">Model ini belum mengkalibrasi kurva pompa Q–H, aliran multi-node EPANET, paparan panas/gambut, debit ekologi kemarau, fondasi di gambut dalam, kerusakan lingkungan, keadaan darurat dan parameter reliabilitas statistik. Harga bisa berubah karena tahun kontrak, pajak, impor, wilayah pemasok, dan penawaran vendor. Angka KPI keberhasilan/availability dalam model hanya ilustrasi/heuristik dan tidak dibuktikan oleh uji lapangan.</div><p>Referensi desain HDPE yang relevan: <a href="https://www.pe100plus.com/PE-Pipes/Technical-guidance/model/Design/Lifetime/typical-design-i242.html" target="_blank">PE100+ service life</a>, <a href="https://www.pe100plus.com/PE-Pipes/Technical-guidance/model/Design/Lifetime/factors-i243.html" target="_blank">temperature derating</a>, <a href="https://www.tropicalpeatlands.org/knowledge/publication/11463-20346/" target="_blank">pengelolaan hidrologi gambut</a>.</p>`)} `;}
+ function renderAB(r){if(!snapshotA)return section('Perbandingan konfigurasi A vs B','Simpan konfigurasi awal sebagai A, kemudian ubah semua pilihan di kiri untuk membentuk B. Keduanya dihitung dengan mesin model yang sama.',`<div class="warning-box"><b>Belum ada A tersimpan.</b> Klik tombol <b>Simpan konfigurasi A</b> di atas untuk membekukan konfigurasi saat ini. Kemudian pindah pilihan di kiri; hasil B akan dibandingkan langsung dengan A.</div>`);
+ const a=M.assess(snapshotA), rows=[['Keputusan screening',a.decision,r.decision,''],['CAPEX',rup(a.fin.capex),rup(r.fin.capex),deltaMoney(r.fin.capex-a.fin.capex)],['OPEX/tahun',rup(a.fin.opex),rup(r.fin.opex),deltaMoney(r.fin.opex-a.fin.opex)],['TCO',rup(a.fin.tco),rup(r.fin.tco),deltaMoney(r.fin.tco-a.fin.tco)],['NPV',rup(a.fin.npv),rup(r.fin.npv),deltaMoney(r.fin.npv-a.fin.npv)],['Head tekanan',fmt(a.hyd.pressBar)+' bar',fmt(r.hyd.pressBar)+' bar',(r.hyd.pressBar-a.hyd.pressBar).toFixed(2)+' bar'],['Daya pompa',fmt(a.hyd.hp)+' HP',fmt(r.hyd.hp)+' HP',(r.hyd.hp-a.hyd.hp).toFixed(1)+' HP'],['Waktu operasional awal',fmt(a.hyd.readyHours)+' jam',fmt(r.hyd.readyHours)+' jam',(r.hyd.readyHours-a.hyd.readyHours).toFixed(1)+' jam'],['Kebutuhan air',fmt(a.hyd.waterVolume)+' m³',fmt(r.hyd.waterVolume)+' m³',(r.hyd.waterVolume-a.hyd.waterVolume).toFixed(0)+' m³'],['BBM/tahun',fmt(a.fin.fuelLitresYear)+' L',fmt(r.fin.fuelLitresYear)+' L',(r.fin.fuelLitresYear-a.fin.fuelLitresYear).toFixed(0)+' L'],['CO₂ BBM saja/tahun',fmt(a.fin.operationalEmissionsKg/1000)+' ton',fmt(r.fin.operationalEmissionsKg/1000)+' ton',(r.fin.operationalEmissionsKg/1000-a.fin.operationalEmissionsKg/1000).toFixed(1)+' ton']];
+ const changedFields=[...SCHEMA.filter(d=>String(snapshotA[d.key])!==String(s[d.key])).map(d=>{const before=d.options.find(x=>x.value===String(snapshotA[d.key]));const after=d.options.find(x=>x.value===String(s[d.key]));return `<div class="explain-card"><h3>${escape(d.label)}</h3><p><b>A:</b> ${escape(before?.label||snapshotA[d.key])} → <b>B:</b> ${escape(after?.label||s[d.key])}</p><div class="procon"><div class="pro"><b>Keuntungan B:</b> ${escape(after?.pro)}</div><div class="con"><b>Risiko B:</b> ${escape(after?.con)}</div></div></div>`;})];
+ return `${section('Perbandingan A ↔ B — dua konfigurasi utuh','Ini adalah perbandingan skenario engineering, BUKAN eksperimen A/B lapangan. Perhitungan setiap panel mengikuti pilihan dan biaya masing-masing.',`<div class="tablewrap"><table class="datatable"><thead><tr><th>Metrik</th><th>Konfigurasi A (tersimpan)</th><th>B (aktif)</th><th>Selisih B–A</th></tr></thead><tbody>${rows.map(x=>`<tr><td><b>${x[0]}</b></td><td>${x[1]}</td><td>${x[2]}</td><td>${x[3]}</td></tr>`).join('')}</tbody></table></div>`)}${section('Mengapa hasilnya berbeda?',changedFields.length?changedFields.length+' parameter teknis berubah.':'Tidak ada pilihan kategori yang berbeda; periksa perubahan parameter numerik.',changedFields.join('')||'<p>Kedua konfigurasi memilih dimensi yang sama.</p>')}`;
+ }
+ const tabs=[['ringkasan','Ringkasan keputusan'],['alternatif','Bandingkan pilihan'],['ab','A vs B langsung'],['teknis','Hidraulika & formula'],['biaya','Biaya & BOQ'],['risiko','Risiko & gates'],['simulasi','Simulasi & sensitivitas'],['jejak','Matriks 93 pilihan'],['dokumen','Data & panduan']];
+ const renderers={ringkasan:renderRingkasan,alternatif:renderAlternatif,ab:renderAB,teknis:renderTeknis,biaya:renderBiaya,risiko:renderRisiko,simulasi:renderSimulasi,jejak:renderJejak,dokumen:renderDocs};
+ function renderAll(doControls=false){if(doControls)createControls();const r=M.assess(s);el('tag').textContent=M.BASES.find(x=>x.id===s.strategy)?.name||s.strategy;el('tabs').innerHTML=tabs.map(([k,l])=>`<button class="navtab ${tab===k?'active':''}" data-tab="${k}">${escape(l)}</button>`).join('');el('body').innerHTML=renderers[tab](r);el('scenarioBtns').innerHTML=M.BASES.map(x=>`<button data-scenario="${x.id}" class="sbtn ${s.strategy===x.id?'active':''}">${x.name}</button>`).join('');el('updateAt').textContent='Diperbarui otomatis • asumsi pra-FEED • data tersimpan lokal';}
+ function preset(id){setValue('strategy',id);}
+ function download(name,data,mime){let blob=new Blob([data],{type:mime}),u=URL.createObjectURL(blob),a=document.createElement('a');a.href=u;a.download=name;a.click();URL.revokeObjectURL(u);}
+ function downloadJSON(){let r=M.assess(s);let obj={snapshotA,version:'1.0',type:'Karhutla Decision Studio – screening, not construction',created:new Date().toISOString(),assumptions:s,outputs:{decision:r.decision,hard:r.hard,conditional:r.conditional,score:r.score,hyd:r.hyd,fin:r.fin},boq:r.boq};download('Karhutla_Decision_Export.json',JSON.stringify(obj,null,2),'application/json');}
+ function csvExport(){let r=M.assess(s);let rows=[['ID','Komponen','Kuantitas','Harga satuan IDR','Jumlah IDR','Dasar estimasi'],...r.boq.map(x=>[x.id,x.name,x.q,x.price*s.priceFactor,x.total,x.origin])];let txt=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');download('BOQ_Karhutla_Decision.csv','\ufeff'+txt,'text/csv;charset=utf-8');}
+ function matrixCSV(){let r=M.assess(s),rows=[['Dimensi','Pilihan','Kelebihan','Kekurangan','Status','CAPEX Rp','TCO Rp','ΔCAPEX vs aktif Rp','ΔTCO vs aktif Rp','TDH m','OPEX Rp/th']];for(const d of SCHEMA)for(const o of d.options){let rr=M.assess({...s,[d.key]:d.key==='hasBooster'?o.value==='true':o.value});rows.push([d.label,o.label,o.pro,o.con,rr.decision,rr.fin.capex,rr.fin.tco,rr.fin.capex-r.fin.capex,rr.fin.tco-r.fin.tco,rr.hyd.tdh,rr.fin.opex]);}const csv=rows.map(row=>row.map(v=>'"'+String(v).replace(/"/g,'""')+'"').join(';')).join('\r\n');download('Matriks_100_Pilihan_Karhutla.csv','\ufeff'+csv,'text/csv;charset=utf-8');}
+ function reset(){if(!confirm('Reset semua pilihan ke contoh Kalimantan Tengah?'))return;s=M.defaultState();previous=null;changed='';save();createControls();renderAll();}
+ document.addEventListener('change',e=>{if(e.target.matches('select[data-key]')){setValue(e.target.dataset.key,e.target.value);} else if(e.target.matches('input[data-key]')){save();}});
+ document.addEventListener('input',e=>{if(e.target.matches('input[type=number][data-key]')){const key=e.target.dataset.key,v=e.target.value;if(v!==''&&Number.isFinite(Number(v))){setValue(key,Number(v));const wrap=e.target.closest('.input-field');const item=NUMERIC.find(x=>x.key===key);const sm=wrap?.querySelector('label small');if(sm&&item)sm.textContent=numericLabel(Number(v),item.unit);}} if(e.target.id==='boqSearch'){filter=e.target.value;let n=el('boqTable');if(n)n.innerHTML=renderBoqTable(M.assess(s));}});
+ document.addEventListener('click',e=>{let t=e.target.closest('[data-tab],[data-scenario],[data-action],[data-choose]');if(!t)return;
+  if(t.dataset.tab){tab=t.dataset.tab;renderAll();window.scrollTo({top:0,behavior:'instant'});}
+  else if(t.dataset.scenario){preset(t.dataset.scenario);createControls();}
+  else if(t.dataset.choose){setValue(t.dataset.choose,t.dataset.option);createControls();}
+  else if(t.dataset.action){let a=t.dataset.action;if(a==='saveA'){snapshotA={...s};try{localStorage.setItem('karhutla-decision-slot-A',JSON.stringify(snapshotA));}catch(e){}tab='ab';renderAll();}else if(a==='export')downloadJSON();else if(a==='csv')csvExport();else if(a==='matrixCSV')matrixCSV();else if(a==='reset')reset();else if(a==='print')window.print();else if(a==='load')el('fileLoad').click();else if(a==='expand'){if(openGroups.size===GROUPS.length)openGroups.clear();else GROUPS.forEach(x=>openGroups.add(x));createControls();}}
+ });
+ document.addEventListener('toggle',e=>{if(e.target.matches('details[data-group]')){let n=e.target.dataset.group;if(e.target.open)openGroups.add(n);else openGroups.delete(n);}},true);
+ el('fileLoad').addEventListener('change',async e=>{let f=e.target.files[0];if(!f)return;try{let j=JSON.parse(await f.text());let v=j.assumptions||j;let state={...defaults,...clean(v)};s=state;if(j.snapshotA){snapshotA={...defaults,...clean(j.snapshotA)};try{localStorage.setItem('karhutla-decision-slot-A',JSON.stringify(snapshotA));}catch(e){}}previous=null;changed='';save();createControls();renderAll();alert('Konfigurasi berhasil diimpor. Status screening dihitung ulang.');}catch(err){alert('Gagal membaca JSON konfigurasi: '+err.message);}e.target.value='';});
+ createControls();renderAll();
+ window.KarhutlaUI={getConfig:()=>({...s}),recalculate:()=>M.assess(s),matrix:()=>SCHEMA,exportJSON:downloadJSON};
+})();
+</script>
+</body></html>

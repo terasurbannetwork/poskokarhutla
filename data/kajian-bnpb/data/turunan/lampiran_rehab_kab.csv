@@ -1,0 +1,74 @@
+kode,prov_nama,nama,banjir,longsor,gempabumi,rumah_rusak_2015_2025,bahaya_kelas_teratas,daftar
+1102,Aceh,Kab. Aceh Tenggara,24,20,20,7504,"longsor, gempa",kelas teratas
+1103,Aceh,Kab. Aceh Timur,16,16,5,23707,–,dua kelas teratas
+1104,Aceh,Kab. Aceh Tengah,22,19,19,5081,gempa,kelas teratas
+1107,Aceh,Kab. Pidie,25,21,21,1617,"banjir, longsor, gempa",kelas teratas
+1108,Aceh,Kab. Aceh Utara,21,14,7,92451,–,dua kelas teratas
+1110,Aceh,Kab. Aceh Singkil,26,5,26,2092,"banjir, gempa",kelas teratas
+1111,Aceh,Kab. Bireuen,23,19,6,10718,–,dua kelas teratas
+1113,Aceh,Kab. Gayo Lues,17,18,12,6138,gempa,kelas teratas
+1116,Aceh,Kab. Aceh Tamiang,16,16,5,40941,–,dua kelas teratas
+1117,Aceh,Kab. Bener Meriah,12,18,6,2416,–,dua kelas teratas
+1118,Aceh,Kab. Pidie Jaya,30,26,9,18999,"banjir, longsor",kelas teratas
+1201,Sumatera Utara,Kab. Tapanuli Tengah,21,26,7,9289,longsor,kelas teratas
+1202,Sumatera Utara,Kab. Tapanuli Utara,26,28,22,2836,"banjir, longsor, gempa",kelas teratas
+1203,Sumatera Utara,Kab. Tapanuli Selatan,13,17,9,2924,–,dua kelas teratas
+1205,Sumatera Utara,Kab. Langkat,24,29,8,5537,longsor,kelas teratas
+1207,Sumatera Utara,Kab. Deli Serdang,20,18,5,4478,–,dua kelas teratas
+1271,Sumatera Utara,Kota Medan,19,,6,1957,–,dua kelas teratas
+1277,Sumatera Utara,Kota Padangsidimpuan,22,11,36,1805,gempa,kelas teratas
+1301,Sumatera Barat,Kab. Pesisir Selatan,12,12,12,13938,gempa,kelas teratas
+1305,Sumatera Barat,Kab. Padang Pariaman,22,18,12,4310,gempa,kelas teratas
+1306,Sumatera Barat,Kab. Agam,15,15,15,2252,gempa,kelas teratas
+1307,Sumatera Barat,Kab. Lima Puluh Kota,26,26,9,2087,"banjir, longsor",kelas teratas
+1308,Sumatera Barat,Kab. Pasaman,21,21,21,2689,"longsor, gempa",kelas teratas
+1312,Sumatera Barat,Kab. Pasaman Barat,26,26,9,3307,"banjir, longsor",kelas teratas
+1371,Sumatera Barat,Kota Padang,14,16,12,6030,gempa,kelas teratas
+1406,Riau,Kab. Rokan Hulu,25,17,8,12767,banjir,kelas teratas
+1471,Riau,Kota Pekanbaru,25,1,3,2266,banjir,kelas teratas
+1509,Jambi,Kab. Tebo,26,9,9,2729,banjir,kelas teratas
+1801,Lampung,Kab. Lampung Selatan,15,15,5,2979,–,dua kelas teratas
+1806,Lampung,Kab. Tanggamus,20,17,17,3764,gempa,kelas teratas
+1807,Lampung,Kab. Lampung Timur,25,2,8,3445,banjir,kelas teratas
+3201,Jawa Barat,Kab. Bogor,14,11,9,20776,–,dua kelas teratas
+3202,Jawa Barat,Kab. Sukabumi,22,16,16,22853,gempa,kelas teratas
+3203,Jawa Barat,Kab. Cianjur,17,13,9,62890,–,dua kelas teratas
+3204,Jawa Barat,Kab. Bandung,15,14,9,14981,–,dua kelas teratas
+3209,Jawa Barat,Kab. Cirebon,21,16,8,2460,–,dua kelas teratas
+3215,Jawa Barat,Kab. Karawang,24,19,8,4781,–,dua kelas teratas
+3217,Jawa Barat,Kab. Bandung Barat,20,20,6,2656,longsor,kelas teratas
+3271,Jawa Barat,Kota Bogor,7,7,8,2877,–,dua kelas teratas
+3310,Jawa Tengah,Kab. Klaten,12,9,7,2072,–,dua kelas teratas
+3318,Jawa Tengah,Kab. Pati,15,15,2,2829,–,dua kelas teratas
+3404,DI Yogyakarta,Kab. Sleman,10,12,9,1611,–,dua kelas teratas
+3509,Jawa Timur,Kab. Jember,19,14,5,2073,–,dua kelas teratas
+3519,Jawa Timur,Kab. Madiun,21,16,5,2540,–,dua kelas teratas
+3522,Jawa Timur,Kab. Bojonegoro,19,13,5,5154,–,dua kelas teratas
+3601,Banten,Kab. Pandeglang,11,11,8,5581,–,dua kelas teratas
+5202,Nusa Tenggara Barat,Kab. Lombok Tengah,14,16,10,26378,–,dua kelas teratas
+5203,Nusa Tenggara Barat,Kab. Lombok Timur,13,14,10,31232,–,dua kelas teratas
+5207,Nusa Tenggara Barat,Kab. Sumbawa Barat,19,5,5,18859,–,dua kelas teratas
+5271,Nusa Tenggara Barat,Kota Mataram,11,,12,13607,gempa,kelas teratas
+5305,Nusa Tenggara Timur,Kab. Alor,18,16,16,3773,gempa,kelas teratas
+5306,Nusa Tenggara Timur,Kab. Flores Timur,26,26,18,5329,"banjir, longsor, gempa",kelas teratas
+5309,Nusa Tenggara Timur,Kab. Ngada,17,26,9,2078,longsor,kelas teratas
+5311,Nusa Tenggara Timur,Kab. Sumba Timur,17,17,11,2854,gempa,kelas teratas
+5320,Nusa Tenggara Timur,Kab. Sabu Raijua,16,17,26,10375,gempa,kelas teratas
+5371,Nusa Tenggara Timur,Kota Kupang,12,11,7,13807,–,dua kelas teratas
+7102,Sulawesi Utara,Kab. Minahasa,22,18,12,2309,gempa,kelas teratas
+7108,Sulawesi Utara,Kab. Bolaang Mongondow Utara,26,26,26,7213,"banjir, longsor, gempa",kelas teratas
+7202,Sulawesi Tengah,Kab. Poso,15,15,10,1596,–,dua kelas teratas
+7203,Sulawesi Tengah,Kab. Donggala,18,18,12,21844,gempa,kelas teratas
+7208,Sulawesi Tengah,Kab. Parigi Moutong,13,13,8,6129,–,dua kelas teratas
+7210,Sulawesi Tengah,Kab. Sigi,15,15,15,29757,gempa,kelas teratas
+7271,Sulawesi Tengah,Kota Palu,7,9,9,55141,–,dua kelas teratas
+7314,Sulawesi Selatan,Kab. Sidenreng Rappang,25,25,2,3774,"banjir, longsor",kelas teratas
+7402,Sulawesi Tenggara,Kab. Konawe,26,26,9,6405,"banjir, longsor",kelas teratas
+7602,Sulawesi Barat,Kab. Mamuju,23,23,8,12002,longsor,kelas teratas
+7605,Sulawesi Barat,Kab. Majene,9,11,7,4513,–,dua kelas teratas
+8101,Maluku,Kab. Maluku Tengah,15,15,5,9255,–,dua kelas teratas
+8106,Maluku,Kab. Seram Bagian Barat,15,15,5,2584,–,dua kelas teratas
+8204,Maluku Utara,Kab. Halmahera Selatan,16,16,5,4101,–,dua kelas teratas
+9171,Papua,Kota Jayapura,16,9,13,1720,gempa,kelas teratas
+9508,Papua Pegunungan,Kab. Nduga,26,26,18,2115,"banjir, longsor, gempa",kelas teratas
+9671,Papua Barat Daya,Kota Sorong,22,16,19,4054,gempa,kelas teratas
