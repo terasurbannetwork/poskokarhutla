@@ -12,3 +12,8 @@ for (const s of SKRIP) {
     assert.match(out, /ok/);
   });
 }
+
+test('genangan/mesin.mjs swa-uji (subsidensi, alur 4-tersambung, profil monoton, tanggul, disagregasi hujan)', () => {
+  const out = execFileSync('node', ['scripts/banjir/genangan/mesin.mjs', 'uji'], { encoding: 'utf8', timeout: 120000 });
+  assert.match(out, /ok/);
+});
