@@ -22,3 +22,10 @@ test('genangan/kunci_j3.py swa-uji (sidik, jangkar, buka sekali, penilai wajib)'
   const out = execFileSync('python3', ['scripts/banjir/genangan/kunci_j3.py', 'uji'], { encoding: 'utf8', timeout: 120000 });
   assert.match(out, /ok/);
 });
+
+for (const s of ['skor_j3', 'kalibrasi_j3']) {
+  test(`genangan/${s}.py swa-uji`, () => {
+    const out = execFileSync('python3', [`scripts/banjir/genangan/${s}.py`, 'uji'], { encoding: 'utf8', timeout: 120000 });
+    assert.match(out, /ok/);
+  });
+}

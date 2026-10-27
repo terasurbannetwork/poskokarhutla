@@ -20,7 +20,7 @@ KEJADIAN = {"2017-01": "2017-02-19", "2018-01": "2018-02-13", "2020-01": "2019-1
 
 def jalankan_mesin(ev, skala, kd=None, kd_map=None):
     """-> jalur raster (cache). kd seragam atau kd_map = jalur json {kab|kec: Kd}."""
-    nama = f"{ev}_s{skala}_" + (f"kd{kd}" if kd_map is None else "peta")
+    nama = f"{kunci_j3.sidik()[:10]}_{ev}_s{skala}_"   # cache terkunci ke sidik: kode/PRAREG berubah = cache lama tak dipakai + (f"kd{kd}" if kd_map is None else "peta")
     jalur = os.path.join(KAL, nama + ".raster.gz")
     if not os.path.exists(jalur):
         os.makedirs(KAL, exist_ok=True)

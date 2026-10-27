@@ -51,12 +51,18 @@ Nilai tepatnya ada di blok BEKU di bawah dan di `mesin.mjs`/`sim_genangan.js`; s
 ## Kenop bebas (satu-satunya yang boleh disetel, pada kejadian kalibrasi saja)
 | Kenop | Rentang (grid, ditulis sebelum run) | Catatan |
 | --- | --- | --- |
-| Kd per kecamatan (mm/jam, `--kd-kec`) | {2, 3, 5, 8, 12, 20, 30, 40} | 44 kecamatan; penalti menyimpang dari median kota (§5.3); selang dari bootstrap laporan |
+| Kd per kecamatan (mm/jam, `--kd-kec`) | {2, 3, 5, 8, 12, 20, 30, 40} | 44 kecamatan; penalti MU*abs(ln(Kd/Kd*)) dengan Kd* = Kd seragam terbaik; selang ketidakpastian bootstrap laporan TIDAK dihitung di versi ini |
 | `skala_hujan` global (`--skala-hujan`) | {1,0; 1,25; 1,5; 1,75; 2,0} | SATU angka untuk semua kejadian (koreksi bias puncak ERA5), tidak disetel per kejadian |
 
 Kalibrasi memakai 2017-01, 2018-01, 2020-01 saja. Skor 2021-02 hanya menghentikan/menolak. Tidak ada kenop lain; kenop tambahan = kriteria baru.
 
-## Metrik (definisi operasional)
+## Algoritma kalibrasi (`kalibrasi_j3.py`, beku lewat sidik)
+Kerugian kecamatan per kejadian = (1 - POD_kec) + LAMBDA x fraksi_basah_kec (LAMBDA 0,5; fraksi hanya bila kecamatan punya laporan atau kejadian >= 100 laporan). Tahap 1: tiap `skala_hujan`
+pada Kd seragam 12, semua kejadian kalibrasi, skala* = kerugian total terkecil. Tahap 2: tiap Kd seragam pada skala*; Kd per kecamatan = argmin (kerugian kecamatan + MU x abs(ln(Kd/Kd*))), MU 0,05, Kd* = Kd seragam terbaik.
+Pembanding (b) Kd seragam = Kd* dari run YANG SAMA (anggaran run identik, skala sama); dilaporkan skornya berdampingan. Anggaran = 5E + 7E + E run (E = 3 kejadian) + run pagar; run akhir per kejadian dengan peta Kd memverifikasi.
+Pagar 2021-02 hanya dilaporkan, tidak memilih. Cache run terkunci ke sidik.
+
+## Metrik (definisi operasional, BEKU: dipertahankan sebagai pilihan resmi; `skor_j3.py` mengimplementasikannya)
 Unit ruang: kecamatan DKI (44, `public/geo/kecamatan/31.json`). Basah: kedalaman maks selama jendela 96 jam >= 10 cm (`ASUMSI.TERGENANG`), dikurangi isi alur
 (kedalaman di atas tepi untuk sel alur). Kecamatan basah: >= 5% luas selnya basah (konsisten §5.4).
 Laporan: PetaBencana per kejadian = laporan dengan `t` di jendela simulasi (WIB), titik di dalam poligon DKI; laporan di luar poligon DKI DIBUANG (tak masuk
