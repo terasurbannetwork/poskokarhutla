@@ -68,19 +68,39 @@ def uji():
     assert r["vonis"] in ("LULUS", "GAGAL") and r["pernyataan"] and r["syarat"]["tanpa_laporan_le_40"] is None, r      # <100 laporan: kriteria kosong dinyatakan
     assert r["per_kejadian"]["2024-08"]["seragam"]["pod_luas_sama"] is not None and abs(r["per_kejadian"]["2024-08"]["luas_basah"] - 3 / 8) < 1e-9
     assert r["selisih_pod_luas_sama"]["seragam"]["titik"] >= 0, "model POD >= seragam pada luas sama (model basah di sel laporan)"
+    sd = kunci_j3.sidik(); S = {"dibuka": {"sidik": sd}}; hd = {"dibuka": {"sidik": sd}}   # gerbang (kode asli): buka harus di HEAD; mulai/selesai di kerja atau HEAD menolak
+    assert gerbang("vonis", S, hd, sd) is None and "terkunci" in gerbang("vonis", S, hd, "lain") and "belum di-commit" in gerbang("vonis", S, {}, sd)
+    t = {"tanggal": "x"}
+    for kunci in ("vonis_mulai", "vonis_selesai"):
+        assert "tidak diulang" in gerbang("vonis", {**S, kunci: {"vonis": t}}, hd, sd) and "tidak diulang" in gerbang("vonis", S, {**hd, kunci: {"vonis": t}}, sd)
+        assert gerbang("sensitivitas", {**S, kunci: {"vonis": t}}, hd, sd) is None, "mode lain tak terpengaruh"
     print("ok")
+
+
+def gerbang(mode, S, head, sidik_sekarang):
+    """-> pesan penolakan atau None. S = state kerja, head = state di HEAD (git show). Buka harus sudah di-commit; mode yang sudah mulai/selesai (kerja ATAU HEAD) tidak diulang."""
+    if not S.get("dibuka") or S["dibuka"].get("sidik") != sidik_sekarang:
+        return "label uji terkunci: jalankan `kunci_j3.py buka` (sidik harus sama dengan sidik state)"
+    if not head.get("dibuka"):
+        return "buka belum di-commit: HEAD:j3_state.json tidak memuat `dibuka`"
+    for nama, st in (("kerja", S), ("HEAD", head)):
+        for kunci in ("vonis_selesai", "vonis_mulai"):
+            if mode in st.get(kunci, {}):
+                return f"{mode} sudah {kunci} ({nama}, {st[kunci][mode]['tanggal']}); vonis tidak diulang (proses mati di tengah juga tak bisa diulang diam-diam)"
+    return None
 
 
 def utama():
     S = json.load(open(kunci_j3.STATE)) if os.path.exists(kunci_j3.STATE) else {}
     mode = sys.argv[1]
-    if not S.get("dibuka") or S["dibuka"].get("sidik") != kunci_j3.sidik():
-        sys.exit("label uji terkunci: jalankan `kunci_j3.py buka` (sidik harus sama dengan sidik state)")
-    if mode in S.get("vonis_selesai", {}):
-        sys.exit(f"{mode} sudah dijalankan {S['vonis_selesai'][mode]['tanggal']}; vonis tidak diulang")
+    g = gerbang(mode, S, kunci_j3.state_head(), kunci_j3.sidik())
+    if g:
+        sys.exit(g)
     J = json.load(open(kunci_j3.SIDIK_BERKAS))
     if kunci_j3.sha_berkas(kunci_j3.HASIL) != J.get("hasil_sha256"):
         sys.exit("hash hasil_j3.json tak cocok dengan j3_sidik.json")
+    S.setdefault("vonis_mulai", {})[mode] = {"tanggal": __import__("datetime").date.today().isoformat()}
+    json.dump(S, open(kunci_j3.STATE, "w"), indent=1)   # penanda SEBELUM label uji dibaca
     from bersama import KecDKI
     B = kunci_j3.beku(); h = json.load(open(kunci_j3.HASIL)); sk = h["skala"]; faktor = None if mode == "vonis" else 4
     model = {"kd": h["kd_seragam"]} if h["final"] == "seragam" else {"kd_map": h["kd_kec"]}   # peta dibaca dari hasil (inline), bukan berkas terpisah

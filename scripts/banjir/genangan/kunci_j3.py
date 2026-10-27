@@ -101,10 +101,18 @@ def periksa(akar=AKAR, sidik_berkas=SIDIK_BERKAS, show=git_show, leluhur=adalah_
     return None
 
 
-def buka(akar=AKAR, sidik_berkas=SIDIK_BERKAS, state=STATE, hasil=HASIL, **kw):
+def state_head(akar=AKAR):
+    """j3_state.json di HEAD (dict) atau {} bila belum di-commit."""
+    b = git_show("HEAD", G + "j3_state.json", akar)
+    return json.loads(b) if b else {}
+
+
+def buka(akar=AKAR, sidik_berkas=SIDIK_BERKAS, state=STATE, hasil=HASIL, head=state_head, **kw):
     hilang = [j for j in NANTI if not os.path.exists(os.path.join(akar, j))]
     if hilang:
         return f"penilai/penyetel belum ada: {hilang}"
+    if head(akar).get("vonis_selesai") or head(akar).get("vonis_mulai"):
+        return "HEAD sudah memuat vonis (mulai/selesai): tak bisa dibuka lagi"
     if os.path.exists(state) and json.load(open(state)).get("dibuka"):
         return f"sudah dibuka {json.load(open(state))['dibuka']['tanggal']}; tak bisa dibuka lagi"
     g = periksa(akar, sidik_berkas, **kw)
@@ -166,6 +174,8 @@ def uji():
         json.dump({"ditolak_pagar": False, "sidik": s1}, open(hs, "w")); simpan(sidik=s1, hasil_sha256=sha_berkas(hs))
         assert buka(d, sb, st, hs, **palsu) is None and json.load(open(st))["dibuka"]["sidik"] == s1
         assert "sudah dibuka" in buka(d, sb, st, hs, **palsu), "buka hanya sekali"
+        os.remove(st); assert "HEAD sudah memuat vonis" in buka(d, sb, st, hs, head=lambda a: {"vonis_selesai": {"vonis": {}}}, **palsu) and not os.path.exists(st)
+        assert "HEAD sudah memuat vonis" in buka(d, sb, st, hs, head=lambda a: {"vonis_mulai": {"vonis": {}}}, **palsu)
         open(os.path.join(d, PRAREG), "a").write(" ")
         assert "sidik beda" in periksa(d, sb, **palsu), "teks kriteria berubah"
     assert re.search(r"<!-- BEKU:mulai -->", open(os.path.join(AKAR, PRAREG), encoding="utf8").read()) and beku()["dx_faktor"] == 12
