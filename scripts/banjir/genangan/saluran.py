@@ -30,6 +30,42 @@ def unduh():
     return d
 
 
+def kueri_pintu():
+    bb = f"{KOTAK[1]},{KOTAK[0]},{KOTAK[3]},{KOTAK[2]}"
+    return (f'[out:json][timeout:120];(nwr["waterway"~"^(sluice_gate|weir|lock_gate|flood_gate)$"]({bb});'
+            f'nwr["man_made"="sluice"]({bb}););out tags center;')
+
+
+def unduh_pintu():
+    """Pintu air terpisah (kueri kecil): mirror sering 504, jadi gagal = None, bukan menjatuhkan seluruh panen."""
+    jalur = os.path.join(MENTAH, "pintu_osm.json")
+    if os.path.exists(jalur):
+        return baca(jalur)
+    try:
+        req = urllib.request.Request(MIRROR, data=urllib.parse.urlencode({"data": kueri_pintu()}).encode(), headers={"User-Agent": UA})
+        with urllib.request.urlopen(req, timeout=150) as r:
+            d = json.loads(r.read())
+    except Exception as e:
+        print("pintu air gagal dipanen:", e)
+        return None
+    simpan(jalur, d)
+    return d
+
+
+def titik_unsur(elemen, kec, jenis):
+    """[lon, lat, nama, 'kab|kec', kapasitas/ket] per unsur di DKI; geometri way diambil titik tengahnya."""
+    out = []
+    for e in elemen:
+        tag = e.get("tags") or {}
+        p = titik_tengah(e) or ((e["center"]["lon"], e["center"]["lat"]) if e.get("center") else None)
+        k = kec.cari(*p) if p else None
+        if not k:
+            continue
+        ket = tag.get("capacity:pump") or tag.get("pump:unit") and tag["pump:unit"] + " unit" or tag.get("waterway") or ""
+        out.append([round(p[0], 5), round(p[1], 5), tag.get("name") or "", f"{k[0]}|{k[1]}", str(ket)])
+    return out
+
+
 def panjang_km(g):
     s = 0.0
     for a, b in zip(g, g[1:]):
@@ -80,6 +116,15 @@ def jalankan():
         "unsur_per_jenis": n, "unsur_luar_dki": luar, "kecamatan": ag,
         "catatan": "panjang = jumlah ruas yang titik tengahnya jatuh di kecamatan; kapasitas tidak ada di OSM."})
     print(n, "luar DKI:", luar, "kecamatan:", len(ag))
+    kd = KecDKI()
+    pompa = titik_unsur([e for e in el if (e.get("tags") or {}).get("man_made") == "pumping_station" or (e.get("tags") or {}).get("amenity") == "pumping_station"], kd, "pompa")
+    pd = unduh_pintu()
+    pintu = titik_unsur(pd["elements"], kd, "pintu") if pd else []
+    simpan(os.path.join(RINGKAS, "pompa.json"), {
+        "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "sumber": ATRIBUSI, "cakupan": "DKI Jakarta (pilot)",
+        "pintu_terpanen": pd is not None, "kolom": ["lon", "lat", "nama", "kab|kec", "ket"], "pompa": pompa, "pintu": pintu,
+        "catatan": "titik dari OSM (survei komunitas, sebagian HOT InAWARE 2017); kapasitas hanya bila tercatat, status operasi tidak ada."})
+    print("pompa", len(pompa), "pintu", len(pintu), "pintu terpanen", pd is not None)
 
 
 def uji():
@@ -91,6 +136,10 @@ def uji():
                         {"type": "node", "lat": -7, "lon": 107, "tags": {}}], KecDKI())
     v = list(ag.values())[0]
     assert len(ag) == 1 and luar == 1 and v["rumah_pompa"] == 1 and v["km"]["canal"] > 1, (ag, luar)
+    t = titik_unsur([{"type": "way", "geometry": g, "tags": {"man_made": "pumping_station", "name": "R", "pump:unit": "3"}},
+                     {"type": "node", "lat": -6.2, "lon": 106.81, "tags": {"waterway": "weir"}}, {"type": "node", "lat": -7, "lon": 107, "tags": {}}], KecDKI(), "x")
+    assert len(t) == 2 and t[0][2] == "R" and t[0][4] == "3 unit" and t[1][4] == "weir", t
+    assert "sluice_gate" in kueri_pintu()
     print("ok")
 
 

@@ -1,0 +1,49 @@
+{
+ "versi": "hulu_hilir/1",
+ "catatan": "Jeda tempuh air antar pos berantai, dipakai hitung mundur banjir kiriman di layar /banjir (pos_air.js). Waktu tiba hilir = waktu baca pos hulu + jeda tengah. Semua jeda masih hipotesis: hanya diuji pada SATU kejadian replay (2 sampai 4 Maret 2025) dan literatur, belum pada deret jam-an SIHKA/DSDA.",
+ "hipotesis": true,
+ "sungai": [
+  {
+   "nama": "Ciliwung",
+   "nama_peta": ["Ciliwung", "Kali Ciliwung", "Sungai Ciliwung"],
+   "rantai": [
+    {"pos": "d:116", "nama": "Bendung Katulampa", "singkat": "Katulampa"},
+    {"pos": "d:118", "nama": "Pos Depok", "singkat": "Depok"},
+    {"pos": "d:122", "nama": "Pintu Air Manggarai", "singkat": "Manggarai"}
+   ],
+   "ruas": [
+    {
+     "dari": "d:116", "ke": "d:118", "jam": {"min": 1, "tengah": 2, "maks": 3}, "teruji": false,
+     "sumber": [
+      "scripts/banjir/replay_kejadian.json, linimasa_pos 3 Mar 2025: Katulampa 200 cm 23.30 lalu Depok Siaga 1 pukul 00.40 sampai 02.00 (BPBD DKI via media), selisih 1,2 sampai 2,5 jam",
+      "scripts/banjir/replay_kejadian.json: Katulampa Siaga 3 pukul 19.30 lalu Depok Siaga 3 pukul 21.40 (2,2 jam); Depok juga menerima hujan lokal, jadi selisih ini batas bawah"
+     ]
+    },
+    {
+     "dari": "d:118", "ke": "d:122", "jam": {"min": 5, "tengah": 7, "maks": 9}, "teruji": false,
+     "sumber": [
+      "scripts/banjir/replay_kejadian.json: Depok Siaga 1 pukul 00.40 sampai 02.00 (4 Mar 2025) lalu Manggarai Siaga 3 pukul 07.00, selisih 5 sampai 6,3 jam",
+      "scripts/banjir/replay_kejadian.json: Depok Siaga 3 pukul 21.40 (3 Mar) lalu Manggarai Siaga 3 pukul 07.00 (4 Mar), selisih 9,3 jam",
+      "Tengah 7 jam dipilih agar total Katulampa ke Manggarai 9 jam, batas bawah literatur Katulampa ke Jakarta"
+     ]
+    }
+   ],
+   "total": {
+    "dari": "d:116", "ke": "d:122", "jam": {"min": 8, "tengah": 9, "maks": 14},
+    "sumber": [
+      "public/banjir/data/param_banjir.json, lead_time_katulampa_jam [12, 9, 14]: Undip (Siaga 1 sekitar 9 sampai 10 jam), studi LSTM 13 sampai 14 jam",
+      "scripts/banjir/replay_kejadian.json, linimasa_pos 2 Mar 2025 22.15: Wali Kota Bogor memperkirakan air tiba di Jakarta sekitar 06.30 3 Mar (8,25 jam)"
+    ]
+   },
+   "uji_replay": {
+    "kejadian": "2 sampai 4 Maret 2025 (scripts/banjir/replay_kejadian.json)",
+    "pengamatan": [
+     {"apa": "Katulampa 200 cm (23.30 3 Mar) ke Manggarai 785 cm (08.00 4 Mar)", "selisih_jam": 8.5},
+     {"apa": "Katulampa Siaga 3 (19.30 3 Mar) ke Manggarai Siaga 3 (07.00 4 Mar)", "selisih_jam": 11.5},
+     {"apa": "Katulampa Siaga 3 ke Depok Siaga 3 (21.40 3 Mar)", "selisih_jam": 2.2}
+    ],
+    "kesimpulan": "Total 9 jam jatuh di antara 8,5 dan 11,5 jam pada satu kejadian. Puncak Manggarai (850 cm, sore 4 Mar, jam tidak tercatat) tidak bisa dibandingkan dengan puncak Katulampa karena Katulampa tidak tercatat sesudah 23.30. Belum teruji pada deret jam-an; tampilkan sebagai hipotesis."
+   }
+  }
+ ]
+}

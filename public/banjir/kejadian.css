@@ -32,3 +32,4 @@
 .wl-kg button:disabled{background:none;color:var(--ink2);opacity:.35;cursor:not-allowed;text-decoration:line-through}
 .wl-kg button[aria-pressed="true"]{background:var(--brand);color:#fff}:root[data-theme="dark"] .wl-kg button[aria-pressed="true"]{color:oklch(18% .035 256)}
 #rows.wl-redup{opacity:.5;transition:opacity .15s}
+.tr-naik{color:#c9503a;font-weight:800}.tr-turun{color:#2e8b57;font-weight:800}.tr-tetap{color:var(--ink2)}   /* kolom Tren tabel wilayah: naik = memburuk */

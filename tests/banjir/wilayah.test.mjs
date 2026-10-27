@@ -90,9 +90,20 @@ test("sapa_banjir: tren berpersen dan tanpa titik tengah", () => {
   assert.match(s, /const persen = \(d, dasar\) => dasar > 0/); assert.ok(!/ · /.test(s.replace(/\/\*[\s\S]*?\*\//g, "")));
 });
 
-test("kolom penduduk jujur: PD, title bukan korban, nol tampil 0 dan null tampil strip; tab segmen berikon", () => {
+/* pemilik 27 Okt: kolom PD jiwa diganti Tren dibanding hari berarsip sebelumnya */
+test("tren: provinsi = selisih kab/kota Siaga atau Awas, kab = selisih tingkat, kunci yang hilang tanpa angka, total nasional", () => {
+  const kab = (kode, status) => ({kode, nama: kode, status});
+  const kini = {provinsi: [{kode: "32", kab: [kab("32|A", "Siaga"), kab("32|B", "Awas"), kab("32|C", "Waspada")]}, {kode: "33", kab: [kab("33|X", "Siaga")]}]};
+  const lalu = {provinsi: [{kode: "32", kab: [kab("32|A", "Waspada"), kab("32|B", "Awas"), kab("32|C", "Siaga")]}]};
+  const t = Wl.tren(kini, lalu);
+  assert.equal(t["32"], 0, "A naik ke Siaga, C turun dari Siaga: tetap 2 lawan 2"); assert.equal(t["32|A"], 1); assert.equal(t["32|B"], 0); assert.equal(t["32|C"], -1);
+  assert.equal(t["33"], undefined, "provinsi tanpa arsip kemarin tidak diberi angka"); assert.equal(t["33|X"], undefined);
+  assert.equal(t._total, 1, "nasional 3 lawan 2"); assert.equal(Wl.tren(kini, null), null);
+});
+
+test("kolom Tren menggantikan PD jiwa; nol tampil 0 dan null tampil strip; tab segmen berikon", () => {
   const w = fs.readFileSync("public/banjir/wilayah.js", "utf8"), h = fs.readFileSync("public/banjir/index.html", "utf8");
-  assert.match(w, />PD jiwa<\/span>/); assert.match(w, /\"PD\", \"Penduduk\"/); assert.match(w, /bukan jumlah korban atau yang tergenang/); assert.ok(!/>TP<\/span>|Terpapar, jiwa/.test(w));
+  assert.match(w, /\">Tren<\/span>/); assert.match(w, /\"TR\", \"Tren\"/); assert.ok(!/>PD jiwa<\/span>|>TP<\/span>|Terpapar, jiwa/.test(w));
   assert.match(w, /const n = v => v == null \? "–" : fmt\(v\)/);
   for (const m of ["status", "hujan", "sungai", "rob", "riwayat"]) assert.match(h, new RegExp(`data-mp="${m}" aria-pressed="[a-z]+"><svg`), m);
   for (const b of ["b", "l"]) assert.match(h, new RegExp(`data-b="${b}" aria-pressed="[a-z]+"><svg`), b);

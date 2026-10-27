@@ -1,6 +1,6 @@
 "use strict";
 /* Tabel wilayah panel Peta /banjir (pola panel Real Time karhutla): per provinsi, bisa dibuka ke kabupaten/kota.
-   Kolom: Status (pil Awas/Siaga/Waspada, status Aman hijau bila 0, "–" bila null), WS gugus wilayah Siaga (prakiraan; kunci data kejadian_aktif), RB titik rob Waspada atau lebih, H3 hujan 3 hari (mm), TP terpapar (jiwa).
+   Kolom: Status (pil Awas/Siaga/Waspada, status Aman hijau bila 0, "–" bila null), WS gugus wilayah Siaga (prakiraan; kunci data kejadian_aktif), RB titik rob Waspada atau lebih, H3 hujan 3 hari (mm), Tren (provinsi: selisih kab/kota Siaga atau Awas, kabupaten: selisih tingkat status, dibanding tepat sehari sebelumnya).
    Data dari kontrak pipeline: data/wilayah_hari.json (hari terbaru), data/hari/<YYYY-MM-DD>.json, data/hari/indeks.json = {dibuat, hari:[...]}.
    null = data tidak ada, ditulis "–" (bukan 0). Periode > sehari dijumlah dari arsip harian: kejadian aktif = gabungan kode unik, terpapar = puncak,
    status = tertinggi, rob dan hujan 3 hari = puncak (menjumlah titik/curah yang sama berkali-kali akan menggandakan).
@@ -86,7 +86,21 @@
     return `${tglLain(geser(akhir, mode === "7" ? -6 : -29))} sampai ${tglLain(akhir)}, ${ket}`;
   }
 
-  const API = {st, agregat, periodeHari, hariAwal, kalender, labelHari, labelPeriode, tglLain, namaBln, urutBaris};
+  /* tren dua dokumen harian: provinsi = selisih banyak kab/kota Siaga atau Awas, kab/kota = selisih tingkat status (0-3), _total = selisih nasional.
+     kunci yang tak ada di salah satu hari tidak diberi angka (tampil "–", bukan 0) */
+  function tren(kini, lalu) {
+    if (!kini || !lalu) return null;
+    const sa = p => (p.kab || []).filter(k => (st(k.status) ?? 0) >= 2).length, L = new Map(), out = {};
+    let tk = 0, tl = 0;
+    for (const p of lalu.provinsi || []) { L.set(p.kode, sa(p)); tl += sa(p); for (const k of p.kab || []) L.set(k.kode, st(k.status)); }
+    for (const p of kini.provinsi || []) {
+      tk += sa(p); if (L.has(p.kode)) out[p.kode] = sa(p) - L.get(p.kode);
+      for (const k of p.kab || []) { const a = st(k.status), b = L.get(k.kode); if (a != null && b != null) out[k.kode] = a - b; }
+    }
+    out._total = tk - tl; return out;
+  }
+
+  const API = {st, agregat, tren, periodeHari, hariAwal, kalender, labelHari, labelPeriode, tglLain, namaBln, urutBaris};
   if (typeof module !== "undefined" && module.exports) module.exports = API; else akar.Wilayah = API;
   if (typeof document === "undefined") return;
 
@@ -94,7 +108,7 @@
   const W = {file: null, ada: [], per: "hari", pilih: null, bulan: [], kalBln: null, kalBuka: false, cache: new Map(), kunci: "", muat: "", agg: null, hari: [], n: 0};
   const PERIODE = [["hari", "Sehari"], ["7", "7 hari"], ["30", "30 hari"], ["th", "Tahun ini"]];
   const IK = {kej: '<path d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/>', rob: '<path d="M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 14c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/>',
-    h3: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>', td: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6"/>',
+    h3: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>', tr: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
     kal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'};
   const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[k]}</svg>`;
   const chip = (k, w, s, l, t) => `<span class="lg-c" style="--w:${w}" title="${t}">${svg(k)}<b>${s}</b>${l}</span>`;   // label pendek; arti lengkap di title
@@ -102,6 +116,14 @@
   const akhir = () => W.pilih || W.file?.hari;
   const pilSt = s => s == null ? "–" : `<span class="pill l${s}">${s ? LEVEL[s] : "Aman"}</span>`;
   const n = v => v == null ? "–" : fmt(v);
+  const trSel = d => d == null ? `<span class="n" data-sort="-99">–</span>` : `<span class="n tr-${d > 0 ? "naik" : d < 0 ? "turun" : "tetap"}" data-sort="${d}">${d > 0 ? "▲" + fmt(d) : d < 0 ? "▼" + fmt(-d) : "0"}</span>`;
+  /* tren membandingkan hari terakhir periode dengan TEPAT sehari sebelumnya; arsip kemarin tak ada = "–" (bukan diam-diam membandingkan dengan hari jauh) */
+  function muatTren() {
+    const a = akhir(), lalu = a && W.ada.includes(geser(a, -1)) ? geser(a, -1) : null, k = a + "|" + lalu;
+    if (W.trK === k) return; W.trK = k; W.tr = null; W.trLalu = lalu;
+    if (!a || !lalu) return;
+    Promise.all([ambil(a), ambil(lalu)]).then(([x, y]) => { if (W.trK !== k) return; W.tr = tren(x, y); if (typeof renderDaftar === "function" && S.jalur.length < 2) renderDaftar(); });
+  }
 
   /* satu dokumen harian; hari terbaru dari wilayah_hari.json, lainnya dari hari/<tanggal>.json; gagal = null */
   function ambil(t) {
@@ -144,8 +166,8 @@
   /* isi daftar untuk jalur provinsi (j kosong) atau kabupaten/kota (j = [provinsi]); "" bila data belum ada sehingga peta.js memakai tabel lama */
   function html(j) {
     if (!W.file) return "";
-    hitung();
-    const kep = kontrol(), D = W.agg;
+    hitung(); muatTren();
+    const kep = kontrol(), D = W.agg, TR = W.tr, trJudul = W.trLalu ? `dibanding ${tglLain(W.trLalu)}` : "arsip hari sebelumnya belum ada";
     if (!D) return kep + `<div class="kosong">${W.hari.length ? "Memuat arsip harian…" : "Belum ada arsip untuk periode ini."}</div>`;
     let baris, kunciDari;
     if (j.length === 1) {
@@ -153,13 +175,13 @@
       baris = p?.kab || []; kunciDari = r => String(r.kode).includes("|") ? r.kode : `${j[0]}|${r.nama}`;
     } else { baris = D.provinsi || []; kunciDari = r => r.kode; }
     const urut = [...baris].sort(urutBaris), T = D.total || {};
-    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "WS", "Wilayah Siaga", "Wilayah Siaga (prakiraan model), jumlah gugus")}${chip("rob", "#2b8c86", "RB", "Rob", "Titik rob berstatus Waspada atau lebih")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari", "Hujan 3 hari terbesar, mm")}${chip("td", "#c9503a", "PD", "Penduduk", "Penduduk semua kecamatan berstatus Siaga atau Awas (WorldPop), jiwa; bukan jumlah korban atau yang tergenang")}</div>`;
-    const kepala = `<div class="tb kepala" style="${G}" title="Sumber: BMKG (prakiraan dan peringatan), Open-Meteo (hujan), GloFAS (sungai), InaRISK (bahaya), WorldPop (penduduk)"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:right">Status</span><span class="n" title="Wilayah Siaga (prakiraan), gugus">WS</span><span class="n" title="Rob, titik Waspada+">RB</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="Penduduk semua kecamatan berstatus Siaga atau Awas (WorldPop), bukan jumlah korban atau yang tergenang">PD jiwa</span></div>`;
-    const total = j.length ? "" : `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${n(T.kejadian_aktif)}</span><span class="n">${n(T.rob)}</span><span class="n">–</span><span class="n">${n(T.terpapar_jiwa)}</span></div>`;
+    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "WS", "Wilayah Siaga", "Wilayah Siaga (prakiraan model), jumlah gugus")}${chip("rob", "#2b8c86", "RB", "Rob", "Titik rob berstatus Waspada atau lebih")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari", "Hujan 3 hari terbesar, mm")}${chip("tr", "#c9503a", "TR", "Tren", `${j.length ? "Naik atau turun tingkat status" : "Bertambah atau berkurangnya kab/kota Siaga atau Awas"}, ${trJudul}`)}</div>`;
+    const kepala = `<div class="tb kepala" style="${G}" title="Sumber: BMKG (prakiraan dan peringatan), Open-Meteo (hujan), GloFAS (sungai), InaRISK (bahaya), WorldPop (penduduk)"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:right">Status</span><span class="n" title="Wilayah Siaga (prakiraan), gugus">WS</span><span class="n" title="Rob, titik Waspada+">RB</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="${j.length ? "Selisih tingkat status" : "Selisih kab/kota Siaga atau Awas"}, ${trJudul}">Tren</span></div>`;
+    const total = j.length ? "" : `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${n(T.kejadian_aktif)}</span><span class="n">${n(T.rob)}</span><span class="n">–</span>${trSel(TR?._total)}</div>`;
     return kep + legenda + kepala + total + (urut.length ? urut.map((r, i) => `<button class="tb${(st(r.status) ?? 0) >= 2 ? " hl" + st(r.status) : ""}" style="${G}" role="listitem" data-k="${esc(kunciDari(r))}">
       <span class="rk">${i + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span style="text-align:right" data-sort="${st(r.status) ?? -1}">${pilSt(st(r.status))}</span>
       <span class="n" data-sort="${r.kejadian_aktif ?? -1}">${n(r.kejadian_aktif)}</span><span class="n" data-sort="${r.rob ?? -1}">${n(r.rob)}</span>
-      <span class="n" data-sort="${r.hujan3_mm ?? -1}">${r.hujan3_mm == null ? "–" : fmt(Math.round(r.hujan3_mm))}</span><span class="n" data-sort="${r.terpapar_jiwa ?? -1}">${n(r.terpapar_jiwa)}</span></button>`).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
+      <span class="n" data-sort="${r.hujan3_mm ?? -1}">${r.hujan3_mm == null ? "–" : fmt(Math.round(r.hujan3_mm))}</span>${trSel(TR?.[j.length ? kunciDari(r) : r.kode])}</button>`).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
   }
 
   /* klik kontrol: chrome (pil aktif, buka-tutup kalender) urgent di tempat; tabel berat digambar ulang sesudah satu frame lewat nanti() */
