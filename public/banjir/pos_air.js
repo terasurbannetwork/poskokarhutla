@@ -205,7 +205,7 @@ const PosUkur = {
   /* ruas waterway sekitar pos Siaga diwarnai: lapisan garis berfilter within poligon kecil, di bawah garis aliran bergerak */
   ruas() {
     if (!peta.getLayer("alir-gerak")) return; const o = PosAir.ruas(this.D?.pos), base = peta.getLayer("alir-badan");
-    for (const k of ["Siaga 3", "Siaga 2", "Siaga 1", "naik"]) { const id = "alir-st-" + k.replace(" ", ""), f = ["all", peta.getFilter("alir-badan"), o[k] ? ["within", o[k]] : ["==", 1, 0]];
+    for (const k of ["Siaga 3", "Siaga 2", "Siaga 1", "naik"]) { const id = "alir-st-" + k.replace(" ", ""), f = ["all", peta.getFilter("alir-badan"), o[k] ? ["within", o[k]] : ["==", ["literal", 1], 0]];   /* ["==", 1, 0] polos dibaca filter lama oleh MapLibre, seluruh "all" ikut ditolak */
       if (peta.getLayer(id)) peta.setFilter(id, f);
       else peta.addLayer({id, type: "line", source: base.source, "source-layer": "waterway", filter: f, layout: {visibility: this.menyala() ? "visible" : "none", "line-cap": "round", "line-join": "round"},
         paint: {"line-color": PosAir.WARNA_KELAS[k], "line-width": peta.getPaintProperty("alir-badan", "line-width"), "line-opacity": .95}}, "alir-garis"); } },
