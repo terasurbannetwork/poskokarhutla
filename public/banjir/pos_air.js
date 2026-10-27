@@ -35,7 +35,8 @@ globalThis.PosAir = (() => {
     const p = Object.fromEntries(new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}).formatToParts(new Date(detik(t) * 1000)).map(x => [x.type, x.value]));
     return `Dibaca ${p.weekday.replace(".", "")} ${p.day} ${p.month.replace(".", "")} ${p.hour}.${p.minute} WIB`; };
   /* nama pos untuk tampilan: SEMUA KAPITAL jadi Title Case; singkatan tanpa huruf hidup (BTB, JB) tetap kapital. Data tidak diubah */
-  const judulPos = n => { n = String(n ?? ""); return n !== n.toUpperCase() ? n : n.toLowerCase().replace(/[a-z]+/g, w => /^[^aiueo]{2,3}$/.test(w) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)); };
+  const SINGKAT = new Set(["pda", "awlr", "arr", "awr", "pduga", "pa", "ps", "btb", "plta", "das", "ii", "iii", "iv"]);   /* singkatan pos SIHKA tetap huruf besar */
+  const judulPos = n => { n = String(n ?? ""); return n !== n.toUpperCase() ? n : n.toLowerCase().replace(/[a-z]+/g, w => /^[^aiueo]{2,3}$/.test(w) || SINGKAT.has(w) ? w.toUpperCase() : w[0].toUpperCase() + w.slice(1)); };
   /* "Sel, 27 Okt 18.00 WIB"; "–" bila waktu tak ada */
   const waktuBacaRingkas = t => t == null ? "–" : waktuBaca(t).replace(/^Dibaca (\S+) /, "$1, ").replace(/^Dibaca /, "");
   const lalu = (t, now) => { if (t == null) return "–"; const j = Math.max(0, (now - detik(t)) / 3600); return j < 1 ? "kurang dari 1 jam lalu" : j < 48 ? Math.floor(j) + " jam lalu" : Math.floor(j / 24) + " hari lalu"; };
@@ -370,7 +371,7 @@ const PosUkur = {
   nasional() { const pos = this.D?.pos; if (!pos?.length) return; this._prov = {kunci: "", nama: "Indonesia", pos, geom: null}; this.provinsi(); },
   /* kartu hover pos: nama dengan pil status, sungai dan kabupaten, tinggi air dan selisih ke batas berikut */
   kartuHover(x) { const w = PosAir.redup(x.status) ? "#7a8796" : PosAir.warnaPos(x), nb = PosAir.menujuBatas(x), r = PosAir.resmi(x);
-    return KAKI(`Sumber: ${esc(PosAir.pengelola(x))}`, PI.kartuTip({judul: `${esc(x.nama)} ${r ? `<span class="pill" style="background:${PosAir.warnaPos(x)};color:${r === "Siaga 3" ? "#3b2f06" : "#fff"}">${r}</span>` : `<span class="pill" style="background:${PosAir.warna(x.status)};color:#fff">${esc(PosAir.nama(x.status))}</span>`}`, sub: `<small class="tp-sub">${esc(PosAir.subjudul(x))}</small>`,
+    return KAKI(`Sumber: ${esc(PosAir.pengelola(x))}`, PI.kartuTip({judul: `${esc(PosAir.judulPos(x.nama))} ${r ? `<span class="pill" style="background:${PosAir.warnaPos(x)};color:${r === "Siaga 3" ? "#3b2f06" : "#fff"}">${r}</span>` : `<span class="pill" style="background:${PosAir.warna(x.status)};color:#fff">${esc(PosAir.nama(x.status))}</span>`}`, sub: `<small class="tp-sub">${esc(PosAir.subjudul(x))}</small>`,
       stat: [["sungai", PosAir.teksPos(x), "tinggi air", w, PosAir.denyutPos(x)], ...(nb && !PosAir.redup(x.status) ? [["debit", PosAir.angkaId(nb.cm) + " cm", "ke " + nb.nama, PosAir.RESMI[nb.nama][0]]] : [])]})); },
   /* pemetaan pos ke wilayah (provinsi atau kabupaten tingkat yang sedang dimuat) dibangun sekali per kunci, di luar handler hover/klik */
   petakan() { const m = this._agg ||= new Map(); if (!this.D?.pos || !S.fiturWil) return;
@@ -381,7 +382,7 @@ const PosUkur = {
   daftar() { $("#posPanel")?.remove(); renderLegenda(); },
   /* kartu baris bulat: kapsul status, nama, "sungai, kota", angka cm + pil, batang ambang dengan tiga tik (tooltip data-tip, fokus papan ketik) */
   baris(l) { return l.map(x => { const tip = PosAir.tipAmbang(x), b = PosAir.batangAmbang(x), w = PosAir.redup(x.status) ? "#7a8796" : PosAir.warnaPos(x);
-    return `<button class="tb pa-baris" data-pos="${esc(x.id)}"${tip ? ` data-tip="${esc(tip)}" aria-label="${esc(x.nama + ": " + tip)}"` : ""}>${this.kapsul(x)}<span class="pa-isi"><b class="pa-nm">${esc(x.nama)}</b><small>${esc(PosAir.subjudul(x))}</small></span>
+    return `<button class="tb pa-baris" data-pos="${esc(x.id)}"${tip ? ` data-tip="${esc(tip)}" aria-label="${esc(PosAir.judulPos(x.nama) + ": " + tip)}"` : ""}>${this.kapsul(x)}<span class="pa-isi"><b class="pa-nm">${esc(PosAir.judulPos(x.nama))}</b><small>${esc(PosAir.subjudul(x))}</small></span>
       <span class="pa-kn"><b style="color:${w}">${PosAir.teksPos(x)}</b>${this.pilPos(x)}</span>${b ? `<span class="pa-ba"><i style="width:${b.isi}%;background:${w}"></i>${b.tik.map(t => `<u style="left:${t.pos}%;background:${t.warna}"></u>`).join("")}</span>` : ""}</button>`; }).join(""); },
   async mulai() { await this.muat(); const sm = peta.getSource("pos"); sm ? sm.setData(PosAir.geojson(this.D?.pos)) : this.lapis(); this.ruas(); this.daftar(); nanti(() => this.pasut()); },
 };
