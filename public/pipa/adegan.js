@@ -383,7 +383,7 @@ export async function buatAdegan(wadah, {onPilih = () => {}, onLabel = () => {},
       baja: [0xa9b1ba, {metalness: 0.75, roughness: 0.32}], bajaGelap: [0x4a525c, {metalness: 0.6, roughness: 0.45}], rangka: [0x2f353d, {roughness: 0.6, metalness: 0.4}],
       mesin: [0xc4402b, {roughness: 0.5}], mesinGelap: [0x2b2f36, {roughness: 0.55}], tangki: [0xe3b23c, {roughness: 0.45}], volute: [0x3f7fb8, {metalness: 0.5, roughness: 0.35}],
       kaca: [0x6fb1d6, {transparent: true, opacity: 0.42, roughness: 0.15, depthWrite: false}], selangHisap: [0x4a5963, {roughness: 0.8}], layflat: [0xd9742b, {roughness: 0.75}],
-      layflatHijau: [0x4d8a4e, {roughness: 0.75}], roda: [0xc23a2c, {roughness: 0.5}], layar: [0x3ee08a, {emissiveIntensity: 1}], putih: [0xeceff2, {roughness: 0.55}], kayu: [0x8a6a44, {roughness: 0.9}],
+      layflatHijau: [0x4d8a4e, {roughness: 0.75}], roda: [0xc23a2c, {roughness: 0.5}], layar: [0x3ee08a, {emissiveIntensity: 1}], putih: [0xeceff2, {roughness: 0.55}],
       karet: [0x25282c, {roughness: 0.95}], lance: [0x8fa0ae, {metalness: 0.8, roughness: 0.3}], lubang: [0xd7b94d, {metalness: 0.7, roughness: 0.35}], panel: [0x23324a, {metalness: 0.4, roughness: 0.3}]
     }[nama];
     if (!mats.has(nama)) { const m = std(d[0], d[1]); if (nama === "layar") m.emissive = new T.Color(0x1d9b5c); mats.set(nama, m); }
@@ -541,9 +541,7 @@ export async function buatAdegan(wadah, {onPilih = () => {}, onLabel = () => {},
     const warnaS = (x, z, y, c) => gambutWarna(c, x, z, klem(0.75 - y * 0.8 - x * 0.04, 0, 0.95) * halus(4, -1, x) + 0.05);
     const tanah = tanahMesh({x0: X0, x1: X1, z0: Z0, z1: Z1, sx: 110, sz: 56, tinggi: tanahY, warnaDi: warnaS});
     g.add(tanah, skirt(x => lereng(x), warnaS, [X0, X1, Z0, Z1], 110), airPermukaan(600, 800, -300 + 0.3, -0.45, 0));
-    // papan kerja (jalur papan) di bawah kit
-    g.add(kotak(maksX - 1.6, 0.07, 4.4, mat("kayu"), (maksX + 1.6) / 2 - 0.2, 0.035, 0));
-    for (let i = 0; i < 22; i++) { const x = 1.3 + i * ((maksX - 2.6) / 21); g.add(kotak(0.035, 0.08, 4.4, mat("karet"), x, 0.04, 0)); }
+    // tanpa papan kerja: kit portabel digelar langsung di tanah gambut (keputusan 60, tanpa instalasi tetap)
     for (const b of k) { const m = modelKomponen(b); g.add(m); komp.push(m); }
     // pipa antar-port: air melewati rantai (pompa paralel), lalu menyebar ke lance
     const polilin = [], pipaMat = mat("kaca");

@@ -17,6 +17,7 @@
 .sp-konteks .ad-seg button{color:color-mix(in srgb,#fff 82%,transparent)}
 .sp-konteks .ad-seg button[aria-checked="true"]{color:var(--ink)}
 .sp-konteks .sp-data-per{border-color:color-mix(in srgb,#fff 45%,transparent);color:#fff}
+.sp-konteks .sp-data-per .sp-yakin{background:color-mix(in srgb,#fff 16%,transparent);border-color:transparent;color:#fff}
 .sp-konteks .sp-tema{background:color-mix(in srgb,#fff 14%,transparent);color:#fff;border:0}
 .sp-pita{flex-basis:100%;min-width:0}.sp-pita:empty{display:none}
 .sp-badan{display:grid;grid-template-columns:232px minmax(0,1fr);gap:var(--sp-6);align-items:start}
