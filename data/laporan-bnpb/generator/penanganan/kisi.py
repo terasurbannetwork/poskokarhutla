@@ -30,7 +30,7 @@ IKON = {'hot': 'rId2', 'fs': 'rIdFs', 'luas': 'rId3', 'belum': 'rId4'}
 if BANJIR:   # ikon/banjir-*.png dibuat ikon.mjs; relasi rIdB* ditambahkan ganti.py (slide tabel) dan tambah_peta.py (slide peta)
     HGX = {'hot': '1F4E79', 'fs': '8A6A2E', 'luas': '2B8C86', 'belum': 'D9600B'}
     HGX_MUDA = {'hot': 'DCE7F5', 'fs': 'F1E6D2', 'luas': 'D6EFEC', 'belum': 'FFE6D5'}
-    KEPALA = {'hot': ('BANJIR*', '  (kec)'), 'fs': ('LONGSOR*', '  (kec)'), 'luas': ('ROB SIAGA*', '  (titik)'), 'belum': ('TERPAPAR*', '  (jiwa)')}
+    KEPALA = {'hot': ('BANJIR*', '  (kec)'), 'fs': ('LONGSOR*', '  (kec)'), 'luas': ('ROB SIAGA*', '  (titik)'), 'belum': ('TERPAPAR*', '  (ribu jiwa)')}
     IKON = {'hot': 'rIdB1', 'fs': 'rIdB2', 'luas': 'rIdB3', 'belum': 'rIdB4'}
 IKON_BANJIR = {'rIdB1': 'banjir-air', 'rIdB2': 'banjir-longsor', 'rIdB3': 'banjir-rob', 'rIdB4': 'banjir-jiwa'}
 Y_KEPALA, Y_HARI, H_KEPALA, H_HARI = 1463040, 1911096, 402336, 182880

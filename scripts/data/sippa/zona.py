@@ -349,7 +349,7 @@ def main(argv):
     cat = ("Perkiraan perencanaan dari OSM dan data terbuka, bukan survei lapangan. Jarak garis lurus, dibatasi 16 km (medan terpotong). "
            "kekerapan_sel22 = tahun aktif S-NPP 2012-2025 (sebanding antar tahun), 0 bila sel tanpa deteksi. "
            "khg null: khg_prioritas.json tidak memuat pemetaan kompleks ke KHG. "
-           "air_km_semua = air TAWAR (way dan relasi multipoligon OSM); air_asin true bila laut/payau lebih dekat daripada air tawar (label: air asin, darurat saja), zona tetap air tawar. "
+           "air_km_semua = air TAWAR (way dan relasi multipoligon OSM); air_asin true bila laut/payau lebih dekat daripada air tawar (label: air asin, darurat saja), zona tetap air tawar; air_asin_km 16,0 dengan jenis null = tak ada air asin dalam 16 km. "
            "brgm_3km = sekat/sumur BRGM dalam 3 km (brgm_pembasahan.json, letak menurut BRGM, kondisi tak diketahui). "
            "Provinsi selain 62: DEM, GSW, MCD64A1, CHIRPS, kekerapan_sel22, jam_tiba null (belum dihitung). "
            f"jam_tiba dari {x['nama_akses']}, null bila belum dihitung. kaw tanpa nama pemegang izin. ")

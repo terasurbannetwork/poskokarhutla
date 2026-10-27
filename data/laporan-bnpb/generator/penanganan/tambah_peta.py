@@ -38,10 +38,9 @@ for b in keep:
         oranye = re.search(r'<a:rPr.*?</a:rPr>', runs[0], re.S).group(0); biasa = re.search(r'<a:rPr.*?</a:rPr>', runs[1], re.S).group(0)
         SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (f'{f0(A[top]["hot"][I])} titik', 1), ('). Total: ', 0), (f'{f0(HOT)} titik', 1),
                (', ', 0), (f'{f0(LUAS)} ha', 1), (' terbakar' + (f' ({LBL_LUAS})' if LBL_LUAS else '') + ', ', 0), (f'{f0(BEL)} ha', 1), (' belum padam' + (f' ({LBL_HA})' if LBL_HA else ''), 0)]
-        if BANJIR:   # rob: titik pantau BMKG; satu provinsi tanpa titik pantau tidak ikut jumlah (nol)
-            SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (f'{f0(nol(A[top]["hot"][I]))} kecamatan', 1), ('). Total Siaga atau Awas: ', 0),
-                   (f'{f0(HOT)} kecamatan', 1), (' banjir, ', 0), (f'{f0(FS)} kecamatan', 1), (' longsor, ', 0), (f'{f0(LUAS)} titik', 1), (' rob, ', 0),
-                   (f'{f0(BEL)} jiwa', 1), (' terpapar', 0)]
+        if BANJIR:   # terpapar dalam ribu jiwa (penanganan_banjir.py); rob: titik pantau BMKG; satu provinsi tanpa titik pantau tidak ikut jumlah (nol)
+            SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (f'{f0(nol(A[top]["hot"][I]))} kecamatan', 1), ('); total ', 0),
+                   (f'{f0(HOT)} kecamatan', 1), (' banjir, ', 0), (f'{f0(FS)}', 1), (' longsor, ', 0), (f'{f0(BEL)} ribu jiwa', 1), (' terpapar', 0)]   # rob di kotak; kalimat penuh menabrak pil CUT OFF
         baru = ''.join(f'<a:r>{oranye if o else biasa}<a:t>{t}</a:t></a:r>' for t, o in SUB)
         b = b[:b.index(runs[0])] + baru + b[b.index(runs[-1]) + len(runs[-1]):]
     out.append(b)
@@ -75,7 +74,7 @@ KP = [('051C2C', 'AFC3DA', 'rIdIk1', 'HOTSPOT', f0(HOT), 'titik'),
       ('D9600B', 'FFDCC2', 'rIdIk3', 'BELUM PADAM', f0(BEL), 'ha')]
 if BANJIR:
     KP = [(HGX['hot'], HGX_MUDA['hot'], 'rIdB1', 'BANJIR', f0(HOT), 'kec'), (HGX['fs'], HGX_MUDA['fs'], 'rIdB2', 'LONGSOR', f0(FS), 'kec'),
-          (HGX['luas'], HGX_MUDA['luas'], 'rIdB3', 'ROB SIAGA', f0(LUAS), 'titik'), (HGX['belum'], HGX_MUDA['belum'], 'rIdB4', 'TERPAPAR', f0(BEL), 'jiwa')]
+          (HGX['luas'], HGX_MUDA['luas'], 'rIdB3', 'ROB SIAGA', f0(LUAS), 'titik'), (HGX['belum'], HGX_MUDA['belum'], 'rIdB4', 'TERPAPAR', f0(BEL), 'ribu jiwa')]
 for n, (col, muda, rid, lab, val, sat) in enumerate(KP):
     x = L + n * (kw + gap)
     # empat kotak lebih sempit dari tiga: ikon dirapatkan dan huruf dikecilkan supaya label dan angka tidak bertemu
@@ -93,7 +92,7 @@ KOL = [(2, 'hot', '051C2C', 'E6ECF3', 'rIdIk1', 'HOTSPOT*', '(titik)'), (3, 'fs'
        (5, 'belum', 'D9600B', 'FFE6D5', 'rIdIk3', 'BELUM PADAM*', '(ha)')]
 if BANJIR:
     KOL = [(j, g, HGX[g], HGX_MUDA[g], f'rIdB{j - 1}', t, sat) for j, g, t, sat in
-           ((2, 'hot', 'BANJIR*', '(kec)'), (3, 'fs', 'LONGSOR*', '(kec)'), (4, 'luas', 'ROB SIAGA*', '(titik)'), (5, 'belum', 'TERPAPAR*', '(jiwa)'))]
+           ((2, 'hot', 'BANJIR*', '(kec)'), (3, 'fs', 'LONGSOR*', '(kec)'), (4, 'luas', 'ROB SIAGA*', '(titik)'), (5, 'belum', 'TERPAPAR*', '(ribu jiwa)'))]
 for j, key, col, muda, rid, t, sat in KOL:
     bx, bw = cx[j] + 27432, CW[j] - 27432
     out.append(kotak(bx, top_isi, bw, hh, fill=col, geomp='roundRect', adj=13636))

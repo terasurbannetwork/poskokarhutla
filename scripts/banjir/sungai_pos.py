@@ -14,7 +14,7 @@ API = os.environ.get("POS_API", "https://centurisk97.id/api/banjir/sungai-ukur")
 SERVER = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
           "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
 UA = "poskobanjir/1.0 (pantau bencana; sungai pos)"
-RADIUS_KM, TOL_M, BATAS_BYTE, MIN_FITUR, GRUP = 6.0, 20.0, 600_000, 20, 10
+RADIUS_KM, TOL_M, BATAS_BYTE, MIN_FITUR, GRUP = 6.0, 20.0, 600_000, 20, 4
 KELAS = "river|canal|stream|drain"
 
 
@@ -89,7 +89,7 @@ def fitur(elemen, pos):
 
 def kueri(grup):
     bag = "".join(f'way["waterway"~"^({KELAS})$"](around:{int(RADIUS_KM * 1000)},{la},{lo});' for lo, la in grup)
-    return f"[out:json][timeout:120];({bag});out geom;"
+    return f"[out:json][timeout:150];({bag});out geom;"
 
 
 def overpass(q):
@@ -97,7 +97,7 @@ def overpass(q):
     for coba in range(6):
         url = SERVER[coba % len(SERVER)]
         try:
-            j = json.loads(urllib.request.urlopen(urllib.request.Request(url, data, headers={"User-Agent": UA}), timeout=150).read())
+            j = json.loads(urllib.request.urlopen(urllib.request.Request(url, data, headers={"User-Agent": UA}), timeout=200).read())
             if "elements" in j and not (j.get("remark") or "").startswith("runtime error"): return j["elements"]
         except Exception as e:
             print(f"  gagal {url}: {e}", file=sys.stderr)

@@ -5,7 +5,7 @@ Mesin dan templat sama dengan deck karhutla (penanganan/*, env BENCANA=banjir); 
   BANJIR    = kecamatan berstatus Siaga atau Awas banjir (laporan.json banjir_sa)
   LONGSOR   = kecamatan berstatus Siaga atau Awas longsor (longsor_sa)
   ROB SIAGA = titik pantau rob BMKG berstatus Siaga (rob_siaga; provinsi tanpa titik pantau = "–")
-  TERPAPAR  = penduduk kecamatan Siaga atau Awas banjir (penduduk, WorldPop)
+  TERPAPAR  = penduduk kecamatan Siaga atau Awas banjir (penduduk, WorldPop), dalam RIBU jiwa supaya 7 digit muat di kolom
 Kolom D-2, D-1, D dengan D = hari laporan; 6 provinsi teratas menurut BANJIR hari D, seri sama menurut LONGSOR.
 Pil kiri = status banjir provinsi hari D, pil kanan = hujan 3 hari tertinggi kecamatan (hari/<D>.json).
 Ini status prakiraan, BUKAN kejadian lapangan (rumah terendam, pengungsi): itu tidak ada di sistem kita.
@@ -40,6 +40,8 @@ def bangun(D, out, sumber):
     except Exception as e:
         sys.exit(f'arsip hari banjir {D} tidak terbaca ({e}); arsip mulai 27 Okt 2026')
     prov = {k: {g: o[m][i - 3:i + 1] for g, m in GRUP.items()} for k, o in L['prov'].items()}
+    for o in prov.values():
+        o['belum'] = [None if v is None else v / 1000 for v in o['belum']]
     # urutan sisipan = urutan tabel dan peta (semua pengurut di penanganan/* stabil terhadap kolom BANJIR)
     prov = dict(sorted(prov.items(), key=lambda kv: (-(kv[1]['hot'][3] or 0), -(kv[1]['fs'][3] or 0))))
     top6 = list(prov)[:6]

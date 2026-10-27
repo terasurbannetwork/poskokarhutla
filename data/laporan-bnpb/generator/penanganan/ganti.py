@@ -151,10 +151,9 @@ def runs_ganti(s, awal, isi):
 def banjir_teks(s1):
     """Judul, subjudul, cut-off, dan catatan kaki slide tabel versi banjir (angka subjudul = jumlah 6 provinsi kolom D)."""
     jml = lambda g: sum(bul(nol(A[k][g][3])) for k in TOP6)
-    s1 = rep(s1, '<a:t>Jumlah 5 provinsi</a:t>', '<a:t>Jumlah 6 provinsi</a:t>')
     s1 = runs_ganti(s1, 'Penanganan dan Pengendalian Karhutla', [('Penanganan Banjir, Longsor dan Rob per Tanggal ', 0), (PAR['hari'], 1), (f' {PAR["bulan"]} ', 2), (PAR['tahun'], 3)])
     s1 = runs_ganti(s1, '5 provinsi', [('6 provinsi', 0), (' teratas: ', 1), (f'{f0(jml("hot"))} kecamatan', 0), (' Siaga atau Awas banjir, ', 1),
-                                     (f'{f0(jml("fs"))} kecamatan', 0), (' longsor, ', 1), (f'{f0(jml("belum"))} jiwa', 0), (f' terpapar pada {PAR["hari"]} {PAR["bln"]}', 1)])
+                                     (f'{f0(jml("fs"))} kecamatan', 0), (' longsor, ', 1), (f'{f0(jml("belum"))} ribu jiwa', 0), (f' terpapar pada {PAR["hari"]} {PAR["bln"]}', 1)])
     s1 = rep(s1, '<a:t>21 Okt 2026, 07.00 WIB</a:t>', f'<a:t>{PAR["cutoff"]}</a:t>')
     return rep(s1, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System).</a:t>',
                '<a:t>*Kecamatan Siaga atau Awas dari prakiraan hujan dan indeks bahaya InaRISK; rob dari titik pantau BMKG; terpapar = penduduk kecamatan Siaga atau Awas banjir (WorldPop). –: tidak dipantau.</a:t>')
@@ -247,7 +246,7 @@ BARU = [T0 + i * PB + 338328 for i in range(6)]
 for base, k in zip(BARU, P5): s1 = isi_baris(s1, base, 118872, k, nid, aoff=9144, ah=128016, hapus_lama=False)
 s1 = rep(s1, '<a:t>Jumlah 5 provinsi</a:t>', '<a:t>Jumlah 6 provinsi</a:t>')
 if BANJIR:
-    s1 = banjir_teks(s1)
+    s1 = ganti_total(banjir_teks(s1), 5330952, P5, nid)
 else:
     s1 = rep(s1, '<a:t>5 provinsi</a:t>', '<a:t>6 provinsi</a:t>')
     s1 = rep(s1, '<a:t> prioritas; ±</a:t>', '<a:t> teratas; ±</a:t>')
