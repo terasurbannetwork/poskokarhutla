@@ -177,7 +177,7 @@ globalThis.PosAir = (() => {
   /* riwayat jam-an (detik naik, cm): dari bacaan paling awal dalam 3 jam terakhir, syarat selisih waktu minimal 1 jam; null bila tak cukup */
   const lajuRiwayat = (ts, vcm) => { const n = ts?.length || 0; if (n < 2 || vcm?.length !== n) return null; const tl = ts[n - 1]; let i = 0; while (i < n - 1 && ts[i] < tl - 10800) i++;
     const dt = (tl - ts[i]) / 3600; return dt < 1 ? null : {laju: (vcm[n - 1] - vcm[i]) / dt, jam: Math.round(dt)}; };
-  const lajuTeks = l => l == null || isNaN(l) ? "–" : Math.abs(l) < .5 ? "tetap" : (l > 0 ? "+" : "−") + angkaId(Math.abs(l)) + " cm/jam";
+  const lajuTeks = l => l == null || isNaN(l) ? "–" : Math.round(Math.abs(l)) < 1 ? "tetap" : (l > 0 ? "+" : "−") + angkaId(Math.round(Math.abs(l))) + " cm/jam";
   const WARNA_LAJU = ["#8d9aa9", "#e3b94e", "#e58a45", "#c9503a"];
   /* HITUNG MUNDUR DARI HULU (public/banjir/data/hulu_hilir.json): pos hulu naik atau Siaga -> tiap pos hilir dalam rantai dapat waktu tiba = waktu baca pos hulu + jeda tempuh tengah.
      Pos hulu aktif: Siaga resmi atau naik tingkat 2 (di atas 10 cm/jam). Dari beberapa pos hulu aktif dipakai yang terdekat ke hilir (jeda terpendek, ekstrapolasi paling pendek). */
@@ -194,11 +194,11 @@ globalThis.PosAir = (() => {
     return out; };
   /* "± 9 jam tiba di Manggarai"; sisa kurang dari 1 jam tanpa "±"; lewat dari tiba: sudah tiba */
   const sisaTeks = e => e.sisa <= 0 ? "semestinya sudah tiba" : e.sisa < 1 ? "kurang dari 1 jam lagi" : `± ${angkaId(Math.round(e.sisa))} jam lagi`;
-  const labelTiba = e => e.sisa <= 0 ? `Air dari hulu semestinya sudah tiba di ${e.singkat}` : e.sisa < 1 ? `kurang dari 1 jam tiba di ${e.singkat}` : `± ${angkaId(Math.round(e.sisa))} jam tiba di ${e.singkat}`;
+  const labelTiba = e => (e.sisa <= 0 ? `Air dari hulu semestinya sudah tiba di ${e.singkat}` : e.sisa < 1 ? `kurang dari 1 jam tiba di ${e.singkat}` : `± ${angkaId(Math.round(e.sisa))} jam tiba di ${e.singkat}`) + " (hipotesis)";
   const hariWib = t => Math.floor((t + 25200) / 86400);
   const tibaTeks = (tiba, now) => { const d = hariWib(tiba) - hariWib(now), hr = new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", weekday: "long"}).format(new Date(tiba * 1000));
-    return "pukul " + jamWib(tiba) + (d === 1 ? " besok" : d > 1 || d < 0 ? ", " + hr : ""); };
-  const kalimatTiba = (e, now) => `Air dari hulu tiba sekitar ${tibaTeks(e.tiba, now)}`;
+    return "pukul " + jamWib(tiba) + " WIB" + (d === 1 ? " besok" : d > 1 || d < 0 ? ", " + hr : ""); };
+  const kalimatTiba = (e, now) => `Air dari hulu ${e.sisa <= 0 ? "semestinya sudah tiba" : "tiba sekitar"} ${tibaTeks(e.tiba, now)}`;
   /* kotak pembatas di sekitar ruas antar dua pos (cincin poligon) untuk filter within pada waterway bernama sungai */
   const kotakRuas = (a, b, pad = .04) => { const x0 = Math.min(a[0], b[0]) - pad, x1 = Math.max(a[0], b[0]) + pad, y0 = Math.min(a[1], b[1]), y1 = Math.max(a[1], b[1]); return [[x0, y0], [x1, y0], [x1, y1], [x0, y1], [x0, y0]]; };
   return {LAJU_TINGKAT, WARNA_LAJU, lajuD3, lajuTingkat, lajuRiwayat, lajuTeks, aktifHulu, hituHuluHilir, labelTiba, sisaTeks, tibaTeks, kalimatTiba, kotakRuas, jenisAir, luasHa, posTerdekat, namaPendek, pengelolaSingkat, ikonPil, IKON_PIL, cmMinus, pasutKurva, judulPos, waktuBacaRingkas, ruasLapis, terdekatNama, KM_LAPIS, pilLabel, tipAmbang, batangAmbang, kabTerdekat, labelKab, dalam, menujuBatas, cmNilai, faktor, cmTeks, ketAngka, teksPos, deltaPos, jamWib, tglJamWib, kakiPanel, deltaKelas, KEMBAR, SIAGA, kelas, WARNA_KELAS, ringkas, perluPantau, kalimat, rasio, kelompok, arah, subjudul, skalaGeom, lingkar, wibDetik, pasutSekarang, deretSelaras, pasutTeks, pasutKartu, lonlat, titik, resmi, ikonKunci, warnaPos, isiPos, pengelola, denyutPos, macetPerPengelola, skala, RESMI, PENGELOLA, warna, nama, redup, denyut, angka, angkaId, satuan, delta, waktuBaca, lalu, pilihMacet, geojson, dash, fase, ISI, NAMA, WARNA, JEDA, detik};
@@ -320,7 +320,7 @@ const PosUkur = {
   lapisan(on) { for (const l of ["air-poligon", "air-sorot", "alir-badan", "alir-garis", "alir-st-Siaga3", "alir-st-Siaga2", "alir-st-Siaga1", "alir-st-peralihan", "alir-st-luar", "alir-st-Siaga3-m", "alir-st-Siaga2-m", "alir-st-Siaga1-m", "alir-st-naik-m", "alir-kilau", "alir-st-naik", "alir-gerak", "alir-panah", "alir-hulu-dasar", "alir-hulu", "alir-hulu-panah", "hulu-label", "pos-cincin", "pos-laju", "pos", "pos-angka", "pos-angka-semua", "pos-pilih-halo", "pos-pilih-cincin", "pos-pilih-luar", "pos-pilih", "pos-pilih-angka", "pasut", "pasut-angka", "pasut-angka-semua"]) peta?.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none"); },
   hit(pt) { const f = peta.getLayer("pos") && peta.queryRenderedFeatures(pt, {layers: ["pos"]}); return f?.length ? f[0].properties.id : null; },
   legenda() { if (!Peta.lihat("pos") || !this.D) return "";
-    return `<div class="lbl">Pos tinggi air</div><div class="leg">${[["biasa", "Biasa"], ["naik_di_atas_biasa", "Naik di atas biasa"], ["tertinggi", "Tertinggi"], ["lama", "Lama atau macet"]].map(([s, n]) => `<span><i class="sw dot" style="background:${PosAir.warna(s)}"></i>${n}</span>`).join("")}<span>Cincin tebal merah: naik cepat</span><span><button type="button" class="pa-daftar" data-pos-nas>Daftar pos</button></span></div>`; },
+    return `<div class="lbl">Pos tinggi air</div><div class="leg">${[["biasa", "Biasa"], ["naik_di_atas_biasa", "Naik di atas biasa"], ["tertinggi", "Tertinggi"], ["lama", "Lama atau macet"]].map(([s, n]) => `<span><i class="sw dot" style="background:${PosAir.warna(s)}"></i>${n}</span>`).join("")}<span>Cincin naik cepat: kuning 3 sampai 10, oranye 10 sampai 20, merah tebal di atas 20 cm/jam <span class="pill pa-hip">hipotesis</span></span><span><button type="button" class="pa-daftar" data-pos-nas>Daftar pos</button></span></div>`; },
   pil(s) { const t = s === "riwayat_kurang" || s === "pantauan_terbatas", n = PosAir.nama(s); return `<span class="pill pa-pil" style="background:${PosAir.warna(s)};color:${t ? "#4a5868" : "#fff"}">${PosAir.ikonPil(n)}${esc(n)}</span>`; },
   pilPos(x) { const r = PosAir.resmi(x), l = r || PosAir.pilLabel(x); return `<span class="pill pa-pil" style="background:${r ? PosAir.warnaPos(x) : PosAir.warna(x.status)};color:${r === "Siaga 3" ? "#3b2f06" : !r && (x.status === "riwayat_kurang" || x.status === "pantauan_terbatas") ? "#4a5868" : "#fff"}">${PosAir.ikonPil(l)}${l}</span>`; },
   kapsul(x) { const w = PosAir.redup(x.status) ? "#7a8796" : PosAir.warnaPos(x), h = Math.round((PosAir.rasio(x) ?? PosAir.isiPos(x)) * 100); return `<i class="pa-kp" style="border-color:${w};background:linear-gradient(to top,${w} ${h}%,transparent ${h}%)"></i>`; },
@@ -353,7 +353,7 @@ const PosUkur = {
     const isi = `${asal ? `<button class="tb" data-semua style="justify-self:start;width:auto;display:inline-flex;align-items:center;gap:4px;white-space:nowrap;padding:4px 12px 4px 8px;border-radius:999px"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>Semua pos</button>` : ""}
       <div class="grid g4 pa-4 pa-kecil">${kot("Tinggi air", `<span style="color:${wn}">${cm == null ? "–" : PosAir.angkaId(cm) + " cm"}</span>`, PosAir.waktuBacaRingkas(x.t))}${kot("Status", pil, rs ? "resmi" : "tanpa batas")}
         ${kot("Batas", nb && !PosAir.redup(x.status) ? PosAir.angkaId(nb.cm) + " cm" : "–", nb && !PosAir.redup(x.status) ? "ke " + nb.nama : rs === "Siaga 1" ? "tertinggi" : "tanpa batas")}${kot("3 jam", d3, a ? a.replace(/<[^>]+>/g, "") : "selisih")}</div>
-      <div class="grid pa-2 pa-kecil">${this.kotLaju(lj, lj == null ? "tanpa data 3 jam" : "dari selisih 3 jam")}${em ? kot("Air hulu tiba", PosAir.jamWib(em.tiba), "dari " + esc(em.dariNama)) : ""}</div>
+      <div class="grid pa-2 pa-kecil">${this.kotLaju(lj, lj == null ? "tanpa data 3 jam" : "dari selisih 3 jam")}${em ? kot("Air dari hulu tiba", PosAir.tglJamWib(em.tiba), `dari ${esc(em.dariNama)} <span class="pill pa-hip">hipotesis</span>`) : ""}</div>
       ${ket ? `<p class="fnd" style="margin:0">${ket}.</p>` : ""}
       ${this.kartuHulu(x)}
       ${lipat("Tabung ukur dan batas Siaga", `<div style="display:grid;grid-template-columns:auto minmax(0,1fr);gap:14px;align-items:center;min-width:0"><div>${this.skala(x)}</div>
@@ -452,14 +452,14 @@ const PosUkur = {
       paint: {"text-color": gelap() ? "#ffd9b0" : "#8a3d0a", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 2.2}}); },
   /* kotak ringkas laju naik; riwayat (jam-an) menggantikan d3 begitu kartu mendapat grafik. dasar disebut di sub-judul kotak */
   kotLaju(l, dasar) { const k = PosAir.lajuTingkat(l), w = l == null ? "var(--ink2)" : l > 0 ? PosAir.WARNA_LAJU[Math.max(k, 1)] : "var(--ink)";
-    return `<div class="kpi" id="paLaju"><span class="lbl">Laju naik</span><b style="color:${w}">${PosAir.lajuTeks(l)}</b><small>${esc(dasar)}</small></div>`; },
+    return `<div class="kpi" id="paLaju"><span class="lbl">Laju air</span><b style="color:${w}">${PosAir.lajuTeks(l)}</b><small>${esc(dasar)}</small></div>`; },
   /* bagian kartu: hitung mundur dari hulu (pos hilir) atau daftar pos hilir yang kena (pos hulu); "" bila pos tak ada di rantai atau hulu tenang */
   kartuHulu(x) {
     const E = this._est; if (!E) return ""; const now = Date.now() / 1000, masuk = E.pos.get(x.id), keluar = E.ruas.filter(e => e.dari === x.id); if (!masuk && !keluar.length) return "";
-    const hip = `<span class="pill pa-hip">hipotesis</span>`, j = e => `${PosAir.angkaId(e.jam.tengah)} jam, rentang ${PosAir.angkaId(e.jam.min)} sampai ${PosAir.angkaId(e.jam.maks)}`;
-    const a = masuk ? `<p style="margin:0"><b>${esc(PosAir.kalimatTiba(masuk, now))}</b> ${hip}</p><p class="fnd" style="margin:2px 0 0">Jeda tempuh dari ${esc(masuk.dariNama)} ± ${esc(j(masuk))}, dihitung dari waktu baca pos hulu.</p>` : "";
-    const b = keluar.length ? `<table class="tb2"><tbody>${keluar.map(e => `<tr><td>${esc(e.singkat)}</td><td class="n" style="white-space:normal;color:var(--ink)">${esc(PosAir.sisaTeks(e))}, ${esc(PosAir.tibaTeks(e.tiba, now))}</td></tr>`).join("")}</tbody></table>${masuk ? "" : hip}` : "";
-    return lipat("Hitung mundur banjir dari hulu", `${a}${b}<p class="fnd" style="margin:6px 0 0">Jeda dari satu kejadian replay (Maret 2025) dan literatur Katulampa ke Jakarta 9 sampai 14 jam; belum teruji pada data jam-an. Sumber di data/hulu_hilir.json.</p>`); },
+    const hip = `<span class="pill pa-hip">hipotesis</span>`, j = e => `sekitar ${PosAir.angkaId(e.jam.tengah)} jam (rentang ${PosAir.angkaId(e.jam.min)} sampai ${PosAir.angkaId(e.jam.maks)} jam)`;
+    const a = masuk ? `<p style="margin:0"><b>${esc(PosAir.kalimatTiba(masuk, now))}</b> ${hip}</p><p class="fnd" style="margin:2px 0 0">Jeda tempuh dari ${esc(masuk.dariNama)} ${esc(j(masuk))}, dihitung dari waktu baca pos hulu.</p>` : "";
+    const b = keluar.length ? `<table class="tb2"><tbody>${keluar.map(e => `<tr><td>${esc(e.singkat)}</td><td class="n" style="white-space:normal;color:var(--ink)">${esc(PosAir.sisaTeks(e))}, ${esc(PosAir.tibaTeks(e.tiba, now))}</td></tr>`).join("")}</tbody></table>${hip}` : "";
+    return lipat("Hitung mundur banjir dari hulu", `${a}${b}<p class="fnd" style="margin:6px 0 0">Jeda berasal dari simulasi ulang satu kejadian (Maret 2025) dan kajian Undip serta studi LSTM Katulampa (Katulampa ke Jakarta 9 sampai 14 jam); belum teruji pada bacaan per jam.</p>`); },
   /* nama waterway terdekat tiap pos Siaga/naik, dari fitur yang sedang tergambar; dicoba tiap moveend, hasil di-cache (gagal dicatat hanya dari zoom 11) */
   cariNama() {
     if (!peta.getLayer("alir-garis") || !this.D?.pos || !this.menyala()) return; this._nm ||= new Map(); let baru = false;

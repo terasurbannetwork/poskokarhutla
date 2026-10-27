@@ -12,7 +12,6 @@ const KalenderRob = (() => {
   const tambah = (iso, n) => new Date(Date.parse(iso + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
   const selisih = (a, b) => Math.round((Date.parse(b + "T00:00:00Z") - Date.parse(a + "T00:00:00Z")) / 864e5);
   const rad = d => d * Math.PI / 180;
-  const f2 = x => Number(x).toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
   const tgl = iso => { const [, m, d] = iso.split("-"); return `${+d} ${BLN[m - 1]}`; };
   const tglPanjang = iso => new Date(iso + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long"});
 
@@ -69,8 +68,8 @@ const KalenderRob = (() => {
     const ora = hari.filter(h => h.oranye), tin = hari.filter(h => h.tinggi), luar = tin.filter(h => h.mm == null);
     const fs = h => h.fase ? `, ${h.fase === "purnama" ? "purnama" : "bulan baru"}` : "";
     let s;
-    if (ora.length) { const h = ora.reduce((a, b) => b.g > a.g ? b : a); s = `${tgl(h.tgl)}: pasang kuat (${f2(h.g)}${fs(h)}) dan hujan ${Math.round(h.mm)} mm diprakirakan, siagakan pompa dan tanggul sebelum harinya.`; if (ora.length > 1) s += ` Ada ${ora.length} hari seperti ini.`; }
-    else if (tin.length) { const h = tin.reduce((a, b) => b.g > a.g ? b : a); s = `Pasang paling kuat ${tgl(h.tgl)} (${f2(h.g)}${fs(h)}); tidak ada hari pasang tinggi yang bersamaan dengan hujan prakiraan.`; }
+    if (ora.length) { const h = ora.reduce((a, b) => b.g > a.g ? b : a); s = `${tgl(h.tgl)}: pasang kuat${fs(h)} dan hujan ${Math.round(h.mm)} mm diprakirakan, siagakan pompa dan tanggul sebelum harinya.`; if (ora.length > 1) s += ` Ada ${ora.length} hari seperti ini.`; }
+    else if (tin.length) { const h = tin.reduce((a, b) => b.g > a.g ? b : a); s = `Pasang paling kuat ${tgl(h.tgl)}${fs(h)}; tidak ada hari pasang tinggi yang bersamaan dengan hujan prakiraan.`; }
     else return "Tidak ada hari pasang tinggi dalam 30 hari ke depan.";
     if (luar.length) s += ` ${luar.length} hari pasang tinggi ada di luar jangkauan prakiraan hujan, jadi belum bisa dinilai.`;
     return s;
@@ -78,7 +77,7 @@ const KalenderRob = (() => {
 
   function tip(h, ambang) {
     const kat = h.tinggi ? "tinggi" : h.g >= ambang * 0.7 ? "sedang" : "rendah";
-    return `<b>${tglPanjang(h.tgl)}</b><br>Kekuatan pasang ${f2(h.g)} (${kat})`
+    return `<b>${tglPanjang(h.tgl)}</b><br>Kekuatan pasang ${kat}`
       + (h.fase ? `<br>${h.fase === "purnama" ? "Bulan purnama" : "Bulan baru"}` : "")
       + `<br>${h.mm == null ? "Hujan belum diprakirakan" : `Hujan prakiraan ${Math.round(h.mm)} mm`}`
       + (h.oranye ? "<br><b>Pasang tinggi dan hujan: siagakan pompa</b>" : "");
@@ -100,12 +99,12 @@ const KalenderRob = (() => {
         + `<text x="${x + W / 2}" y="${oy + H + 6}" text-anchor="middle" font-size="9.5" font-weight="${+h.tgl.slice(8) === 1 || j === 0 ? 700 : 400}" fill="var(--ink2)">${+h.tgl.slice(8)}</text></g>`;
     }).join("");
     const lg = (c, t, ex = "") => `<span style="display:inline-flex;align-items:center;gap:4px"><i style="width:9px;height:9px;border-radius:2px;background:${c};${ex}"></i>${t}</span>`;
-    return `<div class="kalrob"><p class="fnd" style="margin:0 0 6px;color:var(--ink);font-weight:600">${kalimat(hari)}</p>`
+    return `<div class="kalrob"><span class="pill" style="background:#7a4fbf;color:#fff">Hipotesis</span><p class="fnd" style="margin:4px 0 6px;color:var(--ink);font-weight:600">${kalimat(hari)}</p>`
       + `<svg viewBox="0 0 ${Wt} ${Math.ceil(hari.length / BR) * (H + 12)}" width="100%" role="img" aria-label="Kalender kekuatan pasang 30 hari" style="display:block;overflow:visible">${kotak}</svg>`
       + `<div class="fnd" style="display:flex;flex-wrap:wrap;gap:4px 12px;margin-top:6px">${lg(BIRU, "pasang tinggi")}${lg(BIRU, "pasang biasa", "opacity:.35")}${lg(OR, "pasang tinggi dan hujan prakiraan")}`
       + `<span style="display:inline-flex;align-items:center;gap:4px"><i style="width:9px;height:9px;border-radius:2px;border:1.2px dashed ${OR}"></i>pasang tinggi, hujan belum diprakirakan</span>`
       + `<span>Bulatan penuh purnama, bulatan kosong bulan baru</span></div>`
-      + `<p class="fnd" style="margin-top:4px">Kekuatan pasang adalah indeks gaya astronomis 0 sampai 1, bukan tinggi muka air dan bukan prakiraan rob; angin, gelombang, tekanan udara, dan penurunan tanah belum masuk. Sumber: perhitungan Bulan dan Matahari (Meeus), hujan prakiraan Open-Meteo.</p></div>`;
+      + `<p class="fnd" style="margin-top:4px">Kekuatan pasang adalah angka 0 sampai 1 dari posisi Bulan dan Matahari, bukan tinggi air dan bukan prakiraan rob; angin, gelombang, tekanan udara, dan penurunan tanah belum masuk. Bobot pasang harian dan setengah harian masih asumsi. Sumber: hitungan posisi Bulan dan Matahari${pa.dibuat ? `, dibuat ${tgl(pa.dibuat.slice(0, 10))}` : ""}, hujan prakiraan Open-Meteo.</p></div>`;
   }
 
   const muat = () => (muat.p ||= fetch("data/pasang_astro.json", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).catch(() => null));

@@ -348,7 +348,7 @@ test("laju naik cm/jam: dari d3 per 3 jam, satuan dinormalkan, pos mati tanpa la
   assert.equal(P.lajuD3(p(72)), 24); assert.equal(P.lajuD3(p(.6, {satuan: "m"})), 20); assert.equal(P.lajuD3(p(null)), null);
   assert.equal(P.lajuD3(p(30, {status: "lama"})), null); assert.equal(P.lajuD3(p(30, {satuan: "m3/s"})), null);
   assert.equal(P.lajuTeks(24), "+24 cm/jam"); assert.equal(P.lajuTeks(-5), "−5 cm/jam"); assert.equal(P.lajuTeks(.2), "tetap"); assert.equal(P.lajuTeks(null), "–");
-  assert.equal(P.lajuTeks(7.4), "+7,4 cm/jam", "koma desimal Indonesia");
+  assert.equal(P.lajuTeks(7.4), "+7 cm/jam", "bulat, tanpa presisi palsu"); assert.equal(P.lajuTeks(.4), "tetap");
 });
 
 test("tingkat cincin laju: 0 di bawah 3, 1 sampai 10, 2 sampai 20, 3 di atas 20; turun dan null tanpa cincin", () => {
@@ -382,8 +382,8 @@ test("waktu tiba hilir = waktu baca hulu + jeda tengah, dibulatkan jam; label ta
   const now = wib("2026-10-28T17:30"), pos = [posC("d:116", {status_resmi: "Siaga 2", status: "naik_di_atas_biasa"}), posC("d:118"), posC("d:122")];
   const E = P.hituHuluHilir(HH, pos, now), dep = E.pos.get("d:118"), mgr = E.pos.get("d:122");
   assert.equal(dep.tiba, wib("2026-10-28T19:00")); assert.equal(mgr.tiba, wib("2026-10-29T02:00"), "Katulampa 17.00 + 9 jam");
-  assert.equal(P.labelTiba(mgr), "± 9 jam tiba di Manggarai"); assert.match(P.labelTiba(dep), /^± 2 jam tiba di Depok$/);
-  assert.equal(P.kalimatTiba(mgr, now), "Air dari hulu tiba sekitar pukul 02.00 besok"); assert.equal(P.tibaTeks(dep.tiba, now), "pukul 19.00");
+  assert.equal(P.labelTiba(mgr), "± 9 jam tiba di Manggarai (hipotesis)"); assert.match(P.labelTiba(dep), /^± 2 jam tiba di Depok \(hipotesis\)$/);
+  assert.equal(P.kalimatTiba(mgr, now), "Air dari hulu tiba sekitar pukul 02.00 WIB besok"); assert.equal(P.tibaTeks(dep.tiba, now), "pukul 19.00 WIB");
   assert.equal(mgr.dari, "d:116"); assert.equal(mgr.dariNama, "Katulampa"); assert.deepEqual(plain(mgr.jam), {min: 6, tengah: 9, maks: 12});
   assert.deepEqual(plain(mgr.segmen), ["d:118", "d:122"]); assert.ok(mgr.hipotesis);
   assert.ok(!/[·—]/.test(P.labelTiba(mgr)));
@@ -399,8 +399,8 @@ test("hitung mundur: hulu tenang tanpa perkiraan; Depok Siaga memajukan Manggara
   const cepat = P.hituHuluHilir(HH, [posC("d:116", {d3: 90}), posC("d:118")], now);   /* Normal tetapi 30 cm/jam */
   assert.ok(cepat.pos.has("d:118"), "naik cepat memicu walau Normal");
   const lewat = P.hituHuluHilir(HH, [posC("d:116", {status_resmi: "Siaga 2", t: wib("2026-10-28T10:00")}), posC("d:118")], now);
-  assert.equal(P.labelTiba(lewat.pos.get("d:118")), "Air dari hulu semestinya sudah tiba di Depok");
-  assert.equal(P.tibaTeks(wib("2026-10-30T02:00"), now), "pukul 02.00, Jumat");
+  assert.equal(P.labelTiba(lewat.pos.get("d:118")), "Air dari hulu semestinya sudah tiba di Depok (hipotesis)");
+  assert.equal(P.tibaTeks(wib("2026-10-30T02:00"), now), "pukul 02.00 WIB, Jumat");
   const k = P.kotakRuas([106.83, -6.63], [106.84, -6.4]); assert.deepEqual(plain(k[0]), plain(k.at(-1))); assert.equal(k.length, 5);
 });
 
