@@ -2,7 +2,7 @@
 
 Titik awal = koordinat perkiraan tiap sungai di tepi selatan/barat/timur kotak (dari pengetahuan geografi, BUKAN HydroRIVERS:
 HydroRIVERS berupa shapefile ~0,5 GB per benua, tidak dimuat). Tiap titik disnap ke sel GloFAS 0,05 derajat terdekat di jendela
-+-0,1 derajat yang debit rata-ratanya terbesar (sel sungai); koordinat awal dan hasil snap dicatat. Peringatan: sel 0,05
++-0,05 derajat yang debit rata-ratanya terbesar (sel sungai); sungai yang jatuh ke sel yang sama ditandai `kembar_dengan` (tak terpisahkan di GloFAS); koordinat awal dan hasil snap dicatat. Peringatan: sel 0,05
 (~5 km) untuk sungai kecil (Krukut, Sunter, Cipinang) bisa menangkap sungai tetangga; periksa kolom `rata` dan `catatan`.
 Keluaran: data/raw/banjir/genangan/hulu/<titik>.json (seri 1984-kini) dan public/banjir/data/genangan/hulu.json (statistik + seri jendela kejadian).
 """
@@ -26,9 +26,9 @@ def seri(lat, lon, a, b):
 
 
 def snap(lat, lon):
-    """Pilih sel dengan debit rata-rata terbesar (2020-2021) di jendela 5x5 sel 0,05 derajat."""
-    lats = [round(lat + k * 0.05, 3) for k in (-2, -1, 0, 1, 2)]
-    lons = [round(lon + k * 0.05, 3) for k in (-2, -1, 0, 1, 2)]
+    """Pilih sel dengan debit rata-rata terbesar (2020-2021) di jendela 3x3 sel 0,05 derajat."""
+    lats = [round(lat + k * 0.05, 3) for k in (-1, 0, 1)]
+    lons = [round(lon + k * 0.05, 3) for k in (-1, 0, 1)]
     q = {"latitude": ",".join(str(x) for x in lats for _ in lons), "longitude": ",".join(str(x) for _ in lats for x in lons),
          "daily": "river_discharge", "start_date": "2020-01-01", "end_date": "2021-12-31"}
     d = ambil_json(URL + "?" + urllib.parse.urlencode(q, safe=","))
@@ -70,6 +70,8 @@ def jalankan():
             ev[k] = {"mulai": a2, "q": [d["q"][i] for i in ix]}
         out[nama] = {"awal": d["awal"], "snap": d["snap"], "satuan": "m3/s", **statistik(d["waktu"], d["q"]), "kejadian": ev}
         print(nama, out[nama]["snap"], "rata", out[nama]["rata"], "maks", out[nama]["maks"], out[nama]["tgl_maks"])
+    for n, v in out.items():
+        v["kembar_dengan"] = [m for m, w in out.items() if m != n and w["snap"] == v["snap"]]
     simpan(os.path.join(RINGKAS, "hulu.json"), {
         "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"),
         "sumber": "GloFAS v4 reanalisis (Copernicus/ECMWF) lewat Open-Meteo Flood API, sel 0,05 derajat",

@@ -42,6 +42,19 @@ bila terverifikasi. 2007-2016 hanya luas kasar.
 Yang tidak publik (minta resmi, surat disiapkan): kapasitas rumah pompa dan log operasi (Dinas SDA DKI), hujan per jam
 pos DSDA/BMKG historis, arsip tinggi air pintu air, data RW tergenang BPBD dengan kedalaman dan lama surut.
 
+### 3.1 Hasil panen J1 (27 Okt 2026)
+
+- PetaBencana DKI: 27.944 laporan 2016-12 s.d. 2026-10 (2017: 4.590, 2018: 707, 2019: 254, 2020: 3.045, 2021: 990,
+  2022: 1.396, 2023: 3.668, 2024: 11.236, 2025: 1.941). Ini sumber kebenaran UTAMA; ringkasan per kecamatan per tahun di
+  `public/banjir/data/genangan/riwayat_kec.json`.
+- GFM: ~75% luas DKI ter-mask (bayangan radar gedung); luas tergenang per lewat nyaris 0. **Tidak dipakai sebagai
+  kriteria** di DKI; tetap dipakai untuk pinggiran (Bekasi, Tangerang) dan kota lain yang tidak padat.
+- Hujan per jam: ERA5-Land dan ECMWF IFS terpanen (0,1°). IMERG belum terbaca (HDF5, butuh h5py; OPeNDAP menolak token).
+  GSMaP (biner float32 per jam, terbaca stdlib) diusulkan sebagai hujan satelit utama.
+- DEMNAS 9 lembar dimosaik (6000 x 4667 sel, ~8 m, tahun 2011), GLO-30 cadangan.
+- Debit hulu GloFAS 8 titik (kasar: sel 5 km menggabungkan sungai kecil).
+- Saluran OSM per kecamatan (drain 825, canal 241, river 866, rumah pompa 150); gedung OSM per ubin (berjalan).
+
 ## 4. Unit hidrologis dan neraca air
 
 Unit dasar: sel 30 m (DEM) untuk aliran permukaan. Unit laporan: kecamatan (44 di DKI) dan sub-DAS (HydroBASINS lev 12,
@@ -96,13 +109,15 @@ harmonik, bukan ukuran. Tanggul dan luapan sungai belum dimodelkan di v1. Riwaya
 
 ## 7. Uji (didaftarkan sebelum hasil pertama, dikunci ke git seperti prospektif banjir)
 
-Kejadian uji yang tidak dipakai kalibrasi: **2025 Mar** (dan 2021 Feb bila data terverifikasi).
+Usulan revisi sesudah J1 (menunggu persetujuan pemilik): kalibrasi pada kejadian 2017, 2018, 2020, 2021, 2022, 2023;
+uji pada kejadian **2024 dan 2025** yang tidak disentuh saat kalibrasi (pemisahan waktu, 13.177 laporan).
 Pembanding: (a) InaRISK bahaya banjir saja, (b) mesin dengan satu Kd seragam kota.
 Lolos bila SEMUA:
-1. POD laporan PetaBencana ≥ 0,6 dan batas bawah selang 95% (bootstrap) > POD pembanding (a) dan (b).
-2. Rasio sel basah model di area GFM kering (tidak ter-mask) ≤ 0,4.
+1. POD laporan PetaBencana ≥ 0,6 dan batas bawah selang 95% (bootstrap per hari) > POD pembanding (a) dan (b).
+2. Ketajaman: luas basah model ≤ 25% luas DKI pada hari uji, DAN kecamatan tanpa satu pun laporan pada hari dengan ≥ 100
+   laporan di DKI basah ≤ 40% (pengganti GFM yang ter-mask; ketiadaan laporan bukan bukti kering, jadi ambangnya longgar).
 3. Galat absolut median kedalaman terhadap laporan ber-kedalaman ≤ 40 cm.
-4. Spearman peringkat kecamatan model vs frekuensi teramati 2017-2025 ≥ 0,5.
+4. Spearman peringkat kecamatan model vs frekuensi teramati 2017-2023 ≥ 0,5, diuji pada frekuensi 2024-2025.
 Gagal = keluaran tetap tampil berlabel "Eksperimental, tidak lolos uji" (pola karhutla), tidak menjadi angka utama.
 
 ## 8. Tahap

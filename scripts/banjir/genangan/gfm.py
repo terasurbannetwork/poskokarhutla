@@ -133,14 +133,19 @@ def jalankan(unduh_saja=False):
     if unduh_saja:
         return
     nama, titik = titik_sampel(KecDKI())
-    out = {}
+    out, kosong = {}, 0
     for it in pilih:
         if it.get("gagal"):
             continue
-        out.setdefault(dalam_kejadian(it["waktu"]), []).append(ringkas_item(it, nama, titik))
+        r = ringkas_item(it, nama, titik)
+        if r["kota"]["diamati_km2"] == 0:   # bingkai yang tidak menutup DKI: tidak informatif, dihitung saja
+            kosong += 1
+            continue
+        r["kec"] = {n: v for n, v in r["kec"].items() if v["diamati_km2"] > 0}
+        out.setdefault(dalam_kejadian(it["waktu"]), []).append(r)
     simpan(os.path.join(RINGKAS, "gfm_kec.json"), {
         "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "sumber": ATRIBUSI,
-        "item_total_2015_kini": len(item),
+        "item_total_2015_kini": len(item), "item_kejadian": len(pilih), "item_tanpa_liputan_dki": kosong,
         "catatan": "tergenang=ensemble_flood_extent==1; diamati=!=255; mask=exclusion_mask==1 (GFM tidak melapor di sana, kota padat banyak ter-mask); kering_tak_mask=diamati, 0, tak ter-mask. Sampel ~55 m.",
         "kejadian": out})
     for k, v in out.items():
