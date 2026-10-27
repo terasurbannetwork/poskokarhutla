@@ -2,7 +2,8 @@
 
   m1_kumpul.py uji                         self-check tanpa jaringan
   m1_kumpul.py hujan [--tanggal YYYY-MM-DD]  bawaan kemarin WIB; GSMAP_USER/GSMAP_PASS (hanya di Actions)
-  m1_kumpul.py label [--tanggal YYYY-MM-DD]  bawaan kemarin WIB; PetaBencana + pos DSDA, tanpa kunci
+  m1_kumpul.py label [--tanggal YYYY-MM-DD] [--alasan TEKS]  bawaan kemarin WIB; PetaBencana + pos DSDA, tanpa kunci.
+                                             --alasan dicatat di baris (workflow: label ditulis tanpa baris hujan karena umur >= 4 hari)
 Kode keluar: 0 kemajuan atau baris sudah ada, 1 tanpa kemajuan (sumber belum siap/gagal; dicoba lagi besok), 2 login GSMaP gagal.
 
 Keluaran, satu baris JSON per tanggal, APPEND-ONLY (data/banjir/genangan/):
@@ -105,12 +106,17 @@ def tambah(jalur, r, jenis):
         f.write(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n")
 
 
+def opsi(a, nama):
+    return a[a.index(nama) + 1] if nama in a[:-1] else None
+
+
 def tanggal_arg(a):
-    if not a:
-        return kemarin()
-    if len(a) == 2 and a[0] == "--tanggal":
-        return dt.date.fromisoformat(a[1])
-    sys.exit("pakai: ... [--tanggal YYYY-MM-DD]")
+    t = opsi(a, "--tanggal")
+    if t:
+        return dt.date.fromisoformat(t)
+    if a and not set(a) <= {"--alasan", opsi(a, "--alasan")}:
+        sys.exit("pakai: ... [--tanggal YYYY-MM-DD]")
+    return kemarin()
 
 
 # ------------------------------------------------------------------ hujan
@@ -310,7 +316,7 @@ def dsda(tgl, kec, kunci_kec):
     return {"status": "ok", "cakupan_dari": awal, "n_deret": len(deret), "kec": ka}
 
 
-def label(tgl):
+def label(tgl, alasan=None):
     if tgl >= dt.datetime.now(WIB).date():
         print(f"{tgl} belum selesai: label ditolak", file=sys.stderr)
         return 1
@@ -329,6 +335,8 @@ def label(tgl):
          "pb": {"ok": True, "sumber": "data.petabencana.id/reports/archive?admin=ID-JK", "n_ditarik": len(lap),
                 "n_dki": sum(v["n"] for v in ag.values()), "kec": ag},
          "dsda": dsda(tgl, kec, kunci_kec)}
+    if alasan:
+        r["catatan"] = alasan
     tambah(LABEL, r, "label")
     print(f"label {tgl}: {r['pb']['n_dki']} laporan di {len(ag)} kecamatan, dsda {r['dsda']['status']} {len(r['dsda']['kec'])} kec")
     return 0
@@ -414,6 +422,40 @@ def uji():
         lb = {"tanggal": lama.isoformat(), "pb": {"kec": ag}, "dsda": {"status": "gagal", "kec": {}}}
         tambah(LABEL, lb, "label")
         assert baca_jsonl(LABEL)[0]["pb"]["kec"] == ag
+    # opsi baris perintah
+    assert opsi(["--tanggal", "2026-11-02", "--alasan", "x y"], "--alasan") == "x y" and opsi(["--tanggal"], "--tanggal") is None
+    assert tanggal_arg(["--tanggal", "2026-11-02", "--alasan", "x"]) == dt.date(2026, 11, 2) and tanggal_arg([]) == kemarin()
+    # pastikan_tak_menyusut (dipakai m1_kumpul dan tangki.prakira): repo git sementara
+    global AKAR
+    asli_akar = AKAR
+    with tempfile.TemporaryDirectory() as tmp:
+        try:
+            AKAR = tmp
+            g = lambda *c: subprocess.run(["git", "-C", tmp, "-c", "user.name=u", "-c", "user.email=u@u", *c], capture_output=True, check=True)
+            g("init", "-q")
+            j = os.path.join(tmp, "a.jsonl")
+            pastikan_tak_menyusut(j)                                   # belum dilacak: lolos
+            open(j, "w").write('{"x":1}\n{"x":2}\n')
+            g("add", "a.jsonl")
+            g("commit", "-q", "-m", "a")
+            pastikan_tak_menyusut(j)                                   # sama: lolos
+            open(j, "a").write('{"x":3}\n')
+            pastikan_tak_menyusut(j)                                   # bertambah: lolos
+            for isi in ('{"x":1}\n', '{"x":9}\n{"x":2}\n{"x":3}\n'):  # menyusut / berubah
+                open(j, "w").write(isi)
+                try:
+                    pastikan_tak_menyusut(j)
+                    raise AssertionError("harus berhenti")
+                except SystemExit as ex:
+                    assert "menyusut" in str(ex.code), ex.code
+            os.remove(j)                                               # hilang padahal tercatat
+            try:
+                pastikan_tak_menyusut(j)
+                raise AssertionError("hilang harus berhenti")
+            except SystemExit:
+                pass
+        finally:
+            AKAR = asli_akar
     print("ok")
 
 
@@ -423,7 +465,7 @@ def utama(a):
     if a[:1] == ["hujan"]:
         sys.exit(hujan(tanggal_arg(a[1:])))
     if a[:1] == ["label"]:
-        sys.exit(label(tanggal_arg(a[1:])))
+        sys.exit(label(tanggal_arg(a[1:]), opsi(a, "--alasan")))
     sys.exit(__doc__)
 
 

@@ -5,9 +5,12 @@ Kriteria TERKUNCI di docs/banjir/KRITERIA-M1.md (sha256 di KRITERIA_SHA256; beda
   tangki.py uji                 self-check stdlib, tanpa jaringan
   tangki.py latih               kalibrasi 2017-2023 (CV blok-tahun), tulis m1_param.json + kecamatan_genangan.json
   tangki.py bekukan             SEKALI: tulis sidik (kode + parameter + kriteria) ke data/banjir/genangan/m1_beku.json; kedua kali ditolak
-  tangki.py prakira [--tanggal YYYY-MM-DD] [--kering]
-                                baca m1_hujan.jsonl -> m1_prakiraan.jsonl (append-only); menolak tanggal yang labelnya sudah ada,
-                                menolak bila belum dibekukan atau kode/parameter berubah sejak beku (--kering = hitung, cetak, tidak menulis)
+  tangki.py prakira [--versi teramati|prakiraan] [--tanggal YYYY-MM-DD] [--kering]
+                                -> m1_prakiraan.jsonl (append-only, kunci tanggal+versi). teramati (bawaan): hujan dari m1_hujan.jsonl.
+                                prakiraan: hujan per jam Open-Meteo ECMWF IFS, wajib ditulis sebelum 00.00 WIB hari itu.
+                                Menolak: belum dibekukan, kode/parameter/berkas sidik berubah, label hari itu sudah ada,
+                                tanggal < tanggal beku atau di luar Nov-Apr/30 Apr 2027 (kode keluar 3), arsip menyusut terhadap git HEAD
+                                (--kering = hitung, cetak, tidak menulis)
 
 Model (per kecamatan k, per jam, simpanan V dalam mm di atas luas kecamatan):
   limpasan   SCS-CN kumulatif: Pc indeks hujan sebelumnya (meluruh, paruh waktu PARUH_PC jam), Q(Pc) = (Pc-0,2S)^2/(Pc+0,8S);
@@ -29,12 +32,13 @@ Hujan latih: GSMaP harian (hari UTC) dibagi ke jam mengikuti pola jam ERA5 0,25 
 dijumlah ke hari WIB; fitur (mm, m1, m3) sama bentuknya dengan m1_hujan.jsonl; model selalu membaca hujan lewat hietograf(mm, m1, m3).
 Tahun > 2023 tidak pernah dimuat saat kalibrasi.
 """
-import bisect, datetime as dt, hashlib, json, math, os, random, sys, tempfile
+import bisect, datetime as dt, hashlib, json, math, os, random, sys, tempfile, urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from bersama import AKAR, WIB, KecDKI, baca, simpan  # noqa: E402
+from bersama import AKAR, WIB, KecDKI, ambil_json, baca, simpan  # noqa: E402
 import pemicu  # noqa: E402
 import gsmap  # noqa: E402
+import m1_kumpul  # noqa: E402
 from uji_balik import skor  # noqa: E402
 
 KRITERIA = os.path.join(AKAR, "docs/banjir/KRITERIA-M1.md")
@@ -53,6 +57,15 @@ SALURAN = os.path.join(AKAR, "public/banjir/data/genangan/saluran_kec.json")
 M0 = os.path.join(AKAR, "public/banjir/data/kecamatan_pemicu.json")
 ERA5 = pemicu.HUJAN
 VERSI = 1
+# berkas luar tangki.py yang ikut sidik (H1): ubah satu byte = sidik lain = jendela uji lain
+SIDIK_BERKAS = [os.path.join(AKAR, r) for r in (
+    "scripts/banjir/pasang_astro.py", "public/banjir/data/genangan/saluran_kec.json", "public/geo/kecamatan/31.json",
+    "scripts/banjir/genangan/pemicu.py", "scripts/banjir/genangan/bersama.py", "scripts/banjir/genangan/gsmap.py",
+    "scripts/banjir/genangan/m1_kumpul.py", "scripts/banjir/genangan/m1_nilai.py")]
+JENDELA_AKHIR = dt.date(2027, 4, 30)     # KRITERIA-M1: jendela uji berakhir 30 April 2027
+KELUAR_JENDELA = 3                       # kode keluar prakira: tanggal di luar jendela (workflow menganggapnya "dilewati", bukan galat)
+OPENMETEO = "https://api.open-meteo.com/v1/forecast"
+JAM_UJI = None                           # hanya self-check: jam palsu
 
 TAHUN = (2017, 2023)            # kalibrasi; 2024+ tidak dimuat (KRITERIA-M1 larangan)
 MUSIM = pemicu.MUSIM            # Nov-Apr
@@ -100,8 +113,13 @@ def sha_param(p):
 
 
 def sidik(p):
-    """sidik = sha256(sha kode + sha parameter + sha kriteria + sha tafsir)."""
-    return hashlib.sha256((sha_berkas(KODE) + sha_param(p) + KRITERIA_SHA256 + TAFSIR_SHA256).encode()).hexdigest()
+    """sidik = sha256(sha kode + sha parameter + sha kriteria + sha tafsir + sha tiap berkas di SIDIK_BERKAS, urut daftar)."""
+    return hashlib.sha256((sha_berkas(KODE) + sha_param(p) + KRITERIA_SHA256 + TAFSIR_SHA256
+                           + "".join(sha_berkas(j) for j in SIDIK_BERKAS)).encode()).hexdigest()
+
+
+def sekarang():
+    return JAM_UJI or dt.datetime.now(WIB)
 
 
 # ------------------------------------------------------------------ kecamatan, prior, pasang
@@ -202,15 +220,17 @@ def musim_dari(tgl):
     return tgl.year if tgl.month >= 11 else tgl.year - 1
 
 
-def normalkan(baris):
+def normalkan(baris, ref=None):
     """baris: [(musim, n_laporan, kedalaman_maks_cm)] -> ({musim: n_musim}, ref, tak_tercapai). Tafsir KRITERIA-M1-TAFSIR.md:
     ref = median, atas musim 2017/18..2022/23, proporsi baris dengan n >= 3 (aturan (b) SAJA). n_musim = n >= 1 terkecil sehingga
-    proporsi (kedalaman >= 10 cm ATAU n >= n_musim) <= ref; bila (a) sendiri > ref, n_musim = tak hingga (label hanya (a)), dicatat."""
+    proporsi (kedalaman >= 10 cm ATAU n >= n_musim) <= ref; bila (a) sendiri > ref, n_musim = tak hingga (label hanya (a)), dicatat.
+    ref diberikan = dipakai apa adanya (penilai prospektif: acuan dari kalibrasi, baris hanya musim uji)."""
     per = {}
     for s, n, dm in baris:
         per.setdefault(s, []).append((n, dm))
-    pr = sorted(sum(1 for n, dm in per[s] if n >= N_REF) / len(per[s]) for s in MUSIM_REF if s in per)
-    ref = (pr[(len(pr) - 1) // 2] + pr[len(pr) // 2]) / 2
+    if ref is None:
+        pr = sorted(sum(1 for n, dm in per[s] if n >= N_REF) / len(per[s]) for s in MUSIM_REF if s in per)
+        ref = (pr[(len(pr) - 1) // 2] + pr[len(pr) // 2]) / 2
     nm, tak = {}, []
     for s, v in per.items():
         if sum(1 for n, dm in v if dm >= 10) / len(v) > ref:
@@ -468,9 +488,8 @@ def pembanding_cv(dunia, tahun_all):
     return {"klimatologi_bulanan": kl, "ambang_harian_kota": am}
 
 
-def m0_beku(dunia, hujan_fitur):
-    """M0 beku (kecamatan_pemicu.json) dipakai apa adanya pada baris yang sama: (d, m1) -> peluang (interpolasi bilinear di ln),
-    ya bila >= potong. CATATAN: M0 dilatih pada 2017-2023, jadi ini DALAM-SAMPEL untuk M0 (menguntungkan M0)."""
+def m0_fungsi():
+    """M0 beku (kecamatan_pemicu.json) -> f(kunci_kec, harian_mm, maks_1j_mm) -> bool: peluang (interpolasi bilinear di ln) >= potong."""
     m = baca(M0)
     gd, gm = m["grid"]["harian_mm"], m["grid"]["maks_1j_mm"]
     pot = m["model"]["potong_peluang"]
@@ -486,16 +505,25 @@ def m0_beku(dunia, hujan_fitur):
             j -= 1
         return p[i * len(gm) + j] if j >= 0 else 0.0
 
+    def ya(k, d, m1):
+        p = m["kec"][k]["p"]
+        i, wi = sisip(gd, max(d, 1e-3))
+        j, wj = sisip(gm, max(m1, 1e-3))
+        v = ((1 - wi) * ((1 - wj) * p_at(p, i, j) + wj * p_at(p, i, j + 1)) + wi * ((1 - wj) * p_at(p, i + 1, j) + wj * p_at(p, i + 1, j + 1)))
+        return v >= pot
+    return ya
+
+
+def m0_beku(dunia, hujan_fitur):
+    """M0 beku dipakai apa adanya pada baris yang sama (lihat m0_fungsi).
+    CATATAN: M0 dilatih pada 2017-2023, jadi ini DALAM-SAMPEL untuk M0 (menguntungkan M0)."""
+    f = m0_fungsi()
     out = {}
     for ki, (k, _, _) in enumerate(dunia.kecs):
-        p = m["kec"][k]["p"]
         for (o, mm, h, tgl, y, th), (d, m1, _) in zip(dunia.seri[ki], hujan_fitur[ki]):
             if y is None:
                 continue
-            i, wi = sisip(gd, max(d, 1e-3))
-            j, wj = sisip(gm, max(m1, 1e-3))
-            v = ((1 - wi) * ((1 - wj) * p_at(p, i, j) + wj * p_at(p, i, j + 1)) + wi * ((1 - wj) * p_at(p, i + 1, j) + wj * p_at(p, i + 1, j + 1)))
-            ya = v >= pot
+            ya = f(k, d, m1)
             t = out.setdefault((ki, th), [0, 0, 0, 0])
             t[0 if ya and y else 1 if ya else 2 if y else 3] += 1
     return out
@@ -606,7 +634,7 @@ def latih():
         "anggota": anggota, "c3": [round(x, 5) for x in c3], "skala_pasang": [round(x, 6) for x in skala],
         "kandidat": {"n": N_KANDIDAT, "benih": 20261028, "rentang": RANGE, "grid_vth": GRID_VTH},
         "latih": {"tahun": list(TAHUN), "baris_berlabel": len(baris_berlabel(dunia)), "positif": sum(r[4] for r in baris_berlabel(dunia)),
-                  "ref_proporsi_b3": round(ref, 5), "n_musim": {str(k): (None if v == math.inf else v) for k, v in sorted(nm.items())},
+                  "ref_proporsi_b3": round(ref, 5), "ref_proporsi_b3_tepat": ref, "n_musim": {str(k): (None if v == math.inf else v) for k, v in sorted(nm.items())},
                   "n_musim_catatan": "null = tak hingga: proporsi (a) saja melebihi acuan, label musim itu hanya (a)", "musim_hanya_a": tak, "tafsir_sha256": TAFSIR_SHA256, **info},
         "cv": {"ringkas": cv, "selisih_vs_pembanding": selisih, "pembanding_terbaik": terbaik, "per_tahun": per_tahun},
     }
@@ -684,7 +712,8 @@ def bekukan():
     if k["uji_prospektif"]["sha256_parameter"] != sha_param(p) or k["uji_prospektif"]["sha256_kode"] != sha_berkas(KODE):
         sys.exit("keluaran tidak cocok dengan kode/parameter sekarang: jalankan `tangki.py latih` ulang sebelum membekukan")
     rec = {"sidik": sidik(p), "sha256_kode": sha_berkas(KODE), "sha256_parameter": sha_param(p), "kriteria_sha256": KRITERIA_SHA256,
-           "tafsir_sha256": TAFSIR_SHA256, "tanggal_beku": dt.datetime.now(WIB).isoformat(timespec="seconds"), "versi": VERSI}
+           "tafsir_sha256": TAFSIR_SHA256, "tanggal_beku": sekarang().isoformat(timespec="seconds"), "versi": VERSI,
+           "sha256_berkas": {os.path.relpath(j, AKAR): sha_berkas(j) for j in SIDIK_BERKAS}}
     simpan(BEKU, {"beku": [rec]})
     k["uji_prospektif"].update(sidik=rec["sidik"], tanggal_beku=rec["tanggal_beku"], status="berjalan")
     simpan(KELUAR, k)
@@ -747,37 +776,88 @@ def prakira_baris(p, rows, tgl):
             for k, v in hasil.items()}
 
 
-def prakira(tanggal=None, kering=False):
+def hujan_prakiraan(tgls, ambil=ambil_json):
+    """Hujan prakiraan per jam Open-Meteo forecast (ECMWF IFS, zona Asia/Bangkok = WIB) di pusat 42 kecamatan -> {tanggal_iso: {kunci: {mm,m1,m3,h}}}.
+    Fitur sama bentuknya dengan m1_hujan.jsonl (mm/m1/m3 hari WIB). Jam tak lengkap = galat (tidak menebak)."""
+    kecs = kec_daratan()
+    q = {"latitude": ",".join(str(round(la, 4)) for _, la, _ in kecs), "longitude": ",".join(str(round(lo, 4)) for _, _, lo in kecs),
+         "hourly": "precipitation", "models": "ecmwf_ifs", "timezone": "Asia/Bangkok",
+         "start_date": min(tgls).isoformat(), "end_date": max(tgls).isoformat()}
+    d = ambil(OPENMETEO + "?" + urllib.parse.urlencode(q, safe=","))
+    d = d if isinstance(d, list) else [d]
+    if len(d) != len(kecs):
+        sys.exit(f"Open-Meteo memberi {len(d)} titik, diminta {len(kecs)}")
+    out = {t.isoformat(): {} for t in tgls}
+    for (k, _, _), x in zip(kecs, d):
+        for t in tgls:
+            v = [m for w, m in zip(x["hourly"]["time"], x["hourly"]["precipitation"]) if w[:10] == t.isoformat()]
+            if len(v) != 24:
+                sys.exit(f"{k} {t}: {len(v)} jam prakiraan, perlu 24")
+            out[t.isoformat()][k] = {"mm": round(sum(a or 0 for a in v), 1), "m1": round(max(a or 0 for a in v), 1),
+                                     "m3": m1_kumpul.maks_n(v, 3), "h": sum(a is None for a in v)}
+    return out
+
+
+def tolak_jendela(pesan):
+    print(pesan, file=sys.stderr)
+    raise SystemExit(KELUAR_JENDELA)
+
+
+def prakira(tanggal=None, kering=False, versi="teramati", ambil=ambil_json):
     kriteria_ok()
     tafsir_ok()
     p = periksa_beku()
     rows = sorted(baca_jsonl(HUJAN_OP), key=lambda r: r["tanggal"])
-    if not rows:
+    if versi == "teramati" and not rows:
         sys.exit("m1_hujan.jsonl kosong")
-    tgl = dt.date.fromisoformat(tanggal) if tanggal else dt.date.fromisoformat(rows[-1]["tanggal"])
+    if versi not in ("teramati", "prakiraan"):
+        sys.exit("versi harus teramati atau prakiraan")
+    tgl = dt.date.fromisoformat(tanggal) if tanggal else (dt.date.fromisoformat(rows[-1]["tanggal"]) if versi == "teramati" else sekarang().date() + dt.timedelta(days=1))
+    beku = dt.datetime.fromisoformat(baca(BEKU)["beku"][0]["tanggal_beku"]).date()
+    if tgl < beku:
+        tolak_jendela(f"{tgl}: sebelum tanggal beku {beku}, ditolak (jendela uji dimulai saat beku)")
+    if tgl.month not in MUSIM or tgl > JENDELA_AKHIR:
+        tolak_jendela(f"{tgl}: di luar jendela uji (hanya November-April, sampai {JENDELA_AKHIR}), ditolak")
     if any(r["tanggal"] == tgl.isoformat() for r in baca_jsonl(LABEL_OP)):
         sys.exit(f"{tgl}: label hari itu sudah ada; prakiraan harus mendahului label, ditolak")
-    if any(r["tanggal"] == tgl.isoformat() for r in baca_jsonl(PRAKIRAAN)):
-        print(f"{tgl}: prakiraan sudah ada (append-only, tidak ditimpa)")
+    if versi == "prakiraan" and sekarang() >= dt.datetime.combine(tgl, dt.time(0), WIB):
+        sys.exit(f"{tgl}: prakiraan harus ditulis sebelum 00.00 WIB hari itu (sekarang {sekarang().isoformat(timespec='minutes')}), ditolak")
+    if any(r["tanggal"] == tgl.isoformat() and r.get("versi") == versi for r in baca_jsonl(PRAKIRAAN)):
+        print(f"{tgl}: {versi} sudah ada (append-only, tidak ditimpa)")
         return
-    ada = next((r for r in rows if r["tanggal"] == tgl.isoformat()), None)
-    if not ada or ada.get("dikeluarkan"):
-        sys.exit(f"{tgl}: tidak ada hujan teramati yang sah di m1_hujan.jsonl")
+    extra = {}
+    if versi == "teramati":
+        ada = next((r for r in rows if r["tanggal"] == tgl.isoformat()), None)
+        if not ada or ada.get("dikeluarkan"):
+            sys.exit(f"{tgl}: tidak ada hujan teramati yang sah di m1_hujan.jsonl")
+    else:
+        # hari sebelumnya belum punya baris hujan teramati saat 23.30 WIB: diisi prakiraan yang sama (tanpa itu keadaan tanah direset kering)
+        kemarin = tgl - dt.timedelta(days=1)
+        perlu = [tgl] + ([kemarin] if not any(r["tanggal"] == kemarin.isoformat() for r in rows) else [])
+        hp = hujan_prakiraan(perlu, ambil)
+        rows = sorted([r for r in rows if r["tanggal"] <= kemarin.isoformat()]
+                      + [{"tanggal": t, "dikeluarkan": False, "kec": v} for t, v in hp.items()], key=lambda r: r["tanggal"])
+        extra = {"sumber_hujan": "open-meteo forecast ecmwf_ifs, titik pusat kecamatan", "d1_dari_prakiraan": kemarin in perlu,
+                 "hujan": {k: [v["mm"], v["m1"], v["m3"]] for k, v in hp[tgl.isoformat()].items()}}
     kec = prakira_baris(p, rows, tgl)
-    r = {"tanggal": tgl.isoformat(), "versi_hujan": "teramati", "label": LABEL, "sidik": baca(BEKU)["beku"][0]["sidik"],
-         "kriteria_sha256": KRITERIA_SHA256, "tafsir_sha256": TAFSIR_SHA256, "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "kec": kec}
+    if kec is None:
+        sys.exit(f"{tgl}: replay tidak berakhir di tanggal itu")
+    r = {"tanggal": tgl.isoformat(), "versi": versi, "label": LABEL, "sidik": baca(BEKU)["beku"][0]["sidik"],
+         "kriteria_sha256": KRITERIA_SHA256, "tafsir_sha256": TAFSIR_SHA256, "dibuat": sekarang().isoformat(timespec="seconds"), **extra, "kec": kec}
     if kering:
         print(json.dumps(r, ensure_ascii=False)[:600])
         return
     os.makedirs(DIR, exist_ok=True)
+    for j in (PRAKIRAAN, BEKU):
+        m1_kumpul.pastikan_tak_menyusut(j)
     with open(PRAKIRAAN, "a", encoding="utf-8") as f:
         f.write(json.dumps(r, ensure_ascii=False, separators=(",", ":")) + "\n")
-    print(f"prakiraan {tgl}: {sum(1 for v in kec.values() if v['ya'])} dari {len(kec)} kecamatan genangan")
+    print(f"prakira {versi} {tgl}: {sum(1 for v in kec.values() if v['ya'])} dari {len(kec)} kecamatan genangan")
 
 
 # ------------------------------------------------------------------ self-check
 def uji():
-    global DIR, PARAM, BEKU, HUJAN_OP, LABEL_OP, PRAKIRAAN, KELUAR
+    global DIR, PARAM, BEKU, HUJAN_OP, LABEL_OP, PRAKIRAAN, KELUAR, SIDIK_BERKAS, JAM_UJI
     kriteria_ok()
     tafsir_ok()
     # 1. hietograf: jumlah = mm, m1 dan m3 terpenuhi
@@ -851,9 +931,33 @@ def uji():
     assert hitung_z(mk(0), list(range(2017, 2024))) != hitung_z(mk(1), list(range(2017, 2024)))
     assert abs(sum(z for z in hitung_z(mk(0), [2017])) ) < 5 and skala_vm([[2.0]], 0.0, [1.0]) == [[2.0]]
     assert abs(vth_kec({"Vth": 4.0, "b": 0.5, "z": {"A": 2.0}}, "A") - 4.0 * math.exp(-1.0)) < 1e-12 and vth_kec({"Vth": 4.0}, "A") == 4.0
-    # 6. pembekuan sekali, prakiraan menolak sesudah label dan sebelum beku
+    # 6a. sidik memuat SEMUA berkas daftar (H1): ubah satu byte di berkas mana pun = sidik lain
+    nama = {os.path.basename(j) for j in SIDIK_BERKAS}
+    assert len(SIDIK_BERKAS) == 8 and all(os.path.exists(j) for j in SIDIK_BERKAS) and {"m1_nilai.py", "m1_kumpul.py", "pasang_astro.py", "saluran_kec.json", "31.json"} <= nama, nama
+    pp = {"a": 1}
+    asli_sb = SIDIK_BERKAS
+    tmp0 = tempfile.mkdtemp()
+    try:
+        SIDIK_BERKAS = []
+        for i, j in enumerate(asli_sb):
+            c = os.path.join(tmp0, f"{i}.txt")
+            open(c, "w").write(f"isi {i}")
+            SIDIK_BERKAS.append(c)
+        s0 = sidik(pp)
+        for c in SIDIK_BERKAS:
+            open(c, "a").write("x")
+            s1 = sidik(pp)
+            assert s1 != s0, c
+            s0 = s1
+    finally:
+        SIDIK_BERKAS = asli_sb
+    # 6. pembekuan sekali, penjaga prakiraan: sebelum beku, tanggal < beku, di luar Nov-Apr, sesudah label, 00.00 WIB, arsip menyusut
     asli = (DIR, PARAM, BEKU, HUJAN_OP, LABEL_OP, PRAKIRAAN, KELUAR)
     tmp = tempfile.mkdtemp()
+    wib = lambda s: dt.datetime.fromisoformat(s).replace(tzinfo=WIB)
+    asli_pt = m1_kumpul.pastikan_tak_menyusut
+    dipanggil = []
+    m1_kumpul.pastikan_tak_menyusut = lambda j: dipanggil.append(j)
     try:
         DIR = tmp
         PARAM, BEKU, HUJAN_OP, LABEL_OP, PRAKIRAAN = (os.path.join(tmp, n) for n in ("p.json", "b.json", "h.jsonl", "l.jsonl", "r.jsonl"))
@@ -864,12 +968,16 @@ def uji():
                "c3": [0.0, 0.8, 0.2], "skala_pasang": [1.0, 1.0], "dibuat": "x"}
         simpan(PARAM, prm)
         simpan(KELUAR, {"uji_prospektif": {"sha256_parameter": sha_param(prm), "sha256_kode": sha_berkas(KODE), "status": "belum dibekukan"}})
-        try:
-            prakira("2026-10-26")
-        except SystemExit as ex:
-            assert "belum dibekukan" in str(ex)
-        else:
-            raise AssertionError("prakiraan sebelum beku harus ditolak")
+
+        def tolak(kata, kode=None, **kw):
+            try:
+                prakira(**kw)
+            except SystemExit as ex:
+                assert ex.code == kode if kode else kata in str(ex.code), (kata, ex.code, kw)
+            else:
+                raise AssertionError("harus ditolak: " + kata)
+        JAM_UJI = wib("2026-11-10T10:00:00")
+        tolak("belum dibekukan", tanggal="2026-11-12")
         bekukan()
         try:
             bekukan()
@@ -877,36 +985,54 @@ def uji():
             assert "sudah dibekukan" in str(ex)
         else:
             raise AssertionError("bekukan kedua harus ditolak")
-        assert baca(KELUAR)["uji_prospektif"]["status"] == "berjalan"
+        assert baca(KELUAR)["uji_prospektif"]["status"] == "berjalan" and baca(BEKU)["beku"][0]["tanggal_beku"].startswith("2026-11-10")
+        assert set(baca(BEKU)["beku"][0]["sha256_berkas"]) == {os.path.relpath(j, AKAR) for j in SIDIK_BERKAS}
         with open(HUJAN_OP, "w") as f:
-            for i, mm in enumerate((0.0, 60.0, 90.0)):
-                d = f"2026-10-{25 + i}"
+            for d, mm in (("2026-11-11", 0.0), ("2026-11-12", 60.0), ("2026-11-13", 90.0)):
                 f.write(json.dumps({"tanggal": d, "dikeluarkan": False, "kec": {k: {"mm": mm, "m1": mm / 3, "m3": mm * 0.6, "h": 0} for k in kunci}}) + "\n")
-        with open(LABEL_OP, "w") as f:
-            f.write(json.dumps({"tanggal": "2026-10-27", "pb": {"kec": {}}}) + "\n")
-        try:
-            prakira("2026-10-27")
-        except SystemExit as ex:
-            assert "label" in str(ex)
-        else:
-            raise AssertionError("prakiraan sesudah label harus ditolak")
-        prakira("2026-10-26")
-        prakira("2026-10-26")
+        for t in ("2026-11-05", "2026-10-30", "2027-05-02", "2027-11-20"):      # < beku; Oktober; Mei; sesudah 30 Apr 2027
+            tolak("jendela", KELUAR_JENDELA, tanggal=t)
+            tolak("jendela", KELUAR_JENDELA, tanggal=t, versi="prakiraan")
+        # prakiraan: palsu Open-Meteo, 2 hari (hari sebelumnya belum punya hujan teramati -> diisi prakiraan)
+        def palsu(url):
+            q = urllib.parse.parse_qs(urllib.parse.urlparse(url).query)
+            a0, a1 = dt.date.fromisoformat(q["start_date"][0]), dt.date.fromisoformat(q["end_date"][0])
+            n = len(q["latitude"][0].split(","))
+            assert q["models"] == ["ecmwf_ifs"] and q["timezone"] == ["Asia/Bangkok"] and n == 42
+            w = [f"{a0 + dt.timedelta(days=i // 24)}T{i % 24:02d}:00" for i in range((a1 - a0).days * 24 + 24)]
+            return [{"hourly": {"time": w, "precipitation": [2.0] * len(w)}} for _ in range(n)]
+        JAM_UJI = wib("2026-11-12T23:30:00")
+        prakira("2026-11-13", versi="prakiraan", ambil=palsu)
+        prakira("2026-11-13", versi="prakiraan", ambil=palsu)       # kedua: sudah ada, tidak ditimpa
         rr = baca_jsonl(PRAKIRAAN)
-        assert len(rr) == 1 and rr[0]["tanggal"] == "2026-10-26" and len(rr[0]["kec"]) == 42
-        assert any(v["ya"] for v in rr[0]["kec"].values()), "60 mm hari kedua harus menggenangi sebagian kecamatan"
+        assert len(rr) == 1 and rr[0]["versi"] == "prakiraan" and rr[0]["dibuat"].startswith("2026-11-12T23:30") and not rr[0]["d1_dari_prakiraan"], rr
+        assert rr[0]["hujan"][kunci[0]] == [48.0, 2.0, 6.0] and PRAKIRAAN in dipanggil and BEKU in dipanggil, dipanggil
+        JAM_UJI = wib("2026-11-14T00:00:00")
+        tolak("00.00 WIB", tanggal="2026-11-14", versi="prakiraan", ambil=palsu)       # tepat tengah malam hari D = terlambat
+        JAM_UJI = wib("2026-11-13T23:30:00")
+        prakira("2026-11-15", versi="prakiraan", ambil=palsu)     # 11-14 belum ada di m1_hujan.jsonl -> d1 dari prakiraan
+        assert baca_jsonl(PRAKIRAAN)[-1]["d1_dari_prakiraan"] and len(baca_jsonl(PRAKIRAAN)[-1]["kec"]) == 42
+        # teramati
+        JAM_UJI = wib("2026-11-14T05:00:00")
+        prakira("2026-11-12")
+        prakira("2026-11-13")
+        prakira("2026-11-13")
+        rr = baca_jsonl(PRAKIRAAN)
+        assert [(r["tanggal"], r["versi"]) for r in rr] == [("2026-11-13", "prakiraan"), ("2026-11-15", "prakiraan"), ("2026-11-12", "teramati"), ("2026-11-13", "teramati")], rr
+        assert any(v["ya"] for v in rr[2]["kec"].values()), "60 mm hari kedua harus menggenangi sebagian kecamatan"
+        with open(LABEL_OP, "w") as f:
+            f.write(json.dumps({"tanggal": "2026-11-13", "pb": {"kec": {}}}) + "\n")
+        tolak("label", tanggal="2026-11-13")
+        tolak("label", tanggal="2026-11-13", versi="prakiraan", ambil=palsu)
         # kode berubah sesudah beku -> prakiraan menolak
         b = baca(BEKU)
         b["beku"][0]["sidik"] = "0" * 64
         simpan(BEKU, b)
-        try:
-            prakira("2026-10-26", kering=True)
-        except SystemExit as ex:
-            assert "berubah" in str(ex)
-        else:
-            raise AssertionError("sidik basi harus ditolak")
+        tolak("berubah", tanggal="2026-11-12", kering=True)
     finally:
         DIR, PARAM, BEKU, HUJAN_OP, LABEL_OP, PRAKIRAAN, KELUAR = asli
+        JAM_UJI = None
+        m1_kumpul.pastikan_tak_menyusut = asli_pt
     # 7. berkas nyata (bila ada)
     if os.path.exists(KELUAR):
         d = baca(KELUAR)
@@ -924,9 +1050,13 @@ def uji():
     print("ok")
 
 
+def opsi(a, nama):
+    return a[a.index(nama) + 1] if nama in a else None
+
+
 if __name__ == "__main__":
     a = sys.argv[1:] or ["uji"]
     if a[0] == "prakira":
-        prakira(a[a.index("--tanggal") + 1] if "--tanggal" in a else None, "--kering" in a)
+        prakira(opsi(a, "--tanggal"), "--kering" in a, opsi(a, "--versi") or "teramati")
     else:
         {"latih": latih, "bekukan": bekukan, "uji": uji}.get(a[0], uji)()
