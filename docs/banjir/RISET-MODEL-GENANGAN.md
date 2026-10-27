@@ -217,6 +217,8 @@ Tidak ditemukan repo open source Jakarta yang menyediakan model genangan terlati
 - Standar kala ulang desain drainase DKI: belum terbuka dari naskah primer.
 
 ## 8. Keputusan yang dibutuhkan dari pemilik
+
+**Diputus pemilik 27 Okt 2026 ("Gas semua setuju"):** butir 1 dan 2 disetujui; kriteria M0 dikunci di `docs/banjir/KRITERIA-M0.md`. Butir 3, 5, 6 disetujui sesuai saran (WorldCover/GHSL CC BY boleh, PetaBencana hanya agregat sampai syarat dicek, FABDEM tidak dipakai di situs publik). Butir 4 (surat ke DSDA DKI/BMKG) ditunda.
 1. Setujui urutan M0 -> M1 -> M2 dan kriteria §5.1 (termasuk batas FAR) sebelum hasil pertama; dikunci ke git.
 2. Gantikan rancangan "simulasi per kecamatan di layar" dengan "tabel pra-hitung + interpolasi" (alasan: Worker 10 ms, uji kesetaraan, seragam dengan karhutla).
 3. Izin mengambil ESA WorldCover/GHSL (CC BY 4.0, periksa) dan IDF ITB, atau pakai Gumbel ERA5 sendiri (hipotesis).
