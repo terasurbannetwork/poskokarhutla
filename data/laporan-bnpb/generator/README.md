@@ -76,3 +76,27 @@ masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan
 - Skrip deck di `penanganan/`: `kisi.py` (geometri kolom, dipakai bersama), `ganti.py` (tabel, baca param.json),
   `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil, slide operasi), `ikon.mjs` (ikon Pemda; ikon FIRESPOT disalin dari deck 25 Okt), `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
 - Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) butuh `penanganan/logo/<kode>.png`; tanpa itu generator berhenti dengan pesan jelas.
+
+## Penanganan banjir, longsor dan rob
+
+`penanganan_banjir.py` membuat kembaran deck Penanganan untuk banjir. Hasilnya 2 slide: peta status dan tabel 6 provinsi, dengan
+kolom D-2, D-1, dan D. Mesin dan templatnya sama dengan deck karhutla (`penanganan/*`), dipilih lewat env `BENCANA=banjir` yang
+dipasang skrip ini sendiri. Tanpa env itu, deck karhutla keluar sama persis byte demi byte.
+
+```bash
+cd data/laporan-bnpb/generator
+~/.claude/skills/ppt-konsultan/bnpb/.venv/bin/python penanganan_banjir.py --tanggal 2026-10-27 --out ~/Downloads
+```
+
+- Angkanya diambil dari situs yang tayang (`https://centurisk97.id/banjir/data/laporan.json` dan `hari/<tanggal>.json`), karena
+  data banjir harian tidak di-commit ke git. `public/banjir/data/laporan.json` di repo memang tertinggal.
+- Isi kolom:
+  - BANJIR: kecamatan Siaga atau Awas banjir.
+  - LONGSOR: kecamatan Siaga atau Awas longsor.
+  - ROB SIAGA: titik pantau rob BMKG berstatus Siaga. Provinsi tanpa titik pantau ditulis "–".
+  - TERPAPAR: penduduk kecamatan Siaga atau Awas banjir, dalam ribu jiwa.
+- Pil di tiap baris tabel: status banjir provinsi hari D, dan hujan 3 hari tertinggi kecamatan.
+- Angka ini status prakiraan, bukan kejadian lapangan. Rumah terendam dan pengungsi tidak ada di sistem kita.
+- Arsip `hari/` baru mulai 27 Okt 2026, jadi hari sebelum itu tidak bisa dibuat.
+- Python yang dipakai harus versi 3.12 ke atas dan punya Pillow; subprosesnya ikut memakai python yang sama.
+- Peta digambar lewat playwright. Kalau browser bawaan playwright tidak ada, yang dipakai Google Chrome yang terpasang.
