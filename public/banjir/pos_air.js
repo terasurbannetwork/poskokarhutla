@@ -216,11 +216,11 @@ const PosUkur = {
     if (sumber) {
       const kls = ["match", ["get", "class"], "river", 1, .55], filter = ["any", ["==", ["get", "class"], "river"], ["all", ["in", ["get", "class"], ["literal", ["canal", "stream"]]], [">=", ["zoom"], 8]]];
       const lebar = (a, b, c, d) => ["interpolate", ["linear"], ["zoom"], 4, ["*", kls, a], 8, ["*", kls, b], 12, ["*", kls, c], 15, ["*", kls, d]];
-      peta.addLayer({id: "alir-badan", type: "line", source: sumber, "source-layer": "waterway", minzoom: 11, filter, layout: {visibility: vis, "line-cap": "round", "line-join": "round"},
+      peta.addLayer({id: "alir-badan", type: "line", source: sumber, "source-layer": "waterway", minzoom: 12, filter, layout: {visibility: vis, "line-cap": "round", "line-join": "round"},
         paint: {"line-color": gl ? "#2f6f9f" : "#5b9bd8", "line-width": lebar(2.2, 4.6, 13, 36), "line-opacity": .95}}, bl);   /* badan air biru penuh seperti Oyenza; kilau bergerak selebar badan di atasnya */
       peta.addLayer({id: "alir-garis", type: "line", source: sumber, "source-layer": "waterway", filter, layout: {visibility: vis, "line-cap": "round", "line-join": "round"},
         paint: {"line-color": gl ? "#6fb2ea" : "#4f95d6", "line-width": ["interpolate", ["linear"], ["zoom"], 4, ["*", kls, 1], 7, ["*", kls, 1.8], 9, ["*", kls, 2.6], 12, ["*", kls, 3.6], 13, ["*", kls, 4], 15, ["*", kls, 4.5]]}}, bl);   /* tebal sejak zoom jauh: sungai tetap terbaca saat diperkecil */
-      peta.addLayer({id: "alir-gerak", type: "line", source: sumber, "source-layer": "waterway", minzoom: 11, filter, layout: {visibility: vis, "line-join": "round"},
+      peta.addLayer({id: "alir-gerak", type: "line", source: sumber, "source-layer": "waterway", minzoom: 12, filter, layout: {visibility: vis, "line-join": "round"},
         paint: {"line-color": gl ? "#e6f3ff" : "#d6ebff", "line-width": lebar(1.8, 3.7, 10.5, 30), "line-opacity": .55, "line-blur": ["interpolate", ["linear"], ["zoom"], 11, 1, 15, 6], "line-dasharray": [0, 1.5, 1.5, 4]}}, bl);   /* kilau selebar badan air, bukan garis tipis di tengah */
       peta.addLayer({id: "alir-panah", type: "symbol", source: sumber, "source-layer": "waterway", minzoom: 12, filter: ["any", ["==", ["get", "class"], "river"], ["in", ["get", "class"], ["literal", ["canal", "stream"]]]],
         layout: {visibility: vis, "symbol-placement": "line", "symbol-spacing": 250, "icon-image": "pa-panah", "icon-size": ["interpolate", ["linear"], ["zoom"], 12, 1.1, 16, 1.8], "icon-rotation-alignment": "map", "icon-allow-overlap": true, "icon-ignore-placement": true}}, bl); }
