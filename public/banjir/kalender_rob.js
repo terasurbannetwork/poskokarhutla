@@ -6,7 +6,7 @@
    diprakirakan di titik itu. Hari di luar jangkauan prakiraan hujan tidak dianggap kering: kotaknya bergaris putus.
    Kerja murni (fase, pilih, gabung hujan, kalimat) dipisah dari html() supaya bisa diuji di node. */
 const KalenderRob = (() => {
-  const HUJAN_MIN = 5; /* mm/hari: batas hujan ringan BMKG */
+  const HUJAN_MIN = 5; /* mm/hari: batas hujan ringan BMKG; disetujui pemilik 27 Okt 2026 */
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
   const OR = "#e58a45", BIRU = "#4f8fc4";
   const tambah = (iso, n) => new Date(Date.parse(iso + "T00:00:00Z") + n * 864e5).toISOString().slice(0, 10);
