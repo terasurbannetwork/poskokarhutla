@@ -73,7 +73,7 @@ test("INP statis: animasi berhenti saat tab tersembunyi, reduced-motion, dan lap
 test("peta.js memasang sakelar, klik pos, dan pemuatan malas", () => {
   const p = fs.readFileSync("public/banjir/peta.js", "utf8"), h = fs.readFileSync("public/banjir/index.html", "utf8");
   assert.match(p, /PosUkur\.hit\(e\.point\)/); assert.match(p, /nanti\(\(\) => PosUkur\.mulai\(\)\)/); assert.match(p, /if \(k === "pos"\) PosUkur\.tampil\(i\.checked\)/);
-  assert.match(h, /data-l="pos" checked/); assert.match(h, /<script src="pos_air\.js">/);
+  assert.match(h, /data-l="pos" checked/); for (const k of ["sungai", "rob", "kejadian"]) assert.match(h, new RegExp(`data-l="${k}" checked`), `${k} menyala bawaan`); assert.match(h, /<script src="pos_air\.js">/);
 });
 
 test("warna pin: status resmi menang atas persentil, data lama tetap abu, tanpa ambang jatuh ke persentil", () => {
@@ -232,4 +232,19 @@ test("pasut: deret satu datum dengan puncak (MSL); berkas lama berdatum HAT dito
   const j = JSON.parse(fs.readFileSync("public/banjir/data/pasut.json", "utf8"));
   for (const s of j.stasiun) { const now = P.wibDetik(s.deret?.t0 || "2026-10-27T00:00+07:00") + 3600 * 5.5, k = P.pasutSekarang(s, now); if (!k) continue;
     const pk = (s.puncak || []).map(x => x.cm); assert.ok(k.cm >= Math.min(...pk) - 25 && k.cm <= Math.max(...pk) + 25, `${s.nama} ${k.cm} di luar puncak ${Math.min(...pk)}..${Math.max(...pk)}`); }
+});
+
+test("panel pos: pil, tooltip ambang, batang tiga tik, urutan grup (fixture berambang)", () => {
+  const amb = {siaga3: 190, siaga2: 270, siaga1: 310};
+  const x = {id: "1", nama: "Katulampa", v: 239.5, satuan: "cm", status: "naik_di_atas_biasa", status_resmi: "Siaga 3", ambang: amb, sungai: "Ciliwung"};
+  assert.equal(P.pilLabel(x), "Siaga 3"); assert.equal(P.pilLabel({status: "biasa"}), "Tanpa batas"); assert.equal(P.pilLabel({status: "lama"}), "Data lama"); assert.equal(P.pilLabel({status: "macet"}), "Macet");
+  assert.equal(P.tipAmbang(x), "Siaga 3 190 cm, Siaga 2 270 cm, Siaga 1 310 cm, sekarang 239,5 cm (30,5 cm di bawah batas Siaga 2)");
+  assert.match(P.tipAmbang({...x, v: 330}), /20 cm di atas batas Siaga 1/); assert.equal(P.tipAmbang({status: "biasa"}), null);
+  assert.match(P.tipAmbang({...x, v: null}), /^Siaga 3 190 cm, Siaga 2 270 cm, Siaga 1 310 cm$/);
+  assert.match(P.tipAmbang({...x, v: 2.395, satuan: "m"}), /sekarang 239,5 cm/, "satuan m dinormalkan");
+  const b = plain(P.batangAmbang(x)); assert.equal(b.tik.length, 3); assert.deepEqual(b.tik.map(t => t.nama), ["Siaga 3", "Siaga 2", "Siaga 1"]);
+  assert.ok(b.tik[0].pos < b.tik[1].pos && b.tik[1].pos < b.tik[2].pos && b.isi > 0 && b.isi < 100); assert.equal(P.batangAmbang({status: "biasa"}), null);
+  const mk = (id, ex) => ({id, nama: id, x: 0, y: 0, status: "biasa", ...ex});
+  const g = plain(P.kelompok([mk("a", {sungai: "Besar"}), mk("b", {sungai: "Besar"}), mk("c", {sungai: "Besar"}), mk("d", {sungai: "Kecil", status: "naik_di_atas_biasa"}), mk("e", {sungai: "Kecil2", status_resmi: "Siaga 2", ambang: amb})])).map(([k]) => k);
+  assert.deepEqual(g, ["Kecil", "Kecil2", "Besar"], "grup berpos Siaga atau naik dulu");
 });

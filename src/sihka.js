@@ -8,7 +8,7 @@
    > pantauan_terbatas (riwayat 7 sampai < 14 hari) > data_bolong (pembanding 1/2/3 jam hilang) > naik_di_atas_biasa (kenaikan 3 jam > p99 pos itu, n >= 300, >= 14 hari, tiga langkah tak turun, lantai 20 cm
    bila satuan diketahui, bila tidak v >= p95 dan kenaikan >= 2x p99) > tertinggi (v > rekor, >= 30 hari) > biasa. Dasar persentil tidak memuat 24 jam terakhir. */
 import {gagal, cacheTepi} from "./worker.js";
-import {tarikTeks, perbaruiResmi} from "./sungai_resmi.js";
+import {tarikTeks, perbaruiResmi, BUAT_META} from "./sungai_resmi.js";
 import {panenHujan, ruteHujan} from "./hujan.js";
 
 const SUMBER = "https://sihka.sda.pu.go.id/api/v1s/telemetry-list", CADANGAN = "https://sihka.dev-tunnels.id/api/v1s/telemetry-list", TAHAN_HARI = 180, DASAR_HARI = 90, DASAR_SIKLUS = 14;   // bacaan mentah 180 hari (uji balik satu musim hujan); jendela dasar 90 hari
@@ -130,11 +130,10 @@ async function tarik(env) {
 }
 const galatTeks = e => String(e?.message).slice(0, 200);
 
-const SQL_META = "CREATE TABLE IF NOT EXISTS sungai_meta (pos TEXT PRIMARY KEY, sumber TEXT NOT NULL, pengelola TEXT, lon REAL, lat REAL, a3 REAL, a2 REAL, a1 REAL, resmi TEXT, jenis TEXT, diperbarui INTEGER) WITHOUT ROWID";
 /* tabel sungai_meta (0066) belum diterapkan di D1 = status SIHKA tidak boleh mati: buat tabelnya (SQL sama dengan migrasi, idempoten) lalu ulangi */
 const bangunStatus = async (env, kini) => {
   const jalan = () => env.DB.prepare(SQL_STATUS).bind(Math.floor(kini / 1000), kini).run();
-  try { return await jalan(); } catch (e) { if (!/sungai_meta/.test(e?.message)) throw e; await env.DB.prepare(SQL_META).run(); return jalan(); }
+  try { return await jalan(); } catch (e) { if (!/sungai_meta/.test(e?.message)) throw e; await env.DB.prepare(BUAT_META).run(); return jalan(); }
 };
 
 /* tiap jam. Sumber gagal = bacaan & stempel sehat lama utuh (hanya galat dicatat di isi); status tetap dihitung ulang agar pos yang berhenti melapor jadi 'lama'. */

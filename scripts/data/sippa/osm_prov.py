@@ -100,13 +100,16 @@ def curl(url, data=None, t=400):
 
 
 def kueri(la, lo, mode):
+    """way: `out tags geom`; relasi: `out geom` (BUKAN `out tags geom`, itu membuang daftar anggota). mode: penuh | tambah | rel (hanya relasi air)."""
     b = f"({la*UBIN-PAD},{lo*UBIN-PAD},{la*UBIN+UBIN+PAD},{lo*UBIN+UBIN+PAD})"
-    air = (f'relation["natural"="water"]{b};relation["landuse"="reservoir"]{b};way["natural"="coastline"]{b};'
-           f'way["natural"="water"]["salt"="yes"]{b};way["natural"="water"]["water"="lagoon"]{b};way["natural"="water"]["brackish"="yes"]{b};')
+    rel = f'relation["natural"="water"]{b};relation["landuse"="reservoir"]{b};'
+    way = (f'way["natural"="coastline"]{b};way["natural"="water"]["salt"="yes"]{b};way["natural"="water"]["water"="lagoon"]{b};'
+           f'way["natural"="water"]["brackish"="yes"]{b};')
     if mode == "penuh":
-        air += (f'way["highway"~"^({JALAN_RE})$"]{b};way["waterway"~"^(stream|ditch|drain|canal|river)$"]{b};'
+        way += (f'way["highway"~"^({JALAN_RE})$"]{b};way["waterway"~"^(stream|ditch|drain|canal|river)$"]{b};'
                 f'way["natural"="water"]{b};way["landuse"="reservoir"]{b};')
-    return f"[out:json][timeout:240];({air});out tags geom;"
+    w = f"({way});out tags geom;" if mode != "rel" else ""
+    return f"[out:json][timeout:240];{w}({rel});out geom;"
 
 
 def tarik(prov):
@@ -119,7 +122,9 @@ def tarik(prov):
         fn = os.path.join(d, f"ubin_{t[0]}_{t[1]}.json")
         if os.path.exists(fn):
             return t, "ada"
-        q, err = kueri(t[0], t[1], mode), ""
+        # lama_*.json = tarikan way sebelum perbaikan relasi: way dipakai, relasi ditarik ulang saja
+        ada_lama = os.path.exists(os.path.join(d, f"lama_{t[0]}_{t[1]}.json"))
+        q, err = kueri(t[0], t[1], "rel" if ada_lama else mode), ""
         for n in range(6):
             host = OVP[n % len(OVP)]
             try:
@@ -192,7 +197,7 @@ def padat(g, kx, ky, lat0):
 
 def muat(prov, qxy, kx, ky, lat0):
     ind, seen = Titik(qxy), set()
-    for fn in sorted(glob.glob(os.path.join(RAW, f"osm_{prov}", "ubin_*.json"))):
+    for fn in sorted(glob.glob(os.path.join(RAW, f"osm_{prov}", "ubin_*.json")) + glob.glob(os.path.join(RAW, f"osm_{prov}", "lama_*.json"))):
         for e in json.load(open(fn))["elements"]:
             for eid, t, gs, rel in garis_elemen(e):
                 kl = klasifikasi(t, rel)

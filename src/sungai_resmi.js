@@ -85,7 +85,11 @@ const SQL_BACA = `INSERT OR IGNORE INTO sihka_baca (pos, t, v)
     AND json_extract(j.value,'$.t') <= ?2 + 600 AND json_extract(j.value,'$.t') > ?2 - 180*86400 LIMIT 500`;
 const SQL_CATAT = "INSERT INTO cuaca_sumber (kunci, isi, dibuat) VALUES (?1, ?2, ?3) ON CONFLICT(kunci) DO UPDATE SET isi = excluded.isi, dibuat = excluded.dibuat";
 
+/* SQL sama dengan migrasi 0066 (idempoten). Akar 27 Okt 2026: tanpa 0066 di prod, batch simpan() gagal seluruhnya ("no such table: sungai_meta") dan pos DSDA/SIPANTAU tak pernah tertulis;
+   satu-satunya yang membuat tabelnya (fallback di bangunStatus, sihka.js) jalan SESUDAH perbaruiResmi, jadi tarikan resmi pertama selalu gagal dan galatnya tertelan di cuaca_sumber. */
+export const BUAT_META = "CREATE TABLE IF NOT EXISTS sungai_meta (pos TEXT PRIMARY KEY, sumber TEXT NOT NULL, pengelola TEXT, lon REAL, lat REAL, a3 REAL, a2 REAL, a1 REAL, resmi TEXT, jenis TEXT, diperbarui INTEGER) WITHOUT ROWID";
 async function simpan(env, daftar, detik) {
+  await env.DB.prepare(BUAT_META).run();
   const teks = JSON.stringify(daftar.map(p => ({...p, pengelola: PENGELOLA[p.sumber]})));
   await env.DB.batch([env.DB.prepare(SQL_POS).bind(teks, detik), env.DB.prepare(SQL_META).bind(teks, detik), env.DB.prepare(SQL_BACA).bind(teks, detik)]);
 }
