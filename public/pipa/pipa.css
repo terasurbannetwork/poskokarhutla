@@ -467,3 +467,14 @@
 #sp-air-isi{display:grid;gap:var(--sp-4);min-width:0}
 /* Studio: angka matriks bawaannya estimasi model; pil itu hanya mengulang di tiap baris. Yang beda (asumsi kebijakan, menunggu) tetap tampil. */
 .sp-tabel-studio tbody th .sp-yakin.estimasi-model{display:none}
+
+/* fase 2 form lapangan (keputusan 61): SOS, pengingat tekanan, hasil hitung; tanpa warna tertanam */
+.sp-lapangan .lp-sos{position:sticky;top:0;z-index:6;width:100%;min-height:72px;margin:0;border:0;border-radius:0;background:var(--bad,crimson);color:#fff;font-size:22px;font-weight:800;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+.sp-lapangan .lp-sos.menahan{animation:lp-tahan 2s linear forwards}
+@keyframes lp-tahan{from{box-shadow:inset 0 0 0 0 var(--navy)}to{box-shadow:inset 100vw 0 0 0 var(--navy)}}
+.lp-sos-panel{max-width:560px;margin:8px auto;padding:14px;border-radius:14px;background:var(--card);box-shadow:0 0 0 3px var(--bad,crimson);display:grid;gap:10px}
+.lp-sos-panel[hidden],.lp-pengingat[hidden],.lp-sos[hidden]{display:none}
+.lp-sos-panel p{margin:0;font-weight:700}
+.lp-pengingat{max-width:560px;margin:8px auto;padding:12px 14px;border-radius:14px;background:var(--card);box-shadow:0 0 0 3px var(--warn,goldenrod);display:grid;gap:8px}
+.lp-pengingat p{margin:0;font-weight:700}
+.lp-hasil{margin:8px 0;font-size:20px;font-weight:700}

@@ -45,6 +45,8 @@ export const JENIS = {
   p3k_stok: {label: "Stok P3K di bawah ambang", peran: ["pusdalops"], tautan: "/admin/inventaris"},
   sippa_alarm: {label: "Alarm telemetri kit SIPPA", peran: ["pusdalops"], tautan: "/pipa/telemetri"},
   sippa_titik: {label: "Titik panas baru dekat kompleks SIPPA zona A atau B", peran: ["pusdalops"], tautan: "/pipa/peta"},   // SP-103: ditulis cron FIRMS (src/sippa_titik.js)
+  sippa_sos: {label: "SOS dari regu SIPPA di lapangan", peran: ["pusdalops"], tautan: "/pipa/lapangan"},   // SP-123: tombol SOS di form lapangan (src/sippa.js, tabel sippa_lapangan)
+  sippa_selesai: {label: "Gelar SIPPA selesai", peran: ["pusdalops"], tautan: "/pipa/log"},   // SP-127: laporan selesai gelar dari regu
   sippa_mingguan: {label: "Laporan mingguan SIPPA belum dibuat", peran: ["pusdalops"], tautan: "/pipa/laporan"},   // SP-045, ADR-11: terhitung dari sippa_kit dan sippa_laporan, tanpa tabel dan cron baru   // src/sippa.js: sippa_alarm terbuka (DT §6.3.1); tanpa push baru
 };
 const LUAS = ["koordalops", "pimpinan"];
@@ -124,6 +126,19 @@ async function sippaTitik(env, kini, a) {
   return R.map(r => ({id: `sippa-titik:${r.kompleks_id}:${r.dibuat}`, jenis: "sippa_titik", judul: `Titik panas baru ${angkaPendek(r.jarak_km)} km dari kompleks ${r.kompleks_id} (zona ${r.zona}${r.kab ? ", " + r.kab : ""})`,
     rincian: "Cek pemicu dan kelayakan kompleks di SIPPA (zona konservatif, jarak garis lurus)", provs: [r.prov], kab: r.kab, dibuat: r.dibuat, tenggat: null, prioritas: r.zona === "A" ? 1 : 2, dummy: r.dummy}));
 }
+/* SP-123 SOS (prioritas 1) dan SP-127 gelar selesai (prioritas 2) dari form lapangan HP; hidup 24 jam sejak diterima, id memuat id butir jadi tiap SOS berdiri sendiri. Provinsi dari tugas di server. */
+const kodeData = s => { try { return JSON.parse(s) ?? {}; } catch (e) { return {}; } };
+async function sippaLapangan(env, kini, a) {
+  const R = (await env.DB.prepare(`SELECT l.id, l.jenis, l.kompleks_id, l.prov, l.data, l.diterima, l.dummy, t.nama_regu, t.kab FROM sippa_lapangan l JOIN sippa_tugas t ON t.id = l.tugas_id
+    WHERE l.jenis IN ('sos', 'selesai') AND l.diterima > ? ${dumSql(a, "l.dummy")} ORDER BY l.diterima DESC LIMIT 500`).bind(kini - HARI).all()).results;
+  return R.map(r => {
+    const d = kodeData(r.data), tempat = r.kompleks_id ?? r.kab;
+    return r.jenis === "sos" ? {id: `sippa-sos:${r.id}`, jenis: "sippa_sos", judul: `SOS dari regu ${r.nama_regu} (${tempat})`, rincian: `Koordinat ${d.lat}, ${d.lon}${d.pesan ? ". " + d.pesan : ""}`,
+        provs: [r.prov], kab: r.kab, dibuat: r.diterima, tenggat: null, prioritas: 1, dummy: r.dummy}
+      : {id: `sippa-selesai:${r.id}`, jenis: "sippa_selesai", judul: `Gelar selesai di ${tempat}, ${d.alat_kembali?.length ?? 0} alat kembali, ${d.alat_hilang?.length ?? 0} hilang`, rincian: d.catatan ?? `Regu ${r.nama_regu}`,
+        provs: [r.prov], kab: r.kab, dibuat: r.diterima, tenggat: null, prioritas: 2, dummy: r.dummy};
+  });
+}
 const kodeProv = s => { try { const x = JSON.parse(s); return Array.isArray(x) ? x : []; } catch (e) { return []; } };
 async function akunMenunggu(env, kini, a) {
   const R = (await env.DB.prepare(`SELECT id, wilayah, cakupan, dikirim, dummy FROM instansi_akun WHERE status = 'menunggu' ${dumSql(a)} ORDER BY dikirim LIMIT 500`).all()).results;
@@ -162,7 +177,7 @@ async function sippaMingguan(env, kini, a) {
   return [{id: `sippa-mingguan:${tgl}`, jenis: "sippa_mingguan", judul: `${K.length} kit SIPPA bertugas (${banjir} banjir, ${K.length - banjir} gelar), belum ada laporan mingguan dalam 7 hari terakhir`,
     rincian: "Buka Laporan, pilih Mingguan, buat PDF, lalu centang Arsipkan", provs: [...new Set(K.map(k => k.prov).filter(Boolean))], kab: null, dibuat: waktu, tenggat: batas, prioritas: kini > batas ? 1 : 2, dummy: K.every(k => k.dummy) ? 1 : 0}];
 }
-const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi, cekUlangJatuhTempo, keselamatan, alarmSippa, sippaTitik, sippaMingguan];
+const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi, cekUlangJatuhTempo, keselamatan, alarmSippa, sippaTitik, sippaMingguan, sippaLapangan];
 
 /* tabel sumber yang belum dimigrasi (mis. 0018 atau 0029) melewati detektornya saja; 0030 belum ada ditangani pembungkus rute */
 async function kumpulkan(env, kini, a) {

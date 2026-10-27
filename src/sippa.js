@@ -16,6 +16,7 @@ import {jenisBerkas} from "./foto.js";
 import {bersihMedia} from "./media_bersih.js";
 import {halamanSippa, halamanSippaLapangan, CSP_SIPPA} from "./admin_halaman.js";
 import {cekButir, MEDAN, DIISI_SERVER, JENIS_TABEL, FORMULIR_VERSI} from "../public/pipa/formulir.js";
+import {cekLapangan, JENIS_LAP, TAHAP_FOTO, MAKS_DATA, lat as latOK, lon as lonOK} from "./sippa_lapangan.js";
 import {cekAset, KELAS, KELAS_ASET, kelasDari, jadwal} from "../public/pipa/pelihara.js";
 
 const JAM = 3600e3, HARI = 24 * JAM;
@@ -360,7 +361,7 @@ async function lapanganKirim(env, req, url, kini) {
   const t = await pegang(env, req, kini); if (t instanceof Response) return t;
   const oleh = "tugas:" + t.id, l = await batasJam(env, oleh, "sippa.lapangan", 120, kini); if (l) return l;
   const b = await bacaJsonByte(req, MAKS_KIRIM); if (b.galat) return gagal(b.status || 400, b.galat);   // batas dihitung BYTE sebelum didekode (bacaBody menghitung huruf)
-  const o = b.o, JENIS = ["log", "probe", "bbm", "gerak", "inspeksi"]; let total = 0;
+  const o = b.o, JENIS = ["log", "probe", "bbm", "gerak", "inspeksi", ...JENIS_LAP]; let total = 0;
   for (const j of JENIS) { if (o[j] !== undefined && !Array.isArray(o[j])) return gagal(400, `${j} harus larik`); total += (o[j] ?? []).length; }
   if (total > MAKS_BUTIR) return gagal(400, `paling banyak ${MAKS_BUTIR} butir per kiriman (dikirim ${total})`);
   const meleset = typeof o.jam_kirim !== "number" || !Number.isFinite(o.jam_kirim) || Math.abs(o.jam_kirim - kini) > MELESET_MS;   // jam perangkat beda > 10 menit dari jam server
@@ -375,6 +376,11 @@ async function lapanganKirim(env, req, url, kini) {
     if (jenis === "log" && Object.hasOwn(butir, "foto_id")) {   // foto_id diisi klien sesudah unggah foto (DT §6.1.4); bukan medan MEDAN.log, jadi dicek di sini
       ({foto_id: foto, ...isi} = butir);
       if (foto !== null && !(typeof foto === "string" && RE_ID.test(foto) && await env.DB.prepare("SELECT 1 FROM sippa_foto WHERE id = ? AND tugas_id = ?").bind(foto, t.id).first())) { tolak(id, "foto_id tidak dikenal untuk tugas ini"); continue; }
+    }
+    if (JENIS_LAP.includes(jenis)) {   // fase 2 (keputusan 61): daftar periksa, SOS, tekanan, jejak, selesai, bor, debit; validasi di sippa_lapangan.js
+      const e = cekLapangan(jenis, butir, kini); if (e.galat) { tolak(id, e.galat); continue; }
+      if (byteDari(e.data) > MAKS_DATA) { tolak(id, `data ${byteDari(e.data)} byte, batas ${MAKS_DATA}`); continue; }
+      daftar.push({id, jenis, buat: () => tulisLap(env, id, jenis, e.data, e.waktu, t, kini, oleh)}); continue;
     }
     if (jenis === "inspeksi") {   // keputusan 56: pra/pasca gelar komponen atau kit tugasnya (DT §4.3, §6.6)
       const e = await butirInspeksi(env, t, butir, kini); if (e.alasan) { tolak(id, e.alasan); continue; }
@@ -400,7 +406,7 @@ async function lapanganKirim(env, req, url, kini) {
   }
   if (daftar.length) {
     const n = j => daftar.filter(e => e.jenis === j).length;
-    const jej = () => jejakStmt(env, oleh, "sippa_tugas:" + t.id, "kirim", `n${daftar.length}`, `log ${n("log")}, probe ${n("probe")}, bbm ${n("bbm")}, gerak ${n("gerak")}, inspeksi ${n("inspeksi")}`, kini, t.dummy);
+    const jej = () => jejakStmt(env, oleh, "sippa_tugas:" + t.id, "kirim", `n${daftar.length}`, `log ${n("log")}, probe ${n("probe")}, bbm ${n("bbm")}, gerak ${n("gerak")}, inspeksi ${n("inspeksi")}, lapangan ${daftar.filter(e => JENIS_LAP.includes(e.jenis)).length}`, kini, t.dummy);
     let hasil = null;
     try { hasil = await env.DB.batch([...daftar.map(e => e.buat(e.dari)), jej()]); } catch (e) { if (tanpaTabel(e)) throw e; }   // satu butir ditolak D1 membatalkan seluruh batch: ulangi satu per satu supaya yang sah tetap masuk
     if (hasil) daftar.forEach((e, i) => (hasil[i].meta.changes ? diterima : ganda).push(e.id));
@@ -414,6 +420,9 @@ async function lapanganKirim(env, req, url, kini) {
   }
   return json({diterima, ganda, ditolak, jam_server: kini});
 }
+/* satu baris sippa_lapangan; kompleks, provinsi, kit, dan dummy SELALU dari tugas di server (SP-115: prov kiriman klien tidak dipercaya) */
+const tulisLap = (env, id, jenis, data, waktu, t, kini, oleh) => env.DB.prepare("INSERT INTO sippa_lapangan (id, jenis, tugas_id, kit_id, kompleks_id, prov, data, waktu, diterima, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?) ON CONFLICT(id) DO NOTHING")
+  .bind(id, jenis, t.id, t.kit_id ?? null, t.kompleks_id ?? null, t.prov, JSON.stringify(data), waktu, kini, oleh, t.dummy);
 async function lapanganFoto(env, req, url, kini) {
   const t = await pegang(env, req, kini); if (t instanceof Response) return t;
   const oleh = "tugas:" + t.id, l = await batasJam(env, oleh, "sippa.foto", 60, kini); if (l) return l;
@@ -426,15 +435,22 @@ async function lapanganFoto(env, req, url, kini) {
   const berkas = f.get("berkas");
   if (!(berkas instanceof File) || !berkas.size) return gagal(400, "medan berkas wajib berisi foto");
   if (berkas.size > MAKS_FOTO) return gagal(413, `foto ${berkas.size} byte, maksimal ${MAKS_FOTO}`);
+  const tahap = f.get("tahap"), gps = {};   // SP-121: tahap opsional (unggahan lama tanpa tahap tetap sah); bila ada, lat dan lon perangkat wajib
+  if (tahap !== null) {
+    if (!TAHAP_FOTO.includes(tahap)) return gagal(400, `tahap harus salah satu dari ${TAHAP_FOTO.join(", ")}`);
+    for (const k of ["lat", "lon"]) { const v = f.get(k); gps[k] = typeof v === "string" && /^-?\d{1,3}(\.\d{1,10})?$/.test(v) ? Number(v) : NaN; }
+    if (!latOK(gps.lat) || !lonOK(gps.lon)) return gagal(400, "foto bertahap wajib lat dan lon perangkat di dalam Indonesia");
+  }
   const bytes = new Uint8Array(await berkas.arrayBuffer()), mime = jenisBerkas(bytes);   // jenis dari byte awal, bukan nama atau Content-Type kiriman
   if (mime !== "image/jpeg" && mime !== "image/webp") return gagal(400, "berkas harus foto JPEG atau WebP (PNG, GIF, dan video tidak diterima)");
   const bersih = bersihMedia(mime, bytes); if (!bersih || !bersih.length) return gagal(400, "struktur foto tidak sah atau tidak lengkap");   // EXIF, XMP, dan lokasi dibuang
   const id = acak(8), kunci = "sippa-foto/" + id;
   await env.MEDIA.put(kunci, bersih, {httpMetadata: {contentType: mime}});
   try { await env.DB.batch([env.DB.prepare("INSERT INTO sippa_foto (id, tugas_id, prov, mime, ukuran, waktu, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, t.id, t.prov, mime, bersih.length, kini, oleh, t.dummy),
-    jejakStmt(env, oleh, "sippa_foto:" + id, "foto", mime, null, kini, t.dummy)]); }
+    jejakStmt(env, oleh, "sippa_foto:" + id, "foto", mime, null, kini, t.dummy),
+    ...(tahap !== null ? [tulisLap(env, id, "foto", {foto_id: id, tahap, lat: gps.lat, lon: gps.lon, waktu: kini}, kini, t, kini, oleh)] : [])]); }
   catch (e) { await env.MEDIA.delete(kunci).catch(() => {}); throw e; }
-  return json({foto_id: id}, 201);
+  return json({foto_id: id, ...(tahap !== null ? {tahap} : {})}, 201);
 }
 async function fotoBaca(env, req, url, kini, ctx, id) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;
@@ -609,6 +625,7 @@ const SQL_PROV_JEJAK = `CASE substr(j.obyek, 1, instr(j.obyek, ':') - 1)
   WHEN 'sippa_aoi_usul' THEN (SELECT prov FROM sippa_aoi_usul WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
   WHEN 'sippa_inspeksi' THEN (SELECT prov FROM sippa_inspeksi WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
   WHEN 'sippa_log_gelar' THEN (SELECT prov FROM sippa_log_gelar WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_pinjam' THEN (SELECT prov FROM sippa_pinjam WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
   WHEN 'sippa_keputusan' THEN (SELECT prov FROM sippa_keputusan WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
 END`;
 /* provinsi kompleks dari R2 (satu pembacaan, hanya bila klien tak mengirim prov) */
@@ -1316,7 +1333,7 @@ async function dummyIsi(env, req, url, kini) {
   return json({dibuat});
 }
 /* hilir ke hulu; trigger append-only mengizinkan hapus baris dummy. Objek R2 dummy dihapus berdasarkan id baris sebelum barisnya hilang. */
-const HAPUS_URUT = ["sippa_inspeksi", "sippa_stok_gerak", "sippa_aset", "sippa_alarm", "sippa_telemetri_harian", "sippa_telemetri", "sippa_perangkat", "sippa_laporan", "sippa_petak", "sippa_ab_unggah", "sippa_skenario", "sippa_bbm", "sippa_probe", "sippa_log_gelar", "sippa_foto", "sippa_gerak", "sippa_tugas", "sippa_komponen", "sippa_jalan_cek", "sippa_aoi_usul", "sippa_kit"];
+const HAPUS_URUT = ["sippa_lapangan", "sippa_pinjam", "sippa_ba_urut", "sippa_inspeksi", "sippa_stok_gerak", "sippa_aset", "sippa_alarm", "sippa_telemetri_harian", "sippa_telemetri", "sippa_perangkat", "sippa_laporan", "sippa_petak", "sippa_ab_unggah", "sippa_skenario", "sippa_bbm", "sippa_probe", "sippa_log_gelar", "sippa_foto", "sippa_gerak", "sippa_tugas", "sippa_komponen", "sippa_jalan_cek", "sippa_aoi_usul", "sippa_kit"];
 async function dummyHapus(env, req, url, kini) {
   const a = await akses(env, req, "SA"); if (a.res) return a.res;
   const l = await batasJam(env, a.oleh, "sippa.dummy", 30, kini); if (l) return l;
@@ -1327,11 +1344,113 @@ async function dummyHapus(env, req, url, kini) {
   return json({dihapus: Object.fromEntries(HAPUS_URUT.map((t, i) => [t, r[i].meta.changes]))});
 }
 
+/* ================================================================ butir lapangan fase 2, pinjam-pakai, suku cadang (keputusan 61; SP-120 sampai SP-131; skema 0070) */
+const JENIS_BACA = ["foto", ...JENIS_LAP];
+function filterLap(q) {
+  const tugas = q.get("tugas_id"), kompleks = q.get("kompleks_id"), jenis = q.get("jenis"), w = [], p = [];
+  if (tugas === null && kompleks === null) return {galat: "tugas_id atau kompleks_id wajib"};
+  if (tugas !== null) { if (!RE_ID.test(tugas)) return {galat: "tugas_id harus id tugas 16 heks"}; w.push("l.tugas_id = ?"); p.push(tugas); }
+  if (kompleks !== null) { if (!RE_KOMPLEKS.test(kompleks)) return {galat: "kompleks_id harus berbentuk K0001"}; w.push("l.kompleks_id = ?"); p.push(kompleks); }
+  if (jenis !== null) {
+    const j = jenis.split(",");
+    if (!j.length || j.length > JENIS_BACA.length || !j.every(x => JENIS_BACA.includes(x))) return {galat: `jenis harus daftar koma dari ${JENIS_BACA.join(", ")}`};
+    w.push(`l.jenis IN (${j.map(() => "?").join(", ")})`); p.push(...j);
+  }
+  const r = rentangMs(q, "l.waktu"); if (r.galat) return r;
+  return {w: [...w, ...r.w], p: [...p, ...r.p], tugas};
+}
+async function ambilLap(env, req, f, maks) {
+  const r = await env.DB.prepare(`SELECT l.id, l.jenis, l.tugas_id, l.kit_id, l.kompleks_id, l.prov, l.data, l.waktu, l.oleh, l.dummy FROM sippa_lapangan l WHERE l.dummy <= ?${f.w.map(x => " AND " + x).join("")} ORDER BY l.waktu DESC, l.rowid DESC LIMIT 20000`)
+    .bind(lihatDummy(req), ...f.p).all();   // ponytail: wilayah disaring di JS sesudah SQL, sama dengan ambilLog
+  return r.results.filter(x => dalam(req, x.prov)).slice(0, maks);
+}
+async function lapanganBaca(env, req, url) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const f = filterLap(url.searchParams); if (f.galat) return gagal(400, f.galat);
+  if (f.tugas) { const t = await env.DB.prepare("SELECT prov FROM sippa_tugas WHERE id = ? AND dummy <= ?").bind(f.tugas, lihatDummy(req)).first(); if (!t || !dalam(req, t.prov)) return tdk("tugas tidak ada"); }   // tidak ada dan di luar wilayah: satu jawaban
+  const baris = await ambilLap(env, req, f, 500);
+  return json({butir: baris.map(({dummy: _d, ...x}) => ({...x, data: urai(x.data)}))});
+}
+async function lapanganCsv(env, req, url, kini) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const f = filterLap(url.searchParams); if (f.galat) return gagal(400, f.galat);
+  const l = await batasJam(env, a.oleh, "sippa.csv", 60, kini); if (l) return l;
+  return berkasCsv("lapangan", csv(["id", "jenis", "tugas_id", "kit_id", "kompleks_id", "prov", "waktu", "oleh", "dummy", "data"], await ambilLap(env, req, f, 20000)), kini);
+}
+
+const MAKS_PINJAM = 500;
+async function pinjamBuat(env, req, url, kini) {
+  const a = await akses(env, req, "W"); if (a.res) return a.res;
+  const l = await batasJam(env, a.oleh, "sippa.tulis", 600, kini); if (l) return l;
+  const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat); const o = b.o;
+  const asal = teksOK(o.pemilik_asal, 2, 80), terima = teksOK(o.penerima, 2, 80);
+  if (asal === undefined) return gagal(400, "pemilik_asal 2 sampai 80 karakter");
+  if (terima === undefined) return gagal(400, "penerima 2 sampai 80 karakter");
+  const catatan = o.catatan == null ? null : teksOK(o.catatan, 0, 500); if (catatan === undefined) return gagal(400, "catatan paling banyak 500 karakter");
+  if (!Number.isInteger(o.mulai) || !Number.isInteger(o.selesai_rencana) || o.mulai < kini - 30 * HARI || o.mulai > kini + 365 * HARI || o.selesai_rencana <= o.mulai || o.selesai_rencana - o.mulai > 365 * HARI)
+    return gagal(400, "mulai dan selesai_rencana harus milidetik epoch, mulai tidak lebih dari 30 hari lalu, selesai_rencana sesudah mulai, rentang paling lama 365 hari");
+  const bom = o.kode_bom ?? [];
+  if (!Array.isArray(bom) || bom.length > 100 || !bom.every(k => typeof k === "string" && RE_BOM.test(k))) return gagal(400, "kode_bom harus larik paling banyak 100 kode seperti P-101");
+  if (o.kit_id !== undefined && !(typeof o.kit_id === "string" && RE_ID.test(o.kit_id))) return gagal(400, "kit_id harus id kit 16 heks");
+  if (o.kit_id === undefined && !bom.length) return gagal(400, "kit_id atau kode_bom wajib");
+  let prov;
+  if (o.kit_id !== undefined) {   // provinsi dari kit di server; kit di luar wilayah dijawab sama dengan kit yang tidak ada
+    const k = await kitTulis(env, req, o.kit_id); if (!k) return tdk("kit tidak ada");
+    prov = k.prov;
+    if (!prov) return gagal(400, "kit belum punya provinsi; isi lokasi kit lebih dulu");
+    if (bom.length) { const ada = new Set((await env.DB.prepare("SELECT kode_bom FROM sippa_komponen WHERE kit_id = ?").bind(k.id).all()).results.map(r => r.kode_bom)); const asing = bom.find(x => !ada.has(x)); if (asing) return gagal(400, `kode_bom ${asing} bukan komponen kit ini`); }
+  } else {   // tanpa kit tidak ada sumber provinsi di server: dipakai kiriman, tetapi harus di dalam wilayah staf
+    if (!(typeof o.prov === "string" && RE_PROV.test(o.prov))) return gagal(400, "prov wajib (kode provinsi 2 digit) bila kit_id tidak dikirim");
+    if (!dalam(req, o.prov)) return tdk("wilayah tidak tersedia");
+    prov = o.prov;
+  }
+  const id = acak(8), dm = dummyStaf(req, a.oleh), tahun = new Date(kini + 7 * JAM).getUTCFullYear();   // tahun menurut WIB
+  const bomJson = JSON.stringify([...new Set(bom)]);
+  /* nomor berurut dalam satu batch (satu transaksi D1): penghitung naik dulu, lalu baris membaca nilainya. Dummy punya penghitung sendiri dan awalan D supaya tidak menabrak nomor asli. */
+  await env.DB.batch([
+    env.DB.prepare("INSERT INTO sippa_ba_urut (tahun, dummy, terakhir) VALUES (?, ?, 1) ON CONFLICT (tahun, dummy) DO UPDATE SET terakhir = terakhir + 1").bind(tahun, dm),
+    env.DB.prepare(`INSERT INTO sippa_pinjam (id, nomor_ba, kit_id, kode_bom, prov, pemilik_asal, penerima, mulai, selesai_rencana, catatan, oleh, waktu, dummy)
+      SELECT ?, 'BA-SIPPA-' || tahun || '-' || CASE dummy WHEN 1 THEN 'D' ELSE '' END || printf('%04d', terakhir), ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, dummy FROM sippa_ba_urut WHERE tahun = ? AND dummy = ?`)
+      .bind(id, o.kit_id ?? null, bomJson, prov, asal, terima, o.mulai, o.selesai_rencana, catatan || null, a.oleh, kini, tahun, dm),
+    jejakStmt(env, a.oleh, "sippa_pinjam:" + id, "pinjam", terima.slice(0, 40), asal, kini, dm)]);
+  return json({pinjam: await bacaPinjam(env, id)}, 201);
+}
+const bacaPinjam = async (env, id) => { const r = await env.DB.prepare("SELECT * FROM sippa_pinjam WHERE id = ?").bind(id).first(); return {...r, kode_bom: urai(r.kode_bom, [])}; };
+async function pinjamDaftar(env, req, url) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const prov = url.searchParams.get("prov"); if (prov !== null && !RE_PROV.test(prov)) return gagal(400, "prov harus kode provinsi 2 digit");
+  const r = await env.DB.prepare(`SELECT * FROM sippa_pinjam WHERE dummy <= ?${prov !== null ? " AND prov = ?" : ""} ORDER BY mulai DESC, rowid DESC LIMIT 2000`).bind(lihatDummy(req), ...(prov !== null ? [prov] : [])).all();
+  return json({pinjam: r.results.filter(x => dalam(req, x.prov)).slice(0, MAKS_PINJAM).map(x => ({...x, kode_bom: urai(x.kode_bom, [])}))});
+}
+async function pinjamKembali(env, req, url, kini, ctx, id) {
+  const a = await akses(env, req, "W"); if (a.res) return a.res;
+  const l = await batasJam(env, a.oleh, "sippa.tulis", 600, kini); if (l) return l;
+  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat); const o = b.o;
+  const p = await env.DB.prepare("SELECT * FROM sippa_pinjam WHERE id = ? AND dummy <= ? AND dummy >= ?").bind(id, lihatDummy(req), loDummy(req)).first();
+  if (!p || !dalam(req, p.prov)) return tdk("pinjaman tidak ada");
+  if (!Number.isInteger(o.waktu) || o.waktu < p.mulai || o.waktu > kini + MELESET_MS) return gagal(400, "waktu harus milidetik epoch, tidak sebelum mulai dan tidak di masa depan");
+  const kondisi = o.kondisi == null ? null : teksOK(o.kondisi, 0, 200); if (kondisi === undefined) return gagal(400, "kondisi paling banyak 200 karakter");
+  const r = await env.DB.batch([env.DB.prepare("UPDATE sippa_pinjam SET kembali = ?, kondisi_kembali = ? WHERE id = ? AND kembali IS NULL").bind(o.waktu, kondisi || null, id),
+    env.DB.prepare("INSERT INTO pantau_jejak (waktu, oleh, obyek, aksi, ke, catatan, dummy) SELECT ?, ?, ?, 'kembali', NULL, ?, ? WHERE changes() > 0").bind(kini, a.oleh, "sippa_pinjam:" + id, kondisi || null, p.dummy)]);   // jejak hanya bila UPDATE menang
+  if (!r[0].meta.changes) return gagal(409, "pinjaman ini sudah dikembalikan");
+  return json({pinjam: await bacaPinjam(env, id)});
+}
+/* SP-131: komponen yang tindakan inspeksi TERAKHIRNYA tunggu_suku_cadang, dengan umur sejak itu */
+async function sukuCadang(env, req, url, kini) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const r = await env.DB.prepare(`SELECT i.sasaran_id AS komponen_id, i.kit_id, k.kode AS kit_kode, c.kode_bom, c.nama, c.kondisi, i.prov, i.waktu AS sejak, i.temuan, i.dummy FROM sippa_inspeksi i
+    JOIN sippa_komponen c ON c.id = i.sasaran_id LEFT JOIN sippa_kit k ON k.id = i.kit_id
+    WHERE i.sasaran_jenis = 'komponen' AND i.tindakan = 'tunggu_suku_cadang' AND i.dummy <= ?
+      AND NOT EXISTS (SELECT 1 FROM sippa_inspeksi j WHERE j.sasaran_jenis = 'komponen' AND j.sasaran_id = i.sasaran_id AND (j.waktu > i.waktu OR (j.waktu = i.waktu AND j.rowid > i.rowid)))
+    ORDER BY i.waktu LIMIT 2000`).bind(lihatDummy(req)).all();
+  return json({komponen: r.results.filter(x => dalam(req, x.prov)).slice(0, 500).map(x => ({...x, umur_hari: Math.max(0, Math.floor((kini - x.sejak) / HARI))}))});
+}
+
 /* ================================================================ aset, inspeksi, pelihara, stok (SP-093, keputusan 56; DT §3.6, §4.3, §6.6; skema 0059; fungsi murni public/pipa/pelihara.js) */
 const ASET_STATUS = ["rencana", "berfungsi", "rusak", "diserahkan", "diganti_permanen", "nonaktif"];
 const SUMBER_ASET = ["bnpb_dsp", "bpbd", "pu_bina_marga", "pu_cipta_karya", "pu_sda", "badan_geologi", "tniad", "polri", "pemda", "desa", "pdam", "lain"], KEYAKINAN = ["resmi", "terverifikasi", "asumsi-kebijakan"];
 const SASARAN = ["komponen", "kit", "aset"], JENIS_INSPEKSI = ["pra_gelar", "pasca_gelar", "berkala", "pra_musim", "tahunan", "pasca_bencana", "servis", "uji_tekanan", "mutu_air", "serah_terima"], JENIS_LAPANGAN = ["pra_gelar", "pasca_gelar"];
-const TINDAKAN = ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan"], SATUAN_STOK = [...SATUAN, "liter"], ALASAN_STOK = ["terima", "pakai", "pindah", "koreksi", "afkir"], KELAS_K = Object.keys(KELAS);
+const TINDAKAN = ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan", "tunggu_suku_cadang"], SATUAN_STOK = [...SATUAN, "liter"], ALASAN_STOK = ["terima", "pakai", "pindah", "koreksi", "afkir"], KELAS_K = Object.keys(KELAS);
 const MAKS_ATRIBUT = 4096, MAKS_HASIL = 2048;
 const byteDari = o => new TextEncoder().encode(typeof o === "string" ? o : JSON.stringify(o)).length;   // CHECK D1 menghitung huruf; byte >= huruf, jadi lebih ketat dan aman
 const urai = (s, kosong = {}) => { try { return JSON.parse(s); } catch (e) { return kosong; } };
@@ -1575,6 +1694,12 @@ const API = Object.fromEntries(Object.entries({
   "GET /api/sippa/lapangan/saya": lapanganSaya,
   "POST /api/sippa/lapangan/kirim": lapanganKirim,
   "POST /api/sippa/lapangan/foto": lapanganFoto,
+  "GET /api/sippa/lapangan": lapanganBaca,
+  "GET /api/sippa/lapangan.csv": lapanganCsv,
+  "POST /api/sippa/pinjam": pinjamBuat,
+  "GET /api/sippa/pinjam": pinjamDaftar,
+  "POST /api/sippa/pinjam-kembali/:id": pinjamKembali,
+  "GET /api/sippa/suku-cadang": sukuCadang,
   "GET /api/sippa/foto/:id": fotoBaca,
   "GET /api/sippa/log": logDaftar,
   "GET /api/sippa/log.csv": logCsv,

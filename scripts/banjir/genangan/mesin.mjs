@@ -254,7 +254,7 @@ export function muatLabel(kejadian, statePath = STATE_J3, berkas = P("data/raw/b
 
 /* ---------- jalan ---------- */
 function argumen() {
-  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, skalaHujan: 1, kdKec: null, kotak: null, keluar: null};
+  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, skalaHujan: 1, kdKec: null, raster: null, kotak: null, keluar: null};
   const v = process.argv.slice(2);
   for (let i = 0; i < v.length; i++) { const k = v[i];
     if (k === "--tanpa-hulu") a.hulu = false;
@@ -266,6 +266,7 @@ function argumen() {
     else if (k === "--tanggul") a.tanggul = +v[++i];
     else if (k === "--skala-hulu") a.skalaHulu = +v[++i];
     else if (k === "--skala-hujan") a.skalaHujan = +v[++i]; /* kenop global J3 (PRAREG-J3.md), 1 = tanpa koreksi */
+    else if (k === "--raster") a.raster = v[++i]; /* tulis kedalaman maks per sel (gz json) untuk skor_j3.py */
     else if (k === "--kd-kec") a.kdKec = v[++i]; /* json {"kab|kec": Kd mm/jam}; kecamatan tak tercantum memakai --kd */
     else if (k === "--radius-hulu-km") a.radiusHuluKm = +v[++i];
     else if (k === "--kotak") a.kotak = v[++i].split(",").map(Number);
@@ -453,6 +454,9 @@ async function jalan() {
     sebaran_kedalaman_puncak_m: sebaran, hulu: catatHulu, kecamatan};
   const jalur = a.keluar || P("data/raw/banjir/genangan/mesin", `${a.kejadian}.json`); fs.mkdirSync(path.dirname(jalur), {recursive: true});
   fs.writeFileSync(jalur, JSON.stringify(keluar)); log("ditulis " + path.relative(AKAR, jalur));
+  if (a.raster) { /* hm = kedalaman maks (m) di atas tepi; laut -> 0 dan kec -1; kisi: pusat sel (0,0) di (lon0, lat0), langkah dlon ke timur, dlat ke selatan */
+    const kk = Int16Array.from(kec, (c, k) => laut[k] ? -1 : c), hh = Float32Array.from(hm, (v, k) => laut[k] ? 0 : v), b64 = t => Buffer.from(t.buffer).toString("base64");
+    fs.writeFileSync(a.raster, zlib.gzipSync(JSON.stringify({nx, ny, dx_m: dx, lon0: lonSel(0), lat0: latSel(0), dlon: a.faktor * meta.dx, dlat: a.faktor * meta.dy, nama, kec: b64(kk), hm: b64(hh)}))); log("raster " + a.raster); }
   const p90 = c => c.kedalaman_puncak_m.p90, mentengs = kecamatan.find(x => x.kec === "Menteng");
   const top5 = [...kecamatan].sort((x, y) => p90(y) - p90(x) || y.luas_basah_ge10cm_km2 - x.luas_basah_ge10cm_km2).slice(0, 5).map(c => ({kab: c.kab, kec: c.kec, p90: p90(c), maks: c.kedalaman_puncak_m.maks, basah_km2: c.luas_basah_ge10cm_km2, persen_basah: c.persen_basah}));
   console.log(JSON.stringify({menteng_p90: mentengs && p90(mentengs), top5_p90: top5, waktu_jalan_dtk: keluar.waktu_jalan_dtk, langkah: keluar.langkah, neraca_global_m3: keluar.neraca_global_m3, sebaran: sebaran, hulu: catatHulu}, null, 1));

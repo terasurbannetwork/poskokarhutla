@@ -17,3 +17,21 @@ function pengurutKepala(st, th, ulang) {
         th.querySelectorAll("button").forEach(x => x.querySelector("i").textContent = x === b ? (st.turun ? "↓" : "↑") : "");
     ulang(); });
 }
+/* tabel standar siap pakai: o = {kolom:[[kunci,judul,kanan?]], sel(r,kunci)->html, nilai(r,kunci)->nilai urut, urut, turun, per=10, satuan, pilih?(r), kosong?}
+   Menggambar ke el; baris klik (pilih) membawa kelas .on. Pengurut & paginasi: chrome urgent, isi lewat nanti(). Mengembalikan {set(baris)}. */
+function pasangTabel(el, o) {
+  const st = {urut: o.urut, turun: !!o.turun, hal: 0}, per = o.per || 10, tunda = window.nanti || (f => setTimeout(f, 0)); let B = [], F = [], pilih = -1;
+  const gambar = () => {
+    F = B.map((r, i) => [r, i]).sort((x, y) => { const a = o.nilai(x[0], st.urut), b = o.nilai(y[0], st.urut); return (a < b ? -1 : a > b ? 1 : 0) * (st.turun ? -1 : 1); });
+    st.hal = Math.min(st.hal, Math.max(0, Math.ceil(F.length / per) - 1));
+    const bar = F.slice(st.hal * per, (st.hal + 1) * per).map(([r, i]) => `<tr data-i="${i}"${o.pilih ? ' class="klik' + (i === pilih ? " on" : "") + '" tabindex="0"' : ""}>${o.kolom.map(([k, , n]) => `<td${n ? ' class="n"' : ""}>${o.sel(r, k)}</td>`).join("")}</tr>`).join("");
+    el.innerHTML = F.length ? `<div class="tw kj-tw"><table class="kj-tb"><thead><tr>${o.kolom.map(([k, t, n]) => `<th${n ? ' class="n"' : ""}><button data-k="${k}">${t}<i>${st.urut === k ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead><tbody>${bar}</tbody></table></div>${paginasi(st.hal, F.length, per, o.satuan)}` : `<p class="kosong">${o.kosong || "Tidak ada data."}</p>`;
+    const th = el.querySelector("thead"); if (th) pengurutKepala(st, th, () => tunda(gambar));
+  };
+  el.addEventListener("click", e => {
+    const b = e.target.closest(".pgn-b[data-h]"); if (b) { if (!b.disabled) { st.hal = +b.dataset.h; tunda(gambar); } return; }
+    const tr = e.target.closest("tr.klik"); if (!tr || e.target.closest("a")) return;
+    el.querySelectorAll("tr.on").forEach(x => x.classList.remove("on")); tr.classList.add("on"); pilih = +tr.dataset.i; o.pilih(B[pilih]); });
+  el.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches?.("tr.klik")) e.target.click(); });
+  return {set(baris) { B = baris; st.hal = 0; pilih = -1; gambar(); }};
+}

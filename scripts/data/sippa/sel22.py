@@ -1,9 +1,13 @@
 #!/usr/bin/env python3
-"""SIPPA SP-020: kekerapan deteksi VIIRS 2012-2025 per sel 2,2 km di kotak Kalteng.
+"""SIPPA SP-020 + SP-109: kekerapan deteksi VIIRS 2012-2025 per sel 2,2 km di kotak Kalteng (62) dan kotak provinsi lain.
 
-Masukan : data/raw/firms/viirs*.csv (gitignore, lokal; berkas "* 2.*" nyasar dilewati)
+Masukan : data/raw/firms/viirs*.csv (gitignore, lokal; berkas "* 2.*" nyasar dilewati). WAJIB memuat semua tahun 2012-2025 (S-NPP);
+          tahun kosong = berhenti (tidak mengarang). Berkas lokal 28 Okt 2026 hanya 2015, 2019, 2023-2025: sel22 provinsi lain belum bisa dibangun.
 Keluaran: data/sippa/keluaran/sel22.json  (DT 3.1.4, 7.2)
-Pakai   : python3 sel22.py [--raw DIR] [--keluar BERKAS]   |   python3 sel22.py uji
+Pakai   : python3 sel22.py [--raw DIR] [--keluar BERKAS] [--prov 16 63 ...]   |   python3 sel22.py uji
+  Kalteng (KOTAK) = hitungan lama persis: porsi_berulang dan ringkas hanya atas kotak ini. Provinsi lain (SP-109): kotak kompleks provinsi +- PAD_PROV
+  (dari kendala.json + operasi.json) di luar KOTAK, baris ikut `baris`, daftar kotak di `kotak_tambahan`; tanpa --prov tidak ada kotak tambahan
+  (keluaran identik dengan skema lama). Sel di tepi KOTAK yang sudah ada di Kalteng tidak diduplikasi.
 Python 3.12 stdlib. tahun_aktif, per_tahun (hari api = acq_date berbeda), ringkas
 dan porsi berulang HANYA dari S-NPP (satelit "N", sebanding 2012-2025). NOAA-20/21 (2018, 2023 ke atas)
 hanya masuk tahun_aktif_semua (batas atas, tidak sebanding antar-era) dan n_baris_firms (baris, bukan kejadian).
@@ -46,7 +50,29 @@ class Sel:
         self.hingga = ""
 
 
-def hitung(berkas):
+PAD_PROV = 0.2
+
+
+def kotak_prov(provs):
+    """{prov: (lat_min, lat_maks, lon_min, lon_maks)} dari kompleks provinsi di kendala.json + operasi.json, +- PAD_PROV."""
+    pub = os.path.join(AKAR, "public", "data")
+    kd = json.load(open(os.path.join(pub, "kendala.json")))["kompleks"]
+    op = {x["id"]: x for x in json.load(open(os.path.join(pub, "operasi.json")))["kompleks"]}
+    out = {}
+    for p in provs:
+        t = [op[i] for i, v in kd.items() if v["prov"] == p and i in op]
+        if t:
+            out[p] = (round(min(x["lat"] for x in t) - PAD_PROV, 3), round(max(x["lat"] for x in t) + PAD_PROV, 3),
+                      round(min(x["lon"] for x in t) - PAD_PROV, 3), round(max(x["lon"] for x in t) + PAD_PROV, 3))
+    return out
+
+
+def dalam_kotak(lat, lon, kotak):
+    return kotak[0] <= lat <= kotak[1] and kotak[2] <= lon <= kotak[3]
+
+
+def hitung(berkas, tambahan=None):
+    """tambahan None = kotak Kalteng; daftar kotak = titik di salah satunya dan di luar KOTAK (sel provinsi lain)."""
     z = Sel()
     for f in berkas:
         with open(f, newline="") as h:
@@ -57,7 +83,10 @@ def hitung(berkas):
                 if not T0 <= th <= T1:
                     continue
                 lat, lon = float(r["latitude"]), float(r["longitude"])
-                if not (KOTAK[0] <= lat <= KOTAK[1] and KOTAK[2] <= lon <= KOTAK[3]):
+                if tambahan is None:
+                    if not dalam_kotak(lat, lon, KOTAK):
+                        continue
+                elif dalam_kotak(lat, lon, KOTAK) or not any(dalam_kotak(lat, lon, b) for b in tambahan):
                     continue
                 k = ke_sel(lat, lon)
                 z.n += 1
@@ -195,13 +224,26 @@ def uji():
         pass
     else:
         raise SystemExit("invarian lolos padahal hari api > baris")
+    # kotak tambahan: titik di KOTAK tetap milik Kalteng, titik di kotak lain masuk grup kedua, di luar keduanya dibuang
+    with tempfile.TemporaryDirectory() as d:
+        p = os.path.join(d, "viirs_x.csv")
+        with open(p, "w", newline="") as h:
+            w = csv.writer(h)
+            w.writerow(["latitude", "longitude", "acq_date", "confidence", "satellite"])
+            for b in [(-2.0, 113.0, "2019-03-01", "n", "N"), (-8.0, 140.0, "2019-03-01", "n", "N"), (-8.0, 140.0, "2019-03-02", "h", "N"), (20.0, 100.0, "2019-03-01", "n", "N")]:
+                w.writerow(b)
+        z1, z2 = hitung([p]), hitung([p], [(-9.0, -7.0, 139.0, 141.0)])
+        assert z1.n == 1 and z2.n == 2 and len(z2.baris) == 1, (z1.n, z2.n)
+        assert not any(dalam_kotak(*pusat(*k), KOTAK) for k in z2.baris)
+    assert dalam_kotak(-2.0, 113.0, KOTAK) and not dalam_kotak(-8.0, 140.0, KOTAK)
+    assert kotak_prov(["16"])["16"][0] < -4.4758 < kotak_prov(["16"])["16"][1] and kotak_prov(["00"]) == {}
     print("uji sel22: lolos")
 
 
 def main(argv):
     raw = os.path.join(AKAR, "data", "raw", "firms")
     keluar = os.path.join(AKAR, "data", "sippa", "keluaran", "sel22.json")
-    kunci = True
+    kunci, provs = True, []
     a = iter(argv)
     for x in a:
         if x == "--raw":
@@ -210,15 +252,29 @@ def main(argv):
             keluar = next(a)
         elif x == "--tanpa-kunci":   # hanya uji sintetis; lari nyata selalu mengunci porsi
             kunci = False
+        elif x == "--prov":
+            provs = [p for p in a]   # sisa argumen = kode provinsi
     berkas = berkas_viirs(raw)
     if not berkas:
         raise SystemExit(f"tidak ada {raw}/viirs*.csv (gitignore, hanya lokal); berhenti, tidak mengarang data")
     z = hitung(berkas)
     periksa(z, kunci)
+    tambah = kotak_prov(provs)
+    zl = None
+    if tambah:
+        zl = hitung(berkas, list(tambah.values()))
+        periksa(zl, False)
+        if kunci:      # tahun yang tak ada berkasnya membuat tahun_aktif sepihak: berhenti
+            kosong = [T0 + t for t in range(NT) if not any(v[t] for v in z.baris.values())]
+            assert not kosong, f"tahun tanpa data FIRMS {kosong}: sel22 provinsi lain tidak dibangun"
     baris = []
     for k in sorted(z.baris):          # sel yang hanya terdeteksi NOAA tetap tampil: per_tahun nol, tahun_aktif 0
         pt = per_tahun(z, k) if k in z.hari else [0] * NT
         baris.append([id_sel(*k), sum(1 for x in pt if x), pt, len(z.tahun_semua[k])])
+    for k in sorted(zl.baris if zl else ()):
+        if k not in z.baris:
+            pt = per_tahun(zl, k) if k in zl.hari else [0] * NT
+            baris.append([id_sel(*k), sum(1 for x in pt if x), pt, len(zl.tahun_semua[k])])
     porsi = {str(t): None if porsi_berulang(z, t) is None else round(porsi_berulang(z, t), 4) for t in PORSI_TAHUN}
     out = {
         "skema": "sel22/2", "data_hingga": z.hingga,
@@ -230,6 +286,7 @@ def main(argv):
         "label_per_tahun": "hari api S-NPP: acq_date berbeda per sel per tahun",
         "label_tahun_aktif_semua": "batas atas, tidak sebanding antar-era (NOAA-20 sejak 2018, NOAA-21 sejak 2023)",
         "porsi_berulang_ge3_tahun": porsi,
+        **({"kotak_tambahan": {p: list(b) for p, b in tambah.items()}, "label_kotak_tambahan": "porsi_berulang dan ringkas hanya atas kotak Kalteng; baris provinsi lain ikut `baris`"} if tambah else {}),
         "kolom": ["sel", "tahun_aktif", "per_tahun", "tahun_aktif_semua"], "baris": baris, "ringkas": ringkas(z),
     }
     os.makedirs(os.path.dirname(keluar), exist_ok=True)

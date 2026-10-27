@@ -20,6 +20,11 @@ Tanggal tarik: 24-25 Okt 2026.
 `osm_jarak_<prov>.csv` (kolom sama dengan osm_jarak.csv tanpa air_poligon) dibuat `scripts/data/sippa/osm_prov.py` untuk provinsi gambut selain 62.
 DEM, GSW, MCD64A1, CHIRPS, WorldCover belum ditarik untuk provinsi itu (kolom kelayakan_kompleks.json = null).
 
+SP-141 (28 Okt): kolom jalan_mobil_km, jalan_motor_km, jalan_kaki_km (+ `_terpotong`) di semua `osm_jarak*.csv`: jarak ke ruas yang dapat dilalui moda itu, kumulatif
+(motor = ruas mobil atau motor; jalan kaki = semua ruas jalan yang ditarik). Moda ruas dari tag highway, tracktype, surface, motor_vehicle, access (aturan di
+`scripts/data/sippa/moda.py`, label asumsi-kebijakan). Kueri hanya menarik highway path, bukan footway/bridleway, jadi jalan_kaki = jalan kendaraan + path.
+Mentah graf akses prov 62 (`osm_prov.py tarik_jalan 62`, jalan_*.json) ditarik ulang 28 Okt karena mentah graf lama hilang.
+
 ## GloFAS (debit sungai model): tidak ditarik
 Butuh akun Copernicus CDS + API key (dataset `cems-glofas-historical`). Tidak membuat akun; perlu pemilik mendaftar dan menaruh `CDSAPI_KEY` di .env.
 Catatan: resolusi 0,05 derajat hanya relevan untuk sungai besar, bukan parit/kanal gambut.

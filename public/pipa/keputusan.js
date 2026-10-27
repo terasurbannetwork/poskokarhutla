@@ -58,3 +58,37 @@ export function teksWhatsApp(urut, kh, namaProv, tanggalTeks) {
   return baris.join("\n");
 }
 
+
+/* SP-115: catat putusan dan jejak keputusan dan perubahan (keputusan 61). Murni; tulisan lewat POST /api/sippa/keputusan, bacaan lewat GET /api/sippa/jejak.
+   Butuh global public/inti: esc, jamWIB. Alasan 3 sampai 300 huruf (sama dengan server). */
+export const PUTUSAN = {jalan: "Jalan", tunda: "Tunda"};
+export const BATAS_ALASAN = {min: 3, maks: 300};
+const RE_K = /^K\d{1,10}$/;
+
+export function badanKeputusan(f, id) {
+  const g = [], badan = {kompleks_id: id}, a = String(f.alasan ?? "").trim(), n = [...a].length;
+  if (!RE_K.test(id || "")) g.push({medan: "kompleks_id", pesan: "Kompleks tidak dikenal."});
+  if (Object.hasOwn(PUTUSAN, f.putusan)) badan.putusan = f.putusan; else g.push({medan: "putusan", pesan: "Pilih jalan atau tunda."});
+  if (n < BATAS_ALASAN.min || n > BATAS_ALASAN.maks) g.push({medan: "alasan", pesan: `Alasan ${BATAS_ALASAN.min} sampai ${BATAS_ALASAN.maks} huruf (sekarang ${angka(n)}).`}); else badan.alasan = a;
+  return g.length ? {badan: null, galat: g} : {badan, galat: []};
+}
+/* komponen murni: tombol di rincian kompleks; peran baca melihatnya mati berpenjelasan (pola "Catat cek jalan") */
+export const tombolKeputusan = (k, tulis) => `<button type="button" class="ad-tombol" data-aksi="putusan" data-id="${esc(k.id)}" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Catat putusan</button>`;
+
+export const jalurJejak = (sejakMs, batas = 200) => `/api/sippa/jejak?sejak=${Math.max(0, Math.floor(sejakMs))}&batas=${Math.min(500, Math.max(1, Math.floor(batas)))}`;
+const OBYEK = {sippa_kit: "Kit", sippa_komponen: "Komponen kit", sippa_gerak: "Gerak kit", sippa_tugas: "Penugasan", sippa_aset: "Aset", sippa_jalan_cek: "Cek jalan", sippa_aoi_usul: "Usul AOI", sippa_inspeksi: "Inspeksi", sippa_log_gelar: "Log gelar", sippa_keputusan: "Putusan", sippa_foto: "Foto"};
+export const AKSI_JEJAK = {keputusan: "putusan", buat: "dibuat", ubah: "diubah", gerak: "gerak kit", tiba: "tiba", tugas: "ditugaskan", cabut: "dicabut", kirim: "kiriman lapangan", log: "log gelar", foto: "foto", jalan_cek: "cek jalan", aoi: "usul AOI", baru: "baru"};
+export const aksiJejak = jejak => [...new Set((jejak || []).map(j => j.aksi).filter(Boolean))].sort((a, b) => (AKSI_JEJAK[a] ?? a).localeCompare(AKSI_JEJAK[b] ?? b));
+export const namaAksi = a => AKSI_JEJAK[a] ?? a ?? "–";
+export function namaObyek(o) {
+  const [t, ...sisa] = String(o ?? "").split(":");
+  return OBYEK[t] ? `${OBYEK[t]} ${sisa.join(":")}`.trim() : String(o ?? "–");
+}
+export function jejakTabelHtml(jejak, {aksi = "", terpotong = false} = {}) {
+  const baris = (jejak || []).filter(j => !aksi || j.aksi === aksi);
+  const td = (label, isi) => `<td data-label="${label}">${isi}</td>`;
+  const catat = terpotong ? `<p class="ad-spanduk" role="note">Jejak dipotong: ada baris lebih lama yang tidak terbaca. Persempit rentang waktu.</p>` : "";
+  if (!baris.length) return `${catat}<p class="ad-kosong">Belum ada jejak keputusan atau perubahan pada rentang ini.</p>`;
+  return `${catat}<div class="ad-tabel-wadah"><table class="ad-tabel"><caption class="sr">Jejak keputusan dan perubahan SIPPA</caption><thead><tr>${["Waktu", "Siapa", "Apa", "Aksi", "Ke", "Alasan"].map(k => `<th scope="col">${k}</th>`).join("")}</tr></thead><tbody>${baris.map(j =>
+    `<tr>${td("Waktu", esc(j.waktu == null ? "–" : jamWIB(j.waktu)))}${td("Siapa", esc(j.oleh ?? "–"))}${td("Apa", esc(namaObyek(j.obyek)))}${td("Aksi", esc(namaAksi(j.aksi)))}${td("Ke", esc(j.ke ?? "–"))}${td("Alasan", esc(j.catatan ?? "–"))}</tr>`).join("")}</tbody></table></div>`;
+}

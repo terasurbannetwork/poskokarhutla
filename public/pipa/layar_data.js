@@ -16,7 +16,9 @@ const tanggal = s => { const t = Date.parse(s); return Number.isNaN(t) ? "–" :
 const KETERANGAN_KEYAKINAN = {resmi: "Diterbitkan lembaga berwenang", terverifikasi: "Diukur atau dihitung dari data yang bisa ditelusuri", "estimasi-model": "Hasil model, bukan pengukuran", "asumsi-kebijakan": "Ditetapkan sebagai asumsi kebijakan", hipotesis: "Belum diuji", menunggu: "Menunggu data atau keputusan", "penilaian-pakar": "Penilaian pakar"};
 export const DATASET = [
   {nama: "Kompleks api 2026 dan koefisien operasi", berkas: "public/data/operasi.json, kendala.json", sumber: "Pipeline repo; OSM (ODbL)", tarik: "kendala.json", segar: "harian (data.yml)", batas: "Jarak air dan jalan versi kendala.json; 134 kompleks tanpa data jalan", keyakinan: "terverifikasi", status: "ada"},
-  {nama: "Kelayakan per kompleks Kalteng (865 kompleks)", berkas: "kelayakan_kompleks.json", kunci: "kelayakan_kompleks", sumber: "Turunan OSM, DEM, GSW, MCD64A1 (scripts/data/sippa)", tarik: "kendala.json", segar: "saat kendala.json berubah", batas: "Zona memakai jarak garis lurus, bukan jarak tempuh", keyakinan: "terverifikasi", status: "ada"},
+  {nama: "Kelayakan per kompleks, semua provinsi", berkas: "kelayakan_kompleks.json", kunci: "kelayakan_kompleks", sumber: "Turunan OSM, DEM, GSW, MCD64A1 (scripts/data/sippa)", tarik: "kendala.json", segar: "saat kendala.json berubah", batas: "Zona memakai jarak garis lurus, bukan jarak tempuh; provinsi selain Kalteng belum punya DEM, air citra satelit, tahun terbakar, dan waktu tempuh (tampil belum dihitung)", keyakinan: "terverifikasi", status: "ada"},
+  {nama: "Sekat kanal dan sumur bor BRGM", berkas: "brgm_pembasahan.json", kunci: "brgm_pembasahan", sumber: "BRGM PRIMS WFS (data terbuka BRGM)", tarik: "", segar: "saat pipeline BRGM berjalan", batas: "Letak menurut BRGM, belum diverifikasi lapangan; kondisi sekat dan sumur tidak diketahui; status rencana berarti sumur bor belum terbangun", keyakinan: "resmi", status: "ada"},
+  {nama: "Prioritas harian per kompleks", berkas: "prioritas.json", kunci: "prioritas", sumber: "Turunan titik panas FIRMS 7 hari, kelayakan_kompleks.json, akses_kompleks.json", tarik: "titik24.json", segar: "harian (data.yml)", batas: "Titik panas dalam 2 km, bukan luas terbakar; bobot dan ambang asumsi kebijakan, belum diuji balik", keyakinan: "estimasi-model", status: "ada"},
   {nama: "Kelayakan per sel 2,2 km", berkas: "kelayakan_sel.json", kunci: "kelayakan_sel", sumber: "Turunan VIIRS dan zona kompleks", tarik: "NASA FIRMS VIIRS S-NPP (sel22)", segar: "tahunan", batas: "Kekerapan 14 tahun VIIRS 2012–2026", keyakinan: "terverifikasi", status: "ada"},
   {nama: "Kekerapan sel 2,2 km (14 tahun)", berkas: "sel22.json", kunci: "sel22", sumber: "NASA FIRMS VIIRS S-NPP", tarik: "NASA FIRMS VIIRS S-NPP (sel22)", segar: "tahunan", batas: "Hitungan titik panas satelit, bukan luas terbakar", keyakinan: "terverifikasi", status: "ada"},
   {nama: "Ringkasan zona A sampai D tiga versi", berkas: "zona.json", kunci: "zona", sumber: "Turunan OSM (ODbL), DEM, GSW, MCD64A1, CHIRPS", tarik: "OpenStreetMap (jalan, air) via Overpass", segar: "tahunan atau saat AOI baru", batas: "Jalan track OSM belum tentu dapat dilalui pickup di musim hujan; relasi multipolygon danau tidak ikut", keyakinan: "terverifikasi", status: "ada"},
@@ -58,10 +60,17 @@ export function tarikDari(daftar) {
   return hasil;
 }
 
-export function tabDatasetHtml(tarik = {}, daftar = DATASET) {
+/* jumlah kompleks dan provinsi dari baris zona.json (versi konservatif, tingkat provinsi): kalimat nama dihitung dari data, bukan ditulis tangan */
+export function jumlahKelayakan(zona) {
+  const b = ((zona && zona.baris) || []).filter(x => x.versi === "k" && x.kab == null && x.n > 0);
+  return b.length ? {n: b.reduce((s, x) => s + x.n, 0), prov: new Set(b.map(x => x.prov)).size} : null;
+}
+export const namaDataset = (d, jumlah) => d.kunci === "kelayakan_kompleks" && jumlah ? `Kelayakan per kompleks (${fmt(jumlah.n)} kompleks di ${fmt(jumlah.prov)} provinsi)` : d.nama;
+
+export function tabDatasetHtml(tarik = {}, daftar = DATASET, jumlah = null) {
   const baris = daftar.map(d => {
     const t = d.tarik && tarik[d.tarik] ? tanggal(tarik[d.tarik]) : "–", ada = d.status === "ada" || d.status === "sebagian" || d.status === "dikumpulkan";
-    return `<tr>${td("Nama", `<b>${esc(d.nama)}</b>${ada ? "" : ` <span class="sp-status putus">${esc(d.status)}</span>`}`)}${td("Berkas", `<code class="sp-berkas">${esc(d.berkas)}</code>`)}${td("Sumber dan lisensi", esc(d.sumber))}${td("Ditarik", esc(t), "n")}${td("Penyegaran", esc(d.segar || "–"))}${td("Keterbatasan", esc(d.batas || "–"))}${td("Keyakinan", pil(d.keyakinan === "menunggu" ? "Menunggu" : d.keyakinan.charAt(0).toUpperCase() + d.keyakinan.slice(1).replace("-", " "), d.keyakinan, KETERANGAN_KEYAKINAN[d.keyakinan] ?? ""))}</tr>`;
+    return `<tr>${td("Nama", `<b>${esc(namaDataset(d, jumlah))}</b>${ada ? "" : ` <span class="sp-status putus">${esc(d.status)}</span>`}`)}${td("Berkas", `<code class="sp-berkas">${esc(d.berkas)}</code>`)}${td("Sumber dan lisensi", esc(d.sumber))}${td("Ditarik", esc(t), "n")}${td("Penyegaran", esc(d.segar || "–"))}${td("Keterbatasan", esc(d.batas || "–"))}${td("Keyakinan", pil(d.keyakinan === "menunggu" ? "Menunggu" : d.keyakinan.charAt(0).toUpperCase() + d.keyakinan.slice(1).replace("-", " "), d.keyakinan, KETERANGAN_KEYAKINAN[d.keyakinan] ?? ""))}</tr>`;
   });
   return tabel("Inventaris dataset SIPPA", ["Nama", "Berkas", "Sumber dan lisensi", "Ditarik", "Penyegaran", "Keterbatasan", "Keyakinan"], baris, "sp-tabel-dataset");
 }
@@ -161,10 +170,10 @@ export function lepas() { ctrl?.abort(); ctrl = null; }
 
 export async function pasang(akar, konteks) {
   lepas(); ctrl = new AbortController();
-  const sinyal = ctrl.signal, st = {tab: tabDari(new URLSearchParams(location.search).get("tab")), tarik: {}, catatTarik: "Tanggal tarik dimuat dari zona.json dan pemicu.json."};
+  const sinyal = ctrl.signal, st = {tab: tabDari(new URLSearchParams(location.search).get("tab")), tarik: {}, jumlah: null, catatTarik: "Tanggal tarik dimuat dari zona.json dan pemicu.json."};
   akar.innerHTML = `<h1 class="sp-judul">Data dan metode</h1>${kerangkaTab(st.tab)}`;
   const panel = akar.querySelector("#sp-panel"), tabs = [...akar.querySelectorAll("[role=tab]")];
-  const BANGUN = {dataset: () => tabDatasetHtml(st.tarik) + `<p class="ad-catat sp-sumber">Sumber: PRD §7.1 inventaris dataset. ${esc(st.catatTarik)}</p>`, rumus: tabRumusHtml, gerbang: tabGerbangHtml, batas: tabBatasHtml};
+  const BANGUN = {dataset: () => tabDatasetHtml(st.tarik, DATASET, st.jumlah) + `<p class="ad-catat sp-sumber">Sumber: PRD §7.1 inventaris dataset. ${esc(st.catatTarik)}</p>`, rumus: tabRumusHtml, gerbang: tabGerbangHtml, batas: tabBatasHtml};
   const gambar = () => { if (!sinyal.aborted) panel.innerHTML = BANGUN[st.tab](); };
   /* INP: aria-selected dan fokus berpindah di handler; isi panel digambar sesudah satu frame lewat nanti() */
   const pilih = (k, fokus) => {
@@ -185,7 +194,7 @@ export async function pasang(akar, konteks) {
   const [z, p] = await Promise.allSettled(["zona", "pemicu"].map(n => konteks.ambil(`/api/sippa/data/${n}`, sinyal)));
   if (sinyal.aborted) return;
   const ok = [z, p].filter(r => r.status === "fulfilled").map(r => r.value);
-  st.tarik = tarikDari(ok);
+  st.tarik = tarikDari(ok); st.jumlah = z.status === "fulfilled" ? jumlahKelayakan(z.value) : null;
   st.catatTarik = ok.length === 2 ? "Tanggal tarik dari sumber zona.json dan pemicu.json." : ok.length ? "Tanggal tarik hanya sebagian termuat; sebagian sumber tidak bisa dibaca." : "Tanggal tarik belum termuat; sumber tidak bisa dibaca.";
   if (z.status === "fulfilled" && z.value.per) konteks.setPer?.(Date.parse(z.value.per));
   if (st.tab === "dataset") gambar();

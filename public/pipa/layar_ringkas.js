@@ -10,6 +10,7 @@ import {memuat, galat} from "./keadaan.js";
 import {ikon} from "./ikon.js";
 import {ringkasDepot, kesiapanHtml, muatRincian, kitTerpotong} from "./kesiapan.js";
 import {peringkat, keputusanHariIni, teksWhatsApp} from "./keputusan.js";
+import {kartuLapangan, muatButir, awalHariWIB, muatGayaLapangan} from "./lapangan_staf.js";
 
 export const JALUR = {keputusan: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", pemicu: "/api/sippa/data/pemicu", pilot: "/api/sippa/log", zona: "/api/sippa/data/zona", gerak: "/api/sippa/ringkas", alarm: "/api/sippa/alarm?aktif=1"};
 export const TAUTAN = {kit: "/pipa/kit", pemicu: "/pipa/pemicu", pilot: "/pipa/log", zona: "/pipa/peta"};
@@ -209,7 +210,7 @@ export async function pasang(akar, konteks) {
   const sinyal = ctrl.signal, prov = konteks.prov, kini = Date.now();
   const nama = (typeof Wilayah !== "undefined" && Wilayah.PROV?.[prov]) || `provinsi ${prov}`;
   akar.innerHTML = `<h1 class="sp-judul">Ringkas</h1>
-    <section id="insight" class="sp-kisi sp-ringkas" aria-label="Status SIPPA">${Object.keys(JALUR).map(k => `<div class="sp-slot${k === "gerak" || k === "keputusan" ? " lebar" : k === "alarm" ? " sempit" : ""}" data-kartu="${k}"></div>`).join("")}</section>`;
+    <section id="insight" class="sp-kisi sp-ringkas" aria-label="Status SIPPA">${Object.keys(JALUR).map(k => `<div class="sp-slot${k === "gerak" || k === "keputusan" ? " lebar" : k === "alarm" ? " sempit" : ""}" data-kartu="${k}"></div>`).join("")}<div class="sp-slot lebar" data-kartu="lapangan" hidden></div></section>`;
   const slot = k => akar.querySelector(`[data-kartu="${k}"]`);
   for (const k of Object.keys(JALUR)) slot(k).replaceChildren(memuat());
   /* bilah "Data per" hanya dari berkas turunan (pemicu, zona); waktu kit, log, gerak, alarm adalah waktu kejadian, bukan kesegaran data */
@@ -233,6 +234,18 @@ export async function pasang(akar, konteks) {
     if (sinyal.aborted) return;
     const w = slot("kit"); if (w && !w.querySelector(".ad-galat")) w.innerHTML = rakitKartu(kartuKit(j, ringkasDepot(j.kit || [], r), kitTerpotong(j.kit || [])));
   });
+  /* fase 2: SOS dan laporan selesai hari ini dari kit yang sedang di lapangan; tanpa kit digelar atau tanpa butir kartu tetap tersembunyi (aturan A18) */
+  const lapanganSusul = async j => {
+    const kits = (j.kit || []).filter(k => ["gelar", "banjir", "depot"].includes(k.status)).slice(0, 12), nama = Object.fromEntries((j.kit || []).map(k => [k.id, k.kode]));
+    if (!kits.length) return;
+    const rinci = await Promise.allSettled(kits.map(k => konteks.ambil(`/api/sippa/kit/${k.id}`, sinyal)));
+    const kini = Date.now(), sejak = awalHariWIB(kini), tugas = [...new Set(rinci.flatMap(r => r.status === "fulfilled" ? (r.value.tugas || []).filter(t => t.dicabut == null && t.berakhir > sejak).map(t => t.id) : []))].slice(0, 12);
+    if (!tugas.length || sinyal.aborted) return;
+    const butir = (await Promise.all(tugas.map(t => muatButir(konteks.ambil, {tugas: t, jenis: ["sos", "selesai"], sejak}, sinyal)))).flat();
+    const s = kartuLapangan(butir, kini, nama); await muatGayaLapangan();
+    if (sinyal.aborted || s.kosong) return;
+    const w = slot("lapangan"); w.innerHTML = rakitKartu(s); w.hidden = false;
+  };
   akar.addEventListener("click", async e => {
     const t = e.target.closest('[data-aksi="salin-wa"]'); if (!t || !teksWa) return;
     t.textContent = "Menyalin";   // piksel berubah sebelum menunggu izin papan klip (INP)
@@ -249,7 +262,7 @@ export async function pasang(akar, konteks) {
   };
   const bangun = {
     keputusan: ([p, k]) => { const s = kartuKeputusan(p, k, prov, konteks.zona, nama); teksWa = s.wa; return s; },
-    kit: j => { kesiapanSusul(j); return kartuKit(j); }, pemicu: j => kartuPemicu(j, prov, kini),
+    kit: j => { kesiapanSusul(j); lapanganSusul(j).catch(e => { if (e?.name !== "AbortError") console.error(e); }); return kartuKit(j); }, pemicu: j => kartuPemicu(j, prov, kini),
     pilot: j => kartuPilot((j.log || []).filter(l => l.prov == null || l.prov === prov)),
     zona: j => kartuZona(j, prov, nama), gerak: j => kartuGerak(j.gerak_terakhir || []), alarm: j => kartuAlarm(j.alarm || []),
   };

@@ -5,6 +5,7 @@
 import {KELAS, KELAS_ASET, kelasDari, jadwal, laikGelar, stokMin, biayaTahun} from "./pelihara.js";
 import {peranKlien, kirimPost, bukaDialog, tutupDialog, muatGayaKit} from "./layar_kit.js";
 import {katalogHtml} from "./katalog_alat.js";
+import {sukuCadangHtml, muatGayaLapangan} from "./lapangan_staf.js";
 import {memuat, kosong, galat} from "./keadaan.js";
 
 const HARI = 864e5, WIB = 7 * 36e5, PER_HAL = 25, TUNGGU_HARI = 60;
@@ -19,7 +20,7 @@ const NAMA_BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep
 export const SATUAN_KIT = {"P-101": 2, "IMP-101": 2, "SF-101": 2, "C-101": 20, "I-101": 8, "H-101": 1000, "H-201": 500, "T-101": 8, "Q-101": 20};
 const JENIS_SAH = ["pra_gelar", "pasca_gelar", "berkala", "pra_musim", "tahunan", "servis", "uji_tekanan", "mutu_air"];   // himpunan bagian JENIS_INSPEKSI di src/sippa.js
 const TEKS_JENIS = {pra_gelar: "Pra-gelar", pasca_gelar: "Pasca-gelar", berkala: "Berkala", pra_musim: "Pra-musim", tahunan: "Tahunan", servis: "Servis", uji_tekanan: "Uji tekanan", mutu_air: "Uji mutu air"};
-const TINDAKAN = [["tidak_ada", "Tidak ada"], ["perbaiki", "Perbaiki"], ["ganti", "Ganti"], ["afkir", "Afkir"], ["uji_ulang", "Uji ulang"], ["serahkan", "Serahkan"]];
+const TINDAKAN = [["tidak_ada", "Tidak ada"], ["perbaiki", "Perbaiki"], ["ganti", "Ganti"], ["afkir", "Afkir"], ["uji_ulang", "Uji ulang"], ["serahkan", "Serahkan"], ["tunggu_suku_cadang", "Tunggu suku cadang"]];
 const SATUAN_STOK = ["unit", "m", "set", "paket", "liter"], ALASAN_STOK = [["terima", "Terima"], ["pakai", "Pakai"], ["pindah", "Pindah"], ["koreksi", "Koreksi"], ["afkir", "Afkir"]];
 const RE_BOM = /^[A-Z]{1,4}-\d{1,6}$/;
 
@@ -276,10 +277,20 @@ export async function pasang(akar, konteks) {
     konteks.setPer?.(per);
     if (!st.rows.length && !stok.length) { muatGayaKit(); const k = el("div"); k.innerHTML = katalogHtml(); isi.replaceChildren(kosong("Belum ada butir pemeliharaan. Butir muncul dari komponen kit dan aset yang dicatat staf."), k); return; }   // katalog alat mengisi layar kosong (SP-113)
     isi.innerHTML = isiKartuHtml(r, laik, per) + kontrolHtml(hitungChip(st.rows, st), st) + `<div id="sp-pel-tabel"></div>`
-      + `<div class="sp-dua">${kalenderHtml(kalender(st.rows, st.kini))}${stokHtml(stok, peran)}</div>${biayaHtml(biayaKelas(d))}`;
-    gambarTabel();
+      + `<div class="sp-dua">${kalenderHtml(kalender(st.rows, st.kini))}${stokHtml(stok, peran)}</div>${biayaHtml(biayaKelas(d))}<section class="sp-suku" id="sp-suku" hidden></section>`;
+    gambarTabel(); nanti(muatSuku);
   };
 
+  /* SP-131: alat menunggu suku cadang; rute belum ada (404) atau galat = bagian ini disembunyikan, bukan baris "menunggu" */
+  const muatSuku = async () => {
+    const w = isi.querySelector("#sp-suku"); if (!w || sinyal.aborted) return;
+    try {
+      const [j] = await Promise.all([konteks.ambil("/api/sippa/suku-cadang", sinyal), muatGayaLapangan()]);
+      if (sinyal.aborted) return;
+      const rows = (j.komponen || []).filter(r => !konteks.prov || r.prov == null || r.prov === konteks.prov);
+      w.innerHTML = `<h2 class="sp-sub">Alat menunggu suku cadang</h2>${sukuCadangHtml(rows, Date.now())}`; w.hidden = false;
+    } catch (e) { if (e?.name === "AbortError" || sinyal.aborted) return; if (e.status == null) console.error(e); w.hidden = true; }
+  };
   let acMuat = null;
   const muat = async (senyap = false) => {
     acMuat?.abort(); const ac = acMuat = new AbortController(); sinyal.addEventListener("abort", () => ac.abort(), {once: true});   // jawaban basi tidak pernah menimpa yang terbaru

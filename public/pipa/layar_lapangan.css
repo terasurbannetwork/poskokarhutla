@@ -1,0 +1,29 @@
+/* SIPPA: gaya staf butir lapangan fase 2 (grafik suhu dan tekanan, kartu Lapangan, pinjam-pakai, berita acara). Dimuat lapangan_staf.js. Hanya token tema; tanpa warna tertanam. */
+.sp-lap-grafik{margin:var(--sp-3) 0;padding:var(--sp-3);border:1px solid var(--line);border-radius:var(--r);background:var(--card)}
+.sp-lap-grafik h4{margin:0 0 var(--sp-2);font-size:15px}
+.sp-lap-grafik p{margin:0 0 var(--sp-2)}
+.sp-garis{stroke-width:2}
+.sp-seri-0{stroke:var(--accent);fill:var(--accent)}.sp-seri-1{stroke:var(--info);fill:var(--info)}.sp-seri-2{stroke:var(--ok);fill:var(--ok)}.sp-seri-3{stroke:var(--warn);fill:var(--warn)}.sp-seri-4{stroke:var(--ink2);fill:var(--ink2)}
+polyline.sp-seri-0,polyline.sp-seri-1,polyline.sp-seri-2,polyline.sp-seri-3,polyline.sp-seri-4{fill:none}
+.sp-titik.panas{stroke:var(--bad);stroke-width:3}
+.sp-seri-legenda{list-style:none;margin:var(--sp-2) 0 0;padding:0;display:flex;flex-wrap:wrap;gap:var(--sp-3);font-size:12px}
+.sp-seri-pj{display:inline-block;width:14px;height:4px;margin-right:6px;vertical-align:middle;border-radius:2px;background:var(--ink2)}
+.sp-seri-pj.sp-seri-0{background:var(--accent)}.sp-seri-pj.sp-seri-1{background:var(--info)}.sp-seri-pj.sp-seri-2{background:var(--ok)}.sp-seri-pj.sp-seri-3{background:var(--warn)}
+.sp-lap-pilih{margin:var(--sp-3) 0}
+.sp-lap-daftar li.sp-lap-sos{border-left:4px solid var(--bad);padding-left:var(--sp-2)}
+.sp-lg{display:inline-block;width:14px;height:8px;margin-right:6px;border-radius:4px;vertical-align:middle}
+.sp-lg-jejak{background:royalblue}.sp-lg-bor{background:seagreen}.sp-lg-sos{background:red}
+.sp-lap-debit{margin-top:var(--sp-3)}
+.sp-pinjam{margin-top:var(--sp-5)}
+.sp-pinjam .sp-aksi-kepala{margin:var(--sp-2) 0}
+/* berita acara: hanya tercetak, hitam di atas putih, tanpa logo dan merek */
+.sp-ba{font-family:Roboto,Arial,sans-serif;color:#000;background:#fff}
+.sp-ba header{text-align:center;margin-bottom:6mm}
+.sp-ba-inst{font-weight:700;letter-spacing:.04em;text-transform:uppercase;margin:0}
+.sp-ba h1{font-size:16pt;margin:2mm 0}
+.sp-ba dl{display:grid;gap:2mm;margin:4mm 0}.sp-ba dl>div{display:grid;grid-template-columns:36mm 1fr;gap:3mm}.sp-ba dt{font-weight:700}.sp-ba dd{margin:0}
+.sp-ba-ttd-baris{display:grid;grid-template-columns:1fr 1fr;gap:12mm;margin-top:16mm;text-align:center}
+.sp-ba-garis{border-bottom:1px solid #000;height:22mm;margin:0}
+.sp-ba footer{margin-top:10mm;font-size:9pt}
+@page sp-ba{size:A4;margin:20mm}
+@media print{.sp-ba{page:sp-ba}}
