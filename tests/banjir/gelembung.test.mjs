@@ -78,3 +78,16 @@ test("perisai rute basemap: kenali perisai (light dan dark), jangan sentuh nama 
   assert.ok(!G.perisai(L("poi-shield", ["get", "ref"], "shield", "poi")), "bukan transportation_name");
   assert.match(fs.readFileSync("public/banjir/peta.js", "utf8"), /Gelembung\.perisai\(l\)\) peta\.setLayoutProperty\(l\.id, "visibility", "none"\)/);
 });
+
+test("zoom nasional: titik Wilayah Siaga (kej-titik) baru muncul pada ambang pecah gelembung provinsi", () => {
+  assert.match(fs.readFileSync("public/banjir/kejadian.js", "utf8"), /id: "kej-titik", type: "circle", source: "kejpusat", minzoom: Gelembung\.ZOOM\.kabMin/);
+  assert.equal(G.ZOOM.kabMin, G.ZOOM.provMaks);
+});
+
+test("pegangan geser laci kanan: batas 340 px sampai 60%, simpan lokal tanpa melempar, papan ketik, aria-label; legenda tanpa kalimat dan tanpa kelompok kosong", () => {
+  const t = fs.readFileSync("public/banjir/tarik.js", "utf8"), h = fs.readFileSync("public/banjir/index.html", "utf8"), p = fs.readFileSync("public/banjir/peta.js", "utf8");
+  assert.equal(spawnSync("node", ["--check", "public/banjir/tarik.js"], {encoding: "utf8"}).status, 0);
+  assert.match(t, /Math\.max\(340, Math\.min\(maks\(\), w\)\)/); assert.match(t, /innerWidth \* \.6/); assert.match(t, /try \{ localStorage\.setItem/); assert.match(t, /ArrowLeft/); assert.match(t, /aria-label/); assert.match(t, /el\._tarik = h/);
+  assert.match(h, /<script src="tarik\.js">/); assert.ok(!/·|—/.test(t));
+  assert.match(p, /querySelectorAll\("\.lg-g"\)[^\n]*:scope > :not\(\.lbl\)/); assert.match(src, /class="lbl" title="Angka = kecamatan/); assert.ok(!/<div class="leg"[^>]*><span>Angka =/.test(src));
+});

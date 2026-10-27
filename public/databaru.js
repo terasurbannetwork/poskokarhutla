@@ -62,8 +62,6 @@
       <small class="db-cat">Peringatan dini cuaca BMKG biasanya berlaku 2–3 jam. Data ${jam(d.dibuat)}; cek <a href="https://www.bmkg.go.id/peringatan-dini/nowcast" target="_blank" rel="noopener">bmkg.go.id</a> untuk yang terbaru.</small></div>`;
     $("#lapisBtn")?.after(el);
   }
-  const legBMKG = () => nyala("bmkg") ? `<div class="lbl" style="margin-top:8px">Peringatan dini cuaca BMKG</div><div class="leg" style="margin-top:4px">${Object.values(SEV).slice(1, 4).map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("")}
-    <span><i class="sw" style="background:transparent;border:1px dashed var(--ink2)"></i>Sudah berakhir</span><span>Arahkan kursor ke poligon untuk rinciannya</span></div>` : "";
 
   /* ================================================================ kerangka lapisan (sama dengan lapisan5.js) */
   const LAYER = {bmkg: ["db-bmkg-fill", "db-bmkg-line", "db-bmkg-lama"]}, PASANG = {bmkg: pasangBMKG};
@@ -84,7 +82,13 @@
   const tungguPeta = fn => (typeof peta !== "undefined" && peta) ? fn() : setTimeout(() => tungguPeta(fn), 300);
   const _leg = renderLegenda;
   renderLegenda = function () { _leg(); const box = document.querySelector("#legDet > div"); if (!box) return;
-    const h = legBMKG() + (nyala("angin") && HAL === "banjir" ? `<div class="lbl" style="margin-top:8px">Angin siang (bergerak)</div><div class="leg" style="margin-top:4px"><span>Garis mengalir searah angin 10 m jam 12 WIB pada hari terpilih; makin pekat makin kencang. Hanya di darat.</span>${Angin.diam ? "<span>Gerak dimatikan (pengaturan kurangi gerakan): garis diam.</span>" : ""}</div>` : "");
+    /* ringkas seperti item legenda karhutla: judul + swatch; penjelasan panjang di title judul kelompok */
+    const grup = (j, tip, isi) => `<div class="lg-g"><div class="lbl" title="${tip}">${j}</div><div class="leg">${isi}</div></div>`;
+    const angin = nyala("angin") && HAL === "banjir" ? grup("Angin siang", "Garis mengalir searah angin 10 m jam 12 WIB pada hari terpilih; makin pekat makin kencang. Hanya di darat." + (Angin.diam ? " Gerak dimatikan (pengaturan kurangi gerakan): garis diam." : ""),
+      '<span><i class="sw" style="height:3px;vertical-align:3px;background:linear-gradient(90deg,rgba(31,95,139,.25),#1f5f8b)"></i>Angin, pekat = kencang</span>') : "";
+    const bm = nyala("bmkg") ? grup("Peringatan dini cuaca BMKG", "Arahkan kursor ke poligon untuk rinciannya",
+      Object.values(SEV).slice(1, 4).map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("") + '<span><i class="sw" style="background:transparent;border:1px dashed var(--ink2)"></i>Sudah berakhir</span>') : "";
+    const h = bm + angin;
     if (h) box.insertAdjacentHTML("beforeend", h); };
 
   /* ================================================================ karhutla */

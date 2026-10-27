@@ -10,13 +10,13 @@ const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
 const BB_AWAL = [[95, -11.5], [126, 7]];   /* kamera pertama buka: Aceh sampai Halmahera/Timor, tanpa Papua (pemilik, 27 Okt 2026); BB_ID tetap untuk "seluruh Indonesia" */
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
-  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; }; /* dok banjir lebih tinggi (baris skala hujan): batasi supaya kamera awal sama dengan karhutla */
+  return {top: 56, left: (pn?.width || 440) + 30, right: Math.max(tl?.width || 280, r("#laci.on")?.width || 0) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; }; /* dok banjir lebih tinggi (baris skala hujan): batasi supaya kamera awal sama dengan karhutla */
 /* gambar lapisan peta: dimuat sekali dari modul inti (ubin Overlay, kartu hover) */
 let PI = null, LG = null, legBuka = innerWidth > 900;
 const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], sungai: ["#16405c", "#4fa3c4", "sungai"], rob: ["#1f5f5b", "#5fb3a9", "ombak"], posko: ["#0b2545", "#3b6fb0", "posko"],
   pos: ["#16405c", "#4fa3c4", "sungai"], hujanukur: ["#1d4e89", "#69a7e8", "hujan"], peluang: ["#3a0c78", "#a882de", "hujan"], hujan: ["#1d4e89", "#69a7e8", "hujan"], h3: ["#2a3f8f", "#8a7fe0", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"],
-  kejadian: ["#7a1f12", "#e58a45", "peringatan"], bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"]};
-const UBIN_PENDEK = {wilayah: "Status", sungai: "Sungai", pos: "Pos air", hujanukur: "Pos hujan", peluang: "Peluang hujan", rob: "Rob", kejadian: "Wilayah Siaga", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
+  kejadian: ["#7a1f12", "#e58a45", "peringatan"], bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"], hujankini: ["#2a3f8f", "#69a7e8", "hujan"]};
+const UBIN_PENDEK = {hujankini: "Sedang hujan", wilayah: "Status", sungai: "Sungai", pos: "Pos air", hujanukur: "Pos hujan", peluang: "Peluang hujan", rob: "Rob", kejadian: "Wilayah Siaga", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
 const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 /* "Hari ini" hanya bila tanggal itu memang hari ini (WIB); status.json bisa tertinggal sehari */
 const hariWIB = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
@@ -171,7 +171,7 @@ const Peta = {
     peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); }
       /* kartu digambar paling banyak sekali per frame, dari agregat yang sudah dihitung */
-      if (!diTitik && !PosUkur.diPos && !this.diKej && S.mode !== "riwayat" && PI) { fT = f; evT = e.originalEvent; rafT ||= requestAnimationFrame(() => { rafT = 0; if (fT && !PosUkur.diPos && !diTitik && !Gelembung.di) PI.tampilTip(this.kartuWilayah(fT), evT); }); } else fT = null; });
+      if (!diTitik && !PosUkur.diPos && !this.diKej && S.mode !== "riwayat" && PI) { fT = f; evT = e.originalEvent; rafT ||= requestAnimationFrame(() => { rafT = 0; if (fT && !PosUkur.diPos && !diTitik && !Gelembung.di && !(typeof HujanKini !== "undefined" && HujanKini.di)) PI.tampilTip(this.kartuWilayah(fT), evT); }); } else fT = null; });
     peta.on("mouseleave", "wil-fill", () => { fT = null; peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
     /* zoom keluar sendiri: tingkat wilayah ikut naik (kecamatan -> kabupaten -> provinsi -> Indonesia) tanpa menerbangkan peta */
     peta.on("zoomend", e => { if (!e.originalEvent) return; const z = peta.getZoom(), n = S.jalur.length, ke = n >= 1 && z < 5.2 ? 0 : n >= 2 && z < 6.8 ? 1 : n; if (ke === n) return;
@@ -305,7 +305,8 @@ function renderLegenda() {
     ${T("rob") && S.rob ? `<div class="lbl">Pasang laut (rob)</div><div class="leg" style="margin:4px 0 8px"><span><b style="color:#2b8c86">▲</b> normal</span>${[1, 2, 3].map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> ${["", "≥ persentil 95", "≥ persentil 99", "di atas rekor"][l]}</span>`).join("")}</div>` : ""}
     ${hj ? `<div class="lbl">${Peta.lihat("h3") && !Peta.lihat("hujan") ? "Hujan 3 hari puncak" : "Hujan harian"} (model Open-Meteo, mm)</div><div class="legscale">${[3, 12, 35, 75, 125, 200].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
       <div class="legnum">${(Peta.lihat("h3") && !Peta.lihat("hujan") ? [5, 25, 70, 150, 250, 400] : [1, 20, 50, 100, 150, 250]).map(v => `<span>${v}</span>`).join("")}</div>` : ""}${PosUkur.legenda()}${Eksp.legenda()}${typeof Posko !== "undefined" ? Posko.legenda() : ""}</div></details>`;
-  LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
+  LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o});
+  $("#legenda").querySelectorAll(".lg-g").forEach(g => { if (!g.querySelector(":scope > :not(.lbl)")) g.remove(); }); }   /* kelompok tanpa item (judul kosong) tidak dirender */
 
 /* Riwayat (mode peta) dan Tren ada di skrip kedua: lihat 'riwayat & tren' */
 /* ================================================================ popup analisa */

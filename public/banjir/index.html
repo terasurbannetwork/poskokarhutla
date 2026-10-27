@@ -111,6 +111,7 @@
           <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
         </details>
         <details open><summary>Cuaca</summary>
+          <label><input type="checkbox" data-l="hujankini" checked> Sedang hujan (nowcast BMKG)</label>
           <label><input type="checkbox" data-l="hujan"> Hujan harian</label>
           <label><input type="checkbox" data-l="h3"> Hujan 3 hari (puncak)</label>
           <label hidden style="display:none"><input type="checkbox" data-l="hujanukur"> Pos hujan</label>
@@ -260,6 +261,7 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
 <script src="../angka_kawasan.js"></script>
 <script src="peta.js"></script>
 <script src="gelembung.js"></script>
+<script src="tarik.js"></script>
 <script src="kejadian.js"></script>
 <script src="tren.js"></script>
 <script src="insight.js"></script>
@@ -283,6 +285,7 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
 <script src="sapa_banjir.js"></script>
 <script src="mulai.js"></script>
 <script src="../databaru.js" data-halaman="banjir"></script>
+<script src="hujan_kini.js"></script>
 <script src="../informasi.js" data-halaman="banjir"></script>
 <script src="../persetujuan.js" defer></script>
 <script src="../kaki.js" defer></script>

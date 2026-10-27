@@ -211,7 +211,7 @@ test("normalisasi satuan ke cm: m, mm, centimeter; null, m3/s, mdpl tanpa angka;
 
 test("pin pos tidak tersingkir, pos terpilih tersorot (statis)", () => {
   assert.match(src, /id: "pos", type: "symbol"[^\n]*minzoom: 7[^\n]*"icon-allow-overlap": true, "icon-ignore-placement": true/);
-  assert.match(src, /id: "pos-pilih", type: "symbol"[\s\S]*?"icon-size"[\s\S]*?1\.15/);
+  assert.match(src, /id: "pos-pilih", type: "symbol"[\s\S]*?"icon-size"[\s\S]*?1\.25/);
   assert.match(src, /id: "pos-pilih-angka"[\s\S]*?"text-allow-overlap": true/);
   assert.ok(src.indexOf('id: "pos-pilih"') > src.indexOf('id: "pos-angka"'), "pos-pilih di atas pin dan angka");
   assert.match(src, /strokeStyle = "#000"; g\.lineWidth = 2\.5/);
@@ -271,4 +271,20 @@ test("arah aliran: sorot dash maju searah titik garis (hulu ke hilir) tiap langk
   assert.match(src, /id: "alir-panah", type: "symbol"[^\n]*minzoom: 12/); assert.match(src, /"symbol-placement": "line", "symbol-spacing": 250/); assert.match(src, /"icon-rotation-alignment": "map"/);
   assert.ok(!/"text-field"[^\n]*alir-panah/.test(src));
   assert.match(src, /Panah = arah aliran/);
+});
+
+test("kartu pasut: kurva 24 jam satu datum, minus sejati, tabel tiga kolom rata kanan, pil berikon", () => {
+  const st = {puncak: [{t: "2026-10-27T10:00+07:00", cm: 53, jenis: "tinggi"}, {t: "2026-10-27T16:00+07:00", cm: -37, jenis: "rendah"}], deret: {t0: "2026-10-27T00:00+07:00", langkah_menit: 60, cm: [-26, -24, -20, -15, -8, 2, 13, 27, 41, 51, 53, 49, 42, 32, 20, 7, -7, -19, -30, -36, -37, -34, -33, -35, -30, -20, -10, 5, 20, 30, 40, 45, 50]}};
+  const now = P.wibDetik("2026-10-27 06:00"), kv = plain(P.pasutKurva(st, now));
+  assert.equal(kv.pts.length, 25); assert.equal(kv.pts[0].cm, 13); assert.deepEqual(kv.puncak.map(x => x.cm), [53, -37]);
+  assert.equal(P.pasutKurva({...st, deret: {...st.deret, cm: st.deret.cm.map(c => c - 73)}}, now), null, "datum HAT ditolak"); assert.equal(P.pasutKurva({}, now), null);
+  assert.equal(P.cmMinus(-24), "−24"); assert.equal(P.cmMinus(11), "11"); assert.equal(P.cmMinus(null), "–");
+  assert.match(src, /class="pa-v">\$\{PosAir\.cmMinus\(x\.cm\)\}<\/span><span class="pa-u">cm/); assert.match(src, /Pasang: "M3 17l6-6/); assert.match(src, /Surut: "M3 7l6 6/);
+  assert.match(fs.readFileSync("public/banjir/pos_air.css", "utf8"), /\.pa-pk \.n\{[^}]*tabular-nums/);
+  assert.ok(!/\$\{x\.jenis\}, \$\{x\.hari\}/.test(src), "tanpa koma penghubung label dan hari");
+});
+
+test("sorotan pos terpilih: halo, cincin putih, cincin luar, denyut sekali, label berlatar putih tebal", () => {
+  for (const id of ["pos-pilih-halo", "pos-pilih-cincin", "pos-pilih-luar"]) assert.match(src, new RegExp(`id: "${id}", type: "circle"`));
+  assert.match(src, /"text-halo-width": 4\.5/); assert.match(src, /PosUkur\._denyut = null/); assert.match(src, /"pos-pilih-halo", "pos-pilih-cincin", "pos-pilih-luar"/);
 });

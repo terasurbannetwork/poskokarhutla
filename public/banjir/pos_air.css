@@ -14,3 +14,14 @@
 .pa-grup{background:var(--surface);border-radius:14px;margin:0 0 6px;padding:2px 10px}
 .pa-grup>summary{cursor:pointer;padding:8px 0;display:flex;justify-content:space-between;gap:8px}
 .pa-grup .pa-kt{padding:0 0 10px}.pa-grup .pa-baris{background:var(--card)}
+.pa-pil{display:inline-flex;align-items:center;gap:4px}
+.pa-pk td{vertical-align:middle}.pa-pk .n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+.pa-v{display:inline-block;min-width:3.2ch;text-align:right}.pa-u{display:inline-block;width:2.4ch;margin-left:3px;text-align:left;color:var(--ink2)}
+/* pegangan geser laci kanan (tarik.js), sama dengan .tarik karhutla */
+.laci{position:absolute}.laci .tarik{position:absolute;top:0;bottom:0;left:-1px;width:10px;cursor:col-resize;z-index:6;touch-action:none}
+.laci .tarik::after{content:"";position:absolute;top:50%;left:3px;width:4px;height:44px;margin-top:-22px;border-radius:4px;background:var(--line);transition:background .15s}
+.laci .tarik:hover::after,.laci .tarik.aktif::after,.laci .tarik:focus-visible::after{background:var(--brand2)}
+.pa-daftar{border:0;background:var(--surface);color:var(--brand2);font:inherit;font-size:11px;font-weight:700;padding:2px 9px;border-radius:999px;cursor:pointer;white-space:nowrap}
+/* tabel wilayah: angka rata kanan, lebar tetap, tidak menempel */
+#rows .tb .n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
+#rows .tb.kepala .n{letter-spacing:.02em}

@@ -135,8 +135,7 @@
       return false; },
     legenda() {
       if (!this.ada || S.mode !== "status" || !Peta.lihat("wilayah")) return "";
-      return `<div class="lbl">Gelembung angka</div><div class="leg" style="margin:4px 0 8px">${[3, 2].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>
-        <div class="leg" style="margin:0 0 8px"><span>Angka = kecamatan berstatus Siaga atau Awas; warna = status tertinggi di wilayah itu. Provinsi di zoom nasional, kabupaten/kota saat diperbesar.</span></div>`; },
+      return `<div class="lbl" title="Angka = kecamatan berstatus Siaga atau Awas, warna = status tertinggi di wilayah itu. Provinsi di zoom nasional, kabupaten/kota saat diperbesar.">Gelembung angka</div><div class="leg">${[3, 2].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>`; },
   });
   akar.Gelembung = G;
 })(typeof self !== "undefined" ? self : globalThis);

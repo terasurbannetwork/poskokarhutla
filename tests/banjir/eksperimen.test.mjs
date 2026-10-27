@@ -71,7 +71,7 @@ test("istilah gugus kejadian_aktif: Wilayah Siaga (prakiraan) di semua tampilan,
   const b = n => fs.readFileSync("public/banjir/" + n, "utf8");
   assert.match(b("kejadian.js"), /nama: k => "Wilayah Siaga " \+/); assert.match(b("insight.js"), /wilayah Siaga \(prakiraan\)"\)} mencakup/); assert.ok(!/banjir aktif melanda/.test(b("insight.js")));
   assert.match(b("mulai.js"), /Wilayah Siaga \(prakiraan\) \$\{esc\(e\.kode\)\}/); assert.match(b("sapa_banjir.js"), /"Wilayah Siaga \(prakiraan\)"/);
-  const w = b("wilayah.js"); assert.match(w, /"WS", "Wilayah Siaga \(prakiraan\), gugus"/); assert.match(w, />WS gugus<\/span>/); assert.match(w, />RB titik<\/span>/); assert.match(w, /Rob, titik Waspada\+/); assert.ok(!/>KA<\/span>/.test(w)); assert.match(w, /kejadian_aktif/);
+  const w = b("wilayah.js"); assert.match(w, /"WS", "Wilayah Siaga \(prakiraan\), gugus"/); assert.match(w, />WS<\/span>/); assert.match(w, />RB<\/span>/); assert.match(w, /title="Wilayah Siaga \(prakiraan\), gugus">WS/); assert.match(w, /72px/); assert.match(w, /Rob, titik Waspada\+/); assert.ok(!/>KA<\/span>/.test(w)); assert.match(w, /kejadian_aktif/);
 });
 
 test("kartu peluang: pil Eksperimental, vonis teks kecil; cache ekspresi dan tampil ditunda; pos hujan label minimal", () => {

@@ -27,7 +27,7 @@ const KejAktif = {
     const bl = Peta.bawahLabel(), vis = {visibility: Peta.lihat("kejadian") ? "visible" : "none"}, W = ["match", ["get", "lv"], 3, WARNA_LV[3], WARNA_LV[2]];
     peta.addSource("kejpusat", {type: "geojson", data: {type: "FeatureCollection", features: K.map(k => ({type: "Feature", geometry: {type: "Point", coordinates: [k.pusat[1], k.pusat[0]]},
       properties: {kode: k.kode, lv: k.level_tertinggi, skor: k.skor}}))}});
-    peta.addLayer({id: "kej-titik", type: "circle", source: "kejpusat", maxzoom: 8, layout: {...vis, "circle-sort-key": ["get", "skor"]},
+    peta.addLayer({id: "kej-titik", type: "circle", source: "kejpusat", minzoom: Gelembung.ZOOM.kabMin, maxzoom: 8,   /* zoom nasional: hanya gelembung berangka (gelembung.js); titik Wilayah Siaga muncul terinci saat zoom masuk */ layout: {...vis, "circle-sort-key": ["get", "skor"]},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 5, 8, 11], "circle-color": W, "circle-opacity": .9, "circle-stroke-color": "#fff", "circle-stroke-width": 2}});
     this.garis(bl, vis, W); renderLegenda();
     if (this._ia) return; this._ia = true;
