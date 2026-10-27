@@ -1,18 +1,19 @@
 """Hujan per jam untuk jendela kejadian (+-3 hari) di kisi 0,1 derajat kotak Jakarta.
 
-Sumber (Open-Meteo, tanpa kunci): archive-api ERA5-Land (`era5_land`) dan historical-forecast-api ECMWF IFS (`ecmwf_ifs`),
-zona WIB. IMERG 30 menit (GPM_3IMERGHH.07) lewat OPeNDAP GES DISC hanya dengan `imerg` dan secret env EARTHDATA_TOKEN
+Sumber (Open-Meteo, tanpa kunci): archive-api ERA5 (`era5`, 0,25 derajat) dan historical-forecast-api ECMWF IFS (`ecmwf_ifs`),
+zona WIB. ERA5-Land (`era5_land`) DIBUANG: precipitation per jam = null semua untuk Jakarta (cek 27 Okt 2026, variabel lain ada);
+berkas lama dengan kunci era5_land yang seluruhnya kosong dihapus saat dijalankan ulang. IMERG 30 menit (GPM_3IMERGHH.07) lewat OPeNDAP GES DISC hanya dengan `imerg` dan secret env EARTHDATA_TOKEN
 (Bearer; tidak pernah dicetak); tanpa token dilewati dengan pesan. Berkas HDF5 penuh (~8 MB per 30 menit) tidak diunduh:
 tanpa h5py tidak terbaca dan ukurannya ~80 GB untuk semua kejadian.
 Keluaran: data/raw/banjir/genangan/hujan_jam/<kejadian>.json (per sel per model, per jam) dan
 public/banjir/data/genangan/hujan_jam.json (ringkasan: maks 1 jam, maks 3 jam, total per sel per model).
-ERA5-Land meremehkan puncak konvektif kota (RANCANGAN §3): koreksi bias ada di tahap J2.
+ERA5 meremehkan puncak konvektif kota (RANCANGAN §3): koreksi bias ada di tahap J2.
 """
 import datetime as dt, json, os, sys, time, urllib.parse
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bersama import KEJADIAN, MENTAH, RINGKAS, WIB, ambil_json, baca, jendela, simpan
 
-MODEL = {"era5_land": ("https://archive-api.open-meteo.com/v1/archive", "era5_land"),
+MODEL = {"era5": ("https://archive-api.open-meteo.com/v1/archive", "era5"),
          "ecmwf_ifs": ("https://historical-forecast-api.open-meteo.com/v1/forecast", "ecmwf_ifs")}
 LON = [106.6, 106.7, 106.8, 106.9, 107.0]
 LAT = [-6.4, -6.3, -6.2, -6.1]
@@ -47,6 +48,8 @@ def jalankan():
         a2, b2 = jendela(a, b)
         jalur = os.path.join(MENTAH, "hujan_jam", f"{ev}.json")
         data = baca(jalur, {})
+        if "era5_land" in data and all(x is None for sel in data["era5_land"] for x in sel["mm"]):
+            del data["era5_land"]  # kosong semua (null), bukan data
         for nama, (url, model) in MODEL.items():
             if nama in data:
                 continue
@@ -81,6 +84,7 @@ def uji():
     s = ringkas({"lat": 1, "lon": 2, "mm": [1.0, None, 2.5]})
     assert s["total_mm"] == 3.5 and s["jam_kosong"] == 1, s
     assert jendela("2020-01-01", "2020-01-10")[0] == "2019-12-29"
+    assert "era5" in MODEL and "era5_land" not in MODEL
     print("ok")
 
 

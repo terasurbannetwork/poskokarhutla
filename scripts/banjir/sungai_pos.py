@@ -14,7 +14,7 @@ API = os.environ.get("POS_API", "https://centurisk97.id/api/banjir/sungai-ukur")
 SERVER = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.systems/api/interpreter",
           "https://maps.mail.ru/osm/tools/overpass/api/interpreter"]
 UA = "poskobanjir/1.0 (pantau bencana; sungai pos)"
-RADIUS_KM, TOL_M, BATAS_BYTE, MIN_FITUR, GRUP = 6.0, 20.0, 600_000, 20, 4
+RADIUS_KM, TOL_M, BATAS_BYTE, MIN_FITUR, GRUP = 6.0, 20.0, 600_000, 20, 1
 KELAS = "river|canal|stream|drain"
 
 
@@ -94,7 +94,7 @@ def kueri(grup):
 
 def overpass(q):
     data = urllib.parse.urlencode({"data": q}).encode()
-    for coba in range(6):
+    for coba in range(8):
         url = SERVER[coba % len(SERVER)]
         try:
             j = json.loads(urllib.request.urlopen(urllib.request.Request(url, data, headers={"User-Agent": UA}), timeout=200).read())
@@ -126,7 +126,7 @@ def jalankan():
     unik = {}
     for i in range(0, len(pos), GRUP):
         for e in overpass(kueri(pos[i:i + GRUP])): unik[e.get("id")] = e
-        time.sleep(2)
+        time.sleep(1)
     fs = [f for f in (fitur(e, pos) for e in unik.values()) if f]
     fc = {"type": "FeatureCollection", "attribution": "(c) kontributor OpenStreetMap, ODbL 1.0, lewat Overpass; diolah Pantau Bencana.",
           "features": fs}

@@ -4,6 +4,8 @@ Dipakai empat bencana (karhutla, banjir/rob, gempa, gunung api) lewat scripts/um
 Kerja manual/bulanan, BUKAN harian. Keluaran TERKUNCI (login saja), bukan public/:
   data/terkunci/bangunan/grid_<prov>.json   {dibuat, prov, lat0, lon0, step, cells:[[i,j,n,luas_m2],...]}
                                              lat = lat0 + i*step, lon = lon0 + j*step (pojok barat-daya sel)
+  data/terkunci/bangunan/halus_<prov>.json  {dibuat, prov, lat0, lon0, step:0.001, cells:[[i,j,n,luas_m2],...]} sel 110 m, hanya sel berisi
+                                             lat = lat0 + i*step (pojok barat-daya). Untuk menghitung bangunan di dalam genangan: bangunan_di().
   data/terkunci/bangunan/kec.json           {dibuat, ringkasan, prov, kab, kec:{"prov|kab|kec":[n,luas_m2]}}
 Mentah (gunakan GCS publik, cache, dilanjutkan bila putus): data/raw/bangunan/ (gitignored lewat data/raw/*)
   data/raw/bangunan/hasil/<level>_<token>.json = hasil per ubin S2, supaya ulang jalan tidak mengurai CSV lagi.
@@ -167,7 +169,9 @@ def proses_baris(baris, cari, ambang=AMBANG_KEYAKINAN):
         k = math.floor(float(p[0]) * HALUS) * 1000000 + math.floor(float(p[1]) * HALUS)
         cnt[k] = cnt.get(k, 0) + 1
         luas[k] = luas.get(k, 0.0) + float(p[2])
-    kec, grid, tak = {}, {}, 0
+    kec, grid, halus, tak = {}, {}, {}, 0
+    cari0 = cari
+    cari = lambda lon, lat: (lambda w: w if w and None not in w else None)(cari0(lon, lat))  # poligon geo tanpa nama kab/kec (13: ada satu, danau) = tak terpetakan
     per = int(round(STEP * HALUS))
     for k, n in cnt.items():
         ki, kj = divmod(k, 1000000)
@@ -184,17 +188,20 @@ def proses_baris(baris, cari, ambang=AMBANG_KEYAKINAN):
         e = kec.setdefault("|".join(w), [0, 0.0])
         e[0] += n
         e[1] += a
+        hs = halus.setdefault(w[0], {}).setdefault("%d,%d" % (ki - round(LAT0 * HALUS), kj - round(LON0 * HALUS)), [0, 0.0])
+        hs[0] += n
+        hs[1] += a
         g = grid.setdefault(w[0], {}).setdefault("%d,%d" % (ki // per - round(LAT0 / STEP), kj // per - round(LON0 / STEP)), [0, 0.0])
         g[0] += n
         g[1] += a
-    return {"baris": n_baris, "rendah": rendah, "tak_terpetakan": tak, "kec": kec, "grid": grid}
+    return {"baris": n_baris, "rendah": rendah, "tak_terpetakan": tak, "kec": kec, "grid": grid, "halus": halus}
 
 
 def proses_ubin(level, token, cari, hapus=False):
     p = os.path.join(HASIL, f"L{level}_{token}.json")
     if os.path.exists(p):
         h = json.load(open(p))
-        if h.get("ambang") == AMBANG_KEYAKINAN:
+        if h.get("ambang") == AMBANG_KEYAKINAN and "halus" in h:  # cache lama tanpa sel halus diurai ulang
             return h
     mulai = time.time()
     with gzip.open(jalur_ubin(level, token), "rb") as f:
@@ -209,7 +216,7 @@ def proses_ubin(level, token, cari, hapus=False):
 
 def gabung(hasil, provs=None):
     """hasil: daftar hasil sebagian. provs: kode yang disimpan (None = semua). -> (kec_doc, {prov: grid_doc})"""
-    kec, grid = {}, {}
+    kec, grid, halus = {}, {}, {}
     baris = rendah = tak = 0
     for h in hasil:
         baris, rendah, tak = baris + h["baris"], rendah + h["rendah"], tak + h["tak_terpetakan"]
@@ -219,14 +226,15 @@ def gabung(hasil, provs=None):
             e = kec.setdefault(k, [0, 0.0])
             e[0] += n
             e[1] += a
-        for pv, sel in h["grid"].items():
-            if provs and pv not in provs:
-                continue
-            g = grid.setdefault(pv, {})
-            for k, (n, a) in sel.items():
-                e = g.setdefault(k, [0, 0.0])
-                e[0] += n
-                e[1] += a
+        for tujuan, sumber in ((grid, h["grid"]), (halus, h.get("halus", {}))):
+            for pv, sel in sumber.items():
+                if provs and pv not in provs:
+                    continue
+                g = tujuan.setdefault(pv, {})
+                for k, (n, a) in sel.items():
+                    e = g.setdefault(k, [0, 0.0])
+                    e[0] += n
+                    e[1] += a
     kab, prov = {}, {}
     for k, (n, a) in kec.items():
         pv, kb, _ = k.split("|")
@@ -250,6 +258,10 @@ def gabung(hasil, provs=None):
         cells.sort()
         gdoc[pv] = {"dibuat": dibuat, "prov": pv, "lat0": LAT0, "lon0": LON0, "step": STEP, "kolom": ["i", "j", "n", "luas_m2"],
                     "sumber": SUMBER, "lisensi": LISENSI, "ambang_keyakinan": AMBANG_KEYAKINAN, "cells": cells}
+    for pv, sel in halus.items():
+        cells = sorted([*map(int, k.split(",")), n, round(a)] for k, (n, a) in sel.items())
+        gdoc["halus_" + pv] = {"dibuat": dibuat, "prov": pv, "lat0": LAT0, "lon0": LON0, "step": 1 / HALUS, "kolom": ["i", "j", "n", "luas_m2"],
+                               "sumber": SUMBER, "lisensi": LISENSI, "ambang_keyakinan": AMBANG_KEYAKINAN, "cells": cells}
     return kdoc, gdoc
 
 
@@ -265,8 +277,44 @@ def tulis(doc, jalur):
 def simpan(kdoc, gdoc, keluar=KELUAR):
     n = {"kec.json": tulis(kdoc, os.path.join(keluar, "kec.json"))}
     for pv, d in gdoc.items():
-        n[f"grid_{pv}.json"] = tulis(d, os.path.join(keluar, f"grid_{pv}.json"))
+        nama = (pv if pv.startswith("halus_") else f"grid_{pv}") + ".json"
+        n[nama] = tulis(d, os.path.join(keluar, nama))
     return n
+
+
+# ---------------- baca grid halus (dipakai modul lain, mis. banjir/genangan_nasional) ----------------
+_TEMBOLOK = {}
+
+
+def _indeks(prov, keluar=KELUAR):
+    k = (prov, keluar)
+    if k not in _TEMBOLOK:
+        d = json.load(open(os.path.join(keluar, f"halus_{prov}.json")))
+        _TEMBOLOK[k] = ({(i, j): (n, a) for i, j, n, a in d["cells"]}, d["lat0"], d["lon0"])
+    return _TEMBOLOK[k]
+
+
+def bangunan_di(prov, kotak=None, titik=None, keluar=KELUAR):
+    """(jumlah, luas_atap_m2) bangunan di sel halus 110 m provinsi `prov` (kode, mis. "63").
+    kotak = (lon_min, lat_min, lon_max, lat_max): sel yang TITIK TENGAHNYA di dalam kotak (galat tepi <= 1 sel).
+    titik = iterable (lon, lat): tiap sel yang memuat titik dihitung SEKALI (titik banyak dalam satu sel tidak digandakan).
+    Pasangkan dengan piksel genangan 20 m: kumpulkan titik pusat piksel basah, panggil sekali. Berkas halus tidak ada -> FileNotFoundError."""
+    sel, lat0, lon0 = _indeks(prov, keluar)
+    if kotak is not None:
+        x0, y0, x1, y1 = kotak
+        i0, i1 = math.floor((y0 - lat0) * HALUS), math.floor((y1 - lat0) * HALUS)
+        j0, j1 = math.floor((x0 - lon0) * HALUS), math.floor((x1 - lon0) * HALUS)
+        ids = {(i, j) for i in range(i0, i1 + 1) for j in range(j0, j1 + 1)} if (i1 - i0 + 1) * (j1 - j0 + 1) < len(sel) else \
+              {c for c in sel if i0 <= c[0] <= i1 and j0 <= c[1] <= j1}
+        ids = {c for c in ids if x0 <= lon0 + (c[1] + .5) / HALUS <= x1 and y0 <= lat0 + (c[0] + .5) / HALUS <= y1}
+    else:
+        ids = {(math.floor((la - lat0) * HALUS), math.floor((lo - lon0) * HALUS)) for lo, la in (titik or ())}
+    n = a = 0
+    for c in ids:
+        v = sel.get(c)
+        if v:
+            n, a = n + v[0], a + v[1]
+    return n, a
 
 
 # ---------------- uji ----------------
@@ -289,6 +337,11 @@ def uji():
     assert h["kec"]["62|Kab A|Kec A"] == [2, 150.5], h["kec"]
     assert h["kec"]["62|Kab A|Kec B"] == [1, 30.0], h["kec"]
     assert h["grid"]["62"]["%d,%d" % (round((-2.2051 - LAT0) / STEP - .5), round((113.2051 - LON0) / STEP - .5))] == [2, 150.5], h["grid"]
+    # grid halus: jumlah halus == kasar == kecamatan; sel halus (-2.2051,113.2051) -> i=9794 j=19205 (lat0 -12, lon0 94)
+    assert h["halus"]["62"]["%d,%d" % (math.floor(-2.2051 * HALUS) + 12000, math.floor(113.2051 * HALUS) - 94000)] == [2, 150.5], h["halus"]
+    for hh in (h, proses_baris(baris, kotak, ambang=0.5)):
+        tot = lambda d: sum(v[0] for s in d.values() for v in s.values())
+        assert tot(hh["halus"]) == tot(hh["grid"]) == sum(v[0] for v in hh["kec"].values()), "bangunan hilang/ganda"
     # sel di atas ambang bila ambang diturunkan: bukti ambang benar-benar dipakai
     assert proses_baris(baris, kotak, ambang=0.5)["kec"]["62|Kab A|Kec A"][0] == 4
     kdoc, gdoc = gabung([h, h], provs={"62"})
@@ -298,6 +351,11 @@ def uji():
     with tempfile.TemporaryDirectory() as d:
         simpan(kdoc, gdoc, d)
         g = json.load(open(os.path.join(d, "grid_62.json")))
+        hl = json.load(open(os.path.join(d, "halus_62.json")))
+        assert list(hl)[0] == "dibuat" and sum(c[2] for c in hl["cells"]) == sum(c[2] for c in g["cells"]) == 6 and hl["step"] == 0.001
+        assert bangunan_di("62", kotak=(113.2, -2.21, 113.21, -2.2), keluar=d) == (4, 301.0), bangunan_di("62", kotak=(113.2, -2.21, 113.21, -2.2), keluar=d)
+        assert bangunan_di("62", titik=[(113.2051, -2.2051), (113.2052, -2.2052)], keluar=d) == (4, 301.0)  # satu sel (data [h,h]); titik kembar tak digandakan
+        assert bangunan_di("62", kotak=(100, -9, 101, -8), keluar=d) == (0, 0)
         assert g["cells"][0][2] >= 1 and g["step"] == STEP and json.load(open(os.path.join(d, "kec.json")))["kec"]
     # Wilayah nyata: Palangka Raya harus di Kalteng
     w = _muat_wilayah().Wilayah()
