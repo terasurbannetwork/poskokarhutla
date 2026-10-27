@@ -1894,8 +1894,12 @@ const pkRentang = () => { const H = S.pk.hari, a = pkHari(), p = S.periode;
 const pkBln = () => { const m = /^\d{4}-\d{2}/.test(S.periode) ? new Set(S.periode.split(",")) : null; return m ? S.pk.hari.flatMap((t, i) => m.has(t.slice(0, 7)) ? [i] : []) : []; };
 const pkIdx = () => { const ix = pkBln(); if (ix.length) return ix; const [a, b] = pkRentang(); return Array.from({length: b - a + 1}, (_, i) => a + i); };
 const pkPeriode = () => ukurAktif() === "luas" && pkIdx().length > 1;
+/* belum padam HARI INI (data/belum_kini.json, titik.yml sesudah lintasan siang NOAA masuk; pemilik, 27 Okt 2026): belum padam itu stok, jadi hari ini dipakai
+   begitu ada; luas terbakar tetap hari utuh terakhir. Hanya bila hari terpilih belum ada di peta_karhutla.json dan hari itu juga belum (angka hari utuh menang). */
+const pkKini = () => { const t = tglRentang(), k = S.pkKini; return k && k.hari <= t && !S.pk.hari.includes(t) && !S.pk.hari.includes(k.hari) ? k : null; };
+const pkTgl = u => (u === "belum" && pkKini()?.hari) || S.pk.hari[pkHari()];
 const pkJml = (k, u, f = x => x) => { const v = S.pk.prov[k]?.[u]; if (!v) return 0; let s = 0; for (const i of pkIdx()) s += f(v[i] || 0); return s; };
-const nilaiWil = k => { const u = ukurAktif(); return u === "hot" ? S.hit[k] || 0 : u === "kl" ? klusterWil(tglRentang())[k]?.[0] || 0 : u === "luas" ? Math.round(pkJml(k, "luas")) : S.pk.prov[k]?.[u][pkHari()] || 0; };
+const nilaiWil = k => { const u = ukurAktif(); return u === "hot" ? S.hit[k] || 0 : u === "kl" ? klusterWil(tglRentang())[k]?.[0] || 0 : u === "luas" ? Math.round(pkJml(k, "luas")) : pkKini() ? pkKini().prov[k] || 0 : S.pk.prov[k]?.[u][pkHari()] || 0; };
 /* "Sen 19 Okt" (hari kalender WIB, apa pun zona waktu peramban) */
 const tglLain = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, weekday: "short", day: "numeric", month: "short"}).replace(",", "");
 /* "Hari ini" / "Kemarin" menurut jam WIB sekarang (sama dengan label tombol: data yang terlambat sehari tampil "Kemarin"), selain itu "" */
@@ -2142,7 +2146,7 @@ const Peta = {
              urutannya membuat kolom kanan berisi hektar: titik|luas, kompleks|belum padam, FWI|prioritas */
           stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"],
             ...(pk ? [["puncak", fmt(pk.luas[ph] || 0), `ha luas terbakar<br>${tglLain(S.pk.hari[ph])}`, "#d9600b"]] : []), ["api", kl.length, "cluster aktif", "#5f6fb0"],
-            ...(pk ? [["api", fmt(pk.belum[ph] || 0), `ha masih terdeteksi satelit<br>${tglLain(S.pk.hari[ph])}`, "#c9503a"]] : []),
+            ...(pk ? [["api", fmt((pkKini() ? pkKini().prov[k] : pk.belum[ph]) || 0), `ha masih terdeteksi satelit<br>${tglLain(pkTgl("belum"))}`, "#c9503a"]] : []),
             ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : []), ["skor", pr, "prioritas", "#c9503a", pr > 0]], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */
           tren: kp.length < 3 || S.titikPenuh ? grafikTren(k) : ""}); }
       if (S.panel === "riw" || $("#tip")._kl != null || $("#tip")._pf || Riwayat._diGelembung) return;
@@ -2600,7 +2604,7 @@ function renderDaftar() {
   const j = S.jalur;
   let item = (S.fiturWil || []).map(f => ({kunci: f.properties.kunci, nama: f.properties.nama, v: nilaiWil(f.properties.kunci)}));
   const gabung = new Map(); item.forEach(i => { const g = gabung.get(i.kunci); if (g) g.v = Math.max(g.v, i.v); else gabung.set(i.kunci, i); });
-  const u = ukurAktif(), hk = u === "hot" || u === "kl" ? tglRentang() : S.pk.hari[pkHari()], W = klusterWil(hk), ada = klusterHari(hk) !== false;
+  const u = ukurAktif(), hk = u === "hot" || u === "kl" ? tglRentang() : pkTgl(u), W = klusterWil(hk), ada = klusterHari(hk) !== false;
   /* ringkasan cluster wilayah pada hari kolom pertama (klusterWil); tanpa arsip = semua null, level -1 */
   const klW = k => !ada ? [null, null, -1, null, null, null, null] : W[k] || [0, 0, -1, 0, 0, 0, 0];
   muatAsap();
@@ -2618,7 +2622,7 @@ function renderDaftar() {
   const namaBln = b => `${BLN[+b.slice(5) - 1]} ${b.slice(0, 4)}`, blnPilih = /^\d{4}-\d{2}/.test(S.periode) ? S.periode.split(",") : [];
   /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Tanggal data"; harinya disebut di baris atas kepala tabel */
   const hariTitik = u === "hot" || u === "kl" ? `<div class="tr-hari" title="${u === "hot" ? "Kolom Titik: titik panas" : "Cluster masih aktif (titik terakhir <= 72 jam, gambut <= 7 hari) pada akhir"} satu hari kalender WIB"><b>${relRentang() ? relRentang() + ", " : ""}${tglLain(tglRentang())}</b></div>`
-    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB${per ? ", dijumlah per hari" : ""}. Bukan angka regu darat"><b>${per ? (pkBln().length ? blnPilih.map(namaBln).join(", ") : pkRentang().map(i => tglLain(S.pk.hari[i])).join(" – ")) : (l => (l === "Hari ini" || l === "Kemarin" ? l + ", " : "") + tglLain(S.pk.hari[pkHari()]) + (S.pk.hari[pkHari()] < tglRentang() ? " (hari utuh terakhir)" : ""))(labelHari(S.pk.hari[pkHari()]))}</b></div>`;
+    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB${per ? ", dijumlah per hari" : ""}. Bukan angka regu darat"><b>${per ? (pkBln().length ? blnPilih.map(namaBln).join(", ") : pkRentang().map(i => tglLain(S.pk.hari[i])).join(" – ")) : (t => (l => l === "Hari ini" || l === "Kemarin" ? l + ", " : "")(labelHari(t)) + tglLain(t) + (t < tglRentang() ? " (hari utuh terakhir)" : ""))(pkTgl(u))}</b></div>`;
   const pilPeriode = u === "luas" ? `<div class="seg penuh" role="group" aria-label="Periode luas terbakar" id="periode">${[["hari", "Sehari"], ["7", "7 hari"], ["30", "30 hari"], ["th", "Tahun ini"]].map(([v, n]) => `<button data-per="${v}" aria-pressed="${S.periode === v}">${n}</button>`).join("")}<details class="rt-lain rt-bln${blnPilih.length ? " on" : ""}"><summary aria-label="Pilih bulan">${blnPilih.length === 1 ? namaBln(blnPilih[0]) : blnPilih.length ? blnPilih.length + " bulan" : "Bulan"}</summary><div class="rt-pop">${bulan.map(b => `<label><input type="checkbox" value="${b}"${blnPilih.includes(b) ? " checked" : ""}>${namaBln(b)}</label>`).join("")}<button type="button" data-per-bln>Terapkan</button></div></details></div>` : "";
   /* judul kolom disingkat saat panel sempit (container query #rows); kepanjangannya disebut di sini */
   const chip = (k, w, s, l) => `<span class="lg-c" style="--w:${w}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${k}</svg><b>${s}</b>${l}</span>`;
@@ -2724,7 +2728,7 @@ $("#rows").addEventListener("click", e => { const rn = e.target.closest("[data-r
   const uk = e.target.closest("[data-uk]");
   if (uk) { S.ukur = uk.dataset.uk; uk.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === uk));   /* chrome dulu, data & daftar menyusul */
     return nanti(async () => {
-      if (S.ukur !== "hot" && S.ukur !== "kl" && !S.pk) S.pk = await muatJSON("data/peta_karhutla.json").catch(() => null);
+      if (S.ukur !== "hot" && S.ukur !== "kl" && !S.pk) [S.pk, S.pkKini] = await Promise.all([muatJSON("data/peta_karhutla.json").catch(() => null), muatJSON("data/belum_kini.json").catch(() => null)]);
       if (S.ukur !== "hot" && S.ukur !== "kl" && !S.pk) { S.ukur = "hot"; toast("Data luas terbakar belum bisa dimuat"); }
       await Peta.aturWilayah(false); renderLegenda(); }); }
   const kol = e.target.closest(".kepala span[data-s]");

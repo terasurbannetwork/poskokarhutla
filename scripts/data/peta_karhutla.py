@@ -709,6 +709,40 @@ def hari_lengkap_terakhir(sekarang):
     return (sekarang - LATENSI).astimezone(WIB).date() - HARI
 
 
+SIANG = (210, 480)                         # menit UTC lintasan siang NOAA-20/21 di atas Indonesia (13.30 waktu setempat = 03.30-08.00 UTC)
+SIANG_SIAP = dt.time(9, 30)                # FIRMS NRT terlambat ~3 jam: sesudah 09.30 UTC (16.30 WIB) lintasan siang dianggap sudah lengkap
+
+
+def siang_masuk(rec):
+    """True bila rekaman hari UTC (sebagian) memuat deteksi n/h NOAA-20 DAN NOAA-21 dari lintasan siang."""
+    return {s for m, s in zip(rec["m"], rec["s"]) if SIANG[0] <= m <= SIANG[1]} == {0, 1}
+
+
+def belum_kini(rek, hd, akhir, sekarang, kunci, ket, wil, log=print):
+    """Belum padam HARI INI (WIB) per provinsi, rumus sama dengan hitung(). Belum padam adalah stok, jadi layar memakai hari ini begitu kedua lintasan NOAA
+    hari ini (malam 01.30 dan siang 13.30 waktu setempat) sudah masuk. Barat dan tengah (< ~127,5 BT) sudah final; Maluku, Malut, dan Papua masih kurang lintasan malam
+    penutup hari WIB (15-17 UTC, ~1/3 deteksi timur) sampai hari utuh menggantikannya. Pemilik memilih tetap tampil apa adanya (27 Okt 2026).
+    -> {"hari", "dibuat", "prov": {kode: ha}} atau None (belum sore, hari kemarin belum utuh, atau lintasan siang belum ada). Hari UTC ini tidak masuk cache."""
+    d = sekarang.astimezone(WIB).date()
+    if akhir != d - HARI or sekarang < dt.datetime.combine(d, SIANG_SIAP, UTC):
+        return None
+    baris, ok = unduh(d, d, kunci, ambil_pelan, BBOX, ket, famili=("VIIRS_NOAA20", "VIIRS_NOAA21"))
+    if ok.get(d) != {"VIIRS_NOAA20", "VIIRS_NOAA21"}:
+        log(f"peta_karhutla: belum hari ini dilewati, unduhan {d} tak utuh")
+        return None
+    rec = rekam(baris, wil, sekarang.isoformat(timespec="seconds"), titik_palsu.sel_industri()[0]).get(d.isoformat()) or baru_rekaman(sekarang.isoformat())
+    if not siang_masuk(rec):
+        log(f"peta_karhutla: belum hari ini dilewati, lintasan siang {d} belum masuk")
+        return None
+    rec["src"] = {}
+    rek = {**rek, d.isoformat(): rec}
+    for x in (d - 2 * HARI, d - HARI):
+        hd.setdefault(x, hari_data(rek, x))
+    hd = {**hd, d: hari_data(rek, d)}
+    return {"hari": d.isoformat(), "dibuat": sekarang.astimezone(WIB).isoformat(timespec="minutes"),
+            "prov": {k: bul(v[2]) for k, v in hitung(hd, d).items()}}
+
+
 def bangun(argv, sekarang=None, log=print):
     opsi = {a: argv[i + 1] for i, a in enumerate(argv) if a.startswith("--") and i + 1 < len(argv) and not argv[i + 1].startswith("--")}
     sekarang = sekarang or dt.datetime.now(UTC)
@@ -781,6 +815,15 @@ def bangun(argv, sekarang=None, log=print):
     periksa_wil(isi_w, isi)
     for berkas, muatan in ((jw, isi_w), (jalur_kab, isi_kab), (jalur, isi)):   # provinsi terakhir: bila gagal di tengah, JSON provinsi lama memaksa bangun ulang
         tulis(berkas, muatan)
+    if "--akhir" not in opsi:
+        try:
+            kini = belum_kini(rek, hd, akhir, sekarang, kunci, ket, wil, log)
+        except Exception as e:   # tambahan: gagal = layar tetap memakai hari utuh terakhir
+            kini = None
+            log(f"peta_karhutla: belum hari ini gagal ({type(e).__name__}: {e})")
+        if kini:
+            tulis(os.path.join(os.path.dirname(jalur), "belum_kini.json"), kini)
+            log(f"peta_karhutla: belum hari ini {kini['hari']} = {sum(kini['prov'].values())} ha")
     nas = isi["nasional"]
     log(f"peta_karhutla: {len(isi['hari'])} hari ({isi['hari'][0]}..{isi['hari'][-1]}), faktor N20 {F20} N21 {F21}, celah {len(isi['celah'])} hari ({len(isi['celah_turunan'])} turunan), "
         f"hot {nas['hot'][-1]} luas {nas['luas'][-1]} belum {nas['belum'][-1]} padam {nas['padam'][-1]} pada {isi['hari'][-1]}, cutoff {cutoff}; "
@@ -1108,6 +1151,21 @@ def uji_geo():
     return jumlah
 
 
+def uji_kini(baris, wil, rek, hd, baru):
+    """belum_kini() atas unduhan NOAA-20/21 hari UTC 20 Okt (fikstur) = belum hari utuh 20 Okt per provinsi; sebelum 09.30 UTC atau kemarin belum utuh = None."""
+    global unduh
+    d, asli = dt.date(2026, 10, 20), unduh
+    noaa = [(s, r) for s, r in baris if r["acq_date"] == d.isoformat() and r["satellite"] in ("N20", "N21")]
+    unduh = lambda *a, **k: (noaa, {d: {"VIIRS_NOAA20", "VIIRS_NOAA21"}})
+    try:
+        jalan = lambda jam, akhir=d - HARI: belum_kini(rek, dict(hd), akhir, dt.datetime.combine(d, jam, UTC), "", {}, wil, log=lambda *_: None)
+        assert jalan(dt.time(9, 0)) is None and jalan(dt.time(12, 0), d - 2 * HARI) is None, "belum hari ini sebelum lintasan siang lengkap"
+        k = jalan(dt.time(12, 0))
+        assert k["hari"] == d.isoformat() and k["prov"] == {p: bul(v[2]) for p, v in baru[d.isoformat()].items()}, "belum hari ini != belum hari utuh"
+    finally:
+        unduh = asli
+
+
 def uji_deck():
     """(a) 18-20 Okt 2026 sama dengan angka_nasional.json deck untuk 38 provinsi x 4 metrik; (b) invarian; (c) 20 Okt bertanda celah."""
     tar, ref = os.path.join(FIKSTUR, "firms-raw-15-21okt.tar.gz"), os.path.join(FIKSTUR, "angka_nasional.json")
@@ -1129,6 +1187,7 @@ def uji_deck():
         d = dt.date(2026, 10, i)
         baru_kab[d.isoformat()] = {}
         baru[d.isoformat()] = hitung(hd, d, baru_kab[d.isoformat()])
+    uji_kini(baris, wil, rek, hd, baru)
     for i in (18, 19, 20):   # jumlah kecamatan = kabupaten = provinsi sebelum pembulatan, tiap metrik, 38 provinsi
         d = dt.date(2026, 10, i)
         rw, rp = hitung_wil(hd, d), baru[d.isoformat()]
