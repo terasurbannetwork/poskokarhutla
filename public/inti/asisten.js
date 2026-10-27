@@ -107,7 +107,8 @@ const gazetteer = async () => {
 const cariWilayah = (teks, g) => { const q = ` ${norm(teks)} `; return g.daftar.find(e => q.includes(` ${e.v} `)) || null; };
 
 /* ===== Penjawab ===== */
-const tautan = (h, t) => `<a href="${h}">${esc(t)}</a>`;
+const tglID = t => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(String(t || "")); return m ? `${+m[3]} ${["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"][+m[2] - 1]} ${m[1]}` : esc(t); };
+const tautan = (h, t) => `<a href="${/^(\/|https?:\/\/)/.test(h) ? esc(h) : "#"}">${esc(t)}</a>`;
 const sumber = (...b) => `<p class="as-sb">Sumber: ${b.join("; ")}</p>`;
 const baris = (...p) => p.filter(Boolean).map(x => `<p>${x}</p>`).join("");
 const TIDAK_TAHU = `<p>Maaf, saya tidak punya jawaban untuk itu. Saya hanya menjawab dari data yang ada di situs ini. Coba salah satu pertanyaan di bawah, atau buka ${tautan("/semua", "beranda semua bencana")}.</p>`;
@@ -159,7 +160,7 @@ async function ringkasWilayah(e, g) {
   const hari = hariIni(), kodeSk = s => String(s.kab_kode || "").replace(/\D/g, ""), provSk = s => kodeSk(s).startsWith(e.kode) || norm(s.prov) === norm(provNama);
   const sk = (dar?.sk || []).filter(s => s.mulai <= hari && hari <= (s.berakhir || "9999") && provSk(s) && (!kab || cocok(s.kab)));
   if (dar && sk.length) {
-    isi.unshift(`<b>Status darurat berlaku:</b> ` + sk.slice(0, 5).map(s => `${esc(s.status)}${s.jenis ? " " + esc(s.jenis) : ""}${!kab && s.kab ? " di " + esc(s.kab) : ""}, ${esc(s.mulai)} sampai ${esc(s.berakhir || "belum ditentukan")}${s.nomor ? ", SK " + esc(s.nomor) : ""}${/^https?:\/\//.test(s.tautan || "") ? ` ${tautan(esc(s.tautan), "dokumen")}` : ""}`).join("; ") + (sk.length > 5 ? `, dan ${sk.length - 5} lainnya` : "") + ".");
+    isi.unshift(`<b>Status darurat berlaku:</b> ` + sk.slice(0, 5).map(s => `${esc(s.status)}${s.jenis ? " " + esc(s.jenis) : ""}${!kab && s.kab ? " di " + esc(s.kab) : ""}, ${tglID(s.mulai)} sampai ${s.berakhir ? tglID(s.berakhir) : "belum ditentukan"}${s.nomor ? ", SK " + esc(s.nomor) : ""}${/^https?:\/\//.test(s.tautan || "") ? ` ${tautan(s.tautan, "dokumen")}` : ""}`).join("; ") + (sk.length > 5 ? `, dan ${sk.length - 5} lainnya` : "") + ".");
     src.push("status darurat dari SK yang tercatat");
   }
   if (!isi.length) return baris(`Saya tidak bisa membaca data status untuk ${esc(lokasi)} saat ini.`) + baris("Coba lagi nanti, atau buka " + tautan("/semua", "beranda semua bencana") + ".");
@@ -227,7 +228,7 @@ function tambah(kelas, html, teks) {
   el.log.scrollTop = el.log.scrollHeight;
   return d;
 }
-const sambut = () => tambah("as-b", baris("Halo, saya asisten Pantau Bencana. Saya menjawab hanya dari data yang ada di situs ini, lengkap dengan sumber dan waktunya. Pilih pertanyaan atau ketik sendiri."));
+const sambut = () => tambah("as-b", baris("Halo, saya asisten Centurisk97. Saya menjawab hanya dari data yang ada di situs ini, lengkap dengan sumber dan waktunya. Pilih pertanyaan atau ketik sendiri."));
 
 function mintaLokasi() {
   const m = tambah("as-b", baris("Untuk mencari titik api terdekat saya perlu lokasimu. Lokasi hanya dipakai di peramban ini dan tidak dikirim ke mana pun.") + `<div class="as-aksi"><button type="button" data-lokasi="1">Pakai lokasi saya</button></div><p>Atau ketik nama kabupaten, kota, atau provinsi.</p>`);
@@ -293,8 +294,8 @@ function pasang() {
   const w = document.createElement("div");
   w.className = "as-w"; w.setAttribute("translate", "no");
   w.innerHTML = `<button type="button" class="as-fab" aria-label="Buka asisten tanya-jawab" aria-expanded="false" aria-controls="as-panel" title="Tanya asisten">${ikon}</button>
-<section class="as-panel" id="as-panel" role="dialog" aria-label="Asisten tanya-jawab Pantau Bencana" hidden>
-  <header class="as-hd"><b>Asisten Pantau Bencana</b><button type="button" class="as-x" aria-label="Tutup asisten">&times;</button></header>
+<section class="as-panel" id="as-panel" role="dialog" aria-label="Asisten tanya-jawab Centurisk97" hidden>
+  <header class="as-hd"><b>Asisten Centurisk97</b><button type="button" class="as-x" aria-label="Tutup asisten">&times;</button></header>
   <div class="as-log" role="log" aria-live="polite" tabindex="0"></div>
   <div class="as-saran">${SARAN.map(([t, q]) => `<button type="button" data-q="${esc(q)}">${esc(t)}</button>`).join("")}</div>
   <form class="as-f" autocomplete="off"><input type="text" class="as-in" maxlength="200" placeholder="Tanya, mis. banjir di Demak" aria-label="Ketik pertanyaan"><button type="submit" class="as-k">Kirim</button></form>

@@ -13,7 +13,7 @@ const tempat = k => k.skala === "provinsi" || !k.kab ? `Provinsi ${k.prov}` : k.
 const pil = (t, w) => `<span class="pl" style="--w:${w || ABU}">${esc(t)}</span>`;
 export const masa = (k, h) => { const sisa = k.berakhir && berlaku(k, h) ? beda(k.berakhir, h) : null;
   return `${k.berakhir ? `berlaku ${tglID(k.mulai)} sampai ${tglID(k.berakhir)}` : `berlaku sejak ${tglID(k.mulai)}, belum ada tanggal berakhir`}${sisa != null ? `, sisa ${fmt(sisa)} hari` : ""}`; };
-const tautan = k => { const u = escUrl(k.tautan); return u === "#" ? "" : `<a href="${u}" target="_blank" rel="noopener">Lihat SK</a>`; };
+const tautan = k => { const u = escUrl(k.tautan); return u === "#" ? "" : `<a href="${u}" target="_blank" rel="noopener noreferrer">Lihat SK</a>`; };
 
 export function popupHTML(k, h) {
   return `<b translate="no">${esc(tempat(k))}</b><br>${pil(k.status, WARNA[k.status])}<br>${esc(k.jenis)}${k.klasifikasi ? `, ${esc(k.klasifikasi)}` : ""}<br>SK ${esc(k.nomor)}<br>${esc(masa(k, h))}${tautan(k) ? `<br>${tautan(k)}` : ""}`;

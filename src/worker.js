@@ -9,10 +9,11 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanSosmed, halamanKunciApi, halamanKontak} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak} from "./admin_halaman.js";
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
+import {RUTE_FOTO_LABEL} from "./foto_label.js";
 import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
 import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
@@ -547,6 +548,8 @@ const RUTE = {
     return terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL("/index.html", url), req)), await ogFoto(env, url, id).catch(() => null)); },
   "GET /admin/sosmed": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanSosmed()),
   ...RUTE_FOTO,
+  ...RUTE_FOTO_LABEL,   // label kerusakan foto oleh manusia, admin saja (src/foto_label.js)
+  "GET /admin/labelfoto": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanLabelFoto()),
   ...RUTE_SOSMED,
   ...RUTE_POSKO,
   ...RUTE_SITREP,   // arsip sitrep harian (src/sitrep.js)

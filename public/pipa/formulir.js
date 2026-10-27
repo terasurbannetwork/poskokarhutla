@@ -116,7 +116,7 @@ export const JENIS_TABEL = { log: "sippa_log_gelar", probe: "sippa_probe", bbm: 
    sippa_inspeksi lewat butirInspeksi di src/sippa.js. Kit tugas ditentukan server (kit_id dari klien ditolak). Uji membandingkan dengan 0059 dan src/sippa.js. */
 export const INSPEKSI_LAPANGAN = {
   jenis: ["pra_gelar", "pasca_gelar"], sasaran_jenis: ["komponen", "kit"],
-  tindakan: ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan"],
+  tindakan: ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan", "tunggu_suku_cadang"],
 };
 export const TINDAKAN_TUNGGU = "tunggu_suku_cadang";
 const MEDAN_INSPEKSI = daftar(
@@ -127,7 +127,7 @@ const MEDAN_INSPEKSI = daftar(
   bulat("skor", "Skor kondisi", 0, 3, { wajib: true }),
   angka("jam_operasi", "Jam operasi", 0, 100000),
   teks("temuan", "Temuan", null, 1000),
-  pilih("tindakan", "Tindakan", [...INSPEKSI_LAPANGAN.tindakan, TINDAKAN_TUNGGU]),   // SP-131: tunggu_suku_cadang (CHECK di migrasi 0070; INSPEKSI_LAPANGAN.tindakan tetap = 0059)
+  pilih("tindakan", "Tindakan", INSPEKSI_LAPANGAN.tindakan),   // termasuk tunggu_suku_cadang (SP-131, CHECK di migrasi 0070)
   waktu("waktu_klien", "Waktu catat"),
 );
 export const cekInspeksiLapangan = butir => cekButir("inspeksi", butir);

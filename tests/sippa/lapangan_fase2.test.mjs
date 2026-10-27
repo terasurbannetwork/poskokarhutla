@@ -102,11 +102,11 @@ test("urutan kerja renlap: sembilan langkah kode a-z0-9_ sah di server; lima tah
   assert.deepEqual(F.TAHAP_FOTO.map(t => t[0]), S.TAHAP_FOTO); assert.deepEqual(F.JENIS_FASE2, S.JENIS_LAP);
 });
 
-test("inspeksi tunggu_suku_cadang: sah di form inspeksi lapangan; INSPEKSI_LAPANGAN.tindakan lama tidak berubah; tindakan liar tetap ditolak", () => {
+test("inspeksi tunggu_suku_cadang: sah di form inspeksi lapangan; tindakan terdaftar; tindakan liar tetap ditolak", () => {
   const dasar = {id: "0".repeat(16), jenis: "pasca_gelar", sasaran_jenis: "komponen", sasaran_id: "0123456789abcdef", skor: 2};
   assert.equal(F.cekButir("inspeksi", {...dasar, tindakan: "tunggu_suku_cadang"}).ok, true);
   assert.equal(F.cekButir("inspeksi", {...dasar, tindakan: "bakar"}).ok, false);
-  assert.ok(!F.INSPEKSI_LAPANGAN.tindakan.includes("tunggu_suku_cadang"));
+  assert.ok(F.INSPEKSI_LAPANGAN.tindakan.includes("tunggu_suku_cadang"));
   const b = L.bangunInspeksi({jenis: "pasca_gelar", nilai: [{sasaran_jenis: "komponen", sasaran_id: "0123456789abcdef", kode_bom: "P-101", skor: 2}, {sasaran_jenis: "komponen", sasaran_id: "fedcba9876543210", kode_bom: "SF-101", skor: 0}],
     tunggu: new Set(["0123456789abcdef", "fedcba9876543210"])}, KINI);
   assert.equal(b[0].tindakan, "tunggu_suku_cadang"); assert.equal("tindakan" in b[1], false, "komponen baik tidak menunggu suku cadang");

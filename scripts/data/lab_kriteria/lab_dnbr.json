@@ -1,0 +1,34 @@
+{
+ "catatan": "Kriteria LAB luas terbakar dari citra Sentinel-2 (dNBR). Ditulis SEBELUM ada hasil nyata dan tanpa melihatnya. Mengubah berkas ini mengubah kriteria_sha di public/data/lab/dnbr.json. Bukan produksi.",
+ "kotak": {
+  "km": 6, "n": 300, "maks_kotak": 60, "benih": 20261028,
+  "sel_derajat": 0.054, "titik_min_tinggi": 30, "titik_min_sedang": 8,
+  "per_provinsi_per_strata": 4, "jendela_titik": ["2019-07-01", "2019-12-31"],
+  "titik_sumber": "FIRMS VIIRS S-NPP 2019 (viirs_2019.csv), keyakinan n/h, type 0; M0 = titik di kotak dalam jendela [tgl pra, tgl pasca] x 4,3 ha",
+  "pemilihan": "kotak 6x6 km dipilih dari sel titik panas 2019 (bukan dari kluster 2026: acuan independen hanya ada untuk 2019), bergilir antar provinsi, tak saling tumpang, diproses urutan acak berseed"
+ },
+ "adegan": {
+  "pra": ["2019-05-15", "2019-07-15"], "pasca": ["2019-10-20", "2019-12-31"],
+  "awan_maks_pct": 30, "cakupan_min_pct": 60, "kandidat_maks": 4,
+  "pita": "NBR = (B8A - B12)/(B8A + B12) lewat konsesi_citra_jelas.sampel (B8A 20 m; masker SCL awan/bayangan/air/kosong dilebarkan 1 piksel)"
+ },
+ "dnbr": {
+  "usgs": {"rendah": 0.1, "sedang": 0.27, "tinggi": 0.44},
+  "usgs_utama": "sedang",
+  "grid_kalibrasi": [0.05, 0.1, 0.15, 0.2, 0.27, 0.35, 0.44, 0.55, 0.7],
+  "kalibrasi": "leave-one-provinsi-out (LOPO): ambang dipilih dari kotak provinsi lain meminimalkan median |ln| galat; diterapkan ke provinsi yang ditahan. Hanya satu tahun acuan (2019), jadi LOYO tidak mungkin.",
+  "luas": "piksel dNBR > ambang pada piksel valid, dibagi piksel valid, dikali luas kotak (ekstrapolasi); 1 piksel = 20 m = 400 m2"
+ },
+ "acuan": {
+  "dipakai": "gaveau_2019",
+  "sumber": "Gaveau dkk. 2021 ESSD 13:5353, Zenodo 4551243 (poligon Sentinel-2, 2019), dirasterkan ke grid kotak (scanline even-odd)",
+  "tidak_dipakai": {"gfed5": "netCDF4 tidak terpasang; GFED5 0,25 derajat tak sebanding dengan kotak 6 km", "sipongi_gwis": "per provinsi-tahun, bukan per kotak; tidak dapat menilai kotak"},
+  "independensi": "Gaveau juga berbasis Sentinel-2 (metode berbeda): independen metode, BUKAN independen sensor"
+ },
+ "uji": {
+  "eps_ha": 5.0, "min_kotak_dinilai": 15, "min_provinsi": 3, "bootstrap_ulang": 2000, "bootstrap_benih": 20261029, "tingkat_ci": 0.9,
+  "metrik": "galat = ln((pred+eps)/(acuan+eps)) per kotak; skor = median |galat|",
+  "pembanding_wajib": "M0 (titik x 4,3 ha); M1 dilaporkan bila ada (saat ini tidak ada keluaran M1 per kotak)",
+  "lolos": "varian LOPO: median |galat| < M0 DAN batas bawah CI90 bootstrap-kotak dari median(|galat M0| - |galat LOPO|) > 0 DAN n kotak dinilai >= min_kotak_dinilai DAN provinsi >= min_provinsi. Varian USGS 0,27 dilaporkan dengan kriteria sama tetapi tidak menentukan vonis. Tak dapat dinilai = TIDAK lolos."
+ }
+}

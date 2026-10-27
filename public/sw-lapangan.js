@@ -7,7 +7,7 @@
    - Peta luring: cache "pb-peta-luring" diisi lapangan_tugas.js ("Simpan peta area ini"); di sini hanya DIBACA (cache-first untuk tiles.openfreemap.org) dan TIDAK ikut dibersihkan saat versi naik.
    Naikkan VERSI bila logika berubah; cache cangkang/API versi lama dihapus saat aktif. */
 "use strict";
-const VERSI = 3, CANGKANG = `pb-lapangan-cangkang-v${VERSI}`, API = `pb-lapangan-api-v${VERSI}`, PETA = "pb-peta-luring-v1";
+const VERSI = 4, CANGKANG = `pb-lapangan-cangkang-v${VERSI}`, API = `pb-lapangan-api-v${VERSI}`, PETA = "pb-peta-luring-v1";
 const TAWAR_MS = {halaman: 4000, api: 7000};
 const JALUR_API = new Set(["/api/lapangan/saya", "/api/lapangan/tugas", "/api/lacak/info", "/api/sippa/lapangan/saya"]);
 const KUNCI_KREDENSIAL = {"/api/lapangan/saya": "x-kode-regu", "/api/lapangan/tugas": "x-kode-regu", "/api/lacak/info": "x-lacak", "/api/sippa/lapangan/saya": "x-kode"};
