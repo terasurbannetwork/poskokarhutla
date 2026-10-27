@@ -152,7 +152,7 @@ Urutan baris = urutan pengambilan yang disarankan. Gelombang: lihat §5. Status:
 | SP-063 | Registri angka `sippa_angka.py` | `pipa-data` | 9 | M | belum |
 | SP-064 | Gambar peta dan grafik buku | `pipa-data` | 10 | M | belum |
 | SP-065 | Gambar teknik SIPPA-G-01 s.d. G-06 | `pipa-data` | 5 | L | belum |
-| SP-066 | Gambar teknik SIPPA-G-07 s.d. G-12 | `pipa-data` | 9 | L | belum |
+| SP-066 | Gambar teknik SIPPA-G-08 s.d. G-12 (G-07 dicabut) | `pipa-data` | 9 | L | belum |
 | SP-067 | Surat permintaan data (Lampiran I, 13 surat) | `penulis-kajian` | 9 | M | belum |
 | SP-068 | Naskah bab 1–3, 5–6 | `penulis-kajian` | 11 | L | belum |
 | SP-069 | Naskah bab 7–10 | `penulis-kajian` | 11 | L | belum |
@@ -945,7 +945,7 @@ Perintah bersama (dari `data/kajian-bnpb/`): kontrak `python3 bangun/kontrak/nas
 
 #### SP-066 Gambar teknik SIPPA-G-07 s.d. G-12 dan diagram buku
 - **Berkas:** `data/kajian-bnpb/bangun/visual/teknik/rumah_pompa.mjs` (G-07), `profil.mjs` (G-08), `pid.mjs` (G-09, G-10), `zona.mjs` (G-11, membaca aturan `saranSarana` dari `public/pipa/hitung.js`), `petak.mjs` (G-12), diagram buku `lapis.mjs`, `siklus.mjs`, `penampang.mjs`, `alur.mjs`, `lembaga.mjs`, `gerbang.mjs`, `alur_data.mjs`; keluaran `data/kajian-bnpb/gambar/sippa/teknik/SIPPA-G-07..12.png` dan `.pdf`.
-- **Tujuan:** rumah pompa panggung (koridor, bila dibuka), profil trase, modul banjir GA dan P&ID, skema telemetri dan daya, diagram zona dan alur keputusan sarana (identik `saranSarana`), tata letak petak A/B dan grid probe; diagram bab KB §4.
+- **Tujuan:** G-07 dicabut (keputusan 60); profil trase, modul banjir GA dan P&ID, skema telemetri dan daya, diagram zona dan alur keputusan sarana (identik `saranSarana`), tata letak petak A/B dan grid probe; diagram bab KB §4.
 - **Pengerja / pemeriksa:** `pipa-data` / `general-purpose` baru.
 - **Model:** sonnet.
 - **Dependensi:** SP-065, SP-030 (`saranSarana`). **Paralel dengan:** SP-061, SP-063, SP-067. **Isolasi:** worktree ya.

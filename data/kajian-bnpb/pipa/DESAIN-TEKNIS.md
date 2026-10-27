@@ -832,7 +832,7 @@ BEGIN
 END;
 ```
 
-Atribut per kelas divalidasi `SippaPelihara.cekAset(kelas, atribut)` di rute (pesan galat menyebut medan); skema hanya menjaga bentuk objek dan aturan Q10: `sumur_bor` `{kedalaman_m, debit_lps, cat_kode, zona_konservasi, rekomendasi_bg, pengelola, serah_terima}`; `pompa_sumur` `{kw, sumber_daya}`; `pipa_sementara` `{dn_mm, panjang_m, bahan}`; `tandon_hidran` `{kapasitas_l}`; `pipa_koridor` `{od_mm, sdr, panjang_m}`; `jembatan_darurat` `{jenis ("bailey"|"rangka_baja"|"lain"), bentang_m, beban_ton, program}`; `jembatan_permanen` `{jenis, bentang_m, program, nilai_kondisi_pemilik}`.
+Atribut per kelas divalidasi `SippaPelihara.cekAset(kelas, atribut)` di rute (pesan galat menyebut medan); skema hanya menjaga bentuk objek dan aturan Q10: `sumur_bor` `{kedalaman_m, debit_lps, cat_kode, zona_konservasi, rekomendasi_bg, pengelola, serah_terima}`; `pompa_sumur` `{kw, sumber_daya}`; `pipa_sementara` `{dn_mm, panjang_m, bahan}`; `tandon_hidran` `{kapasitas_l}`; `pipa_koridor` dicabut (keputusan 60, ditolak rute); `jembatan_darurat` `{jenis ("bailey"|"rangka_baja"|"lain"), bentang_m, beban_ton, program}`; `jembatan_permanen` `{jenis, bentang_m, program, nilai_kondisi_pemilik}`.
 
 ### 3.5 Idempotensi
 
@@ -1202,7 +1202,7 @@ Sumber: `~/Downloads/Karhutla_Decision_Dashboard.html` (119.474 byte) disalin ke
 1. Pembungkus: tidak ada `localStorage` di mesin (mesin memang tidak memakainya; penyimpanan ada di bagian UI pemilik yang tidak disalin). Tetap skrip klasik: dimuat `<script>` di layar, `importScripts` di Web Worker, `vm` di Node (pola tests/warga/regu_luring.test.mjs:5).
 2. `gerbangSippa(state, hasil)` dijalankan sesudah `assess`, hanya **menambah** butir ke `hasil.hard` dan `hasil.conditional`, lalu `decision` dihitung ulang dengan aturan mesin (ada hard = NO-GO). Butir:
    - H-SERAP dan H-DALAM hanya untuk keadaan yang punya blok `state.sippa = {n_lance, dalam_m, koridor}` (preset S0, S0B, skenario SIPPA pengguna). Preset pemilik S1–S3 adalah jaringan hidran tanpa lance; menerapkan H-SERAP ke sana akan membuat semuanya NO-GO karena debit 2.000 L/min (butir teknis BT-01, §9.2).
-   - `jaringan_permanen`: `state.strategy === "backbone" && (state.sippa?.koridor ?? 1) > 2` → hard; S3 selalu membawa catatan "ditutup sampai G5".
+   - `jaringan_permanen`: `state.strategy === "semi" || state.strategy === "backbone"` → hard (keputusan 60); S2 dan S3 hanya pembanding.
    - H-AIR faktor 1,5: `hasil.hyd.availableLPMin < 1,5 x state.flowLPM` → conditional.
 3. Perbaikan teks G23 tanpa mengubah angka: hitungan dimensi dari skema (32/100), nama item `ELEC`/`GEN`, harga heli Rp130 juta/jam diganti slot `sippa.heli.biaya_jam` berstatus `menunggu`.
 
@@ -1257,7 +1257,7 @@ Modul murni kedua, pola `hitung.js` (ES module tanpa DOM, `globalThis.SippaPelih
 | --- | --- |
 | `KELAS` | `{K1..K10: {nama, interval:{tiap_pakai:bool, hari:{jenis:n}, jam:{jenis:n}}, laju_biaya, pemelihara_t1, pemelihara_t2}}` dengan nilai PRD §6.10.2 dan §6.10.7 |
 | `KELAS_BOM` | `{P:"K1", E:"K1", H:"K2", ST:"K2", M:"K3", C:"K3", V:"K3", SF:"K3", I:"K3", G:"K3", FT:"K4", PT:"K4", LT:"K4", T:"K4", GWT:"K4", U:"K4", Q:"K5", S:"K5", B:"K5"}` |
-| `KELAS_ASET` | `{sumur_bor:"K7", pompa_sumur:"K7", pipa_sementara:"K8", tandon_hidran:"K8", pipa_koridor:"K6", jembatan_darurat:"K9", jembatan_permanen:"K10"}` |
+| `KELAS_ASET` | `{sumur_bor:"K7", pompa_sumur:"K7", pipa_sementara:"K8", tandon_hidran:"K8", jembatan_darurat:"K9", jembatan_permanen:"K10"}` |
 | `KRITIS` | `["K1","K2","K3"]` |
 | `kelasDari(kodeBom)` | awalan sebelum `-`, dicocokkan panjang dulu (`GWT` sebelum `G`, `ST`/`SF` sebelum `S`); tanpa padanan = `null` (uji menolak) |
 | `skorKeKondisi(s)` | 0 `baik`, 1 `rusak_ringan`, 2 `rusak_berat`, 3 `hilang` |

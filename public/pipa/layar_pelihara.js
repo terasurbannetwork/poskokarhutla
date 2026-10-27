@@ -11,7 +11,7 @@ export const STATUS_JADWAL = ["terlambat", "segera", "aman", "belum_pernah"];
 export const TEKS_STATUS = {terlambat: "Terlambat", segera: "Segera", aman: "Aman", belum_pernah: "Belum pernah"};
 export const SKOR_KATA = ["Baik", "Rusak ringan", "Rusak berat", "Hilang atau afkir"];
 const URUT_STATUS = {terlambat: 0, segera: 1, belum_pernah: 2, aman: 3};
-const NAMA_KELAS = {K1: "Pompa", K2: "Selang", K3: "Hidraulik", K4: "Sensor", K5: "APD", K6: "Koridor", K7: "Sumur", K8: "Pipa sementara", K9: "Jembatan darurat", K10: "Jembatan pantau"};
+const NAMA_KELAS = {K1: "Pompa", K2: "Selang", K3: "Hidraulik", K4: "Sensor", K5: "APD", K7: "Sumur", K8: "Pipa sementara", K9: "Jembatan darurat", K10: "Jembatan pantau"};
 const NAMA_BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 /* unit dilayani per kit gambut (PRD §6.1, BOM di src/sippa.js GAMBUT) untuk stok_min = ceil(laju x kit x satuan x (1 + 60/180)); kode di luar daftar tanpa minimum.
    Payload /api/sippa/pelihara tidak membawa jumlah per kit, jadi daftar ini asumsi-kebijakan sampai server mengirim BOM per gudang. */

@@ -187,7 +187,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
 <link href="/inti/kartu.css?v=1" rel="stylesheet">
 <link href="/inti/insight.css?v=1" rel="stylesheet">
-<link href="/pipa/pipa.css?v=5" rel="stylesheet">
+<link href="/pipa/pipa.css?v=6" rel="stylesheet">
 </head>
 <body data-staf="1" data-peran="${esc(ctx.peran.join(","))}" data-layar="${esc(layar)}" data-tulis="${ctx.tulis ? 1 : 0}" data-mod="${ctx.mod ? 1 : 0}" data-super="${ctx.super ? 1 : 0}" data-nama="${esc(ctx.nama || "")}">
 <div id="app"><p class="ad-redup">Memuat SIPPA…</p></div>
@@ -208,7 +208,7 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta name="robots" content="noindex,nofollow">
 <title>SIPPA Lapangan, Centurisk97</title>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
-<link href="/pipa/pipa.css?v=5" rel="stylesheet">
+<link href="/pipa/pipa.css?v=6" rel="stylesheet">
 </head>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>

@@ -127,13 +127,13 @@ test("satuanLapisan: sakelar kompleks dan sel hanya mengubah visibility, tanpa s
 });
 
 /* ---------- saringan dan daftar (P5) ---------- */
-const SEMUA = {zona: new Set(["A", "B", "C", "D"]), bakar3: false, gsw: new Set(["permanen", "musiman", "tak_terdeteksi"]), kab: "", cari: "", versi: "k"};
+const SEMUA = {zona: new Set(["A", "B", "C", "D"]), bakar: 0, tahunAkhir: 2025, gsw: new Set(["permanen", "musiman", "tak_terdeteksi"]), kab: "", cari: "", versi: "k"};
 test("saringKompleks: zona A konservatif 188, optimistis 469, tahun terbakar, GSW, kabupaten, dan kotak cari", () => {
   assert.equal(P.saringKompleks(komp, SEMUA, {}).length, 865);
   assert.equal(P.saringKompleks(komp, {...SEMUA, zona: new Set(["A"])}, {}).length, 188);
   assert.equal(P.saringKompleks(komp, {...SEMUA, zona: new Set(["A"]), versi: "o"}, {}).length, 469);
   assert.equal(P.saringKompleks(komp, {...SEMUA, zona: new Set()}, {}).length, 0);
-  assert.equal(P.saringKompleks(komp, {...SEMUA, bakar3: true}, {}).length, komp.filter(k => k.terbakar_n_2km >= 3).length);
+  assert.equal(P.saringKompleks(komp, {...SEMUA, bakar: 3}, {}).length, komp.filter(k => k.terbakar_akhir > 2022).length, "terbakar dalam 3 tahun terakhir = terbakar_akhir 2023 ke atas");
   assert.equal(P.saringKompleks(komp, {...SEMUA, gsw: new Set(["permanen"])}, {}).length, 120);
   assert.equal(P.saringKompleks(komp, {...SEMUA, kab: "Seruyan"}, {}).length, komp.filter(k => k.kab === "Seruyan").length);
   assert.deepEqual(P.saringKompleks(komp, {...SEMUA, cari: " k0008 "}, {}), ["K0008"], "id tanpa peduli huruf besar dan spasi");
@@ -193,12 +193,12 @@ test("saranHtml: sarana dan alasan berangka dari saranSarana, tautan Hitung, pil
 });
 
 /* ---------- legenda, daftar, formulir ---------- */
-test("legendaHtml: empat zona berhuruf, berpola, beserta arti dan jumlah; ukuran titik; sumber dan tanggal data; basi bila > 400 hari", () => {
-  const h = P.legendaHtml({A: 188, B: 418, C: 89, D: 170, n: 865}, {per: "2026-10-25", sumber: "OpenStreetMap (ODbL) via Overpass", versi: "Konservatif", kini: Date.parse("2026-10-26")}), t = teks(h);
+test("legendaHtml: empat zona berhuruf, berpola, beserta arti dan jumlah; ukuran titik; tanpa baris sumber; basi bila > 400 hari", () => {
+  const h = P.legendaHtml({A: 188, B: 418, C: 89, D: 170, n: 865}, {per: "2026-10-25", versi: "Konservatif", kini: Date.parse("2026-10-26")}), t = teks(h);
   for (const z of ["A", "B", "C", "D"]) { assert.ok(t.includes(z)); assert.match(h, new RegExp(`sp-pola-${z.toLowerCase()}`)); }
   for (const n of ["188", "418", "89", "170"]) assert.ok(t.includes(n));
-  assert.match(t, /Sumber: OpenStreetMap \(ODbL\) via Overpass/); assert.match(t, /25 Okt 2026/); assert.match(t, /0–2/); assert.doesNotMatch(h, /basi/);
-  assert.match(P.legendaHtml({A: 1, B: 0, C: 0, D: 0, n: 1}, {per: "2024-01-01", sumber: "x", versi: "k", kini: Date.parse("2026-10-26")}), /basi, per/);
+  assert.doesNotMatch(t, /Sumber/); assert.match(t, /0–2/); assert.doesNotMatch(h, /basi/);
+  assert.match(P.legendaHtml({A: 1, B: 0, C: 0, D: 0, n: 1}, {per: "2024-01-01", versi: "k", kini: Date.parse("2026-10-26")}), /basi, per/);
 });
 
 test("polaSvg: empat pola berbeda, SVG dekoratif", () => {
@@ -244,7 +244,7 @@ test("kerangkaPeta: bilah memuat satuan, chip zona A-D, terbakar 3 tahun, tiga G
   assert.match(h, /role="region" aria-label="Peta kelayakan kit"/);
   assert.match(h, /data-satuan="kompleks"/); assert.match(h, /data-satuan="sel"/);
   for (const z of "ABCD") assert.match(h, new RegExp(`data-zona="${z}"`));
-  assert.equal([...h.matchAll(/data-gsw="/g)].length, 3); assert.match(h, /data-saring="bakar3"/); assert.match(h, /aria-label="Cari kompleks"/); assert.match(h, /data-aksi="daftar"/);
+  assert.equal([...h.matchAll(/data-gsw="/g)].length, 3); assert.match(h, /data-saring="bakar"/); assert.match(h, /aria-label="Cari kompleks"/); assert.match(h, /data-aksi="daftar"/);
   assert.match(h, /Seruyan/); assert.doesNotMatch(h, /[—·]/);
 });
 

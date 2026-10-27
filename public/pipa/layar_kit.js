@@ -71,7 +71,7 @@ export const persenKehilangan = komp => {
 /* dibandingkan pada nilai yang TAMPIL (satu desimal): "5%" tidak pernah bersanding dengan "di bawah ambang"; tepat di ambang = mencapai (PRD: kehilangan harus < 5%) */
 export const tingkatKehilangan = p => { const r = p == null ? null : Math.round(p * 10) / 10; return r != null && r >= 20 ? "k15" : r != null && r >= 5 ? "u8" : "normal"; };
 export const komponenKurang = komp => komp.filter(x => x.kondisi === "hilang").length;
-const TINGKAT = {normal: "di bawah ambang U8 (5%)", u8: "mencapai ambang U8 (5%)", k15: "mencapai 20%: NO-GO koridor tetap (K-15)"};
+const TINGKAT = {normal: "di bawah ambang U8 (5%)", u8: "mencapai ambang U8 (5%)", k15: "mencapai 20% (ambang K-15): pengamanan kit ditinjau sebelum gelar berikut"};
 
 /* kartu judul daftar: "3 kit: 2 di gudang Palangka Raya, 1 di banjir Kapuas; kehilangan komponen musim ini 1,2%" */
 export function ringkasKit(kits, pct) {

@@ -39,10 +39,10 @@ test("P1 pelihara: awalan baru tanpa kelas membuat uji merah dengan nama awalann
   assert.deepEqual(tanpa, ["XYZ"]);
 });
 
-test("P1 pelihara: KELAS K1 sampai K10 lengkap, KELAS_BOM menunjuk kelas yang ada, KELAS_ASET menunjuk K6-K10, KRITIS K1-K3", () => {
-  assert.deepEqual(Object.keys(KELAS), ["K1", "K2", "K3", "K4", "K5", "K6", "K7", "K8", "K9", "K10"]);
+test("P1 pelihara: KELAS K1 sampai K10 tanpa K6 (koridor dicabut, keputusan 60), KELAS_BOM menunjuk kelas yang ada, KELAS_ASET menunjuk K7-K10, KRITIS K1-K3", () => {
+  assert.deepEqual(Object.keys(KELAS), ["K1", "K2", "K3", "K4", "K5", "K7", "K8", "K9", "K10"]);
   for (const [a, k] of Object.entries(KELAS_BOM)) assert.ok(KELAS[k], `awalan ${a} menunjuk kelas ${k} yang tidak ada`);
-  assert.deepEqual(Object.values(KELAS_ASET).sort(), ["K10", "K6", "K7", "K7", "K8", "K8", "K9"]);
+  assert.deepEqual(Object.values(KELAS_ASET).sort(), ["K10", "K7", "K7", "K8", "K8", "K9"]);
   assert.deepEqual(KRITIS, ["K1", "K2", "K3"]);
   for (const [k, v] of Object.entries(KELAS)) {
     assert.ok(v.nama && v.pemelihara_t1 && v.pemelihara_t2, `${k} tanpa nama atau pemelihara`);
@@ -52,11 +52,11 @@ test("P1 pelihara: KELAS K1 sampai K10 lengkap, KELAS_BOM menunjuk kelas yang ad
 });
 
 test("P1 pelihara: konstanta dikunci ke tabel tulis tangan DT §5.10 dan PRD §6.10 (mutasi angka harus merah)", () => {
-  assert.deepEqual(KELAS_ASET, {sumur_bor: "K7", pompa_sumur: "K7", pipa_sementara: "K8", tandon_hidran: "K8", pipa_koridor: "K6", jembatan_darurat: "K9", jembatan_permanen: "K10"});
+  assert.deepEqual(KELAS_ASET, {sumur_bor: "K7", pompa_sumur: "K7", pipa_sementara: "K8", tandon_hidran: "K8", jembatan_darurat: "K9", jembatan_permanen: "K10"});
   const hari = {K1: {berkala: 30, servis: 180, tahunan: 365}, K2: {uji_tekanan: 365}, K3: {pra_musim: 180, tahunan: 365}, K4: {pra_musim: 180, tahunan: 365}, K5: {berkala: 180, tahunan: 365},
-    K6: {berkala: 30, tahunan: 365}, K7: {berkala: 180, mutu_air: 180}, K8: {berkala: 7}, K9: {berkala: 30, tahunan: 365}, K10: {tahunan: 365}};
-  const jam = {K1: {servis: 50, overhaul: 500}, K7: {servis: 250}}, laju = {K1: 0.08, K2: 0.06, K3: 0.05, K4: 0.08, K5: 0.10, K6: 0.02, K7: 0.03, K8: 0, K9: 0.02, K10: 0};
-  const tiap = {K1: true, K2: true, K3: true, K4: true, K5: false, K6: false, K7: false, K8: true, K9: true, K10: false};
+    K7: {berkala: 180, mutu_air: 180}, K8: {berkala: 7}, K9: {berkala: 30, tahunan: 365}, K10: {tahunan: 365}};
+  const jam = {K1: {servis: 50, overhaul: 500}, K7: {servis: 250}}, laju = {K1: 0.08, K2: 0.06, K3: 0.05, K4: 0.08, K5: 0.10, K7: 0.03, K8: 0, K9: 0.02, K10: 0};
+  const tiap = {K1: true, K2: true, K3: true, K4: true, K5: false, K7: false, K8: true, K9: true, K10: false};
   for (const k of Object.keys(hari)) {
     assert.deepEqual(KELAS[k].interval.hari, hari[k], `hari ${k}`);
     assert.deepEqual(KELAS[k].interval.jam, jam[k] ?? {}, `jam ${k}`);
@@ -232,7 +232,7 @@ test("P6 stokMin: gasket kopling 20 unit pada waktu tunggu 60 hari = 3 (hitung t
 test("keCsv: satu baris per kelas K1-K10 tanpa em dash, deterministik, dan berkas CSV buku sama dengan keluaran modul", () => {
   const csv = keCsv();
   const baris = csv.trimEnd().split("\n");
-  assert.equal(baris.length, 11, `${baris.length} baris, harus kepala + 10 kelas`);
+  assert.equal(baris.length, 10, `${baris.length} baris, harus kepala + 9 kelas (K6 dicabut)`);
   assert.match(baris[0], /^kelas,nama,/);
   assert.equal(csv, keCsv());
   assert.ok(!/[—·]/.test(csv));

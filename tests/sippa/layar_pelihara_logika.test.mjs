@@ -148,7 +148,7 @@ test("kalender: dua belas bulan mulai bulan ini, pita musim karhutla Mei-Okt dan
 test("biayaKelas: tanpa harga dan jumlah = menunggu, laju tertulis per kelas; dengan harga = biayaTahun dengan laju kelas", () => {
   const d = data(), b0 = P.biayaKelas(d);
   assert.equal(b0.total, null); assert.equal(b0.keyakinan, "asumsi-kebijakan");
-  assert.equal(b0.kelas.length, 10);
+  assert.equal(b0.kelas.length, 9);   // K6 koridor dicabut (keputusan 60)
   assert.equal(b0.kelas.find(x => x.kelas === "K1").laju, KELAS.K1.laju_biaya); assert.equal(b0.kelas.find(x => x.kelas === "K1").biaya, null);
   assert.equal(b0.kelas.find(x => x.kelas === "K8").laju, 0, "K8 bukan beban BNPB");
   const dh = {...d, harga: {"P-101": 100e6, "C-101": 1e6}};
@@ -247,7 +247,7 @@ test("kontrolHtml: chip kelas tunggal (Semua menyala bila tanpa kelas) dan chip 
   const rows = P.susunJadwal(data(), KINI), semua = new Set(P.STATUS_JADWAL);
   const h = P.kontrolHtml(P.hitungChip(rows, {kelas: null, status: semua}), {kelas: null, status: semua});
   assert.ok(h.includes('data-kelas="semua" aria-pressed="true"')); assert.ok(h.includes('data-kelas="K1" aria-pressed="false"'));
-  assert.equal((h.match(/data-kelas="/g) || []).length, 11, "Semua + K1 sampai K10"); assert.equal((h.match(/data-status="/g) || []).length, 4);
+  assert.equal((h.match(/data-kelas="/g) || []).length, 10, "Semua + sembilan kelas (K6 dicabut)"); assert.equal((h.match(/data-status="/g) || []).length, 4);
   for (const t of ["Terlambat", "Segera", "Aman", "Belum pernah"]) assert.ok(h.includes(`${t} <span class="num jml">`), t);
   const k1 = P.kontrolHtml(P.hitungChip(rows, {kelas: "K1", status: new Set(["terlambat"])}), {kelas: "K1", status: new Set(["terlambat"])});
   assert.ok(k1.includes('data-kelas="K1" aria-pressed="true"')); assert.ok(k1.includes('data-kelas="semua" aria-pressed="false"'));

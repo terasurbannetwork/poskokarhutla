@@ -202,6 +202,22 @@
         "IP_SALT:garam-lokal"
       ],
       "port": 8805
+    },
+    {
+      "name": "pipa-uji",
+      "runtimeExecutable": "npx",
+      "runtimeArgs": [
+        "wrangler",
+        "dev",
+        "--local",
+        "--port",
+        "8791",
+        "--env-file",
+        ".dev.vars",
+        "--env-file",
+        "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/97ceb9e2-a06b-41b8-a855-d20a7aec52da/scratchpad/uji.vars"
+      ],
+      "port": 8791
     }
   ]
 }

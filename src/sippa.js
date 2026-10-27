@@ -1190,11 +1190,9 @@ export const PENGISI = {
   },
   /* tiga layar R4 (PRD §9.14, keputusan 56). Umur inspeksi dihitung dari c.kini karena jadwal dihitung terhadap hari ini, bukan terhadap periode yang terpampang.
      Kode AS-9001 s.d. 9013 tetap per baris (CHECK menjaga 9000 ke atas hanya dummy); satu pengisi = satu kelompok kelas, jadi dua layar tidak saling mengisi. */
-  async isiAsetPelihara(env, c) {   // pompa sumur, pipa koridor melekat ke SIPPA-903, tandon: jadwal K7, K6, K8 dengan umur berbeda
-    const kit = (await kitDummy(env))["SIPPA-903"];
-    return isiAsetDummy(env, c, ["pompa_sumur", "pipa_koridor", "tandon_hidran"], [
+  async isiAsetPelihara(env, c) {   // pompa sumur dan tandon: jadwal K7 dan K8 dengan umur berbeda (pipa koridor dicabut, keputusan 60)
+    return isiAsetDummy(env, c, ["pompa_sumur", "tandon_hidran"], [
       {kode: "AS-9011", kelas: "pompa_sumur", nama: "Pompa sumur dummy", sumber: "pemda", pemilik: "Pemda dummy", atribut: {kw: 7.5, sumber_daya: "genset"}, insp: [{jenis: "berkala", skor: 1, umur: 200, temuan: "Dummy: seal aus", tindakan: "perbaiki"}]},   // K7 180 hari: terlambat
-      {kode: "AS-9012", kelas: "pipa_koridor", nama: "Pipa koridor dummy K1", sumber: "bnpb_dsp", pemilik: "BNPB", kit_id: kit?.id ?? null, atribut: {od_mm: 160, sdr: 11, panjang_m: 2000}, insp: [{jenis: "berkala", skor: 0, umur: 10}]},   // K6 30 hari: aman
       {kode: "AS-9013", kelas: "tandon_hidran", nama: "Tandon hidran dummy", sumber: "pdam", pemilik: "PDAM dummy", atribut: {kapasitas_l: 20000}, insp: [{jenis: "berkala", skor: 0, umur: 3}]},   // K8 7 hari: segera
     ]);
   },
@@ -1481,7 +1479,8 @@ async function peliharaCsv(env, req, url, kini) {
     const j = jadwal({kelas}, terakhir.get("komponen:" + c.id) ?? null, kelas === "K1" ? d.jam_sejak_servis[c.kit_id] ?? null : null, kini);
     baris.push({sasaran: "komponen", kode: `${c.kit_kode} ${c.kode_bom}`, kelas, nama: c.nama, status: j.status, jatuh_tempo: tgl2(j.jatuh_tempo), alasan: j.alasan});
   }
-  for (const s of d.aset) { const kelas = KELAS_ASET[s.kelas], j = jadwal({kelas}, terakhir.get("aset:" + s.id) ?? null, null, kini); baris.push({sasaran: "aset", kode: s.kode, kelas, nama: s.nama, status: j.status, jatuh_tempo: tgl2(j.jatuh_tempo), alasan: j.alasan}); }
+  for (const s of d.aset) { const kelas = KELAS_ASET[s.kelas]; if (!kelas) continue;   // kelas yang dicabut (pipa_koridor, keputusan 60) tidak terjadwal
+    const j = jadwal({kelas}, terakhir.get("aset:" + s.id) ?? null, null, kini); baris.push({sasaran: "aset", kode: s.kode, kelas, nama: s.nama, status: j.status, jatuh_tempo: tgl2(j.jatuh_tempo), alasan: j.alasan}); }
   return berkasCsv("pelihara", csv(KOLOM_PELIHARA, baris), kini);
 }
 

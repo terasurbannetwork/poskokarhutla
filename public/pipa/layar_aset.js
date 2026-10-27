@@ -15,7 +15,7 @@ export const SUMBER_ASET = [["bnpb_dsp", "BNPB (DSP)"], ["bpbd", "BPBD"], ["pu_b
 export const KEYAKINAN_ASET = ["resmi", "terverifikasi", "asumsi-kebijakan"];
 export const STATUS_ASET = [["rencana", "Rencana"], ["berfungsi", "Berfungsi"], ["rusak", "Rusak"], ["diserahkan", "Diserahkan"], ["diganti_permanen", "Diganti permanen"], ["nonaktif", "Nonaktif"]];
 export const ZONA_KONSERVASI = [["belum", "Belum ditetapkan", "titik"], ["aman", "Aman", "polos"], ["rawan", "Rawan", "garis"], ["kritis", "Kritis", "silang"], ["rusak", "Rusak", "padat"]];
-export const NAMA_KELAS_ASET = {sumur_bor: "Sumur bor", pompa_sumur: "Pompa sumur", pipa_sementara: "Pipa sementara", tandon_hidran: "Tandon dan hidran", pipa_koridor: "Pipa koridor", jembatan_darurat: "Jembatan darurat", jembatan_permanen: "Jembatan permanen"};
+export const NAMA_KELAS_ASET = {sumur_bor: "Sumur bor", pompa_sumur: "Pompa sumur", pipa_sementara: "Pipa sementara", tandon_hidran: "Tandon dan hidran", jembatan_darurat: "Jembatan darurat", jembatan_permanen: "Jembatan permanen"};
 export const TEKS_STATUS_ASET = Object.fromEntries(STATUS_ASET), TEKS_SUMBER = Object.fromEntries(SUMBER_ASET), TEKS_ZONA = Object.fromEntries(ZONA_KONSERVASI.map(([k, n]) => [k, n]));
 export const JENIS_DARURAT = [["bailey", "Bailey"], ["rangka_baja", "Rangka baja"], ["lain", "Lainnya"]];
 export const TEKS_INSPEKSI = {pra_gelar: "Pra-gelar", pasca_gelar: "Pasca-gelar", berkala: "Berkala", pra_musim: "Pra-musim", tahunan: "Tahunan", pasca_bencana: "Pasca-bencana", servis: "Servis", uji_tekanan: "Uji tekanan", mutu_air: "Uji mutu air", serah_terima: "Serah terima"};
