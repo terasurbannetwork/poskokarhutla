@@ -52,8 +52,33 @@ def luas_basah(R):
     return sum(b for _, b in d.values()) / tot if tot else 0.0
 
 
-def pod(nl):
-    return sum(m >= AMBANG for _, m in nl) / len(nl) if nl else None
+def pod(nl, ambang=AMBANG):
+    return sum(m >= ambang for _, m in nl) / len(nl) if nl else None
+
+
+def ambang_untuk_luas(R, frac):
+    """Ambang kedalaman (m) yang membuat fraksi sel darat basah ~ frac (pembanding pada luas basah SAMA). frac <= 0 -> tak ada yang basah."""
+    h = sorted((v for c, v in zip(R["kec"], R["hm"]) if c >= 0), reverse=True); k = round(frac * len(h))
+    return float("inf") if k <= 0 else max(h[min(k, len(h)) - 1], 1e-9)
+
+
+def raster_acak(R, frac, benih=7):
+    """Pembanding bodoh: sel darat acak sebanyak luas basah model (hm 1 m di sel terpilih)."""
+    idx = [i for i, c in enumerate(R["kec"]) if c >= 0]; ya = set(random.Random(benih).sample(idx, round(frac * len(idx))))
+    return {**R, "hm": array.array("f", [1.0 if i in ya else 0.0 for i in range(len(R["hm"]))])}
+
+
+def presisi(R, lap):
+    """Bagian sel basah (darat) yang punya laporan dalam radius; None bila tak ada sel basah. Pelengkap luas basah (laporan bukan bukti kering)."""
+    r = math.ceil(RADIUS / R["dx_m"]); dekat = set()
+    for x in lap:
+        ci, cj = (x["lon"] - R["lon0"]) / R["dlon"], (R["lat0"] - x["lat"]) / R["dlat"]
+        for j in range(max(0, round(cj) - r), min(R["ny"], round(cj) + r + 1)):
+            for i in range(max(0, round(ci) - r), min(R["nx"], round(ci) + r + 1)):
+                if math.hypot(i - ci, j - cj) * R["dx_m"] <= RADIUS:
+                    dekat.add(j * R["nx"] + i)
+    basah = [i for i, (c, v) in enumerate(zip(R["kec"], R["hm"])) if c >= 0 and v >= AMBANG]
+    return sum(i in dekat for i in basah) / len(basah) if basah else None
 
 
 def galat_median(nl):
@@ -159,8 +184,14 @@ def uji():
     assert ph == {"2024-08-17": (1, 1), "2024-08-18": (0, 1)}
     t, lo, hi = bootstrap_pod({str(i): (1, 1) for i in range(20)}); assert t == 1 and lo == 1
     s = bootstrap_selisih({"a": (1, 1), "b": (1, 1), "c": (1, 1)}, {"a": (0, 1), "b": (0, 1), "c": (0, 1)}); assert s[0] == 1 and s[1] == 1
+    import kunci_j3
+    B = kunci_j3.beku(); assert (AMBANG, RADIUS, KEC_MIN) == (B["ambang_basah_m"], B["radius_laporan_m"], B["kec_basah_min_frac"]), "konstanta cermin beda dari blok BEKU"
+    assert ambang_untuk_luas(R, 1 / 36) == 0.5 and ambang_untuk_luas(R, 0) == float("inf") and pod(nl, 0.6) == 0.0
+    assert sum(1 for c, v in zip(R["kec"], raster_acak(R, 1 / 3)["hm"]) if v) == 12
+    assert presisi(R, lap[:1]) == 1.0 and presisi(R, lap[1:]) == 0.0
     print("ok")
 
 
 if __name__ == "__main__":
+    sys.path.insert(0, __import__("os").path.dirname(__import__("os").path.abspath(__file__)))
     uji() if sys.argv[1:] == ["uji"] else sys.exit(__doc__)

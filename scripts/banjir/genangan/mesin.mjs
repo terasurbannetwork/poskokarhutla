@@ -18,6 +18,7 @@ import vm from "node:vm";
 import zlib from "node:zlib";
 import path from "node:path";
 import os from "node:os";
+import {execFileSync} from "node:child_process";
 import {fileURLToPath} from "node:url";
 
 const AKAR = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -224,9 +225,10 @@ function uji() {
     const r = (t, lon, lat, k) => ({t, lon, lat, kedalaman_cm: k});
     fs.writeFileSync(lp, JSON.stringify([r("2024-08-17T10:00:00+07:00", 106.8272, -6.1754, 30), r("2024-08-17T10:00:00+07:00", 106.8272, -6.1754, 30), r("2024-08-17T10:00:00+07:00", 107.5, -6.9, 30),
       r("2024-08-25T10:00:00+07:00", 106.8272, -6.1754, 30), r("2020-01-01T10:00:00+07:00", 106.8272, -6.1754, 20)]));
-    assert.throws(() => muatLabel("2024-08", st, lp), /terkunci/); assert.throws(() => muatLabel("2025-03", st, lp), /bukan kejadian J3/);
+    assert.throws(() => muatLabel("2024-08", st, lp, () => "abc"), /terkunci/); assert.throws(() => muatLabel("2025-03", st, lp), /bukan kejadian J3/);
     assert.equal(muatLabel("2020-01", st, lp).length, 1);
-    fs.writeFileSync(st, JSON.stringify({dibuka: {tanggal: "x"}})); const u = muatLabel("2024-08", st, lp);
+    fs.writeFileSync(st, JSON.stringify({dibuka: {tanggal: "x", sidik: "abc"}}));
+    assert.throws(() => muatLabel("2024-08", st, lp, () => "beda"), /terkunci/, "sidik berubah sesudah buka: terkunci lagi"); const u = muatLabel("2024-08", st, lp, () => "abc");
     assert.equal(u.length, 1, "duplikat, luar DKI, luar jendela dibuang"); assert.match(u[0].kab, /JAKARTA/i); fs.rmSync(d, {recursive: true}); }
   console.log("ok");
 }
@@ -238,12 +240,15 @@ export const KEJADIAN_J3 = {
   "2020-01": {mulai: "2019-12-30", jam: 96, peran: "kalibrasi"}, "2021-02": {mulai: "2021-02-18", jam: 96, peran: "pagar"},
   "2024-08": {mulai: "2024-08-16", jam: 96, peran: "uji"}, "2025-04": {mulai: "2025-04-22", jam: 96, peran: "uji"}};
 const STATE_J3 = P("data/raw/banjir/genangan/j3_state.json");
-export function labelTerbuka(statePath = STATE_J3) { try { return !!JSON.parse(fs.readFileSync(statePath, "utf8")).dibuka; } catch { return false; } }
+/* terbuka hanya bila sidik yang tercatat saat `buka` SAMA dengan sidik sekarang (kode/PRAREG/masukan berubah sesudah buka = terkunci lagi) */
+const sidikSekarang = () => execFileSync("python3", [P("scripts/banjir/genangan/kunci_j3.py"), "sidik-saja"], {encoding: "utf8"}).trim();
+export function labelTerbuka(statePath = STATE_J3, sidikFn = sidikSekarang) {
+  try { const d = JSON.parse(fs.readFileSync(statePath, "utf8")).dibuka; return !!d && !!d.sidik && d.sidik === sidikFn(); } catch { return false; } }
 /* laporan PetaBencana dalam jendela kejadian, di dalam poligon DKI (di luar dibuang), duplikat (waktu, koordinat, kedalaman) dibuang.
    Kejadian peran "uji" ditolak sampai `kunci_j3.py buka`; kejadian di luar KEJADIAN_J3 (mis. 2025-03) juga ditolak. */
-export function muatLabel(kejadian, statePath = STATE_J3, berkas = P("data/raw/banjir/genangan/petabencana_laporan.json")) {
+export function muatLabel(kejadian, statePath = STATE_J3, berkas = P("data/raw/banjir/genangan/petabencana_laporan.json"), sidikFn = sidikSekarang) {
   const e = KEJADIAN_J3[kejadian]; if (!e) throw new Error(`kejadian ${kejadian} bukan kejadian J3`);
-  if (e.peran === "uji" && !labelTerbuka(statePath)) throw new Error(`label uji ${kejadian} terkunci: jalankan kunci_j3.py buka sesudah kalibrasi selesai`);
+  if (e.peran === "uji" && !labelTerbuka(statePath, sidikFn)) throw new Error(`label uji ${kejadian} terkunci: jalankan kunci_j3.py buka sesudah kalibrasi selesai`);
   const a = new Date(e.mulai + "T00:00:00+07:00").getTime(), b = a + e.jam * 3.6e6, geo = JSON.parse(fs.readFileSync(P("public/geo/kecamatan/31.json"), "utf8")), lihat = new Set(), o = [];
   for (const r of JSON.parse(fs.readFileSync(berkas, "utf8"))) { const t = new Date(r.t).getTime(); if (!(t >= a && t < b)) continue;
     const kunci = `${r.t}|${r.lon}|${r.lat}|${r.kedalaman_cm}`; if (lihat.has(kunci)) continue; lihat.add(kunci);
