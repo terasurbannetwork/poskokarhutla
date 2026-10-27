@@ -1839,12 +1839,14 @@ async function renlapPdf(env, req, url, kini, ctx, id) {
 async function renlapSelesai(env, req, url, kini, ctx, id) {
   if (!env.RENLAP_KUNCI) return gagal(503, "RENLAP_KUNCI belum dipasang");
   const ip = await kunciTolak(env, req); if (terkunciMem(ip, kini)) return lajuTolak();
-  /* anti-replay: x-renlap-waktu = detik epoch UTC, x-renlap-kunci = hex HMAC-SHA256(RENLAP_KUNCI, `${renlap_id}|${waktu}`); selisih jam paling lama 300 detik */
+  /* anti-replay: x-renlap-waktu = detik epoch UTC, x-renlap-kunci = hex HMAC-SHA256(RENLAP_KUNCI, `${renlap_id}|${waktu}|${status}`); selisih jam paling lama 300 detik.
+     status ikut ditandatangani supaya tanda tangan yang tersadap tidak bisa dipakai untuk status lain */
+  const b = await bacaBody(req, 2048), o = b.o || {};
   const k = (req.headers.get("x-renlap-kunci") || "").toLowerCase(), wt = req.headers.get("x-renlap-waktu") || "";
   const waktuOK = /^\d{9,12}$/.test(wt) && Math.abs(kini / 1000 - Number(wt)) <= 300;
-  const hmacSah = samaTetap(k, await hmacHex(env.RENLAP_KUNCI, `${id}|${wt}`));   // dihitung selalu: waktu konstan
+  const hmacSah = samaTetap(k, await hmacHex(env.RENLAP_KUNCI, `${id}|${wt}|${typeof o.status === "string" ? o.status : ""}`));   // dihitung selalu: waktu konstan
   if (!waktuOK || !hmacSah) return tolakRenlap(env, req, kini, 403, ip);
-  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat); const o = b.o;
+  if (b.galat) return gagal(b.status || 400, b.galat);
   if (!["jalan", "siap", "gagal"].includes(o.status)) return gagal(400, "status harus jalan, siap, atau gagal");
   const galat = o.galat == null ? null : teksOK(o.galat, 0, 300); if (galat === undefined) return gagal(400, "galat paling banyak 300 karakter");
   const r = await env.DB.prepare("SELECT status FROM sippa_renlap WHERE id = ?").bind(id).first(); if (!r) return tdk("renlap tidak ada");
@@ -1862,6 +1864,9 @@ async function renlapSelesai(env, req, url, kini, ctx, id) {
   if (!u.meta.changes) return gagal(409, "renlap sudah selesai");
   return json({renlap: ringkasRenlap(await env.DB.prepare(`SELECT ${KOLOM_RENLAP} FROM sippa_renlap WHERE id = ?`).bind(id).first())});
 }
+/* tautan HP berlaku 14 hari sejak renlap siap (dossier memuat koordinat dan rute; tautan bocor tidak terbuka selamanya) */
+export const RENLAP_BERLAKU_MS = 14 * 864e5;
+const kedaluwarsaRenlap = (r, kini) => r.selesai != null && kini - r.selesai > RENLAP_BERLAKU_MS;
 /* halaman HP: statis, token di fragmen; data.json hanya lewat header x-renlap-token */
 async function renlapHalaman(env, req, url) {
   const r = await env.ASSETS.fetch(new Request(new URL("/renlap.html", url)));
@@ -1872,8 +1877,9 @@ async function renlapData(env, req, url, kini) {
   const ip = await kunciTolak(env, req); if (terkunciMem(ip, kini)) return lajuTolak();   // IP yang sudah melewati batas: tanpa D1
   const id = url.searchParams.get("id") || "", t = req.headers.get("x-renlap-token") || "";
   if (!RE_ID.test(id) || !RE_TOKEN_RENLAP.test(t)) return tolakRenlap(env, req, kini, 404, ip);
-  const r = await env.DB.prepare("SELECT status, data_kunci, token_hp_sha FROM sippa_renlap WHERE id = ?").bind(id).first();
+  const r = await env.DB.prepare("SELECT status, data_kunci, token_hp_sha, selesai FROM sippa_renlap WHERE id = ?").bind(id).first();
   if (!r || !samaTetap(await sha(t), r.token_hp_sha)) return tolakRenlap(env, req, kini, 404, ip);   // id tak ada dan token salah: badan identik
+  if (kedaluwarsaRenlap(r, kini)) return gagal(410, "tautan renlap kedaluwarsa; minta renlap baru");
   if (r.status !== "siap" || !r.data_kunci) return new Response(JSON.stringify({galat: "renlap belum siap", status: r.status}), {status: 409, headers: {"content-type": "application/json; charset=utf-8", ...KEPALA_RENLAP}});
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get(r.data_kunci); if (!o) return gagal(404, "data renlap tidak ada");
@@ -1886,8 +1892,9 @@ async function renlapImg(env, req, url, kini) {
   const ip = await kunciTolak(env, req); if (terkunciMem(ip, kini)) return lajuTolak();
   const id = url.searchParams.get("id") || "", f = url.searchParams.get("f") || "", t = req.headers.get("x-renlap-token") || "";
   if (!RE_ID.test(id) || !RE_TOKEN_RENLAP.test(t) || !RE_GAMBAR.test(f) || f.includes("..")) return tolakRenlap(env, req, kini, 404, ip);
-  const r = await env.DB.prepare("SELECT status, token_hp_sha FROM sippa_renlap WHERE id = ?").bind(id).first();
+  const r = await env.DB.prepare("SELECT status, token_hp_sha, selesai FROM sippa_renlap WHERE id = ?").bind(id).first();
   if (!r || !samaTetap(await sha(t), r.token_hp_sha)) return tolakRenlap(env, req, kini, 404, ip);
+  if (kedaluwarsaRenlap(r, kini)) return gagal(410, "tautan renlap kedaluwarsa; minta renlap baru");
   if (r.status !== "siap") return new Response(JSON.stringify({galat: "renlap belum siap", status: r.status}), {status: 409, headers: {"content-type": "application/json; charset=utf-8", ...KEPALA_RENLAP}});
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get(`${kunciRenlap(id)}img/${f}`); if (!o) return gagal(404, "tautan renlap tidak berlaku");

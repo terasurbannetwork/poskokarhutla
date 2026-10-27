@@ -38,7 +38,7 @@ jobs:
 
       - name: Periksa masukan
         run: |
-          echo "$RENLAP_ID" | grep -Eq '^[A-Za-z0-9_-]{1,64}$' || { echo "renlap_id tidak sah"; exit 1; }
+          [[ "$RENLAP_ID" =~ ^[A-Za-z0-9_-]{1,64}$ ]] || { echo "renlap_id tidak sah"; exit 1; }   # =~ mencocokkan seluruh string (grep per baris)
           python3 scripts/data/sippa/pilot/renlap.py uji
 
       - name: Lapor jalan

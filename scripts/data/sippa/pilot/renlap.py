@@ -67,7 +67,7 @@ def uji():
     import situs, teks_renlap
     import lapor
     situs.uji(); teks_renlap.uji()
-    assert len(lapor.tanda("k", "r", 1)) == 64
+    assert len(lapor.tanda("k", "r", 1, "siap")) == 64
     print("renlap uji ok")
 
 

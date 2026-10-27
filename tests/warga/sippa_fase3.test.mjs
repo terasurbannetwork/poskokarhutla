@@ -29,7 +29,7 @@ const bikin = async (peran, wilayah = []) => {
 };
 const nas = await bikin(["pusdalops"]), p62 = await bikin(["pusdalops"], ["62"]), p16 = await bikin(["pusdalops"], ["16"]), p16b = await bikin(["pimpinan"], ["16"]), pim = await bikin(["pimpinan"]), ver = await bikin(["verifikator"]);
 const kini = () => Date.now();
-const kunci = (id, w) => createHmac("sha256", "kunci-renlap-uji").update(`${id}|${w}`).digest("hex");
+const kunci = (id, w, s = "") => createHmac("sha256", "kunci-renlap-uji").update(`${id}|${w}|${s}`).digest("hex");
 const detik = () => String(Math.floor(Date.now() / 1000));
 
 uji("migrasi 0073: lima tingkat awal, hanya T0 terbuka; realisasi ke tingkat terkunci ditolak trigger", async () => {
@@ -137,7 +137,7 @@ uji("Renlap dengan GITHUB_TOKEN: workflow_dispatch renlap.yml dengan input renla
 });
 
 const pasangBerkas = async id => { await R2.put(`sippa/renlap/${id}/renlap.pdf`, new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31])); await R2.put(`sippa/renlap/${id}/data.json`, JSON.stringify({kompleks: KOMP, judul: "Renlap uji"})); };
-const selesai = (id, b, kunciHdr, w = detik()) => sip("POST", `/renlap/${id}/selesai`, b, {"x-renlap-waktu": w, ...(kunciHdr === null ? {} : {"x-renlap-kunci": kunciHdr ?? kunci(id, w)})});
+const selesai = (id, b, kunciHdr, w = detik()) => sip("POST", `/renlap/${id}/selesai`, b, {"x-renlap-waktu": w, ...(kunciHdr === null ? {} : {"x-renlap-kunci": kunciHdr ?? kunci(id, w, b?.status)})});
 uji("Renlap selesai: kunci HMAC wajib, siap hanya bila berkas R2 ada, status akhir terkunci", async () => {
   assert.equal((await selesai(RID, {status: "siap"}, null)).s, 403); assert.equal((await selesai(RID, {status: "siap"}, "0".repeat(64))).s, 403); assert.equal((await selesai(RID, {status: "siap"}, kunci("f".repeat(16), detik()))).s, 403, "HMAC id lain");
   const lama = String(Math.floor(Date.now() / 1000) - 400); assert.equal((await selesai(RID, {status: "siap"}, kunci(RID, lama), lama)).s, 403, "replay: waktu lewat 300 detik");

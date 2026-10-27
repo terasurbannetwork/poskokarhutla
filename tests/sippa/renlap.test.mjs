@@ -72,3 +72,9 @@ test("halaman HP /renlap: pakai modul tampil, gambar lewat fetch+blob dengan hea
   assert.match(js, /URL\.createObjectURL/); assert.match(js, /revokeObjectURL/); assert.match(js, /renlap_tampil\.js/); assert.match(js, /Buka lagi beberapa menit/);
   assert.doesNotMatch(tp, /[—·]|titik api|innerHTML|\.style\b/i); assert.doesNotMatch(js, /\.src\s*=\s*["'`]?\/api/);
 });
+
+test("urlBoleh: hanya https, http, img/, dan # sesudah kontrol dan spasi dibuang", async () => {
+  const {urlBoleh} = await import("../../public/pipa/renlap_tampil.js");
+  for (const v of ["https://a.b", "http://a", "img/x.jpg", "#langkah"]) assert.ok(urlBoleh(v), v);
+  for (const v of ["javascript:alert(1)", "java\tscript:alert(1)", " JAVASCRIPT:x", "\u0001javascript:x", "data:text/html,x", "vbscript:x", "//evil.example", "", null]) assert.ok(!urlBoleh(v), String(v));
+});

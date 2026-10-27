@@ -4,7 +4,7 @@
    Gambar: <img> tidak bisa mengirim header, jadi fetch -> blob URL, dilepas saat halaman ditutup. Teks data lewat textContent; HTML dari dossier
    server lewat sisip() yang membuang skrip dan atribut on*. CSP ketat: tanpa gaya sebaris. */
 import {bacaFragmen, tautanKoordinat, teksKoordinat} from "/pipa/renlap.js";
-import {modelRenlap, jalurGambar, namaGambar} from "/pipa/renlap_tampil.js";
+import {modelRenlap, jalurGambar, namaGambar, urlBoleh} from "/pipa/renlap_tampil.js";
 
 const $ = s => document.querySelector(s), isi = $("#isi");
 const SIMPAN = "rlTok", SIMPAN_ID = "rlId";
@@ -22,7 +22,9 @@ function kosong(judul, teks, ulang) {
 }
 
 /* ---------------------------------------------------------------- HTML dossier dan gambar bertoken */
-const BUANG = "script,iframe,object,embed,link,meta,base,form,foreignObject";
+const BUANG = "script,iframe,object,embed,link,meta,base,form,foreignObject,style,template,noscript,portal,animate,set,animateMotion,animateTransform";
+/* atribut URL: daftar izin (https, http, img/, #), dinilai sesudah karakter kontrol dan spasi dibuang (java&#9;script: dsb.) */
+const ATR_URL = new Set(["href", "xlink:href", "src", "action", "formaction", "srcset", "poster", "data"]);
 const blobGambar = new Map(), antreGambar = []; let gambarJalan = 0;
 async function pompaGambar() {
   while (gambarJalan < 3 && antreGambar.length) {
@@ -50,7 +52,10 @@ function pasangGambarDi(akar) {
 function sisip(wadah, html) {
   const dok = new DOMParser().parseFromString(String(html ?? ""), "text/html");
   dok.querySelectorAll(BUANG).forEach(e => e.remove());
-  for (const e of dok.body.querySelectorAll("*")) for (const a of [...e.attributes]) { if (/^on/i.test(a.name) || /^\s*javascript:/i.test(a.value)) e.removeAttribute(a.name); }
+  for (const e of dok.body.querySelectorAll("*")) {
+    for (const a of [...e.attributes]) { const n = a.name.toLowerCase(); if (n.startsWith("on") || n === "style" || n === "srcdoc" || (ATR_URL.has(n) && !urlBoleh(a.value))) e.removeAttribute(a.name); }
+    if (e.localName === "a") { e.setAttribute("rel", "noopener noreferrer"); e.setAttribute("target", "_blank"); }
+  }
   pasangGambarDi(dok.body);
   wadah.append(...dok.body.childNodes); return wadah;
 }

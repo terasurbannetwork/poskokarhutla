@@ -5,8 +5,9 @@ Env RENLAP_API (bawaan https://centurisk97.id). Self-check tanpa jaringan: pytho
 import hashlib, hmac, json, os, re, sys, time, urllib.request
 
 
-def tanda(kunci, rid, waktu):
-    return hmac.new(kunci.encode(), f"{rid}|{waktu}".encode(), hashlib.sha256).hexdigest()
+def tanda(kunci, rid, waktu, status):
+    """HMAC atas id|waktu|status: status ikut ditandatangani (server menolak tanda tangan yang dipakai untuk status lain)."""
+    return hmac.new(kunci.encode(), f"{rid}|{waktu}|{status}".encode(), hashlib.sha256).hexdigest()
 
 
 def lapor(rid, status, galat=None):
@@ -16,14 +17,14 @@ def lapor(rid, status, galat=None):
     req = urllib.request.Request(f"{os.environ.get('RENLAP_API', 'https://centurisk97.id')}/api/sippa/renlap/{rid}/selesai",
                                  data=json.dumps(body).encode(), method="POST",
                                  headers={"content-type": "application/json", "x-renlap-waktu": str(t),
-                                          "x-renlap-kunci": tanda(os.environ["RENLAP_KUNCI"], rid, t), "User-Agent": "renlap/1.0"})
+                                          "x-renlap-kunci": tanda(os.environ["RENLAP_KUNCI"], rid, t, status), "User-Agent": "renlap/1.0"})
     with urllib.request.urlopen(req, timeout=60) as r:
         print("lapor", status, r.status)
 
 
 if __name__ == "__main__":
     if sys.argv[1:2] == ["uji"]:
-        assert tanda("k", "r1", 5) == hmac.new(b"k", b"r1|5", hashlib.sha256).hexdigest() and len(tanda("k", "r1", 5)) == 64
+        assert tanda("k", "r1", 5, "siap") == hmac.new(b"k", b"r1|5|siap", hashlib.sha256).hexdigest() and len(tanda("k", "r1", 5, "siap")) == 64
         print("lapor uji ok")
     else:
         try:

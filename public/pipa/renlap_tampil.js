@@ -44,3 +44,6 @@ export function modelRenlap(d, id) {
   return {judul: d.ringkas?.judul || "Renlap SIPPA", wilayah: typeof w === "string" ? w : Array.isArray(w) ? w.join(", ") : null, acuan: d.acuan || null,
     lokasi, alat, warna: d.warna || [], kerja: d.kerja || [], panduan: {uji: d.uji || [], selamat: d.selamat || [], putus: d.putus || [], cek_gambut: d.cek_gambut || ""}};
 }
+
+/* atribut URL dari HTML data.json: daftar izin (https, http, img/, #) sesudah karakter kontrol dan spasi dibuang, sehingga java&#9;script: dan sejenisnya ditolak */
+export const urlBoleh = v => { const u = String(v ?? "").replace(/[\u0000-\u0020\u007f-\u009f]/g, "").toLowerCase(); return /^(https?:|img\/|#)/.test(u); };

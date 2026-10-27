@@ -727,7 +727,8 @@
     "renlap_tampil.jalurGambar": "jalurGambar dan namaGambar",
     "renlap_tampil.tautanArah": "modelRenlap: bentuk DATA",
     "renlap_tampil.tautanRute": "modelRenlap: bentuk DATA",
-    "renlap_tampil.modelRenlap": "modelRenlap: bentuk DATA"
+    "renlap_tampil.modelRenlap": "modelRenlap: bentuk DATA",
+    "renlap_tampil.urlBoleh": "urlBoleh: hanya https"
   },
   "dikecualikan": {
     "ikon.js": "sprite SVG tanpa logika; gerbang-sippa menolak warna tertanam, tampilannya diperiksa di peramban preview",
