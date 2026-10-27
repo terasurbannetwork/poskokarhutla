@@ -26,7 +26,7 @@ test("DSDA: nama dipotong 80 per code point, ambang dan v tak wajar", () => {
   assert.deepEqual([x.a1, x.a2, x.a3, x.v], [null, null, null, null]);
   assert.equal(uraiDsda(JSON.stringify([pos({TINGGI_AIR: -500})]))[0].v, -50);
 });
-test("DSDA: 5000 entri dibatasi 500 di satu() lewat urai, urai sendiri tetap selesai", () => {
+test("DSDA: 5000 entri terurai utuh (pemotongan 500 ada di satu())", () => {
   assert.equal(uraiDsda(JSON.stringify(Array.from({length: 5000}, (_, i) => pos({ID_PINTU_AIR: String(i)})))).length, 5000);
 });
 test("SIPANTAU: pola id, nama 80, koordinat Malaysia, ambang tak wajar", () => {

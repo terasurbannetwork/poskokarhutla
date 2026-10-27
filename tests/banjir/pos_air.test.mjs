@@ -53,10 +53,10 @@ test("geojson: koordinat, label angka, denyut hanya untuk naik dan tertinggi", (
   assert.deepEqual(plain(P.geojson(undefined)).features, []);
 });
 
-test("dasharray bergeser dan fase denyut dalam 0..1, jeda sekitar 11 fps", () => {
+test("dasharray bergeser dan fase denyut dalam 0..1, jeda sekitar 5,5 fps", () => {
   assert.notDeepEqual(plain(P.dash(0)), plain(P.dash(P.JEDA))); assert.deepEqual(plain(P.dash(0)), plain(P.dash(P.JEDA * 14)));
   for (const t of [0, 500, 1799, 99999]) { const x = P.fase(t); assert.ok(x >= 0 && x < 1); }
-  assert.ok(P.JEDA >= 66 && P.JEDA <= 100);
+  assert.equal(P.JEDA, 180, "separuh kecepatan: dua kali jeda lama (90)");
 });
 
 test("INP statis: animasi berhenti saat tab tersembunyi, reduced-motion, dan lapisan mati; tanpa elemen Marker", () => {
@@ -133,11 +133,11 @@ test("skala tegak: pita dan garis air", () => {
 
 test("ruas sungai berlapis: tanpa nama tiga cincin 1,5/1/0,5 km; bernama tiga cincin 4,5/3/1,5 km; Normal dan macet tidak diwarnai", () => {
   const tanpa = plain(P.ruasLapis(kumpul));
-  assert.deepEqual([...new Set(tanpa.map(x => x.kelas))].sort(), ["Siaga 1", "Siaga 3", "naik"]); assert.ok(tanpa.every(x => x.nama === null)); assert.deepEqual([...new Set(tanpa.map(x => x.lapis))].sort(), [0, 1, 2]);   /* pemilik 27 Okt: gradasi kuning ke merah juga di sungai tanpa nama */
-  const ring = tanpa.find(x => x.kelas === "Siaga 1" && x.lapis === 2).g.coordinates[0][0]; assert.equal(ring.length, 17); assert.deepEqual(ring[0], ring[16]); assert.ok(Math.abs(ring[0][0] - .5 / 111.32) < .001, "cincin dalam 0,5 km di khatulistiwa"); assert.ok(Math.abs(tanpa.find(x => x.kelas === "Siaga 1" && x.lapis === 0).g.coordinates[0][0][0][0] - 1.5 / 111.32) < .001, "cincin luar 1,5 km");
+  assert.deepEqual([...new Set(tanpa.map(x => x.kelas))].sort(), ["Siaga 1", "Siaga 3", "naik"]); assert.ok(tanpa.every(x => x.nama === null)); assert.deepEqual([...new Set(tanpa.map(x => x.lapis))].sort(), [0, 1, 2, 3]);   /* pemilik 27 Okt: gradasi kuning ke merah juga di sungai tanpa nama */
+  const ring = tanpa.find(x => x.kelas === "Siaga 1" && x.lapis === 3).g.coordinates[0][0]; assert.equal(ring.length, 17); assert.deepEqual(ring[0], ring[16]); assert.ok(Math.abs(ring[0][0] - .5 / 111.32) < .001, "cincin dalam 0,5 km di khatulistiwa"); assert.ok(Math.abs(tanpa.find(x => x.kelas === "Siaga 1" && x.lapis === 0).g.coordinates[0][0][0][0] - 2 / 111.32) < .001, "cincin terluar 2 km (6/3)");
   const bernama = plain(P.ruasLapis(kumpul, p => "Ciliwung")).filter(x => x.kelas === "Siaga 1");
-  assert.deepEqual(bernama.map(x => x.lapis).sort(), [0, 1, 2]); assert.ok(bernama.every(x => x.nama === "Ciliwung"));
-  const r = l => Math.abs(bernama.find(x => x.lapis === l).g.coordinates[0][0][0][0]) * 111.32; assert.ok(Math.abs(r(0) - 4.5) < .1 && Math.abs(r(1) - 3) < .1 && Math.abs(r(2) - 1.5) < .1);
+  assert.deepEqual(bernama.map(x => x.lapis).sort(), [0, 1, 2, 3]); assert.ok(bernama.every(x => x.nama === "Ciliwung"));
+  const r = l => Math.abs(bernama.find(x => x.lapis === l).g.coordinates[0][0][0][0]) * 111.32; assert.ok(Math.abs(r(0) - 6) < .1 && Math.abs(r(1) - 4.5) < .1 && Math.abs(r(2) - 3) < .1 && Math.abs(r(3) - 1.5) < .1);
   assert.deepEqual(plain(P.ruasLapis([kumpul[3], kumpul[4]])), []);
 });
 
@@ -267,11 +267,9 @@ test("panel pos: pil, tooltip ambang, batang tiga tik, urutan grup (fixture bera
 test("arah aliran: sorot dash maju searah titik garis (hulu ke hilir) tiap langkah; panah rantai zoom 12 ke atas", () => {
   /* awal dash dalam pola 7 piksel: [0,g,DS,..] mulai di g; pola terbungkus [a,T-DS,DS-a] mulai di a+T-DS */
   const awal = p => p.length === 4 ? p[1] : p[0] + p[1], T = 7, N = 14, tiap = T / N;
-  for (let k = 0; k < N; k++) { const a = awal(plain(P.dash(k * 90))), b = awal(plain(P.dash((k + 1) * 90))), d = (((b - a) % T) + T) % T;
+  for (let k = 0; k < N; k++) { const a = awal(plain(P.dash(k * P.JEDA))), b = awal(plain(P.dash((k + 1) * P.JEDA))), d = (((b - a) % T) + T) % T;
     assert.ok(Math.abs(d - tiap) < .05, `langkah ${k}: maju ${d}, bukan ${tiap} (terbalik bila mendekati ${T - tiap})`); }
-  assert.match(src, /id: "alir-panah", type: "symbol"[^\n]*minzoom: 12/); assert.match(src, /"symbol-placement": "line", "symbol-spacing": 250/); assert.match(src, /"icon-rotation-alignment": "map"/);
-  assert.ok(!/"text-field"[^\n]*alir-panah/.test(src));
-  assert.match(src, /Panah = arah aliran/);
+  assert.ok(!/addLayer\(\{id: "alir-panah"/.test(src) && !/Panah = arah aliran/.test(src));   /* panah dicabut pemilik 27 Okt */
 });
 
 test("kartu pasut: kurva 24 jam satu datum, minus sejati, tabel tiga kolom rata kanan, pil berikon", () => {
@@ -316,4 +314,23 @@ test("kelompok wilayah: nama pendek, bentrok Kota dan Kabupaten memakai nama len
   assert.match(src, /PosAir\.pengelolaSingkat\(l\[0\]\)/);
   assert.match(fs.readFileSync("public/banjir/pos_air.css", "utf8"), /\.pa-grup>summary b\{font-size:14px\}/);
   assert.ok(!/Sumber: \$\{D\.sumber/.test(fs.readFileSync("public/banjir/wilayah.js", "utf8")), "nama berkas internal tidak tampil");
+});
+
+test("badan air: jenis, luas kira-kira, pos terdekat; lapisan air-poligon dan sorot; klik dipasang di peta.js", () => {
+  assert.equal(P.jenisAir("lake", "Situ Gintung"), "Situ"); assert.equal(P.jenisAir("lake", "Waduk Jatiluhur"), "Waduk"); assert.equal(P.jenisAir("reservoir", null), "Waduk"); assert.equal(P.jenisAir("lake", null), "Danau"); assert.equal(P.jenisAir("pond", "X"), "Kolam"); assert.equal(P.jenisAir("aneh"), "Badan air");
+  const kotak = (lo, la, d) => ({type: "Polygon", coordinates: [[[lo, la], [lo + d, la], [lo + d, la + d], [lo, la + d], [lo, la]]]});
+  const ha = P.luasHa(kotak(106, -6, .01)); assert.ok(ha > 120 && ha < 130, `1,1 km x 1,1 km sekitar 122 ha: ${ha}`);
+  assert.ok(P.luasHa({type: "Polygon", coordinates: [kotak(106, -6, .02).coordinates[0], kotak(106.005, -5.995, .01).coordinates[0]]}) < P.luasHa(kotak(106, -6, .02)), "lubang dikurangi"); assert.equal(P.luasHa(null), 0);
+  const d = plain(P.posTerdekat([{id: "a", x: 0, y: 0, lon: 106.8, lat: -6.2}, {id: "b", lon: 107.5, lat: -6.2}], 106.81, -6.2)); assert.equal(d.pos.id, "a"); assert.ok(d.km > .9 && d.km < 1.3); assert.equal(P.posTerdekat([], 0, 0), null);
+  assert.match(src, /id: "air-poligon", type: "fill", source: sumber, "source-layer": "water"/); assert.match(src, /id: "air-sorot"/); assert.match(src, /klikAir\(e\) \{/);
+  assert.match(fs.readFileSync("public/banjir/peta.js", "utf8"), /PosUkur\.klikAir\(e\)\) return/);
+});
+
+test("batch tampilan: prakiraan 4 hari sebaris, tabel prakiraan pil+persen sebaris dan kepala putih tengah, pita BMKG di bawah Overlay, tabel bahaya berikon", () => {
+  const css = fs.readFileSync("public/banjir/pos_air.css", "utf8"), pk = fs.readFileSync("public/banjir/peta.js", "utf8");
+  assert.match(css, /\.grid\.g4\.pa-4\{grid-template-columns:repeat\(4,minmax\(0,1fr\)\)/); assert.match(pk, /class="grid g4 pa-4"/);
+  assert.match(css, /\.laci table\.tb3 td small\{display:inline/); assert.match(css, /table\.tb3 thead th\{[^}]*color:#fff;text-align:center/);
+  assert.match(css, /\.tools \.db-bmkg\{order:99;width:100%/);
+  assert.match(pk, /function tabelBahaya\(bh\)/); assert.match(pk, /<th>Bahaya<\/th><th>Indeks<\/th><th>Kelas<\/th>/); assert.match(pk, /title="Sampel raster InaRISK BNPB di titik tengah kecamatan\."/);
+  assert.ok(!/<p class="fnd">Sampel raster InaRISK/.test(pk), "kalimat sampel pindah ke tooltip");
 });

@@ -31,4 +31,6 @@
 }
 
 /* kartu hover wilayah: kisi 2x2 seperti karhutla (kartuTip bawaan satu baris) */
-.tp-gr.tp-kisi{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
+.tp-gr.tp-kisi{display:grid;grid-template-columns:1fr 1fr;gap:9px 16px;padding:2px 0}
+.tp-gr.tp-kisi .tp-st b{font-size:14px}
+.tp-gr.tp-kisi .tp-st small{font-size:10px;white-space:normal;line-height:1.25}
