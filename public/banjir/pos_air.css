@@ -25,3 +25,7 @@
 /* tabel wilayah: angka rata kanan, lebar tetap, tidak menempel */
 #rows .tb .n{text-align:right;white-space:nowrap;font-variant-numeric:tabular-nums}
 #rows .tb.kepala .n{letter-spacing:.02em}
+.pill.pa-pil::before{display:none}
+#modePeta button,#bahayaSeg button{display:inline-flex;align-items:center;justify-content:center;gap:5px}#modePeta button svg,#bahayaSeg button svg{flex:none}
+.seg.sub button{font-size:11px;padding:5px 2px;gap:4px}.seg.sub button svg{width:13px;height:13px}.seg.sub.redup{opacity:.45}
+#utamaSeg button{display:inline-flex;align-items:center;justify-content:center;gap:5px}

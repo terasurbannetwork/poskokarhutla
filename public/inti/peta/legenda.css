@@ -6,9 +6,10 @@
 #legenda{width:fit-content;max-width:100%;padding:6px 14px 8px;position:relative}
 #legenda summary{display:flex;justify-content:center;gap:6px;text-align:center;cursor:pointer;list-style:none}
 #legenda summary::-webkit-details-marker{display:none}
-.lg-isi{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-start;width:fit-content;max-width:100%;max-height:var(--tl, 150px);overflow-x:hidden;overflow-y:auto;margin:6px auto 0}
+.lg-isi{display:flex;flex-wrap:wrap;gap:12px 28px;align-items:flex-start;width:fit-content;max-width:100%;max-height:var(--tl, min(34vh, 320px));overflow-x:hidden;overflow-y:auto;margin:6px auto 0}
 .lg-isi > *{flex:0 1 auto;min-width:150px}
 .lg-g{min-width:0}
+.lg-g:not(:has(> :not(.lbl))){display:none}
 .lg-g .lbl{margin:0 0 3px!important;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .lg-g .leg{flex-direction:column;flex-wrap:nowrap;gap:3px;margin:0!important}
 .lg-g .legscale,.lg-g .legnum{width:100%;max-width:280px}

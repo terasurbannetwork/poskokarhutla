@@ -288,3 +288,12 @@ test("sorotan pos terpilih: halo, cincin putih, cincin luar, denyut sekali, labe
   for (const id of ["pos-pilih-halo", "pos-pilih-cincin", "pos-pilih-luar"]) assert.match(src, new RegExp(`id: "${id}", type: "circle"`));
   assert.match(src, /"text-halo-width": 4\.5/); assert.match(src, /PosUkur\._denyut = null/); assert.match(src, /"pos-pilih-halo", "pos-pilih-cincin", "pos-pilih-luar"/);
 });
+
+test("pil berikon garis, bukan titik bullet: tiap label punya ikon; pil pos dan pasut memakai pa-pil", () => {
+  for (const l of ["Normal", "Siaga 3", "Siaga 2", "Siaga 1", "Data lama", "Macet", "Tanpa batas", "Tanpa batas resmi", "Naik di atas biasa"]) assert.match(P.ikonPil(l), /<svg[^>]*><path d="M/, l);
+  assert.match(P.ikonPil("tak dikenal"), /M5 12h14/, "cadangan garis datar");
+  assert.match(src, /class="pill pa-pil"/); assert.ok(!/<span class="pill" style=/.test(src.slice(src.indexOf("/* ---------- bagian peta"))), "tak ada pil titik di bagian peta");
+  assert.match(fs.readFileSync("public/banjir/pos_air.css", "utf8"), /\.pill\.pa-pil::before\{display:none\}/);
+});
+
+test("ikon pil pasut dibungkus <path>, bukan data path telanjang", () => { assert.match(src, /aria-hidden="true"><path d="\$\{IK\[n\]\}"\/><\/svg>/); });
