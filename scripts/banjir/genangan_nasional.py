@@ -14,14 +14,15 @@ Pakai:  python3 scripts/banjir/genangan_nasional.py katalog [--dari 2015-01] [--
              (b) riwayat: kabupaten-hari banjir/bandang DIBI, lintasan 0-6 hari sesudah tanggal DIBI.
    Per kecamatan: tergenang_ha (flood==1, bukan air tetap, bukan ter-mask), diamati_ha (flood!=255), mask_ha, cakupan_pct.
 3. Kontrol latar: lintasan PRA ubin yang sama, jam lintas serupa (orbit sama +- 90 mnt), 8-45 hari sebelumnya.
-   tergenang_baru_ha = tergenang sesudah DAN diamati kering (0) sebelumnya. Tergenang sesudah < 2x latar -> sinyal_lemah.
+   tergenang_baru_ha = tergenang sesudah DAN diamati kering (0) sebelumnya. latar_ha = tergenang di pra dalam domain yang sama
+   dengan tergenang; tergenang_baru_ha < 2x latar_ha -> sinyal_lemah.
 4. Keluaran: public/banjir/data/genangan_nasional.json (< 400 KB), data/raw/banjir/gfm_nasional/label_kab_hari.csv.
 
 Proyeksi: Equi7 Oceania (OC) dan Asia (AS, Aceh dan Sumatera utara jatuh di ubin AS); parameter dari proj:wkt2 STAC.
 Ubin diakses tanpa GDAL: tiff_mini + RangeFile (header 256 KB + blok yang dibutuhkan). zstd lewat CLI `zstd`.
 Atribusi wajib Copernicus GFM (lisensi CEMS): lihat ATRIBUSI.
 """
-import argparse, builtins, csv, datetime as dt, json, math, os, re, sys, time, urllib.error, urllib.request
+import argparse, builtins, csv, threading, datetime as dt, json, math, os, re, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
 
 AYAH = os.path.dirname(os.path.abspath(__file__))
@@ -31,6 +32,8 @@ from umum import KELUAR, MENTAH, WIB, baca, simpan  # noqa: E402
 from wilayah import AKAR, PROVINSI, _cincin  # noqa: E402
 import tiff_mini  # noqa: E402
 from equi7 import vincenty  # noqa: E402
+sys.path.insert(2, os.path.join(AYAH, "..", "umum"))
+import bangunan as BG  # noqa: E402  (grid bangunan halus 110 m)
 
 tiff_mini.open = lambda j, m="rb": builtins.open(j, m) if isinstance(j, str) else j  # Tiff menerima RangeFile
 
@@ -113,11 +116,20 @@ class RangeFile:
         self.pos += n
         return b
 
-    def siapkan(self, rentangs):
-        butuh = [r for r in rentangs if r[0] + r[1] > len(self.kepala) and r not in self.cache]
-        with ThreadPoolExecutor(4) as ex:
-            for r, b in zip(butuh, ex.map(lambda r: self.rentang(*r), butuh)):
-                self.cache[r] = b
+    def siapkan(self, rentangs, celah=4096, maks=2_000_000):
+        """Unduh rentang paralel; rentang bertetangga digabung jadi satu permintaan (strip 1 baris reference_water_mask)."""
+        butuh = sorted(r for r in set(rentangs) if r[1] and r[0] + r[1] > len(self.kepala) and r not in self.cache)
+        gabung = []
+        for o, n in butuh:
+            if gabung and o - (gabung[-1][0] + gabung[-1][1]) <= celah and o + n - gabung[-1][0] <= maks:
+                gabung[-1][1] = o + n - gabung[-1][0]
+            else:
+                gabung.append([o, n])
+        with ThreadPoolExecutor(8) as ex:
+            for (o, n), b in zip(gabung, ex.map(lambda g: self.rentang(*g), gabung)):
+                for ro, rn in butuh:
+                    if o <= ro and ro + rn <= o + n:
+                        self.cache[(ro, rn)] = b[ro - o:ro - o + rn]
 
 
 def lzw(data):
@@ -172,8 +184,13 @@ class Raster:
         self.dec = {}
 
     def siapkan(self, blok):
-        t = self.t
-        self.rf.siapkan([(t.offs[b * t.per_baris + a], t.cnts[b * t.per_baris + a]) for a, b in blok if (a, b) not in self.dec and t.cnts[b * t.per_baris + a]])
+        t, perlu = self.t, set()
+        for a, b in blok:   # blok = indeks kisi 512; ubah ke blok/strip milik raster ini (bisa beda ukuran)
+            for kb in range(b * 512 // t.tt, (b * 512 + 511) // t.tt + 1):
+                for ka in range(a * 512 // t.tl, (a * 512 + 511) // t.tl + 1):
+                    if (ka, kb) not in self.dec:
+                        perlu.add((ka, kb))
+        self.rf.siapkan([(t.offs[kb * t.per_baris + ka], t.cnts[kb * t.per_baris + ka]) for ka, kb in perlu if kb * t.per_baris + ka < len(t.offs)])
 
     def nilai(self, col, row):
         t = self.t
@@ -250,8 +267,9 @@ def katalog(dari=AWAL_ARSIP, sampai=None):
         with builtins.open(ITEM, "a") as g:
             for k in baru:
                 g.write(json.dumps(k, separators=(",", ":")) + "\n")
+        ubin_ref = {**baca(os.path.join(DIR, "ubin_ref.json"), {}), **ubin_ref}   # gabung: beberapa jalan `katalog` boleh bersamaan (rentang beda)
         simpan(os.path.join(DIR, "ubin_ref.json"), ubin_ref)
-        selesai[ym] = n
+        selesai = {**baca(BULAN, {}), ym: n}
         simpan(BULAN, selesai)
         print(f"  {ym}: {n} item ({len(baru)} baru)", flush=True)
         ym = bulan_berikut(ym)
@@ -389,11 +407,8 @@ class Lintas:
     def __init__(self, fm):
         self.fm = fm
 
-    def siapkan(self, blok):
-        for f, m in self.fm:
-            f.siapkan(blok)
-            if m is not None:
-                m.siapkan(blok)
+    def semua(self):
+        return [x for f, m in self.fm for x in (f, m) if x is not None]
 
     def baca(self, c, b):
         for f, m in self.fm:
@@ -403,10 +418,11 @@ class Lintas:
         return 255, 0
 
 
-def hitung(pt, nama_ubin, lin, r, pra=None):
+def hitung(pt, nama_ubin, lin, r, pra=None, bgn=None, hasil_b=None):
     """Akumulasi per kecamatan (urutan KUNCI) untuk titik `pt` di ubin `nama_ubin`. lin/pra = Lintas; r = air tetap (nilai/siapkan).
     flood: 0 kering, 1 tergenang, 255 tak teramati; mask 1 = ter-mask; r 1 = air tetap. Titik luar ubin hanya menambah luas.
-    baru = tergenang sesudah, kering TERAMATI (0) di pra; latar = tergenang di pra (bukan ter-mask pra, bukan air tetap)."""
+    baru = tergenang sesudah, kering TERAMATI (0) di pra; latar = piksel yang teramati di lintasan sesudah (v != 255), bukan air tetap, dan tergenang di pra dengan pra tak ter-mask (domain sama dengan tergenang).
+    bgn = {(i,j): (n, luas)} grid bangunan halus; hasil_b diisi {(ki,i,j): [n, ha_tergenang, ha_baru]} hanya sel berisi bangunan."""
     g, x0, ya = ubin_dari_nama(nama_ubin)
     sel, blok = [], set()
     for i, (x, y) in enumerate(pt.xy(g)):
@@ -414,22 +430,22 @@ def hitung(pt, nama_ubin, lin, r, pra=None):
             c, b = int((x - x0) // 20), int((ya - y) // 20)
             sel.append((i, c, b))
             blok.add((c // 512, b // 512))
-    for ras in (lin, r, pra):
-        if ras is not None:
-            ras.siapkan(blok)
+    semua = lin.semua() + [r] + (pra.semua() if pra is not None else [])
+    with ThreadPoolExecutor(8) as ex:   # latensi server GFM 3-7 dtk per permintaan: paralel antarraster
+        list(ex.map(lambda x: x.siapkan(blok), semua))
     acc = [[0.0] * len(KUNCI) for _ in pt.nama]
     for ki, _, _, ha in pt.p:
         acc[ki][0] += ha
     for i, c, b in sel:
         ki, ha = pt.p[i][0], pt.p[i][3]
         a, w = acc[ki], r.nilai(c, b)
-        if pra is not None:
-            pv, pe = pra.baca(c, b)
-            if pv == 1 and pe != 1 and w != 1:
-                a[5] += ha
         v, e = lin.baca(c, b)
         if v == 255:
             continue
+        if pra is not None:
+            pv, pe = pra.baca(c, b)
+            if pv == 1 and pe != 1 and w != 1:   # latar: domain SAMA dengan tergenang (sesudah teramati, bukan air tetap)
+                a[5] += ha
         a[1] += ha
         if e == 1:
             a[2] += ha
@@ -437,9 +453,54 @@ def hitung(pt, nama_ubin, lin, r, pra=None):
             a[3] += ha
         if v == 1 and e != 1 and w != 1:
             a[4] += ha
-            if pra is not None and pv == 0:
+            baru = pra is not None and pv == 0
+            if baru:
                 a[6] += ha
+            if bgn is not None:
+                _, lo, la, _ = pt.p[i]
+                c = (math.floor((la - BG.LAT0) * BG.HALUS), math.floor((lo - BG.LON0) * BG.HALUS))
+                v_b = bgn.get(c)
+                if v_b:
+                    z = hasil_b.setdefault((ki,) + c, [v_b[0], 0.0, 0.0])
+                    z[1] += ha
+                    if baru:
+                        z[2] += ha
     return acc
+
+
+def ha_sel(i):
+    """Luas sel halus baris i (ha)."""
+    return BG.STEP / 10 * 111.32 * math.cos(math.radians(BG.LAT0 + (i + .5) / BG.HALUS)) * BG.STEP / 10 * 110.57 * 100
+
+
+def hitung_bangunan(sel, nama):
+    """sel = [[ki,i,j,n,ha_tergenang,ha_baru]] -> (total, per kec). Tiap hasil = {tergenang:[bawah,atas], baru:[bawah,atas]}.
+    Bawah = n x min(1, ha_tergenang_dalam_sel / luas_sel); atas = n penuh bila ada titik tergenang di sel. Kabupaten: sel yang
+    terbelah antar kecamatan digabung dulu (tak dihitung dua kali)."""
+    def agregat(baris):
+        out = {"tergenang": [0.0, 0.0], "baru": [0.0, 0.0]}
+        for k, idx in (("tergenang", 4), ("baru", 5)):
+            gab = {}
+            for r in baris:
+                g = gab.setdefault((r[1], r[2]), [r[3], 0.0])
+                g[1] += r[idx]
+            for (i, _), (n, ha) in gab.items():
+                if ha > 0:
+                    out[k][0] += n * min(1.0, ha / ha_sel(i))
+                    out[k][1] += n
+        return {k: [round(v[0]), round(v[1])] for k, v in out.items()}
+    per = {}
+    for r in sel:
+        per.setdefault(r[0], []).append(r)
+    return agregat(sel), {nama[k]: agregat(v) for k, v in per.items()}
+
+
+def grid_bangunan(prov):
+    """({(i,j):(n,luas)}, None) bila grid halus provinsi ada; (None, alasan) bila tidak."""
+    try:
+        return BG._indeks(prov)[0], None
+    except FileNotFoundError:
+        return None, f"grid bangunan halus provinsi {prov} belum dibuat (scripts/umum/bangunan.py --prov {prov})"
 
 
 def rangkum(acc):
@@ -451,11 +512,12 @@ def cakupan(tot):
     return round(100 * (tot[1] - tot[2]) / tot[0], 1) if tot[0] else 0.0
 
 
-def lemah(tergenang, lat_pra):
-    """sinyal_lemah: tak ada genangan, atau (ada kontrol dan) tergenang < 2x latar. None bila tak ada kontrol dan ada genangan."""
-    if tergenang <= 0:
+def lemah(nilai, lat_pra):
+    """sinyal_lemah: nilai (tergenang_baru_ha bila ada kontrol pra, kalau tidak tergenang_ha) <= 0, atau (ada kontrol dan)
+    nilai < 2x latar. None bila tak ada kontrol dan ada genangan."""
+    if nilai <= 0:
         return True
-    return None if lat_pra is None else tergenang < 2 * lat_pra
+    return None if lat_pra is None else nilai < 2 * lat_pra
 
 
 def menit(iso):
@@ -505,24 +567,37 @@ class Katalog:
         return [(n, l) for _, _, n, l in sorted(c, key=lambda z: z[:3])]
 
 
-def hitung_pasangan(pt, kat, awal, jendela, buka=Raster):
+def hitung_pasangan(pt, kat, awal, jendela, buka=Raster, prov=None):
     """-> dict hasil kabupaten untuk satu pasangan, atau {'status': 'tanpa_lintasan'}. `buka` = pembuat Raster (disuntik saat uji)."""
     akhir = awal + dt.timedelta(days=jendela)
     cand = kat.kandidat(pt.ubin(), awal, akhir)[:MAKS_KANDIDAT]
     if not cand:
         return {"status": "tanpa_lintasan", "luas_ha": round(sum(p[3] for p in pt.p), 1)}
     ras = {}
-    ambil = lambda href: ras.setdefault(href, buka(HULU + href))
+    ambil = lambda href: ras[href]
+
+    def muat(passes):
+        hrefs = {h for l in passes for k in l["fr"] for h in (k["f"], k["m"]) if h} | {l["r"] for l in passes}
+        hrefs = [h for h in hrefs if h not in ras]
+        with ThreadPoolExecutor(12) as ex:
+            ras.update(zip(hrefs, ex.map(lambda h: buka(HULU + h), hrefs)))
+    muat([l for _, l in cand])
     lintas = lambda l: Lintas([(ambil(k["f"]), ambil(k["m"]) if k["m"] else None) for k in l["fr"]])
     baik = None
     for n, l in cand:
         tot = rangkum(hitung(pt, n, lintas(l), ambil(l["r"])))
         c = cakupan(tot)
-        if baik is None or c > baik[0] + 1e-9:
-            baik = (c, n, l)
-    c, n, l = baik
+        if baik is None or (c, tot[1]) > baik[:2]:
+            baik = (c, tot[1], n, l)
+    c, diamati, n, l = baik
+    if diamati <= 0:   # tak satu bingkai pun menutup kabupaten dalam jendela: bukan "tak banjir", hanya tak teramati
+        return {"status": "tanpa_cakupan", "n_kandidat": len(cand), "luas_ha": round(sum(p[3] for p in pt.p), 1)}
     pra = pilih_pra(kat.ub[n], l)
-    acc = hitung(pt, n, lintas(l), ambil(l["r"]), lintas(pra) if pra else None)
+    if pra:
+        muat([pra])
+    bgn, alasan = grid_bangunan(prov) if prov else (None, "provinsi tak diketahui")
+    sel = {}
+    acc = hitung(pt, n, lintas(l), ambil(l["r"]), lintas(pra) if pra else None, bgn, sel)
     tot = rangkum(acc)
     lat = tot[5] if pra else None
     kec = {nm: [round(x, 1) for x in a[:5]] + [round(a[5], 1) if pra else None, round(a[6], 1) if pra else None]
@@ -531,8 +606,10 @@ def hitung_pasangan(pt, kat, awal, jendela, buka=Raster):
             "pra_tgl": pra["t"] if pra else None, "ubin": n, "n_kandidat": len(cand), "luas_ha": round(tot[0], 1),
             "diamati_ha": round(tot[1], 1), "mask_ha": round(tot[2], 1), "air_ha": round(tot[3], 1), "tergenang_ha": round(tot[4], 1),
             "latar_ha": round(lat, 1) if pra else None, "tergenang_baru_ha": round(tot[6], 1) if pra else None,
-            "cakupan_pct": cakupan(tot), "sinyal_lemah": lemah(tot[4], lat), "fp_item": l["fp"], "anomali": l["an"],
-            "byte": sum(r.rf.byte for r in ras.values()), "kec": kec}
+            "cakupan_pct": cakupan(tot), "sinyal_lemah": lemah(tot[6] if pra else tot[4], lat), "fp_item": l["fp"], "anomali": l["an"],
+            "byte": sum(r.rf.byte for r in ras.values()), "kec": kec,
+            "bangunan_sel": [[ki, i, j] + v for (ki, i, j), v in sorted(sel.items())] if bgn is not None else None,
+            "bangunan_nama": pt.nama, "bangunan_alasan": alasan}
 
 
 # ---------------------------------------------------------------- pasangan
@@ -608,29 +685,30 @@ def luas(a):
         sys.exit("katalog kosong: jalankan `katalog` dulu")
     sudah = muat_hasil()
     pas = (pasangan_aktif() if a.aktif else []) + (pasangan_dibi(a) if a.riwayat else [])
-    mulai, dikerjakan = time.time(), 0
-    for ps in pas:
-        if ps["kunci"] in sudah and not (ps["sumber"] == "aktif" and sudah[ps["kunci"]].get("status") == "tanpa_lintasan"):
-            continue
-        if dikerjakan >= a.anggaran or time.time() - mulai > MAKS_DETIK:
-            print(f"anggaran habis ({dikerjakan} pasangan); lanjut di jalan berikut dari cache", file=sys.stderr)
-            break
+    todo = [ps for ps in pas if ps["kunci"] not in sudah or (ps["sumber"] == "aktif" and sudah[ps["kunci"]].get("status") == "tanpa_lintasan")]
+    if len(todo) > a.anggaran:
+        print(f"anggaran {a.anggaran} dari {len(todo)} pasangan; sisanya di jalan berikut (cache)", file=sys.stderr)
+        todo = todo[:a.anggaran]
+    mulai, kunci = time.time(), threading.Lock()
+
+    def kerja(ps):
+        if time.time() - mulai > MAKS_DETIK:
+            return
         t0 = time.time()
         try:
             kec = kec_kab(ps["prov"], ps["kab"], set(ps["kec"]) if ps["kec"] else None)
-            if not kec:
-                rec = {"status": "tanpa_poligon"}
-            else:
-                rec = hitung_pasangan(Titik(kec), kat, tgl(ps["acuan"]), JENDELA[ps["sumber"]])
-        except RuntimeError as e:
-            print(f"  GAGAL {ps['kunci']}: {e}", file=sys.stderr)
-            continue
+            rec = {"status": "tanpa_poligon"} if not kec else hitung_pasangan(Titik(kec), kat, tgl(ps["acuan"]), JENDELA[ps["sumber"]], prov=ps["prov"])
+        except Exception as e:   # satu pasangan gagal tidak mematikan sisanya; tidak di-cache, diulang jalan berikut
+            print(f"  GAGAL {ps['kunci']}: {type(e).__name__} {e}", file=sys.stderr)
+            return
         rec.update({k: v for k, v in ps.items() if k != "kec"})
-        tambah_hasil(rec)
-        sudah[ps["kunci"]] = rec
-        dikerjakan += 1
-        print(f"  {ps['kunci']}: {rec['status']} {rec.get('tgl', '')[:10]} baru={rec.get('tergenang_baru_ha')} "
-              f"tergenang={rec.get('tergenang_ha')} cakupan={rec.get('cakupan_pct')} lemah={rec.get('sinyal_lemah')} ({time.time() - t0:.0f} dtk)", flush=True)
+        with kunci:
+            tambah_hasil(rec)
+            sudah[ps["kunci"]] = rec
+            print(f"  {ps['kunci']}: {rec['status']} {rec.get('tgl', '')[:10]} baru={rec.get('tergenang_baru_ha')} "
+                  f"tergenang={rec.get('tergenang_ha')} cakupan={rec.get('cakupan_pct')} lemah={rec.get('sinyal_lemah')} ({time.time() - t0:.0f} dtk)", flush=True)
+    with ThreadPoolExecutor(a.paralel) as ex:
+        list(ex.map(kerja, todo))
     terbit(sudah)
 
 
@@ -638,22 +716,36 @@ def luas(a):
 def terbit(hasil=None):
     hasil = hasil if hasil is not None else muat_hasil()
     ok = [h for h in hasil.values() if h.get("status") == "ok"]
+    def bgn_h(h):
+        """-> (total atau None, per kec, alasan). Cache lama tanpa bangunan_sel = belum dihitung."""
+        if h.get("bangunan_sel") is None:
+            alasan = h.get("bangunan_alasan") or grid_bangunan(h["prov"])[1] or "belum dihitung (jalankan ulang pasangan ini)"
+            return None, {}, alasan
+        t, per = hitung_bangunan(h["bangunan_sel"], h["bangunan_nama"])
+        return t, per, None
+
     # label CSV: satu baris per kabupaten-hari yang punya lintasan
     os.makedirs(DIR, exist_ok=True)
     with builtins.open(LABEL, "w", newline="") as g:
         w = csv.writer(g)
-        w.writerow(["prov|kab", "tanggal_lintasan", "tergenang_baru_ha", "diamati_ha", "cakupan_pct", "acuan", "sumber", "tergenang_ha", "sinyal_lemah"])
+        w.writerow(["prov|kab", "tanggal_lintasan", "tergenang_baru_ha", "diamati_ha", "cakupan_pct", "acuan", "sumber", "tergenang_ha", "sinyal_lemah", "bangunan_baru_bawah", "bangunan_baru_atas"])
         for h in sorted(ok, key=lambda h: (h["prov"], h["kab"], h["tgl"])):
+            bt = bgn_h(h)[0]
             w.writerow([f"{h['prov']}|{h['kab']}", h["tgl"][:10], "" if h["tergenang_baru_ha"] is None else h["tergenang_baru_ha"],
                         h["diamati_ha"], h["cakupan_pct"], h["acuan"], h["sumber"], h["tergenang_ha"],
-                        "" if h["sinyal_lemah"] is None else int(h["sinyal_lemah"])])
+                        "" if h["sinyal_lemah"] is None else int(h["sinyal_lemah"]),
+                        *(bt["baru"] if bt else ["", ""])])
 
     def ringkas(h):
+        bt, bper, balasan = bgn_h(h)
         kec = sorted(h["kec"].items(), key=lambda kv: -(kv[1][6] or kv[1][4]))[:12]
         return {"prov": h["prov"], "kab": h["kab"], "acuan": h["acuan"], "lintasan": h["tgl"][:16] + "Z", "pra": (h["pra_tgl"] or "")[:10] or None,
                 "ubin": h["ubin"], "tergenang_ha": h["tergenang_ha"], "tergenang_baru_ha": h["tergenang_baru_ha"], "latar_ha": h["latar_ha"],
                 "diamati_ha": h["diamati_ha"], "mask_ha": h["mask_ha"], "luas_ha": h["luas_ha"], "cakupan_pct": h["cakupan_pct"],
-                "sinyal_lemah": h["sinyal_lemah"], "kec": {n: dict(zip(("luas", "diamati", "mask", "air", "tergenang", "latar", "baru"), v)) for n, v in kec}}
+                "sinyal_lemah": h["sinyal_lemah"],
+                "bangunan": bt if bt is None else {"tergenang_baru": bt["baru"], "tergenang": bt["tergenang"]}, "bangunan_alasan": balasan,
+                "kec": {n: {**dict(zip(("luas", "diamati", "mask", "air", "tergenang", "latar", "baru"), v)),
+                            **({"bangunan_baru": bper[n]["baru"]} if bt is not None and n in bper else {})} for n, v in kec}}
     aktif = {}
     for h in ok:
         if h["sumber"] == "aktif":
@@ -662,15 +754,19 @@ def terbit(hasil=None):
     item = muat_item()
     out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "sumber": ATRIBUSI,
            "_catatan": [
-               "Perkiraan citra radar (Sentinel-1, Copernicus GFM), BUKAN ukur lapangan. Angka luas = BATAS BAWAH.",
+               "Luas = perkiraan radar (Sentinel-1, Copernicus GFM), BUKAN ukur lapangan; cenderung di bawah di permukiman dan hutan (mask). Sawah yang baru dialiri atau ditanami dan tanah basah bisa terhitung tergenang, jadi luas bisa di atas atau di bawah banjir sebenarnya.",
                "Radar buta di kota padat dan lahan terbuka tertentu (exclusion_mask): mask_ha dilaporkan terpisah dan tidak dihitung banjir; cakupan_pct = (diamati - mask) / luas.",
                "Air tetap (reference_water_mask: sungai, danau, tambak) dibuang dari tergenang_ha supaya tidak terhitung banjir.",
                "Lintasan 6-12 hari sekali: banjir singkat yang surut di antara dua lintasan terlewat. Dipilih lintasan dengan cakupan kabupaten terbesar dalam jendela (aktif 0-12 hari, riwayat 0-6 hari sesudah tanggal acuan).",
                "tergenang_baru_ha = tergenang sesudah dan teramati kering di lintasan pra (ubin sama, jam lintas serupa, 8-45 hari sebelumnya); piksel pra tak teramati tidak dihitung baru. null = tak ada lintasan pra.",
-               "sinyal_lemah = tergenang sesudah < 2x tergenang di lintasan pra (latar), atau tak ada genangan. null = tak ada kontrol.",
+               "latar_ha = luas piksel yang teramati di lintasan sesudah (flood != 255), bukan air tetap, dan tergenang (flood == 1) di lintasan pra dengan pra tak ter-mask: domain yang sama dengan tergenang_ha. sinyal_lemah = tergenang_baru_ha <= 0, atau tergenang_baru_ha < 2 x latar_ha. Tanpa lintasan pra: tergenang_ha <= 0 -> true, selain itu null.",
+               "bangunan = jumlah bangunan Google Open Buildings v3 (keyakinan >= 0,70) di sel 110 m yang tergenang, BUKAN rumah dan BUKAN bangunan terendam pasti. Atribusi wajib (CC BY 4.0): Google Open Buildings v3. INDIKATIF, bisa jauh di bawah kenyataan: bangunan di area ter-mask (permukiman padat) tidak terhitung dan radar kurang melihat air di antara bangunan. [bawah, atas] = rentang dengan anggapan sebaran merata di sel 110 m, BUKAN batas terjamin. null = grid bangunan provinsi belum ada.",
                "Sampel titik ~65 m atau lebih lebar pada kabupaten raksasa (tiap 600 rb sampel), bukan hitung piksel penuh; ketelitian ~ beberapa persen luas."],
+           "boleh_tampil": {"luas": True, "bangunan": False,
+                            "alasan_bangunan": "menunggu koreksi permukiman FwDET; Demak 2024 5-12x di bawah DIBI"},
            "katalog": {"item_total": len(item), "per_tahun": per_tahun_item(item)},
-           "n_pasangan": {"ok": len(ok), "tanpa_lintasan": sum(1 for h in hasil.values() if h.get("status") == "tanpa_lintasan")},
+           "n_pasangan": {"ok": len(ok), "tanpa_lintasan": sum(1 for h in hasil.values() if h.get("status") == "tanpa_lintasan"),
+                                  "tanpa_cakupan": sum(1 for h in hasil.values() if h.get("status") == "tanpa_cakupan")},
            "aktif": aktif, "riwayat": riwayat}
     while len(json.dumps(out, ensure_ascii=False, separators=(",", ":"))) > MAKS_BYTE_KELUARAN and out["riwayat"]:
         out["riwayat"].pop()
@@ -699,6 +795,8 @@ def uji():
     assert (g, x0, ya) == ("OC", 4200000, 9000000)
     x, y = maju("OC", 106.8272, -6.1754)
     assert 4_200_000 <= x < 4_500_000 and 8_700_000 <= y < 9_000_000, (x, y)
+    x, y = maju("AS", 101.5, 7.2)   # pusat bingkai AS020M_E051N003T3 (STAC: lon 100,3-102,9, lat 5,9-8,8)
+    assert 5_100_000 <= x < 5_400_000 and 300_000 <= y < 600_000, (x, y)
     for gr, (lo, la) in (("OC", (110.4, -7.0)), ("AS", (96.2, 4.1))):
         k = Kisi(gr, [lo - .3, la - .3, lo + .3, la + .3])
         ex, ey = maju(gr, lo, la)
@@ -715,20 +813,36 @@ def uji():
     titik_poligon([r, [[0.02, 0.02], [0.04, 0.02], [0.04, 0.04], [0.02, 0.04]]], 0.001, 0, h2)
     assert len(h2) == 10000 - 400, len(h2)
     # aritmetika hitung: 2 kecamatan, 3 titik di ubin, satu di luar ubin; kecamatan 0: tergenang, air tetap, mask, tak teramati
+    lo0, la0 = BG.LON0 + .0005, BG.LAT0 + .0005   # titik di sel halus (0, 0)
     class T:
         nama = ["A", "B"]
-        p = [(0, 0, 0, 10.0), (0, 0, 0, 10.0), (0, 0, 0, 10.0), (0, 0, 0, 10.0), (1, 0, 0, 5.0), (1, 0, 0, 5.0)]
+        p = [(0, lo0, la0, 10.0), (0, lo0, la0, 10.0), (0, lo0, la0, 10.0), (0, lo0, la0, 10.0), (1, lo0, la0, 5.0), (1, lo0, la0, 5.0)]
         def xy(self, g):  # (col,row) = (i,0); titik 5 di luar ubin
             return [(4200000 + 20 * i + 1, 9000000 - 1) for i in range(5)] + [(1, 1)]
     f = Palsu({(0, 0): 1, (1, 0): 1, (2, 0): 1, (3, 0): 255, (4, 0): 1}, 0)
     m = Palsu({(1, 0): 1, (4, 0): 1}, 0)           # titik 1 ter-mask, titik 4 ter-mask
     rw = Palsu({(2, 0): 1}, 0)                       # titik 2 air tetap
-    pr = Lintas([(Palsu({(0, 0): 1}, 0), None)])     # titik 0 sudah tergenang sebelumnya
+    pr = Lintas([(Palsu({(0, 0): 1, (3, 0): 1}, 0), None)])     # titik 0 sudah tergenang sebelumnya; titik 3 juga tapi tak teramati sesudah
     a = hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, pr)
     # A: luas 40; diamati 30 (titik 3 = 255); mask 10; air 10; tergenang = hanya titik 0 = 10; latar 10 (titik 0 pra); baru 0
-    assert a[0][:5] == [40.0, 30.0, 10.0, 10.0, 10.0] and a[0][5] == 10.0 and a[0][6] == 0.0, a[0]
+    assert a[0][:5] == [40.0, 30.0, 10.0, 10.0, 10.0] and a[0][5] == 10.0 and a[0][6] == 0.0, a[0]   # latar titik 3 (post 255) tak dihitung: domain sama dengan tergenang
     # B: luas 10 (titik 4 mask, dalam ubin; titik 5 luar ubin), diamati 5, mask 5, tergenang 0
     assert a[1][:5] == [10.0, 5.0, 5.0, 0.0, 0.0], a[1]
+    sl = {}
+    hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, pr, {(0, 0): (7, 100.0)}, sl)
+    assert sl == {(0, 0, 0): [7, 10.0, 0.0]}, sl      # titik 0: tergenang, bukan baru (pra tergenang)
+    sl = {}
+    hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, Lintas([(Palsu({}, 0), None)]), {(0, 0): (7, 100.0), (9, 9): (3, 1.0)}, sl)
+    assert sl == {(0, 0, 0): [7, 10.0, 10.0]}, sl     # tanpa sel berisi bangunan lain
+    # bangunan: sel 110 m (luas A) terbelah dua kecamatan: 0,25 A dan 0,5 A; kab gabung = 0,75 A; atas = n penuh sekali
+    A = ha_sel(5)
+    tb, per = hitung_bangunan([[0, 5, 5, 100, .25 * A, 0.0], [1, 5, 5, 100, .5 * A, 0.0], [0, 6, 6, 10, 3 * A, 0.0]], ["X", "Y"])
+    assert per["X"]["tergenang"] == [round(25 + 10 * min(1, 3 * A / ha_sel(6))), 110], per
+    assert per["Y"]["tergenang"] == [50, 100] and per["Y"]["baru"] == [0, 0]
+    assert tb["tergenang"] == [round(75 + 10), 110], tb      # sel (5,5) tak dihitung dua kali; pecahan dibatasi 1
+    assert hitung_bangunan([], [])[0] == {"tergenang": [0, 0], "baru": [0, 0]}
+    g, alasan = grid_bangunan("99")
+    assert g is None and "99" in alasan   # tanpa grid: null + alasan, bukan 0
     a2 = hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, Lintas([(Palsu({}, 0), None)]))   # pra kering teramati: titik 0 baru
     assert a2[0][4] == 10.0 and a2[0][6] == 10.0 and a2[0][5] == 0.0
     a3 = hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, Lintas([(Palsu({}, 255), None)]))  # pra tak teramati: tak dihitung baru
@@ -738,7 +852,7 @@ def uji():
     assert a4[0][:5] == a[0][:5], a4[0]
     assert cakupan([40, 30, 10, 0, 0, 0, 0]) == 50.0
     # sinyal_lemah
-    assert lemah(0, 5) is True and lemah(9, 5) is True and lemah(10, 5) is False and lemah(10, None) is None
+    assert lemah(0, 0) is True and lemah(0, 5) is True and lemah(9, 5) is True and lemah(10, 5) is False and lemah(10, None) is None
     # pilih_pra: ubin sama, 8-45 hari, jam serupa
     post = {"t": "2024-01-20T22:00:00Z"}
     ks = [{"t": "2024-01-08T22:05:00Z"}, {"t": "2024-01-14T22:05:00Z"}, {"t": "2024-01-08T10:00:00Z"}, {"t": "2023-10-01T22:00:00Z"}]
@@ -794,6 +908,7 @@ def utama():
     p.add_argument("--maks", type=int, default=30)
     p.add_argument("--pilih", nargs="*")
     p.add_argument("--anggaran", type=int, default=40)
+    p.add_argument("--paralel", type=int, default=2, help="pasangan yang dikerjakan bersamaan (server GFM lambat, 3-7 dtk per permintaan)")
     a = p.parse_args()
     if a.mode == "uji":
         uji()
