@@ -10,6 +10,7 @@ import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
 import {PERAN, bersihkanStaf} from "../../src/staf.js";
 import {JENIS, bersihkanPantau} from "../../src/pantau.js";
+import {LAYAR_SIPPA} from "../../src/sippa.js";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
 const uji = berantai();
@@ -79,7 +80,7 @@ uji("daftar peran dan jenis: JS == trigger migrasi == klien (tidak menyimpang)",
   const klien = teks("public/admin/pantau.js");
   for (const p of Object.keys(PERAN)) assert.ok(klien.includes(`${p}:`), "klien tak mengenal peran " + p);
   assert.ok(Object.keys(JENIS).length >= 10);
-  for (const j of Object.values(JENIS)) assert.ok(existsSync(path.join(AKAR, "public", j.tautan.replace(/^\//, "") + ".html")) || j.tautan.startsWith("/admin/"), "tautan layar kerja: " + j.tautan);
+  for (const j of Object.values(JENIS)) assert.ok(existsSync(path.join(AKAR, "public", j.tautan.replace(/^\//, "") + ".html")) || j.tautan.startsWith("/admin/") || (j.tautan.startsWith("/pipa/") && LAYAR_SIPPA.includes(j.tautan.slice(6))), "tautan layar kerja: " + j.tautan);   // /pipa/<layar>: cangkang worker (src/sippa.js), bukan berkas HTML
 });
 
 /* ================================================================ akun */

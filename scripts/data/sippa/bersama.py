@@ -2,8 +2,11 @@
 """SIPPA: statistik, finansial, vonis pilot (DESAIN-TEKNIS §5.5, §5.5.2, §5.6, keputusan 53, SP-019). Stdlib saja.
 Kembar hitung.js; `vonis_pilot` memakai hidraulika.hidraulika untuk butir 4.
 Pakai: python3 scripts/data/sippa/bersama.py uji"""
+import json
 import math
+import os
 import sys
+from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.append(str(Path(__file__).resolve().parent))  # append, bukan insert: `python3 -I` tidak memuat folder skrip
@@ -191,6 +194,37 @@ def vonis_pilot(d):
     gagal = [x["no"] for x in butir if x["lulus"] is not True]
     akhir = "DAPAT DIPAKAI" if not gagal else "BELUM DAPAT DIPAKAI" if (1 in gagal or 6 in gagal) else "DAPAT DIPAKAI BERSYARAT"
     return {"butir": butir, "gagal": gagal, "vonis": akhir}
+
+
+# ---------- keluaran data/sippa/keluaran/*.json (RENCANA-UJI §4.1, DT §7.1) ----------
+MAKS_BYTE = 8 * 1024 * 1024
+KUNCI_KEPALA = ["dibuat", "per", "ambang", "sumber", "catatan"]
+
+
+def kepala(per, ambang, sumber, catatan, versi=None):
+    """Kepala berkas: `dibuat` kunci pertama (syarat /api/status), lalu per, ambang, sumber, catatan."""
+    wib = datetime.now(timezone(timedelta(hours=7))).strftime("%Y-%m-%dT%H:%M+07:00")
+    k = {"dibuat": wib, "per": per, "ambang": ambang, "sumber": sumber, "catatan": catatan}
+    return {**k, "versi": versi} if versi else k
+
+
+def cek_keluaran(doc, nama="keluaran"):
+    """Pemeriksaan umum: kepala berurutan, tanpa NaN/Infinity, <= 8 MB. Mengembalikan teks JSON padat."""
+    assert list(doc)[:5] == KUNCI_KEPALA, f"{nama}: lima kunci pertama {list(doc)[:5]}, wajib {KUNCI_KEPALA}"
+    assert doc["sumber"] and all(s.get("nama") and s.get("lisensi") and s.get("tarik") for s in doc["sumber"]), f"{nama}: sumber wajib nama, lisensi, tarik"
+    teks = json.dumps(doc, ensure_ascii=False, separators=(",", ":"), allow_nan=False)  # NaN/Infinity melempar ValueError
+    assert len(teks.encode()) <= MAKS_BYTE, f"{nama}: {len(teks.encode())} byte melewati 8 MB"
+    return teks
+
+
+def tulis_json(jalur, doc):
+    """Atomik: tulis ke .tmp lalu os.replace."""
+    teks = cek_keluaran(doc, os.path.basename(jalur))
+    os.makedirs(os.path.dirname(jalur), exist_ok=True)
+    with open(jalur + ".tmp", "w", encoding="utf-8") as h:
+        h.write(teks)
+    os.replace(jalur + ".tmp", jalur)
+    return len(teks.encode())
 
 
 def uji():

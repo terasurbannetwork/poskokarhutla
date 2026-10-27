@@ -330,3 +330,34 @@ test("cekButir mengumpulkan semua galat, bukan berhenti di yang pertama", () => 
   assert.equal(h.ok, false);
   assert.deepEqual(h.galat.map(g => g.medan).sort(), ["bbm_l", "jam_pompa", "n_orang"]);
 });
+
+/* SP-094: butir inspeksi operator (keputusan 56). Bukan bagian MEDAN (tidak punya tabel butir sendiri: ia masuk sippa_inspeksi lewat
+   butirInspeksi di src/sippa.js), jadi MEDAN tetap empat jenis; cekButir mengenalinya lewat cekInspeksiLapangan. */
+const INSP = { id: "0123456789abcdef", jenis: "pra_gelar", sasaran_jenis: "komponen", sasaran_id: "0123456789abcdef", skor: 0, waktu_klien: 1761000000000 };
+test("cekInspeksiLapangan: butir minimal sah diterima lewat cekButir; MEDAN tetap empat jenis tanpa inspeksi", () => {
+  ok("inspeksi", INSP); ok("inspeksi", { ...INSP, jenis: "pasca_gelar", sasaran_jenis: "kit", skor: 3, jam_operasi: 12.5, temuan: "selang bocor", tindakan: "perbaiki" });
+  assert.deepEqual(Object.keys(MEDAN).sort(), ["bbm", "gerak", "log", "probe"]);
+  assert.equal(typeof F.cekInspeksiLapangan, "function");
+});
+
+test("cekInspeksiLapangan: yang salah DITOLAK per medan (jenis staf, sasaran aset, skor 4, id sasaran liar, tindakan liar, temuan panjang, jam negatif, medan liar)", () => {
+  tolak("inspeksi", { ...INSP, jenis: "berkala" }, "jenis");          // hanya staf
+  tolak("inspeksi", { ...INSP, jenis: "mutu_air" }, "jenis");
+  tolak("inspeksi", { ...INSP, sasaran_jenis: "aset" }, "sasaran_jenis");
+  tolak("inspeksi", { ...INSP, sasaran_id: "xyz" }, "sasaran_id");
+  tolak("inspeksi", { ...INSP, skor: 4 }, "skor"); tolak("inspeksi", { ...INSP, skor: -1 }, "skor"); tolak("inspeksi", { ...INSP, skor: 1.5 }, "skor"); tolak("inspeksi", { ...INSP, skor: "0" }, "skor");
+  tolak("inspeksi", { ...INSP, tindakan: "bakar" }, "tindakan");
+  tolak("inspeksi", { ...INSP, temuan: "x".repeat(1001) }, "temuan");
+  tolak("inspeksi", { ...INSP, jam_operasi: -1 }, "jam_operasi"); tolak("inspeksi", { ...INSP, jam_operasi: 100001 }, "jam_operasi");
+  tolak("inspeksi", { ...INSP, kit_id: "0123456789abcdef" }, "kit_id");   // kit tugas ditentukan server
+  for (const k of ["id", "jenis", "sasaran_jenis", "sasaran_id", "skor"]) { const { [k]: _, ...sisa } = INSP; tolak("inspeksi", sisa, k); }
+  assert.equal(cekButir("inspeksi", null).ok, false); assert.equal(cekButir("inspeksi", []).ok, false);
+});
+
+test("INSPEKSI_LAPANGAN: tindakan sama dengan CHECK sippa_inspeksi di 0059; jenis operator = JENIS_LAPANGAN di src/sippa.js", () => {
+  const sql = readFileSync(new URL("../../migrations/0059_sippa_aset_pelihara.sql", import.meta.url), "utf8");
+  const cek = /tindakan IN \(([^)]*)\)/.exec(sql); assert.ok(cek, "CHECK tindakan tidak ditemukan di 0059");
+  assert.deepEqual([...F.INSPEKSI_LAPANGAN.tindakan].sort(), [...cek[1].matchAll(/'([a-z_]+)'/g)].map(m => m[1]).sort());
+  const kode = readFileSync(new URL("../../src/sippa.js", import.meta.url), "utf8"), jl = /JENIS_LAPANGAN = \[([^\]]*)\]/.exec(kode);
+  assert.ok(jl, "JENIS_LAPANGAN tidak ditemukan"); assert.deepEqual([...F.INSPEKSI_LAPANGAN.jenis].sort(), [...jl[1].matchAll(/"([a-z_]+)"/g)].map(m => m[1]).sort());
+});

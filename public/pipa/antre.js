@@ -52,7 +52,7 @@ const lihat = tugas_id => tugas_id == null ? () => true : milik(tugas_id);
 export const idbSiap = async () => !!(await pakaiDb());
 export const kodeTersimpan =() => { try { return simpan().getItem(LS_KODE); } catch { return null; } };
 
-/* butir = {jenis: log|probe|bbm|gerak, data, tugas_id}; opsi.lengan_dalam dari tugas. Mengembalikan {ok, id} atau {ok:false, galat|pesan}. */
+/* butir = {jenis: log|probe|bbm|gerak|inspeksi, data, tugas_id}; opsi.lengan_dalam dari tugas. Mengembalikan {ok, id} atau {ok:false, galat|pesan}. */
 export async function tambah({jenis, data, tugas_id = null}, opsi = {}) {
   const id = data?.id || globalThis.crypto.randomUUID();
   const isi = {...data, id};
@@ -144,7 +144,7 @@ async function jalan(sekarang, tugas_id, kodeOpsi) {
   /* 2. butir: paling banyak 200 per panggilan, urut dibuat */
   const tolak = async (b, alasan) => { await taruhButir({...b, keadaan: "ditolak", alasan}); h.ditolak++; };
   async function kirimSet(list) {
-    const badan = {jam_kirim: Date.now(), log: [], probe: [], bbm: [], gerak: []};
+    const badan = {jam_kirim: Date.now(), log: [], probe: [], bbm: [], gerak: [], inspeksi: []};   // inspeksi pra/pasca gelar (SP-094)
     for (const b of list) badan[b.jenis].push(b.data);
     let r;
     try { r = await fetch("/api/sippa/lapangan/kirim", {method: "POST", headers: {"x-kode": kode, "content-type": "application/json"}, body: JSON.stringify(badan)}); }

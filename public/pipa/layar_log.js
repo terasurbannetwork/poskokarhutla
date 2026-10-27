@@ -2,6 +2,7 @@
    Butuh global public/inti: fmt, esc, jamWIB, Kartu, paginasi, pengurutKepala, nanti (dimuat cangkang atau app.js). Logika murni di atas, DOM di bawah. */
 import {durasiLog, kuantil, nKecil} from "./hitung.js";
 import {memuat, kosong, galat} from "./keadaan.js";
+import {tanggalHtml, pasangTanggal} from "./tanggal.js";
 
 const KELAS = ["I", "II", "III"];
 /* ambang G3 (PRD §4.4): tiba sampai air mengalir, jam; label asumsi-kebijakan */
@@ -11,10 +12,19 @@ const HIPOTESIS_STUDIO = [22, 27];
 const JENIS = {karhutla: "Karhutla", banjir: "Banjir", latihan: "Latihan"};
 const PER_HAL = 50;
 
-/* baris rekap: tanpa dummy dan tanpa log yang sudah punya penerus koreksi (koreksi = baris baru dengan koreksi_dari, jejak utuh) */
-export function barisAktif(log) {
+/* log tanpa yang sudah punya penerus koreksi (koreksi = baris baru dengan koreksi_dari, jejak utuh). Dummy TIDAK dibuang di klien:
+   server sudah menyaringnya per peran (lihatDummy), jadi yang sampai ke sini memang boleh dilihat peran ini. */
+export function barisKoreksi(log) {
   const dikoreksi = new Set(log.map(l => l.koreksi_dari).filter(Boolean));
-  return log.filter(l => !l.dummy && !dikoreksi.has(l.id));
+  return log.filter(l => !dikoreksi.has(l.id));
+}
+/* catatan: barisAktif lama (membuang dummy di klien) dipertahankan karena satu uji lama masih menjaganya; layar memakai barisKoreksi */
+/* dummy tidak disaring di klien: GET /api/sippa/log sudah menyaringnya per peran (lihatDummy) */
+export const barisAktif = barisKoreksi;
+
+/* baris yang tampil: koreksi dibuang, lalu jenis, provinsi (baris tanpa prov lolos), dan hanya-meleset */
+export function pilihBaris(log, st, prov) {
+  return barisKoreksi(log).filter(l => st.jenis.has(l.jenis) && (l.prov == null || !prov || l.prov === prov) && (!st.meleset || l.jam_klien_meleset === 1));
 }
 
 /* per kelas: n ulangan (yang punya tiba sampai air mengalir), p50 dan p90 dalam jam, kecil = n < 5, meleset = jumlah dengan jam perangkat meleset, titik untuk grafik */
@@ -78,29 +88,25 @@ let ctrl = null;
 export function lepas() { ctrl?.abort(); ctrl = null; }
 
 export async function pasang(akar, konteks) {
-  lepas(); ctrl = new AbortController();
+  lepas(); ctrl = new AbortController(); pasangTanggal();
   const sinyal = ctrl.signal;
   const st = {jenis: new Set(Object.keys(JENIS)), dari: "", sampai: "", meleset: false, urut: "t_tiba", turun: true, hal: 0, log: []};
   akar.innerHTML = `<h1 class="sp-judul">Rekap time-motion</h1>
     <div class="sp-kontrol" role="group" aria-label="Penyaring log">
       <div class="sp-chips" role="group" aria-label="Jenis">${Object.entries(JENIS).map(([k, n]) => `<button type="button" class="ad-chip" data-jenis="${k}" aria-pressed="true">${n}</button>`).join("")}<button type="button" class="ad-chip" data-meleset aria-pressed="false">Hanya jam meleset</button></div>
-      <label class="sp-tgl">Dari <input type="date" data-tgl="dari"></label><label class="sp-tgl">Sampai <input type="date" data-tgl="sampai"></label>
+      <label class="sp-tgl">Dari ${tanggalHtml({label: "Dari", atribut: 'data-tgl="dari"'})}</label><label class="sp-tgl">Sampai ${tanggalHtml({label: "Sampai", atribut: 'data-tgl="sampai"'})}</label>
       <a class="ad-tombol" data-csv href="/api/sippa/log.csv">Unduh CSV</a></div>
     <div id="sp-log-isi"></div>`;
   const isi = akar.querySelector("#sp-log-isi");
 
-  const pilihBaris = () => {
-    const prov = konteks.prov;
-    return barisAktif(st.log).filter(l => st.jenis.has(l.jenis) && (l.prov == null || !prov || l.prov === prov) && (!st.meleset || l.jam_klien_meleset === 1));
-  };
   /* satu gambar ulang antre sekaligus: klik beruntun tidak menumpuk kerja berat (pola laporan.js) */
   let terjadwal = false;
   const jadwalkanGambar = () => { if (terjadwal) return; terjadwal = true; nanti(() => { terjadwal = false; gambar(); }); };
   const gambar = () => {
     if (sinyal.aborted) return;
-    const rows = pilihBaris();
+    const rows = pilihBaris(st.log, st, konteks.prov);
     if (!st.log.length) { isi.replaceChildren(kosong("Belum ada log gelar. Log masuk dari form lapangan /pipa/lapangan atau entri staf dari formulir kertas.")); return; }
-    const rek = rekapKelas(rows), per = perData(barisAktif(st.log));
+    const rek = rekapKelas(rows), per = perData(barisKoreksi(st.log));
     konteks.setPer?.(per);
     const urut = [...rows].sort((a, b) => { const x = nilaiUrut(a, st.urut), y = nilaiUrut(b, st.urut); return (x == null) - (y == null) || (x > y ? 1 : x < y ? -1 : 0) * (st.turun ? -1 : 1); });
     const hal = Math.min(st.hal, Math.max(0, Math.ceil(urut.length / PER_HAL) - 1)), potong = urut.slice(hal * PER_HAL, (hal + 1) * PER_HAL);

@@ -93,6 +93,7 @@ ulang yang berubah.
 | Layar publik        | `public/index.html`, `public/*.js/css`, i18n, OG              | Cloudflare static assets; `terbit.yml`              | `layar-peta`    |
 | Modifikasi cuaca    | `scripts/omc/**`, `public/omc/**`                             | `public/udara/data/omc_*.json`; dirantai di `udara.yml` | `cuaca-udara`   |
 | SIPPA `/pipa`       | `public/pipa/**`, `tests/sippa/**` (layar); `src/sippa.js`, `migrations/0055-0057` (warga-api); `scripts/data/sippa/**` (pipa-data) | R2 `sippa/`, D1 `sippa_*`; pemicu harian di `data.yml` | `sippa`         |
+| Neraca air Jawa     | `scripts/air/neraca/**`, `data/kajian-bnpb/neraca-air/**`     | `public/data/neraca_air/*.json`; lokal, iklim ERA5-Land ditarik bertahap (belum ada workflow) | `neraca-air`    |
 | Mesin repo          | `.github/workflows/**`, `package.json`, `scripts/agents/**`   | —                                                   | `mekanik-mesin` |
 | Gerbang             | `tests/agen/**`, `tests/beban/**`                             | `npm run uji:agen`                                  | `penulis-gerbang` |
 

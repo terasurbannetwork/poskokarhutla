@@ -1,0 +1,866 @@
+id,kab,daops_kode,daops_nama,daops_garis_km,posko_kode,posko_nama,posko_garis_km,daops_rute_kode,daops_rute_jam,jam_tiba,jam_tiba_batas_atas,jam_tiba_alasan
+K0001,Seruyan,PKB-05,Daops Pangkalanbun,74.2,A117,Desa Muara Dua,10.5,PKB-05,11.5,,5.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0003,Seruyan,PKB-05,Daops Pangkalanbun,78.9,A003,Desa Sungai Perlu,14.3,PKB-05,16.4,,5.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0007,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,82.9,A004,Desa Sungai Cabang,16.5,,,,7.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0008,Kapuas,KPS-05,Daops Kapuas,55.9,A007,Desa Sakakajang,19.2,KPS-05,3.4,2.6,,
+K0009,Katingan,PLK-05,Daops Palangkaraya,91.9,A014,Desa Mendawai,16.5,PLK-05,12.4,,3.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0010,Kapuas,PLK-05,Daops Palangkaraya,66.8,A002,Desa Sei Ahas,12.4,KPS-05,3.9,1.8,,
+K0013,Pulang Pisau,KPS-05,Daops Kapuas,39.0,A007,Desa Sakakajang,17.0,KPS-05,3.5,,2.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0012,Pulang Pisau,KPS-05,Daops Kapuas,46.6,A007,Desa Sakakajang,22.0,KPS-05,6.4,,3.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0011,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,69.2,A004,Desa Sungai Cabang,2.9,,,,8.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0020,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,10.8,A074,Desa Lada Mandala Jaya,29.0,PKB-05,1.5,1.5,,
+K0024,Katingan,PLK-05,Daops Palangkaraya,57.5,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",27.1,PLK-05,3.6,1.9,,
+K0026,Kapuas,PLK-05,Daops Palangkaraya,32.8,T001,"Desa Lahei Mangkutup, Kec. Mantangai",12.2,PLK-05,4.2,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0021,Pulang Pisau,PLK-05,Daops Palangkaraya,70.7,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",11.2,KPS-05,6.8,,1.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0014,Seruyan,PKB-05,Daops Pangkalanbun,115.1,A010,Desa Sembuluh I,22.0,PKB-05,5.8,1.6,,
+K0016,Seruyan,PKB-05,Daops Pangkalanbun,110.3,A010,Desa Sembuluh I,20.3,PKB-05,6.1,1.9,,
+K0025,Kotawaringin Timur,PLK-05,Daops Palangkaraya,104.4,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",16.3,PLK-05,6.3,1.6,,
+K0035,Katingan,PLK-05,Daops Palangkaraya,65.9,A016,Desa Jahanjang,25.5,PLK-05,6.1,,4.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0038,Pulang Pisau,PLK-05,Daops Palangkaraya,51.7,A007,Desa Sakakajang,10.7,PLK-05,3.1,1.5,,
+K0041,Pulang Pisau,KPS-05,Daops Kapuas,49.3,A007,Desa Sakakajang,7.5,KPS-05,3.0,0.8,,
+K0031,Kotawaringin Timur,PLK-05,Daops Palangkaraya,116.5,A027,Desa Samuda Kota,18.2,PLK-05,8.0,1.9,,
+K0044,Kota Palangkaraya,PLK-05,Daops Palangkaraya,32.3,A028,Desa Petuk Bukit,17.3,PLK-05,1.0,0.9,,
+K0027,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,152.2,T007,"Desa Lampuyang, Kec. Teluk Sampit",14.1,PLK-05,7.4,1.7,,
+K0072,Katingan,PLK-05,Daops Palangkaraya,70.3,A006,Desa Galinggang,11.4,PLK-05,8.1,1.1,,
+K0074,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,36.0,T024,"Desa Kinjil, Kec. Kotawaringin Lama",17.8,PKB-05,3.0,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0039,Katingan,KPS-05,Daops Kapuas,110.4,A014,Desa Mendawai,20.7,KPS-05,13.4,,4.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0048,Pulang Pisau,KPS-05,Daops Kapuas,45.6,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",24.6,KPS-05,5.7,,3.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0054,Pulang Pisau,KPS-05,Daops Kapuas,40.6,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",21.4,KPS-05,4.0,,2.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0075,Seruyan,PKB-05,Daops Pangkalanbun,87.9,A004,Desa Sungai Cabang,18.1,,,,5.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0050,Kotawaringin Timur,PLK-05,Daops Palangkaraya,119.4,A014,Desa Mendawai,27.4,PLK-05,9.3,,3.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0055,Katingan,PLK-05,Daops Palangkaraya,104.0,A014,Desa Mendawai,7.4,PLK-05,11.9,,2.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0090,Kota Palangkaraya,PLK-05,Daops Palangkaraya,26.3,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",16.1,PLK-05,0.9,0.9,,
+K0081,Katingan,PLK-05,Daops Palangkaraya,69.5,A006,Desa Galinggang,10.1,PLK-05,9.8,1.5,,
+K0076,Kapuas,PLK-05,Daops Palangkaraya,44.2,T001,"Desa Lahei Mangkutup, Kec. Mantangai",19.1,PLK-05,4.0,1.9,,
+K0046,Seruyan,PKB-05,Daops Pangkalanbun,124.0,A027,Desa Samuda Kota,19.4,PKB-05,7.8,3.5,,
+K0073,Pulang Pisau,PLK-05,Daops Palangkaraya,70.0,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",22.2,KPS-05,7.8,4.1,,
+K0064,Pulang Pisau,PLK-05,Daops Palangkaraya,76.3,A101,Desa Sebangau Jaya,16.8,KPS-05,7.8,,3.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0098,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,29.1,T024,"Desa Kinjil, Kec. Kotawaringin Lama",18.4,PKB-05,1.4,1.2,,
+K0111,Katingan,PLK-05,Daops Palangkaraya,56.0,A028,Desa Petuk Bukit,17.2,PLK-05,1.5,0.9,,
+K0084,Kapuas,PLK-05,Daops Palangkaraya,82.0,A017,Desa Lungkuh Layang,10.5,PLK-05,3.5,1.4,,
+K0128,Kota Palangkaraya,PLK-05,Daops Palangkaraya,11.0,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",22.2,PLK-05,0.5,0.5,,
+K0094,Katingan,PLK-05,Daops Palangkaraya,65.1,A016,Desa Jahanjang,23.2,PLK-05,6.7,,3.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0129,Kota Palangkaraya,PLK-05,Daops Palangkaraya,18.9,A007,Desa Sakakajang,31.2,PLK-05,1.3,1.3,,
+K0105,Kapuas,KPS-05,Daops Kapuas,70.0,A119,Desa Mantangai Tengah,10.7,KPS-05,5.6,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0107,Katingan,PLK-05,Daops Palangkaraya,109.8,A014,Desa Mendawai,11.3,PLK-05,11.3,1.0,,
+K0113,Kapuas,PLK-05,Daops Palangkaraya,40.3,A002,Desa Sei Ahas,19.7,PLK-05,6.1,,4.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0161,Pulang Pisau,PLK-05,Daops Palangkaraya,50.0,A002,Desa Sei Ahas,10.8,PLK-05,5.6,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0104,Kotawaringin Timur,PLK-05,Daops Palangkaraya,111.9,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",12.7,PLK-05,6.4,1.1,,
+K0118,Kotawaringin Timur,PLK-05,Daops Palangkaraya,118.1,A027,Desa Samuda Kota,16.4,PLK-05,8.0,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0157,Katingan,PLK-05,Daops Palangkaraya,58.8,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",15.9,PLK-05,1.8,0.9,,
+K0087,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,126.8,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",15.9,PKB-05,5.3,1.9,,
+K0145,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,18.4,A074,Desa Lada Mandala Jaya,19.6,PKB-05,1.8,1.8,,
+K0202,Kotawaringin Timur,PLK-05,Daops Palangkaraya,116.8,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",25.3,PLK-05,4.9,1.8,,
+K0178,Kota Palangkaraya,PLK-05,Daops Palangkaraya,44.3,A028,Desa Petuk Bukit,6.7,PLK-05,1.4,0.7,,
+K0140,Kotawaringin Timur,PLK-05,Daops Palangkaraya,112.3,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",17.0,PLK-05,7.5,,2.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0141,Katingan,PLK-05,Daops Palangkaraya,78.2,A006,Desa Galinggang,9.3,PLK-05,8.4,1.4,,
+K0166,Kota Palangkaraya,PLK-05,Daops Palangkaraya,15.3,A038,Desa Tuwung,27.5,PLK-05,0.6,0.6,,
+K0150,Katingan,PLK-05,Daops Palangkaraya,45.7,A016,Desa Jahanjang,26.2,PLK-05,4.6,3.0,,
+K0133,Kapuas,PLK-05,Daops Palangkaraya,71.5,A119,Desa Mantangai Tengah,5.0,KPS-05,5.0,0.8,,
+K0169,Pulang Pisau,KPS-05,Daops Kapuas,36.9,T152,"Desa Pantai, Kec. Kapuas Barat",15.7,KPS-05,1.2,0.7,,
+K0152,Kapuas,PLK-05,Daops Palangkaraya,51.2,A002,Desa Sei Ahas,20.2,PLK-05,4.8,2.1,,
+K0163,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,139.4,T007,"Desa Lampuyang, Kec. Teluk Sampit",5.9,PLK-05,7.8,1.6,,
+K0146,Seruyan,PKB-05,Daops Pangkalanbun,78.6,A117,Desa Muara Dua,3.0,PKB-05,8.4,,2.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0171,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,44.0,A087,Desa Teluk Pulai,12.2,PKB-05,9.2,,2.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0170,Kota Palangkaraya,PLK-05,Daops Palangkaraya,24.4,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",12.0,PLK-05,1.3,1.3,,
+K0182,Kota Palangkaraya,PLK-05,Daops Palangkaraya,23.1,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",19.4,PLK-05,1.7,1.7,,
+K0173,Katingan,KPS-05,Daops Kapuas,86.1,A101,Desa Sebangau Jaya,3.9,KPS-05,8.8,0.8,,
+K0193,Pulang Pisau,PLK-05,Daops Palangkaraya,31.7,A038,Desa Tuwung,19.8,PLK-05,4.0,,3.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0188,Kota Palangkaraya,PLK-05,Daops Palangkaraya,10.0,A038,Desa Tuwung,23.3,PLK-05,0.4,0.4,,
+K0130,Kotawaringin Timur,PLK-05,Daops Palangkaraya,132.9,A027,Desa Samuda Kota,9.8,PLK-05,5.3,0.7,,
+K0168,Seruyan,PKB-05,Daops Pangkalanbun,115.4,A010,Desa Sembuluh I,29.8,PKB-05,7.0,,2.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0186,Katingan,PLK-05,Daops Palangkaraya,62.3,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",17.3,PLK-05,2.6,1.9,,
+K0212,Kotawaringin Timur,PLK-05,Daops Palangkaraya,120.1,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",21.0,PKB-05,5.2,1.5,,
+K0287,Kota Palangkaraya,PLK-05,Daops Palangkaraya,17.8,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",7.6,PLK-05,0.7,0.7,,
+K0281,Katingan,PLK-05,Daops Palangkaraya,83.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",17.1,PLK-05,3.1,1.6,,
+K0156,Seruyan,PKB-05,Daops Pangkalanbun,122.9,A040,Desa Kuala Pembuang I,16.3,PLK-05,8.7,2.0,,
+K0189,Barito Selatan,KPS-05,Daops Kapuas,85.0,A119,Desa Mantangai Tengah,12.2,KPS-05,6.5,2.7,,
+K0311,Kota Palangkaraya,PLK-05,Daops Palangkaraya,14.5,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",6.0,PLK-05,0.6,0.5,,
+K0261,Kapuas,MTW-05,Daops Muara Teweh,87.3,A017,Desa Lungkuh Layang,8.7,PLK-05,3.9,1.4,,
+K0290,Pulang Pisau,PLK-05,Daops Palangkaraya,48.2,A007,Desa Sakakajang,14.8,PLK-05,3.0,1.9,,
+K0232,Seruyan,PKB-05,Daops Pangkalanbun,114.6,A040,Desa Kuala Pembuang I,3.9,PLK-05,9.0,1.1,,
+K0435,Seruyan,PKB-05,Daops Pangkalanbun,84.9,T035,"Desa Terawan, Kec. Seruyan Raya",13.9,PKB-05,4.6,1.4,,
+K0274,Kapuas,PLK-05,Daops Palangkaraya,71.2,A100,Desa Sei Gawing,18.8,PLK-05,3.7,1.9,,
+K0303,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,74.6,A004,Desa Sungai Cabang,10.0,,,,8.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0443,Pulang Pisau,KPS-05,Daops Kapuas,46.0,A007,Desa Sakakajang,11.6,KPS-05,3.7,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0317,Kota Palangkaraya,PLK-05,Daops Palangkaraya,21.5,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",14.2,PLK-05,0.6,0.6,,
+K0301,Katingan,PLK-05,Daops Palangkaraya,68.8,A006,Desa Galinggang,23.9,PLK-05,7.5,2.5,,
+K0225,Seruyan,PKB-05,Daops Pangkalanbun,89.1,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",7.9,PKB-05,6.8,0.9,,
+K0369,Kota Palangkaraya,PLK-05,Daops Palangkaraya,19.8,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",7.0,PLK-05,1.0,0.7,,
+K0381,Pulang Pisau,PLK-05,Daops Palangkaraya,22.3,A007,Desa Sakakajang,27.5,PLK-05,2.3,2.3,,
+K0422,Pulang Pisau,KPS-05,Daops Kapuas,42.9,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",18.8,KPS-05,4.2,2.0,,
+K0235,Seruyan,PKB-05,Daops Pangkalanbun,96.3,A117,Desa Muara Dua,18.5,PKB-05,10.8,,3.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0238,Seruyan,PKB-05,Daops Pangkalanbun,112.1,A040,Desa Kuala Pembuang I,9.1,PLK-05,9.7,1.7,,
+K0254,Kotawaringin Timur,PLK-05,Daops Palangkaraya,134.5,A027,Desa Samuda Kota,7.6,PLK-05,6.1,1.2,,
+K0375,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,53.7,A087,Desa Teluk Pulai,16.3,PKB-05,11.9,,5.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0353,Katingan,PLK-05,Daops Palangkaraya,54.9,A016,Desa Jahanjang,25.2,PLK-05,3.8,2.1,,
+K0447,Seruyan,PKB-05,Daops Pangkalanbun,61.0,A048,Desa Pembuang Hulu I,23.7,PKB-05,3.9,2.0,,
+K0438,Pulang Pisau,KPS-05,Daops Kapuas,46.6,A007,Desa Sakakajang,11.5,KPS-05,1.9,1.4,,
+K0399,Sukamara,PKB-05,Daops Pangkalanbun,78.1,A085,Desa Kuala Jelai,20.6,PKB-05,7.4,,4.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0324,Seruyan,PKB-05,Daops Pangkalanbun,76.1,A080,Desa Sukarami,23.7,PKB-05,3.4,1.8,,
+K0460,Katingan,PLK-05,Daops Palangkaraya,63.2,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",11.7,PLK-05,2.0,1.0,,
+K0469,Kota Palangkaraya,PLK-05,Daops Palangkaraya,48.2,A028,Desa Petuk Bukit,10.6,PLK-05,1.6,1.0,,
+K0672,Barito Selatan,MTW-05,Daops Muara Teweh,60.1,A021,Desa Pendang,1.9,PLK-05,4.5,0.7,,
+K0352,Kapuas,PLK-05,Daops Palangkaraya,64.0,T001,"Desa Lahei Mangkutup, Kec. Mantangai",19.8,PLK-05,5.4,3.3,,
+K0565,Pulang Pisau,PLK-05,Daops Palangkaraya,18.9,A038,Desa Tuwung,1.9,PLK-05,1.6,1.1,,
+K0370,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,52.6,A087,Desa Teluk Pulai,18.1,PKB-05,11.3,,5.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0336,Seruyan,PKB-05,Daops Pangkalanbun,75.0,A048,Desa Pembuang Hulu I,22.3,PKB-05,3.1,1.2,,
+K0249,Seruyan,PKB-05,Daops Pangkalanbun,121.7,A040,Desa Kuala Pembuang I,23.4,PLK-05,10.1,3.0,,
+K0297,Kapuas,PLK-05,Daops Palangkaraya,63.8,T001,"Desa Lahei Mangkutup, Kec. Mantangai",24.8,PLK-05,5.4,2.8,,
+K0760,Kota Palangkaraya,PLK-05,Daops Palangkaraya,60.3,A028,Desa Petuk Bukit,17.3,PLK-05,2.7,,2.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0635,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,26.7,A087,Desa Teluk Pulai,25.9,PKB-05,3.0,2.2,,
+K0354,Pulang Pisau,KPS-05,Daops Kapuas,63.7,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",22.0,KPS-05,5.5,,2.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0676,Kapuas,KPS-05,Daops Kapuas,34.3,T152,"Desa Pantai, Kec. Kapuas Barat",10.1,KPS-05,1.9,0.9,,
+K0431,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,146.4,T007,"Desa Lampuyang, Kec. Teluk Sampit",6.2,PLK-05,7.2,1.4,,
+K0482,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,26.7,A087,Desa Teluk Pulai,20.6,PKB-05,3.5,,3.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0642,Pulang Pisau,KPS-05,Daops Kapuas,44.6,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",16.8,KPS-05,3.5,1.3,,
+K0491,Pulang Pisau,KPS-05,Daops Kapuas,44.9,A063,Desa Batanjung,10.6,KPS-05,4.6,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0508,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,29.9,A074,Desa Lada Mandala Jaya,22.9,PKB-05,3.2,2.7,,
+K0598,Kota Palangkaraya,PLK-05,Daops Palangkaraya,9.5,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",7.0,PLK-05,0.3,0.3,,
+K0617,Seruyan,PKB-05,Daops Pangkalanbun,74.5,A117,Desa Muara Dua,20.4,PKB-05,5.6,2.1,,
+K0660,Kapuas,KPS-05,Daops Kapuas,27.6,T152,"Desa Pantai, Kec. Kapuas Barat",8.2,KPS-05,1.5,0.9,,
+K0616,Kota Palangkaraya,PLK-05,Daops Palangkaraya,9.7,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",5.3,PLK-05,0.6,0.6,,
+K0356,Seruyan,PKB-05,Daops Pangkalanbun,121.5,A027,Desa Samuda Kota,24.9,PKB-05,7.5,3.3,,
+K0383,Seruyan,PKB-05,Daops Pangkalanbun,126.4,T007,"Desa Lampuyang, Kec. Teluk Sampit",19.3,PKB-05,7.8,3.5,,
+K0594,Pulang Pisau,KPS-05,Daops Kapuas,59.9,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",6.4,KPS-05,5.3,0.8,,
+K0500,Kota Palangkaraya,PLK-05,Daops Palangkaraya,19.1,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",11.3,PLK-05,0.5,0.5,,
+K0890,Pulang Pisau,PLK-05,Daops Palangkaraya,50.6,A007,Desa Sakakajang,15.9,PLK-05,3.5,,2.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0562,Kapuas,PLK-05,Daops Palangkaraya,67.6,T001,"Desa Lahei Mangkutup, Kec. Mantangai",23.1,PLK-05,4.7,2.8,,
+K0458,Katingan,PLK-05,Daops Palangkaraya,91.1,A006,Desa Galinggang,19.3,PLK-05,11.7,2.1,,
+K0712,Kapuas,KPS-05,Daops Kapuas,46.8,T152,"Desa Pantai, Kec. Kapuas Barat",26.8,KPS-05,1.6,1.6,,
+K0797,Katingan,PLK-05,Daops Palangkaraya,83.9,A006,Desa Galinggang,17.1,PLK-05,11.7,2.0,,
+K0871,Kapuas,KPS-05,Daops Kapuas,23.6,A081,Desa Panamas,17.2,KPS-05,2.4,2.2,,
+K0620,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,23.0,A087,Desa Teluk Pulai,40.5,PKB-05,1.9,1.9,,
+K0663,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,20.9,T024,"Desa Kinjil, Kec. Kotawaringin Lama",21.5,PKB-05,1.9,,1.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0858,Pulang Pisau,PLK-05,Daops Palangkaraya,31.8,A038,Desa Tuwung,13.8,PLK-05,1.0,0.8,,
+K0534,Seruyan,PKB-05,Daops Pangkalanbun,102.3,A040,Desa Kuala Pembuang I,16.8,PKB-05,9.2,2.0,,
+K1008,Kapuas,KPS-05,Daops Kapuas,15.1,T002,"Desa Tambun Raya, Kec. Basarang",7.0,KPS-05,1.2,1.1,,
+K0709,Pulang Pisau,PLK-05,Daops Palangkaraya,27.7,A038,Desa Tuwung,8.7,PLK-05,1.7,1.5,,
+K0779,Seruyan,PKB-05,Daops Pangkalanbun,68.4,A048,Desa Pembuang Hulu I,10.3,PKB-05,3.6,1.5,,
+K0743,Kota Palangkaraya,PLK-05,Daops Palangkaraya,10.3,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",23.1,PLK-05,0.3,0.3,,
+K0511,Seruyan,PKB-05,Daops Pangkalanbun,107.6,A010,Desa Sembuluh I,16.1,PKB-05,5.7,1.5,,
+K0502,Seruyan,PKB-05,Daops Pangkalanbun,124.3,A027,Desa Samuda Kota,22.6,PKB-05,7.5,3.3,,
+K0544,Kapuas,PLK-05,Daops Palangkaraya,77.1,A017,Desa Lungkuh Layang,16.0,PLK-05,3.8,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0556,Kapuas,PLK-05,Daops Palangkaraya,38.7,T001,"Desa Lahei Mangkutup, Kec. Mantangai",18.0,PLK-05,4.2,,2.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0688,Pulang Pisau,KPS-05,Daops Kapuas,41.6,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",26.0,KPS-05,4.9,3.8,,
+K0896,Seruyan,PKB-05,Daops Pangkalanbun,65.1,A048,Desa Pembuang Hulu I,6.6,PKB-05,3.2,1.2,,
+K0974,Barito Timur,MTW-05,Daops Muara Teweh,106.4,T064,"Desa Kupang Bersih, Kec. Pematang Karau",9.1,MTW-05,4.1,0.9,,
+K0484,Gunung Mas,PLK-05,Daops Palangkaraya,77.0,T124,"Desa Belawan Mulia, Kec. Manuhing",24.7,PLK-05,2.0,0.9,,
+K0515,Kapuas,PLK-05,Daops Palangkaraya,55.2,T001,"Desa Lahei Mangkutup, Kec. Mantangai",15.1,PLK-05,5.2,3.3,,
+K0543,Kapuas,PLK-05,Daops Palangkaraya,67.1,A119,Desa Mantangai Tengah,9.1,KPS-05,5.8,,2.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0683,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,22.3,A087,Desa Teluk Pulai,44.6,PKB-05,3.3,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0862,Katingan,PLK-05,Daops Palangkaraya,68.5,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",29.3,PLK-05,6.3,,4.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0622,Pulang Pisau,KPS-05,Daops Kapuas,65.5,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",8.6,KPS-05,5.5,0.8,,
+K1058,Kota Palangkaraya,PLK-05,Daops Palangkaraya,64.5,A028,Desa Petuk Bukit,17.1,PLK-05,2.5,1.4,,
+K0734,Katingan,PLK-05,Daops Palangkaraya,49.8,A016,Desa Jahanjang,9.3,PLK-05,4.8,3.1,,
+K0451,Kotawaringin Timur,PLK-05,Daops Palangkaraya,120.9,A027,Desa Samuda Kota,14.7,PLK-05,7.1,1.6,,
+K0847,Seruyan,PKB-05,Daops Pangkalanbun,80.7,A010,Desa Sembuluh I,15.4,PKB-05,4.9,1.9,,
+K0707,Kota Palangkaraya,PLK-05,Daops Palangkaraya,12.2,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",2.8,PLK-05,0.9,0.6,,
+K0551,Seruyan,PKB-05,Daops Pangkalanbun,110.9,A010,Desa Sembuluh I,18.2,PKB-05,5.9,1.7,,
+K0583,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,139.8,T007,"Desa Lampuyang, Kec. Teluk Sampit",8.0,PLK-05,8.8,,3.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0591,Barito Selatan,PLK-05,Daops Palangkaraya,99.1,A057,Desa Rangga Ilung,18.5,MTW-05,7.3,,2.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0785,Kapuas,PLK-05,Daops Palangkaraya,37.3,T001,"Desa Lahei Mangkutup, Kec. Mantangai",17.3,PLK-05,1.2,0.8,,
+K1176,Pulang Pisau,PLK-05,Daops Palangkaraya,30.7,A038,Desa Tuwung,16.9,PLK-05,2.8,,2.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0414,Seruyan,PKB-05,Daops Pangkalanbun,117.9,A027,Desa Samuda Kota,26.2,PKB-05,6.0,1.7,,
+K0489,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,127.5,A094,Desa Kuala Kuayan,13.9,PKB-05,6.1,1.4,,
+K0521,Kapuas,PLK-05,Daops Palangkaraya,78.1,A119,Desa Mantangai Tengah,10.4,KPS-05,5.8,1.3,,
+K0541,Kotawaringin Timur,PLK-05,Daops Palangkaraya,123.8,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",4.4,PLK-05,5.4,0.7,,
+K0605,Kapuas,PLK-05,Daops Palangkaraya,58.8,A002,Desa Sei Ahas,20.0,PLK-05,5.1,2.0,,
+K0811,Katingan,PLK-05,Daops Palangkaraya,89.4,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",20.8,PLK-05,2.9,1.4,,
+K5063,Kotawaringin Timur,PLK-05,Daops Palangkaraya,108.0,A083,Desa Rubung Buyung,11.1,PLK-05,3.3,0.7,,
+K0710,Seruyan,PKB-05,Daops Pangkalanbun,61.3,A048,Desa Pembuang Hulu I,19.7,PKB-05,3.3,1.4,,
+K0759,Pulang Pisau,KPS-05,Daops Kapuas,68.1,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",6.9,KPS-05,7.1,0.9,,
+K0843,Kapuas,PLK-05,Daops Palangkaraya,84.9,A017,Desa Lungkuh Layang,7.5,PLK-05,2.7,0.5,,
+K1016,Lamandau,PKB-05,Daops Pangkalanbun,50.2,T024,"Desa Kinjil, Kec. Kotawaringin Lama",21.4,PKB-05,2.2,1.3,,
+K0528,Seruyan,PKB-05,Daops Pangkalanbun,101.2,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",8.7,PKB-05,6.2,0.9,,
+K0643,Seruyan,PKB-05,Daops Pangkalanbun,111.0,A040,Desa Kuala Pembuang I,7.4,PLK-05,8.3,0.7,,
+K0533,Kotawaringin Timur,PLK-05,Daops Palangkaraya,150.2,T007,"Desa Lampuyang, Kec. Teluk Sampit",14.9,PLK-05,6.4,0.7,,
+K1092,Kota Palangkaraya,PLK-05,Daops Palangkaraya,16.3,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",7.2,PLK-05,1.5,0.6,,
+K0802,Pulang Pisau,KPS-05,Daops Kapuas,70.3,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",11.0,KPS-05,8.4,,2.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0914,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,63.9,A004,Desa Sungai Cabang,14.7,PKB-05,18.2,,8.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0906,Seruyan,PKB-05,Daops Pangkalanbun,86.5,A080,Desa Sukarami,27.0,PKB-05,3.9,2.0,,
+K0524,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,142.4,T007,"Desa Lampuyang, Kec. Teluk Sampit",5.9,PLK-05,6.9,1.1,,
+K0527,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,132.9,A027,Desa Samuda Kota,15.1,PLK-05,6.0,1.3,,
+K0661,Kapuas,PLK-05,Daops Palangkaraya,79.5,A119,Desa Mantangai Tengah,14.9,KPS-05,5.9,1.4,,
+K0801,Seruyan,PKB-05,Daops Pangkalanbun,70.7,A048,Desa Pembuang Hulu I,13.1,PKB-05,3.2,1.4,,
+K0894,Pulang Pisau,KPS-05,Daops Kapuas,35.4,A081,Desa Panamas,28.1,KPS-05,3.3,2.5,,
+K5093,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,119.5,T035,"Desa Terawan, Kec. Seruyan Raya",35.5,PKB-05,5.1,2.7,,
+K5094,Kotawaringin Timur,PLK-05,Daops Palangkaraya,121.8,A083,Desa Rubung Buyung,20.5,PLK-05,4.0,1.4,,
+K5117,Gunung Mas,PLK-05,Daops Palangkaraya,90.6,T124,"Desa Belawan Mulia, Kec. Manuhing",17.7,PLK-05,3.7,1.8,,
+K0939,Kapuas,PLK-05,Daops Palangkaraya,84.9,A017,Desa Lungkuh Layang,7.8,PLK-05,3.1,0.9,,
+K0769,Kapuas,PLK-05,Daops Palangkaraya,76.3,A017,Desa Lungkuh Layang,16.0,PLK-05,2.7,1.1,,
+K1009,Katingan,PLK-05,Daops Palangkaraya,34.6,A016,Desa Jahanjang,17.4,PLK-05,5.8,4.2,,
+K0966,Barito Selatan,PLK-05,Daops Palangkaraya,89.3,A119,Desa Mantangai Tengah,17.0,KPS-05,6.0,2.2,,
+K0878,Katingan,KPS-05,Daops Kapuas,84.4,A101,Desa Sebangau Jaya,2.3,KPS-05,7.6,0.7,,
+K0821,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,27.0,T024,"Desa Kinjil, Kec. Kotawaringin Lama",23.9,PKB-05,2.2,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0573,Seruyan,PKB-05,Daops Pangkalanbun,116.6,A040,Desa Kuala Pembuang I,7.5,PLK-05,8.9,0.7,,
+K0748,Kotawaringin Timur,PLK-05,Daops Palangkaraya,121.4,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",1.0,PLK-05,5.6,1.1,,
+K0753,Pulang Pisau,KPS-05,Daops Kapuas,75.6,A101,Desa Sebangau Jaya,13.3,KPS-05,5.2,1.6,,
+K0938,Sukamara,PKB-05,Daops Pangkalanbun,59.5,A136,Desa Balai Riam,15.5,PKB-05,3.1,1.3,,
+K1396,Kota Palangkaraya,PLK-05,Daops Palangkaraya,46.7,A028,Desa Petuk Bukit,8.6,PLK-05,1.6,0.9,,
+K0963,Pulang Pisau,KPS-05,Daops Kapuas,33.2,T152,"Desa Pantai, Kec. Kapuas Barat",14.9,KPS-05,1.2,0.9,,
+K0829,Kota Palangkaraya,PLK-05,Daops Palangkaraya,14.0,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",12.5,PLK-05,0.9,0.9,,
+K0981,Seruyan,PKB-05,Daops Pangkalanbun,81.3,A117,Desa Muara Dua,0.8,PKB-05,8.3,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0986,Seruyan,PKB-05,Daops Pangkalanbun,78.4,A117,Desa Muara Dua,8.5,PKB-05,7.1,1.4,,
+K0959,Seruyan,PKB-05,Daops Pangkalanbun,75.2,A117,Desa Muara Dua,14.2,PKB-05,6.4,1.8,,
+K0898,Seruyan,PKB-05,Daops Pangkalanbun,104.7,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",15.1,PLK-05,9.2,2.1,,
+K0900,Kapuas,KPS-05,Daops Kapuas,73.4,A119,Desa Mantangai Tengah,4.5,KPS-05,4.5,0.9,,
+K1250,Kapuas,KPS-05,Daops Kapuas,21.0,A081,Desa Panamas,14.7,KPS-05,1.7,1.5,,
+K1115,Pulang Pisau,KPS-05,Daops Kapuas,51.0,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",13.5,KPS-05,4.4,1.6,,
+K1019,Kapuas,PLK-05,Daops Palangkaraya,78.9,A017,Desa Lungkuh Layang,13.6,PLK-05,3.8,,2.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1180,Kota Palangkaraya,PLK-05,Daops Palangkaraya,13.5,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",25.2,PLK-05,0.6,0.6,,
+K1185,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,39.9,A074,Desa Lada Mandala Jaya,23.3,PKB-05,2.4,1.9,,
+K1020,Kotawaringin Timur,PLK-05,Daops Palangkaraya,98.1,A083,Desa Rubung Buyung,3.4,PLK-05,4.5,0.9,,
+K0841,Seruyan,PKB-05,Daops Pangkalanbun,133.5,A040,Desa Kuala Pembuang I,19.2,PLK-05,7.8,1.3,,
+K0910,Katingan,PLK-05,Daops Palangkaraya,68.4,A016,Desa Jahanjang,26.9,PLK-05,7.3,,3.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0993,Pulang Pisau,PLK-05,Daops Palangkaraya,34.8,A002,Desa Sei Ahas,22.0,PLK-05,5.6,,5.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1081,Pulang Pisau,PLK-05,Daops Palangkaraya,34.4,A002,Desa Sei Ahas,21.2,PLK-05,3.3,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1609,Kota Palangkaraya,PLK-05,Daops Palangkaraya,54.9,A028,Desa Petuk Bukit,7.5,PLK-05,1.6,0.6,,
+K5087,Kotawaringin Timur,PLK-05,Daops Palangkaraya,119.1,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",19.3,PKB-05,5.1,1.3,,
+K5132,Kotawaringin Timur,PLK-05,Daops Palangkaraya,125.0,T137,"Desa Sari Harapan, Kec. Parenggean",4.9,PLK-05,3.8,0.3,,
+K5187,Kotawaringin Timur,PLK-05,Daops Palangkaraya,111.6,A083,Desa Rubung Buyung,11.9,PLK-05,4.1,1.0,,
+K5241,Murung Raya,MTW-05,Daops Muara Teweh,70.6,T146,"Desa Tumbang Kolon, Kec. Sungai Babuat",28.9,MTW-05,3.6,2.7,,
+K0927,Barito Selatan,KPS-05,Daops Kapuas,100.8,A057,Desa Rangga Ilung,15.1,MTW-05,7.0,1.5,,
+K1428,Kapuas,KPS-05,Daops Kapuas,9.2,T002,"Desa Tambun Raya, Kec. Basarang",11.3,KPS-05,0.5,0.5,,
+K1035,Barito Selatan,PLK-05,Daops Palangkaraya,101.7,A057,Desa Rangga Ilung,16.6,MTW-05,7.0,1.5,,
+K1063,Pulang Pisau,KPS-05,Daops Kapuas,63.2,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",5.9,KPS-05,5.0,0.5,,
+K0958,Kapuas,PLK-05,Daops Palangkaraya,57.5,A002,Desa Sei Ahas,8.8,KPS-05,5.3,1.2,,
+K1080,Barito Selatan,PLK-05,Daops Palangkaraya,102.4,A057,Desa Rangga Ilung,24.3,MTW-05,5.9,2.4,,
+K1498,Kota Palangkaraya,PLK-05,Daops Palangkaraya,59.5,A028,Desa Petuk Bukit,16.6,PLK-05,3.1,1.3,,
+K1034,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,71.6,A004,Desa Sungai Cabang,8.0,,,,8.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1125,Kapuas,PLK-05,Daops Palangkaraya,83.4,A017,Desa Lungkuh Layang,9.1,PLK-05,2.6,0.5,,
+K1629,Kota Palangkaraya,PLK-05,Daops Palangkaraya,57.7,A028,Desa Petuk Bukit,16.3,PLK-05,2.9,1.5,,
+K1410,Kota Palangkaraya,PLK-05,Daops Palangkaraya,66.8,A028,Desa Petuk Bukit,19.4,PLK-05,2.7,1.6,,
+K1167,Katingan,PLK-05,Daops Palangkaraya,71.8,A006,Desa Galinggang,9.8,PLK-05,10.4,1.7,,
+K1171,Seruyan,PKB-05,Daops Pangkalanbun,82.2,A010,Desa Sembuluh I,13.0,PKB-05,5.6,,1.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1136,Katingan,PLK-05,Daops Palangkaraya,82.0,A006,Desa Galinggang,9.2,PLK-05,10.4,0.7,,
+K1110,Barito Selatan,PLK-05,Daops Palangkaraya,89.5,A119,Desa Mantangai Tengah,18.2,KPS-05,6.5,2.7,,
+K1121,Barito Selatan,PLK-05,Daops Palangkaraya,104.0,A057,Desa Rangga Ilung,18.0,MTW-05,6.4,1.8,,
+K1513,Katingan,PLK-05,Daops Palangkaraya,64.6,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",11.7,PLK-05,2.1,1.0,,
+K1247,Seruyan,PKB-05,Daops Pangkalanbun,65.9,A048,Desa Pembuang Hulu I,25.4,PKB-05,4.6,1.8,,
+K0931,Sukamara,PKB-05,Daops Pangkalanbun,80.1,A085,Desa Kuala Jelai,19.2,PKB-05,6.9,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1439,Kota Palangkaraya,PLK-05,Daops Palangkaraya,12.4,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",3.2,PLK-05,0.5,0.3,,
+K1562,Kapuas,KPS-05,Daops Kapuas,33.0,A063,Desa Batanjung,17.5,KPS-05,1.8,1.4,,
+K1364,Kota Palangkaraya,PLK-05,Daops Palangkaraya,14.8,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",8.0,PLK-05,1.3,0.7,,
+K1312,Kotawaringin Timur,PLK-05,Daops Palangkaraya,91.2,A083,Desa Rubung Buyung,22.2,PLK-05,3.3,1.6,,
+K1049,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,149.5,T007,"Desa Lampuyang, Kec. Teluk Sampit",4.9,PLK-05,6.3,0.6,,
+K1601,Kota Palangkaraya,PLK-05,Daops Palangkaraya,61.9,A028,Desa Petuk Bukit,14.5,PLK-05,2.2,1.1,,
+K1515,Seruyan,PKB-05,Daops Pangkalanbun,63.3,A048,Desa Pembuang Hulu I,16.6,PKB-05,3.6,1.7,,
+K1253,Seruyan,PKB-05,Daops Pangkalanbun,102.2,A040,Desa Kuala Pembuang I,16.3,PLK-05,9.6,1.9,,
+K1352,Pulang Pisau,KPS-05,Daops Kapuas,52.5,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",9.4,KPS-05,3.5,0.8,,
+K0839,Seruyan,PKB-05,Daops Pangkalanbun,128.2,T007,"Desa Lampuyang, Kec. Teluk Sampit",18.4,PKB-05,10.2,,5.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1061,Kotawaringin Timur,PLK-05,Daops Palangkaraya,115.7,A027,Desa Samuda Kota,18.6,PLK-05,8.8,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1101,Kapuas,PLK-05,Daops Palangkaraya,49.8,T001,"Desa Lahei Mangkutup, Kec. Mantangai",5.6,PLK-05,2.6,1.3,,
+K1124,Kapuas,PLK-05,Daops Palangkaraya,54.7,A100,Desa Sei Gawing,5.9,PLK-05,2.0,0.6,,
+K1241,Kapuas,PLK-05,Daops Palangkaraya,57.5,A100,Desa Sei Gawing,6.7,PLK-05,2.5,1.0,,
+K1358,Kapuas,KPS-05,Daops Kapuas,15.2,A081,Desa Panamas,8.5,KPS-05,1.7,0.7,,
+K1383,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,34.5,T024,"Desa Kinjil, Kec. Kotawaringin Lama",10.3,PKB-05,1.3,0.7,,
+K1458,Katingan,PLK-05,Daops Palangkaraya,59.6,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",14.1,PLK-05,2.3,1.5,,
+K5099,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,127.6,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",31.1,PKB-05,4.7,1.6,,
+K1238,Kapuas,PLK-05,Daops Palangkaraya,78.0,A017,Desa Lungkuh Layang,25.4,PLK-05,3.9,1.3,,
+K1346,Seruyan,PKB-05,Daops Pangkalanbun,79.0,A117,Desa Muara Dua,10.5,PKB-05,6.5,1.1,,
+K1550,Katingan,PLK-05,Daops Palangkaraya,78.3,A006,Desa Galinggang,13.9,PLK-05,11.3,1.7,,
+K1278,Seruyan,PKB-05,Daops Pangkalanbun,111.7,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",18.9,PLK-05,8.9,2.2,,
+K1341,Seruyan,PKB-05,Daops Pangkalanbun,59.6,A048,Desa Pembuang Hulu I,21.4,PKB-05,3.6,1.8,,
+K1366,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,40.5,A087,Desa Teluk Pulai,15.0,PKB-05,7.9,1.6,,
+K1141,Seruyan,PKB-05,Daops Pangkalanbun,86.2,A117,Desa Muara Dua,9.9,PKB-05,10.4,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1759,Katingan,PLK-05,Daops Palangkaraya,75.8,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",6.4,PLK-05,2.2,0.5,,
+K1284,Seruyan,PKB-05,Daops Pangkalanbun,119.1,A027,Desa Samuda Kota,24.2,PKB-05,7.1,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1308,Kotawaringin Timur,PLK-05,Daops Palangkaraya,124.6,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",4.3,PLK-05,5.5,1.0,,
+K1384,Kotawaringin Timur,PLK-05,Daops Palangkaraya,117.5,A027,Desa Samuda Kota,21.5,PLK-05,8.6,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2112,Pulang Pisau,PLK-05,Daops Palangkaraya,37.0,A038,Desa Tuwung,18.9,PLK-05,1.5,1.3,,
+K1426,Seruyan,PKB-05,Daops Pangkalanbun,70.3,A117,Desa Muara Dua,21.0,PKB-05,5.8,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1386,Sukamara,PKB-05,Daops Pangkalanbun,55.8,T024,"Desa Kinjil, Kec. Kotawaringin Lama",19.8,PKB-05,3.6,,2.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1421,Kapuas,PLK-05,Daops Palangkaraya,66.0,T001,"Desa Lahei Mangkutup, Kec. Mantangai",21.6,PLK-05,5.1,,3.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1502,Kapuas,PLK-05,Daops Palangkaraya,74.7,A017,Desa Lungkuh Layang,28.2,PLK-05,4.0,1.4,,
+K1437,Kapuas,PLK-05,Daops Palangkaraya,54.1,A002,Desa Sei Ahas,8.0,KPS-05,4.8,1.0,,
+K1350,Kapuas,PLK-05,Daops Palangkaraya,55.7,T001,"Desa Lahei Mangkutup, Kec. Mantangai",21.5,PLK-05,6.0,3.1,,
+K1542,Katingan,PLK-05,Daops Palangkaraya,101.7,T124,"Desa Belawan Mulia, Kec. Manuhing",24.8,PLK-05,3.2,1.6,,
+K1685,Kapuas,KPS-05,Daops Kapuas,12.0,T002,"Desa Tambun Raya, Kec. Basarang",5.8,KPS-05,0.6,0.4,,
+K1010,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,141.4,T007,"Desa Lampuyang, Kec. Teluk Sampit",10.7,PLK-05,9.2,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1763,Kota Palangkaraya,PLK-05,Daops Palangkaraya,71.3,A028,Desa Petuk Bukit,24.0,PLK-05,2.8,1.8,,
+K1128,Kotawaringin Timur,PLK-05,Daops Palangkaraya,153.3,T007,"Desa Lampuyang, Kec. Teluk Sampit",12.0,PLK-05,6.8,1.1,,
+K1801,Katingan,PLK-05,Daops Palangkaraya,58.3,A028,Desa Petuk Bukit,17.0,PLK-05,1.9,1.3,,
+K1564,Kapuas,KPS-05,Daops Kapuas,14.0,T002,"Desa Tambun Raya, Kec. Basarang",8.2,KPS-05,0.8,0.6,,
+K1245,Seruyan,PKB-05,Daops Pangkalanbun,96.7,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",3.3,PKB-05,8.0,,2.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1743,Katingan,PLK-05,Daops Palangkaraya,87.8,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",22.5,PLK-05,3.0,1.6,,
+K1603,Barito Selatan,MTW-05,Daops Muara Teweh,114.2,T064,"Desa Kupang Bersih, Kec. Pematang Karau",17.9,MTW-05,4.8,1.6,,
+K1423,Barito Selatan,KPS-05,Daops Kapuas,84.8,T021,"Desa Tampulang, Kec. Jenamas",5.3,KPS-05,5.8,0.9,,
+K1318,Pulang Pisau,KPS-05,Daops Kapuas,65.7,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",12.3,KPS-05,4.8,0.9,,
+K1411,Barito Selatan,KPS-05,Daops Kapuas,106.3,A057,Desa Rangga Ilung,16.4,MTW-05,5.1,2.1,,
+K1822,Pulang Pisau,KPS-05,Daops Kapuas,42.1,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",20.8,KPS-05,4.2,,3.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1351,Seruyan,PKB-05,Daops Pangkalanbun,110.1,A040,Desa Kuala Pembuang I,8.6,PLK-05,8.6,1.0,,
+K1303,Sukamara,PKB-05,Daops Pangkalanbun,87.2,A085,Desa Kuala Jelai,10.5,PKB-05,6.3,,1.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1313,Kapuas,KPS-05,Daops Kapuas,57.6,A002,Desa Sei Ahas,20.2,KPS-05,2.8,1.8,,
+K1493,Pulang Pisau,KPS-05,Daops Kapuas,46.6,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",19.1,KPS-05,4.5,2.0,,
+K1588,Seruyan,PKB-05,Daops Pangkalanbun,62.7,A048,Desa Pembuang Hulu I,8.1,PKB-05,3.1,1.0,,
+K1325,Seruyan,PKB-05,Daops Pangkalanbun,98.1,A117,Desa Muara Dua,20.6,PLK-05,10.5,,2.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1925,Kapuas,KPS-05,Daops Kapuas,9.2,T002,"Desa Tambun Raya, Kec. Basarang",16.3,KPS-05,0.8,0.8,,
+K1535,Kapuas,MTW-05,Daops Muara Teweh,87.2,A017,Desa Lungkuh Layang,12.0,PLK-05,4.6,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1257,Kotawaringin Timur,PLK-05,Daops Palangkaraya,120.4,A027,Desa Samuda Kota,15.0,PLK-05,7.2,1.2,,
+K1276,Katingan,KPS-05,Daops Kapuas,88.4,A101,Desa Sebangau Jaya,9.7,KPS-05,7.9,0.8,,
+K1281,Kapuas,KPS-05,Daops Kapuas,57.6,A002,Desa Sei Ahas,19.3,KPS-05,3.1,2.0,,
+K1311,Seruyan,PKB-05,Daops Pangkalanbun,119.9,A040,Desa Kuala Pembuang I,17.8,PLK-05,8.9,2.2,,
+K1401,Katingan,PLK-05,Daops Palangkaraya,67.7,A006,Desa Galinggang,13.7,PLK-05,11.5,1.8,,
+K1483,Pulang Pisau,KPS-05,Daops Kapuas,39.8,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",25.4,KPS-05,4.5,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1501,Sukamara,PKB-05,Daops Pangkalanbun,70.2,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",15.3,PKB-05,5.0,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1553,Sukamara,PKB-05,Daops Pangkalanbun,66.7,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",12.9,PKB-05,4.4,1.6,,
+K1584,Kapuas,PLK-05,Daops Palangkaraya,80.8,A119,Desa Mantangai Tengah,11.4,KPS-05,6.7,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1671,Sukamara,PKB-05,Daops Pangkalanbun,41.2,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",15.9,PKB-05,4.5,2.0,,
+K1712,Kapuas,PLK-05,Daops Palangkaraya,41.6,T001,"Desa Lahei Mangkutup, Kec. Mantangai",14.0,PLK-05,3.0,1.2,,
+K1748,Katingan,PLK-05,Daops Palangkaraya,71.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",6.1,PLK-05,2.4,0.9,,
+K1956,Kapuas,KPS-05,Daops Kapuas,9.3,A081,Desa Panamas,2.0,KPS-05,0.8,0.3,,
+K1962,Katingan,PLK-05,Daops Palangkaraya,86.7,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",17.3,PLK-05,2.4,0.9,,
+K2373,Kapuas,KPS-05,Daops Kapuas,28.1,A063,Desa Batanjung,15.4,KPS-05,2.6,1.4,,
+K5207,Seruyan,PKB-05,Daops Pangkalanbun,115.9,A040,Desa Kuala Pembuang I,8.4,PLK-05,9.0,1.0,,
+K5279,Seruyan,PKB-05,Daops Pangkalanbun,99.6,A040,Desa Kuala Pembuang I,18.9,PLK-05,10.1,,2.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5299,Pulang Pisau,KPS-05,Daops Kapuas,82.5,A101,Desa Sebangau Jaya,17.7,KPS-05,6.2,2.2,,
+K5300,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,135.4,T143,"Desa Bukit Indah, Kec. Telaga Antang",21.7,PLK-05,6.5,2.2,,
+K5302,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,116.0,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",26.6,PKB-05,5.1,2.3,,
+K5313,Seruyan,PKB-05,Daops Pangkalanbun,75.2,A004,Desa Sungai Cabang,17.4,PKB-05,16.6,,6.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5355,Katingan,KPS-05,Daops Kapuas,112.3,A014,Desa Mendawai,27.1,PLK-05,13.3,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5364,Pulang Pisau,KPS-05,Daops Kapuas,65.1,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",24.4,KPS-05,6.3,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5388,Kapuas,PLK-05,Daops Palangkaraya,64.7,T001,"Desa Lahei Mangkutup, Kec. Mantangai",23.7,PLK-05,4.7,2.1,,
+K5402,Kapuas,KPS-05,Daops Kapuas,67.2,A119,Desa Mantangai Tengah,11.1,KPS-05,4.1,1.6,,
+K5405,Pulang Pisau,KPS-05,Daops Kapuas,82.3,A101,Desa Sebangau Jaya,13.3,KPS-05,6.2,1.2,,
+K5407,Katingan,KPS-05,Daops Kapuas,118.2,A014,Desa Mendawai,22.0,PLK-05,11.8,2.0,,
+K5430,Kapuas,PLK-05,Daops Palangkaraya,73.2,A119,Desa Mantangai Tengah,5.5,KPS-05,4.8,0.6,,
+K5450,Pulang Pisau,KPS-05,Daops Kapuas,53.6,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",8.4,KPS-05,3.8,0.9,,
+K5451,Kapuas,MTW-05,Daops Muara Teweh,87.4,A017,Desa Lungkuh Layang,6.2,PLK-05,3.2,0.8,,
+K5453,Barito Selatan,PLK-05,Daops Palangkaraya,106.0,A057,Desa Rangga Ilung,18.1,MTW-05,5.8,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5462,Barito Timur,KPS-05,Daops Kapuas,107.3,A057,Desa Rangga Ilung,22.0,KPS-05,7.4,2.8,,
+K5476,Barito Selatan,PLK-05,Daops Palangkaraya,103.9,T064,"Desa Kupang Bersih, Kec. Pematang Karau",27.6,MTW-05,6.5,,3.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5477,Pulang Pisau,KPS-05,Daops Kapuas,55.7,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",18.6,KPS-05,6.1,1.7,,
+K5508,Pulang Pisau,PLK-05,Daops Palangkaraya,67.0,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",14.1,KPS-05,6.7,2.0,,
+K5523,Seruyan,PKB-05,Daops Pangkalanbun,66.2,A048,Desa Pembuang Hulu I,13.7,PKB-05,4.5,1.9,,
+K5537,Pulang Pisau,KPS-05,Daops Kapuas,53.7,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",8.0,KPS-05,3.5,0.6,,
+K5541,Barito Timur,KPS-05,Daops Kapuas,103.6,A057,Desa Rangga Ilung,12.1,MTW-05,5.1,0.8,,
+K5552,Kota Palangkaraya,PLK-05,Daops Palangkaraya,28.2,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",18.4,PLK-05,1.0,0.9,,
+K5553,Pulang Pisau,KPS-05,Daops Kapuas,41.3,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",24.8,KPS-05,4.1,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5571,Barito Selatan,KPS-05,Daops Kapuas,82.9,A057,Desa Rangga Ilung,13.3,KPS-05,4.1,1.4,,
+K5575,Katingan,PLK-05,Daops Palangkaraya,96.3,A014,Desa Mendawai,16.5,PLK-05,11.6,2.8,,
+K5583,Pulang Pisau,KPS-05,Daops Kapuas,45.5,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",19.2,KPS-05,4.6,2.6,,
+K5585,Pulang Pisau,KPS-05,Daops Kapuas,29.0,T152,"Desa Pantai, Kec. Kapuas Barat",14.6,KPS-05,0.9,0.7,,
+K5637,Kota Palangkaraya,PLK-05,Daops Palangkaraya,24.4,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",13.4,PLK-05,0.9,0.9,,
+K5662,Pulang Pisau,KPS-05,Daops Kapuas,46.3,A007,Desa Sakakajang,8.9,KPS-05,2.6,1.2,,
+K5725,Pulang Pisau,KPS-05,Daops Kapuas,33.8,A081,Desa Panamas,26.5,KPS-05,3.5,2.8,,
+K5730,Kapuas,KPS-05,Daops Kapuas,34.9,A063,Desa Batanjung,13.9,KPS-05,3.0,1.1,,
+K5741,Kapuas,KPS-05,Daops Kapuas,18.8,T152,"Desa Pantai, Kec. Kapuas Barat",9.2,KPS-05,1.1,0.5,,
+K5894,Gunung Mas,PLK-05,Daops Palangkaraya,86.0,T124,"Desa Belawan Mulia, Kec. Manuhing",19.3,PLK-05,3.1,1.2,,
+K5928,Kota Palangkaraya,PLK-05,Daops Palangkaraya,21.1,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",14.8,PLK-05,0.6,0.6,,
+K5965,Kapuas,KPS-05,Daops Kapuas,28.8,A063,Desa Batanjung,18.1,KPS-05,1.5,1.4,,
+K6266,Kota Palangkaraya,PLK-05,Daops Palangkaraya,46.9,A028,Desa Petuk Bukit,9.2,PLK-05,3.0,0.8,,
+K6309,Barito Selatan,MTW-05,Daops Muara Teweh,54.9,A021,Desa Pendang,7.2,MTW-05,5.0,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6407,Pulang Pisau,PLK-05,Daops Palangkaraya,30.3,A038,Desa Tuwung,11.4,PLK-05,0.9,0.7,,
+K6992,Katingan,PLK-05,Daops Palangkaraya,71.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",3.0,PLK-05,2.1,0.6,,
+K7700,Kota Palangkaraya,PLK-05,Daops Palangkaraya,67.4,T170,"Desa Tampelas, Kec. Sepang",22.7,PLK-05,3.0,1.9,,
+K1568,Kapuas,KPS-05,Daops Kapuas,48.8,T127,"Antar Baru, Kec. Marabahan",23.3,KPS-05,2.4,2.4,,
+K1471,Seruyan,PKB-05,Daops Pangkalanbun,137.4,T007,"Desa Lampuyang, Kec. Teluk Sampit",10.1,PLK-05,9.6,,3.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1829,Katingan,PLK-05,Daops Palangkaraya,74.3,A006,Desa Galinggang,9.3,PLK-05,10.1,1.1,,
+K1434,Kotawaringin Timur,PLK-05,Daops Palangkaraya,120.6,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",5.2,PLK-05,4.9,0.6,,
+K1785,Seruyan,PKB-05,Daops Pangkalanbun,67.5,A048,Desa Pembuang Hulu I,11.8,PKB-05,2.5,0.7,,
+K1314,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,114.8,A010,Desa Sembuluh I,25.3,PKB-05,5.1,2.3,,
+K0191,Kapuas,MTW-05,Daops Muara Teweh,80.6,A017,Desa Lungkuh Layang,8.1,PLK-05,3.7,1.1,,
+K2527,Kota Palangkaraya,PLK-05,Daops Palangkaraya,67.7,A028,Desa Petuk Bukit,20.3,PLK-05,2.3,1.2,,
+K2124,Barito Selatan,MTW-05,Daops Muara Teweh,54.4,A021,Desa Pendang,7.8,MTW-05,5.4,,2.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1628,Sukamara,PKB-05,Daops Pangkalanbun,98.1,A085,Desa Kuala Jelai,1.3,PKB-05,5.3,0.5,,
+K1468,Seruyan,PKB-05,Daops Pangkalanbun,74.5,A010,Desa Sembuluh I,24.2,PKB-05,5.0,1.2,,
+K2139,Katingan,PLK-05,Daops Palangkaraya,74.1,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",9.9,PLK-05,2.1,0.8,,
+K1719,Kapuas,KPS-05,Daops Kapuas,50.7,T127,"Antar Baru, Kec. Marabahan",22.6,KPS-05,2.3,2.3,,
+K1682,Kapuas,PLK-05,Daops Palangkaraya,50.8,A002,Desa Sei Ahas,9.4,KPS-05,5.4,1.3,,
+K1758,Barito Selatan,PLK-05,Daops Palangkaraya,88.5,A119,Desa Mantangai Tengah,18.6,KPS-05,6.4,2.6,,
+K1854,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,66.5,A087,Desa Teluk Pulai,19.5,PKB-05,14.6,,8.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1711,Kapuas,PLK-05,Daops Palangkaraya,40.3,T001,"Desa Lahei Mangkutup, Kec. Mantangai",15.0,PLK-05,3.2,1.4,,
+K1745,Katingan,PLK-05,Daops Palangkaraya,80.0,A006,Desa Galinggang,0.6,PLK-05,8.7,0.6,,
+K1885,Katingan,PLK-05,Daops Palangkaraya,77.1,A006,Desa Galinggang,12.6,PLK-05,10.8,1.3,,
+K2266,Kota Palangkaraya,PLK-05,Daops Palangkaraya,9.6,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",5.8,PLK-05,0.3,0.3,,
+K0341,Katingan,PLK-05,Daops Palangkaraya,122.7,T168,"Desa Rantau Asem, Kec. Katingan Tengah",10.4,PLK-05,4.4,1.0,,
+K1737,Seruyan,PKB-05,Daops Pangkalanbun,73.3,A010,Desa Sembuluh I,25.0,PKB-05,4.6,1.2,,
+K0167,Barito Selatan,MTW-05,Daops Muara Teweh,81.5,A017,Desa Lungkuh Layang,12.6,PLK-05,4.1,1.6,,
+K1900,Katingan,PLK-05,Daops Palangkaraya,55.2,A016,Desa Jahanjang,15.6,PLK-05,4.2,2.5,,
+K2034,Kapuas,KPS-05,Daops Kapuas,36.3,A063,Desa Batanjung,14.2,KPS-05,2.0,1.6,,
+K2137,Barito Selatan,MTW-05,Daops Muara Teweh,78.7,A021,Desa Pendang,17.2,MTW-05,3.8,0.9,,
+K1948,Katingan,PLK-05,Daops Palangkaraya,57.8,A016,Desa Jahanjang,15.6,PLK-05,4.2,2.5,,
+K1650,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,67.4,A004,Desa Sungai Cabang,17.9,PKB-05,16.6,,8.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1492,Seruyan,PKB-05,Daops Pangkalanbun,88.4,A003,Desa Sungai Perlu,16.1,,,,3.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1724,Kapuas,PLK-05,Daops Palangkaraya,49.2,T001,"Desa Lahei Mangkutup, Kec. Mantangai",21.0,PLK-05,4.4,2.4,,
+K1867,Sukamara,PKB-05,Daops Pangkalanbun,45.9,T024,"Desa Kinjil, Kec. Kotawaringin Lama",21.7,PKB-05,2.2,0.9,,
+K2320,Barito Selatan,MTW-05,Daops Muara Teweh,74.4,A021,Desa Pendang,14.1,PLK-05,3.6,0.8,,
+K2877,Katingan,PLK-05,Daops Palangkaraya,76.8,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",8.6,PLK-05,2.1,0.5,,
+K1481,Kotawaringin Timur,PLK-05,Daops Palangkaraya,117.8,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",2.9,PLK-05,4.9,0.3,,
+K1856,Katingan,PLK-05,Daops Palangkaraya,100.3,A014,Desa Mendawai,12.4,PLK-05,11.4,3.1,,
+K1827,Katingan,KPS-05,Daops Kapuas,112.3,A014,Desa Mendawai,28.3,PLK-05,13.2,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2757,Seruyan,PKB-05,Daops Pangkalanbun,70.7,A117,Desa Muara Dua,22.6,PKB-05,5.2,2.0,,
+K1752,Barito Selatan,PLK-05,Daops Palangkaraya,87.4,A119,Desa Mantangai Tengah,17.4,KPS-05,6.1,2.2,,
+K2134,Barito Selatan,MTW-05,Daops Muara Teweh,74.2,A021,Desa Pendang,15.2,MTW-05,4.8,1.9,,
+K2696,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,23.3,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",39.6,PKB-05,2.1,2.1,,
+K3157,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,10.7,A074,Desa Lada Mandala Jaya,20.0,PKB-05,0.8,0.8,,
+K3687,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,53.2,A004,Desa Sungai Cabang,17.3,PKB-05,11.3,,5.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3917,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,49.0,A087,Desa Teluk Pulai,10.7,PKB-05,10.9,,4.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0595,Kota Palangkaraya,PLK-05,Daops Palangkaraya,70.5,A028,Desa Petuk Bukit,23.4,PLK-05,2.3,1.2,,
+K0631,Kota Palangkaraya,PLK-05,Daops Palangkaraya,62.1,A028,Desa Petuk Bukit,18.7,PLK-05,3.0,1.5,,
+K1698,Kapuas,KPS-05,Daops Kapuas,34.6,T127,"Antar Baru, Kec. Marabahan",20.4,KPS-05,1.6,1.6,,
+K2672,Kota Palangkaraya,PLK-05,Daops Palangkaraya,57.2,A028,Desa Petuk Bukit,10.0,PLK-05,2.5,1.1,,
+K1679,Kapuas,PLK-05,Daops Palangkaraya,57.5,A002,Desa Sei Ahas,12.3,PLK-05,5.1,1.2,,
+K1997,Seruyan,PKB-05,Daops Pangkalanbun,89.0,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",4.9,PKB-05,6.4,0.4,,
+K2153,Seruyan,PKB-05,Daops Pangkalanbun,75.6,A117,Desa Muara Dua,20.0,PKB-05,14.6,,7.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2231,Seruyan,PKB-05,Daops Pangkalanbun,93.2,A117,Desa Muara Dua,13.0,PKB-05,8.5,1.3,,
+K2384,Seruyan,PKB-05,Daops Pangkalanbun,89.0,A117,Desa Muara Dua,8.1,PKB-05,7.9,0.9,,
+K2532,Seruyan,PKB-05,Daops Pangkalanbun,96.5,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",10.2,PKB-05,8.1,1.6,,
+K2786,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,68.3,A004,Desa Sungai Cabang,20.9,PKB-05,15.6,,8.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2858,Seruyan,PKB-05,Daops Pangkalanbun,93.5,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",4.5,PKB-05,7.8,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3719,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,59.6,A087,Desa Teluk Pulai,13.0,PKB-05,14.2,,6.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1731,Barito Selatan,KPS-05,Daops Kapuas,73.6,T021,"Desa Tampulang, Kec. Jenamas",6.6,KPS-05,4.7,0.6,,
+K2549,Seruyan,PKB-05,Daops Pangkalanbun,85.1,A117,Desa Muara Dua,10.6,PKB-05,10.9,,3.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3089,Pulang Pisau,PLK-05,Daops Palangkaraya,68.9,A101,Desa Sebangau Jaya,24.6,KPS-05,8.0,4.3,,
+K3454,Pulang Pisau,KPS-05,Daops Kapuas,59.3,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",3.7,KPS-05,4.8,0.5,,
+K2659,Katingan,PLK-05,Daops Palangkaraya,74.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",17.9,PLK-05,4.1,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3899,Pulang Pisau,PLK-05,Daops Palangkaraya,52.8,A007,Desa Sakakajang,15.3,PLK-05,3.9,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2313,Seruyan,PKB-05,Daops Pangkalanbun,99.1,A040,Desa Kuala Pembuang I,19.4,PKB-05,10.5,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0286,Katingan,PLK-05,Daops Palangkaraya,96.4,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",24.0,PLK-05,3.5,1.6,,
+K4956,Kota Palangkaraya,PLK-05,Daops Palangkaraya,5.2,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",17.0,PLK-05,0.1,0.1,,
+K1777,Seruyan,PKB-05,Daops Pangkalanbun,129.7,T007,"Desa Lampuyang, Kec. Teluk Sampit",16.0,PKB-05,9.6,4.7,,
+K1830,Kotawaringin Timur,PLK-05,Daops Palangkaraya,127.3,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",6.8,PLK-05,6.4,,1.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1844,Kapuas,KPS-05,Daops Kapuas,62.3,A002,Desa Sei Ahas,13.3,KPS-05,3.5,1.5,,
+K1868,Seruyan,PKB-05,Daops Pangkalanbun,130.7,T007,"Desa Lampuyang, Kec. Teluk Sampit",14.6,PKB-05,9.9,,4.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2015,Kapuas,KPS-05,Daops Kapuas,72.4,A119,Desa Mantangai Tengah,5.3,KPS-05,4.1,0.7,,
+K2457,Pulang Pisau,KPS-05,Daops Kapuas,37.3,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",25.8,KPS-05,3.5,2.1,,
+K2694,Sukamara,PKB-05,Daops Pangkalanbun,46.5,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",17.6,PKB-05,2.4,1.0,,
+K3403,Kapuas,PLK-05,Daops Palangkaraya,42.4,T001,"Desa Lahei Mangkutup, Kec. Mantangai",16.6,PLK-05,3.9,1.9,,
+K3404,Seruyan,PKB-05,Daops Pangkalanbun,64.9,A048,Desa Pembuang Hulu I,6.4,PKB-05,3.3,1.2,,
+K3531,Katingan,KPS-05,Daops Kapuas,95.1,A101,Desa Sebangau Jaya,9.0,KPS-05,9.8,0.8,,
+K3559,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,27.5,A074,Desa Lada Mandala Jaya,20.0,PKB-05,2.3,1.9,,
+K3573,Kapuas,PLK-05,Daops Palangkaraya,54.9,T001,"Desa Lahei Mangkutup, Kec. Mantangai",13.8,PLK-05,5.0,3.1,,
+K3710,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,30.3,A074,Desa Lada Mandala Jaya,17.1,PKB-05,2.0,1.6,,
+K3712,Kapuas,PLK-05,Daops Palangkaraya,80.0,A017,Desa Lungkuh Layang,14.3,PLK-05,4.5,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3724,Kapuas,PLK-05,Daops Palangkaraya,43.8,A002,Desa Sei Ahas,17.9,PLK-05,5.5,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3819,Katingan,PLK-05,Daops Palangkaraya,55.4,A016,Desa Jahanjang,16.8,PLK-05,4.0,2.3,,
+K3902,Seruyan,PKB-05,Daops Pangkalanbun,61.2,A048,Desa Pembuang Hulu I,5.1,PKB-05,2.1,0.3,,
+K4296,Kapuas,KPS-05,Daops Kapuas,14.2,A081,Desa Panamas,9.7,KPS-05,0.8,0.7,,
+K4297,Pulang Pisau,KPS-05,Daops Kapuas,22.4,A081,Desa Panamas,15.1,KPS-05,1.5,1.3,,
+K4737,Pulang Pisau,PLK-05,Daops Palangkaraya,20.7,A038,Desa Tuwung,1.8,PLK-05,2.1,,1.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K4994,Kota Palangkaraya,PLK-05,Daops Palangkaraya,34.0,A028,Desa Petuk Bukit,14.9,PLK-05,2.4,1.7,,
+K5720,Seruyan,PKB-05,Daops Pangkalanbun,124.9,A027,Desa Samuda Kota,21.2,PKB-05,7.6,3.4,,
+K5829,Seruyan,PKB-05,Daops Pangkalanbun,114.7,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",22.3,PKB-05,9.2,2.9,,
+K5858,Seruyan,PKB-05,Daops Pangkalanbun,117.9,A040,Desa Kuala Pembuang I,0.8,PLK-05,8.3,0.3,,
+K5867,Kotawaringin Timur,PLK-05,Daops Palangkaraya,120.2,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",17.4,PKB-05,4.6,0.8,,
+K5946,Seruyan,PKB-05,Daops Pangkalanbun,124.8,A040,Desa Kuala Pembuang I,6.7,PLK-05,7.5,0.4,,
+K6069,Seruyan,PKB-05,Daops Pangkalanbun,101.7,A040,Desa Kuala Pembuang I,16.9,PLK-05,9.4,1.8,,
+K6202,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,138.0,A027,Desa Samuda Kota,6.0,PLK-05,7.5,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6243,Seruyan,PKB-05,Daops Pangkalanbun,125.5,T007,"Desa Lampuyang, Kec. Teluk Sampit",19.8,PKB-05,9.0,4.0,,
+K6246,Seruyan,PKB-05,Daops Pangkalanbun,98.0,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",11.9,PKB-05,8.7,1.5,,
+K6267,Seruyan,PKB-05,Daops Pangkalanbun,126.9,T007,"Desa Lampuyang, Kec. Teluk Sampit",19.9,PKB-05,10.2,,5.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6359,Seruyan,PKB-05,Daops Pangkalanbun,97.5,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",9.9,PKB-05,8.3,1.6,,
+K6456,Seruyan,PKB-05,Daops Pangkalanbun,100.9,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",15.9,PKB-05,9.2,2.0,,
+K6615,Seruyan,PKB-05,Daops Pangkalanbun,96.3,A117,Desa Muara Dua,17.9,PKB-05,10.4,,3.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6628,Seruyan,PKB-05,Daops Pangkalanbun,89.4,A003,Desa Sungai Perlu,15.3,,,,3.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6699,Seruyan,PKB-05,Daops Pangkalanbun,88.5,A117,Desa Muara Dua,8.6,PKB-05,8.8,1.7,,
+K6753,Pulang Pisau,KPS-05,Daops Kapuas,65.1,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",24.0,KPS-05,6.2,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6755,Kotawaringin Timur,PLK-05,Daops Palangkaraya,130.9,T137,"Desa Sari Harapan, Kec. Parenggean",15.3,PLK-05,4.7,1.0,,
+K6879,Seruyan,PKB-05,Daops Pangkalanbun,89.9,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",14.1,PKB-05,6.0,1.7,,
+K6901,Seruyan,PKB-05,Daops Pangkalanbun,114.6,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",22.8,PKB-05,9.6,3.3,,
+K6928,Pulang Pisau,KPS-05,Daops Kapuas,71.6,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",23.9,KPS-05,7.0,,4.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6951,Barito Selatan,PLK-05,Daops Palangkaraya,110.0,A057,Desa Rangga Ilung,20.3,MTW-05,5.2,2.2,,
+K6954,Kapuas,PLK-05,Daops Palangkaraya,74.1,A119,Desa Mantangai Tengah,2.6,KPS-05,4.5,0.5,,
+K6993,Seruyan,PKB-05,Daops Pangkalanbun,123.4,A040,Desa Kuala Pembuang I,9.8,PLK-05,7.8,1.1,,
+K7028,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,135.8,A027,Desa Samuda Kota,9.2,PLK-05,6.1,0.7,,
+K7098,Pulang Pisau,KPS-05,Daops Kapuas,61.4,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",5.5,KPS-05,4.5,0.5,,
+K7109,Seruyan,PKB-05,Daops Pangkalanbun,113.1,T145,"Desa Pandau, Kec. Arut Utara",23.0,PKB-05,5.0,2.2,,
+K7119,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,64.0,A087,Desa Teluk Pulai,18.2,PKB-05,16.2,,8.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7135,Pulang Pisau,KPS-05,Daops Kapuas,69.9,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",22.7,KPS-05,7.0,,4.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7169,Kapuas,PLK-05,Daops Palangkaraya,84.6,A119,Desa Mantangai Tengah,14.2,KPS-05,6.1,2.3,,
+K7256,Pulang Pisau,KPS-05,Daops Kapuas,81.4,A101,Desa Sebangau Jaya,13.5,KPS-05,6.0,1.1,,
+K7264,Pulang Pisau,KPS-05,Daops Kapuas,45.7,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",15.6,KPS-05,3.3,1.0,,
+K7282,Barito Timur,KPS-05,Daops Kapuas,112.7,T166,"Desa Tamiang Layang, Kec. Dusun Timur",19.9,MTW-05,5.9,2.2,,
+K7342,Kapuas,KPS-05,Daops Kapuas,52.9,T127,"Antar Baru, Kec. Marabahan",26.2,KPS-05,2.6,2.6,,
+K7357,Kapuas,KPS-05,Daops Kapuas,56.3,A002,Desa Sei Ahas,20.0,KPS-05,2.7,2.0,,
+K7365,Katingan,KPS-05,Daops Kapuas,119.0,A014,Desa Mendawai,22.6,PLK-05,11.8,2.0,,
+K7385,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,45.7,A087,Desa Teluk Pulai,17.6,PKB-05,9.0,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7427,Kapuas,PLK-05,Daops Palangkaraya,59.9,T001,"Desa Lahei Mangkutup, Kec. Mantangai",16.0,PLK-05,4.2,2.3,,
+K7431,Katingan,PLK-05,Daops Palangkaraya,117.3,A014,Desa Mendawai,18.4,PLK-05,11.6,1.8,,
+K7433,Sukamara,PKB-05,Daops Pangkalanbun,84.3,A085,Desa Kuala Jelai,15.2,PKB-05,6.0,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7438,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,64.0,A004,Desa Sungai Cabang,15.6,PKB-05,17.9,,8.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7453,Seruyan,PKB-05,Daops Pangkalanbun,67.8,A048,Desa Pembuang Hulu I,20.3,PKB-05,4.3,1.5,,
+K7454,Kapuas,PLK-05,Daops Palangkaraya,76.7,A017,Desa Lungkuh Layang,16.1,PLK-05,2.4,0.7,,
+K7462,Kapuas,KPS-05,Daops Kapuas,59.5,A119,Desa Mantangai Tengah,21.4,KPS-05,3.2,3.2,,
+K7463,Kapuas,PLK-05,Daops Palangkaraya,82.0,A017,Desa Lungkuh Layang,10.4,PLK-05,2.8,0.7,,
+K7465,Sukamara,PKB-05,Daops Pangkalanbun,96.8,A085,Desa Kuala Jelai,0.9,PKB-05,5.1,0.3,,
+K7470,Kapuas,PLK-05,Daops Palangkaraya,60.6,A002,Desa Sei Ahas,9.3,KPS-05,6.4,,2.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7471,Sukamara,PKB-05,Daops Pangkalanbun,79.6,A042,Desa Natai Kuini,14.6,PKB-05,5.1,1.1,,
+K7476,Barito Selatan,PLK-05,Daops Palangkaraya,85.7,A119,Desa Mantangai Tengah,13.2,KPS-05,5.7,1.9,,
+K7483,Katingan,PLK-05,Daops Palangkaraya,119.8,A014,Desa Mendawai,21.1,PLK-05,11.6,1.8,,
+K7526,Barito Selatan,KPS-05,Daops Kapuas,94.4,A057,Desa Rangga Ilung,3.9,KPS-05,6.5,1.0,,
+K7566,Kapuas,KPS-05,Daops Kapuas,72.8,A119,Desa Mantangai Tengah,5.5,KPS-05,4.5,1.1,,
+K7569,Barito Timur,MTW-05,Daops Muara Teweh,110.8,T064,"Desa Kupang Bersih, Kec. Pematang Karau",9.9,MTW-05,3.7,0.9,,
+K7572,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,41.4,A087,Desa Teluk Pulai,13.7,PKB-05,8.4,1.8,,
+K7573,Barito Selatan,KPS-05,Daops Kapuas,104.7,A057,Desa Rangga Ilung,16.6,MTW-05,6.1,1.6,,
+K7582,Kapuas,PLK-05,Daops Palangkaraya,57.2,A002,Desa Sei Ahas,9.8,KPS-05,5.2,1.1,,
+K7632,Kapuas,KPS-05,Daops Kapuas,46.9,A007,Desa Sakakajang,18.3,KPS-05,2.6,1.8,,
+K7633,Kapuas,PLK-05,Daops Palangkaraya,56.9,A002,Desa Sei Ahas,10.9,KPS-05,5.1,1.1,,
+K7670,Pulang Pisau,KPS-05,Daops Kapuas,71.7,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",22.9,KPS-05,7.3,,4.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7680,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,63.2,A004,Desa Sungai Cabang,12.3,PKB-05,19.2,,8.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7716,Sukamara,PKB-05,Daops Pangkalanbun,73.2,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",19.1,PKB-05,5.6,2.2,,
+K7721,Pulang Pisau,KPS-05,Daops Kapuas,94.5,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",30.4,KPS-05,15.3,,8.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7724,Kapuas,PLK-05,Daops Palangkaraya,48.4,T001,"Desa Lahei Mangkutup, Kec. Mantangai",20.1,PLK-05,4.1,2.1,,
+K7744,Kotawaringin Timur,PLK-05,Daops Palangkaraya,122.7,A027,Desa Samuda Kota,13.6,PLK-05,6.7,1.6,,
+K7752,Katingan,PLK-05,Daops Palangkaraya,80.1,A006,Desa Galinggang,5.1,PLK-05,9.5,0.4,,
+K7753,Barito Selatan,KPS-05,Daops Kapuas,104.9,A057,Desa Rangga Ilung,14.3,MTW-05,5.6,1.6,,
+K7779,Kapuas,KPS-05,Daops Kapuas,69.7,A119,Desa Mantangai Tengah,8.5,KPS-05,4.6,1.5,,
+K7795,Katingan,PLK-05,Daops Palangkaraya,120.9,A014,Desa Mendawai,22.0,PLK-05,11.5,1.7,,
+K7813,Barito Selatan,KPS-05,Daops Kapuas,83.3,T021,"Desa Tampulang, Kec. Jenamas",3.4,KPS-05,5.1,0.4,,
+K7840,Barito Selatan,KPS-05,Daops Kapuas,104.1,A057,Desa Rangga Ilung,12.8,MTW-05,5.0,0.9,,
+K7854,Barito Selatan,PLK-05,Daops Palangkaraya,107.4,A057,Desa Rangga Ilung,25.9,MTW-05,4.7,1.9,,
+K7856,Kapuas,KPS-05,Daops Kapuas,61.1,A119,Desa Mantangai Tengah,17.2,KPS-05,2.5,1.6,,
+K7858,Sukamara,PKB-05,Daops Pangkalanbun,93.6,A085,Desa Kuala Jelai,4.0,PKB-05,5.1,0.6,,
+K7870,Barito Selatan,KPS-05,Daops Kapuas,107.1,A057,Desa Rangga Ilung,16.7,MTW-05,5.0,2.0,,
+K7897,Kapuas,PLK-05,Daops Palangkaraya,72.2,A100,Desa Sei Gawing,19.6,PLK-05,3.4,1.5,,
+K7912,Kapuas,PLK-05,Daops Palangkaraya,72.3,A119,Desa Mantangai Tengah,3.2,KPS-05,4.8,0.7,,
+K7913,Kapuas,PLK-05,Daops Palangkaraya,70.4,T001,"Desa Lahei Mangkutup, Kec. Mantangai",26.8,PLK-05,4.3,1.8,,
+K7924,Kapuas,PLK-05,Daops Palangkaraya,79.4,A017,Desa Lungkuh Layang,13.0,PLK-05,3.4,1.5,,
+K7925,Katingan,PLK-05,Daops Palangkaraya,79.3,A006,Desa Galinggang,5.7,PLK-05,8.7,1.0,,
+K7930,Kapuas,PLK-05,Daops Palangkaraya,72.9,A100,Desa Sei Gawing,16.3,PLK-05,2.6,0.9,,
+K7947,Barito Selatan,PLK-05,Daops Palangkaraya,100.1,T064,"Desa Kupang Bersih, Kec. Pematang Karau",32.3,MTW-05,6.1,3.2,,
+K7992,Pulang Pisau,PLK-05,Daops Palangkaraya,68.3,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",12.0,KPS-05,6.2,1.5,,
+K8005,Katingan,KPS-05,Daops Kapuas,116.5,A014,Desa Mendawai,21.5,PLK-05,12.2,2.4,,
+K8010,Katingan,PLK-05,Daops Palangkaraya,99.6,A014,Desa Mendawai,13.8,PLK-05,11.6,3.2,,
+K8021,Pulang Pisau,KPS-05,Daops Kapuas,67.7,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",5.3,KPS-05,7.4,1.1,,
+K8026,Barito Selatan,KPS-05,Daops Kapuas,82.7,A057,Desa Rangga Ilung,16.2,KPS-05,5.2,2.0,,
+K8030,Kotawaringin Timur,PLK-05,Daops Palangkaraya,114.6,T006,"Desa Bangkuang Makmur, Kec. Mentawa Baru Ketapang",17.8,PLK-05,7.5,,2.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8031,Pulang Pisau,KPS-05,Daops Kapuas,60.5,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",6.5,KPS-05,5.3,1.1,,
+K8126,Pulang Pisau,PLK-05,Daops Palangkaraya,72.9,A101,Desa Sebangau Jaya,20.2,KPS-05,7.5,3.8,,
+K8140,Sukamara,PKB-05,Daops Pangkalanbun,51.0,T024,"Desa Kinjil, Kec. Kotawaringin Lama",10.1,PKB-05,1.8,0.6,,
+K8164,Kapuas,KPS-05,Daops Kapuas,38.0,T127,"Antar Baru, Kec. Marabahan",22.2,KPS-05,1.6,1.6,,
+K8170,Pulang Pisau,KPS-05,Daops Kapuas,67.8,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",15.7,KPS-05,4.8,1.2,,
+K8175,Kapuas,KPS-05,Daops Kapuas,57.7,A119,Desa Mantangai Tengah,23.0,KPS-05,2.8,2.8,,
+K8227,Kapuas,KPS-05,Daops Kapuas,49.0,T127,"Antar Baru, Kec. Marabahan",20.6,KPS-05,2.9,2.1,,
+K8244,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,44.8,A087,Desa Teluk Pulai,13.9,PKB-05,9.2,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8248,Pulang Pisau,KPS-05,Daops Kapuas,63.4,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",5.7,KPS-05,6.2,0.9,,
+K8249,Kapuas,KPS-05,Daops Kapuas,59.1,A119,Desa Mantangai Tengah,20.3,KPS-05,3.2,2.4,,
+K8250,Barito Selatan,KPS-05,Daops Kapuas,82.7,T021,"Desa Tampulang, Kec. Jenamas",3.4,KPS-05,5.4,0.5,,
+K8252,Katingan,PLK-05,Daops Palangkaraya,102.8,A014,Desa Mendawai,11.0,PLK-05,10.8,2.5,,
+K8264,Seruyan,PKB-05,Daops Pangkalanbun,65.6,A048,Desa Pembuang Hulu I,7.9,PKB-05,3.7,1.0,,
+K8281,Kapuas,PLK-05,Daops Palangkaraya,63.0,A100,Desa Sei Gawing,13.7,PLK-05,3.5,1.6,,
+K8319,Seruyan,PKB-05,Daops Pangkalanbun,66.2,A048,Desa Pembuang Hulu I,12.7,PKB-05,4.2,1.6,,
+K8334,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,66.3,A004,Desa Sungai Cabang,15.6,PKB-05,17.5,,8.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8336,Kapuas,PLK-05,Daops Palangkaraya,80.4,A017,Desa Lungkuh Layang,11.9,PLK-05,3.4,1.3,,
+K8351,Kapuas,KPS-05,Daops Kapuas,67.9,A119,Desa Mantangai Tengah,11.0,KPS-05,4.6,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8394,Pulang Pisau,KPS-05,Daops Kapuas,40.0,A007,Desa Sakakajang,14.1,KPS-05,1.9,1.1,,
+K8408,Katingan,PLK-05,Daops Palangkaraya,65.0,A006,Desa Galinggang,18.4,PLK-05,6.5,1.9,,
+K8409,Seruyan,PKB-05,Daops Pangkalanbun,64.8,A048,Desa Pembuang Hulu I,18.8,PKB-05,4.2,2.0,,
+K8411,Sukamara,PKB-05,Daops Pangkalanbun,71.9,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",18.4,PKB-05,5.5,2.4,,
+K8456,Kapuas,PLK-05,Daops Palangkaraya,39.5,T001,"Desa Lahei Mangkutup, Kec. Mantangai",9.3,PLK-05,2.7,0.9,,
+K8477,Kapuas,PLK-05,Daops Palangkaraya,58.0,T001,"Desa Lahei Mangkutup, Kec. Mantangai",14.6,PLK-05,4.2,2.3,,
+K8483,Katingan,PLK-05,Daops Palangkaraya,116.8,A014,Desa Mendawai,18.2,PLK-05,11.1,1.4,,
+K8490,Pulang Pisau,KPS-05,Daops Kapuas,48.5,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",18.6,KPS-05,5.9,,3.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8491,Barito Timur,KPS-05,Daops Kapuas,104.6,A057,Desa Rangga Ilung,13.3,MTW-05,5.1,0.8,,
+K8505,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,52.7,A087,Desa Teluk Pulai,16.4,PKB-05,11.5,,5.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8518,Katingan,PLK-05,Daops Palangkaraya,92.8,A014,Desa Mendawai,20.3,PLK-05,11.8,2.2,,
+K8522,Sukamara,PKB-05,Daops Pangkalanbun,96.2,A085,Desa Kuala Jelai,1.9,PKB-05,5.4,0.6,,
+K8565,Katingan,PLK-05,Daops Palangkaraya,71.9,A006,Desa Galinggang,11.8,PLK-05,7.5,1.1,,
+K8594,Pulang Pisau,KPS-05,Daops Kapuas,39.8,A007,Desa Sakakajang,14.2,KPS-05,2.0,1.2,,
+K8595,Kapuas,PLK-05,Daops Palangkaraya,49.1,T001,"Desa Lahei Mangkutup, Kec. Mantangai",4.4,PLK-05,2.7,,1.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8616,Pulang Pisau,KPS-05,Daops Kapuas,41.0,A007,Desa Sakakajang,13.3,KPS-05,1.5,0.7,,
+K8624,Pulang Pisau,KPS-05,Daops Kapuas,37.7,A063,Desa Batanjung,26.5,KPS-05,3.9,3.0,,
+K8635,Kapuas,PLK-05,Daops Palangkaraya,41.9,T001,"Desa Lahei Mangkutup, Kec. Mantangai",9.8,PLK-05,2.6,0.8,,
+K8647,Kapuas,KPS-05,Daops Kapuas,61.4,A002,Desa Sei Ahas,13.7,KPS-05,3.9,1.7,,
+K8714,Pulang Pisau,KPS-05,Daops Kapuas,39.4,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",22.0,KPS-05,3.5,1.8,,
+K8769,Barito Selatan,KPS-05,Daops Kapuas,76.1,T021,"Desa Tampulang, Kec. Jenamas",8.3,KPS-05,4.8,1.3,,
+K8784,Kota Palangkaraya,PLK-05,Daops Palangkaraya,28.0,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",18.7,PLK-05,0.9,0.9,,
+K8890,Kapuas,PLK-05,Daops Palangkaraya,66.7,T001,"Desa Lahei Mangkutup, Kec. Mantangai",22.4,PLK-05,4.8,2.9,,
+K8925,Kapuas,PLK-05,Daops Palangkaraya,73.2,A119,Desa Mantangai Tengah,2.4,KPS-05,4.6,0.4,,
+K8926,Kapuas,PLK-05,Daops Palangkaraya,66.8,T001,"Desa Lahei Mangkutup, Kec. Mantangai",22.3,PLK-05,4.9,3.1,,
+K8934,Kota Palangkaraya,PLK-05,Daops Palangkaraya,13.0,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",6.8,PLK-05,0.4,0.4,,
+K8960,Kapuas,PLK-05,Daops Palangkaraya,53.7,A100,Desa Sei Gawing,8.4,PLK-05,1.9,0.6,,
+K8987,Kapuas,PLK-05,Daops Palangkaraya,73.9,A119,Desa Mantangai Tengah,3.3,KPS-05,4.7,0.5,,
+K8988,Kapuas,PLK-05,Daops Palangkaraya,52.7,A100,Desa Sei Gawing,7.6,PLK-05,2.2,0.7,,
+K8989,Kapuas,MTW-05,Daops Muara Teweh,85.9,A017,Desa Lungkuh Layang,12.3,PLK-05,4.3,,1.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9010,Kota Palangkaraya,PLK-05,Daops Palangkaraya,24.0,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",15.4,PLK-05,0.6,0.6,,
+K9037,Kota Palangkaraya,PLK-05,Daops Palangkaraya,21.3,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",14.4,PLK-05,0.6,0.6,,
+K9048,Katingan,PLK-05,Daops Palangkaraya,79.9,A006,Desa Galinggang,6.4,PLK-05,9.9,0.6,,
+K9050,Pulang Pisau,KPS-05,Daops Kapuas,40.3,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",25.4,KPS-05,4.9,,3.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9078,Kota Palangkaraya,PLK-05,Daops Palangkaraya,14.8,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",0.8,PLK-05,1.1,0.9,,
+K9079,Kota Palangkaraya,PLK-05,Daops Palangkaraya,24.0,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",14.0,PLK-05,0.8,0.8,,
+K9135,Katingan,PLK-05,Daops Palangkaraya,93.5,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",23.3,PLK-05,2.7,1.2,,
+K9168,Katingan,PLK-05,Daops Palangkaraya,71.8,A006,Desa Galinggang,7.8,PLK-05,9.6,0.8,,
+K9237,Katingan,PLK-05,Daops Palangkaraya,79.2,A006,Desa Galinggang,15.0,PLK-05,11.5,1.9,,
+K9240,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,16.9,A087,Desa Teluk Pulai,30.4,PKB-05,2.1,2.1,,
+K9294,Pulang Pisau,KPS-05,Daops Kapuas,40.6,A063,Desa Batanjung,21.9,KPS-05,3.6,2.1,,
+K9321,Pulang Pisau,PLK-05,Daops Palangkaraya,51.3,A007,Desa Sakakajang,5.3,KPS-05,3.3,0.9,,
+K9348,Pulang Pisau,PLK-05,Daops Palangkaraya,54.9,A002,Desa Sei Ahas,18.4,KPS-05,4.4,,3.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9351,Pulang Pisau,KPS-05,Daops Kapuas,45.3,A007,Desa Sakakajang,10.3,KPS-05,2.9,,1.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9429,Kapuas,PLK-05,Daops Palangkaraya,49.2,A100,Desa Sei Gawing,16.2,PLK-05,2.7,2.0,,
+K9524,Kota Palangkaraya,PLK-05,Daops Palangkaraya,19.7,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",10.7,PLK-05,0.6,0.6,,
+K9664,Katingan,PLK-05,Daops Palangkaraya,119.7,T168,"Desa Rantau Asem, Kec. Katingan Tengah",12.9,PLK-05,4.5,1.5,,
+K9677,Katingan,PLK-05,Daops Palangkaraya,99.9,T124,"Desa Belawan Mulia, Kec. Manuhing",23.7,PLK-05,3.3,1.8,,
+K9685,Pulang Pisau,PLK-05,Daops Palangkaraya,52.1,A007,Desa Sakakajang,15.7,PLK-05,3.8,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9983,Katingan,PLK-05,Daops Palangkaraya,52.4,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",22.5,PLK-05,2.1,1.4,,
+K10011,Barito Selatan,PLK-05,Daops Palangkaraya,104.2,T064,"Desa Kupang Bersih, Kec. Pematang Karau",26.1,MTW-05,6.9,,3.7,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K10012,Barito Selatan,MTW-05,Daops Muara Teweh,68.0,A021,Desa Pendang,5.9,PLK-05,4.0,0.7,,
+K10062,Pulang Pisau,KPS-05,Daops Kapuas,25.3,A081,Desa Panamas,18.1,KPS-05,1.8,1.6,,
+K10064,Barito Selatan,MTW-05,Daops Muara Teweh,88.5,T064,"Desa Kupang Bersih, Kec. Pematang Karau",14.6,MTW-05,3.8,1.1,,
+K10140,Kota Palangkaraya,PLK-05,Daops Palangkaraya,23.2,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",10.1,PLK-05,1.2,1.2,,
+K10154,Lamandau,PKB-05,Daops Pangkalanbun,79.2,T158,"Desa Bunut, Kec. Bulik",7.7,PKB-05,3.5,0.7,,
+K10155,Kota Palangkaraya,PLK-05,Daops Palangkaraya,7.4,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",7.7,PLK-05,0.3,0.3,,
+K10195,Pulang Pisau,KPS-05,Daops Kapuas,41.8,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",28.7,KPS-05,4.5,3.4,,
+K10228,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,24.9,A087,Desa Teluk Pulai,37.1,PKB-05,1.4,1.4,,
+K10281,Kapuas,MTW-05,Daops Muara Teweh,77.6,A017,Desa Lungkuh Layang,10.4,PLK-05,4.2,0.9,,
+K10300,Pulang Pisau,PLK-05,Daops Palangkaraya,33.5,A002,Desa Sei Ahas,23.3,PLK-05,2.0,2.0,,
+K10390,Pulang Pisau,KPS-05,Daops Kapuas,42.7,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",21.5,KPS-05,4.0,2.4,,
+K10391,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,33.2,A074,Desa Lada Mandala Jaya,22.1,PKB-05,3.0,2.6,,
+K10474,Kota Palangkaraya,PLK-05,Daops Palangkaraya,12.2,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",5.3,PLK-05,0.5,0.5,,
+K10514,Katingan,PLK-05,Daops Palangkaraya,50.6,A016,Desa Jahanjang,21.7,PLK-05,4.2,2.5,,
+K10575,Katingan,PLK-05,Daops Palangkaraya,50.2,A016,Desa Jahanjang,22.1,PLK-05,4.0,2.4,,
+K10618,Kapuas,KPS-05,Daops Kapuas,21.9,A081,Desa Panamas,15.4,KPS-05,2.1,1.9,,
+K10619,Barito Selatan,MTW-05,Daops Muara Teweh,67.2,A021,Desa Pendang,5.2,PLK-05,3.9,0.5,,
+K10629,Kota Palangkaraya,PLK-05,Daops Palangkaraya,16.1,T004,"Desa Bukit Tunggal, Kec. Jekan Raya",4.3,PLK-05,0.7,0.4,,
+K10700,Barito Selatan,MTW-05,Daops Muara Teweh,56.2,A021,Desa Pendang,10.6,MTW-05,3.4,1.2,,
+K10766,Kapuas,KPS-05,Daops Kapuas,12.0,A081,Desa Panamas,5.8,KPS-05,1.1,0.8,,
+K10785,Kapuas,KPS-05,Daops Kapuas,32.7,A063,Desa Batanjung,15.9,KPS-05,2.6,1.9,,
+K10845,Kota Palangkaraya,PLK-05,Daops Palangkaraya,36.6,A028,Desa Petuk Bukit,11.2,PLK-05,1.1,0.7,,
+K10868,Katingan,PLK-05,Daops Palangkaraya,87.4,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",21.0,PLK-05,2.9,1.4,,
+K10871,Kapuas,KPS-05,Daops Kapuas,23.7,A064,Banjarmasin,20.4,KPS-05,1.2,1.2,,
+K10884,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,33.9,T024,"Desa Kinjil, Kec. Kotawaringin Lama",15.7,PKB-05,2.7,,1.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K10962,Barito Selatan,MTW-05,Daops Muara Teweh,55.6,A021,Desa Pendang,6.4,MTW-05,4.8,,1.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K10971,Kapuas,KPS-05,Daops Kapuas,22.8,A081,Desa Panamas,20.3,KPS-05,1.3,1.3,,
+K10991,Pulang Pisau,PLK-05,Daops Palangkaraya,34.5,A038,Desa Tuwung,15.5,PLK-05,1.4,1.2,,
+K11021,Katingan,PLK-05,Daops Palangkaraya,74.7,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",18.5,PLK-05,4.3,,3.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K11069,Kapuas,KPS-05,Daops Kapuas,16.4,A081,Desa Panamas,10.4,KPS-05,1.2,1.0,,
+K11130,Katingan,PLK-05,Daops Palangkaraya,75.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",21.6,PLK-05,5.0,,3.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K11206,Barito Selatan,MTW-05,Daops Muara Teweh,67.7,A021,Desa Pendang,11.7,PLK-05,5.2,,2.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K11208,Kapuas,KPS-05,Daops Kapuas,12.6,A081,Desa Panamas,19.6,KPS-05,1.2,1.2,,
+K11252,Kapuas,KPS-05,Daops Kapuas,11.4,A081,Desa Panamas,4.1,KPS-05,1.5,0.8,,
+K11278,Kapuas,KPS-05,Daops Kapuas,21.8,A081,Desa Panamas,16.3,KPS-05,1.8,1.6,,
+K11379,Kota Palangkaraya,PLK-05,Daops Palangkaraya,46.4,A028,Desa Petuk Bukit,5.1,PLK-05,1.5,0.5,,
+K11421,Kapuas,KPS-05,Daops Kapuas,5.2,T002,"Desa Tambun Raya, Kec. Basarang",10.1,KPS-05,0.2,0.2,,
+K11460,Gunung Mas,PLK-05,Daops Palangkaraya,78.5,T124,"Desa Belawan Mulia, Kec. Manuhing",20.4,PLK-05,2.4,1.1,,
+K11475,Kapuas,PLK-05,Daops Palangkaraya,50.7,T170,"Desa Tampelas, Kec. Sepang",29.1,PLK-05,2.6,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K11516,Katingan,PLK-05,Daops Palangkaraya,65.1,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",12.0,PLK-05,2.2,1.1,,
+K11536,Kota Palangkaraya,PLK-05,Daops Palangkaraya,67.1,T170,"Desa Tampelas, Kec. Sepang",17.0,PLK-05,3.6,2.1,,
+K11549,Katingan,PLK-05,Daops Palangkaraya,61.2,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",12.9,PLK-05,2.0,1.2,,
+K11682,Kota Palangkaraya,PLK-05,Daops Palangkaraya,55.6,A028,Desa Petuk Bukit,13.9,PLK-05,3.1,1.3,,
+K11692,Kota Palangkaraya,PLK-05,Daops Palangkaraya,65.7,A028,Desa Petuk Bukit,22.1,PLK-05,2.9,1.8,,
+K11711,Kota Palangkaraya,PLK-05,Daops Palangkaraya,54.2,A028,Desa Petuk Bukit,6.9,PLK-05,1.8,0.5,,
+K11758,Kota Palangkaraya,PLK-05,Daops Palangkaraya,59.1,A028,Desa Petuk Bukit,13.8,PLK-05,2.9,1.1,,
+K11837,Kota Palangkaraya,PLK-05,Daops Palangkaraya,36.1,A028,Desa Petuk Bukit,11.6,PLK-05,0.9,0.5,,
+K11859,Pulang Pisau,PLK-05,Daops Palangkaraya,39.2,A038,Desa Tuwung,23.7,PLK-05,2.3,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3558,Pulang Pisau,KPS-05,Daops Kapuas,59.4,T005,"Desa Sebangau Jaya, Kec. Sebangau Kuala",19.4,KPS-05,4.2,1.4,,
+K0470,Kapuas,MTW-05,Daops Muara Teweh,83.7,A017,Desa Lungkuh Layang,7.4,PLK-05,3.4,0.8,,
+K0512,Barito Selatan,MTW-05,Daops Muara Teweh,71.4,A021,Desa Pendang,17.2,PLK-05,4.4,,1.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0192,Barito Selatan,MTW-05,Daops Muara Teweh,67.5,A021,Desa Pendang,16.5,PLK-05,5.8,,3.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0549,Barito Selatan,MTW-05,Daops Muara Teweh,60.5,A021,Desa Pendang,15.9,PLK-05,7.2,,4.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2186,Seruyan,PKB-05,Daops Pangkalanbun,99.7,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",18.4,PKB-05,9.6,2.4,,
+K3669,Sukamara,PKB-05,Daops Pangkalanbun,55.2,T024,"Desa Kinjil, Kec. Kotawaringin Lama",20.1,PKB-05,3.5,,2.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3585,Seruyan,PKB-05,Daops Pangkalanbun,66.9,A117,Desa Muara Dua,27.7,PKB-05,5.3,2.7,,
+K3879,Kapuas,PLK-05,Daops Palangkaraya,70.9,A100,Desa Sei Gawing,17.6,PLK-05,4.0,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0537,Pulang Pisau,PLK-05,Daops Palangkaraya,52.4,T170,"Desa Tampelas, Kec. Sepang",26.2,PLK-05,2.0,1.5,,
+K0572,Barito Selatan,MTW-05,Daops Muara Teweh,84.4,A099,Desa Sarimbuah,18.8,MTW-05,3.5,0.9,,
+K1972,Seruyan,PKB-05,Daops Pangkalanbun,88.1,A004,Desa Sungai Cabang,20.5,,,,7.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3802,Pulang Pisau,KPS-05,Daops Kapuas,48.7,T020,"Desa Papuyu Iii Sei. Pudak, Kec. Kahayan Kuala",21.6,KPS-05,6.5,,4.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2628,Kotawaringin Timur,PLK-05,Daops Palangkaraya,118.7,A027,Desa Samuda Kota,15.3,PLK-05,7.6,1.5,,
+K4257,Katingan,PLK-05,Daops Palangkaraya,82.6,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",13.1,PLK-05,2.5,1.0,,
+K0799,Gunung Mas,PLK-05,Daops Palangkaraya,74.0,T124,"Desa Belawan Mulia, Kec. Manuhing",25.1,PLK-05,2.5,1.4,,
+K2871,Kotawaringin Timur,PLK-05,Daops Palangkaraya,111.3,A027,Desa Samuda Kota,22.8,PLK-05,9.7,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K4776,Kota Palangkaraya,PLK-05,Daops Palangkaraya,50.0,A028,Desa Petuk Bukit,12.2,PLK-05,3.0,1.1,,
+K5048,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,141.7,T143,"Desa Bukit Indah, Kec. Telaga Antang",22.1,PLK-05,6.4,2.1,,
+K0588,Seruyan,PKB-05,Daops Pangkalanbun,90.9,A080,Desa Sukarami,24.4,PKB-05,3.4,1.4,,
+K2607,Seruyan,PKB-05,Daops Pangkalanbun,92.2,A117,Desa Muara Dua,12.8,PKB-05,9.1,1.9,,
+K4699,Kapuas,PLK-05,Daops Palangkaraya,44.8,A038,Desa Tuwung,26.7,PLK-05,2.1,1.9,,
+K3414,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,51.6,A087,Desa Teluk Pulai,11.0,PKB-05,11.8,,4.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5064,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,155.5,T143,"Desa Bukit Indah, Kec. Telaga Antang",1.7,PLK-05,7.9,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5150,Barito Utara,MTW-05,Daops Muara Teweh,47.6,A112,Desa Pelari,7.4,MTW-05,1.4,0.6,,
+K5069,Katingan,PLK-05,Daops Palangkaraya,152.1,T168,"Desa Rantau Asem, Kec. Katingan Tengah",21.1,PLK-05,6.6,,2.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5091,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,147.4,T143,"Desa Bukit Indah, Kec. Telaga Antang",16.6,PLK-05,5.9,1.6,,
+K5103,Kotawaringin Timur,PLK-05,Daops Palangkaraya,124.2,T137,"Desa Sari Harapan, Kec. Parenggean",29.5,PLK-05,4.8,2.1,,
+K5110,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,152.0,T143,"Desa Bukit Indah, Kec. Telaga Antang",4.6,PLK-05,8.9,,3.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1184,Kapuas,MTW-05,Daops Muara Teweh,87.8,A017,Desa Lungkuh Layang,17.3,PLK-05,4.6,2.1,,
+K1181,Kota Palangkaraya,PLK-05,Daops Palangkaraya,69.5,T170,"Desa Tampelas, Kec. Sepang",22.8,PLK-05,3.4,2.3,,
+K2709,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,130.1,A027,Desa Samuda Kota,17.2,PLK-05,6.4,1.9,,
+K4633,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,41.1,T024,"Desa Kinjil, Kec. Kotawaringin Lama",15.2,PKB-05,1.6,0.8,,
+K4835,Pulang Pisau,PLK-05,Daops Palangkaraya,43.4,A028,Desa Petuk Bukit,19.7,PLK-05,3.5,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0796,Katingan,PLK-05,Daops Palangkaraya,124.9,T168,"Desa Rantau Asem, Kec. Katingan Tengah",8.9,PLK-05,4.5,0.9,,
+K1260,Kota Palangkaraya,PLK-05,Daops Palangkaraya,72.2,A028,Desa Petuk Bukit,25.0,PLK-05,2.8,1.7,,
+K5060,Kotawaringin Timur,PLK-05,Daops Palangkaraya,149.6,T168,"Desa Rantau Asem, Kec. Katingan Tengah",22.2,PLK-05,6.9,,3.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5098,Kotawaringin Timur,PLK-05,Daops Palangkaraya,136.2,T137,"Desa Sari Harapan, Kec. Parenggean",32.0,PLK-05,5.2,2.0,,
+K5106,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,167.2,T143,"Desa Bukit Indah, Kec. Telaga Antang",13.1,PLK-05,6.9,1.3,,
+K5108,Gunung Mas,PLK-05,Daops Palangkaraya,130.2,T171,"Desa Luwuk Tukau, Kec. Manuhing Raya",3.6,PLK-05,3.6,0.2,,
+K5112,Lamandau,PKB-05,Daops Pangkalanbun,105.6,T095,"Desa Mengkalang, Kec. Batang Kawa",25.8,PKB-05,4.2,2.1,,
+K5123,Katingan,PLK-05,Daops Palangkaraya,143.4,T168,"Desa Rantau Asem, Kec. Katingan Tengah",18.8,PLK-05,6.2,2.1,,
+K5195,Gunung Mas,PLK-05,Daops Palangkaraya,95.6,T124,"Desa Belawan Mulia, Kec. Manuhing",4.1,PLK-05,2.8,0.4,,
+K4707,Kapuas,KPS-05,Daops Kapuas,17.6,T127,"Antar Baru, Kec. Marabahan",21.7,KPS-05,0.8,0.9,,
+K1957,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,43.1,A048,Desa Pembuang Hulu I,17.9,PKB-05,4.3,,2.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K0874,Kota Palangkaraya,PLK-05,Daops Palangkaraya,74.0,T124,"Desa Belawan Mulia, Kec. Manuhing",25.0,PLK-05,3.4,,2.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1206,Katingan,PLK-05,Daops Palangkaraya,103.9,T124,"Desa Belawan Mulia, Kec. Manuhing",16.3,PLK-05,3.3,1.1,,
+K5074,Kotawaringin Timur,PLK-05,Daops Palangkaraya,169.2,T143,"Desa Bukit Indah, Kec. Telaga Antang",19.0,PLK-05,8.1,2.1,,
+K5100,Seruyan,PKB-05,Daops Pangkalanbun,115.7,A094,Desa Kuala Kuayan,21.1,PKB-05,5.2,1.5,,
+K5105,Kapuas,MTW-05,Daops Muara Teweh,83.5,A017,Desa Lungkuh Layang,35.0,PLK-05,5.8,,3.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5166,Katingan,PLK-05,Daops Palangkaraya,170.0,T185,"Desa Tumbang Tabulus, Kec. Marikit",32.2,PLK-05,6.2,2.4,,
+K5169,Gunung Mas,PLK-05,Daops Palangkaraya,100.8,T170,"Desa Tampelas, Kec. Sepang",26.5,PLK-05,4.5,1.9,,
+K5119,Kotawaringin Timur,PLK-05,Daops Palangkaraya,157.5,T143,"Desa Bukit Indah, Kec. Telaga Antang",23.7,PLK-05,6.3,1.8,,
+K5208,Seruyan,PKB-05,Daops Pangkalanbun,112.7,A094,Desa Kuala Kuayan,27.3,PKB-05,6.5,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5228,Seruyan,PKB-05,Daops Pangkalanbun,107.9,A094,Desa Kuala Kuayan,19.9,PKB-05,5.4,1.9,,
+K5347,Kapuas,MTW-05,Daops Muara Teweh,68.9,A017,Desa Lungkuh Layang,36.2,PLK-05,4.7,2.2,,
+K1474,Katingan,KPS-05,Daops Kapuas,114.3,A014,Desa Mendawai,25.7,PLK-05,12.7,3.0,,
+K1886,Seruyan,PKB-05,Daops Pangkalanbun,108.3,T145,"Desa Pandau, Kec. Arut Utara",18.3,PKB-05,4.9,2.1,,
+K1338,Barito Selatan,MTW-05,Daops Muara Teweh,84.6,A017,Desa Lungkuh Layang,11.5,PLK-05,3.9,1.4,,
+K1442,Barito Selatan,MTW-05,Daops Muara Teweh,64.6,A021,Desa Pendang,15.6,PLK-05,6.7,,4.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1541,Seruyan,PKB-05,Daops Pangkalanbun,85.1,A117,Desa Muara Dua,13.8,PKB-05,12.0,,4.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1476,Kota Palangkaraya,PLK-05,Daops Palangkaraya,49.5,A028,Desa Petuk Bukit,13.0,PLK-05,1.2,0.6,,
+K1518,Katingan,PLK-05,Daops Palangkaraya,94.2,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",21.2,PLK-05,3.5,1.7,,
+K1546,Barito Selatan,MTW-05,Daops Muara Teweh,91.0,T064,"Desa Kupang Bersih, Kec. Pematang Karau",12.8,MTW-05,3.5,0.9,,
+K5164,Kotawaringin Timur,PLK-05,Daops Palangkaraya,147.8,T168,"Desa Rantau Asem, Kec. Katingan Tengah",20.9,PLK-05,6.7,,2.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5185,Kapuas,MTW-05,Daops Muara Teweh,68.2,T107,"Desa Hurung Kampin, Kec. Pasak Talawang",35.6,PLK-05,5.5,,3.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5271,Katingan,PLK-05,Daops Palangkaraya,152.3,T168,"Desa Rantau Asem, Kec. Katingan Tengah",20.2,PLK-05,5.5,1.7,,
+K5275,Kotawaringin Timur,PLK-05,Daops Palangkaraya,168.8,T143,"Desa Bukit Indah, Kec. Telaga Antang",15.1,PLK-05,7.5,1.9,,
+K5284,Gunung Mas,PLK-05,Daops Palangkaraya,84.9,T170,"Desa Tampelas, Kec. Sepang",14.9,PLK-05,3.9,1.0,,
+K5290,Gunung Mas,PLK-05,Daops Palangkaraya,118.4,T171,"Desa Luwuk Tukau, Kec. Manuhing Raya",14.4,PLK-05,4.1,1.8,,
+K5321,Katingan,PLK-05,Daops Palangkaraya,150.2,T168,"Desa Rantau Asem, Kec. Katingan Tengah",18.7,PLK-05,6.1,,2.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5359,Lamandau,PKB-05,Daops Pangkalanbun,108.5,T095,"Desa Mengkalang, Kec. Batang Kawa",22.6,PKB-05,5.1,3.0,,
+K5377,Kotawaringin Timur,PLK-05,Daops Palangkaraya,122.8,T137,"Desa Sari Harapan, Kec. Parenggean",8.9,PLK-05,4.1,0.8,,
+K5441,Seruyan,PKB-05,Daops Pangkalanbun,113.2,A094,Desa Kuala Kuayan,24.4,PKB-05,6.1,2.4,,
+K5443,Seruyan,PKB-05,Daops Pangkalanbun,122.3,T145,"Desa Pandau, Kec. Arut Utara",32.3,PKB-05,7.3,3.5,,
+K5470,Seruyan,PKB-05,Daops Pangkalanbun,112.7,A094,Desa Kuala Kuayan,20.5,PKB-05,5.1,1.4,,
+K1687,Kapuas,MTW-05,Daops Muara Teweh,77.4,A017,Desa Lungkuh Layang,10.2,PLK-05,3.9,1.1,,
+K1231,Kapuas,MTW-05,Daops Muara Teweh,70.8,A017,Desa Lungkuh Layang,15.7,PLK-05,5.0,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1638,Katingan,PLK-05,Daops Palangkaraya,120.6,T168,"Desa Rantau Asem, Kec. Katingan Tengah",18.0,PLK-05,6.1,,2.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5332,Lamandau,PKB-05,Daops Pangkalanbun,112.4,T095,"Desa Mengkalang, Kec. Batang Kawa",32.7,PKB-05,4.0,1.9,,
+K5431,Katingan,PLK-05,Daops Palangkaraya,153.9,T168,"Desa Rantau Asem, Kec. Katingan Tengah",23.5,PLK-05,7.2,,3.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5442,Lamandau,PKB-05,Daops Pangkalanbun,103.7,T095,"Desa Mengkalang, Kec. Batang Kawa",28.5,PKB-05,4.5,2.6,,
+K5501,Katingan,PLK-05,Daops Palangkaraya,129.3,T168,"Desa Rantau Asem, Kec. Katingan Tengah",14.0,PLK-05,5.1,1.3,,
+K5830,Gunung Mas,PLK-05,Daops Palangkaraya,103.3,T124,"Desa Belawan Mulia, Kec. Manuhing",31.4,PLK-05,4.4,1.8,,
+K5864,Gunung Mas,PLK-05,Daops Palangkaraya,92.0,T124,"Desa Belawan Mulia, Kec. Manuhing",17.4,PLK-05,3.9,1.9,,
+K5412,Gunung Mas,PLK-05,Daops Palangkaraya,142.8,T171,"Desa Luwuk Tukau, Kec. Manuhing Raya",18.9,PLK-05,5.6,2.0,,
+K5539,Barito Timur,MTW-05,Daops Muara Teweh,106.6,T064,"Desa Kupang Bersih, Kec. Pematang Karau",17.5,MTW-05,3.0,0.9,,
+K5558,Gunung Mas,PLK-05,Daops Palangkaraya,163.9,T171,"Desa Luwuk Tukau, Kec. Manuhing Raya",37.3,PLK-05,6.1,2.2,,
+K5672,Katingan,PLK-05,Daops Palangkaraya,87.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",14.9,PLK-05,3.4,1.7,,
+K5673,Seruyan,PKB-05,Daops Pangkalanbun,143.7,T143,"Desa Bukit Indah, Kec. Telaga Antang",40.8,PKB-05,8.2,4.5,,
+K5693,Barito Timur,MTW-05,Daops Muara Teweh,105.2,T064,"Desa Kupang Bersih, Kec. Pematang Karau",17.4,MTW-05,2.9,0.9,,
+K5707,Katingan,PLK-05,Daops Palangkaraya,107.0,T124,"Desa Belawan Mulia, Kec. Manuhing",17.4,PLK-05,3.2,1.1,,
+K5727,Seruyan,PKB-05,Daops Pangkalanbun,110.8,A094,Desa Kuala Kuayan,22.1,PKB-05,5.2,1.5,,
+K5759,Barito Timur,MTW-05,Daops Muara Teweh,95.3,T064,"Desa Kupang Bersih, Kec. Pematang Karau",9.0,MTW-05,3.1,0.7,,
+K5820,Katingan,PLK-05,Daops Palangkaraya,108.5,T168,"Desa Rantau Asem, Kec. Katingan Tengah",32.3,PLK-05,4.8,,3.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5822,Seruyan,PKB-05,Daops Pangkalanbun,83.1,A080,Desa Sukarami,30.4,PKB-05,3.6,1.8,,
+K5913,Katingan,PLK-05,Daops Palangkaraya,77.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",21.6,PLK-05,5.3,,3.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K5937,Murung Raya,MTW-05,Daops Muara Teweh,71.6,T107,"Desa Hurung Kampin, Kec. Pasak Talawang",31.2,MTW-05,4.6,,3.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K6100,Kapuas,MTW-05,Daops Muara Teweh,62.9,A017,Desa Lungkuh Layang,23.9,PLK-05,4.3,1.4,,
+K6152,Lamandau,PKB-05,Daops Pangkalanbun,105.4,T095,"Desa Mengkalang, Kec. Batang Kawa",27.5,PKB-05,4.0,1.9,,
+K6328,Barito Utara,MTW-05,Daops Muara Teweh,18.5,T153,"Desa Butong, Kec. Teweh Selatan",27.1,MTW-05,1.1,1.1,,
+K6365,Kota Palangkaraya,PLK-05,Daops Palangkaraya,70.1,A028,Desa Petuk Bukit,22.7,PLK-05,2.5,1.5,,
+K6416,Katingan,PLK-05,Daops Palangkaraya,66.8,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",12.1,PLK-05,2.2,1.1,,
+K6745,Gunung Mas,PLK-05,Daops Palangkaraya,77.8,T124,"Desa Belawan Mulia, Kec. Manuhing",21.0,PLK-05,2.6,1.3,,
+K7186,Katingan,PLK-05,Daops Palangkaraya,65.7,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",14.1,PLK-05,2.9,1.8,,
+K7302,Barito Selatan,MTW-05,Daops Muara Teweh,62.2,A021,Desa Pendang,12.5,PLK-05,7.1,,4.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K7413,Kota Palangkaraya,PLK-05,Daops Palangkaraya,69.4,A028,Desa Petuk Bukit,22.9,PLK-05,3.4,2.3,,
+K1233,Seruyan,PKB-05,Daops Pangkalanbun,78.5,A048,Desa Pembuang Hulu I,25.8,PKB-05,3.4,1.5,,
+K0934,Katingan,PLK-05,Daops Palangkaraya,104.0,T124,"Desa Belawan Mulia, Kec. Manuhing",20.3,PLK-05,3.1,1.1,,
+K1826,Kapuas,MTW-05,Daops Muara Teweh,86.4,A017,Desa Lungkuh Layang,18.4,PLK-05,4.6,2.2,,
+K1469,Kapuas,KPS-05,Daops Kapuas,30.8,A063,Desa Batanjung,20.4,KPS-05,2.1,1.6,,
+K1544,Kota Palangkaraya,PLK-05,Daops Palangkaraya,68.1,A028,Desa Petuk Bukit,21.0,PLK-05,2.1,1.0,,
+K2712,Lamandau,PKB-05,Daops Pangkalanbun,80.1,T158,"Desa Bunut, Kec. Bulik",8.2,PKB-05,3.5,0.9,,
+K1543,Kapuas,MTW-05,Daops Muara Teweh,85.4,A017,Desa Lungkuh Layang,18.6,PLK-05,4.3,1.9,,
+K1704,Lamandau,PKB-05,Daops Pangkalanbun,98.1,T145,"Desa Pandau, Kec. Arut Utara",25.0,PKB-05,5.0,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1509,Kapuas,MTW-05,Daops Muara Teweh,62.1,A021,Desa Pendang,23.5,PLK-05,4.8,1.9,,
+K1473,Katingan,PLK-05,Daops Palangkaraya,72.4,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",15.8,PLK-05,3.3,,2.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1479,Seruyan,PKB-05,Daops Pangkalanbun,86.0,A117,Desa Muara Dua,15.1,PKB-05,12.2,,5.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1292,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,110.0,A094,Desa Kuala Kuayan,21.6,PKB-05,5.2,2.4,,
+K1765,Barito Selatan,MTW-05,Daops Muara Teweh,61.1,A021,Desa Pendang,12.2,PLK-05,7.5,,4.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1659,Barito Utara,MTW-05,Daops Muara Teweh,30.0,A067,Desa Besiq,36.1,MTW-05,1.2,1.2,,
+K2201,Kapuas,PLK-05,Daops Palangkaraya,70.8,A100,Desa Sei Gawing,14.2,PLK-05,3.2,1.6,,
+K3393,Katingan,PLK-05,Daops Palangkaraya,125.3,T168,"Desa Rantau Asem, Kec. Katingan Tengah",10.2,PLK-05,4.5,0.9,,
+K3476,Seruyan,STG-04,Daops Sintang,144.8,T182,"Desa Tumbang Kalang, Kec. Seruyan Hulu",14.1,PKB-05,9.2,1.7,,
+K3830,Kota Palangkaraya,PLK-05,Daops Palangkaraya,66.8,T170,"Desa Tampelas, Kec. Sepang",19.1,PLK-05,3.7,2.3,,
+K3860,Pulang Pisau,PLK-05,Daops Palangkaraya,57.2,T170,"Desa Tampelas, Kec. Sepang",22.3,PLK-05,2.4,1.6,,
+K4900,Lamandau,PKB-05,Daops Pangkalanbun,63.9,T158,"Desa Bunut, Kec. Bulik",22.3,PKB-05,2.4,1.4,,
+K6957,Katingan,PLK-05,Daops Palangkaraya,129.5,T168,"Desa Rantau Asem, Kec. Katingan Tengah",19.8,PLK-05,4.3,0.8,,
+K7567,Seruyan,PKB-05,Daops Pangkalanbun,99.8,T003,"Desa Tanjung Rangas, Kec. Seruyan Hilir",17.2,PKB-05,5.7,1.4,,
+K7789,Lamandau,KTP-04,Daops Ketapang,116.4,T095,"Desa Mengkalang, Kec. Batang Kawa",31.2,PKB-05,5.4,,3.3,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8166,Kotawaringin Timur,PKB-05,Daops Pangkalanbun,154.5,T143,"Desa Bukit Indah, Kec. Telaga Antang",16.3,PLK-05,8.7,2.8,,
+K8239,Lamandau,PKB-05,Daops Pangkalanbun,104.0,T095,"Desa Mengkalang, Kec. Batang Kawa",27.2,PKB-05,5.2,,3.1,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K8559,Seruyan,STG-04,Daops Sintang,157.8,T182,"Desa Tumbang Kalang, Kec. Seruyan Hulu",15.0,PKB-05,7.9,1.6,,
+K8607,Katingan,PLK-05,Daops Palangkaraya,99.1,T124,"Desa Belawan Mulia, Kec. Manuhing",23.7,PLK-05,3.2,1.7,,
+K8684,Kapuas,MTW-05,Daops Muara Teweh,83.8,T107,"Desa Hurung Kampin, Kec. Pasak Talawang",21.8,PLK-05,5.2,1.5,,
+K8698,Barito Timur,MTW-05,Daops Muara Teweh,100.9,T064,"Desa Kupang Bersih, Kec. Pematang Karau",21.7,MTW-05,3.0,1.0,,
+K9148,Seruyan,PKB-05,Daops Pangkalanbun,98.9,T145,"Desa Pandau, Kec. Arut Utara",29.7,PKB-05,4.0,1.8,,
+K9228,Barito Selatan,MTW-05,Daops Muara Teweh,82.0,A099,Desa Sarimbuah,16.2,MTW-05,3.5,0.9,,
+K9241,Barito Timur,KPS-05,Daops Kapuas,123.8,T166,"Desa Tamiang Layang, Kec. Dusun Timur",14.0,MTW-05,3.5,0.6,,
+K9295,Kapuas,KPS-05,Daops Kapuas,58.7,T021,"Desa Tampulang, Kec. Jenamas",21.2,KPS-05,2.3,2.1,,
+K9338,Seruyan,PKB-05,Daops Pangkalanbun,97.8,A094,Desa Kuala Kuayan,29.9,PKB-05,4.1,2.0,,
+K9452,Katingan,PLK-05,Daops Palangkaraya,114.0,T168,"Desa Rantau Asem, Kec. Katingan Tengah",29.4,PLK-05,4.6,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9457,Katingan,PLK-05,Daops Palangkaraya,81.7,T124,"Desa Belawan Mulia, Kec. Manuhing",18.8,PLK-05,3.5,,1.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9473,Barito Selatan,MTW-05,Daops Muara Teweh,94.6,T064,"Desa Kupang Bersih, Kec. Pematang Karau",8.6,MTW-05,3.4,0.7,,
+K9546,Barito Selatan,MTW-05,Daops Muara Teweh,76.7,A017,Desa Lungkuh Layang,14.7,PLK-05,3.3,0.7,,
+K9571,Katingan,PLK-05,Daops Palangkaraya,88.9,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",16.2,PLK-05,2.9,1.0,,
+K9625,Kapuas,PLK-05,Daops Palangkaraya,74.4,A100,Desa Sei Gawing,15.1,PLK-05,3.4,1.7,,
+K9676,Katingan,PLK-05,Daops Palangkaraya,84.4,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",10.7,PLK-05,3.1,1.3,,
+K9798,Kapuas,MTW-05,Daops Muara Teweh,69.5,A017,Desa Lungkuh Layang,34.5,PLK-05,4.5,2.0,,
+K9923,Barito Timur,MTW-05,Daops Muara Teweh,117.5,T064,"Desa Kupang Bersih, Kec. Pematang Karau",16.9,MTW-05,3.7,1.0,,
+K9974,Katingan,PLK-05,Daops Palangkaraya,109.7,T168,"Desa Rantau Asem, Kec. Katingan Tengah",31.7,PLK-05,4.8,,3.2,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K9975,Barito Timur,MTW-05,Daops Muara Teweh,114.2,A076,Sungai Kumap,25.3,MTW-05,4.4,1.9,,
+K10036,Barito Timur,MTW-05,Daops Muara Teweh,124.7,T166,"Desa Tamiang Layang, Kec. Dusun Timur",4.9,MTW-05,3.7,0.4,,
+K10248,Kapuas,PLK-05,Daops Palangkaraya,69.2,A100,Desa Sei Gawing,12.7,PLK-05,2.6,1.0,,
+K10402,Kapuas,PLK-05,Daops Palangkaraya,68.4,A100,Desa Sei Gawing,8.5,PLK-05,2.4,0.7,,
+K10499,Kapuas,MTW-05,Daops Muara Teweh,69.6,A017,Desa Lungkuh Layang,27.8,PLK-05,5.4,,3.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K10552,Barito Timur,MTW-05,Daops Muara Teweh,102.6,T064,"Desa Kupang Bersih, Kec. Pematang Karau",8.6,MTW-05,4.1,0.9,,
+K10553,Kapuas,PLK-05,Daops Palangkaraya,87.6,A017,Desa Lungkuh Layang,8.5,PLK-05,4.0,,1.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K10576,Katingan,PLK-05,Daops Palangkaraya,82.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",18.2,PLK-05,3.4,1.9,,
+K10609,Kota Palangkaraya,PLK-05,Daops Palangkaraya,65.1,A028,Desa Petuk Bukit,18.7,PLK-05,1.7,0.6,,
+K10630,Kapuas,MTW-05,Daops Muara Teweh,59.8,A021,Desa Pendang,21.9,PLK-05,5.4,2.5,,
+K10631,Sukamara,PKB-05,Daops Pangkalanbun,53.1,T017,"Desa Sungai Cabang Barat, Kec. Pantai Lunci",7.0,PKB-05,3.1,0.9,,
+K10675,Lamandau,PKB-05,Daops Pangkalanbun,100.5,T145,"Desa Pandau, Kec. Arut Utara",24.5,PKB-05,5.7,,3.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K10702,Barito Selatan,MTW-05,Daops Muara Teweh,72.8,A021,Desa Pendang,13.6,PLK-05,3.5,0.8,,
+K10714,Katingan,PLK-05,Daops Palangkaraya,103.4,T124,"Desa Belawan Mulia, Kec. Manuhing",21.0,PLK-05,3.1,1.2,,
+K10751,Kapuas,MTW-05,Daops Muara Teweh,77.0,A017,Desa Lungkuh Layang,11.8,PLK-05,3.4,0.8,,
+K10794,Gunung Mas,PLK-05,Daops Palangkaraya,99.8,T170,"Desa Tampelas, Kec. Sepang",26.1,PLK-05,4.5,2.0,,
+K10857,Kapuas,MTW-05,Daops Muara Teweh,77.9,A017,Desa Lungkuh Layang,9.5,PLK-05,3.6,0.9,,
+K10859,Kotawaringin Timur,PLK-05,Daops Palangkaraya,98.5,A083,Desa Rubung Buyung,3.7,PLK-05,4.2,0.7,,
+K10906,Barito Timur,MTW-05,Daops Muara Teweh,99.4,A076,Sungai Kumap,23.1,MTW-05,4.3,2.2,,
+K10931,Barito Utara,MTW-05,Daops Muara Teweh,32.9,A112,Desa Pelari,30.0,MTW-05,1.1,1.1,,
+K10941,Barito Timur,KPS-05,Daops Kapuas,122.5,T166,"Desa Tamiang Layang, Kec. Dusun Timur",13.0,MTW-05,4.5,1.1,,
+K10960,Kota Palangkaraya,PLK-05,Daops Palangkaraya,71.3,A028,Desa Petuk Bukit,23.9,PLK-05,2.7,1.6,,
+K10961,Kota Palangkaraya,PLK-05,Daops Palangkaraya,65.7,A028,Desa Petuk Bukit,19.2,PLK-05,1.6,0.5,,
+K10970,Katingan,PLK-05,Daops Palangkaraya,79.7,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",18.0,PLK-05,4.0,,2.5,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K10998,Kapuas,MTW-05,Daops Muara Teweh,57.0,A021,Desa Pendang,27.2,MTW-05,4.4,1.7,,
+K11007,Kota Palangkaraya,PLK-05,Daops Palangkaraya,70.8,A028,Desa Petuk Bukit,23.9,PLK-05,2.9,1.8,,
+K11047,Kapuas,MTW-05,Daops Muara Teweh,83.0,A017,Desa Lungkuh Layang,5.4,PLK-05,3.2,0.6,,
+K11048,Kapuas,MTW-05,Daops Muara Teweh,70.2,A017,Desa Lungkuh Layang,16.2,PLK-05,4.6,1.7,,
+K11049,Kapuas,KPS-05,Daops Kapuas,71.7,T021,"Desa Tampulang, Kec. Jenamas",10.1,KPS-05,4.0,1.0,,
+K11099,Kapuas,MTW-05,Daops Muara Teweh,80.2,A017,Desa Lungkuh Layang,7.4,PLK-05,3.4,0.7,,
+K11106,Kapuas,MTW-05,Daops Muara Teweh,76.9,A017,Desa Lungkuh Layang,9.5,PLK-05,3.7,0.8,,
+K11107,Kapuas,MTW-05,Daops Muara Teweh,61.2,A021,Desa Pendang,25.1,PLK-05,4.3,1.5,,
+K11120,Barito Selatan,MTW-05,Daops Muara Teweh,75.9,A017,Desa Lungkuh Layang,13.8,PLK-05,3.3,0.7,,
+K11132,Kota Palangkaraya,PLK-05,Daops Palangkaraya,44.5,A028,Desa Petuk Bukit,8.8,PLK-05,1.2,0.6,,
+K11188,Barito Selatan,MTW-05,Daops Muara Teweh,62.8,A021,Desa Pendang,16.6,PLK-05,6.8,,4.0,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K11302,Barito Utara,MTW-05,Daops Muara Teweh,24.7,T153,"Desa Butong, Kec. Teweh Selatan",32.7,MTW-05,1.0,1.0,,
+K11354,Sukamara,PKB-05,Daops Pangkalanbun,40.4,T024,"Desa Kinjil, Kec. Kotawaringin Lama",21.1,PKB-05,2.0,0.7,,
+K11364,Kapuas,MTW-05,Daops Muara Teweh,60.3,A021,Desa Pendang,24.0,PLK-05,4.7,1.9,,
+K11462,Kota Palangkaraya,PLK-05,Daops Palangkaraya,61.3,A028,Desa Petuk Bukit,14.1,PLK-05,1.8,0.7,,
+K11484,Kota Palangkaraya,PLK-05,Daops Palangkaraya,70.0,A028,Desa Petuk Bukit,23.0,PLK-05,2.2,1.1,,
+K11485,Barito Selatan,MTW-05,Daops Muara Teweh,60.1,A021,Desa Pendang,13.5,PLK-05,7.9,,4.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K11525,Seruyan,PKB-05,Daops Pangkalanbun,71.3,A048,Desa Pembuang Hulu I,13.4,PKB-05,2.9,1.1,,
+K11574,Kota Palangkaraya,PLK-05,Daops Palangkaraya,73.0,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",23.9,PLK-05,3.9,2.9,,
+K11645,Pulang Pisau,PLK-05,Daops Palangkaraya,59.3,T170,"Desa Tampelas, Kec. Sepang",20.6,PLK-05,2.5,1.7,,
+K11706,Kota Palangkaraya,PLK-05,Daops Palangkaraya,64.7,T170,"Desa Tampelas, Kec. Sepang",21.5,PLK-05,3.1,2.0,,
+K1674,Kapuas,MTW-05,Daops Muara Teweh,68.0,A017,Desa Lungkuh Layang,18.7,PLK-05,4.0,1.1,,
+K2603,Kota Palangkaraya,PLK-05,Daops Palangkaraya,38.3,A028,Desa Petuk Bukit,11.8,PLK-05,2.8,1.2,,
+K1567,Kapuas,MTW-05,Daops Muara Teweh,68.1,A017,Desa Lungkuh Layang,18.4,PLK-05,5.3,,2.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1696,Barito Timur,MTW-05,Daops Muara Teweh,95.8,T064,"Desa Kupang Bersih, Kec. Pematang Karau",7.6,MTW-05,3.4,0.6,,
+K2093,Barito Timur,MTW-05,Daops Muara Teweh,104.0,T064,"Desa Kupang Bersih, Kec. Pematang Karau",6.3,MTW-05,3.9,0.8,,
+K1862,Kota Palangkaraya,PLK-05,Daops Palangkaraya,66.5,A028,Desa Petuk Bukit,19.1,PLK-05,2.3,1.2,,
+K1911,Barito Timur,KPS-05,Daops Kapuas,123.7,T166,"Desa Tamiang Layang, Kec. Dusun Timur",12.7,MTW-05,3.9,0.7,,
+K1606,Katingan,PLK-05,Daops Palangkaraya,109.3,T168,"Desa Rantau Asem, Kec. Katingan Tengah",29.0,PLK-05,5.1,3.3,,
+K2954,Kota Palangkaraya,PLK-05,Daops Palangkaraya,64.8,A028,Desa Petuk Bukit,22.1,PLK-05,3.4,2.2,,
+K3497,Kota Palangkaraya,PLK-05,Daops Palangkaraya,54.4,A028,Desa Petuk Bukit,7.5,PLK-05,1.4,0.4,,
+K1545,Katingan,PLK-05,Daops Palangkaraya,64.1,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",10.4,PLK-05,1.6,0.6,,
+K2362,Katingan,PLK-05,Daops Palangkaraya,77.7,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",16.8,PLK-05,4.0,,2.6,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3026,Katingan,PLK-05,Daops Palangkaraya,65.5,T053,"Desa Banut Kalanaman, Kec. Katingan Hilir",13.3,PLK-05,2.7,1.6,,
+K1906,Barito Selatan,MTW-05,Daops Muara Teweh,83.1,A099,Desa Sarimbuah,14.7,MTW-05,3.3,0.7,,
+K1716,Barito Selatan,KPS-05,Daops Kapuas,84.8,A057,Desa Rangga Ilung,7.1,KPS-05,6.5,1.1,,
+K1778,Kapuas,MTW-05,Daops Muara Teweh,59.0,A021,Desa Pendang,21.2,PLK-05,5.7,,2.9,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K1909,Barito Timur,MTW-05,Daops Muara Teweh,92.8,A076,Sungai Kumap,26.6,MTW-05,4.6,2.6,,
+K3946,Kapuas,PLK-05,Daops Palangkaraya,84.7,A017,Desa Lungkuh Layang,12.4,PLK-05,5.2,,2.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K2323,Barito Timur,MTW-05,Daops Muara Teweh,87.7,A099,Desa Sarimbuah,24.2,MTW-05,4.4,,2.8,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3683,Kotawaringin Barat,PKB-05,Daops Pangkalanbun,43.8,T024,"Desa Kinjil, Kec. Kotawaringin Lama",9.4,PKB-05,1.4,0.6,,
+K2653,Kota Palangkaraya,PLK-05,Daops Palangkaraya,72.3,A028,Desa Petuk Bukit,25.1,PLK-05,2.5,1.4,,
+K4543,Kapuas,MTW-05,Daops Muara Teweh,73.4,A017,Desa Lungkuh Layang,16.1,PLK-05,5.2,,2.4,"belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara"
+K3610,Barito Utara,MTW-05,Daops Muara Teweh,24.0,T153,"Desa Butong, Kec. Teweh Selatan",12.0,MTW-05,1.6,1.0,,
+K4798,Kota Palangkaraya,PLK-05,Daops Palangkaraya,71.5,A028,Desa Petuk Bukit,24.2,PLK-05,2.8,1.7,,
+K2511,Barito Utara,MTW-05,Daops Muara Teweh,41.3,A067,Desa Besiq,26.1,MTW-05,1.1,1.1,,

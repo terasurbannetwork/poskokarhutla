@@ -1,0 +1,54 @@
+/* SIPPA: gaya layar Dashboard A/B /pipa/ab (DS §3.8 §4.8). Dimuat layar ini, bukan pipa.css. Hanya token tema, tanpa warna tertanam, tanpa gaya sebaris. */
+.sp-lk{background:var(--card);border-radius:var(--r);box-shadow:var(--bayang);overflow:hidden;min-width:0}
+.sp-lk-hd{padding:14px 16px 4px;display:grid;gap:2px}
+.sp-lk-hd h3{margin:0;font:800 16px/1.25 var(--display);letter-spacing:-.01em}
+.sp-lk-bd{padding:12px 16px 16px;min-width:0;display:grid;gap:var(--sp-2);align-content:start}
+.sp-lk-isi{margin:0;font-size:13.5px}
+.sp-kisi-ab{display:grid;gap:var(--sp-4);grid-template-columns:repeat(4,minmax(0,1fr))}
+.sp-aoi{display:inline-flex;align-items:center;gap:var(--sp-2);font-size:12.5px;font-weight:600;color:var(--ink2)}
+.sp-aoi select{min-height:44px}
+/* kartu vonis: kata, bukan warna saja (DS §3.12) */
+.sp-vonis-ab{--w:var(--ink3);margin:0;display:flex;align-items:center;min-height:36px;padding:0 var(--sp-3);border-radius:var(--r-sm);border:2px solid var(--w);font:800 14px/1.2 var(--display);letter-spacing:.02em}
+.sp-vonis-ab.kecil{display:inline-flex;min-height:22px;padding:0 9px;font-size:11px;border-width:1.5px;border-radius:999px;white-space:nowrap}
+.sp-vonis-ab.lulus,.sp-vonis-ab.dapat{--w:var(--ok);background:color-mix(in srgb,var(--w) 12%,var(--card))}
+.sp-vonis-ab.tidak,.sp-vonis-ab.belum-dapat{--w:var(--bad);background:color-mix(in srgb,var(--w) 12%,var(--card))}
+.sp-vonis-ab.belum,.sp-vonis-ab.pilot{--w:var(--ink3);border-style:dashed}
+.sp-vonis-ab.syarat{--w:var(--warn);background:color-mix(in srgb,var(--w) 12%,var(--card))}
+.sp-lk-pilot{margin-bottom:var(--sp-4)}
+.sp-butir{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.sp-butir li{display:grid;grid-template-columns:24px minmax(0,1fr) auto minmax(0,14em);gap:var(--sp-2);align-items:baseline;padding:6px 0;border-bottom:1px solid var(--line);font-size:13px}
+.sp-butir li:last-child{border-bottom:0}
+.sp-butir-no{font-weight:800}
+.sp-butir-status{font-weight:700;font-size:12px;white-space:nowrap}
+.sp-butir-status.lulus::before{content:"✓ "}.sp-butir-status.gagal::before{content:"✕ "}.sp-butir-status.belum::before{content:"– "}
+.sp-butir-nilai{color:var(--ink2);font-size:12.5px}
+/* grafik */
+.sp-grafik .sp-ci{stroke:var(--ink);stroke-width:2.5;stroke-linecap:round;opacity:.75}
+.sp-grafik .sp-rerata{stroke:var(--ink);stroke-width:2.5}
+.sp-grafik .sp-titik.pembanding{fill:var(--ink3)}
+.sp-grafik .sp-batang{stroke:var(--card);stroke-width:1}
+.sp-grafik .sp-batang.h0,.sp-batang-h0{fill:var(--brand2);background:var(--brand2)}
+.sp-grafik .sp-batang.h1,.sp-batang-h1{fill:var(--f2);background:var(--f2)}
+.sp-grafik .sp-batang.h2,.sp-batang-h2{fill:var(--ink2);background:var(--ink2)}
+.ex-leg .sp-pj.sp-batang-h0,.ex-leg .sp-pj.sp-batang-h1,.ex-leg .sp-pj.sp-batang-h2{width:10px;height:10px;border:0}
+/* unggah CSV (DS §3.8) */
+.sp-lk-unggah{padding:var(--sp-3) var(--sp-4);margin-bottom:var(--sp-4);display:grid;gap:var(--sp-2)}
+.sp-unggah{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3);padding:var(--sp-4);border:2px dashed var(--line);border-radius:16px;cursor:pointer;min-height:56px}
+.sp-unggah:focus-within{outline:2px solid var(--info);outline-offset:2px}
+.sp-unggah.seret{border-style:solid;border-color:var(--info);background:color-mix(in srgb,var(--info) 8%,transparent)}
+.sp-unggah-teks{flex:1 1 220px;font-weight:600}
+.sp-unggah-hp{display:none}
+.sp-unggah-hasil{display:grid;gap:var(--sp-2)}
+.sp-unggah-hasil:empty{display:none}
+.sp-berkas{margin:0}
+.sp-galat-tabel caption{caption-side:top;text-align:left;font-weight:700;padding:var(--sp-2) 0}
+.sp-tabel-ab td .sp-sub{display:block}
+@media (max-width:1100px){.sp-kisi-ab{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:767px){
+  .sp-kisi-ab{grid-template-columns:minmax(0,1fr)}
+  .sp-lk-unggah .sp-unggah,.sp-lk-unggah>.ad-catat{display:none}
+  .sp-unggah-hp{display:block}
+  .sp-butir li{grid-template-columns:24px minmax(0,1fr) auto}
+  .sp-butir-nilai{grid-column:2/-1}
+  .sp-aoi select,.sp-aksi-kepala .ad-tombol{min-height:44px}
+}

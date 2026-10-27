@@ -158,12 +158,11 @@ export function keCsv() {
 
 globalThis.SippaPelihara = {KELAS, KELAS_BOM, KELAS_ASET, KRITIS, STOK_LAJU, kelasDari, skorKeKondisi, jadwal, laikGelar, stokMin, biayaTahun, cekAset, keCsv};
 
-/* CLI Node saja; dibungkus fungsi async supaya modul tetap aman diimpor worker dan peramban */
+/* CLI Node saja. process.getBuiltinModule (Node 22.3+), bukan import("node:fs"): modul ini diimpor src/sippa.js, dan pemindai modul Miniflare dan bundler wrangler
+   menolak import node:* maupun specifier dinamis di berkas worker. Di worker dan peramban cabang ini tidak pernah jalan. */
 if (globalThis.process?.argv?.[1]?.endsWith("pelihara.js") && process.argv.includes("--csv")) {
-  (async () => {
-    const {writeFileSync, mkdirSync} = await import("node:fs"), {fileURLToPath} = await import("node:url"), {join} = await import("node:path");
-    const dir = join(fileURLToPath(import.meta.url), "../../../data/kajian-bnpb/data/sippa");
-    mkdirSync(dir, {recursive: true});
-    writeFileSync(join(dir, "pelihara.csv"), keCsv());
-  })();
+  const {writeFileSync, mkdirSync} = process.getBuiltinModule("node:fs"), {fileURLToPath} = process.getBuiltinModule("node:url"), {join} = process.getBuiltinModule("node:path");
+  const dir = join(fileURLToPath(import.meta.url), "../../../data/kajian-bnpb/data/sippa");
+  mkdirSync(dir, {recursive: true});
+  writeFileSync(join(dir, "pelihara.csv"), keCsv());
 }

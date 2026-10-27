@@ -24,7 +24,7 @@ export const ALASAN_TRANSISI = {...DASAR, koreksi: PASANGAN_SAH};
 const HANYA_MODERATOR = new Set(["hilang", "ditemukan", "pensiun", "koreksi"]);
 const WAJIB_CATATAN = new Set(["hilang", "koreksi"]);
 const WAJIB_PESAN = {catatan: "Catatan wajib diisi. Tulis alasan singkat.", pengangkut: "Pengangkut wajib diisi. Pilih pengangkut dari daftar.", permintaan_dari: "Permintaan dari wajib diisi. Tulis nama instansi atau peminta."};
-const TEKS_ALASAN = {pra_posisi: "Pra-posisi ke depot", gelar: "Gelar", bongkar: "Bongkar ke depot", kembali: "Kembali ke gudang", pindah_banjir: "Pindah ke banjir", servis: "Kirim servis",
+export const TEKS_ALASAN = {pra_posisi: "Pra-posisi ke depot", gelar: "Gelar", bongkar: "Bongkar ke depot", kembali: "Kembali ke gudang", pindah_banjir: "Pindah ke banjir", servis: "Kirim servis",
   hilang: "Tandai hilang", ditemukan: "Tandai ditemukan", pensiun: "Pensiunkan", koreksi: "Koreksi status"};
 const NAMA_STATUS = {gudang: "gudang", depot: "depot depan", gelar: "digelar", banjir: "dipakai banjir", servis: "servis", hilang: "hilang", pensiun: "pensiun"};
 const TEKS_PENGANGKUT = {yontp: "YonTP", bpbd: "BPBD", daops: "Daops", manggala_agni: "Manggala Agni", lain: "Lain"};
@@ -80,6 +80,20 @@ export function ringkasKit(kits, pct) {
   for (const k of kits) { const kunci = `${k.status}|${k.lokasi || ""}`; grup.set(kunci, (grup.get(kunci) || 0) + 1); }
   const bagian = [...grup].map(([kunci, n]) => { const [s, l] = kunci.split("|"); return `${fmt(n)} di ${s}${l ? " " + l : ""}`; }).join(", ");
   return `${fmt(kits.length)} kit: ${bagian}${pct != null ? `; kehilangan komponen musim ini ${fmt(pct)}%` : ""}`;
+}
+
+/* judul kartu layar: satu klausa pendek; rincian status ada di pilStatusKit, lokasi di tooltip pil */
+export function judulKit(kits, pct) {
+  if (!kits.length) return "Belum ada kit terdaftar";
+  return `${fmt(kits.length)} kit${pct != null ? `; kehilangan komponen musim ini ${fmt(pct)}%` : ""}`;
+}
+/* satu pil per status (urutan siklus hidup STATUS), jumlah id-ID; nama lokasi unik di title */
+export function pilStatusKit(kits) {
+  return STATUS.map(s => {
+    const k = kits.filter(x => x.status === s); if (!k.length) return "";
+    const lok = [...new Set(k.map(x => x.lokasi).filter(Boolean))].join(", ");
+    return `<span class="sp-status ${esc(s)}"${lok ? ` title="${esc(lok)}"` : ""}>${esc(`${fmt(k.length)} ${(LABEL_STATUS[s] ?? s)}`)}</span>`;
+  }).join("");
 }
 
 /* pemakaian tercatat dari tab Pemakaian dan BBM: jam pompa, air banjir, BBM keluar */
@@ -224,7 +238,7 @@ const pergi = jalur => { history.pushState(null, "", jalur + location.search); d
 
 let ctrl = null, dialogTerbuka = null, kamera = null;
 function tutupKamera() { if (kamera) { clearInterval(kamera.timer); kamera.strim?.getTracks().forEach(t => t.stop()); kamera = null; } }
-function bukaDialog(judul, isi) {
+export function bukaDialog(judul, isi) {
   tutupDialog();
   const d = el("dialog", "sp-dialog dlg"), kepala = el("div", "dh"), h = el("h3", "", judul), x = el("button", "");
   h.tabIndex = -1; x.type = "button"; x.setAttribute("aria-label", "Tutup"); x.innerHTML = ikon("x");
@@ -234,7 +248,7 @@ function bukaDialog(judul, isi) {
   document.body.append(d); d.showModal(); h.focus(); dialogTerbuka = d;
   return d;
 }
-function tutupDialog() { dialogTerbuka?.close(); dialogTerbuka = null; }
+export function tutupDialog() { dialogTerbuka?.close(); dialogTerbuka = null; }
 export function lepas() { ctrl?.abort(); ctrl = null; tutupKamera(); tutupDialog(); document.body?.classList.remove("sp-mencetak"); document.querySelectorAll(".sp-cetak-area").forEach(e => e.remove()); }
 
 const kotakGalat = (daftar) => { const e = el("div", "ad-galat"); e.setAttribute("role", "alert"); const ul = el("ul"); daftar.forEach(g => ul.append(el("li", "", g))); e.append(ul); return e; };
@@ -245,7 +259,7 @@ export function formGerak(kit, {rencana = false, alasan = null, peran = peranSay
   const f = el("form", "sp-form"); f.noValidate = true;
   if (!opsi.length) { f.append(kosong("Tidak ada gerak yang sah dari status ini untuk perananmu.")); return f; }
   const label = o => o.alasan === "koreksi" ? `Koreksi status menjadi ${NAMA_STATUS[o.ke_status]}` : TEKS_ALASAN[o.alasan];
-  f.innerHTML = `<label>Gerak <select name="gerak">${opsi.map(o => `<option value="${o.alasan}:${o.ke_status}">${esc(label(o))}</option>`).join("")}</select></label>
+  f.innerHTML = `<label>Gerak <select name="gerak">${opsi.map(o => `<option value="${esc(o.alasan)}:${esc(o.ke_status)}">${esc(label(o))}</option>`).join("")}</select></label>
     <label data-g="rencana"><input type="checkbox" name="rencana"${rencana ? " checked" : ""}> Jadwalkan dulu (kit baru berpindah saat tiba dikonfirmasi)</label>
     <label>Lokasi tujuan <input name="ke_lokasi" maxlength="${MEDAN.gerak.ke_lokasi.maks}"></label>
     <label>Kabupaten atau kota <input name="kab" maxlength="${MEDAN.gerak.kab.maks}"></label>
@@ -359,7 +373,7 @@ async function daftar(akar, konteks) {
     const pct = st.kehilangan?.musim_pct ?? null, per = st.per;
     konteks.setPer?.(per);
     const tingkat = tingkatKehilangan(pct);
-    isi.querySelector("#sp-kit-kartu").innerHTML = Kartu.kartu("Kit", esc(ringkasKit(st.kit, pct)), `<div class="sp-pil-baris">${pct != null ? pilYakin(TINGKAT[tingkat], "asumsi-kebijakan", "Ambang 5% (U8) dan 20% (K-15) ditetapkan sebagai asumsi kebijakan") : ""}${pilYakin("Inventaris staf", "terverifikasi", "Diisi dan diperiksa staf lewat layar ini")}</div>`, `inventaris SIPPA, ${per == null ? "per –" : "per " + jamWIB(per)}`);
+    isi.querySelector("#sp-kit-kartu").innerHTML = Kartu.kartu("Kit", esc(judulKit(st.kit, pct)), `<div class="sp-pil-baris">${pilStatusKit(st.kit)}${pct != null ? pilYakin(TINGKAT[tingkat], "asumsi-kebijakan", "Ambang 5% (U8) dan 20% (K-15) ditetapkan sebagai asumsi kebijakan") : ""}${pilYakin("Inventaris staf", "terverifikasi", "Diisi dan diperiksa staf lewat layar ini")}</div>`, `inventaris SIPPA, ${per == null ? "per –" : "per " + jamWIB(per)}`);
     isi.querySelector("#sp-kit-tabel").innerHTML = st.kit.length ? tabel(KEPALA_KIT, baris.map(barisKitHtml), "Tidak ada kit yang cocok dengan penyaring.", per) : `<p class="ad-kosong">Belum ada kit. Kit dibuat oleh moderator; unit pertama SIPPA-001.</p>`;
   };
   let terjadwal = false;

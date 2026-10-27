@@ -1,0 +1,71 @@
+/* SIPPA: gaya layar Air tanah, Akses, dan rincian aset (DS §4.16 sampai §4.18). Dimuat layar itu, bukan pipa.css. Hanya token tema; tanpa warna tertanam dan tanpa gaya sebaris. */
+.sp-air-atas{display:grid;gap:var(--sp-4);grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);align-items:start}
+.sp-air-samping{display:grid;gap:var(--sp-4);min-width:0}
+.sp-hati{margin:0 0 var(--sp-3);border-left:4px solid var(--warn)}
+.sp-cat-kosong{margin:0 0 var(--sp-3)}
+/* status uji mutu: kata dan bentuk, bukan warna saja */
+.sp-mutu{--w:var(--ink3);display:inline-flex;align-items:center;gap:6px;min-height:22px;padding:0 9px;border-radius:999px;border:1.5px solid var(--w);font-size:11px;font-weight:700;white-space:nowrap;color:var(--ink)}
+.sp-mutu::before{content:"";width:8px;height:8px;border:2px solid var(--w);box-sizing:border-box;border-radius:50%}
+.sp-mutu.lolos{--w:var(--ok)}.sp-mutu.lolos::before{background:var(--w)}
+.sp-mutu.gagal{--w:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}.sp-mutu.gagal::before{border-radius:0;background:linear-gradient(45deg,transparent 40%,var(--w) 40% 60%,transparent 60%),linear-gradient(-45deg,transparent 40%,var(--w) 40% 60%,transparent 60%);border:0}
+.sp-mutu.belum{border-style:dashed}.sp-mutu.belum::before{border-radius:0;transform:rotate(45deg)}
+/* peta titik */
+.sp-peta-air{width:100%;height:auto;display:block;max-height:420px}
+.sp-peta-latar{fill:var(--surface);stroke:var(--line);stroke-width:1}
+.sp-titik-sumur{cursor:pointer;outline:none}
+.sp-titik-sumur:focus-visible .sp-cincin,.sp-titik-sumur.pilih .sp-cincin{stroke:var(--info);stroke-width:3}
+.sp-cincin{fill:var(--card);stroke:var(--ink2);stroke-width:1.5}
+.zona-aman .sp-cincin{stroke:var(--ok)}
+.zona-rawan .sp-cincin{stroke:var(--warn);stroke-dasharray:4 3}
+.zona-kritis .sp-cincin{stroke:var(--bad);stroke-dasharray:1 3;stroke-linecap:round;stroke-width:2.5}
+.zona-rusak .sp-cincin{stroke:var(--bad);stroke-width:4}
+.zona-belum .sp-cincin{stroke:var(--ink3);stroke-dasharray:2 4}
+.sp-sym{stroke:var(--ink);stroke-width:2}
+.sp-sym.lolos{fill:var(--ok)}.sp-sym.gagal{fill:none;stroke:var(--bad);stroke-width:3;stroke-linecap:round}.sp-sym.belum{fill:var(--card)}
+.sp-legenda{display:flex;flex-wrap:wrap;gap:var(--sp-4);margin-top:var(--sp-3);font-size:12.5px}
+.sp-legenda ul{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-1)}
+.sp-legenda li{display:flex;align-items:center;gap:var(--sp-2)}
+.sp-sym-ket{width:14px;height:14px;display:inline-block;border:2px solid var(--ink);box-sizing:border-box}
+.sp-sym-ket.lolos{border-radius:50%;background:var(--ok)}
+.sp-sym-ket.gagal{border-color:var(--bad);background:linear-gradient(45deg,transparent 40%,var(--bad) 40% 60%,transparent 60%),linear-gradient(-45deg,transparent 40%,var(--bad) 40% 60%,transparent 60%)}
+.sp-sym-ket.belum{transform:rotate(45deg) scale(.8);background:var(--card)}
+.sp-pola{width:22px;height:14px;display:inline-block;border:1.5px solid var(--ink2);border-radius:3px;box-sizing:border-box}
+.sp-pola.polos{background:var(--card)}
+.sp-pola.bintik{background:radial-gradient(var(--ink3) 1.2px,transparent 1.4px) 0 0/6px 6px}
+.sp-pola.garis{background:repeating-linear-gradient(45deg,var(--ink2) 0 2px,transparent 2px 6px)}
+.sp-pola.silang{background:repeating-linear-gradient(45deg,var(--ink2) 0 2px,transparent 2px 6px),repeating-linear-gradient(-45deg,var(--ink2) 0 2px,transparent 2px 6px)}
+.sp-pola.padat{background:var(--bad)}
+.sp-dl{display:grid;grid-template-columns:max-content minmax(0,1fr);gap:4px var(--sp-3);margin:0;font-size:13px}
+.sp-dl dt{color:var(--ink2);font-weight:600}.sp-dl dd{margin:0;min-width:0;overflow-wrap:anywhere}
+/* akses */
+.sp-bar-prov{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sp-bar-prov li{display:grid;grid-template-columns:minmax(0,9em) minmax(0,1fr) 4em;gap:var(--sp-2);align-items:center;font-size:12.5px}
+.sp-bar-prov b{text-align:right}
+.sp-bar-isi{height:12px;border-radius:6px;background:var(--surface);overflow:hidden;display:block}
+.sp-bar-isi i{display:block;height:100%;background:var(--brand2);border-radius:6px}
+.sp-grafik .sp-batang.h0{fill:var(--brand2)}
+.sp-tabel-program td .sp-sub,.sp-tabel-jembatan td .sp-sub,.sp-tabel-air td .sp-sub{display:block}
+/* rincian aset */
+.sp-aset-kepala{display:grid;gap:var(--sp-2);margin-bottom:var(--sp-3)}
+.sp-aset-kepala .sp-judul{display:flex;flex-wrap:wrap;gap:var(--sp-2);align-items:baseline}
+.sp-kembali{margin:0 0 var(--sp-3)}
+.sp-angka-baris{display:grid;gap:var(--sp-3);grid-template-columns:repeat(3,minmax(0,1fr));margin-bottom:var(--sp-4)}
+.sp-angka-baris .sp-angka{display:grid;gap:2px;padding:var(--sp-3);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
+.sp-angka-k{font-size:12px;font-weight:600;color:var(--ink2)}.sp-angka-baris b{font:800 22px/1.15 var(--display)}.sp-angka-baris small{color:var(--ink2);font-size:11.5px}
+.sp-aset-panel{background:var(--card);border-radius:var(--r);box-shadow:var(--bayang);padding:var(--sp-4);margin:var(--sp-3) 0}
+.sp-lini{list-style:none;margin:0;padding:0 0 0 var(--sp-3);border-left:2px solid var(--line);display:grid;gap:var(--sp-3)}
+.sp-lini li{position:relative;padding-left:var(--sp-3)}
+.sp-lini-titik{position:absolute;left:calc(-1 * var(--sp-3) - 7px);top:4px;width:12px;height:12px;border-radius:50%;background:var(--brand2);border:2px solid var(--card)}
+.sp-lini .sp-sub{display:block;margin-top:2px}
+/* form */
+.sp-galat-medan{font-size:12px;font-weight:600;color:var(--bad)}.sp-galat-medan:empty{display:none}
+.sp-wajib{font-size:11.5px;font-weight:700;color:var(--bad)}
+.sp-form-aset [aria-invalid="true"]{box-shadow:0 0 0 2px var(--bad)}
+@media (max-width:1100px){.sp-air-atas{grid-template-columns:minmax(0,1fr)}}
+@media (max-width:767px){
+  .sp-angka-baris{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sp-bar-prov li{grid-template-columns:minmax(0,7em) minmax(0,1fr) 3.5em}
+  .sp-aksi .ad-tombol,.sp-aksi-kepala .ad-tombol,.sp-chips .ad-chip,.ad-tabs button{min-height:44px}
+  .sp-titik-sumur{touch-action:manipulation}
+}
+@media (prefers-reduced-motion:reduce){.sp-aset-panel,.sp-titik-sumur{transition:none}}
