@@ -1,11 +1,11 @@
 "use strict";
-/* Gelembung angka di peta /banjir, seperti cluster karhutla: zoom nasional (di bawah 6,5) satu gelembung per provinsi, zoom masuk (6,5 sampai 9) satu per kabupaten/kota,
+/* Gelembung angka di peta /banjir, seperti cluster karhutla: zoom nasional (di bawah 6,5) satu gelembung per provinsi, zoom masuk (6,5 sampai 7,5) satu per kabupaten/kota,
    di atasnya pin dan poligon kecamatan seperti biasa. Angka utama = jumlah kecamatan berstatus Siaga atau Awas pada bahaya dan hari terpilih (S.st.kec); warna = status tertinggi wilayah itu.
    Klik gelembung atau provinsi: kartu kecil berlambang dengan tombol Zoom dan Rincian. Hover provinsi: kartu ringkas empat angka + grafik batang "7 hari terakhir" dari arsip harian data/hari/<tgl>.json.
    Arsip harian hanya memuat status per kabupaten/kota (bukan kecamatan), jadi batang = jumlah kabupaten/kota Siaga atau Awas per hari; hanya hari yang ada yang digambar.
    Bagian murni (agregWil, pusatGeom, seriProv, tren, ZOOM) diuji di tests/banjir/gelembung.test.mjs; bagian peta memakai S, peta, PI, Peta, Wilayah, PosAir, PosUkur, Analisa, lambang, turun, nanti, fmt, esc, WARNA_LV, LEVEL dari skrip lain (dimuat SESUDAH peta.js). */
 (akar => {
-  const ZOOM = {provMaks: 6.5, kabMin: 6.5, kabMaks: 9};
+  const ZOOM = {provMaks: 6.5, kabMin: 6.5, kabMaks: 7.5};
   const NAMA_ST = {aman: 0, normal: 0, waspada: 1, siaga: 2, awas: 3};
   const stNum = s => s == null ? null : typeof s === "number" ? s : NAMA_ST[String(s).toLowerCase()] ?? null;
 
