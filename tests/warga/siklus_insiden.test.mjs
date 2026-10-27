@@ -71,7 +71,7 @@ const foto = async (h, tid, lat, lon) => {
 };
 
 const LAT = -2.55, LON = 112.0, KAB = "Seruyan";
-const T0 = menit(Date.now() - 3 * JAM, 7), AWAL = T0 - 40 * MENIT;   // tugas dibuat 3 jam lalu; satelit mendeteksi insiden 40 menit sebelum tugas
+const T0 = menit(Date.now() - 3 * JAM - 7 * MENIT, 7), AWAL = T0 - 40 * MENIT;   // tugas dibuat 3 sampai 4 jam lalu (menit 7 terakhir sebelum jam itu, di menit berapa pun uji jalan); satelit mendeteksi insiden 40 menit sebelum tugas
 const INSIDEN = "62-261022-101";
 let tid, hSeruyan, hKatingan, kini2;
 let K = {};

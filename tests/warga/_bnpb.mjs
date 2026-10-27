@@ -7,7 +7,7 @@ import {existsSync, readFileSync} from "node:fs";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 
-export const ADMIN = {"x-admin-token": "rahasia-admin"}, MOD2 = {"x-admin-token": "moderator-dua"}, GERBANG = {"x-admin-token": "gerbang@x:sandi"};
+export const ADMIN = {"x-admin-token": "rahasia-admin"}, MOD2 = {"x-admin-token": "moderator-dua"}, GERBANG = {"x-admin-token": "gerbang@x:sandi"}, GERBANG_ORANG = {"x-admin-token": "dirga@x:sandi-dummy"};   // AKUN_SITUS_DUMMY: bentuk per-orang
 export const sha256 = s => createHash("sha256").update(s).digest("hex");
 const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
@@ -16,7 +16,7 @@ const aset = async req => {
 export async function siapkan(nama, {r2 = false, ikat = {}, luar, skrip = "src/worker.js", asetKu} = {}) {
   const mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, skrip), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
     compatibilityDate: "2024-09-23", cf: {country: "ID", colo: "CGK"}, d1Databases: {DB: nama}, ...(r2 ? {r2Buckets: {MEDIA: nama}} : {}),
-    bindings: {IP_SALT: "garam-uji", ALARM_CACHE_DETIK: "0", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", LAPORAN_MUNDUR_HARI: "3650", ...ikat},
+    bindings: {IP_SALT: "garam-uji", ALARM_CACHE_DETIK: "0", ADMIN_TOKEN: "rahasia-admin, moderator-dua", AKUN_SITUS: "gerbang@x:sandi", AKUN_SITUS_DUMMY: "dirga@x:sandi-dummy", SUPER_ADMIN: sha256("rahasia-admin").slice(0, 12), SESI_KUNCI: "kunci-sesi-uji", LAPORAN_MUNDUR_HARI: "3650", ...ikat},
     serviceBindings: {ASSETS: asetKu || aset}, outboundService: luar || (() => new Response("diblok di uji", {status: 599})), cache: false});
   const DB = await mf.getD1Database("DB");
   await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));

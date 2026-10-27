@@ -1,8 +1,8 @@
 // Peta titik panas per provinsi 20 Okt 2026, port dari public/laporan.js kartuPeta() (algoritma label sama).
 import fs from 'node:fs';
-import { chromium } from '/Users/priyankaalfatehan28/Developer/worth-it/node_modules/playwright/index.mjs';
-const REPO = '/Users/priyankaalfatehan28/Documents/GitHub/poskokarhutla';
-const g = JSON.parse(fs.readFileSync(REPO + '/public/geo/provinsi.json'));
+import os from 'node:os';
+const { chromium } = await import(process.env.PLAYWRIGHT_MJS || '/Users/priyankaalfatehan28/Developer/worth-it/node_modules/playwright/index.mjs');
+const g = JSON.parse(fs.readFileSync(new URL('../../../../public/geo/provinsi.json', import.meta.url)));
 const A = JSON.parse(fs.readFileSync('angka_nasional.json')).prov;
 const I = 3, IP = 2;  // 20 Okt, pembanding 19 Okt
 const SINGKAT = {11: "Aceh", 12: "Sumut", 13: "Sumbar", 14: "Riau", 15: "Jambi", 16: "Sumsel", 17: "Bengkulu", 18: "Lampung", 19: "Babel", 21: "Kepri",
@@ -25,7 +25,7 @@ for (const f of g.features) {
   d[f.properties.kode] = s;
 }
 const rows = Object.entries(A).map(([k, o]) => ({k, t: o.hot[I] || 0})).filter(r => r.t > 0).sort((a, b) => b.t - a.t);
-const mx = Math.max(1, rows[0].t), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
+const mx = Math.max(1, rows[0]?.t || 0), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
 let s = Object.entries(d).map(([k, p]) => `<path d="${p}" class="${ada.has(k) ? 'pp-on' : 'pp'}"/>`).join('');
 const bul = rows.filter(r => c[r.k]).map(r => ({...r, x: c[r.k][0], y: c[r.k][1], r: rad(r.t)}));
 s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc"/>`).join('');
@@ -62,13 +62,14 @@ s += bul.slice(0, 7).map((r, n) => {
   if (!pos) pos = [r.x + Math.cos(-3 * Math.PI / 4) * r.r, r.y + Math.sin(-3 * Math.PI / 4) * r.r];
   lencana.push(pos);
   return `<g transform="translate(${pos[0].toFixed(1)},${pos[1].toFixed(1)})"><circle r="7.5" class="rk"/><text y="3.4" class="rk-t">${n + 1}</text></g>`; }).join('');
+const OR = process.env.BENCANA === 'banjir' ? '#2F6FB5' : '#D9600B';   // lingkaran banjir biru (penanganan_banjir.py), karhutla oranye
 const css = `.pp{fill:#DCE1E7;stroke:#fff;stroke-width:.6}.pp-on{fill:#051C2C;stroke:#fff;stroke-width:.8}
-.pc{fill:#D9600B;stroke:#fff;stroke-width:1.5;fill-opacity:.95}.pa{font:800 14px Roboto;fill:#fff;text-anchor:middle}
-.pn{font:700 9.5px Roboto;fill:#fff;text-anchor:middle;opacity:.95}.pl{stroke:#D9600B;stroke-width:1.2}
-.pk{fill:#fff;stroke:#A9B4C2;stroke-width:.8}.pt-t{font:10px Roboto}.pt-n{font-weight:600;fill:#6B7280}.pt-v{font-weight:800;fill:#1A1A1A}\n.rk{fill:#fff;stroke:#D9600B;stroke-width:1.8}.rk-t{font:800 9.5px Roboto;fill:#1A1A1A;text-anchor:middle}`;
+.pc{fill:${OR};stroke:#fff;stroke-width:1.5;fill-opacity:.95}.pa{font:800 14px Roboto;fill:#fff;text-anchor:middle}
+.pn{font:700 9.5px Roboto;fill:#fff;text-anchor:middle;opacity:.95}.pl{stroke:${OR};stroke-width:1.2}
+.pk{fill:#fff;stroke:#A9B4C2;stroke-width:.8}.pt-t{font:10px Roboto}.pt-n{font-weight:600;fill:#6B7280}.pt-v{font-weight:800;fill:#1A1A1A}\n.rk{fill:#fff;stroke:${OR};stroke-width:1.8}.rk-t{font:800 9.5px Roboto;fill:#1A1A1A;text-anchor:middle}`;
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -8 ${PW + 36} ${PH + 16}" width="${PW + 36}" height="${PH + 16}"><style>${css}</style>${s}</svg>`;
 fs.writeFileSync('peta-20okt.svg', svg);
-const b = await chromium.launch({executablePath: '/Users/priyankaalfatehan28/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'}); const pg = await b.newPage({viewport: {width: PW + 36, height: PH + 16}, deviceScaleFactor: 4});
+const b = await chromium.launch({executablePath: process.env.CHROMIUM_SHELL || os.homedir() + '/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'}); const pg = await b.newPage({viewport: {width: PW + 36, height: PH + 16}, deviceScaleFactor: 4});
 await pg.setContent(`<html><body style="margin:0;background:transparent">${svg}</body></html>`);
 await pg.evaluate(() => document.fonts.ready);
 await (await pg.$('svg')).screenshot({path: 'peta-20okt.png', omitBackground: true});

@@ -330,7 +330,7 @@ const Dampak = (() => {
   function popDesa(j) { const x = D.dekat.desa[j], k = S.kluster?.features.find(f => f.properties.id === x.kompleks)?.properties;
     dlg(`Desa ${esc(x.nama)}`, `${esc(namaProv(x.prov))} · kode ${esc(x.kode)}`,
       `<div class="dk-kvs">${kotak("Jarak ke tepi cluster", x.km ? satu(x.km) + " km" : "di dalam area cluster")}${kotak("Cluster", esc(x.kompleks) + ", " + esc(S.meta?.status?.[x.level] || ""))}
-      ${k ? kotak("Luas cluster", "± " + rb(k.luas) + " ha") + kotak("Titik panas 24 jam", fmt(k.n24)) + kotak("Lokasi", esc([k.kec, k.kab].filter(Boolean).join(", "))) : ""}</div>
+      ${k ? kotak("Luas cluster", "± " + rb(k.luas) + " ha" + (k.snpp_proksi > 0 ? `<small style="display:block;font-weight:400;font-size:11px;color:var(--ink2)">luas perkiraan (ukuran piksel S-NPP diperkirakan)</small>` : "")) + kotak("Titik panas 24 jam", fmt(k.n24)) + kotak("Lokasi", esc([k.kec, k.kab].filter(Boolean).join(", "))) : ""}</div>
       <p style="margin:0">Desa sedekat ini perlu jalur evakuasi, masker, dan informasi arah angin harian. Pastikan MPA dan BPBD setempat tahu.</p>${tombolK(x.kompleks)}`); }
 
   /* ================= 6. hutan & gambut ================= */

@@ -10,6 +10,7 @@ import {json, gagal, acak, bacaBody} from "./worker.js";
 import {akunAktif, tenggat, butirApiMunculLagi, butirCekUlang, tanpaTabel, bencanaPer, PROV} from "./instansi.js";
 import {labelBencana} from "./tugas_bencana.js";
 import {laju} from "./bnpb.js";
+import {bacaStatusBanjir, levelKec, NAMA_STATUS} from "./status_banjir.js";
 
 const JAM = 36e5, PUTARAN = 3 * JAM, MAKS_PERANGKAT = 10, MAKS_AKUN = 100, MAKS_KIRIM = 40, MAKS_PESAN = 3993, JWT_UMUR = 12 * JAM / 1000;
 const HOST_PUSH = h => h === "fcm.googleapis.com" || h === "updates.push.services.mozilla.com" || h.endsWith(".push.apple.com") || h.endsWith(".notify.windows.com");
@@ -126,7 +127,8 @@ export const RUTE_PUSH = {
 };
 
 /* ---------------- ringkasan per akun (murni atas data yang sudah dimuat sekali) ---------------- */
-const dalam = (a, prov, kab) => a.tingkat === "kab" ? prov === a.prov && String(kab).toLowerCase() === String(a.kab).toLowerCase() : JSON.parse(a.cakupan).includes(prov);
+export const dalam = (a, prov, kab) => a.tingkat === "kab" ? prov === a.prov && String(kab).toLowerCase() === String(a.kab).toLowerCase() : JSON.parse(a.cakupan).includes(prov);
+const tempatAkun = a => a.tingkat === "kab" ? (a.kab.startsWith("Kota ") ? a.kab : "Kab. " + a.kab) : JSON.parse(a.cakupan).length === 1 && PROV[JSON.parse(a.cakupan)[0]] ? PROV[JSON.parse(a.cakupan)[0]][1] : a.wilayah;
 export function ringkasAkun(a, D, sejak, kini) {
   const baru = D.tugas.filter(t => t.dibuat > sejak && dalam(a, t.prov, t.kab)), idBaru = new Set(baru.map(t => t.id));
   const n = {baru: baru.length, konfirmasi: 0, kabar: 0, ulang: D.cek.filter(b => dalam(a, b.provs[0], b.kab)).length, muncul: D.muncul.filter(b => dalam(a, b.provs[0], b.kab)).length};
@@ -136,7 +138,7 @@ export function ringkasAkun(a, D, sejak, kini) {
   }
   const total = n.baru + n.konfirmasi + n.kabar + n.ulang + n.muncul;
   if (!total) return null;
-  const tempat = a.tingkat === "kab" ? (a.kab.startsWith("Kota ") ? a.kab : "Kab. " + a.kab) : JSON.parse(a.cakupan).length === 1 && PROV[JSON.parse(a.cakupan)[0]] ? PROV[JSON.parse(a.cakupan)[0]][1] : a.wilayah;
+  const tempat = tempatAkun(a);
   const bagian = [[n.konfirmasi, "tugas belum dikonfirmasi"], [n.kabar, "tugas belum ada kabar tindakan"], [n.muncul, "api muncul lagi"], [n.ulang, "cek ulang jatuh tempo"]].filter(([c]) => c).map(([c, t]) => `${c} ${t}`);
   /* tugas bahaya lain (t.bencana, src/tugas_bencana.js): tanpa itu kalimatnya persis seperti dulu (api); dengan itu "N tugas baru" dan rincian per bahaya */
   const per = {}; for (const t of baru) per[t.bencana || "karhutla"] = (per[t.bencana || "karhutla"] || 0) + 1;
@@ -145,6 +147,30 @@ export function ringkasAkun(a, D, sejak, kini) {
   return {judul: n.baru ? `${n.baru} ${campur ? "tugas" : "api"} baru di ${tempat}` : `Ada yang perlu dicek di ${tempat}`,
     isi: bagian.length ? bagian.join(", ") : "Buka Tugas api untuk konfirmasi lapangan.", tag: "pb-" + a.id, url: "/instansi", n};
 }
+
+/* ---------------- status banjir naik (migrations/0064_push_banjir.sql) ----------------
+   st = hasil bacaStatusBanjir; tercatat = Map "prov|kab" -> level terakhir yang dicatat untuk akun ini (kosong = belum ada garis dasar: hanya mencatat, tidak mengirim).
+   Hasil: {naik: [{kab, level, dari}] (Waspada/Siaga/Awas yang LEBIH TINGGI dari tercatat), tulis: [[kab, level]] (semua perubahan, termasuk turun, supaya naik berikutnya terdeteksi)}. Murni. */
+export function banjirAkun(a, st, tercatat) {
+  const per = new Map();
+  for (const [kunci, v] of Object.entries(st.kec)) {
+    const [prov, kab] = kunci.split("|"), l = levelKec(v);
+    if (l == null || !kab || !dalam(a, prov, kab)) continue;
+    const k = prov + "|" + kab; per.set(k, Math.max(per.get(k) ?? 0, l));
+  }
+  const dasar = tercatat.size > 0, naik = [], tulis = [];
+  for (const [k, l] of [...per].sort()) {
+    const dari = tercatat.get(k) ?? 0;
+    if (l === dari && tercatat.has(k)) continue;
+    tulis.push([k, l]);
+    if (dasar && l > dari && l >= 1) naik.push({kab: k.split("|")[1], level: l, dari});
+  }
+  return {naik, tulis};
+}
+const kalimatBanjir = naik => {
+  const u = [...naik].sort((x, y) => y.level - x.level), nama = n => /^kota /i.test(n.kab) ? n.kab : "Kab. " + n.kab;
+  return `Status banjir naik: ${u.slice(0, 5).map(n => `${nama(n)} ke ${NAMA_STATUS[n.level]}`).join(", ")}${u.length > 5 ? `, dan ${u.length - 5} kabupaten lain` : ""}`;
+};
 
 /* ---------------- cron: jam UTC kelipatan 3, mulai menit 25 (ringkasan tugas yang dibuat sejak push terakhir, jadi tugas baru di menit mana pun ikut putaran berikutnya); menit berikutnya melanjutkan sisa akun ---------------- */
 export async function kirimPushDaerah(env, kini = Date.now()) {
@@ -167,14 +193,30 @@ export async function kirimPushDaerah(env, kini = Date.now()) {
     /* klaim DULU, sebelum kirim: invokasi yang mati di tengah atau tumpang tindih tidak mengirim ganda (changes = 0 berarti sudah diklaim pihak lain) */
     const klaim = await env.DB.batch(rencana.map(({a}) => env.DB.prepare("INSERT INTO push_akun (akun_id, putaran) VALUES (?1, ?2) ON CONFLICT(akun_id) DO UPDATE SET putaran = ?2 WHERE putaran != ?2").bind(a.id, putaran)));
     const st = [];
+    /* status banjir naik: berkas basi/hilang atau tabel 0064 belum ada = fitur ini dilewati, ringkasan tugas tetap jalan */
+    const sb = await bacaStatusBanjir(env, kini); let tercatat = null;
+    if (sb) try {
+      const rs = (await env.DB.prepare("SELECT akun_id, kab, level FROM push_banjir WHERE akun_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(rencana.map(x => x.a.id))).all()).results;
+      tercatat = new Map(rencana.map(x => [x.a.id, new Map()])); for (const r of rs) tercatat.get(r.akun_id)?.set(r.kab, r.level);
+    } catch (e) { if (!/no such table: (main\.)?push_banjir/i.test(String(e?.message || e))) throw e; }
+    const tulisBanjir = (a, daftar) => daftar.map(([k, l]) => env.DB.prepare("INSERT INTO push_banjir (akun_id, kab, level, diperbarui) VALUES (?1, ?2, ?3, ?4) ON CONFLICT(akun_id, kab) DO UPDATE SET level = ?3, diperbarui = ?4").bind(a.id, k, l, kini));
     for (const [i, {a, mine}] of rencana.entries()) {
       if (!klaim[i].meta.changes) continue;
       try {
-        const r = ringkasAkun(a, D, a.tk || a.awal, kini);
-        if (!r) { o.kosong++; continue; }
+        let r = ringkasAkun(a, D, a.tk || a.awal, kini);
+        const bj = tercatat ? banjirAkun(a, sb, tercatat.get(a.id)) : {naik: [], tulis: []};
+        if (bj.naik.length) {
+          const k = kalimatBanjir(bj.naik);
+          r = r ? {...r, isi: r.isi + "; " + k.toLowerCase()[0] + k.slice(1)} : {judul: `Status banjir naik di ${tempatAkun(a)}`, isi: k, tag: "pb-" + a.id, url: "/instansi"};
+        }
+        if (!r) { st.push(...tulisBanjir(a, bj.tulis)); o.kosong++; continue; }
         const {n, ...payload} = r, hasil = await kirimKe(env, mine, payload, a.id, kini);
         o.akun++; o.kirim += mine.length; o.hapus += hasil.filter(h => mati(h.status)).length;
-        if (hasil.some(h => h.status >= 200 && h.status < 300)) st.push(env.DB.prepare("UPDATE push_akun SET terakhir_kirim = ? WHERE akun_id = ?").bind(kini, a.id));   // 429/5xx: terakhir_kirim tetap, dicoba lagi putaran berikutnya
+        const terkirim = hasil.some(h => h.status >= 200 && h.status < 300);
+        if (terkirim) st.push(env.DB.prepare("UPDATE push_akun SET terakhir_kirim = ? WHERE akun_id = ?").bind(kini, a.id));   // 429/5xx: terakhir_kirim tetap, dicoba lagi putaran berikutnya
+        /* kenaikan baru dianggap terkirim bila ada perangkat yang menerima; gagal = tidak dicatat, putaran berikutnya mengirim lagi */
+        const naikKab = new Set(bj.naik.map(x => x.kab));
+        st.push(...tulisBanjir(a, terkirim ? bj.tulis : bj.tulis.filter(([k]) => !naikKab.has(k.split("|")[1]))));
         st.push(...catatHasil(env, hasil, kini));
       } catch (e) { o.galat++; console.error("push akun", a.id, e?.message); }   // satu akun cacat tidak mematikan akun lain; sudah terklaim, tidak diulang menit ini
     }

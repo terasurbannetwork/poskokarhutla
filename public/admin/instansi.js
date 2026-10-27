@@ -12,12 +12,18 @@
   const STATUS = {belum_klaim: "Belum diklaim", menunggu: "Menunggu", aktif: "Aktif", ditolak: "Ditolak", dicabut: "Dicabut"};
   const WARNA = {aktif: "hijau", menunggu: "kuning", ditolak: "merah", dicabut: "merah", belum_klaim: ""};
   const HASIL = {api_ada: "Api ada", bukan_api: "Bukan api", sudah_padam: "Sudah padam"}, STATUS_API = {menyala: "Menyala", bara: "Bara", padam: "Padam"};
+  const ALASAN_BA = {tidak_ada_bekas: "tidak ada bekas terbakar", bekas_lama: "bekas terbakar lama", sumber_panas_lain: "sumber panas lain"};   // = ALASAN_BUKAN_API src/instansi.js
   const KENDALA = {air_jauh: "Air jauh", akses_sulit_rawa: "Akses sulit di rawa", roda_empat_sulit: "Roda empat sulit masuk", air_tidak_cukup: "Air tidak cukup", asap_tebal: "Asap tebal", angin_kencang: "Angin kencang"};
   const BANTUAN = {personel: "Personel", air_pompa: "Air dan pompa", alat_berat: "Alat berat", heli_water_bombing: "Helikopter water bombing", logistik: "Logistik", medis: "Medis", lainnya: "Lainnya"};
   const PROV = window.Wilayah.PROV, kab = window.Wilayah.kab;   // satu tabel nama wilayah (/instansi_wilayah.js)
   const jam = t => t ? jamWIB(t) : "-";   // formatter repo (/inti/format.js)
   const num = v => fmt(v ?? 0);
   const pil = (t, k = "") => `<span class="ai-pil ${k}">${esc(t)}</span>`;
+  /* rincian ala laporan Daops (tabel 0063; kode sama dengan src/instansi.js RINCI) */
+  const KAWASAN = {apl: "APL", hp: "HP", hpt: "HPT", hpk: "HPK", hl: "HL", konservasi: "konservasi", khdtk: "KHDTK", tidak_tahu: "tidak tahu"};
+  const rinciAdm = r => !r ? "" : [r.desa && ` Desa ${esc(r.desa)}.`, r.kawasan && ` Kawasan ${esc(KAWASAN[r.kawasan] || r.kawasan)}.`, r.tipe_kebakaran && ` Tipe kebakaran ${esc(r.tipe_kebakaran.replace("_", " dan "))}.`,
+    r.vegetasi?.length && ` Vegetasi ${esc(r.vegetasi.join(", ").replaceAll("_", " "))}.`, r.kedalaman_gambut_cm != null && ` Gambut sekitar ${num(r.kedalaman_gambut_cm)} cm.`,
+    r.padam_baru_ha != null && ` Dipadamkan ${num(r.padam_baru_ha)} ha sejak laporan sebelumnya.`].filter(Boolean).join("");
   const dum = x => x.dummy ? " " + pil("DUMMY", "dummy") : "";
   const kosong = t => `<p class="ai-kosong">${esc(t)}</p>`;
   const sesudahCat = fn => { let jalan = false; const f = () => { if (!jalan) { jalan = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(f)); setTimeout(f, 120); };
@@ -157,11 +163,11 @@
     wadah.textContent = "Memuat…";
     const d = await ambil(`${API}/tugas/${id}`);
     const T = window.Tugaskan, aksesH = window.AksesKartu ? window.AksesKartu.html(d.tugas.akses) : "";
-    wadah.innerHTML = (T ? T.padamBlok(d.tugas) : "") + `<div class="kp-wadah"></div>` + aksesH + `<div class="tg-adm"></div>` + rekBlok(d.tugas.rekomendasi) + window.Kebutuhan.html(d.tugas, !!d.tugas.rekomendasi) + window.Kebutuhan.gudang(d.gudang_terdekat) + sekarang(d.tugas) + (d.isian.length ? d.isian.map(i => `<p class="ai-meta"><b>${i.langkah === "konfirmasi" ? "Konfirmasi" : "Kabar"}</b> ${jam(i.dibuat)} oleh ${esc(i.oleh.username)} (${esc(i.oleh.wilayah)}).
-      ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}. PIC ${esc(i.pic_nama)}, ${esc(i.pic_jabatan)}, WhatsApp ${esc(i.pic_wa)}.` : `${esc(i.tindakan)} Status ${esc(STATUS_API[i.status_api])}. Kendala ${esc(i.kendala.map(k => KENDALA[k]).concat(i.kendala_lain ? [i.kendala_lain] : []).join(", ") || "tidak ada")}.
+    wadah.innerHTML = (T ? T.padamBlok(d.tugas) : "") + `<div class="kp-wadah"></div>` + aksesH + `<div class="tg-adm"></div>` + rekBlok(d.tugas.rekomendasi) + window.Kebutuhan.html(d.tugas, !!d.tugas.rekomendasi) + window.Kebutuhan.gudang(d.gudang_terdekat) + sekarang(d.tugas) + (d.isian.length ? d.isian.map(i => `<p class="ai-meta"><b>${i.langkah === "konfirmasi" ? "Konfirmasi" : "Kabar"}</b> ${jam(i.dibuat)} oleh ${i.petugas ? `petugas <b>${esc(i.petugas.nama || "-")}</b>${i.petugas.peran ? ` (${esc(i.petugas.peran.toLowerCase())})` : ""} lewat tautan, akun ` : ""}${esc(i.oleh.username)} (${esc(i.oleh.wilayah)}).
+      ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}${i.alasan_bukan_api ? `: ${esc(ALASAN_BA[i.alasan_bukan_api] || i.alasan_bukan_api)}` : ""}. PIC ${esc(i.pic_nama)}, ${esc(i.pic_jabatan)}, WhatsApp ${esc(i.pic_wa)}.` : `${esc(i.tindakan)} Status ${esc(STATUS_API[i.status_api])}. Kendala ${esc(i.kendala.map(k => KENDALA[k]).concat(i.kendala_lain ? [i.kendala_lain] : []).join(", ") || "tidak ada")}.
       Bantuan ${esc(i.bantuan.map(k => BANTUAN[k]).concat(i.bantuan_lain ? [i.bantuan_lain] : []).join(", ") || "tidak ada")}. Luas ${i.luas_ha == null ? "-" : num(i.luas_ha)} ha, padam ${i.padam_ha == null ? "-" : num(i.padam_ha)} ha.`}
       Personel ${i.personel == null ? "-" : num(i.personel) + " (manual)"}${i.personel_terlihat != null ? `, mesin melihat minimal ${num(i.personel_terlihat)}` : ""}${i.personel_unsur ? `, per unsur ${esc(Object.entries(i.personel_unsur).map(([k, n]) => `${k} ${num(n)}`).join(", "))}` : ""}${i.regu != null ? `, ${num(i.regu)} regu` : ""}${i.alat_dipakai ? `. Alat ${esc(Object.entries(i.alat_dipakai).map(([a, n]) => `${NAMA_ALAT[a] || a} ${num(n)}`).join(", "))}` : ""}.
-      ${i.kedalaman_bara_cm != null ? ` Kedalaman bara terukur ${num(i.kedalaman_bara_cm)} cm.` : ""}${i.lahan_teramati ? ` Lahan ${esc(i.lahan_teramati)}.` : ""}
+      ${i.kedalaman_bara_cm != null ? ` Kedalaman bara terukur ${num(i.kedalaman_bara_cm)} cm.` : ""}${i.lahan_teramati ? ` Lahan ${esc(i.lahan_teramati)}.` : ""}${rinciAdm(i.rinci)}
       ${i.jarak_km != null ? ` Jarak ke pusat cluster ${num(i.jarak_km)} km${i.jauh ? " (jauh, lebih dari 5 km)" : ""}.` : ""}${i.gps_curiga ? ` ${pil("GPS curiga", "merah")} ${esc(i.gps_curiga)}` : ""}</p>`).join("") : `<p class="ai-meta">Belum ada isian.</p>`)
       + galeri(d.media) + (d.usulan.length ? `<p class="ai-meta">Usulan kontak PT: ${d.usulan.map(u => `${esc(u.nama_pt)} (${esc(u.status)})`).join(", ")}</p>` : "");
     if (d.tugas.status === "buka" && d.tugas.bencana && d.tugas.bencana !== "karhutla") wadah.insertAdjacentHTML("beforeend", `<div class="ai-aksi"><button class="ad-tombol bahaya" data-selesai="${esc(d.tugas.id)}">Tutup tugas ${esc(d.tugas.bencana_nama.toLowerCase())} ini</button></div>`);   // karhutla ditutup lewat laporan padam + satelit

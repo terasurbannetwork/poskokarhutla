@@ -17,7 +17,7 @@
 <meta property="og:type" content="website">
 <meta property="og:site_name" content="Centurisk97">
 <meta property="og:locale" content="id_ID">
-<meta property="og:title" content="Centurisk97 · Banjir, longsor &amp; rob hari ini">
+<meta property="og:title" content="Centurisk97, Banjir, longsor &amp; rob hari ini">
 <meta property="og:description" content="13 Okt: 99 kecamatan berstatus banjir (0 awas, 0 siaga), hujan 3 hari hingga 123 mm. Prakiraan per kecamatan untuk 38 provinsi.">
 <meta property="og:url" content="https://centurisk97.id/banjir/">
 <meta property="og:image" content="https://centurisk97.id/data/og/banjir.png?v=2026-10-14">
@@ -25,7 +25,7 @@
 <meta property="og:image:height" content="630">
 <meta property="og:image:alt" content="13 Okt: 99 kecamatan berstatus banjir (0 awas, 0 siaga), hujan 3 hari hingga 123 mm. Prakiraan per kecamatan untuk 38 provinsi.">
 <meta name="twitter:card" content="summary_large_image">
-<meta name="twitter:title" content="Centurisk97 · Banjir, longsor &amp; rob hari ini">
+<meta name="twitter:title" content="Centurisk97, Banjir, longsor &amp; rob hari ini">
 <meta name="twitter:description" content="13 Okt: 99 kecamatan berstatus banjir (0 awas, 0 siaga), hujan 3 hari hingga 123 mm. Prakiraan per kecamatan untuk 38 provinsi.">
 <meta name="twitter:image" content="https://centurisk97.id/data/og/banjir.png?v=2026-10-14">
 <!-- /og -->
@@ -33,6 +33,7 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.css" rel="stylesheet">
+<link rel="stylesheet" href="pos_air.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/maplibre-gl/4.7.1/maplibre-gl.min.js"></script>
 <link rel="stylesheet" href="../inti/kepala.css">
 <link rel="stylesheet" href="../inti/tema.css">
@@ -66,6 +67,7 @@
   <div class="stat">
     <span class="upd" id="upd">Memuat data…</span>
     <a class="iconbtn" href="/peringatan" aria-label="Peringatan Dini" title="Peringatan Dini"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 9a6 6 0 0 1 12 0c0 6 2.5 7.5 2.5 7.5h-17S6 15 6 9Z"/><path d="M10 20a2 2 0 0 0 4 0"/></svg></a>
+    <button type="button" class="iconbtn" id="sapaBuka" aria-label="Rincian situasi hari ini" title="Rincian situasi hari ini"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 7.5v6M12 16.5v.5"/></svg></button>
     <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema">
       <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg>
     </button>
@@ -81,14 +83,16 @@
       <div class="card list">
         <button class="handle" id="handle" aria-label="Perbesar atau perkecil panel"></button>
         <div class="top">
-          <div class="seg penuh" role="group" aria-label="Mode peta" id="modePeta" style="box-shadow:none;margin-bottom:8px"><button data-mp="status" aria-pressed="true">Status</button><button data-mp="hujan" aria-pressed="false">Hujan</button><button data-mp="sungai" aria-pressed="false">Sungai</button><button data-mp="rob" aria-pressed="false">Rob</button><button data-mp="riwayat" aria-pressed="false">Riwayat</button></div>
-          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px" hidden><button data-m="wil" aria-pressed="true">Wilayah</button><button data-m="posko" aria-pressed="false">Posko</button></div>
-          <div class="seg penuh" role="group" aria-label="Jenis bahaya" id="bahayaSeg" style="box-shadow:none;margin-bottom:8px"><button data-b="b" aria-pressed="true">Banjir</button><button data-b="l" aria-pressed="false">Longsor</button></div>
-          <div class="cari">
+          <div class="cari" style="margin-bottom:8px">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
-            <input id="cari" type="search" placeholder="Cari provinsi, kabupaten, atau kecamatan" autocomplete="off" aria-label="Cari wilayah">
+            <input id="cari" type="search" placeholder="Cari provinsi, kabupaten, kecamatan, sungai, atau pos" autocomplete="off" aria-label="Cari wilayah">
             <div class="hasil card" id="hasil" hidden></div>
           </div>
+          <div class="seg penuh" role="group" aria-label="Isi panel" id="utamaSeg" style="box-shadow:none;margin-bottom:8px"><button data-u="rt" aria-pressed="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12h4l3-7 4 14 3-7h4"/></svg>Real Time</button><button data-u="riw" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button><button data-u="ws" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3 2 20h20zM12 10v4M12 17v.5"/></svg>Wilayah Siaga</button></div>
+          <div class="seg penuh sub" role="group" aria-label="Indikator" id="indikatorSeg" style="box-shadow:none;margin-bottom:8px"><button data-i="b" aria-pressed="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>Banjir</button><button data-i="rob" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M7 6c1.5-2 3-2 4.5 0"/></svg>Rob</button><button data-i="l" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19 10 6l4 7 3-4 4 10z"/></svg>Longsor</button><button data-i="hujan" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/></svg>Hujan</button><button data-i="sungai" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 14c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/></svg>Sungai</button></div>
+          <div class="seg penuh" role="group" aria-label="Mode peta" id="modePeta" hidden style="box-shadow:none;margin-bottom:8px"><button data-mp="status" aria-pressed="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/></svg>Status</button><button data-mp="hujan" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/></svg>Hujan</button><button data-mp="sungai" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 14c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/></svg>Sungai</button><button data-mp="rob" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M7 6c1.5-2 3-2 4.5 0"/></svg>Rob</button><button data-mp="riwayat" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/></svg>Riwayat</button></div>
+          <div class="seg penuh" role="group" aria-label="Isi panel" id="panelMode" style="box-shadow:none;margin-bottom:8px" hidden><button data-m="wil" aria-pressed="true">Wilayah</button><button data-m="posko" aria-pressed="false">Posko</button></div>
+          <div class="seg penuh" role="group" aria-label="Jenis bahaya" id="bahayaSeg" hidden style="box-shadow:none;margin-bottom:8px"><button data-b="b" aria-pressed="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z"/></svg>Banjir</button><button data-b="l" aria-pressed="false"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M3 19 10 6l4 7 3-4 4 10z"/></svg>Longsor</button></div>
         </div>
         <div class="rows" id="rows" role="list"></div>
       </div>
@@ -102,15 +106,21 @@
         <div class="lapis-hd"><span>Overlay</span><button type="button" id="lapisLipat" aria-label="Tutup semua grup" title="Tutup semua grup"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="m7 11 5-5 5 5M7 18l5-5 5 5"/></svg></button></div>
         <details open><summary>Banjir & longsor</summary>
           <label><input type="checkbox" data-l="wilayah" checked> Status wilayah</label>
+          <label><input type="checkbox" data-l="pos" checked> Pos tinggi air</label>
           <label><input type="checkbox" data-l="sungai" checked> Titik sungai (GloFAS)</label>
           <label><input type="checkbox" data-l="rob" checked> Titik pantai (rob)</label>
-          <label><input type="checkbox" data-l="kejadian" checked> Kejadian aktif</label>
+          <label><input type="checkbox" data-l="kejadian" checked> Wilayah Siaga (prakiraan)</label>
           <label hidden><input type="checkbox" data-l="posko"> Rekomendasi posko</label><!-- disembunyikan 16 Okt 2026, paritas karhutla (Posko hilangkan dulu, 14 Okt) -->
-          <label><input type="checkbox" data-l="satelit" checked> Citra satelit</label>
+          <label><input type="checkbox" data-l="satelit"> Citra satelit</label>
         </details>
         <details open><summary>Cuaca</summary>
+          <label><input type="checkbox" data-l="hujankini" checked> Sedang hujan (nowcast BMKG)</label>
           <label><input type="checkbox" data-l="hujan"> Hujan harian</label>
-          <label><input type="checkbox" data-l="h3" checked> Hujan 3 hari (puncak)</label>
+          <label><input type="checkbox" data-l="h3"> Hujan 3 hari (puncak)</label>
+          <label hidden style="display:none"><input type="checkbox" data-l="hujanukur"> Pos hujan</label>
+        </details>
+        <details open><summary>Eksperimental</summary>
+          <label hidden style="display:none"><input type="checkbox" data-l="peluang"> Peluang hujan lebat</label>
         </details>
       </div>
     </div>
@@ -250,7 +260,12 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
   return S.selHujan.get(a.toFixed(2) + "," + o.toFixed(2)) || null; };
 
 </script>
+<script src="wilayah.js"></script>
+<script src="../angka_kawasan.js"></script>
 <script src="peta.js"></script>
+<script src="gelembung.js"></script>
+<script src="subtab.js"></script>
+<script src="tarik.js"></script>
 <script src="kejadian.js"></script>
 <script src="tren.js"></script>
 <script src="insight.js"></script>
@@ -264,6 +279,10 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
 <script src="sim_longsor.js"></script>
 <script src="../bagikan.js" data-halaman="banjir" defer></script>
 <script src="posko.js"></script>
+<script src="kalender_rob.js"></script>
+<script src="pos_air.js"></script>
+<script src="eksperimen.js"></script>
+<script src="lapis_ekstra.js"></script>
 <script src="berita.js"></script>
 <script src="dampak.js"></script>
 <script src="bukti.js"></script>
@@ -272,6 +291,7 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
 <script src="sapa_banjir.js"></script>
 <script src="mulai.js"></script>
 <script src="../databaru.js" data-halaman="banjir"></script>
+<script src="hujan_kini.js"></script>
 <script src="../informasi.js" data-halaman="banjir"></script>
 <script src="../persetujuan.js" defer></script>
 <script src="../kaki.js" defer></script>

@@ -15,12 +15,16 @@ saja (kolom "hitung" hotspot.json), titik palsu industri sudah dibuang):
   diisi mundur dari FIRMS area API (maks MAKS_REQ permintaan per jalan, mulai 1 Januari) sehingga musim terkejar dalam beberapa jalan.
   `musim_lengkap` false = masih ada hari sejak 1 Januari yang belum terisi (angka musim batas bawah).
 
+S-NPP berhenti (FS.SNPP_AKHIR, 1 Nov 2026 13:00 UTC): isi_mundur tidak lagi meminta VIIRS_SNPP_NRT dan tidak menuntutnya (firms_sumber.wajib); hotspot.json (7 hari)
+tetap memuat deteksi S-NPP lama yang masih di jendela (harian.snpp_warisan), jadi hari-hari itu tidak bolong. Galat isi mundur apa pun = dilewati (main), bukan fatal.
+
 Pakai:  python3 scripts/data/khg_prioritas.py        # tulis khg_prioritas.json (butuh hotspot.json, operasi.json; FIRMS_MAP_KEY untuk isi mundur)
         python3 scripts/data/khg_prioritas.py --uji  # self-check tanpa jaringan
 """
 import csv, datetime as dt, io, json, math, os, sys, time
 
 sys.path.insert(0, os.path.dirname(__file__))
+import firms_sumber as FS  # noqa: E402
 from firms_sumber import FAMILI, csv_sah, kelas_yakin, muat_ketersediaan, nasional_harian, penuh, sumber_hari, unduh  # noqa: E402
 from wilayah import AKAR, PROVINSI, Poligon, Wilayah, _cincin, _di_dalam  # noqa: E402
 import titik_unik as TU  # noqa: E402
@@ -247,7 +251,7 @@ def main():
     baris_khg = rakit(props, titik7, t30, musim, kompleks, kanal, geom, Wilayah(), lengkap)
     out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "per": hari_ini, "hari_curiga": len(curiga_sisa), "jendela_7h": j7, "jendela_30h": [(h0 - dt.timedelta(days=30)).isoformat(), kemarin],
            "musim_tahun": int(hari_ini[:4]), "musim_lengkap": lengkap, "musim_data_dari": tgl_awal_ada,
-           "sumber": "Poligon KHG: BRGM PRIMS (https://prims.brgm.go.id, lapisan prims:khg), pemakaian nonkomersial dengan tautan ke wali data; titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20); kanal: OpenStreetMap (ODbL); cluster: operasi.json",
+           "sumber": "Poligon KHG: BRGM PRIMS (https://prims.brgm.go.id, lapisan prims:khg), pemakaian nonkomersial dengan tautan ke wali data; titik panas: NASA FIRMS (MODIS, VIIRS S-NPP sampai 1 Nov 2026, NOAA-20, NOAA-21); kanal: OpenStreetMap (ODbL); cluster: operasi.json",
            "catatan": ("Poligon KHG tidak diubah isinya, hanya disederhanakan untuk tampilan (Douglas-Peucker, toleransi 0,002 derajat, galat sampai +-220 m di tepi), jadi titik dekat tepi bisa masuk/keluar KHG secara keliru; lisensi PRIMS nonkomersial. "
                        "Titik dihitung di dalam poligon (point-in-polygon, cincin luar), lokasi unik per hari WIB (titik_unik.py: M, N, N20, N21; sedang/tinggi), titik industri/PLTU sudah dibuang. "
                        f"titik_7h = jumlah titik harian WIB pada jendela_7h {j7[0]} s.d. {j7[1]} (7 hari penuh terakhir; hari ini yang belum selesai tidak dihitung); titik_30h dan titik_musim dari khg_hari.json sampai {kemarin}. "
@@ -262,7 +266,64 @@ def main():
     print(f"khg_prioritas.json {len(baris_khg)} KHG, {os.path.getsize(p) / 1e3:.0f} KB, khg_hari {os.path.getsize(jalur) / 1e3:.0f} KB, {time.time() - t0:.1f} dtk")
 
 
+def uji_snpp_berhenti():
+    """isi_mundur saat S-NPP berhenti: (a) CSV kepala saja, (b) galat, (c) baris NRT hilang dari data_availability; sebelum dan sesudah FS.SNPP_AKHIR."""
+    D = dt.date.fromisoformat
+    HDR = "latitude,longitude,acq_date,acq_time,confidence\n"
+    avail = "data_id,min_date,max_date\n" + "".join(f"{f}_SP,2012-01-01,2026-06-30\n{f}_NRT,2026-07-01,2026-12-31\n" for f in FAM4)
+    avail_c = avail.replace("VIIRS_SNPP_NRT", "X")
+    def pabrik(mode, a=avail):
+        urls = []
+        def ambil(u):
+            if "data_availability" in u:
+                return a
+            urls.append(u)
+            if "VIIRS_SNPP" in u:
+                if mode == "a":
+                    return HDR
+                if mode == "b":
+                    raise RuntimeError("HTTP Error 400: Bad Request")
+            tg = D(u.split("/")[-1])
+            return HDR + "".join(f"-2.5,100.5,{tg + dt.timedelta(days=n)},0100,90\n" for n in range(int(u.split("/")[-2])))
+        return ambil, urls
+    snpp = lambda urls: [u for u in urls if "VIIRS_SNPP" in u]
+    cari = lambda lo, la: "A"
+    err = io.StringIO()
+    import contextlib
+    try:
+        FS._SEKARANG = FS.SESUDAH
+        # sesudah batas, menurut TANGGAL DATA: hari UTC <= 1 Nov tetap diminta NRT S-NPP (WIB 2 Nov butuh UTC 1 Nov), hari sesudahnya tidak
+        for mode, a in (("0", avail), ("a", avail), ("b", avail), ("0", avail_c), ("b", avail_c)):
+            ambil, urls = pabrik(mode, a)
+            hari = {}
+            with contextlib.redirect_stderr(err):
+                n = isi_mundur(hari, [D("2026-11-02"), D("2026-11-03")], "K", ambil, "b", cari)
+            gagal = mode == "b" and a is avail   # galat: WIB 2 Nov belum selesai (dicoba lagi), WIB 3 Nov tak menunggu S-NPP
+            harap = {"2026-11-03": {"A": 1}} if gagal else {"2026-11-02": {"A": 1}, "2026-11-03": {"A": 1}}
+            assert n == len(harap) and hari == harap, (mode, n, hari)
+            assert [u.split("/")[-4:] for u in snpp(urls)] == ([] if a is avail_c else [["VIIRS_SNPP_NRT", "b", "1", "2026-11-01"]]), (mode, snpp(urls))
+        FS._SEKARANG = FS.PRA
+        ambil, urls = pabrik("b")
+        hari = {}
+        with contextlib.redirect_stderr(err):
+            n = isi_mundur(hari, [D("2026-10-28"), D("2026-10-29")], "K", ambil, "b", cari)
+        assert n == 0 and not hari and any("NOAA20" in u for u in urls), "sebelum batas S-NPP galat: hari tidak ditandai selesai, tanpa pengecualian"
+        ambil, urls = pabrik("a")
+        hari = {}
+        with contextlib.redirect_stderr(err):
+            n = isi_mundur(hari, [D("2026-10-28"), D("2026-10-29")], "K", ambil, "b", cari)
+        assert n == 2 and snpp(urls), "sebelum batas S-NPP kepala saja: nol titik S-NPP, hari selesai"
+        ambil, _ = pabrik("0", avail_c)
+        try:
+            isi_mundur({}, [D("2026-10-28")], "K", ambil, "b", cari); raise SystemExit("(c) sebelum batas harus RuntimeError (ditangkap main)")
+        except RuntimeError:
+            pass
+    finally:
+        FS._SEKARANG = None
+
+
 def uji():
+    FS._SEKARANG = FS.PRA   # hermetis: jam dibekukan sebelum SNPP_AKHIR (lihat uji_snpp_berhenti untuk sesudahnya)
     # tanggal hotspot: tahun dari acuan, mundur setahun bila melampaui
     h = {"acuan": "2026-01-03T05:00:00+00:00"}
     assert tgl_dari_hotspot(h, "01-02") == "2026-01-02" and tgl_dari_hotspot(h, "12-30") == "2025-12-30"
@@ -336,6 +397,7 @@ def uji():
     khg = [{"kode": k, "nama": "KHG " + k, "ha": 1} for k in "ABC"]
     r = rakit(khg, {"A": 1, "B": 5}, {}, {"A": 10, "B": 2}, {"B": 1}, {"B": 3.14}, gm, W(), True)
     assert [x["kode"] for x in r] == ["B", "A"] and r[0]["kab"] == ["Kapuas"] and r[0]["prov"] == "62" and r[0]["kanal_km"] == 3.1 and r[0]["kompleks_aktif"] == 1, r
+    uji_snpp_berhenti()
     print("khg_prioritas: uji lolos")
 
 

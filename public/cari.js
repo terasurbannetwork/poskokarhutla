@@ -102,6 +102,15 @@
       if (b.dataset.foto != null) { terbangFoto(foto[+b.dataset.foto]); return false; }
       return null;   /* bukan milik Cari */
     },
+    /* hasil wilayah dari index.html (kunci "11", "11|Kab", "11|Kab|Kec"): kartu kecil berisi status banjir saja; peta sudah diatur turun() */
+    wilayah(kunci, nama) {
+      const [p, kab, kec] = kunci.split("|"), T = terpilih = {i: {t: "wil", n: nama, p}};
+      bukaKartu(nama, [["Jenis", kec ? "Kecamatan" : kab ? "Kabupaten/kota" : "Provinsi"], ["Lokasi", kec ? `${kab}, ${namaProv(p)}` : kab ? namaProv(p) : ""]], "Sumber: Centurisk97, model banjir");
+      const k = kartu(); k.querySelector(".ck-b").innerHTML = `<p class="ck-n">Memuat…</p>`; k.querySelector("[data-timelapse]")?.remove();
+      statusBanjir({p, kab, kec}).then(h => { if (terpilih !== T) return; if (h) k.querySelector(".ck-b").innerHTML = h; else k.hidden = true; })
+        .catch(e => { console.warn("status banjir", e); if (terpilih === T) k.hidden = true; });
+    },
+    statusBanjir: (w, pusat) => statusBanjir(w, pusat),   /* w = {p, kab?, kec?}; HTML lipat "Status banjir" atau "" */
     segar: () => terpilih && nanti(statistik),
     hapus: () => terpilih && hapusGaris(),
   };
@@ -183,10 +192,10 @@
       const tl = `<span title="(Titik NOAA-20 × 4,22 ha + titik NOAA-21 × 4,36 ha) ÷ 2, per hari kalender WIB. Bukan angka regu darat">`;
       bd = lipat(`Di dalam batas, ${ren}`, tb2([[`Titik panas`, fmt(a.hot) + " titik"], [`${tl}Luas terbakar</span>`, fmt(a.luas) + " ha"],
         [`<span title="Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya">Belum padam</span>`, S.titikPenuh ? fmt(a.belum) + " ha" : "memuat…"], ["Cluster aktif (72 jam)", fmt(kp) + " cluster"]]))
-        + apiKawasan(KL, di)
+        + (T.i.t === "desa" ? `<div id="ckBanjir"></div>` : "") + apiKawasan(KL, di)
         + (catatan && !KAW.has(T.i.t) ? `<p class="ck-n">${esc(catatan.split(". Batas")[0].replace("; ini bukan", "; bukan"))}.</p>` : ""); }
     else bd = `<p class="ck-n">Poligon konsesi tidak ditemukan di data.</p>`;
-    k.querySelector(".ck-b").innerHTML = bd; }
+    k.querySelector(".ck-b").innerHTML = bd; if (T.i.t === "desa" && T.i.id) isiBanjir(T, wilDesa(T.i)); }
   /* isi setara laci cluster ("Api saat ini") untuk satu poligon: jumlah dari cluster di dalam batas, tren titik 7 hari, daftar cluster yang membuka lacinya
      (citra satelit ada di laci). Tren = lokasi unik yang dihitung (S.dihitung) per hari WIB, butuh hotspot.json 7 hari (S.titikPenuh) */
   function apiKawasan(KL, di) {
@@ -207,6 +216,26 @@
       h += lipat(`Cluster di dalam batas`, `<div class="ck-kl">${tampil.map(p => `<button type="button" data-kom="${esc(p.id)}"><b>${esc(p.kec || p.id)}</b><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span><small>${esc(p.id)}, ${fmt(p.px24 || 0)} piksel 24 jam</small></button>`).join("")}</div>`
         + `<p class="ck-n">${urut.length > 8 ? `8 teratas dari ${fmt(urut.length)} cluster. ` : ""}Klik cluster untuk rincian lengkap dan citra satelit terbaru.</p>`); }
     return h; }
+  /* STATUS BANJIR wilayah (desa; kec/kab/prov lewat Cari.statusBanjir): dimuat malas hanya saat hasil wilayah dipilih, hitungan murni di AngkaKawasan.statusWilayah.
+     Hari = hari WIB ini bila ada di status.json, bila tidak hari terakhir yang tidak melewati hari ini, bila tidak hari pertama. */
+  const SB = ["Aman", "Waspada", "Siaga", "Awas"], SB_IK = ["M5 12l5 5L20 7", "M12 8v5M12 16.5v.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z", "M12 8v5M12 16.5v.01M10.3 3.9 2.4 18a2 2 0 0 0 1.7 3h15.8a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0Z", "M12 3 2 21h20L12 3zM12 10v5M12 18v.01"];
+  let sbData = null;
+  const sbMuat = () => sbData ||= Promise.all([ambil("/banjir/data/status.json"), ambil("/banjir/data/kejadian_aktif_awal.json").catch(() => ({kejadian: []}))]).catch(e => { sbData = null; throw e; });
+  const sbHari = (hari, ini) => { const t = hari.indexOf(ini); if (t >= 0) return t; let k = 0; hari.forEach((h, j) => { if (h <= ini) k = j; }); return k; };
+  const sbPil = lv => `<span class="sb-pil sb${lv}"><svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="${SB_IK[lv]}"/></svg>${SB[lv]}</span>`;
+  async function statusBanjir(w, pusat) {
+    const [st, kj] = await sbMuat(), d = sbHari(st.hari, S.meta.hari_wib), r = AngkaKawasan.statusWilayah(st.kec, w, d, "b");
+    if (!r.total) return "";   /* wilayah tak ada di status.json (bukan wilayah berstatus): tidak ditulis, bukan "Aman" */
+    const e = AngkaKawasan.kejadianTerdekat(kj.kejadian, r.keys, pusat), rinci = [3, 2, 1].filter(v => r.n[v]).map(v => `${fmt(r.n[v])} kecamatan ${SB[v]}`).join(", ") || `${fmt(r.total)} kecamatan Aman`;
+    return lipat("Status banjir", tb2([["Status", sbPil(r.lv)], ["Kecamatan", rinci],
+      ["Kejadian aktif", e ? `<a href="/banjir/k/${esc(e.kode)}" target="_blank" rel="noopener">${esc(e.kode)}</a>, ${e.km ? `${fmt(Math.round(e.km))} km dari sini` : "di wilayah ini"}, sejak ${esc(tglPendekSB(e.sejak))}` : "tidak ada"]])
+      + `<p class="ck-n">${st.hari[d] === S.meta.hari_wib ? "Prakiraan" : "Data"} ${esc(tglPendekSB(st.hari[d]))}.</p>`);
+  }
+  const tglPendekSB = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"});
+  /* kab desa = nama di desa_cari.json; kec = "Kec. X" dari teks k */
+  const wilDesa = i => ({p: i.id.slice(0, 2), kab: (i.k || "").split(" · ")[1], kec: ((i.k || "").split(" · ")[0] || "").replace(/^Kec\.\s*/, "")});
+  const isiBanjir = (T, w) => { const k = document.getElementById("ckBanjir"); if (!k) return;
+    statusBanjir(w, T.bb && [(T.bb[1] + T.bb[3]) / 2, (T.bb[0] + T.bb[2]) / 2]).then(h => { if (terpilih === T) k.innerHTML = h; }).catch(e => console.warn("status banjir", e)); };
   /* kepala dan tombol ikon sama dengan laci cluster: jenis sebagai eyebrow, nama, baris profil sebagai label; isi per bagian lipat */
   function bukaKartu(judul, baris, atr) {
     const k = kartu(); k.hidden = false; const jenis = baris.find(r => r[0] === "Jenis")?.[1] || "", lain = baris.filter(r => r[1] && r[0] !== "Jenis"), buf = TITIK.has(terpilih.i.t) ? "Hapus buffer dan tutup" : "Tutup";

@@ -30,3 +30,12 @@ body.uj-badan{margin:0;background:var(--paper,#f5f6f8);color:var(--ink,#101828);
 .uj-aksi{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
 .uj a.uj-tombol{display:inline-flex;align-items:center;min-height:44px;padding:0 16px;border-radius:12px;background:#d9531e;color:#fff;font-weight:700;text-decoration:none}
 @media (max-width:520px){.uj h1{font-size:21px}}
+.ujb{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(230px,1fr));align-items:end}
+.ujb label{display:grid;gap:4px;font-weight:600;font-size:13.5px}
+.ujb select,.ujb input:not([type=file]){min-height:44px;padding:0 10px;border:1px solid var(--line,#d0d5dd);border-radius:10px;font:inherit}
+.ujb [hidden]{display:none}
+.ujb-lok{display:flex;flex-wrap:wrap;align-items:center;gap:10px}
+.ujb .lp-tombol{display:inline-flex;align-items:center;gap:6px;min-height:44px}
+.ujb .uj-aksi,.ujb #ujbStatus{grid-column:1/-1}
+.ujb .ujb-setuju{display:flex;align-items:center;gap:8px;font-weight:600}
+.ujb .ujb-setuju input{width:20px;height:20px}

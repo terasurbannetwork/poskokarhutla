@@ -1,2 +1,35 @@
 /* A24: respons terdekat dibuat tetapi disembunyikan, sama seperti "Respons terdekat" karhutla (cakupan OSM tidak lengkap, nomor perlu dicek) */
 #laci [data-j="Respons terdekat"]{display:none}
+
+/* Tabel wilayah panel Peta /banjir (public/banjir/wilayah.js): pola panel Real Time karhutla. */
+.tb.tb-total{position:sticky;top:30px;z-index:2;background:color-mix(in srgb,#4f8fc4 18%,var(--card));font-weight:800;color:var(--ink);cursor:default;border-bottom:1px solid var(--line)}
+.tb.tb-total .n{font-variant-numeric:tabular-nums}
+.tb.kepala{border-radius:12px 12px 0 0}
+#rows .seg{margin:0 0 6px}
+#rows .seg>button{display:inline-flex;align-items:center;justify-content:center}
+.tr-baris{display:flex;justify-content:space-between;align-items:center;gap:8px;flex-wrap:wrap;padding:2px 2px 5px}
+.tr-hari{font-size:10px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}.tr-hari b{color:var(--ink)}
+.lg-hs{display:flex;flex-wrap:wrap;gap:4px;padding-bottom:5px}
+.lg-c{display:inline-flex;align-items:center;gap:4px;padding:2px 7px 2px 5px;border-radius:999px;background:color-mix(in srgb,var(--w) 12%,transparent);color:var(--ink2);font-size:10px;font-weight:700;white-space:nowrap}
+.lg-c svg{width:12px;height:12px;color:var(--w);flex:none}.lg-c b{color:var(--w);font-weight:800;letter-spacing:.04em}
+.wl-lain{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);background:var(--card);color:var(--ink2);border-radius:999px;padding:3px 10px;font:inherit;font-size:11px;font-weight:700;cursor:pointer}
+.wl-lain svg{width:13px;height:13px}.wl-lain:disabled{opacity:.4;cursor:not-allowed}.wl-lain[aria-expanded="true"]{background:var(--brand);color:#fff;border-color:var(--brand)}
+:root[data-theme="dark"] .wl-lain[aria-expanded="true"]{color:oklch(18% .035 256)}
+.wl-bln{position:relative;flex:1;min-width:0;border-radius:999px;color:var(--ink2)}
+.wl-bln summary{list-style:none;cursor:pointer;text-align:center;padding:5px 14px 5px 2px;font-size:12px;font-weight:600;border-radius:999px;white-space:nowrap}
+.wl-bln summary::-webkit-details-marker{display:none}.wl-bln summary::after{content:"▾";position:absolute;right:7px;top:50%;transform:translateY(-50%);font-size:10px}
+.wl-bln.on{background:var(--brand);color:#fff}:root[data-theme="dark"] .wl-bln.on{color:oklch(18% .035 256)}
+.wl-pop{position:absolute;right:0;top:calc(100% + 4px);z-index:30;min-width:150px;max-height:280px;overflow:auto;display:flex;flex-direction:column;gap:2px;padding:6px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+.wl-pop label{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}.wl-pop label:hover{background:var(--line)}
+.wl-pop input{accent-color:var(--brand);margin:0}
+.wl-pop button{position:sticky;bottom:0;margin-top:4px;padding:7px;border:0;border-radius:999px;background:var(--brand);color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.wl-kal{margin:0 0 8px;padding:8px;border:1px solid var(--line);border-radius:12px;background:var(--card)}.wl-kal[hidden]{display:none}
+.wl-kh{display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;font-size:12.5px}
+.wl-kh button{border:0;background:none;font-size:18px;line-height:1;padding:2px 10px;border-radius:999px;cursor:pointer;color:var(--ink)}.wl-kh button:disabled{opacity:.25;cursor:not-allowed}
+.wl-kg{display:grid;grid-template-columns:repeat(7,1fr);gap:3px;text-align:center}
+.wl-kg i{font-style:normal;font-size:10px;font-weight:800;color:var(--ink2);text-transform:uppercase}
+.wl-kg button{border:0;background:color-mix(in srgb,var(--brand) 12%,transparent);color:var(--ink);border-radius:8px;padding:6px 0;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
+.wl-kg button:disabled{background:none;color:var(--ink2);opacity:.35;cursor:not-allowed;text-decoration:line-through}
+.wl-kg button[aria-pressed="true"]{background:var(--brand);color:#fff}:root[data-theme="dark"] .wl-kg button[aria-pressed="true"]{color:oklch(18% .035 256)}
+#rows.wl-redup{opacity:.5;transition:opacity .15s}
+.tr-naik{color:#c9503a;font-weight:800}.tr-turun{color:#2e8b57;font-weight:800}.tr-tetap{color:var(--ink2)}   /* kolom Tren tabel wilayah: naik = memburuk */

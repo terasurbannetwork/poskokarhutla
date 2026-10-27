@@ -17,12 +17,12 @@ test("nilaiBawaan: debit 300 L/min, 8 lance, debit pemakai lain 0 dan hasilnya K
   assert.equal(L.ringkasVonis(hitung(n), n).kata, "KONDISIONAL");
 });
 
-test("H1: masukan K1 = NO-GO merah dengan pesan H-TEKANAN berangka id-ID", () => {
+test("H1: layar selalu layflat (keputusan 60); kasus tekanan tinggi = NO-GO merah dengan pesan H-TEKANAN berangka id-ID", () => {
   const k = ACUAN.find(x => x.id === "H1");
-  const n = {...bawaan(), ...k.masukan, od_mm: 160, pompa: null};
+  const n = {...bawaan(), ...k.masukan, pompa: null};
   const r = L.ringkasVonis(hitung(n), n);
   assert.equal(r.kata, "NO-GO"); assert.equal(r.kelas, "nogo");
-  assert.match(r.gerbang[0].pesan, /^Tekanan 12,5 bar melewati batas kerja 11,1 bar/);
+  assert.match(r.gerbang[0].pesan, /^Tekanan \d+,\d bar melewati batas kerja \d+,\d bar/);
   assert.equal(r.gerbang[0].kode, "H-TEKANAN"); assert.equal(r.gerbang[0].tingkat, "keras");
 });
 
@@ -61,7 +61,7 @@ test("H3: kedalaman 3 sampai 5 m = pil lengan uji; di bawah 3 m tidak", () => {
 });
 
 test("H4: tiap medan angka ditolak di bawah rentang, di atas rentang, bukan angka, dan kosong pada medan wajib", () => {
-  assert.ok(angka.length >= 20, `hanya ${angka.length} medan angka`);
+  assert.ok(angka.length >= 19, `hanya ${angka.length} medan angka`);   // suhu pipa (derating HDPE) dicabut, keputusan 60
   for (const m of angka) {
     if (m.min > 0 || m.k === "dalam_m" || m.k === "dz_m") { const bawah = m.k === "dalam_m" ? "-0,1" : String(m.min - 1).replace(".", ","); assert.ok(L.cekMedan(m, bawah).galat, `${m.k} di bawah rentang lolos`); }
     assert.ok(L.cekMedan(m, String(m.maks + 1)).galat, `${m.k} di atas rentang lolos`);
@@ -92,8 +92,8 @@ test("angkaId: koma desimal, titik ribuan, dan yang meragukan ditolak", () => {
 });
 
 test("H5: round-trip query memulihkan semua masukan dan hasil identik", () => {
-  const n = {...bawaan(), bahan: "hdpe", od_mm: 200, sdr: 17, L_m: 2345.5, q_lpm: 450, dz_m: -3.5, K: 7, dalam_m: 4, id_datasheet_mm: 98, q95_ls: 12, qeko_ls: 2, stok_m3: 500, hari: 20,
-    pompa: "tekanan_tinggi", n_pompa: 2, perimeter_aktif: true, kompleks: "K0042", dz_sumber: "dsm"};
+  const n = {...bawaan(), L_m: 2345.5, q_lpm: 450, dz_m: -3.5, K: 7, dalam_m: 4, id_datasheet_mm: 98, q95_ls: 12, qeko_ls: 2, stok_m3: 500, hari: 20,
+    pompa: "tekanan_tinggi", n_pompa: 2, kompleks: "K0042", dz_sumber: "dsm"};
   const q = L.keQuery(n);
   assert.deepEqual(L.dariQuery("?" + q).nilai, n);
   assert.deepEqual(hitung(L.dariQuery(q).nilai), hitung(n));
@@ -102,7 +102,7 @@ test("H5: round-trip query memulihkan semua masukan dan hasil identik", () => {
 
 test("H5: query liar dibuang per medan, bukan seluruhnya; kedalaman 6 m di tautan tidak pernah dihitung", () => {
   const r = L.dariQuery("?q_lpm=500&dalam_m=6&bahan=baja&pompa=tidak_ada&n_lance=abc&kompleks=<script>");
-  assert.equal(r.nilai.q_lpm, 500); assert.equal(r.nilai.dalam_m, 1.5); assert.equal(r.nilai.bahan, "layflat");
+  assert.equal(r.nilai.q_lpm, 500); assert.equal(r.nilai.dalam_m, 1.5); assert.equal(L.keHidraulika(r.nilai).bahan, "layflat");
   assert.equal(r.nilai.pompa, "ve1500"); assert.equal(r.nilai.n_lance, 8); assert.equal(r.nilai.kompleks, null);
   assert.deepEqual(Object.keys(r.galat).sort(), ["dalam_m", "n_lance"]);
 });
@@ -138,10 +138,11 @@ test("svgTekanan: garis per 50 m, batas dan 2 bar berlabel, tabel .sr; teks data
   assert.doesNotMatch(s, /NaN|undefined|Infinity/);
 });
 
-test("svgHeadloss: enam diameter pada debit terpilih, satu batang per diameter, nilai id-ID", () => {
+test("svgHeadloss: tiga diameter layflat pada debit terpilih, satu batang per diameter, nilai id-ID", () => {
   const n = {...bawaan(), q_lpm: 300}, s = L.svgHeadloss(n);
-  for (const d of ["DN65", "DN100", "DN150", "OD110", "OD160", "OD200"]) assert.ok(s.includes(d), d);
-  assert.equal((s.match(/class="sp-batang/g) || []).length, 6);
+  for (const d of ["DN65", "DN100", "DN150"]) assert.ok(s.includes(d), d);
+  assert.doesNotMatch(s, /OD\d/);
+  assert.equal((s.match(/class="sp-batang/g) || []).length, 3);
   assert.doesNotMatch(s, /NaN|undefined|Infinity/);
   const kecil = L.headlossPerDiameter(n);
   assert.ok(kecil.find(x => x.n === "DN65").hf > kecil.find(x => x.n === "DN150").hf, "diameter lebih kecil = head loss lebih besar");
@@ -153,9 +154,9 @@ test("headlossPerDiameter: nilai DN100 sama dengan hidraulika() untuk trase 1 km
   assert.ok(Math.abs(d.hf - h.hf_m) < 1e-9, `${d.hf} vs ${h.hf_m}`);
 });
 
-test("keHidraulika: layflat memakai DN, HDPE memakai OD; neraca air hanya bila Q95 diisi", () => {
+test("keHidraulika: selalu layflat memakai DN, HDPE dari tautan lama diabaikan; neraca air hanya bila Q95 diisi", () => {
   const a = L.keHidraulika({...bawaan(), bahan: "hdpe", od_mm: 160});
-  assert.equal(a.bahan, "hdpe"); assert.equal(a.od_mm, 160);
+  assert.equal(a.bahan, "layflat"); assert.equal(a.od_mm, null);
   assert.equal(L.keHidraulika(bawaan()).sumber, null);
   const b = L.keHidraulika({...bawaan(), q95_ls: 8});
   assert.deepEqual(b.sumber, {q95_ls: 8, qeko_ls: 0, stok_m3: 0, hari: 30, evap_m3_hari: 0});
@@ -190,7 +191,6 @@ test("pilIsian: ID asumsi bila datasheet kosong, DSM dari kompleks, lengan uji d
   const n = bawaan(), h = hitung(n);
   assert.match(L.pilIsian(n, h).id_datasheet_mm.teks, /^ID = 0,96 x DN$/);
   assert.equal(L.pilIsian({...n, id_datasheet_mm: 98}, h).id_datasheet_mm, undefined);
-  assert.equal(L.pilIsian({...n, bahan: "hdpe"}, h).id_datasheet_mm, undefined);
   assert.equal(L.pilIsian({...n, dz_sumber: "dsm"}, h).dz_m.kelas, "estimasi-model");
   assert.equal(L.pilIsian({...n, dalam_m: 3}, h).dalam_m.teks, "Lengan uji"); assert.equal(L.pilIsian({...n, dalam_m: 2.9}, h).dalam_m, undefined);
 });

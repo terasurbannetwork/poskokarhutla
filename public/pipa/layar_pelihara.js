@@ -3,7 +3,8 @@
    Jadwal dihitung KLIEN dengan SippaPelihara.jadwal() dari pelihara.js (satu-satunya tempat interval, laju, dan kelas K1-K10). Semua interval dan laju
    berlabel asumsi-kebijakan. Butuh global public/inti: fmt, esc, jamWIB, paginasi, nanti. Tanpa toFixed; semua teks data lewat esc. */
 import {KELAS, KELAS_ASET, kelasDari, jadwal, laikGelar, stokMin, biayaTahun} from "./pelihara.js";
-import {peranKlien, kirimPost, bukaDialog, tutupDialog} from "./layar_kit.js";
+import {peranKlien, kirimPost, bukaDialog, tutupDialog, muatGayaKit} from "./layar_kit.js";
+import {katalogHtml} from "./katalog_alat.js";
 import {memuat, kosong, galat} from "./keadaan.js";
 
 const HARI = 864e5, WIB = 7 * 36e5, PER_HAL = 25, TUNGGU_HARI = 60;
@@ -11,7 +12,7 @@ export const STATUS_JADWAL = ["terlambat", "segera", "aman", "belum_pernah"];
 export const TEKS_STATUS = {terlambat: "Terlambat", segera: "Segera", aman: "Aman", belum_pernah: "Belum pernah"};
 export const SKOR_KATA = ["Baik", "Rusak ringan", "Rusak berat", "Hilang atau afkir"];
 const URUT_STATUS = {terlambat: 0, segera: 1, belum_pernah: 2, aman: 3};
-const NAMA_KELAS = {K1: "Pompa", K2: "Selang", K3: "Hidraulik", K4: "Sensor", K5: "APD", K6: "Koridor", K7: "Sumur", K8: "Pipa sementara", K9: "Jembatan darurat", K10: "Jembatan pantau"};
+const NAMA_KELAS = {K1: "Pompa", K2: "Selang", K3: "Hidraulik", K4: "Sensor", K5: "APD", K7: "Sumur", K8: "Pipa sementara", K9: "Jembatan darurat", K10: "Jembatan pantau"};
 const NAMA_BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 /* unit dilayani per kit gambut (PRD §6.1, BOM di src/sippa.js GAMBUT) untuk stok_min = ceil(laju x kit x satuan x (1 + 60/180)); kode di luar daftar tanpa minimum.
    Payload /api/sippa/pelihara tidak membawa jumlah per kit, jadi daftar ini asumsi-kebijakan sampai server mengirim BOM per gudang. */
@@ -273,7 +274,7 @@ export async function pasang(akar, konteks) {
     if (sinyal.aborted) return;
     const d = st.d, laik = kitTidakLaik(d, st.rows), stok = barisStok(d), r = ringkasan(st.rows, laik, stok), per = d.per ?? st.kini;
     konteks.setPer?.(per);
-    if (!st.rows.length && !stok.length) { isi.replaceChildren(kosong("Belum ada butir pemeliharaan. Butir muncul dari komponen kit dan aset yang dicatat staf.")); return; }
+    if (!st.rows.length && !stok.length) { muatGayaKit(); const k = el("div"); k.innerHTML = katalogHtml(); isi.replaceChildren(kosong("Belum ada butir pemeliharaan. Butir muncul dari komponen kit dan aset yang dicatat staf."), k); return; }   // katalog alat mengisi layar kosong (SP-113)
     isi.innerHTML = isiKartuHtml(r, laik, per) + kontrolHtml(hitungChip(st.rows, st), st) + `<div id="sp-pel-tabel"></div>`
       + `<div class="sp-dua">${kalenderHtml(kalender(st.rows, st.kini))}${stokHtml(stok, peran)}</div>${biayaHtml(biayaKelas(d))}`;
     gambarTabel();

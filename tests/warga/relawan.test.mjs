@@ -6,7 +6,7 @@ import {readFileSync} from "node:fs";
 import {randomBytes} from "node:crypto";
 import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
-import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
+import {siapkan, berantai, ADMIN, MOD2, GERBANG, GERBANG_ORANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";
 import * as R from "../../src/relawan.js";
 
@@ -98,7 +98,7 @@ uji("CHECK menolak isian liar langsung di D1 (tanpa lewat worker)", async () => 
 
 uji("tanpa auth: tiap rute admin 403 (juga akun gerbang), tiap rute berkode 403, halaman admin dialihkan", async () => {
   for (const [m, j] of ADMIN_RUTE) {
-    for (const h of [{}, GERBANG, {"x-admin-token": "salah"}]) {
+    for (const h of [{}, GERBANG, GERBANG_ORANG, {"x-admin-token": "salah"}]) {
       const r = await U.api(m, j, m === "POST" ? {aksi: "x"} : undefined, {...h, ...ipBaru()});
       assert.equal(r.s, 403, `${m} ${j} tanpa auth harus 403, dapat ${r.s}`);
     }

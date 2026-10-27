@@ -28,6 +28,7 @@ import csv, collections, datetime as dt, json, math, os, subprocess, sys
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR, PROVINSI, Wilayah
 import aturan
+import firms_sumber as FS
 
 JALUR = os.path.join(AKAR, "public/data/titik_palsu.json")
 PLTU = os.path.join(AKAR, "public/udara/data/pltu.json")
@@ -114,8 +115,9 @@ def bangun(berkas):
 
 
 def tahun_penuh(kini=None, n=TAHUN_JENDELA):
-    """n tahun kalender penuh terakhir (tahun berjalan tidak ikut)."""
-    y = (kini or dt.date.today()).year
+    """n tahun kalender penuh terakhir (tahun berjalan tidak ikut), paling jauh sampai tahun S-NPP berhenti (FS.SNPP_AKHIR, 2026): arsip standar S-NPP tahun
+    sesudahnya kosong (< MIN_BARIS), jadi tanpa batas ini `segar` gagal tiap bulan mulai Jan 2028. Jendela lalu membeku di 4 tahun terakhir ber-S-NPP."""
+    y = min((kini or dt.date.today()).year, FS.SNPP_AKHIR.year + 1)
     return list(range(y - n, y))
 
 
@@ -218,6 +220,7 @@ def uji():
         with tempfile.TemporaryDirectory() as tmp:
             ARSIP, JALUR, MIN_BARIS = os.path.join(tmp, "firms"), os.path.join(tmp, "tp.json"), 3
             assert tahun_penuh(dt.date(2026, 10, 22)) == [2022, 2023, 2024, 2025] and tahun_penuh(dt.date(2027, 1, 1), 1) == [2026]
+            assert tahun_penuh(dt.date(2028, 2, 1)) == [2023, 2024, 2025, 2026] == tahun_penuh(dt.date(2027, 1, 1)), "jendela membeku di tahun S-NPP terakhir (2026): 2027+ tak punya arsip S-NPP"
             dipanggil = []
             def tarik(y, tmpf):
                 dipanggil.append(y)

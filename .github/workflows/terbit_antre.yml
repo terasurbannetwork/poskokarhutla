@@ -1,0 +1,73 @@
+name: Antre terbit tampilan
+
+# Push ke main/staging TIDAK lagi memicu terbit.yml langsung. Grup concurrency `data` hanya menyimpan SATU run menunggu, dan run menunggu
+# yang lebih lama dibatalkan oleh run baru. Push beruntun (27 Okt 2026, 13:37-14:33 UTC: 25 run terbit) mengisi slot itu terus, sehingga
+# titik.yml terjadwal (13:31) dan dispatch (13:35) terusir tanpa job dan situs tertahan di data 17.43 WIB sampai jaga.yml memicu ulang.
+#
+# Run ringan ini ada DI LUAR grup `data`, jadi tak pernah mengusir siapa pun:
+#   1. push beruntun saling membatalkan lewat grupnya sendiri (cancel-in-progress), jadi hanya push TERBARU yang lanjut; ia meredam 60 detik dulu;
+#   2. menunggu sampai tak ada run pipeline yang MENUNGGU slot grup data (queued/pending/waiting/requested; run yang sedang jalan tidak dihitung);
+#   3. memicu terbit.yml (workflow_dispatch) pada ref itu: terbit.yml tetap di grup `data`, jadi tak pernah menulis/menerbitkan bersamaan
+#      dengan titik/data/banjir. Dispatch memakai kepala branch SAAT dispatch, jadi mencakup semua push yang sudah teredam.
+# Jendela sempit antara langkah 2 dan 3 (beberapa detik) masih bisa kalah oleh cron yang jatuh persis di situ; jaga.yml memicu ulang run itu.
+# Bila antrean tak kosong dalam 150 menit, dispatch jalan juga (terbit tak boleh hilang). Daftar PIPA = semua workflow ber-grup `data` selain terbit.yml
+# (dijaga tests/agen/gerbang-antrean-data.test.mjs). Daftar paths pemicu push kini hanya ada di berkas ini (terbit.yml tak punya pemicu push lagi).
+on:
+  push:
+    branches: [main, staging]
+    paths:
+      - "public/**"
+      - "!public/data/**"
+      - "!public/banjir/data/**"
+      - "src/**"
+      - "wrangler.jsonc"
+      - "migrations/**"
+
+permissions:
+  actions: write
+  contents: read
+
+concurrency:
+  group: terbit-antre-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  antre:
+    runs-on: ubuntu-latest
+    timeout-minutes: 170
+    env:
+      GH_TOKEN: ${{ github.token }}
+      GH_REPO: ${{ github.repository }}
+      PIPA: titik|data|banjir|gempa|lintas|statis|udara|titik_palsu
+    steps:
+      - name: Redam, lalu tunggu slot antre grup data bebas dari pipeline
+        shell: bash
+        run: |
+          sleep 60
+          batas=$(( $(date +%s) + 150 * 60 ))
+          # run pipeline yang MENUNGGU slot (bukan yang jalan); galat API = dianggap kosong (terbit tak boleh macet karena API)
+          menunggu() {
+            for s in queued pending waiting requested; do
+              gh api "repos/$GH_REPO/actions/runs?status=$s&per_page=100" --jq '.workflow_runs[] | "\(.path) \(.status) \(.id)"' || true
+            done | grep -E "workflows/($PIPA)\.yml" || true
+          }
+          while :; do
+            antre=$(menunggu)
+            if [ -z "$antre" ]; then echo "slot antre bebas; lanjut"; break; fi
+            if [ "$(date +%s)" -ge "$batas" ]; then
+              echo "::warning title=Antrean grup data tak kosong::150 menit menunggu habis; terbit.yml dipicu juga: $(echo "$antre" | tr '\n' ';')"
+              break
+            fi
+            echo "$(date -u +%H:%M:%S) menunggu: $(echo "$antre" | tr '\n' ';')"
+            sleep 60
+          done
+
+      - name: Picu terbit.yml (masuk grup data satu kali)
+        shell: bash
+        run: |
+          for i in 1 2 3; do
+            gh workflow run terbit.yml --ref "$GITHUB_REF_NAME" && { echo "terbit.yml dipicu pada $GITHUB_REF_NAME (push $GITHUB_SHA)"; exit 0; }
+            sleep 20
+          done
+          echo "::error title=terbit.yml tak terpicu::dispatch gagal 3 kali; picu manual atau tunggu jaga.yml"
+          exit 1

@@ -144,14 +144,10 @@ test("studio: H-DALAM menolak 5,1 m dan menerima 5 m (batas dari KONST, bukan di
   assert.equal(dalam(5.1).length, 1); assert.equal(dalam(KONST.dalam_maks_m).length, 0); assert.equal(dalam(5.1)[0].includes("keputusan 50"), true);
 });
 
-test("studio: jaringan permanen lebih dari 2 koridor NO-GO; S3 selalu membawa catatan ditutup sampai G5", () => {
-  const s3 = E.compare(E.defaultState())[2].s;
-  const tiga = {...s3, sippa: {n_lance: 8, dalam_m: 2, koridor: 3}}, dua = {...s3, sippa: {n_lance: 8, dalam_m: 2, koridor: 2}};
-  assert.ok(E.gerbangSippa(tiga, E.assess(tiga), KONST).hard.some(x => /^jaringan_permanen/.test(x)), "koridor 3 lolos");
-  assert.ok(!E.gerbangSippa(dua, E.assess(dua), KONST).hard.some(x => /^jaringan_permanen/.test(x)), "koridor 2 ditolak");
-  const polos = E.gerbangSippa(s3, E.assess(s3), KONST);
-  assert.ok(polos.conditional.some(x => /ditutup sampai uji G5/.test(x)), "catatan G5 tidak ada: " + polos.conditional.join(" | "));
-  assert.ok(!polos.hard.some(x => /^jaringan_permanen/.test(x)), "tanpa blok sippa koridor bawaan 1 tidak boleh keras");
+test("studio: jaringan pipa tetap (S2 semi-permanen, S3 backbone) selalu NO-GO jaringan_permanen; S1 portable tidak (keputusan 60)", () => {
+  const [s1, s2, s3] = E.compare(E.defaultState()).map(h => h.s);
+  for (const s of [s2, s3, {...s3, sippa: {n_lance: 8, dalam_m: 2, koridor: 1}}]) assert.ok(E.gerbangSippa(s, E.assess(s), KONST).hard.some(x => /^jaringan_permanen/.test(x)), s.strategy + " lolos");
+  assert.ok(!E.gerbangSippa(s1, E.assess(s1), KONST).hard.some(x => /^jaringan_permanen/.test(x)), "portable ditolak");
 });
 
 test("studio: H-AIR faktor 1,5 menambah syarat bila sumber bersih kurang dari 1,5 kali debit", () => {

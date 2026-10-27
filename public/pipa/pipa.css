@@ -11,10 +11,17 @@
 /* cangkang: bilah konteks, rel, isi, bilah bawah */
 .sp-cangkang{display:grid;gap:var(--sp-4);min-width:0;box-sizing:border-box;max-width:1680px;margin-inline:auto;padding-inline:var(--sp-6)}
 .sp-isi>*{min-width:0}
-.sp-konteks{position:sticky;top:var(--top);z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3);padding:var(--sp-2) 0;background:var(--paper)}
+/* bilah konteks = header peta utama (header.top kepala.css): pita gradien penuh lebar, kontrol putih di atasnya */
+.sp-konteks{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3);min-height:var(--top,58px);box-sizing:border-box;margin-inline:calc(50% - 50vw);padding:var(--sp-2) 14px;background:var(--gradien);color:#fff}
+.sp-konteks .ad-seg{background:color-mix(in srgb,#fff 14%,transparent)}
+.sp-konteks .ad-seg button{color:color-mix(in srgb,#fff 82%,transparent)}
+.sp-konteks .ad-seg button[aria-checked="true"]{color:var(--ink)}
+.sp-konteks .sp-data-per{border-color:color-mix(in srgb,#fff 45%,transparent);color:#fff}
+.sp-konteks .sp-data-per .sp-yakin{background:color-mix(in srgb,#fff 16%,transparent);border-color:transparent;color:#fff}
+.sp-konteks .sp-tema{background:color-mix(in srgb,#fff 14%,transparent);color:#fff;border:0}
 .sp-pita{flex-basis:100%;min-width:0}.sp-pita:empty{display:none}
 .sp-badan{display:grid;grid-template-columns:232px minmax(0,1fr);gap:var(--sp-6);align-items:start}
-.sp-rel{position:sticky;top:calc(var(--top) + 56px);display:grid;gap:var(--sp-1);padding:var(--sp-2);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
+.sp-rel{position:sticky;top:calc(var(--top) + 12px);display:grid;gap:var(--sp-1);padding:var(--sp-2);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
 .sp-rel ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
 .sp-rel-kel{margin:var(--sp-3) var(--sp-2) 2px}
 .sp-rel a,.sp-bawah a,.sp-lainnya a,.sp-lain-tombol{display:flex;align-items:center;gap:var(--sp-2);min-height:38px;padding:0 var(--sp-3);border-radius:12px;color:var(--ink);font-size:13px;font-weight:700;text-decoration:none;transition:background var(--sp-sedang),color var(--sp-sedang)}
@@ -389,3 +396,11 @@
 .sp-dialog-aksi .ad-tombol{min-height:44px;padding:0 var(--sp-5)}
 .sp-tombol-bahaya{background:var(--bad);color:#fff;border-color:var(--bad)}
 @media (prefers-reduced-motion:reduce){.sp-dummy[aria-busy="true"] button:first-child{animation:none}}
+/* keputusan hari ini (SP-100 sampai SP-102): pil Jalan dan Tunda berkata, warna hanya penegas */
+.sp-putusan{display:inline-flex;align-items:center;min-height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:800;border:1.5px solid currentColor}
+.sp-putusan.jalan{color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,transparent)}
+.sp-putusan.tunda{color:var(--ink2)}
+.sp-tabel-prioritas td small{display:block;margin-top:2px;color:var(--ink2);font-size:11.5px;line-height:1.35;white-space:normal}
+.sp-tabel-prioritas td.n,.sp-tabel-prioritas th.n{text-align:right;font-variant-numeric:tabular-nums}
+.sp-keputusan{margin:0 0 var(--sp-3);padding-left:var(--sp-5);font-size:13px}
+.sp-keputusan li{margin-bottom:6px;line-height:1.45}

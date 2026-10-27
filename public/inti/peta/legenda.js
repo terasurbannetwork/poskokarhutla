@@ -4,6 +4,8 @@
    (<details id="legDet"><summary>..</summary><div class="lg-isi">). Karhutla masih punya salinan sendiri di index.html. */
 export function susunLegenda(lg, {saatBuka}) {
   const det = lg.querySelector("#legDet"), isi = lg.querySelector(".lg-isi"); if (!det || !isi) return;
+  const laci = document.querySelector("#laci"), pp = lg.closest("#p-peta");
+  if (laci && pp && !laci._ro) { laci._ro = new ResizeObserver(() => { const w = laci.getBoundingClientRect().width; if (w) pp.style.setProperty("--lc", w + "px"); }); laci._ro.observe(laci); }
   det.ontoggle = e => saatBuka(e.target.open);
   let g = null;
   [...isi.children].forEach(x => { const lepas = x.classList.contains("leg") && g?.lastElementChild?.classList.contains("leg");

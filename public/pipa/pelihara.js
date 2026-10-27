@@ -20,8 +20,6 @@ export const KELAS = {
     pemelihara_t1: "operator (baterai, bersih)", pemelihara_t2: "penyedia kalibrasi"},
   K5: {nama: "APD, gas monitor, kontainer depot, tangki BBM, baut", interval: {tiap_pakai: false, hari: {berkala: 180, tahunan: 365}, jam: {}}, laju_biaya: 0.10,
     pemelihara_t1: "YonTP", pemelihara_t2: "penyedia kalibrasi gas monitor"},
-  K6: {nama: "Pipa HDPE koridor dan rumah pompa panggung", interval: {tiap_pakai: false, hari: {berkala: 30, tahunan: 365}, jam: {}}, laju_biaya: 0.02,
-    pemelihara_t1: "BPBD atau Daops setempat", pemelihara_t2: "penyedia (uji kebocoran)"},
   K7: {nama: "Sumur bor dan pompa sumur", interval: {tiap_pakai: false, hari: {berkala: 180, mutu_air: 180}, jam: {servis: 250}}, laju_biaya: 0.03,
     pemelihara_t1: "pengelola setempat", pemelihara_t2: "Badan Geologi (muka air); dinas kesehatan atau laboratorium (mutu air)"},
   K8: {nama: "Perpipaan sementara, tandon, hidran umum", interval: {tiap_pakai: true, hari: {berkala: 7}, jam: {}}, laju_biaya: 0,
@@ -34,7 +32,7 @@ export const KELAS = {
 /* awalan kode BOM -> kelas. PB dan F melengkapi DT §5.10 supaya templat banjir (PRD §6.3) berkelas; uji P1 menolak awalan tanpa kelas. */
 export const KELAS_BOM = {P: "K1", PB: "K1", E: "K1", H: "K2", ST: "K2", M: "K3", C: "K3", V: "K3", SF: "K3", I: "K3", G: "K3", F: "K3",
   FT: "K4", PT: "K4", LT: "K4", T: "K4", GWT: "K4", U: "K4", Q: "K5", S: "K5", B: "K5"};
-export const KELAS_ASET = {sumur_bor: "K7", pompa_sumur: "K7", pipa_sementara: "K8", tandon_hidran: "K8", pipa_koridor: "K6", jembatan_darurat: "K9", jembatan_permanen: "K10"};
+export const KELAS_ASET = {sumur_bor: "K7", pompa_sumur: "K7", pipa_sementara: "K8", tandon_hidran: "K8", jembatan_darurat: "K9", jembatan_permanen: "K10"};
 export const KRITIS = ["K1", "K2", "K3"];
 /* laju pakai suku cadang per musim per satuan dilayani (PRD §6.10.5), kunci = awalan kode (unit dilayani atau suku cadang):
    C gasket kopling Storz 1 set per 10 kopling; SF elemen filter servis 2 per pompa; P oli, filter oli, busi 2 servis per pompa;
@@ -129,7 +127,6 @@ const BAKU = {
   pompa_sumur: {medan: {kw: ANGKA(0, 1000), sumber_daya: TEKS}, wajib: ["kw"]},
   pipa_sementara: {medan: {dn_mm: ANGKA(1, 2000), panjang_m: ANGKA(0, 100000), bahan: TEKS}, wajib: ["dn_mm", "panjang_m"]},
   tandon_hidran: {medan: {kapasitas_l: ANGKA(0, 1e7)}, wajib: ["kapasitas_l"]},
-  pipa_koridor: {medan: {od_mm: ANGKA(1, 2000), sdr: ANGKA(1, 100), panjang_m: ANGKA(0, 100000)}, wajib: ["od_mm", "sdr", "panjang_m"]},
   jembatan_darurat: {medan: {jenis: ENUM(JENIS_DARURAT), bentang_m: ANGKA(0, 300), beban_ton: ANGKA(0, 1000), program: TEKS}, wajib: ["jenis", "bentang_m"]},
   jembatan_permanen: {medan: {jenis: TEKS, bentang_m: ANGKA(0, 300), program: TEKS, nilai_kondisi_pemilik: ANGKA(0, 5)}, wajib: ["jenis", "bentang_m"]},
 };

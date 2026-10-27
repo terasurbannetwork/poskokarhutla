@@ -7,15 +7,16 @@ const subsKota = kab => /Jakarta/.test(kab) ? "jakarta" : /Semarang|Demak/.test(
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 /* ruang peta yang terlihat diukur dari panel kiri, panel kanan, dan garis waktu (bukan angka tetap), seperti padRuang karhutla */
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
+const BB_AWAL = [[95, -11.5], [126, 7]];   /* kamera pertama buka: Aceh sampai Halmahera/Timor, tanpa Papua (pemilik, 27 Okt 2026); BB_ID tetap untuk "seluruh Indonesia" */
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
-  return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; }; /* dok banjir lebih tinggi (baris skala hujan): batasi supaya kamera awal sama dengan karhutla */
+  return {top: 56, left: (pn?.width || 440) + 30, right: Math.max(tl?.width || 280, r("#laci.on")?.width || 0) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; }; /* dok banjir lebih tinggi (baris skala hujan): batasi supaya kamera awal sama dengan karhutla */
 /* gambar lapisan peta: dimuat sekali dari modul inti (ubin Overlay, kartu hover) */
 let PI = null, LG = null, legBuka = innerWidth > 900;
 const UBIN = {wilayah: ["#f4c48a", "#d4572f", "peta"], sungai: ["#16405c", "#4fa3c4", "sungai"], rob: ["#1f5f5b", "#5fb3a9", "ombak"], posko: ["#0b2545", "#3b6fb0", "posko"],
-  hujan: ["#1d4e89", "#69a7e8", "hujan"], h3: ["#2a3f8f", "#8a7fe0", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"],
-  kejadian: ["#7a1f12", "#e58a45", "peringatan"], bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"]};
-const UBIN_PENDEK = {wilayah: "Status", sungai: "Sungai", rob: "Rob", kejadian: "Kejadian", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
+  pos: ["#16405c", "#4fa3c4", "sungai"], hujanukur: ["#1d4e89", "#69a7e8", "hujan"], peluang: ["#3a0c78", "#a882de", "hujan"], hujan: ["#1d4e89", "#69a7e8", "hujan"], h3: ["#2a3f8f", "#8a7fe0", "hujan"], satelit: ["#13324d", "#4d8a5e", "satelit"],
+  kejadian: ["#7a1f12", "#e58a45", "peringatan"], bmkg: ["#7a3b0b", "#f2b544", "peringatan"], angin: ["#1f5f8b", "#5fc0c9", "angin"], hujankini: ["#2a3f8f", "#69a7e8", "hujan"]};
+const UBIN_PENDEK = {hujankini: "Sedang hujan", wilayah: "Status", sungai: "Sungai", pos: "Pos air", hujanukur: "Pos hujan", peluang: "Peluang hujan", rob: "Rob", kejadian: "Wilayah Siaga", posko: "Posko", hujan: "Hujan", h3: "Hujan 3 hari", satelit: "Satelit", bmkg: "BMKG", angin: "Angin"};
 const kotak = fitur => PI.kotak(fitur);   /* inti/peta/lapis.js */
 /* "Hari ini" hanya bila tanggal itu memang hari ini (WIB); status.json bisa tertinggal sehari */
 const hariWIB = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
@@ -43,7 +44,7 @@ const Pra72 = {
     const baris = D.hari.map((t, h) => `<tr><td><b>${labelHari(t)}</b></td><td>${sel(r.b[h], r.pb?.[h]?.[1])}</td><td>${sel(r.l[h], r.pl?.[h]?.[1])}</td></tr>`).join("");
     const J = this.jendela(), seq = q => J.map((j, i) => `${j} <b>${pc(r[q]?.[i]?.[1])}</b>`).join(", ");
     const hz = ada ? `<p class="fnd">Peluang Siaga banjir ${seq("hb")}; longsor ${seq("hl")}.</p>` : `<p class="fnd">Peluang tidak tersedia (ansambel ECMWF belum terambil hari ini).</p>`;
-    return `<table class="tb3"><thead><tr><th>Hari</th><th>Banjir${ada ? " · peluang Siaga" : ""}</th><th>Longsor${ada ? " · peluang Siaga" : ""}</th></tr></thead><tbody>${baris}</tbody></table>${hz}
+    return `<table class="tb3"><thead><tr><th>Hari</th><th>Banjir${ada ? ", peluang Siaga" : ""}</th><th>Longsor${ada ? ", peluang Siaga" : ""}</th></tr></thead><tbody>${baris}</tbody></table>${hz}
       <p class="fnd">Peluang jalur hujan saja: porsi dari ${fmt(D.anggota || 0)} anggota ansambel ECMWF yang membuat hujan 3 hari melewati ambang Siaga. Sungai dan intensitas per jam tidak ikut, jadi status yang naik lewat jalur itu tidak tercermin di peluang. Peluang belum diuji balik; kalibrasinya belum diketahui. Titik ansambel mewakili kotak 1°.</p>`; },
   /* rob dipisah dari banjir: tinggi pasang prakiraan vs ambang lokasi, validasi DIBI-nya sendiri */
   rob(k) {
@@ -70,17 +71,18 @@ const Peta = {
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
     await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r));
-    peta.fitBounds(BB_ID, {padding: kiriPad(), duration: 0});
+    peta.fitBounds(BB_AWAL, {padding: kiriPad(), duration: 0});
     nanti(() => Pra72.muat().then(() => { if (S.jalur.length >= 2) renderDaftar(); })); },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
   bawahLabel() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
+    for (const l of peta.getStyle().layers) if (typeof Gelembung !== "undefined" && Gelembung.perisai(l)) peta.setLayoutProperty(l.id, "visibility", "none");   /* perisai nomor rute basemap mengganggu (pemilik, 27 Okt 2026); nama jalan tetap */
     if (peta.getSource("wil")) return;
     const bl = this.bawahLabel();
     peta.addSource("wil", {type: "geojson", data: {type: "FeatureCollection", features: []}, promoteId: "id"});
     peta.addLayer({id: "wil-fill", type: "fill", source: "wil", layout: {visibility: this.lihat("wilayah") ? "visible" : "none"},
       paint: {"fill-color": ["match", ["get", "lv"], 3, WARNA_LV[3], 2, WARNA_LV[2], 1, WARNA_LV[1], "rgba(0,0,0,0)"],
-        "fill-opacity": ["case", ["boolean", ["feature-state", "hover"], false], .75, .45]}}, bl);
+        "fill-opacity": ["interpolate", ["linear"], ["zoom"], 10, ["case", ["boolean", ["feature-state", "hover"], false], .75, .45], 13, ["case", ["boolean", ["feature-state", "hover"], false], .4, .15]]}}, bl);
     peta.addLayer({id: "wil-line", type: "line", source: "wil", paint: {"line-color": gelap() ? "#9fb3d1" : "#1d4e89", "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2.4, .6], "line-opacity": .7}});
     peta.addSource("prov", {type: "geojson", data: S.geo.prov});
     peta.addLayer({id: "prov-line", type: "line", source: "prov", paint: {"line-color": gelap() ? "#c9d6ea" : "#0b2545", "line-width": 1.1, "line-opacity": .55}});
@@ -88,7 +90,7 @@ const Peta = {
     /* lapisan lain dipasang malas, satu per giliran, supaya klik pertama tidak tertahan; satelit hanya bila dinyalakan */
     ["hujan", "sungai", "rob"].forEach(k => nanti(() => this.pasangLapis(k)));
     nanti(() => this.lihat("satelit") && this.pasangLapis("satelit"));
-    nanti(() => Posko.lapis()); nanti(() => KejAktif.lapis()); },
+    nanti(() => Posko.lapis()); nanti(() => KejAktif.lapis()); nanti(() => PosUkur.mulai()); nanti(() => PosHujan.mulai()); nanti(() => Eksp.mulai()); },
   pasangLapis(k) {
     if (!peta.getSource("wil") || peta.getLayer(k)) return;
     const vis = on => ({visibility: on ? "visible" : "none"});
@@ -96,7 +98,7 @@ const Peta = {
       peta.addLayer({id: "satelit", type: "raster", source: "satelit", layout: vis(this.lihat("satelit"))}, peta.getLayer("hujan") ? "hujan" : "wil-fill"); }
     else if (k === "hujan") { const g = this.gambarHujan();
       peta.addSource("hujan", {type: "image", url: g.url, coordinates: g.kor});
-      peta.addLayer({id: "hujan", type: "raster", source: "hujan", layout: vis(this.lihat("hujan") || this.lihat("h3")), paint: {"raster-opacity": .75, "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-fill"); }
+      peta.addLayer({id: "hujan", type: "raster", source: "hujan", layout: vis(this.lihat("hujan") || this.lihat("h3")), paint: {"raster-opacity": ["interpolate", ["linear"], ["zoom"], 10, .75, 13, .15], "raster-resampling": "linear", "raster-fade-duration": 0}}, "wil-fill"); }
     else if (k === "sungai") {
       peta.addSource("sungai", {type: "geojson", data: this.geoSungai()});
       peta.addLayer({id: "sungai", type: "circle", source: "sungai", layout: {...vis(this.lihat("sungai")), "circle-sort-key": ["get", "k"]},
@@ -142,14 +144,17 @@ const Peta = {
       return {type: "Feature", geometry: f.geometry, properties: {id: ++id, kunci, nama: j.length === 0 ? namaProv(p.kode) : j.length === 1 ? p.kab : p.kec, lv: ag[kunci]?.lv || 0}}; });
     S.ag = ag;
     if (peta.getSource("wil")) peta.getSource("wil").setData({type: "FeatureCollection", features: S.fiturWil});
+    Eksp.reset(); Eksp.terapkan(); Gelembung.segarkan(); if (PosUkur.menyala()) nanti(() => PosUkur.petakan());
     if (terbang) peta.fitBounds(j.length && S.fiturWil.length ? kotak(S.fiturWil) : BB_ID, {padding: kiriPad(), duration: 700, maxZoom: 11});
     renderCrumb(); renderDaftar(); },
   /* kartu hover satu baris berikon: wilayah (jumlah kecamatan per status, atau status + hujan di kecamatan), titik sungai, titik pantai */
   kartuWilayah(f) { const p = f.properties, kp = p.kunci.split("|"), n = S.ag[p.kunci]?.n || [0, 0, 0, 0], W = WARNA_LV;
-    let stat; if (kp.length < 3) stat = [["peringatan", n[3], "awas", W[3], n[3] > 0], ["bel", n[2], "siaga", W[2]], ["mata", n[1], "waspada", W[1]]];
+    if (kp.length === 1 && Gelembung.ag) return Gelembung.hover(p.kunci);   /* provinsi: kartu empat angka + 7 hari terakhir, cache per provinsi (gelembung.js) */
+    let stat, kisi = false; if (kp.length < 3) { const pa = PosUkur.menyala() ? PosUkur.agg(p.kunci) : null;   /* kisi 2x2 seperti kartu karhutla; pos hanya bila lapisannya menyala */
+      stat = [["peringatan", n[3], "kecamatan awas", W[3], n[3] > 0], ["bel", n[2], "kecamatan siaga", W[2]], ["mata", n[1], "kecamatan waspada", W[1]], ...(pa ? [["sungai", pa["Siaga 3"] + pa["Siaga 2"] + pa["Siaga 1"], "pos tinggi air siaga", W[2], pa["Siaga 2"] + pa["Siaga 1"] > 0]] : [])]; kisi = true; }
     else { const c = selDekat(...pusat(p.kunci)); stat = [["perisai", LEVEL[p.lv], "status", W[p.lv], p.lv >= 2], ["hujan", c ? fmt(Math.round(c.h3)) + " mm" : "–", "hujan 3 hari", "#3f7fb8"],
       ...(Pra72.d?.anggota != null ? [["bel", esc(Pra72.teks(p.kunci)), "peluang siaga", W[2]]] : [])]; }
-    return PI.kartuTip({judul: esc(p.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "", stat}); },
+    const h = PI.kartuTip({judul: esc(p.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "", stat}); return kisi ? KAKI("Sumber: Open-Meteo, ECMWF IFS, GloFAS", h.replace("tp-gr tp-satu", "tp-gr tp-kisi")) : h; },
   kartuSungai(i, k) { const t = S.sungai.titik[i], W = WARNA_LV; if (!t) return "";
     return PI.kartuTip({judul: esc(t.kec), kepala: lambang(t.prov, t.kab), stat: [["sungai", k < 0 ? "–" : LEVEL[k], "status", k < 0 ? "#9aa8b8" : W[k], k >= 2], ["debit", fmt(Math.round(t.puncak)) + " m³/s", "puncak 7 hari", "#3f7fb8"],
       ...(t.q2 ? [["rasio", f2(t.puncak / t.q2) + "×", "dari banjir 2 th", "#3f7fb8"]] : [])]}); },
@@ -158,15 +163,16 @@ const Peta = {
       ...(() => { const sb = SUBS_LIT?.kota?.[subsKota(t.kab || "")]?.sumber?.[0]; return sb && sb.maks_cm_thn ? [["rasio", "sampai " + fmt(sb.maks_cm_thn) + " cm/th", "turun tanah, literatur (hipotesis)", "#b8782f"]] : []; })()]}); },
   interaksi() {
     if (this._ia) return; this._ia = true;
-    let hov = null, diTitik = false; const tip = () => PI?.sembunyiTip();
+    let hov = null, diTitik = false, fT = null, evT = null, rafT = 0; const tip = () => PI?.sembunyiTip();
     /* titik sungai dan rob di atas wilayah: kartunya menang bila kursor di titik */
     for (const [id, kartu] of [["sungai", "kartuSungai"], ["rob", "kartuRob"]]) {
       peta.on("mousemove", id, e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; const f = e.features[0]; PI?.tampilTip(this[kartu](f.properties.i, f.properties.k), e.originalEvent); });
       peta.on("mouseleave", id, () => { diTitik = false; peta.getCanvas().style.cursor = ""; tip(); }); }
     peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); }
-      if (!diTitik && !this.diKej && S.mode !== "riwayat" && PI) PI.tampilTip(this.kartuWilayah(f), e.originalEvent); });
-    peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
+      /* kartu digambar paling banyak sekali per frame, dari agregat yang sudah dihitung */
+      if (!diTitik && !PosUkur.diPos && !this.diKej && S.mode !== "riwayat" && PI) { fT = f; evT = e.originalEvent; rafT ||= requestAnimationFrame(() => { rafT = 0; if (fT && !PosUkur.diPos && !diTitik && !Gelembung.di && !(typeof HujanKini !== "undefined" && HujanKini.di)) PI.tampilTip(this.kartuWilayah(fT), evT); }); } else fT = null; });
+    peta.on("mouseleave", "wil-fill", () => { fT = null; peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
     /* zoom keluar sendiri: tingkat wilayah ikut naik (kecamatan -> kabupaten -> provinsi -> Indonesia) tanpa menerbangkan peta */
     peta.on("zoomend", e => { if (!e.originalEvent) return; const z = peta.getZoom(), n = S.jalur.length, ke = n >= 1 && z < 5.2 ? 0 : n >= 2 && z < 6.8 ? 1 : n; if (ke === n) return;
       S.jalur = S.jalur.slice(0, ke); nanti(() => Peta.aturWilayah(false)); });
@@ -177,6 +183,10 @@ const Peta = {
       const kj = KejAktif.hit(e.point); if (kj) return KejAktif.buka(kj);   /* pin kejadian menang; poligonnya sesudah posko/rob/sungai/riwayat */
       const pk = peta.getLayer("posko") && peta.queryRenderedFeatures(e.point, {layers: ["posko"]});
       if (pk && pk.length) return Posko.popup(pk[0].properties.id, pk[0].geometry.coordinates.slice());
+      const ps = PosUkur.hit(e.point); if (ps) return PosUkur.buka(ps);
+      const ph_ = PosHujan.hit(e.point); if (ph_) return PosHujan.buka(ph_);
+      if (typeof LapisEkstra !== "undefined" && LapisEkstra.klik(e)) return;
+      const pt_ = PosUkur.hitPasut(e.point); if (pt_) return PosUkur.bukaPasut(pt_);   /* pos tinggi air: kartu ringan langsung, grafik menyusul */
       const rb_ = peta.getLayer("rob") && peta.queryRenderedFeatures(e.point, {layers: ["rob"]});
       if (rb_ && rb_.length) return Rob.titik(rb_[0].properties.i);
       const s = peta.getLayer("sungai") && peta.queryRenderedFeatures(e.point, {layers: ["sungai"]});
@@ -184,11 +194,14 @@ const Peta = {
       const gb = S.mode === "riwayat" && peta.getLayer("riw-bubble") && peta.queryRenderedFeatures(e.point, {layers: ["riw-bubble"]});
       if (gb && gb.length) return Riwayat.buka(gb[0].properties.kunci);
       const kp = KejAktif.hit(e.point, true); if (kp) return KejAktif.buka(kp);
+      if (S.mode !== "riwayat" && Gelembung.klik(e)) return;   /* gelembung atau provinsi nasional: kartu kecil Zoom/Rincian */
+      if (PosUkur.menyala() && peta.getZoom() >= 8 && PosUkur.klikAir(e)) return;   /* badan air basemap (danau, situ, waduk): kartu laci */
       const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]});
       if (!w.length) return;
       const k = w[0].properties.kunci;
       if (S.mode === "riwayat" && S.jalur.length >= 2) return Riwayat.buka(k);
       if (S.jalur.length >= 2) return Analisa.wilayah(k);
+      if (S.jalur.length === 0 && PosUkur.menyala() && PosUkur.D) { const g = S.fiturWil?.find(f => f.properties.kunci === k)?.geometry; turun(k); return PosUkur.provinsi(k, g); }   /* drill-down tetap jalan, laci pos provinsi menyusul seperti laci wilayah karhutla */
       turun(k); }); },
 };
 function turun(kunci) { S.jalur = kunci.split("|"); nanti(() => Peta.aturWilayah()); }
@@ -208,6 +221,8 @@ function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
   if (S.mode === "riwayat" && Riwayat.R) return Riwayat.daftar();
   const j = S.jalur, g = "grid-template-columns:20px minmax(0,2.6fr) minmax(46px,.8fr) minmax(44px,.7fr) minmax(76px,1.1fr)";
+  /* provinsi dan kabupaten: tabel arsip harian (wilayah.js); tanpa data pipeline jatuh ke tabel lama di bawah */
+  if (j.length < 2 && S.mode !== "riwayat") { const w = Wilayah.html(j); if (w) { $("#rows").innerHTML = w; return terapkanUrut(); } }
   const item = [...new Map((S.fiturWil || []).map(f => [f.properties.kunci, f.properties])).values()].map(p => {
     const a = S.ag[p.kunci], c = j.length >= 2 ? selDekat(...pusat(p.kunci)) : null;
     return {kunci: p.kunci, nama: p.nama, lv: a?.lv || 0, n: a ? a.n[3] * 1e6 + a.n[2] * 1e3 + a.n[1] : 0, awas: a?.n[3] || 0, siaga: a?.n[2] || 0, h3: S.st.kec[p.kunci]?.h3 ?? c?.h3, ps: j.length >= 2 ? Pra72.siaga(p.kunci) : null}; })
@@ -264,17 +279,22 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
   $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(() => {
     if (peta.getLayer("sungai")) peta.setFilter("sungai", S.mode === "sungai" ? null : [">=", ["get", "k"], 0]);
-    setLapis("wilayah", S.mode === "status" || S.mode === "riwayat"); setLapis("hujan", S.mode === "hujan"); setLapis("h3", S.mode === "status"); setLapis("sungai", S.mode === "sungai" || S.mode === "status"); setLapis("rob", S.mode === "rob" || S.mode === "status");
+    setLapis("wilayah", S.mode === "status" || S.mode === "riwayat"); setLapis("hujan", S.mode === "hujan"); setLapis("h3", false); setLapis("sungai", S.mode === "sungai"); setLapis("rob", S.mode === "rob");  /* Status = wilayah + Wilayah Siaga saja; peta penuh dibilang jelek (pemilik, 27 Okt 2026) */
     if (S.mode === "riwayat") Riwayat.pasang(); else Riwayat.lepas();
-    Posko.tampil(S.mode !== "riwayat");
+    Posko.tampil(S.mode !== "riwayat"); Gelembung.segarkan();
     renderLegenda();
   }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
-  const k = i.dataset.l, map = {kejadian: [], posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
+  const k = i.dataset.l, map = {pos: [], hujanukur: [], peluang: [], kejadian: [], pompa: [], gfm: [], padam: [], subsiden: [], posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
   if (k === "hujan" || k === "h3") nanti(() => { Peta.pasangLapis("hujan"); if (!peta.getLayer("hujan")) return; const on = Peta.lihat("hujan") || Peta.lihat("h3"); peta.setLayoutProperty("hujan", "visibility", on ? "visible" : "none");
     const g = Peta.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); renderLegenda(); });
   else { if (["sungai", "rob", "satelit"].includes(k)) Peta.pasangLapis(k); map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); }
+  if (k === "wilayah") nanti(() => Gelembung.segarkan());
   if (k === "kejadian") KejAktif.tampil(i.checked);
+  if (k === "pos") PosUkur.tampil(i.checked);
+  if (k === "hujanukur") PosHujan.tampil(i.checked);
+  if (k === "peluang") Eksp.tampil(i.checked);
+  if (typeof LapisEkstra !== "undefined" && LapisEkstra.nyala) LapisEkstra.ubah(k, i.checked);
   renderLegenda(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderLegenda() {
@@ -282,12 +302,14 @@ function renderLegenda() {
   $("#legenda").innerHTML = `<details ${legBuka ? "open" : ""} id="legDet"><summary class="lbl">Legenda <span>▾</span></summary><div class="lg-isi">
     ${S.mode === "riwayat" ? Riwayat.legenda() :
     T("wilayah") ? `<div class="lbl">Status ${NAMA_B[S.b]} per wilayah</div><div class="leg" style="margin:4px 0 8px">${[3, 2, 1].map(l => `<span><i class="sw" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>` : ""}
-    ${T("kejadian") && KejAktif.K?.length ? `<div class="lbl">Kejadian banjir aktif</div><div class="leg" style="margin:4px 0 8px">${[3, 2].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>` : ""}
+    ${T("wilayah") ? Gelembung.legenda() : ""}
+    ${T("kejadian") && KejAktif.K?.length ? `<div class="lbl">Wilayah Siaga (prakiraan)</div><div class="leg" style="margin:4px 0 8px">${[3, 2].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>${LEVEL[l]}</span>`).join("")}</div>` : ""}
     ${T("sungai") ? `<div class="lbl">Debit sungai (GloFAS)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#3f7fb8"></i>di bawah banjir 2 tahunan</span>${[1, 2, 3].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>≥ banjir ${[0, 2, 5, 20][l]} tahunan</span>`).join("")}</div>` : ""}
     ${T("rob") && S.rob ? `<div class="lbl">Pasang laut (rob)</div><div class="leg" style="margin:4px 0 8px"><span><b style="color:#2b8c86">▲</b> normal</span>${[1, 2, 3].map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> ${["", "≥ persentil 95", "≥ persentil 99", "di atas rekor"][l]}</span>`).join("")}</div>` : ""}
-    ${hj ? `<div class="lbl">${Peta.lihat("h3") && !Peta.lihat("hujan") ? "Hujan 3 hari puncak" : "Hujan harian"} (mm)</div><div class="legscale">${[3, 12, 35, 75, 125, 200].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
-      <div class="legnum">${(Peta.lihat("h3") && !Peta.lihat("hujan") ? [5, 25, 70, 150, 250, 400] : [1, 20, 50, 100, 150, 250]).map(v => `<span>${v}</span>`).join("")}</div>` : ""}${typeof Posko !== "undefined" ? Posko.legenda() : ""}</div></details>`;
-  LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
+    ${hj ? `<div class="lbl">${Peta.lihat("h3") && !Peta.lihat("hujan") ? "Hujan 3 hari puncak" : "Hujan harian"} (model Open-Meteo, mm)</div><div class="legscale">${[3, 12, 35, 75, 125, 200].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
+      <div class="legnum">${(Peta.lihat("h3") && !Peta.lihat("hujan") ? [5, 25, 70, 150, 250, 400] : [1, 20, 50, 100, 150, 250]).map(v => `<span>${v}</span>`).join("")}</div>` : ""}${PosUkur.legenda()}${Eksp.legenda()}${typeof LapisEkstra !== "undefined" ? LapisEkstra.legenda() : ""}${typeof Posko !== "undefined" ? Posko.legenda() : ""}</div></details>`;
+  LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o});
+  $("#legenda").querySelectorAll(".lg-g").forEach(g => { if (!g.querySelector(":scope > :not(.lbl)")) g.remove(); }); }   /* kelompok tanpa item (judul kosong) tidak dirender */
 
 /* Riwayat (mode peta) dan Tren ada di skrip kedua: lihat 'riwayat & tren' */
 /* ================================================================ popup analisa */
@@ -305,18 +327,48 @@ function grafikHujan(c) {
   return `<svg viewBox="0 -12 ${W} ${B + 22}" width="100%" role="img" aria-label="Hujan harian">${g}</svg>`; }
 /* hidrograf sungai: debit ansambel rata-rata dan maksimum vs Q2/Q5/Q20 */
 function grafikSungai(t) {
-  const hr = S.sungai.hari, W = 660, B = 140, ada = t.q2 != null, qMax = Math.max(...t.qmax.map(x => x || 0), ...t.q.map(x => x || 0)) || 1,
+  const hr = S.sungai.hari, n = hr.length, W = 400, T = 22, B = 168, L = 40, R = 6, ada = t.q2 != null, BIRU = "#3f7fb8",
+    qMax = Math.max(...t.qmax.map(x => x || 0), ...t.q.map(x => x || 0)) || 1,
     /* skala mengikuti debit; ambang yang jauh di atas cukup disebut, supaya kurva tidak gepeng di dasar */
-    m = ada && t.q2 <= qMax * 2.5 ? Math.max(qMax, t.q20 <= qMax * 2.5 ? t.q20 : t.q5 <= qMax * 2.5 ? t.q5 : t.q2) * 1.12 : qMax * 1.25, X = j => j / (hr.length - 1) * (W - 40) + 20, Y = v => B - v / m * 120;
-  /* label ambang di kiri-kanan bergantian supaya tidak bertumpuk */
-  let g = ada ? [[t.q2, 1], [t.q5, 2], [t.q20, 3]].filter(([q]) => q <= m).map(([q, l], i) => `<line x1="20" x2="${W - 20}" y1="${Y(q)}" y2="${Y(q)}" stroke="${WARNA_LV[l]}" stroke-dasharray="5 3"/><text x="${i % 2 ? 24 : W - 20}" y="${Y(q) - 4}" text-anchor="${i % 2 ? "start" : "end"}" font-size="10.5" font-weight="700" style="fill:${WARNA_LV[l]}">banjir ${[0, 2, 5, 20][l]} tahunan · ${fmt(Math.round(q))} m³/s</text>`).join("")
-    : `<text x="${W / 2}" y="14" text-anchor="middle" font-size="11" opacity=".7">Ambang banjir titik ini belum dihitung (diisi bertahap tiap hari)</text>`;
-  if (ada && t.q2 > m) g += `<text x="${W / 2}" y="2" text-anchor="middle" font-size="11" font-weight="700" style="fill:${WARNA_LV[1]}">Ambang banjir 2 tahunan ${fmt(Math.round(t.q2))} m³/s jauh di atas debit saat ini (${Math.round(qMax / t.q2 * 100)}%)</text>`;
-  g += [0, .5, 1].map(f => `<text x="16" y="${Y(m * f) + 4}" text-anchor="end" font-size="9.5" opacity=".55">${rb(m * f)}</text>`).join("");
-  g += `<path d="${t.qmax.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")} ${t.q.map((v, j) => "L" + X(hr.length - 1 - j) + "," + Y(t.q[hr.length - 1 - j] || 0)).join("")}Z" fill="#3f7fb8" opacity=".15"/>`;
-  g += `<path d="${t.q.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")}" fill="none" stroke="#3f7fb8" stroke-width="2.5"/>`;
-  g += t.q.map((v, j) => `<circle cx="${X(j)}" cy="${Y(v || 0)}" r="3.5" fill="#3f7fb8" data-tip="<b>${tglPendek(hr[j])}</b><br>debit ${fmt(Math.round(v))} m³/s (maks ansambel ${fmt(Math.round(t.qmax[j]))})"/><text x="${X(j)}" y="${B + 14}" text-anchor="middle" font-size="10" opacity=".65">${hr[j].slice(8)}/${hr[j].slice(5, 7)}</text>`).join("");
-  return `<svg viewBox="0 -8 ${W} ${B + 22}" width="100%" role="img" aria-label="Debit sungai">${g}</svg>`; }
+    m = ada && t.q2 <= qMax * 2.5 ? Math.max(qMax, t.q20 <= qMax * 2.5 ? t.q20 : t.q5 <= qMax * 2.5 ? t.q5 : t.q2) * 1.12 : qMax * 1.25,
+    X = j => L + j / (n - 1) * (W - L - R), Y = v => B - (v || 0) / m * (B - T), gap = (W - L - R) / (n - 1),
+    kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10), iK = hr.indexOf(kini),
+    iP = t.q.reduce((b, v, j) => (v || 0) > (t.q[b] || 0) ? j : b, 0),
+    garis = a => a.map((v, j) => (j ? "L" : "M") + X(j).toFixed(1) + "," + Y(v).toFixed(1)).join("");
+  /* kisi dan sumbu: tiga garis tipis, angka di kiri, satuan di pojok */
+  let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${Y(m * f)}" y2="${Y(m * f)}" stroke="currentColor" opacity="${f ? .08 : .2}"/><text x="${L - 7}" y="${Y(m * f) + 3.5}" text-anchor="end" font-size="10" opacity=".55">${rb(m * f)}</text>`).join("")
+    + `<text x="${L - 7}" y="${T - 10}" text-anchor="end" font-size="9.5" font-weight="700" opacity=".55">m³/s</text>`;
+  /* pembatas hari ini: kiri teramati (redup), kanan prakiraan */
+  if (iK > 0) g += `<rect x="${L}" y="${T}" width="${X(iK) - L}" height="${B - T}" fill="currentColor" opacity=".035"/><line x1="${X(iK)}" x2="${X(iK)}" y1="${T}" y2="${B}" stroke="currentColor" stroke-dasharray="2 3" opacity=".35"/>`
+    + `<text x="${X(iK) - 6}" y="${T + 11}" text-anchor="end" font-size="9.5" font-weight="700" opacity=".5">TERAMATI</text><text x="${X(iK) + 6}" y="${T + 11}" font-size="9.5" font-weight="700" opacity=".5">PRAKIRAAN</text>`;
+  /* ambang: garis putus berwarna level, label pil di kanan */
+  if (ada) g += [[t.q2, 1], [t.q5, 2], [t.q20, 3]].filter(([q]) => q <= m).map(([q, l]) => { const lb = `Banjir ${[0, 2, 5, 20][l]} tahunan ${fmt(Math.round(q))}`, w = lb.length * 5.6 + 14;
+    return `<line x1="${L}" x2="${W - R}" y1="${Y(q)}" y2="${Y(q)}" stroke="${WARNA_LV[l]}" stroke-width="1.4" stroke-dasharray="6 4"/><rect x="${W - R - w}" y="${Y(q) - 9}" width="${w}" height="18" rx="9" fill="${WARNA_LV[l]}"/><text x="${W - R - w / 2}" y="${Y(q) + 3.5}" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">${lb}</text>`; }).join("");
+  else g += `<text x="${(L + W - R) / 2}" y="${T + 26}" text-anchor="middle" font-size="11" opacity=".7">Ambang banjir titik ini belum dihitung (diisi bertahap tiap hari)</text>`;
+  if (ada && t.q2 > m) g += `<text x="${(L + W - R) / 2}" y="${T + 26}" text-anchor="middle" font-size="11" font-weight="700" style="fill:${WARNA_LV[1]}">Debit tertinggi ${Math.round(qMax / t.q2 * 100)}% dari ambang banjir 2 tahunan (${fmt(Math.round(t.q2))} m³/s)</text>`;
+  /* pita ansambel sampai maksimum, luasan debit rata-rata bergradasi, garis utama */
+  g += `<defs><linearGradient id="hgIsi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${BIRU}" stop-opacity=".32"/><stop offset="1" stop-color="${BIRU}" stop-opacity="0"/></linearGradient></defs>`
+    + `<path d="${garis(t.qmax)}${t.q.map((_, j) => "L" + X(n - 1 - j).toFixed(1) + "," + Y(t.q[n - 1 - j]).toFixed(1)).join("")}Z" fill="${BIRU}" opacity=".14"/>`
+    + `<path d="${garis(t.q)}L${X(n - 1)},${B}L${X(0)},${B}Z" fill="url(#hgIsi)"/>`
+    + `<path d="${garis(t.q)}" fill="none" stroke="${BIRU}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+  /* puncak: pil angka di atas titik tertinggi */
+  const lp = `${fmt(Math.round(t.q[iP] || 0))} m³/s`, wp = lp.length * 6 + 14, xp = Math.min(Math.max(X(iP), L + wp / 2), W - R - wp / 2);
+  g += `<rect x="${xp - wp / 2}" y="${Y(t.q[iP]) - 27}" width="${wp}" height="18" rx="9" fill="${BIRU}"/><text x="${xp}" y="${Y(t.q[iP]) - 14.5}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff">${lp}</text>`;
+  /* kolom sorot per hari: seluruh tinggi kolom jadi sasaran, garis bantu dan titik membesar saat disorot */
+  g += t.q.map((v, j) => { const pq = ada && t.q2 ? `<br>${Math.round((v || 0) / t.q2 * 100)}% dari banjir 2 tahunan` : "";
+    return `<g class="hg-k" data-tip="<b>${tglPendek(hr[j])}</b>${j < iK ? ", teramati" : iK >= 0 ? ", prakiraan" : ""}<br>Debit ${fmt(Math.round(v || 0))} m³/s<br>Maks ansambel ${fmt(Math.round(t.qmax[j] || 0))} m³/s${pq}">`
+      + `<rect x="${X(j) - gap / 2}" y="${T}" width="${gap}" height="${B - T + 20}" fill="transparent"/><line class="hg-p" x1="${X(j)}" x2="${X(j)}" y1="${T}" y2="${B}" stroke="${BIRU}" stroke-width="1"/>`
+      + `<circle class="hg-t" cx="${X(j)}" cy="${Y(v)}" r="${j === iK ? 5 : 3.5}" fill="${j === iK ? "#fff" : BIRU}" stroke="${BIRU}" stroke-width="2"/>`
+      + `<text x="${X(j)}" y="${B + 15}" text-anchor="middle" font-size="10" opacity="${j === iK ? 1 : .6}" font-weight="${j === iK ? 800 : 500}">${j === iK ? "Hari ini" : hr[j].slice(8) + "/" + hr[j].slice(5, 7)}</text></g>`; }).join("");
+  return `<svg class="hg" viewBox="0 0 ${W} ${B + 24}" width="100%" role="img" aria-label="Debit sungai 10 hari">${g}</svg>`; }
+/* tabel indeks bahaya InaRISK: ikon jenis + nama | indeks 0-1 rata kanan | pil kelas berikon */
+const IK_BHY = {banjir: "M12 3s6 6.5 6 11a6 6 0 0 1-12 0c0-4.5 6-11 6-11z", bandang: "M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 14c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2", longsor: "M3 19 10 6l4 7 3-4 4 10z",
+  kering: "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8zM12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M5 19l2-2M17 7l2-2", gelombang: "M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M7 6c1.5-2 3-2 4.5 0"};
+const kelasBhy = v => v >= .66 ? ["Tinggi", "Siaga 1", WARNA_LV[3]] : v >= .33 ? ["Sedang", "Tanpa batas", WARNA_LV[2]] : ["Rendah", "Normal", "#3f9a6a"];
+function tabelBahaya(bh) {
+  const baris = [["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"], ["kering", "Kekeringan"], ["gelombang", "Gelombang ekstrem & abrasi"]].filter(([k]) => bh[k] != null).map(([k, n]) => { const [kl, ik, w] = kelasBhy(bh[k]);
+    return `<tr><td><span style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IK_BHY[k]}"/></svg>${n}</span></td><td class="n" style="font-variant-numeric:tabular-nums">${bh[k].toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td style="text-align:center"><span class="pill pa-pil" style="background:${w};color:#fff">${PosAir.ikonPil(ik)}${kl}</span></td></tr>`; }).join("");
+  return `<table class="tb3"><thead><tr><th>Bahaya</th><th>Indeks</th><th>Kelas</th></tr></thead><tbody>${baris}</tbody></table>`; }
 const Analisa = {
   /* laci rincian di kanan (seperti Laci karhutla); di tab lain jatuh ke dialog tengah. kepala = lambang + <div><h3>nama</h3><p>jenis · induk</p></div> */
   buka(html, kepala) {
@@ -324,13 +376,13 @@ const Analisa = {
     if (!diPeta || !el) { const d = $("#dlg"); d.innerHTML = `<div class="dh">${kepala}<button aria-label="Tutup" data-tutup>×</button></div><div class="db">${html}</div>`;
       d.querySelector("[data-tutup]").onclick = () => d.close(); d.onclick = e => this.klik(e, () => d.close()); d.showModal(); return; }
     const m = kepala.match(/^(.*?)<div><h3[^>]*>(.*?)<\/h3><p>(.*?)<\/p><\/div>$/s) || [0, "", kepala, ""], [ey, ...sisa] = m[3].split(" · ");
-    el.innerHTML = `<div class="hd">${m[1]}<div class="hd-isi"><span class="hd-ey">${ey || "Rincian"}</span><h2 id="dlgJudul" title="${m[2].replace(/<[^>]+>/g, "")}">${m[2]}</h2>${sisa.length ? `<div class="hd-meta"><span>${sisa.join(" · ")}</span></div>` : ""}</div>
+    el.innerHTML = `<div class="hd">${m[1]}<div class="hd-isi"><span class="hd-ey">${ey || "Rincian"}</span><h2 id="dlgJudul" title="${m[2].replace(/<[^>]+>/g, "")}">${m[2]}</h2>${sisa.length ? `<div class="hd-meta"><span>${sisa.join(", ")}</span></div>` : ""}</div>
       <div class="hd-aksi"><button class="tutup ik-btn" aria-label="Tutup" title="Tutup"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div></div>
       <div class="bd" style="display:grid;gap:10px">${html}</div>`;
     if (el._tarik) el.appendChild(el._tarik);
     el.classList.add("on"); el.querySelector(".tutup").onclick = () => el.classList.remove("on");
     el.onclick = e => this.klik(e); },
-  klik(e, sebelum) { const s = e.target.closest("[data-sg]"); if (s) { sebelum?.(); return this.sungai(+s.dataset.sg); } const w = e.target.closest("[data-wil]"); if (w) { sebelum?.(); return this.wilayah(w.dataset.wil); } },
+  klik(e, sebelum) { if (e.target.closest("[data-semua]")) return PosUkur.provinsi(); const ps = e.target.closest("[data-pos]"); if (ps) { sebelum?.(); return PosUkur.buka(ps.dataset.pos, true, !!PosUkur._prov); } const s = e.target.closest("[data-sg]"); if (s) { sebelum?.(); return this.sungai(+s.dataset.sg); } const w = e.target.closest("[data-wil]"); if (w) { sebelum?.(); return this.wilayah(w.dataset.wil); } },
   wilayah(kunci) {
     const p = kunci.split("|"), jenis = ["prov", "kab", "kec"][p.length - 1], f = S.fiturWil?.find(x => x.properties.kunci === kunci);
     const [lat, lon] = f ? pusat(kunci) : [0, 0], c = selDekat(lat, lon), v = S.st.kec[kunci], ag = agregat(S.b, 0);
@@ -341,13 +393,13 @@ const Analisa = {
     const thR = riw ? Object.keys(riw).sort() : [], mR = Math.max(1, ...thR.map(t => riw[t].kejadian || 0));
     const nama = jenis === "prov" ? namaProv(p[0]) : p.at(-1), sub = {prov: "Provinsi", kab: "Kabupaten/kota · " + namaProv(p[0]), kec: "Kecamatan · " + p[1] + " · " + namaProv(p[0])}[jenis];
     const kepala = `${jenis === "prov" ? lambang(p[0]) : lambang(p[0], p[1])}<div><h3 id="dlgJudul">${esc(nama)}</h3><p>${esc(sub)}</p></div>`;
-    const isi = `<div class="grid g4">${S.st.hari.map((t, h) => kot(h ? tglPendek(t) : "Hari ini", `<span style="color:${WARNA_LV[lvH(h)]}">${LEVEL[lvH(h)]}</span>`, NAMA_B[S.b])).join("")}</div>
+    const isi = `<div class="grid g4 pa-4">${S.st.hari.map((t, h) => kot(h ? tglPendek(t) : "Hari ini", `<span style="color:${WARNA_LV[lvH(h)]}">${LEVEL[lvH(h)]}</span>`, NAMA_B[S.b])).join("")}</div>
       ${jenis === "kec" && Pra72.d ? lipat("Prakiraan 3 hari dan peluang", Pra72.isi(kunci)) + (Pra72.rob(kunci) ? lipat("Rob (status terpisah)", Pra72.rob(kunci), false) : "") : ""}
-      ${jenis !== "kec" && ag[kunci] ? `<p class="fnd">Hari ini: ${[3, 2, 1].map(l => `${fmt(ag[kunci].n[l])} kecamatan ${LEVEL[l].toLowerCase()}`).join(" · ")}.</p>` : ""}
-      ${c ? lipat("Hujan 10 hari · 3 hari teramati + 7 hari prakiraan", `${grafikHujan(c)}<div class="grid g4">${kot("Puncak 3 hari", fmt(Math.round(c.h3)) + " mm", kelasHujan(c.h3 / 3) + " rata-rata")}${kot("Hujan 7 hari lalu", fmt(Math.round(c.a7)) + " mm", c.a7 >= 150 ? "tanah jenuh" : c.a7 >= 70 ? "tanah basah" : "tanah relatif kering")}${kot("Hari hujan lebat", fmt(c.h.filter((x, j) => j >= S.hujan.hari.indexOf(S.hujan.hari_ini) && x >= 50).length), "≥ 50 mm, 7 hari")}${kot("Hembusan maks", fmt(Math.round(Math.max(...(c.g || [0])))) + " km/jam", "7 hari")}</div>
+      ${jenis !== "kec" && ag[kunci] ? `<p class="fnd">Hari ini: ${[3, 2, 1].map(l => `${fmt(ag[kunci].n[l])} kecamatan ${LEVEL[l].toLowerCase()}`).join(", ")}.</p>` : ""}
+      ${c ? lipat("Hujan 10 hari: 3 hari teramati dan 7 hari prakiraan", `${grafikHujan(c)}<div class="grid g4">${kot("Puncak 3 hari", fmt(Math.round(c.h3)) + " mm", kelasHujan(c.h3 / 3) + " rata-rata")}${kot("Hujan 7 hari lalu", fmt(Math.round(c.a7)) + " mm", c.a7 >= 150 ? "tanah jenuh" : c.a7 >= 70 ? "tanah basah" : "tanah relatif kering")}${kot("Hari hujan lebat", fmt(c.h.filter((x, j) => j >= S.hujan.hari.indexOf(S.hujan.hari_ini) && x >= 50).length), "≥ 50 mm, 7 hari")}${kot("Hembusan maks", fmt(Math.round(Math.max(...(c.g || [0])))) + " km/jam", "7 hari")}</div>
         <p class="fnd">Sel 0,25° terdekat (${f2(c.lat)}, ${f2(c.lon)}). Garis putus = 50 mm (lebat) dan 100 mm (sangat lebat), skala BMKG.</p>`) : ""}
       ${sg.length ? lipat("Sungai terdekat (GloFAS)", `<table class="tb3"><thead><tr><th>Titik sungai</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Jarak</th><th class="n">Status</th></tr></thead><tbody>${sg.map(t => `<tr data-sg="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b><small>${esc(t.kab)}</small></td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.d))} km</td><td class="n">${pill(t.kelas)}</td></tr>`).join("")}</tbody></table><p class="fnd">Klik baris untuk hidrograf. Q2 = debit banjir 2 tahunan dari data 1997–2025.</p>`) : ""}
-      ${bh ? lipat("Indeks bahaya InaRISK (0–1)", `<table class="tb2"><tbody>${[["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"], ["kering", "Kekeringan"], ["gelombang", "Gelombang ekstrem & abrasi"]].filter(([k]) => bh[k] != null).map(([k, n]) => `<tr><td>${n}</td><td class="n">${fmt(Math.round(bh[k] * 100) / 100)} · ${bh[k] >= .66 ? "tinggi" : bh[k] >= .33 ? "sedang" : "rendah"}</td></tr>`).join("")}</tbody></table><p class="fnd">Sampel raster InaRISK BNPB di titik tengah kecamatan.</p>`) : ""}
+      ${bh ? lipat(`<span title="Sampel raster InaRISK BNPB di titik tengah kecamatan.">Indeks bahaya InaRISK (0–1)</span>`, tabelBahaya(bh)) : ""}
       ${thR.length ? lipat(`Kejadian ${NAMA_B[S.b]} tercatat BNPB`, `<svg viewBox="0 0 ${thR.length * 26} 90" width="100%" role="img" aria-label="Kejadian per tahun">${thR.map((t, j) => { const n = riw[t].kejadian || 0, h = n / mR * 64;
           return `<rect x="${j * 26 + 3}" y="${72 - h}" width="20" height="${Math.max(1, h)}" rx="3" fill="#3f7fb8" data-tip="<b>${t}</b><br>${fmt(n)} kejadian${riw[t].meninggal != null ? `<br>${fmt(riw[t].meninggal)} meninggal · ${rb(riw[t].terdampak || 0)} terdampak` : ""}"/><text x="${j * 26 + 13}" y="${68 - h}" text-anchor="middle" font-size="9.5">${n || ""}</text><text x="${j * 26 + 13}" y="86" text-anchor="middle" font-size="9" opacity=".6">${t.slice(2)}</text>`; }).join("")}</svg>
         <p class="fnd">Total ${fmt(thR.reduce((a, t) => a + (riw[t].kejadian || 0), 0))} kejadian, ${thR[0]}–${thR.at(-1)}. Sumber: BNPB (data.bnpb.go.id).</p>`, false) : ""}
@@ -356,10 +408,9 @@ const Analisa = {
     this.buka(isi, kepala); },
   sungai(i) {
     const t = S.sungai.titik[i]; if (!t) return;
-    const isi = `<div class="grid g4">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + " m³/s", "rata-rata ansambel")}${kot("Q2", t.q2 ? fmt(Math.round(t.q2)) : "–", "m³/s · banjir 2 tahunan")}${kot("Puncak ÷ Q2", t.q2 ? f2(t.puncak / t.q2) + "×" : "–", !t.q2 ? "ambang belum ada" : t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
-      ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS; pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari debit maksimum tiap tahun 1997–2025 (distribusi Gumbel). Angka kiri = m³/s.</p>`)}
-      <p class="fnd">GloFAS memodelkan sungai besar pada kisi ± 5 km; sungai kecil dan banjir lokal (drainase kota, rob) tidak tertangkap. Koordinat ${f3(t.lat)}, ${f3(t.lon)}.</p>`;
-    this.buka(isi, `<div><h3 id="dlgJudul">Sungai di ${esc(t.kec)}</h3><p>${esc(t.kab)} · ${esc(namaProv(t.prov))}</p></div>`); },
+    const isi = `<div class="grid g4 satu">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + '<i class="sat">m³/s</i>', "rata-rata ansambel")}${kot("Q2", t.q2 ? fmt(Math.round(t.q2)) + '<i class="sat">m³/s</i>' : "–", "banjir 2 tahunan")}${kot("Puncak ÷ Q2", t.q2 ? f2(t.puncak / t.q2) + "×" : "–", !t.q2 ? "ambang belum ada" : t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
+      ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS, pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari debit maksimum tiap tahun 1997–2025 (distribusi Gumbel). Sorot grafik untuk angka tiap hari.</p>`)}`;
+    this.buka(isi, `<div><h3 id="dlgJudul">Sungai di ${esc(t.kec)}</h3><p>${esc(t.kab)}, ${esc(namaProv(t.prov))}</p></div>`); },
 };
 
 /* ================================================================ prakiraan per provinsi */
@@ -368,7 +419,7 @@ const Prakiraan = {
     const pv = Object.keys(S.meta.provinsi).sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
     const baris = pv.map(k => { const lv = S.st.hari.map((_, h) => agregat(S.b, h)[k]); const sel = S.hujan.grid.filter(g => g.prov === k);
       return {k, lv, h3: Math.max(0, ...sel.map(g => g.h3 || 0)), n: lv[0]?.n || [0, 0, 0, 0], skor: Math.max(...lv.map(a => a?.lv || 0)) * 1e6 + (lv[0]?.n[3] || 0) * 1e3 + (lv[0]?.n[2] || 0)}; }).sort((a, b) => b.skor - a.skor || b.h3 - a.h3);
-    $("#prakiraan").innerHTML = `<div class="head"><div><h2>Prakiraan ${NAMA_B[S.b]} 4 hari · 38 provinsi</h2><p>Status tertinggi kecamatan di tiap provinsi per hari.</p></div>
+    $("#prakiraan").innerHTML = `<div class="head"><div><h2>Prakiraan ${NAMA_B[S.b]} 4 hari, 38 provinsi</h2><p>Status tertinggi kecamatan di tiap provinsi per hari.</p></div>
       <div class="seg" id="pkB">${[["b", "Banjir"], ["l", "Longsor"]].map(([v, n]) => `<button data-b="${v}" aria-pressed="${S.b === v}">${n}</button>`).join("")}</div></div>
       <div class="tw"><table><thead><tr><th>Provinsi</th>${S.st.hari.map((t, h) => `<th>${h ? tglPendek(t) : "Hari ini"}</th>`).join("")}<th class="n">Awas hari ini</th><th class="n">Siaga hari ini</th><th class="n">Hujan 3 hari maks</th></tr></thead><tbody>
       ${baris.map(r => `<tr data-k="${r.k}" style="cursor:pointer"><td><b>${esc(namaProv(r.k))}</b></td>${r.lv.map(a => `<td>${a ? pill(a.lv) : `<span style="color:var(--ink2);font-size:12px">Normal</span>`}</td>`).join("")}
@@ -470,7 +521,7 @@ const Riwayat = {
     else peta.getSource("riw-lbl").setData(data);
     if (!this._ev) { this._ev = true; const tip = $("#tip"), taruh = e => { tip.classList.add("on"); tip.style.left = Math.min(innerWidth - tip.offsetWidth - 8, e.originalEvent.clientX + 14) + "px"; tip.style.top = Math.max(8, e.originalEvent.clientY - tip.offsetHeight - 12) + "px"; };
       peta.on("mousemove", "riw-bubble", e => { const p = e.features[0].properties; peta.getCanvas().style.cursor = "pointer"; this._diGelembung = true;
-        tip.innerHTML = `<b>${esc(p.nama)}</b><br>Skor risiko <b>${p.s}</b> · ${esc(p.kelas)}<br>${p.kec ? "Riwayat Kab. " + esc(p.kec) + ": " : ""}berkejadian ${p.tahun} dari ${p.th} tahun<br>${fmt(p.total)} kejadian ${NAMA_J[this.jenisPeta()]} · puncak ${esc(p.puncak)}<br><small>klik untuk analisa</small>`; taruh(e); });
+        tip.innerHTML = `<b>${esc(p.nama)}</b><br>Skor risiko <b>${p.s}</b>, ${esc(p.kelas)}<br>${p.kec ? "Riwayat Kab. " + esc(p.kec) + ": " : ""}berkejadian ${p.tahun} dari ${p.th} tahun<br>${fmt(p.total)} kejadian ${NAMA_J[this.jenisPeta()]} · puncak ${esc(p.puncak)}<br><small>klik untuk analisa</small>`; taruh(e); });
       peta.on("mouseleave", "riw-bubble", () => { this._diGelembung = false; peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); });
       /* angka sel di bawah kursor */
       peta.on("mousemove", e => { if (S.mode !== "riwayat" || this._diGelembung) return; const G = this.grid[this.jenisPeta()], d = this.baca(e.lngLat.lng, e.lngLat.lat); if (!d) return;
@@ -482,8 +533,8 @@ const Riwayat = {
   daftar() {
     const j = this.jenisPeta(), J = this.R.jenis[j], n = J.tahun_cakup.length, pv = S.jalur[0], o = pv && this.R.musim[j]?.[pv], g = "grid-template-columns:20px minmax(0,1fr) 40px 52px 96px";
     const item = [...new Set((S.fiturWil || []).map(f => f.properties.kunci))].map(k => this.rec(k, j) || {kunci: k, nama: S.fiturWil.find(f => f.properties.kunci === k).properties.nama, skor: -1}).sort((a, b) => b.skor - a.skor);
-    const musim = o ? `<div style="padding:10px 10px 4px;font-size:12.5px"><div class="lbl">Periode rawan ${NAMA_J[j]} · ${esc(namaProv(pv))}</div>
-      <div>Tahun La Niña <b>${Tren.siaga(o.p_la_nina)}</b> · tahun biasa <b>${Tren.siaga(o.p_biasa)}</b> · puncak <b>${DAS(o.puncak)}</b></div></div>` : "";
+    const musim = o ? `<div style="padding:10px 10px 4px;font-size:12.5px"><div class="lbl">Periode rawan ${NAMA_J[j]}, ${esc(namaProv(pv))}</div>
+      <div>Tahun La Niña <b>${Tren.siaga(o.p_la_nina)}</b>, tahun biasa <b>${Tren.siaga(o.p_biasa)}</b>, puncak <b>${DAS(o.puncak)}</b></div></div>` : "";
     $("#rows").innerHTML = musim + `<div class="tb kepala" style="${g}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][Math.min(S.jalur.length, 2)]}</span><span class="n">Skor</span><span class="n">Tahun</span><span style="text-align:right">Risiko</span></div>`
       + (item.map((r, i) => `<button class="tb" data-riw="${esc(r.kunci)}" style="${g}" title="${r.skor >= 0 ? `Berkejadian ${r.tahun} dari ${n} tahun, ${fmt(r.total)} kejadian ${J.tahun_cakup[0]}–${J.tahun_cakup.at(-1)}${r.tingkat === "kec" ? " (riwayat kab/kota)" : ""}` : "Belum ada kejadian tercatat"}">
         <span class="rk">${i + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span class="n" style="font-weight:700">${r.skor >= 0 ? r.skor : "–"}</span>

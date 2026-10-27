@@ -53,3 +53,4 @@ Vonis: `bersih` bila ketiga pertama kosong dan tidak ada lonjakan ukuran; `temua
 
 - 2026-10-15 · Ilmu awal diisi dari kode dan riwayat git (`b6f645f`, `3b90271`), `.gitignore`, `du`, `public/.assetsignore`. Dicatat: `.env 2` pernah terlacak dengan `FIRMS_MAP_KEY` tidak kosong (nilai tidak dicetak) dan masih di riwayat sehingga kunci harus dirotasi; `.gitignore` kini menolak `* 2`, `* 2.*`, `.env*`.
 - 2026-10-22 · Pohon kerja bersih tidak berarti aman untuk commit besar: sapuan gas sudah memasukkan laporan_konsesi dan sawit_retro ke HEAD. Cek 'git log -- <berkas>' untuk konfirmasi, bukan hanya git status.
+- 2026-10-27 · Salinan ' 2' dicari di disk dengan find -name '* 2*' menjaring nama sah (docs/deck-bnpb 'Sumatera 271026', 'Konsesi Terbakar 2026'): false positive. Pakai find -name '* 2' -o -name '* 2.*' atau git ls-files | grep -E ' 2(\.|$)'. Di zsh, $(cat daftar) ke git diff tidak dipecah: diff kosong tanpa galat; pakai '< daftar xargs git diff --'.

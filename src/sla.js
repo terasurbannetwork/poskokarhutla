@@ -19,11 +19,12 @@ import {dummySla} from "./sla_dummy.js";
 import {stafOK, stafSesi, dariStaf} from "./staf.js";
 import {SEMUA_PERAN} from "./admin_halaman.js";
 import {superOK} from "./posko.js";
-import {tenggat, PROV} from "./instansi.js";
+import {tenggat, PROV, tahanSejak, TAHAN_BUKAN_API} from "./instansi.js";
 import {labelBencana, bencanaId} from "./tugas_bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, TARGET = {tugas_konfirmasi: 360, konfirmasi_kabar: 1440};   // = TENGGAT_KONFIRMASI / TENGGAT_KABAR di instansi.js
-const NAMA = {titik: "Titik panas", berita: "Berita", dampak: "Dampak", himawari: "Himawari-9", jeda_satelit: "Jeda satelit lewat sampai data terbit"};
+const NAMA = {titik: "Titik panas", berita: "Berita", dampak: "Dampak", himawari: "Himawari-9", jeda_satelit: "Jeda satelit lewat sampai data terbit",
+  jeda_sensor_M: "Jeda sensor MODIS (M) sampai putaran titik", jeda_sensor_N: "Jeda sensor S-NPP (N) sampai putaran titik", jeda_sensor_N20: "Jeda sensor NOAA-20 (N20) sampai putaran titik", jeda_sensor_N21: "Jeda sensor NOAA-21 (N21) sampai putaran titik"};
 /* urutan tahap; pasangan berurutan = tahap yang diukur */
 export const TAHAP = [["deteksi", "tugas"], ["tugas", "konfirmasi"], ["konfirmasi", "kabar"], ["konfirmasi", "tiba"], ["tiba", "padam"], ["padam", "terverifikasi"]];
 const kunciTahap = ([d, k]) => d === "deteksi" ? "deteksi_tugas" : `${d}_${k}`;
@@ -38,7 +39,10 @@ const bulat = x => x == null ? null : Math.round(x);
 
 /* ---------------- riwayat status (cron) ---------------- */
 export async function catatRiwayatStatus(env, hasil, kini = Date.now()) {
-  const slot = Math.floor(kini / JAM), st = Object.entries(hasil.sumber || {}).map(([nama, s]) =>
+  /* jeda_sensor = {M|N|N20|N21: {terakhir, umur_jam}} (bersarang): satu baris per sensor bernama jeda_sensor_<kode>; sensor tanpa umur (hilang, atau N sesudah berhenti 1 Nov 2026) tidak ditulis, seperti jeda_satelit yang tak ada */
+  const masuk = Object.entries(hasil.sumber || {}).flatMap(([nama, s]) => nama === "jeda_sensor"
+    ? Object.entries(s || {}).filter(([, v]) => v?.umur_jam != null).map(([k, v]) => [`jeda_sensor_${k}`, v]) : [[nama, s]]);
+  const slot = Math.floor(kini / JAM), st = masuk.map(([nama, s]) =>
     env.DB.prepare("INSERT OR REPLACE INTO status_riwayat (slot, sumber, umur_menit, batas_menit, segar) VALUES (?, ?, ?, ?, ?)")
       .bind(slot, nama.slice(0, 40), s.umur_jam == null ? null : Math.round(s.umur_jam * 60), s.ambang_jam == null ? null : Math.round(s.ambang_jam * 60), (hasil.basi || []).includes(nama) ? 0 : 1));   // periksaStatus membuang `basi` per sumber; daftarnya di hasil.basi
   if (!st.length) return {lewat: "tanpa sumber"};
@@ -204,6 +208,8 @@ export async function hitungSla(env, kini, {hari = 30, prov, kab, provs, dummy =
   catatan.push("Tahap tanpa isian dihitung tidak ada data, bukan nol.");
   const perkiraan = baris.filter(t => waktuTahap(t).perkiraan).length;
   if (perkiraan) catatan.push(`${perkiraan} dari ${baris.length} tugas memakai waktu pembuatan sebagai perkiraan deteksi dan tidak ikut statistik deteksi.`);
+  const sejak = await tahanSejak(env, kini);
+  if (sejak) catatan.push(`Sejak ${sejak.teks}, bukan api dengan alasan tidak ada bekas atau bekas lama hanya menahan tugas baru ${TAHAN_BUKAN_API.alasanSesaatHari} hari (dulu ${TAHAN_BUKAN_API.lamaHari} hari): titik yang muncul lagi di lokasi itu bisa menjadi tugas baru, jadi persentase bukan api dan keterlambatan tidak sebanding langsung dengan masa sebelumnya.`);
   /* tren harian: kesegaran dari riwayat, median deteksi->tugas dari tugas yang dibuat hari itu */
   const tugasHari = new Map();
   for (const t of baris) { const d = durasiTahap(t).deteksi_tugas; if (d != null) { const h = WIB(t.dibuat); (tugasHari.get(h) || tugasHari.set(h, []).get(h)).push(d); } }

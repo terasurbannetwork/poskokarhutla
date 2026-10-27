@@ -71,5 +71,16 @@
     rincian(j.pertanyaan);
     const c = $("ujCatatan"); for (const teks of j.catatan || []) if (!Array.from(c.children).some(li => li.textContent === teks)) c.append(el("li", "", teks));
   }
-  muat();
+  /* uji banjir: GET /api/uji-lapangan/banjir (agregat; sel < 5 datang null = ditahan) */
+  async function muatBanjir() {
+    let r; try { r = await fetch("/api/uji-lapangan/banjir", {headers: {accept: "application/json"}}); } catch (e) { return; }
+    if (!r.ok) return;
+    const j = await r.json().catch(() => null); if (!j?.genangan) return;
+    const k = el("div", "uj-kartu"), tahan = x => x == null ? "<5" : angka(x, 0);
+    k.append(el("b", "", "Uji lapangan banjir"));
+    k.append(el("p", "", `Genangan ditemukan petugas: ${tahan(j.genangan.n)}${j.genangan.tinggi_median_cm == null ? "" : `, tinggi tengah ${angka(j.genangan.tinggi_median_cm, 0)} cm`}. Lokasi Aman yang dicek tanpa genangan (kontrol): ${tahan(j.kontrol.n)}.`));
+    k.append(el("p", "", "Status peta saat pengamatan: " + j.genangan.per_status.map(x => `${x.status} ${tahan(x.n)}`).join(", ") + ". Genangan di lokasi berstatus Aman berarti banjir yang terlewat peta."));
+    $("ujRincian").append(k);
+  }
+  muat().then(muatBanjir);
 })();

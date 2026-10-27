@@ -222,3 +222,15 @@ test("kisi DEM: sudut dan sel saling balik", () => {
   const [lo, la] = SG.dariSel(K, 10, 20), [i2, j2] = SG.keSel(K, lo, la); assert.ok(Math.abs(i2 - 10) < 1e-6 && Math.abs(j2 - 20) < 1e-6);
   const d = Math.abs(K.sudut[1][0] - K.sudut[0][0]) * 111320 * Math.cos(6.2 * Math.PI / 180); assert.ok(Math.abs(d - 6000) / 6000 < .01, `lebar ${d} m`);
 });
+
+test("drainase kd per sel: neraca tetap tertutup, volume drainase per sel = jumlah neraca, kd 0 = perilaku lama", () => {
+  const nx = 16, ny = 12, z = new Float64Array(nx * ny).map((_, k) => (k % nx) * .05 + ((k / nx) | 0) * .02), J = 6, N = nx * ny;
+  const kd = new Float64Array(N).fill(8); for (let k = 0; k < N; k++) if (k % nx > 8) kd[k] = 0;
+  const cfg = {nx, ny, dx: 30, z, jam: J, hujan: jam(J, t => t < 3 ? 30 : 0)};
+  const a = SG.jalankan({...cfg, kd}), b = SG.jalankan(cfg), c = SG.jalankan({...cfg, kd: new Float64Array(N)});
+  assert.ok(a.neraca.drain > 0 && a.neraca.galat < .01, JSON.stringify(a.neraca));
+  assert.ok(Math.abs(a.drainSel.reduce((s, v) => s + v, 0) - a.neraca.drain) < 1e-6 * a.neraca.drain);
+  for (let k = 0; k < N; k++) if (k % nx > 8) assert.equal(a.drainSel[k], 0);
+  assert.deepEqual(Array.from(c.kedalaman), Array.from(b.kedalaman));
+  assert.throws(() => SG.jalankan({...cfg, kd: new Float64Array(N - 1)}), /kd/);
+});

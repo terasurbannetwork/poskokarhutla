@@ -34,7 +34,7 @@
   const diProvApi = x => { const t = (x.headline || "") + " " + (x.wilayah || ""), P = provApi(); return [...P].some(k => t.includes(namaProv(k))); };
   const relevan = x => HAL !== "karhutla" || R_API.test(x.event + " " + (x.headline || "")) || (/hujan/i.test(x.event) && diProvApi(x));
   const hujanBaik = x => HAL === "karhutla" && /hujan/i.test(x.event) && !R_API.test(x.event);
-  const GEL = [["ekstrem", "ekstrem (> 6 m)", W.tua], ["sangat_tinggi", "sangat tinggi (4–6 m)", W.merah], ["tinggi", "tinggi (2,5–4 m)", W.oranye]];
+  const GEL = [["ekstrem", "ekstrem (> 6 m)", W.tua], ["sangat_tinggi", "sangat tinggi (4 sampai 6 m)", W.merah], ["tinggi", "tinggi (2,5 sampai 4 m)", W.oranye]];
   const geoBMKG = d => ({type: "FeatureCollection", features: d.nowcast.filter(x => x.polygon && relevan(x)).flatMap(x => x.polygon.map(r => ({type: "Feature",
     geometry: {type: "Polygon", coordinates: [r]}, properties: {id: x.id, a: aktif(x) ? 1 : 0, w: (SEV[x.severity] || SEV.Minor)[0]}})))});
   async function pasangBMKG() {
@@ -50,20 +50,42 @@
     peta.on("mouseleave", "db-bmkg-fill", () => pop.remove());
   }
   const kartuBMKG = x => `<b>${esc(x.headline || x.event)}</b><br>${esc(x.wilayah)}<br><small>${aktif(x) ? "Berlaku sampai " + jam(x.selesai) : "Sudah berakhir " + jam(x.selesai)} · tingkat ${(SEV[x.severity] || ["", x.severity])[1].toLowerCase()}</small>`;
-  /* pita kecil di kolom alat peta: hanya muncul bila ada yang berlaku */
+  /* pita kecil di kolom alat peta: hanya muncul bila ada yang berlaku. Satu daftar kartu rapat, dikelompokkan per jenis. */
+  const IK = p => `<svg class="db-ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${p}</svg>`;
+  const JENIS = {
+    gelombang: ["Gelombang", IK('<path d="M2 8c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2M2 15c2.5 0 2.5 2 5 2s2.5-2 5-2 2.5 2 5 2 2.5-2 5-2"/>')],
+    hujan: ["Hujan lebat", IK('<path d="M7 16a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 9a3.5 3.5 0 0 1 0 7M8 19v2M12 19v2M16 19v2"/>')],
+    angin: ["Angin kencang", IK('<path d="M3 8h10a3 3 0 1 0-3-3M3 12h15a3 3 0 1 1-3 3M3 16h7"/>')],
+    petir: ["Petir", IK('<path d="M13 2 4 14h7l-1 8 9-12h-7z"/>')],
+    lain: ["Lainnya", IK('<path d="M12 3 2 20h20zM12 10v4M12 17.5v.01"/>')]};
+  const jenisDari = e => /hujan/i.test(e) ? "hujan" : /angin/i.test(e) ? "angin" : /petir/i.test(e) ? "petir" : "lain";
+  const rng = n => n.replace(/^.*\((.*)\)$/, "$1");
+  const WZ = {WITA: "+08:00", WIT: "+09:00"};
   async function pitaBMKG() {
     const d = await PER().catch(() => null); if (!d || $(".db-bmkg")) return;
-    const now = d.nowcast.filter(x => aktif(x) && relevan(x)), gel = HAL === "karhutla" ? [] : d.gelombang.flatMap(g => GEL.filter(([k]) => g[k]?.length && new Date(g.sampai + ({WITA: "+08:00", WIT: "+09:00"}[g.zona] || "+07:00")) > Date.now() - 864e5).map(([k, n, w]) => ({g, n, w, xs: g[k]})));
+    const now = d.nowcast.filter(x => aktif(x) && relevan(x)), gel = HAL === "karhutla" ? [] : d.gelombang.flatMap(g => GEL.filter(([k]) => g[k]?.length && new Date(g.sampai + (WZ[g.zona] || "+07:00")) > Date.now() - 864e5).map(([k, n, w]) => ({g, n, w, xs: g[k]})));
     if (!now.length && !gel.length) return;
+    const jml = {}, kel = new Map();                       /* kel: judul kelompok -> {jenis, baris[]} */
+    const tambah = (judul, jenis, baris) => { if (!kel.has(judul)) kel.set(judul, {jenis, baris: []}); kel.get(judul).baris.push(baris); };
+    const hitung = j => jml[j] = (jml[j] || 0) + 1;
+    const pilT = (t, w) => `<span class="db-lv" style="background:${w};color:${w === W.kuning ? "#2a2a2a" : "#fff"}">${esc(t)}</span>`;
+    const baris = (j, w, judul, sub, subTip, pil, sampai) => `<div class="db-r"><span class="db-ij" style="color:${w}">${JENIS[j][1]}</span><div class="db-t"><b>${esc(judul)}</b><span class="db-s" title="${esc(subTip)}">${esc(sub)}</span></div><div class="db-k">${pilT(pil, w)}<small>sampai ${jam(sampai).replace(/ WIB$/, "")}</small></div></div>`;
+    now.forEach(x => {
+      const j = jenisDari(x.event), baik = hujanBaik(x), sev = SEV[x.severity] || SEV.Minor, w = baik ? W.biru : sev[0];
+      hitung(j); if (j === "hujan" && /petir/i.test(x.event)) hitung("petir");
+      const prov = (x.headline || "").split(/ di /).slice(1).join(" di ").trim() || x.wilayah;
+      tambah(x.event, j, baris(j, w, prov, x.wilayah, x.wilayah, baik ? "membantu pemadaman" : sev[1], x.selesai));
+    });
+    gel.forEach(({g, n, w, xs}) => { hitung("gelombang");
+      tambah("Gelombang " + n.replace(/ \((.*)\)/, " $1").replace("> ", "lebih dari "), "gelombang",
+        baris("gelombang", w, g.wilayah, xs.slice(0, 6).join(", ") + (xs.length > 6 ? ` +${xs.length - 6} lagi` : ""), xs.join(", "), rng(n), g.sampai + (WZ[g.zona] || "+07:00"))); });
     const el = document.createElement("details"); el.className = "db-bmkg";
-    el.innerHTML = `<summary><i></i>BMKG: ${[now.length && `${now.length} peringatan ${HAL === "karhutla" ? "terkait api" : "cuaca"}`, gel.length && `${gel.length} gelombang tinggi`].filter(Boolean).join(" · ")}</summary>
-      <div>${now.map(x => `<p><b style="color:${hujanBaik(x) ? W.biru : (SEV[x.severity] || SEV.Minor)[0]}">${esc(x.event)}${hujanBaik(x) ? " (membantu pemadaman)" : ""}</b> ${esc((x.headline || "").replace(x.event, "").trim())}<br>${esc(x.wilayah)}<br><small>sampai ${jam(x.selesai)}${x.web ? ` · <a href="${esc(x.web)}" target="_blank" rel="noopener">BMKG</a>` : ""}</small></p>`).join("")}
-      ${gel.map(({g, n, w, xs}) => `<p><b style="color:${w}">Gelombang ${n}</b> ${esc(g.wilayah)}<br><small>${esc(xs.slice(0, 4).join(", "))}${xs.length > 4 ? ` +${xs.length - 4} lagi` : ""}</small></p>`).join("")}
-      <small class="db-cat">Peringatan dini cuaca BMKG biasanya berlaku 2–3 jam. Data ${jam(d.dibuat)}; cek <a href="https://www.bmkg.go.id/peringatan-dini/nowcast" target="_blank" rel="noopener">bmkg.go.id</a> untuk yang terbaru.</small></div>`;
+    el.innerHTML = `<summary><i></i>BMKG: ${now.length + gel.length} peringatan aktif</summary>
+      <div><div class="db-rk">${Object.keys(JENIS).filter(j => jml[j]).map(j => `<span class="db-pl">${JENIS[j][1]}${jml[j]} ${JENIS[j][0].toLowerCase()}</span>`).join("")}</div>
+      ${[...kel].map(([jd, {jenis, baris}]) => `<section><h4>${JENIS[jenis][1]}${esc(jd)}<em>${baris.length} wilayah</em></h4>${baris.join("")}</section>`).join("")}
+      <small class="db-cat"><span>Sumber: <a href="https://www.bmkg.go.id/peringatan-dini/nowcast" target="_blank" rel="noopener">BMKG</a>, data ${jam(d.dibuat)}</span><span class="db-info" title="Peringatan dini cuaca BMKG biasanya berlaku 2 sampai 3 jam. Buka bmkg.go.id untuk yang terbaru.">${IK('<circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8v.01"/>')}</span></small></div>`;
     $("#lapisBtn")?.after(el);
   }
-  const legBMKG = () => nyala("bmkg") ? `<div class="lbl" style="margin-top:8px">Peringatan dini cuaca BMKG</div><div class="leg" style="margin-top:4px">${Object.values(SEV).slice(1, 4).map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("")}
-    <span><i class="sw" style="background:transparent;border:1px dashed var(--ink2)"></i>Sudah berakhir</span><span>Arahkan kursor ke poligon untuk rinciannya</span></div>` : "";
 
   /* ================================================================ kerangka lapisan (sama dengan lapisan5.js) */
   const LAYER = {bmkg: ["db-bmkg-fill", "db-bmkg-line", "db-bmkg-lama"]}, PASANG = {bmkg: pasangBMKG};
@@ -84,7 +106,13 @@
   const tungguPeta = fn => (typeof peta !== "undefined" && peta) ? fn() : setTimeout(() => tungguPeta(fn), 300);
   const _leg = renderLegenda;
   renderLegenda = function () { _leg(); const box = document.querySelector("#legDet > div"); if (!box) return;
-    const h = legBMKG() + (nyala("angin") && HAL === "banjir" ? `<div class="lbl" style="margin-top:8px">Angin siang (bergerak)</div><div class="leg" style="margin-top:4px"><span>Garis mengalir searah angin 10 m jam 12 WIB pada hari terpilih; makin pekat makin kencang. Hanya di darat.</span>${Angin.diam ? "<span>Gerak dimatikan (pengaturan kurangi gerakan): garis diam.</span>" : ""}</div>` : "");
+    /* ringkas seperti item legenda karhutla: judul + swatch; penjelasan panjang di title judul kelompok */
+    const grup = (j, tip, isi) => `<div class="lg-g"><div class="lbl" title="${tip}">${j}</div><div class="leg">${isi}</div></div>`;
+    const angin = nyala("angin") && HAL === "banjir" ? grup("Angin siang", "Garis mengalir searah angin 10 m jam 12 WIB pada hari terpilih; makin pekat makin kencang. Hanya di darat." + (Angin.diam ? " Gerak dimatikan (pengaturan kurangi gerakan): garis diam." : ""),
+      '<span><i class="sw" style="height:3px;vertical-align:3px;background:linear-gradient(90deg,rgba(31,95,139,.25),#1f5f8b)"></i>Angin, pekat = kencang</span>') : "";
+    const bm = nyala("bmkg") ? grup("Peringatan dini cuaca BMKG", "Arahkan kursor ke poligon untuk rinciannya",
+      Object.values(SEV).slice(1, 4).map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("") + '<span><i class="sw" style="background:transparent;border:1px dashed var(--ink2)"></i>Sudah berakhir</span>') : "";
+    const h = bm + angin;
     if (h) box.insertAdjacentHTML("beforeend", h); };
 
   /* ================================================================ karhutla */
@@ -200,6 +228,12 @@
 
   function banjir() {
     kotakLapis("Cuaca", [["bmkg", "Peringatan dini cuaca BMKG"], ["angin", "Angin (bergerak)"]]);
+    /* angin menyala bawaan di banjir: tunggu peta siap + hujan.json termuat, lalu mulai saat browser senggang (tidak menahan cat pertama) */
+    const siapAngin = (n = 0) => { const i = document.querySelector('#lapis input[data-l="angin"]');
+      if (!i || i.checked || n > 60) return; /* ~30 dtk lalu menyerah: hujan.json gagal dimuat */
+      if (!(typeof peta !== "undefined" && peta?.isStyleLoaded?.() && S.hujan?.grid)) return void setTimeout(siapAngin, 500, n + 1);
+      (window.requestIdleCallback || setTimeout)(() => { if (i.checked) return; i.checked = true; lihat("angin", true); }); };
+    siapAngin();
     pitaBMKG();
     const ENS = () => muat("ens", "data/hujan_ansambel.json");
     const _w = Analisa.wilayah.bind(Analisa);

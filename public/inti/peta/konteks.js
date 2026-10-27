@@ -72,11 +72,28 @@ const pasangLapisan = {
       "circle-color": warna, "circle-stroke-color": "#fff", "circle-stroke-width": ["interpolate", ["linear"], ["zoom"], 5, .5, 10, 1.5]}});
   },
   async jalan(peta, sebelum) {
+    /* seluruh Indonesia dari sumber vektor basemap (OpenMapTiles: transportation, waterway); jalan.geojson (akses.py) hanya
+       Riau, Jambi, Sumsel, Kalimantan, NTT, jadi cuma fallback bila peta tak punya sumber vektor itu. Id kt-* beda dari alir-* (pos_air.js). */
+    const ls = peta.getStyle().layers, vek = nama => ls.find(l => l["source-layer"] === nama)?.source;
+    const sJalan = vek("transportation"), sSungai = vek("waterway");
+    const lbl = ls.find(l => l.type === "symbol")?.id;   /* di bawah label basemap */
+    const bawah = sJalan && sSungai ? lbl : sebelum();
+    const lebarJ = ["interpolate", ["linear"], ["zoom"], 5, ["match", ["get", "k"], 1, 1.2, .5], 10, ["match", ["get", "k"], 1, 3, 1.4]];
+    if (sJalan && sSungai) {
+      if (!peta.getLayer("kt-sungai")) peta.addLayer({id: "kt-sungai", type: "line", source: sSungai, "source-layer": "waterway", minzoom: 5,
+        filter: ["any", ["==", ["get", "class"], "river"], ["all", ["in", ["get", "class"], ["literal", ["canal", "stream"]]], [">=", ["zoom"], 9]]],
+        layout: {visibility: "none"}, paint: {"line-color": W.biru, "line-width": ["interpolate", ["linear"], ["zoom"], 5, .6, 10, 2], "line-opacity": .8}}, bawah);
+      if (!peta.getLayer("kt-jalan")) peta.addLayer({id: "kt-jalan", type: "line", source: sJalan, "source-layer": "transportation", minzoom: 4,
+        filter: ["in", ["get", "class"], ["literal", ["motorway", "trunk", "primary", "secondary", "tertiary"]]],
+        layout: {visibility: "none", "line-cap": "round", "line-join": "round"},
+        paint: {"line-color": ["match", ["get", "class"], ["motorway", "trunk", "primary"], W.merah, "secondary", W.oranye, W.kuning],
+          "line-width": ["interpolate", ["linear"], ["zoom"], 5, ["match", ["get", "class"], ["motorway", "trunk", "primary"], 1.2, .5], 10, ["match", ["get", "class"], ["motorway", "trunk", "primary"], 3, 1.4]], "line-opacity": .85}}, bawah);
+      return;
+    }
     if (!peta.getSource("kt-jalan")) peta.addSource("kt-jalan", {type: "geojson", data: DATA + "jalan.geojson", attribution: "Jalan & sungai © kontributor OpenStreetMap (ODbL)"});
-    const bawah = sebelum();
     if (!peta.getLayer("kt-sungai")) peta.addLayer({id: "kt-sungai", type: "line", source: "kt-jalan", filter: ["==", ["get", "k"], 6], paint: {"line-color": W.biru, "line-width": ["interpolate", ["linear"], ["zoom"], 5, .6, 10, 2], "line-opacity": .8}}, bawah);
     if (!peta.getLayer("kt-jalan")) peta.addLayer({id: "kt-jalan", type: "line", source: "kt-jalan", filter: ["<=", ["get", "k"], 3], layout: {"line-cap": "round", "line-join": "round"},
-      paint: {"line-color": ["match", ["get", "k"], 1, W.merah, 2, W.oranye, W.kuning], "line-width": ["interpolate", ["linear"], ["zoom"], 5, ["match", ["get", "k"], 1, 1.2, .5], 10, ["match", ["get", "k"], 1, 3, 1.4]], "line-opacity": .85}}, bawah);
+      paint: {"line-color": ["match", ["get", "k"], 1, W.merah, 2, W.oranye, W.kuning], "line-width": lebarJ, "line-opacity": .85}}, bawah);
   },
 };
 

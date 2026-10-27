@@ -4,7 +4,6 @@ K2,"Selang layflat, serang, dan hisap",ya,uji_tekanan=365,,0.06,ya,H ST,"operato
 K3,"Manifold, kopling, katup, filter, lance",ya,pra_musim=180;tahunan=365,,0.05,ya,M C V SF I G F,operator,"YonTP atau penyedia (uji relief, uji debit lance)"
 K4,Sensor dan telemetri,ya,pra_musim=180;tahunan=365,,0.08,tidak,FT PT LT T GWT U,"operator (baterai, bersih)",penyedia kalibrasi
 K5,"APD, gas monitor, kontainer depot, tangki BBM, baut",tidak,berkala=180;tahunan=365,,0.1,tidak,Q S B,YonTP,penyedia kalibrasi gas monitor
-K6,Pipa HDPE koridor dan rumah pompa panggung,tidak,berkala=30;tahunan=365,,0.02,tidak,,BPBD atau Daops setempat,penyedia (uji kebocoran)
 K7,Sumur bor dan pompa sumur,tidak,berkala=180;mutu_air=180,servis=250,0.03,tidak,,pengelola setempat,Badan Geologi (muka air); dinas kesehatan atau laboratorium (mutu air)
 K8,"Perpipaan sementara, tandon, hidran umum",ya,berkala=7,,0,tidak,,PDAM atau BPBD,Cipta Karya
 K9,Jembatan darurat,ya,berkala=30;tahunan=365,,0.02,tidak,,penerima (pemda atau BPBD),Kementerian PU (Bina Marga) atau TNI (Zeni)

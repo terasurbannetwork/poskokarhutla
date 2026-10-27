@@ -4,7 +4,7 @@
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
 import {himawariRespons} from "./himawari.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
-import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah} from "./titik.js";
+import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah, jedaSensor} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
@@ -38,7 +38,9 @@ import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
+import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
+import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
@@ -50,7 +52,7 @@ import {RUTE_LAPORAN_KARHUTLA, buatDrafLaporanKarhutla} from "./laporan_karhutla
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
-import {perbaruiSihka, dasarSihka, ruteSihka} from "./sihka.js";
+import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
 import {himawariDibuat} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
@@ -224,7 +226,7 @@ async function denganWilayah(env, sql, ikat, cara) {
 /* ================================================================ rute */
 async function daftar(env, url, kini) {
   const q = url.searchParams, ikat = [kini];
-  let where = `l.disembunyikan = 0 AND l.selesai = 0 AND l.kedaluwarsa > ? AND NOT (l.salah >= 3 AND l.salah > l.benar)
+  let where = `l.disembunyikan = 0 AND l.selesai = 0 AND l.kedaluwarsa > ? AND NOT (l.salah >= 3 AND l.salah > l.benar AND l.jenis NOT IN ('minta', 'tawar', 'sehat', 'padam', 'evakuasi'))
     AND NOT EXISTS (SELECT 1 FROM laporan c WHERE c.induk = l.id AND c.disembunyikan = 0)`;
   const jam = q.has("jam") ? Number(q.get("jam")) : 168;
   if (!Number.isInteger(jam) || jam < 1 || jam > 168) return gagal(400, `jam harus bilangan bulat 1–168, diterima '${q.get("jam")}'`);
@@ -366,6 +368,8 @@ async function suara(env, req, id, kelompok, kini) {
   if (!sah.includes(nilai)) return gagal(400, `nilai '${nilai}' tidak sah; pilih ${sah.join("/")}`);
   const ada = await env.DB.prepare("SELECT disembunyikan FROM laporan WHERE id = ?").bind(id).first();
   if (!ada || ada.disembunyikan) return gagal(404, "laporan tidak ada atau disembunyikan");
+  /* aduan menyembunyikan laporan di 3 suara: wajib Turnstile seperti buat() (tanpa itu 3 IP anonim bisa menghapus laporan apa pun) */
+  if (kelompok === "aduan" && !(await turnstileOK(env, b.o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
   const ip = await ipHash(env, req);
   const laju = await cekLaju(env, ip, kelompok === "aduan" ? "aduan" : "konfirmasi", kini); if (laju) return laju;
   await env.DB.prepare(`INSERT INTO suara (laporan_id, ip_hash, kelompok, nilai, waktu) VALUES (?, ?, ?, ?, ?)
@@ -402,10 +406,12 @@ export async function gagalSudahBanyak(env, kunci, aksi, maks, kini) {
   return (await env.DB.prepare("SELECT count(*) n FROM laju_posko WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
 }
 export const catatGagal = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini).run();
+/* satu-satunya definisi "secret akun gerbang": dipakai adminOK (diterima) dan modOK di posko.js (dikeluarkan dari moderator) */
+export const akunGerbang = env => Object.keys(env).filter(k => /^AKUN_SITUS(_[A-Z0-9_]+)?$/.test(k)).sort().map(k => env[k]);
 export async function adminOK(env, req, kini = Date.now()) {
   /* AKUN_SITUS dan AKUN_SITUS_<NAMA>: akun "user:sandi" tambahan (gerbang centurisk97.id). Satu secret per orang supaya akun baru
      tidak perlu membaca ulang secret lama (Cloudflare tidak bisa menampilkan nilai secret). */
-  const daftar = [env.ADMIN_TOKEN, ...Object.keys(env).filter(k => /^AKUN_SITUS(_[A-Z0-9_]+)?$/.test(k)).sort().map(k => env[k])].filter(x => typeof x === "string" && x).join(",");
+  const daftar = [env.ADMIN_TOKEN, ...akunGerbang(env)].filter(x => typeof x === "string" && x).join(",");
   if (!daftar) return null;
   const sah = await Promise.all(daftar.split(",").map(x => x.trim()).filter(Boolean).map(sha));
   const t = req.headers.get("x-admin-token") ?? (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)/i)?.[1];
@@ -433,7 +439,7 @@ async function admin(env, req, url, id, kini) {
     if (url.searchParams.get("audit") === "1")
       return json((await env.DB.prepare("SELECT waktu, moderator, aksi, laporan_id, jumlah, alasan FROM audit_moderasi ORDER BY id DESC LIMIT 300").all()).results);
     const tersembunyi = url.searchParams.get("tersembunyi") === "1";
-    const r = await denganWilayah(env, `SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${GABUNG_WIL} ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY l.dibuat DESC LIMIT 300`, [], "all");
+    const r = await denganWilayah(env, `SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${GABUNG_WIL} ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY ${tersembunyi ? "l.aduan DESC, " : ""}l.dibuat DESC LIMIT 300`, [], "all");
     return json(r.results.map(x => ({...x, detail: JSON.parse(x.detail)})));
   }
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
@@ -482,7 +488,7 @@ async function umurSumber(env, url, kini, [jalur, ambang]) {
   const w = jalur === "/api/himawari" ? await himawariDibuat(env) : jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : jalur === "/api/cuaca/nowcast" ? await nowcastDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
   return {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
 }
-async function periksaStatus(env, url, kini) {
+export async function periksaStatus(env, url, kini) {   // diekspor untuk uji dengan jam buatan (tests/warga/jeda_sensor.test.mjs)
   const sumber = {}, uji = {}, basi = [];
   await Promise.all([
     ...SUMBER_STATUS.map(async ([nama, ...r]) => { const {basi: b, ...o} = await umurSumber(env, url, kini, r); sumber[nama] = o; if (b) basi.push(nama); }),
@@ -491,6 +497,20 @@ async function periksaStatus(env, url, kini) {
   /* jeda satelit lewat -> data terbit (PROGRAM-15-JAM blok E): pengamatan terbaru (meta.json data_terakhir) sampai meta.json dibuat. Tanpa ambang: tidak pernah 503,
      tapi ikut status_riwayat tiap jam sehingga /api/sla dan dashboard kinerja punya median dan p95-nya. */
   const [dib, lewat] = await Promise.all([dibuatAset(env, url, "/data/meta.json"), dibuatAset(env, url, "/data/meta.json", "data_terakhir")]);
+  /* SIHKA: dari mana tarikan terakhir ("resmi" | "cadangan") dan kapan; hanya bila sudah pernah menarik */
+  try { const p = (await env.DB.prepare("SELECT json_extract(isi, '$.via') via, dibuat FROM cuaca_sumber WHERE kunci = 'sihka'").first()); if (p) sumber.sihka_via = {via: p.via ?? "resmi", dibuat: new Date(p.dibuat).toISOString()}; } catch (e) { /* tabel belum ada */ }
+  /* DSDA DKI + SIPANTAU Tangerang: dibuat = percobaan terakhir, ok = kedua sumber sehat pada percobaan itu, galat = galat sumber mana pun (<= 200 char). Informatif, tidak memengaruhi `ok` status */
+  try {
+    const rs = (await env.DB.prepare("SELECT kunci, json_extract(isi, '$.ok') ok, json_extract(isi, '$.coba') coba, json_extract(isi, '$.galat') galat, dibuat FROM cuaca_sumber WHERE kunci IN ('sungai_dsda','sungai_tng')").all()).results;
+    if (rs.length) { const g = rs.filter(r => r.galat).map(r => r.kunci.slice(7) + ": " + r.galat).join("; ").slice(0, 200);
+      sumber.sungai_resmi = {dibuat: new Date(Math.max(...rs.map(r => r.coba ?? r.dibuat))).toISOString(), ok: rs.length === 2 && rs.every(r => r.ok != null && !r.galat), galat: g || null}; }
+  } catch (e) { /* tabel belum ada */ }
+  /* jeda per sensor (M, N, N20, N21): deteksi terbaru tiap sensor di putaran titik_terbaru terakhir sampai putaran itu dibuat, supaya telatnya satu satelit tak tersembunyi di balik
+     satelit lain yang tepat waktu (jeda_satelit di bawah hanya memakai deteksi terbaru dari semua sensor). Tanpa ambang: tidak memengaruhi `ok`. json_extract di D1, BUKAN JSON.parse isi putaran (<= 1,8 MB; batas CPU Free 10 ms). */
+  try {
+    const p = await env.DB.prepare("SELECT dibuat, json_extract(isi, '$.terakhir_sensor') ts, json_extract(isi, '$.galat') g FROM titik_terbaru ORDER BY id DESC LIMIT 1").first();   // g = galat putaran itu (<= 4 teks 80 karakter): sensor yang gagal ditarik diberi galat: true
+    const j = p?.ts == null ? null : jedaSensor(p.ts, p.dibuat, kini, p.g); if (j) sumber.jeda_sensor = j;
+  } catch (e) { /* tabel belum ada */ }
   if (dib != null && lewat != null && dib >= lewat) sumber.jeda_satelit = {dibuat: new Date(lewat).toISOString(), umur_jam: Math.round((dib - lewat) / JAM * 10) / 10, ambang_jam: null};
   return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber, uji};
 }
@@ -537,6 +557,7 @@ const RUTE = {
   ...RUTE_ALUN,
   ...RUTE_RISET,
   ...RUTE_MEJA,
+  ...RUTE_UJI_BANJIR,   // uji lapangan banjir: POST /api/instansi/uji-banjir (akun instansi), GET /api/uji-lapangan/banjir agregat (src/uji_banjir.js)
   ...RUTE_UJI,   // uji lapangan karhutla: GET /api/uji-lapangan agregat Q1-Q5, tanpa data pribadi (src/uji_lapangan.js)
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
@@ -546,6 +567,7 @@ const RUTE = {
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
+  ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
   ...RUTE_KORBAN,   // laporan korban jiwa: instansi dan Pusdalops melapor, verifikasi, butir Meja Pantau (src/korban.js)
@@ -615,6 +637,7 @@ export const HTML_RUTE = [
   [/^\/kabar\/?$/, "/kabar.html", "/kabar"],   // kabar api prioritas per kabupaten, diteruskan Pusdalops ke WA BPBD (public/kabar*, data scripts/data/kabar_kab.py)
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
   [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
+  [/^\/monitor\/?$/, "/monitor.html", "/monitor"],   // monitor peringatan api untuk staf BNPB dan BPBD (public/monitor*, src/monitor.js); tetap tertutup di centurisk97.id, tiap API menjaga sesinya
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */
@@ -673,8 +696,8 @@ async function layaniHTML(req, env, ctx, url) {
    Hanya dipanggil dari rute GET publik di fetch() (/api/warga daftar & konfig, /api/titik, /api/status); admin, POST, dan rute
    bercookie tidak pernah lewat sini. Kunci = URL dengan parameter diurutkan. Hanya 200 yang disimpan. Pemanggilan Worker tetap
    terhitung; yang dihemat bacaan D1 dan CPU. Respons keluar dengan Cache-Control public max-age=detik (peramban ikut menyimpan). */
-export async function cacheTepi(req, ctx, detik, buat) {
-  const u = new URL(req.url); u.searchParams.sort();
+export async function cacheTepi(req, ctx, detik, buat, tanpaQuery = false) {
+  const u = new URL(req.url); u.searchParams.sort(); if (tanpaQuery) u.search = "";   // tanpaQuery: rute yang jawabannya tak bergantung kueri (/api/status), supaya ?x=acak tak melewati cache
   const kunci = new Request(u.toString(), {method: "GET"}), c = globalThis.caches?.default;
   if (c) { const ada = await c.match(kunci); if (ada) return ada; }
   const r = await buat();
@@ -718,7 +741,7 @@ export default {
     if (url.pathname.startsWith("/api/banjir/")) { const b = await ruteSihka(req, env, ctx, url); if (b) return b; }   // sungai terukur SIHKA D1 (src/sihka.js)
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
     if (url.pathname.startsWith("/api/peringatan/") || url.pathname.startsWith("/api/admin/peringatan/")) { const p = await layaniPeringatan(req, env, ctx, url); if (p) return p; }   // peringatan dini (src/peringatan.js)
-    if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()));
+    if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()), true);
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
@@ -807,6 +830,8 @@ export default {
       try { console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime))); } catch (e) { console.error("peringatan", e?.message); }   // sesudah gempa baru tersimpan
       console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
       /* SIHKA paling akhir: email EWS tidak boleh tertahan langkah ini */
+      if (new Date(sekarang).getUTCMinutes() % 10 === 3 && new Date(sekarang).getUTCMinutes() !== 23) try { console.log("hujan", JSON.stringify(await perbaruiHujan(env, sekarang))); } catch (e) { console.error("hujan", e?.message); }   // hujan SIHKA per interval: tiap 10 menit (kuota tulis D1 Free, lihat src/hujan.js)
+      if (new Date(sekarang).getUTCMinutes() === 38) try { console.log("sungai resmi", JSON.stringify(await perbaruiSungaiResmi(env, sekarang))); } catch (e) { console.error("sungai resmi", e?.message); }   // DSDA + SIPANTAU: invokasi sendiri, terpisah dari SIHKA menit 23
       if (new Date(sekarang).getUTCMinutes() === 23) {   // SIHKA: tiap jam menit 23; dasar historis sekali sehari 20 UTC
         try { console.log("sihka", JSON.stringify(await perbaruiSihka(env, sekarang))); } catch (e) { console.error("sihka", e?.message); }
         if (new Date(sekarang).getUTCHours() === 20) try { console.log("sihka dasar", JSON.stringify(await dasarSihka(env, sekarang))); } catch (e) { console.error("sihka dasar", e?.message); }
@@ -827,6 +852,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
     try { await bersihkanSippa(env, sekarang); } catch (e) { console.error("sippa", e?.message); }   // migrasi 0058 belum jalan = cron lain tetap jalan; ringkas+buang telemetri > 30 hari, alarm diam
+    try { await bersihkanUjiBanjir(env, Date.now()); } catch (e) { console.error("uji banjir", e?.message); }   // retensi 12 bulan
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
     try { await bersihkanArsipSitrep(env, Date.now()); } catch (e) { console.error("arsip sitrep", e?.message); }   // retensi 400 hari

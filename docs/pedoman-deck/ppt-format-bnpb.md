@@ -154,7 +154,7 @@ Nama berkas: `<Judul deck> DDMMYY`, DDMMYY = tanggal paparan.
 
 **Pil CUT OFF DATA.** Navy `051C2C` di kanan atas (x≈696, y≈70), lebar 186–220 pt, tinggi 16,6–18 pt. Isi: `CUT OFF DATA` 6–8 pt bold `AFC3DA`/`A9B4C2` spasi 100, lalu `22 Okt 2026, 23.00 WIB` 8–10 pt bold putih. Jam ditulis bertitik. Dipasang di setiap slide data.
 
-**Catatan kaki.** Bilah `4A9BE0` sekitar 3 × 13–17 pt di x 43,2 y≈488–490. Teks baku: `*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).` (7,5 pt di deck wilayah, 9,5 pt miring di templat BNPB). Data hari berjalan ditambah "Angka 22 Okt sementara, data s.d. 16.25 WIB." Slide analisis memakai baris "Sumber: ..." 7,5 pt `6B7280`.
+**Catatan kaki.** Bilah `4A9BE0` sekitar 3 × 13–17 pt di x 43,2 y≈488–490. Teks baku: `*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).` (7,5 pt di deck wilayah, 9,5 pt miring di templat BNPB). Data hari berjalan ditambah "Angka 22 Okt sementara, data s.d. 16.25 WIB.", kecuali deck Penanganan: sejak 27 Okt 2026 catatan kakinya teks baku saja. Slide analisis memakai baris "Sumber: ..." 7,5 pt `6B7280`.
 
 **Ikon.** Gaya garis (Lucide/Tabler), PNG 256 px satu warna, selalu di dalam lingkaran. Ikon putih di atas lingkaran solid, ikon berwarna di atas lingkaran tint warnanya sendiri. Ukuran ikon 55–62% diameter lingkaran. Ikon wajib ada di kepala tabel, kartu angka, dan chip.
 

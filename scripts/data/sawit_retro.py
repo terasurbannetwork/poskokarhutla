@@ -794,7 +794,7 @@ def rgb_foto(pil, lat, lon, km, n):
             c = C.COG(it["assets"][k]["href"])
             x0, y0, r0, kiri, atas = KC.jendela(it, k, lat, lon, km)
             v = c.contoh(C.level_untuk(c, r0, max(10, km * 1000 / n)), x0, y0, r0, kiri, atas, km * 1000, n)[0]
-            ch.append(ke_byte_tc(v, rb.get("scale", 1e-4), rb.get("offset", 0)))
+            ch.append(ke_byte_tc(v, *C.skala_offset(it, k)))
     return ch
 
 

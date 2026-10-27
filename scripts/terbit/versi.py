@@ -70,7 +70,7 @@ def jalan(akar=AKAR, maks=100):
     # kena memang pengecualian.
     ada = set(abadi)
     semua = [("/" + os.path.relpath(os.path.join(d, f), akar).replace(os.sep, "/"))
-             for d, _, fs in os.walk(akar) for f in fs]
+             for d, _, fs in os.walk(akar) for f in fs if " 2." not in f]   # salinan iCloud "x 2.js" tak ikut dihitung (AGENTS.md §9)
     blok, kecuali = [TANDA], []
     for ujung in (".js", ".css"):
         sama = [w for w in semua if w.endswith(ujung)]

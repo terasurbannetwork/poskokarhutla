@@ -49,7 +49,7 @@ export function kotak(fitur) {
    katalog: {kunci: [warnaA, warnaB, ikon]}; pendek: {kunci: nama pendek}; nama lengkap pindah ke tooltip. */
 export function ubinLapis(L, {katalog = {}, pendek = {}} = {}) {
   if (!L) return;
-  const jalan = () => L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
+  const jalan = () => L.querySelectorAll("details").forEach(d => { d.hidden = ![...d.querySelectorAll("label")].some(l => !l.hidden && l.style.display !== "none"); /* grup tanpa ubin terlihat tidak dirender */ const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }
     ls.forEach(l => { const i = l.querySelector("input"), [a, b, k] = katalog[i?.dataset.l] || KONTEKS[i?.dataset.l] || ["#5f6fb0", "#a9b6e6", "peta"], t = l.textContent.trim(), pn = pendek[i?.dataset.l] || t;
       l.className = "ubin"; l.textContent = ""; l.append(i);

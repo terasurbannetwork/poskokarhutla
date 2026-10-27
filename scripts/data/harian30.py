@@ -6,11 +6,16 @@ Hari yang sudah tertutup jendela 7 hari diperbarui tiap jalan; hari yang lebih t
 (public/data ikut cache Actions). Hari yang belum ada (jalan pertama, atau cache hilang) diisi mundur dari
 FIRMS area API, maksimal 5 hari per permintaan.
 
+S-NPP berhenti (FS.SNPP_AKHIR, 1 Nov 2026 13:00 UTC): hari yang dihitung dari hotspot 7 hari ikut apa adanya (lokasi unik tetap, N20/N21 menutup cakupan);
+isi mundur tidak lagi meminta VIIRS_SNPP_NRT dan tidak menuntutnya (firms_sumber.wajib), serta TIDAK PERNAH menghentikan penulisan harian30.json bila
+isi mundur gagal (galat = ::warning, hari yang kurang dicoba lagi jalan berikutnya).
+
 Uji tanpa jaringan:  python3 scripts/data/harian30.py uji
 """
 import csv, datetime as dt, io, json, os, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import firms_sumber as FS  # noqa: E402
 from firms_sumber import FAMILI, SENSOR, kelas_yakin, muat_ketersediaan, nasional_harian, penuh, unduh  # noqa: E402
 import titik_unik as TU  # noqa: E402
 
@@ -55,7 +60,7 @@ def tulis(jalur, data, hari_ini):
     hari = sorted(t for t in data if t <= hari_ini)[-SIMPAN:]
     kunci = lambda kel: sorted({k for t in hari for k in data[t][kel]})
     isi = {"versi": VERSI, "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "hari_ini": hari_ini,
-           "catatan": "Titik panas = lokasi unik ~375 m per hari WIB dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21, keyakinan sedang/tinggi. Hari ini belum lengkap.",
+           "catatan": "Titik panas = lokasi unik ~375 m per hari WIB dari MODIS + VIIRS S-NPP (sampai 1 Nov 2026) + NOAA-20 + NOAA-21, keyakinan sedang/tinggi. Hari ini belum lengkap.",
            "hari": hari,
            "prov": {k: [data[t]["p"].get(k, 0) for t in hari] for k in kunci("p")},
            "kab": {k: [data[t]["k"].get(k, 0) for t in hari] for k in kunci("k")}}
@@ -120,13 +125,83 @@ def perbarui(keluar, titik, k, w, ambil, bbox, hari_ini, batas):
     kosong = curiga(data, hari_ini, nasional_harian(os.path.join(keluar, "musim_harian.json")))
     if kosong:
         print(f"harian30: isi mundur {len(kosong)} hari ({kosong[0]} s.d. {kosong[-1]})")
-        data.update(isi_mundur(kosong, k, w, ambil, bbox))
+        try:   # FIRMS/data_availability bermasalah (mis. VIIRS_SNPP_NRT hilang sebelum jadwal): jendela 7 hari yang sudah dihitung tetap ditulis
+            data.update(isi_mundur(kosong, k, w, ambil, bbox))
+        except Exception as e:
+            print(f"::warning title=harian30 isi mundur::{type(e).__name__}: {FS.sensor_url(e)}; {len(kosong)} hari dicoba lagi jalan berikutnya", file=sys.stderr)
     isi = tulis(jalur, data, hari_ini)
     print(f"harian30: {len(isi['hari'])} hari, {len(isi['prov'])} provinsi, {len(isi['kab'])} kab/kota")
 
 
+def uji_snpp_berhenti():
+    """S-NPP berhenti (a: CSV kepala saja, b: galat, c: baris hilang dari data_availability) sebelum dan sesudah FS.SNPP_AKHIR; jam FS dibekukan."""
+    import contextlib, tempfile
+    D = dt.date.fromisoformat
+    PRA, SESUDAH = FS.PRA, FS.SESUDAH
+    class W:
+        def cari(self, lon, lat):
+            return ["62", "Kapuas", "X"]
+    HDR = "latitude,longitude,acq_date,acq_time,confidence\n"
+    avail = "data_id,min_date,max_date\n" + "".join(f"{f}_SP,2012-01-01,2026-06-30\n{f}_NRT,2026-07-01,2026-12-31\n" for f in ("VIIRS_SNPP", "VIIRS_NOAA20", "VIIRS_NOAA21", "MODIS"))
+    avail_c = avail.replace("VIIRS_SNPP_NRT", "X")
+    def pabrik(mode, a=avail):
+        urls = []
+        def ambil(u):
+            if "data_availability" in u:
+                return a
+            urls.append(u)
+            if "VIIRS_SNPP" in u:
+                if mode == "a":
+                    return HDR
+                if mode == "b":
+                    raise RuntimeError("HTTP Error 400: Bad Request")
+            tg = D(u.split("/")[-1])   # satu deteksi tiap hari UTC dalam blok 5 hari, 01.00 UTC = 08.00 WIB hari yang sama
+            return HDR + "".join(f"-2.5,100.5,{tg + dt.timedelta(days=n)},0100,h\n" for n in range(int(u.split("/")[-2])))
+        return ambil, urls
+    snpp = lambda urls: [u for u in urls if "VIIRS_SNPP" in u]
+    err = io.StringIO()
+    try:
+        FS._SEKARANG = SESUDAH
+        # sesudah batas aturan menurut TANGGAL DATA: hari UTC <= 1 Nov tetap diminta NRT S-NPP (hari WIB 2 Nov butuh UTC 1 Nov), hari sesudahnya tidak
+        for mode, a in (("0", avail), ("a", avail), ("b", avail), ("0", avail_c), ("b", avail_c)):
+            ambil, urls = pabrik(mode, a)
+            with contextlib.redirect_stderr(err):
+                r = isi_mundur(["2026-11-02", "2026-11-03", "2026-11-04"], "K", W(), ambil, "b")
+            gagal = mode == "b" and a is avail   # S-NPP NRT galat: WIB 2 Nov (butuh UTC 1 Nov) belum penuh; 3-4 Nov tak menunggu S-NPP
+            assert sorted(r) == (["2026-11-03", "2026-11-04"] if gagal else ["2026-11-02", "2026-11-03", "2026-11-04"]) and all(r[d]["p"] == {"62": 1} for d in r), (mode, r)
+            assert [u.split("/")[-4:] for u in snpp(urls)] == ([] if a is avail_c else [["VIIRS_SNPP_NRT", "b", "1", "2026-11-01"]]), (mode, snpp(urls))
+        # hari WIB 1 Nov (UTC 31 Okt + 1 Nov): S-NPP NRT diminta; galat = belum penuh (dicoba lagi), tanpa pengecualian
+        for mode, harap in (("0", ["2026-11-01"]), ("b", [])):
+            ambil, urls = pabrik(mode)
+            with contextlib.redirect_stderr(err):
+                r = isi_mundur(["2026-11-01"], "K", W(), ambil, "b")
+            assert list(r) == harap and len(snpp(urls)) == 1, (mode, r, snpp(urls))
+        # SEBELUM batas: (b) S-NPP galat = hari belum penuh (dicoba lagi), tanpa pengecualian; sensor lain tidak terpengaruh; (a) kosong = penuh
+        FS._SEKARANG = PRA
+        ambil, urls = pabrik("b")
+        with contextlib.redirect_stderr(err):
+            r = isi_mundur(["2026-10-28", "2026-10-29"], "K", W(), ambil, "b")
+        assert r == {} and any("NOAA20" in u for u in urls), (r, urls)
+        ambil, urls = pabrik("a")
+        with contextlib.redirect_stderr(err):
+            r = isi_mundur(["2026-10-28", "2026-10-29"], "K", W(), ambil, "b")
+        assert sorted(r) == ["2026-10-28", "2026-10-29"] and len(snpp(urls)) >= 1, r
+        # (c) sebelum batas: muat_ketersediaan RuntimeError (hari bolong = gagal keras) TETAPI perbarui() tetap menulis harian30.json
+        ambil, urls = pabrik("0", avail_c)
+        with tempfile.TemporaryDirectory() as d:
+            with contextlib.redirect_stderr(err), contextlib.redirect_stdout(io.StringIO()):
+                perbarui(d, [{"t": dt.datetime(2026, 10, 28, 5, 0, tzinfo=dt.timezone.utc), "lat": -2.0, "lon": 113.0, "s": "N20", "c": 1, "adm": ["62", "Kapuas", "X"]}],
+                         "K", W(), ambil, "b", "2026-10-29", dt.datetime(2026, 10, 22, tzinfo=dt.timezone.utc))
+            h = json.load(open(os.path.join(d, "harian30.json")))
+            assert h["hari"][-1] == "2026-10-28" and h["prov"]["62"][-1] == 1, "isi mundur gagal tidak boleh menahan penulisan"
+        assert "::warning title=harian30 isi mundur" in err.getvalue() and "data_availability tak lengkap" in err.getvalue()
+    finally:
+        FS._SEKARANG = None
+
+
 def uji():
     import tempfile
+    FS._SEKARANG = FS.PRA   # hermetis: jam dibekukan sebelum SNPP_AKHIR (sesudahnya VIIRS_SNPP_NRT tak diminta lagi; lihat uji_snpp_berhenti)
     t = lambda s: dt.datetime.fromisoformat(s)
     a = lambda **x: {"lat": -2.0, "lon": 113.0, "adm": ["62", "Kapuas", "X"], **x}
     titik = [a(t=t("2026-10-12T18:00:00+00:00"), s="N", c=1),                  # 13 Okt WIB
@@ -163,6 +238,7 @@ def uji():
     assert any(x.endswith("_NRT") for x in pakai) and any(x.endswith("_SP") for x in pakai), pakai
     assert isi_mundur(["2026-10-11"], "K", W(), lambda u: avail if "data_av" in u else "Invalid MAP_KEY", "b") == {}
     assert [kelas_yakin(x, False) for x in "lnh"] == [0, 1, 2] and [kelas_yakin(x, True) for x in ("29", "30", "79", "80", "")] == [0, 1, 1, 2, 0]
+    uji_snpp_berhenti()
     print("harian30: uji lolos")
 
 
