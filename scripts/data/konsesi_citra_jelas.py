@@ -43,8 +43,7 @@ def pita(item, k, lat, lon, km):
     A = item["assets"][k]
     c = C.COG(A["href"])
     x0, y0, r0, kiri, atas = K.jendela(item, k, lat, lon, km)
-    rb = (A.get("raster:bands") or [{}])[0]
-    sk, of = rb.get("scale", 1e-4), rb.get("offset", 0)
+    sk, of = C.skala_offset(item, k)
     v = c.contoh(C.level_untuk(c, r0, km * 1000 / N), x0, y0, r0, kiri, atas, km * 1000, N)[0]
     return [None if d == 0 else d * sk + of for d in v]
 

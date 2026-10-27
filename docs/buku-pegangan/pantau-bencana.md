@@ -922,6 +922,11 @@ Disepakati pemilik setelah katalog di bawah ditelusuri. Menang atas butir mana p
 61. **Buku pegangan diperbarui atas inisiatif sendiri.** Tiap selera atau koreksi baru dari pemilik langsung ditulis di sini dan di `keputusan-pemilik.md` skill, lalu diterbitkan, tanpa menunggu diminta.
 62. **Justify hanya bila celahnya wajar.** Bila rata kanan-kiri membuat celah besar antarkata (daftar nama berhubung-tanda, kolom sempit), pakai rata kiri (*"kalo justify membuat… terpisah gede, rata kiri aja"*, 27 Okt).
 63. **Judul sampul mengisi ruang sampai tepi foto.** Baris diisi penuh dari kiri, tidak dibagi seimbang yang menyisakan ruang putih besar di kanan; paling banyak 3 baris.
+64. **Citra bukti tampil berpasangan warna asli dan SWIR.** SWIR (B12, B8A, B4) memperlihatkan bekas bakar cokelat dan api aktif merah yang tidak terlihat di warna asli; titik deteksi satelit (NOAA-20/21 bila ada) digambar di atasnya. Kasus yang tertutup awan atau asap di tahap terbakar tidak dipakai; lebih baik dua contoh kuat daripada tiga yang lemah.
+65. **Peta karhutla untuk audiens sawit menampilkan lahan sawit** (The TreeMap 2024, industri dan rakyat) di bawah titik api, satu sumber dengan angka persentase di halaman lain.
+66. **Peta hanya daratan Indonesia.** Lapisan negara tetangga (sawit Malaysia, Brunei) tidak digambar.
+67. **Hotspot peta memakai hari terbaru** (hari paparan dibuat), label legenda "Hotspot 27 Oktober 2026, s.d. 10.53 WIB", dan tanggal sumber halaman itu ikut hari tersebut.
+68. **"Menjadi sawit" harus terbukti dari peta tahun tanam**, bukan dari citra saja: kebun muda belum tampak sebagai pohon di citra 10 m, yang terlihat baru blok dan jalan kebun. Lokasi yang sudah sawit sebelum api (tahun tanam lebih awal dari tahun api) adalah sawit terbakar, bukan contoh bakar lalu tanam; keterangan citra ditulis "Kebun sawit muda".
 
 Disusun 26 Okt 2026 dari tiga sumber: (1) pesan mentah pemilik `masukan_ppt.txt` (15 Sep sampai 26 Okt, 288 baris, sebagian besar situs/kode dan dibuang), (2) memori `ppt-*`, `aturan-deck-26-okt-rinci`, `deck-urgen-kerjakan-di-berkas`, `selera-deck-malaysia`, `tanpa-titik-*`, `laporan-harian-bnpb`, (3) skill `ppt-konsultan` (`keputusan-pemilik.md`, `selera-presentasi.md`, `deck-operasional.md`, `gaya.md`, `gaya-bnpb.md`, `nada.md`, `angka-dan-copy.md`).
 

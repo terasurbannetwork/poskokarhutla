@@ -145,7 +145,7 @@ export function susunKolom(state, tersimpan = [], konst = KONST) {
   const dasar = state.sippa ? {...M.defaultState(), ...keu} : (({sippa, manfaat: _, ...r}) => r)(state);
   const kol = [];
   for (const k of ["S0", "S0B"]) { const st = {...M.presetSippa(k), ...keu}; kol.push({kode: k, nama: NAMA_PRESET[k], asal: "preset", hasil: M.gerbangSippa(st, M.assess(st), konst), manfaat}); }
-  M.compare({...M.defaultState(), ...dasar}).forEach((h, i) => { const kode = ["S1", "S2", "S3"][i]; kol.push({kode, nama: NAMA_PRESET[kode], asal: "preset", hasil: M.gerbangSippa(h.s, h, konst), manfaat, ditutup: kode === "S3"}); });
+  M.compare({...M.defaultState(), ...dasar}).forEach((h, i) => { const kode = ["S1", "S2", "S3"][i]; kol.push({kode, nama: NAMA_PRESET[kode], asal: "preset", hasil: M.gerbangSippa(h.s, h, konst), manfaat, ditutup: kode !== "S1"}); });
   tersimpan.slice(0, MAKS_PEMBANDING).forEach((t, i) => { const st = bersihkan(t.state); kol.push({kode: `U${i + 1}`, nama: t.nama, id: t.id, asal: "tersimpan", hasil: nilaiHasil(st, konst), manfaat: st.manfaat || MANFAAT_BAWAAN}); });
   return kol;
 }
@@ -366,7 +366,7 @@ function kepalaKolom(c) {
   const nogo = c.hasil.decision === "NO-GO", x = hit(c.hasil);
   return `<th scope="col" class="sp-kol${nogo ? " sp-kol-nogo" : ""}" data-kode="${lolos(c.kode)}"><b class="sp-kode">${lolos(c.kode)}</b><span class="sp-nama">${lolos(c.nama)}</span>${pilVonis(c.hasil.decision)}
     <span class="sp-hit-baris"><span class="sp-hit keras" title="Hambatan keras">${x.keras} keras</span><span class="sp-hit syarat" title="Hambatan bersyarat">${x.syarat} syarat</span><span class="sp-hit catatan" title="Catatan">${x.catatan} catatan</span></span>
-    ${c.ditutup ? `<span class="sp-status putus sp-tutup">ditutup sampai G5</span>` : ""}${nogo ? `<small class="sp-alasan">${lolos(c.hasil.hard[0])}</small>` : ""}</th>`;
+    ${c.ditutup ? `<span class="sp-status putus sp-tutup">ditutup</span>` : ""}${nogo ? `<small class="sp-alasan">${lolos(c.hasil.hard[0])}</small>` : ""}</th>`;
 }
 function selHtml(x) {
   const isi = x.html ?? (x.menunggu ? `–${pil("menunggu")}` : lolos(x.teks));
@@ -379,12 +379,12 @@ export function tabBandingkanHtml(baris, kolom) {
     <tbody>${baris.map(r => `<tr data-k="${r.k}"><th scope="row"><span class="sp-ukuran">${lolos(r.label)}</span>${pil(r.yakin)}</th>${r.sel.map(selHtml).join("")}</tr>`).join("")}</tbody></table></div>`;
   const kartu = `<div class="sp-kartu-skenario">${kolom.map((c, i) => {
     const nogo = c.hasil.decision === "NO-GO", keras = c.hasil.hard;
-    return `<article class="sp-skenario${nogo ? " sp-kol-nogo" : ""}" aria-labelledby="sk-${lolos(c.kode)}"><header class="sp-skenario-kepala"><b class="sp-kode" id="sk-${lolos(c.kode)}">${lolos(c.kode)}</b><span class="sp-nama">${lolos(c.nama)}</span>${pilVonis(c.hasil.decision)}${c.ditutup ? '<span class="sp-status putus sp-tutup">ditutup sampai G5</span>' : ""}</header>
+    return `<article class="sp-skenario${nogo ? " sp-kol-nogo" : ""}" aria-labelledby="sk-${lolos(c.kode)}"><header class="sp-skenario-kepala"><b class="sp-kode" id="sk-${lolos(c.kode)}">${lolos(c.kode)}</b><span class="sp-nama">${lolos(c.nama)}</span>${pilVonis(c.hasil.decision)}${c.ditutup ? '<span class="sp-status putus sp-tutup">ditutup</span>' : ""}</header>
       <dl class="sp-skenario-angka">${BARIS_KARTU.map(k => { const r = baris.find(b => b.k === k); return `<div><dt>${lolos(r.label)}</dt><dd>${selHtml(r.sel[i]).replace(/^<td[^>]*>|<\/td>$/g, "")}</dd></div>`; }).join("")}</dl>
       ${keras.length ? `<ul class="sp-skenario-keras" aria-label="Hambatan keras">${keras.slice(0, 3).map(t => `<li>${lolos(t)}</li>`).join("")}${keras.length > 3 ? `<li class="ad-redup">dan ${tampil(keras.length - 3)} hambatan keras lain</li>` : ""}</ul>` : '<p class="sp-skenario-keras">Hambatan keras: tidak ada</p>'}
       <button type="button" class="ad-tombol" data-rincian="${lolos(c.kode)}">Rincian</button></article>`;
   }).join("")}</div>`;
-  return `${tabel}${kartu}${sumber(`${SUMBER_MESIN}; ${MANFAAT_TEKS} ${pil("asumsi-kebijakan", "Asumsi kebijakan")}. S1 sampai S3 memakai kondisi lokasi dan anggaran keadaanmu; S0 dan S0B preset kit SIPPA dengan anggaran yang sama. S3 ditutup sampai G5. Biaya heli per jam menunggu angka BNPB (slot sippa.heli.biaya_jam), pembanding resmi > Rp200 juta per sorti satu jam (BNPB, September 2023). Baris tanpa kolom berbingkai berarti belum ada pembeda di antara kolom yang bukan NO-GO.`)}`;
+  return `${tabel}${kartu}${sumber(`${SUMBER_MESIN}; ${MANFAAT_TEKS} ${pil("asumsi-kebijakan", "Asumsi kebijakan")}. S1 sampai S3 memakai kondisi lokasi dan anggaran keadaanmu; S0 dan S0B preset kit SIPPA dengan anggaran yang sama. S2 dan S3 jaringan pipa tetap, ditutup (keputusan 60); angkanya hanya pembanding. Biaya heli per jam menunggu angka BNPB (slot sippa.heli.biaya_jam), pembanding resmi > Rp200 juta per sorti satu jam (BNPB, September 2023). Baris tanpa kolom berbingkai berarti belum ada pembeda di antara kolom yang bukan NO-GO.`)}`;
 }
 export function rincianKolomHtml(baris, kolom, i) {
   return `<dl class="sp-rincian">${baris.map(r => `<div><dt>${lolos(r.label)}</dt><dd>${selHtml(r.sel[i]).replace(/^<td[^>]*>|<\/td>$/g, "")}</dd></div>`).join("")}</dl>${kolom[i].hasil.hard.length ? `<h4 class="sp-sub-judul">Hambatan keras</h4><ul class="sp-daftar-risiko">${kolom[i].hasil.hard.map(t => `<li>${lolos(t)}</li>`).join("")}</ul>` : ""}`;
@@ -550,7 +550,7 @@ export async function pasang(akar, konteks) {
   catch (e) { if (!sinyal.aborted) akar.replaceChildren(galat(0, e.message, () => pasang(akar, konteks))); return; }
   if (sinyal.aborted) return;
 
-  const st = {state: stateAwal("S2"), preset: "S2", tab: "bandingkan", daftar: null, daftarGalat: null, tandai: [], cacheState: new Map(), kolom: [], hasil: null, cari: "", mcCache: new Map(), mcTerakhir: new Map(), memo: {}};
+  const st = {state: stateAwal("S0"), preset: "S0", tab: "bandingkan", daftar: null, daftarGalat: null, tandai: [], cacheState: new Map(), kolom: [], hasil: null, cari: "", mcCache: new Map(), mcTerakhir: new Map(), memo: {}};
   const mc = buatMc();
   hentikan.push(() => mc.tutup());
   const ponsel = () => matchMedia("(max-width: 767px)").matches;
@@ -599,7 +599,7 @@ export async function pasang(akar, konteks) {
     semua("[data-man-aktif]").forEach(i => { i.checked = m[i.dataset.manAktif].aktif; });
     semua("[data-man-isi]").forEach(i => { const [a, b] = i.dataset.manIsi.split("."); i.value = desimal(m[a][b]); });
     semua("[data-man-syarat]").forEach(i => { i.checked = m.irigasi.syarat[Number(i.dataset.manSyarat)]; });
-    semua("[data-preset]").forEach(b => { const on = b.dataset.preset === st.preset; b.setAttribute("aria-checked", String(on)); b.tabIndex = on || (!st.preset && b.dataset.preset === "S2") ? 0 : -1; });
+    semua("[data-preset]").forEach(b => { const on = b.dataset.preset === st.preset; b.setAttribute("aria-checked", String(on)); b.tabIndex = on || (!st.preset && b.dataset.preset === "S0") ? 0 : -1; });
   }
 
   /* ----- hitung dan gambar: sesudah frame tercat, hanya keadaan terakhir (peleburan) ----- */
@@ -841,7 +841,7 @@ export async function pasang(akar, konteks) {
     else if (a === "ekspor") { unduh("studio-skenario.json", JSON.stringify(ekspor(st.state, st.hasil), null, 2), "application/json"); kabari("Keadaan diekspor sebagai studio-skenario.json."); }
     else if (a === "boq") { unduh("boq-studio.csv", boqCsv(st.hasil), "text/csv;charset=utf-8"); kabari("BOQ diunduh sebagai boq-studio.csv."); }
     else if (a === "matriks") nanti(() => { unduh("matriks-100-pilihan.csv", matriksCsv(st.memo.m100?.nilai || matriks100(st.state)), "text/csv;charset=utf-8"); kabari("Matriks 100 pilihan diunduh."); });
-    else if (a === "atur-ulang") konfirmasi("Atur ulang semua pilihan?", "Semua isian kembali ke contoh Kalimantan Tengah (S2, semi-permanen) dan manfaat kembali 0.", "Atur ulang", () => { st.state = stateAwal("S2"); st.preset = "S2"; sinkronKontrol(true); segarkan(); kabari("Semua isian diatur ulang ke preset S2."); });
+    else if (a === "atur-ulang") konfirmasi("Atur ulang semua pilihan?", "Semua isian kembali ke contoh Kalimantan Tengah (S0, kit SIPPA relay) dan manfaat kembali 0.", "Atur ulang", () => { st.state = stateAwal("S0"); st.preset = "S0"; sinkronKontrol(true); segarkan(); kabari("Semua isian diatur ulang ke preset S0."); });
   }, {signal: sinyal});
 
   /* ----- vonis dan kontrol menempel di bawah bilah konteks ----- */

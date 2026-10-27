@@ -208,6 +208,16 @@ def png(rgb, n, maks=MAKS_BYTE):
 
 
 # ---------------------------------------------------------------- Sentinel-2
+def skala_offset(item, aset):
+    """(skala, offset) pantulan dari raster:bands aset. Earth Search 'sentinel-2-l2a' (href sentinel-s2-l2a-cogs) mencatat offset -0,1
+    untuk baseline >= 04.00, padahal DN COG-nya TIDAK memuat BOA_ADD_OFFSET +1000: memakai offset itu membuat pantulan negatif dan
+    citra hitam. Offset hanya dipakai untuk 'sentinel-2-c1-l2a' (DN memang memuat +1000)."""
+    a = item["assets"][aset]
+    rb = (a.get("raster:bands") or [{}])[0]
+    l2a_lama = item.get("collection") == "sentinel-2-l2a" or "sentinel-s2-l2a-cogs" in a.get("href", "")
+    return rb.get("scale", 1e-4), 0.0 if l2a_lama else rb.get("offset", 0)
+
+
 def cari(bb, hari_ini):
     q = {"collections": ["sentinel-2-l2a"], "bbox": bb, "limit": 30,
          "datetime": f"{(hari_ini - dt.timedelta(days=HARI)).isoformat()}T00:00:00Z/{hari_ini.isoformat()}T23:59:59Z",
@@ -245,8 +255,7 @@ def gambar_s2(item, lat, lon, berkas):
     def kanal(k):
         c = COG(A[k]["href"])
         x0, y0, r0, kiri, atas = jendela(item, k, lat, lon)
-        rb = (A[k].get("raster:bands") or [{}])[0]
-        sk, of = rb.get("scale", 1e-4), rb.get("offset", 0)
+        sk, of = skala_offset(item, k)
         v = c.contoh(level_untuk(c, r0, 20), x0, y0, r0, kiri, atas, KM * 1000, PX)[0]
         return array("B", (0 if d == 0 else max(0, min(255, int((d * sk + of) * 2.5 * 255))) for d in v))
     with ThreadPoolExecutor(3) as ex:
@@ -452,6 +461,15 @@ def uji():
     p = png(rgb, 64, maks=10 ** 9)
     assert p[:8] == b"\x89PNG\r\n\x1a\n" and struct.unpack(">II", p[16:24]) == (64, 64)
     assert len(png(rgb, 64, maks=11_000)) < len(p), "PNG tidak mengecil saat melewati batas"
+    # skala_offset: sentinel-2-l2a baseline >= 04.00 menyatakan offset -0,1 tetapi DN tanpa +1000 -> offset diabaikan; c1 tetap dipakai
+    rb = [{"scale": 1e-4, "offset": -.1}]
+    lama = {"collection": "sentinel-2-l2a", "properties": {"s2:processing_baseline": "05.09"},
+            "assets": {"red": {"href": "https://sentinel-cogs.s3.us-west-2.amazonaws.com/sentinel-s2-l2a-cogs/48/M/YT/2023/7/S2A_48MYT_20230726_1_L2A/B04.tif", "raster:bands": rb}}}
+    assert skala_offset(lama, "red") == (1e-4, 0.0), "offset -0,1 diterapkan ke sentinel-2-l2a: citra jadi hitam"
+    tanpa_kol = {"assets": lama["assets"]}   # item tersimpan tanpa 'collection' (cache) tetap dikenali dari href
+    assert skala_offset(tanpa_kol, "red")[1] == 0.0
+    c1 = {"collection": "sentinel-2-c1-l2a", "assets": {"red": {"href": "https://e84-earth-search-sentinel-data.s3.us-west-2.amazonaws.com/sentinel-2-c1-l2a/48/M/YT/2023/7/S2A_T48MYT_20230726T031529_L2A/B04.tif", "raster:bands": rb}}}
+    assert skala_offset(c1, "red") == (1e-4, -.1)
     print("citra.py uji: lolos")
 
 

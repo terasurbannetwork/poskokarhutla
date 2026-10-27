@@ -128,7 +128,18 @@
 .sp-form-galat .sp-galat-isian{margin:0 0 4px;color:var(--bad);font-size:12.5px;font-weight:600}
 .sp-form-galat{padding:var(--sp-2) var(--sp-3);border-radius:var(--r-sm,10px);background:color-mix(in srgb,var(--bad) 10%,var(--card))}
 
-@media (max-width:1279px){.sp-peta{grid-template-columns:minmax(0,1fr) minmax(320px,380px)}}
+/* laptop dan tablet: peta memenuhi layar, bilah kontrol, legenda, dan panel melayang di dalam peta */
+@media (min-width:768px){
+  .sp-peta{display:block;position:relative;height:max(520px,calc(100dvh - 150px));border-radius:var(--r,16px);overflow:hidden;box-shadow:var(--bayang)}
+  .sp-peta-utama{display:block}
+  .sp-peta-bidang{position:absolute;inset:0;height:auto;border-radius:0;box-shadow:none}
+  .sp-peta-bilah{position:absolute;top:10px;left:10px;z-index:5;max-width:calc(100% - var(--sp-panel) - 30px);box-shadow:var(--shadow-lg,0 8px 28px color-mix(in srgb,var(--ink) 16%,transparent))}
+  .sp-peta-panel{position:absolute;top:10px;right:10px;bottom:10px;z-index:5;width:var(--sp-panel);max-height:none;padding:0}
+  .sp-peta{--sp-panel:min(380px,36%)}
+  .sp-peta-pita{top:auto;bottom:12px;left:50%;right:auto;width:min(420px,40%);transform:translateX(-50%)}
+  .sp-peta .maplibregl-ctrl-bottom-right{right:calc(var(--sp-panel) + 20px)}
+}
+
 
 /* HP: peta penuh, panel jadi lembar bawah tiga tinggi (intip 96 px, setengah, penuh) */
 @media (max-width:767px){
@@ -164,3 +175,5 @@
   .sp-dl-baris{grid-template-columns:112px minmax(0,1fr)}
 }
 @media (prefers-reduced-motion:reduce){.sp-peta-panel,.sp-sakelar input::after{transition:none}}
+.sp-osm{display:inline-block;width:16px;height:0;border-top:3px solid}
+.sp-osm-track{border-top-style:dashed;border-top-width:2px}

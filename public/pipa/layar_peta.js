@@ -140,6 +140,22 @@ export function lapisanSel(ramp) {
     {id: "sel-garis", type: "line", source: "sel", layout: {visibility: "none"}, paint: {"line-color": ["match", ["get", "zona"], ...ZONA.flatMap(z => [z, ZONA_META[z].warna]), "rgba(0,0,0,0)"], "line-width": 1}},
   ];
 }
+/* jalan dan air OSM dari ubin openmaptiles peta dasar (tanpa unduhan tambahan); ubin hanya memuat parit, drain, dan track di zoom 13–14 */
+const WARNA_OSM = gelap => ({jalan: gelap ? "#e2b878" : "#8a5a2b", air: gelap ? "#5cd6ea" : "#0b8fae"});
+const KELAS_UTAMA = ["motorway", "trunk", "primary", "secondary", "tertiary"];
+function lapisanJalanAir(gelap) {
+  const w = WARNA_OSM(gelap), lebar = (utama, lain) => ["match", ["get", "class"], ...utama, lain];
+  return [
+    {id: "osm-air", type: "line", source: "openmaptiles", "source-layer": "waterway", paint: {"line-color": w.air, "line-opacity": 0.9,
+      "line-width": ["interpolate", ["linear"], ["zoom"], 6, lebar([["river", "canal"], 1.2], 0.5), 13, lebar([["river", "canal"], 3], 1.2)]}},
+    {id: "osm-jalan", type: "line", source: "openmaptiles", "source-layer": "transportation", filter: ["match", ["get", "class"], [...KELAS_UTAMA, "minor", "service"], true, false],
+      layout: {"line-cap": "round"}, paint: {"line-color": w.jalan, "line-opacity": 0.85,
+      "line-width": ["interpolate", ["linear"], ["zoom"], 6, lebar([KELAS_UTAMA, 1.4], 0.5), 13, lebar([KELAS_UTAMA, 3], 1.4)]}},
+    {id: "osm-track", type: "line", source: "openmaptiles", "source-layer": "transportation", filter: ["==", ["get", "class"], "track"],
+      paint: {"line-color": w.jalan, "line-opacity": 0.85, "line-width": 1.2, "line-dasharray": [2, 1.5]}},
+  ];
+}
+const LAPISAN_OSM = [["osm-air", "air"], ["osm-jalan", "jalan"], ["osm-track", "jalan"]];
 const LAPISAN_KOMPLEKS = ["kompleks-pola", "kompleks-huruf", "kompleks-sorot"], LAPISAN_SEL = ["sel-isi", "sel-garis"];
 /* hanya pasangan [idLapisan, visibility]: pemanggil memakai setLayoutProperty, tidak pernah addSource (P2) */
 export function satuanLapisan(satuan) {
@@ -227,7 +243,8 @@ export function popupSel(p) {
 }
 
 /* ---------- legenda ---------- */
-export function legendaHtml(jumlah, {per, sumber, versi, kini = Date.now()}) {
+export function legendaHtml(jumlah, {per, sumber, versi, gelap = false, kini = Date.now()}) {
+  const osm = WARNA_OSM(gelap), garis = (w, kelas = "") => `<i class="sp-osm${kelas}" style="border-top-color:${w}"></i>`;
   const baris = ZONA.map(z => `<li>${polaSvg(z)}<b>${z}</b><span>${esc(ZONA_META[z].arti)}</span><span class="n">${esc(fmt(jumlah[z]))}</span></li>`).join("");
   const ramp = ["1–2", "3–4", "5–6", "7–9", "10–14"].map((t, i) => `<li><i class="sp-ramp sp-ramp-${i + 1}"></i>${t}</li>`).join("");
   const lama = basiPeta(per, kini) ? ` ${pil(`basi, per ${tanggal(Date.parse(per))}`, "asumsi-kebijakan", "Data lebih tua dari 400 hari")}` : "";
@@ -235,6 +252,7 @@ export function legendaHtml(jumlah, {per, sumber, versi, kini = Date.now()}) {
     <ul class="sp-leg-zona">${baris}</ul>
     <b class="sp-leg-judul">Tahun terbakar (MCD64A1, 2 km)</b>
     <ul class="sp-leg-ukuran"><li><i class="sp-u sp-u4"></i>0–2</li><li><i class="sp-u sp-u6"></i>3–5</li><li><i class="sp-u sp-u8"></i>6 atau lebih</li></ul>
+    <ul class="sp-leg-ukuran sp-leg-osm"><li>${garis(osm.jalan)}Jalan</li><li>${garis(osm.jalan, " sp-osm-track")}Track</li><li>${garis(osm.air)}Air</li></ul>
     <div class="sp-leg-sel"><b class="sp-leg-judul">Sel 2,2 km, tahun aktif VIIRS</b>
     <ul class="sp-leg-ramp">${ramp}</ul></div>
     <p class="sp-leg-sumber">Sumber: ${esc(sumber)}, data per ${esc(per ? tanggal(Date.parse(per)) : "–")}${lama}</p>`;
@@ -296,6 +314,9 @@ export function kerangkaPeta({kabupaten = [], hitung = {}} = {}) {
       <div class="sp-lapisan-menu" id="sp-lapisan" hidden>
         <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="huruf" checked> Huruf zona di peta (zoom 10 ke atas)</label>
         <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="titik"> Titik kompleks di atas sel</label>
+        <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="jalan" checked> Jalan OSM (track putus-putus)</label>
+        <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="air" checked> Sungai, kanal, dan parit OSM</label>
+        <p class="ad-catat">Track dan parit kecil baru tampil di zoom 13 ke atas.</p>
       </div>
     </div>
     <div class="sp-peta-bidang">
@@ -423,7 +444,7 @@ export async function pasang(akar, konteks) {
   }
   function gambarLegenda() {
     const jumlah = st.versi === "v" ? hitungPerZona(semua, "v", cek) : (() => { const b = dataZ && barisZona(dataZ, prov, st.versi); return b || hitungPerZona(semua, st.versi, cek); })();
-    q("#sp-leg-badan").innerHTML = legendaHtml(jumlah, {per: dataK.per, sumber: "OSM (ODbL) via Overpass, Copernicus GLO-30, JRC GSW, MODIS MCD64A1, VIIRS S-NPP", versi: st.versi});
+    q("#sp-leg-badan").innerHTML = legendaHtml(jumlah, {per: dataK.per, sumber: "OSM (ODbL) via Overpass, Copernicus GLO-30, JRC GSW, MODIS MCD64A1, VIIRS S-NPP", versi: st.versi, gelap: sebagaiGelap()});
   }
   function gambarRincian() {
     const wad = q(".sp-panel-rincian"), k = st.pilih && peKomp[st.pilih];
@@ -448,6 +469,7 @@ export async function pasang(akar, konteks) {
     const s = satuanLapisan(st.satuan), titik = q('[data-lapisan="titik"]').checked, huruf = q('[data-lapisan="huruf"]').checked;
     for (const [id, v] of s.kompleks) peta.setLayoutProperty(id, "visibility", id === "kompleks-huruf" && !huruf ? "none" : titik && st.satuan === "sel" ? "visible" : v);
     if (peta.getLayer("sel-isi")) for (const [id, v] of s.sel) peta.setLayoutProperty(id, "visibility", v);
+    for (const [id, kunci] of LAPISAN_OSM) if (peta.getLayer(id)) peta.setLayoutProperty(id, "visibility", q(`[data-lapisan="${kunci}"]`).checked ? "visible" : "none");
     muatEl.hidden = !(st.satuan === "sel" && !peta.getLayer("sel-isi"));
     if (!muatEl.hidden) { muatEl.classList.add("kecil"); muatEl.textContent = "Memuat sel 2,2 km"; }
   };
@@ -459,6 +481,7 @@ export async function pasang(akar, konteks) {
   }
   function pasangLapisan() {
     for (const z of ZONA) if (!peta.hasImage(`zona-${z}`)) peta.addImage(`zona-${z}`, gambarZona(z, sebagaiGelap()), {pixelRatio: 2});
+    if (peta.getSource("openmaptiles") && !peta.getLayer("osm-air")) for (const l of lapisanJalanAir(sebagaiGelap())) peta.addLayer(l);   // di bawah titik kompleks
     if (!peta.getSource("kompleks")) {
       peta.addSource("kompleks", {type: "geojson", data: geoK, promoteId: "id"});
       for (const l of lapisanKompleks(KUNCI_ZONA[st.versi])) peta.addLayer(l);
@@ -494,7 +517,7 @@ export async function pasang(akar, konteks) {
     await muatMapLibre();
     if (sinyal.aborted) return;
     const titik = new maplibregl.LngLatBounds(); semua.forEach(k => titik.extend([k.lon, k.lat]));
-    peta = new maplibregl.Map({container: "sp-peta-kanvas", style: DASAR(), bounds: titik, fitBoundsOptions: {padding: 32, animate: false}, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false});
+    peta = new maplibregl.Map({container: "sp-peta-kanvas", style: DASAR(), bounds: titik, fitBoundsOptions: {padding: ponsel() ? 32 : {top: 150, left: 32, bottom: 32, right: 420}, animate: false}, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-left");
     const ukur = new ResizeObserver(() => peta?.resize());   // wadah berubah tinggi (lembar, saringan, orientasi): kanvas mengikuti
@@ -517,7 +540,7 @@ export async function pasang(akar, konteks) {
     });
     for (const id of ["kompleks-sorot", "sel-isi"]) { peta.on("mouseenter", id, () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", id, () => { peta.getCanvas().style.cursor = ""; }); }
     /* tema: ganti gaya dasar, lalu style.load memasang ulang gambar, sumber, dan lapisan */
-    const amati = new MutationObserver(() => { if (peta && !gagalDasar) { popup?.remove(); peta.setStyle(DASAR(), {diff: false}); } });
+    const amati = new MutationObserver(() => { gambarLegenda(); if (peta && !gagalDasar) { popup?.remove(); peta.setStyle(DASAR(), {diff: false}); } });
     amati.observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]}); hentikan.push(() => amati.disconnect());
     peta.once("load", () => (globalThis.requestIdleCallback || (f => setTimeout(f, 400)))(() => nanti(bacaSel)));
   } catch (e) {

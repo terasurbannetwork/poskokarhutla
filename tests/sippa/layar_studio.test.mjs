@@ -103,13 +103,13 @@ test("keuangan: manfaat 0 sama dengan fin mesin dan dengan SippaHitung.npv dan b
 });
 
 /* ---------- kolom dan matriks ---------- */
-test("susunKolom: S0, S0B, S1, S2, S3 lalu tersimpan paling banyak 6, tiap kolom lewat gerbangSippa, S3 ditutup sampai G5", () => {
+test("susunKolom: S0, S0B, S1, S2, S3 lalu tersimpan paling banyak 6, tiap kolom lewat gerbangSippa, S2 dan S3 ditutup (keputusan 60)", () => {
   const tersimpan = Array.from({length: 8}, (_, i) => ({id: String(i).padStart(16, "0"), nama: `Uji ${i}`, state: {waterQ: 20 + i}}));
   const k = S.susunKolom(E.defaultState(), tersimpan, KONST);
   assert.deepEqual(k.map(x => x.kode), ["S0", "S0B", "S1", "S2", "S3", "U1", "U2", "U3", "U4", "U5", "U6"], "enam tambahan, tidak lebih");
-  assert.equal(k.find(x => x.kode === "S3").ditutup, true); assert.ok(!k.find(x => x.kode === "S2").ditutup);
+  assert.equal(k.find(x => x.kode === "S3").ditutup, true); assert.equal(k.find(x => x.kode === "S2").ditutup, true); assert.ok(!k.find(x => x.kode === "S1").ditutup);
   for (const c of k) assert.ok(c.hasil.hard && c.hasil.decision && c.hasil.fin, c.kode);
-  assert.ok(k.find(x => x.kode === "S3").hasil.conditional.some(t => /G5/.test(t)), "S3 membawa catatan ditutup sampai G5");
+  for (const kode of ["S2", "S3"]) assert.ok(k.find(x => x.kode === kode).hasil.hard.some(t => /^jaringan_permanen/.test(t)), `${kode} wajib NO-GO jaringan_permanen`);
   assert.equal(k[5].nama, "Uji 0"); assert.equal(k[5].asal, "tersimpan");
   assert.equal(S.susunKolom(E.defaultState(), [], KONST).length, 5);
 });
@@ -247,12 +247,12 @@ test("kepekaan: enam variabel, diurut dari rentang TCO terbesar, sisi rendah tid
 
 /* ---------- HTML ---------- */
 const nama = '<img src=x onerror=alert(1)>';
-test("tabBandingkanHtml: tabel dan kartu HP dari satu sumber; teks data di-escape; kolom NO-GO tampil dengan alasan keras; S3 ditutup sampai G5; th scope", () => {
+test("tabBandingkanHtml: tabel dan kartu HP dari satu sumber; teks data di-escape; kolom NO-GO tampil dengan alasan keras; S2 dan S3 ditutup; th scope", () => {
   const k = S.susunKolom(E.defaultState(), [{id: "a".repeat(16), nama, state: {waterQ: 5}}], KONST);
   const h = S.tabBandingkanHtml(S.barisMatriks(k), k);
   assert.ok(!h.includes(nama) && h.includes(esc(nama)), "nama skenario wajib di-escape");
   assert.match(h, /class="ad-tabel-wadah/); assert.match(h, /sp-tabel-studio/); assert.match(h, /sp-skenario/);
-  assert.match(h, /<th scope="col"/); assert.match(h, /<th scope="row"/); assert.match(h, /ditutup sampai G5/);
+  assert.match(h, /<th scope="col"/); assert.match(h, /<th scope="row"/); assert.match(h, /sp-tutup">ditutup</);
   const noGo = k.filter(c => c.hasil.decision === "NO-GO"); assert.ok(noGo.length);
   for (const c of noGo) { assert.ok(h.includes(esc(c.hasil.hard[0])), `alasan keras ${c.kode} tampil`); }
   assert.match(h, /sp-kol-nogo/); assert.match(h, /sp-terbaik/); assert.match(h, /class="sr">terbaik/);
