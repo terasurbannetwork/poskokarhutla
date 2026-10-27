@@ -3,16 +3,10 @@ name: Terbitkan tampilan
 # Perubahan tampilan (HTML/JS/CSS, worker) terbit lewat sini, BUKAN `wrangler deploy` dari laptop: data harian diambil dari
 # cache jalan data.yml / banjir.yml terakhir, jadi tidak ada data yang mundur. ± 5 menit (2 menit terbit + uji node).
 # Uji node (agen + worker) jalan SEBELUM apa pun diterbitkan: merah = tidak deploy.
+# Pemicu push TIDAK di sini: terbit_antre.yml (di luar grup data) menunggu slot antre bebas lalu men-dispatch berkas ini. Push langsung
+# ke grup `data` mengusir titik.yml/data.yml terjadwal dari satu-satunya slot antre (27 Okt 2026). Dispatch manual di bawah langsung masuk
+# grup `data`: jangan dipicu di atas antrean orang lain.
 on:
-  push:
-    branches: [main, staging]
-    paths:
-      - "public/**"
-      - "!public/data/**"
-      - "!public/banjir/data/**"
-      - "src/**"
-      - "wrangler.jsonc"
-      - "migrations/**"
   workflow_dispatch:
 
 concurrency:

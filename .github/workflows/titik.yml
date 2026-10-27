@@ -2,9 +2,19 @@ name: Titik panas tiap 3 jam
 
 # Lintasan VIIRS/MODIS masuk FIRMS NRT sepanjang hari; tiap 3 jam titik panas, kompleks, posko, dan kebutuhan operasi
 # dihitung ulang lalu diterbitkan. FWI tidak dihitung ulang (FWI=0: cuaca siang cukup sekali sehari, hemat kuota Open-Meteo).
+#
+# Dua putaran TAMBAHAN menjelang cut-off laporan (27 Okt 2026). GitHub menunda cron ± 35 menit (median; p90 ± 59), jadi putaran terakhir
+# sebelum cut-off 17.00 WIB (Penanganan) baru mulai ± 14.15 dan memuat ± 55% titik hari itu (lintasan VIIRS siang tiba di FIRMS ± 15.40-16.50),
+# dan sebelum 07.00 WIB (harian) putaran terakhir mulai ± 05.15.
+#   cron 10 9 * * *   (16.10 WIB) -> mulai nyata ± 16.45 WIB
+#   cron 55 22 * * *  (05.55 WIB) -> mulai nyata ± 06.30 WIB (menit 55, bukan 0: awal jam tersibuk di GitHub)
+# Putaran tambahan TIDAK menjalankan langkah harian/6-jam (jejak api, risiko+prioritas): kondisinya github.event.schedule di langkah itu,
+# BUKAN jam wall-clock. Menambah cron di sini = tambahkan juga ke dua kondisi itu (dijaga tests/agen/gerbang-antrean-data.test.mjs).
 on:
   schedule:
     - cron: "40 */3 * * *"
+    - cron: "10 9 * * *"
+    - cron: "55 22 * * *"
   workflow_dispatch:
 
 concurrency:
@@ -200,10 +210,12 @@ jobs:
       # Jejak api: simulasi sebaran +24/+48/+72 jam tiap kompleks aktif (model data + cuaca prakiraan) -> public/data/jejak_api.json
       # (dibaca src/ews.js untuk peringatan email). Cache cuaca ikut folder prospektif (disimpan di langkah berikutnya). Anggaran sendiri 420 dtk.
       - name: Jejak api kompleks aktif (boleh gagal)
+        if: github.event.schedule != '10 9 * * *' && github.event.schedule != '55 22 * * *'   # bukan putaran tambahan cut-off (cron di atas)
         continue-on-error: true
         timeout-minutes: 17   # JEJAK_DETIK 900 (300 kompleks, 16 Okt 2026: 40 kompleks = 49 dtk) + kelonggaran tulis berkas
         # sekali sehari (pemilik: "pipeline harian"; sampai ~15 menit per jalan, tiap 3 jam = ~3.600 menit Actions/bulan): putaran 21:40 UTC
         # = 04:40 WIB, jadi email terkirim pagi. Jendela 21-23 UTC menampung keterlambatan jadwal GitHub. Manual (dispatch) selalu jalan.
+        # Putaran tambahan 55 22 (mulai ± 23.30 UTC, di jendela itu) disaring `if:` di atas supaya jejak tidak jalan dua kali sehari.
         run: |
           jam=$(date -u +%H)
           if [ "${{ github.event_name }}" != "workflow_dispatch" ] && [ "$jam" -lt 21 ]; then echo "jejak dilewati (jam UTC $jam, harian 21-23)"; exit 0; fi
@@ -231,10 +243,12 @@ jobs:
       # Prioritas dampak tiap 6 jam (Ruang Koordinasi F2): jalan 00, 06, 12, 18 UTC menumpang titik panas segar dari langkah di atas; bahaya lain dari
       # cache banjir- yang dipulihkan. Uji balik prospektif tetap harian di lintas.yml. Worker membaca hasilnya menit 55 (src/pengingat.js).
       - name: Indeks risiko dan prioritas dampak tiap 6 jam (boleh gagal)
+        if: github.event.schedule != '10 9 * * *' && github.event.schedule != '55 22 * * *'   # bukan putaran tambahan cut-off (cron di atas)
         continue-on-error: true
         timeout-minutes: 5
         run: |
-          # cron 40 */3 telat 30-45 menit, jadi jam jatuh di 1,4,7,..; j%6 <= 2 menangkap satu dari tiap dua putaran (sekali per 6 jam)
+          # cron 40 */3 telat 30-45 menit, jadi jam jatuh di 1,4,7,..; j%6 <= 2 menangkap satu dari tiap dua putaran (sekali per 6 jam).
+          # Putaran tambahan (jam ± 9 dan ± 23 UTC) sudah disaring `if:` di atas; tanpa itu j=0 (cron 55 22 yang telat > 1 jam) lolos dua kali.
           j=$((10#$(date -u +%H)))
           if [ $((j % 6)) -gt 2 ] && [ "${{ github.event_name }}" != "workflow_dispatch" ]; then echo "jam $j UTC: bukan giliran 6 jam"; exit 0; fi
           python3 scripts/bnpb/risiko.py --cek && python3 scripts/bnpb/risiko.py

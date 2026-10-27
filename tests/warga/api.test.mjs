@@ -551,6 +551,8 @@ uji("titik panas 3 jam: CSV rusak dibuang, keyakinan dikodekan, kembar dihapus, 
   assert.ok(!B.some(b => b[0] === -5.5), "titik Laut Jawa harus dibuang");
   assert.equal(Math.max(...B.map(b => b[2])), 0, "titik terbaru harus jam 0 terhadap acuan");
   assert.ok(r.j.galat.some(g => g.includes("VIIRS_NOAA20_NRT")), "galat sensor gagal harus dicatat");
+  const m1 = new Date(Math.floor(t1 / 60e3) * 60e3).toISOString();   // jam CSV hanya sampai menit
+  assert.deepEqual(r.j.terakhir_sensor, {M: m1, N: m1}, "terakhir_sensor: hanya sensor yang punya deteksi (N20 galat, N21 kosong tidak ditulis)");
   for (let i = 0; i < 9; i++) await (await mf.getWorker()).scheduled({cron: "15 */3 * * *"});
   assert.equal((await DB.prepare("SELECT count(*) n FROM titik_terbaru").first()).n, 8, "hanya 8 putaran terakhir disimpan");
 });
@@ -577,4 +579,27 @@ uji("status: jeda satelit dari meta.json, tanpa ambang dan tanpa data_terakhir t
     r = await panggil("GET", "/api/status");
     assert.ok(!("jeda_satelit" in r.j.sumber), "tanpa data_terakhir: tidak ada angka, bukan nol");
   } finally { if (lama === undefined) delete ASET_UJI["/data/meta.json"]; else ASET_UJI["/data/meta.json"] = lama; }
+});
+
+/* jeda per sensor: terakhir_sensor putaran titik_terbaru terakhir (json_extract di D1) -> sumber.jeda_sensor; tanpa ambang, tidak pernah 503.
+   N berhenti 1 Nov 2026 13:00 UTC (produk S-NPP dihentikan): uji ini memakai jam sungguhan, jadi harapan N mengikuti tanggalnya; batas persisnya di jeda_sensor.test.mjs. */
+uji("status: jeda_sensor per sensor dari putaran titik terakhir (4 sensor, sensor hilang, putaran lama tanpa medan), tidak pernah 503", async () => {
+  const dibuat = KINI + 1000, iso = jam => new Date(dibuat - Math.round(jam * JAM)).toISOString(), berhenti = Date.now() >= Date.UTC(2026, 10, 1, 13);
+  const sisip = async isi => (await DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(dibuat, JSON.stringify({baris: [], ...isi})).run()).meta.last_row_id;
+  const N = (terakhir, umur) => berhenti ? {berhenti: true} : {terakhir, umur_jam: umur};
+  const ids = [];
+  try {
+    ids.push(await sisip({terakhir_sensor: {M: iso(1.5), N: iso(8.3), N20: iso(0.4), N21: iso(4.9)}}));
+    let r = await panggil("GET", "/api/status");
+    assert.deepEqual(r.j.sumber.jeda_sensor, {M: {terakhir: iso(1.5), umur_jam: 1.5}, N: N(iso(8.3), 8.3), N20: {terakhir: iso(0.4), umur_jam: 0.4}, N21: {terakhir: iso(4.9), umur_jam: 4.9}}, r.teks);
+    assert.ok(!r.j.basi.includes("jeda_sensor") && !("jeda_sensor" in r.j.uji), "jeda tanpa ambang tidak boleh membuat 503");
+    const dasar = {status: r.status, ok: r.j.ok, basi: r.j.basi};
+    ids.push(await sisip({terakhir_sensor: {M: iso(2), N20: iso(3)}}));   // N dan N21 tidak punya deteksi
+    r = await panggil("GET", "/api/status");
+    assert.deepEqual(r.j.sumber.jeda_sensor, {M: {terakhir: iso(2), umur_jam: 2}, N: berhenti ? {berhenti: true} : {terakhir: null, umur_jam: null}, N20: {terakhir: iso(3), umur_jam: 3}, N21: {terakhir: null, umur_jam: null}}, r.teks);
+    ids.push(await sisip({}));   // putaran ditulis sebelum perubahan ini: tanpa angka, bukan nol
+    r = await panggil("GET", "/api/status");
+    assert.ok(!("jeda_sensor" in r.j.sumber), "putaran tanpa terakhir_sensor: tidak dilaporkan");
+    assert.deepEqual({status: r.status, ok: r.j.ok, basi: r.j.basi}, dasar, "ada/tidaknya jeda_sensor tidak mengubah status, ok, maupun basi");
+  } finally { for (const id of ids) await DB.prepare("DELETE FROM titik_terbaru WHERE id = ?").bind(id).run(); }
 });

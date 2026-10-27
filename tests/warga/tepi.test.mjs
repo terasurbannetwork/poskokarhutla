@@ -8,6 +8,7 @@ import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 
 let mf, DB;
+const ASET = {};   // jalur -> isi; selain itu 404 (uji /api/status mengisinya supaya 200 dan bisa disimpan cache)
 const verifikasi = [];
 const luar = async req => {
   const u = new URL(req.url);
@@ -17,7 +18,7 @@ const luar = async req => {
 };
 const opsi = ikat => ({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
   compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-tepi"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", ...ikat},
-  serviceBindings: {ASSETS: () => new Response("tidak ada", {status: 404})}, outboundService: luar});
+  serviceBindings: {ASSETS: async req => { const p = new URL(req.url).pathname; return p in ASET ? new Response(ASET[p]) : new Response("tidak ada", {status: 404}); }}, outboundService: luar});
 
 before(async () => {
   mf = new Miniflare(opsi({TURNSTILE_SITEKEY: "kunci-situs", TURNSTILE_SECRET: "rahasia-ts"}));
@@ -77,4 +78,23 @@ uji("cache tepi: daftar GET disimpan 30 dtk per kueri ternormalisasi; admin dan 
   assert.equal(adm.h.get("cache-control"), "no-store", `admin harus no-store: ${adm.status}`);
   const p = await lapor("lolos", -2.7);
   assert.equal(p.h.get("cache-control"), "no-store", "POST harus no-store");
+});
+
+/* /api/status: kunci cache tanpa kueri, jadi ?x=acak tidak melewati cache dan tidak menjalankan periksaStatus penuh (hanya 200 yang disimpan; 503 tetap tak di-cache) */
+uji("cache tepi: /api/status memakai satu kunci walau kuerinya acak; rute lain tetap per kueri", async () => {
+  const meta = jam => JSON.stringify({dibuat: new Date(Date.now() - jam * 3600e3).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(2000)});
+  Object.assign(ASET, Object.fromEntries(["gempa", "cuaca", "udara", "gunungapi", "kekeringan"].map(n => [`/banjir/data/berita_${n}.json`, meta(2)])),
+    {"/data/kekeringan_meta.json": meta(2), "/udara/data/prakiraan.json": meta(2), "/banjir/data/gunungapi_status.json": meta(2), "/data/meta.json": meta(2), "/data/presiden/semua.json": meta(2),
+     "/banjir/data/meta.json": meta(20), "/data/berita.json": meta(5), "/data/dampak.json": meta(100), "/banjir/data/cuaca_meta.json": meta(3)});
+  await DB.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES ('autogempa', NULL, '{}', ?)").bind(Date.now() - 360e3).run();
+  await DB.prepare("INSERT INTO cuaca_sumber (kunci, isi, dibuat) VALUES ('nowcast', '{}', ?)").bind(Date.now() - 1800e3).run();
+  try {
+    const a = await panggil("GET", "/api/status");
+    assert.equal(a.status, 200, a.teks); assert.equal(a.h.get("cache-control"), "public, max-age=60");
+    await new Promise(r => setTimeout(r, 25));   // putaran periksaStatus baru akan membawa `kini` berbeda
+    for (const q of ["?x=1", "?x=acak-" + Math.random(), "?a=1&b=2", "?"]) {
+      const b = await panggil("GET", "/api/status" + q);
+      assert.equal(b.status, 200, b.teks); assert.equal(b.j.kini, a.j.kini, `${q}: harus kena cache (kini sama), bukan periksaStatus baru`); assert.equal(b.teks, a.teks);
+    }
+  } finally { for (const k of Object.keys(ASET)) delete ASET[k]; await DB.prepare("DELETE FROM gempa_sumber").run(); await DB.prepare("DELETE FROM cuaca_sumber").run(); }
 });
