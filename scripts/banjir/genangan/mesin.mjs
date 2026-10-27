@@ -252,11 +252,21 @@ async function jalan() {
   const {kec, nama} = rasterKec(JSON.parse(fs.readFileSync(P("public/geo/kecamatan/31.json"), "utf8")), nx, ny, lonSel, latSel);
   if (a.siap) { const c = {}; for (let k = 0; k < N; k++) if (laut[k]) { const n = kec[k] < 0 ? "(luar DKI)" : nama[kec[k]]; c[n] = (c[n] || 0) + 1; }
     console.log(JSON.stringify({nLaut, per_kec: c, rata_z_sel_darat_dki: null}, null, 1)); return; }
-  const kdKec = nama.map(() => a.kd), kd = new Float64Array(N); for (let k = 0; k < N; k++) kd[k] = laut[k] ? 0 : (kec[k] >= 0 ? kdKec[kec[k]] : a.kd);
+  const kdKec = nama.map(() => a.kd), kd = new Float64Array(N); for (let k = 0; k < N; k++) kd[k] = laut[k] || alur[k] ? 0 : (kec[k] >= 0 ? kdKec[kec[k]] : a.kd);
 
-  /* hujan: sel hujan terdekat per sel DEM -> kelas; SCS-CN harian */
-  const hj = JSON.parse(fs.readFileSync(P("data/raw/banjir/genangan/hujan_jam", a.kejadian + ".json"), "utf8")), sh = hj[a.hujan];
-  if (!sh) throw new Error(`model hujan ${a.hujan} tidak ada`);
+  /* hujan: sel hujan terdekat per sel DEM -> kelas; SCS-CN harian. Sumber: ifs | era5 (jam langsung) | gsmap_dis (total harian GSMaP x bentuk jam model --bentuk) */
+  const KUNCI = {ifs: "ecmwf_ifs", ecmwf_ifs: "ecmwf_ifs", era5: "era5"}, hj = JSON.parse(fs.readFileSync(P("data/raw/banjir/genangan/hujan_jam", a.kejadian + ".json"), "utf8"));
+  const kunciModel = a.hujan === "gsmap_dis" ? KUNCI[a.bentuk] : KUNCI[a.hujan]; if (!kunciModel) throw new Error(`--hujan ${a.hujan} tidak dikenal (ifs|era5|gsmap_dis)`);
+  let sh = hj[kunciModel]; if (!sh) throw new Error(`model hujan ${kunciModel} tidak ada`);
+  if (sh.every(s => s.mm.every(x => x == null))) throw new Error(`model hujan ${kunciModel} kosong semua (null)`);
+  let infoHujan = {sumber: a.hujan, model: kunciModel};
+  if (a.hujan === "gsmap_dis") {
+    const gs = JSON.parse(fs.readFileSync(P("data/banjir/genangan/gsmap_harian.json"), "utf8")), gl = gs.meta.grid; let ganti = 0, tanpa = 0;
+    sh = sh.map(s => { const total = {}; for (const [tgl, f] of Object.entries(gs.hari)) { const v = bilinear(f, gl.lon, gl.lat, s.lon, s.lat); if (v != null) total[tgl] = v; }
+      const r = disagregasi(s.mm, s.waktu, total); ganti = Math.max(ganti, r.diganti); tanpa += r.tanpaBentuk; return {...s, mm: r.mm}; });
+    if (!ganti) throw new Error(`GSMaP harian tidak mencakup ${a.kejadian} (hari tersedia ${Object.keys(gs.hari)[0]}..${Object.keys(gs.hari).at(-1)})`);
+    infoHujan = {...infoHujan, hari_diganti: ganti, hari_model_kering_diratakan: tanpa, produk: [...new Set(Object.values(gs.produk))]};
+  }
   const lats = [...new Set(sh.map(s => s.lat))].sort((p, q) => p - q), lons = [...new Set(sh.map(s => s.lon))].sort((p, q) => p - q);
   const idx = sh.map(s => lats.indexOf(s.lat) * lons.length + lons.indexOf(s.lon)), serieKisi = []; idx.forEach((q, i) => serieKisi[q] = sh[i]);
   const o = serieKisi[0].waktu.indexOf(a.mulai + "T00:00"); if (o < 0) throw new Error("mulai di luar jendela hujan");
@@ -267,30 +277,43 @@ async function jalan() {
   const kelas = new Uint8Array(N), near = (v, arr) => { let b = 0; for (let i = 1; i < arr.length; i++) if (Math.abs(arr[i] - v) < Math.abs(arr[b] - v)) b = i; return b; };
   for (let j = 0; j < ny; j++) { const lj = near(latSel(j), lats); for (let i = 0; i < nx; i++) kelas[j * nx + i] = lj * lons.length + near(lonSel(i), lons); }
 
-  /* hulu: dedup per sel GloFAS (Krukut=Pesanggrahan, Bekasi=Sunter berbagi sel), hanya yang di dalam kotak; sel akumulasi D8 terbesar dalam 2,5 km */
-  let acc = null; const masuk = [], hulu = JSON.parse(fs.readFileSync(P("public/banjir/data/genangan/hulu.json"), "utf8")), dipakai = new Set(), catatHulu = [];
+  /* hulu: dedup per sel GloFAS (Krukut=Pesanggrahan, Bekasi=Sunter berbagi sel), hanya yang di dalam kotak. Disuntik di sel ALUR bernama sama (OSM) terdekat dari
+     titik snap (<= radiusHuluKm). Tanpa alur (--tanpa-alur) atau tanpa alur bernama: dilewati, dicatat. ASUMSI skala: Q GloFAS di titik snap = seluruh debit sungai
+     di titik itu (skala 1 x --skala-hulu); fraksi luas DAS di dalam kotak TIDAK dihitung (luas DAS tak ada di repo). Bila titik B terletak di hilir titik A pada alur yang
+     sama, B menyuntik max(0, Q_B - sum Q anak) supaya total di B tetap Q_B (tak dihitung ganda). */
+  const masuk = [], hulu = JSON.parse(fs.readFileSync(P("public/banjir/data/genangan/hulu.json"), "utf8")), dipakai = new Set(), catatHulu = [], calon = [];
   const tglQ = new Date(a.mulai + "T00:00:00+07:00").getTime();
   if (a.hulu) for (const [n, t] of Object.entries(hulu.titik)) {
     const ev = t.kejadian[a.kejadian], kunci = t.snap.join(","); if (!ev) { catatHulu.push({nama: n, dilewati: "tanpa seri kejadian"}); continue; }
-    if (dipakai.has(kunci)) { catatHulu.push({nama: n, dilewati: "sel GloFAS sama dengan titik lain"}); continue; } dipakai.add(kunci);
-    const ci = Math.round((t.snap[1] - lonSel(0)) / (a.faktor * meta.dx)), cj = Math.round((latSel(0) - t.snap[0]) / (a.faktor * meta.dy));
+    if (dipakai.has(kunci)) { catatHulu.push({nama: n, dilewati: "sel GloFAS sama dengan titik lain"}); continue; }
+    const ci = (t.snap[1] - lonSel(0)) / (a.faktor * meta.dx), cj = (latSel(0) - t.snap[0]) / (a.faktor * meta.dy);
     if (ci < 0 || cj < 0 || ci >= nx || cj >= ny) { catatHulu.push({nama: n, dilewati: "di luar kotak DEM", snap: t.snap}); continue; }
-    if (!acc) { const f = SG.isiCekungan(z, nx, ny, benih); acc = SG.akumulasi(f, SG.arahD8(f, nx, ny, benih)); }
-    const R = Math.round(2500 / dx); let b = -1;
-    for (let j = Math.max(0, cj - R); j <= Math.min(ny - 1, cj + R); j++) for (let i = Math.max(0, ci - R); i <= Math.min(nx - 1, ci + R); i++) { const k = j * nx + i; if (!laut[k] && (b < 0 || acc[k] > acc[b])) b = k; }
-    const off = Math.round((new Date(ev.mulai + "T00:00:00+07:00").getTime() - tglQ) / 3.6e6), q = debitJam(ev.q, -off, J);
-    masuk.push({k: b, q}); catatHulu.push({nama: n, sel: [b % nx, (b / nx) | 0], z_m: +z0[b].toFixed(2), akumulasi_sel: acc[b], q_rata: +(q.reduce((x, y) => x + y, 0) / q.length).toFixed(1), q_maks: +Math.max(...q).toFixed(1)});
+    const nm = NAMA_ALUR[n] || new RegExp(n, "i"); let b = -1, bd = Infinity;
+    for (const s of sungaiSel) if (nm.test(s.nama)) for (const k of s.sel) { if (!alur[k]) continue; const dd = Math.hypot(k % nx - ci, ((k / nx) | 0) - cj) * dx; if (dd < bd) { bd = dd; b = k; } }
+    if (b < 0 || bd > a.radiusHuluKm * 1000) { catatHulu.push({nama: n, dilewati: b < 0 ? "tidak ada alur OSM bernama sama" : `alur bernama terdekat ${(bd / 1000).toFixed(1)} km > ${a.radiusHuluKm} km`}); continue; }
+    dipakai.add(kunci);
+    const off = Math.round((new Date(ev.mulai + "T00:00:00+07:00").getTime() - tglQ) / 3.6e6), q = debitJam(ev.q, -off, J).map(v => v * a.skalaHulu);
+    calon.push({nama: n, k: b, q, jarak_snap_m: Math.round(bd)});
   }
+  /* hilir tiap calon: ikuti dasar menurun lewat sel alur sampai calon lain / laut / tepi */
+  const hilir = k0 => { let c = k0, ct = new Set([c]); for (let s = 0; s < N; s++) { const i = c % nx, j = (c / nx) | 0; let nb = -1;
+      for (const n of [i > 0 && c - 1, i < nx - 1 && c + 1, j > 0 && c - nx, j < ny - 1 && c + nx]) if (n !== false && alur[n] && !ct.has(n) && z[n] < z[c] - 1e-12 && (nb < 0 || z[n] < z[nb])) nb = n;
+      if (nb < 0) return -1; c = nb; ct.add(c); const m = calon.find(x => x.k === c); if (m) return m; } return -1; };
+  for (const c of calon) c.induk = hilir(c.k);
+  for (const c of calon) { const anak = calon.filter(x => x.induk === c), q = c.q.map((v, t) => Math.max(0, v - anak.reduce((s, x) => s + x.q[t], 0)));
+    masuk.push({k: c.k, q}); catatHulu.push({nama: c.nama, sel: [c.k % nx, (c.k / nx) | 0], jarak_snap_m: c.jarak_snap_m, z_dasar_m: +z0[c.k].toFixed(2), q_glofas_rata: +(c.q.reduce((x, y) => x + y, 0) / c.q.length).toFixed(1),
+      q_suntik_rata: +(q.reduce((x, y) => x + y, 0) / q.length).toFixed(1), q_suntik_maks: +Math.max(...q).toFixed(1), di_hilir_titik: c.induk ? c.induk.nama : null}); }
 
   const pasang = SG.pasang(Array(Math.ceil(J / 24) + 1).fill(a.muka), a.rentang);
-  log(`jalankan: ${J} jam, ${masuk.length} masukan hulu, hujan ${a.hujan} (jumlah ${Math.min(...lain).toFixed(0)}..${Math.max(...lain).toFixed(0)} mm), kd ${a.kd} mm/jam`);
-  const hasil = SG.jalankan({nx, ny, dx, z, laut, muka: pasang, jam: J, hujanKelas: seri, kelas, masuk, kd},
+  log(`jalankan: ${J} jam, ${masuk.length} masukan hulu, hujan ${a.hujan}/${kunciModel} (jumlah ${Math.min(...lain).toFixed(0)}..${Math.max(...lain).toFixed(0)} mm), kd ${a.kd} mm/jam`);
+  const manning = new Float64Array(N); for (let k = 0; k < N; k++) manning[k] = nAlur[k] || SG.ASUMSI.MANNING;
+  const hasil = SG.jalankan({nx, ny, dx, z, laut, muka: pasang, jam: J, hujanKelas: seri, kelas, masuk, kd, manning},
     p => { if (Math.round(p * J) % 12 === 0) log(`  ${(p * 100).toFixed(0)}%`); });
   const waktuJalan = (Date.now() - t0) / 1000; log(`selesai: ${hasil.langkah} langkah`);
 
   /* ---------- keluaran per kecamatan ---------- */
-  const A = dx * dx, nK = nama.length, hm = hasil.hmaks, jamGe = new Uint8Array(N), TG = SG.ASUMSI.TERGENANG;
-  for (let t = 1; t <= J; t++) { const off = t * N; for (let k = 0; k < N; k++) if (hasil.kedalaman[off + k] >= TG) jamGe[k]++; }
+  const A = dx * dx, nK = nama.length, hm = Float32Array.from(hasil.hmaks, (v, k) => Math.max(0, v - dalamAlur[k])), jamGe = new Uint8Array(N), TG = SG.ASUMSI.TERGENANG;
+  for (let t = 1; t <= J; t++) { const off = t * N; for (let k = 0; k < N; k++) if (hasil.kedalaman[off + k] - dalamAlur[k] >= TG) jamGe[k]++; }
   const volKelas = seri.map(s => s.reduce((x, y) => x + y, 0) / 1000 * A), akhir = J * N;
   const per = nama.map(() => ({nSel: 0, h: [], wet: 0, jamBasah: [], hujan: 0, sungai: 0, drain: 0, sisa: 0}));
   for (let k = 0; k < N; k++) { const c = kec[k]; if (c < 0 || laut[k]) continue; const p = per[c];
@@ -310,16 +333,22 @@ async function jalan() {
   const n = hasil.neraca;
   const keluar = {
     dibuat: new Date().toISOString(), kejadian: a.kejadian,
-    parameter: {...a, dx_m: +dx.toFixed(2), nx, ny, tahun_dem: TAHUN_DEM, subsidensi_m: +turun.toFixed(3), kalibrasi: "TIDAK. Semua angka placeholder (J2).",
-      catatan: ["Hujan ECMWF IFS 0,1 derajat, belum dikoreksi bias; ERA5-Land kosong di arsip lokal (semua None).", "CN seragam, belum dari tutupan lahan.",
-        "Kd seragam per kecamatan; sungai tanpa alur (DEM 33 m, luapan v2).", "Subsidensi seragam, jangkar literatur (lihat jangkarSubsiden)."]},
+    parameter: {...a, dx_m: +dx.toFixed(2), nx, ny, tahun_dem: TAHUN_DEM, subsidensi_m: +turun.toFixed(3), kalibrasi: "TIDAK. Semua angka placeholder (J2.5).",
+      alur_param: a.alur ? ALUR : null, sel_alur: info.sel_alur || null, profil_alur: info.profil || null, sel_tanggul: nTanggul, hujan_info: infoHujan,
+      catatan: ["Hujan: " + JSON.stringify(infoHujan) + "; belum dikoreksi bias. ERA5-Land kosong untuk Jakarta (precipitation null), dipakai era5 0,25 derajat.", "CN seragam, belum dari tutupan lahan.",
+        "Alur OSM river/canal/drain dibakar ke DEM (kedalaman/lebar/n di alur_param, ASUMSI); kedalaman keluaran di sel alur = muka air di atas tepi. Aliran/luapan sungai tetap v1 (alur satu sel).",
+        "Hulu GloFAS disuntik di sel alur bernama sama terdekat dari titik snap; skala 1 x skala_hulu (fraksi DAS tak dihitung, luas DAS tak ada di repo); titik di hilir titik lain hanya menyuntik selisihnya.",
+        "Tanggul pantai: sel darat bertetangga laut dinaikkan ke " + a.tanggul + " m MSL (ASUMSI NCICD/tanggul pantai), kecuali sel alur (muara terbuka, muka laut batas). Garis pantai dari DEM 2011.",
+        "Subsidensi seragam v1: nilai tengah literatur bila ada (Abidin 15 cm/thn), jika tidak maksimum (Sidiq 5 cm/thn = MAKS kota, batas atas); Jakarta Selatan/Timur terlalu rendah."]},
     waktu_jalan_dtk: +waktuJalan.toFixed(1), langkah: hasil.langkah,
     neraca_global_m3: {masuk: Math.round(n.masuk), keluar: Math.round(n.keluar), sisa: Math.round(n.simpan), hujan: Math.round(n.hujan), sungai: Math.round(n.sungai),
       drainase: Math.round(n.drain), tepi: Math.round(n.tepi), laut_masuk: Math.round(n.lautMasuk), laut_keluar: Math.round(n.lautKeluar), koreksi_negatif: Math.round(n.koreksi), galat_persen: +(n.galat * 100).toFixed(4)},
     sebaran_kedalaman_puncak_m: sebaran, hulu: catatHulu, kecamatan};
   const jalur = a.keluar || P("data/raw/banjir/genangan/mesin", `${a.kejadian}.json`); fs.mkdirSync(path.dirname(jalur), {recursive: true});
   fs.writeFileSync(jalur, JSON.stringify(keluar)); log("ditulis " + path.relative(AKAR, jalur));
-  console.log(JSON.stringify({waktu_jalan_dtk: keluar.waktu_jalan_dtk, langkah: keluar.langkah, neraca_global_m3: keluar.neraca_global_m3, sebaran: sebaran, hulu: catatHulu}, null, 1));
+  const p90 = c => c.kedalaman_puncak_m.p90, mentengs = kecamatan.find(x => x.kec === "Menteng");
+  const top5 = [...kecamatan].sort((x, y) => p90(y) - p90(x) || y.luas_basah_ge10cm_km2 - x.luas_basah_ge10cm_km2).slice(0, 5).map(c => ({kab: c.kab, kec: c.kec, p90: p90(c), maks: c.kedalaman_puncak_m.maks, basah_km2: c.luas_basah_ge10cm_km2, persen_basah: c.persen_basah}));
+  console.log(JSON.stringify({menteng_p90: mentengs && p90(mentengs), top5_p90: top5, waktu_jalan_dtk: keluar.waktu_jalan_dtk, langkah: keluar.langkah, neraca_global_m3: keluar.neraca_global_m3, sebaran: sebaran, hulu: catatHulu}, null, 1));
 }
 
 if (process.argv[2] === "uji") uji(); else await jalan();
