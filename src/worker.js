@@ -39,6 +39,7 @@ import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
+import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
 import {layaniMcp} from "./mcp.js";
 import {RUTE_PEMIRSA, bersihkanPemirsa, pemirsaSesi, arahPemirsa, hapusSesiPemirsa, cookiePemirsa} from "./pemirsa.js";
@@ -546,6 +547,7 @@ const RUTE = {
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
+  ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
   ...RUTE_PEMIRSA,   // akun pemirsa: hanya melihat tab tertentu situs Centurisk97 (src/pemirsa.js)
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
   ...RUTE_KORBAN,   // laporan korban jiwa: instansi dan Pusdalops melapor, verifikasi, butir Meja Pantau (src/korban.js)
@@ -615,6 +617,7 @@ export const HTML_RUTE = [
   [/^\/kabar\/?$/, "/kabar.html", "/kabar"],   // kabar api prioritas per kabupaten, diteruskan Pusdalops ke WA BPBD (public/kabar*, data scripts/data/kabar_kab.py)
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
   [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
+  [/^\/monitor\/?$/, "/monitor.html", "/monitor"],   // monitor peringatan api untuk staf BNPB dan BPBD (public/monitor*, src/monitor.js); tetap tertutup di centurisk97.id, tiap API menjaga sesinya
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */

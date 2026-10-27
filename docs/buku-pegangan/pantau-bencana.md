@@ -905,6 +905,24 @@ Disepakati pemilik setelah katalog di bawah ditelusuri. Menang atas butir mana p
 
 46. **Laporan harian tetap format lama.** Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla tetap memakai generator repo dan templat pemilik. Uji 27 Okt membangunnya ulang dengan gaya deck kajian; vonis pemilik: *"lebih jelek ternyata, pakai yang sebelumnya aja"*. Aturan selera di bab ini berlaku untuk deck kajian dan paparan, bukan untuk laporan harian.
 
+47. **Tata letak tiap slide isi harus berbeda.** Jangan mengulang pola yang sama (misalnya tabel kiri dan panel ikon kanan) di semua halaman; tiap slide direncanakan sendiri dari grafik, peta, kisi kartu, tabel penuh dengan pita, atau langkah (*"kenapa harus sama semua"*, 27 Okt).
+48. **Logo mitra tidak lebih besar dari logo BNPB.**
+49. **Penutup tidak mengulang tanggal.** Bila pil tanggal tampil, baris di atasnya tanpa tanggal (*"ini jangan keulang ya"*).
+50. **Logo BNPB 1,5 kali** di sampul dan kepala slide; logo mitra bulat tanpa kotak putih, lebih kecil dari BNPB.
+51. **Judul tidak diawali angka.** Tulis "Sebanyak 34% hotspot…"; angka kunci dan kata yang menyertainya disorot oranye. Baris pertama judul diisi penuh sampai tepi; baris kedua boleh satu kata.
+52. **Tabel:** kepala navy, tulisan putih, rata tengah; garis horizontal saja (tanpa garis tepi kiri-kanan), garis paling bawah hitam. Berlaku juga untuk tabel rekomendasi. Kolom label pendek (tahun) diberi ruang, tidak rapat.
+53. **Kartu:** berbayang tipis; tanpa nomor 01-08; label sumber jadi pil gelap bertulisan putih di kanan atas, selalu bertahun; satu lembaga satu warna; tiap kriteria punya subjudul satu baris.
+54. **Grafik:** legenda di bawah figur; satuan ("Dalam ribu titik") sebagai pil kecil; tanpa kurva tren; ruas batang yang tipis memakai callout; perbandingan dua tahun urut kiri-kanan (pembanding kiri); perubahan persen diberi segitiga naik/turun.
+55. **Pita kaki** selebar garis, gelap, tulisan putih, isi rata tengah vertikal, tidak menempel tepi atau garis di atasnya.
+56. **Teks 2-3 baris selalu justify**, termasuk sel tabel. Pesan panjang mengisi sisa ruang, tanpa ruang putih di bawah.
+57. **Istilah dan data:** angka sejak Januari tetap hotspot (firespot kumulatif tidak ada); standar terbaru dipakai (RSPO P&C 2024, ISH 2024); unit BNPB ditulis lengkap dengan "BNPB"; tanpa pil "Direncanakan"; pemadaman dipimpin BPBD bersama KTPA.
+58. **Peta dan citra:** tanpa latar laut biru, dipotong rapat; baris unsur peta disembunyikan; citra "terbakar lalu jadi sawit" bebas awan, bertahun, area bakar ditandai jejak VIIRS (NOAA-20/21 bila ada).
+59. **Judul panel ditulis lengkap sesuai arti**, panel dilebarkan bila perlu; judul sampul paling banyak 3 baris, subjudul sampul lebih kecil.
+60. **Contoh citra harus membuktikan klaimnya.** Untuk "terbakar lalu jadi sawit": bekas bakar terlihat jelas (bukan bayangan awan), area yang jadi sawit kurang lebih sama dengan area bekas bakar, dan jejak satelit digambar sebagai titik pusat deteksi, bukan kotak 375 m yang melebar. Contoh yang bekas bakarnya kecil tetapi kebunnya meluas tidak dipakai (*"dikit aja yang dibakar… berarti bukan sengaja"*, 27 Okt).
+61. **Buku pegangan diperbarui atas inisiatif sendiri.** Tiap selera atau koreksi baru dari pemilik langsung ditulis di sini dan di `keputusan-pemilik.md` skill, lalu diterbitkan, tanpa menunggu diminta.
+62. **Justify hanya bila celahnya wajar.** Bila rata kanan-kiri membuat celah besar antarkata (daftar nama berhubung-tanda, kolom sempit), pakai rata kiri (*"kalo justify membuat… terpisah gede, rata kiri aja"*, 27 Okt).
+63. **Judul sampul mengisi ruang sampai tepi foto.** Baris diisi penuh dari kiri, tidak dibagi seimbang yang menyisakan ruang putih besar di kanan; paling banyak 3 baris.
+
 Disusun 26 Okt 2026 dari tiga sumber: (1) pesan mentah pemilik `masukan_ppt.txt` (15 Sep sampai 26 Okt, 288 baris, sebagian besar situs/kode dan dibuang), (2) memori `ppt-*`, `aturan-deck-26-okt-rinci`, `deck-urgen-kerjakan-di-berkas`, `selera-deck-malaysia`, `tanpa-titik-*`, `laporan-harian-bnpb`, (3) skill `ppt-konsultan` (`keputusan-pemilik.md`, `selera-presentasi.md`, `deck-operasional.md`, `gaya.md`, `gaya-bnpb.md`, `nada.md`, `angka-dan-copy.md`).
 
 Cara baca:

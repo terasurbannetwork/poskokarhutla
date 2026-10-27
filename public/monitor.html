@@ -1,0 +1,39 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#ffffff">
+<title>Monitor Deteksi Api | Centurisk97</title>
+<link rel="stylesheet" href="/monitor.css?v=1">
+</head>
+<body>
+<header class="mn-kepala">
+  <div><h1>Monitor Deteksi Api</h1><p id="mnSat" class="mn-kecil">Data satelit belum dimuat</p></div>
+  <div class="mn-aksi"><span id="mnSaya" class="mn-kecil"></span><button id="mnSuara" class="mn-tbl" type="button">Aktifkan suara dan notifikasi</button></div>
+</header>
+<main>
+  <section id="mnMasuk" class="mn-kartu" hidden>
+    <h2>Masuk untuk melihat tindak lanjut</h2>
+    <p>Tabel tindak lanjut hanya untuk staf Dit. Dalops dan BPBD. Tabel deteksi satelit di bawah tetap bisa dilihat.</p>
+    <p><a class="mn-tbl" href="/instansi">Masuk sebagai BPBD</a> <a class="mn-tbl mn-tbl2" href="/admin">Masuk sebagai staf BNPB</a></p>
+  </section>
+  <section class="mn-kartu">
+    <div class="mn-judul"><h2 id="mnJudulDet">Deteksi terbaru</h2>
+      <div class="mn-filter"><label>Provinsi <select id="mnFProv"><option value="">Semua</option></select></label>
+      <label>Keyakinan <select id="mnFKey"><option value="">Semua</option><option value="2">Tinggi</option><option value="1">Sedang</option><option value="0">Rendah</option></select></label></div></div>
+    <div class="mn-gulir"><table><thead><tr><th>Waktu WIB</th><th>Provinsi</th><th>Kabupaten</th><th>Kecamatan</th><th>Satelit</th><th class="k">FRP</th><th>Keyakinan</th><th>Koordinat</th></tr></thead><tbody id="mnDet"></tbody></table></div>
+    <div class="mn-hal"><button id="mnPrev" type="button" class="mn-tbl mn-tbl2">Sebelumnya</button><span id="mnHal" class="mn-kecil"></span><button id="mnNext" type="button" class="mn-tbl mn-tbl2">Berikutnya</button></div>
+  </section>
+  <section class="mn-kartu" id="mnTugasKartu">
+    <div class="mn-judul"><h2 id="mnJudulTugas">Tindak lanjut per kejadian</h2></div>
+    <div class="mn-gulir"><table><thead><tr><th>Lokasi</th><th>Terdeteksi sejak</th><th>Dibaca Dalops</th><th>Dibaca BPBD</th><th>Groundcheck</th><th>Tindak lanjut</th><th>Status</th></tr></thead><tbody id="mnTugas"><tr><td colspan="7" class="mn-kosong">Memuat</td></tr></tbody></table></div>
+  </section>
+</main>
+<div id="mnModal" class="mn-modal" hidden><div class="mn-dlg" role="dialog" aria-modal="true" aria-labelledby="mnMJ">
+  <h2 id="mnMJ"></h2><div id="mnMIsi"></div>
+  <div class="mn-aksi"><button id="mnBaca" class="mn-tbl" type="button">Sudah dibaca</button><button id="mnTutup" class="mn-tbl mn-tbl2" type="button">Tutup</button></div></div></div>
+<script src="/monitor.js?v=1"></script>
+</body>
+</html>

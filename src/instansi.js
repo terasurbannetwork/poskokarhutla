@@ -224,7 +224,7 @@ async function kirimBerkas(env, kunci) {
 /* ================================================================ tugas: lingkup, tenggat */
 /* baris dummy hanya terlihat akun dummy (akun nyata tidak pernah melihat atau menyentuh data contoh) */
 const SQL_DUMMY = a => a.dummy ? "1" : "t.dummy = 0";
-const lingkupSql = a => a.tingkat === "kab" ? [`t.prov = ? AND lower(t.kab) = lower(?) AND ${SQL_DUMMY(a)}`, [a.prov, a.kab]] : [`t.prov IN (SELECT value FROM json_each(?)) AND ${SQL_DUMMY(a)}`, [a.cakupan]];
+export const lingkupSql = a => a.tingkat === "kab" ? [`t.prov = ? AND lower(t.kab) = lower(?) AND ${SQL_DUMMY(a)}`, [a.prov, a.kab]] : [`t.prov IN (SELECT value FROM json_each(?)) AND ${SQL_DUMMY(a)}`, [a.cakupan]];
 export const dalamLingkup = (a, t) => (a.dummy || !t.dummy) && (a.tingkat === "kab" ? t.prov === a.prov && String(t.kab).toLowerCase() === String(a.kab).toLowerCase() : JSON.parse(a.cakupan).includes(t.prov));
 /* murni: tenggat berikutnya dan terlambat; tugas selesai (padam/bukan_api) tidak pernah terlambat */
 /* durasi untuk teks buatan Worker; SAMA dengan fmt.durasi di public/inti/format.js (dijaga tests/warga/staf_halaman.test.mjs): "45 menit", "6 jam 24 menit", "1 hari 10 jam" */
@@ -324,8 +324,8 @@ export function infoPadam(t, kini) {
     muncul: t.padam_verif === "muncul_lagi" ? t.muncul ?? null : null};
 }
 /* jenis bencana per tugas (tabel 0047; baris tak ada atau tabel belum ada = karhutla). Map id -> id bencana. */
-const KECUALI_LAIN = "AND NOT EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana != 'karhutla')";
-const tanpaBencana = e => /no such table: (main\.)?tugas_bencana/i.test(String(e?.message || e));
+export const KECUALI_LAIN = "AND NOT EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana != 'karhutla')";
+export const tanpaBencana = e => /no such table: (main\.)?tugas_bencana/i.test(String(e?.message || e));
 export async function bencanaPer(env, rows) {
   const out = new Map(); if (!rows.length) return out;
   try { for (const r of (await env.DB.prepare("SELECT tugas_id, bencana FROM tugas_bencana WHERE tugas_id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(rows.map(t => t.id))).all()).results) out.set(r.tugas_id, bencanaId(r.bencana)); }
@@ -701,7 +701,7 @@ async function unggahMedia(env, req, kini) {
   return json({id, jenis, waktu_ambil: w.waktu, sumber_waktu: w.sumber, orang_terdeteksi: orang ? orang.maks : null, orang_sumber: sumber, exif_jarak: exifJarak, exif_api_km: eApi, terverifikasi: {kamera: !!kamera, waktu: eWaktu != null, gps: eOk}, jarak_km: g.jarak_km, jauh: g.jarak_km > JAUH_KM}, 201);
 }
 /* media dan thumbnail dari R2 untuk akun dalam lingkup tugas atau admin; selalu private, no-store; Range didukung supaya video bisa digeser */
-async function kirimMedia(env, req, m, id, thumb) {
+export async function kirimMedia(env, req, m, id, thumb) {
   if (!env.MEDIA) return gagal(503, "penyimpanan berkas belum aktif (R2 MEDIA)");
   const o = await env.MEDIA.get(`instansi/media/${id}${thumb ? "_t" : ""}`, thumb ? {} : {range: req.headers, onlyIf: req.headers});
   if (!o) return gagal(404, "berkas tidak ada");

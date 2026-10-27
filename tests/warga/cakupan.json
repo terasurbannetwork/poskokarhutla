@@ -1,6 +1,11 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "table monitor_baca": "tabel monitor_baca belum ada",
+    "GET /api/monitor": "dalops: lihat seluruh negeri",
+    "POST /api/monitor/baca": "POST baca: sekali per pembaca",
+    "GET /api/monitor/media/:id": "media: di luar wilayah 404",
+    "GET /api/monitor/thumb/:id": "tanpa sesi: 401 JSON",
     "table uji_tugas": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
     "table uji_isian": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
     "table uji_sampel": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
