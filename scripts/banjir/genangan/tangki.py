@@ -61,7 +61,8 @@ VERSI = 1
 SIDIK_BERKAS = [os.path.join(AKAR, r) for r in (
     "scripts/banjir/pasang_astro.py", "public/banjir/data/genangan/saluran_kec.json", "public/geo/kecamatan/31.json",
     "scripts/banjir/genangan/pemicu.py", "scripts/banjir/genangan/bersama.py", "scripts/banjir/genangan/gsmap.py",
-    "scripts/banjir/genangan/m1_kumpul.py", "scripts/banjir/genangan/m1_nilai.py")]
+    "scripts/banjir/genangan/m1_kumpul.py", "scripts/banjir/genangan/m1_nilai.py",
+    "scripts/banjir/genangan/petabencana.py", "scripts/banjir/wilayah.py", "scripts/banjir/umum.py", "scripts/banjir/uji_balik.py")]
 JENDELA_AKHIR = dt.date(2027, 4, 30)     # KRITERIA-M1: jendela uji berakhir 30 April 2027
 KELUAR_JENDELA = 3                       # kode keluar prakira: tanggal di luar jendela (workflow menganggapnya "dilewati", bukan galat)
 OPENMETEO = "https://api.open-meteo.com/v1/forecast"
@@ -713,6 +714,7 @@ def bekukan():
         sys.exit("keluaran tidak cocok dengan kode/parameter sekarang: jalankan `tangki.py latih` ulang sebelum membekukan")
     rec = {"sidik": sidik(p), "sha256_kode": sha_berkas(KODE), "sha256_parameter": sha_param(p), "kriteria_sha256": KRITERIA_SHA256,
            "tafsir_sha256": TAFSIR_SHA256, "tanggal_beku": sekarang().isoformat(timespec="seconds"), "versi": VERSI,
+           "sha256_m0": sha_berkas(M0),
            "sha256_berkas": {os.path.relpath(j, AKAR): sha_berkas(j) for j in SIDIK_BERKAS}}
     simpan(BEKU, {"beku": [rec]})
     k["uji_prospektif"].update(sidik=rec["sidik"], tanggal_beku=rec["tanggal_beku"], status="berjalan")
@@ -723,6 +725,13 @@ def bekukan():
 # ------------------------------------------------------------------ prakira
 def baca_jsonl(jalur):
     return [json.loads(b) for b in open(jalur, encoding="utf-8") if b.strip()] if os.path.exists(jalur) else []
+
+
+def m0_ok():
+    """M0 (kecamatan_pemicu.json, pembanding b) harus sama dengan saat beku; penilai menolak bila berbeda."""
+    b = baca(BEKU)["beku"][0]
+    if b.get("sha256_m0") != sha_berkas(M0):
+        sys.exit("kecamatan_pemicu.json (M0) berbeda dari saat beku: pembanding (b) tidak sah, penilaian ditolak")
 
 
 def periksa_beku():
@@ -830,6 +839,12 @@ def prakira(tanggal=None, kering=False, versi="teramati", ambil=ambil_json):
         ada = next((r for r in rows if r["tanggal"] == tgl.isoformat()), None)
         if not ada or ada.get("dikeluarkan"):
             sys.exit(f"{tgl}: tidak ada hujan teramati yang sah di m1_hujan.jsonl")
+        # D-1 belum punya baris hujan: tunda (kode 3, tanpa menulis) sampai umur D-1 >= 4 hari; sesudah itu reset kering sah, ditandai d1_hilang
+        kemarin = tgl - dt.timedelta(days=1)
+        d1_hilang = kemarin >= beku and not any(r["tanggal"] == kemarin.isoformat() for r in rows)
+        if d1_hilang and (sekarang().date() - kemarin).days < 4:
+            tolak_jendela(f"{tgl}: baris hujan {kemarin} belum ada (umur < 4 hari), prakiraan teramati ditunda")
+        extra = {"d1_hilang": d1_hilang} if d1_hilang else {}
     else:
         # hari sebelumnya belum punya baris hujan teramati saat 23.30 WIB: diisi prakiraan yang sama (tanpa itu keadaan tanah direset kering)
         kemarin = tgl - dt.timedelta(days=1)
@@ -933,7 +948,7 @@ def uji():
     assert abs(vth_kec({"Vth": 4.0, "b": 0.5, "z": {"A": 2.0}}, "A") - 4.0 * math.exp(-1.0)) < 1e-12 and vth_kec({"Vth": 4.0}, "A") == 4.0
     # 6a. sidik memuat SEMUA berkas daftar (H1): ubah satu byte di berkas mana pun = sidik lain
     nama = {os.path.basename(j) for j in SIDIK_BERKAS}
-    assert len(SIDIK_BERKAS) == 8 and all(os.path.exists(j) for j in SIDIK_BERKAS) and {"m1_nilai.py", "m1_kumpul.py", "pasang_astro.py", "saluran_kec.json", "31.json"} <= nama, nama
+    assert len(SIDIK_BERKAS) == 12 and all(os.path.exists(j) for j in SIDIK_BERKAS) and {"m1_nilai.py", "m1_kumpul.py", "pasang_astro.py", "saluran_kec.json", "31.json"} <= nama, nama
     pp = {"a": 1}
     asli_sb = SIDIK_BERKAS
     tmp0 = tempfile.mkdtemp()
@@ -1012,6 +1027,19 @@ def uji():
         JAM_UJI = wib("2026-11-13T23:30:00")
         prakira("2026-11-15", versi="prakiraan", ambil=palsu)     # 11-14 belum ada di m1_hujan.jsonl -> d1 dari prakiraan
         assert baca_jsonl(PRAKIRAAN)[-1]["d1_dari_prakiraan"] and len(baca_jsonl(PRAKIRAAN)[-1]["kec"]) == 42
+        m0_ok()                                                       # sha M0 sama dengan saat beku
+        b0 = baca(BEKU)
+        assert b0["beku"][0]["sha256_m0"] == sha_berkas(M0)
+        b0["beku"][0]["sha256_m0"] = "0" * 64
+        simpan(BEKU, b0)
+        try:
+            m0_ok()
+        except SystemExit as ex:
+            assert "M0" in str(ex.code)
+        else:
+            raise AssertionError("M0 berubah harus ditolak")
+        b0["beku"][0]["sha256_m0"] = sha_berkas(M0)
+        simpan(BEKU, b0)
         # teramati
         JAM_UJI = wib("2026-11-14T05:00:00")
         prakira("2026-11-12")
@@ -1020,6 +1048,17 @@ def uji():
         rr = baca_jsonl(PRAKIRAAN)
         assert [(r["tanggal"], r["versi"]) for r in rr] == [("2026-11-13", "prakiraan"), ("2026-11-15", "prakiraan"), ("2026-11-12", "teramati"), ("2026-11-13", "teramati")], rr
         assert any(v["ya"] for v in rr[2]["kec"].values()), "60 mm hari kedua harus menggenangi sebagian kecamatan"
+        assert "d1_hilang" not in rr[2] and "d1_hilang" not in rr[3]      # D-1 ada
+        # D-1 hilang: 11-16 punya hujan, 11-15 tidak. Umur D-1 2 hari -> tunda kode 3 tanpa menulis; umur 5 hari -> sah, d1_hilang
+        with open(HUJAN_OP, "a") as f:
+            f.write(json.dumps({"tanggal": "2026-11-16", "dikeluarkan": False, "kec": {k: {"mm": 30.0, "m1": 10.0, "m3": 20.0, "h": 0} for k in kunci}}) + "\n")
+        JAM_UJI = wib("2026-11-17T05:00:00")
+        n0 = len(baca_jsonl(PRAKIRAAN))
+        tolak("tunda", KELUAR_JENDELA, tanggal="2026-11-16")
+        assert len(baca_jsonl(PRAKIRAAN)) == n0
+        JAM_UJI = wib("2026-11-20T05:00:00")
+        prakira("2026-11-16")
+        assert baca_jsonl(PRAKIRAAN)[-1]["d1_hilang"] is True and len(baca_jsonl(PRAKIRAAN)) == n0 + 1
         with open(LABEL_OP, "w") as f:
             f.write(json.dumps({"tanggal": "2026-11-13", "pb": {"kec": {}}}) + "\n")
         tolak("label", tanggal="2026-11-13")
