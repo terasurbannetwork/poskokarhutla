@@ -218,7 +218,7 @@ const Alir = {
     if (ts - Alir.terakhir < PosAir.JEDA) return; Alir.terakhir = ts;
     if (peta.isMoving()) return;   /* geser atau zoom sedang jalan: peta sudah sibuk, lewati pembaruan paint */
     peta.setPaintProperty("alir-gerak", "line-dasharray", PosAir.dash(ts)); peta.getLayer("alir-kilau") && peta.setPaintProperty("alir-kilau", "line-dasharray", PosAir.dash(ts));
-    peta.getLayer("alir-hulu") && peta.setPaintProperty("alir-hulu", "line-dasharray", PosAir.dash(ts));   /* ruas hulu ke hilir memakai pola dash yang sama dengan kilau */
+    peta.getLayer("alir-hulu") && peta.getLayoutProperty("alir-hulu", "visibility") !== "none" && PosUkur._est?.ruas?.length && peta.setPaintProperty("alir-hulu", "line-dasharray", PosAir.dash(ts));   /* ruas hulu ke hilir memakai pola dash yang sama dengan kilau */
     if (PosUkur._denyut != null && peta.getLayer("pos-pilih-halo")) { const f = Math.min(1, (performance.now() - PosUkur._denyut) / 700), r = 22 + 8 * Math.sin(Math.PI * f);   /* satu denyut lembut lalu diam */
       peta.setPaintProperty("pos-pilih-halo", "circle-radius", r); peta.setPaintProperty("pos-pilih-luar", "circle-radius", 28 + (r - 22)); if (f >= 1) PosUkur._denyut = null; }
     if (peta.getLayer("pos-cincin")) { const f = PosAir.fase(ts); peta.setPaintProperty("pos-cincin", "circle-stroke-opacity", .6 * (1 - f)); peta.setPaintProperty("pos-cincin", "circle-radius", 11 + f * 12); } },

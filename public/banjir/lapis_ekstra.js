@@ -67,7 +67,7 @@ const LapisEkstra = {
     const bawah = peta.getLayer("wil-line") ? "wil-line" : undefined, gl = gelap(), ink = gl ? "#fff" : "#0b2545", halo = gl ? "#0b1424" : "#fff";
     if (k === "pompa") { const [p, g] = await Promise.all([this.muat("pompa", "data/genangan/pompa.json"), this.kec()]); if (!p || !g || peta.getLayer("ekstra-pompa")) return this.isiKartu();
       const f = a => ({type: "FeatureCollection", features: a.map(x => ({type: "Feature", geometry: {type: "Point", coordinates: [x[0], x[1]]}, properties: {nama: x[2], kec: x[3], ket: x[4]}}))});
-      peta.addSource("ekstra-kec", {type: "geojson", data: g}); peta.addSource("ekstra-pompa", {type: "geojson", data: f(p.pompa)});
+      if (!peta.getSource("ekstra-kec")) peta.addSource("ekstra-kec", {type: "geojson", data: g}); peta.addSource("ekstra-pompa", {type: "geojson", data: f(p.pompa)});
       peta.addLayer({id: "ekstra-tp", type: "line", source: "ekstra-kec", layout: {visibility: this.vis("pompa")}, paint: {"line-color": "#d4151b", "line-width": 3, "line-dasharray": [2, 1]}, filter: ["in", ["get", "k"], ["literal", [""]]]}, bawah);
       const lay = (id, src, w) => peta.addLayer({id, type: "circle", source: src, layout: {visibility: this.vis("pompa")}, paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 8, 4, 13, 9], "circle-color": w, "circle-stroke-color": "#fff", "circle-stroke-width": 1.5}});
       lay("ekstra-pompa", "ekstra-pompa", "#0b5fb0");
