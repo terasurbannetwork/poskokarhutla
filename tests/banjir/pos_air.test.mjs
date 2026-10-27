@@ -83,7 +83,7 @@ test("warna pin: status resmi menang atas persentil, data lama tetap abu, tanpa 
   assert.equal(P.warnaPos(p("lama", "Siaga 1")), P.warna("lama"), "data lama tidak berwarna siaga");
   assert.equal(P.warnaPos(p("naik_di_atas_biasa", null)), "#e58a45"); assert.equal(P.warnaPos(p("biasa")), "#3f7fb8");
   assert.equal(P.ikonKunci(p("biasa", "Siaga 2")), "r-Siaga2"); assert.equal(P.ikonKunci(p("biasa", null)), "biasa");
-  assert.ok(P.denyutPos(p("biasa", "Siaga 1")) && !P.denyutPos(p("tertinggi", "Siaga 3")) && P.denyutPos(p("tertinggi", null)));
+  assert.ok(P.denyutPos(p("biasa", "Siaga 1")) && P.denyutPos(p("tertinggi", "Siaga 3")) && !P.denyutPos(p("biasa", "Normal")) && P.denyutPos(p("tertinggi", null)));
 });
 
 test("koordinat lon/lat dipakai bila ada, pengelola punya cadangan, skala ambang", () => {
@@ -130,11 +130,11 @@ test("skala tegak: pita dan garis air", () => {
   assert.ok(g.pita[0].y1 === g.H && g.pita[3].y0 === 0, "pita menutup seluruh tinggi");
 });
 
-test("ruas sungai: Siaga, atau naik tanpa ambang; radius sekitar 3 km", () => {
+test("ruas sungai: Siaga, atau naik tanpa ambang; radius sekitar 6 km", () => {
   const o = plain(P.ruas(kumpul));
   assert.deepEqual(Object.keys(o).sort(), ["Siaga 1", "Siaga 3", "naik"]);
   const ring = o["Siaga 1"].coordinates[0][0]; assert.equal(ring.length, 17); assert.deepEqual(ring[0], ring[16]);
-  assert.ok(Math.abs(ring[0][0] - 3 / 111.32) < .001, "radius 3 km di khatulistiwa");
+  assert.ok(Math.abs(ring[0][0] - 6 / 111.32) < .001, "radius 6 km di khatulistiwa");
   assert.deepEqual(plain(P.ruas([kumpul[3], kumpul[4]])), {}, "Normal dan macet tidak diwarnai");
 });
 
@@ -169,4 +169,14 @@ test("INP statis: sakelar pos menunda lapisan, animasi lewati saat peta bergerak
   assert.match(src, /tampil\(on\) {[^]*aria-busy[^]*nanti\(\(\) => { this\.lapisan\(on\); this\.daftar\(\)/);
   assert.match(src, /if \(peta\.isMoving\(\)\) return;/); assert.match(src, /if \(this\._g !== x\.id\) return;/); assert.match(src, /this\._g = x\.id;/);
   assert.match(src, /PosUkur\.ruas\(\); PosUkur\.daftar\(\);/);
+});
+
+test("pos per provinsi (point in polygon) dan selisih ke batas Siaga berikutnya", () => {
+  const kotak = {type: "Polygon", coordinates: [[[100, -1], [102, -1], [102, 1], [100, 1], [100, -1]]]}, mp = {type: "MultiPolygon", coordinates: [kotak.coordinates]};
+  const ps = [{id: "a", lon: 101, lat: 0}, {id: "b", lon: 103, lat: 0}, {id: "c", lon: 101.5, lat: .9}];
+  assert.deepEqual(plain(P.dalam(ps, kotak)).map(p => p.id), ["a", "c"]); assert.equal(P.dalam(ps, mp).length, 2); assert.deepEqual(P.dalam(ps, null), []);
+  const A = {siaga3: 50, siaga2: 100, siaga1: 150};
+  assert.deepEqual(plain(P.menujuBatas({v: 33, satuan: "cm", ambang: A})), {nama: "Siaga 3", cm: 17});
+  assert.deepEqual(plain(P.menujuBatas({v: .8, satuan: "m", ambang: A})), {nama: "Siaga 2", cm: 20});
+  assert.equal(P.menujuBatas({v: 200, satuan: "cm", ambang: A}), null); assert.equal(P.menujuBatas({v: 5, satuan: "cm"}), null);
 });

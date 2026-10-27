@@ -200,6 +200,12 @@
 
   function banjir() {
     kotakLapis("Cuaca", [["bmkg", "Peringatan dini cuaca BMKG"], ["angin", "Angin (bergerak)"]]);
+    /* angin menyala bawaan di banjir: tunggu peta siap + hujan.json termuat, lalu mulai saat browser senggang (tidak menahan cat pertama) */
+    const siapAngin = (n = 0) => { const i = document.querySelector('#lapis input[data-l="angin"]');
+      if (!i || i.checked || n > 60) return; /* ~30 dtk lalu menyerah: hujan.json gagal dimuat */
+      if (!(typeof peta !== "undefined" && peta?.loaded() && S.hujan?.grid)) return void setTimeout(siapAngin, 500, n + 1);
+      (window.requestIdleCallback || setTimeout)(() => { if (i.checked) return; i.checked = true; lihat("angin", true); }); };
+    siapAngin();
     pitaBMKG();
     const ENS = () => muat("ens", "data/hujan_ansambel.json");
     const _w = Analisa.wilayah.bind(Analisa);

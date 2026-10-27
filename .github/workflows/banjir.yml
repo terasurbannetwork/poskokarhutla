@@ -11,6 +11,10 @@ on:
         description: "Bangun ulang bukti DAS hulu + citra Sentinel (bukti_das.py, citra_banjir.py; ±1 jam+, DAS/Hansen berubah setahun sekali)"
         type: boolean
         default: false
+      genangan:
+        description: "Panen GSMaP per jam (JAXA) untuk jendela kejadian genangan Jakarta (gsmap.py; ratusan berkas, puluhan menit) lalu commit public/banjir/data/genangan/gsmap.json"
+        type: boolean
+        default: false
 
 concurrency:
   group: data
@@ -174,6 +178,22 @@ jobs:
           python3 scripts/banjir/bukti_das.py subdas
           python3 scripts/banjir/citra_banjir.py
           python3 scripts/banjir/hulu.py
+
+      # Manual (workflow_dispatch input genangan): FTP JAXA butuh secret GSMAP_USER/GSMAP_PASS (tidak ada lokal). Commit hanya gsmap.json.
+      - name: Panen GSMaP genangan Jakarta (manual)
+        if: ${{ inputs.genangan }}
+        continue-on-error: true
+        env:
+          GSMAP_USER: ${{ secrets.GSMAP_USER }}
+          GSMAP_PASS: ${{ secrets.GSMAP_PASS }}
+        run: |
+          python3 scripts/banjir/genangan/gsmap.py uji
+          python3 scripts/banjir/genangan/gsmap.py
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          G="public/banjir/data/genangan/gsmap.json"
+          [ -e "$G" ] && git add -f "$G"
+          git diff --cached --quiet -- "$G" || { git commit -q -m "data: GSMaP genangan Jakarta $(TZ=Asia/Jakarta date +%F)" -- "$G" && git pull -q --rebase --autostash && git push -q || echo "::warning::commit GSMaP gagal"; }
 
       # Sesudah status.py: seri harian, kejadian aktif, catatan prospektif (append-only), lalu dampak dan laporan bila skripnya ada.
       # Tiap skrip gagal hanya memberi peringatan (data utama sudah jadi; prospektif tidak menimpa berkas rusak/menyusut),

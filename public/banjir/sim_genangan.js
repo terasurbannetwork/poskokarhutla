@@ -210,7 +210,11 @@ function jalankan(cfg, kabar) {
   let zPantai = Infinity;
   if (adaLaut) for (let k = 0; k < N; k++) if (laut[k]) { const i = k % nx, j = (k / nx) | 0;
     for (const n of [i > 0 && k - 1, i < nx - 1 && k + 1, j > 0 && k - nx, j < ny - 1 && k + nx]) if (n !== false && !laut[n]) zPantai = Math.min(zPantai, z[n]); }
-  const V = {hujan: 0, sungai: 0, lautMasuk: 0, lautKeluar: 0, tepi: 0, pompa: 0, pompaMinta: 0, koreksi: 0}; /* pompaMinta = laju x waktu; pompa < pompaMinta bila sumur pompa kering */
+  const V = {hujan: 0, sungai: 0, lautMasuk: 0, lautKeluar: 0, tepi: 0, pompa: 0, pompaMinta: 0, koreksi: 0, drain: 0}; /* pompaMinta = laju x waktu; pompa < pompaMinta bila sumur pompa kering */
+  /* kd (opsional, J2 mesin headless): kapasitas drainase mm/jam per sel (larik N). Tiap langkah sel darat membuang min(air ada, kd x dt);
+     volume per sel di hasil.drainSel (m3), jumlahnya V.drain masuk sisi KELUAR neraca. Tanpa kd perilaku lama persis. */
+  const kd = cfg.kd || null, dren = kd ? new Float64Array(N) : null;
+  if (kd) { kd.length === N || salah(`kd ${kd.length} sel != ${N}`); for (let k = 0; k < N; k++) { angka(kd[k], "kd"); kd[k] >= 0 || salah(`kd sel ${k} negatif`); } }
   const ked = new Float32Array(N * (J + 1)), luas = new Float64Array(J + 1), vol = new Float64Array(J + 1), Tend = J * 3600;
   let t = 0, simpanBerikut = 3600, langkah = 0;
   const K = {nx, ny, dx, A, n2, z, h, hmaks, qx, qy, px: new Float64Array(qx.length), py: new Float64Array(qy.length), theta: cfg.theta ?? THETA, sk, laut, tt: tutup, ek, es, qe, eo, pq, V};
@@ -231,15 +235,16 @@ function jalankan(cfg, kabar) {
     for (const m of masuk) { const v = debit(m, t + dt / 2) * dt; h[m.k] += v / A; V.sungai += v; }
     const eta = adaLaut ? etaLaut(t + dt / 2) : 0; if (pompa.length) aturPompa(t);
     hAkhir = langkahAir(K, dt, eta);
+    if (kd) { const r = dt / 3.6e6; for (let k = 0; k < N; k++) { const q = kd[k]; if (q > 0 && h[k] > 0 && !laut[k]) { const v = h[k] < q * r ? h[k] : q * r; h[k] -= v; dren[k] += v * A; V.drain += v * A; } } }
     t += dt; langkah++;
     if (t >= simpanBerikut - 1e-9) { const s = Math.round(simpanBerikut / 3600), o = s * N; let lu = 0, vo = 0;
       for (let k = 0; k < N; k++) { if (laut[k]) continue; ked[o + k] = h[k]; vo += h[k] * A; if (h[k] >= ASUMSI.TERGENANG) lu += A; }
       luas[s] = lu; vol[s] = vo; t = simpanBerikut; simpanBerikut += 3600; if (kabar) kabar(s / J); }
   }
   let simpan = 0; for (let k = 0; k < N; k++) if (!laut[k]) simpan += h[k] * A;
-  const masukV = V.hujan + V.sungai + V.lautMasuk, keluarV = V.tepi + V.lautKeluar + V.pompa;
+  const masukV = V.hujan + V.sungai + V.lautMasuk, keluarV = V.tepi + V.lautKeluar + V.pompa + V.drain;
   const galat = Math.abs(masukV - keluarV - simpan) / Math.max(masukV, 1e-9);
-  return {nx, ny, dx, jam: J, kedalaman: ked, hmaks: Float32Array.from(hmaks), luas, volume: vol, langkah,
+  return {nx, ny, dx, jam: J, kedalaman: ked, hmaks: Float32Array.from(hmaks), luas, volume: vol, langkah, drainSel: dren,
     neraca: {...V, masuk: masukV, keluar: keluarV, simpan, galat}};
 }
 

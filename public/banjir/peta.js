@@ -7,6 +7,7 @@ const subsKota = kab => /Jakarta/.test(kab) ? "jakarta" : /Semarang|Demak/.test(
 const DASAR = () => gelap() ? "https://tiles.openfreemap.org/styles/dark" : "https://tiles.openfreemap.org/styles/positron";
 /* ruang peta yang terlihat diukur dari panel kiri, panel kanan, dan garis waktu (bukan angka tetap), seperti padRuang karhutla */
 const BB_ID = [[94.8, -11.2], [141.2, 6.2]];
+const BB_AWAL = [[95, -11.5], [126, 7]];   /* kamera pertama buka: Aceh sampai Halmahera/Timor, tanpa Papua (pemilik, 27 Okt 2026); BB_ID tetap untuk "seluruh Indonesia" */
 const kiriPad = () => { if (innerWidth <= 900) return {top: 60, bottom: innerHeight * .45, left: 16, right: 16};
   const r = s => document.querySelector(s)?.getBoundingClientRect(), pn = r(".panel"), tl = r(".tools"), lg = r("#dok"), pt = r("#p-peta");
   return {top: 56, left: (pn?.width || 440) + 30, right: (tl?.width || 280) + 30, bottom: Math.min(160, Math.max(30, pt && lg ? pt.bottom - lg.top + 16 : 150))}; }; /* dok banjir lebih tinggi (baris skala hujan): batasi supaya kamera awal sama dengan karhutla */
@@ -70,7 +71,7 @@ const Peta = {
     peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     peta.on("style.load", () => this.pasang());
     await new Promise(r => peta.isStyleLoaded() ? r() : peta.once("style.load", r));
-    peta.fitBounds(BB_ID, {padding: kiriPad(), duration: 0});
+    peta.fitBounds(BB_AWAL, {padding: kiriPad(), duration: 0});
     nanti(() => Pra72.muat().then(() => { if (S.jalur.length >= 2) renderDaftar(); })); },
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
   bawahLabel() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
@@ -193,6 +194,7 @@ const Peta = {
       const k = w[0].properties.kunci;
       if (S.mode === "riwayat" && S.jalur.length >= 2) return Riwayat.buka(k);
       if (S.jalur.length >= 2) return Analisa.wilayah(k);
+      if (S.jalur.length === 0 && PosUkur.menyala() && PosUkur.D) { const g = S.fiturWil?.find(f => f.properties.kunci === k)?.geometry; turun(k); return PosUkur.provinsi(k, g); }   /* drill-down tetap jalan, laci pos provinsi menyusul seperti laci wilayah karhutla */
       turun(k); }); },
 };
 function turun(kunci) { S.jalur = kunci.split("|"); nanti(() => Peta.aturWilayah()); }
@@ -339,7 +341,7 @@ const Analisa = {
     if (el._tarik) el.appendChild(el._tarik);
     el.classList.add("on"); el.querySelector(".tutup").onclick = () => el.classList.remove("on");
     el.onclick = e => this.klik(e); },
-  klik(e, sebelum) { const s = e.target.closest("[data-sg]"); if (s) { sebelum?.(); return this.sungai(+s.dataset.sg); } const w = e.target.closest("[data-wil]"); if (w) { sebelum?.(); return this.wilayah(w.dataset.wil); } },
+  klik(e, sebelum) { if (e.target.closest("[data-semua]")) return PosUkur.provinsi(); const ps = e.target.closest("[data-pos]"); if (ps) { sebelum?.(); return PosUkur.buka(ps.dataset.pos, true, !!PosUkur._prov); } const s = e.target.closest("[data-sg]"); if (s) { sebelum?.(); return this.sungai(+s.dataset.sg); } const w = e.target.closest("[data-wil]"); if (w) { sebelum?.(); return this.wilayah(w.dataset.wil); } },
   wilayah(kunci) {
     const p = kunci.split("|"), jenis = ["prov", "kab", "kec"][p.length - 1], f = S.fiturWil?.find(x => x.properties.kunci === kunci);
     const [lat, lon] = f ? pusat(kunci) : [0, 0], c = selDekat(lat, lon), v = S.st.kec[kunci], ag = agregat(S.b, 0);
