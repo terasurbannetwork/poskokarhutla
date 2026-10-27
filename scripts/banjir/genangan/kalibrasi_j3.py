@@ -21,8 +21,10 @@ MULAI = kunci_j3.beku()["mulai"]   # sumber tunggal jendela; dicocokkan dengan K
 
 
 def nama_cache(sid, ev, skala, kd=None, kd_map=None, faktor=None):
-    """Nama berkas cache: sidik, kejadian, skala, Kd seragam ATAU hash isi peta Kd, faktor dx. Kd/peta/faktor beda = nama beda."""
-    u = f"kd{kd}" if kd_map is None else "peta" + hashlib.sha256(open(kd_map, "rb").read()).hexdigest()[:10]
+    """Nama berkas cache: sidik, kejadian, skala, Kd seragam ATAU hash isi peta Kd (dict atau jalur json), faktor dx. Kd/peta/faktor beda = nama beda."""
+    if isinstance(kd_map, str):
+        kd_map = json.load(open(kd_map))
+    u = f"kd{kd}" if kd_map is None else "peta" + hashlib.sha256(json.dumps(kd_map, sort_keys=True).encode()).hexdigest()[:10]
     return f"{sid[:10]}_{ev}_s{skala}_{u}" + (f"_f{faktor}" if faktor else "")
 
 
@@ -31,6 +33,8 @@ def jalankan_mesin(ev, skala, kd=None, kd_map=None, faktor=None):
     nama = nama_cache(kunci_j3.sidik(), ev, skala, kd, kd_map, faktor); jalur = os.path.join(KAL, nama + ".raster.gz")
     if not os.path.exists(jalur):
         os.makedirs(KAL, exist_ok=True)
+        if isinstance(kd_map, dict):   # peta inline dari hasil_j3.json -> berkas untuk --kd-kec
+            kd_map = os.path.join(KAL, nama + ".kd.json"); json.dump(dict(sorted(kd_map.items())), open(kd_map, "w"))
         a = ["node", os.path.join(D, "mesin.mjs"), *kunci_j3.argumen_beku(), *(["--faktor", str(faktor)] if faktor else []), "--kejadian", ev, "--mulai", MULAI[ev],
              "--skala-hujan", str(skala), "--raster", jalur, "--keluar", os.path.join(KAL, nama + ".json")] + (["--kd", str(kd)] if kd_map is None else ["--kd", str(KD_AWAL), "--kd-kec", kd_map])
         subprocess.run(a, check=True, stdout=subprocess.DEVNULL)
@@ -95,7 +99,18 @@ def kab(k):
     return k.split("|")[0]
 
 
-def jalan(evs, grid_s, grid_kd, maks_run=None, jalankan=jalankan_mesin, label=muat_label, raster=skor_j3.baca_raster, tulis_peta=None):
+def loeo(h):
+    """Leave-one-event-out dari tabel tahap 2: Kd dipilih dari kejadian lain, dinilai di kejadian yang ditahan. -> {ev: {kerugian_peta, kerugian_seragam, peta_lebih_baik}}; {} bila < 2 kejadian."""
+    T = {int(g): v for g, v in h["tabel_tahap2"].items()}; evs = sorted(next(iter(T.values()))); out = {}
+    for e in evs if len(evs) > 1 else []:
+        sisa = {g: jumlah([v[x] for x in evs if x != e]) for g, v in T.items()}
+        kds, peta = pilih_kd(sisa)
+        lp = sum(T[peta.get(k, kds)][e].get(k, 0) for k in T[kds][e]); ls = total(T[kds][e])
+        out[e] = {"kerugian_peta": lp, "kerugian_seragam": ls, "peta_lebih_baik": lp < ls}
+    return out
+
+
+def jalan(evs, grid_s, grid_kd, maks_run=None, jalankan=jalankan_mesin, label=muat_label, raster=skor_j3.baca_raster, tahap3=False):
     lab = {e: label(e) for e in evs}; n = [0]
 
     def rugi(ev, **kw):
@@ -118,17 +133,18 @@ def jalan(evs, grid_s, grid_kd, maks_run=None, jalankan=jalankan_mesin, label=mu
     kecs = sorted(p_kec); p_kab_kec = peta_kec(p_kab, kecs, kab)
     h = {"skala": s_best, "kd_seragam": kds, "kd_kec": p_kec, "kd_kab": p_kab, "tahap1": {str(a): total(b) for a, b in k1.items()}, "tahap2": {str(a): total(b) for a, b in k2.items()},
          "tabel_tahap2": {str(g): {e: d for e, d in v.items()} for g, v in per_ev.items()}, "run": n[0]}
-    if tulis_peta:   # tahap 3: peta ditulis ke berkas, dijalankan di kejadian kalibrasi
-        jk, jb = tulis_peta("kec", p_kec), tulis_peta("kab", p_kab_kec)
-        l_kec = sum(total(rugi(e, skala=s_best, kd_map=jk)) for e in evs); l_kab = sum(total(rugi(e, skala=s_best, kd_map=jb)) for e in evs); l_ser = total(k2[kds])
-        h.update({"kerugian_kalibrasi": {"seragam": l_ser, "kec": l_kec, "kab": l_kab}, "final": "kec" if l_kec < l_ser else "seragam", "peta_kec": jk, "peta_kab": jb, "run": n[0]})
+    if tahap3:   # tahap 3: peta (inline di hasil) dijalankan di kejadian kalibrasi; peta kecamatan dipakai hanya bila menang di kalibrasi DAN pada kejadian yang disisihkan (LOEO)
+        l_kec = sum(total(rugi(e, skala=s_best, kd_map=p_kec)) for e in evs); l_kab = sum(total(rugi(e, skala=s_best, kd_map=p_kab_kec)) for e in evs); l_ser = total(k2[kds])
+        lo = loeo(h); lo_ok = bool(lo) and sum(v["kerugian_peta"] for v in lo.values()) < sum(v["kerugian_seragam"] for v in lo.values())
+        h.update({"kerugian_kalibrasi": {"seragam": l_ser, "kec": l_kec, "kab": l_kab}, "loeo": lo, "loeo_peta_menang": lo_ok, "final": "kec" if l_kec < l_ser and lo_ok else "seragam",
+                  "kd_kab_kec": p_kab_kec, "run": n[0]})
     return h
 
 
 def pagar(h, B, jalankan=jalankan_mesin, label=muat_label, raster=skor_j3.baca_raster, bahaya=None):
     """Skor 2021-02 dengan model final; hanya LAPORAN (tak memilih). -> dict, ditolak bila di bawah ambang BEKU `pagar` atau tak mengalahkan InaRISK pada luas sama."""
     ev, P = B["pagar"][0], B["pagar_ambang"]
-    kw = {"kd": h["kd_seragam"]} if h["final"] == "seragam" else {"kd_map": h["peta_kec"]}
+    kw = {"kd": h["kd_seragam"]} if h["final"] == "seragam" else {"kd_map": h["kd_kec"]}
     R = raster(jalankan(ev, skala=h["skala"], **kw)); nl = skor_j3.nilai_laporan(R, label(ev)); luas = skor_j3.luas_basah(R); p = skor_j3.pod(nl)
     pi = skor_j3.pod_kec(nl, skor_j3.inarisk_ya(R, bahaya or {}, luas)) if bahaya is not None else None
     ok = p is not None and p >= P["pod_min"] and luas <= P["luas_basah_maks"] and (pi is None or p > pi)
@@ -140,7 +156,10 @@ def uji():
     B = kunci_j3.beku(); A = B["kalibrasi_algo"]
     assert (KD_AWAL, LAMBDA, MU, N_MIN, LAPORAN_BANYAK) == (A["kd_awal"], A["lambda"], A["mu"], A["n_min"], A["laporan_banyak"]), "konstanta cermin beda dari blok BEKU"
     js = open(os.path.join(D, "mesin.mjs"), encoding="utf8").read()
-    assert dict(re.findall(r'"(\d{4}-\d\d)": \{mulai: "([\d-]+)"', js)) == MULAI == B["mulai"], "jendela beda dari KEJADIAN_J3 di mesin.mjs"
+    ev = re.findall(r'"(\d{4}-\d\d)": \{mulai: "([\d-]+)", jam: (\d+), peran: "(\w+)"', js)
+    peran = {e: r for r in ("kalibrasi", "pagar", "uji") for e in B[r]}
+    assert {e: m for e, m, _, _ in ev} == MULAI == B["mulai"], "jendela beda dari KEJADIAN_J3 di mesin.mjs"
+    assert all(int(j) == B["jam"] and peran[e] == r for e, _, j, r in ev) and len(ev) == len(peran) == 6, "peran/jam beda dari blok BEKU"
     with tempfile.TemporaryDirectory() as t:
         m1, m2, m3 = (os.path.join(t, f"{i}.json") for i in (1, 2, 3))
         json.dump({"A|a": 5}, open(m1, "w")); json.dump({"A|a": 8}, open(m2, "w")); json.dump({"A|a": 5}, open(m3, "w"))
@@ -161,14 +180,17 @@ def uji():
     assert 10 * ((1 - 1) + LAMBDA * 1.0) > 10 * ((1 - .5) + LAMBDA * .25) - 10 * .25 * 0, "LAMBDA 1: basah penuh (1,0) tidak mengalahkan miss separuh+basah seperempat (0,75)"
     dasar = dict(jalankan=lambda ev, **kw: "x", label=lambda e: lap, raster=lambda p: R)
     s = jalan(["2020-01"], (1.0, 1.5), (5, 12), maks_run=1, **dasar); assert s["berhenti"] and s["run"] == 1
-    with tempfile.TemporaryDirectory() as t:
-        def tulis(nm, p):
-            j = os.path.join(t, nm + ".json"); json.dump(p, open(j, "w")); return j
-        s = jalan(["2020-01"], (1.0, 1.5), (5, 12), tulis_peta=tulis, **dasar)
-    assert s["skala"] == 1.0 and s["kd_seragam"] in (5, 12) and set(s["kd_kec"]) == {"A|a"} and s["final"] == "seragam", s     # peta tak lebih baik: seragam
+    s = jalan(["2020-01"], (1.0, 1.5), (5, 12), tahap3=True, **dasar)
+    assert s["skala"] == 1.0 and s["kd_seragam"] in (5, 12) and set(s["kd_kec"]) == {"A|a"} and s["final"] == "seragam" and s["loeo"] == {}, s     # peta tak lebih baik / LOEO kosong: seragam
+    ev3 = ["2017-01", "2018-01", "2020-01"]; hh = {"tabel_tahap2": {"5": {e: {"X|1": 3, "X|2": 1} for e in ev3}, "12": {e: {"X|1": 1, "X|2": 3} for e in ev3}}}
+    lo = loeo(hh); assert set(lo) == set(ev3) and all(v["kerugian_peta"] <= v["kerugian_seragam"] for v in lo.values())
+    assert not loeo({"tabel_tahap2": {"5": {"a": {"X|1": 1}}}})
     P = {"pod_min": .4, "luas_basah_maks": .25}
     g = pagar({"final": "seragam", "kd_seragam": 12, "skala": 1.0}, {"pagar": ["2021-02"], "pagar_ambang": P}, bahaya={"31|A|a": {"banjir": 1}}, **dasar)
     assert g["pod"] == 1.0 and g["luas_basah"] == .5 and g["ditolak"], g     # luas basah 50% > 25%: ditolak
+    R0 = {**R, "hm": array.array("f", [0.0] * 7 + [0.2])}   # tak ada sel basah di laporan, luas basah kecil
+    g = pagar({"final": "seragam", "kd_seragam": 12, "skala": 1.0}, {"pagar": ["2021-02"], "pagar_ambang": P}, bahaya={"31|A|a": {"banjir": 1}}, jalankan=lambda ev, **kw: "x", label=lambda e: lap, raster=lambda p: R0)
+    assert g["pod"] == 0.0 and g["luas_basah"] <= .25 and g["ditolak"], g     # POD < 0,4: ditolak
     print("ok")
 
 
@@ -184,9 +206,10 @@ if __name__ == "__main__":
             sys.exit("kunci belum hijau: " + g)
         os.makedirs(KAL, exist_ok=True)
 
-        def tulis(nm, p):
-            j = os.path.join(KAL, f"kd_{nm}.json"); json.dump(p, open(j, "w"), sort_keys=True); return j
-        h = jalan(B["kalibrasi"], gs, gk, tulis_peta=tulis)
+        if os.path.exists(kunci_j3.STATE) and json.load(open(kunci_j3.STATE)).get("dibuka"):
+            sys.exit("label uji sudah dibuka: kalibrasi tidak boleh diulang")
+        h = jalan(B["kalibrasi"], gs, gk, tahap3=True)
+        h["sidik"] = kunci_j3.sidik()
         bahaya = json.load(open(os.path.join(AKAR, "public/banjir/data/bahaya.json")))["kec"]
         h["pagar"] = pagar(h, B, bahaya=bahaya); h["ditolak_pagar"] = h["pagar"]["ditolak"]
         json.dump(h, open(os.path.join(KAL, "hasil_j3.json"), "w"), indent=1, sort_keys=True); print("ditulis hasil_j3.json; ditolak_pagar =", h["ditolak_pagar"])

@@ -21,17 +21,6 @@ def frek_hari(lap_semua, tahun, kec_dari):
     return {k: len(v) for k, v in hari.items()}
 
 
-def loeo(h):
-    """Leave-one-event-out dari tabel tahap 2: Kd dipilih dari kejadian lain, dinilai di kejadian yang ditahan. -> {ev: {peta, seragam, lebih_baik}}"""
-    T = {int(g): v for g, v in h["tabel_tahap2"].items()}; evs = sorted(next(iter(T.values()))); out = {}
-    for e in evs:
-        sisa = {g: kal.jumlah([v[x] for x in evs if x != e]) for g, v in T.items()}
-        kds, peta = kal.pilih_kd(sisa)
-        lp = sum(T[peta.get(k, kds)][e].get(k, 0) for k in T[kds][e]); ls = kal.total(T[kds][e])
-        out[e] = {"kerugian_peta": lp, "kerugian_seragam": ls, "peta_lebih_baik": lp < ls}
-    return out
-
-
 def evaluasi(B, data, bahaya, frek, laju=None):
     """data {ev: {"R": {"model","seragam","kab"}, "lab": [laporan]}}; frek {"2024-2025": {kec: n}, "2017-2023": {...}} -> dict hasil + vonis."""
     K = B["lulus"]; metode = ("seragam", "kab", "inarisk", "acak"); ph = {m: {} for m in ("model",) + metode}
@@ -66,7 +55,7 @@ def evaluasi(B, data, bahaya, frek, laju=None):
 def uji():
     import array
     B = kunci_j3.beku(); h = {"tabel_tahap2": {"5": {"a": {"X|1": 3, "X|2": 1}, "b": {"X|1": 3, "X|2": 1}, "c": {"X|1": 1, "X|2": 3}}, "12": {"a": {"X|1": 1, "X|2": 3}, "b": {"X|1": 1, "X|2": 3}, "c": {"X|1": 3, "X|2": 1}}}}
-    o = loeo(h); assert set(o) == {"a", "b", "c"} and all("peta_lebih_baik" in v for v in o.values())
+    o = kal.loeo(h); assert set(o) == {"a", "b", "c"} and all("peta_lebih_baik" in v for v in o.values())
     assert frek_hari([{"t": "2024-01-01T01:00", "lon": 0, "lat": 0}, {"t": "2024-01-01T09:00", "lon": 0, "lat": 0}, {"t": "2024-01-02T09:00", "lon": 0, "lat": 0}, {"t": "2020-01-02", "lon": 0, "lat": 0}],
                       (2024, 2025), lambda lo, la: ("K", "a")) == {"K|a": 2}
     def raster(hm):
@@ -84,21 +73,29 @@ def uji():
 
 def utama():
     S = json.load(open(kunci_j3.STATE)) if os.path.exists(kunci_j3.STATE) else {}
+    mode = sys.argv[1]
     if not S.get("dibuka") or S["dibuka"].get("sidik") != kunci_j3.sidik():
         sys.exit("label uji terkunci: jalankan `kunci_j3.py buka` (sidik harus sama dengan sidik state)")
+    if mode in S.get("vonis_selesai", {}):
+        sys.exit(f"{mode} sudah dijalankan {S['vonis_selesai'][mode]['tanggal']}; vonis tidak diulang")
+    J = json.load(open(kunci_j3.SIDIK_BERKAS))
+    if kunci_j3.sha_berkas(kunci_j3.HASIL) != J.get("hasil_sha256"):
+        sys.exit("hash hasil_j3.json tak cocok dengan j3_sidik.json")
     from bersama import KecDKI
-    B = kunci_j3.beku(); h = json.load(open(kunci_j3.HASIL)); sk = h["skala"]; faktor = None if sys.argv[1] == "vonis" else 4
-    model = {"kd": h["kd_seragam"]} if h["final"] == "seragam" else {"kd_map": h["peta_kec"]}
+    B = kunci_j3.beku(); h = json.load(open(kunci_j3.HASIL)); sk = h["skala"]; faktor = None if mode == "vonis" else 4
+    model = {"kd": h["kd_seragam"]} if h["final"] == "seragam" else {"kd_map": h["kd_kec"]}   # peta dibaca dari hasil (inline), bukan berkas terpisah
     data = {}
     for ev in B["uji"]:
         data[ev] = {"lab": kal.muat_label(ev), "R": {"model": skor_j3.baca_raster(kal.jalankan_mesin(ev, sk, faktor=faktor, **model)),
                                                       "seragam": skor_j3.baca_raster(kal.jalankan_mesin(ev, sk, kd=h["kd_seragam"], faktor=faktor)),
-                                                      "kab": skor_j3.baca_raster(kal.jalankan_mesin(ev, sk, kd_map=h["peta_kab"], faktor=faktor))}}
+                                                      "kab": skor_j3.baca_raster(kal.jalankan_mesin(ev, sk, kd_map=h["kd_kab_kec"], faktor=faktor))}}
     semua = json.load(open(os.path.join(kunci_j3.AKAR, kunci_j3.D, "petabencana_laporan.json"))); k = KecDKI()
     frek = {"2024-2025": frek_hari(semua, (2024, 2025), k.cari), "2017-2023": frek_hari(semua, (2017, 2023), k.cari)}
     bahaya = json.load(open(os.path.join(kunci_j3.AKAR, "public/banjir/data/bahaya.json")))["kec"]
-    r = evaluasi(B, data, bahaya, frek); r["leave_one_event_out"] = loeo(h); r["dx_faktor"] = faktor or B["dx_faktor"]
+    r = evaluasi(B, data, bahaya, frek); r["leave_one_event_out"] = h.get("loeo"); r["dx_faktor"] = faktor or B["dx_faktor"]
     jalur = os.path.join(kal.KAL, "vonis_j3.json" if faktor is None else "sensitivitas_33m.json"); json.dump(r, open(jalur, "w"), indent=1, sort_keys=True)
+    S.setdefault("vonis_selesai", {})[mode] = {"tanggal": __import__("datetime").date.today().isoformat(), "sidik": S["dibuka"]["sidik"]}
+    json.dump(S, open(kunci_j3.STATE, "w"), indent=1)   # state dilacak git: vonis dan sensitivitas masing-masing SEKALI
     print(json.dumps({k: r[k] for k in ("vonis", "syarat", "pod", "pernyataan")}, indent=1))
 
 

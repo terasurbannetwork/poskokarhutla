@@ -22,7 +22,7 @@ MASUKAN = ["public/geo/kecamatan/31.json", "public/banjir/data/genangan/pompa.js
 HASIL = os.path.join(AKAR, "data/raw/banjir/genangan/j3_kal/hasil_j3.json")
 PRAREG = G + "PRAREG-J3.md"
 SIDIK_BERKAS = os.path.join(AKAR, G + "j3_sidik.json")
-STATE = os.path.join(AKAR, "data/raw/banjir/genangan/j3_state.json")   # sama dengan STATE_J3 di mesin.mjs
+STATE = os.path.join(AKAR, G + "j3_state.json")   # DILACAK git (penghapusan/penulisan ulang terlihat di diff); sama dengan STATE_J3 di mesin.mjs
 
 
 def beku(akar=AKAR):
@@ -92,6 +92,12 @@ def periksa(akar=AKAR, sidik_berkas=SIDIK_BERKAS, show=git_show, leluhur=adalah_
         for j in berkas(akar):
             if show(c, j) != open(os.path.join(akar, j), "rb").read():
                 return f"{j} beda dari versi di commit jangkar {c[:10]}"
+        try:
+            sj = json.loads(show(c, G + "j3_sidik.json"))["sidik"]
+        except (TypeError, ValueError, KeyError):
+            return "j3_sidik.json tidak ada/tak terbaca di commit jangkar"
+        if sj != S["sidik"]:
+            return "sidik di j3_sidik.json beda dari yang tercatat di commit jangkar (ditulis ulang diam-diam?)"
     return None
 
 
@@ -107,7 +113,10 @@ def buka(akar=AKAR, sidik_berkas=SIDIK_BERKAS, state=STATE, hasil=HASIL, **kw):
     S = json.load(open(sidik_berkas))
     if not os.path.exists(hasil) or not S.get("hasil_sha256") or sha_berkas(hasil) != S["hasil_sha256"]:
         return "hasil_j3.json (skala*, Kd*, peta Kd) tidak tercatat/tidak cocok dengan hasil_sha256 di j3_sidik.json: kalibrasi harus selesai dan hash-nya dijangkar SEBELUM buka"
-    if json.load(open(hasil)).get("ditolak_pagar"):
+    hs = json.load(open(hasil))
+    if hs.get("sidik") != sidik(akar, kw.get("daftar")):
+        return "hasil_j3.json dihasilkan dengan sidik lain (kode/masukan berubah sesudah kalibrasi): kalibrasi ulang"
+    if hs.get("ditolak_pagar"):
         return "konfigurasi ditolak pagar 2021-02 (PRAREG): tidak boleh dibuka"
     os.makedirs(os.path.dirname(state), exist_ok=True)
     json.dump({"dibuka": {"tanggal": dt.date.today().isoformat(), "sidik": sidik(akar, kw.get("daftar"))}}, open(state, "w"))
@@ -122,7 +131,7 @@ def uji():
         open(os.path.join(d, PRAREG), "w").write('t\n<!-- BEKU:mulai -->\n```json\n{"dx_faktor": 12, "jam": 96, "hujan": "era5", "cn": 80, "muka": 0.6, "rentang": 1, '
                                               '"skala_subsiden": 1, "skala_hulu": 1, "radius_hulu_km": 10, "tanggul_m": 2.5}\n```\n<!-- BEKU:akhir -->\n')
         assert argumen_beku(d)[:4] == ["--faktor", "12", "--jam", "96"]
-        sb, st, hs = os.path.join(d, "s.json"), os.path.join(d, "state.json"), os.path.join(d, "hasil.json")
+        sb, st, hs = os.path.join(d, G + "j3_sidik.json"), os.path.join(d, "state.json"), os.path.join(d, "hasil.json")
         DL = ["m1.json", "m2.json"]; open(os.path.join(d, "m1.json"), "w").write("a"); open(os.path.join(d, "m2.json"), "w").write("b")
         palsu = {"show": lambda c, j, akar=None: open(os.path.join(d, j), "rb").read(), "leluhur": lambda c: True, "daftar": DL}
         simpan = lambda **k: json.dump({"jangkar_commit": "abc", **k}, open(sb, "w"))
@@ -132,6 +141,8 @@ def uji():
         assert periksa(d, sb, **palsu) is None
         assert "bukan leluhur" in periksa(d, sb, show=palsu["show"], leluhur=lambda c: False, daftar=DL)
         assert "commit jangkar" in periksa(d, sb, show=lambda c, j, akar=None: b"lain", leluhur=lambda c: True, daftar=DL)
+        asli = palsu["show"]
+        assert "ditulis ulang" in periksa(d, sb, show=lambda c, j, akar=None: json.dumps({"sidik": "lama"}).encode() if j.endswith("j3_sidik.json") else asli(c, j), leluhur=lambda c: True, daftar=DL)
         assert "penilai/penyetel belum ada" in buka(d, sb, st, hs, **palsu)
         for j in NANTI:
             open(os.path.join(d, j), "w").write("y")
@@ -144,13 +155,15 @@ def uji():
         assert "sidik beda" in buka(d, sb, st, hs, **palsu) and not os.path.exists(st), "kode berubah: tolak, state tak ditulis"
         open(os.path.join(d, WAJIB[1]), "w").write("x")
         assert "hasil_j3.json" in buka(d, sb, st, hs, **palsu), "tanpa hash hasil: tolak"
-        json.dump({"skala": 1.5, "ditolak_pagar": False}, open(hs, "w")); simpan(sidik=s1, hasil_sha256="salah")
+        json.dump({"skala": 1.5, "ditolak_pagar": False, "sidik": s1}, open(hs, "w")); simpan(sidik=s1, hasil_sha256="salah")
         assert "hasil_j3.json" in buka(d, sb, st, hs, **palsu), "hash hasil tak cocok: tolak"
-        simpan(sidik=s1, hasil_sha256=sha_berkas(hs)); json.dump({"ditolak_pagar": True}, open(hs, "w"))
+        simpan(sidik=s1, hasil_sha256=sha_berkas(hs)); json.dump({"ditolak_pagar": True, "sidik": s1}, open(hs, "w"))
         assert "hasil_j3.json" in buka(d, sb, st, hs, **palsu), "hasil berubah sesudah dijangkar: tolak"
-        json.dump({"ditolak_pagar": True}, open(hs, "w")); simpan(sidik=s1, hasil_sha256=sha_berkas(hs))
+        json.dump({"ditolak_pagar": True, "sidik": s1}, open(hs, "w")); simpan(sidik=s1, hasil_sha256=sha_berkas(hs))
         assert "pagar" in buka(d, sb, st, hs, **palsu) and not os.path.exists(st)
-        json.dump({"ditolak_pagar": False}, open(hs, "w")); simpan(sidik=s1, hasil_sha256=sha_berkas(hs))
+        json.dump({"ditolak_pagar": False, "sidik": "sidik-lain"}, open(hs, "w")); simpan(sidik=s1, hasil_sha256=sha_berkas(hs))
+        assert "sidik lain" in buka(d, sb, st, hs, **palsu), "hasil dari sidik berbeda: tolak"
+        json.dump({"ditolak_pagar": False, "sidik": s1}, open(hs, "w")); simpan(sidik=s1, hasil_sha256=sha_berkas(hs))
         assert buka(d, sb, st, hs, **palsu) is None and json.load(open(st))["dibuka"]["sidik"] == s1
         assert "sudah dibuka" in buka(d, sb, st, hs, **palsu), "buka hanya sekali"
         open(os.path.join(d, PRAREG), "a").write(" ")

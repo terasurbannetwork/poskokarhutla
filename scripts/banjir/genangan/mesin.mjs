@@ -239,7 +239,7 @@ export const KEJADIAN_J3 = {
   "2017-01": {mulai: "2017-02-19", jam: 96, peran: "kalibrasi"}, "2018-01": {mulai: "2018-02-13", jam: 96, peran: "kalibrasi"},
   "2020-01": {mulai: "2019-12-30", jam: 96, peran: "kalibrasi"}, "2021-02": {mulai: "2021-02-18", jam: 96, peran: "pagar"},
   "2024-08": {mulai: "2024-08-16", jam: 96, peran: "uji"}, "2025-04": {mulai: "2025-04-22", jam: 96, peran: "uji"}};
-const STATE_J3 = P("data/raw/banjir/genangan/j3_state.json");
+const STATE_J3 = P("scripts/banjir/genangan/j3_state.json"); /* DILACAK git */
 /* terbuka hanya bila sidik yang tercatat saat `buka` SAMA dengan sidik sekarang (kode/PRAREG/masukan berubah sesudah buka = terkunci lagi) */
 const sidikSekarang = () => execFileSync("python3", [P("scripts/banjir/genangan/kunci_j3.py"), "sidik-saja"], {encoding: "utf8"}).trim();
 export function labelTerbuka(statePath = STATE_J3, sidikFn = sidikSekarang) {
