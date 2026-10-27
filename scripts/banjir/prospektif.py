@@ -116,7 +116,7 @@ KRITERIA = {"tanggal_registrasi": "2026-10-27", "jendela_mulai": "2026-10-19", "
             "metode_bootstrap": "blok-bergerak atas hari terbit, panjang blok_hari, boot_b ulangan, benih; ulangan tanpa kejadian model (ETS tak terdefinisi) dilewati; selang persentil dua sisi",
             "rumus_ets": "ar=(a+b)(a+c)/N; ETS=(a-ar)/(a+b+c-ar); N=a+b+c+d; d=n_kab(entri terbaru)-|ramalan U kejadian|"}
 KRITERIA_SHA256 = "2df5613aa36dd27af5abc8a00ad0ac06f290ece286b78f835f47648399a37912"
-JANGKAR_COMMIT = ""   # commit yang memuat PRAREG-PROSPEKTIF.md; isi sesudah commit pendaftaran (lihat PRAREG bagian Jangkar)
+JANGKAR_COMMIT = "46d543a0bdf61188ddfda19474e49176571434a1"   # commit yang memuat PRAREG-PROSPEKTIF.md; isi sesudah commit pendaftaran (lihat PRAREG bagian Jangkar)
 PRAREG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "PRAREG-PROSPEKTIF.md")
 PRAREG_GIT = "scripts/banjir/PRAREG-PROSPEKTIF.md"
 SKOR = os.path.join(KELUAR, "prospektif_skor.json")
