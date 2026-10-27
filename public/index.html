@@ -2144,7 +2144,8 @@ const Peta = {
           /* titik = hari terpilih (satu hari WIB); kompleks = aktif (terdeteksi <= 72 jam, gambut kering 168 jam) tanpa ikut hari terpilih, jadi labelnya disebut */
           /* luas terbakar dan belum padam (perkiraan satelit per provinsi) tampil berdua begitu data luas dimuat (ukuran Luas terbakar atau Belum padam; pemilik, 22 Okt 2026);
              urutannya membuat kolom kanan berisi hektar: titik|luas, kompleks|belum padam, FWI|prioritas */
-          stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"],
+          /* firespot (titik firespot hari terpilih, satuan HS, sama dengan kolom FS daftar wilayah) di samping titik; tanpa arsip hari itu = "–" (pemilik, 27 Okt 2026) */
+          stat: [["titik", S.hit[k] || 0, "titik " + namaRentang(), "#e58a45"], ["api", klusterHari(tglRentang()) === false ? "–" : (r => r ? r[4] ?? "–" : 0)(klusterWil(tglRentang())[k]),"firespot " + namaRentang(), "#d9600b"],
             ...(pk ? [["puncak", fmt(pk.luas[ph] || 0), `ha luas terbakar<br>${tglLain(S.pk.hari[ph])}`, "#d9600b"]] : []), ["api", kl.length, "cluster aktif", "#5f6fb0"],
             ...(pk ? [["api", fmt((pkKini() ? pkKini().prov[k] : pk.belum[ph]) || 0), `ha masih terdeteksi satelit<br>${tglLain(pkTgl("belum"))}`, "#c9503a"]] : []),
             ...(fw != null ? [["fwi", fw, "FWI maks", "#a9402f", fw >= 14]] : []), ["skor", pr, "prioritas", "#c9503a", pr > 0]], /* jumlah posko disembunyikan (pemilik, 14 Okt 2026) */

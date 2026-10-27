@@ -120,23 +120,67 @@ class RangeFile:
                 self.cache[r] = b
 
 
+def lzw(data):
+    """Dekompresi LZW TIFF (MSB dulu, early change, 9-12 bit): dipakai reference_water_mask GFM (tiff_mini belum bisa kompresi 5)."""
+    tab = [bytes([i]) for i in range(256)] + [b"", b""]
+    out, bits, buf, nb, prev = bytearray(), 9, 0, 0, None
+    for byte in data:
+        buf, nb = (buf << 8) | byte, nb + 8
+        while nb >= bits:
+            kode = (buf >> (nb - bits)) & ((1 << bits) - 1)
+            nb -= bits
+            buf &= (1 << nb) - 1
+            if kode == 257:
+                return bytes(out)
+            if kode == 256:
+                del tab[258:]
+                bits, prev = 9, None
+                continue
+            if prev is None:
+                ent = tab[kode]
+            else:
+                ent = tab[kode] if kode < len(tab) else prev + prev[:1]
+                tab.append(prev + ent[:1])
+            out += ent
+            prev = ent
+            n = len(tab)
+            bits = 9 if n < 511 else 10 if n < 1023 else 11 if n < 2047 else 12
+    return bytes(out)
+
+
+class TiffLzw(tiff_mini.Tiff):
+    def ubin(self, kol, baris):
+        if self.komp != 5:
+            return super().ubin(kol, baris)
+        k = baris * self.per_baris + kol
+        self.f.seek(self.offs[k])
+        b = bytearray(lzw(self.f.read(self.cnts[k])))
+        if self.kode != "B":
+            raise ValueError("LZW hanya uint8")
+        if self.pred == 2:
+            for r in range(self.tt):
+                for i in range(r * self.tl + 1, (r + 1) * self.tl):
+                    b[i] = (b[i] + b[i - 1]) & 255
+        return bytes(b)
+
+
 class Raster:
     """Satu GeoTIFF GFM di server; nilai(col, row) membaca blok yang dibutuhkan saja (cache di memori)."""
     def __init__(self, url):
         self.rf = RangeFile(url)
-        self.t = tiff_mini.Tiff(self.rf)
+        self.t = TiffLzw(self.rf)
         self.dec = {}
 
     def siapkan(self, blok):
         t = self.t
-        self.rf.siapkan([(t.offs[b * t.per_baris + a], t.cnts[b * t.per_baris + a]) for a, b in blok if (a, b) not in self.dec])
+        self.rf.siapkan([(t.offs[b * t.per_baris + a], t.cnts[b * t.per_baris + a]) for a, b in blok if (a, b) not in self.dec and t.cnts[b * t.per_baris + a]])
 
     def nilai(self, col, row):
         t = self.t
         k = (col // t.tl, row // t.tt)
         a = self.dec.get(k)
         if a is None:
-            a = self.dec[k] = t.ubin(*k)
+            a = self.dec[k] = t.ubin(*k) if t.cnts[k[1] * t.per_baris + k[0]] else bytes([255]) * (t.tl * t.tt)  # blok kosong = tak teramati
         return a[(row % t.tt) * t.tl + col % t.tl]
 
 
@@ -331,28 +375,46 @@ class Titik:
                 x, y = xy[i]
                 n = f"{g}020M_E{int(x // 300000) * 3:03d}N{int(y // 300000) * 3:03d}T3"
                 out[n] = out.get(n, 0) + 1
-        s = sum(out.values())
-        return {n: c / s for n, c in out.items()}
+        n_s = len(range(0, len(self.p), langkah))
+        return {n: c / n_s for n, c in out.items()}
 
 
 # ---------------------------------------------------------------- hitung luas
 KUNCI = ("luas_ha", "diamati_ha", "mask_ha", "air_ha", "tergenang_ha", "latar_ha", "baru_ha")
 
 
-def hitung(pt, nama_ubin, f, m, r, pra=None):
-    """Akumulasi per kecamatan untuk titik `pt` di ubin `nama_ubin`. f/m/r/pra = objek dengan nilai(col,row)/siapkan(blok).
-    Tiap titik luar ubin hanya menambah luas. Urutan akumulator = KUNCI. Nilai f: 0 kering, 1 tergenang, 255 tak teramati;
-    m: 1 ter-mask; r: 1 air tetap. Pra: kering teramati (0) di lintasan pra = syarat 'baru'."""
+class Lintas:
+    """Satu lintasan = beberapa bingkai Sentinel-1 berurutan (selang menit) di ubin yang sama: per piksel dipakai bingkai
+    pertama yang teramati (!= 255). fm = [(flood, mask atau None)]; baca(col,row) -> (flood, mask)."""
+    def __init__(self, fm):
+        self.fm = fm
+
+    def siapkan(self, blok):
+        for f, m in self.fm:
+            f.siapkan(blok)
+            if m is not None:
+                m.siapkan(blok)
+
+    def baca(self, c, b):
+        for f, m in self.fm:
+            v = f.nilai(c, b)
+            if v != 255:
+                return v, (m.nilai(c, b) if m is not None else 0)
+        return 255, 0
+
+
+def hitung(pt, nama_ubin, lin, r, pra=None):
+    """Akumulasi per kecamatan (urutan KUNCI) untuk titik `pt` di ubin `nama_ubin`. lin/pra = Lintas; r = air tetap (nilai/siapkan).
+    flood: 0 kering, 1 tergenang, 255 tak teramati; mask 1 = ter-mask; r 1 = air tetap. Titik luar ubin hanya menambah luas.
+    baru = tergenang sesudah, kering TERAMATI (0) di pra; latar = tergenang di pra (bukan ter-mask pra, bukan air tetap)."""
     g, x0, ya = ubin_dari_nama(nama_ubin)
-    xy = pt.xy(g)
-    sel = []
-    blok = set()
-    for i, (x, y) in enumerate(xy):
+    sel, blok = [], set()
+    for i, (x, y) in enumerate(pt.xy(g)):
         if x0 <= x < x0 + 300000 and ya - 300000 < y <= ya:
             c, b = int((x - x0) // 20), int((ya - y) // 20)
             sel.append((i, c, b))
             blok.add((c // 512, b // 512))
-    for ras in (f, m, r, pra):
+    for ras in (lin, r, pra):
         if ras is not None:
             ras.siapkan(blok)
     acc = [[0.0] * len(KUNCI) for _ in pt.nama]
@@ -360,10 +422,14 @@ def hitung(pt, nama_ubin, f, m, r, pra=None):
         acc[ki][0] += ha
     for i, c, b in sel:
         ki, ha = pt.p[i][0], pt.p[i][3]
-        v = f.nilai(c, b)
+        a, w = acc[ki], r.nilai(c, b)
+        if pra is not None:
+            pv, pe = pra.baca(c, b)
+            if pv == 1 and pe != 1 and w != 1:
+                a[5] += ha
+        v, e = lin.baca(c, b)
         if v == 255:
             continue
-        a, e, w = acc[ki], m.nilai(c, b), r.nilai(c, b)
         a[1] += ha
         if e == 1:
             a[2] += ha
@@ -371,35 +437,17 @@ def hitung(pt, nama_ubin, f, m, r, pra=None):
             a[3] += ha
         if v == 1 and e != 1 and w != 1:
             a[4] += ha
-            if pra is not None and pra.nilai(c, b) == 0:
+            if pra is not None and pv == 0:
                 a[6] += ha
     return acc
 
 
-def latar(pt, nama_ubin, f, m, r, pra):
-    """Tergenang di lintasan PRA (bukan air tetap, bukan ter-mask) per kecamatan: pembanding sinyal_lemah."""
-    g, x0, ya = ubin_dari_nama(nama_ubin)
-    xy = pt.xy(g)
-    sel = [(i, int((x - x0) // 20), int((ya - y) // 20)) for i, (x, y) in enumerate(xy)
-           if x0 <= x < x0 + 300000 and ya - 300000 < y <= ya]
-    pra.siapkan({(c // 512, b // 512) for _, c, b in sel})
-    acc = [0.0] * len(pt.nama)
-    for i, c, b in sel:
-        if pra.nilai(c, b) == 1 and m.nilai(c, b) != 1 and r.nilai(c, b) != 1:
-            acc[pt.p[i][0]] += pt.p[i][3]
-    return acc
-
-
-def rangkum(pt, acc):
-    """acc per kec -> (total, kec dict) dengan cakupan_pct = (diamati - mask) / luas."""
-    tot = [sum(a[j] for a in acc) for j in range(len(KUNCI))]
-    kec = {}
-    for n, a in zip(pt.nama, acc):
-        kec[n] = [round(x, 1) for x in a]
-    return tot, kec
+def rangkum(acc):
+    return [sum(a[j] for a in acc) for j in range(len(KUNCI))]
 
 
 def cakupan(tot):
+    """% luas dengan bacaan sah: (diamati - mask) / luas."""
     return round(100 * (tot[1] - tot[2]) / tot[0], 1) if tot[0] else 0.0
 
 
@@ -410,72 +458,81 @@ def lemah(tergenang, lat_pra):
     return None if lat_pra is None else tergenang < 2 * lat_pra
 
 
-def pilih_pra(item_ub, post):
+def menit(iso):
+    return dt.datetime.fromisoformat(iso.replace("Z", "+00:00"))
+
+
+def pilih_pra(lintasan_ub, post):
     """Lintasan PRA ubin yang sama: 8-45 hari sebelum, jam lintas +-90 mnt (orbit sama); terdekat ke post."""
-    t = dt.datetime.fromisoformat(post["t"].replace("Z", "+00:00"))
+    t = menit(post["t"])
     out = []
-    for k in item_ub:
-        s = dt.datetime.fromisoformat(k["t"].replace("Z", "+00:00"))
+    for k in lintasan_ub:
+        s = menit(k["t"])
         sel = (t - s).total_seconds() / 86400
         dm = abs((s.hour * 60 + s.minute) - (t.hour * 60 + t.minute))
         dm = min(dm, 1440 - dm)
-        if PRA[0] <= sel <= PRA[1] and dm <= JAM_PRA and k["f"] and k["m"] and k.get("r"):
+        if PRA[0] <= sel <= PRA[1] and dm <= JAM_PRA:
             out.append((sel, k))
     return min(out, key=lambda x: x[0])[1] if out else None
 
 
 class Katalog:
+    """Item -> lintasan: bingkai satu ubin yang berselang <= 10 menit adalah SATU lintasan (3 bingkai berurutan = satu lewat)."""
     def __init__(self, item):
         self.ub = {}
+        per = {}
         for k in item.values():
-            self.ub.setdefault(k["ub"], []).append(k)
-        for v in self.ub.values():
-            v.sort(key=lambda k: k["t"])
+            if k["f"]:
+                per.setdefault(k["ub"], []).append(k)
+        for n, ks in per.items():
+            ks.sort(key=lambda k: k["t"])
+            ls = []
+            for k in ks:
+                if ls and (menit(k["t"]) - menit(ls[-1]["fr"][-1]["t"])).total_seconds() <= 600:
+                    ls[-1]["fr"].append(k)
+                else:
+                    ls.append({"t": k["t"], "ub": n, "fr": [k]})
+            for l in ls:
+                l["id"] = l["fr"][0]["id"]
+                l["r"] = next((k["r"] for k in l["fr"] if k.get("r")), None)
+                l["fp"] = sum(k["fp"] or 0 for k in l["fr"])
+                l["an"] = any(k["an"] for k in l["fr"])
+            self.ub[n] = [l for l in ls if l["r"]]
 
     def kandidat(self, ubin_frak, awal, akhir):
         a, b = awal.isoformat(), (akhir + dt.timedelta(days=1)).isoformat()
-        c = [(-fr, k["t"], n, k) for n, fr in ubin_frak.items() for k in self.ub.get(n, []) if a <= k["t"] < b and k["f"] and k["m"] and k.get("r")]
-        return [(n, k) for _, _, n, k in sorted(c, key=lambda z: z[:3])]
+        c = [(-fr, l["t"], n, l) for n, fr in ubin_frak.items() for l in self.ub.get(n, []) if a <= l["t"] < b]
+        return [(n, l) for _, _, n, l in sorted(c, key=lambda z: z[:3])]
 
 
 def hitung_pasangan(pt, kat, awal, jendela, buka=Raster):
     """-> dict hasil kabupaten untuk satu pasangan, atau {'status': 'tanpa_lintasan'}. `buka` = pembuat Raster (disuntik saat uji)."""
     akhir = awal + dt.timedelta(days=jendela)
-    frak = pt.ubin()
-    cand = kat.kandidat(frak, awal, akhir)[:MAKS_KANDIDAT]
+    cand = kat.kandidat(pt.ubin(), awal, akhir)[:MAKS_KANDIDAT]
     if not cand:
         return {"status": "tanpa_lintasan", "luas_ha": round(sum(p[3] for p in pt.p), 1)}
     ras = {}
     ambil = lambda href: ras.setdefault(href, buka(HULU + href))
+    lintas = lambda l: Lintas([(ambil(k["f"]), ambil(k["m"]) if k["m"] else None) for k in l["fr"]])
     baik = None
-    for n, k in cand:
-        acc = hitung(pt, n, ambil(k["f"]), ambil(k["m"]), ambil(k["r"]))
-        tot, _ = rangkum(pt, acc)
+    for n, l in cand:
+        tot = rangkum(hitung(pt, n, lintas(l), ambil(l["r"])))
         c = cakupan(tot)
         if baik is None or c > baik[0] + 1e-9:
-            baik = (c, n, k)
-    c, n, k = baik
-    pra = pilih_pra(kat.ub[n], k)
-    lat = None
-    if pra:
-        rp = ambil(pra["f"])
-        acc = hitung(pt, n, ambil(k["f"]), ambil(k["m"]), ambil(k["r"]), rp)
-        la = latar(pt, n, rp, ambil(k["m"]), ambil(k["r"]), rp)
-        lat = sum(la)
-        for a, x in zip(acc, la):
-            a[5] = x
-    else:
-        acc = hitung(pt, n, ambil(k["f"]), ambil(k["m"]), ambil(k["r"]))
-    tot, kec = rangkum(pt, acc)
-    for nm, a in zip(pt.nama, acc):
-        kec[nm] = [round(x, 1) for x in a[:5]] + [round(a[5], 1) if pra else None, round(a[6], 1) if pra else None]
-    sl = lemah(tot[4], lat)
-    return {"status": "ok", "post": k["id"], "tgl": k["t"], "pra": pra["id"] if pra else None, "pra_tgl": pra["t"] if pra else None,
-            "ubin": n, "n_kandidat": len(cand), "luas_ha": round(tot[0], 1), "diamati_ha": round(tot[1], 1), "mask_ha": round(tot[2], 1),
-            "air_ha": round(tot[3], 1), "tergenang_ha": round(tot[4], 1), "latar_ha": round(lat, 1) if pra else None,
-            "tergenang_baru_ha": round(tot[6], 1) if pra else None, "cakupan_pct": cakupan(tot), "sinyal_lemah": sl,
-            "fp_item": k["fp"], "anomali": k["an"], "byte": sum(r.rf.byte for r in ras.values()),
-            "kec": {nm: v for nm, v in kec.items() if v[1] > 0}}
+            baik = (c, n, l)
+    c, n, l = baik
+    pra = pilih_pra(kat.ub[n], l)
+    acc = hitung(pt, n, lintas(l), ambil(l["r"]), lintas(pra) if pra else None)
+    tot = rangkum(acc)
+    lat = tot[5] if pra else None
+    kec = {nm: [round(x, 1) for x in a[:5]] + [round(a[5], 1) if pra else None, round(a[6], 1) if pra else None]
+           for nm, a in zip(pt.nama, acc) if a[1] > 0}
+    return {"status": "ok", "post": l["id"], "tgl": l["t"], "n_bingkai": len(l["fr"]), "pra": pra["id"] if pra else None,
+            "pra_tgl": pra["t"] if pra else None, "ubin": n, "n_kandidat": len(cand), "luas_ha": round(tot[0], 1),
+            "diamati_ha": round(tot[1], 1), "mask_ha": round(tot[2], 1), "air_ha": round(tot[3], 1), "tergenang_ha": round(tot[4], 1),
+            "latar_ha": round(lat, 1) if pra else None, "tergenang_baru_ha": round(tot[6], 1) if pra else None,
+            "cakupan_pct": cakupan(tot), "sinyal_lemah": lemah(tot[4], lat), "fp_item": l["fp"], "anomali": l["an"],
+            "byte": sum(r.rf.byte for r in ras.values()), "kec": kec}
 
 
 # ---------------------------------------------------------------- pasangan
@@ -666,24 +723,32 @@ def uji():
     f = Palsu({(0, 0): 1, (1, 0): 1, (2, 0): 1, (3, 0): 255, (4, 0): 1}, 0)
     m = Palsu({(1, 0): 1, (4, 0): 1}, 0)           # titik 1 ter-mask, titik 4 ter-mask
     rw = Palsu({(2, 0): 1}, 0)                       # titik 2 air tetap
-    pr = Palsu({(0, 0): 1}, 0)                       # titik 0 sudah tergenang sebelumnya
-    a = hitung(T(), "OC020M_E042N087T3", f, m, rw, pr)
-    # A: luas 40; diamati 30 (titik 3 = 255); mask 10; air 10; tergenang = hanya titik 0 (1 dan bukan mask/air) = 10; baru = 0 (pra=1)
-    assert a[0][:5] == [40.0, 30.0, 10.0, 10.0, 10.0] and a[0][6] == 0.0, a[0]
+    pr = Lintas([(Palsu({(0, 0): 1}, 0), None)])     # titik 0 sudah tergenang sebelumnya
+    a = hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, pr)
+    # A: luas 40; diamati 30 (titik 3 = 255); mask 10; air 10; tergenang = hanya titik 0 = 10; latar 10 (titik 0 pra); baru 0
+    assert a[0][:5] == [40.0, 30.0, 10.0, 10.0, 10.0] and a[0][5] == 10.0 and a[0][6] == 0.0, a[0]
     # B: luas 10 (titik 4 mask, dalam ubin; titik 5 luar ubin), diamati 5, mask 5, tergenang 0
     assert a[1][:5] == [10.0, 5.0, 5.0, 0.0, 0.0], a[1]
-    a2 = hitung(T(), "OC020M_E042N087T3", f, m, rw, Palsu({}, 0))    # pra kering teramati: titik 0 baru
-    assert a2[0][4] == 10.0 and a2[0][6] == 10.0
-    a3 = hitung(T(), "OC020M_E042N087T3", f, m, rw, Palsu({}, 255))  # pra tak teramati: tak dihitung baru
+    a2 = hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, Lintas([(Palsu({}, 0), None)]))   # pra kering teramati: titik 0 baru
+    assert a2[0][4] == 10.0 and a2[0][6] == 10.0 and a2[0][5] == 0.0
+    a3 = hitung(T(), "OC020M_E042N087T3", Lintas([(f, m)]), rw, Lintas([(Palsu({}, 255), None)]))  # pra tak teramati: tak dihitung baru
     assert a3[0][6] == 0.0
+    # dua bingkai satu lintasan: bingkai pertama kosong (255) di titik 0, bingkai kedua mengisi
+    a4 = hitung(T(), "OC020M_E042N087T3", Lintas([(Palsu({}, 255), None), (f, m)]), rw)
+    assert a4[0][:5] == a[0][:5], a4[0]
     assert cakupan([40, 30, 10, 0, 0, 0, 0]) == 50.0
     # sinyal_lemah
     assert lemah(0, 5) is True and lemah(9, 5) is True and lemah(10, 5) is False and lemah(10, None) is None
     # pilih_pra: ubin sama, 8-45 hari, jam serupa
     post = {"t": "2024-01-20T22:00:00Z"}
-    ks = [{"t": "2024-01-08T22:05:00Z", "f": "a", "m": "b", "r": "c"}, {"t": "2024-01-14T22:05:00Z", "f": "a", "m": "b", "r": "c"},
-          {"t": "2024-01-08T10:00:00Z", "f": "a", "m": "b", "r": "c"}, {"t": "2023-10-01T22:00:00Z", "f": "a", "m": "b", "r": "c"}]
+    ks = [{"t": "2024-01-08T22:05:00Z"}, {"t": "2024-01-14T22:05:00Z"}, {"t": "2024-01-08T10:00:00Z"}, {"t": "2023-10-01T22:00:00Z"}]
     assert pilih_pra(ks, post)["t"] == "2024-01-08T22:05:00Z"   # 14 Jan terlalu dekat (6 hari), 08 Jan beda jam diabaikan
+    assert lzw(bytes.fromhex("80 0b 60 50 22 0c 0c 85 01".replace(" ", ""))) == b"-----A---B"  # contoh spesifikasi TIFF 6.0
+    # lintasan: 3 bingkai berselang menit = satu lintasan; bingkai 12 jam kemudian lintasan lain
+    def b(i, t):
+        return {"id": i, "ub": "OC020M_E030N096T3", "t": t, "f": "f", "m": "m", "r": "r", "fp": 5, "an": False}
+    kt = Katalog({i: b(i, t) for i, t in (("a", "2020-01-05T22:00:00Z"), ("b", "2020-01-05T22:00:25Z"), ("c", "2020-01-05T22:00:50Z"), ("d", "2020-01-06T10:00:00Z"))})
+    assert [(len(l["fr"]), l["fp"]) for l in kt.ub["OC020M_E030N096T3"]] == [(3, 15), (1, 5)]
     # katalog lanjut dari cache: bulan selesai tidak diminta lagi, item terpotong dibuang
     global DIR, ITEM, BULAN, UBIN_BULAN, stac_post, JEDA
     simpan_ = (DIR, ITEM, BULAN, UBIN_BULAN, stac_post, JEDA)
@@ -706,7 +771,7 @@ def uji():
         assert per_tahun_item(it) == {"2020": 9} and it["X_2020-01_0"]["r"] == "r.tif", it["X_2020-01_0"]["r"]
         # kandidat + pasangan sintetis dari ujung ke ujung (tanpa jaringan)
         kat = Katalog(it)
-        assert [k["id"] for _, k in kat.kandidat({"OC020M_E030N096T3": 1.0}, dt.date(2020, 1, 1), dt.date(2020, 1, 6))] == ["X_2020-01_0", "X_2020-01_1", "X_2020-01_2"]
+        assert len(kat.kandidat({"OC020M_E030N096T3": 1.0}, dt.date(2020, 1, 1), dt.date(2020, 1, 6))) == 1   # 3 bingkai satu jam = satu lintasan
         # cache hasil: tulis dua baris + satu baris terpotong, muat kembali
         global HASIL
         HASIL = os.path.join(DIR, "hasil.jsonl")

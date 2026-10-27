@@ -2,7 +2,7 @@
    (pola tests/banjir/sim_genangan.test.mjs), menjalankan SATU kejadian di DEM DEMNAS yang diturunkan ke ~30 m.
    Pakai:  node scripts/banjir/genangan/mesin.mjs [--kejadian 2020-01] [--mulai 2019-12-30] [--jam 96] [--faktor 4]
            [--hujan ifs|era5|gsmap_dis] [--bentuk ifs|era5] [--cn 80] [--kd 10] [--muka 0.6] [--rentang 1] [--skala-subsiden 1] [--tanpa-hulu]
-           [--tanpa-alur] [--tanggul 2.5 | --tanpa-tanggul] [--skala-hulu 1] [--radius-hulu-km 8]
+           [--tanpa-alur] [--tanggul 2.5 | --tanpa-tanggul] [--skala-hulu 1] [--radius-hulu-km 10]
            [--kotak lon0,lat0,lon1,lat1] [--keluar berkas.json]       node ... uji   (swa-uji helper)
    Masukan : DEM data/raw/banjir/genangan/medan/demnas_kotak.f32.gz (+json); hujan jam hujan_jam/<kejadian>.json (kisi 0,1 derajat,
              tiap sel DEM memakai sel hujan terdekat, SCS-CN harian limpasanHarian); Kd per kecamatan (seragam dulu); debit hulu GloFAS
@@ -28,6 +28,8 @@ const TAHUN_DEM = 2011; /* DEMNAS TerraSAR-X 2011 (demnas_kotak.json catatan) */
 export const ALUR = {river: {dalam: 3, lebar: 30, n: .035}, canal: {dalam: 2.5, lebar: 15, n: .035}, drain: {dalam: 1, lebar: 5, n: .03}};
 /* Tanggul pantai: elevasi puncak (m terhadap MSL tahun kejadian). ASUMSI dari tanggul pantai/NCICD Jakarta (puncak rencana tahap A ~ +2,5 sampai +3,5 m MSL
    di literatur NCICD/PTPIN; angka ini BUKAN ukuran lapangan dan tidak diverifikasi di repo). */
+/* batas pemotongan dasar alur di bawah kedalaman standar saat meluruskan profil (breach), ASUMSI */
+ALUR.potong_ekstra_m = 3;
 export const TANGGUL_M = 2.5;
 const NAMA_ALUR = {Ciliwung: /ci\s*liwung/i, Cipinang: /ci\s*pinang/i};
 
@@ -95,19 +97,27 @@ class Heap { constructor() { this.a = []; }
   push(k, v) { const a = this.a; a.push([v, k]); let i = a.length - 1; while (i > 0) { const p = (i - 1) >> 1; if (a[p][0] <= a[i][0]) break; [a[p], a[i]] = [a[i], a[p]]; i = p; } }
   pop() { const a = this.a, t = a[0], e = a.pop(); if (a.length) { a[0] = e; let i = 0; for (;;) { let m = i; const l = 2 * i + 1, r = l + 1; if (l < a.length && a[l][0] < a[m][0]) m = l; if (r < a.length && a[r][0] < a[m][0]) m = r; if (m === i) break; [a[m], a[i]] = [a[i], a[m]]; i = m; } } return t; }
   get n() { return this.a.length; } }
-/* profil dasar alur monoton ke hilir: Priority-Flood (+eps) HANYA di sel alur. Benih = sel alur bertetangga laut atau di tepi kisi; komponen alur tanpa benih
-   dibenihi sel terendahnya (ujung buntu). bed diubah di tempat. Mengembalikan {komponenBuntu, naik: jumlah sel dasar yang dinaikkan > 1 m}. */
-export function profilMonoton(bed, alur, nx, ny, laut, eps = 1e-5) {
-  const N = nx * ny, ada = new Uint8Array(N), H = new Heap(), idx = []; let buntu = 0, naik = 0;
-  const nb = k => { const i = k % nx, j = (k / nx) | 0, r = []; if (i > 0) r.push(k - 1); if (i < nx - 1) r.push(k + 1); if (j > 0) r.push(k - nx); if (j < ny - 1) r.push(k + nx); return r; };
+/* profil dasar alur monoton ke hilir. Benih = sel alur bertetangga laut atau di tepi kisi; komponen tanpa benih dibenihi sel terendahnya (ujung buntu).
+   Dua tahap: (1) BREACH: pohon Priority-Flood dari hilir; tiap sel hilir yang lebih tinggi dari sel hulunya diturunkan ke dasar hulu, tak lebih rendah dari
+   lantai[sel] (batas pemotongan; mencegah pelepasan tanggul/jembatan DSM menaikkan seluruh alur hulu); (2) FILL: sisa pelanggaran dinaikkan (Priority-Flood +eps).
+   bed diubah di tempat. Mengembalikan {komponenBuntu, naik (sel dasar naik > 1 m dari awal), turun (sel dasar turun > 1 m)}. */
+export function profilMonoton(bed, alur, nx, ny, laut, lantai = null, eps = 1e-5) {
+  const N = nx * ny, nb = k => { const i = k % nx, j = (k / nx) | 0, r = []; if (i > 0) r.push(k - 1); if (i < nx - 1) r.push(k + 1); if (j > 0) r.push(k - nx); if (j < ny - 1) r.push(k + nx); return r; };
+  const idx = []; for (let k = 0; k < N; k++) if (alur[k]) idx.push(k);
   const asli = Float64Array.from(bed);
-  const alir = () => { while (H.n) { const [v, c] = H.pop(); for (const n of nb(c)) if (alur[n] && !ada[n]) { ada[n] = 1; if (bed[n] < v + eps) bed[n] = v + eps; H.push(n, bed[n]); } } };
-  for (let k = 0; k < N; k++) if (alur[k]) { idx.push(k); const i = k % nx, j = (k / nx) | 0;
-    if (!ada[k] && (!i || !j || i === nx - 1 || j === ny - 1 || nb(k).some(n => laut[n]))) { ada[k] = 1; H.push(k, bed[k]); } }
-  alir(); idx.sort((a, b) => bed[a] - bed[b]);
-  for (const k of idx) if (!ada[k]) { ada[k] = 1; buntu++; H.push(k, bed[k]); alir(); }
-  for (const k of idx) if (bed[k] - asli[k] > 1) naik++;
-  return {komponenBuntu: buntu, naik};
+  const fill = (b, catat) => { /* satu Priority-Flood; catat = {urut, induk} bila perlu pohon */
+    const ada = new Uint8Array(N), H = new Heap(); let buntu = 0;
+    const alir = () => { while (H.n) { const [v, c] = H.pop(); if (catat) catat.urut.push(c);
+      for (const n of nb(c)) if (alur[n] && !ada[n]) { ada[n] = 1; if (b[n] < v + eps) b[n] = v + eps; if (catat) catat.induk[n] = c; H.push(n, b[n]); } } };
+    for (const k of idx) { const i = k % nx, j = (k / nx) | 0; if (!ada[k] && (!i || !j || i === nx - 1 || j === ny - 1 || nb(k).some(n => laut[n]))) { ada[k] = 1; H.push(k, b[k]); } }
+    alir(); const kurut = [...idx].sort((p, q) => b[p] - b[q]);
+    for (const k of kurut) if (!ada[k]) { ada[k] = 1; buntu++; H.push(k, b[k]); alir(); }
+    return buntu; };
+  if (lantai) { const tmp = Float64Array.from(bed), t = {urut: [], induk: new Int32Array(N).fill(-1)}; fill(tmp, t);
+    for (let q = t.urut.length - 1; q >= 0; q--) { const c = t.urut[q], p = t.induk[c]; if (p < 0) continue; const tujuan = Math.max(bed[c], lantai[p]); if (bed[p] > tujuan) bed[p] = tujuan; } }
+  const buntu = fill(bed, null); let naik = 0, turun = 0;
+  for (const k of idx) { if (bed[k] - asli[k] > 1) naik++; else if (asli[k] - bed[k] > 1) turun++; }
+  return {komponenBuntu: buntu, naik, turun};
 }
 /* sel darat (bukan alur) bertetangga-4 dengan laut */
 export function pesisir(laut, alur, nx, ny) {
@@ -155,6 +165,10 @@ function uji() {
   { const bed = Float64Array.from([3, 2, 4, 1]), alur = new Uint8Array(4).fill(1), laut = Uint8Array.from([0, 0, 0, 0]);
     /* 1x4 di tepi kiri/kanan: benih di kedua ujung (tepi); dasar [3,2,4,1] tidak berubah karena tiap sel punya jalur turun ke tepi */
     profilMonoton(bed, alur, 4, 1, laut); assert(bed.join() === "3,2,4,1", bed.join()); }
+  { const nx = 6, ny = 3, alur = new Uint8Array(18), laut = new Uint8Array(18), bed = new Float64Array(18).fill(9); laut[11] = 1; for (const k of [7, 8, 9, 10]) alur[k] = 1; bed[10] = 3; bed[9] = 5; bed[8] = 2; bed[7] = 4;
+    const b1 = Float64Array.from(bed); profilMonoton(b1, alur, nx, ny, laut); assert([7, 8, 9, 10].every(k => Math.abs(b1[k] - 5) < 1e-3 || b1[k] === 3) && b1[8] >= 5, "fill " + [7, 8, 9, 10].map(k => b1[k]));
+    const b2 = Float64Array.from(bed); profilMonoton(b2, alur, nx, ny, laut, new Float64Array(18).fill(-1e9)); assert(Math.abs(b2[9] - 2) < 1e-3 && Math.abs(b2[10] - 2) < 1e-3 && b2[7] === 4 && b2[8] >= b2[9] && b2[7] >= b2[8], "breach " + [7, 8, 9, 10].map(k => b2[k]));
+    const b3 = Float64Array.from(bed); profilMonoton(b3, alur, nx, ny, laut, new Float64Array(18).fill(4)); assert(b3[10] === 3 && Math.abs(b3[9] - 4) < 1e-3 && b3[8] >= 4 && b3[7] >= 4, "lantai " + [7, 8, 9, 10].map(k => b3[k])); }
   { const nx = 5, ny = 3, alur = new Uint8Array(15), bed = new Float64Array(15).fill(9); for (const k of [6, 7, 8]) { alur[k] = 1; } bed[6] = 2; bed[7] = 0; bed[8] = 3; /* komponen buntu: tak menyentuh tepi */
     const p = profilMonoton(bed, alur, nx, ny, new Uint8Array(15)); assert(p.komponenBuntu === 1 && bed[7] === 0 && bed[6] > 0 && bed[8] > 0, JSON.stringify(p) + [bed[6], bed[7], bed[8]]); }
   { const laut = Uint8Array.from([1, 0, 0, 0, 0, 0]), alur = Uint8Array.from([0, 0, 0, 0, 1, 0]); /* 3x2: laut (0,0); alur (1,1) */
@@ -169,7 +183,7 @@ function uji() {
 
 /* ---------- jalan ---------- */
 function argumen() {
-  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 8, kotak: null, keluar: null};
+  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, kotak: null, keluar: null};
   const v = process.argv.slice(2);
   for (let i = 0; i < v.length; i++) { const k = v[i];
     if (k === "--tanpa-hulu") a.hulu = false;
@@ -232,7 +246,8 @@ async function jalan() {
         for (let dj = -tebal; dj <= tebal; dj++) for (let di2 = -tebal; di2 <= tebal; di2++) { const i = i0 + di2, j = j0 + dj; if (i >= 0 && j >= 0 && i < nx && j < ny && Math.abs(di2) + Math.abs(dj) <= tebal) mk.push(j * nx + i); } } }
       for (const k of mk) { if (laut[k]) continue; if (kl > alurKelas[k]) alurKelas[k] = kl; }
       if (e.tags.name) sungaiSel.push({nama: e.tags.name, kelas: w, sel: sel.filter(k => !laut[k])}); }
-    for (let k = 0; k < N; k++) if (alurKelas[k]) { const w = kelasDari[alurKelas[k]]; dalamKelas[k] = ALUR[w].dalam; nAlur[k] = ALUR[w].n; }
+    /* sub-sel: alur selebar `lebar` dalam sel selebar dx menampung (lebar/dx) x isi penampang; kedalaman efektif = dalam x min(1, lebar/dx) menjaga luas penampang & tampungan per panjang alur */
+    for (let k = 0; k < N; k++) if (alurKelas[k]) { const w = kelasDari[alurKelas[k]]; dalamKelas[k] = ALUR[w].dalam * Math.min(1, ALUR[w].lebar / dx); nAlur[k] = ALUR[w].n; }
     info.sel_alur = {river: 0, canal: 0, drain: 0}; for (let k = 0; k < N; k++) if (alurKelas[k]) info.sel_alur[kelasDari[alurKelas[k]]]++;
   }
   const alur = Uint8Array.from(alurKelas, v => v ? 1 : 0);
@@ -241,12 +256,14 @@ async function jalan() {
   if (a.tanggul != null) { const m = pesisir(laut, alur, nx, ny); for (let k = 0; k < N; k++) if (m[k]) { nTanggul++; if (z0[k] < a.tanggul) z0[k] = a.tanggul; } }
   const zTepi = Float64Array.from(z0); /* tinggi tepi sebelum dibakar */
   if (a.alur) { const bed = Float64Array.from(z0); for (let k = 0; k < N; k++) if (alur[k]) bed[k] = z0[k] - dalamKelas[k];
-    info.profil = profilMonoton(bed, alur, nx, ny, laut); for (let k = 0; k < N; k++) if (alur[k]) z0[k] = bed[k]; }
+    const lantai = Float64Array.from(zTepi, (v, k) => v - dalamKelas[k] - ALUR.potong_ekstra_m);
+    info.profil = profilMonoton(bed, alur, nx, ny, laut, lantai); for (let k = 0; k < N; k++) if (alur[k]) z0[k] = bed[k]; }
   const benih = SG.benihTepi(nx, ny, laut), z = SG.siapkanDEM(z0, nx, ny, benih);
   let nLaut = 0, isi = 0; for (let k = 0; k < N; k++) { if (laut[k]) nLaut++; if (z[k] > z0[k] + 1e-9) isi++; }
   const dalamAlur = new Float64Array(N); /* isi alur di bawah tepi (m): kedalaman keluaran sel alur = muka air di atas tepi */
   for (let k = 0; k < N; k++) if (alur[k]) dalamAlur[k] = Math.max(0, zTepi[k] - z[k]);
-  log(`subsidensi ${turun.toFixed(3)} m (2011 -> ${tahun}); sel laut ${nLaut}, sel cekungan diangkat ${isi}; sel alur ${JSON.stringify(info.sel_alur || 0)}, tanggul ${nTanggul} sel (${a.tanggul} m), profil ${JSON.stringify(info.profil || {})}`);
+  if (a.alur) { const dl = []; for (let k = 0; k < N; k++) if (alur[k]) dl.push(dalamAlur[k]); info.dalam_alur_m = {p10: persentil(dl, .1), p50: persentil(dl, .5), p90: persentil(dl, .9), tanpa_alur_lt_0_3m_persen: +(dl.filter(v => v < .3).length / dl.length * 100).toFixed(1)}; }
+  log(`subsidensi ${turun.toFixed(3)} m (2011 -> ${tahun}); sel laut ${nLaut}, sel cekungan diangkat ${isi}; sel alur ${JSON.stringify(info.sel_alur || 0)}, tanggul ${nTanggul} sel (${a.tanggul} m), profil ${JSON.stringify(info.profil || {})} dalam ${JSON.stringify(info.dalam_alur_m || {})}`);
 
   /* kecamatan */
   const {kec, nama} = rasterKec(JSON.parse(fs.readFileSync(P("public/geo/kecamatan/31.json"), "utf8")), nx, ny, lonSel, latSel);
@@ -334,7 +351,7 @@ async function jalan() {
   const keluar = {
     dibuat: new Date().toISOString(), kejadian: a.kejadian,
     parameter: {...a, dx_m: +dx.toFixed(2), nx, ny, tahun_dem: TAHUN_DEM, subsidensi_m: +turun.toFixed(3), kalibrasi: "TIDAK. Semua angka placeholder (J2.5).",
-      alur_param: a.alur ? ALUR : null, sel_alur: info.sel_alur || null, profil_alur: info.profil || null, sel_tanggul: nTanggul, hujan_info: infoHujan,
+      alur_param: a.alur ? ALUR : null, sel_alur: info.sel_alur || null, profil_alur: info.profil || null, dalam_alur_m: info.dalam_alur_m || null, sel_tanggul: nTanggul, hujan_info: infoHujan,
       catatan: ["Hujan: " + JSON.stringify(infoHujan) + "; belum dikoreksi bias. ERA5-Land kosong untuk Jakarta (precipitation null), dipakai era5 0,25 derajat.", "CN seragam, belum dari tutupan lahan.",
         "Alur OSM river/canal/drain dibakar ke DEM (kedalaman/lebar/n di alur_param, ASUMSI); kedalaman keluaran di sel alur = muka air di atas tepi. Aliran/luapan sungai tetap v1 (alur satu sel).",
         "Hulu GloFAS disuntik di sel alur bernama sama terdekat dari titik snap; skala 1 x skala_hulu (fraksi DAS tak dihitung, luas DAS tak ada di repo); titik di hilir titik lain hanya menyuntik selisihnya.",
