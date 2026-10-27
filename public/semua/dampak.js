@@ -11,12 +11,18 @@ const GRUP = [["Korban", "#c9503a", ["meninggal", "hilang", "luka", "terdampak",
   ["Rumah", "#e58a45", ["rr_berat", "rr_sedang", "rr_ringan", "terendam"]],
   ["Fasilitas rusak", "#4f8fc4", ["f_pendidikan", "f_ibadah", "f_kesehatan", "f_kantor", "f_umum", "jembatan"]]];
 const PERIODE = [7, 30, 365];
+/* DIBI menulis jenis dengan banyak varian ("Kebakaran Lahan", "Angin Topan", "Banjir Rob"): saring dan ringkas memakai 14 jenis baku BNPB, rincian baris tetap menyebut tulisan asli. */
+const BAKU = [[/tsunami/i, "Gempa bumi dan tsunami"], [/gempa/i, "Gempa bumi dan tsunami"], [/lahar|erupsi|gunung/i, "Erupsi gunung api"],
+  [/gedung|permukiman/i, "Kebakaran permukiman"], [/kebakaran/i, "Kebakaran hutan dan lahan"], [/gelombang|abrasi/i, "Gelombang pasang dan abrasi"],
+  [/banjir/i, "Banjir"], [/longsor|gerakan tanah/i, "Tanah longsor"], [/angin|puting|topan|cuaca/i, "Cuaca ekstrem"], [/kering/i, "Kekeringan"],
+  [/konflik/i, "Konflik sosial"], [/epidemi|wabah/i, "Epidemi dan wabah penyakit"], [/teknologi|industri/i, "Gagal teknologi"]];
+const baku = j => (BAKU.find(([re]) => re.test(j)) || [, "Lainnya"])[1];
 const jml = (L, k) => L.reduce((s, r) => s + (+r[k] || 0), 0), cacah = r => +r.kejadian || 1;
 const geser = (t, n) => new Date(new Date(t + "T12:00:00Z").getTime() - n * 864e5).toISOString().slice(0, 10);
 
 export async function pasangDampak(el) {
   let D = null; try { const r = await fetch("/data/dibi_kejadian.json", {cache: "no-cache"}); if (r.ok) D = await r.json(); } catch (e) {}
-  const SEMUA = Array.isArray(D?.kejadian) ? D.kejadian : [];
+  const SEMUA = (Array.isArray(D?.kejadian) ? D.kejadian : []).map(r => ({...r, asli: r.jenis, jenis: baku(String(r.jenis || ""))}));
   if (!SEMUA.length) { el.innerHTML = Kartu.kartu("Dampak bencana", "Data dampak belum tersedia", `<p class="kosong">Data dampak kejadian BNPB (DIBI) belum tersedia, jadi panel ini kosong. Angka tidak ditebak.</p>`, "DIBI BNPB"); return; }
   const kol = new Set(D.kolom || []), ada = k => kol.has(k), st = {hari: 30, jenis: ""}, sampai = D.sampai || SEMUA.reduce((m, r) => r.tanggal > m ? r.tanggal : m, "");
   const jenisAda = [...new Set(SEMUA.map(r => r.jenis))].sort((a, b) => a.localeCompare(b, "id"));
@@ -29,7 +35,7 @@ export async function pasangDampak(el) {
 
   const rinci = r => { const d = det(); if (!d) return;
     const baris = GRUP.flatMap(([, w, ks]) => ks.filter(k => ada(k) && +r[k] > 0).map(k => `<span class="pl" style="--w:${w}">${LABEL[k]} ${fmt(+r[k])}</span>`));
-    d.innerHTML = `<b translate="no">${esc(r.kab)}, ${esc(r.prov)}</b>, ${esc(r.jenis)}, ${tglID(r.tanggal)}${cacah(r) > 1 ? `, ${fmt(cacah(r))} kejadian` : ""}<div class="pls">${baris.join("") || "Tidak ada dampak tercatat pada kejadian ini."}</div>`; d.hidden = false; };
+    d.innerHTML = `<b translate="no">${esc(r.kab)}, ${esc(r.prov)}</b>, ${esc(r.asli)}, ${tglID(r.tanggal)}${cacah(r) > 1 ? `, ${fmt(cacah(r))} kejadian` : ""}<div class="pls">${baris.join("") || "Tidak ada dampak tercatat pada kejadian ini."}</div>`; d.hidden = false; };
 
   const tabel = { t: null };
   const isi = () => {

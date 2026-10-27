@@ -27,7 +27,6 @@ LAPORAN = os.path.join(AKAR, "data/raw/banjir/genangan/petabencana_laporan.json"
 MEDAN = os.path.join(AKAR, "data/raw/banjir/genangan/medan")
 WIB = dt.timezone(dt.timedelta(hours=7))
 AMBANG_DB = -17.0
-J3_UJI = {"2024-08", "2025-04"}
 TAK = -32768   # None dalam cache int16 (dB x 100)
 
 
@@ -151,6 +150,38 @@ def lolos_kejadian(csi, naif, semua, kr):
         return False
     L = kr["lolos_kejadian"]
     return csi >= L["csi_min"] and csi >= max(naif or 0, semua or 0) + L["margin_atas_pembanding"]
+
+
+# ---------------------------------------------------------------- penjaga label uji J3 (PRAREG-J3.md)
+MESIN = os.path.join(AYAH, "genangan", "mesin.mjs")
+
+
+def jendela_j3(mesin=MESIN):
+    """[(awal, akhir)] datetime WIB jendela kejadian peran "uji" dari KEJADIAN_J3 di mesin.mjs (sumber yang sama dengan muatLabel; tidak disalin).
+    Gagal membaca/menemukan tabel = galat keras, BUKAN diam-diam tanpa penjaga."""
+    import re
+    src = open(mesin).read()
+    blok = src[src.index("export const KEJADIAN_J3"):]
+    blok = blok[:blok.index("};") + 2]
+    out = []
+    for m in re.finditer(r'mulai:\s*"(\d{4}-\d{2}-\d{2})",\s*jam:\s*(\d+),\s*peran:\s*"uji"', blok):
+        a = dt.datetime.fromisoformat(m.group(1) + "T00:00:00+07:00")
+        out.append((a, a + dt.timedelta(hours=int(m.group(2)))))
+    if not out:
+        raise RuntimeError("tabel KEJADIAN_J3 peran uji tidak terbaca dari mesin.mjs: berhenti")
+    return out
+
+
+def tanpa_j3(laporan, jendela):
+    """buang laporan di jendela uji J3 SEGERA setelah baca, tanpa menghitung/menyimpan apa pun darinya -> (laporan_sisa)"""
+    ada = lambda t: any(a <= t < b for a, b in jendela)
+    return [r for r in laporan if not ada(dt.datetime.fromisoformat(r["t"]))]
+
+
+def kena_j3(waktu, jam, jendela):
+    """jendela label [waktu-jam, waktu+jam] menyentuh jendela uji J3?"""
+    d = dt.timedelta(hours=jam)
+    return any(waktu - d < b and waktu + d > a for a, b in jendela)
 
 
 # ---------------------------------------------------------------- masker medan (DEMNAS lokal)
@@ -325,7 +356,8 @@ def nilai_adegan(sesudah, dasar, naif_sebelum, kec, sah_medan, labelkec, kr):
 def jalan():
     kr, sha = kriteria()
     mulai, anggaran = time.time(), float(os.environ.get("LAB_MENIT", "40")) * 60
-    lap = json.load(open(LAPORAN))
+    J3 = jendela_j3()
+    lap = tanpa_j3(json.load(open(LAPORAN)), J3)   # laporan jendela uji J3 dibuang di sini, tidak pernah dihitung
     from bersama import KecDKI
     kd = KecDKI()
     kec_of = lambda lo, la: ("%s|%s" % kd.cari(lo, la)) if kd.cari(lo, la) else None
@@ -338,13 +370,13 @@ def jalan():
     kejadian = kejadian_dari_laporan(lap, lb["kejadian_hari_min_laporan"], lb["gabung_kejadian_hari"])
     semua_hari = {h for e in kejadian for h in e["hari"]}
     A = kr["adegan"]
-    hasil, keg = [], []
+    hasil, keg, dikecualikan = [], [], []
     for ev in kejadian:
         if time.time() - mulai > anggaran:
             keg.append(f"anggaran habis sebelum {ev['puncak']}")
             break
         D = dt.date.fromisoformat(ev["puncak"])
-        rec = {"kejadian": ev["puncak"], "hari_laporan": ev["hari"], "n_laporan": ev["n"], "j3_uji": ev["puncak"][:7] in J3_UJI, "adegan": []}
+        rec = {"kejadian": ev["puncak"], "hari_laporan": ev["hari"], "n_laporan": ev["n"], "adegan": []}
         try:
             # tanggal WIB D..D+2; lintasan UTC bisa jatuh sehari lebih awal, ambil D-1..D+3 lalu saring
             g = R.cari((D - dt.timedelta(days=1)).isoformat(), (D + dt.timedelta(days=3)).isoformat())
@@ -367,6 +399,9 @@ def jalan():
                 dasar_k = kand[:A["dasar_maks_lintasan"]]
                 n0, n1 = A["naif_dasar_hari_sebelum"][0], A["naif_dasar_hari_sebelum"][1]
                 naif_k = next((k for k in kand if n0 <= (tgl - dt.date.fromisoformat(k[0])).days <= n1), None)
+                if kena_j3(w, lb["jendela_label_jam"], J3):
+                    dikecualikan.append(kunci[0])
+                    continue
                 lab = label_kec(lap, kec_of, w, lb["jendela_label_jam"], 1)
                 a = {"tanggal_utc": kunci[0], "waktu_wib": w.astimezone(WIB).isoformat(timespec="minutes"), "orbit": kunci[1],
                      "selisih_hari_wib": sel, "dasar_lintasan": [k[0] for k in dasar_k], "naif_sebelum": naif_k[0] if naif_k else None}
@@ -400,6 +435,7 @@ def jalan():
             print(f"   {ev['puncak']} gagal: {e}", file=sys.stderr)
         hasil.append(rec)
         print(f"   {ev['puncak']}: {len(rec['adegan'])} adegan", file=sys.stderr)
+    keg.append("dikecualikan: jendela uji J3 terkunci")   # selalu disebut, tanpa angka
     simpan_hasil(hasil, kr, sha, keg)
 
 
@@ -462,7 +498,7 @@ def ringkas_md(o):
          "| Kejadian | Adegan | CSI otsu+masker | naif | semua positif | Putusan |", "|---|---|---|---|---|---|"]
     for r in o["kejadian"]:
         p = r["putusan"]
-        s.append(f"| {r['kejadian']}{' (J3 uji)' if r['j3_uji'] else ''} | {p.get('adegan', '-')} | {p.get('CSI', '-')} | {p.get('CSI_naif', '-')} | {p.get('CSI_semua_positif', '-')} | "
+        s.append(f"| {r['kejadian']} | {p.get('adegan', '-')} | {p.get('CSI', '-')} | {p.get('CSI_naif', '-')} | {p.get('CSI_semua_positif', '-')} | "
                  f"{'lolos' if p['lolos'] else 'gagal' if p['lolos'] is False else p['status']} |")
     s += ["", "Keterbatasan: " + "; ".join(o["keterbatasan"]) + "."]
     return "\n".join(s) + "\n"
@@ -525,6 +561,15 @@ def uji():
     r2 = dict(r, otsu_masker=dict(r["otsu_masker"], metrik=metrik({"a": True}, {"a": True})))
     assert putusan({"adegan": [{"status": "ok", "selisih_hari_wib": 0, "cakupan_sel_persen": 90, "tanggal_utc": "x", **r2}]}, kr)["status"] == "tak_dapat_dinilai"
     assert putusan({"adegan": []}, kr)["lolos"] is None
+    # penjaga J3: jendela dibaca dari mesin.mjs; laporan di jendela uji = nol baris tersisa, di luar jendela utuh
+    J = jendela_j3()
+    assert len(J) == 2 and all((b - a).total_seconds() == 96 * 3600 for a, b in J), J
+    for a, b in J:
+        di_dalam = [{"t": (a + dt.timedelta(hours=h)).isoformat(), "lon": 0, "lat": 0} for h in (0, 30, 95)]
+        assert tanpa_j3(di_dalam, J) == [], "laporan jendela uji J3 harus nol baris"
+        luar = [{"t": (a - dt.timedelta(hours=1)).isoformat(), "lon": 0, "lat": 0}, {"t": b.isoformat(), "lon": 0, "lat": 0}]
+        assert len(tanpa_j3(luar, J)) == 2
+        assert kena_j3(a - dt.timedelta(hours=6), 12, J) and not kena_j3(a - dt.timedelta(hours=13), 12, J)
     # buat_kisi: ukuran sesuai kriteria
     lo, la = buat_kisi(kr)
     assert len(lo) == 320 * 310 and lo[0] == 106.6805 and la[0] == -6.0705, (len(lo), lo[0], la[0])

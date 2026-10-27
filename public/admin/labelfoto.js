@@ -41,7 +41,7 @@
     }
     fotoEl.innerHTML = `<img alt="Foto lapangan untuk dilabel" src="${esc(f.url)}">`;
     infoEl.innerHTML = `<b>${esc(f.bencana)}, ${esc(f.kategori)}</b><span>${tgl(f.diambil || f.dibuat)}</span>
-      <a href="https://www.google.com/maps?q=${f.lat},${f.lon}" target="_blank" rel="noopener">${(+f.lat).toFixed(5)}, ${(+f.lon).toFixed(5)}</a>`;
+      <a href="https://www.google.com/maps?q=${+f.lat},${+f.lon}" target="_blank" rel="noopener noreferrer">${(+f.lat).toFixed(5)}, ${(+f.lon).toFixed(5)}</a>`;
     for (const x of antre.slice(0, 3)) new Image().src = x.url;   // muat dini 3 foto berikutnya supaya lompatan instan
     tandai();
   }
@@ -54,7 +54,7 @@
     if (kini) riwayat.push(kini);
     kini = antre.shift() || null;
     gambar();
-    if (antre.length < 5 && berikut !== undefined) isi();
+    if (antre.length < 5) isi();
   }
   async function isi() {
     if (memuat || berikut === false) return;
@@ -83,7 +83,7 @@
 
   function beri(kelas) {
     const f = kini; if (!f) return;
-    galat(""); const lama = labelKu.get(kunci(f)), j = jenis;
+    galat(""); const lama = labelKu.get(kunci(f)), j = ["bukan_bangunan", "tidak_jelas"].includes(kelas) ? null : jenis;   // server menolak jenis objek pada dua kelas ini
     if (lama === undefined) saya++;
     labelKu.set(kunci(f), kelas); jenis = null; sisa = Math.max(0, sisa - (lama === undefined ? 1 : 0));
     maju();   // sinkron: foto berikutnya tampil sekarang; jaringan di belakang

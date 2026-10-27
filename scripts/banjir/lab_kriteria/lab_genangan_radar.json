@@ -39,5 +39,5 @@
  "dinilai": {"kecamatan_positif_min": 5, "kecamatan_negatif_min": 5, "lainnya": "tak_dapat_dinilai"},
  "lolos_kejadian": {"csi_min": 0.30, "margin_atas_pembanding": 0.05, "pembanding": ["naif", "semua_positif"]},
  "lolos_keseluruhan": {"kejadian_dinilai_min": 3, "pecahan_lolos_min": 0.6},
- "catatan_pra_registrasi_j3": "Kejadian 2024-08 dan 2025-04 adalah label UJI J3 (PRAREG-J3.md). Lab radar ini tidak menyetel apa pun pada label, tetapi membaca PetaBencana mentah langsung; ditandai j3_uji di keluaran."
+ "catatan_pra_registrasi_j3": "Jendela kejadian peran uji di KEJADIAN_J3 (mesin.mjs, dibaca otomatis) terkunci: laporan di dalamnya dibuang sebelum dihitung, lintasan yang jendela labelnya menyentuhnya dikecualikan, tidak ada angka dari situ di keluaran."
 }

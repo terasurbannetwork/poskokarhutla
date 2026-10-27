@@ -2,6 +2,7 @@
    Tidak ada model, tidak ada skor AI. Semua rute admin (adminOK PERTAMA, sebelum body/D1). Halaman: public/admin/labelfoto.js. */
 import {json, gagal, adminOK, bacaBody} from "./worker.js";
 import {laju} from "./bnpb.js";
+import {superOK} from "./posko.js";
 
 export const AMBANG_LABEL = 500;   // model baru dilatih setelah sekian FOTO terlabel (disepakati pemilik); satu-satunya tempat angka ini ditulis
 export const KELAS = ["rusak_berat", "rusak_sedang", "rusak_ringan", "tidak_rusak", "bukan_bangunan", "tidak_jelas"];
@@ -63,7 +64,7 @@ async function antre(env, req, url, kini) {
   const mod = await adminOK(env, req, kini); if (!mod) return gagal(403, "admin wajib masuk");
   const dummy = dummyMode(url), baru = url.searchParams.get("mode") === "baru", batas = Math.min(50, Math.max(1, parseInt(url.searchParams.get("batas"), 10) || 20)), cur = url.searchParams.get("sebelum");
   let kunci = null;
-  if (cur) { const m = /^(\d{1,15}):(\w{16})$/.exec(cur); if (!m) return gagal(400, "sebelum harus <waktu>:<id>"); kunci = [Number(m[1]), m[2]]; }
+  if (cur) { const m = /^(\d{1,15}):([0-9a-f]{16})$/.exec(cur); if (!m) return gagal(400, "sebelum harus <waktu>:<id>"); kunci = [Number(m[1]), m[2]]; }
   /* mode saya (bawaan) = yang BELUM saya label (foto yang sudah dilabel orang lain tetap muncul: perlu pelabel kedua untuk kesepakatan); mode baru = belum dilabel siapa pun */
   const belum = `dummy = ? AND NOT EXISTS (SELECT 1 FROM foto_label l WHERE l.sumber = f.sumber AND l.foto_id = f.id${baru ? "" : " AND l.pelabel = ?"})`, arg = baru ? [dummy] : [dummy, mod];
   try {
@@ -78,12 +79,13 @@ async function antre(env, req, url, kini) {
 
 async function simpan(env, req, kini) {
   const mod = await adminOK(env, req, kini); if (!mod) return gagal(403, "admin wajib masuk");
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status ?? 400, b.galat);
   const {sumber, foto_id: id, kelas} = b.o, jenis = b.o.jenis_objek ?? null;
   if (!Object.hasOwn(SEL, sumber)) return gagal(400, `sumber harus ${Object.keys(SEL).join("/")}`);
-  if (typeof id !== "string" || !/^\w{16}$/.test(id)) return gagal(400, "foto_id harus 16 karakter");
+  if (typeof id !== "string" || !/^[0-9a-f]{16}$/.test(id)) return gagal(400, "foto_id harus 16 karakter heksadesimal");
   if (!KELAS.includes(kelas)) return gagal(400, `kelas harus ${KELAS.join("/")}`);
   if (jenis !== null && !JENIS_OBJEK.includes(jenis)) return gagal(400, `jenis_objek harus ${JENIS_OBJEK.join("/")}`);
+  if (jenis !== null && ["bukan_bangunan", "tidak_jelas"].includes(b.o.kelas)) return gagal(400, "jenis_objek harus kosong untuk kelas bukan_bangunan/tidak_jelas");
   try {
     const f = await env.DB.prepare(`SELECT dummy FROM (${SEL[sumber]}) WHERE id = ?`).bind(id).first();   // hanya foto yang lolos moderasi
     if (!f) return gagal(404, "foto tidak ada atau belum disetujui");
@@ -105,11 +107,12 @@ async function ekspor(env, req, url, kini) {
   try {
     const [r, st] = [await env.DB.prepare(`${SEMUA} SELECT f.sumber, f.id, f.lat, f.lon, f.bencana, f.kategori, f.diambil, f.dibuat, l.pelabel, l.kelas, l.jenis_objek, l.waktu
       FROM f JOIN foto_label l ON l.sumber = f.sumber AND l.foto_id = f.id WHERE l.dummy = ? ORDER BY f.dibuat, f.id, l.pelabel LIMIT 100000`).bind(dummy).all(), await statistik(env, dummy, mod)];
-    const per = new Map();
+    const per = new Map(), anon = new Map();   /* lokasi pelapor dibulatkan 0,01 derajat (~1 km); id moderator diganti indeks anonim */
     for (const x of r.results) {
+      if (!anon.has(x.pelabel)) anon.set(x.pelabel, `pelabel-${anon.size + 1}`);
       const k = x.sumber + x.id;
-      if (!per.has(k)) per.set(k, {sumber: x.sumber, id: x.id, kunci_r2: KUNCI_R2[x.sumber](x.id), lat: x.lat, lon: x.lon, tanggal: new Date(x.diambil || x.dibuat).toISOString(), jenis_bencana: x.bencana, kategori: x.kategori, label: []});
-      per.get(k).label.push({pelabel: x.pelabel, kelas: x.kelas, jenis_objek: x.jenis_objek, waktu: x.waktu});
+      if (!per.has(k)) per.set(k, {sumber: x.sumber, id: x.id, kunci_r2: KUNCI_R2[x.sumber](x.id), lat: x.lat == null ? null : Math.round(x.lat * 100) / 100, lon: x.lon == null ? null : Math.round(x.lon * 100) / 100, tanggal: new Date(x.diambil || x.dibuat).toISOString(), jenis_bencana: x.bencana, kategori: x.kategori, label: []});
+      per.get(k).label.push({pelabel: anon.get(x.pelabel), kelas: x.kelas, jenis_objek: x.jenis_objek, waktu: x.waktu});
     }
     const foto = [...per.values()].map(f => {
       const n = f.label.length, hit = {}; for (const l of f.label) hit[l.kelas] = (hit[l.kelas] || 0) + 1;
@@ -127,14 +130,14 @@ async function media(env, req, url, kini, id) {
   if (!env.MEDIA) return gagal(503, "penyimpanan foto belum diaktifkan (R2 binding MEDIA)");
   const r = await env.DB.prepare(`SELECT mime FROM (${SEL[s]}) WHERE id = ?`).bind(id).first(); if (!r) return gagal(404, "foto tidak ada");
   const o = await env.MEDIA.get(KUNCI_R2[s](id)); if (!o) return gagal(404, "berkas tidak ada");
-  return new Response(o.body, {headers: {"content-type": r.mime, "content-length": String(o.size), "x-content-type-options": "nosniff", "cache-control": "private, max-age=300", "content-disposition": "inline"}});
+  return new Response(o.body, {headers: {"content-type": r.mime, "content-length": String(o.size), "x-content-type-options": "nosniff", "cache-control": "private, max-age=300", "content-disposition": "inline", "content-security-policy": "sandbox; default-src 'none'"}});
 }
 
 /* Dummy (DUMMY.md): label contoh pada foto dummy yang SUDAH ada (isi dulu di /admin/foto). Tiap kelas terisi; tiga pelabel palsu supaya kesepakatan dan kappa berangka
    (b sama dengan a kecuali tiap foto ke-4, c hanya tiap foto ke-3); sepertiga foto dibiarkan belum dilabel supaya antrean tidak kosong. Gerbang "sudah ada" = label dummy yang MASIH hidup. */
 async function dummy(env, req, kini) {
-  const mod = await adminOK(env, req, kini); if (!mod) return gagal(403, "admin wajib masuk");
-  const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
+  const mod = await superOK(env, req); if (!mod) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
+  const b = await bacaBody(req); if (b.galat) return gagal(b.status ?? 400, b.galat);
   try {
     if (b.o.aksi === "hapus") return json({ok: true, label: (await env.DB.prepare("DELETE FROM foto_label WHERE dummy = 1").run()).meta.changes});
     if (b.o.aksi !== "isi") return gagal(400, "aksi harus isi/hapus");
