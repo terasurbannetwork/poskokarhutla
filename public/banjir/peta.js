@@ -324,18 +324,40 @@ function grafikHujan(c) {
   return `<svg viewBox="0 -12 ${W} ${B + 22}" width="100%" role="img" aria-label="Hujan harian">${g}</svg>`; }
 /* hidrograf sungai: debit ansambel rata-rata dan maksimum vs Q2/Q5/Q20 */
 function grafikSungai(t) {
-  const hr = S.sungai.hari, W = 660, B = 140, ada = t.q2 != null, qMax = Math.max(...t.qmax.map(x => x || 0), ...t.q.map(x => x || 0)) || 1,
+  const hr = S.sungai.hari, n = hr.length, W = 400, T = 22, B = 168, L = 40, R = 6, ada = t.q2 != null, BIRU = "#3f7fb8",
+    qMax = Math.max(...t.qmax.map(x => x || 0), ...t.q.map(x => x || 0)) || 1,
     /* skala mengikuti debit; ambang yang jauh di atas cukup disebut, supaya kurva tidak gepeng di dasar */
-    m = ada && t.q2 <= qMax * 2.5 ? Math.max(qMax, t.q20 <= qMax * 2.5 ? t.q20 : t.q5 <= qMax * 2.5 ? t.q5 : t.q2) * 1.12 : qMax * 1.25, X = j => j / (hr.length - 1) * (W - 40) + 20, Y = v => B - v / m * 120;
-  /* label ambang di kiri-kanan bergantian supaya tidak bertumpuk */
-  let g = ada ? [[t.q2, 1], [t.q5, 2], [t.q20, 3]].filter(([q]) => q <= m).map(([q, l], i) => `<line x1="20" x2="${W - 20}" y1="${Y(q)}" y2="${Y(q)}" stroke="${WARNA_LV[l]}" stroke-dasharray="5 3"/><text x="${i % 2 ? 24 : W - 20}" y="${Y(q) - 4}" text-anchor="${i % 2 ? "start" : "end"}" font-size="10.5" font-weight="700" style="fill:${WARNA_LV[l]}">banjir ${[0, 2, 5, 20][l]} tahunan, ${fmt(Math.round(q))} m³/s</text>`).join("")
-    : `<text x="${W / 2}" y="14" text-anchor="middle" font-size="11" opacity=".7">Ambang banjir titik ini belum dihitung (diisi bertahap tiap hari)</text>`;
-  if (ada && t.q2 > m) g += `<text x="${W / 2}" y="2" text-anchor="middle" font-size="11" font-weight="700" style="fill:${WARNA_LV[1]}">Ambang banjir 2 tahunan ${fmt(Math.round(t.q2))} m³/s jauh di atas debit saat ini (${Math.round(qMax / t.q2 * 100)}%)</text>`;
-  g += [0, .5, 1].map(f => `<text x="16" y="${Y(m * f) + 4}" text-anchor="end" font-size="9.5" opacity=".55">${rb(m * f)}</text>`).join("");
-  g += `<path d="${t.qmax.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")} ${t.q.map((v, j) => "L" + X(hr.length - 1 - j) + "," + Y(t.q[hr.length - 1 - j] || 0)).join("")}Z" fill="#3f7fb8" opacity=".15"/>`;
-  g += `<path d="${t.q.map((v, j) => (j ? "L" : "M") + X(j) + "," + Y(v || 0)).join("")}" fill="none" stroke="#3f7fb8" stroke-width="2.5"/>`;
-  g += t.q.map((v, j) => `<circle cx="${X(j)}" cy="${Y(v || 0)}" r="3.5" fill="#3f7fb8" data-tip="<b>${tglPendek(hr[j])}</b><br>debit ${fmt(Math.round(v))} m³/s (maks ansambel ${fmt(Math.round(t.qmax[j]))})"/><text x="${X(j)}" y="${B + 14}" text-anchor="middle" font-size="10" opacity=".65">${hr[j].slice(8)}/${hr[j].slice(5, 7)}</text>`).join("");
-  return `<svg viewBox="0 -8 ${W} ${B + 22}" width="100%" role="img" aria-label="Debit sungai">${g}</svg>`; }
+    m = ada && t.q2 <= qMax * 2.5 ? Math.max(qMax, t.q20 <= qMax * 2.5 ? t.q20 : t.q5 <= qMax * 2.5 ? t.q5 : t.q2) * 1.12 : qMax * 1.25,
+    X = j => L + j / (n - 1) * (W - L - R), Y = v => B - (v || 0) / m * (B - T), gap = (W - L - R) / (n - 1),
+    kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10), iK = hr.indexOf(kini),
+    iP = t.q.reduce((b, v, j) => (v || 0) > (t.q[b] || 0) ? j : b, 0),
+    garis = a => a.map((v, j) => (j ? "L" : "M") + X(j).toFixed(1) + "," + Y(v).toFixed(1)).join("");
+  /* kisi dan sumbu: tiga garis tipis, angka di kiri, satuan di pojok */
+  let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W - R}" y1="${Y(m * f)}" y2="${Y(m * f)}" stroke="currentColor" opacity="${f ? .08 : .2}"/><text x="${L - 7}" y="${Y(m * f) + 3.5}" text-anchor="end" font-size="10" opacity=".55">${rb(m * f)}</text>`).join("")
+    + `<text x="${L - 7}" y="${T - 10}" text-anchor="end" font-size="9.5" font-weight="700" opacity=".55">m³/s</text>`;
+  /* pembatas hari ini: kiri teramati (redup), kanan prakiraan */
+  if (iK > 0) g += `<rect x="${L}" y="${T}" width="${X(iK) - L}" height="${B - T}" fill="currentColor" opacity=".035"/><line x1="${X(iK)}" x2="${X(iK)}" y1="${T}" y2="${B}" stroke="currentColor" stroke-dasharray="2 3" opacity=".35"/>`
+    + `<text x="${X(iK) - 6}" y="${T + 11}" text-anchor="end" font-size="9.5" font-weight="700" opacity=".5">TERAMATI</text><text x="${X(iK) + 6}" y="${T + 11}" font-size="9.5" font-weight="700" opacity=".5">PRAKIRAAN</text>`;
+  /* ambang: garis putus berwarna level, label pil di kanan */
+  if (ada) g += [[t.q2, 1], [t.q5, 2], [t.q20, 3]].filter(([q]) => q <= m).map(([q, l]) => { const lb = `Banjir ${[0, 2, 5, 20][l]} tahunan ${fmt(Math.round(q))}`, w = lb.length * 5.6 + 14;
+    return `<line x1="${L}" x2="${W - R}" y1="${Y(q)}" y2="${Y(q)}" stroke="${WARNA_LV[l]}" stroke-width="1.4" stroke-dasharray="6 4"/><rect x="${W - R - w}" y="${Y(q) - 9}" width="${w}" height="18" rx="9" fill="${WARNA_LV[l]}"/><text x="${W - R - w / 2}" y="${Y(q) + 3.5}" text-anchor="middle" font-size="10" font-weight="700" fill="#fff">${lb}</text>`; }).join("");
+  else g += `<text x="${(L + W - R) / 2}" y="${T + 26}" text-anchor="middle" font-size="11" opacity=".7">Ambang banjir titik ini belum dihitung (diisi bertahap tiap hari)</text>`;
+  if (ada && t.q2 > m) g += `<text x="${(L + W - R) / 2}" y="${T + 26}" text-anchor="middle" font-size="11" font-weight="700" style="fill:${WARNA_LV[1]}">Debit tertinggi ${Math.round(qMax / t.q2 * 100)}% dari ambang banjir 2 tahunan (${fmt(Math.round(t.q2))} m³/s)</text>`;
+  /* pita ansambel sampai maksimum, luasan debit rata-rata bergradasi, garis utama */
+  g += `<defs><linearGradient id="hgIsi" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${BIRU}" stop-opacity=".32"/><stop offset="1" stop-color="${BIRU}" stop-opacity="0"/></linearGradient></defs>`
+    + `<path d="${garis(t.qmax)}${t.q.map((_, j) => "L" + X(n - 1 - j).toFixed(1) + "," + Y(t.q[n - 1 - j]).toFixed(1)).join("")}Z" fill="${BIRU}" opacity=".14"/>`
+    + `<path d="${garis(t.q)}L${X(n - 1)},${B}L${X(0)},${B}Z" fill="url(#hgIsi)"/>`
+    + `<path d="${garis(t.q)}" fill="none" stroke="${BIRU}" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>`;
+  /* puncak: pil angka di atas titik tertinggi */
+  const lp = `${fmt(Math.round(t.q[iP] || 0))} m³/s`, wp = lp.length * 6 + 14, xp = Math.min(Math.max(X(iP), L + wp / 2), W - R - wp / 2);
+  g += `<rect x="${xp - wp / 2}" y="${Y(t.q[iP]) - 27}" width="${wp}" height="18" rx="9" fill="${BIRU}"/><text x="${xp}" y="${Y(t.q[iP]) - 14.5}" text-anchor="middle" font-size="10.5" font-weight="800" fill="#fff">${lp}</text>`;
+  /* kolom sorot per hari: seluruh tinggi kolom jadi sasaran, garis bantu dan titik membesar saat disorot */
+  g += t.q.map((v, j) => { const pq = ada && t.q2 ? `<br>${Math.round((v || 0) / t.q2 * 100)}% dari banjir 2 tahunan` : "";
+    return `<g class="hg-k" data-tip="<b>${tglPendek(hr[j])}</b>${j < iK ? ", teramati" : iK >= 0 ? ", prakiraan" : ""}<br>Debit ${fmt(Math.round(v || 0))} m³/s<br>Maks ansambel ${fmt(Math.round(t.qmax[j] || 0))} m³/s${pq}">`
+      + `<rect x="${X(j) - gap / 2}" y="${T}" width="${gap}" height="${B - T + 20}" fill="transparent"/><line class="hg-p" x1="${X(j)}" x2="${X(j)}" y1="${T}" y2="${B}" stroke="${BIRU}" stroke-width="1"/>`
+      + `<circle class="hg-t" cx="${X(j)}" cy="${Y(v)}" r="${j === iK ? 5 : 3.5}" fill="${j === iK ? "#fff" : BIRU}" stroke="${BIRU}" stroke-width="2"/>`
+      + `<text x="${X(j)}" y="${B + 15}" text-anchor="middle" font-size="10" opacity="${j === iK ? 1 : .6}" font-weight="${j === iK ? 800 : 500}">${j === iK ? "Hari ini" : hr[j].slice(8) + "/" + hr[j].slice(5, 7)}</text></g>`; }).join("");
+  return `<svg class="hg" viewBox="0 0 ${W} ${B + 24}" width="100%" role="img" aria-label="Debit sungai 10 hari">${g}</svg>`; }
 const Analisa = {
   /* laci rincian di kanan (seperti Laci karhutla); di tab lain jatuh ke dialog tengah. kepala = lambang + <div><h3>nama</h3><p>jenis · induk</p></div> */
   buka(html, kepala) {
@@ -375,9 +397,8 @@ const Analisa = {
     this.buka(isi, kepala); },
   sungai(i) {
     const t = S.sungai.titik[i]; if (!t) return;
-    const isi = `<div class="grid g4">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + " m³/s", "rata-rata ansambel")}${kot("Q2", t.q2 ? fmt(Math.round(t.q2)) : "–", "m³/s · banjir 2 tahunan")}${kot("Puncak ÷ Q2", t.q2 ? f2(t.puncak / t.q2) + "×" : "–", !t.q2 ? "ambang belum ada" : t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
-      ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS; pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari debit maksimum tiap tahun 1997–2025 (distribusi Gumbel). Angka kiri = m³/s.</p>`)}
-      <p class="fnd">GloFAS memodelkan sungai besar pada kisi ± 5 km; sungai kecil dan banjir lokal (drainase kota, rob) tidak tertangkap. Koordinat ${f3(t.lat)}, ${f3(t.lon)}.</p>`;
+    const isi = `<div class="grid g4 satu">${kot("Status", `<span style="color:${t.kelas ? WARNA_LV[t.kelas] : "inherit"}">${LEVEL[t.kelas]}</span>`, "puncak 7 hari")}${kot("Debit puncak", fmt(Math.round(t.puncak)) + '<i class="sat">m³/s</i>', "rata-rata ansambel")}${kot("Q2", t.q2 ? fmt(Math.round(t.q2)) + '<i class="sat">m³/s</i>' : "–", "banjir 2 tahunan")}${kot("Puncak ÷ Q2", t.q2 ? f2(t.puncak / t.q2) + "×" : "–", !t.q2 ? "ambang belum ada" : t.puncak >= t.q2 ? "di atas ambang" : "di bawah ambang")}</div>
+      ${lipat("Hidrograf 10 hari", `${grafikSungai(t)}<p class="fnd">Garis biru = debit rata-rata ansambel GloFAS, pita = sampai maksimum ansambel. Garis putus = ambang periode ulang dari debit maksimum tiap tahun 1997–2025 (distribusi Gumbel). Sorot grafik untuk angka tiap hari.</p>`)}`;
     this.buka(isi, `<div><h3 id="dlgJudul">Sungai di ${esc(t.kec)}</h3><p>${esc(t.kab)}, ${esc(namaProv(t.prov))}</p></div>`); },
 };
 

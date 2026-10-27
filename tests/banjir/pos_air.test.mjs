@@ -304,7 +304,7 @@ test("batang ambang hanya untuk pos berambang dan berangka; kapsul besar sesuai 
   assert.equal(P.batangAmbang({status: "biasa", v: 5, satuan: "cm"}), null, "tanpa ambang: tanpa batang"); assert.equal(P.batangAmbang({ambang: amb, v: null, satuan: "cm"}), null, "tanpa angka: tanpa batang");
   const b = plain(P.batangAmbang({ambang: amb, v: 155, satuan: "cm"})); assert.ok(b.isi > 30 && b.isi < 60 && b.tik.length === 3);
   assert.match(src, /class="pa-kp"/); assert.match(src, /<span class="pa-ang"/); assert.ok(src.indexOf("${this.pilPos(x)}<span class=\"pa-ang\"") > 0, "pil di kiri angka");
-  const css = fs.readFileSync("public/banjir/pos_air.css", "utf8"); assert.match(css, /\.pa-kp\{[^}]*width:14px;height:26px/); assert.match(css, /\.pa-baris\{[^}]*grid-template-columns:auto minmax\(0,1fr\) auto 66px/);
+  const css = fs.readFileSync("public/banjir/pos_air.css", "utf8"); assert.match(css, /\.pa-kp\{[^}]*width:14px;height:26px/); assert.match(css, /\.pa-baris\{[^}]*grid-template-columns:auto minmax\(0,1fr\) auto 78px/);
 });
 
 test("kelompok wilayah: nama pendek, bentrok Kota dan Kabupaten memakai nama lengkap; pos_sungai.json dimuat malas; judul grup 14px tanpa kotak", () => {
