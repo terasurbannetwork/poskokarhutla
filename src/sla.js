@@ -19,7 +19,7 @@ import {dummySla} from "./sla_dummy.js";
 import {stafOK, stafSesi, dariStaf} from "./staf.js";
 import {SEMUA_PERAN} from "./admin_halaman.js";
 import {superOK} from "./posko.js";
-import {tenggat, PROV} from "./instansi.js";
+import {tenggat, PROV, tahanSejak, TAHAN_BUKAN_API} from "./instansi.js";
 import {labelBencana, bencanaId} from "./tugas_bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, TARGET = {tugas_konfirmasi: 360, konfirmasi_kabar: 1440};   // = TENGGAT_KONFIRMASI / TENGGAT_KABAR di instansi.js
@@ -204,6 +204,8 @@ export async function hitungSla(env, kini, {hari = 30, prov, kab, provs, dummy =
   catatan.push("Tahap tanpa isian dihitung tidak ada data, bukan nol.");
   const perkiraan = baris.filter(t => waktuTahap(t).perkiraan).length;
   if (perkiraan) catatan.push(`${perkiraan} dari ${baris.length} tugas memakai waktu pembuatan sebagai perkiraan deteksi dan tidak ikut statistik deteksi.`);
+  const sejak = await tahanSejak(env, kini);
+  if (sejak) catatan.push(`Sejak ${sejak.teks}, bukan api dengan alasan tidak ada bekas atau bekas lama hanya menahan tugas baru ${TAHAN_BUKAN_API.alasanSesaatHari} hari (dulu ${TAHAN_BUKAN_API.lamaHari} hari): titik yang muncul lagi di lokasi itu bisa menjadi tugas baru, jadi persentase bukan api dan keterlambatan tidak sebanding langsung dengan masa sebelumnya.`);
   /* tren harian: kesegaran dari riwayat, median deteksi->tugas dari tugas yang dibuat hari itu */
   const tugasHari = new Map();
   for (const t of baris) { const d = durasiTahap(t).deteksi_tugas; if (d != null) { const h = WIB(t.dibuat); (tugasHari.get(h) || tugasHari.set(h, []).get(h)).push(d); } }

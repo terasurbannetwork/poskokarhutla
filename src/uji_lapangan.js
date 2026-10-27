@@ -10,7 +10,7 @@ import {json, gagal, acak, adminOK, cacheTepi} from "./worker.js";
 import {lajuIP} from "./bnpb.js";
 import {pemirsaSesi} from "./pemirsa.js";
 import {km} from "./titik.js";
-import {pasKartu, pasAkses, pasRekomendasi} from "./instansi.js";
+import {pasKartu, pasAkses, pasRekomendasi, tahanSejak, TAHAN_BUKAN_API} from "./instansi.js";
 
 const JAM = 36e5, HARI = 24 * JAM;
 const BBOX = {latMin: -11.5, latMaks: 6.5, lonMin: 94.5, lonMaks: 141.5};
@@ -206,6 +206,7 @@ async function muatBerkas(env, berkas, kini) {
   } catch (e) { return null; }
 }
 const KUNCI_META = "uji_kandidat_ver";
+export const KOLAM_TAHAN_HARI = 14;   // bukan_api menahan kandidat kontrol di dekatnya, apa pun alasannya (tidak ikut TAHAN_BUKAN_API di src/instansi.js)
 export async function pilihSampelKontrol(env, kini = Date.now()) {
   const minggu = mingguISO(kini), C = PRAREGISTRASI.kontrol;
   const [a, b] = await Promise.all([muatBerkas(env, "uji_kandidat.json", kini), muatBerkas(env, "tugas_kompleks.json", kini)]);
@@ -219,9 +220,12 @@ export async function pilihSampelKontrol(env, kini = Date.now()) {
   let dibuat = 0, provs = 0;
   if (perProv.size) {
     const buka = (await env.DB.prepare("SELECT prov, lower(kab) kab, lat, lon FROM tugas_api WHERE (status = 'buka' OR (status = 'bukan_api' AND konfirmasi_pada > ?)) AND prov IN (SELECT value FROM json_each(?)) LIMIT 5000")
-      .bind(kini - 14 * HARI, JSON.stringify([...perProv.keys()])).all()).results;
+      .bind(kini - KOLAM_TAHAN_HARI * HARI, JSON.stringify([...perProv.keys()])).all()).results;
     for (const [prov, daftar] of perProv) {
-      /* kandidat yang sudah dekat (<= 2 km, kabupaten sama) tugas terbuka tidak ikut kolam: akan bergabung ke tugas itu, bukan tugas baru */
+      /* kandidat yang sudah dekat (<= 2 km, kabupaten sama) tugas terbuka tidak ikut kolam: akan bergabung ke tugas itu, bukan tugas baru.
+         bukan_api menahan kolam KOLAM_TAHAN_HARI apa pun alasannya, supaya strata kontrol tetap sebanding dengan data sebelum aturan alasan (migrasi 0062).
+         Akibatnya asimetris: bukan_api beralasan sesaat berumur 3-14 hari sudah tidak menahan pembuat tugas (strata 'tugas' bisa mengunjungi ulang lokasinya),
+         tetapi lokasinya belum bisa terpilih sebagai kontrol. Asimetri ini disebut di catatan agregat. */
       const bebas = daftar.filter(k => !buka.some(t => t.prov === prov && t.kab === k.kab.toLowerCase() && km(k.lat, k.lon, t.lat, t.lon) <= 2));
       if (!bebas.length) continue;
       const pil = pilihKontrol(bebas, minggu, prov, C.per_minggu_per_provinsi);
@@ -335,11 +339,15 @@ export async function agregat(env, kini = Date.now()) {
   const FS = A.has("tugas_kartu") ? "(SELECT json_extract(kk.kartu, '$.firespot') FROM tugas_kartu kk WHERE kk.tugas_id = t.id)" : "NULL";
   const PLAT = A.has("tugas_luas_awal") ? "(SELECT la.luas_ha FROM tugas_luas_awal la WHERE la.tugas_id = t.id)" : "NULL";
   const DASAR = `FROM tugas_isian i JOIN tugas_api t ON t.id = i.tugas_id LEFT JOIN uji_tugas u ON u.tugas_id = t.id LEFT JOIN uji_isian x ON x.isian_id = i.id WHERE t.dummy = 0 AND i.dummy = 0 ${hanyaKarhutla}`;
-  /* Q1 */
+  const sejak = await tahanSejak(env, kini), T = TAHAN_BUKAN_API;
+  /* Q1; sesudah = kunjungan sejak aturan tahan beralasan berlaku (lokasi yang sama bisa dikunjungi ulang), dipisah supaya porsinya terbaca */
   const q1 = (await env.DB.prepare(`SELECT coalesce(u.sampel, 'tugas') sampel, coalesce(u.level, t.level) level, coalesce(u.firespot, ${FS}) firespot,
       CASE WHEN i.hasil = 'api_ada' OR (i.hasil = 'sudah_padam' AND x.bekas_terbakar_baru = 'ya') THEN 1 ELSE 0 END ya,
-      coalesce((SELECT s.n_kandidat * 1.0 / s.n_dipilih FROM uji_sampel s WHERE s.minggu = u.minggu AND s.prov = u.prov AND s.n_dipilih > 0), 1.0) bobot, count(*) n
-    ${DASAR} AND i.langkah = 'konfirmasi' AND i.hasil IS NOT NULL GROUP BY 1, 2, 3, 4, 5`).all()).results;
+      coalesce((SELECT s.n_kandidat * 1.0 / s.n_dipilih FROM uji_sampel s WHERE s.minggu = u.minggu AND s.prov = u.prov AND s.n_dipilih > 0), 1.0) bobot,
+      CASE WHEN i.dibuat >= ?1 THEN 1 ELSE 0 END sesudah, count(*) n
+    ${DASAR} AND i.langkah = 'konfirmasi' AND i.hasil IS NOT NULL GROUP BY 1, 2, 3, 4, 5, 6`).bind(sejak?.ms ?? null).all()).results;
+  const Q1 = tahanQ1(hitungQ1(q1));
+  if (sejak) Q1.rincian.aturan_tahan = {sejak: new Date(sejak.ms).toISOString(), n_sesudah: kecil(q1.filter(b => b.sesudah && grupLevel(b.level) >= PRAREGISTRASI.q1.ambang.level_min).reduce((a, b) => a + b.n, 0))};
   /* Q2 */
   let t2 = 0, l2 = 0, tak2 = 0;
   if (A.has("uji_terlewat")) for (const r of (await env.DB.prepare("SELECT hasil, count(*) n FROM uji_terlewat GROUP BY hasil").all()).results) { if (r.hasil === "terdeteksi") t2 = r.n; else if (r.hasil === "terlewat") l2 = r.n; else tak2 = r.n; }
@@ -373,13 +381,14 @@ export async function agregat(env, kini = Date.now()) {
   const q2 = hitungQ2(t2, l2);
   return {
     versi: P.versi, diperbarui: kini, praregistrasi: P,
-    pertanyaan: [jdl(tahanQ1(hitungQ1(q1))), jdl(tahanLain({...q2, rincian: {tak_dinilai_tidak_dihitung: tak2}})), jdl(tahanLain(hitungQ3(pasangan3))), jdl(tahanLain(hitungQ4(r4, taksiran))), jdl(tahanLain(hitungQ5(b5, s5)))],
+    pertanyaan: [jdl(Q1), jdl(tahanLain({...q2, rincian: {tak_dinilai_tidak_dihitung: tak2}})), jdl(tahanLain(hitungQ3(pasangan3))), jdl(tahanLain(hitungQ4(r4, taksiran))), jdl(tahanLain(hitungQ5(b5, s5)))],
     kontrol,
     catatan: ["Tugas otomatis hanya level 3 dan level 2 bersyarat: tanpa sampel kontrol, presisi hanya dihitung pada yang sudah dicurigai. Sampel kontrol dipilih acak per minggu per provinsi dan ditimbang kebalikan peluang terpilih.",
       "Kunjungan hanya terjadi di tempat yang bisa dijangkau regu: hasilnya berlaku untuk cluster yang dekat akses, tidak untuk seluruh kawasan.",
       "Luas taksiran mata tidak dihitung di Q4; hanya keliling GPS, jalan keliling, dan drone.",
       "Data bertahan 180 hari mengikuti retensi tugas; ukuran contoh dalam halaman ini adalah jendela bergulir, bukan akumulasi sepanjang musim.",
-      "Q2 bergantung pada laporan regu berkode yang tepercaya dan pada jendela 24 jam titik FIRMS di D1; laporan yang jendelanya tak tercakup tidak dihitung."],
+      "Q2 bergantung pada laporan regu berkode yang tepercaya dan pada jendela 24 jam titik FIRMS di D1; laporan yang jendelanya tak tercakup tidak dihitung.",
+      ...(sejak ? [`Sejak ${sejak.teks}, bukan api beralasan tidak ada bekas atau bekas lama menahan lokasinya ${T.alasanSesaatHari} hari, bukan ${T.lamaHari}: lokasi yang sama bisa dikunjungi lagi lewat tugas biasa dan tiap kunjungan masuk Q1 sebagai baris sendiri (rincian Q1 aturan_tahan menyebut jumlah kunjungan level ${PRAREGISTRASI.q1.ambang.level_min} ke atas sesudah tanggal itu). Alasan diisi regu tanpa verifikasi dan menentukan lama tahan, jadi ikut menentukan jumlah baris Q1. Kolam sampel kontrol tetap menahan ${KOLAM_TAHAN_HARI} hari, jadi lokasi itu bisa dikunjungi ulang sebagai tugas tetapi belum bisa terpilih sebagai kontrol.`] : [])],
   };
 }
 /* evaluasi internal: admin ATAU pemirsa di SEMUA host (keputusan pemilik 23 Okt 2026). Urutan: izin -> laju -> cache 60 dtk; izin SELALU di depan cache. */

@@ -7,7 +7,7 @@
   const TERPASANG = navigator.standalone === true || matchMedia("(display-mode: standalone)").matches;
   let reg = null, sub = null, mulai = false;
   const api = async (metode, url, body) => {
-    try { const r = await fetch(url, {method: metode, headers: {...(metode === "POST" ? {"x-pb": "1", "content-type": "application/json"} : {})}, body: body === undefined ? undefined : JSON.stringify(body)});
+    try { const r = await fetch(url, {method: metode, headers: {...(metode === "POST" ? {"x-pb": "1", "content-type": "application/json"} : {}), ...(window.InstansiSaya?.akun?.id ? {"x-akun": window.InstansiSaya.akun.id} : {})}, body: body === undefined ? undefined : JSON.stringify(body)});
       return {ok: r.ok, j: await r.json().catch(() => ({}))}; } catch (e) { return {ok: false, j: {galat: "Tidak ada sinyal. Coba lagi."}}; }
   };
   const kunciApp = s => { const t = s.replace(/-/g, "+").replace(/_/g, "/"), b = atob(t + "=".repeat((4 - t.length % 4) % 4)); return Uint8Array.from(b, c => c.charCodeAt(0)); };
@@ -51,7 +51,7 @@
   $("keluar").addEventListener("click", async e => {
     if (lepas || !sub) return;
     e.stopImmediatePropagation(); e.preventDefault();
-    try { await api("POST", "/api/instansi/push/berhenti", {endpoint: sub.endpoint}); await sub.unsubscribe(); sub = null; } catch (x) {}
+    try { const r = await api("POST", "/api/instansi/push/berhenti", {endpoint: sub.endpoint}); if (r.ok) { await sub.unsubscribe(); sub = null; } } catch (x) {}   // ditolak (tab basi) atau tanpa sinyal: langganan tetap, keluar sendiri yang memutuskan
     lepas = true; $("keluar").click(); lepas = false;   // gagal jaringan tidak menahan keluar
   }, true);
   const utama = $("vUtama"), cek = () => { if (!utama.hidden) siap(); };

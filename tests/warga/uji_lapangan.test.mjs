@@ -10,7 +10,7 @@ import {createHash} from "node:crypto";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: instansi.js dan uji_lapangan.js saling impor
-import {PRAREGISTRASI, METODE_TERUKUR, wilson, proporsi, hitungQ1, hitungQ2, hitungQ3, hitungQ4, hitungQ5, selangMedian, persen, hash53, mingguISO, layakKontrol, pilihKontrol, kunciKandidat, bacaUji,
+import {PRAREGISTRASI, KOLAM_TAHAN_HARI, METODE_TERUKUR, wilson, proporsi, hitungQ1, hitungQ2, hitungQ3, hitungQ4, hitungQ5, selangMedian, persen, hash53, mingguISO, layakKontrol, pilihKontrol, kunciKandidat, bacaUji,
   TUTUPAN, METODE_LUAS, YA_TIDAK, TINGGI_NYALA, ANGIN_LOKAL, PENYEBAB, BEKAS_BARU} from "../../src/uji_lapangan.js";
 
 const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM;
@@ -349,6 +349,35 @@ uji("uji lapangan: kandidat dekat tugas terbuka tidak ikut kolam; kontrol tak di
   await cron(kini + 3 * HARI + JAM); const sisa = await n("uji_tugas", "sampel = 'kontrol'");
   assert.equal(sisa, 1, "hanya yang dikunjungi bertahan"); assert.equal((await DB.prepare("SELECT n_tak_dikunjungi FROM uji_sampel WHERE minggu = ?").bind(minggu).first()).n_tak_dikunjungi, 4);
   assert.equal(await n("tugas_api", `id = '${dikunjungi}'`), 1); await DB.exec("DELETE FROM tugas_api; DELETE FROM uji_sampel;"); KANDIDAT = null;
+});
+uji("uji lapangan: kolam kontrol menahan KOLAM_TAHAN_HARI (14) apa pun alasan bukan api (pembuat tugas melepas alasan sesaat sesudah 3 hari); catatan dan rincian Q1 menyebut tanggal aturan", async () => {
+  await DB.exec("DELETE FROM tugas_api; DELETE FROM tugas_meta; DELETE FROM uji_sampel;");
+  assert.equal(KOLAM_TAHAN_HARI, 14);
+  const kini = BASE + 56 * HARI;
+  const bukanApi = async (lat, umurHari, alasan) => {
+    const id = await tugasBaru({prov: "62", kab: "Seruyan", lat, lon: 112.0, dibuat: kini - (umurHari + 1) * HARI, status: "bukan_api", konfirmasi_pada: kini - umurHari * HARI}), iid = hex16();
+    await DB.prepare("INSERT INTO tugas_isian (id, tugas_id, akun_id, klien_id, langkah, hasil, pic_nama, pic_jabatan, pic_wa, lat, lon, waktu_gps, dibuat) VALUES (?, ?, ?, ?, 'konfirmasi', 'bukan_api', 'Budi', 'Kepala BPBD', '6281234567890', ?5, 112.0, ?6, ?6)")
+      .bind(iid, id, AKUN, `klien-kolam-${iid}`, lat, kini - umurHari * HARI).run();
+    if (alasan) await DB.prepare("INSERT INTO isian_lapangan (isian_id, alasan_bukan_api) VALUES (?, ?)").bind(iid, alasan).run();
+  };
+  /* tiap bukan api berjarak > 20 km dari yang lain; kandidat dekatnya ~1 km ke timur */
+  const kasus = [[-2.0, 5, "tidak_ada_bekas"], [-2.2, 5, "bekas_lama"], [-2.4, 10, null], [-2.6, 13, "tidak_ada_bekas"], [-2.8, 15, null], [-3.0, 15, "bekas_lama"]];
+  for (const [lat, umur, alasan] of kasus) await bukanApi(lat, umur, alasan);
+  const pool = [...kasus.map(([lat], i) => kand(i, {lat, lon: 112.0 + 0.009})), ...Array.from({length: 6}, (_, i) => kand(i + 10, {lat: -2.5 - i * 0.05, lon: 112.5}))];
+  KANDIDAT = {dibuat: new Date(kini - JAM).toISOString(), kompleks: pool}; await cron(kini);
+  assert.equal((await DB.prepare("SELECT n_kandidat FROM uji_sampel").first()).n_kandidat, 8, "6 jauh + 2 dekat bukan api 15 hari; yang 5, 10, dan 13 hari tetap keluar kolam walau alasannya sesaat");
+  const tanpa = await api("GET", "/api/uji-lapangan"); assert.equal(tanpa.s, 200, tanpa.t);
+  assert.ok(!tanpa.j.catatan.some(c => /^Sejak /.test(c)), "tanpa penanda 0062 tidak ada catatan aturan"); assert.equal(tanpa.j.pertanyaan[0].rincian.aturan_tahan, undefined);
+  /* penanda 6 hari lalu: dua kunjungan (umur 5) sesudahnya; tambah lima kunjungan level 3 lagi supaya hitungannya lolos penahan sel kecil */
+  const sejak = new Date(kini - 6 * HARI).toISOString();
+  await DB.prepare("INSERT INTO tugas_meta (kunci, nilai) VALUES ('tahan_bukan_api_sejak', ?)").bind(sejak).run();
+  for (let i = 0; i < 5; i++) await bukanApi(-4.0 - i * 0.3, 1, null);
+  const ada = await api("GET", "/api/uji-lapangan");
+  assert.ok(ada.j.catatan.some(c => /^Sejak \d+ \S+ \d{4}, .*menahan lokasinya 3 hari, bukan 14.*Alasan diisi regu tanpa verifikasi.*Kolam sampel kontrol tetap menahan 14 hari/.test(c)), JSON.stringify(ada.j.catatan));
+  assert.deepEqual(ada.j.pertanyaan[0].rincian.aturan_tahan, {sejak, n_sesudah: 7}, "2 kunjungan umur 5 hari + 5 umur 1 hari; yang 10-15 hari sebelum penanda");
+  await DB.prepare("UPDATE tugas_meta SET nilai = ? WHERE kunci = 'tahan_bukan_api_sejak'").bind(new Date(Date.now() - 181 * HARI).toISOString()).run();
+  assert.ok(!(await api("GET", "/api/uji-lapangan")).j.catatan.some(c => /^Sejak /.test(c)), "lewat retensi 180 hari: catatan hilang");
+  await DB.exec("DELETE FROM tugas_api; DELETE FROM tugas_meta; DELETE FROM uji_sampel;"); KANDIDAT = null;
 });
 
 /* ================================================================ Q2: api terlewat */

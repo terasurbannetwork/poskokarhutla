@@ -16,7 +16,8 @@ PAKAI
   python3 scripts/data/ujibanding_firespot.py ringkas [--tulis]        cetak ringkasan + hitung ulang `keputusan` dari JSON yang ada
 
 BERKAS LAPANGAN (read-only, TANPA pic_nama/pic_wa/akun/foto; dummy dibuang):
-  npx wrangler d1 execute poskowarga --remote --json --command "SELECT t.id, t.prov, t.lat, t.lon, t.level, t.dibuat, t.terdeteksi_awal, i.hasil, i.dibuat AS konf_dibuat, i.waktu_gps, i.luas_ha FROM tugas_api t JOIN tugas_isian i ON i.tugas_id = t.id AND i.langkah = 'konfirmasi' WHERE t.dummy = 0 AND i.dummy = 0" > data/raw/ujibanding/lapangan.json
+  npx wrangler d1 execute poskowarga --remote --json --command "SELECT t.id, t.prov, t.lat, t.lon, t.level, t.dibuat, t.terdeteksi_awal, i.hasil, i.dibuat AS konf_dibuat, i.waktu_gps, i.luas_ha, l.alasan_bukan_api, u.bekas_terbakar_baru, CASE WHEN l.penugasan_id IS NULL THEN 'instansi' ELSE 'petugas' END AS sumber FROM tugas_api t JOIN tugas_isian i ON i.tugas_id = t.id AND i.langkah = 'konfirmasi' LEFT JOIN isian_lapangan l ON l.isian_id = i.id LEFT JOIN uji_isian u ON u.isian_id = i.id WHERE t.dummy = 0 AND i.dummy = 0" > data/raw/ujibanding/lapangan.json
+  (kolom alasan_bukan_api/sumber butuh migrasi 0062 dan bekas_terbakar_baru butuh 0055 di produksi; sebelum itu pakai kueri tanpa LEFT JOIN: kolomnya kosong, label seperti dulu.)
   (database_name poskowarga di wrangler.jsonc; butuh CLOUDFLARE_API_TOKEN + CLOUDFLARE_ACCOUNT_ID.) Mode `lapangan` memakai FIRMS NRT/SP
   (FIRMS_MAP_KEY) 8 hari sebelum `dibuat` dalam kotak +-0,1 derajat tiap tugas. Cache per tugas (memuat lokasi) ada di env LAB_CACHE_LAPANGAN
   (bukan di data/raw; kosong = direktori sementara yang hilang bersama job). Angka dengan n_tugas < 5 atau n_ya < 5 per sel disembunyikan (null).
@@ -71,7 +72,7 @@ BATASAN = [
     "2019 adalah tahun El Nino kuat (kebakaran luar biasa besar); belum tentu mewakili tahun biasa. Hanya Agu-Nov, S-NPP + NOAA-20 (NOAA-21 belum ada).",
     "Bekas terbakar di luar Agu-Nov ikut menjadi petak (recall bisa terlalu rendah) dan awan menutup sebagian pemetaan Gaveau.",
     "Lapangan: tugas hanya dibuat untuk cluster yang lolos R0, jadi bias seleksi: dari lapangan hanya presisi R0 dan ketahanan positif aturan yang lebih ketat yang bisa dinilai, bukan recall sebenarnya.",
-    "Lapangan: n kecil dan konfirmasi dilakukan setelah tugas dibuat; 'sudah_padam' dihitung positif hanya bila luas_ha terlapor > 0, selain itu dikeluarkan.",
+    "Lapangan: n kecil dan konfirmasi dilakukan setelah tugas dibuat; 'bukan_api' negatif apa pun alasannya (sama dengan Q1 uji lapangan); 'sudah_padam' positif bila bekas_terbakar_baru = ya, atau (isian sebelum medan itu ada) bila luas_ha terlapor > 0, selain itu dikeluarkan. Isian sebelum migrasi 0062 tidak punya alasan bukan api maupun sumber; satu lokasi bisa dicek berulang (lihat n_lokasi).",
     "Dugaan satuan Kemenhut = per LOKASI (firespot-lokasi); BELUM terkonfirmasi dari dokumen resmi. Karena itu presisi dilaporkan per lokasi dan per kejadian.",
     "R9 'kejadian_gabung' hanya jumlah gugus setelah sel ya digabung ulang; pasangan statistik tetap memakai cluster asal (populasi sama).",
     "Penyaring permukiman memakai titik desa OSM (9 provinsi), bukan poligon permukiman.",
@@ -1182,7 +1183,10 @@ def baca_wrangler(jalur):
 
 
 def tugas_dari_baris(baris):
-    """-> (tugas berlabel, pengecualian). Hanya kolom non-sensitif yang dibaca."""
+    """-> (tugas berlabel, pengecualian). Hanya kolom non-sensitif yang dibaca.
+    bukan_api = negatif apa pun alasannya (sama dengan Q1 src/uji_lapangan.js; alasan hanya dilaporkan di per_sumber, tidak menyaring).
+    sudah_padam: bila bekas_terbakar_baru terisi, positif hanya bila 'ya' (sisi positif Q1), selain itu dikeluarkan; data lama tanpa isian itu
+    memakai aturan sebelumnya (positif bila luas terlapor > 0)."""
     t, dikeluar = [], collections.Counter()
     for r in baris:
         h = r.get("hasil")
@@ -1191,7 +1195,8 @@ def tugas_dari_baris(baris):
         elif h == "bukan_api":
             y = False
         elif h == "sudah_padam":
-            if (r.get("luas_ha") or 0) > 0:
+            bekas = r.get("bekas_terbakar_baru")
+            if bekas == "ya" or (bekas is None and (r.get("luas_ha") or 0) > 0):
                 y = True
             else:
                 dikeluar["sudah_padam_tanpa_bekas_diketahui"] += 1
@@ -1199,8 +1204,28 @@ def tugas_dari_baris(baris):
         else:
             dikeluar["hasil_lain"] += 1
             continue
-        t.append({"id": r["id"], "lat": r["lat"], "lon": r["lon"], "prov": str(r.get("prov") or ""), "dibuat": r["dibuat"], "y": y, "hasil": h})
+        t.append({"id": r["id"], "lat": r["lat"], "lon": r["lon"], "prov": str(r.get("prov") or ""), "dibuat": r["dibuat"], "y": y, "hasil": h,
+                  "sumber": r.get("sumber") or "instansi", "alasan": r.get("alasan_bukan_api")})
     return t, dict(dikeluar)
+
+
+def per_sumber(tugas, minimal=5):
+    """jumlah label per sumber konfirmasi (instansi = akun, petugas = tautan /lacak) dan per alasan bukan api: mutu label tiap jalur bisa dibandingkan.
+    Hitungan < minimal disembunyikan (None), aturan yang sama dengan sel lain di keluaran ini."""
+    out = {}
+    for t in tugas:
+        d = out.setdefault(t["sumber"], {"positif": 0, "negatif": 0, "alasan_negatif": {}})
+        d["positif" if t["y"] else "negatif"] += 1
+        if not t["y"]:
+            k = t["alasan"] or "tanpa_alasan"
+            d["alasan_negatif"][k] = d["alasan_negatif"].get(k, 0) + 1
+    kecil = lambda n: n if n >= minimal else None
+    return {s: {"positif": kecil(d["positif"]), "negatif": kecil(d["negatif"]), "alasan_negatif": {k: kecil(n) for k, n in d["alasan_negatif"].items()}} for s, d in out.items()}
+
+
+def n_lokasi(tugas):
+    """lokasi unik (lat/lon dibulatkan 0,01 derajat, sekitar 1,1 km): satu titik palsu yang berulang dicek tidak tampak seperti banyak bukti bebas"""
+    return len({(round(t["lat"], 2), round(t["lon"], 2)) for t in tugas})
 
 
 def cache_lapangan():
@@ -1334,7 +1359,10 @@ def mode_lapangan(jalur, ambil_firms=None):
     from wilayah import Wilayah
     out = evaluasi_lapangan(tugas, ambil_firms or ambil_firms_nyata, Penyaring(), wilayah=Wilayah())
     out["dikeluarkan"] = dikeluar
-    out["definisi_label"] = "api_ada=positif; bukan_api=negatif; sudah_padam=positif bila luas_ha terlapor > 0, selain itu dikeluarkan dan dihitung terpisah"
+    out["per_sumber"] = per_sumber(tugas)
+    out["n_lokasi"] = n_lokasi(tugas) if len(tugas) >= 5 else None
+    out["definisi_label"] = ("api_ada=positif; bukan_api=negatif (apa pun alasannya, sama dengan Q1); sudah_padam=positif bila bekas_terbakar_baru=ya, "
+                             "atau (data lama tanpa isian itu) luas_ha terlapor > 0; selain itu dikeluarkan dan dihitung terpisah")
     return out
 
 
@@ -1512,6 +1540,19 @@ def uji():
              {"id": "t3", "prov": "16", "lat": 1.0, "lon": 111.0, "dibuat": 1, "hasil": "sudah_padam", "luas_ha": 0}, {"id": "t4", "prov": "16", "lat": 1.0, "lon": 111.0, "dibuat": 1, "hasil": "sudah_padam", "luas_ha": 5}]
     tg, dk = tugas_dari_baris(baris)
     assert len(tg) == 3 and dk == {"sudah_padam_tanpa_bekas_diketahui": 1} and [t["y"] for t in tg] == [True, False, True]
+    # label 0062: bekas_lama dikeluarkan, bekas terbakar baru menjadikan sudah_padam positif, sumber dan alasan terbawa
+    tg2, dk2 = tugas_dari_baris([
+        {"id": "a", "lat": 0, "lon": 110, "dibuat": 1, "hasil": "bukan_api", "alasan_bukan_api": "bekas_lama", "sumber": "petugas"},
+        {"id": "b", "lat": 0, "lon": 110, "dibuat": 1, "hasil": "bukan_api", "alasan_bukan_api": "sumber_panas_lain", "sumber": "petugas"},
+        {"id": "c", "lat": 0, "lon": 110.5, "dibuat": 1, "hasil": "bukan_api"},
+        {"id": "d", "lat": 0, "lon": 110, "dibuat": 1, "hasil": "sudah_padam", "luas_ha": None, "bekas_terbakar_baru": "ya", "sumber": "petugas"},
+        {"id": "e", "lat": 0, "lon": 110, "dibuat": 1, "hasil": "sudah_padam", "luas_ha": 0, "bekas_terbakar_baru": "tidak"},
+        {"id": "f", "lat": 0, "lon": 110, "dibuat": 1, "hasil": "sudah_padam", "luas_ha": 5, "bekas_terbakar_baru": "tidak"}])
+    assert [(t["id"], t["y"]) for t in tg2] == [("a", False), ("b", False), ("c", False), ("d", True)], tg2   # bekas_lama tetap negatif (Q1)
+    assert dk2 == {"sudah_padam_tanpa_bekas_diketahui": 2}, dk2   # luas > 0 tetapi bekas baru 'tidak' = dikeluarkan, seperti Q1 tidak menghitungnya positif
+    assert per_sumber(tg2, minimal=1) == {"petugas": {"positif": 1, "negatif": 2, "alasan_negatif": {"bekas_lama": 1, "sumber_panas_lain": 1}}, "instansi": {"positif": None, "negatif": 1, "alasan_negatif": {"tanpa_alasan": 1}}}, "positif 0 < minimal 1 = None"
+    assert per_sumber(tg2, minimal=2)["petugas"] == {"positif": None, "negatif": 2, "alasan_negatif": {"bekas_lama": None, "sumber_panas_lain": None}}, "n kecil disembunyikan"
+    assert n_lokasi(tg2) == 2
     awal = dt.datetime(2026, 9, 3, 0, tzinfo=dt.timezone.utc)
 
     def palsu_firms(t):

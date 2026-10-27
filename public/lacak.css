@@ -19,7 +19,7 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-app
 .lk-tombol{display:flex;align-items:center;justify-content:center;gap:8px;min-height:52px;width:100%;padding:12px 16px;border-radius:14px;border:2px solid var(--navy);background:#fff;color:var(--navy);font:700 17px/1.2 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-decoration:none;cursor:pointer;touch-action:manipulation}
 .lk-tombol.utama{background:var(--navy);color:#fff}.lk-tombol.bahaya{border-color:var(--merah);color:var(--merah)}
 .lk-tombol:disabled{opacity:.45;cursor:not-allowed}
-.lk-tombol:focus-visible,.lk-cek input:focus-visible{outline:3px solid var(--oranye);outline-offset:2px}
+.lk-tombol:focus-visible,.lk-cek input:focus-visible,.lk-kond:focus-visible,.lk-opsi:focus-visible,.lk-foto button:focus-visible,.lk-buang:focus-visible{outline:3px solid var(--oranye);outline-offset:2px}
 .lk-dua{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 .lk-nav{display:grid}
 .lk-cek{list-style:none;margin:0;padding:0;display:grid;gap:6px}
@@ -44,5 +44,43 @@ body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,-app
 .lk-darurat{border:2px solid var(--merah)}
 .lk-tombol.darurat{border-color:var(--merah);background:var(--merah);color:#fff}
 .lk-dar-pilih{display:grid;gap:8px}
+/* lapor dari lokasi: tombol kondisi besar, satu ketukan; warna hanya saat terpilih (teks tetap terbaca tanpa warna) */
+.lk-lapor{border:2px solid var(--navy)}
+.lk-lapor h3{font-size:16px;margin:0 0 4px}
+.lk-lapor-isi,.lk-blok{display:grid;gap:8px}.lk-lapor-isi{gap:14px}
+.lk-kondisi{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lk-kond,.lk-opsi{min-height:56px;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:#fff;color:var(--ink);font:700 16px/1.25 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;text-align:left;cursor:pointer;touch-action:manipulation}
+.lk-kond[aria-pressed="true"]{color:#fff}
+.lk-kond.k-menyala[aria-pressed="true"]{background:var(--merah);border-color:var(--merah)}
+.lk-kond.k-bara[aria-pressed="true"]{background:#b85420;border-color:#b85420}
+.lk-kond.k-padam[aria-pressed="true"]{background:#1f6b42;border-color:#1f6b42}
+.lk-kond.k-bukan_api[aria-pressed="true"]{background:var(--ink2);border-color:var(--ink2)}
+.lk-pilih{display:grid;gap:8px}.lk-pilih.tiga{grid-template-columns:repeat(3,1fr)}.lk-pilih.dua{grid-template-columns:repeat(2,1fr)}
+.lk-pilih.dua .lk-opsi{font-size:15px;padding:8px 10px}
+.lk-rinci{border:1px solid var(--line);border-radius:14px;padding:0 12px}
+.lk-rinci summary{min-height:52px;display:flex;align-items:center;font-weight:700;cursor:pointer;touch-action:manipulation;list-style:none}
+.lk-rinci summary::-webkit-details-marker{display:none}
+.lk-rinci summary::after{content:"";margin-left:auto;width:9px;height:9px;border:solid var(--ink2);border-width:0 2px 2px 0;transform:rotate(45deg);flex:none}
+.lk-rinci[open] summary::after{transform:rotate(-135deg)}
+.lk-rinci[open] summary{border-bottom:1px solid var(--line);margin-bottom:12px}
+.lk-dua .lk-isian{align-content:end}
+.lk-rinci>.lk-blok{gap:14px;padding-bottom:14px}
+.lk-rinci summary:focus-visible{outline:3px solid var(--oranye);outline-offset:2px;border-radius:10px}
+.lk-isian input{font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-height:48px;padding:10px;border:1px solid var(--line);border-radius:12px;width:100%;min-width:0}
+.lk-opsi{min-height:48px;font-weight:600}
+.lk-pilih.tiga .lk-opsi{text-align:center;padding:8px 6px}
+.lk-opsi[aria-pressed="true"]{border-color:var(--navy);background:#e8eef8;color:var(--navy)}
+.lk-berkas{position:absolute;width:1px;height:1px;opacity:0;overflow:hidden;pointer-events:none}
+.lk-foto{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.lk-foto:empty{display:none}
+.lk-foto li{position:relative}
+.lk-foto img{width:100%;aspect-ratio:1;object-fit:cover;border-radius:10px;display:block;background:#eef2f7}
+.lk-foto button{position:absolute;right:4px;top:4px;min-height:32px;padding:4px 8px;border-radius:8px;border:0;background:rgb(11 37 69/.85);color:#fff;font:700 13px system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+.lk-isian{display:grid;gap:6px;font-weight:600;font-size:14px}
+.lk-isian textarea{font:16px/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;padding:10px;border:1px solid var(--line);border-radius:12px;resize:vertical}
+.lk-antre{display:grid;gap:6px;padding:10px 12px;border-radius:12px;background:#fff4e0;color:#7a4f00;font-weight:600;font-size:14px}
+.lk-antre p{margin:0}.lk-antre .galat{color:var(--merah)}
+.lk-buang{margin-left:6px;min-height:36px;padding:4px 12px;border-radius:10px;border:2px solid var(--merah);background:#fff;color:var(--merah);font-weight:700}
+.lk-riwayat{margin:0;padding-left:18px;font-size:14.5px}.lk-riwayat li{margin:4px 0}
 @media (min-width:600px){.lk-wrap{padding-top:20px}.lk-kartu h1{font-size:28px}}
 @media (prefers-reduced-motion:no-preference){.lk-tombol{transition:background-color .12s,opacity .12s}}
