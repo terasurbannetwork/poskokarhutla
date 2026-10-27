@@ -117,9 +117,10 @@ test("ringkas: batang bertumpuk, pos naik terpisah, tidak mengirim", () => {
 test("rasio ambang, kelompok per sungai atau kabupaten, arah, subjudul", () => {
   assert.equal(P.rasio(kumpul[0]), 1); assert.equal(P.rasio(kumpul[3]), .25); assert.equal(P.rasio(kumpul[2]), null);
   const g = plain(P.kelompok(kumpul)).map(([k, l]) => [k, l.map(p => p.id)]);
-  assert.deepEqual(g[0], ["Cirarab", ["1", "2"]]); assert.ok(g.some(([k]) => k === "Kab. Bogor")); assert.ok(g.some(([k]) => k === "Tanpa nama sungai"));
+  assert.deepEqual(g[0], ["Cirarab", ["1", "2"]]); assert.ok(g.some(([k]) => k === "Bogor")); assert.ok(g.some(([k]) => k === "Tanpa nama sungai"));
   assert.equal(P.arah(1.5, "cm"), "naik 1,5 cm"); assert.equal(P.arah(-2, "cm"), "turun 2 cm"); assert.equal(P.arah(null, "cm"), ""); assert.equal(P.arah(0, "cm"), "");
-  assert.equal(P.subjudul(kumpul[0]), "Cirarab, Tangerang"); assert.equal(P.subjudul({}), "Pos tinggi air");
+  assert.equal(P.subjudul(kumpul[0]), "Cirarab, Tangerang"); assert.equal(P.subjudul({}), "SIHKA"); assert.equal(P.subjudul({kota: "Kota Administrasi Jakarta Timur", pengelola: "Dinas Sumber Daya Air DKI Jakarta (DSDA)"}), "Jakarta Timur, DSDA DKI");
+  assert.equal(P.subjudul({sumber: "SIHKA"}, "Kota Bogor"), "Bogor, SIHKA"); assert.equal(P.namaPendek("Kabupaten Bogor"), "Bogor"); assert.equal(P.namaPendek("Kab. Maybrat"), "Maybrat");
 });
 
 test("skala tegak: pita dan garis air", () => {
@@ -232,9 +233,9 @@ test("kelompok: tanpa sungai dan kab jatuh ke kabupaten terdekat dari pusat keca
   assert.equal(P.kabTerdekat(mk("a", -6.13, 106.9), pusat), "31|Kota Jakarta Utara");
   assert.equal(P.kabTerdekat(mk("b", -6.5, 106.8), pusat), "32|Bogor");
   assert.equal(P.kabTerdekat(mk("c", 0, 120), pusat), null); assert.equal(P.kabTerdekat(mk("d", 0, 0), null), null);
-  assert.equal(P.labelKab("Bogor"), "Kab. Bogor"); assert.equal(P.labelKab("Kota Bogor"), "Kota Bogor");
+  assert.equal(P.labelKab("Bogor"), "Bogor"); assert.equal(P.labelKab("Kota Administrasi Jakarta Timur"), "Jakarta Timur");
   const g = plain(P.kelompok([mk("a", -6.13, 106.9), mk("b", -6.5, 106.8), mk("c", 0, 120), mk("e", -6.5, 106.8, {sungai: "Ciliwung"}), mk("f", 0, 0, {kab: "X"})], p => P.kabTerdekat(p, pusat))).map(([k, l]) => [k, l.length]);
-  assert.deepEqual(Object.fromEntries(g), {"Kota Jakarta Utara": 1, "Kab. Bogor": 1, "Tanpa nama sungai": 1, "Ciliwung": 1, "Kab. X": 1});
+  assert.deepEqual(Object.fromEntries(g), {"Jakarta Utara": 1, "Bogor": 1, "Tanpa nama sungai": 1, "Ciliwung": 1, "X": 1});
   assert.equal(plain(P.kelompok([mk("a", 0, 0)])).at(0)[0], "Tanpa nama sungai", "tanpa cari: perilaku lama");
 });
 
@@ -297,3 +298,22 @@ test("pil berikon garis, bukan titik bullet: tiap label punya ikon; pil pos dan 
 });
 
 test("ikon pil pasut dibungkus <path>, bukan data path telanjang", () => { assert.match(src, /aria-hidden="true"><path d="\$\{IK\[n\]\}"\/><\/svg>/); });
+
+test("batang ambang hanya untuk pos berambang dan berangka; kapsul besar sesuai rasio; baris sebaris", () => {
+  const amb = {siaga3: 190, siaga2: 270, siaga1: 310};
+  assert.equal(P.batangAmbang({status: "biasa", v: 5, satuan: "cm"}), null, "tanpa ambang: tanpa batang"); assert.equal(P.batangAmbang({ambang: amb, v: null, satuan: "cm"}), null, "tanpa angka: tanpa batang");
+  const b = plain(P.batangAmbang({ambang: amb, v: 155, satuan: "cm"})); assert.ok(b.isi > 30 && b.isi < 60 && b.tik.length === 3);
+  assert.match(src, /class="pa-kp"/); assert.match(src, /<span class="pa-ang"/); assert.ok(src.indexOf("${this.pilPos(x)}<span class=\"pa-ang\"") > 0, "pil di kiri angka");
+  const css = fs.readFileSync("public/banjir/pos_air.css", "utf8"); assert.match(css, /\.pa-kp\{[^}]*width:14px;height:26px/); assert.match(css, /\.pa-baris\{[^}]*grid-template-columns:auto minmax\(0,1fr\) auto 66px/);
+});
+
+test("kelompok wilayah: nama pendek, bentrok Kota dan Kabupaten memakai nama lengkap; pos_sungai.json dimuat malas; judul grup 14px tanpa kotak", () => {
+  const mk = (id, kab, ex = {}) => ({id, nama: id, x: 0, y: 0, status: "biasa", kab, ...ex});
+  const g = plain(P.kelompok([mk("a", "Kota Administrasi Jakarta Timur"), mk("b", "Kota Depok"), mk("c", "Kota Bogor"), mk("d", "Kabupaten Bogor")])).map(([k]) => k).sort();
+  assert.deepEqual(g, ["Depok", "Jakarta Timur", "Kabupaten Bogor", "Kota Bogor"]);
+  assert.match(src, /muatSungai\(\) \{ return this\._sg \|\|= fetch\("data\/pos_sungai\.json"/); assert.match(src, /nanti\(\(\) => this\.muatSungai\(\)\)/);
+  assert.match(src, /i < 4 \|\| l\.some\(PAN\)/, "4 grup teratas dan grup berpos Siaga/naik terbuka");
+  assert.match(src, /PosAir\.pengelolaSingkat\(l\[0\]\)/);
+  assert.match(fs.readFileSync("public/banjir/pos_air.css", "utf8"), /\.pa-grup>summary b\{font-size:14px\}/);
+  assert.ok(!/Sumber: \$\{D\.sumber/.test(fs.readFileSync("public/banjir/wilayah.js", "utf8")), "nama berkas internal tidak tampil");
+});
