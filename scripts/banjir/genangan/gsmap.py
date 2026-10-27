@@ -167,7 +167,14 @@ def berkas_tanggal(f, produk, tgl, cache):
             c.sort(key=lambda n: ("0000_2300" not in n and "0000_2359" not in n and "00Z-23Z" not in n, n))
             m = re.search(r"(\d{2}Z-\d{2}Z|\d{4}_\d{4})", c[0])
             return nama, c[0], (m.group(1).replace("_", "-") if m else "tanpa")
+    if not berkas_tanggal.dicetak:   # sekali per run: susunan folder nyata untuk log Actions bila tak ada yang cocok
+        berkas_tanggal.dicetak = True
+        for _, dasar in produk:
+            print(f"  susunan {dasar}: {cache.get(dasar, [])[:30]}", file=sys.stderr)
     return None, None, None
+
+
+berkas_tanggal.dicetak = False
 
 
 def unduh_batas(f, jalur, batas=BATAS_BYTE):
