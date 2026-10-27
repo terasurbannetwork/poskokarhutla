@@ -4,7 +4,12 @@ Jalan di CI SESUDAH harian.py, taktik.py, dan insiden.py (yang menulis ulang ked
 tidak butuh arsip FIRMS. Rumus sama dengan public/riwayat_sel.js `analisa` (laci): ubah keduanya bersamaan.
   a   tahun terbakar dari n tahun penuh: seri MODIS 2003-... (>= 3 titik) bila ada, selain itu VIIRS 2012-... (>= 10 titik)
   rt  rata-rata titik VIIRS S-NPP (keyakinan sedang/tinggi) per tahun penuh di jendela ~16 km
-  n7  titik S-NPP keyakinan sedang/tinggi 7 hari terakhir (hotspot.json) di jendela 3x3 yang SAMA: sebanding dengan rt
+  n7  titik S-NPP keyakinan sedang/tinggi 7 hari terakhir (hotspot.json) di jendela 3x3 yang SAMA: sebanding dengan rt.
+      S-NPP berhenti didistribusikan 1 Nov 2026 13.00 UTC (firms_sumber.SNPP_AKHIR): deteksi SESUDAH itu dihitung dari NOAA-20 keyakinan >= 1 dibagi RASIO_N20_N_LOKAL
+      (0,89, median jendela 3x3, IQR 0,72-1,07: satuan yang sama dengan n7; N20 sebelum batas tidak ikut karena S-NPP yang menghitungnya), jadi n7 tetap "setara S-NPP" dan
+      rs = n7/rt tidak runtuh ke nol selama seminggu pertama sesudah batas. Sebagian n7 itu PROKSI (bukan hitungan S-NPP): kunci `n7_proksi: true` (hanya ditulis bila
+      ada sumbangan NOAA-20; kunci absen = hitungan S-NPP murni, berkas tidak membengkak sebelum batas) supaya layar tidak melabelinya "titik S-NPP" (public/riwayat_sel.js:50,
+      bagikan.js:267: tugas layar-peta)
       (cluster `n` memuat 4 sensor semua keyakinan, ~2,5x lebih banyak: tidak boleh dibagi rt; temuan validasi-model 23 Okt 2026).
       Penyaring api vegetasi arsip (sel industri) tidak tersedia untuk NRT; diukur 23 Okt 2026 n7 justru ~0,9x arsip (median per jendela 1,00).
   rs  n7 / rt: > 1 berarti seminggu ini sudah melebihi setahun biasa (api di luar kebiasaan)
@@ -20,9 +25,30 @@ import datetime as dt, json, math, os, statistics as st, sys
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
+import firms_sumber as FS  # noqa: E402
 
 DATA = os.path.join(AKAR, "public/data")
 X0, Y1, SEL, TAHUN_AKTIF, AKTIF_MODIS = 94.5, 6.5, 0.05, 10, 3
+
+
+def n7_setara(hs, ix_iy):
+    """hotspot.json -> ({(ix, iy): titik setara S-NPP keyakinan sedang/tinggi, 7 hari terakhir}, {(ix, iy): bagian yang berasal dari proksi NOAA-20}): S-NPP ("N") sebelum
+    SNPP_AKHIR, NOAA-20 / RASIO_N20_N_LOKAL sesudahnya."""
+    K = {k: i for i, k in enumerate(hs["kolom"])}
+    acuan = dt.datetime.fromisoformat(hs["acuan"])
+    out, proksi = {}, {}
+    for b in hs["baris"]:
+        if b[K["keyakinan"]] < 1 or b[K["jam"]] < -168:
+            continue
+        sesudah = acuan + dt.timedelta(hours=b[K["jam"]]) >= FS.SNPP_AKHIR
+        p = b[K["sensor"]] == "N20" and sesudah
+        bobot = 1 / FS.RASIO_N20_N_LOKAL if p else 1 if (b[K["sensor"]] == "N" and not sesudah) else 0
+        if bobot:
+            c = ix_iy(b[K["lat"]], b[K["lon"]])
+            out[c] = out.get(c, 0) + bobot
+            if p:
+                proksi[c] = proksi.get(c, 0) + bobot
+    return out, proksi
 
 
 def kunci(lat, lon):
@@ -69,7 +95,7 @@ def bertingkat(H, rec, p, h):
     return out
 
 
-def watak(rec, th0, sd, n7, hari, thm0=None, lama_unggul=True, hier=None):
+def watak(rec, th0, sd, n7, hari, thm0=None, lama_unggul=True, hier=None, n7_proksi=0.0):
     """hier = hasil bertingkat() bila model bertingkat lolos uji (main memeriksa riwayat_sel_uji.json hierarki), selain itu None."""
     """rec = rekaman riwayat_sel; sd = tanggal arsip (ISO); n7 = titik S-NPP sedang/tinggi 7 hari di jendela; hari = umur api;
     lama_unggul = hasil uji balik (main membacanya dari riwayat_sel_uji.json)."""
@@ -83,7 +109,7 @@ def watak(rec, th0, sd, n7, hari, thm0=None, lama_unggul=True, hier=None):
         a = sum(1 for _, v in penuh if v >= TAHUN_AKTIF)
     r, h = rec.get("r") or [], max(1, hari or 1)
     lanjut = [v for v in r if v >= h]
-    w = {"a": a, "n": len(penuh), "rt": rt, "n7": n7, "rs": bulat(n7 / rt * 10) / 10 if rt >= 1 and n7 else None,
+    w = {"a": a, "n": len(penuh), "rt": rt, "n7": n7, **({"n7_proksi": True} if n7_proksi > 0 else {}), "rs": bulat(n7 / rt * 10) / 10 if rt >= 1 and n7 else None,
          "md": bulat(st.median(r)) if len(r) >= 3 else None,
          "sisa": max(0, bulat(st.median(lanjut) - h)) if lama_unggul and len(lanjut) >= 3 else None,
          "akhir": (dt.date(th1, 1, 1) + dt.timedelta(days=(hier["akhir"] if hier and hier.get("akhir_ok") else rec["s"][1]) - 1)).isoformat() if rec.get("s") or (hier and hier.get("akhir_ok")) else None,
@@ -108,11 +134,7 @@ def main():
         uji_, H = {}, None
     hs = json.load(open(os.path.join(DATA, "hotspot.json")))
     K = {k: i for i, k in enumerate(hs["kolom"])}
-    snpp = {}   # (ix, iy) -> titik S-NPP keyakinan sedang/tinggi 7 hari terakhir
-    for b in hs["baris"]:
-        if b[K["sensor"]] == "N" and b[K["keyakinan"]] >= 1 and b[K["jam"]] >= -168:
-            c = (int((b[K["lon"]] - X0) / SEL), int((Y1 - b[K["lat"]]) / SEL))
-            snpp[c] = snpp.get(c, 0) + 1
+    snpp, proksi = n7_setara(hs, lambda lat, lon: (int((lon - X0) / SEL), int((Y1 - lat) / SEL)))   # (ix, iy) -> titik (setara) S-NPP keyakinan sedang/tinggi 7 hari terakhir
     for f in kl["features"]:
         p = f["properties"]
         u, s = kunci(p["lat"], p["lon"])
@@ -126,11 +148,12 @@ def main():
         p.pop("wt", None)
         if rec:
             ix, iy = map(int, s.split("_"))
-            n7 = sum(snpp.get((ix + a, iy + b), 0) for a in (-1, 0, 1) for b in (-1, 0, 1))
+            n7 = bulat(sum(snpp.get((ix + a, iy + b), 0) for a in (-1, 0, 1) for b in (-1, 0, 1)))
+            n7p = sum(proksi.get((ix + a, iy + b), 0) for a in (-1, 0, 1) for b in (-1, 0, 1))
             hb = bertingkat(H, rec, p, p.get("hari"))
             if hb:
                 hb["sisa_ok"], hb["akhir_ok"] = uji_.get("lama_unggul_hierarki") is True, uji_.get("musim_unggul_hierarki") is True
-            p["wt"] = tw[p["id"]] = watak(rec, d["th0"], d["sd"], n7, p.get("hari"), d.get("thm0"), unggul, hb)
+            p["wt"] = tw[p["id"]] = watak(rec, d["th0"], d["sd"], n7, p.get("hari"), d.get("thm0"), unggul, hb, n7p)
     json.dump(kl, open(os.path.join(DATA, "kluster.json"), "w"), ensure_ascii=False, separators=(",", ":"))
     jalur = os.path.join(DATA, "kluster_awal.json")   # muatan pertama halaman (harian.pecah_kluster): properti sama, tanpa api24
     if os.path.exists(jalur):
@@ -153,6 +176,22 @@ def main():
 
 def uji():
     assert kunci(-3.1201, 112.1635) == ("17_9", "353_192")
+    # n7 setara S-NPP: S-NPP sebelum SNPP_AKHIR, NOAA-20 / RASIO_N20_N_LOKAL sesudahnya; N20 sebelum batas dan N sesudah batas tidak ikut; keyakinan rendah / > 7 hari ditolak
+    ac = FS.SNPP_AKHIR + dt.timedelta(days=3)
+    H = {"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan"], "acuan": ac.isoformat(), "baris": []}
+    jam = lambda t: (t - ac).total_seconds() / 3600
+    sbl, ssd = FS.SNPP_AKHIR - dt.timedelta(hours=5), FS.SNPP_AKHIR + dt.timedelta(hours=5)
+    H["baris"] = ([[-3.0, 112.0, jam(sbl), "N", 1, 1]] * 4 + [[-3.0, 112.0, jam(sbl), "N20", 1, 1]] * 3 + [[-3.0, 112.0, jam(ssd), "N20", 1, 1]] * 5
+                  + [[-3.0, 112.0, jam(ssd), "N", 1, 1]] * 2 + [[-3.0, 112.0, jam(ssd), "N20", 1, 0]] + [[-3.0, 112.0, jam(ac - dt.timedelta(days=8)), "N", 1, 1]])
+    n, pk = n7_setara(H, lambda lat, lon: (int((lon - X0) / SEL), int((Y1 - lat) / SEL)))
+    sel_ = next(iter(n))
+    assert abs(n[sel_] - (4 + 5 / FS.RASIO_N20_N_LOKAL)) < 1e-9 and abs(pk[sel_] - 5 / FS.RASIO_N20_N_LOKAL) < 1e-9 and bulat(n[sel_]) == 10, (n, pk)
+    pra = {**H, "acuan": (FS.SNPP_AKHIR - dt.timedelta(days=1)).isoformat(), "baris": [[-3.0, 112.0, -5.0, "N", 1, 1]] * 6 + [[-3.0, 112.0, -5.0, "N20", 1, 1]] * 6}
+    n0, pk0 = n7_setara(pra, lambda lat, lon: 0)
+    assert list(n0.values()) == [6] and pk0 == {}, "sebelum batas: sama persis dengan hitungan S-NPP lama, tanpa proksi"
+    # penanda proksi di keluaran watak(): hanya ada bila ada sumbangan NOAA-20, kunci absen = S-NPP murni
+    rec0 = {"y": [0, 0, 0, 400, 0, 0, 0, 50, 0, 0, 0, 30, 0, 0, 900], "r": [2, 5, 9, 12, 20], "s": [200, 305], "k": 2, "x": [6.4, 11]}
+    assert "n7_proksi" not in watak(rec0, 2012, "2026-10-12", 30, 8) and watak(rec0, 2012, "2026-10-12", 30, 8, n7_proksi=2.2)["n7_proksi"] is True
     rec = {"y": [0, 0, 0, 400, 0, 0, 0, 50, 0, 0, 0, 30, 0, 0, 900], "r": [2, 5, 9, 12, 20], "s": [200, 305], "k": 2, "x": [6.4, 11]}
     w = watak(rec, 2012, "2026-10-12", 3000, 8)
     assert (w["a"], w["n"], w["rt"]) == (3, 14, 34), w

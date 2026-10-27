@@ -47,7 +47,9 @@
     /* pembilang WAJIB titik S-NPP sedang/tinggi di jendela yang sama (watak_kluster.py `n7`); `p.n` cluster = 4 sensor semua keyakinan, tidak sebanding */
     const n7 = p.wt?.n7;
     a.rs = rt >= 1 && n7 ? Math.round(n7 / rt * 10) / 10 : null;
-    if (a.rs >= 1) fakta.push(`Seminggu ini ${ang(n7)} titik S-NPP di sekitar sini, ${kali(a.rs)} kali rata-rata setahun (${ang(rt)} titik ${th0}–${thIni - 1}): di luar kebiasaan.`);
+    /* setelah S-NPP berhenti (1 Nov 2026) sebagian n7 = titik NOAA-20 yang disetarakan ke S-NPP: pipeline menandai wt.n7_proksi, kalimat harus jujur */
+    a.n7Proksi = !!p.wt?.n7_proksi;
+    if (a.rs >= 1) fakta.push(`Seminggu ini ${a.n7Proksi ? "±" + ang(n7) + " titik (setara S-NPP, sebagian dari NOAA-20)" : ang(n7) + " titik S-NPP"} di sekitar sini, ${kali(a.rs)} kali rata-rata setahun (${ang(rt)} titik ${th0}–${thIni - 1}): di luar kebiasaan.`);
 
     /* 2. tahun ini vs tahun-tahun lalu sampai tanggal yang sama (VIIRS) */
     const lalu = penuh.map(yd), rLalu = rata(lalu), ini = yd(thIni);

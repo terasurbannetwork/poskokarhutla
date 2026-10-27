@@ -59,6 +59,7 @@ sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import firms
 import titik_palsu
 import titik_unik
+import firms_sumber as FS
 from firms_sumber import muat_ketersediaan, sumber_hari, unduh
 from wilayah import AKAR, PROVINSI, Wilayah
 
@@ -79,7 +80,7 @@ FAKTOR = {"N20": F20, "N21": F21}          # ha per titik; tersimpan di JSON ter
 # PORSI HANYA untuk deteksi celah S-NPP (celah_hari, CELAH_NAS); TIDAK dipakai luas/belum/padam.
 PORSI = 0.5337924177818518                 # S-NPP : N20+N21 (n/h) = median 16-19 Okt 2026 (deck BNPB 21 Okt, angka_nasional.json); KONSTAN
 ACUAN = ("2026-10-16", "2026-10-17", "2026-10-18", "2026-10-19")   # hari S-NPP lengkap tempat PORSI diukur (hanya --uji yang memakainya)
-SNPP_AKHIR = ("2026-11-01", 780)           # akuisisi S-NPP terakhir yang didistribusikan FIRMS: 1 Nov 2026 13:00 UTC (tanggal UTC, menit); sesudahnya N21 menggantikan
+SNPP_AKHIR = (FS.SNPP_AKHIR.date().isoformat(), FS.SNPP_AKHIR.hour * 60 + FS.SNPP_AKHIR.minute)   # akuisisi S-NPP terakhir yang didistribusikan FIRMS (tanggal UTC, menit) = 1 Nov 2026 13:00 UTC; diturunkan dari firms_sumber.SNPP_AKHIR (satu-satunya tempat batas ditulis); sesudahnya N21 menggantikan
 PATAH = (dt.datetime.fromisoformat(SNPP_AKHIR[0]).replace(tzinfo=UTC) + dt.timedelta(minutes=SNPP_AKHIR[1])).astimezone(WIB).date()   # hari WIB pertama berseri hot baru
 # Hasil --ukur (21 Okt 2026, 2026-01-01..2026-10-20, hari tanpa celah): dipakai teks metode supaya angka kalimat tidak diketik tangan.
 #   porsi_median/porsi_agregat = rasio S-NPP:N20+N21 (n/h) median harian / jumlah setahun; snpp_n21_* = S-NPP : N21 sedang/tinggi (UTC-hari; p10/p90 harian).
@@ -126,14 +127,13 @@ def baru_rekaman(tarik):
             "zla": [], "zlo": [], "zm": [], "zp": [], "zk": [], "zq": [], "zkn": [], "zkw": []}
 
 
-def wajib(u, ket):
-    """Famili yang harus utuh untuk hari UTC u. S-NPP opsional bila FIRMS sudah berhenti mendistribusikannya (u melewati max_date NRT-nya sementara
-    NOAA-20 masih ada; dijadwalkan 1 Nov 2026), supaya jalan harian tidak mati; famili lain tak pernah opsional (hari bolong = gagal keras)."""
-    w = set(FAMILI)
-    nrt = ket.get("VIIRS_SNPP_NRT")
-    if sumber_hari("VIIRS_SNPP", u, ket) is None and (nrt is None or u > nrt[1]) and sumber_hari("VIIRS_NOAA20", u, ket):
-        w.discard("VIIRS_SNPP")
-    return w
+def wajib(u, ket, acuan=None):
+    """Famili yang harus utuh untuk hari UTC u: firms_sumber.wajib(longgar=True). Luas/belum/padam hanya memakai N20/N21; S-NPP hanya untuk lokasi unik (hot) dan celah S-NPP,
+    jadi sesudah FS.SNPP_AKHIR (1 Nov 2026 13:00 UTC) S-NPP NRT opsional: tetap diminta untuk hari <= 1 Nov bila FIRMS masih melayani, tetapi galatnya TIDAK menahan hari
+    (rekaman `src` S-NPP = None, hari itu `snpp` False, celah S-NPP tak dinilai); tanpa ini satu galat 400 di hari UTC 1 Nov membekukan peta_karhutla.json untuk selamanya.
+    Baris NRT hilang dari data_availability atau hari sesudah tanggal batas juga opsional bila NOAA-20 ada; famili lain tak pernah opsional (hari bolong = gagal keras).
+    `acuan` = jam patokan (bawaan jam dinding; swa-uji membekukannya)."""
+    return FS.wajib(u, ket, FAMILI, longgar=True, acuan=acuan)
 
 
 def sedang(r):
@@ -387,8 +387,10 @@ def jalur_rek(cache, u):
     return os.path.join(cache, f"{u.isoformat()}.json.gz")
 
 
-def muat_rek(cache, u):
-    """Rekaman sah atau None (tak ada, rusak, versi lain, atau ditarik < 12 jam sesudah hari UTC-nya berakhir)."""
+def muat_rek(cache, u, terima_ulang=False):
+    """Rekaman sah atau None (tak ada, rusak, versi lain, atau ditarik < 12 jam sesudah hari UTC-nya berakhir). Rekaman yang S-NPP NRT-nya ADA sumbernya tetapi gagal diunduh
+    (`snpp_gagal` == 1; opsional sesudah SNPP_AKHIR, jadi hari tetap sah) dianggap belum sah SEKALI supaya jalan berikutnya mencoba lagi (3 jam kemudian di titik.yml); gagal lagi
+    (`snpp_gagal` == 2) = final: S-NPP hilang dari `hot` hari WIB itu (batasan yang diterima; terima_ulang=True memuat rekaman itu apa adanya sebagai cadangan)."""
     try:
         with gzip.open(jalur_rek(cache, u), "rt") as f:
             rec = json.load(f)
@@ -396,7 +398,18 @@ def muat_rek(cache, u):
     except (OSError, ValueError, KeyError):
         return None
     akhir_hari = dt.datetime.combine(u + HARI, dt.time(), UTC)
-    return rec if rec.get("v") == VREK and tarik >= akhir_hari + TRUST else None
+    if rec.get("v") != VREK or tarik < akhir_hari + TRUST:
+        return None
+    return None if rec.get("snpp_gagal") == 1 and not terima_ulang else rec
+
+
+def snpp_gagal_lama(cache, u):
+    """Hitungan `snpp_gagal` rekaman lama (0 bila tak ada/rusak), untuk menaikkannya bila S-NPP gagal lagi."""
+    try:
+        with gzip.open(jalur_rek(cache, u), "rt") as f:
+            return int(json.load(f).get("snpp_gagal", 0))
+    except (OSError, ValueError, TypeError):
+        return 0
 
 
 def simpan_rek(cache, u, rec):
@@ -432,7 +445,9 @@ def unduh_hari(hari_utc, kunci, ket, wil, cache, log=print):
                 if not wajib(u, ket) <= ok.get(u, set()) or u in sah:
                     continue
                 rec = rekaman.get(u.isoformat()) or baru_rekaman(tarik)
-                rec["src"] = {f: sumber_hari(f, u, ket).rsplit("_", 1)[1] if f in wajib(u, ket) else None for f in FAMILI}   # None = tak didistribusikan lagi
+                rec["src"] = {f: sumber_hari(f, u, ket).rsplit("_", 1)[1] if sumber_hari(f, u, ket) and f in ok.get(u, ()) else None for f in FAMILI}   # None = tak didistribusikan lagi / gagal diunduh dan opsional (S-NPP sesudah SNPP_AKHIR)
+                if sumber_hari("VIIRS_SNPP", u, ket) and "VIIRS_SNPP" not in ok.get(u, ()):   # sumber S-NPP ada, tidak terunduh, hari tetap sah (longgar): tandai untuk satu percobaan ulang
+                    rec["snpp_gagal"] = snpp_gagal_lama(cache, u) + 1
                 simpan_rek(cache, u, rec)
                 sah.add(u)
                 ada.append(u)
@@ -778,7 +793,10 @@ def bangun(argv, sekarang=None, log=print):
             rek[u.isoformat()] = r
     sah = unduh_hari(kosong, kunci, ket, wil, cache, log) if kosong else set()
     for u in sah:
-        rek[u.isoformat()] = muat_rek(cache, u) or json.load(gzip.open(jalur_rek(cache, u), "rt"))
+        rek[u.isoformat()] = muat_rek(cache, u, True) or json.load(gzip.open(jalur_rek(cache, u), "rt"))
+    for u in kosong:   # percobaan ulang S-NPP gagal total (jaringan): pakai rekaman lama yang bertanda `snpp_gagal`, bukan menghentikan peta
+        if u.isoformat() not in rek and muat_rek(cache, u, True):
+            rek[u.isoformat()] = muat_rek(cache, u, True)
     hilang = [u.isoformat() for u in perlu if u.isoformat() not in rek]
     if hilang:
         sys.exit(f"peta_karhutla: hari UTC tidak utuh setelah 3 percobaan: {hilang}; berkas lama dibiarkan")
@@ -941,11 +959,11 @@ def uji_sintetis():
     D = dt.date
     ket = {f + "_NRT": (D(2026, 7, 1), D(2026, 11, 20)) for f in FAMILI}
     ket["VIIRS_SNPP_NRT"] = (D(2026, 7, 1), D(2026, 11, 1))
-    assert wajib(D(2026, 11, 1), ket) == set(FAMILI) and wajib(D(2026, 11, 2), ket) == set(FAMILI) - {"VIIRS_SNPP"}
+    assert wajib(D(2026, 11, 1), ket, FS.PRA) == set(FAMILI) and wajib(D(2026, 11, 2), ket, FS.PRA) == set(FAMILI) - {"VIIRS_SNPP"}
     del ket["VIIRS_SNPP_NRT"]                                   # barisnya hilang dari data_availability sesudah berhenti
-    assert wajib(D(2026, 11, 2), ket) == set(FAMILI) - {"VIIRS_SNPP"} and wajib(D(2026, 5, 2), {**ket, "VIIRS_SNPP_SP": (D(2012, 1, 1), D(2026, 6, 30))}) == set(FAMILI)
+    assert wajib(D(2026, 11, 2), ket, FS.PRA) == set(FAMILI) - {"VIIRS_SNPP"} and wajib(D(2026, 5, 2), {**ket, "VIIRS_SNPP_SP": (D(2012, 1, 1), D(2026, 6, 30))}, FS.PRA) == set(FAMILI)
     ket["VIIRS_SNPP_NRT"] = (D(2026, 7, 1), D(2026, 11, 1))
-    assert wajib(D(2026, 11, 25), ket) == set(FAMILI), "tak ada famili yang opsional bila semuanya melewati max_date (hari bolong = gagal keras)"
+    assert wajib(D(2026, 11, 25), ket, FS.PRA) == set(FAMILI), "tak ada famili yang opsional bila semuanya melewati max_date (hari bolong = gagal keras)"
     mk = lambda src: {**baru_rekaman("t"), "src": {"VIIRS_SNPP": src}}
     assert hari_data({"2026-11-02": mk(None), "2026-11-03": mk(None)}, D(2026, 11, 3))["snpp"] is False
     assert hari_data({"2026-10-30": mk("NRT"), "2026-10-31": mk("NRT")}, D(2026, 10, 31))["snpp"] is True
@@ -1315,8 +1333,102 @@ def uji_terbit():
     return len(K["kab"]), sum(len(v["d"]) for v in K["kab"].values()), len(K["hari"])
 
 
+def uji_snpp_berhenti():
+    """unduh_hari + hari_data saat S-NPP berhenti: (a) CSV kepala saja, (b) galat, (c) baris NRT hilang dari data_availability; jam FS dibekukan sebelum/sesudah SNPP_AKHIR."""
+    import contextlib, tempfile
+    D = dt.date
+    HDR = "latitude,longitude,acq_date,acq_time,satellite,confidence\n"
+    SAT = {"VIIRS_SNPP": "N", "VIIRS_NOAA20": "N20", "VIIRS_NOAA21": "N21", "MODIS": "Terra"}
+    class W:
+        def cari(self, lon, lat):
+            return ("62", "X", "Y")
+    ket0 = {f + "_NRT": (D(2026, 7, 1), D(2026, 12, 31)) for f in FAMILI}
+    ket0["VIIRS_SNPP_NRT"] = (D(2026, 7, 1), D(2026, 11, 1))     # (a)/(b): barisnya masih tercantum
+    ket_c = {k: v for k, v in ket0.items() if k != "VIIRS_SNPP_NRT"}   # (c): barisnya dihapus
+    def pabrik(mode):
+        urls = []
+        def ambil(u):
+            urls.append(u)
+            fam = u.split("/")[-4].rsplit("_", 1)[0]
+            if fam == "VIIRS_SNPP" and mode == "a":
+                return HDR
+            if fam == "VIIRS_SNPP" and mode == "b":
+                raise RuntimeError("HTTP Error 400: Bad Request")
+            d0, n = D.fromisoformat(u.split("/")[-1]), int(u.split("/")[-2])
+            return HDR + "".join(f"-2.0,{113.0 + k * 0.1},{d0 + dt.timedelta(days=k)},0100,{SAT[fam]},{'60' if fam == 'MODIS' else 'n'}\n" for k in range(n))
+        return ambil, urls
+    asli = (globals()["ambil_pelan"], time.sleep)
+    err = io.StringIO()
+    try:
+        time.sleep = lambda x: None
+        for mode, ket in (("0", ket0), ("a", ket0), ("b", ket0), ("0", ket_c), ("b", ket_c)):
+            FS._SEKARANG = FS.SESUDAH
+            ambil, urls = pabrik(mode)
+            globals()["ambil_pelan"] = ambil
+            with tempfile.TemporaryDirectory() as cache, contextlib.redirect_stderr(err):
+                hari = [D(2026, 10, 31), D(2026, 11, 1), D(2026, 11, 2), D(2026, 11, 3)]
+                sah = unduh_hari(hari, "K", ket, W(), cache, lambda *_: None)
+                assert sah == set(hari), (mode, sah)
+                sn = [u for u in urls if "VIIRS_SNPP" in u]
+                if ket is ket_c:
+                    assert not sn, (mode, "baris NRT S-NPP hilang dari data_availability: tak ada sumber, tak diminta")
+                else:   # hari <= 1 Nov TETAP diminta (satu blok 31 Okt + 1 Nov), hari sesudahnya tidak
+                    assert len(sn) == 1 and sn[0].endswith("/2/2026-10-31"), (mode, sn)
+                rek = {u.isoformat(): muat_rek(cache, u + dt.timedelta(days=0)) or json.load(gzip.open(jalur_rek(cache, u), "rt")) for u in hari}
+                assert all(r["src"]["VIIRS_NOAA20"] == "NRT" for r in rek.values()), (mode, [r["src"] for r in rek.values()])
+                dapat = mode in ("0", "a") and ket is ket0   # S-NPP NRT diunduh (kepala saja pun diunduh); galat / baris hilang = None, hari TETAP sah (longgar)
+                assert [rek[x]["src"]["VIIRS_SNPP"] for x in ("2026-10-31", "2026-11-01", "2026-11-02", "2026-11-03")] == (["NRT", "NRT", None, None] if dapat else [None] * 4), (mode, [r["src"] for r in rek.values()])
+                h = hari_data(rek, D(2026, 11, 3))
+                assert h["snpp"] is False and sum(h["hot"].values()) > 0, "tanpa S-NPP: celah S-NPP tak dinilai, N20/N21/M tetap menghitung"
+        # galat S-NPP NRT sesudah batas: hari tetap sah, tetapi diberi SATU kesempatan ulang pada jalan berikutnya (snpp_gagal 1 -> belum sah; 2 = final)
+        FS._SEKARANG = FS.SESUDAH
+        def tua(cache, hari):   # tarik rekaman dibuat > 12 jam sesudah harinya (jam dinding uji sebelum 1 Nov, jadi rekaman baru selalu "terlalu baru")
+            for u in hari:
+                r = json.load(gzip.open(jalur_rek(cache, u), "rt")); r["tarik"] = "2026-11-05T00:00:00+00:00"; simpan_rek(cache, u, r)
+        with tempfile.TemporaryDirectory() as cache, contextlib.redirect_stderr(err):
+            hari = [D(2026, 10, 31), D(2026, 11, 1), D(2026, 11, 2), D(2026, 11, 3)]
+            ambil, urls = pabrik("b"); globals()["ambil_pelan"] = ambil
+            assert unduh_hari(hari, "K", ket0, W(), cache, lambda *_: None) == set(hari)
+            tua(cache, hari)
+            assert [json.load(gzip.open(jalur_rek(cache, u), "rt")).get("snpp_gagal") for u in hari] == [1, 1, None, None]
+            assert muat_rek(cache, hari[0]) is None and muat_rek(cache, hari[1]) is None and muat_rek(cache, hari[2]) and muat_rek(cache, hari[3]), "gagal pertama: dicoba lagi (belum sah)"
+            assert muat_rek(cache, hari[0], True) is not None, "tetapi bisa dipakai sebagai cadangan bila percobaan ulang gagal total"
+            ambil, urls = pabrik("b"); globals()["ambil_pelan"] = ambil   # percobaan ulang yang gagal lagi: final
+            unduh_hari(hari[:2], "K", ket0, W(), cache, lambda *_: None); tua(cache, hari[:2])
+            assert [json.load(gzip.open(jalur_rek(cache, u), "rt")).get("snpp_gagal") for u in hari[:2]] == [2, 2] and all(muat_rek(cache, u) for u in hari[:2]), "gagal kedua: final, tak dicoba lagi"
+        with tempfile.TemporaryDirectory() as cache, contextlib.redirect_stderr(err):
+            ambil, urls = pabrik("b"); globals()["ambil_pelan"] = ambil
+            unduh_hari(hari[:2], "K", ket0, W(), cache, lambda *_: None); tua(cache, hari[:2])
+            ambil, urls = pabrik("0"); globals()["ambil_pelan"] = ambil   # percobaan ulang berhasil: S-NPP masuk, penanda hilang
+            unduh_hari(hari[:2], "K", ket0, W(), cache, lambda *_: None); tua(cache, hari[:2])
+            rr = [json.load(gzip.open(jalur_rek(cache, u), "rt")) for u in hari[:2]]
+            assert all("snpp_gagal" not in r and r["src"]["VIIRS_SNPP"] == "NRT" for r in rr) and all(muat_rek(cache, u) for u in hari[:2]), rr
+        # SEBELUM batas: (a) kepala saja = nol titik S-NPP tetapi hari sah; (b) galat = hari tidak sah (S-NPP wajib), tidak meledak
+        FS._SEKARANG = FS.PRA
+        for mode, sah_ok in (("0", True), ("a", True), ("b", False)):
+            ambil, urls = pabrik(mode)
+            globals()["ambil_pelan"] = ambil
+            with tempfile.TemporaryDirectory() as cache, contextlib.redirect_stderr(err):
+                sah = unduh_hari([D(2026, 10, 28), D(2026, 10, 29)], "K", ket0, W(), cache, lambda *_: None)
+                assert (sah == {D(2026, 10, 28), D(2026, 10, 29)}) == sah_ok, (mode, sah)
+                assert sum("VIIRS_SNPP" in u for u in urls) >= 1
+                if sah_ok:
+                    r = json.load(gzip.open(jalur_rek(cache, D(2026, 10, 28)), "rt"))
+                    assert r["src"]["VIIRS_SNPP"] == "NRT" and r["src"]["VIIRS_NOAA20"] == "NRT"
+        # wajib() longgar: sebelum batas S-NPP wajib sampai max_date NRT-nya; baris hilang + NOAA-20 ada = opsional; sesudah batas opsional untuk hari bersumber NRT
+        assert wajib(D(2026, 11, 1), ket0, FS.PRA) == set(FAMILI) and wajib(D(2026, 11, 2), ket0, FS.PRA) == set(FAMILI) - {"VIIRS_SNPP"}
+        assert wajib(D(2026, 11, 1), ket0, FS.SESUDAH) == set(FAMILI) - {"VIIRS_SNPP"} and wajib(D(2026, 10, 31), ket_c, FS.PRA) == set(FAMILI) - {"VIIRS_SNPP"}
+        assert wajib(D(2026, 5, 2), {**ket0, "VIIRS_SNPP_SP": (D(2012, 1, 1), D(2026, 6, 30))}, FS.SESUDAH) == set(FAMILI), "arsip SP S-NPP tetap wajib"
+        assert SNPP_AKHIR == ("2026-11-01", 780) and PATAH == D(2026, 11, 1), "turunan dari firms_sumber.SNPP_AKHIR tidak boleh bergeser"
+    finally:
+        globals()["ambil_pelan"], time.sleep = asli
+        FS._SEKARANG = FS.PRA
+
+
 def uji():
+    FS._SEKARANG = FS.PRA   # hermetis: jam dibekukan sebelum SNPP_AKHIR (sesudahnya VIIRS_SNPP_NRT tak diminta lagi; lihat uji_snpp_berhenti)
     uji_sintetis()
+    uji_snpp_berhenti()
     uji_kab()
     n_kab = uji_geo()
     uji_tahun_baru()
