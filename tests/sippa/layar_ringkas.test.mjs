@@ -1,6 +1,6 @@
 /* SP-031: logika murni layar Ringkas /pipa (PRD §9.4.1, DS §4.1): empat kartu Insight + gerak terakhir + alarm, tiap kartu memuat sendiri.
    Pembangun kartu mengembalikan spesifikasi (ey, judul, isi, sumber) tanpa DOM; rute /api/sippa/* disimulasi lewat data tiruan, kontrak DT §4.3.
-   Data nyata data/sippa/keluaran/{zona,pemicu}.json dipakai sebagai masukan supaya angka judul = angka berkas (A188, A469). */
+   Data nyata data/sippa/keluaran/{zona,pemicu}.json dipakai sebagai masukan supaya angka judul = angka berkas (A188, A470). */
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
@@ -99,9 +99,9 @@ test("kartuPilot: titik per sesi bergaris ambang G3 per kelas, teks judul titik 
 });
 
 /* ---------- Zona ---------- */
-test("kartuZona dari zona.json nyata: judul memakai A188 (kendala.json) dan A469 (semua jalan OSM), tiga versi dalam batang, pola dan huruf A-D wajib", () => {
+test("kartuZona dari zona.json nyata: judul memakai A188 (kendala.json) dan A470 (semua jalan OSM), tiga versi dalam batang, pola dan huruf A-D wajib", () => {
   const z = nyata("zona"), k = R.kartuZona(z, "62", "Kalimantan Tengah");
-  assert.equal(teks(k.judul), "Zona A Kalimantan Tengah: 188 kompleks (versi kendala.json), 469 (semua jalan OSM)");
+  assert.equal(teks(k.judul), "Zona A Kalimantan Tengah: 188 kompleks (versi kendala.json), 470 (semua jalan OSM)");
   for (const h of ["A", "B", "C", "D"]) assert.match(k.isi, new RegExp(`<text[^>]*class="sp-zona-huruf"[^>]*>${h}<`), `huruf ${h}`);
   for (const pola of ["zona-pola-A", "zona-pola-B", "zona-pola-C", "zona-pola-D"]) assert.match(k.isi, new RegExp(pola), pola);
   assert.match(k.isi, /Konservatif/); assert.match(k.isi, /Jalan utama OSM/); assert.match(k.isi, /Optimistis/);
