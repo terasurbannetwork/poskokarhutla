@@ -1,0 +1,62 @@
+name: M1 genangan, pengumpul prospektif harian
+
+# Uji prospektif M1 musim 2026/27 (docs/banjir/KRITERIA-M1.md, dikunci 28 Okt 2026). Tiap pagi mencatat hujan GSMaP per jam
+# yang dijumlah ke hari WIB kemarin dan label genangan hari WIB kemarin, append-only. Hari WIB berakhir 17Z; GSMaP NRT
+# berlatensi sekitar 4 jam, jadi jalan 21.30 UTC (04.30 WIB). Gagal satu hari dicoba lagi otomatis esoknya lewat --tanggal.
+on:
+  schedule:
+    - cron: "30 21 * * *"
+  workflow_dispatch:
+    inputs:
+      tanggal:
+        description: "Tanggal WIB (YYYY-MM-DD); kosong = kemarin"
+        default: ""
+
+concurrency:
+  group: m1-prospektif
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  kumpul:
+    runs-on: ubuntu-latest
+    timeout-minutes: 40
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Self-check
+        run: python3 scripts/banjir/genangan/m1_kumpul.py uji
+
+      # kemarin dan dua hari sebelumnya: hari yang terlewat (NRT telat, sumber mati) terisi sendiri; yang sudah ada dilewati
+      - name: Kumpulkan hujan dan label
+        env:
+          GSMAP_USER: ${{ secrets.GSMAP_USER }}
+          GSMAP_PASS: ${{ secrets.GSMAP_PASS }}
+          TANGGAL: ${{ inputs.tanggal }}
+        run: |
+          if [ -n "$TANGGAL" ]; then hari="$TANGGAL"; else hari="$(for n in 3 2 1; do TZ=Asia/Jakarta date -d "-$n day" +%F; done)"; fi
+          for t in $hari; do
+            for m in hujan label; do
+              kode=0; python3 scripts/banjir/genangan/m1_kumpul.py $m --tanggal "$t" || kode=$?
+              if [ "$kode" = 2 ]; then echo "::error::login FTP JAXA gagal"; exit 2; fi
+              [ "$kode" = 0 ] || echo "::warning::$m $t tanpa kemajuan (kode $kode)"
+            done
+          done
+
+      - name: Commit catatan
+        if: ${{ always() }}
+        run: |
+          F="data/banjir/genangan/m1_hujan.jsonl data/banjir/genangan/m1_label.jsonl"
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          for f in $F; do [ -e "$f" ] && git add "$f"; done
+          git diff --cached --quiet && exit 0
+          git commit -q -m "data: M1 prospektif $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do git pull -q --rebase --autostash && git push -q && exit 0; sleep 10; done
+          echo "::error::push M1 prospektif gagal"; exit 1
