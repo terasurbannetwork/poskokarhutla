@@ -131,8 +131,8 @@ globalThis.PosAir = (() => {
   /* ruas sungai berwarna: pos Siaga, atau naik_di_atas_biasa tanpa ambang. Dengan nama waterway terdekat: tiga cincin (4,5 km pudar kuning, 3 km 70%, 1,5 km penuh) hanya untuk waterway bernama sama;
      tanpa nama: tiga cincin dirapatkan (1,5, 1, 0,5 km). Hasil: [{kelas, lapis: 0 luar | 1 tengah | 2 dalam, nama|null, g: MultiPolygon}], satu per (kelas, lapis, nama) */
   const KM_LAPIS = [6, 4.5, 3, 1.5];   /* terluar peralihan kuning-biru, lalu kuning, campuran, status penuh: memudar halus ke biru sungai */
-  const ruasLapis = (pos, namaDari) => { const m = new Map(); for (const p of pos || []) { const k = kelas(p); if (!SIAGA.includes(k) && !(k === "naik" && !p.ambang)) continue; const [lo, la] = titik(p), nm = namaDari ? namaDari(p) || null : null;
-      for (const l of [0, 1, 2, 3]) { const key = k + "|" + l + "|" + (nm || ""); (m.get(key) || m.set(key, {kelas: k, lapis: l, nama: nm, g: {type: "MultiPolygon", coordinates: []}}).get(key)).g.coordinates.push([lingkar(lo, la, nm ? KM_LAPIS[l] : KM_LAPIS[l] / 3)]); } }   /* tanpa nama: gradasi tetap ada, dirapatkan ke 1,5 km supaya tidak tumpah ke sungai lain */
+  const ruasLapis = (pos, namaDari, km = KM_LAPIS) => { const m = new Map(); for (const p of pos || []) { const k = kelas(p); if (!SIAGA.includes(k) && !(k === "naik" && !p.ambang)) continue; const [lo, la] = titik(p), nm = namaDari ? namaDari(p) || null : null;
+      km.forEach((r, l) => { const key = k + "|" + l + "|" + (nm || ""); (m.get(key) || m.set(key, {kelas: k, lapis: l, nama: nm, g: {type: "MultiPolygon", coordinates: []}}).get(key)).g.coordinates.push([lingkar(lo, la, nm ? r : r / 3)]); }); }   /* tanpa nama: gradasi tetap ada, dirapatkan ke 1,5 km supaya tidak tumpah ke sungai lain */
     return [...m.values()]; };
   /* nama waterway terdekat dari titik: fitur [{properties: {name}, geometry}] hasil queryRenderedFeatures, jarak ke titik terdekat garis (km kasar) */
   const terdekatNama = (feats, lon, la) => { let best = null, bd = Infinity; const kx = Math.cos(la * Math.PI / 180);
@@ -233,6 +233,8 @@ const Alir = {
 /* baris sumber kecil di bawah kartu hover */
 const KAKI = (t, h) => h + `<small style="display:block;margin-top:5px;color:var(--ink2);font-size:9px">${t}</small>`;
 globalThis.KAKI = KAKI;
+/* radius cincin ruas berwarna di zoom dekat (km, terluar dulu): empat langkah biru ke kuning tiap 1 km, kuning, campuran, Siaga penuh */
+const GRADASI_KM = [8, 7, 6, 5, 4, 2.75, 1.5];
 const PosUkur = {
   D: null, p: null, t0: 0,
   menyala: () => !!document.querySelector('#lapis input[data-l="pos"]')?.checked,
@@ -317,7 +319,7 @@ const PosUkur = {
   tampil(on) { const lb = document.querySelector('#lapis input[data-l="pos"]')?.closest("label"); if (lb) { lb.classList.add("memuat"); lb.setAttribute("aria-busy", "true"); }
     on ? Alir.mulai() : Alir.henti();
     nanti(() => { this.lapisan(on); this.daftar(); if (on) this.petakan(); if (lb) { lb.classList.remove("memuat"); lb.removeAttribute("aria-busy"); } }); },
-  lapisan(on) { for (const l of ["air-poligon", "air-sorot", "alir-badan", "alir-garis", "alir-st-Siaga3", "alir-st-Siaga2", "alir-st-Siaga1", "alir-st-peralihan", "alir-st-luar", "alir-st-Siaga3-m", "alir-st-Siaga2-m", "alir-st-Siaga1-m", "alir-st-naik-m", "alir-kilau", "alir-st-naik", "alir-gerak", "alir-panah", "alir-hulu-dasar", "alir-hulu", "alir-hulu-panah", "hulu-label", "pos-cincin", "pos-laju", "pos", "pos-angka", "pos-angka-semua", "pos-pilih-halo", "pos-pilih-cincin", "pos-pilih-luar", "pos-pilih", "pos-pilih-angka", "pasut", "pasut-angka", "pasut-angka-semua"]) peta?.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none"); },
+  lapisan(on) { for (const l of ["air-poligon", "air-sorot", "alir-badan", "alir-garis", "alir-st-Siaga3", "alir-st-Siaga2", "alir-st-Siaga1", "alir-st-g0", "alir-st-g1", "alir-st-g2", "alir-st-g3", "alir-st-luar", "alir-st-Siaga3-m", "alir-st-Siaga2-m", "alir-st-Siaga1-m", "alir-st-naik-m", "alir-kilau", "alir-st-naik", "alir-gerak", "alir-panah", "alir-hulu-dasar", "alir-hulu", "alir-hulu-panah", "hulu-label", "pos-cincin", "pos-laju", "pos", "pos-angka", "pos-angka-semua", "pos-pilih-halo", "pos-pilih-cincin", "pos-pilih-luar", "pos-pilih", "pos-pilih-angka", "pasut", "pasut-angka", "pasut-angka-semua"]) peta?.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none"); },
   hit(pt) { const f = peta.getLayer("pos") && peta.queryRenderedFeatures(pt, {layers: ["pos"]}); return f?.length ? f[0].properties.id : null; },
   legenda() { if (!Peta.lihat("pos") || !this.D) return "";
     return `<div class="lbl">Pos tinggi air</div><div class="leg">${[["biasa", "Biasa"], ["naik_di_atas_biasa", "Naik di atas biasa"], ["tertinggi", "Tertinggi"], ["lama", "Lama atau macet"]].map(([s, n]) => `<span><i class="sw dot" style="background:${PosAir.warna(s)}"></i>${n}</span>`).join("")}<span>Cincin naik cepat: kuning 3 sampai 10, oranye 10 sampai 20, merah tebal di atas 20 cm/jam <span class="pill pa-hip">hipotesis</span></span><span><button type="button" class="pa-daftar" data-pos-nas>Daftar pos</button></span></div>`; },
@@ -408,16 +410,17 @@ const PosUkur = {
     sv.addEventListener("pointerover", e => requestAnimationFrame(() => taruh(e))); sv.addEventListener("pointermove", taruh); sv.addEventListener("pointerleave", () => tp.classList.remove("on")); },
   /* ruas waterway sekitar pos Siaga diwarnai: lapisan garis berfilter within poligon kecil, di bawah garis aliran bergerak */
   ruas() {
-    if (!peta.getLayer("alir-gerak")) return; const it = PosAir.ruasLapis(this.D?.pos, p => this._nm?.get(p.id)), base = peta.getFilter("alir-badan"), src = peta.getLayer("alir-badan").source, vis = this.menyala() ? "visible" : "none";
+    if (!peta.getLayer("alir-gerak")) return; const it = PosAir.ruasLapis(this.D?.pos, p => this._nm?.get(p.id), GRADASI_KM), base = peta.getFilter("alir-badan"), src = peta.getLayer("alir-badan").source, vis = this.menyala() ? "visible" : "none";
     const sel = (a) => { const bagian = it.filter(a).map(x => ["all", ["within", x.g], ...(x.nama ? [["==", ["get", "name"], x.nama]] : [])]); return ["all", base, bagian.length ? ["any", ...bagian] : ["==", ["literal", 1], 0]]; };   /* ["==", 1, 0] polos dibaca filter lama oleh MapLibre */
     /* selebar badan air biru (alir-badan) supaya ruas berwarna menutupnya penuh, tanpa pinggiran biru */
     const kls = ["match", ["get", "class"], "river", 1, .55], lebar = ["interpolate", ["linear"], ["zoom"], 8, 2.5, 12, 4, 13, ["max", 4, ["*", kls, 6.5]], 15, ["*", kls, 18]], atas = peta.getLayer("alir-panah") ? "alir-panah" : undefined;
     const campur = (a, b, t) => "#" + [1, 3, 5].map(i => Math.round(parseInt(a.slice(i, i + 2), 16) * (1 - t) + parseInt(b.slice(i, i + 2), 16) * t).toString(16).padStart(2, "0")).join(""), KUNING = "#f2c14e";
     const tambah = (id, filter, warna, op, sebelum) => { if (peta.getLayer(id)) return peta.setFilter(id, filter);
       peta.addLayer({id, type: "line", source: src, "source-layer": "waterway", filter, layout: {visibility: vis, "line-cap": "round", "line-join": "round"}, paint: {"line-color": warna, "line-width": lebar, "line-opacity": op}}, sebelum); };
-    tambah("alir-st-peralihan", sel(x => x.lapis === 0), campur(KUNING, "#5b9bd8", .5), .55, atas);   /* cincin terluar kuning-biru: tepi kuning tidak berhenti tiba-tiba ke biru sungai */
-    tambah("alir-st-luar", sel(x => x.lapis === 1), KUNING, .9, atas);   /* gradasi menjauhi pin: dalam warna Siaga, tengah campuran, luar kuning; di atas garis aliran biru */
-    for (const k of ["Siaga 3", "Siaga 2", "Siaga 1", "naik"]) { const id = "alir-st-" + k.replace(" ", ""); tambah(id + "-m", sel(x => x.kelas === k && x.lapis === 2), campur(PosAir.WARNA_KELAS[k], KUNING, .5), .92, atas); tambah(id, sel(x => x.kelas === k && x.lapis === 3), PosAir.WARNA_KELAS[k], .95, atas); }
+    /* gradasi menjauhi pin, tiap cincin 1 km: biru sungai ke kuning dalam empat langkah (g0 terluar), lalu kuning, campuran, warna Siaga penuh; semua pekat supaya tumpukan tidak meloncat */
+    for (let l = 0; l < 4; l++) tambah("alir-st-g" + l, sel(x => x.lapis === l), campur(KUNING, "#5b9bd8", (4 - l) / 5), .95, atas);
+    tambah("alir-st-luar", sel(x => x.lapis === 4), KUNING, .95, atas);
+    for (const k of ["Siaga 3", "Siaga 2", "Siaga 1", "naik"]) { const id = "alir-st-" + k.replace(" ", ""); tambah(id + "-m", sel(x => x.kelas === k && x.lapis === 5), campur(PosAir.WARNA_KELAS[k], KUNING, .5), .95, atas); tambah(id, sel(x => x.kelas === k && x.lapis === 6), PosAir.WARNA_KELAS[k], .95, atas); }
     /* kilau terang searah aliran (urutan titik garis = hulu ke hilir) di seluruh ruas berwarna */
     const semua = ["all", base, ["any", ...it.map(x => ["all", ["within", x.g], ...(x.nama ? [["==", ["get", "name"], x.nama]] : [])])].slice(0, 1).length && it.length ? ["any", ...it.map(x => ["all", ["within", x.g], ...(x.nama ? [["==", ["get", "name"], x.nama]] : [])])] : ["==", ["literal", 1], 0]];
     if (peta.getLayer("alir-kilau")) peta.setFilter("alir-kilau", semua);

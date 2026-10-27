@@ -2,7 +2,7 @@
 Pakai: python3 -I tambah_peta.py <deck.pptx> <peta.png> <angka_nasional.json> [operasi]  (deck ditimpa; 'operasi' = halaman operasi ikut)"""
 import json, math, os, re, sys, zipfile
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
-from kisi import lebar_teks   # noqa: E402
+from kisi import lebar_teks, BANJIR, IKON_BANJIR, HGX, HGX_MUDA, nol   # noqa: E402
 DECK, PNG, AN = sys.argv[1], sys.argv[2], sys.argv[3]
 OPERASI = sys.argv[4:] == ['operasi']
 A = json.load(open(AN))['prov']
@@ -23,21 +23,25 @@ keep = [b for b in shapes if geom(b)[1] < 1350000 or geom(b)[1] >= 6150000 or ge
 def settexts(b, texts):
     it = iter(texts)
     return re.sub(r'<a:t>[^<]*</a:t>', lambda m: f'<a:t>{next(it, "")}</a:t>', b)
-rows = sorted(A, key=lambda k: -A[k]['hot'][I]); ada = [k for k in rows if A[k]['hot'][I] > 0]
-HOT = sum(A[k]['hot'][I] for k in A); HOTP = sum(A[k]['hot'][IP] for k in A)
-LUAS = sum(bul(A[k]['luas'][I]) for k in A); BEL = sum(bul(A[k]['belum'][I]) for k in A)
-FS = sum(A[k]['fs'][I] for k in A)
+rows = sorted(A, key=lambda k: -nol(A[k]['hot'][I])); ada = [k for k in rows if nol(A[k]['hot'][I]) > 0]
+HOT = sum(nol(A[k]['hot'][I]) for k in A); HOTP = sum(nol(A[k]['hot'][IP]) for k in A)
+LUAS = sum(bul(nol(A[k]['luas'][I])) for k in A); BEL = sum(bul(nol(A[k]['belum'][I])) for k in A)
+FS = sum(nol(A[k]['fs'][I]) for k in A)
 top = rows[0]
 out = []
 for b in keep:
     t = ''.join(re.findall(r'<a:t>([^<]*)</a:t>', b))
     if t.startswith('Penanganan dan Pengendalian'):
-        b = settexts(b, ['Peta Hotspot untuk Pengendalian dan Penanganan Karhutla 2026'])
+        b = settexts(b, ['Peta Status Banjir, Longsor dan Rob 2026' if BANJIR else 'Peta Hotspot untuk Pengendalian dan Penanganan Karhutla 2026'])
     elif t.startswith(('5 provinsi', '6 provinsi')):
         runs = re.findall(r'<a:r>.*?</a:r>', b, re.S)
         oranye = re.search(r'<a:rPr.*?</a:rPr>', runs[0], re.S).group(0); biasa = re.search(r'<a:rPr.*?</a:rPr>', runs[1], re.S).group(0)
         SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (f'{f0(A[top]["hot"][I])} titik', 1), ('). Total: ', 0), (f'{f0(HOT)} titik', 1),
                (', ', 0), (f'{f0(LUAS)} ha', 1), (' terbakar' + (f' ({LBL_LUAS})' if LBL_LUAS else '') + ', ', 0), (f'{f0(BEL)} ha', 1), (' belum padam' + (f' ({LBL_HA})' if LBL_HA else ''), 0)]
+        if BANJIR:   # rob: titik pantau BMKG; satu provinsi tanpa titik pantau tidak ikut jumlah (nol)
+            SUB = [('Terbanyak di ', 0), (NAMA[top], 1), (' (', 0), (f'{f0(nol(A[top]["hot"][I]))} kecamatan', 1), ('). Total Siaga atau Awas: ', 0),
+                   (f'{f0(HOT)} kecamatan', 1), (' banjir, ', 0), (f'{f0(FS)} kecamatan', 1), (' longsor, ', 0), (f'{f0(LUAS)} titik', 1), (' rob, ', 0),
+                   (f'{f0(BEL)} jiwa', 1), (' terpapar', 0)]
         baru = ''.join(f'<a:r>{oranye if o else biasa}<a:t>{t}</a:t></a:r>' for t, o in SUB)
         b = b[:b.index(runs[0])] + baru + b[b.index(runs[-1]) + len(runs[-1]):]
     out.append(b)
@@ -69,6 +73,9 @@ KP = [('051C2C', 'AFC3DA', 'rIdIk1', 'HOTSPOT', f0(HOT), 'titik'),
       ('C9503A', 'FFE3DC', 'rIdIkFs', 'FIRESPOT', f0(FS), 'titik'),
       ('3F5F80', 'D3DFEA', 'rIdIk2', 'LUAS TERBAKAR', f0(LUAS), 'ha'),
       ('D9600B', 'FFDCC2', 'rIdIk3', 'BELUM PADAM', f0(BEL), 'ha')]
+if BANJIR:
+    KP = [(HGX['hot'], HGX_MUDA['hot'], 'rIdB1', 'BANJIR', f0(HOT), 'kec'), (HGX['fs'], HGX_MUDA['fs'], 'rIdB2', 'LONGSOR', f0(FS), 'kec'),
+          (HGX['luas'], HGX_MUDA['luas'], 'rIdB3', 'ROB SIAGA', f0(LUAS), 'titik'), (HGX['belum'], HGX_MUDA['belum'], 'rIdB4', 'TERPAPAR', f0(BEL), 'jiwa')]
 for n, (col, muda, rid, lab, val, sat) in enumerate(KP):
     x = L + n * (kw + gap)
     # empat kotak lebih sempit dari tiga: ikon dirapatkan dan huruf dikecilkan supaya label dan angka tidak bertemu
@@ -84,6 +91,9 @@ out.append(kotak(cx[1], top_isi, CW[1], hh, [[('PROVINSI', 750, True, '6B7280', 
 KOL = [(2, 'hot', '051C2C', 'E6ECF3', 'rIdIk1', 'HOTSPOT*', '(titik)'), (3, 'fs', 'C9503A', 'FFE3DC', 'rIdIkFs', 'FIRESPOT*', '(titik)'),
        (4, 'luas', '3F5F80', 'E6ECF3', 'rIdIk2', 'LUAS TERBAKAR*', '(ha)'),
        (5, 'belum', 'D9600B', 'FFE6D5', 'rIdIk3', 'BELUM PADAM*', '(ha)')]
+if BANJIR:
+    KOL = [(j, g, HGX[g], HGX_MUDA[g], f'rIdB{j - 1}', t, sat) for j, g, t, sat in
+           ((2, 'hot', 'BANJIR*', '(kec)'), (3, 'fs', 'LONGSOR*', '(kec)'), (4, 'luas', 'ROB SIAGA*', '(titik)'), (5, 'belum', 'TERPAPAR*', '(jiwa)'))]
 for j, key, col, muda, rid, t, sat in KOL:
     bx, bw = cx[j] + 27432, CW[j] - 27432
     out.append(kotak(bx, top_isi, bw, hh, fill=col, geomp='roundRect', adj=13636))
@@ -91,7 +101,7 @@ for j, key, col, muda, rid, t, sat in KOL:
     out.append(gambar(rid, x0, top_isi + (hh - 100584) // 2, 100584, 100584, 'Ikon ' + t))
     out.append(kotak(x0 + 118872, top_isi, tw + 45720, hh, [[(t, 450, True, 'FFFFFF'), (' ' + sat, 450, False, muda)]], anchor='ctr', wrap='none'))
 TOP = rows[:10]
-MX = {key: max(A[k][key][I] for k in TOP) or 1 for _, key, *_ in KOL}
+MX = {key: max(nol(A[k][key][I]) for k in TOP) or 1 for _, key, *_ in KOL}
 ry = top_isi + hh + 45720; rh = (dasar - ry) // 10
 for n, k in enumerate(TOP):
     y = ry + n * rh; o = A[k]
@@ -99,11 +109,11 @@ for n, k in enumerate(TOP):
     out.append(kotak(cx[0] + 27432, y + (rh - 192024) // 2, 192024, 192024, [[(str(n + 1), 700, True, 'FFFFFF')]], fill='051C2C', geomp='ellipse', algn='ctr'))
     out.append(kotak(cx[1] + 45720, y, CW[1] - 45720, rh, [[(NAMA[k], 800 if len(NAMA[k]) <= 18 else 700, True, '1A1A1A')]], anchor='ctr'))
     for j, key, col, *_ in KOL:
-        v = o[key][I]; cur, prv = bul(v), bul(o[key][IP])   # persen dari angka yang tampil, vs 19 Okt
+        v = o[key][I]; cur, prv = bul(nol(v)), bul(nol(o[key][IP]))   # persen dari angka yang tampil, vs 19 Okt
         pr = bul((cur - prv) / prv * 100) if prv else None
-        ar, ac = (('baru', 'A9B4C2') if pr is None else (f'▲{f0(pr)}%', 'D9600B') if pr > 0 else (f'▼{f0(-pr)}%', '2F86D1') if pr < 0 else ('0%', '6B7280'))
+        ar, ac = (('', 'A9B4C2') if v is None else ('baru', 'A9B4C2') if pr is None else (f'▲{f0(pr)}%', 'D9600B') if pr > 0 else (f'▼{f0(-pr)}%', '2F86D1') if pr < 0 else ('0%', '6B7280'))
         VW = CW[j] - 329184   # angka rata kanan di kolom tetap, persen rata kiri di kolom tetap: lurus ke bawah
-        out.append(kotak(cx[j], y, VW, rh, [[(f0(v), 850, True, '1A1A1A')]], algn='r', anchor='ctr'))
+        out.append(kotak(cx[j], y, VW, rh, [[('–' if v is None else f0(v), 850, True, '1A1A1A')]], algn='r', anchor='ctr'))
         out.append(kotak(cx[j] + VW + 45720, y, 329184 - 45720, rh, [[(ar, 580, True, ac)]], algn='l', anchor='ctr'))
 # 3) peta di kiri, selebar sisa panel, ditengahkan vertikal
 X0 = L; W = RX - 182880 - L; H = round(W * 1664 / 4144); Y0 = top_isi + (dasar - top_isi - H) // 2
@@ -113,6 +123,9 @@ out.append(f'<p:pic><p:nvPicPr><p:cNvPr id="{i}" name="Peta hotspot 20 Okt"/><p:
 # 4) legenda di bawah panel, posisi & ukuran sama dengan slide tabel
 LEG = [('ellipse', 'D9600B', 'Ukuran lingkaran sebanding jumlah titik panas'), ('rect', '051C2C', 'Provinsi dengan titik panas'), ('rect', 'DCE1E7', 'Tanpa titik panas'),
        ('rect', 'D9600B', 'naik dari hari sebelumnya'), ('rect', '2F86D1', 'turun dari hari sebelumnya')]
+if BANJIR:
+    LEG = [('ellipse', '2F6FB5', 'Ukuran lingkaran sebanding kecamatan Siaga atau Awas banjir'), ('rect', '051C2C', 'Provinsi dengan kecamatan Siaga atau Awas'),
+           ('rect', 'DCE1E7', 'Tanpa kecamatan Siaga atau Awas')] + LEG[3:]
 lw = [128016 + 91440 + round(len(t) * 750 / 100 * 0.5 * 12700) + 320040 for _, _, t in LEG]
 x = 548640 + (11094415 - sum(lw)) // 2
 for (g, col, t), w in zip(LEG, lw):
@@ -129,6 +142,7 @@ rels = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships x
         f'<Relationship Id="rId1" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="{logo}"/>'
         '<Relationship Id="rIdPeta" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/peta-hotspot-20okt.png"/>'
         + ''.join(f'<Relationship Id="rIdIk{n}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/image-1-{n + 1}.png"/>' for n in (1, 2, 3))
+        + ''.join(f'<Relationship Id="{r}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/ikon-{n}.png"/>' for r, n in IKON_BANJIR.items() if BANJIR)   # ditulis ganti.py
         + '<Relationship Id="rIdIkFs" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/ikon-firespot.png"/>'   # ditulis ganti.py
         + re.sub(r'Id="[^"]+"', 'Id="rIdLay"', lay) + '</Relationships>')
 # Slide yang dibuang dari deck atas permintaan pemilik: slide2 "Provinsi Tambahan" (22 Okt 2026) dan

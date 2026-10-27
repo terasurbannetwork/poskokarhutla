@@ -112,6 +112,21 @@ def ganti_tabel(s, lib, top6, bm):
     return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>prakiraan cuaca {bm["periode"]}</a:t>')
 
 
+
+def ganti_tabel_banjir(s, lib, top6, st, h3, tgl):
+    """Versi banjir dari ganti_tabel: kolom pil kiri = status banjir provinsi hari laporan (wilayah_hari, tertinggi kabupaten),
+    kolom pil kanan = hujan 3 hari terakhir tertinggi kecamatan (mm, None = tak ada kecamatan tercatat). Jenis pil dipinjam
+    dari pustaka PM2,5/cuaca templat: Awas = merah, Siaga = oranye, lainnya = abu; hujan > 0 = pil hujan."""
+    for i, k in enumerate(top6):
+        y = T0 + i * PB
+        v = st.get(k) or 'Normal'
+        s = pasang(s, lib, X_PM, y, {'Awas': 'berbahaya', 'Siaga': 'tidak sehat'}.get(v, 'rendah'), v.upper())
+        h = h3.get(k)
+        s = pasang(s, lib, X_CU, y, 'hujan' if h else 'cerah', f'HUJAN {round(h)} MM' if h else 'TIDAK TERCATAT')
+    s = rep(s, '<a:t>PM2.5 berbahaya</a:t>', '<a:t>status Awas</a:t>')
+    s = rep(s, '<a:t>PM2.5 tidak sehat</a:t>', '<a:t>status Siaga</a:t>')
+    return rep(s, '<a:t>prakiraan cuaca 20–22 Okt</a:t>', f'<a:t>hujan 3 hari s.d. {tgl}</a:t>')
+
 def singkat(t, n=46):
     t = re.sub(r',?\s+dan\s+', ', ', t.replace('Kabupaten ', '').replace(' dan sekitarnya', ''))
     return t if len(t) <= n else t[:t.rfind(',', 0, n - 5)] + ', dll.'
