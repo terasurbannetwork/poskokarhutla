@@ -38,6 +38,7 @@ import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
+import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
@@ -538,6 +539,7 @@ const RUTE = {
   ...RUTE_ALUN,
   ...RUTE_RISET,
   ...RUTE_MEJA,
+  ...RUTE_UJI_BANJIR,   // uji lapangan banjir: POST /api/instansi/uji-banjir (akun instansi), GET /api/uji-lapangan/banjir agregat (src/uji_banjir.js)
   ...RUTE_UJI,   // uji lapangan karhutla: GET /api/uji-lapangan agregat Q1-Q5, tanpa data pribadi (src/uji_lapangan.js)
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
@@ -830,6 +832,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
     try { await bersihkanSippa(env, sekarang); } catch (e) { console.error("sippa", e?.message); }   // migrasi 0058 belum jalan = cron lain tetap jalan; ringkas+buang telemetri > 30 hari, alarm diam
+    try { await bersihkanUjiBanjir(env, Date.now()); } catch (e) { console.error("uji banjir", e?.message); }   // retensi 12 bulan
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
     try { await bersihkanArsipSitrep(env, Date.now()); } catch (e) { console.error("arsip sitrep", e?.message); }   // retensi 400 hari

@@ -14,7 +14,7 @@ import argparse, datetime as dt, json, os, posixpath, re, shutil, subprocess, sy
 from xml.sax.saxutils import escape
 
 DI = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, DI)
-import wa_harian  # noqa: E402
+import wa_harian, banjir_data  # noqa: E402
 
 AKAR = wa_harian.AKAR
 BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
@@ -149,6 +149,7 @@ class Deck:
         s.KH_T, s.SER = [x for x in s.KH if x['tangani']], [x for x in KJ if x['perhatian']]
         s.N_SEL, s.N_TOT, s.N_PROV = sum(1 for x in KJ if not x['tangani']), len(KJ), len({x['prov'] for x in KJ})
         s.TT = json.load(open(os.path.join(ke, 'titik.json')))
+        s.BJ = banjir_data.baca(AKAR, tanggal, NAMA)   # None = sumber banjir kosong: halaman banjir tidak dibuat
         hd = dt.date.fromisoformat(D['hari'])
         s.lbl_hari = f'{hd.day} {BULAN[hd.month - 1][:3].upper()}' + (f' S.D. {jam.replace(":", ".")}' if jam else '')
         s.lbl_kum = f'TERBAKAR 1 JAN–{hd.day} {BULAN[hd.month - 1][:3].upper()}'
@@ -428,6 +429,73 @@ class Deck:
         o += s.geser(ket, (LY + LH if LN else KB) + 73152 - 6080760)
         return o
 
+
+    # ---------------------------------------------------------- slide banjir (setelah rincian): status banjir dan rob dari sistem kita
+    def judul_banjir(s):
+        t = s.BJ['total']; hd = dt.date.fromisoformat(s.BJ['hari'])
+        H, P = (lambda x: (x, ORG, True)), (lambda x: (x, INK, True))
+        ada = [(t['awas'], 'Awas'), (t['siaga'], 'Siaga')]
+        J = [P(f'Status banjir {tgl_id(hd)}: ')]
+        for n, lab in ada:
+            if n: J += [H(f'{n} provinsi'), P(f' {lab}, ')]
+        if t['kejadian_aktif']: J += [H(f0(t['kejadian_aktif'])), P(' kejadian aktif, ')]
+        if t['rob']: J += [H(f0(t['rob'])), P(' titik rob Waspada atau lebih, ')]
+        if len(J) == 1: J += [P('tidak ada provinsi Siaga atau Awas, ')]
+        J[-1] = (J[-1][0].rstrip(', '), J[-1][1], True)
+        return J
+
+    def s_banjir(s):
+        B, o = s.BJ, ''
+        ST = {3: ('Awas', MERAH, T_MERAH, 'banjir_merah'), 2: ('Siaga', ORG, T_ORG, 'banjir_oranye'), 1: ('Waspada', '8A6A2E', T_KER, 'banjir_kering'), 0: ('Normal', NAVY, T_NAVY, 'banjir_navy')}
+        P, T = B['prov'], B['total']; jiwa = T['terpapar_jiwa'] is not None
+        # Awas dan Siaga wajib masuk (aturan pemilik): baris sisanya diringkas bila lebih dari 12
+        wajib = sum(p['status'] >= 2 for p in P); baris = P if len(P) <= max(12, wajib) else P[:max(11, wajib)] + [None]
+        y0, yb = 2057400, 6260000; rp = min((yb - y0) // len(baris), 380000)
+        LH_ = len(baris) * rp + y0 + 91440 - 1325880   # panel setinggi isinya
+        o += s.kotak(548640, 1325880, 6720840, LH_, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=2000) + s.kepala(548640, 1325880, 6720840, '2F6FB5', 'DCE7F5', 'banjir_putih', 'Status banjir per provinsi', len(P))
+        kol = [('PROVINSI', 676656, 1700000, 'l'), ('STATUS', 2400000, 1000000, 'ctr'), ('HUJAN 3 HARI TERBESAR', 3450000, 1700000, 'ctr'), ('KEJADIAN AKTIF', 5200000, 800000, 'ctr'),
+               ('TITIK ROB', 5950000, 600000, 'ctr')] + ([('TERPAPAR', 6550000, 700000, 'ctr')] if jiwa else [])
+        for t, x, w, al in kol: o += s.tx(x, 1856232, w, 164592, [t], sz=650, b=True, c=ABU, al=al)
+        o += s.garis(676656, 2039112, 6464808, INK)
+        hm = max([p['hujan3_mm'] or 0 for p in P] + [1])
+        for n, p in enumerate(baris):
+            y = y0 + n * rp
+            if n: o += s.garis(676656, y, 6464808, 'EEF0F3')
+            if p is None:
+                sisa = P[len(baris) - 1:]
+                o += s.tx(676656, y, 3000000, rp, [f'{len(sisa)} provinsi lainnya'], sz=720, c=TEKS, an='ctr', wrap='none'); continue
+            nm, w, tint, ik = ST[p['status']]
+            o += s.tx(676656, y, 1700000, rp, [p['nama']], sz=880, b=True, an='ctr', wrap='none')
+            ph = int(min(200000, rp * .62)); _, pw = s.pil(0, 0, nm, tint, w, ik, sz=720, h=ph)
+            o += s.pil(2900000 - pw / 2, y + (rp - ph) / 2, nm, tint, w, ik, sz=720, h=ph)[0]
+            if p['hujan3_mm'] is not None:
+                bw = 1100000 * p['hujan3_mm'] / hm
+                o += s.kotak(3500000, y + rp * .3, 1100000, rp * .4, 'F3F5F8') + s.kotak(3500000, y + rp * .3, max(bw, 12000), rp * .4, '2F6FB5') + s.tx(4650000, y, 520000, rp, [f"{f0(p['hujan3_mm'])} mm"], sz=760, c=TEKS, an='ctr', wrap='none')
+            o += s.tx(5200000, y, 800000, rp, ['–' if p['kejadian_aktif'] is None else f0(p['kejadian_aktif'])], sz=880, b=bool(p['kejadian_aktif']), c=NAVY if p['kejadian_aktif'] else ABU, al='ctr', an='ctr')
+            o += s.tx(5950000, y, 600000, rp, ['–' if p['rob'] is None else f0(p['rob'])], sz=880, b=bool(p['rob']), c=NAVY if p['rob'] else ABU, al='ctr', an='ctr')
+            if jiwa: o += s.tx(6550000, y, 700000, rp, [f0(p['terpapar_jiwa']) if p['terpapar_jiwa'] is not None else '–'], sz=800, c=TEKS, al='ctr', an='ctr', wrap='none')
+        QX, QW = 7406640, 4236415; kw = (QW - 91440) // 2
+        o += s.kotak(QX, 1325880, QW, 2377440, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=3000) + s.tx(QX + 164592, 1417320, QW - 329184, 182880, ['RINGKAS PROVINSI'], sz=750, b=True, c=NAVY, spc=100)
+        n_tot = T['awas'] + T['siaga'] + T['waspada']; bw = QW - 329184; x = QX + 164592
+        for n, k in ((T['awas'], 3), (T['siaga'], 2), (T['waspada'], 1)):
+            if n:
+                ww = bw * n / n_tot; o += s.kotak(x, 1645920, ww, 201168, ST[k][1]) + s.tx(x, 1645920, ww, 201168, [str(n)], sz=750, b=True, c='FFFFFF', al='ctr', an='ctr'); x += ww
+        kar = [('banjir_merah', T_MERAH, f0(T['awas']), 'provinsi Awas', MERAH), ('banjir_oranye', T_ORG, f0(T['siaga']), 'provinsi Siaga', ORG),
+               ('banjir_navy', T_NAVY, '–' if T['kejadian_aktif'] is None else f0(T['kejadian_aktif']), 'kejadian banjir aktif', NAVY), ('banjir_slate', T_SLATE, '–' if T['rob'] is None else f0(T['rob']), 'titik rob Waspada atau lebih', SLATE)]
+        for i, (ik, tint, v, lab, w) in enumerate(kar): o += s.kartu(QX + 164592 + (i % 2) * (kw - 80000 + 45720), 1965960 + (i // 2) * 594360, ik, tint, v, lab, w, w=kw - 80000)
+        o += s.tx(QX + 164592, 3200400, QW - 329184, 560000, [f'Hari data {tgl_id(dt.date.fromisoformat(B["hari"]))}'
+                                                            + (f', cut-off {s.jam.replace(":", ".")} WIB' if s.jam else '') + '.'], sz=720, c=TEKS)
+        if B.get('rob_depan'):
+            RD = B['rob_depan'][:6]
+            o += s.kotak(QX, 3794760, QW, 160000 + 320000 + 228600 * len(RD), 'FFFFFF', 'roundRect', ln='BFC5CC', adj=4000)
+            o += s.tx(QX + 164592, 3886200, QW - 329184, 182880, ['ROB 1 SAMPAI 3 HARI KE DEPAN'], sz=750, b=True, c=NAVY, spc=100)
+            for i, r in enumerate(RD):
+                y = 4160520 + i * 228600; nm, w, tint, ik = ST[r['lv']]; d = dt.date.fromisoformat(r['hari'])
+                o += s.tx(QX + 164592, y, 2300000, 182880, [r['kec']], sz=760, an='ctr', wrap='none') + s.pil(QX + 2750000, y + 9144, nm, tint, w, ik, sz=700, h=164592)[0]
+                o += s.tx(QX + 3500000, y, 570000, 182880, [f'{d.day} {BULAN[d.month - 1][:3]}'], sz=760, c=TEKS, al='r', an='ctr', wrap='none')
+        o += s.tx(QX, 6080760, QW, 274320, [f'Sumber: Centurisk97, model banjir dan rob, data {tgl_id(dt.date.fromisoformat(B["hari"]))}'], sz=650, c=ABU, an='ctr')
+        return o
+
     # ---------------------------------------------------------- rakit
     def bangun(s, templat, keluar):
         zi = zipfile.ZipFile(templat); F = {n: zi.read(n) for n in zi.namelist()}
@@ -441,6 +509,7 @@ class Deck:
                 g = re.search(GEO, blk); g = tuple(map(int, g.groups())) if g else None
                 if blk.startswith('<p:pic>') and 'r:embed="rId1"' in blk: simpan.append(blk); continue
                 if g and ((g[3] == 0 and g[1] in (1207008, 6446520)) or g[1] == 6510528): simpan.append(blk)
+            if i == 3: dekor3 = (sk[:a], sk[b:], simpan)
             body = fn()
             jd = s.tx(548640, 292608, 10454335, 822960, [[(t, c, True) for t, c, _ in judul]], sz=szj, an='b')
             F[f'ppt/slides/slide{i}.xml'] = (sk[:a] + ''.join(simpan) + jd + body + sk[b:]).encode()
@@ -450,6 +519,20 @@ class Deck:
             F[f'ppt/slides/_rels/slide{i}.xml.rels'] = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + tetap
                 + ''.join(f'<Relationship Id="{r}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{nama(p)}"/>' for p, r in s.MED.items()) + '</Relationships>').encode()
             for p in s.MED: F[f'ppt/media/{nama(p)}'] = open(p, 'rb').read()
+        if s.BJ:   # klon slide 3 (kerangka sama), isi diganti, disisipkan sebagai slide 4; penutup jadi slide 5
+            s.N[0] = 300; s.MED.clear(); body = s.s_banjir(); awal, akhir, dekor = dekor3
+            tetap = [x.replace('<a:t>3</a:t>', '<a:t>4</a:t>') for x in dekor]   # dekor slide 3 (logo, garis, nomor halaman) tanpa isinya
+            jd = s.tx(548640, 292608, 10454335, 822960, [[(t, c, True) for t, c, _ in s.judul_banjir()]], sz=2200, an='b')
+            F['ppt/slides/slide5.xml'] = (awal + ''.join(tetap) + jd + body + akhir).encode()
+            rel = F['ppt/slides/_rels/slide3.xml.rels'].decode()
+            keep = ''.join(r for r in re.findall(r'<Relationship [^>]*/>', rel) if 'Id="rId1"' in r or '/image"' not in r)
+            nama = lambda p: 'h-' + os.path.relpath(p, s.ke).replace('/', '-')
+            F['ppt/slides/_rels/slide5.xml.rels'] = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + keep
+                + ''.join(f'<Relationship Id="{r}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{nama(p)}"/>' for p, r in s.MED.items()) + '</Relationships>').encode()
+            for p in s.MED: F[f'ppt/media/{nama(p)}'] = open(p, 'rb').read()
+            F['[Content_Types].xml'] = F['[Content_Types].xml'].replace(b'<Override PartName="/ppt/slides/slide4.xml"', b'<Override PartName="/ppt/slides/slide5.xml" ContentType="application/vnd.openxmlformats-officedocument.presentationml.slide+xml"/><Override PartName="/ppt/slides/slide4.xml"', 1)
+            F['ppt/_rels/presentation.xml.rels'] = F['ppt/_rels/presentation.xml.rels'].replace(b'</Relationships>', b'<Relationship Id="rId99" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/slide" Target="slides/slide5.xml"/></Relationships>')
+            F['ppt/presentation.xml'] = F['ppt/presentation.xml'].replace(b'<p:sldId id="259" r:id="rId5"/>', b'<p:sldId id="260" r:id="rId99"/><p:sldId id="259" r:id="rId5"/>', 1)
         mulai = dt.datetime.strptime(s.wa['mulai'], '%Y-%m-%d %H.%M'); sampai = dt.datetime.strptime(s.wa['sampai'], '%Y-%m-%d %H.%M')
         jam = lambda t: f'{t.day} {BULAN[t.month - 1][:3]} {t.year}, {t:%H.%M}'
         GANTI = {1: [('21 Okt 2026, 07.00  –  22 Okt 2026, 07.00 WIB', f'{jam(mulai)}  –  {jam(sampai)} WIB'), ('Kamis, 22 Oktober 2026', f'{HARI_ID[s.tanggal.weekday()]}, {tgl_id(s.tanggal)}')],
@@ -460,7 +543,7 @@ class Deck:
             F[f'ppt/slides/slide{i}.xml'] = x.encode()
         x = F['ppt/slides/slide4.xml'].decode(); blk = [b for b in re.findall(r'<p:sp>.*?</p:sp>', x, re.S) if 'Lampiran (data rinci)' in b]
         if blk: F['ppt/slides/slide4.xml'] = x.replace(blk[0], '').encode()   # deck tanpa lampiran (pemilik 23 Okt)
-        for i in (1, 2, 3, 4):
+        for i in (1, 2, 3, 4) + ((5,) if s.BJ else ()):
             t = re.sub(r'<[^>]+>', '', F[f'ppt/slides/slide{i}.xml'].decode())
             assert '·' not in t and '—' not in t, f'titik tengah / em dash di slide {i}'
         dipakai = set()

@@ -3093,6 +3093,7 @@ $("#cari").addEventListener("input", e => {
 $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (window.Cari?.klik(b) !== null) return; $("#hasil").hidden = true; $("#cari").value = "";
   if (b.dataset.kl) return Laci.buka(b.dataset.k);
   const p = b.dataset.k.split("|"); turun(p.slice(0, 2).join("|"));
+  { const nm = b.querySelector("b")?.textContent; nanti(() => window.Cari?.wilayah(b.dataset.k, nm)); }   /* kartu status banjir wilayah, ditunda agar klik tidak menunggu */
   if (p.length === 3) setTimeout(async () => { const kec = S.geo.kec[p[0]] ||= await muatJSON(`geo/kecamatan/${p[0]}.json`);
     const f = kec.features.find(f => f.properties.kab === p[1] && f.properties.kec === p[2]); if (f) peta.fitBounds(kotak([f]), {padding: kiriPad(), maxZoom: 12}); }, 800); });
 document.addEventListener("click", e => { if (!e.target.closest(".cari")) $("#hasil").hidden = true; });

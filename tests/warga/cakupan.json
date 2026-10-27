@@ -760,7 +760,12 @@
     "GET /api/sippa/pelihara": "GET /api/sippa/pelihara dan pelihara.csv",
     "GET /api/sippa/pelihara.csv": "GET /api/sippa/pelihara dan pelihara.csv",
     "GET /api/sippa/stok": "POST/GET /api/sippa/stok",
-    "POST /api/sippa/stok": "POST/GET /api/sippa/stok"
+    "POST /api/sippa/stok": "POST/GET /api/sippa/stok",
+    "table push_banjir": "push banjir: putaran pertama hanya mencatat garis dasar",
+    "table uji_banjir": "uji banjir: CHECK skema menolak kontrol non-Aman",
+    "POST /api/instansi/uji-banjir": "uji banjir: gerbang route, tanpa sesi 401",
+    "GET /api/uji-lapangan/banjir": "uji banjir agregat: tanpa login 403",
+    "GET /api/instansi/uji-banjir/kec": "formulir uji banjir: GET /api/instansi/uji-banjir/kec"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

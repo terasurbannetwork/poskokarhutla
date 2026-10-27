@@ -260,3 +260,11 @@ Protokol + pengumpulan data + hasil supaya klasifikasi dan prediksi platform bis
 - **Strata tugas otomatis** dicatat sekali di `uji_tugas` saat tugas dibuat (level, firespot, luas platform, `p_lolos` bila pipeline mengirimnya).
 - **Q2** dinilai cron dari `lapangan` (menyala/bara, tak curiga, tak ditahan) terhadap `tugas_lapangan` dan `titik_terbaru` (-3 .. +24 jam, 2 km); hasil di `uji_terlewat`.
 - **GET /api/uji-lapangan** dan halaman `/uji-lapangan`: admin ATAU pemirsa di SEMUA host. Urutan izin, laju 20/menit per IP, cache 60 dtk (private). Agregat saja (tanpa nama, WA, atau koordinat); sel rincian dengan n < 5 ditahan (null + `ditahan:true`, halaman menulis "<5"), headline tidak berubah. Sampel kontrol tidak dihitung sebagai api terkonfirmasi di draf Laporan Karhutla. Uji: `tests/warga/uji_lapangan.test.mjs`.
+
+## Uji lapangan banjir (src/uji_banjir.js, migrations/0064_push_banjir.sql dan 0065_uji_banjir.sql)
+
+- `POST /api/instansi/uji-banjir` (akun instansi aktif, header `x-pb: 1`, 60/jam per akun) menyimpan sampel `genangan` atau `kontrol`; status peta dibaca server dari `status.json`. `GET /api/instansi/uji-banjir/kec` memberi daftar kecamatan wilayah akun. `GET /api/uji-lapangan/banjir` agregat untuk admin atau pemirsa: bila satu sel per status < 5, semua sel per status ditahan.
+- `foto_id` opsional harus foto non-dummy yang diunggah dari IP yang sama (`foto.ip_hash`) dalam 30 menit terakhir. BATAS: tabel `foto` tidak mencatat akun instansi, jadi pengikatan ke akun yang sama tidak mungkin tanpa migrasi; yang diikat hanya perangkat/IP dan waktu.
+- Formulir mengunggah foto hanya bila kotak "Foto dan lokasinya boleh tayang publik" dicentang; koordinat foto dibulatkan 4 desimal. Unggahan tanpa token Turnstile ditolak bila produksi mewajibkannya.
+- Retensi: baris `uji_banjir` lebih tua dari 12 bulan dihapus cron bersih-bersih (menit 17, `bersihkanUjiBanjir`).
+- Push banjir naik: `push_banjir` menyimpan level terakhir per akun dan kabupaten; putaran pertama sebuah akun hanya mencatat garis dasar.

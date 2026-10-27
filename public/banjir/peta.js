@@ -208,6 +208,8 @@ function renderDaftar() {
   if (S.panel === "posko") return renderDaftarPosko();
   if (S.mode === "riwayat" && Riwayat.R) return Riwayat.daftar();
   const j = S.jalur, g = "grid-template-columns:20px minmax(0,2.6fr) minmax(46px,.8fr) minmax(44px,.7fr) minmax(76px,1.1fr)";
+  /* provinsi dan kabupaten: tabel arsip harian (wilayah.js); tanpa data pipeline jatuh ke tabel lama di bawah */
+  if (j.length < 2 && S.mode !== "riwayat") { const w = Wilayah.html(j); if (w) { $("#rows").innerHTML = w; return terapkanUrut(); } }
   const item = [...new Map((S.fiturWil || []).map(f => [f.properties.kunci, f.properties])).values()].map(p => {
     const a = S.ag[p.kunci], c = j.length >= 2 ? selDekat(...pusat(p.kunci)) : null;
     return {kunci: p.kunci, nama: p.nama, lv: a?.lv || 0, n: a ? a.n[3] * 1e6 + a.n[2] * 1e3 + a.n[1] : 0, awas: a?.n[3] || 0, siaga: a?.n[2] || 0, h3: S.st.kec[p.kunci]?.h3 ?? c?.h3, ps: j.length >= 2 ? Pra72.siaga(p.kunci) : null}; })

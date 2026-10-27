@@ -6,6 +6,11 @@ on:
   schedule:
     - cron: "20 0 * * *"
   workflow_dispatch:
+    inputs:
+      bukti:
+        description: "Bangun ulang bukti DAS hulu + citra Sentinel (bukti_das.py, citra_banjir.py; ±1 jam+, DAS/Hansen berubah setahun sekali)"
+        type: boolean
+        default: false
 
 concurrency:
   group: data
@@ -21,7 +26,10 @@ jobs:
     # cuaca, gunung api, berita + dampak 5 modul (masing-masing sampai 15 menit): tak pernah terbit, berita modul macet sejak 16 Okt.
     timeout-minutes: 120
     steps:
+      # riwayat penuh: prospektif.py memakai git show <commit jangkar> dan git merge-base --is-ancestor
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
@@ -35,6 +43,7 @@ jobs:
           key: banjir-${{ github.run_id }}
           restore-keys: banjir-
 
+      # situs live tak terjangkau: lanjut dengan cache (data lama tercatat); jaga_segar.py/jaga_banjir.py menolak terbit bila basi
       - name: Pulihkan data karhutla terakhir
         uses: actions/cache/restore@v4
         with:
@@ -44,6 +53,7 @@ jobs:
 
       # cache data- bisa hilang (batas 10 GB) atau lebih tua dari yang tayang: tarik dari situs live, jangan dari git (insiden 23 Okt 2026)
       - name: Data tidak lebih tua dari yang tayang
+        continue-on-error: true
         run: python3 scripts/terbit/isi_data.py perlu
 
       # sama dengan data.yml: berkas karhutla yang di-commit tapi tidak dibuat ulang di CI jangan digantikan versi cache
@@ -58,12 +68,28 @@ jobs:
             public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
+      # arsip hari LAMPAU yang di-commit menang atas cache (cache bisa lebih pendek/hilang; pola d6ffb475). indeks.json dari repo juga:
+      # wilayah_hari.py menggabungkannya dengan berkas yang ada, jadi tak menyusut. Hari ini tetap dari cache/wilayah_hari.py.
+      - name: Arsip banjir hari lampau dari repo
+        run: |
+          kini=$(TZ=Asia/Jakarta date +%F)
+          for f in $(git ls-files 'public/banjir/data/hari/*.json'); do
+            b=$(basename "$f" .json)
+            if [ "$b" = indeks ] || [[ "$b" < "$kini" ]]; then git checkout HEAD -- "$f" || echo "::warning::arsip $f tidak dipulihkan"; fi
+          done
+          # log prospektif yang sudah di-commit: dipulihkan bila cache hilang (prospektif.py menolak berkas yang hilang padahal tercatat di git)
+          for f in public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json; do
+            git ls-files --error-unmatch "$f" >/dev/null 2>&1 && [ ! -e "$f" ] && git checkout HEAD -- "$f"
+          done; true
+
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro wilayah_hari jaga_banjir hulu unit_respons; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
-      # Satu ulangan setelah 10 menit sebelum menyerah.
+      # Satu ulangan setelah 10 menit sebelum menyerah. Tetap gagal: run tidak jatuh, hujan.json lama bertahan,
+      # dan jaga_banjir.py menolak terbit (hari_ini bukan hari ini WIB).
       - name: Prakiraan hujan
+        continue-on-error: true
         run: python3 scripts/banjir/hujan.py || { echo "ulang 10 menit lagi"; sleep 600; python3 scripts/banjir/hujan.py; }
 
       # ~1.780 panggilan kuota (349 titik x 51 anggota / 10); sebelum isi-ulang arsip sungai yang menghabiskan sisa kuota.
@@ -84,7 +110,8 @@ jobs:
         run: python3 scripts/banjir/peringatan.py
 
       # ambang 29 tahun dilanjut 6 titik per hari (kuota Open-Meteo 10.000/hari dibagi dengan hujan & rob)
-      - name: Debit sungai GloFAS
+      - name: Debit sungai GloFAS (boleh gagal, data lama bertahan)
+        continue-on-error: true
         env:
           SUNGAI_B_TITIK: "6"
         run: python3 scripts/banjir/sungai.py
@@ -112,25 +139,58 @@ jobs:
         continue-on-error: true
         run: python3 scripts/umum/outlook12.py
 
-      - name: Status kecamatan dan posko
+      - name: Status kecamatan
+        run: python3 scripts/banjir/status.py
+
+      # posko.py merantai cuaca, gunung api, berita (sumber eksternal): gagal tidak menjatuhkan run, berkas lama bertahan
+      - name: Posko dan rantai modul (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/banjir/posko.py
+
+      # Sesudah status.py (butuh status.json + hujan.json + bukti/*.json yang di-commit).
+      - name: Telusur hulu DAS (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/banjir/hulu.py
+
+      # OSM Overpass berubah pelan: tanggal 1 WIB atau bila berkas belum ada. Hasil kosong/separuh tidak menimpa (dijaga skripnya).
+      - name: Unit respons OSM (bulanan, boleh gagal)
+        continue-on-error: true
         run: |
-          python3 scripts/banjir/status.py
-          python3 scripts/banjir/posko.py
+          if [ "$(TZ=Asia/Jakarta date +%d)" = 01 ] || [ ! -f public/banjir/data/unit_respons.json ]; then
+            python3 scripts/banjir/unit_respons.py
+          fi
+
+      # Manual (workflow_dispatch input bukti): HydroBASINS + Hansen + Sentinel, hasil JSON + PNG masuk public/banjir/data/bukti
+      - name: Bukti DAS hulu dan citra satelit (manual)
+        if: ${{ inputs.bukti }}
+        continue-on-error: true
+        run: |
+          python3 scripts/banjir/bukti_das.py
+          python3 scripts/banjir/bukti_das.py subdas
+          python3 scripts/banjir/citra_banjir.py
+          python3 scripts/banjir/hulu.py
 
       # Sesudah status.py: seri harian, kejadian aktif, catatan prospektif (append-only), lalu dampak dan laporan bila skripnya ada.
-      # Boleh gagal: data utama sudah jadi; prospektif tidak menimpa berkas yang rusak atau menyusut.
-      - name: Seri status, kejadian aktif, prospektif, dampak, laporan (boleh gagal)
-        continue-on-error: true
+      # Tiap skrip gagal hanya memberi peringatan (data utama sudah jadi; prospektif tidak menimpa berkas rusak/menyusut),
+      # KECUALI prospektif.py kode 3 (arsip menyusut): itu menggagalkan run, jadi tanpa continue-on-error.
+      - name: Seri status, kejadian aktif, prospektif, dampak, laporan
         run: |
           python3 scripts/banjir/seri_status.py || echo "::warning::seri_status gagal"
           python3 scripts/banjir/kejadian_aktif.py || echo "::warning::kejadian_aktif gagal"
-          python3 scripts/banjir/prospektif.py || echo "::warning::prospektif gagal"
+          for sub in "" skor; do
+            python3 scripts/banjir/prospektif.py $sub || { rc=$?; [ "$rc" = 3 ] && { echo "::error::prospektif $sub: arsip menyusut (kode 3)"; exit 3; }; echo "::warning::prospektif $sub gagal"; }
+          done
           # laporan_banjir membaca keluaran dampak: dilewati bila dampak gagal
           if [ -f scripts/banjir/dampak.py ]; then
             python3 scripts/banjir/dampak.py && { [ ! -f scripts/banjir/laporan_banjir.py ] || python3 scripts/banjir/laporan_banjir.py || echo "::warning::laporan_banjir gagal"; } || echo "::warning::dampak gagal, laporan_banjir dilewati"
           elif [ -f scripts/banjir/laporan_banjir.py ]; then
             python3 scripts/banjir/laporan_banjir.py || echo "::warning::laporan_banjir gagal"
           fi
+
+      # Arsip per hari WIB: sesudah dampak.py (terdampak_jiwa) dan kejadian_aktif.py; hari/** + wilayah_hari.json ikut di-commit
+      - name: Arsip wilayah banjir per hari (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/banjir/wilayah_hari.py
 
       - name: Simpan data banjir untuk jalan berikutnya
         if: always()
@@ -151,11 +211,21 @@ jobs:
           key: citra-${{ github.run_id }}
           restore-keys: citra-
 
+      # Sumber eksternal yang gagal tidak menjatuhkan run, tetapi data banjir basi tidak boleh terbit/ter-commit (pola jaga_segar.py)
+      - name: Tolak data banjir basi
+        run: python3 scripts/banjir/jaga_banjir.py
+
       - name: Terbitkan ke Cloudflare
         env:
           CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
           CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
+          # vonis prospektif + arsip hari terjangkar di git tiap run, juga di jalur token (jalur ini deploy lalu keluar); sebelum checkout FETCH_HEAD yang men-stage
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          JP="public/banjir/data/prospektif.json public/banjir/data/prospektif_skor.json public/banjir/data/hari public/banjir/data/wilayah_hari.json"
+          for f in $JP; do [ -e "$f" ] && git add -f "$f"; done   # satu per satu: git add dengan satu path hilang tidak men-stage apa pun
+          git diff --cached --quiet -- $JP 2>/dev/null || { git commit -q -m "data: prospektif dan arsip hari banjir $(TZ=Asia/Jakarta date +%F)" -- $(for f in $JP; do [ -e "$f" ] && echo "$f"; done) && git pull -q --rebase --autostash && git push -q || echo "::warning::commit prospektif/arsip hari gagal"; }
           git fetch -q origin main && git checkout FETCH_HEAD -- . ':!public/data' ':!public/banjir/data' ':!data/raw'
           if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/isi_data.py buat && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"

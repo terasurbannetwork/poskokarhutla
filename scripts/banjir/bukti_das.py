@@ -7,7 +7,7 @@ Pakai:  python3 scripts/banjir/bukti_das.py            # bangun semua daerah -> 
         python3 scripts/banjir/bukti_das.py uji         # invarian berkas hasil + uji fungsi murni (luring)
 Lalu  python3 scripts/banjir/citra_banjir.py            # menambah citra sebelum-sesudah ke berkas yang sama
 
-JALAN MANUAL / jarang (seperti scripts/data/konsesi_laporan.py), BUKAN bagian banjir.yml harian: DAS dan hutan hilang
+JALAN MANUAL / jarang (seperti scripts/data/konsesi_laporan.py), BUKAN bagian banjir.yml harian (di sana hanya lewat workflow_dispatch input `bukti`, bersama citra_banjir.py): DAS dan hutan hilang
 berubah setahun sekali (rilis Hansen), kejadian DIBI berubah pelan. Satu daerah ~2-6 menit (jaringan GCS), seluruhnya ~30 menit.
 Hasilnya (JSON + PNG) di-commit; data/raw/banjir/das/ (zip HydroBASINS ~70 MB) tidak.
 

@@ -42,6 +42,12 @@ python3 harian.py --tanggal 2026-10-25 --koordalops wa_koordalops.txt --bmkg wa_
 
 Aturan pemilik yang dikunci di kode: status karhutla ikut sisa belum padam data kita; provinsi berstatus Prioritas di website wajib masuk;
 perlu perhatian semua jenis; luas karhutla hanya angka kita; tiap pil berikon; panel setinggi isinya; tanpa titik tengah dan em dash.
+**Halaman banjir** (slide 4, sebelum penutup; sisipan otomatis bila ada data): status banjir per provinsi, kejadian aktif, titik rob Waspada atau lebih,
+hujan 3 hari terbesar, rob 1 sampai 3 hari ke depan. Sumber hanya sistem kita (`public/banjir/data`), dibaca `banjir_data.py`:
+`wilayah_hari.json` bila harinya = hari laporan, kalau tidak `status.json` + `rob.json` + `kejadian_aktif_awal.json` + `prakiraan72.json`.
+Provinsi berstatus Awas atau Siaga wajib masuk (baris tidak dipotong); hari laporan tidak ada di sumber atau tidak ada satu pun Siaga/Awas,
+kejadian aktif, atau rob = halaman tidak dibuat (bukan diisi 0). `terpapar_jiwa` (kolom TERPAPAR) hanya tampil bila sumbernya membawanya. Uji: `python3 banjir_data.py`.
+
 Kawasan tanpa kabupaten (mis. Gunung Arjuno) dipetakan ke kecamatan di `KAWASAN` (harian.py); nama kabupaten WA yang tidak ada di data
 website menghentikan generator dengan pesan jelas.
 

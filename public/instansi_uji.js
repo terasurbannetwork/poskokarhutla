@@ -79,4 +79,77 @@
   }
   const lepas = () => { jalur = {tugas: null, titik: []}; };
   window.UjiLapangan = {bidang, bidangCek, baca, bacaCek, lepas, luasHa, DAFTAR: {TUTUPAN, METODE_LUAS, YA_TIDAK, TINGGI_NYALA, ANGIN_LOKAL, PENYEBAB, BEKAS_BARU}};
+
+  /* ================================================================ uji lapangan banjir (formulir di /uji-lapangan, bagian D)
+     Memanggil GET /api/instansi/uji-banjir/kec, POST /api/instansi/uji-banjir, dan (foto opsional) POST /api/foto. Status peta dihitung server, bukan dikirim. Sampel kontrol tanpa medan genangan. */
+  const UB = {
+    badan(n) {
+      if (n.sampel !== "genangan" && n.sampel !== "kontrol") throw new Error("Pilih sampel.");
+      if (!n.kec) throw new Error("Pilih kecamatan.");
+      if (!Number.isFinite(n.lat) || !Number.isFinite(n.lon)) throw new Error("Ambil lokasi dulu.");
+      const b = {sampel: n.sampel, kec: n.kec, lat: n.lat, lon: n.lon};
+      if (n.sampel === "kontrol") return b;
+      const t = Number(n.tinggi), l = Number(n.lama), h = n.luas === "" || n.luas == null ? null : Number(n.luas);
+      if (!Number.isInteger(t) || t < 1 || t > 1000) throw new Error("Tinggi genangan 1 sampai 1000 cm.");
+      if (!Number.isInteger(l) || l < 0 || l > 720) throw new Error("Lama genang 0 sampai 720 jam.");
+      if (h != null && !(h > 0 && h <= 100000)) throw new Error("Luas lebih dari 0 dan paling banyak 100000 ha.");
+      b.tinggi_cm = t; b.lama_jam = l; if (h != null) b.luas_ha = h; if (n.fotoId) b.foto_id = n.fotoId;
+      return b;
+    },
+    async kirim(n, ambil = (...a) => fetch(...a)) {
+      const r = await ambil("/api/instansi/uji-banjir", {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(UB.badan(n))});
+      return {s: r.status, j: await r.json().catch(() => ({}))};
+    },
+    async kecamatan(ambil = (...a) => fetch(...a)) {
+      const r = await ambil("/api/instansi/uji-banjir/kec", {credentials: "same-origin", headers: {accept: "application/json"}});
+      return {s: r.status, j: await r.json().catch(() => ({}))};
+    },
+    /* foto lewat unggah foto yang ada (POST /api/foto, kategori genangan); kompres = (berkas, sisi) => Blob, bawaan memakai canvas */
+    async foto(berkas, lok, setuju, {ambil = (...a) => fetch(...a), kompres = UB.kompres} = {}) {
+      if (setuju !== true) throw new Error("Centang persetujuan tayang publik untuk mengunggah foto.");
+      const f = new FormData(), r4 = x => Math.round(x * 1e4) / 1e4;
+      f.append("bencana", "banjir"); f.append("kategori", "genangan"); f.append("setuju", "1");
+      f.append("lat", r4(lok.lat)); f.append("lon", r4(lok.lon)); f.append("akurasi", lok.akurasi); f.append("waktu_gps", lok.waktu);
+      f.append("media", await kompres(berkas, 1600), "foto"); f.append("thumb", await kompres(berkas, 480), "thumb");
+      const r = await ambil("/api/foto", {method: "POST", credentials: "same-origin", body: f});
+      return {s: r.status, j: await r.json().catch(() => ({}))};
+    },
+    async kompres(berkas, sisi) {
+      const bmp = await createImageBitmap(berkas), s = Math.min(1, sisi / Math.max(bmp.width, bmp.height)), c = document.createElement("canvas");
+      c.width = Math.round(bmp.width * s); c.height = Math.round(bmp.height * s); c.getContext("2d").drawImage(bmp, 0, 0, c.width, c.height);
+      return new Promise(ok => c.toBlob(w => w?.type === "image/webp" ? ok(w) : c.toBlob(ok, "image/jpeg", .8), "image/webp", .75));
+    },
+  };
+  window.UjiBanjir = UB;
+  function pasangBanjir() {
+    const f = $("ujbForm"); if (!f) return;
+    const st = $("ujbStatus"), lapor = (t, galat) => { st.textContent = t; st.className = galat ? "uj-galat" : "uj-redup"; };
+    let lok = null, fotoId = null;
+    const tampil = () => { for (const e of f.querySelectorAll("[data-ujb-genangan]")) e.hidden = f.sampel.value !== "genangan"; };
+    f.sampel.addEventListener("change", tampil); tampil();
+    UB.kecamatan().then(({s, j}) => {
+      if (s !== 200) return lapor(s === 401 ? "Masuk dulu di Ruang Instansi (/instansi) di peramban ini." : (j.galat || `Daftar kecamatan belum bisa dimuat (${s}).`), true);
+      for (const k of j.kecamatan) { const o = document.createElement("option"); o.value = k.kec; o.textContent = `${k.nama}, ${k.kab} (${k.status})`; f.kec.append(o); }
+    }).catch(() => lapor("Tidak ada sambungan.", true));
+    $("ujbLokasi").addEventListener("click", () => {
+      if (!navigator.geolocation) return lapor("Peramban ini tidak punya GPS.", true);
+      navigator.geolocation.getCurrentPosition(p => { lok = {lat: Math.round(p.coords.latitude * 1e5) / 1e5, lon: Math.round(p.coords.longitude * 1e5) / 1e5, akurasi: Math.round(p.coords.accuracy), waktu: Date.now()}; $("ujbLokasiInfo").textContent = `${lok.lat}, ${lok.lon} (akurasi ${lok.akurasi} m)`; },
+        () => lapor("Lokasi belum terbaca. Beri izin lokasi dan coba lagi.", true), {enableHighAccuracy: true, timeout: 20000});
+    });
+    f.addEventListener("submit", async e => {
+      e.preventDefault(); const tombol = $("ujbKirim"); tombol.disabled = true; lapor("Mengirim");
+      try {
+        if (f.foto.files[0] && f.sampel.value === "genangan" && f.setuju.checked) {
+          if (!lok) throw new Error("Ambil lokasi dulu.");
+          const r = await UB.foto(f.foto.files[0], lok, f.setuju.checked); if (r.s !== 201) throw new Error(r.j.galat || `Foto gagal diunggah (${r.s}). Kosongkan foto atau unggah di /foto.`);
+          fotoId = r.j.id;
+        }
+        const r = await UB.kirim({sampel: f.sampel.value, kec: f.kec.value, lat: lok?.lat, lon: lok?.lon, tinggi: f.tinggi.value, lama: f.lama.value, luas: f.luas.value, fotoId});
+        if (r.s !== 201) throw new Error(r.j.galat || `Gagal (${r.s}).`);
+        lapor(`Tersimpan. Status peta saat ini ${r.j.status_peta}.`); f.reset(); tampil(); fotoId = null;
+      } catch (x) { lapor(x.message, true); }
+      tombol.disabled = false;
+    });
+  }
+  if (typeof document.readyState === "string" && document.readyState === "loading") document.addEventListener("DOMContentLoaded", pasangBanjir); else pasangBanjir();
 })();

@@ -1,5 +1,6 @@
 """Telusur hulu banjir per DAS: dari mana hujan yang mengalir ke daerah langganan/Siaga, dalam persen per sub-DAS hulu.
 
+Dipanggil banjir.yml harian, SESUDAH status.py.
 Pakai:  python3 scripts/banjir/hulu.py        bangun public/banjir/data/hulu.json (sesudah hujan.py dan status.py)
         python3 scripts/banjir/hulu.py uji    self-check luring (contoh sintetis + berkas hasil bila ada)
 
