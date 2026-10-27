@@ -9257,9 +9257,27 @@
 "Perkiraan penduduk terpapar": "Estimated population exposed",
 "perkiraan model": "model estimate",
 "Perkiraan model guncangan, belum diuji terhadap laporan Dirasakan.": "Shaking model estimate, not yet tested against Felt reports.",
-"Simulasikan": "Simulate"
+"Simulasikan": "Simulate",
+"Satelit berikutnya di": "Next satellite over",
+"Lewat (WIB)": "Pass (WIB)",
+"Cakupan": "Coverage",
+"Data siap (WIB)": "Data ready (WIB)",
+"seluruh": "entire",
+"sebagian": "partial",
+"lusa": "day after tomorrow",
+"besok {0}": "tomorrow {0}",
+"lusa {0}": "day after tomorrow {0}",
+"Sumber: elemen orbit CelesTrak (epoch tertua": "Source: CelesTrak orbital elements (oldest epoch",
+"), dihitung di peramban": "), computed in your browser",
+"jeda aman": "safe delay",
+"(diukur 27 Okt 2026); bisa lebih lama bila satelit telat.": "(measured 27 Oct 2026); may take longer if a satellite is late.",
+"Jam satelit paling dekat ke tengah kotak batas wilayah": "Time the satellite is closest to the center of the area's bounding box",
+"seluruh: semua batas wilayah ada di dalam jalur sapuan; sebagian: hanya sebagian wilayah tersapu": "entire: the whole area boundary is inside the swath; partial: only part of the area is swept",
+"Perkiraan data satelit sudah bisa diambil (jam lewat + jeda aman)": "Estimated time the satellite data can be retrieved (pass time + safe delay)"
 },
 "pola": [
+["^(\\p{L}[\\p{L}\\d-]*) lewat ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB, data biasanya siap ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB\\.$", "$1 passes $2 WIB, data usually ready $3 WIB."],
+["^(VIIRS|MODIS) ([\\d.,]+) jam$", "$1 $2 h"],
 [
 "^7 hari terakhir, ([\\d.,]+) dari ([\\d.,]+) titik panas VIIRS di cluster \\(([\\d.,]+)%\\) berada di dalam areal konsesi\\.$",
 "last 7 days, $1 of $2 VIIRS hotspots in clusters ($3%) are inside concession areas."

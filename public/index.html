@@ -2635,7 +2635,7 @@ function renderDaftar() {
   const total = item.length ? `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span>${u === "kl"
       ? `<span class="n">${fmt(jm(i => i.v))}</span><span class="n">${jmN(i => i.kw[5])}</span><span class="n">${jmN(i => i.kw[6])}</span><span class="n">${item.some(i => i.kw[5] == null) ? "–" : fmt(jm(i => i.kw[0] - i.kw[5] - i.kw[6]))}</span>`
       : `<span class="n">${fmt(jm(i => i.v))}</span><span class="n">${jmN(i => i.kw[4])}</span><span class="n">${per ? "–" : jmN(i => i.kw[3])}</span>`}<span></span><span></span></div>` : "";
-  $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + kartuAsap(j[j.length - 1]) : "") + sakelar + kepala + total + (item.length ? item.map((i, n) => {
+  $("#rows").innerHTML = (j.length >= 1 ? trenMini(j[0]) + kartuAsap(j[j.length - 1]) + (window.SatelitLintas ? SatelitLintas.kartu() : "") : "") + sakelar + kepala + total + (item.length ? item.map((i, n) => {
     const [akt, , , nk, fs, j24, j72] = i.kw, lv = i.lv, f = v => v ? fmt(v) : "–";
     const t = j.length === 0 ? trenProv(i.kunci) : null;
     const judul = t ? `${t.th[t.th.length - 1]}: ${fmt(t.ini)} titik, ${(t.ini / t.rata).toFixed(1).replace(".", ",")}× rata-rata ${t.th[0]}–${t.th[t.th.length - 2]}` : "";
@@ -6850,6 +6850,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="databaru.js" data-halaman="karhutla"></script>
 <script src="informasi.js" data-halaman="karhutla"></script>
 <script src="titik_live.js"></script>
+<script src="satelit_lintas.js"></script>
 <script src="citra.js"></script>
 <script src="konsesi.js"></script>
 <script src="aktor.js"></script>

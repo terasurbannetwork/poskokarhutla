@@ -160,3 +160,13 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 |---|---|---|
 | Luas terbakar / Belum padam (ubin Overlay) | Burned area / Not extinguished | grup "Api & respons"; nama lengkap di tooltip ubin: "... per kabupaten (perkiraan satelit)" = "... by regency (satellite estimate)" |
 | Perkiraan satelit, bukan luas resmi. | Satellite estimate, not the official area. | kaki popup kabupaten; legenda: "Perkiraan satelit · selama 1–20 Okt 2026" |
+
+## Kartu "Satelit berikutnya" (panel wilayah karhutla, 27 Okt 2026)
+
+| Indonesia | English | Catatan |
+|---|---|---|
+| Satelit berikutnya di <wilayah> | Next satellite over <area> | kartu di panel provinsi/kabupaten; nama wilayah dan satelit translate=no |
+| <Satelit> lewat <jam> WIB, data biasanya siap <jam> WIB. | <Satellite> passes <time> WIB, data usually ready <time> WIB. | lewat pola di en.json; jam WIB "00.20", penanda hari "besok"/"lusa" = tomorrow / day after tomorrow |
+| Lewat (WIB) / Satelit / Cakupan / Data siap (WIB) | Pass (WIB) / Satellite / Coverage / Data ready (WIB) | kepala tabel 5 lintasan; satu istilah "Data siap" = "Data ready" di seluruh kartu (bukan "data masuk"/"data ada"); "Lewat" jam satelit paling dekat ke tengah kotak batas wilayah |
+| seluruh / sebagian (cakupan) | entire / partial | seluruh = semua simpul batas wilayah di dalam jalur sapuan; sebagian = hanya sebagian wilayah tersapu (lintasan tanpa satu pun simpul di jalur tidak ditampilkan) |
+| jeda aman VIIRS 3 jam | safe delay VIIRS 3 h | jeda dibaca dari data/tle.json, tanpa "±"; pola "VIIRS\|MODIS N jam" -> "N h"; kaki: "(diukur 27 Okt 2026); bisa lebih lama bila satelit telat." |

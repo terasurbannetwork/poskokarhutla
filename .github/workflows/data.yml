@@ -455,6 +455,15 @@ jobs:
         continue-on-error: true
         run: python3 scripts/data/asap.py
 
+      # elemen orbit (TLE) 4 satelit dari CelesTrak -> public/data/tle.json, dibaca layar untuk "Satelit berikutnya melintas pukul ...".
+      # Berkas bergulir lewat cache data- (BUKAN di daftar git checkout HEAD) dan terbit bersama public/data; gagal = tle.json lama dibiarkan.
+      - name: Elemen orbit satelit TLE (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 3
+        run: |
+          python3 scripts/data/tle.py uji || { echo "::error title=TLE uji merah::tle.py uji gagal; tle.json lama dibiarkan"; exit 1; }
+          python3 scripts/data/tle.py || { echo "::warning title=TLE gagal::CelesTrak tidak terjangkau; tle.json lama dibiarkan"; exit 1; }
+
       - name: Data pelengkap (boleh gagal, data lama tetap dipakai)
         continue-on-error: true
         run: |
