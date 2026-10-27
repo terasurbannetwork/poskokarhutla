@@ -33,7 +33,7 @@ Tiap fitur kabupaten = maksimum atas sel hujan kabupaten itu (sama cara aturan m
 | anteseden | `api85`, `api90`, `api95` indeks hujan anteseden API_k = k API + hujan, sampai hari e-1 | ERA5, k 0,85 / 0,90 / 0,95 |
 | tanah | `sm` lengas tanah 7-28 cm | ERA5 `soil_moisture_7_to_28cm_mean` |
 | musim | `bulan_sin`, `bulan_cos` | tanggal |
-| statis | `frek_dibi` laju hari kejadian DIBI kabupaten | DIBI, tahun latih saja; baris latih memakai leave-one-year-out agar tidak melihat label sendiri |
+| statis | `frek_dibi` laju hari kejadian DIBI kabupaten | DIBI, EKSPANSIF: baris tahun latih y memakai hanya tahun latih < y (2016 = laju nasional sampel 2008-2015), dihaluskan 30 hari; validasi/uji memakai semua tahun latih. Nilai baris tahun y tidak bergantung pada label tahun y (asersi di `uji`) |
 | statis | `bahaya_b` indeks bahaya banjir InaRISK (maksimum kecamatan sampel) | `public/banjir/data/bahaya.json` (`bahaya.py`, sama dengan `status.py`) |
 | aturan | `level_aturan` 0..3 | `status.level_banjir` dengan konstanta berlaku (model = aturan + koreksi) |
 
@@ -58,26 +58,43 @@ AUC, Brier, Brier skill vs klimatologi, reliabilitas 10 bin; pada ambang yang me
 berpasangan model vs aturan (blok yang sama untuk keduanya), persentil 2,5 dan 97,5, biji 11. Ambang alarm tetap pada tiap ulangan
 (ditetapkan pada seluruh periode).
 
-## 7. Kriteria lulus (DIBEKUKAN, sidik `b369bedf1b3ca622`)
+## 7. Kriteria lulus (DIBEKUKAN, sidik `c890cedf7b4ca4dd`)
 
-Dibekukan di kode (`KRITERIA`, `sidik_kriteria()`); `uji` menegaskan sidik di atas tercantum di berkas ini, dan `buka` menolak bila
-sidik kriteria, kandidat, `model_kab.py`, `uji_balik.py`, `status.py` atau `dibi_tanggal.json` berubah sejak `latih`. Lulus bila SEMUA:
+Dibekukan di kode (`KRITERIA`, `sidik_kriteria()`); `uji` menegaskan sidik di atas tercantum di berkas ini. `buka` menolak bila sidik
+penuh berubah sejak `latih`: sidik penuh = kriteria + kandidat (pohon, Platt model/LR/klimatologi, pembanding, daftar sel) + isi
+`model_kab.py`, `uji_balik.py`, `status.py`, `umum.py`, `scripts/sebaran/gbdt.py`, `bahaya.json`, `dibi_tanggal.json` + manifest cache
+ERA5 (nama, ukuran, sha256 per sel). Kalibrasi setara: model, regresi logistik dan klimatologi sama-sama dikalibrasi Platt di validasi.
+Lulus bila SEMUA:
 
-1. batas bawah CI95 selisih ETS (model - aturan) > 0 pada >= Waspada;
-2. batas bawah CI95 selisih ETS (model - aturan) > 0 pada >= Siaga;
-3. Brier skill model vs klimatologi > 0 (titik);
-4. penjaga (usulan pengerja, pemilik boleh mencoret sebelum mengunci): AUC model >= AUC regresi logistik dan Brier model <= Brier
-   regresi logistik (titik). Model yang tidak mengalahkan pembanding sederhana tidak layak dipakai.
+1. batas bawah CI95 dETS (model - aturan) > 0 pada >= Waspada DAN >= Siaga;
+2. batas bawah CI95 dETS (model - regresi logistik) > 0 pada Waspada DAN Siaga;
+3. batas bawah CI95 dETS (model - klimatologi) > 0 pada Waspada DAN Siaga;
+4. batas bawah CI95 Brier skill model vs klimatologi (terkalibrasi) > 0;
+5. penjaga titik: AUC model >= AUC regresi logistik.
 
-Lulus berarti kandidat boleh dipasang SEBAGAI pelengkap berlabel (status resmi tidak ditimpa), bukan menggantikan `status.py`.
-Tidak lulus: aturan tetap. Uji dibuka SEKALI (`uji.json` menjadi penanda); latih ulang = eksperimen baru dengan periode uji baru.
+Seri skor pada ambang alarm dipecah acak berbiji tetap 11 (jumlah seri dilaporkan di keluaran). Lulus berarti kandidat boleh dipasang
+SEBAGAI pelengkap berlabel (status resmi tidak ditimpa). Tidak lulus: aturan tetap. Uji dibuka SEKALI (`uji.json` = penanda); sesudah
+`buka`, hasil + sidik ditambahkan otomatis ke §10 berkas ini (ikut git). Latih ulang = eksperimen baru dengan periode uji baru.
 
 ## 8. Hasil validasi 2022-2023
 
-(Diisi dari `latih.json` setelah `latih`.)
+BELUM ADA untuk sampel penuh. Per 27 Okt 2026 malam baru 25 dari 104 sel ERA5 ter-cache (kuota harian Open-Meteo habis), jadi hanya
+10 kabupaten yang lengkap. `MODEL_KAB_SEBAGIAN=1 python3 scripts/banjir/model_kab.py latih` menjalankan pipa pada 10 kabupaten itu
+(21.720 baris latih, 145 kejadian; 7.300 baris validasi, 27 kejadian) ke `data/raw/banjir/model_kab_sebagian/`: HANYA pratinjau pipa,
+terlalu tipis untuk vonis (CI lebar, `buka` menolak mode ini). Setelah kuota pulih (00.00 UTC = 07.00 WIB):
+`python3 scripts/banjir/model_kab.py ambil` (lanjut dari cache) lalu `python3 scripts/banjir/model_kab.py latih` (perkiraan 5-10 menit).
 
 ## 9. Ranjau
 
 - `ambil_cuaca` mengambil 5 sel per panggilan dengan jeda 330 dtk; bobot ~79 per sel. 104 sel = ~8.216 bobot (harian 10.000).
 - `gbdt.py` stdlib: sekitar satu detik per pohon pada 80 ribu baris, jadi `latih` memakan puluhan menit.
+- Kuota nyata lebih boros dari taksiran 79/sel: 25 sel (5 panggilan x 5 sel) sudah menabrak batas jam, dan batas harian habis sebelum 30 sel
+  (kuota dibagi proses lain di jaringan yang sama). Satu panggilan 5 sel x 10 tahun per jam bisa 15-55 menit (server lambat).
+  Beberapa proses `ambil` paralel pada irisan sel berbeda mempercepat, tetapi menghabiskan kuota jam lebih cepat.
 - Python 3.9 di mesin ini: tanpa `match` dan `X | Y`.
+- Keterbatasan statistik (diakui, tidak mengubah kriteria): (a) bootstrap blok kab x tahun tidak menangkap korelasi ANTAR-kabupaten pada
+  hari/minggu yang sama (hujan besar satu sistem cuaca), jadi CI cenderung terlalu sempit; sensitivitas blok pulau x minggu dilaporkan
+  di keluaran (`d_ets_model_vs_aturan_pulau_minggu`) tetapi tidak menentukan vonis. (b) `pers_h3` memuat dirinya sendiri: batas persentil
+  sel dihitung dari H3 hari latih, termasuk hari yang sedang dinilai pada baris latih (tidak pada validasi/uji). (c) `bahaya_b` InaRISK
+  belum terbukti bebas dari DIBI (InaRISK disusun dari data kejadian historis); bila ya, model mewarisi sebagian label. (d) laju
+  `frek_dibi` ekspansif tahun pertama latih memakai DIBI 2008-2015 yang lebih kurang lengkap dari tahun-tahun belakangan.

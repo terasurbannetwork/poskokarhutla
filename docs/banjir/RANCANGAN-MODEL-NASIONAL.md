@@ -21,6 +21,22 @@ Semua opsi dicoba, bertahap. Tiap lapisan hanya tampil kalau mengalahkan pemband
 `model_kab.py` mode `buka` (uji 2024-2025) dijalankan sekali, SESUDAH kriteria di
 `scripts/banjir/RISET-MODEL-KAB.md` di-commit.
 
+## Status 28 Okt 2026
+
+- N1: `scripts/banjir/genangan_nasional.py`, katalog 142.545 item, 34 pasangan kabupaten-hari terukur, `public/banjir/data/genangan_nasional.json`
+  (`boleh_tampil`: luas ya, bangunan tidak). Demak 14 Mar 2024: 10.359 ha tergenang baru, 2.730-5.988 bangunan, sedangkan DIBI 131.703 jiwa
+  terdampak. Radar buta di permukiman.
+- N2: grid bangunan 110 m (`scripts/umum/bangunan.py`, `data/terkunci/bangunan/halus_<prov>.json`) untuk prov 63, 33, 13.
+- N3: `scripts/banjir/model_kab.py`, kriteria dikunci (sidik `c890cedf7b4ca4dd`, `RISET-MODEL-KAB.md` §7) setelah tinjauan validasi-model.
+  Menunggu ERA5 lengkap (79 dari 104 sel, kuota Open-Meteo), lalu `latih`, lalu `buka` sekali.
+- FwDET (`scripts/banjir/kedalaman_genangan.py`, eksperimen, keluaran hanya di `data/raw/banjir/kedalaman/`): status **belum teruji**.
+  Di Jateng (n=5, satu di antaranya Kota Semarang tanpa deteksi) median galat log10 turun dari 1,66 ke 1,34 setelah FwDET, tetapi tetap
+  sekitar 22 kali di bawah jiwa terdampak DIBI, korelasi peringkat Spearman -0,1 (tanpa kemampuan membedakan kabupaten), dan penurunan
+  bergantung pada satu kabupaten (Grobogan). Hasil Jateng dilihat sebagian dengan parameter awal sebelum PARAM final dikunci, sehingga bukan
+  uji buta, dan Sumbar tidak punya pasangan sah, jadi kriteria dua wilayah tidak terpenuhi. Parameter terpilih di tepi kisi. Kedalaman median
+  0,0 m: derau DSM GLO-30 lebih besar dari kedalaman. Banjir kota (Semarang, Banjarmasin) tak terlihat sama sekali: itu wilayah simulasi 2D.
+  Perbaikan berikutnya butuh DEM bare-earth (DEMNAS 8 m) dan kebenaran lapangan per area, bukan DIBI harian.
+
 ## Sumber luar yang dinilai
 
 - **Google Flood Forecasting API**: gratis, CC BY 4.0, prakiraan banjir sungai 7 hari (seperti Flood Hub), plus
