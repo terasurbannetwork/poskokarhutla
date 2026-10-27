@@ -27,7 +27,7 @@ satu api bisa di luarnya). Deteksi insiden dihitung dengan filter SAMA PERSIS (s
 dari `det_t` (waktu deteksi terakhir yang sudah dihitung), jadi tak dihitung dua kali; insiden baru/dari status lama mulai dari 48 jam yang tersedia dan
 `dasar` menyebut "dihitung sejak ...". Penyaring tahun: >= 2020 (2018-19 SiPongi tak mencatat Papua dkk.), SiPongi >= 50 ha, rasio ha/(deteksi x 14,0625) >= 0,01;
 provinsi dengan < 5 tahun, median rasio di luar [0,05; 1], atau p75/p25 > 3 jatuh ke median nasional. Pembanding luas_satelit.json (GWIS MCD64A1) hanya informasi.
-S-NPP berhenti didistribusikan 1 Nov 2026: sensor acuan putaran = "N" bila ada deteksi N dalam 24 jam terakhir, selain itu "N20" dibagi RASIO_N20_N (setara N); akumulasi tetap lewat det_t sehingga pergantian tak menggandakan.
+S-NPP berhenti didistribusikan 1 Nov 2026: sensor acuan putaran = "N" bila ada deteksi N dalam 24 jam terakhir, selain itu "N20" dibagi RASIO_N20_N (= firms_sumber.RASIO_N20_N_LOKAL 0,89, median jendela 3x3 sel 0,05 derajat, IQR 0,72-1,07: satuan yang sama dengan deteksi per insiden; setara N); akumulasi tetap lewat det_t sehingga pergantian tak menggandakan.
 ASUMSI tak teruji: rasio musiman SiPongi/deteksi berlaku untuk satu api; SiPongi sendiri indikasi dari titik panas, bukan citra. Perkiraan perencanaan, bukan luas
 terverifikasi (Fase 3.5, dNBR).
 `luas_aktif` = piksel VIIRS unik berumur <= 12 jam, dihitung per sensor lalu diambil terbanyak, x 14,0625 ha, TANPA faktor: batas bawah luas piksel menyala (tepi sapuan lebih besar), bukan luas terbakar. Hanya-MODIS = tidak diisi.
@@ -46,6 +46,7 @@ import collections, datetime as dt, json, math, os, statistics, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(__file__))
 from wilayah import AKAR  # noqa: E402
+from firms_sumber import RASIO_N20_N_LOKAL as RASIO_N20_N, RASIO_N20_N_LOKAL_IQR, rasio_teks  # noqa: E402  (rasio terukur per satuan jendela lokal; laporan.py memakai RASIO_N20_N harian)
 from kendala import Indeks, JALAN_KELAS, km  # noqa: E402  (indeks ruang jalan/sungai/kanal yang sama dengan kendala.json)
 
 DATA = os.environ.get("INSIDEN_DATA") or os.path.join(AKAR, "public/data")
@@ -76,14 +77,15 @@ MIN_PX = 30          # tahun dengan < 30 piksel VIIRS (421 ha) terlalu bising un
 N_MIN = 5            # tahun terpakai minimum agar provinsi memakai faktornya sendiri (asumsi platform)
 ARAH_NISBAH, ARAH_MIN_TITIK = 0.25, 4   # tumbuh/menyusut bila selisih >= 25% kemarin DAN max(n24, kemarin) >= 4 titik VIIRS; selain itu "sedikit" (asumsi platform)
 TAHUN_MIN, RESMI_MIN_HA, RASIO_MIN = 2020, 50, 0.01   # 2018-19: SiPongi tak mencatat Papua dkk. (artefak); SiPongi < 50 ha atau rasio < 0,01 = bising
-# S-NPP ("N") berhenti didistribusikan 1 Nov 2026. Sesudahnya acuan hitung deteksi = "N20" dikonversi ke setara N dengan membagi RASIO_N20_N.
-# Terukur 22 Okt 2026 pada hotspot.json lokal (7 hari, 6-12 Okt, keyakinan nominal/tinggi): N 68.753, N20 61.388 -> 0,893 (rasio harian median 0,997,
-# rentang 0,64-1,17 pada 8 hari >50 deteksi). ASUMSI: deteksi per lintasan kedua satelit setara (orbit satu rangkaian JPSS, selisih ~50 menit).
-RASIO_N20_N = 0.89
+# S-NPP ("N") berhenti didistribusikan 1 Nov 2026 (firms_sumber.SNPP_AKHIR). Sesudahnya acuan hitung deteksi = "N20" dikonversi ke setara N dengan membagi RASIO_N20_N.
+# Rasio dan selangnya diukur dan dipilih scripts/data/rasio_n20_n.py pada jendela lokal 3x3 sel 0,05 derajat (insiden = sekumpulan kompleks berdekatan, bukan total nasional): median jendela
+# Oktober 0,83 (4.458 jendela ber-N >= 50, 12 hari laporan tanpa celah sensor) digeser ke level jangka panjang (x1,07 = harian 0,97 / Oktober 0,91 dari Agu+Sep) = 0,89, IQR 0,72-1,07.
+# Angka nasional harian (0,97) milik laporan.py. Keduanya terpusat di firms_sumber.py (RASIO_DASAR menyimpan masukannya).
+# ASUMSI: deteksi per lintasan kedua satelit setara (orbit satu rangkaian JPSS, selisih ~50 menit). Satu insiden bisa meleset sebesar IQR itu.
 RASIO_BATAS, KUARTIL_MAKS = (0.05, 1.0), 3.0          # provinsi di luar ini jatuh ke nasional
 PARAMETER = {"jarak_km": JARAK_KM, "padam_hari": PADAM_HARI, "simpan_hari": SIMPAN_HARI, "buka_hari": BUKA_HARI, "riwayat_maks": RIWAYAT_MAKS,
              "segar_jam": SEGAR_JAM, "radius_m": RADIUS_M, "piksel_ha": PIKSEL_HA, "min_px": MIN_PX, "n_min": N_MIN,
-             "arah": {"nisbah": ARAH_NISBAH, "min_titik": ARAH_MIN_TITIK}, "rasio_n20_n": RASIO_N20_N, "buka_gambut_hari": BUKA_GAMBUT_HARI, "tahun_min": TAHUN_MIN}
+             "arah": {"nisbah": ARAH_NISBAH, "min_titik": ARAH_MIN_TITIK}, "rasio_n20_n": RASIO_N20_N, "rasio_n20_n_iqr": list(RASIO_N20_N_LOKAL_IQR), "buka_gambut_hari": BUKA_GAMBUT_HARI, "tahun_min": TAHUN_MIN}
 
 
 # ---- waktu ----
@@ -367,7 +369,7 @@ def terapkan(r, cs, uk, kini, fk=None):
         lengkap = r.get("det_sejak") and baca_t(r["awal"]) >= baca_t(r["det_sejak"])
         r["luas_koreksi"] = {"ha": round(n * f["faktor"], 1), "min": round(n * f["p10"], 1), "maks": round(n * f["p90"], 1), "faktor": round(f["faktor"], 2),
                              "dasar": "%g deteksi setara S-NPP (nominal/tinggi)%s x %.2f ha/deteksi, %s; %s" % (
-                                 round(n, 1), "; acuan N20 (S-NPP tak terdeteksi), rasio N20/N %.2f (harian 0,64-1,17)" % RASIO_N20_N if r.get("det_n20") else "", f["faktor"], "sejak awal api" if lengkap else "dihitung sejak %sZ, deteksi sebelumnya tak tercatat" % (r.get("det_sejak") or "?")[5:16].replace("T", " "), f["dasar"])}
+                                 round(n, 1), "; acuan N20 (S-NPP tak terdeteksi), rasio N20/N " + rasio_teks(True) if r.get("det_n20") else "", f["faktor"], "sejak awal api" if lengkap else "dihitung sejak %sZ, deteksi sebelumnya tak tercatat" % (r.get("det_sejak") or "?")[5:16].replace("T", " "), f["dasar"])}
     ak = [x["luas_aktif"] for x in u if "luas_aktif" in x]
     if ak:
         ha = round(sum(x["ha"] for x in ak), 1)
@@ -649,9 +651,9 @@ def uji():
     t1 = t0 + dt.timedelta(hours=30)
     b20 = [(-3.0, 112.0, -2.0, "N20", 9.0, 1)] * 2 + [(-3.0, 112.001, -29.0, "N20", 9.0, 1)]   # satu N20 lebih tua dari N terakhir (t0-1 jam), dua lebih baru
     langkah(ins, [c], [(a, b, j - 30, *r) for a, b, j, *r in hb2] + b20, t1, t1, fk, m)
-    # hb2: 6 N sudah dihitung (kumulatif 6); N20 sebelum N terakhir (t0+2 jam = hb2 N terakhir) tak dihitung; 2 N20 baru -> +2/0,89
+    # hb2: 6 N sudah dihitung (kumulatif 6); N20 sebelum N terakhir (t0+2 jam = hb2 N terakhir) tak dihitung; 2 N20 baru -> +2/RASIO_N20_N (lokal)
     assert abs(ins[iid]["deteksi"] - (6 + 2 / RASIO_N20_N)) < 0.01 and ins[iid]["det_n20"] is True, ins[iid]
-    assert "acuan N20 (S-NPP tak terdeteksi)" in ins[iid]["luas_koreksi"]["dasar"] and "0.89" in ins[iid]["luas_koreksi"]["dasar"] and "0,64-1,17" in ins[iid]["luas_koreksi"]["dasar"]
+    assert "acuan N20 (S-NPP tak terdeteksi)" in ins[iid]["luas_koreksi"]["dasar"] and "rasio N20/N 0,89 (median jendela 3x3, IQR 0,72-1,07)" in ins[iid]["luas_koreksi"]["dasar"]
     langkah(ins, [c], [(a, b, j - 30, *r) for a, b, j, *r in hb2] + b20, t1, t1, fk, m)   # ulang: tetap
     assert abs(ins[iid]["deteksi"] - (6 + 2 / RASIO_N20_N)) < 0.01
     baru = langkah({}, [_kotak("K1", -3.0, 112.0)], [(-3.0, 112.0, -2.0, "N20", 9.0, 1)] * 4 + [(-3.0, 112.0, -2.0, "N", 9.0, 0)], t0, t0, fk, m)["K1"]   # N berkeyakinan rendah bukan acuan

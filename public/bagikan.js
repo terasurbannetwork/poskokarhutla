@@ -255,7 +255,7 @@ const Bagikan = {
     const kpi = [
       {l: "Piksel api 24 jam", s: "Piksel 24 j", v: fmt(p.px24), ket: `± ${fmt(Math.round(p.px24 * 14))} ha garis api aktif`, ks: `± ${fmt(Math.round(p.px24 * 14))} ha`, w: this.LV[3]},
       {l: "Hari menyala", s: "Hari menyala", v: fmt(p.hari), ket: "dalam 7 hari terakhir", ks: "7 hari terakhir", w: this.LV[2]},
-      {l: "Luas indikatif", s: "Luas", v: fmt(Math.round(p.luas)) + " ha", ket: `rentang ${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`, ks: "indikatif", w: this.LV[2]},
+      {l: "Luas indikatif", s: "Luas", v: fmt(Math.round(p.luas)) + " ha", ket: `rentang ${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha${p.snpp_proksi > 0 ? ", perkiraan" : ""}`, ks: p.snpp_proksi > 0 ? "perkiraan" : "indikatif", w: this.LV[2]},   /* snpp_proksi: kompleks memuat titik S-NPP warisan, ukuran pikselnya diperkirakan */
       {l: "Bahaya cuaca (FWI)", s: "FWI", v: p.cuaca ? fmt(p.fwi) : "–", ket: p.cuaca ? "bahaya cuaca " + FWI_KELAS[kf][0].toLowerCase() : "tidak tersedia", ks: p.cuaca ? FWI_KELAS[kf][0].toLowerCase() : "–", w: this.LV[kf]},
     ];
     const rows = [...dk.slice(0, 4).map(d => ({n: d.nama, v: Math.round(d.jarak), t: fmt(Math.round(d.jarak)) + " km", w: this.LV[1]})), ...(bp ? [{n: bp.nama, v: Math.round(bp.jarak), t: fmt(Math.round(bp.jarak)) + " km", w: this.LV[0]}] : [])];
@@ -264,7 +264,7 @@ const Bagikan = {
       ...(p.cuaca ? [{lv: kf, t: `Cuaca: suhu ${fmt(p.t)} °C, kelembapan ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam.`}] : []),
       /* pola lokasi (watak_kluster.py `wt`, VIIRS 2012-2025 jendela ~16 km); bagian yang datanya kosong tidak ditulis */
       ...(p.wt ? [{lv: p.wt.lg || p.wt.k >= 2 ? 2 : 1, t: [p.wt.lg ? `Lokasi langganan: terbakar ${p.wt.a} dari ${p.wt.n} tahun` : p.wt.a ? `Terbakar ${p.wt.a} dari ${p.wt.n} tahun` : `Tidak pernah terbakar besar dalam ${p.wt.n} tahun terakhir`,
-        p.wt.rs >= 1 ? `seminggu ini ${fmt(p.wt.rs >= 10 ? Math.round(p.wt.rs) : p.wt.rs)} kali rata-rata setahun` : null, p.wt.md ? `dulu rata-rata ${fmt(p.wt.md)} hari` : null,
+        p.wt.rs >= 1 ? `seminggu ini ${p.wt.n7_proksi ? "±" : ""}${fmt(p.wt.rs >= 10 ? Math.round(p.wt.rs) : p.wt.rs)} kali rata-rata setahun${p.wt.n7_proksi ? " (setara S-NPP, sebagian NOAA-20)" : ""}` : null, p.wt.md ? `dulu rata-rata ${fmt(p.wt.md)} hari` : null,
         p.wt.akhir ? `musim sampai ${new Date(p.wt.akhir + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"})}` : null,
         p.wt.k >= 2 ? "sering kambuh, mop-up 14 hari" : null].filter(Boolean).join(", ") + "."}] : [])];
     return {tpl: "kompleks", prov: p.prov, lv: p.level, label: `Cluster ${p.id}`, judul: `${p.kec}, ${p.kab}`,

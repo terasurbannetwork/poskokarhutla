@@ -3138,7 +3138,7 @@ const Laci = {
       <div class="bd" style="display:grid;gap:10px">
       ${p.teramati ? "" : `<div class="sop" style="border-color:var(--ink2);margin:0"><b>Tidak terdeteksi ${fmt(p.jam_sejak)} jam terakhir.</b> Bisa sudah tidak menyala, bisa tertutup awan atau asap. ${p.dc > 350 ? "Gambut sangat kering (DC > 350): bara bawah permukaan mungkin masih menyala, wajib ground-check." : "Pastikan dengan ground-check sebelum dianggap tidak menyala."}</div>`}
       ${lipat("Api saat ini", `<div class="kv"><div><b>${fmt(p.px24)}</b><span>piksel aktif 24 jam</span></div><div><b>${fmt(p.hari)}</b><span>hari menyala</span></div><div><b>${vs}</b><span>deteksi vs kemarin</span></div></div>
-        <table class="tb2"><tbody>${baris("Luas indikatif", `${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`)}${baris("Deteksi VIIRS (7 hari)", fmt(p.n))}${baris("Daya radiasi api (FRP)", fmt(Math.round(p.frp)) + " MW")}
+        <table class="tb2"><tbody>${baris("Luas indikatif" + (p.snpp_proksi > 0 ? `<small style="display:block;color:var(--ink2)" title="${fmt(p.snpp_proksi)} titik S-NPP warisan memakai ukuran piksel perkiraan; garis luar dan luas cluster ini perkiraan">luas perkiraan (ukuran piksel S-NPP diperkirakan)</small>` : ""), `${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`)}${baris("Deteksi VIIRS (7 hari)", fmt(p.n))}${baris("Daya radiasi api (FRP)", fmt(Math.round(p.frp)) + " MW")}
           ${baris("Pertama terdeteksi", jamWIB(p.awal))}${baris("Terakhir terdeteksi", `${jamWIB(p.akhir)} · ${fmt(Math.round(jamLalu * 10) / 10)} jam lalu`)}</tbody></table>`)}
       ${lipat("Penjelasan status", (() => {
         /* dua bahan status: seberapa besar apinya + seberapa mendukung cuacanya; meteran bertingkat supaya terbaca orang awam */
@@ -3252,7 +3252,7 @@ const Tabel = {
       <td class="kp-ab">${esc(namaProv(p.prov))}</td><td class="kp-kab">${esc(p.kab)}</td><td class="kp-ab">${esc(p.kec)}</td>
       <td class="n num">${fmt(p.px24)}</td>
       <td class="n"><span class="kp-hr h${p.hari >= 7 ? 3 : p.hari >= 3 ? 2 : 1}">${fmt(p.hari)} hari</span></td>
-      <td class="n num"><b>${fmt(p.n)}</b></td><td class="n num">${fmt(p.luas)}</td>
+      <td class="n num"><b>${fmt(p.n)}</b></td><td class="n num">${p.snpp_proksi > 0 ? `<span title="luas perkiraan (ukuran piksel S-NPP diperkirakan)">~</span>` : ""}${fmt(p.luas)}</td>
       <td class="n"><span class="kp-fwi f${kelasFWI(p.fwi)}" title="${FWI_KELAS[kelasFWI(p.fwi)][0]}">${fmt(p.fwi)}</span></td><td class="n num kp-ab">${fmt(p.dc)}</td><td class="n num">${p.wt?.rs != null ? (p.wt.rs >= 10 ? `<b>${fmt(Math.round(p.wt.rs))}×</b>` : fmt(p.wt.rs) + "×") : "–"}</td></tr>`).join("")
       : `<tr><td colspan="12" class="kosong">Tidak ada cluster yang cocok. Kosongkan kotak cari untuk melihat semua.</td></tr>`;
     const sum = k => r.reduce((a, p) => a + (p[k] || 0), 0);
@@ -4590,7 +4590,7 @@ const Berita = {
     this.dlg(`${esc(c.kab.split("|")[1])}: api prioritas tanpa berita`, `${esc(namaProv(c.prov))}, ${fmt(c.n_prioritas)} cluster prioritas, ± ${rb(c.luas_ha)} ha, tidak ada berita 7 hari terakhir`,
       `<p style="margin:0 0 10px">Cluster ini aktif menurut satelit, tetapi belum muncul di berita. Bisa berarti api jauh dari permukiman, belum dilaporkan, atau luput dari perhatian. Layak dicek lapangan dan disampaikan ke publik.</p>
       <div class="tw"><table><thead><tr><th>Cluster</th><th>Kecamatan</th><th class="n">Luas</th><th class="n">Titik 24 jam</th><th class="n">FWI</th><th class="n">Hari aktif</th><th></th></tr></thead><tbody>
-      ${ks.map(p => `<tr><td><b>${p.id}</b></td><td>${esc(p.kec || "–")}</td><td class="n num">${rb(p.luas || 0)} ha</td><td class="n num">${fmt(p.n24 || 0)}</td><td class="n num">${p.fwi == null ? "–" : fmt(Math.round(p.fwi))}</td><td class="n num">${fmt(p.hari || 0)}</td><td><button class="btn sec" data-kom="${p.id}">Buka di peta</button></td></tr>`).join("") || `<tr><td colspan="7">Data cluster tidak ditemukan.</td></tr>`}</tbody></table></div>`); },
+      ${ks.map(p => `<tr><td><b>${p.id}</b></td><td>${esc(p.kec || "–")}</td><td class="n num">${p.snpp_proksi > 0 ? `<span title="luas perkiraan (ukuran piksel S-NPP diperkirakan)">~</span>` : ""}${rb(p.luas || 0)} ha</td><td class="n num">${fmt(p.n24 || 0)}</td><td class="n num">${p.fwi == null ? "–" : fmt(Math.round(p.fwi))}</td><td class="n num">${fmt(p.hari || 0)}</td><td><button class="btn sec" data-kom="${p.id}">Buka di peta</button></td></tr>`).join("") || `<tr><td colspan="7">Data cluster tidak ditemukan.</td></tr>`}</tbody></table></div>`); },
   /* lonjakan: berita provinsi itu pada hari lonjakan + 21 hari volume */
   rinciLonj(i) { const x = this._lonj[i], D = this.d, A = D.artikel.filter(a => a.prov?.includes(x.prov)), hari = Object.keys(D.harian).sort().slice(-21);
     const per = Object.fromEntries(hari.map(t => [t, 0])); A.forEach(a => { const t = a.tgl.slice(0, 10); if (t in per) per[t]++; });

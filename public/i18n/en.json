@@ -9273,7 +9273,13 @@
 "(diukur 27 Okt 2026); bisa lebih lama bila satelit telat.": "(measured 27 Oct 2026); may take longer if a satellite is late.",
 "Jam satelit paling dekat ke tengah kotak batas wilayah": "Time the satellite is closest to the center of the area's bounding box",
 "seluruh: semua batas wilayah ada di dalam jalur sapuan; sebagian: hanya sebagian wilayah tersapu": "entire: the whole area boundary is inside the swath; partial: only part of the area is swept",
-"Perkiraan data satelit sudah bisa diambil (jam lewat + jeda aman)": "Estimated time the satellite data can be retrieved (pass time + safe delay)"
+"Perkiraan data satelit sudah bisa diambil (jam lewat + jeda aman)": "Estimated time the satellite data can be retrieved (pass time + safe delay)",
+"Seminggu ini {0} titik S-NPP di sekitar sini, {1} kali rata-rata setahun ({2} titik {3}–{4}): di luar kebiasaan.": "This week {0} S-NPP hotspots around here, {1} times the yearly average ({2} hotspots {3}–{4}): unusual.",
+"Seminggu ini ±{0} titik (setara S-NPP, sebagian dari NOAA{1}) di sekitar sini, {2} kali rata-rata setahun ({3} titik {4}–{5}): di luar kebiasaan.": "This week ±{0} hotspots (S-NPP equivalent, partly from NOAA-20) around here, {2} times the yearly average ({3} hotspots {4}–{5}): unusual.",
+"luas perkiraan (ukuran piksel S-NPP diperkirakan)": "estimated area (S-NPP pixel size approximated)",
+"{0} titik S-NPP warisan memakai ukuran piksel perkiraan; garis luar dan luas cluster ini perkiraan": "{0} legacy S-NPP hotspots use an estimated pixel size; this cluster's outline and area are estimates",
+"perkiraan": "estimate",
+"rentang {0}–{1} ha, perkiraan": "range {0}–{1} ha, estimate"
 },
 "pola": [
 ["^(\\p{L}[\\p{L}\\d-]*) lewat ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB, data biasanya siap ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB\\.$", "$1 passes $2 WIB, data usually ready $3 WIB."],
