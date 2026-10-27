@@ -8,7 +8,7 @@
 <meta name="theme-color" content="#0b2545">
 <title>Tugas api | Centurisk97</title>
 <link rel="icon" href="/img/logo.svg">
-<link rel="stylesheet" href="/lacak.css?v=3">
+<link rel="stylesheet" href="/lacak.css?v=5">
 </head>
 <body>
 <header class="lk-top"><img src="/img/logo.svg" alt="" width="28" height="28"><span>Centurisk97</span><b>Tugas api</b></header>
@@ -71,6 +71,21 @@
           <input id="fotoGaleri" class="lk-berkas" type="file" accept="image/*" multiple tabindex="-1" aria-hidden="true">
           <ul id="daftarFoto" class="lk-foto"></ul>
         </div>
+        <details id="wadahRinci" class="lk-rinci" hidden>
+          <summary>Rincian lokasi, boleh dilewati</summary>
+          <div class="lk-blok">
+            <label class="lk-isian">Desa atau kelurahan<input id="rDesa" maxlength="80" autocomplete="off"></label>
+            <div class="lk-blok"><p class="lk-label" id="labelKawasan">Fungsi kawasan</p><div id="pilihKawasan" class="lk-pilih dua" role="group" aria-labelledby="labelKawasan"></div></div>
+            <div id="rinciApi" class="lk-blok">
+              <div class="lk-dua"><label class="lk-isian">Luas terbakar, perkiraan (ha)<input id="rLuas" inputmode="decimal" autocomplete="off"></label><label class="lk-isian">Dipadamkan sejak laporan terakhir (ha)<input id="rPadam" inputmode="decimal" autocomplete="off"></label></div>
+              <p id="rTotal" class="lk-kecil" hidden></p>
+              <div class="lk-blok"><p class="lk-label" id="labelTipe">Tipe kebakaran</p><div id="pilihTipe" class="lk-pilih dua" role="group" aria-labelledby="labelTipe"></div></div>
+              <div class="lk-blok"><p class="lk-label" id="labelVeg">Vegetasi, boleh lebih dari satu</p><div id="pilihVeg" class="lk-pilih dua" role="group" aria-labelledby="labelVeg"></div></div>
+              <div class="lk-blok"><p class="lk-label" id="labelTanah">Jenis tanah</p><div id="pilihTanah" class="lk-pilih dua" role="group" aria-labelledby="labelTanah"></div></div>
+              <label id="wadahGambut" class="lk-isian" hidden>Kedalaman gambut, perkiraan (cm)<input id="rGambut" inputmode="numeric" autocomplete="off"></label>
+            </div>
+          </div>
+        </details>
         <label id="wadahCatatan" class="lk-isian" hidden>Catatan, boleh kosong<textarea id="catatan" rows="2" maxlength="1000"></textarea></label>
         <div class="lk-blok">
           <p class="lk-label" id="labelKirim">Kirim</p>
@@ -97,7 +112,8 @@
   </div>
 </main>
 <script src="/instansi_akses.js?v=1" defer></script>
-<script src="/lacak_lapor.js?v=3" defer></script>
+<script src="/inti/exif.js?v=1" defer></script>
+<script src="/lacak_lapor.js?v=8" defer></script>
 <script src="/lacak.js?v=5" defer></script>
 </body>
 </html>

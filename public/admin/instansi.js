@@ -19,6 +19,11 @@
   const jam = t => t ? jamWIB(t) : "-";   // formatter repo (/inti/format.js)
   const num = v => fmt(v ?? 0);
   const pil = (t, k = "") => `<span class="ai-pil ${k}">${esc(t)}</span>`;
+  /* rincian ala laporan Daops (tabel 0063; kode sama dengan src/instansi.js RINCI) */
+  const KAWASAN = {apl: "APL", hp: "HP", hpt: "HPT", hpk: "HPK", hl: "HL", konservasi: "konservasi", khdtk: "KHDTK", tidak_tahu: "tidak tahu"};
+  const rinciAdm = r => !r ? "" : [r.desa && ` Desa ${esc(r.desa)}.`, r.kawasan && ` Kawasan ${esc(KAWASAN[r.kawasan] || r.kawasan)}.`, r.tipe_kebakaran && ` Tipe kebakaran ${esc(r.tipe_kebakaran.replace("_", " dan "))}.`,
+    r.vegetasi?.length && ` Vegetasi ${esc(r.vegetasi.join(", ").replaceAll("_", " "))}.`, r.kedalaman_gambut_cm != null && ` Gambut sekitar ${num(r.kedalaman_gambut_cm)} cm.`,
+    r.padam_baru_ha != null && ` Dipadamkan ${num(r.padam_baru_ha)} ha sejak laporan sebelumnya.`].filter(Boolean).join("");
   const dum = x => x.dummy ? " " + pil("DUMMY", "dummy") : "";
   const kosong = t => `<p class="ai-kosong">${esc(t)}</p>`;
   const sesudahCat = fn => { let jalan = false; const f = () => { if (!jalan) { jalan = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(f)); setTimeout(f, 120); };
@@ -162,7 +167,7 @@
       ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}${i.alasan_bukan_api ? `: ${esc(ALASAN_BA[i.alasan_bukan_api] || i.alasan_bukan_api)}` : ""}. PIC ${esc(i.pic_nama)}, ${esc(i.pic_jabatan)}, WhatsApp ${esc(i.pic_wa)}.` : `${esc(i.tindakan)} Status ${esc(STATUS_API[i.status_api])}. Kendala ${esc(i.kendala.map(k => KENDALA[k]).concat(i.kendala_lain ? [i.kendala_lain] : []).join(", ") || "tidak ada")}.
       Bantuan ${esc(i.bantuan.map(k => BANTUAN[k]).concat(i.bantuan_lain ? [i.bantuan_lain] : []).join(", ") || "tidak ada")}. Luas ${i.luas_ha == null ? "-" : num(i.luas_ha)} ha, padam ${i.padam_ha == null ? "-" : num(i.padam_ha)} ha.`}
       Personel ${i.personel == null ? "-" : num(i.personel) + " (manual)"}${i.personel_terlihat != null ? `, mesin melihat minimal ${num(i.personel_terlihat)}` : ""}${i.personel_unsur ? `, per unsur ${esc(Object.entries(i.personel_unsur).map(([k, n]) => `${k} ${num(n)}`).join(", "))}` : ""}${i.regu != null ? `, ${num(i.regu)} regu` : ""}${i.alat_dipakai ? `. Alat ${esc(Object.entries(i.alat_dipakai).map(([a, n]) => `${NAMA_ALAT[a] || a} ${num(n)}`).join(", "))}` : ""}.
-      ${i.kedalaman_bara_cm != null ? ` Kedalaman bara terukur ${num(i.kedalaman_bara_cm)} cm.` : ""}${i.lahan_teramati ? ` Lahan ${esc(i.lahan_teramati)}.` : ""}
+      ${i.kedalaman_bara_cm != null ? ` Kedalaman bara terukur ${num(i.kedalaman_bara_cm)} cm.` : ""}${i.lahan_teramati ? ` Lahan ${esc(i.lahan_teramati)}.` : ""}${rinciAdm(i.rinci)}
       ${i.jarak_km != null ? ` Jarak ke pusat cluster ${num(i.jarak_km)} km${i.jauh ? " (jauh, lebih dari 5 km)" : ""}.` : ""}${i.gps_curiga ? ` ${pil("GPS curiga", "merah")} ${esc(i.gps_curiga)}` : ""}</p>`).join("") : `<p class="ai-meta">Belum ada isian.</p>`)
       + galeri(d.media) + (d.usulan.length ? `<p class="ai-meta">Usulan kontak PT: ${d.usulan.map(u => `${esc(u.nama_pt)} (${esc(u.status)})`).join(", ")}</p>` : "");
     if (d.tugas.status === "buka" && d.tugas.bencana && d.tugas.bencana !== "karhutla") wadah.insertAdjacentHTML("beforeend", `<div class="ai-aksi"><button class="ad-tombol bahaya" data-selesai="${esc(d.tugas.id)}">Tutup tugas ${esc(d.tugas.bencana_nama.toLowerCase())} ini</button></div>`);   // karhutla ditutup lewat laporan padam + satelit

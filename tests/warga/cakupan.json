@@ -3,6 +3,7 @@
   "diuji": {
     "table uji_tugas": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
     "table uji_isian": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
+    "table isian_rinci": "lapor: rincian ala Daops (0063): total dipadamkan dijumlah server, pilihan asing ditolak, riwayat akun dan tautan membawa rincian",
     "table isian_lapangan": "lapor: migrasi 0062 idempoten",
     "table media_petugas": "lapor: info membawa langkah konfirmasi; berkas petugas tercatat di media_petugas",
     "POST /api/lacak/media": "lapor: info membawa langkah konfirmasi; berkas petugas tercatat di media_petugas",

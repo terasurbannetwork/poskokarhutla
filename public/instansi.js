@@ -15,6 +15,10 @@
   const NAMA_ALAT = {pompa: "pompa", selang_m: "selang (m)", jet_shooter: "jet shooter", heli_wb: "helikopter water bombing", alat_berat: "alat berat", drone_termal: "drone termal", pembasah_l: "bahan pembasah (liter konsentrat)"};
   const UNSUR = {bpbd: "BPBD", tni: "TNI", polri: "Polri", manggala_agni: "Manggala Agni", mpa: "MPA", damkar: "Damkar", swasta: "Swasta", relawan: "Relawan", lainnya: "Lainnya"};
   const LAHAN = {gambut: "Gambut", mineral: "Mineral", campuran: "Campuran", tidak_tahu: "Tidak tahu"};
+  /* rincian ala laporan Daops (sama dengan src/instansi.js RINCI, tabel 0063) */
+  const RINCI = {kawasan: {apl: "APL (area penggunaan lain)", hp: "Hutan produksi", hpt: "Hutan produksi terbatas", hpk: "Hutan produksi konversi", hl: "Hutan lindung", konservasi: "Konservasi (TN, SM, Tahura)", khdtk: "KHDTK", tidak_tahu: "Tidak tahu"},
+    tipe: {permukaan: "Permukaan", bawah: "Bawah (gambut)", permukaan_bawah: "Permukaan dan bawah", tajuk: "Tajuk"},
+    veg: {semak_belukar: "Semak belukar", pakis: "Pakis", ilalang: "Ilalang", gelam: "Gelam", akasia: "Akasia", sawit: "Sawit", karet: "Karet", hutan: "Pepohonan hutan", lain: "Lainnya"}};
   const NAMA_STATUS = {belum_klaim: "Belum diklaim", menunggu: "Menunggu persetujuan admin", aktif: "Aktif", ditolak: "Ditolak", dicabut: "Dicabut"};
   const LEVEL = ["Rutin", "Patroli", "Siaga", "Prioritas"];   // nama status yang sama dengan layar publik (index.html LV)
   const MAKS_FOTO = 1.4 * 1048576;
@@ -335,7 +339,7 @@
           <label>Bantuan lain<input id="bantuanLain" maxlength="300"></label>
           <h3 class="in-sub">Alat dari inventaris yang dipakai</h3><div id="alatInvWadah" class="lp-centang"><p class="lp-kecil">Memuat alat siap…</p></div>`}
         ${api ? `<label>Luas terbakar di lokasi (hektare)<input id="luas" inputmode="decimal"></label><label>Sudah dipadamkan (hektare)<input id="padam" inputmode="decimal"></label>` : ""}
-        ${bidangPemadaman(api)}${api ? gambutBidang() : ""}
+        ${bidangPemadaman(api)}${api ? gambutBidang() + rinciBidang() : ""}
         ${konf && api ? `<h3 class="in-sub">Perusahaan konsesi</h3><div id="ptWadah" class="in-baris-isi"><p class="lp-kecil">Dicocokkan dengan peta konsesi saat bagian ini dibuka.</p></div>` : ""}</details>
       ${api && window.UjiLapangan ? window.UjiLapangan.bidang(t.id, konf) : ""}
       ${langkahHtml(3, "Kirim")}
@@ -522,7 +526,7 @@
     wadah.dataset.muat = id;
     wadah.innerHTML = (r.j.isian.length ? r.j.isian.map(i => `<p class="in-meta"><b>${i.langkah === "konfirmasi" ? "Konfirmasi" : "Kabar"}</b>, ${esc(jamWIB(i.dibuat))},
       ${esc(i.oleh.wilayah)}${olehPetugas(i)}. ${i.langkah === "konfirmasi" ? `${esc(HASIL[i.hasil])}${i.alasan_bukan_api ? ` (${esc(ALASAN_BA[i.alasan_bukan_api] || i.alasan_bukan_api)})` : ""}${i.petugas ? "" : `, PIC ${esc(i.pic_nama)} (${esc(i.pic_jabatan)})`}${i.jauh ? ", lokasi isian jauh dari pusat cluster" : ""}`
-      : `${i.tindakan ? esc(i.tindakan) + (/[.!?]$/.test(i.tindakan) ? " " : ". ") : ""}Status ${esc(STATUS_API[i.status_api])}${i.personel_efektif != null ? `, ${angka(i.personel_efektif, 0)} personel${i.personel != null && i.personel_terlihat != null ? ` (isian manual, mesin melihat minimal ${angka(i.personel_terlihat, 0)})` : ""}` : ""}.`}</p>`).join("") : `<p class="in-meta">Belum ada isian.</p>`) + galeri(r.j.media);
+      : `${i.tindakan ? esc(i.tindakan) + (/[.!?]$/.test(i.tindakan) ? " " : ". ") : ""}Status ${esc(STATUS_API[i.status_api])}${i.personel_efektif != null ? `, ${angka(i.personel_efektif, 0)} personel${i.personel != null && i.personel_terlihat != null ? ` (isian manual, mesin melihat minimal ${angka(i.personel_terlihat, 0)})` : ""}` : ""}.`}${teksRinci(i) ? `${i.langkah === "konfirmasi" ? "." : ""} ${teksRinci(i)}.` : ""}</p>`).join("") : `<p class="in-meta">Belum ada isian.</p>`) + galeri(r.j.media);
   }
 
   /* ---- GPS dan media (satu isian boleh 1-10 foto atau video; aturan per berkas sama dengan foto lapangan warga) ---- */
@@ -542,28 +546,7 @@
   }
   const nilai = id => ($(id)?.value || "").trim();
   const angkaIsian = (id, bulat) => { const v = nilai(id).replace(",", "."); if (!v) return null; const n = Number(v); if (!Number.isFinite(n) || n < 0 || (bulat && !Number.isInteger(n))) throw new Error(`Isian harus angka 0 atau lebih${bulat ? " (bulat)" : ""}.`); return n; };
-  /* EXIF JPEG: DateTimeOriginal dan GPS (sama dengan public/foto.js). null bila tidak ada. */
-  function bacaExif(buf) {
-    try {
-      const v = new DataView(buf); if (v.getUint16(0) !== 0xffd8) return null;
-      let o = 2;
-      while (o < v.byteLength - 4) { const m = v.getUint16(o), n = v.getUint16(o + 2);
-        if (m === 0xffe1 && v.getUint32(o + 4) === 0x45786966) { const t = o + 10, le = v.getUint16(t) === 0x4949;
-          const u16 = p => v.getUint16(t + p, le), u32 = p => v.getUint32(t + p, le), ifd = p => { const out = {}, k = u16(p); for (let i = 0; i < k; i++) { const e = p + 2 + i * 12; out[u16(e)] = {n: u32(e + 4), nilai: e + 8}; } return out; };
-          const str = e => { const p = e.n > 4 ? u32(e.nilai) : e.nilai; let s = ""; for (let i = 0; i < e.n - 1; i++) s += String.fromCharCode(v.getUint8(t + p + i)); return s; };
-          const rat = e => { const p = u32(e.nilai); return [0, 1, 2].map(i => u32(p + i * 8) / (u32(p + i * 8 + 4) || 1)); };
-          const ifd0 = ifd(u32(4)), hasil = {};
-          if (ifd0[0x8769]) { const ex = ifd(u32(ifd0[0x8769].nilai)), dt = ex[0x9003] && str(ex[0x9003]), off = ex[0x9011] && str(ex[0x9011]), m2 = dt && dt.match(/^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/);
-            if (m2) { const w = Date.parse(`${m2[1]}-${m2[2]}-${m2[3]}T${m2[4]}:${m2[5]}:${m2[6]}` + (off && /^[+-]\d\d:\d\d$/.test(off) ? off : "")); if (Number.isFinite(w)) hasil.waktu = w; } }
-          if (ifd0[0x8825]) { const g = ifd(u32(ifd0[0x8825].nilai));
-            if (g[2] && g[4]) { const dms = a => a[0] + a[1] / 60 + a[2] / 3600, la = dms(rat(g[2])), lo = dms(rat(g[4]));
-              const sLa = g[1] ? String.fromCharCode(v.getUint8(g[1].nilai + t)) : "N", sLo = g[3] ? String.fromCharCode(v.getUint8(g[3].nilai + t)) : "E";
-              if (la || lo) { hasil.lat = sLa === "S" ? -la : la; hasil.lon = sLo === "W" ? -lo : lo; } } }
-          return hasil; }
-        if (m === 0xffda) break; o += 2 + n; }
-    } catch (e) {}
-    return null;
-  }
+  /* EXIF JPEG (DateTimeOriginal dan GPS) dibaca lewat /inti/exif.js (window.bacaExif, dipakai juga /lacak). null bila tidak ada. */
   const keBlob = (c, tipe, q) => new Promise(r => c.toBlob(r, tipe, q));
   function gambar(src, sisi) { const s = Math.min(1, sisi / Math.max(src.width || src.videoWidth, src.height || src.videoHeight)), c = document.createElement("canvas"), w = src.width || src.videoWidth, h = src.height || src.videoHeight;
     c.width = Math.max(1, Math.round(w * s)); c.height = Math.max(1, Math.round(h * s)); c.getContext("2d").drawImage(src, 0, 0, c.width, c.height); return c; }
@@ -590,7 +573,7 @@
       if (v.durasi > 60.5) throw new Error(`${f.name}: video ${Math.round(v.durasi)} detik, maksimal 60 detik. Potong dulu.`);
       return {media: f, thumb: v.thumb, bingkai: v.bingkai, durasi: v.durasi, kamera: !!f._kamera};
     }
-    const exif = /jpe?g$/i.test(f.type) ? bacaExif(await f.slice(0, 256 * 1024).arrayBuffer()) : null;
+    const exif = /jpe?g$/i.test(f.type) ? window.bacaExif(await f.slice(0, 256 * 1024).arrayBuffer()) : null;
     if (exif?.waktu && Date.now() - exif.waktu > 48 * 3600e3) throw new Error(`${f.name}: diambil ${Math.round((Date.now() - exif.waktu) / 864e5)} hari lalu, hanya 48 jam terakhir.`);
     let bmp; try { bmp = await createImageBitmap(f); } catch (e) { throw new Error(`${f.name}: bukan foto atau video yang bisa dibaca.`); }
     const o = {media: await kompres(bmp, 1600, 0.8), thumb: await keBlob(gambar(bmp, 640), "image/jpeg", 0.7), exif, kamera: !!f._kamera}; bmp.close?.();   // thumbnail JPEG: server menghitung orang dari thumbnail yang DISIMPAN, bukan dari kiriman klien   // canvas membuang EXIF dari berkas yang diunggah
@@ -738,7 +721,7 @@
       const lk = angkaIsian("luas"), pk = angkaIsian("padam"); if (lk != null) body.luas_ha = lk; if (pk != null) body.padam_ha = pk;
       if (pk != null && lk != null && pk > lk) throw new Error("Luas padam tidak boleh melebihi luas terbakar.");
       if (!konf) { const ai = [...document.querySelectorAll('input[name="alatInv"]:checked')].map(i => i.value); if (ai.length) body.alat_inventaris = ai; }
-      bacaGambut(body); bacaPemadaman(body); if (konf && $("ptWadah")) { const pt = bacaPT("pt", false); if (pt) body.pt = pt; }
+      bacaGambut(body); bacaRinci(body); bacaPemadaman(body); if (konf && $("ptWadah")) { const pt = bacaPT("pt", false); if (pt) body.pt = pt; }
       if (tg && apiTugas(tg) && window.UjiLapangan) window.UjiLapangan.baca(body, body.luas_ha != null);   // uji lapangan: tutupan + metode luas wajib bila luas diisi
       }
     } catch (x) { const g = $("progres"); if (g) { g.className = "in-progres galat"; g.textContent = x.message; g.scrollIntoView({block: "nearest"}); } return; }
@@ -817,6 +800,24 @@
   const gambutBidang = () => `<label>Kedalaman bara terukur, cm (boleh kosong)<input id="bara" inputmode="numeric" placeholder="0 sampai 300, dari tongkat atau injektor yang ditusuk ke gambut sampai terasa panas"></label>
     <label>Lahan yang teramati<select id="lahan"><option value="">Tidak diisi</option>${Object.entries(LAHAN).map(([k, v]) => `<option value="${k}">${v}</option>`).join("")}</select></label>`;
   const bacaGambut = body => { const b = angkaIsian("bara", true); if (b != null) { if (b > 300) throw new Error("Kedalaman bara maksimal 300 cm."); body.kedalaman_bara_cm = b; } if (nilai("lahan")) body.lahan_teramati = nilai("lahan"); };
+  const opsiRinci = o => `<option value="">Tidak diisi</option>${Object.entries(o).map(([k, v]) => `<option value="${k}">${esc(v)}</option>`).join("")}`;
+  const rinciBidang = () => `<h3 class="in-sub">Rincian lokasi, seperti laporan Daops</h3><label>Desa atau kelurahan<input id="rDesa" maxlength="80"></label>
+    <label>Fungsi kawasan<select id="rKawasan">${opsiRinci(RINCI.kawasan)}</select></label><label>Tipe kebakaran<select id="rTipe">${opsiRinci(RINCI.tipe)}</select></label>
+    <h3 class="in-sub">Vegetasi</h3><div class="lp-centang">${Object.entries(RINCI.veg).map(([k, v]) => `<label class="lp-cek"><input type="checkbox" name="rVeg" value="${k}">${esc(v)}</label>`).join("")}</div>
+    <label>Kedalaman gambut, perkiraan cm (boleh kosong)<input id="rGambut" inputmode="numeric"></label>`;
+  const bacaRinci = body => {
+    const r = {}, desa = nilai("rDesa"), g = $("rGambut") ? angkaIsian("rGambut", true) : null, veg = [...document.querySelectorAll('input[name="rVeg"]:checked')].map(i => i.value);
+    if (desa) { if ([...desa].length < 2) throw new Error("Nama desa minimal 2 huruf."); r.desa = desa; }
+    if (g != null) { if (g > 1500) throw new Error("Kedalaman gambut maksimal 1.500 cm."); r.kedalaman_gambut_cm = g; }
+    if (nilai("rKawasan")) r.kawasan = nilai("rKawasan"); if (nilai("rTipe")) r.tipe_kebakaran = nilai("rTipe"); if (veg.length) r.vegetasi = veg;
+    if (Object.keys(r).length) body.rinci = r;
+  };
+  /* riwayat: luas, total padam, dan rincian dalam satu kalimat; tambahan padam per laporan dari tautan petugas (padam_baru_ha) */
+  const teksRinci = i => { const r = i.rinci || {};
+    return [r.desa && `desa ${esc(r.desa)}`, r.kawasan && esc(RINCI.kawasan[r.kawasan] || r.kawasan), r.tipe_kebakaran && `kebakaran ${esc(RINCI.tipe[r.tipe_kebakaran] || r.tipe_kebakaran).toLowerCase()}`,
+      r.vegetasi?.length && `vegetasi ${esc(r.vegetasi.map(v => RINCI.veg[v] || v).join(", ")).toLowerCase()}`, r.kedalaman_gambut_cm != null && `gambut sekitar ${angka(r.kedalaman_gambut_cm)} cm`,
+      i.luas_ha != null && `luas terbakar sekitar ${angka(i.luas_ha)} ha`, r.padam_baru_ha != null && `dipadamkan ${angka(r.padam_baru_ha)} ha sejak laporan sebelumnya`,
+      i.padam_ha != null && `total dipadamkan ${angka(i.padam_ha)} ha`].filter(Boolean).join("; ").replace(/^./, c => c.toUpperCase()); };
   async function ptMuat() {
     const t = tugas.find(x => x.id === terpilih), w = $("ptWadah"); if (!t || !w) return;
     w.innerHTML = `<p class="lp-kecil">Memeriksa konsesi di titik ini…</p>`;

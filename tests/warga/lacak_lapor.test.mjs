@@ -134,6 +134,44 @@ uji("lapor: konfirmasi api, kabar padam wajib foto, lalu cek ulang; berkas penug
   assert.equal((await DB.prepare("SELECT count(*) n FROM isian_lapangan l JOIN penugasan p ON p.id = l.penugasan_id WHERE p.nama = 'Dedi Lain'").first()).n, 0);
 });
 
+uji("lapor: rincian ala Daops (0063): total dipadamkan dijumlah server, pilihan asing ditolak, riwayat akun dan tautan membawa rincian", async () => {
+  for (const s of pecah(teks("migrations/0063_isian_rinci.sql"))) await DB.prepare(s).run();   // diulang di atas skema yang sudah ada: aman
+  const T5 = await tugas("Kab Lapor", -2.35, 113.75), tk = await tugaskan(A, T5, {nama: "Wati Regu", peran: "ketua_regu"}), g = gps(-2.3504, 113.7504);
+  const kosong = id16();
+  await DB.prepare("INSERT INTO tugas_isian (id, tugas_id, akun_id, klien_id, langkah, dibuat, tindakan, kendala, bantuan, status_api) VALUES (?, ?, ?, 'klien-cek-0063', 'tindakan', 1, 'x uji', '[]', '[]', 'bara')").bind(kosong, T5, A.id).run();
+  await assert.rejects(DB.prepare("INSERT INTO isian_rinci (isian_id) VALUES (?)").bind(kosong).run(), /CHECK|constraint/i, "baris tanpa isi ditolak");
+  await assert.rejects(DB.prepare("INSERT INTO isian_rinci (isian_id, vegetasi) VALUES (?, '\"pakis\"')").bind(kosong).run(), /CHECK|constraint/i, "vegetasi bukan larik JSON");
+  await DB.prepare("DELETE FROM tugas_isian WHERE id = ?").bind(kosong).run();
+  const i0 = (await lacak("GET", "info", tk)).j.lapor; assert.deepEqual(i0.rinci.vegetasi.slice(0, 2).map(v => v.kode), ["semak_belukar", "pakis"]); assert.equal(i0.rinci.padam_total, null);
+  const m = await fotoToken(tk, g);
+  for (const [r, nama] of [[{kawasan: "taman"}, "kawasan asing"], [{vegetasi: ["kelapa"]}, "vegetasi asing"], [{vegetasi: "pakis"}, "vegetasi bukan larik"], [{kedalaman_gambut_cm: 2000}, "gambut lebih dari 1500 cm"],
+    [{padam_baru_ha: -1}, "padam negatif"], [{padam_baru_ha: 0.005}, "lebih teliti dari 0,01 ha"], [{desa: "x"}, "desa satu huruf"], [{desa: "🔥"}, "desa satu emoji (2 unit UTF-16, 1 karakter di CHECK): 400, bukan 500"], ["desa", "rinci bukan objek"]])
+    assert.equal((await lacak("POST", "lapor", tk, LAPOR("konfirmasi", "menyala", [m], {rinci: r}))).s, 400, nama);
+  const rinci = {desa: "Tanjung Taruna", kawasan: "hl", tipe_kebakaran: "permukaan_bawah", vegetasi: ["pakis", "semak_belukar", "akasia"], kedalaman_gambut_cm: 200, padam_baru_ha: 0.3};
+  const k = await lacak("POST", "lapor", tk, LAPOR("konfirmasi", "menyala", [m], {luas_ha: 10, lahan_teramati: "gambut", rinci})); assert.equal(k.s, 201, k.t);
+  assert.deepEqual({...await DB.prepare("SELECT luas_ha, padam_ha, lahan_teramati FROM tugas_isian WHERE id = ?").bind(k.j.id).first()}, {luas_ha: 10, padam_ha: 0.3, lahan_teramati: "gambut"});
+  /* laporan posko 26 Okt menulis "Total ±0,30 ha" untuk H1-H13 yang jumlahnya 3,0 ha: di sini total dijumlah server, dan 0,1 + 0,2 tidak jadi 0,30000000000000004 */
+  for (const [baru, total] of [[0.2, 0.5], [0.1, 0.6]]) {
+    const kb = await lacak("POST", "lapor", tk, LAPOR("kabar", "bara", [], {rinci: {padam_baru_ha: baru}})); assert.equal(kb.s, 201, kb.t);
+    assert.equal((await DB.prepare("SELECT padam_ha FROM tugas_isian WHERE id = ?").bind(kb.j.id).first()).padam_ha, total);
+  }
+  assert.equal((await lacak("GET", "info", tk)).j.lapor.rinci.padam_total, 0.6);
+  assert.equal((await lacak("POST", "lapor", tk, LAPOR("kabar", "bara", [], {luas_ha: 0.5, rinci: {padam_baru_ha: 0.1}}))).s, 400, "total 0,7 ha melebihi luas 0,5 ha");
+  /* akun: total diketik bersama padam_baru ditolak (dua makna); rincian akun tanpa padam tersimpan dan total ketikan tetap dipakai */
+  assert.equal((await api("POST", `/api/instansi/kabar/${T5}`, {klien_id: "rinci-akun-1", status_api: "bara", padam_ha: 2, rinci: {padam_baru_ha: 0.5}}, {...A.h, ...ipBaru()})).s, 400);
+  const ka = await api("POST", `/api/instansi/kabar/${T5}`, {klien_id: "rinci-akun-2", status_api: "bara", padam_ha: 2, rinci: {desa: "Tanjung Taruna", tipe_kebakaran: "bawah"}}, {...A.h, ...ipBaru()}); assert.equal(ka.s, 201, ka.t);
+  const rk = await api("GET", `/api/instansi/tugas/${T5}`, undefined, A.h); assert.equal(rk.s, 200, rk.t);
+  assert.deepEqual(rk.j.isian[0].rinci, {...rinci, padam_baru_ha: 0.3}); assert.deepEqual(rk.j.isian.at(-1).rinci, {desa: "Tanjung Taruna", kawasan: null, tipe_kebakaran: "bawah", vegetasi: [], kedalaman_gambut_cm: null, padam_baru_ha: null});
+  assert.equal(rk.j.isian.at(-1).padam_ha, 2);
+  assert.deepEqual((await lacak("GET", "info", tk)).j.lapor.riwayat.map(r => r.padam_baru_ha), [0.1, 0.2, 0.3], "Laporan saya: tambahan padam per laporan, terbaru dulu");
+  /* 8 kabar bersamaan masing-masing +1 ha: tidak ada tambahan yang hilang. Yang kalah lomba dijawab 503 (antrean klien mengirim ulang), di sini dikirim ulang sampai 201 */
+  const B = await akun("pemkabparalel", "Kab Lapor"), lalu = (await DB.prepare("SELECT padam_ha FROM tugas_isian WHERE tugas_id = ? AND padam_ha IS NOT NULL ORDER BY dibuat DESC, id DESC LIMIT 1").bind(T5).first()).padam_ha;
+  const kirim = n => api("POST", `/api/instansi/kabar/${T5}`, {klien_id: `rinci-paralel-${n}`, status_api: "bara", rinci: {padam_baru_ha: 1}}, {...B.h, ...ipBaru()});
+  const hasil = await Promise.all([...Array(8).keys()].map(kirim));
+  for (const [n, r] of hasil.entries()) { let x = r; for (let i = 0; x.s === 503 && i < 10; i++) x = await kirim(n); assert.equal(x.s, 201, x.t); if (r.s !== 201) assert.match(r.j.galat, /bersamaan/); }
+  assert.equal((await DB.prepare("SELECT padam_ha FROM tugas_isian WHERE tugas_id = ? AND padam_ha IS NOT NULL ORDER BY dibuat DESC, id DESC LIMIT 1").bind(T5).first()).padam_ha, lalu + 8, "total = sebelum + 8 x 1 ha");
+});
+
 uji("lapor: tautan bocor tidak bisa menutup tugas dari jauh; tautan hanya menerima foto", async () => {
   const T4 = await tugas("Kab Lapor", -2.5, 113.6), tk = await tugaskan(A, T4, {nama: "Rudi Jauh", peran: "anggota"});
   const jauh = gps(-2.5, 113.7);   // sekitar 11 km dari titik api

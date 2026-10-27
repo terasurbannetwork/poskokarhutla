@@ -6,6 +6,8 @@
      (60 detik x 2^n, maks 30 menit). Batas waktu 90 detik per unggahan dan 45 detik per laporan. Berkas diunggah sekali (id diingat, blob-nya dibuang dari antrean),
      laporan memakai klien_id tetap (idempoten di server).
    - Server menolak bacaan GPS lebih dari 6 jam: antrean berumur > 5 jam diberi peringatan. 410 (tautan mati) atau Selesai = draf dan antrean tautan itu dihapus dari ponsel.
+   - "Rincian lokasi" (info.lapor.rinci, migrasi 0063) mengikuti butir laporan Daops: desa, fungsi kawasan, luas, tipe kebakaran, vegetasi, tanah, kedalaman gambut. Semua opsional.
+     Yang diketik hanya luas dipadamkan SEJAK laporan terakhir; totalnya dijumlah server.
    CSP: tanpa skrip/gaya inline; teks data lewat esc(); pratinjau foto lewat blob:. */
 (() => {
   "use strict";
@@ -21,8 +23,11 @@
   const NAMA = {menyala: "Api masih menyala", bara: "Tinggal bara atau asap", padam: "Sudah padam", bukan_api: "Bukan api"};
   const BEKAS = [["ya", "Ya, ada"], ["tidak", "Tidak ada"], ["tak_tahu", "Tidak tahu"]];
   const MAKS_FOTO = 5, JEDA0 = 60e3, JEDA_MAKS = 30 * 60e3, UMUR_PERINGATAN = 5 * 3600e3;
-  const kosong = () => ({kondisi: null, alasan: null, bekas: null, catatan: "", foto: []});
-  let C = null, L = null, kunci = "", draf = kosong(), antrean = [], urls = [], sibuk = false, menyiapkan = false, memproses = false, lagi = false;
+  const kosong = () => ({kondisi: null, alasan: null, bekas: null, catatan: "", foto: [], desa: "", kawasan: null, tipe: null, veg: [], tanah: null, luas: "", padam: "", gambut: ""});
+  const RINCI_TEKS = {rDesa: "desa", rLuas: "luas", rPadam: "padam", rGambut: "gambut"};
+  const ha = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 2});
+  const angka = (s, bulat) => { const t = String(s ?? "").trim().replace(",", "."); if (!t) return null; const n = Number(t); return Number.isFinite(n) && n >= 0 && (!bulat || Number.isInteger(n)) ? n : NaN; };
+  let C = null, L = null, kunci = "", draf = kosong(), antrean = [], urls = [], sibuk = false, menyiapkan = false, memproses = false, lagi = false, sigPilihan = "";
 
   /* ---- IndexedDB: antrean (keyPath id) dan draf (keyPath tk = sha256 token, 24 hex) ---- */
   const idb = () => new Promise((ok, no) => { if (!window.indexedDB) return no(new Error("tanpa IndexedDB")); const r = indexedDB.open("pb_lacak", 1);
@@ -31,32 +36,11 @@
   const simpan = it => it.memori ? Promise.resolve() : tx("antrean", "readwrite", s => s.put(it)).catch(() => {});
   const buang = async it => { antrean = antrean.filter(x => x !== it); if (!it.memori) await tx("antrean", "readwrite", s => s.delete(it.id)).catch(() => {}); };
   /* pilihan (kecil, tiap ketuk) dan foto (blob, hanya saat foto berubah) disimpan di dua baris store draf */
-  const simpanPilihan = () => tx("draf", "readwrite", s => s.put({tk: kunci, kondisi: draf.kondisi, alasan: draf.alasan, bekas: draf.bekas, catatan: draf.catatan})).catch(() => {});
+  const simpanPilihan = () => tx("draf", "readwrite", s => { const {foto, ...pilihan} = draf; return s.put({tk: kunci, ...pilihan}); }).catch(() => {});
   const simpanFoto = () => tx("draf", "readwrite", s => s.put({tk: kunci + ":foto", foto: draf.foto})).catch(() => {});
   const sha = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s)))].map(b => b.toString(16).padStart(2, "0")).join("").slice(0, 24);
 
-  /* ---- foto: EXIF JPEG (DateTimeOriginal, GPS) dibaca dari berkas asli; canvas membuang EXIF dari berkas yang diunggah. Sama dengan public/instansi.js ---- */
-  function bacaExif(buf) {
-    try {
-      const v = new DataView(buf); if (v.getUint16(0) !== 0xffd8) return null;
-      let o = 2;
-      while (o < v.byteLength - 4) { const m = v.getUint16(o), n = v.getUint16(o + 2);
-        if (m === 0xffe1 && v.getUint32(o + 4) === 0x45786966) { const t = o + 10, le = v.getUint16(t) === 0x4949;
-          const u16 = p => v.getUint16(t + p, le), u32 = p => v.getUint32(t + p, le), ifd = p => { const out = {}, k = u16(p); for (let i = 0; i < k; i++) { const e = p + 2 + i * 12; out[u16(e)] = {n: u32(e + 4), nilai: e + 8}; } return out; };
-          const str = e => { const p = e.n > 4 ? u32(e.nilai) : e.nilai; let s = ""; for (let i = 0; i < e.n - 1; i++) s += String.fromCharCode(v.getUint8(t + p + i)); return s; };
-          const rat = e => { const p = u32(e.nilai); return [0, 1, 2].map(i => u32(p + i * 8) / (u32(p + i * 8 + 4) || 1)); };
-          const ifd0 = ifd(u32(4)), hasil = {};
-          if (ifd0[0x8769]) { const ex = ifd(u32(ifd0[0x8769].nilai)), dt = ex[0x9003] && str(ex[0x9003]), off = ex[0x9011] && str(ex[0x9011]), m2 = dt && dt.match(/^(\d{4}):(\d\d):(\d\d) (\d\d):(\d\d):(\d\d)/);
-            if (m2) { const w = Date.parse(`${m2[1]}-${m2[2]}-${m2[3]}T${m2[4]}:${m2[5]}:${m2[6]}` + (off && /^[+-]\d\d:\d\d$/.test(off) ? off : "")); if (Number.isFinite(w)) hasil.waktu = w; } }
-          if (ifd0[0x8825]) { const g = ifd(u32(ifd0[0x8825].nilai));
-            if (g[2] && g[4]) { const dms = a => a[0] + a[1] / 60 + a[2] / 3600, la = dms(rat(g[2])), lo = dms(rat(g[4]));
-              const sLa = g[1] ? String.fromCharCode(v.getUint8(g[1].nilai + t)) : "N", sLo = g[3] ? String.fromCharCode(v.getUint8(g[3].nilai + t)) : "E";
-              if (la || lo) { hasil.lat = sLa === "S" ? -la : la; hasil.lon = sLo === "W" ? -lo : lo; } } }
-          return hasil; }
-        if (m === 0xffda) break; o += 2 + n; }
-    } catch (e) {}
-    return null;
-  }
+  /* ---- foto: EXIF JPEG dibaca dari berkas asli lewat /inti/exif.js (window.bacaExif, dipakai juga /instansi); canvas membuang EXIF dari berkas yang diunggah ---- */
   const keBlob = (c, tipe, q) => new Promise((ok, no) => c.toBlob(b => b ? ok(b) : no(new Error("Foto tidak bisa diproses: memori ponsel penuh. Tutup aplikasi lain lalu coba lagi.")), tipe, q));
   function kanvas(src, sisi) { const s = Math.min(1, sisi / Math.max(src.width, src.height)), c = document.createElement("canvas");
     c.width = Math.max(1, Math.round(src.width * s)); c.height = Math.max(1, Math.round(src.height * s)); c.getContext("2d").drawImage(src, 0, 0, c.width, c.height); return c; }
@@ -64,7 +48,7 @@
   const tipe = () => tipeKecil ??= (() => { try { const c = document.createElement("canvas"); c.width = c.height = 1; return c.toDataURL("image/webp").startsWith("data:image/webp") ? "image/webp" : "image/jpeg"; } catch (e) { return "image/jpeg"; } })();
   async function siapkanFoto(f, kamera) {
     if (!/^image\//.test(f.type)) throw new Error(`${f.name || "Berkas"} bukan foto.`);
-    const exif = /jpe?g$/i.test(f.type) ? bacaExif(await f.slice(0, 256 * 1024).arrayBuffer()) : null;
+    const exif = /jpe?g$/i.test(f.type) ? window.bacaExif(await f.slice(0, 256 * 1024).arrayBuffer()) : null;
     if (exif?.waktu && Date.now() - exif.waktu > 48 * 3600e3) throw new Error(`Foto diambil ${Math.round((Date.now() - exif.waktu) / 864e5).toLocaleString("id-ID")} hari lalu; hanya 48 jam terakhir.`);
     let bmp, besar, kecil;
     try { bmp = await createImageBitmap(f); } catch (e) { throw new Error("Foto tidak bisa dibaca peramban ini."); }
@@ -94,17 +78,34 @@
   const status = (t, k) => { const s = $("statusLapor"); s.hidden = !t; s.textContent = t || ""; s.className = "lk-status " + (k || ""); };
   const fotoWajib = () => !!L && (L.foto || !!L.kondisi.find(x => x.kode === draf.kondisi)?.foto || (L.langkah === "konfirmasi" && !draf.kondisi));
   const tanyaBekas = () => !!L?.bekas && (L.langkah === "cekulang" || (L.langkah === "konfirmasi" && draf.kondisi === "padam"));
+  const adaRinci = () => !!L?.rinci && (L.langkah === "konfirmasi" || L.langkah === "kabar");
+  const rinciApi = () => draf.kondisi !== "bukan_api";   // bukan api: hanya desa dan kawasan
+  const tanyaGambut = () => draf.tanah === "gambut" || draf.tanah === "campuran";
   const tombol = (attr, kode, nama, aktif, kelas) => `<button type="button" class="${kelas}" ${attr}="${esc(kode)}" aria-pressed="${aktif}">${esc(nama)}</button>`;
-  const teksRiwayat = r => r.langkah === "cekulang" ? "foto lokasi padam" : NAMA[r.langkah === "konfirmasi" ? (r.hasil === "api_ada" ? r.status_api : r.hasil === "sudah_padam" ? "padam" : r.hasil) : r.status_api] || "";
+  const teksRiwayat = r => (r.langkah === "cekulang" ? "foto lokasi padam" : NAMA[r.langkah === "konfirmasi" ? (r.hasil === "api_ada" ? r.status_api : r.hasil === "sudah_padam" ? "padam" : r.hasil) : r.status_api] || "")
+    + (r.padam_baru_ha != null ? `, dipadamkan ${ha(r.padam_baru_ha)} ha` : "");
   function gambar() {
     const k = $("kartuLapor"); k.hidden = !L; if (!L) return;
     $("hLapor").textContent = L.langkah ? JUDUL[L.langkah] : "Lapor dari lokasi";
     $("laporArahan").textContent = L.langkah ? ARAHAN[L.langkah] : L.pesan || "";
     $("laporForm").hidden = !L.langkah;
     $("blokKondisi").hidden = !L.kondisi.length;
-    $("pilihKondisi").innerHTML = L.kondisi.map(x => tombol("data-kondisi", x.kode, x.nama, draf.kondisi === x.kode, "lk-kond k-" + esc(x.kode))).join("");
-    $("pilihAlasan").innerHTML = L.alasan_bukan_api.map(x => tombol("data-alasan", x.kode, x.nama, draf.alasan === x.kode, "lk-opsi")).join("");
-    $("pilihBekas").innerHTML = BEKAS.map(([kd, n]) => tombol("data-bekas", kd, n, draf.bekas === kd, "lk-opsi")).join("");
+    $("wadahRinci").hidden = !adaRinci();
+    /* tombol pilihan hanya digambar ulang bila daftarnya berubah (info dimuat ulang tiap 5 menit): fokus dan ketukan yang sedang jalan tidak hilang. aria-pressed diurus gambarPilihan */
+    const R = adaRinci() ? L.rinci : null, sig = JSON.stringify([L.kondisi, L.alasan_bukan_api, R && [R.kawasan, R.tipe_kebakaran, R.lahan, R.vegetasi]]);
+    if (sig !== sigPilihan) {
+      sigPilihan = sig;
+      $("pilihKondisi").innerHTML = L.kondisi.map(x => tombol("data-kondisi", x.kode, x.nama, false, "lk-kond k-" + esc(x.kode))).join("");
+      $("pilihAlasan").innerHTML = L.alasan_bukan_api.map(x => tombol("data-alasan", x.kode, x.nama, false, "lk-opsi")).join("");
+      $("pilihBekas").innerHTML = BEKAS.map(([kd, n]) => tombol("data-bekas", kd, n, false, "lk-opsi")).join("");
+      const satu = (id, attr, daftar) => { $(id).innerHTML = (daftar || []).map(x => tombol(attr, x.kode, x.nama, false, "lk-opsi")).join(""); };
+      satu("pilihKawasan", "data-kawasan", R?.kawasan); satu("pilihTipe", "data-tipe", R?.tipe_kebakaran); satu("pilihTanah", "data-tanah", R?.lahan); satu("pilihVeg", "data-veg", R?.vegetasi);
+    }
+    if (R) {
+      $("rTotal").hidden = R.padam_total == null;
+      $("rTotal").textContent = R.padam_total == null ? "" : `Sejauh ini dipadamkan ${ha(R.padam_total)} ha${R.luas_terakhir != null ? ` dari perkiraan ${ha(R.luas_terakhir)} ha terbakar` : ""}. Isi yang dipadamkan sejak laporan terakhir saja; totalnya dijumlah otomatis.`;
+      for (const [id, k] of Object.entries(RINCI_TEKS)) if (document.activeElement !== $(id) && $(id).value !== draf[k]) $(id).value = draf[k];   // jangan timpa yang sedang diketik
+    }
     $("wadahCatatan").hidden = L.langkah !== "kabar"; if (document.activeElement !== $("catatan") && $("catatan").value !== draf.catatan) $("catatan").value = draf.catatan;   // jangan timpa yang sedang diketik
     $("labelKirim").textContent = `${L.kondisi.length ? "3. " : ""}Kirim`;
     gambarPilihan();
@@ -113,8 +114,11 @@
   }
   /* ketukan: hanya aria-pressed, wadah, dan label yang berubah (tanpa innerHTML: fokus dan ketukan berikutnya tidak hilang) */
   function gambarPilihan() {
-    for (const [attr, v] of [["kondisi", draf.kondisi], ["alasan", draf.alasan], ["bekas", draf.bekas]]) for (const b of $("kartuLapor").querySelectorAll(`[data-${attr}]`)) b.setAttribute("aria-pressed", String(b.dataset[attr] === v));
+    for (const [attr, v] of [["kondisi", draf.kondisi], ["alasan", draf.alasan], ["bekas", draf.bekas], ["kawasan", draf.kawasan], ["tipe", draf.tipe], ["tanah", draf.tanah]])
+      for (const b of $("kartuLapor").querySelectorAll(`[data-${attr}]`)) b.setAttribute("aria-pressed", String(b.dataset[attr] === v));
+    for (const b of $("kartuLapor").querySelectorAll("[data-veg]")) b.setAttribute("aria-pressed", String(draf.veg.includes(b.dataset.veg)));
     $("wadahAlasan").hidden = draf.kondisi !== "bukan_api"; $("wadahBekas").hidden = !tanyaBekas();
+    $("rinciApi").hidden = !rinciApi(); $("wadahGambut").hidden = !tanyaGambut();
     $("labelFoto").textContent = `${L.kondisi.length ? "2. " : ""}Foto lokasi${fotoWajib() ? ", wajib" : ", boleh dilewati"}`;
     tombolSibuk();
   }
@@ -161,6 +165,10 @@
     if (b.dataset.kondisi) { draf.kondisi = b.dataset.kondisi; if (draf.kondisi !== "bukan_api") draf.alasan = null; if (!tanyaBekas()) draf.bekas = null; }
     else if (b.dataset.alasan) draf.alasan = b.dataset.alasan;
     else if (b.dataset.bekas) draf.bekas = b.dataset.bekas;
+    else if (b.dataset.kawasan) draf.kawasan = draf.kawasan === b.dataset.kawasan ? null : b.dataset.kawasan;   // ketuk lagi = batal pilih
+    else if (b.dataset.tipe) draf.tipe = draf.tipe === b.dataset.tipe ? null : b.dataset.tipe;
+    else if (b.dataset.tanah) draf.tanah = draf.tanah === b.dataset.tanah ? null : b.dataset.tanah;
+    else if (b.dataset.veg) draf.veg = draf.veg.includes(b.dataset.veg) ? draf.veg.filter(x => x !== b.dataset.veg) : [...draf.veg, b.dataset.veg];
     else if (b.dataset.hapus) { draf.foto.splice(Number(b.dataset.hapus), 1); gambarFoto(); gambarPilihan(); return simpanFoto(); }
     else if (b.id === "bFotoKamera") return $("fotoKamera").click();
     else if (b.id === "bFotoGaleri") return $("fotoGaleri").click();
@@ -170,6 +178,25 @@
     status(""); gambarPilihan(); simpanPilihan();
   });
 
+  let tmRinci = null;
+  $("wadahRinci").addEventListener("input", e => { const k = RINCI_TEKS[e.target.id]; if (!k) return; draf[k] = e.target.value; clearTimeout(tmRinci); tmRinci = setTimeout(simpanPilihan, 600); });
+  $("wadahRinci").addEventListener("change", e => { if (RINCI_TEKS[e.target.id]) simpanPilihan(); });
+
+  /* rincian -> medan body lapor, atau teks galat. Yang tidak berlaku untuk kondisi terpilih (bukan api, tanah bukan gambut) tidak dikirim walau masih ada di draf */
+  function isiRinci() {
+    if (!adaRinci()) return {};
+    const api = rinciApi(), luas = api ? angka(draf.luas) : null, padam = api ? angka(draf.padam) : null, gambut = api && tanyaGambut() ? angka(draf.gambut, true) : null, desa = draf.desa.trim();
+    if ([luas, padam].some(Number.isNaN)) return "Luas harus angka 0 atau lebih, contoh 0,5.";
+    if (padam != null && Math.abs(padam * 100 - Math.round(padam * 100)) > 1e-6) return "Luas dipadamkan paling teliti 0,01 ha, contoh 0,25.";
+    if (Number.isNaN(gambut) || gambut > 1500) return "Kedalaman gambut harus angka bulat 0 sampai 1.500 cm.";
+    if ([...desa].length === 1) return "Nama desa minimal 2 huruf.";
+    const total = padam == null ? null : (L.rinci.padam_total ?? 0) + padam;
+    if (total != null && luas != null && total > luas + 1e-9) return `Total dipadamkan ${ha(total)} ha melebihi luas terbakar ${ha(luas)} ha.`;
+    const rinci = {desa: desa || undefined, kawasan: draf.kawasan ?? undefined,
+      ...(api ? {tipe_kebakaran: draf.tipe ?? undefined, vegetasi: draf.veg.length ? draf.veg : undefined, kedalaman_gambut_cm: gambut ?? undefined, padam_baru_ha: padam ?? undefined} : {})};
+    return {luas_ha: luas ?? undefined, lahan_teramati: api ? draf.tanah ?? undefined : undefined, rinci: Object.values(rinci).some(v => v !== undefined) ? rinci : undefined};
+  }
+
   /* ---- kirim: simpan ke antrean dulu, lalu proses ---- */
   async function kirim() {
     if (sibuk || menyiapkan || !L?.langkah) return;
@@ -177,14 +204,16 @@
     if (L.kondisi.length && !draf.kondisi) return status("Pilih kondisi di lokasi dulu: ketuk salah satu tombol.", "galat");
     if (draf.kondisi === "bukan_api" && !draf.alasan) return status("Pilih alasan kenapa bukan api.", "galat");
     if (fotoWajib() && !draf.foto.length) return status("Ambil minimal satu foto lokasi.", "galat");
+    const isi = isiRinci(); if (typeof isi === "string") { $("wadahRinci").open = true; return status(isi, "galat"); }
     sibuk = true; tombolSibuk(); status("Menyimpan…");
     try {
       let gps = null;
       if (draf.foto.length) { status("Membaca lokasi, tahan ponsel diam sebentar…"); gps = await ambilGPS(); }
       const it = {id: idAcak(), tk: kunci, klien_id: idAcak(), langkah: L.langkah, kondisi: draf.kondisi, alasan: draf.kondisi === "bukan_api" ? draf.alasan : null, bekas: tanyaBekas() ? draf.bekas : null,
-        catatan: L.langkah === "kabar" ? draf.catatan.trim() : "", gps, berkas: draf.foto.map(f => ({media: f.media, thumb: f.thumb, exif: f.exif, kamera: f.kamera})), dibuat: Date.now(), coba: 0, berikut: 0};
+        catatan: L.langkah === "kabar" ? draf.catatan.trim() : "", isi, gps, berkas: draf.foto.map(f => ({media: f.media, thumb: f.thumb, exif: f.exif, kamera: f.kamera})), dibuat: Date.now(), coba: 0, berikut: 0};
       try { await tx("antrean", "readwrite", s => s.put(it)); } catch (x) { it.memori = true; }   // tanpa IndexedDB: tetap dikirim, tidak tahan muat ulang
-      antrean.push(it); draf = kosong(); await tx("draf", "readwrite", s => { s.delete(kunci); return s.delete(kunci + ":foto"); }).catch(() => {});
+      antrean.push(it); draf = kosong(); for (const id of [...Object.keys(RINCI_TEKS), "catatan"]) $(id).value = "";   // isian yang masih fokus tidak tertinggal di layar
+      await tx("draf", "readwrite", s => { s.delete(kunci); return s.delete(kunci + ":foto"); }).catch(() => {});
       status("Tersimpan di ponsel, mengirim…"); gambar(); gambarFoto(); gambarAntrean();
     } catch (x) { return status(x.message, "galat"); }
     finally { sibuk = false; tombolSibuk(); }
@@ -212,7 +241,7 @@
     }
     status("Mengirim laporan…");
     const r = await kirimApi("lapor", {klien_id: it.klien_id, langkah: it.langkah, kondisi: it.kondisi ?? undefined, alasan_bukan_api: it.alasan ?? undefined, bekas_terbakar_baru: it.bekas ?? undefined,
-      catatan: it.catatan || undefined, media: it.berkas.map(b => b.mediaId)});
+      catatan: it.catatan || undefined, ...it.isi, media: it.berkas.map(b => b.mediaId)});
     return r.ok ? {ok: r.j} : nilai(r);
   }
   async function proses(paksa = false) {
@@ -243,9 +272,10 @@
       C = o; L = o.lapor || null;
       try { kunci = await sha(o.token); } catch (e) { kunci = "t" + o.token.slice(0, 8); }
       try { const [d, f] = await Promise.all([tx("draf", "readonly", s => s.get(kunci)), tx("draf", "readonly", s => s.get(kunci + ":foto"))]);
-        draf = {...kosong(), kondisi: d?.kondisi ?? null, alasan: d?.alasan ?? null, bekas: d?.bekas ?? null, catatan: d?.catatan ?? "", foto: Array.isArray(f?.foto) ? f.foto : []}; } catch (e) {}
+        const {tk, ...p} = d || {}; draf = {...kosong(), ...p, veg: Array.isArray(p.veg) ? p.veg : [], foto: Array.isArray(f?.foto) ? f.foto : []}; } catch (e) {}
       try { antrean = (await tx("antrean", "readonly", s => s.getAll())).filter(x => x.tk === kunci); } catch (e) {}
       gambar(); gambarFoto(); gambarAntrean(); proses(true);
+      if (adaRinci() && (draf.desa || draf.kawasan || draf.tipe || draf.veg.length || draf.tanah || draf.luas || draf.padam)) $("wadahRinci").open = true;   // draf rincian yang dipulihkan terlihat, sekali saat halaman dibuka
     },
     perbarui(l) { if (l !== undefined) { L = l || null; gambar(); } },
     menunggu: () => antrean.filter(x => !x.galat).length + (sibuk || menyiapkan ? 1 : 0) + (draf.foto.length ? 1 : 0),   // foto yang belum dikirim ikut dihitung; Hapus foto melepaskannya
