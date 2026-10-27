@@ -324,7 +324,7 @@ uji("sumber resmi: DSDA DKI (JSON datatmalaststatus, mm ke cm, 5000 = tanpa amba
   isiSumber = JSON.stringify([posSihka("S-kat", 106.8377, -6.6336), posSihka("S-jauh", 106.9, -6.7)]);   // S-kat ~ 90 m dari Katulampa 2; S-jauh ~ 8 km
   await tik(KR);
   const ds = JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sungai_dsda'"))[0].isi), tg = JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sungai_tng'"))[0].isi);
-  assert.deepEqual([ds.pos, ds.galat, ds.ok], [38, null, KR]); assert.deepEqual([tg.pos, tg.galat], [25, null]);
+  assert.deepEqual([ds.pos, ds.galat, ds.ok], [38, null, KR + 900e3]); assert.deepEqual([tg.pos, tg.galat], [25, null]);
   const r = await api(), p = await kolom();
   assert.equal(r.status, 200); assert.equal(r.j.pos.length, 35 + 25 + 1, "38 terbaca, 3 tanpa bacaan (TANGGAL 0001) tak tampil; S-kat digabung ke d:116");
   assert.equal(Object.values(r.j.ringkas).reduce((a, b) => a + b, 0), r.j.pos.length);

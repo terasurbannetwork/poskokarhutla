@@ -29,3 +29,11 @@
 #modePeta button,#bahayaSeg button{display:inline-flex;align-items:center;justify-content:center;gap:5px}#modePeta button svg,#bahayaSeg button svg{flex:none}
 .seg.sub button{font-size:11px;padding:5px 2px;gap:4px}.seg.sub button svg{width:13px;height:13px}.seg.sub.redup{opacity:.45}
 #utamaSeg button{display:inline-flex;align-items:center;justify-content:center;gap:5px}
+/* kartu pos: label berikon, baris status kini disorot, pengelola selebar kartu */
+.laci .pa-lb{display:inline-flex;align-items:center;gap:6px;color:var(--ink2);font-weight:600}
+.laci .pa-lb svg{flex:none;opacity:.8}
+.laci .tb2 tr.pa-kini td{background:color-mix(in srgb,var(--brand2) 9%,transparent)}
+.laci .tb2 .pa-pil{font-size:11px;padding:2px 9px}
+.laci .pa-peng{margin:0;display:grid;gap:3px;font-size:12.5px}
+.laci .pa-peng b{font-weight:700;color:var(--ink);line-height:1.35}
+.laci .tb2 tr:has(.pa-pil) td.n{white-space:nowrap!important}

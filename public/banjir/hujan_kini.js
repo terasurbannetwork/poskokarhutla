@@ -5,7 +5,7 @@
    (global: peta, S, PosHujan, EksPA, LEVEL, WARNA_LV, esc, fmt, renderLegenda). Ubinnya <input data-l="hujankini"> di grup Cuaca; penangan change bawaan
    halaman tidak mengenal kunci ini, jadi ditangkap di fase capture seperti databaru.js. */
 const HujanKini = (() => {
-  const API = "/api/cuaca/nowcast", SEGAR_MS = 5 * 60e3, RADIUS_KM = 25, W = {petir: "#5f3dc4", lebat: "#1d4e89", sedang: "#3f7fb8", ringan: "#69a7e8"};
+  const API = "/api/cuaca/nowcast", SEGAR_MS = 5 * 60e3, RADIUS_KM = 25, W = {petir: "#1c7ed6", lebat: "#339af0", sedang: "#74c0fc", ringan: "#a5d8ff"};   // biru muda semua (pemilik 27 Okt: jangan ungu)
   let D = null, janji = null, PI = null, di = false, tAmbil = 0, pj = null, rafH = 0, eH = null;
   const nyala = () => !!document.querySelector('#lapis input[data-l="hujankini"]')?.checked;
   const kini = () => Date.now();
@@ -35,7 +35,7 @@ const HujanKini = (() => {
       ["debit", ph ? EksPA.mmTeks(ph.p.mm_1jam ?? 0) + " mm" : "–", ph ? `1 jam, pos ${fmt(Math.round(ph.km))} km` : "tanpa pos hujan dekat", "#1d4e89"],
       ...(st ? [["perisai", st.teks, esc(st.ket), WARNA_LV[st.lv], st.lv >= 2]] : [])];
     const nKec = a.wilayah.split(",").filter(x => x.trim()).length, judul = ev.charAt(0) + ev.slice(1).toLowerCase();
-    return KAKI(`Sumber: BMKG (nowcast), ${ph ? "SIHKA Kementerian PU, " : ""}prakiraan banjir Centurisk97`, PI.kartuTip({judul: esc(judul), sub: `<small class="tp-sub">${fmt(nKec)} kecamatan</small>`, stat})).replace("tp-gr tp-satu", "tp-gr tp-kisi");
+    return PI.kartuTip({judul: esc(judul), sub: `<small class="tp-sub">${fmt(nKec)} kecamatan</small>`, stat}).replace("tp-gr tp-satu", "tp-gr tp-kisi");
   }
 
   async function pasang(paksa) {
