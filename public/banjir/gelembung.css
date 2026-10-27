@@ -1,0 +1,15 @@
+/* Kartu klik gelembung/provinsi dan grafik batang kartu hover /banjir (gelembung.js). Kelas .tp-tr* sama dengan kartu hover karhutla. */
+.tp-pl{display:inline-block;padding:0 6px;border-radius:999px;font-size:9px;font-weight:700;color:#fff}
+.tp-tr{border-top:1px solid var(--line);padding:5px 11px 7px}
+.tp-tr-h{display:flex;justify-content:space-between;align-items:center;font-size:8.5px;font-weight:800;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2);margin-bottom:4px}
+.tp-tr svg{display:block}
+.tp-tr-x{display:flex;justify-content:space-between;gap:6px;font-size:8px;color:var(--ink2);margin-top:2px}
+.tp-tr-x span:nth-child(2){text-align:center}
+.gel-pop .maplibregl-popup-content{padding:0;overflow:hidden;border-radius:12px}
+.gel-hd{display:flex;align-items:center;gap:10px;padding:10px 34px 8px 12px}
+.gel-hd .lambang{width:28px;height:34px;filter:none}
+.gel-hd small{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}
+.gel-hd b{font-size:14px}
+.gel-n{margin:0;padding:0 12px 8px;font-size:12.5px}.gel-n b{font-size:20px;margin-right:2px}
+.gel-aksi{display:flex;gap:8px;padding:0 12px 12px}
+.gel-aksi .btn{flex:1;height:32px;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;gap:6px}

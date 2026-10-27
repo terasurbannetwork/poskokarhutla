@@ -187,7 +187,7 @@ test("normalisasi satuan ke cm: m, mm, centimeter; null, m3/s, mdpl tanpa angka;
   assert.equal(t(-1.11, "m"), "-111 cm"); assert.equal(t(97.01, "m"), "9.701 cm");
   for (const s of [null, "m3/s", "m³/s", "mdpl"]) assert.equal(t(5, s), "–", String(s));
   assert.equal(t(null, "m"), "–");
-  assert.equal(P.ketAngka({v: 5, satuan: null}), "satuan tidak dicantumkan sumber"); assert.equal(P.ketAngka({v: 5, satuan: "mdpl"}), "bukan tinggi air");
+  assert.equal(P.ketAngka({v: 5, satuan: null}), "Satuan tidak jelas"); assert.equal(P.ketAngka({v: 5, satuan: "mdpl"}), "Bukan tinggi air");
   assert.equal(P.ketAngka({v: 5, satuan: "m"}), ""); assert.equal(P.ketAngka({v: null, satuan: null}), "");
   assert.equal(P.deltaPos({d3: 0.1, satuan: "m"}), "▲ 10 cm"); assert.equal(P.deltaPos({d3: -20, satuan: "mm"}), "▼ 2 cm"); assert.equal(P.deltaPos({d3: 1, satuan: null}), "–");
   assert.equal(P.arah(0.1, "m"), "naik 10 cm"); assert.equal(P.arah(1, "mdpl"), "");
