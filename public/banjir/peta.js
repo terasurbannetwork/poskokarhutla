@@ -148,10 +148,11 @@ const Peta = {
     renderCrumb(); renderDaftar(); },
   /* kartu hover satu baris berikon: wilayah (jumlah kecamatan per status, atau status + hujan di kecamatan), titik sungai, titik pantai */
   kartuWilayah(f) { const p = f.properties, kp = p.kunci.split("|"), n = S.ag[p.kunci]?.n || [0, 0, 0, 0], W = WARNA_LV;
-    let stat; if (kp.length < 3) stat = [["peringatan", n[3], "awas", W[3], n[3] > 0], ["bel", n[2], "siaga", W[2]], ["mata", n[1], "waspada", W[1]]];
+    let stat, kisi = false; if (kp.length < 3) { const pa = PosUkur.menyala() ? PosUkur.agg(p.kunci, S.fiturWil?.find(x => x.properties.kunci === p.kunci)?.geometry) : null;   /* kisi 2x2 seperti kartu karhutla; pos hanya bila lapisannya menyala */
+      stat = [["peringatan", n[3], "kecamatan awas", W[3], n[3] > 0], ["bel", n[2], "kecamatan siaga", W[2]], ["mata", n[1], "kecamatan waspada", W[1]], ...(pa ? [["sungai", pa["Siaga 3"] + pa["Siaga 2"] + pa["Siaga 1"], "pos tinggi air siaga", W[2], pa["Siaga 2"] + pa["Siaga 1"] > 0]] : [])]; kisi = true; }
     else { const c = selDekat(...pusat(p.kunci)); stat = [["perisai", LEVEL[p.lv], "status", W[p.lv], p.lv >= 2], ["hujan", c ? fmt(Math.round(c.h3)) + " mm" : "–", "hujan 3 hari", "#3f7fb8"],
       ...(Pra72.d?.anggota != null ? [["bel", esc(Pra72.teks(p.kunci)), "peluang siaga", W[2]]] : [])]; }
-    return PI.kartuTip({judul: esc(p.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "", stat}); },
+    const h = PI.kartuTip({judul: esc(p.nama), kepala: kp.length < 3 ? lambang(kp[0], kp[1]) : "", stat}); return kisi ? h.replace("tp-gr tp-satu", "tp-gr tp-kisi") : h; },
   kartuSungai(i, k) { const t = S.sungai.titik[i], W = WARNA_LV; if (!t) return "";
     return PI.kartuTip({judul: esc(t.kec), kepala: lambang(t.prov, t.kab), stat: [["sungai", k < 0 ? "–" : LEVEL[k], "status", k < 0 ? "#9aa8b8" : W[k], k >= 2], ["debit", fmt(Math.round(t.puncak)) + " m³/s", "puncak 7 hari", "#3f7fb8"],
       ...(t.q2 ? [["rasio", f2(t.puncak / t.q2) + "×", "dari banjir 2 th", "#3f7fb8"]] : [])]}); },
@@ -160,15 +161,16 @@ const Peta = {
       ...(() => { const sb = SUBS_LIT?.kota?.[subsKota(t.kab || "")]?.sumber?.[0]; return sb && sb.maks_cm_thn ? [["rasio", "sampai " + fmt(sb.maks_cm_thn) + " cm/th", "turun tanah, literatur (hipotesis)", "#b8782f"]] : []; })()]}); },
   interaksi() {
     if (this._ia) return; this._ia = true;
-    let hov = null, diTitik = false; const tip = () => PI?.sembunyiTip();
+    let hov = null, diTitik = false, fT = null, evT = null, rafT = 0; const tip = () => PI?.sembunyiTip();
     /* titik sungai dan rob di atas wilayah: kartunya menang bila kursor di titik */
     for (const [id, kartu] of [["sungai", "kartuSungai"], ["rob", "kartuRob"]]) {
       peta.on("mousemove", id, e => { diTitik = true; peta.getCanvas().style.cursor = "pointer"; const f = e.features[0]; PI?.tampilTip(this[kartu](f.properties.i, f.properties.k), e.originalEvent); });
       peta.on("mouseleave", id, () => { diTitik = false; peta.getCanvas().style.cursor = ""; tip(); }); }
     peta.on("mousemove", "wil-fill", e => { peta.getCanvas().style.cursor = "pointer"; const f = e.features[0];
       if (hov !== f.id) { if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = f.id; peta.setFeatureState({source: "wil", id: hov}, {hover: true}); }
-      if (!diTitik && !this.diKej && S.mode !== "riwayat" && PI) PI.tampilTip(this.kartuWilayah(f), e.originalEvent); });
-    peta.on("mouseleave", "wil-fill", () => { peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
+      /* kartu digambar paling banyak sekali per frame, dari agregat yang sudah dihitung */
+      if (!diTitik && !this.diKej && S.mode !== "riwayat" && PI) { fT = f; evT = e.originalEvent; rafT ||= requestAnimationFrame(() => { rafT = 0; if (fT) PI.tampilTip(this.kartuWilayah(fT), evT); }); } else fT = null; });
+    peta.on("mouseleave", "wil-fill", () => { fT = null; peta.getCanvas().style.cursor = ""; if (hov !== null) peta.setFeatureState({source: "wil", id: hov}, {hover: false}); hov = null; if (!diTitik && S.mode !== "riwayat") tip(); });
     /* zoom keluar sendiri: tingkat wilayah ikut naik (kecamatan -> kabupaten -> provinsi -> Indonesia) tanpa menerbangkan peta */
     peta.on("zoomend", e => { if (!e.originalEvent) return; const z = peta.getZoom(), n = S.jalur.length, ke = n >= 1 && z < 5.2 ? 0 : n >= 2 && z < 6.8 ? 1 : n; if (ke === n) return;
       S.jalur = S.jalur.slice(0, ke); nanti(() => Peta.aturWilayah(false)); });

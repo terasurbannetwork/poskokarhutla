@@ -49,7 +49,7 @@ test("pos lama dan macet dipilih, terlama mengirim di atas", () => {
 
 test("geojson: koordinat, label angka, denyut hanya untuk naik dan tertinggi", () => {
   const g = plain(P.geojson([{id: "1", nama: "X", x: 0, y: 0, v: 41.5, satuan: "cm", status: "tertinggi"}, {id: "2", nama: "Y", x: 0, y: 0, v: null, satuan: null, status: "biasa"}]));
-  assert.equal(g.features[0].properties.p, 1); assert.equal(g.features[0].properties.a, "41,5"); assert.equal(g.features[1].properties.p, 0); assert.equal(g.features[1].properties.a, "");
+  assert.equal(g.features[0].properties.p, 1); assert.equal(g.features[0].properties.a, "41,5 cm"); assert.equal(g.features[1].properties.p, 0); assert.equal(g.features[1].properties.a, "");
   assert.deepEqual(plain(P.geojson(undefined)).features, []);
 });
 
@@ -179,4 +179,26 @@ test("pos per provinsi (point in polygon) dan selisih ke batas Siaga berikutnya"
   assert.deepEqual(plain(P.menujuBatas({v: 33, satuan: "cm", ambang: A})), {nama: "Siaga 3", cm: 17});
   assert.deepEqual(plain(P.menujuBatas({v: .8, satuan: "m", ambang: A})), {nama: "Siaga 2", cm: 20});
   assert.equal(P.menujuBatas({v: 200, satuan: "cm", ambang: A}), null); assert.equal(P.menujuBatas({v: 5, satuan: "cm"}), null);
+});
+
+test("normalisasi satuan ke cm: m, mm, centimeter; null, m3/s, mdpl tanpa angka; negatif tetap", () => {
+  const t = (v, satuan) => P.teksPos({v, satuan});
+  assert.equal(t(2.93, "m"), "293 cm"); assert.equal(t(2930, "mm"), "293 cm"); assert.equal(t(293, "cm"), "293 cm"); assert.equal(t(293, "centimeter"), "293 cm");
+  assert.equal(t(-1.11, "m"), "-111 cm"); assert.equal(t(97.01, "m"), "9.701 cm");
+  for (const s of [null, "m3/s", "m³/s", "mdpl"]) assert.equal(t(5, s), "–", String(s));
+  assert.equal(t(null, "m"), "–");
+  assert.equal(P.ketAngka({v: 5, satuan: null}), "satuan tidak dicantumkan sumber"); assert.equal(P.ketAngka({v: 5, satuan: "mdpl"}), "bukan tinggi air");
+  assert.equal(P.ketAngka({v: 5, satuan: "m"}), ""); assert.equal(P.ketAngka({v: null, satuan: null}), "");
+  assert.equal(P.deltaPos({d3: 0.1, satuan: "m"}), "▲ 10 cm"); assert.equal(P.deltaPos({d3: -20, satuan: "mm"}), "▼ 2 cm"); assert.equal(P.deltaPos({d3: 1, satuan: null}), "–");
+  assert.equal(P.arah(0.1, "m"), "naik 10 cm"); assert.equal(P.arah(1, "mdpl"), "");
+  const g = plain(P.geojson([{id: "1", x: 0, y: 0, v: 1.5, satuan: "m", status: "biasa"}, {id: "2", x: 0, y: 0, v: 9, satuan: null, status: "biasa"}]));
+  assert.equal(g.features[0].properties.a, "150 cm"); assert.equal(g.features[1].properties.a, "");
+});
+
+test("pin pos tidak tersingkir, pos terpilih tersorot (statis)", () => {
+  assert.match(src, /id: "pos", type: "symbol"[^\n]*minzoom: 7[^\n]*"icon-allow-overlap": true, "icon-ignore-placement": true/);
+  assert.match(src, /id: "pos-pilih", type: "symbol"[\s\S]*?"icon-size"[\s\S]*?1\.15/);
+  assert.match(src, /id: "pos-pilih-angka"[\s\S]*?"text-allow-overlap": true/);
+  assert.ok(src.indexOf('id: "pos-pilih"') > src.indexOf('id: "pos-angka"'), "pos-pilih di atas pin dan angka");
+  assert.match(src, /strokeStyle = "#000"; g\.lineWidth = 2\.5/);
 });

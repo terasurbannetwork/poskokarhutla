@@ -29,3 +29,6 @@
   body.cetak-sarana .chk.srn{grid-template-columns:minmax(0,1fr) 92px 70px 104px 104px}
   body.cetak-sarana .chk.srn small.m{display:none}
 }
+
+/* kartu hover wilayah: kisi 2x2 seperti karhutla (kartuTip bawaan satu baris) */
+.tp-gr.tp-kisi{display:grid;grid-template-columns:1fr 1fr;gap:6px 14px}
