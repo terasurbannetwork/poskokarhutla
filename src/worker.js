@@ -226,7 +226,7 @@ async function denganWilayah(env, sql, ikat, cara) {
 /* ================================================================ rute */
 async function daftar(env, url, kini) {
   const q = url.searchParams, ikat = [kini];
-  let where = `l.disembunyikan = 0 AND l.selesai = 0 AND l.kedaluwarsa > ? AND NOT (l.salah >= 3 AND l.salah > l.benar)
+  let where = `l.disembunyikan = 0 AND l.selesai = 0 AND l.kedaluwarsa > ? AND NOT (l.salah >= 3 AND l.salah > l.benar AND l.jenis NOT IN ('minta', 'tawar', 'sehat', 'padam', 'evakuasi'))
     AND NOT EXISTS (SELECT 1 FROM laporan c WHERE c.induk = l.id AND c.disembunyikan = 0)`;
   const jam = q.has("jam") ? Number(q.get("jam")) : 168;
   if (!Number.isInteger(jam) || jam < 1 || jam > 168) return gagal(400, `jam harus bilangan bulat 1–168, diterima '${q.get("jam")}'`);
@@ -368,6 +368,8 @@ async function suara(env, req, id, kelompok, kini) {
   if (!sah.includes(nilai)) return gagal(400, `nilai '${nilai}' tidak sah; pilih ${sah.join("/")}`);
   const ada = await env.DB.prepare("SELECT disembunyikan FROM laporan WHERE id = ?").bind(id).first();
   if (!ada || ada.disembunyikan) return gagal(404, "laporan tidak ada atau disembunyikan");
+  /* aduan menyembunyikan laporan di 3 suara: wajib Turnstile seperti buat() (tanpa itu 3 IP anonim bisa menghapus laporan apa pun) */
+  if (kelompok === "aduan" && !(await turnstileOK(env, b.o.turnstile, req))) return gagal(403, "verifikasi Turnstile gagal");
   const ip = await ipHash(env, req);
   const laju = await cekLaju(env, ip, kelompok === "aduan" ? "aduan" : "konfirmasi", kini); if (laju) return laju;
   await env.DB.prepare(`INSERT INTO suara (laporan_id, ip_hash, kelompok, nilai, waktu) VALUES (?, ?, ?, ?, ?)
@@ -404,10 +406,12 @@ export async function gagalSudahBanyak(env, kunci, aksi, maks, kini) {
   return (await env.DB.prepare("SELECT count(*) n FROM laju_posko WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
 }
 export const catatGagal = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_posko (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini).run();
+/* satu-satunya definisi "secret akun gerbang": dipakai adminOK (diterima) dan modOK di posko.js (dikeluarkan dari moderator) */
+export const akunGerbang = env => Object.keys(env).filter(k => /^AKUN_SITUS(_[A-Z0-9_]+)?$/.test(k)).sort().map(k => env[k]);
 export async function adminOK(env, req, kini = Date.now()) {
   /* AKUN_SITUS dan AKUN_SITUS_<NAMA>: akun "user:sandi" tambahan (gerbang centurisk97.id). Satu secret per orang supaya akun baru
      tidak perlu membaca ulang secret lama (Cloudflare tidak bisa menampilkan nilai secret). */
-  const daftar = [env.ADMIN_TOKEN, ...Object.keys(env).filter(k => /^AKUN_SITUS(_[A-Z0-9_]+)?$/.test(k)).sort().map(k => env[k])].filter(x => typeof x === "string" && x).join(",");
+  const daftar = [env.ADMIN_TOKEN, ...akunGerbang(env)].filter(x => typeof x === "string" && x).join(",");
   if (!daftar) return null;
   const sah = await Promise.all(daftar.split(",").map(x => x.trim()).filter(Boolean).map(sha));
   const t = req.headers.get("x-admin-token") ?? (req.headers.get("authorization") || "").match(/^Bearer\s+(\S+)/i)?.[1];
