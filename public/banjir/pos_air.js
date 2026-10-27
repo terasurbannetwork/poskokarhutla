@@ -543,9 +543,10 @@ const PosUkur = {
   /* kartu hover pos: nama dengan pil status, sungai dan kabupaten, tinggi air dan selisih ke batas berikut */
   /* kartu hover pos: baris 1 nama, baris 2 "sungai atau kota, pengelola", badan angka besar kiri + pil kanan, batang ambang + selisih ke batas, jam baca; ~260 px */
   kartuHover(x) { const w = PosAir.redup(x.status) ? "#7a8796" : PosAir.warnaPos(x), nb = PosAir.menujuBatas(x), b = PosAir.batangAmbang(x), cm = PosAir.cmNilai(x), mati = x.status === "lama" || x.status === "macet";
-    const sub = PosAir.subjudul(this.sungaiDari(x) && !x.sungai ? {...x, sungai: this.sungaiDari(x)} : x, this.kabDari(x)?.split("|")[1]);
-    return `<div class="pa-hv"><div class="pa-hv-n">${esc(PosAir.judulPos(x.nama))}</div><div class="pa-hv-s">${esc(sub)}</div>
-      <div class="pa-hv-b"><span class="pa-hv-a" style="color:${mati ? "#7a8796" : "var(--ink)"}"><b>${cm == null ? "–" : PosAir.angkaId(cm)}</b>${cm == null ? "" : " cm"}</span>${this.pilPos(x)}</div>
+    /* kartu hover tanpa nama pengelola (keputusan pemilik 27 Okt); pil Normal cukup ikonnya */
+    const sg = this.sungaiDari(x), sub = [sg, PosAir.namaPendek(x.kota || x.kab || this.kabDari(x)?.split("|")[1] || "")].filter(Boolean).join(", "), normal = (PosAir.resmi(x) || PosAir.pilLabel(x)) === "Normal";
+    return `<div class="pa-hv"><div class="pa-hv-n">${esc(PosAir.judulPos(x.nama))}</div>${sub ? `<div class="pa-hv-s">${esc(sub)}</div>` : ""}
+      <div class="pa-hv-b"><span class="pa-hv-a" style="color:${mati ? "#7a8796" : "var(--ink)"}"><b>${cm == null ? "–" : PosAir.angkaId(cm)}</b>${cm == null ? "" : " cm"}</span>${normal ? this.pilPos(x).replace(/<\/svg>Normal</, '</svg><').replace('class="pill pa-pil"', 'class="pill pa-pil pa-ikon" title="Normal" aria-label="Normal"') : this.pilPos(x)}</div>
       ${b ? `<span class="pa-ba pa-hv-ba"><i style="width:${b.isi}%;background:${PosAir.warnaPos(x)}"></i>${b.tik.map(t => `<u style="left:${t.pos}%;background:${t.warna}"></u>`).join("")}</span>` : ""}
       ${nb && !PosAir.redup(x.status) ? `<div class="pa-hv-k"><b>${PosAir.angkaId(nb.cm)} cm</b> lagi ke ${nb.nama}</div>` : ""}
       ${x.t != null ? `<div class="pa-hv-j">${PosAir.waktuBaca(x.t)}</div>` : ""}</div>`; },

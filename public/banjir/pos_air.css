@@ -72,3 +72,4 @@ table.tb3 thead th{background:oklch(25.5% .075 256);color:#fff;text-align:center
 details.lipat.pa-grup>summary .pa-jml{margin-left:auto}details.lipat.pa-grup>summary::after{margin-left:0}
 details.lipat.pa-grup .pa-kt{gap:6px}
 .pa-ang .pa-kos{font-size:10.5px;font-weight:700;color:var(--ink2);white-space:nowrap}
+.pill.pa-pil.pa-ikon{width:22px;padding:0;justify-content:center;gap:0}
