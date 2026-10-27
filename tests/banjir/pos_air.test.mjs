@@ -130,10 +130,10 @@ test("skala tegak: pita dan garis air", () => {
   assert.ok(g.pita[0].y1 === g.H && g.pita[3].y0 === 0, "pita menutup seluruh tinggi");
 });
 
-test("ruas sungai berlapis: tanpa nama 1,5 km; bernama tiga cincin 4,5/3/1,5 km; Normal dan macet tidak diwarnai", () => {
+test("ruas sungai berlapis: tanpa nama tiga cincin 1,5/1/0,5 km; bernama tiga cincin 4,5/3/1,5 km; Normal dan macet tidak diwarnai", () => {
   const tanpa = plain(P.ruasLapis(kumpul));
-  assert.deepEqual([...new Set(tanpa.map(x => x.kelas))].sort(), ["Siaga 1", "Siaga 3", "naik"]); assert.ok(tanpa.every(x => x.lapis === 2 && x.nama === null));
-  const ring = tanpa.find(x => x.kelas === "Siaga 1").g.coordinates[0][0]; assert.equal(ring.length, 17); assert.deepEqual(ring[0], ring[16]); assert.ok(Math.abs(ring[0][0] - 1.5 / 111.32) < .001, "radius 1,5 km di khatulistiwa");
+  assert.deepEqual([...new Set(tanpa.map(x => x.kelas))].sort(), ["Siaga 1", "Siaga 3", "naik"]); assert.ok(tanpa.every(x => x.nama === null)); assert.deepEqual([...new Set(tanpa.map(x => x.lapis))].sort(), [0, 1, 2]);   /* pemilik 27 Okt: gradasi kuning ke merah juga di sungai tanpa nama */
+  const ring = tanpa.find(x => x.kelas === "Siaga 1" && x.lapis === 2).g.coordinates[0][0]; assert.equal(ring.length, 17); assert.deepEqual(ring[0], ring[16]); assert.ok(Math.abs(ring[0][0] - .5 / 111.32) < .001, "cincin dalam 0,5 km di khatulistiwa"); assert.ok(Math.abs(tanpa.find(x => x.kelas === "Siaga 1" && x.lapis === 0).g.coordinates[0][0][0][0] - 1.5 / 111.32) < .001, "cincin luar 1,5 km");
   const bernama = plain(P.ruasLapis(kumpul, p => "Ciliwung")).filter(x => x.kelas === "Siaga 1");
   assert.deepEqual(bernama.map(x => x.lapis).sort(), [0, 1, 2]); assert.ok(bernama.every(x => x.nama === "Ciliwung"));
   const r = l => Math.abs(bernama.find(x => x.lapis === l).g.coordinates[0][0][0][0]) * 111.32; assert.ok(Math.abs(r(0) - 4.5) < .1 && Math.abs(r(1) - 3) < .1 && Math.abs(r(2) - 1.5) < .1);
@@ -163,9 +163,9 @@ test("pasang surut: nilai sekarang, arah, empat puncak berikut (fixture)", () =>
 test("sorot aliran: pola pendek-panjang berjumlah tetap, bergeser, garis tengah utuh dan opasitas turun di zoom tinggi", () => {
   for (let i = 0; i < 14; i++) { const d = plain(P.dash(i * P.JEDA)); assert.ok(Math.abs(d.reduce((a, b) => a + b, 0) - 7) < .05, JSON.stringify(d)); }
   assert.notDeepEqual(plain(P.dash(0)), plain(P.dash(P.JEDA * 5)));
-  assert.match(src, /id: "alir-garis", type: "line"[^]*?"line-color": gl \? "#6fb2ea" : "#7fb6e6"/, "garis tengah biru muda tipis tanpa dash");
+  assert.match(src, /id: "alir-garis", type: "line"[^]*?"line-color": gl \? "#6fb2ea" : "#4f95d6"/, "garis tengah biru tanpa dash, tebal sejak zoom jauh");
   assert.ok(!/id: "alir-garis"[^]*?line-dasharray[^]*?id: "alir-gerak"/.test(src), "garis tengah tidak berdash");
-  assert.match(src, /id: "alir-gerak"[^]*?"line-blur": 1/);
+  assert.match(src, /id: "alir-gerak"[^]*?"line-width": lebar\(/, "kilau aliran selebar badan air (pemilik 27 Okt, seperti Oyenza)");
   const pk = fs.readFileSync("public/banjir/peta.js", "utf8");
   assert.match(pk, /"fill-opacity": \["interpolate", \["linear"\], \["zoom"\], 10/); assert.match(pk, /"raster-opacity": \["interpolate", \["linear"\], \["zoom"\], 10, \.75, 13, \.15\]/);
 });
