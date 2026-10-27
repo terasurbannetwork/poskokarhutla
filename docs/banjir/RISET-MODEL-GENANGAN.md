@@ -225,3 +225,12 @@ Tidak ditemukan repo open source Jakarta yang menyediakan model genangan terlati
 4. Surat ke Dinas SDA DKI/BMKG (pos hujan jam, kapasitas pompa, log operasi, arsip tinggi air); tanpa ini faktor bias hujan dan Kd tetap berlabel hipotesis.
 5. Lisensi PetaBencana: periksa syarat resmi sebelum menerbitkan lebih dari agregat.
 6. FABDEM (CC BY-NC-SA) tidak dipakai di situs publik sampai ada keputusan; DEMNAS 2011 dengan koreksi subsidensi tetap acuan.
+
+
+## 9. Hasil M0 (27 Okt 2026)
+
+Uji 2024-2025 dibuka sekali; vonis **GAGAL** atas kriteria terkunci `KRITERIA-M0.md`. Hujan harian GSMaP 0,1 derajat (gauge v8, 1.771 hari) ditambah intensitas jam ERA5. M0: POD 0,297, FAR 0,646, ETS 0,174. Klimatologi bulanan per kecamatan: ETS 0,180 (pembanding terbaik; selisih ETS -0,006, CI95 -0,027 sampai 0,016). Aturan status sekarang (parsial): ETS 0,009, FAR 0,95. Diperiksa `validasi-model`: tanpa kebocoran, sidik cocok, vonis sesuai.
+
+Sebab paling mungkin, berbukti: (i) hujan harian per sel 11 km hampir tidak membedakan hari tergenang (AUC uji 0,51-0,54), sehingga kemampuan M0 hanyalah "kecamatan mana yang sering dilaporkan"; (ii) label PetaBencana didominasi bias pelapor (tingkat positif 1,1% sampai 5,9% per tahun mengikuti jumlah laporan) dan hari UTC GSMaP tergeser 7 jam dari tanggal WIB laporan.
+
+Akibat untuk M1: uji 2024-2025 sudah terbuka dan tidak boleh dipakai menyetel. M1 butuh kriteria dan periode uji baru (mis. prospektif mulai musim 2026/27), hujan berjam WIB (GSMaP jam atau pos), dan label yang tidak bergantung volume pelapor (dinormalkan per tahun atau GFM/DIBI).
