@@ -304,7 +304,7 @@ def bangun():
            "sampai": (akhir + WIB).strftime("%Y-%m-%d %H:%M WIB"), "dari": "2026-01-01",
            "sumber_titik": "NASA FIRMS VIIRS S-NPP 375 m, keyakinan nominal/tinggi (arsip SP + NRT)",
            "sumber_konsesi": sumber, "ha_piksel": round(HA_PIKSEL, 2), "jeda_kejadian": JEDA,
-           "celah": "FIRMS kosong 8 Mei - 1 Jun 2026", "prov": []}
+           "celah": "Satelit S-NPP tanpa data: 10-12 Mar, 28-30 Apr, 1-2 Jun, 11-16 Jul, 3 Agu 2026", "prov": []}
     for kd, rs in sorted(prov.items()):
         rs.sort(key=lambda r: -r["titik"])
         with open(os.path.join(KELUAR, f"{kd}.json"), "w") as f:

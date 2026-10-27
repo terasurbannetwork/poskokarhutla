@@ -47,7 +47,7 @@
       + (ps.length ? `<div class="ak-tcl"><small>Pemegang saham</small>${ps.map(x => `<span>${bendera(x.negara, 11)}${esc(x.nama)}</span>`).join("")}</div>` : "")
       + (p.catatan ? `<p class="ak-tcn">${esc(p.catatan)}</p>` : ""); };
 
-  Object.assign(Insight.st, {akJenis: "", akHal: 0, akUrut: "peta", akTurun: true});
+  Object.assign(Insight.st, {akJenis: "", akHal: 0, akUrut: "luas", akTurun: true});
   Object.assign(Insight.LABEL, {aktor: "Perusahaan", aktorNegara: "Modal asing", aktorGrup: "Grup usaha", aktorPsn: "PSN Merauke", aktorTokoh: "Tokoh politik"});
   ["aktor", "aktorNegara"].forEach(k => Insight.PENUH.add(k));
   const i0 = Insight.EX.indexOf("paparan");   /* sesudah paparan = posisi lama sesudah kartu bnpb (disembunyikan 17 Okt 2026) */
@@ -55,30 +55,47 @@
 
   /* ---------- 1. daftar perusahaan ---------- */
   const PER = 10;
+  /* Pemilik, 27 Okt 2026: 48 jam ke depan kartu ini HANYA sawit (pertemuan dengan GAPKI). Lewat batas ini kartu kembali sendiri ke
+     semua jenis + tab Semua/Sawit/PBPH/Modal asing; kolom baru (luas, hotspot, firespot) tetap. Hapus konstanta + cabangnya bila tak dipakai lagi. */
+  const SAWIT_SAJA_SAMPAI = Date.parse("2026-10-29T10:00:00+07:00");
+  A.SAWIT_SAJA_SAMPAI = SAWIT_SAJA_SAMPAI;
+  A.kini = () => Date.now();                       /* disuntik uji */
+  A.sawitSaja = (t = A.kini()) => t < SAWIT_SAJA_SAMPAI;
+  const BLN3 = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const tglPendek = s => `${+s.slice(8, 10)} ${BLN3[+s.slice(5, 7) - 1]}`;                /* "2026-10-19" -> "19 Okt" */
   Insight.exAktor = function () {
     if (!A.d) return tunggu(); if (A.d.gagal) return "";
-    const st = this.st, semua = A.d.perusahaan.filter(p => titik(p) != null);
-    let r = semua.filter(p => !st.akJenis || (st.akJenis === "asing" ? p.negara.some(k => k !== "ID") : p.jenis === st.akJenis));
-    const nilai = {titik, nama: p => p.nama, grup: p => p.grup.join(", "), prov: p => p.prov, peta: p => p.cek?.titik_viirs ?? -1, kini: p => p.cek?.titik_terkini ?? -1, negara: p => p.negara.filter(k => k !== "ID").length};
-    const tk = A.d.periode?.terkini, lbKini = tk?.dari ? (tk.dari === tk.sampai ? +tk.dari.slice(3) : `${+tk.dari.slice(3)}–${+tk.sampai.slice(3)}`) + " " + ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][+tk.sampai.slice(0, 2) - 1] : "Terkini";
-    const f = nilai[st.akUrut] || titik;
+    const st = this.st, sawit = A.sawitSaja(), semua = A.d.perusahaan.filter(p => titik(p) != null && (!sawit || p.jenis === "sawit"));
+    let r = semua.filter(p => sawit || !st.akJenis || (st.akJenis === "asing" ? p.negara.some(k => k !== "ID") : p.jenis === st.akJenis));
+    /* kolom angka: luas & hotspot 2026 dari laporan konsesi (aktor_sawit.py: p.sawit26), hotspot & firespot terkini dari aktor_walhi.cek_terkini */
+    const s26 = p => p.sawit26, kini_ = p => p.cek?.titik_terkini, fs_ = p => p.cek?.firespot_terkini;
+    const nilai = {titik, nama: p => p.nama, grup: p => p.grup.join(", "), prov: p => p.prov, negara: p => p.negara.filter(k => k !== "ID").length,
+      luas: p => s26(p)?.luas_bakar_ha ?? -1, hs: p => s26(p)?.titik ?? -1, kini: p => kini_(p) ?? -1, fs: p => fs_(p) ?? -1};
+    nilai.peta = nilai.hs;                                                              /* kunci lama "peta" */
+    const tk = A.d.periode?.terkini, lbKini = tk?.dari ? (tk.dari === tk.sampai ? +tk.dari.slice(3) : `${+tk.dari.slice(3)}–${+tk.sampai.slice(3)}`) + " " + BLN3[+tk.sampai.slice(0, 2) - 1] : "Terkini";
+    const sp = semua.find(p => s26(p)?.sampai)?.sawit26.sampai, lb26 = sp ? `1 Jan–${tglPendek(sp)}` : "2026";
+    const f = nilai[st.akUrut] || nilai.luas;
     r = r.slice().sort((a, b) => { const x = f(a), y = f(b); const c = typeof x === "string" ? x.localeCompare(y, "id") : x - y; return st.akTurun ? -c : c; });
     const jml = Math.max(1, Math.ceil(r.length / PER)); st.akHal = Math.min(st.akHal, jml - 1);
     const hal = r.slice(st.akHal * PER, st.akHal * PER + PER), asing = semua.filter(p => p.negara.some(k => k !== "ID")).length;
-    const th = (k, t, n) => `<th${n ? ' class="n"' : ""}><button data-ak-urut="${k}">${t}<i>${st.akUrut === k ? (st.akTurun ? "↓" : "↑") : ""}</i></button></th>`;
-    const tabel = `<div class="tw ak-tw"><table><thead><tr><th class="n">No</th>${th("nama", "Perusahaan")}${th("negara", "Negara")}${th("grup", "Grup")}<th>Industri</th>${th("prov", "Provinsi")}${th("peta", "Peta Jan–Agu", 1)}${th("kini", lbKini, 1)}</tr></thead>
-      <tbody>${hal.map((p, i) => `<tr data-ak="${esc(p.nama)}" tabindex="0" data-tip="${esc(A.tip(p))}">
-        <td class="n">${st.akHal * PER + i + 1}</td><td class="ak-nm">${esc(p.nama)}</td>
-        <td class="ak-ng">${benderaDaf(p.negara, 14) || `<span class="ak-mt">–</span>`}</td><td class="ak-gr">${esc(p.grup.join(", ") || "–")}</td><td>${indPil(p.industri)}</td><td>${esc(p.prov)}</td>
-        <td class="n">${!p.cek?.poligon ? `<span class="ak-mt" data-tip="Nama ini tidak ada di peta konsesi GFW/Trase">tidak di peta</span>`
-          : p.cek.lokasi === "beda" ? `<span class="ak-pl ak-pl3" data-tip="Poligon senama di peta berada di provinsi lain dari yang tercatat; ${fmt(p.cek.titik_viirs)} titik VIIRS di poligon itu">lokasi beda</span>`
-          : `<span class="ak-pl ak-pl2">${fmt(p.cek.titik_viirs ?? 0)}</span>`}</td>
-        <td class="n">${p.cek?.poligon && p.cek.lokasi !== "beda" ? (p.cek.titik_terkini ? `<span class="ak-pl">${fmt(p.cek.titik_terkini)}</span>` : `<span class="ak-mt">0</span>`) : `<span class="ak-mt">–</span>`}</td></tr>`).join("")
-        || `<tr><td colspan="8" class="kosong">Tidak ada perusahaan.</td></tr>`}</tbody></table></div>${paginasi(st.akHal, r.length, PER, "perusahaan")}`;
-    const kini = semua.filter(p => p.cek?.titik_terkini && p.cek.lokasi !== "beda").length;
-    return this.ex(`${this.hl(fmt(semua.length) + " perusahaan")} terindikasi karhutla 2026, ${this.hl(fmt(asing))} terafiliasi luar negeri; ${this.hl(fmt(kini))} masih ada titik panas di konsesinya ${esc(lbKini)}`, "", "", tabel,
-      `Sumber: NASA FIRMS VIIRS di poligon konsesi GFW/Trase senama (Peta Jan–Agu, ${esc(lbKini)})`,
-      this.seg("akJenis", [["", "Semua"], ["sawit", "Sawit"], ["pbph", "PBPH"], ["asing", "Modal asing"]])); };
+    const th = (k, t, n, sub) => `<th${n ? ' class="n"' : ""}><button data-ak-urut="${k}"><span class="ak-ph2">${t}${sub ? `<small class="ak-pr">${esc(sub)}</small>` : ""}</span><i>${st.akUrut === k ? (st.akTurun ? "↓" : "↑") : ""}</i></button></th>`;
+    const ang = (v, pil) => v == null ? `<span class="ak-mt" data-tip="Belum ada datanya">–</span>` : v ? `<span class="${pil}">${fmt(v)}</span>` : `<span class="ak-mt">0</span>`;
+    const kolAngka = [th("luas", "Indikasi luas terbakar (ha)", 1, lb26), th("hs", "Hotspot", 1, lb26), th("kini", "Hotspot", 1, lbKini), th("fs", "Firespot", 1, lbKini)].join("");
+    const selAngka = p => `<td class="n">${ang(s26(p)?.luas_bakar_ha, "ak-pl")}</td><td class="n">${ang(s26(p)?.titik, "ak-pl")}</td><td class="n">${ang(kini_(p), "ak-pl")}</td><td class="n">${ang(fs_(p), "ak-pl")}</td>`;
+    /* jendela sawit: tanpa Negara dan Industri (semuanya sawit); sesudahnya kolom lama kembali di depan kolom angka */
+    const kepala = sawit ? `${th("nama", "Perusahaan")}${th("grup", "Grup")}${th("prov", "Provinsi")}` : `${th("nama", "Perusahaan")}${th("negara", "Negara")}${th("grup", "Grup")}<th>Industri</th>${th("prov", "Provinsi")}`;
+    const sel = p => sawit ? `<td class="ak-nm">${esc(p.nama)}</td><td class="ak-gr">${esc(p.grup.join(", ") || "–")}</td><td>${esc(p.prov)}</td>`
+      : `<td class="ak-nm">${esc(p.nama)}</td><td class="ak-ng">${benderaDaf(p.negara, 14) || `<span class="ak-mt">–</span>`}</td><td class="ak-gr">${esc(p.grup.join(", ") || "–")}</td><td>${indPil(p.industri)}</td><td>${esc(p.prov)}</td>`;
+    const kol = sawit ? 8 : 10;
+    const tabel = `<div class="tw ak-tw"><table><thead><tr><th class="n">No</th>${kepala}${kolAngka}</tr></thead>
+      <tbody>${hal.map((p, i) => `<tr data-ak="${esc(p.nama)}" tabindex="0" data-tip="${esc(A.tip(p))}"><td class="n">${st.akHal * PER + i + 1}</td>${sel(p)}${selAngka(p)}</tr>`).join("")
+        || `<tr><td colspan="${kol}" class="kosong">Tidak ada perusahaan.</td></tr>`}</tbody></table></div>${paginasi(st.akHal, r.length, PER, "perusahaan")}`;
+    const kini = semua.filter(p => kini_(p) && p.cek.lokasi !== "beda").length, ha = semua.reduce((a, p) => a + (s26(p)?.luas_bakar_ha || 0), 0);
+    const judul = sawit ? `${this.hl(fmt(semua.length) + " perusahaan sawit")} terindikasi karhutla 2026 dengan indikasi luas terbakar ${this.hl(fmt(ha) + " ha")}; ${this.hl(fmt(kini))} masih ada titik panas di konsesinya ${esc(lbKini)}`
+      : `${this.hl(fmt(semua.length) + " perusahaan")} terindikasi karhutla 2026, ${this.hl(fmt(asing))} terafiliasi luar negeri; ${this.hl(fmt(kini))} masih ada titik panas di konsesinya ${esc(lbKini)}`;
+    return this.ex(judul, "", "", tabel,
+      `Sumber: NASA FIRMS VIIRS 375 m di poligon konsesi GFW/Trase senama. Luas = indikasi dari piksel VIIRS unik x 14,06 ha per konsesi (bukan citra); firespot = titik di cluster yang lolos syarat metode Kemenhut (${esc(lbKini)})`,
+      sawit ? "" : this.seg("akJenis", [["", "Semua"], ["sawit", "Sawit"], ["pbph", "PBPH"], ["asing", "Modal asing"]])); };
 
   /* ---------- 2. modal asing per negara (Tabel 3) ---------- */
   Insight.exAktorNegara = function () {

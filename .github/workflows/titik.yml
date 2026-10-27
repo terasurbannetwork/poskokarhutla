@@ -93,13 +93,16 @@ jobs:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: |
           # cache data- bisa membawa trio yang lebih tua atau tak lengkap dari versi repo: pakai versi repo bila lebih baru
-          akhir() { python3 -c "import json,sys; print(json.load(open(sys.argv[1]))['hari'][-1])" "$1" 2>/dev/null || echo 0; }
+          # hari terakhir lalu waktu dibuat: cache berhari sama tetapi dari kode lama (tanpa "faktor", 25 Okt) kalah dari versi repo
+          akhir() { python3 -c "import json,sys; d=json.load(open(sys.argv[1])); print(d['hari'][-1] + '|' + d.get('dibuat', ''))" "$1" 2>/dev/null || echo 0; }
+          repo() { f=$(git ls-files 'public/data/peta_karhutla*.json'); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
           git show HEAD:public/data/peta_karhutla.json > /tmp/pk_repo.json 2>/dev/null || true
           if [ ! -f public/data/peta_karhutla_kab.json ] || [ ! -f public/data/peta_karhutla_wil.json ] \
              || [[ "$(akhir /tmp/pk_repo.json)" > "$(akhir public/data/peta_karhutla.json)" ]]; then
-            f=$(git ls-files 'public/data/peta_karhutla*.json'); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
+            repo
           fi
-          python3 scripts/data/peta_karhutla.py --uji
+          # uji pasangan terbit gagal atas salinan cache = kembali ke versi repo sekali, supaya peta tidak macet diam-diam (24-27 Okt 2026)
+          python3 scripts/data/peta_karhutla.py --uji || { echo "::warning title=peta_karhutla::uji gagal atas salinan cache, pakai versi repo"; repo; python3 scripts/data/peta_karhutla.py --uji; }
           python3 scripts/data/peta_karhutla.py
 
       - name: Simpan cache FIRMS per hari UTC untuk peta luas

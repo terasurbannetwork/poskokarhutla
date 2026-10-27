@@ -59,12 +59,18 @@ def tandai_unik(titik):
     return sum(p["hitung"] for p in titik)
 
 
+KOLOM_PADAT = ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah"]
+
+
 def berkas_hari(d, titik):
-    tabel = sorted({p["adm"] for p in titik}); idx = {k: i for i, k in enumerate(tabel)}
-    return {"kolom": KOLOM, "hari": d, "jam_dari": "00.00 WIB hari itu", "wilayah": tabel, "sensor_utama": list(TU.SENSOR),
-            "keyakinan_min": TU.KEYAKINAN_MIN, "satuan": "lokasi unik ~375 m per hari WIB (titik_unik.py)",
-            "baris": [[p["lat"], p["lon"], p["jam"], p["s"], p["frp"], p["c"], idx[p["adm"]], d[5:], p["hitung"]]
-                      for p in sorted(titik, key=lambda p: p["jam"])]}
+    """hanya lokasi unik yang dihitung (hitung=1); tgl_wib dan hitung sama untuk semua baris jadi tidak ditulis (peramban menambahkannya).
+    lat/lon 4 desimal, jam 1 desimal, frp bulat, sensor = indeks ke sensor_utama: ± 25 byte per baris."""
+    u = [p for p in titik if p["hitung"]]
+    tabel = sorted({p["adm"] for p in u}); idx = {k: i for i, k in enumerate(tabel)}
+    return {"kolom": KOLOM_PADAT, "hari": d, "jam_dari": "00.00 WIB hari itu", "wilayah": tabel, "sensor_utama": list(TU.SENSOR),
+            "keyakinan_min": TU.KEYAKINAN_MIN, "satuan": "lokasi unik ~375 m per hari WIB (titik_unik.py), hanya yang dihitung",
+            "baris": [[round(p["lat"], 4), round(p["lon"], 4), round(p["jam"], 1), TU.SENSOR.index(p["s"]), round(p["frp"]), p["c"], idx[p["adm"]]]
+                      for p in sorted(u, key=lambda p: p["jam"])]}
 
 
 def main(tahun, sd, *berkas):
@@ -133,9 +139,8 @@ def uji():
     assert tandai_unik(t) == 2, "dua sel berbeda"
     assert [p["hitung"] for p in t] == [0, 1, 1], "yang lebih dulu di sel sama yang dihitung"
     b = berkas_hari("2026-08-05", t)
-    assert b["kolom"] == KOLOM and b["wilayah"] == ["62|A|B", "62|A|C"]
-    assert b["baris"][0] == [-2.0, 113.0, 1.5, "N", 3, 2, 0, "08-05", 1], b["baris"][0]
-    assert all(r[7] == "08-05" for r in b["baris"])
+    assert b["kolom"] == KOLOM_PADAT and b["wilayah"] == ["62|A|B", "62|A|C"]
+    assert b["baris"] == [[-2.0, 113.0, 1.5, 1, 3, 2, 0], [-2.5, 113.0, 13.5, 0, 9, 1, 1]], b["baris"]
     print("titik_hari: uji lulus")
 
 
