@@ -285,34 +285,47 @@ def uji():
     assert "/x/nama" in list(kunci_terlarang({"x": {"nama": 1}})) and not list(kunci_terlarang({"kaw": "konsesi"}))
     assert kaw({"jenis": {"hti": 1}}, {"kaw": "lain"}) == "konsesi" and kaw({"jenis": {}}, {"kaw": "lain"}) == "lain"
     assert kaw({"jenis": {"hti": 1}}, {"kaw": "konservasi"}) == "konservasi"
-    sel22, komp, sel, zb, _ = hitung()
-    # tiap kompleks tepat satu zona per versi; jumlah = 865
-    assert len(komp) == N_KOMPLEKS == len({k["id"] for k in komp})
-    for k in komp:
+    sel22, semua, sel, zb, _ = hitung()
+    # tiap kompleks tepat satu zona per versi; prov 62 = 865 (angka acuan matriks_jarak.md hanya untuk prov 62)
+    assert len(semua) == len({k["id"] for k in semua})
+    komp = [k for k in semua if k["prov"] == PROV]
+    assert len(komp) == N_KOMPLEKS
+    for k in semua:
         assert all(k["zona_" + v] in "ABCD" and len(k["zona_" + v]) == 1 for v in VERSI), k["id"]
     acu, medacu = matriks_acuan()
-    prov = {r["versi"]: r for r in zb if r["kab"] is None}
+    prov = {r["versi"]: r for r in zb if r["kab"] is None and r["prov"] == PROV}
+    for p in {r["prov"] for r in zb}:                                  # tiap provinsi: jumlah zona = n = kompleks provinsi itu
+        for v in VERSI:
+            r = next(r for r in zb if r["prov"] == p and r["kab"] is None and r["versi"] == v)
+            assert r["A"] + r["B"] + r["C"] + r["D"] == r["n"] == sum(1 for k in semua if k["prov"] == p), (p, v)
     for v in VERSI:
         got = {z: prov[v][z] for z in "ABCD"}
         assert got == acu[v], f"versi {v}: {got} != matriks_jarak.md {acu[v]}"
         assert sum(got.values()) == prov[v]["n"] == N_KOMPLEKS
-        for kb in {r["kab"] for r in zb if r["kab"]}:
-            r = next(r for r in zb if r["kab"] == kb and r["versi"] == v)
+        for kb in {r["kab"] for r in zb if r["kab"] and r["prov"] == PROV}:
+            r = next(r for r in zb if r["kab"] == kb and r["versi"] == v and r["prov"] == PROV)
             assert r["A"] + r["B"] + r["C"] + r["D"] == r["n"]
     assert abs(prov["o"]["median_air_km"] - medacu["air baru semua"]) <= 0.01, f"median air {prov['o']['median_air_km']}"
     assert abs(prov["o"]["median_jalan_km"] - medacu["jalan baru semua"]) <= 0.01, f"median jalan {prov['o']['median_jalan_km']}"
     assert prov["o"]["tanpa_jalan_16km"] == 44 and prov["k"]["tanpa_jalan_16km"] is None
     # kekerapan dari tahun_aktif S-NPP: 0..14
     assert all(isinstance(k["kekerapan_sel22"], int) and 0 <= k["kekerapan_sel22"] <= 14 for k in komp)
+    assert all(k["kekerapan_sel22"] is None for k in semua if k["prov"] != PROV), "sel22 hanya meliputi kotak Kalteng"
+    # SP-108: air_asin hanya bila air asin lebih dekat daripada air tawar; zona memakai air tawar
+    for k in semua:
+        assert isinstance(k["air_asin"], bool)
+        if k["air_asin"]:
+            assert k["air_asin_km"] < k["air_km_semua"] and k["air_asin_jenis"] in ("laut", "payau"), k["id"]
+    assert all(k["brgm_3km"] is None or set(k["brgm_3km"]) == {"sekat_kanal", "sumur_bor", "sumur_rencana", "lain"} for k in semua)
     # sel
     assert len(sel) == len(sel22["baris"]) and len({r[0] for r in sel}) == len(sel)
     for r in sel:
         assert 0 <= r[3] <= 14 and (r[8] is None) == (r[7] is None) == (r[6] is None)
         assert r[8] is None or r[8] <= RADIUS_SEL_KM
     # tanpa nama perusahaan
-    for nama, o in (("kompleks", komp), ("sel", sel), ("zona", zb)):
+    for nama, o in (("kompleks", semua), ("sel", sel), ("zona", zb)):
         assert not list(kunci_terlarang(o)), f"kunci terlarang di {nama}: {list(kunci_terlarang(o))[:3]}"
-    assert {k["kaw"] for k in komp} <= {"lain", "konsesi", "konservasi"}
+    assert {k["kaw"] for k in semua} <= {"lain", "konsesi", "konservasi"}
     # tiap versi zona tidak sama dengan satu zona saja (pengecek anti-degenerasi)
     assert all(len({k["zona_" + v] for k in komp}) == 4 for v in VERSI)
     print("uji zona: lolos")
@@ -336,8 +349,11 @@ def main(argv):
     cat = ("Perkiraan perencanaan dari OSM dan data terbuka, bukan survei lapangan. Jarak garis lurus, dibatasi 16 km (medan terpotong). "
            "kekerapan_sel22 = tahun aktif S-NPP 2012-2025 (sebanding antar tahun), 0 bila sel tanpa deteksi. "
            "khg null: khg_prioritas.json tidak memuat pemetaan kompleks ke KHG. "
+           "air_km_semua = air TAWAR (way dan relasi multipoligon OSM); air_asin true bila laut/payau lebih dekat daripada air tawar (label: air asin, darurat saja), zona tetap air tawar. "
+           "brgm_3km = sekat/sumur BRGM dalam 3 km (brgm_pembasahan.json, letak menurut BRGM, kondisi tak diketahui). "
+           "Provinsi selain 62: DEM, GSW, MCD64A1, CHIRPS, kekerapan_sel22, jam_tiba null (belum dihitung). "
            f"jam_tiba dari {x['nama_akses']}, null bila belum dihitung. kaw tanpa nama pemegang izin. ")
-    kk = {**kepala(per, "kelayakan_kompleks", ambang, sumber, cat), "masukan": masukan, "n": len(komp), "kolom_keyakinan": KEYAKINAN, "kompleks": komp}
+    kk = {**kepala(per, "kelayakan_kompleks", ambang, sumber, cat), "masukan": masukan, "n": len(komp), "n_prov": {p: sum(1 for k in komp if k["prov"] == p) for p in dict.fromkeys(k["prov"] for k in komp)}, "kolom_keyakinan": KEYAKINAN, "kompleks": komp}
     ks = {**kepala(per, "kelayakan_sel", {"air_km": AIR, "jalan_km": JALAN}, sumber,
                    "Kisi 0,02 derajat sel22 (hanya sel dengan deteksi VIIRS). tahun_aktif S-NPP; hari_api = jumlah hari api S-NPP 2012-2025 "
                    "(bukan tren). zona_k_terdekat, gambut: kompleks terdekat dalam 5 km, null bila tidak ada (jarak air/jalan per sel belum dihitung, BT-03). "
