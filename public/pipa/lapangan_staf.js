@@ -106,13 +106,16 @@ export function suhuHtml(probe, per = null) {
 
 /* ---------- tekanan per sesi ---------- */
 export function sesiTekanan(butir, jeda = JEDA_SESI_MS) {
-  const t = butir.filter(b => b.jenis === "tekanan" && b.data && typeof b.data.bar === "number").sort((a, b) => a.waktu - b.waktu), sesi = [];
-  for (const b of t) {
-    const akhir = sesi.at(-1);
-    if (akhir && akhir.tugas_id === b.tugas_id && b.waktu - akhir.sampai <= jeda) { akhir.titik.push(b); akhir.sampai = b.waktu; }
-    else sesi.push({tugas_id: b.tugas_id, mulai: b.waktu, sampai: b.waktu, titik: [b]});
+  const perTugas = new Map(), sesi = [];
+  for (const b of butir) if (b.jenis === "tekanan" && b.data && typeof b.data.bar === "number") { if (!perTugas.has(b.tugas_id)) perTugas.set(b.tugas_id, []); perTugas.get(b.tugas_id).push(b); }
+  for (const [tugas_id, daftar] of perTugas) {
+    let akhir = null;
+    for (const b of daftar.sort((x, y) => x.waktu - y.waktu)) {
+      if (akhir && b.waktu - akhir.sampai <= jeda) { akhir.titik.push(b); akhir.sampai = b.waktu; }
+      else sesi.push(akhir = {tugas_id, mulai: b.waktu, sampai: b.waktu, titik: [b]});
+    }
   }
-  return sesi.map(s => ({...s, lanceRendah: s.titik.filter(b => b.data.titik === "lance" && b.data.bar < BAR_MIN_LANCE).length}));
+  return sesi.sort((x, y) => y.mulai - x.mulai).map(s => ({...s, lanceRendah: s.titik.filter(b => b.data.titik === "lance" && b.data.bar < BAR_MIN_LANCE).length}));
 }
 export function tekananHtml(butir, per = null) {
   const sesi = sesiTekanan(butir);

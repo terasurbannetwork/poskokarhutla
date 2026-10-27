@@ -6,10 +6,10 @@ import {tglID} from "/semua/darurat.js";
 
 const LABEL = {meninggal: "Meninggal dunia", hilang: "Hilang", luka: "Luka-luka", terdampak: "Terdampak", mengungsi: "Mengungsi",
   rr_berat: "Rusak berat", rr_sedang: "Rusak sedang", rr_ringan: "Rusak ringan", terendam: "Rumah terendam",
-  f_pendidikan: "Sekolah", f_ibadah: "Tempat ibadah", f_kesehatan: "Fasilitas kesehatan", f_kantor: "Perkantoran", jembatan: "Jembatan"};
+  f_pendidikan: "Sekolah", f_ibadah: "Tempat ibadah", f_kesehatan: "Fasilitas kesehatan", f_kantor: "Perkantoran", f_umum: "Fasilitas umum", jembatan: "Jembatan"};
 const GRUP = [["Korban", "#c9503a", ["meninggal", "hilang", "luka", "terdampak", "mengungsi"]],
   ["Rumah", "#e58a45", ["rr_berat", "rr_sedang", "rr_ringan", "terendam"]],
-  ["Fasilitas rusak", "#4f8fc4", ["f_pendidikan", "f_ibadah", "f_kesehatan", "f_kantor", "jembatan"]]];
+  ["Fasilitas rusak", "#4f8fc4", ["f_pendidikan", "f_ibadah", "f_kesehatan", "f_kantor", "f_umum", "jembatan"]]];
 const PERIODE = [7, 30, 365];
 const jml = (L, k) => L.reduce((s, r) => s + (+r[k] || 0), 0), cacah = r => +r.kejadian || 1;
 const geser = (t, n) => new Date(new Date(t + "T12:00:00Z").getTime() - n * 864e5).toISOString().slice(0, 10);
@@ -28,8 +28,8 @@ export async function pasangDampak(el) {
   const det = () => el.querySelector("#dmRinci");
 
   const rinci = r => { const d = det(); if (!d) return;
-    const baris = GRUP.flatMap(([, w, ks]) => ks.filter(ada).map(k => `<span class="pl" style="--w:${w}">${LABEL[k]} ${fmt(+r[k] || 0)}</span>`));
-    d.innerHTML = `<b translate="no">${esc(r.kab)}, ${esc(r.prov)}</b>, ${esc(r.jenis)}, ${tglID(r.tanggal)}${cacah(r) > 1 ? `, ${fmt(cacah(r))} kejadian` : ""}<div class="pls">${baris.join("") || "Tidak ada kolom dampak pada sumber."}</div>`; d.hidden = false; };
+    const baris = GRUP.flatMap(([, w, ks]) => ks.filter(k => ada(k) && +r[k] > 0).map(k => `<span class="pl" style="--w:${w}">${LABEL[k]} ${fmt(+r[k])}</span>`));
+    d.innerHTML = `<b translate="no">${esc(r.kab)}, ${esc(r.prov)}</b>, ${esc(r.jenis)}, ${tglID(r.tanggal)}${cacah(r) > 1 ? `, ${fmt(cacah(r))} kejadian` : ""}<div class="pls">${baris.join("") || "Tidak ada dampak tercatat pada kejadian ini."}</div>`; d.hidden = false; };
 
   const tabel = { t: null };
   const isi = () => {

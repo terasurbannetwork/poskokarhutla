@@ -1,0 +1,43 @@
+{
+ "catatan": "Semua kriteria lab_genangan_radar.py. Ditulis 28 Okt 2026 SEBELUM ada hasil nyata dan tanpa melihat skor apa pun. Mengubah berkas ini mengubah kriteria_sha di keluaran; hasil lama tidak ditimpa diam-diam. Tidak ada parameter yang disetel pada label: Otsu tak berpengawas, ambang tetap -17 dB dari citra_banjir.py.",
+ "wilayah": "DKI Jakarta, 44 kecamatan (public/geo/kecamatan/31.json), tanpa Kepulauan Seribu karena di luar kisi",
+ "kisi": {"lon": [106.68, 107.0], "lat": [-6.38, -6.07], "langkah_derajat": 0.001, "resolusi_bacaan_m": 100},
+ "label": {
+  "sumber": "PetaBencana.id laporan warga DKI (data/raw/banjir/genangan/petabencana_laporan.json), status confirmed",
+  "kejadian_hari_min_laporan": 100,
+  "gabung_kejadian_hari": 2,
+  "jendela_label_jam": 12,
+  "kecamatan_positif_min_laporan": 2,
+  "catatan": "Label = >=2 laporan dalam +-12 jam dari waktu lintasan S1. Bias pelapor (kota padat, ponsel); BUKAN peta luas genangan. Tidak ada label genangan DSDA terpolygon di repo, jadi hanya PetaBencana."
+ },
+ "adegan": {
+  "koleksi": "sentinel-1-rtc (Planetary Computer)", "polarisasi": "VV",
+  "setelah_hari_wib": [0, 2],
+  "dasar_hari_sebelum": [8, 60], "dasar_maks_lintasan": 3, "dasar_orbit": "sama dengan adegan sesudah",
+  "dasar_buang_bila_dekat_kejadian_hari": 1,
+  "naif_dasar_hari_sebelum": [8, 45],
+  "lintasan": "semua item STAC dengan orbit relatif dan tanggal UTC sama digabung (piksel sah pertama)"
+ },
+ "metode": {
+  "naif": "ambang tetap -17 dB, satu lintasan sebelum (terdekat dalam 8-45 hari, orbit sama), TANPA masker; gelap baru = sesudah < -17 dan sebelum >= -17",
+  "tetap_masker": "ambang -17 dB, dasar = median lintasan dasar, dengan masker lereng, medan dan air tetap",
+  "otsu_masker": "ambang Otsu per adegan sesudah (histogram 0,5 dB pada -30..0 dB, dijepit ke [-22, -14]), dasar = median lintasan dasar, dengan masker; METODE UTAMA",
+  "semua_positif": "pembanding sepele: semua kecamatan dinyatakan tergenang (CSI = laju dasar)",
+  "m1_hujan": "model M1 tidak dipakai: tangki.py belum dibekukan (draf, belum dijalankan) saat kriteria ini ditulis"
+ },
+ "masker": {
+  "lereng_derajat_maks": 5, "lereng_dasar": "minimum DEMNAS 8 m per sel 0,001 derajat (proksi tanah), lereng antar sel bertetangga",
+  "medan_tinggi_m_maks": 50,
+  "air_tetap": "sel dengan dasar median < ambang (sudah gelap sebelum) dikeluarkan; tidak ada sumber sawah/badan air lain di repo untuk DKI",
+  "sah_min_persen_kecamatan": 50
+ },
+ "satuan_uji": {
+  "satuan": "kecamatan", "ambang_pecahan_sel": 0.02,
+  "kepekaan_pecahan": [0.005, 0.01, 0.02, 0.05],
+  "catatan": "ambang utama 0,02 dibekukan di sini; nilai lain hanya kepekaan, tidak dipakai memutuskan lolos"
+ },
+ "dinilai": {"kecamatan_positif_min": 5, "kecamatan_negatif_min": 5, "lainnya": "tak_dapat_dinilai"},
+ "lolos_kejadian": {"csi_min": 0.30, "margin_atas_pembanding": 0.05, "pembanding": ["naif", "semua_positif"]},
+ "lolos_keseluruhan": {"kejadian_dinilai_min": 3, "pecahan_lolos_min": 0.6},
+ "catatan_pra_registrasi_j3": "Kejadian 2024-08 dan 2025-04 adalah label UJI J3 (PRAREG-J3.md). Lab radar ini tidak menyetel apa pun pada label, tetapi membaca PetaBencana mentah langsung; ditandai j3_uji di keluaran."
+}

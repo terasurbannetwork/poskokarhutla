@@ -45,7 +45,7 @@ export const JENIS = {
   p3k_stok: {label: "Stok P3K di bawah ambang", peran: ["pusdalops"], tautan: "/admin/inventaris"},
   sippa_alarm: {label: "Alarm telemetri kit SIPPA", peran: ["pusdalops"], tautan: "/pipa/telemetri"},
   sippa_titik: {label: "Titik panas baru dekat kompleks SIPPA zona A atau B", peran: ["pusdalops"], tautan: "/pipa/peta"},   // SP-103: ditulis cron FIRMS (src/sippa_titik.js)
-  sippa_sos: {label: "SOS dari regu SIPPA di lapangan", peran: ["pusdalops"], tautan: "/pipa/lapangan"},   // SP-123: tombol SOS di form lapangan (src/sippa.js, tabel sippa_lapangan)
+  sippa_sos: {label: "SOS dari regu SIPPA di lapangan", peran: ["pusdalops"], tautan: "/pipa/peta"},   // SP-123: tombol SOS di form lapangan (src/sippa.js, tabel sippa_lapangan)
   sippa_selesai: {label: "Gelar SIPPA selesai", peran: ["pusdalops"], tautan: "/pipa/log"},   // SP-127: laporan selesai gelar dari regu
   sippa_mingguan: {label: "Laporan mingguan SIPPA belum dibuat", peran: ["pusdalops"], tautan: "/pipa/laporan"},   // SP-045, ADR-11: terhitung dari sippa_kit dan sippa_laporan, tanpa tabel dan cron baru   // src/sippa.js: sippa_alarm terbuka (DT §6.3.1); tanpa push baru
 };

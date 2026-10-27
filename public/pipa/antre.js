@@ -2,7 +2,7 @@
    localStorage "sippa.antre" untuk teks bila IndexedDB gagal. Tanpa DOM: layar ada di lapangan.js. Kode penugasan dibaca dari
    localStorage "sippa.kode" dan hanya dikirim sebagai header x-kode, tidak pernah di alamat. Server idempoten (ON CONFLICT(id) DO NOTHING),
    jadi kunci `sedangKirim` di sini cukup per tab; dua tab yang berbarengan paling jauh menghasilkan jawaban "ganda", bukan baris ganda. */
-import {cekButir, cekFase2, JENIS_FASE2} from "./formulir.js";
+import {cekButir, cekFase2, JENIS_FASE2, TAHAP_FOTO} from "./formulir.js";
 
 /* fase 2 (keputusan 61): jenis tanpa tabel di MEDAN diperiksa cekFase2 */
 const periksa = (jenis, isi, opsi) => JENIS_FASE2.includes(jenis) ? cekFase2(jenis, isi) : cekButir(jenis, isi, opsi);
@@ -95,6 +95,7 @@ export async function tambahFoto(blob, butir_id, opsi = {}) {
   if (blob?.type === "image/png") return {ok: false, pesan: "Foto PNG tidak didukung. Pakai JPEG atau WebP."};
   if (!MIME_FOTO.includes(blob?.type)) return {ok: false, pesan: "Format foto tidak didukung. Pakai JPEG atau WebP."};
   if (blob.size > FOTO_MAKS) return {ok: false, pesan: "Foto lebih dari 8 MB. Kecilkan dulu."};
+  if (opsi.tahap && !TAHAP_FOTO.some(t => t[0] === opsi.tahap)) return {ok: false, pesan: "Tahap foto tidak dikenal"};
   if (opsi.tahap && !(Number.isFinite(opsi.lat) && Number.isFinite(opsi.lon))) return {ok: false, pesan: "Foto bukti butuh lokasi GPS. Ambil lokasi dulu."};
   if (!(await pakaiDb())) return {ok: false, pesan: "Foto tidak bisa disimpan luring di peramban ini"};
   try { await op("foto", "put", {id: globalThis.crypto.randomUUID(), blob, mime: blob.type, butir_id, keadaan: "menunggu", ...(opsi.tahap ? {tahap: opsi.tahap, lat: opsi.lat, lon: opsi.lon, tugas_id: opsi.tugas_id ?? null} : {})}); }

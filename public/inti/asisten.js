@@ -72,7 +72,7 @@ const waktu = iso => {
   if (isNaN(d)) return "waktu tidak diketahui";
   const s = tglSaja ? d.toLocaleDateString("id-ID", {...WIB, day: "numeric", month: "short"}) : d.toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
   const m = (Date.now() - d) / 6e4, umur = m < 0 ? "" : m < 90 ? `${Math.max(1, Math.round(m))} menit lalu` : m < 2880 ? `${Math.round(m / 60)} jam lalu` : `${Math.round(m / 1440)} hari lalu`;
-  return s + (umur ? ` (${umur})` : "") + (m > 4320 ? ", lebih dari 3 hari lalu, kemungkinan belum diperbarui" : "");
+  return s + (umur ? ` (${umur}${m > 4320 ? ", kemungkinan belum diperbarui" : ""})` : "");
 };
 const norm = s => String(s || "").toLowerCase().replace(/kabupaten |kab\. |provinsi |prov\. /g, "").replace(/[^a-z0-9\s]/g, " ").replace(/\s+/g, " ").trim();
 const inti = s => norm(s).replace(/^kota /, "");   /* "Kota Bogor" dan "Bogor" dianggap sama bila hanya salah satunya dikenal */
@@ -145,7 +145,7 @@ async function ringkasWilayah(e, g) {
   if (bj?.kejadian) {
     const cocokKec = x => { const [p, kb] = x.split("|"); return p === e.kode && (!kab || cocok(kb)); };
     const kj = bj.kejadian.filter(k => k.kec.some(cocokKec)), kec = bj.kejadian.flatMap(k => k.kec).filter(cocokKec), lv = Math.max(0, ...kj.map(k => k.level_tertinggi));
-    isi.push(kec.length ? `<b>${esc(nama("banjir"))}:</b> ${fmt(kec.length, 0)} kecamatan berstatus ${lv >= 3 ? "Awas" : "Siaga"} atau lebih tinggi. ${rute("banjir", "Peta banjir")}` : `<b>${esc(nama("banjir"))}:</b> tidak ada kecamatan berstatus Siaga atau Awas di data terakhir. ${rute("banjir", "Peta banjir")}`);
+    isi.push(kec.length ? `<b>${esc(nama("banjir"))}:</b> ${fmt(kec.length, 0)} kecamatan berstatus ${lv >= 3 ? "Siaga atau Awas, tertinggi Awas" : "Siaga"}. ${rute("banjir", "Peta banjir")}` : `<b>${esc(nama("banjir"))}:</b> tidak ada kecamatan berstatus Siaga atau Awas di data terakhir. ${rute("banjir", "Peta banjir")}`);
     src.push(`prakiraan banjir Centurisk97, data ${esc(waktu(bj.dibuat))}`);
   }
   /* kekeringan */
@@ -156,7 +156,8 @@ async function ringkasWilayah(e, g) {
     src.push(`deteksi kekeringan Centurisk97, data ${esc(waktu(kemarau.hari_ini))}`);
   }
   /* status darurat resmi (berkas boleh tidak ada) */
-  const hari = hariIni(), sk = (dar?.sk || []).filter(s => s.mulai <= hari && hari <= (s.berakhir || "9999") && (kab ? (s.kab_kode ? String(s.kab_kode) === String(e.kunci?.split("|")[0]) && cocok(s.kab) : cocok(s.kab)) : norm(s.prov) === norm(provNama) || String(s.kab_kode || "").startsWith(e.kode)));
+  const hari = hariIni(), kodeSk = s => String(s.kab_kode || "").replace(/\D/g, ""), provSk = s => kodeSk(s).startsWith(e.kode) || norm(s.prov) === norm(provNama);
+  const sk = (dar?.sk || []).filter(s => s.mulai <= hari && hari <= (s.berakhir || "9999") && provSk(s) && (!kab || cocok(s.kab)));
   if (dar && sk.length) {
     isi.unshift(`<b>Status darurat berlaku:</b> ` + sk.slice(0, 5).map(s => `${esc(s.status)}${s.jenis ? " " + esc(s.jenis) : ""}${!kab && s.kab ? " di " + esc(s.kab) : ""}, ${esc(s.mulai)} sampai ${esc(s.berakhir || "belum ditentukan")}${s.nomor ? ", SK " + esc(s.nomor) : ""}${/^https?:\/\//.test(s.tautan || "") ? ` ${tautan(esc(s.tautan), "dokumen")}` : ""}`).join("; ") + (sk.length > 5 ? `, dan ${sk.length - 5} lainnya` : "") + ".");
     src.push("status darurat dari SK yang tercatat");
@@ -173,7 +174,7 @@ async function apiWilayah(e, g) {
   const kab = e.jenis === "kab", cl = kl.features.map(f => f.properties).filter(p => p.prov === e.kode && (!kab || inti(p.kab) === inti(e.nama))).sort((a, b) => (b.n24 || 0) - (a.n24 || 0));
   const lokasi = kab ? `${e.nama}, ${g.prov[e.kode]}` : g.prov[e.kode], n24 = cl.reduce((a, p) => a + (p.n24 || 0), 0);
   const isi = cl.length
-    ? baris(`<b>${fmt(cl.length, 0)} cluster titik panas di ${esc(lokasi)}</b>, ${fmt(n24, 0)} titik dalam 24 jam.`, "Terbesar: " + cl.slice(0, 3).map(p => `${esc(p.kab)}${p.kec ? ", " + esc(p.kec) : ""} (${fmt(p.n24, 0)} titik 24 jam, level ${p.level})`).join("; ") + ".")
+    ? baris(`<b>${fmt(cl.length, 0)} cluster titik panas di ${esc(lokasi)}</b>, ${fmt(n24, 0)} titik dalam 24 jam.`, "Terbesar: " + [...cl.reduce((m, p) => { const k = kab ? p.kec || p.kab : p.kab; m.set(k, (m.get(k) || 0) + (p.n24 || 0)); return m; }, new Map())].sort((a, b) => b[1] - a[1]).slice(0, 3).map(([k, n]) => `${esc(k)} (${fmt(n, 0)} titik 24 jam)`).join("; ") + ".")
     : baris(`<b>Tidak ada cluster titik panas</b> tercatat di ${esc(lokasi)} pada data terakhir.`);
   return isi + baris("Titik panas bukan konfirmasi kebakaran. Bila kamu melihat api atau asap, hubungi 112.", tautan("/", "Buka peta karhutla")) + sumber(`cluster titik panas NASA FIRMS, data ${esc(waktu(tk?.acuan))}`);
 }

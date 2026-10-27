@@ -99,7 +99,7 @@ uji("SP-121 foto bertahap: tahap dan GPS wajib berpasangan, tahap enum, tanpa ta
 uji("SP-123 SOS: disimpan dan jadi butir Meja Pantau prioritas 1 untuk provinsi tugas; staf provinsi lain dan peran lain tidak melihat", async () => {
   const id = uuid(), r = await lap(KODE, "sos", {id, waktu: kini(), lat: -2.15, lon: 113.55, pesan: "api mendekat"}); assert.equal(r.j.diterima[0], id, r.t);
   const butir = async h => (await api("GET", "/api/pantau", undefined, h)).j.butir.filter(b => b.jenis === "sippa_sos");
-  const semua = await butir(pus.h), b = semua.filter(x => x.id === `sippa-sos:${id}`); assert.equal(b.length, 1, "satu butir per SOS (tiga SOS di berkas ini)"); assert.equal(semua.length, 3); assert.equal(b[0].prioritas, 1); assert.equal(b[0].prov, "62"); assert.match(b[0].judul, /^SOS dari regu Regu F2 \(K0129\)$/); assert.match(b[0].rincian, /-2.15, 113.55\. api mendekat/);
+  const semua = await butir(pus.h), b = semua.filter(x => x.id === `sippa-sos:${id}`); assert.equal(b.length, 1, "satu butir per SOS (tiga SOS di berkas ini)"); assert.equal(semua.length, 3); assert.equal(b[0].prioritas, 1); assert.equal(b[0].tautan, "/pipa/peta"); assert.equal(b[0].prov, "62"); assert.match(b[0].judul, /^SOS dari regu Regu F2 \(K0129\)$/); assert.match(b[0].rincian, /-2.15, 113.55\. api mendekat/);
   assert.equal((await butir(pus61.h)).length, 0, "wilayah 61 tidak melihat 62"); assert.equal((await butir(ver.h)).length, 0, "verifikator bukan penangan");
   await lap(KODE61, "sos", {id: uuid(), waktu: kini(), lat: 0.0, lon: 109.3}); assert.equal((await butir(pus61.h)).length, 1, "SOS provinsi 61 untuk staf 61");
 });

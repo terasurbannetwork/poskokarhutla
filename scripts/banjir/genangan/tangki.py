@@ -18,7 +18,10 @@ Model (per kecamatan k, per jam, simpanan V dalam mm di atas luas kecamatan):
   genangan   ya bila V melewati ambang Vth pada jam mana pun di hari WIB itu.
   kedalaman  (V_maks - Vth) / 10 / PHI cm (HIPOTESIS: PHI = fraksi luas cekungan, ASUMSI tetap, tidak terkalibrasi).
   lama surut jam dari puncak V sampai V <= Vth, hujan nol sesudah akhir hari (HIPOTESIS, tidak ada label surut).
-Parameter bebas (5): S, Kd, gamma, kappa, Vth. Selebihnya TETAP dan tertulis (PARUH_PC, PHI, PC_BASAH, AMBANG_PASANG, bentuk hietograf,
+Suku dasar per kecamatan (keputusan pemilik 28 Okt 2026): ambang kecamatan Vth_k = Vth * exp(-b * z_k), z_k = logit(p_k) - logit(p_kota),
+p_k = (pos_k + M_PRIOR * p_kota) / (n_k + M_PRIOR) = frekuensi hari berlabel positif kecamatan k yang menyusut ke kota (M_PRIOR TETAP, bukan
+parameter bebas). pos/n dihitung HANYA dari tahun latih lipatan itu (model akhir: 2017-2023), jadi tahun yang dilepas tidak pernah masuk z_k.
+Parameter bebas (6): S, Kd, gamma, kappa, b, Vth (b = satu parameter baru; b=0 = M1 tanpa suku dasar). Selebihnya TETAP dan tertulis (PARUH_PC, PHI, PC_BASAH, AMBANG_PASANG, bentuk hietograf,
 definisi pesisir). Kalibrasi: N_KANDIDAT titik acak (benih tetap, tidak bergantung data) x sapuan Vth; tiap lipatan CV (satu tahun
 dilepas) memilih pasangan terbaik (ETS gabungan) HANYA dari tahun lain; model akhir memilih dari semua tahun 2017-2023.
 Anggota keluaran = 7 model lipatan + model akhir; peluang = bagian anggota yang berkata ya, rentang = min-maks antar anggota.
@@ -36,6 +39,8 @@ from uji_balik import skor  # noqa: E402
 
 KRITERIA = os.path.join(AKAR, "docs/banjir/KRITERIA-M1.md")
 KRITERIA_SHA256 = "614a30046eb1770f26d28ae0296bd581297b9b53c2d3aa2796263be3b03a1ca0"
+TAFSIR = os.path.join(AKAR, "docs/banjir/KRITERIA-M1-TAFSIR.md")
+TAFSIR_SHA256 = "bcc9c7789cb00ce265a34f0e9e32e29d040f3095e630c7f4b79df0e4815eb2c1"
 KODE = os.path.abspath(__file__)
 DIR = os.path.join(AKAR, "data/banjir/genangan")
 PARAM = os.path.join(DIR, "m1_param.json")
@@ -52,7 +57,8 @@ VERSI = 1
 TAHUN = (2017, 2023)            # kalibrasi; 2024+ tidak dimuat (KRITERIA-M1 larangan)
 MUSIM = pemicu.MUSIM            # Nov-Apr
 MUSIM_REF = tuple(range(2017, 2023))   # musim 2017/18 .. 2022/23
-N_REF, N_MAKS = 3, 200
+N_REF = 3
+M_PRIOR = 200            # hari semu penyusutan frekuensi kecamatan ke kota (TETAP; ~1100 hari berlabel per kecamatan per 6 tahun)
 LABEL = "Hipotesis, belum lolos uji"
 
 # --- tetap (bukan parameter bebas)
@@ -64,7 +70,7 @@ AMBANG_PASANG = 0.70     # indeks pasang pantura >= ini = pasang tinggi (kuantil
 PUNCAK_JAM = 15          # jam WIB puncak hietograf
 N_KANDIDAT = 800
 GRID_VTH = [round(0.25 * 1.17 ** i, 3) for i in range(36)]      # 0,25 .. ~65 mm
-RANGE = {"S": (8.0, 150.0), "Kd": (0.3, 12.0), "gamma": (0.0, 1.0), "kappa": (0.0, 0.9)}
+RANGE = {"S": (8.0, 150.0), "Kd": (0.3, 12.0), "gamma": (0.0, 1.0), "kappa": (0.0, 0.9), "b": (0.0, 1.2)}
 GRID_D = (10, 25, 50, 75, 100, 150, 200, 300)
 GRID_M1 = (5, 10, 20, 40, 70, 100)
 SURUT_MAKS = 72
@@ -74,6 +80,13 @@ def kriteria_ok():
     h = hashlib.sha256(open(KRITERIA, "rb").read()).hexdigest()
     if h != KRITERIA_SHA256:
         sys.exit(f"KRITERIA-M1.md berubah ({h}); hasil tidak sah, tolak")
+    return h
+
+
+def tafsir_ok():
+    h = hashlib.sha256(open(TAFSIR, "rb").read()).hexdigest()
+    if h != TAFSIR_SHA256:
+        sys.exit(f"KRITERIA-M1-TAFSIR.md berubah ({h}); hasil tidak sah, tolak")
     return h
 
 
@@ -87,8 +100,8 @@ def sha_param(p):
 
 
 def sidik(p):
-    """sidik = sha256(sha kode + sha parameter + sha kriteria)."""
-    return hashlib.sha256((sha_berkas(KODE) + sha_param(p) + KRITERIA_SHA256).encode()).hexdigest()
+    """sidik = sha256(sha kode + sha parameter + sha kriteria + sha tafsir)."""
+    return hashlib.sha256((sha_berkas(KODE) + sha_param(p) + KRITERIA_SHA256 + TAFSIR_SHA256).encode()).hexdigest()
 
 
 # ------------------------------------------------------------------ kecamatan, prior, pasang
@@ -190,25 +203,22 @@ def musim_dari(tgl):
 
 
 def normalkan(baris):
-    """baris: [(musim, n_laporan, kedalaman_maks_cm)] -> ({musim: n_musim}, ref, tak_tercapai).
-    ref = median (musim 2017/18..2022/23) proporsi baris positif menurut label (a: kedalaman >= 10 cm, ATAU b: n >= 3).
-    (Tafsiran kalimat KRITERIA-M1 "menurut aturan (b) dengan n = 3": aturan label dengan n = 3, termasuk (a); tafsiran (b) saja
-    membuat ref 1% yang tak bisa dicapai karena (a) sendiri sudah di atasnya.) n_musim = bilangan bulat terkecil sehingga
-    proporsi positif (a: kedalaman >= 10 cm, ATAU b: n >= n_musim) tidak melebihi ref. Tak ada n yang cukup: N_MAKS dan dicatat."""
+    """baris: [(musim, n_laporan, kedalaman_maks_cm)] -> ({musim: n_musim}, ref, tak_tercapai). Tafsir KRITERIA-M1-TAFSIR.md:
+    ref = median, atas musim 2017/18..2022/23, proporsi baris dengan n >= 3 (aturan (b) SAJA). n_musim = n >= 1 terkecil sehingga
+    proporsi (kedalaman >= 10 cm ATAU n >= n_musim) <= ref; bila (a) sendiri > ref, n_musim = tak hingga (label hanya (a)), dicatat."""
     per = {}
     for s, n, dm in baris:
         per.setdefault(s, []).append((n, dm))
-    pr = sorted(sum(1 for n, dm in per[s] if dm >= 10 or n >= N_REF) / len(per[s]) for s in MUSIM_REF if s in per)
+    pr = sorted(sum(1 for n, dm in per[s] if n >= N_REF) / len(per[s]) for s in MUSIM_REF if s in per)
     ref = (pr[(len(pr) - 1) // 2] + pr[len(pr) // 2]) / 2
     nm, tak = {}, []
     for s, v in per.items():
-        for n in range(1, N_MAKS + 1):
-            if sum(1 for a, b in v if b >= 10 or a >= n) / len(v) <= ref:
-                nm[s] = n
-                break
-        else:
-            nm[s], _ = N_MAKS, tak.append(s)
-    return nm, ref, tak
+        if sum(1 for n, dm in v if dm >= 10) / len(v) > ref:
+            nm[s] = math.inf
+            tak.append(s)
+            continue
+        nm[s] = next(n for n in range(1, max(a for a, _ in v) + 2) if sum(1 for a, b in v if b >= 10 or a >= n) / len(v) <= ref)
+    return nm, ref, sorted(tak)
 
 
 # ------------------------------------------------------------------ tangki
@@ -310,6 +320,33 @@ def simulasi(seri, out_normal, out_tinggi, S, tinggi_set):
     return hasil
 
 
+def logit(p):
+    return math.log(p / (1 - p))
+
+
+def hitung_z(dunia, tahun_pakai):
+    """z_k per kecamatan dari frekuensi hari berlabel positif HANYA pada tahun_pakai, menyusut ke kota dengan M_PRIOR hari semu."""
+    pos, tot = [0] * len(dunia.seri), [0] * len(dunia.seri)
+    for i, rows in enumerate(dunia.seri):
+        for (o, mm, h, tgl, y, th) in rows:
+            if y is not None and th in tahun_pakai:
+                pos[i] += y
+                tot[i] += 1
+    pk = sum(pos) / sum(tot)
+    pk = min(max(pk, 1e-6), 1 - 1e-6)
+    return [logit(min(max((p + M_PRIOR * pk) / (n + M_PRIOR), 1e-6), 1 - 1e-6)) - logit(pk) for p, n in zip(pos, tot)]
+
+
+def skala_vm(vm, b, z):
+    """skor kecamatan = V_maks * exp(b z_k); ya bila skor > Vth (setara Vth_k = Vth exp(-b z_k))."""
+    return vm if not b else [[v * w for v in row] for row, w in zip(vm, (math.exp(b * x) for x in z))]
+
+
+def vth_kec(a, k):
+    """Vth_k satu anggota (a berisi 'z' per kunci kecamatan; anggota tanpa 'z' = tanpa suku dasar)."""
+    return a["Vth"] * math.exp(-a.get("b", 0.0) * a.get("z", {}).get(k, 0.0))
+
+
 def hitung_kontingensi(pos, neg, c):
     """pos/neg terurut; ya bila skor > c. -> (a, b, c, d)."""
     a = len(pos) - bisect.bisect_right(pos, c)
@@ -366,7 +403,7 @@ def kandidat(n=N_KANDIDAT, benih=20261028):
     out = []
     for _ in range(n):
         out.append({"S": round(math.exp(r.uniform(*map(math.log, RANGE["S"]))), 3), "Kd": round(math.exp(r.uniform(*map(math.log, RANGE["Kd"]))), 3),
-                    "gamma": round(r.uniform(*RANGE["gamma"]), 3), "kappa": round(r.uniform(*RANGE["kappa"]), 3)})
+                    "gamma": round(r.uniform(*RANGE["gamma"]), 3), "kappa": round(r.uniform(*RANGE["kappa"]), 3), "b": round(r.uniform(*RANGE["b"]), 3)})
     return out
 
 
@@ -502,6 +539,7 @@ def bangun_dunia(kecs, h, lap, skala):
 
 def latih():
     kriteria_ok()
+    tafsir_ok()
     kecs, h, info = kumpul_data()
     lap = pemicu.label_laporan()
     skala = skala_pasang()
@@ -509,52 +547,67 @@ def latih():
     assert all(s[5] <= TAHUN[1] for rows in dunia.seri for s in rows), "tahun > 2023 termuat"
     tahun = list(range(TAHUN[0], TAHUN[1] + 1))
     cands = kandidat()
-    tabel = []
+    kunci_kec = [k for k, _, _ in kecs]
+    lipatan = tahun + [None]
+    zf = {held: hitung_z(dunia, [t for t in tahun if t != held]) for held in lipatan}      # z hanya dari tahun latih lipatan itu
+    tabel = {held: [] for held in lipatan}
+    tab0 = []                                                                              # ablasi: tanpa suku dasar (b=0)
     for ci, prm in enumerate(cands):
         vm = dunia.vmax_semua(prm)
         per = kumpul_tahun(dunia, vm)
-        tabel.append((ci, {th: [hitung_kontingensi(*per[th], v) for v in GRID_VTH] for th in tahun}))
+        tab0.append((ci, {th: [hitung_kontingensi(*per[th], v) for v in GRID_VTH] for th in tahun}))
+        for held in lipatan:
+            per = kumpul_tahun(dunia, skala_vm(vm, prm["b"], zf[held]))
+            tabel[held].append((ci, {th: [hitung_kontingensi(*per[th], v) for v in GRID_VTH] for th in tahun if th != held}))
         if ci % 20 == 0:
             print(f"  kandidat {ci}/{len(cands)}", file=sys.stderr)
-    anggota, lipat = [], {}
-    for held in tahun + [None]:
-        e, ci, vi = cari_terbaik(tabel, [t for t in tahun if t != held])
+    anggota, lipat, lipat0 = [], {}, {}
+    for held in lipatan:
+        pakai = [t for t in tahun if t != held]
+        e, ci, vi = cari_terbaik(tabel[held], pakai)
         prm = {**cands[ci], "Vth": GRID_VTH[vi]}
-        anggota.append({"lipatan": held, "ets_latih": round(e, 4), **prm})
+        anggota.append({"lipatan": held, "ets_latih": round(e, 4), **prm, "z": {k: round(x, 4) for k, x in zip(kunci_kec, zf[held])}})
+        e0, ci0, vi0 = cari_terbaik(tab0, pakai)
         if held:
-            lipat[held] = prm
-    # CV: tiap lipatan dilepas, nilai pada tahun dilepas dengan parameter dari tahun lain
-    cv_m1 = {}
+            lipat[held] = (prm, zf[held])
+            lipat0[held] = {**cands[ci0], "b": 0.0, "Vth": GRID_VTH[vi0]}
+    # CV: tiap lipatan dilepas, nilai pada tahun dilepas dengan parameter dan z dari tahun lain
+    cv_m1, cv_nol = {}, {}
     for held in tahun:
-        prm = lipat[held]
-        vm = dunia.vmax_semua(prm)
-        cv_m1 = gabung(cv_m1, blok_dari_prediksi(dunia, vm, prm["Vth"], held))
+        prm, z = lipat[held]
+        cv_m1 = gabung(cv_m1, blok_dari_prediksi(dunia, skala_vm(dunia.vmax_semua(prm), prm["b"], z), prm["Vth"], held))
+        p0 = lipat0[held]
+        cv_nol = gabung(cv_nol, blok_dari_prediksi(dunia, dunia.vmax_semua(p0), p0["Vth"], held))
     hujan_fitur = [[h[k][s[3].isoformat()] for s in dunia.seri[i]] for i, (k, _, _) in enumerate(kecs)]
     pb = pembanding_cv(dunia, tahun)
     pb["m0_beku_dalam_sampel"] = m0_beku(dunia, hujan_fitur)
+    terbaik = max(pb, key=lambda n: ringkas(pb[n])["ets"] or -9)
+    pb["m1_tanpa_suku_dasar"] = cv_nol
     for v in pb.values():
         for k in cv_m1:
             v.setdefault(k, [0, 0, 0, 0])
     cv = {"M1": ringkas(cv_m1), **{n: ringkas(b) for n, b in pb.items()}}
-    selisih = {}
-    terbaik = max(pb, key=lambda n: ringkas(pb[n])["ets"] or -9)
+    selisih, per_tahun = {}, {}
     for n in pb:
         t, ci = pemicu.bootstrap_selisih(cv_m1, pb[n])
         selisih[n] = {"selisih_ets": t, "ci95": ci}
-    per_tahun = {}
     for th in tahun:
-        per_tahun[th] = {"M1": ringkas({k: v for k, v in cv_m1.items() if k[1] == th}),
-                         "klimatologi_bulanan": ringkas({k: v for k, v in pb["klimatologi_bulanan"].items() if k[1] == th})}
+        sub = lambda bl: {k: v for k, v in bl.items() if k[1] == th}
+        per_tahun[th] = {"M1": ringkas(sub(cv_m1)), **{n: ringkas(sub(b)) for n, b in pb.items()}, "selisih": {}}
+        for n in pb:
+            t, ci = pemicu.bootstrap_selisih(sub(cv_m1), sub(pb[n]))
+            per_tahun[th]["selisih"][n] = {"selisih_ets": t, "ci95": ci}
     c3 = pemicu.grid_m3([{"d": mm, "m1": m1, "m3": m3} for v in h.values() for (mm, m1, m3) in v.values() if mm > 0])
-    prevalensi = {s: None for s in nm}
     param = {
         "versi": VERSI, "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"),
-        "parameter_bebas": {"jumlah": 5, "nama": ["S", "Kd", "gamma", "kappa", "Vth"]},
-        "tetap": {"paruh_pc_jam": PARUH_PC, "phi": PHI, "pc_basah_mm": PC_BASAH, "ambang_pasang": AMBANG_PASANG, "puncak_jam": PUNCAK_JAM},
+        "parameter_bebas": {"jumlah": 6, "nama": ["S", "Kd", "gamma", "kappa", "b", "Vth"]},
+        "suku_dasar": "Vth_k = Vth*exp(-b*z_k); z_k = logit(p_k)-logit(p_kota), p_k=(pos_k+M*p_kota)/(n_k+M); frekuensi dari tahun latih lipatan saja",
+        "tetap": {"m_prior_hari": M_PRIOR, "paruh_pc_jam": PARUH_PC, "phi": PHI, "pc_basah_mm": PC_BASAH, "ambang_pasang": AMBANG_PASANG, "puncak_jam": PUNCAK_JAM},
         "anggota": anggota, "c3": [round(x, 5) for x in c3], "skala_pasang": [round(x, 6) for x in skala],
         "kandidat": {"n": N_KANDIDAT, "benih": 20261028, "rentang": RANGE, "grid_vth": GRID_VTH},
         "latih": {"tahun": list(TAHUN), "baris_berlabel": len(baris_berlabel(dunia)), "positif": sum(r[4] for r in baris_berlabel(dunia)),
-                  "ref_proporsi_b3": round(ref, 5), "n_musim": {str(k): v for k, v in sorted(nm.items())}, "musim_tak_tercapai": tak, **info},
+                  "ref_proporsi_b3": round(ref, 5), "n_musim": {str(k): (None if v == math.inf else v) for k, v in sorted(nm.items())},
+                  "n_musim_catatan": "null = tak hingga: proporsi (a) saja melebihi acuan, label musim itu hanya (a)", "musim_hanya_a": tak, "tafsir_sha256": TAFSIR_SHA256, **info},
         "cv": {"ringkas": cv, "selisih_vs_pembanding": selisih, "pembanding_terbaik": terbaik, "per_tahun": per_tahun},
     }
     simpan(PARAM, param)
@@ -587,7 +640,7 @@ def tulis(param, kecs):
                                 L.append(None)
                             continue
                         m3 = m3_dari(param["c3"], d, m1)
-                        rs = [kasus(a, f[0][k], f[1][k], d, m1, tinggi, basah, m3) for a, f in zip(ang, fs)]
+                        rs = [kasus({**a, "Vth": vth_kec(a, k)}, f[0][k], f[1][k], d, m1, tinggi, basah, m3) for a, f in zip(ang, fs)]
                         ya = [r for r in rs if r[0]]
                         P.append(round(len(ya) / len(rs), 2))
                         DLO.append(round(min(r[1] for r in ya)) if ya else 0)
@@ -603,11 +656,11 @@ def tulis(param, kecs):
                  "p": "peluang = bagian dari %d anggota model (7 lipatan CV + model akhir) yang berkata genangan" % len(ang),
                  "dalam_cm": "[batas bawah, batas atas] kedalaman setara antar anggota yang berkata ya; HIPOTESIS",
                  "surut_jam": "[bawah, atas] jam dari puncak sampai simpanan di bawah ambang; HIPOTESIS"},
-        "model": {"definisi": "tangki per kecamatan: limpasan SCS-CN, keluaran drainase Kd x f_kec, pasang tinggi menahan keluaran kecamatan pesisir",
-                  "parameter_bebas": param["parameter_bebas"], "tetap": param["tetap"], "anggota": ang, "label": "laporan PetaBencana dinormalkan per musim (KRITERIA-M1)",
+        "model": {"definisi": "tangki per kecamatan: limpasan SCS-CN, keluaran drainase Kd x f_kec, pasang tinggi menahan keluaran kecamatan pesisir, ambang Vth geser per kecamatan oleh logit frekuensi tergenang (suku dasar)",
+                  "parameter_bebas": param["parameter_bebas"], "tetap": param["tetap"], "anggota": [{k: v for k, v in a.items() if k != "z"} for a in ang], "label": "laporan PetaBencana dinormalkan per musim (KRITERIA-M1 + tafsir)",
                   "latih": param["latih"], "cv": param["cv"]},
         "uji_prospektif": {"kriteria_sha256": KRITERIA_SHA256, "sidik": sd, "sha256_parameter": sha_param(param), "sha256_kode": sha_berkas(KODE),
-                           "tanggal_beku": None, "status": "belum dibekukan", "jendela": "dari tanggal beku sampai 2027-04-30, hanya November-April"},
+                           "tafsir_sha256": TAFSIR_SHA256, "tanggal_beku": None, "status": "belum dibekukan", "jendela": "dari tanggal beku sampai 2027-04-30, hanya November-April"},
         "keterbatasan": [
             "Hujan latih: GSMaP harian dibagi ke jam mengikuti pola jam ERA5 0,25 derajat hari UTC yang sama; GSMaP per jam tidak dipakai (belum ada arsip 2017-2023), jadi puncak jam bergantung pola ERA5 yang meremehkan konvektif.",
             "Satu S (CN) kota: tidak ada peta kedap air per kecamatan; tampungan seragam (tanpa DEM per kecamatan).",
@@ -621,6 +674,7 @@ def tulis(param, kecs):
 # ------------------------------------------------------------------ bekukan
 def bekukan():
     kriteria_ok()
+    tafsir_ok()
     ada = baca(BEKU)
     if ada and ada.get("beku"):
         sys.exit(f"sudah dibekukan {ada['beku'][0]['tanggal_beku']} (sidik {ada['beku'][0]['sidik'][:12]}); pembekuan hanya sekali, versi baru = berkas baru")
@@ -630,7 +684,7 @@ def bekukan():
     if k["uji_prospektif"]["sha256_parameter"] != sha_param(p) or k["uji_prospektif"]["sha256_kode"] != sha_berkas(KODE):
         sys.exit("keluaran tidak cocok dengan kode/parameter sekarang: jalankan `tangki.py latih` ulang sebelum membekukan")
     rec = {"sidik": sidik(p), "sha256_kode": sha_berkas(KODE), "sha256_parameter": sha_param(p), "kriteria_sha256": KRITERIA_SHA256,
-           "tanggal_beku": dt.datetime.now(WIB).isoformat(timespec="seconds"), "versi": VERSI}
+           "tafsir_sha256": TAFSIR_SHA256, "tanggal_beku": dt.datetime.now(WIB).isoformat(timespec="seconds"), "versi": VERSI}
     simpan(BEKU, {"beku": [rec]})
     k["uji_prospektif"].update(sidik=rec["sidik"], tanggal_beku=rec["tanggal_beku"], status="berjalan")
     simpan(KELUAR, k)
@@ -680,9 +734,10 @@ def prakira_baris(p, rows, tgl):
                 out = keluaran(a, f, pes, tinggi)
                 vmax, V2, Pc2, _, _, tr = jalan(h, V, Pc, out, a["S"], jejak=True)
                 tr = tr + [max(0.0, V2 - out * (i + 1)) for i in range(SURUT_MAKS)]
-                ya = vmax > a["Vth"]
+                vk = vth_kec(a, k)
+                ya = vmax > vk
                 hp = max(range(24), key=lambda i: tr[i]) if ya else 0
-                hasil[k].append((ya, vmax, (vmax - a["Vth"]) / 10 / PHI if ya else 0.0, surut(tr, hp, a["Vth"]) if ya else 0))
+                hasil[k].append((ya, vmax, (vmax - vk) / 10 / PHI if ya else 0.0, surut(tr, hp, vk) if ya else 0))
                 keadaan[ai][k] = [V2, Pc2]
     if hasil is None or prev != tgl:
         return None
@@ -694,6 +749,7 @@ def prakira_baris(p, rows, tgl):
 
 def prakira(tanggal=None, kering=False):
     kriteria_ok()
+    tafsir_ok()
     p = periksa_beku()
     rows = sorted(baca_jsonl(HUJAN_OP), key=lambda r: r["tanggal"])
     if not rows:
@@ -709,7 +765,7 @@ def prakira(tanggal=None, kering=False):
         sys.exit(f"{tgl}: tidak ada hujan teramati yang sah di m1_hujan.jsonl")
     kec = prakira_baris(p, rows, tgl)
     r = {"tanggal": tgl.isoformat(), "versi_hujan": "teramati", "label": LABEL, "sidik": baca(BEKU)["beku"][0]["sidik"],
-         "kriteria_sha256": KRITERIA_SHA256, "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "kec": kec}
+         "kriteria_sha256": KRITERIA_SHA256, "tafsir_sha256": TAFSIR_SHA256, "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "kec": kec}
     if kering:
         print(json.dumps(r, ensure_ascii=False)[:600])
         return
@@ -723,6 +779,7 @@ def prakira(tanggal=None, kering=False):
 def uji():
     global DIR, PARAM, BEKU, HUJAN_OP, LABEL_OP, PRAKIRAAN, KELUAR
     kriteria_ok()
+    tafsir_ok()
     # 1. hietograf: jumlah = mm, m1 dan m3 terpenuhi
     for mm, m1, m3 in ((50, 20, 35), (10, 10, 10), (80, 5, 12)):
         h = hietograf(mm, m1, m3)
@@ -780,6 +837,20 @@ def uji():
     baris += [(2023, 1, 0)] * 30 + [(2023, 0, 0)] * 70       # musim ramai pelapor: n_musim naik
     nm, ref, tak = normalkan(baris)
     assert abs(ref - 0.05) < 1e-9 and nm[2017] == 1 and nm[2023] == 2 and not tak, (nm, ref, tak)
+    # tafsir: acuan HANYA dari aturan (b); (a) yang melebihi acuan -> n_musim tak hingga dan dicatat; (a) di bawah acuan tak mengubah acuan
+    nm, ref, tak = normalkan(baris + [(2024, 0, 12)] * 10 + [(2024, 0, 0)] * 90 + [(2025, 0, 12)] * 3 + [(2025, 5, 0)] * 6 + [(2025, 0, 0)] * 91)
+    assert abs(ref - 0.05) < 1e-9 and nm[2024] == math.inf and tak == [2024] and nm[2025] == 6, (nm, ref, tak)
+    # 5b. suku dasar tanpa kebocoran tahun yang dilepas: ubah label tahun 2020 -> z lipatan 'lepas 2020' tidak berubah, z lain berubah
+    dn = Dunia([("A|a", 0, 0), ("B|b", 0, 0)], [], set(), {})
+    def mk(y2020):
+        rw = lambda kec, y, th: (th * 1000 + kec, 5.0, None, dt.date(th, 12, 1), y, th)
+        return Dunia(dn.kecs, [[rw(0, 1 if th < 2022 else 0, th) for th in range(2017, 2024)] * 30 + [rw(0, y2020, 2020)] * 30,
+                               [rw(1, 0, th) for th in range(2017, 2024)] * 30], set(), {})
+    z1, z2 = hitung_z(mk(0), [t for t in range(2017, 2024) if t != 2020]), hitung_z(mk(1), [t for t in range(2017, 2024) if t != 2020])
+    assert z1 == z2 and z1[0] > 0 > z1[1], (z1, z2)
+    assert hitung_z(mk(0), list(range(2017, 2024))) != hitung_z(mk(1), list(range(2017, 2024)))
+    assert abs(sum(z for z in hitung_z(mk(0), [2017])) ) < 5 and skala_vm([[2.0]], 0.0, [1.0]) == [[2.0]]
+    assert abs(vth_kec({"Vth": 4.0, "b": 0.5, "z": {"A": 2.0}}, "A") - 4.0 * math.exp(-1.0)) < 1e-12 and vth_kec({"Vth": 4.0}, "A") == 4.0
     # 6. pembekuan sekali, prakiraan menolak sesudah label dan sebelum beku
     asli = (DIR, PARAM, BEKU, HUJAN_OP, LABEL_OP, PRAKIRAAN, KELUAR)
     tmp = tempfile.mkdtemp()
@@ -841,6 +912,7 @@ def uji():
         d = baca(KELUAR)
         assert os.path.getsize(KELUAR) < 300_000, os.path.getsize(KELUAR)
         assert len(d["kec"]) == 42 and d["label"] == LABEL and d["uji_prospektif"]["kriteria_sha256"] == KRITERIA_SHA256
+        assert d["uji_prospektif"]["tafsir_sha256"] == TAFSIR_SHA256
         p = baca(PARAM)
         assert p["latih"]["tahun"][1] <= 2023 and d["uji_prospektif"]["sha256_parameter"] == sha_param(p)
         n = len(GRID_D) * len(GRID_M1) * 4
