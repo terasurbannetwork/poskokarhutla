@@ -1,12 +1,12 @@
 "use strict";
 /* Pop-up "Situasi banjir hari ini": pola dan gaya sama dengan public/sapa.js (karhutla), mesin bersama di public/inti/sapa.js.
-   Sekali per hari WIB per peramban (kunci localStorage "pb_sapa" dipakai bersama karhutla); muncul di /banjir dan /banjir/peta.
+   Sekali per hari WIB per peramban (kunci localStorage "pb_sapa_banjir", terpisah dari karhutla; tombol "!" di header membukanya kapan saja); muncul di /banjir dan /banjir/peta.
    Angka dari status.json (S.st), sungai.json, rob.json, peringatan.json, seri_status.json (naik/turun dari kemarin; disembunyikan bila
    kemarin belum tercatat, bukan ditulis 0) dan kejadian_aktif_awal.json (kejadian baru sejak kemarin). Prakiraan = hari 1-3 status.json.
    Skrip klasik, dimuat SETELAH peta.js. Global: S, muatJSON, esc, fmt, namaProv, LEVEL, WARNA_LV, Peta, Analisa, bukaTab, $. */
 (() => {
-  const {sudah, ik, kartu, IK} = SapaInti;
-  if (sudah() || /[?&](wil|k)=/.test(location.search) || !["/banjir", "/banjir/peta"].includes(location.pathname.replace(/\/+$/, ""))) return;
+  const {ik, kartu, IK} = SapaInti, KUNCI = "pb_sapa_banjir", sudah = () => SapaInti.sudah(KUNCI);
+  const otomatis = !(sudah() || /[?&](wil|k)=/.test(location.search) || !["/banjir", "/banjir/peta"].includes(location.pathname.replace(/\/index\.html$/, "").replace(/\/+$/, "")));
   Object.assign(IK, {
     hujan: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>',
     sungai: '<path d="M3 8c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 14c3 0 3-2 6-2s3 2 6 2 3-2 6-2M3 20c3 0 3-2 6-2s3 2 6 2 3-2 6-2"/>',
@@ -69,13 +69,15 @@
       <div class="sp-aksi"><span>Sumber: Open-Meteo, GloFAS, InaRISK, BMKG</span><button class="sp-pri" data-tutup>Lihat peta</button></div>`;
   }
 
-  async function tampil() {
-    if (!(await siap()) || sudah()) return;
+  async function tampil(paksa) {
+    if (!(await siap()) || (!paksa && sudah())) return;
     const [per, seri, aktif] = await Promise.all(["peringatan", "seri_status", "kejadian_aktif_awal"].map(f => muatJSON(`data/${f}.json`).catch(() => null)));
     SapaInti.dialog(html(hitung(per, seri, aktif)), (e, d) => { const b = e.target.closest("[data-k]"); if (!b) return;
-      d.close(); const p = b.dataset.k.split("|"); S.jalur = p.slice(0, 2); bukaTab("peta"); Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k)); return true; });
+      d.close(); const p = b.dataset.k.split("|"); S.jalur = p.slice(0, 2); bukaTab("peta"); Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k)); return true; }, KUNCI);
   }
 
   SapaInti.css();
-  SapaInti.mulai(tampil);
+  if (otomatis) SapaInti.mulai(() => tampil());
+  let muat = 0;
+  document.getElementById("sapaBuka")?.addEventListener("click", async () => { if (muat || document.querySelector("dialog.sp[open]")) return; muat = 1; try { await tampil(true); } finally { muat = 0; } });
 })();

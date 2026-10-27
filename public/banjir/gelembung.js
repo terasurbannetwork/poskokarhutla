@@ -121,11 +121,11 @@
       this.cache.set(ck, h); return h; },
     /* klik: kartu kecil berlambang di titik tengah wilayah */
     kartu(kunci, ll) {
-      const p = kunci.split("|"), prov = p.length === 1, a = this.ag?.[kunci], n = a ? a.s : 0, nama = prov ? namaProv(kunci) : p[1]; PI?.sembunyiTip(); this.tutup();
+      const p = kunci.split("|"), prov = p.length === 1, nama = prov ? namaProv(kunci) : p[1]; PI?.sembunyiTip(); this.tutup();
       const ik = d => `<svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
-      const pop = this._pop = new maplibregl.Popup({closeButton: true, maxWidth: "260px", className: "gel-pop"}).setLngLat(ll).setHTML(`<div class="gel-kartu"><div class="gel-hd">${lambang(p[0], prov ? null : p[1])}<div><small>${prov ? "Provinsi" : "Kabupaten/kota"}</small><b>${esc(nama)}</b></div></div>
-        <p class="gel-n"><b style="color:${n ? WARNA_LV[a.n[3] ? 3 : 2] : "inherit"}">${fmt(n)}</b> kecamatan Siaga atau Awas</p>
-        <div class="gel-aksi"><button class="btn" data-g="zoom">${ik('<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M11 8v6M8 11h6"/>')}Zoom</button><button class="btn sec" data-g="rinci">${ik('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>')}Rincian</button></div></div>`).addTo(peta);
+      const pop = this._pop = new maplibregl.Popup({closeButton: false, className: "pw-pop", offset: 8, maxWidth: "none"}).setLngLat(ll).setHTML(`<div class="pw"><div class="pw-h">${lambang(p[0], prov ? null : p[1])}<b>${esc(nama)}</b></div>
+        <div class="pw-a"><button type="button" data-g="zoom">${ik('<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5M11 8v6M8 11h6"/>')}Zoom</button><button type="button" class="gelap" data-g="rinci">${ik('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>')}Rincian</button></div></div>`).addTo(peta);
+      document.documentElement.classList.add("pw-buka"); pop.on("close", () => document.documentElement.classList.remove("pw-buka"));
       pop.getElement().addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (!b) return; pop.remove();
         /* Zoom = masuk wilayah + laci samping (pos tinggi air provinsi, atau analisa wilayah); Rincian = pop-up riwayat ala karhutla (Tren.rinci) */
         if (b.dataset.g === "zoom") nanti(() => { turun(kunci); const g = prov && S.geo.prov.features.find(x => x.properties.kode === kunci)?.geometry; return prov && PosUkur.menyala() && PosUkur.D ? PosUkur.provinsi(kunci, g) : Analisa.wilayah(kunci); });

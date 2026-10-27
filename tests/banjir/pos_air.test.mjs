@@ -305,14 +305,14 @@ test("batang ambang hanya untuk pos berambang dan berangka; kapsul besar sesuai 
   const css = fs.readFileSync("public/banjir/pos_air.css", "utf8"); assert.match(css, /\.pa-kp\{[^}]*width:14px;height:26px/); assert.match(css, /\.pa-baris\{[^}]*grid-template-columns:auto minmax\(0,1fr\) auto 78px/);
 });
 
-test("kelompok wilayah: nama pendek, bentrok Kota dan Kabupaten memakai nama lengkap; pos_sungai.json dimuat malas; judul grup 14px tanpa kotak", () => {
+test("kelompok wilayah: nama pendek, bentrok Kota dan Kabupaten memakai nama lengkap; pos_sungai.json dimuat malas; grup dalam kotak details.lipat ala karhutla", () => {
   const mk = (id, kab, ex = {}) => ({id, nama: id, x: 0, y: 0, status: "biasa", kab, ...ex});
   const g = plain(P.kelompok([mk("a", "Kota Administrasi Jakarta Timur"), mk("b", "Kota Depok"), mk("c", "Kota Bogor"), mk("d", "Kabupaten Bogor")])).map(([k]) => k).sort();
   assert.deepEqual(g, ["Depok", "Jakarta Timur", "Kabupaten Bogor", "Kota Bogor"]);
   assert.match(src, /muatSungai\(\) \{ return this\._sg \|\|= fetch\("data\/pos_sungai\.json"/); assert.match(src, /nanti\(\(\) => this\.muatSungai\(\)\)/);
   assert.match(src, /i < 4 \|\| l\.some\(PAN\)/, "4 grup teratas dan grup berpos Siaga/naik terbuka");
   assert.match(src, /PosAir\.pengelolaSingkat\(l\[0\]\)/);
-  assert.match(fs.readFileSync("public/banjir/pos_air.css", "utf8"), /\.pa-grup>summary b\{font-size:14px\}/);
+  assert.match(src, /<details class="lipat pa-grup"/); assert.match(src, /<span class="pill pa-jml">/);
   assert.ok(!/Sumber: \$\{D\.sumber/.test(fs.readFileSync("public/banjir/wilayah.js", "utf8")), "nama berkas internal tidak tampil");
 });
 

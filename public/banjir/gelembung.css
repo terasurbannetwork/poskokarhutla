@@ -5,11 +5,14 @@
 .tp-tr svg{display:block}
 .tp-tr-x{display:flex;justify-content:space-between;gap:6px;font-size:8px;color:var(--ink2);margin-top:2px}
 .tp-tr-x span:nth-child(2){text-align:center}
-.gel-pop .maplibregl-popup-content{padding:0;overflow:hidden;border-radius:12px}
-.gel-hd{display:flex;align-items:center;gap:10px;padding:10px 34px 8px 12px}
-.gel-hd .lambang{width:28px;height:34px;filter:none}
-.gel-hd small{display:block;font-size:10px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;color:var(--ink2)}
-.gel-hd b{font-size:14px}
-.gel-n{margin:0;padding:0 12px 8px;font-size:12.5px}.gel-n b{font-size:20px;margin-right:2px}
-.gel-aksi{display:flex;gap:8px;padding:0 12px 12px}
-.gel-aksi .btn{flex:1;height:32px;font-size:12.5px;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+/* kartu klik = salinan .pw karhutla (public/index.html): lambang + nama, Zoom bergaris, Rincian gelap */
+.pw-buka #tip{opacity:0!important;visibility:hidden}
+.pw-pop{z-index:65}
+.pw-pop .maplibregl-popup-content{padding:0;border-radius:14px;overflow:hidden;box-shadow:0 12px 30px oklch(25% .05 256 / .22)}
+.pw-h{display:flex;align-items:center;justify-content:center;gap:8px;padding:9px 12px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line);font-family:var(--display);font-size:13.5px}
+.pw-h .lambang{width:20px;height:24px}
+.pw-a{display:flex;justify-content:center;gap:6px;padding:9px 10px}
+.pw-a button{display:inline-flex;align-items:center;gap:6px;height:32px;padding:0 12px;border:1px solid var(--line);border-radius:999px;background:var(--card);color:var(--ink);font:700 12px var(--font);cursor:pointer;white-space:nowrap}
+.pw-a button svg{width:14px;height:14px}
+.pw-a button:hover{border-color:var(--brand2)}
+.pw-a button.gelap{background:linear-gradient(135deg,oklch(32% .09 256),oklch(22% .07 256));color:#fff;border:0}
