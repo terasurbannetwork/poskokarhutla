@@ -54,9 +54,11 @@ website menghentikan generator dengan pesan jelas.
 ## Penanganan
 
 `Laporan Penanganan Pengendalian Karhutla DDMMYY` (2 slide: peta, tabel). Aturan pemilik 25 Okt 2026: cut-off **17.00 WIB**
-hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara s.d. 17.00 (catatan kaki "Angka D sementara,
-data s.d. 17.00 WIB."); tabel punya **empat** kelompok berbintang FIRESPOT, HOTSPOT, LUAS TERBAKAR, BELUM PADAM, tiga hari
-masing-masing; halaman "Operasi Penanganan Karhutla" **dibuang** (sumbernya teks WA satgas, tidak ada untuk hari lampau).
+hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara s.d. 17.00 (catatan kaki cukup teks baku sumber data;
+kalimat Firespot dan "Angka D sementara" dibuang pemilik 27 Okt 2026); tabel punya **empat** kelompok berbintang, tiga hari
+masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan slide peta); halaman "Operasi Penanganan Karhutla"
+**dibuang** (sumbernya teks WA satgas, tidak ada untuk hari lampau), kecuali teks WA satgas hari itu diberikan lewat `--operasi wa.txt`
+(27 Okt 2026; contoh `../satelit-2026-10-27/wa-satgas.txt`).
 
     cd data/laporan-bnpb/generator
     python3 penanganan.py --tanggal 2026-10-25                      # --jam 17:00 bawaan, --out ~/Downloads bawaan
@@ -72,5 +74,5 @@ masing-masing; halaman "Operasi Penanganan Karhutla" **dibuang** (sumbernya teks
 - Pil PM2,5 + cuaca tanpa `--bmkg`: `pil_sendiri.py` (rata-rata provinsi CAMS + ambang P.14/2020, hujan/angin Open-Meteo
   dengan kelas BMKG; uji `python3 pil_sendiri.py`). Dengan `--bmkg`: `wa_operasi.py` (uji `python3 wa_operasi.py`).
 - Skrip deck di `penanganan/`: `kisi.py` (geometri kolom, dipakai bersama), `ganti.py` (tabel, baca param.json),
-  `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil), `sementara.py`, `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
+  `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil, slide operasi), `ikon.mjs` (ikon Pemda; ikon FIRESPOT disalin dari deck 25 Okt), `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
 - Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) butuh `penanganan/logo/<kode>.png`; tanpa itu generator berhenti dengan pesan jelas.

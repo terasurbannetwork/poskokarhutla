@@ -8,7 +8,7 @@ def bul(v): return int(math.floor(v + 0.5))  # pembulatan sekali, setengah ke at
 def f0(v): return f"{bul(v):,}".replace(',', '.')
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from kisi import (GRUP, KOL0, PITCH0, GW0, SELA, GW, PITCH, BW, LW, GX, LX, BX,   # noqa: E402  kisi tabel, dipakai cek6.py juga
-                  HGX, HGX_MUDA, KEPALA, KEPALA_SZ, IKON_DX, IKON_W, KEPALA_TX,
+                  HGX, HGX_MUDA, KEPALA, KEPALA_SZ, IKON_W, IKON_SELA, IKON, lebar_teks,
                   Y_KEPALA, Y_HARI, H_KEPALA, H_HARI, NX)
 s1 = open(SP + '/deck/x/ppt/slides/slide1.xml').read()
 SHAPES = lambda s: list(re.finditer(r'<p:sp>.*?</p:sp>', s, re.S))
@@ -101,6 +101,11 @@ def ganti_total(s, y, kode, nid=None):
     return s.replace('</p:spTree>', ''.join(baru) + '</p:spTree>')
 
 
+# label hari per kelompok: luas & belum padam boleh bergeser ke hari utuh terakhir (penanganan.py ha_utuh, pemilik 27 Okt 2026)
+# belum padam boleh tetap di hari laporan sementara luas di hari utuh terakhir (belum_kini.json website, penanganan.py belum_kini)
+KOLOM = {**{g_: PAR['kolom'] for g_ in GRUP}, 'luas': PAR.get('kolom_ha', PAR['kolom']), 'belum': PAR.get('kolom_belum', PAR.get('kolom_ha', PAR['kolom']))}
+
+
 def kepala_tabel(s, nid):
     """Kepala 4 kolom + label hari + garis dasar tiap kelompok, dibangun ulang dari cetakan HOTSPOT templat.
     Yang lama (3 kelompok) dibuang dulu supaya tidak ada sisa di posisi templat."""
@@ -112,17 +117,20 @@ def kepala_tabel(s, nid):
         if y == Y_KEPALA and cy == H_KEPALA: s = s.replace(b, '', 1)              # latar + tulisan kepala
         elif y == 1554480 and cx == 219456: s = s.replace(b, '', 1)               # ikon kepala
         elif y == Y_HARI and cx == PITCH0 and cy == H_HARI: s = s.replace(b, '', 1)   # label hari
+    assert 'r:embed="rId2"' in T['ikon'], 'ikon kepala templat bukan rId2 (api): peta IKON kisi.py tak berlaku'
     baru = []
     for g_ in GRUP:
         lab, sat = KEPALA[g_]
         baru.append(setcol_fill(setgeom(T['kepala'], GX[g_], Y_KEPALA, GW, H_KEPALA), HGX[g_]))
-        baru.append(setgeom(T['ikon'], GX[g_] + IKON_DX, Y_KEPALA + (H_KEPALA - IKON_W) // 2, IKON_W, IKON_W))
-        kt = setgeom(T['kepala_teks'], GX[g_] + KEPALA_TX, Y_KEPALA, GW - KEPALA_TX - 45720, H_KEPALA)
+        tw = lebar_teks([(lab, KEPALA_SZ, True), (sat, KEPALA_SZ, False)])
+        x0 = GX[g_] + (GW - IKON_W - IKON_SELA - tw) // 2   # ikon + tulisan rata tengah di kotak (pemilik 27 Okt 2026)
+        baru.append(setgeom(T['ikon'], x0, Y_KEPALA + (H_KEPALA - IKON_W) // 2, IKON_W, IKON_W).replace('r:embed="rId2"', f'r:embed="{IKON[g_]}"'))
+        kt = setgeom(T['kepala_teks'], x0 + IKON_W + IKON_SELA, Y_KEPALA, tw + 91440, H_KEPALA)
         kt = re.sub(r'sz="\d+"', f'sz="{KEPALA_SZ}"', kt).replace('wrap="square"', 'wrap="none"')
         kt = kt.replace('<a:t>HOTSPOT*</a:t>', f'<a:t>{lab}</a:t>').replace('<a:t>  (titik)</a:t>', f'<a:t>{sat}</a:t>')
         kt = kt.replace('val="E6ECF3"', f'val="{HGX_MUDA[g_]}"')
         baru.append(kt)
-        for i, hr in enumerate(PAR['kolom']):
+        for i, hr in enumerate(KOLOM[g_]):
             baru.append(settext(setgeom(T['hari'], LX[g_][i], Y_HARI, LW, H_HARI), hr))
     out = []
     for b in baru:
@@ -221,11 +229,11 @@ for base, k in zip([2697480, 3429000, 4160520], P3): s2 = isi_baris(s2, base, 31
 s1 = ganti_total(s1, 5330952, P5, nid)
 s2 = ganti_total(s2, 4416552, P3, nid); s2 = ganti_total(s2, 4855464, P8, nid)
 L5 = sum(bul(A[k]['luas'][3]) for k in P5); T5 = sum(bul(A[k]['luas'][1]) for k in P5); B5 = sum(bul(A[k]['belum'][3]) for k in P5); B8 = sum(bul(A[k]['belum'][3]) for k in P8); D5 = sum(bul(A[k]['padam'][3]) for k in P5)
-s1 = rep(s1, '<a:t>502,08 ha</a:t>', f'<a:t>{f0(D5)} ha</a:t>')
+s1 = rep(s1, '<a:t>502,08 ha</a:t>', f'<a:t>±{f0(D5)} ha</a:t>')   # ± menempel di angka oranye (pemilik 27 Okt 2026)
 s1 = rep(s1, '<a:t>51 persen</a:t>', f'<a:t>{bul(D5 / T5 * 100)} persen</a:t>')
-s1 = rep(s1, '<a:t>983,34 ha</a:t>', f'<a:t>{f0(T5)} ha</a:t>')
-s1 = rep(s1, '<a:t> telah padam pada </a:t>', f'<a:t> api {PAR["padam_dari"]} telah padam pada </a:t>')
-s1 = rep(s1, '<a:t>481,26 ha</a:t>', f'<a:t>{f0(B5)} ha</a:t>')
+s1 = rep(s1, '<a:t>983,34 ha</a:t>', f'<a:t>±{f0(T5)} ha</a:t>')
+s1 = rep(s1, '<a:t> telah padam pada </a:t>', f'<a:t> api {PAR["padam_dari"]} {"" if PAR.get("belum_lbl") else "telah "}padam pada </a:t>')   # belum_lbl memanjangkan kalimat: "telah" dibuang supaya tak tertutup pil CUT OFF
+s1 = rep(s1, '<a:t>481,26 ha</a:t>', f'<a:t>±{f0(B5)} ha</a:t>')
 s2 = rep(s2, '<a:t>554,76 ha</a:t>', f'<a:t>{f0(B8)} ha</a:t>')
 s2 = rep(s2, '<a:t>LUAS TERBAKAR / TARGET</a:t>', '<a:t>LUAS TERBAKAR*</a:t>')   # kepala s1 dibangun ulang kepala_tabel()
 s2 = rep(s2, '<a:t>BELUM PADAM</a:t>', '<a:t>BELUM PADAM*</a:t>')
@@ -235,11 +243,7 @@ s2 = rep(s2, '<a:t>Fire spot 8 provinsi</a:t>', '<a:t>Lokasi api bertahan, 8 pro
 s2 = rep(s2, '<a:t>3 provinsi tambahan masuk prioritas karena peningkatan hotspot.</a:t>', '<a:t>3 provinsi tambahan masuk daftar prioritas.</a:t>')
 CAT = '**Perkiraan satelit VIIRS S-NPP (NASA FIRMS), 4,3 ha per titik; belum padam = titik yang bertahan ≥1 hari di lokasi sama.'
 s1 = rep(s1, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System).</a:t>',
-         '<a:t>*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS). '
-         'Firespot = titik panas terkonfirmasi api, bagian dari hotspot.</a:t>')
-# catatan kaki bertambah satu kalimat dan satu lagi disisipkan sementara.py: hurufnya dikecilkan supaya tetap satu baris
-for a_, b_ in reversed(sp_di_y(s1, 6172200)):
-    s1 = s1[:a_] + re.sub(r'sz="(\d+)"', lambda m: f'sz="{round(int(m.group(1)) * 0.9)}"', s1[a_:b_]) + s1[b_:]
+         '<a:t>*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).</a:t>')   # pemilik 27 Okt 2026: tanpa kalimat Firespot dan "Angka D sementara"
 s2 = rep(s2, '<a:t>Fire spot belum termasuk Papua Selatan dan Sulawesi Tengah.</a:t>', '<a:t>Lokasi api bertahan = kluster titik api satelit yang menyala ≥1 hari di tempat sama; berbeda dari Fire Spot BNPB.</a:t>')
 s2 = rep(s2, '<a:t>*Hotspot berdasarkan GIS (Geographic Information System). NA: belum ada data laporan lapangan.</a:t>', '<a:t>*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).</a:t>')
 CUTOFF = PAR['cutoff']
@@ -256,18 +260,19 @@ for j in range(3):
     s2 = s2.replace(f'<a:t>@kolom{j}@</a:t>', f'<a:t>{PAR["kolom"][j]}</a:t>')
 # slide1: satu-satunya label hari yang boleh ada adalah ketiga kolom laporan, masing-masing sekali per kelompok
 hari_s1 = sorted(set(re.findall(r'<a:t>(\d{1,2} [A-Z][a-z]{2})</a:t>', s1)))
-assert hari_s1 == sorted(set(PAR['kolom'])), f'label hari slide1 {hari_s1}, harusnya {sorted(set(PAR["kolom"]))}'
-for hr in PAR['kolom']:
-    assert s1.count(f'<a:t>{hr}</a:t>') == len(GRUP), f'label {hr} muncul {s1.count(f"<a:t>{hr}</a:t>")} kali, harusnya {len(GRUP)}'
+harus = sorted({h for v in KOLOM.values() for h in v})
+assert hari_s1 == harus, f'label hari slide1 {hari_s1}, harusnya {harus}'
+for hr in harus:
+    n_ = sum(v.count(hr) for v in KOLOM.values())
+    assert s1.count(f'<a:t>{hr}</a:t>') == n_, f'label {hr} muncul {s1.count(f"<a:t>{hr}</a:t>")} kali, harusnya {n_}'
 # tanggal judul (21) dan subjudul (20) sama-sama jadi hari laporan; lewat penanda supaya deck 20 atau 21 Okt
 # tidak menghitung angka yang baru saja ditulis sebagai token templat yang belum diganti
-for a in ('21', '20'):
-    s1 = rep(s1, f'<a:t>{a}</a:t>', '<a:t>@hari@</a:t>')
-s1 = s1.replace('<a:t>@hari@</a:t>', f'<a:t>{PAR["hari"]}</a:t>')
+s1 = rep(s1, '<a:t>21</a:t>', '<a:t>@hari@</a:t>'); s1 = rep(s1, '<a:t>20</a:t>', '<a:t>@harisub@</a:t>')
+s1 = s1.replace('<a:t>@hari@</a:t>', f'<a:t>{PAR["hari"]}</a:t>').replace('<a:t>@harisub@</a:t>', f'<a:t>{PAR.get("hari_ha", PAR["hari"])}</a:t>')
 s1 = rep(s1, '<a:t> Oktober </a:t>', f'<a:t> {PAR["bulan"]} </a:t>')   # bulan judul   # subjudul: '... telah padam pada 21 Okt'
-for a in (' teratas; ±', ') dari ±', ' Okt, belum padam ±'):   # selera pemilik: tanpa ± (22 Okt 2026)
+for a in (' teratas; ±', ') dari ±', ' Okt, belum padam ±'):   # ± templat (hitam) dibuang; ± ikut angka oranye di atas
     s1 = rep(s1, f'<a:t>{a}</a:t>', f'<a:t>{a[:-1]}</a:t>')
-s1 = rep(s1, '<a:t> Okt, belum padam </a:t>', f'<a:t> {PAR["bln"]}, belum padam </a:t>')   # bulan subjudul
+s1 = rep(s1, '<a:t> Okt, belum padam </a:t>', f'<a:t> {PAR["bln"]}, belum padam {PAR["belum_lbl"] + " " if PAR.get("belum_lbl") else ""}</a:t>')   # bulan subjudul; hari belum padam bila beda dari hari padam
 GES = 235639  # geser ikon+teks LUAS TERBAKAR agar rata tengah di kotaknya (slide2 saja; kepala slide1 sudah rata dari kepala_tabel)
 s2 = rep(s2, '<a:off x="7111898" y="1554480"/>', f'<a:off x="{7111898 + GES}" y="1554480"/>')
 s2 = rep(s2, '<a:off x="7386218" y="1463040"/>', f'<a:off x="{7386218 + GES}" y="1463040"/>')
@@ -278,9 +283,11 @@ for it in zi.infolist():
     if it.filename == 'ppt/slides/slide2.xml': d = s2.encode()
     if it.filename == 'ppt/slides/_rels/slide1.xml.rels':
         d = d.decode().replace('</Relationships>', ''.join(f'<Relationship Id="S2{r}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="{t}"/>' for r, t in REL_S2)
-            + ''.join(f'<Relationship Id="logo{k}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/logo-{k}.png"/>' for k in LOGO) + '</Relationships>').encode()
+            + ''.join(f'<Relationship Id="logo{k}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/logo-{k}.png"/>' for k in LOGO)
+            + '<Relationship Id="rIdFs" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/ikon-firespot.png"/></Relationships>').encode()
     zo.writestr(it, d)
 
 for k, j in LOGO.items(): zo.writestr(f'ppt/media/logo-{k}.png', open(j, 'rb').read())
+zo.writestr('ppt/media/ikon-firespot.png', open(os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ikon', 'firespot.png'), 'rb').read())
 zo.close()
 print('ok luas20', f0(L5), 'luas18', f0(T5), 'padam', f0(D5), bul(D5 / T5 * 100), '% belum5', f0(B5), 'belum8', f0(B8))
