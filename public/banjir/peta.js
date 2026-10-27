@@ -270,7 +270,7 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
   $("#modePeta").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(() => {
     if (peta.getLayer("sungai")) peta.setFilter("sungai", S.mode === "sungai" ? null : [">=", ["get", "k"], 0]);
-    setLapis("wilayah", S.mode === "status" || S.mode === "riwayat"); setLapis("hujan", S.mode === "hujan"); setLapis("h3", S.mode === "status"); setLapis("sungai", S.mode === "sungai" || S.mode === "status"); setLapis("rob", S.mode === "rob" || S.mode === "status");
+    setLapis("wilayah", S.mode === "status" || S.mode === "riwayat"); setLapis("hujan", S.mode === "hujan"); setLapis("h3", false); setLapis("sungai", S.mode === "sungai"); setLapis("rob", S.mode === "rob");  /* Status = wilayah + Wilayah Siaga saja; peta penuh dibilang jelek (pemilik, 27 Okt 2026) */
     if (S.mode === "riwayat") Riwayat.pasang(); else Riwayat.lepas();
     Posko.tampil(S.mode !== "riwayat");
     renderLegenda();
