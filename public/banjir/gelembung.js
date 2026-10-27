@@ -42,13 +42,16 @@
     if (rb === 0) return ra === 0 ? {d: 0, arah: 0} : null; const d = Math.round((ra - rb) / rb * 100); return {d, arah: d < 0 ? -1 : d > 0 ? 1 : 0}; }
   const vonisTeks = t => t == null ? null : t.arah < 0 ? `MEMBAIK -${-t.d}%` : t.arah > 0 ? `MEMBURUK +${t.d}%` : "STABIL";
 
-  const API = {ZOOM, stNum, pusatGeom, agregWil, pusatKab, hariAkhir, seriProv, persenHarian, tren, vonisTeks};
+  /* perisai nomor rute basemap OpenFreeMap (kotak berangka "1"): lapisan symbol transportation_name berikon road_/shield atau yang teksnya ref tanpa name; label nama jalan tetap */
+  const perisai = l => l?.type === "symbol" && l["source-layer"] === "transportation_name" && (/shield/i.test(l.id) || /shield|road_/i.test(JSON.stringify(l.layout?.["icon-image"] ?? ""))
+    || (t => t.includes('"ref"') && !t.includes('"name'))(JSON.stringify(l.layout?.["text-field"] ?? "")));
+  const API = {perisai, ZOOM, stNum, pusatGeom, agregWil, pusatKab, hariAkhir, seriProv, persenHarian, tren, vonisTeks};
   if (typeof document === "undefined") { akar.Gelembung = API; return; }
 
   /* ================= bagian peta ================= */
   const KAB = "gel-kab", PROV = "gel-prov", LAYER = [PROV, PROV + "-n", KAB, KAB + "-n"];
   const WARNA_TREN = {"-1": "#2b8c86", "0": "#8a94a6", "1": "#c9503a"};
-  const G = {docs: [], versi: 0, pusatProv: new Map(), pusatKab: null, cache: new Map(), _p: null};
+  const G = {docs: [], versi: 0, pusatProv: new Map(), titikKab: null, cache: new Map(), _p: null};
 
   function fitur() {
     const j = S.jalur, ag = G.ag || {}, f = [];
@@ -56,7 +59,7 @@
     const tambah = (t, kunci, nama, c) => { const a = ag[kunci]; if (!a || !a.s || !c) return; const n = a.s;
       f.push({type: "Feature", geometry: {type: "Point", coordinates: c}, properties: {t, kunci, nama, n, lbl: fmt(n), lv: a.n[3] ? 3 : 2}}); };
     if (j.length === 0) for (const p of S.geo.prov.features) { const k = p.properties.kode; if (!G.pusatProv.has(k)) G.pusatProv.set(k, pusatGeom(p.geometry)); tambah("p", k, namaProv(k), G.pusatProv.get(k)); }
-    if (G.pusatKab) for (const [k, c] of Object.entries(G.pusatKab)) if (!j.length || k.startsWith(j[0] + "|")) tambah("k", k, k.split("|")[1], c);
+    if (G.titikKab) for (const [k, c] of Object.entries(G.titikKab)) if (!j.length || k.startsWith(j[0] + "|")) tambah("k", k, k.split("|")[1], c);
     return f; }
 
   const berat = n => ["interpolate", ["linear"], ["get", "n"], 1, n[0], 20, n[1], 200, n[2]];
@@ -84,7 +87,7 @@
       peta.getSource("gel").setData({type: "FeatureCollection", features: f}); this.ada = f.length > 0; this.cache.clear();
       for (const l of LAYER) peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none");
       renderLegenda(); },
-    muatPusat() { if (this.pusatKab) return; muatJSON("data/pusat_kec.json").then(d => { this.pusatKab = pusatKab(d); this.segarkan(); }).catch(() => {}); },
+    muatPusat() { if (this.titikKab) return; muatJSON("data/pusat_kec.json").then(d => { this.kec = d; this.titikKab = pusatKab(d);  this.segarkan(); }).catch(() => {}); },
     async muatArsip() {
       const idx = await muatJSON("data/hari/indeks.json").catch(() => null); if (!idx?.hari?.length) return;
       this.docs = (await Promise.all(hariAkhir(idx.hari).map(t => muatJSON(`data/hari/${t}.json`).catch(() => null)))).filter(Boolean); this.versi++; this.cache.clear(); },

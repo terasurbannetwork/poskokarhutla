@@ -202,3 +202,34 @@ test("pin pos tidak tersingkir, pos terpilih tersorot (statis)", () => {
   assert.ok(src.indexOf('id: "pos-pilih"') > src.indexOf('id: "pos-angka"'), "pos-pilih di atas pin dan angka");
   assert.match(src, /strokeStyle = "#000"; g\.lineWidth = 2\.5/);
 });
+
+test("angka cm: zoom 11 ke atas semua tampil tanpa tabrakan; pasut berlabel prediksi sekarang", () => {
+  assert.match(src, /\["pos-angka-semua", 11, 24, true\]/); assert.match(src, /"text-allow-overlap": true, "text-ignore-placement": true/);
+  assert.match(src, /\["pos-angka", 8\.5, 11, false\]/); assert.match(src, /"symbol-sort-key": \["get", "u"\]/);
+  assert.match(src, /\["pasut-angka-semua", 11, 24, true\]/);
+  const st = {deret: {t0: "2026-10-27 00:00", langkah_menit: 60, cm: [10, -21, 35]}};
+  assert.equal(P.pasutTeks(st, P.wibDetik("2026-10-27 01:00")), "\u221221 cm"); assert.equal(P.pasutTeks(st, P.wibDetik("2026-10-27 00:00")), "10 cm");
+  assert.equal(P.pasutTeks({}, 0), "");
+});
+
+test("kelompok: tanpa sungai dan kab jatuh ke kabupaten terdekat dari pusat kecamatan, jauh dari semuanya tetap Tanpa nama sungai", () => {
+  const pusat = {"31|Kota Jakarta Utara|Tanjung Priok": [-6.12, 106.88], "32|Bogor|Cibinong": [-6.48, 106.85]};
+  const mk = (id, lat, lon, ex = {}) => ({id, nama: id, lat, lon, status: "biasa", ...ex});
+  assert.equal(P.kabTerdekat(mk("a", -6.13, 106.9), pusat), "31|Kota Jakarta Utara");
+  assert.equal(P.kabTerdekat(mk("b", -6.5, 106.8), pusat), "32|Bogor");
+  assert.equal(P.kabTerdekat(mk("c", 0, 120), pusat), null); assert.equal(P.kabTerdekat(mk("d", 0, 0), null), null);
+  assert.equal(P.labelKab("Bogor"), "Kab. Bogor"); assert.equal(P.labelKab("Kota Bogor"), "Kota Bogor");
+  const g = plain(P.kelompok([mk("a", -6.13, 106.9), mk("b", -6.5, 106.8), mk("c", 0, 120), mk("e", -6.5, 106.8, {sungai: "Ciliwung"}), mk("f", 0, 0, {kab: "X"})], p => P.kabTerdekat(p, pusat))).map(([k, l]) => [k, l.length]);
+  assert.deepEqual(Object.fromEntries(g), {"Kota Jakarta Utara": 1, "Kab. Bogor": 1, "Tanpa nama sungai": 1, "Ciliwung": 1, "Kab. X": 1});
+  assert.equal(plain(P.kelompok([mk("a", 0, 0)])).at(0)[0], "Tanpa nama sungai", "tanpa cari: perilaku lama");
+});
+
+test("pasut: deret satu datum dengan puncak (MSL); berkas lama berdatum HAT ditolak; data nyata pasut.json tidak pernah salah jauh", () => {
+  const st = {puncak: [{t: "2026-10-27T10:00+07:00", cm: 53, jenis: "tinggi"}], deret: {t0: "2026-10-27T00:00+07:00", langkah_menit: 60, cm: [-26, -24, -20, -15, -8, 2, 13, 27, 41, 51, 53, 49]}};
+  assert.ok(P.deretSelaras(st)); assert.equal(P.pasutSekarang(st, P.wibDetik("2026-10-27 10:00")).cm, 53);
+  const hat = {...st, deret: {...st.deret, cm: st.deret.cm.map(c => c - 73)}};
+  assert.ok(!P.deretSelaras(hat)); assert.equal(P.pasutSekarang(hat, P.wibDetik("2026-10-27 10:00")), null); assert.equal(P.pasutTeks(hat, P.wibDetik("2026-10-27 10:00")), "");
+  const j = JSON.parse(fs.readFileSync("public/banjir/data/pasut.json", "utf8"));
+  for (const s of j.stasiun) { const now = P.wibDetik(s.deret?.t0 || "2026-10-27T00:00+07:00") + 3600 * 5.5, k = P.pasutSekarang(s, now); if (!k) continue;
+    const pk = (s.puncak || []).map(x => x.cm); assert.ok(k.cm >= Math.min(...pk) - 25 && k.cm <= Math.max(...pk) + 25, `${s.nama} ${k.cm} di luar puncak ${Math.min(...pk)}..${Math.max(...pk)}`); }
+});

@@ -378,7 +378,7 @@ function muatGaya() {
     l.onload = l.onerror = () => ok(); sebelum ? sebelum.before(l) : document.head.append(l); setTimeout(ok, 1500);
   });
   const dasar = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() ? [] : GAYA_DASAR.map(h => pasangLink(h, h.slice(6), document.querySelector('link[href*="/pipa/pipa.css"]')));
-  return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=2", "peta"), muatGayaKit()]);
+  return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=3", "peta"), muatGayaKit()]);
 }
 let pustaka = null;
 function muatMapLibre() {

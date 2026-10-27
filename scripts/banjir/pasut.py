@@ -29,11 +29,12 @@ def parse_hltide(j):
 
 
 def rapat_jam(rows):
-    """Deret 10 menit [{t, pred_hat}] -> {t0, langkah_menit:60, cm} ambil menit :00 saja, harus berurutan per jam."""
-    jam = [r for r in rows if r["t"][14:16] == "00" and r.get("pred_hat") is not None]
+    """Deret 10 menit [{t, msl}] -> {t0, langkah_menit:60, cm} ambil menit :00 saja, harus berurutan per jam.
+    Field `msl` (meter, datum MSL) yang dipakai: sama datum dengan hltide/MSL. `pred_hat` datum HAT (selisih sekitar 70 cm di Tanjung Priok) tidak boleh dipakai."""
+    jam = [r for r in rows if r["t"][14:16] == "00" and r.get("msl") not in (None, "")]
     if not jam:
         return None
-    return {"t0": jam[0]["t"], "langkah_menit": 60, "cm": [cm(r["pred_hat"]) for r in jam]}
+    return {"t0": jam[0]["t"], "langkah_menit": 60, "cm": [cm(r["msl"]) for r in jam]}
 
 
 def persentil(xs, p):
@@ -111,7 +112,7 @@ def uji():
          "high_tides": [{"time": "2026-10-27T22:40+07:00", "value": 1.0436}, {"time": "2026-10-27T11:50+07:00", "value": 0.1857}]}
     p = parse_hltide(j)
     assert [x["t"][11:16] for x in p] == ["05:50", "11:50", "22:40"] and p[0]["jenis"] == "rendah" and p[2]["cm"] == 104, p
-    rows = [{"t": f"2026-10-27T{h:02d}:{m:02d}+07:00", "pred_hat": (h * 6 + m / 10) / 100} for h in range(24) for m in range(0, 60, 10)]
+    rows = [{"t": f"2026-10-27T{h:02d}:{m:02d}+07:00", "msl": str((h * 6 + m / 10) / 100)} for h in range(24) for m in range(0, 60, 10)]
     r = rapat_jam(rows)
     assert r["langkah_menit"] == 60 and len(r["cm"]) == 24 and r["t0"].startswith("2026-10-27T00:00") and r["cm"][1] == 6, r
     assert rapat_jam([]) is None

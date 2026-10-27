@@ -76,6 +76,7 @@ const Peta = {
   lihat(k) { const i = document.querySelector(`#lapis input[data-l="${k}"]`); return i ? i.checked : false; },
   bawahLabel() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
+    for (const l of peta.getStyle().layers) if (typeof Gelembung !== "undefined" && Gelembung.perisai(l)) peta.setLayoutProperty(l.id, "visibility", "none");   /* perisai nomor rute basemap mengganggu (pemilik, 27 Okt 2026); nama jalan tetap */
     if (peta.getSource("wil")) return;
     const bl = this.bawahLabel();
     peta.addSource("wil", {type: "geojson", data: {type: "FeatureCollection", features: []}, promoteId: "id"});

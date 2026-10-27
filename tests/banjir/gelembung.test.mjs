@@ -66,3 +66,15 @@ test("INP statis: hover lewat rAF dengan cache per wilayah, klik membuka kartu u
   assert.match(src, /nanti\(\(\) => turun\(kunci\)\)/); assert.match(src, /nanti\(\(\) => \{ const g = prov/);
   assert.match(src, /grafik\(kode\) \{\s*const s = seriProv\(this\.docs, kode\); if \(s\.length < 2\) return ""/, "tanpa arsip cukup grafik tidak tampil");
 });
+
+test("perisai rute basemap: kenali perisai (light dan dark), jangan sentuh nama jalan", () => {
+  const nama = ["case", ["has", "name:nonlatin"], ["concat", ["get", "name:latin"]], ["coalesce", ["get", "name_en"], ["get", "name"]]];
+  const L = (id, tf, ic, sl = "transportation_name", type = "symbol") => ({id, type, "source-layer": sl, layout: {"text-field": tf, "icon-image": ic}});
+  assert.ok(G.perisai(L("highway-shield-non-us", ["to-string", ["get", "ref"]], ["concat", "road_", ["get", "ref_length"]])));
+  assert.ok(G.perisai(L("road_shield_us", ["to-string", ["get", "ref"]], ["concat", ["get", "network"], "_", ["get", "ref_length"]])));
+  assert.ok(G.perisai(L("highway_name_motorway", ["to-string", ["get", "ref"]])), "dark: teks ref tanpa name");
+  for (const id of ["highway-name-major", "highway-name-minor", "highway-name-path", "highway_name_other"]) assert.ok(!G.perisai(L(id, nama)), id);
+  assert.ok(!G.perisai(L("highway-shield", ["get", "ref"], undefined, "road", "line")), "bukan symbol");
+  assert.ok(!G.perisai(L("poi-shield", ["get", "ref"], "shield", "poi")), "bukan transportation_name");
+  assert.match(fs.readFileSync("public/banjir/peta.js", "utf8"), /Gelembung\.perisai\(l\)\) peta\.setLayoutProperty\(l\.id, "visibility", "none"\)/);
+});
