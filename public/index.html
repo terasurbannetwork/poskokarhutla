@@ -1375,6 +1375,15 @@ details.mt-tek[open]>summary::after{transform:rotate(-135deg)}
 :is(#rentang,#periode) .rt-lain select option{color:var(--ink);background:var(--card)}
 :is(#rentang,#periode) .rt-lain::after{content:"▾";position:absolute;right:7px;top:50%;transform:translateY(-50%);pointer-events:none;font-size:10px}
 :is(#rentang,#periode) .rt-lain.on{background:var(--brand);color:#fff}
+#periode{overflow:visible}   /* checklist bulan menggantung di bawah tombolnya; .seg bawaan overflow:auto memotongnya */
+#periode .rt-bln summary{list-style:none;flex:1;min-width:0;font-size:11px;font-weight:600;text-align:center;padding:5px 14px 5px 2px;border-radius:999px;cursor:pointer;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+#periode .rt-bln summary::-webkit-details-marker{display:none}
+#periode .rt-bln summary:focus-visible{outline:2px solid var(--brand);outline-offset:-2px}
+#periode .rt-pop{position:absolute;right:0;top:calc(100% + 4px);z-index:30;min-width:150px;max-height:280px;overflow:auto;display:flex;flex-direction:column;gap:2px;padding:6px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:0 8px 24px rgba(0,0,0,.18)}
+#periode .rt-pop label{display:flex;align-items:center;gap:8px;padding:6px 8px;border-radius:8px;font-size:12px;font-weight:600;cursor:pointer}
+#periode .rt-pop label:hover{background:var(--line)}
+#periode .rt-pop input{accent-color:var(--brand);margin:0}
+#periode .rt-pop button{position:sticky;bottom:0;margin-top:4px;padding:7px;border:0;border-radius:999px;background:var(--brand);color:#fff;font:inherit;font-size:12px;font-weight:700;cursor:pointer}
 :root[data-theme="dark"] :is(#rentang,#periode) .rt-lain.on{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) :is(#rentang,#periode) .rt-lain.on{color:oklch(18% .035 256)}}
 .tp-hd{justify-content:center;text-align:center}
@@ -1879,10 +1888,13 @@ S.periode = "hari";
 const pkRentang = () => { const H = S.pk.hari, a = pkHari(), p = S.periode;
   if (p === "7" || p === "30") return [Math.max(0, a - +p + 1), a];
   if (p === "th") return [H.findIndex(t => t.startsWith(H[a].slice(0, 4))), a];
-  if (/^\d{4}-\d{2}$/.test(p) && H.some(t => t.startsWith(p))) return [H.findIndex(t => t.startsWith(p)), H.findLastIndex(t => t.startsWith(p))];
+  const ix = pkBln(); if (ix.length) return [ix[0], ix.at(-1)];
   return [a, a]; };
-const pkPeriode = () => ukurAktif() === "luas" && pkRentang()[0] !== pkRentang()[1];
-const pkJml = (k, u, f = x => x) => { const v = S.pk.prov[k]?.[u]; if (!v) return 0; const [a, b] = pkRentang(); let s = 0; for (let i = a; i <= b; i++) s += f(v[i] || 0); return s; };
+/* "YYYY-MM,YYYY-MM" = beberapa bulan pilihan checklist, boleh tidak bersambung (pemilik, 27 Okt 2026); indeks harinya dijumlah satu per satu */
+const pkBln = () => { const m = /^\d{4}-\d{2}/.test(S.periode) ? new Set(S.periode.split(",")) : null; return m ? S.pk.hari.flatMap((t, i) => m.has(t.slice(0, 7)) ? [i] : []) : []; };
+const pkIdx = () => { const ix = pkBln(); if (ix.length) return ix; const [a, b] = pkRentang(); return Array.from({length: b - a + 1}, (_, i) => a + i); };
+const pkPeriode = () => ukurAktif() === "luas" && pkIdx().length > 1;
+const pkJml = (k, u, f = x => x) => { const v = S.pk.prov[k]?.[u]; if (!v) return 0; let s = 0; for (const i of pkIdx()) s += f(v[i] || 0); return s; };
 const nilaiWil = k => { const u = ukurAktif(); return u === "hot" ? S.hit[k] || 0 : u === "kl" ? klusterWil(tglRentang())[k]?.[0] || 0 : u === "luas" ? Math.round(pkJml(k, "luas")) : S.pk.prov[k]?.[u][pkHari()] || 0; };
 /* "Sen 19 Okt" (hari kalender WIB, apa pun zona waktu peramban) */
 const tglLain = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {...WIB, weekday: "short", day: "numeric", month: "short"}).replace(",", "");
@@ -2602,11 +2614,12 @@ function renderDaftar() {
   const G = `grid-template-columns:18px minmax(0,2fr) minmax(40px,.7fr) minmax(40px,.8fr) minmax(40px,.8fr)${u === "kl" ? " minmax(40px,.8fr)" : ""} minmax(62px,1fr) minmax(62px,1fr)`;
   const pilUkur =`<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
   const sakelar = pilUkur;
+  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], bulan = u === "luas" ? [...new Set(S.pk.hari.map(t => t.slice(0, 7)))].reverse() : [];
+  const namaBln = b => `${BLN[+b.slice(5) - 1]} ${b.slice(0, 4)}`, blnPilih = /^\d{4}-\d{2}/.test(S.periode) ? S.periode.split(",") : [];
   /* kolom Titik = satu hari kalender WIB yang dipilih di kartu "Tanggal data"; harinya disebut di baris atas kepala tabel */
   const hariTitik = u === "hot" || u === "kl" ? `<div class="tr-hari" title="${u === "hot" ? "Kolom Titik: titik panas" : "Cluster masih aktif (titik terakhir <= 72 jam, gambut <= 7 hari) pada akhir"} satu hari kalender WIB"><b>${relRentang() ? relRentang() + ", " : ""}${tglLain(tglRentang())}</b></div>`
-    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB${per ? ", dijumlah per hari" : ""}. Bukan angka regu darat"><b>${per ? pkRentang().map(i => tglLain(S.pk.hari[i])).join(" – ") : tglLain(S.pk.hari[pkHari()])}</b></div>`;
-  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], bulan = u === "luas" ? [...new Set(S.pk.hari.map(t => t.slice(0, 7)))].reverse() : [];
-  const pilPeriode = u === "luas" ? `<div class="seg penuh" role="group" aria-label="Periode luas terbakar" id="periode">${[["hari", "Sehari"], ["7", "7 hari"], ["30", "30 hari"], ["th", "Tahun ini"]].map(([v, n]) => `<button data-per="${v}" aria-pressed="${S.periode === v}">${n}</button>`).join("")}<span class="rt-lain${S.periode.includes("-") ? " on" : ""}"><select aria-label="Pilih bulan" data-per-bln>${S.periode.includes("-") ? "" : `<option value="" selected>Bulan</option>`}${bulan.map(b => `<option value="${b}"${b === S.periode ? " selected" : ""}>${BLN[+b.slice(5) - 1]} ${b.slice(0, 4)}</option>`).join("")}</select></span></div>` : "";
+    : `<div class="tr-hari" title="${u === "luas" ? "Titik NOAA-20/21 × porsi × 4,3 ha" : "Luas yang titiknya masih terdeteksi 12–36 jam sebelumnya"}, per hari kalender WIB${per ? ", dijumlah per hari" : ""}. Bukan angka regu darat"><b>${per ? (pkBln().length ? blnPilih.map(namaBln).join(", ") : pkRentang().map(i => tglLain(S.pk.hari[i])).join(" – ")) : (l => (l === "Hari ini" || l === "Kemarin" ? l + ", " : "") + tglLain(S.pk.hari[pkHari()]) + (S.pk.hari[pkHari()] < tglRentang() ? " (hari utuh terakhir)" : ""))(labelHari(S.pk.hari[pkHari()]))}</b></div>`;
+  const pilPeriode = u === "luas" ? `<div class="seg penuh" role="group" aria-label="Periode luas terbakar" id="periode">${[["hari", "Sehari"], ["7", "7 hari"], ["30", "30 hari"], ["th", "Tahun ini"]].map(([v, n]) => `<button data-per="${v}" aria-pressed="${S.periode === v}">${n}</button>`).join("")}<details class="rt-lain rt-bln${blnPilih.length ? " on" : ""}"><summary aria-label="Pilih bulan">${blnPilih.length === 1 ? namaBln(blnPilih[0]) : blnPilih.length ? blnPilih.length + " bulan" : "Bulan"}</summary><div class="rt-pop">${bulan.map(b => `<label><input type="checkbox" value="${b}"${blnPilih.includes(b) ? " checked" : ""}>${namaBln(b)}</label>`).join("")}<button type="button" data-per-bln>Terapkan</button></div></details></div>` : "";
   /* judul kolom disingkat saat panel sempit (container query #rows); kepanjangannya disebut di sini */
   const chip = (k, w, s, l) => `<span class="lg-c" style="--w:${w}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">${k}</svg><b>${s}</b>${l}</span>`;
   const legenda = u === "kl" || per ? "" : `<span class="lg-hs nm-pdk">${u === "hot" ? chip('<circle cx="12" cy="12" r="3" fill="currentColor"/><circle cx="12" cy="12" r="8"/>', "#e58a45", "HS", "Hotspot") : ""}${chip(IKON.api, "#c9503a", "FS", "Firespot")}${chip(IKON.titik, "#1d4e89", "CL", "Cluster")}</span>`;
@@ -2701,9 +2714,11 @@ $("#panelMode").addEventListener("click", e => { const b = e.target.closest("but
   $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b));
   nanti(async () => { if (S.panel === "riw" && !S.riw) { $("#rows").innerHTML = `<div class="kosong"><div class="spin"></div>Memuat arsip 2002–2026…</div>`; await Riwayat.muat(); await Peta.aturWilayah(false); }
     Peta.warnaWil(); renderDaftar(); renderLegenda(); }); });
-$("#rows").addEventListener("change", e => { if (e.target.matches("[data-per-bln]") && e.target.value) { S.periode = e.target.value; nanti(() => Peta.aturWilayah(false)); } });
 $("#rows").addEventListener("click", e => { const rn = e.target.closest("[data-rn]");
   if (rn) { Riwayat.n = +rn.dataset.rn; simpanLokal("pk-riw-n", Riwayat.n); Riwayat.hitung(); nanti(() => Peta.aturWilayah(false)); return; }
+  /* checklist bulan: centang beberapa lalu Terapkan; tanpa centang = kembali Sehari */
+  if (e.target.closest("[data-per-bln]")) { const v = [...e.target.closest(".rt-pop").querySelectorAll("input:checked")].map(x => x.value).sort();
+    S.periode = v.length ? v.join(",") : "hari"; e.target.closest("details").open = false; return nanti(() => Peta.aturWilayah(false)); }
   const pr = e.target.closest("[data-per]");
   if (pr) { S.periode = pr.dataset.per; pr.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === pr)); return nanti(() => Peta.aturWilayah(false)); }
   const uk = e.target.closest("[data-uk]");
