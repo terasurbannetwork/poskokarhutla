@@ -343,11 +343,12 @@ def cek_silang(P, fitur):
 class Kompleks:
     """Titik -> kompleks K#### (kluster.json, jendela 7 hari): di dalam poligonnya, atau pusat terdekat <= 0,03 derajat (~3 km)."""
     def __init__(self, jalur):
-        self.f, self.g = [], {}
+        self.f, self.g, self.fs = [], {}, {}
         if not os.path.exists(jalur):
             return
         for f in json.load(open(jalur))["features"]:
             p = f["properties"]
+            self.fs[p["id"]] = p.get("firespot")  # "ya" | "mungkin" | None (harian.py firespot(); kluster.json lama tanpa properti ini)
             poli = cincin(f["geometry"]) if f["geometry"]["type"] != "Point" else []
             bb = None
             if poli:
@@ -386,6 +387,7 @@ def cek_terkini(P, fitur, jalur=os.path.join(AKAR, "public/data/hotspot.json")):
         for i in p["_poli"]:
             milik.setdefault(i, set()).add(k)
     per = {k: 0 for k in P}
+    fs = {k: 0 for k in P}
     kp = Kompleks(os.path.join(AKAR, "public/data/kluster.json"))
     t0 = dt.datetime.fromisoformat(h["acuan"])
     kom = {k: {} for k in P}
@@ -400,6 +402,7 @@ def cek_terkini(P, fitur, jalur=os.path.join(AKAR, "public/data/hotspot.json")):
         w = (t0 + dt.timedelta(hours=r[h["kolom"].index("jam")] + 7)).strftime("%Y-%m-%d")
         for k in ks:
             per[k] += 1
+            fs[k] += bool(kid) and kp.fs.get(kid) == "ya"  # titik di dalam cluster firespot "ya" (definisi harian.py), sebaris dengan titik_terkini
             if kid:
                 e = kom[k].setdefault(kid, {"id": kid, "n": 0, "dari": w, "sampai": w})
                 e["n"] += 1
@@ -407,6 +410,7 @@ def cek_terkini(P, fitur, jalur=os.path.join(AKAR, "public/data/hotspot.json")):
     for k, p in P.items():
         if p["_poli"]:
             p["cek"]["titik_terkini"] = per[k]
+            p["cek"]["firespot_terkini"] = fs[k] if any(kp.fs.values()) else None  # None = kluster.json tanpa klasifikasi firespot: tampil "-", bukan 0
             p["kompleks"] = sorted(kom[k].values(), key=lambda e: -e["n"])
     tgl = sorted({r[c["tgl_wib"]] for r in baris})
     return {"acuan": h["acuan"], "dari": tgl[0] if tgl else "", "sampai": tgl[-1] if tgl else ""}
@@ -457,6 +461,8 @@ def tulis(P, fitur, viirs_baru, acuan=None):
     for p in P.values():
         for i in p["_poli"]:
             poli.setdefault(fitur[i]["properties"].get("id") or str(i), p["nama"])
+    import aktor_sawit
+    aktor_sawit.tambah(daf, poli)  # sawit26: titik & indikasi luas terbakar 2026 per perusahaan dari laporan konsesi
     out = {"dibuat": dt.date.today().isoformat(), "sumber": SUMBER, "periode": {"tabel": "1 Jan - 31 Agu 2026", "lampiran": "Jan - Sep 2026",
            "cek": "1 Jan - 31 Agu 2026 (hari WIB), VIIRS S-NPP, FIRMS kosong 8 Mei - 1 Jun", "terkini": acuan},
            "ringkasan": {"titik_jan_sep": 30927, "titik_konsesi": 9951, "areal_sawit": 561, "pbph": 293, "modal_asing": 9, "grup_my_sg": 93,
@@ -500,6 +506,8 @@ def uji():
         if "titik_viirs" in p["cek"] and p["harian"]:
             assert sum(n for d_, n in p["harian"] if d_ < "2026-09-01") == p["cek"]["titik_viirs"], p["nama"]
         assert all(e["n"] > 0 and e["dari"] <= e["sampai"] and e["id"].startswith("K") for e in p["kompleks"]), p["nama"]
+    import aktor_sawit
+    aktor_sawit.uji_berkas(d)
     print("ok", len(nama), "perusahaan;", sum(1 for p in d["perusahaan"] if p["cek"]["poligon"]), "cocok peta")
 
 
