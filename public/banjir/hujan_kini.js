@@ -6,14 +6,14 @@
    halaman tidak mengenal kunci ini, jadi ditangkap di fase capture seperti databaru.js. */
 const HujanKini = (() => {
   const API = "/api/cuaca/nowcast", SEGAR_MS = 5 * 60e3, RADIUS_KM = 25, W = {petir: "#5f3dc4", lebat: "#1d4e89", sedang: "#3f7fb8", ringan: "#69a7e8"};
-  let D = null, janji = null, PI = null, di = false;
+  let D = null, janji = null, PI = null, di = false, tAmbil = 0, pj = null, rafH = 0, eH = null;
   const nyala = () => !!document.querySelector('#lapis input[data-l="hujankini"]')?.checked;
   const kini = () => Date.now();
   /* hanya hujan, hanya yang sedang berjalan; peringatan tanpa poligon dilewati (tidak ditebak dari nama kecamatan) */
   const aktif = a => /hujan/i.test(a.event || "") && a.polygon?.length && Date.parse(a.mulai) <= kini() && Date.parse(a.selesai) > kini();
   const warna = ev => /petir/i.test(ev) ? W.petir : /sangat lebat|ekstrem|lebat/i.test(ev) ? W.lebat : /sedang/i.test(ev) ? W.sedang : W.ringan;
   const geo = () => ({type: "FeatureCollection", features: (D?.nowcast || []).filter(aktif).map(a => ({type: "Feature", geometry: {type: "MultiPolygon", coordinates: a.polygon.map(r => [r])}, properties: {id: a.id, w: warna(a.event)}}))});
-  const muat = () => janji ||= fetch(API, {cache: "no-cache"}).then(r => r.ok ? r.json() : null).then(d => { D = Array.isArray(d?.nowcast) ? d : null; return D; }).catch(() => null).finally(() => { janji = null; });
+  const muat = () => janji ||= fetch(API, {cache: "no-cache"}).then(r => r.ok ? r.json() : null).then(d => { D = Array.isArray(d?.nowcast) ? d : null; tAmbil = kini(); return D; }).catch(() => null).finally(() => { janji = null; });
 
   const jamWib = ms => new Date(ms).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}).replace(":", ".");
   const durasi = ms => { const m = Math.max(0, Math.round(ms / 60e3)), j = Math.floor(m / 60), s = m % 60; return j ? `${j} jam${s ? ` ${s} menit` : ""}` : `${m} menit`; };
@@ -38,29 +38,30 @@ const HujanKini = (() => {
     return KAKI(`Sumber: BMKG (nowcast), ${ph ? "SIHKA Kementerian PU, " : ""}prakiraan banjir Centurisk97`, PI.kartuTip({judul: esc(judul), sub: `<small class="tp-sub">${fmt(nKec)} kecamatan</small>`, stat})).replace("tp-gr tp-satu", "tp-gr tp-kisi");
   }
 
-  async function pasang() {
+  async function pasang(paksa) {
     PI ||= await import("../inti/peta/lapis.js");
-    await Promise.all([muat(), PosHujan.muat?.()]);   /* tiap kali dinyalakan: ambil ulang (respons Worker sudah di-cache tepi) */
+    await Promise.all([!paksa && D && kini() - tAmbil < SEGAR_MS ? D : muat(), PosHujan.muat?.()]);   /* ganti tema tidak mengambil ulang data segar; menyalakan dari ubin selalu mengambil ulang */
     const g = geo(), s = peta.getSource("hujankini"); if (s) return s.setData(g);
     peta.addSource("hujankini", {type: "geojson", data: g, attribution: "Peringatan dini © BMKG"});
     const bawah = peta.getLayer("wil-line") ? "wil-line" : undefined;
     peta.addLayer({id: "hujankini-fill", type: "fill", source: "hujankini", paint: {"fill-color": ["get", "w"], "fill-opacity": .28}}, bawah);
     peta.addLayer({id: "hujankini-garis", type: "line", source: "hujankini", paint: {"line-color": ["get", "w"], "line-width": 1.6, "line-opacity": .9}}, bawah);
     if (pasang.ok) return; pasang.ok = true;   /* penangan per id lapisan bertahan lintas ganti gaya; dipasang sekali */
-    peta.on("mousemove", "hujankini-fill", e => { if (!nyala()) return; const a = D?.nowcast.find(x => x.id === e.features[0].properties.id); if (!a) return;
-      di = true; peta.getCanvas().style.cursor = "pointer"; PI.tampilTip(kartu(a, e), e.originalEvent); });
-    peta.on("mouseleave", "hujankini-fill", () => { di = false; peta.getCanvas().style.cursor = ""; PI.sembunyiTip(); });
+    /* kartu digambar paling banyak sekali per frame, seperti hover wilayah */
+    peta.on("mousemove", "hujankini-fill", e => { if (!nyala()) return; di = true; peta.getCanvas().style.cursor = "pointer"; eH = {id: e.features[0].properties.id, point: e.point, lngLat: e.lngLat, originalEvent: e.originalEvent};   /* MapLibre menghapus e.features sesudah handler: salin sekarang */
+      rafH ||= requestAnimationFrame(() => { rafH = 0; const x = eH; if (!di || !x) return; const a = D?.nowcast.find(n => n.id === x.id); if (a) PI.tampilTip(kartu(a, x), x.originalEvent); }); });
+    peta.on("mouseleave", "hujankini-fill", () => { di = false; eH = null; peta.getCanvas().style.cursor = ""; PI.sembunyiTip(); });
   }
-  async function tampil(on) {
-    if (on) { try { await pasang(); } catch (e) { console.warn("hujankini", e); } }
+  async function tampil(on, paksa) {
+    if (on) { try { await (pj ||= pasang(paksa).finally(() => { pj = null; })); } catch (e) { console.warn("hujankini", e); } }   /* dua panggilan beruntun berbagi satu pasang */
     for (const l of ["hujankini-fill", "hujankini-garis"]) peta?.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none");
     if (!on) di = false; renderLegenda();
   }
   const jumlah = () => (D?.nowcast || []).filter(aktif).length;
-  const legenda = () => !nyala() ? "" : `<div class="lbl" style="margin-top:8px">Sedang hujan (BMKG)</div><div class="leg" style="margin-top:4px">${[[W.petir, "Lebat, petir"], [W.lebat, "Lebat"], [W.sedang, "Sedang"], [W.ringan, "Ringan"]].map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("")}${D ? `<span>${jumlah() ? `${fmt(jumlah())} area` : "Tidak ada area"}${Date.parse(D.terbit || D.dibuat) ? `, ${jamWib(Date.parse(D.terbit || D.dibuat))} WIB` : ""}</span>` : ""}</div>`;
+  const legenda = () => !nyala() ? "" : `<div class="lg-g"><div class="lbl" title="Area hujan yang sedang berjalan menurut peringatan dini nowcast BMKG; bukan prakiraan.">Sedang hujan (BMKG)</div><div class="leg">${[[W.petir, "Lebat, petir"], [W.lebat, "Lebat"], [W.sedang, "Sedang"], [W.ringan, "Ringan"]].map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("")}${D ? `<span>${jumlah() ? `${fmt(jumlah())} area` : "Tidak ada area"}${Date.parse(D.terbit || D.dibuat) ? `, ${jamWib(Date.parse(D.terbit || D.dibuat))} WIB` : ""}</span>` : ""}</div></div>`;
 
   /* kunci ini tidak dikenal penangan bawaan halaman: tangkap lebih dulu (capture) */
-  document.querySelector("#lapis")?.addEventListener("change", e => { const i = e.target.closest('input[data-l="hujankini"]'); if (!i) return; e.stopImmediatePropagation(); if (peta) nanti(() => tampil(i.checked)); }, true);
+  document.querySelector("#lapis")?.addEventListener("change", e => { const i = e.target.closest('input[data-l="hujankini"]'); if (!i) return; e.stopImmediatePropagation(); if (!peta) return; renderLegenda(); if (i.checked) nanti(() => tampil(true, true)); else tampil(false); }, true);   /* legenda dan sembunyi langsung; fetch dan addLayer ditunda */
   /* data segar lagi tiap 5 menit selama lapisan menyala dan tab terlihat */
   setInterval(() => { if (!document.hidden && nyala() && peta?.getSource("hujankini")) muat().then(() => peta.getSource("hujankini")?.setData(geo())); }, SEGAR_MS);
   const _leg = renderLegenda; renderLegenda = function () { _leg(); document.querySelector("#legDet > div")?.insertAdjacentHTML("beforeend", legenda()); };
