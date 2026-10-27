@@ -1,0 +1,189 @@
+#url https://www.bps.go.id/id/statistics-table/1/MTI3NCMx/proyeksi-penduduk-menurut-provinsi--2010---2035.html
+#ditarik 2026-10-26T12:25:17.960Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Tabel Publikasi Indikator Kependudukan SUPAS 2025 telah tersedia dalam bentuk Tabel Statistik yang dapat diakses pada Menu Produk > Direktori. Klik disini untuk mengakses laman tersebut.
+
+Dalam rangka percepatan transformasi tata kelola penyelenggaraan pemerintahan, layanan kunjungan langsung PST pada hari Jumat dialihkan menjadi layanan online: pst.bps.go.id
+
+Beranda
+
+Produk - Tabel Statistik
+
+Kependudukan dan Migrasi
+
+Proyeksi Penduduk menurut provinsi, 2010 - 2035
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Kependudukan dan Migrasi
+Tenaga Kerja
+Pendidikan
+Kesehatan
+Konsumsi dan Pendapatan
+Perlindungan Sosial
+Pemukiman dan Perumahan
+Hukum dan Kriminal
+Budaya
+Aktivitas Politik dan Komunitas Lainnya
+Penggunaan Waktu
+
+Statistik Ekonomi
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Proyeksi Penduduk menurut provinsi, 2010 - 2035
+
+Terakhir Diperbarui : 18 Februari 2014
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+Proyeksi Penduduk menurut Provinsi, 2010-2035 (Ribuan)
+						
+Provinsi	Tahun
+2010	2015	2020	2025	2030	2035
+Aceh	4523.10	5002.00	5459.90	5870.00	6227.60	6541.40
+Sumatera Utara	13028.70	13937.80	14703.50	15311.20	15763.70	16073.40
+Sumatera Barat	4865.30	5196.30	5498.80	5757.80	5968.30	6130.40
+Riau	5574.90	6344.40	7128.30	7898.50	8643.30	9363.00
+Jambi	3107.60	3402.10	3677.90	3926.60	4142.30	4322.90
+Sumatera Selatan	7481.60	8052.30	8567.90	9000.40	9345.20	9610.70
+Bengkulu	1722.10	1874.90	2019.80	2150.50	2264.30	2360.60
+Lampung	7634.00	8117.30	8521.20	8824.60	9026.20	9136.10
+Kepulauan Bangka Belitung	1230.20	1372.80	1517.60	1657.50	1788.90	1911.00
+Kepulauan Riau	1692.80	1973.00	2242.20	2501.50	2768.50	3050.50
+Pulau Sumatera	50860.30	55272.90	59337.10	62898.60	65938.30	68500.00
+DKI Jakarta	9640.40	10177.90	10645.00	11034.00	11310.00	11459.60
+Jawa Barat	43227.10	46709.60	49935.70	52785.70	55193.80	57137.30
+Jawa Tengah	32443.90	33774.10	34940.10	35958.60	36751.70	37219.40
+DI Yogyakarta	3467.50	3679.20	3882.30	4064.60	4220.20	4348.50
+Jawa Timur	37565.80	38847.60	39886.30	40646.10	41077.30	41127.70
+Banten	10688.60	11955.20	13160.50	14249.00	15201.80	16033.10
+Pulau Jawa	137033.30	145143.60	152449.90	158738.00	163754.80	167325.60
+Bali	3907.40	4152.80	4380.80	4586.00	4765.40	4912.40
+Nusa Tenggara Barat	4516.10	4835.60	5125.60	5375.60	5583.80	5754.20
+Nusa Tenggara Timur	4706.20	5120.10	5541.40	5970.80	6402.20	6829.10
+Bali dan Kep. Nusa Tenggara	13129.70	14108.50	15047.80	15932.40	16751.40	17495.70
+Kalimantan Barat	4411.40	4789.60	5134.80	5432.60	5679.20	5878.10
+Kalimantan Tengah	2220.80	2495.00	2769.20	3031.00	3273.60	3494.50
+Kalimantan Selatan	3642.60	3989.80	4304.00	4578.30	4814.20	5016.30
+Kalimantan Timur	3576.10	4068.60	4561.70	5040.70	5497.00	5929.20
+Pulau Kalimantan	13850.90	15343.00	16769.70	18082.60	19264.00	20318.10
+Sulawesi Utara	2277.70	2412.10	2528.80	2624.30	2696.10	2743.70
+Sulawesi Tengah	2646.00	2876.70	3097.00	3299.50	3480.60	3640.80
+Sulawesi Selatan	8060.40	8520.30	8928.00	9265.50	9521.70	9696.00
+Sulawesi Tenggara	2243.60	2499.50	2755.60	3003.00	3237.70	3458.10
+Gorontalo	1044.80	1133.20	1219.60	1299.70	1370.20	1430.10
+Sulawesi Barat	1164.60	1282.20	1405.00	1527.80	1647.20	1763.30
+Pulau Sulawesi	17437.10	18724.00	19934.00	21019.80	21953.50	22732.00
+Maluku	1541.90	1686.50	1831.90	1972.70	2104.20	2227.80
+Maluku Utara	1043.30	1162.30	1278.80	1391.00	1499.40	1603.60
+Kep. Maluku	2585.20	2848.80	3110.70	3363.70	3603.60	3831.40
+Papua Barat	765.30	871.50	981.80	1092.20	1200.10	1305.00
+Papua	2857.00	3149.40	3435.40	3701.70	3939.40	4144.60
+Pulau Papua	3622.30	4020.90	4417.20	4793.90	5139.50	5449.60
+INDONESIA	238518.80	255461.70	271066.40	284829.00	296405.10	305652.40
+Tabel Terkait
+Persentase Penduduk Daerah Perkotaan Hasil Proyeksi Penduduk menurut Provinsi, 2015 - 2035
+Jumlah Penduduk Hasil Proyeksi Menurut Provinsi dan Jenis Kelamin (Ribu Jiwa)
+Jumlah Penduduk menurut Provinsi dan Jenis Kelamin
+Jumlah dan Persentase Penduduk Miskin Menurut Provinsi
+Kepadatan Penduduk menurut Provinsi (jiwa/km2)
+Rata-rata Harga Valuta Asing Terpilih menurut Provinsi 2010
+Persentase Penduduk menurut Provinsi dan Jenis Kelamin (Persen)
+Jumlah Penduduk, Laju Pertumbuhan Penduduk, Distribusi Persentase Penduduk, Kepadatan Penduduk, Rasio Jenis Kelamin Penduduk Menurut Provinsi
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik(BPS - Statistics Indonesia)
+
+Jl. Dr. Sutomo 6-8
+
+Jakarta 10710 Indonesia
+
+Telp (62-21) 3841195; 3842508; 3810291
+
+Faks (62-21) 3857046
+
+Mailbox : bpshq@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
