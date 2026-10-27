@@ -3,10 +3,10 @@
    Bagian murni (PosAir) diuji di tests/banjir/pos_air.test.mjs; bagian peta (PosUkur, Alir) memakai peta/Analisa/nanti dari skrip lain. */
 globalThis.PosAir = (() => {
   const R = 6378137, DEG = 180 / Math.PI;
-  const NAMA = {biasa: "Biasa", naik_di_atas_biasa: "Naik di atas biasa", tertinggi: "Tertinggi", lama: "Data lama", macet: "Macet", bukan_tinggi: "Bukan tinggi air", riwayat_kurang: "Riwayat kurang", data_bolong: "Data bolong"};
-  const WARNA = {biasa: "#3f7fb8", naik_di_atas_biasa: "#e58a45", tertinggi: "#c9503a", lama: "#8d9aa9", macet: "#8d9aa9", bukan_tinggi: "#8d9aa9", riwayat_kurang: "#c3ccd6", data_bolong: "#8d9aa9"};
+  const NAMA = {biasa: "Biasa", naik_di_atas_biasa: "Naik di atas biasa", tertinggi: "Tertinggi", lama: "Data lama", macet: "Macet", bukan_tinggi: "Bukan tinggi air", riwayat_kurang: "Riwayat kurang", pantauan_terbatas: "Pantauan terbatas", data_bolong: "Data bolong"};
+  const WARNA = {biasa: "#3f7fb8", naik_di_atas_biasa: "#e58a45", tertinggi: "#c9503a", lama: "#8d9aa9", macet: "#8d9aa9", bukan_tinggi: "#8d9aa9", riwayat_kurang: "#c3ccd6", pantauan_terbatas: "#c3ccd6", data_bolong: "#8d9aa9"};
   /* isi air di kapsul: penanda relatif per status, bukan ukuran; pos tanpa pembanding tidak punya tinggi relatif */
-  const ISI = {biasa: .5, naik_di_atas_biasa: .75, tertinggi: 1, lama: .3, macet: .3, bukan_tinggi: .3, riwayat_kurang: .4, data_bolong: .3};
+  const ISI = {biasa: .5, naik_di_atas_biasa: .75, tertinggi: 1, lama: .3, macet: .3, bukan_tinggi: .3, riwayat_kurang: .4, pantauan_terbatas: .4, data_bolong: .3};
   const SATUAN = {centimeter: "cm", "m3/s": "m³/s"};
   /* status resmi (ambang siaga pengelola) menang atas status persentil, kecuali data lama atau macet */
   const RESMI = {"Normal": ["#3f7fb8", .5], "Siaga 3": ["#e3b94e", .65], "Siaga 2": ["#e58a45", .8], "Siaga 1": ["#c9503a", 1]};
@@ -27,13 +27,14 @@ globalThis.PosAir = (() => {
   const satuan = s => s == null ? "" : (SATUAN[s] || s);
   /* satuan null: angka saja, tanpa konversi */
   const angka = (v, s) => v == null || isNaN(v) ? "–" : angkaId(v) + (satuan(s) ? " " + satuan(s) : "");
-  const delta = (d, s) => d == null ? "–" : (d > 0 ? "+" : "") + angka(d, s);
+  const delta = (d, s) => d == null ? "–" : d > 0 ? "▲ " + angka(d, s) : d < 0 ? "▼ " + angka(Math.abs(d), s) : "tetap";
+  const deltaKelas = d => d == null ? "" : d > 0 ? "naik" : d < 0 ? "turun" : "tetap";
   const detik = t => t > 1e12 ? t / 1000 : t;
   /* "Dibaca Sen 27 Okt 16.00 WIB" */
-  const waktuBaca = t => {
+  const waktuBaca = t => { if (t == null) return "–";
     const p = Object.fromEntries(new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", weekday: "short", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}).formatToParts(new Date(detik(t) * 1000)).map(x => [x.type, x.value]));
     return `Dibaca ${p.weekday.replace(".", "")} ${p.day} ${p.month.replace(".", "")} ${p.hour}.${p.minute} WIB`; };
-  const lalu = (t, now) => { const j = Math.max(0, (now - detik(t)) / 3600); return j < 1 ? "kurang dari 1 jam lalu" : j < 48 ? Math.floor(j) + " jam lalu" : Math.floor(j / 24) + " hari lalu"; };
+  const lalu = (t, now) => { if (t == null) return "–"; const j = Math.max(0, (now - detik(t)) / 3600); return j < 1 ? "kurang dari 1 jam lalu" : j < 48 ? Math.floor(j) + " jam lalu" : Math.floor(j / 24) + " hari lalu"; };
   /* pos lama dan macet, terlama mengirim di atas */
   const pilihMacet = pos => { const u = (s) => pos.filter(p => p.status === s).sort((a, b) => a.t - b.t); return {lama: u("lama"), macet: u("macet")}; };
   /* daftar macet per pengelola: [[pengelola, [pos lama dan macet, terlama dulu]]], kelompok terbanyak dulu */
@@ -85,7 +86,11 @@ globalThis.PosAir = (() => {
   const pasutKartu = (st, now, n = 4) => (st?.puncak || []).filter(x => wibDetik(x.t) > now).sort((a, b) => wibDetik(a.t) - wibDetik(b.t)).slice(0, n).map(x => {
     const dt = new Date(wibDetik(x.t) * 1000), f = new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", weekday: "short"}).format(dt).replace(".", "");
     return {jenis: x.jenis === "tinggi" ? "Pasang" : "Surut", hari: f, jam: String(x.t).slice(11, 16).replace(":", "."), cm: x.cm}; });
-  return {KEMBAR, SIAGA, kelas, WARNA_KELAS, ringkas, perluPantau, kalimat, rasio, kelompok, arah, subjudul, skalaGeom, lingkar, ruas, wibDetik, pasutSekarang, pasutKartu, lonlat, titik, resmi, ikonKunci, warnaPos, isiPos, pengelola, denyutPos, macetPerPengelola, skala, RESMI, PENGELOLA, warna, nama, redup, denyut, angka, angkaId, satuan, delta, waktuBaca, lalu, pilihMacet, geojson, dash, fase, ISI, NAMA, WARNA, JEDA, detik};
+  const jamWib = ts => new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit", hourCycle: "h23"}).format(new Date(detik(ts) * 1000)).replace(":", ".");
+  const tglJamWib = ts => new Intl.DateTimeFormat("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short"}).format(new Date(detik(ts) * 1000)).replace(".", "") + " " + jamWib(ts) + " WIB";
+  /* kaki panel ringkas: pengelola yang ada dan jam baca terbaru */
+  const kakiPanel = pos => { const ada = (pos || []).filter(p => p.t != null), peng = [...new Set((pos || []).map(pengelola))]; return peng.length ? `Sumber: ${peng.join(", ")}${ada.length ? `, dibaca terbaru ${jamWib(Math.max(...ada.map(p => detik(p.t))))} WIB` : ""}` : ""; };
+  return {jamWib, tglJamWib, kakiPanel, deltaKelas, KEMBAR, SIAGA, kelas, WARNA_KELAS, ringkas, perluPantau, kalimat, rasio, kelompok, arah, subjudul, skalaGeom, lingkar, ruas, wibDetik, pasutSekarang, pasutKartu, lonlat, titik, resmi, ikonKunci, warnaPos, isiPos, pengelola, denyutPos, macetPerPengelola, skala, RESMI, PENGELOLA, warna, nama, redup, denyut, angka, angkaId, satuan, delta, waktuBaca, lalu, pilihMacet, geojson, dash, fase, ISI, NAMA, WARNA, JEDA, detik};
 })();
 
 /* ---------- bagian peta (butuh peta, Analisa, nanti, gelap, esc dari skrip lain) ---------- */
@@ -100,6 +105,7 @@ const Alir = {
     if (!Alir.boleh()) { Alir.id = 0; return; }
     Alir.id = requestAnimationFrame(Alir.langkah);
     if (ts - Alir.terakhir < PosAir.JEDA) return; Alir.terakhir = ts;
+    if (peta.isMoving()) return;   /* geser atau zoom sedang jalan: peta sudah sibuk, lewati pembaruan paint */
     peta.setPaintProperty("alir-gerak", "line-dasharray", PosAir.dash(ts));
     if (peta.getLayer("pos-cincin")) { const f = PosAir.fase(ts); peta.setPaintProperty("pos-cincin", "circle-stroke-opacity", .6 * (1 - f)); peta.setPaintProperty("pos-cincin", "circle-radius", 11 + f * 12); } },
   pasang() { if (this.dipasang) return; this.dipasang = true;
@@ -157,12 +163,15 @@ const PosUkur = {
       peta.on("mouseleave", "pos", () => { peta.getCanvas().style.cursor = ""; PI?.sembunyiTip(); }); }
     this.ruas(); Alir.pasang(); Alir.kurangGerak() ? Alir.diam() : Alir.mulai(); this.daftar(); renderLegenda(); },
   cari(id) { return this.D?.pos?.find(p => p.id === id) || null; },
-  tampil(on) { for (const l of ["alir-badan", "alir-garis", "alir-st-Siaga3", "alir-st-Siaga2", "alir-st-Siaga1", "alir-st-naik", "alir-gerak", "pos-cincin", "pos-pilih", "pos", "pos-angka", "pasut"]) peta?.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none");
-    on ? Alir.mulai() : Alir.henti(); this.daftar(); },
+  /* sakelar: chrome urgent (penanda memuat, hidden panel, animasi); 12 lapisan dan daftar menyusul sesudah satu frame */
+  tampil(on) { const lb = document.querySelector('#lapis input[data-l="pos"]')?.closest("label"); if (lb) { lb.classList.add("memuat"); lb.setAttribute("aria-busy", "true"); }
+    const pn = $("#posPanel"); if (pn && !on) pn.hidden = true; on ? Alir.mulai() : Alir.henti();
+    nanti(() => { this.lapisan(on); this.daftar(); if (lb) { lb.classList.remove("memuat"); lb.removeAttribute("aria-busy"); } }); },
+  lapisan(on) { for (const l of ["alir-badan", "alir-garis", "alir-st-Siaga3", "alir-st-Siaga2", "alir-st-Siaga1", "alir-st-naik", "alir-gerak", "pos-cincin", "pos-pilih", "pos", "pos-angka", "pasut"]) peta?.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none"); },
   hit(pt) { const f = peta.getLayer("pos") && peta.queryRenderedFeatures(pt, {layers: ["pos"]}); return f?.length ? f[0].properties.id : null; },
   legenda() { if (!Peta.lihat("pos") || !this.D) return "";
     return `<div class="lbl">Pos tinggi air</div><div class="leg" style="margin:4px 0 8px">${[["biasa", "Biasa"], ["naik_di_atas_biasa", "Naik di atas biasa"], ["tertinggi", "Tertinggi"], ["lama", "Lama atau macet"]].map(([s, n]) => `<span><i class="sw dot" style="background:${PosAir.warna(s)}"></i>${n}</span>`).join("")}</div>`; },
-  pil(s) { const t = s === "riwayat_kurang"; return `<span class="pill" style="background:${PosAir.warna(s)};color:${t ? "#4a5868" : "#fff"}">${esc(PosAir.nama(s))}</span>`; },
+  pil(s) { const t = s === "riwayat_kurang" || s === "pantauan_terbatas"; return `<span class="pill" style="background:${PosAir.warna(s)};color:${t ? "#4a5868" : "#fff"}">${esc(PosAir.nama(s))}</span>`; },
   pilPos(x) { const r = PosAir.resmi(x); return r ? `<span class="pill" style="background:${PosAir.warnaPos(x)};color:${r === "Siaga 3" ? "#3b2f06" : "#fff"}">${r}</span>` : this.pil(x.status); },
   kapsul(x) { const w = PosAir.warnaPos(x), h = Math.round(PosAir.isiPos(x) * 100); return `<i style="display:inline-block;flex:none;width:10px;height:18px;border-radius:6px;border:1.5px solid ${w};background:linear-gradient(to top,${w} ${h}%,transparent ${h}%)"></i>`; },
   /* skala tegak: pita ambang, garis air bergelombang di tinggi sekarang */
@@ -174,11 +183,11 @@ const PosUkur = {
   buka(id, terbang) {
     const x = this.cari(id); if (!x) return; const w = PosAir.redup(x.status) ? "#7a8796" : PosAir.warnaPos(x), u = PosAir.satuan(x.satuan), a = PosAir.arah(x.d3, x.satuan);
     if (terbang) { const [lo, la] = PosAir.titik(x); peta.flyTo({center: [lo, la], zoom: Math.max(peta.getZoom(), 10), padding: kiriPad()}); }
-    this.pilih(x);
+    this.pilih(x); this._g = x.id;
     const sg = x.ambang ? [["Siaga 3", x.ambang.siaga3], ["Siaga 2", x.ambang.siaga2], ["Siaga 1", x.ambang.siaga1]] : [];
     const isi = `<div style="display:flex;align-items:baseline;gap:8px;flex-wrap:wrap"><b style="font-size:34px;line-height:1;color:${w}">${PosAir.angkaId(x.v)}</b>${u ? `<span style="font-size:15px;color:var(--ink2)">${esc(u)}</span>` : ""}<span style="margin-left:auto;display:flex;align-items:center;gap:8px">${a ? `<small>${a}</small>` : ""}${this.pilPos(x)}</span></div>
       ${this.skala(x)}
-      <table class="tb2"><tbody>${sg.map(([n, v]) => `<tr><td>${n}</td><td class="n">${PosAir.angka(v, "cm")}</td></tr>`).join("")}<tr><td>Perubahan 3 jam</td><td class="n">${PosAir.delta(x.d3, x.satuan)}</td></tr><tr><td>Dibaca</td><td class="n">${PosAir.waktuBaca(x.t).replace("Dibaca ", "")}</td></tr><tr><td>Pengelola</td><td class="n">${esc(PosAir.pengelola(x))}</td></tr></tbody></table>
+      <table class="tb2"><tbody>${sg.map(([n, v]) => `<tr><td>${n}</td><td class="n">${PosAir.angka(v, "cm")}</td></tr>`).join("")}<tr><td>Perubahan 3 jam</td><td class="n"><span class="${PosAir.deltaKelas(x.d3)}" style="color:${x.d3 > 0 ? "#c9503a" : x.d3 < 0 ? "#3f7fb8" : "inherit"}">${PosAir.delta(x.d3, x.satuan)}</span></td></tr>${x.t != null ? `<tr><td>Dibaca</td><td class="n">${PosAir.waktuBaca(x.t).replace("Dibaca ", "")}</td></tr>` : ""}<tr><td>Pengelola</td><td class="n">${esc(PosAir.pengelola(x))}</td></tr></tbody></table>
       <div id="paGrafik"></div>`;
     Analisa.buka(isi, `<div><h3 id="dlgJudul">${esc(x.nama)}</h3><p>${esc(PosAir.subjudul(x))}</p></div>`);
     nanti(() => this.grafik(x)); },
@@ -186,6 +195,7 @@ const PosUkur = {
   pilih(x) { const [lo, la] = x ? PosAir.titik(x) : [0, 0]; peta.getSource("pos-pilih")?.setData({type: "FeatureCollection", features: x ? [{type: "Feature", geometry: {type: "Point", coordinates: [lo, la]}, properties: {}}] : []}); },
   async grafik(x) {
     const r = await fetch("/api/banjir/sungai-ukur/pos/" + encodeURIComponent(x.id), {cache: "no-cache"}).then(r => r.ok ? r.json() : null).catch(() => null), el = $("#paGrafik");
+    if (this._g !== x.id) return;   /* pos lain dibuka selama menunggu */
     if (!el || !r?.v?.length || r.v.length < 2) return;
     const W = 660, B = 110, v = r.v, k = x.satuan === "m" ? 100 : 1, g = PosAir.skalaGeom(x), a = x.ambang, ba = a ? [["Normal", 0, a.siaga3], ["Siaga 3", a.siaga3, a.siaga2], ["Siaga 2", a.siaga2, a.siaga1], ["Siaga 1", a.siaga1, 1e9]] : [];
     const lo = Math.min(...v) - (Math.max(...v) - Math.min(...v)) * .1, hi = Math.max(...v) + (Math.max(...v) - Math.min(...v)) * .1 || lo + 1, m = hi - lo || 1, X = i => 20 + i / (v.length - 1) * (W - 40), Y = q => B - 10 - Math.max(0, Math.min(1, (q - lo) / m)) * (B - 30);
@@ -207,8 +217,9 @@ const PosUkur = {
     peta.on("mouseenter", "pasut", () => peta.getCanvas().style.cursor = "pointer"); peta.on("mouseleave", "pasut", () => peta.getCanvas().style.cursor = ""); },
   hitPasut(pt) { const f = peta.getLayer("pasut") && peta.queryRenderedFeatures(pt, {layers: ["pasut"]}); return f?.length ? f[0].properties.id : null; },
   bukaPasut(id) { const s = this.PS?.stasiun?.find(x => x.id === id); if (!s) return; const now = Date.now() / 1000, k = PosAir.pasutSekarang(s, now), pk = PosAir.pasutKartu(s, now);
-    const isi = `<div style="display:flex;align-items:baseline;gap:8px"><b style="font-size:34px;line-height:1;color:#2b8c86">${k ? PosAir.angkaId(k.cm) : "–"}</b><span style="font-size:15px;color:var(--ink2)">cm</span>${k ? `<span class="pill" style="margin-left:auto;background:#2b8c86;color:#fff">Sedang ${k.arah}</span>` : ""}</div>
-      <table class="tb2"><tbody>${pk.map(x => `<tr><td>${x.jenis}, ${x.hari} ${x.jam} WIB</td><td class="n">${PosAir.angka(x.cm, "cm")}</td></tr>`).join("")}</tbody></table>`;
+    const isi = `<div class="lbl">Prediksi pukul ${PosAir.jamWib(now)} WIB</div><div style="display:flex;align-items:baseline;gap:8px"><b style="font-size:34px;line-height:1;color:#2b8c86">${k ? PosAir.angkaId(k.cm) : "–"}</b>${k ? `<span style="font-size:15px;color:var(--ink2)">cm</span><span class="pill" style="margin-left:auto;background:#2b8c86;color:#fff">Sedang ${k.arah}</span>` : ""}</div>
+      <table class="tb2"><tbody>${pk.map(x => `<tr><td>${x.jenis}, ${x.hari} ${x.jam} WIB</td><td class="n">${PosAir.angka(x.cm, "cm")}</td></tr>`).join("")}</tbody></table>
+      <p class="fnd">Sumber: BMKG Maritim, prediksi pasang surut${this.PS.dibuat ? ", dibuat " + PosAir.tglJamWib(Date.parse(this.PS.dibuat) / 1000) : ""}.</p>`;
     Analisa.buka(isi, `<div><h3 id="dlgJudul">Pasang surut ${esc(s.nama)}</h3><p>${esc(s.prov || "Stasiun pasut BMKG")}</p></div>`); },
   /* panel ringkas di kiri: jumlah, batang bertumpuk, kalimat, perlu dipantau, per sungai, pos tidak mengirim */
   daftar() {
@@ -226,9 +237,10 @@ const PosUkur = {
       <p class="fnd">${esc(PosAir.kalimat(pos))}</p>
       ${pantau.length ? `<div class="lbl" style="margin:8px 0 2px">Perlu dipantau</div>${pantau.map(x => { const q = PosAir.rasio(x); return `<button class="tb" data-pos="${esc(x.id)}" style="display:flex;align-items:center;gap:8px;width:100%;text-align:left">${this.kapsul(x)}<span style="flex:1;min-width:0"><b style="display:block;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.nama)}</b><small>${esc(PosAir.subjudul(x))}</small>${q == null ? "" : `<i style="display:block;height:3px;border-radius:2px;background:var(--line);margin-top:3px"><i style="display:block;height:3px;border-radius:2px;width:${Math.round(q * 100)}%;background:${PosAir.warnaPos(x)}"></i></i>`}</span><b>${PosAir.angka(x.v, x.satuan)}</b>${this.pilPos(x)}</button>`; }).join("")}` : ""}
       <div class="lbl" style="margin:8px 0 2px">Per sungai</div>${this.grup.map(([k, l], i) => `<details data-g="${i}"><summary>${esc(k)} <small>${PosAir.angkaId(l.length)} pos</small></summary><div class="gr"></div></details>`).join("")}
-      ${PosAir.macetPerPengelola(pos).map(([k, l]) => `<details><summary>Tidak mengirim, ${esc(k)} <small>${PosAir.angkaId(l.length)}</small></summary>${l.map(p => `<button class="tb" data-pos="${esc(p.id)}" style="display:flex;justify-content:space-between;gap:8px;width:100%"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nama)}</span><small style="white-space:nowrap">${PosAir.lalu(p.t, now)}</small></button>`).join("")}</details>`).join("")}</div>`; },
+      ${PosAir.macetPerPengelola(pos).map(([k, l]) => `<details><summary>Tidak mengirim, ${esc(k)} <small>${PosAir.angkaId(l.length)} pos</small></summary>${l.map(p => `<button class="tb" data-pos="${esc(p.id)}" style="display:flex;justify-content:space-between;gap:8px;width:100%"><span style="overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(p.nama)}</span><small style="white-space:nowrap">${PosAir.lalu(p.t, now)}</small></button>`).join("")}</details>`).join("")}
+      <p class="fnd">${esc(PosAir.kakiPanel(pos))}</p></div>`; },
   baris(l) { return l.map(x => `<button class="tb" data-pos="${esc(x.id)}" style="display:flex;align-items:center;gap:8px;width:100%;text-align:left">${this.kapsul(x)}<span style="flex:1;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">${esc(x.nama)}</span><b style="color:${PosAir.redup(x.status) ? "#7a8796" : "inherit"}">${PosAir.angka(x.v, x.satuan)}</b>${this.pilPos(x)}</button>`).join(""); },
   async mulai() { await this.muat(); const sm = peta.getSource("pos"); sm ? sm.setData(PosAir.geojson(this.D?.pos)) : this.lapis(); this.ruas(); this.daftar(); nanti(() => this.pasut()); },
 };
 /* data dimuat sesudah peta siap; segar lagi saat tab kembali terlihat dan data lebih tua dari 5 menit */
-document.addEventListener("visibilitychange", () => { if (!document.hidden && PosUkur.D && Date.now() - PosUkur.t0 > 3e5) { PosUkur.p = null; PosUkur.muat().then(() => peta?.getSource("pos")?.setData(PosAir.geojson(PosUkur.D?.pos))); } });
+document.addEventListener("visibilitychange", () => { if (!document.hidden && PosUkur.D && Date.now() - PosUkur.t0 > 3e5) { PosUkur.p = null; PosUkur.muat().then(() => { peta?.getSource("pos")?.setData(PosAir.geojson(PosUkur.D?.pos)); PosUkur.ruas(); PosUkur.daftar(); }); } });

@@ -31,7 +31,7 @@ const angka = x => (x === null || x === "" || x === undefined || !Number.isFinit
 const RESMI = s => /^(Normal|Siaga [123])$/.test(s) ? s : null;
 
 /* SIPANTAU: lokasi[] (ambang, bacaan terakhir) + lokasi_map[] (koordinat). Ambang Siaga 3/2/1 = minimum_3/2/1 (cm; <= 0 = tidak ada). status_resmi MENGIKUTI TEKS sumber, bukan tafsiran kita:
-   "Normal" = Normal, "Awas" = Siaga 1, "Siaga" = Siaga <angka siaga> (2 atau 3); sumber memberi angka 4 atau 3 juga untuk "Normal", jadi angkanya saja tidak dipakai. */
+   "Normal" = Normal, "Awas" = Siaga 1, "Siaga" = Siaga <angka siaga> (2 atau 3; ASUMSI: di data nyata baru terlihat "Siaga" dengan angka 2, kombinasi "Siaga" + 3 belum pernah terlihat); sumber memberi angka 4 atau 3 juga untuk "Normal", jadi angkanya saja tidak dipakai. */
 export function uraiSipantau(teks) {
   const d = JSON.parse(teks).data, koor = new Map();
   for (const f of d.lokasi_map || []) { const c = f?.geometry?.coordinates; if (f?.data?.id && c) koor.set(f.data.id, [+c[0], +c[1]]); }
@@ -51,6 +51,9 @@ export function uraiSipantau(teks) {
 /* DSDA DKI: onclick="ShowPopup(nama, tinggi_mm, siaga1, siaga2, siaga3, 'lat,lng,nama,tinggi,Status : X,id', daerah)"; mm -> cm; ambang 5000/5000/5000 = placeholder = null;
    tanggal dd/mm/yyyy dan jam hh:mm (WIB) di sel baris yang sama. */
 const POPUP = /ShowPopup\(&#39;(.*?)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(.*?)&#39;,/, TGL = />(\d\d)\/(\d\d)\/(\d{4})<\/span>/, JAM = />(\d\d):(\d\d)<\/span>/;
+/* ambang DSDA (mm -> cm; argumen siaga3, siaga2, siaga1). Tiga-tiganya harus sah (> 0 dan bukan placeholder 5000) DAN berurut siaga1 > siaga2 > siaga3; selain itu SEMUANYA null
+   (baris "Rumah Pompa Pluit 1" 450/0/-500 mm = sensor relatif pompa, bukan ambang sungai; ambang separuh sah menyesatkan). */
+const ambangDsda = (s3, s2, s1) => { const [a3, a2, a1] = [s3, s2, s1].map(x => +x / 10); return [s3, s2, s1].some(x => +x <= 0 || +x === 5000) || !(a1 > a2 && a2 > a3) ? null : [a3, a2, a1]; };
 export function uraiDsda(teks) {
   const out = []; let i = teks.indexOf("GridListPintuAir_DXDataRow");
   while (i >= 0) {
@@ -58,10 +61,10 @@ export function uraiDsda(teks) {
     if (!a) continue;
     const k = a[6].split(","), lat = +k[0], lon = +k[1], kode = k[k.length - 1].trim(), st = /Status : ([^,]+)/.exec(a[6]);
     if (!/^\d{1,8}$/.test(kode) || !DALAM_INDONESIA(lon, lat)) continue;
-    const amb = x => (+x === 5000 ? null : +x / 10), tg = TGL.exec(p), jm = JAM.exec(p);
+    const amb = ambangDsda(a[5], a[4], a[3]), tg = TGL.exec(p), jm = JAM.exec(p);
     const m = tg && jm ? wib(+tg[3], +tg[2] - 1, +tg[1], +jm[1], +jm[2]) : null;
-    const nama = a[1].replace(/&amp;/g, "&");
-    out.push({id: "d:" + kode, nama, sumber: "DSDA DKI", lon, lat, a3: amb(a[5]), a2: amb(a[4]), a1: amb(a[3]), resmi: RESMI(st?.[1].trim()),
+    const nama = a[1].replace(/&(quot|#39|lt|gt|amp);/g, (_, k) => ({quot: '"', "#39": "'", lt: "<", gt: ">", amp: "&"})[k]);   // amp terakhir menurut urutan tunggal: tanpa dekode ganda
+    out.push({id: "d:" + kode, nama, sumber: "DSDA DKI", lon, lat, a3: amb?.[0] ?? null, a2: amb?.[1] ?? null, a1: amb?.[2] ?? null, resmi: RESMI(st?.[1].trim()),
       jenis: /pompa/i.test(nama) ? "pompa" : null, v: +a[2] / 10, t: m});
   }
   return out;
@@ -96,8 +99,8 @@ async function satu(env, kunci, url, periksa, urai, kini) {
     await env.DB.prepare(SQL_CATAT).bind(kunci, JSON.stringify({ok: kini, pos: daftar.length, galat: null}), kini).run();
     return {pos: daftar.length};
   } catch (e) {
-    await env.DB.prepare("UPDATE cuaca_sumber SET isi = json_set(coalesce(isi, '{}'), '$.galat', ?) WHERE kunci = ?").bind(String(e.message).slice(0, 200), kunci).run().catch(() => {});
-    await env.DB.prepare("INSERT OR IGNORE INTO cuaca_sumber (kunci, isi, dibuat) VALUES (?1, ?2, ?3)").bind(kunci, JSON.stringify({ok: null, galat: String(e.message).slice(0, 200)}), kini).run().catch(() => {});
+    await env.DB.prepare("UPDATE cuaca_sumber SET isi = json_set(coalesce(isi, '{}'), '$.galat', ?) WHERE kunci = ?").bind(String(e?.message).slice(0, 200), kunci).run().catch(() => {});
+    await env.DB.prepare("INSERT OR IGNORE INTO cuaca_sumber (kunci, isi, dibuat) VALUES (?1, ?2, ?3)").bind(kunci, JSON.stringify({ok: null, galat: String(e?.message).slice(0, 200)}), kini).run().catch(() => {});
     return {galat: e.message};
   }
 }

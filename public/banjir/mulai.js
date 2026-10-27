@@ -7,7 +7,7 @@ function infoWil(i, K) {
   if (!r.total) return "";
   const td = S.st.hari[S.hari], tglData = td && td !== new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10) ? `<br><small>data ${new Date(td + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</small>` : "";
   const e = AngkaKawasan.kejadianTerdekat(K, r.keys, null);
-  return `<span class="pill l${r.lv}" style="float:right">${NM_ST[r.lv]}</span>${tglData}${e ? `<br><small>Wilayah Siaga ${esc(e.kode)}</small>` : ""}`; }
+  return `<span class="pill l${r.lv}" style="float:right">${NM_ST[r.lv]}</span>${tglData}${e ? `<br><small>Wilayah Siaga (prakiraan) ${esc(e.kode)}</small>` : ""}`; }
 function gambarHasil(hs, K) { const h = $("#hasil");
   h.innerHTML = hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}${infoWil(i, K)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan di wilayah berstatus.</div>`; h.hidden = false; }
 $("#cari").addEventListener("input", async e => {

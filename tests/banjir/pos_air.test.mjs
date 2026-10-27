@@ -31,7 +31,8 @@ test("status ke warna, redup, denyut", () => {
 test("angka format Indonesia, satuan null tanpa konversi", () => {
   assert.equal(P.angka(0.41, "m"), "0,41 m"); assert.equal(P.angka(701.98, "cm"), "702 cm"); assert.equal(P.angka(12.34, "cm"), "12,3 cm");
   assert.equal(P.angka(-0.02, null), "-0,02"); assert.equal(P.angka(5, "centimeter"), "5 cm"); assert.equal(P.angka(null, "m"), "–");
-  assert.equal(P.delta(0.01, "m"), "+0,01 m"); assert.equal(P.delta(-1.5, "cm"), "-1,5 cm"); assert.equal(P.delta(null, "m"), "–");
+  assert.equal(P.delta(0.01, "m"), "▲ 0,01 m"); assert.equal(P.delta(-1.5, "cm"), "▼ 1,5 cm"); assert.equal(P.delta(0, "cm"), "tetap"); assert.equal(P.delta(null, "m"), "–");
+  assert.deepEqual(plain([2, -2, 0, null].map(P.deltaKelas)), ["naik", "turun", "tetap", ""]);
 });
 
 test("waktu baca WIB", () => {
@@ -153,4 +154,19 @@ test("sorot aliran: pola pendek-panjang berjumlah tetap, bergeser, garis tengah 
   assert.match(src, /id: "alir-gerak"[^]*?"line-blur": 1/);
   const pk = fs.readFileSync("public/banjir/peta.js", "utf8");
   assert.match(pk, /"fill-opacity": \["interpolate", \["linear"\], \["zoom"\], 10/); assert.match(pk, /"raster-opacity": \["interpolate", \["linear"\], \["zoom"\], 10, \.75, 13, \.15\]/);
+});
+
+test("t null tidak pecah; pantauan terbatas seperti riwayat kurang; jam dan kaki panel", () => {
+  assert.equal(P.waktuBaca(null), "–"); assert.equal(P.lalu(null, 1e6), "–");
+  assert.equal(P.warna("pantauan_terbatas"), P.warna("riwayat_kurang")); assert.ok(!P.redup("pantauan_terbatas")); assert.equal(P.nama("pantauan_terbatas"), "Pantauan terbatas");
+  assert.equal(P.kelas({status: "pantauan_terbatas"}), "Normal"); assert.equal(P.geojson([{id: "1", x: 0, y: 0, v: 1, status: "pantauan_terbatas"}]).features[0].properties.i, "pantauan_terbatas");
+  assert.equal(P.jamWib(Date.UTC(2026, 9, 27, 9, 5) / 1000), "16.05");
+  assert.equal(P.kakiPanel([{t: Date.UTC(2026, 9, 27, 9, 0) / 1000}, {t: Date.UTC(2026, 9, 27, 8, 0) / 1000, pengelola: "DSDA DKI"}]), "Sumber: Kementerian PU, Ditjen SDA (SIHKA), DSDA DKI, dibaca terbaru 16.00 WIB");
+  assert.equal(P.kakiPanel([]), "");
+});
+
+test("INP statis: sakelar pos menunda lapisan, animasi lewati saat peta bergerak, grafik tahan balapan, segar ulang lengkap", () => {
+  assert.match(src, /tampil\(on\) {[^]*aria-busy[^]*nanti\(\(\) => { this\.lapisan\(on\); this\.daftar\(\)/);
+  assert.match(src, /if \(peta\.isMoving\(\)\) return;/); assert.match(src, /if \(this\._g !== x\.id\) return;/); assert.match(src, /this\._g = x\.id;/);
+  assert.match(src, /PosUkur\.ruas\(\); PosUkur\.daftar\(\);/);
 });

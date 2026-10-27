@@ -70,6 +70,15 @@ test("p null: wilayah abu, bukan transparan dan bukan 0; label cakrawala bertang
 test("istilah gugus kejadian_aktif: Wilayah Siaga (prakiraan) di semua tampilan, kunci data tetap", () => {
   const b = n => fs.readFileSync("public/banjir/" + n, "utf8");
   assert.match(b("kejadian.js"), /nama: k => "Wilayah Siaga " \+/); assert.match(b("insight.js"), /wilayah Siaga \(prakiraan\)"\)} mencakup/); assert.ok(!/banjir aktif melanda/.test(b("insight.js")));
-  assert.match(b("mulai.js"), /Wilayah Siaga \$\{esc\(e\.kode\)\}/); assert.match(b("sapa_banjir.js"), /"Wilayah Siaga \(prakiraan\)"/);
-  const w = b("wilayah.js"); assert.match(w, /"WS", "Wilayah Siaga \(prakiraan\)"/); assert.match(w, />WS<\/span>/); assert.ok(!/>KA<\/span>/.test(w)); assert.match(w, /kejadian_aktif/);
+  assert.match(b("mulai.js"), /Wilayah Siaga \(prakiraan\) \$\{esc\(e\.kode\)\}/); assert.match(b("sapa_banjir.js"), /"Wilayah Siaga \(prakiraan\)"/);
+  const w = b("wilayah.js"); assert.match(w, /"WS", "Wilayah Siaga \(prakiraan\), gugus"/); assert.match(w, />WS gugus<\/span>/); assert.match(w, />RB titik<\/span>/); assert.match(w, /Rob, titik Waspada\+/); assert.ok(!/>KA<\/span>/.test(w)); assert.match(w, /kejadian_aktif/);
+});
+
+test("kartu peluang: pil Eksperimental, vonis teks kecil; cache ekspresi dan tampil ditunda; pos hujan label minimal", () => {
+  assert.equal(E.vonis(D), "Belum ada vonis uji prospektif"); assert.equal(E.vonis({prospektif: {vonis: "lolos"}}), "Vonis uji prospektif: lolos");
+  assert.match(src, />Eksperimental<\/span><small[^>]*>\$\{esc\(EksPA\.vonis\(this\.d\)\)\}/); assert.match(src, /Sumber: \$\{esc\(this\.d\.sumber\)\}/);
+  assert.match(src, /this\._ek\[this\.c\] \|\|=/); assert.match(src, /reset\(\) { this\._ek = {}; }/); assert.match(fs.readFileSync("public/banjir/peta.js", "utf8"), /Eksp\.reset\(\); Eksp\.terapkan\(\);/);
+  assert.match(src, /tampil\(on\) {[^]*nanti\(\(\) => { if \(on\) this\.mulai\(\)/);
+  assert.match(src, /mm sejak 00\.00 WIB, minimal/); assert.match(src, /mm sejak 00\.00 WIB, data lama/); assert.match(src, /1 jam terakhir, minimal/); assert.match(src, /"≥ " \+ EksPA\.kelasHujan/);
+  const k = fs.readFileSync("public/banjir/kejadian.js", "utf8"); assert.ok(!/<\/b> · |\(prakiraan\) · /.test(k));
 });

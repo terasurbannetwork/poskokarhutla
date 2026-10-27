@@ -57,7 +57,7 @@ def satu(st, hari_ini):
     time.sleep(JEDA)
     deret = rapat_jam(ambil(f"{U}/data/WIB/{id_}/{a}/{tgl(hari_ini + dt.timedelta(days=HARI_DERET))}", coba=2, batas_waktu=20))
     ting = [p["cm"] for p in puncak if p["jenis"] == "tinggi"]
-    di_atas = p90 = None
+    di_atas = p90 = hari_di = None
     try:  # basis 90 hari: satu panggilan; gagal -> null
         time.sleep(JEDA)
         basis = ambil(f"{U}/hltide/MSL/WIB/{id_}/{tgl(hari_ini - dt.timedelta(days=HARI_BASIS))}/{tgl(hari_ini - dt.timedelta(days=1))}",
@@ -65,11 +65,13 @@ def satu(st, hari_ini):
         b_cm = list(maks_harian(parse_hltide(basis)).values())
         if len(b_cm) >= 30 and ting:
             p90 = persentil(b_cm, 0.9)
-            di_atas = any(v > p90 for v in maks_harian(puncak).values())
+            dua = sorted(maks_harian(puncak).items())[:2]  # hari ini dan besok saja; 4 hari vs ambang satu hari = positif berlebihan
+            hari_di = [d for d, v in dua if v > p90]
+            di_atas = bool(hari_di)
     except Exception as e:
         print(f"  basis {st['Lokasi']}: {e}", file=sys.stderr)
     return {"id": str(id_), "nama": st["Lokasi"], "prov": st.get("Provinsi"), "lat": st["Lat"], "lon": st["Lon"], "datum": "MSL",
-            "puncak": puncak, "deret": deret, "tertinggi_3h_cm": max(ting) if ting else None, "p90_harian_cm": p90, "di_atas_biasa": di_atas}
+            "puncak": puncak, "deret": deret, "tertinggi_4h_cm": max(ting) if ting else None, "p90_harian_cm": p90, "hari_di_atas": hari_di, "di_atas_biasa": di_atas}
 
 
 def periksa(o):
@@ -82,6 +84,7 @@ def periksa(o):
         assert d and d["langkah_menit"] == 60 and len(d["cm"]) >= 24, s["id"]
         assert all(-1000 < c < 1000 for c in d["cm"]), s["id"]
         assert s["di_atas_biasa"] in (True, False, None)
+        assert not s["di_atas_biasa"] or s["p90_harian_cm"] is not None, s["id"]
 
 
 def main():
@@ -114,8 +117,15 @@ def uji():
     assert rapat_jam([]) is None
     assert persentil(list(range(101)), 0.9) == 90
     assert maks_harian(p) == {"2026-10-27": 104}, maks_harian(p)
-    ok = {"dibuat": "x", "sumber": "s", "stasiun": [{"id": "1", "lat": -7.2, "lon": 112.7, "puncak": p, "deret": r, "di_atas_biasa": None}]}
+    ok = {"dibuat": "x", "sumber": "s", "stasiun": [{"id": "1", "lat": -7.2, "lon": 112.7, "puncak": p, "deret": r, "p90_harian_cm": None, "di_atas_biasa": None}]}
     periksa(ok)
+    ok["stasiun"][0]["di_atas_biasa"] = True
+    try:
+        periksa(ok)
+        raise SystemExit("true tanpa p90 lolos")
+    except AssertionError:
+        pass
+    ok["stasiun"][0]["di_atas_biasa"] = None
     ok["stasiun"][0]["deret"]["cm"] = [0] * 5
     try:
         periksa(ok)

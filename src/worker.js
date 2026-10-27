@@ -493,6 +493,8 @@ async function periksaStatus(env, url, kini) {
   /* jeda satelit lewat -> data terbit (PROGRAM-15-JAM blok E): pengamatan terbaru (meta.json data_terakhir) sampai meta.json dibuat. Tanpa ambang: tidak pernah 503,
      tapi ikut status_riwayat tiap jam sehingga /api/sla dan dashboard kinerja punya median dan p95-nya. */
   const [dib, lewat] = await Promise.all([dibuatAset(env, url, "/data/meta.json"), dibuatAset(env, url, "/data/meta.json", "data_terakhir")]);
+  /* SIHKA: dari mana tarikan terakhir ("resmi" | "cadangan") dan kapan; hanya bila sudah pernah menarik */
+  try { const p = (await env.DB.prepare("SELECT json_extract(isi, '$.via') via, dibuat FROM cuaca_sumber WHERE kunci = 'sihka'").first()); if (p) sumber.sihka_via = {via: p.via ?? "resmi", dibuat: new Date(p.dibuat).toISOString()}; } catch (e) { /* tabel belum ada */ }
   if (dib != null && lewat != null && dib >= lewat) sumber.jeda_satelit = {dibuat: new Date(lewat).toISOString(), umur_jam: Math.round((dib - lewat) / JAM * 10) / 10, ambang_jam: null};
   return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber, uji};
 }
@@ -812,7 +814,7 @@ export default {
       try { console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime))); } catch (e) { console.error("peringatan", e?.message); }   // sesudah gempa baru tersimpan
       console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
       /* SIHKA paling akhir: email EWS tidak boleh tertahan langkah ini */
-      if (new Date(sekarang).getUTCMinutes() % 5 === 3 && new Date(sekarang).getUTCMinutes() !== 23) try { console.log("hujan", JSON.stringify(await perbaruiHujan(env, sekarang))); } catch (e) { console.error("hujan", e?.message); }   // hujan SIHKA per interval: tiap 5 menit
+      if (new Date(sekarang).getUTCMinutes() % 10 === 3 && new Date(sekarang).getUTCMinutes() !== 23) try { console.log("hujan", JSON.stringify(await perbaruiHujan(env, sekarang))); } catch (e) { console.error("hujan", e?.message); }   // hujan SIHKA per interval: tiap 10 menit (kuota tulis D1 Free, lihat src/hujan.js)
       if (new Date(sekarang).getUTCMinutes() === 23) {   // SIHKA: tiap jam menit 23; dasar historis sekali sehari 20 UTC
         try { console.log("sihka", JSON.stringify(await perbaruiSihka(env, sekarang))); } catch (e) { console.error("sihka", e?.message); }
         if (new Date(sekarang).getUTCHours() === 20) try { console.log("sihka dasar", JSON.stringify(await dasarSihka(env, sekarang))); } catch (e) { console.error("sihka dasar", e?.message); }

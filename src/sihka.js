@@ -5,7 +5,7 @@
    utuh, tetapi status DIHITUNG ULANG supaya pos yang berhenti melapor jadi 'lama'.
    Sumber luar: badan dibaca bertahap dan dibatalkan > 2 MB, tanpa redirect; tiap tulisan D1 dari teks luar punya LIMIT dan batas panjang.
    Status per pos (prioritas): bukan_tinggi (satuan debit/mdpl) > lama (> 5 jam) > macet (nilai sama 12 jam) > riwayat_kurang (< 7 hari atau n < 100)
-   > data_bolong (pembanding 1/2/3 jam hilang) > naik_di_atas_biasa (kenaikan 3 jam > p99 pos itu, n >= 300, >= 14 hari, tiga langkah tak turun, lantai 20 cm
+   > pantauan_terbatas (riwayat 7 sampai < 14 hari) > data_bolong (pembanding 1/2/3 jam hilang) > naik_di_atas_biasa (kenaikan 3 jam > p99 pos itu, n >= 300, >= 14 hari, tiga langkah tak turun, lantai 20 cm
    bila satuan diketahui, bila tidak v >= p95 dan kenaikan >= 2x p99) > tertinggi (v > rekor, >= 30 hari) > biasa. Dasar persentil tidak memuat 24 jam terakhir. */
 import {gagal, cacheTepi} from "./worker.js";
 import {tarikTeks, perbaruiResmi} from "./sungai_resmi.js";
@@ -21,6 +21,13 @@ const DASAR_MUDA_HARI = 14;
 /* pos yang sama di dua sumber: sumber berbeda dan jarak < ~300 m (0,0027 derajat, lingkaran di bidang lon/lat); yang berambang resmi menang (rk 2), lalu SIHKA (rk 1), sisanya jadi sumber_lain */
 const PENGELOLA_SIHKA = "Kementerian Pekerjaan Umum, Direktorat Jenderal Sumber Daya Air (SIHKA)";
 const DEKAT = (q, f) => `${q}.id <> ${f}.id AND ${q}.sumber <> ${f}.sumber AND (${q}.lon - ${f}.lon) * (${q}.lon - ${f}.lon) + (${q}.lat - ${f}.lat) * (${q}.lat - ${f}.lat) < 7.29e-6`;
+/* penggabungan GREEDY menurut prioritas: pos dibuang hanya bila punya pesaing berprioritas lebih tinggi yang sendirinya DIPERTAHANKAN (rantai A-B-C: B kalah dari A, C tetap hidup karena B dibuang).
+   K = pasti dipertahankan, D = pasti dibuang, U = belum tentu; tiap ronde menyelesaikan satu tingkat ketergantungan, jadi rantai pesaing sampai 5 tingkat tepat (sisa U dianggap dipertahankan).
+   # ponytail: rantai > 5 pos berbeda sumber dalam 300 m tidak ada di data nyata; naikkan jumlah ronde bila ada. */
+const RONDE = n => n >= 5 ? "" : `s${n + 1} AS (SELECT x.id, CASE
+      WHEN EXISTS (SELECT 1 FROM ed JOIN s${n} p ON p.id = ed.b WHERE ed.a = x.id AND p.st = 'K') THEN 'D'
+      WHEN NOT EXISTS (SELECT 1 FROM ed JOIN s${n} p ON p.id = ed.b WHERE ed.a = x.id AND p.st <> 'D') THEN 'K' ELSE 'U' END st FROM s${n} x),
+  ${RONDE(n + 1)}`;
 const SUMBER_TEKS = "Kementerian PU, Ditjen SDA (SIHKA)";
 
 /* teks SIHKA -> baris sihka_baca. ?2 = kini (detik): hanya bacaan 6 jam terakhir dan tidak lebih dari 10 menit di masa depan (ada cap waktu 2026-11 nyasar).
@@ -29,6 +36,7 @@ export const SQL_BACA = `INSERT OR IGNORE INTO sihka_baca (pos, t, v)
   SELECT json_extract(p.value,'$.id'), CAST(unixepoch(json_extract(r.value,'$.timestamp')) AS INTEGER), json_extract(r.value,'$.value')
   FROM json_each(?1) p, json_each(json_extract(p.value,'$.raw')) r
   WHERE json_extract(p.value,'$.type') = 'DUGA AIR' AND typeof(json_extract(p.value,'$.id')) = 'text' AND length(json_extract(p.value,'$.id')) <= 40
+    AND instr(json_extract(p.value,'$.id'), ':') = 0   /* id berawalan 'd:'/'t:' milik sumber resmi; id SIHKA tak boleh menimpanya */
     AND json_extract(p.value,'$.id') IN (SELECT pos FROM sihka_pos)
     AND typeof(json_extract(r.value,'$.value')) IN ('integer','real') AND abs(json_extract(r.value,'$.value')) < 1e5
     AND unixepoch(json_extract(r.value,'$.timestamp')) > ?2 - 6*3600
@@ -44,7 +52,7 @@ const SQL_POS = `INSERT INTO sihka_pos (pos, nama, x, y, satuan, tz, merek, dili
       substr(json_extract(j,'$.tz'), 1, 16) tz,
       substr((SELECT json_extract(r.value,'$.merek') FROM json_each(json_extract(j,'$.raw')) r WHERE json_extract(r.value,'$.merek') IS NOT NULL LIMIT 1), 1, 16) merek
     FROM (SELECT p.value j, json_extract(p.value,'$.coordinate') c FROM json_each(?1) p WHERE json_extract(p.value,'$.type') = 'DUGA AIR') o
-    WHERE typeof(json_extract(j,'$.id')) = 'text' AND length(json_extract(j,'$.id')) <= 40 AND typeof(c) = 'text' AND c LIKE '%,%')
+    WHERE typeof(json_extract(j,'$.id')) = 'text' AND length(json_extract(j,'$.id')) <= 40 AND instr(json_extract(j,'$.id'), ':') = 0 AND typeof(c) = 'text' AND c LIKE '%,%')
   WHERE x BETWEEN 10.4e6 AND 15.9e6 AND y BETWEEN -1.35e6 AND 0.75e6
   LIMIT 1500
   ON CONFLICT(pos) DO UPDATE SET nama = excluded.nama, x = excluded.x, y = excluded.y, satuan = excluded.satuan, tz = excluded.tz, merek = excluded.merek, dilihat = excluded.dilihat`;
@@ -90,6 +98,7 @@ export const SQL_STATUS = `INSERT INTO cuaca_sumber (kunci, isi, dibuat)
       WHEN u.lt < ?1 - 5*3600 THEN 'lama'
       WHEN u.n12 >= 6 AND u.sebar12 = 0 THEN 'macet'
       WHEN coalesce(d.hari, 0) < 7 OR coalesce(d.n, 0) < 100 THEN 'riwayat_kurang'
+      WHEN d.hari < 14 THEN 'pantauan_terbatas'   -- riwayat 7 sampai < 14 hari: aturan naik_di_atas_biasa (>= 14 hari) belum bisa menyala, jangan tampil 'biasa'
       WHEN u.r1 IS NULL OR u.r2 IS NULL OR u.r3 IS NULL THEN 'data_bolong'
       WHEN d.n >= 300 AND d.hari >= 14 AND d.d3_p99 > 0 AND u.v - u.r3 > d.d3_p99 AND u.v >= u.r1 AND u.r1 >= u.r2 AND u.r2 >= u.r3
         AND ((${LANTAI} IS NOT NULL AND u.v - u.r3 >= ${LANTAI})
@@ -98,20 +107,28 @@ export const SQL_STATUS = `INSERT INTO cuaca_sumber (kunci, isi, dibuat)
       ELSE 'biasa' END status
     FROM m u LEFT JOIN sihka_dasar d ON d.pos = u.pos LEFT JOIN sungai_meta mt ON mt.pos = u.pos),
   f AS MATERIALIZED (SELECT e.*, (CASE WHEN coalesce(a3, a2, a1) IS NOT NULL THEN 2 ELSE 0 END + (sumber = 'SIHKA')) rk FROM e),
-  g AS (SELECT f.*, EXISTS(SELECT 1 FROM f q WHERE ${DEKAT("q", "f")} AND (q.rk > f.rk OR (q.rk = f.rk AND q.id < f.id))) buang FROM f)
+  ed AS MATERIALIZED (SELECT f.id a, q.id b FROM f, f q WHERE ${DEKAT("q", "f")} AND (q.rk > f.rk OR (q.rk = f.rk AND q.id < f.id))),   -- a punya pesaing b yang berprioritas lebih tinggi
+  s1 AS (SELECT id, CASE WHEN NOT EXISTS (SELECT 1 FROM ed WHERE ed.a = f.id) THEN 'K' ELSE 'U' END st FROM f),
+  ${RONDE(1)}
+  g AS (SELECT f.*, (s5.st = 'D') buang FROM f JOIN s5 ON s5.id = f.id)
   SELECT 'sihka_status', json_object('dibuat', ?2, 'ok', (SELECT dibuat FROM cuaca_sumber WHERE kunci = 'sihka'), 'sumber', '${SUMBER_TEKS}',
     'ringkas', json((SELECT coalesce(json_group_object(status, c), '{}') FROM (SELECT status, count(*) c FROM g WHERE buang = 0 GROUP BY status))),
     'pos', json((SELECT coalesce(json_group_array(json_object('id', id, 'nama', nama, 'x', x, 'y', y, 'satuan', satuan, 'v', v, 't', t, 'd3', d3, 'status', status, 'hari', round(hari, 1),
       'sumber', sumber, 'pengelola', pengelola, 'jenis', jenis, 'lon', lon, 'lat', lat, 'status_resmi', resmi,
       'ambang', json(CASE WHEN coalesce(a3, a2, a1) IS NULL THEN NULL ELSE json_object('siaga3', a3, 'siaga2', a2, 'siaga1', a1) END),
-      'sumber_lain', json((SELECT coalesce(json_group_array(json_object('sumber', q.sumber, 'id', q.id, 'nama', q.nama)), '[]') FROM f q WHERE ${DEKAT("q", "g")} AND (g.rk > q.rk OR (g.rk = q.rk AND g.id < q.id)))))), '[]') FROM g WHERE buang = 0))), ?2
+      'sumber_lain', json((SELECT coalesce(json_group_array(json_object('sumber', q.sumber, 'id', q.id, 'nama', q.nama)), '[]') FROM ed JOIN g q ON q.id = ed.a WHERE ed.b = o.id AND q.buang = 1)))), '[]') FROM g o WHERE buang = 0))), ?2
   ON CONFLICT(kunci) DO UPDATE SET isi = excluded.isi, dibuat = excluded.dibuat`;
 
 const periksaSihka = t => { if (!t.startsWith("[") || !t.includes('"DUGA AIR"')) throw new Error("bukan daftar telemetri"); };
-/* domain resmi dulu (sihka.sda.pu.go.id, 27 Okt 2026); dev-tunnels hanya cadangan bila resmi gagal. Galat yang dilaporkan = galat domain resmi. */
-async function tarik() {
-  try { return await tarikTeks(SUMBER, periksaSihka); } catch (e) { try { return await tarikTeks(CADANGAN, periksaSihka); } catch (e2) { throw e; } }
+/* domain resmi dulu (sihka.sda.pu.go.id, 27 Okt 2026). dev-tunnels (terowongan pribadi pihak ketiga) HANYA bila env.SIHKA_CADANGAN === "1" dan resmi gagal; dipakai = via "cadangan"
+   (tercatat di stempel 'sihka' dan di /api/status). Galat yang dilaporkan = galat domain resmi. Mengembalikan {teks, via}. */
+async function tarik(env) {
+  try { return {teks: await tarikTeks(SUMBER, periksaSihka), via: "resmi"}; } catch (e) {
+    if (env?.SIHKA_CADANGAN !== "1") throw e;
+    try { return {teks: await tarikTeks(CADANGAN, periksaSihka), via: "cadangan"}; } catch (e2) { throw e; }
+  }
 }
+const galatTeks = e => String(e?.message).slice(0, 200);
 
 const SQL_META = "CREATE TABLE IF NOT EXISTS sungai_meta (pos TEXT PRIMARY KEY, sumber TEXT NOT NULL, pengelola TEXT, lon REAL, lat REAL, a3 REAL, a2 REAL, a1 REAL, resmi TEXT, jenis TEXT, diperbarui INTEGER) WITHOUT ROWID";
 /* tabel sungai_meta (0066) belum diterapkan di D1 = status SIHKA tidak boleh mati: buat tabelnya (SQL sama dengan migrasi, idempoten) lalu ulangi */
@@ -124,30 +141,30 @@ const bangunStatus = async (env, kini) => {
 export async function perbaruiSihka(env, kini = Date.now()) {
   const detik = Math.floor(kini / 1000);
   await perbaruiResmi(env, kini).catch(e => console.error("sungai resmi", e?.message));   // DSDA DKI + SIPANTAU Tangerang: berdiri sendiri, tidak pernah melempar; SIHKA mati tidak menahannya
-  let teks; try { teks = await tarik(); } catch (e) {
-    await env.DB.prepare("UPDATE cuaca_sumber SET isi = json_set(coalesce(isi, '{}'), '$.galat', ?) WHERE kunci = 'sihka'").bind(e.message).run().catch(() => {});
+  let teks, via; try { ({teks, via} = await tarik(env)); } catch (e) {
+    await env.DB.prepare("UPDATE cuaca_sumber SET isi = json_set(coalesce(isi, '{}'), '$.galat', ?) WHERE kunci = 'sihka'").bind(galatTeks(e)).run().catch(() => {});
     await bangunStatus(env, kini);
-    return {galat: e.message};
+    return {galat: galatTeks(e)};
   }
   await panenHujan(env, teks, kini).catch(e => console.error("hujan", e?.message));   // satu unduhan dipakai bersama; gagal hujan tidak menahan sungai
   if (!(await env.DB.prepare("SELECT 1 FROM sihka_pos WHERE instr(pos, ':') = 0 LIMIT 1").first())) await env.DB.prepare(SQL_POS).bind(teks, detik).run();   // pertama kali: metadata dulu (SQL_BACA hanya menerima pos terdaftar)
   const baru = (await env.DB.prepare(SQL_BACA).bind(teks, detik).run()).meta.changes;
   await env.DB.prepare("INSERT INTO cuaca_sumber (kunci, isi, dibuat) VALUES ('sihka', ?, ?) ON CONFLICT(kunci) DO UPDATE SET isi = excluded.isi, dibuat = excluded.dibuat")
-    .bind(JSON.stringify({ok: kini, baru, galat: null, dibaca: teks.length}), kini).run();
+    .bind(JSON.stringify({ok: kini, baru, galat: null, dibaca: teks.length, via}), kini).run();
   await bangunStatus(env, kini);   // sesudah stempel sehat, supaya `ok` di status = tarikan ini
-  return {baru, dibaca: teks.length};
+  return {baru, dibaca: teks.length, via};
 }
 
-/* tiap 5 menit di luar menit 23 (menit 23 sudah lewat perbaruiSihka): hanya hujan. Gagal = tak ada yang berubah. */
+/* tiap 10 menit di luar menit 23 (menit 23 sudah lewat perbaruiSihka): hanya hujan. Gagal = tak ada yang berubah. */
 export async function perbaruiHujan(env, kini = Date.now()) {
-  let teks; try { teks = await tarik(); } catch (e) { return {galat: e.message}; }
+  let teks; try { ({teks} = await tarik(env)); } catch (e) { return {galat: galatTeks(e)}; }
   return panenHujan(env, teks, kini);
 }
 
 /* harian: metadata pos, dasar historis, buang bacaan > 180 hari dan pos tak terlihat > 30 hari, lalu status disegarkan. Tarikan sendiri; gagal = tak ada yang berubah. */
 export async function dasarSihka(env, kini = Date.now()) {
   const detik = Math.floor(kini / 1000);
-  let teks; try { teks = await tarik(); } catch (e) { return {galat: e.message}; }
+  let teks; try { ({teks} = await tarik(env)); } catch (e) { return {galat: galatTeks(e)}; }
   await env.DB.prepare(SQL_POS).bind(teks, detik).run();
   await env.DB.prepare(SQL_DASAR).bind(detik).run();
   // tanpa pindai penuh: seek PK per pos terdaftar; bacaan pos yang akan dibuang dihapus dulu (SQL_BACA hanya menerima pos terdaftar, jadi tak ada yatim)
@@ -191,10 +208,14 @@ export async function ruteSihka(req, env, ctx, url) {
 async function riwayatPos(req, env, ctx, url) {
   if (req.method !== "GET" && req.method !== "HEAD") return gagal(405, "hanya GET dan HEAD", {allow: "GET, HEAD"});
   let id; try { id = decodeURIComponent(url.pathname.slice(JALUR_POS.length)); } catch (e) { return gagal(404, "pos tidak dikenal"); }
-  if (!id || id.length > 40 || id.includes("/")) return gagal(404, "pos tidak dikenal");
-  const r = await cacheTepi(new Request(url.origin + JALUR_POS + encodeURIComponent(id)), ctx, 600, async () => {
+  if (!/^[\w:.-]{1,40}$/.test(id)) return gagal(404, "pos tidak dikenal");   // bentuk id sebelum menyentuh D1
+  const kunci = new Request(url.origin + JALUR_POS + encodeURIComponent(id));
+  const r = await cacheTepi(kunci, ctx, 600, async () => {
     let isi; try { const kini = Date.now(); isi = (await env.DB.prepare(SQL_RIWAYAT).bind(id, Math.floor(kini / 1000), kini).first())?.isi; } catch (e) { console.error("sihka pos", e?.message); return gagal(503, "sungai terukur belum siap"); }
-    return isi ? new Response(isi, {headers: {"content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff"}}) : gagal(404, "pos tidak dikenal");
+    if (isi) return new Response(isi, {headers: {"content-type": "application/json; charset=utf-8", "x-content-type-options": "nosniff"}});
+    const tak = gagal(404, "pos tidak dikenal", {"cache-control": "public, max-age=60"});   // 404 pos tak dikenal ikut di-cache tepi 60 dtk (cacheTepi hanya menyimpan 200): id acak tak menembus D1 berulang
+    const c = globalThis.caches?.default; if (c) ctx?.waitUntil?.(c.put(kunci, tak.clone()).catch(() => {}));
+    return tak;
   });
   return req.method === "HEAD" ? new Response(null, {status: r.status, headers: r.headers}) : r;
 }

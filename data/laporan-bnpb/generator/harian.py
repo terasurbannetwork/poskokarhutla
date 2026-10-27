@@ -497,7 +497,7 @@ class Deck:
         for n, lab in ada:
             if n: J += [H(f'{n} provinsi'), P(f' {lab}, ')]
         if t['kejadian_aktif']: J += [H(f0(t['kejadian_aktif'])), P(' wilayah Siaga (prakiraan), ')]
-        if t['rob']: J += [H(f0(t['rob'])), P(' titik rob Waspada atau lebih, ')]
+        if t['rob']: J += [H(f0(t['rob'])), P(' titik rob Waspada+, ')]
         if len(J) == 1: J += [P('tidak ada provinsi Siaga atau Awas, ')]
         J[-1] = (J[-1][0].rstrip(', '), J[-1][1], True)
         return J
@@ -551,7 +551,7 @@ class Deck:
                 y = 4160520 + i * 228600; nm, w, tint, ik = ST[r['lv']]; d = dt.date.fromisoformat(r['hari'])
                 o += s.tx(QX + 164592, y, 2300000, 182880, [r['kec']], sz=760, an='ctr', wrap='none') + s.pil(QX + 2750000, y + 9144, nm, tint, w, ik, sz=700, h=164592)[0]
                 o += s.tx(QX + 3500000, y, 570000, 182880, [f'{d.day} {BULAN[d.month - 1][:3]}'], sz=760, c=TEKS, al='r', an='ctr', wrap='none')
-        o += s.tx(QX, 6080760, QW, 274320, [f'Sumber: Centurisk97, model banjir dan rob, data {tgl_id(dt.date.fromisoformat(B["hari"]))}'], sz=650, c=ABU, an='ctr')
+        o += s.tx(QX, 6080760, QW, 274320, [f'Sumber: Open-Meteo, GloFAS, InaRISK, BMKG, olahan Centurisk97, data {tgl_id(dt.date.fromisoformat(B["hari"]))}'], sz=650, c=ABU, an='ctr')
         return o
 
     # ---------------------------------------------------------- rakit

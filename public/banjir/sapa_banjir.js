@@ -52,7 +52,7 @@
     const awas = [
       h.ev.length && kartu("tetes", "#1d4e89", "Wilayah Siaga (prakiraan)", `<b>${fmt(h.ev.length)}</b> gugus kecamatan berstatus siaga atau lebih${h.baru.length ? `, <b>${fmt(h.baru.length)}</b> baru sejak ${tgl(kemarin(t0))}` : ""}`),
       h.sungai.length && kartu("sungai", "#1d4e89", "Debit sungai tinggi", `<b>${fmt(h.sungai.length)}</b> titik sungai melewati debit banjir 5 tahunan atau lebih`),
-      h.rob.length && kartu("hujan", "#2b8c86", "Pasang laut tinggi", `<b>${fmt(h.rob.length)}</b> titik pantai di atas persentil 99 muka laut`),
+      h.rob.length && kartu("hujan", "#2b8c86", "Pasang laut tinggi", `<b>${fmt(h.rob.length)}</b> titik rob Siaga, di atas persentil 99 muka laut`),
       ...h.bmkg.slice(0, 2).map(x => kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event)))].filter(Boolean).join("");
     return `<div class="sp-hd"><div style="flex:1;min-width:0"><span class="sp-eyh">${ik("tetes")}${basi ? `Situasi banjir, data <span translate="no">${tgl(t0)}</span>` : "Situasi banjir hari ini"}</span>
         <h3 id="spJudul"><b>${fmt(h.total)}</b> kecamatan berstatus banjir${arah}</h3>

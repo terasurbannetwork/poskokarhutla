@@ -9,7 +9,7 @@ Keluaran: kepala bersama.py, kolom ["lon","lat","jenis","status"], baris; jenis 
 Keyakinan "resmi" untuk letak titik menurut BRGM (belum diverifikasi lapangan; KONDISI sekat tidak diketahui). zona.py memakai hitung_3km()
 untuk kolom brgm_3km per kompleks. Python 3.12 stdlib.
 """
-import json, math, os, sys, urllib.request
+import json, math, os, subprocess, sys
 from datetime import datetime, timedelta, timezone
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -32,8 +32,9 @@ def wfs(lap, bbox):
     w, s, e, n = bbox
     u = (f"{WFS}?service=WFS&version=1.0.0&request=GetFeature&typeName=prims:{lap}&outputFormat=application/json"
          f"&bbox={w:.3f},{s:.3f},{e:.3f},{n:.3f}")
-    rq = urllib.request.Request(u, headers={"User-Agent": "poskokarhutla-sippa/1.0"})
-    return json.load(urllib.request.urlopen(rq, timeout=300))["features"]
+    # curl: urllib dengan UA bawaan ditolak PRIMS (403)
+    r = subprocess.run(["curl", "-sf", "-m", "300", "--retry", "2", "-A", "poskokarhutla-sippa/1.0", u], capture_output=True, check=True)
+    return json.loads(r.stdout)["features"]
 
 
 def titik_dari(feat, lap):

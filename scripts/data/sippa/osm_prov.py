@@ -15,7 +15,7 @@ Kelas air: TAWAR = waterway river/canal/stream/ditch/drain + tepi natural=water/
 Jarak garis lurus ke titik terpadat (<= 150 m) pada garis OSM, dibatasi 16 km (kolom *_terpotong). Keyakinan: terverifikasi (data OSM), bukan survei.
 """
 import csv, glob, json, math, os, sys, time
-import urllib.parse, urllib.request
+import subprocess
 from concurrent.futures import ThreadPoolExecutor
 
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
@@ -91,6 +91,14 @@ def ubin_prov(komp):
 
 
 # ---------- tarik ----------
+def curl(url, data=None, t=400):
+    """curl (bukan urllib: Python lokal 3.9 sering gagal jabat tangan TLS ke Overpass). Gagal = CalledProcessError."""
+    cmd = ["curl", "-sf", "-m", str(t), "-A", "poskokarhutla-sippa/1.0 (pinkatitan@gmail.com)"]
+    if data:
+        cmd += ["--data-urlencode", "data=" + data]
+    return subprocess.run(cmd + [url], capture_output=True, check=True).stdout
+
+
 def kueri(la, lo, mode):
     b = f"({la*UBIN-PAD},{lo*UBIN-PAD},{la*UBIN+UBIN+PAD},{lo*UBIN+UBIN+PAD})"
     air = (f'relation["natural"="water"]{b};relation["landuse"="reservoir"]{b};way["natural"="coastline"]{b};'
@@ -115,9 +123,7 @@ def tarik(prov):
         for n in range(6):
             host = OVP[n % len(OVP)]
             try:
-                rq = urllib.request.Request(host, urllib.parse.urlencode({"data": q}).encode(),
-                                            {"User-Agent": "poskokarhutla-sippa/1.0 (pinkatitan@gmail.com)", "Accept": "*/*"})
-                dat = urllib.request.urlopen(rq, timeout=400).read()
+                dat = curl(host, q)
                 json.loads(dat)
                 with open(fn + ".tmp", "wb") as h:
                     h.write(dat)
@@ -130,7 +136,7 @@ def tarik(prov):
 
     ub = ubin_prov(komp)
     print(prov, mode, len(ub), "ubin", flush=True)
-    with ThreadPoolExecutor(2) as ex:
+    with ThreadPoolExecutor(1) as ex:
         for t, st in ex.map(satu, ub):
             print(prov, t, st, flush=True)
 
