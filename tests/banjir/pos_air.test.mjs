@@ -334,3 +334,89 @@ test("batch tampilan: prakiraan 4 hari sebaris, tabel prakiraan pil+persen sebar
   assert.match(pk, /function tabelBahaya\(bh\)/); assert.match(pk, /<th>Bahaya<\/th><th>Indeks<\/th><th>Kelas<\/th>/); assert.match(pk, /title="Sampel raster InaRISK BNPB di titik tengah kecamatan\."/);
   assert.ok(!/<p class="fnd">Sampel raster InaRISK/.test(pk), "kalimat sampel pindah ke tooltip");
 });
+
+test("kartu hover pos dan pasut: nama, sub, badan angka+pil, tanpa label generik di kepala; tabel puncak empat kolom berkepala gelap", () => {
+  const css = fs.readFileSync("public/banjir/pos_air.css", "utf8");
+  const i = src.indexOf("  kartuHover(x) {"), j = src.indexOf("kartuHoverPasut(s) {"), h = src.slice(i, j);
+  assert.match(h, /class="pa-hv-n"/); assert.match(h, /class="pa-hv-s"/); assert.match(h, /class="pa-hv-b"/); assert.ok(!/Pos tinggi air/.test(h), "tanpa label Pos tinggi air di kartu hover"); assert.ok(!/PI\.kartuTip/.test(h));
+  assert.match(src, /peta\.on\("mousemove", "pasut"/); assert.match(css, /\.pa-hv\{width:260px/);
+  assert.match(src, /<th>Jenis<\/th><th>Hari<\/th><th>Jam<\/th><th>Tinggi<\/th>/);
+});
+
+test("laju naik cm/jam: dari d3 per 3 jam, satuan dinormalkan, pos mati tanpa laju", () => {
+  const p = (d3, ex = {}) => ({id: "a", x: 0, y: 0, v: 100, satuan: "cm", status: "biasa", d3, ...ex});
+  assert.equal(P.lajuD3(p(72)), 24); assert.equal(P.lajuD3(p(.6, {satuan: "m"})), 20); assert.equal(P.lajuD3(p(null)), null);
+  assert.equal(P.lajuD3(p(30, {status: "lama"})), null); assert.equal(P.lajuD3(p(30, {satuan: "m3/s"})), null);
+  assert.equal(P.lajuTeks(24), "+24 cm/jam"); assert.equal(P.lajuTeks(-5), "−5 cm/jam"); assert.equal(P.lajuTeks(.2), "tetap"); assert.equal(P.lajuTeks(null), "–");
+  assert.equal(P.lajuTeks(7.4), "+7,4 cm/jam", "koma desimal Indonesia");
+});
+
+test("tingkat cincin laju: 0 di bawah 3, 1 sampai 10, 2 sampai 20, 3 di atas 20; turun dan null tanpa cincin", () => {
+  const t = P.lajuTingkat;
+  assert.deepEqual([null, undefined, -30, 0, 2.9].map(t), [0, 0, 0, 0, 0]);
+  assert.deepEqual([3, 10, 10.1, 20, 20.1, 80].map(t), [1, 1, 2, 2, 3, 3]);
+  const g = (d3, ex) => P.geojson([{id: "a", nama: "A", x: 0, y: 0, v: 50, satuan: "cm", status: "biasa", status_resmi: "Normal", d3, ...ex}]).features[0].properties;
+  assert.equal(g(75).l, 3); assert.equal(g(75).u, 0, "naik cepat menang tabrakan label");
+  assert.equal(g(0).l, 0); assert.equal(g(-30).l, 0); assert.equal(g(75, {status: "macet"}).l, 0);
+  /* Normal naik cepat harus lebih tebal daripada Siaga 3 yang diam: Siaga 3 diam hanya cincin denyut 2 px, tingkat 2 ke atas 4,5 px */
+  assert.equal(g(0, {status_resmi: "Siaga 3"}).l, 0); assert.equal(g(0, {status_resmi: "Siaga 3"}).p, 1);
+  assert.match(src, /"circle-stroke-width": \["match", \["get", "l"\], 3, 7, 2, 4\.5, 2\.5\]/);
+  assert.match(src, /id: "pos-laju", type: "circle", source: "pos"/, "lapisan circle berbasis properti, bukan DOM per pin");
+  assert.ok(P.WARNA_LAJU[3] === "#c9503a" && P.WARNA_LAJU[1] !== P.WARNA_LAJU[3]);
+});
+
+test("laju dari riwayat jam-an: bacaan paling awal dalam 3 jam, minimal selisih 1 jam", () => {
+  const H = 3600, t0 = 1e9;
+  assert.deepEqual(plain(P.lajuRiwayat([t0, t0 + H, t0 + 2 * H, t0 + 3 * H], [100, 120, 150, 190])), {laju: 30, jam: 3});
+  assert.deepEqual(plain(P.lajuRiwayat([t0, t0 + 5 * H, t0 + 6 * H], [10, 40, 52])), {laju: 12, jam: 1}, "bacaan lebih tua dari 3 jam diabaikan");
+  assert.equal(P.lajuRiwayat([t0, t0 + 600], [1, 5]), null, "kurang dari 1 jam");
+  assert.equal(P.lajuRiwayat([t0], [1]), null); assert.equal(P.lajuRiwayat([t0, t0 + H], [1]), null);
+  assert.equal(P.lajuRiwayat([t0, t0 + H, t0 + 2 * H], [90, 60, 30]).laju, -30);
+});
+
+const HH = JSON.parse(fs.readFileSync("public/banjir/data/hulu_hilir.json", "utf8"));
+const wib = s => Date.parse(s + ":00+07:00") / 1000;
+const posC = (id, ex) => ({id, nama: id, x: 0, y: 0, v: 50, satuan: "cm", status: "biasa", status_resmi: "Normal", d3: 0, t: wib("2026-10-28T17:00"), ...ex});
+
+test("waktu tiba hilir = waktu baca hulu + jeda tengah, dibulatkan jam; label tanpa presisi palsu", () => {
+  const now = wib("2026-10-28T17:30"), pos = [posC("d:116", {status_resmi: "Siaga 2", status: "naik_di_atas_biasa"}), posC("d:118"), posC("d:122")];
+  const E = P.hituHuluHilir(HH, pos, now), dep = E.pos.get("d:118"), mgr = E.pos.get("d:122");
+  assert.equal(dep.tiba, wib("2026-10-28T19:00")); assert.equal(mgr.tiba, wib("2026-10-29T02:00"), "Katulampa 17.00 + 9 jam");
+  assert.equal(P.labelTiba(mgr), "± 9 jam tiba di Manggarai"); assert.match(P.labelTiba(dep), /^± 2 jam tiba di Depok$/);
+  assert.equal(P.kalimatTiba(mgr, now), "Air dari hulu tiba sekitar pukul 02.00 besok"); assert.equal(P.tibaTeks(dep.tiba, now), "pukul 19.00");
+  assert.equal(mgr.dari, "d:116"); assert.equal(mgr.dariNama, "Katulampa"); assert.deepEqual(plain(mgr.jam), {min: 6, tengah: 9, maks: 12});
+  assert.deepEqual(plain(mgr.segmen), ["d:118", "d:122"]); assert.ok(mgr.hipotesis);
+  assert.ok(!/[·—]/.test(P.labelTiba(mgr)));
+});
+
+test("hitung mundur: hulu tenang tanpa perkiraan; Depok Siaga memajukan Manggarai; kiriman lama dibuang; hulu mati diabaikan", () => {
+  const now = wib("2026-10-28T17:30");
+  assert.equal(P.hituHuluHilir(HH, [posC("d:116"), posC("d:118"), posC("d:122")], now).ruas.length, 0);
+  const dep = P.hituHuluHilir(HH, [posC("d:116", {status_resmi: "Siaga 3", status: "biasa", t: wib("2026-10-28T17:00")}), posC("d:118", {status_resmi: "Siaga 3", t: wib("2026-10-28T17:00")}), posC("d:122")], now);
+  assert.equal(dep.pos.get("d:122").dari, "d:118", "pos hulu terdekat yang aktif dipakai"); assert.equal(dep.pos.get("d:122").tiba, wib("2026-10-29T00:00"));
+  assert.equal(P.hituHuluHilir(HH, [posC("d:116", {status_resmi: "Siaga 1", t: wib("2026-10-27T00:00")}), posC("d:118"), posC("d:122")], now).ruas.length, 0, "tiba lebih dari 6 jam lalu");
+  assert.equal(P.hituHuluHilir(HH, [posC("d:116", {status_resmi: "Siaga 1", status: "macet"}), posC("d:118")], now).ruas.length, 0);
+  const cepat = P.hituHuluHilir(HH, [posC("d:116", {d3: 90}), posC("d:118")], now);   /* Normal tetapi 30 cm/jam */
+  assert.ok(cepat.pos.has("d:118"), "naik cepat memicu walau Normal");
+  const lewat = P.hituHuluHilir(HH, [posC("d:116", {status_resmi: "Siaga 2", t: wib("2026-10-28T10:00")}), posC("d:118")], now);
+  assert.equal(P.labelTiba(lewat.pos.get("d:118")), "Air dari hulu semestinya sudah tiba di Depok");
+  assert.equal(P.tibaTeks(wib("2026-10-30T02:00"), now), "pukul 02.00, Jumat");
+  const k = P.kotakRuas([106.83, -6.63], [106.84, -6.4]); assert.deepEqual(plain(k[0]), plain(k.at(-1))); assert.equal(k.length, 5);
+});
+
+test("hulu_hilir.json: tiap jeda punya sumber tertulis, jeda terurut, rantai nyambung, hipotesis menyala bila belum teruji", () => {
+  assert.equal(HH.hipotesis, true);
+  for (const sg of HH.sungai) {
+    assert.ok(sg.nama && sg.nama_peta.length && sg.rantai.length >= 2);
+    assert.equal(sg.ruas.length, sg.rantai.length - 1);
+    sg.ruas.forEach((r, i) => { assert.equal(r.dari, sg.rantai[i].pos); assert.equal(r.ke, sg.rantai[i + 1].pos);
+      assert.ok(r.sumber.length >= 1 && r.sumber.every(x => x.length > 20), `sumber ${r.dari}`); assert.ok(r.jam.min <= r.jam.tengah && r.jam.tengah <= r.jam.maks);
+      assert.equal(typeof r.teruji, "boolean"); if (!r.teruji) assert.equal(HH.hipotesis, true); });
+    assert.ok(sg.total.sumber.length >= 1);
+    const jml = sg.ruas.reduce((a, r) => a + r.jam.tengah, 0); assert.ok(jml >= sg.total.jam.min && jml <= sg.total.jam.maks, "jumlah ruas jatuh dalam rentang literatur");
+    assert.ok(sg.uji_replay.pengamatan.length >= 1 && sg.uji_replay.kesimpulan);
+  }
+  assert.ok(!/[·—]/.test(JSON.stringify(HH)));
+  assert.match(src, /alir-hulu"[^}]*"line-dasharray"/, "ruas hulu memakai pola dash yang sama"); assert.match(src, /pa-panah/);
+  assert.match(fs.readFileSync("public/banjir/pos_air.css", "utf8"), /\.pill\.pa-hip\{/);
+});

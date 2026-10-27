@@ -55,3 +55,12 @@ table.tb3 thead th{background:oklch(25.5% .075 256);color:#fff;text-align:center
 .pa-ikbulat{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:50%;background:#2b8c86;color:#fff}
 .pa-pk td{padding:4px 3px}
 .laci .grid.g4.pa-4 .kpi b{font-size:15px;white-space:nowrap}
+/* kartu hover pos dan pasut (#tip.kartu): nama, sub, badan angka+pil, batang, selisih, jam */
+.pa-hv{width:260px;box-sizing:border-box;padding:10px 12px 9px;display:grid;gap:5px}
+.pa-hv-n{font-size:13.5px;font-weight:800;line-height:1.25;overflow-wrap:anywhere}.pa-hv-s{font-size:10.5px;color:var(--ink2);margin-top:-3px}
+.pa-hv-b{display:flex;align-items:center;justify-content:space-between;gap:8px}.pa-hv-a{font-size:12px;color:var(--ink2);white-space:nowrap}.pa-hv-a b{font-size:24px;font-weight:800;color:inherit;font-variant-numeric:tabular-nums}
+.pa-hv-ba{display:block;position:relative;height:5px;border-radius:3px;background:#d9e0e8;margin:3px 0 1px}
+.pa-hv-k{font-size:11px}.pa-hv-j{font-size:10px;color:var(--ink2)}
+/* laju naik dan hitung mundur hulu ke hilir: baris dua kotak, pil hipotesis amber */
+.laci .grid.pa-2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px}.laci .grid.pa-2 .kpi{padding:8px 6px;min-width:0}.laci .grid.pa-2 .kpi b{font-size:15px;white-space:nowrap}
+.pill.pa-hip{background:oklch(93% .06 85);color:oklch(40% .1 70);text-transform:none;letter-spacing:0;font-size:11px;padding:1px 8px;vertical-align:1px}
