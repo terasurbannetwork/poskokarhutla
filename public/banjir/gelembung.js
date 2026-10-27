@@ -117,7 +117,7 @@
       const stat = [["bel", fmt(n), "kec. Siaga atau Awas", n ? W[a.n[3] ? 3 : 2] : "#8a94a6", n > 0], ["peringatan", baris?.kejadian_aktif == null ? "–" : fmt(baris.kejadian_aktif), "Wilayah Siaga", W[2]],
         ["hujan", baris?.hujan3_mm == null ? "–" : fmt(Math.round(baris.hujan3_mm)) + " mm", "hujan 3 hari", "#3f7fb8"],
         ps ? ["sungai", fmt(ps.naik), `pos Siaga${ps.mati ? `, ${fmt(ps.mati)} tak kirim` : ""}`, ps.naik ? WARNA_LV[2] : "#3f7fb8", ps.naik > 0] : ["ombak", rob == null ? "–" : fmt(rob), "titik rob", "#2b8c86"]];
-      const h = PI.kartuTip({judul: esc(prov ? namaProv(kunci) : p[1]), kepala: lambang(p[0], prov ? null : p[1]), stat}) + (prov ? this.grafik(kunci) : "");
+      const h = PI.kartuTip({judul: esc(prov ? namaProv(kunci) : p[1]), kepala: lambang(p[0], prov ? null : p[1]), stat}).replace("tp-gr tp-satu", "tp-gr tp-kisi") + (prov ? this.grafik(kunci) : "");   // empat angka 2x2, satu baris terlalu sesak
       this.cache.set(ck, h); return h; },
     /* klik: kartu kecil berlambang di titik tengah wilayah */
     kartu(kunci, ll) {
@@ -127,8 +127,9 @@
         <p class="gel-n"><b style="color:${n ? WARNA_LV[a.n[3] ? 3 : 2] : "inherit"}">${fmt(n)}</b> kecamatan Siaga atau Awas</p>
         <div class="gel-aksi"><button class="btn" data-g="zoom">${ik('<circle cx="11" cy="11" r="7"/><path d="m20 20-4-4M11 8v6M8 11h6"/>')}Zoom</button><button class="btn sec" data-g="rinci">${ik('<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>')}Rincian</button></div></div>`).addTo(peta);
       pop.getElement().addEventListener("click", e => { const b = e.target.closest("[data-g]"); if (!b) return; pop.remove();
-        if (b.dataset.g === "zoom") nanti(() => turun(kunci));
-        else nanti(() => { const g = prov && S.geo.prov.features.find(x => x.properties.kode === kunci)?.geometry; return prov && PosUkur.menyala() && PosUkur.D ? PosUkur.provinsi(kunci, g) : Analisa.wilayah(kunci); }); }); },
+        /* Zoom = masuk wilayah + laci samping (pos tinggi air provinsi, atau analisa wilayah); Rincian = pop-up riwayat ala karhutla (Tren.rinci) */
+        if (b.dataset.g === "zoom") nanti(() => { turun(kunci); const g = prov && S.geo.prov.features.find(x => x.properties.kode === kunci)?.geometry; return prov && PosUkur.menyala() && PosUkur.D ? PosUkur.provinsi(kunci, g) : Analisa.wilayah(kunci); });
+        else nanti(() => Riwayat.muat().then(() => Riwayat.buka(kunci)).catch(() => Analisa.wilayah(kunci))); }); },
     tutup() { this._pop?.remove(); this._pop = null; },
     /* dipanggil peta.on("click") sebelum poligon: hanya gelembung yang membuka kartu Zoom/Rincian; klik provinsi (poligon) tetap membuka laci pos langsung (keputusan pemilik, peta.js); true bila ditangani */
     klik(e) {
