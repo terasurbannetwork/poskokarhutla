@@ -6,6 +6,13 @@ Satuan: kecamatan DKI (44) x hari musim hujan (Nov-Apr), 2017-2025. Label: lapor
 Hujan jam: ERA5 0,25 derajat (Open-Meteo archive, zona Asia/Bangkok = WIB) per sel terdekat tiap kecamatan. BUKAN ERA5-Land:
 precipitation ERA5-Land dari Open-Meteo kosong semua (null) untuk Jakarta per 27 Okt 2026, juga di cache J1 hujan_jam/*.json.
 Fitur hari: d total harian, m1 maks 1 jam, m3 maks 3 jam beruntun (dalam hari), a7 jumlah d tujuh hari sebelumnya.
+SUMBER HUJAN (keputusan pemilik 27 Okt 2026, bawaan `gsmap`): d, a7, h3 (jadi juga ambang harian kota dan status.py) dari
+GSMaP harian gauge v8 0,1 derajat (data/banjir/genangan/gsmap_harian.json, dipanen gsmap.py di Actions) pada SEL TERDEKAT
+ke titik pusat kecamatan: sel 0,1 derajat (~11 km) sebanding kecamatan (3-10 km), rata-rata sel yang berpotongan hampir selalu
+satu sampai dua sel yang sama, dan aturan ini identik dengan ERA5 (sel terdekat) sehingga yang berubah hanya sumbernya.
+m1, m3 (maks 1 dan 3 jam) tetap ERA5 jam, karena GSMaP harian tak punya resolusi jam; m1 bisa melebihi d GSMaP, dibiarkan.
+`era5` tetap bisa dipilih (`latih era5`). Sumber masuk param, jadi masuk sidik. `latih gsmap` menolak jalan bila berkas
+GSMaP belum ada/belum lengkap (tidak pernah diam-diam jatuh ke ERA5).
 
 Model: logit P = a0 + delta_kec + sum b_j z_j, z = ln(1+fitur) distandarkan, b_j >= 0 (monotonik naik terhadap tiap hujan).
 delta_kec menyusut ke kota (ridge lam): kecamatan sedikit hari positif ikut nilai kota. Parameter bebas: a0, 4 b, lam
@@ -18,13 +25,14 @@ Alur (satu arah, tiap tahap tidak melihat yang sesudahnya):
   buka    verifikasi sidik, buka uji 2024-2025 SEKALI (tolak kalau state sudah ber-`dibuka`), vonis menurut kriteria
   uji     self-check stdlib
 
-Pakai:  python3 scripts/banjir/genangan/pemicu.py ambil | latih | buka | uji
+Pakai:  python3 scripts/banjir/genangan/pemicu.py ambil | latih [gsmap|era5] | buka | uji
 """
 import datetime as dt, hashlib, json, math, os, random, sys, time, urllib.parse
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from bersama import AKAR, MENTAH, KecDKI, ambil_json, baca, simpan  # noqa: E402
 from bahaya import sentroid  # noqa: E402
+import gsmap  # noqa: E402
 from status import level_banjir  # noqa: E402
 from uji_balik import skor  # noqa: E402
 
@@ -45,6 +53,12 @@ GRID_D = (10, 20, 30, 40, 60, 80, 100, 130, 160, 200, 250, 300)
 GRID_M1 = (5, 10, 15, 20, 30, 40, 60, 80, 120)
 ULANG_CI, ULANG_PITA = 1000, 60
 LABEL = "Hipotesis, belum lolos uji"
+SUMBER = ("gsmap", "era5")
+HILANG_MAKS = 0.01      # bagian hari musim GSMaP yang boleh belum ada; baris tanpa hujan lengkap d-7..d+1 dibuang tabel()
+TEKS_SUMBER = {
+    "era5": "ERA5 0,25 derajat jam (Open-Meteo archive); ERA5-Land precipitation kosong",
+    "gsmap": "GSMaP v8 gauge harian 0,1 derajat (JAXA), sel terdekat ke titik pusat kecamatan, untuk d, a7, h3 dan ambang harian kota; "
+             "maks 1 jam dan 3 jam dari ERA5 0,25 derajat jam (Open-Meteo archive)"}
 FITUR = ("d", "m1", "m3", "a7")
 
 
@@ -125,6 +139,46 @@ def muat_hujan():
     return harian(jam)
 
 
+def sel_gsmap(g, la, lo):
+    """-> (indeks, lat, lon) sel GSMaP terdekat ke titik; menolak titik di luar kotak panen."""
+    gl, gb = g["meta"]["grid"]["lon"], g["meta"]["grid"]["lat"]
+    i, j = (min(range(len(a)), key=lambda x: abs(a[x] - v)) for a, v in ((gl, lo), (gb, la)))
+    assert abs(gl[i] - lo) <= 0.0501 and abs(gb[j] - la) <= 0.0501, f"titik {la},{lo} di luar kotak GSMaP"
+    return j * len(gl) + i, gb[j], gl[i]
+
+
+def sidik_gsmap(g, tahun_maks):
+    """sha256 isi GSMaP hari <= akhir tahun_maks (+ grid): menahan data latih tetap, walau hari 2024+ ditambah sesudahnya."""
+    isi = {"grid": g["meta"]["grid"], "hari": {t: v for t, v in sorted(g["hari"].items()) if int(t[:4]) <= tahun_maks}}
+    return hashlib.sha256(json.dumps(isi, sort_keys=True).encode()).hexdigest()
+
+
+def siapkan_hujan(sumber, kecs, era5, tahun_maks, dari=dt.date(2016, 11, 1), berkas=gsmap.KELUAR_HARIAN):
+    """-> ({kunci kec: {tanggal: (d, m1, m3)}}, info). Tahun > tahun_maks TIDAK dimuat dari GSMaP. Keluar bila GSMaP belum lengkap."""
+    if sumber not in SUMBER:
+        sys.exit(f"sumber hujan {sumber!r} tidak dikenal: {SUMBER}")
+    if sumber == "era5":
+        return {k: era5[sel_era5(la, lo)] for k, la, lo in kecs}, {}
+    g, pesan = gsmap.muat_harian(berkas)
+    if not g:
+        sys.exit("sumber GSMaP tidak bisa dipakai, tidak jatuh ke ERA5: " + pesan)
+    perlu = [d.isoformat() for d in gsmap.hari_musim(dari, dt.date(tahun_maks, 12, 31))]
+    kurang = [t for t in perlu if t not in g["hari"]]
+    if len(kurang) > HILANG_MAKS * len(perlu):
+        sys.exit(f"GSMaP belum lengkap: {len(kurang)} dari {len(perlu)} hari musim {perlu[0]}..{perlu[-1]} belum ada "
+                 f"(batas {HILANG_MAKS:.0%}); contoh {kurang[:3]}. Jalankan gsmap_musim.yml dulu.")
+    hujan, sel = {}, {}
+    for k, la, lo in kecs:
+        idx, sla, slo = sel_gsmap(g, la, lo)
+        sel[k] = [sla, slo]
+        e = era5[sel_era5(la, lo)]
+        hujan[k] = {t: (v[idx], e[t][1], e[t][2]) for t, v in g["hari"].items()
+                    if int(t[:4]) <= tahun_maks and v[idx] is not None and t in e}
+    return hujan, {"sha256_data_latih": sidik_gsmap(g, VAL), "sel": sel, "hari_hilang": len(kurang), "hari_diminta": len(perlu),
+                   "produk": {p: sum(1 for x in g["produk"].values() if x == p) for p in sorted(set(g["produk"].values()))},
+                   "jendela_utc": g["meta"].get("jendela_utc"), "versi": g["meta"].get("versi")}
+
+
 # ------------------------------------------------------------------ tabel kecamatan-hari
 def label_laporan():
     """{(kab|kec, tanggal): (n_laporan, kedalaman_maks_cm atau 0)} hanya laporan di dalam DKI."""
@@ -143,7 +197,7 @@ def tabel(kecs, hujan, lap, tahun_maks, tahun_min=LATIH[0]):
     """Baris kecamatan-hari musim hujan tahun_min..tahun_maks yang punya hujan d-7..d+1. Tahun > tahun_maks TIDAK dimuat."""
     baris = []
     for ki, (kunci, la, lo) in enumerate(kecs):
-        h = hujan[sel_era5(la, lo)]
+        h = hujan[kunci]
         for tahun in range(tahun_min, tahun_maks + 1):
             t = dt.date(tahun, 1, 1)
             while t.year == tahun:
@@ -392,11 +446,12 @@ def monotonik(p):
 
 
 # ------------------------------------------------------------------ latih
-def latih():
+def latih(sumber="gsmap"):
     kriteria_ok()
     if (baca(STATE) or {}).get("dibuka"):
         sys.exit("uji sudah dibuka; latih ulang tidak diizinkan")
-    kecs, hujan, lap = kecamatan(), muat_hujan(), label_laporan()
+    kecs, lap = kecamatan(), label_laporan()
+    hujan, info = siapkan_hujan(sumber, kecs, muat_hujan(), VAL)
     nk = len(kecs)
     baris = tabel(kecs, hujan, lap, VAL)                      # tahun uji TIDAK dimuat di tahap ini
     assert max(r["y"] for r in baris) <= VAL
@@ -428,7 +483,9 @@ def latih():
     pb = pembanding_fit(baris, n_lap, kecs)
     param = {"versi": VERSI, "n_lap": n_lap, "lam": lam, "potong": potong, "fit": [LATIH[0], VAL], "th": [round(x, 6) for x in m["th"]],
              "dl": [round(x, 6) for x in m["dl"]], "mu": [round(x, 6) for x in m["mu"]], "sd": [round(x, 6) for x in m["sd"]],
-             "pembanding": pb, "sumber_hujan": "ERA5 0,25 derajat jam (Open-Meteo archive); ERA5-Land precipitation kosong"}
+             "pembanding": pb, "sumber": sumber, "sumber_hujan": TEKS_SUMBER[sumber]}
+    if info:
+        param["gsmap"] = info
     m = {"th": param["th"], "dl": param["dl"], "mu": param["mu"], "sd": param["sd"], "lam": lam}
     hs = sidik(param)
     c3, a7 = grid_m3(baris), sorted(r["a7"] for r in baris)[len(baris) // 2]
@@ -466,7 +523,10 @@ def tulis(kecs, m, c3, a7, ban, lat_pos, param, kandidat, validasi, kinerja):
                   "pemilihan_cv": kandidat, "validasi_2023": validasi},
         "kinerja_uji": kinerja,
         "keterbatasan": ["Laporan PetaBencana bias pelapor (2024 berisi laporan jauh lebih banyak); ketiadaan laporan bukan bukti kering.",
-                         "Hujan jam ERA5 0,25 derajat (satu sel menaungi beberapa kecamatan), belum dikoreksi bias; pos hujan DSDA/BMKG belum diminta.",
+                         ("Hujan harian GSMaP 0,1 derajat (sel ~11 km menaungi beberapa kecamatan), hari UTC dipakai sebagai hari WIB (geser 7 jam), "
+                          "maks 1 dan 3 jam dari ERA5 jam (bisa melebihi total harian GSMaP); belum dikoreksi bias; pos hujan DSDA/BMKG belum diminta."
+                          if param.get("sumber") == "gsmap" else
+                          "Hujan jam ERA5 0,25 derajat (satu sel menaungi beberapa kecamatan), belum dikoreksi bias; pos hujan DSDA/BMKG belum diminta."),
                          "Kemiringan kurva dibagi se-kota; kecamatan berbeda lewat intersep terpenyusutan.",
                          "Kepulauan Seribu: sel ERA5 laut."],
         "kec": kec}, )
@@ -483,7 +543,10 @@ def buka(state=STATE, keluar=None):
     if sidik(S["param"]) != S["sidik"]:
         sys.exit("sidik beda: kode pemicu.py, kriteria, atau parameter berubah sejak latih; tolak")
     P = S["param"]
-    kecs, hujan, lap, bahaya = kecamatan(), muat_hujan(), label_laporan(), baca(BAHAYA)
+    kecs, lap, bahaya = kecamatan(), label_laporan(), baca(BAHAYA)
+    hujan, info = siapkan_hujan(P.get("sumber", "era5"), kecs, muat_hujan(), UJI[1])
+    if info and info["sha256_data_latih"] != P["gsmap"]["sha256_data_latih"]:
+        sys.exit("data GSMaP 2016-2023 berubah sejak latih (sha256 beda); tolak")
     nk, n_lap = len(kecs), P["n_lap"]
     uji = tabel(kecs, hujan, lap, UJI[1], UJI[0])
     m = {k: P[k] for k in ("th", "dl", "mu", "sd")}
@@ -528,17 +591,18 @@ def uji():
     # data mainan: hujan menentukan label; hujan dua sel, 3 kecamatan, 2017-2023 (+2024 sebagai jebakan)
     r = random.Random(1)
     kecs = [("A|a", -6.2, 106.8), ("A|b", -6.2, 106.8), ("B|c", -6.3, 106.9)]
-    hujan = {}
+    era5 = {}
     for s in {sel_era5(la, lo) for _, la, lo in kecs}:
         h, t = {}, dt.date(2016, 12, 1)
         while t < dt.date(2026, 2, 1):
             d = r.expovariate(1 / 8)
             h[t.isoformat()] = (d, d * .4, d * .6)
             t += dt.timedelta(days=1)
-        hujan[s] = h
+        era5[s] = h
+    hujan, _ = siapkan_hujan("era5", kecs, era5, 2025)
     lap = {}
     for (k, la, lo) in kecs:
-        for t, v in hujan[sel_era5(la, lo)].items():
+        for t, v in hujan[k].items():
             if v[0] > 25 and r.random() < .8:
                 lap[(k, t)] = (3, 15)
     tb = tabel(kecs, hujan, lap, VAL)
@@ -547,6 +611,36 @@ def uji():
     assert min(m["th"][1:]) >= 0
     for k in range(3):
         assert monotonik(kurva(m, k, grid_m3(tb), 30)), "kurva mainan tidak monotonik"
+    # jalur GSMaP: grid 2x2 (lon 106.8/106.9, lat -6.2/-6.3); nilai sel terdekat = 1,1 x ERA5 d kecamatan
+    G = {"meta": {"grid": {"lon": [106.8, 106.9], "lat": [-6.2, -6.3]}, "jendela_utc": ["0000-2300"], "versi": "v8"}, "hari": {}, "produk": {}}
+    t = dt.date(2016, 11, 1)
+    while t < dt.date(2026, 1, 1):
+        iso = t.isoformat()
+        if iso in hujan["A|a"]:
+            G["hari"][iso] = [hujan["A|a"][iso][0] * 1.1, None, None, hujan["B|c"][iso][0] * 1.1]
+            G["produk"][iso] = "gauge_v8"
+        t += dt.timedelta(days=1)
+    d0 = tempfile.mkdtemp()
+    ada, kurang, tidak = (os.path.join(d0, n) for n in ("ada.json", "kurang.json", "tidak.json"))
+    simpan(ada, G)
+    G2 = {**G, "hari": {k: v for k, v in G["hari"].items() if k[:4] != "2019"}}   # satu tahun hilang -> belum lengkap
+    simpan(kurang, G2)
+    hg, info = siapkan_hujan("gsmap", kecs, era5, 2025, dt.date(2016, 12, 1), ada)
+    t0 = "2018-02-03"
+    assert abs(hg["A|a"][t0][0] - hujan["A|a"][t0][0] * 1.1) < 1e-9 and hg["A|a"][t0][1:] == hujan["A|a"][t0][1:], "d GSMaP, m1/m3 ERA5"
+    assert abs(hg["B|c"][t0][0] - hujan["B|c"][t0][0] * 1.1) < 1e-9 and info["sel"]["B|c"] == [-6.3, 106.9] and info["produk"] == {"gauge_v8": len(G["hari"])}
+    assert max(int(x[:4]) for x in hg["A|a"]) == 2025 and max(int(x[:4]) for x in siapkan_hujan("gsmap", kecs, era5, 2023, dt.date(2016, 12, 1), ada)[0]["A|a"]) == 2023
+    tbg = tabel(kecs, hg, lap, VAL)
+    assert tbg and abs(tbg[10]["d"] - hg[kecs[tbg[10]["k"]][0]][tbg[10]["t"]][0]) < 1e-9, "tabel memakai d GSMaP"
+    assert fit(tbg, 3, 10.0, 3)["th"][1] >= 0
+    for jalur in (tidak, kurang):   # berkas tak ada / tak lengkap: tolak, tidak jatuh ke ERA5
+        try:
+            siapkan_hujan("gsmap", kecs, era5, 2023, dt.date(2016, 12, 1), jalur)
+        except SystemExit as e:
+            assert "GSMaP" in str(e)
+            continue
+        raise AssertionError("GSMaP tak lengkap harus ditolak")
+    assert sidik({"sumber": "gsmap"}) != sidik({"sumber": "era5"})
     # gerbang: buka tanpa sidik harus gagal; sidik yang basi harus gagal
     tmp = os.path.join(tempfile.mkdtemp(), "state.json")
     for isi in (None, {"param": {}}, {"sidik": "salah", "param": {}}):
@@ -574,4 +668,5 @@ def uji():
 
 
 if __name__ == "__main__":
-    {"ambil": ambil, "latih": latih, "buka": buka, "uji": uji}.get(sys.argv[1] if len(sys.argv) > 1 else "uji", uji)()
+    a = sys.argv[1:] or ["uji"]
+    {"ambil": ambil, "latih": lambda: latih(*a[1:2]), "buka": buka, "uji": uji}.get(a[0], uji)()
