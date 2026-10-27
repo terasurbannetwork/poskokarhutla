@@ -190,5 +190,4 @@
   .sp-dl-baris{grid-template-columns:112px minmax(0,1fr)}
 }
 @media (prefers-reduced-motion:reduce){.sp-peta-panel,.sp-sakelar input::after{transition:none}}
-.sp-osm{display:inline-block;width:16px;height:0;border-top:3px solid}
-.sp-osm-track{border-top-style:dashed;border-top-width:2px}
+.sp-osm{flex:none}

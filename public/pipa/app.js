@@ -8,12 +8,12 @@ import {bolehDummy, pasangDummy, ambilPesan, layarDummy} from "./dummy.js";
 const GRUP = [
   {k: "ringkas", n: "Ringkas", i: "layout-dashboard"},
   {kel: "Rencana", item: [{k: "peta", n: "Peta", i: "peta"}, {k: "hitung", n: "Hitung", i: "calculator"}, {k: "pemicu", n: "Pemicu", i: "siren"}, {k: "studio", n: "Studio", i: "sliders-horizontal"}, {k: "3d", n: "3D", i: "box"}]},
-  {kel: "Operasi", item: [{k: "kit", n: "Kit", i: "warehouse"}, {k: "pelihara", n: "Pelihara", i: "wrench"}, {k: "air", n: "Air tanah", i: "cloud-check"}, {k: "akses", n: "Akses", i: "chevron-right"}, {k: "log", n: "Log", i: "timer"}, {k: "ab", n: "A/B", i: "flask-conical"}, {k: "telemetri", n: "Telemetri", i: "activity"}]},
+  {kel: "Operasi", item: [{k: "kit", n: "Kit", i: "warehouse"}, {k: "pelihara", n: "Pelihara", i: "wrench"}, {k: "air", n: "Air tanah", i: "cloud-check"}, {k: "log", n: "Log", i: "timer"}, {k: "ab", n: "A/B", i: "flask-conical"}, {k: "telemetri", n: "Telemetri", i: "activity"}]},
   {kel: "Keluaran", item: [{k: "laporan", n: "Laporan", i: "file-text"}, {k: "data", n: "Data", i: "database"}]},
 ];
 const SEMUA = GRUP.flatMap(g => g.item || [g]);
 /* aset = rincian /pipa/aset/:id (PRD §9.4.12): modul layar, bukan butir menu; judulnya ada di sini supaya tampil() menemukannya */
-const RINCIAN = [{k: "aset", n: "Rincian aset"}];
+const RINCIAN = [{k: "aset", n: "Rincian aset"}, {k: "akses", n: "Akses"}];   // akses (jembatan): disembunyikan dari menu atas permintaan pemilik 27 Okt, rute tetap
 export const LAYAR = [...SEMUA, ...RINCIAN].map(x => x.k);
 const BAWAH = ["ringkas", "peta", "kit", "log"];
 const href = k => k === "ringkas" ? "/pipa" : `/pipa/${k}`;

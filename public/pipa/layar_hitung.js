@@ -1,7 +1,7 @@
 /* SIPPA: layar Kalkulator hidraulika /pipa/hitung (PRD §9.4.3, DS §3.7.1, §3.11, §3.12, §4.3). Kontrak router: pasang(akar, konteks) dan lepas().
    Butuh global public/inti: nanti (dimuat cangkang atau app.js); fmt dipakai bila ada. Logika murni di atas (diuji tanpa DOM), DOM di bawah.
    Rumus tidak ditulis ulang: semua dari hitung.js. Gaya di layar_hitung.css (dimuat layar ini, bukan pipa.css). Tidak ada data di berkas ini. */
-import {hidraulika, hfHW, idHdpe, idLayflat, pesanGerbang, KONST, KELAS_POMPA, BAWAAN} from "./hitung.js";
+import {hidraulika, hfHW, idLayflat, pesanGerbang, KONST, KELAS_POMPA, BAWAAN} from "./hitung.js";
 import {memuat, galat} from "./keadaan.js";
 import {ikon} from "./ikon.js";
 
@@ -24,13 +24,10 @@ export const MEDAN = [
   {k: "dz_m", label: "Beda elevasi", satuan: "m", min: -20, maks: 50, bawaan: BAWAAN.dz_m, kel: "trase", jenis: "angka", bantu: "positif = naik"},
   {k: "K", label: "Σ K minor", satuan: "", min: 0, maks: 30, bawaan: BAWAAN.K, kel: "trase", jenis: "angka"},
   {k: "sisa_bar", label: "Tekanan sisa di manifold", satuan: "bar", min: 0.5, maks: 6, bawaan: BAWAAN.sisa_bar, kel: "trase", jenis: "angka"},
-  {k: "bahan", label: "Bahan", kel: "pipa", jenis: "pilih", seg: true, bawaan: BAWAAN.bahan, opsi: [["layflat", "Layflat"], ["hdpe", "HDPE"]]},
   {k: "dn_mm", label: "DN layflat", kel: "pipa", jenis: "pilih", bawaan: BAWAAN.dn_mm, hanya: "layflat", opsi: [[65, "DN65"], [100, "DN100"], [150, "DN150"]]},
-  {k: "od_mm", label: "OD HDPE", kel: "pipa", jenis: "pilih", bawaan: 160, hanya: "hdpe", opsi: [[110, "OD110"], [160, "OD160"], [200, "OD200"], [250, "OD250"]]},
-  {k: "sdr", label: "SDR HDPE", kel: "pipa", jenis: "pilih", seg: true, bawaan: BAWAAN.sdr, hanya: "hdpe", opsi: [[11, "SDR11 (PN16)"], [17, "SDR17 (PN10)"]]},
   {k: "id_datasheet_mm", label: "ID datasheet", satuan: "mm", min: KONST.id_datasheet.min, maks: KONST.id_datasheet.maks, bawaan: null, opsional: true, kel: "pipa", jenis: "angka", hanya: "layflat", bantu: "kosong = 0,96 x DN"},
   {k: "pk_layflat_bar", label: "Tekanan kerja layflat", satuan: "bar", min: 6, maks: 25, bawaan: BAWAAN.pk_layflat_bar, kel: "pipa", jenis: "angka", hanya: "layflat", bantu: "dari datasheet"},
-  {k: "C", label: "C Hazen-Williams", satuan: "", min: 100, maks: 150, bawaan: BAWAAN.C, kel: "pipa", jenis: "angka", bantu: "layflat 120–130, HDPE 135–140"},
+  {k: "C", label: "C Hazen-Williams", satuan: "", min: 100, maks: 150, bawaan: BAWAAN.C, kel: "pipa", jenis: "angka", bantu: "layflat 120–130"},
   {k: "pompa", label: "Kelas pompa", kel: "pompa", jenis: "pilih", bawaan: BAWAAN.pompa, opsi: OPSI_POMPA, kosongKe: "tanpa"},
   {k: "n_pompa", label: "Jumlah pompa", satuan: "", min: 1, maks: 4, bawaan: BAWAAN.n_pompa, kel: "pompa", jenis: "angka", bulat: true},
   {k: "eta", label: "Efisiensi pompa η", satuan: "", min: 0.35, maks: 0.9, bawaan: BAWAAN.eta, kel: "pompa", jenis: "angka"},
@@ -43,8 +40,6 @@ export const MEDAN = [
   {k: "qeko_ls", label: "Q ekologi", satuan: "L/s", min: 0, maks: 1e6, bawaan: null, opsional: true, kel: "sumber", jenis: "angka"},
   {k: "stok_m3", label: "Stok awal", satuan: "m3", min: 0, maks: 1e9, bawaan: null, opsional: true, kel: "sumber", jenis: "angka"},
   {k: "hari", label: "Lama pemantauan", satuan: "hari", min: 1, maks: 3650, bawaan: null, opsional: true, kel: "sumber", jenis: "angka", bulat: true, bantu: "kosong = 30 hari"},
-  {k: "suhu_c", label: "Suhu pipa", satuan: "°C", min: 20, maks: 60, bawaan: BAWAAN.suhu_c, kel: "lingkungan", jenis: "angka", bantu: "untuk derating HDPE"},
-  {k: "perimeter_aktif", label: "Ujung di perimeter api aktif", kel: "lingkungan", jenis: "sakelar", bawaan: false},
 ];
 const POLA_KOMPLEKS = /^K\d{1,10}$/;
 
@@ -140,9 +135,9 @@ export function masukanKompleks(k, liku = KONST.liku_trase) {
 /* ---------- ke fungsi murni ---------- */
 export function keHidraulika(n) {
   const q95 = n.q95_ls;
-  return {bahan: n.bahan, dn_mm: n.dn_mm, od_mm: n.od_mm, sdr: n.sdr, id_datasheet_mm: n.id_datasheet_mm, pk_layflat_bar: n.pk_layflat_bar, L_m: n.L_m, q_lpm: n.q_lpm, C: n.C,
-    dz_m: n.dz_m, dz_sumber: n.dz_sumber, K: n.K, sisa_bar: n.sisa_bar, eta: n.eta, suhu_c: n.suhu_c, pompa: n.pompa, n_pompa: n.n_pompa, n_lance: n.n_lance,
-    serap_lain_lpm: n.serap_lain_lpm, dalam_m: n.dalam_m, jam: n.jam, hisap: n.hisap ?? true, perimeter_aktif: !!n.perimeter_aktif,
+  return {bahan: "layflat", dn_mm: n.dn_mm, od_mm: null, sdr: BAWAAN.sdr, id_datasheet_mm: n.id_datasheet_mm, pk_layflat_bar: n.pk_layflat_bar, L_m: n.L_m, q_lpm: n.q_lpm, C: n.C,
+    dz_m: n.dz_m, dz_sumber: n.dz_sumber, K: n.K, sisa_bar: n.sisa_bar, eta: n.eta, suhu_c: BAWAAN.suhu_c, pompa: n.pompa, n_pompa: n.n_pompa, n_lance: n.n_lance,
+    serap_lain_lpm: n.serap_lain_lpm, dalam_m: n.dalam_m, jam: n.jam, hisap: n.hisap ?? true, perimeter_aktif: false,
     sumber: q95 == null ? null : {q95_ls: q95, qeko_ls: n.qeko_ls ?? 0, stok_m3: n.stok_m3 ?? 0, hari: n.hari ?? 30, evap_m3_hari: 0}};
 }
 
@@ -176,20 +171,20 @@ export function kartuAngka(h, p) {
 /* pil kecil di samping isian: dari mana angka itu berasal atau apa artinya */
 export function pilIsian(n, h) {
   const r = {};
-  if (n.bahan === "layflat" && n.id_datasheet_mm == null) r.id_datasheet_mm = {teks: `ID = ${desimal(KONST.layflat_id_rasio)} x DN`, kelas: "asumsi-kebijakan"};
+  if (n.id_datasheet_mm == null) r.id_datasheet_mm = {teks: `ID = ${desimal(KONST.layflat_id_rasio)} x DN`, kelas: "asumsi-kebijakan"};
   if (n.dz_sumber === "dsm") r.dz_m = {teks: "Dari DSM", kelas: "estimasi-model"};
   if (h && n.dalam_m >= KONST.dalam_uji_m) r.dalam_m = {teks: "Lengan uji", kelas: "hipotesis"};
   return r;
 }
 
 /* ---------- grafik ---------- */
-const DIAMETER = [["DN65", "layflat", 65], ["DN100", "layflat", 100], ["DN150", "layflat", 150], ["OD110", "hdpe", 110], ["OD160", "hdpe", 160], ["OD200", "hdpe", 200]];
-/* head loss m per km pada debit dan C masukan; layflat ID = 0,96 x DN, HDPE dari OD dan SDR masukan */
+const DIAMETER = [["DN65", "layflat", 65], ["DN100", "layflat", 100], ["DN150", "layflat", 150]];   // HDPE dicabut dari kit (keputusan 60)
+/* head loss m per km pada debit dan C masukan; layflat ID = 0,96 x DN */
 export function headlossPerDiameter(n) {
   const Q = n.q_lpm / 60000;
   return DIAMETER.map(([nama, bahan, mm]) => {
-    const id = bahan === "hdpe" ? idHdpe(mm, n.sdr) : idLayflat(mm, null).id, D = id / 1000;
-    return {n: nama, bahan, mm, id, hf: hfHW(1000, Q, n.C, D), v: Q / (Math.PI * D * D / 4), dipakai: n.bahan === bahan && (bahan === "hdpe" ? n.od_mm : n.dn_mm) === mm};
+    const id = idLayflat(mm, null).id, D = id / 1000;
+    return {n: nama, bahan, mm, id, hf: hfHW(1000, Q, n.C, D), v: Q / (Math.PI * D * D / 4), dipakai: n.dn_mm === mm};
   });
 }
 
@@ -342,7 +337,6 @@ export async function pasang(akar, konteks) {
     q("[data-angka]").innerHTML = kartuAngka(h, st.nilai).map(a => `<div class="sp-angka${a.nada ? " " + lolos(a.nada) : ""}"><dt><span class="ad-ey">${lolos(a.label)}</span>${pil(a.yakin === "estimasi-model" ? "Estimasi model" : "Asumsi kebijakan", a.yakin)}</dt><dd><b>${lolos(a.nilai)}</b>${a.nada === "lewat" ? '<span class="sr"> melewati batas</span>' : ""}<small>${lolos(a.banding)}</small><small class="sp-sumber">${lolos(a.sumber)}</small></dd></div>`).join("");
     const pilI = pilIsian(st.nilai, h);
     semua("[data-pil]").forEach(e => { const p = pilI[e.dataset.pil]; e.hidden = !p; e.innerHTML = p ? pil(p.teks, p.kelas) : ""; });
-    semua("[data-hanya]").forEach(e => { e.hidden = e.dataset.hanya !== st.nilai.bahan; });
     semua("[data-bila-kompleks]").forEach(e => { e.hidden = !st.nilai.kompleks; });
   }
 

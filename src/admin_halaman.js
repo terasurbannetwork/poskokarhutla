@@ -197,7 +197,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <script src="/inti/tabel.js"></script>
 <script src="/inti/nanti.js"></script>
 <script src="/inti/kartu.js"></script>
-<script type="module" src="/pipa/app.js?v=2"></script>
+<script type="module" src="/pipa/app.js?v=3"></script>
 </body></html>`;
 /* /pipa/lapangan: form luring operator berkode, tanpa sesi dan tanpa data staf; gaya dan skrip hanya 'self' (CSP_LAPANGAN di src/posko.js) */
 export const halamanSippaLapangan = () => `<!doctype html>
