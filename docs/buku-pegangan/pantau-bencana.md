@@ -903,6 +903,8 @@ Disepakati pemilik setelah katalog di bawah ditelusuri. Menang atas butir mana p
 
 45. **Jumlah disebut, isinya disebut juga.** Judul yang menyebut "tiga provinsi" (atau jumlah lain) langsung menyebut namanya, dengan pola daftar titik dua: "berjalan di tiga provinsi: Aceh, Sumatera Utara, Sumatera Barat".
 
+46. **Laporan harian tetap format lama.** Laporan Kejadian Bencana Harian dan Laporan Penanganan Pengendalian Karhutla tetap memakai generator repo dan templat pemilik. Uji 27 Okt membangunnya ulang dengan gaya deck kajian; vonis pemilik: *"lebih jelek ternyata, pakai yang sebelumnya aja"*. Aturan selera di bab ini berlaku untuk deck kajian dan paparan, bukan untuk laporan harian.
+
 Disusun 26 Okt 2026 dari tiga sumber: (1) pesan mentah pemilik `masukan_ppt.txt` (15 Sep sampai 26 Okt, 288 baris, sebagian besar situs/kode dan dibuang), (2) memori `ppt-*`, `aturan-deck-26-okt-rinci`, `deck-urgen-kerjakan-di-berkas`, `selera-deck-malaysia`, `tanpa-titik-*`, `laporan-harian-bnpb`, (3) skill `ppt-konsultan` (`keputusan-pemilik.md`, `selera-presentasi.md`, `deck-operasional.md`, `gaya.md`, `gaya-bnpb.md`, `nada.md`, `angka-dan-copy.md`).
 
 Cara baca:
