@@ -722,7 +722,12 @@
     "renlap.tautanKoordinat": "koordinat",
     "renlap.teksKoordinat": "koordinat",
     "renlap.ubahPilihan": "ubahPilihan",
-    "py:osm_pbf.py": "uji:osm_pbf"
+    "py:osm_pbf.py": "uji:osm_pbf",
+    "renlap_tampil.namaGambar": "jalurGambar dan namaGambar",
+    "renlap_tampil.jalurGambar": "jalurGambar dan namaGambar",
+    "renlap_tampil.tautanArah": "modelRenlap: bentuk DATA",
+    "renlap_tampil.tautanRute": "modelRenlap: bentuk DATA",
+    "renlap_tampil.modelRenlap": "modelRenlap: bentuk DATA"
   },
   "dikecualikan": {
     "ikon.js": "sprite SVG tanpa logika; gerbang-sippa menolak warna tertanam, tampilannya diperiksa di peramban preview",

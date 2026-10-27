@@ -5,3 +5,6 @@
 .rl-baris span:first-child { opacity: 0.75; }
 .rl-aksi { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
 .rl-catat { font-size: 0.85rem; opacity: 0.8; }
+/* gambar bertoken: placeholder saat memuat (blob URL belum ada), tanda bila gagal */
+img.rl-muat, .rl-muat { min-height: 96px; opacity: 0.5; background: var(--surface, transparent); }
+.rl-gagal { opacity: 0.4; outline: 1px dashed var(--up-garis, currentColor); }

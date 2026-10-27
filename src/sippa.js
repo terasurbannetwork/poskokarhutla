@@ -540,7 +540,7 @@ async function logTulis(env, req, url, kini) {
 
 /* ================================================================ data turunan R2, ringkas, cek jalan, usul AOI (SP-029; DT §3.1, §4.3, §8.3) */
 /* nama tetap: hanya ini yang boleh dibaca dari R2 sippa/<nama>.json. Router worker.js meneruskan /api/sippa/data/<nama> apa adanya; nama lain = 404 tanpa menyentuh R2. */
-export const DATA_SIPPA = ["kelayakan_kompleks", "kelayakan_sel", "zona", "sel22", "kit_nasional", "pemicu", "aoi_calon", "akses_kompleks", "cat", "jembatan_dibi", "program_jembatan", "prioritas", "brgm_pembasahan"];
+export const DATA_SIPPA = ["kelayakan_kompleks", "kelayakan_sel", "zona", "sel22", "kit_nasional", "pemicu", "aoi_calon", "akses_kompleks", "cat", "jembatan_dibi", "program_jembatan", "prioritas", "brgm_pembasahan", "konsesi_kompleks"];
 const MAKS_BYTE = 8 * 1024 * 1024, SEGAR_DETIK = 300;   // sama dengan MAKS_BYTE src/risiko7.js; salinan boleh dipakai ulang peramban 5 menit, kecuali pemicu (harian, dipantau kesegarannya)
 async function dataBaca(env, req, url, kini, ctx, nama) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;   // hak SEBELUM nama dan R2: tamu tak boleh tahu berkas ada atau tidak
@@ -1880,6 +1880,21 @@ async function renlapData(env, req, url, kini) {
   return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", ...KEPALA_RENLAP}});
 }
 
+/* gambar Renlap untuk halaman HP: token sama dengan renlapData; nama berkas dikunci ke satu segmen img/ */
+const RE_GAMBAR = /^[A-Za-z0-9._-]{1,80}\.(jpe?g|png|svg|webp)$/i, MIME_GAMBAR = {jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", svg: "image/svg+xml", webp: "image/webp"};
+async function renlapImg(env, req, url, kini) {
+  const ip = await kunciTolak(env, req); if (terkunciMem(ip, kini)) return lajuTolak();
+  const id = url.searchParams.get("id") || "", f = url.searchParams.get("f") || "", t = req.headers.get("x-renlap-token") || "";
+  if (!RE_ID.test(id) || !RE_TOKEN_RENLAP.test(t) || !RE_GAMBAR.test(f) || f.includes("..")) return tolakRenlap(env, req, kini, 404, ip);
+  const r = await env.DB.prepare("SELECT status, token_hp_sha FROM sippa_renlap WHERE id = ?").bind(id).first();
+  if (!r || !samaTetap(await sha(t), r.token_hp_sha)) return tolakRenlap(env, req, kini, 404, ip);
+  if (r.status !== "siap") return new Response(JSON.stringify({galat: "renlap belum siap", status: r.status}), {status: 409, headers: {"content-type": "application/json; charset=utf-8", ...KEPALA_RENLAP}});
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const o = await env.MEDIA.get(`${kunciRenlap(id)}img/${f}`); if (!o) return gagal(404, "tautan renlap tidak berlaku");
+  const eks = f.split(".").pop().toLowerCase();
+  return new Response(o.body, {headers: {...KEPALA_RENLAP, "content-type": MIME_GAMBAR[eks], "cache-control": "private, max-age=3600", ...(eks === "svg" ? {"content-security-policy": "default-src 'none'; style-src 'unsafe-inline'"} : {})}});
+}
+
 /* ================================================================ tabel rute (digabung ke RUTE di src/worker.js; kunci dibaca gerbang.test.mjs, jadi tiap rute API satu baris literal) */
 const hal = layar => (env, req, url) => halaman(env, req, url, layar);
 const API = Object.fromEntries(Object.entries({
@@ -1959,5 +1974,6 @@ export const RUTE_SIPPA = {
   "GET /renlap": renlapHalaman,
   "HEAD /renlap": renlapHalaman,
   "GET /api/renlap/data": renlapData,
+  "GET /api/renlap/img": renlapImg,
   ...API,
 };

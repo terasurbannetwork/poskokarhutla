@@ -161,6 +161,17 @@ uji("Renlap PDF: dialirkan dari R2 ke peran baca di wilayah; luar wilayah 404", 
   assert.equal((await sip("GET", `/renlap/${RID}/pdf`, undefined, p16.h)).s, 404); assert.equal((await sip("GET", `/renlap/${RID}/pdf`)).s, 401); assert.equal((await sip("GET", `/renlap/${RID}/pdf`, undefined, ver.h)).s, 403);
   assert.equal((await sip("GET", "/renlap", undefined, p62.h)).j.renlap.find(x => x.id === RID).status, "siap");
 });
+uji("Renlap gambar: /api/renlap/img token header, nama berkas ketat, MIME benar, svg ber-CSP, 404 identik, belum siap 409", async () => {
+  await R2.put(`sippa/renlap/${RID}/img/peta.png`, new Uint8Array([0x89, 0x50, 0x4e, 0x47])); await R2.put(`sippa/renlap/${RID}/img/sket.svg`, "<svg xmlns='http://www.w3.org/2000/svg'><script>alert(1)</script></svg>"); await R2.put(`sippa/renlap/${RID}/img/aneh.exe`, "x");
+  const g = (id, f, t = TOKEN) => mf.dispatchFetch(`http://bnpb.lokal/api/renlap/img?id=${id}&f=${encodeURIComponent(f)}`, {headers: t === null ? {} : {"x-renlap-token": t}});
+  const png = await g(RID, "peta.png"); assert.equal(png.status, 200); assert.equal(png.headers.get("content-type"), "image/png"); assert.equal(png.headers.get("cache-control"), "private, max-age=3600"); assert.equal(png.headers.get("x-content-type-options"), "nosniff"); assert.equal(png.headers.get("content-security-policy"), null); assert.equal((await png.arrayBuffer()).byteLength, 4);
+  const svg = await g(RID, "sket.svg"); assert.equal(svg.status, 200); assert.equal(svg.headers.get("content-type"), "image/svg+xml"); assert.equal(svg.headers.get("content-security-policy"), "default-src 'none'; style-src 'unsafe-inline'"); await svg.body.cancel();
+  const bodi = [];
+  for (const [id, f, t] of [[RID, "peta.png", "0".repeat(36)], [RID, "peta.png", null], [RID, "peta.png", "xyz"], ["1".repeat(16), "peta.png", TOKEN], [RID, "../data.json"], [RID, "..%2Fdata.json"], [RID, "a/../peta.png"], [RID, "aneh.exe"], [RID, "data.json"], [RID, "tidakada.png"], [RID, ".."], [RID, "a..png".padEnd(90, "a") + ".png"], [RID, ""]]) { const r = await g(id, f, t === undefined ? TOKEN : t); assert.equal(r.status, 404, `${id} ${f}`); bodi.push(await r.text()); }
+  assert.equal(new Set(bodi.slice(0, 4)).size, 1, "token salah = id tak ada = tanpa token");
+  assert.equal((await mf.dispatchFetch(`http://bnpb.lokal/api/renlap/img?id=${RID}&f=peta.png&t=${TOKEN}`)).status, 404, "token di query tidak diterima");
+  const tunggu = await renlap({kompleks_ids: ["K0129"]}); assert.equal((await g(tunggu.j.renlap.id, "peta.png", tunggu.j.token)).status, 409, "token benar, belum siap"); assert.equal((await g(tunggu.j.renlap.id, "peta.png", TOKEN)).status, 404, "token renlap lain tidak berlaku");
+});
 uji("Renlap versi HP: /api/renlap/data hanya dengan token header yang cocok; salah/tak ada identik; belum siap 409; CSP ketat, no-store, noindex", async () => {
   const d = (id, t) => api("GET", `/api/renlap/data?id=${id}`, undefined, t === null ? {} : {"x-renlap-token": t});
   const ok = await d(RID, TOKEN); assert.equal(ok.s, 200, ok.t); assert.equal(ok.j.judul, "Renlap uji"); assert.match(ok.h.get("cache-control"), /no-store/); assert.match(ok.h.get("x-robots-tag"), /noindex/);

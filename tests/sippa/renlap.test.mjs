@@ -45,3 +45,30 @@ test("halaman HP /renlap: CSP ketat (tanpa gaya sebaris, tanpa skrip sebaris), h
   assert.match(js, /409/); assert.match(js, /429/); assert.doesNotMatch(css, /#[0-9a-fA-F]{3,8}\b|rgba?\(/);
   for (const t of [html, js, css, baca("public/pipa/renlap.js")]) { assert.doesNotMatch(t, /[—·]/); assert.doesNotMatch(t, /titik api/i); }
 });
+
+/* SP-140: halaman HP memakai bentuk DATA uji pilot (src/uji_pilot_data.js sebagai fixture bentuk) */
+const T = await import("../../public/pipa/renlap_tampil.js");
+const {DATA} = await import("../../src/uji_pilot_data.js");
+test("jalurGambar dan namaGambar: img/<nama> -> jalur API; tautan luar, naik folder, id salah ditolak", () => {
+  assert.equal(T.jalurGambar(ID, "img/pompa 1.jpg"), null);
+  assert.equal(T.jalurGambar(ID, "img/pompa_1.jpg"), `/api/renlap/img?id=${ID}&f=pompa_1.jpg`);
+  assert.equal(T.jalurGambar(ID, "./img/a-b.png"), `/api/renlap/img?id=${ID}&f=a-b.png`);
+  for (const s of ["https://x.id/img/a.jpg", "img/../a.jpg", "img/a/b.jpg", "/pipa/uji_pilot/img/a.jpg", "img/a.exe", "", null]) assert.equal(T.jalurGambar(ID, s), null, String(s));
+  assert.equal(T.jalurGambar("xyz", "img/a.jpg"), null); assert.equal(T.namaGambar("img/a.svg"), "a.svg");
+});
+test("modelRenlap: bentuk DATA uji pilot dipetakan; ringkas.judul dan wilayah dipakai; bentuk lain ditolak", () => {
+  const m = T.modelRenlap({...DATA, ringkas: {judul: "Renlap Kalteng", wilayah: ["Pulang Pisau", "Seruyan"]}}, ID);
+  assert.equal(m.judul, "Renlap Kalteng"); assert.equal(m.wilayah, "Pulang Pisau, Seruyan"); assert.equal(m.lokasi.length, DATA.lokasi.length);
+  const l = m.lokasi[0], a = l.alur.filter(x => x.titik);
+  assert.ok(a.length > 1); assert.match(a[0].arah, /^https:\/\/www\.google\.com\/maps\/dir\/\?api=1&destination=-?\d+\.\d{5},-?\d+\.\d{5}&travelmode=(driving|walking)$/);
+  assert.match(l.rute, /&waypoints=/); assert.match(l.arahParkir, /destination=/); assert.equal(l.alur.length, DATA.lokasi[0].alur.length);
+  const m2 = T.modelRenlap({...DATA, alat: [{nama: "x", foto: "img/pompa.jpg"}, {nama: "y", foto: "/pipa/uji_pilot/img/z.jpg"}]}, ID);
+  assert.equal(m2.alat[0].fotoJalur, `/api/renlap/img?id=${ID}&f=pompa.jpg`); assert.equal(m2.alat[1].fotoJalur, null);
+  assert.equal(T.modelRenlap(DATA, ID).judul, "Renlap SIPPA"); assert.equal(T.modelRenlap({renlap: {}, kompleks: []}, ID), null); assert.equal(T.modelRenlap(null, ID), null);
+  assert.equal(T.tautanRute([]), null); assert.equal(T.tautanArah([null, 1]), null);
+});
+test("halaman HP /renlap: pakai modul tampil, gambar lewat fetch+blob dengan header token, 409 berpesan menit, tanpa tanda terlarang", () => {
+  const js = baca("public/renlap.js"), tp = baca("public/pipa/renlap_tampil.js");
+  assert.match(js, /URL\.createObjectURL/); assert.match(js, /revokeObjectURL/); assert.match(js, /renlap_tampil\.js/); assert.match(js, /Buka lagi beberapa menit/);
+  assert.doesNotMatch(tp, /[—·]|titik api|innerHTML|\.style\b/i); assert.doesNotMatch(js, /\.src\s*=\s*["'`]?\/api/);
+});

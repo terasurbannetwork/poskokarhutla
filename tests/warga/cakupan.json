@@ -814,6 +814,7 @@
     "GET /renlap": "Renlap versi HP",
     "HEAD /renlap": "Renlap versi HP",
     "GET /api/renlap/data": "Renlap versi HP",
+    "GET /api/renlap/img": "Renlap gambar: /api/renlap/img",
     "table sippa_anggaran_tingkat": "migrasi 0073: lima tingkat awal",
     "table sippa_anggaran_realisasi": "migrasi 0073: lima tingkat awal",
     "table sippa_renlap": "Renlap tanpa GITHUB_TOKEN",
