@@ -322,7 +322,7 @@ const PosUkur = {
   async simGenangan(x) {
     const [lo, la] = PosAir.titik(x), rs = PosAir.resmi(x), T = SimTampak.T, kc = Gelembung.kec || await muatJSON("data/pusat_kec.json").catch(() => null); let prov = null, d0 = Infinity;
     if (kc) for (const [k, [a, o]] of Object.entries(kc)) { const d = (a - la) ** 2 + (o - lo) ** 2; if (d < d0) { d0 = d; prov = k.split("|")[0]; } }
-    if (prov) Simulasi.prov = prov;   /* pusat_kec.json berkunci "kodeProv|kab|kec" */
+    await Simulasi.awal?.(); if (prov) { Simulasi.prov = prov; Simulasi.kab = ""; }   /* pusat_kec.json berkunci "kodeProv|kab|kec"; awal() sekali per muat dan menimpa prov, jadi ditunggu dulu */
     const titik = {lat: la, lon: lo, nama: PosAir.judulPos(x.nama), kab: "sekitar pos tinggi air"}, siaga = rs && rs !== "Normal";
     Object.assign(T, {titik, hasil: null, tanggul: [], pompa: [], pintu: false, sk: !siaga ? "dasar" : SimTampak._uji.masukan(titik).sg ? "sungai" : "ekstrem"}); T.op.sungai = rs === "Siaga 1" ? 3 : 2;
     Simulasi.mode = "genangan"; bukaTab("sim");
