@@ -331,7 +331,7 @@ def label(tgl, alasan=None):
         print(f"PetaBencana gagal ({e}): baris dilewati, coba lagi besok", file=sys.stderr)
         return 1
     ag = agregat_pb(lap, tgl, kec, kunci_kec)
-    r = {"tanggal": tgl.isoformat(), "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"),
+    r = {"tanggal": tgl.isoformat(), "dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"),
          "pb": {"ok": True, "sumber": "data.petabencana.id/reports/archive?admin=ID-JK", "n_ditarik": len(lap),
                 "n_dki": sum(v["n"] for v in ag.values()), "kec": ag},
          "dsda": dsda(tgl, kec, kunci_kec)}

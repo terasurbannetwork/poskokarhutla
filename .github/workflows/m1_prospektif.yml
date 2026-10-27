@@ -2,14 +2,14 @@ name: M1 genangan, pengumpul prospektif harian
 
 # Uji prospektif M1 musim 2026/27 (docs/banjir/KRITERIA-M1.md, dikunci 28 Okt 2026), append-only.
 # Dua jadwal:
-#  - 23.30 WIB (16:30 UTC): prakiraan versi hujan PRAKIRAAN untuk BESOK WIB (harus tertulis sebelum 00.00 WIB hari itu).
+#  - 22.30 WIB (15:30 UTC): prakiraan versi hujan PRAKIRAAN untuk BESOK WIB (harus tertulis sebelum 00.00 WIB hari itu).
 #  - 04.30 WIB (21:30 UTC): untuk empat hari terakhir: hujan GSMaP -> prakiraan versi TERAMATI -> label. Hari WIB berakhir 17Z; GSMaP NRT
 #    berlatensi sekitar 4 jam. Hari yang terlewat terisi sendiri esoknya; yang sudah ada dilewati.
 # Label hari D ditulis bila baris hujan D sudah ada ATAU umur D >= 4 hari (NRT yang telat tidak boleh membuat label hilang selamanya);
 # label tanpa baris hujan membawa catatan alasan. Prakiraan baru dijalankan sesudah model dibekukan (m1_beku.json ada).
 on:
   schedule:
-    - cron: "30 16 * * *"
+    - cron: "30 15 * * *"
     - cron: "30 21 * * *"
   workflow_dispatch:
     inputs:
@@ -29,7 +29,7 @@ permissions:
 
 env:
   M1: data/banjir/genangan
-  MALAM: ${{ github.event.schedule == '30 16 * * *' || inputs.mode == 'prakiraan' }}
+  MALAM: ${{ github.event.schedule == '30 15 * * *' || inputs.mode == 'prakiraan' }}
 
 jobs:
   kumpul:
@@ -48,7 +48,7 @@ jobs:
           python3 scripts/banjir/genangan/m1_nilai.py uji
           python3 scripts/banjir/genangan/tangki.py uji
 
-      # 23.30 WIB: prakiraan hujan prakiraan untuk besok WIB; kode 3 = di luar jendela uji (dilewati)
+      # 22.30 WIB: prakiraan hujan prakiraan untuk besok WIB; kode 3 = di luar jendela uji (dilewati)
       - name: Prakiraan besok (versi prakiraan)
         if: ${{ env.MALAM == 'true' }}
         run: |
@@ -67,16 +67,21 @@ jobs:
         run: |
           if [ -n "$TANGGAL" ]; then hari="$TANGGAL"; else hari="$(for n in 4 3 2 1; do TZ=Asia/Jakarta date -d "-$n day" +%F; done)"; fi
           hariini="$(TZ=Asia/Jakarta date +%F)"
+          # urutan tetap: hujan semua hari (lama ke baru), lalu prakiraan teramati (lama ke baru; D-1 harus sudah punya hujan), lalu label
           for t in $hari; do
             kode=0; python3 scripts/banjir/genangan/m1_kumpul.py hujan --tanggal "$t" || kode=$?
             if [ "$kode" = 2 ]; then echo "::error::login FTP JAXA gagal"; exit 2; fi
             [ "$kode" = 0 ] || echo "::warning::hujan $t tanpa kemajuan (kode $kode)"
+          done
 
-            if [ -e "$M1/m1_beku.json" ]; then
+          if [ -e "$M1/m1_beku.json" ]; then
+            for t in $hari; do
               kode=0; python3 scripts/banjir/genangan/tangki.py prakira --versi teramati --tanggal "$t" || kode=$?
-              case "$kode" in 0) ;; 3) echo "::notice::$t di luar jendela uji, prakiraan teramati dilewati";; *) echo "::warning::prakiraan teramati $t tanpa kemajuan (kode $kode)";; esac
-            fi
+              case "$kode" in 0) ;; 3) echo "::notice::prakiraan teramati $t dilewati/ditunda (di luar jendela uji atau hujan D-1 belum ada)";; *) echo "::warning::prakiraan teramati $t tanpa kemajuan (kode $kode)";; esac
+            done
+          fi
 
+          for t in $hari; do
             umur=$(( ( $(date -d "$hariini" +%s) - $(date -d "$t" +%s) ) / 86400 ))
             if grep -q "^{\"tanggal\":\"$t\"" "$M1/m1_hujan.jsonl" 2>/dev/null; then
               alasan=""
@@ -85,6 +90,11 @@ jobs:
               echo "::warning::$alasan"
             else
               echo "::notice::label $t ditunda: baris hujan belum ada (umur $umur hari < 4)"; continue
+            fi
+            # prakiraan teramati wajib mendahului label: bila model beku, hari masih muda, dan barisnya belum ada (ditunda), label ikut menunggu
+            if [ -e "$M1/m1_beku.json" ] && [ "$umur" -lt 4 ] && ! grep -q "^{\"tanggal\":\"$t\",\"versi\":\"teramati\"" "$M1/m1_prakiraan.jsonl" 2>/dev/null; then
+              tgl_ok=$(python3 -c "import sys,json;b=json.load(open('$M1/m1_beku.json'))['beku'][0]['tanggal_beku'][:10];print(int('$t'>=b and '$t'[5:7] in ('11','12','01','02','03','04')))")
+              if [ "$tgl_ok" = 1 ]; then echo "::notice::label $t ditunda: prakiraan teramati belum ada"; continue; fi
             fi
             kode=0; python3 scripts/banjir/genangan/m1_kumpul.py label --tanggal "$t" ${alasan:+--alasan "$alasan"} || kode=$?
             [ "$kode" = 0 ] || echo "::warning::label $t tanpa kemajuan (kode $kode)"
