@@ -126,6 +126,26 @@ export function pesisir(laut, alur, nx, ny) {
     if ((i > 0 && laut[k - 1]) || (i < nx - 1 && laut[k + 1]) || (j > 0 && laut[k - nx]) || (j < ny - 1 && laut[k + nx])) m[k] = 1; }
   return m;
 }
+/* muara = sel alur (bukan laut) bertetangga-4 dengan laut: tempat pintu air (keputusan pemilik 28 Okt: tiap muara diberi pintu) */
+export function muaraAlur(laut, alur, nx, ny) {
+  const m = new Uint8Array(nx * ny);
+  for (let k = 0; k < m.length; k++) { if (laut[k] || !alur[k]) continue; const i = k % nx, j = (k / nx) | 0;
+    if ((i > 0 && laut[k - 1]) || (i < nx - 1 && laut[k + 1]) || (j > 0 && laut[k - nx]) || (j < ny - 1 && laut[k + nx])) m[k] = 1; }
+  return m;
+}
+/* kapasitas rumah pompa (m3/dtk) dari teks OSM `ket` (capacity:pump); null bila tak terbaca JELAS, tidak ada tebakan.
+   Dibaca: bilangan, "NxM", beberapa pompa dipisah koma/&/dan/+ (dijumlah); satuan eksplisit liter/detik, l/menit; bilangan telanjang = L/dtk (ASUMSI satuan,
+   ditandai satuan:"asumsi"). Ditolak: "n unit", rpm, m3, tanda kurung, atau ada bilangan < 50 (mis. "3,3 dan 5": koma desimal atau pompa?). */
+export function kapasitasPompa(ket) {
+  let t = String(ket ?? "").toLowerCase().replace(/\s+/g, "");
+  if (!t || /unit|rpm|\(|m3|m³/.test(t)) return null;
+  let faktor = 1, satuan = "asumsi";
+  if (/l(iter|t)?\/?menit/.test(t)) { faktor = 1 / 60; satuan = "l/menit"; } else if (/(liter|lt|l)\/?(detik|s)\b|(liter|lt|l)\/?(detik|s)$/.test(t)) satuan = "l/dtk";
+  t = t.replace(/(liter|lt|l)\/?(detik|menit|s)/g, "").replace(/perpompa/g, "");
+  const tok = t.split(/,|&|dan|\+/).filter(Boolean); let jml = 0;
+  for (const x of tok) { const m = /^(\d+)x(\d+)$/.exec(x) || /^()(\d+)$/.exec(x); if (!m) return null; const v = (m[1] ? +m[1] : 1) * +m[2]; if (!(+m[2] >= 50)) return null; jml += v; }
+  return jml > 0 ? {q: jml * faktor / 1000, satuan} : null;
+}
 /* hujan harian -> per jam: jam model (bentuk) dinormalkan ke total harian. Hari tanpa total tetap hujan model; hari model kering diratakan 24 jam.
    waktu "YYYY-MM-DDTHH:00" WIB; total {tanggal: mm}. Mengembalikan {mm, diganti, tanpaBentuk}. */
 export function disagregasi(mm, waktu, total) {
@@ -178,17 +198,39 @@ function uji() {
     const r2 = disagregasi(mm, w, {"2020-01-02": 24}); assert(r2.mm[24] === 1 && r2.tanpaBentuk === 1 && r2.mm[5] === 6); }
   { const f = [0, 10, 20, 30]; /* 2x2, lons 0,1 lats 0,1: f[j*2+i] */
     assert(bilinear(f, [0, 1], [0, 1], .5, .5) === 15 && bilinear(f, [0, 1], [0, 1], 0, 0) === 0 && bilinear([null, 10, 20, 30], [0, 1], [0, 1], .5, .5) === 20); }
+  /* pintu muara + pompa (J2.6) */
+  { const laut = Uint8Array.from([1, 0, 0, 0, 1, 0, 0, 0]), alur = Uint8Array.from([0, 1, 1, 0, 0, 1, 0, 0]); /* 4x2 */
+    assert(Array.from(muaraAlur(laut, alur, 4, 2)).join() === "0,1,0,0,0,1,0,0", Array.from(muaraAlur(laut, alur, 4, 2)).join()); }
+  { const k = x => kapasitasPompa(x);
+    assert(k("5000").q === 5 && k("5000").satuan === "asumsi" && k("48800 liter/detik").q === 48.8 && k("48800 liter/detik").satuan === "l/dtk");
+    assert(Math.abs(k("900, 1500 & 1500 l/menit").q - 3900 / 60000) < 1e-12 && k("3 x 5000").q === 15 && k("500,500,100").q === 1.1 && k("2 x 500 liter/s").q === 1);
+    for (const x of ["1 unit", "3,3 dan 5", "1420/16 rpm", "60(2)x100x500", "500 Liter m3", "", null, "100 abc"]) assert(k(x) === null, "harus null: " + x); }
+  { const SG = muatMesin(), nx = 5, ny = 3, N = 15, z = new Float64Array(N), laut = new Uint8Array(N), pl = new Uint8Array(N);
+    for (let j = 0; j < ny; j++) { laut[j * nx] = 1; z[j * nx] = -1; pl[j * nx + 1] = 1; }
+    const dasar = {nx, ny, dx: 100, z, laut, muka: [1, 1, 1], jam: 2, hujan: new Float64Array(2)};
+    const t = SG.jalankan({...dasar, pintuLaut: pl}), b = SG.jalankan({...dasar});
+    assert(t.neraca.lautMasuk === 0 && b.neraca.lautMasuk > 0, `pintu menahan laut: ${t.neraca.lautMasuk} vs ${b.neraca.lautMasuk}`);
+    /* sungai lebih tinggi dari laut: pintu terbuka, air keluar ke laut dengan atau tanpa pintu */
+    const q = [0, 1, 2].map(j => ({k: j * nx + 1, q: new Float64Array(3).fill(300)}));
+    const e = SG.jalankan({...dasar, muka: [0, 0, 0], masuk: q, pintuLaut: pl}), f = SG.jalankan({...dasar, muka: [0, 0, 0], masuk: q});
+    assert(e.neraca.lautKeluar > 0 && Math.abs(e.neraca.lautKeluar - f.neraca.lautKeluar) / f.neraca.lautKeluar < .05, `pintu membuka: ${e.neraca.lautKeluar} vs ${f.neraca.lautKeluar}`);
+    /* pompa: sel kering tidak dipompa; sel basah dipompa, tidak melebihi isi, neraca tertutup */
+    const pm = [{k: 2 * nx + 3, q: 5}], kering = SG.jalankan({...dasar, muka: [0, 0, 0], pompa: pm}), basah = SG.jalankan({...dasar, muka: [0, 0, 0], hujan: new Float64Array(2).fill(30), pompa: pm});
+    assert(kering.neraca.pompa === 0 && kering.neraca.pompaMinta > 0, `pompa sel kering: ${kering.neraca.pompa}`);
+    assert(basah.neraca.pompa > 0 && basah.neraca.pompa <= basah.neraca.pompaMinta && basah.neraca.galat < 1e-6, `pompa basah ${basah.neraca.pompa} galat ${basah.neraca.galat}`); }
   console.log("ok");
 }
 
 /* ---------- jalan ---------- */
 function argumen() {
-  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, kotak: null, keluar: null};
+  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, kotak: null, keluar: null};
   const v = process.argv.slice(2);
   for (let i = 0; i < v.length; i++) { const k = v[i];
     if (k === "--tanpa-hulu") a.hulu = false;
     else if (k === "--siap") a.siap = true;
     else if (k === "--tanpa-alur") a.alur = false;
+    else if (k === "--tanpa-pintu") a.pintu = false;
+    else if (k === "--tanpa-pompa") a.pompa = false;
     else if (k === "--tanpa-tanggul") a.tanggul = null;
     else if (k === "--tanggul") a.tanggul = +v[++i];
     else if (k === "--skala-hulu") a.skalaHulu = +v[++i];
@@ -258,6 +300,7 @@ async function jalan() {
   if (a.alur) { const bed = Float64Array.from(z0); for (let k = 0; k < N; k++) if (alur[k]) bed[k] = z0[k] - dalamKelas[k];
     const lantai = Float64Array.from(zTepi, (v, k) => v - dalamKelas[k] - ALUR.potong_ekstra_m);
     info.profil = profilMonoton(bed, alur, nx, ny, laut, lantai); for (let k = 0; k < N; k++) if (alur[k]) z0[k] = bed[k]; }
+  const muara = muaraAlur(laut, alur, nx, ny); let nMuara = 0; for (let k = 0; k < N; k++) nMuara += muara[k];
   const benih = SG.benihTepi(nx, ny, laut), z = SG.siapkanDEM(z0, nx, ny, benih);
   let nLaut = 0, isi = 0; for (let k = 0; k < N; k++) { if (laut[k]) nLaut++; if (z[k] > z0[k] + 1e-9) isi++; }
   const dalamAlur = new Float64Array(N); /* isi alur di bawah tepi (m): kedalaman keluaran sel alur = muka air di atas tepi */
@@ -321,10 +364,21 @@ async function jalan() {
     masuk.push({k: c.k, q}); catatHulu.push({nama: c.nama, sel: [c.k % nx, (c.k / nx) | 0], jarak_snap_m: c.jarak_snap_m, z_dasar_m: +z0[c.k].toFixed(2), q_glofas_rata: +(c.q.reduce((x, y) => x + y, 0) / c.q.length).toFixed(1),
       q_suntik_rata: +(q.reduce((x, y) => x + y, 0) / q.length).toFixed(1), q_suntik_maks: +Math.max(...q).toFixed(1), di_hilir_titik: c.induk ? c.induk.nama : null}); }
 
+  /* pompa: kapasitas dari pompa.json (OSM), sel isap = sel DEM terdekat (bila jatuh di laut, sel darat terdekat <= 3 sel); tanpa kapasitas terbaca = tidak dipakai (null, dihitung) */
+  const infoPompa = {aktif: a.pompa, di_data: 0, di_kotak: 0, tanpa_kapasitas: 0, dipakai: 0, satuan_asumsi: 0, dipindah_dari_laut: 0, kapasitas_total_m3dtk: 0}; const pompa = [];
+  if (a.pompa) { const pj = JSON.parse(fs.readFileSync(P("public/banjir/data/genangan/pompa.json"), "utf8")), per = {}; infoPompa.di_data = pj.pompa.length;
+    for (const [lon, lat, , , ket] of pj.pompa) { const ci = Math.round((lon - lonSel(0)) / (a.faktor * meta.dx)), cj = Math.round((latSel(0) - lat) / (a.faktor * meta.dy));
+      if (ci < 0 || cj < 0 || ci >= nx || cj >= ny) continue; infoPompa.di_kotak++;
+      const kap = kapasitasPompa(ket); if (!kap) { infoPompa.tanpa_kapasitas++; continue; }
+      let k = cj * nx + ci;
+      if (laut[k]) { let b = -1, bd = 1e9; for (let dj = -3; dj <= 3; dj++) for (let di2 = -3; di2 <= 3; di2++) { const i = ci + di2, j = cj + dj; if (i < 0 || j < 0 || i >= nx || j >= ny || laut[j * nx + i]) continue; const d2 = di2 * di2 + dj * dj; if (d2 < bd) { bd = d2; b = j * nx + i; } }
+        if (b < 0) { infoPompa.tanpa_kapasitas++; continue; } k = b; infoPompa.dipindah_dari_laut++; }
+      per[k] = (per[k] || 0) + kap.q; infoPompa.dipakai++; if (kap.satuan === "asumsi") infoPompa.satuan_asumsi++; infoPompa.kapasitas_total_m3dtk += kap.q; }
+    for (const [k, q] of Object.entries(per)) pompa.push({k: +k, q}); infoPompa.kapasitas_total_m3dtk = +infoPompa.kapasitas_total_m3dtk.toFixed(2); }
   const pasang = SG.pasang(Array(Math.ceil(J / 24) + 1).fill(a.muka), a.rentang);
   log(`jalankan: ${J} jam, ${masuk.length} masukan hulu, hujan ${a.hujan}/${kunciModel} (jumlah ${Math.min(...lain).toFixed(0)}..${Math.max(...lain).toFixed(0)} mm), kd ${a.kd} mm/jam`);
   const manning = new Float64Array(N); for (let k = 0; k < N; k++) manning[k] = nAlur[k] || SG.ASUMSI.MANNING;
-  const hasil = SG.jalankan({nx, ny, dx, z, laut, muka: pasang, jam: J, hujanKelas: seri, kelas, masuk, kd, manning},
+  const hasil = SG.jalankan({nx, ny, dx, z, laut, muka: pasang, jam: J, hujanKelas: seri, kelas, masuk, kd, manning, pompa, pintuLaut: a.pintu && a.alur ? muara : null},
     p => { if (Math.round(p * J) % 12 === 0) log(`  ${(p * 100).toFixed(0)}%`); });
   const waktuJalan = (Date.now() - t0) / 1000; log(`selesai: ${hasil.langkah} langkah`);
 
@@ -351,15 +405,17 @@ async function jalan() {
   const keluar = {
     dibuat: new Date().toISOString(), kejadian: a.kejadian,
     parameter: {...a, dx_m: +dx.toFixed(2), nx, ny, tahun_dem: TAHUN_DEM, subsidensi_m: +turun.toFixed(3), kalibrasi: "TIDAK. Semua angka placeholder (J2.5).",
-      alur_param: a.alur ? ALUR : null, sel_alur: info.sel_alur || null, profil_alur: info.profil || null, dalam_alur_m: info.dalam_alur_m || null, sel_tanggul: nTanggul, hujan_info: infoHujan,
+      alur_param: a.alur ? ALUR : null, sel_alur: info.sel_alur || null, profil_alur: info.profil || null, dalam_alur_m: info.dalam_alur_m || null, sel_tanggul: nTanggul, pintu_muara: {aktif: a.pintu && a.alur, sel: nMuara}, pompa_info: infoPompa, hujan_info: infoHujan,
       catatan: ["Hujan: " + JSON.stringify(infoHujan) + "; belum dikoreksi bias. ERA5-Land kosong untuk Jakarta (precipitation null), dipakai era5 0,25 derajat.", "CN seragam, belum dari tutupan lahan.",
         "Alur OSM river/canal/drain dibakar ke DEM (kedalaman/lebar/n di alur_param, ASUMSI); kedalaman keluaran di sel alur = muka air di atas tepi. Aliran/luapan sungai tetap v1 (alur satu sel).",
         "Hulu GloFAS disuntik di sel alur bernama sama terdekat dari titik snap; skala 1 x skala_hulu (fraksi DAS tak dihitung, luas DAS tak ada di repo); titik di hilir titik lain hanya menyuntik selisihnya.",
         "Tanggul pantai: sel darat bertetangga laut dinaikkan ke " + a.tanggul + " m MSL (ASUMSI NCICD/tanggul pantai), kecuali sel alur (muara terbuka, muka laut batas). Garis pantai dari DEM 2011.",
+        "Pintu muara (28 Okt): di tiap sel alur bertetangga laut, muka laut > muka air sel muara = tertutup (laut->darat 0, darat->laut tetap). Berlaku di SEMUA muara; titik pintu OSM (pompa.json) tidak menentukan lokasi.",
+        "Pompa: kapasitas dari teks OSM capacity:pump (bilangan telanjang = L/dtk, ASUMSI satuan), mengisap sel DEM terdekat hanya sebesar air yang ada, dibuang ke luar domain (suku pompa_keluar di neraca); tanpa kapasitas terbaca = tidak dipakai.",
         "Subsidensi seragam v1: nilai tengah literatur bila ada (Abidin 15 cm/thn), jika tidak maksimum (Sidiq 5 cm/thn = MAKS kota, batas atas); Jakarta Selatan/Timur terlalu rendah."]},
     waktu_jalan_dtk: +waktuJalan.toFixed(1), langkah: hasil.langkah,
     neraca_global_m3: {masuk: Math.round(n.masuk), keluar: Math.round(n.keluar), sisa: Math.round(n.simpan), hujan: Math.round(n.hujan), sungai: Math.round(n.sungai),
-      drainase: Math.round(n.drain), tepi: Math.round(n.tepi), laut_masuk: Math.round(n.lautMasuk), laut_keluar: Math.round(n.lautKeluar), koreksi_negatif: Math.round(n.koreksi), galat_persen: +(n.galat * 100).toFixed(4)},
+      drainase: Math.round(n.drain), tepi: Math.round(n.tepi), laut_masuk: Math.round(n.lautMasuk), laut_keluar: Math.round(n.lautKeluar), pompa_keluar: Math.round(n.pompa), pompa_diminta: Math.round(n.pompaMinta), koreksi_negatif: Math.round(n.koreksi), galat_persen: +(n.galat * 100).toFixed(4)},
     sebaran_kedalaman_puncak_m: sebaran, hulu: catatHulu, kecamatan};
   const jalur = a.keluar || P("data/raw/banjir/genangan/mesin", `${a.kejadian}.json`); fs.mkdirSync(path.dirname(jalur), {recursive: true});
   fs.writeFileSync(jalur, JSON.stringify(keluar)); log("ditulis " + path.relative(AKAR, jalur));

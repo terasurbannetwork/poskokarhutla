@@ -217,7 +217,7 @@ function jalankan(cfg, kabar) {
   if (kd) { kd.length === N || salah(`kd ${kd.length} sel != ${N}`); for (let k = 0; k < N; k++) { angka(kd[k], "kd"); kd[k] >= 0 || salah(`kd sel ${k} negatif`); } }
   const ked = new Float32Array(N * (J + 1)), luas = new Float64Array(J + 1), vol = new Float64Array(J + 1), Tend = J * 3600;
   let t = 0, simpanBerikut = 3600, langkah = 0;
-  const K = {nx, ny, dx, A, n2, z, h, hmaks, qx, qy, px: new Float64Array(qx.length), py: new Float64Array(qy.length), theta: cfg.theta ?? THETA, sk, laut, tt: tutup, ek, es, qe, eo, pq, V};
+  const K = {nx, ny, dx, A, n2, z, h, hmaks, qx, qy, px: new Float64Array(qx.length), py: new Float64Array(qy.length), theta: cfg.theta ?? THETA, sk, laut, tt: tutup, pintuLaut: cfg.pintuLaut || null, ek, es, qe, eo, pq, V};
   const etaLaut = s => { const a = Math.min(J, Math.floor(s / 3600)), b = Math.min(J, a + 1), f = s / 3600 - a; return muka[a] + (muka[b] - muka[a]) * f; };
   const debit = (m, s) => { const a = Math.min(J, Math.floor(s / 3600)), b = Math.min(J, a + 1), f = s / 3600 - a; return m.q[a] + (m.q[b] - m.q[a]) * f; };
   let hAkhir = 0;
@@ -255,7 +255,7 @@ function cbrt(a) { F64[0] = a; U32[HI] = ((U32[HI] / 3) | 0) + 715094163; U32[1 
   x = (2 * x + a / (x * x)) / 3; return (2 * x + a / (x * x)) / 3; }
 /* satu langkah inersia: fluks sisi, aliran tepi, pembatas, perbarui h. Fungsi terpisah tanpa closure: ~10x lebih cepat di V8 */
 function langkahAir(K, dt, eta) {
-  const {nx, ny, dx, A, n2, z, h, hmaks, qx, qy, px, py, sk, laut, tt, ek, es, qe, eo, pq, V} = K, N = nx * ny, nE = ek.length, gdt = G * dt;
+  const {nx, ny, dx, A, n2, z, h, hmaks, qx, qy, px, py, sk, laut, tt, ek, es, qe, eo, pq, V} = K, pl = K.pintuLaut, N = nx * ny, nE = ek.length, gdt = G * dt;
   /* skema q-terpusat de Almeida dkk. 2012: q lama dirata-rata dengan sisi sejajar tetangga. Diuji di mangkuk n 0,013-0,03,
      48 jam: theta 1 (Bates asli) dengan alfa 0,7 berosilasi lalu pecah sesudah ~6 jam; theta 0,7 membeku jadi pola papan
      catur; theta 0,9 alfa 0,7 rata sampai 0,1 mm. */
@@ -270,7 +270,9 @@ function langkahAir(K, dt, eta) {
     const za = z[a], zb = z[b], ea = la ? (za > eta ? za : eta) : za + h[a], eb = lb ? (zb > eta ? zb : eta) : zb + h[b];
     const hf = (ea > eb ? ea : eb) - (za > zb ? za : zb);
     if (hf <= HMIN) { arr[f] = 0; continue; }
-    const q = arr[f]; arr[f] = (qm - gdt * hf * (eb - ea) / dx) / (1 + gdt * (n2[a] + n2[b]) * .5 * (q < 0 ? -q : q) / (hf * hf * cbrt(hf)));
+    const q = arr[f]; const nq = (qm - gdt * hf * (eb - ea) / dx) / (1 + gdt * (n2[a] + n2[b]) * .5 * (q < 0 ? -q : q) / (hf * hf * cbrt(hf)));
+    /* pintu muara (cfg.pintuLaut, sel darat di muara): muka laut di atas muka air sel muara = tertutup, laut -> darat 0; darat -> laut tetap */
+    arr[f] = pl && ((la && pl[b] && ea > eb && nq > 0) || (lb && pl[a] && eb > ea && nq < 0)) ? 0 : nq;
   }
   eo.fill(0);
   for (let e = 0; e < nE; e++) { const k = ek[e], d = h[k]; const v = d > HMIN ? d * cbrt(d * d) * es[e] / Math.sqrt(n2[k]) : 0; qe[e] = v; eo[k] += v; }

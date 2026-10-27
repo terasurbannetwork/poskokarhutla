@@ -33,7 +33,7 @@ def unduh():
 def kueri_pintu():
     bb = f"{KOTAK[1]},{KOTAK[0]},{KOTAK[3]},{KOTAK[2]}"
     return (f'[out:json][timeout:120];(nwr["waterway"~"^(sluice_gate|weir|lock_gate|flood_gate)$"]({bb});'
-            f'nwr["man_made"="sluice"]({bb}););out tags center;')
+            f'nwr["man_made"~"^(sluice|sluice_gate)$"]({bb}););out tags center;')
 
 
 def unduh_pintu():
@@ -41,12 +41,17 @@ def unduh_pintu():
     jalur = os.path.join(MENTAH, "pintu_osm.json")
     if os.path.exists(jalur):
         return baca(jalur)
-    try:
-        req = urllib.request.Request(MIRROR, data=urllib.parse.urlencode({"data": kueri_pintu()}).encode(), headers={"User-Agent": UA})
-        with urllib.request.urlopen(req, timeout=150) as r:
-            d = json.loads(r.read())
-    except Exception as e:
-        print("pintu air gagal dipanen:", e)
+    d = None
+    for coba in range(4):  # mirror sering 504: ulangi dengan jeda
+        try:
+            req = urllib.request.Request(MIRROR, data=urllib.parse.urlencode({"data": kueri_pintu()}).encode(), headers={"User-Agent": UA})
+            with urllib.request.urlopen(req, timeout=150) as r:
+                d = json.loads(r.read())
+            break
+        except Exception as e:
+            print("pintu air gagal dipanen (coba %d):" % (coba + 1), e)
+            time.sleep(20 * (coba + 1))
+    if d is None:
         return None
     simpan(jalur, d)
     return d
