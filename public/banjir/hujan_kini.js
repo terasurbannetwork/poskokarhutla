@@ -22,19 +22,20 @@ const HujanKini = (() => {
   const posDekat = ll => { let b = null, d = RADIUS_KM; for (const p of PosHujan.D?.pos || []) { if (typeof p.lon !== "number" || EksPA.redupHujan(p, kini() / 1000)) continue; const k = km(ll, [p.lon, p.lat]); if (k <= d) { d = k; b = p; } } return b && {p: b, km: d}; };
   /* status banjir dari wil-fill di bawah kursor: kecamatan = levelnya, kab/prov = level tertinggi yang punya kecamatan */
   const statusWil = pt => { const f = peta.getLayer("wil-fill") && peta.queryRenderedFeatures(pt, {layers: ["wil-fill"]})[0]; if (!f) return null; const p = f.properties, kp = String(p.kunci || "").split("|");
-    if (kp.length === 3 && p.lv != null) return {lv: +p.lv, teks: LEVEL[p.lv], ket: "status banjir " + (p.nama || "kecamatan")};
+    if (kp.length === 3 && p.lv != null) return {lv: +p.lv, teks: LEVEL[p.lv], ket: "status banjir kecamatan"};
     const n = S.ag?.[p.kunci]?.n; if (!n) return null; const lv = [3, 2, 1].find(i => n[i] > 0) ?? 0;
-    return {lv, teks: LEVEL[lv], ket: lv ? `${fmt(n[lv])} kecamatan ${LEVEL[lv].toLowerCase()}, ${p.nama}` : `status banjir ${p.nama}`}; };
+    return {lv, teks: LEVEL[lv], ket: lv ? `${fmt(n[lv])} kecamatan ${LEVEL[lv].toLowerCase()}` : "status banjir"}; };
 
   function kartu(a, e) {
     const m = Date.parse(a.mulai), s = Date.parse(a.selesai), ev = String(a.event || "Hujan"), int = ev.replace(/^hujan\s*/i, "").replace(/\s*(dan|disertai)\s*petir/i, "") || "Hujan";
     const ph = posDekat([e.lngLat.lng, e.lngLat.lat]), st = statusWil(e.point);
     const stat = [["hujan", int, /petir/i.test(ev) ? "intensitas, disertai petir" : "intensitas", warna(ev), /lebat|ekstrem/i.test(ev)],
       ["peta", jamWib(m), `mulai, ${durasi(kini() - m)} lalu`, "#3f7fb8"],
-      ["bel", jamWib(s), `perkiraan selesai, ${durasi(s - kini())} lagi`, "#3f7fb8"],
-      ["debit", ph ? EksPA.mmTeks(ph.p.mm_1jam ?? 0) + " mm" : "–", ph ? `1 jam terakhir, ${esc(ph.p.nama)} (${fmt(Math.round(ph.km))} km)` : "tidak ada pos hujan dalam 25 km", "#1d4e89"],
+      ["bel", jamWib(s), `selesai, ${durasi(s - kini())} lagi`, "#3f7fb8"],
+      ["debit", ph ? EksPA.mmTeks(ph.p.mm_1jam ?? 0) + " mm" : "–", ph ? `1 jam, pos ${fmt(Math.round(ph.km))} km` : "tanpa pos hujan dekat", "#1d4e89"],
       ...(st ? [["perisai", st.teks, esc(st.ket), WARNA_LV[st.lv], st.lv >= 2]] : [])];
-    return KAKI(`Sumber: BMKG (nowcast), ${ph ? "SIHKA Kementerian PU, " : ""}prakiraan banjir Centurisk97`, PI.kartuTip({judul: esc(ev), sub: `<small class="tp-sub">${esc(a.wilayah.split(",").slice(0, 4).map(x => x.trim()).join(", ").toLowerCase().replace(/\b\p{L}/gu, c => c.toUpperCase()))}${a.wilayah.split(",").length > 4 ? ` dan ${fmt(a.wilayah.split(",").length - 4)} lainnya` : ""}</small>`, stat})).replace("tp-gr tp-satu", "tp-gr tp-kisi");
+    const nKec = a.wilayah.split(",").filter(x => x.trim()).length, judul = ev.charAt(0) + ev.slice(1).toLowerCase();
+    return KAKI(`Sumber: BMKG (nowcast), ${ph ? "SIHKA Kementerian PU, " : ""}prakiraan banjir Centurisk97`, PI.kartuTip({judul: esc(judul), sub: `<small class="tp-sub">${fmt(nKec)} kecamatan</small>`, stat})).replace("tp-gr tp-satu", "tp-gr tp-kisi");
   }
 
   async function pasang() {
