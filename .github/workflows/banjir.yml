@@ -87,7 +87,7 @@ jobs:
           done; true
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro wilayah_hari jaga_banjir hulu unit_respons; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro wilayah_hari jaga_banjir hulu unit_respons sungai_pos; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah. Tetap gagal: run tidak jatuh, hujan.json lama bertahan,
@@ -162,6 +162,15 @@ jobs:
         run: python3 scripts/banjir/hulu.py
 
       # OSM Overpass berubah pelan: tanggal 1 WIB atau bila berkas belum ada. Hasil kosong/separuh tidak menimpa (dijaga skripnya).
+      # Garis sungai OSM 6 km di sekitar pos berambang, untuk ruas Siaga di zoom < 12 (ruas_jauh.js). Mingguan (Senin UTC)
+      # atau bila berkas belum ada; Overpass sering penuh, skrip melanjutkan dari cache dan tidak menimpa dengan hasil separuh.
+      - name: Sungai sekitar pos berambang (mingguan, boleh gagal)
+        continue-on-error: true
+        run: |
+          if [ "$(date -u +%u)" = 1 ] || [ ! -f public/banjir/data/sungai_pos.json ]; then
+            python3 scripts/banjir/sungai_pos.py
+          fi
+
       - name: Unit respons OSM (bulanan, boleh gagal)
         continue-on-error: true
         run: |

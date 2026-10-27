@@ -16,6 +16,8 @@ SERVER = ["https://overpass-api.de/api/interpreter", "https://overpass.kumi.syst
 UA = "poskobanjir/1.0 (pantau bencana; sungai pos)"
 RADIUS_KM, TOL_M, BATAS_BYTE, MIN_FITUR, GRUP = 6.0, 20.0, 600_000, 20, 1
 KELAS = "river|canal|stream|drain"
+GAGAL_MAKS = 0.1
+MENTAH = os.path.join(AKAR, "data/raw/banjir/sungai_pos")
 
 
 def km(a, b, c, d):
@@ -123,10 +125,16 @@ def jalankan():
     req = urllib.request.Request(API, headers={"User-Agent": UA})
     pos = pos_terpilih(json.loads(urllib.request.urlopen(req, timeout=60).read()))
     if not pos: raise SystemExit("tidak ada pos berambang; berkas lama dibiarkan")
-    unik = {}
-    for i in range(0, len(pos), GRUP):
-        for e in overpass(kueri(pos[i:i + GRUP])): unik[e.get("id")] = e
-        time.sleep(1)
+    unik, gagal = {}, 0
+    for lo, la in pos:  # per pos, hasil mentah di-cache supaya jalan ulang melanjutkan; satu pos gagal dilewati (batas GAGAL_MAKS)
+        c = os.path.join(MENTAH, f"{lo}_{la}.json")
+        if os.path.exists(c): els = json.load(open(c))
+        else:
+            try: els = overpass(kueri([(lo, la)]))
+            except SystemExit: gagal += 1; print(f"  pos {lo},{la} dilewati", file=sys.stderr); continue
+            os.makedirs(MENTAH, exist_ok=True); json.dump(els, open(c, "w"), separators=(",", ":")); time.sleep(1)
+        for e in els: unik[e.get("id")] = e
+    if gagal > len(pos) * GAGAL_MAKS: raise SystemExit(f"{gagal} dari {len(pos)} pos gagal; berkas lama dibiarkan")
     fs = [f for f in (fitur(e, pos) for e in unik.values()) if f]
     fc = {"type": "FeatureCollection", "attribution": "(c) kontributor OpenStreetMap, ODbL 1.0, lewat Overpass; diolah Pantau Bencana.",
           "features": fs}
