@@ -17,7 +17,7 @@ const KejAktif = {
   warna: lv => WARNA_LV[Math.min(3, Math.max(2, lv || 2))],
   /* nama dari kabupaten anggota: "Aceh Barat Daya" atau "Aceh Jaya dan 2 lainnya" */
   kab(k) { const a = [...new Set(k.kec.map(x => x.split("|")[1]))]; return a.length > 2 ? `${a.slice(0, 2).join(", ")} dan ${fmt(a.length - 2)} lainnya` : a.join(" dan "); },
-  nama: k => "Banjir " + KejAktif.kab(k),
+  nama: k => "Wilayah Siaga " + KejAktif.kab(k),
   tgl: t => tglPendek(t),
 
   /* lapisan di peta (dipanggil dari Peta.pasang, juga tiap gaya peta berganti): titik pusat selalu, poligon bila zoom cukup */
@@ -54,7 +54,7 @@ const KejAktif = {
     const n = this._n = (this._n || 0) + 1;   /* dua klik berurutan atau tutup laci: hanya panggilan terakhir yang menang */
     if (!document.querySelector("#p-peta.on")) bukaTab("peta", false);
     const K = await this.muatAwal(); if (n !== this._n) return; const k = K.find(x => x.kode === kode);
-    if (!k) { toast("Kejadian " + kode + " tidak ditemukan atau sudah selesai"); this.url_bersih(); return; }
+    if (!k) { toast("Wilayah Siaga " + kode + " tidak ditemukan atau sudah selesai"); this.url_bersih(); return; }
     if (dorong) history.replaceState(null, "", this.url(kode));
     peta?.getLayer("kej-pilih") && peta.setFilter("kej-pilih", ["==", ["get", "kode"], kode]);
     const G = await this.geo(); if (n !== this._n) return;
@@ -70,7 +70,7 @@ const KejAktif = {
       <p class="fnd" translate="no"><b>${ada.map(x => esc(x[2])).join(", ")}${kec.length > ada.length ? ` dan ${fmt(kec.length - ada.length)} lainnya` : ""}</b> · ${esc(kab)}</p>
       <p class="fnd">Mulai terdeteksi ${this.tgl(k.sejak)}. Skor indeks ${fmt(Math.round(k.skor))} dari 100 <span class="pill" style="background:var(--surface);color:var(--ink2)">belum dikalibrasi</span>${k.bahaya_banjir != null ? `; bahaya banjir InaRISK ${k.bahaya_banjir >= .66 ? "tinggi" : k.bahaya_banjir >= .33 ? "sedang" : "rendah"}` : ""}${k.sungai ? `; ${fmt(k.sungai.titik)} titik sungai di dekatnya` : ""}.</p>
       <div id="kejRespons" data-j="Respons terdekat"></div>
-      <details class="lipat"><summary>Cara skor dihitung</summary><div class="isi"><p class="fnd">Indeks 0 sampai 100 untuk mengurutkan kejadian, bukan peluang atau ukuran kerusakan. Terdiri dari tingkat peringatan (40 poin; Awas bernilai penuh), jumlah penduduk di kecamatan terdeteksi (30; makin banyak makin tinggi, naik pelan), jumlah kecamatan (15; penuh pada 10 kecamatan atau lebih), dan bahaya banjir InaRISK (15). Bagian yang datanya tidak ada dibuang, bobotnya dibagi ulang. Status banjir sendiri masih sering memberi alarm palsu, jadi indeks ini belum dikalibrasi.</p></div></details>
+      <details class="lipat"><summary>Cara skor dihitung</summary><div class="isi"><p class="fnd">Indeks 0 sampai 100 untuk mengurutkan wilayah Siaga, bukan peluang atau ukuran kerusakan. Terdiri dari tingkat peringatan (40 poin; Awas bernilai penuh), jumlah penduduk di kecamatan terdeteksi (30; makin banyak makin tinggi, naik pelan), jumlah kecamatan (15; penuh pada 10 kecamatan atau lebih), dan bahaya banjir InaRISK (15). Bagian yang datanya tidak ada dibuang, bobotnya dibagi ulang. Status banjir sendiri masih sering memberi alarm palsu, jadi indeks ini belum dikalibrasi.</p></div></details>
       <p class="fnd">Sumber: Open-Meteo, GloFAS, InaRISK. Prakiraan model, bukan kejadian teramati dan bukan pernyataan resmi BNPB/BMKG. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`;
     this._buka = true; Analisa.buka(isi, `<div><h3 id="dlgJudul" translate="no">${esc(this.nama(k))}</h3><p>Wilayah Siaga (prakiraan) · <span translate="no">${esc(k.kode)}</span> · ${esc(ps)}</p></div>`); this._buka = false;
     const el = $("#laci"); el.dataset.kej = k.kode;
@@ -84,7 +84,7 @@ const KejAktif = {
     const [la, lo] = k.pusat, jauh = u => km(la, lo, u.lat, u.lon), dekat = (j, m) => U.filter(u => u.j === j).map(u => ({...u, d: jauh(u)})).sort((a, b) => a.d - b.d).slice(0, m);
     const R = [...dekat("basarnas", 1), ...dekat("pos", 1), ...dekat("bpbd", 2)].sort((a, b) => a.d - b.d), J = {basarnas: "Basarnas", pos: "Pos SAR", bpbd: "BPBD"};
     s.innerHTML = `<details class="lipat" data-j="Respons terdekat" open><summary>Respons terdekat</summary><div class="isi"><table class="tb2"><tbody>${R.map(u => `<tr><td><b>${J[u.j]}</b> <span translate="no">${esc(u.n)}</span></td><td class="n" translate="no">${fmt(Math.round(u.d))} km${u.t ? ", " + esc(u.t) : ""}</td></tr>`).join("")}</tbody></table>
-      <p class="fnd">Jarak garis lurus dari pusat kejadian. Sumber: OpenStreetMap dan BNPB; cakupan tidak lengkap, nomor perlu dicek ulang.</p></div></details>`; },
+      <p class="fnd">Jarak garis lurus dari pusat wilayah Siaga. Sumber: OpenStreetMap dan BNPB; cakupan tidak lengkap, nomor perlu dicek ulang.</p></div></details>`; },
   async bagikan(k) { const u = location.origin + this.url(k.kode);
     try { if (navigator.share) return await navigator.share({title: this.nama(k), url: u}); await navigator.clipboard.writeText(u); toast("Tautan disalin"); } catch (e) { if (e?.name !== "AbortError") toast("Tautan belum bisa dibagikan"); } },
   url_bersih() { if (/^\/banjir\/k\//.test(location.pathname) || /[?&]k=B\d+/.test(location.search)) history.replaceState(null, "", "/banjir/peta"); },

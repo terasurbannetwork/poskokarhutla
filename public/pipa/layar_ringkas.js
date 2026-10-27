@@ -5,9 +5,10 @@
    Butuh global public/inti: fmt, esc, jamWIB, Kartu, nanti. */
 import {kuantil, nKecil} from "./hitung.js";
 import {barisKoreksi, rekapKelas, AMBANG_G3} from "./layar_log.js";
-import {TEKS_ALASAN} from "./layar_kit.js";
+import {TEKS_ALASAN, muatGayaKit} from "./layar_kit.js";
 import {memuat, galat, menunggu} from "./keadaan.js";
 import {ikon} from "./ikon.js";
+import {ringkasDepot, kesiapanHtml, muatRincian, kitTerpotong} from "./kesiapan.js";
 import {peringkat, keputusanHariIni, teksWhatsApp} from "./keputusan.js";
 
 export const JALUR = {keputusan: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", pemicu: "/api/sippa/data/pemicu", pilot: "/api/sippa/log", zona: "/api/sippa/data/zona", gerak: "/api/sippa/ringkas", alarm: "/api/sippa/alarm?aktif=1"};
@@ -34,7 +35,7 @@ export function ringkasKit(kits) {
   return {siap: n("gudang"), lapangan: n("depot") + n("gelar") + n("banjir"), hilang: n("hilang"), servis: n("servis"), total: kits.length};
 }
 
-export function kartuKit(d) {
+export function kartuKit(d, depot = null, terpotong = 0) {
   const kits = d.kit || [];
   const sumber = "inventaris SIPPA D1 (kit, gerak, komponen)";
   if (!kits.length) return {ey: "Kit", judul: "Belum ada kit terdaftar.", isi: kosongHtml("Kit dicatat dari layar Kit lewat tombol Tambah kit."), sumber, per: null, tautan: TAUTAN.kit};
@@ -43,7 +44,7 @@ export function kartuKit(d) {
   const baris = teratas.map(k => `<li data-kode="${esc(k.kode)}"><b class="num">${esc(k.kode)}</b><span class="sp-status ${esc(k.status)}">${esc(LABEL_STATUS[k.status] ?? k.status)}</span></li>`).join("");
   const lain = kits.length - teratas.length, pct = d.kehilangan?.musim_pct;
   return {ey: "Kit", judul: `Kit: ${hl(r.siap)} siap di gudang, ${hl(r.lapangan)} di lapangan, ${hl(r.hilang)} hilang`,
-    isi: `<ul class="sp-daftar">${baris}</ul>${lain > 0 ? `<p class="ad-catat">dan ${esc(fmt(lain))} kit lain</p>` : ""}${pct == null ? "" : `<p class="ad-catat">${esc(fmt(pct))}% komponen musim ini hilang</p>`}${pilBaris(pil("Terverifikasi", "terverifikasi", "Dicatat staf di inventaris SIPPA"))}`,
+    isi: `<ul class="sp-daftar">${baris}</ul>${lain > 0 ? `<p class="ad-catat">dan ${esc(fmt(lain))} kit lain</p>` : ""}${pct == null ? "" : `<p class="ad-catat">${esc(fmt(pct))}% komponen musim ini hilang</p>`}${depot ? kesiapanHtml(depot, terpotong) : ""}${pilBaris(pil("Terverifikasi", "terverifikasi", "Dicatat staf di inventaris SIPPA"))}`,
     sumber, per, perLabel: "perubahan terakhir", tautan: TAUTAN.kit};
 }
 
@@ -204,7 +205,7 @@ let ctrl = null;
 export function lepas() { ctrl?.abort(); ctrl = null; }
 
 export async function pasang(akar, konteks) {
-  lepas(); ctrl = new AbortController();
+  lepas(); ctrl = new AbortController(); muatGayaKit();
   const sinyal = ctrl.signal, prov = konteks.prov, kini = Date.now();
   const nama = (typeof Wilayah !== "undefined" && Wilayah.PROV?.[prov]) || `provinsi ${prov}`;
   akar.innerHTML = `<h1 class="sp-judul">Ringkas</h1>
@@ -225,8 +226,14 @@ export async function pasang(akar, konteks) {
     const s = bangun(hasil.ok); per[k] = s.per; wadah.innerHTML = rakitKartu(s); tampilPer();
   };
   let teksWa = "";
+  /* kartu Kit tampil dulu tanpa kesiapan; bagian kit siap gelar diisi begitu rincian kit datang (maksimal 12 fetch) */
+  const kesiapanSusul = j => muatRincian(konteks.ambil, j.kit || [], sinyal).then(r => {
+    if (sinyal.aborted) return;
+    const w = slot("kit"); if (w && !w.querySelector(".ad-galat")) w.innerHTML = rakitKartu(kartuKit(j, ringkasDepot(j.kit || [], r), kitTerpotong(j.kit || [])));
+  });
   akar.addEventListener("click", async e => {
     const t = e.target.closest('[data-aksi="salin-wa"]'); if (!t || !teksWa) return;
+    t.textContent = "Menyalin";   // piksel berubah sebelum menunggu izin papan klip (INP)
     try { await navigator.clipboard.writeText(teksWa); t.textContent = "Tersalin"; } catch { t.textContent = "Salin gagal; izinkan papan klip"; }
   }, {signal: sinyal});
   const muat = {
@@ -240,7 +247,7 @@ export async function pasang(akar, konteks) {
   };
   const bangun = {
     keputusan: ([p, k]) => { const s = kartuKeputusan(p, k, prov, konteks.zona, nama); teksWa = s.wa; return s; },
-    kit: j => kartuKit(j), pemicu: j => kartuPemicu(j, prov, kini),
+    kit: j => { kesiapanSusul(j); return kartuKit(j); }, pemicu: j => kartuPemicu(j, prov, kini),
     pilot: j => kartuPilot((j.log || []).filter(l => l.prov == null || l.prov === prov)),
     zona: j => kartuZona(j, prov, nama), gerak: j => kartuGerak(j.gerak_terakhir || []), alarm: j => kartuAlarm(j.alarm || []),
   };

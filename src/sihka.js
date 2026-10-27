@@ -9,6 +9,7 @@
    bila satuan diketahui, bila tidak v >= p95 dan kenaikan >= 2x p99) > tertinggi (v > rekor, >= 30 hari) > biasa. Dasar persentil tidak memuat 24 jam terakhir. */
 import {gagal, cacheTepi} from "./worker.js";
 import {tarikTeks, perbaruiResmi} from "./sungai_resmi.js";
+import {panenHujan, ruteHujan} from "./hujan.js";
 
 const SUMBER = "https://sihka.sda.pu.go.id/api/v1s/telemetry-list", CADANGAN = "https://sihka.dev-tunnels.id/api/v1s/telemetry-list", TAHAN_HARI = 180, DASAR_HARI = 90, DASAR_SIKLUS = 14;   // bacaan mentah 180 hari (uji balik satu musim hujan); jendela dasar 90 hari
 const UA = "pantaubencana-sihka/1.0 (+https://centurisk97.id; pemantauan banjir nonkomersial)";
@@ -112,7 +113,12 @@ async function tarik() {
   try { return await tarikTeks(SUMBER, periksaSihka); } catch (e) { try { return await tarikTeks(CADANGAN, periksaSihka); } catch (e2) { throw e; } }
 }
 
-const bangunStatus = (env, kini) => env.DB.prepare(SQL_STATUS).bind(Math.floor(kini / 1000), kini).run();
+const SQL_META = "CREATE TABLE IF NOT EXISTS sungai_meta (pos TEXT PRIMARY KEY, sumber TEXT NOT NULL, pengelola TEXT, lon REAL, lat REAL, a3 REAL, a2 REAL, a1 REAL, resmi TEXT, jenis TEXT, diperbarui INTEGER) WITHOUT ROWID";
+/* tabel sungai_meta (0066) belum diterapkan di D1 = status SIHKA tidak boleh mati: buat tabelnya (SQL sama dengan migrasi, idempoten) lalu ulangi */
+const bangunStatus = async (env, kini) => {
+  const jalan = () => env.DB.prepare(SQL_STATUS).bind(Math.floor(kini / 1000), kini).run();
+  try { return await jalan(); } catch (e) { if (!/sungai_meta/.test(e?.message)) throw e; await env.DB.prepare(SQL_META).run(); return jalan(); }
+};
 
 /* tiap jam. Sumber gagal = bacaan & stempel sehat lama utuh (hanya galat dicatat di isi); status tetap dihitung ulang agar pos yang berhenti melapor jadi 'lama'. */
 export async function perbaruiSihka(env, kini = Date.now()) {
@@ -123,12 +129,19 @@ export async function perbaruiSihka(env, kini = Date.now()) {
     await bangunStatus(env, kini);
     return {galat: e.message};
   }
+  await panenHujan(env, teks, kini).catch(e => console.error("hujan", e?.message));   // satu unduhan dipakai bersama; gagal hujan tidak menahan sungai
   if (!(await env.DB.prepare("SELECT 1 FROM sihka_pos WHERE instr(pos, ':') = 0 LIMIT 1").first())) await env.DB.prepare(SQL_POS).bind(teks, detik).run();   // pertama kali: metadata dulu (SQL_BACA hanya menerima pos terdaftar)
   const baru = (await env.DB.prepare(SQL_BACA).bind(teks, detik).run()).meta.changes;
   await env.DB.prepare("INSERT INTO cuaca_sumber (kunci, isi, dibuat) VALUES ('sihka', ?, ?) ON CONFLICT(kunci) DO UPDATE SET isi = excluded.isi, dibuat = excluded.dibuat")
     .bind(JSON.stringify({ok: kini, baru, galat: null, dibaca: teks.length}), kini).run();
   await bangunStatus(env, kini);   // sesudah stempel sehat, supaya `ok` di status = tarikan ini
   return {baru, dibaca: teks.length};
+}
+
+/* tiap 5 menit di luar menit 23 (menit 23 sudah lewat perbaruiSihka): hanya hujan. Gagal = tak ada yang berubah. */
+export async function perbaruiHujan(env, kini = Date.now()) {
+  let teks; try { teks = await tarik(); } catch (e) { return {galat: e.message}; }
+  return panenHujan(env, teks, kini);
 }
 
 /* harian: metadata pos, dasar historis, buang bacaan > 180 hari dan pos tak terlihat > 30 hari, lalu status disegarkan. Tarikan sendiri; gagal = tak ada yang berubah. */
@@ -164,6 +177,7 @@ export async function sihkaDibuat(env) {
 /* GET/HEAD /api/banjir/sungai-ukur: baris sihka_status apa adanya (tanpa parse), cache tepi 10 menit; tabel/isi belum ada = 503 */
 export async function ruteSihka(req, env, ctx, url) {
   if (url.pathname.startsWith(JALUR_POS)) return riwayatPos(req, env, ctx, url);
+  if (url.pathname.replace(/\/+$/, "") === "/api/banjir/hujan-ukur") return ruteHujan(req, env, ctx, url);
   if (url.pathname.replace(/\/+$/, "") !== "/api/banjir/sungai-ukur") return null;
   if (req.method !== "GET" && req.method !== "HEAD") return gagal(405, "hanya GET dan HEAD", {allow: "GET, HEAD"});
   const r = await cacheTepi(new Request(url.origin + "/api/banjir/sungai-ukur"), ctx, 600, async () => {

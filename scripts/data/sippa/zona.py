@@ -9,8 +9,11 @@ Pakai   : python3 zona.py [--keluar DIR]   |   python3 zona.py uji
 Python 3.12 stdlib. Zona: A air<2,5 & jalan<5; B air<2,5 & jalan>=5/null; C air>=2,5 & jalan<5; D sisanya (operator "<", keputusan 51).
 Kekerapan = tahun_aktif S-NPP dari sel22 (sebanding 2012-2025); per_tahun/n_baris tidak dipakai sebagai tren. Tanpa nama perusahaan.
 """
-import csv, hashlib, json, math, os, re, statistics, sys
+import csv, glob, hashlib, json, math, os, re, statistics, sys
 from datetime import datetime, timedelta, timezone
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import brgm  # noqa: E402
 
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 CSV = os.path.join(AKAR, "data", "kajian-bnpb", "pipa", "data")
@@ -19,8 +22,8 @@ KEL = os.path.join(AKAR, "data", "sippa", "keluaran")
 AIR, JALAN = 2.5, 5.0
 SEL = 0.02
 MAKS = 8 * 1024 * 1024
-PROV = "62"
-N_KOMPLEKS = 865
+PROV = "62"                                   # provinsi dengan atribut lengkap (DEM, GSW, MCD64A1, CHIRPS, sel22, akses)
+N_KOMPLEKS = 865                              # kompleks prov 62
 RADIUS_SEL_KM = 5.0
 TERLARANG = {"nama", "perusahaan", "pt"}      # kunci yang tidak boleh ada di keluaran
 VERSI = {"k": ("air_km_lama", "jalan_km_lama"), "u": ("air_km_semua", "jalan_km_utama"), "o": ("air_km_semua", "jalan_km_semua")}
@@ -33,6 +36,7 @@ KEYAKINAN = {
     "terbakar_n_2km": "terverifikasi", "terbakar_n_5km": "terverifikasi", "terbakar_akhir": "terverifikasi",
     "kekerapan_sel22": "terverifikasi", "chirps_anom_akhir_pct": "terverifikasi", "kaw": "terverifikasi",
     "khg": "resmi", "jam_tiba": "estimasi-model",
+    "air_asin": "terverifikasi", "air_asin_km": "terverifikasi", "air_asin_jenis": "terverifikasi", "brgm_3km": "resmi",
 }
 
 
@@ -46,6 +50,15 @@ def zona(air, jalan):
 def baca_csv(nama):
     with open(os.path.join(CSV, nama), newline="") as h:
         return {r["id"]: r for r in csv.DictReader(h)}
+
+
+def baca_osm():
+    """osm_jarak.csv (prov 62) + osm_jarak_<prov>.csv (SP-109). Urutan provinsi: 62 dulu, lalu kode naik. -> ({id: baris}, [prov])."""
+    osm, provs = baca_csv("osm_jarak.csv"), [PROV]
+    for p in sorted(glob.glob(os.path.join(CSV, "osm_jarak_*.csv"))):
+        provs.append(re.search(r"osm_jarak_(\d+)\.csv", p).group(1))
+        osm.update(baca_csv(os.path.basename(p)))
+    return osm, provs
 
 
 def baca_json(*p):
@@ -126,15 +139,21 @@ def susun_kompleks(sel22):
     op = {x["id"]: x for x in baca_json(PUB, "operasi.json")["kompleks"]}
     kons = baca_json(PUB, "kompleks_konsesi.json")["kompleks"]
     khg = baca_json(PUB, "khg_prioritas.json")
-    osm, dem, gsw = baca_csv("osm_jarak.csv"), baca_csv("dem_elevasi.csv"), baca_csv("gsw_air_terdekat.csv")
+    osm, provs = baca_osm()
+    dem, gsw = baca_csv("dem_elevasi.csv"), baca_csv("gsw_air_terdekat.csv")
     bakar, chirps = baca_csv("area_terbakar.csv"), baca_csv("chirps_anomali_tahunan.csv")
     jam, nama_akses = sumber_akses()
     aktif = {r[0]: r[1] for r in sel22["baris"]}
-    ids = sorted(k for k, v in kend["kompleks"].items() if v["prov"] == PROV)
-    assert len(ids) == N_KOMPLEKS, f"kompleks prov {PROV} = {len(ids)}, harus {N_KOMPLEKS}"
+    ids = [k for p in provs for k in sorted(k for k, v in kend["kompleks"].items() if v["prov"] == p and k in op)]
+    assert sum(1 for k in ids if kend["kompleks"][k]["prov"] == PROV) == N_KOMPLEKS, f"kompleks prov {PROV}, harus {N_KOMPLEKS}"
+    assert set(ids) == set(osm), f"osm_jarak*.csv {len(osm)} baris, kompleks {len(ids)}"
+    titik_brgm = brgm.muat()
+    brgm3 = brgm.hitung_3km([{"id": k, "lat": op[k]["lat"], "lon": op[k]["lon"]} for k in ids], titik_brgm) if titik_brgm is not None else {}
     out = []
     for k in ids:
-        kd, o, m, d, g, b, c = kend["kompleks"][k], op[k], osm[k], dem[k], gsw[k], bakar[k], chirps[k]
+        kd, o, m = kend["kompleks"][k], op[k], osm[k]
+        lengkap = kd["prov"] == PROV                          # DEM, GSW, MCD64A1, CHIRPS, sel22 baru ada untuk Kalteng; provinsi lain null
+        d, g, b, c = (dem[k], gsw[k], bakar[k], chirps[k]) if lengkap else ({}, {}, {}, {})
         lat, lon = round(o["lat"], 4), round(o["lon"], 4)
         r = {
             "id": k, "prov": kd["prov"], "kab": kd["kab"], "lat": lat, "lon": lon, "gambut": bool(kd["gambut"]),
@@ -144,18 +163,21 @@ def susun_kompleks(sel22):
             "jalan_km_semua": f(m["jalan_kend_km"], 2), "jalan_km_setapak": f(m["jalan_setapak_km"], 2),
             "terpotong": {"jalan_semua": m["jalan_kend_terpotong"] == "1", "jalan_utama": m["jalan_utama_terpotong"] == "1",
                           "air_semua": m["air_semua_terpotong"] == "1"},
+            # SP-108: air asin (laut/payau) terpisah; zona tetap memakai air tawar (air_km_semua)
+            "air_asin": m.get("air_asin") == "1", "air_asin_km": f(m.get("air_asin_km"), 2), "air_asin_jenis": m.get("air_asin_jenis") or None,
         }
         for v, (a, j) in VERSI.items():
             r["zona_" + v] = zona(r[a], r[j])
         r.update({
-            "elev_kompleks_m": f(d["elev_kompleks_m"], 1), "elev_air_m": f(d["elev_air_terdekat_m"], 1),
-            "beda_air_m": f(d["beda_air_minus_kompleks_m"], 1), "gsw": g["gsw_kelas"] or None,
-            "terbakar_n_2km": i(b["bakar_n_tahun_2km"]), "terbakar_n_5km": i(b["bakar_n_tahun_5km"]),
-            "terbakar_akhir": i(b["bakar_tahun_terakhir_2km"]),
-            "kekerapan_sel22": aktif.get(id_sel(*sel_dari(lat, lon)), 0),   # sel tanpa baris = 0 tahun aktif S-NPP
-            "chirps_anom_akhir_pct": f(c["anom_2025"], 1), "kaw": kaw(kons.get(k), o),
+            "elev_kompleks_m": f(d.get("elev_kompleks_m"), 1), "elev_air_m": f(d.get("elev_air_terdekat_m"), 1),
+            "beda_air_m": f(d.get("beda_air_minus_kompleks_m"), 1), "gsw": g.get("gsw_kelas") or None,
+            "terbakar_n_2km": i(b.get("bakar_n_tahun_2km")), "terbakar_n_5km": i(b.get("bakar_n_tahun_5km")),
+            "terbakar_akhir": i(b.get("bakar_tahun_terakhir_2km")),
+            "kekerapan_sel22": aktif.get(id_sel(*sel_dari(lat, lon)), 0) if lengkap else None,   # sel tanpa baris = 0 tahun aktif S-NPP; di luar kotak sel22 = null
+            "chirps_anom_akhir_pct": f(c.get("anom_2025"), 1), "kaw": kaw(kons.get(k), o),
             "khg": None,                                                    # khg_prioritas.json tidak memuat pemetaan kompleks-KHG
             "jam_tiba": jam(k),
+            "brgm_3km": brgm3.get(k),                                       # SP-110; null bila brgm_pembasahan.json belum ditarik
         })
         out.append(r)
     return out, {"khg": khg, "kendala": kend, "nama_akses": nama_akses}
@@ -191,12 +213,15 @@ def med(v):
 def susun_zona(komp):
     """Satu baris provinsi + satu per kabupaten, per versi."""
     baris = []
-    kelompok = [(None, komp)] + [(kb, [k for k in komp if k["kab"] == kb]) for kb in sorted({k["kab"] for k in komp})]
-    for kb, isi in kelompok:
+    kelompok = []
+    for p in dict.fromkeys(k["prov"] for k in komp):                  # urutan kemunculan: 62 dulu
+        kp = [k for k in komp if k["prov"] == p]
+        kelompok += [(p, None, kp)] + [(p, kb, [k for k in kp if k["kab"] == kb]) for kb in sorted({k["kab"] for k in kp})]
+    for p, kb, isi in kelompok:
         for v, (a, j) in VERSI.items():
             cnt = {z: sum(1 for k in isi if k["zona_" + v] == z) for z in "ABCD"}
             potong = {"k": None, "u": "jalan_utama", "o": "jalan_semua"}[v]
-            baris.append({"prov": PROV, "kab": kb, "versi": v, **cnt, "n": len(isi),
+            baris.append({"prov": p, "kab": kb, "versi": v, **cnt, "n": len(isi),
                           "median_air_km": med(k[a] for k in isi), "median_jalan_km": med(k[j] for k in isi),
                           "tanpa_jalan_16km": None if potong is None else sum(1 for k in isi if k["terpotong"][potong])})
     return baris

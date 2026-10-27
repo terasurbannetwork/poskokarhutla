@@ -5,6 +5,7 @@
    0/1/2 dengan ambang BRIN), dedup (lat4, lon4, waktu, sensor), titik di luar wilayah Indonesia dibuang. Bedanya:
    wilayah dicari dari geo/provinsi.json + pusat kecamatan terdekat (banjir/data/pusat_kec.json), bukan poligon
    kecamatan penuh, jadi titik di pantai/perbatasan bisa sedikit berbeda dari data harian. */
+import {alarmTitikSippa} from "./sippa_titik.js";
 export const SENSOR = {VIIRS_SNPP_NRT: "N", VIIRS_NOAA20_NRT: "N20", VIIRS_NOAA21_NRT: "N21", MODIS_NRT: "M"};
 export const SENSOR_UTAMA = ["M", "N", "N20", "N21"];   // semua dihitung sebagai lokasi unik di peramban (AngkaKawasan.unik), sama dengan hotspot.json
 const BBOX = [94, -11.5, 141.5, 6.5], JAM = 3600e3, SIMPAN = 8, MAKS_BYTE = 1.8e6, KEC_CADANGAN_KM = 8;
@@ -104,12 +105,19 @@ export async function perbaruiTitik(env, kini = Date.now()) {
     baris: titik.map(p => [p.lat, p.lon, Math.round((p.t - acuan) / JAM * 100) / 100, p.s, p.frp, p.c, p.w, tglWIB(p.t)])};
   let teks = JSON.stringify(isi);
   while (teks.length > MAKS_BYTE && isi.baris.length) { isi.baris = isi.baris.slice(Math.ceil(isi.baris.length * .1)); teks = JSON.stringify(isi); }   // buang yang tertua
+  /* SP-103: pembanding = putaran terakhir yang alarmnya berhasil diproses (titik_proses_sippa), bukan sekadar putaran sebelumnya: putaran yang dilewati/galat tidak menghilangkan titik barunya */
+  let sebelumnya = null;
+  try { sebelumnya = (await env.DB.prepare("SELECT isi FROM titik_terbaru WHERE id = (SELECT putaran FROM titik_proses_sippa WHERE id = 1)").first())?.isi
+    ?? (await env.DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first())?.isi ?? null; } catch (e) { /* migrasi 0067 belum ada: alarm di bawah juga gagal dan dicatat */ }
   await env.DB.batch([
     env.DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(kini, teks),
     env.DB.prepare(`DELETE FROM titik_terbaru WHERE id NOT IN (SELECT id FROM titik_terbaru ORDER BY id DESC LIMIT ${SIMPAN})`),
   ]);
+  let sippa; try { sippa = await alarmTitikSippa(env, titik, sebelumnya, kini);
+    if (!sippa.lewat) await env.DB.prepare("INSERT INTO titik_proses_sippa (id, putaran) VALUES (1, (SELECT max(id) FROM titik_terbaru)) ON CONFLICT (id) DO UPDATE SET putaran = excluded.putaran").run(); }
+  catch (e) { sippa = {galat: String(e?.message || e).slice(0, 120)}; console.error("titik: alarm SIPPA", sippa.galat); }   // tabel 0067 belum ada = galat dicatat, putaran tetap sah
   if (!masker) console.error("titik: masker titik_palsu.json tak terbaca, putaran tetap disimpan tanpa penyaringan");
-  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat};
+  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat, sippa};
 }
 
 export async function titikTerbaru(env) {

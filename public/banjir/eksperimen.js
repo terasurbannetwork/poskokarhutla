@@ -4,18 +4,26 @@
 globalThis.EksPA = (() => {
   const CAKRAWALA = [["besok", "Besok"], ["lusa", "Lusa"], ["h3", "3 hari"], ["h7", "7 hari"]];
   const DEFINISI = {besok: "≥ 50 mm sehari", lusa: "≥ 50 mm sehari", h3: "≥ 100 mm 3 hari", h7: "≥ 50 mm minimal sehari dalam 7 hari"};
-  const BATAS = [0, .1, .25, .5, .75, 1], WARNA = ["#e9e4f5", "#c7b8ea", "#a085d6", "#7a4fbf", "#4b1f8f"], TAK = "rgba(0,0,0,0)";
-  const kelas = p => p == null || !isFinite(p) ? -1 : Math.min(4, BATAS.findIndex((b, i) => i && p < b) - 1 < 0 ? 4 : BATAS.findIndex((b, i) => i && p < b) - 1);
+  const BATAS = [0, .1, .25, .5, .75, 1], WARNA = ["#e9e4f5", "#c7b8ea", "#a085d6", "#7a4fbf", "#4b1f8f"], TAK = "rgba(0,0,0,0)", ABU = "#cfd5dc";
+  const kelas = p => { if (p == null || !isFinite(p)) return -1; const i = BATAS.findIndex((b, j) => j && p < b); return i < 0 ? 4 : i - 1; };
   const warna = p => kelas(p) < 0 ? TAK : WARNA[kelas(p)];
   const pct = p => p == null || !isFinite(p) ? "–" : p >= .995 ? ">99%" : p > 0 && p < .005 ? "<1%" : Math.round(p * 100) + "%";
-  const nilai = (w, c) => { const x = w?.cakrawala?.[c]; return x == null ? null : (c === "h7" ? x.p : x.p) ?? null; };
+  const nilai = (w, c) => { const x = w?.cakrawala?.[c]; return x?.p ?? null; };
+  /* wilayah punya entri cakrawala tetapi p null (berkas basi atau di luar horizon): abu, bukan 0 dan bukan transparan */
+  const warnaWilayah = (w, c) => { const x = w?.cakrawala?.[c]; return x == null ? TAK : x.p == null ? ABU : warna(x.p); };
+  const WIB = {timeZone: "Asia/Jakarta"}, tgl = (t, o) => new Intl.DateTimeFormat("id-ID", {...WIB, ...o}).format(new Date(t + "T12:00:00+07:00")).replace(".", "");
+  const hm = t => ({h: tgl(t, {day: "numeric"}), b: tgl(t, {month: "short"})});
+  /* "Besok, Rab 28 Okt", "3 hari, 28 sampai 30 Okt", "7 hari, 28 Okt sampai 3 Nov" dari cakrawala wilayah acuan */
+  const labelCakrawala = (w, c) => { const x = w?.cakrawala?.[c], nama = Object.fromEntries(CAKRAWALA)[c]; if (!x?.t) return nama;
+    if (c === "besok" || c === "lusa") return `${nama}, ${tgl(x.t, {weekday: "short"})} ${hm(x.t).h} ${hm(x.t).b}`;
+    if (!x.sampai) return nama; const a = hm(x.t), b = hm(x.sampai); return `${nama}, ${a.h}${a.b === b.b ? "" : " " + a.b} sampai ${b.h} ${b.b}`; };
   const ada = d => !!d?.wilayah && Object.values(d.wilayah).some(w => w?.cakrawala && Object.keys(w.cakrawala).length);
   const lencana = d => { const v = d?.prospektif?.vonis; return v ? `Eksperimental, ${v} uji prospektif` : "Eksperimental, belum ada vonis uji prospektif"; };
   /* kunci peta (provinsi, kabupaten, atau kecamatan) -> kunci peluang.json (provinsi atau provinsi|kabupaten) */
   const kunciPel = k => String(k).split("|").slice(0, 2).join("|");
   /* ekspresi match warna untuk fitur yang tampil, dikelompokkan per warna; tanpa data = transparan */
   const ekspresi = (d, c, kunciFitur) => { const g = new Map();
-    for (const k of new Set(kunciFitur)) { const w = warna(nilai(d?.wilayah?.[kunciPel(k)], c)); if (w !== TAK) g.set(w, [...(g.get(w) || []), k]); }
+    for (const k of new Set(kunciFitur)) { const w = warnaWilayah(d?.wilayah?.[kunciPel(k)], c); if (w !== TAK) g.set(w, [...(g.get(w) || []), k]); }
     return g.size ? ["match", ["get", "kunci"], ...[...g].flatMap(([w, l]) => [l, w]), TAK] : TAK; };
   /* pos hujan: skala BMKG harian; pos lama atau macet dan angka kosong abu */
   const HB = [[.5, "#c3ccd6"], [5, "#8cc4ec"], [20, "#4f9be0"], [50, "#2f6fc0"], [100, "#6a3fc0"], [150, "#b0309a"], [1e9, "#7a1040"]];
@@ -25,7 +33,7 @@ globalThis.EksPA = (() => {
   const mmTeks = v => v == null || !isFinite(v) ? "" : Number(v).toLocaleString("id-ID", {maximumFractionDigits: v >= 10 ? 0 : 1});
   const geojsonHujan = (pos, now) => ({type: "FeatureCollection", features: (pos || []).filter(p => typeof p.lon === "number" && typeof p.lat === "number").map(p => ({type: "Feature", geometry: {type: "Point", coordinates: [p.lon, p.lat]},
     properties: {id: p.id, nama: p.nama, w: redupHujan(p, now) ? "#c3ccd6" : warnaHujan(p.mm_hari), a: mmTeks(p.mm_hari), u: p.mm_hari == null ? 0 : p.mm_hari}}))});
-  return {CAKRAWALA, DEFINISI, BATAS, WARNA, TAK, kelas, warna, pct, nilai, ada, lencana, kunciPel, ekspresi, HB, warnaHujan, redupHujan, kelasHujan, mmTeks, geojsonHujan};
+  return {labelCakrawala, warnaWilayah, ABU, CAKRAWALA, DEFINISI, BATAS, WARNA, TAK, kelas, warna, pct, nilai, ada, lencana, kunciPel, ekspresi, HB, warnaHujan, redupHujan, kelasHujan, mmTeks, geojsonHujan};
 })();
 
 /* ---------- bagian peta ---------- */
@@ -48,12 +56,12 @@ const Eksp = {
     renderLegenda(); },
   kartu() { let k = $("#eksKartu"); if (k) return k;
     k = document.createElement("div"); k.id = "eksKartu"; k.className = "box"; k.hidden = true; $("#lapis").after(k);
-    k.addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; this.c = b.dataset.c; k.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { this.terapkan(); renderLegenda(); }); });
+    k.addEventListener("click", e => { const b = e.target.closest("button[data-c]"); if (!b) return; this.c = b.dataset.c; k.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { this.terapkan(); this.isiKartu(); renderLegenda(); }); });
     return k; },
   isiKartu() { this.kartu().innerHTML = `<div class="lbl" style="margin-bottom:6px">Peluang hujan lebat</div><div class="seg penuh" style="box-shadow:none">${EksPA.CAKRAWALA.map(([c, n]) => `<button data-c="${c}" aria-pressed="${c === this.c}">${n}</button>`).join("")}</div>
-    <span class="pill" style="margin-top:8px;background:#7a4fbf;color:#fff">${esc(EksPA.lencana(this.d))}</span>`; },
+    <div style="margin-top:6px;font-weight:600">${esc(EksPA.labelCakrawala(this.d?.wilayah?.ID, this.c))}</div><span class="pill" style="margin-top:8px;background:#7a4fbf;color:#fff">${esc(EksPA.lencana(this.d))}</span>`; },
   legenda() { if (!this.nyala || !EksPA.ada(this.d)) return "";
-    return `<div class="lbl">Peluang ${esc(EksPA.DEFINISI[this.c])}</div><div class="legscale">${EksPA.WARNA.map(w => `<i style="background:${w}"></i>`).join("")}</div><div class="legnum">${EksPA.BATAS.map(b => `<span>${Math.round(b * 100)}%</span>`).join("")}</div>`; },
+    return `<div class="lbl">Peluang ${esc(EksPA.DEFINISI[this.c])}</div><div class="legscale">${EksPA.WARNA.map(w => `<i style="background:${w}"></i>`).join("")}</div><div class="legnum">${EksPA.BATAS.map(b => `<span>${Math.round(b * 100)}%</span>`).join("")}</div><div class="lbl" style="font-weight:400">Peluang tertinggi di wilayah</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:${EksPA.ABU}"></i>Tanpa data</span></div>`; },
 };
 
 const PosHujan = {

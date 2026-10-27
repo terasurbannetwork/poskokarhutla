@@ -50,7 +50,7 @@
     const pr = [1, 2, 3].map(i => ({t: S.st.hari[i], w: h.n[i][1], s: h.n[i][2], a: h.n[i][3]})).filter(x => x.t >= hariWIB());   // prakiraan yang tanggalnya sudah lewat disembunyikan
     const sek = (judul, isi) => `<section class="sp-sek"><h4>${judul}</h4>${isi}</section>`;
     const awas = [
-      h.ev.length && kartu("tetes", "#1d4e89", "Kejadian banjir aktif", `<b>${fmt(h.ev.length)}</b> gugus kecamatan berstatus siaga atau lebih${h.baru.length ? `, <b>${fmt(h.baru.length)}</b> baru sejak ${tgl(kemarin(t0))}` : ""}`),
+      h.ev.length && kartu("tetes", "#1d4e89", "Wilayah Siaga (prakiraan)", `<b>${fmt(h.ev.length)}</b> gugus kecamatan berstatus siaga atau lebih${h.baru.length ? `, <b>${fmt(h.baru.length)}</b> baru sejak ${tgl(kemarin(t0))}` : ""}`),
       h.sungai.length && kartu("sungai", "#1d4e89", "Debit sungai tinggi", `<b>${fmt(h.sungai.length)}</b> titik sungai melewati debit banjir 5 tahunan atau lebih`),
       h.rob.length && kartu("hujan", "#2b8c86", "Pasang laut tinggi", `<b>${fmt(h.rob.length)}</b> titik pantai di atas persentil 99 muka laut`),
       ...h.bmkg.slice(0, 2).map(x => kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event)))].filter(Boolean).join("");

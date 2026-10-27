@@ -46,7 +46,7 @@ const Insight = {
       ...(A.some(r => r.penduduk != null) ? [{k: "pend", n: "Penduduk", num: 1, v: r => r.penduduk ?? -1, h: r => r.penduduk != null ? rb(r.penduduk) + " jiwa" : "–"}] : []),
       ...(A.some(r => r.h3_mm != null) ? [{k: "h3", n: "Hujan 3 hari", num: 1, v: r => r.h3_mm ?? -1, h: r => r.h3_mm != null ? this.pl(fmt(Math.round(r.h3_mm)) + " mm", this.warnaHujan(r.h3_mm)) : "–"}] : []),
       {k: "skor", n: "Skor", num: 1, v: r => r.skor ?? -1, h: r => r.skor != null ? this.pl(fmt(Math.round(r.skor)), NAVY) : "–"}];
-    return this.ex(`${this.hl(fmt(A.length) + " kejadian")} banjir aktif melanda ${this.hl(fmt(nKec) + " kecamatan")} di ${fmt(nProv)} provinsi hari ini`, "", "",
+    return this.ex(`${this.hl(fmt(A.length) + " wilayah Siaga (prakiraan)")} mencakup ${this.hl(fmt(nKec) + " kecamatan")} di ${fmt(nProv)} provinsi hari ini`, "", "",
       this.tabel("kejadian", kol, A, r => `data-kej="${esc(r.kode)}"`, 5, "kejadian", r => r.skor ?? -1), `Sumber: Open-Meteo, GloFAS, InaRISK`); },
 
   /* 1. status per provinsi untuk hari terpilih */

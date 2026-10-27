@@ -30,7 +30,7 @@ test("agregat: kejadian yang sama di dua hari terhitung satu, terpapar puncak, s
   assert.equal(Wl.agregat([a]), a, "satu dokumen dikembalikan apa adanya"); assert.equal(Wl.agregat([null]), null);
 });
 
-test("agregat: arsip lama tanpa kejadian_kode membuat KA null di periode, bukan 0", () => {
+test("agregat: arsip lama tanpa kejadian_kode membuat WS (wilayah Siaga) null di periode, bukan 0", () => {
   const lama = dok("2026-10-24", [{kode: "A", nama: "A", status: 1, kejadian_aktif: 4, terpapar_jiwa: 5, kab: []}]);
   const baru = dok("2026-10-25", [P("A", 1, ["B1"], 0, 1, 9)]);
   const r = Wl.agregat([lama, baru]); assert.equal(r.provinsi[0].kejadian_aktif, null); assert.equal(r.provinsi[0].terpapar_jiwa, 9);

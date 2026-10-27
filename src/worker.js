@@ -52,7 +52,7 @@ import {RUTE_LAPORAN_KARHUTLA, buatDrafLaporanKarhutla} from "./laporan_karhutla
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
-import {perbaruiSihka, dasarSihka, ruteSihka} from "./sihka.js";
+import {perbaruiSihka, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
 import {himawariDibuat} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
@@ -812,6 +812,7 @@ export default {
       try { console.log("peringatan", JSON.stringify(await periksaPeringatan(env, ev.scheduledTime))); } catch (e) { console.error("peringatan", e?.message); }   // sesudah gempa baru tersimpan
       console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
       /* SIHKA paling akhir: email EWS tidak boleh tertahan langkah ini */
+      if (new Date(sekarang).getUTCMinutes() % 5 === 3 && new Date(sekarang).getUTCMinutes() !== 23) try { console.log("hujan", JSON.stringify(await perbaruiHujan(env, sekarang))); } catch (e) { console.error("hujan", e?.message); }   // hujan SIHKA per interval: tiap 5 menit
       if (new Date(sekarang).getUTCMinutes() === 23) {   // SIHKA: tiap jam menit 23; dasar historis sekali sehari 20 UTC
         try { console.log("sihka", JSON.stringify(await perbaruiSihka(env, sekarang))); } catch (e) { console.error("sihka", e?.message); }
         if (new Date(sekarang).getUTCHours() === 20) try { console.log("sihka dasar", JSON.stringify(await dasarSihka(env, sekarang))); } catch (e) { console.error("sihka dasar", e?.message); }

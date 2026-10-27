@@ -142,6 +142,7 @@ const Peta = {
       return {type: "Feature", geometry: f.geometry, properties: {id: ++id, kunci, nama: j.length === 0 ? namaProv(p.kode) : j.length === 1 ? p.kab : p.kec, lv: ag[kunci]?.lv || 0}}; });
     S.ag = ag;
     if (peta.getSource("wil")) peta.getSource("wil").setData({type: "FeatureCollection", features: S.fiturWil});
+    Eksp.terapkan();
     if (terbang) peta.fitBounds(j.length && S.fiturWil.length ? kotak(S.fiturWil) : BB_ID, {padding: kiriPad(), duration: 700, maxZoom: 11});
     renderCrumb(); renderDaftar(); },
   /* kartu hover satu baris berikon: wilayah (jumlah kecamatan per status, atau status + hujan di kecamatan), titik sungai, titik pantai */

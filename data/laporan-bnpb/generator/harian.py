@@ -496,7 +496,7 @@ class Deck:
         J = [P(f'Status banjir {tgl_id(hd)}: ')]
         for n, lab in ada:
             if n: J += [H(f'{n} provinsi'), P(f' {lab}, ')]
-        if t['kejadian_aktif']: J += [H(f0(t['kejadian_aktif'])), P(' kejadian aktif, ')]
+        if t['kejadian_aktif']: J += [H(f0(t['kejadian_aktif'])), P(' wilayah Siaga (prakiraan), ')]
         if t['rob']: J += [H(f0(t['rob'])), P(' titik rob Waspada atau lebih, ')]
         if len(J) == 1: J += [P('tidak ada provinsi Siaga atau Awas, ')]
         J[-1] = (J[-1][0].rstrip(', '), J[-1][1], True)
@@ -511,7 +511,7 @@ class Deck:
         y0, yb = 2057400, 6260000; rp = min((yb - y0) // len(baris), 380000)
         LH_ = len(baris) * rp + y0 + 91440 - 1325880   # panel setinggi isinya
         o += s.kotak(548640, 1325880, 6720840, LH_, 'FFFFFF', 'roundRect', ln='BFC5CC', adj=2000) + s.kepala(548640, 1325880, 6720840, '2F6FB5', 'DCE7F5', 'banjir_putih', 'Status banjir per provinsi', len(P))
-        kol = [('PROVINSI', 676656, 1700000, 'l'), ('STATUS', 2400000, 1000000, 'ctr'), ('HUJAN 3 HARI TERBESAR', 3450000, 1700000, 'ctr'), ('KEJADIAN AKTIF', 5200000, 800000, 'ctr'),
+        kol = [('PROVINSI', 676656, 1700000, 'l'), ('STATUS', 2400000, 1000000, 'ctr'), ('HUJAN 3 HARI TERBESAR', 3450000, 1700000, 'ctr'), ('WILAYAH SIAGA', 5200000, 800000, 'ctr'),
                ('TITIK ROB', 5950000, 600000, 'ctr')] + ([('TERPAPAR', 6550000, 700000, 'ctr')] if jiwa else [])
         for t, x, w, al in kol: o += s.tx(x, 1856232, w, 164592, [t], sz=650, b=True, c=ABU, al=al)
         o += s.garis(676656, 2039112, 6464808, INK)
@@ -539,7 +539,7 @@ class Deck:
             if n:
                 ww = bw * n / n_tot; o += s.kotak(x, 1645920, ww, 201168, ST[k][1]) + s.tx(x, 1645920, ww, 201168, [str(n)], sz=750, b=True, c='FFFFFF', al='ctr', an='ctr'); x += ww
         kar = [('banjir_merah', T_MERAH, f0(T['awas']), 'provinsi Awas', MERAH), ('banjir_oranye', T_ORG, f0(T['siaga']), 'provinsi Siaga', ORG),
-               ('banjir_navy', T_NAVY, '–' if T['kejadian_aktif'] is None else f0(T['kejadian_aktif']), 'kejadian banjir aktif', NAVY), ('banjir_slate', T_SLATE, '–' if T['rob'] is None else f0(T['rob']), 'titik rob Waspada atau lebih', SLATE)]
+               ('banjir_navy', T_NAVY, '–' if T['kejadian_aktif'] is None else f0(T['kejadian_aktif']), 'wilayah Siaga (prakiraan)', NAVY), ('banjir_slate', T_SLATE, '–' if T['rob'] is None else f0(T['rob']), 'titik rob Waspada atau lebih', SLATE)]
         for i, (ik, tint, v, lab, w) in enumerate(kar): o += s.kartu(QX + 164592 + (i % 2) * (kw - 80000 + 45720), 1965960 + (i // 2) * 594360, ik, tint, v, lab, w, w=kw - 80000)
         o += s.tx(QX + 164592, 3200400, QW - 329184, 560000, [f'Hari data {tgl_id(dt.date.fromisoformat(B["hari"]))}'
                                                             + (f', cut-off {s.jam.replace(":", ".")} WIB' if s.jam else '') + '.'], sz=720, c=TEKS)

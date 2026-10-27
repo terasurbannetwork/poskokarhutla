@@ -4,6 +4,8 @@
 import {MEDAN} from "./formulir.js";
 import {ikon} from "./ikon.js";
 import {memuat, kosong, galat} from "./keadaan.js";
+import {ringkasDepot, kesiapanHtml, muatRincian, kitTerpotong} from "./kesiapan.js";
+import {katalogHtml} from "./katalog_alat.js";
 
 /* ---------- mesin keadaan kit (DT §6.2). Pasangan sah = CHECK sippa_gerak di 0056; uji membandingkan keduanya. ---------- */
 export const STATUS = ["gudang", "depot", "gelar", "banjir", "servis", "hilang", "pensiun"];
@@ -348,24 +350,40 @@ function dialogTugaskan(kit, sesudahTutup) {
 }
 
 /* ---------- layar ---------- */
+/* gaya kesiapan dan katalog (layar_kit.css) dimuat sekali oleh layar Kit, Pelihara, dan Peta */
+export function muatGayaKit() {
+  return new Promise(ok => {
+    if (document.querySelector('link[data-sp="kit"]')) return ok();
+    const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/pipa/layar_kit.css?v=1"; l.dataset.sp = "kit";
+    l.onload = l.onerror = () => ok(); document.head.append(l); setTimeout(ok, 1500);
+  });
+}
+
 export async function pasang(akar, konteks) {
   lepas(); ctrl = new AbortController();
   return konteks.id ? rincian(akar, konteks) : daftar(akar, konteks);
 }
 
 async function daftar(akar, konteks) {
-  const sinyal = ctrl.signal, st = {status: new Set(STATUS), jenis: new Set(Object.keys(JENIS_KIT)), kit: [], kehilangan: null, per: null};
+  const sinyal = ctrl.signal, st = {status: new Set(STATUS), jenis: new Set(Object.keys(JENIS_KIT)), kit: [], kehilangan: null, per: null, rincian: {}, rinciMuat: false};
+  muatGayaKit();
   akar.innerHTML = `<h1 class="sp-judul">Kit</h1><div id="sp-kit-isi"></div>`;
   const isi = akar.querySelector("#sp-kit-isi");
   const baru = () => {
-    isi.innerHTML = `<div id="sp-kit-kartu"></div>
+    isi.innerHTML = `<div id="sp-kit-kartu"></div><div id="sp-kit-siap"></div>
       <div class="sp-kontrol" role="group" aria-label="Penyaring kit"><button type="button" class="ad-tombol sp-besar" data-pindai aria-expanded="false" aria-controls="sp-pindai">Pindai QR</button>
         <div class="sp-chips" role="group" aria-label="Status">${STATUS.map(s => `<button type="button" class="ad-chip" data-status="${s}" aria-pressed="true">${NAMA_STATUS[s]}</button>`).join("")}</div>
         <div class="sp-chips" role="group" aria-label="Jenis">${Object.entries(JENIS_KIT).map(([k, n]) => `<button type="button" class="ad-chip" data-jenis="${k}" aria-pressed="true">${n}</button>`).join("")}</div></div>
       <section class="sp-pindai" id="sp-pindai" hidden><div class="sp-pindai-video" hidden></div><p class="sp-pindai-info" role="status"></p>
         <form class="sp-pindai-form"><label>Kode kit <input name="kode" placeholder="SIPPA-001" autocomplete="off" maxlength="40"></label><button type="submit" class="ad-tombol">Buka kit</button></form></section>
-      <div id="sp-kit-tabel"></div>`;
-    gambar();
+      <div id="sp-kit-tabel"></div><div id="sp-kit-katalog">${katalogHtml()}</div>`;
+    gambar(); gambarSiap();
+    /* rincian kit di depot dimuat sesudah daftar tampil: laik dan BBM tidak menahan layar */
+    if (!st.rinciMuat) { st.rinciMuat = true; muatRincian(konteks.ambil, st.kit, sinyal).then(r => { if (!sinyal.aborted) { st.rincian = r; gambarSiap(); } }); }
+  };
+  const gambarSiap = () => {
+    const w = isi.querySelector("#sp-kit-siap"); if (!w || sinyal.aborted) return;
+    w.innerHTML = Kartu.kartu("Kit siap gelar", esc("Kit siap gelar per depot"), kesiapanHtml(ringkasDepot(st.kit, st.rincian), kitTerpotong(st.kit)), `inventaris SIPPA, ${st.per == null ? "per –" : "per " + jamWIB(st.per)}`);
   };
   const gambar = () => {
     if (sinyal.aborted) return;

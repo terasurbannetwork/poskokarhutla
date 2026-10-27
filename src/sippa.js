@@ -84,7 +84,7 @@ const dalam = (req, prov) => dalamWilayahStaf(req, prov == null ? [] : [prov]);
 const batasJam = (env, kunci, aksi, maks, kini) => laju(env, kunci, aksi, [[JAM, maks]], kini);
 const alihkan = (ke2, h = {}) => new Response(null, {status: 303, headers: {location: ke2, "cache-control": "no-store", ...h}});
 const gal = c => gagal(400, c.galat.map(g => `${g.medan}: ${g.pesan}`).join("; "));
-const teksOK = (v, min, maks) => typeof v === "string" && v.normalize("NFC").trim().length >= min && v.trim().length <= maks ? v.normalize("NFC").trim() : undefined;
+const teksOK = (v, min, maks) => { if (typeof v !== "string") return undefined; const t = v.normalize("NFC").trim(), n = [...t].length; return n >= min && n <= maks ? t : undefined; };   // [...t] = titik kode, sama dengan length() SQLite di CHECK
 const bersihGalat = e => { const m = String(e?.message || e).replace(/^D1_ERROR:\s*/, "").replace(/:?\s*SQLITE_\w+.*$/s, "").slice(0, 200); return /^sippa_\w+:/.test(m) ? m : "basis data menolak butir: " + m; };
 const galatKeadaan = e => /sippa_gerak_(cek|tetap)/.test(String(e?.message || e));
 
@@ -593,6 +593,54 @@ async function aoiUsul(env, req, url, kini) {
   await env.DB.batch([env.DB.prepare("INSERT INTO sippa_aoi_usul (id, kompleks_id, sel, prov, alasan, status, oleh, waktu, dummy) VALUES (?, ?, ?, ?, ?, 'usul', ?, ?, ?)").bind(id, o.kompleks_id ?? null, o.sel ?? null, o.prov, alasan, a.oleh, kini, dm),
     jejakStmt(env, a.oleh, "sippa_aoi_usul:" + id, "aoi", o.kompleks_id ?? o.sel, null, kini, dm)]);
   return json({aoi: await env.DB.prepare("SELECT id, kompleks_id, sel, prov, alasan, status, oleh, waktu, dummy FROM sippa_aoi_usul WHERE id = ?").bind(id).first()}, 201);
+}
+
+/* ================================================================ SP-115: keputusan dan jejak perubahan (keputusan pemilik 61)
+   Keputusan jalan atau tunda per kompleks disimpan di sippa_keputusan; semua perubahan SIPPA lain sudah menulis pantau_jejak (obyek 'sippa_*:<id>'). GET /jejak membacanya,
+   disaring provinsi staf lewat prov obyek (kit, komponen, gerak, tugas, aset, cek jalan, usul AOI, inspeksi, log gelar, keputusan). Obyek tanpa provinsi (A/B, skenario, laporan) tak tampil bagi staf berwilayah.
+   ponytail: penyaringan wilayah di JS sesudah SQL (batas 2000 baris dibaca); bila jejak tumbuh besar, tambahkan kolom prov di pantau_jejak lewat migrasi. */
+const SQL_PROV_JEJAK = `CASE substr(j.obyek, 1, instr(j.obyek, ':') - 1)
+  WHEN 'sippa_kit' THEN (SELECT prov FROM sippa_kit WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_komponen' THEN (SELECT k.prov FROM sippa_komponen c JOIN sippa_kit k ON k.id = c.kit_id WHERE c.id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_gerak' THEN (SELECT prov FROM sippa_gerak WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_tugas' THEN (SELECT prov FROM sippa_tugas WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_aset' THEN (SELECT prov FROM sippa_aset WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_jalan_cek' THEN (SELECT prov FROM sippa_jalan_cek WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_aoi_usul' THEN (SELECT prov FROM sippa_aoi_usul WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_inspeksi' THEN (SELECT prov FROM sippa_inspeksi WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_log_gelar' THEN (SELECT prov FROM sippa_log_gelar WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_keputusan' THEN (SELECT prov FROM sippa_keputusan WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+END`;
+/* provinsi kompleks dari R2 (satu pembacaan, hanya bila klien tak mengirim prov) */
+async function provKompleks(env, id) {
+  const o = env.MEDIA && await env.MEDIA.get("sippa/kelayakan_kompleks.json");
+  if (!o?.size) { o?.body?.cancel().catch(() => {}); return null; }
+  try { return (await o.json()).kompleks.find(k => k.id === id)?.prov ?? null; } catch (e) { return null; }
+}
+async function keputusanBuat(env, req, url, kini) {
+  const a = await akses(env, req, "W"); if (a.res) return a.res;
+  const l = await batasJam(env, a.oleh, "sippa.tulis", 600, kini); if (l) return l;
+  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat); const o = b.o;
+  if (typeof o.kompleks_id !== "string" || !RE_KOMPLEKS.test(o.kompleks_id)) return gagal(400, "kompleks_id harus berbentuk K0001");
+  if (o.putusan !== "jalan" && o.putusan !== "tunda") return gagal(400, "putusan harus jalan atau tunda");
+  const alasan = teksOK(o.alasan, 3, 300); if (alasan === undefined) return gagal(400, "alasan 3 sampai 300 karakter");
+  const prov = await provKompleks(env, o.kompleks_id);   // prov selalu dari data kelayakan, tidak dari klien (staf berwilayah tidak bisa melabeli kompleks provinsi lain)
+  if (!prov || !RE_PROV.test(prov) || !dalam(req, prov)) return tdk("kompleks tidak ditemukan");   // tidak ada dan di luar wilayah: satu jawaban identik
+  const id = acak(8), dm = dummyStaf(req, a.oleh);
+  await env.DB.batch([env.DB.prepare("INSERT INTO sippa_keputusan (id, kompleks_id, prov, putusan, alasan, oleh, waktu, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?)").bind(id, o.kompleks_id, prov, o.putusan, alasan, a.oleh, kini, dm),
+    jejakStmt(env, a.oleh, "sippa_keputusan:" + id, "keputusan", `${o.kompleks_id} ${o.putusan}`, alasan, kini, dm)]);
+  return json({keputusan: await env.DB.prepare("SELECT id, kompleks_id, prov, putusan, alasan, oleh, waktu, dummy FROM sippa_keputusan WHERE id = ?").bind(id).first()}, 201);
+}
+async function jejakDaftar(env, req, url, kini) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const q = url.searchParams, angka = (n, def, min, maks) => { const v = q.get(n); if (v === null) return def; return /^\d{1,15}$/.test(v) && +v >= min && +v <= maks ? +v : NaN; };
+  const sejak = angka("sejak", kini - 7 * HARI, 0, kini + HARI), batas = angka("batas", 100, 1, 500);
+  if (Number.isNaN(sejak)) return gagal(400, "sejak harus waktu epoch milidetik");
+  if (Number.isNaN(batas)) return gagal(400, "batas harus 1 sampai 500");
+  const r = await env.DB.prepare(`SELECT j.id, j.waktu, j.oleh, j.obyek, j.aksi, j.ke, j.catatan, ${SQL_PROV_JEJAK} AS prov FROM pantau_jejak j
+    WHERE substr(j.obyek, 1, 6) = 'sippa_' AND j.waktu >= ? AND j.dummy <= ? ORDER BY j.waktu DESC, j.id DESC LIMIT 2000`).bind(sejak, lihatDummy(req)).all();
+  const jejak = r.results.filter(x => dalam(req, x.prov)).slice(0, batas);
+  return json({jejak, sejak, batas, terpotong: r.results.length >= 2000});   // true: ada baris lebih lama yang tak terbaca; persempit sejak
 }
 
 /* ================================================================ A/B, skenario, laporan (SP-035; DT §3.3, §4.3; PRD §9.4.7)
@@ -1537,6 +1585,8 @@ const API = Object.fromEntries(Object.entries({
   "GET /api/sippa/jalan-cek": jalanDaftar,
   "POST /api/sippa/jalan-cek": jalanTulis,
   "POST /api/sippa/aoi": aoiUsul,
+  "POST /api/sippa/keputusan": keputusanBuat,
+  "GET /api/sippa/jejak": jejakDaftar,
   "GET /api/sippa/ab": abDaftar,
   "POST /api/sippa/ab/unggah": abUnggah,
   "POST /api/sippa/ab-status/:id": abStatus,

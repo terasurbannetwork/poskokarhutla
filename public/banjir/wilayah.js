@@ -1,6 +1,6 @@
 "use strict";
 /* Tabel wilayah panel Peta /banjir (pola panel Real Time karhutla): per provinsi, bisa dibuka ke kabupaten/kota.
-   Kolom: Status (pil Awas/Siaga/Waspada, status Aman hijau bila 0, "–" bila null), KA kejadian aktif, RB rob, H3 hujan 3 hari (mm), TP terpapar (jiwa).
+   Kolom: Status (pil Awas/Siaga/Waspada, status Aman hijau bila 0, "–" bila null), WS wilayah Siaga (prakiraan; kunci data kejadian_aktif), RB rob, H3 hujan 3 hari (mm), TP terpapar (jiwa).
    Data dari kontrak pipeline: data/wilayah_hari.json (hari terbaru), data/hari/<YYYY-MM-DD>.json, data/hari/indeks.json = {dibuat, hari:[...]}.
    null = data tidak ada, ditulis "–" (bukan 0). Periode > sehari dijumlah dari arsip harian: kejadian aktif = gabungan kode unik, terpapar = puncak,
    status = tertinggi, rob dan hujan 3 hari = puncak (menjumlah titik/curah yang sama berkali-kali akan menggandakan).
@@ -20,7 +20,7 @@
   const jml = (a, b) => a == null ? b : b == null ? a : a + b, mks = (a, b) => a == null ? b : b == null ? a : Math.max(a, b);
 
   /* kejadian_aktif = banyak kode unik (himpunan), jadi periode = gabungan himpunan kode, bukan jumlah harian (kejadian yang sama di dua hari terhitung satu).
-     terpapar_jiwa, rob, hujan 3 hari = puncak; status = tertinggi. Arsip lama tanpa kejadian_kode: KA null ("–") di periode > sehari. */
+     terpapar_jiwa, rob, hujan 3 hari = puncak; status = tertinggi. Arsip lama tanpa kejadian_kode: WS null ("–") di periode > sehari. */
   const GABUNG = {status: mks, rob: mks, hujan3_mm: mks, terpapar_jiwa: mks};
   const kosong = (kode, nama) => ({kode, nama, status: null, kejadian_aktif: null, rob: null, hujan3_mm: null, terpapar_jiwa: null, kejadian_kode: new Set(), lama: false});
   function lebur(o, r) {
@@ -153,8 +153,8 @@
       baris = p?.kab || []; kunciDari = r => String(r.kode).includes("|") ? r.kode : `${j[0]}|${r.nama}`;
     } else { baris = D.provinsi || []; kunciDari = r => r.kode; }
     const urut = [...baris].sort(urutBaris), T = D.total || {};
-    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "KA", "Kejadian aktif")}${chip("rob", "#2b8c86", "RB", "Rob")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari, mm")}${chip("td", "#c9503a", "TP", "Terpapar, jiwa")}</div>`;
-    const kepala = `<div class="tb kepala" style="${G}"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:right">Status</span><span class="n" title="Kejadian aktif">KA</span><span class="n" title="Rob">RB</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="Terpapar, jiwa">TP jiwa</span></div>`;
+    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "WS", "Wilayah Siaga (prakiraan)")}${chip("rob", "#2b8c86", "RB", "Rob")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari, mm")}${chip("td", "#c9503a", "TP", "Terpapar, jiwa")}</div>`;
+    const kepala = `<div class="tb kepala" style="${G}"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:right">Status</span><span class="n" title="Wilayah Siaga (prakiraan)">WS</span><span class="n" title="Rob">RB</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="Terpapar, jiwa">TP jiwa</span></div>`;
     const total = j.length ? "" : `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${n(T.kejadian_aktif)}</span><span class="n">${n(T.rob)}</span><span class="n">–</span><span class="n">${n(T.terpapar_jiwa)}</span></div>`;
     return kep + legenda + kepala + total + (urut.length ? urut.map((r, i) => `<button class="tb${(st(r.status) ?? 0) >= 2 ? " hl" + st(r.status) : ""}" style="${G}" role="listitem" data-k="${esc(kunciDari(r))}">
       <span class="rk">${i + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span style="text-align:right" data-sort="${st(r.status) ?? -1}">${pilSt(st(r.status))}</span>

@@ -8,6 +8,7 @@ import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker.js dulu: sihka.js saling impor dengannya
 import {SQL_BACA, SQL_DASAR, SQL_HAPUS_LAMA, SQL_HAPUS_BACA_POS} from "../../src/sihka.js";
+import {SQL_BACA as SQL_HUJAN_BACA} from "../../src/hujan.js";
 
 const FIX = readFileSync(path.join(AKAR, "tests/warga/fixtures/sihka_telemetry.json"), "utf8");
 const K = Date.parse("2026-10-19T09:23:00Z"), k = K / 1000, K2 = Date.parse("2026-10-19T20:23:00Z"), k2 = K2 / 1000;   // menit 23: jam biasa, lalu 20 UTC (harian)
@@ -368,6 +369,55 @@ uji("SIHKA: domain resmi sihka.sda.pu.go.id dipakai dulu; dev-tunnels hanya cada
   assert.deepEqual([panggilan, panggilanCadangan], [2, 1], "resmi dicoba, gagal, cadangan dipakai");
   assert.equal(JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sihka'"))[0].isi).galat, null, "cadangan sukses = tarikan sehat");
   sihkaResmiMati = false; statusSumber = 200;
+});
+
+// ---- hujan SIHKA: nilai per INTERVAL (dibuktikan dari feed nyata berjarak 5 menit: 4,5 lalu 0; fixture a/b = cuplikan asli 10:00 dan 10:05 UTC) ----
+const HA = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/sihka_hujan_a.json"), "utf8")), HB = JSON.parse(readFileSync(path.join(AKAR, "tests/warga/fixtures/sihka_hujan_b.json"), "utf8"));
+const dgAir = posSihka("S-pengisi", 106.9, -6.7);   // feed nyata selalu memuat DUGA AIR; tarikan menolak yang tidak
+const hujanApi = async (init) => { const r = await mf.dispatchFetch("http://sihka.lokal/api/banjir/hujan-ukur", init); const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch (e) {} return {status: r.status, j, h: r.headers, t}; };
+const hujanPos = async () => Object.fromEntries((await hujanApi()).j.pos.map(p => [p.nama, p]));
+const T = (m, h = 10, hari = "27") => Date.parse(`2026-10-${hari}T${String(h).padStart(2, "0")}:${String(m).padStart(2, "0")}:00Z`);
+
+uji("hujan-ukur: belum terisi 503; POST 405", async () => {
+  await DB.batch([DB.prepare("DELETE FROM hujan_pos"), DB.prepare("DELETE FROM hujan_baca"), DB.prepare("DELETE FROM cuaca_sumber WHERE kunci = 'hujan_status'")]);
+  assert.equal((await hujanApi()).status, 503);
+  const p = await mf.dispatchFetch("http://sihka.lokal/api/banjir/hujan-ukur", {method: "POST", body: "{}"}); assert.equal(p.status, 405); assert.match(p.headers.get("allow"), /GET/);
+});
+
+uji("hujan: bacaan per interval dijumlah (bukan kumulatif); nol, satuan cm, di luar Jawa, nilai ganjil tidak masuk; kontrak rute persis", async () => {
+  isiSumber = JSON.stringify([...HA, dgAir]); await tik(T(3));   // 10:03
+  isiSumber = JSON.stringify([...HB, dgAir]); await tik(T(8));   // 10:08: 4,5 -> 0 pada gauge yang sama = bukan kumulatif
+  const r = await hujanApi();
+  assert.equal(r.status, 200); assert.match(r.h.get("cache-control"), /public, max-age=300/); assert.deepEqual(Object.keys(r.j), ["dibuat", "sumber", "catatan", "pos"]); assert.equal(r.j.dibuat, T(8));
+  assert.deepEqual(Object.keys(r.j.pos[0]), ["id", "nama", "lon", "lat", "mm_hari", "mm_1jam", "t", "status", "pengelola"]);
+  const p = await hujanPos();
+  assert.deepEqual(Object.keys(p).sort(), ["CENGKARENG DRAIN", "CIKAPUNDUNG RIVERSPOT", "PASIR JAYA", "REJOSO"], "MERANGIN/LINGKOK LIME di luar Jawa, POS PEMALI JUANA tanpa nilai");
+  assert.deepEqual([p["PASIR JAYA"].mm_hari, p["PASIR JAYA"].mm_1jam, p["PASIR JAYA"].t, p["PASIR JAYA"].status], [4.5, 4.5, T(5) / 1000, "biasa"]);
+  assert.deepEqual([p["CIKAPUNDUNG RIVERSPOT"].mm_hari, p["CIKAPUNDUNG RIVERSPOT"].mm_1jam], [3, 3], "1 (09:50) + 2 (10:00)");
+  assert.deepEqual([p.REJOSO.mm_hari, p.REJOSO.t], [0, T(0) / 1000], "nol-ke-nol tidak menulis lagi (t maju hanya sejam sekali)");
+  assert.ok(p["PASIR JAYA"].lon > 105 && p["PASIR JAYA"].lon < 116 && p["PASIR JAYA"].lat < -5 && p["PASIR JAYA"].lat > -9); assert.match(p["PASIR JAYA"].pengelola, /Sumber Daya Air \(SIHKA\)/);
+  assert.equal((await baris("SELECT count(*) n FROM hujan_baca WHERE v > 100 OR v <= 0"))[0].n, 0, "134 (satuan cm) dan nol tidak tersimpan");
+  assert.equal((await baris("SELECT count(*) n FROM hujan_baca"))[0].n, 3, "4,5 + 1 + 2");
+  const h = await mf.dispatchFetch("http://sihka.lokal/api/banjir/hujan-ukur", {method: "HEAD"}); assert.equal(h.status, 200); assert.equal(await h.text(), "");
+});
+
+uji("hujan: tarikan ulang tanpa bacaan baru = 0 tulis bacaan; lewat 3 jam = lama; ganti hari WIB = mm_hari nol; bacaan > 3 hari dibuang jam-an", async () => {
+  isiSumber = JSON.stringify([...HB, dgAir]); const n = (await DB.prepare(SQL_HUJAN_BACA).bind(isiSumber, Math.floor(T(8) / 1000)).run()).meta.changes; assert.equal(n, 0);
+  await tik(T(13, 14)); let p = await hujanPos();   // 14:13 UTC = 21:13 WIB, hari yang sama; bacaan terakhir 10:05
+  assert.deepEqual([p["PASIR JAYA"].status, p["PASIR JAYA"].mm_hari, p["PASIR JAYA"].mm_1jam], ["lama", 4.5, 0]);
+  await tik(T(3, 17)); p = await hujanPos();   // 17:03 UTC = 00:03 WIB hari berikutnya
+  assert.deepEqual([p["PASIR JAYA"].mm_hari, p["CIKAPUNDUNG RIVERSPOT"].mm_hari], [0, 0]);
+  await tik(T(3, 1, "31")); assert.equal((await baris("SELECT count(*) n FROM hujan_baca"))[0].n, 0, "lebih dari 3 hari lalu dibuang (menit < 5)");
+});
+
+uji("hujan: nilai > 0 yang sama >= 6 jam = macet; nilai berubah memulihkannya", async () => {
+  await DB.batch([DB.prepare("DELETE FROM hujan_pos"), DB.prepare("DELETE FROM hujan_baca")]);
+  const feed = (v, jam) => JSON.stringify([{...HA[0], id: "H-macet", name: "MACET", raw: [{unit: "mm", merek: "X", value: v, timestamp: new Date(T(0, jam, "28")).toISOString()}]}, dgAir]);
+  const st = async () => (await hujanPos()).MACET.status;
+  for (let jam = 1; jam <= 6; jam++) { isiSumber = feed(0.5, jam); await tik(T(3, jam, "28")); }
+  assert.equal(await st(), "biasa", "5 jam sama belum macet");
+  isiSumber = feed(0.5, 7); await tik(T(3, 7, "28")); assert.equal(await st(), "macet", "6 jam");
+  isiSumber = feed(0.7, 7).replace("07:00:00", "07:20:00"); await tik(T(23, 7, "28")); assert.equal(await st(), "biasa", "nilai berubah = pulih");
 });
 
 uji("tabel hilang (migrasi belum jalan): GET 503 bukan 500, cron tidak melempar", async () => {

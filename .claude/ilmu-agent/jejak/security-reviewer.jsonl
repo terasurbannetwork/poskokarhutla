@@ -164,3 +164,4 @@
 {"t":"2026-10-27T15:37:27.124+07:00","berkas":"public/banjir/wilayah.js","blob":"0691c4264619736be096180855c5d4d7223035eb","aturan":"f479c1a381d6","vonis":"bersih","ringkas":"nama/kode lewat esc; data-wk/data-wt tanggal arsip pipeline tak di-esc (sumber tepercaya)","sha":"37253fbc"}
 {"t":"2026-10-27T15:37:27.166+07:00","berkas":"public/banjir/mulai.js","blob":"f1259a48e698a56426a836ff7cc9b19c416fa816","aturan":"f479c1a381d6","vonis":"bersih","ringkas":"esc(i.k/i.n/i.j/e.kode); lv numerik","sha":"37253fbc"}
 {"t":"2026-10-27T15:37:27.208+07:00","berkas":"public/banjir/sapa_banjir.js","blob":"071c2dcec473057fdd4b1ce7c0d99389f53678d0","aturan":"f479c1a381d6","vonis":"bersih","ringkas":"string data lewat esc, sisanya fmt/tgl","sha":"37253fbc"}
+{"t":"2026-10-27T17:14:49.817+07:00","berkas":"public/pipa/kesiapan.js","blob":"1f9ead74689f5ba3c2bf40c816741baf102bbce8","aturan":"f479c1a381d6","vonis":"bersih","ringkas":"esc konsisten, SWIR rel noopener","sha":"28ae73e8"}
