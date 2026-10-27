@@ -64,6 +64,11 @@
       "sha256": {
         "pipa.css": "c8971cba0345a07f7c686f8928154f9272fd8ab7cc07af81d5c6e863d4eb0de5"
       }
+    },
+    "8": {
+      "sha256": {
+        "pipa.css": "1bac1c9197835bb3aa3e7fb0a1aa420d0e404e285e1d2878e93acd4e93b45ad3"
+      }
     }
   }
 }

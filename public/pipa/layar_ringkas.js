@@ -6,7 +6,7 @@
 import {kuantil, nKecil} from "./hitung.js";
 import {barisKoreksi, rekapKelas, AMBANG_G3} from "./layar_log.js";
 import {TEKS_ALASAN, muatGayaKit} from "./layar_kit.js";
-import {memuat, galat, menunggu} from "./keadaan.js";
+import {memuat, galat} from "./keadaan.js";
 import {ikon} from "./ikon.js";
 import {ringkasDepot, kesiapanHtml, muatRincian, kitTerpotong} from "./kesiapan.js";
 import {peringkat, keputusanHariIni, teksWhatsApp} from "./keputusan.js";
@@ -38,7 +38,7 @@ export function ringkasKit(kits) {
 export function kartuKit(d, depot = null, terpotong = 0) {
   const kits = d.kit || [];
   const sumber = "inventaris SIPPA D1 (kit, gerak, komponen)";
-  if (!kits.length) return {ey: "Kit", judul: "Belum ada kit terdaftar.", isi: kosongHtml("Kit dicatat dari layar Kit lewat tombol Tambah kit."), sumber, per: null, tautan: TAUTAN.kit};
+  if (!kits.length) return {kosong: true, ey: "Kit", judul: "Belum ada kit terdaftar.", isi: kosongHtml("Kit dicatat dari layar Kit lewat tombol Tambah kit."), sumber, per: null, tautan: TAUTAN.kit};
   const r = ringkasKit(kits), per = kits.reduce((m, k) => k.diubah != null && (m == null || k.diubah > m) ? k.diubah : m, null);
   const teratas = [...kits].sort((a, b) => (URUT_STATUS[a.status] ?? 9) - (URUT_STATUS[b.status] ?? 9) || String(a.kode).localeCompare(String(b.kode))).slice(0, 3);
   const baris = teratas.map(k => `<li data-kode="${esc(k.kode)}"><b class="num">${esc(k.kode)}</b><span class="sp-status ${esc(k.status)}">${esc(LABEL_STATUS[k.status] ?? k.status)}</span></li>`).join("");
@@ -88,7 +88,7 @@ function titikMini(rek) {
 
 export function kartuPilot(log) {
   const sumber = "log gelar lapangan dan entri staf (SIPPA D1)", aktif = barisKoreksi(log).filter(l => !l.dummy && l.jenis === "karhutla");
-  if (!aktif.length) return {ey: "Pilot", judul: "Belum ada log gelar.", isi: kosongHtml("Log masuk dari form lapangan /pipa/lapangan atau entri staf dari formulir kertas."), sumber, per: null, tautan: TAUTAN.pilot};
+  if (!aktif.length) return {kosong: true, ey: "Pilot", judul: "Belum ada log gelar.", isi: kosongHtml("Log masuk dari form lapangan /pipa/lapangan atau entri staf dari formulir kertas."), sumber, per: null, tautan: TAUTAN.pilot};
   const rek = rekapKelas(aktif), ys = KELAS.flatMap(k => rek[k].titik.map(t => t.y)), per = aktif.reduce((m, l) => l.t_tiba != null && (m == null || l.t_tiba > m) ? l.t_tiba : m, null);
   const kecil = nKecil(ys.length), p50 = kuantil(ys, 0.5);
   const sesi = `${hl(aktif.length)} sesi gelar`;
@@ -142,7 +142,7 @@ const waktuTag = ms => ms == null ? "–" : `<time datetime="${new Date(ms).toIS
 
 export function kartuGerak(rows) {
   const sumber = "inventaris SIPPA D1 (gerak kit)";
-  if (!rows.length) return {ey: "Kit", judul: "Belum ada gerak kit.", isi: kosongHtml("Gerak dicatat dari layar Kit dan form lapangan."), sumber, per: null};
+  if (!rows.length) return {kosong: true, ey: "Kit", judul: "Belum ada gerak kit.", isi: kosongHtml("Gerak dicatat dari layar Kit dan form lapangan."), sumber, per: null};
   const urut = [...rows].sort((a, b) => b.waktu - a.waktu).slice(0, 10), td = (l, v, n) => `<td${n ? ' class="n"' : ""} data-label="${l}">${v}</td>`;
   const tr = g => `<tr>${td("Waktu", waktuTag(g.waktu))}${td("Kit", `<b>${esc(g.kit_kode ?? g.kit_id ?? "–")}</b>`)}${td("Gerak", `<span class="sp-status ${esc(g.dari_status)}">${esc(LABEL_STATUS[g.dari_status] ?? g.dari_status)}</span>${ikon("chevron-right")}<span class="sp-status ${esc(g.ke_status)}">${esc(LABEL_STATUS[g.ke_status] ?? g.ke_status)}</span>`)}${td("Alasan", esc(TEKS_ALASAN[g.alasan] ?? g.alasan ?? "–"))}${td("Pengangkut", esc(PENGANGKUT[g.pengangkut] ?? "–"))}</tr>`;
   return {ey: "Kit", judul: `${hl(urut.length)} gerak kit terakhir`,
@@ -156,7 +156,7 @@ const SATUAN_ALARM = {hisap_rendah: "bar", debit_rendah: "L/min", dry_run: "L/mi
 const angkaSatuan = (a, v) => { const u = a.satuan ?? SATUAN_ALARM[a.kode] ?? ""; return esc(`${fmt(v)}${u ? ` ${u}` : ""}`); };
 export function kartuAlarm(alarm) {
   const sumber = "telemetri SIPPA (perangkat dan alarm)";
-  if (!alarm.length) return {ey: "Telemetri", judul: "Tidak ada alarm aktif.", isi: kosongHtml("Alarm muncul di sini saat perangkat melewati ambang."), sumber, per: null};
+  if (!alarm.length) return {kosong: true, ey: "Telemetri", judul: "Tidak ada alarm aktif.", isi: kosongHtml("Alarm muncul di sini saat perangkat melewati ambang."), sumber, per: null};
   const baris = alarm.map(a => `<li><b>${esc(NAMA_ALARM[a.kode] ?? a.kode)}</b>${a.kit_kode ? `<span>${esc(a.kit_kode)}</span>` : ""}${a.nilai != null ? `<span class="num">${angkaSatuan(a, a.nilai)}${a.ambang != null ? ` (ambang ${angkaSatuan(a, a.ambang)})` : ""}</span>` : ""}<span class="ad-catat">sejak ${waktuTag(a.mulai)}</span></li>`).join("");
   return {ey: "Telemetri", judul: `Telemetri: ${hl(alarm.length)} alarm aktif`, isi: `<ul class="sp-daftar sp-alarm">${baris}</ul>`, sumber, per: Math.max(...alarm.map(a => a.mulai).filter(Boolean)), perLabel: "alarm terbaru"};
 }
@@ -220,10 +220,12 @@ export async function pasang(akar, konteks) {
     const wadah = slot(k);
     if (hasil.galat) {
       const e = hasil.galat; if (e.status == null) console.error(e);
-      wadah.replaceChildren(e.status === 404 && k === "alarm" ? menunggu("Telemetri belum dirilis di versi ini") : e.status === 404 && k === "keputusan" ? menunggu("Peringkat prioritas menunggu putaran pipeline data.yml") : galat(e.status ?? 0, e.status == null ? "Kartu tidak bisa ditampilkan. Coba lagi." : e.message || undefined, ulang));
+      /* 404 = berkas atau rute belum ada: kartu disembunyikan, bukan diganti baris "menunggu" (aturan pemilik A18) */
+      if (e.status === 404 && (k === "alarm" || k === "keputusan")) { wadah.hidden = true; return; }
+      wadah.replaceChildren(galat(e.status ?? 0, e.status == null ? "Kartu tidak bisa ditampilkan. Coba lagi." : e.message || undefined, ulang));
       return;
     }
-    const s = bangun(hasil.ok); per[k] = s.per; wadah.innerHTML = rakitKartu(s); tampilPer();
+    const s = bangun(hasil.ok); per[k] = s.per; wadah.hidden = !!s.kosong; wadah.innerHTML = s.kosong ? "" : rakitKartu(s); tampilPer();
   };
   let teksWa = "";
   /* kartu Kit tampil dulu tanpa kesiapan; bagian kit siap gelar diisi begitu rincian kit datang (maksimal 12 fetch) */

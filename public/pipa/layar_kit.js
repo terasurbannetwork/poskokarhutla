@@ -383,6 +383,7 @@ async function daftar(akar, konteks) {
   };
   const gambarSiap = () => {
     const w = isi.querySelector("#sp-kit-siap"); if (!w || sinyal.aborted) return;
+    w.hidden = !st.kit.length;   // tanpa kit: satu kondisi kosong saja di bawah, bukan tiga (aturan pemilik A18)
     w.innerHTML = Kartu.kartu("Kit siap gelar", esc("Kit siap gelar per depot"), kesiapanHtml(ringkasDepot(st.kit, st.rincian), kitTerpotong(st.kit)), `inventaris SIPPA, ${st.per == null ? "per –" : "per " + jamWIB(st.per)}`);
   };
   const gambar = () => {
@@ -391,6 +392,7 @@ async function daftar(akar, konteks) {
     const pct = st.kehilangan?.musim_pct ?? null, per = st.per;
     konteks.setPer?.(per);
     const tingkat = tingkatKehilangan(pct);
+    for (const sel of ["#sp-kit-kartu", ".sp-kontrol"]) isi.querySelector(sel).hidden = !st.kit.length;
     isi.querySelector("#sp-kit-kartu").innerHTML = Kartu.kartu("Kit", esc(judulKit(st.kit, pct)), `<div class="sp-pil-baris">${pilStatusKit(st.kit)}${pct != null ? pilYakin(TINGKAT[tingkat], "asumsi-kebijakan", "Ambang 5% (U8) dan 20% (K-15) ditetapkan sebagai asumsi kebijakan") : ""}${pilYakin("Inventaris staf", "terverifikasi", "Diisi dan diperiksa staf lewat layar ini")}</div>`, `inventaris SIPPA, ${per == null ? "per –" : "per " + jamWIB(per)}`);
     isi.querySelector("#sp-kit-tabel").innerHTML = st.kit.length ? tabel(KEPALA_KIT, baris.map(barisKitHtml), "Tidak ada kit yang cocok dengan penyaring.", per) : `<p class="ad-kosong">Belum ada kit. Kit dibuat oleh moderator; unit pertama SIPPA-001.</p>`;
   };

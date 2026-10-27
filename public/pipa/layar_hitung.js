@@ -296,9 +296,9 @@ export async function pasang(akar, konteks) {
 
   akar.innerHTML = `<div class="sp-judul-baris"><h1 class="sp-judul">Kalkulator hidraulika</h1>
     <div class="sp-aksi-judul"><button type="button" class="ad-tombol" data-aksi="salin">Salin tautan</button>
-    <button type="button" class="ad-tombol" data-aksi="skenario" ${skenario.aktif ? "" : "disabled"} title="${lolos(skenario.alasan)}">Simpan sebagai skenario Studio</button>
+    ${skenario.aktif ? `<button type="button" class="ad-tombol" data-aksi="skenario">Simpan sebagai skenario Studio</button>` : ""}
     ${bolehEkspor(peran) ? '<button type="button" class="ad-tombol" data-aksi="ekspor">Ekspor acuan</button>' : ""}</div></div>
-    <p class="sp-info-aksi" role="status" data-info></p>${skenario.aktif ? "" : `<p class="sp-bantu sp-info-skenario">${lolos(skenario.alasan)}</p>`}
+    <p class="sp-info-aksi" role="status" data-info></p>
     <div data-kompleks></div>
     <div class="sp-hitung">
       <form class="sp-form sp-hitung-form" novalidate aria-label="Masukan kalkulator">${KELOMPOK.map(([kel, nama], i) => `<details class="sp-kel"${!ponsel || i === 0 ? " open" : ""} data-kel="${kel}"><summary><span class="ad-ey">${nama}</span></summary><div class="sp-kel-isi">${MEDAN.filter(m => m.kel === kel).map(m => isianHtml(m, st.nilai[m.k])).join("")}</div></details>`).join("")}</form>
@@ -332,9 +332,10 @@ export async function pasang(akar, konteks) {
     const lm = q("[data-lama]");
     lm.hidden = !lama.length;
     lm.textContent = lama.length ? `Hasil memakai nilai sah terakhir untuk: ${lama.map(k => MEDAN.find(m => m.k === k).label).join(", ")}.` : "";
+    q(".sp-gerbang-rinci").hidden = !r.gerbang.length;   // tanpa hambatan: kalimatnya sudah di alasan vonis, daftar kosong tidak diulang
     q("[data-gerbang]").innerHTML = r.gerbang.length ? r.gerbang.map(g => `<li><span class="sp-tingkat ${lolos(g.tingkat)}">${lolos(TINGKAT[g.tingkat])}</span><code class="sp-kode-g">${lolos(g.kode)}</code><span>${lolos(g.pesan)}</span></li>`).join("") : `<li class="sp-gerbang-kosong">${lolos(TANPA_HAMBATAN)}</li>`;
     if (st.vonis !== r.kata) { if (st.vonis != null) umum.textContent = `Vonis berubah menjadi ${r.kata}: ${r.alasan}`; st.vonis = r.kata; }
-    q("[data-angka]").innerHTML = kartuAngka(h, st.nilai).map(a => `<div class="sp-angka${a.nada ? " " + lolos(a.nada) : ""}"><dt><span class="ad-ey">${lolos(a.label)}</span>${pil(a.yakin === "estimasi-model" ? "Estimasi model" : "Asumsi kebijakan", a.yakin)}</dt><dd><b>${lolos(a.nilai)}</b>${a.nada === "lewat" ? '<span class="sr"> melewati batas</span>' : ""}<small>${lolos(a.banding)}</small><small class="sp-sumber">${lolos(a.sumber)}</small></dd></div>`).join("");
+    q("[data-angka]").innerHTML = kartuAngka(h, st.nilai).map(a => `<div class="sp-angka${a.nada ? " " + lolos(a.nada) : ""}"><dt><span class="ad-ey">${lolos(a.label)}</span>${a.yakin === "estimasi-model" ? "" : pil("Asumsi kebijakan", a.yakin)}</dt><dd><b>${lolos(a.nilai)}</b>${a.nada === "lewat" ? '<span class="sr"> melewati batas</span>' : ""}<small>${lolos(a.banding)}</small><small class="sp-sumber">${lolos(a.sumber)}</small></dd></div>`).join("");
     const pilI = pilIsian(st.nilai, h);
     semua("[data-pil]").forEach(e => { const p = pilI[e.dataset.pil]; e.hidden = !p; e.innerHTML = p ? pil(p.teks, p.kelas) : ""; });
     semua("[data-bila-kompleks]").forEach(e => { e.hidden = !st.nilai.kompleks; });

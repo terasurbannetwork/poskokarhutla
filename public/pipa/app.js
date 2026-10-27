@@ -97,7 +97,7 @@ function mulai(akar) {
   VERSI_ZONA.forEach(([k, n]) => { const b = el("button", "", {type: "button", role: "radio", "aria-checked": String(k === konteks.zona), "data-zona": k, tabindex: k === konteks.zona ? "0" : "-1"}); b.textContent = n; seg.append(b); });
   /* waktu data dari layar (konteks.setPer), bukan konstanta; pil basi dari keadaan.js bila lebih tua dari 48 jam */
   const batas = el("span", "sp-data-per");
-  const tulisPer = () => { batas.replaceChildren(konteks.per == null ? "Data per –" : `Data per ${waktu(konteks.per)}`); if (konteks.per != null && Date.now() - konteks.per > BASI_MS) batas.append(" ", basi(konteks.per)); };
+  const tulisPer = () => { batas.hidden = konteks.per == null; batas.replaceChildren(konteks.per == null ? "Data per –" : `Data per ${waktu(konteks.per)}`); if (konteks.per != null && Date.now() - konteks.per > BASI_MS) batas.append(" ", basi(konteks.per)); };
   tulisPer();
   const pita = el("div", "sp-pita");
   const info = el("div", "sp-pita sp-info", {role: "status"});   // hasil isi/hapus dummy: di bilah konteks supaya tidak terhapus saat layar dimuat

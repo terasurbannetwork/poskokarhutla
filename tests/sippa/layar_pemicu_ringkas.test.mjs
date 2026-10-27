@@ -14,7 +14,8 @@ const model = (b, basi) => P.barisModel({baris: [b], ...SEGAR, basi: {ansambel: 
 test("selTingkat: pil ringkas; saran tindakan dan sebab basi pindah ke tooltip, bukan kolom kata-kata tinggi", () => {
   const h = P.selTingkat(model(baris("A", "SIAGA"), {ansambel: true}));
   assert.match(h, /<span class="sp-tingkat t-siaga" title="[^"]*Cek kesiapan kit[^"]*">SIAGA<\/span>/, "chip SIAGA, saran di title");
-  assert.match(h, /title="PRA-POSISI dan GELAR: –, data ansambel basi">ansambel basi</, "sebab basi ringkas, rinci di title");
+  assert.match(h, /<span class="sr">PRA-POSISI dan GELAR: –, data ansambel basi<\/span>/, "sebab basi tetap untuk pembaca layar; tampilan cukup spanduk atas (28 Okt)");
+  assert.doesNotMatch(h, /sp-yakin/, "tanpa pil basi berulang per baris");
   assert.doesNotMatch(h, /<small/, "tanpa baris kecil yang membungkus");
   assert.ok(h.replace(/<span class="sr">.*?<\/span>/g, "").replace(/<[^>]*>/g, " ").trim().split(/\s+/).length <= 3, "teks tampil paling banyak tiga kata: " + h);
   assert.match(P.selTingkat(model(baris("B", "GELAR"), {ansambel: true})), /t-basi" title="–, data ansambel basi">basi</, "GELAR dipadamkan basi: pil basi, bukan kalimat");
