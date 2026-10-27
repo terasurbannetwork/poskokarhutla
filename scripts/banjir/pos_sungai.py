@@ -96,13 +96,17 @@ def jalankan():
             sel.setdefault(f"{math.floor(p['lon'] / SEL)}_{math.floor(p['lat'] / SEL)}", []).append(p)
     for i, (k, ps) in enumerate(sorted(sel.items()), 1):
         print(f"sel {i}/{len(sel)} {k}: {len(ps)} pos", flush=True)
-        d = unduh_sel(k, [(p["lon"], p["lat"]) for p in ps])
-        if d is None:
-            continue  # sel gagal: pos tanpa entri, dicoba lagi pada jalan berikutnya
-        ways = [e for e in d["elements"] if e["type"] == "way"]
-        for p in ps:
-            n, j = terdekat(p["lon"], p["lat"], ways)
-            out[p["id"]] = {"sungai": n, "jarak_m": j, "cara": "osm"}
+        if os.path.exists(os.path.join(MENTAH, f"{k}.json")):  # sel utuh sudah di-cache
+            grup = [(ps, unduh_sel(k, []))]
+        else:  # potongan 10 pos: sel besar kena 504
+            grup = [(ps[j:j + 10], unduh_sel(f"{k}_{j // 10}", [(p["lon"], p["lat"]) for p in ps[j:j + 10]])) for j in range(0, len(ps), 10)]
+        for sub, dd in grup:
+            if dd is None:
+                continue  # gagal: pos tanpa entri, dicoba lagi pada jalan berikutnya
+            ways = [e for e in dd["elements"] if e["type"] == "way"]
+            for p in sub:
+                n, j = terdekat(p["lon"], p["lat"], ways)
+                out[p["id"]] = {"sungai": n, "jarak_m": j, "cara": "osm"}
     simpan(KELUAR, {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"),
                     "sumber": "OpenStreetMap (ODbL); nama SIPANTAU", "pos": out})
     sumber = {p["id"]: p["sumber"] for p in pos}
