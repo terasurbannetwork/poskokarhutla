@@ -17,6 +17,7 @@ import assert from "node:assert/strict";
 import vm from "node:vm";
 import zlib from "node:zlib";
 import path from "node:path";
+import os from "node:os";
 import {fileURLToPath} from "node:url";
 
 const AKAR = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../..");
@@ -218,12 +219,42 @@ function uji() {
     const pm = [{k: 2 * nx + 3, q: 5}], kering = SG.jalankan({...dasar, muka: [0, 0, 0], pompa: pm}), basah = SG.jalankan({...dasar, muka: [0, 0, 0], hujan: new Float64Array(2).fill(30), pompa: pm});
     assert(kering.neraca.pompa === 0 && kering.neraca.pompaMinta > 0, `pompa sel kering: ${kering.neraca.pompa}`);
     assert(basah.neraca.pompa > 0 && basah.neraca.pompa <= basah.neraca.pompaMinta && basah.neraca.galat < 1e-6, `pompa basah ${basah.neraca.pompa} galat ${basah.neraca.galat}`); }
+  { /* gerbang label J3: uji terkunci sampai state `dibuka`; kalibrasi terbaca; duplikat dan luar DKI dibuang; kejadian asing ditolak */
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), "j3-")), st = path.join(d, "s.json"), lp = path.join(d, "l.json");
+    const r = (t, lon, lat, k) => ({t, lon, lat, kedalaman_cm: k});
+    fs.writeFileSync(lp, JSON.stringify([r("2024-08-17T10:00:00+07:00", 106.8272, -6.1754, 30), r("2024-08-17T10:00:00+07:00", 106.8272, -6.1754, 30), r("2024-08-17T10:00:00+07:00", 107.5, -6.9, 30),
+      r("2024-08-25T10:00:00+07:00", 106.8272, -6.1754, 30), r("2020-01-01T10:00:00+07:00", 106.8272, -6.1754, 20)]));
+    assert.throws(() => muatLabel("2024-08", st, lp), /terkunci/); assert.throws(() => muatLabel("2025-03", st, lp), /bukan kejadian J3/);
+    assert.equal(muatLabel("2020-01", st, lp).length, 1);
+    fs.writeFileSync(st, JSON.stringify({dibuka: {tanggal: "x"}})); const u = muatLabel("2024-08", st, lp);
+    assert.equal(u.length, 1, "duplikat, luar DKI, luar jendela dibuang"); assert.match(u[0].kab, /JAKARTA/i); fs.rmSync(d, {recursive: true}); }
   console.log("ok");
+}
+
+/* ---------- gerbang label J3 (PRAREG-J3.md): label uji tidak terbaca sebelum `kunci_j3.py buka` ---------- */
+/* Jendela simulasi tiap kejadian J3: mulai 00:00 WIB = puncak laporan PetaBencana - 2 hari (gsmap.py PUNCAK), 96 jam. peran uji = label terkunci. */
+export const KEJADIAN_J3 = {
+  "2017-01": {mulai: "2017-02-19", jam: 96, peran: "kalibrasi"}, "2018-01": {mulai: "2018-02-13", jam: 96, peran: "kalibrasi"},
+  "2020-01": {mulai: "2019-12-30", jam: 96, peran: "kalibrasi"}, "2021-02": {mulai: "2021-02-18", jam: 96, peran: "pagar"},
+  "2024-08": {mulai: "2024-08-16", jam: 96, peran: "uji"}, "2025-04": {mulai: "2025-04-22", jam: 96, peran: "uji"}};
+const STATE_J3 = P("data/raw/banjir/genangan/j3_state.json");
+export function labelTerbuka(statePath = STATE_J3) { try { return !!JSON.parse(fs.readFileSync(statePath, "utf8")).dibuka; } catch { return false; } }
+/* laporan PetaBencana dalam jendela kejadian, di dalam poligon DKI (di luar dibuang), duplikat (waktu, koordinat, kedalaman) dibuang.
+   Kejadian peran "uji" ditolak sampai `kunci_j3.py buka`; kejadian di luar KEJADIAN_J3 (mis. 2025-03) juga ditolak. */
+export function muatLabel(kejadian, statePath = STATE_J3, berkas = P("data/raw/banjir/genangan/petabencana_laporan.json")) {
+  const e = KEJADIAN_J3[kejadian]; if (!e) throw new Error(`kejadian ${kejadian} bukan kejadian J3`);
+  if (e.peran === "uji" && !labelTerbuka(statePath)) throw new Error(`label uji ${kejadian} terkunci: jalankan kunci_j3.py buka sesudah kalibrasi selesai`);
+  const a = new Date(e.mulai + "T00:00:00+07:00").getTime(), b = a + e.jam * 3.6e6, geo = JSON.parse(fs.readFileSync(P("public/geo/kecamatan/31.json"), "utf8")), lihat = new Set(), o = [];
+  for (const r of JSON.parse(fs.readFileSync(berkas, "utf8"))) { const t = new Date(r.t).getTime(); if (!(t >= a && t < b)) continue;
+    const kunci = `${r.t}|${r.lon}|${r.lat}|${r.kedalaman_cm}`; if (lihat.has(kunci)) continue; lihat.add(kunci);
+    const f = geo.features.find(f => (f.geometry.type === "MultiPolygon" ? f.geometry.coordinates : [f.geometry.coordinates]).some(poli => di(r.lon, r.lat, poli[0]))); if (!f) continue;
+    o.push({t: r.t, lon: r.lon, lat: r.lat, kedalaman_cm: r.kedalaman_cm, kab: f.properties.kab, kec: f.properties.kec}); }
+  return o;
 }
 
 /* ---------- jalan ---------- */
 function argumen() {
-  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, kotak: null, keluar: null};
+  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, skalaHujan: 1, kdKec: null, kotak: null, keluar: null};
   const v = process.argv.slice(2);
   for (let i = 0; i < v.length; i++) { const k = v[i];
     if (k === "--tanpa-hulu") a.hulu = false;
@@ -234,6 +265,8 @@ function argumen() {
     else if (k === "--tanpa-tanggul") a.tanggul = null;
     else if (k === "--tanggul") a.tanggul = +v[++i];
     else if (k === "--skala-hulu") a.skalaHulu = +v[++i];
+    else if (k === "--skala-hujan") a.skalaHujan = +v[++i]; /* kenop global J3 (PRAREG-J3.md), 1 = tanpa koreksi */
+    else if (k === "--kd-kec") a.kdKec = v[++i]; /* json {"kab|kec": Kd mm/jam}; kecamatan tak tercantum memakai --kd */
     else if (k === "--radius-hulu-km") a.radiusHuluKm = +v[++i];
     else if (k === "--kotak") a.kotak = v[++i].split(",").map(Number);
     else if (k === "--skala-subsiden") a.skalaSubsiden = +v[++i];
@@ -312,7 +345,7 @@ async function jalan() {
   const {kec, nama} = rasterKec(JSON.parse(fs.readFileSync(P("public/geo/kecamatan/31.json"), "utf8")), nx, ny, lonSel, latSel);
   if (a.siap) { const c = {}; for (let k = 0; k < N; k++) if (laut[k]) { const n = kec[k] < 0 ? "(luar DKI)" : nama[kec[k]]; c[n] = (c[n] || 0) + 1; }
     console.log(JSON.stringify({nLaut, per_kec: c, rata_z_sel_darat_dki: null}, null, 1)); return; }
-  const kdKec = nama.map(() => a.kd), kd = new Float64Array(N); for (let k = 0; k < N; k++) kd[k] = laut[k] || alur[k] ? 0 : (kec[k] >= 0 ? kdKec[kec[k]] : a.kd);
+  const kdPeta = a.kdKec ? JSON.parse(fs.readFileSync(a.kdKec, "utf8")) : {}, kdKec = nama.map(n => kdPeta[n] ?? a.kd), kd = new Float64Array(N); for (let k = 0; k < N; k++) kd[k] = laut[k] || alur[k] ? 0 : (kec[k] >= 0 ? kdKec[kec[k]] : a.kd);
 
   /* hujan: sel hujan terdekat per sel DEM -> kelas; SCS-CN harian. Sumber: ifs | era5 (jam langsung) | gsmap_dis (total harian GSMaP x bentuk jam model --bentuk) */
   const KUNCI = {ifs: "ecmwf_ifs", ecmwf_ifs: "ecmwf_ifs", era5: "era5"}, hj = JSON.parse(fs.readFileSync(P("data/raw/banjir/genangan/hujan_jam", a.kejadian + ".json"), "utf8"));
@@ -327,6 +360,7 @@ async function jalan() {
     if (!ganti) throw new Error(`GSMaP harian tidak mencakup ${a.kejadian} (hari tersedia ${Object.keys(gs.hari)[0]}..${Object.keys(gs.hari).at(-1)})`);
     infoHujan = {...infoHujan, hari_diganti: ganti, hari_model_kering_diratakan: tanpa, produk: [...new Set(Object.values(gs.produk))]};
   }
+  if (a.skalaHujan !== 1) sh = sh.map(s => ({...s, mm: s.mm.map(x => x == null ? x : x * a.skalaHujan)}));
   const lats = [...new Set(sh.map(s => s.lat))].sort((p, q) => p - q), lons = [...new Set(sh.map(s => s.lon))].sort((p, q) => p - q);
   const idx = sh.map(s => lats.indexOf(s.lat) * lons.length + lons.indexOf(s.lon)), serieKisi = []; idx.forEach((q, i) => serieKisi[q] = sh[i]);
   const o = serieKisi[0].waktu.indexOf(a.mulai + "T00:00"); if (o < 0) throw new Error("mulai di luar jendela hujan");
@@ -424,4 +458,6 @@ async function jalan() {
   console.log(JSON.stringify({menteng_p90: mentengs && p90(mentengs), top5_p90: top5, waktu_jalan_dtk: keluar.waktu_jalan_dtk, langkah: keluar.langkah, neraca_global_m3: keluar.neraca_global_m3, sebaran: sebaran, hulu: catatHulu}, null, 1));
 }
 
-if (process.argv[2] === "uji") uji(); else await jalan();
+if (process.argv[2] === "uji") uji();
+else if (process.argv[2] === "label") console.log(JSON.stringify(muatLabel(process.argv[3])));
+else await jalan();

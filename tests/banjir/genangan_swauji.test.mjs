@@ -17,3 +17,8 @@ test('genangan/mesin.mjs swa-uji (subsidensi, alur 4-tersambung, profil monoton,
   const out = execFileSync('node', ['scripts/banjir/genangan/mesin.mjs', 'uji'], { encoding: 'utf8', timeout: 120000 });
   assert.match(out, /ok/);
 });
+
+test('genangan/kunci_j3.py swa-uji (sidik, jangkar, buka sekali, penilai wajib)', () => {
+  const out = execFileSync('python3', ['scripts/banjir/genangan/kunci_j3.py', 'uji'], { encoding: 'utf8', timeout: 120000 });
+  assert.match(out, /ok/);
+});
