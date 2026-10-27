@@ -247,11 +247,15 @@
       ${S.token[p.id] && J.bantuan ? `<div class="lw-blok"><button class="lw-btn" data-selesai>Tandai sudah terpenuhi / selesai</button></div>` : ""}
       ${p.riwayat?.length ? `<div class="lw-blok"><h4>Riwayat di titik ini</h4><ol class="lw-riwayat">${p.riwayat.map(r => `<li><span class="lw-titikw" style="background:${K.WARNA[J.sub[r.sub]?.[1]] || "#999"}"></span>${esc(J.sub[r.sub]?.[0] || r.sub)} · ${lalu(r.dibuat)}${r.teks ? ` · ${esc(r.teks)}` : ""}</li>`).join("")}</ol></div>` : ""}
       <div class="lw-blok lw-bawah"><button class="lw-tautan" data-bagikan>Salin tautan laporan</button>
-        <details class="lw-aduan"><summary>Laporkan penyalahgunaan</summary><div class="lw-pil">${[["spam", "Spam / iklan"], ["palsu", "Info palsu"], ["kasar", "Kasar / SARA"], ["pribadi", "Data pribadi"], ["lainnya", "Lainnya"]].map(([k, n]) => `<button class="lw-btn" data-aduan="${k}">${n}</button>`).join("")}</div></details></div>`);
+        <details class="lw-aduan"><summary>Laporkan penyalahgunaan</summary><div class="lw-pil">${[["spam", "Spam / iklan"], ["palsu", "Info palsu"], ["kasar", "Kasar / SARA"], ["pribadi", "Data pribadi"], ["lainnya", "Lainnya"]].map(([k, n]) => `<button class="lw-btn" data-aduan="${k}">${n}</button>`).join("")}</div><div class="lw-ts"></div></details></div>`);
     const P = $("#lwPanel");
     P.querySelectorAll("[data-suara]").forEach(b => b.onclick = async () => { try { const r = await kirimAPI(`/${id}/konfirmasi`, {nilai: b.dataset.suara});
       P.querySelector('[data-suara="benar"] b').textContent = r.benar; P.querySelector('[data-suara="salah"] b').textContent = r.salah; toast("Terima kasih, konfirmasi tercatat."); } catch (e) { toast(e.message); } });
-    P.querySelectorAll("[data-aduan]").forEach(b => b.onclick = async () => { try { const r = await kirimAPI(`/${id}/lapor`, {nilai: b.dataset.aduan}); toast(r.disembunyikan ? "Laporan disembunyikan untuk ditinjau." : "Aduan tercatat. Terima kasih."); if (r.disembunyikan) { tutupPanel(); muat(true); } } catch (e) { toast(e.message); } });
+    let tsA = null; // widget Turnstile aduan: dirender malas saat <details> pertama dibuka
+    if (konfig.turnstile) P.querySelector(".lw-aduan")?.addEventListener("toggle", e => { if (e.target.open) muatTurnstile().then(() => { tsA ??= turnstile.render(e.target.querySelector(".lw-ts"), {sitekey: konfig.turnstile, language: "id"}); }).catch(() => {}); }, {once: true});
+    P.querySelectorAll("[data-aduan]").forEach(b => b.onclick = async () => { const body = {nilai: b.dataset.aduan};
+      if (konfig.turnstile) { body.turnstile = tsA != null ? turnstile.getResponse(tsA) : ""; if (!body.turnstile) return toast("Selesaikan verifikasi dulu."); }
+      try { const r = await kirimAPI(`/${id}/lapor`, body); toast(r.disembunyikan ? "Laporan disembunyikan untuk ditinjau." : "Aduan tercatat. Terima kasih."); if (r.disembunyikan) { tutupPanel(); muat(true); } } catch (e) { toast(e.message); } finally { if (tsA != null) turnstile.reset(tsA); } });
     P.querySelectorAll("[data-lanjut]").forEach(b => b.onclick = () => formulir(p.jenis, {induk: id, sub: b.dataset.lanjut, lat, lon}));
     P.querySelector("[data-buka]")?.addEventListener("click", e => rincian(e.target.dataset.buka));
     P.querySelector("[data-laci]")?.addEventListener("click", e => { if (window.Laci?.buka && window.bukaTab) { e.preventDefault(); window.bukaTab("peta"); window.Laci.buka(e.target.dataset.laci); } });

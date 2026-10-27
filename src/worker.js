@@ -439,7 +439,7 @@ async function admin(env, req, url, id, kini) {
     if (url.searchParams.get("audit") === "1")
       return json((await env.DB.prepare("SELECT waktu, moderator, aksi, laporan_id, jumlah, alasan FROM audit_moderasi ORDER BY id DESC LIMIT 300").all()).results);
     const tersembunyi = url.searchParams.get("tersembunyi") === "1";
-    const r = await denganWilayah(env, `SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${GABUNG_WIL} ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY l.dibuat DESC LIMIT 300`, [], "all");
+    const r = await denganWilayah(env, `SELECT ${KOLOM}, l.aduan, l.disembunyikan, l.ip_hash FROM laporan l ${GABUNG_WIL} ${tersembunyi ? "WHERE l.disembunyikan = 1 OR l.aduan > 0" : ""} ORDER BY ${tersembunyi ? "l.aduan DESC, " : ""}l.dibuat DESC LIMIT 300`, [], "all");
     return json(r.results.map(x => ({...x, detail: JSON.parse(x.detail)})));
   }
   const b = await bacaBody(req); if (b.galat) return gagal(400, b.galat);
