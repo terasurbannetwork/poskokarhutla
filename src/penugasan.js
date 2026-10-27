@@ -1,7 +1,8 @@
 /* Penugasan orang ke tugas api dan pelacak posisi lewat tautan. Skema: migrations/0035_penugasan.sql. Aturan pemilik (21 Okt 2026, pola gemah-ripah antar/[token] dan pangantara kdmp_links):
    - Akun instansi aktif menugaskan orang (driver, ketua regu, anggota) ke tugas api: nama, peran, WA, jumlah orang. Worker membuat tautan /lacak/<token>: token 18 byte acak (36 hex),
      TAMPIL SEKALI ke akun yang menugaskan, hanya sha256-nya disimpan. Status aktif/dicabut/selesai, kedaluwarsa (default 48 jam), dibuka_pada. Tombol WA hanya membuka wa.me (tidak ada kiriman otomatis).
-   - /lacak/<token> tanpa login: halaman statis (public/lacak.html). API-nya membawa token di header `x-lacak` (bukan di URL, supaya tidak masuk log): info, centang butir, berangkat, posisi, tiba, selesai.
+   - /lacak/<token> tanpa login: halaman statis (public/lacak.html). API-nya membawa token di header `x-lacak` (bukan di URL, supaya tidak masuk log): info, centang butir, berangkat, posisi, tiba, selesai,
+     dan lapor dari lokasi (foto + kondisi; konfirmasi/kabar/cek ulang atas nama orang ini, 0062: src/instansi.js laporPetugas).
    - Posisi: ditolak 410 bila tautan dicabut/selesai/kedaluwarsa, 409 sebelum "Mulai berangkat"; lat/lon dalam kotak Indonesia (0,0 ditolak), akurasi 0 sampai 5000 (selain itu null);
      batas 4 per menit per token dan 300 per menit per IP; tabel hanya menambah; retensi 30 hari di cron bersih-bersih; geofence: tiba otomatis bila <= 300 m dari api dengan akurasi <= 300 m.
    - Privasi: posisi hanya terlihat akun pemilik tugas (wilayah), moderator, dan staf pusdalops/verifikator wilayah itu; berhenti saat selesai/dicabut. WA orang yang ditugaskan hanya untuk akun pemilik.
@@ -11,7 +12,7 @@ import {json, gagal, acak, sha, bacaBody, normalWA, ipHash} from "./worker.js";
 import {tx, num} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {km} from "./titik.js";
-import {akunAktif, tugasDalam, dalamLingkup, jsonAman, bencanaPer} from "./instansi.js";
+import {akunAktif, tugasDalam, dalamLingkup, jsonAman, bencanaPer, laporInfo, laporPetugas, unggahMediaPetugas} from "./instansi.js";
 import {labelBencana} from "./tugas_bencana.js";
 const tandaiBencana = async (env, t, id) => { t.bencana = (await bencanaPer(env, [{id}])).get(id) ?? "karhutla"; t.bencana_nama = labelBencana(t.bencana).nama; };
 import {modAtauStaf, dalamWilayahStaf, stafNyata, P_VALIDASI} from "./staf.js";
@@ -274,7 +275,18 @@ async function infoLacak(env, req, kini) {
   const angin = await anginRegu(env, p, kini);
   return json({kini, angin, darurat_jenis: JENIS_DARURAT, tugas: {kab: p.kab, kec: p.kec, lat: p.lat, lon: p.lon, level: p.level, ditutup: p.tstatus !== "buka", cara, alat}, akses: jsonAman(p.akses), navigasi: navigasi(p), oleh: p.akun_wilayah,
     penugasan: {nama: p.nama, peran: p.peran, peran_nama: PERAN[p.peran], orang: p.orang, kedaluwarsa: p.kedaluwarsa, dibuka_pada: p.dibuka_pada ?? kini, berangkat_pada: p.berangkat_pada, tiba_pada: p.tiba_pada},
-    butir, checklist: cek, ringkas: ringkasChecklist(butir, cek), batas: {jeda_ms: BATAS.jedaKlienMs, tiba_m: BATAS.tibaMeter}});
+    butir, checklist: cek, ringkas: ringkasChecklist(butir, cek), batas: {jeda_ms: BATAS.jedaKlienMs, tiba_m: BATAS.tibaMeter}, lapor: await laporInfo(env, p, kini)});
+}
+/* lapor dari lokasi lewat tautan: isian dan berkas tercatat atas nama orang ini (src/instansi.js laporPetugas) */
+const pelaku = p => ({id: p.id, nama: p.nama, peran_nama: PERAN[p.peran], wa: p.wa});
+async function laporLacak(env, req, kini) {
+  const d = await dariToken(env, req, kini); if (d.r) return d.r;
+  const b = await bacaBody(req, 8192); if (b.galat) return gagal(b.status || 400, b.galat);
+  return laporPetugas(env, d.p, pelaku(d.p), b.o, kini);   // laporan berfoto dari lokasi ikut mencatat tiba (src/instansi.js stmtTiba)
+}
+async function mediaLacak(env, req, kini) {
+  const d = await dariToken(env, req, kini); if (d.r) return d.r;
+  return unggahMediaPetugas(env, req, d.p, pelaku(d.p), kini);
 }
 async function centangLacak(env, req, kini) {
   const d = await dariToken(env, req, kini); if (d.r) return d.r;
@@ -407,7 +419,7 @@ async function hitungAlarm(env, kini) {
 }
 
 /* ================================================================ halaman /lacak/<token> dan manifest PWA per token */
-const CSP_LACAK = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; connect-src 'self'; manifest-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const CSP_LACAK = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data: blob:; connect-src 'self'; manifest-src 'self' blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
 const KEPALA_LACAK = {"cache-control": "no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow"};
 /* dipanggil rute() di src/worker.js untuk jalur /lacak: halaman statis tunggal; token ada di fragmen (#<36 hex>) yang dibaca lacak.js dan dikirim lewat header x-lacak.
    Manifest PWA dibuat lacak.js sebagai blob (start_url berisi fragmen), jadi tak ada rute manifest per token. */
@@ -474,6 +486,8 @@ const RUTE_ASLI = {
   "POST /api/lacak/tiba": (env, req, url, kini) => tiba(env, req, kini),
   "POST /api/lacak/selesai": (env, req, url, kini) => selesai(env, req, kini),
   "POST /api/lacak/darurat": (env, req, url, kini, ctx) => darurat(env, req, kini, ctx),
+  "POST /api/lacak/media": (env, req, url, kini) => mediaLacak(env, req, kini),
+  "POST /api/lacak/lapor": (env, req, url, kini) => laporLacak(env, req, kini),
   "GET /api/instansi/usulan/:id": (env, req, url, kini, ctx, id) => usulan(env, req, kini, id),
 };
 /* kiriman bersesi dan kiriman lacak wajib header x-pb: 1 (anti-CSRF; halaman mengirimnya otomatis); tabel 0035 belum ada = 503 yang jelas */

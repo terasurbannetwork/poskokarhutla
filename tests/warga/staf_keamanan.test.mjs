@@ -112,7 +112,7 @@ uji("7. CSP /instansi mengizinkan Google Fonts saja tambahan; versi aset /admin/
   assert.match(csp, /style-src 'self' https:\/\/cdnjs\.cloudflare\.com https:\/\/fonts\.googleapis\.com;/); assert.match(csp, /font-src https:\/\/fonts\.gstatic\.com;/);
   assert.match(csp, /script-src 'self' https:\/\/cdnjs\.cloudflare\.com;/); assert.ok(!/unsafe-/.test(csp), "tidak ada unsafe-*"); assert.match(csp, /frame-ancestors 'none'/); assert.match(csp, /connect-src 'self' https:\/\/\*\.openfreemap\.org;/);
   const h = await (await U.mf.dispatchFetch("http://bnpb.lokal/admin/instansi", {headers: ADMIN})).text();
-  assert.ok(h.includes("/admin/instansi.css?v=3") && h.includes("/admin/instansi.js?v=4"), "versi aset naik");
+  assert.ok(h.includes("/admin/instansi.css?v=3") && h.includes("/admin/instansi.js?v=5"), "versi aset naik");
   await sisip("tugas_api", {id: id16(), prov: "62", kab: "Kapuas", kec: "Mentaya", lat: -2.4, lon: 113.1, level: 3, n24: 4, dibuat: Date.now() - (8 * 60 + 3) * MENIT, terakhir_terdeteksi: Date.now() - JAM, status: "buka", dummy: 0});
   const j = (await api("GET", "/api/pantau", undefined, MOD2)).j, b = j.butir.find(x => x.jenis === "api_konfirmasi" && x.judul.includes("Mentaya"));
   assert.match(b.judul, /lewat 2 jam 3 menit dari batas 6 jam$/);

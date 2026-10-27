@@ -125,7 +125,7 @@
   /* ================= panel penugasan (akun) dan versi baca-saja (admin) ================= */
   let gen = 0, aktif = null;   // satu panel hidup pada satu waktu; yang lama berhenti sendiri
   async function api(metode, url, body) {
-    const h = {...(metode === "POST" ? {"x-pb": "1"} : {}), ...(body === undefined ? {} : {"content-type": "application/json"})};
+    const h = {...(metode === "POST" ? {"x-pb": "1"} : {}), ...(body === undefined ? {} : {"content-type": "application/json"}), ...(window.InstansiSaya?.akun?.id ? {"x-akun": window.InstansiSaya.akun.id} : {})};   // x-akun: tab basi ditolak 401 (src/instansi.js akunMasuk)
     let r; try { r = await fetch(url, {method: metode, headers: h, body: body === undefined ? undefined : JSON.stringify(body)}); } catch (e) { return {ok: false, status: 0, j: {galat: "Tidak ada sinyal."}}; }
     return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))};
   }

@@ -14,7 +14,7 @@
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const ganti = (n, ...a) => n.replaceChildren(...a.flat().filter(x => x != null && x !== false));   // replaceChildren(null) menulis teks "null"
   const api = async (metode, url, body) => {
-    try { const r = await fetch(url, {method: metode, headers: {...(metode === "POST" ? {"x-pb": "1", "content-type": "application/json"} : {})}, body: body === undefined ? undefined : JSON.stringify(body)}); return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))}; }
+    try { const r = await fetch(url, {method: metode, headers: {...(metode === "POST" ? {"x-pb": "1", "content-type": "application/json"} : {}), ...(window.InstansiSaya?.akun?.id ? {"x-akun": window.InstansiSaya.akun.id} : {})}, body: body === undefined ? undefined : JSON.stringify(body)}); return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))}; }
     catch (e) { return {ok: false, status: 0, j: {galat: "Tidak ada sinyal."}}; }
   };
   const wibHariIni = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);

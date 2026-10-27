@@ -178,7 +178,8 @@ uji("gel2/W8: /api/pipa/lapangan: regu_maks/regu_rata, luas awal dan maks, lahan
   assert.equal(B[t].instansi_hash, createHash("sha256").update("instansi|" + a).digest("hex").slice(0, 12)); assert.match(B[t].instansi_hash, /^[0-9a-f]{12}$/); assert.strictEqual(B[t4].instansi_hash, null); assert.strictEqual(B[t4].regu_maks, null); assert.equal(B[t4].jumlah_isian, 0); assert.strictEqual(B[t4].luas_satelit_awal_ha, null);
   assert.ok(!r.t.includes(a) && !/Rahasia|akun|pic_/i.test(r.t), "id akun dan nama tidak keluar");
   assert.deepEqual(Object.keys(B[t]).sort(), ["alat_dipakai", "diubah", "id", "instansi_hash", "jumlah_isian", "kab", "kedalaman_bara_cm", "lahan", "lahan_peta_gambut", "lat", "lon", "luas_garis_ha", "luas_lapangan_ha", "luas_satelit_awal_ha", "luas_satelit_ha", "luas_satelit_maks_ha",
-    "mulai_padam", "padam_ha", "padam_pada", "padam_verif", "personel", "prov", "regu", "regu_maks", "regu_rata", "status_api"].sort());
+    "mulai_padam", "padam_ha", "padam_pada", "padam_verif", "personel", "prov", "regu", "regu_maks", "regu_rata", "status_api",
+    "status", "hasil", "konfirmasi_pada", "alasan_bukan_api", "sumber_konfirmasi", "isian_petugas"].sort());
 });
 
 uji("gel2/0046: tugas baru dari cron menyimpan luas satelit awal sekali; versi berikutnya yang lebih luas menaikkan luas_ha tetapi bukan luas awal", async () => {

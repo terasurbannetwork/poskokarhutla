@@ -82,7 +82,7 @@ test("layar akun: teks verifikasi; bukan api menutup tanpa dihitung padam; api a
     const r = await mf.dispatchFetch("http://instansi.lokal/api/instansi/media", {method: "POST", headers: {"x-pb": "1", "content-type": r0.headers.get("content-type"), "content-length": String(buf.length), ...h}, body: buf});
     const j = await r.json(); assert.equal(r.status, 201, JSON.stringify(j)); return j.id;
   };
-  const konf = async (tid, hasil) => api("POST", `/api/instansi/konfirmasi/${tid}`, {klien_id: "verif-" + hasil + tid.slice(0, 4), hasil, pic_nama: "Pak Joko", pic_jabatan: "Kepala Desa", pic_wa: "0812 1111 2222", media: [await unggah(tid)]}, h);
+  const konf = async (tid, hasil) => api("POST", `/api/instansi/konfirmasi/${tid}`, {klien_id: "verif-" + hasil + tid.slice(0, 4), hasil, ...(hasil === "bukan_api" ? {alasan_bukan_api: "tidak_ada_bekas"} : {}), pic_nama: "Pak Joko", pic_jabatan: "Kepala Desa", pic_wa: "0812 1111 2222", media: [await unggah(tid)]}, h);
   /* tidak ada api: tugas ditutup bukan_api, bukan padam */
   assert.equal((await konf(ver[0].id, "bukan_api")).s, 201); assert.equal(await st(ver[0].id), "bukan_api");
   assert.equal((await DB.prepare("SELECT count(*) n FROM tugas_api WHERE status = 'padam'").first()).n, 0, "tidak ada api tidak dihitung api padam");

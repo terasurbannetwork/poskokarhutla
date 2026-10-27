@@ -3,6 +3,10 @@
   "diuji": {
     "table uji_tugas": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
     "table uji_isian": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
+    "table isian_lapangan": "lapor: migrasi 0062 idempoten",
+    "table media_petugas": "lapor: info membawa langkah konfirmasi; berkas petugas tercatat di media_petugas",
+    "POST /api/lacak/media": "lapor: info membawa langkah konfirmasi; berkas petugas tercatat di media_petugas",
+    "POST /api/lacak/lapor": "lapor: bukan api wajib alasan; PIC = petugas",
     "table uji_sampel": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
     "table uji_terlewat": "uji lapangan: migrasi 0055 idempoten; CHECK strata",
     "GET /api/uji-lapangan": "uji lapangan: API menghitung Q1-Q5 dari data sintetis",

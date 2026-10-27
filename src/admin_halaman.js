@@ -112,7 +112,7 @@ export const halamanInstansi = ctx => halaman("instansi", "Memuat Akun Instansiâ
 <script src="/instansi_kartu.js?v=1"></script>
 <script src="/instansi_tugaskan.js?v=1"></script>
 <script src="/admin/bersama.js?v=4"></script>
-<script src="/admin/instansi.js?v=4"></script>`, ctx);
+<script src="/admin/instansi.js?v=5"></script>`, ctx);
 
 /* Inventaris peralatan pemadam (/admin/inventaris): peta gudang digambar SVG sendiri oleh skrip halaman, jadi CSP admin tidak berubah */
 export const halamanInventaris = ctx => halaman("inventaris", "Memuat inventaris alatâ€¦", `<link href="/admin/inventaris.css?v=1" rel="stylesheet">

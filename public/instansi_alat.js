@@ -24,7 +24,7 @@
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const pesan = (t, k) => { const p = el("pesan"); if (p) { p.textContent = t || ""; p.className = "lp-pesan " + (k || ""); } };
   const api = async (metode, url, body) => {
-    const raw = body instanceof Blob, hd = {...(metode === "POST" ? {"x-pb": "1"} : {}), ...(body === undefined || raw ? {} : {"content-type": "application/json"})};
+    const raw = body instanceof Blob, hd = {...(metode === "POST" ? {"x-pb": "1"} : {}), ...(body === undefined || raw ? {} : {"content-type": "application/json"}), ...(window.InstansiSaya?.akun?.id ? {"x-akun": window.InstansiSaya.akun.id} : {})};   // x-akun: tab basi ditolak 401
     try { const r = await fetch(url, {method: metode, headers: hd, body: body === undefined ? undefined : raw ? body : JSON.stringify(body)}); return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))}; }
     catch (e) { return {ok: false, status: 0, j: {galat: "Tidak ada sinyal. Coba lagi saat sinyal kembali."}}; }
   };

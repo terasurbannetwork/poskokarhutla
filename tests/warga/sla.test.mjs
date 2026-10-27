@@ -113,6 +113,7 @@ uji("sla: tahap waktu dari kolom nyata: deteksi = min(himawari, viirs), perkiraa
   assert.equal(T.konfirmasi_tiba.p50_menit, 80); assert.equal(T.tiba_padam.n, 1); assert.equal(T.padam_terverifikasi.p50_menit, 50 * 60); assert.strictEqual(T.tiba_padam.target_menit, null);
   const w = j.wilayah.find(x => x.kode === "62"); assert.equal(w.nama, "Kalimantan Tengah"); assert.equal(w.n, 3); assert.deepEqual(w.tahap.deteksi_tugas, {p50: 60, p90: 90, n: 2}); assert.equal(typeof w.terlambat_buka, "number");
   assert.ok(j.catatan.some(c => /1 dari 3 tugas memakai waktu pembuatan/.test(c)));
+  assert.ok(j.catatan.some(c => /^Sejak \d+ \S+ \d{4}, bukan api dengan alasan tidak ada bekas atau bekas lama hanya menahan tugas baru 3 hari/.test(c)), "penanda 0062 disebut");
   assert.equal(j.proses.find(p => p.tahap === "konfirmasi").n, 2); assert.equal(j.proses.find(p => p.tahap === "terverifikasi").n, 1);
   assert.equal(j.macet.find(m => m.tahap === "konfirmasi").n_menunggu, 1, "tugas ketiga belum dikonfirmasi"); assert.equal(j.macet.find(m => m.tahap === "konfirmasi").n_lewat_target, 1);
   assert.ok(j.tren.some(x => x.deteksi_tugas_p50 != null));

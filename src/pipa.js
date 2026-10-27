@@ -30,7 +30,13 @@ export async function pipaLapangan(env, req, url) {
   const tolak = await periksaToken(env, req); if (tolak) return tolak;
   const sejak = Math.max(0, Number(url.searchParams.get("sejak")) || 0);
   const I = (kolom, cond = "1") => `(SELECT ${kolom} FROM tugas_isian i WHERE i.tugas_id = t.id AND ${cond} ORDER BY i.dibuat DESC LIMIT 1)`;
-  const sql = (garis, awal) => `SELECT t.id, t.prov, t.kab, t.lat, t.lon, t.luas_ha luas_satelit_ha, t.padam_pada, t.padam_verif, t.rekomendasi,
+  /* label lapangan untuk uji balik: hasil konfirmasi, alasan bukan api, dan sumbernya ('instansi' = akun instansi, 'petugas' = tautan /lacak, 0062) */
+  const KONF = "FROM tugas_isian i LEFT JOIN isian_lapangan l ON l.isian_id = i.id WHERE i.tugas_id = t.id AND i.langkah = 'konfirmasi'";
+  const LAP = lap => lap ? `(SELECT l.alasan_bukan_api ${KONF}) alasan_bukan_api, (SELECT CASE WHEN l.penugasan_id IS NULL THEN 'instansi' ELSE 'petugas' END ${KONF}) sumber_konfirmasi,
+    (SELECT count(*) FROM isian_lapangan l JOIN tugas_isian i ON i.id = l.isian_id WHERE i.tugas_id = t.id AND l.penugasan_id IS NOT NULL) isian_petugas`
+    : "NULL alasan_bukan_api, (SELECT 'instansi' FROM tugas_isian i WHERE i.tugas_id = t.id AND i.langkah = 'konfirmasi') sumber_konfirmasi, 0 isian_petugas";
+  const sql = (garis, awal, lap) => `SELECT t.id, t.prov, t.kab, t.lat, t.lon, t.luas_ha luas_satelit_ha, t.padam_pada, t.padam_verif, t.rekomendasi, t.status, t.konfirmasi_pada,
+    (SELECT hasil FROM tugas_isian WHERE tugas_id = t.id AND langkah = 'konfirmasi') hasil, ${LAP(lap)},
     (SELECT lahan_teramati FROM tugas_isian WHERE tugas_id = t.id AND lahan_teramati IS NOT NULL AND lahan_teramati != 'tidak_tahu' ORDER BY dibuat DESC LIMIT 1) lahan,
     ${I("i.luas_ha", "i.luas_ha IS NOT NULL")} luas_lapangan_ha, ${I("i.padam_ha", "i.padam_ha IS NOT NULL")} padam_ha, ${garis} luas_garis_ha,
     ${I("i.regu", "i.regu IS NOT NULL")} regu, ${I("i.personel", "i.personel IS NOT NULL")} personel, (SELECT min(mulai_padam) FROM tugas_isian WHERE tugas_id = t.id) mulai_padam,
@@ -40,12 +46,13 @@ export async function pipaLapangan(env, req, url) {
     ${awal} luas_satelit_awal_ha,
     max(t.dibuat, coalesce(t.isian_terakhir, 0), coalesce(t.padam_pada, 0), coalesce(t.verif_pada, 0)) diubah
     FROM tugas_api t WHERE t.dummy = 0 AND max(t.dibuat, coalesce(t.isian_terakhir, 0), coalesce(t.padam_pada, 0), coalesce(t.verif_pada, 0)) >= ?1 ORDER BY diubah LIMIT ${MAKS}`;
-  let garis = true, awal = true, rows;
-  for (let i = 0; i < 3 && !rows; i++) {
-    try { rows = (await env.DB.prepare(sql(garis ? "(SELECT max(luas_ha) FROM ops_garis g WHERE g.tugas_id = t.id AND g.jenis = 'garis_api')" : "NULL", awal ? "(SELECT luas_ha FROM tugas_luas_awal a WHERE a.tugas_id = t.id)" : "NULL")).bind(sejak).all()).results; }
+  let garis = true, awal = true, lap = true, rows;
+  for (let i = 0; i < 4 && !rows; i++) {
+    try { rows = (await env.DB.prepare(sql(garis ? "(SELECT max(luas_ha) FROM ops_garis g WHERE g.tugas_id = t.id AND g.jenis = 'garis_api')" : "NULL", awal ? "(SELECT luas_ha FROM tugas_luas_awal a WHERE a.tugas_id = t.id)" : "NULL", lap)).bind(sejak).all()).results; }
     catch (e) {
       if (garis && tanpaTabel(e, "ops_garis")) garis = false;
       else if (awal && tanpaTabel(e, "tugas_luas_awal")) awal = false;
+      else if (lap && tanpaTabel(e, "isian_lapangan")) lap = false;
       else if (/no such table/i.test(String(e?.message || e))) return gagal(503, "tugas api belum diaktifkan");
       else throw e;
     }
@@ -55,6 +62,7 @@ export async function pipaLapangan(env, req, url) {
     return {id: r.id, prov: r.prov, kab: r.kab, lat: bulat2(r.lat), lon: bulat2(r.lon), lahan: r.lahan, luas_satelit_ha: r.luas_satelit_ha, luas_lapangan_ha: r.luas_lapangan_ha,
       padam_ha: r.padam_ha, luas_garis_ha: r.luas_garis_ha, regu: r.regu, personel: r.personel, mulai_padam: r.mulai_padam, padam_pada: r.padam_pada, padam_verif: r.padam_verif,
       kedalaman_bara_cm: r.kedalaman_bara_cm, alat_dipakai: parse(r.alat_dipakai), status_api: r.status_api,
+      status: r.status, hasil: r.hasil, konfirmasi_pada: r.konfirmasi_pada, alasan_bukan_api: r.alasan_bukan_api, sumber_konfirmasi: r.sumber_konfirmasi, isian_petugas: r.isian_petugas,
       regu_maks: r.regu_maks, regu_rata: r.regu_rata, luas_satelit_awal_ha: r.luas_satelit_awal_ha, luas_satelit_maks_ha: r.luas_satelit_ha,
       /* dari peta gambut lewat rekomendasi pipeline: kunci `gambut` bila ada, selain itu bara_cm terukur (hanya dihitung di sel gambut) = true. Selain itu null (tidak diketahui), BUKAN false:
          rekomendasi tanpa bara tidak membuktikan lahan bukan gambut. */
