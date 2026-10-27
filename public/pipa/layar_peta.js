@@ -87,15 +87,15 @@ export function ringkasanZona(z, prov, kompleks, cek) {
     median: Object.fromEntries(["k", "u", "o"].map(x => [x, {air: b[x]?.median_air_km ?? null, jalan: b[x]?.median_jalan_km ?? null}])),
   };
 }
-const KOLOM_RINGKAS = [["k", "Konservatif", "versi kendala.json"], ["u", "Jalan utama OSM", "tersier ke atas x semua air"], ["o", "Semua jalan OSM", "optimistis, termasuk track"], ["v", "Terverifikasi", "optimistis hanya di kompleks yang cek jalan hujannya lolos"]];
+const KOLOM_RINGKAS = [["k", "Konservatif", "versi kendala.json", "Kons."], ["u", "Jalan utama OSM", "tersier ke atas x semua air", "Utama OSM"], ["o", "Semua jalan OSM", "optimistis, termasuk track", "Semua OSM"], ["v", "Terverifikasi", "optimistis hanya di kompleks yang cek jalan hujannya lolos", "Terv."]];
 export function ringkasanHtml(r, versiAktif = "k") {
   if (!r) return `<p class="ad-kosong">Belum ada ringkasan zona untuk provinsi ini.</p>`;
-  const kepala = KOLOM_RINGKAS.map(([v, n, ket]) => `<th scope="col" class="n${v === versiAktif ? " aktif" : ""}" title="${esc(ket)}">${esc(n)}</th>`).join("");
+  const kepala = KOLOM_RINGKAS.map(([v, n, ket, pendek]) => `<th scope="col" class="n${v === versiAktif ? " aktif" : ""}" title="${esc(ket)}"><abbr title="${esc(n)}">${esc(pendek)}</abbr></th>`).join("");
   const baris = r.baris.map(b => `<tr><th scope="row"><span class="sp-yakin zona-pil z-${b.zona}">${polaSvg(b.zona)}${b.zona}</span></th>${KOLOM_RINGKAS.map(([v, n]) => `<td class="n${v === versiAktif ? " aktif" : ""}" data-label="${esc(n)}"><b>${esc(fmt(b[v].n))}</b> <span class="sp-pct">${esc(b[v].pct)}</span></td>`).join("")}</tr>`).join("");
   const m = r.median;
   return `<div class="ad-tabel-wadah sp-ringkas-zona"><table class="ad-tabel"><caption class="sr">Jumlah kompleks per zona menurut empat versi jarak</caption><thead><tr><th scope="col">Zona</th>${kepala}</tr></thead><tbody>${baris}</tbody></table></div>
-    <ul class="sp-daftar sp-ringkas-cat"><li>Tanpa jalan kendaraan dalam 16 km: <b>${esc(fmt(r.tanpaJalan16))}</b> kompleks (semua jalan OSM).</li>
-    <li>Median jarak air ${esc(km(m.o.air))} km dan jalan ${esc(km(m.o.jalan))} km (semua jalan OSM); versi kendala.json ${esc(km(m.k.air))} km dan ${esc(km(m.k.jalan))} km.</li></ul>`;
+    <div class="sp-ringkas-cat"><p>Tanpa jalan kendaraan dalam 16 km: <b>${esc(fmt(r.tanpaJalan16))}</b> kompleks (semua jalan OSM).</p>
+    <p>Median jarak air ${esc(km(m.o.air))} km dan jalan ${esc(km(m.o.jalan))} km (semua jalan OSM); versi kendala.json ${esc(km(m.k.air))} km dan ${esc(km(m.k.jalan))} km.</p></div>`;
 }
 
 /* ---------- satuan, simbol, lapisan peta ---------- */
@@ -378,7 +378,7 @@ function muatGaya() {
     l.onload = l.onerror = () => ok(); sebelum ? sebelum.before(l) : document.head.append(l); setTimeout(ok, 1500);
   });
   const dasar = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() ? [] : GAYA_DASAR.map(h => pasangLink(h, h.slice(6), document.querySelector('link[href*="/pipa/pipa.css"]')));
-  return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=3", "peta"), muatGayaKit()]);
+  return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=5", "peta"), muatGayaKit()]);
 }
 let pustaka = null;
 function muatMapLibre() {
@@ -544,9 +544,9 @@ export async function pasang(akar, konteks) {
     await muatMapLibre();
     if (sinyal.aborted) return;
     const titik = new maplibregl.LngLatBounds(); semua.forEach(k => titik.extend([k.lon, k.lat]));
-    peta = new maplibregl.Map({container: "sp-peta-kanvas", style: DASAR(), bounds: titik, fitBoundsOptions: {padding: ponsel() ? 32 : {top: 150, left: 280, bottom: 32, right: 420}, animate: false}, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false});
+    peta = new maplibregl.Map({container: "sp-peta-kanvas", style: DASAR(), bounds: titik, fitBoundsOptions: {padding: ponsel() ? 32 : 40, animate: false}, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
-    peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-left");
+    peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     const ukur = new ResizeObserver(() => peta?.resize());   // wadah berubah tinggi (lembar, saringan, orientasi): kanvas mengikuti
     ukur.observe(q("#sp-peta-kanvas")); hentikan.push(() => ukur.disconnect());
     peta.on("style.load", pasangLapisan);

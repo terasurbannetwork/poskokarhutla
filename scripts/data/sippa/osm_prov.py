@@ -103,8 +103,7 @@ def kueri(la, lo, mode):
     """way: `out tags geom`; relasi: `out geom` (BUKAN `out tags geom`, itu membuang daftar anggota). mode: penuh | tambah | rel (hanya relasi air)."""
     b = f"({la*UBIN-PAD},{lo*UBIN-PAD},{la*UBIN+UBIN+PAD},{lo*UBIN+UBIN+PAD})"
     rel = f'relation["natural"="water"]{b};relation["landuse"="reservoir"]{b};'
-    way = (f'way["natural"="coastline"]{b};way["natural"="water"]["salt"="yes"]{b};way["natural"="water"]["water"="lagoon"]{b};'
-           f'way["natural"="water"]["brackish"="yes"]{b};')
+    way = f'way["natural"="coastline"]{b};'     # air payau way ikut `penuh` lewat way natural=water; mode tambah (62) hanya pantai + relasi
     if mode == "penuh":
         way += (f'way["highway"~"^({JALAN_RE})$"]{b};way["waterway"~"^(stream|ditch|drain|canal|river)$"]{b};'
                 f'way["natural"="water"]{b};way["landuse"="reservoir"]{b};')
@@ -125,8 +124,8 @@ def tarik(prov):
         # lama_*.json = tarikan way sebelum perbaikan relasi: way dipakai, relasi ditarik ulang saja
         ada_lama = os.path.exists(os.path.join(d, f"lama_{t[0]}_{t[1]}.json"))
         q, err = kueri(t[0], t[1], "rel" if ada_lama else mode), ""
-        for n in range(6):
-            host = OVP[n % len(OVP)]
+        for n in range(40):                      # Overpass publik sering 502 "at capacity": ulang rapat, 40 kali
+            host = OVP[0]
             try:
                 dat = curl(host, q)
                 json.loads(dat)
@@ -136,7 +135,7 @@ def tarik(prov):
                 return t, f"{len(dat)//1024} KB"
             except Exception as e:
                 err = repr(e)[:120]
-                time.sleep(15 * (n + 1))
+                time.sleep(min(10 + 5 * n, 40))
         return t, "GAGAL " + err
 
     ub = ubin_prov(komp)

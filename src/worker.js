@@ -52,7 +52,7 @@ import {RUTE_LAPORAN_KARHUTLA, buatDrafLaporanKarhutla} from "./laporan_karhutla
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
 import {perbaruiGunungapi, layaniGunungapi} from "./gunungapi.js";
-import {perbaruiSihka, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
+import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka} from "./sihka.js";
 import {himawariDibuat} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
@@ -499,6 +499,12 @@ async function periksaStatus(env, url, kini) {
   const [dib, lewat] = await Promise.all([dibuatAset(env, url, "/data/meta.json"), dibuatAset(env, url, "/data/meta.json", "data_terakhir")]);
   /* SIHKA: dari mana tarikan terakhir ("resmi" | "cadangan") dan kapan; hanya bila sudah pernah menarik */
   try { const p = (await env.DB.prepare("SELECT json_extract(isi, '$.via') via, dibuat FROM cuaca_sumber WHERE kunci = 'sihka'").first()); if (p) sumber.sihka_via = {via: p.via ?? "resmi", dibuat: new Date(p.dibuat).toISOString()}; } catch (e) { /* tabel belum ada */ }
+  /* DSDA DKI + SIPANTAU Tangerang: dibuat = percobaan terakhir, ok = kedua sumber sehat pada percobaan itu, galat = galat sumber mana pun (<= 200 char). Informatif, tidak memengaruhi `ok` status */
+  try {
+    const rs = (await env.DB.prepare("SELECT kunci, json_extract(isi, '$.ok') ok, json_extract(isi, '$.coba') coba, json_extract(isi, '$.galat') galat, dibuat FROM cuaca_sumber WHERE kunci IN ('sungai_dsda','sungai_tng')").all()).results;
+    if (rs.length) { const g = rs.filter(r => r.galat).map(r => r.kunci.slice(7) + ": " + r.galat).join("; ").slice(0, 200);
+      sumber.sungai_resmi = {dibuat: new Date(Math.max(...rs.map(r => r.coba ?? r.dibuat))).toISOString(), ok: rs.length === 2 && rs.every(r => r.ok != null && !r.galat), galat: g || null}; }
+  } catch (e) { /* tabel belum ada */ }
   if (dib != null && lewat != null && dib >= lewat) sumber.jeda_satelit = {dibuat: new Date(lewat).toISOString(), umur_jam: Math.round((dib - lewat) / JAM * 10) / 10, ambang_jam: null};
   return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber, uji};
 }
@@ -819,6 +825,7 @@ export default {
       console.log("ews gempa", JSON.stringify(await Ews.prosesGempa(env, sekarang).catch(e => ({galat: e.message}))));   // email pelanggan EWS dekat pusat gempa
       /* SIHKA paling akhir: email EWS tidak boleh tertahan langkah ini */
       if (new Date(sekarang).getUTCMinutes() % 10 === 3 && new Date(sekarang).getUTCMinutes() !== 23) try { console.log("hujan", JSON.stringify(await perbaruiHujan(env, sekarang))); } catch (e) { console.error("hujan", e?.message); }   // hujan SIHKA per interval: tiap 10 menit (kuota tulis D1 Free, lihat src/hujan.js)
+      if (new Date(sekarang).getUTCMinutes() === 38) try { console.log("sungai resmi", JSON.stringify(await perbaruiSungaiResmi(env, sekarang))); } catch (e) { console.error("sungai resmi", e?.message); }   // DSDA + SIPANTAU: invokasi sendiri, terpisah dari SIHKA menit 23
       if (new Date(sekarang).getUTCMinutes() === 23) {   // SIHKA: tiap jam menit 23; dasar historis sekali sehari 20 UTC
         try { console.log("sihka", JSON.stringify(await perbaruiSihka(env, sekarang))); } catch (e) { console.error("sihka", e?.message); }
         if (new Date(sekarang).getUTCHours() === 20) try { console.log("sihka dasar", JSON.stringify(await dasarSihka(env, sekarang))); } catch (e) { console.error("sihka dasar", e?.message); }

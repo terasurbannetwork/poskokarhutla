@@ -1,9 +1,8 @@
-/* Sumber tinggi muka air berambang RESMI di samping SIHKA: DSDA DKI (HTML ASP.NET, ShowPopup per baris tabel) dan SIPANTAU Kota Tangerang (JSON). Dipanen
+/* Sumber tinggi muka air berambang RESMI di samping SIHKA: DSDA DKI (JSON datatmalaststatus.json) dan SIPANTAU Kota Tangerang (JSON). Dipanen
    perbaruiResmi tiap jam dari cron SIHKA. Hasilnya MASUK tabel SIHKA yang sama (sihka_pos, sihka_baca; id 'd:<kode>' / 't:<uuid>') ditambah metadata di sungai_meta (0066),
    jadi dasar persentil, status lama/macet/riwayat_kurang, riwayat 24 jam, dan retensi ikut tanpa jalur kedua. Gagal-lunak: tiap sumber berdiri sendiri, galatnya dicatat di
-   cuaca_sumber ('sungai_dsda' / 'sungai_tng') dan tidak menyentuh bacaan lama. CPU 10 ms: SIPANTAU JSON ~34 KB (JSON.parse), DSDA ~190 KB dibaca per baris tabel lewat indexOf dan satu
-   regex per potongan <= 4 KB (bukan regex atas seluruh halaman); tulisan D1 satu teks JSON kecil yang diurai json_each. Koordinat TIDAK pernah dikarang: pos tanpa koordinat sah dilewati. */
-export const DSDA = "https://poskobanjir.dsdadki.web.id/", SIPANTAU = "https://api.dpuprkotang.info/nuxt/posduga";
+   cuaca_sumber ('sungai_dsda' / 'sungai_tng') dan tidak menyentuh bacaan lama. CPU 10 ms: SIPANTAU JSON ~34 KB dan DSDA JSON ~24 KB (JSON.parse, kecil); tulisan D1 satu teks JSON kecil yang diurai json_each. Koordinat TIDAK pernah dikarang: pos tanpa koordinat sah dilewati. */
+export const DSDA = "https://poskobanjir.dsdadki.web.id/datatmalaststatus.json", SIPANTAU = "https://api.dpuprkotang.info/nuxt/posduga";
 const UA = "pantaubencana-sihka/1.0 (+https://centurisk97.id; pemantauan banjir nonkomersial)", MAKS_BYTE = 2e6, TIMEOUT_MS = 8000;
 const PENGELOLA = {
   "DSDA DKI": "Dinas Sumber Daya Air Provinsi DKI Jakarta (Posko Banjir DSDA DKI)",
@@ -48,24 +47,22 @@ export function uraiSipantau(teks) {
   return out;
 }
 
-/* DSDA DKI: onclick="ShowPopup(nama, tinggi_mm, siaga1, siaga2, siaga3, 'lat,lng,nama,tinggi,Status : X,id', daerah)"; mm -> cm; ambang 5000/5000/5000 = placeholder = null;
-   tanggal dd/mm/yyyy dan jam hh:mm (WIB) di sel baris yang sama. */
-const POPUP = /ShowPopup\(&#39;(.*?)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(-?[\d.]+)&#39;,&#39;(.*?)&#39;,/, TGL = />(\d\d)\/(\d\d)\/(\d{4})<\/span>/, JAM = />(\d\d):(\d\d)<\/span>/;
-/* ambang DSDA (mm -> cm; argumen siaga3, siaga2, siaga1). Tiga-tiganya harus sah (> 0 dan bukan placeholder 5000) DAN berurut siaga1 > siaga2 > siaga3; selain itu SEMUANYA null
+/* DSDA DKI: JSON resmi datatmalaststatus.json (daftar ~38 objek, ~24 KB, diverifikasi 27 Okt 2026). TINGGI_AIR dan SIAGA1..3 dalam MILIMETER (Katulampa SIAGA1/2/3 = 2000/1500/800 mm = 200/150/80 cm,
+   Hek Kramat TINGGI_AIR 2124 > SIAGA3 2000 berstatus "Siaga 3"), jadi dibagi 10 ke cm; urutan SIAGA1 > SIAGA2 > SIAGA3 (SIAGA4 = penanda 0/1/1600, tidak dipakai). id 'd:' + ID_PINTU_AIR
+   (sama dengan kode yang dulu dibaca dari HTML, jadi riwayat tidak putus). TANGGAL = waktu WIB tanpa zona; "0001-01-01" = belum pernah melapor (t null). STATUS_SIAGA = "Status : Normal" / "Status : Siaga 3". */
+const TGL = /^(\d{4})-(\d\d)-(\d\d)T(\d\d):(\d\d)/;
+/* ambang DSDA (mm -> cm). Tiga-tiganya harus sah (> 0 dan bukan placeholder 5000) DAN berurut siaga1 > siaga2 > siaga3; selain itu SEMUANYA null
    (baris "Rumah Pompa Pluit 1" 450/0/-500 mm = sensor relatif pompa, bukan ambang sungai; ambang separuh sah menyesatkan). */
-const ambangDsda = (s3, s2, s1) => { const [a3, a2, a1] = [s3, s2, s1].map(x => +x / 10); return [s3, s2, s1].some(x => +x <= 0 || +x === 5000) || !(a1 > a2 && a2 > a3) ? null : [a3, a2, a1]; };
+const ambangDsda = (s3, s2, s1) => { const [a3, a2, a1] = [s3, s2, s1].map(x => +x / 10); return [s3, s2, s1].some(x => !(+x > 0) || +x === 5000) || !(a1 > a2 && a2 > a3) ? null : [a3, a2, a1]; };
 export function uraiDsda(teks) {
-  const out = []; let i = teks.indexOf("GridListPintuAir_DXDataRow");
-  while (i >= 0) {
-    const j = teks.indexOf("GridListPintuAir_DXDataRow", i + 20), p = teks.slice(i, Math.min(j < 0 ? teks.length : j, i + 4000)), a = POPUP.exec(p); i = j;
-    if (!a) continue;
-    const k = a[6].split(","), lat = +k[0], lon = +k[1], kode = k[k.length - 1].trim(), st = /Status : ([^,]+)/.exec(a[6]);
+  const out = [], d = JSON.parse(teks);
+  for (const o of Array.isArray(d) ? d : []) {
+    const kode = String(o?.ID_PINTU_AIR ?? ""), lat = angka(o?.LATITUDE), lon = angka(o?.LONGITUDE);
     if (!/^\d{1,8}$/.test(kode) || !DALAM_INDONESIA(lon, lat)) continue;
-    const amb = ambangDsda(a[5], a[4], a[3]), tg = TGL.exec(p), jm = JAM.exec(p);
-    const m = tg && jm ? wib(+tg[3], +tg[2] - 1, +tg[1], +jm[1], +jm[2]) : null;
-    const nama = a[1].replace(/&(quot|#39|lt|gt|amp);/g, (_, k) => ({quot: '"', "#39": "'", lt: "<", gt: ">", amp: "&"})[k]);   // amp terakhir menurut urutan tunggal: tanpa dekode ganda
-    out.push({id: "d:" + kode, nama, sumber: "DSDA DKI", lon, lat, a3: amb?.[0] ?? null, a2: amb?.[1] ?? null, a1: amb?.[2] ?? null, resmi: RESMI(st?.[1].trim()),
-      jenis: /pompa/i.test(nama) ? "pompa" : null, v: +a[2] / 10, t: m});
+    const amb = ambangDsda(o.SIAGA3, o.SIAGA2, o.SIAGA1), m = TGL.exec(o.TANGGAL || ""), nama = String(o.NAMA_PINTU_AIR || kode).slice(0, 80);
+    out.push({id: "d:" + kode, nama, sumber: "DSDA DKI", lon, lat, a3: amb?.[0] ?? null, a2: amb?.[1] ?? null, a1: amb?.[2] ?? null,
+      resmi: RESMI(String(o.STATUS_SIAGA || "").replace(/^Status\s*:\s*/, "").trim()),
+      jenis: /pompa/i.test(nama) ? "pompa" : null, v: angka(o.TINGGI_AIR) === null ? null : +o.TINGGI_AIR / 10, t: m && +m[1] > 2000 ? wib(+m[1], +m[2] - 1, +m[3], +m[4], +m[5]) : null});
   }
   return out;
 }
@@ -100,11 +97,11 @@ async function satu(env, kunci, url, periksa, urai, kini) {
     const daftar = urai(await tarikTeks(url, periksa));
     if (!daftar.length) throw new Error("tak ada pos terbaca");
     await simpan(env, daftar, Math.floor(kini / 1000));
-    await env.DB.prepare(SQL_CATAT).bind(kunci, JSON.stringify({ok: kini, pos: daftar.length, galat: null}), kini).run();
+    await env.DB.prepare(SQL_CATAT).bind(kunci, JSON.stringify({ok: kini, coba: kini, pos: daftar.length, galat: null}), kini).run();
     return {pos: daftar.length};
   } catch (e) {
-    await env.DB.prepare("UPDATE cuaca_sumber SET isi = json_set(coalesce(isi, '{}'), '$.galat', ?) WHERE kunci = ?").bind(String(e?.message).slice(0, 200), kunci).run().catch(() => {});
-    await env.DB.prepare("INSERT OR IGNORE INTO cuaca_sumber (kunci, isi, dibuat) VALUES (?1, ?2, ?3)").bind(kunci, JSON.stringify({ok: null, galat: String(e?.message).slice(0, 200)}), kini).run().catch(() => {});
+    await env.DB.prepare("UPDATE cuaca_sumber SET isi = json_set(coalesce(isi, '{}'), '$.galat', ?1, '$.coba', ?3) WHERE kunci = ?2").bind(String(e?.message).slice(0, 200), kunci, kini).run().catch(() => {});
+    await env.DB.prepare("INSERT OR IGNORE INTO cuaca_sumber (kunci, isi, dibuat) VALUES (?1, ?2, ?3)").bind(kunci, JSON.stringify({ok: null, coba: kini, galat: String(e?.message).slice(0, 200)}), kini).run().catch(() => {});
     return {galat: e.message};
   }
 }
@@ -112,7 +109,7 @@ async function satu(env, kunci, url, periksa, urai, kini) {
 export async function perbaruiResmi(env, kini = Date.now()) {
   const bentuk = (re, apa) => t => { if (!re.test(t)) throw new Error("bukan " + apa); };
   const [dsda, tng] = [
-    await satu(env, "sungai_dsda", DSDA, bentuk(/GridListPintuAir_DXDataRow/, "halaman posko banjir"), uraiDsda, kini),
+    await satu(env, "sungai_dsda", DSDA, bentuk(/^\s*\[[\s\S]*"ID_PINTU_AIR"/, "JSON pintu air"), uraiDsda, kini),
     await satu(env, "sungai_tng", SIPANTAU, bentuk(/^\s*\{[\s\S]*"lokasi_map"/, "JSON posduga"), uraiSipantau, kini)];
   return {dsda, tng};
 }

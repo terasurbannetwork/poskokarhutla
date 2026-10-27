@@ -7,7 +7,7 @@ import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, pecah} from "./_bantu.mjs";
 
-const DSDA = readFileSync(path.join(AKAR, "tests/warga/fixtures/dsda_dki_poskobanjir.html"), "utf8"), TNG = readFileSync(path.join(AKAR, "tests/warga/fixtures/sipantau_posduga.json"), "utf8");
+const DSDA = readFileSync(path.join(AKAR, "tests/warga/fixtures/dsda_dki_datatmalaststatus.json"), "utf8").replaceAll("2026-10-27T19:", "2026-10-27T16:"), TNG = readFileSync(path.join(AKAR, "tests/warga/fixtures/sipantau_posduga.json"), "utf8");
 const KR = Date.parse("2026-10-27T10:23:00Z");
 const merc = (lon, lat) => [lon * 6378137 * Math.PI / 180, Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) * 6378137];
 const SIHKA = JSON.stringify([{id: "S-jauh", name: "S-jauh", type: "DUGA AIR", tz: "Asia/Jakarta", coordinate: merc(106.9, -6.7).join(","), raw: [{unit: "cm", merek: "X", value: 77, timestamp: new Date(KR - 600e3).toISOString()}]}]);
@@ -26,6 +26,7 @@ after(() => mf?.dispose());
 test("tanpa migrasi 0066/0068: SATU tik cron menit 23 sudah menghasilkan pos DSDA DKI dan SIPANTAU di /api/banjir/sungai-ukur", async () => {
   assert.equal((await DB.prepare("SELECT 1 FROM sqlite_master WHERE name = 'sungai_meta'").first()), null, "prasyarat: tabel belum ada");
   await (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: new Date(KR)});
+  await (await mf.getWorker()).scheduled({cron: "* * * * *", scheduledTime: new Date(KR + 15 * 60e3)});   // menit 38: sumber resmi invokasi sendiri
   const j = await (await mf.dispatchFetch("http://x/api/banjir/sungai-ukur")).json(), per = {};
   for (const p of j.pos) per[p.sumber] = (per[p.sumber] || 0) + 1;
   assert.ok(per["DSDA DKI"] >= 5 && per["SIPANTAU Kota Tangerang"] >= 10 && per.SIHKA >= 1, JSON.stringify(per));

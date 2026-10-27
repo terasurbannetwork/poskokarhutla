@@ -139,19 +139,26 @@ const bangunStatus = async (env, kini) => {
 /* tiap jam. Sumber gagal = bacaan & stempel sehat lama utuh (hanya galat dicatat di isi); status tetap dihitung ulang agar pos yang berhenti melapor jadi 'lama'. */
 export async function perbaruiSihka(env, kini = Date.now()) {
   const detik = Math.floor(kini / 1000);
-  await perbaruiResmi(env, kini).catch(e => console.error("sungai resmi", e?.message));   // DSDA DKI + SIPANTAU Tangerang: berdiri sendiri, tidak pernah melempar; SIHKA mati tidak menahannya
   let teks, via; try { ({teks, via} = await tarik(env)); } catch (e) {
     await env.DB.prepare("UPDATE cuaca_sumber SET isi = json_set(coalesce(isi, '{}'), '$.galat', ?) WHERE kunci = 'sihka'").bind(galatTeks(e)).run().catch(() => {});
     await bangunStatus(env, kini);
     return {galat: galatTeks(e)};
   }
-  await panenHujan(env, teks, kini).catch(e => console.error("hujan", e?.message));   // satu unduhan dipakai bersama; gagal hujan tidak menahan sungai
   if (!(await env.DB.prepare("SELECT 1 FROM sihka_pos WHERE instr(pos, ':') = 0 LIMIT 1").first())) await env.DB.prepare(SQL_POS).bind(teks, detik).run();   // pertama kali: metadata dulu (SQL_BACA hanya menerima pos terdaftar)
   const baru = (await env.DB.prepare(SQL_BACA).bind(teks, detik).run()).meta.changes;
   await env.DB.prepare("INSERT INTO cuaca_sumber (kunci, isi, dibuat) VALUES ('sihka', ?, ?) ON CONFLICT(kunci) DO UPDATE SET isi = excluded.isi, dibuat = excluded.dibuat")
     .bind(JSON.stringify({ok: kini, baru, galat: null, dibaca: teks.length, via}), kini).run();
+  await panenHujan(env, teks, kini).catch(e => console.error("hujan", e?.message));   // sesudah stempel: Worker dibunuh/galat di sini tidak lagi menghapus jejak SIHKA sehat. Satu unduhan dipakai bersama
   await bangunStatus(env, kini);   // sesudah stempel sehat, supaya `ok` di status = tarikan ini
   return {baru, dibaca: teks.length, via};
+}
+
+/* tiap jam, MENIT 38 (invokasi sendiri, anggaran CPU 10 ms sendiri; dulu di dalam menit 23 bersama SIHKA): DSDA DKI + SIPANTAU Tangerang. Tiap sumber menstempel sendiri
+   (cuaca_sumber 'sungai_dsda' / 'sungai_tng', termasuk `coba` dan `galat`; /api/status sumber.sungai_resmi). Status banjir disusun ulang supaya pos baru langsung tampil. Tidak pernah melempar. */
+export async function perbaruiSungaiResmi(env, kini = Date.now()) {
+  const h = await perbaruiResmi(env, kini);
+  if ((h.dsda?.pos || h.tng?.pos) && await env.DB.prepare("SELECT 1 FROM sihka_pos LIMIT 1").first()) await bangunStatus(env, kini).catch(e => console.error("sungai resmi status", e?.message));
+  return h;
 }
 
 /* tiap 10 menit di luar menit 23 (menit 23 sudah lewat perbaruiSihka): hanya hujan. Gagal = tak ada yang berubah. */
