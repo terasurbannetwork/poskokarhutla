@@ -71,5 +71,6 @@
   "0067_sippa_titik_keputusan.sql": "4355dbe47a3869931577d3abb46083074b9c836c5fde3d1389c02aa0dab64c3d",
   "0068_hujan_sihka.sql": "ec51b9536ea2493226fca551e541b396b6524075b1085f4f5d2894c3d3d2a261",
   "0069_suara_bantuan_tetap_tampil.sql": "ef4ea535d55ac1504aed87bdab74b09a6c283180259a4c0afb2d016edf88bcba",
-  "0070_sippa_lapangan_pinjam.sql": "1e9647d5b8591f7143f2d155ce77f1c41c4b52e6528c04016d7eb18c519bb8f0"
+  "0070_sippa_lapangan_pinjam.sql": "1e9647d5b8591f7143f2d155ce77f1c41c4b52e6528c04016d7eb18c519bb8f0",
+  "0072_tugas_api_level.sql": "70265b9aa218b7b52319f3a10d2921ab2850f6d7975cf7bf5d9a262bd85ad0e7"
 }

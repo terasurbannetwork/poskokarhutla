@@ -35,7 +35,7 @@ const aset = async req => {
 };
 before(async () => {
   mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
-    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-sihka"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin"}, serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
+    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-sihka"}, bindings: {SIHKA_STATUS_JEDA_MENIT: "0", IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin"}, serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
   DB = await mf.getD1Database("DB"); worker = await mf.getWorker();
   await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));
 });
@@ -376,7 +376,7 @@ uji("SIHKA: domain resmi dipakai dulu; dev-tunnels TIDAK dipakai tanpa SIHKA_CAD
   assert.match(JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sihka'"))[0].isi).galat, /HTTP 503/);
   // instance kedua dengan SIHKA_CADANGAN=1
   const mf2 = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
-    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-sihka-cad"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", SIHKA_CADANGAN: "1"}, serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
+    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-sihka-cad"}, bindings: {SIHKA_STATUS_JEDA_MENIT: "0", IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", SIHKA_CADANGAN: "1"}, serviceBindings: {ASSETS: aset}, outboundService: luar, cache: false});
   try {
     const DB2 = await mf2.getD1Database("DB"), w2 = await mf2.getWorker(); await DB2.batch(pecah(migrasi()).map(x => DB2.prepare(x)));
     panggilan = 0; panggilanCadangan = 0; await w2.scheduled({cron: "* * * * *", scheduledTime: new Date(KR + 18000e3)});
@@ -464,4 +464,14 @@ uji("tabel hilang (migrasi belum jalan): GET 503 bukan 500, cron tidak melempar"
   await DB.batch([DB.prepare("DROP TABLE cuaca_sumber")]);
   assert.equal((await api()).status, 503);
   await tik(K2 + 3600e3);
+});
+
+/* hotfix 28 Okt 2026: kuota baca D1 gratis habis karena status (~250 ribu baris) dihitung tiap 10 menit lewat hujan. Jeda bawaan 180 menit di bangunStatus. */
+test("jeda status bawaan: panggilan kedua dalam 3 jam tidak menghitung ulang status; sesudah 3 jam menghitung lagi", async () => {
+  const {STATUS_JEDA_MENIT} = await import("../../src/sihka.js");
+  assert.equal(STATUS_JEDA_MENIT, 180);
+  const src = (await import("node:fs")).readFileSync(new URL("../../src/sihka.js", import.meta.url), "utf8");
+  const tubuh = src.slice(src.indexOf("const bangunStatus"), src.indexOf("export async function perbaruiSihka"));
+  assert.match(tubuh, /kini - lalu\.dibuat < jeda\) return null/, "jeda hilang dari satu-satunya pintu status");
+  for (const f of ["perbaruiSihka", "perbaruiSungaiResmi", "perbaruiHujan"]) assert.ok(!new RegExp(`${f}[\\s\\S]{0,4000}env\\.DB\\.prepare\\(SQL_STATUS\\)`).test(src.slice(src.indexOf(`export async function ${f}`))), `${f} memanggil SQL_STATUS langsung, melewati jeda`);
 });

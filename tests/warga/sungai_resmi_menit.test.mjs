@@ -18,7 +18,7 @@ before(async () => {
   const luar = async req => { const h = new URL(req.url).hostname;
     return h === "poskobanjir.dsdadki.web.id" ? new Response(DSDA) : h === "api.dpuprkotang.info" ? new Response(tngKode === 200 ? TNG : "mati", {status: tngKode}) : h === "sihka.sda.pu.go.id" ? new Response(SIHKA) : new Response("diblok", {status: 599}); };
   mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}], compatibilityDate: "2024-09-23",
-    d1Databases: {DB: "uji-menit"}, bindings: {IP_SALT: "g", ADMIN_TOKEN: "r"}, serviceBindings: {ASSETS: async () => new Response("", {status: 404})}, outboundService: luar, cache: false});
+    d1Databases: {DB: "uji-menit"}, bindings: {SIHKA_STATUS_JEDA_MENIT: "0", IP_SALT: "g", ADMIN_TOKEN: "r"}, serviceBindings: {ASSETS: async () => new Response("", {status: 404})}, outboundService: luar, cache: false});
   DB = await mf.getD1Database("DB"); W = await mf.getWorker();
   for (const f of readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql")).sort()) await DB.batch(pecah(readFileSync(path.join(AKAR, "migrations", f), "utf8")).map(s => DB.prepare(s)));
 });
