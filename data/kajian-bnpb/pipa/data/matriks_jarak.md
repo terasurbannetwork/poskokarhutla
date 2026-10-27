@@ -6,9 +6,9 @@ Pereproduksi versi lama dari kendala.json (jalan None = tak ada rute = jauh): {'
 
 | Zona | Aturan | Lama (kendala.json) | Baru: semua jalan x semua air | Baru: air semua + jalan lama | Air lama + jalan baru | Baru: hanya jalan utama (tersier ke atas) x semua air |
 |---|---|---:|---:|---:|---:|---:|
-| A | air<2,5 & jalan<5 | 188 | 469 | 196 | 454 | 198 |
+| A | air<2,5 & jalan<5 | 188 | 470 | 197 | 454 | 199 |
 | B | air<2,5 & jalan>=5 | 418 | 158 | 431 | 152 | 429 |
-| C | air>=2,5 & jalan<5 | 89 | 167 | 81 | 182 | 81 |
+| C | air>=2,5 & jalan<5 | 89 | 166 | 80 | 182 | 80 |
 | D | air>=2,5 & jalan>=5 | 170 | 71 | 157 | 77 | 157 |
 
 "Semua jalan" = highway motorway..tertiary, unclassified, residential, service, track, living_street (bisa dilalui kendaraan; track belum tentu musim hujan).
@@ -20,7 +20,7 @@ Pereproduksi versi lama dari kendala.json (jalan None = tak ada rute = jauh): {'
 |---|---:|---:|---:|---:|
 | A | 184 | 0 | 4 | 0 |
 | B | 263 | 152 | 3 | 0 |
-| C | 12 | 0 | 77 | 0 |
+| C | 13 | 0 | 76 | 0 |
 | D | 10 | 6 | 83 | 71 |
 
 ## Ringkasan jarak (km)

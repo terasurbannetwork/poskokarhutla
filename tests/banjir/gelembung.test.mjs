@@ -63,7 +63,8 @@ test("persenHarian dan tren 3 hari vs 3 sebelumnya", () => {
 test("INP statis: hover lewat rAF dengan cache per wilayah, klik membuka kartu urgent dan laci menyusul lewat nanti", () => {
   assert.match(src, /requestAnimationFrame\(\(\) => \{ const p = this\._p/);
   assert.match(src, /this\.cache\.get\(ck\)/); assert.match(src, /this\.cache\.set\(ck, h\)/);
-  assert.match(src, /nanti\(\(\) => turun\(kunci\)\)/); assert.match(src, /nanti\(\(\) => \{ const g = prov/);
+  assert.match(src, /nanti\(\(\) => \{ turun\(kunci\); const g = prov/, "Zoom: masuk wilayah lalu laci samping, lewat nanti");
+  assert.match(src, /nanti\(\(\) => Riwayat\.muat\(\)\.then\(\(\) => Riwayat\.buka\(kunci\)\)/, "Rincian: pop-up riwayat ala karhutla, lewat nanti");
   assert.match(src, /grafik\(kode\) \{\s*const s = seriProv\(this\.docs, kode\); if \(s\.length < 2\) return ""/, "tanpa arsip cukup grafik tidak tampil");
 });
 

@@ -187,5 +187,17 @@ canvas.angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:non
 .laci .kpi b{font-size:17px;padding-top:5px}
 .laci details.lipat .isi{overflow-x:auto}
 @media (max-width:900px){.laci .grid.g4{grid-template-columns:repeat(4,minmax(0,1fr))}}
+/* empat kotak satu baris (rincian sungai banjir): angka dan keterangan diperkecil supaya muat */
+.laci .grid.g4.satu,.dlg .grid.g4.satu{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px}
+.grid.g4.satu .kpi b{font-size:16px;white-space:nowrap}
+.grid.g4.satu .kpi small{font-size:10.5px;line-height:1.3}
+.grid.g4.satu .kpi .sat{margin-left:2px;font-style:normal;font-size:10.5px;font-weight:600;opacity:.7}
+/* hidrograf sungai: kolom sorot per hari */
+.hg .hg-p{opacity:0;transition:opacity .12s}
+.hg .hg-t{transition:r .12s}
+.hg .hg-k{cursor:crosshair}
+.hg .hg-k:hover .hg-p{opacity:.45}
+.hg .hg-k:hover .hg-t{r:6}
+@media (prefers-reduced-motion:reduce){.hg .hg-p,.hg .hg-t{transition:none}}
 /* judul kecil di laci (dulu disalin di cuaca.css dan gempa.css) */
 .lc-h{margin:0;font-size:11.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;color:var(--ink2)}
