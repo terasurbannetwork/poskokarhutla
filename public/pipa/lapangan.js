@@ -67,6 +67,24 @@ export function bangunLog(s, kini = Date.now()) {
     bocor_henti_menit: s.bocor_henti_menit, konfigurasi: s.konfigurasi ? JSON.stringify(s.konfigurasi) : undefined, catatan: s.catatan, waktu_klien: kini});
 }
 
+/* SP-094 (keputusan 56, DT §6.6 butir 1): inspeksi pra-gelar dan pasca-gelar komponen kit tugas, tersimpan luring seperti butir lain.
+   Kontrak GET lapangan/saya (DT §4.3) belum memuat kit.id dan kit.komponen: daftar periksa dibaca dari kit.komponen bila server mengirimnya, selain itu dialog
+   menyatakan daftar belum diterima (tidak mengarang butir). pelihara.js tidak ikut tersimpan service worker, jadi kata skor dan awalan K1 disalin di sini; uji menyamakannya. */
+export const KATA_SKOR = ["Baik", "Rusak ringan", "Rusak berat", "Hilang atau afkir"];
+export const AWALAN_K1 = ["P", "PB", "E"];
+const awalanK1 = kode => AWALAN_K1.includes(/^([A-Z]{1,4})-/.exec(kode)?.[1]);
+export function daftarPeriksa(kit) {
+  if (!kit || !Array.isArray(kit.komponen)) return [];
+  return kit.komponen.filter(c => c && typeof c.id === "string" && c.id.length === 16 && typeof c.kode_bom === "string")
+    .map(c => ({sasaran_jenis: "komponen", sasaran_id: c.id, kode_bom: c.kode_bom, nama: String(c.nama ?? c.kode_bom), skor: null}));
+}
+/* satu butir per komponen yang dinilai; temuan hanya melekat pada skor > 0; jam operasi hanya komponen K1 (pompa) */
+export function bangunInspeksi({jenis, nilai, jam = {}, temuan = ""}, kini = Date.now()) {
+  const t = String(temuan).trim();
+  return nilai.filter(n => Number.isInteger(n.skor)).map(n => bersih({jenis, sasaran_jenis: n.sasaran_jenis, sasaran_id: n.sasaran_id, skor: n.skor,
+    jam_operasi: awalanK1(n.kode_bom) && typeof jam[n.sasaran_id] === "number" ? jam[n.sasaran_id] : undefined, temuan: n.skor > 0 && t ? t : undefined, waktu_klien: kini}));
+}
+
 /* Pita sinkron (DS §2.1.3, §3.7.2): empat keadaan, satu kalimat. Alasan penolakan hanya ditampilkan bila tepat satu butir ditolak. */
 export function kalimatSinkron({menunggu = 0, ditolak = 0, mengirim = false, terakhir = null, alasan = ""}) {
   if (mengirim) return {keadaan: "kirim", ikon: "refresh-cw", teks: `Mengirim ${angka(menunggu)} isian.`};
@@ -235,7 +253,7 @@ export function pasang(akar) {
       return k;
     }));
   }
-  const JENIS_LABEL = {log: "Sesi gelar", probe: "Probe", bbm: "BBM", gerak: "Pindah kit"};
+  const JENIS_LABEL = {log: "Sesi gelar", probe: "Probe", bbm: "BBM", gerak: "Pindah kit", inspeksi: "Inspeksi"};
 
   function tampilTugas() {
     const t = S.tugas.tugas, kit = S.tugas.kit;
@@ -252,7 +270,7 @@ export function pasang(akar) {
       });
     });
     const aksi = [tombol("Mulai sesi gelar", "utama besar", () => tampilSesi()), tombol("Catat probe", "", () => tampilProbe()), tombol("Catat BBM", "", () => tampilBbm())];
-    if (kit) aksi.push(tombol("Pindah kit", "", () => tampilGerak()));
+    if (kit) aksi.push(tombol("Inspeksi komponen", "", () => tampilInspeksi()), tombol("Pindah kit", "", () => tampilGerak()));
     ganti(blok("Tugas", ...info), wadahAntre, blok("Catat", ...aksi), keluarT);
     segarkan();
   }
@@ -367,6 +385,29 @@ export function pasang(akar) {
       await segarkan(); kembaliKeTugas(); if (navigator.onLine !== false) tunda(kirim);
     }));
     ganti(blok("BBM", aksi.el, jenis.el, liter.el, tiket.el), err, simpan, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* inspeksi pra/pasca gelar: kondisi tiap komponen sebagai segmen berlabel kata, komponen yang tak dinilai dilewati (DS §4.15, DT §6.6) */
+  function tampilInspeksi() {
+    S.tampil = "inspeksi";
+    const daftarK = daftarPeriksa(S.tugas.kit), kembali = tombol("Kembali", "", kembaliKeTugas);
+    if (!daftarK.length) { ganti(blok("Inspeksi komponen", el("p", "lp-pesan galat", "Daftar komponen kit belum diterima dari server. Hubungi perencana untuk memperbarui tugas ini.", {role: "alert"})), kembali); return; }
+    const jenis = pil("Jenis inspeksi", [["pra_gelar", "Pra-gelar"], ["pasca_gelar", "Pasca-gelar"]], "pra_gelar");
+    const baris = daftarK.map(c => ({c, g: pil(`Kondisi ${c.kode_bom}`, KATA_SKOR.map((k, i) => [i, k]), null), j: awalanK1(c.kode_bom) ? isian(`Jam operasi ${c.kode_bom} sejak servis`, {mode: "decimal"}) : null}));
+    const temuan = el("textarea", "", null, {maxlength: "1000", "aria-label": "Temuan", rows: "3"});
+    const err = el("div", "lp-pesan galat", null, {role: "alert"}), simpan = tombol("Simpan inspeksi", "utama besar");
+    simpan.addEventListener("click", () => urgentLalu(simpan, "Menyimpan...", async () => {
+      const dinilai = baris.map(({c, g}) => ({...c, skor: g.nilai()})), jam = {};
+      for (const {c, j} of baris) if (j) { const v = angkaDari(j.input); if (typeof v === "string") { err.replaceChildren(el("p", "", kal(`Jam operasi ${c.kode_bom} harus angka`))); return; } if (v !== undefined) jam[c.sasaran_id] = v; }
+      const butir = bangunInspeksi({jenis: jenis.nilai(), nilai: dinilai, jam, temuan: temuan.value});
+      if (!butir.length) { err.replaceChildren(el("p", "", "Nilai kondisi minimal satu komponen.")); return; }
+      /* semua butir diperiksa dulu: satu yang salah = tidak ada yang tersimpan setengah */
+      const salah = butir.map(b => cekButir("inspeksi", {id: "0".repeat(16), ...b}, opsiTugas())).find(c => !c.ok);
+      if (salah) { tulisGalat(err, "inspeksi", salah.galat); return; }
+      for (const b of butir) { const r = await tambah({jenis: "inspeksi", data: b, tugas_id: tid()}, opsiTugas()); if (!r.ok) { if (r.galat) tulisGalat(err, "inspeksi", r.galat); else err.replaceChildren(el("p", "", r.pesan)); return; } }
+      await segarkan(); kembaliKeTugas(); if (navigator.onLine !== false) tunda(kirim);
+    }));
+    ganti(blok("Inspeksi komponen", jenis.el), ...baris.map(({c, g, j}) => blok(`${c.kode_bom} ${c.nama}`, g.el, ...(j ? [j.el] : []))), blok("Temuan", temuan), err, simpan, kembali);
   }
 
   /* pindah kit: hanya gelar, bongkar, kembali (DT §6.2 kolom K); dari_status dari kit tugas, server menolak bila staf sudah memindahnya */

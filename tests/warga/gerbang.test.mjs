@@ -31,6 +31,7 @@ function temukan() {
   if (/kabarLevel3\(/.test(readFileSync(path.join(AKAR, "src/instansi.js"), "utf8"))) out.add("cron kabarLevel3");
   if (/catatAwalTugas\(/.test(readFileSync(path.join(AKAR, "src/instansi.js"), "utf8"))) out.add("cron kunciAlarmVIIRS");
   if (/bersihkanPantau\(env/.test(w)) out.add("cron bersihkanPantau");
+  if (/bersihkanSippa\(env/.test(w)) out.add("cron bersihkanSippa");
   if (/bersihkanStaf\(env/.test(w)) out.add("cron bersihkanStaf");
   if (/jalankanUji\(env/.test(w)) out.add("cron jalankanUji");
   if (/buatPengingat\(env/.test(w)) out.add("cron buatPengingat");

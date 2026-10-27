@@ -112,6 +112,25 @@ export const DIISI_SERVER = {
 
 export const JENIS_TABEL = { log: "sippa_log_gelar", probe: "sippa_probe", bbm: "sippa_bbm", gerak: "sippa_gerak" };
 
+/* SP-094 (keputusan 56): butir inspeksi pra/pasca gelar dari operator. Bukan bagian MEDAN: ia tidak punya tabel butir sendiri, tetapi masuk
+   sippa_inspeksi lewat butirInspeksi di src/sippa.js. Kit tugas ditentukan server (kit_id dari klien ditolak). Uji membandingkan dengan 0059 dan src/sippa.js. */
+export const INSPEKSI_LAPANGAN = {
+  jenis: ["pra_gelar", "pasca_gelar"], sasaran_jenis: ["komponen", "kit"],
+  tindakan: ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan"],
+};
+const MEDAN_INSPEKSI = daftar(
+  teks("id", "ID butir", null, null, ya({ panjang: ID })),
+  pilih("jenis", "Jenis inspeksi", INSPEKSI_LAPANGAN.jenis, { wajib: true }),
+  pilih("sasaran_jenis", "Sasaran", INSPEKSI_LAPANGAN.sasaran_jenis, { wajib: true }),
+  teks("sasaran_id", "ID sasaran", null, null, ya({ panjang: [16] })),
+  bulat("skor", "Skor kondisi", 0, 3, { wajib: true }),
+  angka("jam_operasi", "Jam operasi", 0, 100000),
+  teks("temuan", "Temuan", null, 1000),
+  pilih("tindakan", "Tindakan", INSPEKSI_LAPANGAN.tindakan),
+  waktu("waktu_klien", "Waktu catat"),
+);
+export const cekInspeksiLapangan = butir => cekButir("inspeksi", butir);
+
 /* Pasangan [lebih awal, lebih akhir] yang ditolak trigger sippa_log_urut bila terbalik. Persis daftar trigger:
    t_mulai_injeksi sengaja tidak dibandingkan dengan t_selesai dan t_bongkar_selesai. */
 export const URUTAN_WAKTU = [
@@ -160,7 +179,7 @@ function cekMedan(m, v, opsi) {
 export function cekButir(jenis, butir, opsi = {}) {
   const galat = [];
   const ke = (medanNama, pesan) => { if (!galat.some(g => g.medan === medanNama)) galat.push({ medan: medanNama, pesan }); };
-  const def = Object.hasOwn(MEDAN, jenis) ? MEDAN[jenis] : null;
+  const def = jenis === "inspeksi" ? MEDAN_INSPEKSI : Object.hasOwn(MEDAN, jenis) ? MEDAN[jenis] : null;
   if (!def) return { ok: false, galat: [{ medan: "jenis", pesan: `jenis butir tidak dikenal: ${String(jenis)}` }] };
   if (!butir || typeof butir !== "object" || Array.isArray(butir)) return { ok: false, galat: [{ medan: "butir", pesan: "butir harus berupa objek" }] };
   for (const k of Object.keys(butir)) if (!Object.hasOwn(def, k)) ke(k, "medan tidak dikenal");

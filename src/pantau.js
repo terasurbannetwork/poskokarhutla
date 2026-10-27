@@ -43,6 +43,8 @@ export const JENIS = {
   korban_baru: {label: "Laporan korban jiwa belum diverifikasi", peran: ["pusdalops"], tautan: "/admin/korban"},   // prioritas 0 = tertinggi, di atas "Segera"
   p3k_kedaluwarsa: {label: "Barang P3K kedaluwarsa atau hampir kedaluwarsa", peran: ["pusdalops"], tautan: "/admin/inventaris"},
   p3k_stok: {label: "Stok P3K di bawah ambang", peran: ["pusdalops"], tautan: "/admin/inventaris"},
+  sippa_alarm: {label: "Alarm telemetri kit SIPPA", peran: ["pusdalops"], tautan: "/pipa/telemetri"},
+  sippa_mingguan: {label: "Laporan mingguan SIPPA belum dibuat", peran: ["pusdalops"], tautan: "/pipa/laporan"},   // SP-045, ADR-11: terhitung dari sippa_kit dan sippa_laporan, tanpa tabel dan cron baru   // src/sippa.js: sippa_alarm terbuka (DT §6.3.1); tanpa push baru
 };
 const LUAS = ["koordalops", "pimpinan"];
 const tolakTulis = () => gagal(403, "peran pimpinan hanya membaca; penugasan dan perubahan status tidak diizinkan");
@@ -105,6 +107,16 @@ async function panggilan(env, kini, a) {
   }
   return out;
 }
+/* alarm telemetri SIPPA yang masih terbuka; tutup otomatis saat pulih atau manual, lalu butirnya hilang sendiri. Keselamatan (dry run, tekanan lebih, CO) prioritas 1. Tabel 0058 belum ada = dilewati di kumpulkan() */
+const LABEL_ALARM = {hisap_rendah: "tekanan hisap di bawah batas NPSH", debit_rendah: "debit di bawah 20% debit operasi", dry_run: "pompa kering (debit nol, mesin hidup)", tekanan_lebih: "tekanan buang di atas 88% PN",
+  belum_dingin: "suhu gambut masih di atas 50 C setelah 24 jam", co_tinggi: "CO rata-rata 15 menit di atas 35 ppm", bbm_rendah: "BBM di bawah 20%", diam: "perangkat diam lebih dari 3 kali interval"};
+const angkaPendek = n => String(Math.round(Number(n) * 100) / 100).replace(".", ",");
+async function alarmSippa(env, kini, a) {
+  const R = (await env.DB.prepare(`SELECT a.id, a.kode, a.nilai, a.ambang, a.mulai, a.dummy, p.tag, k.kode kit_kode, k.prov, k.kab FROM sippa_alarm a JOIN sippa_perangkat p ON p.id = a.perangkat_id JOIN sippa_kit k ON k.id = a.kit_id
+    WHERE a.ditutup IS NULL ${dumSql(a, "a.dummy")} ORDER BY a.mulai LIMIT 500`).all()).results;
+  return R.map(r => ({id: `sippa-alarm:${r.id}`, jenis: "sippa_alarm", judul: `Kit ${r.kit_kode}, ${r.tag}: ${LABEL_ALARM[r.kode]}`, rincian: r.nilai != null ? `Terukur ${angkaPendek(r.nilai)}, ambang ${angkaPendek(r.ambang)}, menyala ${jam(kini - r.mulai)} (ambang asumsi-kebijakan)` : `Menyala ${jam(kini - r.mulai)}`,
+    provs: r.prov ? [r.prov] : [], kab: r.kab, dibuat: r.mulai, tenggat: null, prioritas: ["dry_run", "tekanan_lebih", "co_tinggi"].includes(r.kode) ? 1 : 2, dummy: r.dummy}));
+}
 const kodeProv = s => { try { const x = JSON.parse(s); return Array.isArray(x) ? x : []; } catch (e) { return []; } };
 async function akunMenunggu(env, kini, a) {
   const R = (await env.DB.prepare(`SELECT id, wilayah, cakupan, dikirim, dummy FROM instansi_akun WHERE status = 'menunggu' ${dumSql(a)} ORDER BY dikirim LIMIT 500`).all()).results;
@@ -128,13 +140,28 @@ const p3kButir = (env, kini, a) => butirP3k(env, kini, a.dummy);   // P3K kedalu
 const apiMunculLagi = (env, kini, a) => butirApiMunculLagi(env, kini, a.dummy);   // tugas dibuka kembali karena titik panas baru sesudah laporan padam (src/instansi.js)
 const cekUlangJatuhTempo = (env, kini, a) => butirCekUlang(env, kini, a.dummy);   // tugas padam di gambut yang jadwal cek ulang H+1/H+3/H+7 lewat tanpa kunjungan berfoto (src/instansi.js)
 const keselamatan = async (env, kini, a) => (await alarmKeselamatan(env, kini)).filter(b => a.dummy || !b.dummy);   // L3: darurat, regu sunyi, angin ke regu, rotasi (src/penugasan.js)
-const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi, cekUlangJatuhTempo, keselamatan];
+/* SP-045: pekan SIPPA dimulai Senin 07.40 WIB (00.40 UTC). Butir ada sepanjang pekan itu selama ada kit gelar/banjir dan tak ada laporan mingguan dalam 7 hari terakhir; id memuat tanggal Senin, jadi pekan berikutnya berid baru. Murni, diuji. */
+export function awalMingguSippa(kini) {
+  const g = new Date(kini - 40 * 60e3), mundur = (g.getUTCDay() + 6) % 7;   // 07.40 WIB = 00.40 UTC; geser 40 menit supaya batas pekan jatuh di 00.00 UTC; getUTCDay 1 = Senin
+  const tgl = new Date(g.getTime() - mundur * HARI).toISOString().slice(0, 10);
+  return {tgl, waktu: Date.parse(tgl + "T07:40:00+07:00")};
+}
+async function sippaMingguan(env, kini, a) {
+  const K = (await env.DB.prepare(`SELECT status, prov, dummy FROM sippa_kit WHERE status IN ('gelar', 'banjir') ${dumSql(a)} LIMIT 500`).all()).results;
+  if (!K.length) return [];
+  const sudah = await env.DB.prepare(`SELECT 1 FROM sippa_laporan WHERE jenis = 'mingguan' AND waktu > ? ${dumSql(a)} LIMIT 1`).bind(kini - 7 * HARI).first();
+  if (sudah) return [];
+  const {tgl, waktu} = awalMingguSippa(kini), banjir = K.filter(k => k.status === "banjir").length, batas = waktu + 8 * JAM + 20 * 60e3;   // batas 16.00 WIB hari Senin
+  return [{id: `sippa-mingguan:${tgl}`, jenis: "sippa_mingguan", judul: `${K.length} kit SIPPA bertugas (${banjir} banjir, ${K.length - banjir} gelar), belum ada laporan mingguan dalam 7 hari terakhir`,
+    rincian: "Buka Laporan, pilih Mingguan, buat PDF, lalu centang Arsipkan", provs: [...new Set(K.map(k => k.prov).filter(Boolean))], kab: null, dibuat: waktu, tenggat: batas, prioritas: kini > batas ? 1 : 2, dummy: K.every(k => k.dummy) ? 1 : 0}];
+}
+const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi, cekUlangJatuhTempo, keselamatan, alarmSippa, sippaMingguan];
 
 /* tabel sumber yang belum dimigrasi (mis. 0018 atau 0029) melewati detektornya saja; 0030 belum ada ditangani pembungkus rute */
 async function kumpulkan(env, kini, a) {
   const boleh = new Set(jenisBoleh(a)), mentah = [];
   for (const f of DETEKTOR) {
-    let r; try { r = await f(env, kini, a); } catch (e) { if (/no such table: (tugas_|instansi_|usulan_|panggilan|kontak_pt|gudang|alat|lk_|omc_)/i.test(String(e?.message || e))) continue; throw e; }
+    let r; try { r = await f(env, kini, a); } catch (e) { if (/no such table: (tugas_|instansi_|usulan_|panggilan|kontak_pt|gudang|alat|lk_|omc_|sippa_)/i.test(String(e?.message || e))) continue; throw e; }
     mentah.push(...r);
   }
   return mentah.filter(b => boleh.has(b.jenis) && (!a.wilayah.length || b.provs.some(p => a.wilayah.includes(p))));

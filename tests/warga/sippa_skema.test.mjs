@@ -371,3 +371,78 @@ uji("sippa_stok_gerak: delta, saldo, tambah-saja", () => {
   const d = sah(S, {dummy: 1}).id;
   assert.doesNotThrow(() => db.exec(`DELETE FROM sippa_stok_gerak WHERE id='${d}'`), "DELETE stok dummy DITOLAK");
 });
+
+/* ===== 0058_sippa_telemetri.sql (RENCANA-UJI §3.4, keputusan 38): satu baris per pesan ===== */
+const MIG58 = () => readFileSync(path.join(AKAR, "migrations/0058_sippa_telemetri.sql"), "utf8");
+const tokenSha = () => (++n).toString(16).padStart(64, "0");
+const bacaanN = k => JSON.stringify(Array.from({length: k}, (_, i) => ["PT-101", T0 + i, 1.5, 0, null]));
+Object.assign(DASAR, {
+  sippa_perangkat: u => ({id: id16(), kit_id: ada(u, "kit_id", kit), tag: "PT-101", jenis: "tekanan", satuan: "bar", dibuat: T0}),
+  sippa_telemetri: u => ({id: id16() + id16(), pengirim_id: ada(u, "pengirim_id", () => sah("sippa_perangkat", {jenis: "gateway", tag: "U-102", satuan: "-", token_sha: tokenSha()}).id), kit_id: "k", diterima: T0, t_awal: T0, t_akhir: T0, n: 1, bacaan: bacaanN(1)}),
+  sippa_telemetri_harian: () => ({perangkat_id: id16(), hari: "2026-10-05", n: 10}),
+  sippa_alarm: () => ({id: id16(), perangkat_id: id16(), kit_id: id16(), kode: "diam", mulai: T0}),
+});
+
+uji("sippa umum: migrasi 0058 idempoten dua kali, empat tabel, kolom dummy NOT NULL DEFAULT 0 dan CHECK, tanpa INSERT OR IGNORE", () => {
+  for (let i = 0; i < 2; i++) for (const s of pecah(MIG58())) db.exec(s);
+  const tabel = db.prepare("SELECT name FROM sqlite_master WHERE type='table' AND name LIKE 'sippa\\_%' ESCAPE '\\'").all().map(r => r.name);
+  for (const t of ["sippa_perangkat", "sippa_telemetri", "sippa_telemetri_harian", "sippa_alarm"]) {
+    assert.ok(tabel.includes(t), `${t} tidak ada sesudah 0058; tabel ada: ${tabel.join(",")}`);
+    const c = db.prepare(`SELECT * FROM pragma_table_info('${t}') WHERE name='dummy'`).get();
+    assert.ok(c && c.notnull === 1 && String(c.dflt_value) === "0", `${t}.dummy tidak NOT NULL DEFAULT 0: ${JSON.stringify(c)}`);
+    tolak(t, {dummy: 2});
+  }
+  assert.ok(!/INSERT OR IGNORE/i.test(MIG58()), "0058 memakai INSERT OR IGNORE; harus ON CONFLICT DO NOTHING");
+});
+
+uji("sippa_perangkat: tag P&ID, jenis, satuan, kedalaman, rentang sah, gateway wajib token, token unik, unik (kit, tag), interval", () => {
+  const P = "sippa_perangkat";
+  for (const tag of ["pt101", "PT_101", "PT-", "101", "PT-101-extra-x"]) tolak(P, {tag});
+  for (const tag of ["PT-101", "T-108", "GPS-101"]) lolos(P, {tag});
+  tolak(P, {jenis: "angin"}); for (const j of ["tekanan", "debit", "level", "suhu_gambut", "muka_air_tanah", "co", "pm25", "bbm", "rpm", "posisi"]) lolos(P, {jenis: j});
+  lolos(P, {jenis: "gateway", token_sha: tokenSha()}); tolak(P, {jenis: "gateway", token_sha: null}); lolos(P, {jenis: "debit", token_sha: null});
+  tolak(P, {satuan: "kg"}); tolak(P, {kedalaman_cm: 20}); lolos(P, {kedalaman_cm: 50}); lolos(P, {kedalaman_cm: 500});
+  tolak(P, {min_sah: 5, maks_sah: 5}); tolak(P, {min_sah: 6, maks_sah: 5}); lolos(P, {min_sah: 5, maks_sah: 5.1}); lolos(P, {min_sah: null, maks_sah: 5}); lolos(P, {min_sah: 5, maks_sah: null});
+  tolak(P, {interval_s: 9}); tolak(P, {interval_s: 3601}); lolos(P, {interval_s: 10}); lolos(P, {interval_s: 3600}); tolak(P, {aktif: 2});
+  tolak(P, {token_sha: heks(63)}); tolak(P, {token_sha: heks(63) + "G"}); tolak(P, {token_sha: heks(63) + "A"}); lolos(P, {token_sha: heks(64)});
+  assert.throws(() => sah(P, {token_sha: heks(64)}), /UNIQUE constraint failed: sippa_perangkat.token_sha/, "dua perangkat dengan token_sha sama DITERIMA");
+  tolak(P, {tag_datar: heks(21)}); lolos(P, {tag_datar: heks(20)});
+  const k1 = kit(), k2 = kit();
+  lolos(P, {kit_id: k1, tag: "PT-101"});
+  assert.throws(() => sah(P, {kit_id: k1, tag: "PT-101"}), /UNIQUE constraint failed: sippa_perangkat.kit_id, sippa_perangkat.tag/, "dua PT-101 di kit sama DITERIMA");
+  lolos(P, {kit_id: k2, tag: "PT-101"});
+  assert.throws(() => sah(P, {kit_id: id16()}), /FOREIGN KEY constraint failed/, "perangkat untuk kit yang tidak ada DITERIMA");
+});
+
+uji("sippa_telemetri: id 32 heks, id ganda, bacaan larik JSON <= 64 KB, n 1-500, n_mutu2 <= n, t_akhir >= t_awal, FK pengirim", () => {
+  const T = "sippa_telemetri";
+  tolak(T, {id: heks(31)}); tolak(T, {id: heks(33)}); lolos(T, {id: heks(32)});
+  assert.throws(() => sah(T, {id: heks(32)}), /UNIQUE constraint failed: sippa_telemetri.id|PRIMARY KEY/i, "id pesan kembar DITERIMA (rute harus menghitungnya ganda)");
+  tolak(T, {bacaan: "{}"}); tolak(T, {bacaan: "x"}); tolak(T, {bacaan: "5"}); lolos(T, {bacaan: "[]", n: 1});
+  const besar = '["' + "x".repeat(65535) + '"]';
+  assert.equal(besar.length, 65539); tolak(T, {bacaan: besar}); const pas = '["' + "x".repeat(65532) + '"]'; assert.equal(pas.length, 65536); lolos(T, {bacaan: pas});
+  tolak(T, {n: 0}); tolak(T, {n: 501}); lolos(T, {n: 500, n_mutu2: 500, bacaan: bacaanN(500)}); lolos(T, {n: 1});
+  tolak(T, {n_mutu2: 2}, /CHECK constraint failed: .*n_mutu2/s); tolak(T, {n_mutu2: -1}); lolos(T, {n_mutu2: 1});
+  tolak(T, {t_awal: T0, t_akhir: T0 - 1}, /CHECK constraint failed: .*t_akhir >= t_awal/s); lolos(T, {t_awal: T0, t_akhir: T0}); lolos(T, {t_awal: T0, t_akhir: T0 + 1});
+  assert.throws(() => sah(T, {pengirim_id: id16()}), /FOREIGN KEY constraint failed/, "pesan dari pengirim yang tidak terdaftar DITERIMA");
+});
+
+uji("sippa_telemetri_harian: PK (perangkat, hari), hari YYYY-MM-DD", () => {
+  const H = "sippa_telemetri_harian", p = id16();
+  lolos(H, {perangkat_id: p, hari: "2026-10-05"}); lolos(H, {perangkat_id: p, hari: "2026-10-06"});
+  assert.throws(() => sah(H, {perangkat_id: p, hari: "2026-10-05"}), /UNIQUE constraint failed: sippa_telemetri_harian.perangkat_id, sippa_telemetri_harian.hari/, "dua baris (perangkat, hari) sama DITERIMA");
+  for (const hari of ["2026-10-5", "26-10-05", "2026/10/05", "2026-20-05", "x"]) tolak(H, {hari});
+  tolak(H, {n: null}, /NOT NULL constraint failed/);
+});
+
+uji("sippa_alarm: kode, satu alarm terbuka per (perangkat, kode), ditutup_oleh 3-40", () => {
+  const A = "sippa_alarm", p = id16();
+  tolak(A, {kode: "gempa"}); for (const k of ["hisap_rendah", "debit_rendah", "dry_run", "tekanan_lebih", "belum_dingin", "co_tinggi", "bbm_rendah", "diam"]) lolos(A, {kode: k});
+  lolos(A, {perangkat_id: p, kode: "dry_run"});
+  assert.throws(() => sah(A, {perangkat_id: p, kode: "dry_run"}), /UNIQUE constraint failed: sippa_alarm.perangkat_id, sippa_alarm.kode/, "dua alarm terbuka (perangkat, kode) sama DITERIMA");
+  lolos(A, {perangkat_id: p, kode: "dry_run", ditutup: T0 + 1, ditutup_oleh: "otomatis"});   // satu terbuka, satu tertutup
+  lolos(A, {perangkat_id: p, kode: "dry_run", ditutup: T0 + 2, ditutup_oleh: "otomatis"});   // dua tertutup tidak bentrok
+  lolos(A, {perangkat_id: p, kode: "diam"});
+  tolak(A, {ditutup_oleh: "ab"}); tolak(A, {ditutup_oleh: heks(41)}); lolos(A, {ditutup_oleh: heks(40), ditutup: T0 + 1}); lolos(A, {ditutup_oleh: "abc", ditutup: T0 + 1});
+  tolak(A, {id: heks(15)}); tolak(A, {mulai: null}, /NOT NULL constraint failed/);
+});

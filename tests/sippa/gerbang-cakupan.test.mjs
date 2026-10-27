@@ -11,7 +11,7 @@ const DIR_PIPA = join(AKAR, "public/pipa");
 const DIR_UJI = join(AKAR, "tests/sippa");
 const DIR_PY = join(AKAR, "scripts/data/sippa");
 const BATAS_ANTRE = 0;          // = jumlah antre saat berkas dibuat; hanya boleh turun
-const BATAS_LAYAR_BELUM = 11;   // layar LAYAR_SIPPA tanpa modul layar_*.js di P0 (hanya log yang ada); hanya boleh turun
+const BATAS_LAYAR_BELUM = 0;   // semua layar LAYAR_SIPPA kini punya modul layar_*.js (27 Okt 2026); hanya boleh turun
 const ls = (d, re) => existsSync(d) ? readdirSync(d).filter(n => re.test(n)).sort() : [];
 
 /* ---------- penemuan ---------- */
@@ -137,7 +137,7 @@ test("penolakan: kunci yang sudah tidak ada di kode dilaporkan basi", () => {
 
 test("penolakan: modul layar tanpa layar terdaftar, dan layar tanpa modul melewati batas, dilaporkan", () => {
   assert.match(periksa(reg, {...temuan, layar: [...temuan.layar, "hantu"]}, baris, {LAYAR}).layar[0], /layar_hantu\.js tanpa layar "hantu"/);
-  assert.match(periksa(reg, {...temuan, layar: []}, baris, {LAYAR, batasLayarBelum: 11}).layar[0], /^12 layar tanpa modul > batas 11/);
+  assert.match(periksa(reg, {...temuan, layar: []}, baris, {LAYAR, batasLayarBelum: 11}).layar[0], /^16 layar tanpa modul > batas 11/);
 });
 
 test("penolakan: BATAS_ANTRE tidak naik di atas jumlah antre registri saat ini", () => {

@@ -491,7 +491,8 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   const tmp = mkdtempSync(path.join(tmpdir(), "uji-registry-"));
   cpSync(path.join(AKAR, "src"), path.join(tmp, "src"), {recursive: true});
   mkdirSync(path.join(tmp, "public")); for (const f of ["informasi_jenis.js", "ews_tindakan.js", "laporan_karhutla_spek.js", "laporan_karhutla_wa.js", "laporan_bencana_spek.js", "laporan_bencana_wa.js"]) copyFileSync(path.join(AKAR, "public", f), path.join(tmp, "public", f));
-  mkdirSync(path.join(tmp, "public/pipa")); copyFileSync(path.join(AKAR, "public/pipa/formulir.js"), path.join(tmp, "public/pipa/formulir.js"));   // src/sippa.js mengimpor formulir.js langsung (ADR-03)
+  mkdirSync(path.join(tmp, "public/pipa")); copyFileSync(path.join(AKAR, "public/pipa/formulir.js"), path.join(tmp, "public/pipa/formulir.js"));
+  copyFileSync(path.join(AKAR, "public/pipa/pelihara.js"), path.join(tmp, "public/pipa/pelihara.js"));   // src/sippa.js mengimpor fungsi pemeliharaan murni langsung (SP-093)   // src/sippa.js mengimpor formulir.js langsung (ADR-03)
   copyFileSync(path.join(AKAR, "public/pipa/uji_pilot_spek.js"), path.join(tmp, "public/pipa/uji_pilot_spek.js"));   // src/uji_pilot.js mengimpor aturan isian langsung
   mkdirSync(path.join(tmp, "public/bnpb")); copyFileSync(path.join(AKAR, "public/bnpb/pendataan_spek.js"), path.join(tmp, "public/bnpb/pendataan_spek.js"));   // src/pendataan.js mengimpor spek bersama langsung
   writeFileSync(path.join(tmp, "src/bencana.generated.js"), `export default ${JSON.stringify(B)};\n`);

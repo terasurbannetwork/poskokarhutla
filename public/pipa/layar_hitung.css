@@ -1,0 +1,101 @@
+/* SIPPA: gaya layar Hitung /pipa/hitung (DS §3.7.1, §3.2.2, §3.11, §3.12). Dimuat oleh layar_hitung.js sesudah pipa.css; hanya kelas sp-*,
+   token dari DS §2, tanpa gaya sebaris (CSP style-src 'self'). Tema gelap mengikuti token; hanya yang tidak ikut disetel di bawah. */
+
+.sp-hitung [hidden],.sp-judul-baris [hidden]{display:none!important}
+.sp-judul-baris{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.sp-aksi-judul{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.sp-aksi-judul .ad-tombol:disabled{opacity:.55;cursor:not-allowed}
+.sp-info-aksi{margin:0;min-height:0;font-size:13px;font-weight:600;color:var(--ink2)}.sp-info-aksi:empty{display:none}
+.sp-info-skenario{margin:0}
+.sp-bantu{display:block;font-size:12px;line-height:1.35;color:var(--ink2);font-weight:500}
+
+/* kisi dua kolom: formulir | hasil */
+.sp-hitung{display:grid;grid-template-columns:minmax(320px,400px) minmax(0,1fr);gap:var(--sp-6);align-items:start}
+.sp-hitung-form{gap:var(--sp-3);align-content:start}
+.sp-hasil{display:grid;gap:var(--sp-4);min-width:0;align-content:start}
+
+/* kelompok masukan: akordeon asli <details>, terbuka di desktop */
+.sp-kel{background:var(--card);border-radius:var(--r);box-shadow:var(--bayang);min-width:0}
+.sp-kel>summary{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-3);min-height:48px;padding:0 var(--sp-5);cursor:pointer;list-style:none;border-radius:var(--r)}
+.sp-kel>summary::-webkit-details-marker{display:none}
+.sp-kel>summary::after{content:"";width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg) translateY(-2px);transition:transform var(--sp-sedang)}
+.sp-kel[open]>summary::after{transform:rotate(-135deg) translateY(-2px)}
+.sp-kel[open]>summary{border-bottom-left-radius:0;border-bottom-right-radius:0}
+.sp-kel-isi{display:grid;grid-template-columns:repeat(auto-fill,minmax(148px,1fr));gap:var(--sp-3) var(--sp-3);padding:var(--sp-2) var(--sp-5) var(--sp-5)}
+.sp-isian{display:grid;gap:4px;align-content:start;min-width:0}
+.sp-isian:has(.ad-seg),.sp-isian:has(select),.sp-isian-sakelar{grid-column:1/-1}
+.sp-lab-baris{display:flex;align-items:center;justify-content:space-between;gap:var(--sp-2);flex-wrap:wrap;min-height:20px}
+.sp-lab-baris label,.sp-lab{font-size:12.5px;font-weight:700;color:var(--ink2)}
+.sp-pil-isian{display:inline-flex}
+.sp-kotak{position:relative;display:block}
+.sp-kotak input{width:100%;box-sizing:border-box;font-variant-numeric:tabular-nums}
+.sp-kotak input.ada-satuan{padding-right:62px}
+.sp-satuan{position:absolute;right:12px;top:50%;transform:translateY(-50%);font-size:12px;font-weight:700;color:var(--ink2);pointer-events:none}
+.sp-hitung-form input[aria-invalid="true"]{box-shadow:inset 0 0 0 2px var(--bad)}
+.sp-galat-isian{display:flex;gap:4px;align-items:flex-start;font-size:12px;font-weight:600;line-height:1.35;color:var(--bad)}
+.sp-galat-isian .sp-ikon{width:14px;height:14px;margin-top:1px}
+.sp-isian .ad-seg{display:flex;width:100%}.sp-isian .ad-seg button{flex:1;min-height:44px;padding:0 var(--sp-2)}
+.sp-sakelar{display:flex!important;align-items:center;gap:var(--sp-2);font-size:13px;font-weight:700;color:var(--ink)!important;min-height:44px;cursor:pointer}
+.sp-sakelar input{flex:none}
+
+/* kartu vonis (DS §3.12): pita kiri 6px, ikon 28px, kata 24px, daftar gerbang */
+.sp-vonis-kartu{--w:var(--ink3);display:flex;gap:var(--sp-4);align-items:flex-start;padding:var(--sp-5) var(--sp-6);border-radius:var(--r);border-left:6px solid var(--w);background:color-mix(in srgb,var(--w) 7%,var(--card));box-shadow:var(--bayang);min-width:0}
+.sp-vonis-kartu.nogo{--w:var(--bad)}.sp-vonis-kartu.hold{--w:var(--warn)}.sp-vonis-kartu.kondisional{--w:var(--ok)}
+.sp-vonis-ikon{flex:none;color:var(--w)}.sp-ikon-vonis{width:28px;height:28px;display:block}
+.sp-vonis-isi{display:grid;gap:var(--sp-2);min-width:0;flex:1}
+.sp-vonis-kata{margin:0;font:800 24px/1.15 var(--display);letter-spacing:-.01em;color:var(--ink)}
+.sp-vonis-alasan{margin:0;font-size:14px;line-height:1.45;color:var(--ink)}
+.sp-lama{margin:0;font-size:12.5px;font-weight:600;color:var(--ink2)}
+.sp-gerbang-rinci{margin-top:var(--sp-2)}
+.sp-gerbang-rinci>summary{cursor:pointer;font-size:12.5px;font-weight:700;color:var(--ink2);min-height:32px;display:flex;align-items:center}
+.sp-gerbang-daftar{list-style:none;margin:var(--sp-2) 0 0;padding:0;display:grid;gap:var(--sp-2)}
+.sp-gerbang-daftar li{display:grid;grid-template-columns:auto auto minmax(0,1fr);gap:var(--sp-2);align-items:baseline;font-size:13px;line-height:1.4}
+.sp-gerbang-daftar .sp-gerbang-kosong{display:block;color:var(--ink2)}
+.sp-tingkat{display:inline-flex;align-items:center;height:20px;padding:0 9px;border-radius:999px;border:1.5px solid var(--ink3);font-size:11px;font-weight:700;white-space:nowrap;color:var(--ink)}
+.sp-tingkat.keras{border-color:var(--bad)}.sp-tingkat.syarat{border-color:var(--warn)}.sp-tingkat.catatan{border-style:dashed}
+.sp-kode-g{font:700 12px ui-monospace,SFMono-Regular,Menlo,monospace;color:var(--ink2)}
+
+/* kartu angka (DS §3.2.2) */
+.sp-angka-kisi{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:var(--sp-3);margin:0}
+.sp-angka{display:grid;align-content:start;gap:2px;padding:var(--sp-4);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang);min-width:0}
+.sp-angka dt{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-2);min-height:20px}
+.sp-angka dd{margin:0;display:grid;gap:2px}
+.sp-angka b{font:800 28px/1.15 var(--display);letter-spacing:-.02em;font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.sp-angka small{font-size:12px;line-height:1.35;color:var(--ink2);font-weight:500}
+.sp-angka .sp-sumber{color:var(--ink2);margin-top:var(--sp-2);font-size:11.5px}
+.sp-angka.lewat{box-shadow:var(--bayang),inset 3px 0 0 var(--bad)}.sp-angka.lewat b{color:var(--bad)}
+.sp-angka.syarat b{color:color-mix(in srgb,var(--warn) 72%,#000)}
+:root[data-theme="dark"] .sp-angka.syarat b{color:var(--warn)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-angka.syarat b{color:var(--warn)}}
+
+/* grafik */
+.sp-garis-tekanan{stroke:var(--brand2,var(--navy2));stroke-width:2.5;stroke-linejoin:round;stroke-linecap:round}
+.sp-grafik .sp-titik-kecil{fill:var(--brand2,var(--navy2));stroke:transparent;stroke-width:12px;opacity:0}
+.sp-grafik .sp-titik-kecil:hover{opacity:1}
+.sp-grafik .sp-batang{fill:var(--ink3);opacity:.55}
+.sp-grafik .sp-batang.dipakai{fill:var(--brand2,var(--navy2));opacity:1}
+.ex-leg .sp-pj-garis{border-top:3px solid var(--brand2,var(--navy2))}
+.ex-leg .sp-pj-putus{border-top:2px dashed var(--ink2)}
+.sp-tabel-data{background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
+.sp-tabel-data>summary{cursor:pointer;display:flex;align-items:center;min-height:44px;padding:0 var(--sp-5);font-size:13px;font-weight:700;color:var(--ink2)}
+.sp-tabel-data>div{max-height:280px;overflow:auto;padding:0 var(--sp-5) var(--sp-4)}
+
+.sp-kompleks{display:block;line-height:1.6}.sp-kompleks .sp-yakin{margin:0 2px;vertical-align:middle}
+
+/* di bawah 900 px: satu kolom, vonis menempel di atas (ringkas), masukan di akordeon, hasil sesudahnya */
+@media (max-width:900px){
+  .sp-hitung{grid-template-columns:minmax(0,1fr);gap:var(--sp-3)}
+  .sp-hasil{display:contents}
+  .sp-hasil>:not(.sp-vonis-kartu){order:2}
+  .sp-hitung-form{order:1}
+  .sp-vonis-kartu{order:0;position:sticky;top:var(--sp-atas,0px);z-index:4;padding:var(--sp-3) var(--sp-4);gap:var(--sp-3);max-height:60vh;overflow:auto}
+  .sp-ikon-vonis{width:22px;height:22px}
+  .sp-vonis-kata{font-size:18px}
+  .sp-vonis-alasan{font-size:13px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+  .sp-vonis-kartu [data-vonis-pil]{display:none}
+  .sp-angka-kisi{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sp-angka{padding:var(--sp-3)}.sp-angka b{font-size:21px}
+  .sp-kel-isi{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
+@media (max-width:560px){#hx-g-tekanan,#hx-g-headloss{overflow-x:auto}#hx-g-tekanan .sp-grafik,#hx-g-headloss .sp-grafik{min-width:520px}}
+@media (max-width:420px){.sp-kel-isi{grid-template-columns:minmax(0,1fr)}.sp-gerbang-daftar li{grid-template-columns:auto minmax(0,1fr)}.sp-gerbang-daftar li>span:last-child{grid-column:1/-1}}
