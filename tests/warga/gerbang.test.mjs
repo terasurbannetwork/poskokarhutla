@@ -42,6 +42,7 @@ function temukan() {
   for (const [, x] of gm.matchAll(/j === "(\/api\/gempa\/\w+)"/g)) out.add("GET " + x);
   if (/perbaruiGempa\(env/.test(w)) out.add("cron gempa");
   for (const [, x] of readFileSync(path.join(AKAR, "src/sihka.js"), "utf8").matchAll(/"(\/api\/banjir\/[\w-]+)"/g)) out.add("GET " + x);   // SIHKA: semua rute baca
+  if (/"\/api\/banjir\/sungai-ukur\/pos\/"/.test(readFileSync(path.join(AKAR, "src/sihka.js"), "utf8"))) out.add("GET /api/banjir/sungai-ukur/pos/:id");
   if (/dasarSihka\(env/.test(w)) out.add("cron dasar sihka");
   if (/perbaruiSihka\(env/.test(w)) out.add("cron sihka");
   const pr = readFileSync(path.join(AKAR, "src/peringatan.js"), "utf8");   // peringatan dini: rute baca, rute admin, cron

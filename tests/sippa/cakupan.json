@@ -547,7 +547,17 @@
     "layar_pemicu.bannerBasi": "bannerBasi: kosong bila segar",
     "layar_pemicu.selTingkat": "selTingkat: pil ringkas",
     "tanggal.labelTanggal": "labelTanggal: ISO jadi teks id-ID",
-    "tanggal.tanggalHtml": "tanggalHtml: tombol bertulis id-ID"
+    "tanggal.tanggalHtml": "tanggalHtml: tombol bertulis id-ID",
+    "keputusan.BOBOT_ZONA": "skor: titik 7 hari",
+    "keputusan.AMBANG": "jalanTunda: urutan aturan",
+    "keputusan.skor": "skor: titik 7 hari",
+    "keputusan.jalanTunda": "jalanTunda: urutan aturan",
+    "keputusan.jamBerangkat": "jamBerangkat: tiba 07.00",
+    "keputusan.peringkat": "peringkat dan keputusanHariIni",
+    "keputusan.keputusanHariIni": "peringkat dan keputusanHariIni",
+    "layar_ringkas.kartuKeputusan": "kartuKeputusan:",
+    "py:prioritas.py": "uji:prioritas",
+    "keputusan.teksWhatsApp": "teksWhatsApp: kepala tebal"
   },
   "dikecualikan": {
     "ikon.js": "sprite SVG tanpa logika; gerbang-sippa menolak warna tertanam, tampilannya diperiksa di peramban preview",

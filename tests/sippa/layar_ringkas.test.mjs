@@ -160,7 +160,7 @@ test("isolasi: pembatalan (AbortError) dilaporkan sebagai batal, bukan galat yan
 
 /* ---------- kontrak jaringan: data lewat sesi, satu jalur per kartu ---------- */
 test("JALUR: tiap kartu punya jalur API sendiri dari DT §4.3 (data/zona, data/pemicu, kit, log, ringkas, alarm)", () => {
-  assert.deepEqual(R.JALUR, {kit: "/api/sippa/kit", pemicu: "/api/sippa/data/pemicu", pilot: "/api/sippa/log", zona: "/api/sippa/data/zona", gerak: "/api/sippa/ringkas", alarm: "/api/sippa/alarm?aktif=1"});
+  assert.deepEqual(R.JALUR, {keputusan: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", pemicu: "/api/sippa/data/pemicu", pilot: "/api/sippa/log", zona: "/api/sippa/data/zona", gerak: "/api/sippa/ringkas", alarm: "/api/sippa/alarm?aktif=1"});
 });
 
 test("tautan kartu: Kit, Pemicu, Pilot, Zona menuju layarnya (PRD §9.4.1: kartu = tautan)", () => {
@@ -170,4 +170,21 @@ test("tautan kartu: Kit, Pemicu, Pilot, Zona menuju layarnya (PRD §9.4.1: kartu
 test("tidak ada angka dihitung ulang dari data mentah selain pencacahan: tidak ada pemanggilan hidraulika atau zona() di layar Ringkas", () => {
   const t = readFileSync(new URL("../../public/pipa/layar_ringkas.js", import.meta.url), "utf8");
   assert.doesNotMatch(t, /hidraulika\(|\bzona\(|saranSarana\(|toFixed\(/);
+});
+
+/* ---------- Keputusan hari ini (SP-100 sampai SP-102) ---------- */
+test("kartuKeputusan: judul menyebut kompleks teratas yang jalan, kabupaten, jam berangkat; tabel 10 teratas dengan putusan dan alasan; teks di-escape", () => {
+  const kel = {kompleks: [{id: "K1", kab: "Kapuas", prov: "62", zona_k: "A"}, {id: "K2", kab: "<b>Katingan</b>", prov: "62", zona_k: "B"}, {id: "K3", kab: "Seruyan", prov: "16", zona_k: "A"}]};
+  const p = {dibuat: "2026-10-27T08:00+07:00", kompleks: [
+    {id: "K1", n24: 0, n7: 20, menit: 90, darat: true, dari: "Daops Kapuas", besok: {hujan_mm: 45, angin_kmj: 5}},
+    {id: "K2", n24: 1, n7: 4, menit: 60, darat: true, dari: "Desa Tumbang", besok: {hujan_mm: 1, angin_kmj: 5}},
+    {id: "K3", n24: 9, n7: 90, menit: 10, darat: true, dari: "lain"}]};
+  const s = R.kartuKeputusan(p, kel, "62", "k");
+  assert.equal(s.ey, "Keputusan hari ini");
+  assert.equal(teks(s.judul), "Kirim kit ke K2 (&lt;b&gt;Katingan&lt;/b&gt;), berangkat besok 06.00 WIB dari Desa Tumbang", "K1 ditunda hujan, K3 di provinsi lain");
+  assert.ok(!s.isi.includes("<b>Katingan</b>") && s.isi.includes("&lt;b&gt;Katingan"), "nama kabupaten di-escape");
+  assert.match(s.isi, /sp-putusan tunda/); assert.match(s.isi, /Hujan 45 mm besok/); assert.match(s.isi, /Peringkat prioritas 7 hari, 2 teratas/);
+  assert.equal(s.per, Date.parse("2026-10-27T08:00+07:00"));
+  const kosong = R.kartuKeputusan({kompleks: []}, kel, "62");
+  assert.match(kosong.judul, /^Tidak ada titik panas dalam 2 km/);
 });

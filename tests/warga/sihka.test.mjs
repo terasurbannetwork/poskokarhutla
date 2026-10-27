@@ -17,9 +17,15 @@ const harap = (() => { const s = new Set(); for (const o of JSON.parse(FIX)) if 
 
 let mf, worker, DB;
 let isiSumber = FIX, statusSumber = 200, panggilan = 0;   // kendali fixture
+const DSDA_HTML = readFileSync(path.join(AKAR, "tests/warga/fixtures/dsda_dki_poskobanjir.html"), "utf8"), TNG_JSON = readFileSync(path.join(AKAR, "tests/warga/fixtures/sipantau_posduga.json"), "utf8");
+let resmiAktif = false, dsdaHtml = DSDA_HTML, tngJson = TNG_JSON, resmiKode = 200, sihkaResmiMati = false, panggilanCadangan = 0;   // sumber berambang resmi mati kecuali dinyalakan uji
 const luar = async req => {
-  if (new URL(req.url).hostname !== "sihka.dev-tunnels.id") return new Response("diblok di uji", {status: 599});
-  panggilan++; return new Response(statusSumber === 200 ? isiSumber : "gagal", {status: statusSumber});
+  const h = new URL(req.url).hostname;
+  if (h === "poskobanjir.dsdadki.web.id") return resmiAktif ? new Response(resmiKode === 200 ? dsdaHtml : "gagal", {status: resmiKode}) : new Response("mati", {status: 599});
+  if (h === "api.dpuprkotang.info") return resmiAktif ? new Response(resmiKode === 200 ? tngJson : "gagal", {status: resmiKode}) : new Response("mati", {status: 599});
+  if (h === "sihka.dev-tunnels.id") { panggilanCadangan++; return sihkaResmiMati ? new Response(isiSumber) : new Response("mati", {status: 599}); }
+  if (h !== "sihka.sda.pu.go.id") return new Response("diblok di uji", {status: 599});
+  panggilan++; if (sihkaResmiMati) return new Response("mati", {status: 503}); return new Response(statusSumber === 200 ? isiSumber : "gagal", {status: statusSumber});
 };
 const aset = async req => {
   const f = path.join(AKAR, "public", decodeURIComponent(new URL(req.url).pathname));
@@ -45,8 +51,8 @@ const status = async () => Object.fromEntries((await api()).j.pos.map(p => [p.id
 const jumlah = async () => (await baris("SELECT count(*) n FROM sihka_baca"))[0].n;
 
 uji("migrasi 0016 sihka idempoten: dijalankan dua kali tidak galat", async () => {
-  const sql = pecah(migrasi()).filter(s => /sihka_/.test(s));
-  assert.equal(sql.length, 3);
+  const sql = pecah(migrasi()).filter(s => /sihka_|sungai_meta/.test(s));
+  assert.equal(sql.length, 4);
   await DB.batch(sql.map(s => DB.prepare(s)));
 });
 
@@ -259,6 +265,109 @@ uji("badan > 2 MB tanpa content-length (stream) ditolak dan dibatalkan; data utu
 uji("HEAD /api/banjir/sungai-ukur: status sama dengan GET, badan kosong, cache-control public max-age=600", async () => {
   const g = await mf.dispatchFetch("http://sihka.lokal/api/banjir/sungai-ukur"), h = await mf.dispatchFetch("http://sihka.lokal/api/banjir/sungai-ukur", {method: "HEAD"});
   assert.equal(h.status, g.status); assert.equal(await h.text(), ""); assert.match(h.headers.get("cache-control"), /public, max-age=600/);
+});
+
+uji("riwayat_kurang: pos muda dihitung ulang tiap hari, jadi setelah ~9 hari panen satu jam sekali tidak ada yang tertahan di dasar basi (bukan menunggu bucket 14 hari)", async () => {
+  await bersihSemua();
+  const ids = Array.from({length: 14}, (_, i) => "R" + i + "-" + (i * 37 + 11).toString(16)), HARI = 10;
+  isiSumber = KOSONG;
+  for (let d = 0; d < HARI; d++) {   // satu hari: bacaan tiap jam menit 13, lalu cron 20:23 UTC (dasar harian)
+    const tick = K2 - (HARI - 1 - d) * 86400e3, b = [];
+    for (const id of ids) {
+      if (d === 0) b.push(pos(id, "cm"));
+      for (let h = 0; h < 24; h++) b.push(DB.prepare("INSERT OR IGNORE INTO sihka_baca (pos,t,v) VALUES (?,?,?)").bind(id, tick / 1000 - 600 - h * 3600, 100 + ((d * 24 + h) * 7) % 23));
+    }
+    await DB.batch(b.concat(ids.map(id => DB.prepare("UPDATE sihka_pos SET dilihat = ? WHERE pos = ?").bind(tick / 1000, id)))); await tik(tick);
+  }
+  const ds = await baris("SELECT pos, n, hari FROM sihka_dasar"), st = await status();
+  assert.equal(ds.length, ids.length);
+  for (const d of ds) assert.ok(d.hari >= 7 && d.n >= 100, `${d.pos} hari ${d.hari} n ${d.n}`);
+  for (const id of ids) assert.notEqual(st[id], "riwayat_kurang", id);
+});
+
+uji("GET /api/banjir/sungai-ukur/pos/<id>: 24 jam terakhir urut naik, <= 300 titik diturunkan rata (terbaru tetap ada), JSON dari SQL, cache 10 menit", async () => {
+  await bersihSemua();
+  const kini = Math.floor(Date.now() / 1000), b = [pos("P-ramai", "cm"), pos("P-sedikit", "m"), pos("P-kosong", null), pos("sp ace/ok", "cm"), pos("d:9", "cm"), baca("d:9", kini - 600, 42)];
+  for (let i = 0; i < 700; i++) b.push(baca("P-ramai", kini - 120 - i * 120, 100 + i % 50));   // tiap 2 menit, ~23 jam
+  b.push(baca("P-ramai", kini - 90000, 1), baca("P-ramai", kini + 5000, 2));   // lebih tua dari 24 jam dan di masa depan: tak ikut
+  for (const [i, v] of [3, 4, 5].entries()) b.push(baca("P-sedikit", kini - 3600 * (3 - i), v));
+  await DB.batch(b);
+  const ambil = (id, init) => mf.dispatchFetch("http://sihka.lokal/api/banjir/sungai-ukur/pos/" + id, init);
+  const r = await ambil("P-ramai"), j = await r.json();
+  assert.equal(r.status, 200); assert.match(r.headers.get("cache-control"), /public, max-age=600/); assert.equal(r.headers.get("x-content-type-options"), "nosniff");
+  assert.deepEqual(Object.keys(j), ["id", "nama", "satuan", "dibuat", "t", "v"]); assert.equal(j.id, "P-ramai"); assert.equal(j.satuan, "cm"); assert.ok(Math.abs(j.dibuat - Date.now()) < 60e3);
+  assert.equal(j.t.length, j.v.length); assert.ok(j.t.length > 150 && j.t.length <= 300, "ada " + j.t.length);
+  assert.ok(j.t.every((t, i) => i === 0 || t > j.t[i - 1]), "urut naik"); assert.ok(j.t[0] > kini - 86400 && j.t.at(-1) === kini - 120, "terbaru tetap ada, yang > 24 jam dan masa depan tidak");
+  const k3 = await (await ambil("P-sedikit")).json(); assert.deepEqual(k3.t, [kini - 10800, kini - 7200, kini - 3600]); assert.deepEqual(k3.v, [3, 4, 5]); assert.equal(k3.satuan, "m");
+  const dd = await (await ambil("d:9")).json(); assert.deepEqual([dd.id, dd.t, dd.v], ["d:9", [kini - 600], [42]], "pos DSDA/SIPANTAU memakai rute yang sama");
+  const kos = await (await ambil("P-kosong")).json(); assert.deepEqual([kos.t, kos.v, kos.satuan], [[], [], null]);
+  assert.equal((await ambil("sp%20ace%2Fok")).status, 404, "garis miring ter-encode ditolak");
+  assert.equal((await ambil("tidak-ada")).status, 404); assert.equal((await ambil("X".repeat(41))).status, 404); assert.equal((await ambil("%E0%A4%A")).status, 404);
+  const p = await ambil("P-ramai", {method: "POST", body: "{}"}); assert.equal(p.status, 405); assert.match(p.headers.get("allow"), /GET/);
+  const h = await ambil("P-ramai", {method: "HEAD"}); assert.equal(h.status, 200); assert.equal(await h.text(), "");
+});
+
+// ---- sumber berambang resmi (DSDA DKI, SIPANTAU Tangerang) dari fixture respons asli, digabung dengan SIHKA ----
+const KR = Date.parse("2026-10-27T10:23:00Z"), kr = KR / 1000;   // 17:23 WIB; bacaan DSDA 16:50 WIB dan SIPANTAU 16:00 WIB = baru
+const merc = (lon, lat) => [lon * 6378137 * Math.PI / 180, Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) * 6378137];
+const posSihka = (id, lon, lat) => ({id, name: id, type: "DUGA AIR", tz: "Asia/Jakarta", coordinate: merc(lon, lat).join(","), raw: [{unit: "cm", merek: "X", value: 77, timestamp: new Date((kr - 600) * 1000).toISOString()}]});
+const TNG = JSON.parse(TNG_JSON).data, tngLok = nama => TNG.lokasi.find(o => o.nama === nama);
+const kolom = async () => Object.fromEntries((await api()).j.pos.map(p => [p.id, p]));
+
+uji("sumber resmi: DSDA DKI (ShowPopup, mm ke cm, 5000 = tanpa ambang, pompa) dan SIPANTAU (skema 3/4 tingkat, bacaan berbulan lalu = lama); pos kembar < 300 m digabung, resmi menang", async () => {
+  await bersihSemua(); await DB.prepare("DELETE FROM sungai_meta").run(); resmiAktif = true;
+  isiSumber = JSON.stringify([posSihka("S-kat", 106.8377, -6.6336), posSihka("S-jauh", 106.9, -6.7)]);   // S-kat ~ 90 m dari Katulampa 2; S-jauh ~ 8 km
+  await tik(KR);
+  const ds = JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sungai_dsda'"))[0].isi), tg = JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sungai_tng'"))[0].isi);
+  assert.deepEqual([ds.pos, ds.galat, ds.ok], [7, null, KR]); assert.deepEqual([tg.pos, tg.galat], [25, null]);
+  const r = await api(), p = await kolom();
+  assert.equal(r.status, 200); assert.equal(r.j.pos.length, 7 + 25 + 1, "S-kat digabung ke d:116");
+  assert.equal(Object.values(r.j.ringkas).reduce((a, b) => a + b, 0), r.j.pos.length);
+  const kat = p["d:116"];
+  assert.deepEqual([kat.sumber, kat.pengelola, kat.v, kat.satuan, kat.status_resmi, kat.x, kat.y], ["DSDA DKI", "Dinas Sumber Daya Air Provinsi DKI Jakarta (Posko Banjir DSDA DKI)", 0, "cm", "Normal", null, null]);
+  assert.deepEqual(kat.ambang, {siaga3: 80, siaga2: 150, siaga1: 200}); assert.deepEqual([kat.lon, kat.lat], [106.836806, -6.633167]); assert.equal(kat.t, Date.parse("2026-10-27T09:50:00Z") / 1000);
+  assert.deepEqual(kat.sumber_lain.map(x => [x.sumber, x.id]), [["SIHKA", "S-kat"]]); assert.ok(!p["S-kat"], "kembar tidak muncul sendiri");
+  const jauh = p["S-jauh"]; assert.deepEqual([jauh.sumber, jauh.ambang, jauh.status_resmi, jauh.sumber_lain], ["SIHKA", null, null, []]);
+  assert.ok(Math.abs(jauh.lon - 106.9) < 1e-4 && Math.abs(jauh.lat + 6.7) < 1e-4 && jauh.x > 1e7, "lon/lat dari EPSG:3857, x/y tetap untuk SIHKA"); assert.match(jauh.pengelola, /Sumber Daya Air \(SIHKA\)/);
+  assert.equal(p["d:114"].status_resmi, "Siaga 3"); assert.equal(p["d:114"].v, 151); assert.equal(p["d:114"].jenis, null);
+  assert.equal(p["d:165"].jenis, "pompa"); assert.equal(p["d:189"].ambang, null, "5000/5000/5000 = placeholder"); assert.deepEqual(p["d:189"].ambang ?? null, null);
+  assert.deepEqual(p["d:107"].ambang, {siaga3: 190, siaga2: 270, siaga1: 310}); assert.equal(p["d:107"].status_resmi, "Siaga 3");
+  const duren = tngLok("ANGKE - DUREN VILLA"), pd = p["t:" + duren.id];   // skema 3 tingkat, bacaan 28 Agu 2026 = berbulan lalu
+  assert.deepEqual([pd.sumber, pd.status, pd.v, pd.status_resmi, pd.t], ["SIPANTAU Kota Tangerang", "lama", 75, "Normal", Date.parse("2026-08-28T09:00:00Z") / 1000]);
+  assert.deepEqual(pd.ambang, {siaga3: duren.minimum_3, siaga2: duren.minimum_2, siaga1: duren.minimum_1}); assert.equal(pd.pengelola, "Dinas Pekerjaan Umum dan Penataan Ruang Kota Tangerang (SIPANTAU)");
+  const awas = TNG.lokasi.find(o => o.sensor_record_latest?.siaga_status === "Awas"), pa = p["t:" + awas.id];   // 28 Jul: berbulan lalu
+  assert.deepEqual([pa.status_resmi, pa.v, pa.status], ["Siaga 1", awas.sensor_record_latest.ketinggian_air, "lama"]);
+  const siaga2 = TNG.lokasi.find(o => o.sensor_record_latest?.siaga_status === "Siaga" && o.sensor_record_latest.tanggal.startsWith("27 Okt")), ps = p["t:" + siaga2.id];
+  assert.deepEqual([ps.status_resmi, ps.status], ["Siaga 2", "riwayat_kurang"], "baru, belum punya riwayat");
+  const benda = tngLok("BENDA"), pb = p["t:" + benda.id]; assert.equal(pb.status_resmi, "Normal", "teks sumber 'Normal' menang atas angka siaga 3");
+  assert.deepEqual(pb.ambang, {siaga3: benda.minimum_3, siaga2: benda.minimum_2, siaga1: benda.minimum_1});
+  const lonlat = TNG.lokasi_map.find(f => f.data.id === awas.id).geometry.coordinates; assert.deepEqual([pa.lon, pa.lat], [+lonlat[0], +lonlat[1]]);
+  // rute lama tetap kompatibel: kunci lama masih ada di tiap pos
+  for (const key of ["id", "nama", "x", "y", "satuan", "v", "t", "d3", "status", "hari"]) assert.ok(key in kat, key);
+});
+
+uji("sumber resmi gagal-lunak: HTML/JSON salah bentuk, HTTP 500, terlalu besar = bacaan dan stempel lama utuh, galat tercatat per sumber, sumber lain jalan terus", async () => {
+  const n0 = await jumlah(), ok0 = JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sungai_tng'"))[0].isi).ok;
+  const galat = async k => JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = ?", k))[0].isi);
+  tngJson = "<html>Just a moment...</html>"; dsdaHtml = "<html>tak ada tabel</html>"; await tik(KR + 3600e3);
+  assert.match((await galat("sungai_tng")).galat, /bukan JSON/); assert.match((await galat("sungai_dsda")).galat, /bukan halaman/); assert.equal((await galat("sungai_tng")).ok, ok0);
+  dsdaHtml = DSDA_HTML; tngJson = TNG_JSON; resmiKode = 500; await tik(KR + 7200e3);
+  assert.match((await galat("sungai_tng")).galat, /HTTP 500/); assert.equal((await galat("sungai_tng")).ok, ok0);
+  resmiKode = 200; tngJson = "{" + '"lokasi_map":' + " ".repeat(2.1e6) + "}"; await tik(KR + 10800e3);
+  assert.match((await galat("sungai_tng")).galat, /terlalu besar/);
+  assert.equal((await galat("sungai_dsda")).galat, null, "DSDA pulih sendiri");
+  assert.equal(await jumlah(), n0, "tak ada bacaan hilang atau dobel (bacaan sumber sama = INSERT OR IGNORE)");
+  tngJson = TNG_JSON;
+});
+
+uji("SIHKA: domain resmi sihka.sda.pu.go.id dipakai dulu; dev-tunnels hanya cadangan bila resmi gagal", async () => {
+  isiSumber = JSON.stringify([posSihka("S-jauh", 106.9, -6.7)]); panggilan = 0; panggilanCadangan = 0; resmiAktif = false;
+  await tik(KR + 14400e3);
+  assert.deepEqual([panggilan, panggilanCadangan], [1, 0], "resmi saja");
+  sihkaResmiMati = true; await tik(KR + 18000e3);
+  assert.deepEqual([panggilan, panggilanCadangan], [2, 1], "resmi dicoba, gagal, cadangan dipakai");
+  assert.equal(JSON.parse((await baris("SELECT isi FROM cuaca_sumber WHERE kunci = 'sihka'"))[0].isi).galat, null, "cadangan sukses = tarikan sehat");
+  sihkaResmiMati = false; statusSumber = 200;
 });
 
 uji("tabel hilang (migrasi belum jalan): GET 503 bukan 500, cron tidak melempar", async () => {

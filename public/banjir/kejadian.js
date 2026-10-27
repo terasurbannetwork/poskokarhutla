@@ -47,7 +47,7 @@ const KejAktif = {
   hit(titik, poligon = false) { const L = [poligon ? "kej-isi" : "kej-titik"].filter(id => peta.getLayer(id) && peta.getLayoutProperty(id, "visibility") !== "none"); if (!L.length) return null;
     return peta.queryRenderedFeatures(titik, {layers: L})[0]?.properties.kode || null; },
   kartu: k => PI.kartuTip({judul: esc(KejAktif.nama(k)), stat: [["perisai", LEVEL[k.level_tertinggi], "tingkat tertinggi", KejAktif.warna(k.level_tertinggi), k.level_tertinggi >= 3],
-    ["mata", fmt(k.n_kec), "kecamatan", "#3f7fb8"], ["hujan", k.h3_mm != null ? fmt(Math.round(k.h3_mm)) + " mm" : "–", "hujan 3 hari", "#3f7fb8"]]}),
+    ["mata", fmt(k.n_kec), "kecamatan", "#3f7fb8"], ["hujan", k.h3_mm != null ? fmt(Math.round(k.h3_mm)) + " mm" : "–", "hujan 3 hari", "#3f7fb8"]], kaki: "Prakiraan model, bukan kejadian teramati"}),
 
   /* buka satu kejadian: peta fit ke poligon + laci. dorong = ubah URL */
   async buka(kode, dorong = true) {
@@ -71,8 +71,8 @@ const KejAktif = {
       <p class="fnd">Mulai terdeteksi ${this.tgl(k.sejak)}. Skor indeks ${fmt(Math.round(k.skor))} dari 100 <span class="pill" style="background:var(--surface);color:var(--ink2)">belum dikalibrasi</span>${k.bahaya_banjir != null ? `; bahaya banjir InaRISK ${k.bahaya_banjir >= .66 ? "tinggi" : k.bahaya_banjir >= .33 ? "sedang" : "rendah"}` : ""}${k.sungai ? `; ${fmt(k.sungai.titik)} titik sungai di dekatnya` : ""}.</p>
       <div id="kejRespons" data-j="Respons terdekat"></div>
       <details class="lipat"><summary>Cara skor dihitung</summary><div class="isi"><p class="fnd">Indeks 0 sampai 100 untuk mengurutkan kejadian, bukan peluang atau ukuran kerusakan. Terdiri dari tingkat peringatan (40 poin; Awas bernilai penuh), jumlah penduduk di kecamatan terdeteksi (30; makin banyak makin tinggi, naik pelan), jumlah kecamatan (15; penuh pada 10 kecamatan atau lebih), dan bahaya banjir InaRISK (15). Bagian yang datanya tidak ada dibuang, bobotnya dibagi ulang. Status banjir sendiri masih sering memberi alarm palsu, jadi indeks ini belum dikalibrasi.</p></div></details>
-      <p class="fnd">Sumber: Open-Meteo, GloFAS, InaRISK. Deteksi model, bukan pernyataan resmi BNPB/BMKG. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`;
-    this._buka = true; Analisa.buka(isi, `<div><h3 id="dlgJudul" translate="no">${esc(this.nama(k))}</h3><p>Kejadian banjir · <span translate="no">${esc(k.kode)}</span> · ${esc(ps)}</p></div>`); this._buka = false;
+      <p class="fnd">Sumber: Open-Meteo, GloFAS, InaRISK. Prakiraan model, bukan kejadian teramati dan bukan pernyataan resmi BNPB/BMKG. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.</p>`;
+    this._buka = true; Analisa.buka(isi, `<div><h3 id="dlgJudul" translate="no">${esc(this.nama(k))}</h3><p>Wilayah Siaga (prakiraan) · <span translate="no">${esc(k.kode)}</span> · ${esc(ps)}</p></div>`); this._buka = false;
     const el = $("#laci"); el.dataset.kej = k.kode;
     const t = el.querySelector(".tutup"); if (t) { const lama = t.onclick; t.onclick = ev => { lama?.(ev); this.bersih(); }; }
     el.querySelector(".hd-aksi")?.insertAdjacentHTML("afterbegin", `<button class="bagikan ik-btn" aria-label="Bagikan" title="Bagikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>`);

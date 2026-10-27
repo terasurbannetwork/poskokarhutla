@@ -371,6 +371,7 @@ jobs:
           mkdir -p /tmp/sippa
           python3 scripts/data/sippa/pemicu.py uji || { echo "::error title=Pemicu SIPPA swauji merah::pemicu.py uji gagal"; exit 1; }
           python3 scripts/data/sippa/pemicu.py --keluar /tmp/sippa
+          python3 scripts/data/sippa/prioritas.py uji && python3 scripts/data/sippa/prioritas.py --keluar /tmp/sippa || echo "::warning title=Prioritas SIPPA::prioritas.py gagal; peringkat memakai berkas lama"
 
       - name: Unggah SIPPA ke R2 (boleh gagal)
         if: steps.sippa_pemicu.outcome == 'success'
@@ -382,6 +383,7 @@ jobs:
           set -e
           sha256sum /tmp/sippa/pemicu.json
           npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/pemicu.json --file /tmp/sippa/pemicu.json --content-type application/json --remote
+          if [ -f /tmp/sippa/prioritas.json ]; then npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/prioritas.json --file /tmp/sippa/prioritas.json --content-type application/json --remote; fi
           if [ "${{ github.event.inputs.sippa_tahunan }}" = "1" ]; then
             for f in kelayakan_kompleks kelayakan_sel zona sel22 kit_nasional aoi_calon; do
               if [ -f data/sippa/keluaran/$f.json ]; then

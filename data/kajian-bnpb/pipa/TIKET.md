@@ -1658,3 +1658,49 @@ Tersisa (tidak menghalangi eksekusi; bawaan tertulis):
 8. **Pemilik gerbang SIPPA web**: pengerja `sippa`, pemeriksa `penulis-gerbang` (PRD §9.12.1). Gerbang buku SP-086 dikerjakan `penulis-gerbang` di berkas milik `pipa-data` dengan pemilik berkas sebagai pemeriksa.
 9. **R1 menarik W-06 dan sebagian W-07 lebih awal** dari P2 PRD supaya `/pipa/ab` (minggu 45) dan Laporan pilot (minggu 46) tersedia.
 10. **Banyak perubahan pekerjaan lain di `git status` awal sesi**; tiket commit hanya menyentuh berkas tiketnya.
+
+---
+
+## 11. Program 27 Okt 2026 (keputusan 61)
+
+Fase 1 memakai data yang sudah ada di repo atau worker; fase 2 butuh form lapangan di HP; fase 3 butuh data baru, infrastruktur, atau data musim pilot. Nomor dalam kurung = nomor rekomendasi.
+
+| Tiket | Butir | Fase | Pengerja | Catatan |
+| --- | --- | --- | --- | --- |
+| SP-100 | Kartu "Keputusan hari ini" di Ringkas: kit ke mana, berangkat jam berapa, alasan satu kalimat (1) | 1 | `sippa` | dari SP-101 dan SP-102 |
+| SP-101 | "Jalan atau tunda" H-1 per lokasi dari titik panas 24 jam, hujan, angin (2) | 1 | `sippa` | aturan tertulis, label asumsi-kebijakan |
+| SP-102 | Peringkat kompleks prioritas mingguan: titik panas aktif x zona x waktu tempuh (3) | 1 | `pipa-data` | akses_kompleks.json + /api/titik |
+| SP-103 | Alarm titik panas baru dalam 2 km dari kompleks zona A atau B (4) | 1 | `warga-api` | cron FIRMS 3 jam, butir Meja Pantau |
+| SP-104 | Angka "kit siap gelar" per depot: laik, lengkap, BBM cukup (5) | 1 | `sippa` | sippa_kit, sippa_komponen, stok |
+| SP-105 | Peta kit terdekat per titik panas dengan waktu sampai (6) | 1 | `sippa` | graf akses SP-099 |
+| SP-106 | Ringkasan WhatsApp satu layar untuk pimpinan (7) | 1 | `sippa` | teks salin, tanpa kirim otomatis |
+| SP-107 | Lampu per titik panas: hijau siap, kuning kurang alat, merah tidak terjangkau (8) | 1 | `sippa` | |
+| SP-108 | Laut dan air payau berlabel "air asin, darurat saja" (23); danau besar multipoligon OSM ikut sumber air (22) | 1 | `pipa-data` | zona dihitung ulang, angka buku ikut |
+| SP-109 | Provinsi gambut lain: Sumsel, Riau, Jambi, Kalbar, Kalsel, Papua Selatan (24) | 1 | `pipa-data` | osm_jarak, kelayakan, akses per provinsi |
+| SP-110 | Lapisan sekat kanal dan sumur bor BRGM dari PRIMS (27) | 1 | `pipa-data` | WFS `prims:infrastruktur_pembasahan_3r`, `prims:rencana_sumur_bor` |
+| SP-111 | Citra Sentinel-2 SWIR terbaru per kompleks satu klik, untuk konfirmasi api (29) | 1 | `pipa-data` | `scripts/data/citra.py`, pola citra_pilot.py |
+| SP-112 | Riwayat kompleks: tahun terbakar, gelar SIPPA sebelumnya, hasilnya (30) | 1 | `sippa` | MCD64A1 + sippa_log |
+| SP-113 | Katalog alat berfoto dan kelas kinerja dari lampiran renlap (31) | 1 | `sippa` | foto Wikimedia berkredit dari pilot/lampiran.py |
+| SP-114 | p50/p90 tiba sampai air mengalir per kelas medan dari log (45); ekspor CSV evaluator satu tombol (44) | 1 | `sippa` | |
+| SP-115 | Log keputusan dan perubahan angka: siapa, kapan, alasan (49) | 1 | `warga-api` | pola pantau_jejak |
+| SP-120 | Daftar periksa gelar di HP, centang per langkah, jam otomatis (12) | 2 | `sippa` | /pipa/lapangan |
+| SP-121 | Foto bukti per tahap ber-GPS untuk semua gelar (13) | 2 | `warga-api` | pola /uji-pilot, src/gps.js, src/foto.js |
+| SP-122 | Mode luring penuh: ubin peta dan rute disimpan sebelum berangkat (14) | 2 | `sippa` | service worker lapangan |
+| SP-123 | Tombol SOS dan titik kumpul di layar lapangan (15) | 2 | `sippa` | |
+| SP-124 | Suhu tanah per petak: 5 titik x 4 kedalaman, sebelum, sesudah, besok, jadi grafik (16) | 2 | `sippa` | termometer tusuk; probe digital 2027 |
+| SP-125 | Tekanan lance tiap 10 menit dengan pengingat dan peringatan < 2 bar (17) | 2 | `sippa` | manometer dibaca regu; PT-101 telemetri 2027 |
+| SP-126 | Rute jalan kaki dari jejak GPS regu (18) | 2 | `sippa` | |
+| SP-127 | Laporan selesai gelar otomatis ke Posko: foto, jam, alat kembali (20) | 2 | `warga-api` | |
+| SP-128 | Kedalaman gambut per petak dari bor regu, dikembalikan ke peta (25) | 2 | `warga-api` | lihat catatan sumber di bawah |
+| SP-129 | Debit kanal kemarau dari ukur lapangan (26) | 2 | `sippa` | metode pelampung atau ember-stopwatch |
+| SP-130 | Pinjam-pakai alat dengan berita acara digital (36) | 2 | `warga-api` | |
+| SP-131 | Kehilangan komponen per musim per depot (37); alat rusak menunggu suku cadang dengan umurnya (39) | 2 | `sippa` | |
+| SP-140 | Renlap Generator dari kompleks mana pun (PDF + versi HP) (11) | 3 | `pipa-data` + `mekanik-mesin` | arah mesin belum diputus pemilik |
+| SP-141 | Jalan per moda mobil, motor, jalan kaki dari tag OSM `tracktype`, `surface`, `highway=path` (21) | 3 | `pipa-data` | tarik ulang Overpass dengan tag |
+| SP-142 | Lapisan izin konsesi untuk izin pemegang hak sebelum gelar (28) | 3 | `pipa-data` | nama perusahaan tidak ditulis (keputusan 50) |
+| SP-143 | Stok minimum per depot dengan peringatan beli ulang (32); servis pompa dari jam pakai (33); BBM per gelar jadi permintaan logistik (35) | 3 | `sippa` | pelihara.js |
+| SP-144 | Lini masa kit karhutla dan banjir (34); pindah otomatis ke modul banjir November dengan daftar tujuan (40) | 3 | `sippa` | |
+| SP-145 | A/B terisi dari data lapangan (41); gerbang G0–G5 dihitung ulang tiap data masuk (42); kartu terbukti dan belum (43); laporan mingguan PDF tiap Jumat (46); selang pendek lawan panjang (47); akses per provinsi BPBD (48); anggaran T0–T4 terkunci gerbang dengan sisa dana (50) | 3 | `sippa` + `warga-api` | butuh data musim pilot |
+
+**Sumber kedalaman gambut (SP-128).** Peta gambut PRIMS BRGM 1:250.000 tidak memuat kedalaman. Peta lahan gambut BBSDLP Kementan memuat kelas ketebalan (dangkal, sedang, dalam, sangat dalam) pada skala 1:250.000; dipakai sebagai perkiraan awal berlabel. Angka yang mengikat hanya hasil bor regu per petak (kolom baru di form lapangan, disimpan di D1, tampil di peta dan Rincian kompleks).
+
