@@ -1,0 +1,254 @@
+#url https://jateng.bps.go.id/id/statistics-table/3/Y2tKeVZYUk1UMDVNV1ROcGFXOW1kblZzZUZrMFp6MDkjMw==/populasi-unggas.html?year=2024
+#ditarik 2026-10-27T03:14:39.955Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI JAWA TENGAH
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Sebagai upaya meningkatkan kualitas data dan pelayanan kami kepada Anda mohon mengisi Survei Kebutuhan Data (SKD) 2026 melalui tautan : https://skd.bps.go.id/skd/s/3300
+
+Anda bisa menyampaikan pengaduan layanan kepada kami disini atau  mengakses Layanan Aspirasi dan Pengaduan Online Rakyat (LAPOR) disini
+
+Layanan Online Data BPS silakan melalui e-mail : jateng@bps.go.id, Whatsapp (chat only) : 0815 6770 1212, dan silastik.bps.go.id
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pertanian, Kehutanan, Perikanan
+
+Populasi Unggas Menurut Kabupaten/Kota dan Jenis Unggas di Provinsi Jawa Tengah (ekor), 2024
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Statistik Ekonomi
+
+Statistik Makroekonomi
+Neraca Ekonomi
+Statistik Bisnis
+Statistik sektoral
+Keuangan Pemerintah, Fiskal dan Statistik Sektor Publik
+Perdagangan Internasional dan Neraca Pembayaran
+Harga-Harga
+Biaya Tenaga Kerja
+Ilmu Pengetahuan, Teknologi, dan Inovasi
+Pertanian, Kehutanan, Perikanan
+Energi
+Pertambangan, Manufaktur, Konstruksi
+Transportasi
+Pariwisata
+Perbankan, Asuransi dan Finansial
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Populasi Unggas Menurut Kabupaten/Kota dan Jenis Unggas di Provinsi Jawa Tengah (ekor), 2024
+
+Terakhir Diperbarui : 12 Februari 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2024
+Freeze judul kolom
+
+Kabupaten/Kota
+
+	
+
+Populasi Unggas - Ayam Buras (Ekor)
+
+	
+
+Populasi Unggas - Itik dan itik manila (Ekor)
+
+	
+
+Populasi Unggas - Ayam Ras Petelur (Ekor)
+
+	
+
+Populasi Unggas - Ayam Ras Pedaging (Ekor)
+
+
+Cilacap	1.113.448	551.191	...	...
+Banyumas	914.226	195.574	...	...
+Purbalingga	815.125	125.944	...	...
+Banjarnegara	467.418	82.200	...	...
+Kebumen	853.255	175.651	...	...
+Purworejo	764.778	256.139	...	...
+Wonosobo	260.172	41.883	...	...
+Magelang	574.008	208.977	...	...
+Boyolali	491.731	187.640	...	...
+Klaten	2.726.653	351.090	...	...
+Sukoharjo	1.182.717	268.926	...	...
+Wonogiri	2.007.878	51.093	...	...
+Karanganyar	804.384	67.376	...	...
+Sragen	526.468	269.630	...	...
+Grobogan	1.161.151	199.819	...	...
+Blora	664.700	293.063	...	...
+Rembang	366.897	52.107	...	...
+Pati	750.991	552.272	...	...
+Kudus	169.928	70.508	...	...
+Jepara	614.124	93.843	...	...
+Demak	432.765	207.099	...	...
+Semarang	627.968	192.034	...	...
+Temanggung	231.075	47.295	...	...
+Kendal	258.089	205.953	...	...
+Batang	539.761	176.712	...	...
+Pekalongan	216.215	210.773	...	...
+Pemalang	2.931.377	243.655	...	...
+Tegal	468.293	108.331	...	...
+Brebes	621.234	224.661	...	...
+Kota Magelang	20.225	9.641	...	...
+Kota Surakarta	17.064	743	...	...
+Kota Salatiga	56.102	9.404	...	...
+Kota Semarang	99.392	36.479	...	...
+Kota Pekalongan	198.833	27.486	...	...
+Kota Tegal	40.250	154.474	...	...
+Jawa Tengah	23.988.695	5.949.666	53.000.737	634.673.943
+
+Sumber :
+
+Kementerian Pertanian (Direktorat Jenderal Peternakan dan Kesehatan Hewan)/Ministry of Agriculture (Directorate General of Livestock and Animal Health Services)
+
+Keterangan :
+
+1Ayam Buras mencakup ayam kampung biasa, ayam kampung petelur, ayam kampung pedaging, dan ayam lokal lainnya/Native chickens include regular native chickens, egg-laying native chickens, meat-producing native chickens, and other local breeds
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+a
+
+: 25% < RSE ≤ 50%
+
+b
+
+: RSE < 50%
+
+c
+
+: Penjumlahan tidak sama dengan wilayah diatasnya
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik Provinsi Jawa Tengah (BPS-Statistics Jawa Tengah Province)Jl.Pahlawan No. 6 Telp. 024 - 8412802
+
+8412804
+
+8412805 Fax. 024 - 8311195 e-mail : jateng@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup

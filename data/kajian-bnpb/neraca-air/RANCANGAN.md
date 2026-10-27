@@ -26,9 +26,9 @@ Tanda **[BELUM DICEK]** = belum dibuka dari sumber primer.
 - Limpasan lokal R = surplus bak (P - ETa - pengisian bak). Dipecah menjadi aliran langsung dan aliran dasar dengan
   tampungan linear satu reservoir (k bulanan, dikalibrasi ke GloFAS, §3.4) supaya debit kemarau tidak nol.
 - Ketersediaan bulanan kab: A = R_lokal + Qin. Neraca: N = A - U (positif surplus, negatif defisit).
-  Ketersediaan andalan A80 = persentil eksedansi 80% per bulan atas 35 tahun (praktik debit andalan PUPR untuk irigasi;
+  Ketersediaan andalan A80 = persentil eksedansi 80% per bulan atas 35 tahun (praktik debit andalan PUPR untuk irigasi; **[DIGANTI: keputusan pemilik 26 Okt 2026 (kemarau Jun-Okt, 5 skenario klim/1997/2015/2019/2023) dan NA-05 (N80 kemarau = persentil ke-20 total Jun-Okt tahunan)]**
   90% untuk air baku) **[BELUM DICEK: pasal/pedoman PUPR yang menetapkan Q80/Q90]**.
-- Indikator per kab: N rerata dan N80 (juta m3) per bulan; tahunan; kemarau (Jun-Sep, empat bulan, sama dengan
+- Indikator per kab: N rerata dan N80 (juta m3) per bulan; tahunan; kemarau (Jun-Sep, empat bulan, sama dengan **[DIGANTI: keputusan pemilik 26 Okt 2026 (kemarau Jun-Okt, 5 skenario klim/1997/2015/2019/2023) dan NA-05 (N80 kemarau = persentil ke-20 total Jun-Okt tahunan)]**
   kartu kemarau Kajian Air); rasio U/A (gaya indeks pemakaian air, `ws.csv` kolom `ipa_persen`); status DDL air
   Permen LH 17/2009 (Sa/Da) sebagai pembanding resmi.
 
@@ -119,7 +119,7 @@ Semua diakses dengan `urllib` (stdlib) lewat `ambil`/`per_lokasi`/`KuotaHabis` d
 
 | Berkas | Isi | Ukuran perkiraan |
 | --- | --- | --- |
-| `kab.json` | 119 kab x 12 bulan x {P, ETa, R, Qin, Qout, U per sektor, N, N80, rasio} x 4 skenario (klimatologi, 2015, 2019, 2023) | ~250 KB (~60 KB gzip) |
+| `kab.json` | 119 kab x 12 bulan x {P, ETa, R, Qin, Qout, U per sektor, N, N80, rasio} x 4 skenario (klimatologi, 2015, 2019, 2023) | ~250 KB (~60 KB gzip) | **[DIGANTI: keputusan pemilik 26 Okt 2026 (kemarau Jun-Okt, 5 skenario klim/1997/2015/2019/2023) dan NA-05 (N80 kemarau = persentil ke-20 total Jun-Okt tahunan)]**
 | `ringkas.json` | per kab: N tahunan, N kemarau, bulan defisit, status DDL, bendera waduk/kota kecil | ~25 KB |
 | `aliran.json` | tepi kab->kab dengan aliran bulanan (untuk panah di peta) | ~40 KB |
 | `terkini.json` | bulan terakhir ERA5-Land vs klimatologi (anomali N) | ~15 KB |
@@ -149,7 +149,7 @@ Geometri tidak disalin: layar memakai `public/geo/kabupaten/*.json`.
   `kekeringan`), ditautkan dari `/bnpb`. Alternatif: lapisan di peta utama kekeringan. Pertanyaan pemilik.
 - Peta kab Jawa: warna divergen N (merah defisit, biru surplus), skala tetap per indikator, kab tanpa data abu-abu.
   Pengalih indikator: N rerata / N80 / rasio U/A / status DDL.
-- Penggeser bulan Jan-Des + tombol "Tahunan" dan "Kemarau Jun-Sep". Pengalih skenario: Normal / 2015 / 2019 / 2023.
+- Penggeser bulan Jan-Des + tombol "Tahunan" dan "Kemarau Jun-Sep". Pengalih skenario: Normal / 2015 / 2019 / 2023. **[DIGANTI: keputusan pemilik 26 Okt 2026 (kemarau Jun-Okt, 5 skenario klim/1997/2015/2019/2023) dan NA-05 (N80 kemarau = persentil ke-20 total Jun-Okt tahunan)]**
 - Panah aliran antar-kab (tebal ~ Qin), dapat dimatikan.
 - Kartu kab: neraca bulanan (batang P-ETa-U, garis N), rincian U per sektor, Qin dari kab mana, label
   `estimasi-model`, bendera waduk/kota kecil, sumber.
@@ -189,7 +189,7 @@ rekomendasi (3 slide); lampiran metode.
 | NA-10 | Deck + gerbang QA | 7 | 2 h |
 
 Pertanyaan untuk pemilik:
-1. Musim kemarau Jun-Sep (empat bulan) atau Mei-Okt?
+1. Musim kemarau Jun-Sep (empat bulan) atau Mei-Okt? **[DIGANTI: keputusan pemilik 26 Okt 2026 (kemarau Jun-Okt, 5 skenario klim/1997/2015/2019/2023) dan NA-05 (N80 kemarau = persentil ke-20 total Jun-Okt tahunan)]**
 2. Industri: koefisien dari tenaga kerja BPS, persen domestik, atau dikecualikan dengan catatan?
 3. Aliran balik irigasi dihitung (pecahan berapa) atau U tetap pengambilan bruto?
 4. Waduk dan transfer Tarum Barat masuk v1 (tabel tulis tangan) atau v2?
@@ -222,3 +222,17 @@ Pertanyaan untuk pemilik:
 | Koefisien industri | 500 L/hari/karyawan "PU 2005", hanya dikutip sekunder (jurnal Geoplanning Undip, doi 10.14710/geoplanning.2.2.124-137) | sekunder; teks PU 2005 belum dibuka |
 | Transfer Tarum Barat | 6.200 L/det, Dinas SDA DKI Jakarta 28 Jul 2026 (dsda.jakarta.go.id artikel 181) | TUTUP (resmi) |
 | Waduk v1 | 6 baris `scripts/air/neraca/waduk.csv`; hanya Kedung Ombo `resmi` (BBWS Pemali Juana 2021); lima lain `sekunder` dari paket air-jawa | TETAP: butuh angka PJT II, PLN (Saguling, Cirata), BBWS Bengawan Solo, PJT I |
+| Luas rerata sub-DAS (§1.2) | Repo hanya punya HydroBASINS level 09 (Jawa di zip `hybas_au_lev09_v1c`): 534 sub-DAS di Jawa, rerata 248 km2, plus 21 celah pantai semu. Level 12 belum diunduh | TUTUP untuk lev09; lev12 = tiket terpisah |
+| Jumlah sel 0,1 derajat (§2, "~1.300 [hitung ulang]") | 1.308 sel menyentuh kab Jawa (topologi.json meta.n_sel); luas sampel 132.499 km2 (BPS model 132.698) | TUTUP |
+| ERA5-Land hujan via Open-Meteo (§2) | Dicek 27 Okt 2026: `models=era5_land` mengembalikan precipitation_sum null di Jawa (1995 dan 2024; suhu ada). iklim.py memakai `era5_seamless`: hujan praktis ERA5 0,25 derajat, ET0 ERA5-Land. Kuota tetap 182,6 per sel | TUTUP; uji hujan lawan CHIRPS/GloFAS masuk NA-06 |
+
+## Penyimpangan metode (27 Okt 2026), dicatat bersama alasannya
+
+| Butir | Rancangan | Dijalankan | Alasan |
+| --- | --- | --- | --- |
+| Hujan bulanan per sel 0,1 derajat | ERA5-Land via Open-Meteo (§2) | **CHIRPS v2.0 bulanan 0,05 derajat** (UCSB CHC) lewat IRI Data Library (`iridl.ldeo.columbia.edu`, netCDF-3, 7 potongan lima tahun, 1991-2025); rerata sel 0,05 di dalam sel 0,1; 3 sel pulau kecil (CHIRPS bertopeng laut) memakai sel berdata terdekat 0,056 derajat (dicatat di `iklim.json` meta) | Open-Meteo tidak punya hujan ERA5-Land untuk Jawa dan kuota gratis ~54 sel/hari = ~24 hari untuk 1.308 sel. CHIRPS = hujan stasiun + satelit, resmi dan terbuka |
+| ET0 bulanan | ERA5-Land ET0 Open-Meteo | **FAO-56 Penman-Monteith bulanan dari NASA POWER** (MERRA-2, 88 titik kisi 0,5 derajat; T2M, T2M_MAX, T2M_MIN, ALLSKY_SFC_SW_DWN, RH2M, WS2M; G=0; elevasi sel MERRA-2); sel 0,1 memakai titik terdekat | Tanpa kuota; satu panggilan per titik. Lebih kasar (0,5 derajat) dan memakai rerata bulanan, bukan harian; di 18 sel DIY ET0 POWER +8,9% terhadap ERA5-Land (lihat VALIDASI.md) |
+| Open-Meteo era5_seamless | jalur utama | **pembanding saja** di 18 sel DIY (`p_era5`, `et0_era5` di iklim.json) | lihat atas |
+| Ternak | tabel masukan kosong | BPS (data Kementan) populasi ternak menurut kab/kota 2024, 6 provinsi (`masukan/ternak_kab.csv`); sapi+kerbau, kambing+domba, babi; unggas = ayam buras + itik saja (ayam ras '...' tidak tersedia); kuda tidak dihitung (tidak ada di SNI 2002 Tabel 4) | keputusan pemilik 2 + tugas 27 Okt |
+| Industri | tenaga kerja per kab, semua provinsi | tenaga kerja industri **besar-sedang** BPS: DKI, Jabar, Banten 2022, Jateng 2021; DIY dan Jatim null (tabel kab industri besar-sedang tidak ditemukan; tabel Jatim 2018 adalah mikro-kecil, tidak dipakai) | 75 dari 119 kab ber-data |
+| Parameter bak | alpha 0,5, k 2,0 | alpha 0,6, k 2,0 (NA-06) | Rasio tahunan sudah 1,00 sebelum kalibrasi; kalibrasi hanya menyentuh aliran kemarau (median Jun-Okt 1,42 -> 1,34, tetap TIDAK LOLOS 0,8-1,25). 0,8/2,0 dan 0,9/2,0 memenuhi kedua median (1,21; 1,17) tetapi memadamkan aliran muara tahun kering (sungai ~0 di 1997: 7 dan 10 dari 12), padahal tahun kering adalah produk utama; maka 0,6/2,0. Kalibrasi dan validasi memakai GloFAS yang sama di 12 muara yang sama (dalam-sampel). Lihat VALIDASI.md |

@@ -1,0 +1,237 @@
+#url https://jakarta.bps.go.id/id/statistics-table/3/UzJWaVUxZHdWVGxwU1hSd1UxTXZlbmRITjA1Q2R6MDkjMw==/populasi-ternak.html?year=2024
+#ditarik 2026-10-27T02:55:09.838Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI DKI JAKARTA
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Dalam rangka evaluasi pelayanan PST BPS Provinsi DKI Jakarta, mohon dapat mengisi Kuesioner Survei Kebutuhan Data pada link ini.
+
+BPS Provinsi DKI Jakarta tidak menerima gratifikasi dalam bentuk apapun. #TOLAKGRATIFIKASI
+
+Kini hadir Aplikasi Silatipa untuk mempermudah Anda mencari data secara offline. Unduh di sini
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pertanian, Kehutanan, Perikanan
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi DKI Jakarta (ekor), 2024
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Statistik Ekonomi
+
+Statistik Makroekonomi
+Neraca Ekonomi
+Statistik Bisnis
+Statistik sektoral
+Keuangan Pemerintah, Fiskal dan Statistik Sektor Publik
+Perdagangan Internasional dan Neraca Pembayaran
+Harga-Harga
+Biaya Tenaga Kerja
+Ilmu Pengetahuan, Teknologi, dan Inovasi
+Pertanian, Kehutanan, Perikanan
+Energi
+Pertambangan, Manufaktur, Konstruksi
+Transportasi
+Pariwisata
+Perbankan, Asuransi dan Finansial
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi DKI Jakarta (ekor), 2024
+
+Terakhir Diperbarui : 12 Februari 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2024
+Freeze judul kolom
+
+Kabupaten/Kota
+
+	
+
+Populasi Ternak - Sapi Perah (Ekor)
+
+	
+
+Populasi Ternak - Sapi Potong (Ekor)
+
+	
+
+Populasi Ternak - Kerbau (Ekor)
+
+	
+
+Populasi Ternak - Kuda (Ekor)
+
+	
+
+Populasi Ternak - Kambing (Ekor)
+
+	
+
+Populasi Ternak - Domba (Ekor)
+
+	
+
+Populasi Ternak - Babi (Ekor)
+
+
+Kepulauan Seribu	–	–	–	–	267	7	–
+Kota Jakarta Selatan	301	1.042	17	18	460	38	–
+Kota Jakarta Timur	563	812	7	43	1.889	802	–
+Kota Jakarta Pusat	10	–	–	–	194	–	–
+Kota Jakarta Barat	–	611	7	106	416	164	–
+Kota Jakarta Utara	4	219	7	28	913	265	–
+DKI Jakarta	878	2.684	38	195	4.139	1.276	–
+
+Sumber :
+
+Kementerian Pertanian (Direktorat Jenderal Peternakan dan Kesehatan Hewan)/Ministry of Agriculture (Directorate General of Livestock and Animal Health Services)
+
+Keterangan :
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+a
+
+: 25% < RSE ≤ 50%
+
+b
+
+: RSE < 50%
+
+c
+
+: Penjumlahan tidak sama dengan wilayah diatasnya
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik Provinsi DKI Jakarta (BPS-Statistics DKI Jakarta Province)Jl. Salemba Tengah No. 36-38 Paseban Senen Jakarta Pusat
+
+Phone (021) 31928493
+
+Fax. (021) 3152004
+
+E-mail : bps3100@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup

@@ -10,7 +10,7 @@ Per sub-DAS (topologi.json), urut hulu ke hilir:
   Waduk di sub-DAS: tampung lalu lepas target tetap = rerata aliran 1991-2025 (jalan pertama tanpa waduk), dijepit
   [0, tampungan]. Transfer (Tarum Barat) diambil sesudah waduk, dikirim ke kab tujuan menurut penduduk.
 Kab: A = R lokal + Qin; C = kebutuhan konsumtif (irigasi dikurangi aliran balik 30%); N = A - C.
-  N80 = persentil 20 N bulan itu atas 35 tahun (terlampaui 80% tahun). Status DDL gaya Permen LH 17/2009:
+  N80 (per bulan, tidak aditif) = persentil 20 N bulan itu atas 35 tahun; N80_kemarau = persentil 20 dari TOTAL N Jun-Okt tiap tahun (terlampaui 80% tahun). Status DDL gaya Permen LH 17/2009:
   SA = limpasan lokal tahunan (pengganti 10 x C x R x A), DA = penduduk x 1.600 m3/kapita/tahun.
 Konservasi massa diperiksa tiap jalan: P = ETa + dS tanah + laut + keluar himpunan + pasok + dS waduk (galat < 0,1%).
 
@@ -38,8 +38,8 @@ TOL = 1e-3                            # galat massa relatif
 # ---- ASUMSI (dikalibrasi ke GloFAS di NA-06) ---------------------------------------------------------------------
 ASUMSI_TAW = fao.taw_mm(zr=1.0)       # 130 mm: lempung FAO-56 Tabel 19, zona akar 1 m (asumsi lanskap campuran)
 ASUMSI_KC = 1.0
-ASUMSI_ALPHA = 0.5                    # pecahan surplus yang langsung jadi aliran
-ASUMSI_K = 2.0                        # bulan, konstanta tampungan linear
+ASUMSI_ALPHA = 0.6                    # pecahan surplus yang langsung jadi aliran (kalibrasi NA-06 dari 0,5; kompromi di VALIDASI.md)
+ASUMSI_K = 2.0                        # bulan, konstanta tampungan linear (tetap 2,0 sesudah NA-06)
 
 
 def bak(p, et0, taw=ASUMSI_TAW, kc=ASUMSI_KC, alpha=ASUMSI_ALPHA, k=ASUMSI_K, sm0=None, g0=0.0):
@@ -100,7 +100,7 @@ def urutan(sub, tambah=()):
     return out
 
 
-def rute_bulan(order, sub, R, C, waduk, transfer, simpan_waduk, detik):
+def rute_bulan(order, sub, R, C, waduk, transfer, simpan_waduk, detik, muara=None):
     """Satu bulan. sub[s] = {"nd", "irisan": {kab: pecahan luas}, "outlet": kab}; R, C = {(s, kab): juta m3}.
     waduk {s: {"v": tampungan, "target": juta m3/bulan atau None}}; transfer [{"s", "m3s", "tujuan": {(s, kab): bagian}}].
     -> (per_kab {kab: {"qin","qout","pasok","kurang","dres"}}, tepi {(dari, ke, jenis): vol}, laut, batas)"""
@@ -156,6 +156,8 @@ def rute_bulan(order, sub, R, C, waduk, transfer, simpan_waduk, detik):
         keluar[s] = q
         if sub[s]["nd"] == 0:
             laut += q
+            if muara is not None:
+                muara[s] = muara.get(s, 0.0) + q
             kab[o]["qout"] += q
         elif sub[s]["nd"] not in sub:
             batas += q
@@ -203,7 +205,7 @@ def jalankan(topo, iklim, keb, waduk_csv):
     hb = {}
     for c in sel_dipakai:
         d = iklim["sel"][c]
-        eta, r, sm, g, sm0, g0 = bak_dipanaskan(d["p"], d["et0"])
+        eta, r, sm, g, sm0, g0 = bak_dipanaskan(d["p"], d["et0"], taw=ASUMSI_TAW, kc=ASUMSI_KC, alpha=ASUMSI_ALPHA, k=ASUMSI_K)   # dibaca saat panggil: validasi.py mengkalibrasi
         hb[c] = {"eta": eta, "r": r, "ds": (sm + g) - (sm0 + g0)}
     # struktur sub-DAS
     sub = {}
@@ -229,8 +231,9 @@ def jalankan(topo, iklim, keb, waduk_csv):
         if s is None or str(s) not in pilih:
             continue
         s = str(s)
-        if w["jenis"] == "waduk":
-            waduk[s] = {"v": float(w["tampungan_juta_m3"]), "target": None, "id": w["id"]}
+        if w["jenis"] == "waduk":   # dua waduk di satu sub-DAS level 09 (Cirata + Jatiluhur) = satu tampungan gabungan
+            lama = waduk.get(s, {"v": 0.0, "id": ""})
+            waduk[s] = {"v": lama["v"] + float(w["tampungan_juta_m3"]), "target": None, "id": "+".join(x for x in (lama["id"], w["id"]) if x)}
         else:
             tuj = w["kab_tujuan"].split(",")
             if not all(k in lengkap for k in tuj):
@@ -281,9 +284,13 @@ def jalankan(topo, iklim, keb, waduk_csv):
             waduk[s]["target"] = target[s]
         st = {}
         jalan = {"kab": collections.defaultdict(lambda: collections.defaultdict(lambda: [0.0] * n_bln)),
-                 "tepi": collections.defaultdict(lambda: [0.0] * n_bln), "laut": 0.0, "batas": 0.0, "pasok": 0.0, "dres": 0.0}
+                 "tepi": collections.defaultdict(lambda: [0.0] * n_bln), "muara": {}, "muara_t": {}, "laut": 0.0, "batas": 0.0, "pasok": 0.0, "dres": 0.0}
         for t, (y, m) in enumerate(bulan):
-            kb_t, tp, laut, bts = rute_bulan(order, sub, R[t], C[t], waduk, transfer, st, 86400 * calendar.monthrange(y, m)[1])
+            mt = {}
+            kb_t, tp, laut, bts = rute_bulan(order, sub, R[t], C[t], waduk, transfer, st, 86400 * calendar.monthrange(y, m)[1], mt)
+            for s_, v_ in mt.items():   # aliran ke laut per sub-DAS muara (validasi GloFAS)
+                jalan["muara"][s_] = jalan["muara"].get(s_, 0.0) + v_
+                jalan["muara_t"].setdefault(s_, [0.0] * n_bln)[t] = v_
             for k, v in kb_t.items():
                 for x, val in v.items():
                     jalan["kab"][k][x][t] = val
@@ -353,7 +360,10 @@ def ringkas_kab(k, keb_k, kabv, U, jalan, bulan, U30, jalan30):
                 per_bulan[x][m] += seri(x, t)
         d = {x: [round(v / n[m], 2) for m, v in enumerate(per_bulan[x])] for x in nama}
         if sk == "klim":
-            d["N80"] = [round(persentil([seri("N", t) for t in idx[sk] if bulan[t][1] == m + 1], 0.2), 2) for m in range(12)]
+            d["N80"] = [round(persentil([seri("N", t) for t in idx[sk] if bulan[t][1] == m + 1], 0.2), 2) for m in range(12)]   # per bulan, TIDAK aditif
+            # N80 kemarau sebenarnya: persentil 20 dari TOTAL Jun-Okt tiap tahun (35 nilai) = terlampaui 80% tahun
+            tot = [sum(seri("N", t) for t in idx[sk] if bulan[t][0] == y and bulan[t][1] in KEMARAU) for y in sorted({b[0] for b in bulan})]
+            d["N80_kemarau_total"] = round(persentil(tot, 0.2), 2)
         for x in ("ternak", "industri"):
             if keb_k[x] is None:
                 d[x] = None
@@ -361,10 +371,11 @@ def ringkas_kab(k, keb_k, kabv, U, jalan, bulan, U30, jalan30):
     return out
 
 
-def tulis(h, keb, topo):
+def tulis(h, keb, topo, iklim_meta):
     os.makedirs(KELUAR, exist_ok=True)
     meta = {"label": "estimasi-model", "satuan": "juta m3 per bulan (rerata bulan kalender untuk klim)",
-            "versi": "v1 (NA-05)", "periode_iklim": "1991-01..2025-12 ERA5-Land via Open-Meteo",
+            "versi": "v1 (NA-05)", "periode_iklim": "1991-01..2025-12; sumber per variabel di sumber_iklim",
+            "sumber_iklim": iklim_meta["sumber"],
             "kebutuhan": "2025 (N, konsumtif) dan proyeksi 2030 (N2030, konsumtif_2030)",
             "kemarau": "Juni-Oktober", "skenario": list(SKENARIO),
             "parameter": {"taw_mm": ASUMSI_TAW, "kc": ASUMSI_KC, "alpha": ASUMSI_ALPHA, "k_bulan": ASUMSI_K,
@@ -394,12 +405,13 @@ def tulis(h, keb, topo):
         sa = sum(kl["R"])
         da = keb["kab"][k]["pend_2025"] * KHLA / 1e6
         rk[k] = {"nama": v["nama"], "prov": v["prov"], "N_tahunan": round(sum(kl["N"]), 1),
-                 "N_kemarau": round(sum(kl["N"][m - 1] for m in KEMARAU), 1),
-                 "N80_kemarau": round(sum(kl["N80"][m - 1] for m in KEMARAU), 1),
+                 "N_kemarau": round(sum(kl["N"][m - 1] for m in KEMARAU), 2),
+                 "N80_kemarau": round(kl["N80_kemarau_total"], 2),
+                 "R_tahunan": round(sum(kl["R"]), 1), "C_tahunan": round(C, 1), "qin_tahunan": round(sum(kl["qin"]), 1),
                  "N2030_tahunan": round(sum(kl["N2030"]), 1),
                  "bulan_defisit": sum(1 for x in kl["N"] if x < 0), "bulan_defisit_N80": sum(1 for x in kl["N80"] if x < 0),
                  "rasio_C_A_persen": round(100 * C / A, 1) if A > 0 else None,
-                 "N_kemarau_skenario": {sk: round(sum(v["skenario"][sk]["N"][m - 1] for m in KEMARAU), 1) for sk in SKENARIO[1:]},
+                 "N_kemarau_skenario": {sk: round(sum(v["skenario"][sk]["N"][m - 1] for m in KEMARAU), 2) for sk in SKENARIO[1:]},
                  "ddl": {"SA": round(sa, 1), "DA": round(da, 1), "status": "surplus" if sa > da else "defisit",
                          "catatan": "gaya Permen LH 17/2009; SA = limpasan lokal model, bukan 10 x C x R x A"},
                  "bendera": {"hilir_waduk": k in hulu_waduk, "kota_kecil": h["luas_kab"][k] < luas_sub,
@@ -425,11 +437,14 @@ def main():
         if any(x < 0 for x in d["p"] + d["et0"]):
             raise ValueError(f"iklim sel {c}: nilai negatif")
     h = jalankan(topo, iklim, keb, list(csv.DictReader(open(WADUK))))
-    rk = tulis(h, keb, topo)
-    luas = sum(h["luas_kab"][k] for k in h["lengkap"])
-    R = sum(sum(h["kabv"][k]["R"]) for k in h["lengkap"]) / 35
-    P = sum(sum(h["kabv"][k]["P"]) for k in h["lengkap"]) / 35
-    E = sum(sum(h["kabv"][k]["ETa"]) for k in h["lengkap"]) / 35
+    rk = tulis(h, keb, topo, iklim['meta'])
+    semua = list(h["luas_kab"])   # seluruh himpunan sub-DAS tertutup, termasuk bagian kab yang belum lengkap
+    ny = len(h["bulan"]) / 12
+    luas = sum(h["luas_kab"][k] for k in semua)
+    R = sum(sum(h["kabv"][k]["R"]) for k in semua) / ny
+    P = sum(sum(h["kabv"][k]["P"]) for k in semua) / ny
+    E = sum(sum(h["kabv"][k]["ETa"]) for k in semua) / ny
+    print(f"himpunan tertutup: {len(h['pilih'])} sub-DAS", file=sys.stderr)
     print(f"kab lengkap {len(h['lengkap'])}: {', '.join(rk[k]['nama'] for k in h['lengkap'])}", file=sys.stderr)
     print(f"luas {luas:.0f} km2; P {P:.0f}, ETa {E:.0f}, R {R:.0f} juta m3/th = P {P / luas * 1000:.0f}, "
           f"ETa {E / luas * 1000:.0f}, R {R / luas * 1000:.0f} mm/th", file=sys.stderr)

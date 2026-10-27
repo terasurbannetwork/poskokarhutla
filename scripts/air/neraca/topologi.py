@@ -4,7 +4,7 @@ Sekali, lokal (zip HydroBASINS 52 MB tidak ada di CI). Cara: kisi sampel 0,01 de
 poligon kab; tiap titik dicari sub-DAS-nya (scanline even-odd, sama dengan `Garis` di scripts/banjir/bukti_das.py) dan
 sel iklim 0,1 derajat-nya (kisi ERA5-Land). Luas tiap irisan (sub-DAS, kab, sel) = jumlah luas titik.
 
-- Sub-DAS: HydroBASINS v1c level 09 (Lehner & Grill 2013), `data/raw/banjir/das/hybas_as_lev09_v1c.zip`, rantai
+- Sub-DAS: HydroBASINS v1c level 09 (Lehner & Grill 2013), `data/raw/banjir/das/hybas_{au,as}_lev09_v1c.zip` (Jawa di "au"), rantai
   NEXT_DOWN. RANCANGAN menyebut level 12; yang ada di repo level 09 (unduh level 12 = tiket terpisah).
   ponytail: level 09 lebih kasar, kota kecil mendapat aliran menurut pecahan luas saja.
 - Kab: `data/kajian-bnpb/data/air-jawa/peta_kab.geojson` (119 kab/kota, kode Kemendagri; geometri disederhanakan).
@@ -21,7 +21,7 @@ DIR = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.abspath(os.path.join(DIR, "../../.."))
 sys.path.insert(0, os.path.join(AKAR, "scripts/scrape"))
 
-ZIP = os.path.join(AKAR, "data/raw/banjir/das/hybas_as_lev09_v1c.zip")
+ZIP = [os.path.join(AKAR, f"data/raw/banjir/das/hybas_{w}_lev09_v1c.zip") for w in ("au", "as")]   # Jawa ada di "au" (Australasia)
 KAB = os.path.join(AKAR, "data/kajian-bnpb/data/air-jawa/peta_kab.geojson")
 WADUK = os.path.join(DIR, "waduk.csv")
 KELUAR = os.path.join(DIR, "topologi.json")
@@ -125,7 +125,7 @@ def bangun():
         kab[f["properties"]["kode"]] = [[tuple(p) for p in ring] for pl in poli for ring in pl]
     print(f"kab {len(kab)}", file=sys.stderr)
     das, nd, luas_hb = {}, {}, {}
-    for p, rings in L.baca_shp(ZIP):
+    for p, rings in (x for z in ZIP if os.path.exists(z) for x in L.baca_shp(z)):
         if not rings:
             continue
         xs = [q[0] for r in rings for q in r]
@@ -135,6 +135,7 @@ def bangun():
         i = int(p["hybas_id"])
         das[i], nd[i], luas_hb[i] = rings, int(p["next_down"]), float(p["sub_area"])
     print(f"sub-DAS di kotak Jawa {len(das)}", file=sys.stderr)
+    assert das, f"tidak ada sub-DAS HydroBASINS di kotak Jawa dari {ZIP}"
     kab_r, das_r = rasterkan(kab), rasterkan(das)
     sub = irisan(kab_r, das_r, nd)
     titik = {}
@@ -145,7 +146,7 @@ def bangun():
                     lon, lat = float(w["lon" + k]), float(w["lat" + k])
                     d = cari(das_r, round((lat - Y0) / DX - 0.5), round((lon - X0) / DX - 0.5))
                     titik[w["id"] + k] = d if d in sub else None
-    t = {"meta": {"sumber": {"das": "HydroBASINS v1c level 09 (Lehner & Grill 2013), hybas_as_lev09_v1c.zip",
+    t = {"meta": {"sumber": {"das": "HydroBASINS v1c level 09 (Lehner & Grill 2013), hybas_au_lev09_v1c.zip (+ as)",
                              "kab": "data/kajian-bnpb/data/air-jawa/peta_kab.geojson (BIG via public/geo/kabupaten)"},
                   "kisi_sampel_derajat": DX, "sel_iklim_derajat": SEL, "label": "olah(resmi)",
                   "catatan": "luas dari sampel titik 0,01 derajat; id negatif = celah pantai tanpa sub-DAS, langsung ke laut"},

@@ -1,0 +1,256 @@
+#url https://jabar.bps.go.id/id/statistics-table/3/UzJWaVUxZHdWVGxwU1hSd1UxTXZlbmRITjA1Q2R6MDkjMw==/populasi-ternak.html?year=2024
+#ditarik 2026-10-27T02:53:58.599Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI JAWA BARAT
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Saksikan Rilis Berita Resmi Statistik di sini | Survei Kepuasan Masyarakat | Portal Layanan Terintegrasi BPS Provinsi Jawa Barat
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pertanian, Kehutanan, Perikanan
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi Jawa Barat (ekor), 2024
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Statistik Ekonomi
+
+Statistik Makroekonomi
+Neraca Ekonomi
+Statistik Bisnis
+Statistik sektoral
+Keuangan Pemerintah, Fiskal dan Statistik Sektor Publik
+Perdagangan Internasional dan Neraca Pembayaran
+Harga-Harga
+Biaya Tenaga Kerja
+Ilmu Pengetahuan, Teknologi, dan Inovasi
+Pertanian, Kehutanan, Perikanan
+Energi
+Pertambangan, Manufaktur, Konstruksi
+Transportasi
+Pariwisata
+Perbankan, Asuransi dan Finansial
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi Jawa Barat (ekor), 2024
+
+Terakhir Diperbarui : 12 Februari 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2024
+Freeze judul kolom
+
+Kabupaten/Kota
+
+	
+
+Populasi Ternak - Sapi Perah (Ekor)
+
+	
+
+Populasi Ternak - Sapi Potong (Ekor)
+
+	
+
+Populasi Ternak - Kerbau (Ekor)
+
+	
+
+Populasi Ternak - Kuda (Ekor)
+
+	
+
+Populasi Ternak - Kambing (Ekor)
+
+	
+
+Populasi Ternak - Domba (Ekor)
+
+	
+
+Populasi Ternak - Babi (Ekor)
+
+
+Bogor	5.671	19.995	4.894	426	83.791	200.751	499
+Sukabumi	2.095	19.387	6.516	161	95.491	310.216	–
+Cianjur	1.614	21.434	6.627	694	92.015	474.962	–
+Bandung	25.449	23.465	2.131	1.158	25.140	240.092	–
+Garut	11.112	30.683	4.489	118	29.313	651.781	–
+Tasikmalaya	1.440	25.960	2.111	155	35.879	162.606	–
+Ciamis	19	6.292	224	16	141.013	204.013	–
+Kuningan	6.675	28.865	4.835	347	7.933	135.795	1.152
+Cirebon	100	4.200	1.749	127	21.745	308.482	–
+Majalengka	280	10.150	309	288	16.365	1.408.918	–
+Sumedang	4.299	27.673	2.530	475	34.950	83.700	–
+Indramayu	–	6.704	509	30	103.505	366.076	–
+Subang	10.502	27.119	1.581	–	22.729	288.020	–
+Purwakarta	–	10.066	3.122	40	14.961	100.163	–
+Karawang	18	3.963	105	27	16.574	98.651	143
+Bekasi	51	12.245	171	20	53.421	150.631	–
+Bandung Barat	26.469	5.736	487	214	14.990	176.553	–
+Pangandaran	–	14.677	242	47	14.751	49.802	–
+Kota Bogor	724	386	42	58	2.400	5.623	–
+Kota Sukabumi	39	608	–	32	37	1.235	–
+Kota Bandung	254	1.452	4	12	95	4.452	–
+Kota Cirebon	–	667	–	1	3.874	6.408	–
+Kota Bekasi	18	2.034	6	3	6.778	3.190	–
+Kota Depok	470	2.240	28	304	2.893	1.957	–
+Kota Cimahi	648	226	–	19	60	2.550	–
+Kota Tasikmalaya	202	2.779	671	442	3.355	13.416	–
+Kota Banjar	–	746	4	3	3.723	3.734	–
+Jawa Barat	98.149	309.752	43.387	5.217	847.781	5.453.777	1.794
+
+Sumber :
+
+Kementerian Pertanian (Direktorat Jenderal Peternakan dan Kesehatan Hewan)/Ministry of Agriculture (Directorate General of Livestock and Animal Health Services)
+
+Keterangan :
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+a
+
+: 25% < RSE ≤ 50%
+
+b
+
+: RSE < 50%
+
+c
+
+: Penjumlahan tidak sama dengan wilayah diatasnya
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik Provinsi Jawa Barat (BPS-Statistics Jawa Barat Province)Jl. PHH. Mustofa No. 43 Bandung 40124
+
+Jawa Barat - Indonesia
+
+Telp: +62 22 7272595
+
+Mailbox: bps3200@bps.go.id; pst3200@bps.go.id
+
+Whatsapp : 0851-7992-8832 (Chat Only)
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup
