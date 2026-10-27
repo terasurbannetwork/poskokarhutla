@@ -4,6 +4,7 @@ import {durasiLog, kuantil, nKecil} from "./hitung.js";
 import {memuat, kosong, galat} from "./keadaan.js";
 import {tanggalHtml, pasangTanggal} from "./tanggal.js";
 import {jalurJejak, jejakTabelHtml, aksiJejak, namaAksi} from "./keputusan.js";
+import {bandingSelang, selangHtml} from "./bukti.js";
 import {suhuHtml, tekananHtml, uraiCsv, ambilTeks, muatButir, muatGayaLapangan} from "./lapangan_staf.js";
 
 export const RENTANG_JEJAK = [[7, "7 hari terakhir"], [30, "30 hari terakhir"], [90, "90 hari terakhir"]];
@@ -111,6 +112,7 @@ export async function pasang(akar, konteks) {
       <label class="sp-tgl">Dari ${tanggalHtml({label: "Dari", atribut: 'data-tgl="dari"'})}</label><label class="sp-tgl">Sampai ${tanggalHtml({label: "Sampai", atribut: 'data-tgl="sampai"'})}</label>
       <a class="ad-tombol" data-csv href="/api/sippa/log.csv">Unduh CSV</a></div>
     <div id="sp-log-isi"></div>
+    <section class="sp-jejak" aria-labelledby="sp-selang-judul"><h2 class="sp-sub" id="sp-selang-judul">Selang pendek lawan panjang</h2><div id="sp-selang-isi" aria-live="polite"></div></section>
     <section class="sp-jejak" aria-labelledby="sp-jejak-judul"><h2 class="sp-sub" id="sp-jejak-judul">Jejak keputusan dan perubahan</h2>
       <div class="sp-kontrol" role="group" aria-label="Penyaring jejak">
         <label>Rentang <select data-jejak="hari">${RENTANG_JEJAK.map(([h, n]) => `<option value="${h}">${n}</option>`).join("")}</select></label>
@@ -138,6 +140,7 @@ export async function pasang(akar, konteks) {
       <tbody>${potong.length ? potong.map(barisTabel).join("") : `<tr><td colspan="${KOLOM.length}"><p class="ad-kosong">Tidak ada log yang cocok dengan penyaring.</p></td></tr>`}</tbody></table></div>${paginasi(hal, urut.length, PER_HAL, "log")}`;
     const th = isi.querySelector("thead tr");
     pengurutKepala(st, th, jadwalkanGambar);
+    akar.querySelector("#sp-selang-isi").innerHTML = selangHtml(bandingSelang(rows));
   };
   /* tiap muat membatalkan muat sebelumnya: jawaban basi tidak pernah menimpa jawaban terbaru */
   let acMuat = null;
@@ -205,9 +208,9 @@ export async function pasang(akar, konteks) {
   }, {signal: sinyal});
   akar.addEventListener("change", e => {
     const t = e.target.closest("[data-tgl]"), j = e.target.closest("[data-jejak]");
-    if (e.target.closest('[data-lap="tugas"]')) { nanti(muatLap); return; }
-    if (t) { st[t.dataset.tgl] = t.value; nanti(muat); }
-    else if (j) { if (j.dataset.jejak === "hari") { jej.hari = Number(j.value) || 7; nanti(muatJejak); } else { jej.aksi = j.value; nanti(gambarJejak); } }
+    if (e.target.closest('[data-lap="tugas"]')) { if (pilihTugas.value) isiLap.replaceChildren(memuat()); nanti(muatLap); return; }
+    if (t) { st[t.dataset.tgl] = t.value; isi.replaceChildren(memuat()); nanti(muat); }
+    else if (j) { if (j.dataset.jejak === "hari") { jej.hari = Number(j.value) || 7; isiJejak.replaceChildren(memuat()); nanti(muatJejak); } else { jej.aksi = j.value; nanti(gambarJejak); } }
   }, {signal: sinyal});
   nanti(muatJejak);
   await muat();

@@ -90,7 +90,7 @@ test("kartuLapangan: tanpa SOS dan tanpa selesai hari ini = kosong (kartu tersem
   assert.equal(S.kartuLapangan([sos(KINI - 2 * HARI), sel(KINI - 2 * HARI)], KINI).kosong, true); assert.equal(S.kartuLapangan([], KINI).kosong, true);
   const k = S.kartuLapangan([sel(KINI - 1000), sos(KINI - 5000, "<b>ular</b>")], KINI, {k1: "SIPPA-001"});
   assert.match(teks(k.judul), /^1 SOS dari regu hari ini$/); assert.ok(k.isi.indexOf("SOS") < k.isi.indexOf("Selesai gelar"));
-  assert.doesNotMatch(k.isi, /<b>ular/); assert.match(k.isi, /&lt;b&gt;ular/); assert.match(k.isi, /SIPPA-001/); assert.match(k.isi, /https:\/\/www\.google\.com\/maps\?q=-2\.2,113\.9/); assert.match(k.isi, /rel="noopener"/);
+  assert.doesNotMatch(k.isi, /<b>ular/); assert.match(k.isi, /&lt;b&gt;ular/); assert.match(k.isi, /SIPPA-001/); assert.match(k.isi, /https:\/\/www\.google\.com\/maps\?q=-2\.2,113\.9/); assert.match(k.isi, /rel="noopener noreferrer"/);
   assert.match(k.isi, /2 alat kembali/); assert.match(k.isi, /1 hilang: C-101/);
   assert.match(teks(S.kartuLapangan([sel(KINI - 1000)], KINI).judul), /^1 regu melapor selesai gelar hari ini$/); assert.equal(S.kartuLapangan([sel(KINI)], KINI).ey, "Lapangan hari ini");
 });

@@ -193,3 +193,32 @@ uji("migrasi 0070 idempoten: dijalankan ulang, isi sippa_inspeksi, indeks, dan t
   const pompa = KOMP.find(c => c.kode_bom === "P-101").id; assert.equal((await sip("POST", "/inspeksi", {sasaran_jenis: "komponen", sasaran_id: pompa, kit_id: KIT, jenis: "berkala", skor: 0, tindakan: "uji_ulang"}, pus.h)).s, 201, "trigger terapkan masih jalan");
   assert.equal((await DB.prepare("SELECT kondisi FROM sippa_komponen WHERE id = ?").bind(pompa).first()).kondisi, "baik");
 });
+
+uji("koordinat lapangan: peran baca (pimpinan) dapat 0,01 di data, titik jejak, CSV, dan SOS Meja Pantau; peran tulis penuh", async () => {
+  const w = kini() - 500, idB = uuid(), idJ = uuid(), idS = uuid();
+  const r = await kirim(KODE, {bor: [{id: idB, lat: -2.12345, lon: 113.65432, kedalaman_cm: 100, waktu: w}], sos: [{id: idS, lat: -2.55555, lon: 113.44444, waktu: w}],
+    jejak: [{id: idJ, titik: [[-2.11111, 113.22222, w - 1000], [-2.33333, 113.77777, w]], moda: "perahu"}]});
+  assert.equal(r.j.diterima.length, 3, r.t);
+  const q = h => sip("GET", `/lapangan?tugas_id=${TUGAS}&jenis=bor,jejak`, undefined, h);
+  const tulis = (await q(pus.h)).j.butir, baca = (await q(pim.h)).j.butir;
+  assert.equal(tulis.find(x => x.id === idB).data.lat, -2.12345); assert.deepEqual(tulis.find(x => x.id === idJ).data.titik[1].slice(0, 2), [-2.33333, 113.77777]);
+  assert.equal(baca.find(x => x.id === idB).data.lat, -2.12); assert.equal(baca.find(x => x.id === idB).data.lon, 113.65);
+  assert.deepEqual(baca.find(x => x.id === idJ).data.titik, [[-2.11, 113.22, w - 1000], [-2.33, 113.78, w]], "tiap titik dibulatkan, waktu utuh");
+  const csv = (h, p = "") => mf.dispatchFetch(`http://bnpb.lokal/api/sippa/lapangan.csv?tugas_id=${TUGAS}&jenis=bor${p}`, {headers: h}).then(async x => ({s: x.status, t: await x.text()}));
+  assert.match((await csv(pim.h)).t, /-2\.12,/); assert.doesNotMatch((await csv(pim.h)).t, /-2\.12345/);
+  assert.equal((await csv(pim.h, "&presisi=penuh")).s, 403); assert.match((await csv(pus.h, "&presisi=penuh")).t, /-2\.12345/);
+  const sos = async h => (await api("GET", "/api/pantau", undefined, h)).j.butir.find(b => b.id === "sippa-sos:" + idS);
+  assert.match((await sos(pim.h)).rincian, /^Koordinat -2\.56, 113\.44/); assert.match((await sos(pus.h)).rincian, /^Koordinat -2\.55555, 113\.44444/);
+});
+uji("lapangan: wilayah disaring di SQL (butir provinsi lain tidak memakan batas), terpotong ditandai", async () => {
+  const b = await sip("GET", `/lapangan?tugas_id=${TUGAS}&jenis=periksa`, undefined, pus.h); assert.equal(b.j.butir.length, 500); assert.equal(b.j.terpotong, true);
+  const k = await sip("GET", "/lapangan?kompleks_id=K0500", undefined, pus61.h); assert.equal(k.s, 200); assert.equal(k.j.terpotong, false);
+});
+uji("pinjam tanpa kit_id: kode_bom harus ada di templat komponen; suku cadang pra-0070 = 503", async () => {
+  const dasar = {pemilik_asal: "Pemda A", penerima: "BPBD B", mulai: kini(), selesai_rencana: kini() + 5 * HARI, prov: "62"};
+  assert.equal((await sip("POST", "/pinjam", {...dasar, kode_bom: ["ZZ-999"]}, pus.h)).s, 400);
+  assert.equal((await sip("POST", "/pinjam", {...dasar, kode_bom: ["P-101"]}, pus.h)).s, 201);
+  await DB.prepare("ALTER TABLE sippa_lapangan RENAME TO sippa_lapangan_x").run();
+  try { const r = await sip("GET", "/suku-cadang", undefined, pus.h); assert.equal(r.s, 503, r.t); assert.match(r.j.galat, /Migrasi SIPPA/); }
+  finally { await DB.prepare("ALTER TABLE sippa_lapangan_x RENAME TO sippa_lapangan").run(); }
+});

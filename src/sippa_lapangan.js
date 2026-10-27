@@ -8,7 +8,7 @@ export const MAKS_DATA = 32768;
 const RE_LANGKAH = /^[a-z0-9_]{2,40}$/, RE_PETAK = /^[A-Za-z0-9._ -]{1,40}$/, RE_BOM = /^[A-Z]{1,4}-\d{1,6}$/;
 const ada = (v, a, z) => typeof v === "number" && Number.isFinite(v) && v >= a && v <= z;
 export const lat = v => ada(v, -11.5, 6.5), lon = v => ada(v, 94.5, 141.5);   // kotak Indonesia, sama dengan MEDAN.log
-const teks = (v, maks) => { if (v == null) return null; if (typeof v !== "string") return undefined; const t = v.normalize("NFC").trim(); return [...t].length <= maks ? t : undefined; };
+const teks = (v, maks) => { if (v == null) return null; if (typeof v !== "string") return undefined; const t = v.normalize("NFC").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, "").trim(); return [...t].length <= maks ? t : undefined; };   // kontrol dan bidi dibuang (pemalsuan tampilan)
 const waktuOK = (v, kini) => ada(v, 1, 9e15) ? (v > kini - 30 * HARI && v <= kini + MELESET_MS ? Math.round(v) : kini) : null;
 const r3 = x => Math.round(x * 1000) / 1000, r6 = x => Math.round(x * 1e6) / 1e6;
 const g = galat => ({galat});

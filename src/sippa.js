@@ -8,7 +8,7 @@
    - Validasi masukan klien = server lewat cekButir dari public/pipa/formulir.js (ADR-03); trigger dan CHECK D1 adalah sumber kebenaran terakhir.
    ponytail: staf berwilayah disaring di JS sesudah SQL (dalamWilayahStaf, jumlah kit puluhan); bila kit atau log menembus ribuan, pindahkan ke WHERE prov IN (json_each). */
 import {json, gagal, acak, bacaBody, bacaBytes, adminOK, sha, ipHash} from "./worker.js";
-import {stafOK, stafSesi, stafNyata, dalamWilayahStaf, jejakStmt} from "./staf.js";
+import {stafOK, stafSesi, stafNyata, dalamWilayahStaf, wilayahStaf, jejakStmt} from "./staf.js";
 import {laju, kodeBaru, pemegangKode} from "./bnpb.js";
 import {modOK, superOK, CSP_LAPANGAN} from "./posko.js";
 import {pemirsaSesi} from "./pemirsa.js";
@@ -85,7 +85,7 @@ const dalam = (req, prov) => dalamWilayahStaf(req, prov == null ? [] : [prov]);
 const batasJam = (env, kunci, aksi, maks, kini) => laju(env, kunci, aksi, [[JAM, maks]], kini);
 const alihkan = (ke2, h = {}) => new Response(null, {status: 303, headers: {location: ke2, "cache-control": "no-store", ...h}});
 const gal = c => gagal(400, c.galat.map(g => `${g.medan}: ${g.pesan}`).join("; "));
-const teksOK = (v, min, maks) => { if (typeof v !== "string") return undefined; const t = v.normalize("NFC").trim(), n = [...t].length; return n >= min && n <= maks ? t : undefined; };   // [...t] = titik kode, sama dengan length() SQLite di CHECK
+const teksOK = (v, min, maks) => { if (typeof v !== "string") return undefined; const t = v.normalize("NFC").replace(/[\u0000-\u0008\u000B\u000C\u000E-\u001F\u200B-\u200F\u202A-\u202E\u2066-\u2069]/g, "").trim(), n = [...t].length; return n >= min && n <= maks ? t : undefined; };   // [...t] = titik kode, sama dengan length() SQLite di CHECK
 const bersihGalat = e => { const m = String(e?.message || e).replace(/^D1_ERROR:\s*/, "").replace(/:?\s*SQLITE_\w+.*$/s, "").slice(0, 200); return /^sippa_\w+:/.test(m) ? m : "basis data menolak butir: " + m; };
 const galatKeadaan = e => /sippa_gerak_(cek|tetap)/.test(String(e?.message || e));
 
@@ -425,8 +425,8 @@ const tulisLap = (env, id, jenis, data, waktu, t, kini, oleh) => env.DB.prepare(
   .bind(id, jenis, t.id, t.kit_id ?? null, t.kompleks_id ?? null, t.prov, JSON.stringify(data), waktu, kini, oleh, t.dummy);
 async function lapanganFoto(env, req, url, kini) {
   const t = await pegang(env, req, kini); if (t instanceof Response) return t;
-  const oleh = "tugas:" + t.id, l = await batasJam(env, oleh, "sippa.foto", 60, kini); if (l) return l;
   if (!env.MEDIA) return gagal(503, "penyimpanan foto belum tersedia");
+  const oleh = "tugas:" + t.id, l = await batasJam(env, oleh, "sippa.foto", 60, kini); if (l) return l;
   if (!(req.headers.get("content-type") || "").startsWith("multipart/form-data")) return gagal(400, "kirim sebagai multipart/form-data dengan medan berkas");
   const pjg = Number(req.headers.get("content-length") || 0);
   if (!(pjg > 0)) return gagal(411, "Content-Length wajib pada unggahan");   // sebelum formData(): badan chunked tak terbatas tidak ditampung
@@ -626,6 +626,8 @@ const SQL_PROV_JEJAK = `CASE substr(j.obyek, 1, instr(j.obyek, ':') - 1)
   WHEN 'sippa_inspeksi' THEN (SELECT prov FROM sippa_inspeksi WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
   WHEN 'sippa_log_gelar' THEN (SELECT prov FROM sippa_log_gelar WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
   WHEN 'sippa_pinjam' THEN (SELECT prov FROM sippa_pinjam WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_renlap' THEN (SELECT prov FROM sippa_renlap WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
+  WHEN 'sippa_anggaran_realisasi' THEN (SELECT prov FROM sippa_anggaran_realisasi WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
   WHEN 'sippa_keputusan' THEN (SELECT prov FROM sippa_keputusan WHERE id = substr(j.obyek, instr(j.obyek, ':') + 1))
 END`;
 /* provinsi kompleks dari R2 (satu pembacaan, hanya bila klien tak mengirim prov) */
@@ -1333,14 +1335,19 @@ async function dummyIsi(env, req, url, kini) {
   return json({dibuat});
 }
 /* hilir ke hulu; trigger append-only mengizinkan hapus baris dummy. Objek R2 dummy dihapus berdasarkan id baris sebelum barisnya hilang. */
-const HAPUS_URUT = ["sippa_lapangan", "sippa_pinjam", "sippa_ba_urut", "sippa_inspeksi", "sippa_stok_gerak", "sippa_aset", "sippa_alarm", "sippa_telemetri_harian", "sippa_telemetri", "sippa_perangkat", "sippa_laporan", "sippa_petak", "sippa_ab_unggah", "sippa_skenario", "sippa_bbm", "sippa_probe", "sippa_log_gelar", "sippa_foto", "sippa_gerak", "sippa_tugas", "sippa_komponen", "sippa_jalan_cek", "sippa_aoi_usul", "sippa_kit"];
+const HAPUS_URUT = ["sippa_renlap", "sippa_anggaran_realisasi", "sippa_lapangan", "sippa_pinjam", "sippa_ba_urut", "sippa_inspeksi", "sippa_stok_gerak", "sippa_aset", "sippa_alarm", "sippa_telemetri_harian", "sippa_telemetri", "sippa_perangkat", "sippa_laporan", "sippa_petak", "sippa_ab_unggah", "sippa_skenario", "sippa_bbm", "sippa_probe", "sippa_log_gelar", "sippa_foto", "sippa_gerak", "sippa_tugas", "sippa_komponen", "sippa_jalan_cek", "sippa_aoi_usul", "sippa_kit"];
 async function dummyHapus(env, req, url, kini) {
   const a = await akses(env, req, "SA"); if (a.res) return a.res;
   const l = await batasJam(env, a.oleh, "sippa.dummy", 30, kini); if (l) return l;
   const foto = (await env.DB.prepare("SELECT id FROM sippa_foto WHERE dummy = 1").all()).results.map(r => "sippa-foto/" + r.id);
   const lap = (await env.DB.prepare("SELECT id FROM sippa_laporan WHERE dummy = 1 AND ada_berkas = 1").all()).results.map(r => `sippa-laporan/${r.id}.pdf`);
-  if (foto.length + lap.length && env.MEDIA) await env.MEDIA.delete([...foto, ...lap]);
+  const renlap = (await env.DB.prepare("SELECT id FROM sippa_renlap WHERE dummy = 1").all().catch(() => ({results: []}))).results.map(r => r.id);   // sebelum batch; tabel 0073 belum ada = tak ada
   const r = await env.DB.batch([...HAPUS_URUT.map(t => env.DB.prepare(`DELETE FROM ${t} WHERE dummy = 1`)), env.DB.prepare("DELETE FROM pantau_jejak WHERE dummy = 1 AND obyek GLOB 'sippa_*'")]);
+  if (env.MEDIA) {   // R2 sesudah batch sukses: batch gagal tidak meninggalkan baris tanpa berkas
+    const kunci = [...foto, ...lap];
+    for (const id of renlap) { let kursor; do { const l = await env.MEDIA.list({prefix: kunciRenlap(id), cursor: kursor}); kunci.push(...l.objects.map(o => o.key)); kursor = l.truncated ? l.cursor : undefined; } while (kursor); }
+    for (let i = 0; i < kunci.length; i += 1000) await env.MEDIA.delete(kunci.slice(i, i + 1000));
+  }
   return json({dihapus: Object.fromEntries(HAPUS_URUT.map((t, i) => [t, r[i].meta.changes]))});
 }
 
@@ -1359,23 +1366,39 @@ function filterLap(q) {
   const r = rentangMs(q, "l.waktu"); if (r.galat) return r;
   return {w: [...w, ...r.w], p: [...p, ...r.p], tugas};
 }
-async function ambilLap(env, req, f, maks) {
-  const r = await env.DB.prepare(`SELECT l.id, l.jenis, l.tugas_id, l.kit_id, l.kompleks_id, l.prov, l.data, l.waktu, l.oleh, l.dummy FROM sippa_lapangan l WHERE l.dummy <= ?${f.w.map(x => " AND " + x).join("")} ORDER BY l.waktu DESC, l.rowid DESC LIMIT 20000`)
-    .bind(lihatDummy(req), ...f.p).all();   // ponytail: wilayah disaring di JS sesudah SQL, sama dengan ambilLog
-  return r.results.filter(x => dalam(req, x.prov)).slice(0, maks);
+/* wilayah staf disaring di SQL (LIMIT tidak memakan baris provinsi lain); peran baca saja: lat/lon dan tiap [lat, lon, ms] di data.titik dibulatkan 0,01 (pola log); penuh = peran tulis */
+const kasarData = d => {
+  if (!d || typeof d !== "object") return d;
+  const o = {...d};
+  if ("lat" in o) o.lat = bulat(o.lat);
+  if ("lon" in o) o.lon = bulat(o.lon);
+  if (Array.isArray(o.titik)) o.titik = o.titik.map(t => Array.isArray(t) ? [bulat(t[0]), bulat(t[1]), ...t.slice(2)] : t);
+  return o;
+};
+async function ambilLap(env, req, f, maks, penuh) {
+  const wil = wilayahStaf(req), saring = wil.length ? ` AND l.prov IN (${wil.map(() => "?").join(", ")})` : "";
+  const r = await env.DB.prepare(`SELECT l.id, l.jenis, l.tugas_id, l.kit_id, l.kompleks_id, l.prov, l.data, l.waktu, l.oleh, l.dummy FROM sippa_lapangan l WHERE l.dummy <= ?${f.w.map(x => " AND " + x).join("")}${saring} ORDER BY l.waktu DESC, l.rowid DESC LIMIT ${maks + 1}`)
+    .bind(lihatDummy(req), ...f.p, ...wil).all();
+  const b = r.results.filter(x => dalam(req, x.prov));
+  return {baris: b.slice(0, maks).map(x => penuh ? x : {...x, data: JSON.stringify(kasarData(urai(x.data)))}), terpotong: b.length > maks};
 }
 async function lapanganBaca(env, req, url) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;
   const f = filterLap(url.searchParams); if (f.galat) return gagal(400, f.galat);
   if (f.tugas) { const t = await env.DB.prepare("SELECT prov FROM sippa_tugas WHERE id = ? AND dummy <= ?").bind(f.tugas, lihatDummy(req)).first(); if (!t || !dalam(req, t.prov)) return tdk("tugas tidak ada"); }   // tidak ada dan di luar wilayah: satu jawaban
-  const baris = await ambilLap(env, req, f, 500);
-  return json({butir: baris.map(({dummy: _d, ...x}) => ({...x, data: urai(x.data)}))});
+  const {baris, terpotong} = await ambilLap(env, req, f, 500, !!await adminAtauStaf(env, req, P_SIPPA_TULIS));
+  return json({butir: baris.map(({dummy: _d, ...x}) => ({...x, data: urai(x.data)})), terpotong});
 }
 async function lapanganCsv(env, req, url, kini) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;
   const f = filterLap(url.searchParams); if (f.galat) return gagal(400, f.galat);
+  const presisi = url.searchParams.get("presisi"); if (presisi !== null && presisi !== "penuh") return gagal(400, "presisi hanya boleh penuh");
+  if (presisi === "penuh" && !await adminAtauStaf(env, req, P_SIPPA_TULIS)) return gagal(403, "koordinat penuh hanya untuk staf yang boleh menulis");
   const l = await batasJam(env, a.oleh, "sippa.csv", 60, kini); if (l) return l;
-  return berkasCsv("lapangan", csv(["id", "jenis", "tugas_id", "kit_id", "kompleks_id", "prov", "waktu", "oleh", "dummy", "data"], await ambilLap(env, req, f, 20000)), kini);
+  const {baris, terpotong} = await ambilLap(env, req, f, 20000, presisi === "penuh");
+  const r = berkasCsv("lapangan", csv(["id", "jenis", "tugas_id", "kit_id", "kompleks_id", "prov", "waktu", "oleh", "dummy", "data"], baris), kini);
+  if (terpotong) r.headers.set("x-terpotong", "1");
+  return r;
 }
 
 const MAKS_PINJAM = 500;
@@ -1393,6 +1416,7 @@ async function pinjamBuat(env, req, url, kini) {
   if (!Array.isArray(bom) || bom.length > 100 || !bom.every(k => typeof k === "string" && RE_BOM.test(k))) return gagal(400, "kode_bom harus larik paling banyak 100 kode seperti P-101");
   if (o.kit_id !== undefined && !(typeof o.kit_id === "string" && RE_ID.test(o.kit_id))) return gagal(400, "kit_id harus id kit 16 heks");
   if (o.kit_id === undefined && !bom.length) return gagal(400, "kit_id atau kode_bom wajib");
+  if (o.kit_id === undefined) { const dikenal = new Set(Object.values(TEMPLAT_BOM).flat().map(x => x.kode_bom)); const asing = bom.find(x => !dikenal.has(x)); if (asing) return gagal(400, `kode_bom ${asing} tidak ada di templat komponen SIPPA`); }
   let prov;
   if (o.kit_id !== undefined) {   // provinsi dari kit di server; kit di luar wilayah dijawab sama dengan kit yang tidak ada
     const k = await kitTulis(env, req, o.kit_id); if (!k) return tdk("kit tidak ada");
@@ -1419,8 +1443,10 @@ const bacaPinjam = async (env, id) => { const r = await env.DB.prepare("SELECT *
 async function pinjamDaftar(env, req, url) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;
   const prov = url.searchParams.get("prov"); if (prov !== null && !RE_PROV.test(prov)) return gagal(400, "prov harus kode provinsi 2 digit");
-  const r = await env.DB.prepare(`SELECT * FROM sippa_pinjam WHERE dummy <= ?${prov !== null ? " AND prov = ?" : ""} ORDER BY mulai DESC, rowid DESC LIMIT 2000`).bind(lihatDummy(req), ...(prov !== null ? [prov] : [])).all();
-  return json({pinjam: r.results.filter(x => dalam(req, x.prov)).slice(0, MAKS_PINJAM).map(x => ({...x, kode_bom: urai(x.kode_bom, [])}))});
+  const s = saringProv(req, "prov");   // wilayah staf di SQL: LIMIT tidak termakan baris provinsi lain
+  const r = await env.DB.prepare(`SELECT * FROM sippa_pinjam WHERE dummy <= ?${prov !== null ? " AND prov = ?" : ""}${s.sql} ORDER BY mulai DESC, rowid DESC LIMIT ${MAKS_PINJAM + 1}`).bind(lihatDummy(req), ...(prov !== null ? [prov] : []), ...s.p).all();
+  const b = r.results.filter(x => dalam(req, x.prov));
+  return json({pinjam: b.slice(0, MAKS_PINJAM).map(x => ({...x, kode_bom: urai(x.kode_bom, [])})), terpotong: b.length > MAKS_PINJAM});
 }
 async function pinjamKembali(env, req, url, kini, ctx, id) {
   const a = await akses(env, req, "W"); if (a.res) return a.res;
@@ -1438,6 +1464,7 @@ async function pinjamKembali(env, req, url, kini, ctx, id) {
 /* SP-131: komponen yang tindakan inspeksi TERAKHIRNYA tunggu_suku_cadang, dengan umur sejak itu */
 async function sukuCadang(env, req, url, kini) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;
+  if (!await env.DB.prepare("SELECT 1 FROM sqlite_master WHERE type = 'table' AND name = 'sippa_lapangan'").first()) return json({galat: "Migrasi SIPPA belum diterapkan di basis data", status: "tanpa_migrasi"}, 503);   // 0070; tanpa ini daftar kosong menyesatkan layar
   const r = await env.DB.prepare(`SELECT i.sasaran_id AS komponen_id, i.kit_id, k.kode AS kit_kode, c.kode_bom, c.nama, c.kondisi, i.prov, i.waktu AS sejak, i.temuan, i.dummy FROM sippa_inspeksi i
     JOIN sippa_komponen c ON c.id = i.sasaran_id LEFT JOIN sippa_kit k ON k.id = i.kit_id
     WHERE i.sasaran_jenis = 'komponen' AND i.tindakan = 'tunggu_suku_cadang' AND i.dummy <= ?
@@ -1679,6 +1706,180 @@ async function stokBuat(env, req, url, kini) {
   return json({stok: s}, 201);
 }
 
+/* ================================================================ fase 3 (keputusan 61; SP-145 anggaran T0-T4, SP-140 Renlap Generator; skema 0073) */
+const TINGKAT = ["T0", "T1", "T2", "T3", "T4"], REPO_RENLAP = "terasurbannetwork/poskokarhutla", MAKS_REALISASI = 2000;
+const RP_MAKS = 1e13;
+const saringProv = (req, kolom) => { const w = wilayahStaf(req); return {sql: w.length ? ` AND ${kolom} IN (${w.map(() => "?").join(", ")})` : "", p: w, nasional: !w.length}; };
+const KOLOM_REAL = "id, tingkat, prov, uraian, rp, tanggal, bukti, oleh, waktu, dummy";
+async function anggaranBaca(env, req) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const s = saringProv(req, "prov"), d = lihatDummy(req);
+  const [T, R, J] = await Promise.all([env.DB.prepare("SELECT tingkat, nama, gerbang_pembuka, pagu_rp, status, gerbang_bukti, dibuka_oleh, dibuka_waktu FROM sippa_anggaran_tingkat WHERE dummy <= ? ORDER BY tingkat").bind(d).all(),
+    env.DB.prepare(`SELECT ${KOLOM_REAL} FROM sippa_anggaran_realisasi WHERE dummy <= ?${s.sql} ORDER BY tanggal DESC, rowid DESC LIMIT ${MAKS_REALISASI + 1}`).bind(d, ...s.p).all(),
+    env.DB.prepare(`SELECT tingkat, sum(rp) rp FROM sippa_anggaran_realisasi WHERE dummy <= ?${s.sql} GROUP BY tingkat`).bind(d, ...s.p).all()]);
+  const jumlah = new Map(J.results.map(r => [r.tingkat, r.rp]));
+  /* staf berwilayah hanya melihat realisasi provinsinya; sisa dana nasional tidak dihitung dari jumlah sebagian (null) */
+  const tingkat = T.results.map(t => { const realisasi_rp = jumlah.get(t.tingkat) ?? 0; return {...t, realisasi_rp, sisa_rp: s.nasional && t.pagu_rp != null ? t.pagu_rp - realisasi_rp : null}; });
+  return json({tingkat, realisasi: R.results.slice(0, MAKS_REALISASI).map(({dummy: _d, ...x}) => x), terpotong: R.results.length > MAKS_REALISASI});
+}
+async function anggaranTulis(env, req, url, kini) {
+  const a = await akses(env, req, "W"); if (a.res) return a.res;
+  const l = await batasJam(env, a.oleh, "sippa.tulis", 600, kini); if (l) return l;
+  const b = await bacaBody(req, 4096); if (b.galat) return gagal(b.status || 400, b.galat); const o = b.o;
+  if (!TINGKAT.includes(o.tingkat)) return gagal(400, `tingkat harus salah satu dari ${TINGKAT.join(", ")}`);
+  const uraian = teksOK(o.uraian, 3, 200); if (uraian === undefined) return gagal(400, "uraian 3 sampai 200 karakter");
+  const bukti = o.bukti == null ? null : teksOK(o.bukti, 0, 300); if (bukti === undefined) return gagal(400, "bukti paling banyak 300 karakter");
+  if (!Number.isInteger(o.rp) || o.rp < 1 || o.rp > RP_MAKS) return gagal(400, "rp harus bilangan bulat rupiah lebih dari nol");
+  if (!Number.isInteger(o.tanggal) || o.tanggal < kini - 5 * 365 * HARI || o.tanggal > kini + HARI) return gagal(400, "tanggal harus milidetik epoch, paling lama 5 tahun lalu dan tidak di masa depan");
+  const w = wilayahStaf(req); let prov = null;   // provinsi dari wilayah staf di server; akun nasional mencatat di buku nasional (NULL)
+  if (w.length === 1) prov = w[0];
+  else if (w.length > 1) { if (!(typeof o.prov === "string" && w.includes(o.prov))) return gagal(400, `prov wajib salah satu wilayahmu: ${w.join(", ")}`); prov = o.prov; }
+  const t = await env.DB.prepare("SELECT status FROM sippa_anggaran_tingkat WHERE tingkat = ?").bind(o.tingkat).first();
+  if (!t) return gagal(400, "tingkat belum disiapkan (migrasi 0073)");
+  if (t.status !== "terbuka") return gagal(409, `tingkat ${o.tingkat} masih terkunci gerbang`);
+  const id = acak(8), dm = dummyStaf(req, a.oleh);
+  try {
+    await env.DB.batch([env.DB.prepare("INSERT INTO sippa_anggaran_realisasi (id, tingkat, prov, uraian, rp, tanggal, bukti, oleh, waktu, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(id, o.tingkat, prov, uraian, o.rp, o.tanggal, bukti || null, a.oleh, kini, dm),
+      jejakStmt(env, a.oleh, "sippa_anggaran_realisasi:" + id, "anggaran", o.tingkat, `Rp${o.rp} ${uraian}`.slice(0, 200), kini, dm)]);
+  } catch (e) { if (/sippa_realisasi_terkunci/.test(String(e?.message || e))) return gagal(409, `tingkat ${o.tingkat} masih terkunci gerbang`); throw e; }
+  return json({realisasi: await env.DB.prepare(`SELECT ${KOLOM_REAL} FROM sippa_anggaran_realisasi WHERE id = ?`).bind(id).first()}, 201);
+}
+async function anggaranBuka(env, req, url, kini) {
+  const a = await akses(env, req, "M"); if (a.res) return a.res;
+  const l = await batasJam(env, a.oleh, "sippa.tulis", 600, kini); if (l) return l;
+  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat); const o = b.o;
+  if (!TINGKAT.includes(o.tingkat)) return gagal(400, `tingkat harus salah satu dari ${TINGKAT.join(", ")}`);
+  const bukti = teksOK(o.gerbang_bukti, 3, 300); if (bukti === undefined) return gagal(400, "gerbang_bukti 3 sampai 300 karakter: tulis gerbang yang lulus dan rujukan buktinya");
+  const r = await env.DB.batch([env.DB.prepare("UPDATE sippa_anggaran_tingkat SET status = 'terbuka', gerbang_bukti = ?, dibuka_oleh = ?, dibuka_waktu = ? WHERE tingkat = ? AND status = 'terkunci'").bind(bukti, a.oleh, kini, o.tingkat),
+    env.DB.prepare("INSERT INTO pantau_jejak (waktu, oleh, obyek, aksi, ke, catatan, dummy) SELECT ?, ?, ?, 'buka_tingkat', ?, ?, 0 WHERE changes() > 0").bind(kini, a.oleh, "sippa_anggaran_tingkat:" + o.tingkat, o.tingkat, bukti)]);   // jejak hanya bila UPDATE menang
+  if (!r[0].meta.changes) return gagal(409, `tingkat ${o.tingkat} sudah terbuka`);
+  return json({tingkat: await env.DB.prepare("SELECT tingkat, nama, gerbang_pembuka, pagu_rp, status, gerbang_bukti, dibuka_oleh, dibuka_waktu FROM sippa_anggaran_tingkat WHERE tingkat = ?").bind(o.tingkat).first()});
+}
+
+/* ---------------------------------------------------------------- Renlap Generator (SP-140; arah GitHub Actions `renlap.yml`)
+   Alur: POST renlap -> baris 'antre' + workflow_dispatch -> workflow membuat PDF dan data.json di R2 sippa/renlap/<id>/ lalu memanggil POST .../selesai dengan
+   x-renlap-kunci = HMAC-SHA256(RENLAP_KUNCI, renlap_id). Versi HP: token 36 heks dibagikan SEKALI di fragmen (#t=), hanya sha256-nya disimpan. */
+const RE_TOKEN_RENLAP = /^[0-9a-f]{36}$/;
+const KEPALA_RENLAP = {"cache-control": "no-store", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow"};
+const CSP_RENLAP = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+const kunciRenlap = id => `sippa/renlap/${id}/`;
+const KOLOM_RENLAP = "id, kompleks_ids, prov, status, pdf_kunci IS NOT NULL AS ada_pdf, data_kunci IS NOT NULL AS ada_data, oleh, waktu, selesai, galat, dummy";
+const ringkasRenlap = r => ({...r, kompleks_ids: urai(r.kompleks_ids, []), ada_pdf: !!r.ada_pdf, ada_data: !!r.ada_data});
+async function hmacHex(kunci, pesan) {
+  const k = await crypto.subtle.importKey("raw", new TextEncoder().encode(kunci), {name: "HMAC", hash: "SHA-256"}, false, ["sign"]);
+  return [...new Uint8Array(await crypto.subtle.sign("HMAC", k, new TextEncoder().encode(pesan)))].map(x => x.toString(16).padStart(2, "0")).join("");
+}
+const samaTetap = (x, y) => { if (x.length !== y.length) return false; let d = 0; for (let i = 0; i < x.length; i++) d |= x.charCodeAt(i) ^ y.charCodeAt(i); return d === 0; };
+/* tebakan salah dihitung per IP: hitungan di memori isolat dicek DULU (IP yang sudah melewati batas ditolak tanpa menyentuh D1); D1 laju hanya cadangan lintas isolat.
+   ponytail: memori per isolat, tidak dibagi antar isolat; WAF rate limit di Cloudflare untuk /api/renlap/data dan /api/sippa/renlap/<id>/selesai menutup celahnya. */
+const TOLAK_MEM = new Map(), BATAS_TOLAK = 120;
+const kunciTolak = async (env, req) => env.IP_SALT ? await ipHash(env, req) : null;
+function terkunciMem(ip, kini) {
+  const e = ip && TOLAK_MEM.get(ip);
+  if (e && e.sampai <= kini) { TOLAK_MEM.delete(ip); return false; }
+  return !!e && e.n >= BATAS_TOLAK;
+}
+const lajuTolak = () => gagal(429, "terlalu banyak percobaan salah; coba lagi sejam lagi", {"retry-after": "3600"});
+async function tolakRenlap(env, req, kini, status = 404, ip) {
+  ip = ip ?? await kunciTolak(env, req);
+  if (ip) {
+    const e = TOLAK_MEM.get(ip);
+    if (e && e.sampai > kini) e.n++; else { if (TOLAK_MEM.size > 5000) for (const [k, v] of TOLAK_MEM) if (v.sampai <= kini) TOLAK_MEM.delete(k); TOLAK_MEM.set(ip, {n: 1, sampai: kini + JAM}); }
+    if (TOLAK_MEM.get(ip).n >= BATAS_TOLAK) return lajuTolak();
+    const l = await laju(env, ip, "renlap.gagal", [[JAM, BATAS_TOLAK]], kini); if (l) return l;
+  }
+  return gagal(status, "tautan renlap tidak berlaku");
+}
+async function picuRenlap(env, id, ids) {
+  if (!env.GITHUB_TOKEN) return {ok: false, pesan: "mesin belum disambungkan"};
+  try {
+    const r = await fetch(`https://api.github.com/repos/${REPO_RENLAP}/actions/workflows/renlap.yml/dispatches`, {method: "POST", signal: AbortSignal.timeout(8000),
+      headers: {authorization: `Bearer ${env.GITHUB_TOKEN}`, accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", "user-agent": "sippa-renlap", "content-type": "application/json"},
+      body: JSON.stringify({ref: "main", inputs: {renlap_id: id, kompleks_ids: ids.join(",")}})});
+    r.body?.cancel().catch(() => {});
+    return r.status === 204 ? {ok: true} : {ok: false, pesan: `pemicu mesin ditolak (HTTP ${r.status})`};
+  } catch (e) { return {ok: false, pesan: "pemicu mesin tidak terjangkau"}; }
+}
+async function renlapBuat(env, req, url, kini) {
+  const a = await akses(env, req, "W"); if (a.res) return a.res;
+  const l = await batasJam(env, a.oleh, "sippa.renlap", 20, kini); if (l) return l;
+  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat); const ids = b.o.kompleks_ids;
+  if (!Array.isArray(ids) || ids.length < 1 || ids.length > 10 || !ids.every(k => typeof k === "string" && RE_KOMPLEKS.test(k))) return gagal(400, "kompleks_ids harus larik 1 sampai 10 id seperti K0001");
+  const unik = [...new Set(ids)];
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const o = await env.MEDIA.get("sippa/kelayakan_kompleks.json"); let peta = new Map();
+  if (o?.size) try { peta = new Map((await o.json()).kompleks.map(k => [k.id, k.prov])); } catch (e) { /* data rusak = semua tidak ditemukan */ } else o?.body?.cancel().catch(() => {});
+  const provs = unik.map(k => peta.get(k));   // provinsi SELALU dari data kelayakan di server
+  if (provs.some(p => !p || !RE_PROV.test(p) || !dalam(req, p))) return tdk("kompleks tidak ditemukan");   // tidak ada dan di luar wilayah: satu jawaban identik
+  if (new Set(provs).size !== 1) return gagal(400, "semua kompleks dalam satu renlap harus satu provinsi");
+  const id = acak(8), token = acak(18), dm = dummyStaf(req, a.oleh), prov = provs[0];
+  await env.DB.batch([env.DB.prepare("INSERT INTO sippa_renlap (id, kompleks_ids, prov, status, token_hp_sha, oleh, waktu, dummy) VALUES (?, ?, ?, 'antre', ?, ?, ?, ?)").bind(id, JSON.stringify(unik), prov, await sha(token), a.oleh, kini, dm),
+    jejakStmt(env, a.oleh, "sippa_renlap:" + id, "renlap", unik.join(",").slice(0, 80), null, kini, dm)]);
+  const p = await picuRenlap(env, id, unik);
+  if (!p.ok) await env.DB.prepare("UPDATE sippa_renlap SET galat = ? WHERE id = ? AND status = 'antre'").bind(p.pesan, id).run();
+  const r = await env.DB.prepare(`SELECT ${KOLOM_RENLAP} FROM sippa_renlap WHERE id = ?`).bind(id).first();
+  return json({renlap: ringkasRenlap(r), token, hp: `/renlap#t=${token}&id=${id}`, ...(p.ok ? {} : {pesan: p.pesan})}, 201);   // token ditampilkan sekali; tidak bisa dibaca lagi
+}
+async function renlapDaftar(env, req, url) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const s = saringProv(req, "prov");
+  const r = await env.DB.prepare(`SELECT ${KOLOM_RENLAP} FROM sippa_renlap WHERE dummy <= ?${s.sql} ORDER BY waktu DESC, rowid DESC LIMIT 200`).bind(lihatDummy(req), ...s.p).all();
+  return json({renlap: r.results.filter(x => dalam(req, x.prov)).map(ringkasRenlap)});
+}
+async function renlapPdf(env, req, url, kini, ctx, id) {
+  const a = await akses(env, req, "B"); if (a.res) return a.res;
+  const r = await env.DB.prepare("SELECT prov, status, pdf_kunci FROM sippa_renlap WHERE id = ? AND dummy <= ?").bind(id, lihatDummy(req)).first();
+  if (!r || !dalam(req, r.prov)) return tdk("renlap tidak ada");
+  if (r.status !== "siap" || !r.pdf_kunci) return gagal(409, "renlap belum siap");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const o = await env.MEDIA.get(r.pdf_kunci); if (!o) return tdk("renlap tidak ada");
+  return new Response(o.body, {headers: {"content-type": "application/pdf", "content-disposition": `inline; filename="renlap-${id}.pdf"`, "cache-control": "private, no-store", "x-content-type-options": "nosniff"}});
+}
+/* dipanggil workflow (bukan orang): HMAC atas renlap_id dengan RENLAP_KUNCI; status jalan, siap, atau gagal */
+async function renlapSelesai(env, req, url, kini, ctx, id) {
+  if (!env.RENLAP_KUNCI) return gagal(503, "RENLAP_KUNCI belum dipasang");
+  const ip = await kunciTolak(env, req); if (terkunciMem(ip, kini)) return lajuTolak();
+  /* anti-replay: x-renlap-waktu = detik epoch UTC, x-renlap-kunci = hex HMAC-SHA256(RENLAP_KUNCI, `${renlap_id}|${waktu}`); selisih jam paling lama 300 detik */
+  const k = (req.headers.get("x-renlap-kunci") || "").toLowerCase(), wt = req.headers.get("x-renlap-waktu") || "";
+  const waktuOK = /^\d{9,12}$/.test(wt) && Math.abs(kini / 1000 - Number(wt)) <= 300;
+  const hmacSah = samaTetap(k, await hmacHex(env.RENLAP_KUNCI, `${id}|${wt}`));   // dihitung selalu: waktu konstan
+  if (!waktuOK || !hmacSah) return tolakRenlap(env, req, kini, 403, ip);
+  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat); const o = b.o;
+  if (!["jalan", "siap", "gagal"].includes(o.status)) return gagal(400, "status harus jalan, siap, atau gagal");
+  const galat = o.galat == null ? null : teksOK(o.galat, 0, 300); if (galat === undefined) return gagal(400, "galat paling banyak 300 karakter");
+  const r = await env.DB.prepare("SELECT status FROM sippa_renlap WHERE id = ?").bind(id).first(); if (!r) return tdk("renlap tidak ada");
+  if (r.status === "siap" || r.status === "gagal") return gagal(409, "renlap sudah selesai");
+  if (o.status === "jalan") { const l = await batasJam(env, "renlap:" + id, "renlap.jalan", 10, kini); if (l) return l; }   // pesan 'jalan' berulang (replay atau workflow macet) dibatasi per id
+  let pdf = null, data = null;
+  if (o.status === "siap") {   // kunci R2 dibentuk server dari id; siap hanya bila kedua berkas benar-benar ada
+    if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+    const [p, d] = await Promise.all([env.MEDIA.head(kunciRenlap(id) + "renlap.pdf"), env.MEDIA.head(kunciRenlap(id) + "data.json")]);
+    if (!p?.size || !d?.size) return gagal(409, "renlap.pdf dan data.json belum ada di R2");
+    pdf = kunciRenlap(id) + "renlap.pdf"; data = kunciRenlap(id) + "data.json";
+  }
+  const u = await env.DB.prepare("UPDATE sippa_renlap SET status = ?, pdf_kunci = ?, data_kunci = ?, galat = ?, selesai = ? WHERE id = ? AND status IN ('antre', 'jalan')")
+    .bind(o.status, pdf, data, o.status === "gagal" ? galat || "gagal tanpa keterangan" : null, o.status === "jalan" ? null : kini, id).run();
+  if (!u.meta.changes) return gagal(409, "renlap sudah selesai");
+  return json({renlap: ringkasRenlap(await env.DB.prepare(`SELECT ${KOLOM_RENLAP} FROM sippa_renlap WHERE id = ?`).bind(id).first())});
+}
+/* halaman HP: statis, token di fragmen; data.json hanya lewat header x-renlap-token */
+async function renlapHalaman(env, req, url) {
+  const r = await env.ASSETS.fetch(new Request(new URL("/renlap.html", url)));
+  if (!r.ok) { r.body?.cancel(); return gagal(404, "halaman renlap tidak ada"); }
+  return new Response(req.method === "HEAD" ? null : r.body, {headers: {"content-type": "text/html; charset=utf-8", ...KEPALA_RENLAP, "content-security-policy": CSP_RENLAP}});
+}
+async function renlapData(env, req, url, kini) {
+  const ip = await kunciTolak(env, req); if (terkunciMem(ip, kini)) return lajuTolak();   // IP yang sudah melewati batas: tanpa D1
+  const id = url.searchParams.get("id") || "", t = req.headers.get("x-renlap-token") || "";
+  if (!RE_ID.test(id) || !RE_TOKEN_RENLAP.test(t)) return tolakRenlap(env, req, kini, 404, ip);
+  const r = await env.DB.prepare("SELECT status, data_kunci, token_hp_sha FROM sippa_renlap WHERE id = ?").bind(id).first();
+  if (!r || !samaTetap(await sha(t), r.token_hp_sha)) return tolakRenlap(env, req, kini, 404, ip);   // id tak ada dan token salah: badan identik
+  if (r.status !== "siap" || !r.data_kunci) return new Response(JSON.stringify({galat: "renlap belum siap", status: r.status}), {status: 409, headers: {"content-type": "application/json; charset=utf-8", ...KEPALA_RENLAP}});
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const o = await env.MEDIA.get(r.data_kunci); if (!o) return gagal(404, "data renlap tidak ada");
+  return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", ...KEPALA_RENLAP}});
+}
+
 /* ================================================================ tabel rute (digabung ke RUTE di src/worker.js; kunci dibaca gerbang.test.mjs, jadi tiap rute API satu baris literal) */
 const hal = layar => (env, req, url) => halaman(env, req, url, layar);
 const API = Object.fromEntries(Object.entries({
@@ -1738,6 +1939,13 @@ const API = Object.fromEntries(Object.entries({
   "GET /api/sippa/pelihara.csv": peliharaCsv,
   "GET /api/sippa/stok": stokDaftar,
   "POST /api/sippa/stok": stokBuat,
+  "GET /api/sippa/anggaran": anggaranBaca,
+  "POST /api/sippa/anggaran/realisasi": anggaranTulis,
+  "POST /api/sippa/anggaran/buka": anggaranBuka,
+  "POST /api/sippa/renlap": renlapBuat,
+  "GET /api/sippa/renlap": renlapDaftar,
+  "GET /api/sippa/renlap/:id/pdf": renlapPdf,
+  "POST /api/sippa/renlap/:id/selesai": renlapSelesai,
   "POST /api/sippa/dummy/isi": dummyIsi,
   "POST /api/sippa/dummy/hapus": dummyHapus,
 }).map(([k, f]) => [k, bungkusSippa(f)]));
@@ -1748,5 +1956,8 @@ export const RUTE_SIPPA = {
   "GET /pipa/aset/:id": hal("aset"),
   "GET /pipa/lapangan": () => halamanLapangan(),
   "GET /admin/pipa": () => alihkan("/pipa"),
+  "GET /renlap": renlapHalaman,
+  "HEAD /renlap": renlapHalaman,
+  "GET /api/renlap/data": renlapData,
   ...API,
 };

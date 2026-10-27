@@ -10,7 +10,10 @@ import {memuat, galat} from "./keadaan.js";
 import {ikon} from "./ikon.js";
 import {ringkasDepot, kesiapanHtml, muatRincian, kitTerpotong} from "./kesiapan.js";
 import {peringkat, keputusanHariIni, teksWhatsApp} from "./keputusan.js";
-import {kartuLapangan, muatButir, awalHariWIB, muatGayaLapangan} from "./lapangan_staf.js";
+import {hitungGerbang, kartuGerbangHtml} from "./bukti.js";
+import {ringkasAb} from "./layar_ab.js";
+import {barisProbe} from "./layar_laporan.js";
+import {kartuLapangan, muatButir, awalHariWIB, muatGayaLapangan, ambilTeks} from "./lapangan_staf.js";
 
 export const JALUR = {keputusan: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", pemicu: "/api/sippa/data/pemicu", pilot: "/api/sippa/log", zona: "/api/sippa/data/zona", gerak: "/api/sippa/ringkas", alarm: "/api/sippa/alarm?aktif=1"};
 export const TAUTAN = {kit: "/pipa/kit", pemicu: "/pipa/pemicu", pilot: "/pipa/log", zona: "/pipa/peta"};
@@ -268,5 +271,19 @@ export async function pasang(akar, konteks) {
   };
   /* tiap kartu mendarat begitu datanya datang (tidak menunggu yang lain); ulangi hanya kartu itu */
   const jalankan = k => bungkus(muat[k]).then(h => pasangSlot(k, h, bangun[k], () => { slot(k).replaceChildren(memuat()); jalankan(k); }));
+  /* SP-145 butir 42 dan 43: kartu untuk pimpinan, gerbang dihitung ulang tiap layar dibuka; gagal memuat = kartu tidak tampil (bukan baris menunggu) */
+  const muatGerbang = async () => {
+    try {
+      const q = new URLSearchParams({sejak: kini - 365 * 864e5, sampai: kini});
+      const [logJ, probeT, abJ] = await Promise.all([ambil(`/api/sippa/log?${q}`), ambilTeks(`/api/sippa/probe.csv?${q}`, sinyal), ambil("/api/sippa/ab").catch(e => { if (e?.name === "AbortError") throw e; return {petak: [], unggah: []}; })]);
+      if (sinyal.aborted) return;
+      const petak = (abJ.petak || []).filter(p => !(p.dummy === 1 || p.dummy === true) && (p.prov == null || p.prov === prov));
+      const g = hitungGerbang({log: barisKoreksi(logJ.log || []).filter(l => l.prov == null || l.prov === prov), probe: barisProbe(probeT), ab: ringkasAb(petak, {unggah: abJ.unggah || []})});
+      const w = akar.querySelector("#sp-gerbang"); if (!w) return;
+      w.innerHTML = Kartu.kartu("Gerbang", esc("Apa yang sudah lulus, apa yang belum"), kartuGerbangHtml(g, Date.now()), "log, probe, dan A/B SIPPA"); w.hidden = false;
+    } catch (e) { if (e?.name !== "AbortError" && e?.status == null) console.error(e); }
+  };
+  akar.insertAdjacentHTML("beforeend", `<div id="sp-gerbang" hidden></div>`);
+  nanti(muatGerbang);
   await Promise.all(Object.keys(muat).map(jalankan));
 }

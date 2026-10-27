@@ -9,6 +9,9 @@ import {pratinjauHtml, buatPdf, siapkanBahan} from "./laporan_pdf.js";
 import {barisKoreksi} from "./layar_log.js";
 import {memuat, kosong, galat, menunggu} from "./keadaan.js";
 import {tanggalHtml, pasangTanggal} from "./tanggal.js";
+import {awalLaporan, anggaranHtml, formRealisasiHtml, cekRealisasi, badanRealisasi, cekBuka, badanBuka} from "./bukti.js";
+import {daftarRenlapHtml} from "./renlap.js";
+import {kirimPost, bukaDialog, tutupDialog, peranKlien} from "./layar_kit.js";
 
 const ID16 = /^[0-9a-f]{16}$/;
 export const PER_HAL = 50;
@@ -151,15 +154,16 @@ export async function pasang(akar, konteks) {
   lepas(); ctrl = new AbortController();
   const sinyal = ctrl.signal, bisaArsip = bolehArsip(document.body?.dataset);
   await muatGaya();
+  const awal = awalLaporan(location.search);   // tautan Meja Pantau: ?jenis=mingguan&minggu=YYYY-Www membuka laporan mingguan minggu itu
   const PROV = globalThis.Wilayah?.PROV || {"62": "Kalimantan Tengah"};
   akar.innerHTML = `<div class="sp-lap-kepala"><h1 class="sp-judul">Laporan</h1></div>
     <div class="sp-lap-kisi">
       <section class="sp-lk sp-lap-form" aria-labelledby="sp-lap-fh"><header class="sp-lk-hd"><span class="ad-ey">Buat laporan</span><div><h3 id="sp-lap-fh">PDF dari data SIPPA, dibuat di perangkatmu</h3></div></header>
         <div class="sp-lk-bd"><form class="sp-form" novalidate>
-          <label>Jenis laporan<select name="jenis">${JENIS_LAPORAN.map(([k, n]) => `<option value="${k}">${esc(n)}</option>`).join("")}</select></label>
+          <label>Jenis laporan<select name="jenis">${JENIS_LAPORAN.map(([k, n]) => `<option value="${k}"${k === awal?.jenis ? " selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
           <label data-jenis="kejadian" hidden>Sesi gelar<select name="sesi" aria-describedby="sp-lap-sb"></select><span class="sp-bantu" id="sp-lap-sb">Satu sesi gelar dalam rentang dan provinsi yang dipilih.</span></label>
           <label>Provinsi<select name="prov">${Object.entries(PROV).map(([k, n]) => `<option value="${esc(k)}"${k === konteks.prov ? " selected" : ""}>${esc(n)}</option>`).join("")}</select></label>
-          <div class="sp-lap-tgl"><label>Dari${tanggalHtml({nama: "dari", label: "Dari", nilai: RENTANG_PILOT.dari})}</label><label>Sampai${tanggalHtml({nama: "sampai", label: "Sampai", nilai: RENTANG_PILOT.sampai})}</label></div>
+          <div class="sp-lap-tgl"><label>Dari${tanggalHtml({nama: "dari", label: "Dari", nilai: awal?.dari ?? RENTANG_PILOT.dari})}</label><label>Sampai${tanggalHtml({nama: "sampai", label: "Sampai", nilai: awal?.sampai ?? RENTANG_PILOT.sampai})}</label></div>
           <label>Kendala di lapangan<textarea name="kendala" rows="3" maxlength="${MAKS_KENDALA * MAKS_KENDALA_PANJANG}" aria-describedby="sp-lap-kb"></textarea><span class="sp-bantu" id="sp-lap-kb">Satu kendala per baris, paling banyak ${fmt(MAKS_KENDALA)}. Boleh dikosongkan.</span></label>
           <label class="sp-cek"><input type="checkbox" name="arsip"${bisaArsip ? " checked" : " disabled"}> Arsipkan salinan di server</label>
           ${bisaArsip ? "" : `<p class="ad-spanduk" role="status">Akunmu hanya bisa membaca arsip. PDF tetap bisa dibuat dan diunduh.</p>`}
@@ -171,6 +175,10 @@ export async function pasang(akar, konteks) {
         <div class="sp-lk-bd" id="sp-lap-arsip-isi"></div></section>
       <section class="sp-lk sp-lap-pra-kotak" aria-labelledby="sp-lap-ph"><header class="sp-lk-hd"><span class="ad-ey">Pratinjau isi</span><div><h3 id="sp-lap-ph">Isi laporan yang akan dibuat</h3></div></header>
         <div class="sp-lk-bd" id="sp-lap-pra-isi"></div></section>
+      <section class="sp-lk sp-lap-renlap" aria-labelledby="sp-lap-rh"><header class="sp-lk-hd"><span class="ad-ey">Renlap</span><div><h3 id="sp-lap-rh">Rencana lapangan per kompleks</h3></div></header>
+        <div class="sp-lk-bd" id="sp-lap-renlap-isi"></div></section>
+      <section class="sp-lk sp-lap-anggaran" aria-labelledby="sp-lap-gh"><header class="sp-lk-hd"><span class="ad-ey">Anggaran</span><div><h3 id="sp-lap-gh">Anggaran T0 sampai T4 dan sisa dana</h3></div></header>
+        <div class="sp-lk-bd" id="sp-lap-anggaran-isi"></div></section>
       <section class="sp-lk sp-lap-aoi" aria-labelledby="sp-lap-oh"><header class="sp-lk-hd"><span class="ad-ey">Gerbang G0</span><div><h3 id="sp-lap-oh">Calon AOI usulan</h3></div></header>
         <div class="sp-lk-bd" id="sp-lap-aoi-isi"></div></section>
     </div>`;
@@ -300,5 +308,46 @@ export async function pasang(akar, konteks) {
     if (p && !p.disabled && arsipIsi.contains(p)) { p.parentElement.querySelectorAll(".pgn-b").forEach(x => x.removeAttribute("aria-current")); p.setAttribute("aria-current", "page"); st.hal = +p.dataset.h; nanti(gambarArsip); }
   }, {signal: sinyal});
 
-  segarkanPra(); muatArsip();
+  /* ---- renlap (SP-140): daftar status, unduh PDF, salin tautan HP. Token tidak ada di daftar; tautan hanya muncul sekali saat dibuat. ---- */
+  const renlapIsi = akar.querySelector("#sp-lap-renlap-isi"), anggIsi = akar.querySelector("#sp-lap-anggaran-isi"), peran = peranKlien(document.body?.dataset);
+  async function muatRenlap() {
+    renlapIsi.replaceChildren(memuat());
+    try { const j = await konteks.ambil("/api/sippa/renlap", sinyal); if (!sinyal.aborted) renlapIsi.innerHTML = daftarRenlapHtml(j.renlap || [], {origin: location.origin}); }
+    catch (e) { if (e.name === "AbortError" || sinyal.aborted) return; if (e.status === 404) { renlapIsi.replaceChildren(menunggu("Renlap menunggu rute di server")); return; } if (e.status == null) console.error(e); renlapIsi.replaceChildren(galat(e.status ?? 0, e.status == null ? "Renlap tidak bisa ditampilkan. Coba lagi." : e.status ? e.message : "Tidak bisa terhubung ke server.", muatRenlap)); }
+  }
+  /* ---- anggaran (SP-145 butir 50) ---- */
+  let anggaran = null;
+  async function muatAnggaran() {
+    anggIsi.replaceChildren(memuat());
+    try { anggaran = await konteks.ambil("/api/sippa/anggaran", sinyal); if (!sinyal.aborted) anggIsi.innerHTML = anggaranHtml(anggaran, peran, Date.now()); }
+    catch (e) { if (e.name === "AbortError" || sinyal.aborted) return; if (e.status === 404) { anggIsi.replaceChildren(menunggu("Anggaran menunggu rute di server")); return; } if (e.status == null) console.error(e); anggIsi.replaceChildren(galat(e.status ?? 0, e.status == null ? "Anggaran tidak bisa ditampilkan. Coba lagi." : e.status ? e.message : "Tidak bisa terhubung ke server.", muatAnggaran)); }
+  }
+  const dialogForm = (judul, html, cek, badan, url, ok) => {
+    const w = document.createElement("div"); w.innerHTML = html; bukaDialog(judul, w);
+    const form = w.querySelector("form"), galatSlot = form.querySelector(".sp-galat-slot"), kirim = form.querySelector("button[type=submit]");
+    form.addEventListener("submit", async e => {
+      e.preventDefault(); if (kirim.disabled) return;
+      const n = Object.fromEntries(new FormData(form)), salah = cek(n);
+      if (salah.length) { galatSlot.replaceChildren(kotakGalat(salah.map(s => s.alasan))); return; }
+      kirim.disabled = true; kirim.setAttribute("aria-busy", "true"); galatSlot.replaceChildren();
+      try { await kirimPost(url, badan(n)); tutupDialog(); konteks.pesan?.(ok); muatAnggaran(); }
+      catch (er) { galatSlot.replaceChildren(kotakGalat([er.message])); kirim.disabled = false; kirim.removeAttribute("aria-busy"); }
+    });
+  };
+  akar.addEventListener("click", async e => {
+    const salin = e.target.closest("[data-salin-renlap]");
+    if (salin) { salin.textContent = "Menyalin"; try { await navigator.clipboard.writeText(salin.dataset.salinRenlap); salin.textContent = "Tautan HP tersalin"; } catch { salin.textContent = "Salin gagal; izinkan papan klip"; } return; }
+    if (e.target.closest("[data-realisasi]") && anggaran) {
+      pasangTanggal();
+      dialogForm("Catat realisasi anggaran", formRealisasiHtml(anggaran.tingkat, new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10)), n => cekRealisasi(n, anggaran.tingkat), badanRealisasi, "/api/sippa/anggaran/realisasi", "Realisasi tercatat.");
+      return;
+    }
+    const bk = e.target.closest("[data-buka-anggaran]");
+    if (bk) {
+      const t = bk.dataset.bukaAnggaran;
+      dialogForm(`Buka gembok ${t}`, `<form class="sp-form" novalidate><input type="hidden" name="tingkat" value="${esc(t)}"><label>Bukti gerbang lulus<textarea name="gerbang_bukti" rows="3" maxlength="500"></textarea></label><div class="sp-galat-slot" role="alert"></div><div class="sp-aksi"><button type="submit" class="ad-tombol utama">Buka gembok</button></div></form>`, cekBuka, badanBuka, "/api/sippa/anggaran/buka", `${t} dibuka.`);
+    }
+  }, {signal: sinyal});
+
+  segarkanPra(); muatArsip(); muatRenlap(); muatAnggaran();
 }

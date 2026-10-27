@@ -10,9 +10,10 @@ import {buatKonteks, lampuTitik, propsTitik, titikDariProps, popupTitik, legenda
 import {ikon} from "./ikon.js";
 import {KOSONG_GEO, LAPISAN_LAP, geoLapangan, lapisanLapangan, legendaLapanganHtml, debitHtml, muatButir, muatGayaLapangan} from "./lapangan_staf.js";
 import {JENIS_BRGM, LAPISAN_BRGM, kotakProv, geoBrgm, lapisanBrgm, namaGambarBrgm, legendaBrgmHtml, brgmBaris, airAsinTeks} from "./brgm.js";
+import {cekRenlap, badanRenlap, ubahPilihan, hasilBuatHtml, MAKS_RENLAP} from "./renlap.js";
 import {tombolKeputusan, badanKeputusan, PUTUSAN, BATAS_ALASAN} from "./keputusan.js";
 
-export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", sel: "/api/sippa/data/kelayakan_sel", zona: "/api/sippa/data/zona", cek: "/api/sippa/jalan-cek", aoi: "/api/sippa/aoi", prioritas: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", log: "/api/sippa/log?jenis=karhutla", brgm: "/api/sippa/data/brgm_pembasahan", keputusan: "/api/sippa/keputusan"};
+export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", sel: "/api/sippa/data/kelayakan_sel", zona: "/api/sippa/data/zona", cek: "/api/sippa/jalan-cek", aoi: "/api/sippa/aoi", prioritas: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", log: "/api/sippa/log?jenis=karhutla", brgm: "/api/sippa/data/brgm_pembasahan", keputusan: "/api/sippa/keputusan", renlap: "/api/sippa/renlap"};
 
 /* warna hex setara token PRD §9.4.2 (MapLibre tidak membaca var(--ok)); pola dan huruf membawa makna, warna saja tidak cukup (keputusan 52, DS §2.1.5) */
 export const ZONA_META = {
@@ -288,10 +289,11 @@ const KOLOM_DAFTAR = [["zona", "Zona", true], ["id", "Kompleks", true], ["kab", 
 export function tabelDaftarHtml(rows, versi, cek, st = {}) {
   if (!rows.length) return `<p class="ad-kosong">Tidak ada kompleks yang cocok dengan saringan.</p>`;
   const aktif = st.urut || "zona", arah = st.turun ? "descending" : "ascending";
-  const kepala = KOLOM_DAFTAR.map(([k, n]) => `<th scope="col"${aktif === k ? ` aria-sort="${arah}"` : ""}${["air", "jalan", "terbakar"].includes(k) ? ' class="n"' : ""}><button type="button" data-k="${k}" aria-label="Urutkan menurut ${esc(n)}">${esc(n)}<i>${aktif === k ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("");
+  const pilihBanyak = st.renlap instanceof Set;
+  const kepala = (pilihBanyak ? `<th scope="col"><span class="sr">Pilih untuk renlap</span></th>` : "") + KOLOM_DAFTAR.map(([k, n]) => `<th scope="col"${aktif === k ? ` aria-sort="${arah}"` : ""}${["air", "jalan", "terbakar"].includes(k) ? ' class="n"' : ""}><button type="button" data-k="${k}" aria-label="Urutkan menurut ${esc(n)}">${esc(n)}<i>${aktif === k ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("");
   const isi = rows.map(k => {
     const j = jarakVersi(k, versi, cek), z = zonaVersi(k, versi, cek), td = (l, v, hp, n) => `<td${n ? ' class="n"' : ""} data-label="${l}"${hp ? " data-hp" : ""}>${v}</td>`;
-    return `<tr class="sp-klik">${td("Zona", `<span class="sp-yakin zona-pil z-${z}">${polaSvg(z)}${z}</span>`, true)}${td("Kompleks", `<button type="button" class="sp-baris-id" data-id="${esc(k.id)}">${esc(k.id)}</button>`, true)}${td("Kabupaten", esc(k.kab ?? "–"), true)}${td("Air (km)", esc(km(j.air)), true, true)}${td("Jalan (km)", j.jalan == null ? "tanpa jalan" : esc(km(j.jalan)), true, true)}${td("Terbakar (tahun)", esc(ang(k.terbakar_n_2km)), false, true)}${td("GSW", esc(NAMA_GSW[k.gsw] ?? BELUM), false)}</tr>`;
+    return `<tr class="sp-klik">${pilihBanyak ? td("Pilih", `<input type="checkbox" data-renlap="${esc(k.id)}" aria-label="Pilih ${esc(k.id)} untuk renlap"${st.renlap.has(k.id) ? " checked" : ""}>`, true) : ""}${td("Zona", `<span class="sp-yakin zona-pil z-${z}">${polaSvg(z)}${z}</span>`, true)}${td("Kompleks", `<button type="button" class="sp-baris-id" data-id="${esc(k.id)}">${esc(k.id)}</button>`, true)}${td("Kabupaten", esc(k.kab ?? "–"), true)}${td("Air (km)", esc(km(j.air)), true, true)}${td("Jalan (km)", j.jalan == null ? "tanpa jalan" : esc(km(j.jalan)), true, true)}${td("Terbakar (tahun)", esc(ang(k.terbakar_n_2km)), false, true)}${td("GSW", esc(NAMA_GSW[k.gsw] ?? BELUM), false)}</tr>`;
   }).join("");
   return `<div class="ad-tabel-wadah sp-daftar-peta"><table class="ad-tabel"><caption class="sr">Daftar kompleks menurut zona ${esc(NAMA_VERSI[versi] ?? versi)}</caption><thead><tr>${kepala}</tr></thead><tbody>${isi}</tbody></table></div>`;
 }
@@ -482,7 +484,7 @@ export async function pasang(akar, konteks) {
   }
   function gambarLegenda() {
     const jumlah = st.versi === "v" ? hitungPerZona(semua, "v", cek) : (() => { const b = dataZ && barisZona(dataZ, prov, st.versi); return b || hitungPerZona(semua, st.versi, cek); })();
-    q("#sp-leg-badan").innerHTML = legendaHtml(jumlah, {per: dataK.per, versi: st.versi, gelap: sebagaiGelap(), lampu: !!ctxLampu, brgm: !!q('[data-lapisan="brgm"]')?.checked, bakarAda}) + (geoLapK.features.length && q('[data-lapisan="lapangan"]')?.checked ? legendaLapanganHtml() : "");
+    q("#sp-leg-badan").innerHTML = legendaHtml(jumlah, {per: dataK.per, versi: st.versi, gelap: sebagaiGelap(), lampu: !!ctxLampu, brgm: !!q('[data-lapisan="brgm"]')?.checked, bakarAda}) + (geoLapK.features.length && q('[data-lapisan="lapangan"]')?.checked ? legendaLapanganHtml() + (tulis ? "" : `<p class="sp-leg-sumber">lokasi dibulatkan ±1 km untuk peran baca</p>`) : "");
   }
   function gambarRincian() {
     const wad = q(".sp-panel-rincian"), k = st.pilih && peKomp[st.pilih];
@@ -490,7 +492,7 @@ export async function pasang(akar, konteks) {
     const c = cek[k.id];
     q(".sp-peta-panel").dataset.pilih = "1";   // di ponsel rincian naik ke atas lembar
     wad.innerHTML =`${rincianKompleks(k, cek, st.versi, {per: dataK.per, log: logGelar})}${butirLapUntuk === k.id ? debitHtml(butirLap) : ""}${saranHtml(k, st.versi, st.api, c)}
-      <div class="sp-aksi-panel"><button type="button" class="ad-tombol" data-aksi="cek" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Catat cek jalan</button><button type="button" class="ad-tombol" data-aksi="aoi" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Usulkan sebagai calon AOI</button>${tombolKeputusan(k, tulis)}</div>${tulis ? "" : `<p class="ad-catat">Mencatat cek jalan, putusan, dan mengusulkan AOI butuh peran tulis.</p>`}
+      <div class="sp-aksi-panel"><button type="button" class="ad-tombol" data-aksi="cek" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Catat cek jalan</button><button type="button" class="ad-tombol" data-aksi="renlap" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Buat renlap</button><button type="button" class="ad-tombol" data-aksi="aoi" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Usulkan sebagai calon AOI</button>${tombolKeputusan(k, tulis)}</div>${tulis ? "" : `<p class="ad-catat">Mencatat cek jalan, putusan, dan mengusulkan AOI butuh peran tulis.</p>`}
       ${c ? `<p class="ad-catat">Cek jalan musim hujan terakhir: ${esc(c.hasil)} (${esc(jamWIB(c.waktu))}).</p>` : ""}`;
   }
   gambarPanel(); gambarLegenda(); gambarRincian();
@@ -560,6 +562,8 @@ export async function pasang(akar, konteks) {
   }
   /* SP-110: BRGM dimuat malas, hanya saat sakelar pertama kali dinyalakan; disaring ke kotak provinsi aktif dalam nanti() */
   const TEKS_BRGM = "Memuat lapisan BRGM";
+  /* INP: pita "Memuat" tampil seketika di handler change (urgent); muatBrgm sendiri jalan sesudah satu frame */
+  const pitaBrgm = nyala => { if (nyala && !brgmMuat) { pita.hidden = false; pita.textContent = TEKS_BRGM; } };
   function muatBrgm() {
     if (brgmMuat) return; brgmMuat = true; pita.hidden = false; pita.textContent = TEKS_BRGM;
     ambilSekali(konteks, JALUR.brgm, sinyal).then(d => nanti(() => {
@@ -639,10 +643,25 @@ export async function pasang(akar, konteks) {
   }
 
   /* ---------- daftar kompleks (dialog) ---------- */
+  /* SP-140: renlap dari kompleks terpilih. Token dan tautan HP hanya ada di balasan buat, jadi langsung ditampilkan dengan peringatan simpan. */
+  async function buatRenlap(daftarId) {
+    const g = cekRenlap(daftarId); if (g.length) { konteks.pesan?.(g[0].alasan); return; }
+    const isiD = document.createElement("div"); isiD.textContent = "Membuat renlap";
+    bukaDialog("Buat renlap", isiD);
+    isiD.addEventListener("click", async e => {
+      const b = e.target.closest("[data-salin-renlap]"); if (!b) return;
+      b.textContent = "Menyalin";
+      try { await navigator.clipboard.writeText(b.dataset.salinRenlap); b.textContent = "Tersalin"; } catch { b.textContent = "Salin gagal; salin dari kotak"; }
+    });
+    try { isiD.innerHTML = hasilBuatHtml(await kirimPost(JALUR.renlap, badanRenlap(daftarId)), location.origin); }
+    catch (x) { isiD.textContent = x.message || "Renlap gagal dibuat. Coba lagi."; }
+  }
   function bukaDaftar() {
-    const s = {urut: null, turun: false, hal: 0}, isi = document.createElement("div"), kepala = document.createElement("p");
+    const s = {urut: null, turun: false, hal: 0, renlap: tulis ? new Set() : undefined}, isi = document.createElement("div"), kepala = document.createElement("p");
     kepala.className = "ad-catat"; isi.append(kepala);
-    const tubuh = document.createElement("div"), nav = document.createElement("div"); isi.append(tubuh, nav);
+    const tubuh = document.createElement("div"), nav = document.createElement("div"), bar = document.createElement("div"); isi.append(tubuh, nav);
+    if (tulis) { bar.className = "sp-aksi"; bar.innerHTML = `<button type="button" class="ad-tombol" data-renlap-buat disabled>Buat renlap</button>`; isi.append(bar); }
+    const segarBar = () => { const b = bar.querySelector("button"); if (!b) return; b.disabled = !s.renlap.size; b.textContent = s.renlap.size ? `Buat renlap (${fmt(s.renlap.size)} dari maks ${fmt(MAKS_RENLAP)} dipilih)` : "Buat renlap"; };
     const gambar = () => {
       const ada = new Set(ids), urut = urutDaftar(semua.filter(k => ada.has(k.id)), st.versi, cek, s.urut, s.turun), hal = potong(urut, s.hal);
       kepala.textContent = `${fmt(urut.length)} dari ${fmt(semua.length)} kompleks menurut saringan peta, zona versi ${NAMA_VERSI[st.versi]}.`;
@@ -650,10 +669,17 @@ export async function pasang(akar, konteks) {
     };
     gambar();
     const d = bukaDialog("Daftar kompleks", isi); d.classList.add("sp-dialog-daftar");
+    d.addEventListener("change", e => {
+      const c = e.target.closest("[data-renlap]"); if (!c) return;
+      const r = ubahPilihan(s.renlap, c.dataset.renlap, c.checked);
+      if (r.penuh) { c.checked = false; konteks.pesan?.(`Paling banyak ${fmt(MAKS_RENLAP)} kompleks per renlap.`); return; }
+      s.renlap = r.set; segarBar();
+    });
     d.addEventListener("click", e => {
       const u = e.target.closest("th button[data-k]"), h = e.target.closest(".pgn-b"), b = e.target.closest(".sp-baris-id");
       if (u) { const k = u.dataset.k; s.turun = s.urut === k ? !s.turun : false; s.urut = k; s.hal = 0; u.closest("tr").querySelectorAll("th").forEach(t => { const on = t.contains(u); on ? t.setAttribute("aria-sort", s.turun ? "descending" : "ascending") : t.removeAttribute("aria-sort"); t.querySelector("i").textContent = on ? (s.turun ? "↓" : "↑") : ""; }); nanti(gambar); }
       else if (h && !h.disabled) { s.hal = Number(h.dataset.h); h.setAttribute("aria-current", "page"); nanti(gambar); }
+      else if (e.target.closest("[data-renlap-buat]")) { const ids = [...s.renlap]; nanti(() => buatRenlap(ids)); }
       else if (b) { d.close(); pilih(b.dataset.id, {terbang: true}); }
     });
   }
@@ -726,6 +752,7 @@ export async function pasang(akar, konteks) {
       else if (a === "lembar") aturLembar(tinggiLembar[(tinggiLembar.indexOf(q(".sp-lembar").dataset.tinggi) + 1) % 3]);
       else if (a === "cek" && k && tulis) dialogCek(k);
       else if (a === "putusan" && k && tulis) dialogKeputusan(k);
+      else if (a === "renlap" && k && tulis) nanti(() => buatRenlap([k.id]));
       else if (a === "aoi" && k && tulis) dialogAoi(k.id, `kompleks ${k.id}`);
       else if (a === "hitung" && !(e.metaKey || e.ctrlKey || e.shiftKey || e.button)) { e.preventDefault(); history.pushState(null, "", aksi.getAttribute("href")); dispatchEvent(new PopStateEvent("popstate")); }
     }
@@ -736,7 +763,7 @@ export async function pasang(akar, konteks) {
     else if (t.matches('[data-saring="bakar"]')) { st.bakar = Number(t.value) || 0; nanti(terapkanSaringan); }
     else if (t.matches("[data-api]")) { st.api = t.checked; const k = peKomp[st.pilih], c = k && cek[k.id]; if (k) nanti(() => { const s = q(".sp-saran"); if (s) s.outerHTML = saranHtml(k, st.versi, st.api, c); }); }
     else if (t.matches("[data-lapisan]")) {
-      if (t.dataset.lapisan === "brgm") { if (t.checked) nanti(muatBrgm); nanti(gambarLegenda); }
+      if (t.dataset.lapisan === "brgm") { pitaBrgm(t.checked); if (t.checked) nanti(muatBrgm); nanti(gambarLegenda); }
       nanti(terapkanSatuan);
     }
   });

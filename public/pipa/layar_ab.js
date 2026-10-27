@@ -6,6 +6,8 @@ import {vonisG4, vonisPilot, KONST} from "./hitung.js";
 import {peranKlien} from "./layar_kit.js";
 import {bahanPilot, barisProbe, RENTANG_PILOT} from "./layar_laporan.js";
 import {memuat, kosong, galat, menunggu} from "./keadaan.js";
+import {abLapangan, abLapanganHtml} from "./bukti.js";
+import {barisKoreksi} from "./layar_log.js";
 
 /* ---------- konstanta: sama dengan CHECK dan pemeriksa server (src/sippa.js KOLOM_AB, LENGAN) ---------- */
 export const LENGAN_AB = [["konvensional", "Konvensional"], ["lance", "Lance"], ["lance_surfaktan", "Lance + surfaktan"], ["sekat_rewetting", "Sekat kanal atau rewetting"], ["lance_dalam", "Lance dalam"]];
@@ -320,15 +322,26 @@ export async function pasang(akar, konteks) {
     konteks.setPer?.(per);
     if (!(st.d.petak || []).length) { isi.replaceChildren(kosong("Belum ada petak A/B. Unggah CSV petak dari lapangan untuk melihat perbandingan lengan.")); return; }
     const banner = ring.dummy ? `<p class="ad-spanduk" role="status">Sebagian baris adalah data dummy Super Admin, bukan hasil lapangan.</p>` : "";
-    isi.innerHTML = banner + `<div id="sp-ab-pilot"></div><section class="sp-kisi sp-kisi-ab" aria-label="Vonis G4 per lengan">${ring.lengan.map(kartuLenganHtml).join("")}</section>`
+    isi.innerHTML = banner + `<div id="sp-ab-pilot"></div><div id="sp-ab-lap"></div><section class="sp-kisi sp-kisi-ab" aria-label="Vonis G4 per lengan">${ring.lengan.map(kartuLenganHtml).join("")}</section>`
       + `<article class="ex"><header class="ex-hd"><span class="ex-ey">Efikasi</span><div class="ex-jd"><h3>Ha dingin terverifikasi 30 hari per regu-hari, per lengan</h3></div></header><div class="ex-bd">${grafikTitikHtml(ring)}</div>`
       + `<footer class="ex-ft"><em>Sumber: SIPPA D1 (sippa_petak), per ${esc(per == null ? "–" : jamWIB(per))}; ${ring.lengan.some(l => l.keyakinan === "hipotesis") ? "hipotesis" : "ditinjau evaluator"}, bukan bukti efektivitas</em></footer></article>`
       + `<div class="sp-dua"><article class="ex"><header class="ex-hd"><span class="ex-ey">Nyala ulang</span><div class="ex-jd"><h3>Nyala ulang 7, 30, dan 90 hari per lengan</h3></div></header><div class="ex-bd">${grafikBatangHtml(ring)}</div></article>`
       + `<section class="sp-panel-pel" aria-labelledby="sp-ab-th"><h2 class="sp-sub-judul" id="sp-ab-th">Ringkasan per lengan</h2>${tabelLenganHtml(ring, per)}</section></div>` + daftarUnggahHtml(st.d.unggah || [], peran);
     if (st.pilot) isiPilot();
+    isiLap();
   };
   let terjadwal = false;
   const jadwalkan = () => { if (terjadwal) return; terjadwal = true; nanti(() => { terjadwal = false; gambar(); }); };
+  const isiLap = () => { const t = isi.querySelector("#sp-ab-lap"); if (t && st.lap) t.innerHTML = `<section class="sp-panel-pel" aria-labelledby="sp-ab-lh"><h2 class="sp-sub-judul" id="sp-ab-lh">A/B dari data lapangan: lance (L) lawan semprot (K)</h2>${abLapanganHtml(st.lap, st.per)}</section>`; };
+  /* SP-145 butir 41: suhu tanah sebelum, sesudah, dan besok per petak dari probe dan log form lapangan (365 hari terakhir) */
+  async function muatLap() {
+    const q = new URLSearchParams({sejak: Date.now() - 365 * 864e5, sampai: Date.now()});
+    try {
+      const [logJ, probeT] = await Promise.all([konteks.ambil(`/api/sippa/log?${q}`, sinyal), getTeks(`/api/sippa/probe.csv?${q}`, sinyal)]);
+      if (sinyal.aborted) return;
+      st.lap = abLapangan({probe: barisProbe(probeT).filter(p => p.petak_id), log: barisKoreksi(logJ.log || []), petak: st.d?.petak || []}); isiLap();
+    } catch (e) { if (e.name === "AbortError" || sinyal.aborted) return; const t = isi.querySelector("#sp-ab-lap"); if (t) t.replaceChildren(menunggu("A/B dari lapangan belum bisa dihitung: probe dan log tidak termuat")); }
+  }
   const isiPilot = () => { const t = isi.querySelector("#sp-ab-pilot"); if (t && st.pilot) t.innerHTML = kartuPilotHtml(st.pilot, st.per); };
 
   /* vonis pilot: log, probe, komponen dari API yang sama dengan Laporan; gagal tidak menjatuhkan layar A/B (kartu diganti pil menunggu) */
@@ -354,7 +367,7 @@ export async function pasang(akar, konteks) {
       if (ac.signal.aborted) return;
       st.d = d; st.per = Date.now();
       const nilai = selAoi.value; selAoi.replaceChildren(new Option("Semua AOI", "")); for (const a of daftarAoi(d.petak || [])) selAoi.append(new Option(a, a)); selAoi.value = daftarAoi(d.petak || []).includes(nilai) ? nilai : ""; st.aoi = selAoi.value || null;
-      gambar(); if (!st.pilotDicoba) { st.pilotDicoba = true; nanti(muatPilot); }
+      gambar(); if (!st.pilotDicoba) { st.pilotDicoba = true; nanti(muatPilot); nanti(muatLap); }
     } catch (e) { if (ac.signal.aborted) return; if (e.status == null) console.error(e); isi.replaceChildren(galat(e.status ?? 0, e.status == null ? "Layar tidak bisa ditampilkan. Coba lagi." : e.status ? e.message : "Tidak bisa terhubung ke server.", () => muat())); }
   };
 

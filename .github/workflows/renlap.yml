@@ -1,0 +1,71 @@
+name: Renlap Generator
+
+# Rencana lapangan (PDF + data.json untuk halaman HP) untuk kompleks pilihan. Dipicu manual oleh worker (SP-140, butir 11).
+# Keluaran: R2 poskokarhutla-foto/sippa/renlap/<renlap_id>/{renlap.pdf,data.json,img/*}, lalu lapor ke centurisk97.id (jalan, siap, atau gagal).
+on:
+  workflow_dispatch:
+    inputs:
+      renlap_id:
+        description: "id renlap (huruf, angka, - dan _; paling banyak 64)"
+        required: true
+      kompleks_ids:
+        description: "id kompleks dipisah koma, paling banyak 10 (contoh K0166,K0128)"
+        required: true
+
+concurrency:
+  group: renlap-${{ inputs.renlap_id }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  renlap:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    env:
+      RENLAP_ID: ${{ inputs.renlap_id }}
+      KOMPLEKS_IDS: ${{ inputs.kompleks_ids }}
+      RENLAP_KUNCI: ${{ secrets.RENLAP_KUNCI }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Periksa masukan
+        run: |
+          echo "$RENLAP_ID" | grep -Eq '^[A-Za-z0-9_-]{1,64}$' || { echo "renlap_id tidak sah"; exit 1; }
+          python3 scripts/data/sippa/pilot/renlap.py uji
+
+      - name: Lapor jalan
+        run: python3 scripts/data/sippa/pilot/lapor.py "$RENLAP_ID" jalan
+
+      - name: Pasang Pillow
+        run: pip install Pillow
+
+      - name: Bangun renlap
+        run: |
+          which google-chrome
+          python3 scripts/data/sippa/pilot/renlap.py "$KOMPLEKS_IDS" --out "$RUNNER_TEMP/renlap"
+
+      - name: Unggah ke R2
+        run: |
+          set -e
+          d="$RUNNER_TEMP/renlap/keluaran"; p="poskokarhutla-foto/sippa/renlap/$RENLAP_ID"
+          npx --yes wrangler@4.42.0 r2 object put "$p/renlap.pdf" --file "$d/renlap.pdf" --content-type application/pdf --remote
+          for f in "$d"/img/*; do
+            npx --yes wrangler@4.42.0 r2 object put "$p/img/$(basename "$f")" --file "$f" --content-type image/jpeg --remote
+          done
+          # data.json terakhir: jadi penanda unggahan lengkap; server memeriksa renlap.pdf dan data.json ada sebelum menerima "siap"
+          npx --yes wrangler@4.42.0 r2 object put "$p/data.json" --file "$d/data.json" --content-type application/json --remote
+
+      - name: Lapor siap
+        run: python3 scripts/data/sippa/pilot/lapor.py "$RENLAP_ID" siap
+
+      - name: Lapor gagal
+        if: failure()
+        run: python3 scripts/data/sippa/pilot/lapor.py "$RENLAP_ID" gagal "renlap gagal di GitHub Actions, lihat log run ${{ github.run_id }}"
