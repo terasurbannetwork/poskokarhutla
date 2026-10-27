@@ -131,21 +131,50 @@ def cocok_harian(nama, tgl):
     return f".{ymd}." in nama and nama.endswith(".dat.gz") and not re.search(ymd + r"\.\d{4}\.", nama)
 
 
+def isi_folder(f, folder, cache):
+    """NLST bercache; folder tak ada dibalas JAXA dengan 450 (error_temp) atau 550 (error_perm): keduanya = kosong."""
+    if folder not in cache:
+        try:
+            cache[folder] = [os.path.basename(n.rstrip("/")) for n in f.nlst(folder)]
+        except (ftplib.error_perm, ftplib.error_temp):
+            cache[folder] = []
+    return cache[folder]
+
+
+def cari_harian(f, folder, tgl, cache, kedalaman=3):
+    """Jelajah susunan folder yang belum diketahui (diverifikasi 27 Okt: bukan YYYY/MM/DD). Hanya masuk ke anak yang
+    cocok dengan tanggal ini (YYYY, MM, DD, YYYYMM, YYYYMMDD) atau anak tanpa pola tanggal (mis. 00Z-23Z), jadi tidak
+    pernah menyapu folder tanggal lain. -> daftar jalur berkas harian tgl."""
+    isi = isi_folder(f, folder, cache)
+    c = [f"{folder}/{n}" for n in isi if cocok_harian(n, tgl)]
+    if c or kedalaman == 0:
+        return c
+    cocok_tgl = {f"{tgl:%Y}", f"{tgl:%m}", f"{tgl:%d}", f"{tgl:%Y%m}", f"{tgl:%Y%m%d}"}
+    anak = [n for n in isi if n in cocok_tgl] + sorted((n for n in isi if "." not in n and not re.fullmatch(r"\d+", n)),
+                                                      key=lambda n: ("00Z-23Z" not in n, n))
+    for n in anak:
+        c = cari_harian(f, f"{folder}/{n}", tgl, cache, kedalaman - 1)
+        if c:
+            return c
+    return []
+
+
 def berkas_tanggal(f, produk, tgl, cache):
-    """-> (nama_produk, jalur, jendela) dari produk pertama yang punya berkas harian tgl; folder dicoba YYYY/MM/DD, YYYY/MM, YYYY."""
+    """-> (nama_produk, jalur, jendela) dari produk pertama yang punya berkas harian tgl."""
     for nama, dasar in produk:
-        for folder in (f"{dasar}/{tgl:%Y/%m/%d}", f"{dasar}/{tgl:%Y/%m}", f"{dasar}/{tgl:%Y}"):
-            if folder not in cache:
-                try:
-                    cache[folder] = f.nlst(folder)
-                except ftplib.error_perm:  # 550 folder tak ada / kosong
-                    cache[folder] = []
-            c = sorted(n for n in cache[folder] if cocok_harian(os.path.basename(n), tgl))
-            if c:
-                c.sort(key=lambda n: ("0000_2300" not in n and "0000_2359" not in n, n))
-                m = re.search(r"(\d{4})_(\d{4})", os.path.basename(c[0]))
-                return nama, c[0], (f"{m.group(1)}-{m.group(2)}" if m else "tanpa")
+        c = sorted(cari_harian(f, dasar, tgl, cache))
+        if c:
+            c.sort(key=lambda n: ("0000_2300" not in n and "0000_2359" not in n and "00Z-23Z" not in n, n))
+            m = re.search(r"(\d{2}Z-\d{2}Z|\d{4}_\d{4})", c[0])
+            return nama, c[0], (m.group(1).replace("_", "-") if m else "tanpa")
+    if not berkas_tanggal.dicetak:   # sekali per run: susunan folder nyata untuk log Actions bila tak ada yang cocok
+        berkas_tanggal.dicetak = True
+        for _, dasar in produk:
+            print(f"  susunan {dasar}: {cache.get(dasar, [])[:30]}", file=sys.stderr)
     return None, None, None
+
+
+berkas_tanggal.dicetak = False
 
 
 def unduh_batas(f, jalur, batas=BATAS_BYTE):
@@ -378,8 +407,9 @@ def uji_harian():
         return gzip.compress(struct.pack(f"<{NX * NY}f", *a))
     d1, d2, d3, d4 = (dt.date(2017, 1, i) for i in (1, 2, 3, 4))
     daftar = {"/standard/v8": ["/standard/v8/daily_G"],
+              "/standard/v8/daily_G": ["2016", "2017"], "/standard/v8/daily_G/2017": ["01", "02"],
               "/standard/v8/daily_G/2017/01/01": ["/standard/v8/daily_G/2017/01/01/gsmap_gauge.20170101.0000_2300.v8.dat.gz"],
-              "/standard/v8/daily_G/2017/01": ["/standard/v8/daily_G/2017/01/gsmap_gauge.20170102.dat.gz",
+              "/standard/v8/daily_G/2017/01": ["01", "/standard/v8/daily_G/2017/01/gsmap_gauge.20170102.dat.gz",
                                                "/standard/v8/daily_G/2017/01/gsmap_gauge.20170103.dat.gz"]}
     isi = {"/standard/v8/daily_G/2017/01/01/gsmap_gauge.20170101.0000_2300.v8.dat.gz": gz(1.0),
            "/standard/v8/daily_G/2017/01/gsmap_gauge.20170102.dat.gz": gz(0.5),
@@ -394,6 +424,16 @@ def uji_harian():
     finally:
         time.sleep = time_sleep
     assert n == 1 and data["hari"]["2017-01-02"] == ["lama"], (n, data["gagal"])
+    class Ftp450(FtpPalsu):
+        def nlst(self, folder):
+            if folder not in self.daftar:
+                raise ftplib.error_temp("450 No such file or directory")
+            return self.daftar[folder]
+    g = Ftp450({"/x": ["00Z-23Z", "2016"], "/x/00Z-23Z": ["201701", "201702"],
+                "/x/00Z-23Z/201701": ["gsmap_gauge.20170105.0.1d.daily.00Z-23Z.v8.0000.0.dat.gz"]}, {})
+    assert berkas_tanggal(g, [("gauge_v8", "/x")], dt.date(2017, 1, 5), {}) == \
+        ("gauge_v8", "/x/00Z-23Z/201701/gsmap_gauge.20170105.0.1d.daily.00Z-23Z.v8.0000.0.dat.gz", "00Z-23Z")
+    assert berkas_tanggal(g, [("gauge_v8", "/x")], dt.date(2017, 1, 6), {}) == (None, None, None)
     assert data["hari"]["2017-01-01"][1 * len(ci) + 2] == 24.0 and data["produk"]["2017-01-01"] == "gauge_v8"
     assert set(data["gagal"]) == {"2017-01-03", "2017-01-04"} and tersimpan and data["meta"]["jendela_utc"] == ["0000-2300"]
     # run kedua: hari 3 pulih, hari 2 tak disentuh

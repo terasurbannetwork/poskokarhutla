@@ -41,3 +41,17 @@
 .laci .pa-peng b{font-weight:700;color:var(--ink);line-height:1.35}
 .laci .tb2 tr:has(.pa-pil) td.n{white-space:nowrap!important}
 .tb.pa-baris>.pa-ba{justify-self:stretch!important;overflow:visible;width:100%}.tb.pa-baris>.pa-ang{justify-self:end!important;text-align:right!important}.tb.pa-baris>.pa-isi{justify-self:stretch!important;text-align:left!important}
+/* prakiraan 4 hari sebaris, tabel prakiraan: pil dan persen sebaris, kepala gelap rata tengah putih */
+.laci .grid.g4.pa-4{grid-template-columns:repeat(4,minmax(0,1fr));gap:6px}.laci .grid.g4.pa-4 .kpi{padding:8px 6px;min-width:0}
+.laci table.tb3 td small{display:inline;margin-left:5px}.laci table.tb3 td{vertical-align:middle}
+table.tb3 thead th{background:oklch(25.5% .075 256);color:#fff;text-align:center;font-weight:800;padding:6px 4px}table.tb3 thead th:first-child{border-radius:8px 0 0 8px}table.tb3 thead th:last-child{border-radius:0 8px 8px 0}
+/* pita BMKG (databaru.js menyisipkannya sesudah tombol Overlay): urutkan ke bawah panel Overlay, selebar panel itu */
+.tools .db-bmkg{order:99;width:100%;box-sizing:border-box;align-self:stretch}
+.tools #lapis{order:50}
+/* kotak ringkas kartu pos: empat kotak kecil sebaris */
+.laci .pa-kecil .kpi .lbl{font-size:9px;padding:3px 4px;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.laci .pa-kecil .kpi b{font-size:15px;line-height:1.2;white-space:nowrap}.laci .pa-kecil .kpi small{font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;display:block}
+.laci .pa-kecil .kpi .pill,.laci .pa-kecil .kpi .pa-pil{font-size:10px;padding:1px 6px;height:18px}
+.pa-ikbulat{display:grid;place-items:center;flex:none;width:38px;height:38px;border-radius:50%;background:#2b8c86;color:#fff}
+.pa-pk td{padding:4px 3px}
+.laci .grid.g4.pa-4 .kpi b{font-size:15px;white-space:nowrap}
