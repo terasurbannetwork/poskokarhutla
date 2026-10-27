@@ -60,6 +60,8 @@ jobs:
           for f in $(git ls-files 'public/data/kluster_hari/*.json'); do
             [[ "$(basename "$f" .json)" < "$kini" ]] && git checkout HEAD -- "$f"
           done; true
+          # arsip titik per hari dari CSV FIRMS standar (commit) menang atas salinan NRT di cache (scripts/data/titik_hari.py)
+          for f in $(git ls-files 'public/data/titik_hari/2*.json'); do git checkout HEAD -- "$f"; done; true
 
       # sekali jalan: musim_harian.json dibangun ulang (latar median; 25 Okt 2026: lokasi unik 4 satelit, titik_unik.py); cache data- lama
       # (latar atau definisi lain) tidak boleh menang. Cache yang sudah baru -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache baru.
@@ -85,6 +87,11 @@ jobs:
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python3 scripts/data/harian.py || { echo "::error title=harian.py gagal::FIRMS/BNPB tidak terjangkau; langkah lain lanjut dengan titik terakhir dari cache"; exit 1; }
+
+      # arsip titik per hari 2026 untuk kalender Tanggal lain di peta (scripts/data/titik_hari.py): hari utuh >= ambang dari hotspot.json
+      - name: Arsip titik panas per hari
+        continue-on-error: true
+        run: python3 scripts/data/titik_hari.py dari-hotspot
 
       - name: Kompleks x konsesi (perusahaan)
         run: python3 scripts/data/konsesi_kompleks.py
