@@ -385,7 +385,7 @@ jobs:
           npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/pemicu.json --file /tmp/sippa/pemicu.json --content-type application/json --remote
           if [ -f /tmp/sippa/prioritas.json ]; then npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/prioritas.json --file /tmp/sippa/prioritas.json --content-type application/json --remote; fi
           if [ "${{ github.event.inputs.sippa_tahunan }}" = "1" ]; then
-            for f in kelayakan_kompleks kelayakan_sel zona sel22 kit_nasional aoi_calon; do
+            for f in kelayakan_kompleks kelayakan_sel zona sel22 kit_nasional aoi_calon brgm_pembasahan; do
               if [ -f data/sippa/keluaran/$f.json ]; then
                 sha256sum data/sippa/keluaran/$f.json
                 npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/$f.json --file data/sippa/keluaran/$f.json --content-type application/json --remote

@@ -15,6 +15,7 @@ export function skor(p, zona) {
 /* putusan H-1: aturan pertama yang cocok menang (urutan = keselamatan dulu) */
 export function jalanTunda(p) {
   const b = p.besok;
+  if (p.darat == null) return {putusan: "tunda", alasan: "Waktu tempuh dari posko belum dihitung untuk provinsi ini; cek jalan sebelum mengirim kit."};
   if (!p.darat) return {putusan: "tunda", alasan: "Tidak terjangkau darat: jalan kaki lebih dari 5 km. Pertimbangkan udara."};
   if (b && b.angin_kmj >= AMBANG.angin_kmj) return {putusan: "tunda", alasan: `Angin ${angka(b.angin_kmj)} km/jam besok: asap dan percikan berbahaya bagi regu.`};
   if (b && b.hujan_mm >= AMBANG.hujan_mm) return {putusan: "tunda", alasan: `Hujan ${angka(b.hujan_mm, 1)} mm besok: bara bisa padam sendiri dan jalan licin.`};

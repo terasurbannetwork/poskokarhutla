@@ -524,7 +524,7 @@ async function logTulis(env, req, url, kini) {
 
 /* ================================================================ data turunan R2, ringkas, cek jalan, usul AOI (SP-029; DT §3.1, §4.3, §8.3) */
 /* nama tetap: hanya ini yang boleh dibaca dari R2 sippa/<nama>.json. Router worker.js meneruskan /api/sippa/data/<nama> apa adanya; nama lain = 404 tanpa menyentuh R2. */
-export const DATA_SIPPA = ["kelayakan_kompleks", "kelayakan_sel", "zona", "sel22", "kit_nasional", "pemicu", "aoi_calon", "akses_kompleks", "cat", "jembatan_dibi", "program_jembatan", "prioritas"];
+export const DATA_SIPPA = ["kelayakan_kompleks", "kelayakan_sel", "zona", "sel22", "kit_nasional", "pemicu", "aoi_calon", "akses_kompleks", "cat", "jembatan_dibi", "program_jembatan", "prioritas", "brgm_pembasahan"];
 const MAKS_BYTE = 8 * 1024 * 1024, SEGAR_DETIK = 300;   // sama dengan MAKS_BYTE src/risiko7.js; salinan boleh dipakai ulang peramban 5 menit, kecuali pemicu (harian, dipantau kesegarannya)
 async function dataBaca(env, req, url, kini, ctx, nama) {
   const a = await akses(env, req, "B"); if (a.res) return a.res;   // hak SEBELUM nama dan R2: tamu tak boleh tahu berkas ada atau tidak
