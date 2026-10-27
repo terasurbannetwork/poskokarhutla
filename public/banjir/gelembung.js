@@ -94,9 +94,8 @@
     /* hover lewat rAF: gerak mouse hanya menaruh permintaan terbaru; digambar sekali per frame */
     minta(fn, ev) { const baru = !this._p; this._p = {fn, ev}; if (!baru) return;
       requestAnimationFrame(() => { const p = this._p; this._p = null; if (p && PI) PI.tampilTip(p.fn(), p.ev); }); },
-    pos(kode) {
-      const D = PosUkur.D?.pos, f = S.geo.prov.features.find(x => x.properties.kode === kode); if (!D || !f) return null;
-      const dlm = PosAir.dalam(D, f.geometry); if (!dlm.length) return null; const r = PosAir.ringkas(dlm); return {naik: r.naik + r["Siaga 3"] + r["Siaga 2"] + r["Siaga 1"], total: dlm.length, mati: r.mati}; },
+    /* pos tinggi air provinsi dari agregat PosUkur.agg (dipetakan peta.js); null selama belum siap atau tanpa pos */
+    pos(kode) { const r = PosUkur.agg?.(kode); if (!r || !r.total) return null; return {naik: r["Siaga 3"] + r["Siaga 2"] + r["Siaga 1"], total: r.total, mati: r.mati}; },
     grafik(kode) {
       const s = seriProv(this.docs, kode); if (s.length < 2) return "";
       const v = s.map(x => x.n), N = v.length, W = 260, H = 46, m = Math.max(1, ...v), bw = W / N, ps = persenHarian(v), t = tren(v), vt = vonisTeks(t), pf = N <= 7 ? 9.5 : 8;
@@ -109,13 +108,13 @@
         <div class="tp-tr-x"><span>${tg(s[0].hari)}</span><span>kabupaten/kota Siaga atau Awas</span><span>${tg(s.at(-1).hari)}</span></div></div>`; },
     /* kartu hover: dihitung sekali per wilayah, hari, bahaya, dan versi data (cache), bukan tiap gerak mouse */
     hover(kunci) {
-      const ck = `${kunci}|${S.b}|${S.hari}|${this.versi}|${PosUkur.D ? 1 : 0}`, c = this.cache.get(ck); if (c) return c;
+      const ck = `${kunci}|${S.b}|${S.hari}|${this.versi}|${PosUkur.D ? 1 : 0}${PosUkur._agg?.size || 0}`, c = this.cache.get(ck); if (c) return c;
       const p = kunci.split("|"), prov = p.length === 1, a = this.ag?.[kunci], n = a ? a.s : 0, W = WARNA_LV, F = Wilayah.W?.file;
       const baris = prov ? F?.provinsi?.find(x => x.kode === kunci) : F?.provinsi?.find(x => x.kode === p[0])?.kab?.find(x => x.kode === kunci);
       const ps = prov ? this.pos(kunci) : null, rob = baris?.rob;
       const stat = [["bel", fmt(n), "kec. Siaga atau Awas", n ? W[a.n[3] ? 3 : 2] : "#8a94a6", n > 0], ["peringatan", baris?.kejadian_aktif == null ? "–" : fmt(baris.kejadian_aktif), "Wilayah Siaga", W[2]],
         ["hujan", baris?.hujan3_mm == null ? "–" : fmt(Math.round(baris.hujan3_mm)) + " mm", "hujan 3 hari", "#3f7fb8"],
-        ps ? ["sungai", fmt(ps.naik), `pos di atas normal${ps.mati ? `, ${fmt(ps.mati)} tak kirim` : ""}`, "#3f7fb8"] : ["ombak", rob == null ? "–" : fmt(rob), "titik rob", "#2b8c86"]];
+        ps ? ["sungai", fmt(ps.naik), `pos Siaga${ps.mati ? `, ${fmt(ps.mati)} tak kirim` : ""}`, ps.naik ? WARNA_LV[2] : "#3f7fb8", ps.naik > 0] : ["ombak", rob == null ? "–" : fmt(rob), "titik rob", "#2b8c86"]];
       const h = PI.kartuTip({judul: esc(prov ? namaProv(kunci) : p[1]), kepala: lambang(p[0], prov ? null : p[1]), stat}) + (prov ? this.grafik(kunci) : "");
       this.cache.set(ck, h); return h; },
     /* klik: kartu kecil berlambang di titik tengah wilayah */
@@ -129,11 +128,10 @@
         if (b.dataset.g === "zoom") nanti(() => turun(kunci));
         else nanti(() => { const g = prov && S.geo.prov.features.find(x => x.properties.kode === kunci)?.geometry; return prov && PosUkur.menyala() && PosUkur.D ? PosUkur.provinsi(kunci, g) : Analisa.wilayah(kunci); }); }); },
     tutup() { this._pop?.remove(); this._pop = null; },
-    /* dipanggil peta.on("click") sebelum poligon: gelembung atau provinsi (tingkat nasional) membuka kartu; true bila ditangani */
+    /* dipanggil peta.on("click") sebelum poligon: hanya gelembung yang membuka kartu Zoom/Rincian; klik provinsi (poligon) tetap membuka laci pos langsung (keputusan pemilik, peta.js); true bila ditangani */
     klik(e) {
       const h = peta.getLayer(PROV) && peta.queryRenderedFeatures(e.point, {layers: [PROV, KAB].filter(l => peta.getLayer(l))});
       if (h?.length) { const k = h[0].properties.kunci; this.kartu(k, h[0].geometry.coordinates.slice()); return true; }
-      if (S.jalur.length === 0) { const w = peta.queryRenderedFeatures(e.point, {layers: ["wil-fill"]}); if (w.length) { this.kartu(w[0].properties.kunci, e.lngLat); return true; } }
       return false; },
     legenda() {
       if (!this.ada || S.mode !== "status" || !Peta.lihat("wilayah")) return "";
