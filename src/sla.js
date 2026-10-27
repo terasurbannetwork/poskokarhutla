@@ -23,7 +23,8 @@ import {tenggat, PROV, tahanSejak, TAHAN_BUKAN_API} from "./instansi.js";
 import {labelBencana, bencanaId} from "./tugas_bencana.js";
 
 const MENIT = 60e3, JAM = 60 * MENIT, HARI = 24 * JAM, TARGET = {tugas_konfirmasi: 360, konfirmasi_kabar: 1440};   // = TENGGAT_KONFIRMASI / TENGGAT_KABAR di instansi.js
-const NAMA = {titik: "Titik panas", berita: "Berita", dampak: "Dampak", himawari: "Himawari-9", jeda_satelit: "Jeda satelit lewat sampai data terbit"};
+const NAMA = {titik: "Titik panas", berita: "Berita", dampak: "Dampak", himawari: "Himawari-9", jeda_satelit: "Jeda satelit lewat sampai data terbit",
+  jeda_sensor_M: "Jeda sensor MODIS (M) sampai putaran titik", jeda_sensor_N: "Jeda sensor S-NPP (N) sampai putaran titik", jeda_sensor_N20: "Jeda sensor NOAA-20 (N20) sampai putaran titik", jeda_sensor_N21: "Jeda sensor NOAA-21 (N21) sampai putaran titik"};
 /* urutan tahap; pasangan berurutan = tahap yang diukur */
 export const TAHAP = [["deteksi", "tugas"], ["tugas", "konfirmasi"], ["konfirmasi", "kabar"], ["konfirmasi", "tiba"], ["tiba", "padam"], ["padam", "terverifikasi"]];
 const kunciTahap = ([d, k]) => d === "deteksi" ? "deteksi_tugas" : `${d}_${k}`;
@@ -38,7 +39,10 @@ const bulat = x => x == null ? null : Math.round(x);
 
 /* ---------------- riwayat status (cron) ---------------- */
 export async function catatRiwayatStatus(env, hasil, kini = Date.now()) {
-  const slot = Math.floor(kini / JAM), st = Object.entries(hasil.sumber || {}).map(([nama, s]) =>
+  /* jeda_sensor = {M|N|N20|N21: {terakhir, umur_jam}} (bersarang): satu baris per sensor bernama jeda_sensor_<kode>; sensor tanpa umur (hilang, atau N sesudah berhenti 1 Nov 2026) tidak ditulis, seperti jeda_satelit yang tak ada */
+  const masuk = Object.entries(hasil.sumber || {}).flatMap(([nama, s]) => nama === "jeda_sensor"
+    ? Object.entries(s || {}).filter(([, v]) => v?.umur_jam != null).map(([k, v]) => [`jeda_sensor_${k}`, v]) : [[nama, s]]);
+  const slot = Math.floor(kini / JAM), st = masuk.map(([nama, s]) =>
     env.DB.prepare("INSERT OR REPLACE INTO status_riwayat (slot, sumber, umur_menit, batas_menit, segar) VALUES (?, ?, ?, ?, ?)")
       .bind(slot, nama.slice(0, 40), s.umur_jam == null ? null : Math.round(s.umur_jam * 60), s.ambang_jam == null ? null : Math.round(s.ambang_jam * 60), (hasil.basi || []).includes(nama) ? 0 : 1));   // periksaStatus membuang `basi` per sumber; daftarnya di hasil.basi
   if (!st.length) return {lewat: "tanpa sumber"};

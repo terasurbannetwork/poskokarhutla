@@ -4,7 +4,7 @@
    hanya lewat POST /:id/kontak yang dibatasi lajunya, dan dihapus cron setelah 72 jam. */
 import {himawariRespons} from "./himawari.js";
 import {JENIS, BAHAYA} from "../public/informasi_jenis.js";
-import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah} from "./titik.js";
+import {perbaruiTitik, titikTerbaru, wilayah, cariWilayah, jedaSensor} from "./titik.js";
 import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
@@ -488,7 +488,7 @@ async function umurSumber(env, url, kini, [jalur, ambang]) {
   const w = jalur === "/api/himawari" ? await himawariDibuat(env) : jalur.startsWith("/api/gempa/") ? await gempaDibuat(env) : jalur === "/api/cuaca/nowcast" ? await nowcastDibuat(env) : await dibuatAset(env, url, jalur), jam = w == null ? null : Math.round((kini - w) / JAM * 10) / 10;
   return {dibuat: w == null ? null : new Date(w).toISOString(), umur_jam: jam, ambang_jam: ambang, basi: ambang != null && (jam == null || jam > ambang)};
 }
-async function periksaStatus(env, url, kini) {
+export async function periksaStatus(env, url, kini) {   // diekspor untuk uji dengan jam buatan (tests/warga/jeda_sensor.test.mjs)
   const sumber = {}, uji = {}, basi = [];
   await Promise.all([
     ...SUMBER_STATUS.map(async ([nama, ...r]) => { const {basi: b, ...o} = await umurSumber(env, url, kini, r); sumber[nama] = o; if (b) basi.push(nama); }),
@@ -504,6 +504,12 @@ async function periksaStatus(env, url, kini) {
     const rs = (await env.DB.prepare("SELECT kunci, json_extract(isi, '$.ok') ok, json_extract(isi, '$.coba') coba, json_extract(isi, '$.galat') galat, dibuat FROM cuaca_sumber WHERE kunci IN ('sungai_dsda','sungai_tng')").all()).results;
     if (rs.length) { const g = rs.filter(r => r.galat).map(r => r.kunci.slice(7) + ": " + r.galat).join("; ").slice(0, 200);
       sumber.sungai_resmi = {dibuat: new Date(Math.max(...rs.map(r => r.coba ?? r.dibuat))).toISOString(), ok: rs.length === 2 && rs.every(r => r.ok != null && !r.galat), galat: g || null}; }
+  } catch (e) { /* tabel belum ada */ }
+  /* jeda per sensor (M, N, N20, N21): deteksi terbaru tiap sensor di putaran titik_terbaru terakhir sampai putaran itu dibuat, supaya telatnya satu satelit tak tersembunyi di balik
+     satelit lain yang tepat waktu (jeda_satelit di bawah hanya memakai deteksi terbaru dari semua sensor). Tanpa ambang: tidak memengaruhi `ok`. json_extract di D1, BUKAN JSON.parse isi putaran (<= 1,8 MB; batas CPU Free 10 ms). */
+  try {
+    const p = await env.DB.prepare("SELECT dibuat, json_extract(isi, '$.terakhir_sensor') ts, json_extract(isi, '$.galat') g FROM titik_terbaru ORDER BY id DESC LIMIT 1").first();   // g = galat putaran itu (<= 4 teks 80 karakter): sensor yang gagal ditarik diberi galat: true
+    const j = p?.ts == null ? null : jedaSensor(p.ts, p.dibuat, kini, p.g); if (j) sumber.jeda_sensor = j;
   } catch (e) { /* tabel belum ada */ }
   if (dib != null && lewat != null && dib >= lewat) sumber.jeda_satelit = {dibuat: new Date(lewat).toISOString(), umur_jam: Math.round((dib - lewat) / JAM * 10) / 10, ambang_jam: null};
   return {ok: !basi.length, basi: basi.sort(), kini: new Date(kini).toISOString(), sumber, uji};
@@ -690,8 +696,8 @@ async function layaniHTML(req, env, ctx, url) {
    Hanya dipanggil dari rute GET publik di fetch() (/api/warga daftar & konfig, /api/titik, /api/status); admin, POST, dan rute
    bercookie tidak pernah lewat sini. Kunci = URL dengan parameter diurutkan. Hanya 200 yang disimpan. Pemanggilan Worker tetap
    terhitung; yang dihemat bacaan D1 dan CPU. Respons keluar dengan Cache-Control public max-age=detik (peramban ikut menyimpan). */
-export async function cacheTepi(req, ctx, detik, buat) {
-  const u = new URL(req.url); u.searchParams.sort();
+export async function cacheTepi(req, ctx, detik, buat, tanpaQuery = false) {
+  const u = new URL(req.url); u.searchParams.sort(); if (tanpaQuery) u.search = "";   // tanpaQuery: rute yang jawabannya tak bergantung kueri (/api/status), supaya ?x=acak tak melewati cache
   const kunci = new Request(u.toString(), {method: "GET"}), c = globalThis.caches?.default;
   if (c) { const ada = await c.match(kunci); if (ada) return ada; }
   const r = await buat();
@@ -735,7 +741,7 @@ export default {
     if (url.pathname.startsWith("/api/banjir/")) { const b = await ruteSihka(req, env, ctx, url); if (b) return b; }   // sungai terukur SIHKA D1 (src/sihka.js)
     if (url.pathname.startsWith("/api/gempa/")) { const g = await layaniGempa(req, env, ctx, url); if (g) return g; }   // katalog gempa D1 (src/gempa.js)
     if (url.pathname.startsWith("/api/peringatan/") || url.pathname.startsWith("/api/admin/peringatan/")) { const p = await layaniPeringatan(req, env, ctx, url); if (p) return p; }   // peringatan dini (src/peringatan.js)
-    if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()));
+    if (url.pathname === "/api/status" && req.method === "GET") return cacheTepi(req, ctx, 60, () => status(env, url, Date.now()), true);
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
