@@ -340,7 +340,7 @@ def lapor(nama, y, rows, cols, kov, kamus, rng, nperm, mode="level"):
                 den = m1
             pct = lambda x: 100 * x / den
         z = {90: t_kuantil(df, .90), 95: t_kuantil(df, .95)}
-        p_perm = float((np.abs(perm[:, j]) >= abs(b[j]) - 1e-12).mean())
+        p_perm = float(((np.abs(perm[:, j]) >= abs(b[j]) - 1e-12).sum() + 1) / (len(perm) + 1))   # +1: p tak pernah 0
         sd = float(perm[:, j].std())
         mde = 2.8 * sd
         r = dict(b=float(b[j]), se=float(se[j]), df=df, persen=pct(b[j]), n_perlakuan=n1, n_kontrol=n0, rata_perlakuan=m1,
@@ -467,8 +467,23 @@ def eksplor(kabs, D, kontam, nb, hari, rng):
         z = t_kuantil(df, .95)
         conv = (lambda x: 100 * (math.exp(x) - 1)) if nama == "pm25_ln" else (lambda x: x)   # vis dalam meter, bukan persen
         res[nama] = dict(b=float(b[0]), persen=conv(b[0]), ci95=[conv(b[0] - z * se[0]), conv(b[0] + z * se[0])], n_stasiun=len({r["i"] for r in rows}),
-                         n_perlakuan=int(X.sum()), n_obs=len(rows), p_permutasi=float((np.abs(perm) >= abs(b[0])).mean()), mde_persen=conv(2.8 * sd))
+                         n_perlakuan=int(X.sum()), n_obs=len(rows), p_permutasi=float(((np.abs(perm) >= abs(b[0])).sum() + 1) / (len(perm) + 1)), mde_persen=conv(2.8 * sd))
     return res
+
+
+def cek_dummy():
+    """koefisien primer: proyeksi bergantian (resid) vs regresi dummy penuh (PRAREG 5) + IFS dry ice vs kontrol."""
+    kabs, sel, D, kontam, tak, hari, nb = bangun()
+    ki = np.unique([r["i"] for r in sel], return_inverse=True)[1]; ti = np.unique([r["h"] for r in sel], return_inverse=True)[1]
+    y = np.array([r["y"] for r in sel]); d = np.array([r["d"] for r in sel], "f8"); f = np.array([r["f"] for r in sel])
+    b = ols(y, np.column_stack([d, f]), ki, ti)[0]
+    X = np.column_stack([d, f, np.eye(ki.max() + 1)[ki], np.eye(ti.max() + 1)[ti][:, 1:]])
+    bd = np.linalg.lstsq(X, y, rcond=None)[0]
+    print("primer resid:", b[0], "dummy penuh:", bd[0], "selisih:", abs(b[0] - bd[0]), "| IFS:", b[1], bd[1])
+    dr = np.array([r["dry"] for r in sel]) > 0; nc = np.array([r["nacl"] for r in sel]) > 0
+    ctrl = d == 0
+    for nama, m in (("dry ice", dr), ("NaCl", nc), ("kontrol", ctrl)):
+        print(f"{nama}: n={m.sum()} IFS rata-rata {f[m].mean():.2f} mm, CHIRPS rata-rata {y[m].mean():.2f} mm")
 
 
 # ------------------------------------------------------------------ jendela jam (deskriptif, PRAREG 8)
@@ -529,4 +544,4 @@ def uji():
 
 if __name__ == "__main__":
     c = sys.argv[1] if len(sys.argv) > 1 else "uji"
-    {"uji": uji, "tarik": tarik, "analisis": analisis, "jendela": jendela}[c]()
+    {"uji": uji, "tarik": tarik, "analisis": analisis, "jendela": jendela, "cekdummy": cek_dummy}[c]()

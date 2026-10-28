@@ -32,7 +32,7 @@ Semua selang memuat 0: tidak terdeteksi. Persen anomali tidak dilaporkan (rata-r
 | NaCl | -8% | -109 sampai +94 | -130 sampai +115 | 0,87 | 128% | 103 |
 | Dry ice | -83% | -142 sampai -25 | -154 sampai -13 | 0,02 | 100% | 35 |
 
-Dry ice memberi koefisien negatif yang melewati batas, arah BERLAWANAN dengan harapan. Jangan dibaca sebagai "dry ice menurunkan hujan": rata-rata hujan di sel dry ice hanya 0,3 mm, operasi dry ice terpusat di Sumsel dan Kalsel pada hari-hari kering yang dipilih operator, dan kovariat IFS tidak menyerap seleksi itu. Ini satu dari dua uji bahan dan 1 dari belasan uji, tanpa koreksi; perlakukan sebagai kesesuaian berlawanan, bukan sebab.
+Dry ice memberi koefisien negatif yang melewati batas, arah BERLAWANAN dengan harapan. Jangan dibaca sebagai "dry ice menurunkan hujan". Dugaan seleksi hari/tempat kering, diuji pasca-hasil: prakiraan IFS rata-rata di sel dry ice 2,15 mm/hari (CHIRPS 0,32), di sel NaCl 3,38 (CHIRPS 1,84), di sel kontrol 7,95 (CHIRPS 5,48). Model yang tak tahu penyemaian pun memperkirakan sel dry ice jauh lebih kering, jadi dugaan seleksi didukung; ini uji pasca-hasil, bukan terdaftar. Ini satu dari dua uji bahan dan 1 dari belasan uji, tanpa koreksi; perlakukan sebagai kesesuaian berlawanan, bukan sebab.
 
 ## Per provinsi (eksploratori, Holm pada keluarga empat provinsi)
 
@@ -65,7 +65,7 @@ METAR IEM Banjarmasin/Banjarbaru (WAOO) 27 Okt, sortie 11.14 sampai 14.37 WITA p
 
 ## Keterbatasan
 
-1. Seleksi: sortie dilakukan di hari dan tempat yang dinilai berpotensi awan; ini menaikkan hujan di kelompok sasaran tanpa efek semai (arah bias positif), sementara hari kering untuk dry ice menurunkannya. Kovariat IFS hanya mengendalikan sebagian.
+1. Seleksi: arahnya tidak diketahui sebelumnya. Sel perlakuan ternyata lebih kering daripada kontrol bahkan menurut IFS (IFS: dry ice 2,15 dan NaCl 3,38 vs kontrol 7,95 mm/hari), sehingga seleksi di data ini cenderung ke tempat/hari kering, bukan berawan; kovariat IFS hanya mengendalikan sebagian.
 2. Sasaran tidak presisi: sortie lintas kab, penyemaian di hulu lalu hujan jatuh di hilir (NaCl, awan bergerak); label kab sasaran bukan kab tempat hujan jatuh. Penyangga tetangga mengurangi tetapi tidak menghapus spillover.
 3. Hujan di CHIRPS: resolusi 5 km, hari UTC (07 WIB sampai 07 WIB), kualitas satelit IR untuk hujan konvektif kecil terbatas; versi prelim.
 4. 25 Okt tanpa catatan dibuang; 26 dan 27 Okt (hari operasi terbanyak, 32 sortie) belum ada CHIRPS, jadi tidak ikut. Sortie sebelum 16 Okt tidak tercatat di rekap (dianggap baseline); Kaltim dikeluarkan (30 sortie tanpa periode).
@@ -79,6 +79,12 @@ METAR IEM Banjarmasin/Banjarbaru (WAOO) 27 Okt, sortie 11.14 sampai 14.37 WITA p
 - Plasebo ruang: 3 kab acak per hari (PRAREG tidak menetapkan jumlah).
 - Kolom D dengan kurang dari 3 sel perlakuan tidak dihitung (Lampung, "lain").
 - Jarak pandang dilaporkan dalam meter, bukan persen.
+- Estimator: PRAREG 5 menulis regresi dummy penuh; kode memakai proyeksi bergantian (`resid()`, algoritma FWL, perlu untuk 5.000 permutasi). Dibuktikan setara: koefisien primer proyeksi -0,5480545163821 vs dummy penuh -0,5480545163821 (selisih 6e-15, batas 1e-6); koefisien IFS juga sama (0,2081933928). `efek.py cekdummy`.
+- p permutasi dihitung (hitungan + 1) / (5.000 + 1), tidak pernah 0; dihitung ulang pasca-validasi.
+
+## Bukti urutan pra-registrasi
+
+PRAREG kini sudah di-commit bersama hasil (62b9cf95). Satu-satunya bukti bahwa PRAREG ditulis sebelum data hasil ditarik adalah waktu berkas (mtime): PRAREG 10:14:04, data hasil pertama 10:14:45 (28 Okt). Tidak ada commit terpisah atau cap waktu pihak ketiga; hash di PRAREG tidak membuktikan urutan sendiri.
 
 ## Verifikasi klaim hujan (tambahan)
 

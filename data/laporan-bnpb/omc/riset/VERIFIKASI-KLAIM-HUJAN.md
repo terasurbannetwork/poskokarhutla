@@ -4,7 +4,7 @@ Sumber hujan: CHIRPS-2.0 prelim harian 0,05 derajat (rata-rata sel dalam poligon
 
 Ringkasan: cocok 83, klaim nihil sesuai 2, klaim nihil tidak sesuai 1, lemah 14, tidak bisa dicek 45, tidak cocok 16
 
-Aturan: cocok bila rata-rata kab >= 1 mm atau METAR hujan; lemah 0,1 sampai 1 mm; tidak cocok < 0,1 mm dan METAR kering atau tanpa METAR. CHIRPS memiliki resolusi 5 km dan hari UTC, hujan sore di sebagian kecil kab dapat luput dari rata-rata. Satu kab = satu klaim.
+Aturan: cocok bila rata-rata kab >= 1 mm atau METAR hujan; lemah 0,1 sampai 1 mm; tidak cocok < 0,1 mm dan METAR kering atau tanpa METAR. Catatan: "cocok" hanya berarti ada hujan di kab itu pada hari itu, bukan bahwa OMC yang menyebabkannya; lihat kolom median normal 1-15 Okt. Asimetri METAR: METAR hujan di bandara dalam kab otomatis menaikkan vonis jadi cocok, tetapi METAR kering tidak menurunkannya (satu titik tak mewakili kab). Dari 111 klaim berhujan yang punya CHIRPS, 78 memiliki hujan di atas median normal 1-15 Okt kab itu; dari 81 yang berstatus cocok, 68 di atas median (sisanya hujan serupa hari-hari tanpa OMC, yang di banyak kab mediannya 0 mm). CHIRPS memiliki resolusi 5 km dan hari UTC, hujan sore di sebagian kecil kab dapat luput dari rata-rata. Satu kab = satu klaim.
 
 | Tanggal | Provinsi | Kab/kota | Rata (mm) | Maks sel | METAR | Median 1-15 Okt | Tetangga kontrol | Vonis |
 |---|---|---|---:|---:|---|---:|---:|---|
