@@ -1,0 +1,21 @@
+Sumber: teks WA ditempel pemilik 28 Okt 2026. Disalin bagian yang berguna untuk evaluasi OMC (PM2.5 BMKG, ISPU, lokasi kejadian). Laporan Dalkarhut ditempel 3 kali, isinya sama; tabel hotspot SiPongi hanya totalnya (angka hotspot di sistem kita tetap dari FIRMS kita sendiri).
+
+=== BMKG, PM2.5 tertinggi, Senin 26 Okt 2026 pukul 06.00 WIB (ug/m3) ===
+Pangkalanbun 668,5 (Berbahaya); Samarinda 504,5 (Berbahaya); Mempawah 392,4 (Berbahaya); Palangkaraya 235,1 (Sangat Tidak Sehat); Kubu Raya 97,0; Maros 88,8; Banjarbaru 73,9; Lore Lindu 65,7; Kotabaru 58,2; Sintang 55,0 (semua Tidak Sehat).
+
+=== BMKG, PM2.5 tertinggi, Senin 26 Okt 2026 pukul 18.00 WIB (ug/m3) ===
+Pangkalanbun 283,1 (Berbahaya); Palangkaraya 235,1 (Sangat Tidak Sehat); Kota Jambi 141,0; Muaro Jambi 111,3; Mempawah 96,4; Talang Betutu Palembang 78,6; Maros 78,2; Banjarbaru 74,2; Kubu Raya 68,0; Musi 2 Palembang 66,7 (semua Tidak Sehat).
+Prakiraan BMKG 27-29 Okt: Siaga hujan lebat-sangat lebat Sumut, Sumsel, Jabar, Jateng, DIY, Jatim.
+
+=== Laporan Ringkasan Operasi Dalkarhut, 26 Okt 2026 pukul 07.00 WIB ===
+Hotspot SiPongi 25 Okt 00.01 - 26 Okt 07.00 WIB (total per satelit dan confidence): Terra/Aqua tinggi 79, sedang 276, rendah 25; NOAA20 tinggi 25, sedang 3.185, rendah 64; SNPP tinggi 57, sedang 2.341, rendah 66.
+40 laporan kejadian di 7 provinsi (wilayah tertulis 9), 12 padam, 28 proses:
+Jambi 7: Sungai Abang/Sarolangun (padam); Simpang Datuk/Nipah Panjang/Tanjabtim 2 titik (proses); Rantau Rasau/Berbak/Tanjabtim (proses); Sungai Cemara/Sadu (proses); Labuhan Pering/Sadu (proses); TN Bukit Tiga Puluh Suo Suo/Sumay/Tebo (padam); Tanjung/Kumpeh/Muaro Jambi (proses).
+Sumsel 9: Air Itam Timur/Penukal/PALI (padam); Putak/Gelumbang (proses); Ujung Tanjung/Tulung Selapan/OKI (proses); Talang Rimba/Cengal/OKI (proses); Grid O26 Sebokor/Air Kumbang/Banyuasin (proses); Pangkalan Tungkal/Tungkal Jaya/Muba (proses); Karang Agung/Lalan/Muba (padam); Karang Agung/Lalan/Muba (proses); Riding/Pangkalan Lampam/OKI (proses).
+Kalbar 2: Natai Kuini/Kendawangan/Ketapang (padam); Air Hitam Besar/Kendawangan/Ketapang (proses).
+Kalteng 15: Tanjung Taruna/Jabiren Raya/Pulang Pisau 4 titik (proses); Sei Sekonyer Tanjung Harapan TNTP/Kumai/Kobar (proses); Kotawaringin Hulu/Kotawaringin Lama/Kobar (padam); Baamang Hulu/Baamang/Kotim (padam); Tangkiling/Bukit Batu/Palangka Raya (proses); TN Sebangau Sungai Koran/Kereng Bengkirai/Palangka Raya (proses); Marang/Bukit Batu/Palangka Raya (proses); Kelampangan/Sabangau/Palangka Raya 2 titik (proses); Kameloh Baru/Sebangau/Palangka Raya (proses); Kasongan Lama/Katingan Hilir/Katingan (proses); Gohong/Kahayan Hilir/Pulang Pisau (proses); KHDTK Tumbang Nusa/Jabiren/Pulang Pisau (proses); Jabiren/Jabiren Raya/Pulang Pisau (proses); Saka Kajang/Jabiren Raya/Pulang Pisau (proses); Tumbang Mangkutub dusun Tuanan/Mantangai/Kapuas (proses).
+Kalsel 3: Hutan Lindung Landasan Ulin Barat/Liang Anggang/Banjarbaru 2 titik (padam); Salikung/Muara Uya/Tabalong (proses); Sarigadung/Simpang Empat/Tanah Bumbu (padam).
+Kaltim 1: Sei Buntu/Sambaliung/Berau (padam). Sulsel 1: Baruga/Malili/Luwu Timur (padam). Sulteng 2: Hangira/Lore Tengah/Poso (padam); Berdikari/Palolo/Sigi (proses).
+Kumulatif 2026: 8.797 kejadian, 73.147,04 ha ditangani.
+
+ISPU (kategori): Sumut Medan 01/03 Sedang, Medan 02 Baik, Asahan Sedang. Riau Pelalawan, Siak Bunga Raya, Kampar Tidak Sehat; Bengkalis, Siak, Rokan Hilir Sedang. Jambi Muaro Jambi Sangat Tidak Sehat; Paal Lima, Tebo Tidak Sehat; Tanjabtim Sedang. Sumsel PALI, Musi Rawas Berbahaya; Prabumulih Sangat Tidak Sehat; Palembang Bukit Kecil, Lahat, Muara Enim, Muba Tidak Sehat; Ogan Ilir, OKU Selatan Sedang. Kalbar Pontianak Tenggara Sangat Tidak Sehat; Kubu Raya, Sintang Tidak Sehat; Sekadau, Bengkayang, Sambas Sedang. Kalteng Palangkaraya, Kapuas, Gunung Mas, Murung Raya, Barito Selatan, Kotim Berbahaya. Kalsel Barito Kuala, Banjarmasin, HSS, Tabalong Berbahaya; Banjar Sangat Tidak Sehat. Kaltim Kutai Barat Sangat Tidak Sehat; IKN (Wonotirto, Muara Jawa, Sanipah, Plaza Bhinneka), Balikpapan, PPU Tidak Sehat; Bontang, Plaza Seremoni Sedang.
