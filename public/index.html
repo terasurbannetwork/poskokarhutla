@@ -3116,7 +3116,7 @@ const Laci = {
     const el = $("#laci"); el.classList.add("on");
     const lipat = (judul, isi, buka = true) => `<details class="lipat" data-j="${judul}" ${buka ? "open" : ""}><summary>${judul}</summary><div class="isi">${isi}</div></details>`;
     const baris = (k, v) => `<tr><td>${k}</td><td class="n">${v}</td></tr>`;
-    const jamLalu = (Date.now() - new Date(p.akhir)) / 36e5, kunciKec = `${p.prov}|${p.kab}|${p.kec}`, rw = S.riw?.[kunciKec];
+    const wk = WaktuKluster.deteksi(p, S.meta.dibuat), kunciKec = `${p.prov}|${p.kab}|${p.kec}`, rw = S.riw?.[kunciKec];
     const vs = p.kmrn ? (p.ini >= p.kmrn ? "+" : "") + Math.round((p.ini / p.kmrn - 1) * 100) + "%" : p.ini ? "baru" : "–";
     const kelasDC = ["basah", "lembap", "kering", "sangat kering"][p.dc <= 140 ? 0 : p.dc <= 260 ? 1 : p.dc <= 350 ? 2 : 3];
     const riwayat = (() => { const v = rw ? rw.v : S.sejarah?.kec[kunciKec], th = rw ? Riwayat.th : S.sejarah?.tahun; if (!v || !th) return `<p class="fnd">Kecamatan ini tidak pernah mencapai 10 titik setahun dalam arsip.</p>`;
@@ -3138,8 +3138,8 @@ const Laci = {
       <div class="bd" style="display:grid;gap:10px">
       ${p.teramati ? "" : `<div class="sop" style="border-color:var(--ink2);margin:0"><b>Tidak terdeteksi ${fmt(p.jam_sejak)} jam terakhir.</b> Bisa sudah tidak menyala, bisa tertutup awan atau asap. ${p.dc > 350 ? "Gambut sangat kering (DC > 350): bara bawah permukaan mungkin masih menyala, wajib ground-check." : "Pastikan dengan ground-check sebelum dianggap tidak menyala."}</div>`}
       ${lipat("Api saat ini", `<div class="kv"><div><b>${fmt(p.px24)}</b><span>piksel aktif 24 jam</span></div><div><b>${fmt(p.hari)}</b><span>hari menyala</span></div><div><b>${vs}</b><span>deteksi vs kemarin</span></div></div>
-        <table class="tb2"><tbody>${baris("Luas indikatif" + (p.snpp_proksi > 0 ? `<small style="display:block;color:var(--ink2)" title="${fmt(p.snpp_proksi)} titik S-NPP warisan memakai ukuran piksel perkiraan; garis luar dan luas cluster ini perkiraan">luas perkiraan (ukuran piksel S-NPP diperkirakan)</small>` : ""), `${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`)}${baris("Deteksi VIIRS (7 hari)", fmt(p.n))}${baris("Daya radiasi api (FRP)", fmt(Math.round(p.frp)) + " MW")}
-          ${baris("Pertama terdeteksi", jamWIB(p.awal))}${baris("Terakhir terdeteksi", `${jamWIB(p.akhir)} · ${fmt(Math.round(jamLalu * 10) / 10)} jam lalu`)}</tbody></table>`)}
+        <table class="tb2"><tbody>${baris("Luas indikatif" + (p.snpp_proksi > 0 ? `<small style="display:block;color:var(--ink2)" title="${fmt(p.snpp_proksi)} titik S-NPP warisan memakai ukuran piksel perkiraan; garis luar dan luas cluster ini perkiraan">luas perkiraan (ukuran piksel S-NPP diperkirakan)</small>` : ""), `${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`)}${baris("Deteksi VIIRS (7 hari)", fmt(p.n))}${Number.isFinite(p.frp) ? baris("Daya radiasi api (FRP)", fmt(Math.round(p.frp)) + " MW") : ""}
+          ${baris("Pertama terdeteksi", wk.awal ? jamWIB(wk.awal) : WaktuKluster.TANPA)}${baris("Terakhir terdeteksi", wk.akhir ? `${jamWIB(wk.akhir)} · ${fmt(wk.lalu)} jam lalu${p.akhir ? "" : " (perkiraan dari data ringkas)"}` : WaktuKluster.TANPA)}</tbody></table>`)}
       ${lipat("Penjelasan status", (() => {
         /* dua bahan status: seberapa besar apinya + seberapa mendukung cuacanya; meteran bertingkat supaya terbaca orang awam */
         const meter = (n, isi, w) => `<span class="st-m">${Array.from({length: n}, (_, i) => `<i style="${i < isi ? `background:${w}` : ""}"></i>`).join("")}</span>`;
@@ -6829,6 +6829,7 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="lapisan5.js"></script>
 <link rel="stylesheet" href="banding.css">
 <link rel="stylesheet" href="cari.css">
+<script src="waktu_kluster.js"></script>
 <script src="angka_kawasan.js"></script>
 <script src="cari.js"></script>
 <link rel="stylesheet" href="timelapse.css">

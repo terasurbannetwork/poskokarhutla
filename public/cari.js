@@ -201,11 +201,11 @@
   function apiKawasan(KL, di) {
     let h = "";
     if (KL.length) { const j = k => KL.reduce((s, p) => s + (p[k] || 0), 0), ini = j("ini"), kmrn = j("kmrn"), luas = j("luas");
-      const awal = KL.reduce((m, p) => p.awal < m ? p.awal : m, KL[0].awal), akhir = KL.reduce((m, p) => p.akhir > m ? p.akhir : m, KL[0].akhir);
-      const vs = kmrn ? (ini >= kmrn ? "+" : "") + Math.round((ini / kmrn - 1) * 100) + "%" : ini ? "baru" : "–", lalu = Math.round((Date.now() - new Date(akhir)) / 36e5 * 10) / 10;
+      const wk = WaktuKluster.gabung(KL, S.meta.dibuat);
+      const vs = kmrn ? (ini >= kmrn ? "+" : "") + Math.round((ini / kmrn - 1) * 100) + "%" : ini ? "baru" : "–";
       h += lipat("Api saat ini", `<div class="kv"><div><b>${fmt(j("px24"))}</b><span>piksel aktif 24 jam</span></div><div><b>${fmt(Math.max(...KL.map(p => p.hari || 0)))}</b><span>hari menyala (terlama)</span></div><div><b>${vs}</b><span>deteksi vs kemarin</span></div></div>`
-        + tb2([["Luas indikatif", `${fmt(Math.round(luas * .3))}–${fmt(Math.round(luas))} ha`], ["Deteksi VIIRS (7 hari)", fmt(j("n"))], ["Daya radiasi api (FRP)", fmt(Math.round(j("frp"))) + " MW"],
-          ["Pertama terdeteksi", jamWIB(awal)], ["Terakhir terdeteksi", `${jamWIB(akhir)}, ${fmt(lalu)} jam lalu`]]) + `<p class="ck-n">Jumlah dari ${fmt(KL.length)} cluster di dalam batas.</p>`); }
+        + tb2([["Luas indikatif", `${fmt(Math.round(luas * .3))}–${fmt(Math.round(luas))} ha`], ["Deteksi VIIRS (7 hari)", fmt(j("n"))], ...(KL.some(p => Number.isFinite(p.frp)) ? [["Daya radiasi api (FRP)", fmt(Math.round(j("frp"))) + " MW"]] : []),
+          ["Pertama terdeteksi", wk.awal ? jamWIB(wk.awal) : WaktuKluster.TANPA], ["Terakhir terdeteksi", wk.akhir ? `${jamWIB(wk.akhir)}, ${fmt(wk.lalu)} jam lalu` : WaktuKluster.TANPA]]) + `<p class="ck-n">Jumlah dari ${fmt(KL.length)} cluster di dalam batas.</p>`); }
     if (S.titikPenuh) { const hr = [...hariLain().reverse(), hariSebelum(S.meta.hari_wib), S.meta.hari_wib], n = new Map(hr.map(t => [t.slice(5), 0]));
       for (const r of S.titik) if (n.has(r[7]) && di(r[1], r[0]) && S.dihitung(r)) n.set(r[7], n.get(r[7]) + 1);
       const v = hr.map(t => n.get(t.slice(5))), m = Math.max(...v, 1), bw = 100 / v.length;
