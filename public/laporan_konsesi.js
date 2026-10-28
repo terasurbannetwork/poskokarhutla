@@ -16,7 +16,7 @@
     tambang: ["Kemenhut", "PPKH Ditjen Planologi Kehutanan, Kementerian Kehutanan (Jan 2026)"]};
   const SB_LAIN = [["Titik panas", "NASA FIRMS", "VIIRS S-NPP 375 m, keyakinan nominal/tinggi (arsip SP + NRT)"],
     ["Kawasan hutan", "KLHK", "Peta kawasan hutan KLHK versi 2017"],
-    ["Lahan gambut", "Kementan (BBSDLP) lewat PRIMS BRGM", "Peta gambut 1:250.000; Kaltim dari GFW"],
+    ["Lahan gambut", "Kementan (BBSDLP) lewat PRIMS BRGM", "Peta gambut 1:250.000; Kaltim dari PIPPIB (indikatif)"],
     ["Batas wilayah", "Kemendagri", "Kode dan batas provinsi, kabupaten/kota, kecamatan Kemendagri"],
     ["Grup & pemegang saham", "Centurisk97", "Atribut grup peta konsesi dan penelusuran kepemilikan perusahaan"],
     ["Citra peta", "Google, Copernicus", "Citra satelit dasar Google; SWIR Sentinel-2 L2A 20 m (B12/B8A/B04), mengandung data Copernicus Sentinel 2026 yang diolah"]];
