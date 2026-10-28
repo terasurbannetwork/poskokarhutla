@@ -55,11 +55,13 @@ export function turunMeter(jangkar, dari, ke) {
   return s / 100;
 }
 /* rata-rata blok f x f (kolom/baris sisa dibuang), nodata diabaikan */
-export function turunkan(z, kolom, baris, f, nodata) {
-  const nx = Math.floor(kolom / f), ny = Math.floor(baris / f), o = new Float64Array(nx * ny);
-  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) { let s = 0, n = 0;
-    for (let b = 0; b < f; b++) for (let a = 0; a < f; a++) { const v = z[(j * f + b) * kolom + i * f + a]; if (v !== nodata) { s += v; n++; } }
-    o[j * nx + i] = n ? s / n : 0; }
+export function turunkan(z, kolom, baris, f, nodata, mode = "mean") {
+  /* mode (J4, filter DSM bangunan/jembatan): "mean" (bawaan, J3) | "median" | "pNN" (persentil NN, mis. p25) dari sel 8 m dalam blok; DSM = permukaan atas, bangunan dan jembatan adalah tonjolan, jadi persentil rendah mendekati tanah */
+  const nx = Math.floor(kolom / f), ny = Math.floor(baris / f), o = new Float64Array(nx * ny), q = mode === "mean" ? null : mode === "median" ? .5 : +mode.slice(1) / 100, buf = [];
+  if (q !== null && !(q >= 0 && q <= 1)) throw new Error(`mode agregasi ${mode} tidak dikenal (mean|median|pNN)`);
+  for (let j = 0; j < ny; j++) for (let i = 0; i < nx; i++) { let s = 0, n = 0; buf.length = 0;
+    for (let b = 0; b < f; b++) for (let a = 0; a < f; a++) { const v = z[(j * f + b) * kolom + i * f + a]; if (v !== nodata) { s += v; n++; if (q !== null) buf.push(v); } }
+    if (q === null) o[j * nx + i] = n ? s / n : 0; else { buf.sort((p, r) => p - r); o[j * nx + i] = n ? buf[Math.min(n - 1, Math.floor(q * n))] : 0; } }
   return {z: o, nx, ny};
 }
 /* debit harian (m3/s, hari ke-i mulai 00:00 WIB di `hariAwal`, diwakili pukul 12:00) -> per jam sejak `mulai`, J+1 nilai, interpolasi linier */
@@ -173,6 +175,8 @@ function uji() {
   assert(turunMeter(j, 2011, 2011) === 0 && Math.abs(turunMeter(j, 2020, 2025) - .25) < 1e-9 && turunMeter(j, 2011, 2020) > turunMeter(j, 2011, 2015));
   const t = turunkan(Float32Array.from([1, 3, 5, 7, 2, 4, 6, 8, 9]), 3, 3, 2, -9999); assert(t.nx === 1 && t.ny === 1 && t.z[0] === 3.25);
   const t2 = turunkan(Float32Array.from([1, -9999, 3, 5]), 2, 2, 2, -9999); assert(t2.z[0] === 3);
+  const t3 = turunkan(Float32Array.from([1, 3, 5, 100]), 2, 2, 2, -9999, "median"), t4 = turunkan(Float32Array.from([1, 3, 5, 100]), 2, 2, 2, -9999, "p25"); assert(t3.z[0] === 5 && t4.z[0] === 3, "agregasi median/p25 (filter DSM J4)");
+  let galat = false; try { turunkan(Float32Array.from([1]), 1, 1, 1, -9999, "xx"); } catch { galat = true; } assert(galat, "mode agregasi tak dikenal ditolak");
   const q = debitJam([10, 20, 30], 0, 48); assert(q[0] === 10 && Math.abs(q[12] - 10) < 1e-9 && Math.abs(q[24] - 15) < 1e-9 && Math.abs(q[36] - 20) < 1e-9 && q[48] === 25, Array.from(q));
   assert(persentil([5, 1, 3], .5) === 3 && persentil([], .5) === null);
   const g = {features: [{properties: {kab: "A", kec: "x"}, geometry: {type: "Polygon", coordinates: [[[0, 0], [2, 0], [2, 2], [0, 2], [0, 0]]]}}]};
@@ -259,7 +263,7 @@ export function muatLabel(kejadian, statePath = STATE_J3, berkas = P("data/raw/b
 
 /* ---------- jalan ---------- */
 function argumen() {
-  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, skalaHujan: 1, kdKec: null, raster: null, kotak: null, keluar: null};
+  const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, skalaHujan: 1, agregasi: "mean", cekungan: null, kdKec: null, raster: null, kotak: null, keluar: null};
   const v = process.argv.slice(2);
   for (let i = 0; i < v.length; i++) { const k = v[i];
     if (k === "--tanpa-hulu") a.hulu = false;
@@ -271,6 +275,8 @@ function argumen() {
     else if (k === "--tanggul") a.tanggul = +v[++i];
     else if (k === "--skala-hulu") a.skalaHulu = +v[++i];
     else if (k === "--skala-hujan") a.skalaHujan = +v[++i]; /* kenop global J3 (PRAREG-J3.md), 1 = tanpa koreksi */
+    else if (k === "--agregasi") a.agregasi = v[++i]; /* J4: mean (J3) | median | pNN, filter DSM saat 8 m -> dx */
+    else if (k === "--cekungan-maks") a.cekungan = +v[++i]; /* J4: ganti ASUMSI.CEKUNGAN_MAKS (m) */
     else if (k === "--raster") a.raster = v[++i]; /* tulis kedalaman maks per sel (gz json) untuk skor_j3.py */
     else if (k === "--kd-kec") a.kdKec = v[++i]; /* json {"kab|kec": Kd mm/jam}; kecamatan tak tercantum memakai --kd */
     else if (k === "--radius-hulu-km") a.radiusHuluKm = +v[++i];
@@ -301,7 +307,7 @@ async function jalan() {
     bar0 = Math.max(0, Math.floor((meta.y0 - la1) / meta.dy)); const bar1 = Math.min(meta.baris, Math.ceil((meta.y0 - la0) / meta.dy));
     kol = kol1 - kol0; bar = bar1 - bar0; z8 = new Float32Array(kol * bar);
     for (let j = 0; j < bar; j++) z8.set(mentah.subarray((bar0 + j) * meta.kolom + kol0, (bar0 + j) * meta.kolom + kol0 + kol), j * kol); }
-  const d = turunkan(z8, kol, bar, a.faktor, meta.nodata), nx = d.nx, ny = d.ny, N = nx * ny;
+  const d = turunkan(z8, kol, bar, a.faktor, meta.nodata, a.agregasi), nx = d.nx, ny = d.ny, N = nx * ny;
   const lonSel = i => meta.x0 + (kol0 + (i + .5) * a.faktor) * meta.dx, latSel = j => meta.y0 - (bar0 + (j + .5) * a.faktor) * meta.dy;
   const lat0 = latSel(ny >> 1), dxm = a.faktor * meta.dx * 111320 * Math.cos(lat0 * Math.PI / 180), dym = a.faktor * meta.dy * 110574;
   if (Math.abs(dxm / dym - 1) > .01) throw new Error(`sel tidak persegi: ${dxm} x ${dym}`);
@@ -340,7 +346,7 @@ async function jalan() {
     const lantai = Float64Array.from(zTepi, (v, k) => v - dalamKelas[k] - ALUR.potong_ekstra_m);
     info.profil = profilMonoton(bed, alur, nx, ny, laut, lantai); for (let k = 0; k < N; k++) if (alur[k]) z0[k] = bed[k]; }
   const muara = muaraAlur(laut, alur, nx, ny); let nMuara = 0; for (let k = 0; k < N; k++) nMuara += muara[k];
-  const benih = SG.benihTepi(nx, ny, laut), z = SG.siapkanDEM(z0, nx, ny, benih);
+  const benih = SG.benihTepi(nx, ny, laut), z = a.cekungan == null ? SG.siapkanDEM(z0, nx, ny, benih) : SG.siapkanDEM(z0, nx, ny, benih, a.cekungan);
   let nLaut = 0, isi = 0; for (let k = 0; k < N; k++) { if (laut[k]) nLaut++; if (z[k] > z0[k] + 1e-9) isi++; }
   const dalamAlur = new Float64Array(N); /* isi alur di bawah tepi (m): kedalaman keluaran sel alur = muka air di atas tepi */
   for (let k = 0; k < N; k++) if (alur[k]) dalamAlur[k] = Math.max(0, zTepi[k] - z[k]);
@@ -461,7 +467,8 @@ async function jalan() {
   fs.writeFileSync(jalur, JSON.stringify(keluar)); log("ditulis " + path.relative(AKAR, jalur));
   if (a.raster) { /* hm = kedalaman maks (m) di atas tepi; laut -> 0 dan kec -1; kisi: pusat sel (0,0) di (lon0, lat0), langkah dlon ke timur, dlat ke selatan */
     const kk = Int16Array.from(kec, (c, k) => laut[k] ? -1 : c), hh = Float32Array.from(hm, (v, k) => laut[k] ? 0 : v), b64 = t => Buffer.from(t.buffer).toString("base64");
-    fs.writeFileSync(a.raster, zlib.gzipSync(JSON.stringify({nx, ny, dx_m: dx, lon0: lonSel(0), lat0: latSel(0), dlon: a.faktor * meta.dx, dlat: a.faktor * meta.dy, nama, kec: b64(kk), hm: b64(hh)}))); log("raster " + a.raster); }
+    const dg = Uint8Array.from(z, (v, k) => v > z0[k] + 1e-9 ? 1 : 0); /* sel cekungan yang diangkat siapkanDEM (J4: fraksi sel basah di sel diangkat) */
+    fs.writeFileSync(a.raster, zlib.gzipSync(JSON.stringify({nx, ny, dx_m: dx, lon0: lonSel(0), lat0: latSel(0), dlon: a.faktor * meta.dx, dlat: a.faktor * meta.dy, nama, kec: b64(kk), hm: b64(hh), diangkat: b64(dg)}))); log("raster " + a.raster); }
   const p90 = c => c.kedalaman_puncak_m.p90, mentengs = kecamatan.find(x => x.kec === "Menteng");
   const top5 = [...kecamatan].sort((x, y) => p90(y) - p90(x) || y.luas_basah_ge10cm_km2 - x.luas_basah_ge10cm_km2).slice(0, 5).map(c => ({kab: c.kab, kec: c.kec, p90: p90(c), maks: c.kedalaman_puncak_m.maks, basah_km2: c.luas_basah_ge10cm_km2, persen_basah: c.persen_basah}));
   console.log(JSON.stringify({menteng_p90: mentengs && p90(mentengs), top5_p90: top5, waktu_jalan_dtk: keluar.waktu_jalan_dtk, langkah: keluar.langkah, neraca_global_m3: keluar.neraca_global_m3, sebaran: sebaran, hulu: catatHulu}, null, 1));
