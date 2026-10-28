@@ -12,6 +12,10 @@ on:
         description: "1 = unggah juga berkas tahunan SIPPA ke R2 sippa/"
         required: false
         default: "0"
+      satelit_anggaran:
+        description: "Anggaran permintaan FIRMS untuk riwayat deteksi per satelit (/satelit). Kosong = bawaan skrip (60). Isi mundur penuh sejak 1 Jan ~250 permintaan: pecah 2-3 jalan @100 supaya muat batas 45 menit"
+        required: false
+        default: ""
 
 concurrency:
   group: data
@@ -101,6 +105,42 @@ jobs:
       - name: Arsip titik panas per hari
         continue-on-error: true
         run: python3 scripts/data/titik_hari.py dari-hotspot
+
+      # riwayat deteksi per satelit setahun untuk tab tersembunyi /satelit -> public/data/satelit/riwayat.json (scripts/data/satelit_riwayat.py).
+      # KUMULATIF: ikut cache data- seperti khg_hari.json/musim_harian.json (+ salinan situs live lewat _isi.json bila cache hilang, dan `git add public/data` di jalur
+      # tanpa token). Cache kecil sendiri di bawah menjamin kemajuan isi mundur selamat walau langkah keras sesudahnya (Uji aturan) gagal sebelum cache data- disimpan.
+      # Dipulihkan SESUDAH data-: bila menimpa, ia versi yang disimpan langsung sesudah skrip jalan, jadi paling baru.
+      - name: Pulihkan riwayat deteksi per satelit
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data/satelit/riwayat.json
+          key: satelit-riwayat-${{ github.run_id }}
+          restore-keys: satelit-riwayat-
+
+      # jadwal harian memakai anggaran bawaan skrip (60 permintaan FIRMS, batas 20 menit); dispatch dengan satelit_anggaran = isi mundur besar sekali jalan
+      # (batas 45 menit; job 90 menit, jadi jalankan dengan cache data- hangat). Tanpa FIRMS_MAP_KEY skrip keluar 0 tanpa menyentuh berkas. Gagal tidak menahan terbit.
+      - name: Riwayat deteksi per satelit (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 50
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          SATELIT_ANGGARAN: ${{ github.event.inputs.satelit_anggaran }}
+        run: |
+          arg=(); batas=20
+          case "$SATELIT_ANGGARAN" in
+            '') ;;
+            *[!0-9]*) echo "::warning title=satelit_anggaran::input bukan angka; anggaran bawaan skrip dipakai" ;;
+            *) arg=(--anggaran "$SATELIT_ANGGARAN"); batas=45 ;;
+          esac
+          python3 -I scripts/data/satelit_riwayat.py --uji && timeout "${batas}m" python3 -I scripts/data/satelit_riwayat.py "${arg[@]}" \
+            || { echo "::warning title=Riwayat satelit gagal::satelit_riwayat.py gagal atau melewati batas waktu; riwayat.json lama dibiarkan"; exit 1; }
+
+      - name: Simpan riwayat deteksi per satelit
+        if: always() && hashFiles('public/data/satelit/riwayat.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: public/data/satelit/riwayat.json
+          key: satelit-riwayat-${{ github.run_id }}
 
       - name: Kompleks x konsesi (perusahaan)
         run: python3 scripts/data/konsesi_kompleks.py

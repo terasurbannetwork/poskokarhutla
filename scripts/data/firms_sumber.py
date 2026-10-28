@@ -132,7 +132,8 @@ def wajib(u, ket, famili=FAMILI, longgar=False, acuan=None):
 
 def csv_sah(teks):
     if not teks.lstrip().startswith("latitude"):
-        raise ValueError("balasan FIRMS bukan CSV: " + teks.strip()[:80])
+        # potongan badan balasan masuk ke pesan galat/log Actions: newline/CR/kontrol diganti spasi supaya balasan jahat tak bisa membuka baris baru berawalan `::` (perintah alur kerja)
+        raise ValueError("balasan FIRMS bukan CSV: " + re.sub(r"[\x00-\x1f\x7f-\x9f\u2028\u2029]+", " ", teks.strip()[:80]))
     return csv.DictReader(io.StringIO(teks))
 
 
@@ -325,6 +326,16 @@ def uji():
         raise RuntimeError("HTTP 500 " + url)
     unduh(D("2026-01-02"), D("2026-01-02"), "RAHASIA123", meledak, "1,2,3,4", ket, log=log)
     assert log.getvalue() and "RAHASIA123" not in log.getvalue(), log.getvalue()
+    # balasan bukan CSV yang berisi newline/CR + perintah alur kerja: pesan galat dan log unduh() tetap satu baris berawalan "firms_sumber:" (tak ada baris `::` hasil suntikan)
+    jahat = "Invalid MAP_KEY.\n::error title=suntik::x\r::warning::y\u2028::notice::z"
+    try:
+        csv_sah(jahat); raise SystemExit("balasan jahat harus ValueError")
+    except ValueError as e:
+        assert str(e).startswith("balasan FIRMS bukan CSV: Invalid MAP_KEY.") and len(str(e).splitlines()) == 1 and "\r" not in str(e) and "\u2028" not in str(e), repr(str(e))
+    log = io.StringIO()
+    b, ok = unduh(D("2026-01-02"), D("2026-01-02"), "K", lambda u: jahat, "b", ket, log=log)
+    baris_log = log.getvalue().splitlines()
+    assert not b and not ok and baris_log and all(x.startswith("firms_sumber: gagal") for x in baris_log) and "::error title=suntik" in log.getvalue(), baris_log   # teks tetap ada, hanya tak di awal baris
     uji_snpp_berhenti()
     print("firms_sumber: uji lolos")
 
