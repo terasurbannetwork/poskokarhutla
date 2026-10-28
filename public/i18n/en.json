@@ -9309,7 +9309,7 @@
 "Belum ada deteksi yang masuk sesudah lintasan ini; jeda aman belum lewat, atau data FIRMS belum diambil lagi sesudah jeda itu": "No detections have come in since this pass; the safe delay has not yet passed, or FIRMS data has not been fetched again since that delay",
 "Belum diambil lagi sejak": "Not fetched again since",
 "Data FIRMS terakhir diambil": "FIRMS data last fetched",
-"Seharusnya siap (WIB)": "Expected ready (WIB)",
+"Batas tunggu (WIB)": "Wait limit (WIB)",
 "sudah lewat": "already passed",
 "kurang dari {0} jam": "less than {0} h",
 "tertunda, telat sekitar {0} jam": "delayed, about {0} h late",
@@ -9320,7 +9320,14 @@
 "Status dari deteksi terakhir tiap satelit di NASA FIRMS.": "Status from the latest detection of each satellite in NASA FIRMS.",
 "Jam lintasan = saat satelit paling dekat ke tengah Indonesia (perkiraan).": "Pass time = when the satellite is closest to the centre of Indonesia (estimate).",
 "Baris tanpa perkiraan memakai jam deteksi (median).": "Rows without a forecast use the detection time (median).",
-"Deteksi = baris FIRMS berkeyakinan sedang dan tinggi, bukan lokasi unik.": "Detections = FIRMS rows with nominal and high confidence, not unique locations."
+"Deteksi = baris FIRMS berkeyakinan sedang dan tinggi, bukan lokasi unik.": "Detections = FIRMS rows with nominal and high confidence, not unique locations.",
+"waktu sampai data tampil di aplikasi, median {0} hari terakhir": "time until data appears in the app, median of the last {0} days",
+"waktu sampai data tampil di aplikasi, median riwayat terakhir": "time until data appears in the app, median of recent records",
+"aplikasi mengambil data tiap {0} jam": "the app fetches data every {0} h",
+"Bisa lebih lama bila satelit telat.": "May take longer if a satellite is late.",
+"Perkiraan data tampil di aplikasi (jam lewat + median)": "Estimated time the data appears in the app (pass time + median)",
+"Perkiraan data satelit sudah bisa diambil (jam lewat + jeda tiap satelit, lihat keterangan di bawah)": "Estimated time the satellite data can be retrieved (pass time + delay of each satellite, see the note below)",
+"Belum ada deteksi yang masuk sesudah lintasan ini; batas tunggu belum lewat, atau data FIRMS belum diambil lagi sesudah batas itu": "No detections have come in since this pass; the wait limit has not yet passed, or FIRMS data has not been fetched again since that limit"
 },
 "pola": [
 ["^(\\p{L}[\\p{L}\\d-]*), jam deteksi ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB: (.+)$", "$1, detection time $2 WIB: $3"],
@@ -9331,7 +9338,9 @@
 ["^Lintasan satelit terakhir; diolah (\\d{1,2}) (Jan|Feb|Mar|Apr|May|Jun|Jul|Aug|Sept?|Oct|Nov|Dec) (\\d{1,2}):(\\d{2}) WIB$", "Latest satellite pass; processed $1 $2 $3:$4 WIB"],
 ["^(\\p{L}[\\p{L}\\d-]*) ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB: (.+)$", "$1 $2 WIB: $3"],
 ["^(\\p{L}[\\p{L}\\d-]*) lewat ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB, data biasanya siap ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB\\.$", "$1 passes $2 WIB, data usually ready $3 WIB."],
-["^(VIIRS|MODIS) ([\\d.,]+) jam$", "$1 $2 h"],
+["^(VIIRS|MODIS|NOAA-\\d+|Terra|Aqua) ([\\d.,]+) jam$", "$1 $2 h"],
+["^(VIIRS|MODIS|NOAA-\\d+|Terra|Aqua) ([\\d.,]+) sampai ([\\d.,]+) jam$", "$1 $2 to $3 h"],
+["^\\(diukur (\\d{1,2} \\p{L}{3,4} \\d{4})\\); bisa lebih lama bila satelit telat\\.$", "(measured $1); may take longer if a satellite is late."],
 [
 "^7 hari terakhir, ([\\d.,]+) dari ([\\d.,]+) titik panas VIIRS di cluster \\(([\\d.,]+)%\\) berada di dalam areal konsesi\\.$",
 "last 7 days, $1 of $2 VIIRS hotspots in clusters ($3%) are inside concession areas."
