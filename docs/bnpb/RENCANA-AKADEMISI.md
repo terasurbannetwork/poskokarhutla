@@ -111,6 +111,15 @@ Urut menurut manfaat untuk BNPB.
 - Mentah panen disimpan di luar repo dan tidak di-commit.
 - Tiap butir data membawa sumber dan tanggal ambil.
 
+## Hasil Tahap 0 (28 Okt)
+
+- Keempat nama ditemukan di PDDikti dan SINTA.
+- PDDikti memberi biodata, jabatan fungsional, riwayat S1/S2/S3 dengan tahun, mata kuliah per semester, dan portofolio (penelitian, pengabdian, karya, paten).
+- SINTA memberi subjek, skor, h-index Scopus dan Scholar, daftar artikel, dan foto (dari Google Scholar).
+- API langsung keduanya menolak klien non-browser: PDDikti 401, SINTA 403. Jalurnya lewat browser sungguhan dengan sesi sendiri, tanpa memalsukan header.
+- Pencarian penulis SINTA hanya mencocokkan nama, bukan subjek. Jadi daftar induk dibangun per prodi: halaman prodi PDDikti dan halaman departemen SINTA. Saringan B (kata kunci publikasi lintas prodi) butuh sumber lain, misalnya Garuda atau OpenAlex.
+- Jabatan struktural dan kontak tidak ada di PDDikti maupun SINTA. Sumbernya laman kampus dan berita, cakupannya diperkirakan rendah, dan perlu tanggal periksa karena cepat berubah. Contoh: Irwan Meilano dilantik Wakil Menteri Kelautan dan Perikanan pada 1 Okt 2026 (Katadata); laman ITB masih mencatatnya sebagai Wakil Rektor Akademik.
+
 ## Risiko
 
 - PDDikti atau SINTA memblokir panen massal. Mitigasinya jeda lebih panjang dan panen dicicil beberapa hari. Kalau tetap diblokir, minta akses data resmi lewat surat (contoh ada di `docs/bnpb/SURAT-AKSES-DATA.md`).
