@@ -65,7 +65,7 @@ function indeksWilayah(daftar, prov, kab) {   // "kodeprov|kabupaten|kecamatan" 
 }
 async function titikApi(env, url, {prov, kab, jam, limit}) {
   const d = await data(env, url, jam === 72 ? "hotspot72" : "hotspot24"), cocok = indeksWilayah(d.wilayah, prov, kab), ih = d.kolom.indexOf("hitung");
-  /* yang dihitung = kolom "hitung" (lokasi unik ~375 m per hari WIB, 4 satelit, keyakinan sedang/tinggi; scripts/data/titik_unik.py) */
+  /* yang dihitung = kolom "hitung" (lokasi unik ~375 m per hari WIB, 4 satelit, semua keyakinan sejak 28 Okt 2026; scripts/data/titik_unik.py) */
   /* berkas lama tanpa kolom itu (sebelum jalan data pertama sesudah 25 Okt 2026): sensor_utama + keyakinan_min seperti dulu */
   const utama = new Set(d.sensor_utama), dihitung = ih >= 0 ? r => r[ih] === 1 : r => utama.has(r[3]) && r[5] >= (d.keyakinan_min ?? 0);
   const per = {}; const baris = d.baris.filter(r => r[2] >= -jam && dihitung(r) && cocok.has(r[6]));

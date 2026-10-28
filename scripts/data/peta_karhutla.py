@@ -4,7 +4,7 @@ keduanya berdampingan dengan --keluar; ketiga berkas dibawa bersama, satu yang h
 
 Metode "deck" (sama dengan deck BNPB 21 Okt 2026; rujukan data/laporan-bnpb/satelit-2026-10-21/hitung3.py, hitung_nasional.py, README.md):
 - provinsi = wilayah.Wilayah().cari(lon, lat)[0]; hari = hari kalender WIB (UTC+7) dari acq_date + acq_time.
-- hot   = LOKASI UNIK per hari WIB menurut scripts/data/titik_unik.py (keputusan pemilik 25 Okt 2026): M, S-NPP, NOAA-20, NOAA-21, keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30),
+- hot   = LOKASI UNIK per hari WIB menurut scripts/data/titik_unik.py (keputusan pemilik 25 Okt 2026): M, S-NPP, NOAA-20, NOAA-21, semua keyakinan (titik_unik.KEYAKINAN_MIN, sejak 28 Okt 2026; dulu sedang/tinggi),
   tanpa sel industri; sel kisi titik_unik.sel dihitung sekali per hari, wilayah = deteksi paling awal. Aturannya DIIMPOR, bukan disalin. Sengaja tidak sama dengan SiPongi/GIS BNPB
   (titik mentah semua keyakinan; deck 21 Okt). Tidak ada seri "lokasi" lain: hot sendiri adalah lokasi unik. N21 selalu ikut, jadi pensiun S-NPP (SNPP_AKHIR) tidak mematahkan seri.
 - luas  = (n_N20 x F20 + n_N21 x F21) / 2, n_* = titik NOAA-20 / NOAA-21 berkeyakinan n/h; F20 = 4,12 ha, F21 = 4,16 ha per titik (kalibrasi langsung per satelit,
@@ -96,8 +96,8 @@ WARM = 2                                   # hari sebelum hari hitung yang dibut
 LATENSI = dt.timedelta(hours=4)            # NRT terlambat; hari WIB d dianggap lengkap bila sudah (now - 4 jam) > d
 TRUST = dt.timedelta(hours=12)             # rekaman cache sah bila ditarik >= 12 jam sesudah hari UTC-nya berakhir
 VERSI = 1
-VREK = 10                                   # 2: + tn (S-NPP semua keyakinan), h21t (N21 sesudah SNPP_AKHIR); 3: + kn/k (kabupaten tiap deteksi N20/N21 n/h);
-                                           # 4: + hk/h21k/h21tk (hot per kecamatan), kw/q (kecamatan tiap deteksi N20/N21 n/h); 5: + s (satelit tiap deteksi N20/N21 n/h: 0 = N20, 1 = N21); 6: deteksi di sel sumber panas tetap (titik_palsu) tidak masuk c/m/p/k/q/kw/s; 7: hot/hk/h21*/tn hanya keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30); 8: hot/hk/h21*/tn juga membuang sel sumber panas tetap; 9: (dibatalkan); 10: hot = lokasi unik titik_unik (z*), hk/h21k/h21t* dihapus; rekaman versi lain diunduh ulang
+VREK = 11                                   # 2: + tn (S-NPP semua keyakinan), h21t (N21 sesudah SNPP_AKHIR); 3: + kn/k (kabupaten tiap deteksi N20/N21 n/h);
+                                           # 4: + hk/h21k/h21tk (hot per kecamatan), kw/q (kecamatan tiap deteksi N20/N21 n/h); 5: + s (satelit tiap deteksi N20/N21 n/h: 0 = N20, 1 = N21); 6: deteksi di sel sumber panas tetap (titik_palsu) tidak masuk c/m/p/k/q/kw/s; 7: hot/hk/h21*/tn hanya keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30); 8: hot/hk/h21*/tn juga membuang sel sumber panas tetap; 9: (dibatalkan); 10: hot = lokasi unik titik_unik (z*), hk/h21k/h21t* dihapus; 11 (28 Okt 2026): z* ikut keyakinan rendah (titik_unik.KEYAKINAN_MIN = 0), tn/h21/luas tetap n/h; rekaman versi lain diunduh ulang
 VERSI_WIL = 1                              # peta_karhutla_wil.json (kabupaten/kota + kecamatan, jarang)
 PITA = 5                                   # derajat bujur per pita deteksi celah
 # celah (dikalibrasi pada 293 hari 2026): rasio S-NPP : N20+N21 nasional per hari bergeser +-20% secara alami (p10 0,34, p90 0,61) dan per pita
@@ -149,10 +149,16 @@ def sedang(r):
         return False
 
 
+def dihitung_hot(r):
+    """Saringan keyakinan TITIK PANAS (z*) = titik_unik.KEYAKINAN_MIN (sejak 28 Okt 2026: semua keyakinan). luas (c/m/p) dan tn/h21
+    tetap sedang/tinggi lewat sedang(), karena faktornya diukur dari titik n/h."""
+    return FS.kelas_yakin(r["confidence"].strip(), r["satellite"] in ("Terra", "Aqua")) >= titik_unik.KEYAKINAN_MIN
+
+
 def rekam(baris, wil, tarik, industri=None):
     """[(sumber, baris_csv)] -> {tgl_utc: rekaman}. Rekaman:
     z* = TITIK PANAS (lokasi unik, titik_unik.py): per bagian hari UTC (b = menit >= 17:00 UTC = hari WIB berikutnya) deteksi PERTAMA tiap sel kisi titik_unik.sel dari M, N, N20, N21
-         berkeyakinan sedang/tinggi (sedang()) tanpa sel industri, berurut menit: zla/zlo lintang/bujur, zm menit UTC, zp provinsi ("" = laut/luar), zk/zq indeks ke zkn (nama kabupaten)
+         lolos dihitung_hot() (titik_unik.KEYAKINAN_MIN; sejak 28 Okt 2026 semua keyakinan) tanpa sel industri, berurut menit: zla/zlo lintang/bujur, zm menit UTC, zp provinsi ("" = laut/luar), zk/zq indeks ke zkn (nama kabupaten)
          dan zkw (kunci kecamatan kode|kab|kec); hari_data menggabungkan dua bagian yang membentuk satu hari WIB dan menjatuhkan sel yang sama (deteksi paling awal menang);
     h21/tn = jumlah N21 / S-NPP sedang/tinggi di provinsi (hanya untuk --ukur);
     bd {pita bujur: [N, N20, N21 masing-masing (a, b)]} (n/h, di provinsi, tanpa saringan industri; dasar celah dan bobot()), c/m/p = sel, menit UTC, provinsi (0 = laut/luar) tiap N20/N21 n/h
@@ -171,13 +177,14 @@ def rekam(baris, wil, tarik, industri=None):
         lon, lat = float(r["longitude"]), float(r["latitude"])
         ind = bool(industri) and titik_palsu.palsu(lat, lon, industri)   # sel sumber panas tetap: tidak dihitung di mana pun (bd tetap lengkap untuk celah)
         ok = sedang(r) and not ind
+        ok_hot = dihitung_hot(r) and not ind
         idn = memo.get((lon, lat))
         if idn is None:
             w = wil.cari(lon, lat)
             idn = memo[(lon, lat)] = w or ("", None, None)
         prov, kab = idn[0], idn[1] or ""   # fitur tanpa nama kabupaten (danau) -> kab ""
         kk = f"{prov}|{idn[1]}|{idn[2]}" if prov else ""   # kunci kecamatan persis seperti layar: kode|kab|kec
-        if ok:
+        if ok_hot:
             kandidat.setdefault(r["acq_date"], []).append({"s": "M" if s in ("Terra", "Aqua") else s, "c": 1, "lat": lat, "lon": lon, "m": m, "b": b, "p": prov, "k": kab, "q": kk})
         if s == "N" and prov and ok:
             rec["tn"] += 1
@@ -479,9 +486,10 @@ def metode():
               f"({koma(100 * STATIS['bertahan_statis'] / STATIS['bertahan'], 1)}% dari yang bertahan) berada di sel sumber panas industri; "
               f"daftar selnya diperbarui berkala, jadi hari lama tidak dihitung ulang sampai bangun ulang penuh.")
     return {
-        "hot": "Titik panas = lokasi unik per hari kalender WIB: sel kisi sekitar 375 m yang terdeteksi MODIS, VIIRS S-NPP, NOAA-20, atau NOAA-21 berkeyakinan sedang dan tinggi "
-               "(VIIRS nominal/tinggi, MODIS 30 ke atas), tiap sel dihitung sekali per hari berapa pun satelit dan lintasannya. Titik berkeyakinan rendah dan titik di sel sumber panas tetap "
-               "(smelter, tambang, kilang, pembangkit) tidak dihitung. Angka ini tidak sama dengan SiPongi dan GIS BNPB, yang menghitung titik mentah semua keyakinan.",
+        "hot": "Titik panas = lokasi unik per hari kalender WIB: sel kisi sekitar 375 m yang terdeteksi MODIS, VIIRS S-NPP, NOAA-20, atau NOAA-21 pada semua tingkat keyakinan "
+               "(rendah, sedang, tinggi), tiap sel dihitung sekali per hari berapa pun satelit dan lintasannya. Keyakinan rendah ikut dihitung karena api gambut yang membara bersuhu rendah "
+               "dan sering tertutup asap, sehingga sinyalnya jatuh di kelas rendah (Tansey dkk. 2008). Titik di sel sumber panas tetap "
+               "(smelter, tambang, kilang, pembangkit) tidak dihitung. Angka ini tidak sama dengan SiPongi dan GIS BNPB, yang menghitung titik mentah tanpa menggabungkan lokasi yang sama.",
         "luas": f"(titik NOAA-20 x {koma(F20, 2)} ha + titik NOAA-21 x {koma(F21, 2)} ha) / 2, titik berkeyakinan nominal/tinggi. Faktor tiap satelit = luas resmi BNPB "
                 f"2019–2025 dibagi titik NOAA-20 (median {koma(F20, 2)} ha per titik; NOAA-21 2024–2025: {koma(F21, 2)} ha). Titik di sel sumber panas tetap (smelter, tambang, kilang, pembangkit) dibuang karena faktor dihitung dari titik tersaring (tanpa saringan 10,5% titik Jan–Jul 2026 bukan api lahan). Uji Jan–Jul 2026: jumlah luas nasional "
                 f"{ribu(UJI_SIPONGI['kita'])} ha vs SiPongi {ribu(UJI_SIPONGI['sipongi'])} ha (+{UJI_SIPONGI['selisih']}%); cara lama (titik x porsi x 4,3 ha) +{UJI_SIPONGI['lama']}%. Saringan dipilih sesudah uji ini dilihat, jadi angka ini bukan uji luar contoh murni; uji tinggalkan satu tahun 2019–2025 meleset rata-rata 13,5%. "
@@ -1218,7 +1226,7 @@ def uji_deck():
             for k, v in rp.items():
                 assert all(abs(tot[k][j] - v[j]) < 1e-6 for j in range(4)), (d, tingkat, k, tot[k], v)
     assert len(A["prov"]) == 38
-    # hot: keputusan pemilik 25 Okt 2026 = LOKASI UNIK (titik_unik) 4 satelit, sedang/tinggi, tanpa sel industri, jadi BUKAN lagi angka deck (deck = titik mentah semua keyakinan).
+    # hot: keputusan pemilik 25 Okt 2026 = LOKASI UNIK (titik_unik) 4 satelit, tanpa sel industri; keyakinan = titik_unik.KEYAKINAN_MIN (28 Okt 2026: semua), jadi BUKAN lagi angka deck (deck = titik mentah semua keyakinan).
     # Pembanding mandiri: hitung ulang dari baris fikstur (tanpa rekam/hari_data) lewat titik_unik.unik berurut waktu; hot harus sama persis, <= deteksi mentah yang lolos saringan sama,
     # dan lebih kecil daripada deteksi mentah itu (sel yang dilihat dua satelit = satu).
     # luas/belum/padam deck memakai rumus lama (titik x PORSI x 4,3), jadi bukan pembanding persis:
@@ -1227,7 +1235,7 @@ def uji_deck():
     pts = []
     for _, r in baris:
         sen = {"Terra": "M", "Aqua": "M"}.get(r["satellite"], r["satellite"])
-        if sen not in titik_unik.SENSOR or not sedang(r) or titik_palsu.palsu(float(r["latitude"]), float(r["longitude"]), industri):
+        if sen not in titik_unik.SENSOR or not dihitung_hot(r) or titik_palsu.palsu(float(r["latitude"]), float(r["longitude"]), industri):
             continue
         jam = r["acq_time"].zfill(4)
         t = dt.datetime.fromisoformat(r["acq_date"]).replace(tzinfo=UTC) + dt.timedelta(hours=int(jam[:2]), minutes=int(jam[2:]))

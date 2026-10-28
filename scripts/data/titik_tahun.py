@@ -1,6 +1,6 @@
 """Titik panas semua satelit (MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21) per bulan per provinsi sejak 1 Januari -> public/data/titik_tahun.json
 
-Definisinya sama dengan baris harian laporan (laporan.py, titik_unik.py: LOKASI UNIK ~375 m per hari dari M, N, N20, N21, keyakinan sedang/tinggi,
+Definisinya sama dengan baris harian laporan (laporan.py, titik_unik.py: LOKASI UNIK ~375 m per hari dari M, N, N20, N21, semua keyakinan (titik_unik.KEYAKINAN_MIN, sejak 28 Okt 2026),
 tanpa sumber panas tetap, hari kalender WIB).
 laporan.py memakai 'harian' hanya untuk hari sebelum arsip hariannya; hari di arsip diambil dari baris harian, jadi
 Grand total = (titik sebelum arsip) + jumlah baris harian. Arsip SP vs NRT beda ~0,1% (1-16 Okt 2026: 293.584 vs 293.263).
@@ -43,7 +43,7 @@ def main(tahun, sd, *berkas):
                 prov.setdefault(adm[0], [0] * 12)[t.month - 1] += 1
                 d = t.date().isoformat()
                 hari[d] = hari.get(d, 0) + 1
-    out = {"sumber": "NASA FIRMS MODIS C6.1, VIIRS S-NPP, NOAA-20, NOAA-21; arsip standar (SP) + NRT, lokasi unik ~375 m per hari, keyakinan sedang/tinggi, tanpa sumber panas tetap, hari WIB",
+    out = {"sumber": "NASA FIRMS MODIS C6.1, VIIRS S-NPP, NOAA-20, NOAA-21; arsip standar (SP) + NRT, lokasi unik ~375 m per hari, semua keyakinan, tanpa sumber panas tetap, hari WIB",
            "tahun": tahun, "sd": sd, "dibuat": dt.date.today().isoformat(), "prov": prov,
            # nasional per hari WIB 1 Jan s.d. sd: laporan.py memakai hari sebelum arsip hariannya, sisanya dari baris harian
            "harian": [hari.get((dt.date(int(tahun), 1, 1) + dt.timedelta(days=i)).isoformat(), 0)

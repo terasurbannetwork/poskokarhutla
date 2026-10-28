@@ -2,7 +2,7 @@
 //
 // Sebab aturan ini (28 Okt 2026): FIRMS berhenti menerbitkan sejak 27 Okt +-20.25 WIB, sehingga hari ini tidak punya satu titik pun dan tabel menulis "0" di
 // setiap provinsi. Pembaca menafsirkan 0 sebagai "tidak ada api", padahal artinya "belum ada data". Akibatnya keputusan lapangan bisa salah arah.
-// Aturannya: selama hari ini belum punya satu titik TERHITUNG (lolos S.dihitung: keyakinan sedang/tinggi, lokasi unik ~375 m), hitung() di public/index.html
+// Aturannya: selama hari ini belum punya satu titik TERHITUNG (lolos S.dihitung: keyakinan >= keyakinan_min, lokasi unik ~375 m), hitung() di public/index.html
 //   - mengisi S.hariKosong = {hari, jam} pada rentang APA PUN (Hari ini maupun Kemarin), dibaca pop-up Situasi (sapa.js), bagikan.js, dan grafik 7 hari (cari.js);
 //   - pada rentang "Hari ini" juga mengisi S.hotMundur (sama dengan S.hariKosong) dan memindahkan S.hariPilih ke hari terakhir yang berdata, sehingga tabel
 //     memakai hari itu, berjudul "Data terakhir, ... s.d. ... WIB", dengan catatan "Belum ada data titik panas NASA FIRMS untuk hari ini.";

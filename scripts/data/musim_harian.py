@@ -1,7 +1,7 @@
 """Kurva musim api: titik panas kumulatif per hari-ke-n, 2019 s.d. tahun berjalan, nasional dan per provinsi -> public/data/musim_harian.json
 
 Definisi sama dengan baris harian laporan (laporan.py) dan titik_unik.py: LOKASI UNIK ~375 m per hari dari MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21
-(NOAA-21 ada sejak 2023), hanya keyakinan sedang/tinggi (VIIRS n/h, MODIS >= 30) dan di luar sel sumber panas tetap (keputusan pemilik 25 Okt 2026), hari kalender WIB,
+(NOAA-21 ada sejak 2023), semua keyakinan (titik_unik.KEYAKINAN_MIN; rendah ikut sejak 28 Okt 2026, dulu hanya sedang/tinggi) dan di luar sel sumber panas tetap (keputusan pemilik 25 Okt 2026), hari kalender WIB,
 provinsi lewat wilayah.py. Berkas ini menyimpan HITUNGAN HARIAN (bukan kumulatif); layar yang menjumlahkan.
 
   tahun   : tahun yang tercakup (2019..)
@@ -28,7 +28,7 @@ HITUNG = os.path.join(AKAR, "data/raw/firms/musim_harian_hitung.json")
 AWAL, LATAR_AKHIR = 2019, 2025
 WIB = dt.timedelta(hours=7)
 SUMBER = "NASA FIRMS MODIS C6.1, VIIRS S-NPP, VIIRS NOAA-20, VIIRS NOAA-21; arsip standar (SP) + NRT; tahun berjalan dari laporan.json"
-DEFINISI = "Lokasi unik ~375 m per hari dari semua satelit (M, N, N20, N21 sejak 2023), keyakinan sedang/tinggi saja, tanpa sumber panas tetap, hari kalender WIB, provinsi menurut batas BIG; hitungan per hari, bukan kumulatif. Hari arsip laporan ikut lokasi unik sesudah migrasi_titik (laporan.py)"
+DEFINISI = "Lokasi unik ~375 m per hari dari semua satelit (M, N, N20, N21 sejak 2023), semua keyakinan, tanpa sumber panas tetap, hari kalender WIB, provinsi menurut batas BIG; hitungan per hari, bukan kumulatif. Hari arsip laporan ikut lokasi unik sesudah migrasi_titik (laporan.py)"
 
 
 def hari_tahun(tahun):
@@ -207,7 +207,7 @@ def uji():
         raise AssertionError("panjang salah harus ditolak")
     except AssertionError as e:
         assert "harusnya" in str(e), e
-    # hitung_csv menolak keyakinan rendah: VIIRS n/h dan MODIS 30+ masuk, VIIRS l dan MODIS 29 tidak
+    # hitung_csv: sejak 28 Okt 2026 semua keyakinan masuk (titik_unik.KEYAKINAN_MIN = 0), termasuk VIIRS l dan MODIS 29
     import tempfile
     with tempfile.TemporaryDirectory() as tmp:
         b = os.path.join(tmp, "x.csv")
@@ -216,14 +216,14 @@ def uji():
         open(b, "w").write(h + "".join(f"-2.0,{113.0 + i * 0.01:.2f},2026-03-10,0300,{c}\n" for i, c in enumerate(("n", "h", "l", "30", "29", "80"))))
         import titik_palsu
         hit = hitung_csv("2026-03-31", [b], set())
-        assert sum(sum(v) for v in hit["2026"].values()) == 4, hit
+        assert sum(sum(v) for v in hit["2026"].values()) == 6, hit
         # lokasi unik lintas berkas: sel yang sama hari yang sama sekali, hari lain dihitung lagi
         b2 = os.path.join(tmp, "y.csv")
         open(b2, "w").write(h + "-2.0,113.00,2026-03-10,0500,n\n-2.0,113.00,2026-03-11,0300,n\n")
         hit = hitung_csv("2026-03-31", [b, b2], set())
-        assert sum(sum(v) for v in hit["2026"].values()) == 5, hit
+        assert sum(sum(v) for v in hit["2026"].values()) == 7, hit
         hit = hitung_csv("2026-03-31", [b], {titik_palsu.sel(-2.0, 113.0)})
-        assert sum(sum(v) for v in hit["2026"].values()) == 3, ("titik di sel industri (baris 'n' di 113,00) harus dibuang", hit)
+        assert sum(sum(v) for v in hit["2026"].values()) == 5, ("titik di sel industri (baris 'n' di 113,00) harus dibuang", hit)
     # berkas nyata (bila ada): invarian dan setara laporan.json untuk tiap hari arsip
     lap = json.load(open(os.path.join(AKAR, "public/data/laporan.json"))) if os.path.exists(os.path.join(AKAR, "public/data/laporan.json")) else None
     if os.path.exists(JALUR):

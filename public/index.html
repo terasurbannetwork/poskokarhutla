@@ -1834,7 +1834,7 @@ async function muatData() {
   S.poskoDari = new Map(); S.posko.forEach(x => x.kompleks.forEach(k => S.poskoDari.set(k, x)));
   meta.status = (meta.status || []).map(t => t === "Siaga pemadaman awal" ? "Pemadaman awal" : t);   /* Siaga = istilah resmi BMKG/BNPB/SK, bukan keluaran platform (audit 21 Okt 2026 §4.0 butir 3) */
   S.meta = meta; S.acuan = new Date(hs.acuan); S.acuan0 = S.acuan; S.titik = hs.baris; S.titikPenuh = !hs.jam_maks; S.jamTitik = hs.jam_maks || 168; S.kluster = kl; S.fwi = fw; S.bnpb = bn; S.wilayah = wl; S.geo.prov = prov;
-  S.kmin = hs.keyakinan_min ?? 1;   /* pemilik 25 Okt 2026: hanya keyakinan sedang+tinggi dihitung; rendah tetap digambar */
+  S.kmin = hs.keyakinan_min ?? 0;   /* titik_unik.KEYAKINAN_MIN dari hotspot.json; pemilik 28 Okt 2026: keyakinan rendah ikut dihitung (25 Okt: sedang+tinggi saja) */
   /* pemilik 25 Okt 2026: yang dihitung = lokasi unik ~375 m per hari WIB dari 4 satelit (AngkaKawasan.unik = titik_unik.py).
      Dihitung ulang tiap S.titik berganti atau bertambah (titik_live.js menambah baris /api/titik) */
   S.dihitung = b => { if (S._unikDari !== S.titik || S._unikN !== S.titik.length) { S._unik = AngkaKawasan.unik(S.titik, S.kmin); S._unikDari = S.titik; S._unikN = S.titik.length; } return S._unik.has(b); };
@@ -1906,7 +1906,7 @@ const tglLain = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID",
 /* "Hari ini" / "Kemarin" menurut jam WIB sekarang (sama dengan label tombol: data yang terlambat sehari tampil "Kemarin"), selain itu "" */
 const relRentang = () => { const l = labelHari(tglRentang()); return l === "Hari ini" || l === "Kemarin" ? l : ""; };
 const namaRentang = () => relRentang().toLowerCase() || tglLain(tglRentang());
-/* Hotspot mundur (pemilik, 28 Okt 2026): selama belum ada satu titik TERHITUNG (lolos S.dihitung, kriteria yang sama dengan hitungan; titik keyakinan rendah tidak dihitung)
+/* Hotspot mundur (pemilik, 28 Okt 2026): selama belum ada satu titik TERHITUNG (lolos S.dihitung, kriteria yang sama dengan hitungan)
    bertanggal hari ini (FIRMS belum menerbitkan lintasan baru, atau lewat 00.00 WIB sebelum lintasan malam pertama), "0" terbaca "tidak ada api" padahal artinya
    "belum ada data". Dua keadaan, keduanya {hari: "YYYY-MM-DD" WIB, jam: ms deteksi terhitung terbaru} diisi hitung(), selain itu null:
    S.hariKosong = FAKTA: hari ini belum punya titik terhitung; diisi pada rentang APA PUN (Hari ini atau Kemarin). Dibaca konsumen yang selalu tentang hari ini
@@ -1934,7 +1934,7 @@ function hitung() {
     for (const b of S.titik) {
       if (b[3] === "N" && b[5] >= 1 && masuk(b)) for (const k of S.wilKunci[b[6]]) snpp[k] = (snpp[k] || 0) + 1; /* sebanding dengan arsip riwayat */
       if (!S.dihitung(b)) continue;
-      if (b[7] === S.hariIni) ada = true;   /* kriteria sama dengan hitungan (titik keyakinan rendah tidak menghentikan mundur); jalur umum tanpa iterasi tambahan */
+      if (b[7] === S.hariIni) ada = true;   /* kriteria sama dengan hitungan; jalur umum tanpa iterasi tambahan */
       if (!masuk(b)) continue;
       for (const k of S.wilKunci[b[6]]) { per[k] = (per[k] || 0) + 1; if (b[5] === 2) tinggi[k] = (tinggi[k] || 0) + 1; }
     } };
@@ -5626,7 +5626,7 @@ function renderMetode() {
       "Arsip riwayat, kalender musim, lapisan lahan, bandara, Daops, dan luas terbakar tidak diperbarui harian."]});
 
   B.push({ik: "sensor", j: "Titik panas (hotspot)", sub: "Angka titik panas per hari platform ini (lokasi unik dari empat satelit; bukan angka resmi BNPB)",
-    singkat: `Satelit NASA melintas di atas Indonesia beberapa kali sehari dan menandai piksel yang jauh lebih panas dari sekitarnya. Satu tanda itu disebut titik panas (hotspot). Angka platform adalah jumlah LOKASI (kotak ± 375 m) yang terdeteksi panas dengan keyakinan sedang atau tinggi oleh salah satu dari empat satelit dalam satu hari WIB. Lokasi yang dilihat dua satelit, atau dua kali lintasan, dihitung sekali. Karena itu angkanya tidak sama dengan SiPongi/BNPB, yang menjumlahkan semua tanda dari tiga satelit termasuk keyakinan rendah.`,
+    singkat: `Satelit NASA melintas di atas Indonesia beberapa kali sehari dan menandai piksel yang jauh lebih panas dari sekitarnya. Satu tanda itu disebut titik panas (hotspot). Angka platform adalah jumlah LOKASI (kotak ± 375 m) yang terdeteksi panas oleh salah satu dari empat satelit dalam satu hari WIB, pada semua tingkat keyakinan. Keyakinan rendah ikut dihitung karena api gambut yang membara bersuhu rendah dan sering tertutup asap, sehingga satelit sering menandainya dengan keyakinan rendah. Lokasi yang dilihat dua satelit, atau dua kali lintasan, dihitung sekali. Karena itu angkanya tidak sama dengan SiPongi/BNPB, yang menjumlahkan semua tanda dari tiga satelit tanpa menggabungkan lokasi yang sama.`,
     alur: [["d", "sensor", "Satelit melintas", "MODIS, VIIRS S-NPP, NOAA-20, NOAA-21"], ["d", "berkas", "Ambil 7 hari terakhir", "NASA FIRMS, diulang bila gagal"], ["o", "pin", "Tempatkan di kecamatan", "titik di laut atau negara tetangga dibuang"],
       ["o", "hitung", "Hitung lokasi unik per hari WIB", "kotak ± 375 m sekali sehari, empat satelit, keyakinan sedang dan tinggi"], ["h", "grafik", "Angka platform", "per provinsi, kabupaten, kecamatan"]],
     contoh: () => {
@@ -5642,7 +5642,7 @@ function renderMetode() {
         ["hasil", "Titik panas hari ini", "angka di kartu, peta, dan tabel", fmt(resmi) + " titik"]],
         `Lintasan yang masuk setelah jam jalan (${M.dibuat ? jamWIB(M.dibuat) : "–"}) belum terhitung untuk tanggal ini.`);
     },
-    teknis: `${h("Tujuan")}<p>Menghitung lokasi panas keyakinan sedang dan tinggi dari semua satelit yang tersedia tanpa menghitung api yang sama dua kali, dan menyediakan deteksi untuk pengelompokan cluster.</p>
+    teknis: `${h("Tujuan")}<p>Menghitung lokasi panas semua tingkat keyakinan dari semua satelit yang tersedia tanpa menghitung api yang sama dua kali, dan menyediakan deteksi untuk pengelompokan cluster.</p>
     ${h("Data masukan")}${tb(["Produk FIRMS", "Satelit", "Piksel nominal", "Dihitung di angka resmi", "Dipakai untuk cluster"], [
       ["VIIRS_SNPP_NRT", "Suomi NPP", "375 m", "ya (kode N)", "ya, keyakinan sedang/tinggi"], ["VIIRS_NOAA20_NRT", "NOAA-20", "375 m", "ya (N20)", "ya, sedang/tinggi"],
       ["VIIRS_NOAA21_NRT", "NOAA-21", "375 m", "ya (N21)", "ya, sedang/tinggi"], ["MODIS_NRT", "Terra & Aqua", "1 km", "ya (M)", "tidak"]])}
@@ -5653,7 +5653,7 @@ function renderMetode() {
       "Koordinat dibulatkan 4 desimal (± 11 m). Baris yang persis sama (lintang, bujur, waktu, sensor) hanya dihitung sekali. Ini membuang baris ganda dari API, bukan menggabungkan deteksi antarsatelit.",
       "Ukuran piksel sebenarnya = max(scan, track) dari FIRMS (km; kosong = 0,4). Dipakai DBSCAN.",
       "Wilayah: uji titik-dalam-poligon (ray casting) terhadap poligon kecamatan kode Kemendagri, diindeks per sel 0,5°. Hanya cincin luar yang dipakai (lubang diabaikan, batas sudah disederhanakan). Titik yang tidak jatuh di kecamatan mana pun dibuang (laut atau negara tetangga)."])}
-    ${h("Angka platform (bukan angka resmi pemerintah)")}<p>Jumlah lokasi unik per hari kalender WIB (00.00–23.59): deteksi MODIS, VIIRS S-NPP, NOAA-20, dan NOAA-21 keyakinan sedang dan tinggi ditempatkan di kisi 0,003375° (± 375 m, bujur dikali cos lintang), dan tiap kotak dihitung sekali per hari. Yang dihitung deteksi paling awal; wilayahnya ikut deteksi itu. Keputusan pemilik 25 Okt 2026: NOAA-20 dan NOAA-21 lewat berselang ± 50 menit di orbit yang sama, jadi menjumlahkan deteksi mentah menghitung api yang sama dua kali; dengan lokasi unik NOAA-21 tetap menambah lokasi yang terlewat satelit lain, dan pensiunnya S-NPP (1 Nov 2026) tidak membuat angka anjlok. Hari arsip laporan sebelum 25 Okt 2026 sudah dihitung ulang dengan cara ini dari unduhan ulang FIRMS. Jalan terakhir memuat ${fmt(M.jumlah_titik)} deteksi 7 hari (semua sensor).</p>
+    ${h("Angka platform (bukan angka resmi pemerintah)")}<p>Jumlah lokasi unik per hari kalender WIB (00.00–23.59): deteksi MODIS, VIIRS S-NPP, NOAA-20, dan NOAA-21 pada semua tingkat keyakinan ditempatkan di kisi 0,003375° (± 375 m, bujur dikali cos lintang), dan tiap kotak dihitung sekali per hari. Yang dihitung deteksi paling awal; wilayahnya ikut deteksi itu. Keputusan pemilik 25 Okt 2026: NOAA-20 dan NOAA-21 lewat berselang ± 50 menit di orbit yang sama, jadi menjumlahkan deteksi mentah menghitung api yang sama dua kali; dengan lokasi unik NOAA-21 tetap menambah lokasi yang terlewat satelit lain, dan pensiunnya S-NPP (1 Nov 2026) tidak membuat angka anjlok. Keputusan pemilik 28 Okt 2026: keyakinan rendah ikut dihitung (sebelumnya hanya sedang dan tinggi), karena api gambut yang membara bersuhu rendah dan tertutup asap sering jatuh di kelas rendah; di gambut Kalimantan Tengah MODIS melewatkan sekitar 60% kebakaran dan memasukkan titik keyakinan rendah memperbaiki kecocokan dengan luas terbakar (Tansey dkk. 2008). Luas terbakar dan cluster tetap memakai keyakinan sedang dan tinggi, karena faktornya diukur dari titik itu. Seluruh arsip dihitung ulang dengan definisi ini dari unduhan ulang FIRMS. Jalan terakhir memuat ${fmt(M.jumlah_titik)} deteksi 7 hari (semua sensor).</p>
     <p>Pilihan hari di peta: Hari ini, Kemarin, atau Tanggal lain. Tiap pilihan = satu hari kalender WIB (00.00–23.59), tidak dijumlahkan antarhari. Peta memuat <code>hotspot24.json</code> lebih dulu; <code>hotspot.json</code> baru dimuat saat tanggal yang lebih lama dipilih atau tren kecamatan dibuka.</p>
     <p><b>Kelipatan normal harian</b> (kartu titik panas, rentang "kemarin"): rata-rata titik VIIRS S-NPP keyakinan sedang/tinggi per hari pada bulan yang sama di tahun-tahun lalu (arsip <code>sejarah.json</code>, 2015 s.d. tahun lalu) = jumlah titik bulan itu ÷ jumlah tahun ÷ jumlah hari bulan itu. Pembandingnya hitungan S-NPP sedang/tinggi kemarin saja, supaya sebanding dengan arsip.</p>
     ${h("Validasi")}<p><b>Uji silang 11 Oktober 2026</b> terhadap dasbor BNPB: Jambi 181 vs 147, Sumsel 2.156 vs 1.991, Kalteng 4.227 vs 3.908, Kalsel 395 vs 445 (selisih 4–23%). Kalbar 796 vs 401 dan Riau 1 vs 8 belum cocok; metode BNPB tidak dipublikasikan.</p>

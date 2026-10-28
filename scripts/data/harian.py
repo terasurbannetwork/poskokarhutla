@@ -27,7 +27,7 @@ SENSOR = ["VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT", "MODIS_NRT"]
 HARI = 7
 
 # Hitungan utama (keputusan pemilik 25 Okt 2026): LOKASI UNIK ~375 m per hari kalender WIB dari MODIS + S-NPP + NOAA-20 + NOAA-21,
-# keyakinan sedang/tinggi saja (definisi di titik_unik.py). Sengaja tidak sama dengan SiPongi/GIS BNPB (titik mentah M+N+N20).
+# semua keyakinan sejak 28 Okt 2026 (definisi di titik_unik.py); cluster/kompleks tetap sedang/tinggi. Sengaja tidak sama dengan SiPongi/GIS BNPB (titik mentah M+N+N20).
 # Titik keyakinan rendah tetap ada di berkas titik dan digambar di peta; kolom "hitung" hotspot.json menandai deteksi yang dihitung.
 import titik_unik as TU  # noqa: E402
 # Kejadian api (FEDS, Chen dkk. 2022; Indradjad dkk. 2024): VIIRS 3 satelit, keyakinan nominal+tinggi,
@@ -508,6 +508,11 @@ def main():
     viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI)
              and not A.gunung_api(p["lat"], p["lon"])]
     label, inti = dbscan(viirs)
+    # VIIRS keyakinan rendah per piksel 375 m: hanya untuk persistensi bara gambut (gambut_bara.py), tidak ikut cluster
+    rendah = {}
+    for p in titik:
+        if p["s"] != "M" and p["c"] == 0 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI):
+            rendah.setdefault(pix(p), []).append(p)
     kluster = {}
     for p, l in zip(viirs, label):
         kluster.setdefault(l, []).append(p)
@@ -592,8 +597,10 @@ def main():
         bentuk, luas_ha = garis_api(pts)
         bara = None  # gambut bawah permukaan (gambut_bara.py): hanya jejak piksel yang jatuh di peta gambut
         if lv >= 2 and di_gambut:
-            bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"]) for p in pts if GAMBUT.cari(p["lon"], p["lat"])],
-                             luas_ha, wt_dekat(grid, g, lat0, lon0))
+            # + titik keyakinan rendah di piksel yang sama (menambah tanggal/malam, bukan jejak baru); malam = 18.00-06.00 WIB
+            pb = pts + [q for x in {pix(p) for p in pts} for q in rendah.get(x, ())]
+            bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"], not 6 <= p["t"].astimezone(WIB).hour < 18)
+                              for p in pb if GAMBUT.cari(p["lon"], p["lat"])], luas_ha, wt_dekat(grid, g, lat0, lon0))
         adm = w.cari(lon0, lat0) or max((p["adm"] for p in pts), key=[p["adm"] for p in pts].count)
         fitur.append({
             "type": "Feature",

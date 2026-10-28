@@ -9,8 +9,8 @@ Ambang lain ada di AMBANG dan ikut ditulis sebagai `taktik_ambang`. Ini ARAHAN P
 
 KEDALAMAN BARA. FRP sesaat TIDAK bisa menunjukkan kedalaman gambut: bara gambut berpijar rendah dan tertutup abu, dan FRP bercampur nyala
 vegetasi permukaan. Yang bisa ditaksir kasar hanya KEDALAMAN TERBAKAR (bukan ketebalan total gambut) dari energi radiatif terintegrasi:
-  m_kg = FRE_MJ x 0,368 (Wooster dkk. 2005 JGR 110 D24311: FRE linear terhadap massa terbakar, r2 0,98; koefisien 0,368 kg/MJ dari ingatan,
-         abstrak yang terverifikasi hanya memuat r2, jadi angkanya BELUM diverifikasi ke teks lengkap)
+  m_kg = FRE_MJ x 0,368 (Wooster dkk. 2005 JGR 110 D24311: FRE linear terhadap massa terbakar, r2 0,98; koefisien 0,368 kg/MJ dikonfirmasi TIDAK
+         langsung lewat Li dkk. 2018 JGR Biogeosci.: rentang lapangan/lab 0,368-0,453 kg/MJ, 0,368 dari api RUMPUT SAVANA; teks Wooster 2005 belum dibuka)
   D_m = m_kg / (A_m2 x BD), A = luas terbakar gambut_bara `a`, BD = gambut_bara.BD. FRE ~ sum(frp_MW x n x 600 s) sel Himawari-9 WLF dalam radius.
 FRP yang dijumlah = FRP pindaian TERAKHIR per sel x n pindaian berdeteksi (himawari.json hanya menyimpan FRP terbaru; FRP dianggap tetap sepanjang n, jadi kasar).
 Sel dijumlah hanya bila pusatnya dalam jari-jari ekuivalen kompleks + 1 km (setengah sel Himawari); A (gambut_bara `a`) = luas terbakar di dalam kompleks.
@@ -643,7 +643,7 @@ def uji():
     P = lambda r, m: [c for c in r["cara"] if c["metode"] == m][0]
     KB = lambda r: {**r["kebutuhan"]["total"], "energi": r["kebutuhan"]["energi"]}   # bentuk datar untuk uji
     dc = "2026-10-21T05:00:00Z"
-    bara = lambda fb=0.5, wt=None: GB.hitung([((2 * i, 0), tg, 10.0) for i in range(10) for tg in ("2026-10-15", "2026-10-16")][: 20 if fb >= 0.5 else 10] + ([((2 * i, 0), "2026-10-16", 5.0) for i in range(10, 20)] if fb >= 0.5 else []), 1000, wt=wt)
+    bara = lambda fb=0.5, wt=None: GB.hitung([((2 * i, 0), tg, 10.0, True) for i in range(10) for tg in ("2026-10-15", "2026-10-16")][: 20 if fb >= 0.5 else 10] + ([((2 * i, 0), "2026-10-16", 5.0, True) for i in range(10, 20)] if fb >= 0.5 else []), 1000, wt=wt)
     R = lambda t, op, kd, kl, h=None, omc=(), pm=None, koef=KOEF: rekomendasi(t, op, kd, kl, None, h, koef, list(omc), dc, pm)
     # darat_selang: kanal 0,3 km, kaki 0,4 km; peran utama
     r = R(T(), {"jenis": "mineral", "isi": 5}, {"air_km": 0.3, "kaki_km": 0.4}, None)

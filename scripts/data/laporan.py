@@ -4,7 +4,7 @@ Titik panas dan luas terdampak per hari, per kab/kota, per provinsi, dengan arsi
 Kontrak skema: lihat kunci-kunci di build(); halaman laporan membaca berkas ini.
 
 Definisi angka:
-  titik  = LOKASI UNIK ~375 m (titik_unik.py: M, N, N20, N21, keyakinan sedang/tinggi; keputusan pemilik 25 Okt 2026), satu sel sekali per
+  titik  = LOKASI UNIK ~375 m (titik_unik.py: M, N, N20, N21, semua keyakinan sejak 28 Okt 2026; keputusan pemilik 25 Okt 2026), satu sel sekali per
            hari laporan = jendela 24 jam s.d. 16.00 WIB (lihat 'Hari laporan'); BUKAN sama dengan wilayah.json harian (hari kalender).
            Hari arsip sebelum 25 Okt 2026 (dulu titik mentah M+N+N20) dihitung ulang sekali dari FIRMS 4 satelit: migrasi_titik().
   luas   = PERKIRAAN luas terbakar = titik VIIRS S-NPP (N) keyakinan >= 1 hari itu x HA_TITIK (4,3 ha)
@@ -48,7 +48,9 @@ HA_TITIK, HA_RENDAH, HA_TINGGI = 4.30, 3.22, 4.59   # ha per titik S-NPP; lihat 
 HA_PIKSEL, SEL = 14.06, 0.375 / 111.32   # 1 piksel VIIRS 375 m; sel kisi dalam derajat lintang
 PORSI_BAWAAN = 0.5338   # porsi S-NPP terhadap titik sensor utama bila tak ada hari ber-S-NPP di jendela: sama dengan peta_karhutla.PORSI (median 16-19 Okt 2026, deck BNPB)
 LUAS_V = 2
-MULAI_UNIK = "2026-10-25"   # hari laporan pertama yang build() hitung sebagai lokasi unik; hari arsip sebelumnya dimigrasi sekali (migrasi_titik)
+MULAI_UNIK = "2026-10-29"   # hari laporan pertama yang build() hitung dengan definisi titik_unik.py terkini; hari arsip sebelumnya dimigrasi sekali (migrasi_titik).
+                            # 25 Okt 2026: lokasi unik 4 satelit; 29 Okt 2026: + keyakinan rendah (titik_unik.KEYAKINAN_MIN = 0), jadi semua hari arsip dimigrasi ulang.
+KUNCI_MIGRASI = "titik_unik_v2"   # daftar hari arsip yang sudah berdefinisi terkini; "titik_unik" (v1, tanpa keyakinan rendah) tidak dipakai lagi
 ARSIP_HARI = 90
 TUTUP_JAM = 16   # jam WIB penutup hari laporan
 BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
@@ -188,7 +190,7 @@ def arsip_seri(arsip):
 
 
 def migrasi_titik(arsip, ambil_csv, cari, palsu=None):
-    """Hari arsip < MULAI_UNIK yang belum lokasi unik (arsip["titik_unik"]) dihitung ulang SEKALI dari FIRMS 4 satelit lewat hitung() yang
+    """Hari arsip < MULAI_UNIK yang belum berdefinisi terkini (arsip[KUNCI_MIGRASI]) dihitung ulang SEKALI dari FIRMS 4 satelit lewat hitung() yang
     sama dengan jendela hotspot.json: titik nasional/prov/kab hari itu = lokasi unik per hari laporan (D-1 16.00, D 16.00] WIB. Hari arsip
     sebelum 21 Okt 2026 (dulu hari kalender) ikut pindah ke jendela 16.00, jadi seluruh seri satu definisi.
     ambil_csv(u0, u1) -> ([(sumber, baris_csv)], ok) = firms_sumber.unduh 4 famili; cari(lon, lat) -> [prov, kab, kec] | None;
@@ -197,7 +199,7 @@ def migrasi_titik(arsip, ambil_csv, cari, palsu=None):
     from firms_sumber import SENSOR, kelas_yakin, penuh
     if not arsip or not arsip.get("hari"):
         return arsip
-    sudah = set(arsip.get("titik_unik") or [])
+    sudah = set(arsip.get(KUNCI_MIGRASI) or [])
     perlu = [d for d in arsip["hari"] if d < MULAI_UNIK and d not in sudah]
     if not perlu:
         return arsip
@@ -241,7 +243,8 @@ def migrasi_titik(arsip, ambil_csv, cari, palsu=None):
             v["titik"][i] = h.get((p,), 0)
         for k, v in kab.items():
             v["titik"][i] = h.get(k, 0)
-    a["titik_unik"] = sorted(sudah | set(selesai))
+    a[KUNCI_MIGRASI] = sorted(sudah | set(selesai))
+    a.pop("titik_unik", None)
     print(f"laporan: migrasi titik lokasi unik {len(selesai)} hari ({selesai[0]} s.d. {selesai[-1]}), belum {len(perlu) - len(selesai)}", file=sys.stderr)
     return a
 
@@ -498,7 +501,7 @@ def build(hs, kl, meta, luas_resmi, operasi, arsip, sekarang=None, sejarah=None,
         "awal_arsip": hari_iso[0] if hari_iso else None,
         "jadwal": {"tutup": "16.00 WIB", "pembaruan": "tiap 3 jam"},
         "luas_v": LUAS_V,
-        "titik_unik": sorted(d for d in ((arsip or {}).get("titik_unik") or []) if d in hari_iso),   # hari arsip yang sudah dimigrasi (migrasi_titik)
+        KUNCI_MIGRASI: sorted(d for d in ((arsip or {}).get(KUNCI_MIGRASI) or []) if d in hari_iso),   # hari arsip yang sudah dimigrasi (migrasi_titik)
         "luas_taksir": sorted(set(taksir) | set(d for d in hari_iso if d in ((arsip or {}).get("luas_taksir") or []))
                               | (set(hari_iso) - {x.isoformat() for x in hari} if (arsip or {}).get("luas_v") != LUAS_V else set())),
         "tahun_berjalan": tb,
@@ -633,22 +636,22 @@ def uji():
           "baris": [b(L(0.5, 101.5), "N", 1, 0, "12-31"), b(L(0.5, 101.5), "N", 1, 0, "12-31"),  # 2 titik S-NPP = 2 x 4,3 ha, tapi SATU lokasi
                     b(L(0.5, 101.52), "N21", 2, 0, "12-31"),                                    # N21 di sel lain (~2,2 km): lokasi kedua, bukan luas
                     b(L(0.5, 101.5), "N", 1, 0, "01-01"),
-                    b(L(0.7, 101.7), "M", 2, 1, "01-02"), b(L(0.8, 101.8), "N", 0, 1, "01-02"),  # M: titik tanpa luas; yak 0: bukan titik, bukan luas
+                    b(L(0.7, 101.7), "M", 2, 1, "01-02"), b(L(0.8, 101.8), "N", 0, 1, "01-02"),  # M: titik tanpa luas; yak 0: titik (28 Okt 2026), bukan luas
                     b(L(0.9, 101.9), "N20", 1, 1, "01-02"), b(L(0.9, 101.9), "N21", 1, 1, "01-02")]}  # N21 sel sama dengan N20: dobel, sekali
     acu, akhir, t, s, c = hitung(hs)
     assert akhir == dt.date(2026, 1, 2) and dt.date(2025, 12, 31) in t, (akhir, list(t))
     hari, o, ctx = seri(t, s, c)
-    # dampak: 12-31 dua titik S-NPP satu piksel -> 1 sel x 14,06; 01-02 N20 satu sel, N yak 0 tidak dihitung
+    # dampak: 12-31 dua titik S-NPP satu piksel -> 1 sel x 14,06; 01-02 N20 satu sel, N yak 0 tidak dihitung untuk dampak
     assert o[()]["dampak"] == [14, 14, 14], o[()]["dampak"]
     assert all(d >= l for d, l in zip(o[()]["dampak"], o[()]["luas"]))
     assert [d.isoformat() for d in hari] == ["2025-12-31", "2026-01-01", "2026-01-02"]
-    assert o[()]["titik"] == [2, 1, 2], o[()]   # N yak 0 (keyakinan rendah) DITOLAK
+    assert o[()]["titik"] == [2, 1, 3], o[()]   # N yak 0 (keyakinan rendah) IKUT jadi titik sejak 28 Okt 2026
     assert o[()]["luas"] == [9, 4, 0], o[()]["luas"]  # 2 / 1 / 0 titik S-NPP keyakinan >= 1, x 4,3 ha
     assert o[()]["baru"] == o[()]["luas"], o[()]["baru"]
     # celah S-NPP: hari tanpa titik S-NPP padahal sensor lain mencatat -> ditaksir titik x porsi median
     tc, sc = {1: {(): 10}, 2: {(): 10}, 3: {(): 10}}, {1: {(): 5}, 2: {(): 5}, 3: {(): 0}}
     assert isi_celah(tc, sc) == (0.5, ["3"]) and sc[3][()] == 5.0, sc
-    assert o[("14", "A")]["titik"] == [2, 1, 0] and o[("14", "B")]["titik"] == [0, 0, 2]
+    assert o[("14", "A")]["titik"] == [2, 1, 0] and o[("14", "B")]["titik"] == [0, 0, 3]
     # arsip: tanggal tertua memakai arsip; konteks menahan baru lama bila lebih kaya
     meta = {"dibuat": "2026-01-02T21:45+07:00", "provinsi": {"14": "Riau"}}
     arsip = {"hari": ["2025-12-30", "2025-12-31"], "nasional": {"titik": [5, 9], "luas": [70, 99], "baru": [70, 56]}, "prov": {}, "kab": [],
@@ -656,15 +659,16 @@ def uji():
     lap = build(hs, None, meta, None, None, arsip)
     assert lap["hari"] == ["2025-12-30", "2025-12-31", "2026-01-01", "2026-01-02"], lap["hari"]
     n = lap["nasional"]
-    # porsi median S-NPP = 1 (2/2, 1/1, 0/3); 01-02 tanpa S-NPP = celah -> 3 x 1 x 4,3. Arsip lama dikonversi titik x 1 x 4,3
-    assert n["titik"] == [5, 9, 1, 2] and n["luas"] == [22, 39, 4, 9], n  # tertua jendela (12-31) dari arsip
+    # porsi median S-NPP = 1 (2/2, 1/1, 0/3); 01-02 tanpa S-NPP = celah -> 3 titik x 1 x 4,3 = 13 (titik ikut keyakinan rendah sejak 28 Okt 2026;
+    # porsi dihitung dari titik berdefinisi sama, jadi di data nyata porsi turun sebanding dan taksiran celah tetap setara S-NPP n/h). Arsip lama dikonversi titik x 1 x 4,3
+    assert n["titik"] == [5, 9, 1, 3] and n["luas"] == [22, 39, 4, 13], n  # tertua jendela (12-31) dari arsip
     assert n["baru"] == n["luas"], n
     assert n["dampak"][:2] == [None, None] and n["dampak"][2:] == [14, 14], n["dampak"]   # arsip tanpa kolom dampak = None
     assert lap["luas_v"] == LUAS_V and konversi_arsip(lap, 0.1) is lap  # arsip baru tidak dikonversi ulang
     assert lap["awal_arsip"] == "2025-12-30" and n["kab"][2] == 1 and lap["prov"]["14"]["nama"] == "Riau"
     # arsip kosong: semua dari jendela
     lap0 = build(hs, None, meta, None, None, None)
-    assert lap0["hari"] == ["2026-01-01", "2026-01-02"] and lap0["nasional"]["titik"] == [1, 2], lap0["nasional"]  # tertua terpotong dibuang
+    assert lap0["hari"] == ["2026-01-01", "2026-01-02"] and lap0["nasional"]["titik"] == [1, 3], lap0["nasional"]  # tertua terpotong dibuang
     # tahun berjalan: sejarah s.d. sehari sebelum dibuat + luas harian sesudahnya
     sj = {"tahun": ["2026"], "dibuat": "2026-01-02", "prov": {"14": {"2026": [10000] + [0] * 11}}}
     tb = tahun_berjalan(sj, ["2025-12-31", "2026-01-01", "2026-01-02"], [9, 4, 7], "2026")
@@ -721,16 +725,16 @@ def uji():
     csv_m = [K(0.5, 101.5, "2026-10-02", "0300", "n"), K(0.5, 101.5, "2026-10-02", "0350", "h", "VIIRS_NOAA21_NRT"),   # sel sama 10-02: SATU
              K(0.5, 102.5, "2026-10-02", "0400", "n", "VIIRS_NOAA21_NRT"),                                             # kab B (baru di arsip)
              K(0.6, 101.5, "2026-10-02", "1000", "n"),                                                                  # 17.00 WIB = hari laporan 10-03
-             K(0.7, 101.5, "2026-10-02", "0300", "l"), K(0.8, 101.5, "2026-10-02", "0300", "h"), K(9, 9, "2026-10-02", "0300", "h")]   # rendah / sel palsu / laut
+             K(0.7, 101.5, "2026-10-02", "0300", "l"), K(0.8, 101.5, "2026-10-02", "0300", "h"), K(9, 9, "2026-10-02", "0300", "h")]   # rendah (dihitung) / sel palsu / laut
     fam = {"VIIRS_SNPP", "VIIRS_NOAA20", "VIIRS_NOAA21", "MODIS"}
     okm = {D: set(fam) for D in (dt.date(2026, 10, 1), dt.date(2026, 10, 2))}   # 30 Sep tak lengkap -> hari 10-01 tidak dimigrasi
     cari_m = lambda lon, lat: None if lon < 100 else ["14", "A" if lon < 102 else "B", "x"]
     mg = migrasi_titik(ar, lambda u0, u1: (csv_m, okm), cari_m, lambda la, lo: abs(la - 0.8) < 1e-6)
-    assert mg["nasional"]["titik"] == [100, 2, 7] and mg["prov"]["14"]["titik"] == [100, 2, 7], mg["nasional"]
-    assert {v["nama"]: v["titik"] for v in mg["kab"]} == {"A": [100, 1, 7], "B": [0, 1, 0]}, mg["kab"]
-    assert mg["titik_unik"] == ["2026-10-02"] and mg["nasional"]["luas"] == [9, 9, 9] and ar["nasional"]["titik"] == [100, 100, 7]
-    assert migrasi_titik(mg, lambda u0, u1: (csv_m, {D: set(fam) for D in (dt.date(2026, 9, 30), dt.date(2026, 10, 1))}), cari_m)["titik_unik"] == ["2026-10-01", "2026-10-02"]
-    assert migrasi_titik({**mg, "titik_unik": ["2026-10-01", "2026-10-02"]}, None, None)["titik_unik"] == ["2026-10-01", "2026-10-02"]   # selesai: tak mengunduh
+    assert mg["nasional"]["titik"] == [100, 3, 7] and mg["prov"]["14"]["titik"] == [100, 3, 7], mg["nasional"]   # baris "l" (0,7) ikut sejak 28 Okt 2026
+    assert {v["nama"]: v["titik"] for v in mg["kab"]} == {"A": [100, 2, 7], "B": [0, 1, 0]}, mg["kab"]
+    assert mg[KUNCI_MIGRASI] == ["2026-10-02"] and mg["nasional"]["luas"] == [9, 9, 9] and ar["nasional"]["titik"] == [100, 100, 7]
+    assert migrasi_titik(mg, lambda u0, u1: (csv_m, {D: set(fam) for D in (dt.date(2026, 9, 30), dt.date(2026, 10, 1))}), cari_m)[KUNCI_MIGRASI] == ["2026-10-01", "2026-10-02"]
+    assert migrasi_titik({**mg, KUNCI_MIGRASI: ["2026-10-01", "2026-10-02", "2026-10-25"]}, None, None)[KUNCI_MIGRASI] == ["2026-10-01", "2026-10-02", "2026-10-25"]   # selesai: tak mengunduh
     # luas_banding: sumber tanpa data suatu tahun = None (bukan 0); GWIS digabung di kode pertama grup
     sj2 = {"tahun": ["2025", "2026"], "dibuat": "2026-01-02", "prov": {"14": {"2025": [100] + [0] * 11, "2026": [10] + [0] * 11}}}
     tb2 = tahun_berjalan(sj2, ["2026-01-02"], [7], "2026")

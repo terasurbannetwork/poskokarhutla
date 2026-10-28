@@ -4,7 +4,7 @@ Keluaran:
   public/data/titik_hari/indeks.json      jumlah lokasi unik per hari 1 Jan s.d. sd (semua hari) + daftar hari berarsip (>= AMBANG)
   public/data/titik_hari/<YYYY-MM-DD>.json titik hari itu, baris berformat SAMA dengan hotspot.json (harian.py titik_json) kecuali
                                            kolom jam = jam sejak 00.00 WIB hari itu (peramban mengubahnya ke jam relatif acuan)
-Definisi titik = titik_tahun.py: MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21, keyakinan sedang/tinggi, tanpa sumber panas tetap,
+Definisi titik = titik_tahun.py: MODIS + VIIRS S-NPP + NOAA-20 + NOAA-21, semua keyakinan (titik_unik.KEYAKINAN_MIN), tanpa sumber panas tetap,
 hari kalender WIB, dalam poligon provinsi. Kolom hitung menandai lokasi unik ~375 m (titik_unik.py), jadi jumlah di indeks
 = jumlah baris hitung=1 = angka peta untuk hari itu.
 
@@ -88,7 +88,7 @@ def main(tahun, sd, *berkas):
         if f[:4] == tahun and f.endswith(".json") and f[:-5] not in arsip:
             os.remove(os.path.join(KELUAR, f))
     with open(os.path.join(KELUAR, "indeks.json"), "w") as f:
-        json.dump({"sumber": "NASA FIRMS MODIS C6.1, VIIRS S-NPP, NOAA-20, NOAA-21 (SP + NRT), lokasi unik ~375 m per hari WIB, keyakinan sedang/tinggi, tanpa sumber panas tetap",
+        json.dump({"sumber": "NASA FIRMS MODIS C6.1, VIIRS S-NPP, NOAA-20, NOAA-21 (SP + NRT), lokasi unik ~375 m per hari WIB, semua keyakinan, tanpa sumber panas tetap",
                    "tahun": tahun, "sd": sd, "ambang": AMBANG, "dibuat": dt.date.today().isoformat(),
                    "jumlah": jumlah, "arsip": arsip}, f, separators=(",", ":"))
     print(len(arsip), "hari berarsip dari", len(jumlah), file=sys.stderr)
