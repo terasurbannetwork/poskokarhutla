@@ -153,6 +153,16 @@ def hitung(i, h, tg, txt, negatif, rain, maks, hari_ada, air_kab, nb, D):
     return b
 
 
+def banding(baris):
+    """berapa klaim ber-CHIRPS yang hujannya di atas median normal 1-15 Okt kab itu."""
+    ok = [b for b in baris if b.get("rata_mm") not in (None, "") and b.get("median_1_15okt_mm") not in (None, "") and not b["klaim"].startswith("(klaim nihil)")]
+    atas = [b for b in ok if b["rata_mm"] > b["median_1_15okt_mm"]]
+    cocok = [b for b in ok if b["vonis"] == "cocok"]
+    ca = [b for b in cocok if b["rata_mm"] > b["median_1_15okt_mm"]]
+    return (f"Dari {len(ok)} klaim berhujan yang punya CHIRPS, {len(atas)} memiliki hujan di atas median normal 1-15 Okt kab itu; "
+            f"dari {len(cocok)} yang berstatus cocok, {len(ca)} di atas median (sisanya hujan serupa hari-hari tanpa OMC, yang di banyak kab mediannya 0 mm).")
+
+
 def tulis_md(baris):
     from collections import Counter
     c = Counter(b["vonis"] for b in baris)
@@ -162,6 +172,9 @@ def tulis_md(baris):
          "Klaim di luar kab/kota (kecamatan, taman nasional, jalan tol) dan klaim tanggal 25 sampai 27 Okt tanpa METAR hujan tidak bisa dicek.", "",
          "Ringkasan: " + ", ".join(f"{k} {v}" for k, v in sorted(c.items())), "",
          "Aturan: cocok bila rata-rata kab >= 1 mm atau METAR hujan; lemah 0,1 sampai 1 mm; tidak cocok < 0,1 mm dan METAR kering atau tanpa METAR. "
+         "Catatan: \"cocok\" hanya berarti ada hujan di kab itu pada hari itu, bukan bahwa OMC yang menyebabkannya; lihat kolom median normal 1-15 Okt. "
+         "Asimetri METAR: METAR hujan di bandara dalam kab otomatis menaikkan vonis jadi cocok, tetapi METAR kering tidak menurunkannya (satu titik tak mewakili kab). "
+         + banding(baris) + " "
          "CHIRPS memiliki resolusi 5 km dan hari UTC, hujan sore di sebagian kecil kab dapat luput dari rata-rata. Satu kab = satu klaim.", "",
          "| Tanggal | Provinsi | Kab/kota | Rata (mm) | Maks sel | METAR | Median 1-15 Okt | Tetangga kontrol | Vonis |", "|---|---|---|---:|---:|---|---:|---:|---|"]
     for b in baris:
