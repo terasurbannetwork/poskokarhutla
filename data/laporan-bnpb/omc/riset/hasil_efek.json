@@ -1,0 +1,501 @@
+{
+ "hari": [
+  1,
+  2,
+  3,
+  4,
+  5,
+  6,
+  7,
+  8,
+  9,
+  10,
+  11,
+  12,
+  13,
+  14,
+  15,
+  16,
+  17,
+  18,
+  19,
+  20,
+  21,
+  22,
+  23,
+  24
+ ],
+ "n_sel": 4434,
+ "n_kab": 200,
+ "tak_cocok": [
+  [
+   "2026-10-17",
+   "Sumatera Selatan",
+   "timur-tenggara Palembang (dry ice)"
+  ],
+  [
+   "2026-10-17",
+   "Sumatera Selatan",
+   "timur laut Palembang"
+  ],
+  [
+   "2026-10-19",
+   "Kalimantan Selatan",
+   "Delta Barito"
+  ],
+  [
+   "2026-10-19",
+   "Sumatera Selatan",
+   "timur laut-timur Palembang"
+  ],
+  [
+   "2026-10-19",
+   "Sumatera Selatan",
+   "tenggara Palembang (dry ice)"
+  ],
+  [
+   "2026-10-20",
+   "Kalimantan Tengah",
+   "perbatasan Seruyan-Kotawaringin Barat (NaCl)"
+  ],
+  [
+   "2026-10-20",
+   "Sumatera Selatan",
+   "timur laut-timur Palembang"
+  ],
+  [
+   "2026-10-21",
+   "Kalimantan Tengah",
+   "dll."
+  ],
+  [
+   "2026-10-21",
+   "Sumatera Selatan",
+   "timur"
+  ],
+  [
+   "2026-10-21",
+   "Sumatera Selatan",
+   "tenggara"
+  ],
+  [
+   "2026-10-21",
+   "Sumatera Selatan",
+   "barat daya"
+  ],
+  [
+   "2026-10-21",
+   "Sumatera Selatan",
+   "barat laut Palembang"
+  ],
+  [
+   "2026-10-21",
+   "Sumatera Selatan",
+   "sekitar bandara dan kota Palembang"
+  ],
+  [
+   "2026-10-22",
+   "Kalimantan Tengah",
+   "TNTP"
+  ],
+  [
+   "2026-10-22",
+   "Sumatera Selatan",
+   "Palembang dan sekitarnya"
+  ],
+  [
+   "2026-10-22",
+   "Sumatera Selatan",
+   "lintas Lampung-OKU Timur"
+  ],
+  [
+   "2026-10-23",
+   "Sumatera Selatan",
+   "Palembang dan sekitarnya"
+  ],
+  [
+   "2026-10-24",
+   "Sumatera Selatan",
+   "Palembang dan sekitarnya"
+  ],
+  [
+   "2026-10-26",
+   "Jawa Timur",
+   "Malang"
+  ],
+  [
+   "2026-10-26",
+   "Jawa Timur",
+   "Pasuruan"
+  ],
+  [
+   "2026-10-26",
+   "Jawa Timur",
+   "Probolinggo"
+  ],
+  [
+   "2026-10-26",
+   "Jawa Timur",
+   "Jember"
+  ],
+  [
+   "2026-10-26",
+   "Jawa Timur",
+   "Bondowoso"
+  ],
+  [
+   "2026-10-27",
+   "Kalimantan Selatan",
+   "tenggara Banjarbaru"
+  ],
+  [
+   "2026-10-27",
+   "Kalimantan Tengah",
+   "Kalteng bagian barat"
+  ],
+  [
+   "2026-10-27",
+   "Kalimantan Tengah",
+   "Kalteng"
+  ],
+  [
+   "2026-10-27",
+   "Kalimantan Tengah",
+   "Kalsel"
+  ],
+  [
+   "2026-10-27",
+   "Papua Selatan",
+   "Merauke"
+  ],
+  [
+   "2026-10-27",
+   "Papua Selatan",
+   "Boven Digoel"
+  ],
+  [
+   "2026-10-27",
+   "Papua Selatan",
+   "Mappi"
+  ],
+  [
+   "2026-10-27",
+   "Papua Selatan",
+   "Merauke"
+  ],
+  [
+   "2026-10-27",
+   "Sumatera Selatan",
+   "timur-barat laut Palembang"
+  ]
+ ],
+ "kontaminasi_provhari": 42,
+ "dt": "2026-10-28T03:34Z",
+ "nperm": 5000,
+ "primer": {
+  "d": {
+   "b": -0.5480545163821282,
+   "se": 1.0697934439544736,
+   "df": 23,
+   "persen": -23.938410871852636,
+   "n_perlakuan": 109,
+   "n_kontrol": 4325,
+   "rata_perlakuan": 1.7413811496525962,
+   "ci90": [
+    -104.02314753272628,
+    56.14632578902101
+   ],
+   "ci95": [
+    -120.60137381266277,
+    72.7245520689575
+   ],
+   "p_permutasi": 0.5384,
+   "sd_permutasi": 0.8700778394952555,
+   "mde_persen": 106.41128670831866,
+   "terdeteksi95": false
+  }
+ },
+ "tanpa_kov": {
+  "d": {
+   "b": -0.743161167335232,
+   "se": 1.3732034076941728,
+   "df": 23,
+   "persen": -29.91139101370648,
+   "n_perlakuan": 109,
+   "n_kontrol": 4325,
+   "rata_perlakuan": 1.7413811496525962,
+   "ci90": [
+    -124.63685437814438,
+    64.81407235073142
+   ],
+   "ci95": [
+    -144.24583645892974,
+    84.42305443151677
+   ],
+   "p_permutasi": 0.4818,
+   "sd_permutasi": 1.054465293333503,
+   "mde_persen": 118.83487760085,
+   "terdeteksi95": false
+  }
+ },
+ "anomali": {
+  "d": {
+   "b": 0.19398024855809068,
+   "se": 0.9289269097247559,
+   "df": 23,
+   "persen": -13.076825037012444,
+   "n_perlakuan": 109,
+   "n_kontrol": 4325,
+   "rata_perlakuan": -1.4833894925492388,
+   "ci90": [
+    94.24909239275955,
+    -120.40274246678442
+   ],
+   "ci95": [
+    116.46647636677497,
+    -142.62012644079985
+   ],
+   "p_permutasi": 0.7908,
+   "sd_permutasi": 0.7202830284725937,
+   "mde_persen": -135.9583905544159,
+   "terdeteksi95": true
+  }
+ },
+ "indikator": {
+  "d": {
+   "b": 0.12045938610407751,
+   "se": 0.09651719714578444,
+   "df": 23,
+   "persen": 48.86531000641824,
+   "n_perlakuan": 109,
+   "n_kontrol": 4325,
+   "rata_perlakuan": 0.3669724770642202,
+   "ci90": [
+    -18.23785091774296,
+    115.96847093057946
+   ],
+   "ci95": [
+    -32.12877985480766,
+    129.85939986764416
+   ],
+   "p_permutasi": 0.1282,
+   "sd_permutasi": 0.08038144140728277,
+   "mde_persen": 91.30064251913574,
+   "terdeteksi95": false
+  }
+ },
+ "log": {
+  "d": {
+   "b": 0.08463020581251554,
+   "se": 0.19647713842967945,
+   "df": 23,
+   "persen": 8.83145398859433,
+   "n_perlakuan": 109,
+   "n_kontrol": 4325,
+   "rata_perlakuan": 0.6262511908512417,
+   "ci90": [
+    -22.283793118807992,
+    52.404316327202835
+   ],
+   "ci95": [
+    -27.516680167472384,
+    63.40704874773526
+   ],
+   "p_permutasi": 0.6182,
+   "sd_permutasi": 0.16002252738093237,
+   "mde_persen": 56.52774250220205,
+   "terdeteksi95": false
+  }
+ },
+ "bahan": {
+  "nacl": {
+   "b": -0.15564739779293638,
+   "se": 1.185087656751767,
+   "df": 23,
+   "persen": -7.788334873821029,
+   "n_perlakuan": 103,
+   "n_kontrol": 4331,
+   "rata_perlakuan": 1.8428208282731358,
+   "ci90": [
+    -109.4205733202364,
+    93.84390357259434
+   ],
+   "ci95": [
+    -130.4593169879084,
+    114.88264724026632
+   ],
+   "p_permutasi": 0.865,
+   "sd_permutasi": 0.9110687820938054,
+   "mde_persen": 127.6473929677737,
+   "terdeteksi95": false
+  },
+  "dry": {
+   "b": -1.5596947945008308,
+   "se": 0.6403872048828322,
+   "df": 23,
+   "persen": -83.16917801632958,
+   "n_perlakuan": 35,
+   "n_kontrol": 4399,
+   "rata_perlakuan": 0.31563309943915424,
+   "ci90": [
+    -141.69448448293966,
+    -24.64387154971953
+   ],
+   "ci95": [
+    -153.80972409238845,
+    -12.528631940270747
+   ],
+   "p_permutasi": 0.0206,
+   "sd_permutasi": 0.6688997378212742,
+   "mde_persen": 99.8715622986145,
+   "terdeteksi95": true
+  }
+ },
+ "provinsi": {
+  "d_Kalimantan Tengah": {
+   "b": -0.7879403080594577,
+   "se": 1.0370803524372982,
+   "df": 23,
+   "persen": -35.06679347212957,
+   "n_perlakuan": 46,
+   "n_kontrol": 4388,
+   "rata_perlakuan": 1.4590296314238829,
+   "ci90": [
+    -114.16987610779896,
+    44.036289163539834
+   ],
+   "ci95": [
+    -130.54489159830175,
+    60.4113046540426
+   ],
+   "p_permutasi": 0.4226,
+   "sd_permutasi": 0.982162709553121,
+   "mde_persen": 122.38951391495142,
+   "terdeteksi95": false,
+   "p_holm": 1
+  },
+  "d_Sumatera Selatan": {
+   "b": -0.419441688354611,
+   "se": 0.7194395556981282,
+   "df": 23,
+   "persen": -28.115009817886317,
+   "n_perlakuan": 19,
+   "n_kontrol": 4415,
+   "rata_perlakuan": 1.0724364616852617,
+   "ci90": [
+    -110.76431803471706,
+    54.53429839894443
+   ],
+   "ci95": [
+    -127.87343258798066,
+    71.643412952208
+   ],
+   "p_permutasi": 0.6214,
+   "sd_permutasi": 0.8102754192160058,
+   "mde_persen": 152.07483089313826,
+   "terdeteksi95": false,
+   "p_holm": 1
+  },
+  "d_Kalimantan Selatan": {
+   "b": -1.1648478659265984,
+   "se": 1.7810497578518176,
+   "df": 23,
+   "persen": -53.56334793822102,
+   "n_perlakuan": 27,
+   "n_kontrol": 4407,
+   "rata_perlakuan": 1.009862847209019,
+   "ci90": [
+    -193.9264063921776,
+    86.79971051573551
+   ],
+   "ci95": [
+    -222.9827614657719,
+    115.85606558932984
+   ],
+   "p_permutasi": 0.3248,
+   "sd_permutasi": 1.1954564956916285,
+   "mde_persen": 153.91831969734815,
+   "terdeteksi95": false,
+   "p_holm": 1
+  },
+  "d_Kalimantan Barat": {
+   "b": 0.9153491805504478,
+   "se": 1.3267136651116795,
+   "df": 23,
+   "persen": 22.390264900987813,
+   "n_perlakuan": 15,
+   "n_kontrol": 4419,
+   "rata_perlakuan": 5.003506174664727,
+   "ci90": [
+    -33.229340201787146,
+    78.00987000376277
+   ],
+   "ci95": [
+    -44.74307474647478,
+    89.52360454845041
+   ],
+   "p_permutasi": 0.563,
+   "sd_permutasi": 1.544803817907619,
+   "mde_persen": 105.80441740296875,
+   "terdeteksi95": false,
+   "p_holm": 1
+  }
+ },
+ "plasebo_geser15": {
+  "pl": {
+   "b": -0.6851705092548313,
+   "se": 0.6443916921690456,
+   "df": 14,
+   "persen": -58.92279710113711,
+   "n_perlakuan": 139,
+   "n_kontrol": 2861,
+   "rata_perlakuan": 0.4776570260347462,
+   "ci90": [
+    -156.5274361711807,
+    38.68184196890649
+   ],
+   "ci95": [
+    -177.7781459147366,
+    59.932551712462356
+   ],
+   "p_permutasi": 0.299,
+   "sd_permutasi": 0.6424272322543031,
+   "mde_persen": 154.69157684368875,
+   "terdeteksi95": false
+  }
+ },
+ "plasebo_ruang": {
+  "n": 300,
+  "laju_tolak_5persen": 0.06666666666666667,
+  "sd_b": 0.6834093307865504,
+  "kab_pool": 23
+ },
+ "eksplor": {
+  "pm25_ln": {
+   "b": 0.0832445824905108,
+   "persen": 8.680759015125506,
+   "ci95": [
+    -54.24007491572497,
+    158.1190279125413
+   ],
+   "n_stasiun": 17,
+   "n_perlakuan": 22,
+   "n_obs": 96,
+   "p_permutasi": 0.759,
+   "mde_persen": 109.37293057535014
+  },
+  "vis_siang": {
+   "b": 2643.3465277777773,
+   "persen": 2643.3465277777773,
+   "ci95": [
+    87.85760828383582,
+    5198.835447271718
+   ],
+   "n_stasiun": 9,
+   "n_perlakuan": 4,
+   "n_obs": 197,
+   "p_permutasi": 0.0185,
+   "mde_persen": 3215.5552916156803
+  }
+ }
+}

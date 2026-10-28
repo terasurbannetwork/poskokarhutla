@@ -1,0 +1,162 @@
+tanggal,provinsi,kab,klaim,vonis,rata_mm,maks_sel_mm,metar,median_1_15okt_mm,tetangga_kontrol_mm,alasan
+2026-10-16,Kalimantan Barat,Kota Singkawang,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,10.5,20.5,,8.1,10.8,CHIRPS
+2026-10-16,Kalimantan Barat,Kota Pontianak,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,3.3,7.3,,0.0,7.6,CHIRPS
+2026-10-16,Kalimantan Barat,Kayong Utara,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,14.3,22.6,,1.4,9.1,CHIRPS
+2026-10-16,Kalimantan Barat,Bengkayang,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,10.8,21.8,,7.1,7.7,CHIRPS
+2026-10-16,Kalimantan Barat,Kubu Raya,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,9.1,23.6,WIOO hujan,3.8,5.2,CHIRPS + METAR
+2026-10-16,Kalimantan Barat,Mempawah,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,6.1,14.2,,6.6,7.7,CHIRPS
+2026-10-16,Kalimantan Barat,Ketapang,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,2.4,20.4,,0.8,4.4,CHIRPS
+2026-10-16,Kalimantan Barat,Sintang,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,5.5,27.7,,4.3,4.9,CHIRPS
+2026-10-16,Kalimantan Barat,Sambas,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,10.9,22.8,,5.7,10.6,CHIRPS
+2026-10-16,Kalimantan Barat,Landak,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Ponti,cocok,7.6,22.4,,5.8,7.4,CHIRPS
+2026-10-16,Kalimantan Selatan,Hulu Sungai Selatan,Tapin;Tabalong;Balangan;Hulu Sungai Tengah;Hulu Sungai Selatan;Hulu Sungai Utara (ringan),tidak cocok,0.1,3.3,,0.0,1.7,CHIRPS
+2026-10-16,Kalimantan Selatan,Hulu Sungai Tengah,Tapin;Tabalong;Balangan;Hulu Sungai Tengah;Hulu Sungai Selatan;Hulu Sungai Utara (ringan),lemah,0.3,4.9,,0.0,0.3,CHIRPS
+2026-10-16,Kalimantan Selatan,Hulu Sungai Utara,Tapin;Tabalong;Balangan;Hulu Sungai Tengah;Hulu Sungai Selatan;Hulu Sungai Utara (ringan),lemah,0.6,5.6,,0.0,4.3,CHIRPS
+2026-10-16,Kalimantan Selatan,Tabalong,Tapin;Tabalong;Balangan;Hulu Sungai Tengah;Hulu Sungai Selatan;Hulu Sungai Utara (ringan),cocok,10.7,26.8,,0.0,8.4,CHIRPS
+2026-10-16,Kalimantan Selatan,Balangan,Tapin;Tabalong;Balangan;Hulu Sungai Tengah;Hulu Sungai Selatan;Hulu Sungai Utara (ringan),lemah,0.5,4.6,,0.0,0.3,CHIRPS
+2026-10-16,Kalimantan Selatan,Tapin,Tapin;Tabalong;Balangan;Hulu Sungai Tengah;Hulu Sungai Selatan;Hulu Sungai Utara (ringan),tidak cocok,0.0,0,,0.0,2.5,CHIRPS
+2026-10-16,Kalimantan Tengah,Kotawaringin Barat,Kotawaringin Barat (sedang-lebat),cocok,2.4,14.2,,0.0,2.1,CHIRPS
+2026-10-16..2026-10-18,Kalimantan Barat,,hujan ringan–lebat di 8–11 kab/kota,tidak bisa dicek,,,,,,klaim agregat rentang tanggal
+2026-10-16..2026-10-18,Kalimantan Selatan,,hujan di HSU dan Banua Enam,tidak bisa dicek,,,,,,klaim agregat rentang tanggal
+2026-10-16..2026-10-18,Kalimantan Tengah,,"hujan di Kobar, Mura, Gumas, Barsel, Kotim, Kapuas",tidak bisa dicek,,,,,,klaim agregat rentang tanggal
+2026-10-16..2026-10-18,Sumatera Selatan,,hujan ringan di Palembang,tidak bisa dicek,,,,,,klaim agregat rentang tanggal
+2026-10-17,Kalimantan Barat,Bengkayang,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),cocok,7.7,18.2,,7.1,5.1,CHIRPS
+2026-10-17,Kalimantan Barat,Kubu Raya,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),cocok,0.4,6.7,WIOO hujan,3.8,2.4,CHIRPS + METAR
+2026-10-17,Kalimantan Barat,Mempawah,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),lemah,0.4,10.2,,6.6,2.6,CHIRPS
+2026-10-17,Kalimantan Barat,Ketapang,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),lemah,0.4,10.5,,0.8,2.0,CHIRPS
+2026-10-17,Kalimantan Barat,Sintang,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),cocok,2.7,20.9,,4.3,3.2,CHIRPS
+2026-10-17,Kalimantan Barat,Sanggau,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),cocok,6.8,25.9,,4.2,3.4,CHIRPS
+2026-10-17,Kalimantan Barat,Sambas,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),cocok,11.8,24.2,,5.7,6.1,CHIRPS
+2026-10-17,Kalimantan Barat,Landak,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),cocok,2.3,13.0,,5.8,3.8,CHIRPS
+2026-10-17,Kalimantan Tengah,Kotawaringin Timur,Murung Raya;Gunung Mas;Barito Selatan;Kotawaringin Barat;Kotawaringin Timur (ringan),tidak cocok,0.0,0,,0.0,0.0,CHIRPS
+2026-10-17,Kalimantan Tengah,Kotawaringin Barat,Murung Raya;Gunung Mas;Barito Selatan;Kotawaringin Barat;Kotawaringin Timur (ringan),tidak cocok,0.0,0,,0.0,0.0,CHIRPS
+2026-10-17,Kalimantan Tengah,Barito Selatan,Murung Raya;Gunung Mas;Barito Selatan;Kotawaringin Barat;Kotawaringin Timur (ringan),tidak cocok,0.0,0,,0.1,0.1,CHIRPS
+2026-10-17,Kalimantan Tengah,Murung Raya,Murung Raya;Gunung Mas;Barito Selatan;Kotawaringin Barat;Kotawaringin Timur (ringan),cocok,2.8,15.5,,0.8,3.0,CHIRPS
+2026-10-17,Kalimantan Tengah,Gunung Mas,Murung Raya;Gunung Mas;Barito Selatan;Kotawaringin Barat;Kotawaringin Timur (ringan),lemah,0.2,5.1,,0.1,1.8,CHIRPS
+2026-10-18,Kalimantan Barat,Kota Singkawang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,14.6,20.4,,8.1,14.3,CHIRPS
+2026-10-18,Kalimantan Barat,Kota Pontianak,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,11.6,16.8,,0.0,13.5,CHIRPS
+2026-10-18,Kalimantan Barat,Bengkayang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,14.7,40.7,,7.1,12.9,CHIRPS
+2026-10-18,Kalimantan Barat,Kubu Raya,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,10.8,24.6,WIOO hujan,3.8,11.9,CHIRPS + METAR
+2026-10-18,Kalimantan Barat,Mempawah,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,16.2,24.2,,6.6,11.8,CHIRPS
+2026-10-18,Kalimantan Barat,Ketapang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,2.0,19.7,,0.8,5.0,CHIRPS
+2026-10-18,Kalimantan Barat,Sintang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,2.7,20.3,,4.3,5.1,CHIRPS
+2026-10-18,Kalimantan Barat,Sekadau,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,6.4,26.7,,2.7,6.1,CHIRPS
+2026-10-18,Kalimantan Barat,Sanggau,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,9.5,27.5,,4.2,9.0,CHIRPS
+2026-10-18,Kalimantan Barat,Sambas,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,13.8,26.4,,5.7,14.7,CHIRPS
+2026-10-18,Kalimantan Barat,Landak,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;K,cocok,10.2,21.9,,5.8,12.8,CHIRPS
+2026-10-18,Kalimantan Selatan,Hulu Sungai Utara,Hulu Sungai Utara (radar),cocok,4.6,11.6,,0.0,1.0,CHIRPS
+2026-10-18,Kalimantan Tengah,Kapuas,Kapuas,cocok,2.8,12.3,,0.3,2.8,CHIRPS
+2026-10-18,Sumatera Selatan,,Tol Palindra (ringan),tidak bisa dicek,,,,,,bukan kab/kota di domain data
+2026-10-19,Kalimantan Barat,Kota Singkawang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,5.1,10.5,,8.1,8.2,CHIRPS
+2026-10-19,Kalimantan Barat,Kota Pontianak,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,16.1,20.9,,0.0,15.2,CHIRPS
+2026-10-19,Kalimantan Barat,Kayong Utara,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,13.4,20.4,,1.4,16.7,CHIRPS
+2026-10-19,Kalimantan Barat,Bengkayang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,10.7,25.8,,7.1,7.8,CHIRPS
+2026-10-19,Kalimantan Barat,Kubu Raya,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,16.7,26.1,WIOO hujan,3.8,11.1,CHIRPS + METAR
+2026-10-19,Kalimantan Barat,Mempawah,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,13.8,20.5,,6.6,13.4,CHIRPS
+2026-10-19,Kalimantan Barat,Ketapang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,7.2,26.6,,0.8,6.1,CHIRPS
+2026-10-19,Kalimantan Barat,Sintang,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,3.9,26.7,,4.3,5.7,CHIRPS
+2026-10-19,Kalimantan Barat,Sekadau,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,4.7,26.8,,2.7,4.1,CHIRPS
+2026-10-19,Kalimantan Barat,Sanggau,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,4.2,23.0,,4.2,9.2,CHIRPS
+2026-10-19,Kalimantan Barat,Sambas,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,5.7,15.3,,5.7,7.9,CHIRPS
+2026-10-19,Kalimantan Barat,Melawi,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,6.8,20.9,,0.7,3.5,CHIRPS
+2026-10-19,Kalimantan Barat,Landak,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;M,cocok,10.2,23.1,,5.8,11.3,CHIRPS
+2026-10-19,Kalimantan Selatan,Banjar,(klaim nihil) tidak terpantau hujan (radar 24 jam),klaim nihil sesuai,0.0,1.4,,0.0,0.4,CHIRPS
+2026-10-19,Kalimantan Selatan,Tabalong,(klaim nihil) tidak terpantau hujan (radar 24 jam),klaim nihil tidak sesuai,7.2,15.8,,0.0,7.3,CHIRPS
+2026-10-19,Kalimantan Selatan,Barito Kuala,(klaim nihil) tidak terpantau hujan (radar 24 jam),klaim nihil sesuai,0.2,3.3,,0.0,2.5,CHIRPS
+2026-10-19,Kalimantan Tengah,Kotawaringin Timur,Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,lemah,0.3,7.7,,0.0,,CHIRPS
+2026-10-19,Kalimantan Tengah,Kotawaringin Barat,Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,cocok,2.3,13.6,,0.0,3.1,CHIRPS
+2026-10-19,Kalimantan Tengah,Barito Selatan,Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,cocok,6.8,15.3,,0.1,4.7,CHIRPS
+2026-10-19,Kalimantan Tengah,Seruyan,Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,cocok,2.8,19.4,,0.0,4.9,CHIRPS
+2026-10-19,Sumatera Selatan,Ogan Ilir,Pemulutan Ogan Ilir;Kikim Timur Lahat (sangat ringan),tidak cocok,0.0,0,,0.0,0.0,CHIRPS
+2026-10-19,Sumatera Selatan,Lahat,Pemulutan Ogan Ilir;Kikim Timur Lahat (sangat ringan),tidak cocok,0.0,0,,0.0,0.0,CHIRPS
+2026-10-19,Sumatera Selatan,,"hujan sangat ringan Pemulutan (Ogan Ilir) dan Kikim Timur (Lahat), tak terukur penakar",tidak bisa dicek,,,,,,bukan kab/kota di domain data
+2026-10-20,Kalimantan Barat,Kota Singkawang,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,12.5,15.5,,8.1,11.6,CHIRPS
+2026-10-20,Kalimantan Barat,Kota Pontianak,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,9.9,14.7,,0.0,10.1,CHIRPS
+2026-10-20,Kalimantan Barat,Bengkayang,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,10.9,21.8,,7.1,10.3,CHIRPS
+2026-10-20,Kalimantan Barat,Kubu Raya,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,9.4,18.9,WIOO hujan,3.8,9.1,CHIRPS + METAR
+2026-10-20,Kalimantan Barat,Mempawah,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,10.8,22.2,,6.6,10.0,CHIRPS
+2026-10-20,Kalimantan Barat,Ketapang,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,1.4,19.2,,0.8,4.0,CHIRPS
+2026-10-20,Kalimantan Barat,Sanggau,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,6.1,26.3,,4.2,7.1,CHIRPS
+2026-10-20,Kalimantan Barat,Sambas,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,12.2,24.7,,5.7,11.7,CHIRPS
+2026-10-20,Kalimantan Barat,Landak,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-,cocok,9.7,21.7,,5.8,9.3,CHIRPS
+2026-10-20,Kalimantan Tengah,Kotawaringin Barat,Kotawaringin Barat (Pangkalan Bun),cocok,4.2,13.7,,0.0,2.2,CHIRPS
+2026-10-20,Sumatera Selatan,,belum ada laporan hujan 20-23 Okt,tidak bisa dicek,,,,,,bukan kab/kota di domain data
+2026-10-21,Kalimantan Barat,Kota Singkawang,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),tidak cocok,0.0,0,,8.1,3.2,CHIRPS
+2026-10-21,Kalimantan Barat,Kota Pontianak,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),tidak cocok,0.0,0,,0.0,1.3,CHIRPS
+2026-10-21,Kalimantan Barat,Bengkayang,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),cocok,2.2,8.9,,7.1,1.5,CHIRPS
+2026-10-21,Kalimantan Barat,Kubu Raya,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),cocok,2.2,9.9,WIOO kering,3.8,0.8,CHIRPS + METAR
+2026-10-21,Kalimantan Barat,Ketapang,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),lemah,0.8,8.5,,0.8,1.9,CHIRPS
+2026-10-21,Kalimantan Barat,Sanggau,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),cocok,2.7,18.5,,4.2,2.4,CHIRPS
+2026-10-21,Kalimantan Barat,Sambas,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),cocok,4.2,11.5,,5.7,1.1,CHIRPS
+2026-10-21,Kalimantan Barat,Landak,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),lemah,0.1,6.0,,5.8,1.9,CHIRPS
+2026-10-21,Kalimantan Tengah,Kotawaringin Barat,Kotawaringin Barat,lemah,0.7,12.5,,0.0,0.2,CHIRPS
+2026-10-21,Sumatera Selatan,,belum ada laporan hujan 21 Okt,tidak bisa dicek,,,,,,bukan kab/kota di domain data
+2026-10-22,Kalimantan Barat,Kota Singkawang,Sambas;Singkawang;Mempawah;Sintang (ringan radar),tidak cocok,0.0,0,,8.1,0.2,CHIRPS
+2026-10-22,Kalimantan Barat,Mempawah,Sambas;Singkawang;Mempawah;Sintang (ringan radar),lemah,0.2,5.1,,6.6,0.2,CHIRPS
+2026-10-22,Kalimantan Barat,Sintang,Sambas;Singkawang;Mempawah;Sintang (ringan radar),tidak cocok,0.0,9.8,,4.3,0.0,CHIRPS
+2026-10-22,Kalimantan Barat,Sambas,Sambas;Singkawang;Mempawah;Sintang (ringan radar),lemah,0.1,5.4,,5.7,0.2,CHIRPS
+2026-10-22,Kalimantan Tengah,Murung Raya,Murung Raya,tidak cocok,0.0,9.4,,0.8,0.0,CHIRPS
+2026-10-23,Kalimantan Barat,Bengkayang,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),cocok,11.7,20.2,,7.1,10.4,CHIRPS
+2026-10-23,Kalimantan Barat,Ketapang,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),cocok,1.0,14.1,,0.8,2.8,CHIRPS
+2026-10-23,Kalimantan Barat,Sintang,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),cocok,6.0,25.5,,4.3,4.3,CHIRPS
+2026-10-23,Kalimantan Barat,Sekadau,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),cocok,10.3,20.5,,2.7,10.4,CHIRPS
+2026-10-23,Kalimantan Barat,Sanggau,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),cocok,10.4,26.3,,4.2,9.0,CHIRPS
+2026-10-23,Kalimantan Barat,Sambas,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),cocok,12.2,27.3,,5.7,10.5,CHIRPS
+2026-10-23,Kalimantan Barat,Landak,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),cocok,10.2,23.0,,5.8,9.2,CHIRPS
+2026-10-23,Kalimantan Selatan,Kotabaru,Kotabaru,tidak cocok,0.0,0,,0.0,0.3,CHIRPS
+2026-10-23,Kalimantan Tengah,Murung Raya,Murung Raya (22 Okt),cocok,2.1,28.3,,0.8,2.2,CHIRPS
+2026-10-23,Lampung,Lampung Barat,ringan di TNWK dan Lampung Barat,lemah,0.5,5.0,,0.0,0.1,CHIRPS
+2026-10-24,Jawa Barat,,"24-25 Okt ringan-sedang sisi barat Ciremai, Ciamis, Sumedang, Tasikmalaya, Majalengka, Purwakarta; sisi timur Ciremai (yang terbakar) belum hujan",tidak bisa dicek,,,,,,bukan kab/kota di domain data
+2026-10-24,Kalimantan Selatan,Kotabaru,Tapin;Kotabaru,lemah,0.2,4.2,,0.0,0.3,CHIRPS
+2026-10-24,Kalimantan Selatan,Tapin,Tapin;Kotabaru,tidak cocok,0.0,0,,0.0,0.4,CHIRPS
+2026-10-24,Kalimantan Tengah,Seruyan,Seruyan (deras),cocok,3.6,23.5,,0.0,7.2,CHIRPS
+2026-10-24,Lampung,Lampung Tengah,"ringan Lampung Timur, Lampung Tengah, TNWK, lebat Way Kanan",tidak cocok,0.0,1.0,,0.0,0.7,CHIRPS
+2026-10-24,Lampung,Lampung Timur,"ringan Lampung Timur, Lampung Tengah, TNWK, lebat Way Kanan",tidak cocok,0.1,2.1,,0.0,0.2,CHIRPS
+2026-10-24,Lampung,Way Kanan,"ringan Lampung Timur, Lampung Tengah, TNWK, lebat Way Kanan",cocok,1.8,5.2,,0.0,3.1,CHIRPS
+2026-10-24,Sumatera Selatan,Ogan Komering Ilir,Musi Banyuasin;Palembang;Banyuasin;OKI (bervariasi),cocok,1.2,13.6,,0.0,1.6,CHIRPS
+2026-10-24,Sumatera Selatan,Musi Banyuasin,Musi Banyuasin;Palembang;Banyuasin;OKI (bervariasi),cocok,13.9,26.5,,0.0,14.2,CHIRPS
+2026-10-24,Sumatera Selatan,Kota Palembang,Musi Banyuasin;Palembang;Banyuasin;OKI (bervariasi),cocok,1.1,6.0,WIPP kering,0.0,7.5,CHIRPS + METAR
+2026-10-24,Sumatera Selatan,Banyuasin,Musi Banyuasin;Palembang;Banyuasin;OKI (bervariasi),cocok,3.9,14.7,,0.0,8.7,CHIRPS
+2026-10-25,Kalimantan Tengah,Kotawaringin Timur,"Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau",cocok,7.9,16.7,,0.0,7.2,CHIRPS
+2026-10-25,Kalimantan Tengah,Kotawaringin Barat,"Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau",cocok,4.1,14.3,,0.0,4.3,CHIRPS
+2026-10-25,Kalimantan Tengah,Kota Palangkaraya,"Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau",cocok,10.0,12.6,,0.0,9.7,CHIRPS
+2026-10-25,Kalimantan Tengah,Barito Utara,"Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau",cocok,12.0,29.8,,0.6,8.8,CHIRPS
+2026-10-25,Kalimantan Tengah,Pulang Pisau,"Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau",cocok,4.1,14.2,,0.0,11.4,CHIRPS
+2026-10-26,Jambi,Tanjung Jabung Timur,"Hujan ringan hingga sedang di Sungai Benuh, Labuhan Pering, dan Cemara, Kecamatan Sadu, Ta",tidak bisa dicek,,,,0.2,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Jawa Timur,,"Dampak (hujan): Kota Malang, Kab. Malang, Kab. Bondowoso, Kab. Jember",tidak bisa dicek,,,,,,bukan kab/kota di domain data
+2026-10-26,Kalimantan Barat,Kota Singkawang,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",tidak bisa dicek,,,,8.1,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Barat,Kota Pontianak,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Barat,Kubu Raya,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",cocok,,,WIOO hujan,3.8,,tanggal di luar CHIRPS; METAR bandara di kab mencatat hujan
+2026-10-26,Kalimantan Barat,Mempawah,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",tidak bisa dicek,,,,6.6,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Barat,Ketapang,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",tidak bisa dicek,,,,0.8,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Barat,Sintang,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",tidak bisa dicek,,,,4.3,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Barat,Sanggau,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",tidak bisa dicek,,,,4.2,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Barat,Landak,"Hujan dilaporkan di Pontianak, Kubu Raya, Sanggau, Singkawang, Ketapang, Mempawah, Sintang",tidak bisa dicek,,,,5.8,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Hulu Sungai Selatan,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Hulu Sungai Tengah,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Kota Banjarmasin,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Kota Banjarbaru,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",cocok,,,WAOO hujan,0.0,,tanggal di luar CHIRPS; METAR bandara di kab mencatat hujan
+2026-10-26,Kalimantan Selatan,Tanah Bumbu,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Tanah Laut,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Tabalong,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Kotabaru,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Banjar,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Selatan,Tapin,"Hujan dilaporkan di Banjarmasin, Banjarbaru, Banjar, Tanah Laut, Tanah Bumbu, Tapin, Hulu ",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Tengah,Kotawaringin Timur,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Tengah,Kotawaringin Barat,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Tengah,Kota Palangkaraya,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Tengah,Barito Utara,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,tidak bisa dicek,,,,0.6,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Kalimantan Tengah,Pulang Pisau,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Sumatera Selatan,Ogan Komering Ilir,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-26,Sumatera Selatan,Banyuasin,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Selatan,Tanah Bumbu,pptx slide 3: hujan di Kab Kotabaru dan Tanah Bumbu intensitas sedang,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Selatan,Kotabaru,pptx slide 3: hujan di Kab Kotabaru dan Tanah Bumbu intensitas sedang,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Tengah,Kotawaringin Timur,"Hujan ringan-lebat (radar BMKG) di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Tim",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Tengah,Kota Palangkaraya,"Hujan ringan-lebat (radar BMKG) di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Tim",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Tengah,Pulang Pisau,"Hujan ringan-lebat (radar BMKG) di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Tim",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Tengah,Gunung Mas,"Hujan ringan-lebat (radar BMKG) di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Tim",tidak bisa dicek,,,,0.1,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Tengah,Katingan,"Hujan ringan-lebat (radar BMKG) di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Tim",tidak bisa dicek,,,,0.2,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Tengah,Seruyan,"Hujan ringan-lebat (radar BMKG) di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Tim",tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Kalimantan Tengah,Kapuas,"Hujan ringan-lebat (radar BMKG) di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Tim",tidak bisa dicek,,,,0.3,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Sumatera Selatan,Ogan Komering Ulu Timur,pptx slide 3: hujan di Kab OKI dan OKU Timur sedang hingga lebat;,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)
+2026-10-27,Sumatera Selatan,Ogan Komering Ilir,pptx slide 3: hujan di Kab OKI dan OKU Timur sedang hingga lebat;,tidak bisa dicek,,,,0.0,,tanggal di luar CHIRPS (terakhir 24 Okt)

@@ -955,6 +955,11 @@ Disepakati pemilik setelah katalog di bawah ditelusuri. Menang atas butir mana p
 66. **Peta hanya daratan Indonesia.** Lapisan negara tetangga (sawit Malaysia, Brunei) tidak digambar.
 67. **Hotspot peta memakai hari terbaru** (hari paparan dibuat), label legenda "Hotspot 27 Oktober 2026, s.d. 10.53 WIB", dan tanggal sumber halaman itu ikut hari tersebut.
 68. **"Menjadi sawit" harus terbukti dari peta tahun tanam**, bukan dari citra saja: kebun muda belum tampak sebagai pohon di citra 10 m, yang terlihat baru blok dan jalan kebun. Lokasi yang sudah sawit sebelum api (tahun tanam lebih awal dari tahun api) adalah sawit terbakar, bukan contoh bakar lalu tanam; keterangan citra ditulis "Kebun sawit muda".
+69. **Header tabel tidak boleh patah kata** (28 Okt, deck OMC: *"Tanggal ya jangan gitu dong"*). Kapital rata tengah tanpa jarak huruf; kolom dilebarkan sampai header satu baris.
+70. **Tiap tabel ditutup garis bawah** di bawah baris terakhir (28 Okt: *"Garis bawahnya mana"*).
+71. **Bukti tidak disajikan sebagai tabel penuh kalimat** (28 Okt: *"Jelek banget sumpah ga pantes ini kaya gini penyajian datanya"*). Angka jadi grafik native, vonis jadi chip berikon, klaim jadi kartu berpil; paling banyak sekitar 12 kata per sel atau kartu.
+72. **Panel penjelasan memakai bahasa awam** (28 Okt: *"Buat agar bisa dipahami dengan baik oleh manusia"*). Istilah teknis diganti kata sehari-hari ("penyemaian garam", "awan dingin di pegunungan"); nama metode statistik tidak tampil.
+73. **Sumber dan kaki halaman mengikuti deck BNPB terakhir yang disetujui** (28 Okt: *"Sumber dan footernya harusnya ga gini"*): bilah biru di kiri, "Sumber:" tebal dan isinya miring, satu sampai dua baris di atas garis kaki; footer "Badan Nasional Penanggulangan Bencana | Copyright 2026" dan nomor halaman kanan.
 
 Disusun 26 Okt 2026 dari tiga sumber: (1) pesan mentah pemilik `masukan_ppt.txt` (15 Sep sampai 26 Okt, 288 baris, sebagian besar situs/kode dan dibuang), (2) memori `ppt-*`, `aturan-deck-26-okt-rinci`, `deck-urgen-kerjakan-di-berkas`, `selera-deck-malaysia`, `tanpa-titik-*`, `laporan-harian-bnpb`, (3) skill `ppt-konsultan` (`keputusan-pemilik.md`, `selera-presentasi.md`, `deck-operasional.md`, `gaya.md`, `gaya-bnpb.md`, `nada.md`, `angka-dan-copy.md`).
 
