@@ -1,0 +1,67 @@
+/* Uji integrasi /api/akademisi/karya/:id (src/akademisi.js) lewat Worker sungguhan di Miniflare: gerbang staf sebelum OpenAlex,
+   kunci API ikut, ringkasan karya, sumber gagal = 502. OpenAlex ditiru lewat outboundService. */
+import {test, before, after} from "node:test";
+import assert from "node:assert/strict";
+import path from "node:path";
+import {Miniflare} from "miniflare";
+import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+
+let mf, minta = [], jawab = null;
+const luar = async req => {
+  const u = new URL(req.url);
+  if (u.hostname !== "api.openalex.org") return new Response("diblok di uji", {status: 599});
+  minta.push(u);
+  return jawab ? jawab(u) : new Response("{}", {status: 500});
+};
+before(async () => {
+  mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
+    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-akademisi"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", OPENALEX_KEY: "kunci-uji"},
+    serviceBindings: {ASSETS: () => new Response("tidak ada", {status: 404})}, outboundService: luar, cache: false});
+  const DB = await mf.getD1Database("DB"); await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));
+});
+after(() => mf?.dispose());
+
+const ADMIN = {"x-admin-token": "rahasia-admin"};
+const api = async (j, h = {}) => { const r = await mf.dispatchFetch("http://akademisi.lokal" + j, {headers: h}); return {status: r.status, j: await r.json().catch(() => null)}; };
+const karya = (n, i) => ({id: "https://openalex.org/W" + i, doi: i % 2 ? "https://doi.org/10.1/x" + i : null, display_name: "Judul " + i, publication_year: 2020 + i,
+  cited_by_count: 100 - i, primary_location: {source: {display_name: "Jurnal " + i, type: "journal"}},
+  authorships: Array.from({length: n}, (_, k) => ({author: {id: "https://openalex.org/" + (k === 1 ? "A5017898742" : "A1" + k), display_name: "Penulis " + k}}))});
+
+test("tanpa sesi staf = 401 dan OpenAlex tidak dipanggil", async () => {
+  minta = [];
+  assert.equal((await api("/api/akademisi/karya/A5017898742")).status, 401);
+  assert.equal(minta.length, 0);
+});
+
+test("staf: 8 karya terurut sitasi dari OpenAlex dengan kunci API, diringkas (penulis maks 3 + dkk., DOI atau tautan OpenAlex)", async () => {
+  minta = []; jawab = u => u.pathname.startsWith("/authors/") ? new Response(JSON.stringify({counts_by_year: [{year: 2025, works_count: 9, cited_by_count: 400}, {year: 2024, works_count: 7, cited_by_count: 350}], summary_stats: {i10_index: 55}}))
+    : new Response(JSON.stringify({results: [karya(5, 1), karya(2, 2)]}));
+  const r = await api("/api/akademisi/karya/A5017898742", ADMIN);
+  assert.equal(r.status, 200);
+  const u = minta.find(x => x.pathname === "/works");
+  assert.equal(minta.find(x => x.pathname === "/authors/A5017898742").searchParams.get("api_key"), "kunci-uji");
+  assert.deepEqual(r.j.tahunan, [[2024, 7, 350], [2025, 9, 400]], "seri tahunan urut naik"); assert.equal(r.j.i10, 55);
+  assert.equal(u.searchParams.get("filter"), "author.id:A5017898742"); assert.equal(u.searchParams.get("sort"), "cited_by_count:desc");
+  assert.equal(u.searchParams.get("per-page"), "8"); assert.equal(u.searchParams.get("api_key"), "kunci-uji");
+  assert.deepEqual(r.j.karya[0], {judul: "Judul 1", url: "https://doi.org/10.1/x1", tahun: 2021, sitasi: 99, terbitan: "Jurnal 1", penulis: "Penulis 0, Penulis 1, Penulis 2 dkk.",
+    urutan: 2, jumlah_penulis: 5, jenis: "Jurnal"});
+  assert.equal(r.j.karya[1].url, "https://openalex.org/W2"); assert.equal(r.j.karya[1].penulis, "Penulis 0, Penulis 1");
+});
+
+test("profil penulis gagal: karya tetap tampil, seri tahunan kosong", async () => {
+  jawab = u => u.pathname.startsWith("/authors/") ? new Response("{}", {status: 500}) : new Response(JSON.stringify({results: [karya(1, 3)]}));
+  const r = await api("/api/akademisi/karya/A5017898744", ADMIN);
+  assert.equal(r.status, 200); assert.equal(r.j.karya.length, 1); assert.deepEqual(r.j.tahunan, []); assert.equal(r.j.i10, null);
+});
+
+test("OpenAlex menolak (429) = 502, layar menyembunyikan bagiannya", async () => {
+  jawab = () => new Response("{}", {status: 429});
+  const r = await api("/api/akademisi/karya/A5017898743", ADMIN);
+  assert.equal(r.status, 502); assert.match(r.j.galat, /OpenAlex 429/);
+});
+
+test("id bukan id penulis OpenAlex tidak mencapai rute", async () => {
+  minta = [];
+  assert.notEqual((await api("/api/akademisi/karya/W123456", ADMIN)).status, 200);
+  assert.equal(minta.length, 0);
+});

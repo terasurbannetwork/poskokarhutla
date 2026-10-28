@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/akademisi.css?v=7">
+<link rel="stylesheet" href="/akademisi.css?v=8">
 </head>
 <body>
 <header class="top">
@@ -30,11 +30,14 @@
   </div>
 </header>
 
-<div class="ak">
-  <section class="ak-judul">
-    <p class="lbl">Ruang BNPB</p>
+<section class="ak-kepala">
+  <div class="ak-kepala-isi">
     <h1>Direktori Pakar Kebencanaan</h1>
-  </section>
+    <p id="akAngka" class="ak-ringkas"></p>
+  </div>
+</section>
+
+<div class="ak">
 
   <section id="akMasuk" class="ak-panel ak-kosong" hidden>
     <h2>Masuk untuk membuka direktori</h2>
@@ -44,12 +47,14 @@
   <p id="akGalat" class="ak-panel" hidden></p>
 
   <section id="akIsi" hidden>
-    <div id="akAngka" class="ak-angka"></div>
-
+    <div class="ak-saring">
     <div class="ak-alat">
       <label class="ak-cari"><span class="sr">Cari pakar</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input id="akQ" type="search" autocomplete="off" placeholder="Cari nama, kampus, atau topik riset"></label>
+    </div>
+
+    <div class="ak-baris">
       <div class="ak-kampus-pilih">
         <button id="akKBtn" class="ak-kbtn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ak-ikon ak-kik" viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/></svg><span id="akKIsi"><em>Semua kampus dan lembaga</em></span>
           <svg class="ak-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -59,9 +64,6 @@
           <div id="akKDaftar" class="ak-kdaftar" role="listbox" aria-label="Kampus"></div>
         </div>
       </div>
-    </div>
-
-    <div class="ak-baris">
       <div class="ak-seg" id="akS" role="group" aria-label="Sumber">
         <button type="button" data-v="bukanx" aria-pressed="true">Dosen Indonesia</button><button type="button" data-v="s" aria-pressed="false">Terdaftar di SINTA</button><button type="button" data-v="" aria-pressed="false">Semua</button>
       </div>
@@ -70,6 +72,7 @@
       </div>
     </div>
     <div id="akRumpun" class="ak-chip" role="group" aria-label="Rumpun bahaya"></div>
+    </div>
 
     <p id="akJumlah" class="ak-jumlah" aria-live="polite"></p>
     <div id="akDaftar" class="ak-daftar"></div>
@@ -87,7 +90,7 @@
     <div id="akDIsi"></div>
   </article>
 </div>
-<script src="/akademisi.js?v=7"></script>
+<script src="/akademisi.js?v=8"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>
