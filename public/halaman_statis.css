@@ -1,0 +1,18 @@
+/* Halaman statis berkepala situs (404, 500, syarat). Token dari /inti/tema.css; gaya.css membuat <main> fixed, jadi isi memakai div.isi. */
+html,body{height:auto}
+body{padding-top:var(--top);background:var(--paper);color:var(--ink);font:15px/1.6 var(--font);overflow-x:hidden}
+.isi{max-width:720px;margin:0 auto;padding:32px 16px 56px}
+.isi a{color:var(--brand2)}
+.isi h2{font-size:16px;margin:28px 0 6px}
+.isi p,.isi li{margin:0 0 10px}
+.isi ol,.isi ul{padding-left:20px;margin:0 0 10px}
+.kecil{color:var(--ink2);font-size:13px}
+
+/* 404 / 500: satu kartu di tengah, kode besar oranye, satu aksi */
+.galat{min-height:calc(100vh - var(--top));display:grid;place-items:center;padding:24px 16px}
+.galat .kartu{max-width:460px;width:100%;background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:32px 24px;text-align:center}
+.galat .kode{font-family:var(--display);font-weight:800;font-size:64px;line-height:1;color:var(--f2);margin:0 0 12px}
+.galat h1{font-size:20px;line-height:1.3;margin:0 0 8px}
+.galat p{color:var(--ink2);margin:0 0 20px}
+.galat .aksi{display:inline-flex;align-items:center;justify-content:center;min-height:44px;padding:0 20px;border-radius:10px;border:0;background:var(--brand2);color:#fff;font-weight:600;text-decoration:none;cursor:pointer}
+.galat .catatan{font-size:13px;margin:16px 0 0}

@@ -633,6 +633,7 @@ export const HTML_RUTE = [
   ...ruteBencana(),   // "/", "/banjir/", tab dan kejadian dari registry; bencana "mati" tanpa rute
   [/^\/tentang-halaman\/?$/, "/tentang.html", "/tentang-halaman"],   /* /tentang kini tab di index.html (registry) */   // html_handling "none" mematikan /tentang -> tentang.html otomatis
   [/^\/privasi\/?$/, "/privasi.html", "/privasi"],
+  [/^\/syarat\/?$/, "/syarat.html", "/syarat"],
   [/^\/peringatan\/?$/, "/peringatan.html", "/peringatan"],
   [/^\/laporan\/?$/, "/laporan.html", "/laporan"],
   [/^\/paparan\/?$/, "/paparan.html", "/paparan"],   // deck paparan rakor karhutla per provinsi (public/paparan*)
@@ -725,9 +726,24 @@ function bisaDiIframe(res) {
   return new Response(res.body, {status: res.status, statusText: res.statusText, headers: h});
 }
 
-export default {
+/* 404/500 untuk peramban: halaman berkepala situs (public/404.html, public/500.html), bukan badan kosong atau halaman galat Cloudflare.
+   API, aset berekstensi selain .html, dan metode selain GET/HEAD tetap mendapat jawaban lama. */
+const mauHalaman = (req, url) => (req.method === "GET" || req.method === "HEAD") && !/^\/(api|mcp|ubin)(\/|$)/.test(url.pathname) && !/\.(?!html?$)[a-z0-9]{1,12}$/i.test(url.pathname);
+export async function halamanGalat(env, req, url, kode) {
+  try {
+    const a = await env.ASSETS.fetch(new Request(new URL(`/${kode}.html`, url)));
+    if (a.ok) return new Response(req.method === "HEAD" ? null : a.body, {status: kode, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff"}});
+  } catch (e) { console.error("halaman galat", kode, e); }
+  return new Response(kode === 404 ? "Tidak ditemukan" : "Galat server", {status: kode});
+}
+
+const W = {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
+    try { return await W.layani(req, env, ctx, url); }
+    catch (e) { console.error("fetch", url.pathname, e); return mauHalaman(req, url) ? halamanGalat(env, req, url, 500) : gagal(500, "galat server"); }
+  },
+  async layani(req, env, ctx, url) {
     /* API terbuka mitra: di SEMUA host (termasuk centurisk97.id), sebelum gerbang halaman dan pencatatan pemirsa. /api = dokumentasinya (public/api.html). */
     if (url.pathname === "/api/v1" || url.pathname.startsWith("/api/v1/")) return layaniApiV1(req, env, ctx, url);
     if (url.pathname === "/mcp" || url.pathname === "/mcp/") return layaniMcp(req, env, ctx, url);   // server MCP remote (src/mcp.js), juga di semua host
@@ -779,7 +795,7 @@ export default {
     const r = await rute(env, req, url, ctx); if (r) return r;
     const h = await layaniHTML(req, env, ctx, url);
     if (h) return /^\/presiden\/?$/.test(url.pathname) ? bisaDiIframe(h) : h;
-    if (!url.pathname.startsWith("/api/warga")) return env.ASSETS.fetch(req);
+    if (!url.pathname.startsWith("/api/warga")) { const a = await env.ASSETS.fetch(req); return a.status === 404 && mauHalaman(req, url) ? halamanGalat(env, req, url, 404) : a; }
     const kini = Date.now(), p = url.pathname.replace(/\/+$/, "").split("/").slice(3);   // ["", "api", "warga", ...]
     try {
       if (req.method === "POST") {
@@ -849,6 +865,7 @@ export default {
     return bersihSemua(env, sekarang);
   },
 };
+export default W;
 
 // bersih-bersih Lapor Warga, foto, gempa, peringatan, EWS, gangguan, garam IP (dulu cron "17 * * * *", kini menit 17 dari cron tiap menit)
 async function bersihSemua(env, sekarang) {
