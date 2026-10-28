@@ -71,7 +71,7 @@ def perbarui_hari(hari, baru, batas_lengkap, akhir):
 VERSI_HARI = 4     # v1 memilih SP/NRT dari umur hari: SP VIIRS berakhir 30 Jun 2026, jadi Jul-Agu hanya terisi MODIS atau kosong; v3 (25 Okt 2026): hanya keyakinan sedang/tinggi; v4 (25 Okt 2026): lokasi unik 4 satelit; semua hari diisi ulang
 FAM4 = FAMILI + ("VIIRS_NOAA21",)
 MIGRASI_DARI = "2000-01-01"   # hari >= ini dibuang saat versi berkas lama < VERSI_HARI (kini semua hari)
-KEYAKINAN_MIN = 1
+KEYAKINAN_MIN = TU.KEYAKINAN_MIN   # satu sumber: titik_unik.py
 CURIGA_NAS = 300   # hari KHG kosong tetapi titik nasional (musim_harian.json) >= ini dianggap unduhan gagal, bukan nol sungguhan
 
 
@@ -106,7 +106,7 @@ def isi_mundur(hari, perlu, kunci, ambil, bbox, cari, saring=None, maks_req=MAKS
         if saring and saring(lat, lon):
             continue
         if kelas_yakin(r.get("confidence", ""), src.startswith("MODIS")) < KEYAKINAN_MIN:
-            continue   # keyakinan rendah tidak dihitung
+            continue   # di bawah ambang titik_unik.py
         tg = t.astimezone(WIB).date().isoformat()
         if (tg, TU.sel(lat, lon)) in lihat:
             continue   # lokasi yang sama hari itu sudah dihitung (satelit/lintasan lain): titik_unik.py

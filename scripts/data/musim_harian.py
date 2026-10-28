@@ -78,8 +78,8 @@ def hitung_csv(sd, berkas, industri=None):
             if d.year < AWAL or d > sdd:
                 continue
             c = r["confidence"].strip()
-            if kelas_yakin(c, c.isdigit()) < 1:
-                continue   # keyakinan rendah (VIIRS l, MODIS < 30) tidak dihitung
+            if kelas_yakin(c, c.isdigit()) < TU.KEYAKINAN_MIN:
+                continue   # di bawah ambang titik_unik.py (sejak 28 Okt 2026 = 0: semua keyakinan dihitung)
             if industri and titik_palsu.palsu(r["latitude"], r["longitude"], industri):
                 continue   # sumber panas tetap (industri, tambang, kilang, PLTU) tidak dihitung
             si, sj = TU.sel(float(r["latitude"]), float(r["longitude"]))

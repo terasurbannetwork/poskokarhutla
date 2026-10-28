@@ -39,7 +39,7 @@ def baca(berkas_sensor, tahun, sd, cari, industri):
             if str(t.year) != tahun or d > sd:
                 continue
             c = r["confidence"].strip(); k = kelas_yakin(c, c.isdigit())
-            if k < 1 or (industri and titik_palsu.palsu(r["latitude"], r["longitude"], industri)):
+            if k < TU.KEYAKINAN_MIN or (industri and titik_palsu.palsu(r["latitude"], r["longitude"], industri)):
                 continue
             lat, lon = round(float(r["latitude"]), 4), round(float(r["longitude"]), 4)
             adm = cari(lon, lat)
