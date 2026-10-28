@@ -435,6 +435,14 @@ class Deck:
             for jn, (nama, ikon, warna, tint) in JENIS_LAIN.items():
                 xs = [x for x in LN if x['jenis'] == jn]
                 if not xs: continue
+                if ringkas and not yy:
+                    # 28 Okt pemilik: legenda ikon jenis bencana di atas daftar ringkas
+                    lx = XL + 18288; lain += '@0@'
+                    for jn2, (nm2, ik2, w2, _) in JENIS_LAIN.items():
+                        if not any(x['jenis'] == jn2 for x in LN): continue
+                        lain += s.kotak(lx, 27432, 128016, 128016, w2, 'ellipse') + s.gambar(lx + 27432, 54864, 73152, 73152, f'{ik2}_putih') + s.tx(lx + 164592, 0, len(nm2) * 48000, 182880, [nm2], sz=700, c=TEKS, an='ctr', wrap='none')
+                        lx += 164592 + len(nm2) * 48000 + 137160
+                    lain += '@@'; yy += 182880 + 45720
                 if ringkas:
                     # 28 Okt: kolom kanan tidak muat (7 kekeringan + 7 lainnya): satu baris per kejadian, angka jadi pil, baris kedua bila pil tidak muat
                     for x in xs:
@@ -487,7 +495,9 @@ class Deck:
             tkk, tjw, tl, ttk = (sum(x['angka'].get(m, 0) for x in xs) for m in ('kk', 'jiwa', 'liter', 'tangki'))
             px = max(8458200, XL + len(NAMA[p]) * 70000 + 91440) if p else 0   # pil sesudah nama provinsi (nama panjang tidak tertimpa)
             if p: o += s.tx(XL, 1856232, px - XL, 201168, [NAMA[p]], sz=950, b=True, an='ctr', wrap='none') + s.kotak(px, 1883664, 640080, 146304, T_KER, 'roundRect', adj=50000) + s.gambar(px + 51206, 1883664 + 29261, 87782, 87782, 'daun_k') + s.tx(px + 117043, 1883664, 640080 - 117043, 146304, [f'{len(xs)} kejadian'], sz=620, b=True, c='8A6A2E', al='ctr', an='ctr')
-            for t, x0 in (('LOKASI', XL), ('TERDAMPAK', 8650000), ('BANTUAN AIR', 9930000)): o += s.tx(x0, 2121408, 1200000, 146304, [t], sz=620, b=True, c=ABU, spc=60)
+            # 28 Okt pemilik: kepala kolom rata tengah di atas isinya (TERDAMPAK = KK + jiwa, BANTUAN AIR = pil liter + tangki)
+            for t, x0, w0, al in (('LOKASI', XL, 1200000, 'l'), ('TERDAMPAK', 8620000, 9900000 - 8620000, 'ctr'), ('BANTUAN AIR', 9930000, XR - 9930000, 'ctr')):
+                o += s.tx(x0, 2121408, w0, 146304, [t], sz=620, b=True, c=ABU, spc=60, al=al)
             o += s.garis(XL, 2286000, XR - XL, INK)
             tot = len(xs) > 1
             def baris_air(y, kk, jw, liter, tangki, garis_c, b=True):
