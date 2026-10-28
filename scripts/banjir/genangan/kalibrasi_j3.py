@@ -9,7 +9,7 @@ Kerugian kecamatan per kejadian = w*((1 - POD_kec) + LAMBDA*frac_basah), w = max
 Konstanta dicerminkan di blok BEKU PRAREG dan diperiksa `uji`. Pakai:  python3 scripts/banjir/genangan/kalibrasi_j3.py jalan | kering | uji
 (`kering`: 1 kejadian 2020-01, 2 run, tanpa tulis hasil, tanpa cek kunci)
 """
-import hashlib, json, math, os, subprocess, sys
+import glob, hashlib, json, math, os, subprocess, sys, tempfile
 
 D = os.path.dirname(os.path.abspath(__file__)); sys.path.insert(0, D)
 import kunci_j3, skor_j3  # noqa: E402
@@ -34,7 +34,7 @@ def jalankan_mesin(ev, skala, kd=None, kd_map=None, faktor=None):
     if not os.path.exists(jalur):
         os.makedirs(KAL, exist_ok=True)
         if isinstance(kd_map, dict):   # peta inline dari hasil_j3.json -> berkas untuk --kd-kec
-            kd_map = os.path.join(KAL, nama + ".kd.json"); json.dump(dict(sorted(kd_map.items())), open(kd_map, "w"))
+            p = os.path.join(KAL, nama + ".kd.json"); json.dump(dict(sorted(kd_map.items())), open(p, "w")); kd_map = p
         a = ["node", os.path.join(D, "mesin.mjs"), *kunci_j3.argumen_beku(), *(["--faktor", str(faktor)] if faktor else []), "--kejadian", ev, "--mulai", MULAI[ev],
              "--skala-hujan", str(skala), "--raster", jalur, "--keluar", os.path.join(KAL, nama + ".json")] + (["--kd", str(kd)] if kd_map is None else ["--kd", str(KD_AWAL), "--kd-kec", kd_map])
         subprocess.run(a, check=True, stdout=subprocess.DEVNULL)
@@ -152,8 +152,12 @@ def pagar(h, B, jalankan=jalankan_mesin, label=muat_label, raster=skor_j3.baca_r
 
 
 def uji():
-    import array, re, tempfile
+    import array, re
     B = kunci_j3.beku(); A = B["kalibrasi_algo"]
+    global KAL; kal0, sr0, KAL = KAL, subprocess.run, tempfile.mkdtemp(); subprocess.run = lambda a, **k: a   # peta Kd dict -> berkas --kd-kec (dulu crash di tahap 3)
+    try:
+        jalankan_mesin("2020-01", 1.0, kd_map={"b|x": 5.0, "a|y": 20.0}); assert json.load(open(glob.glob(os.path.join(KAL, "*.kd.json"))[0])) == {"a|y": 20.0, "b|x": 5.0}
+    finally: KAL, subprocess.run = kal0, sr0
     assert (KD_AWAL, LAMBDA, MU, N_MIN, LAPORAN_BANYAK) == (A["kd_awal"], A["lambda"], A["mu"], A["n_min"], A["laporan_banyak"]), "konstanta cermin beda dari blok BEKU"
     js = open(os.path.join(D, "mesin.mjs"), encoding="utf8").read()
     ev = re.findall(r'"(\d{4}-\d\d)": \{mulai: "([\d-]+)", jam: (\d+), peran: "(\w+)"', js)

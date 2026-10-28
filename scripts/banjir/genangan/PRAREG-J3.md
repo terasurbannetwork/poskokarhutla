@@ -96,6 +96,9 @@ Gagal = keluaran tetap tampil berlabel "Eksperimental, tidak lolos uji".
 4. `buka` menolak bila sidik beda, jangkar tak bisa diverifikasi (bukan leluhur HEAD), penilai belum ada, atau sudah pernah dibuka; kalau lolos, menulis `data/raw/banjir/genangan/j3_state.json` dan label uji terbaca SEKALI untuk vonis. Vonis tidak diulang.
 5. Mengubah kode, parameter, atau angka kriteria sesudah sidik = kriteria baru, tanggal baru.
 
+## Amandemen
+- **28 Okt 2026, 09.15 WIB, sidik 61fe334d8f diganti.** Kalibrasi pertama (jangkar 497c0613) crash di awal tahap 3: `jalankan_mesin` menimpa peta Kd (dict) dengan jalurnya lalu memanggil `.items()`. Tahap 1 dan 2 sudah selesai (36 run kalibrasi); hasil_j3.json tidak ditulis, label uji dan pagar tidak dibaca, `buka` tidak pernah jalan. Perbaikan satu baris di `kalibrasi_j3.py` plus satu uji regresi; logika, parameter, kriteria, dan masukan tidak berubah. Semua 45 run diulang dari nol di bawah sidik baru (cache lama terkunci ke sidik lama dan tidak dipakai).
+
 ## Beku
 <!-- BEKU:mulai -->
 ```json
