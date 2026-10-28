@@ -1,6 +1,7 @@
 // Ikon garis (gaya Lucide) untuk panel Bencana lainnya: PNG transparan 96 px, beberapa warna.
 import fs from 'node:fs';
-import { chromium } from '/Users/hhizari/.npm/_npx/420ff84f11983ee5/node_modules/playwright/index.mjs';
+import os from 'node:os';
+const { chromium } = await import(process.env.PLAYWRIGHT_MJS || 'playwright');
 const P = {
   gempa: '<path d="M2 12h3l2-6 3 12 3-9 2 5 2-2h5"/>',
   api: '<path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/>',
@@ -13,7 +14,7 @@ const P = {
   sampah: '<path d="M3 6h18"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6"/><path d="M8 6V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/>',
 };
 const W = {putih: '#FFFFFF', slate: '#5B7A99', merah: '#C8102E', oranye: '#D9600B', navy: '#051C2C'};
-const b = await chromium.launch({executablePath: '/Users/hhizari/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'});
+const b = await chromium.launch({executablePath: process.env.CHROMIUM_SHELL || os.homedir() + '/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'});
 const pg = await b.newPage({viewport: {width: 96, height: 96}});
 for (const [n, d] of Object.entries(P)) for (const [w, c] of Object.entries(W)) {
   await pg.setContent(`<html><body style="margin:0;background:transparent"><svg xmlns="http://www.w3.org/2000/svg" width="96" height="96" viewBox="0 0 24 24" fill="none" stroke="${c}" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${d}</svg></body></html>`);

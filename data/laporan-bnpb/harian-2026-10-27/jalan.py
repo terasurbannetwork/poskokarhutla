@@ -1,9 +1,9 @@
 """Laporan harian 271026: riwayat website s.d. 25 Okt dari berkas repo (origin/main, faktor 4,12/4,16; website tayang masih versi lama),
 angka 25 Okt s.d. 27 Okt 07.00 WIB dari satelit.hitung atas FIRMS publik 7 hari (cache/raw). Cut-off 07.00 (pemilik 27 Okt); WA Koordalops pagi 26-27 Okt 07.00."""
 import datetime as dt, json, os, subprocess, sys
-G = '/Users/hhizari/WebProjects/poskokarhutla/data/laporan-bnpb/generator'; sys.path.insert(0, G); os.chdir(G)
+S = os.path.dirname(os.path.abspath(__file__)); G = os.path.normpath(os.path.join(S, '..', 'generator')); sys.path.insert(0, G); os.chdir(G)   # S dihitung sebelum chdir
 import harian, wa_harian
-S = os.path.dirname(os.path.abspath(__file__)); OUT = S; os.makedirs(OUT, exist_ok=True)
+OUT = S; os.makedirs(OUT, exist_ok=True)
 def web_repo(ke):
     os.makedirs(ke, exist_ok=True); o = {}
     import urllib.request

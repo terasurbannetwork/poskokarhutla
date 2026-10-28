@@ -9,13 +9,14 @@
   dan d (aturan pemilik 21 Okt 2026: 48 jam tanpa titik = padam).
 - fs = jumlah kluster sel NOAA-20/21 yang bertahan (jarak <= 4 sel ~1,5 km). S-NPP tidak dipakai di uji ini.
 Nilai disimpan tanpa pembulatan; pembulatan sekali di ganti.py."""
-import csv, glob, json, sys
+import csv, glob, json, os, sys
 from datetime import datetime, timedelta, date
 from collections import defaultdict
-sys.path.insert(0, '/Users/hhizari/WebProjects/poskokarhutla/scripts/data')
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))   # akar repo: tiga tingkat di atas berkas ini
+sys.path.insert(0, os.path.join(REPO, 'scripts', 'data'))
 from wilayah import Wilayah
 W = Wilayah()
-TGT = sorted(f['properties']['kode'] for f in json.load(open('/Users/hhizari/WebProjects/poskokarhutla/public/geo/provinsi.json'))['features'])
+TGT = sorted(f['properties']['kode'] for f in json.load(open(os.path.join(REPO, 'public', 'geo', 'provinsi.json')))['features'])
 CUT = datetime(2026, 10, 25, 6, 40)  # cut-off 25 Okt 06.40 WIB (FIRMS 7 hari publik ditarik 25 Okt 07.21 WIB; deteksi sesudah 06.40 dibuang)
 G = 0.003375
 # sel sumber panas tetap (smelter, tambang, kilang, PLTU; tanpa kawah) = titik_palsu.sel_industri(); hanya untuk hotspot, luas/belum tidak disaring

@@ -9,9 +9,8 @@ tayang (unduh ulang tiap jalan, simpan di web/):
 Selisih hitungan sendiri vs website dicetak, lalu angka website yang dipakai."""
 import csv, datetime as dt, io, json, os, sys, urllib.error, urllib.request
 from collections import Counter
-G = '/Users/hhizari/WebProjects/poskokarhutla/data/laporan-bnpb/generator'; sys.path.insert(0, G); os.chdir(G)
+S = os.path.dirname(os.path.abspath(__file__)); G = os.path.normpath(os.path.join(S, '..', 'generator')); sys.path.insert(0, G); os.chdir(G)   # S dihitung sebelum chdir
 import satelit, penanganan
-S = os.path.dirname(os.path.abspath(__file__))
 D, JAM = dt.date(2026, 10, 27), '15:00'
 UTC_WEB = {'2026-10-26', '2026-10-27'}   # hari UTC yang di cache/raw belum lengkap (ditarik 27 Okt 08.34 WIB)
 

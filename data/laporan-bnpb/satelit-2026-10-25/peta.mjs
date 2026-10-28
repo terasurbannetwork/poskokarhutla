@@ -1,7 +1,10 @@
 // Peta titik panas per provinsi 25 Okt 2026 sementara (cut-off 25 Okt 06.40 WIB), port dari public/laporan.js kartuPeta() (algoritma label sama).
 import fs from 'node:fs';
-import { chromium } from '/Users/hhizari/.npm/_npx/420ff84f11983ee5/node_modules/playwright/index.mjs';
-const REPO = '/Users/hhizari/WebProjects/poskokarhutla';
+import os from 'node:os';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+const { chromium } = await import(process.env.PLAYWRIGHT_MJS || 'playwright');
+const REPO = resolve(fileURLToPath(new URL('../../..', import.meta.url)));   // akar repo (tiga tingkat di atas berkas ini), tanpa garis miring akhir
 const g = JSON.parse(fs.readFileSync(REPO + '/public/geo/provinsi.json'));
 const A = JSON.parse(fs.readFileSync('angka_nasional.json')).prov;
 const I = 3, IP = 2;  // 25 Okt sementara, pembanding 24 Okt
@@ -71,7 +74,7 @@ const css = `.pp{fill:#DCE1E7;stroke:#fff;stroke-width:.6}.pp-on{fill:#051C2C;st
 .pk{fill:#fff;stroke:#A9B4C2;stroke-width:.8}.pt-t{font:10px Roboto}.pt-n{font-weight:600;fill:#6B7280}.pt-v{font-weight:800;fill:#1A1A1A}\n.fsp{fill:#FFC857;opacity:.85}.rk{fill:#fff;stroke:#D9600B;stroke-width:1.8}.rk-t{font:800 9.5px Roboto;fill:#1A1A1A;text-anchor:middle}`;
 const svg = `<svg xmlns="http://www.w3.org/2000/svg" viewBox="-6 -8 ${PW + 36} ${PH + 16}" width="${PW + 36}" height="${PH + 16}"><style>${css}</style>${s}</svg>`;
 fs.writeFileSync('peta-25okt.svg', svg);
-const b = await chromium.launch({executablePath: '/Users/hhizari/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'}); const pg = await b.newPage({viewport: {width: PW + 36, height: PH + 16}, deviceScaleFactor: 4});
+const b = await chromium.launch({executablePath: process.env.CHROMIUM_SHELL || os.homedir() + '/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell'}); const pg = await b.newPage({viewport: {width: PW + 36, height: PH + 16}, deviceScaleFactor: 4});
 await pg.setContent(`<html><head><link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;600;700;800&display=block" rel="stylesheet"></head><body style="margin:0;background:transparent">${svg}</body></html>`, {waitUntil: 'networkidle'});   // Roboto tidak terpasang lokal
 await pg.evaluate(async () => { await document.fonts.load('800 14px Roboto'); await document.fonts.load('600 10px Roboto'); await document.fonts.ready; });
 await (await pg.$('svg')).screenshot({path: 'peta-25okt.png', omitBackground: true});

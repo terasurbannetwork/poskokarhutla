@@ -8,9 +8,10 @@ angka_nasional.json: 'hari' = 4 tanggal (indeks 0 = pembanding), 'prov' = hot/lu
 - slide3.xml (operasi): tidak disentuh."""
 import json, math, os, re, sys, zipfile
 from datetime import date
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))   # akar repo: tiga tingkat di atas berkas ini
 MASUK, AN, KELUAR, CUTOFF = sys.argv[1:5]; CATATAN = sys.argv[5] if len(sys.argv) > 5 else ''
 J = json.load(open(AN)); A = J['prov']; HARI = [date.fromisoformat(d) for d in J['hari']]
-NAMA = {k: v['nama'] for k, v in json.load(open('/Users/hhizari/WebProjects/poskokarhutla/public/data/laporan.json'))['prov'].items()}
+NAMA = {k: v['nama'] for k, v in json.load(open(os.path.join(REPO, 'public', 'data', 'laporan.json')))['prov'].items()}
 KODE = {v: k for k, v in NAMA.items()}
 def bul(v): return int(math.floor(v + 0.5))
 def f0(v): return f"{bul(v):,}".replace(',', '.')
@@ -64,7 +65,7 @@ def pindah_baris(s):
             if b.startswith('<p:pic>') and x < 1225296:
                 rid = f'Lambang{k2}'; LAMBANG[rid] = k2
                 b = re.sub(r'r:embed="\w+"', f'r:embed="{rid}"', b)
-                import struct; pw, ph = struct.unpack('>II', open(f'/Users/hhizari/WebProjects/poskokarhutla/public/lambang/provinsi/{k2}.png', 'rb').read()[16:24])
+                import struct; pw, ph = struct.unpack('>II', open(os.path.join(REPO, 'public', 'lambang', 'provinsi', f'{k2}.png'), 'rb').read()[16:24])
                 mx_, my_ = x + cx // 2, y + cy // 2; cx = 341757; cy = round(cx * ph / pw); x, y = mx_ - cx // 2, my_ - cy // 2
         return setgeom(b, x, y, cx, cy)
     return re.sub(r'<p:(sp|pic)>.*?</p:\1>', f, s, flags=re.S)
@@ -231,7 +232,7 @@ if len(sys.argv) > 6 and sys.argv[6]: F['ppt/media/peta-hotspot-20okt.png'] = op
 if LAMBANG:
     R1 = F['ppt/slides/_rels/slide1.xml.rels'].decode()
     for rid, k in LAMBANG.items():
-        F[f'ppt/media/lambang-{k}.png'] = open(f'/Users/hhizari/WebProjects/poskokarhutla/public/lambang/provinsi/{k}.png', 'rb').read()
+        F[f'ppt/media/lambang-{k}.png'] = open(os.path.join(REPO, 'public', 'lambang', 'provinsi', f'{k}.png'), 'rb').read()
         R1 = R1.replace('</Relationships>', f'<Relationship Id="{rid}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/lambang-{k}.png"/></Relationships>')
     F['ppt/slides/_rels/slide1.xml.rels'] = R1.encode()
     assert 'Extension="png"' in F['[Content_Types].xml'].decode()

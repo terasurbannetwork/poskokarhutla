@@ -3,11 +3,12 @@ Firespot = titik firespot hari terakhir per provinsi (keluaran firespot.py: titi
 Satu kolom (hari terakhir). Tiga kelompok kolom (hotspot, luas, belum) digeser ke kanan dan disempitkan faktor F agar kolom baru muat;
 gaya kolom baru disalin dari elemen yang ada (kepala kelompok, label tanggal, label angka, sel jumlah). Masukan harus keluaran perbarui.py
 dengan FIRESPOT (ikon ppt/media/ikon-firespot.png sudah ada)."""
-import collections, json, re, sys, zipfile
+import collections, json, os, re, sys, zipfile
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))   # akar repo: tiga tingkat di atas berkas ini
 MASUK, KL, KELUAR = sys.argv[1:4]
 HARI_FS = f"{int(json.load(open(KL))['hari'][-1][-2:])} Okt"
 FSP = {k: v[1] for k, v in json.load(open(KL))['prov'].items()}   # firespot titik hari terakhir (keluaran firespot.py)
-NAMA = {k: v['nama'] for k, v in json.load(open('/Users/hhizari/WebProjects/poskokarhutla/public/data/laporan.json'))['prov'].items()}
+NAMA = {k: v['nama'] for k, v in json.load(open(os.path.join(REPO, 'public', 'data', 'laporan.json')))['prov'].items()}
 KODE = {v: k for k, v in NAMA.items()}
 X0, KANAN, LEBAR = 4663440, 10704982 + 800913, 914400       # tepi kiri kelompok hotspot, tepi kanan kelompok belum padam, lebar kolom firespot
 F = (KANAN - X0 - LEBAR) / (KANAN - X0)

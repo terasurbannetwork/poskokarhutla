@@ -5,7 +5,8 @@ pada hari d (WIB) sebelum batas yang termasuk cluster "ya". S-NPP/NOAA-20 = sens
 Pakai sebagai modul: muat(raw_dir) lalu hitung(titik, kini, hari)."""
 import csv, datetime as dt, glob, os, sys
 from collections import Counter
-sys.path.insert(0, '/Users/hhizari/WebProjects/poskokarhutla/scripts/data')
+REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), '..', '..', '..'))   # akar repo: tiga tingkat di atas berkas ini
+sys.path.insert(0, os.path.join(REPO, 'scripts', 'data'))
 import harian as H, titik_palsu as TP
 from wilayah import Wilayah
 UTC, WIB = dt.timezone.utc, H.WIB
