@@ -1,0 +1,246 @@
+#url https://jabar.bps.go.id/id/statistics-table/3/Y2tKeVZYUk1UMDVNV1ROcGFXOW1kblZzZUZrMFp6MDkjMw==/populasi-unggas.html?year=2024
+#ditarik 2026-10-27T03:14:23.038Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI JAWA BARAT
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Saksikan Rilis Berita Resmi Statistik di sini | Survei Kepuasan Masyarakat | Portal Layanan Terintegrasi BPS Provinsi Jawa Barat
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pertanian, Kehutanan, Perikanan
+
+Populasi Unggas Menurut Kabupaten/Kota dan Jenis Unggas di Provinsi Jawa Barat (ekor), 2024
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Statistik Ekonomi
+
+Statistik Makroekonomi
+Neraca Ekonomi
+Statistik Bisnis
+Statistik sektoral
+Keuangan Pemerintah, Fiskal dan Statistik Sektor Publik
+Perdagangan Internasional dan Neraca Pembayaran
+Harga-Harga
+Biaya Tenaga Kerja
+Ilmu Pengetahuan, Teknologi, dan Inovasi
+Pertanian, Kehutanan, Perikanan
+Energi
+Pertambangan, Manufaktur, Konstruksi
+Transportasi
+Pariwisata
+Perbankan, Asuransi dan Finansial
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Populasi Unggas Menurut Kabupaten/Kota dan Jenis Unggas di Provinsi Jawa Barat (ekor), 2024
+
+Terakhir Diperbarui : 12 Februari 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2024
+Freeze judul kolom
+
+Kabupaten/Kota
+
+	
+
+Populasi Unggas - Ayam Buras (Ekor)
+
+	
+
+Populasi Unggas - Itik dan itik manila (Ekor)
+
+	
+
+Populasi Unggas - Ayam Ras Petelur (Ekor)
+
+	
+
+Populasi Unggas - Ayam Ras Pedaging (Ekor)
+
+
+Bogor	1.184.986	304.641	...	...
+Sukabumi	1.718.159	83.015	...	...
+Cianjur	4.456.237	762.818	...	...
+Bandung	1.712.540	388.438	...	...
+Garut	692.159	46.666	...	...
+Tasikmalaya	626.495	112.180	...	...
+Ciamis	1.575.156	183.214	...	...
+Kuningan	562.398	102.416	...	...
+Cirebon	1.387.653	889.593	...	...
+Majalengka	1.189.433	315.915	...	...
+Sumedang	538.510	71.585	...	...
+Indramayu	2.193.968	3.466.087	...	...
+Subang	1.734.502	733.391	...	...
+Purwakarta	763.900	54.237	...	...
+Karawang	370.913	894.849	...	...
+Bekasi	598.412	205.491	...	...
+Bandung Barat	340.628	141.208	...	...
+Pangandaran	324.283	51.372	...	...
+Kota Bogor	34.891	4.362	...	...
+Kota Sukabumi	2.451	2.338	...	...
+Kota Bandung	20.622	923	...	...
+Kota Cirebon	18.214	2.397	...	...
+Kota Bekasi	114.125	12.067	...	...
+Kota Depok	22.459	4.236	...	...
+Kota Cimahi	9.561	2.114	...	...
+Kota Tasikmalaya	738.793	46.849	...	...
+Kota Banjar	64.614	12.837	...	...
+Jawa Barat	22.996.062	8.895.239	47.818.243	716.619.015
+
+Sumber :
+
+Kementerian Pertanian (Direktorat Jenderal Peternakan dan Kesehatan Hewan)/Ministry of Agriculture (Directorate General of Livestock and Animal Health Services)
+
+Keterangan :
+
+1Ayam Buras mencakup ayam kampung biasa, ayam kampung petelur, ayam kampung pedaging, dan ayam lokal lainnya/Native chickens include regular native chickens, egg-laying native chickens, meat-producing native chickens, and other local breeds
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+a
+
+: 25% < RSE ≤ 50%
+
+b
+
+: RSE < 50%
+
+c
+
+: Penjumlahan tidak sama dengan wilayah diatasnya
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik Provinsi Jawa Barat (BPS-Statistics Jawa Barat Province)Jl. PHH. Mustofa No. 43 Bandung 40124
+
+Jawa Barat - Indonesia
+
+Telp: +62 22 7272595
+
+Mailbox: bps3200@bps.go.id; pst3200@bps.go.id
+
+Whatsapp : 0851-7992-8832 (Chat Only)
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup

@@ -1,4 +1,13 @@
-"""NA-03 Iklim bulanan per sel 0,1 derajat: ERA5-Land via Open-Meteo Archive 1991-2025 -> iklim.json (di-commit).
+"""PEMBANDING (bukan jalur utama sejak 27 Okt 2026, lihat iklim_global.py: CHIRPS + NASA POWER, semua Jawa tanpa kuota).
+Jalur ini menulis iklim.json berformat sama tetapi sumber ERA5; JANGAN dijalankan di atas iklim.json hasil iklim_global.py
+(cache iklim.json lama dipakai sebagai p_era5/et0_era5 oleh iklim_global.py gabung; cadangannya: salin dulu ke tempat lain).
+
+NA-03 Iklim bulanan per sel 0,1 derajat: ERA5 seamless via Open-Meteo Archive 1991-2025 -> iklim.json (di-commit).
+
+MODEL: `models=era5_seamless`, BUKAN `era5_land`. Dicek 27 Okt 2026: Open-Meteo mengembalikan precipitation_sum null
+untuk era5_land di Jawa (1995 dan 2024, harian dan per jam; suhu ada). era5_seamless = ERA5-Land bila ada, ERA5 0,25
+derajat bila tidak: hujan praktis dari ERA5 0,25 derajat, ET0 dari ERA5-Land 0,1 derajat. Hujan ERA5 di Jawa
+pegunungan perlu diuji lawan CHIRPS/GloFAS di NA-06.
 
 Variabel harian `precipitation_sum` dan `et0_fao_evapotranspiration` (Penman-Monteith FAO-56 yang dihitung Open-Meteo
 dari ERA5-Land), dijumlah per bulan (mm). Pola permintaan sama dengan scripts/data/tanah.py; `ambil`, `KuotaHabis`,
@@ -27,6 +36,7 @@ URL = "https://archive-api.open-meteo.com/v1/archive?"
 VAR = ("precipitation_sum", "et0_fao_evapotranspiration")
 AWAL, AKHIR = 1991, 2025
 PER_MINTA, JEDA = 3, 65
+MODEL = "era5_seamless"
 
 
 def bulan_seri(a=AWAL, b=AKHIR):
@@ -72,7 +82,21 @@ def sel_subset(topo, prov):
             if c not in pilih:
                 pilih.add(c)
                 tumpuk.append(c)
-    return sorted({c for i in pilih for kb in sub[i]["kab"].values() for c in kb}), pilih
+    # urut per DAS utuh, DAS terkecil dulu: tiap jalan yang terpotong kuota tetap menyisakan DAS yang lengkap
+    # beserta hulunya, jadi neraca.py bisa jalan atas sebagian DAS.
+    def muara(i):
+        while str(sub[i]["nd"]) in sub:
+            i = str(sub[i]["nd"])
+        return i
+    das = collections.defaultdict(set)
+    for i in pilih:
+        das[muara(i)] |= {c for kb in sub[i]["kab"].values() for c in kb}
+    urut, lihat = [], set()
+    for m in sorted(das, key=lambda m: (len(das[m]), m)):
+        for c in sorted(das[m] - lihat):
+            urut.append(c)
+            lihat.add(c)
+    return urut, pilih
 
 
 def tarik(sel, cache, maks=None):
@@ -81,7 +105,7 @@ def tarik(sel, cache, maks=None):
     for a in range(0, len(perlu), PER_MINTA):
         b = perlu[a:a + PER_MINTA]
         q = {"latitude": ",".join(c.split(",")[0] for c in b), "longitude": ",".join(c.split(",")[1] for c in b),
-             "models": "era5_land", "daily": ",".join(VAR), "start_date": f"{AWAL}-01-01", "end_date": f"{AKHIR}-12-31",
+             "models": MODEL, "daily": ",".join(VAR), "start_date": f"{AWAL}-01-01", "end_date": f"{AKHIR}-12-31",
              "timezone": "Asia/Jakarta"}
         try:
             data = per_lokasi(ambil(URL + urllib.parse.urlencode(q), batas_waktu=300))
@@ -108,7 +132,7 @@ def main(arg):
         sys.exit(__doc__)
     maks = int(arg[arg.index("--maks") + 1]) if "--maks" in arg else None
     cache = json.load(open(KELUAR)) if os.path.exists(KELUAR) else {
-        "meta": {"sumber": "ERA5-Land (Copernicus C3S) via Open-Meteo Archive API, models=era5_land, CC BY 4.0",
+        "meta": {"sumber": "ERA5 / ERA5-Land (Copernicus C3S) via Open-Meteo Archive API, models=era5_seamless (era5_land tanpa hujan di Open-Meteo), CC BY 4.0",
                  "variabel": {"p": "precipitation_sum", "et0": "et0_fao_evapotranspiration (FAO-56 PM, Open-Meteo)"},
                  "satuan": "mm/bulan", "bulan_awal": f"{AWAL}-01", "bulan_akhir": f"{AKHIR}-12", "label": "estimasi-model"},
         "sel": {}}
@@ -140,6 +164,10 @@ def uji():
                        "3": {"nd": 0, "kab": {"3401": {"c": 1}}}, "4": {"nd": 0, "kab": {"3201": {"d": 1}}}}}
     sel, pilih = sel_subset(topo, "34")
     assert pilih == {"1", "2", "3"} and sel == ["a", "b", "c"], (pilih, sel)   # hulu dari Jateng ikut, DAS lain tidak
+    topo["subdas"]["5"] = {"nd": 0, "kab": {"3402": {"e": 1, "f": 1}}}
+    topo["subdas"]["6"] = {"nd": 0, "kab": {"3403": {"g": 1}}}
+    sel, _ = sel_subset(topo, "34")
+    assert sel == ["g", "e", "f", "a", "b", "c"], sel   # DAS terkecil dulu, sel satu DAS berurutan
     print("ok iklim")
 
 

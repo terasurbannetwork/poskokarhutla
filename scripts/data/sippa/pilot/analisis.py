@@ -1,7 +1,7 @@
 """Analisis per situs: gambut, KHG, desa, SBO, kanal, elevasi profil, hidraulika, peta. Keluar: data.json + img/*.jpg"""
 import json, math, os, subprocess, sys
 from PIL import Image
-from kumpul import curl, km, OUT, REPO
+from kumpul import curl, km, OUT, REPO, HERE, GENERIK
 
 sys.path.insert(0, f"{REPO}/scripts/data/sippa")
 import hidraulika as H  # noqa: E402
@@ -12,6 +12,8 @@ LATIHAN = {"K9037"}  # titik api sekitar di luar gambut: petak latihan di komple
 PIN = {"K2628": "2026-10-14", "K9037": "2026-10-04"}  # adegan bersih yang dipilih manual (sesudahnya berawan)
 GULUNG_M = 20      # asumsi panjang satu gulung selang layflat
 SERAP_NOZZLE = 160  # L/menit nozzle konvensional di petak pembanding
+JARAK_PENDEK_KM = 0.5  # renlap otomatis: air terdekat dari petak <= ini = selang pendek (bagian A), selebihnya selang panjang (bagian B)
+PROV = {"14": "Riau", "15": "Jambi", "16": "Sumatera Selatan", "61": "Kalimantan Barat", "62": "Kalimantan Tengah", "63": "Kalimantan Selatan"}
 
 
 def cincin(x, y, r):
@@ -41,6 +43,19 @@ def jarak_tepi(lat, lon, g):
                 if abs(y - lat) < 0.2 and abs(x - lon) < 0.2:
                     best = min(best, km((lat, lon), (y, x)))
     return best
+
+
+HARI_WIB = "2026-10-26"
+BLN = ["", "Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"]
+
+
+def hari_wib(acuan_iso):
+    """tanggal WIB dari waktu acuan titik panas (live_meta.json hari_wib menang bila ada)"""
+    from datetime import datetime, timedelta
+    try:
+        return json.load(open(f"{OUT}/live_meta.json"))["hari_wib"]
+    except Exception:
+        return (datetime.fromisoformat(acuan_iso.replace("Z", "+00:00")) + timedelta(hours=7)).strftime("%Y-%m-%d")
 
 
 def baca(p):
@@ -151,10 +166,12 @@ def hid(L, dz, q, n_lance, serap_lain=0, dn=65, pompa="portabel_besar", n_pompa=
 def main():
     situs = json.load(open(f"{OUT}/situs.json"))
     acuan_h = json.load(open(f"{OUT}/live_hotspot72.json"))
+    global HARI_WIB
+    HARI_WIB = hari_wib(acuan_h["acuan"])
     for s in situs:
         k, a = s["kel"], s["akses"]; kid = s["id"]; d = f"{OUT}/raw/{kid}"
         pusat = (k["lat"], k["lon"]); air = (a["air"]["lat"], a["air"]["lon"])
-        rute = [(y, x) for x, y in a["rute"]]
+        rute = [(y, x) for x, y in (a.get("rute") or [])] or [pusat]
         ujung = rute[-2] if len(rute) >= 2 else pusat
         if kid == "K7357":
             ujung = (-2.5066, 114.4518)          # titik turun perahu (one pager)
@@ -167,9 +184,11 @@ def main():
         s["gambut_luas_poligon_ha"] = dalam[0]["properties"].get("luas") if dalam else None
         s["air_di_gambut"] = any(di_dalam(air[1], air[0], f["geometry"]) for f in g)
         khg = [f["properties"] for f in baca(f"{d}/prims_khg.json")["features"] if di_dalam(k["lon"], k["lat"], f["geometry"])]
-        s["khg"] = khg[0] if khg else None
+        s["khg"] = khg[0] if khg else ({"nama_khg": "Di luar KHG terdata"} if GENERIK else None)
         desa = [f["properties"] for f in baca(f"{d}/prims_adm_desa.json")["features"] if di_dalam(k["lon"], k["lat"], f["geometry"])]
-        s["desa"] = desa[0] if desa else None
+        s["desa"] = desa[0] if desa else ({"desa": "–", "kecamatan": "–"} if GENERIK else None)
+        if not s["nama"] and s["desa"] and s["desa"]["desa"] == "–":
+            s["nama"] = f'Kompleks {kid}, {k["kab"].replace("Kota Palangkaraya", "Kota Palangka Raya")}'
         if not s["nama"] and s["desa"]:
             s["nama"] = f'{s["desa"]["desa"].title()}, {s["desa"]["kecamatan"].title()}, {k["kab"].replace("Kota Palangkaraya", "Kota Palangka Raya")}'
         # SBO dan infrastruktur pembasahan
@@ -234,6 +253,8 @@ def main():
                 calon.append({"jenis": jenis if not (best[2] or "").strip() else f"Sungai {best[2].strip()} (PRIMS/RBI)", "lat": round(best[1][0], 5), "lon": round(best[1][1], 5), "d_km": round(best[0], 2),
                               "garis": [[x, y] for x, y in best[3]]})
         calon.sort(key=lambda c: c["d_km"])
+        if GENERIK and not s.get("paksa") and calon[0]["d_km"] > JARAK_PENDEK_KM:
+            s["paksa"] = {"otomatis": True}      # air jauh dari petak: pompa di titik air SIPPA dekat jalan, selang panjang (bagian B)
         if s.get("paksa"):      # selang panjang: pompa tetap di air tepi jalan (titik air SIPPA), bukan kanal terdekat ke api
             calon = [c for c in calon if "titik SIPPA" in c["jenis"]] + [c for c in calon if "titik SIPPA" not in c["jenis"]]
         s["air_calon"] = calon
@@ -281,12 +302,21 @@ def main():
         if not os.path.exists(f"{OUT}/img/{kid}_s2.json") or json.load(open(f"{OUT}/img/{kid}_s2.json"))["km"] != kmb \
                 or abs(json.load(open(f"{OUT}/img/{kid}_s2.json"))["lat"] - cla) > 1e-4:
             env = {**os.environ, "HARI": "60", **({"TGL": PIN[kid]} if kid in PIN else {})}
-            subprocess.run([sys.executable, f"{OUT}/citra_pilot.py", kid, f"{cla:.5f}", f"{clo:.5f}", str(kmb)], env=env)
-        ms = json.load(open(f"{OUT}/img/{kid}_s2.json"))
-        E, N = C.ke_utm(ms["lat"], ms["lon"], ms["epsg"] % 100)
-        md = {"img": f"img/{kid}_s2.jpg", "epsg": ms["epsg"], "E0": E - kmb * 500, "N0": N + kmb * 500, "res": kmb * 1000 / ms["px"],
-              "w": ms["px"], "h": ms["px"], "m_per_px": kmb * 1000 / ms["px"], "tgl": ms["tgl"], "jam_utc": ms["jam_utc"],
-              "satelit": ms["satelit"], "adegan": ms["adegan"], "km": kmb}
+            if GENERIK:
+                env["HARI_ACUAN"] = HARI_WIB
+            subprocess.run([sys.executable, f"{HERE}/citra_pilot.py", kid, f"{cla:.5f}", f"{clo:.5f}", str(kmb)], env=env)
+        if GENERIK and not os.path.exists(f"{OUT}/img/{kid}_s2.json"):
+            # tidak ada adegan Sentinel-2 yang terbaca: pakai ubin Esri (tanggal pengambilan tidak diketahui), ditandai "esri"
+            be = ekstent([pusat, target, airt, ujung, air], 0.4, 3)
+            md = peta(be, pilih_z(be, 1100), f"{kid}_s2", 1.0)
+            md.update({"esri": True, "tgl": HARI_WIB, "jam_utc": "00:00", "satelit": "Esri World Imagery", "adegan": "",
+                       "km": round(md["w"] * md["m_per_px"] / 1000, 1)})
+        else:
+            ms = json.load(open(f"{OUT}/img/{kid}_s2.json"))
+            E, N = C.ke_utm(ms["lat"], ms["lon"], ms["epsg"] % 100)
+            md = {"img": f"img/{kid}_s2.jpg", "epsg": ms["epsg"], "E0": E - kmb * 500, "N0": N + kmb * 500, "res": kmb * 1000 / ms["px"],
+                  "w": ms["px"], "h": ms["px"], "m_per_px": kmb * 1000 / ms["px"], "tgl": ms["tgl"], "jam_utc": ms["jam_utc"],
+                  "satelit": ms["satelit"], "adegan": ms["adegan"], "km": kmb}
         rt = rute + [pusat, target]
         if kid == "K7357":
             rt += [(-2.4126, 114.4366)]
@@ -300,16 +330,23 @@ def main():
         print(kid, "gambut", s["gambut_prims"], "tepi", s["gambut_tepi_km"], "khg", s["khg"] and s["khg"]["nama_khg"],
               "desa", s["desa"] and s["desa"]["desa"], "infra", len(infra), "t48", len(s["titik48"]),
               "L", L, "dz", dz, dz_maks, s["hid"]["penuh"]["vonis"], "target", s["target"], "air", calon[0], "s2", md["tgl"], file=sys.stderr)
-    # ringkasan Kalteng 48 jam
+    # ringkasan wilayah 48 jam: pilot = Kalteng 25-26 Okt (tetap); renlap = provinsi kompleks, dua tanggal WIB terakhir
     kol = acuan_h["kolom"]; wil = acuan_h["wilayah"]
+    provs = sorted({str(s["kel"]["prov"]) for s in situs}) if GENERIK else ["62"]
+    baris_ = [dict(zip(kol, b_)) for b_ in acuan_h["baris"]]
+    tgls = sorted({r["tgl_wib"] for r in baris_ if r["hitung"]})[-2:] if GENERIK else ["10-25", "10-26"]
     kab = {}
     n = 0
-    for b in acuan_h["baris"]:
-        r = dict(zip(kol, b))
+    for r in baris_:
         w = wil[r["wilayah"]] if isinstance(r["wilayah"], int) else r["wilayah"]
-        if r["hitung"] and r["tgl_wib"] in ("10-25", "10-26") and str(w).startswith("62|"):
+        if r["hitung"] and r["tgl_wib"] in tgls and str(w).split("|")[0] in provs:
             n += 1; kb = w.split("|")[1]; kab[kb] = kab.get(kb, 0) + 1
     ring = {"acuan": acuan_h["acuan"], "kalteng48": n, "kab": sorted(kab.items(), key=lambda x: -x[1])[:5]}
+    if GENERIK:
+        nm = ", ".join(PROV.get(p_, f"provinsi {p_}") for p_ in provs)
+        t0, t1 = (tgls + tgls)[0], tgls[-1]
+        ring.update({"hari_fwi": HARI_WIB, "wilayah": nm, "tgl_label": (f"{int(t0[3:])}–" if t0 != t1 and t0[:2] == t1[:2] else f"{int(t0[3:])} {BLN[int(t0[:2])]}–" if t0 != t1 else "") + f"{int(t1[3:])} {BLN[int(t1[:2])]}",
+                     "judul": f"Renlap: {len(situs)} lokasi", "n_gambut": sum(1 for s in situs if s["gambut_prims"])})
     json.dump({"situs": situs, "ringkas": ring}, open(f"{OUT}/data.json", "w"), ensure_ascii=False)
     print(ring, file=sys.stderr)
 

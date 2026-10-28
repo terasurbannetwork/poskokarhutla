@@ -21,6 +21,10 @@ KEJADIAN = {
     "2020-01": ("2020-01-01", "2020-01-10"),
     "2021-02": ("2021-02-01", "2021-02-28"),
     "2025-03": ("2025-03-01", "2025-03-31"),
+    # puncak laporan PetaBencana 2025 = April (1.292 laporan, puncak 24 Apr) vs Maret 231; gsmap.py PUNCAK memakai 2025-04. Panen hujan_jam/debit_hulu 2025-04 belum dijalankan.
+    "2025-04": ("2025-04-01", "2025-04-30"),
+    # kejadian UJI J3 (PRAREG-J3.md): puncak 2024-08-18 (gsmap.py PUNCAK). Hanya MASUKAN (hujan_jam, debit_hulu) yang dipanen; label tak dibaca.
+    "2024-08": ("2024-08-01", "2024-08-31"),
 }
 
 

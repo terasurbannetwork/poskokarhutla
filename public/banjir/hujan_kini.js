@@ -55,7 +55,54 @@ const HujanKini = (() => {
   async function tampil(on, paksa) {
     if (on) { try { await (pj ||= pasang(paksa).finally(() => { pj = null; })); } catch (e) { console.warn("hujankini", e); } }   /* dua panggilan beruntun berbagi satu pasang */
     for (const l of ["hujankini-fill", "hujankini-garis"]) peta?.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none");
-    if (!on) di = false; renderLegenda();
+    if (on) bangunRintik(); else { di = false; hentiRintik(); } renderLegenda();
+  }
+  /* Animasi rintik di dalam area yang sedang hujan, mulai zoom 9 (pemilik 28 Okt). Satu kanvas di atas peta, tak menangkap klik.
+     Poligon diproyeksikan ulang hanya sesudah peta berhenti bergerak (moveend); selama digeser/di-zoom kanvas dikosongkan dan loop berhenti, jadi geser peta tetap ringan.
+     Kepadatan menurut intensitas BMKG; petir = kilat redup sesekali. Mati bila tab tersembunyi atau perangkat minta gerak dikurangi. */
+  const ZOOM_RINTIK = 9, KELAS = [[/sangat lebat|ekstrem/i, 3.5e-3], [/lebat/i, 2.5e-3], [/sedang/i, 1.4e-3], [/./, 7e-4]];
+  const kurang = matchMedia("(prefers-reduced-motion: reduce)");
+  let cv = null, grup = [], rafR = 0, tR = 0;
+  const bolehRintik = () => nyala() && peta.getZoom() >= ZOOM_RINTIK && !document.hidden && !kurang.matches;
+  function hentiRintik() { cancelAnimationFrame(rafR); rafR = 0; cv?.getContext("2d").clearRect(0, 0, cv.width, cv.height); }
+  function bangunRintik() {
+    hentiRintik(); grup = [];
+    if (!bolehRintik()) return;
+    const box = peta.getCanvas(), w = box.clientWidth, h = box.clientHeight, dpr = devicePixelRatio || 1;
+    if (!cv) { cv = document.createElement("canvas"); cv.setAttribute("aria-hidden", "true"); cv.style.cssText = "position:absolute;left:0;top:0;pointer-events:none"; box.after(cv); }
+    if (cv.width !== Math.round(w * dpr) || cv.height !== Math.round(h * dpr)) { cv.width = Math.round(w * dpr); cv.height = Math.round(h * dpr); cv.style.width = w + "px"; cv.style.height = h + "px"; }
+    const kls = new Map();   /* satu Path2D per kelas intensitas (+ petir terpisah untuk kilat) */
+    for (const a of (D?.nowcast || []).filter(aktif)) {
+      const ev = String(a.event || ""), kd = KELAS.find(([re]) => re.test(ev))[1], kunci = kd + (/petir/i.test(ev) ? "p" : "");
+      const g = kls.get(kunci) || {dens: kd, petir: kunci.endsWith("p"), path: new Path2D(), x0: w, y0: h, x1: 0, y1: 0};
+      for (const r of a.polygon) r.forEach((c, i) => { const p = peta.project(c); g.path[i ? "lineTo" : "moveTo"](p.x, p.y); g.x0 = Math.min(g.x0, p.x); g.y0 = Math.min(g.y0, p.y); g.x1 = Math.max(g.x1, p.x); g.y1 = Math.max(g.y1, p.y); });
+      kls.set(kunci, g);
+    }
+    for (const g of kls.values()) {
+      g.x0 = Math.max(g.x0, 0); g.y0 = Math.max(g.y0, 0); g.x1 = Math.min(g.x1, w); g.y1 = Math.min(g.y1, h);
+      const luas = (g.x1 - g.x0) * (g.y1 - g.y0); if (luas <= 0) continue;
+      const n = Math.min(2500, Math.round(luas * g.dens));   // ponytail: plafon 2.500 rintik per kelas, cukup untuk layar penuh lebat
+      g.tetes = Array.from({length: n}, () => ({x: g.x0 + Math.random() * (g.x1 - g.x0), y: g.y0 + Math.random() * (g.y1 - g.y0), v: 380 + Math.random() * 260, l: 11 + Math.random() * 9}));
+      g.kilat = 0; grup.push(g);
+    }
+    if (grup.length) { tR = performance.now(); rafR = requestAnimationFrame(langkahRintik); }
+  }
+  function langkahRintik(t) {
+    const dt = Math.min(.05, (t - tR) / 1000), ctx = cv.getContext("2d"), dpr = cv.width / cv.clientWidth; tR = t;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0); ctx.clearRect(0, 0, cv.clientWidth, cv.clientHeight);
+    ctx.lineWidth = 1.2; ctx.lineCap = "round"; ctx.strokeStyle = "rgba(22,80,165,.6)";   /* lebih panjang, tegak, dan biru dari partikel angin supaya tak tertukar */
+    for (const g of grup) {
+      ctx.save(); ctx.clip(g.path, "evenodd");
+      if (g.petir) { if (g.kilat <= 0 && Math.random() < dt / 6) g.kilat = .18; if (g.kilat > 0) { ctx.fillStyle = `rgba(255,255,255,${Math.min(.35, g.kilat * 2.4)})`; ctx.fill(g.path, "evenodd"); g.kilat -= dt; } }   /* rata-rata satu kilat per 6 detik */
+      ctx.beginPath();
+      for (const d of g.tetes) {
+        d.y += d.v * dt; d.x += d.v * dt * .18;
+        if (d.y > g.y1) { d.y = g.y0 - d.l; d.x = g.x0 + Math.random() * (g.x1 - g.x0); }
+        ctx.moveTo(d.x, d.y); ctx.lineTo(d.x - d.l * .18, d.y - d.l);
+      }
+      ctx.stroke(); ctx.restore();
+    }
+    rafR = requestAnimationFrame(langkahRintik);
   }
   const jumlah = () => (D?.nowcast || []).filter(aktif).length;
   const legenda = () => !nyala() ? "" : `<div class="lg-g"><div class="lbl" title="Area hujan yang sedang berjalan menurut peringatan dini nowcast BMKG; bukan prakiraan.">Sedang hujan (BMKG)</div><div class="leg">${[[W.petir, "Lebat, petir"], [W.lebat, "Lebat"], [W.sedang, "Sedang"], [W.ringan, "Ringan"]].map(([w, n]) => `<span><i class="sw" style="background:${w}"></i>${n}</span>`).join("")}${D ? `<span>${jumlah() ? `${fmt(jumlah())} area` : "Tidak ada area"}${Date.parse(D.terbit || D.dibuat) ? `, ${jamWib(Date.parse(D.terbit || D.dibuat))} WIB` : ""}</span>` : ""}</div></div>`;
@@ -63,10 +110,12 @@ const HujanKini = (() => {
   /* kunci ini tidak dikenal penangan bawaan halaman: tangkap lebih dulu (capture) */
   document.querySelector("#lapis")?.addEventListener("change", e => { const i = e.target.closest('input[data-l="hujankini"]'); if (!i) return; e.stopImmediatePropagation(); if (!peta) return; renderLegenda(); if (i.checked) nanti(() => tampil(true, true)); else tampil(false); }, true);   /* legenda dan sembunyi langsung; fetch dan addLayer ditunda */
   /* data segar lagi tiap 5 menit selama lapisan menyala dan tab terlihat */
-  setInterval(() => { if (!document.hidden && nyala() && peta?.getSource("hujankini")) muat().then(() => peta.getSource("hujankini")?.setData(geo())); }, SEGAR_MS);
+  setInterval(() => { if (!document.hidden && nyala() && peta?.getSource("hujankini")) muat().then(() => { peta.getSource("hujankini")?.setData(geo()); bangunRintik(); }); }, SEGAR_MS);
   const _leg = renderLegenda; renderLegenda = function () { _leg(); document.querySelector("#legDet > div")?.insertAdjacentHTML("beforeend", legenda()); };
   /* lapisan menyala bawaan: pasang begitu peta siap, dan lagi sesudah ganti gaya peta (tema) */
   const tunggu = fn => typeof peta !== "undefined" && peta?.getLayer?.("wil-fill") ? fn() : setTimeout(() => tunggu(fn), 400);
-  tunggu(() => { if (nyala()) tampil(true); peta.on("style.load", () => setTimeout(() => nyala() && tampil(true), 60)); });
+  tunggu(() => { if (nyala()) tampil(true); peta.on("style.load", () => setTimeout(() => nyala() && tampil(true), 60));
+    peta.on("movestart", hentiRintik); peta.on("moveend", bangunRintik); peta.on("resize", bangunRintik);   /* bukan idle: lapisan beranimasi lain membuat peta tak pernah idle */
+    document.addEventListener("visibilitychange", () => document.hidden ? hentiRintik() : bangunRintik()); kurang.addEventListener?.("change", bangunRintik); });
   return {get di() { return di; }, tampil, kartu};
 })();

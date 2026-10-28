@@ -2,12 +2,17 @@
 import json, os, re, shutil
 from PIL import Image
 import cetak as C          # memakai fungsi gambar dan teks yang sama dengan PDF
-from teks import TEKS, UMUM, KIT
+from teks import TEKS, KIT
 from lampiran import ALAT, FOTO, GAMBAR
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../.."))
-IMG = f"{REPO}/public/pipa/uji_pilot/img"
-WEB = "/pipa/uji_pilot/img/"
+if C.GENERIK:     # renlap: keluaran ke OUT/keluaran/{data.json,img/}; alamat gambar di data.json = RENLAP_IMG_PREFIX (bawaan "img/", relatif ke data.json)
+    KELUAR = f"{C.OUT}/keluaran"
+    IMG = f"{KELUAR}/img"
+    WEB = os.environ.get("RENLAP_IMG_PREFIX", "img/")
+else:
+    IMG = f"{REPO}/public/pipa/uji_pilot/img"
+    WEB = "/pipa/uji_pilot/img/"
 os.makedirs(IMG, exist_ok=True)
 dipakai = set()
 
@@ -58,7 +63,7 @@ for s in C.D["situs"]:
     t = TEKS[s["id"]]; a = s["akses"]; T = s["titik"]; w = C.air(s); k = s["kel"]
     aktif = [c for c in s["kluster"] if c.get("n24")]
     ca = aktif[0] if aktif else (s["kluster"][0] if s["kluster"] else None)
-    wx = next((d for d in s["fwi_sel"]["hari"] if d["tgl"] == "2026-10-26"), None)
+    wx = next((d for d in s["fwi_sel"]["hari"] if d["tgl"] == C.HARI), None)
     C.ADA.pop(s["id"], None)
     detail = C.peta_detail(s)
     rute_svg, rute_leg = C.peta_rute(s)
@@ -80,7 +85,8 @@ for s in C.D["situs"]:
         "cuaca": ({"dc": wx["dc"], "t": wx["t"], "rh": wx["rh"], "ws": wx["ws"], "hujan": wx["hujan"]} if wx else None),
         "ramalan": ({"tgl": s["cuaca"]["time"], "hujan": s["cuaca"]["precipitation_sum"], "peluang": s["cuaca"]["precipitation_probability_max"]} if s["cuaca"] else None),
         "tahun_api": k["kekerapan_sel22"],
-        "citra": {"satelit": m["satelit"], "tgl": C.tgl_id(m["tgl"]), "jam": jam.strftime("%H.%M"), "km": m["km"]},
+        "citra": ({"satelit": m["satelit"], "tgl": "tanggal pengambilan tidak diketahui", "jam": "", "km": m["km"]} if m.get("esri")
+                  else {"satelit": m["satelit"], "tgl": C.tgl_id(m["tgl"]), "jam": jam.strftime("%H.%M"), "km": m["km"]}),
         "svg": {k_: tanpa_style(v_) for k_, v_ in {"detail": gambar_ke_web(detail), "rute": gambar_ke_web("".join(rute_svg)), "tata": gambar_ke_web(C.peta_tata(s)),
                 "profil": C.profil_svg(s), "profil_jalan": C.profil_svg(s, "profil_jalan")}.items()},
         "head": C.teks_head(s),
@@ -105,9 +111,15 @@ for kk, nama, fungsi, spek, jumlah in ALAT:
         item["svg"] = GAMBAR[kk]
     alat.append(item)
 
+UMUM = C.UMUM
 data = {"acuan": C.ACUAN, "kalteng": C.R["kalteng48"], "kab": C.R["kab"][:2], "gagasan": UMUM["gagasan"], "panjang": UMUM["panjang"],
         "cek_gambut": UMUM["cek_gambut"], "putus": UMUM["putus"], "uji": UMUM["uji"], "selamat": UMUM["selamat"],
         "kerja": UMUM["kerja"], "warna": C.WARNA, "lokasi": lokasi, "alat": [{**a, "svg": tanpa_style(a["svg"])} if "svg" in a else a for a in alat]}
+if C.GENERIK:
+    teks = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("titik api", "titik panas").replace("Titik api", "Titik panas")
+    open(f"{KELUAR}/data.json", "w").write(teks)
+    print("data.json", len(teks) // 1024, "KB; gambar", len(os.listdir(IMG)), "berkas")
+    raise SystemExit(0)
 js = ("/* DIBANGKITKAN dari dossier pilot SIPPA Kalteng (scripts/data/sippa/pilot/ekspor_web.py). Jangan disunting tangan.\n"
       "   Hanya dikirim lewat GET /api/uji-pilot dengan token yang cocok (src/uji_pilot.js, keputusan SIPPA 59). */\n"
       "export const DATA = " + json.dumps(data, ensure_ascii=False, separators=(",", ":")) + ";\n")

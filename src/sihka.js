@@ -20,6 +20,9 @@ const UA = "pantaubencana-sihka/1.0 (+https://centurisk97.id; pemantauan banjir 
 const DASAR_MUDA_HARI = 14;
 /* pos yang sama di dua sumber: sumber berbeda dan jarak < ~300 m (0,0027 derajat, lingkaran di bidang lon/lat); yang berambang resmi menang (rk 2), lalu SIHKA (rk 1), sisanya jadi sumber_lain */
 const PENGELOLA_SIHKA = "Kementerian Pekerjaan Umum, Direktorat Jenderal Sumber Daya Air (SIHKA)";
+/* pasangan hanya dicari di sel kisi tetangga (3x3, sel 0,003 derajat >= ambang 0,0027; CAST memotong ke nol jadi sel 0 lebih lebar, tak pernah memisah): kesetaraan gx/gy memberi indeks otomatis.
+   Dulu f x f penuh (~480^2 = 230 ribu baris baca per hitung status, 28 Okt 2026 bagian terbesar kuota baca D1). */
+const SEL = 0.003;
 const DEKAT = (q, f) => `${q}.id <> ${f}.id AND ${q}.sumber <> ${f}.sumber AND (${q}.lon - ${f}.lon) * (${q}.lon - ${f}.lon) + (${q}.lat - ${f}.lat) * (${q}.lat - ${f}.lat) < 7.29e-6`;
 /* penggabungan GREEDY menurut prioritas: pos dibuang hanya bila punya pesaing berprioritas lebih tinggi yang sendirinya DIPERTAHANKAN (rantai A-B-C: B kalah dari A, C tetap hidup karena B dibuang).
    K = pasti dipertahankan, D = pasti dibuang, U = belum tentu; tiap ronde menyelesaikan satu tingkat ketergantungan, jadi rantai pesaing sampai 5 tingkat tepat (sisa U dianggap dipertahankan).
@@ -106,8 +109,9 @@ export const SQL_STATUS = `INSERT INTO cuaca_sumber (kunci, isi, dibuat)
       WHEN d.hari >= 30 AND u.v > d.v_max THEN 'tertinggi'
       ELSE 'biasa' END status
     FROM m u LEFT JOIN sihka_dasar d ON d.pos = u.pos LEFT JOIN sungai_meta mt ON mt.pos = u.pos),
-  f AS MATERIALIZED (SELECT e.*, (CASE WHEN coalesce(a3, a2, a1) IS NOT NULL THEN 2 ELSE 0 END + (sumber = 'SIHKA')) rk FROM e),
-  ed AS MATERIALIZED (SELECT f.id a, q.id b FROM f, f q WHERE ${DEKAT("q", "f")} AND (q.rk > f.rk OR (q.rk = f.rk AND q.id < f.id))),   -- a punya pesaing b yang berprioritas lebih tinggi
+  f AS MATERIALIZED (SELECT e.*, (CASE WHEN coalesce(a3, a2, a1) IS NOT NULL THEN 2 ELSE 0 END + (sumber = 'SIHKA')) rk, CAST(lon / ${SEL} AS INTEGER) gx, CAST(lat / ${SEL} AS INTEGER) gy FROM e),
+  d(k) AS (VALUES (-1), (0), (1)),
+  ed AS MATERIALIZED (SELECT f.id a, q.id b FROM f, d dx, d dy, f q WHERE q.gx = f.gx + dx.k AND q.gy = f.gy + dy.k AND ${DEKAT("q", "f")} AND (q.rk > f.rk OR (q.rk = f.rk AND q.id < f.id))),   -- a punya pesaing b yang berprioritas lebih tinggi
   s1 AS (SELECT id, CASE WHEN NOT EXISTS (SELECT 1 FROM ed WHERE ed.a = f.id) THEN 'K' ELSE 'U' END st FROM f),
   ${RONDE(1)}
   g AS (SELECT f.*, (s5.st = 'D') buang FROM f JOIN s5 ON s5.id = f.id)
@@ -131,7 +135,13 @@ async function tarik(env) {
 const galatTeks = e => String(e?.message).slice(0, 200);
 
 /* tabel sungai_meta (0066) belum diterapkan di D1 = status SIHKA tidak boleh mati: buat tabelnya (SQL sama dengan migrasi, idempoten) lalu ulangi */
+/* status menyapu ~250 ribu baris sihka_baca sekali jalan; dipanggil SIHKA tiap jam, sungai resmi tiap jam, dan hujan tiap 10 menit.
+   Jeda 4 jam di satu tempat ini (28 Okt 2026: kuota baca D1 gratis 5 juta/hari habis, produksi 500; 3 jam masih ~2 juta/hari, pemilik minta 4 jam). ponytail: jeda tetap, hitung inkremental bila status perlu lebih segar */
+export const STATUS_JEDA_MENIT = 240;   // env.SIHKA_STATUS_JEDA_MENIT menimpa (uji memakai "0" supaya tiap panggilan menghitung)
 const bangunStatus = async (env, kini) => {
+  const jeda = Number(env?.SIHKA_STATUS_JEDA_MENIT ?? STATUS_JEDA_MENIT) * 60e3;
+  const lalu = jeda > 0 ? await env.DB.prepare("SELECT dibuat FROM cuaca_sumber WHERE kunci = 'sihka_status'").first().catch(() => null) : null;
+  if (lalu?.dibuat && kini >= lalu.dibuat && kini - lalu.dibuat < jeda) return null;
   const jalan = () => env.DB.prepare(SQL_STATUS).bind(Math.floor(kini / 1000), kini).run();
   try { return await jalan(); } catch (e) { if (!/sungai_meta/.test(e?.message)) throw e; await env.DB.prepare(BUAT_META).run(); return jalan(); }
 };

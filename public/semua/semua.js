@@ -6,6 +6,8 @@ import {IKON} from "/inti/kepala.js";
 import {susunLegenda} from "/inti/peta/legenda.js";
 import {pasangAnalisis} from "/semua/analisis.js";
 import {pasangKejadian} from "/semua/kejadian.js";
+import {pasangDarurat} from "/semua/darurat.js";
+import {pasangDampak} from "/semua/dampak.js";
 
 const nanti = fn => { let ok = false; const go = () => { if (!ok) { ok = true; fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 const bacaLokal = k => { try { return localStorage.getItem(k); } catch (e) { return null; } };
@@ -82,3 +84,26 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 /* ---------- outlook iklim, bahaya 12 bulan, bencana berantai: di bawah kartu situasi, dimuat setelah cat pertama */
 nanti(() => pasangAnalisis($("#analisis")));
 nanti(async () => { try { const r = await REG; await H; kejadian = await pasangKejadian($("#kejadian"), r.bencana.filter(b => b.status === "aktif")); kejadian?.saring(dipilih); } catch (e) {} });
+
+/* ---------- fase: Pra-bencana, Tanggap Darurat, Pasca-bencana. Satu klik = pil urgent, tampilan menyusul; pilihan di hash (#fase=pra). Tanpa muat ulang. */
+const FASE = ["pra", "tanggap", "pasca"];
+let darurat, faseKini = "tanggap";
+const dariHash = () => { const f = new URLSearchParams(location.hash.slice(1)).get("fase"); return FASE.includes(f) ? f : "tanggap"; };
+function setFase(f, tulis = true) {
+  faseKini = f;
+  document.querySelectorAll("#fase button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.f === f)));   /* chrome urgent */
+  nanti(() => {
+    document.querySelector("main").dataset.fase = f;
+    if (tulis) history.replaceState(null, "", f === "tanggap" ? location.pathname + location.search : "#fase=" + f);
+    darurat?.aktif(f === "tanggap");
+    if (f !== "pasca") peta.resize();
+  });
+}
+$("#fase").addEventListener("click", e => { const b = e.target.closest("button[data-f]"); if (b && b.dataset.f !== faseKini) setFase(b.dataset.f); });
+addEventListener("hashchange", () => { const f = dariHash(); if (f !== faseKini) setFase(f, false); });
+if (dariHash() !== "tanggap") { document.querySelector("main").dataset.fase = faseKini = dariHash(); document.querySelectorAll("#fase button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.f === faseKini))); }
+
+nanti(async () => { darurat = await pasangDarurat($("#darurat"), peta); darurat.aktif(faseKini === "tanggap");
+  if (darurat.ada) { await H; const lg = $("#legenda .lg-isi"); if (lg) { const g = document.createElement("div"); g.className = "lg-g"; g.dataset.fase = "tanggap";
+    g.innerHTML = `<div class="lbl">Status darurat</div>${darurat.legenda.map(([n, w]) => `<div class="leg"><span><i class="sw" style="background:${w}"></i>${esc(n)}</span></div>`).join("")}`; lg.appendChild(g); } } });
+nanti(() => pasangDampak($("#dampak")));

@@ -6,10 +6,14 @@
 import {kuantil, nKecil} from "./hitung.js";
 import {barisKoreksi, rekapKelas, AMBANG_G3} from "./layar_log.js";
 import {TEKS_ALASAN, muatGayaKit} from "./layar_kit.js";
-import {memuat, galat, menunggu} from "./keadaan.js";
+import {memuat, galat} from "./keadaan.js";
 import {ikon} from "./ikon.js";
 import {ringkasDepot, kesiapanHtml, muatRincian, kitTerpotong} from "./kesiapan.js";
 import {peringkat, keputusanHariIni, teksWhatsApp} from "./keputusan.js";
+import {hitungGerbang, kartuGerbangHtml} from "./bukti.js";
+import {ringkasAb} from "./layar_ab.js";
+import {barisProbe} from "./layar_laporan.js";
+import {kartuLapangan, muatButir, awalHariWIB, muatGayaLapangan, ambilTeks} from "./lapangan_staf.js";
 
 export const JALUR = {keputusan: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", pemicu: "/api/sippa/data/pemicu", pilot: "/api/sippa/log", zona: "/api/sippa/data/zona", gerak: "/api/sippa/ringkas", alarm: "/api/sippa/alarm?aktif=1"};
 export const TAUTAN = {kit: "/pipa/kit", pemicu: "/pipa/pemicu", pilot: "/pipa/log", zona: "/pipa/peta"};
@@ -38,7 +42,7 @@ export function ringkasKit(kits) {
 export function kartuKit(d, depot = null, terpotong = 0) {
   const kits = d.kit || [];
   const sumber = "inventaris SIPPA D1 (kit, gerak, komponen)";
-  if (!kits.length) return {ey: "Kit", judul: "Belum ada kit terdaftar.", isi: kosongHtml("Kit dicatat dari layar Kit lewat tombol Tambah kit."), sumber, per: null, tautan: TAUTAN.kit};
+  if (!kits.length) return {kosong: true, ey: "Kit", judul: "Belum ada kit terdaftar.", isi: kosongHtml("Kit dicatat dari layar Kit lewat tombol Tambah kit."), sumber, per: null, tautan: TAUTAN.kit};
   const r = ringkasKit(kits), per = kits.reduce((m, k) => k.diubah != null && (m == null || k.diubah > m) ? k.diubah : m, null);
   const teratas = [...kits].sort((a, b) => (URUT_STATUS[a.status] ?? 9) - (URUT_STATUS[b.status] ?? 9) || String(a.kode).localeCompare(String(b.kode))).slice(0, 3);
   const baris = teratas.map(k => `<li data-kode="${esc(k.kode)}"><b class="num">${esc(k.kode)}</b><span class="sp-status ${esc(k.status)}">${esc(LABEL_STATUS[k.status] ?? k.status)}</span></li>`).join("");
@@ -88,7 +92,7 @@ function titikMini(rek) {
 
 export function kartuPilot(log) {
   const sumber = "log gelar lapangan dan entri staf (SIPPA D1)", aktif = barisKoreksi(log).filter(l => !l.dummy && l.jenis === "karhutla");
-  if (!aktif.length) return {ey: "Pilot", judul: "Belum ada log gelar.", isi: kosongHtml("Log masuk dari form lapangan /pipa/lapangan atau entri staf dari formulir kertas."), sumber, per: null, tautan: TAUTAN.pilot};
+  if (!aktif.length) return {kosong: true, ey: "Pilot", judul: "Belum ada log gelar.", isi: kosongHtml("Log masuk dari form lapangan /pipa/lapangan atau entri staf dari formulir kertas."), sumber, per: null, tautan: TAUTAN.pilot};
   const rek = rekapKelas(aktif), ys = KELAS.flatMap(k => rek[k].titik.map(t => t.y)), per = aktif.reduce((m, l) => l.t_tiba != null && (m == null || l.t_tiba > m) ? l.t_tiba : m, null);
   const kecil = nKecil(ys.length), p50 = kuantil(ys, 0.5);
   const sesi = `${hl(aktif.length)} sesi gelar`;
@@ -142,7 +146,7 @@ const waktuTag = ms => ms == null ? "–" : `<time datetime="${new Date(ms).toIS
 
 export function kartuGerak(rows) {
   const sumber = "inventaris SIPPA D1 (gerak kit)";
-  if (!rows.length) return {ey: "Kit", judul: "Belum ada gerak kit.", isi: kosongHtml("Gerak dicatat dari layar Kit dan form lapangan."), sumber, per: null};
+  if (!rows.length) return {kosong: true, ey: "Kit", judul: "Belum ada gerak kit.", isi: kosongHtml("Gerak dicatat dari layar Kit dan form lapangan."), sumber, per: null};
   const urut = [...rows].sort((a, b) => b.waktu - a.waktu).slice(0, 10), td = (l, v, n) => `<td${n ? ' class="n"' : ""} data-label="${l}">${v}</td>`;
   const tr = g => `<tr>${td("Waktu", waktuTag(g.waktu))}${td("Kit", `<b>${esc(g.kit_kode ?? g.kit_id ?? "–")}</b>`)}${td("Gerak", `<span class="sp-status ${esc(g.dari_status)}">${esc(LABEL_STATUS[g.dari_status] ?? g.dari_status)}</span>${ikon("chevron-right")}<span class="sp-status ${esc(g.ke_status)}">${esc(LABEL_STATUS[g.ke_status] ?? g.ke_status)}</span>`)}${td("Alasan", esc(TEKS_ALASAN[g.alasan] ?? g.alasan ?? "–"))}${td("Pengangkut", esc(PENGANGKUT[g.pengangkut] ?? "–"))}</tr>`;
   return {ey: "Kit", judul: `${hl(urut.length)} gerak kit terakhir`,
@@ -156,7 +160,7 @@ const SATUAN_ALARM = {hisap_rendah: "bar", debit_rendah: "L/min", dry_run: "L/mi
 const angkaSatuan = (a, v) => { const u = a.satuan ?? SATUAN_ALARM[a.kode] ?? ""; return esc(`${fmt(v)}${u ? ` ${u}` : ""}`); };
 export function kartuAlarm(alarm) {
   const sumber = "telemetri SIPPA (perangkat dan alarm)";
-  if (!alarm.length) return {ey: "Telemetri", judul: "Tidak ada alarm aktif.", isi: kosongHtml("Alarm muncul di sini saat perangkat melewati ambang."), sumber, per: null};
+  if (!alarm.length) return {kosong: true, ey: "Telemetri", judul: "Tidak ada alarm aktif.", isi: kosongHtml("Alarm muncul di sini saat perangkat melewati ambang."), sumber, per: null};
   const baris = alarm.map(a => `<li><b>${esc(NAMA_ALARM[a.kode] ?? a.kode)}</b>${a.kit_kode ? `<span>${esc(a.kit_kode)}</span>` : ""}${a.nilai != null ? `<span class="num">${angkaSatuan(a, a.nilai)}${a.ambang != null ? ` (ambang ${angkaSatuan(a, a.ambang)})` : ""}</span>` : ""}<span class="ad-catat">sejak ${waktuTag(a.mulai)}</span></li>`).join("");
   return {ey: "Telemetri", judul: `Telemetri: ${hl(alarm.length)} alarm aktif`, isi: `<ul class="sp-daftar sp-alarm">${baris}</ul>`, sumber, per: Math.max(...alarm.map(a => a.mulai).filter(Boolean)), perLabel: "alarm terbaru"};
 }
@@ -209,7 +213,7 @@ export async function pasang(akar, konteks) {
   const sinyal = ctrl.signal, prov = konteks.prov, kini = Date.now();
   const nama = (typeof Wilayah !== "undefined" && Wilayah.PROV?.[prov]) || `provinsi ${prov}`;
   akar.innerHTML = `<h1 class="sp-judul">Ringkas</h1>
-    <section id="insight" class="sp-kisi sp-ringkas" aria-label="Status SIPPA">${Object.keys(JALUR).map(k => `<div class="sp-slot${k === "gerak" || k === "keputusan" ? " lebar" : k === "alarm" ? " sempit" : ""}" data-kartu="${k}"></div>`).join("")}</section>`;
+    <section id="insight" class="sp-kisi sp-ringkas" aria-label="Status SIPPA">${Object.keys(JALUR).map(k => `<div class="sp-slot${k === "gerak" || k === "keputusan" ? " lebar" : k === "alarm" ? " sempit" : ""}" data-kartu="${k}"></div>`).join("")}<div class="sp-slot lebar" data-kartu="lapangan" hidden></div></section>`;
   const slot = k => akar.querySelector(`[data-kartu="${k}"]`);
   for (const k of Object.keys(JALUR)) slot(k).replaceChildren(memuat());
   /* bilah "Data per" hanya dari berkas turunan (pemicu, zona); waktu kit, log, gerak, alarm adalah waktu kejadian, bukan kesegaran data */
@@ -220,10 +224,12 @@ export async function pasang(akar, konteks) {
     const wadah = slot(k);
     if (hasil.galat) {
       const e = hasil.galat; if (e.status == null) console.error(e);
-      wadah.replaceChildren(e.status === 404 && k === "alarm" ? menunggu("Telemetri belum dirilis di versi ini") : e.status === 404 && k === "keputusan" ? menunggu("Peringkat prioritas menunggu putaran pipeline data.yml") : galat(e.status ?? 0, e.status == null ? "Kartu tidak bisa ditampilkan. Coba lagi." : e.message || undefined, ulang));
+      /* 404 = berkas atau rute belum ada: kartu disembunyikan, bukan diganti baris "menunggu" (aturan pemilik A18) */
+      if (e.status === 404 && (k === "alarm" || k === "keputusan")) { wadah.hidden = true; return; }
+      wadah.replaceChildren(galat(e.status ?? 0, e.status == null ? "Kartu tidak bisa ditampilkan. Coba lagi." : e.message || undefined, ulang));
       return;
     }
-    const s = bangun(hasil.ok); per[k] = s.per; wadah.innerHTML = rakitKartu(s); tampilPer();
+    const s = bangun(hasil.ok); per[k] = s.per; wadah.hidden = !!s.kosong; wadah.innerHTML = s.kosong ? "" : rakitKartu(s); tampilPer();
   };
   let teksWa = "";
   /* kartu Kit tampil dulu tanpa kesiapan; bagian kit siap gelar diisi begitu rincian kit datang (maksimal 12 fetch) */
@@ -231,6 +237,18 @@ export async function pasang(akar, konteks) {
     if (sinyal.aborted) return;
     const w = slot("kit"); if (w && !w.querySelector(".ad-galat")) w.innerHTML = rakitKartu(kartuKit(j, ringkasDepot(j.kit || [], r), kitTerpotong(j.kit || [])));
   });
+  /* fase 2: SOS dan laporan selesai hari ini dari kit yang sedang di lapangan; tanpa kit digelar atau tanpa butir kartu tetap tersembunyi (aturan A18) */
+  const lapanganSusul = async j => {
+    const kits = (j.kit || []).filter(k => ["gelar", "banjir", "depot"].includes(k.status)).slice(0, 12), nama = Object.fromEntries((j.kit || []).map(k => [k.id, k.kode]));
+    if (!kits.length) return;
+    const rinci = await Promise.allSettled(kits.map(k => konteks.ambil(`/api/sippa/kit/${k.id}`, sinyal)));
+    const kini = Date.now(), sejak = awalHariWIB(kini), tugas = [...new Set(rinci.flatMap(r => r.status === "fulfilled" ? (r.value.tugas || []).filter(t => t.dicabut == null && t.berakhir > sejak).map(t => t.id) : []))].slice(0, 12);
+    if (!tugas.length || sinyal.aborted) return;
+    const butir = (await Promise.all(tugas.map(t => muatButir(konteks.ambil, {tugas: t, jenis: ["sos", "selesai"], sejak}, sinyal)))).flat();
+    const s = kartuLapangan(butir, kini, nama); await muatGayaLapangan();
+    if (sinyal.aborted || s.kosong) return;
+    const w = slot("lapangan"); w.innerHTML = rakitKartu(s); w.hidden = false;
+  };
   akar.addEventListener("click", async e => {
     const t = e.target.closest('[data-aksi="salin-wa"]'); if (!t || !teksWa) return;
     t.textContent = "Menyalin";   // piksel berubah sebelum menunggu izin papan klip (INP)
@@ -247,11 +265,25 @@ export async function pasang(akar, konteks) {
   };
   const bangun = {
     keputusan: ([p, k]) => { const s = kartuKeputusan(p, k, prov, konteks.zona, nama); teksWa = s.wa; return s; },
-    kit: j => { kesiapanSusul(j); return kartuKit(j); }, pemicu: j => kartuPemicu(j, prov, kini),
+    kit: j => { kesiapanSusul(j); lapanganSusul(j).catch(e => { if (e?.name !== "AbortError") console.error(e); }); return kartuKit(j); }, pemicu: j => kartuPemicu(j, prov, kini),
     pilot: j => kartuPilot((j.log || []).filter(l => l.prov == null || l.prov === prov)),
     zona: j => kartuZona(j, prov, nama), gerak: j => kartuGerak(j.gerak_terakhir || []), alarm: j => kartuAlarm(j.alarm || []),
   };
   /* tiap kartu mendarat begitu datanya datang (tidak menunggu yang lain); ulangi hanya kartu itu */
   const jalankan = k => bungkus(muat[k]).then(h => pasangSlot(k, h, bangun[k], () => { slot(k).replaceChildren(memuat()); jalankan(k); }));
+  /* SP-145 butir 42 dan 43: kartu untuk pimpinan, gerbang dihitung ulang tiap layar dibuka; gagal memuat = kartu tidak tampil (bukan baris menunggu) */
+  const muatGerbang = async () => {
+    try {
+      const q = new URLSearchParams({sejak: kini - 365 * 864e5, sampai: kini});
+      const [logJ, probeT, abJ] = await Promise.all([ambil(`/api/sippa/log?${q}`), ambilTeks(`/api/sippa/probe.csv?${q}`, sinyal), ambil("/api/sippa/ab").catch(e => { if (e?.name === "AbortError") throw e; return {petak: [], unggah: []}; })]);
+      if (sinyal.aborted) return;
+      const petak = (abJ.petak || []).filter(p => !(p.dummy === 1 || p.dummy === true) && (p.prov == null || p.prov === prov));
+      const g = hitungGerbang({log: barisKoreksi(logJ.log || []).filter(l => l.prov == null || l.prov === prov), probe: barisProbe(probeT), ab: ringkasAb(petak, {unggah: abJ.unggah || []})});
+      const w = akar.querySelector("#sp-gerbang"); if (!w) return;
+      w.innerHTML = Kartu.kartu("Gerbang", esc("Apa yang sudah lulus, apa yang belum"), kartuGerbangHtml(g, Date.now()), "log, probe, dan A/B SIPPA"); w.hidden = false;
+    } catch (e) { if (e?.name !== "AbortError" && e?.status == null) console.error(e); }
+  };
+  akar.insertAdjacentHTML("beforeend", `<div id="sp-gerbang" hidden></div>`);
+  nanti(muatGerbang);
   await Promise.all(Object.keys(muat).map(jalankan));
 }

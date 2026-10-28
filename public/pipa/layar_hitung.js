@@ -4,6 +4,8 @@
 import {hidraulika, hfHW, idLayflat, pesanGerbang, KONST, KELAS_POMPA, BAWAAN} from "./hitung.js";
 import {memuat, galat} from "./keadaan.js";
 import {ikon} from "./ikon.js";
+import {permintaanBbm} from "./logistik.js";
+import {muatGayaKit} from "./layar_kit.js";
 
 /* ---------- format ---------- */
 const tampil = n => typeof fmt === "function" ? fmt(n) : n == null || Number.isNaN(n) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
@@ -243,6 +245,12 @@ export function bolehSkenario(peran, tersedia) {
 }
 
 /* ================= tampilan (DOM) ================= */
+function cetakTeks(teks) {
+  const area = document.createElement("div"), pre = document.createElement("pre"); area.className = "sp-cetak-area"; pre.textContent = teks; area.append(pre);
+  document.body.append(area); document.body.classList.add("sp-mencetak");
+  const bersih = () => { document.body.classList.remove("sp-mencetak"); area.remove(); removeEventListener("afterprint", bersih); };
+  addEventListener("afterprint", bersih); print();
+}
 const SKENARIO_TERSEDIA = false;   // dibalik oleh tiket rute skenario (SP-035) bersama layar Studio
 const TINGKAT = {keras: "Keras", syarat: "Bersyarat", catatan: "Catatan"};
 const IKON_VONIS = {
@@ -296,9 +304,12 @@ export async function pasang(akar, konteks) {
 
   akar.innerHTML = `<div class="sp-judul-baris"><h1 class="sp-judul">Kalkulator hidraulika</h1>
     <div class="sp-aksi-judul"><button type="button" class="ad-tombol" data-aksi="salin">Salin tautan</button>
-    <button type="button" class="ad-tombol" data-aksi="skenario" ${skenario.aktif ? "" : "disabled"} title="${lolos(skenario.alasan)}">Simpan sebagai skenario Studio</button>
+    <button type="button" class="ad-tombol" data-aksi="bbm">Jadikan permintaan BBM</button>
+    ${skenario.aktif ? `<button type="button" class="ad-tombol" data-aksi="skenario">Simpan sebagai skenario Studio</button>` : ""}
     ${bolehEkspor(peran) ? '<button type="button" class="ad-tombol" data-aksi="ekspor">Ekspor acuan</button>' : ""}</div></div>
-    <p class="sp-info-aksi" role="status" data-info></p>${skenario.aktif ? "" : `<p class="sp-bantu sp-info-skenario">${lolos(skenario.alasan)}</p>`}
+    <p class="sp-info-aksi" role="status" data-info></p>
+    <section class="sp-lk" data-bbm hidden aria-labelledby="hx-bbm-h"><h2 class="sp-sub-judul" id="hx-bbm-h">Permintaan BBM</h2><textarea class="sp-teks-bbm" rows="11" readonly data-bbm-teks aria-label="Teks permintaan BBM"></textarea>
+      <div class="sp-aksi"><button type="button" class="ad-tombol" data-aksi="bbm-salin">Salin teks</button><button type="button" class="ad-tombol" data-aksi="bbm-cetak">Cetak</button></div></section>
     <div data-kompleks></div>
     <div class="sp-hitung">
       <form class="sp-form sp-hitung-form" novalidate aria-label="Masukan kalkulator">${KELOMPOK.map(([kel, nama], i) => `<details class="sp-kel"${!ponsel || i === 0 ? " open" : ""} data-kel="${kel}"><summary><span class="ad-ey">${nama}</span></summary><div class="sp-kel-isi">${MEDAN.filter(m => m.kel === kel).map(m => isianHtml(m, st.nilai[m.k])).join("")}</div></details>`).join("")}</form>
@@ -332,9 +343,10 @@ export async function pasang(akar, konteks) {
     const lm = q("[data-lama]");
     lm.hidden = !lama.length;
     lm.textContent = lama.length ? `Hasil memakai nilai sah terakhir untuk: ${lama.map(k => MEDAN.find(m => m.k === k).label).join(", ")}.` : "";
+    q(".sp-gerbang-rinci").hidden = !r.gerbang.length;   // tanpa hambatan: kalimatnya sudah di alasan vonis, daftar kosong tidak diulang
     q("[data-gerbang]").innerHTML = r.gerbang.length ? r.gerbang.map(g => `<li><span class="sp-tingkat ${lolos(g.tingkat)}">${lolos(TINGKAT[g.tingkat])}</span><code class="sp-kode-g">${lolos(g.kode)}</code><span>${lolos(g.pesan)}</span></li>`).join("") : `<li class="sp-gerbang-kosong">${lolos(TANPA_HAMBATAN)}</li>`;
     if (st.vonis !== r.kata) { if (st.vonis != null) umum.textContent = `Vonis berubah menjadi ${r.kata}: ${r.alasan}`; st.vonis = r.kata; }
-    q("[data-angka]").innerHTML = kartuAngka(h, st.nilai).map(a => `<div class="sp-angka${a.nada ? " " + lolos(a.nada) : ""}"><dt><span class="ad-ey">${lolos(a.label)}</span>${pil(a.yakin === "estimasi-model" ? "Estimasi model" : "Asumsi kebijakan", a.yakin)}</dt><dd><b>${lolos(a.nilai)}</b>${a.nada === "lewat" ? '<span class="sr"> melewati batas</span>' : ""}<small>${lolos(a.banding)}</small><small class="sp-sumber">${lolos(a.sumber)}</small></dd></div>`).join("");
+    q("[data-angka]").innerHTML = kartuAngka(h, st.nilai).map(a => `<div class="sp-angka${a.nada ? " " + lolos(a.nada) : ""}"><dt><span class="ad-ey">${lolos(a.label)}</span>${a.yakin === "estimasi-model" ? "" : pil("Asumsi kebijakan", a.yakin)}</dt><dd><b>${lolos(a.nilai)}</b>${a.nada === "lewat" ? '<span class="sr"> melewati batas</span>' : ""}<small>${lolos(a.banding)}</small><small class="sp-sumber">${lolos(a.sumber)}</small></dd></div>`).join("");
     const pilI = pilIsian(st.nilai, h);
     semua("[data-pil]").forEach(e => { const p = pilI[e.dataset.pil]; e.hidden = !p; e.innerHTML = p ? pil(p.teks, p.kelas) : ""; });
     semua("[data-bila-kompleks]").forEach(e => { e.hidden = !st.nilai.kompleks; });
@@ -409,6 +421,21 @@ export async function pasang(akar, konteks) {
       tulisQuery();
       try { await navigator.clipboard.writeText(location.href); kabari("Tautan disalin. Semua masukan ikut di dalamnya."); }
       catch { kabari("Tautan sudah ada di bilah alamat. Salin dari sana."); }
+    } else if (b.dataset.aksi === "bbm" && st.h) {
+      try {
+        const k = st.kompleks;
+        st.bbm = permintaanBbm({h: st.h, nilai: st.nilai, lokasi: k ? `Kompleks ${k.id}${k.kab ? `, ${k.kab}` : ""}` : null, tanggal: Date.now()});
+        q("[data-bbm-teks]").value = st.bbm.teks; q("[data-bbm]").hidden = false; kabari("Teks permintaan siap disalin atau dicetak.");
+      } catch (er) { kabari(er.message || "Permintaan BBM belum bisa dibuat."); }
+    } else if (b.dataset.aksi === "bbm-salin" && st.bbm) {
+      try { await navigator.clipboard.writeText(st.bbm.teks); kabari("Teks permintaan disalin."); } catch { kabari("Salin dari kotak teks di atas."); }
+    } else if (b.dataset.aksi === "bbm-cetak" && st.bbm) {
+      if (b.getAttribute("aria-busy") === "true") return;
+      b.setAttribute("aria-busy", "true");
+      nanti(async () => {   // INP: cetak sesudah satu frame; gaya cetak dimuat dulu
+        try { await muatGayaKit(); cetakTeks(st.bbm.teks); } catch (er) { console.error(er); kabari("Cetak belum bisa dibuat. Coba lagi."); }
+        b.removeAttribute("aria-busy");
+      });
     } else if (b.dataset.aksi === "ekspor" && st.h) {
       const blob = new Blob([JSON.stringify(eksporAcuan(st.nilai, st.h), null, 2)], {type: "application/json"}), u = URL.createObjectURL(blob), a = document.createElement("a");
       a.href = u; a.download = "acuan-hidraulika.json"; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4000);

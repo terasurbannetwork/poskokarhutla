@@ -127,8 +127,9 @@ export function selTingkat(x) {
   const {tampil} = x, saran = TINDAKAN[x.tingkat];
   if (tampil.kunci === "basi") return `<span class="sp-tingkat t-basi" title="${esc(tampil.teks)}">basi</span><span class="sr">${esc(tampil.teks)}</span>`;
   const sebab = "PRA-POSISI dan GELAR: –, data ansambel basi";
+  /* basi sudah di spanduk atas; per baris cukup untuk pembaca layar, bukan pil yang diulang tiap baris (pemilik A1, 28 Okt) */
   return `<span class="sp-tingkat t-${KELAS[tampil.kunci]}" title="${esc(saran)}">${esc(tampil.teks)}</span>`
-    + (tampil.basi && tampil.kunci === "SIAGA" ? ` <span class="sp-yakin asumsi-kebijakan" title="${esc(sebab)}">ansambel basi</span><span class="sr">${esc(sebab)}</span>` : "") + `<span class="sr">${esc(saran)}</span>`;
+    + (tampil.basi && tampil.kunci === "SIAGA" ? `<span class="sr">${esc(sebab)}</span>` : "") + `<span class="sr">${esc(saran)}</span>`;
 }
 
 /* spanduk di atas layar: data basi tidak boleh terbaca sebagai aman. Kosong bila ansambel dan titik panas segar. */
@@ -146,8 +147,8 @@ export function barisHtml(m, {pilih, peran}) {
   return m.map((x, i) => {
     const {b, tampil} = x, tulis = peran === "W" || peran === "M";
     const tingkat = selTingkat(x);
-    const hari = x.hari != null ? `${esc(fmt(x.hari))} dari 7` : x.basiA ? "–, data ansambel basi" : "–";
-    const titik = x.titik == null ? "–" : `${esc(fmt(x.titik))}${x.titikBasi ? " " + pil("data titik basi", "asumsi-kebijakan", "Acuan titik panas lebih tua dari 36 jam") : ""}`;
+    const hari = x.hari != null ? `${esc(fmt(x.hari))} dari 7` : x.basiA ? `–<span class="sr">, data ansambel basi</span>` : "–";
+    const titik = x.titik == null ? "–" : `${esc(fmt(x.titik))}${x.titikBasi ? `<span class="sr">, data titik basi</span>` : ""}`;
     const kit = x.kit ? `<a class="sp-kit-kode" href="/pipa/kit/${esc(x.kit.kit.id)}">${esc(x.kit.kit.kode)}</a>, ${esc(fmt(x.kit.km))} km ${pilKit(x.kit.kit)}` : "–";
     const depot = !x.pusat ? "–" : x.depot ? `${esc(x.depot.kit.lokasi ?? x.depot.kit.kode)}, ${esc(fmt(x.depot.km))} km` : "belum ada kit di depot";
     const aksi = x.rencana && tulis ? `<button type="button" class="ad-tombol" data-rencana="${i}">Buat rencana pra-posisi</button>` : "";

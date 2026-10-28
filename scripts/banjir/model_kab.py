@@ -18,7 +18,7 @@ from collections import defaultdict
 
 DIR = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, DIR)
-from umum import MENTAH, baca, simpan
+from umum import KELUAR as KELUAR_PUBLIK, MENTAH, baca, simpan
 from status import GESER
 import uji_balik as ub
 
@@ -33,7 +33,10 @@ def _impor(nama, jalur):
 G = _impor("gbdt_sebaran", os.path.join(DIR, "..", "sebaran", "gbdt.py"))
 
 LATIH, VALIDASI, UJI = range(2016, 2022), range(2022, 2024), range(2024, 2026)
-KELUAR = os.path.join(MENTAH, "model_kab")
+# MODEL_KAB_SEBAGIAN=1: hanya kabupaten yang SEMUA selnya sudah di cache (kuota harian Open-Meteo habis sebelum sampel lengkap).
+# Keluaran ke model_kab_sebagian/ dan `buka` ditolak: itu pratinjau pipa, bukan kandidat yang boleh diuji.
+SEBAGIAN = bool(os.environ.get("MODEL_KAB_SEBAGIAN"))
+KELUAR = os.path.join(MENTAH, "model_kab_sebagian" if SEBAGIAN else "model_kab")
 KANDIDAT, HASIL_LATIH, HASIL_UJI = (os.path.join(KELUAR, n) for n in ("kandidat.json", "latih.json", "uji.json"))
 DIBI_TGL = os.path.join(MENTAH, "dibi_tanggal.json")
 RISET = os.path.join(DIR, "RISET-MODEL-KAB.md")
@@ -62,9 +65,13 @@ KRITERIA = {
     "alarm": "ambang model = jumlah alarm sama dengan aturan status.py (>= Waspada, >= Siaga) pada periode yang sama",
     "dETS_waspada_ci_bawah_lebih_dari": 0.0,
     "dETS_siaga_ci_bawah_lebih_dari": 0.0,
-    "brier_skill_vs_klimatologi_lebih_dari": 0.0,
-    "penjaga_lr": "titik: AUC model >= AUC regresi logistik DAN Brier model <= Brier regresi logistik",
-    "ci": "bootstrap blok (kab x tahun), 1000 ulangan, berpasangan model vs aturan, persentil 2,5 dan 97,5, biji 11",
+    "dETS_vs_lr_waspada_siaga_ci_bawah_lebih_dari": 0.0,
+    "dETS_vs_klimatologi_waspada_siaga_ci_bawah_lebih_dari": 0.0,
+    "brier_skill_vs_klimatologi_ci_bawah_lebih_dari": 0.0,
+    "kalibrasi": "model, regresi logistik, dan klimatologi sama-sama dikalibrasi Platt di validasi 2022-2023; klimatologi terkalibrasi = acuan Brier skill",
+    "penjaga_lr": "titik: AUC model >= AUC regresi logistik",
+    "seri": "pemecah seri skor pada ambang alarm: acak berbiji tetap 11",
+    "ci": "bootstrap blok (kab x tahun), 1000 ulangan, berpasangan, persentil 2,5 dan 97,5, biji 11",
 }
 BIJI = 11
 
@@ -75,12 +82,24 @@ def sidik_kriteria():
 
 def sidik_penuh(kand):
     """sha256: kriteria + kandidat (pohon, Platt, pembanding, fitur) + isi model_kab.py, uji_balik.py, status.py + dibi_tanggal.json."""
-    isi = {k: kand[k] for k in ("fitur", "bias", "pohon", "platt", "hiper", "lr", "klim", "frek", "pers_batas")}
+    isi = {k: kand[k] for k in ("fitur", "bias", "pohon", "platt", "platt_lr", "platt_klim", "hiper", "lr", "klim", "frek", "frek_awal",
+                                "pers_batas", "sel")}
     h = hashlib.sha256(json.dumps({"kriteria": KRITERIA, "kand": isi}, sort_keys=True).encode())
-    for j in (os.path.join(DIR, n) for n in ("model_kab.py", "uji_balik.py", "status.py")):
+    kode = [os.path.join(DIR, n) for n in ("model_kab.py", "uji_balik.py", "status.py", "umum.py")]
+    kode += [os.path.join(DIR, "..", "sebaran", "gbdt.py"), os.path.join(KELUAR_PUBLIK, "bahaya.json"), DIBI_TGL]
+    for j in kode:
         h.update(hashlib.sha256(open(j, "rb").read()).digest())
-    h.update(hashlib.sha256(open(DIBI_TGL, "rb").read()).digest())
+    h.update(json.dumps(manifest_era5(kand["sel"]), sort_keys=True).encode())
     return h.hexdigest()[:16]
+
+
+def manifest_era5(sel):
+    """Daftar berkas cache ERA5 sampel: [nama, ukuran, sha256] per sel (urut)."""
+    out = []
+    for s in sorted(map(tuple, sel)):
+        j = ub.jalur(*s)
+        out.append([os.path.basename(j), os.path.getsize(j), hashlib.sha256(open(j, "rb").read()).hexdigest()])
+    return out
 
 
 # ------------------------------------------------------------------ data
@@ -91,6 +110,8 @@ def muat_sampel():
     ev, sk = ub.peristiwa(baris), ub.sel_per_kab()
     batas = ub.hari_ke(dt.date(LATIH[-1], 12, 31))   # kabupaten dipilih dari kejadian <= 2021 saja (sama ambang_wilayah.pilih_latih)
     kabs = ub.pilih({j: {k: {e for e in v if e <= batas} for k, v in ev[j].items()} for j in ev}, sk)
+    if SEBAGIAN:
+        kabs = [k for k in kabs if all(os.path.exists(ub.jalur(*s)) for s in sk[k])]
     return ev, sk, kabs, {s for k in kabs for s in sk[k]}
 
 
@@ -140,14 +161,26 @@ def persentil_batas(cuaca):
     return out
 
 
-def frekuensi(ev, kabs):
-    """Laju hari kejadian DIBI per kab pada tahun latih (satu angka), dan per kab tanpa tiap tahun latih (leave-one-year-out untuk baris latih)."""
-    n_th = {y: len(hari_tahun([y])) for y in LATIH}
+def laju_awal(baris, kabs):
+    """Laju hari-kejadian banjir/bandang DIBI nasional sampel pada 2008-2015 (SEBELUM tahun latih): nilai tahun latih pertama."""
+    kab, lo, hi = set(kabs), dt.date(2008, 1, 1), dt.date(2015, 12, 31)
+    hari = {(f"{p}|{n}", t) for jenis, p, n, t, v in baris if v >= 1 and {"banjir", "bandang"} & set(jenis) and f"{p}|{n}" in kab and lo <= dt.date.fromisoformat(t) <= hi}
+    return len(hari) / (len(kab) * ((hi - lo).days + 1))
+
+
+def frekuensi(ev, kabs, awal):
+    """Laju hari kejadian DIBI per kab, dihaluskan ke `awal` dengan bobot 30 hari: (n_kej + 30 awal)/(n_hari + 30).
+    ekspansif[kab][y] = hanya dari tahun latih < y (2016 = awal, nasional pra-2016); penuh[kab] = semua tahun latih (validasi/uji).
+    Nilai baris tahun y TIDAK bergantung pada label tahun y."""
     rentang = {y: set(hari_tahun([y])) for y in LATIH}
     jum = {k: {y: len(rentang[y] & set(ev["banjir"].get(k, ()))) for y in LATIH} for k in kabs}
-    penuh = {k: sum(jum[k].values()) / sum(n_th.values()) for k in kabs}
-    loyo = {k: {y: (sum(jum[k].values()) - jum[k][y]) / (sum(n_th.values()) - n_th[y]) for y in LATIH} for k in kabs}
-    return penuh, loyo
+
+    def laju(k, th):
+        n = sum(len(rentang[y]) for y in th)
+        return (sum(jum[k][y] for y in th) + 30 * awal) / (n + 30)
+    penuh = {k: laju(k, LATIH) for k in kabs}
+    eks = {k: {y: laju(k, [t for t in LATIH if t < y]) for y in LATIH} for k in kabs}
+    return penuh, eks
 
 
 def klimatologi(ev, kabs, rata):
@@ -162,7 +195,7 @@ def klimatologi(ev, kabs, rata):
     return out
 
 
-def bangun(cuaca, sk, kabs, ev, tahun, pers, penuh, loyo):
+def bangun(cuaca, sk, kabs, ev, tahun, pers, penuh, eks):
     """Baris kab-hari tahun `tahun` -> dict kolom: kab, tahun, bulan, e, X (urut FITUR), y, level."""
     B = {"kab": [], "tahun": [], "bulan": [], "e": [], "X": [], "y": [], "level": []}
     hari = list(hari_tahun(tahun))
@@ -183,7 +216,7 @@ def bangun(cuaca, sk, kabs, ev, tahun, pers, penuh, loyo):
             f["pers_h3"] = max(bisect.bisect_left(pers[s], sel_seri[s][e]["h3"]) / len(pers[s]) for s, _ in sel)
             m = (ub.AWAL + dt.timedelta(e)).month
             f["bulan_sin"], f["bulan_cos"] = math.sin(2 * math.pi * m / 12), math.cos(2 * math.pi * m / 12)
-            f["frek_dibi"] = loyo[kab][y_] if y_ in LATIH else penuh[kab]
+            f["frek_dibi"] = eks[kab][y_] if y_ in LATIH else penuh[kab]
             f["bahaya_b"], f["level_aturan"] = bh, l
             B["kab"].append(kab); B["tahun"].append(y_); B["bulan"].append(m); B["e"].append(e)
             B["X"].append([f[n] for n in FITUR]); B["y"].append(1 if e in kej else 0); B["level"].append(l)
@@ -236,18 +269,34 @@ def kontingensi(alarm, y, idx):
     return [a, b, c, d]
 
 
-def alarm_sebanyak(skor, n):
-    """Alarm = n skor tertinggi (seri dipecah menurut urutan indeks, deterministik)."""
-    urut = sorted(range(len(skor)), key=lambda i: (-skor[i], i))
+def alarm_sebanyak(skor, n, biji=BIJI):
+    """Alarm = n skor tertinggi; seri dipecah acak dengan biji tetap (bukan urutan indeks: indeks berurut kab lalu waktu)."""
+    r = random.Random(biji)
+    acak = [r.random() for _ in skor]
+    urut = sorted(range(len(skor)), key=lambda i: (-skor[i], acak[i]))
     ya = set(urut[:n])
     return [i in ya for i in range(len(skor))]
 
 
-def blok_indeks(B):
+def seri_ambang(skor, n):
+    """Jumlah baris yang skornya SAMA dengan skor alarm terakhir (n-th tertinggi): ukuran seri yang dipecah acak."""
+    if not n:
+        return 0
+    batas = sorted(skor, reverse=True)[n - 1]
+    return sum(1 for v in skor if v == batas)
+
+
+def blok_indeks(B, per="kab_tahun"):
+    """kab_tahun = blok utama; pulau_minggu = sensitivitas (korelasi antar-kab di hari/minggu yang sama)."""
     out = defaultdict(list)
-    for i, (k, t) in enumerate(zip(B["kab"], B["tahun"])):
-        out[(k, t)].append(i)
+    for i, (k, t, e) in enumerate(zip(B["kab"], B["tahun"], B["e"])):
+        out[(k, t) if per == "kab_tahun" else (ub.KELOMPOK[k[0]], e // 7)].append(i)
     return out
+
+
+def logit(p):
+    p = min(max(p, 1e-9), 1 - 1e-9)
+    return math.log(p / (1 - p))
 
 
 def jumlah(blok, kunci):
@@ -306,7 +355,8 @@ def penilaian(B, p_model, p_lr, p_klim, p_aturan, ulang=ULANG):
         alarm = {"aturan": [l >= L for l in B["level"]], "model": alarm_sebanyak(p_model, n_alarm), "lr": alarm_sebanyak(p_lr, n_alarm),
                  "klimatologi": alarm_sebanyak(p_klim, n_alarm)}
         blk = {m: cacah(B, a, bl) for m, a in alarm.items()}
-        r = {"alarm": n_alarm, "laju_alarm": round(n_alarm / len(y), 4)}
+        r = {"alarm": n_alarm, "laju_alarm": round(n_alarm / len(y), 4),
+             "seri_di_ambang": {m: seri_ambang(p, n_alarm) for m, p in (("model", p_model), ("lr", p_lr), ("klimatologi", p_klim))}}
         for m in alarm:
             s = ub.skor(*jumlah(blk[m], sorted(blk[m])))
             r[m] = {**{k: None if v is None else round(v, 4) for k, v in s.items()}, "ci": ci_skor(blk[m], ulang) if ulang else {}}
@@ -315,6 +365,14 @@ def penilaian(B, p_model, p_lr, p_klim, p_aturan, ulang=ULANG):
             r["d_ets_" + m + "_vs_aturan"] = {"nilai": round(d, 4), "ci": [round(x, 4) for x in ci]}
         d, ci = ci_selisih(blk["model"], blk["aturan"], ulang) if ulang else (0, [0, 0])
         r["d_ets_model_vs_aturan"] = {"nilai": round(d, 4), "ci": [round(x, 4) for x in ci]}
+        for m in ("lr", "klimatologi"):
+            d, ci = ci_selisih(blk["model"], blk[m], ulang) if ulang else (0, [0, 0])
+            r["d_ets_model_vs_" + m] = {"nilai": round(d, 4), "ci": [round(x, 4) for x in ci]}
+        if ulang:   # sensitivitas (tidak menentukan vonis): blok pulau x minggu menangkap korelasi antar-kab pada hari yang sama
+            b2 = blok_indeks(B, "pulau_minggu")
+            bm, ba = cacah(B, alarm["model"], b2), cacah(B, alarm["aturan"], b2)
+            d, ci = ci_selisih(bm, ba, ulang)
+            r["d_ets_model_vs_aturan_pulau_minggu"] = {"nilai": round(d, 4), "ci": [round(x, 4) for x in ci], "blok": len(b2)}
         out[nama] = r
     return out
 
@@ -322,11 +380,13 @@ def penilaian(B, p_model, p_lr, p_klim, p_aturan, ulang=ULANG):
 def vonis(pen):
     """Menerapkan KRITERIA pada penilaian() periode uji -> {"lulus": bool, "rincian": {...}}."""
     k = KRITERIA
-    rin = {"dETS_waspada": pen["waspada"]["d_ets_model_vs_aturan"]["ci"][0] > k["dETS_waspada_ci_bawah_lebih_dari"],
-           "dETS_siaga": pen["siaga"]["d_ets_model_vs_aturan"]["ci"][0] > k["dETS_siaga_ci_bawah_lebih_dari"],
-           "brier_skill": pen["probabilitas"]["model"]["brier_skill_vs_klim"] > k["brier_skill_vs_klimatologi_lebih_dari"]}
-    pm, pl = pen["probabilitas"]["model"], pen["probabilitas"]["lr"]
-    rin["penjaga_lr"] = pm["auc"] >= pl["auc"] and pm["brier"] <= pl["brier"]
+    rin = {}
+    for nama in LEVEL_ALARM:
+        for lawan, batas in (("aturan", k[f"dETS_{nama}_ci_bawah_lebih_dari"]), ("lr", k["dETS_vs_lr_waspada_siaga_ci_bawah_lebih_dari"]),
+                             ("klimatologi", k["dETS_vs_klimatologi_waspada_siaga_ci_bawah_lebih_dari"])):
+            rin[f"dETS_{nama}_vs_{lawan}"] = pen[nama]["d_ets_model_vs_" + lawan]["ci"][0] > batas
+    rin["brier_skill_ci_bawah"] = pen["probabilitas"]["model"]["bss_ci"][0] > k["brier_skill_vs_klimatologi_ci_bawah_lebih_dari"]
+    rin["penjaga_auc_lr"] = pen["probabilitas"]["model"]["auc"] >= pen["probabilitas"]["lr"]["auc"]
     return {"lulus": all(rin.values()), "rincian": rin}
 
 
@@ -335,6 +395,11 @@ def peluang_pembanding(B, klim, laju_level):
     p_klim = [klim[f"{k}|{m}"] for k, m in zip(B["kab"], B["bulan"])]
     p_aturan = [laju_level[l] for l in B["level"]]
     return p_klim, p_aturan
+
+
+def kalibrasi_pembanding(p_lr, p_klim, pl_lr, pl_klim):
+    """LR dan klimatologi diberi perlakuan SAMA dengan model: Platt (dipasang di validasi)."""
+    return pakai_platt(pl_lr, [logit(p) for p in p_lr]), pakai_platt(pl_klim, [logit(p) for p in p_klim])
 
 
 def laju_per_level(B):
@@ -363,18 +428,19 @@ def siapkan():
     ev, sk, kabs, sel = muat_sampel()
     cuaca = muat_cuaca(sel)
     pers = persentil_batas(cuaca)
-    penuh, loyo = frekuensi(ev, kabs)
-    return ev, sk, kabs, cuaca, pers, penuh, loyo
+    awal = laju_awal(baca(DIBI_TGL), kabs)
+    penuh, eks = frekuensi(ev, kabs, awal)
+    return ev, sk, kabs, cuaca, pers, penuh, eks, awal
 
 
 def latih():
     if os.path.exists(HASIL_UJI):
         sys.exit("uji sudah dibuka; latih ulang = eksperimen baru dengan periode uji baru")
     t0 = time.time()
-    ev, sk, kabs, cuaca, pers, penuh, loyo = siapkan()
+    ev, sk, kabs, cuaca, pers, penuh, eks, awal = siapkan()
     klim = klimatologi(ev, kabs, penuh)
-    TR = bangun(cuaca, sk, kabs, ev, LATIH, pers, penuh, loyo)
-    VA = bangun(cuaca, sk, kabs, ev, VALIDASI, pers, penuh, loyo)
+    TR = bangun(cuaca, sk, kabs, ev, LATIH, pers, penuh, eks)
+    VA = bangun(cuaca, sk, kabs, ev, VALIDASI, pers, penuh, eks)
     print(f"{len(kabs)} kab, {len(cuaca)} sel; latih {len(TR['y'])} baris ({sum(TR['y'])} kejadian), validasi {len(VA['y'])} ({sum(VA['y'])})")
     w = [1.0] * len(TR["y"])
     semua = sorted(KELOMPOK)
@@ -412,6 +478,8 @@ def latih():
     lr_m = G.latih_lr([x_lr(x) for x in TR["X"]], TR["y"], w)
     p_lr = [G.prediksi_lr(lr_m, x_lr(x)) for x in VA["X"]]
     p_klim, p_aturan = peluang_pembanding(VA, klim, laju_per_level(TR))
+    pl_lr, pl_klim = platt([logit(p) for p in p_lr], VA["y"]), platt([logit(p) for p in p_klim], VA["y"])
+    p_lr, p_klim = kalibrasi_pembanding(p_lr, p_klim, pl_lr, pl_klim)
     pen = penilaian(VA, p_model, p_lr, p_klim, p_aturan)
     # kepentingan fitur: jumlah gain tak tersedia di gbdt.py -> hitung frekuensi pemakaian belahan berbobot kedalaman
     pakai = defaultdict(float)
@@ -421,9 +489,9 @@ def latih():
                 pakai[FITUR[sp[0]]] += 1
     kand = {"versi": "model-kab-1", "dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
             "status": "KANDIDAT: uji 2024-2025 belum dibuka; ERA5 prakiraan sempurna", "fitur": FITUR, "kelompok_aktif": grup,
-            "aktif": aktif_dari(grup), "bias": m["bias"], "pohon": m["pohon"], "platt": pl,
+            "aktif": aktif_dari(grup), "bias": m["bias"], "pohon": m["pohon"], "platt": pl, "platt_lr": pl_lr, "platt_klim": pl_klim,
             "hiper": {"dalam": d, "lr": lr, "pohon": n_pohon, **HIPER_TETAP}, "lr": {k: lr_m[k] for k in ("mu", "sd", "b")},
-            "klim": klim, "frek": penuh, "pers_batas": {f"{s[0]:.3f}_{s[1]:.3f}": v[::max(1, len(v) // 200)] for s, v in pers.items()},
+            "klim": klim, "frek": penuh, "frek_awal": awal, "sel": sorted(cuaca), "pers_batas": {f"{s[0]:.3f}_{s[1]:.3f}": v[::max(1, len(v) // 200)] for s, v in pers.items()},
             "laju_level": laju_per_level(TR), "kab": kabs, "sidik_kriteria": sidik_kriteria()}
     kand["sidik"] = sidik_penuh(kand)
     simpan(KANDIDAT, kand)
@@ -450,9 +518,18 @@ def cetak(pen):
         for m in ("model", "lr", "klimatologi"):
             x = r["d_ets_" + m + "_vs_aturan"]
             print(f"      dETS {m} - aturan {x['nilai']:+.4f} CI95 [{x['ci'][0]:+.4f}, {x['ci'][1]:+.4f}]")
+        for m in ("lr", "klimatologi"):
+            x = r["d_ets_model_vs_" + m]
+            print(f"      dETS model - {m} {x['nilai']:+.4f} CI95 [{x['ci'][0]:+.4f}, {x['ci'][1]:+.4f}]")
+        if "d_ets_model_vs_aturan_pulau_minggu" in r:
+            x = r["d_ets_model_vs_aturan_pulau_minggu"]
+            print(f"      (sensitivitas blok pulau x minggu, {x['blok']} blok) dETS model - aturan {x['nilai']:+.4f} CI95 [{x['ci'][0]:+.4f}, {x['ci'][1]:+.4f}]")
+        print(f"      seri di ambang (baris dengan skor = skor alarm terakhir, dipecah acak): {r['seri_di_ambang']}")
 
 
 def buka():
+    if SEBAGIAN:
+        sys.exit("MODEL_KAB_SEBAGIAN: pratinjau sampel tidak lengkap tidak boleh membuka uji")
     if os.path.exists(HASIL_UJI):
         sys.exit(f"uji sudah dibuka ({baca(HASIL_UJI).get('tanggal')}); tidak bisa dibuka lagi")
     kand = baca(KANDIDAT)
@@ -462,19 +539,24 @@ def buka():
         sys.exit("sidik kriteria/kandidat/kode berubah sejak `latih`: uji ditolak. Latih ulang dan kunci ulang sebelum membuka.")
     if sidik_kriteria() not in open(RISET).read():
         sys.exit("RISET-MODEL-KAB.md tidak memuat sidik_kriteria yang sama dengan kode: uji ditolak.")
-    ev, sk, kabs, cuaca, pers, penuh, loyo = siapkan()
+    ev, sk, kabs, cuaca, pers, penuh, eks, awal = siapkan()
     assert kabs == kand["kab"], "sampel kabupaten berubah"
-    TR = bangun(cuaca, sk, kabs, ev, LATIH, pers, penuh, loyo)
-    UJ = bangun(cuaca, sk, kabs, ev, UJI, pers, penuh, loyo)
+    UJ = bangun(cuaca, sk, kabs, ev, UJI, pers, penuh, eks)
     mdl = {"bias": kand["bias"], "pohon": kand["pohon"]}
     p_model = pakai_platt(kand["platt"], skor_gbdt(mdl, UJ["X"]))
     p_lr = [G.prediksi_lr(kand["lr"], x_lr(x)) for x in UJ["X"]]
     p_klim, p_aturan = peluang_pembanding(UJ, kand["klim"], kand["laju_level"])
+    p_lr, p_klim = kalibrasi_pembanding(p_lr, p_klim, kand["platt_lr"], kand["platt_klim"])
     pen = penilaian(UJ, p_model, p_lr, p_klim, p_aturan)
     v = vonis(pen)
     cetak(pen)
     print("VONIS", "LULUS" if v["lulus"] else "TIDAK LULUS", v["rincian"])
     simpan(HASIL_UJI, {"tanggal": dt.date.today().isoformat(), "sidik": kand["sidik"], "kriteria": KRITERIA, "uji": pen, "vonis": v})
+    # hasil + sidik juga masuk RISET-MODEL-KAB.md (ikut git), bukan hanya uji.json di data/raw yang di-gitignore
+    with open(RISET, "a") as f:
+        f.write(f"\n## 10. Hasil uji 2024-2025 (dibuka {dt.date.today().isoformat()}, sidik `{kand['sidik']}`, sidik kriteria `{sidik_kriteria()}`)\n\n"
+                f"VONIS: **{'LULUS' if v['lulus'] else 'TIDAK LULUS'}**. Rincian: `{json.dumps(v['rincian'])}`\n\n```json\n"
+                + json.dumps({k: pen[k] for k in ("n", "kej", "laju", "kab", "probabilitas", "waspada", "siaga")}, indent=1, ensure_ascii=False) + "\n```\n")
 
 
 # ------------------------------------------------------------------ swauji
@@ -508,23 +590,39 @@ def uji():
         # persentil dari tahun latih saja: mengubah hujan tahun uji tidak menggeser batas
         cu = {"p": [x if tahun_dari(i) in LATIH else x + 500 for i, x in enumerate(c["p"])], "im": c["im"], "sm": c["sm"]}
         assert persentil_batas({(0, 0): c})[(0, 0)] == persentil_batas({(0, 0): cu})[(0, 0)]
-        # bangun(): baris benar dan frek LOYO (baris latih tidak melihat kejadiannya sendiri)
+        # bangun(): baris benar; frek_dibi ekspansif: nilai baris tahun y tidak bergantung pada label tahun y
         kab = "32|X"
         ev = {"banjir": {kab: {e for e in hari if tahun_dari(e) == 2016 and e % 20 == 0}}, "longsor": {}}
+        ev2 = {"banjir": {kab: ev["banjir"][kab] | {e for e in hari if tahun_dari(e) == 2017 and e % 7 == 0}}, "longsor": {}}
         sk = {kab: {(0, 0): [0.5, 0.5]}}
         cua = {(0, 0): c}
         pers = persentil_batas(cua)
-        penuh, loyo = frekuensi(ev, [kab])
-        assert loyo[kab][2016] == 0 and loyo[kab][2017] > 0 and 0 < penuh[kab] < loyo[kab][2017]   # kejadian hanya di 2016
-        B = bangun(cua, sk, [kab], ev, [2016, 2017], pers, penuh, loyo)
+        awal = 0.004
+        penuh, eks = frekuensi(ev, [kab], awal)
+        penuh2, eks2 = frekuensi(ev2, [kab], awal)
+        assert eks[kab][2016] == eks2[kab][2016] == awal               # tahun latih pertama = laju pra-latih, tanpa label 2016
+        assert eks[kab][2017] == eks2[kab][2017] > awal                # 2017 hanya melihat 2016, bukan label 2017
+        assert eks[kab][2018] != eks2[kab][2018]                       # 2018 melihat 2017: label 2017 boleh masuk tahun SESUDAHNYA
+        B = bangun(cua, sk, [kab], ev, [2016, 2017], pers, penuh, eks)
+        B2 = bangun(cua, sk, [kab], ev2, [2016, 2017], pers, penuh2, eks2)
+        fk = FITUR.index("frek_dibi")
+        assert [x[fk] for x in B["X"]] == [x[fk] for x in B2["X"]], "frek_dibi baris tahun y bergantung pada label tahun y"
+        assert sum(B2["y"]) > sum(B["y"])                              # label memang beda, fitur tidak
         assert len(B["y"]) == len(B["X"]) == len(B["level"]) and sum(B["y"]) == len(ev["banjir"][kab]) and set(B["tahun"]) == {2016, 2017}
         assert all(len(x) == len(FITUR) for x in B["X"])
         i = [j for j, t in enumerate(B["tahun"]) if t == 2016][0]
-        assert B["X"][i][FITUR.index("frek_dibi")] == loyo[kab][2016] and loyo[kab][2016] < penuh[kab]
+        assert B["X"][i][fk] == awal
+        # laju_awal: hanya 2008-2015 yang dihitung
+        bar = [[["banjir"], "32", "X", "2010-01-01", 1], [["banjir"], "32", "X", "2010-01-01", 1], [["bandang"], "32", "X", "2012-05-05", 2],
+               [["banjir"], "32", "X", "2016-01-01", 1], [["longsor"], "32", "X", "2011-01-01", 1]]
+        assert abs(laju_awal(bar, ["32|X"]) - 2 / 2922) < 1e-12
         # kontingensi, alarm sebanyak, vonis
         assert kontingensi([1, 1, 0, 0, 1], [1, 0, 1, 0, 0], range(5)) == [1, 2, 1, 1]
         assert alarm_sebanyak([0.1, 0.9, 0.5, 0.9], 2) == [False, True, False, True]   # seri 0,9 dan 0,9: dua-duanya masuk
-        assert sum(alarm_sebanyak([0.5] * 10, 3)) == 3
+        assert sum(alarm_sebanyak([0.5] * 10, 3)) == 3 and seri_ambang([0.5] * 10, 3) == 10 and seri_ambang([0.9, 0.5, 0.5, 0.1], 2) == 2
+        # seri dipecah acak, bukan menurut indeks (indeks awal tidak selalu menang) dan deterministik
+        seri = alarm_sebanyak([0.5] * 200, 50)
+        assert seri == alarm_sebanyak([0.5] * 200, 50) and not all(seri[:50]) and sum(seri) == 50
         # latih LR+GBDT+Platt di data sintetis ber-sinyal, ekspor pohon datar identik dengan prediksi_gbdt
         r = random.Random(1)
         X = [[r.random(), r.random(), r.random()] for _ in range(1500)]
@@ -541,21 +639,32 @@ def uji():
         # penilaian() end-to-end: model sempurna mengalahkan aturan acak pada ETS; vonis bekerja
         kabs_ = [f"k{i}" for i in range(8)]
         r = random.Random(2)
+        kabs_ = [f"32|k{i}" for i in range(8)]
         Bs = {"kab": [], "tahun": [], "bulan": [], "e": [], "X": [], "y": [], "level": []}
         for k in kabs_:
             for t in (2022, 2023):
                 for _ in range(300):
                     yy = 1 if r.random() < 0.05 else 0
-                    Bs["kab"].append(k); Bs["tahun"].append(t); Bs["bulan"].append(1); Bs["e"].append(0); Bs["X"].append([]); Bs["y"].append(yy)
+                    Bs["kab"].append(k); Bs["tahun"].append(t); Bs["bulan"].append(1); Bs["e"].append(len(Bs["y"]) % 400); Bs["X"].append([]); Bs["y"].append(yy)
                     Bs["level"].append(2 if (yy and r.random() < 0.3) or r.random() < 0.1 else 0)
         sempurna = [0.9 if v else 0.04 for v in Bs["y"]]
         klim_ = [sum(Bs["y"]) / len(Bs["y"])] * len(Bs["y"])
         pen = penilaian(Bs, sempurna, klim_, klim_, [0.05 + 0.2 * (l >= 2) for l in Bs["level"]], ulang=200)
+        assert "d_ets_model_vs_aturan_pulau_minggu" in pen["siaga"] and pen["siaga"]["seri_di_ambang"]["klimatologi"] == len(Bs["y"])
         assert pen["waspada"]["alarm"] == pen["siaga"]["alarm"] and pen["waspada"]["model"]["pod"] == 1.0
-        assert pen["waspada"]["d_ets_model_vs_aturan"]["ci"][0] > 0 and pen["probabilitas"]["model"]["brier_skill_vs_klim"] > 0.5
+        assert pen["waspada"]["d_ets_model_vs_aturan"]["ci"][0] > 0 and pen["probabilitas"]["model"]["bss_ci"][0] > 0.5
         v = vonis(pen)
-        assert v["rincian"]["dETS_waspada"] and v["rincian"]["dETS_siaga"] and v["rincian"]["brier_skill"], v
-        assert not vonis({**pen, "siaga": {**pen["siaga"], "d_ets_model_vs_aturan": {"nilai": 0, "ci": [-0.01, 0.02]}}})["lulus"]
+        assert v["lulus"] and len(v["rincian"]) == 8, v
+        for lawan in ("aturan", "lr", "klimatologi"):   # tiap syarat dETS melawan tiap pembanding, di tiap level, bisa menggagalkan
+            for nama in LEVEL_ALARM:
+                rusak = {**pen, nama: {**pen[nama], "d_ets_model_vs_" + lawan: {"nilai": 0, "ci": [-0.01, 0.02]}}}
+                assert not vonis(rusak)["lulus"] and not vonis(rusak)["rincian"][f"dETS_{nama}_vs_{lawan}"]
+        assert not vonis({**pen, "probabilitas": {**pen["probabilitas"], "model": {**pen["probabilitas"]["model"], "bss_ci": [-0.01, 0.9]}}})["lulus"]
+        assert not vonis({**pen, "probabilitas": {**pen["probabilitas"], "lr": {**pen["probabilitas"]["lr"], "auc": 1.1}}})["lulus"]
+        # kalibrasi pembanding: Platt identik dengan perlakuan model (laju rata-rata terjaga)
+        z0 = [logit(0.02 + 0.3 * v_) for v_ in y[:1500]]
+        pl0 = platt(z0, y)
+        assert abs(sum(pakai_platt(pl0, z0)) / 1500 - sum(y) / 1500) < 0.01
         # model yang hanya mengulang klimatologi tidak lulus
         pen2 = penilaian(Bs, klim_, klim_, klim_, [0.05 + 0.2 * (l >= 2) for l in Bs["level"]], ulang=200)
         assert not vonis(pen2)["lulus"]

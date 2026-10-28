@@ -1,0 +1,273 @@
+#url https://jatim.bps.go.id/id/statistics-table/3/UzJWaVUxZHdWVGxwU1hSd1UxTXZlbmRITjA1Q2R6MDkjMw==/populasi-ternak.html?year=2024
+#ditarik 2026-10-27T02:54:26.430Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI JAWA TIMUR
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Demi meningkatkan kualitas pelayanan dan data BPS Provinsi Jawa Timur, silakan isi Survei Kebutuhan Data di sini
+
+Konsultasi data statistik langsung dengan statistisi ahli BPS Provinsi Jawa Timur? Yuk kunjungi HaloPST
+
+Untuk Layanan Pengaduan BPS Provinsi Jawa Timur, silakan mengisi FORM atau hubungi kami di nomor 0851 1750 3500 (Telp/WA) pada jam kerja
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pertanian, Kehutanan, Perikanan
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi Jawa Timur (ekor), 2024
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Statistik Ekonomi
+
+Statistik Makroekonomi
+Neraca Ekonomi
+Statistik Bisnis
+Statistik sektoral
+Keuangan Pemerintah, Fiskal dan Statistik Sektor Publik
+Perdagangan Internasional dan Neraca Pembayaran
+Harga-Harga
+Biaya Tenaga Kerja
+Ilmu Pengetahuan, Teknologi, dan Inovasi
+Pertanian, Kehutanan, Perikanan
+Energi
+Pertambangan, Manufaktur, Konstruksi
+Transportasi
+Pariwisata
+Perbankan, Asuransi dan Finansial
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi Jawa Timur (ekor), 2024
+
+Terakhir Diperbarui : 12 Februari 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2024
+Freeze judul kolom
+
+Kabupaten/Kota
+
+	
+
+Populasi Ternak - Sapi Perah (Ekor)
+
+	
+
+Populasi Ternak - Sapi Potong (Ekor)
+
+	
+
+Populasi Ternak - Kerbau (Ekor)
+
+	
+
+Populasi Ternak - Kuda (Ekor)
+
+	
+
+Populasi Ternak - Kambing (Ekor)
+
+	
+
+Populasi Ternak - Domba (Ekor)
+
+	
+
+Populasi Ternak - Babi (Ekor)
+
+
+Pacitan	658	59.785	64	67	349.592	8.117	263
+Ponorogo	10.040	58.042	17	38	398.833	23.587	650
+Trenggalek	10.190	42.241	246	4	435.237	42.839	–
+Tulungagung	25.514	126.002	279	49	173.348	9.407	11.044
+Blitar	21.626	142.081	361	64	383.955	19.133	3.184
+Kediri	11.128	214.715	251	145	222.626	50.050	2.933
+Malang	85.820	165.106	490	228	434.824	21.200	6.855
+Lumajang	5.292	127.874	2.583	223	176.547	54.401	1.876
+Jember	388	193.792	244	160	220.884	84.252	868
+Banyuwangi	2.338	101.010	1.364	338	140.027	133.117	464
+Bondowoso	510	145.577	–	210	65.836	11.996	38
+Situbondo	36	164.780	156	153	19.908	39.192	–
+Probolinggo	12.686	202.092	19	513	77.566	129.826	2.214
+Pasuruan	89.884	87.546	53	379	96.085	52.256	1.578
+Sidoarjo	1.149	5.150	189	73	34.098	15.743	35
+Mojokerto	1.371	36.259	88	170	36.999	14.679	4.000
+Jombang	8.346	64.106	53	23	99.035	60.665	6
+Nganjuk	102	118.441	821	9	124.678	69.890	91
+Madiun	100	28.042	24	39	100.939	6.809	95
+Magetan	850	69.012	35	333	57.184	40.529	8.500
+Ngawi	118	66.069	698	17	83.485	41.930	799
+Bojonegoro	21	240.519	265	43	161.397	204.550	–
+Tuban	33	269.750	499	69	134.179	94.377	–
+Lamongan	4	107.333	143	92	95.811	84.721	–
+Gresik	260	24.853	57	149	61.174	23.129	–
+Bangkalan	25	138.421	235	486	96.403	508	–
+Sampang	–	147.156	–	16	63.993	3.461	–
+Pamekasan	11	180.077	–	94	60.017	13.012	–
+Sumenep	–	275.893	2.615	204	96.835	4.929	–
+Kota Kediri	134	2.980	39	10	4.039	1.606	–
+Kota Blitar	273	3.703	–	6	2.474	645	250
+Kota Malang	201	1.687	92	41	2.131	779	–
+Kota Probolinggo	112	4.122	–	22	1.086	3.861	–
+Kota Pasuruan	3	199	–	2	2.299	401	–
+Kota Mojokerto	–	80	3	4	701	205	30
+Kota Madiun	–	147	–	–	1.519	347	–
+Kota Surabaya	169	215	12	5	2.932	127	–
+Kota Batu	8.535	2.535	–	17	8.832	7.190	190
+Jawa Timur	297.927	3.617.392	11.995	4.495	4.527.508	1.373.466	45.963
+
+Sumber :
+
+Kementerian Pertanian (Direktorat Jenderal Peternakan dan Kesehatan Hewan)/Ministry of Agriculture (Directorate General of Livestock and Animal Health Services)
+
+Keterangan :
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+a
+
+: 25% < RSE ≤ 50%
+
+b
+
+: RSE < 50%
+
+c
+
+: Penjumlahan tidak sama dengan wilayah diatasnya
+
+BADAN PUSAT STATISTIK
+
+BPS Provinsi Jawa Timur (Statistics of Jawa Timur Province)
+
+Jalan Raya Kendangsari Industri No. 43 - 44 Surabaya 60292
+
+Telp. (031) 8439343
+
+Fax (031) 8494007
+
+8471143
+
+Email : bps3500@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup

@@ -64,11 +64,11 @@ def bangun(kompleks, akses, titik24, titik7, per, sumber, cuaca=None):
         if k["id"] not in n7 and k["id"] not in n24:
             continue
         s = a.get(k["id"], {})
-        darat = not (s.get("tak_terjangkau") or s.get("kaki_tak_realistis")) and s.get("total_menit") is not None
+        darat = None if not s else not (s.get("tak_terjangkau") or s.get("kaki_tak_realistis")) and s.get("total_menit") is not None   # None = akses belum dihitung (akses_sippa.py baru Kalteng)
         baris.append({"id": k["id"], "n24": n24.get(k["id"], 0), "n7": max(n7.get(k["id"], 0), n24.get(k["id"], 0)), "menit": s.get("total_menit"), "darat": darat,
                       "dari": (s.get("dari") or {}).get("nama"), "ujung": s.get("ujung"), "besok": (cuaca or {}).get(k["id"])})
     doc = kepala(per, AMBANG, sumber, "Jumlah titik panas unik per hari (VIIRS dan MODIS) dalam 2 km garis lurus dari titik kompleks. Waktu tempuh dari akses_kompleks.json "
-                 "(estimasi-model, bukan navigasi). darat=false bila jalan kaki di atas 5 km atau tak terjangkau. besok = prakiraan Open-Meteo sel 0,5 derajat lewat fwi.json. Bobot dan putusan jalan atau tunda dihitung di layar.", "sippa_prioritas/1")
+                 "(estimasi-model, bukan navigasi). darat=false bila jalan kaki di atas 5 km atau tak terjangkau; null bila akses provinsi itu belum dihitung. besok = prakiraan Open-Meteo sel 0,5 derajat lewat fwi.json. Bobot dan putusan jalan atau tunda dihitung di layar.", "sippa_prioritas/1")
     doc["kompleks"] = sorted(baris, key=lambda b: (-b["n7"], b["id"]))
     return doc
 
@@ -93,18 +93,21 @@ def main(keluar):
     t24 = baca(os.path.join(PUB, "titik24.json"))
     arsip = sorted(glob.glob(os.path.join(PUB, "titik_hari", "20*.json")))
     sampai = date.fromisoformat(os.path.basename(arsip[-1])[:10])
-    prov = "62"
-    kompleks = [k for k in kel["kompleks"] if k["prov"] == prov]
-    t7, hari = titik_harian(sampai, prov)
-    lo = min(k["lon"] for k in kompleks) - 0.1, max(k["lon"] for k in kompleks) + 0.1
-    la = min(k["lat"] for k in kompleks) - 0.1, max(k["lat"] for k in kompleks) + 0.1
-    t24p = [(r[0], r[1]) for r in t24["titik"] if la[0] <= r[0] <= la[1] and lo[0] <= r[1] <= lo[1]]
     sumber = [{"nama": "NASA FIRMS lewat titik_hari dan titik24.json", "lisensi": "NASA open data", "tarik": str(sampai)},
               {"nama": "kelayakan_kompleks.json dan akses_kompleks.json", "lisensi": "repo ini", "tarik": kel["per"]}]
     fwi = baca(os.path.join(PUB, "fwi.json"))
     sumber.append({"nama": "Open-Meteo lewat fwi.json", "lisensi": "CC BY 4.0", "tarik": fwi["hari_ini"]})
-    fwi["grid"] = [g for g in fwi["grid"] if g["prov"] == prov] or fwi["grid"]
-    doc = bangun(kompleks, aks["kompleks"], t24p, t7, str(sampai), sumber, cuaca_besok(kompleks, fwi))
+    baris, hari = [], []
+    for prov in sorted({k["prov"] for k in kel["kompleks"]}):   # tiap provinsi di kelayakan (SP-109)
+        kompleks = [k for k in kel["kompleks"] if k["prov"] == prov]
+        t7, hari = titik_harian(sampai, prov)
+        lo = min(k["lon"] for k in kompleks) - 0.1, max(k["lon"] for k in kompleks) + 0.1
+        la = min(k["lat"] for k in kompleks) - 0.1, max(k["lat"] for k in kompleks) + 0.1
+        t24p = [(r[0], r[1]) for r in t24["titik"] if la[0] <= r[0] <= la[1] and lo[0] <= r[1] <= lo[1]]
+        grid = {**fwi, "grid": [g for g in fwi["grid"] if g["prov"] == prov] or fwi["grid"]}
+        baris += bangun(kompleks, aks["kompleks"], t24p, t7, str(sampai), sumber, cuaca_besok(kompleks, grid))["kompleks"]
+    doc = bangun([], [], [], [], str(sampai), sumber)
+    doc["kompleks"] = sorted(baris, key=lambda b: (-b["n7"], b["id"]))
     doc["hari"] = hari
     doc["titik24_acuan"] = t24.get("acuan")
     n = tulis_json(os.path.join(keluar, "prioritas.json"), doc)
@@ -122,6 +125,8 @@ def uji():
     assert ids["A"]["n24"] == 1 and ids["A"]["n7"] == 2 and ids["A"]["darat"] and ids["A"]["menit"] == 60, ids["A"]
     d2 = bangun(k, akses, [], [(-2.5, 114.01)], "x", [{"nama": "uji", "lisensi": "x", "tarik": "x"}])
     assert d2["kompleks"][0]["id"] == "B" and d2["kompleks"][0]["darat"] is False, d2["kompleks"]   # jalan kaki tak realistis
+    d3 = bangun(k, [], [], [(-3.0, 114.0)], "x", [{"nama": "uji", "lisensi": "x", "tarik": "x"}])
+    assert d3["kompleks"][0]["darat"] is None and d3["kompleks"][0]["menit"] is None, d3["kompleks"]   # akses belum dihitung, bukan tak terjangkau
     assert abs(km(-2, 114, -2, 114.01) - 1.11) < 0.01
     c = cuaca_besok(k[:1], {"hari_ini": "2026-10-27", "grid": [{"lat": -2.0, "lon": 114.0, "hari": [{"tgl": "2026-10-28", "hujan": 12.5, "ws": 9.0}]}, {"lat": -9, "lon": 100, "hari": []}]})
     assert c == {"A": {"tgl": "2026-10-28", "hujan_mm": 12.5, "angin_kmj": 9.0}}, c

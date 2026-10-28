@@ -16,7 +16,7 @@ KOREKSI = {'Supit Urung': 'Supit Urang'}   # salah ketik nama di WA yang berulan
 
 def kode_prov(nama):
     n = re.sub(r'\s+', ' ', nama.replace('Prov.', '').strip()).lower()
-    n = {'kep. bangka belitung': 'kepulauan bangka belitung', 'diy': 'di yogyakarta', 'daerah istimewa yogyakarta': 'di yogyakarta', 'd.i yogyakarta': 'di yogyakarta', 'd.i. yogyakarta': 'di yogyakarta', 'dki jakarta': 'dki jakarta'}.get(n, n)
+    n = {'kepulauan bangka belitung': 'kep. bangka belitung', 'bangka belitung': 'kep. bangka belitung', 'diy': 'di yogyakarta', 'daerah istimewa yogyakarta': 'di yogyakarta', 'd.i yogyakarta': 'di yogyakarta', 'd.i. yogyakarta': 'di yogyakarta', 'dki jakarta': 'dki jakarta'}.get(n, n)
     if n not in _PROV:
         raise ValueError(f'provinsi tidak dikenal: {nama!r}')
     return _PROV[n]
@@ -32,7 +32,7 @@ def status_dari(kondisi, prov_level):
     Urutan: kata 'masih/belum dapat/pendinginan' -> belum; ada sisa belum padam > 0 ha -> belum (kabupaten) atau berjalan (provinsi, sisa
     tersebar di banyak lokasi); 'berhasil dipadamkan/sudah padam/surut' -> selesai; selain itu berjalan."""
     k = kondisi.lower()
-    if re.search(r'masih dilakukan|masih pemadaman|belum dapat|pendinginan|muncul kembali|masih terlihat|masih terpantau|masih berlangsung', k):
+    if re.search(r'masih dilakukan|masih pemadaman|belum dapat|pendinginan|muncul kembali|masih terlihat|masih terpantau|masih berlangsung|masih menggenang|belum surut|berangsur surut', k):
         return 'belum'
     m = re.search(r'sisa[^,.]*?(?:padam\s*)?(?:luas\s*)?±?\s*(\d[\d.,]*)\s*ha', k)
     if m and angka(m.group(1).rstrip('.,')) > 0:
@@ -44,11 +44,12 @@ def status_dari(kondisi, prov_level):
 
 def _jenis_lokasi(judul):
     j = judul.lower()
-    jenis = ('angin' if 'angin kencang' in j else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j else 'kekeringan' if 'kekeringan' in j
+    jenis = ('angin' if 'angin kencang' in j or 'puting beliung' in j else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j else 'kekeringan' if 'kekeringan' in j
              else 'gempabumi' if 'gempa' in j else 'banjir' if 'banjir' in j else 'lainnya')
     di = re.split(r'\s+di\s+', judul, maxsplit=1)[1] if ' di ' in judul else ''
+    if not di.startswith(('Prov.', 'Provinsi')): di = re.sub(r',\s*Prov(?:\.|insi)\s.*$', '', di)   # WA 28 Okt: "di Kota Subulussalam, Prov. Aceh"
     if jenis == 'lainnya' and 'TPA' in judul:
-        lok = re.search(r'(TPA\s+[A-Z][\w ]*?)\s+di\s', judul).group(1)
+        lok = re.search(r'(TPA\s+[A-Z][\w ]*?)\)?\s+di\s', judul).group(1)
     elif di.startswith(('Prov.', 'Provinsi')):
         g = re.search(r'\((?:Gn\.|Gunung)\s+([^)]+)\)', judul)   # WA 26 Okt: "(Gn. Argopuro) di Prov. Jawa Timur" = kawasan, bukan seluruh provinsi
         lok = f'Gunung {g.group(1).strip()}' if g else ''
@@ -66,7 +67,7 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
     if jenis == 'kekeringan':
         a.update(kk=cari(r'([\d.]+)\s*KK'), jiwa=cari(r'([\d.]+)\s*jiwa'), tangki=cari(r'(\d+)\s*Tangki'), liter=cari(r'([\d.]+)\s*Liter'))
     elif jenis == 'angin':
-        a.update(kios=cari(r'(\d[\d.]*)\s*unit\s*kios'), rumah=cari(r'(\d[\d.]*)\s*unit\s*rumah'))
+        a.update(kk=cari(r'([\d.]+)\s*KK'), kios=cari(r'(\d[\d.]*)\s*unit\s*kios'), rumah=cari(r'(\d[\d.]*)\s*unit\s*rumah'))
     elif jenis in ('gempabumi', 'banjir'):
         a.update(meninggal=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?jiwa\s*MD'), kk=cari(r'([\d.]+)\s*KK'), mengungsi=cari(r'([\d.]+)\s*jiwa\s*mengungsi'),
                  huntara=cari(r'(\d[\d.]*)\s*unit\s*huntara'))

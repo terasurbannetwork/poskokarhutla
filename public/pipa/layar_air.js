@@ -124,8 +124,10 @@ export async function pasang(akar, konteks) {
     const r = ringkasAir(st.rows, st.cat), z = ringkasZona(st.rows);
     konteks.setPer?.(st.per);
     isi.innerHTML = (perluHatiPenurunan(konteks.prov) ? `<p class="ad-spanduk sp-hati" role="note">${esc(PESAN_PENURUNAN)}</p>` : "")
-      + (r.adaCat ? "" : `<p class="ad-kosong sp-cat-kosong">${esc(PESAN_CAT_BELUM)}</p>`)
-      + `<div class="sp-kisi sp-air-atas"><section class="sp-panel-pel" aria-labelledby="sp-air-ph"><div class="sp-panel-kepala"><h2 class="sp-sub-judul" id="sp-air-ph">Sebaran sumur</h2><button type="button" class="ad-chip" data-daftar aria-pressed="${st.daftar}">Daftar</button></div><div id="sp-air-peta"></div>`
+      + (r.adaCat ? "" : `<p class="ad-kosong sp-cat-kosong">${esc(PESAN_CAT_BELUM)}</p>`);
+    /* belum ada sumur: kartu ringkasan + satu kondisi kosong, bukan peta, rincian, dan tabel yang masing-masing kosong (pemilik A18) */
+    if (!st.rows.length) { isi.innerHTML += `${kartuAirHtml(r, st.per)}<div><p class="ad-kosong">Belum ada sumur tercatat. Catat sumur lewat tombol Catat sumur.</p></div>`; return; }
+    isi.innerHTML += `<div class="sp-kisi sp-air-atas"><section class="sp-panel-pel" aria-labelledby="sp-air-ph"><div class="sp-panel-kepala"><h2 class="sp-sub-judul" id="sp-air-ph">Sebaran sumur</h2><button type="button" class="ad-chip" data-daftar aria-pressed="${st.daftar}">Daftar</button></div><div id="sp-air-peta"></div>`
       + `<p class="ad-catat">Zona konservasi tercatat: ${ZONA_KONSERVASI.map(([k, n]) => `${esc(n)} ${esc(fmt(z[k]))}`).join(", ")}.</p></section>`
       + `<div class="sp-air-samping">${kartuAirHtml(r, st.per)}<section class="sp-panel-pel" id="sp-air-rincian" aria-live="polite"></section></div></div><section class="sp-panel-pel" aria-labelledby="sp-air-th"><h2 class="sp-sub-judul" id="sp-air-th">Sumur tercatat</h2><div id="sp-air-tabel"></div></section>`;
     gambarPeta(); gambarRincian(); gambarTabel();

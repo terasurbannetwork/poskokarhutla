@@ -116,8 +116,9 @@ export const JENIS_TABEL = { log: "sippa_log_gelar", probe: "sippa_probe", bbm: 
    sippa_inspeksi lewat butirInspeksi di src/sippa.js. Kit tugas ditentukan server (kit_id dari klien ditolak). Uji membandingkan dengan 0059 dan src/sippa.js. */
 export const INSPEKSI_LAPANGAN = {
   jenis: ["pra_gelar", "pasca_gelar"], sasaran_jenis: ["komponen", "kit"],
-  tindakan: ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan"],
+  tindakan: ["tidak_ada", "perbaiki", "ganti", "afkir", "uji_ulang", "serahkan", "tunggu_suku_cadang"],
 };
+export const TINDAKAN_TUNGGU = "tunggu_suku_cadang";
 const MEDAN_INSPEKSI = daftar(
   teks("id", "ID butir", null, null, ya({ panjang: ID })),
   pilih("jenis", "Jenis inspeksi", INSPEKSI_LAPANGAN.jenis, { wajib: true }),
@@ -126,7 +127,7 @@ const MEDAN_INSPEKSI = daftar(
   bulat("skor", "Skor kondisi", 0, 3, { wajib: true }),
   angka("jam_operasi", "Jam operasi", 0, 100000),
   teks("temuan", "Temuan", null, 1000),
-  pilih("tindakan", "Tindakan", INSPEKSI_LAPANGAN.tindakan),
+  pilih("tindakan", "Tindakan", INSPEKSI_LAPANGAN.tindakan),   // termasuk tunggu_suku_cadang (SP-131, CHECK di migrasi 0070)
   waktu("waktu_klien", "Waktu catat"),
 );
 export const cekInspeksiLapangan = butir => cekButir("inspeksi", butir);
@@ -196,4 +197,97 @@ export function cekButir(jenis, butir, opsi = {}) {
     ke("tiba", "wajib diisi untuk gerak langsung; hanya gerak terencana boleh tanpa waktu tiba");
   }
   return { ok: galat.length === 0, galat };
+}
+
+/* ---------- Fase 2 (keputusan 61, SP-120 sampai SP-129): butir lapangan tanpa tabel di MEDAN ----------
+   Kontrak medan = src/sippa_lapangan.js (cekLapangan). Tinggal di berkas ini, bukan modul baru, karena /pipa/lapangan hanya menyimpan
+   formulir.js, antre.js, ikon.js untuk luring. Foto bukti tidak lewat sini: ia berangkat lewat /lapangan/foto dengan tahap, lat, lon. */
+export const JENIS_FASE2 = ["periksa", "sos", "tekanan", "jejak", "selesai", "bor", "debit"];
+export const TAHAP_FOTO = [["tiba", "Tiba"], ["pompa", "Pompa terpasang"], ["gelar", "Selang tergelar"], ["injeksi", "Injeksi"], ["selesai", "Selesai"]];
+/* urutan kerja renlap (teks.py "kerja"): satu langkah satu centang berjam */
+export const LANGKAH_PERIKSA = [["sehari_sebelum", "Sehari sebelumnya: cek air, jalan, izin desa"], ["tiba", "Tiba dan pengarahan keselamatan"], ["pasang_petak", "Pasang petak dan bor tebal gambut"],
+  ["ukur_sebelum", "Ukur suhu sebelum dan foto petak"], ["pasang_pompa", "Pasang pompa dan selang"], ["alirkan_air", "Alirkan air"], ["suntik_semprot", "Suntik dan semprot"],
+  ["ukur_sesudah", "Ukur suhu sesudah"], ["bongkar", "Bongkar dan catat alat"]];
+export const MODA_JEJAK = [["jalan_kaki", "Jalan kaki"], ["perahu", "Perahu"], ["kendaraan", "Kendaraan"]];
+export const TITIK_TEKANAN = [["pompa", "Pompa"], ["manifold", "Manifold"], ["lance", "Lance"]];
+export const KEBUTUHAN_DEBIT_LPS = 5;   // kebutuhan satu kit (L/s), asumsi kebijakan renlap
+export const BAR_MIN_LANCE = 2, PENGINGAT_TEKANAN_MS = 10 * 60000, SOS_TAHAN_MS = 2000;
+export const JEJAK = {jarakM: 20, selangMs: 30000, maks: 500};
+
+const dalam = (v, a, z) => typeof v === "number" && Number.isFinite(v) && v >= a && v <= z;
+const r3 = x => Math.round(x * 1000) / 1000;
+
+/* debit L/s: pelampung = lebar x dalam x kecepatan x 0,85 x 1000; ember = liter per detik. null bila isian belum lengkap. Sama dengan hitungDebit server. */
+export function hitungDebit(d) {
+  if (!d) return null;
+  if (d.metode === "pelampung") return dalam(d.lebar_m, 0.01, 500) && dalam(d.dalam_m, 0.01, 50) && dalam(d.kecepatan_ms, 0.01, 20) ? r3(d.lebar_m * d.dalam_m * d.kecepatan_ms * 0.85 * 1000) : null;
+  if (d.metode === "ember") return dalam(d.volume_l, 0.01, 100000) && dalam(d.detik, 0.5, 3600) ? r3(d.volume_l / d.detik) : null;
+  return null;
+}
+/* debit dibanding kebutuhan satu kit: kata dan rasio, tanpa menghakimi di bawah ambang yang belum teruji */
+export const bandingDebit = lps => lps == null ? null : {lps, rasio: lps / KEBUTUHAN_DEBIT_LPS, cukup: lps >= KEBUTUHAN_DEBIT_LPS};
+
+/* aturan ganti petak renlap: kurang dari 50 cm bukan gambut, kurang dari 100 cm lance tembus ke tanah biasa */
+export function peringatanBor(cm) {
+  if (!dalam(cm, 0, 1500)) return null;
+  if (cm < 50) return "Kurang dari 50 cm: ini bukan gambut. Pindah ke petak lain.";
+  if (cm < 100) return "Kurang dari 100 cm: lance bisa tembus ke tanah biasa. Pertimbangkan ganti petak.";
+  return null;
+}
+export const peringatanTekanan = (titik, bar) => titik === "lance" && dalam(bar, 0, 25) && bar < BAR_MIN_LANCE ? "Di bawah 2 bar di lance: air belum cukup menembus. Naikkan gas pelan-pelan." : null;
+/* pengingat tiap 10 menit saat sesi gelar aktif (sudah air mengalir, belum selesai); terakhir = ms catatan tekanan atau pengingat terakhir */
+export function pengingatTekanan({aktif, terakhir, kini}) {
+  if (!aktif) return {perlu: false, sisaMs: null};
+  const sisa = PENGINGAT_TEKANAN_MS - (kini - (terakhir ?? 0));
+  return {perlu: sisa <= 0, sisaMs: Math.max(0, sisa)};
+}
+
+/* jarak meter antara dua titik (haversine) */
+export function jarakM(a, b) {
+  const R = 6371008.8, rad = Math.PI / 180, dLat = (b[0] - a[0]) * rad, dLon = (b[1] - a[1]) * rad;
+  const h = Math.sin(dLat / 2) ** 2 + Math.cos(a[0] * rad) * Math.cos(b[0] * rad) * Math.sin(dLon / 2) ** 2;
+  return 2 * R * Math.asin(Math.min(1, Math.sqrt(h)));
+}
+/* Perekam jejak: titik baru disimpan bila sudah 20 m dari titik tersimpan terakhir ATAU 30 detik sejak itu. Mengembalikan larik yang sama bila tidak disimpan.
+   Penuh (500): setiap titik kedua dibuang dan perekaman terus, supaya bentuk jejak tetap utuh dari awal sampai akhir (titik awal dan akhir tidak hilang). */
+export function tambahTitikJejak(titik, baru, o = JEJAK) {
+  if (!Array.isArray(baru) || !dalam(baru[0], -11.5, 6.5) || !dalam(baru[1], 94.5, 141.5) || !dalam(baru[2], 1, 9e15)) return titik;
+  const akhir = titik.at(-1);
+  if (akhir && jarakM(akhir, baru) < o.jarakM && baru[2] - akhir[2] < o.selangMs) return titik;
+  let hasil = [...titik, baru];
+  if (hasil.length > o.maks) hasil = [...hasil.filter((_, i) => i % 2 === 0 || i === hasil.length - 1)];
+  return hasil;
+}
+export const panjangJejakM = titik => titik.reduce((s, t, i) => i ? s + jarakM(titik[i - 1], t) : 0, 0);
+
+/* validasi klien butir fase 2: aturan sama dengan cekLapangan server; mengembalikan {ok, galat:[{medan,pesan}]} seperti cekButir */
+export function cekFase2(jenis, b) {
+  const galat = [], ke = (medan, pesan) => galat.push({medan, pesan});
+  if (!JENIS_FASE2.includes(jenis)) return {ok: false, galat: [{medan: "jenis", pesan: `jenis butir tidak dikenal: ${String(jenis)}`}]};
+  if (!b || typeof b !== "object" || Array.isArray(b)) return {ok: false, galat: [{medan: "butir", pesan: "butir harus berupa objek"}]};
+  const bom = (k) => { if (b[k] != null && !(Array.isArray(b[k]) && b[k].length <= 100 && b[k].every(x => typeof x === "string" && /^[A-Z]{1,4}-\d{1,6}$/.test(x)))) ke(k, "harus daftar kode BOM seperti P-101"); };
+  if (b.petak_id != null && !(typeof b.petak_id === "string" && /^[A-Za-z0-9._ -]{1,40}$/.test(b.petak_id))) ke("petak_id", "1 sampai 40 karakter huruf, angka, titik, garis, spasi");
+  if (jenis === "jejak") {
+    if (!Array.isArray(b.titik) || b.titik.length < 2 || b.titik.length > JEJAK.maks) ke("titik", "harus 2 sampai 500 titik");
+    else if (!b.titik.every(t => Array.isArray(t) && t.length === 3 && dalam(t[0], -11.5, 6.5) && dalam(t[1], 94.5, 141.5) && dalam(t[2], 1, 9e15))) ke("titik", "tiap titik harus [lintang, bujur, waktu] di dalam Indonesia");
+    if (!MODA_JEJAK.some(m => m[0] === b.moda)) ke("moda", "harus jalan_kaki, perahu, atau kendaraan");
+    return {ok: !galat.length, galat};
+  }
+  if (jenis !== "jejak" && !dalam(b.waktu, 1, 9e15)) ke("waktu", "wajib diisi");
+  if (jenis === "periksa" && !(typeof b.langkah === "string" && /^[a-z0-9_]{2,40}$/.test(b.langkah))) ke("langkah", "2 sampai 40 karakter a-z, 0-9, garis bawah");
+  if (jenis === "tekanan") { if (!TITIK_TEKANAN.some(t => t[0] === b.titik)) ke("titik", "harus pompa, manifold, atau lance"); if (!dalam(b.bar, 0, 25)) ke("bar", "harus antara 0 dan 25"); }
+  if (jenis === "selesai") { bom("alat_kembali"); bom("alat_hilang"); }
+  if (jenis === "sos" || jenis === "bor" || jenis === "debit") { if (!dalam(b.lat, -11.5, 6.5)) ke("lat", "di luar Indonesia"); if (!dalam(b.lon, 94.5, 141.5)) ke("lon", "di luar Indonesia"); }
+  if (jenis === "sos" && b.pesan != null && !(typeof b.pesan === "string" && [...b.pesan].length <= 200)) ke("pesan", "paling banyak 200 karakter");
+  if ((jenis === "selesai" || jenis === "bor") && b.catatan != null && !(typeof b.catatan === "string" && [...b.catatan].length <= (jenis === "bor" ? 200 : 500))) ke("catatan", `paling banyak ${jenis === "bor" ? 200 : 500} karakter`);
+  if (jenis === "bor" && !dalam(b.kedalaman_cm, 0, 1500)) ke("kedalaman_cm", "harus antara 0 dan 1.500");
+  if (jenis === "debit") {
+    if (b.metode === "pelampung") { if (hitungDebit(b) == null) ke("lebar_m", "isi lebar, kedalaman, dan kecepatan dengan angka lebih dari 0"); }
+    else if (b.metode === "ember") { if (hitungDebit(b) == null) ke("volume_l", "isi volume dan detik dengan angka lebih dari 0 (detik minimal 0,5)"); }
+    else ke("metode", "harus pelampung atau ember");
+  }
+  const kenal = {periksa: ["langkah", "waktu", "petak_id"], sos: ["lat", "lon", "waktu", "pesan"], tekanan: ["titik", "bar", "waktu", "petak_id"], selesai: ["waktu", "alat_kembali", "alat_hilang", "catatan"],
+    bor: ["petak_id", "lat", "lon", "kedalaman_cm", "waktu", "catatan"], debit: ["metode", "lat", "lon", "waktu", "lebar_m", "dalam_m", "kecepatan_ms", "volume_l", "detik"]}[jenis];
+  for (const k of Object.keys(b)) if (k !== "id" && !kenal.includes(k)) ke(k, "medan tidak dikenal");
+  return {ok: !galat.length, galat};
 }

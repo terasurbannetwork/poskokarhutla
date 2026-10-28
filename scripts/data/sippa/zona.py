@@ -6,6 +6,9 @@ Masukan : data/kajian-bnpb/pipa/data/*.csv, public/data/{kendala,operasi,akses,k
           jam_tiba: data/sippa/keluaran/akses_kompleks.json (SP-099) bila ada; kalau tidak public/data/akses.json
 Keluaran: data/sippa/keluaran/{kelayakan_kompleks,kelayakan_sel,zona}.json  (DT 3.1.1-3.1.3, 7.2)
 Pakai   : python3 zona.py [--keluar DIR]   |   python3 zona.py uji
+SP-141: jalan_mobil_km, jalan_motor_km, jalan_kaki_km (osm_jarak*.csv, moda.py, asumsi-kebijakan). SP-142: konsesi (bool|null), konsesi_jenis
+(HGU|HTI|IUPHHK|lain|null) dari kompleks_konsesi.json (titik panas 7 hari di areal izin) tanpa nama pemegang izin (keputusan 50); keluaran keempat
+konsesi_kompleks.json {kolom, baris[id, jenis_utama, jenis[]]}. kekerapan_sel22 terisi untuk provinsi yang masuk `kotak_tambahan` sel22.json (SP-109).
 Python 3.12 stdlib. Zona: A air<2,5 & jalan<5; B air<2,5 & jalan>=5/null; C air>=2,5 & jalan<5; D sisanya (operator "<", keputusan 51).
 Kekerapan = tahun_aktif S-NPP dari sel22 (sebanding 2012-2025); per_tahun/n_baris tidak dipakai sebagai tren. Tanpa nama perusahaan.
 """
@@ -22,6 +25,7 @@ KEL = os.path.join(AKAR, "data", "sippa", "keluaran")
 AIR, JALAN = 2.5, 5.0
 SEL = 0.02
 MAKS = 8 * 1024 * 1024
+KOTAK_SEL22 = (-3.6, 0.8, 110.7, 115.9)         # kotak Kalteng sel22.py (KOTAK); kotak provinsi lain di sel22["kotak_tambahan"]
 PROV = "62"                                   # provinsi dengan atribut lengkap (DEM, GSW, MCD64A1, CHIRPS, sel22, akses)
 N_KOMPLEKS = 865                              # kompleks prov 62
 RADIUS_SEL_KM = 5.0
@@ -37,7 +41,10 @@ KEYAKINAN = {
     "kekerapan_sel22": "terverifikasi", "chirps_anom_akhir_pct": "terverifikasi", "kaw": "terverifikasi",
     "khg": "resmi", "jam_tiba": "estimasi-model",
     "air_asin": "terverifikasi", "air_asin_km": "terverifikasi", "air_asin_jenis": "terverifikasi", "brgm_3km": "resmi",
+    "jalan_mobil_km": "asumsi-kebijakan", "jalan_motor_km": "asumsi-kebijakan", "jalan_kaki_km": "asumsi-kebijakan",
+    "konsesi": "estimasi-model", "konsesi_jenis": "estimasi-model",
 }
+JENIS_KONSESI = {"sawit": "HGU", "hti": "HTI", "hph": "IUPHHK", "tambang": "lain"}   # kompleks_konsesi.json -> label izin tanpa nama pemegang
 
 
 def zona(air, jalan):
@@ -108,6 +115,19 @@ def kaw(kons, op):
     return "lain"
 
 
+def konsesi(kons, op):
+    """-> (konsesi bool|None, jenis utama|None, semua jenis). Ada titik panas di areal izin = True; jenis utama = porsi terbesar.
+    Tak ada di kompleks_konsesi.json dan bukan kaw konsesi = None (tak diketahui). Tanpa nama."""
+    jenis = (kons or {}).get("jenis") or {}
+    if jenis:
+        urut = sorted(jenis, key=lambda j: (-jenis[j].get("porsi", 0), -jenis[j].get("luas_ha", 0), j))
+        semua = list(dict.fromkeys(JENIS_KONSESI.get(j, "lain") for j in urut))
+        return True, semua[0], semua
+    if op["kaw"] == "konsesi":
+        return True, "lain", ["lain"]
+    return (None if kons is None else False), None, []
+
+
 def jam_tiba(a):
     """a = entri akses (larik 'dari' berisi jam) atau None."""
     jam = [d["jam"] for d in (a or {}).get("dari", []) if isinstance(d, dict) and d.get("jam") is not None]
@@ -134,6 +154,10 @@ def sumber_akses():
     return (lambda k: jam_tiba(d.get(k))), "akses.json"
 
 
+def ada_sel22(lat, lon, kotak):
+    return any(b[0] <= lat <= b[1] and b[2] <= lon <= b[3] for b in kotak)
+
+
 def susun_kompleks(sel22):
     kend = baca_json(PUB, "kendala.json")
     op = {x["id"]: x for x in baca_json(PUB, "operasi.json")["kompleks"]}
@@ -144,12 +168,13 @@ def susun_kompleks(sel22):
     bakar, chirps = baca_csv("area_terbakar.csv"), baca_csv("chirps_anomali_tahunan.csv")
     jam, nama_akses = sumber_akses()
     aktif = {r[0]: r[1] for r in sel22["baris"]}
+    kotak_sel = [KOTAK_SEL22] + [tuple(b) for b in sel22.get("kotak_tambahan", {}).values()]
     ids = [k for p in provs for k in sorted(k for k, v in kend["kompleks"].items() if v["prov"] == p and k in op)]
     assert sum(1 for k in ids if kend["kompleks"][k]["prov"] == PROV) == N_KOMPLEKS, f"kompleks prov {PROV}, harus {N_KOMPLEKS}"
     assert set(ids) == set(osm), f"osm_jarak*.csv {len(osm)} baris, kompleks {len(ids)}"
     titik_brgm = brgm.muat()
     brgm3 = brgm.hitung_3km([{"id": k, "lat": op[k]["lat"], "lon": op[k]["lon"]} for k in ids], titik_brgm) if titik_brgm is not None else {}
-    out = []
+    out, konsesi_baris = [], []
     for k in ids:
         kd, o, m = kend["kompleks"][k], op[k], osm[k]
         lengkap = kd["prov"] == PROV                          # DEM, GSW, MCD64A1, CHIRPS, sel22 baru ada untuk Kalteng; provinsi lain null
@@ -173,14 +198,18 @@ def susun_kompleks(sel22):
             "beda_air_m": f(d.get("beda_air_minus_kompleks_m"), 1), "gsw": g.get("gsw_kelas") or None,
             "terbakar_n_2km": i(b.get("bakar_n_tahun_2km")), "terbakar_n_5km": i(b.get("bakar_n_tahun_5km")),
             "terbakar_akhir": i(b.get("bakar_tahun_terakhir_2km")),
-            "kekerapan_sel22": aktif.get(id_sel(*sel_dari(lat, lon)), 0) if lengkap else None,   # sel tanpa baris = 0 tahun aktif S-NPP; di luar kotak sel22 = null
+            "kekerapan_sel22": aktif.get(id_sel(*sel_dari(lat, lon)), 0) if lengkap or ada_sel22(lat, lon, kotak_sel) else None,   # sel tanpa baris = 0 tahun aktif S-NPP; di luar kotak sel22 = null
             "chirps_anom_akhir_pct": f(c.get("anom_2025"), 1), "kaw": kaw(kons.get(k), o),
             "khg": None,                                                    # khg_prioritas.json tidak memuat pemetaan kompleks-KHG
             "jam_tiba": jam(k),
             "brgm_3km": brgm3.get(k),                                       # SP-110; null bila brgm_pembasahan.json belum ditarik
+            # SP-141: jarak ke jalan per moda (kumulatif), null bila osm_jarak*.csv belum memuat kolomnya
+            "jalan_mobil_km": f(m.get("jalan_mobil_km"), 2), "jalan_motor_km": f(m.get("jalan_motor_km"), 2), "jalan_kaki_km": f(m.get("jalan_kaki_km"), 2),
         })
+        r["konsesi"], r["konsesi_jenis"], semua_jenis = konsesi(kons.get(k), o)
+        konsesi_baris.append([k, r["konsesi_jenis"], semua_jenis])
         out.append(r)
-    return out, {"khg": khg, "kendala": kend, "nama_akses": nama_akses}
+    return out, {"khg": khg, "kendala": kend, "nama_akses": nama_akses, "konsesi": konsesi_baris}
 
 
 def susun_sel(sel22, komp):
@@ -310,7 +339,8 @@ def uji():
     assert prov["o"]["tanpa_jalan_16km"] == 44 and prov["k"]["tanpa_jalan_16km"] is None
     # kekerapan dari tahun_aktif S-NPP: 0..14
     assert all(isinstance(k["kekerapan_sel22"], int) and 0 <= k["kekerapan_sel22"] <= 14 for k in komp)
-    assert all(k["kekerapan_sel22"] is None for k in semua if k["prov"] != PROV), "sel22 hanya meliputi kotak Kalteng"
+    kotak = [KOTAK_SEL22] + [tuple(b) for b in sel22.get("kotak_tambahan", {}).values()]
+    assert all((k["kekerapan_sel22"] is None) == (not ada_sel22(k["lat"], k["lon"], kotak)) for k in semua if k["prov"] != PROV), "sel22 hanya di kotak Kalteng + kotak_tambahan"
     # SP-108: air_asin hanya bila air asin lebih dekat daripada air tawar; zona memakai air tawar
     for k in semua:
         assert isinstance(k["air_asin"], bool)
@@ -326,6 +356,16 @@ def uji():
     for nama, o in (("kompleks", semua), ("sel", sel), ("zona", zb)):
         assert not list(kunci_terlarang(o)), f"kunci terlarang di {nama}: {list(kunci_terlarang(o))[:3]}"
     assert {k["kaw"] for k in semua} <= {"lain", "konsesi", "konservasi"}
+    # SP-142 konsesi: tanpa nama pemegang izin, jenis hanya label izin
+    assert konsesi({"jenis": {"sawit": {"porsi": 0.1, "luas_ha": 5}, "hti": {"porsi": 0.5, "luas_ha": 1}}}, {"kaw": "lain"}) == (True, "HTI", ["HTI", "HGU"])
+    assert konsesi({"jenis": {}}, {"kaw": "lain"}) == (False, None, []) and konsesi(None, {"kaw": "lain"}) == (None, None, [])
+    assert konsesi(None, {"kaw": "konsesi"}) == (True, "lain", ["lain"]) and konsesi({"jenis": {"tambang": {}}}, {"kaw": "lain"})[1] == "lain"
+    for k in semua:
+        assert k["konsesi"] in (None, True, False) and k["konsesi_jenis"] in (None, "HGU", "HTI", "IUPHHK", "lain"), k["id"]
+        assert not k["konsesi_jenis"] or k["konsesi"] is True, k["id"]
+        assert all(k[x] is None or 0 <= k[x] <= 16 for x in ("jalan_mobil_km", "jalan_motor_km", "jalan_kaki_km")), k["id"]
+        if k["jalan_mobil_km"] is not None:   # kumulatif: kaki <= motor <= mobil; motor tak lebih jauh dari mobil
+            assert k["jalan_kaki_km"] <= k["jalan_motor_km"] <= k["jalan_mobil_km"] + 1e-9 and k["jalan_kaki_km"] <= k["jalan_km_semua"] + 1e-9, k["id"]
     # tiap versi zona tidak sama dengan satu zona saja (pengecek anti-degenerasi)
     assert all(len({k["zona_" + v] for k in komp}) == 4 for v in VERSI)
     print("uji zona: lolos")
@@ -363,7 +403,12 @@ def main(argv):
                    "versi k = kendala.json (Konservatif); u = jalan utama OSM tersier ke atas x semua air; o = semua jalan kendaraan OSM x semua air (Optimistis). "
                    "kab null = baris provinsi. Median atas nilai bukan null. tanpa_jalan_16km = jumlah kompleks tanpa jalan dalam 16 km (null untuk k)."),
           "baris": zb}
-    for nama, o in (("kelayakan_kompleks", kk), ("kelayakan_sel", ks), ("zona", kz)):
+    kn = {**kepala(per, "konsesi_kompleks", {}, sumber[-1:],
+                   "Jenis izin areal konsesi tempat titik panas 7 hari kompleks berada (kompleks_konsesi.json), tanpa nama pemegang izin (keputusan 50). "
+                   "jenis_utama = porsi titik panas terbesar; HGU = sawit, HTI = kayu pulp, IUPHHK = HPH hutan alam, lain = tambang atau tanda kawasan konsesi. "
+                   "Kompleks tanpa titik panas di areal izin tidak ada di baris. Batas konsesi berumur; pastikan ke instansi sebelum tindakan hukum."),
+          "kolom": ["id", "jenis_utama", "jenis"], "baris": [b for b in x["konsesi"] if b[1]]}
+    for nama, o in (("kelayakan_kompleks", kk), ("kelayakan_sel", ks), ("zona", kz), ("konsesi_kompleks", kn)):
         print(f"{nama}.json {tulis_json(keluar, nama, o)} byte")
     for r in zb:
         if r["kab"] is None:

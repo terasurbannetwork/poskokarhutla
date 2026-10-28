@@ -1,0 +1,1162 @@
+{
+ "dibuat": "2026-10-28T02:03+07:00",
+ "kriteria_sha": "8491b967865b80a6",
+ "kriteria": "scripts/banjir/lab_kriteria/lab_genangan_radar.json",
+ "sifat": "LAB, bukan produksi. Radar S1 vs laporan warga PetaBencana per kecamatan DKI. Tidak ada peta/angka resmi.",
+ "keterbatasan": [
+  "revisit S1 6-12 hari (S1A saja sebelum 2024): genangan kota sering sudah surut saat satelit lewat",
+  "bangunan menutupi air (double bounce) dan jalan sempit < piksel 80 m: genangan kota padat tidak menggelapkan radar",
+  "label = laporan warga (bias pelapor, jam laporan tak sama dengan jam lintasan), bukan luas genangan",
+  "kecamatan ber-label hanya tanda 'ada laporan', bukan tinggi/luas; false alarm bisa genangan nyata yang tak dilaporkan",
+  "model hujan M1 tidak tersedia sebagai pembanding"
+ ],
+ "ringkasan": {
+  "kejadian_berlabel": 31,
+  "dengan_adegan_0_2_hari": 8,
+  "adegan_terbaca": 8,
+  "dinilai": 3,
+  "lolos": 0,
+  "lolos_keseluruhan": false,
+  "CSI_median_otsu_masker": 0.0,
+  "CSI_median_tetap_masker": 0.0,
+  "CSI_median_naif": 0.0,
+  "CSI_median_semua_positif": 0.341,
+  "AUC_median_otsu_masker": 0.524
+ },
+ "catatan": [
+  "dikecualikan: jendela uji J3 terkunci"
+ ],
+ "kejadian": [
+  {
+   "kejadian": "2017-02-21",
+   "hari_laporan": [
+    "2017-02-19",
+    "2017-02-21"
+   ],
+   "n_laporan": 1169,
+   "adegan": [
+    {
+     "tanggal_utc": "2017-02-22",
+     "waktu_wib": "2017-02-22T18:15+07:00",
+     "orbit": 98,
+     "selisih_hari_wib": 1,
+     "dasar_lintasan": [
+      "2017-01-17",
+      "2016-12-24"
+     ],
+     "naif_sebelum": "2017-01-17",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 71,
+     "kec_positif": 14,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 14,
+       "fa": 0,
+       "cn": 28,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.541,
+      "kepekaan_CSI": {
+       "0.005": 0.143,
+       "0.01": 0.143,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 14,
+       "fa": 0,
+       "cn": 27,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.556,
+      "kepekaan_CSI": {
+       "0.005": 0.143,
+       "0.01": 0.143,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 2,
+       "miss": 12,
+       "fa": 0,
+       "cn": 27,
+       "POD": 0.143,
+       "FAR": 0.0,
+       "CSI": 0.143
+      },
+      "AUC": 0.602,
+      "kepekaan_CSI": {
+       "0.005": 0.133,
+       "0.01": 0.143,
+       "0.02": 0.143,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 14,
+      "miss": 0,
+      "fa": 27,
+      "cn": 0,
+      "POD": 1.0,
+      "FAR": 0.659,
+      "CSI": 0.341
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "dinilai",
+    "adegan": "2017-02-22",
+    "CSI": 0.143,
+    "CSI_naif": 0.0,
+    "CSI_semua_positif": 0.341,
+    "lolos": false
+   }
+  },
+  {
+   "kejadian": "2017-04-11",
+   "hari_laporan": [
+    "2017-04-11"
+   ],
+   "n_laporan": 114,
+   "adegan": [
+    {
+     "tanggal_utc": "2017-04-11",
+     "waktu_wib": "2017-04-11T18:14+07:00",
+     "orbit": 98,
+     "selisih_hari_wib": 0,
+     "dasar_lintasan": [
+      "2017-03-30",
+      "2017-03-18",
+      "2017-03-06"
+     ],
+     "naif_sebelum": "2017-03-30",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 109,
+     "kec_positif": 18,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 18,
+       "fa": 0,
+       "cn": 24,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.438,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 18,
+       "fa": 0,
+       "cn": 23,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.435,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 18,
+       "fa": 0,
+       "cn": 23,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.457,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 18,
+      "miss": 0,
+      "fa": 23,
+      "cn": 0,
+      "POD": 1.0,
+      "FAR": 0.561,
+      "CSI": 0.439
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "dinilai",
+    "adegan": "2017-04-11",
+    "CSI": 0.0,
+    "CSI_naif": 0.0,
+    "CSI_semua_positif": 0.439,
+    "lolos": false
+   }
+  },
+  {
+   "kejadian": "2018-02-15",
+   "hari_laporan": [
+    "2018-02-15"
+   ],
+   "n_laporan": 109,
+   "adegan": [
+    {
+     "tanggal_utc": "2018-02-17",
+     "waktu_wib": "2018-02-17T18:14+07:00",
+     "orbit": 98,
+     "selisih_hari_wib": 2,
+     "dasar_lintasan": [
+      "2018-02-05",
+      "2018-01-24",
+      "2018-01-12"
+     ],
+     "naif_sebelum": "2018-02-05",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 0,
+     "kec_positif": 0,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 0,
+       "fa": 0,
+       "cn": 42,
+       "POD": null,
+       "FAR": null,
+       "CSI": null
+      },
+      "AUC": null,
+      "kepekaan_CSI": {
+       "0.005": null,
+       "0.01": null,
+       "0.02": null,
+       "0.05": null
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 0,
+       "fa": 0,
+       "cn": 41,
+       "POD": null,
+       "FAR": null,
+       "CSI": null
+      },
+      "AUC": null,
+      "kepekaan_CSI": {
+       "0.005": null,
+       "0.01": null,
+       "0.02": null,
+       "0.05": null
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 0,
+       "fa": 0,
+       "cn": 41,
+       "POD": null,
+       "FAR": null,
+       "CSI": null
+      },
+      "AUC": null,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": null,
+       "0.05": null
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 0,
+      "miss": 0,
+      "fa": 41,
+      "cn": 0,
+      "POD": null,
+      "FAR": 1.0,
+      "CSI": 0.0
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "tak_dapat_dinilai",
+    "alasan": "kecamatan positif 0, negatif 41",
+    "lolos": null,
+    "adegan": "2018-02-17"
+   }
+  },
+  {
+   "kejadian": "2020-01-02",
+   "hari_laporan": [
+    "2020-01-01",
+    "2020-01-02"
+   ],
+   "n_laporan": 249,
+   "adegan": [
+    {
+     "tanggal_utc": "2020-01-02",
+     "waktu_wib": "2020-01-02T18:15+07:00",
+     "orbit": 98,
+     "selisih_hari_wib": 0,
+     "dasar_lintasan": [
+      "2019-12-21",
+      "2019-12-09",
+      "2019-11-27"
+     ],
+     "naif_sebelum": "2019-12-21",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 112,
+     "kec_positif": 12,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 12,
+       "fa": 0,
+       "cn": 30,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.511,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 12,
+       "fa": 0,
+       "cn": 29,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.51,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 12,
+       "fa": 0,
+       "cn": 29,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.524,
+      "kepekaan_CSI": {
+       "0.005": 0.077,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 12,
+      "miss": 0,
+      "fa": 29,
+      "cn": 0,
+      "POD": 1.0,
+      "FAR": 0.707,
+      "CSI": 0.293
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "dinilai",
+    "adegan": "2020-01-02",
+    "CSI": 0.0,
+    "CSI_naif": 0.0,
+    "CSI_semua_positif": 0.293,
+    "lolos": false
+   }
+  },
+  {
+   "kejadian": "2020-02-08",
+   "hari_laporan": [
+    "2020-02-08"
+   ],
+   "n_laporan": 120,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2020-02-11",
+   "hari_laporan": [
+    "2020-02-11"
+   ],
+   "n_laporan": 465,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2020-02-16",
+   "hari_laporan": [
+    "2020-02-16"
+   ],
+   "n_laporan": 109,
+   "adegan": [
+    {
+     "tanggal_utc": "2020-02-15",
+     "waktu_wib": "2020-02-16T05:33+07:00",
+     "orbit": 47,
+     "selisih_hari_wib": 0,
+     "dasar_lintasan": [
+      "2020-02-03",
+      "2020-01-22",
+      "2020-01-16"
+     ],
+     "naif_sebelum": "2020-02-03",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 0,
+     "kec_positif": 0,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 0,
+       "fa": 0,
+       "cn": 42,
+       "POD": null,
+       "FAR": null,
+       "CSI": null
+      },
+      "AUC": null,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": null,
+       "0.05": null
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 0,
+       "fa": 0,
+       "cn": 41,
+       "POD": null,
+       "FAR": null,
+       "CSI": null
+      },
+      "AUC": null,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": null,
+       "0.05": null
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 0,
+       "fa": 0,
+       "cn": 41,
+       "POD": null,
+       "FAR": null,
+       "CSI": null
+      },
+      "AUC": null,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": null,
+       "0.05": null
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 0,
+      "miss": 0,
+      "fa": 41,
+      "cn": 0,
+      "POD": null,
+      "FAR": 1.0,
+      "CSI": 0.0
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "tak_dapat_dinilai",
+    "alasan": "kecamatan positif 0, negatif 41",
+    "lolos": null,
+    "adegan": "2020-02-15"
+   }
+  },
+  {
+   "kejadian": "2020-02-25",
+   "hari_laporan": [
+    "2020-02-23",
+    "2020-02-25"
+   ],
+   "n_laporan": 1040,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2021-02-20",
+   "hari_laporan": [
+    "2021-02-20"
+   ],
+   "n_laporan": 240,
+   "adegan": [
+    {
+     "tanggal_utc": "2021-02-21",
+     "waktu_wib": "2021-02-22T05:33+07:00",
+     "orbit": 47,
+     "selisih_hari_wib": 2,
+     "dasar_lintasan": [
+      "2021-02-09",
+      "2021-01-28",
+      "2021-01-04"
+     ],
+     "naif_sebelum": "2021-02-09",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 6,
+     "kec_positif": 2,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 2,
+       "fa": 0,
+       "cn": 40,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.425,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 2,
+       "fa": 0,
+       "cn": 39,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.436,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 2,
+       "fa": 0,
+       "cn": 39,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.59,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 2,
+      "miss": 0,
+      "fa": 39,
+      "cn": 0,
+      "POD": 1.0,
+      "FAR": 0.951,
+      "CSI": 0.049
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "tak_dapat_dinilai",
+    "alasan": "kecamatan positif 2, negatif 39",
+    "lolos": null,
+    "adegan": "2021-02-21"
+   }
+  },
+  {
+   "kejadian": "2022-04-26",
+   "hari_laporan": [
+    "2022-04-25",
+    "2022-04-26"
+   ],
+   "n_laporan": 287,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2023-05-07",
+   "hari_laporan": [
+    "2023-05-05",
+    "2023-05-06",
+    "2023-05-07"
+   ],
+   "n_laporan": 904,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2023-12-27",
+   "hari_laporan": [
+    "2023-12-27"
+   ],
+   "n_laporan": 130,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-01-18",
+   "hari_laporan": [
+    "2024-01-16",
+    "2024-01-18"
+   ],
+   "n_laporan": 301,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-02-03",
+   "hari_laporan": [
+    "2024-02-03"
+   ],
+   "n_laporan": 172,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-02-24",
+   "hari_laporan": [
+    "2024-02-24"
+   ],
+   "n_laporan": 167,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-04-07",
+   "hari_laporan": [
+    "2024-04-05",
+    "2024-04-07",
+    "2024-04-08",
+    "2024-04-09"
+   ],
+   "n_laporan": 596,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-04-19",
+   "hari_laporan": [
+    "2024-04-19"
+   ],
+   "n_laporan": 134,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-04-26",
+   "hari_laporan": [
+    "2024-04-26"
+   ],
+   "n_laporan": 155,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-05-02",
+   "hari_laporan": [
+    "2024-04-30",
+    "2024-05-02"
+   ],
+   "n_laporan": 236,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-05-22",
+   "hari_laporan": [
+    "2024-05-22"
+   ],
+   "n_laporan": 120,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-05-31",
+   "hari_laporan": [
+    "2024-05-31"
+   ],
+   "n_laporan": 244,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-07-29",
+   "hari_laporan": [
+    "2024-07-27",
+    "2024-07-29"
+   ],
+   "n_laporan": 251,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-08-07",
+   "hari_laporan": [
+    "2024-08-07"
+   ],
+   "n_laporan": 169,
+   "adegan": [
+    {
+     "tanggal_utc": "2024-08-08",
+     "waktu_wib": "2024-08-08T18:15+07:00",
+     "orbit": 98,
+     "selisih_hari_wib": 1,
+     "dasar_lintasan": [
+      "2024-07-03",
+      "2024-06-21",
+      "2024-06-09"
+     ],
+     "naif_sebelum": "2024-07-03",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 68,
+     "kec_positif": 2,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 2,
+       "fa": 0,
+       "cn": 40,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.487,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 2,
+       "fa": 0,
+       "cn": 39,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.487,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 2,
+       "fa": 0,
+       "cn": 39,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.423,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 2,
+      "miss": 0,
+      "fa": 39,
+      "cn": 0,
+      "POD": 1.0,
+      "FAR": 0.951,
+      "CSI": 0.049
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "tak_dapat_dinilai",
+    "alasan": "kecamatan positif 2, negatif 39",
+    "lolos": null,
+    "adegan": "2024-08-08"
+   }
+  },
+  {
+   "kejadian": "2024-08-14",
+   "hari_laporan": [
+    "2024-08-10",
+    "2024-08-12",
+    "2024-08-13",
+    "2024-08-14",
+    "2024-08-15"
+   ],
+   "n_laporan": 828,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-10-10",
+   "hari_laporan": [
+    "2024-10-10",
+    "2024-10-11"
+   ],
+   "n_laporan": 495,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-10-16",
+   "hari_laporan": [
+    "2024-10-16"
+   ],
+   "n_laporan": 126,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-11-13",
+   "hari_laporan": [
+    "2024-11-11",
+    "2024-11-13",
+    "2024-11-15"
+   ],
+   "n_laporan": 535,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-11-18",
+   "hari_laporan": [
+    "2024-11-18"
+   ],
+   "n_laporan": 220,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2024-12-20",
+   "hari_laporan": [
+    "2024-12-20"
+   ],
+   "n_laporan": 179,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  },
+  {
+   "kejadian": "2025-04-17",
+   "hari_laporan": [
+    "2025-04-17"
+   ],
+   "n_laporan": 128,
+   "adegan": [
+    {
+     "tanggal_utc": "2025-04-17",
+     "waktu_wib": "2025-04-17T18:15+07:00",
+     "orbit": 98,
+     "selisih_hari_wib": 0,
+     "dasar_lintasan": [
+      "2025-04-05",
+      "2025-03-24",
+      "2025-03-12"
+     ],
+     "naif_sebelum": "2025-04-05",
+     "cakupan_sel_persen": 100,
+     "laporan_dalam_jendela": 128,
+     "kec_positif": 4,
+     "ambang_otsu_db": -14.0,
+     "naif": {
+      "metrik": {
+       "hit": 0,
+       "miss": 4,
+       "fa": 0,
+       "cn": 38,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.579,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 42,
+      "pecahan_median": 0
+     },
+     "tetap_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 4,
+       "fa": 0,
+       "cn": 37,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.578,
+      "kepekaan_CSI": {
+       "0.005": 0.0,
+       "0.01": 0.0,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "otsu_masker": {
+      "metrik": {
+       "hit": 0,
+       "miss": 4,
+       "fa": 0,
+       "cn": 37,
+       "POD": 0.0,
+       "FAR": null,
+       "CSI": 0.0
+      },
+      "AUC": 0.524,
+      "kepekaan_CSI": {
+       "0.005": 0.167,
+       "0.01": 0.25,
+       "0.02": 0.0,
+       "0.05": 0.0
+      },
+      "kec_dinilai": 41,
+      "pecahan_median": 0
+     },
+     "semua_positif": {
+      "hit": 4,
+      "miss": 0,
+      "fa": 37,
+      "cn": 0,
+      "POD": 1.0,
+      "FAR": 0.902,
+      "CSI": 0.098
+     },
+     "status": "ok"
+    }
+   ],
+   "putusan": {
+    "status": "tak_dapat_dinilai",
+    "alasan": "kecamatan positif 4, negatif 37",
+    "lolos": null,
+    "adegan": "2025-04-17"
+   }
+  },
+  {
+   "kejadian": "2025-04-20",
+   "hari_laporan": [
+    "2025-04-20"
+   ],
+   "n_laporan": 163,
+   "adegan": [],
+   "status": "tanpa_adegan_0_2_hari",
+   "putusan": {
+    "status": "tanpa_adegan_0_2_hari",
+    "lolos": null
+   }
+  }
+ ]
+}

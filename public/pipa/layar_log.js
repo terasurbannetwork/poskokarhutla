@@ -3,6 +3,11 @@
 import {durasiLog, kuantil, nKecil} from "./hitung.js";
 import {memuat, kosong, galat} from "./keadaan.js";
 import {tanggalHtml, pasangTanggal} from "./tanggal.js";
+import {jalurJejak, jejakTabelHtml, aksiJejak, namaAksi} from "./keputusan.js";
+import {bandingSelang, selangHtml} from "./bukti.js";
+import {suhuHtml, tekananHtml, uraiCsv, ambilTeks, muatButir, muatGayaLapangan} from "./lapangan_staf.js";
+
+export const RENTANG_JEJAK = [[7, "7 hari terakhir"], [30, "30 hari terakhir"], [90, "90 hari terakhir"]];
 
 const KELAS = ["I", "II", "III"];
 /* ambang G3 (PRD §4.4): tiba sampai air mengalir, jam; label asumsi-kebijakan */
@@ -11,6 +16,16 @@ export const AMBANG_G3 = {I: {p50: 4, p90: 6}, II: {p50: 8, p90: 12}, III: {p50:
 const HIPOTESIS_STUDIO = [22, 27];
 const JENIS = {karhutla: "Karhutla", banjir: "Banjir", latihan: "Latihan"};
 const PER_HAL = 50;
+
+/* SP-124: tugas yang boleh dipilih untuk grafik suhu dan tekanan: satu per tugas_id, terbaru dulu, paling banyak 30 */
+export function pilihanTugas(log) {
+  const lihat = new Set(), hasil = [];
+  for (const l of [...barisKoreksi(log)].sort((a, b) => (b.t_tiba ?? b.waktu_klien ?? 0) - (a.t_tiba ?? a.waktu_klien ?? 0))) {
+    if (!l.tugas_id || lihat.has(l.tugas_id)) continue;
+    lihat.add(l.tugas_id); hasil.push({id: l.tugas_id, teks: `${l.t_tiba ? new Date(l.t_tiba).toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"}) : "tanpa tanggal"}, ${l.kit_kode ?? l.kit_id ?? "tanpa kit"}, regu ${l.nama_regu ?? "–"}`});
+  }
+  return hasil.slice(0, 30);
+}
 
 /* log tanpa yang sudah punya penerus koreksi (koreksi = baris baru dengan koreksi_dari, jejak utuh). Dummy TIDAK dibuang di klien:
    server sudah menyaringnya per peran (lihatDummy), jadi yang sampai ke sini memang boleh dilihat peran ini. */
@@ -96,8 +111,16 @@ export async function pasang(akar, konteks) {
       <div class="sp-chips" role="group" aria-label="Jenis">${Object.entries(JENIS).map(([k, n]) => `<button type="button" class="ad-chip" data-jenis="${k}" aria-pressed="true">${n}</button>`).join("")}<button type="button" class="ad-chip" data-meleset aria-pressed="false">Hanya jam meleset</button></div>
       <label class="sp-tgl">Dari ${tanggalHtml({label: "Dari", atribut: 'data-tgl="dari"'})}</label><label class="sp-tgl">Sampai ${tanggalHtml({label: "Sampai", atribut: 'data-tgl="sampai"'})}</label>
       <a class="ad-tombol" data-csv href="/api/sippa/log.csv">Unduh CSV</a></div>
-    <div id="sp-log-isi"></div>`;
-  const isi = akar.querySelector("#sp-log-isi");
+    <div id="sp-log-isi"></div>
+    <section class="sp-jejak" aria-labelledby="sp-selang-judul"><h2 class="sp-sub" id="sp-selang-judul">Selang pendek lawan panjang</h2><div id="sp-selang-isi" aria-live="polite"></div></section>
+    <section class="sp-jejak" aria-labelledby="sp-jejak-judul"><h2 class="sp-sub" id="sp-jejak-judul">Jejak keputusan dan perubahan</h2>
+      <div class="sp-kontrol" role="group" aria-label="Penyaring jejak">
+        <label>Rentang <select data-jejak="hari">${RENTANG_JEJAK.map(([h, n]) => `<option value="${h}">${n}</option>`).join("")}</select></label>
+        <label>Aksi <select data-jejak="aksi"><option value="">Semua aksi</option></select></label></div>
+      <div id="sp-jejak-isi" aria-live="polite"></div></section>
+    <section class="sp-lap-pilih" aria-labelledby="sp-lap-judul"><h2 class="sp-sub" id="sp-lap-judul">Suhu tanah dan tekanan per tugas</h2>
+      <label>Tugas <select data-lap="tugas"><option value="">Pilih tugas</option></select></label><div id="sp-lap-isi" aria-live="polite"></div></section>`;
+  const isi = akar.querySelector("#sp-log-isi"), isiLap = akar.querySelector("#sp-lap-isi"), pilihTugas = akar.querySelector('[data-lap="tugas"]'), isiJejak = akar.querySelector("#sp-jejak-isi"), pilihAksi = akar.querySelector('[data-jejak="aksi"]');
 
   /* satu gambar ulang antre sekaligus: klik beruntun tidak menumpuk kerja berat (pola laporan.js) */
   let terjadwal = false;
@@ -117,6 +140,7 @@ export async function pasang(akar, konteks) {
       <tbody>${potong.length ? potong.map(barisTabel).join("") : `<tr><td colspan="${KOLOM.length}"><p class="ad-kosong">Tidak ada log yang cocok dengan penyaring.</p></td></tr>`}</tbody></table></div>${paginasi(hal, urut.length, PER_HAL, "log")}`;
     const th = isi.querySelector("thead tr");
     pengurutKepala(st, th, jadwalkanGambar);
+    akar.querySelector("#sp-selang-isi").innerHTML = selangHtml(bandingSelang(rows));
   };
   /* tiap muat membatalkan muat sebelumnya: jawaban basi tidak pernah menimpa jawaban terbaru */
   let acMuat = null;
@@ -130,10 +154,45 @@ export async function pasang(akar, konteks) {
     try {
       const j = await konteks.ambil("/api/sippa/log" + (q.size ? "?" + q : ""), ac.signal);
       if (ac.signal.aborted) return;
-      st.log = j.log || []; st.hal = 0;
+      st.log = j.log || []; st.hal = 0; isiPilihan();
       if (j.terpotong) konteks.pesan?.("Log dipotong di 2.000 baris terbaru; persempit rentang tanggal.");
       gambar();
     } catch (e) { if (ac.signal.aborted) return; if (e.status == null) console.error(e); isi.replaceChildren(galat(e.status ?? 0, e.status == null ? "Layar tidak bisa ditampilkan. Coba lagi." : e.status ? e.message : "Tidak bisa terhubung ke server.", muat)); }
+  };
+
+  /* SP-124: suhu tanah (probe.csv, belum ada rute JSON) dan tekanan per tugas, dimuat saat tugas dipilih */
+  let acLap = null;
+  const muatLap = async () => {
+    acLap?.abort(); const ac = acLap = new AbortController(); sinyal.addEventListener("abort", () => ac.abort(), {once: true});
+    const id = pilihTugas.value; if (!id) { isiLap.replaceChildren(); return; }
+    isiLap.replaceChildren(memuat());
+    try {
+      const [teks, tekanan] = await Promise.all([ambilTeks(`/api/sippa/probe.csv?tugas=${encodeURIComponent(id)}`, ac.signal), muatButir(konteks.ambil, {tugas: id, jenis: "tekanan"}, ac.signal), muatGayaLapangan()]);
+      if (ac.signal.aborted) return;
+      const t = Date.now();
+      isiLap.innerHTML = `<h3 class="sp-sub">Suhu tanah</h3>${suhuHtml(uraiCsv(teks), t)}<h3 class="sp-sub">Tekanan</h3>${tekananHtml(tekanan, t)}`;
+    } catch (e) { if (ac.signal.aborted || e?.name === "AbortError") return; if (e.status == null) console.error(e); isiLap.replaceChildren(galat(e.status ?? 0, e.status == null ? "Grafik tidak bisa ditampilkan. Coba lagi." : e.message, muatLap)); }
+  };
+  const isiPilihan = () => { const lama = pilihTugas.value; pilihTugas.innerHTML = `<option value="">Pilih tugas</option>${pilihanTugas(st.log).map(t => `<option value="${esc(t.id)}"${t.id === lama ? " selected" : ""}>${esc(t.teks)}</option>`).join("")}`; };
+
+  /* jejak: dimuat terpisah dari log; ganti rentang = muat ulang, ganti aksi = gambar ulang tanpa jaringan */
+  const jej = {hari: 7, aksi: "", data: null};
+  const gambarJejak = () => {
+    if (sinyal.aborted || !jej.data) return;
+    isiJejak.innerHTML = jejakTabelHtml(jej.data.jejak, {aksi: jej.aksi, terpotong: !!jej.data.terpotong});
+  };
+  let acJejak = null;
+  const muatJejak = async () => {
+    acJejak?.abort(); const ac = acJejak = new AbortController(); sinyal.addEventListener("abort", () => ac.abort(), {once: true});
+    isiJejak.replaceChildren(memuat());
+    try {
+      const j = await konteks.ambil(jalurJejak(Date.now() - jej.hari * 864e5), ac.signal);
+      if (ac.signal.aborted) return;
+      jej.data = {jejak: j.jejak || [], terpotong: j.terpotong};
+      const ada = aksiJejak(jej.data.jejak); if (jej.aksi && !ada.includes(jej.aksi)) jej.aksi = "";
+      pilihAksi.innerHTML = `<option value="">Semua aksi</option>${ada.map(a => `<option value="${esc(a)}"${a === jej.aksi ? " selected" : ""}>${esc(namaAksi(a))}</option>`).join("")}`;
+      gambarJejak();
+    } catch (e) { if (ac.signal.aborted) return; if (e.status == null) console.error(e); isiJejak.replaceChildren(galat(e.status ?? 0, e.status == null ? "Jejak tidak bisa ditampilkan. Coba lagi." : e.status ? e.message : "Tidak bisa terhubung ke server.", muatJejak)); }
   };
 
   /* INP: chrome (aria-pressed, panah, halaman aktif) berubah di handler; gambar ulang berat lewat nanti() */
@@ -147,6 +206,12 @@ export async function pasang(akar, konteks) {
     const p = e.target.closest(".pgn-b[data-h]");
     if (p && !p.disabled) { p.parentElement.querySelectorAll(".pgn-b").forEach(x => x.removeAttribute("aria-current")); p.setAttribute("aria-current", "page"); st.hal = +p.dataset.h; jadwalkanGambar(); }
   }, {signal: sinyal});
-  akar.addEventListener("change", e => { const t = e.target.closest("[data-tgl]"); if (t) { st[t.dataset.tgl] = t.value; nanti(muat); } }, {signal: sinyal});
+  akar.addEventListener("change", e => {
+    const t = e.target.closest("[data-tgl]"), j = e.target.closest("[data-jejak]");
+    if (e.target.closest('[data-lap="tugas"]')) { if (pilihTugas.value) isiLap.replaceChildren(memuat()); nanti(muatLap); return; }
+    if (t) { st[t.dataset.tgl] = t.value; isi.replaceChildren(memuat()); nanti(muat); }
+    else if (j) { if (j.dataset.jejak === "hari") { jej.hari = Number(j.value) || 7; isiJejak.replaceChildren(memuat()); nanti(muatJejak); } else { jej.aksi = j.value; nanti(gambarJejak); } }
+  }, {signal: sinyal});
+  nanti(muatJejak);
   await muat();
 }

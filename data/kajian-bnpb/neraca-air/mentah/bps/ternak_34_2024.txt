@@ -1,0 +1,242 @@
+#url https://yogyakarta.bps.go.id/id/statistics-table/3/UzJWaVUxZHdWVGxwU1hSd1UxTXZlbmRITjA1Q2R6MDkjMw==/populasi-ternak.html?year=2024
+#ditarik 2026-10-27T02:54:52.047Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI DI YOGYAKARTA
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Ada kendala mengakses produk layanan kami? Hubungi WASis: 0815-6769-3400 atau klik ikon WASis di pojok kanan bawah website ini.
+
+Bantu kami dalam meningkatkan pelayanan pada PST BPS Provinsi DI Yogyakarta dengan cara mengisi Survei Kebutuhan Data sesuai link berikut: http://s.bps.go.id/SKD2026DIY Jawaban Anda Untuk Pelayanan Lebih baik
+
+«« Layanan Online BPS : email - pst3400@bps.go.id, WA - 0815 6769 3400, dengan mengklik pojok kanan bawah website ini ««
+
+«« Layanan Pelayanan Statistik Terpadu (PST) BPS Provinsi D.I. Yogyakarta melalui Whatsapp kini telah hadir 24 jam ««
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pertanian, Kehutanan, Perikanan
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi DI Yogyakarta (ekor), 2024
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Statistik Ekonomi
+
+Statistik Makroekonomi
+Neraca Ekonomi
+Statistik Bisnis
+Statistik sektoral
+Keuangan Pemerintah, Fiskal dan Statistik Sektor Publik
+Perdagangan Internasional dan Neraca Pembayaran
+Harga-Harga
+Biaya Tenaga Kerja
+Ilmu Pengetahuan, Teknologi, dan Inovasi
+Pertanian, Kehutanan, Perikanan
+Energi
+Pertambangan, Manufaktur, Konstruksi
+Transportasi
+Pariwisata
+Perbankan, Asuransi dan Finansial
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi DI Yogyakarta (ekor), 2024
+
+Terakhir Diperbarui : 12 Februari 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2024
+Freeze judul kolom
+
+Kabupaten/Kota
+
+	
+
+Populasi Ternak - Sapi Perah (Ekor)
+
+	
+
+Populasi Ternak - Sapi Potong (Ekor)
+
+	
+
+Populasi Ternak - Kerbau (Ekor)
+
+	
+
+Populasi Ternak - Kuda (Ekor)
+
+	
+
+Populasi Ternak - Kambing (Ekor)
+
+	
+
+Populasi Ternak - Domba (Ekor)
+
+	
+
+Populasi Ternak - Babi (Ekor)
+
+
+Kulon Progo	12	56.024	60	18	130.652	38.648	1.318
+Bantul	37	66.978	149	1.150	64.694	64.115	2.971
+Gunungkidul	–	136.153	4	12	210.014	15.731	570
+Sleman	2.856	26.552	137	205	32.704	39.157	3.727
+Kota Yogyakarta	3	90	–	15	95	67	–
+DI Yogyakarta	2.908	285.797	350	1.400	438.159	157.718	8.586
+
+Sumber :
+
+Kementerian Pertanian (Direktorat Jenderal Peternakan dan Kesehatan Hewan)/Ministry of Agriculture (Directorate General of Livestock and Animal Health Services)
+
+Keterangan :
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+a
+
+: 25% < RSE ≤ 50%
+
+b
+
+: RSE < 50%
+
+c
+
+: Penjumlahan tidak sama dengan wilayah diatasnya
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik Provinsi Daerah Istimewa Yogyakarta
+
+Jl. Brawijaya Tamantirto Kasihan Bantul 55183
+
+Telp. 0274-4342234. Fx. 0274-4342230
+
+E-mail : pst3400@bps.go.id (PST/permintaan data)
+
+E-mail : yogyakarta@bps.go.id (PPID dan Info Magang)
+
+Whatsapp: 081567693400 (PST/permintaan data)
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup

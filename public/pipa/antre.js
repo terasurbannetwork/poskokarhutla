@@ -2,7 +2,10 @@
    localStorage "sippa.antre" untuk teks bila IndexedDB gagal. Tanpa DOM: layar ada di lapangan.js. Kode penugasan dibaca dari
    localStorage "sippa.kode" dan hanya dikirim sebagai header x-kode, tidak pernah di alamat. Server idempoten (ON CONFLICT(id) DO NOTHING),
    jadi kunci `sedangKirim` di sini cukup per tab; dua tab yang berbarengan paling jauh menghasilkan jawaban "ganda", bukan baris ganda. */
-import {cekButir} from "./formulir.js";
+import {cekButir, cekFase2, JENIS_FASE2, TAHAP_FOTO} from "./formulir.js";
+
+/* fase 2 (keputusan 61): jenis tanpa tabel di MEDAN diperiksa cekFase2 */
+const periksa = (jenis, isi, opsi) => JENIS_FASE2.includes(jenis) ? cekFase2(jenis, isi) : cekButir(jenis, isi, opsi);
 
 const NAMA_DB = "sippa-antre", LS_ANTRE = "sippa.antre", LS_KODE = "sippa.kode";
 const BATAS_LS = 200, BATAS_KIRIM = 200, FOTO_MAKS = 8388608;
@@ -52,11 +55,11 @@ const lihat = tugas_id => tugas_id == null ? () => true : milik(tugas_id);
 export const idbSiap = async () => !!(await pakaiDb());
 export const kodeTersimpan =() => { try { return simpan().getItem(LS_KODE); } catch { return null; } };
 
-/* butir = {jenis: log|probe|bbm|gerak|inspeksi, data, tugas_id}; opsi.lengan_dalam dari tugas. Mengembalikan {ok, id} atau {ok:false, galat|pesan}. */
+/* butir = {jenis: log|probe|bbm|gerak|inspeksi|periksa|sos|tekanan|jejak|selesai|bor|debit, data, tugas_id}; opsi.lengan_dalam dari tugas. Mengembalikan {ok, id} atau {ok:false, galat|pesan}. */
 export async function tambah({jenis, data, tugas_id = null}, opsi = {}) {
   const id = data?.id || globalThis.crypto.randomUUID();
   const isi = {...data, id};
-  const c = cekButir(jenis, isi, opsi);
+  const c = periksa(jenis, isi, opsi);
   if (!c.ok) return {ok: false, galat: c.galat};
   try {
     if (!(await pakaiDb()) && bacaLs().length >= BATAS_LS) return {ok: false, pesan: "Antrean di peramban ini penuh. Kirim dulu saat ada sinyal."};
@@ -78,7 +81,7 @@ export async function perbaiki(id, data, opsi = {}) {
   const b = (await semuaButir()).find(x => x.id === id);
   if (!b) return {ok: false, pesan: "Isian tidak ditemukan di antrean"};
   const isi = {...data, id};
-  const c = cekButir(b.jenis, isi, opsi);
+  const c = periksa(b.jenis, isi, opsi);
   if (!c.ok) return {ok: false, galat: c.galat};
   await taruhButir({...b, data: isi, keadaan: "menunggu", alasan: null, coba: 0, kirim_berikut: 0});
   return {ok: true};
@@ -87,15 +90,20 @@ export async function perbaiki(id, data, opsi = {}) {
 export const hapus = id => buangButir(id);
 
 /* ---------- foto ---------- */
-export async function tambahFoto(blob, butir_id) {
+/* opsi.tahap (tiba|pompa|gelar|injeksi|selesai) + lat + lon + tugas_id = foto bukti berdiri sendiri (SP-121): server membuat butir foto sendiri dari /lapangan/foto */
+export async function tambahFoto(blob, butir_id, opsi = {}) {
   if (blob?.type === "image/png") return {ok: false, pesan: "Foto PNG tidak didukung. Pakai JPEG atau WebP."};
   if (!MIME_FOTO.includes(blob?.type)) return {ok: false, pesan: "Format foto tidak didukung. Pakai JPEG atau WebP."};
   if (blob.size > FOTO_MAKS) return {ok: false, pesan: "Foto lebih dari 8 MB. Kecilkan dulu."};
+  if (opsi.tahap && !TAHAP_FOTO.some(t => t[0] === opsi.tahap)) return {ok: false, pesan: "Tahap foto tidak dikenal"};
+  if (opsi.tahap && !(Number.isFinite(opsi.lat) && Number.isFinite(opsi.lon))) return {ok: false, pesan: "Foto bukti butuh lokasi GPS. Ambil lokasi dulu."};
   if (!(await pakaiDb())) return {ok: false, pesan: "Foto tidak bisa disimpan luring di peramban ini"};
-  try { await op("foto", "put", {id: globalThis.crypto.randomUUID(), blob, mime: blob.type, butir_id, keadaan: "menunggu"}); }
+  try { await op("foto", "put", {id: globalThis.crypto.randomUUID(), blob, mime: blob.type, butir_id, keadaan: "menunggu", ...(opsi.tahap ? {tahap: opsi.tahap, lat: opsi.lat, lon: opsi.lon, tugas_id: opsi.tugas_id ?? null} : {})}); }
   catch { return {ok: false, pesan: "Foto tidak bisa disimpan luring di peramban ini"}; }
   return {ok: true};
 }
+/* koordinat foto sebagai teks yang diterima server (paling banyak 10 desimal, tanpa eksponen) */
+const koord = v => String(Math.round(v * 1e6) / 1e6).replace(/e.*/, "0");
 
 /* ---------- kirim ---------- */
 /* 60 dtk x 2^coba, tertutup 30 menit, dikali 0,8 sampai 1,2 supaya ponsel satu regu tidak menyerbu bersamaan (DT §6.1.4) */
@@ -114,7 +122,7 @@ async function jalan(sekarang, tugas_id, kodeOpsi) {
   if (tugas_id == null) return {...h, berhenti: "tugas", pesan: "Tugas belum dimuat. Buka tugasmu dulu."};
   const semua = (await semuaButir()).filter(milik(tugas_id));
   const ids = new Set(semua.map(b => b.id));
-  const foto = (await semuaFoto()).filter(f => f.keadaan === "menunggu" && (f.kirim_berikut || 0) <= sekarang && ids.has(f.butir_id));
+  const foto = (await semuaFoto()).filter(f => f.keadaan === "menunggu" && (f.kirim_berikut || 0) <= sekarang && (ids.has(f.butir_id) || (f.tahap && f.tugas_id === tugas_id)));
   let sisa = semua.filter(b => b.keadaan === "menunggu" && b.kirim_berikut <= sekarang).sort((a, b) => a.dibuat - b.dibuat);
   if (!sisa.length && !foto.length) return h;
   const kode = kodeOpsi ?? kodeTersimpan();
@@ -129,6 +137,7 @@ async function jalan(sekarang, tugas_id, kodeOpsi) {
   /* 1. foto dulu; 4xx menandai foto ditolak tetapi butirnya tetap berangkat */
   for (const f of foto) {
     const fd = new FormData(); fd.append("berkas", f.blob);
+    if (f.tahap) { fd.append("tahap", f.tahap); fd.append("lat", koord(f.lat)); fd.append("lon", koord(f.lon)); }
     let r;
     try { r = await fetch("/api/sippa/lapangan/foto", {method: "POST", headers: {"x-kode": kode}, body: fd}); } catch { await tundaFoto(f); return {...h, ...MENUNGGU_SINYAL}; }
     const s = henti(r.status); if (s) return {...h, ...s};
@@ -144,7 +153,7 @@ async function jalan(sekarang, tugas_id, kodeOpsi) {
   /* 2. butir: paling banyak 200 per panggilan, urut dibuat */
   const tolak = async (b, alasan) => { await taruhButir({...b, keadaan: "ditolak", alasan}); h.ditolak++; };
   async function kirimSet(list) {
-    const badan = {jam_kirim: Date.now(), log: [], probe: [], bbm: [], gerak: [], inspeksi: []};   // inspeksi pra/pasca gelar (SP-094)
+    const badan = {jam_kirim: Date.now(), log: [], probe: [], bbm: [], gerak: [], inspeksi: [], ...Object.fromEntries(JENIS_FASE2.map(j => [j, []]))};   // inspeksi pra/pasca gelar (SP-094)
     for (const b of list) badan[b.jenis].push(b.data);
     let r;
     try { r = await fetch("/api/sippa/lapangan/kirim", {method: "POST", headers: {"x-kode": kode, "content-type": "application/json"}, body: JSON.stringify(badan)}); }

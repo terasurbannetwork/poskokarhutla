@@ -1,0 +1,264 @@
+#url https://jateng.bps.go.id/id/statistics-table/3/UzJWaVUxZHdWVGxwU1hSd1UxTXZlbmRITjA1Q2R6MDkjMw==/populasi-ternak.html?year=2024
+#ditarik 2026-10-27T02:54:13.940Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+PROVINSI JAWA TENGAH
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Sebagai upaya meningkatkan kualitas data dan pelayanan kami kepada Anda mohon mengisi Survei Kebutuhan Data (SKD) 2026 melalui tautan : https://skd.bps.go.id/skd/s/3300
+
+Anda bisa menyampaikan pengaduan layanan kepada kami disini atau  mengakses Layanan Aspirasi dan Pengaduan Online Rakyat (LAPOR) disini
+
+Layanan Online Data BPS silakan melalui e-mail : jateng@bps.go.id, Whatsapp (chat only) : 0815 6770 1212, dan silastik.bps.go.id
+
+Beranda
+
+Produk - Tabel Statistik
+
+Pertanian, Kehutanan, Perikanan
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi Jawa Tengah (ekor), 2024
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Statistik Ekonomi
+
+Statistik Makroekonomi
+Neraca Ekonomi
+Statistik Bisnis
+Statistik sektoral
+Keuangan Pemerintah, Fiskal dan Statistik Sektor Publik
+Perdagangan Internasional dan Neraca Pembayaran
+Harga-Harga
+Biaya Tenaga Kerja
+Ilmu Pengetahuan, Teknologi, dan Inovasi
+Pertanian, Kehutanan, Perikanan
+Energi
+Pertambangan, Manufaktur, Konstruksi
+Transportasi
+Pariwisata
+Perbankan, Asuransi dan Finansial
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Populasi Ternak Menurut Kabupaten/Kota dan Jenis Ternak di Provinsi Jawa Tengah (ekor), 2024
+
+Terakhir Diperbarui : 12 Februari 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2024
+Freeze judul kolom
+
+Kabupaten/Kota
+
+	
+
+Populasi Ternak - Sapi Perah (Ekor)
+
+	
+
+Populasi Ternak - Sapi Potong (Ekor)
+
+	
+
+Populasi Ternak - Kerbau (Ekor)
+
+	
+
+Populasi Ternak - Kuda (Ekor)
+
+	
+
+Populasi Ternak - Kambing (Ekor)
+
+	
+
+Populasi Ternak - Domba (Ekor)
+
+	
+
+Populasi Ternak - Babi (Ekor)
+
+
+Cilacap	19	15.792	364	160	158.369	38.521	1.727
+Banyumas	2.949	13.010	314	51	165.836	16.516	2.346
+Purbalingga	127	12.425	847	67	256.713	25.559	1.669
+Banjarnegara	76	21.052	180	85	206.696	52.271	69
+Kebumen	2	65.108	182	267	103.485	24.949	769
+Purworejo	20	16.217	343	77	188.566	26.612	1.601
+Wonosobo	293	12.298	533	29	138.505	77.945	742
+Magelang	816	31.625	1.350	122	136.421	81.816	1.020
+Boyolali	54.684	80.641	627	312	84.353	49.124	4.945
+Klaten	2.820	64.876	365	178	77.779	35.547	1.069
+Sukoharjo	–	19.632	132	68	56.498	4.028	3.428
+Wonogiri	30	155.109	3	5	353.417	132.235	6.670
+Karanganyar	156	55.027	59	185	42.323	112.510	7.462
+Sragen	9	60.181	27	22	115.341	3.836	2.541
+Grobogan	186	148.693	629	23	169.527	1.943	384
+Blora	10	174.700	298	77	109.855	3.736	215
+Rembang	–	108.110	40	51	82.003	12.860	114
+Pati	106	57.096	395	27	208.327	5.655	1.198
+Kudus	180	3.429	1.945	28	27.509	14.224	–
+Jepara	31	34.963	2.066	72	106.439	5.970	154
+Demak	–	3.657	2.071	65	30.589	49.474	–
+Semarang	17.010	37.536	940	425	117.793	30.257	4.227
+Temanggung	196	11.167	169	56	49.452	205.089	248
+Kendal	31	17.156	697	28	70.958	18.336	–
+Batang	171	17.592	145	48	79.158	9.454	5.202
+Pekalongan	170	13.823	752	44	52.054	20.827	–
+Pemalang	27	4.550	1.644	61	136.855	43.517	600
+Tegal	67	5.415	937	31	103.741	26.028	–
+Brebes	–	18.901	5.054	132	56.630	126.505	–
+Kota Magelang	38	60	23	5	405	754	69
+Kota Surakarta	9	297	10	35	397	81	59
+Kota Salatiga	3.035	945	26	11	4.505	631	277
+Kota Semarang	717	3.427	309	–	11.210	2.208	218
+Kota Pekalongan	255	155	10	–	1.609	816	–
+Kota Tegal	–	8	–	–	2.881	2.286	–
+Jawa Tengah	84.240	1.284.673	23.486	2.847	3.506.199	1.262.120	49.023
+
+Sumber :
+
+Kementerian Pertanian (Direktorat Jenderal Peternakan dan Kesehatan Hewan)/Ministry of Agriculture (Directorate General of Livestock and Animal Health Services)
+
+Keterangan :
+
+Keterangan Data :
+
+...
+
+: Data tidak tersedia
+
+–
+
+: Tidak ada atau nol
+
+NA
+
+: Data tidak dapat ditampilkan
+
+e
+
+: Angka estimasi
+
+r
+
+: Angka diperbaiki
+
+~0
+
+: Data dapat diabaikan
+
+*
+
+: Angka sementara
+
+**
+
+: Angka sangat sementara
+
+***
+
+: Angka sangat sangat sementara
+
+a
+
+: 25% < RSE ≤ 50%
+
+b
+
+: RSE < 50%
+
+c
+
+: Penjumlahan tidak sama dengan wilayah diatasnya
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik Provinsi Jawa Tengah (BPS-Statistics Jawa Tengah Province)Jl.Pahlawan No. 6 Telp. 024 - 8412802
+
+8412804
+
+8412805 Fax. 024 - 8311195 e-mail : jateng@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
+
+Tutup

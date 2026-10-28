@@ -3,12 +3,16 @@
 
 Pakai:
   python3 osm_prov.py tarik 62 16       # unduh ubin (bisa dilanjut; berkas yang sudah ada dilewati)
+  python3 osm_prov.py tarik_jalan 62    # hanya jalan+sungai (tag penuh) ke jalan_*.json, untuk graf akses (SP-141)
   python3 osm_prov.py jarak 62 16       # hitung -> data/kajian-bnpb/pipa/data/osm_jarak.csv (62) | osm_jarak_<prov>.csv (lain)
   python3 osm_prov.py uji               # self-check (tanpa jaringan)
 Mode tarik: prov 62 = "tambah" (hanya relasi multipoligon air, garis pantai, air payau; jalan dan way air lama dari osm_jarak.csv DIPERTAHANKAN
   supaya angka buku Kalteng hanya berubah karena SP-108). prov lain = "penuh" (jalan + semua air + relasi + pantai).
 Mentah: data/raw/pipa/osm_<prov>/ubin_*.json (gitignore). ODbL (c) kontributor OpenStreetMap. Python 3.12 stdlib.
 
+SP-141: kolom baru jalan_mobil_km, jalan_motor_km, jalan_kaki_km (+ *_terpotong): jarak ke ruas yang dapat dilalui moda itu, KUMULATIF (motor = ruas mobil atau motor,
+  jalan_kaki = semua ruas jalan yang ditarik); aturan tag di moda.py (asumsi-kebijakan). Kueri hanya menarik highway path, bukan footway/bridleway, jadi jalan_kaki = jalan kendaraan + path.
+  Prov 62: jalan_*.json (tarik_jalan 62) ikut dibaca; kolom jalan lama osm_jarak.csv tidak berubah.
 Kelas air: TAWAR = waterway river/canal/stream/ditch/drain + tepi natural=water/landuse=reservoir (way DAN relasi multipoligon) tanpa tanda asin.
   ASIN = natural=coastline (laut) + natural=water dengan salt=yes, brackish=yes, atau water=lagoon (payau).
   Zona A-D memakai air tawar (air_semua_km). air_asin_* dihitung terpisah; air_asin=1 bila air asin lebih dekat daripada air tawar.
@@ -17,6 +21,9 @@ Jarak garis lurus ke titik terpadat (<= 150 m) pada garis OSM, dibatasi 16 km (k
 import csv, glob, json, math, os, sys, time
 import subprocess
 from concurrent.futures import ThreadPoolExecutor
+
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
+import moda as M  # noqa: E402
 
 AKAR = os.path.abspath(os.path.join(os.path.dirname(__file__), "..", "..", ".."))
 PUB = os.path.join(AKAR, "public", "data")
@@ -30,7 +37,9 @@ KEND = {"motorway", "trunk", "primary", "secondary", "tertiary", "unclassified",
         "motorway_link", "trunk_link", "primary_link", "secondary_link", "tertiary_link", "living_street"}
 UTAMA = {"motorway", "trunk", "primary", "secondary", "tertiary", "motorway_link", "trunk_link", "primary_link", "secondary_link", "tertiary_link"}
 JENIS_AIR = {"river": "sungai", "canal": "kanal", "ditch": "parit", "drain": "parit", "stream": "anak_sungai"}
-KATEGORI = ("jalan_kend", "jalan_utama", "jalan_setapak", "air_semua", "air_kecil", "air_poligon", "air_asin")
+KATEGORI = ("jalan_kend", "jalan_utama", "jalan_setapak", "air_semua", "air_kecil", "air_poligon", "air_asin",
+            "jalan_mobil", "jalan_motor", "jalan_kaki")     # tiga terakhir SP-141, kumulatif: motor = mobil atau motor, kaki = semua ruas jalan
+MODA_KAT = {"mobil": ("jalan_mobil", "jalan_motor", "jalan_kaki"), "motor": ("jalan_motor", "jalan_kaki"), "jalan_kaki": ("jalan_kaki",)}
 LAT0 = {"62": -1.5}                       # 62 mereproduksi proyeksi pipa_data.py persis; lainnya: rerata lintang kompleks
 
 
@@ -56,6 +65,9 @@ def klasifikasi(t, relasi=False):
             hasil.append(("jalan_utama", h))
     elif h == "path":
         hasil.append(("jalan_setapak", h))
+    md = M.moda_ruas(t)
+    if md:      # SP-141: jarak ke jalan per moda (moda.py, asumsi-kebijakan); label = moda ruas
+        hasil += [(k, md) for k in MODA_KAT[md]]
     if w in JENIS_AIR:
         hasil.append(("air_semua", JENIS_AIR[w]))
         if w in ("stream", "ditch", "drain"):
@@ -107,22 +119,25 @@ def kueri(la, lo, mode):
     if mode == "penuh":
         way += (f'way["highway"~"^({JALAN_RE})$"]{b};way["waterway"~"^(stream|ditch|drain|canal|river)$"]{b};'
                 f'way["natural"="water"]{b};way["landuse"="reservoir"]{b};')
+    if mode == "jalan":   # SP-141: hanya graf akses (jalan + sungai/kanal) dengan semua tag (tracktype, surface, access)
+        return f'[out:json][timeout:240];(way["highway"~"^({JALAN_RE})$"]{b};way["waterway"~"^(river|canal)$"]{b};);out tags geom;'
     w = f"({way});out tags geom;" if mode != "rel" else ""
     return f"[out:json][timeout:240];{w}({rel});out geom;"
 
 
-def tarik(prov):
+def tarik(prov, jalan=False):
+    """jalan=True: hanya jalan + sungai/kanal ke jalan_*.json (graf akses prov 62, yang mentah ubin_*-nya hanya relasi/pantai)."""
     komp = kompleks(prov)
-    mode = "tambah" if prov == "62" else "penuh"
+    mode = "jalan" if jalan else "tambah" if prov == "62" else "penuh"
     d = os.path.join(RAW, f"osm_{prov}")
     os.makedirs(d, exist_ok=True)
 
     def satu(t):
-        fn = os.path.join(d, f"ubin_{t[0]}_{t[1]}.json")
+        fn = os.path.join(d, f"{'jalan' if jalan else 'ubin'}_{t[0]}_{t[1]}.json")
         if os.path.exists(fn):
             return t, "ada"
         # lama_*.json = tarikan way sebelum perbaikan relasi: way dipakai, relasi ditarik ulang saja
-        ada_lama = os.path.exists(os.path.join(d, f"lama_{t[0]}_{t[1]}.json"))
+        ada_lama = not jalan and os.path.exists(os.path.join(d, f"lama_{t[0]}_{t[1]}.json"))
         q, err = kueri(t[0], t[1], "rel" if ada_lama else mode), ""
         for n in range(40):                      # Overpass publik sering 502 "at capacity": ulang rapat, 40 kali
             host = OVP[0]
@@ -196,7 +211,8 @@ def padat(g, kx, ky, lat0):
 
 def muat(prov, qxy, kx, ky, lat0):
     ind, seen = Titik(qxy), set()
-    for fn in sorted(glob.glob(os.path.join(RAW, f"osm_{prov}", "ubin_*.json")) + glob.glob(os.path.join(RAW, f"osm_{prov}", "lama_*.json"))):
+    for fn in sorted(glob.glob(os.path.join(RAW, f"osm_{prov}", "ubin_*.json")) + glob.glob(os.path.join(RAW, f"osm_{prov}", "lama_*.json"))
+                     + glob.glob(os.path.join(RAW, f"osm_{prov}", "jalan_*.json"))):
         for e in json.load(open(fn))["elements"]:
             for eid, t, gs, rel in garis_elemen(e):
                 kl = klasifikasi(t, rel)
@@ -243,6 +259,8 @@ def gabung_lama(baru, lama):
                      air_semua_lat=b["air_semua_lat"], air_semua_lon=b["air_semua_lon"])
         for k in ("air_poligon_km", "air_poligon_terpotong", "air_asin_km", "air_asin_terpotong", "air_asin_jenis", "air_asin_lat", "air_asin_lon"):
             o[k] = b[k]
+        for k in MODA_KAT["mobil"]:      # SP-141: kolom baru; kolom jalan lama tidak disentuh
+            o[k + "_km"], o[k + "_terpotong"] = b[k + "_km"], b[k + "_terpotong"]
         hasil.append(o)
     return hasil
 
@@ -293,7 +311,7 @@ def uji():
     assert asin_jenis({"natural": "water", "water": "lagoon"}) == "payau" and asin_jenis({"natural": "water"}) is None
     assert klasifikasi({"natural": "water"}, True) == [("air_semua", "danau_kolam"), ("air_poligon", "danau_kolam")]
     assert klasifikasi({"natural": "water", "salt": "yes"}) == [("air_asin", "payau")]
-    assert ("jalan_utama", "primary") in klasifikasi({"highway": "primary"}) and klasifikasi({"highway": "footway"}) == []
+    assert ("jalan_utama", "primary") in klasifikasi({"highway": "primary"}) and klasifikasi({"highway": "footway"}) == [("jalan_kaki", "jalan_kaki")]
     g = [{"lat": 0.0, "lon": 111.0}, {"lat": 0.0, "lon": 111.0 + 1 / 111.32}]    # 1 km
     rel = {"type": "relation", "id": 1, "tags": {"natural": "water"}, "members": [{"type": "way", "geometry": g}, {"type": "node"}]}
     assert garis_elemen(rel)[0][3] and len(garis_elemen(rel)[0][2]) == 1
@@ -309,8 +327,12 @@ def uji():
     assert ind.terdekat("air_poligon", 0.0, 0.0) is None
     baris = tandai_asin([dict(air_asin_km="1.0", air_semua_km="2.0"), dict(air_asin_km="16.0", air_semua_km="16.0"), dict(air_asin_km="3", air_semua_km="1")])
     assert [o["air_asin"] for o in baris] == [1, 0, 0]
+    k = dict(klasifikasi({"highway": "track", "tracktype": "grade3"}))
+    assert "jalan_kend" in k and "jalan_motor" in k and "jalan_kaki" in k and "jalan_mobil" not in k, k
+    assert [c for c, _ in klasifikasi({"highway": "primary"}) if c.startswith("jalan_") and c not in ("jalan_kend", "jalan_utama")] == ["jalan_mobil", "jalan_motor", "jalan_kaki"]
     lama = {"K": dict(id="K", air_semua_km="3.0", air_semua_terpotong="0", air_semua_jenis="parit", air_semua_lat="1", air_semua_lon="2")}
-    b = dict(id="K", air_poligon_km=1.2, air_poligon_terpotong=0, air_semua_lat=9, air_semua_lon=8, air_asin_km=5.0, air_asin_terpotong=0,
+    b = dict(jalan_mobil_km=2.0, jalan_mobil_terpotong=0, jalan_motor_km=1.0, jalan_motor_terpotong=0, jalan_kaki_km=0.5, jalan_kaki_terpotong=0)
+    b.update(id="K", air_poligon_km=1.2, air_poligon_terpotong=0, air_semua_lat=9, air_semua_lon=8, air_asin_km=5.0, air_asin_terpotong=0,
              air_asin_jenis="laut", air_asin_lat=3, air_asin_lon=4)
     o = gabung_lama([b], lama)[0]
     assert o["air_semua_km"] == 1.2 and o["air_semua_jenis"] == "danau_kolam" and o["air_asin_jenis"] == "laut"
@@ -325,6 +347,8 @@ if __name__ == "__main__":
         uji()
     elif a[:1] == ["tarik"]:
         [tarik(p) for p in a[1:]]
+    elif a[:1] == ["tarik_jalan"]:
+        [tarik(p, True) for p in a[1:]]
     elif a[:1] == ["jarak"]:
         [jarak(p) for p in a[1:]]
     else:

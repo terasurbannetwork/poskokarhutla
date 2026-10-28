@@ -9,10 +9,11 @@ import * as St from "./statistik.js";
 import * as Pub from "./publik.js";
 import {terapkanOg} from "./og_meta.js";
 import {ruteBencana, sumberStatus, sumberUji, sitemap} from "./bencana.js";
-import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanSosmed, halamanKunciApi, halamanKontak} from "./admin_halaman.js";
+import {halamanMasuk, halamanStatistik, halamanPesan, halamanPublik, halamanFoto, halamanLabelFoto, halamanSosmed, halamanKunciApi, halamanKontak} from "./admin_halaman.js";
 import {RUTE_SOSMED} from "./sosmed.js";
 import {RUTE_POSKO, buatAntrean, bersihkanPosko} from "./posko.js";
 import {RUTE_FOTO, bersihkanFoto, ogFoto} from "./foto.js";
+import {RUTE_FOTO_LABEL} from "./foto_label.js";
 import {bersihkanBnpb, RUTE_BNPB} from "./bnpb.js";
 import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
@@ -547,6 +548,8 @@ const RUTE = {
     return terapkanOg(env, url, await env.ASSETS.fetch(new Request(new URL("/index.html", url), req)), await ogFoto(env, url, id).catch(() => null)); },
   "GET /admin/sosmed": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanSosmed()),
   ...RUTE_FOTO,
+  ...RUTE_FOTO_LABEL,   // label kerusakan foto oleh manusia, admin saja (src/foto_label.js)
+  "GET /admin/labelfoto": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanLabelFoto()),
   ...RUTE_SOSMED,
   ...RUTE_POSKO,
   ...RUTE_SITREP,   // arsip sitrep harian (src/sitrep.js)
@@ -600,8 +603,8 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), id = tgl ? tgl[2] : nama ? nama[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks
-  const kunci = tgl ? tgl[1] + "/:tanggal" : nama ? nama[1] + "/:nama" : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), id = tgl ? tgl[2] : nama ? nama[2] : rl ? rl[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks
+  const kunci = tgl ? tgl[1] + "/:tanggal" : nama ? nama[1] + "/:nama" : rl ? `${rl[1]}/:id/${rl[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
@@ -645,6 +648,7 @@ export const HTML_RUTE = [
    BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
 export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"],
   ["/daftar-kontak", "registrasi kontak pemangku kepentingan (kepala daerah, BPBD, TNI, Polri) yang tidak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu, tidak membaca apa pun"],
+  ["/renlap", "halaman HP Renlap SIPPA dibuka regu lapangan dengan tautan bertoken di fragmen #t=, tanpa akun (keputusan SIPPA 61, SP-140); data.json hanya terkirim bila token cocok (/api/renlap/data), halaman tanpa token kosong"],
   ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
   ["/presiden", "panel publik agregat karhutla untuk dashboard presiden, tanpa data pribadi (keputusan pemilik 22 Okt 2026)"],
   ["/instansi", "pemda, polisi, dan TNI masuk dengan username dan sandi akun instansi sendiri, bukan sesi admin (keputusan pemilik 21 Okt 2026); sesi, status aktif, dan cakupan wilayah dicek di tiap panggilan API"],
@@ -753,7 +757,8 @@ export default {
       return ke ? new Response(null, {status: 301, headers: {location: ke + url.search, "cache-control": "no-store"}}) : new Response("Tidak ditemukan", {status: 404});
     }
     if (HOST_TERKUNCI.has(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
-    if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});   // satu pintu: /instansi (CSP ketat)
+    if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});
+    if (url.pathname === "/renlap.html") return new Response(null, {status: 303, headers: {location: "/renlap", "cache-control": "no-store"}});   // satu pintu ber-CSP ketat (fragmen #t= ikut dibawa peramban)   // satu pintu: /instansi (CSP ketat)
     if (url.pathname === "/instansi_uji.html") return new Response(null, {status: 303, headers: {location: "/uji-lapangan", "cache-control": "no-store"}});   // satu pintu: /uji-lapangan
     if (url.pathname === "/presiden.html") return new Response(null, {status: 303, headers: {location: "/presiden" + url.search, "cache-control": "no-store"}});   // satu pintu: /presiden (publik, bisa di-iframe)
     if (url.pathname === "/rumah_rusak.html") return new Response(null, {status: 303, headers: {location: "/rumah-rusak", "cache-control": "no-store"}});   // satu pintu: /rumah-rusak (CSP ketat, 404 di luar Centurisk97)

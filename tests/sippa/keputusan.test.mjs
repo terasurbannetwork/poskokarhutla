@@ -16,6 +16,8 @@ test("skor: titik 7 hari + 3 x titik 24 jam, dibobot zona, dibagi 1 + jam perjal
 
 test("jalanTunda: urutan aturan tak terjangkau, angin, hujan, api tidak aktif, lalu jalan dengan alasan berangka id-ID", () => {
   assert.match(K.jalanTunda({...dasar, darat: false}).alasan, /^Tidak terjangkau darat/);
+  assert.match(K.jalanTunda({...dasar, darat: null, menit: null}).alasan, /^Waktu tempuh dari posko belum dihitung/, "provinsi tanpa akses bukan tak terjangkau");
+  assert.equal(K.skor({...dasar, darat: null}, "A"), null);
   const angin = K.jalanTunda({...dasar, besok: {hujan_mm: 50, angin_kmj: 30}});
   assert.equal(angin.putusan, "tunda"); assert.match(angin.alasan, /^Angin 30 km\/jam/, "angin menang atas hujan (keselamatan dulu)");
   assert.match(K.jalanTunda({...dasar, besok: {hujan_mm: 20.5, angin_kmj: 5}}).alasan, /^Hujan 20,5 mm/);
