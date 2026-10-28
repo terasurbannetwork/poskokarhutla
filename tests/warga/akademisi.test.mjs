@@ -5,10 +5,13 @@ import assert from "node:assert/strict";
 import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
+import "../../src/worker.js";   // urutan impor: worker dulu (akademisi.js mengimpor balik worker.js)
+import {ringkasOrcid} from "../../src/akademisi.js";
 
-let mf, minta = [], jawab = null;
+let mf, minta = [], jawab = null, jawabOrcid = null;
 const luar = async req => {
   const u = new URL(req.url);
+  if (u.hostname === "pub.orcid.org") { minta.push(u); return jawabOrcid ? jawabOrcid(u) : new Response("{}", {status: 404}); }
   if (u.hostname !== "api.openalex.org") return new Response("diblok di uji", {status: 599});
   minta.push(u);
   return jawab ? jawab(u) : new Response("{}", {status: 500});
@@ -48,6 +51,19 @@ test("staf: 8 karya terurut sitasi dari OpenAlex dengan kunci API, diringkas (pe
   assert.equal(r.j.karya[1].url, "https://openalex.org/W2"); assert.equal(r.j.karya[1].penulis, "Penulis 0, Penulis 1");
 });
 
+test("saringan karya: halaman, urutan terbaru, jenis jurnal, cari judul dibersihkan; nilai liar jatuh ke bawaan", async () => {
+  minta = []; jawab = u => u.pathname.startsWith("/authors/") ? new Response("{}") : new Response(JSON.stringify({meta: {count: 31}, results: [karya(1, 4)]}));
+  const r = await api("/api/akademisi/karya/A5017898742?hal=3&urut=terbaru&jenis=jurnal&cari=" + encodeURIComponent("coral, reef|uji:x"), ADMIN);
+  assert.equal(r.status, 200); assert.equal(r.j.jumlah, 31); assert.equal(r.j.hal, 3); assert.equal(r.j.per_hal, 8);
+  const u = minta.find(x => x.pathname === "/works");
+  assert.equal(u.searchParams.get("page"), "3"); assert.equal(u.searchParams.get("sort"), "publication_date:desc");
+  assert.equal(u.searchParams.get("filter"), "author.id:A5017898742,primary_location.source.type:journal,title.search:coral reef uji x");
+  minta = [];
+  await api("/api/akademisi/karya/A5017898742?hal=999&urut=jahat&jenis=x", ADMIN);
+  const v = minta.find(x => x.pathname === "/works");
+  assert.equal(v.searchParams.get("page"), "50"); assert.equal(v.searchParams.get("sort"), "cited_by_count:desc"); assert.equal(v.searchParams.get("filter"), "author.id:A5017898742");
+});
+
 test("profil penulis gagal: karya tetap tampil, seri tahunan kosong", async () => {
   jawab = u => u.pathname.startsWith("/authors/") ? new Response("{}", {status: 500}) : new Response(JSON.stringify({results: [karya(1, 3)]}));
   const r = await api("/api/akademisi/karya/A5017898744", ADMIN);
@@ -74,4 +90,29 @@ test("rincian SINTA: staf saja, dibaca dari pecahan id % 64, id belum dipanen = 
   assert.equal(r.status, 200); assert.deepEqual(r.j.tabel["H-Index"], [33, 41]); assert.equal(r.j.artikel[0].kuartil, "Q1 as Journal");
   assert.equal((await api("/api/akademisi/sinta/6033476", ADMIN)).status, 404, "pecahan sama, id lain belum dipanen");
   assert.equal((await api("/api/akademisi/sinta/5", ADMIN)).status, 404, "pecahan belum ada");
+});
+
+test("ringkasOrcid: rekaman kosong = tidak publik; pendidikan dan pekerjaan terurut terbaru, biografi dipotong", () => {
+  assert.deepEqual(ringkasOrcid(null), {publik: false});
+  assert.equal(ringkasOrcid({"activities-summary": {works: {group: []}}, person: {name: {}}}).publik, false);
+  const af = (jenis, nama, mulai, peran) => ({summaries: [{[jenis + "-summary"]: {organization: {name: nama}, "role-title": peran, "start-date": {year: {value: String(mulai)}}}}]});
+  const r = ringkasOrcid({person: {biography: {content: "Peneliti tsunami."}}, "activities-summary": {educations: {"affiliation-group": [af("education", "ITB", 1995, "S1"), af("education", "Tohoku University", 2008, "PhD")]},
+    employments: {"affiliation-group": [af("employment", "BNPB", 2015, "Kepala Pusat")]}}});
+  assert.equal(r.publik, true); assert.equal(r.biografi, "Peneliti tsunami.");
+  assert.deepEqual(r.pendidikan.map(x => [x.institusi, x.peran, x.mulai]), [["Tohoku University", "PhD", 2008], ["ITB", "S1", 1995]]);
+  assert.equal(r.pekerjaan[0].peran, "Kepala Pusat");
+});
+
+test("karya ?orcid= sah: ORCID ditanya hanya di halaman 1; orcid liar diabaikan", async () => {
+  jawab = u => u.pathname.startsWith("/authors/") ? new Response("{}") : new Response(JSON.stringify({meta: {count: 1}, results: [karya(1, 5)]}));
+  jawabOrcid = () => new Response(JSON.stringify({person: {biography: {content: "Bio"}}}));
+  minta = [];
+  const r = await api("/api/akademisi/karya/A5017898745?orcid=0000-0002-4522-8258", ADMIN);
+  assert.equal(r.j.orcid.publik, true); assert.equal(minta.filter(x => x.hostname === "pub.orcid.org").length, 1);
+  minta = [];
+  const r2 = await api("/api/akademisi/karya/A5017898745?orcid=0000-0002-4522-8258&hal=2", ADMIN);
+  assert.equal(r2.j.orcid, undefined); assert.equal(minta.filter(x => x.hostname === "pub.orcid.org").length, 0);
+  minta = [];
+  const r3 = await api("/api/akademisi/karya/A5017898746?orcid=jahat/../x", ADMIN);
+  assert.equal(r3.j.orcid, undefined); assert.equal(minta.filter(x => x.hostname === "pub.orcid.org").length, 0);
 });

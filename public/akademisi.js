@@ -47,11 +47,14 @@
   const sosok = (o, besar) => `<span class="ak-sosok${besar ? " besar" : ""}">${foto(o, besar)}${logo(o)}</span>`;
   const logoKecil = k => logoK[k] ? `<img class="ak-klogo" src="${esc(logoK[k])}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="ak-klogo kosong" aria-hidden="true">${esc(inisial(k))}</span>`;
 
-  const kartu = (o, i) => `<button type="button" class="ak-orang" data-i="${i}">
-      <div class="ak-atas">${sosok(o)}<div class="ak-nama"><h3>${esc(o[1])}</h3>${sub(o)}</div></div>
-      <div class="ak-pil">${o[3].map((r, j) => pilRumpun(r, j === 0)).join("")}</div>
+  /* kartu galeri: sampul foto (atau pita navy berinisial dan ikon rumpun utama), label di sudut, nama di atas gradasi, metrik di bawah */
+  const kartu = (o, i) => { const [l, d, w] = RUMPUN[o[3][0]] || [o[3][0] || "", "", "#6b7280"], prodi = o[11] ? o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, "") : "";
+    return `<button type="button" class="ak-orang" data-i="${i}">
+      <span class="ak-sampul${o[9] ? "" : " kosong"}" style="--w0:${w}">${o[9] ? `<img src="${esc(o[9])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-inisial="${esc(inisial(o[1]))}">` : `<span class="ak-sampul-inisial">${esc(inisial(o[1]))}</span>${d ? `<svg class="ak-sampul-ikon" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>` : ""}`}
+        ${l ? `<em class="ak-sampul-pil" style="--w0:${w}">${d ? ikon(d, "#fff") : ""}${esc(l)}${o[3].length > 1 ? ` <small>+${o[3].length - 1}</small>` : ""}</em>` : ""}${o[13] === "s" ? `<em class="ak-sampul-sinta">SINTA</em>` : ""}
+        <span class="ak-sampul-nama"><b>${esc(o[1])}</b><small>${esc(o[2])}</small>${prodi ? `<i>${esc(prodi)}</i>` : ""}</span>${o[14] ? `<img class="ak-sampul-logo" src="${esc(o[14])}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}</span>
       ${metrik(o)}
-    </button>`;
+    </button>`; };
 
   function saring() {
     const q = st.q.toLowerCase();
@@ -67,14 +70,9 @@
   function gambar(gulir) {
     const nHal = Math.max(1, Math.ceil(hasil.length / PER_HAL)), a = (st.hal - 1) * PER_HAL;
     $("akDaftar").innerHTML = hasil.slice(a, a + PER_HAL).map((o, j) => kartu(o, a + j)).join("");
-    $("akJumlah").innerHTML = hasil.length ? `<b>${angka(hasil.length)}</b> pakar, menampilkan ${angka(a + 1)} sampai ${angka(Math.min(a + PER_HAL, hasil.length))}` : "";
     $("akHampa").hidden = hasil.length > 0;
-    const nomor = [...new Set([1, st.hal - 1, st.hal, st.hal + 1, nHal])].filter(n => n >= 1 && n <= nHal).sort((x, y) => x - y);
-    let isi = `<button type="button" data-h="${st.hal - 1}" ${st.hal === 1 ? "disabled" : ""} aria-label="Halaman sebelumnya">‹</button>`, prev = 0;
-    for (const n of nomor) { if (n - prev > 1) isi += "<span>…</span>"; isi += `<button type="button" data-h="${n}"${n === st.hal ? ' aria-current="page"' : ""}>${angka(n)}</button>`; prev = n; }
-    isi += `<button type="button" data-h="${st.hal + 1}" ${st.hal === nHal ? "disabled" : ""} aria-label="Halaman berikutnya">›</button>`;
-    $("akHal").innerHTML = nHal > 1 ? isi : "";
-    if (gulir) $("akJumlah").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
+    $("akHal").innerHTML = navHal(st.hal, hasil.length, PER_HAL, "pakar");
+    if (gulir) document.querySelector(".ak-hasil").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
   }
 
   /* ---------- pemilih kampus dan lembaga ---------- */
@@ -102,21 +100,29 @@
   let karyaId = "";
   /* grafik area per tahun, SVG tulisan tangan: kurva halus (Catmull-Rom), angka di atas tiap titik, sumbu tahun di bawah */
   function grafik(seri, judul, warna) {
-    const W = 620, H = 150, kiri = 12, kanan = 12, atas = 26, bawah = 24, n = seri.length, maks = Math.max(1, ...seri.map(x => x[1]));
+    const per = new Map(seri.map(([t, v]) => [+t, v])), th = [...per.keys()];   // tahun tanpa data diisi nol supaya sumbu berurutan
+    seri = th.length ? Array.from({length: Math.max(...th) - Math.min(...th) + 1}, (_, i) => [Math.min(...th) + i, per.get(Math.min(...th) + i) ?? 0]) : seri;
+    seri = seri.slice(Math.max(0, seri.findIndex(x => x[1] > 0)));   // tahun nol di awal dipangkas
+    const W = 940, H = 190, kiri = 14, kanan = 14, atas = 28, bawah = 26, n = seri.length, maks = Math.max(1, ...seri.map(x => x[1]));
     const X = i => kiri + (n === 1 ? (W - kiri - kanan) / 2 : i * (W - kiri - kanan) / (n - 1)), Y = v => atas + (1 - v / maks) * (H - atas - bawah);
-    const t = seri.map(([th, v], i) => [X(i), Y(v)]);
+    const t = seri.map(([th, v], i) => [X(i), Y(v)]), dasar = H - bawah;
+    /* kurva monoton (Fritsch-Carlson): tidak menembus di bawah nol atau di atas puncak antara dua titik */
+    const dx = t.slice(1).map((p, i) => p[0] - t[i][0]), m = t.slice(1).map((p, i) => (p[1] - t[i][1]) / dx[i]);
+    const tg = t.map((_, i) => i === 0 ? m[0] : i === n - 1 ? m[n - 2] : m[i - 1] * m[i] <= 0 ? 0 : 3 * (dx[i - 1] + dx[i]) / ((2 * dx[i] + dx[i - 1]) / m[i - 1] + (dx[i] + 2 * dx[i - 1]) / m[i]));
     let d = `M${t[0][0]},${t[0][1]}`;
-    for (let i = 0; i < n - 1; i++) { const a = t[i - 1] || t[i], b = t[i], c = t[i + 1], e = t[i + 2] || c;
-      d += ` C${b[0] + (c[0] - a[0]) / 6},${Math.min(H - bawah, b[1] + (c[1] - a[1]) / 6)} ${c[0] - (e[0] - b[0]) / 6},${Math.min(H - bawah, c[1] - (e[1] - b[1]) / 6)} ${c[0]},${c[1]}`; }
-    const g = "g" + Math.random().toString(36).slice(2, 8), dasar = H - bawah;
-    return `<figure class="ak-grafik"><figcaption>${judul}</figcaption><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${judul}">
-      <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${warna}" stop-opacity=".28"/><stop offset="1" stop-color="${warna}" stop-opacity="0"/></linearGradient></defs>
+    for (let i = 0; i < n - 1; i++) d += ` C${t[i][0] + dx[i] / 3},${t[i][1] + (tg[i] || 0) * dx[i] / 3} ${t[i + 1][0] - dx[i] / 3},${t[i + 1][1] - (tg[i + 1] || 0) * dx[i] / 3} ${t[i + 1][0]},${t[i + 1][1]}`;
+    /* label: tahun paling banyak ~14, angka di titik bertanda (tiap langkah, puncak, terakhir) */
+    const langkah = Math.max(1, Math.ceil(n / 14)), iMaks = seri.findIndex(x => x[1] === maks), tandai = i => i % langkah === 0 || i === n - 1 || i === iMaks;
+    const g = "g" + Math.random().toString(36).slice(2, 8);
+    return `<figure class="ak-grafik"><figcaption>${judul}<span>${seri[0][0]}–${seri[n - 1][0]}, puncak ${angka(maks)} (${seri[iMaks][0]})</span></figcaption><svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${judul}">
+      <defs><linearGradient id="${g}" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="${warna}" stop-opacity=".26"/><stop offset="1" stop-color="${warna}" stop-opacity="0"/></linearGradient></defs>
       ${[.5, 1].map(f => `<line x1="${kiri}" x2="${W - kanan}" y1="${Y(maks * f)}" y2="${Y(maks * f)}" class="ak-gr-garis"/>`).join("")}
       <line x1="${kiri}" x2="${W - kanan}" y1="${dasar}" y2="${dasar}" class="ak-gr-dasar"/>
-      <path d="${d} L${t[n - 1][0]},${dasar} L${t[0][0]},${dasar}Z" fill="url(#${g})"/><path d="${d}" fill="none" stroke="${warna}" stroke-width="2.2" stroke-linecap="round"/>
-      ${t.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="3.2" fill="var(--card)" stroke="${warna}" stroke-width="2"/><text x="${x}" y="${y - 9}" class="ak-gr-nilai" style="fill:${warna}">${angka(seri[i][1])}</text><text x="${x}" y="${H - 6}" class="ak-gr-tahun">${seri[i][0]}</text>`).join("")}
+      <path d="${d} L${t[n - 1][0]},${dasar} L${t[0][0]},${dasar}Z" fill="url(#${g})"/><path d="${d}" fill="none" stroke="${warna}" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>
+      ${t.map(([x, y], i) => tandai(i) ? `<circle cx="${x}" cy="${y}" r="3.4" fill="var(--card)" stroke="${warna}" stroke-width="2"/><text x="${x}" y="${y - 10}" class="ak-gr-nilai" style="fill:${warna}">${angka(seri[i][1])}</text><text x="${x}" y="${H - 6}" class="ak-gr-tahun">${seri[i][0]}</text>` : "").join("")}
     </svg></figure>`;
   }
+
   /* rincian SINTA (panen): tabel Scopus vs GScholar, grafik Scopus per tahun, artikel berkuartil, ringkasan dari data bersumber */
   async function rinciSinta(o) {
     let x; try { const r = await fetch("/api/akademisi/sinta/" + encodeURIComponent(o[10]), {credentials: "same-origin"}); if (!r.ok) return; x = await r.json(); } catch (e) { return; }
@@ -139,9 +145,9 @@
     }
     if (x.artikel?.length) {
       const IKJ = '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>';
-      $("akScopus").querySelector("ol").innerHTML = x.artikel.map(k => { const q = (k.kuartil || "").match(/^Q(\d)/)?.[1], u = (k.urutan || "").match(/(\d+) of (\d+)/);
-        const jn = /Conference/i.test(k.kuartil || "") ? "Prosiding" : /Journal/i.test(k.kuartil || "") ? "Jurnal" : /Book/i.test(k.kuartil || "") ? "Buku" : "";
-        return `<li><a href="${esc(k.url)}" ${LUAR}><b>${esc(k.judul)}</b><span class="ak-klabel">${q ? `<em class="q q${q}">Q${q}</em>` : ""}${jn ? `<em class="j">${jn}</em>` : ""}${k.terbitan ? `<em class="t">${ikon(IKJ, "currentColor")}${esc(k.terbitan)}</em>` : ""}${u && +u[1] > 0 ? `<em>Penulis ke-${u[1]} dari ${u[2]}</em>` : ""}${k.tahun ? `<em>${k.tahun}</em>` : ""}<em class="s">Dikutip ${angka(k.sitasi ?? 0)}</em></span></a></li>`; }).join("");
+      $("akScopus").querySelector("ol").innerHTML = x.artikel.map(k => { const u = (k.urutan || "").match(/(\d+) of (\d+)/);
+        return barisKarya({...k, q: (k.kuartil || "").match(/^Q(\d)/)?.[1], jenis: /Conference/i.test(k.kuartil || "") ? "Prosiding" : /Journal/i.test(k.kuartil || "") ? "Jurnal" : /Book/i.test(k.kuartil || "") ? "Buku" : "",
+          urutan: u && +u[1] > 0 ? u[1] : null, jumlah_penulis: u?.[2]}); }).join("");
       $("akScopus").hidden = false;
     }
     /* ringkasan: hanya merangkai fakta yang ada di data, tanpa klaim tambahan */
@@ -153,25 +159,65 @@
     $("akRingkas").querySelector("p").textContent = kal.join(" ");
     $("akRingkas").hidden = false;
   }
-  async function karya(o) {
+  /* navigasi halaman bersama: daftar pakar dan daftar karya memakai bentuk yang sama */
+  function navHal(hal, total, per, benda) {
+    const nHal = Math.max(1, Math.ceil(total / per)), a = (hal - 1) * per;
+    if (!total) return "";
+    const awal = Math.max(1, Math.min(hal - 2, nHal - 4)), jendela = Array.from({length: Math.min(5, nHal)}, (_, i) => awal + i);
+    const nomor = [...new Set([...(awal > 1 ? [1] : []), ...jendela, ...(awal + 4 < nHal ? [nHal] : [])])];
+    let isi = `<button type="button" class="ak-hal-arah" data-h="${hal - 1}" ${hal === 1 ? "disabled" : ""}>‹ Sebelumnya</button>`, prev = 0;
+    for (const n of nomor) { if (n - prev > 1) isi += "<span>…</span>"; isi += `<button type="button" data-h="${n}"${n === hal ? ' aria-current="page"' : ""}>${angka(n)}</button>`; prev = n; }
+    isi += `<button type="button" class="ak-hal-arah" data-h="${hal + 1}" ${hal === nHal ? "disabled" : ""}>Berikutnya ›</button>`;
+    return `<p><b>${angka(total)}</b> ${benda}<span>menampilkan ${angka(a + 1)}–${angka(Math.min(a + per, total))}</span></p>${nHal > 1 ? `<div>${isi}</div>` : ""}`;
+  }
+  const IKJ = '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>';
+  const IKL = {jenis: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>', orang: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
+    tahun: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', kuartil: '<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>'};
+  /* satu baris karya (OpenAlex atau Scopus): judul + label berikon di kiri, kutipan di kolom kanan */
+  const barisKarya = k => `<li><a href="${esc(k.url)}" ${LUAR}><span class="ak-kisi"><b>${esc(k.judul)}</b>
+      <span class="ak-klabel">${k.q ? `<em class="q q${k.q}">${ikon(IKL.kuartil, "#fff")}Q${k.q}</em>` : ""}${k.jenis ? `<em class="j">${ikon(IKL.jenis, "#fff")}${esc(k.jenis)}</em>` : ""}${k.terbitan ? `<em class="t">${ikon(IKJ, "currentColor")}${esc(k.terbitan)}</em>` : ""}${k.urutan ? `<em>${ikon(IKL.orang, "currentColor")}Penulis ke-${k.urutan} dari ${k.jumlah_penulis}</em>` : ""}${k.tahun ? `<em>${ikon(IKL.tahun, "currentColor")}${k.tahun}</em>` : ""}</span></span>
+      <span class="ak-kangka"><b>${angka(k.sitasi ?? 0)}</b><small>kutipan</small></span></a></li>`;
+  const kst = {hal: 1, urut: "sitasi", jenis: "", cari: ""};
+  let karyaTunda = 0;
+  /* ORCID publik: tautan muncul, riwayat pendidikan dan pekerjaan sebagai lini masa, biografi apa adanya (berlabel sumbernya) */
+  function orcid(x, id) {
+    $("akTautan").insertAdjacentHTML("beforeend", `<a href="https://orcid.org/${esc(id)}" ${LUAR}>ORCID${ikon('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>', "currentColor")}</a>`);
+    const garis = (l, judul) => l.length ? `<div class="ak-garis"><h4>${judul}</h4><ol>${l.map(r => `<li><span class="ak-gthn">${r.mulai || ""}${r.selesai ? `–${r.selesai}` : r.mulai ? "–kini" : ""}</span><b>${esc(r.peran || r.unit || r.institusi)}</b><small>${esc([r.peran || r.unit ? r.unit : "", r.institusi].filter(Boolean).filter((v, i, a) => a.indexOf(v) === i).join(", "))}</small></li>`).join("")}</ol></div>` : "";
+    const isi = (x.biografi ? `<p class="ak-bio">${esc(x.biografi)}</p>` : "") + `<div class="ak-garis2">${garis(x.pendidikan, "Pendidikan")}${garis(x.pekerjaan, "Pekerjaan dan jabatan")}</div>`;
+    if (!x.biografi && !x.pendidikan.length && !x.pekerjaan.length) return;
+    const sek = $("akOrcid"); sek.querySelector(".ak-disi").innerHTML = isi + `<p class="ak-sumber">Sumber: rekaman publik ORCID</p>`; sek.hidden = false;
+  }
+  async function karya(o, awal = true) {
     karyaId = o[0];
-    let j; try { const r = await fetch("/api/akademisi/karya/" + encodeURIComponent(o[0]), {credentials: "same-origin"}); if (!r.ok) return; j = await r.json(); } catch (e) { return; }
+    if (awal) Object.assign(kst, {hal: 1, urut: "sitasi", jenis: "", cari: ""});
+    const q = new URLSearchParams({hal: kst.hal, urut: kst.urut, ...(kst.jenis && {jenis: kst.jenis}), ...(kst.cari && {cari: kst.cari}), ...(awal && o[7] && {orcid: o[7]})});
+    const sek = $("akKarya"); if (!awal && sek) sek.querySelector("ol").style.opacity = ".5";
+    let j; try { const r = await fetch(`/api/akademisi/karya/${encodeURIComponent(o[0])}?${q}`, {credentials: "same-origin"}); if (!r.ok) return; j = await r.json(); } catch (e) { return; }
+    if (karyaId !== o[0] || !sek) return;
     const gr = $("akTahunan");
-    if (karyaId === o[0] && gr && j.tahunan?.length > 1) {
-      const box = gr.querySelector("div"), adaScopus = [...box.querySelectorAll("figcaption")].some(f => f.textContent === "Artikel Scopus per tahun");   // SINTA lebih panjang: menang
+    if (awal && gr && j.tahunan?.length > 1) {
+      const box = gr.querySelector("div"), adaScopus = [...box.querySelectorAll("figcaption")].some(f => f.textContent.startsWith("Artikel Scopus per tahun"));   // SINTA lebih panjang: menang
       box.insertAdjacentHTML("beforeend", (adaScopus ? "" : grafik(j.tahunan.map(x => [x[0], x[1]]), "Karya terbit per tahun", "#e8590c")) + grafik(j.tahunan.map(x => [x[0], x[2]]), "Sitasi per tahun", "#2f9e44"));
       gr.hidden = false;
     }
-    const sek = $("akKarya"); if (karyaId !== o[0] || !sek || !j.karya?.length) return;
-    const IKJ = '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>';
-    sek.querySelector("ol").innerHTML = j.karya.map(k => `<li><a href="${esc(k.url)}" ${LUAR}><b>${esc(k.judul)}</b>
-      <span class="ak-klabel">${k.jenis ? `<em class="j">${esc(k.jenis)}</em>` : ""}${k.terbitan ? `<em class="t">${ikon(IKJ, "currentColor")}${esc(k.terbitan)}</em>` : ""}${k.urutan ? `<em>Penulis ke-${k.urutan} dari ${k.jumlah_penulis}</em>` : ""}${k.tahun ? `<em>${k.tahun}</em>` : ""}<em class="s">Dikutip ${angka(k.sitasi)}</em></span></a></li>`).join("");
+    if (awal && j.orcid?.publik) orcid(j.orcid, o[7]);
+    if (awal && !j.karya?.length) return;
+    const ol = sek.querySelector("ol"); ol.style.opacity = "";
+    ol.innerHTML = j.karya.length ? j.karya.map(barisKarya).join("") : `<li class="ak-khampa">Tidak ada karya yang cocok.</li>`;
+    $("akKHal").innerHTML = navHal(j.hal || kst.hal, Math.min(j.jumlah || 0, 50 * (j.per_hal || 8)), j.per_hal || 8, "karya");
     sek.hidden = false;
+    if (awal) {   // pasang kendali saringan sekali per lembar
+      sek.querySelector(".ak-ksaring").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (!b) return;
+        kst[b.dataset.k] = b.dataset.v; kst.hal = 1; b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b))); karya(o, false); });
+      sek.querySelector("input").addEventListener("input", e => { clearTimeout(karyaTunda); karyaTunda = setTimeout(() => { kst.cari = e.target.value.trim(); kst.hal = 1; karya(o, false); }, 350); });
+      $("akKHal").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return; kst.hal = +b.dataset.h; karya(o, false); sek.scrollIntoView({block: "start", behavior: "smooth"}); });
+    }
   }
+
   function buka(o) {
     const IK = {buka: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'};
     const tautan = [[`https://openalex.org/${o[0]}`, "OpenAlex"], o[10] && [`https://sinta.kemdiktisaintek.go.id/authors/profile/${o[10]}`, "SINTA"],
-      o[7] && [`https://orcid.org/${o[7]}`, "ORCID"], [`https://scholar.google.com/scholar?q=${encodeURIComponent('"' + o[1] + '"')}`, "Google Scholar"]].filter(Boolean);
+[`https://scholar.google.com/scholar?q=${encodeURIComponent('"' + o[1] + '"')}`, "Google Scholar"]].filter(Boolean);
     const status = o[13] === "s" ? ["ok", "Terdaftar di SINTA"] : o[13] === "x" ? ["", "Tidak ditemukan di SINTA"] : ["", "Belum dicocokkan dengan SINTA"];
     /* kepala lembar: foto, nama, institusi, label (prodi, SINTA, rumpun) dan metrik semuanya di pita navy */
     $("akDIsi").innerHTML = `<div class="ak-dkepala"><div class="ak-dk-atas">${sosok(o, true)}<div class="ak-nama"><h2 id="akDNama">${esc(o[1])}</h2><p>${esc(o[2])}</p></div></div>
@@ -180,13 +226,24 @@
       <div class="ak-dtubuh">
         ${o[12] ? `<section class="ak-dbagian"><h3>Bidang menurut SINTA</h3><p>${esc(o[12])}</p></section>` : ""}
         <section class="ak-dbagian"><h3>Topik riset utama</h3><div class="ak-topik">${o[8].map(t => `<span>${esc(t)}</span>`).join("")}</div></section>
+        <section class="ak-dbagian" id="akOrcid" hidden><h3>Biografi dan riwayat</h3></section>
         <section class="ak-dbagian" id="akRingkas" hidden><h3>Ringkasan</h3><p></p></section>
         <section class="ak-dbagian" id="akMetrik" hidden><h3>Metrik publikasi menurut SINTA</h3><div></div></section>
         <section class="ak-dbagian" id="akTahunan" hidden><h3>Rekam jejak per tahun</h3><div class="ak-grafik2"></div></section>
         <section class="ak-dbagian" id="akScopus" hidden><h3>Artikel Scopus terbaru</h3><ol class="ak-karya"></ol></section>
-        <section class="ak-dbagian" id="akKarya" hidden><h3>Karya ilmiah paling banyak dikutip</h3><ol class="ak-karya"></ol></section>
-        <section class="ak-dbagian"><h3>Profil di luar</h3><div class="ak-tautan">${tautan.map(([u, n]) => `<a href="${esc(u)}" ${LUAR}>${n}${ikon(IK.buka, "currentColor")}</a>`).join("")}</div></section>
+        <section class="ak-dbagian" id="akKarya" hidden><h3>Karya ilmiah</h3>
+          <div class="ak-ksaring"><div class="ak-seg" role="group" aria-label="Jenis karya"><button type="button" data-k="jenis" data-v="" aria-pressed="true">Semua</button><button type="button" data-k="jenis" data-v="jurnal" aria-pressed="false">Jurnal</button><button type="button" data-k="jenis" data-v="prosiding" aria-pressed="false">Prosiding</button><button type="button" data-k="jenis" data-v="buku" aria-pressed="false">Buku</button></div>
+            <label class="ak-cari ak-kcari2"><span class="sr">Cari judul karya</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input type="search" autocomplete="off" placeholder="Cari judul karya"></label>
+            <div class="ak-seg" role="group" aria-label="Urutkan karya"><span class="ak-seg-lbl">Urutkan</span><button type="button" data-k="urut" data-v="sitasi" aria-pressed="true">Paling dikutip</button><button type="button" data-k="urut" data-v="terbaru" aria-pressed="false">Terbaru</button></div></div>
+          <ol class="ak-karya"></ol><nav id="akKHal" class="ak-hal" aria-label="Halaman daftar karya"></nav></section>
+        <section class="ak-dbagian"><h3>Profil di luar</h3><div class="ak-tautan" id="akTautan">${tautan.map(([u, n]) => `<a href="${esc(u)}" ${LUAR}>${n}${ikon(IK.buka, "currentColor")}</a>`).join("")}</div></section>
       </div>`;
+    /* tiap bagian jadi kontainer yang bisa dilipat; id dan hidden ikut pindah supaya pengisi async tetap menemukannya */
+    for (const sc of $("akDIsi").querySelectorAll("section.ak-dbagian")) {
+      const d = document.createElement("details"), sum = document.createElement("summary"), isi = document.createElement("div");
+      d.className = "ak-dbagian"; if (sc.id) d.id = sc.id; d.hidden = sc.hidden; d.open = true; isi.className = "ak-disi";
+      sum.append(sc.querySelector("h3")); isi.append(...sc.childNodes); d.append(sum, isi); sc.replaceWith(d);
+    }
     $("akLembar").hidden = false;
     document.body.style.overflow = "hidden";
     karya(o);
@@ -201,8 +258,8 @@
     semua.forEach(o => { o[3].forEach(r => { per[r] = (per[r] || 0) + 1; }); perK[o[2]] = (perK[o[2]] || 0) + 1; if (o[14] && !logoK[o[2]]) logoK[o[2]] = o[14]; });
     semua.forEach(o => { if (!o[14] && logoK[o[2]]) o[14] = logoK[o[2]]; });   // logo kampus dipinjam dari rekan sekampus yang sudah tercocokkan SINTA
     const kampus = Object.keys(perK).filter(k => jenisK(k) === "k").length;
-    const b = n => `<b>${angka(n)}</b>`;
-    $("akAngka").innerHTML = `${b(semua.length)} pakar dari ${b(kampus)} universitas dan ${b(Object.keys(perK).length - kampus)} lembaga riset dan pemerintah, ${b(semua.filter(o => o[13] === "s").length)} di antaranya terdaftar di SINTA.`;
+    $("akAngka").innerHTML = [[semua.length, "pakar terhimpun"], [kampus, "universitas dan kampus"], [Object.keys(perK).length - kampus, "lembaga riset dan pemerintah"], [semua.filter(o => o[13] === "s").length, "terdaftar di SINTA"]]
+      .map(([n, l]) => `<div><b>${angka(n)}</b><span>${l}</span></div>`).join("");
     $("akRumpun").innerHTML = `<button type="button" data-r="" aria-pressed="true">Semua rumpun</button>` +
       d.rumpun.slice().sort((a, b) => (per[b] || 0) - (per[a] || 0)).map(r => { const [l, ic, w] = RUMPUN[r] || [r, "", "#6b7280"];
         return `<button type="button" data-r="${esc(r)}" aria-pressed="false">${ic ? ikon(ic, w) : ""}${esc(l)}<span>${angka(per[r] || 0)}</span></button>`; }).join("");
@@ -266,7 +323,9 @@
   document.addEventListener("error", e => {
     const img = e.target;
     if (img.tagName !== "IMG") return;
-    if (img.classList.contains("ak-logo") || img.classList.contains("ak-klogo")) { img.remove(); return; }
+    if (img.classList.contains("ak-logo") || img.classList.contains("ak-klogo") || img.classList.contains("ak-sampul-logo")) { img.remove(); return; }
+    const sp = img.parentElement?.classList.contains("ak-sampul") ? img.parentElement : null;
+    if (sp && img === sp.firstElementChild) { sp.classList.add("kosong"); const i = document.createElement("span"); i.className = "ak-sampul-inisial"; i.textContent = img.dataset.inisial || ""; img.replaceWith(i); return; }
     if (!img.classList.contains("ak-foto")) return;
     const s = document.createElement("span"); s.className = img.className; s.textContent = img.dataset.inisial; s.setAttribute("aria-hidden", "true");
     img.replaceWith(s);

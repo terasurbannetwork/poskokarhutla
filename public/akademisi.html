@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/akademisi.css?v=8">
+<link rel="stylesheet" href="/akademisi.css?v=9">
 </head>
 <body>
 <header class="top">
@@ -33,7 +33,7 @@
 <section class="ak-kepala">
   <div class="ak-kepala-isi">
     <h1>Direktori Pakar Kebencanaan</h1>
-    <p id="akAngka" class="ak-ringkas"></p>
+    <div id="akAngka" class="ak-ringkas" aria-label="Ringkasan direktori"></div>
   </div>
 </section>
 
@@ -74,10 +74,11 @@
     <div id="akRumpun" class="ak-chip" role="group" aria-label="Rumpun bahaya"></div>
     </div>
 
-    <p id="akJumlah" class="ak-jumlah" aria-live="polite"></p>
-    <div id="akDaftar" class="ak-daftar"></div>
-    <div id="akHampa" class="ak-panel ak-kosong" hidden><h2>Tidak ada pakar yang cocok</h2><p>Coba kata lain atau longgarkan saringan.</p><button id="akReset" class="ak-tbl" type="button">Hapus semua saringan</button></div>
-    <nav id="akHal" class="ak-hal" aria-label="Halaman daftar pakar"></nav>
+    <div class="ak-hasil">
+      <div id="akDaftar" class="ak-daftar"></div>
+      <div id="akHampa" class="ak-kosong" hidden><h2>Tidak ada pakar yang cocok</h2><p>Coba kata lain atau longgarkan saringan.</p><button id="akReset" class="ak-tbl" type="button">Hapus semua saringan</button></div>
+      <nav id="akHal" class="ak-hal" aria-label="Halaman daftar pakar" aria-live="polite"></nav>
+    </div>
   </section>
 
   <div id="akMuat" class="ak-daftar" aria-hidden="true"></div>
@@ -90,7 +91,7 @@
     <div id="akDIsi"></div>
   </article>
 </div>
-<script src="/akademisi.js?v=8"></script>
+<script src="/akademisi.js?v=9"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>
