@@ -49,23 +49,29 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-kjenis button{flex:1}
 .ak-kcari input{padding-left:16px;min-height:42px;box-shadow:none;background:var(--surface);border-color:transparent}
 .ak-kdaftar{max-height:380px;overflow:auto;display:grid;gap:2px;overscroll-behavior:contain}
-.ak-kdaftar button{display:flex;align-items:center;gap:10px;font:inherit;font-size:14px;color:var(--ink);background:transparent;border:0;border-radius:12px;padding:8px 10px;cursor:pointer;text-align:left;min-height:46px}
+.ak-kdaftar button{display:flex;align-items:center;gap:12px;font:inherit;font-size:14px;font-weight:600;line-height:1.3;color:var(--ink);background:transparent;border:0;border-radius:12px;padding:8px 10px;cursor:pointer;text-align:left;min-height:50px}
 .ak-kdaftar button:hover{background:var(--surface)}
-.ak-kdaftar button[aria-selected="true"]{background:color-mix(in oklch,var(--brand2) 10%,var(--card));font-weight:700}
+.ak-kdaftar button[aria-selected="true"]{background:#e7f1ff;color:#0b3d91;font-weight:800;box-shadow:inset 3px 0 0 #1c7ed6}
+:root[data-theme="dark"] .ak-kdaftar button[aria-selected="true"]{background:oklch(35% .08 255);color:#fff}
 .ak-kdaftar button > span:not(.ak-klogo){flex:1;min-width:0}
-.ak-kdaftar button small{color:var(--ink2);font-variant-numeric:tabular-nums;font-size:12.5px;background:var(--surface);border-radius:999px;padding:2px 8px}
+.ak-kdaftar button small{margin-left:auto;flex:none;color:var(--ink2);font-weight:700;font-variant-numeric:tabular-nums;font-size:12px;background:var(--surface);border-radius:999px;padding:2px 9px}
+.ak-kdaftar button[aria-selected="true"] small{background:#fff;color:#0b3d91}
+.ak-kdaftar .ak-klogo{width:34px;height:34px}
 .ak-klogo{width:30px;height:30px;flex:none;object-fit:contain;border-radius:50%;background:#fff;border:1px solid var(--line);padding:3px}
 .ak-klogo.kosong{display:grid;place-items:center;font-size:10.5px;font-weight:800;color:var(--ink2);background:var(--surface)}
 .ak-kdaftar p{padding:14px;color:var(--ink2);font-size:13px}
 
 /* segmen */
-.ak-baris{display:flex;flex-wrap:wrap;gap:10px;align-items:center}
-.ak-baris #akU{margin-left:auto}
+.ak-baris{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr) auto;gap:10px;align-items:stretch}
+.ak-baris #akS{display:flex}
+.ak-baris #akS button{flex:1}
+@media (max-width:1100px){.ak-baris{grid-template-columns:minmax(220px,1fr) minmax(0,1.6fr)}.ak-baris #akU{grid-column:1/-1}.ak-baris #akU button{flex:1}.ak-baris #akU{display:flex}}
 .ak-seg{display:inline-flex;align-items:center;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .ak-seg::-webkit-scrollbar{display:none}
 .ak-seg-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:0 8px 0 12px;white-space:nowrap}
 .ak-seg button{font:inherit;font-size:13.5px;font-weight:600;color:var(--ink2);background:transparent;border:0;border-radius:999px;min-height:36px;padding:0 14px;cursor:pointer;white-space:nowrap}
-.ak-seg button{transition:background-color .15s,color .15s}
+.ak-seg button{transition:background-color .15s,color .15s;display:inline-flex;align-items:center;justify-content:center;gap:6px}
+.ak-seg button .ak-ikon{width:15px;height:15px;stroke:currentColor}
 .ak-seg button:hover:not([aria-pressed="true"]){color:var(--ink);background:var(--surface)}
 .ak-seg button[aria-pressed="true"]{background:var(--brand);color:#fff;box-shadow:0 1px 3px oklch(25% .07 256 / .25)}
 .ak button:focus,.ak-lembar button:focus{outline:none}
@@ -117,7 +123,7 @@ body{padding-top:var(--top);overflow-x:hidden}
 
 /* kartu galeri: sampul 4:5, nama di atas gradasi gelap, metrik di bawah */
 .ak-hasil .ak-orang{padding:8px 8px 14px;gap:12px;border-radius:20px}
-.ak-sampul{position:relative;display:block;aspect-ratio:4/5;border-radius:14px;overflow:hidden;background:var(--surface)}
+.ak-sampul{position:relative;display:block;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--surface)}
 .ak-sampul > img:first-child{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
 .ak-orang:hover .ak-sampul > img:first-child{transform:scale(1.04)}
 .ak-sampul.kosong{background:radial-gradient(120% 90% at 80% 0%,color-mix(in oklch,var(--w0) 55%,transparent),transparent 60%),linear-gradient(160deg,oklch(40% .11 255),oklch(22% .07 257))}
@@ -137,6 +143,20 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-sampul-logo ~ .ak-sampul-nama,.ak-sampul:has(.ak-sampul-logo) .ak-sampul-nama{right:48px}
 .ak-hasil .ak-orang .ak-metrik{padding:12px 6px 0}
 .ak-hasil .ak-orang .ak-metrik b{font-size:18px}
+
+.ak-kartu-label{display:flex;flex-wrap:wrap;gap:6px;padding:0 4px}
+.ak-kartu-label button,.ak-orang .ak-pil button{font-family:inherit;cursor:pointer;border:0}
+.ak-lbl-inst{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:12px!important;font-style:italic;font-weight:700;color:#fff;background:var(--brand);border-radius:999px;padding:4px 11px}
+.ak-lbl-inst:hover{background:var(--brand2)}
+.ak-lbl-prodi{max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:11.5px!important;font-weight:700;color:#0b3d91;background:#e7f1ff;border-radius:999px;padding:4px 10px}
+.ak-lbl-prodi:hover{background:#d0e4ff}
+.ak-orang .ak-pil{padding:0 4px}
+.ak-orang .ak-pil button:hover{filter:brightness(.95);box-shadow:inset 0 0 0 1px var(--ink2)}
+.ak-aktif{display:flex;flex-wrap:wrap;gap:6px}
+.ak-aktif button{display:inline-flex;align-items:center;gap:8px;font:inherit;font-size:13px;color:#0b3d91;background:#e7f1ff;border:0;border-radius:999px;padding:6px 8px 6px 14px;cursor:pointer}
+.ak-aktif button span{display:grid;place-items:center;width:20px;height:20px;border-radius:50%;background:#fff;font-size:14px;line-height:1}
+.ak-orang{cursor:pointer}
+.ak-orang:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 
 /* kontainer hasil + paginasi */
 .ak-hasil{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow-lg);padding:18px;display:grid;grid-template-columns:minmax(0,1fr);gap:16px}
