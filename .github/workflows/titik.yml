@@ -63,12 +63,16 @@ jobs:
             [[ "$(basename "$f" .json)" < "$kini" ]] && git checkout HEAD -- "$f"
           done; true
 
-      # sekali jalan: musim_harian.json dibangun ulang (latar median; 25 Okt 2026: lokasi unik 4 satelit, titik_unik.py); cache data- lama
-      # (latar atau definisi lain) tidak boleh menang. Cache yang sudah baru -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache baru.
-      - name: Pulihkan musim_harian dari repo bila cache berdefinisi lama
+      # sekali jalan: riwayat titik dibangun ulang lokal dengan definisi titik_unik.py terkini (25 Okt 2026: lokasi unik 4 satelit; 28 Okt 2026: semua
+      # keyakinan). Cache data- berdefinisi lama tidak boleh menang atas versi repo: musim_harian.json (latar median + "semua keyakinan"), titik_tahun.json
+      # dan titik_hari/indeks.json ("semua keyakinan" di definisi/sumber). Cache yang sudah baru -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache baru.
+      - name: Pulihkan riwayat titik dari repo bila cache berdefinisi lama
         run: |
-          python3 -c "import json,sys; m=json.load(open('public/data/musim_harian.json')); sys.exit(0 if m['latar']['stat']=='median' and m['definisi'].startswith('Lokasi unik') else 1)" 2>/dev/null \
+          python3 -c "import json,sys; m=json.load(open('public/data/musim_harian.json')); sys.exit(0 if m['latar']['stat']=='median' and 'semua keyakinan' in m['definisi'] else 1)" 2>/dev/null \
             || { f=$(git ls-files public/data/musim_harian.json); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
+          for f in $(git ls-files public/data/titik_tahun.json public/data/titik_hari/indeks.json); do
+            python3 -c "import json,sys; sys.exit(0 if 'semua keyakinan' in json.load(open(sys.argv[1])).get('sumber', '') else 1)" "$f" 2>/dev/null || git checkout HEAD -- "$f"
+          done
 
       - name: Titik panas, kompleks (FWI dipakai ulang)
         env:
