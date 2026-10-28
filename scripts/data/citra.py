@@ -39,8 +39,8 @@ AWAN_BAIK = 30         # % awan dalam kotak yang dianggap cukup bersih
 
 
 # ---------------------------------------------------------------- geometri
-def ke_utm(lat, lon, zona):
-    """WGS84 -> UTM (E, N) zona tertentu; N selatan +10.000 km bila lat < 0. Deret Krüger, galat < 1 mm."""
+def ke_utm(lat, lon, zona, selatan=None):
+    """WGS84 -> UTM (E, N) zona tertentu; N selatan +10.000 km bila selatan (bawaan: lat < 0; di ekuator ubin 326xx/327xx menentukan: lihat epsg_selatan). Deret Krüger, galat < 1 mm."""
     a, f, k0 = 6378137.0, 1 / 298.257223563, 0.9996
     n = f / (2 - f)
     A = a / (1 + n) * (1 + n * n / 4 + n ** 4 / 64)
@@ -51,7 +51,12 @@ def ke_utm(lat, lon, zona):
     xi, eta = math.atan2(t, math.cos(l)), math.atanh(math.sin(l) / math.sqrt(1 + t * t))
     E = 500000 + k0 * A * (eta + sum(al[j] * math.cos(2 * (j + 1) * xi) * math.sinh(2 * (j + 1) * eta) for j in range(3)))
     N = k0 * A * (xi + sum(al[j] * math.sin(2 * (j + 1) * xi) * math.cosh(2 * (j + 1) * eta) for j in range(3)))
-    return E, N + (10_000_000 if lat < 0 else 0)
+    return E, N + (10_000_000 if (lat < 0 if selatan is None else selatan) else 0)
+
+
+def epsg_selatan(epsg):
+    """EPSG 327xx = UTM selatan (N + 10.000 km); 326xx = utara. Ubin Sentinel-2 di sekitar ekuator bisa 326xx walau lat < 0."""
+    return epsg // 100 == 327
 
 
 def kotak(lat, lon, km):
@@ -228,7 +233,7 @@ def cari(bb, hari_ini):
 def jendela(item, aset, lat, lon):
     """(x0, y0, res0, kiri, atas) kotak KM berpusat di titik, dalam UTM aset itu"""
     epsg = item["properties"].get("proj:epsg") or int(str(item["properties"].get("proj:code", "0")).split(":")[-1])
-    E, N = ke_utm(lat, lon, epsg % 100)
+    E, N = ke_utm(lat, lon, epsg % 100, epsg_selatan(epsg))
     tr = item["assets"][aset]["proj:transform"]
     return tr[2], tr[5], tr[0], E - KM * 500, N + KM * 500
 
