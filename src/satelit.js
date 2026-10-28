@@ -7,6 +7,7 @@
    (pipeline scripts/data/tle.py memakainya untuk jeda_data_menit; kontrak bentuknya dipakai layar kartu "Satelit berikutnya").
    Endpoint TIDAK menghitung dari granul per permintaan: cron harian (ringkasGranul) menghitung ringkasan 30 hari sekali dan menyimpannya sebagai satu baris satelit_ringkas;
    endpoint membaca baris itu. Alasannya kuota baca D1: miss cache tepi terjadi per pusat data, dan tiap miss yang menghitung dari granul membaca ribuan baris.
+   Baris itu juga memuat `harian` (30 hari WIB terakhir, per hari per sensor; pembaca: halaman Data satelit /satelit lewat scripts/data/satelit_riwayat.py), dihitung dari baris yang sama.
    Berkas ini sengaja tidak mengimpor worker.js: titik.js (yang diimpor worker.js) memakainya. */
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, WIB = 7 * JAM;
 export const JENDELA_URAI_JAM = 24;   // satu-satunya tempat: titik.js (uraiCSV) memakainya sebagai jendela bawaan, endpoint menurunkan batas_jeda_menit darinya
@@ -69,29 +70,42 @@ const ringkas = ({jeda, ak}) => {
   return {n: u.length, lintasan: lintasan(ak), median_menit: persen(u, 50), p90_menit: persen(u, 90)};
 };
 const kelompok = () => ({jeda: [], ak: []});
+/* satu (hari WIB, sensor): n, lintasan (gugus granul hari itu saja; lintasan yang melintasi 00.00 WIB terhitung satu di tiap hari, seperti siang/malam), median, p90 (nearest-rank), maks jeda */
+const ringkasHari = ({jeda, ak}) => { const u = Int32Array.from(jeda).sort();
+  return {n: u.length, lintasan: lintasan(ak), median_menit: persen(u, 50), p90_menit: persen(u, 90), maks_menit: u[u.length - 1]}; };
+const tanggalWIB = d => new Date(d * HARI).toISOString().slice(0, 10);   // d = Math.floor((ms UTC + WIB) / HARI)
 
 /* Jendela tetap 30 hari ke belakang dari `kini`. Dua pernyataan dalam SATU batch: (1) granul 30 hari lewat indeks akuisisi (urut akuisisi, dasar `lintasan`), (2) satu baris akuisisi tertua untuk
    mulai_catat. mulai_catat = putaran pertama tabel ini (min terlihat): baris akuisisi tertua selalu berasal dari putaran pertama (yang melihat 24 jam data lama
    sekaligus), jadi cukup satu baris dan tanpa pindai terlihat (tak berindeks). Setelah pemangkasan 400 hari ia menjadi "tertua yang masih disimpan": tidak
    berpengaruh pada jendela 30 hari. Granul dengan akuisisi < mulai_catat TIDAK dihitung: terlihat serentak di putaran pertama, jedanya palsu.
-   Hanya dipanggil dari cron (ringkasGranul) dan uji, TIDAK dari jalur permintaan publik. Melempar bila tabel belum ada. CHECK terlihat >= akuisisi menjamin jeda tak negatif. */
+   Hanya dipanggil dari cron (ringkasGranul) dan uji, TIDAK dari jalur permintaan publik. Melempar bila tabel belum ada. CHECK terlihat >= akuisisi menjamin jeda tak negatif.
+   `harian` (kunci tanggal WIB -> kode sensor -> n, lintasan, median/p90/maks menit) dihitung dari baris yang SAMA dalam satu lintasan loop, tanpa kueri tambahan: 30 hari WIB terakhir
+   (hari ini sebagian + 29 hari penuh; semuanya di dalam jendela `dari`), aturan sama dengan ringkasan 30 hari. Sensor tanpa granul hari itu tidak ditulis; hari tanpa granul sama sekali tidak ada. */
 export async function hitungJeda(env, kini = Date.now()) {
   const dari = kini - JENDELA_HARI * HARI;
   const [g, awal] = await env.DB.batch([
     env.DB.prepare("SELECT sensor, akuisisi, terlihat FROM satelit_granul WHERE akuisisi >= ? AND akuisisi <= ? ORDER BY akuisisi").bind(dari, kini),
     env.DB.prepare("SELECT terlihat FROM satelit_granul ORDER BY akuisisi LIMIT 1")]);
   const mulai = awal.results[0]?.terlihat ?? null;
-  const per = new Map(KODE.map(k => [k, {semua: kelompok(), siang: kelompok(), malam: kelompok(), hari: new Set()}]));
+  const per = new Map(KODE.map(k => [k, {semua: kelompok(), siang: kelompok(), malam: kelompok(), hari: new Set(), perHari: new Map()}]));
+  const hariMin = Math.floor((kini + WIB) / HARI) - (JENDELA_HARI - 1);
   for (const x of g.results) {
     const s = per.get(x.sensor); if (!s || (mulai != null && x.akuisisi < mulai)) continue;
     const m = Math.round((x.terlihat - x.akuisisi) / MENIT), w = x.akuisisi + WIB, jam = Math.floor((w % HARI) / JAM);   // jam akuisisi WIB
     for (const k of [s.semua, jam >= 6 && jam < 18 ? s.siang : s.malam]) { k.jeda.push(m); k.ak.push(x.akuisisi); }
-    s.hari.add(Math.floor(w / HARI));
+    const d = Math.floor(w / HARI); s.hari.add(d);
+    if (d >= hariMin) { let h = s.perHari.get(d); if (!h) s.perHari.set(d, h = kelompok()); h.jeda.push(m); h.ak.push(x.akuisisi); }   // g.results urut akuisisi: tiap larik ak sudah urut
   }
   const sensor = Object.fromEntries(KODE.map(k => { const s = per.get(k), t = ringkas(s.semua);
     return [k, {n: t.n, lintasan: t.lintasan, hari_ada: s.hari.size, median_menit: t.median_menit, p90_menit: t.p90_menit, siang: ringkas(s.siang), malam: ringkas(s.malam)}]; }));
+  const harian = {};
+  for (const d of [...new Set(KODE.flatMap(k => [...per.get(k).perHari.keys()]))].sort((a, b) => a - b)) {
+    const o = {}; for (const k of KODE) { const h = per.get(k).perHari.get(d); if (h) o[k] = ringkasHari(h); }
+    harian[tanggalWIB(d)] = o;
+  }
   const iso = t => new Date(t).toISOString();
-  return {dibuat: iso(kini), hari: JENDELA_HARI, dari: iso(dari), sampai: iso(kini), mulai_catat: mulai == null ? null : iso(mulai), batas_jeda_menit: JENDELA_URAI_JAM * 60, sensor};
+  return {dibuat: iso(kini), hari: JENDELA_HARI, dari: iso(dari), sampai: iso(kini), mulai_catat: mulai == null ? null : iso(mulai), batas_jeda_menit: JENDELA_URAI_JAM * 60, sensor, harian};
 }
 
 /* Cron harian: menit 19 tiap jam (worker.js, invokasi sendiri supaya CPU hitung 30 hari tak menumpang bersih-bersih menit 17). Menghitung dan menyimpan ringkasan HANYA bila

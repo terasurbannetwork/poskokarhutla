@@ -208,10 +208,11 @@ const jeda = (kini = KINI) => hitungJeda({DB: T.DB}, kini);   // hitungan murni 
 
 uji("satelit jeda: tabel kosong -> 200, keempat kode ada dengan nol dan null, mulai_catat null", async () => {
   const j = await jeda(), kosong = {n: 0, lintasan: 0, median_menit: null, p90_menit: null};
-  assert.deepEqual(Object.keys(j), ["dibuat", "hari", "dari", "sampai", "mulai_catat", "batas_jeda_menit", "sensor"]);
+  assert.deepEqual(Object.keys(j), ["dibuat", "hari", "dari", "sampai", "mulai_catat", "batas_jeda_menit", "sensor", "harian"]);
   assert.deepEqual([j.dibuat, j.hari, j.dari, j.sampai, j.mulai_catat, j.batas_jeda_menit], ["2026-11-20T14:00:00.000Z", 30, "2026-10-21T14:00:00.000Z", "2026-11-20T14:00:00.000Z", null, 1440]);
   assert.deepEqual(Object.keys(j.sensor), ["N20", "N21", "M", "N"]);
   for (const s of Object.values(j.sensor)) assert.deepEqual(s, {n: 0, lintasan: 0, hari_ada: 0, median_menit: null, p90_menit: null, siang: kosong, malam: kosong});
+  assert.deepEqual(j.harian, {}, "tanpa granul: harian objek kosong, bukan null");
   assert.equal(JENDELA_HARI, 30);
 });
 
@@ -303,6 +304,72 @@ uji("satelit jeda: jendela tepat 30 hari (dari termasuk, 1 ms lebih awal tidak);
   assert.equal(k.sensor.N20.n, 1, "granul tertua akuisisinya < mulai_catat (dirinya sendiri): dikecualikan"); assert.equal(k.sensor.N20.median_menit, 60);
 });
 
+/* ---------------------------------------------------------------- harian: 30 hari WIB, per hari per sensor ---------------------------------------------------------------- */
+uji("satelit harian: pengelompokan hari WIB (batas 17.00 UTC), median/p90/maks nearest-rank, lintasan per hari, sensor dan hari tanpa granul tidak ditulis, tepi jendela 30 hari WIB", async () => {
+  await kosongKan();
+  const O = (hari, hm) => Date.UTC(2026, 9, hari, ...hm.split(":").map(Number));   // Oktober
+  /* KINI = 20 Nov 14:00 UTC (21.00 WIB): 30 hari WIB = 22 Okt .. 20 Nov. 21 Okt 16:59 UTC = 21 Okt 23.59 WIB (di luar harian, tetap di jendela 30 hari 14:00 UTC); 21 Okt 17:00 UTC = 22 Okt 00.00 WIB (hari pertama) */
+  await sisip([
+    ["M", O(21, "15:00"), 0],       // pembuka: akuisisi tertua = mulai_catat (jeda 0 supaya dirinya dihitung); 22.00 WIB 21 Okt = di luar harian
+    ["N21", O(21, "16:59"), 100],   // 23.59 WIB 21 Okt: di luar harian
+    ["N21", O(21, "17:00"), 110],   // 00.00 WIB 22 Okt: hari pertama harian
+    ["N20", U(12, "16:59"), 150],   // 23.59 WIB 12 Nov
+    ["N20", U(12, "17:00"), 160],   // 00.00 WIB 13 Nov: semenit sesudahnya, hari WIB berikutnya (tanggal UTC sama)
+    ["N20", U(13, "03:00"), 100], ["N20", U(13, "03:06"), 400], ["N20", U(13, "03:12"), 220],   // 10.00 WIB 13 Nov, satu lintasan
+    ["N21", U(13, "05:00"), 90],
+    ["M", U(14, "03:00"), 90],
+    ["N20", KINI - JAM, 200],       // 20.00 WIB 20 Nov: hari ini (sebagian) ikut
+    ["N", KINI + 10 * MENIT, 100]]);   // di depan sekarang: tak dihitung
+  const j = await jeda();
+  assert.deepEqual(Object.keys(j.harian), ["2026-10-22", "2026-11-12", "2026-11-13", "2026-11-14", "2026-11-20"], "terurut naik; hari tanpa granul tidak ada");
+  const sat = (n, lintasan, median, p90, maks) => ({n, lintasan, median_menit: median, p90_menit: p90, maks_menit: maks});
+  assert.deepEqual(j.harian["2026-10-22"], {N21: sat(1, 1, 110, 110, 110)}, "hari pertama jendela; 23.59 WIB sehari sebelumnya tidak ikut");
+  assert.deepEqual(j.harian["2026-11-12"], {N20: sat(1, 1, 150, 150, 150)});
+  /* 13 Nov WIB: N20 jeda 160 (00.00 WIB), 100, 400, 220 -> terurut 100 160 220 400: rank 2 dan 4 (bukan interpolasi); lintasan: 17:00 UTC kemarin, lalu gugus 03:00-03:12 = 2. Urutan kunci = kode sensor, sensor kosong (M, N) tidak ada */
+  assert.deepEqual(j.harian["2026-11-13"], {N20: sat(4, 2, 160, 400, 400), N21: sat(1, 1, 90, 90, 90)});
+  assert.deepEqual(Object.keys(j.harian["2026-11-13"]), ["N20", "N21"]);
+  assert.deepEqual(j.harian["2026-11-14"], {M: sat(1, 1, 90, 90, 90)});
+  assert.deepEqual(j.harian["2026-11-20"], {N20: sat(1, 1, 200, 200, 200)});
+  assert.deepEqual(Object.keys(j.harian["2026-11-13"].N20), ["n", "lintasan", "median_menit", "p90_menit", "maks_menit"]);
+  /* konsisten dengan ringkasan 30 hari: jumlah harian = n sensor, kecuali granul di luar 30 hari WIB (N21 23.59 WIB 21 Okt, M pembuka 22.00 WIB 21 Okt) */
+  const jum = k => Object.values(j.harian).reduce((a, o) => a + (o[k]?.n || 0), 0);
+  assert.deepEqual([jum("N20"), j.sensor.N20.n], [6, 6]); assert.deepEqual([jum("N21"), j.sensor.N21.n], [2, 3]); assert.deepEqual([jum("M"), j.sensor.M.n], [1, 2]); assert.deepEqual([jum("N"), j.sensor.N.n], [0, 0]);
+  assert.equal(j.sensor.N20.hari_ada, 3, "hari_ada ringkasan lama tidak berubah (12, 13, 20 Nov WIB)");
+  await kosongKan();
+});
+
+uji("satelit harian: granul sebelum mulai_catat tidak ikut harian; maks_menit = jeda terpanjang hari itu; tepi hari ini (kini 00.00 WIB) dan jeda dibulatkan menit", async () => {
+  await kosongKan();
+  /* tertua: akuisisi 5 Nov 03:00 UTC, jeda 400 menit -> mulai_catat = 5 Nov 09:40 UTC. 03:30 (< mulai_catat) dibuang; 10:00 dan 10:30 dihitung */
+  await sisip([["N20", U(5, "03:00"), 400], ["N20", U(5, "03:30"), 60], ["N20", U(5, "10:00"), 60], ["N20", U(5, "10:30"), 380]]);
+  await T.DB.prepare("INSERT INTO satelit_granul (sensor, akuisisi, terlihat, n) VALUES ('N21', ?, ?, 1)").bind(U(5, "11:00"), U(5, "11:00") + 90 * MENIT + 31e3).run();   // 90 menit 31 detik -> 91
+  let j = await jeda();
+  assert.equal(j.mulai_catat, new Date(U(5, "03:00") + 400 * MENIT).toISOString());
+  assert.deepEqual(j.harian["2026-11-05"], {N20: {n: 2, lintasan: 1, median_menit: 60, p90_menit: 380, maks_menit: 380}, N21: {n: 1, lintasan: 1, median_menit: 91, p90_menit: 91, maks_menit: 91}},
+    "hanya 10:00 dan 10:30 (celah 30 menit = satu lintasan); 03:00 dan 03:30 sebelum mulai_catat dibuang; nearest-rank dua nilai: median = yang pertama, p90 = yang kedua");
+  /* hari ini tepat 00.00 WIB (kini = 17:00 UTC): hari berjalan baru mulai; 30 hari WIB = 22 Okt .. hari ini, granul 17:00 UTC = akuisisi == kini masuk (<= kini) */
+  const kini = U(20, "17:00"); await kosongKan();
+  await sisip([["N21", kini - 40 * HARI, 0], ["N21", U(20, "16:00"), 120], ["N21", kini, 30]]);
+  j = await hitungJeda({DB: T.DB}, kini);
+  assert.deepEqual(Object.keys(j.harian), ["2026-11-20", "2026-11-21"], "16:00 UTC = 23.00 WIB 20 Nov; 17:00 UTC = 00.00 WIB 21 Nov (hari ini)");
+  assert.deepEqual(j.harian["2026-11-21"], {N21: {n: 1, lintasan: 1, median_menit: 30, p90_menit: 30, maks_menit: 30}});
+  await kosongKan();
+});
+
+uji("satelit harian: ringkasGranul menyimpan harian di baris satelit_ringkas yang sama (tanpa kunci baru di luar harian) dan 30 hari WIB x 4 sensor tetap kecil", async () => {
+  await kosongKan(); await T.DB.prepare("DELETE FROM satelit_ringkas").run();
+  /* 30 hari penuh, tiap hari 4 sensor x 12 granul (worst-case lebih rapat dari kenyataan ~5-10 granul/sensor/hari) */
+  const kini = Date.UTC(2026, 10, 20, JAM_RINGKAS_UTC, 19), r = [["M", kini - 31 * HARI, 0]];
+  for (let d = 30; d >= 0; d--) for (const s of ["N20", "N21", "M", "N"]) for (let i = 0; i < 12; i++) r.push([s, kini - d * HARI - 3 * JAM + i * 50 * MENIT, 60 + i * 11 + d]);
+  await sisip(r.filter(x => x[1] <= kini - 20 * MENIT));
+  const h = await ringkasGranul(ENV(T.DB), kini); assert.ok(!h.lewat, JSON.stringify(h));
+  const o = JSON.parse((await ringkasBaris()).isi), hari = Object.keys(o.harian);
+  assert.ok(hari.length >= 30 && hari.length <= 31, `30 hari WIB (+ sebagian hari ini): ${hari.length}`); assert.equal(hari[hari.length - 1], "2026-11-20"); assert.ok(hari[0] >= "2026-10-22", hari[0]);
+  assert.deepEqual(o, await hitungJeda(ENV(T.DB), kini));
+  assert.ok(h.byte < 30e3, `ringkasan ${h.byte} byte: harus kecil (satu baris D1, respons publik cache 6 jam)`);
+  await kosongKan(); await T.DB.prepare("DELETE FROM satelit_ringkas").run();
+});
+
 const ringkasTes = async () => {   // data contoh: pembuka (jeda 0) lalu beberapa granul N20/N21 di sekitar KINI
   await kosongKan(); await T.DB.prepare("DELETE FROM satelit_ringkas").run();
   await sisip([["M", KINI - 5 * HARI, 0], ["N20", KINI - 4 * HARI, 150], ["N20", KINI - 4 * HARI + 6 * MENIT, 154], ["N20", KINI - 2 * HARI, 210], ["N21", KINI - 3 * HARI, 120]]);
@@ -316,7 +383,7 @@ uji("satelit ringkas: ringkasGranul menghitung ringkasan berbentuk persis hitung
   assert.equal(h.dibuat, "2026-11-20T13:19:00.000Z"); assert.equal(h.granul, 5, "N20 x3 + N21 x1 + pembuka M x1 (akuisisi = mulai_catat, tidak dikecualikan)"); assert.ok(h.byte > 500 && h.byte < 4000);
   assert.equal(await ringkasN(), 1); let b = await ringkasBaris(); assert.equal(b.dibuat, t13);
   assert.deepEqual(JSON.parse(b.isi), await hitungJeda(ENV(T.DB), t13), "persis bentuk respons: dibuat, hari, dari, sampai, mulai_catat, batas_jeda_menit, sensor");
-  const o = JSON.parse(b.isi); assert.deepEqual(Object.keys(o), ["dibuat", "hari", "dari", "sampai", "mulai_catat", "batas_jeda_menit", "sensor"]); assert.equal(o.sensor.N20.n, 3); assert.equal(o.sensor.N20.lintasan, 2);
+  const o = JSON.parse(b.isi); assert.deepEqual(Object.keys(o), ["dibuat", "hari", "dari", "sampai", "mulai_catat", "batas_jeda_menit", "sensor", "harian"]); assert.equal(o.sensor.N20.n, 3); assert.equal(o.sensor.N20.lintasan, 2);
   /* jam lain + ringkasan segar: hanya SATU SELECT satu baris, tidak menghitung ulang (granul baru belum terlihat di ringkasan) */
   await sisip([["N21", KINI - HARI, 100]]);
   assert.deepEqual(await ringkasGranul(ENV(T.DB), t13 + 3 * JAM), {lewat: "bukan jamnya"}); assert.equal((await ringkasBaris()).dibuat, t13, "tidak berubah");
@@ -370,7 +437,7 @@ uji("satelit jeda: rute publik GET 200 JSON (bentuk kontrak) dari SATU baris rin
   const r = await T.api("GET", "/api/satelit/jeda");
   assert.equal(r.s, 200, r.t); assert.match(r.h.get("content-type"), /^application\/json/);
   assert.equal(r.h.get("cache-control"), "public, max-age=21600", "cache tepi 6 jam"); assert.equal(r.h.get("x-content-type-options"), "nosniff");
-  assert.deepEqual(Object.keys(r.j), ["dibuat", "hari", "dari", "sampai", "mulai_catat", "batas_jeda_menit", "sensor"]); assert.equal(r.j.batas_jeda_menit, 1440);
+  assert.deepEqual(Object.keys(r.j), ["dibuat", "hari", "dari", "sampai", "mulai_catat", "batas_jeda_menit", "sensor", "harian"]); assert.equal(r.j.batas_jeda_menit, 1440);
   assert.equal(r.j.hari, 30); assert.equal(Date.parse(r.j.sampai) - Date.parse(r.j.dari), 30 * HARI); assert.ok(Math.abs(Date.parse(r.j.dibuat) - kini) < 60e3);
   assert.deepEqual(Object.keys(r.j.sensor), ["N20", "N21", "M", "N"]);
   for (const s of Object.values(r.j.sensor)) assert.deepEqual(Object.keys(s), ["n", "lintasan", "hari_ada", "median_menit", "p90_menit", "siang", "malam"]);
@@ -379,6 +446,8 @@ uji("satelit jeda: rute publik GET 200 JSON (bentuk kontrak) dari SATU baris rin
   assert.deepEqual([r.j.sensor.N21.median_menit, r.j.sensor.M.median_menit, r.j.sensor.N.median_menit], [120, 100, 250]);
   assert.ok(!/ip_hash|token|kunci/i.test(r.t), "tanpa data pribadi");
   assert.equal(r.t, (await ringkasBaris()).isi, "badan respons = teks baris tersimpan apa adanya");
+  const hr = Object.entries(r.j.harian); assert.ok(hr.length >= 1 && hr.every(([tg, o]) => /^\d{4}-\d{2}-\d{2}$/.test(tg) && Object.keys(o).every(k => ["N20", "N21", "M", "N"].includes(k))), "harian ikut disajikan apa adanya");
+  assert.deepEqual(Object.values(r.j.harian).flatMap(o => Object.values(o)).map(x => Object.keys(x)).filter(k => k.join() !== "n,lintasan,median_menit,p90_menit,maks_menit"), [], "bentuk tiap hari-sensor tetap");
   /* bukti tidak menghitung per permintaan: granul dikosongkan, jawaban tetap sama sampai cron menghitung ulang */
   await kosongKan();
   const q = await T.api("GET", "/api/satelit/jeda?hari=1&sensor=N20&x=" + Math.random()); assert.equal(q.s, 200); assert.equal(q.t, r.t, "query diabaikan dan isi dari ringkasan tersimpan"); assert.equal(q.j.sensor.N20.n, 2);

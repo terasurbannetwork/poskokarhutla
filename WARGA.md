@@ -167,7 +167,11 @@ sendiri) menghitung ringkasan 30 hari sekali sehari pada jam 13 UTC (sebelum `tl
 
 `GET /api/satelit/jeda` (publik, GET/HEAD, tanpa parameter, cache tepi 6 jam) meneruskan baris `satelit_ringkas` itu: jendela 30 hari, per sensor `n` (granul), `lintasan` (gugus granul berurutan
 dengan celah > 45 menit), `hari_ada` (tanggal WIB berbeda), `median_menit`, `p90_menit` (nearest-rank), dan rincian `siang` (akuisisi WIB 06.00-17.59) / `malam` (juga `n`, `lintasan`, median, p90).
-`mulai_catat` = putaran pertama tabel; granul dengan akuisisi sebelum itu tidak dihitung (putaran pertama melihat 24 jam data lama sekaligus). Tabel atau baris belum ada = 503 `{"galat":"data belum tersedia"}`
+`mulai_catat` = putaran pertama tabel; granul dengan akuisisi sebelum itu tidak dihitung (putaran pertama melihat 24 jam data lama sekaligus). Kunci `harian` (paling akhir di respons):
+tanggal WIB (`"2026-10-28"`) -> kode sensor (`N20`/`N21`/`M`/`N`) -> `{n, lintasan, median_menit, p90_menit, maks_menit}`, 30 hari WIB terakhir (hari ini sebagian + 29 hari penuh), dihitung dalam
+lintasan loop yang sama dengan ringkasan 30 hari (tanpa kueri D1 tambahan; aturan sama: sebelum `mulai_catat` dikecualikan, jeda = terlihat - akuisisi). Hari dikelompokkan dari akuisisi dalam WIB
+(granul 16.59 UTC dan 17.00 UTC jatuh di dua hari berbeda); `lintasan` dihitung per hari (gugus yang melintasi 00.00 WIB terhitung satu di tiap hari, jadi jumlah harian bisa melebihi `lintasan`
+30 hari). Sensor tanpa granul hari itu tidak ditulis; hari tanpa granul sama sekali tidak ada; tabel kosong = `{}`. Kira-kira 10 KB untuk 30 hari x 4 sensor. Tabel atau baris belum ada = 503 `{"galat":"data belum tersedia"}`
 (tanpa cache, detail hanya ke log). Pemakai: `scripts/data/tle.py` (jeda_data_menit terukur) dan kartu "Satelit berikutnya". Uji: `tests/warga/satelit_granul.test.mjs`.
 
 ## Statistik, admin, dan kotak pesan
