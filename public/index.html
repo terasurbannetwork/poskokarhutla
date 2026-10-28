@@ -2021,6 +2021,10 @@ const Peta = {
         "circle-color": "#c9503a", "circle-stroke-color": "#ffffff", "circle-stroke-width": 2}});
     peta.addLayer({id: "prio-1", type: "symbol", source: "prio", maxzoom: 10, filter: ["!", ["has", "point_count"]], layout: {visibility: visK, "text-field": "1", "text-size": ["interpolate", ["linear"], ["zoom"], 4, 10, 9, 12.5], "text-font": ["Noto Sans Bold"], "text-allow-overlap": true, "text-ignore-placement": true},
       paint: {"text-color": "#fff"}});
+    /* ikon drone: cluster gambut membara yang punya sel bara (bara.sel, scripts/data/harian.py), di sisi kanan atas penanda cluster */
+    if (!peta.hasImage("drone")) peta.addImage("drone", ikonDrone(), {pixelRatio: 2});
+    peta.addLayer({id: "kl-drone", type: "symbol", source: "klpt", minzoom: 5, filter: ["==", ["get", "drone"], 1], layout: {visibility: visK, "icon-image": "drone",
+      "icon-size": ["interpolate", ["linear"], ["zoom"], 5, .75, 10, 1.1], "icon-offset": [16, -16], "icon-allow-overlap": true, "icon-ignore-placement": true}});
     peta.addLayer({id: "prio-lbl", type: "symbol", source: "prio", minzoom: 7, maxzoom: 10, filter: ["!", ["has", "point_count"]], layout: {visibility: visK, "text-field": ["get", "id"], "text-size": 10.5, "text-offset": [0, 1.4], "text-anchor": "top", "text-font": ["Noto Sans Bold"], "text-optional": true},
       paint: {"text-color": gelap() ? "#ffffff" : "#7a2b2b", "text-halo-color": gelap() ? "#0b1424" : "#ffffff", "text-halo-width": 1.6}});
     peta.addSource("daops", {type: "geojson", data: {type: "FeatureCollection", features: S.daops.filter(d => S.daopsDipakai.has(d.kode)).map(d => ({type: "Feature", geometry: {type: "Point", coordinates: [d.lon, d.lat]}, properties: {nama: d.nama.replace("Daops ", ""), regu: d.regu}}))}});
@@ -2072,7 +2076,7 @@ const Peta = {
   },
   geoPusat(fs = S.kluster.features) {
     return {type: "FeatureCollection", features: fs.map(f => ({type: "Feature",
-      geometry: {type: "Point", coordinates: [f.properties.lon, f.properties.lat]}, properties: {id: f.properties.id, n: f.properties.n, level: f.properties.level}}))};
+      geometry: {type: "Point", coordinates: [f.properties.lon, f.properties.lat]}, properties: {id: f.properties.id, n: f.properties.n, level: f.properties.level, drone: f.properties.bara?.sel?.length ? 1 : 0}}))};
   },
   /* cluster dan Api baru ikut hari terpilih: hari lampau = pusat cluster akhir hari itu dari arsip kluster_hari (tanpa poligon),
      Api baru Himawari hanya ada untuk sekarang jadi disembunyikan */
@@ -2152,6 +2156,8 @@ const Peta = {
       const ke = n >= 1 && z < 5.2 ? 0 : n >= 2 && z < 6.8 ? 1 : n; if (ke === n) return;
       S.jalur = S.jalur.slice(0, ke); renderCrumb(); nanti(() => Peta.aturWilayah(false)); });
     peta.on("mouseenter", "prio-klaster", () => peta.getCanvas().style.cursor = "pointer");
+    peta.on("mouseenter", "kl-drone", () => peta.getCanvas().style.cursor = "pointer");
+    peta.on("mouseleave", "kl-drone", () => { peta.getCanvas().style.cursor = ""; });
     peta.on("mouseleave", "prio-klaster", () => { peta.getCanvas().style.cursor = ""; tip.classList.remove("on"); });
     peta.on("mousemove", "prio-klaster", e => { const f = e.features[0], id = f.properties.cluster_id, ev = e.originalEvent;
       if (tip._kl !== id) { tip._kl = id; peta.getSource("prio").getClusterLeaves(id, 8, 0).then(fs => { if (tip._kl !== id) return;
@@ -2188,6 +2194,9 @@ const Peta = {
       if (kc && kc.length) { const id = kc[0].properties.cluster_id, src = peta.getSource("prio");
         src.getClusterLeaves(id, 100, 0).then(fs => { const b = new maplibregl.LngLatBounds(); fs.forEach(f => b.extend(f.geometry.coordinates));
           peta.fitBounds(b, {padding: 90, maxZoom: 9.5, duration: 1100, essential: true}); }); return; }
+      /* ikon drone: buka Atur drone gambut untuk cluster itu (tab baru, peta tetap di tempat) */
+      const dr = peta.getLayer("kl-drone") && peta.getLayoutProperty("kl-drone", "visibility") !== "none" && peta.queryRenderedFeatures([[e.point.x - 4, e.point.y - 4], [e.point.x + 4, e.point.y + 4]], {layers: ["kl-drone"]});
+      if (dr && dr.length) { window.open("/admin/drone?k=" + encodeURIComponent(dr[0].properties.id), "_blank", "noopener"); return; }
       /* area klik penanda kompleks dilebarkan ±6 px supaya titik kecil tetap kena */
       const k = peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ["kl-pt3", "kl-pt", "kl-line", "kl-fill"].filter(l => peta.getLayer(l))});
       if (k.length) return Laci.buka(k[0].properties.id);
@@ -2373,6 +2382,13 @@ const Lapis = {
   },
 };
 /* ikon panah angin digambar di kanvas (tanpa berkas gambar) */
+/* ikon drone di cluster gambut membara (pemilik 28 Okt 2026): lingkaran navy, badan + empat rotor putih; klik membuka /admin/drone?k=<id> */
+function ikonDrone() { const c = document.createElement("canvas"); c.width = c.height = 48; const x = c.getContext("2d");
+  x.fillStyle = "#0b2545"; x.strokeStyle = "#c9a227"; x.lineWidth = 3; x.beginPath(); x.arc(24, 24, 21, 0, 2 * Math.PI); x.fill(); x.stroke();
+  x.strokeStyle = "#ffffff"; x.fillStyle = "#ffffff"; x.lineWidth = 2.6; x.beginPath(); x.moveTo(15, 15); x.lineTo(33, 33); x.moveTo(33, 15); x.lineTo(15, 33); x.stroke();
+  for (const [a, b] of [[15, 15], [33, 15], [15, 33], [33, 33]]) { x.beginPath(); x.arc(a, b, 5, 0, 2 * Math.PI); x.lineWidth = 2; x.stroke(); }
+  x.fillRect(20, 20, 8, 8);
+  return x.getImageData(0, 0, 48, 48); }
 function panah() { const c = document.createElement("canvas"); c.width = c.height = 40; const x = c.getContext("2d");
   x.fillStyle = gelap() ? "#cfe0ff" : "#1d4e89"; x.beginPath(); x.moveTo(20, 2); x.lineTo(31, 22); x.lineTo(23, 19); x.lineTo(23, 38); x.lineTo(17, 38); x.lineTo(17, 19); x.lineTo(9, 22); x.closePath(); x.fill();
   return x.getImageData(0, 0, 40, 40); }
@@ -3009,7 +3025,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   if (i.dataset.l === "foto") return window.Foto?.lapis(i.checked);
   /* Himawari (titik 10 menit + api baru) tidak punya tombol sendiri: ikut tombol Satelit (pemilik, 19 Okt 2026) */
   if (i.dataset.l === "satelit") ["himawari"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
-  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
+  const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "kl-drone", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
     angin: ["angin"], langganan: ["langganan"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
@@ -3206,7 +3222,8 @@ const Laci = {
         return lipat("Gambut terbakar di bawah permukaan (estimasi)", `<table class="tb2 br"><tbody>${baris("Luas gambut terbakar", rt(b.a, "ha"))}${baris("Kedalaman terbakar", rt(b.d, "cm"))}${b.tertahan_air
           ? `<tr><td colspan="2">Muka air perkiraan di atas permukaan; gambut di bawahnya dianggap tidak terbakar.</td></tr>`
           : baris("Massa gambut terbakar", rt(b.m, "ton")) + baris("Emisi CO₂", rt(b.co2, "ton")) + baris("Emisi CH₄", rt(b.ch4, "ton")) + baris("Emisi CO", rt(b.co, "ton"))}${b.fb != null && Number.isFinite(b.fb) ? baris("Persistensi api", `${Math.round(b.fb * 100).toLocaleString("id-ID")}% sel gambut terdeteksi ≥ 2 hari, termasuk malam hari`) : ""}${baris("Muka air (perkiraan)", wt)}</tbody></table>
-        ${b.dipotong === false ? ket("kedalaman tidak dipotong muka air") : ""}${ket("Perkiraan = luas × kedalaman × kerapatan gambut × faktor emisi (IPCC 2013). Skenario memakai asumsi rendah–tinggi, belum divalidasi lapangan; bukan tambahan dari estimasi emisi nasional. Muka air = perkiraan, bukan pengukuran.")}${ket(`Sumber: NASA FIRMS VIIRS, peta gambut GFW, IPCC 2013 · deteksi s.d. ${jamWIB(p.akhir)}`)}`); })()}
+        ${b.dipotong === false ? ket("kedalaman tidak dipotong muka air") : ""}${ket("Perkiraan = luas × kedalaman × kerapatan gambut × faktor emisi (IPCC 2013). Skenario memakai asumsi rendah–tinggi, belum divalidasi lapangan; bukan tambahan dari estimasi emisi nasional. Muka air = perkiraan, bukan pengukuran.")}${ket(`Sumber: NASA FIRMS VIIRS, peta gambut GFW, IPCC 2013, deteksi s.d. ${jamWIB(p.akhir)}`)}${Array.isArray(b.sel) && b.sel.length
+          ? `<p class="fnd" style="margin-top:8px"><a href="/admin/drone?k=${encodeURIComponent(p.id)}" target="_blank" rel="noopener"><b>🛸 Atur drone ke gambut ini</b></a> (${b.sel.length.toLocaleString("id-ID")} sel 375 m, staf dan instansi)</p>` : ""}`); })()}
       ${lipat("Respons terdekat", `${ps ? `<p style="margin:0;font-size:12.5px"><b>Posko disarankan: ${ps.id}, ${esc(ps.nama)}</b><br><span style="color:var(--ink2)">${fmt(km(p.lat, p.lon, ps.lat, ps.lon))} km, menjangkau ${fmt(ps.kompleks.length)} cluster (${fmt(ps.prioritas)} prioritas) dalam 30 km</span></p>` : ""}
         <table class="tb3"><thead><tr><th>Unit</th><th class="n">Regu</th><th class="n">Orang</th><th class="n">Jarak</th><th class="n">Via darat</th></tr></thead><tbody>
           ${dk.map(d => `<tr><td><b>${esc(d.nama.replace("Daops ", "Daops "))}</b><small>${esc(d.kab)}${d.presisi === "kota" ? " · lokasi perkiraan" : ""}</small></td><td class="n num">${fmt(d.regu)}</td><td class="n num">${fmt(d.anggota)}</td><td class="n num"><b>${fmt(Math.round(d.jarak))}</b> km</td><td class="n num">sekitar ${fmtJam(jamDarat(d.jarak))}</td></tr>`).join("") || `<tr><td colspan="5">Data Daops belum tersedia.</td></tr>`}
@@ -3656,7 +3673,7 @@ const Riwayat = {
     this.tampilLabel(S.panel === "riw"); },
   tampilLabel(on) { ["riw-bubble", "riw-angka", "riw-nama"].forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", on ? "visible" : "none"));
     /* mode riwayat: sembunyikan posko, daops, kompleks supaya gelembung terbaca; pulihkan sesuai kotak lapisan saat keluar */
-    [["posko", ["posko", "posko-lbl"]], ["daops", ["daops", "daops-lbl"]], ["kluster", ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "prio-klaster", "prio-n", "prio-1", "prio-lbl"]]].forEach(([k, ls]) =>
+    [["posko", ["posko", "posko-lbl"]], ["daops", ["daops", "daops-lbl"]], ["kluster", ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "kl-drone", "prio-klaster", "prio-n", "prio-1", "prio-lbl"]]].forEach(([k, ls]) =>
       ls.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", !on && Peta.lihat(k) ? "visible" : "none"))); },
   /* angka sel di bawah kursor */
   baca(lng, lat) { const G = this.grid; if (!G) return null; const ix = Math.floor((lng - G.x0) / G.sel), iy = Math.floor((G.y1 - lat) / G.sel);

@@ -36,6 +36,7 @@ import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
 import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
+import {RUTE_DRONE} from "./drone.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
@@ -566,6 +567,7 @@ const RUTE = {
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
+  ...RUTE_DRONE,   // atur drone ke gambut membara: halaman staf/instansi /admin/drone (src/drone.js, docs/bnpb/PANDUAN-DRONE-GAMBUT.md)
   ...RUTE_SIPPA,   // SIPPA: web /pipa staf BNPB, kit, tugas, log gelar, lapangan berkode (src/sippa.js; awalan /api/sippa/*, bukan /api/pipa/*)
   ...RUTE_PUSH,   // Web Push akun instansi: langganan perangkat, status, uji (src/push.js)
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)

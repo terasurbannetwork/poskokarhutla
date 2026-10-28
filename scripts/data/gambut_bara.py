@@ -59,7 +59,8 @@ def hitung(deteksi, luas_ha, wt=None):
     (harian.pix); malam = True bila 18.00-06.00 WIB. wt: cm (negatif = di bawah permukaan) atau None. frp tidak dipakai (tetap diterima agar pemanggil sederhana).
     Sel 750 m dihitung persisten bila >= 2 tanggal DAN ada deteksi malam (CATATAN["fb"]).
     -> dict `bara` atau None bila tanpa piksel gambut. Kunci: a, d, m, co2, ch4, co (tiap [rendah, tengah, tinggi]),
-    fb (indeks persistensi 0..1), wt, px (sel 375 m), dipotong (bool), tertahan_air (bool)."""
+    fb (indeks persistensi 0..1), wt, px (sel 375 m), dipotong (bool), tertahan_air (bool),
+    sp ([[i, j, 1|0]] piksel 375 m terurut, 1 = sel 750 m-nya persisten; dipakai rute sapuan drone, pemanggil boleh mengubahnya ke lat/lon)."""
     px, sel, mlm = set(), {}, set()
     for k, tg, _, malam in deteksi:
         px.add(k)
@@ -69,7 +70,8 @@ def hitung(deteksi, luas_ha, wt=None):
             mlm.add(s)
     if not px:
         return None
-    fb = sum(1 for s, t in sel.items() if len(t) >= 2 and s in mlm) / len(sel)
+    tetap = {s for s, t in sel.items() if len(t) >= 2 and s in mlm}
+    fb = len(tetap) / len(sel)
     jejak = len(px) * PIKSEL_HA
     a = [min(jejak * f, luas_ha) if luas_ha else jejak * f for f in FRAKSI_TERBAKAR]
     d0 = [D_BAWAH, D_BAWAH + (D_ATAS - D_BAWAH) * fb, D_ATAS]
@@ -78,6 +80,7 @@ def hitung(deteksi, luas_ha, wt=None):
     return {"a": [round(x, 1) for x in a], "d": [round(x) for x in d], "m": [round(x) for x in m],
             **{g: [round(x * e) for x in m] for g, e in EF.items()},
             "fb": round(fb, 2), "wt": None if wt is None else round(wt), "px": len(px),
+            "sp": [[i, j, int((i // 2, j // 2) in tetap)] for i, j in sorted(px)],
             "dipotong": d != d0, "tertahan_air": wt is not None and wt >= 0, **({"kal_n": KAL_N} if KAL_N else {})}
 
 
@@ -106,6 +109,7 @@ def uji():
     assert hitung(dt_, 50)["a"][2] == 50.0
     # persistensi dihitung di sel 750 m: dua piksel 375 m satu sel pada tanggal beda = 1 sel, 2 tanggal -> fb 1; FRP tak berpengaruh
     assert hitung([((0, 0), "a", 90.0, True), ((1, 1), "b", 90.0, False)], 100)["fb"] == 1.0
+    assert hitung([((0, 0), "a", 9.0, True), ((1, 1), "b", 9.0, False), ((4, 0), "a", 9.0, True)], 100)["sp"] == [[0, 0, 1], [1, 1, 1], [4, 0, 0]]
     assert hitung([((0, 0), "a", 5.0, True), ((2, 0), "a", 5.0, True)], 100)["fb"] == 0
     # syarat malam: 2 tanggal tanpa satu pun deteksi malam bukan persisten; malam sekali tanpa tanggal kedua juga bukan
     assert hitung([((0, 0), "a", 5.0, False), ((0, 0), "b", 5.0, False)], 100)["fb"] == 0

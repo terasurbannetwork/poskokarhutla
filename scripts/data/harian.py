@@ -34,6 +34,7 @@ import titik_unik as TU  # noqa: E402
 # DBSCAN Haversine eps adaptif hingga 1,5 km, minPts 1 (titik tunggal tetap kejadian), jendela 7 hari,
 # aktif bila terdeteksi <= 72 jam (168 jam di gambut kering).
 EPS_KM, MIN_PTS, JENDELA_HARI, AKTIF_JAM, AKTIF_GAMBUT_JAM = 1.5, 1, 7, 72, 168
+SEL_DRONE = 300   # maks sel 375 m per kompleks di bara.sel (~15 KB per kompleks); 300 sel = ~4.200 ha, lebih dari sehari terbang satu drone
 R_BUMI = 6371.0088
 
 # Klasifikasi firespot ala Kemenhut SIPANTAU KARHUTLA (paparan pembentukan firespot, 22 Okt 2026): saringan "api nyata?" DI DEPAN
@@ -601,6 +602,9 @@ def main():
             pb = pts + [q for x in {pix(p) for p in pts} for q in rendah.get(x, ())]
             bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"], not 6 <= p["t"].astimezone(WIB).hour < 18)
                               for p in pb if GAMBUT.cari(p["lon"], p["lat"])], luas_ha, wt_dekat(grid, g, lat0, lon0))
+            if bara:   # sel piksel 375 m -> pusat [lat, lon, persisten] untuk rute sapuan drone (/admin/drone); dibatasi SEL_DRONE, yang persisten didahulukan
+                sp = sorted(bara.pop("sp"), key=lambda x: -x[2])[:SEL_DRONE]
+                bara["sel"] = [[round(i * TU.SEL, 5), round(j * TU.SEL / math.cos(math.radians(i * TU.SEL)), 5), p] for i, j, p in sp]
         adm = w.cari(lon0, lat0) or max((p["adm"] for p in pts), key=[p["adm"] for p in pts].count)
         fitur.append({
             "type": "Feature",
