@@ -475,6 +475,10 @@
      "Deteksi" = baris keyakinan >= S.kmin (sedang+tinggi, sama dengan halaman metode); baris keyakinan rendah tetap menentukan deteksi terakhir.
      Fungsi murni (kelompokTitik, cocokkan, klasifikasi, susunModel, htmlPop) tanpa DOM supaya bisa diuji dari node; DOM hanya di pasang(). */
   var MUNDUR_JAM = 24, MAJU_JAM = 12, IRISAN_BARIS = 40000, COCOK_MS = 20 * 6e4, CELAH_MS = 45 * 6e4, MODEL_SEGAR_MS = 5 * 6e4, DEPAN = 5, KISI_MS = 6 * 36e5, LEMBAR_PX = 768;
+  /* ambang keterlambatan (28 Okt 2026): FIRMS terlambat = >= 2 lintasan tertunda dari >= 2 satelit, ATAU satu lintasan tertunda dengan telat >= 3 jam; pengambilan aplikasi basi = > 4 jam;
+     daftar Tertunda > LIPAT_DI baris dilipat (ringkasan + TERBARU_BARIS baris terbaru, sisanya dibuka/tutup); pil #upd bertanda bila deteksi terbaru > 10 jam
+     (celah lintasan terpanjang ~7 jam + latensi FIRMS ~3 jam; sama dengan TITIK_SEGAR di titik_live.js), diperiksa tiap 5 menit */
+  var TELAT_SATU_MENIT = 180, AMBIL_BASI_MS = 4 * 36e5, LIPAT_DI = 5, TERBARU_BARIS = 3, PIL_TELAT_MS = 10 * 36e5, PIL_PERIODE_MS = 5 * 6e4;
   /* kode sensor di baris titik (harian.py PETA_SENSOR): N = S-NPP, N20, N21, M = MODIS (Terra dan Aqua tak dibedakan) */
   function kodeSensor(e) { var m = /^NOAA-(\d+)$/.exec(e.nama || ""); return e.sensor === "MODIS" ? "M" : m ? "N" + m[1] : null; }
   function namaKode(k) { var m = /^N(\d+)$/.exec(k); return m ? "NOAA-" + m[1] : k === "N" ? "S-NPP" : k === "M" ? "MODIS" : k; }
@@ -600,6 +604,10 @@
     var lintas = idx.map(function (i) { return todos[i]; }), cacah = idx.map(function (i) { return cc.cacah[i]; });
     ters = lintas.map(function (p) { return bersama[p.kode] > 1 ? terSat[p.nama] : kel.terakhir[p.kode]; });
     klasifikasi(lintas, cacah, ters, now, diambil);
+    /* deteksi terbaru (keyakinan apa pun) semua satelit dan per satelit, dibaca analisisTelat; per satelit = ters yang sama dengan status lintasan */
+    var detSemua = null, detSat = {};
+    Object.keys(kel.terakhir).forEach(function (k) { var t = kel.terakhir[k]; if (t > -Infinity && (detSemua === null || t > detSemua)) detSemua = t; });
+    satelit.forEach(function (e) { var k = kodeSensor(e), t = k ? (bersama[k] > 1 ? terSat[e.nama] : kel.terakhir[k]) : undefined; if (t > -Infinity) detSat[e.nama] = t; });
     if (cakup) lintas.forEach(function (p) { if (p.ms - COCOK_MS < cakup) { p.status = "belumMuat"; p.n = 0; delete p.telatMenit; delete p.sejak; } });
     var baris = satelit.map(function (e) { return {nama: e.nama, kode: kodeSensor(e), riwayat: false, lintas: lintas.filter(function (p) { return p.nama === e.nama; })}; });
     var punya = {}, akhirRiwayat = hari ? Math.min(now, sampai - 1) : now;
@@ -620,7 +628,7 @@
     /* "Berikutnya": paling banyak DEPAN baris, dua kelompok (sudah lewat dan menunggu masuk | akan lewat); sedikitnya dua "akan lewat" selalu tampil bila ada */
     var lewatMenunggu = oleh("menunggu"), akanLewat = oleh("perkiraan"), mw = lewatMenunggu.slice(0, DEPAN - Math.min(2, akanLewat.length)), ak = akanLewat.slice(0, DEPAN - mw.length);
     var m = {now: now, dari: dari, sampai: sampai, perkiraan: satelit.length > 0, baris: baris, tertunda: oleh("tertunda"), berikutnya: mw.concat(ak), menunggu: mw, akan: ak,
-      terbaru: terbaru || null, ada: ada, epoch: epoch, jedaR: ringkasJeda(satelit, o.jeda, now), diambil: diambil, mode: jd.mode};
+      terbaru: terbaru || null, ada: ada, epoch: epoch, jedaR: ringkasJeda(satelit, o.jeda, now), diambil: diambil, mode: jd.mode, deteksi: {semua: detSemua, per: detSat}};
     if (hari) {
       m.semua = semua.slice().sort(urutWaktu);
       m.cakup = cakup; m.kurang = jd.mode === "kemarin" && cakup > 0 && cakup > dari - COCOK_MS;
@@ -648,6 +656,42 @@
     if (p.status === "tertunda") return awal + "tertunda, telat " + teksTelat(p.telatMenit);
     if (p.status === "belumMuat") return awal + "data titik panas jam itu belum termuat";
     return p.nama + " lewat " + teksHari(p.ms, now) + " WIB, data biasanya siap " + teksHari(p.data, now) + " WIB." + (p.status === "menunggu" ? " Menunggu masuk." + (p.sejak ? " Belum diambil lagi sejak " + teksHari(p.sejak, now) + " WIB." : "") : "");
+  }
+  /* ---------- keterlambatan (tampilan Sekarang saja: kalimatnya tentang keadaan sekarang, bukan hari yang sudah lewat). Kata di layar = FAKTA (data belum masuk), bukan sebab pasti.
+     kita  = aplikasi belum mengambil FIRMS lagi > 4 jam (waktu ambil terakhir = max(S.meta.dibuat, S.titikDiambil); masalah di sisi kita): {sejak, menit}.
+     firms = >= 2 lintasan tertunda dari >= 2 satelit, ATAU ada lintasan tertunda dengan telat >= 3 jam. {satelit: null | [nama satelit yang tertunda], sejak, menit}:
+             kalimat UMUM (satelit null, "sejak" = deteksi terbaru semua satelit) hanya bila >= 2 satelit tertunda DAN deteksi terbaru semua satelit sudah >= 3 jam (atau tak ada deteksi sama sekali);
+             selain itu kalimat menyebut satelit yang tertunda, dan "sejak" = deteksi terbaru yang TERBARU di antara satelit itu: itulah satu-satunya waktu yang jujur untuk "belum masuk sejak X"
+             (satelit yang deteksinya lebih lama tak masuk sejak lebih awal; memakai yang paling tua akan keliru bagi satelit yang masih mengirim sesudahnya). sejak null = belum ada deteksi di data termuat. */
+  function analisisTelat(m) {
+    var out = {kita: null, firms: null};
+    if (!m || m.mode !== "sekarang") return out;
+    var now = m.now, tt = m.tertunda || [], nama = {}, urut = [], lama = false, det = m.deteksi || {}, per = det.per || {};
+    if (m.diambil > 0 && now - m.diambil > AMBIL_BASI_MS) out.kita = {sejak: m.diambil, menit: (now - m.diambil) / 6e4};
+    tt.forEach(function (p) { if (!nama[p.nama]) { nama[p.nama] = 1; urut.push(p.nama); } if (p.telatMenit >= TELAT_SATU_MENIT) lama = true; });
+    if ((tt.length >= 2 && urut.length >= 2) || lama) {
+      var pos = {}; (m.baris || []).forEach(function (b, i) { pos[b.nama] = i; });   // urutan nama = urutan baris grafik (NOAA-20, NOAA-21, Terra, Aqua)
+      urut.sort(function (a, b) { return (pos[a] === undefined ? 99 : pos[a]) - (pos[b] === undefined ? 99 : pos[b]); });
+      var umum = urut.length >= 2 && !(det.semua > 0 && now - det.semua < TELAT_SATU_MENIT * 6e4), t = null;
+      if (umum) t = det.semua;
+      else urut.forEach(function (n) { if (per[n] > 0 && (t === null || per[n] > t)) t = per[n]; });
+      out.firms = {satelit: umum ? null : urut, sejak: t > 0 ? t : null, menit: t > 0 ? Math.max(0, (now - t) / 6e4) : null};
+    }
+    return out;
+  }
+  /* kotak peringatan ringan: ikon segitiga + kalimat berkepala tebal (bukan warna saja); sisi kita dulu. Tiap kalimat = dua simpul teks (kepala tebal | sisanya) supaya EN lewat pola di en.json */
+  var IKON_PERINGATAN = '<svg class="lp-ti" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0z"/><path d="M12 9v4M12 17h.01"/></svg>';
+  var gabungNama = function (n) { return n.length < 3 ? n.join(" dan ") : n.slice(0, -1).join(", ") + ", dan " + n[n.length - 1]; };
+  function htmlTelat(a, now) {
+    var p = [], sejak = function (x) { return "sejak " + teksHari(x.sejak, now) + "\u00a0WIB (" + teksTelat(x.menit) + ")"; };   // spasi tak terputus: jam dan WIB tak terpisah di akhir baris
+    var kosong = "tidak ada titik panas baru dalam " + MUNDUR_JAM + " jam terakhir.";
+    if (a.kita) p.push("<p><b>Aplikasi belum mengambil data FIRMS lagi</b> " + sejak(a.kita) + ".</p>");
+    if (a.firms) {
+      var f = a.firms, sat = f.satelit;
+      p.push(sat ? "<p><b>Data " + gabungNama(sat.map(esc)) + " belum masuk" + (f.sejak ? "</b> " + sejak(f) + ". Titik panas " + (sat.length > 1 ? "satelit-satelit itu" : "satelit itu") + " di peta baru sampai jam tersebut." : ":</b> " + kosong) + "</p>"
+        : "<p><b>Data FIRMS belum masuk:</b> " + (f.sejak ? "tidak ada titik panas baru " + sejak(f) + ". Peta masih menampilkan titik panas sampai jam itu." : kosong) + "</p>");
+    }
+    return p.length ? '<div class="lp-telat">' + IKON_PERINGATAN + '<div class="lp-tt">' + p.join("") + "</div></div>" : "";
   }
   var JARI = {masuk: 5, masuk0: 2.8, tertunda: 4.5, menunggu: 4.5, perkiraan: 4.5, belumMuat: 4};
   var KET_TUNDA = "Belum ada deteksi yang masuk sesudah lintasan ini, padahal biasanya sudah siap.";
@@ -687,10 +731,11 @@
   var KET_DETEKSI = "Deteksi = baris FIRMS berkeyakinan sedang dan tinggi, bukan lokasi unik.";
   var swatch = function (st) { return '<svg class="lp-sw" viewBox="0 0 14 14" aria-hidden="true"><circle class="m-' + st + '" cx="7" cy="7" r="' + JARI[st] + '"/></svg>'; };
   /* kepala = [teks, tooltip?]; kolom pertama = satelit; kolom ke-`kanan` (bila ada) rata kanan (kolom Telat), selebihnya rata kiri */
-  function tabelPop(kepala, isi, kanan, kelas) {
+  function tabelPop(kepala, isi, kanan, kelas) {   // isi = HTML baris (satu tbody) atau [[HTML, atribut tbody], ...] (beberapa tbody, mis. bagian yang bisa dibuka/tutup)
+    var badan = typeof isi === "string" ? "<tbody>" + isi + "</tbody>" : isi.map(function (b) { return "<tbody" + (b[1] || "") + ">" + b[0] + "</tbody>"; }).join("");
     return '<table class="lp-t' + (kelas ? " " + kelas : "") + '"><thead><tr>' + kepala.map(function (h, i) {
       return '<th scope="col"' + (i === kanan ? ' class="t"' : i ? ' class="n"' : "") + (h[1] ? ' title="' + esc(h[1]) + '"' : "") + ">" + h[0] + "</th>";
-    }).join("") + "</tr></thead><tbody>" + isi + "</tbody></table>";
+    }).join("") + "</tr></thead>" + badan + "</table>";
   }
   var sel = function (x, kanan) { return '<td class="' + (kanan ? "t" : "n") + '">' + x + "</td>"; };
   var namaSel = function (p) { return '<td translate="no">' + esc(p.nama) + "</td>"; };
@@ -784,11 +829,25 @@
     }
     return h + '<p class="lp-kaki">' + htmlKaki(m) + "</p>";
   }
-  /* m = susunModel(...) | {belumMuat: true}; W = lebar gambar (px); ops = {memuat} (hanya Kemarin) */
+  /* daftar Tertunda: <= LIPAT_DI baris tampil semua; lebih dari itu = ringkasan "N lintasan tertunda, <awal> sampai <akhir> WIB" di atas tabel, TERBARU_BARIS baris terbaru terlihat dan sisanya
+     (lebih awal, urutan waktu tetap naik) di tbody#lpLebih di balik tombol aria-expanded (pola .fold index.html: tombol + chevron, bukan paginasi: daftar terbatas 24 jam, ringkasan dan baris
+     terbaru harus terlihat sekaligus). ops.lebih = terbuka (dipegang pasang() supaya gambar ulang tak menutupnya) */
+  var KEPALA_TUNDA = [["Satelit"], ["Lewat (WIB)"], ["Batas tunggu (WIB)"], ["Telat"]];
+  var CHEVRON = '<svg class="lp-chev" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg>';
+  function tabelTunda(m, lebih) {
+    var tt = m.tertunda, now = m.now, baris = function (xs) { return xs.map(function (p) { return "<tr>" + namaSel(p) + sel(celHari(p.ms, now)) + sel(celHari(p.batas, now)) + sel(teksTelat(p.telatMenit), true) + "</tr>"; }).join(""); };
+    if (tt.length <= LIPAT_DI) return tabelPop(KEPALA_TUNDA, baris(tt), 3);
+    var awal = tt.slice(0, tt.length - TERBARU_BARIS), n = awal.length;
+    var tombol = '<tr class="lp-lb"><td colspan="4"><button type="button" class="lp-lebih" aria-expanded="' + (lebih ? "true" : "false") + '" aria-controls="lpLebih"><span class="lp-lb-buka">Lihat ' + n +
+      ' lintasan lebih awal</span><span class="lp-lb-tutup">Sembunyikan ' + n + " lintasan lebih awal</span>" + CHEVRON + "</button></td></tr>";
+    return tabelPop(KEPALA_TUNDA, [[tombol], [baris(awal), ' id="lpLebih"' + (lebih ? "" : " hidden")], [baris(tt.slice(n))]], 3);
+  }
+  var ringTunda = function (m) { var tt = m.tertunda; return '<p class="lp-ring lp-tl"><span>' + tt.length.toLocaleString("id-ID") + " lintasan tertunda, " + teksHari(tt[0].ms, m.now) + " sampai " + teksHari(tt[tt.length - 1].ms, m.now) + "\u00a0WIB</span></p>"; };
+  /* m = susunModel(...) | {belumMuat: true}; W = lebar gambar (px); ops = {memuat} (hanya Kemarin), {lebih} (daftar Tertunda panjang terbuka) */
   function htmlPop(m, W, ops) {
     if (!m || m.belumMuat) return '<p class="lp-ring"><span>Data titik panas belum selesai dimuat.</span></p>';
     if (m.mode === "kemarin" || m.mode === "besok") return htmlHari(m, W, ops);
-    var now = m.now, tb = m.terbaru, h = '<p class="lp-ring">';
+    var now = m.now, tb = m.terbaru, tl = analisisTelat(m), h = (tl.kita || tl.firms ? htmlTelat(tl, now) : "") + '<p class="lp-ring">';
     h += tb ? "<span>Lintasan terakhir yang datanya sudah masuk:</span> <span>" + (penandaHari(tb.ms, now) || "hari ini") + "</span> <b>" + jam(tb.ms) + '</b> <span translate="no">WIB (' + esc(tb.nama) + ")</span>."
       : "<span>Belum ada lintasan yang datanya masuk dalam " + MUNDUR_JAM + " jam terakhir.</span>";
     if (m.tertunda.length) h += " <span>Lintasan tertunda:</span> <b>" + m.tertunda.length.toLocaleString("id-ID") + "</b>.";
@@ -799,8 +858,7 @@
     if (m.baris.length) h += svgGrafik(m, W);
     if (m.perkiraan) {
       h += '<h3 class="lbl lp-h">Tertunda</h3>' + (m.tertunda.length
-        ? '<p class="lp-kos lp-kap"><span>' + KET_TUNDA + "</span></p>" + tabelPop([["Satelit"], ["Lewat (WIB)"], ["Batas tunggu (WIB)"], ["Telat"]],
-          m.tertunda.map(function (p) { return "<tr>" + namaSel(p) + sel(celHari(p.ms, now)) + sel(celHari(p.batas, now)) + sel(teksTelat(p.telatMenit), true) + "</tr>"; }).join(""), 3)
+        ? (m.tertunda.length > LIPAT_DI ? ringTunda(m) : "") + '<p class="lp-kos lp-kap"><span>' + KET_TUNDA + "</span></p>" + tabelTunda(m, ops && ops.lebih)
         : '<p class="lp-kos"><span>Tidak ada lintasan tertunda.</span></p>');
       var kelompokBaris = function (judul, daftar) {
         return daftar.length ? '<tr class="lp-pr"><th scope="rowgroup" colspan="3">' + judul + "</th></tr>" + daftar.map(function (p) {
@@ -918,12 +976,44 @@
      mengikuti "Tanggal data" halaman (S.rentang); mengganti hari TIDAK mengubah S.rentang atau peta. Kemarin yang barisnya belum memuat seluruh hari memanggil muatTitik(168) (pemuat index.html) sekali per buka.
      Pendengar keydown/pointerdown/resize/focusout hanya terpasang selama terbuka (satu AbortController, dilepas saat tutup) */
   var HARI_TAB = [["kemarin", "Kemarin"], ["sekarang", "Sekarang"], ["besok", "Besok"]];
+  /* ---------- tanda data terlambat di pil #upd: deteksi terbaru (S.acuan) lebih tua dari PIL_TELAT_MS = kelas upd-telat (titik kuning kecil lewat CSS, tetap ada walau titik_live.js menulis ulang
+     innerHTML pil) + title dan aria-label diperbarui. Hanya membaca S.acuan, tanpa pustaka orbit. Diperiksa tiap PIL_PERIODE_MS, saat tab tampak lagi, dan saat isi/title pil ditulis (muatData, titik_live):
+     MutationObserver hanya membaca dan menulis bila berbeda, jadi tak berputar dengan i18n.js (title EN = terjemahan teks kita: dikenali lewat window.T). Hilang sendiri begitu data baru masuk;
+     title aplikasi dipulihkan hanya bila masih tulisan kita (titik_live yang menulis ulang title dibiarkan) */
+  function statusPil(acuanMs, now) { var umur = now - acuanMs; return {telat: acuanMs > 0 && isFinite(acuanMs) && umur > PIL_TELAT_MS, umur: umur}; }
+  /* title = aria-label: diawali label yang TAMPAK di pil (WCAG 2.5.3 label in name), lalu fakta; "data diolah" = waktu ambil terakhir (menggantikan info title titik_live yang ditimpa) */
+  var teksPil = function (acuanMs, now, label, diolahMs) {
+    return label + ". Titik panas terbaru " + teksTelat((now - acuanMs) / 6e4) + " lalu; belum ada data baru dari FIRMS" + (diolahMs > 0 ? "; data diolah " + teksHari(diolahMs, now) + " WIB" : "");
+  };
+  function pasangTanda(pil) {
+    var ditulis = null, terj = function (t) { return typeof window !== "undefined" && typeof window.T === "function" ? window.T(t) : t; };
+    var milikku = function (v) { return ditulis !== null && v !== null && (v === ditulis || v === terj(ditulis)); };
+    var periksa = function () {
+      var ms = typeof S !== "undefined" && S && S.acuan ? +S.acuan : NaN, now = Date.now(), st = statusPil(ms, now), cur = pil.getAttribute("title");
+      if (st.telat) {
+        var label = (pil.textContent || "").replace(/\s+/g, " ").trim();
+        if (!label || /Memuat/.test(label)) label = "Data " + teksHari(ms, now) + " WIB";
+        var t = teksPil(ms, now, label, waktuDiambil());
+        pil.classList.add("upd-telat");
+        if (t !== ditulis || !milikku(cur) || !milikku(pil.getAttribute("aria-label"))) { ditulis = t; pil.setAttribute("title", t); pil.setAttribute("aria-label", t); }
+      } else if (ditulis !== null) {
+        var punya = milikku(cur), ac = waktuDiambil();
+        pil.classList.remove("upd-telat"); if (milikku(pil.getAttribute("aria-label"))) pil.removeAttribute("aria-label");
+        ditulis = null;
+        if (punya) { if (ac > 0 && typeof jamWIB === "function") pil.setAttribute("title", "Lintasan satelit terakhir; diolah " + jamWIB(ac)); else pil.removeAttribute("title"); }
+      }
+    };
+    periksa();
+    if (typeof MutationObserver === "function") new MutationObserver(periksa).observe(pil, {childList: true, attributes: true, attributeFilter: ["title"]});
+    setInterval(function () { if (!document.hidden) periksa(); }, PIL_PERIODE_MS);
+    document.addEventListener("visibilitychange", function () { if (!document.hidden) periksa(); });
+  }
   function pasang() {
     var pil = document.getElementById("upd"), pop = document.getElementById("lintasPop");
     if (!pil || !pop || pil.tagName !== "BUTTON" || pil._lintas) return;
-    pil._lintas = true;
+    pil._lintas = true; pasangTanda(pil);
     var isi = pop.querySelector(".lp-isi"), kepala = pop.querySelector(".lp-kepala"), tombolX = pop.querySelector(".lp-x"), buka = false, gen = 0, model = null, lebarGbr = 0, rz = 0, ulang = 0, ac = null;
-    var mode = "sekarang", muatJalan = false, sudahMuat = false;
+    var mode = "sekarang", muatJalan = false, sudahMuat = false, lebih = false;   // lebih = daftar Tertunda panjang terbuka (reset tiap popover dibuka)
     var atas = document.createElement("div"), seg = document.createElement("div");
     atas.className = "lp-atas"; seg.className = "seg penuh lp-seg"; seg.setAttribute("role", "group"); seg.setAttribute("aria-label", "Hari lintasan");
     seg.innerHTML = HARI_TAB.map(function (t) { return '<button type="button" data-hari="' + t[0] + '" aria-pressed="false"><span class="lp-hl">' + t[1] + '</span><span class="lp-ht" translate="no"></span></button>'; }).join("");
@@ -934,7 +1024,7 @@
       tombolHari.forEach(function (b) { var v = b.getAttribute("data-hari"), t = b.querySelector(".lp-ht"), s = tglPendek(tgl[v]); b.setAttribute("aria-pressed", String(v === mode)); if (t.textContent !== s) t.textContent = s; });
     };
     var lebar = function () { var v = window.innerWidth; return Math.max(300, (v <= LEMBAR_PX ? v : Math.min(560, v)) - 28); };   // lebar isi: lembar penuh <= 768 px, selain itu popover 560 px
-    var gambar = function () { lebarGbr = lebar(); isi.innerHTML = htmlPop(model, lebarGbr, {memuat: muatJalan}); };
+    var gambar = function () { lebarGbr = lebar(); isi.innerHTML = htmlPop(model, lebarGbr, {memuat: muatJalan, lebih: lebih}); };
     var taruh = function () {   // desktop: tepi kanan popover = tepi kanan pil; <= 768 px: CSS membuat lembar selebar layar dan mengabaikan variabel ini
       var r = pil.getBoundingClientRect(), w = Math.min(560, window.innerWidth - 16);
       pop.style.setProperty("--lp-x", Math.round(Math.max(8, Math.min(r.right - w, window.innerWidth - w - 8))) + "px");
@@ -973,7 +1063,7 @@
       typeof nanti === "function" ? nanti(jalan) : setTimeout(jalan, 120);
     };
     var bukaPop = function () {
-      buka = true; sudahMuat = false;
+      buka = true; sudahMuat = false; lebih = false;
       mode = modeAwal(typeof S !== "undefined" && S ? S.rentang : "hari");
       ac = new AbortController();
       var sg = {signal: ac.signal}, keluar = function (e) { var t = e.relatedTarget; if (buka && t && !pop.contains(t) && t !== pil) tutup(false); };   // papan ketik: Tab keluar dari popover/pil menutupnya
@@ -994,6 +1084,12 @@
       if (!buka || !v || v === mode) return;
       mode = v; segarSeg(); pop.scrollTop = 0; tampilkan();
     });
+    /* daftar Tertunda yang panjang: baris lebih awal dibuka/ditutup hanya lewat atribut (aria-expanded + hidden), tanpa menggambar ulang, jadi klik langsung terasa */
+    isi.addEventListener("click", function (e) {
+      var b = e.target.closest && e.target.closest("button.lp-lebih"), t = b && isi.querySelector("#lpLebih");
+      if (!b) return;
+      lebih = b.getAttribute("aria-expanded") !== "true"; b.setAttribute("aria-expanded", String(lebih)); if (t) t.hidden = !lebih;
+    });
     pil.addEventListener("click", function () { buka ? tutup(false) : bukaPop(); });
     tombolX.addEventListener("click", function () { tutup(true); });
     var pra = function (e) { if (pra.s || (e.pointerType && e.pointerType !== "mouse")) return; pra.s = 1; muatPustaka().catch(function () {}); muatTle().catch(function () {}); };   // pustaka + tle.json dimuat begitu pil disentuh
@@ -1006,6 +1102,7 @@
     titik: titikDari, simpul: simpulWilayah, selubung: selubung, cakupan: hitungCakupan, satKeLintasan: satKeLintasan, hitungJejak: hitungJejak, lintasWilayah: lintasWilayah, htmlKartu: htmlKartu,
     potong: potong, isiKartu: isiKartu, siapkanJejak: siapkanJejak,
     pop: {ambangMs: ambangMs, waktuDiambil: waktuDiambil, sigData: sigData, kodeSensor: kodeSensor, namaKode: namaKode, kelompokTitik: kelompokTitik, kelompokTitikBertahap: kelompokTitikBertahap, cocokkan: cocokkan, lintasDariWaktu: lintasDariWaktu, klasifikasi: klasifikasi, susunModel: susunModel, htmlPop: htmlPop, svgGrafik: svgGrafik, judulLintas: judulLintas, teksTelat: teksTelat, htmlKaki: htmlKaki, ringkasJeda: ringkasJeda, htmlJeda: htmlJeda,
+      analisisTelat: analisisTelat, htmlTelat: htmlTelat, tabelTunda: tabelTunda, statusPil: statusPil, teksPil: teksPil,
       jendelaHari: jendelaHari, awalHari: awalHari, modeAwal: modeAwal, kelompokPeriode: kelompokPeriode, ringkasKemarin: ringkasKemarin, ringkasBesok: ringkasBesok, cakupDari: cakupDari, tglPendek: tglPendek,
       lintasNasional: lintasNasional, modelNasional: modelNasional, titikNasional: titikNasional, pasang: pasang},
     konstanta: {pustaka: PUSTAKA, sri: SRI, horizonJam: HORIZON_JAM, jejakJam: JEJAK_MUNDUR_JAM + JEJAK_MAJU_JAM, langkahDtk: LANGKAH_DTK, irisan: IRISAN, mundurJam: MUNDUR_JAM, majuJam: MAJU_JAM, cocokMs: COCOK_MS}};

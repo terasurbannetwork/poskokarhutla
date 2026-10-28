@@ -9379,9 +9379,58 @@
 "Besok 1 lintasan; lintasan siang pertama": "Tomorrow 1 pass; first daytime pass",
 "Besok {0} lintasan; lintasan pertama": "Tomorrow {0} passes; first pass",
 "Besok 1 lintasan; lintasan pertama": "Tomorrow 1 pass; first pass",
-"(latensi FIRMS, diukur 27 Okt 2026); bisa lebih lama bila satelit telat.": "(FIRMS latency, measured 27 Oct 2026); may take longer if a satellite is late."
+"(latensi FIRMS, diukur 27 Okt 2026); bisa lebih lama bila satelit telat.": "(FIRMS latency, measured 27 Oct 2026); may take longer if a satellite is late.",
+"Aplikasi belum mengambil data FIRMS lagi": "The app has not fetched FIRMS data again",
+"Lihat {0} lintasan lebih awal": "Show {0} earlier passes",
+"Sembunyikan {0} lintasan lebih awal": "Hide {0} earlier passes",
+"Data FIRMS belum masuk:": "FIRMS data not received yet:",
+"tidak ada titik panas baru dalam {0} jam terakhir.": "no new hotspots in the last {0} hours."
 },
 "pola": [
+[
+"^tidak ada titik panas baru sejak ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB \\((.+?)\\)\\. Peta masih menampilkan titik panas sampai jam itu\\.$",
+"no new hotspots since $1 WIB ($2). The map still shows hotspots up to that time."
+],
+[
+"^Data (\\p{L}[\\p{L}\\d-]*) belum masuk(:?)$",
+"Data from $1 not received yet$2"
+],
+[
+"^Data (\\p{L}[\\p{L}\\d-]*) dan (\\p{L}[\\p{L}\\d-]*) belum masuk(:?)$",
+"Data from $1 and $2 not received yet$3"
+],
+[
+"^Data (\\p{L}[\\p{L}\\d-]*), (\\p{L}[\\p{L}\\d-]*), dan (\\p{L}[\\p{L}\\d-]*) belum masuk(:?)$",
+"Data from $1, $2, and $3 not received yet$4"
+],
+[
+"^Data (\\p{L}[\\p{L}\\d-]*), (\\p{L}[\\p{L}\\d-]*), (\\p{L}[\\p{L}\\d-]*), dan (\\p{L}[\\p{L}\\d-]*) belum masuk(:?)$",
+"Data from $1, $2, $3, and $4 not received yet$5"
+],
+[
+"^sejak ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB \\((.+?)\\)\\. Titik panas satelit-satelit itu di peta baru sampai jam tersebut\\.$",
+"since $1 WIB ($2). Hotspots from those satellites on the map only go up to that time."
+],
+[
+"^(.+?)\\. Titik panas terbaru (sekitar [\\d.,]+ jam) lalu; belum ada data baru dari FIRMS; data diolah ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB$",
+"$1. Latest hotspots $2 ago; no new data from FIRMS yet; data processed $3 WIB"
+],
+[
+"^(.+?)\\. Titik panas terbaru (sekitar [\\d.,]+ jam) lalu; belum ada data baru dari FIRMS$",
+"$1. Latest hotspots $2 ago; no new data from FIRMS yet"
+],
+[
+"^(\\d[\\d.,]*) lintasan tertunda, ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) sampai ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB$",
+"$1 delayed passes, $2 to $3 WIB"
+],
+[
+"^sejak ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB \\((.+?)\\)\\. Titik panas satelit itu di peta baru sampai jam tersebut\\.$",
+"since $1 WIB ($2). Hotspots from that satellite on the map only go up to that time."
+],
+[
+"^sejak ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB \\((.+?)\\)\\.$",
+"since $1 WIB ($2)."
+],
 [
 "^pertama (\\p{L}[\\p{L}\\d-]*) (\\d{2}\\.\\d{2}) WIB$",
 "first $1 $2 WIB"
