@@ -14,6 +14,7 @@
      [data-lintas] yang diisi begitu hitungan selesai. Kerja berat lewat nanti() (rAF + idle) dan irisan ber-await, bukan di handler klik.
    - Galat GLOBAL (pustaka/tle.json gagal atau basi) mematikan kartu untuk sesi: satu console.warn, tanpa galat di layar. Galat satu
      wilayah (geometri kosong, tak ada lintasan) hanya membuang kartu wilayah itu (di-cache sebagai kosong).
+   - Berkas yang sama juga menggerakkan popover "Lintasan satelit di atas Indonesia" dari pil jam data di header (bagian bawah berkas; gaya di satelit_lintas.css).
    Bahasa Indonesia; EN lewat i18n/en.json (kalimat jam lewat pola, nama satelit/jam translate=no). */
 (function (g) {
   "use strict";
@@ -160,7 +161,7 @@
     if (s <= 0) return ""; if (s === 1) return "besok"; if (s === 2) return "lusa";
     return new Date(ms).toLocaleDateString("id-ID", {weekday: "short", timeZone: "Asia/Jakarta"});
   }
-  var kataHari = function (p) { return p === "besok" || p === "lusa" ? "<span>" + p + "</span> " : p ? '<span translate="no">' + esc(p) + "</span> " : ""; };
+  var kataHari = function (p) { return p === "besok" || p === "lusa" || p === "kemarin" ? "<span>" + p + "</span> " : p ? '<span translate="no">' + esc(p) + "</span> " : ""; };
   var teksJam = function (ms, now) { var p = penanda(ms, now); return (p ? p + " " : "") + jam(ms); };
   var celJam = function (ms, now) { return kataHari(penanda(ms, now)) + "<b>" + jam(ms) + "</b>"; };
   var angkaJam = function (menit) { return (menit / 60).toLocaleString("id-ID", {maximumFractionDigits: 1}); };
@@ -206,8 +207,9 @@
     return G.pustaka || (G.pustaka = new Promise(function (ok, no) {
       var s = document.createElement("script");
       s.src = PUSTAKA; s.integrity = SRI; s.crossOrigin = "anonymous";
-      s.onload = function () { g.satellite && g.satellite.propagate && g.satellite.twoline2satrec && g.satellite.gstime && g.satellite.eciToGeodetic ? ok(g.satellite) : no(new Error("satellite.js tidak lengkap")); };
-      s.onerror = function () { no(new Error("satellite.js gagal dimuat")); };
+      var gagal = function (pesan) { G.pustaka = null; no(new Error(pesan)); };   // janji gagal dilepas: pemanggil berikutnya (popover) mencoba lagi; kartu wilayah tetap mati lewat G.gagal
+      s.onload = function () { g.satellite && g.satellite.propagate && g.satellite.twoline2satrec && g.satellite.gstime && g.satellite.eciToGeodetic ? ok(g.satellite) : gagal("satellite.js tidak lengkap"); };
+      s.onerror = function () { gagal("satellite.js gagal dimuat"); };
       document.head.appendChild(s);
     }));
   }
@@ -218,7 +220,7 @@
       });
       if (!ok.length) throw new Error("elemen orbit kosong atau lebih tua dari 14 hari");
       return {satelit: ok};
-    }));
+    }).catch(function (e) { G.tle = null; throw e; }));   // janji gagal dilepas (lihat muatPustaka)
   }
   /* jejak 36 jam semua satelit, irisan <= IRISAN titik dengan jeda di antaranya; dipakai ulang oleh semua wilayah */
   function siapkanJejak(sat, tle) {
@@ -289,7 +291,352 @@
     return '<div hidden data-lintas="' + esc(kunci) + '"></div>';
   }
 
+  /* ================= Popover "Lintasan satelit di atas Indonesia" (pil jam data di header; pemilik, 28 Okt 2026) =================
+     Garis waktu NASIONAL per satelit: 24 jam ke belakang + 12 jam ke depan dari sekarang. Jejak SGP4 mulai now-24 jam (terpisah dari jejak kartu
+     wilayah yang mulai now; kartu tak berubah), titik acuan = pusat kotak Indonesia dari S.geo.prov; lintasan di-cache 30 menit, model status 5 menit.
+     Status lintasan lampau dari deteksi terakhir SATELITNYA di S.titik (baris [lat, lon, jam, sensor, frp, keyakinan, ...]; jam = jam relatif ke S.acuan).
+     Kode hanya tahu ada/tidaknya deteksi sesudah lintasan, bukan apakah "data sudah dikirim": rumusan di layar dibuat netral.
+       masuk    = deteksi terakhir satelit itu >= jam lintasan - 20 menit (tak ada deteksi di jendela lintasan = "masuk, tanpa deteksi", BUKAN "tidak ada api");
+                  N20/N21 = deteksi terakhir kode sensornya; Terra dan Aqua sama-sama "M": deteksi M diatribusikan ke lintasan Terra/Aqua terdekat (+-20 menit) dan
+                  deteksi terakhir dihitung PER SATELIT dari baris yang teratribusi;
+       tertunda = belum masuk dan sekarang > lintasan + jeda_data_menit (dari tle.json); menunggu = belum masuk, belum lewat jeda; depan = perkiraan.
+     Sensor N (S-NPP) tak punya TLE: hanya riwayat dari baris N (jam = median jam deteksi), otomatis hilang bila pipeline berhenti menulis N.
+     "Deteksi" = baris keyakinan >= S.kmin (sedang+tinggi, sama dengan halaman metode); baris keyakinan rendah tetap menentukan deteksi terakhir.
+     Fungsi murni (kelompokTitik, cocokkan, klasifikasi, susunModel, htmlPop) tanpa DOM supaya bisa diuji dari node; DOM hanya di pasang(). */
+  var MUNDUR_JAM = 24, MAJU_JAM = 12, IRISAN_BARIS = 40000, COCOK_MS = 20 * 6e4, CELAH_MS = 45 * 6e4, MODEL_SEGAR_MS = 5 * 6e4, NASIONAL_SEGAR_MS = 30 * 6e4, DEPAN = 5, KISI_MS = 6 * 36e5, LEMBAR_PX = 768;
+  /* kode sensor di baris titik (harian.py PETA_SENSOR): N = S-NPP, N20, N21, M = MODIS (Terra dan Aqua tak dibedakan) */
+  function kodeSensor(e) { var m = /^NOAA-(\d+)$/.exec(e.nama || ""); return e.sensor === "MODIS" ? "M" : m ? "N" + m[1] : null; }
+  function namaKode(k) { var m = /^N(\d+)$/.exec(k); return m ? "NOAA-" + m[1] : k === "N" ? "S-NPP" : k === "M" ? "MODIS" : k; }
+  var urutKode = function (a, b) { var r = function (k) { var m = /^N(\d+)$/.exec(k); return m ? +m[1] : k === "M" ? 1e3 : 2e3; }; return r(a) - r(b); };
+
+  /* baris titik -> per kode sensor: waktu deteksi (>= dariMs) dengan penanda dihitung (keyakinan >= kmin), dan deteksi terakhir (semua baris, termasuk keyakinan
+     rendah = bukti data masuk); baris [dari, sampai) ditambahkan ke acc supaya bisa diiris */
+  function kelompokTitik(baris, acuanMs, dariMs, kmin, acc, dari, sampai) {
+    acc = acc || {waktu: {}, hit: {}, terakhir: {}};
+    var waktu = acc.waktu, hit = acc.hit, terakhir = acc.terakhir, n = sampai === undefined ? baris.length : Math.min(sampai, baris.length);
+    for (var i = dari || 0; i < n; i++) {
+      var b = baris[i], k = b[3], t = acuanMs + b[2] * 36e5;
+      if (!(t === t)) continue;
+      if (terakhir[k] === undefined || t > terakhir[k]) terakhir[k] = t;
+      if (t >= dariMs) { (waktu[k] || (waktu[k] = [])).push(t); (hit[k] || (hit[k] = [])).push(b[5] === undefined || b[5] >= kmin ? 1 : 0); }
+    }
+    return acc;
+  }
+  /* sama, tetapi per 40 ribu baris dengan jeda (S.titik bisa ratusan ribu baris saat 7 hari dimuat). Bila titik_live mengganti S.titik/menggeser S.acuan di tengah
+     jalan, diulang (3 kali); kalau masih berubah, satu putaran penuh SINKRON (konsisten, tak ada data campur) */
+  async function kelompokTitikBertahap(dariMs) {
+    var kmin = S.kmin === undefined ? 1 : S.kmin;
+    for (var coba = 0; coba < 3; coba++) {
+      var baris = S.titik, acuanMs = +S.acuan, acc = {waktu: {}, hit: {}, terakhir: {}};
+      for (var a = 0; a < baris.length; a += IRISAN_BARIS) { if (a) await tidur(); kelompokTitik(baris, acuanMs, dariMs, kmin, acc, a, a + IRISAN_BARIS); }
+      if (baris === S.titik && acuanMs === +S.acuan) return acc;
+    }
+    return kelompokTitik(S.titik, +S.acuan, dariMs, kmin);
+  }
+  /* tiap deteksi -> lintasan terdekat bersensor sama dalam +-20 menit (Terra dan Aqua sama-sama "M": diatribusikan ke yang terdekat). Hasil: cacah deteksi
+     DIHITUNG per indeks lintasan dan terakhir[i] = waktu deteksi terbaru (apa pun keyakinannya) yang teratribusi ke lintasan i (-Infinity bila tak ada) */
+  function cocokkan(lintas, waktu, hit) {
+    var cacah = lintas.map(function () { return 0; }), terakhir = lintas.map(function () { return -Infinity; }), per = {};
+    lintas.forEach(function (p, i) { (per[p.kode] || (per[p.kode] = [])).push(i); });
+    Object.keys(waktu).forEach(function (k) {
+      var idx = per[k], ts = waktu[k], ht = hit && hit[k];
+      if (!idx) return;
+      idx.sort(function (a, b) { return lintas[a].ms - lintas[b].ms; });
+      var ms = idx.map(function (i) { return lintas[i].ms; });
+      for (var a = 0; a < ts.length; a++) {
+        var lo = 0, hi = ms.length;   // lintasan pertama dengan ms >= waktu deteksi; terdekat = dia atau pendahulunya
+        while (lo < hi) { var mid = (lo + hi) >> 1; if (ms[mid] < ts[a]) lo = mid + 1; else hi = mid; }
+        var best = -1, bd = COCOK_MS + 1;
+        for (var j = lo - 1; j <= lo; j++) if (j >= 0 && j < ms.length) { var d = Math.abs(ts[a] - ms[j]); if (d < bd) { bd = d; best = idx[j]; } }
+        if (best < 0) continue;
+        if (!ht || ht[a]) cacah[best]++;
+        if (ts[a] > terakhir[best]) terakhir[best] = ts[a];
+      }
+    });
+    return {cacah: cacah, terakhir: terakhir};
+  }
+  /* deteksi satu sensor tanpa lintasan terhitung (S-NPP, atau semua bila TLE gagal) -> lintasan-riwayat: urutan waktu dipecah di celah > 45 menit, jam = median jam deteksi */
+  function lintasDariWaktu(kode, ts, hit) {
+    var ix = ts.map(function (_, i) { return i; }).sort(function (a, b) { return ts[a] - ts[b]; }), out = [], ke = [], n = 0;
+    var tutup = function () { if (ke.length) out.push({ms: ke[ke.length >> 1], nama: namaKode(kode), kode: kode, n: n, status: n ? "masuk" : "masuk0", riwayat: true}); ke = []; n = 0; };
+    ix.forEach(function (i) { if (ke.length && ts[i] - ke[ke.length - 1] > CELAH_MS) tutup(); ke.push(ts[i]); n += hit ? hit[i] : 1; });
+    tutup();
+    return out;
+  }
+  /* status tiap lintasan (diubah di tempat): perkiraan | masuk | masuk0 (tanpa deteksi) | tertunda (+telatMenit) | menunggu; ters[i] = deteksi terakhir satelit lintasan i */
+  function klasifikasi(lintas, cacah, ters, now) {
+    lintas.forEach(function (p, i) {
+      p.n = cacah[i];
+      if (p.ms > now) { p.status = "perkiraan"; return; }
+      var ter = ters[i];
+      if (ter !== undefined && ter >= p.ms - COCOK_MS) { p.status = p.n ? "masuk" : "masuk0"; return; }
+      if (now > p.data) { p.status = "tertunda"; p.telatMenit = (now - p.data) / 6e4; } else p.status = "menunggu";
+    });
+  }
+  /* o = {now, lintas: lintasan hitungan SGP4 | null (gagal), satelit: tle.satelit | null, baris: S.titik, acuanMs: +S.acuan, kmin, kel: hasil kelompokTitik (opsional)} -> model untuk htmlPop */
+  function susunModel(o) {
+    var now = o.now, dari = now - MUNDUR_JAM * 36e5, sampai = now + MAJU_JAM * 36e5, satelit = o.lintas ? o.satelit || [] : [];
+    var kel = o.kel || kelompokTitik(o.baris || [], o.acuanMs, dari - COCOK_MS, o.kmin === undefined ? 1 : o.kmin);
+    var lintas = (o.lintas || []).filter(function (p) { return p.ms >= dari && p.ms <= sampai; }).map(function (p) { return {ms: p.ms, nama: p.nama, kode: p.kode, data: p.data}; });
+    var cc = cocokkan(lintas, kel.waktu, kel.hit), bersama = {}, terSat = {}, ters;
+    satelit.forEach(function (e) { var k = kodeSensor(e); if (k) bersama[k] = (bersama[k] || 0) + 1; });   // kode dipakai > 1 satelit (M): deteksi terakhir per satelit dari baris teratribusi
+    lintas.forEach(function (p, i) { if (cc.terakhir[i] > (terSat[p.nama] === undefined ? -Infinity : terSat[p.nama])) terSat[p.nama] = cc.terakhir[i]; });
+    ters = lintas.map(function (p) { return bersama[p.kode] > 1 ? terSat[p.nama] : kel.terakhir[p.kode]; });
+    klasifikasi(lintas, cc.cacah, ters, now);
+    var baris = satelit.map(function (e) { return {nama: e.nama, kode: kodeSensor(e), riwayat: false, lintas: lintas.filter(function (p) { return p.nama === e.nama; })}; });
+    var punya = {};
+    satelit.forEach(function (e) { var k = kodeSensor(e); if (k) punya[k] = true; });
+    Object.keys(kel.waktu).filter(function (k) { return !punya[k] && namaKode(k) !== k; }).sort(urutKode).forEach(function (k) {
+      baris.push({nama: namaKode(k), kode: k, riwayat: true, lintas: lintasDariWaktu(k, kel.waktu[k], kel.hit[k]).filter(function (p) { return p.ms >= dari && p.ms <= now; })});
+    });
+    var semua = [], epoch = null, jeda = [], sen = {};
+    baris.forEach(function (b) { semua = semua.concat(b.lintas); });
+    satelit.forEach(function (e) {   // untuk kaki: rentang epoch elemen orbit dan jeda aman per sensor, dibaca dari tle.json
+      var t = Date.parse(e.epoch);
+      if (t === t) epoch = epoch ? [Math.min(epoch[0], t), Math.max(epoch[1], t)] : [t, t];
+      if (!sen[e.sensor]) { sen[e.sensor] = 1; jeda.push([e.sensor, e.jeda_data_menit]); }
+    });
+    var oleh = function (st) { return semua.filter(function (p) { return p.status === st; }).sort(urutWaktu); }, ada = {};
+    semua.forEach(function (p) { ada[p.status] = true; });
+    var masuk = oleh("masuk"), terbaru = masuk[masuk.length - 1];
+    if (!terbaru) { masuk = oleh("masuk0"); terbaru = masuk[masuk.length - 1]; }
+    return {now: now, dari: dari, sampai: sampai, perkiraan: satelit.length > 0, baris: baris, tertunda: oleh("tertunda"), berikutnya: oleh("menunggu").concat(oleh("perkiraan")).slice(0, DEPAN),
+      terbaru: terbaru || null, ada: ada, epoch: epoch, jeda: jeda};
+  }
+
+  /* ---------- tampilan (string HTML, tanpa DOM) */
+  var penandaHari = function (ms, now) { return hariKe(now) - hariKe(ms) === 1 ? "kemarin" : penanda(ms, now); };
+  var teksHari = function (ms, now) { var p = penandaHari(ms, now); return (p ? p + " " : "") + jam(ms); };
+  var celHari = function (ms, now) { return kataHari(penandaHari(ms, now)) + "<b>" + jam(ms) + "</b>"; };
+  /* telat dibulatkan ke 0,5 jam (jam siap tetap menit): "sekitar 1,5 jam"; di bawah 0,5 jam "kurang dari 0,5 jam" */
+  var teksTelat = function (menit) {
+    var j = menit / 60;
+    return j < 0.5 ? "kurang dari 0,5 jam" : "sekitar " + (Math.round(j * 2) / 2).toLocaleString("id-ID", {minimumFractionDigits: 1, maximumFractionDigits: 1}) + " jam";
+  };
+  /* judul penanda (tooltip). masuk/masuk0/tertunda: "<satelit> <jam> WIB: <keterangan>"; menunggu/perkiraan: kalimat kartu wilayah "<satelit> lewat <jam> WIB, data biasanya
+     siap <jam> WIB." (+ " Menunggu masuk." bila sudah lewat); lintasan-riwayat (tanpa TLE): "<satelit>, jam deteksi <jam> WIB: N deteksi". Pola EN ada di i18n/en.json */
+  function judulLintas(p, now) {
+    if (p.riwayat) return p.nama + ", jam deteksi " + teksHari(p.ms, now) + " WIB: " + (p.n ? p.n.toLocaleString("id-ID") + " deteksi" : "masuk, tanpa deteksi");
+    var awal = p.nama + " " + teksHari(p.ms, now) + " WIB: ";
+    if (p.status === "masuk") return awal + p.n.toLocaleString("id-ID") + " deteksi";
+    if (p.status === "masuk0") return awal + "masuk, tanpa deteksi";
+    if (p.status === "tertunda") return awal + "tertunda, telat " + teksTelat(p.telatMenit);
+    return p.nama + " lewat " + teksHari(p.ms, now) + " WIB, data biasanya siap " + teksHari(p.data, now) + " WIB." + (p.status === "menunggu" ? " Menunggu masuk." : "");
+  }
+  var JARI = {masuk: 5, masuk0: 2.8, tertunda: 4.5, menunggu: 4.5, perkiraan: 4.5};
+  var KET_TUNDA = "Belum ada deteksi yang masuk sesudah lintasan ini, padahal biasanya sudah siap.";
+  var LEGENDA = [["masuk", "Data masuk", ""], ["masuk0", "Data masuk, tanpa deteksi", "Ada deteksi yang masuk sesudah lintasan ini, tetapi tidak ada satu pun di jendela lintasan ini; bukan bukti tidak ada api"],
+    ["tertunda", "Tertunda", KET_TUNDA], ["menunggu", "Menunggu masuk", "Belum ada deteksi yang masuk sesudah lintasan ini; jeda aman belum lewat"], ["perkiraan", "Perkiraan lintasan", ""]];
+  var TIP_SIAP = "Perkiraan data satelit sudah bisa diambil (jam lewat + jeda aman)";
+
+  function svgGrafik(m, W) {
+    var L = 64, R = 12, T = 22, RH = 26, B = 30, n = m.baris.length, dasar = T + n * RH, H = dasar + B, lebar = W - L - R, rentang = m.sampai - m.dari;
+    var X = function (ms) { return Math.round((L + (ms - m.dari) / rentang * lebar) * 10) / 10; }, Y = function (i) { return T + i * RH + RH / 2; };
+    var s = '<svg class="lp-g" viewBox="0 0 ' + W + " " + H + '" role="img" aria-label="' + esc("Garis waktu lintasan satelit: " + MUNDUR_JAM + " jam ke belakang sampai " + MAJU_JAM + " jam ke depan") + '">';
+    m.baris.forEach(function (b, i) { if (i % 2 === 0) s += '<rect class="lp-z" x="0" y="' + (T + i * RH) + '" width="' + W + '" height="' + RH + '"/>'; });
+    for (var t = Math.ceil((m.dari + WIB_MS) / KISI_MS) * KISI_MS - WIB_MS; t <= m.sampai; t += KISI_MS) {
+      var x = X(t), tengah = jam(t) === "00.00";
+      s += '<line class="lp-k' + (tengah ? " lp-k0" : "") + '" x1="' + x + '" y1="' + T + '" x2="' + x + '" y2="' + dasar + '"/><text class="lp-tk" translate="no" x="' + x + '" y="' + (dasar + 12) + '" text-anchor="middle">' + jam(t) + "</text>";
+      if (tengah) s += '<text class="lp-tk lp-tg" translate="no" x="' + x + '" y="' + (dasar + 24) + '" text-anchor="middle">' +
+        esc(new Date(t).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"})) + "</text>";
+    }
+    var xn = X(m.now);
+    s += '<line class="lp-now" x1="' + xn + '" y1="' + (T - 5) + '" x2="' + xn + '" y2="' + dasar + '"/><text class="lp-nowt" x="' + xn + '" y="' + (T - 9) + '" text-anchor="middle">sekarang</text>';
+    m.baris.forEach(function (b, i) {
+      var y = Y(i);
+      s += '<text class="lp-n" translate="no" x="6" y="' + (y + 3.5) + '">' + esc(b.nama) + "</text>";
+      if (b.riwayat && m.perkiraan) s += '<text class="lp-tp" x="' + (xn + 8) + '" y="' + (y + 3.5) + '">tanpa perkiraan</text>';
+      b.lintas.forEach(function (p) {
+        var cx = X(p.ms);
+        if (p === m.terbaru) s += '<circle class="lp-halo" cx="' + cx + '" cy="' + y + '" r="9"/><text class="lp-tb" translate="no" x="' + cx + '" y="' + (y - 11) + '" text-anchor="middle">' + jam(p.ms) + "</text>";
+        s += '<circle class="m-' + p.status + '" cx="' + cx + '" cy="' + y + '" r="' + JARI[p.status] + '"><title>' + esc(judulLintas(p, m.now)) + "</title></circle>";
+      });
+    });
+    return s + "</svg>";
+  }
+  var swatch = function (st) { return '<svg class="lp-sw" viewBox="0 0 14 14" aria-hidden="true"><circle class="m-' + st + '" cx="7" cy="7" r="' + JARI[st] + '"/></svg>'; };
+  /* kepala = [teks, tooltip?]; kolom pertama = satelit; kolom ke-`kanan` (bila ada) rata kanan (kolom Telat), selebihnya rata kiri */
+  function tabelPop(kepala, isi, kanan) {
+    return '<table class="lp-t"><thead><tr>' + kepala.map(function (h, i) {
+      return '<th scope="col"' + (i === kanan ? ' class="t"' : i ? ' class="n"' : "") + (h[1] ? ' title="' + esc(h[1]) + '"' : "") + ">" + h[0] + "</th>";
+    }).join("") + "</tr></thead><tbody>" + isi + "</tbody></table>";
+  }
+  var sel = function (x, kanan) { return '<td class="' + (kanan ? "t" : "n") + '">' + x + "</td>"; };
+  var namaSel = function (p) { return '<td translate="no">' + esc(p.nama) + "</td>"; };
+  /* kaki: sumber, epoch elemen orbit dan jeda aman dibaca dari tle.json (lewat model), definisi jam dan deteksi */
+  function htmlKaki(m) {
+    var tgl = function (ms) { return new Date(ms).toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "Asia/Jakarta"}); }, h = "";
+    if (m.perkiraan && m.epoch) {
+      var a = m.epoch[0], b = m.epoch[1];
+      h += '<span>Sumber: elemen orbit CelesTrak, epoch</span> <span translate="no">' + esc(tgl(a) + " " + jam(a)) + "</span> <span>sampai</span> <span translate=\"no\">" +
+        esc((tgl(b) !== tgl(a) ? tgl(b) + " " : "") + jam(b)) + " WIB</span>. <span>Dihitung di peramban.</span> ";
+    }
+    h += "<span>Status dari deteksi terakhir tiap satelit di NASA FIRMS.</span> ";
+    if (m.perkiraan) h += "<span>Jam lintasan = saat satelit paling dekat ke tengah Indonesia (perkiraan).</span> ";
+    if (m.baris.some(function (b) { return b.riwayat; })) h += "<span>Baris tanpa perkiraan memakai jam deteksi (median).</span> ";
+    h += "<span>Deteksi = baris FIRMS berkeyakinan sedang dan tinggi, bukan lokasi unik.</span>";
+    if (m.perkiraan && m.jeda.length) h += " <span>Jeda aman</span> " + m.jeda.map(function (j) { return "<span>" + esc(j[0]) + " " + angkaJam(j[1]) + " jam</span>"; }).join(", ") +
+      " <span>(diukur 27 Okt 2026); bisa lebih lama bila satelit telat.</span>";
+    return h;
+  }
+  /* m = susunModel(...) | {belumMuat: true}; W = lebar gambar (px) */
+  function htmlPop(m, W) {
+    if (!m || m.belumMuat) return '<p class="lp-ring"><span>Data titik panas belum selesai dimuat.</span></p>';
+    var now = m.now, tb = m.terbaru, h = '<p class="lp-ring">';
+    h += tb ? "<span>Lintasan terakhir yang datanya sudah masuk:</span> <span>" + (penandaHari(tb.ms, now) || "hari ini") + "</span> <b>" + jam(tb.ms) + '</b> <span translate="no">WIB (' + esc(tb.nama) + ")</span>."
+      : "<span>Belum ada lintasan yang datanya masuk dalam " + MUNDUR_JAM + " jam terakhir.</span>";
+    if (m.tertunda.length) h += " <span>Lintasan tertunda:</span> <b>" + m.tertunda.length.toLocaleString("id-ID") + "</b>.";
+    h += "</p>";
+    if (!m.perkiraan) h += '<p class="lp-cat"><span>Perkiraan lintasan belum bisa dihitung.</span></p>';
+    var leg = LEGENDA.filter(function (l) { return m.ada[l[0]]; });
+    if (leg.length) h += '<div class="lp-leg">' + leg.map(function (l) { return "<span" + (l[2] ? ' title="' + esc(l[2]) + '"' : "") + ">" + swatch(l[0]) + "<span>" + l[1] + "</span></span>"; }).join("") + "</div>";
+    if (m.baris.length) h += svgGrafik(m, W);
+    if (m.perkiraan) {
+      h += '<h3 class="lbl lp-h">Tertunda</h3>' + (m.tertunda.length
+        ? '<p class="lp-kos lp-kap"><span>' + KET_TUNDA + "</span></p>" + tabelPop([["Satelit"], ["Lewat (WIB)"], ["Seharusnya siap (WIB)"], ["Telat"]],
+          m.tertunda.map(function (p) { return "<tr>" + namaSel(p) + sel(celHari(p.ms, now)) + sel(celHari(p.data, now)) + sel(teksTelat(p.telatMenit), true) + "</tr>"; }).join(""), 3)
+        : '<p class="lp-kos"><span>Tidak ada lintasan tertunda.</span></p>');
+      h += '<h3 class="lbl lp-h">Berikutnya</h3>' + (m.berikutnya.length
+        ? tabelPop([["Satelit"], ["Lewat (WIB)"], ["Data siap (WIB)", TIP_SIAP]], m.berikutnya.map(function (p) {
+          return "<tr>" + namaSel(p) + sel(celHari(p.ms, now) + (p.status === "menunggu" ? ' <span class="lp-sl">sudah lewat</span>' : "")) + sel(celHari(p.data, now)) + "</tr>"; }).join(""))
+        : '<p class="lp-kos"><span>Tidak ada lintasan dalam ' + MAJU_JAM + " jam ke depan.</span></p>");
+    }
+    return h + '<p class="lp-kaki">' + htmlKaki(m) + "</p>";
+  }
+
+  /* ---------- hitungan (async, irisan + tidur() seperti kartu wilayah; tidak ada tugas panjang) */
+  var dataSiap = function () { return typeof S !== "undefined" && S && S.meta && Array.isArray(S.titik) && S.acuan && !isNaN(+S.acuan); };
+  var sigData = function () { return dataSiap() ? S.titik.length + "|" + (+S.acuan) : ""; };
+  /* titik acuan nasional (janji di-cache): kotak batas dari SEMUA simpul, simpul uji cakupan dari simpul yang ditipiskan (tiap ke-4); 17 ribu simpul provinsi membuat
+     titikDari ~22 ms dingin (tugas panjang di HP), padahal ia toh hanya mengambil ~400 simpul untuk dites ke sapuan seribu kilometer. pusatKotak dan simpulWilayah
+     dipisah jeda; gagal tidak di-cache */
+  function titikNasional() {
+    if (G.nasTitik) return G.nasTitik;
+    var janji = G.nasTitik = (async function () {
+      var f = typeof S !== "undefined" && S.geo && S.geo.prov && S.geo.prov.features, b = f && pusatKotak(f);
+      if (!b) throw new Error("geometri Indonesia kosong");
+      await tidur();
+      var pts = [], k = 0, jalan = function (c) { if (typeof c[0] === "number") { if (k++ % 4 === 0) pts.push(c); } else for (var i = 0; i < c.length; i++) jalan(c[i]); };
+      for (var i = 0; i < f.length; i++) if (f[i].geometry) jalan(f[i].geometry.coordinates);
+      var s = simpulWilayah([{geometry: {coordinates: pts}}]);
+      if (!s) throw new Error("geometri Indonesia kosong");
+      b.simpul = s;
+      return b;
+    })();
+    janji.catch(function () { if (G.nasTitik === janji) G.nasTitik = null; });
+    return janji;
+  }
+  /* lintasan 36 jam (now-24 jam .. now+12 jam) semua satelit di atas Indonesia; di-cache 30 menit, satu hitungan berjalan dipakai bersama */
+  async function lintasNasional(sat, tle, now) {
+    var c = G.nas;
+    if (c && c.tle === tle && now - c.dibuat < NASIONAL_SEGAR_MS) return c.lintas;
+    if (G.nasJanji) return G.nasJanji;
+    var janji = G.nasJanji = (async function () {
+      var titik = await titikNasional();
+      var t0 = Math.floor((now - MUNDUR_JAM * 36e5) / 3e4) * 3e4, n = (MUNDUR_JAM + MAJU_JAM) * 3600 / LANGKAH_DTK + 1, hasil = [];
+      for (var k = 0; k < tle.satelit.length; k++) {
+        var e = tle.satelit[k], kode = kodeSensor(e), tmp = [];
+        await tidur();
+        var jej = await buatJejakBertahap(sat, e, t0, LANGKAH_DTK, n);
+        await tidur();
+        satKeLintasan(tmp, e, {t0: t0, jej: jej}, titik, t0);
+        tmp.forEach(function (p) { p.kode = kode; hasil.push(p); });
+      }
+      hasil.sort(urutWaktu);
+      G.nas = {tle: tle, dibuat: now, lintas: hasil};
+      return hasil;
+    })();
+    var lepas = function () { if (G.nasJanji === janji) G.nasJanji = null; };
+    janji.then(lepas, lepas);
+    return janji;
+  }
+  async function hitungModel() {
+    if (!dataSiap()) return {belumMuat: true};
+    var sig = sigData(), c = G.pop;
+    if (c && c.sig === sig && Date.now() - c.ms < MODEL_SEGAR_MS) return c.model;
+    var tle = null, lintas = null;
+    try {
+      var sat = await muatPustaka(); tle = await muatTle(); await tidur();
+      lintas = await lintasNasional(sat, tle, Date.now());
+    } catch (e) {   // pustaka/tle.json/geometri gagal: popover tetap menampilkan riwayat dari baris titik; janji gagal sudah dilepas, jadi buka berikutnya mencoba lagi
+      tle = lintas = null;
+      if (!G.peringatanPop) { G.peringatanPop = true; console.warn("Lintasan satelit: perkiraan tidak dihitung:", e && e.message || e); }
+    }
+    await tidur();
+    if (!dataSiap()) return {belumMuat: true};
+    var kel = await kelompokTitikBertahap(Date.now() - (MUNDUR_JAM * 36e5 + COCOK_MS) - 6e4);
+    await tidur();
+    if (!dataSiap()) return {belumMuat: true};
+    var model = susunModel({now: Date.now(), lintas: lintas, satelit: tle && tle.satelit, kel: kel});
+    if (lintas) G.pop = {ms: Date.now(), sig: sigData(), model: model};   // model tanpa perkiraan (gagal) TIDAK di-cache: buka berikutnya mencoba lagi
+    return model;
+  }
+  /* satu hitungan berjalan dipakai bersama (buka-tutup-buka cepat); dilepas lewat then, bukan finally: hitungModel bisa selesai sebelum penugasan G.popJanji */
+  function modelNasional() {
+    if (G.popJanji) return G.popJanji;
+    var janji = G.popJanji = hitungModel(), lepas = function () { if (G.popJanji === janji) G.popJanji = null; };
+    janji.then(lepas, lepas);
+    return janji;
+  }
+
+  /* ---------- DOM: pil #upd (tombol) + #lintasPop. Klik membuka SINKRON (placeholder), hitungan menyusul lewat nanti().
+     Pendengar keydown/pointerdown/resize/focusout hanya terpasang selama terbuka (satu AbortController, dilepas saat tutup) */
+  function pasang() {
+    var pil = document.getElementById("upd"), pop = document.getElementById("lintasPop");
+    if (!pil || !pop || pil.tagName !== "BUTTON" || pil._lintas) return;
+    pil._lintas = true;
+    var isi = pop.querySelector(".lp-isi"), tombolX = pop.querySelector(".lp-x"), buka = false, gen = 0, model = null, lebarGbr = 0, rz = 0, ulang = 0, ac = null;
+    var lebar = function () { var v = window.innerWidth; return Math.max(300, (v <= LEMBAR_PX ? v : Math.min(560, v)) - 28); };   // lebar isi: lembar penuh <= 768 px, selain itu popover 560 px
+    var gambar = function () { lebarGbr = lebar(); isi.innerHTML = htmlPop(model, lebarGbr); };
+    var taruh = function () {   // desktop: tepi kanan popover = tepi kanan pil; <= 768 px: CSS membuat lembar selebar layar dan mengabaikan variabel ini
+      var r = pil.getBoundingClientRect(), w = Math.min(560, window.innerWidth - 16);
+      pop.style.setProperty("--lp-x", Math.round(Math.max(8, Math.min(r.right - w, window.innerWidth - w - 8))) + "px");
+      pop.style.setProperty("--lp-y", Math.round(r.bottom + 8) + "px");
+    };
+    var tutup = function (fokus) {
+      if (!buka) return;
+      buka = false; gen++; clearTimeout(ulang); ac.abort(); ac = null;
+      pop.hidden = true; pil.setAttribute("aria-expanded", "false");
+      if (fokus) pil.focus();
+    };
+    /* hitung lalu gambar; data titik belum ada saat pil diklik: coba lagi tiap detik selama popover masih terbuka (tidak terkunci di pesan "belum dimuat") */
+    var isiPop = function (id) {
+      modelNasional().then(function (m) {
+        if (id !== gen || !buka) return;
+        model = m; gambar();
+        if (m.belumMuat) ulang = setTimeout(function () { if (id === gen && buka) isiPop(id); }, 1000);
+      }, function (e) { console.warn("Lintasan satelit:", e && e.message || e); });
+    };
+    var bukaPop = function () {
+      buka = true; var id = ++gen, c = G.pop;
+      ac = new AbortController();
+      var sg = {signal: ac.signal}, keluar = function (e) { var t = e.relatedTarget; if (buka && t && !pop.contains(t) && t !== pil) tutup(false); };   // papan ketik: Tab keluar dari popover/pil menutupnya
+      document.addEventListener("keydown", function (e) { if (e.key === "Escape") { e.preventDefault(); tutup(true); } }, sg);
+      document.addEventListener("pointerdown", function (e) { if (!pop.contains(e.target) && !pil.contains(e.target)) tutup(false); }, {signal: ac.signal, capture: true});
+      pop.addEventListener("focusout", keluar, sg); pil.addEventListener("focusout", keluar, sg);
+      window.addEventListener("resize", function () {   // gambar ulang hanya bila lebar gambar berubah; taruh() hanya untuk popover desktop
+        if (rz) return;
+        rz = requestAnimationFrame(function () { rz = 0; if (!buka) return; if (window.innerWidth > LEMBAR_PX) taruh(); if (model && lebar() !== lebarGbr) gambar(); });
+      }, sg);
+      pil.setAttribute("aria-expanded", "true"); taruh(); pop.hidden = false;
+      if (c && c.sig === sigData() && Date.now() - c.ms < MODEL_SEGAR_MS) { model = c.model; gambar(); }
+      else {
+        model = null; isi.innerHTML = '<p class="lp-ring"><span>Menghitung lintasan…</span></p>';
+        var jalan = function () { isiPop(id); };
+        typeof nanti === "function" ? nanti(jalan) : setTimeout(jalan, 120);
+      }
+      pop.focus({preventScroll: true});
+    };
+    pil.addEventListener("click", function () { buka ? tutup(false) : bukaPop(); });
+    tombolX.addEventListener("click", function () { tutup(true); });
+    var pra = function (e) { if (pra.s || (e.pointerType && e.pointerType !== "mouse")) return; pra.s = 1; muatPustaka().catch(function () {}); muatTle().catch(function () {}); };   // pustaka + tle.json dimuat begitu pil disentuh
+    pil.addEventListener("pointerenter", pra); pil.addEventListener("focus", pra);
+  }
+  if (typeof document !== "undefined") { if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", pasang); else pasang(); }
+
   g.SatelitLintas = {kartu: kartu, hitung: hitungSemua, buatJejak: buatJejak, cariLintasan: cariLintasan, pusatKotak: pusatKotak, jarakKm: jarakKm, jam: jam, penanda: penanda,
     titik: titikDari, simpul: simpulWilayah, selubung: selubung, cakupan: hitungCakupan, satKeLintasan: satKeLintasan, hitungJejak: hitungJejak, lintasWilayah: lintasWilayah, htmlKartu: htmlKartu,
-    konstanta: {pustaka: PUSTAKA, sri: SRI, horizonJam: HORIZON_JAM, langkahDtk: LANGKAH_DTK, irisan: IRISAN, segarMs: SEGAR_MS}};
+    pop: {kodeSensor: kodeSensor, namaKode: namaKode, kelompokTitik: kelompokTitik, kelompokTitikBertahap: kelompokTitikBertahap, cocokkan: cocokkan, lintasDariWaktu: lintasDariWaktu, klasifikasi: klasifikasi, susunModel: susunModel, htmlPop: htmlPop, svgGrafik: svgGrafik, judulLintas: judulLintas, teksTelat: teksTelat, htmlKaki: htmlKaki,
+      lintasNasional: lintasNasional, modelNasional: modelNasional, titikNasional: titikNasional, pasang: pasang},
+    konstanta: {pustaka: PUSTAKA, sri: SRI, horizonJam: HORIZON_JAM, langkahDtk: LANGKAH_DTK, irisan: IRISAN, segarMs: SEGAR_MS, mundurJam: MUNDUR_JAM, majuJam: MAJU_JAM, cocokMs: COCOK_MS}};
 })(typeof window !== "undefined" ? window : globalThis);
