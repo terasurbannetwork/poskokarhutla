@@ -1,0 +1,125 @@
+{
+ "dx_faktor": 12,
+ "galat_median_cm": 32.0,
+ "leave_one_event_out": {
+  "2017-01": {
+   "kerugian_peta": 603.0192101440007,
+   "kerugian_seragam": 400.7840567599395,
+   "peta_lebih_baik": false
+  },
+  "2018-01": {
+   "kerugian_peta": 120.21829423148608,
+   "kerugian_seragam": 116.57460552065155,
+   "peta_lebih_baik": false
+  },
+  "2020-01": {
+   "kerugian_peta": 114.44904100818819,
+   "kerugian_seragam": 112.16788272977625,
+   "peta_lebih_baik": false
+  }
+ },
+ "per_kejadian": {
+  "2024-08": {
+   "acak": {
+    "pod": 0.11181818181818182
+   },
+   "inarisk": {
+    "pod": 0.00909090909090909
+   },
+   "kab": {
+    "ambang_luas_sama_m": 0.08956196159124374,
+    "luas_basah_asli": 0.015810276679841896,
+    "pod_ambang_10cm": 0.0009090909090909091,
+    "pod_luas_sama": 0.0009090909090909091
+   },
+   "luas_basah": 0.016074818710902244,
+   "n_laporan": 1100,
+   "pod": 0.0009090909090909091,
+   "presisi": 0.000968054211035818,
+   "rob_jakarta_utara": {
+    "catatan": "muka laut tetap 0,6 m; bukan model rob",
+    "n": 7,
+    "pod": 0.0
+   },
+   "seragam": {
+    "ambang_luas_sama_m": 0.10030286759138107,
+    "luas_basah_asli": 0.016074818710902244,
+    "pod_ambang_10cm": 0.0009090909090909091,
+    "pod_luas_sama": 0.0009090909090909091
+   },
+   "tanpa_laporan_basah": 0.3125
+  },
+  "2025-04": {
+   "acak": {
+    "pod": 0.8097560975609757
+   },
+   "inarisk": {
+    "pod": 0.01707317073170732
+   },
+   "kab": {
+    "ambang_luas_sama_m": 0.08527851104736328,
+    "luas_basah_asli": 0.056394136503688026,
+    "pod_ambang_10cm": 0.02926829268292683,
+    "pod_luas_sama": 0.02926829268292683
+   },
+   "luas_basah": 0.057281130372537424,
+   "n_laporan": 410,
+   "pod": 0.03170731707317073,
+   "presisi": 0.030969845150774247,
+   "rob_jakarta_utara": {
+    "catatan": "muka laut tetap 0,6 m; bukan model rob",
+    "n": 20,
+    "pod": 0.05
+   },
+   "seragam": {
+    "ambang_luas_sama_m": 0.10053057223558426,
+    "luas_basah_asli": 0.057281130372537424,
+    "pod_ambang_10cm": 0.03170731707317073,
+    "pod_luas_sama": 0.03170731707317073
+   },
+   "tanpa_laporan_basah": 0.4375
+  }
+ },
+ "pernyataan": null,
+ "pod": {
+  "atas95": 0.026554013277006638,
+  "bawah95": 0.0004737091425864519,
+  "titik": 0.009271523178807948
+ },
+ "selisih_pod_luas_sama": {
+  "acak": {
+   "atas95": -0.1257071024512885,
+   "bawah95": -0.5580985915492959,
+   "titik": -0.2920529801324503
+  },
+  "inarisk": {
+   "atas95": 0.010348071495766699,
+   "bawah95": -0.011394101876675604,
+   "titik": -0.001986754966887416
+  },
+  "kab": {
+   "atas95": 0.002155172413793101,
+   "bawah95": 0.0,
+   "titik": 0.0006622516556291404
+  },
+  "seragam": {
+   "atas95": 0.0,
+   "bawah95": 0.0,
+   "titik": 0.0
+  }
+ },
+ "spearman": {
+  "2017-2023": -0.008186755719279395,
+  "2024-2025": -0.15632858230927593
+ },
+ "syarat": {
+  "galat_median_le_40cm": true,
+  "luas_basah_le_25": true,
+  "mengalahkan_inarisk": false,
+  "mengalahkan_kd_seragam": false,
+  "pod_ge_0.6": false,
+  "spearman_ge_0.5": false,
+  "tanpa_laporan_le_40": false
+ },
+ "vonis": "GAGAL"
+}
