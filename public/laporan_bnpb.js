@@ -157,6 +157,7 @@ function kartuHtml(b) {
 const imporHtml = () => `<div class="lb-impor">
     <textarea id="lbUraiTeks" rows="5" spellcheck="false" placeholder="Tempel di sini rekap WA Dit. Koordalops (Mohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal ...)"></textarea>
     <div class="lb-impor-aksi">
+      <button type="button" class="pp-btn kecil" data-a="uraiWa" title="Pesan dan berkas yang dikirim ke nomor WA laporan pada tanggal ini">Ambil dari WA</button>
       <button type="button" class="pp-btn kecil" data-a="urai">Urai teks</button>
       <label class="pp-btn kecil ke2 lb-imp">Unggah laphar PDF<input type="file" id="lbUraiBerkas" accept=".pdf,.txt,application/pdf,text/plain" hidden></label>
       <button type="button" class="pp-btn kecil ke2" data-a="uraiModel" title="Untuk teks yang bentuknya tidak dikenali pengurai">Urai dengan model</button>
@@ -196,6 +197,7 @@ $("#lbForm").addEventListener("click", e => {
   else if (a === "naik") { const i = +b.closest("tr").dataset.i; if (!i) return; [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]]; }
   else if (a === "isiSatelit") return isiSatelit();
   else if (a === "urai") return uraiTempel();
+  else if (a === "uraiWa") return uraiDariWa();
   else if (a === "uraiModel") return uraiModel();
   else if (a === "uraiMasuk") return uraiMasuk();
   else return;
@@ -245,6 +247,23 @@ async function uraiBerkas(file) {
     if (!h.bentuk) { pasangHasil(null); return uraiSt(`${file.name} terbaca, tapi bentuknya bukan laphar Dit. Koordalops. Coba tombol Urai dengan model.`); }
     pasangHasil(h, file.name);
   } catch (e) { pasangHasil(null); uraiSt(e.message); }
+}
+/* kotak masuk WA (src/wa.js): laphar PDF terakhir hari itu diurai seperti unggahan; tanpa PDF, semua teks pesan digabung lalu diurai seperti tempelan */
+async function uraiDariWa() {
+  uraiSt("Mengambil kiriman WA…");
+  try {
+    const {pesan} = await api(`/api/wa/masuk?tanggal=${S.tanggal}&jenis=bencana`);
+    if (!pesan.length) return uraiSt(`Belum ada kiriman WA untuk ${LB.tglP(S.tanggal)}.`);
+    const pdf = pesan.filter(p => p.ada_berkas && /pdf/i.test(p.tipe || p.nama_berkas || "")).at(-1);
+    if (pdf) {
+      const r = await fetch(`/api/wa/berkas?id=${pdf.id}`, {credentials: "same-origin"}); if (!r.ok) throw new Error("berkas WA gagal diunduh");
+      return uraiBerkas(new File([await r.blob()], pdf.nama_berkas || "laphar.pdf", {type: "application/pdf"}));
+    }
+    const teks = pesan.map(p => p.teks).filter(Boolean).join("\n\n");
+    if (!teks) return uraiSt(`${pesan.length} kiriman WA hari ini, tapi tidak ada teks atau PDF yang bisa diurai.`);
+    $("#lbUraiTeks").value = teks;
+    uraiTempel();
+  } catch (e) { uraiSt("Gagal mengambil kiriman WA: " + e.message); }
 }
 async function uraiModel() {
   const teks = (S.uraiTeks || $("#lbUraiTeks").value || "").trim();
