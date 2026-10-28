@@ -472,7 +472,7 @@
                   lagi sejak"); depan = perkiraan. Waktu diambil tak valid (0/NaN): dianggap baru diambil (perilaku lama, now > lintasan + ambang = tertunda), supaya
                   lintasan tidak menunggu selamanya; "Data siap" dan telat tetap dari jeda_data_menit.
      Sensor N (S-NPP) tak punya TLE: hanya riwayat dari baris N (jam = median jam deteksi), otomatis hilang bila pipeline berhenti menulis N.
-     "Deteksi" = baris keyakinan >= S.kmin (sedang+tinggi, sama dengan halaman metode); baris keyakinan rendah tetap menentukan deteksi terakhir.
+     "Deteksi" = baris keyakinan >= S.kmin (dari data: 0 = semua tingkat sejak 28 Okt 2026, sama dengan halaman metode); semua baris tetap menentukan deteksi terakhir.
      Fungsi murni (kelompokTitik, cocokkan, klasifikasi, susunModel, htmlPop) tanpa DOM supaya bisa diuji dari node; DOM hanya di pasang(). */
   var MUNDUR_JAM = 24, MAJU_JAM = 12, IRISAN_BARIS = 40000, COCOK_MS = 20 * 6e4, CELAH_MS = 45 * 6e4, MODEL_SEGAR_MS = 5 * 6e4, DEPAN = 5, KISI_MS = 6 * 36e5, LEMBAR_PX = 768;
   /* ambang keterlambatan (28 Okt 2026): FIRMS terlambat = >= 2 lintasan tertunda dari >= 2 satelit, ATAU satu lintasan tertunda dengan telat >= 3 jam; pengambilan aplikasi basi = > 4 jam;
@@ -728,7 +728,11 @@
     });
     return s + "</svg>";
   }
-  var KET_DETEKSI = "Deteksi = baris FIRMS berkeyakinan sedang dan tinggi, bukan lokasi unik.";
+  /* ikut S.kmin dari data (keyakinan_min hotspot*.json): 0 sejak keputusan pemilik 28 Okt 2026 (keyakinan rendah ikut dihitung) */
+  var ketDeteksi = function () {
+    var k = typeof S !== "undefined" && S && S.kmin !== undefined ? S.kmin : 1;
+    return k <= 0 ? "Deteksi = baris FIRMS semua tingkat keyakinan, bukan lokasi unik." : "Deteksi = baris FIRMS berkeyakinan sedang dan tinggi, bukan lokasi unik.";
+  };
   var swatch = function (st) { return '<svg class="lp-sw" viewBox="0 0 14 14" aria-hidden="true"><circle class="m-' + st + '" cx="7" cy="7" r="' + JARI[st] + '"/></svg>'; };
   /* kepala = [teks, tooltip?]; kolom pertama = satelit; kolom ke-`kanan` (bila ada) rata kanan (kolom Telat), selebihnya rata kiri */
   function tabelPop(kepala, isi, kanan, kelas) {   // isi = HTML baris (satu tbody) atau [[HTML, atribut tbody], ...] (beberapa tbody, mis. bagian yang bisa dibuka/tutup)
@@ -751,7 +755,7 @@
     if (m.diambil && !besok) h += "<span>Data FIRMS terakhir diambil</span> " + kataHari(penandaHari(m.diambil, m.now)) + '<span translate="no">' + jam(m.diambil) + " WIB</span>. ";
     if (m.perkiraan) h += "<span>Jam lintasan = saat satelit paling dekat ke tengah Indonesia (perkiraan).</span> ";
     if (m.baris.some(function (b) { return b.riwayat; })) h += "<span>Baris tanpa perkiraan memakai jam deteksi (median).</span> ";
-    if (!besok) h += "<span>" + KET_DETEKSI + "</span>";
+    if (!besok) h += "<span>" + ketDeteksi() + "</span>";
     if (m.perkiraan && m.jedaR && (m.jedaR.terukur.length || m.jedaR.bawaan.length)) h += " " + htmlJeda(m.jedaR, true);
     return h;
   }
@@ -802,7 +806,7 @@
     }).join("");
   }
   function tabelKemarin(m) {
-    return tabelPop([["Lewat (WIB)"], ["Satelit"], ["Deteksi", KET_DETEKSI], ["Status"]], barisHari(m, 4, function (p) {
+    return tabelPop([["Lewat (WIB)"], ["Satelit"], ["Deteksi", ketDeteksi()], ["Status"]], barisHari(m, 4, function (p) {
       var det = p.status === "masuk" ? angka(p.n) : p.status === "masuk0" ? "0" : "-";
       return '<tr><td class="n"><b>' + jam(p.ms) + '</b></td><td><span translate="no">' + esc(p.nama) + "</span>" + (p.riwayat ? ' <span class="lp-sl">jam deteksi</span>' : "") + "</td>" + sel(det, true) +
         '<td class="lp-st">' + swatch(p.status) + "<span>" + labelStatus(p) + "</span>" + (p.status === "tertunda" ? ' <span class="lp-sl">telat ' + teksTelat(p.telatMenit) + "</span>" : "") + "</td></tr>";

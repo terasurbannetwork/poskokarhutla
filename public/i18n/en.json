@@ -9321,6 +9321,7 @@
 "Jam lintasan = saat satelit paling dekat ke tengah Indonesia (perkiraan).": "Pass time = when the satellite is closest to the centre of Indonesia (estimate).",
 "Baris tanpa perkiraan memakai jam deteksi (median).": "Rows without a forecast use the detection time (median).",
 "Deteksi = baris FIRMS berkeyakinan sedang dan tinggi, bukan lokasi unik.": "Detections = FIRMS rows with nominal and high confidence, not unique locations.",
+"Deteksi = baris FIRMS semua tingkat keyakinan, bukan lokasi unik.": "Detections = FIRMS rows of all confidence levels, not unique locations.",
 "waktu sampai data tampil di aplikasi, median {0} hari terakhir": "time until data appears in the app, median of the last {0} days",
 "waktu sampai data tampil di aplikasi, median riwayat terakhir": "time until data appears in the app, median of recent records",
 "aplikasi mengambil data tiap {0} jam": "the app fetches data every {0} h",
