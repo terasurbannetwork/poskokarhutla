@@ -363,7 +363,9 @@ class Deck:
                 pe = s.pecah(isi); ikp = 'api_merah' if pe and pe[1] == 'ha' else ('orang' if pe and pe[1] == 'KK' else 'rumah') + ('_k' if j == 'kekeringan' else '_slate')
                 if pe and pe[1] == 'ha': pe = (f'± {pe[0]}', 'ha')
                 o += s.kotak(10470000, y, 1070000, q, tint, 'roundRect', adj=50000) + s.gambar(10520000, y + q * .16, q * .68, q * .68, ikp)
-                o += s.au(XE, y, q, *pe, 720, c=tc, wn=500000, wu=300000) if pe else s.tx(10545775, y, 932688, q, [isi], sz=620, b=True, c=tc, al='ctr', an='ctr', wrap='none')
+                if pe and pe[1] == 'ha':   # 28 Okt: TPA sejajar dengan pil karhutla di atasnya (label di posisi "sisa", angka dan ha di kolom yang sama)
+                    o += s.tx(10650000, y, 260000, q, ['luas'], sz=720, b=True, c=tc, an='ctr', wrap='none') + s.au(XE, y, q, *pe, 720, c=tc, wn=380000, wu=200000)
+                else: o += s.au(XE, y, q, *pe, 720, c=tc, wn=500000, wu=300000) if pe else s.tx(10545775, y, 932688, q, [isi], sz=620, b=True, c=tc, al='ctr', an='ctr', wrap='none')
         o += s.kotak(548640, 5468112, 11094415, 822960, 'FDF4EC', 'roundRect', adj=8889) + s.tx(694944, 5541264, 3657600, 182880, ['YANG AKAN DILAKUKAN BNPB'], sz=750, b=True, c=ORG, spc=100)
         for i, (ik, jd, isi) in enumerate(s.tindak()):
             x = 694944 + i * 3600602
@@ -484,7 +486,8 @@ class Deck:
                 r += s.au(9640000, y, rp, *(s.pecah(jw) or ('–', 'jiwa')), 800, c=TEKS, b=False, wn=400000, wu=260000) if s.pecah(jw) or jw == 'jiwa –' else s.tx(9150000, y, 700000, rp, [jw], sz=800, c=TEKS, an='ctr', wrap='none')
                 ph_, yp = 164592, y + (rp - 164592) / 2; pl, lc = s.pecah(liter), '8A6A2E' if not b else INK
                 r += s.kotak(9930000, yp, 880000, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(9985000, yp + 32000, 100584, 100584, 'tetes_k')
-                r += s.au(9930000 + 620000, yp, ph_, *(pl or ('–', 'liter')), 720, c=lc if pl else ABU, wn=430000, wu=200000)   # 28 Okt: tanpa data = "– liter", bukan "belum dilaporkan" yang meluber
+                # 28 Okt pemilik: tanpa data ditulis kata-kata, bukan strip; teks lebih kecil di tengah sisa pil supaya tidak meluber
+                r += s.au(9930000 + 620000, yp, ph_, *pl, 720, c=lc, wn=430000, wu=200000) if pl else s.tx(10100000, yp, 690000, ph_, ['belum ada data'], sz=650, c=TEKS, al='ctr', an='ctr', wrap='none')
                 tk = re.search(r'([\d.]+)', tangki)
                 if tk: r += (s.kotak(10870000, yp, 608463, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(10910000, yp + 27432, 109728, 109728, 'truk_kering')
                              + s.au(10870000 + 300000, yp, ph_, tk[1], 'tangki', 720, c=lc, wn=120000, wu=300000))
