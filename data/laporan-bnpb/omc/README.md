@@ -1,6 +1,6 @@
 # Rekap OMC karhutla 2026 (gabungan)
 
-Berkas data: `omc_rekap.csv` (106 baris). Hanya angka yang tertulis di sumber. `tanggal` = tanggal OPERASI. Kolom tambahan: `jam_mulai`, `jam_selesai` (dengan zona WIB/WITA/WIT, hanya bila tertulis), `wilayah_bnpb` (pembagian dari pemilik). `cao_kg` kosong semua: CaO hanya muncul sebagai stok SAM 2.000 kg (WA dan pptx), tidak ada sortie CaO.
+Berkas data: `omc_rekap.csv` (123 baris). Hanya angka yang tertulis di sumber. `tanggal` = tanggal OPERASI. Kolom tambahan: `jam_mulai`, `jam_selesai` (dengan zona WIB/WITA/WIT, hanya bila tertulis), `wilayah_bnpb` (pembagian dari pemilik). `cao_kg` kosong semua: CaO hanya muncul sebagai stok SAM 2.000 kg (WA dan pptx), tidak ada sortie CaO.
 
 Cara gabung: `omc_dari_wa_16-26okt.csv` (tidak disunting) jadi baris utama 16 sampai 26 Okt, termasuk 22 Okt (WA Laporan Penanganan 23 Okt; sebelumnya dari komentar deck, angka sama). Sumber lain yang beda angka disimpan dengan catatan "beda sumber". Baris 27 Okt dari `sumber/wa_27okt_posko_tni_jatim.txt` dan `LAPORAN_HARIAN_OMC_27102026.pptx` (pptx tidak memuat 25 Okt, tidak ada jam). Baris dengan tanggal berbentuk rentang (`..`) dan tanggal kosong adalah agregat/tanpa tanggal dan tidak dijumlahkan.
 
@@ -13,12 +13,12 @@ Cara gabung: `omc_dari_wa_16-26okt.csv` (tidak disunting) jadi baris utama 16 sa
 | Riau | I | 0 | 0 | 0 |
 | Sumatera Selatan | II | 55 | 32.600 | 27.700 |
 | Jambi | II | 0 | 0 | 0 |
-| Lampung (22 Okt, bahan tidak tertulis) | II | 1 | tidak tertulis | tidak tertulis |
+| Lampung (22 Okt 1 sortie bahan tidak tertulis; 23 dan 24 Okt 2.000 kg NaCl masing-masing, sortie tidak tertulis) | II | 1 | 4.000 | tidak tertulis |
 | Kalimantan Selatan | III | 13 | 10.000 | 2.100 |
 | Kalimantan Barat | III | 10 | 9.400 | 0 |
 | Jawa Timur (PK-SCH 26 Okt) | III | 1 | 1.000 | 0 |
 
-Per wilayah BNPB: Wilayah I 70 sortie, 49.000 kg NaCl, 23.800 kg dry ice (Kalteng, Papsel, Riau); Wilayah II 56 sortie, 32.600 kg NaCl, 27.700 kg dry ice (Sumsel, Lampung, Jambi); Wilayah III 24 sortie, 20.400 kg NaCl, 2.100 kg dry ice (Kalsel, Kalbar, Jatim). Tidak ikut: Kaltim (Wilayah II) 30 sortie 28.800 kg NaCl tanpa periode, Jabar (Wilayah II) PK-ALA 1 sortie 1.000 kg NaCl tanpa tanggal, Jatim 24-26 Okt agregat 3 sortie 3.000 kg.
+Per wilayah BNPB: Wilayah I 70 sortie, 49.000 kg NaCl, 23.800 kg dry ice (Kalteng, Papsel, Riau); Wilayah II 56 sortie, 36.600 kg NaCl, 27.700 kg dry ice (Sumsel, Lampung, Jambi); Wilayah III 24 sortie, 20.400 kg NaCl, 2.100 kg dry ice (Kalsel, Kalbar, Jatim). Tidak ikut: Kaltim (Wilayah II) 30 sortie 28.800 kg NaCl tanpa periode, Jabar (Wilayah II) PK-ALA 1 sortie 1.000 kg NaCl tanpa tanggal, Jatim 24-26 Okt agregat 3 sortie 3.000 kg.
 
 ## Rekap resmi posko (Lapsit Posko OMC hari ke-10, 27 Okt) dibanding jumlah baris harian kita
 
@@ -52,6 +52,31 @@ Jambi dan Kalbar tanpa OMC sejak pesawat pindah (PK-ALA ke Jawa Barat, PK-SCH ke
 - 25 Okt kosong (laporan WA yang ditempel sebagai "25 Okt" adalah operasi 24 Okt; pptx 27 Okt tidak memuat 25 Okt); Jatim 24 dan 25 Okt tanpa rincian harian.
 - Sebelum 16 Okt tidak ada data. A-2904 dan A-1328 27 Okt "on air": jam selesai dan kg terlaksana belum final.
 - Jam 27 Okt hanya untuk SAM (WITA) dan PK-SCG; Sumsel 27 Okt tanpa jam.
+
+## Tambahan dari rekap repo pemilik (28 Okt, `sumber/pemilik_28okt_rekap_omc_repo.txt`)
+
+Baris lama tidak ditimpa. Baru: Lampung 20 Okt nihil (tak ada awan), Lampung 23 Okt 2.000 kg NaCl (TNWK, Lampung Barat), Lampung 24 Okt 2.000 kg NaCl, Jabar Kertajati mulai 24 Okt (tanpa sortie/kg). Ditandai "beda sumber": Kalteng 22 Okt 6 sortie (berkas WA 7); Kalteng 23 Okt dry ice 5.000 kg (WA 5.200; rekap menyebut selisih sumber ini sendiri); Kalteng 24 Okt dry ice 5.300 kg (berkas WA 4.500; NaCl 3.000 sama); Kalsel 24 Okt PK-SNK 2.000 kg tanggal laporan 25 Okt, operasi kemungkinan 24 Okt (angka sama, bukan sortie tambahan). Sisa angka rekap (Sumsel 19 sampai 24 Okt, Kalteng 20 dan 21 Okt, Kalbar 21 dan 23 Okt) sama dengan baris kita.
+
+Hujan tambahan (klaim laporan, hubungan sebab-akibat belum diuji): Kalteng 20 dan 21 Okt Kotawaringin Barat, 22 Okt Murung Raya, 24 Okt deras Seruyan, 25 Okt Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau (laporan hujan tanggal 25 padahal operasi 25 Okt belum ada sumber, jangan dibaca sebagai hasil OMC); Lampung 23 Okt ringan TNWK dan Lampung Barat, 24 Okt ringan Lampung Timur, Lampung Tengah, TNWK, lebat Way Kanan; Jabar 24-25 Okt ringan-sedang sisi barat Ciremai dan sekitarnya, sisi timur Ciremai (yang terbakar) belum hujan; Kalsel 23 Okt bentrok: WA hujan Kotabaru, radar BMKG di laporan Koordalops tidak ada hujan. Sumsel: dry ice untuk menembus asap, bukan hujan; hujan sangat ringan 19 Okt Pemulutan dan Kikim Timur tak terukur penakar, ringan sore 24 Okt sekitar Palembang, 20-23 Okt belum ada laporan hujan.
+
+Jarak pandang Palembang setelah penyemaian (klaim laporan, semua kembali turun sore): 19 Okt 700 m ke 7 km; 20 Okt 1 ke 3 km; 22 Okt sampai 2,5 km; 23 Okt sampai 6 km; 24 Okt sampai 10 km.
+
+Total Sumsel per 24 Okt, rekap sumber: 39 sortie, 22.800 kg dry ice, 16.000 kg NaCl. Jumlah baris harian kita 16 sampai 24 Okt: 43 sortie, 26.000 kg dry ice, 16.000 kg NaCl. NaCl sama; dry ice selisih 3.200 kg dan sortie selisih 4 (angka selisih dry ice kebetulan sama dengan dry ice kita 16 dan 17 Okt, 1.600 + 1.600; sumber tidak menyatakan periode awalnya). Tidak direkonsiliasi.
+
+## Periode OMC sebelumnya (rekap repo pemilik; tidak masuk CSV harian)
+
+| Wilayah | Periode | Sortie | Bahan |
+| --- | --- | ---: | --- |
+| Jambi (PK-ALA) | 5-12 Jun | 13 | 12.991 kg NaCl |
+| Jambi (PK-ALA) | 26 Agu-2 Sep | 8 | 8.000 kg |
+| Jambi (PK-ALA) | 2-5 Okt | 5 | 5.000 kg |
+| Jambi (PK-ALA) | 9-13 Okt | 9 | 9.000 kg; sesudahnya PK-ALA pindah ke Jabar |
+| Riau | 15 Feb-10 Mar dan 7-27 Apr; ditutup 25 Sep karena musim hujan | tidak tertulis | tidak tertulis |
+| Sumsel | 22-26 Agu | tidak tertulis | tidak tertulis |
+| Kalbar | 22 Agu-23 Okt (data BMKG); PK-SCH pindah ke Jatim 24 Okt | tidak tertulis | tidak tertulis |
+| Kalteng | 26 Agu-27 Okt (data BMKG) | tidak tertulis | tidak tertulis |
+
+Jambi jumlah 4 periode: 35 sortie, 34.991 kg (penjumlahan saya dari angka tertulis; periode lain tanpa sortie/kg).
 
 ## `scripts/omc/nilai.py`
 
