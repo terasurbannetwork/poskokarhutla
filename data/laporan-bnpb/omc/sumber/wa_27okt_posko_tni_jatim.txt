@@ -1,0 +1,49 @@
+Sumber: teks WA ditempel pemilik 28 Okt 2026 (bagian OMC saja, angka disalin apa adanya).
+
+=== BPBD Prov. Jatim, laporan OMC 25/26 Okt 2026 ===
+Posko: Base Ops Lanudal Juanda. Pesawat: Cessna Caravan 208B PK-SCH. Operator: PT Makson Sukses Pratama.
+26 Okt 2026, Sortie 1: 13.52-15.57 WIB (jam terbang 2 jam 5 menit), 1.000 kg NaCl, wilayah Malang, Pasuruan, Probolinggo, Jember, Bondowoso.
+Rekap 24-26 Okt 2026: 3 sortie, 6 jam 58 menit, 3.000 kg NaCl.
+Dampak (hujan): Kota Malang, Kab. Malang, Kab. Bondowoso, Kab. Jember.
+Rencana 27 Okt: 2 sortie.
+
+=== Resume Posko Terpadu OMC (Waasops Panglima TNI), Selasa 27 Okt 2026 ===
+a. POSKO LANUD SMH (Sumsel), 27 Okt:
+1. A-2117: S1 OKI 800 kg dry ice; S2 OKI dan Banyuasin 800 kg NaCl.
+2. A-2104: S1 OKI 800 kg NaCl; S2 Musi Banyuasin 800 kg NaCl.
+3. A-1319: S1 timur-barat laut Palembang 4.800 kg NaCl, 8.000-12.000 ft.
+4. PK-IKC: S1 Musi Banyuasin 1.000 kg NaCl, 8.000-10.000 ft.
+5. PK-SNP (Lampung dan Sumsel): S1 OKI 900 kg dry ice. Kumulatif PK-SNP: 8 sortie, 7 sortie 6.200 kg dry ice + 1 sortie 800 kg NaCl.
+Rekap harian: TNI AU 800 kg dry ice + 7.200 kg NaCl; PK-IKC 1.000 kg NaCl; PK-SNP 900 kg dry ice.
+Kumulatif: TNI AU 41 sortie 17.566 kg dry ice + 35.000 kg NaCl; PK-IKC 10 sortie 2.400 kg dry ice + 7.000 kg NaCl; PK-SNP 8 sortie 6.200 kg dry ice + 800 kg NaCl.
+Rekap kumulatif OMC (posko SMH): NaCl 100 sortie 111.200 kg; dry ice 25 sortie 19.966 kg.
+Indikasi: PM2.5 Palembang/Talang Betutu/Bukit Kecil 06.00-15.00 WIB turun 115 ke 68,8 ug/m3 (masih Tidak Sehat); visibility 1.000 m ke 7 km; penerbangan normal.
+Stok Sumsel 27 Okt: NaCl total 17.200, pakai 8.200, sisa 9.000 kg; dry ice total 10.916, pakai 800, sisa 10.116 kg; masuk 7.000 kg NaCl.
+
+b. POSKO LANUD SAM (Kalsel/Kalteng), 27 Okt (jam WITA):
+Dry ice: A-2107 S2 11.18-12.57 Banjarbaru 800 kg; PK-SNC S1 13.00-13.57 Banjarmasin 500 kg; A-2119 S2 13.15-14.37 tenggara Banjarbaru 800 kg. Total 3 sortie 2.100 kg dry ice.
+NaCl: PK-SNL S1 07.33-09.35 Katingan, Kotawaringin Timur 1.000 kg; PK-SNL S2 11.14-13.46 Tanah Bumbu, Kotabaru 1.000 kg; A-2107 S1 07.46-09.40 Kapuas, Pulang Pisau 800 kg; A-2105 S1 08.12-09.25 Pulang Pisau, Katingan 800 kg; A-2119 S1 08.49-10.41 Palangka Raya, Katingan 800 kg; A-2904 S1 mulai 13.32 Kalteng bagian barat 2.000 kg (on air); A-1328 S1 mulai 15.06 Kalteng dan Kalsel 4.800 kg (on air). Total 7 sortie 11.200 kg NaCl.
+Hasil: PM2.5 Banjarbaru umumnya Tidak Sehat 00.00-15.00 WITA, puncak 108,8 pukul 15.00 WIB; saat penyemaian dry ice turun 14,55% dari 88 (11.00 WITA) ke 75,2 (12.00 WITA). Visibility Syamsudin Noor 1.500 m pagi ke 5.000 m mulai 12.30 WITA.
+Stok SAM: dry ice 15.160 kg (BMKG 7.760, Mitra BNPB 7.400); NaCl 11.000 kg (BMKG 2.800, Mitra 8.200); CaO 2.000 kg (Mitra BNPB).
+Serviceable: PK-SNK, PK-SNL, PK-SNC, A-1328, A-2904, A-2107, A-2119, A-2105.
+
+c. POSKO LANUD IKR (Palangka Raya): PK-FPU OMC 26 Okt 3 sortie, 1.000 kg NaCl per sortie. 27 Okt PK-FPU OMC ETD TBA.
+
+d. POSKO LANUD DHOMBER (Kaltim): rekap OMC Kaltim 30 sortie, NaCl 28.800 kg (periode tidak tertulis).
+
+e. POSKO LANUD MERAUKE (Papua Selatan), 27 Okt (WIT):
+PK-SCG kumulatif 8 sortie + 1 on progress, 20 jam 39 menit, NaCl 9.000 kg.
+S1 14.58-17.34 WIT, Merauke, Boven Digoel, Mappi, 11.000-11.500 ft, 1.000 kg NaCl. S2 on progress, Merauke, 1.000 kg NaCl.
+
+f. Hujan 27 Okt: radar BMKG hujan ringan-lebat di Katingan, Palangka Raya, Pulang Pisau, Kotawaringin Timur, Kapuas. PM2.5 14.00 WIB Pangkalan Bun 199,4, Palangka Raya 72,5.
+
+=== Lapsit Posko OMC Hari ke-10 (Waasops Panglima TNI), 27 Okt 2026 ===
+Rekap 16-27 Okt:
+- Sumsel (Lanud SMH): 143 sorti OMC; 35 sorti dry ice 28,6 ton; 35 sorti NaCl 51 ton.
+- Kalteng: 110 sorti OMC; 36 sorti dry ice 29,1 ton; 39 sorti NaCl 57,6 ton.
+- Kalsel (Lanud SAM): 80 sorti OMC; 4 sorti dry ice 2,3 ton; 11 sorti NaCl 10,6 ton.
+- Jawa Barat: PK-ALA 1 sorti 1 ton NaCl (Sumedang, Subang, Majalengka, Kuningan, Gunung Ciremai).
+- Jawa Tengah: 7 sorti, 16.500 liter (water bombing heli TNI, bukan OMC).
+- Kumulatif 333 sorti OMC Sumsel+Kalteng+Kalsel, 16 sorti Jabar+Jateng.
+Catatan laporan sendiri: angka rekap umum belum sesuai rincian per wilayah, perlu verifikasi.
+Hujan 27 Okt: sedang di Sumsel, Kalteng, Kalsel; sedang-tinggi Jabar dan Jateng. 26-27 Okt hujan sangat lebat Tabalong, lebat Murung Raya.

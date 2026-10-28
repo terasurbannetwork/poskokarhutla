@@ -56,3 +56,8 @@ tanggal_operasi,provinsi,pesawat,sortie,nacl_kg,dry_ice_kg,sasaran,hujan_dilapor
 2026-10-26,Sumatera Selatan,Hercules A-1319,1,4800,0,OKI;OKU;OKU Timur,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),dry ice nihil 26 Okt,WA Laporan Karhutla 27 Okt
 2026-10-26,Sumatera Selatan,CASA A-2104,2,1600,0,OKI;Banyuasin,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),,WA Laporan Karhutla 27 Okt
 2026-10-26,Sumatera Selatan,PK-IKC,2,2000,0,Banyuasin;OKI,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),,WA Laporan Karhutla 27 Okt
+2026-10-22,Kalimantan Tengah,tidak dirinci,7,1000,5000,Murung Raya;Gunung Mas;Palangka Raya;TNTP,Murung Raya,,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Sumatera Selatan,tidak dirinci,9,1800,5800,Palembang dan sekitarnya;lintas Lampung-OKU Timur,,dilaporkan perbaikan jarak pandang dan penurunan PM2.5 (klaim laporan),WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Kalimantan Barat,tidak ada OMC,0,0,0,,Sambas;Singkawang;Mempawah;Sintang (ringan radar),awan potensial belum mendukung,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Kalimantan Selatan,tidak ada OMC,0,0,0,,,armada siaga,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Jambi,tidak ada OMC,0,0,0,,,armada siaga; BMKG peringatkan hujan sedang-lebat Muaro Jambi dan Tanjung Jabung Timur,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
