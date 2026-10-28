@@ -157,7 +157,10 @@ ALAT = [
 
 
 import json, os
-FOTO = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "foto/pilihan.json")))
+try:
+    FOTO = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "foto/pilihan.json")))
+except OSError:      # foto Commons tidak di-commit (runner CI): lampiran memakai gambar teknik SVG
+    FOTO = {}
 
 
 def gambar(k):

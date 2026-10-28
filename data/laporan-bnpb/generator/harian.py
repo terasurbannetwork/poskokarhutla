@@ -244,7 +244,7 @@ class Deck:
             return {'pil': pil, 'stat': stat}
         if x['jenis'] == 'angin':
             rusak = ', '.join(t for t in (f"{f0(a['kios'])} kios" if a.get('kios') else '', f"{f0(a['rumah'])} rumah" if a.get('rumah') else '') if t)
-            return {'pil': ([(f'{rusak} rusak', 'F7F8FA', INK, 'rumah_slate')] if rusak else [])
+            return {'pil': ([(f'{rusak} rusak', 'F7F8FA', INK, 'rumah_slate')] if rusak else []) + ([(f"±{f0(a['kk'])} KK", 'F7F8FA', INK, 'orang_slate')] if a.get('kk') else [])
                     + [('penanganan' if x['tangani'] else 'selesai', T_ORG if x['tangani'] else T_NAVY, ORG if x['tangani'] else NAVY, 'awas_oranye' if x['tangani'] else 'kalender_navy')]}
         kon = x['teks']['kondisi'].lower()
         st = 'pendinginan' if 'pendinginan' in kon else 'masih pemadaman' if x['status'] == 'belum' else 'padam' if x['status'] == 'selesai' else 'penanganan'
@@ -335,8 +335,9 @@ class Deck:
         o += s.garis(8668512, 3557016, 2809951, 'E5E7EB') + s.tx(8668512, 3621024, 2864815, 182880, [f'BENCANA DALAM PENANGANAN ({s.N_TOT - s.N_SEL})'], sz=750, b=True, c=MERAH, spc=100)
         rp = min(164592, (5300000 - 3840480) // max(1, len(baris))); XE = 11180000   # ujung kanan angka pil; satuan terpanjang ("rumah") masih di dalam pil
         def ringkas(xs):
-            a = {m: sum(x['angka'].get(m, 0) for x in xs) for m in ('kk', 'rumah', 'rumah_dampak', 'mengungsi', 'jiwa')}
-            return (f"{f0(a['kk'])} KK" if a['kk'] else f"{f0(a['rumah'] or a['rumah_dampak'])} rumah" if a['rumah'] or a['rumah_dampak']
+            a = {m: sum(x['angka'].get(m, 0) for x in xs) for m in ('kk', 'rumah', 'rumah_dampak', 'mengungsi', 'jiwa', 'ha')}
+            ha = f0(a['ha']) if a['ha'] == int(a['ha']) else str(round(a['ha'], 1)).replace('.', ',')   # TPA 28 Okt: ±15,5 ha, bukan "penanganan"
+            return (f"{f0(a['kk'])} KK" if a['kk'] else f"{ha} ha" if a['ha'] else f"{f0(a['rumah'] or a['rumah_dampak'])} rumah" if a['rumah'] or a['rumah_dampak']
                     else f"{f0(a['mengungsi'])} mengungsi" if a['mengungsi'] else 'penanganan')
         for n, (k, x) in enumerate(baris):
             y = 3840480 + n * rp; q = int(rp * .8)
@@ -359,7 +360,8 @@ class Deck:
                 o += (s.tx(10650000, y, 260000, q, ['sisa'], sz=720, b=True, c=tc, an='ctr', wrap='none') + s.au(XE, y, q, f"± {f0(x['sat']['sisa'])}", 'ha', 720, c=tc, wn=380000, wu=200000)
                       if round(x['sat']['sisa']) or not x['sat'].get('api') else s.tx(10746943, y, 713232, q, [isi], sz=620, b=True, c=tc, an='ctr', wrap='none'))
             else:
-                pe = s.pecah(isi); ikp = ('orang' if pe and pe[1] == 'KK' else 'rumah') + ('_k' if j == 'kekeringan' else '_slate')
+                pe = s.pecah(isi); ikp = 'api_merah' if pe and pe[1] == 'ha' else ('orang' if pe and pe[1] == 'KK' else 'rumah') + ('_k' if j == 'kekeringan' else '_slate')
+                if pe and pe[1] == 'ha': pe = (f'± {pe[0]}', 'ha')
                 o += s.kotak(10470000, y, 1070000, q, tint, 'roundRect', adj=50000) + s.gambar(10520000, y + q * .16, q * .68, q * .68, ikp)
                 o += s.au(XE, y, q, *pe, 720, c=tc, wn=500000, wu=300000) if pe else s.tx(10545775, y, 932688, q, [isi], sz=620, b=True, c=tc, al='ctr', an='ctr', wrap='none')
         o += s.kotak(548640, 5468112, 11094415, 822960, 'FDF4EC', 'roundRect', adj=8889) + s.tx(694944, 5541264, 3657600, 182880, ['YANG AKAN DILAKUKAN BNPB'], sz=750, b=True, c=ORG, spc=100)
@@ -393,7 +395,7 @@ class Deck:
             y = y0 + n * rp
             if n and jenis != 'grup': o += s.garis(676656, y, 6464808, 'EEF0F3')
             if jenis == 'grup':
-                tot = sum(x['sat']['kum'] for x in xs); ph = int(rp * .62)
+                tot = next((x['sat']['kum'] for x in xs if not x['lokasi']), None) or sum(x['sat']['kum'] for x in xs); ph = int(rp * .62)   # angka provinsi sudah memuat kabupatennya
                 o += s.kotak(676656, y + rp * .06, 6464808, rp * .88, 'F7F8FA') + s.tx(749808, y, 1645920, rp, [NAMA[p]], sz=sz_n, b=True, an='ctr')
                 wn = 1645920 if len(NAMA[p]) > 14 else 1040000
                 o += s.kotak(749808 + wn - 80000, y + (rp - ph) / 2, 638251, ph, T_ORG, 'roundRect', adj=50000) + s.gambar(749808 + wn - 80000 + ph * .35, y + (rp - ph) / 2 + ph * .2, ph * .6, ph * .6, 'api_o2') + s.tx(749808 + wn - 80000 + ph * .8, y + (rp - ph) / 2, 638251 - ph * .8, ph, [f'{len(xs)} kejadian'], sz=int(sz_p * .9), b=True, c=ORG, al='ctr', an='ctr')
@@ -401,7 +403,7 @@ class Deck:
                 continue
             x = xs[0]; sa = x['sat']; ind = 164592 if jenis == 'anak' else 0; d = int(min(237744, rp * .6))
             o += s.status_ikon(676656 + ind, y + (rp - d) / 2, d, x['tangani'])
-            nm = [(x['lokasi'], INK, False)] if jenis == 'anak' else [(NAMA[p], INK, True)] + ([(', ' + x['lokasi'], INK, False)] if x['lokasi'] else [])
+            nm = [(x['lokasi'] or 'Tingkat provinsi', INK, False)] if jenis == 'anak' else [(NAMA[p], INK, True)] + ([(', ' + x['lokasi'], INK, False)] if x['lokasi'] else [])
             o += s.tx(990000 + ind, y, 2073240 - ind, rp, [nm], sz=sz_n, an='ctr', wrap='none')
             o += s.au(3291840 + 820000, y, rp, f"± {f0(sa['kum'])}", 'ha', int(sz_n * .98), wn=820000)
             if x['tangani']:
@@ -411,38 +413,58 @@ class Deck:
                 o += s.kotak(5964742, yy, 1155436, ph, T_ORG, 'roundRect', adj=50000) + s.gambar(6037894, yy + (ph - ic) / 2, ic, ic, 'api_o2') + (s.tx(6211630, yy, 260000, ph, ['sisa'], sz=sz_p, b=True, c=ORG, an='ctr', wrap='none') + s.au(6211630 + 690000, yy, ph, f"± {f0(sa['sisa'])}", 'ha', sz_p, c=ORG, wn=420000, wu=180000)
                                                                                                                if round(sa['sisa']) or not sa.get('api') else s.tx(6211630, yy, 899404, ph, [sis], sz=sz_p, b=True, c=ORG, an='ctr', wrap='none'))
         QX, QW = 7406640, 4236415; XL, XR = 7571232, 11478463
-        lain, yy = '', 0
-        for jn, (nama, ikon, warna, tint) in JENIS_LAIN.items():
-            xs = [x for x in LN if x['jenis'] == jn]
-            if not xs: continue
-            if yy: yy += 54864
-            lain += f'@{yy}@' + s.kotak(XL, 0, XR - XL, 182880, 'F3F5F8', 'roundRect', adj=30000) + s.kotak(XL + 45720, 18288, 146304, 146304, warna, 'ellipse') + s.gambar(XL + 73152, 45720, 91440, 91440, f'{ikon}_putih')
-            p_, _ = s.pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, {'gempa': 'gempa_slate', 'api': 'api_merah', 'banjir': 'banjir_navy', 'angin': 'angin_slate'}[ikon], sz=580, h=128016)
-            lain += s.tx(XL + 237744, 0, 1600000, 182880, [nama], sz=820, b=True, an='ctr', wrap='none') + p_ + '@@'
-            yy += 182880 + 18288
-            for x in xs:
-                dt_ = s.detail(x)
-                lain += f'@{yy}@' + s.status_ikon(XL + 18288, 18288, 146304, x['tangani']) + s.tx(XL + 219456, 0, 2286000, 182880, [[(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], INK, False)] if x['lokasi'] else [])], sz=760, an='ctr', wrap='none')
-                px_ = XR - 18288; pills = ''
-                for t, f, c, ik in reversed(dt_.get('pil', [])):
-                    ww = 120000 + len(t) * 700 * 62 + 164592 * .9; px_ -= ww; pills += s.pil(px_, 9144, t, f, c, ik, sz=700, h=164592)[0]; px_ -= 54864
-                lain += pills + '@@'
-                yy += 182880 + 9144
-                if dt_.get('stat'):
-                    sw = (XR - XL - 219456 - 2 * 45720) // len(dt_['stat']); sx = XL + 219456
-                    lain += f'@{yy}@'
-                    for v, lab, ik, c in dt_['stat']:
-                        lain += s.kotak(sx, 0, sw, 320040, 'F7F8FA', 'roundRect', adj=14000) + s.gambar(sx + 64008, 45720, 118872, 118872, ik) + s.tx(sx + 219456, 18288, sw - 240000, 164592, [v], sz=950, b=True, c=c, an='ctr', wrap='none')
-                        lain += s.tx(sx + 64008, 182880, sw - 100000, 118872, [lab], sz=620, c=TEKS, an='ctr', wrap='none')
-                        sx += sw + 45720
-                    lain += '@@'; yy += 320040 + 18288
-                yy += 9144
+        def pils(ps, px_, y_):
+            o_ = ''
+            for t, f, c, ik in reversed(ps):
+                ww = 120000 + len(t) * 700 * 62 + 164592 * .9; px_ -= ww; o_ += s.pil(px_, y_, t, f, c, ik, sz=700, h=164592)[0]; px_ -= 54864
+            return o_, px_
+        def isi_lain(ringkas):
+            lain, yy = '', 0
+            for jn, (nama, ikon, warna, tint) in JENIS_LAIN.items():
+                xs = [x for x in LN if x['jenis'] == jn]
+                if not xs: continue
+                if ringkas:
+                    # 28 Okt: kolom kanan tidak muat (7 kekeringan + 7 lainnya): satu baris per kejadian, angka jadi pil, baris kedua bila pil tidak muat
+                    for x in xs:
+                        dt_ = s.detail(x); st = [(f"{v} {lab.replace(' terdampak', '').replace('jiwa ', '')}", 'F7F8FA', c, ik) for v, lab, ik, c in dt_.get('stat', [])]
+                        nm = [(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], INK, False)] if x['lokasi'] else [])
+                        xn = XL + 400000 + int(sum(len(t) for t, _, _ in nm) * 760 * 50)
+                        lain += f'@{yy}@' + s.status_ikon(XL + 18288, 18288, 146304, x['tangani']) + s.kotak(XL + 201168, 18288, 146304, 146304, warna, 'ellipse') + s.gambar(XL + 228600, 45720, 91440, 91440, f'{ikon}_putih')
+                        lain += s.tx(XL + 400000, 0, 2286000, 182880, [nm], sz=760, an='ctr', wrap='none')
+                        satu, px_ = pils(dt_.get('pil', []) + st, XR - 18288, 9144)
+                        if px_ > xn: lain += satu + '@@'; yy += 182880 + 27432; continue
+                        lain += pils(dt_.get('pil', []), XR - 18288, 9144)[0] + '@@'; yy += 182880 + 9144
+                        lain += f'@{yy}@' + pils(st, XR - 18288, 9144)[0] + '@@'; yy += 182880 + 27432
+                    continue
+                if yy: yy += 54864
+                lain += f'@{yy}@' + s.kotak(XL, 0, XR - XL, 182880, 'F3F5F8', 'roundRect', adj=30000) + s.kotak(XL + 45720, 18288, 146304, 146304, warna, 'ellipse') + s.gambar(XL + 73152, 45720, 91440, 91440, f'{ikon}_putih')
+                p_, _ = s.pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, {'gempa': 'gempa_slate', 'api': 'api_merah', 'banjir': 'banjir_navy', 'angin': 'angin_slate'}[ikon], sz=580, h=128016)
+                lain += s.tx(XL + 237744, 0, 1600000, 182880, [nama], sz=820, b=True, an='ctr', wrap='none') + p_ + '@@'
+                yy += 182880 + 18288
+                for x in xs:
+                    dt_ = s.detail(x)
+                    lain += f'@{yy}@' + s.status_ikon(XL + 18288, 18288, 146304, x['tangani']) + s.tx(XL + 219456, 0, 2286000, 182880, [[(NAMA[x['prov']], INK, True)] + ([(', ' + x['lokasi'], INK, False)] if x['lokasi'] else [])], sz=760, an='ctr', wrap='none')
+                    lain += pils(dt_.get('pil', []), XR - 18288, 9144)[0] + '@@'
+                    yy += 182880 + 9144
+                    if dt_.get('stat'):
+                        sw = (XR - XL - 219456 - 2 * 45720) // len(dt_['stat']); sx = XL + 219456
+                        lain += f'@{yy}@'
+                        for v, lab, ik, c in dt_['stat']:
+                            lain += s.kotak(sx, 0, sw, 320040, 'F7F8FA', 'roundRect', adj=14000) + s.gambar(sx + 64008, 45720, 118872, 118872, ik) + s.tx(sx + 219456, 18288, sw - 240000, 164592, [v], sz=950, b=True, c=c, an='ctr', wrap='none')
+                            lain += s.tx(sx + 64008, 182880, sw - 100000, 118872, [lab], sz=620, c=TEKS, an='ctr', wrap='none')
+                            sx += sw + 45720
+                        lain += '@@'; yy += 320040 + 18288
+                    yy += 9144
+            return lain, yy
+        lain, yy = isi_lain(False)
         LH = 411480 + yy + 64008
         # panel setinggi isinya (pemilik 24 Okt): kekeringan di atas, bencana lainnya langsung di bawahnya, keterangan menempel di bawahnya
         PK_ = {p: [x for x in KR if x['prov'] == p] for p in dict.fromkeys(x['prov'] for x in KR)}
         if len(PK_) > 1: PK_ = {None: KR}   # 27 Okt: 9 kekeringan di 6 provinsi tidak muat sebagai blok per provinsi
         BR = {p: len(xs) + (len(xs) > 1) for p, xs in PK_.items()}; KEPALA = 2304288 - 1856232 - (265176 if None in PK_ else 0)
         KB_isi = 1856232 + sum(KEPALA + 320040 * n + 91440 for n in BR.values()) - 91440 + 137160 if KR else 1325880
+        if KR and LN and (6007608 - LH - 2 * 91440 - 1856232 - len(BR) * KEPALA) // max(1, sum(BR.values())) < 230000:
+            lain, yy = isi_lain(True); LH = 411480 + yy + 64008
         LY = KB_isi + 91440 if 6007608 - (KB_isi + 91440) >= LH else 6007608 - LH
         KB = LY - 91440
         if KR:
@@ -462,7 +484,8 @@ class Deck:
                 r += s.au(9640000, y, rp, *(s.pecah(jw) or ('–', 'jiwa')), 800, c=TEKS, b=False, wn=400000, wu=260000) if s.pecah(jw) or jw == 'jiwa –' else s.tx(9150000, y, 700000, rp, [jw], sz=800, c=TEKS, an='ctr', wrap='none')
                 ph_, yp = 164592, y + (rp - 164592) / 2; pl, lc = s.pecah(liter), '8A6A2E' if not b else INK
                 r += s.kotak(9930000, yp, 880000, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(9985000, yp + 32000, 100584, 100584, 'tetes_k')
-                r += s.au(9930000 + 620000, yp, ph_, *pl, 720, c=lc, wn=430000, wu=200000) if pl else s.tx(10110000, yp, 650000, ph_, [liter], sz=720, b=True, c=lc, an='ctr', wrap='none')
+                # 28 Okt pemilik: tanpa data ditulis kata-kata, bukan strip; teks lebih kecil di tengah sisa pil supaya tidak meluber
+                r += s.au(9930000 + 620000, yp, ph_, *pl, 720, c=lc, wn=430000, wu=200000) if pl else s.tx(10100000, yp, 690000, ph_, ['belum ada data'], sz=650, c=TEKS, al='ctr', an='ctr', wrap='none')
                 tk = re.search(r'([\d.]+)', tangki)
                 if tk: r += (s.kotak(10870000, yp, 608463, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(10910000, yp + 27432, 109728, 109728, 'truk_kering')
                              + s.au(10870000 + 300000, yp, ph_, tk[1], 'tangki', 720, c=lc, wn=120000, wu=300000))

@@ -9279,7 +9279,12 @@
 "luas perkiraan (ukuran piksel S-NPP diperkirakan)": "estimated area (S-NPP pixel size approximated)",
 "{0} titik S-NPP warisan memakai ukuran piksel perkiraan; garis luar dan luas cluster ini perkiraan": "{0} legacy S-NPP hotspots use an estimated pixel size; this cluster's outline and area are estimates",
 "perkiraan": "estimate",
-"rentang {0}–{1} ha, perkiraan": "range {0}–{1} ha, estimate"
+"rentang {0}–{1} ha, perkiraan": "range {0}–{1} ha, estimate",
+"Belum ada data titik panas NASA FIRMS untuk hari ini.": "No NASA FIRMS hotspot data for today yet.",
+"firespot hari ini": "today's firespots",
+"firespot kemarin": "yesterday's firespots",
+"titik panas terdeteksi": "hotspots detected",
+"Umur deteksi": "Detection age"
 },
 "pola": [
 ["^(\\p{L}[\\p{L}\\d-]*) lewat ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB, data biasanya siap ((?:\\p{L}+ )?\\d{2}\\.\\d{2}) WIB\\.$", "$1 passes $2 WIB, data usually ready $3 WIB."],
@@ -9292,6 +9297,7 @@
 ["^Citra (\\d.*)$", "Image of $1"],
 ["^Area terbakar (\\d.*) sampai (\\d.*)$", "Burnt area $1 to $2"],
 
+["^firespot (\\p{L}{3} \\d{1,2} \\p{L}{3,4})$", "firespots $1"],
 ["^titik (\\p{L}{3} \\d{1,2} \\p{L}{3,4})$", "hotspots $1"],
 ["^Titik panas (\\p{L}{3} \\d{1,2} \\p{L}{3,4})$", "Hotspots $1"],
 ["^Data satelit tidak lengkap pada (\\d+) hari, mulai (.+)$", "Satellite data incomplete on $1 days, from $2"],
@@ -9382,6 +9388,15 @@
 ["^di ([A-Z][A-Za-z .]+)$", "in $1"],
 ["^hingga (.+?), tertinggi ke-(\\d+) sejak (\\d{4})$", "to $1, rank $2 since $3"],
 ["^▲▼ dibanding (.+)$", "▲▼ vs $1"],
+["^Data terakhir, (.+?) s\\.d\\. (.+?) WIB$", "Latest data, $1 to $2 WIB"],
+["^Titik panas (\\p{L}{3} \\d{1,2} \\p{L}{3,4}) \\(data terakhir\\)$", "Hotspots $1 (latest data)"],
+["^Belum ada data titik panas NASA FIRMS untuk hari ini\\. Data terakhir (.+):$", "No NASA FIRMS hotspot data for today yet. Latest data $1:"],
+["^Belum ada data titik panas NASA FIRMS sejak (.+)$", "No NASA FIRMS hotspot data since $1"],
+["^data terakhir s\\.d\\. (.+?) WIB$", "latest data up to $1 WIB"],
+["^s\\.d\\. ([\\d.:]+) WIB$", "up to $1 WIB"],
+["^Titik panas terbanyak (\\p{L}{3} \\d{1,2} \\p{L}{3,4})$", "Most hotspots $1"],
+["^Kabupaten/kota dengan titik panas terbanyak (\\p{L}{3} \\d{1,2} \\p{L}{3,4})$", "Regencies/cities with the most hotspots $1"],
+["^Keyakinan tinggi (\\p{L}{3} \\d{1,2} \\p{L}{3,4})$", "High confidence $1"],
 ["^Total (.+?) s\\.d\\. (.+)$", "Total $1 to $2"],
 ["^Grand total s\\.d\\. (.+)$", "Grand total to $1"],
 ["^Okt–Des (\\d{4}) s\\.d\\. (.+)$", "Oct–Dec $1 to $2"],

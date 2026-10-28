@@ -47,7 +47,7 @@
 
   /* tombol dummy 🧪/🧹 (DUMMY.md) tinggal di slot kanan judul halaman, di luar #app yang dirender ulang tiap ganti tab */
   const aksiJudul = document.getElementById("aksiJudul");
-  aksiJudul.innerHTML = '<button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
+  aksiJudul.innerHTML = '<a class="ad-tombol" href="/admin/labelfoto">🏷️ Label kerusakan</a><button class="ad-tombol ad-bulat" data-dummy="isi" title="Isi data dummy untuk halaman ini" aria-label="Isi data dummy">🧪</button><button class="ad-tombol ad-bulat" data-dummy="hapus" title="Hapus semua data dummy" aria-label="Hapus data dummy">🧹</button>';
   const klik = async e => {
     const t = e.target.closest("[data-tab]"); if (t) { tab = t.dataset.tab; app.querySelectorAll("[data-tab]").forEach(b => b.setAttribute("aria-pressed", b === t)); return muat(); }
     const d = e.target.closest("[data-dummy]");

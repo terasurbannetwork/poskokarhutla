@@ -93,3 +93,6 @@ scripts/data/sippa/pilot/g_*.json
 scripts/data/sippa/pilot/data.json
 scripts/data/sippa/pilot/situs.json
 scripts/data/sippa/pilot/dossier.*
+
+# Renlap Generator: folder kerja lokal (renlap.py --out)
+scripts/data/sippa/pilot/kerja/

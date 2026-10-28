@@ -1,13 +1,15 @@
 """data.json + teks.py -> dossier.html: 2 halaman ringkasan potret + 3 halaman lanskap per lokasi (5 selang pendek, 5 selang panjang)."""
-import json, math
+import json, math, os, re
 from datetime import datetime, timedelta, timezone
 from html import escape as e
 from analisis import proyeksi, arah, OUT
-from kumpul import km
-from teks import TEKS, UMUM, KIT, UJI, teks_panjang
+from kumpul import km, GENERIK, HERE
+from teks import TEKS, UMUM, KIT, UJI, DALAM_PANJANG, teks_panjang
+import teks_renlap
 from lampiran import halaman_lampiran, ALAT
 
 WIB = timezone(timedelta(hours=7))
+CSS_RENLAP = ".pk{position:absolute;left:9mm;right:9mm;bottom:2.2mm;font-size:5.6pt;color:#64748b;line-height:1.2}"
 D = json.load(open(f"{OUT}/data.json"))
 R = D["ringkas"]
 BLN = {"Jan": "Jan", "Feb": "Feb", "Mar": "Mar", "Apr": "Apr", "May": "Mei", "Jun": "Jun", "Jul": "Jul", "Aug": "Agu", "Sep": "Sep",
@@ -41,6 +43,11 @@ def koor(p):
 PERAN = {"K9321": "UJI JALAN KAKI JAUH"}
 SENSOR = {"N": "S-NPP", "N20": "NOAA-20", "N21": "NOAA-21", "M": "MODIS"}
 ACUAN = wib(R["acuan"], "%d %b %Y, %H.%M")
+HARI = R.get("hari_fwi", "2026-10-26")                  # tanggal baris FWI yang dipakai kartu cuaca
+DARI = len(D["situs"])
+teks_renlap.HARI_FWI[0] = HARI
+if GENERIK:
+    UMUM = teks_renlap.umum(D)                           # teks umum renlap: tanpa jadwal dan nama lokasi pilot Kalteng
 
 
 def target(s):
@@ -128,6 +135,8 @@ def baris(k, v):
 def uji(s):
     if s["id"] in UJI:
         return UJI[s["id"]]
+    if GENERIK and not s.get("paksa"):
+        return "Uji suntik air ke bara gambut, selang pendek" if s["target"] else "Latihan pasang dan bongkar alat, tanpa api"
     h = s["hid"]
     return f'Uji selang panjang ± {ang(h["L"])} m' + (f', {h["relay"]["n_ruas"] - 1} pompa tambahan' if h.get("relay") else "")
 
@@ -137,7 +146,7 @@ def bagian(s):
 
 
 def kepala(s, sub):
-    return (f'<header class="kepala"><div class="pil{" pb" if s.get("paksa") else ""}">{s["no"]}</div><div class="kj1"><div class="sup">LOKASI {s["no"]} DARI 10, {bagian(s)}, HALAMAN {sub}</div>'
+    return (f'<header class="kepala"><div class="pil{" pb" if s.get("paksa") else ""}">{s["no"]}</div><div class="kj1"><div class="sup">LOKASI {s["no"]} DARI {DARI}, {bagian(s)}, HALAMAN {sub}</div>'
             f'<h1>{e(s["nama"])}</h1></div><div class="tujuan"><span>Untuk</span>{e(uji(s))}</div>'
             f'<div class="kanan">BNPB SIPPA<br><span>Data per {ACUAN}</span></div></header>')
 
@@ -172,7 +181,8 @@ def alur(s):
         tuju = "ke dermaga" if a["menit"]["perahu"] else "ke ujung jalan"
         L.append({"judul": f'Naik mobil {a["menit"]["jalan"]} menit', "ket": f"{tuju}: {jarak}{rinci}."})
     if a["menit"]["perahu"]:
-        L.append({"judul": "Naik perahu di dermaga", "ket": "pindahkan alat dari mobil ke perahu", "titik": DERMAGA, "warna": "#334155"})
+        L.append({"judul": "Naik perahu di dermaga", "ket": "pindahkan alat dari mobil ke perahu", "warna": "#334155",
+                  **({"titik": DERMAGA} if s["id"] == "K7357" else {})})   # lokasi dermaga hanya diketahui untuk K7357
         L.append({"judul": f'Naik perahu {a["menit"]["perahu"]} menit', "ket": f'{ang(a["km"]["perahu"], 1)} km lewat sungai dan kanal.'})
     perahu = a["ujung"] == "perahu"
     L.append({"judul": "Turun perahu" if perahu else "Parkir di ujung jalan", "ket": "turunkan alat, bagi bawaan per orang",
@@ -340,8 +350,15 @@ def keterangan(s):
     m = s["peta"]["detail"]
     jam = datetime.fromisoformat(f'{m["tgl"]}T{m["jam_utc"]}:00+00:00').astimezone(WIB)
     warna = "".join(f'<span><i class="sw" style="background:{c}"></i><b>{a}</b> = {b}</span>' for c, a, b in WARNA)
-    return (f'<div class="ket2"><div class="warna"><span class="jdl">Warna citra</span>{warna}</div>'
-            f'<ul><li><b>Citra:</b> {m["satelit"]}, {tgl_id(m["tgl"])} pukul {jam:%H.%M} WIB. Kotak {ang(m["km"],1)} × {ang(m["km"],1)} km.</li>'
+    if m.get("esri"):      # tidak ada adegan Sentinel-2 yang terbaca: Esri warna asli, tanggal pengambilan tidak diketahui
+        blok = ""
+        citra = (f'<li><b>Citra:</b> Esri World Imagery, warna asli, tanggal pengambilan tidak diketahui (bukan citra terbaru; Sentinel-2 tidak terbaca). '
+                 f'Kotak {ang(m["km"],1)} × {ang(m["km"],1)} km.</li>')
+    else:
+        blok = f'<div class="warna"><span class="jdl">Warna citra</span>{warna}</div>'
+        citra = f'<li><b>Citra:</b> {m["satelit"]}, {tgl_id(m["tgl"])} pukul {jam:%H.%M} WIB. Kotak {ang(m["km"],1)} × {ang(m["km"],1)} km.</li>'
+    return (f'<div class="ket2">{blok}'
+            f'<ul>{citra}'
             f'<li><b>Titik api:</b> satelit NASA FIRMS sampai {ACUAN}.</li>'
             f'<li><b>Klik</b> penanda atau titik api untuk membuka lokasinya di Google Maps.</li>'
             f'<li>Garis selang dan jalan kaki hanya menunjukkan arah; di lapangan ikuti tanggul atau setapak.</li></ul></div>')
@@ -377,7 +394,7 @@ def sidebar(s):
         if ca.get("tanggung"):
             h.append(baris_kartu("Kawasan", e(", ".join(reversed(ca["tanggung"])))))
     h.append("</table></div>")
-    wx = next((d for d in s["fwi_sel"]["hari"] if d["tgl"] == "2026-10-26"), None)
+    wx = next((d for d in s["fwi_sel"]["hari"] if d["tgl"] == HARI), None)
     h.append('<div class="kartu"><div class="kj">Cuaca dan kekeringan hari ini</div><table>')
     if wx:
         h.append(baris_kartu("Kekeringan gambut (DC)", f'<b class="oranye">{ang(wx["dc"])}</b>{", sangat kering (di atas 350)" if wx["dc"] > 350 else ""}'))
@@ -390,7 +407,8 @@ def sidebar(s):
         h.append('<tr><td>Peluang, %</td>' + "".join(f"<td>{x}</td>" for x in cu["precipitation_probability_max"]) + "</tr></table>")
     h.append("</div>")
     h.append('<div class="kartu"><div class="kj">Lahan dan riwayat</div><table>')
-    h.append(baris_kartu("Gambut", f'<b>Ya</b>, di peta gambut resmi; kedalaman: {t["dalam"]}'))
+    h.append(baris_kartu("Gambut", f'<b>Ya</b>, di peta gambut resmi; kedalaman: {t["dalam"]}' if s.get("gambut_prims", True)
+                         else f'<b>Tidak tercatat</b> di peta gambut resmi 1:250.000; kedalaman: {t["dalam"]}'))
     h.append(baris_kartu("Tahun ada api", f'<b>{k["kekerapan_sel22"]}</b> dari 14 tahun (2012–2025)'))
     h.append(baris_kartu("Desa", f'{e(s["desa"]["desa"])}, Kec. {e(s["desa"]["kecamatan"])}'))
     h.append(baris_kartu("Kesatuan hidrologis gambut", e(s["khg"]["nama_khg"].replace("KHG ", ""))))
@@ -597,34 +615,46 @@ def halaman_ringkas():
     S = D["situs"]
     A = [s for s in S if not s.get("paksa")]; B = [s for s in S if s.get("paksa")]
     kab = ", ".join(f"{n.replace('Kota Palangkaraya','Palangka Raya')} {ang(v)}" for n, v in R["kab"][:2])
+    tabelA = ('<h2 class="bag">Bagian A: selang pendek, pompa dekat api</h2><table class="utama">' + KOLOM
+              + "".join(baris_ringkas(s) for s in A) + "</table>") if A else ""
     satu = (f'<section class="hal potret"><header class="kepala1"><div class="sup">BNPB SIPPA, SISTEM PIPA PORTABEL KARHUTLA DAN BANJIR</div>'
-            f'<div class="baris1"><h1>Pilot Kalimantan Tengah: 10 lokasi uji</h1><div class="kanan">Kondisi per {ACUAN}<br>Dossier tim lapangan, {2 + 3 * len(S) + (len(ALAT) + 7) // 8} halaman</div></div></header>'
-            f'<div class="kpi4"><div><b class="oranye">{ang(R["kalteng48"])}</b><span>titik api Kalteng 25–26 Okt</span></div>'
-            f'<div><b class="kecilb">{kab}</b><span>kabupaten terbanyak</span></div><div><b>10 dari 10</b><span>lokasi di dalam peta gambut resmi</span></div>'
-            f'<div><b>5 + 5</b><span>lokasi selang pendek dan selang panjang</span></div></div>'
+            f'<div class="baris1"><h1>{R.get("judul", "Pilot Kalimantan Tengah: 10 lokasi uji")}</h1><div class="kanan">Kondisi per {ACUAN}<br>Dossier tim lapangan, {2 + 3 * len(S) + (len(ALAT) + 7) // 8} halaman</div></div></header>'
+            f'<div class="kpi4"><div><b class="oranye">{ang(R["kalteng48"])}</b><span>titik api {R["wilayah"] + " " + R["tgl_label"] if GENERIK else "Kalteng 25–26 Okt"}</span></div>'
+            f'<div><b class="kecilb">{kab}</b><span>kabupaten terbanyak</span></div><div><b>{R.get("n_gambut", 10)} dari {len(S)}</b><span>lokasi di dalam peta gambut resmi</span></div>'
+            f'<div><b>{len(A)} + {len(B)}</b><span>lokasi selang pendek dan selang panjang</span></div></div>'
             f'<p class="gagasan">{UMUM["gagasan"]}</p>'
-            f'<h2 class="bag">Bagian A: selang pendek, pompa dekat api</h2><table class="utama">{KOLOM}{"".join(baris_ringkas(s) for s in A)}</table>'
+            f'{tabelA}'
             f'<div class="dua1"><div class="kartu"><div class="kj">Cek gambut</div>{UMUM["cek_gambut"]}</div>'
             f'<div class="kartu"><div class="kj">Yang perlu diputuskan</div><ol class="rapat">{"".join(f"<li>{x}</li>" for x in UMUM["putus"])}</ol></div></div>'
             f'{SUMBER.format(acuan=ACUAN)}</section>')
-    Ls = [s["hid"]["L"] for s in B]
-    rentang = f"{ang(min(Ls) / 1000, 1)}–{ang(max(Ls) / 1000, 1)} km"
-    dua = (f'<section class="hal potret"><header class="kepala1"><div class="sup">BNPB SIPPA, PILOT KALIMANTAN TENGAH</div>'
-           f'<div class="baris1"><h1>Bagian B: selang panjang, pompa di tepi jalan</h1><div class="kanan">Kondisi per {ACUAN}</div></div></header>'
-           f'<p class="gagasan">{UMUM["panjang"].replace("RENTANG", rentang)}</p>'
-           f'<table class="utama">{KOLOM}{"".join(baris_ringkas(s) for s in B)}</table>'
+    if B:
+        Ls = [s["hid"]["L"] for s in B]
+        rentang = f"{ang(min(Ls) / 1000, 1)}–{ang(max(Ls) / 1000, 1)} km"
+        judul2 = "Bagian B: selang panjang, pompa di tepi jalan"
+        isi2 = (f'<p class="gagasan">{UMUM["panjang"].replace("RENTANG", rentang)}</p>'
+                f'<table class="utama">{KOLOM}{"".join(baris_ringkas(s) for s in B)}</table>')
+    else:                   # renlap tanpa lokasi selang panjang
+        judul2, isi2 = "Cara uji dan keselamatan", ""
+    dua = (f'<section class="hal potret"><header class="kepala1"><div class="sup">BNPB SIPPA, {"RENCANA LAPANGAN" if GENERIK else "PILOT KALIMANTAN TENGAH"}</div>'
+           f'<div class="baris1"><h1>{judul2}</h1><div class="kanan">Kondisi per {ACUAN}</div></div></header>{isi2}'
            f'<div class="dua1"><div class="kartu"><div class="kj">Cara menguji efektivitas, semua lokasi</div><ol class="rapat">{"".join(f"<li>{x}</li>" for x in UMUM["uji"])}</ol></div>'
            f'<div class="kartu"><div class="kj">Keselamatan, semua lokasi</div><ul class="rapat">{"".join(f"<li>{x}</li>" for x in UMUM["selamat"])}</ul></div></div>'
            f'{SUMBER.format(acuan=ACUAN)}</section>')
     return satu + dua
 
 
+if GENERIK and os.environ.get("RENLAP_TANPA_TEKS_TANGAN"):   # tolak teks tulisan tangan pilot (isinya bertanggal 26 Okt): semua lokasi dari templat
+    TEKS.clear(); DALAM_PANJANG.clear()
 for s in D["situs"]:
     if s["id"] not in TEKS:
-        TEKS[s["id"]] = teks_panjang(s["id"], s)
+        TEKS[s["id"]] = teks_panjang(s["id"], s) if s["id"] in DALAM_PANJANG else teks_renlap.teks_otomatis(s)
 
 html = (f'<!doctype html><html lang="id"><head><meta charset="utf-8"><title>SIPPA Pilot Kalteng: dossier lapangan</title>'
-        f'<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>{open(f"{OUT}/gaya.css").read()}</style></head><body>'
+        f'<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>{open(f"{HERE}/gaya.css").read()}{CSS_RENLAP if GENERIK else ""}</style></head><body>'
         + halaman_ringkas() + "".join(halaman_peta(s) + halaman_jalan(s) + halaman_pasang(s) for s in D["situs"]) + halaman_lampiran(ACUAN) + "</body></html>")
+if GENERIK:      # halaman lanskap diberi baris sumber dan kondisi; istilah satelit "titik panas", bukan "titik api"
+    pk = f'<div class="pk">{teks_renlap.SUMBER_PENDEK} Kondisi per {ACUAN}. BNPB SIPPA.</div>'
+    html = re.sub(r'(<section class="hal lanskap">.*?)</section>', lambda m: m.group(1) + pk + "</section>", html, flags=re.S)
+    html = html.replace("titik api", "titik panas").replace("Titik api", "Titik panas")
 open(f"{OUT}/dossier.html", "w").write(html)
 print("ok", len(html))

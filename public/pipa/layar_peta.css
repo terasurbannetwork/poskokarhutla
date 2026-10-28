@@ -18,6 +18,8 @@
 .sp-pola circle{paint-order:stroke}
 .sp-pola-a .sp-pola-isi,.sp-pola-d .sp-pola-isi,.sp-pola-c .sp-pola-isi{stroke:color-mix(in oklch,var(--w) 55%,#000);stroke-width:1}
 .zona-pil{gap:5px;padding-left:6px;text-transform:none}
+.sp-brgm{--b:oklch(58% .16 290);flex:none;overflow:visible}.sp-brgm-b{fill:var(--b);stroke:var(--card);stroke-width:1.2;stroke-linejoin:round}.sp-brgm.rencana .sp-brgm-b{fill:var(--card);stroke:var(--b);stroke-width:1.8}
+.sp-leg-brgm li{gap:5px}
 
 /* bilah kontrol peta */
 .sp-peta-bilah{position:relative;display:flex;flex-wrap:wrap;align-items:center;gap:10px var(--sp-2);padding:var(--sp-3);background:var(--card);border-radius:var(--r,16px);box-shadow:var(--bayang)}

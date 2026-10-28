@@ -16,7 +16,7 @@ const kepala = judul => `<!doctype html>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
-const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
+const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
   relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
 const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "kinerja", "pendataan"];
@@ -38,9 +38,9 @@ const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span><button class="ad-keluar" type="button" data-staf-keluar>Keluar</button>` : ""}
 </header>` : `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep">Admin</span>
-  <nav>${Object.entries(HAL).filter(([k]) => !BNPB.includes(k) || k === BNPB[0]).map(([k, [ik, l]]) => BNPB.includes(k)
+  <nav>${Object.entries(HAL).filter(([k]) => k !== "labelfoto" && (!BNPB.includes(k) || k === BNPB[0])).map(([k, [ik, l]]) => BNPB.includes(k)
     ? `<a href="/admin/${k}" ${BNPB.includes(aktif) || aktif === "instansi" ? 'aria-current="page"' : ""}>🏛️ Ruang Koordinasi</a>`
-    : `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
+    : `<a href="/admin/${k}" ${aktif === k || (k === "foto" && aktif === "labelfoto") ? 'aria-current="page"' : ""}>${ik} ${l}${k === "pesan" ? '<b class="ad-badge" id="badgePesan" hidden></b>' : ""}</a>`).join("")}</nav>
   <form method="post" action="/admin/keluar"><button class="ad-keluar" type="submit">Keluar</button></form>
 </header>`;
 /* Kerangka bersama: header, judul halaman (ikon + judul + slot aksi kanan #aksiJudul), lalu isi #app yang diisi skripnya. */
@@ -92,6 +92,10 @@ export const halamanPesan = () => halaman("pesan", "Memuat pesan…", `<script s
 
 export const halamanFoto = () => halaman("foto", "Memuat antrean foto…", `<link href="/admin/foto.css?v=2" rel="stylesheet">
 <script src="/admin/foto.js?v=2"></script>`);
+
+/* Label kerusakan foto (/admin/labelfoto): bagian dari kelompok Foto lapangan (tidak di nav atas; tautannya tab di /admin/foto) */
+export const halamanLabelFoto = () => halaman("labelfoto", "Memuat foto…", `<link href="/admin/labelfoto.css?v=1" rel="stylesheet">
+<script src="/admin/labelfoto.js?v=1"></script>`);
 
 export const halamanSosmed = () => halaman("sosmed", "Memuat post…", `<link href="/admin/sosmed.css?v=1" rel="stylesheet">
 <script src="/admin/sosmed.js?v=1"></script>`);
@@ -187,7 +191,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
 <link href="/inti/kartu.css?v=1" rel="stylesheet">
 <link href="/inti/insight.css?v=1" rel="stylesheet">
-<link href="/pipa/pipa.css?v=7" rel="stylesheet">
+<link href="/pipa/pipa.css?v=9" rel="stylesheet">
 </head>
 <body data-staf="1" data-peran="${esc(ctx.peran.join(","))}" data-layar="${esc(layar)}" data-tulis="${ctx.tulis ? 1 : 0}" data-mod="${ctx.mod ? 1 : 0}" data-super="${ctx.super ? 1 : 0}" data-nama="${esc(ctx.nama || "")}">
 <div id="app"><p class="ad-redup">Memuat SIPPA…</p></div>
@@ -208,12 +212,12 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta name="robots" content="noindex,nofollow">
 <title>SIPPA Lapangan, Centurisk97</title>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
-<link href="/pipa/pipa.css?v=7" rel="stylesheet">
+<link href="/pipa/pipa.css?v=9" rel="stylesheet">
 </head>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>
 <noscript><p>Form lapangan butuh JavaScript aktif.</p></noscript>
-<script type="module" src="/pipa/lapangan.js?v=3"></script>
+<script type="module" src="/pipa/lapangan.js?v=5"></script>
 </body></html>`;
 
 /* halaman publik /statistik (tanpa login). Data dari /api/publik. */

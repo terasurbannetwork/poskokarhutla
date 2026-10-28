@@ -170,3 +170,15 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 | Lewat (WIB) / Satelit / Cakupan / Data siap (WIB) | Pass (WIB) / Satellite / Coverage / Data ready (WIB) | kepala tabel 5 lintasan; satu istilah "Data siap" = "Data ready" di seluruh kartu (bukan "data masuk"/"data ada"); "Lewat" jam satelit paling dekat ke tengah kotak batas wilayah |
 | seluruh / sebagian (cakupan) | entire / partial | seluruh = semua simpul batas wilayah di dalam jalur sapuan; sebagian = hanya sebagian wilayah tersapu (lintasan tanpa satu pun simpul di jalur tidak ditampilkan) |
 | jeda aman VIIRS 3 jam | safe delay VIIRS 3 h | jeda dibaca dari data/tle.json, tanpa "±"; pola "VIIRS\|MODIS N jam" -> "N h"; kaki: "(diukur 27 Okt 2026); bisa lebih lama bila satelit telat." |
+
+## Hotspot mundur (panel Real Time, indikator Hotspot, 28 Okt 2026)
+
+| Indonesia | English | Catatan |
+|---|---|---|
+| Data terakhir, <tanggal> s.d. <jam> WIB | Latest data, <date> to <time> WIB | judul tabel Hotspot bila belum ada satu titik pun bertanggal hari ini; lewat pola di en.json; jam = deteksi terbaru hari itu |
+| Belum ada data titik panas NASA FIRMS untuk hari ini. | No NASA FIRMS hotspot data for today yet. | catatan amber di bawah judul tabel Hotspot mundur dan caption grafik 7 hari kartu kawasan; keputusan pemilik 28 Okt 2026 (berhenti di situ); bukan "data satelit" karena Himawari-9 juga satelit dan datanya ada hari ini; tidak menyebut "FIRMS gangguan" dan tidak menulis "tidak ada api": nol berarti belum ada data |
+| firespot hari ini / kemarin / <tanggal> | today's / yesterday's firespots / firespots <date> | label statistik di kartu hover wilayah, pasangan "titik hari ini / kemarin / <tanggal>" |
+| Belum ada data titik panas NASA FIRMS untuk hari ini. Data terakhir <tanggal>: N titik panas terdeteksi | No NASA FIRMS hotspot data for today yet. Latest data <date>: N hotspots detected | judul pop-up Situasi bila hari mundur = sehari sebelum hari laporan; tanpa panah banding. Lebih lama: "Belum ada data titik panas NASA FIRMS sejak <tanggal> <jam> WIB" / "No NASA FIRMS hotspot data since ..." (tanpa angka) |
+| Titik panas <tanggal> / Titik <tgl> / s.d. <jam> WIB / data terakhir s.d. <jam> WIB | Hotspots <date> / Hotspots <date> / up to <time> WIB / latest data up to <time> WIB | label gambar bagikan, tabel provinsi pop-up, kartu asap saat Hotspot mundur |
+| Titik panas <tanggal> (data terakhir) / Umur deteksi | Hotspots <date> (latest data) / Detection age | judul legenda titik saat Hotspot mundur (lewat pola di en.json); "Umur deteksi" = baris popup titik, jam sejak SEKARANG (bukan sejak lintasan terakhir) |
+| Api baru · Himawari-9, <tanggal> <jam awal>–<jam acuan> WIB | New fire · Himawari-9, <date> <start>–<reference time> WIB | keterangan legenda Api baru (jendela /api/himawari, 3 jam); dua tanggal bila melewati tengah malam |

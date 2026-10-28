@@ -71,7 +71,7 @@ def jalan(akar=AKAR, maks=100):
     ada = set(abadi)
     semua = [("/" + os.path.relpath(os.path.join(d, f), akar).replace(os.sep, "/"))
              for d, _, fs in os.walk(akar) for f in fs if " 2." not in f]   # salinan iCloud "x 2.js" tak ikut dihitung (AGENTS.md §9)
-    blok, kecuali = [TANDA], []
+    blok, kecuali, pulih = [TANDA], [], []
     for ujung in (".js", ".css"):
         sama = [w for w in semua if w.endswith(ujung)]
         asing = sorted(w for w in sama if w not in ada)
@@ -94,16 +94,34 @@ def jalan(akar=AKAR, maks=100):
             for i in range(0, len(nm) - len(ujung) - 1):                   # akhiran nama: "/*kejadian.js", "/*sim.js"
                 t = nm[i:]
                 tambah("/*" + t, lambda x, t=t: x.endswith(t) and len(x) > len(t))
+            for k in [i for i, c in enumerate(w) if c == "/"][1:]:         # akhiran nama di dalam folder: "/pipa/*s.js"
+                dr = w[:k + 1]
+                for i in range(0, len(nm) - len(ujung)):
+                    t = nm[i:]
+                    tambah(dr + "*" + t, lambda x, dr=dr, t=t: x.startswith(dr) and x.endswith(t) and len(x) > len(dr) + len(t))
             for i in range(0, len(nm) - len(ujung) - 2):                   # potongan nama: "/*sim_*.js"
                 for j in range(i + 3, len(nm) - len(ujung) + 1):
                     t = nm[i:j]
                     tambah("/*" + t + "*" + ujung, lambda x, t=t: t in x[1:] and x.endswith(ujung))
         sisa = set(asing)
+        # Folder yang hampir seluruhnya pengecualian: satu "/dir/*.js" lalu tiap berkas immutable di dalamnya dipulihkan
+        # (aturan sesudahnya menang: "! Cache-Control" + immutable). Dipakai bila untung > 3 aturan.
+        while True:
+            dirs = {w[:k + 1] for w in sisa for k, c in enumerate(w) if c == "/" and k > 0}
+            net = {dr: (len([w for w in sisa if w.startswith(dr)]) - 1 - len([w for w in sama if w.startswith(dr) and w in ada])) for dr in dirs}
+            if not net or max(net.values()) <= 3:
+                break
+            dr = max(net, key=lambda k: (net[k], -len(k)))
+            kecuali.append(dr + "*" + ujung)
+            pulih += [w for w in sama if w.startswith(dr) and w in ada]
+            sisa = {w for w in sisa if not w.startswith(dr)}
         while sisa:
             q = max(cand, key=lambda k: (len(cand[k] & sisa), -len(k)))
             kecuali.append(q); sisa -= cand[q]
     for pola in kecuali:
         blok += [pola, "  ! Cache-Control", "  Cache-Control: public, max-age=0, must-revalidate"]
+    for w in pulih:   # sesudah semua pengecualian: berkas immutable di dalam folder pengecualian
+        blok += [w, "  ! Cache-Control", "  Cache-Control: public, max-age=31536000, immutable"]
     if halaman:
         blok += ["/*.html", "  Cache-Control: no-cache"]
     jumlah = sum(1 for b in lama.splitlines() if b.startswith("/")) + sum(1 for b in blok if b.startswith("/"))

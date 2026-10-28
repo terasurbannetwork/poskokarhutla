@@ -179,7 +179,7 @@
   const tab = (judul, kolom, baris) => `<table class="ck-t"><thead><tr><th>${judul}</th>${kolom.map(c => `<th>${c}</th>`).join("")}</tr></thead><tbody>${baris.map(r => `<tr>${r.map((c, k) => k ? `<td>${c}</td>` : `<th>${c}</th>`).join("")}</tr>`).join("")}</tbody></table>`;
   function statistik() {
     const T = terpilih; if (!T || (!TITIK.has(T.i.t) && T.poli === undefined)) return; const k = kartu(); let bd = "";
-    const ren = namaRentang();   /* satu hari WIB terpilih: "hari ini" | "kemarin" | "Sen 19 Okt" */
+    const ren = namaHot();   /* satu hari WIB terpilih: "hari ini" | "kemarin" | "Sen 19 Okt"; Hotspot mundur (pemilik, 28 Okt 2026) = hari terakhir berdata, sama dengan S.hariPilih di bawah */
     if (TITIK.has(T.i.t)) { const [lo, la] = T.i.c, BUF = BUFJ[T.i.t], t = BUF.map(() => 0), kp = BUF.map(() => 0);
       const dl = .5, dlo = .5 / Math.max(.2, Math.cos(la * rad));
       for (const b of S.titik) { if (Math.abs(b[0] - la) > dl || Math.abs(b[1] - lo) > dlo || !S.dihitung(b) || !masuk(b)) continue; const d = jarak(la, lo, b[0], b[1]); BUF.forEach((km, j) => d <= km && t[j]++); }
@@ -209,9 +209,10 @@
     if (S.titikPenuh) { const hr = [...hariLain().reverse(), hariSebelum(S.meta.hari_wib), S.meta.hari_wib], n = new Map(hr.map(t => [t.slice(5), 0]));
       for (const r of S.titik) if (n.has(r[7]) && di(r[1], r[0]) && S.dihitung(r)) n.set(r[7], n.get(r[7]) + 1);
       const v = hr.map(t => n.get(t.slice(5))), m = Math.max(...v, 1), bw = 100 / v.length;
-      h += lipat(`Titik panas ${v.length} hari`, `<svg viewBox="0 0 100 34" width="100%" role="img" aria-label="Titik panas per hari di dalam batas">${v.map((x, k) => { const hh = Math.max(.6, x / m * 18);
-        return `<rect x="${k * bw + bw * .15}" y="${24 - hh}" width="${bw * .7}" height="${hh}" rx=".8" fill="${k === v.length - 1 ? "#c9503a" : "#e58a45"}"/><text x="${k * bw + bw / 2}" y="${22 - hh}" text-anchor="middle" font-size="3.2" font-weight="700" fill="var(--ink2)">${fmt(x)}</text><text x="${k * bw + bw / 2}" y="31" text-anchor="middle" font-size="3" fill="var(--ink2)">${+hr[k].slice(8)}</text>`; }).join("")}</svg>`
-        + `<p class="ck-n">Hari ini belum sehari penuh.</p>`); }
+      /* Hotspot mundur (pemilik, 28 Okt 2026): belum ada data hari ini, batang hari ini = "–" tanpa batang (0 terbaca "tidak ada api") */
+      h += lipat(`Titik panas ${v.length} hari`, `<svg viewBox="0 0 100 34" width="100%" role="img" aria-label="Titik panas per hari di dalam batas">${v.map((x, k) => { const kosong = S.hariKosong && k === v.length - 1, hh = kosong ? 0 : Math.max(.6, x / m * 18);
+        return `${kosong ? "" : `<rect x="${k * bw + bw * .15}" y="${24 - hh}" width="${bw * .7}" height="${hh}" rx=".8" fill="${k === v.length - 1 ? "#c9503a" : "#e58a45"}"/>`}<text x="${k * bw + bw / 2}" y="${22 - hh}" text-anchor="middle" font-size="3.2" font-weight="700" fill="var(--ink2)">${kosong ? "–" : fmt(x)}</text><text x="${k * bw + bw / 2}" y="31" text-anchor="middle" font-size="3" fill="var(--ink2)">${+hr[k].slice(8)}</text>`; }).join("")}</svg>`
+        + `<p class="ck-n">${S.hariKosong ? "Belum ada data titik panas NASA FIRMS untuk hari ini." : "Hari ini belum sehari penuh."}</p>`); }
     if (KL.length) { const urut = [...KL].sort((x, y) => y.level - x.level || (y.px24 || 0) - (x.px24 || 0)), tampil = urut.slice(0, 8);
       h += lipat(`Cluster di dalam batas`, `<div class="ck-kl">${tampil.map(p => `<button type="button" data-kom="${esc(p.id)}"><b>${esc(p.kec || p.id)}</b><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span><small>${esc(p.id)}, ${fmt(p.px24 || 0)} piksel 24 jam</small></button>`).join("")}</div>`
         + `<p class="ck-n">${urut.length > 8 ? `8 teratas dari ${fmt(urut.length)} cluster. ` : ""}Klik cluster untuk rincian lengkap dan citra satelit terbaru.</p>`); }

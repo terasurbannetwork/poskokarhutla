@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<meta name="theme-color" content="#ffffff">
+<meta name="referrer" content="no-referrer">
+<title>Direktori Pakar Kebencanaan | Centurisk97</title>
+<link rel="stylesheet" href="/akademisi.css?v=3">
+</head>
+<body>
+<main class="ak">
+  <header class="ak-kepala">
+    <p class="ak-label">Ruang BNPB</p>
+    <h1>Direktori Pakar Kebencanaan</h1>
+    <p id="akSumber" class="ak-redup">Memuat data</p>
+  </header>
+
+  <section id="akMasuk" class="ak-panel ak-kosong" hidden>
+    <h2>Masuk untuk membuka direktori</h2>
+    <p class="ak-redup">Direktori ini hanya untuk staf BNPB dan admin karena memuat data pribadi akademisi.</p>
+    <a class="ak-tbl" href="/admin">Masuk sebagai staf BNPB</a>
+  </section>
+
+  <section id="akIsi" hidden>
+    <div id="akAngka" class="ak-angka"></div>
+
+    <div class="ak-alat">
+      <label class="ak-cari"><span class="ak-sr">Cari</span>
+        <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
+        <input id="akQ" type="search" autocomplete="off" placeholder="Cari nama, kampus, atau topik"></label>
+      <div class="ak-pilih">
+        <label><span class="ak-sr">Kampus</span><select id="akK"><option value="">Semua kampus</option></select></label>
+        <label><span class="ak-sr">Status</span><select id="akS"><option value="bukanx">Dosen Indonesia</option><option value="s">Terdaftar di SINTA</option><option value="">Semua sumber</option></select></label>
+        <label><span class="ak-sr">Urutkan</span><select id="akU"><option value="4">Urut h-index</option><option value="5">Urut jumlah karya</option><option value="6">Urut sitasi</option><option value="1">Urut nama</option></select></label>
+      </div>
+    </div>
+    <div id="akRumpun" class="ak-chip" role="group" aria-label="Rumpun bahaya"></div>
+
+    <p id="akJumlah" class="ak-redup ak-jumlah" aria-live="polite"></p>
+    <div id="akDaftar" class="ak-daftar"></div>
+    <div id="akHampa" class="ak-panel ak-kosong" hidden><h2>Tidak ada pakar yang cocok</h2><button id="akReset" class="ak-tbl" type="button">Hapus semua saringan</button></div>
+    <p class="ak-tengah"><button id="akLagi" class="ak-tbl ak-tbl2" type="button" hidden>Tampilkan 60 lagi</button></p>
+    <p class="ak-catatan">Contoh awal dari OpenAlex dan SINTA. Gelar, jabatan, riwayat pendidikan, dan kontak menyusul dari PDDikti dan laman kampus. "Dosen Indonesia" menyembunyikan penulis yang tidak terdaftar di SINTA, biasanya penulis asing yang pernah menulis bersama kampus Indonesia.</p>
+  </section>
+
+  <div id="akMuat" class="ak-daftar" aria-hidden="true"></div>
+</main>
+
+<div id="akLembar" class="ak-lembar" hidden>
+  <div class="ak-latar" data-tutup></div>
+  <article class="ak-dlg" role="dialog" aria-modal="true" aria-labelledby="akDNama">
+    <button class="ak-x" type="button" data-tutup aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div id="akDIsi"></div>
+  </article>
+</div>
+<script src="/akademisi.js?v=3"></script>
+</body>
+</html>
