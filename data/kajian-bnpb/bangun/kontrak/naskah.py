@@ -106,11 +106,11 @@ def fmt_id(x, d=None):
     return f'{v:,.{d}f}'.translate(str.maketrans(',.', '.,'))
 
 
-def dua_bermakna(x):
-    """(nilai dibulatkan ke 2 angka bermakna, jumlah desimal yang perlu)."""
+def dua_bermakna(x, n=2):
+    """(nilai dibulatkan ke n angka bermakna, bawaan 2, jumlah desimal yang perlu)."""
     if x == 0:
         return 0.0, 0
-    e = floor(log10(abs(x))) - 1
+    e = floor(log10(abs(x))) - (n - 1)
     v = Decimal(repr(float(x))).scaleb(-e).quantize(Decimal(1), rounding=ROUND_HALF_UP).scaleb(e)
     return float(v), max(0, -e)
 
@@ -140,11 +140,20 @@ def format_angka(nilai, rendah, tinggi, satuan, keyakinan, opsi):
             return 'tetap'
         kata_arah = 'naik ' if vals[-1] > 0 else 'turun '
         vals = [abs(v) for v in vals]
-    est = keyakinan == 'estimasi-model'
-    d = int(f) if f and f.isdigit() else None
+    # cacah (kab/kota, kejadian): hitungan eksak dari keluaran model, tampil bulat tanpa "sekitar" (opsi atau entri cacah)
+    est = keyakinan == 'estimasi-model' and 'cacah' not in flag
+    d = int(f) if f and f.isdigit() else (0 if 'cacah' in flag else None)
     if est:
-        pas = [dua_bermakna(v) for v in vals]
-        vals, d = [p[0] for p in pas], max(p[1] for p in pas)
+        n = int(opsi.get('bermakna', 2))   # entri registri boleh meminta 3 angka bermakna supaya angka kunci tidak bergeser
+        pas = [dua_bermakna(v, n) for v in vals]
+        d = max(p[1] for p in pas)
+        if len(vals) > 1:
+            # rentang: semua batas dibulatkan ke tempat desimal yang sama dari nilai aslinya (1,306 jadi 1,31, bukan 1,30)
+            tempat = max(n - 1 - floor(log10(abs(v))) for v in vals if v)
+            vals = [float(Decimal(repr(float(v))).scaleb(tempat).quantize(Decimal(1), rounding=ROUND_HALF_UP).scaleb(-tempat)) for v in vals]
+            d = max(0, tempat)
+        else:
+            vals = [pas[0][0]]
     jenis = 'rupiah' if 'rupiah' in flag else 'ringkas' if 'ringkas' in flag else None
     b, kata = _skala(max(abs(v) for v in vals)) if jenis else (1, '')
     if b > 1:
@@ -258,9 +267,13 @@ class Konteks:
             else:
                 opsi['flag'].add(k.strip())
         tak_dikenal = opsi['flag'] - {'teks', 'tahun', 'rentang', 'rendah', 'tinggi', 'arah', 'persen', 'ringkas',
-                                      'rupiah', 'satuan'}
+                                      'rupiah', 'satuan', 'cacah'}
         if tak_dikenal or set(opsi) - {'flag', 'fmt'}:
             raise KeyError(f'opsi token tidak dikenal: {sorted(tak_dikenal) or sorted(set(opsi) - {"flag", "fmt"})}')
+        if e.get('cacah'):
+            opsi['flag'].add('cacah')
+        if e.get('bermakna'):
+            opsi['bermakna'] = e['bermakna']
         kyk = e['keyakinan'].split(';')[0].strip()
         if kyk not in self.tema['kosakata']['keyakinan']:
             raise KeyError(f'entri "{kunci}": keyakinan "{kyk}" bukan salah satu label (tema.json kosakata.keyakinan)')
@@ -1025,6 +1038,9 @@ def _uji_diri():
     f = lambda **o: {'fmt': o.pop('fmt', None), 'flag': set(o.pop('flag', ''))}
     assert format_angka(None, 257.95, 593.30, 'jiwa', 'estimasi-model', f(flag=['satuan'])) == '260\u2013590 jiwa'
     assert format_angka(150.2, None, None, 'jiwa', 'estimasi-model', f()) == 'sekitar 150'
+    assert format_angka(68, None, None, 'kab/kota', 'estimasi-model', f(flag=['cacah'])) == '68'   # cacah: tanpa "sekitar"
+    assert format_angka(185.59, None, None, '', 'estimasi-model', {'flag': set(), 'bermakna': 3}) == 'sekitar 186'
+    assert format_angka(None, 0.6887, 1.3060, '', 'estimasi-model', f()) == '0,69\u20131,31'   # rentang tidak menggeser batas
     assert format_angka(None, 257355e6, 337785e6, 'Rp', 'asumsi-kebijakan', f(flag=['rupiah'])) == 'Rp257,4\u2013337,8 miliar'
     assert format_angka(-17.8396, None, None, '%', 'resmi', f(fmt='1', flag=['persen', 'arah'])) == 'turun 17,8%'
     assert format_angka(1250340, None, None, 'jiwa-hari', 'asumsi-kebijakan', f(flag=['ringkas'])) == '1,3 juta'
