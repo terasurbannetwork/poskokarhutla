@@ -1,0 +1,92 @@
+name: Genangan Jakarta J4, pengumpul prospektif harian
+
+# Uji prospektif J4 musim 2026/27 (scripts/banjir/genangan/PRAREG-J4.md bagian 3 dan 7), append-only ke data/banjir/genangan/j4_*.
+# 05.30 WIB (22:30 UTC): hujan GSMaP kemarin -> pemicu -> prakira (D+2..D+9) -> commit -> label -> commit.
+# Label SESUDAH push prediksi: j4_operasi.py label hanya mengambil label untuk baris prediksi yang sudah ada di origin/main.
+# Grup concurrency sama dengan m1_prospektif.yml (data/banjir/genangan yang sama), tidak menyentuh grup data. Tidak ada deploy.
+on:
+  schedule:
+    - cron: "30 22 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: m1-prospektif
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+env:
+  J4: scripts/banjir/genangan/j4_operasi.py
+
+jobs:
+  kumpul:
+    runs-on: ubuntu-latest
+    timeout-minutes: 90
+    steps:
+      # riwayat penuh: label memakai git fetch + git show origin/main, kunci_j4 memakai commit jangkar
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      # mesin.mjs (simulasi 100 m) jalan di node
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      # hanya langkah ini yang memegang secret; kosong = lewati dengan notice
+      - name: Hujan GSMaP kemarin
+        env:
+          GSMAP_USER: ${{ secrets.GSMAP_USER }}
+          GSMAP_PASS: ${{ secrets.GSMAP_PASS }}
+        run: |
+          if [ -z "$GSMAP_USER" ] || [ -z "$GSMAP_PASS" ]; then echo "::notice::secret GSMAP_USER/GSMAP_PASS kosong, langkah hujan dilewati"; exit 0; fi
+          kode=0; python3 "$J4" hujan || kode=$?
+          [ "$kode" = 0 ] || echo "::warning::hujan J4 tanpa kemajuan (kode $kode); kegagalan unduh tercatat di j4_gagal.jsonl"
+
+      - name: Pemicu kejadian
+        run: |
+          kode=0; python3 "$J4" pemicu || kode=$?
+          case "$kode" in 0) ;; 2) echo "::notice::J4 belum dijangkar (j4_sidik.json), pemicu dilewati";; *) echo "::warning::pemicu J4 gagal (kode $kode)";; esac
+
+      # kode 3 (menunggu ERA5) sudah dijadikan 0 oleh skripnya; 2 = belum dijangkar / kunci_j4 merah
+      - name: Prakiraan kejadian terpilih
+        run: |
+          kode=0; python3 "$J4" prakira || kode=$?
+          case "$kode" in 0|3) ;; 2) echo "::notice::prakira dilewati: J4 belum dijangkar atau kunci_j4 merah";; *) echo "::warning::prakira J4 gagal tercatat (kode $kode)";; esac
+
+      - name: Commit prediksi dan catatan
+        if: ${{ always() }}
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          F=$(ls -d data/banjir/genangan/j4_* 2>/dev/null) || true
+          [ -n "$F" ] || exit 0
+          git add -f -- $F
+          git diff --cached --quiet -- $F && exit 0
+          git commit -q -m "data: genangan J4 prediksi $(TZ=Asia/Jakarta date +%F)" -- $F
+          for i in 1 2 3; do git pull -q --rebase --autostash && git push -q && exit 0; sleep 10; done
+          echo "::error::push prediksi J4 gagal"; exit 1
+
+      # sesudah push di atas: label hanya untuk prediksi yang sudah di origin/main
+      - name: Label PetaBencana
+        run: |
+          kode=0; python3 "$J4" label || kode=$?
+          case "$kode" in 0|3) ;; 2) echo "::notice::label dilewati: J4 belum dijangkar atau kunci_j4 merah";; *) echo "::warning::label J4 gagal tercatat (kode $kode)";; esac
+
+      - name: Commit label
+        if: ${{ always() }}
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          F=$(ls -d data/banjir/genangan/j4_* 2>/dev/null) || true
+          [ -n "$F" ] || exit 0
+          git add -f -- $F
+          git diff --cached --quiet -- $F && exit 0
+          git commit -q -m "data: genangan J4 label $(TZ=Asia/Jakarta date +%F)" -- $F
+          for i in 1 2 3; do git pull -q --rebase --autostash && git push -q && exit 0; sleep 10; done
+          echo "::error::push label J4 gagal"; exit 1
