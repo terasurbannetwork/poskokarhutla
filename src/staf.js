@@ -58,6 +58,7 @@ export function dalamWilayahStaf(req, provs) {
   const s = SESI.get(req);
   return !s || !s.wilayah.length || provs.some(p => s.wilayah.includes(p));
 }
+export const wilayahStaf = req => SESI.get(req)?.wilayah ?? [];   // kosong = nasional (atau bukan staf)
 /* pelaku staf (sesi) yang BUKAN akun dummy: rute lama yang dibuka untuk staf menyaring baris dummy darinya */
 export const stafNyata = req => { const s = SESI.get(req); return !!s && !s.dummy; };
 export const dariStaf = mod => typeof mod === "string" && mod.startsWith("staf:");

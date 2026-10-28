@@ -14,7 +14,7 @@ const waktuTag = ms => ms == null ? "–" : `<time datetime="${new Date(ms).toIS
 const tanggal = ms => ms == null ? "–" : new Date(ms).toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"});
 const lima = n => Number(n).toLocaleString("id-ID", {minimumFractionDigits: 5, maximumFractionDigits: 5});
 const td = (label, isi, n) => `<td${n ? ' class="n"' : ""} data-label="${label}">${isi}</td>`;
-const tautanPeta = (lat, lon) => `<a href="https://www.google.com/maps?q=${encodeURIComponent(lat)},${encodeURIComponent(lon)}" target="_blank" rel="noopener">${esc(lima(lat))}; ${esc(lima(lon))}</a>`;
+const tautanPeta = (lat, lon) => `<a href="https://www.google.com/maps?q=${encodeURIComponent(lat)},${encodeURIComponent(lon)}" target="_blank" rel="noopener noreferrer">${esc(lima(lat))}; ${esc(lima(lon))}</a>`;
 export const awalHariWIB = kini => Math.floor((kini + 7 * JAM) / HARI) * HARI - 7 * JAM;
 
 /* ---------- ambil data ---------- */

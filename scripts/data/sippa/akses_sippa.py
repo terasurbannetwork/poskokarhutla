@@ -464,7 +464,9 @@ def uji():
         assert e["track_perlu_cek"] or "track" not in e["jalan_kelas_menit"], e["id"]  # track < 30 detik dibulatkan hilang dari menit, bendera tetap
         assert e["ujung"] == "perahu" or (e["menit"]["perahu"] == 0 and e["km"]["perahu"] == 0), e["id"]
         assert sum(e["jalan_kelas_menit"].values()) <= e["menit"]["jalan"] + len(e["jalan_kelas_menit"]), e["id"]  # selisih pembulatan
-    for v, ref in {"k": (188, 418, 89, 170), "u": (198, 429, 81, 157), "o": (469, 158, 167, 71)}.items():  # angka buku, matriks_jarak.md
+    import zona as Z  # angka buku dibaca dari matriks_jarak.md (bukan konstanta: SP-108 menggeser u dan o sesudah 26 Okt)
+    acu, _ = Z.matriks_acuan()
+    for v, ref in {v: tuple(acu[v][z] for z in "ABCD") for v in "kuo"}.items():
         got = tuple(sum(e["zona"][v] == z for e in ks) for z in "ABCD")
         assert got == ref, (v, got, ref)
     assert d["ringkas"] == ringkas(ks) == d["ringkas_prov"][PROV_KAL], "ringkas tidak sinkron"

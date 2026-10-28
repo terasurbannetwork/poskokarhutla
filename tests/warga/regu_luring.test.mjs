@@ -69,7 +69,7 @@ test("lapangan: modul api hanya untuk karhutla, tanpa kamus salinan, ?v= dinaikk
   assert.match(h, /id="hKondisi"/); assert.match(h, /lapangan_tugas\.js\?v=2/); assert.match(h, /instansi_kartu\.js\?v=2/); assert.match(h, /lapangan\.js\?v=2/);
   assert.match(j, /mulai\(\{bentuk: atur,/); assert.match(t, /bt\.api && window\.AksesKartu/); assert.match(t, /bt\.api && cara\.length/);
   assert.doesNotMatch(j + t, /Banjir sudah surut|Mulai surut|Masih tergenang/, "kamus tidak boleh disalin");
-  assert.match(baca("sw-lapangan.js"), /VERSI = 3,/);
+  assert.match(baca("sw-lapangan.js"), /VERSI = 5,/);
 });
 /* install service worker per scope: /pipa/lapangan berakhiran /lapangan tapi tidak boleh memasang cangkang Posko */
 const pasang = async scope => {
@@ -107,9 +107,9 @@ test("install: scope /lapangan dan /lacak tetap seperti semula", async () => {
   assert.equal(a.diambil[0], "/lapangan"); assert.ok(a.diambil.some(u => u.includes("maplibre-gl.js")) && a.diambil.includes("/rumah_rusak.js?v=1"));
   assert.equal(b.diambil[0], "/lacak"); assert.ok(!b.diambil.includes("/vendor/qrcode/qrcode.min.js?v=1") && b.diambil.includes("/img/logo.svg"));
 });
-test("sw-lapangan: VERSI 3, jalur API SIPPA memakai x-kode, POST tidak disentuh", () => {
+test("sw-lapangan: VERSI 5, jalur API SIPPA memakai x-kode, POST tidak disentuh", () => {
   const s = baca("sw-lapangan.js");
-  assert.match(s, /VERSI = 3,/);
+  assert.match(s, /VERSI = 5,/);
   assert.match(s, /"\/api\/sippa\/lapangan\/saya": "x-kode"/); assert.match(s, /JALUR_API = new Set\(\[[^\]]*"\/api\/sippa\/lapangan\/saya"/);
   assert.match(s, /req\.method !== "GET"\) return/);
 });

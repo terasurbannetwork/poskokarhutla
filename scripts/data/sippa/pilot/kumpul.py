@@ -2,7 +2,10 @@
 import json, math, subprocess, os, sys
 
 REPO = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../../../.."))
-OUT = os.path.dirname(os.path.abspath(__file__))
+HERE = os.path.dirname(os.path.abspath(__file__))
+# Renlap Generator (SP-140): RENLAP_OUT = folder kerja; RENLAP_KOMPLEKS = daftar kompleks. Tanpa env, perilaku pilot lama tidak berubah.
+OUT = os.environ.get("RENLAP_OUT") or HERE
+GENERIK = bool(os.environ.get("RENLAP_KOMPLEKS"))
 
 SITUS = [
     dict(no=1, id="K0166", nama="Sabangau, Kota Palangka Raya", peran="PILOT UTAMA"),
@@ -51,7 +54,12 @@ def main():
     col = hs["kolom"]; baris = [dict(zip(col, b)) for b in hs["baris"]]
     fwi = json.load(open(f"{OUT}/live_fwi.json"))["grid"]
     hasil = []
-    for s in SITUS:
+    if GENERIK:
+        import situs
+        daftar = situs.bangun(situs.parse_ids(os.environ["RENLAP_KOMPLEKS"]), kel, aks)
+    else:
+        daftar = SITUS
+    for s in daftar:
         k, a = kel[s["id"]], aks[s["id"]]
         pusat = (k["lat"], k["lon"])
         s.update(kel=k, akses=a)
@@ -70,7 +78,7 @@ def main():
         s["fwi_sel"] = g
         # bbox peta detail: kompleks, air, ujung jalan, titik api 3 km
         pts = [pusat, (a["air"]["lat"], a["air"]["lon"])]
-        if a.get("rute"):
+        if a.get("rute") and len(a["rute"]) >= 2:
             pts.append((a["rute"][-2][1], a["rute"][-2][0]))
         s["bbox_detail"] = bbox(pts, 1.0)
         rpts = [(y, x) for x, y in a.get("rute") or []] + [pusat]

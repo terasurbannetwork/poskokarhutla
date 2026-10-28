@@ -7,6 +7,7 @@ import {peranKlien, kirimPost, bukaDialog, tutupDialog, muatGayaKit} from "./lay
 import {katalogHtml} from "./katalog_alat.js";
 import {sukuCadangHtml, muatGayaLapangan} from "./lapangan_staf.js";
 import {memuat, kosong, galat} from "./keadaan.js";
+import {daftarBeli, teksBeli, servisPompa, servisHtml} from "./logistik.js";
 
 const HARI = 864e5, WIB = 7 * 36e5, PER_HAL = 25, TUNGGU_HARI = 60;
 export const STATUS_JADWAL = ["terlambat", "segera", "aman", "belum_pernah"];
@@ -207,9 +208,9 @@ export function kalenderHtml(k) {
 export function stokHtml(baris, peran) {
   const bawah = baris.filter(b => b.bawah).length, tulis = peran === "W" || peran === "M";
   const isi = baris.length ? `<div class="ad-tabel-wadah"><table class="ad-tabel sp-tabel-stok"><caption class="sr">Stok suku cadang per gudang</caption><thead><tr>${["Gudang", "Kode", "Saldo", "Minimum", "Keterangan"].map(k => `<th scope="col">${k}</th>`).join("")}</tr></thead><tbody>`
-    + baris.map(b => `<tr>${td("Gudang", esc(b.gudang))}${td("Kode", esc(b.kode_bom))}${td("Saldo", `${esc(fmt(b.saldo))} ${esc(b.satuan)}`, "n")}${td("Minimum", b.min == null ? "–" : esc(fmt(b.min)), "n")}${td("Keterangan", b.bawah ? `<span class="sp-laik">di bawah minimum</span>` : b.min == null ? `<span class="sp-sub">tanpa minimum</span>` : "")}</tr>`).join("")
+    + baris.map(b => `<tr>${td("Gudang", esc(b.gudang))}${td("Kode", esc(b.kode_bom))}${td("Saldo", `${esc(fmt(b.saldo))} ${esc(b.satuan)}`, "n")}${td("Minimum", b.min == null ? "–" : esc(fmt(b.min)), "n")}${td("Keterangan", b.bawah ? `<span class="sp-laik">di bawah minimum</span> ${esc(teksBeli(b))}` : b.min == null ? `<span class="sp-sub">tanpa minimum</span>` : "")}</tr>`).join("")
     + `</tbody></table></div>` : `<p class="ad-kosong">Belum ada stok tercatat. Catat penerimaan suku cadang lewat tombol Catat stok.</p>`;
-  return `<section class="sp-panel-pel" aria-labelledby="sp-stok-h"><div class="sp-panel-kepala"><h2 class="sp-sub-judul" id="sp-stok-h">${bawah > 0 ? `${esc(fmt(bawah))} kode di bawah minimum` : "Stok suku cadang"}</h2>${tulis ? `<button type="button" class="ad-tombol" data-stok>Catat stok</button>` : ""}</div>${isi}`
+  return `<section class="sp-panel-pel" aria-labelledby="sp-stok-h"><div class="sp-panel-kepala"><h2 class="sp-sub-judul" id="sp-stok-h">${bawah > 0 ? `${esc(fmt(bawah))} kode di bawah minimum, ${esc(fmt(daftarBeli(baris).length))} perlu dibeli` : "Stok suku cadang"}</h2>${tulis ? `<button type="button" class="ad-tombol" data-stok>Catat stok</button>` : ""}</div>${isi}`
     + `<p class="ad-catat">Minimum = pembulatan ke atas dari laju pakai x unit dilayani x (1 + ${esc(fmt(TUNGGU_HARI))}/180), unit dilayani dari BOM kit gambut (PRD §6.10.5). ${pilYakin("asumsi-kebijakan", "asumsi-kebijakan", JUDUL_ASUMSI)}</p></section>`;
 }
 
@@ -277,7 +278,7 @@ export async function pasang(akar, konteks) {
     konteks.setPer?.(per);
     if (!st.rows.length && !stok.length) { muatGayaKit(); const k = el("div"); k.innerHTML = katalogHtml(); isi.replaceChildren(kosong("Belum ada butir pemeliharaan. Butir muncul dari komponen kit dan aset yang dicatat staf."), k); return; }   // katalog alat mengisi layar kosong (SP-113)
     isi.innerHTML = isiKartuHtml(r, laik, per) + kontrolHtml(hitungChip(st.rows, st), st) + `<div id="sp-pel-tabel"></div>`
-      + `<div class="sp-dua">${kalenderHtml(kalender(st.rows, st.kini))}${stokHtml(stok, peran)}</div>${biayaHtml(biayaKelas(d))}<section class="sp-suku" id="sp-suku" hidden></section>`;
+      + `<div class="sp-dua">${kalenderHtml(kalender(st.rows, st.kini))}${stokHtml(stok, peran)}</div>${servisHtml(servisPompa(d))}${biayaHtml(biayaKelas(d))}<section class="sp-suku" id="sp-suku" hidden></section>`;
     gambarTabel(); nanti(muatSuku);
   };
 

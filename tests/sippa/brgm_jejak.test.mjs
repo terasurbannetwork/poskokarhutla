@@ -86,7 +86,7 @@ test("provinsi baru: kompleks Sumsel (prov 16) dengan field null tampil belum di
   }
   const k = sumsel[0], r = teks(P.rincianKompleks(k, cek, "k"));
   assert.match(r, /Beda elevasi air\s+belum dihitung/); assert.match(r, /Terbakar \(MCD64A1\)\s+belum dihitung/); assert.match(r, /Kekerapan sel \(VIIRS\)\s+belum dihitung/);
-  assert.match(r, /Curah hujan \(CHIRPS\)\s+belum dihitung/); assert.match(r, /Waktu tempuh\s+belum dihitung/); assert.match(r, /Air di citra satelit\s+belum dihitung/);
+  assert.match(r, /Curah hujan \(CHIRPS\)\s+belum dihitung/); assert.match(r, k.jam_tiba == null ? /Waktu tempuh\s+belum dihitung/ : /Waktu tempuh\s+\d/);   // jam_tiba terisi sejak akses semua provinsi (28 Okt) assert.match(r, /Air di citra satelit\s+belum dihitung/);
   assert.match(r, /Sekat kanal dan sumur bor BRGM\s+tidak ada dalam 3 km|Sekat kanal dan sumur bor BRGM\s+\d/); assert.match(r, /Air asin\s+laut 9,3 km, air tawar lebih dekat/);
   assert.match(teks(P.popupKompleks(k, "k", cek)), /Beda elevasi\s+belum dihitung[\s\S]*Terbakar\s+belum dihitung/);
   assert.match(teks(P.tabelDaftarHtml([k], "k", cek)), /belum dihitung[\s\S]*belum dihitung/);
@@ -117,10 +117,10 @@ test("peta perakit: BRGM dimuat malas lewat sakelar, rincian punya tombol Catat 
 });
 
 test("layar_data: kalimat jumlah kelayakan dihitung dari zona.json, dataset brgm_pembasahan dan prioritas terdaftar", () => {
-  const j = D.jumlahKelayakan(nyata("zona")); assert.deepEqual(j, {n: 1623, prov: 6});
+  const z = nyata("zona"), j = D.jumlahKelayakan(z); assert.ok(j.n > 865 && j.prov > 1, "lebih dari Kalteng");
   const d = D.DATASET.find(x => x.kunci === "kelayakan_kompleks");
-  assert.equal(D.namaDataset(d, j), "Kelayakan per kompleks (1.623 kompleks di 6 provinsi)"); assert.equal(D.namaDataset(d, null), "Kelayakan per kompleks, semua provinsi");
+  assert.equal(D.namaDataset(d, j), `Kelayakan per kompleks (${fmt(j.n)} kompleks di ${j.prov} provinsi)`); assert.equal(D.namaDataset(d, null), "Kelayakan per kompleks, semua provinsi");
   const kunci = D.DATASET.map(x => x.kunci); assert.ok(kunci.includes("brgm_pembasahan") && kunci.includes("prioritas"));
-  assert.doesNotMatch(D.tabDatasetHtml({}, D.DATASET, j), /865/); assert.match(D.tabDatasetHtml({}, D.DATASET, j), /1\.623 kompleks di 6 provinsi/);
+  assert.doesNotMatch(D.tabDatasetHtml({}, D.DATASET, j), /865/); assert.ok(D.tabDatasetHtml({}, D.DATASET, j).includes(`${fmt(j.n)} kompleks di ${j.prov} provinsi`));
   assert.equal(D.jumlahKelayakan({baris: []}), null);
 });

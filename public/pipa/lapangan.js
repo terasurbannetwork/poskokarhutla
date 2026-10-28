@@ -530,7 +530,7 @@ export function pasang(akar) {
   /* SP-125 tekanan; pengingat tiap 10 menit saat sesi aktif (sudah air mengalir, belum selesai) */
   const sesiAktif = () => { try { const t = JSON.parse(baca(LS_DRAF + tid()))?.tahap || {}; return t.t_air_mengalir != null && t.t_selesai == null ? t.t_air_mengalir : null; } catch { return null; } };
   const tekananTerakhir = () => Number(baca(LS_TEKANAN + tid())) || null;
-  let pengingatDiam = 0;
+  let pengingatDiam = 0, konteksBunyi = null;   // satu AudioContext bersama
   function periksaPengingat() {
     if (!S.tugas) { pengingat.hidden = true; return; }
     const mulaiAir = sesiAktif(), pe = pengingatTekanan({aktif: mulaiAir != null, terakhir: Math.max(tekananTerakhir() || 0, mulaiAir || 0), kini: Date.now()});
@@ -540,7 +540,7 @@ export function pasang(akar) {
     if (Date.now() - pengingatDiam < 180000) return;
     pengingat.hidden = false;
     if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
-    try { const a = new AudioContext(), o = a.createOscillator(); o.connect(a.destination); o.frequency.value = 880; o.start(); o.stop(a.currentTime + 0.25); } catch { /* bunyi butuh izin peramban; getar dan banner tetap muncul */ }
+    try { const a = (konteksBunyi ||= new AudioContext()), o = a.createOscillator(); o.connect(a.destination); o.frequency.value = 880; o.start(); o.stop(a.currentTime + 0.25); } catch { /* bunyi butuh izin peramban; getar dan banner tetap muncul */ }
   }
   const pengingatTimer = setInterval(() => tunda(periksaPengingat), 30000);
   function tampilTekanan() {

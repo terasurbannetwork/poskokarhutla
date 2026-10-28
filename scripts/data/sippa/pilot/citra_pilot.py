@@ -6,7 +6,7 @@ from PIL import Image, ImageOps, ImageStat
 sys.path.insert(0, os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 import citra as C  # noqa: E402
 
-OUT = os.path.dirname(os.path.abspath(__file__))
+OUT = os.environ.get("RENLAP_OUT") or os.path.dirname(os.path.abspath(__file__))
 
 
 def mutu(p):
@@ -20,7 +20,7 @@ def mutu(p):
 def main(kid, lat, lon, km):
     C.KM, C.HARI, C.MAKS_BYTE = km, int(os.environ.get("HARI", 45)), 8_000_000
     C.PX = int(km * 1000 / 10)
-    hari = dt.date(2026, 10, 26)
+    hari = dt.date.fromisoformat(os.environ.get("HARI_ACUAN", "2026-10-26"))
     kand = []
     for it in C.cari(C.kotak(lat, lon, 1), hari):
         if not C.menutup(it["geometry"], C.kotak(lat, lon, km * 1.03)):

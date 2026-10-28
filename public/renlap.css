@@ -1,0 +1,10 @@
+/* Renlap HP: hanya tambahan di atas /pipa/uji_pilot.css; warna dari token uji_pilot_warna.css, tanpa hex dan tanpa gaya sebaris. */
+.rl-kartu { margin: 0 0 var(--rl-jarak, 12px); padding: 14px; border: 1px solid var(--up-garis, currentColor); border-radius: 12px; }
+.rl-kartu h2 { margin: 0 0 6px; font-size: 1.05rem; }
+.rl-baris { display: flex; justify-content: space-between; gap: 12px; padding: 4px 0; }
+.rl-baris span:first-child { opacity: 0.75; }
+.rl-aksi { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.rl-catat { font-size: 0.85rem; opacity: 0.8; }
+/* gambar bertoken: placeholder saat memuat (blob URL belum ada), tanda bila gagal */
+img.rl-muat, .rl-muat { min-height: 96px; opacity: 0.5; background: var(--surface, transparent); }
+.rl-gagal { opacity: 0.4; outline: 1px dashed var(--up-garis, currentColor); }

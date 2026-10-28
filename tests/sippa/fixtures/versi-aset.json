@@ -36,6 +36,15 @@
         "formulir.js": "9f4410bfcaa03d9f08df0e81650f02b428d5707a27a06eb25a607b80cc3054c6",
         "ikon.js": "933309865cdaa07ee668345dcc251997c7006ab829f4b8caaec2f5393836ad51"
       }
+    },
+    "5": {
+      "sw": 5,
+      "sha256": {
+        "lapangan.js": "65962473f208632bfe01c500bc42da13057e6b81ea4b601a6d7bc4676b5dae9e",
+        "antre.js": "92479399cd0173469b15e69ec0140a5c3e2678b0f73e363e7358dc1b71b504d5",
+        "formulir.js": "9f4410bfcaa03d9f08df0e81650f02b428d5707a27a06eb25a607b80cc3054c6",
+        "ikon.js": "933309865cdaa07ee668345dcc251997c7006ab829f4b8caaec2f5393836ad51"
+      }
     }
   },
   "css": {
