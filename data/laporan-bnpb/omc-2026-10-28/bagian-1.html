@@ -1,0 +1,90 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Rekap OMC Karhutla s.d. 27 Okt 2026</title>
+<style>
+  :root { --navy: #0B2545; --teks: #1F2933; --redup: #5B6775; --garis: #D9DEE5; --zebra: #F4F6F9;
+          --hujan: #1F6FD1; --hujan-bg: #E3EEFB; --belum: #6B7480; --belum-bg: #ECEEF1; --udara: #9A5B00; --udara-bg: #FCF0DC; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; font: 15px/1.38 "Helvetica Neue", Arial, sans-serif; color: var(--teks); }
+  .kertas { width: 1400px; padding: 28px 32px 22px; }
+  h1 { margin: 0; font-size: 26px; color: var(--navy); letter-spacing: -.2px; }
+  h2 { margin: 22px 0 8px; font-size: 16px; color: var(--navy); text-transform: uppercase; letter-spacing: .6px; }
+  .sub { margin: 4px 0 0; color: var(--redup); font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--navy); color: #fff; font-size: 13px; font-weight: 600; text-align: left; padding: 9px 10px; }
+  th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  th.n { padding-right: 56px; }
+  /* angka rata kanan, satuan selalu mulai di x yang sama */
+  td.so::after, td.kg::after, td.t::after, td.hr::after { display: inline-block; width: 2.9em; padding-left: .35em; text-align: left; color: var(--redup); font-weight: 400; }
+  td.so::after { content: "sorti"; }
+  td.kg::after { content: "kg"; }
+  td.t::after { content: "ton"; }
+  td.hr::after { content: "hari"; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--garis); vertical-align: top; }
+  tbody.hari:nth-of-type(even) td { background: var(--zebra); }
+  td.tgl { font-weight: 700; color: var(--navy); white-space: nowrap; }
+  td.prov { font-weight: 600; white-space: nowrap; }
+  td.kosong { color: #A0A8B3; }
+  .pil { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .4px; border-radius: 4px; padding: 1px 6px; margin-right: 6px; }
+  .pil.h { color: var(--hujan); background: var(--hujan-bg); }
+  .pil.b { color: var(--belum); background: var(--belum-bg); }
+  .pil.u { color: var(--udara); background: var(--udara-bg); }
+  tr.jumlah td { font-weight: 700; border-top: 2px solid var(--navy); border-bottom: none; }
+  .kumulatif td { font-size: 15px; }
+  .kumulatif td.n { font-size: 16px; }
+  .catatan { margin: 10px 0 0; padding: 0 0 0 18px; color: var(--redup); font-size: 13px; }
+  .catatan li { margin: 2px 0; }
+</style>
+</head>
+<body>
+<div class="kertas">
+  <h1>Rekap Operasi Modifikasi Cuaca (OMC) Karhutla s.d. 27 Oktober 2026</h1>
+  <p class="sub">Sumber: rekap harian hujan dan OMC 15–27 Okt (laporan harian Kaban 16–28 Okt); identifikasi OMC 31 Agu–27 Okt (58 laporan harian); Lapsit Posko OMC Halim hari ke-10; resume briefing Posko Terpadu OMC 27 Okt; laporan Tim Pendampingan BNPB per provinsi 27 Okt; tabel hasil OMC BNPB (Jatim, PK-SNP Sumsel–Lampung); pemaparan OMC BNPB Sumsel–Lampung 27 Okt; lapsit Posko OMC Papua Selatan 28 Okt; Laporan Harian OMC TNI AU 27 Okt; BPBD Jatim 26 Okt</p>
+
+  <h2>Kumulatif per provinsi s.d. 27 Okt</h2>
+  <table class="kumulatif">
+    <thead>
+      <tr><th>Provinsi</th><th class="n">Sorti OMC</th><th class="n">Sorti dry ice</th><th class="n">Dry ice</th><th class="n">Sorti NaCl</th><th class="n">NaCl</th><th>Wilayah semai</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prov">Kalimantan Tengah</td><td class="n so">113</td><td class="n so">36</td><td class="n t">29,1</td><td class="n so">42</td><td class="n t">60,6</td><td>Palangka Raya, Kapuas, Pulang Pisau, Katingan, Kotim, Kobar, Seruyan, TN Tanjung Puting, Barito Timur, Barito Selatan</td></tr>
+      <tr><td class="prov">Kalimantan Selatan</td><td class="n so">81</td><td class="n so">4</td><td class="n t">2,3</td><td class="n so">12</td><td class="n t">11,6</td><td>Banjarbaru, Banjarmasin, Banjar, Barito Kuala, Tanah Laut, Tanah Bumbu, Kotabaru, Tapin, HSS, HST, HSU, Balangan, Tabalong</td></tr>
+      <tr><td class="prov">Sumatera Selatan</td><td class="n so">66</td><td class="n so">38</td><td class="n t">31,0</td><td class="n so">28</td><td class="n t">43,8</td><td>Palembang, OKI, Banyuasin, Musi Banyuasin, OKU, OKU Timur, Muara Enim, Ogan Ilir</td></tr>
+      <tr><td class="prov">Kalimantan Timur</td><td class="n so">30</td><td class="n so">0</td><td class="n t">0</td><td class="n so">30</td><td class="n t">28,8</td><td class="kosong">tidak dirinci</td></tr>
+      <tr><td class="prov">Kalimantan Barat</td><td class="n so">12</td><td class="n so">0</td><td class="n t">0</td><td class="n so">12</td><td class="n t">11,4</td><td>Ketapang, Kayong Utara, Mempawah, Landak, Kubu Raya, Pontianak, Sekadau, Sintang</td></tr>
+      <tr><td class="prov">Lampung</td><td class="n so">11</td><td class="n so">0</td><td class="n t">0</td><td class="n so">11</td><td class="n t">11,0</td><td>Lampung Timur (TN Way Kambas), Lampung Tengah, Lampung Barat, Lampung Selatan, Bandar Lampung, Way Kanan, Mesuji, Tulang Bawang, Tulang Bawang Barat</td></tr>
+      <tr><td class="prov">Papua Selatan</td><td class="n so">9</td><td class="n so">0</td><td class="n t">0</td><td class="n so">9</td><td class="n t">9,0</td><td>Merauke (utara, tengah), Boven Digoel (selatan), Mappi (selatan)</td></tr>
+      <tr><td class="prov">Jawa Barat</td><td class="n so">7</td><td class="n so">0</td><td class="n t">0</td><td class="n so">7</td><td class="n t">7,0</td><td>Gunung Ciremai dan sekitarnya (27 Okt: Sumedang, Subang, Majalengka, Kuningan)</td></tr>
+      <tr><td class="prov">Jawa Timur</td><td class="n so">5</td><td class="n so">0</td><td class="n t">0</td><td class="n so">5</td><td class="n t">3,0</td><td>Malang, Kota Batu, Pasuruan, Probolinggo, Jember, Bondowoso, Gunung Arjuno, Gunung Argopuro</td></tr>
+      <tr class="jumlah"><td>Jumlah 9 provinsi</td><td class="n so">334</td><td class="n so">78</td><td class="n t">62,4</td><td class="n so">156</td><td class="n t">186,2</td><td></td></tr>
+    </tbody>
+  </table>
+  <ul class="catatan">
+    <li>Kalteng dan Kalsel = Posko OMC Halim 16–27 Okt ditambah rekap harian 15 Okt; sorti OMC versi Halim lebih banyak dari sorti semai, angka dikutip apa adanya.</li>
+    <li>Sumsel = jumlah rekap harian 15–27 Okt. Rekap Tim Pendamping per 27 Okt (60 sorti, dry ice 26,2 ton) baru dihitung sejak 17 Okt (PK-SNP sejak 21 Okt), sehingga tidak memuat 6 sorti dry ice 15–18 Okt (4,8 ton). NaCl memakai angka tertinggi, 43,8 ton (Hercules A-1319 24.600 kg; jumlah harian 42,8 ton). Versi Posko Halim: 143 sorti, dry ice 28,6 ton, NaCl 51 ton.</li>
+    <li>Kalbar = rekap harian 15–23 Okt (PK-SCH dipindah ke Jatim 24 Okt). Lampung = PK-SNP 13 sorti NaCl 21–27 Okt dikurangi 2 sorti yang masuk Sumsel (21 Okt 800 kg, 22 Okt 1.000 kg), jadi 11 sorti × 1.000 kg pada 23–27 Okt. Kaltim (Lanud Dhomber) = akumulasi posko, awal periode tidak disebut. Papua Selatan = Posko OMC Merauke 22–28 Okt (Asmat nihil): volume hujan ±2,57 juta m³, titik panas turun dari 1.169 titik (22 Okt) menjadi 65 titik (28 Okt pukul 00.00–12.00 WIT). Jabar = 24–27 Okt, OMC dicukupkan 27 Okt. Jatim = PK-SCH 24–27 Okt; NaCl 2 sorti 27 Okt belum dilaporkan.</li>
+  </ul>
+
+  <h2>OMC sebelumnya, 31 Agu–14 Okt (6 provinsi prioritas, referensi)</h2>
+  <table class="kumulatif">
+    <thead>
+      <tr><th>Provinsi</th><th>Periode</th><th class="n">Hari OMC</th><th class="n">Hari ada hujan</th><th class="n">Sorti</th><th class="n">NaCl</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prov">Kalimantan Barat</td><td>31 Agu – 14 Okt</td><td class="n hr">43</td><td class="n hr">38</td><td class="n so">84</td><td class="n t">77,0</td></tr>
+      <tr><td class="prov">Kalimantan Tengah</td><td>31 Agu – 10 Okt</td><td class="n hr">27</td><td class="n hr">20</td><td class="n so">≥68</td><td class="n t">≥56,0</td></tr>
+      <tr><td class="prov">Riau</td><td>31 Agu – 25 Sep (selesai)</td><td class="n hr">20</td><td class="n hr">19</td><td class="n so">39</td><td class="n t">≥28,0</td></tr>
+      <tr><td class="prov">Sumatera Selatan</td><td>1 Sep – 13 Okt</td><td class="n hr">19</td><td class="n hr">19</td><td class="n so">29</td><td class="n t">28,2</td></tr>
+      <tr><td class="prov">Kalimantan Selatan</td><td>5 Sep – 14 Okt</td><td class="n hr">18</td><td class="n hr">14</td><td class="n so">30</td><td class="n t">29,0</td></tr>
+      <tr><td class="prov">Jambi</td><td>31 Agu – 13 Okt (terakhir)</td><td class="n hr">10</td><td class="n hr">9</td><td class="n so">17</td><td class="n t">17,0</td></tr>
+    </tbody>
+  </table>
+  <ul class="catatan">
+    <li>Dari identifikasi 58 laporan harian (1 Sep–28 Okt). Sorti dan NaCl adalah angka yang tertulis di narasi, bukan total resmi; ≥ = ada hari yang tidak dirinci (Kalteng 1 hari; Riau 5 hari untuk NaCl). Kalsel 5 hari menyebut dukungan lintas Kalteng yang mungkin juga tercatat di Kalteng. Semua bahan semai pada periode ini NaCl. Tabel ini tidak dijumlahkan dengan kumulatif di atas.</li>
+  </ul>
+
+</div>
+</body>
+</html>

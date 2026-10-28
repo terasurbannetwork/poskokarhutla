@@ -1,0 +1,200 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>Rekap OMC Karhutla s.d. 27 Okt 2026</title>
+<style>
+  :root { --navy: #0B2545; --teks: #1F2933; --redup: #5B6775; --garis: #D9DEE5; --zebra: #F4F6F9;
+          --hujan: #1F6FD1; --hujan-bg: #E3EEFB; --belum: #6B7480; --belum-bg: #ECEEF1; --udara: #9A5B00; --udara-bg: #FCF0DC; }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: #fff; font: 15px/1.38 "Helvetica Neue", Arial, sans-serif; color: var(--teks); }
+  .kertas { width: 1400px; padding: 28px 32px 22px; }
+  h1 { margin: 0; font-size: 26px; color: var(--navy); letter-spacing: -.2px; }
+  h2 { margin: 22px 0 8px; font-size: 16px; color: var(--navy); text-transform: uppercase; letter-spacing: .6px; }
+  .sub { margin: 4px 0 0; color: var(--redup); font-size: 14px; }
+  table { width: 100%; border-collapse: collapse; }
+  th { background: var(--navy); color: #fff; font-size: 13px; font-weight: 600; text-align: left; padding: 9px 10px; }
+  th.n, td.n { text-align: right; font-variant-numeric: tabular-nums; white-space: nowrap; }
+  th.n { padding-right: 56px; }
+  /* angka rata kanan, satuan selalu mulai di x yang sama */
+  td.so::after, td.kg::after, td.t::after, td.hr::after { display: inline-block; width: 2.9em; padding-left: .35em; text-align: left; color: var(--redup); font-weight: 400; }
+  td.so::after { content: "sorti"; }
+  td.kg::after { content: "kg"; }
+  td.t::after { content: "ton"; }
+  td.hr::after { content: "hari"; }
+  td { padding: 8px 10px; border-bottom: 1px solid var(--garis); vertical-align: top; }
+  tbody.hari:nth-of-type(even) td { background: var(--zebra); }
+  td.tgl { font-weight: 700; color: var(--navy); white-space: nowrap; }
+  td.prov { font-weight: 600; white-space: nowrap; }
+  td.kosong { color: #A0A8B3; }
+  .pil { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: .4px; border-radius: 4px; padding: 1px 6px; margin-right: 6px; }
+  .pil.h { color: var(--hujan); background: var(--hujan-bg); }
+  .pil.b { color: var(--belum); background: var(--belum-bg); }
+  .pil.u { color: var(--udara); background: var(--udara-bg); }
+  tr.jumlah td { font-weight: 700; border-top: 2px solid var(--navy); border-bottom: none; }
+  .kumulatif td { font-size: 15px; }
+  .kumulatif td.n { font-size: 16px; }
+  .catatan { margin: 10px 0 0; padding: 0 0 0 18px; color: var(--redup); font-size: 13px; }
+  .catatan li { margin: 2px 0; }
+</style>
+</head>
+<body>
+<div class="kertas">
+  <h1>Rekap Operasi Modifikasi Cuaca (OMC) Karhutla s.d. 27 Oktober 2026</h1>
+  <p class="sub">Sumber: rekap harian hujan dan OMC 15–27 Okt (laporan harian Kaban 16–28 Okt); identifikasi OMC 31 Agu–27 Okt (58 laporan harian); Lapsit Posko OMC Halim hari ke-10; resume briefing Posko Terpadu OMC 27 Okt; laporan Tim Pendampingan BNPB per provinsi 27 Okt; tabel hasil OMC BNPB (Jatim, PK-SNP Sumsel–Lampung); pemaparan OMC BNPB Sumsel–Lampung 27 Okt; lapsit Posko OMC Papua Selatan 28 Okt; Laporan Harian OMC TNI AU 27 Okt; BPBD Jatim 26 Okt</p>
+
+  <h2>Kumulatif per provinsi s.d. 27 Okt</h2>
+  <table class="kumulatif">
+    <thead>
+      <tr><th>Provinsi</th><th class="n">Sorti OMC</th><th class="n">Sorti dry ice</th><th class="n">Dry ice</th><th class="n">Sorti NaCl</th><th class="n">NaCl</th><th>Wilayah semai</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prov">Kalimantan Tengah</td><td class="n so">113</td><td class="n so">36</td><td class="n t">29,1</td><td class="n so">42</td><td class="n t">60,6</td><td>Palangka Raya, Kapuas, Pulang Pisau, Katingan, Kotim, Kobar, Seruyan, TN Tanjung Puting, Barito Timur, Barito Selatan</td></tr>
+      <tr><td class="prov">Kalimantan Selatan</td><td class="n so">81</td><td class="n so">4</td><td class="n t">2,3</td><td class="n so">12</td><td class="n t">11,6</td><td>Banjarbaru, Banjarmasin, Banjar, Barito Kuala, Tanah Laut, Tanah Bumbu, Kotabaru, Tapin, HSS, HST, HSU, Balangan, Tabalong</td></tr>
+      <tr><td class="prov">Sumatera Selatan</td><td class="n so">66</td><td class="n so">38</td><td class="n t">31,0</td><td class="n so">28</td><td class="n t">43,8</td><td>Palembang, OKI, Banyuasin, Musi Banyuasin, OKU, OKU Timur, Muara Enim, Ogan Ilir</td></tr>
+      <tr><td class="prov">Kalimantan Timur</td><td class="n so">30</td><td class="n so">0</td><td class="n t">0</td><td class="n so">30</td><td class="n t">28,8</td><td class="kosong">tidak dirinci</td></tr>
+      <tr><td class="prov">Kalimantan Barat</td><td class="n so">12</td><td class="n so">0</td><td class="n t">0</td><td class="n so">12</td><td class="n t">11,4</td><td>Ketapang, Kayong Utara, Mempawah, Landak, Kubu Raya, Pontianak, Sekadau, Sintang</td></tr>
+      <tr><td class="prov">Lampung</td><td class="n so">11</td><td class="n so">0</td><td class="n t">0</td><td class="n so">11</td><td class="n t">11,0</td><td>Lampung Timur (TN Way Kambas), Lampung Tengah, Lampung Barat, Lampung Selatan, Bandar Lampung, Way Kanan, Mesuji, Tulang Bawang, Tulang Bawang Barat</td></tr>
+      <tr><td class="prov">Papua Selatan</td><td class="n so">9</td><td class="n so">0</td><td class="n t">0</td><td class="n so">9</td><td class="n t">9,0</td><td>Merauke (utara, tengah), Boven Digoel (selatan), Mappi (selatan)</td></tr>
+      <tr><td class="prov">Jawa Barat</td><td class="n so">7</td><td class="n so">0</td><td class="n t">0</td><td class="n so">7</td><td class="n t">7,0</td><td>Gunung Ciremai dan sekitarnya (27 Okt: Sumedang, Subang, Majalengka, Kuningan)</td></tr>
+      <tr><td class="prov">Jawa Timur</td><td class="n so">5</td><td class="n so">0</td><td class="n t">0</td><td class="n so">5</td><td class="n t">3,0</td><td>Malang, Kota Batu, Pasuruan, Probolinggo, Jember, Bondowoso, Gunung Arjuno, Gunung Argopuro</td></tr>
+      <tr class="jumlah"><td>Jumlah 9 provinsi</td><td class="n so">334</td><td class="n so">78</td><td class="n t">62,4</td><td class="n so">156</td><td class="n t">186,2</td><td></td></tr>
+    </tbody>
+  </table>
+  <ul class="catatan">
+    <li>Kalteng dan Kalsel = Posko OMC Halim 16–27 Okt ditambah rekap harian 15 Okt; sorti OMC versi Halim lebih banyak dari sorti semai, angka dikutip apa adanya.</li>
+    <li>Sumsel = jumlah rekap harian 15–27 Okt. Rekap Tim Pendamping per 27 Okt (60 sorti, dry ice 26,2 ton) baru dihitung sejak 17 Okt (PK-SNP sejak 21 Okt), sehingga tidak memuat 6 sorti dry ice 15–18 Okt (4,8 ton). NaCl memakai angka tertinggi, 43,8 ton (Hercules A-1319 24.600 kg; jumlah harian 42,8 ton). Versi Posko Halim: 143 sorti, dry ice 28,6 ton, NaCl 51 ton.</li>
+    <li>Kalbar = rekap harian 15–23 Okt (PK-SCH dipindah ke Jatim 24 Okt). Lampung = PK-SNP 13 sorti NaCl 21–27 Okt dikurangi 2 sorti yang masuk Sumsel (21 Okt 800 kg, 22 Okt 1.000 kg), jadi 11 sorti × 1.000 kg pada 23–27 Okt. Kaltim (Lanud Dhomber) = akumulasi posko, awal periode tidak disebut. Papua Selatan = Posko OMC Merauke 22–28 Okt (Asmat nihil): volume hujan ±2,57 juta m³, titik panas turun dari 1.169 titik (22 Okt) menjadi 65 titik (28 Okt pukul 00.00–12.00 WIT). Jabar = 24–27 Okt, OMC dicukupkan 27 Okt. Jatim = PK-SCH 24–27 Okt; NaCl 2 sorti 27 Okt belum dilaporkan.</li>
+  </ul>
+
+  <h2>OMC sebelumnya, 31 Agu–14 Okt (6 provinsi prioritas, referensi)</h2>
+  <table class="kumulatif">
+    <thead>
+      <tr><th>Provinsi</th><th>Periode</th><th class="n">Hari OMC</th><th class="n">Hari ada hujan</th><th class="n">Sorti</th><th class="n">NaCl</th></tr>
+    </thead>
+    <tbody>
+      <tr><td class="prov">Kalimantan Barat</td><td>31 Agu – 14 Okt</td><td class="n hr">43</td><td class="n hr">38</td><td class="n so">84</td><td class="n t">77,0</td></tr>
+      <tr><td class="prov">Kalimantan Tengah</td><td>31 Agu – 10 Okt</td><td class="n hr">27</td><td class="n hr">20</td><td class="n so">≥68</td><td class="n t">≥56,0</td></tr>
+      <tr><td class="prov">Riau</td><td>31 Agu – 25 Sep (selesai)</td><td class="n hr">20</td><td class="n hr">19</td><td class="n so">39</td><td class="n t">≥28,0</td></tr>
+      <tr><td class="prov">Sumatera Selatan</td><td>1 Sep – 13 Okt</td><td class="n hr">19</td><td class="n hr">19</td><td class="n so">29</td><td class="n t">28,2</td></tr>
+      <tr><td class="prov">Kalimantan Selatan</td><td>5 Sep – 14 Okt</td><td class="n hr">18</td><td class="n hr">14</td><td class="n so">30</td><td class="n t">29,0</td></tr>
+      <tr><td class="prov">Jambi</td><td>31 Agu – 13 Okt (terakhir)</td><td class="n hr">10</td><td class="n hr">9</td><td class="n so">17</td><td class="n t">17,0</td></tr>
+    </tbody>
+  </table>
+  <ul class="catatan">
+    <li>Dari identifikasi 58 laporan harian (1 Sep–28 Okt). Sorti dan NaCl adalah angka yang tertulis di narasi, bukan total resmi; ≥ = ada hari yang tidak dirinci (Kalteng 1 hari; Riau 5 hari untuk NaCl). Kalsel 5 hari menyebut dukungan lintas Kalteng yang mungkin juga tercatat di Kalteng. Semua bahan semai pada periode ini NaCl. Tabel ini tidak dijumlahkan dengan kumulatif di atas.</li>
+  </ul>
+
+  <h2>Rincian harian 15–27 Okt</h2>
+  <table>
+    <thead>
+      <tr><th>Tanggal</th><th>Provinsi</th><th class="n">Sorti</th><th class="n">Dry ice</th><th class="n">NaCl</th><th>Sasaran semai</th><th>Hasil dilaporkan</th></tr>
+    </thead>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="4">15 Okt</td><td class="prov">Kalbar</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>Mempawah, Landak, Kubu Raya, Pontianak, Ketapang</td><td><span class="pil h">HUJAN</span>ringan–sedang di Sambas, Bengkayang, Landak, Singkawang, Mempawah, Pontianak, Kubu Raya, Ketapang</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">3</td><td class="n kg">0</td><td class="n kg">3.000</td><td>Barito Timur, Kapuas, Palangka Raya, Kotim; PK-SNK lintas Kapuas–Kalsel</td><td><span class="pil h">HUJAN</span>di Barito Timur, Kapuas, Palangka Raya, Kotim</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Kotabaru, HST, HSS, Barito Kuala (sorti lintas Kapuas di baris Kalteng)</td><td><span class="pil h">HUJAN</span>ringan–lebat di Banjarbaru, Banjarmasin, Banjar, Barito Kuala, Tanah Bumbu, Tabalong, Balangan, HSU, Kotabaru</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">2</td><td class="n kg">1.600</td><td class="n kg">0</td><td>kawasan Bandara SMB II, Palembang</td><td><span class="pil u">UDARA MEMBAIK</span>jarak pandang Palembang 800 m → 3 km</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="4">16 Okt</td><td class="prov">Kalbar</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">1.800</td><td>Ketapang, Kayong Utara</td><td><span class="pil h">HUJAN</span>ringan–lebat di Sambas, Singkawang, Mempawah, Sintang, Landak, Kubu Raya, Kayong Utara, Bengkayang, Pontianak, Ketapang</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">4</td><td class="n kg">0</td><td class="n kg">4.000</td><td>Kotim, Katingan, Seruyan, Kobar, Pulang Pisau, Palangka Raya</td><td><span class="pil h">HUJAN</span>sedang–lebat di Kobar</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>HSS, HST, Balangan, Tabalong</td><td><span class="pil h">HUJAN</span>ringan (radar) di Tapin, Tabalong, Balangan, HST, HSS, HSU</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">2</td><td class="n kg">1.600</td><td class="n kg">0</td><td>udara Kota Palembang</td><td><span class="pil u">UDARA MEMBAIK</span>jarak pandang Palembang 1,5 km → 2–2,5 km, malam 3,5 km</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="4">17 Okt</td><td class="prov">Kalbar</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Ketapang, Kayong Utara</td><td><span class="pil h">HUJAN</span>ringan–lebat di sebagian Sanggau, Sintang, Bengkayang, Landak, Sambas, Mempawah, Kubu Raya, Ketapang</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>Pulang Pisau, Palangka Raya, Kapuas; PK-SNK Barito Timur, Barito Selatan, Tabalong (lintas Kalsel)</td><td><span class="pil h">HUJAN</span>ringan di Murung Raya, Gunung Mas, Barito Selatan, Kobar, Kotim</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">0</td><td class="n kg">0</td><td class="n kg">0</td><td>Tabalong (sorti PK-SNK yang sama, di baris Kalteng)</td><td><span class="pil b">BELUM HUJAN</span></td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">3</td><td class="n kg">1.600</td><td class="n kg">800</td><td>dry ice: area Bandara SMB II, timur–tenggara Palembang</td><td><span class="pil u">UDARA MEMBAIK</span>jarak pandang Palembang hingga 5–7 km</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="4">18 Okt</td><td class="prov">Kalbar</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Ketapang, Kayong Utara</td><td><span class="pil h">HUJAN</span>ringan–lebat di Sambas, Sintang, Singkawang, Bengkayang, Landak, Mempawah, Pontianak, Kubu Raya, Sanggau, Sekadau, Ketapang</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>Kapuas, perbatasan Barito Selatan; PK-SNK Barito Timur, Barito Selatan (lintas Kalsel)</td><td><span class="pil h">HUJAN</span>di Kapuas</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Tapin, Banjar, Barito Kuala, Kotabaru (sorti lintas di baris Kalteng)</td><td><span class="pil h">HUJAN</span>(radar) di HSU</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">4</td><td class="n kg">2.400</td><td class="n kg">800</td><td>Palembang, Banyuasin, OKI, Ogan Ilir</td><td><span class="pil h">HUJAN</span>ringan di ruas Tol Palindra (Palembang); jarak pandang 500 m–7 km</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="4">19 Okt</td><td class="prov">Kalbar</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">1.800</td><td>Ketapang, Kayong Utara</td><td><span class="pil h">HUJAN</span>ringan–lebat di 13 kab/kota: Sambas, Sintang, Singkawang, Bengkayang, Landak, Mempawah, Pontianak, Kubu Raya, Sanggau, Sekadau, Melawi, Kayong Utara, Ketapang</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">5</td><td class="n kg">800</td><td class="n kg">3.800</td><td>Barito Selatan, Seruyan, Kotim, Kobar, Katingan, Kapuas, Pulang Pisau, Palangka Raya; PK-SNK Barito Timur–Tabalong (lintas Kalsel)</td><td><span class="pil h">HUJAN</span>di Barito Selatan (Buntok), Seruyan, Kotim, Kobar</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">3</td><td class="n kg">1.600</td><td class="n kg">800</td><td>dry ice: timur laut–tenggara Palembang; NaCl: Ogan Ilir, OKI, Banyuasin</td><td><span class="pil h">HUJAN</span>sangat ringan di Pemulutan (Ogan Ilir) dan Kikim Timur (Lahat); jarak pandang Palembang 700 m → 7 km</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Banjar, Barito Kuala, Delta Barito (sorti Tabalong di baris Kalteng)</td><td><span class="pil b">BELUM HUJAN</span>radar BMKG 24 jam</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="3">20 Okt</td><td class="prov">Kalbar</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Ketapang, Kayong Utara</td><td><span class="pil h">HUJAN</span>ringan–lebat di Sambas, Singkawang, Bengkayang, Landak, Mempawah, Kubu Raya, Sanggau, Ketapang, Pontianak</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">6</td><td class="n kg">3.900</td><td class="n kg">800</td><td>dry ice: Palangka Raya; NaCl: Kotim, perbatasan Seruyan–Kobar</td><td><span class="pil h">HUJAN</span>di Kobar (Pangkalan Bun); PM2,5 pagi turun 36%</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">1</td><td class="n kg">800</td><td class="n kg">0</td><td>timur laut–timur Palembang</td><td><span class="pil u">UDARA MEMBAIK</span>jarak pandang Palembang siang–sore 1 km → 3 km</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="4">21 Okt</td><td class="prov">Kalbar</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">1.800</td><td>Ketapang, Kayong Utara</td><td><span class="pil h">HUJAN</span>ringan–sedang di Sambas, Singkawang, Pontianak, Bengkayang, Landak, Kubu Raya, Sanggau, Ketapang</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">9</td><td class="n kg">4.400</td><td class="n kg">3.800</td><td>dry ice: Palangka Raya; NaCl: Kotim, Seruyan, Kobar, Pulang Pisau, Katingan, Kapuas; PK-SNK Barito Timur–Tabalong (lintas Kalsel)</td><td><span class="pil h">HUJAN</span>di Kobar</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">6</td><td class="n kg">4.000</td><td class="n kg">800</td><td>dry ice: Palembang; NaCl (PK-SNP): Palembang, Banyuasin</td><td><span class="pil h">HUJAN</span>ringan di Musi Banyuasin setelah sorti NaCl sore; jarak pandang Palembang 200 m → 2,5 km</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Kotabaru, Tanah Bumbu, Banjar, Barito Kuala (sorti Tabalong di baris Kalteng)</td><td><span class="pil b">BELUM HUJAN</span></td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="2">22 Okt</td><td class="prov">Kalteng</td><td class="n so">7</td><td class="n kg">5.000</td><td class="n kg">1.000</td><td>Murung Raya, Gunung Mas, Palangka Raya, TN Tanjung Puting</td><td><span class="pil h">HUJAN</span>di Murung Raya</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">9</td><td class="n kg">5.800</td><td class="n kg">1.800</td><td>dry ice: Palembang; NaCl: lintas Lampung Utara, Way Kanan–OKU Timur (PK-SNP) dan 1 sorti lain</td><td><span class="pil b">BELUM HUJAN</span>di Sumsel; jarak pandang naik, PM2,5 turun. Sorti PK-SNP ke Lampung: hujan ringan di Lampung Utara</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="5">23 Okt</td><td class="prov">Kalbar</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Sekadau, Ketapang, Sintang</td><td><span class="pil h">HUJAN</span>ringan–sedang di Sambas, Bengkayang, Landak, Sanggau, Sekadau, Sintang, Ketapang</td></tr>
+      <tr><td class="prov">Kalteng</td><td class="n so">8</td><td class="n kg">5.200</td><td class="n kg">2.000</td><td>dry ice: Palangka Raya; NaCl: Katingan, Kotim, Seruyan, Kobar</td><td><span class="pil b">BELUM HUJAN</span></td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Kotabaru, Tanah Bumbu, Tanah Laut</td><td><span class="pil h">HUJAN</span>di Kotabaru</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">7</td><td class="n kg">4.900</td><td class="n kg">2.200</td><td>dry ice: Palembang; NaCl: Banyuasin, OKI</td><td><span class="pil b">BELUM HUJAN</span>jarak pandang membaik menjelang siang, Palembang 3,5 km setelah semai dry ice</td></tr>
+      <tr><td class="prov">Lampung</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>TN Way Kambas (Lampung Timur), Lampung Barat</td><td><span class="pil h">HUJAN</span>ringan di Lampung Timur (TN Way Kambas) dan Lampung Barat</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="6">24 Okt</td><td class="prov">Kalteng</td><td class="n so">8</td><td class="n kg">4.500</td><td class="n kg">3.000</td><td>dry ice: Palangka Raya; NaCl: Palangka Raya, Katingan, Pulang Pisau, Kotim, Kobar</td><td><span class="pil h">HUJAN</span>deras di Seruyan</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>Tanah Laut, Kotabaru, Barito Kuala, Tapin, HSS, HSU, Balangan</td><td><span class="pil h">HUJAN</span>di Tapin dan Kotabaru</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">8</td><td class="n kg">3.300</td><td class="n kg">8.800</td><td>dry ice: Palembang dan sekitarnya; NaCl: Banyuasin, OKI, Musi Banyuasin</td><td><span class="pil h">HUJAN</span>di Musi Banyuasin (Bayung Lencir, Sekayu, Sungai Lilin), Palembang (Plaju, Talang Betutu, Talang Jambe), Banyuasin (Makarti Jaya, Tanjung Lago, Sumber Marga Telang, Talang Kelapa), OKI (Jejawi); jarak pandang Palembang 10 km pukul 09.00–15.00, PM2,5 membaik jadi sedang</td></tr>
+      <tr><td class="prov">Jabar</td><td class="n so kosong">–</td><td class="n kg">0</td><td class="n kg kosong">–</td><td>Gunung Ciremai (NaCl)</td><td><span class="pil h">HUJAN</span>di Gunung Ciremai</td></tr>
+      <tr><td class="prov">Jatim</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Pasuruan, Probolinggo</td><td><span class="pil h">HUJAN</span>ringan di Jember, Bondowoso, Trenggalek, Probolinggo, Banyuwangi, Pasuruan, Tulungagung; sedang di Pacitan</td></tr>
+      <tr><td class="prov">Lampung</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>Tulang Bawang, Lampung Tengah, Lampung Timur; Way Kanan, OKU Timur/Selatan (Sumsel)</td><td><span class="pil h">HUJAN</span>lebat di Way Kanan; ringan di Lampung Timur, Lampung Tengah, TN Way Kambas</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="6">25 Okt</td><td class="prov">Kalteng</td><td class="n so">11</td><td class="n kg">5.300</td><td class="n kg">8.800</td><td>dry ice: Palangka Raya; NaCl: Palangka Raya, Katingan, Pulang Pisau, Kotim, Seruyan, Kobar (termasuk Hercules A-1328), dan utara Kalsel (A-2119, 800 kg)</td><td><span class="pil h">HUJAN</span>di Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Banjar, Tanah Bumbu (sorti A-2119 di baris Kalteng)</td><td><span class="pil h">HUJAN</span>di Banjar (Martapura, sedang), Tanah Laut, Tanah Bumbu (Batulicin, sedang), Tapin, HSS</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">8</td><td class="n kg">1.700</td><td class="n kg">9.200</td><td>dry ice: timur–tenggara Palembang; NaCl: Banyuasin, Musi Banyuasin, OKI, OKU, Muara Enim, barat–utara Palembang</td><td><span class="pil h">HUJAN</span>deras di Sako Kenten (Palembang); ringan–deras di Sungai Menang, Pangkalan Lampam, Pampangan, Kayuagung (OKI); jarak pandang Palembang 3,5–6 km</td></tr>
+      <tr><td class="prov">Jabar</td><td class="n so kosong">–</td><td class="n kg">0</td><td class="n kg kosong">–</td><td>Gunung Ciremai (NaCl)</td><td><span class="pil h">HUJAN</span>di Gunung Ciremai</td></tr>
+      <tr><td class="prov">Jatim</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Kota Malang, Gunung Arjuno, Gunung Argopuro, Jember</td><td><span class="pil h">HUJAN</span>ringan di sekitar Gunung Argopuro; ringan–sedang di Malang</td></tr>
+      <tr><td class="prov">Lampung</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>TN Way Kambas, Lampung Tengah, Bandar Lampung; Mesuji, Tulang Bawang</td><td><span class="pil h">HUJAN</span>sedang di TN Way Kambas, Lampung Timur, Lampung Tengah; ringan di Mesuji, Tulang Bawang</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="7">26 Okt</td><td class="prov">Kalteng</td><td class="n so">9</td><td class="n kg">0</td><td class="n kg">14.400</td><td>Gunung Mas, Katingan, Kotim, Seruyan, Pulang Pisau, Kapuas, Palangka Raya, dll.</td><td><span class="pil h">HUJAN</span>di Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau</td></tr>
+      <tr><td class="prov">Kalsel</td><td class="n so kosong">–</td><td class="n kg kosong">–</td><td class="n kg kosong">–</td><td>Kotabaru, Hulu Sungai Selatan (Hercules A-1328, masuk baris Kalteng)</td><td><span class="pil h">HUJAN</span>di 10 kab/kota, termasuk Banjarmasin, Banjarbaru, Kotabaru, HSS</td></tr>
+      <tr><td class="prov">Sumsel</td><td class="n so">5</td><td class="n kg">0</td><td class="n kg">8.400</td><td>OKI, OKU, OKU Timur, Banyuasin</td><td><span class="pil h">HUJAN</span>di sebagian besar Sumsel; deras di Pangkalan Lampam (OKI) dan Banyuasin. Penakar BMKG 26–27 Okt: Tulung Selapan (OKI) 8,4 mm, Banyuasin 4,8 mm, Belitang (OKU Timur) 3,6 mm, Kota Palembang 1,6 mm</td></tr>
+      <tr><td class="prov">Jabar</td><td class="n so kosong">–</td><td class="n kg">0</td><td class="n kg kosong">–</td><td>Gunung Ciremai (NaCl)</td><td><span class="pil h">HUJAN</span>di Gunung Ciremai</td></tr>
+      <tr><td class="prov">Jatim</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Malang, Pasuruan, Probolinggo, Jember, Bondowoso, Gunung Arjuno, Gunung Argopuro</td><td><span class="pil h">HUJAN</span>ringan di Kota Malang, Kab. Malang, Pasuruan, Banyuwangi; BPBD Jatim: dampak OMC 24–26 Okt juga hujan di Bondowoso, Jember</td></tr>
+      <tr><td class="prov">Lampung</td><td class="n so">3</td><td class="n kg">0</td><td class="n kg">3.000</td><td>Lampung Tengah, Tulang Bawang, TN Way Kambas, Lampung Timur, Mesuji</td><td><span class="pil h">HUJAN</span>sedang di TN Way Kambas dan Lampung Tengah; ringan di Tulang Bawang dan Mesuji</td></tr>
+      <tr><td class="prov">Papua Selatan</td><td class="n so kosong">–</td><td class="n kg">0</td><td class="n kg kosong">–</td><td>Merauke, Boven Digoel, Mappi</td><td><span class="pil h">HUJAN</span>ringan–sedang (3,2 mm) di Boven Digoel, Mappi, Merauke (26 Okt 06.00 – 27 Okt 08.00 WIT)</td></tr>
+    </tbody>
+
+    <tbody class="hari">
+      <tr><td class="tgl" rowspan="6">27 Okt</td><td class="prov">Sumsel</td><td class="n so">8</td><td class="n kg">1.700</td><td class="n kg">9.200</td><td>dry ice: timur–tenggara Palembang; NaCl: OKI, Banyuasin, Musi Banyuasin, OKU, Muara Enim, Ogan Ilir</td><td><span class="pil h">HUJAN</span>sedang–lebat di OKI dan OKU Timur; ringan–sedang di Cengal dan Pangkalan Jerambah (OKI), Pusat Konservasi Gajah (Banyuasin). Penakar BMKG 07.01–16.00 WIB: Pangkalan Lampam (OKI) 36 mm, Pagar Alam 7,4 mm, Banyuasin I 4 mm. PM2,5 Palembang 115 → 68,8 µg/m³, jarak pandang membaik hingga 7 km</td></tr>
+      <tr><td class="prov">Kalteng–Kalsel</td><td class="n so">12</td><td class="n kg">2.100</td><td class="n kg">13.200</td><td>dry ice: Banjarbaru, Banjarmasin, Palangka Raya; NaCl: Katingan, Kotim, Kobar, Seruyan (TN Tanjung Puting), Kapuas, Pulang Pisau, Palangka Raya, Barito Kuala, Tanah Laut, Tanah Bumbu, Kotabaru, Banjar, HSS, HST, HSU, Balangan, Tabalong</td><td><span class="pil h">HUJAN</span>ringan–lebat (radar) di Katingan, Palangka Raya, Pulang Pisau, Kotim, Kapuas; ringan–sedang di Gunung Mas, Seruyan; hujan juga di Kobar, Sukamara, Murung Raya, Barito Utara; ringan–sedang di Kotabaru, Tanah Bumbu, Banjarmasin, Banjarbaru, Barito Kuala, Tanah Laut, Banjar, Tapin, HSS, HST, HSU, Tabalong, Balangan. PM2,5 Banjarbaru turun 14,6% saat semai dry ice, jarak pandang Syamsudin Noor 1,5 → 5 km</td></tr>
+      <tr><td class="prov">Jabar</td><td class="n so">1</td><td class="n kg">0</td><td class="n kg">1.000</td><td>Sumedang, Subang, Majalengka, Kuningan, Gunung Ciremai</td><td><span class="pil h">HUJAN</span>ringan–sedang di Gunung Ciremai; radar BMKG: ringan–sangat lebat di hampir seluruh Jabar. OMC dicukupkan</td></tr>
+      <tr><td class="prov">Jatim</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg kosong">–</td><td>Bondowoso, Jember, Gunung Argopuro; Kota Malang, Kab. Malang, Kota Batu, Gunung Arjuno</td><td><span class="pil h">HUJAN</span>ringan–sedang di Jombang, Bondowoso, Mojokerto, Jember, Madiun, Nganjuk, Tuban, Bojonegoro, Malang, timur Pulau Madura; Surabaya pada malam hari</td></tr>
+      <tr><td class="prov">Lampung</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>Lampung Timur, TN Way Kambas, Lampung Selatan; Mesuji, Tulang Bawang, Tulang Bawang Barat, Lampung Tengah</td><td><span class="pil h">HUJAN</span>ringan di Lampung Selatan, Lampung Timur, Tulang Bawang Barat, Lampung Tengah</td></tr>
+      <tr><td class="prov">Papua Selatan</td><td class="n so">2</td><td class="n kg">0</td><td class="n kg">2.000</td><td>Merauke, Mappi (sorti ke-2 penyemaian malam: Merauke)</td><td><span class="pil h">HUJAN</span>di utara Merauke mulai 17.00 WIT, meluas ke Boven Digoel dan Mappi, 2–3 jam setelah penyemaian</td></tr>
+    </tbody>
+  </table>
+
+  <ul class="catatan">
+    <li>Penerbangan lintas Kalteng–Kalsel (PK-SNK 15, 17, 18, 19, 21 Okt; CASA A-2119 25 Okt; Hercules A-1328 26 Okt) dicatat sekali di baris Kalteng; baris Kalsel hanya memuat sorti khusus Kalsel. 27 Okt Kalteng–Kalsel memuat 2 sorti dry ice (A-2107, A-2119) dari resume Posko Lanud SAM yang tidak tercatat di laporan Tim Kalteng.</li>
+    <li>– = tidak tercatat. 0 = dilaporkan nihil atau semua sorti memakai bahan lain. Rincian harian tidak ada untuk Kaltim, Papua Selatan 22–26 Okt (7 sorti), dan Jabar 24–26 Okt (6 sorti). Kalbar tidak ada OMC 22 dan 24–27 Okt; Kalsel tidak ada OMC 20 dan 22 Okt.</li>
+    <li>Riau: OMC 4 periode (15 Feb – 25 Sep 2026), selesai karena musim hujan. Jambi: OMC terakhir 13 Okt, pesawat PK-ALA kemudian pindah ke Jabar. Hujan = dilaporkan setelah OMC, belum tentu akibat langsung OMC; hujan di provinsi yang hari itu tidak ada OMC tidak dimasukkan.</li>
+  </ul>
+</div>
+</body>
+</html>
