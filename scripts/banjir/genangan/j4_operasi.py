@@ -6,7 +6,7 @@
            + debit Flood API -> mesin.mjs --dem-100m -> j4_prakira/<D>.raster.gz + baris rantai-hash di j4_prediksi.jsonl.
            ERA5 jam jendela 96 jam belum lengkap: kode keluar 3, coba lagi esok (TANPA pengganti); lewat D+9 dicatat di j4_gagal.jsonl.
   label    D+3 sampai D+9, HANYA bila baris prediksinya sudah ada di origin/main: PetaBencana tersaring dan tanpa saring -> j4_label.jsonl
-  nilai    kriteria bagian 5 dan 6 -> j4_vonis.json SEKALI (menolak bila kunci_j4 `cek` merah); `nilai --pratinjau` hanya mencetak
+  nilai    kriteria bagian 5 dan 6 -> j4_vonis.json SEKALI (menolak bila kunci_j4 `cek` merah); `nilai --pratinjau` hanya mencetak hitungan kejadian/laporan (tanpa AUC); vonis TAHAN tidak menulis j4_vonis.json (catatan j4_tahan.jsonl)
 Kegagalan unduh atau prakiraan: SELALU satu baris di j4_gagal.jsonl (tanggal, tahap, alasan, percobaan); kejadian itu keluar dan tidak diulang sesudah label atau hasil lain terlihat.
 Hanya DUA percobaan pada hari yang sama sebelum prediksi tersimpan (jumlahnya dicatat). Env J4_DIR hanya untuk uji lokal.
 Pakai:  python3 scripts/banjir/genangan/j4_operasi.py hujan|pemicu|prakira|label|nilai [--tanggal YYYY-MM-DD] [--pratinjau] | uji
@@ -260,6 +260,13 @@ def jalankan_mesin(tgl, mulai, masukan, raster, keluar, tambahan=()):
         subprocess.run(a, check=True, stdout=subprocess.DEVNULL, stderr=subprocess.PIPE, timeout=3600)
 
 
+def versi_node():
+    try:
+        return subprocess.run(["node", "--version"], capture_output=True, text=True, timeout=20).stdout.strip() or None
+    except Exception:
+        return None
+
+
 def hash_baris(r):
     return sha_j({k: v for k, v in r.items() if k != "hash"})
 
@@ -311,7 +318,7 @@ def prakira(tgl, sidik_kode, mesin=jalankan_mesin, flood=ambil_flood, era5=ambil
     with gzip.open(os.path.join(DIR, "j4_prakira", f"{tgl}.masukan.json.gz"), "wt") as h:
         json.dump(masukan, h, sort_keys=True, separators=(",", ":"))
     r = {"tanggal": str(tgl), "mulai": iso(mulai), "jam": JAM, "ant_hari_ada": sum(1 for k in range(1, HUJAN_ANT_HARI + 1) if iso(mulai - dt.timedelta(days=k)) in rows and not rows[iso(mulai - dt.timedelta(days=k))].get("dikeluarkan")), "sidik_kode": sidik_kode, "sha_hujan": sha_j(hj), "sha_hulu": sha_j(masukan["hulu"]), "sha_raster": sha_b(open(ras, "rb").read()),
-         "persen_basah_ge10cm": ring["sebaran_kedalaman_puncak_m"].get("persen_ge10cm"), "runner": platform.platform(), "dibuat": sekarang().isoformat(timespec="minutes"),
+         "persen_basah_ge10cm": ring["sebaran_kedalaman_puncak_m"].get("persen_ge10cm"), "runner": platform.platform(), "python": platform.python_version(), "node": versi_node(), "sha_gsmap_py": sha_b(open(os.path.join(D, "gsmap.py"), "rb").read()), "sha_m1_kumpul_py": sha_b(open(os.path.join(D, "m1_kumpul.py"), "rb").read()), "dibuat": sekarang().isoformat(timespec="minutes"),
          "prev": pred[-1]["hash"] if pred else "0" * 64}
     r["hash"] = hash_baris(r); tambah(f("j4_prediksi.jsonl"), r)
     print(f"prediksi {tgl}: tersimpan {r['hash'][:12]} basah {r['persen_basah_ge10cm']}%")
@@ -421,14 +428,42 @@ def siap_vonis(n_terjudge, jumlah_laporan, h):
     return False, "belum waktunya"
 
 
-def kumpul(x):
+def kumpul(x, catat=False):
     """-> (daftar [(tanggal, prediksi, label)] terjudge untuk ambang x, jumlah terpilih, jumlah keluar)."""
     terpilih = sorted({r["tanggal"] for r in baca_jsonl(f("j4_kejadian.jsonl")) if r["x"] == x and r["status"] == "terpilih"})
     pred = {r["tanggal"]: r for r in baca_jsonl(f("j4_prediksi.jsonl"))}; lab = {r["tanggal"]: r for r in baca_jsonl(f("j4_label.jsonl"))}; gg = keluar_set()
     sudah = [t for t in terpilih if dt.date.fromisoformat(t) + dt.timedelta(days=9) < hari_ini()]    # yang masih bisa terisi tidak dihitung keluar
     keluar = [t for t in sudah if t in gg or t not in pred or t not in lab]
-    ok = [(t, pred[t], lab[t]) for t in terpilih if t in pred and t in lab and t not in gg and lab[t]["n_tersaring"] >= skor_j4.MIN_LAPORAN]
+    bad = {t for t in terpilih if t in pred and t not in gg and not sha_masukan_ok(t, pred[t])}    # masukan.json.gz tak cocok dengan hash di baris prediksi: kejadian keluar, dicatat
+    if catat:
+        for t in sorted(bad):
+            gagal(t, "nilai", "sha256 masukan.json.gz tak cocok dengan sha_hujan/sha_hulu di baris prediksi: kejadian keluar")
+    keluar = sorted(set(keluar) | (bad & set(sudah)))
+    ok = [(t, pred[t], lab[t]) for t in terpilih if t in pred and t in lab and t not in gg and t not in bad and lab[t]["n_tersaring"] >= skor_j4.MIN_LAPORAN]
     return ok, len(sudah), len(keluar)
+
+
+def sha_masukan_ok(t, p):
+    try:
+        mk = json.load(gzip.open(os.path.join(DIR, "j4_prakira", f"{t}.masukan.json.gz"), "rt"))
+        return sha_j(mk["hujan"]) == p["sha_hujan"] and sha_j(mk["hulu"]) == p["sha_hulu"]
+    except Exception:
+        return False
+
+
+def pakai_x2(n_x, h):
+    """X2 hanya bila kejadian X < 6 dan tanggal vonis (30 Apr 2027) lewat. X >= 6 kejadian tapi < 150 laporan = belum cukup data pada X, bukan alasan memakai X2 (PRAREG 6)."""
+    return n_x < MIN_KEJADIAN and h >= TGL_VONIS
+
+
+def tulis_vonis(hasil, out, pratinjau):
+    """j4_vonis.json hanya untuk vonis nyata. Hasil ditahan (kejadian keluar > 20%) atau kosong: TIDAK ditulis, catatan ke j4_tahan.jsonl, supaya `nilai` bisa jalan lagi. -> 'vonis' | 'tahan' | None"""
+    if pratinjau or not hasil:
+        return None
+    if any(v["ditahan"] for v in hasil.values()):
+        tambah(f("j4_tahan.jsonl"), {"dicatat": sekarang().isoformat(timespec="minutes"), "vonis": {str(k): v["vonis"] for k, v in hasil.items()}, "keluar": {str(k): [v["kejadian_keluar"], v["kejadian_terpilih"]] for k, v in hasil.items()}})
+        return "tahan"
+    open(f("j4_vonis.json"), "w").write(out); return "vonis"
 
 
 def nilai(pratinjau=False):
@@ -440,13 +475,19 @@ def nilai(pratinjau=False):
         if g:
             print("kunci merah, nilai menolak:", g, file=sys.stderr); return 2
     bahaya = json.load(open(os.path.join(AKAR, "public/banjir/data/bahaya.json")))["kec"]; inarisk = {k[3:]: v.get("banjir", 0.0) for k, v in bahaya.items() if k.startswith("31|")}
-    z = z_panggang(); hasil = {}
+    if pratinjau:    # hanya hitungan kejadian/laporan, TIDAK ada AUC
+        for x in (X, X2):
+            ok, n_sel, n_keluar = kumpul(x); print(f"X={x}: terjudge {len(ok)}, {sum(l['n_tersaring'] for _, _, l in ok)} laporan, keluar {n_keluar}/{n_sel}")
+        return 0
+    z = z_panggang(); hasil = {}; n_x = 0
     for x in (X, X2):
-        ok, n_sel, n_keluar = kumpul(x); jml = sum(l["n_tersaring"] for _, _, l in ok); siap, alasan = siap_vonis(len(ok), jml, hari_ini())
-        if x == X2 and (hasil.get(X, {}).get("n_kejadian", 0) >= MIN_KEJADIAN or hari_ini() < TGL_VONIS):
+        ok, n_sel, n_keluar = kumpul(x, catat=True); jml = sum(l["n_tersaring"] for _, _, l in ok); siap, alasan = siap_vonis(len(ok), jml, hari_ini())
+        if x == X:
+            n_x = len(ok)
+        elif not pakai_x2(n_x, hari_ini()):
             continue
         print(f"X={x}: terjudge {len(ok)}, {jml} laporan, keluar {n_keluar}/{n_sel}; {alasan}; siap={siap}")
-        if not siap and not pratinjau:
+        if not siap:
             continue
         ms = {"saring": [], "tanpa_saring": []}
         for t, p, l in ok:
@@ -466,13 +507,13 @@ def nilai(pratinjau=False):
                 hasil[x]["arah_sama"] = hasil[x]["sensitivitas_tanpa_saring"]["lulus"] == hasil[x]["syarat_i_lulus"]
         if x == X and siap:
             break
-    out = json.dumps({"dibuat": sekarang().isoformat(timespec="minutes"), "pratinjau": pratinjau, "hasil": {str(k): v for k, v in hasil.items()},
+    out = json.dumps({"dibuat": sekarang().isoformat(timespec="minutes"), "hasil": {str(k): v for k, v in hasil.items()},
                       "klaim": "keterampilan relatif terhadap bias lokasi pelapor, BUKAN akurasi prakiraan genangan"}, indent=1, ensure_ascii=False)
     print(out)
     if not hasil:
         print("belum cukup data: tidak ada vonis")
-    elif not pratinjau:
-        open(f("j4_vonis.json"), "w").write(out)
+    elif tulis_vonis(hasil, out, pratinjau) == "tahan":
+        print("TAHAN: j4_vonis.json tidak ditulis (catatan di j4_tahan.jsonl); nilai bisa dijalankan lagi")
     return 0
 
 
@@ -559,6 +600,7 @@ def uji():
             open(ras, "wb").write(b"raster"); json.dump({"sebaran_kedalaman_puncak_m": {"persen_ge10cm": 1.5}}, open(kel, "w"))
         assert prakira(tgl2, "sidik-x", mesin_palsu, flood, era_x) == 0
         pd = baca_jsonl(f("j4_prediksi.jsonl")); assert rantai_ok(pd) and pd[-1]["prev"] == pd[-2]["hash"] and pd[-1]["sha_raster"] == sha_b(b"raster") and os.path.exists(f("j4_prakira/%s.masukan.json.gz" % tgl2))
+        assert {"python", "node", "sha_gsmap_py", "sha_m1_kumpul_py"} <= set(pd[-1]) and len(pd[-1]["sha_gsmap_py"]) == 64
         def rusak(*a):
             raise RuntimeError("mesin mati")
         tgl3 = dt.date.today() - dt.timedelta(days=3)
@@ -590,6 +632,19 @@ def uji():
         m2 = dict(m); m2["u"] = [0.5] * 100; assert vonis([m2] * 6, 0, 6)["vonis"] == "TIDAK LULUS"
         assert siap_vonis(10, 0, dt.date(2027, 1, 1))[0] and not siap_vonis(9, 999, dt.date(2027, 4, 30))[0] and siap_vonis(6, 150, dt.date(2027, 5, 8))[0] and not siap_vonis(6, 149, dt.date(2027, 5, 8))[0]
         assert not siap_vonis(5, 999, dt.date(2027, 5, 8))[0]
+        # X2 hanya bila kejadian X < 6 (dan tanggal vonis lewat); X 6+ kejadian tapi < 150 laporan = belum cukup data pada X
+        assert pakai_x2(5, dt.date(2027, 4, 30)) and not pakai_x2(6, dt.date(2027, 5, 8)) and not pakai_x2(9, dt.date(2027, 5, 8)) and not pakai_x2(5, dt.date(2027, 4, 29))
+        # TAHAN tidak menulis j4_vonis.json; vonis nyata menulis; pratinjau tidak
+        vt = {"ditahan": True, "vonis": "TAHAN", "kejadian_keluar": 3, "kejadian_terpilih": 6}; vl = {"ditahan": False, "vonis": "LULUS"}
+        assert tulis_vonis({34: vt}, "{}", False) == "tahan" and not os.path.exists(f("j4_vonis.json")) and baca_jsonl(f("j4_tahan.jsonl"))
+        assert tulis_vonis({34: vl}, "{}", True) is None and not os.path.exists(f("j4_vonis.json"))
+        assert tulis_vonis({34: vl}, "{}", False) == "vonis" and os.path.exists(f("j4_vonis.json")); os.remove(f("j4_vonis.json"))
+        # sha masukan: cocok = ok, diubah = keluar
+        mk = {"hujan": {"a": 1}, "hulu": {"b": 2}}; pp = {"sha_hujan": sha_j(mk["hujan"]), "sha_hulu": sha_j(mk["hulu"])}
+        os.makedirs(f("j4_prakira"), exist_ok=True)
+        with gzip.open(f("j4_prakira/zz.masukan.json.gz"), "wt") as h:
+            json.dump(mk, h)
+        assert sha_masukan_ok("zz", pp) and not sha_masukan_ok("zz", {**pp, "sha_hulu": "x"}) and not sha_masukan_ok("tidak-ada", pp)
         # berkas panggang ada dan cocok dengan kisi hujan: 500 x 388, blok tanpa data tercatat
         zb = z_panggang(); assert len(zb) == 500 * 388 and sum(math.isinf(x) for x in zb) < 5000
         assert "gsmap_jam" in MESIN and MESIN[MESIN.index("--faktor") + 1] == "12"

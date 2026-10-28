@@ -46,8 +46,7 @@ def leluhur(commit, akar=AKAR):
 
 
 def di_remote(commit, akar=AKAR):
-    r = git("branch", "-r", "--contains", commit, akar=akar)
-    return r.returncode == 0 and bool(r.stdout.strip())
+    return git("merge-base", "--is-ancestor", commit, "origin/main", akar=akar).returncode == 0    # origin/main saja, sama dengan di_origin
 
 
 def periksa(akar=AKAR, sidik_berkas=SIDIK_BERKAS, berkas=None, show=git_show, lel=leluhur, remote=di_remote):
