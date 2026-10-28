@@ -47,18 +47,15 @@
   const sosok = (o, besar) => `<span class="ak-sosok${besar ? " besar" : ""}">${foto(o, besar)}${logo(o)}</span>`;
   const logoKecil = k => logoK[k] ? `<img class="ak-klogo" src="${esc(logoK[k])}" alt="" loading="lazy" referrerpolicy="no-referrer">` : `<span class="ak-klogo kosong" aria-hidden="true">${esc(inisial(k))}</span>`;
 
-  /* kartu galeri: sampul foto (atau pita navy berinisial dan ikon rumpun utama), label di sudut, nama di atas gradasi, metrik di bawah */
-  /* kartu galeri: sampul foto (atau pita navy berinisial dan ikon rumpun utama), nama di atas gradasi; di bawahnya label yang bisa diklik
+  /* kartu: foto bulat berlogo kampus dan nama; di bawahnya label yang bisa diklik
      untuk menyaring (institusi, prodi, rumpun), lalu metrik. Kartu = div berperan tombol supaya label di dalamnya boleh jadi tombol. */
   const prodiDari = o => o[11] ? o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, "") : "";
-  const kartu = (o, i) => { const [, d, w] = RUMPUN[o[3][0]] || ["", "", "#6b7280"], prodi = prodiDari(o);
+  const kartu = (o, i) => { const prodi = prodiDari(o);
     return `<div class="ak-orang" role="button" tabindex="0" data-i="${i}" aria-label="Buka profil ${esc(o[1])}">
-      <span class="ak-sampul${o[9] ? "" : " kosong"}" style="--w0:${w}">${o[9] ? `<img src="${esc(o[9])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-inisial="${esc(inisial(o[1]))}">` : `<span class="ak-sampul-inisial">${esc(inisial(o[1]))}</span>${d ? `<svg class="ak-sampul-ikon" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>` : ""}`}
-        ${o[13] === "s" ? `<em class="ak-sampul-sinta">SINTA</em>` : ""}${o[15] === "diaspora" ? `<em class="ak-sampul-diaspora">Diaspora</em>` : ""}
-        <span class="ak-sampul-nama"><b>${esc(o[1])}</b></span>${o[14] ? `<img class="ak-sampul-logo" src="${esc(o[14])}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}</span>
+      <span class="ak-atas">${sosok(o)}<span class="ak-nama"><h3>${esc(o[1])}</h3>${o[13] === "s" || o[15] === "diaspora" ? `<span class="ak-lencana">${o[13] === "s" ? `<em class="ak-l-sinta">SINTA</em>` : ""}${o[15] === "diaspora" ? `<em class="ak-l-diaspora">Diaspora</em>` : ""}</span>` : ""}</span></span>
       <span class="ak-kartu-label">
         <button type="button" class="ak-lbl-inst" data-fk="kampus" data-v="${esc(o[2])}" title="Saring: ${esc(o[2])}">${esc(o[2])}</button>
-        ${prodi ? `<button type="button" class="ak-lbl-prodi" data-fk="prodi" data-v="${esc(o[11])}" title="Saring program studi ini">${esc(prodi)}</button>` : ""}
+        ${prodi ? `<button type="button" class="ak-lbl-prodi" data-fk="prodi" data-v="${esc(prodi)}" title="Saring program studi ini">${esc(prodi)}</button>` : ""}
       </span>
       <span class="ak-pil">${o[3].map((r, j) => `<button type="button" class="ak-r${j === 0 ? " utama" : ""}" data-fk="rumpun" data-v="${esc(r)}" style="--w0:${(RUMPUN[r] || [])[2] || "#6b7280"}">${(RUMPUN[r] || [])[1] ? ikon(RUMPUN[r][1], RUMPUN[r][2]) : ""}${esc((RUMPUN[r] || [r])[0])}</button>`).join("")}</span>
       ${metrik(o)}
@@ -66,14 +63,13 @@
 
   function saring() {
     const q = st.q.toLowerCase();
-    hasil = semua.filter(o => (!st.rumpun || o[3].includes(st.rumpun)) && (!st.kampus || o[2] === st.kampus) && (!st.prodi || o[11] === st.prodi)
+    hasil = semua.filter(o => (!st.rumpun || o[3].includes(st.rumpun)) && (!st.kampus || o[2] === st.kampus) && (!st.prodi || prodiDari(o) === st.prodi)
       && (q || st.sumber === "" || (st.sumber === "s" ? o[13] === "s" : o[13] !== "x")) && (!q || o._cari.includes(q)));   // cari nama = semua sumber
     const u = st.urut;
     hasil.sort(u === 1 ? (a, b) => a[1].localeCompare(b[1], "id") : (a, b) => b[u] - a[u] || b[4] - a[4]);
     st.hal = 1;
     document.querySelectorAll("#akRumpun button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.r === st.rumpun)));
-    $("akAktif").innerHTML = st.prodi ? `<button type="button" data-hapus="prodi">Program studi: <b>${esc(prodiDari([, , , , , , , , , , , st.prodi]))}</b><span aria-hidden="true">×</span></button>` : "";
-    $("akAktif").hidden = !st.prodi;
+    $("akPIsi").innerHTML = `<em>${esc(st.prodi || "Semua program studi")}</em>`;
     gambar(false);
   }
 
@@ -101,8 +97,23 @@
   }
   function pilihKampus(k) {
     st.kampus = k;
+    if (k && st.prodi && !semua.some(o => o[2] === k && prodiDari(o) === st.prodi)) st.prodi = "";   // prodi yang tidak ada di kampus ini dilepas
     $("akKIsi").innerHTML = k ? `${logoKecil(k)}<em>${esc(k)}</em>` : "<em>Semua kampus dan lembaga</em>";
     bukaKampus(false); saring();
+  }
+
+  /* ---------- pemilih program studi: daftar ikut kampus terpilih ---------- */
+  function daftarProdi() {
+    const q = $("akPQ").value.trim().toLowerCase(), n = {};
+    semua.forEach(o => { const p = prodiDari(o); if (p && (!st.kampus || o[2] === st.kampus)) n[p] = (n[p] || 0) + 1; });
+    const isi = Object.entries(n).filter(([p]) => !q || p.toLowerCase().includes(q)).sort((a, b) => b[1] - a[1]);
+    $("akPDaftar").innerHTML = (q ? "" : `<button type="button" role="option" data-p="" aria-selected="${!st.prodi}"><span>Semua program studi</span></button>`)
+      + (isi.length ? isi.slice(0, 300).map(([p, c]) => `<button type="button" role="option" data-p="${esc(p)}" aria-selected="${p === st.prodi}"><span>${esc(p)}</span><small>${angka(c)}</small></button>`).join("")
+      : `<p>Tidak ada program studi bernama itu.</p>`);
+  }
+  function bukaProdi(buka) {
+    $("akPPop").hidden = !buka; $("akPBtn").setAttribute("aria-expanded", String(buka));
+    if (buka) { $("akPQ").value = ""; daftarProdi(); $("akPQ").focus(); }
   }
 
   /* ---------- lembar detail ---------- */
@@ -305,7 +316,13 @@
     $("akKQ").addEventListener("input", daftarKampus);
     $("akKJenis").addEventListener("click", e => { const b = e.target.closest("button[data-j]"); if (!b) return; st.kJenis = b.dataset.j; daftarKampus(); $("akKQ").focus(); });
     $("akKDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b) pilihKampus(b.dataset.k); });
-    document.addEventListener("click", e => { if (!$("akKPop").hidden && !e.target.closest(".ak-kampus-pilih")) bukaKampus(false); });
+    $("akPBtn").addEventListener("click", () => bukaProdi($("akPPop").hidden));
+    $("akPQ").addEventListener("input", daftarProdi);
+    $("akPDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-p]"); if (b) { st.prodi = b.dataset.p; bukaProdi(false); saring(); } });
+    document.addEventListener("click", e => {
+      if (!$("akKPop").hidden && !e.target.closest(".ak-kampus-pilih:not(.ak-prodi-pilih)")) bukaKampus(false);
+      if (!$("akPPop").hidden && !e.target.closest(".ak-prodi-pilih")) bukaProdi(false);
+    });
     /* label di kartu menyaring; klik di bagian lain kartu membuka profil */
     $("akDaftar").addEventListener("click", e => {
       const f = e.target.closest("[data-fk]");
@@ -315,14 +332,13 @@
       const b = e.target.closest(".ak-orang"); if (b) buka(hasil[+b.dataset.i]);
     });
     $("akDaftar").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ak-orang")) { e.preventDefault(); buka(hasil[+e.target.dataset.i]); } });
-    $("akAktif").addEventListener("click", e => { const b = e.target.closest("[data-hapus]"); if (b) { st[b.dataset.hapus] = ""; saring(); } });
     $("akLembar").addEventListener("click", e => { if (e.target.closest("[data-tutup]")) tutup(); });
     document.addEventListener("keydown", e => {
       if (e.key !== "Escape") return;
-      if (!$("akLembar").hidden) tutup(); else if (!$("akKPop").hidden) { bukaKampus(false); $("akKBtn").focus(); }
+      if (!$("akLembar").hidden) tutup(); else if (!$("akKPop").hidden) { bukaKampus(false); $("akKBtn").focus(); } else if (!$("akPPop").hidden) { bukaProdi(false); $("akPBtn").focus(); }
     });
     $("akReset").addEventListener("click", () => {
-      Object.assign(st, {q: "", rumpun: "", sumber: ""}); $("akQ").value = "";
+      Object.assign(st, {q: "", rumpun: "", sumber: "", prodi: ""}); $("akQ").value = "";
       $("akS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === "")));
       pilihKampus("");
     });

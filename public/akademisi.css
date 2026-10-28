@@ -62,10 +62,12 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-kdaftar p{padding:14px;color:var(--ink2);font-size:13px}
 
 /* segmen */
-.ak-baris{display:grid;grid-template-columns:minmax(240px,300px) minmax(0,1fr) auto;gap:10px;align-items:stretch}
+.ak-baris{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:10px;align-items:stretch}
+.ak-baris .ak-kampus-pilih{min-width:0}
+.ak-baris #akU{display:flex}.ak-baris #akU button{flex:1}
 .ak-baris #akS{display:flex}
 .ak-baris #akS button{flex:1}
-@media (max-width:1100px){.ak-baris{grid-template-columns:minmax(220px,1fr) minmax(0,1.6fr)}.ak-baris #akU{grid-column:1/-1}.ak-baris #akU button{flex:1}.ak-baris #akU{display:flex}}
+@media (max-width:1100px){.ak-baris{grid-template-columns:minmax(0,1fr)}}
 .ak-seg{display:inline-flex;align-items:center;gap:2px;background:var(--card);border:1px solid var(--line);border-radius:999px;padding:3px;max-width:100%;overflow-x:auto;scrollbar-width:none}
 .ak-seg::-webkit-scrollbar{display:none}
 .ak-seg-lbl{font-size:11px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);padding:0 8px 0 12px;white-space:nowrap}
@@ -122,7 +124,12 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-mlabel .ak-ikon{width:14px;height:14px}
 
 /* kartu galeri: sampul 4:5, nama di atas gradasi gelap, metrik di bawah */
-.ak-hasil .ak-orang{padding:8px 8px 14px;gap:12px;border-radius:20px}
+.ak-hasil .ak-orang{padding:16px 14px 14px;gap:12px;border-radius:20px}
+.ak-lencana{display:flex;gap:5px}
+.ak-lencana em{font-style:normal;font-size:10.5px;line-height:16px;font-weight:800;letter-spacing:.04em;color:#fff;border-radius:999px;padding:1px 8px}
+.ak-l-sinta{background:#2f9e44}
+.ak-l-diaspora{background:#c2255c}
+.ak-hasil .ak-orang .ak-kartu-label,.ak-hasil .ak-orang .ak-pil,.ak-hasil .ak-orang .ak-metrik{padding-left:0;padding-right:0}
 .ak-sampul{position:relative;display:block;aspect-ratio:1/1;border-radius:14px;overflow:hidden;background:var(--surface)}
 .ak-sampul > img:first-child{width:100%;height:100%;object-fit:cover;object-position:50% 20%;display:block;transition:transform .35s cubic-bezier(.2,.7,.2,1)}
 .ak-orang:hover .ak-sampul > img:first-child{transform:scale(1.04)}

@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/akademisi.css?v=10">
+<link rel="stylesheet" href="/akademisi.css?v=13">
 </head>
 <body>
 <header class="top">
@@ -64,6 +64,14 @@
           <div id="akKDaftar" class="ak-kdaftar" role="listbox" aria-label="Kampus"></div>
         </div>
       </div>
+      <div class="ak-kampus-pilih ak-prodi-pilih">
+        <button id="akPBtn" class="ak-kbtn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ak-ikon ak-kik" viewBox="0 0 24 24" aria-hidden="true"><path d="M4 5c3-1 6-1 8 1 2-2 5-2 8-1v14c-3-1-6-1-8 1-2-2-5-2-8-1z"/><path d="M12 6v14"/></svg><span id="akPIsi"><em>Semua program studi</em></span>
+          <svg class="ak-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div id="akPPop" class="ak-kpop" hidden>
+          <label class="ak-kcari"><span class="sr">Cari program studi</span><input id="akPQ" type="search" autocomplete="off" placeholder="Cari program studi"></label>
+          <div id="akPDaftar" class="ak-kdaftar" role="listbox" aria-label="Program studi"></div>
+        </div>
+      </div>
       <div class="ak-seg" id="akS" role="group" aria-label="Sumber">
         <button type="button" data-v="bukanx" aria-pressed="false"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10 12 5l9 5-9 5z"/><path d="M7 12v4c2 2 8 2 10 0v-4"/></svg>Dosen Indonesia</button><button type="button" data-v="s" aria-pressed="true"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.5 2 3.2-.3.8 3.1 2.7 1.8-1.3 3 1.3 3-2.7 1.8-.8 3.1-3.2-.3L12 21l-2.5-2-3.2.3-.8-3.1L2.8 14.4l1.3-3-1.3-3 2.7-1.8.8-3.1 3.2.3z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>Terdaftar di SINTA</button><button type="button" data-v="" aria-pressed="false"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c3 0 5.5 2 5.5 5"/></svg>Semua</button>
       </div>
@@ -72,7 +80,6 @@
       </div>
     </div>
     <div id="akRumpun" class="ak-chip" role="group" aria-label="Rumpun bahaya"></div>
-    <div id="akAktif" class="ak-aktif" hidden></div>
     </div>
 
     <div class="ak-hasil">
@@ -92,7 +99,7 @@
     <div id="akDIsi"></div>
   </article>
 </div>
-<script src="/akademisi.js?v=10"></script>
+<script src="/akademisi.js?v=13"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>
