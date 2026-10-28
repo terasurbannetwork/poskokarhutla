@@ -469,7 +469,7 @@ uji("tabel hilang (migrasi belum jalan): GET 503 bukan 500, cron tidak melempar"
 /* hotfix 28 Okt 2026: kuota baca D1 gratis habis karena status (~250 ribu baris) dihitung tiap 10 menit lewat hujan. Jeda bawaan 180 menit di bangunStatus. */
 test("jeda status bawaan: panggilan kedua dalam 3 jam tidak menghitung ulang status; sesudah 3 jam menghitung lagi", async () => {
   const {STATUS_JEDA_MENIT} = await import("../../src/sihka.js");
-  assert.equal(STATUS_JEDA_MENIT, 180);
+  assert.equal(STATUS_JEDA_MENIT, 240);
   const src = (await import("node:fs")).readFileSync(new URL("../../src/sihka.js", import.meta.url), "utf8");
   const tubuh = src.slice(src.indexOf("const bangunStatus"), src.indexOf("export async function perbaruiSihka"));
   assert.match(tubuh, /kini - lalu\.dibuat < jeda\) return null/, "jeda hilang dari satu-satunya pintu status");

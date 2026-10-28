@@ -132,8 +132,8 @@ const galatTeks = e => String(e?.message).slice(0, 200);
 
 /* tabel sungai_meta (0066) belum diterapkan di D1 = status SIHKA tidak boleh mati: buat tabelnya (SQL sama dengan migrasi, idempoten) lalu ulangi */
 /* status menyapu ~250 ribu baris sihka_baca sekali jalan; dipanggil SIHKA tiap jam, sungai resmi tiap jam, dan hujan tiap 10 menit.
-   Jeda 3 jam di satu tempat ini (28 Okt 2026: kuota baca D1 gratis 5 juta/hari habis, produksi 500). ponytail: jeda tetap, hitung inkremental bila status perlu lebih segar */
-export const STATUS_JEDA_MENIT = 180;   // env.SIHKA_STATUS_JEDA_MENIT menimpa (uji memakai "0" supaya tiap panggilan menghitung)
+   Jeda 4 jam di satu tempat ini (28 Okt 2026: kuota baca D1 gratis 5 juta/hari habis, produksi 500; 3 jam masih ~2 juta/hari, pemilik minta 4 jam). ponytail: jeda tetap, hitung inkremental bila status perlu lebih segar */
+export const STATUS_JEDA_MENIT = 240;   // env.SIHKA_STATUS_JEDA_MENIT menimpa (uji memakai "0" supaya tiap panggilan menghitung)
 const bangunStatus = async (env, kini) => {
   const jeda = Number(env?.SIHKA_STATUS_JEDA_MENIT ?? STATUS_JEDA_MENIT) * 60e3;
   const lalu = jeda > 0 ? await env.DB.prepare("SELECT dibuat FROM cuaca_sumber WHERE kunci = 'sihka_status'").first().catch(() => null) : null;
