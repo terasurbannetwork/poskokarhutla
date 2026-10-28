@@ -54,7 +54,7 @@
   const kartu = (o, i) => { const [, d, w] = RUMPUN[o[3][0]] || ["", "", "#6b7280"], prodi = prodiDari(o);
     return `<div class="ak-orang" role="button" tabindex="0" data-i="${i}" aria-label="Buka profil ${esc(o[1])}">
       <span class="ak-sampul${o[9] ? "" : " kosong"}" style="--w0:${w}">${o[9] ? `<img src="${esc(o[9])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-inisial="${esc(inisial(o[1]))}">` : `<span class="ak-sampul-inisial">${esc(inisial(o[1]))}</span>${d ? `<svg class="ak-sampul-ikon" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>` : ""}`}
-        ${o[13] === "s" ? `<em class="ak-sampul-sinta">SINTA</em>` : ""}
+        ${o[13] === "s" ? `<em class="ak-sampul-sinta">SINTA</em>` : ""}${o[15] === "diaspora" ? `<em class="ak-sampul-diaspora">Diaspora</em>` : ""}
         <span class="ak-sampul-nama"><b>${esc(o[1])}</b></span>${o[14] ? `<img class="ak-sampul-logo" src="${esc(o[14])}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}</span>
       <span class="ak-kartu-label">
         <button type="button" class="ak-lbl-inst" data-fk="kampus" data-v="${esc(o[2])}" title="Saring: ${esc(o[2])}">${esc(o[2])}</button>
@@ -67,7 +67,7 @@
   function saring() {
     const q = st.q.toLowerCase();
     hasil = semua.filter(o => (!st.rumpun || o[3].includes(st.rumpun)) && (!st.kampus || o[2] === st.kampus) && (!st.prodi || o[11] === st.prodi)
-      && (st.sumber === "" || (st.sumber === "s" ? o[13] === "s" : o[13] !== "x")) && (!q || o._cari.includes(q)));
+      && (q || st.sumber === "" || (st.sumber === "s" ? o[13] === "s" : o[13] !== "x")) && (!q || o._cari.includes(q)));   // cari nama = semua sumber
     const u = st.urut;
     hasil.sort(u === 1 ? (a, b) => a[1].localeCompare(b[1], "id") : (a, b) => b[u] - a[u] || b[4] - a[4]);
     st.hal = 1;
@@ -231,7 +231,7 @@
     const status = o[13] === "s" ? ["ok", "Terdaftar di SINTA"] : o[13] === "x" ? ["", "Tidak ditemukan di SINTA"] : ["", "Belum dicocokkan dengan SINTA"];
     /* kepala lembar: foto, nama, institusi, label (prodi, SINTA, rumpun) dan metrik semuanya di pita navy */
     $("akDIsi").innerHTML = `<div class="ak-dkepala"><div class="ak-dk-atas">${sosok(o, true)}<div class="ak-nama"><h2 id="akDNama">${esc(o[1])}</h2><p>${esc(o[2])}</p></div></div>
-        <div class="ak-pil">${o[11] ? `<span class="ak-prodi">${esc(o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, ""))}</span>` : ""}<span class="ak-tanda ${status[0]}">${status[1]}</span>${o[3].map(r => pilRumpun(r)).join("")}</div>
+        <div class="ak-pil">${o[11] ? `<span class="ak-prodi">${esc(o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, ""))}</span>` : ""}<span class="ak-tanda ${status[0]}">${status[1]}</span>${o[15] === "diaspora" ? `<span class="ak-tanda diaspora">Diaspora Indonesia</span>` : ""}${o[3].map(r => pilRumpun(r)).join("")}</div>
         ${metrik(o)}</div>
       <div class="ak-dtubuh">
         ${o[12] ? `<section class="ak-dbagian"><h3>Bidang menurut SINTA</h3><p>${esc(o[12])}</p></section>` : ""}
