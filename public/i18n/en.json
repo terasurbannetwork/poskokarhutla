@@ -9471,7 +9471,6 @@
 "‹ Kembali ke peta": "‹ Back to the map",
 "hingga": "to",
 "1 kejadian": "1 event",
-"Kapan satelit melintas di atas Indonesia, apakah datanya sudah sampai di aplikasi, dan berapa deteksi FIRMS (semua tingkat keyakinan) yang dibawanya. Diperbarui harian.": "When satellites pass over Indonesia, whether their data has reached the app, and how many FIRMS detections (all confidence levels) they carried. Updated daily.",
 "{0} gugus deteksi": "{0} detection groups",
 "1 gugus deteksi": "1 detection group",
 "dengan": "with",
@@ -9498,7 +9497,14 @@
 "; hari yang belum utuh tidak dihitung": "; days that are not complete are not counted",
 "Hari terhitung": "Days counted",
 "Jumlah granul FIRMS": "Number of FIRMS granules",
-"Memuat data satelit…": "Loading satellite data…"
+"Memuat data satelit…": "Loading satellite data…",
+"Kapan satelit melintas di atas Indonesia, apakah datanya sudah sampai di aplikasi, dan berapa deteksi FIRMS": "When satellites pass over Indonesia, whether their data has reached the app, and how many FIRMS detections",
+"(semua tingkat keyakinan)": "(all confidence levels)",
+"(keyakinan sedang dan tinggi)": "(medium and high confidence)",
+"(keyakinan tinggi)": "(high confidence)",
+"yang dibawanya. Diperbarui harian.": "they carried. Updated daily.",
+"NASA FIRMS (arsip dan NRT), keyakinan sedang dan tinggi": "NASA FIRMS (archive and NRT), medium and high confidence",
+"NASA FIRMS (arsip dan NRT), keyakinan tinggi": "NASA FIRMS (archive and NRT), high confidence"
 },
 "pola": [
 [

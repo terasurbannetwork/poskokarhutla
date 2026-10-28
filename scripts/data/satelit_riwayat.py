@@ -3,17 +3,19 @@
 Berkas KUMULATIF: dibaca, dilengkapi, ditulis lagi tiap jalan (harus bertahan antarjalan, lihat data.yml). Skema (kunci hari = tanggal WIB):
   {"dibuat": "2026-10-29T14:30Z", "sumber": "...", "mulai": "2026-01-01", "sampai": "2026-10-28",
    "satelit": ["NOAA-20", "NOAA-21", "Terra", "Aqua", "S-NPP"],
-   "hari": {"2026-10-27": {"NOAA-20": {"d": 1542, "l": [[95, 170], [654, 142]]}, "Terra": {...},
+   "hari": {"2026-10-27": {"NOAA-20": {"d": [212, 988, 342], "l": [[95, 20, 118, 32], [654, 11, 98, 33]]}, "Terra": {...},
                            "tiba": {"N20": {"n": 40, "lintasan": 5, "median": 205, "p90": 330, "maks": 610}}}}}
-  d = jumlah deteksi (baris FIRMS) satelit itu pada hari WIB itu; l = gugus lintasan [menit sejak 00.00 WIB saat deteksi pertama gugus, jumlah deteksi];
-  gugus = deteksi berurutan satu satelit dengan celah <= CELAH_MENIT (45) menit, celah lebih besar membuka gugus baru; sum(jumlah gugus) = d.
+  Jumlah deteksi (baris FIRMS) DIPECAH per tingkat keyakinan [rendah, sedang(nominal), tinggi] = kode aplikasi 0/1/2 (firms_sumber.kelas_yakin, kolom `keyakinan`
+  hotspot.json: VIIRS l/n/h, MODIS <30/30-79/>=80). d = [r, s, t] satelit itu pada hari WIB itu; l = gugus lintasan [menit sejak 00.00 WIB saat deteksi pertama gugus, r, s, t].
+  Gugus dibentuk dari SEMUA deteksi satelit itu (berurutan, celah <= CELAH_MENIT (45) menit; celah lebih besar membuka gugus baru) lalu tiap gugus dipecah per tingkat;
+  jumlah r/s/t seluruh gugus = d[0]/d[1]/d[2]. Bentuk lama {d: int, l: [[menit, n]]} tidak sah (dibuang dan diunduh ulang).
   Satelit tanpa deteksi hari itu tidak ditulis. mulai/sampai = hari pertama/terakhir yang ADA di `hari`.
 
 Sumber. FIRMS area API lewat firms_sumber.unduh (SP bila hari di jangkauan arsip standar, selain itu NRT; dipilih dari /api/data_availability, bukan dari umur hari)
 untuk VIIRS NOAA-20, NOAA-21, S-NPP dan MODIS (Terra/Aqua dipisah dari kolom `satellite`: "Terra"/"T", "Aqua"/"A"). Semua tingkat keyakinan. Deteksi yang dihitung = SAMA
 dengan data titik aplikasi (harian.py, harian30.py, khg_prioritas.py): jatuh di darat Indonesia (wilayah.Wilayah.cari; laut dan negara tetangga dibuang) dan bukan sel
 sumber panas tetap industri (titik_palsu.sel_industri; kawah tetap dihitung; matikan dengan env TITIK_PALSU=0 seperti di harian.py). Tidak ada saringan baru. Beda dengan
-"lokasi unik" titik_unik.py: d di sini = baris FIRMS, hanya baris identik (lat, lon, waktu, satelit) yang dibuang.
+"lokasi unik" titik_unik.py: jumlah di sini = baris FIRMS, hanya baris identik (lat, lon, waktu, satelit) yang dibuang.
 Waktu FIRMS (acq_date/acq_time) = UTC; hari dan menit `l` = WIB (+7). Hari WIB D = UTC D-1 17:00 .. D 17:00, jadi hari UTC D-1 dan D diunduh dan hari D ditulis hanya bila
 SEMUA famili wajib sukses untuk keduanya (firms_sumber.penuh); berhentinya S-NPP (FS.SNPP_AKHIR, 1 Nov 2026) ditangani firms_sumber. Hari tanpa satu deteksi pun (total
 nol) dianggap unduhan salah (bug SP kosong 2-27 Agu 2026): tidak ditulis, dicoba lagi. Hari yang famili wajibnya tak punya sumber (mis. SP suatu sensor tak menjangkau)
@@ -43,7 +45,7 @@ import argparse, datetime as dt, io, json, math, os, re, sys, time, urllib.reque
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import firms_sumber as FS  # noqa: E402
-from firms_sumber import FAMILI, muat_ketersediaan, penuh, sumber_hari, unduh, wajib  # noqa: E402
+from firms_sumber import FAMILI, kelas_yakin, muat_ketersediaan, penuh, sumber_hari, unduh, wajib  # noqa: E402
 
 AKAR = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 KELUAR = os.path.join(AKAR, "public/data/satelit/riwayat.json")
@@ -58,8 +60,8 @@ POTONG_HARI = 5                       # hari UTC per potongan unduhan (maks area
 FAM = FAMILI + ("VIIRS_NOAA21",)      # sama dengan harian30.FAM4 / khg_prioritas.FAM4
 SATELIT = ("NOAA-20", "NOAA-21", "Terra", "Aqua", "S-NPP")
 SAT_FAMILI = {"VIIRS_NOAA20": "NOAA-20", "VIIRS_NOAA21": "NOAA-21", "VIIRS_SNPP": "S-NPP"}
-SUMBER = ("NASA FIRMS (arsip SP + NRT), darat Indonesia tanpa sumber panas industri tetap, semua tingkat keyakinan; "
-          "jam tiba dari riwayat kedatangan aplikasi")
+SUMBER = ("NASA FIRMS (arsip SP + NRT), darat Indonesia tanpa sumber panas industri tetap, semua tingkat keyakinan "
+          "dengan jumlah dipecah per tingkat (rendah, sedang, tinggi); jam tiba dari riwayat kedatangan aplikasi")
 URL_JEDA = "https://centurisk97.id/api/satelit/jeda"
 TIBA_PERCOBAAN, TIBA_TIMEOUT, TIBA_BACA_MAKS = 2, 15, 2_000_000   # kali, dtk, byte
 TIBA_KODE = ("N20", "N21", "M", "N")
@@ -70,14 +72,15 @@ KONTROL = re.compile(r"[\x00-\x1f\x7f-\x9f\u2028\u2029]+")   # pemisah baris/kon
 
 
 # ---------------------------------------------------------------- deteksi -> gugus
-def gugus(menit, celah=CELAH_MENIT):
-    """Daftar menit (WIB, 0..1439) -> [[menit pertama gugus, jumlah], ...]; celah antardeteksi berurutan > `celah` membuka gugus baru."""
+def gugus(per_menit, celah=CELAH_MENIT):
+    """{menit WIB (0..1439): [r, s, t]} (jumlah deteksi per tingkat keyakinan pada menit itu) -> [[menit pertama gugus, r, s, t], ...]. Gugus dibentuk dari semua deteksi
+    tanpa memandang tingkat: menit berurutan dengan celah > `celah` membuka gugus baru; hitungan r/s/t gugus = jumlah deteksi tiap tingkat di dalamnya."""
     out, akhir = [], None
-    for m in sorted(menit):
-        if out and m - akhir <= celah:
-            out[-1][1] += 1
-        else:
-            out.append([m, 1])
+    for m in sorted(per_menit):
+        if not out or m - akhir > celah:
+            out.append([m, 0, 0, 0])
+        for k in range(3):
+            out[-1][1 + k] += per_menit[m][k]
         akhir = m
     return out
 
@@ -91,7 +94,8 @@ def nama_satelit(src, baris):
 
 
 def kumpul(baris, sasaran, cari, saring, acc, stat):
-    """Baris FIRMS [(sumber, dict)] -> menambah acc[tgl WIB][satelit] = [menit WIB, ...] untuk hari di `sasaran` (set 'YYYY-MM-DD').
+    """Baris FIRMS [(sumber, dict)] -> menambah acc[tgl WIB][satelit][menit WIB][kelas] untuk hari di `sasaran` (set 'YYYY-MM-DD'); kelas 0/1/2 (rendah/sedang/tinggi) dari
+    firms_sumber.kelas_yakin (pemetaan titik aplikasi: VIIRS l/n/h tak dikenal = sedang, MODIS < 30 / 30-79 / >= 80, bukan angka = rendah).
     Saringan SAMA dengan titik aplikasi: saring(lat, lon) True = sel industri (dibuang), cari(lon, lat) None = laut/luar negeri (dibuang).
     Baris identik (lat, lon, waktu, satelit) dihitung sekali. stat: 'rusak' (baris tak terbaca), 'tak_dikenal' (satelit MODIS tak dikenal)."""
     lihat = set()
@@ -116,12 +120,17 @@ def kumpul(baris, sasaran, cari, saring, acc, stat):
         lihat.add(k)
         if (saring and saring(lat, lon)) or not cari(lon, lat):
             continue
-        acc.setdefault(tgl, {}).setdefault(sat, []).append(t.hour * 60 + t.minute)
+        acc.setdefault(tgl, {}).setdefault(sat, {}).setdefault(t.hour * 60 + t.minute, [0, 0, 0])[kelas_yakin(r.get("confidence") or "", src.startswith("MODIS"))] += 1
 
 
 def rakit_hari(per_sat):
-    """{satelit: [menit]} -> {satelit: {"d": n, "l": gugus}} urut SATELIT, hanya yang punya deteksi."""
-    return {s: {"d": len(per_sat[s]), "l": gugus(per_sat[s])} for s in SATELIT if per_sat.get(s)}
+    """{satelit: {menit: [r, s, t]}} -> {satelit: {"d": [r, s, t], "l": gugus}} urut SATELIT, hanya yang punya deteksi."""
+    out = {}
+    for sat in SATELIT:
+        if per_sat.get(sat):
+            l = gugus(per_sat[sat])
+            out[sat] = {"d": [sum(g[1 + k] for g in l) for k in range(3)], "l": l}
+    return out
 
 
 # ---------------------------------------------------------------- jam tiba (centurisk97.id/api/satelit/jeda)
@@ -250,8 +259,8 @@ def _angka(x):
 
 
 def isi_sah(per):
-    """Skema satu hari dari berkas lama/cache: minimal satu satelit; kunci isi hanya SATELIT atau "tiba"; per satelit tepat {d, l} dengan d int >= 0, l = daftar
-    [menit 0..1439, jumlah >= 0] (int) dan d = jumlah gugus; tiba = {kode di TIBA_KODE: tepat lima angka terbatas >= 0}. Selain itu rusak."""
+    """Skema satu hari dari berkas lama/cache: minimal satu satelit; kunci isi hanya SATELIT atau "tiba"; per satelit tepat {d, l} dengan d = [r, s, t] (tiga int >= 0), l = daftar
+    [menit 0..1439, r, s, t] (int, jumlah >= 0) dan d = jumlah gugus per tingkat (bentuk lama d int ditolak); tiba = {kode di TIBA_KODE: tepat lima angka terbatas >= 0}. Selain itu rusak."""
     if not isinstance(per, dict) or not any(k in SATELIT for k in per):
         return False
     for k, v in per.items():
@@ -260,13 +269,15 @@ def isi_sah(per):
                                                   for kode, b in v.items()):
                 return False
         elif k in SATELIT:
-            if not (isinstance(v, dict) and set(v) == {"d", "l"} and _int(v["d"]) and v["d"] >= 0 and isinstance(v["l"], list)):
+            if not (isinstance(v, dict) and set(v) == {"d", "l"} and isinstance(v["d"], list) and len(v["d"]) == 3 and all(_int(x) and x >= 0 for x in v["d"])
+                    and isinstance(v["l"], list)):
                 return False
-            jumlah = 0
+            jumlah = [0, 0, 0]
             for g in v["l"]:
-                if not (isinstance(g, list) and len(g) == 2 and _int(g[0]) and _int(g[1]) and 0 <= g[0] < 1440 and g[1] >= 0):
+                if not (isinstance(g, list) and len(g) == 4 and all(_int(x) for x in g) and 0 <= g[0] < 1440 and all(x >= 0 for x in g[1:])):
                     return False
-                jumlah += g[1]
+                for j in range(3):
+                    jumlah[j] += g[1 + j]
             if jumlah != v["d"]:
                 return False
         else:
@@ -480,7 +491,7 @@ def ketersediaan(sp_viirs, sp_modis):
 
 
 def isi_dasar():
-    """{(famili, tanggal UTC): [(lat, lon, 'HHMM', kolom satellite)]} untuk 28 Feb..9 Mar. Tiap hari UTC: N20 05.00/05.10/09.00 (WIB 12.00, 12.10, 16.00), NOAA-21 06.00 (WIB 13.00),
+    """{(famili, tanggal UTC): [(lat, lon, 'HHMM', kolom satellite[, keyakinan])]} untuk 28 Feb..9 Mar (keyakinan bawaan sedang: VIIRS "n", MODIS "50"). Tiap hari UTC: N20 05.00/05.10/09.00 (WIB 12.00, 12.10, 16.00), NOAA-21 06.00 (WIB 13.00),
     S-NPP 07.00 (WIB 14.00), Terra 03.00 (WIB 10.00), Aqua 04.00 (WIB 11.00). 4 Mar UTC juga memuat N20 16:59 (WIB 23:59 hari yang sama) dan satu deteksi di laut."""
     out, d = {}, D("2026-02-28")
     while d <= D("2026-03-09"):
@@ -516,7 +527,7 @@ def pabrik(isi, avail_teks=None, gagal=None):
         out = [HDR_FIRMS]
         for i in range(n):
             d = tgl + dt.timedelta(days=i)
-            out += [f"{la},{lo},{d},{jam},{sc},n\n" for la, lo, jam, sc in sumber(fam, d.isoformat())]
+            out += [f"{b[0]},{b[1]},{d},{b[2]},{b[3]},{b[4] if len(b) > 4 else '50' if fam == 'MODIS' else 'n'}\n" for b in sumber(fam, d.isoformat())]   # keyakinan bawaan: sedang
         return "".join(out)
     return ambil, catat
 
@@ -536,6 +547,7 @@ def uji():
         uji_rencana()
         uji_tiba()
         uji_jalan_penuh()
+        uji_keyakinan()
         uji_isi_mundur()
         uji_gagal()
         uji_berkas_lama()
@@ -546,31 +558,49 @@ def uji():
 
 
 def uji_gugus_dan_kumpul():
-    # gugus: tepat 45 menit tetap satu gugus, 46 membuka gugus baru; urutan masukan tak penting
-    assert gugus([100, 110, 150, 196, 197]) == [[100, 3], [196, 2]] and gugus([0, 45, 90, 136]) == [[0, 3], [136, 1]], "celah <= 45 satu gugus, 46 gugus baru"
-    assert gugus([300, 100, 346]) == [[100, 1], [300, 1], [346, 1]] and gugus([]) == [] and gugus([5, 5, 5]) == [[5, 3]]
+    # gugus: tepat 45 menit tetap satu gugus, 46 membuka gugus baru; urutan masukan tak penting; hitungan per tingkat [r, s, t]
+    assert gugus({100: [1, 0, 0], 110: [0, 1, 0], 150: [0, 0, 1], 196: [0, 2, 0], 197: [1, 0, 0]}) == [[100, 1, 1, 1], [196, 1, 2, 0]]
+    assert gugus({0: [1, 0, 0], 45: [0, 1, 0], 90: [0, 0, 1], 136: [1, 0, 0]}) == [[0, 1, 1, 1], [136, 1, 0, 0]], "celah <= 45 satu gugus, 46 gugus baru"
+    assert gugus({300: [0, 1, 0], 100: [0, 1, 0], 346: [0, 0, 1]}) == [[100, 0, 1, 0], [300, 0, 1, 0], [346, 0, 0, 1]] and gugus({}) == [] and gugus({5: [2, 3, 4]}) == [[5, 2, 3, 4]]
+    # gugus dibentuk dari SEMUA deteksi lalu dipecah per tingkat: rendah di 100 dan 160 (celah 60) tetap satu gugus karena ada deteksi tinggi di 130
+    assert gugus({100: [1, 0, 0], 130: [0, 0, 1], 160: [1, 0, 0]}) == [[100, 2, 0, 1]], "bukan satu gugus per tingkat"
     # satelit: VIIRS dari famili, MODIS dari kolom satellite (nama panjang NRT, huruf tunggal SP)
     assert [nama_satelit(s, {}) for s in ("VIIRS_NOAA20_NRT", "VIIRS_NOAA21_SP", "VIIRS_SNPP_NRT")] == ["NOAA-20", "NOAA-21", "S-NPP"]
     assert [nama_satelit("MODIS_NRT", {"satellite": v}) for v in ("Terra", "Aqua", "T", "A", "X", "")] == ["Terra", "Aqua", "Terra", "Aqua", None, None]
 
-    def b(src, lat, lon, tgl, jam, sat=""):
-        return (src, {"latitude": str(lat), "longitude": str(lon), "acq_date": tgl, "acq_time": jam, "satellite": sat})
+    def b(src, lat, lon, tgl, jam, sat="", conf=None):
+        r = {"latitude": str(lat), "longitude": str(lon), "acq_date": tgl, "acq_time": jam, "satellite": sat}
+        if conf is not None:
+            r["confidence"] = conf
+        return (src, r)
     N20, acc, st = "VIIRS_NOAA20_NRT", {}, {}
-    kumpul([b(N20, -2.0, 113.0, "2026-03-04", "1659"), b(N20, -2.0, 113.0, "2026-03-04", "1700"),        # 4 Mar 23:59 WIB; 5 Mar 00:00 WIB
-            b(N20, -2.0, 113.0, "2026-03-04", "1659"),                                                     # duplikat identik: sekali
-            b(N20, -2.0, 113.001, "2026-03-04", "1659"),                                                   # lokasi lain, waktu sama: dihitung (d = baris, bukan lokasi unik)
-            b(N20, 2.0, 113.0, "2026-03-04", "0500"),                                                      # laut
-            b(N20, -3.0, 113.0, "2026-03-04", "0500"),                                                     # sel industri
-            b("MODIS_NRT", -2.0, 113.0, "2026-03-04", "0510", "Terra"), b("MODIS_NRT", -2.0, 113.0, "2026-03-04", "0510", "Aqua"),
-            b("MODIS_SP", -2.0, 113.2, "2026-03-04", "0510", "T"), b("MODIS_NRT", -2.0, 113.0, "2026-03-04", "0510", "X"),
-            b(N20, -2.0, 113.0, "2026-03-04", "5"), b(N20, "x", 113.0, "2026-03-04", "0100"),              # "5" -> 00:05 UTC = 07:05 WIB; lintang rusak
-            b(N20, -2.0, 113.0, "2026-03-09", "0100")],                                                    # di luar sasaran
+    kumpul([b(N20, -2.0, 113.0, "2026-03-04", "1659", conf="n"), b(N20, -2.0, 113.0, "2026-03-04", "1700", conf="n"),   # 4 Mar 23:59 WIB; 5 Mar 00:00 WIB
+            b(N20, -2.0, 113.0, "2026-03-04", "1659", conf="n"),                                                          # duplikat identik: sekali
+            b(N20, -2.0, 113.001, "2026-03-04", "1659", conf="h"),                                                        # lokasi lain, waktu sama: dihitung (baris, bukan lokasi unik), tinggi
+            b(N20, 2.0, 113.0, "2026-03-04", "0500", conf="n"),                                                           # laut
+            b(N20, -3.0, 113.0, "2026-03-04", "0500", conf="n"),                                                          # sel industri
+            b("MODIS_NRT", -2.0, 113.0, "2026-03-04", "0510", "Terra", "85"), b("MODIS_NRT", -2.0, 113.0, "2026-03-04", "0510", "Aqua", "10"),
+            b("MODIS_SP", -2.0, 113.2, "2026-03-04", "0510", "T", "30"), b("MODIS_NRT", -2.0, 113.0, "2026-03-04", "0510", "X", "50"),
+            b(N20, -2.0, 113.0, "2026-03-04", "5", conf="l"), b(N20, "x", 113.0, "2026-03-04", "0100", conf="n"),          # "5" -> 00:05 UTC = 07:05 WIB; lintang rusak
+            b(N20, -2.0, 113.0, "2026-03-09", "0100", conf="n")],                                                         # di luar sasaran
            {"2026-03-04", "2026-03-05"}, LAUT, PALSU, acc, st)
-    assert sorted(acc["2026-03-04"]["NOAA-20"]) == [425, 1439, 1439] and acc["2026-03-05"]["NOAA-20"] == [0], acc
-    assert acc["2026-03-04"]["Terra"] == [730, 730] and acc["2026-03-04"]["Aqua"] == [730], acc   # "T" dari arsip SP juga Terra
+    assert acc["2026-03-04"]["NOAA-20"] == {425: [1, 0, 0], 1439: [0, 1, 1]} and acc["2026-03-05"]["NOAA-20"] == {0: [0, 1, 0]}, acc
+    assert acc["2026-03-04"]["Terra"] == {730: [0, 1, 1]} and acc["2026-03-04"]["Aqua"] == {730: [1, 0, 0]}, acc   # "T" dari arsip SP juga Terra; 85 tinggi, 30 sedang, 10 rendah
     assert st == {"tak_dikenal": 1, "rusak": 1} and "2026-03-09" not in acc, (st, acc)
-    assert rakit_hari(acc["2026-03-04"]) == {"NOAA-20": {"d": 3, "l": [[425, 1], [1439, 2]]}, "Terra": {"d": 2, "l": [[730, 2]]}, "Aqua": {"d": 1, "l": [[730, 1]]}}
-    assert list(rakit_hari(acc["2026-03-04"])) == ["NOAA-20", "Terra", "Aqua"] and rakit_hari({}) == {} and rakit_hari({"Aqua": []}) == {}
+    hari = rakit_hari(acc["2026-03-04"])
+    assert hari == {"NOAA-20": {"d": [1, 1, 1], "l": [[425, 1, 0, 0], [1439, 0, 1, 1]]}, "Terra": {"d": [0, 1, 1], "l": [[730, 0, 1, 1]]}, "Aqua": {"d": [1, 0, 0], "l": [[730, 1, 0, 0]]}}, hari
+    assert list(hari) == ["NOAA-20", "Terra", "Aqua"] and rakit_hari({}) == {} and rakit_hari({"Aqua": {}}) == {}
+    # pemetaan keyakinan = firms_sumber.kelas_yakin (satu-satunya pemetaan titik aplikasi), VIIRS dan MODIS beda: kolom hilang -> VIIRS sedang, MODIS rendah
+    assert kelas_yakin is FS.kelas_yakin
+    acc = {}
+    viirs = ["l", "n", "h", "L", "H", "x", None]
+    kumpul([b(N20, -2.0, 113.0 + i / 1000, "2026-03-04", f"05{i:02d}", conf=c) for i, c in enumerate(viirs)] + [b("VIIRS_SNPP_NRT", -2.0, 113.0, "2026-03-04", "0500")], {"2026-03-04"}, LAUT, None, acc, {})
+    assert [acc["2026-03-04"]["NOAA-20"][720 + i] for i in range(len(viirs))] == [[1, 0, 0], [0, 1, 0], [0, 0, 1], [1, 0, 0], [0, 0, 1], [0, 1, 0], [0, 1, 0]], "VIIRS l/n/h, tak dikenal atau tanpa kolom = sedang"
+    assert acc["2026-03-04"]["S-NPP"] == {720: [0, 1, 0]}
+    acc = {}
+    modis = ["0", "29", "30", "79", "80", "100", "", "n", None]
+    kumpul([b("MODIS_NRT", -2.0, 113.0 + i / 1000, "2026-03-04", f"05{i:02d}", "Aqua", c) for i, c in enumerate(modis)], {"2026-03-04"}, LAUT, None, acc, {})
+    assert [acc["2026-03-04"]["Aqua"][720 + i] for i in range(len(modis))] == [[1, 0, 0], [1, 0, 0], [0, 1, 0], [0, 1, 0], [0, 0, 1], [0, 0, 1], [1, 0, 0], [1, 0, 0], [1, 0, 0]], "MODIS < 30 / 30-79 / >= 80, bukan angka = rendah"
 
 
 def uji_rencana():
@@ -635,15 +665,17 @@ def uji_jalan_penuh():
         doc = json.loads(teks)
         assert list(doc) == ["dibuat", "sumber", "mulai", "sampai", "satelit", "hari"] and doc["dibuat"] == "2026-03-10T14:25Z" and doc["satelit"] == list(SATELIT)
         assert doc["mulai"] == "2026-03-01" and doc["sampai"] == "2026-03-09" and list(doc["hari"]) == sorted(doc["hari"]) and len(doc["hari"]) == 9
-        assert "\n" not in teks and '"NOAA-20":{"d":3,"l":[[720,2],[960,1]]}' in teks, "JSON padat"
+        assert "\n" not in teks and '"NOAA-20":{"d":[0,3,0],"l":[[720,0,2,0],[960,0,1,0]]}' in teks, "JSON padat"
         # WIB 4 Mar = UTC 3 Mar 17:00 .. 4 Mar 17:00: N20 05.00/05.10/09.00 UTC pada 4 Mar (WIB 12.00, 12.10, 16.00) + 23.59 WIB; laut dibuang
         h4 = doc["hari"]["2026-03-04"]
-        assert h4["NOAA-20"] == {"d": 4, "l": [[720, 2], [960, 1], [1439, 1]]}, h4["NOAA-20"]
-        assert h4["NOAA-21"] == {"d": 1, "l": [[780, 1]]} and h4["S-NPP"] == {"d": 1, "l": [[840, 1]]} and h4["Terra"] == {"d": 1, "l": [[600, 1]]} and h4["Aqua"] == {"d": 1, "l": [[660, 1]]}, h4
-        assert list(h4) == list(SATELIT[:2]) + ["Terra", "Aqua", "S-NPP"] and doc["hari"]["2026-03-01"]["NOAA-20"] == {"d": 3, "l": [[720, 2], [960, 1]]}
+        assert h4["NOAA-20"] == {"d": [0, 4, 0], "l": [[720, 0, 2, 0], [960, 0, 1, 0], [1439, 0, 1, 0]]}, h4["NOAA-20"]
+        assert h4["NOAA-21"] == {"d": [0, 1, 0], "l": [[780, 0, 1, 0]]} and h4["S-NPP"] == {"d": [0, 1, 0], "l": [[840, 0, 1, 0]]} and h4["Terra"] == {"d": [0, 1, 0], "l": [[600, 0, 1, 0]]} and h4["Aqua"] == {
+            "d": [0, 1, 0], "l": [[660, 0, 1, 0]]}, h4
+        assert list(h4) == list(SATELIT[:2]) + ["Terra", "Aqua", "S-NPP"] and doc["hari"]["2026-03-01"]["NOAA-20"] == {"d": [0, 3, 0], "l": [[720, 0, 2, 0], [960, 0, 1, 0]]}
         for t, per in doc["hari"].items():
+            assert isi_sah(per), (t, per)
             for s, v in per.items():
-                assert v["d"] == sum(n for _, n in v["l"]) and v["l"] == sorted(v["l"]) and all(0 <= m < 1440 and n > 0 for m, n in v["l"]), (t, s, v)
+                assert v["d"] == [sum(g[1 + k] for g in v["l"]) for k in range(3)] and v["l"] == sorted(v["l"]) and all(0 <= g[0] < 1440 and sum(g[1:]) > 0 for g in v["l"]), (t, s, v)
         ket = muat_ketersediaan("K", lambda u: ketersediaan("2026-03-05", "2026-03-05"), FAM)
         assert len(catat["area"]) == biaya(D("2026-02-28"), D("2026-03-09"), ket) == 12 and catat["avail"] == 1, "rencana = kenyataan"
         assert all(D(u.split("/")[-1]) <= D("2026-03-05") for u in catat["area"] if u.split("/")[-4].endswith("_SP")) and not any(
@@ -655,7 +687,7 @@ def uji_jalan_penuh():
         ambil2, catat2 = pabrik(isi2)
         jalan(f, ambil2, anggaran=60, now=SEKARANG + dt.timedelta(minutes=5))
         d2 = json.load(open(f, encoding="utf-8"))
-        assert d2["hari"]["2026-03-02"] == doc["hari"]["2026-03-02"] and d2["hari"]["2026-03-08"]["NOAA-20"]["d"] == doc["hari"]["2026-03-08"]["NOAA-20"]["d"] + 1
+        assert d2["hari"]["2026-03-02"] == doc["hari"]["2026-03-02"] and sum(d2["hari"]["2026-03-08"]["NOAA-20"]["d"]) == sum(doc["hari"]["2026-03-08"]["NOAA-20"]["d"]) + 1
         assert len(catat2["area"]) == 4 and {D(u.split("/")[-1]) for u in catat2["area"]} == {D("2026-03-06")} and d2["dibuat"] == "2026-03-10T14:30Z", catat2["area"]
         # isi sama -> berkas dibiarkan (dibuat tidak bergerak)
         kode, err = jalan(f, pabrik(isi2)[0], anggaran=60, now=SEKARANG + dt.timedelta(minutes=20))
@@ -673,7 +705,38 @@ def uji_jalan_penuh():
             jalan(f, pabrik(isi3)[0], tiba=tiba2, anggaran=60, now=SEKARANG + dt.timedelta(minutes=40))
             d4 = json.load(open(f, encoding="utf-8"))
             assert d4["hari"]["2026-03-08"]["tiba"] == d3["hari"]["2026-03-08"]["tiba"] and d4["hari"]["2026-03-09"]["tiba"] == d3["hari"]["2026-03-09"]["tiba"], tiba2
-        assert d4["hari"]["2026-03-09"]["NOAA-20"]["d"] == d3["hari"]["2026-03-09"]["NOAA-20"]["d"] + 1 and d4["hari"]["2026-03-08"]["NOAA-20"]["d"] == d3["hari"]["2026-03-08"]["NOAA-20"]["d"] - 1
+        tot = lambda d, t: sum(d["hari"][t]["NOAA-20"]["d"])
+        assert tot(d4, "2026-03-09") == tot(d3, "2026-03-09") + 1 and tot(d4, "2026-03-08") == tot(d3, "2026-03-08") - 1
+
+
+def uji_keyakinan():
+    """Dari CSV FIRMS sampai riwayat.json: jumlah dipecah per tingkat (VIIRS l/n/h, MODIS angka), gugus campur tingkat, d = jumlah gugus per tingkat; bentuk lama dibuang dan diunduh ulang."""
+    import tempfile
+    # 4 Mar WIB: N20 05.00 l, 05.10 n, 05.20 h, 05.30 h (UTC; WIB 12.00-12.30 = satu gugus campur) lalu 09.00 l (WIB 16.00, gugus sendiri); Terra 03.00 "85" dan 03.10 "20" (WIB 10.00, 10.10)
+    isi = {("VIIRS_NOAA20", "2026-03-04"): [(-2.0, 113.0, "0500", "N20", "l"), (-2.0, 113.001, "0510", "N20", "n"), (-2.0, 113.002, "0520", "N20", "h"), (-2.0, 113.003, "0530", "N20", "h"),
+                                            (-2.0, 113.004, "0900", "N20", "l")],
+           ("VIIRS_NOAA21", "2026-03-04"): [(-2.1, 113.0, "0600", "N21", "n")], ("VIIRS_SNPP", "2026-03-04"): [(-2.2, 113.0, "0700", "N", "h")],
+           ("MODIS", "2026-03-04"): [(-2.3, 113.0, "0300", "Terra", "85"), (-2.3, 113.001, "0310", "Terra", "20"), (-2.4, 113.0, "0400", "Aqua", "30")]}
+    with tempfile.TemporaryDirectory() as tmp:
+        f = os.path.join(tmp, "r.json")
+        kode, err = jalan(f, pabrik(isi)[0], now=dt.datetime(2026, 3, 5, 10, 0, tzinfo=UTC), mulai="2026-03-04")     # kemarin = 4 Mar WIB
+        doc = json.load(open(f, encoding="utf-8"))
+        assert kode == 0 and list(doc["hari"]) == ["2026-03-04"], (kode, err, list(doc["hari"]))
+        h = doc["hari"]["2026-03-04"]
+        assert h["NOAA-20"] == {"d": [2, 1, 2], "l": [[720, 1, 1, 2], [960, 1, 0, 0]]}, h["NOAA-20"]
+        assert h["Terra"] == {"d": [1, 0, 1], "l": [[600, 1, 0, 1]]} and h["Aqua"] == {"d": [0, 1, 0], "l": [[660, 0, 1, 0]]}, h
+        assert h["NOAA-21"] == {"d": [0, 1, 0], "l": [[780, 0, 1, 0]]} and h["S-NPP"] == {"d": [0, 0, 1], "l": [[840, 0, 0, 1]]} and "dipecah per tingkat (rendah, sedang, tinggi)" in doc["sumber"]
+        # berkas bentuk lama ({d: int, l: [[menit, n]]}) tidak sah: dibuang seluruhnya per hari, diunduh ulang dalam bentuk baru, berkas ditulis ulang
+        lama = {**doc, "sumber": "lama", "hari": {"2026-03-04": {"NOAA-20": {"d": 5, "l": [[720, 4], [960, 1]]}, "Terra": {"d": 2, "l": [[600, 2]]}}}}
+        json.dump(lama, open(f, "w", encoding="utf-8"))
+        err = io.StringIO()
+        assert baca(f, err) == ({}, False) and "melanggar skema" in err.getvalue()
+        kode, err = jalan(f, pabrik(isi)[0], now=dt.datetime(2026, 3, 5, 10, 0, tzinfo=UTC), mulai="2026-03-04")
+        assert kode == 0 and json.load(open(f, encoding="utf-8")) == doc
+        # bentuk lama + FIRMS mati: tidak ada yang sah, kode 1, berkas lama dibiarkan (tidak dipakai)
+        json.dump(lama, open(f, "w", encoding="utf-8"))
+        kode, err = jalan(f, pabrik(isi, gagal=lambda fam, tgl: RuntimeError("HTTP 500"))[0], now=dt.datetime(2026, 3, 5, 10, 0, tzinfo=UTC), mulai="2026-03-04")
+        assert kode == 1 and "TIDAK dibersihkan" in err
 
 
 def uji_isi_mundur():
@@ -776,23 +839,27 @@ def uji_berkas_lama():
         True, False, False, False, False, False, False, False, False], "angka non-ASCII dan tanggal mustahil ditolak"
     assert baca_tiba({"\uff12\uff10\uff12\uff16-03-04": {"N20": EP}, "2026-02-30": {"N20": EP}}) == {}
     assert satu_baris("a\nb\r::c\u2028d\x00e") == "a b ::c d e"
-    ok_hari = {"NOAA-20": {"d": 3, "l": [[100, 2], [900, 1]]}, "Terra": {"d": 0, "l": []}, "tiba": {"N20": EP_BERKAS, "M": {**EP_BERKAS, "n": 7.5}}}
-    assert isi_sah(ok_hari) and isi_sah({"Aqua": {"d": 1, "l": [[0, 1]]}}) and isi_sah({"Aqua": {"d": 1, "l": [[1439, 1]]}, "tiba": {}})
+    ok_hari = {"NOAA-20": {"d": [1, 2, 0], "l": [[100, 1, 1, 0], [900, 0, 1, 0]]}, "Terra": {"d": [0, 0, 0], "l": []}, "tiba": {"N20": EP_BERKAS, "M": {**EP_BERKAS, "n": 7.5}}}
+    assert isi_sah(ok_hari) and isi_sah({"Aqua": {"d": [0, 1, 0], "l": [[0, 0, 1, 0]]}}) and isi_sah({"Aqua": {"d": [0, 0, 1], "l": [[1439, 0, 0, 1]]}, "tiba": {}})
     nan, tak_hingga = float("nan"), float("inf")
+    n20 = lambda d, l, **x: {"NOAA-20": {"d": d, "l": l, **x}}
+    sah = n20([0, 1, 0], [[1, 0, 1, 0]])          # satu hari sah sebagai dasar; tiap entri `rusak` mengubah satu hal
     rusak = {   # nama -> isi satu hari yang harus ditolak
-        "bukan dict": [], "kosong": {}, "hanya tiba": {"tiba": {"N20": EP_BERKAS}}, "kunci asing": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "Bulan": {"d": 1, "l": [[1, 1]]}},
-        "d bool": {"NOAA-20": {"d": True, "l": [[1, 1]]}}, "d float": {"NOAA-20": {"d": 1.0, "l": [[1, 1]]}}, "d negatif": {"NOAA-20": {"d": -1, "l": []}},
-        "d NaN": {"NOAA-20": {"d": nan, "l": [[1, 1]]}}, "d Infinity": {"NOAA-20": {"d": tak_hingga, "l": []}}, "d teks": {"NOAA-20": {"d": "1", "l": [[1, 1]]}},
-        "d tanpa l": {"NOAA-20": {"d": 1}}, "kunci ekstra": {"NOAA-20": {"d": 1, "l": [[1, 1]], "x": 1}}, "satelit bukan dict": {"NOAA-20": [1, [[1, 1]]]},
-        "l bukan list": {"NOAA-20": {"d": 1, "l": "x"}}, "gugus 3 unsur": {"NOAA-20": {"d": 1, "l": [[1, 1, 1]]}}, "gugus bukan list": {"NOAA-20": {"d": 1, "l": [5]}},
-        "menit 1440": {"NOAA-20": {"d": 1, "l": [[1440, 1]]}}, "menit negatif": {"NOAA-20": {"d": 1, "l": [[-1, 1]]}}, "menit float": {"NOAA-20": {"d": 1, "l": [[1.5, 1]]}},
-        "menit bool": {"NOAA-20": {"d": 1, "l": [[True, 1]]}}, "jumlah negatif": {"NOAA-20": {"d": 1, "l": [[1, 2], [5, -1]]}}, "jumlah teks": {"NOAA-20": {"d": 1, "l": [[1, "1"]]}},
-        "jumlah != d": {"NOAA-20": {"d": 2, "l": [[1, 1]]}}, "tiba bukan dict": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": [1]},
-        "tiba kode asing": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"X": EP_BERKAS}}, "tiba negatif": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"N20": {**EP_BERKAS, "maks": -1}}},
-        "tiba NaN": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"N20": {**EP_BERKAS, "p90": nan}}}, "tiba Infinity": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"N20": {**EP_BERKAS, "p90": tak_hingga}}},
-        "tiba kurang kunci": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"N20": {"n": 1}}}, "tiba teks": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"N20": {**EP_BERKAS, "n": "9"}}},
-        "tiba bool": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"N20": {**EP_BERKAS, "n": True}}}, "tiba kunci ekstra": {"NOAA-20": {"d": 1, "l": [[1, 1]]}, "tiba": {"N20": {**EP_BERKAS, "x": 1}}}}
-    assert not any(isi_sah(v) for v in rusak.values()) and [n for n, v in rusak.items() if isi_sah(v)] == []
+        "bukan dict": [], "kosong": {}, "hanya tiba": {"tiba": {"N20": EP_BERKAS}}, "kunci asing": {**sah, "Bulan": sah["NOAA-20"]},
+        "BENTUK LAMA d int": {"NOAA-20": {"d": 1, "l": [[1, 1]]}}, "bentuk lama gugus 2 unsur": n20([0, 1, 0], [[1, 1]]), "bentuk lama campur": n20(1, [[1, 0, 1, 0]]),
+        "d 2 unsur": n20([0, 1], [[1, 0, 1, 0]]), "d 4 unsur": n20([0, 1, 0, 0], [[1, 0, 1, 0]]), "d bool": n20([0, True, 0], [[1, 0, 1, 0]]), "d float": n20([0, 1.0, 0], [[1, 0, 1, 0]]),
+        "d negatif": n20([0, -1, 0], []), "d NaN": n20([0, nan, 0], [[1, 0, 1, 0]]), "d Infinity": n20([0, tak_hingga, 0], []), "d teks": n20([0, "1", 0], [[1, 0, 1, 0]]),
+        "d bukan list": n20({"r": 0, "s": 1, "t": 0}, [[1, 0, 1, 0]]), "d tanpa l": {"NOAA-20": {"d": [0, 1, 0]}}, "kunci ekstra": n20([0, 1, 0], [[1, 0, 1, 0]], x=1),
+        "satelit bukan dict": {"NOAA-20": [[0, 1, 0], [[1, 0, 1, 0]]]}, "l bukan list": n20([0, 1, 0], "x"), "gugus 3 unsur": n20([0, 1, 0], [[1, 0, 1]]),
+        "gugus 5 unsur": n20([0, 1, 0], [[1, 0, 1, 0, 0]]), "gugus bukan list": n20([0, 1, 0], [5]), "menit 1440": n20([0, 1, 0], [[1440, 0, 1, 0]]),
+        "menit negatif": n20([0, 1, 0], [[-1, 0, 1, 0]]), "menit float": n20([0, 1, 0], [[1.5, 0, 1, 0]]), "menit bool": n20([0, 1, 0], [[True, 0, 1, 0]]),
+        "jumlah negatif": n20([0, 1, 0], [[1, 0, 2, 0], [5, 0, -1, 0]]), "jumlah teks": n20([0, 1, 0], [[1, 0, "1", 0]]), "jumlah float": n20([0, 1, 0], [[1, 0, 1.0, 0]]),
+        "jumlah != d (total)": n20([0, 2, 0], [[1, 0, 1, 0]]), "jumlah != d (per tingkat)": n20([0, 1, 0], [[1, 1, 0, 0]]), "jumlah != d (d kurang)": n20([0, 0, 0], [[1, 0, 1, 0]]),
+        "tiba bukan dict": {**sah, "tiba": [1]}, "tiba kode asing": {**sah, "tiba": {"X": EP_BERKAS}}, "tiba negatif": {**sah, "tiba": {"N20": {**EP_BERKAS, "maks": -1}}},
+        "tiba NaN": {**sah, "tiba": {"N20": {**EP_BERKAS, "p90": nan}}}, "tiba Infinity": {**sah, "tiba": {"N20": {**EP_BERKAS, "p90": tak_hingga}}},
+        "tiba kurang kunci": {**sah, "tiba": {"N20": {"n": 1}}}, "tiba teks": {**sah, "tiba": {"N20": {**EP_BERKAS, "n": "9"}}},
+        "tiba bool": {**sah, "tiba": {"N20": {**EP_BERKAS, "n": True}}}, "tiba kunci ekstra": {**sah, "tiba": {"N20": {**EP_BERKAS, "x": 1}}}}
+    assert isi_sah(sah) and [n for n, v in rusak.items() if isi_sah(v)] == []
     isi = isi_dasar()
     senyap = io.StringIO()
     with tempfile.TemporaryDirectory() as tmp:
@@ -829,7 +896,7 @@ def uji_berkas_lama():
             jalan(f, pabrik(isi)[0], tiba={"2026-03-04": {"N20": EP}}, anggaran=100)
             assert json.load(open(f, encoding="utf-8"))["hari"] == doc["hari"], repr(kunci)
         # fixture: sumber ATAU dibuat berawalan FIXTURE (huruf besar/kecil, spasi depan) membuang SELURUH dokumen, termasuk hari yang sah skemanya
-        sintetis = {(D("2026-01-01") + dt.timedelta(days=i)).isoformat(): {"NOAA-20": {"d": 1, "l": [[0, 1]]}} for i in range(301)}
+        sintetis = {(D("2026-01-01") + dt.timedelta(days=i)).isoformat(): {"NOAA-20": {"d": [0, 1, 0], "l": [[0, 0, 1, 0]]}} for i in range(301)}
         for kunci, nilai in (("sumber", "FIXTURE data uji layar"), ("dibuat", "FIXTURE-2026-10-28"), ("sumber", "  fixture sintetis"), ("dibuat", "Fixture")):
             f = tulis_kotor({**doc, kunci: nilai}, {**sintetis, **doc["hari"]})
             err = io.StringIO()
@@ -854,7 +921,7 @@ def uji_berkas_lama():
         assert baru["hari"] == doc["hari"] and baru["sampai"] == "2026-03-09" and "melewati kemarin" in log, (sorted(baru["hari"]), log)
         # berkas kotor + FIRMS mati: bagian sah tetap, yang kotor TERTULIS BERSIH (bukan dibiarkan karena "tidak ada perubahan")
         h = copy.deepcopy(doc["hari"])
-        h["2026-03-05"] = rusak["jumlah != d"]
+        h["2026-03-05"] = rusak["jumlah != d (total)"]
         f = tulis_kotor(doc, h)
         kode, log = jalan(f, pabrik(isi, gagal=lambda fam, tgl: RuntimeError("HTTP 500"))[0], anggaran=100)
         baru = json.load(open(f, encoding="utf-8"))
@@ -890,12 +957,15 @@ def uji_produksi():
         ambil, catat = pabrik(sepi, av)
         jalan(f2, ambil, mulai="2026-01-01", now=sekarang + dt.timedelta(days=1))
         assert len(catat["area"]) == 4 and catat["avail"] == 1, len(catat["area"])
-    # ukuran: satu hari nyata (5 satelit, ~21 gugus, tiba 4 sensor) x 365 hari jauh di bawah 500 KB
-    contoh = {"NOAA-20": {"d": 1542, "l": [[95, 170], [654, 142], [754, 847], [854, 33], [1416, 350]]}, "NOAA-21": {"d": 1400, "l": [[150, 170], [700, 142], [810, 847], [905, 33], [1330, 208]]},
-              "Terra": {"d": 52, "l": [[423, 20], [521, 19], [1064, 13]]}, "Aqua": {"d": 60, "l": [[230, 20], [330, 19], [1100, 21]]}, "S-NPP": {"d": 1300, "l": [[60, 170], [700, 142], [800, 847], [900, 141]]},
-              "tiba": {k: EP_BERKAS for k in TIBA_KODE}}
+    # ukuran: satu hari nyata (5 satelit, 21 gugus, jumlah dipecah per tingkat, tiba 4 sensor) x 365 hari di bawah 500 KB
+    sat = lambda l: {"d": [sum(g[1 + k] for g in l) for k in range(3)], "l": l}
+    contoh = {"NOAA-20": sat([[95, 20, 118, 32], [654, 11, 98, 33], [754, 96, 540, 211], [854, 5, 22, 6], [1416, 80, 210, 60]]),
+              "NOAA-21": sat([[150, 18, 110, 42], [700, 10, 90, 42], [810, 90, 520, 237], [905, 4, 20, 9], [1330, 40, 120, 48]]),
+              "Terra": sat([[423, 4, 12, 4], [521, 3, 12, 4], [1064, 2, 8, 3]]), "Aqua": sat([[230, 4, 12, 4], [330, 3, 12, 4], [1100, 5, 9, 7]]),
+              "S-NPP": sat([[60, 15, 120, 35], [700, 12, 100, 30], [800, 80, 560, 207], [900, 20, 90, 31]]), "tiba": {k: EP_BERKAS for k in TIBA_KODE}}
+    assert isi_sah(contoh) and contoh["NOAA-20"]["d"] == [212, 988, 342]
     per_hari = len(json.dumps({"2026-10-28": contoh}, separators=(",", ":"))) + 1
-    assert per_hari * 365 < 300_000, per_hari   # ~0,2 MB setahun
+    assert per_hari * 365 < 500_000, per_hari   # ~0,3 MB setahun (tiba tersimpan untuk hari yang pernah dilihat endpoint, jadi paling banyak 245 B x 365)
 
 
 if __name__ == "__main__":

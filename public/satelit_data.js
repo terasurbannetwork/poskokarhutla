@@ -1,9 +1,9 @@
 /* Halaman "Data satelit": tab tersembunyi `satelit` di halaman karhutla (rute /satelit, TIDAK ada di menu; satu-satunya pintu = tautan di kaki popover lintasan satelit, satelit_lintas.js).
    Keputusan pemilik 28 Okt 2026, kontrak: riwayat.json oleh pipa-data, mock v4 disetujui. Dimuat MALAS oleh index.html (muatSatelit) saat tab dibuka; gaya di satelit_data.css.
-   Data: /data/satelit/riwayat.json = {dibuat, sumber, mulai, sampai, satelit, hari: {tgl WIB: {NOAA-20|NOAA-21|Terra|Aqua|S-NPP: {d: jumlah deteksi, l: [[menit sejak 00.00 WIB, jumlah]]}, tiba: {N20|N21|M|N:
+   Data: /data/satelit/riwayat.json = {dibuat, sumber, mulai, sampai, satelit, hari: {tgl WIB: {NOAA-20|NOAA-21|Terra|Aqua|S-NPP: {d: [rendah, sedang, tinggi], l: [[menit sejak 00.00 WIB, rendah, sedang, tinggi]]}, tiba: {N20|N21|M|N:
    {n, lintasan, median, p90, maks (menit)}}}}}. "l" = gugus lintasan dari data (deteksi berurutan satelit itu, celah <= 45 menit). Dibaca apa adanya; tidak ada angka pipeline yang dihitung ulang di sini.
    Berkas belum ada / tidak sah = keadaan kosong jujur ("Riwayat sedang disiapkan"), tanpa galat.
-   - Satuan "deteksi" = baris FIRMS (semua tingkat keyakinan), bukan lokasi unik. Tidak ada garis atau angka cut-off laporan (keputusan pemilik).
+   - Satuan "deteksi" = baris FIRMS yang lolos ambang keyakinan aplikasi (S.kmin; 0 = semua tingkat), bukan lokasi unik. Tidak ada garis atau angka cut-off laporan (keputusan pemilik).
    - Rentang <= 31 hari: lintasan PERKIRAAN SGP4 dari mesin satelit_lintas.js (SatelitLintas.pop.lintasRentang, elemen orbit terbaru) dicocokkan dengan gugus deteksi (+-20 menit) lewat susunModel yang sama
      dengan popover, jadi tabel Rincian identik dengan tabel popover (tabelKemarin/tabelBesok dipakai ulang, tidak digandakan). Rentang lebih panjang: gugus data saja (perkiraan orbit tidak dihitung dan disebut di kartu).
      Hari sesudah riwayat.sampai (hari ini, kemarin) diambil dari data titik langsung aplikasi (S.titik) lewat jalur popover yang sama.
@@ -39,8 +39,14 @@
   const tglPendek = s => tglMemo("p", s, {day: "numeric", month: "short"}), namaHari = s => tglMemo("h", s, {weekday: "short"}), tglPanjang = s => tglMemo("l", s, {day: "numeric", month: "short", year: "numeric"});
   const bulanFmt = ym => tglMemo("b", ym + "-15", {month: "short"});
   const bil = x => typeof x === "number" && isFinite(x);   // data riwayat.json dibaca apa adanya, tetapi bukan angka = ditolak/dilewati
-  const gugusSah = gg => Array.isArray(gg) && bil(gg[0]) && gg[0] >= 0 && gg[0] < 1440;
-  const jmlGugus = gg => { const n = +gg[1]; return isFinite(n) && n > 0 ? n : 0; };
+  /* keyakinan FIRMS: kode 0/1/2 = rendah/sedang/tinggi (kolom keyakinan hotspot.json). riwayat.json menyimpan jumlah per tingkat [r, s, t] (d) dan gugus [menit, r, s, t] (l); yang DIHITUNG mengikuti ambang
+     aplikasi S.kmin (keyakinan_min hotspot.json, 0 = semua ikut): jumlah = tingkat >= kmin. Satu helper (jmlTingkat) untuk semua pembaca d dan l. Bentuk lama (d dan l berangka tunggal) ditolak sahkanRiwayat:
+     angka tunggal tak bisa disaring per tingkat, jadi tidak dipakai separuh. */
+  const kminApp = () => { const k = typeof S !== "undefined" && S ? S.kmin : 0; return typeof k === "number" && isFinite(k) ? Math.min(3, Math.max(0, Math.floor(k))) : 0; };
+  const jmlTingkat = (arr, mulai) => { let n = 0; for (let i = mulai; i < 3; i++) { const v = +arr[i]; if (isFinite(v) && v > 0) n += v; } return n; };   // arr = [rendah, sedang, tinggi]
+  const jmlD = (d, kmin) => Array.isArray(d) ? jmlTingkat(d, kmin) : 0;
+  const gugusSah = gg => Array.isArray(gg) && gg.length >= 4 && bil(gg[0]) && gg[0] >= 0 && gg[0] < 1440;
+  const jmlGugus = (gg, kmin) => jmlTingkat(gg.slice(1, 4), kmin);
   const jamAngka = menit => (menit / 60).toLocaleString("id-ID", {maximumFractionDigits: 1});
   const durasi = menit => !isFinite(menit) ? "-" : typeof fmt === "function" && fmt.durasi ? fmt.durasi(menit * 6e4) : Math.round(menit) + " menit";   // fmt.durasi (inti/format.js): "45 menit", "6 jam 24 menit"
   const tidur = () => typeof scheduler !== "undefined" && scheduler.yield ? scheduler.yield() : new Promise(ok => setTimeout(ok, 0));
@@ -73,13 +79,13 @@
   /* ---------- riwayat.json */
   function sahkanRiwayat(d) {
     if (!d || typeof d !== "object" || !d.hari || typeof d.hari !== "object" || !sah(d.mulai) || !sah(d.sampai) || d.sampai < d.mulai) return null;
-    for (const iso of Object.keys(d.hari)) {   // satelit: {d: deteksi >= 0, l: [[menit, jumlah], ...]}; yang bukan bilangan = berkas ditolak seluruhnya (keadaan kosong), bukan dipakai separuh
+    for (const iso of Object.keys(d.hari)) {   // satelit: {d: [r, s, t], l: [[menit, r, s, t], ...]}; yang bukan bilangan = berkas ditolak seluruhnya (keadaan kosong), bukan dipakai separuh
       const h = d.hari[iso]; if (!h || typeof h !== "object") return null;
       for (const nama of Object.keys(h)) {
         if (!KODE[nama]) continue;
         const x = h[nama]; if (!x || typeof x !== "object") return null;
-        if (x.d !== undefined && !(bil(x.d) && x.d >= 0)) return null;
-        if (x.l !== undefined) { if (!Array.isArray(x.l)) return null; for (const gg of x.l) if (!Array.isArray(gg) || !bil(gg[0]) || !bil(gg[1])) return null; }
+        if (x.d !== undefined && !(Array.isArray(x.d) && x.d.length === 3 && x.d.every(v => bil(v) && v >= 0))) return null;   // d = [rendah, sedang, tinggi]
+        if (x.l !== undefined) { if (!Array.isArray(x.l)) return null; for (const gg of x.l) if (!Array.isArray(gg) || gg.length !== 4 || !gg.every(bil)) return null; }   // gugus = [menit, rendah, sedang, tinggi]
       }
     }
     return d;
@@ -94,14 +100,18 @@
   /* ---------- model rentang. p = {ms, nama, kode, n, status, riwayat?, data?, telatMenit?, ...} (bentuk sama dengan lintasan popover) */
   /* gugus riwayat -> kel (bentuk kelompokTitik): waktu[k] = jam deteksi pertama tiap gugus, hit[k] = BOBOT (jumlah deteksi gugus), Terra dan Aqua bersama di "M" (diatribusikan ke lintasan terdekat) */
   function kelDariRiwayat(R, dari) {
-    const kel = {waktu: {N20: [], N21: [], M: [], N: []}, hit: {N20: [], N21: [], M: [], N: []}, terakhir: {}};
+    const km = kminApp(), kel = {waktu: {N20: [], N21: [], M: [], N: []}, hit: {N20: [], N21: [], M: [], N: []}, terakhir: {}};
     Object.keys(R.hari).sort().forEach(iso => {
       if (iso < geser(dari, -1) || iso > R.sampai) return;   // sehari sebelum rentang ikut: lintasan 00.xx bisa bertetangga dengan deteksi 23.xx hari sebelumnya (+-20 menit)
       const t0 = awalMs(iso), h = R.hari[iso] || {};
       Object.keys(h).forEach(nama => {
         const k = KODE[nama], l = h[nama] && h[nama].l;
         if (!k || !Array.isArray(l)) return;
-        l.forEach(gg => { if (!gugusSah(gg)) return; const t = t0 + gg[0] * 6e4; kel.waktu[k].push(t); kel.hit[k].push(jmlGugus(gg)); if (!(kel.terakhir[k] >= t)) kel.terakhir[k] = t; });
+        l.forEach(gg => {   // gugus yang jumlahnya 0 sesudah ambang: bobot 0 (tetap bukti data masuk seperti baris keyakinan rendah di popover), tetapi tanpa baris S-NPP hantu
+          if (!gugusSah(gg)) return;
+          const n = jmlGugus(gg, km); if (!n && k === "N") return;
+          const t = t0 + gg[0] * 6e4; kel.waktu[k].push(t); kel.hit[k].push(n); if (!(kel.terakhir[k] >= t)) kel.terakhir[k] = t;
+        });
       });
     });
     return kel;
@@ -120,14 +130,14 @@
   }
   /* tanpa perkiraan orbit: tiap gugus riwayat = satu lintasan (jam = jam deteksi pertama), Terra dan Aqua terpisah */
   function modelGugus(R, hariList, now) {
-    const semua = [];
+    const semua = [], km = kminApp();
     hariList.forEach(iso => {
       if (iso > R.sampai) return;
       const t0 = awalMs(iso), h = R.hari[iso] || {};
       Object.keys(h).forEach(nama => {
         const k = KODE[nama], l = h[nama] && h[nama].l;
         if (!k || !Array.isArray(l)) return;
-        l.forEach(gg => { if (!gugusSah(gg)) return; const n = jmlGugus(gg); semua.push({ms: t0 + gg[0] * 6e4, nama, kode: k, n, status: n ? "masuk" : "masuk0", riwayat: true}); });
+        l.forEach(gg => { if (!gugusSah(gg)) return; const n = jmlGugus(gg, km); if (!n) return; semua.push({ms: t0 + gg[0] * 6e4, nama, kode: k, n, status: "masuk", riwayat: true}); });   // 0 sesudah ambang = seperti tak ada deteksi
       });
     });
     semua.sort((a, b) => a.ms - b.ms);
@@ -226,13 +236,16 @@
   const LABEL_PRESET = {7: "7 hari", 30: "30 hari", 90: "90 hari", 365: "1 tahun"};
   const titleLintas = n => hl(id(n) + " lintasan"), titleGugus = n => hl(id(n) + " gugus deteksi");
   /* sumber di kaki kartu = potongan pendek digabung "; " (i18n.js menerjemahkan tiap potongan sendiri, jadi potongan yang sama dipakai ulang di semua kartu) */
-  const PS = {orbit: "orbit CelesTrak (SGP4)", firms: "NASA FIRMS (arsip dan NRT), semua tingkat keyakinan", cocok: "dicocokkan ±20 menit", gugus: "gugus deteksi per satelit", klik: "klik tanggal atau kotak untuk rincian lintasan",
+  const PS = {orbit: "orbit CelesTrak (SGP4)", cocok: "dicocokkan ±20 menit", gugus: "gugus deteksi per satelit", klik: "klik tanggal atau kotak untuk rincian lintasan",
     panjang: "rentang lebih dari 31 hari: tanpa perkiraan orbit, hanya gugus deteksi dari data FIRMS", gagal: "perkiraan orbit tidak tersedia saat ini", jedaMed: "jeda median = median dari median harian riwayat kedatangan (MODIS: Terra dan Aqua bersama)",
     jedaMulai: "jeda median dari riwayat kedatangan mulai 28 Okt 2026", tiba: "riwayat kedatangan data FIRMS di aplikasi (mulai 28 Okt 2026)", jedaArti: "jeda = waktu dari akuisisi satelit sampai data terlihat di aplikasi",
     perkiraan: "perkiraan", utuh: "per hari kalender WIB utuh", parsial: "* bulan belum utuh (sebagian hari)", kosong: "NASA FIRMS", kosong2: "orbit CelesTrak"};
   const gabung = (...a) => a.filter(Boolean).join("; ");
-  const SUMBER_ORBIT = gabung(PS.orbit, PS.firms, PS.cocok), SUMBER_GUGUS = gabung(PS.firms, PS.gugus), SUMBER_TIBA = PS.tiba;
-  const catatanSumber = M => gabung(M.perkiraan ? SUMBER_ORBIT : SUMBER_GUGUS, M.perkiraan ? "" : M.orbitGagal ? PS.gagal : PS.panjang, PS.klik);
+  /* teks tingkat keyakinan mengikuti ambang aplikasi (S.kmin), sama dengan ketDeteksi popover: 0 = semua, 1 = sedang dan tinggi, >= 2 = tinggi */
+  const confTeks = () => { const k = kminApp(); return k <= 0 ? "semua tingkat keyakinan" : k === 1 ? "keyakinan sedang dan tinggi" : "keyakinan tinggi"; };
+  const firmsTeks = () => "NASA FIRMS (arsip dan NRT), " + confTeks();
+  const sumberOrbit = () => gabung(PS.orbit, firmsTeks(), PS.cocok), sumberGugus = () => gabung(firmsTeks(), PS.gugus), SUMBER_TIBA = PS.tiba;
+  const catatanSumber = M => gabung(M.perkiraan ? sumberOrbit() : sumberGugus(), M.perkiraan ? "" : M.orbitGagal ? PS.gagal : PS.panjang, PS.klik);
   const kosongKartu = (pil, judul, teks, sumber) => Kartu.kartu(pil, judul, kosong(teks), sumber);
   const hariBerjalan = M => M.hariList[M.hariList.length - 1] === isoWib(M.now);   // rentang memuat hari ini: angkanya "sejauh ini"
   const akhirArsip = M => isoWib(M.batasArsip - 1);   // hari terakhir arsip riwayat
@@ -333,15 +346,15 @@
   }
   function kartuRincian(M, hari, besok, tampilBesok) {
     const r = isiRincian(M, hari, besok), penuh = M.hariList.length <= MAKS_HARIAN;
-    return Kartu.kartu("Rincian lintasan", r.judul, r.badan, hari === "besok" ? gabung(PS.orbit, PS.perkiraan) : M.perkiraan ? gabung(PS.orbit, PS.firms) : SUMBER_GUGUS,
+    return Kartu.kartu("Rincian lintasan", r.judul, r.badan, hari === "besok" ? gabung(PS.orbit, PS.perkiraan) : M.perkiraan ? gabung(PS.orbit, firmsTeks()) : sumberGugus(),
       '<select id="sdHari" aria-label="Pilih hari"' + (penuh ? ' data-lengkap="1"' : "") + ">" + opsiHari(M, hari, tampilBesok, penuh) + "</select>");
   }
 
   /* kartu Ringkasan per satelit */
   function kartuRingkas(M, R) {
     const rows = ringkasSat(M, R), gug = !M.perkiraan;
-    if (!rows.length) return gug ? kosongKartu("Ringkasan per satelit", "<span>Belum ada gugus deteksi dalam rentang ini</span>", "<span>Pilih rentang yang mencakup hari dengan data deteksi.</span>", SUMBER_GUGUS)
-      : kosongKartu("Ringkasan per satelit", "<span>Belum ada data lintasan dalam rentang ini</span>", "<span>Pilih rentang yang mencakup hari dengan data lintasan.</span>", SUMBER_GUGUS);
+    if (!rows.length) return gug ? kosongKartu("Ringkasan per satelit", "<span>Belum ada gugus deteksi dalam rentang ini</span>", "<span>Pilih rentang yang mencakup hari dengan data deteksi.</span>", sumberGugus())
+      : kosongKartu("Ringkasan per satelit", "<span>Belum ada data lintasan dalam rentang ini</span>", "<span>Pilih rentang yang mencakup hari dengan data lintasan.</span>", sumberGugus());
     const tle = rows.filter(r => !r.riwayat), riw = rows.filter(r => r.riwayat), dasar = gug ? rows : tle;   // satu basis: X, Y, dan deteksi di judul dari baris yang sama; satelit tanpa data orbit disebut terpisah
     const totL = jumlah(dasar, r => r.lintas), totB = jumlah(dasar, r => r.bawa), totD = jumlah(dasar, r => r.deteksi), totN = gug ? 0 : jumlah(riw, r => r.deteksi);
     const jedaAda = rows.some(r => r.jeda !== null), sejauh = hariBerjalan(M) ? " <span>(sejauh ini)</span>" : "";
@@ -358,13 +371,13 @@
     const kep = '<thead><tr><th>Satelit</th><th class="n">' + (gug ? "Gugus dengan deteksi" : "Lintasan") + "</th>" + (gug ? "" : '<th class="n">Membawa deteksi</th>') + '<th class="n">Deteksi</th>' + (gug ? "" : '<th class="n">Tertunda</th>') + '<th class="n">Jeda median</th></tr></thead>';
     const judul = gug ? titleGugus(totL) + " <span>dengan</span> " + hl(id(totD) + " deteksi") + sejauh
       : hl(id(totB) + " dari " + id(totL)) + " <span>lintasan membawa</span> " + hl(id(totD) + " deteksi") + (totN ? "; " + hl(id(totN) + " deteksi") + " <span>dari satelit tanpa data orbit</span> (" + tn(riw.map(r => r.nama).join(", ")) + ")" : "") + sejauh;
-    const sumber = gabung(gug ? SUMBER_GUGUS : SUMBER_ORBIT, jedaAda ? PS.jedaMed : PS.jedaMulai);
+    const sumber = gabung(gug ? sumberGugus() : sumberOrbit(), jedaAda ? PS.jedaMed : PS.jedaMulai);
     return Kartu.kartu("Ringkasan per satelit", judul, tabel('<table class="sd-t">' + kep + "<tbody>" + b + "</tbody></table>"), sumber);
   }
 
   /* kartu Status lintasan per hari (hanya dengan perkiraan orbit) */
   function kartuStatus(M) {
-    if (!M.perkiraan) return kosongKartu("Status lintasan per hari", "<span>Status lintasan per hari tersedia untuk rentang sampai 31 hari</span>", "<span>Perkiraan orbit hanya dihitung untuk rentang sampai 31 hari. Pilih rentang yang lebih pendek.</span>", SUMBER_ORBIT);
+    if (!M.perkiraan) return kosongKartu("Status lintasan per hari", "<span>Status lintasan per hari tersedia untuk rentang sampai 31 hari</span>", "<span>Perkiraan orbit hanya dihitung untuk rentang sampai 31 hari. Pilih rentang yang lebih pendek.</span>", sumberOrbit());
     const hari = M.hariList, per = hari.map(h => (M.perHari.get(h) || []).filter(p => !p.riwayat));
     const maks = Math.max(1, ...per.map(a => a.length)), sk = skalaNice(maks);
     const Wd = 560, Hd = 200, L = 34, B = 24, T = 26, lb = (Wd - L - 10) / hari.length, bw = Math.min(40, lb * .6), langkahX = Math.max(1, Math.ceil(hari.length / 12));
@@ -384,7 +397,7 @@
     });
     s += "</svg>";
     const tunda = jumlah(per, a => a.filter(p => p.status === "tertunda").length);
-    return Kartu.kartu("Status lintasan per hari", tunda ? hl(id(tunda) + " lintasan") + " <span>tertunda dalam rentang ini</span>" : "<span>Tidak ada lintasan tertunda dalam rentang ini</span>", s, SUMBER_ORBIT, "",
+    return Kartu.kartu("Status lintasan per hari", tunda ? hl(id(tunda) + " lintasan") + " <span>tertunda dalam rentang ini</span>" : "<span>Tidak ada lintasan tertunda dalam rentang ini</span>", s, sumberOrbit(), "",
       [["var(--b3)", "Data masuk"], ["var(--k0)", "Tanpa deteksi"], ["#f5a524", "Tertunda"], ["var(--line)", "Menunggu masuk atau perkiraan"]]);
   }
 
@@ -431,15 +444,15 @@
      Bulan yang tak lengkap hari bertanda "*"; "bulan tertinggi" hanya dari bulan utuh */
   const hariBulan = ym => new Date(Date.UTC(+ym.slice(0, 4), +ym.slice(5, 7), 0)).getUTCDate();
   function kartuDeteksi(R, hariList) {
-    const hari = hariList.filter(h => R.hari[h] && h <= R.sampai), bulanan = hari.length > MAKS_HARIAN, sumber = gabung(PS.firms, PS.utuh);
+    const hari = hariList.filter(h => R.hari[h] && h <= R.sampai), bulanan = hari.length > MAKS_HARIAN, sumber = gabung(firmsTeks(), PS.utuh);
     const kosongKrt = () => kosongKartu("Deteksi per satelit", "<span>Belum ada hari utuh dalam rentang ini</span>", "<span>Deteksi per satelit dihitung per hari utuh; pilih rentang yang mencakup hari sebelum hari ini.</span>", sumber);
     if (!hari.length) return kosongKrt();
-    const kel = new Map();
+    const kel = new Map(), km = kminApp();
     hari.forEach(h => {
       const kunci = bulanan ? h.slice(0, 7) : h; let o = kel.get(kunci);
       if (!o) kel.set(kunci, o = {N20: 0, N21: 0, M: 0, N: 0, T: 0, A: 0, total: 0, hari: 0});
       o.hari++;
-      Object.keys(R.hari[h]).forEach(nama => { const k = KODE[nama], d = R.hari[h][nama] && +R.hari[h][nama].d; if (!k || !(d >= 0)) return; o[k] += d; o.total += d; if (nama === "Terra") o.T += d; if (nama === "Aqua") o.A += d; });
+      Object.keys(R.hari[h]).forEach(nama => { const k = KODE[nama], d = k && R.hari[h][nama] ? jmlD(R.hari[h][nama].d, km) : 0; if (!k) return; o[k] += d; o.total += d; if (nama === "Terra") o.T += d; if (nama === "Aqua") o.A += d; });
     });
     const ks = [...kel.keys()], tt = ks.map(k => kel.get(k).total), parsial = k => bulanan && kel.get(k).hari < hariBulan(k), adaParsial = ks.some(parsial);
     const maks = Math.max(...tt), sk = skalaNice(maks);
@@ -485,11 +498,11 @@
   const terlihat = () => { const p = document.getElementById("p-satelit"); return !!p && p.classList.contains("on"); };
   const aktif = gen => { if (gen !== St.gen) return false; if (!terlihat()) { St.tertahan = true; return false; } return true; };
   const placeholderHal = '<p class="sd-muat-hal" role="status">Memuat data satelit…</p>';
-  const KEPALA = '<div class="sd-kepala"><div><a class="sd-kembali" href="/" data-kembali>‹ Kembali ke peta</a><h2 class="sd-jd">Data satelit</h2>' +
-    "<p>Kapan satelit melintas di atas Indonesia, apakah datanya sudah sampai di aplikasi, dan berapa deteksi FIRMS (semua tingkat keyakinan) yang dibawanya. Diperbarui harian.</p></div>";
+  const kepalaHal = () => '<div class="sd-kepala"><div><a class="sd-kembali" href="/" data-kembali>‹ Kembali ke peta</a><h2 class="sd-jd">Data satelit</h2>' +
+    "<p><span>Kapan satelit melintas di atas Indonesia, apakah datanya sudah sampai di aplikasi, dan berapa deteksi FIRMS</span> <span>(" + confTeks() + ")</span> <span>yang dibawanya. Diperbarui harian.</span></p></div>";
 
   function kerangka(el) {
-    el.innerHTML = KEPALA +
+    el.innerHTML = kepalaHal() +
       '<div class="sd-rentang"><div class="seg" role="group" aria-label="Rentang cepat" id="sdPreset">' + Object.keys(LABEL_PRESET).map(n => '<button type="button" data-n="' + n + '">' + LABEL_PRESET[n] + "</button>").join("") + "</div>" +
       '<div class="sd-tgl"><label>Dari <input type="date" id="sdDari" aria-describedby="sdKet"></label><label>sampai <input type="date" id="sdSampai" aria-describedby="sdKet"></label></div>' +
       '<div class="sd-ket-tgl" id="sdKet" aria-live="polite"></div></div></div>' +
@@ -624,7 +637,7 @@
 
   /* keadaan kosong jujur: berkas belum ada di produksi atau tidak sah */
   function kerangkaKosong(el) {
-    el.innerHTML = KEPALA + "</div>" + '<div class="sd-grid"><div class="sd-slot lebar">' + Kartu.kartu("Data satelit", "<span>Riwayat sedang disiapkan</span>",
+    el.innerHTML = kepalaHal() + "</div>" + '<div class="sd-grid"><div class="sd-slot lebar">' + Kartu.kartu("Data satelit", "<span>Riwayat sedang disiapkan</span>",
       kosong("<span>Riwayat lintasan dan deteksi per satelit belum tersedia. Lintasan hari ini, kemarin, dan besok tetap bisa dilihat lewat jam data di bagian atas halaman.</span>"), gabung(PS.kosong, PS.kosong2)) + "</div></div>";
   }
 
