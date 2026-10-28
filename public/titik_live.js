@@ -37,10 +37,12 @@
   }
   /* Worker cron (:15 tiap 3 jam) dan titik.yml (:40 tiap 3 jam, terbit statis) mengambil FIRMS yang sama: selama data statis
      < 3,5 jam, /api/titik hampir tidak menambah titik tapi memakan satu pemanggilan Worker per kunjungan. Baru dipanggil bila
-     terbit statis terlambat/gagal (cek ulang tiap 30 menit). */
-  const STATIS_SEGAR = 3.5 * 36e5;
+     terbit statis terlambat/gagal (cek ulang tiap 30 menit). meta.dibuat = jam pipeline JALAN, bukan umur titiknya: 28 Okt 2026 titik.yml
+     08.42 WIB terbit dengan titik terakhir 27 Okt 19.21 WIB (FIRMS terlambat), /api/titik sudah punya lintasan malam tetapi dilewati.
+     Jadi dilewati hanya bila titik terakhir data statis juga < 10 jam (celah lintasan terpanjang ~7 jam + latensi FIRMS ~3 jam). */
+  const STATIS_SEGAR = 3.5 * 36e5, TITIK_SEGAR = 10 * 36e5;
   async function ambil() {
-    if (S.meta?.dibuat && Date.now() - Date.parse(S.meta.dibuat) < STATIS_SEGAR) return;
+    if (S.meta?.dibuat && Date.now() - Date.parse(S.meta.dibuat) < STATIS_SEGAR && Date.now() - S.acuan0 < TITIK_SEGAR) return;
     try { const r = await fetch("/api/titik"); if (!r.ok) return; const d = await r.json();
       if (!Array.isArray(d.baris) || !Array.isArray(d.wilayah)) return;
       if (!live || d.dibuat !== live.dibuat) { live = d; untuk = null; } gabung();
