@@ -31,7 +31,7 @@ def jalankan(*cmd, cwd):
 def param_ha(D, hb, belum_kini, luas_00):
     """Label hari kelompok LUAS dan BELUM PADAM serta penanda hari di subjudul bila angkanya hari utuh terakhir (lihat bangun)."""
     kolom, geser = ([hb(D - dt.timedelta(days=i)) for i in g] for g in ((2, 1, 0), (3, 2, 1)))
-    p = {'kolom_ha': kolom if luas_00 else geser, 'kolom_belum': kolom if belum_kini else geser,
+    p = {'kolom_ha': kolom if luas_00 else geser, 'kolom_belum': kolom if belum_kini or luas_00 else geser,   # luas_00: belum hari utuh juga dilabeli cut-off 00.00
          'hari_ha': str((D if luas_00 else D - dt.timedelta(days=1)).day)}
     if luas_00:
         pass   # label kolom sudah tanggal cut-off; subjudul slide peta tanpa penanda (pemilik 27 Okt 2026: "hilangkan cutoff")

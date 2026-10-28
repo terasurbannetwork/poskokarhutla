@@ -71,6 +71,32 @@ def _total(v):
     return v[0] if len(v) > 1 and abs(sum(v[1:]) - v[0]) < 1 else sum(v)
 
 
+PEMILIK = {'BNPB': 'BNPB', 'TNI': 'TNI', 'KEMENHUT': 'Kemenhut', 'PEMDA': 'Pemda', 'PT SINARMAS': 'PT Sinarmas'}   # ejaan pil deck; WA 28 Okt huruf besar
+
+
+def gelar(teks):
+    """Armada per provinsi dari LAPORAN GELAR PESAWAT ('*1. KALIMANTAN BARAT: 9 UNIT*' lalu baris '- WB: 3 Unit (Palangka Raya), 1 Unit
+    (Sampit)'): {provinsi: [patroli/OMC, WB]}, tanggal 'Data:'. None bila pesan tak memuat rincian per provinsi. Rekap ini dipakai bila ada,
+    karena badan WA bisa masih menyalin armada hari sebelumnya (28 Okt: Jabar dan Jateng masih ada di badan, rekap sudah tidak)."""
+    if 'GELAR PESAWAT' not in teks:
+        return None
+    t = teks[teks.index('GELAR PESAWAT'):]
+    t = t[:t.index('REKAPITULASI NASIONAL')] if 'REKAPITULASI NASIONAL' in t else t
+    blok = re.split(r'^\*\d+\. ([A-Z][A-Z /]+?): (\d+) UNIT\*\s*$', t, flags=re.M)
+    if len(blok) < 3:
+        return None
+    armada = {}
+    for nama, n, isi in zip(blok[1::3], blok[2::3], blok[3::3]):
+        nama = ' '.join(w.capitalize() for w in nama.split()).replace(' / ', '/').replace('Ikn', 'IKN')
+        pw = [0, 0]
+        for jenis, sisa in re.findall(r'^-\s*([^:\n]+):(.*)$', isi, re.M):
+            pw[jenis.strip().upper().startswith('WB')] += sum(int(x) for x in re.findall(r'(\d+) Unit', sisa, re.I))
+        assert sum(pw) == int(n), f'gelar {nama}: rincian {pw} tidak berjumlah {n} unit'
+        armada[nama] = pw
+    tgl = re.search(r'Data: (\d+) (\w+) (\d{4})', t)
+    return armada, dt.date(int(tgl.group(3)), BULAN[tgl.group(2).lower()], int(tgl.group(1))) if tgl else None
+
+
 def operasi(teks):
     tgl = re.search(r'water bombing pada (\d+) (\w+) (\d{4})', teks, re.I)
     tanggal = dt.date(int(tgl.group(3)), BULAN[tgl.group(2).lower()], int(tgl.group(1)))
@@ -92,10 +118,10 @@ def operasi(teks):
         nama, isi = m.group(1).strip(), m.group(2)
         nacl, dry = (_total([_angka(x) for x in re.findall(rf'([\d.]+) kg {b}', isi)]) for b in ('NaCl', 'dry ice'))
         so = re.search(r'\*(\d+) sortie', isi)
-        sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|di) \*([^*]+)\*', isi.split('Hujan')[0])
+        sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran) \*([^*]+)\*', isi.split('Hujan')[0])   # bukan "di *X*": "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
                                  for k in re.split(r',\s*(?:dan\s+)?|\s+dan\s+', x.replace('sekitar ', '')) if k.strip()))   # kab yang disasar beberapa pesawat sekali saja
         hujan = None
-        h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi)
+        h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt)
         h2 = re.search(r'Hujan\s+([a-z ]+?)\s+pada (\d+) (\w+)[^\n]*?di \*([^*]+)\*', isi)
         h3 = re.search(r'Hujan\s+dilaporkan di ([^*\n]+?)(?: pada [^.\n]*)?\.', isi)
         if h2:   # "Hujan <intensitas> pada <tgl> ... di *X*" (tanggal di depan)
@@ -105,14 +131,24 @@ def operasi(teks):
                      'tanggal': dt.date(tanggal.year, BULAN[h.group(4).lower()], int(h.group(3))) if h.group(3) else tanggal}
         elif h3:   # "Hujan dilaporkan di sebagian besar wilayah X pada dini hari" (27 Okt): lokasi tanpa cetak tebal
             hujan = {'intensitas': '', 'lokasi': h3.group(1), 'tanggal': tanggal}
+        tg = h and not h2 and re.search(r'tanggal \*?(\d{1,2}) (\w+)', isi[isi.rfind('\n', 0, h.start()) + 1:h.end()])   # "Hujan ... dilaporkan tanggal 26 Oktober 2026 di *X*" (Jambi 28 Okt)
+        if hujan and tg:
+            hujan['tanggal'] = dt.date(tanggal.year, BULAN[tg.group(2).lower()], int(tg.group(1)))
         if hujan and hujan['tanggal'] != tanggal:
             hujan = None   # hujan hari lain bukan hasil OMC hari laporan
         omc[nama] = {'sortie': int(so.group(1)) if so else 0, 'nacl': nacl, 'dryice': dry, 'sasaran': ', '.join(sas),
                      'hujan': hujan, 'jarak_pandang': bool(re.search(r'jarak pandang|PM2,5', isi, re.I))}
     # pemilik armada dari rekap gelar pesawat (A. BERDASARKAN INSTANSI); pesan lama tanpa rekap = {} (baris PEMILIK tidak dipasang)
-    pemilik = ({m.group(1).strip(): int(m.group(2)) for m in re.finditer(r'^\*\d+\. ([^:*\n]+): (\d+) Unit\*', _bagian(teks, r'BERDASARKAN INSTANSI\*', r'\*B\. BERDASARKAN'), re.M)}
+    pemilik = ({PEMILIK.get(m.group(1).strip().upper(), m.group(1).strip()): int(m.group(2))
+                for m in re.finditer(r'^\*\d+\. ([^:*\n]+): (\d+) Unit\*', _bagian(teks, r'BERDASARKAN INSTANSI\*', r'\*B\. BERDASARKAN'), re.M)}
                if 'BERDASARKAN INSTANSI' in teks else {})
-    return {'tanggal': tanggal, 'personel': personel, 'armada': armada, 'omc': omc, 'pemilik': pemilik}
+    g = gelar(teks)
+    if g:
+        armada = g[0]
+    lap = re.search(r'^_(\d+) (\w+) (\d{4})_\s*$', teks, re.M)   # tanggal laporan di bawah judul WA ("_28 Oktober 2026_")
+    return {'tanggal': tanggal, 'personel': personel, 'armada': armada, 'omc': omc, 'pemilik': pemilik,
+            'tanggal_armada': (g and g[1]) or tanggal,
+            'tanggal_laporan': dt.date(int(lap.group(3)), BULAN[lap.group(2).lower()], int(lap.group(1))) if lap else tanggal}
 
 
 if __name__ == '__main__':

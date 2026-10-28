@@ -6,6 +6,7 @@
   Hanya dengan penanganan.py --operasi (teks WA satgas hari itu); tanpa itu halaman operasi dibuang (tambah_peta.buang_slide),
   karena WA satgas tidak diarsipkan dan hari lampau tak bisa diisi."""
 import re
+from kisi import lebar_teks
 
 X_PM, X_CU = 2798064, 3767328   # x pil PM2.5 dan pil cuaca di tiap baris
 T0, PB = 2316480, 518160         # y pil baris 1 tabel, jarak baris
@@ -36,6 +37,12 @@ def isi_pil(s, x, y, teks, donor_y=None):
     lama = re.findall(r'<a:t>([^<]*)</a:t>', pot); assert len(lama) == 1, lama
     pot = pot.replace(f'<a:t>{lama[0]}</a:t>', f'<a:t>{teks}</a:t>')
     if len(teks) > 12: pot = pot.replace('wrap="square"', 'wrap="none"')   # "CERAH BERAWAN" sedikit lebih lebar dari kotak teks; muat di dalam pil
+    # teks lebih lebar dari kotaknya tertutup pil sebelah ("231 SGT TDK SEH", 28 Okt 2026): huruf dikecilkan secukupnya, pil lain tetap
+    tx = next(t for t in re.findall(r'<p:sp>.*?</p:sp>', pot, re.S) if '<a:t>' in t)   # kotak tulisan pil (bukan latar/ikon)
+    kotak, sz = int(re.search(r'<a:ext cx="(\d+)"', tx).group(1)), int(re.search(r'sz="(\d+)"', tx).group(1))
+    w = lebar_teks([(teks.replace('&lt;', '<'), sz, True)])
+    if w > kotak * 1.02:   # metrik Arial sedikit lebih lebar dari Roboto: "HUJAN SEDANG" (+1,5%) tampil utuh, jangan ikut dikecilkan
+        pot = pot.replace(tx, re.sub(r'sz="\d+"', f'sz="{sz * kotak // w // 10 * 10}"', tx))
     return s[:a] + pot + s[b:]
 
 
@@ -100,7 +107,7 @@ def ganti_tabel(s, lib, top6, bm):
         if 'bahaya' in kat:
             s = pasang(s, lib, X_PM, y, 'berbahaya', f'{round(v)} BERBAHAYA')
         elif 'tidak sehat' in kat:
-            s = pasang(s, lib, X_PM, y, 'tidak sehat', f'{round(v)} SANGAT TDK SEHAT' if 'sangat' in kat else f'{round(v)} TIDAK SEHAT')
+            s = pasang(s, lib, X_PM, y, 'tidak sehat', f'{round(v)} SGT TDK SEHAT' if 'sangat' in kat else f'{round(v)} TIDAK SEHAT')
         elif v is not None:
             s = pasang(s, lib, X_PM, y, 'rendah', f'{round(v)} {kat.upper()}' if kat else f'PM2.5 {round(v)}')
         else:
@@ -149,7 +156,9 @@ def pasang_sp(s, x, y, proto, label):
 
 
 def ganti_operasi(s, op):
-    D = op['tanggal']
+    # judul dan pil tanggal = tanggal laporan WA, bukan hari kegiatan di isinya (pemilik 28 Okt 2026: "bukannya udah ada tanggal 28?");
+    # sama dengan label cut-off luas terbakar (kegiatan 27 Okt dilaporkan 28 Okt)
+    D = op.get('tanggal_laporan') or op['tanggal']
     ARMADA = sorted(([n, p, w] for n, (p, w) in op['armada'].items()), key=lambda r: -(r[1] + r[2]))
     s = teks(s, '21', str(D.day)); s = teks(s, ' Oktober ', f' {BULAN[D.month - 1]} ')   # judul templat 211026: data per tanggal D
     # personel (per provinsi dan per instansi) tidak diganti: templat sudah memuat angka WA 21 s.d. 26 Okt; WA tak memuat rincian instansi
@@ -184,6 +193,9 @@ def ganti_operasi(s, op):
     dua = sorted(((n, o) for n, o in omc.items() if o['sortie']), key=lambda kv: -(kv[1]['nacl'] + kv[1]['dryice']))[:2]
     s = teks(s, 'SEMAI DRY ICE', 'SEMAI OMC'); s = teks(s, 'BAHAN SEMAI', 'DRY ICE + NaCl' if any(o['dryice'] for o in op['omc'].values()) else 'NaCl')
     s = teks(s, '20 Okt', bln(D), 2)
+    # pil tanggal ARMADA UDARA (panel kanan, x >= 6164428) = tanggal rekap gelar pesawat, bisa sehari sesudah operasi (28 Okt 2026)
+    s = re.sub(rf'(<p:sp>(?:(?!</p:sp>).)*?<a:off x="(\d+)"(?:(?!</p:sp>).)*?<a:t>){bln(D)}(</a:t>)',
+               lambda m: m.group(1) + (bln(op.get('tanggal_armada') or D) if int(m.group(2)) >= 6164428 else bln(D)) + m.group(3), s, flags=re.S)
     tot_s, tot_kg = sum(o['sortie'] for _, o in dua), sum(o['nacl'] + o['dryice'] for _, o in dua)
     rb = lambda v: f'{v:,.0f}'.replace(',', '.')   # ribuan bertitik
     lab = f'{tot_s} sortie, {rb(tot_kg)} kg'
