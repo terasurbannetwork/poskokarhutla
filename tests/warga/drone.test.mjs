@@ -37,13 +37,13 @@ const halamanOk = (r, sup) => {
 
 uji("admin moderator, staf peran apa pun, dan akun instansi aktif membuka /admin/drone", async () => {
   halamanOk(await man("/admin/drone?k=K0029", ADMIN), 1);
+  halamanOk(await man("/admin/drone", GERBANG), 0);   // akun situs Centurisk97 juga boleh (pemilik 28 Okt 2026)
   for (const p of [["tmc"], ["pimpinan"], ["verifikator"]]) halamanOk(await man("/admin/drone", await staf(p)), 0);
   halamanOk(await man("/admin/drone", await instansi("aktif")), 0);
 });
 
-uji("tamu ke Meja Pantau dengan ?ke= kembali ke cluster; akun gerbang dan instansi belum aktif ditolak", async () => {
+uji("tamu ke Meja Pantau dengan ?ke= kembali ke cluster; instansi belum aktif ditolak", async () => {
   const t = await man("/admin/drone?k=K0029");
   assert.equal(t.s, 303); assert.equal(t.h.get("location"), "/admin/pantau?ke=" + encodeURIComponent("/admin/drone?k=K0029"));
-  assert.equal((await man("/admin/drone", GERBANG)).s, 403, "akun gerbang situs saja bukan staf/instansi");
   assert.equal((await man("/admin/drone", await instansi("menunggu"))).s, 303, "instansi belum aktif diperlakukan seperti tamu");
 });

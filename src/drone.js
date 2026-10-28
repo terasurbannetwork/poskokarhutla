@@ -1,7 +1,7 @@
 /* Atur drone ke gambut membara (/admin/drone, pemilik 28 Okt 2026). Panduan: docs/bnpb/PANDUAN-DRONE-GAMBUT.md.
    Tahap 1: halaman saja. Data dari /data/kluster_awal.json (bara.sel dari scripts/data/harian.py), rute sapuan dan KMZ dihitung di peramban
    (public/admin/drone.js), jadi tidak ada rute tulis, tabel D1, atau batas laju di sini. Tahap 2 (kirim ke dock) menambah rute POST sendiri.
-   Hak buka: admin moderator, staf BNPB peran apa pun, atau akun instansi aktif. Akun gerbang situs saja = 403 polos; tamu = 303 ke Meja Pantau. */
+   Hak buka: admin moderator, akun situs Centurisk97 (gerbang; pemilik 28 Okt 2026), staf BNPB peran apa pun, atau akun instansi aktif; tamu = 303 ke Meja Pantau. */
 import {adminOK} from "./worker.js";
 import {stafSesi} from "./staf.js";
 import {modOK, superOK} from "./posko.js";
@@ -49,12 +49,11 @@ async function konteks(env, req, kini) {
   if (s) return {nama: s.nama, super: false};
   const a = await akunAktif(env, req, kini);
   if (!(a instanceof Response)) return {nama: a.nama || a.username, super: false};
-  return await adminOK(env, req, kini) ? "gerbang" : null;
+  return await adminOK(env, req, kini) ? {nama: "Centurisk97", super: false} : null;   // akun situs Centurisk97 juga boleh (pemilik 28 Okt 2026)
 }
 
 async function halaman(env, req, url, kini) {
   const ctx = await konteks(env, req, kini);
-  if (ctx === "gerbang") return new Response(`<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Atur drone gambut, Centurisk97</title></head><body><p>Halaman ini untuk staf BNPB dan akun instansi. Masuk dengan akun staf atau akun instansi.</p></body></html>`, {status: 403, headers: H});
   if (!ctx) return new Response(null, {status: 303, headers: {location: "/admin/pantau?ke=" + encodeURIComponent(url.pathname + url.search), "cache-control": "no-store"}});
   return new Response(halamanDrone(ctx), {headers: H});
 }

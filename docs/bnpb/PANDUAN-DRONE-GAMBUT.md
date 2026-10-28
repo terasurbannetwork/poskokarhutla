@@ -25,7 +25,8 @@ Setiap cluster seperti itu mendapat **ikon drone** di peta, dan sel gambutnya (p
 | Admin moderator | Ya, termasuk tombol data contoh (🧪 🧹) bila Super Admin | Masuk admin |
 | Staf BNPB, peran apa pun | Ya | Meja Pantau (`/admin/pantau`); sesudah masuk, halaman kembali ke cluster yang dipilih |
 | Akun instansi aktif (pemda, TNI, Polri) | Ya | Masuk di `/instansi` dulu, lalu buka tautan drone |
-| Akun gerbang situs saja, instansi belum aktif, tamu | Tidak | Ditolak atau dialihkan ke halaman masuk |
+| Akun situs Centurisk97 | Ya | Masuk situs seperti biasa |
+| Instansi belum aktif, tamu | Tidak | Dialihkan ke halaman masuk |
 
 Ikon drone di peta tampil untuk semua pengunjung. Halaman rutenya tetap hanya untuk akun di atas.
 
