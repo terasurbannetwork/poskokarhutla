@@ -55,8 +55,10 @@ if __name__ == "__main__":
     T = [p("N20", 1, -2.0, 113.0), p("N21", 2, -2.0001, 113.0001),   # sel sama, satelit lain: sekali
          p("N21", 1, -2.0, 113.01),                                    # ~1,1 km ke timur: sel baru
          p("N", 1, -2.0, 113.0, "10-24"),                              # sel sama hari lain: dihitung lagi
-         p("M", 0, -3.0, 114.0), p("X", 2, -3.0, 114.0)]               # keyakinan rendah / sensor asing: ditolak
+         p("M", 0, -3.0, 114.0), p("X", 2, -3.0, 114.0)]               # keyakinan rendah: DIHITUNG (KEYAKINAN_MIN 0); sensor asing: ditolak
+    assert KEYAKINAN_MIN == 0, "pemilik 28 Okt 2026: keyakinan rendah ikut dihitung"
     u = unik(T, lambda q: q["h"])
-    assert [(q["s"], q["h"]) for q in u] == [("N20", "10-25"), ("N21", "10-25"), ("N", "10-24")], u
+    assert [(q["s"], q["h"]) for q in u] == [("N20", "10-25"), ("N21", "10-25"), ("N", "10-24"), ("M", "10-25")], u
+    assert not dihitung("X", 2) and dihitung("M", 0)
     assert sel(-2.0, 113.0) == sel(-2.0001, 113.0001) != sel(-2.0, 113.01)
     print("titik_unik: uji lolos")

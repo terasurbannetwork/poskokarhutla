@@ -1,7 +1,7 @@
 "use strict";
 /* angka_kawasan.js: hotspot, luas terbakar, belum padam di dalam satu poligon (kawasan atau konsesi dari kotak cari), hitungan murni tanpa DOM.
    Rumus = scripts/data/peta_karhutla.py versi kabupaten (deck BNPB), dijalankan pada baris hotspot.json di peramban:
-   - hot   = titik yang dihitung (dihitung(r), di halaman = S.dihitung: lokasi unik ~375 m per hari WIB, 4 satelit, keyakinan sedang/tinggi;
+   - hot   = titik yang dihitung (dihitung(r), di halaman = S.dihitung: lokasi unik ~375 m per hari WIB, 4 satelit, semua keyakinan sejak 28 Okt 2026;
              unik() di bawah) pada hari WIB terpilih (sama dengan angka Hotspot panel peta);
    - luas  = (titik NOAA-20 x F.N20 + titik NOAA-21 x F.N21) / 2, keyakinan nominal/tinggi hari itu, dibulatkan sekali setengah ke atas
              (kalibrasi langsung ke luas resmi BNPB per satelit, keputusan pemilik 25 Okt 2026); satelit yang hari itu tak punya titik se-Indonesia
@@ -21,7 +21,7 @@ const n2x = r => (r[3] === "N20" || r[3] === "N21") && r[5] >= 1;
    -> Set baris yang dihitung. Baris data harian dan /api/titik digabung di peramban, jadi kolom "hitung" berkas tidak dipakai di sini. */
 const SENSOR_UNIK = new Set(["M", "N", "N20", "N21"]);
 const selUnik = (lat, lon) => Math.round(lat / G) + "," + Math.round(lon * Math.cos(lat * Math.PI / 180) / G);
-function unik(baris, kmin = 1) {
+function unik(baris, kmin = 0) {   /* kmin 0 = semua keyakinan (titik_unik.KEYAKINAN_MIN, pemilik 28 Okt 2026) */
   const lihat = new Set(), out = new Set();
   for (const r of [...baris].sort((a, b) => a[2] - b[2])) {
     if (!SENSOR_UNIK.has(r[3]) || r[5] < kmin) continue;
