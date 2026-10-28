@@ -1,0 +1,358 @@
+{
+ "nama": "neraca-peta-ddl",
+ "keterangan": "Rasio ketersediaan dan kebutuhan air gaya Permen LH 17/2009 per kab/kota di Pulau Jawa, iklim 1991–2025 dan penduduk 2025",
+ "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; bukan status resmi (batas tetap, SA/DA = 1 memisahkan defisit dan surplus)",
+ "catatan": "SA = limpasan lokal model; DA = penduduk x 1.600 m³/kapita/tahun; rasio di bawah 1 = defisit.",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  203.31
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.17
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Defisit, SA/DA ≤ 0,25 (35)",
+   "jenis": "kotak",
+   "warna": "#DCEBF8"
+  },
+  {
+   "label": "Defisit, 0,25–0,5 (13)",
+   "jenis": "kotak",
+   "warna": "#A4CAEE"
+  },
+  {
+   "label": "Defisit, 0,5–1 (37)",
+   "jenis": "kotak",
+   "warna": "#68A8E0"
+  },
+  {
+   "label": "Surplus, 1–2 (31)",
+   "jenis": "kotak",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "Surplus, > 2 (3)",
+   "jenis": "kotak",
+   "warna": "#1B5A93"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#DCEBF8": [
+   "skala",
+   "legenda"
+  ],
+  "#1B5A93": [
+   "skala",
+   "legenda"
+  ],
+  "#2F86D1": [
+   "skala",
+   "legenda"
+  ],
+  "#68A8E0": [
+   "skala",
+   "legenda"
+  ],
+  "#A4CAEE": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "skala-batang",
+   "teks",
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 358.74,
+   "y": 35.92,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "0"
+  },
+  {
+   "x": 422.93,
+   "y": 35.92,
+   "w": 26.52,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "200 km"
+  },
+  {
+   "x": 433.6,
+   "y": 6.92,
+   "w": 5.19,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "U"
+  },
+  {
+   "x": 56.72,
+   "y": 23.87,
+   "w": 49.26,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-31",
+   "teks": "DKI Jakarta"
+  },
+  {
+   "x": 202.45,
+   "y": 99.56,
+   "w": 57.47,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-34",
+   "teks": "DI Yogyakarta"
+  },
+  {
+   "x": 193.32,
+   "y": 72.94,
+   "w": 55.78,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-33",
+   "teks": "Jawa Tengah"
+  },
+  {
+   "x": 89.06,
+   "y": 58.76,
+   "w": 48.11,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-32",
+   "teks": "Jawa Barat"
+  },
+  {
+   "x": 35.11,
+   "y": 39.26,
+   "w": 33.01,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-36",
+   "teks": "Banten"
+  },
+  {
+   "x": 296.25,
+   "y": 96.28,
+   "w": 49.95,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-35",
+   "teks": "Jawa Timur"
+  },
+  {
+   "x": 36.38,
+   "y": 156.11,
+   "w": 183.47,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-36",
+   "teks": "SA/DA gaya Permen LH 17/2009 (jumlah kab/kota)"
+  },
+  {
+   "x": 36.38,
+   "y": 155.11,
+   "w": 183.47,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-36",
+   "teks": "SA/DA gaya Permen LH 17/2009 (jumlah kab/kota)"
+  },
+  {
+   "x": 243.85,
+   "y": 156.11,
+   "w": 89.71,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-229",
+   "teks": "Defisit, SA/DA ≤ 0,25 (35)"
+  },
+  {
+   "x": 229.85,
+   "y": 155.11,
+   "w": 103.71,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-229",
+   "teks": "Defisit, SA/DA ≤ 0,25 (35)"
+  },
+  {
+   "x": 357.57,
+   "y": 156.11,
+   "w": 73.77,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-343",
+   "teks": "Defisit, 0,25–0,5 (13)"
+  },
+  {
+   "x": 343.57,
+   "y": 155.11,
+   "w": 87.77,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-343",
+   "teks": "Defisit, 0,25–0,5 (13)"
+  },
+  {
+   "x": 128.2,
+   "y": 169.11,
+   "w": 63.21,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-114",
+   "teks": "Defisit, 0,5–1 (37)"
+  },
+  {
+   "x": 114.2,
+   "y": 168.11,
+   "w": 77.21,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-114",
+   "teks": "Defisit, 0,5–1 (37)"
+  },
+  {
+   "x": 215.41,
+   "y": 169.11,
+   "w": 61.09,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-201",
+   "teks": "Surplus, 1–2 (31)"
+  },
+  {
+   "x": 201.41,
+   "y": 168.11,
+   "w": 75.09,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-201",
+   "teks": "Surplus, 1–2 (31)"
+  },
+  {
+   "x": 300.5,
+   "y": 169.11,
+   "w": 53.02,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-286",
+   "teks": "Surplus, > 2 (3)"
+  },
+  {
+   "x": 286.5,
+   "y": 168.11,
+   "w": 67.02,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-286",
+   "teks": "Surplus, > 2 (3)"
+  },
+  {
+   "x": 3,
+   "y": 181.11,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 190.71,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "rasio",
+ "cakupan": "jawa",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "air",
+  "batas": [
+   0.25,
+   0.5,
+   1,
+   2
+  ],
+  "label": [
+   "Defisit, SA/DA ≤ 0,25",
+   "Defisit, 0,25–0,5",
+   "Defisit, 0,5–1",
+   "Surplus, 1–2",
+   "Surplus, > 2"
+  ],
+  "warna": [
+   "skala.air.1",
+   "skala.air.2",
+   "skala.air.3",
+   "skala.air.4",
+   "skala.air.5"
+  ],
+  "rumus": "batas tetap, SA/DA = 1 memisahkan defisit dan surplus",
+  "resmi": false,
+  "jumlah": [
+   35,
+   13,
+   37,
+   31,
+   3
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": true,
+  "skala_pojok": "kanan atas",
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 6,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

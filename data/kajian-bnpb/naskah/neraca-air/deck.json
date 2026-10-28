@@ -1,0 +1,1080 @@
+{
+ "_catatan": "Spek deck kajian neraca air Pulau Jawa (NA-10). Isi dari naskah/neraca-air/*.md; angka hanya token registri neraca.* yang juga dipakai naskah DOCX. Bagian: A pasokan dan kebutuhan, B musim kemarau, C validasi dan data, D rekomendasi. Klaim tegas hanya dari daftar Aman dikutip HASIL.md; angka Jun-Okt per kab/kota diberi catatan indikasi urutan.",
+ "kajian": "neraca-air",
+ "tanggal": "2026-10-28",
+ "cut_off": "27 Okt 2026, 23.59 WIB",
+ "judul_dokumen": "Neraca Air Pulau Jawa per Kabupaten/Kota",
+ "subjek_dokumen": "Pasokan dan kebutuhan air bulanan, musim kemarau Juni–Oktober, dan tahun kering",
+ "pesan_kunci": "Air Pulau Jawa cukup dalam setahun tetapi kurang di sebagian kab/kota pada musim kemarau; peringkat kab/kota model dipakai sebagai daftar periksa kemarau 2027 bersama data BPBD sambil data pos duga dan waduk diminta untuk validasi.",
+ "slide": [
+  {
+   "jenis": "sampul",
+   "layout": "gelap",
+   "foto": "gambar/foto/air-bengawan-solo-kering.jpg",
+   "kepada": "Disampaikan kepada Kepala Badan Nasional Penanggulangan Bencana",
+   "kredit": "Foto: Bengawan Solo pada musim kemarau, Juli 2015; Crisco 1492, CC BY-SA 4.0, Wikimedia Commons"
+  },
+  {
+   "jenis": "kartu-angka",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Tesis, lima temuan, dan dua keputusan yang diminta",
+   "judul": "Pesan Kunci: air Jawa cukup setahun, kurang di sebagian kab/kota saat kemarau, dan dua keputusan",
+   "cut_off": true,
+   "judul_panel": "Pesan kunci",
+   "tesis": "Konsumtif 2025 sama dengan {{angka:neraca.jawa.rasio_c_r_persen|persen}} limpasan tahunan dan {{angka:neraca.jawa.rasio_c_r_kemarau_persen|persen}} limpasan Juni–Oktober; peringkat kab/kota menjadi daftar periksa, dipasangkan dengan data BPBD karena belum cocok dengan catatan kejadian DIBI.",
+   "temuan": [
+    {
+     "kode": "Temuan A.1",
+     "keyakinan": "estimasi-model",
+     "ikon": "air-baku",
+     "teks": "**Pasokan.** Air permukaan terbarukan {{angka:neraca.jawa.r_miliar|satuan}}, selisih {{angka:neraca.validasi.selisih_bps_persen|persen}} dari angka BPS 2020. Kedua angka adalah keluaran model. Limpasan Juni–Oktober hanya {{angka:neraca.jawa.r_kemarau_persen_tahunan|persen}} dari total."
+    },
+    {
+     "kode": "Temuan A.2",
+     "keyakinan": "estimasi-model",
+     "ikon": "wilayah",
+     "teks": "**Setahun.** Neraca tahunan negatif hanya di dua kota pantai kecil; kekurangan terjadi di musim kemarau. Kebutuhan konsumtif setahun hanya {{angka:neraca.jawa.rasio_c_r_persen|persen}} limpasan."
+    },
+    {
+     "kode": "Temuan B.1",
+     "keyakinan": "estimasi-model",
+     "ikon": "kekeringan",
+     "teks": "**Kemarau.** {{angka:neraca.hitung.n80_kemarau_neg}} kab/kota kurang air pada satu dari lima kemarau bila irigasi potensial dipenuhi. Nilai per kab/kota dibaca sebagai urutan. Jawa Timur {{angka:neraca.prov.jawa_timur.n_n80_neg}}, Jawa Tengah {{angka:neraca.prov.jawa_tengah.n_n80_neg}}."
+    },
+    {
+     "kode": "Temuan B.2",
+     "keyakinan": "estimasi-model",
+     "ikon": "kalender",
+     "teks": "**Tahun kering.** Iklim 1997 membuat {{angka:neraca.skenario.1997.n_kab_neg}} kab/kota negatif; bias tiap tahun berbeda arah. Angka itu indikasi tekanan tanpa batas atas atau bawah. Iklim 2015 membuat {{angka:neraca.skenario.2015.n_kab_neg}} kab/kota negatif."
+    },
+    {
+     "kode": "Temuan C.1",
+     "keyakinan": "estimasi-model",
+     "ikon": "data",
+     "teks": "**Validasi.** Aliran tahunan sejalan GloFAS; median aliran Juni–Oktober {{angka:neraca.validasi.rasio_kemarau_median}} kali, belum lolos. Pembandingnya sendiri model. Tahunan bermedian {{angka:neraca.validasi.rasio_median}} kali di {{angka:neraca.validasi.n_muara}} muara."
+    },
+    {
+     "kode": "Temuan C.2",
+     "keyakinan": "estimasi-model",
+     "ikon": "data",
+     "teks": "**Data.** Kebutuhan industri kosong di {{angka:neraca.hitung.industri_kosong}} kab/kota; lima dari enam tampungan waduk bersumber sekunder. Kebutuhan Jawa Timur dan DI Yogyakarta menjadi batas bawah."
+    }
+   ],
+   "pita": {
+    "label": "Keputusan yang diminta dari Kepala BNPB",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "kekeringan",
+      "judul": "Daftar periksa kemarau 2027",
+      "isi": "Pakai peringkat sebagai daftar periksa BPBD sebelum Juni 2027, dipasangkan dengan data penyaluran air."
+     },
+     {
+      "ikon": "data",
+      "judul": "Data pos duga dan waduk",
+      "isi": "Minta debit pos duga dan operasi waduk dari Kementerian PU untuk validasi."
+     },
+     {
+      "ikon": "regulasi",
+      "judul": "Batas pemakaian",
+      "isi": "Volume air darurat tetap dihitung dari data BPBD; angka model tidak dipakai untuk volume."
+     }
+    ]
+   },
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; BPS 2020; GloFAS; estimasi model",
+   "grup": [
+    {
+     "pil": "Estimasi model",
+     "nada": "data",
+     "ikon": "data",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.jawa.rasio_c_r_kemarau_persen|persen}}",
+       "label": "konsumtif/limpasan kemarau",
+       "ikon": "air-baku",
+       "warna": "biru"
+      },
+      {
+       "nilai": "{{angka:neraca.hitung.n80_kemarau_neg}}",
+       "label": "kab/kota kemarau andalan negatif",
+       "ikon": "kekeringan",
+       "warna": "oranye"
+      },
+      {
+       "nilai": "{{angka:neraca.validasi.rasio_kemarau_median}}",
+       "label": "median rasio kemarau lawan GloFAS",
+       "ikon": "data",
+       "warna": "navy"
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Setahun air cukup, kemarau tidak",
+   "judul": "A1. Kebutuhan konsumtif Jawa {{angka:neraca.jawa.rasio_c_r_persen|persen}} dari limpasan tahunan, naik ke {{angka:neraca.jawa.rasio_c_r_kemarau_persen|persen}} pada Juni–Oktober",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Pasokan dan kebutuhan",
+     "nada": "data",
+     "ikon": "air-baku",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.jawa.r_miliar}}",
+       "label": "miliar m³ limpasan per tahun",
+       "ikon": "air-baku",
+       "warna": "biru"
+      },
+      {
+       "nilai": "{{angka:neraca.jawa.irigasi_persen_total|persen}}",
+       "label": "kebutuhan kotor dari irigasi",
+       "ikon": "irigasi",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.jawa.r_kemarau_persen_tahunan|persen}}",
+       "label": "limpasan jatuh Juni–Oktober",
+       "ikon": "kalender",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Limpasan lokal dan kebutuhan konsumtif bulanan Pulau Jawa, juta m³",
+    "ikon": "kalender",
+    "peringkat": false,
+    "data": {
+     "csv": "data/neraca-air/bulanan.csv",
+     "kolom": [
+      {
+       "nama": "bulan",
+       "kepala": "Bulan"
+      },
+      {
+       "nama": "R",
+       "kepala": "Limpasan lokal",
+       "fmt": "0",
+       "warna": "biru",
+       "ikon": "air-baku"
+      },
+      {
+       "nama": "konsumtif",
+       "kepala": "Konsumtif",
+       "fmt": "0",
+       "warna": "oranye",
+       "ikon": "irigasi"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+    }
+   },
+   "panel": {
+    "judul": "Cara membaca",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Konsumtif = domestik, ternak, industri, dan irigasi dikurangi aliran balik {{angka:neraca.param.aliran_balik_persen|persen}}.",
+     "Irigasi adalah kebutuhan potensial, {{angka:neraca.jawa.irigasi_persen_sni|persen}} dari angka standar SNI.",
+     "Jawa Timur dan DI Yogyakarta tanpa data industri: angkanya batas bawah."
+    ],
+    "data": {
+     "csv": "data/neraca-air/provinsi.csv",
+     "kolom": [
+      {
+       "nama": "prov_nama",
+       "kepala": "Provinsi"
+      },
+      {
+       "nama": "rasio_C_R_persen",
+       "kepala": "Konsumtif/limpasan %",
+       "fmt": "1",
+       "warna": "navy",
+       "ikon": "air-baku"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini",
+     "urut": "-rasio_C_R_persen"
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana: CHIRPS 1991–2025, NASA POWER, HydroBASINS, BPS, WorldPop; estimasi model",
+   "pita": {
+    "label": "Kebutuhan 2025 per sektor",
+    "nada": "data",
+    "kolom": [
+     {
+      "ikon": "irigasi",
+      "judul": "Irigasi potensial",
+      "isi": "{{angka:neraca.jawa.irigasi|ringkas|satuan}}, gaya KP-01."
+     },
+     {
+      "ikon": "jiwa",
+      "judul": "Domestik",
+      "isi": "{{angka:neraca.jawa.domestik|ringkas|satuan}} untuk {{angka:neraca.jawa.pend_2025|ringkas}} jiwa."
+     },
+     {
+      "ikon": "data",
+      "judul": "Industri besar-sedang",
+      "isi": "{{angka:neraca.jawa.industri|satuan}}, hanya {{angka:neraca.hitung.industri_ada}} kab/kota ber-data."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "temuan-peta",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "pesan": "Kab/kota yang tak bisa memenuhi kemarau dari limpasannya sendiri",
+   "judul": "A2. Di {{angka:neraca.hitung.rasio_kemarau_lebih_100}} kab/kota kebutuhan Juni–Oktober melebihi limpasan lokalnya; kab/kota ini bergantung pada aliran dari hulu",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Ketergantungan",
+     "nada": "data",
+     "ikon": "wilayah",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.hitung.rasio_kemarau_lebih_100}}",
+       "label": "kab/kota kebutuhan melebihi limpasan",
+       "ikon": "wilayah",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.kab.indramayu.qin_persen|persen}}",
+       "label": "air Indramayu dari hulu",
+       "ikon": "air-baku",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "peta": {
+    "png": "gambar/neraca-air/deck/peta-rasio.png",
+    "legenda": {
+     "dari_manifest": true,
+     "judul": "Konsumtif/limpasan lokal Juni–Oktober"
+    },
+    "keyakinan": "estimasi-model",
+    "sumber": "Model neraca air kajian ini"
+   },
+   "panel": {
+    "judul": "Cara membaca",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Limpasan lokal tidak menghitung aliran masuk dari hulu.",
+     "Kab/kota hilir menanggung akibat pemakaian dan operasi waduk di hulu.",
+     "Jawa bagian timur paling tertekan; Jawa Barat bagian selatan paling longgar.",
+     "Rasio Jawa seluruhnya {{angka:neraca.jawa.rasio_c_r_kemarau_persen|persen}}, dengan kebutuhan 2030 {{angka:neraca.jawa.rasio_c_r_kemarau_2030_persen|persen}}.",
+     "Perpipaan antarwilayah dan air tanah tidak dimodelkan."
+    ],
+    "data": {
+     "csv": "data/neraca-air/kab.csv",
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Kab/kota"
+      },
+      {
+       "nama": "rasio_C_R_kemarau_persen",
+       "kepala": "Rasio kemarau %",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "kekeringan"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini",
+     "urut": "-rasio_C_R_kemarau_persen",
+     "batas": 7
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, iklim 1991–2025 dan kebutuhan 2025; estimasi model"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Surplus lokal di hulu menjadi pasokan hilir",
+   "cut_off": true,
+   "judul": "A3. Air Kabupaten Indramayu {{angka:neraca.kab.indramayu.qin_persen|persen}} berasal dari hulu; delapan dari sepuluh surplus lokal terbesar ada di Jawa Barat dan Banten",
+   "grup": [
+    {
+     "pil": "Ketergantungan hulu",
+     "nada": "data",
+     "ikon": "air-baku",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.kab.indramayu.qin_persen|persen}}",
+       "label": "air Indramayu dari hulu",
+       "ikon": "air-baku",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.kab.jakut.qin_persen|persen}}",
+       "label": "air Jakarta Utara dari hulu",
+       "ikon": "air-baku",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Sepuluh kab/kota dengan surplus lokal tahunan terbesar",
+    "ikon": "wilayah",
+    "peringkat": true,
+    "data": {
+     "csv": "data/neraca-air/kab.csv",
+     "urut": "-R_minus_C_tahunan",
+     "batas": 10,
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Kab/kota"
+      },
+      {
+       "nama": "R_minus_C_tahunan",
+       "kepala": "Surplus lokal, juta m³",
+       "fmt": "0",
+       "warna": "biru",
+       "ikon": "air-baku"
+      },
+      {
+       "nama": "qin_persen",
+       "kepala": "Air dari hulu %",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "wilayah"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+    }
+   },
+   "panel": {
+    "judul": "Cara membaca",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Surplus lokal = limpasan lokal dikurangi konsumtif; air yang lewat tidak dihitung.",
+     "Surplus hulu mengalir menjadi pasokan kab/kota hilir.",
+     "Neraca kab/kota hilir memuat air lewat dan tidak boleh dijumlahkan.",
+     "Penelusuran memakai {{angka:neraca.param.n_subdas|satuan}} HydroBASINS.",
+     "Sub-DAS rerata {{angka:neraca.param.subdas_rerata_km2|satuan}}: kota kecil membaca sungai yang lewat."
+    ],
+    "data": {
+     "csv": "data/neraca-air/kab.csv",
+     "urut": "-qin_persen",
+     "batas": 8,
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Kab/kota"
+      },
+      {
+       "nama": "qin_persen",
+       "kepala": "Dari hulu %",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "air-baku"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana: penelusuran aliran HydroBASINS, model neraca air kajian ini; estimasi model"
+  },
+  {
+   "jenis": "temuan-peta",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "pesan": "Neraca kemarau andalan menunjuk kab/kota prioritas",
+   "judul": "B1. {{angka:neraca.hitung.n80_kemarau_neg}} kab/kota kekurangan air Juni–Oktober pada sedikitnya satu dari lima tahun bila irigasi potensial dipenuhi",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Indikasi urutan",
+     "nada": "perhatian",
+     "ikon": "kekeringan",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.prov.jawa_timur.n_n80_neg}}",
+       "label": "kab/kota di Jawa Timur",
+       "ikon": "wilayah",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.prov.jawa_tengah.n_n80_neg}}",
+       "label": "kab/kota di Jawa Tengah",
+       "ikon": "wilayah",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.prov.jawa_barat.n_n80_neg}}",
+       "label": "kab/kota di Jawa Barat",
+       "ikon": "wilayah",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "peta": {
+    "png": "gambar/neraca-air/deck/peta-n80.png",
+    "legenda": {
+     "dari_manifest": true,
+     "judul": "Neraca kemarau andalan, mm"
+    },
+    "keyakinan": "estimasi-model",
+    "sumber": "Model neraca air kajian ini"
+   },
+   "panel": {
+    "judul": "Definisi dan batas",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Neraca kemarau andalan = persentil kedua puluh total Juni–Oktober 1991–2025.",
+     "Aliran kemarau model belum lolos validasi: nilai per kab/kota dibaca sebagai urutan.",
+     "Pemakaian sah: daftar periksa dan pemilihan wilayah; volume tangki dihitung dari data BPBD.",
+     "{{angka:neraca.hitung.n80_neg_kota_kecil}} dari {{angka:neraca.hitung.n80_kemarau_neg}} adalah kota kecil yang airnya kiriman hulu.",
+     "Penduduk kab/kota itu {{angka:neraca.hitung.n80_neg_pend|ringkas}} jiwa.",
+     "Rerata Juni–Oktober negatif di {{angka:neraca.hitung.n_kemarau_neg}} kab/kota."
+    ],
+    "data": {
+     "csv": "data/neraca-air/kab.csv",
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Kab/kota"
+      },
+      {
+       "nama": "N80_kemarau_mm",
+       "kepala": "Andalan per luas, mm",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "kekeringan"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini",
+     "urut": "N80_kemarau_mm",
+     "batas": 7
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, iklim 1991–2025 dan kebutuhan 2025; estimasi model"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Kekurangan terdalam di kabupaten beririgasi luas",
+   "judul": "B2. {{angka:neraca.kab.n80_1.nama|teks}} mencatat neraca kemarau andalan {{angka:neraca.kab.n80_1.n80|satuan}}, terendah di Pulau Jawa",
+   "cut_off": true,
+   "tabel": {
+    "judul_panel": "Dua belas kab/kota dengan neraca kemarau andalan terendah",
+    "ikon": "kekeringan",
+    "peringkat": true,
+    "data": {
+     "csv": "data/neraca-air/kab.csv",
+     "urut": "N80_kemarau",
+     "batas": 15,
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Kab/kota"
+      },
+      {
+       "nama": "N_tahunan",
+       "kepala": "Tahunan, juta m³",
+       "fmt": "0",
+       "warna": "biru",
+       "ikon": "air-baku"
+      },
+      {
+       "nama": "N80_kemarau",
+       "kepala": "Kemarau andalan, juta m³",
+       "fmt": "0",
+       "warna": "oranye",
+       "ikon": "kekeringan"
+      },
+      {
+       "nama": "N_kemarau_1997",
+       "kepala": "Iklim 1997, juta m³",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "kalender"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+    }
+   },
+   "panel": {
+    "judul": "Cara membaca",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Neraca tahunan positif besar: kekurangan muncul saat irigasi bertemu aliran rendah.",
+     "Neraca memuat air lewat dari hulu dan tidak boleh dijumlahkan antar-kab/kota.",
+     "Tanpa data industri di Jawa Timur: kekurangannya batas bawah.",
+     "Lima belas terdalam semuanya kabupaten, tujuh di Jawa Timur.",
+     "Kab/kota yang sama muncul lagi di daftar iklim 1997.",
+     "Volume per kab/kota belum dipakai untuk menghitung tangki atau embung."
+    ],
+    "data": {
+     "csv": "data/neraca-air/kab.csv",
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Kab/kota"
+      },
+      {
+       "nama": "N_kemarau",
+       "kepala": "Jun–Okt rerata, juta m³",
+       "fmt": "0",
+       "warna": "navy",
+       "ikon": "kekeringan"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini",
+     "urut": "N_kemarau",
+     "batas": 10
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; indikasi urutan, estimasi model"
+  },
+  {
+   "jenis": "temuan-grafik",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "pesan": "Tahun kering menaikkan jumlah kab/kota defisit berlipat",
+   "judul": "B3. Iklim 1997 membuat neraca Juni–Oktober negatif di {{angka:neraca.skenario.1997.n_kab_neg}} kab/kota, dibanding {{angka:neraca.skenario.klim.n_kab_neg}} pada iklim rerata",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Rasio kemarau",
+     "nada": "perhatian",
+     "ikon": "kekeringan",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.skenario.2015.rasio_c_r_persen|persen}}",
+       "label": "konsumtif/limpasan, iklim 2015",
+       "ikon": "kekeringan",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.skenario.2019.rasio_c_r_persen|persen}}",
+       "label": "konsumtif/limpasan, iklim 2019",
+       "ikon": "kekeringan",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "grafik": {
+    "judul_panel": "Kab/kota dengan neraca Juni–Oktober negatif per skenario iklim",
+    "ikon": "kalender",
+    "judul": "**Kab/kota negatif**, iklim 1991–2025 dan tahun kering",
+    "keluarga": "kering",
+    "data": {
+     "csv": "data/neraca-air/skenario.csv",
+     "kolom": [
+      {
+       "nama": "label",
+       "kepala": "Skenario"
+      },
+      {
+       "nama": "n_kab_neg",
+       "kepala": "Kab/kota",
+       "fmt": "0"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, kebutuhan 2025"
+    },
+    "ubah": false,
+    "persen_batang": false
+   },
+   "panel": {
+    "judul": "Arah bias",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Iklim 1997: model memadamkan aliran di {{angka:neraca.validasi.kering_nol_1997}} dari {{angka:neraca.validasi.n_muara}} muara, kekurangan dilebih-lebihkan.",
+     "Iklim 2019: aliran Jratunseluna {{angka:neraca.validasi.jratunseluna_2019}} kali GloFAS, kekurangan terhitung terlalu kecil.",
+     "Angka tahun kering tidak menjadi batas atas atau batas bawah.",
+     "Median rasio Juni–Oktober model/GloFAS: {{angka:neraca.validasi.kering_median_1997}} pada 1997, {{angka:neraca.validasi.kering_median_2023}} pada 2023.",
+     "Konsumtif naik di tahun kering karena hujan efektif padi berkurang.",
+     "Skenario dipakai memilih wilayah rencana kontinjensi."
+    ],
+    "data": {
+     "csv": "data/neraca-air/muara.csv",
+     "kolom": [
+      {
+       "nama": "sungai",
+       "kepala": "Sungai",
+       "ganti": {
+        "Jratunseluna (Serang-Lusi-Juwana)": "Jratunseluna"
+       }
+      },
+      {
+       "nama": "rasio_1997",
+       "kepala": "Rasio 1997",
+       "fmt": "2",
+       "warna": "navy",
+       "ikon": "data"
+      },
+      {
+       "nama": "rasio_2019",
+       "kepala": "Rasio 2019",
+       "fmt": "2",
+       "warna": "oranye",
+       "ikon": "data"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana; GloFAS",
+     "batas": 6
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; GloFAS; estimasi model"
+  },
+  {
+   "jenis": "temuan-peta",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "pesan": "Status gaya Permen LH berbeda dengan neraca bulanan",
+   "judul": "B4. Cara daya dukung Permen LH menandai {{angka:neraca.hitung.ddl_defisit}} kab/kota defisit; {{angka:neraca.hitung.ddl_defisit_n_positif}} di antaranya punya neraca tahunan positif",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Bukan status resmi",
+     "nada": "data",
+     "ikon": "regulasi",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.hitung.ddl_defisit}}",
+       "label": "kab/kota defisit gaya Permen LH",
+       "ikon": "wilayah",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.hitung.ddl_defisit_pend|ringkas}}",
+       "label": "jiwa di kab/kota itu",
+       "ikon": "jiwa",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "peta": {
+    "png": "gambar/neraca-air/deck/peta-ddl.png",
+    "legenda": {
+     "dari_manifest": true,
+     "judul": "Ketersediaan/kebutuhan, di bawah satu defisit"
+    },
+    "keyakinan": "estimasi-model",
+    "sumber": "Model neraca air kajian ini"
+   },
+   "panel": {
+    "judul": "Mengapa berbeda",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Ketersediaan = limpasan lokal model, tanpa air kiriman hulu.",
+     "Kebutuhan = penduduk kali {{angka:neraca.param.khla|satuan}}, jauh di atas kebutuhan sektor.",
+     "Status resmi daerah memakai koefisien limpasan dan hujan tahunan.",
+     "Peraturan tidak menetapkan ambang rasio; status hanya surplus atau defisit.",
+     "Neraca tahunan kajian ini negatif hanya di dua kota pantai kecil.",
+     "Kajian ini tidak menetapkan status daya dukung daerah."
+    ],
+    "data": {
+     "csv": "data/neraca-air/kab.csv",
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Kab/kota"
+      },
+      {
+       "nama": "ddl_rasio_SA_DA",
+       "kepala": "Ketersediaan/kebutuhan",
+       "fmt": "2",
+       "warna": "navy",
+       "ikon": "wilayah"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini",
+     "urut": "ddl_rasio_SA_DA",
+     "batas": 6
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; Permen LH 17/2009; bukan status resmi"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "pesan": "Validasi tahunan lolos, kemarau belum",
+   "judul": "C1. Aliran tahunan model {{angka:neraca.validasi.rasio_rentang|rentang}} kali GloFAS di {{angka:neraca.validasi.n_muara}} muara; median Juni–Oktober {{angka:neraca.validasi.rasio_kemarau_median}} kali",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Pembanding model",
+     "nada": "data",
+     "ikon": "data",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.validasi.rasio_median}}",
+       "label": "median rasio tahunan",
+       "ikon": "data",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.validasi.r_median}}",
+       "label": "median korelasi bulanan",
+       "ikon": "data",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.validasi.rasio_kemarau_median}}",
+       "label": "median rasio Juni–Oktober",
+       "ikon": "kekeringan",
+       "warna": "oranye"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Debit model dibanding GloFAS per muara, 1991–2024",
+    "ikon": "air-baku",
+    "peringkat": false,
+    "data": {
+     "csv": "data/neraca-air/muara.csv",
+     "batas": 12,
+     "kolom": [
+      {
+       "nama": "sungai",
+       "kepala": "Sungai",
+       "ganti": {
+        "Jratunseluna (Serang-Lusi-Juwana)": "Jratunseluna"
+       }
+      },
+      {
+       "nama": "rasio",
+       "kepala": "Rasio tahunan",
+       "fmt": "2",
+       "warna": "navy",
+       "ikon": "data"
+      },
+      {
+       "nama": "rasio_kemarau",
+       "kepala": "Rasio Juni–Oktober",
+       "fmt": "2",
+       "warna": "oranye",
+       "ikon": "kekeringan"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+    }
+   },
+   "panel": {
+    "judul": "Batas validasi",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Kalibrasi dan validasi memakai GloFAS yang sama: uji dalam sampel.",
+     "GloFAS dan BPS 2020 sama-sama model; belum ada pos duga air.",
+     "Ambang rasio {{angka:neraca.validasi.ambang_rendah|fmt=2}}–{{angka:neraca.validasi.ambang_tinggi|fmt=2}} dipenuhi tahunan, tidak dipenuhi kemarau.",
+     "Limpasan total selisih {{angka:neraca.validasi.selisih_bps_persen|persen}} dari BPS 2020; tahun 2020 saja {{angka:neraca.validasi.selisih_bps_2020_persen|persen}}.",
+     "Kab/kota neraca kemarau negatif lebih jarang tercatat kekeringan di DIBI: {{angka:neraca.hitung.n80_neg_dibi_persen|persen|cacah}} lawan {{angka:neraca.hitung.n80_pos_dibi_persen|persen|cacah}}.",
+     "Korelasi bulanan terendah di Citarum, sungai dengan tiga waduk besar berurutan."
+    ],
+    "data": {
+     "csv": "data/neraca-air/muara.csv",
+     "kolom": [
+      {
+       "nama": "sungai",
+       "kepala": "Sungai",
+       "ganti": {
+        "Jratunseluna (Serang-Lusi-Juwana)": "Jratunseluna"
+       }
+      },
+      {
+       "nama": "r_bulanan",
+       "kepala": "Korelasi bulanan",
+       "fmt": "2",
+       "warna": "navy",
+       "ikon": "data"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Pengolahan data Pantau Bencana; GloFAS",
+     "urut": "r_bulanan",
+     "batas": 7
+    }
+   },
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS Copernicus lewat Open-Meteo; BPS 2020; estimasi model"
+  },
+  {
+   "jenis": "tabel-peringkat",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "pesan": "Lima celah data menahan label estimasi model",
+   "judul": "C2. Kebutuhan industri kosong di {{angka:neraca.hitung.industri_kosong}} kab/kota dan lima dari enam tampungan waduk bersumber sekunder",
+   "cut_off": true,
+   "grup": [
+    {
+     "pil": "Cakupan data",
+     "nada": "perhatian",
+     "ikon": "data",
+     "kartu": [
+      {
+       "nilai": "{{angka:neraca.hitung.industri_kosong}}",
+       "label": "kab/kota tanpa data industri",
+       "ikon": "data",
+       "warna": "navy"
+      },
+      {
+       "nilai": "{{angka:neraca.hitung.hilir_waduk}}",
+       "label": "kab/kota hilir waduk",
+       "ikon": "bendungan",
+       "warna": "navy"
+      }
+     ]
+    }
+   ],
+   "tabel": {
+    "judul_panel": "Celah data dan pemegangnya, dengan akibat pada angka",
+    "ikon": "data",
+    "peringkat": false,
+    "data": {
+     "csv": "data/neraca-air/celah.csv",
+     "kolom": [
+      {
+       "nama": "celah",
+       "kepala": "Celah"
+      },
+      {
+       "nama": "pemegang",
+       "kepala": "Pemegang data"
+      },
+      {
+       "nama": "akibat",
+       "kepala": "Akibat pada angka"
+      }
+     ],
+     "keyakinan": "estimasi-model",
+     "sumber": "Analisis kajian ini"
+    }
+   },
+   "panel": {
+    "judul": "Pemakaian sekarang",
+    "ikon": "ringkasan",
+    "daftar": [
+     "Peringkat dipakai sebagai urutan pemeriksaan; volume kekurangan belum dipakai.",
+     "Tiap data yang diterima menaikkan label satu bagian model.",
+     "Model dan uji konservasi massanya bisa dijalankan ulang.",
+     "Industri hanya besar-sedang; mikro-kecil tidak termasuk.",
+     "Hanya Kedung Ombo dan Tarum Barat yang bersumber resmi.",
+     "Model dan uji konservasi massanya bisa dijalankan ulang begitu data baru diterima."
+    ],
+    "data": {
+     "csv": "data/neraca-air/waduk.csv",
+     "kolom": [
+      {
+       "nama": "nama",
+       "kepala": "Waduk atau transfer",
+       "ganti": {
+        "Saluran Tarum Barat (Citarum ke Jakarta)": "Saluran Tarum Barat",
+        "Jatiluhur (Ir. H. Djuanda)": "Jatiluhur",
+        "Gajah Mungkur (Wonogiri)": "Gajah Mungkur",
+        "Sutami (Karangkates)": "Sutami"
+       }
+      },
+      {
+       "nama": "keyakinan",
+       "kepala": "Label sumber"
+      }
+     ],
+     "keyakinan": "asumsi-kebijakan",
+     "sumber": "Tabel waduk kajian ini",
+     "batas": 5
+    }
+   },
+   "sumber": "Analisis kajian ini; BPS; tabel waduk kajian ini",
+   "pita": {
+    "label": "Permintaan data yang diusulkan",
+    "nada": "aksi",
+    "kolom": [
+     {
+      "ikon": "air-baku",
+      "judul": "Pos duga BBWS",
+      "isi": "Debit bulanan dua belas muara dan titik batas kab/kota."
+     },
+     {
+      "ikon": "bendungan",
+      "judul": "Operasi waduk",
+      "isi": "Tampungan efektif dan pelepasan bulanan enam waduk."
+     },
+     {
+      "ikon": "data",
+      "judul": "Air industri",
+      "isi": "Tenaga kerja atau pengambilan air per kab/kota Jatim dan DIY."
+     }
+    ]
+   }
+  },
+  {
+   "jenis": "rekomendasi",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Lima rekomendasi: dua pemakaian dan tiga permintaan data",
+   "cut_off": true,
+   "judul": "Rekomendasi {{sorot:100 hari}} dan peta jalan {{sorot:2026–2027}}: langkah, rincian, penanggung jawab",
+   "rekomendasi": [
+    {
+     "kode": "01",
+     "jenis": "kapasitas",
+     "langkah": "Pakai peringkat kemarau sebagai daftar periksa",
+     "waktu": "100-hari",
+     "status": "baru",
+     "rincian": "BPBD di kab/kota dengan neraca kemarau andalan negatif memeriksa sumber air darurat sebelum Juni 2027.",
+     "lembaga": [
+      "Dir. Kesiapsiagaan",
+      "Dir. PD Wilayah I–III",
+      "BPBD"
+     ]
+    },
+    {
+     "kode": "02",
+     "jenis": "data",
+     "langkah": "Minta debit pos duga dan neraca Pola PSDA",
+     "waktu": "100-hari",
+     "status": "baru",
+     "rincian": "Debit bulanan pos duga di dua belas muara dan batas kab/kota dipakai menguji aliran kemarau.",
+     "lembaga": [
+      "Pusdatinkom",
+      "Kementerian PU"
+     ]
+    },
+    {
+     "kode": "03",
+     "jenis": "kapasitas",
+     "langkah": "Masukkan skenario kering ke rencana kontinjensi",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Kab/kota yang negatif di semua skenario tahun kering memuat skenario iklim 2015 atau 2019.",
+     "lembaga": [
+      "Dir. Kesiapsiagaan",
+      "Dir. PERB",
+      "BMKG"
+     ]
+    },
+    {
+     "kode": "04",
+     "jenis": "data",
+     "langkah": "Minta tampungan dan pelepasan waduk besar",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Tampungan efektif dan pelepasan bulanan enam waduk besar tersedia dengan sumber resmi per baris.",
+     "lembaga": [
+      "Pusdatinkom",
+      "Kementerian PU"
+     ]
+    },
+    {
+     "kode": "05",
+     "jenis": "data",
+     "langkah": "Minta data air industri per kab/kota",
+     "waktu": "2026-2027",
+     "status": "baru",
+     "rincian": "Tenaga kerja atau pengambilan air industri DI Yogyakarta dan Jawa Timur tersedia untuk pembaruan.",
+     "lembaga": [
+      "Pusdatinkom",
+      "BPS",
+      "Kemenperin"
+     ]
+    }
+   ]
+  },
+  {
+   "jenis": "kesimpulan",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "pesan": "Delapan kesimpulan berangka dan keputusan yang diminta",
+   "cut_off": true,
+   "judul": "Kesimpulan: delapan temuan berangka tentang neraca air Jawa dan keputusan yang diminta",
+   "kartu": [
+    {
+     "label": "Pasokan",
+     "ikon": "air-baku",
+     "warna": "navy",
+     "judul": "Limpasan",
+     "isi": "{{angka:neraca.jawa.r_miliar|satuan}}, estimasi model."
+    },
+    {
+     "label": "Pasokan",
+     "ikon": "kalender",
+     "warna": "navy",
+     "judul": "Musim",
+     "isi": "{{angka:neraca.jawa.r_kemarau_persen_tahunan|persen}} limpasan jatuh pada Juni–Oktober."
+    },
+    {
+     "label": "Kebutuhan",
+     "ikon": "irigasi",
+     "warna": "navy",
+     "judul": "Irigasi",
+     "isi": "{{angka:neraca.jawa.irigasi_persen_total|persen}} kebutuhan kotor, dihitung potensial."
+    },
+    {
+     "label": "Neraca",
+     "ikon": "wilayah",
+     "warna": "navy",
+     "judul": "Tahunan",
+     "isi": "Negatif hanya di dua kota pantai kecil."
+    },
+    {
+     "label": "Kemarau",
+     "ikon": "kekeringan",
+     "warna": "oranye",
+     "judul": "Andalan",
+     "isi": "{{angka:neraca.hitung.n80_kemarau_neg}} kab/kota negatif, indikasi urutan."
+    },
+    {
+     "label": "Kemarau",
+     "ikon": "kekeringan",
+     "warna": "oranye",
+     "judul": "Iklim 1997",
+     "isi": "{{angka:neraca.skenario.1997.n_kab_neg}} kab/kota negatif; bias melebih-lebihkan."
+    },
+    {
+     "label": "Validasi",
+     "ikon": "data",
+     "warna": "navy",
+     "judul": "Kemarau",
+     "isi": "Median rasio {{angka:neraca.validasi.rasio_kemarau_median}} kali GloFAS, belum lolos."
+    },
+    {
+     "label": "Data",
+     "ikon": "data",
+     "warna": "navy",
+     "judul": "Industri",
+     "isi": "Kosong di {{angka:neraca.hitung.industri_kosong}} kab/kota Jatim, DIY, Kep. Seribu."
+    }
+   ],
+   "arahan": {
+    "label": "ARAHAN",
+    "ikon": "regulasi",
+    "teks": "Tetapkan peringkat neraca kemarau sebagai daftar periksa kemarau 2027 dan minta data pos duga serta operasi waduk dari Kementerian PU."
+   },
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; GloFAS; BPS; estimasi model"
+  },
+  {
+   "jenis": "penutup",
+   "foto": "gambar/foto/air-bengawan-solo-kering.jpg",
+   "kredit": "Foto: Bengawan Solo pada musim kemarau, Juli 2015; Crisco 1492, CC BY-SA 4.0, Wikimedia Commons"
+  }
+ ]
+}

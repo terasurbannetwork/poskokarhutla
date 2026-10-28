@@ -1,0 +1,225 @@
+{
+ "nama": "neraca-garis-bulanan",
+ "keterangan": "Limpasan lokal dan kebutuhan konsumtif bulanan Pulau Jawa, rerata 1991–2025 dan kebutuhan 2025 (juta m³)",
+ "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; estimasi model",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  224.5
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.92
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "Limpasan lokal",
+   "jenis": "label-ujung",
+   "warna": "#2F86D1"
+  },
+  {
+   "label": "Kebutuhan konsumtif",
+   "jenis": "label-ujung",
+   "warna": "#D9600B"
+  }
+ ],
+ "hex": {
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#6B7280": [
+   "teks"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ],
+  "#2F86D1": [
+   "seri",
+   "legenda"
+  ],
+  "#FFFFFF": [
+   "garis",
+   "latar"
+  ],
+  "#D9600B": [
+   "seri",
+   "legenda"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 23.07,
+   "y": 196.27,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "0"
+  },
+  {
+   "x": 3,
+   "y": 76.9,
+   "w": 24.57,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "20.000"
+  },
+  {
+   "x": 25.98,
+   "y": 214.5,
+   "w": 13.18,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jan"
+  },
+  {
+   "x": 54.99,
+   "y": 214.5,
+   "w": 13.15,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Feb"
+  },
+  {
+   "x": 83.54,
+   "y": 214.5,
+   "w": 14.04,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Mar"
+  },
+  {
+   "x": 113.35,
+   "y": 214.5,
+   "w": 12.41,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Apr"
+  },
+  {
+   "x": 141.97,
+   "y": 214.5,
+   "w": 13.16,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Mei"
+  },
+  {
+   "x": 170.93,
+   "y": 214.5,
+   "w": 13.24,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jun"
+  },
+  {
+   "x": 201.16,
+   "y": 214.5,
+   "w": 10.77,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Jul"
+  },
+  {
+   "x": 228.48,
+   "y": 214.5,
+   "w": 14.12,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Agu"
+  },
+  {
+   "x": 257.8,
+   "y": 214.5,
+   "w": 13.47,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Sep"
+  },
+  {
+   "x": 287.45,
+   "y": 214.5,
+   "w": 12.17,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Okt"
+  },
+  {
+   "x": 315.46,
+   "y": 214.5,
+   "w": 14.14,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Nov"
+  },
+  {
+   "x": 344.72,
+   "y": 214.5,
+   "w": 13.61,
+   "h": 8,
+   "jenis": "teks",
+   "teks": "Des"
+  },
+  {
+   "x": 363.92,
+   "y": 57.52,
+   "w": 53.82,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-Limpasan lokal",
+   "teks": "Limpasan lokal"
+  },
+  {
+   "x": 419.72,
+   "y": 57.27,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-Limpasan lokal",
+   "teks": "23.246"
+  },
+  {
+   "x": 363.92,
+   "y": 189.24,
+   "w": 76.24,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "ujung-Kebutuhan konsumtif",
+   "teks": "Kebutuhan konsumtif"
+  },
+  {
+   "x": 442.14,
+   "y": 188.99,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "grup": "ujung-Kebutuhan konsumtif",
+   "teks": "1.177"
+  },
+  {
+   "x": 32.57,
+   "y": 28.5,
+   "w": 26.85,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "26.792"
+  },
+  {
+   "x": 32.57,
+   "y": 199.64,
+   "w": 21.98,
+   "h": 8.5,
+   "jenis": "nilai",
+   "teks": "1.009"
+  }
+ ],
+ "jenis": "garis",
+ "alasan": "Dua seri dua belas bulan untuk membandingkan musim pasokan dan kebutuhan; batang kelompok tidak tersedia di perender",
+ "sumbu_y": false,
+ "pil": 0,
+ "n_periode": 12,
+ "acuan": 2,
+ "anotasi": 0,
+ "pita": false,
+ "label_ujung": true
+}

@@ -1,0 +1,358 @@
+{
+ "nama": "neraca-peta-rasio-kemarau",
+ "keterangan": "Kebutuhan konsumtif dibanding limpasan lokal Juni–Oktober per kab/kota di Pulau Jawa, rerata 1991–2025 dan kebutuhan 2025 (%)",
+ "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini; estimasi model (batas tetap, 100% = kebutuhan sama dengan limpasan lokal)",
+ "catatan": "Limpasan lokal tanpa aliran masuk dari hulu; irigasi = kebutuhan potensial dikurangi aliran balik.",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  203.31
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.17
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 25% (25)",
+   "jenis": "kotak",
+   "warna": "#F4ECDC"
+  },
+  {
+   "label": "25–50% (21)",
+   "jenis": "kotak",
+   "warna": "#DCC79C"
+  },
+  {
+   "label": "50–100% (26)",
+   "jenis": "kotak",
+   "warna": "#C4A262"
+  },
+  {
+   "label": "100–200% (31)",
+   "jenis": "kotak",
+   "warna": "#A07A32"
+  },
+  {
+   "label": "> 200% (16)",
+   "jenis": "kotak",
+   "warna": "#6E5424"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#6E5424": [
+   "skala",
+   "legenda"
+  ],
+  "#DCC79C": [
+   "skala",
+   "legenda"
+  ],
+  "#F4ECDC": [
+   "skala",
+   "legenda"
+  ],
+  "#A07A32": [
+   "skala",
+   "legenda"
+  ],
+  "#C4A262": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "skala-batang",
+   "teks",
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 358.74,
+   "y": 35.92,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "0"
+  },
+  {
+   "x": 422.93,
+   "y": 35.92,
+   "w": 26.52,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "200 km"
+  },
+  {
+   "x": 433.6,
+   "y": 6.92,
+   "w": 5.19,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "U"
+  },
+  {
+   "x": 56.72,
+   "y": 23.87,
+   "w": 49.26,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-31",
+   "teks": "DKI Jakarta"
+  },
+  {
+   "x": 202.45,
+   "y": 99.56,
+   "w": 57.47,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-34",
+   "teks": "DI Yogyakarta"
+  },
+  {
+   "x": 193.32,
+   "y": 72.94,
+   "w": 55.78,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-33",
+   "teks": "Jawa Tengah"
+  },
+  {
+   "x": 89.06,
+   "y": 58.76,
+   "w": 48.11,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-32",
+   "teks": "Jawa Barat"
+  },
+  {
+   "x": 35.11,
+   "y": 39.26,
+   "w": 33.01,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-36",
+   "teks": "Banten"
+  },
+  {
+   "x": 296.25,
+   "y": 96.28,
+   "w": 49.95,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-35",
+   "teks": "Jawa Timur"
+  },
+  {
+   "x": 24.56,
+   "y": 156.11,
+   "w": 213.61,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-24",
+   "teks": "Konsumtif / limpasan lokal Juni–Oktober (jumlah kab/kota)"
+  },
+  {
+   "x": 24.56,
+   "y": 155.11,
+   "w": 213.61,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-24",
+   "teks": "Konsumtif / limpasan lokal Juni–Oktober (jumlah kab/kota)"
+  },
+  {
+   "x": 262.17,
+   "y": 156.11,
+   "w": 37.37,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-248",
+   "teks": "≤ 25% (25)"
+  },
+  {
+   "x": 248.17,
+   "y": 155.11,
+   "w": 51.37,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-248",
+   "teks": "≤ 25% (25)"
+  },
+  {
+   "x": 323.55,
+   "y": 156.11,
+   "w": 45.56,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-309",
+   "teks": "25–50% (21)"
+  },
+  {
+   "x": 309.55,
+   "y": 155.11,
+   "w": 59.56,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-309",
+   "teks": "25–50% (21)"
+  },
+  {
+   "x": 393.1,
+   "y": 156.11,
+   "w": 50.05,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-379",
+   "teks": "50–100% (26)"
+  },
+  {
+   "x": 379.1,
+   "y": 155.11,
+   "w": 64.05,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-379",
+   "teks": "50–100% (26)"
+  },
+  {
+   "x": 180.6,
+   "y": 169.11,
+   "w": 54.54,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-166",
+   "teks": "100–200% (31)"
+  },
+  {
+   "x": 166.6,
+   "y": 168.11,
+   "w": 68.54,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-166",
+   "teks": "100–200% (31)"
+  },
+  {
+   "x": 259.14,
+   "y": 169.11,
+   "w": 41.98,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-245",
+   "teks": "> 200% (16)"
+  },
+  {
+   "x": 245.14,
+   "y": 168.11,
+   "w": 55.98,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-245",
+   "teks": "> 200% (16)"
+  },
+  {
+   "x": 3,
+   "y": 181.11,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 190.71,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "rasio",
+ "cakupan": "jawa",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "emas",
+  "batas": [
+   25,
+   50,
+   100,
+   200
+  ],
+  "label": [
+   "≤ 25%",
+   "25–50%",
+   "50–100%",
+   "100–200%",
+   "> 200%"
+  ],
+  "warna": [
+   "skala.emas.1",
+   "skala.emas.2",
+   "skala.emas.3",
+   "skala.emas.4",
+   "skala.emas.5"
+  ],
+  "rumus": "batas tetap, 100% = kebutuhan sama dengan limpasan lokal",
+  "resmi": false,
+  "jumlah": [
+   25,
+   21,
+   26,
+   31,
+   16
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": true,
+  "skala_pojok": "kanan atas",
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 6,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}
