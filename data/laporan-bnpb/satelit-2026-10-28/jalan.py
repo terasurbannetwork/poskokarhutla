@@ -9,9 +9,8 @@ semua angka dari berkas website tayang (unduh ulang tiap jalan, simpan di web/),
 Titik hari UTC 27 dan 28 Okt dibangun ulang dari hotspot.json hanya untuk menguji hotspot hitungan sendiri terhadap harian30.json."""
 import csv, datetime as dt, io, json, os, sys, urllib.error, urllib.request
 from collections import Counter
-G = '/Users/hhizari/WebProjects/poskokarhutla/data/laporan-bnpb/generator'; sys.path.insert(0, G); os.chdir(G)
+S = os.path.dirname(os.path.abspath(__file__)); G = os.path.normpath(os.path.join(S, '..', 'generator')); sys.path.insert(0, G); os.chdir(G)
 import satelit, penanganan
-S = os.path.dirname(os.path.abspath(__file__))
 D, JAM = dt.date(2026, 10, 28), '17:00'
 UTC_WEB = {'2026-10-27', '2026-10-28'}   # hari UTC yang tidak ada/belum lengkap di cache/raw (ditarik 27 Okt 08.34 WIB)
 
