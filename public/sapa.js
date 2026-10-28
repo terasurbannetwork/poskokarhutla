@@ -1,6 +1,6 @@
 /* sapa.js — pop-up "Situasi hari ini" saat halaman karhutla dibuka. Sekali per hari WIB per peramban (localStorage "pb_sapa"),
    muncul setelah spanduk persetujuan ditutup, dilewati bila halaman dibuka lewat tautan khusus (?… atau /k/…).
-   Skrip klasik, dimuat SETELAH skrip utama. Global: S, muatJSON, esc, fmt, namaProv, jamWIB, Laci, bukaTab, $.
+   Skrip klasik, dimuat SETELAH skrip utama. Global: S, muatJSON, esc, fmt, namaProv, jamWIB, tglLain, hariSebelum, Laci, bukaTab, $.
    Semua angka dari kluster.json (kompleks aktif), peringatan.json (BMKG), asap.json (CAMS), sama dengan tab lain. */
 (() => {
   const JAM = 36e5, ISPU_TS = 55.4, ISPU_PM10 = 150, {hariIni, sudah, ik, kartu} = SapaInti;
@@ -18,10 +18,15 @@
   const arahD = d => d ? `<small class="${d > 0 ? "naik" : "turun"}">${d > 0 ? "▲" : "▼"}${fmt(Math.abs(d))}</small>` : "";
   /* satu format baris kompleks (Bertahan paling lama, rincian provinsi, rincian gambut); kecN = kompleks menyala per kab|kec */
   let kecN = new Map();
-  const kepalaK = () => th("k sp-kl", ["#", "Kabupaten, kecamatan", "Provinsi", "Sejak", "Titik 7 hari", "Hari ini", "Cluster di kec.", "Menyala", "Gambut", "Lokasi"], [4, 5, 6], [2, 3, 4, 6, 8]);
+  /* Hotspot mundur (pemilik, 28 Okt 2026): bila S.hariKosong (index.html hitung(): belum ada satu titik terhitung bertanggal hari ini, rentang apa pun; pop-up selalu tentang hari ini), p.ini di kluster.json = 0 karena hari_akhir
+     pipeline belum punya titik, bukan "tidak ada api". mdr = {hari, jam, kemarin}; kemarin = hari terakhir berdata tepat sehari sebelum meta.hari_wib, satu-satunya hari yang
+     punya hitungan per cluster (p.kmrn, harian.py n_kmrn). Hari yang lebih lama tidak punya angka: sel "–", tanpa arah banding. Angka pipeline dibaca apa adanya. */
+  let mdr = null;
+  const nIni = p => !mdr ? p.ini || 0 : mdr.kemarin ? p.kmrn || 0 : 0;
+  const kepalaK = () => th("k sp-kl", ["#", "Kabupaten, kecamatan", "Provinsi", "Sejak", "Titik 7 hari", mdr ? tgl(mdr.hari) : "Hari ini", "Cluster di kec.", "Menyala", "Gambut", "Lokasi"], [4, 5, 6], [2, 3, 4, 6, 8]);
   /* baris = div berperan tombol, karena di dalamnya ada tautan Maps / WA / Lapor WA (aksiLokasi di index.html) */
   const baris = (p, i) => `<div class="sp-k sp-kl" role="button" tabindex="0" data-k="${esc(p.id)}"><i>${i + 1}</i><span class="sp-nm1" translate="no"><b>${esc(p.kab)}</b>${p.kec ? `<span> · ${esc(p.kec)}</span>` : ""}</span>
-    <em class="sp-p prov sp-mh">${esc(namaProv(p.prov))}</em><span class="sp-mh">${tgl(p.awal)}</span><b class="sp-ka sp-mh">${fmt(p.n)}</b><b class="sp-ka">${fmt(p.ini || 0)} ${arahD((p.ini || 0) - (p.kmrn || 0))}</b>
+    <em class="sp-p prov sp-mh">${esc(namaProv(p.prov))}</em><span class="sp-mh">${tgl(p.awal)}</span><b class="sp-ka sp-mh">${fmt(p.n)}</b><b class="sp-ka">${mdr ? (mdr.kemarin ? fmt(p.kmrn || 0) : "–") : `${fmt(p.ini || 0)} ${arahD((p.ini || 0) - (p.kmrn || 0))}`}</b>
     <b class="sp-ka sp-mh">${fmt(kecN.get(`${p.kab}|${p.kec}`) || 1)}</b><em class="sp-p merah">${fmt(p.hari)} hari</em>${p.gambut ? `<em class="sp-p gambut sp-mh">${ik("daun")}Gambut</em>` : `<em class="sp-mh"></em>`}${aksiLokasi(p.lat, p.lon, `Cluster ${p.id} · ${p.kec ? p.kec + ", " : ""}${p.kab}`, true)}</div>`;
   const tabelK = (xs, N = 8) => `<div class="sp-ks rata">${kepalaK()}${xs.slice(0, N).map(baris).join("")}</div>${xs.length > N ? `<p>Dan ${fmt(xs.length - N)} cluster lain, semuanya tampil di peta.</p>` : ""}`;
   /* rincian provinsi: kategori pil -> [warna, ikon, kalimat] */
@@ -30,10 +35,10 @@
   const pilPv = (o, kat, isi) => `<button class="sp-p ${KAT[kat][0]}" data-sppv="${esc(o.k)}" data-kat="${kat}" aria-expanded="false">${KAT[kat][1] ? ik(KAT[kat][1]) : ""}${isi}</button>`;
   const selPv = (o, kat) => o[kat].length ? pilPv(o, kat, fmt(o[kat].length)) : `<span class="sp-nol">–</span>`;
   const KLIK = "Klik baris untuk menutup pop-up, menuju cluster itu di peta, dan membuka rinciannya.";
-  const rinci = (o, kat) => `<p><b>${fmt(o[kat].length)}</b> ${KAT[kat][2]} di ${esc(namaProv(o.k))}. ${KLIK}</p>${tabelK(o[kat])}`;
+  const rinci = (o, kat) => `<p><b>${fmt(o[kat].length)}</b> ${kat === "api" && mdr ? `cluster dengan titik panas ${tglLain(mdr.hari)}` : KAT[kat][2]} di ${esc(namaProv(o.k))}. ${KLIK}</p>${tabelK(o[kat])}`;
   /* rincian kartu "Perlu perhatian" */
   const ISU = {
-    gambut: h => `<p><b>${fmt(h.gambut.length)}</b> cluster menyala di lahan gambut, urut titik panas hari ini. ${KLIK}</p>${tabelK(h.gambut)}`,
+    gambut: h => `<p><b>${fmt(h.gambut.length)}</b> cluster menyala di lahan gambut, urut ${mdr ? "jumlah titik" : "titik panas hari ini"}. ${KLIK}</p>${tabelK(h.gambut)}`,
     asap: h => { const m = new Map(); for (const [k, v] of h.asapKab) m.set(k, [v]); for (const [k, v] of h.pm10Kab) (m.get(k) || m.set(k, []).get(k))[1] = v;
       const xs = [...m].sort((a, b) => (b[1][0] || 0) - (a[1][0] || 0) || (b[1][1] || 0) - (a[1][1] || 0)), N = 10, ug = v => v ? `<b class="sp-ka">${fmt(v)}</b>` : `<span class="sp-ka sp-nol">–</span>`;
       return `<p><b>${fmt(xs.length)}</b> kabupaten dengan cluster menyala di bawah asap tidak sehat hari ini (ISPU: PM2.5 ≥ 55,4, PM10 ≥ 150 µg/m³), puncak harian sel 1° Copernicus CAMS.</p>
@@ -48,6 +53,7 @@
   async function siap() { for (let i = 0; i < 400 && !(S.meta && S.kluster); i++) await new Promise(r => setTimeout(r, 150)); return !!S.kluster; }
 
   function hitung(per, asap) {
+    const hm = S.hariKosong; mdr = hm ? {hari: hm.hari, jam: hm.jam, kemarin: hm.hari === hariSebelum(S.meta.hari_wib)} : null;
     const acuan = new Date(S.meta.data_terakhir || S.meta.dibuat).getTime();
     const aktif = S.kluster.features.map(f => f.properties).filter(p => p.awal);
     const nyala = aktif.filter(p => p.jam_sejak <= 24);
@@ -55,8 +61,8 @@
     /* pembanding: kompleks yang muncul 24-48 jam lalu (kluster.json memuat 7 hari, jadi tidak ada yang hilang) */
     const baruKmrn = aktif.filter(p => { const t = acuan - new Date(p.awal); return t > 24 * JAM && t <= 48 * JAM; });
     const lama = nyala.filter(p => p.hari > 2).sort((a, b) => b.hari - a.hari || b.n - a.n);
-    const ini = aktif.reduce((s, p) => s + (p.ini || 0), 0), kmrn = aktif.reduce((s, p) => s + (p.kmrn || 0), 0);
-    const gambut = nyala.filter(p => p.gambut).sort((a, b) => (b.ini || 0) - (a.ini || 0) || b.n - a.n);
+    const ini = aktif.reduce((s, p) => s + nIni(p), 0), kmrn = aktif.reduce((s, p) => s + (p.kmrn || 0), 0);
+    const gambut = nyala.filter(p => p.gambut).sort((a, b) => nIni(b) - nIni(a) || b.n - a.n);
     kecN = new Map(); for (const p of nyala) { const k = `${p.kab}|${p.kec}`; kecN.set(k, (kecN.get(k) || 0) + 1); }
     const bmkg = (per?.nowcast || []).filter(x => x.selesai && new Date(x.selesai) > Date.now() && R_API.test(x.event + " " + (x.headline || "")));
     /* asap: PM2.5 dan PM10 (kolom 2 dan 7) maks hari ini di sel 1° tempat kompleks menyala, dikelompokkan per kabupaten */
@@ -68,12 +74,12 @@
         if (p10 >= ISPU_PM10) pm10Kab.set(k, Math.max(pm10Kab.get(k) || 0, p10)); } }
     /* per provinsi: titik hari ini, kompleks baru 24 jam, bertahan > 2 hari, menyala di gambut */
     const prov = new Map(), q = k => prov.get(k) || prov.set(k, {k, ini: 0, kmrn: 0, api: [], baru: [], lama: [], gambut: []}).get(k);
-    for (const p of aktif) { const o = q(p.prov); o.ini += p.ini || 0; o.kmrn += p.kmrn || 0; if (p.ini) o.api.push(p); }
+    for (const p of aktif) { const o = q(p.prov); o.ini += nIni(p); o.kmrn += p.kmrn || 0; if (nIni(p)) o.api.push(p); }
     for (const p of baru) q(p.prov).baru.push(p);
     for (const p of lama) q(p.prov).lama.push(p);
     for (const p of gambut) q(p.prov).gambut.push(p);
     const provAwas = [...prov.values()].filter(o => o.ini > 0).sort((a, b) => b.ini - a.ini).slice(0, 5);
-    const urutIni = (a, b) => (b.ini || 0) - (a.ini || 0) || b.n - a.n;
+    const urutIni = (a, b) => nIni(b) - nIni(a) || b.n - a.n;
     for (const o of provAwas) { o.api.sort(urutIni); o.baru.sort(urutIni); o.gambut.sort(urutIni); }
     /* asap per provinsi (muatAsap/asapDi di index.html, PM2,5 24 jam CAMS, hanya asap api): provinsi tanpa titik panas
        tapi udaranya tidak sehat ikut masuk tabel, karena asap tetap berbahaya walau apinya di provinsi lain */
@@ -88,12 +94,18 @@
   function html(h) {
     const naik = h.ini - h.kmrn, pct = h.kmrn ? ` (${fmt(Math.round(Math.abs(naik) / h.kmrn * 100))}%)` : "";
     const arah = naik > 0 ? `<b class="naik">${ik("naik")}${fmt(naik)}${pct}</b> dari kemarin` : naik < 0 ? `<b class="turun">${ik("turun")}${fmt(-naik)}${pct}</b> dari kemarin` : "sama dengan kemarin";
+    /* Hotspot mundur (pemilik, 28 Okt 2026): judul tidak menyiratkan 0 titik hari ini atau penurunan, tanpa panah banding. Angka kemarin (h.kmrn) hanya bila hari mundur =
+       hari sebelum meta.hari_wib; hari yang lebih lama tidak punya angka */
+    const jamM = mdr && new Date(mdr.jam).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit"});
+    const judul = !mdr ? `<b>${fmt(h.ini)}</b> titik panas terdeteksi, ${arah}`
+      : mdr.kemarin ? `Belum ada data titik panas NASA FIRMS untuk hari ini. Data terakhir ${tglLain(mdr.hari)}: <b>${fmt(h.kmrn)}</b> titik panas terdeteksi`
+      : `Belum ada data titik panas NASA FIRMS sejak ${tglLain(mdr.hari)} ${jamM} WIB`;
     /* sel asap provinsi: pil status (warna skala P.14/2020) + PM2,5 rata-rata 24 jam kab/kota terburuk */
     const NM = ["Baik", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
     const selAsap = o => { const a = o.as; if (!a) return `<span class="sp-nol">–</span>`;
       return `<em class="sp-p as${a.lv}" title="PM2,5 rata-rata 24 jam tertinggi di ${esc(a.nama)}${a.n ? `; ${fmt(a.n)} kab/kota tidak sehat, ${fmt(a.jiwa)} jiwa` : ""}">${ik("asap")}${NM[a.lv]} · ${fmt(a.r24[h.A.hi])}</em>`; };
-    const barisPv = o => { const d = o.ini - o.kmrn;
-      return `<div class="sp-pr"><button class="sp-pn" data-sppv="${esc(o.k)}" data-kat="api">${esc(namaProv(o.k))}</button>${o.ini ? pilPv(o, "api", `${fmt(o.ini)}${d ? ` · ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}`) : `<span class="sp-nol">0 titik</span>`}${selPv(o, "baru")}${selPv(o, "lama")}${selPv(o, "gambut")}${h.A ? selAsap(o) : ""}</div><div class="sp-pd" hidden></div>`; };
+    const barisPv = o => { const d = mdr ? 0 : o.ini - o.kmrn;
+      return `<div class="sp-pr"><button class="sp-pn" data-sppv="${esc(o.k)}" data-kat="api">${esc(namaProv(o.k))}</button>${o.ini ? pilPv(o, "api", `${fmt(o.ini)}${d ? ` · ${d > 0 ? "▲" : "▼"} ${fmt(Math.abs(d))}` : ""}`) : `<span class="sp-nol">${mdr && !mdr.kemarin ? "–" : "0 titik"}</span>`}${selPv(o, "baru")}${selPv(o, "lama")}${selPv(o, "gambut")}${h.A ? selAsap(o) : ""}</div><div class="sp-pd" hidden></div>`; };
     const jiwaAsap = h.kabAsapN.reduce((s, x) => s + (x.jiwa || 0), 0);
     const sek = (judul, isi) => `<section class="sp-sek"><h4>${judul}</h4>${isi}</section>`;
     const kab = topKab(h.baru, 5), maks = kab[0]?.n || 1, kmrnKab = new Map();
@@ -107,12 +119,12 @@
         p10 && `PM10 hingga <b>${fmt(p10)} µg/m³</b> di ${fmt(h.pm10Kab.length)} kabupaten, antara lain ${kabAsap(h.pm10Kab)}`].filter(Boolean).join("<br>"))),
       ...h.bmkg.slice(0, 2).map((x, i) => kartuIsu(`bmkg${i}`, kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event))))].filter(Boolean).join("");
     return `<div class="sp-hd"><div style="flex:1;min-width:0"><span class="sp-eyh">${ik("api")}Situasi karhutla hari ini</span>
-        <h3 id="spJudul"><b>${fmt(h.ini)}</b> titik panas terdeteksi, ${arah}</h3>
+        <h3 id="spJudul">${judul}</h3>
         <div class="sp-chips"><span class="sp-p putih">${ik("api")}${fmt(h.nyala.length)} cluster menyala</span><span class="sp-p putih">${ik("api")}${fmt(h.baru.length)} cluster baru, 24 jam</span><span class="sp-p putih">${ik("jam")}${fmt(h.lama.length)} bertahan &gt; 2 hari</span><span class="sp-p putih">${ik("daun")}${fmt(h.gambut.length)} di gambut</span>${h.A ? `<span class="sp-p putih" title="Kab/kota dengan PM2,5 rata-rata 24 jam di atas 55,4 µg/m³ yang asapnya dari kebakaran">${ik("asap")}${fmt(h.kabAsapN.length)} kab/kota asap tidak sehat${jiwaAsap ? `, ${fmt(jiwaAsap)} jiwa` : ""}</span>` : ""}</div>
 </div>
         <button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
       <div class="sp-isi">
-      ${h.provAwas.length || h.provAsap.length ? sek("Provinsi perlu perhatian", `<div class="sp-pt sp-panel${h.A ? " as" : ""}">${th("p", ["Provinsi", "Titik panas (vs kemarin)", "Cluster baru 24 jam", "Bertahan &gt; 2 hari", "Di gambut", ...(h.A ? ["Asap (PM2,5 24 jam)"] : [])])}${h.provAwas.map(barisPv).join("")}${h.provAsap.length ? `<p class="sp-ct">Di luar lima besar titik panas, tapi udaranya tidak sehat karena asap kebakaran:</p>${h.provAsap.map(barisPv).join("")}` : ""}</div>`) : ""}
+      ${h.provAwas.length || h.provAsap.length ? sek("Provinsi perlu perhatian", `<div class="sp-pt sp-panel${h.A ? " as" : ""}">${th("p", ["Provinsi", mdr ? `Titik panas ${tglLain(mdr.hari)}` : "Titik panas (vs kemarin)", "Cluster baru 24 jam", "Bertahan &gt; 2 hari", "Di gambut", ...(h.A ? ["Asap (PM2,5 24 jam)"] : [])])}${h.provAwas.map(barisPv).join("")}${h.provAsap.length ? `<p class="sp-ct">Di luar lima besar titik panas, tapi udaranya tidak sehat karena asap kebakaran:</p>${h.provAsap.map(barisPv).join("")}` : ""}</div>`) : ""}
       ${kab.length ? sek("Cluster baru terbanyak", `<div class="sp-bs sp-panel rata">${th("b", ["Kabupaten", "Provinsi", "", "Kemarin", "Hari ini"], [3, 4])}${bar}</div>`) : ""}
       ${h.lama.length ? sek("Bertahan paling lama", `<div class="sp-ks sp-panel rata">${kepalaK()}${h.lama.slice(0, 4).map(baris).join("")}</div>`) : ""}
       ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel rata">${th("c", ["Isu", "Rincian"])}${awas}</div>`) : ""}

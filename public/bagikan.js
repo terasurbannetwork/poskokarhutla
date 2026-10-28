@@ -329,7 +329,7 @@ const Bagikan = {
   teksPendek() {
     if (this.T) return `${this.T.teksWil("")} ${this.en() ? "Follow" : "Pantau"} ${this.K.nama}:`;
     const d = this.data("");
-    return this.hal === "banjir" ? `${d.kpi[0].v} kecamatan berstatus banjir hari ini (${d.kpi[0].ket}). Pantau ${this.K.nama}:` : `${d.kpi[0].v} titik panas dan ${d.kpi[2].v} cluster prioritas pemadaman hari ini. Pantau ${this.K.nama}:`;
+    return this.hal === "banjir" ? `${d.kpi[0].v} kecamatan berstatus banjir hari ini (${d.kpi[0].ket}). Pantau ${this.K.nama}:` : (m => m ? `${d.kpi[0].v} titik panas pada data terakhir (${m.pdk}) dan ${d.kpi[2].v} cluster prioritas pemadaman. Pantau ${this.K.nama}:` : `${d.kpi[0].v} titik panas dan ${d.kpi[2].v} cluster prioritas pemadaman hari ini. Pantau ${this.K.nama}:`)(this.hariIni().mdr);
   },
 
   /* ---------------------------------------------------------------- bagikan sekali ketuk (bagi.js)
@@ -363,8 +363,9 @@ const Bagikan = {
       return E ? `${nm}: ${d.kpi[0].v} sub-districts on flood alert, 3-day rain up to ${d.kpi[1].v} (${tg}).` : `${nm}: ${d.kpi[0].v} kecamatan berstatus banjir, hujan 3 hari hingga ${d.kpi[1].v} (${tg}).`; }
     const kl = k ? klusterDi(k) : S.kluster.features, n3 = kl.filter(f => f.properties.level === 3).length, h = this.hariIni(), R = this.ringkasanD();
     const jw = R ? (k ? R.P?.[k]?.jiwa : R.kpi?.jiwaNas) : 0;
-    const dua = jw ? (E ? `${this.jiwa(jw)} people exposed to smoke` : `${this.jiwa(jw)} jiwa terpapar asap`) : (E ? `${this.n(k ? h.per[k] : h.tot)} hotspots today` : `${this.n(k ? h.per[k] : h.tot)} titik panas hari ini`);
-    return E ? `${nm}: ${this.n(n3)} priority fire complexes, ${dua} (${tg}).` : `${nm}: ${this.n(n3)} cluster prioritas, ${dua} (${tg}).`;
+    const mdr = !jw && h.mdr, n = this.n(k ? h.per[k] : h.tot);   /* mundur: titik panas bertanggal data terakhir, tanpa tanggal laporan di ujung */
+    const dua = jw ? (E ? `${this.jiwa(jw)} people exposed to smoke` : `${this.jiwa(jw)} jiwa terpapar asap`) : mdr ? (E ? `${n} hotspots in the latest data (${mdr.pdk})` : `${n} titik panas pada data terakhir (${mdr.pdk})`) : (E ? `${n} hotspots today` : `${n} titik panas hari ini`), ujung = mdr ? "" : ` (${tg})`;
+    return E ? `${nm}: ${this.n(n3)} priority fire complexes, ${dua}${ujung}.` : `${nm}: ${this.n(n3)} cluster prioritas, ${dua}${ujung}.`;
   },
   konteks(jenis, a) {
     const E = this.en(), tg = this.tglPendek(), o = location.origin, L = E ? "Live map:" : "Pantau langsung:";
@@ -422,27 +423,33 @@ const Bagikan = {
   /* titik panas hari kalender WIB per provinsi & kab (sensor utama, keyakinan sedang dan tinggi; sama dengan KPI peta saat rentang "Hari ini") */
   hariIni() {
     if (this._hari) return this._hari;
-    const per = {}, kab = {}; let tot = 0, tinggi = 0;
-    for (const b of S.titik || []) { if (b[7] !== S.hariIni || !S.dihitung?.(b)) continue; const w = S.wilKunci[b[6]]; if (!w) continue;
+    /* Hotspot mundur (pemilik, 28 Okt 2026): selama S.hariKosong (index.html hitung(): belum ada satu titik terhitung bertanggal hari ini, rentang apa pun; gambar selalu tentang hari ini) yang dihitung hari terakhir berdata,
+       bukan hari ini yang kosong; mdr = teks bertanggalnya (tgl "Sel 27 Okt", pdk "27 Okt", jam "19.21"). Tanpa mundur tetap selalu hari ini, tak ikut pilihan Kemarin */
+    const m = S.hariKosong, kunci = m ? m.hari.slice(5) : S.hariIni, per = {}, kab = {}; let tot = 0, tinggi = 0;
+    for (const b of S.titik || []) { if (b[7] !== kunci || !S.dihitung?.(b)) continue; const w = S.wilKunci[b[6]]; if (!w) continue;
       per[w[0]] = (per[w[0]] || 0) + 1; kab[w[1]] = (kab[w[1]] || 0) + 1; tot++; if (b[5] === 2) tinggi++; }
-    return this._hari = {per, kab, tot, tinggi};
+    const loc = this.en() ? "en-GB" : "id-ID", z = {timeZone: "Asia/Jakarta"}, d = m && new Date(m.hari + "T12:00:00+07:00"),
+      mdr = m && {tgl: d.toLocaleDateString(loc, {...z, weekday: "short", day: "numeric", month: "short"}).replace(",", ""), pdk: d.toLocaleDateString(loc, {...z, day: "numeric", month: "short"}),
+        jam: new Date(m.jam).toLocaleTimeString(loc, {...z, hour: "2-digit", minute: "2-digit"})};
+    return this._hari = {per, kab, tot, tinggi, kunci, mdr};
   },
   polos(html) { return new DOMParser().parseFromString(String(html), "text/html").body.textContent.replace(/\s+/g, " ").trim(); },
   data(k) { return this._d?.[k || "-"] || ((this._d ||= {})[k || "-"] = this.T ? this.T.data(k) : this.hal === "banjir" ? this.dataBanjir(k) : this.dataApi(k)); },
   dataApi(k) {
     const h = this.hariIni(), kl = k ? klusterDi(k) : S.kluster.features, lvN = [0, 1, 2, 3].map(l => kl.filter(f => f.properties.level === l).length);
     const fw = k ? S.wilayah[k]?.fwi_maks : Math.max(0, ...Object.keys(S.meta.provinsi).map(p => S.wilayah[p]?.fwi_maks || 0)), kf = fw == null ? 0 : kelasFWI(fw);
-    const n = k ? h.per[k] || 0 : h.tot, lv = Math.max(0, ...kl.map(f => f.properties.level));
+    const n = k ? h.per[k] || 0 : h.tot, lv = Math.max(0, ...kl.map(f => f.properties.level)), mdr = h.mdr;
     const kpi = [
-      {l: "Titik panas hari ini", s: "Titik panas", v: fmt(n), ket: k ? "hari ini (WIB)" : `hari ini (WIB) · ${fmt(h.tinggi)} keyakinan tinggi`, ks: "hari ini (WIB)", w: this.LV[3], ik: "api"},
+      mdr ? {l: `Titik panas ${mdr.tgl}`, s: `Titik ${mdr.pdk}`, v: fmt(n), ket: `data terakhir s.d. ${mdr.jam} WIB${k ? "" : ` · ${fmt(h.tinggi)} keyakinan tinggi`}`, ks: `s.d. ${mdr.jam} WIB`, w: this.LV[3], ik: "api"}
+      : {l: "Titik panas hari ini", s: "Titik panas", v: fmt(n), ket: k ? "hari ini (WIB)" : `hari ini (WIB) · ${fmt(h.tinggi)} keyakinan tinggi`, ks: "hari ini (WIB)", w: this.LV[3], ik: "api"},
       {l: "Cluster aktif", s: "Cluster", v: fmt(kl.length), ket: "aktif 72 jam terakhir", ks: "aktif 72 jam", w: this.LV[2], ik: "lapis"},
       {l: "Prioritas pemadaman", s: "Prioritas", v: fmt(lvN[3]), ket: `${fmt(lvN[2])} lain siaga pemadaman`, ks: `+${fmt(lvN[2])} siaga`, w: this.LV[3], ik: "awas"},
       {l: "FWI maksimum", s: "FWI maks", v: fmt(fw), ket: fw == null ? "–" : "bahaya cuaca " + FWI_KELAS[kf][0].toLowerCase(), ks: fw == null ? "–" : FWI_KELAS[kf][0].toLowerCase(), w: this.LV[kf], ik: "cuaca"},
     ];
     let rows, jb, jp;
-    if (!k) { rows = Object.entries(h.per).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([p, v]) => ({n: namaProv(p), k: p, v, t: fmt(v), w: this.LV[S.wilayah[p]?.level ?? 0]})); jb = "Titik panas terbanyak hari ini"; jp = "Titik panas hari ini"; }
+    if (!k) { rows = Object.entries(h.per).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([p, v]) => ({n: namaProv(p), k: p, v, t: fmt(v), w: this.LV[S.wilayah[p]?.level ?? 0]})); jb = mdr ? `Titik panas terbanyak ${mdr.tgl}` : "Titik panas terbanyak hari ini"; jp = mdr ? `Titik panas ${mdr.tgl}` : "Titik panas hari ini"; }
     else {
-      rows = Object.entries(h.kab).filter(([x]) => x.startsWith(k + "|")).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([x, v]) => ({n: x.split("|")[1], v, t: fmt(v), w: this.LV[3]})); jb = "Kabupaten/kota dengan titik panas terbanyak hari ini"; jp = "Titik panas per kabupaten";
+      rows = Object.entries(h.kab).filter(([x]) => x.startsWith(k + "|")).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([x, v]) => ({n: x.split("|")[1], v, t: fmt(v), w: this.LV[3]})); jb = mdr ? `Kabupaten/kota dengan titik panas terbanyak ${mdr.tgl}` : "Kabupaten/kota dengan titik panas terbanyak hari ini"; jp = "Titik panas per kabupaten";
       if (!rows.length) { const c = {}; kl.forEach(f => c[f.properties.kab] = (c[f.properties.kab] || 0) + 1);
         rows = Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([x, v]) => ({n: x, v, t: fmt(v), w: this.LV[2]})); jb = "Kabupaten/kota dengan cluster terbanyak"; jp = "Cluster per kabupaten"; }
     }
@@ -943,7 +950,7 @@ const Bagikan = {
     if (this.T) isi = this.T.keterangan?.(d, tg) || `${d.judul}, ${tg}. ${d.sub}.`;
     else if (this.hal === "banjir") isi = `${d.tpl === "provinsi" ? d.judul : "Situasi banjir, longsor, dan rob"}, ${tg}: ${K[0]} kecamatan berstatus banjir (${d.kpi[0].ket}). Hujan 3 hari terlebat ${K[1]}, ${K[2]} titik sungai di atas ambang banjir 2 tahunan, ${K[3]} titik pantai berstatus rob.`;
     else isi = d.tpl === "kompleks" ? `${d.label} di ${d.judul}: ${d.sub}.`
-      : `${d.tpl === "provinsi" ? d.judul : "Indonesia"}, ${tg}. Satelit mendeteksi ${K[0]} titik panas hari ini. Dari ${K[1]} cluster yang aktif, ${K[2]} perlu diprioritaskan untuk dipadamkan. Bahaya cuaca kebakaran (FWI) mencapai ${K[3]}, kategori ${d.kpi[3].ket.replace(/^bahaya cuaca /, "")}.`;
+      : `${d.tpl === "provinsi" ? d.judul : "Indonesia"}, ${tg}. ${(m => m ? `Belum ada data titik panas NASA FIRMS untuk hari ini. Data terakhir ${m.tgl} s.d. ${m.jam} WIB: satelit mendeteksi ${K[0]} titik panas.` : `Satelit mendeteksi ${K[0]} titik panas hari ini.`)(this.hariIni().mdr)} Dari ${K[1]} cluster yang aktif, ${K[2]} perlu diprioritaskan untuk dipadamkan. Bahaya cuaca kebakaran (FWI) mencapai ${K[3]}, kategori ${d.kpi[3].ket.replace(/^bahaya cuaca /, "")}.`;
     const rek = d.tpl === "provinsi" && d.rek[0] ? `\n\nLangkah utama: ${d.rek[0].t}.` : "";
     return `${isi}${top ? `\n\nPaling banyak di ${top}.` : ""}${rek}\n\nPeta dan data lengkapnya: https://${this.situs()}\n\n${tagar}`;
   },
@@ -996,7 +1003,7 @@ const Bagikan = {
     }
     const h = this.hariIni(), R = Object.keys(S.meta.provinsi).map(k => { const kl = klusterDi(k); return {k, n: h.per[k] || 0, kl: kl.length, p: kl.filter(f => f.properties.level === 3).length, s: kl.filter(f => f.properties.level === 2).length, w: S.wilayah[k] || {}}; })
       .sort((a, b) => b.n - a.n || b.kl - a.kl);
-    return {kepala: ["Provinsi", "Status", "Titik hari ini", "Cluster aktif", "Prioritas", "Siaga", "FWI maks"], angka: [2, 3, 4, 5, 6],
+    return {kepala: ["Provinsi", "Status", h.mdr ? `Titik ${h.mdr.pdk}` : "Titik hari ini", "Cluster aktif", "Prioritas", "Siaga", "FWI maks"], angka: [2, 3, 4, 5, 6],
       baris: R.map(r => [namaProv(r.k), S.meta.status[r.w.level ?? 0], r.n, r.kl, r.p, r.s, r.w.fwi_maks ?? null]), aktif: R.filter(r => r.n || r.kl).length};
   },
   /* kompleks prioritas (karhutla) / kecamatan siaga-awas (banjir) */
@@ -1075,8 +1082,8 @@ const Bagikan = {
     } else {
       const h = this.hariIni(), hr = Object.keys(S.wilayah[Object.keys(S.wilayah)[0]]?.harian || {}).sort(), pk = new Map(), ang = new Map();
       for (const x of S.posko || []) { pk.set(x.prov, (pk.get(x.prov) || 0) + 1); ang.set(x.prov, (ang.get(x.prov) || 0) + anggaran(S.semuaPosko.get(x.id)).total); }
-      const tg = {}; for (const b of S.titik) if (b[7] === S.hariIni && S.dihitung(b) && b[5] === 2) { const p = S.wilKunci[b[6]]?.[0]; tg[p] = (tg[p] || 0) + 1; }
-      tambah("Provinsi", ["Kode", "Provinsi", "Status", "Titik panas hari ini (WIB)", "Keyakinan tinggi hari ini", ...hr.map(t => "Titik " + t), "Cluster aktif", "Prioritas pemadaman", "Siaga pemadaman", "Patroli terpadu", "FWI maks", "FWI rata-rata", "DC maks", "FFMC maks", "Posko lapangan", "Anggaran posko (Rp)", "Pantauan harian BNPB"],
+      const tg = {}; for (const b of S.titik) if (b[7] === h.kunci && S.dihitung(b) && b[5] === 2) { const p = S.wilKunci[b[6]]?.[0]; tg[p] = (tg[p] || 0) + 1; }
+      tambah("Provinsi", ["Kode", "Provinsi", "Status", h.mdr ? `Titik panas ${h.mdr.tgl}` : "Titik panas hari ini (WIB)", h.mdr ? `Keyakinan tinggi ${h.mdr.tgl}` : "Keyakinan tinggi hari ini", ...hr.map(t => "Titik " + t), "Cluster aktif", "Prioritas pemadaman", "Siaga pemadaman", "Patroli terpadu", "FWI maks", "FWI rata-rata", "DC maks", "FFMC maks", "Posko lapangan", "Anggaran posko (Rp)", "Pantauan harian BNPB"],
         Object.keys(S.meta.provinsi).map(k => { const w = S.wilayah[k] || {}, kl = klusterDi(k), n = l => kl.filter(f => f.properties.level === l).length;
           return [k, namaProv(k), S.meta.status[w.level ?? 0], h.per[k] || 0, tg[k] || 0, ...hr.map(t => w.harian?.[t] ?? 0), kl.length, n(3), n(2), n(1), w.fwi_maks ?? null, w.fwi_rata ?? null, w.dc_maks ?? null, w.ffmc_maks ?? null, pk.get(k) || 0, Math.round(ang.get(k) || 0), S.meta.bnpb?.[k] ? "ya" : "tidak"]; })
           .sort((a, b) => b[3] - a[3] || b[5 + hr.length] - a[5 + hr.length]));
