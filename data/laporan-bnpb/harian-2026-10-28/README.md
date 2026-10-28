@@ -7,5 +7,6 @@
 - Provinsi Prioritas di tabel itu wajib masuk (Papua Selatan, Sumsel, Sultra). Provinsi dengan belum padam >= 50 ha juga
   masuk walau tidak di WA (Kaltim 461, Sulsel 95, Sulteng 64, Kalsel 62 ha). Selesai: Riau, Jambi (belum padam 0; WA Jambi
   sisa 58 ha, website menang), Bangka Selatan, Lampung Selatan, Kuningan, Toraja Utara.
+- Perlu perhatian = Prioritas atau sisa >= 100 ha (Kaltim ikut). Kartu laporan = 26 WA + 7 tambahan website = 33.
 - FIRMS: cache/raw diisi dari FIRMS publik 7 hari (SouthEast_Asia_7d), dipecah per hari UTC.
 - Bangun ulang: `PLAYWRIGHT_MJS=... python3 jalan.py`, lalu ekspor PDF lewat PowerPoint.

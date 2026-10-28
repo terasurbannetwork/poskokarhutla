@@ -363,9 +363,7 @@ class Deck:
                 pe = s.pecah(isi); ikp = 'api_merah' if pe and pe[1] == 'ha' else ('orang' if pe and pe[1] == 'KK' else 'rumah') + ('_k' if j == 'kekeringan' else '_slate')
                 if pe and pe[1] == 'ha': pe = (f'± {pe[0]}', 'ha')
                 o += s.kotak(10470000, y, 1070000, q, tint, 'roundRect', adj=50000) + s.gambar(10520000, y + q * .16, q * .68, q * .68, ikp)
-                if pe and pe[1] == 'ha':   # 28 Okt: TPA sejajar dengan pil karhutla di atasnya (label di posisi "sisa", angka dan ha di kolom yang sama)
-                    o += s.tx(10650000, y, 260000, q, ['luas'], sz=720, b=True, c=tc, an='ctr', wrap='none') + s.au(XE, y, q, *pe, 720, c=tc, wn=380000, wu=200000)
-                else: o += s.au(XE, y, q, *pe, 720, c=tc, wn=500000, wu=300000) if pe else s.tx(10545775, y, 932688, q, [isi], sz=620, b=True, c=tc, al='ctr', an='ctr', wrap='none')
+                o += s.au(XE, y, q, *pe, 720, c=tc, wn=500000, wu=300000) if pe else s.tx(10545775, y, 932688, q, [isi], sz=620, b=True, c=tc, al='ctr', an='ctr', wrap='none')
         o += s.kotak(548640, 5468112, 11094415, 822960, 'FDF4EC', 'roundRect', adj=8889) + s.tx(694944, 5541264, 3657600, 182880, ['YANG AKAN DILAKUKAN BNPB'], sz=750, b=True, c=ORG, spc=100)
         for i, (ik, jd, isi) in enumerate(s.tindak()):
             x = 694944 + i * 3600602

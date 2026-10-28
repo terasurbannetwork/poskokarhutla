@@ -9,7 +9,7 @@
    "status": "berjalan",
    "angka": {},
    "tangani": true,
-   "perhatian": false,
+   "perhatian": true,
    "sat": {
     "kum": 125188,
     "sisa": 461,

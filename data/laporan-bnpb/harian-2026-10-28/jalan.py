@@ -101,12 +101,13 @@ for x in D['kejadian']:
     x['sat']['hot'] = sum(W_(kk)[4] or 0 for kk in ks) if ks else W_(x['prov'] + (f"|{x['lokasi']}" if x['lokasi'] else ''))[4] or 0
     if not x['lokasi']:
         lv = W_(x['prov'])[2]
-        x['tangani'] = round(x['sat']['sisa']) > 0 or lv == 3; x['perhatian'] = x['tangani'] and (x['perhatian'] or lv == 3)
+        x['tangani'] = round(x['sat']['sisa']) > 0 or lv == 3; x['perhatian'] = x['tangani'] and (x['perhatian'] or lv == 3 or round(x['sat']['sisa']) >= 100)   # 28 Okt: Prioritas atau sisa >= 100 ha (aturan 23 Okt)
         x['status'] = 'berjalan'
         print('website', H_SISA, harian.NAMA[x['prov']], ['Aman', 'Patroli', 'Siaga', 'Prioritas'][max(lv, 0)], round(x['sat']['sisa']), 'ha', x['sat']['hot'], 'FS ->', 'ditangani' if x['tangani'] else 'selesai', 'PERHATIAN' if x['perhatian'] else '')
 # urutan tabel: baris provinsi sisa terbesar di atas, lalu kawasan/kabupaten, lalu jenis lain
 kh = [x for x in D['kejadian'] if x['jenis'] == 'karhutla']
 D['kejadian'] = sorted((x for x in kh if not x['lokasi']), key=lambda x: -x['sat']['sisa']) + [x for x in kh if x['lokasi']] + [x for x in D['kejadian'] if x['jenis'] != 'karhutla']
+wa['laporan'] += len(D.get('prioritas_baru', []))   # 28 Okt: kejadian tambahan dari website ikut dihitung sebagai laporan (26 WA + 7 = 33 >= 27 menonjol)
 json.dump(D, open(os.path.join(ke, 'data.json'), 'w'), ensure_ascii=False, indent=1)
 import shutil, zipfile
 tpl = os.path.join(G, 'cache', 'templat', 'harian-221026.pptx')
