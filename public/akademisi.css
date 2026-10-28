@@ -155,6 +155,19 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-gr-dasar{stroke:var(--line)}
 .ak-gr-nilai{font:700 11px var(--font,system-ui);text-anchor:middle;font-variant-numeric:tabular-nums}
 .ak-gr-tahun{font:500 10.5px var(--font,system-ui);fill:var(--ink2);text-anchor:middle}
+.ak-tabel{width:100%;border-collapse:separate;border-spacing:0;font-size:13.5px;font-variant-numeric:tabular-nums;border:1px solid var(--line);border-radius:14px;overflow:hidden}
+.ak-tabel th,.ak-tabel td{padding:9px 14px;text-align:right;border-bottom:1px solid var(--line)}
+.ak-tabel th:first-child,.ak-tabel td:first-child{text-align:left;color:var(--ink2)}
+.ak-tabel tbody tr:last-child td{border-bottom:0}
+.ak-tabel td{font-weight:700;color:var(--ink)}
+.ak-tabel thead th{background:var(--surface);font-weight:700}
+.ak-tabel em{font-style:normal;font-size:11.5px;font-weight:700;border-radius:999px;padding:2px 10px}
+.ak-tabel .sc{color:#fff;background:#e8590c}
+.ak-tabel .gs{color:#fff;background:#2f9e44}
+.ak-skor{font-size:13px;color:var(--ink2)}
+.ak-skor b{color:var(--f2);font-family:var(--display);font-weight:800}
+.ak-klabel .q{color:#fff;font-weight:800}
+.ak-klabel .q1{background:#2f9e44}.ak-klabel .q2{background:#1c7ed6}.ak-klabel .q3{background:#e8590c}.ak-klabel .q4{background:#868e96}
 .ak-karya{margin:0;padding:0;list-style:none;display:grid;border:1px solid var(--line);border-radius:14px;overflow:hidden}
 .ak-karya li + li{border-top:1px solid var(--line)}
 .ak-karya a{display:grid;gap:8px;padding:12px 14px;color:var(--ink);text-decoration:none}

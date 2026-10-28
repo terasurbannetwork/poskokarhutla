@@ -15,7 +15,7 @@ const luar = async req => {
 };
 before(async () => {
   mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
-    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-akademisi"}, bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", OPENALEX_KEY: "kunci-uji"},
+    compatibilityDate: "2024-09-23", d1Databases: {DB: "uji-akademisi"}, r2Buckets: ["MEDIA"], bindings: {IP_SALT: "garam-uji", ADMIN_TOKEN: "rahasia-admin", OPENALEX_KEY: "kunci-uji"},
     serviceBindings: {ASSETS: () => new Response("tidak ada", {status: 404})}, outboundService: luar, cache: false});
   const DB = await mf.getD1Database("DB"); await DB.batch(pecah(migrasi()).map(s => DB.prepare(s)));
 });
@@ -64,4 +64,14 @@ test("id bukan id penulis OpenAlex tidak mencapai rute", async () => {
   minta = [];
   assert.notEqual((await api("/api/akademisi/karya/W123456", ADMIN)).status, 200);
   assert.equal(minta.length, 0);
+});
+
+test("rincian SINTA: staf saja, dibaca dari pecahan id % 64, id belum dipanen = 404", async () => {
+  const R2 = await mf.getR2Bucket("MEDIA");
+  await R2.put("akademisi/sinta/" + (6033412 % 64) + ".json", JSON.stringify({"6033412": {tabel: {"H-Index": [33, 41]}, artikel: [{judul: "Uji", kuartil: "Q1 as Journal"}]}}));
+  assert.equal((await api("/api/akademisi/sinta/6033412")).status, 401);
+  const r = await api("/api/akademisi/sinta/6033412", ADMIN);
+  assert.equal(r.status, 200); assert.deepEqual(r.j.tabel["H-Index"], [33, 41]); assert.equal(r.j.artikel[0].kuartil, "Q1 as Journal");
+  assert.equal((await api("/api/akademisi/sinta/6033476", ADMIN)).status, 404, "pecahan sama, id lain belum dipanen");
+  assert.equal((await api("/api/akademisi/sinta/5", ADMIN)).status, 404, "pecahan belum ada");
 });

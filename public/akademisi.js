@@ -117,12 +117,49 @@
       ${t.map(([x, y], i) => `<circle cx="${x}" cy="${y}" r="3.2" fill="var(--card)" stroke="${warna}" stroke-width="2"/><text x="${x}" y="${y - 9}" class="ak-gr-nilai" style="fill:${warna}">${angka(seri[i][1])}</text><text x="${x}" y="${H - 6}" class="ak-gr-tahun">${seri[i][0]}</text>`).join("")}
     </svg></figure>`;
   }
+  /* rincian SINTA (panen): tabel Scopus vs GScholar, grafik Scopus per tahun, artikel berkuartil, ringkasan dari data bersumber */
+  async function rinciSinta(o) {
+    let x; try { const r = await fetch("/api/akademisi/sinta/" + encodeURIComponent(o[10]), {credentials: "same-origin"}); if (!r.ok) return; x = await r.json(); } catch (e) { return; }
+    if (karyaId !== o[0]) return;
+    const T = x.tabel || {}, BARIS = [["Article", "Artikel"], ["Citation", "Sitasi"], ["Cited Document", "Dokumen dikutip"], ["H-Index", "h-index"], ["i10-Index", "i10-index"], ["G-Index", "G-index"]];
+    const ada = BARIS.filter(([k]) => T[k]);
+    if (ada.length) {
+      const skor = x.skor?.["SINTA Score Overall"];
+      $("akMetrik").querySelector("div").innerHTML = `<table class="ak-tabel"><thead><tr><th></th><th><em class="sc">Scopus</em></th><th><em class="gs">Google Scholar</em></th></tr></thead>
+        <tbody>${ada.map(([k, l]) => `<tr><td>${l}</td><td>${angka(T[k][0] ?? 0)}</td><td>${angka(T[k][1] ?? 0)}</td></tr>`).join("")}</tbody></table>
+        ${skor != null ? `<p class="ak-skor">Skor SINTA <b>${angka(skor)}</b>${x.skor?.["SINTA Score 3Yr"] != null ? `, tiga tahun terakhir <b>${angka(x.skor["SINTA Score 3Yr"])}</b>` : ""}</p>` : ""}`;
+      $("akMetrik").hidden = false;
+    }
+    const sc = x.grafik?.["scopus-chart-articles"];
+    if (sc?.length > 1) {
+      const gr = $("akTahunan"), lama = gr.querySelector(".ak-grafik2");
+      lama.insertAdjacentHTML("afterbegin", grafik(sc.map(([t, v]) => [t, v]), "Artikel Scopus per tahun", "#e8590c"));
+      lama.querySelectorAll(".ak-grafik").forEach(f => { if (f.querySelector("figcaption").textContent === "Karya terbit per tahun") f.remove(); });
+      gr.hidden = false;
+    }
+    if (x.artikel?.length) {
+      const IKJ = '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11"/>';
+      $("akScopus").querySelector("ol").innerHTML = x.artikel.map(k => { const q = (k.kuartil || "").match(/^Q(\d)/)?.[1], u = (k.urutan || "").match(/(\d+) of (\d+)/);
+        const jn = /Conference/i.test(k.kuartil || "") ? "Prosiding" : /Journal/i.test(k.kuartil || "") ? "Jurnal" : /Book/i.test(k.kuartil || "") ? "Buku" : "";
+        return `<li><a href="${esc(k.url)}" ${LUAR}><b>${esc(k.judul)}</b><span class="ak-klabel">${q ? `<em class="q q${q}">Q${q}</em>` : ""}${jn ? `<em class="j">${jn}</em>` : ""}${k.terbitan ? `<em class="t">${ikon(IKJ, "currentColor")}${esc(k.terbitan)}</em>` : ""}${u && +u[1] > 0 ? `<em>Penulis ke-${u[1]} dari ${u[2]}</em>` : ""}${k.tahun ? `<em>${k.tahun}</em>` : ""}<em class="s">Dikutip ${angka(k.sitasi ?? 0)}</em></span></a></li>`; }).join("");
+      $("akScopus").hidden = false;
+    }
+    /* ringkasan: hanya merangkai fakta yang ada di data, tanpa klaim tambahan */
+    const kal = [`${o[1]} tercatat di ${o[2]}${x.prodi ? `, ${x.prodi.replace(/^(S\d|D\d|Sp-?\d) - (.*)$/, "program studi $2 ($1)")}` : ""}.`];
+    if (x.subjek?.length) kal.push(`Bidang yang dicantumkan di SINTA: ${x.subjek.join(", ")}.`);
+    if (T.Article) kal.push(`Tercatat ${angka(T.Article[0] ?? 0)} artikel di Scopus dengan h-index ${angka(T["H-Index"]?.[0] ?? 0)} dan ${angka(T.Article[1] ?? 0)} karya di Google Scholar dengan h-index ${angka(T["H-Index"]?.[1] ?? 0)}.`);
+    const q1 = (x.artikel || []).filter(k => /^Q1/.test(k.kuartil || "")).length;
+    if (x.artikel?.length) kal.push(`${q1 ? `${q1} dari ${x.artikel.length} artikel Scopus terbarunya terbit di jurnal Q1. ` : ""}Artikel terbaru terbit di ${x.artikel[0].terbitan || "jurnal bereputasi"} (${x.artikel[0].tahun}).`);
+    $("akRingkas").querySelector("p").textContent = kal.join(" ");
+    $("akRingkas").hidden = false;
+  }
   async function karya(o) {
     karyaId = o[0];
     let j; try { const r = await fetch("/api/akademisi/karya/" + encodeURIComponent(o[0]), {credentials: "same-origin"}); if (!r.ok) return; j = await r.json(); } catch (e) { return; }
     const gr = $("akTahunan");
     if (karyaId === o[0] && gr && j.tahunan?.length > 1) {
-      gr.querySelector("div").innerHTML = grafik(j.tahunan.map(x => [x[0], x[1]]), "Karya terbit per tahun", "#e8590c") + grafik(j.tahunan.map(x => [x[0], x[2]]), "Sitasi per tahun", "#2f9e44");
+      const box = gr.querySelector("div"), adaScopus = [...box.querySelectorAll("figcaption")].some(f => f.textContent === "Artikel Scopus per tahun");   // SINTA lebih panjang: menang
+      box.insertAdjacentHTML("beforeend", (adaScopus ? "" : grafik(j.tahunan.map(x => [x[0], x[1]]), "Karya terbit per tahun", "#e8590c")) + grafik(j.tahunan.map(x => [x[0], x[2]]), "Sitasi per tahun", "#2f9e44"));
       gr.hidden = false;
     }
     const sek = $("akKarya"); if (karyaId !== o[0] || !sek || !j.karya?.length) return;
@@ -143,13 +180,17 @@
       <div class="ak-dtubuh">
         ${o[12] ? `<section class="ak-dbagian"><h3>Bidang menurut SINTA</h3><p>${esc(o[12])}</p></section>` : ""}
         <section class="ak-dbagian"><h3>Topik riset utama</h3><div class="ak-topik">${o[8].map(t => `<span>${esc(t)}</span>`).join("")}</div></section>
+        <section class="ak-dbagian" id="akRingkas" hidden><h3>Ringkasan</h3><p></p></section>
+        <section class="ak-dbagian" id="akMetrik" hidden><h3>Metrik publikasi menurut SINTA</h3><div></div></section>
         <section class="ak-dbagian" id="akTahunan" hidden><h3>Rekam jejak per tahun</h3><div class="ak-grafik2"></div></section>
+        <section class="ak-dbagian" id="akScopus" hidden><h3>Artikel Scopus terbaru</h3><ol class="ak-karya"></ol></section>
         <section class="ak-dbagian" id="akKarya" hidden><h3>Karya ilmiah paling banyak dikutip</h3><ol class="ak-karya"></ol></section>
         <section class="ak-dbagian"><h3>Profil di luar</h3><div class="ak-tautan">${tautan.map(([u, n]) => `<a href="${esc(u)}" ${LUAR}>${n}${ikon(IK.buka, "currentColor")}</a>`).join("")}</div></section>
       </div>`;
     $("akLembar").hidden = false;
     document.body.style.overflow = "hidden";
     karya(o);
+    if (o[10]) rinciSinta(o);
     $("akLembar").querySelector(".ak-x").focus();
   }
   function tutup() { $("akLembar").hidden = true; document.body.style.overflow = ""; }

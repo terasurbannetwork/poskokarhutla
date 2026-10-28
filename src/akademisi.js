@@ -47,5 +47,19 @@ async function karya(env, req, ctx, id) {
   });
 }
 
+/* GET /api/akademisi/sinta/<SINTA ID>: rincian profil SINTA hasil panen (metrik Scopus/GScholar, skor, grafik per tahun, artikel Scopus
+   berkuartil). Disimpan di R2 dalam 64 pecahan (akademisi/sinta/<id % 64>.json, peta id -> rincian) supaya satu permintaan hanya mengurai
+   berkas kecil. Staf saja; tidak ada rincian = 404 dan layar diam. */
+const ID_SINTA = /^\d{1,9}$/, PECAHAN = 64;
+async function sinta(env, req, id) {
+  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!ID_SINTA.test(id)) return gagal(404, "pakar tidak dikenal");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const o = await env.MEDIA.get(`akademisi/sinta/${Number(id) % PECAHAN}.json`);
+  const x = o ? (await o.json())[id] : null;
+  return x ? json(x, 200, {"cache-control": "private, max-age=3600"}) : gagal(404, "rincian SINTA belum dipanen");
+}
+
 export const RUTE_AKADEMISI = {"GET /api/akademisi": (env, req) => induk(env, req),
-  "GET /api/akademisi/karya/:id": (env, req, url, kini, ctx, id) => karya(env, req, ctx, id)};
+  "GET /api/akademisi/karya/:id": (env, req, url, kini, ctx, id) => karya(env, req, ctx, id),
+  "GET /api/akademisi/sinta/:id": (env, req, url, kini, ctx, id) => sinta(env, req, id)};
