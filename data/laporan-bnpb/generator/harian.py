@@ -335,8 +335,9 @@ class Deck:
         o += s.garis(8668512, 3557016, 2809951, 'E5E7EB') + s.tx(8668512, 3621024, 2864815, 182880, [f'BENCANA DALAM PENANGANAN ({s.N_TOT - s.N_SEL})'], sz=750, b=True, c=MERAH, spc=100)
         rp = min(164592, (5300000 - 3840480) // max(1, len(baris))); XE = 11180000   # ujung kanan angka pil; satuan terpanjang ("rumah") masih di dalam pil
         def ringkas(xs):
-            a = {m: sum(x['angka'].get(m, 0) for x in xs) for m in ('kk', 'rumah', 'rumah_dampak', 'mengungsi', 'jiwa')}
-            return (f"{f0(a['kk'])} KK" if a['kk'] else f"{f0(a['rumah'] or a['rumah_dampak'])} rumah" if a['rumah'] or a['rumah_dampak']
+            a = {m: sum(x['angka'].get(m, 0) for x in xs) for m in ('kk', 'rumah', 'rumah_dampak', 'mengungsi', 'jiwa', 'ha')}
+            ha = f0(a['ha']) if a['ha'] == int(a['ha']) else str(round(a['ha'], 1)).replace('.', ',')   # TPA 28 Okt: ±15,5 ha, bukan "penanganan"
+            return (f"{f0(a['kk'])} KK" if a['kk'] else f"{ha} ha" if a['ha'] else f"{f0(a['rumah'] or a['rumah_dampak'])} rumah" if a['rumah'] or a['rumah_dampak']
                     else f"{f0(a['mengungsi'])} mengungsi" if a['mengungsi'] else 'penanganan')
         for n, (k, x) in enumerate(baris):
             y = 3840480 + n * rp; q = int(rp * .8)
@@ -359,7 +360,8 @@ class Deck:
                 o += (s.tx(10650000, y, 260000, q, ['sisa'], sz=720, b=True, c=tc, an='ctr', wrap='none') + s.au(XE, y, q, f"± {f0(x['sat']['sisa'])}", 'ha', 720, c=tc, wn=380000, wu=200000)
                       if round(x['sat']['sisa']) or not x['sat'].get('api') else s.tx(10746943, y, 713232, q, [isi], sz=620, b=True, c=tc, an='ctr', wrap='none'))
             else:
-                pe = s.pecah(isi); ikp = ('orang' if pe and pe[1] == 'KK' else 'rumah') + ('_k' if j == 'kekeringan' else '_slate')
+                pe = s.pecah(isi); ikp = 'api_merah' if pe and pe[1] == 'ha' else ('orang' if pe and pe[1] == 'KK' else 'rumah') + ('_k' if j == 'kekeringan' else '_slate')
+                if pe and pe[1] == 'ha': pe = (f'± {pe[0]}', 'ha')
                 o += s.kotak(10470000, y, 1070000, q, tint, 'roundRect', adj=50000) + s.gambar(10520000, y + q * .16, q * .68, q * .68, ikp)
                 o += s.au(XE, y, q, *pe, 720, c=tc, wn=500000, wu=300000) if pe else s.tx(10545775, y, 932688, q, [isi], sz=620, b=True, c=tc, al='ctr', an='ctr', wrap='none')
         o += s.kotak(548640, 5468112, 11094415, 822960, 'FDF4EC', 'roundRect', adj=8889) + s.tx(694944, 5541264, 3657600, 182880, ['YANG AKAN DILAKUKAN BNPB'], sz=750, b=True, c=ORG, spc=100)
@@ -482,7 +484,7 @@ class Deck:
                 r += s.au(9640000, y, rp, *(s.pecah(jw) or ('–', 'jiwa')), 800, c=TEKS, b=False, wn=400000, wu=260000) if s.pecah(jw) or jw == 'jiwa –' else s.tx(9150000, y, 700000, rp, [jw], sz=800, c=TEKS, an='ctr', wrap='none')
                 ph_, yp = 164592, y + (rp - 164592) / 2; pl, lc = s.pecah(liter), '8A6A2E' if not b else INK
                 r += s.kotak(9930000, yp, 880000, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(9985000, yp + 32000, 100584, 100584, 'tetes_k')
-                r += s.au(9930000 + 620000, yp, ph_, *pl, 720, c=lc, wn=430000, wu=200000) if pl else s.tx(10110000, yp, 650000, ph_, [liter], sz=720, b=True, c=lc, an='ctr', wrap='none')
+                r += s.au(9930000 + 620000, yp, ph_, *(pl or ('–', 'liter')), 720, c=lc if pl else ABU, wn=430000, wu=200000)   # 28 Okt: tanpa data = "– liter", bukan "belum dilaporkan" yang meluber
                 tk = re.search(r'([\d.]+)', tangki)
                 if tk: r += (s.kotak(10870000, yp, 608463, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(10910000, yp + 27432, 109728, 109728, 'truk_kering')
                              + s.au(10870000 + 300000, yp, ph_, tk[1], 'tangki', 720, c=lc, wn=120000, wu=300000))
