@@ -120,6 +120,45 @@ cek di lembar spesifikasi drone.
 
 ## 5. Membaca hasil
 
+### Otomatis: skrip `scripts/bnpb/drone_termal.py` (disarankan)
+
+Satu cluster bisa menghasilkan ratusan foto. Skrip ini membaca semua foto R-JPEG dalam satu folder, lalu:
+
+1. mengambil suhu tiap piksel lewat DJI Thermal SDK;
+2. menandai piksel yang lebih panas dari median foto + 10 °C (minimal 40 °C);
+3. menggabungkan piksel yang bersebelahan jadi satu titik bara;
+4. menghitung koordinat tiap titik dari posisi drone, ketinggian, dan arah gimbal;
+5. menggabungkan titik yang sama dari foto yang tumpang tindih;
+6. menulis CSV siap unggah dan ringkasan pesan WhatsApp.
+
+Persiapan sekali di laptop posko:
+
+- Unduh **DJI Thermal SDK** (gratis) dari situs pengembang DJI.
+- Taruh program `dji_irp` dari SDK itu di PATH, atau tunjuk lewat `--sdk`.
+- Python 3 sudah cukup; tidak perlu pustaka lain.
+
+```bash
+python3 scripts/bnpb/drone_termal.py /jalur/folder_foto -o titik_bara.csv --suhu-udara 32 --kelembapan 60
+```
+
+| Opsi | Bawaan | Kapan diubah |
+| --- | --- | --- |
+| `--delta` | 10 | Calon bara = median foto + delta °C. Turunkan (mis. 6) bila bara tipis lolos, naikkan bila terlalu banyak alarm palsu |
+| `--min-suhu` | 40 | Ambang mutlak. Siang terik bisa membuat tanah gundul mendekati 40 °C |
+| `--min-piksel` | 3 | Bercak lebih kecil dianggap derau |
+| `--fov` | 49 | Sudut pandang horizontal termal, sama dengan halaman drone |
+| `--lebar`, `--tinggi` | 640, 512 | 1280 dan 1024 bila memakai mode resolusi super |
+| `--zona` | +07:00 | Jam kamera di WITA (+08:00) atau WIT (+09:00) |
+| `--raw` | mati | Memakai berkas `.raw` hasil `dji_irp` yang sudah ada, tanpa memanggil SDK |
+
+Batasan:
+- Kamera dianggap tegak lurus dan tanah datar. Foto yang miring lebih dari 15° dilewati.
+- Parameter jarak di SDK dibatasi 25 m. Untuk terbang 100 m, koreksi udara memakai 25 m, jadi suhu terbaca sedikit lebih rendah dari aslinya. Untuk mencari bara ini tidak masalah, karena yang dicari perbedaan suhu.
+- Format metadata DJI dan opsi `dji_irp` belum dicek dengan foto dan versi SDK sungguhan. Uji sekali dengan satu folder foto contoh.
+- Self-check tanpa SDK: `python3 scripts/bnpb/drone_termal.py --uji`.
+
+### Manual: DJI Thermal Analysis Tool
+
 1. Salin folder foto dari kartu drone.
 2. Buka R-JPEG di **DJI Thermal Analysis Tool 3** (gratis). Atur emisivitas dan jarak seperti 4b, lalu pakai alat
    titik atau kotak untuk membaca suhu maksimum tiap foto.

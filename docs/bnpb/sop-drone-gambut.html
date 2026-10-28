@@ -31,7 +31,7 @@ ol{margin:0 0 2mm;padding-left:5mm}ol li{margin:.6mm 0}
 .catat{border-left:3.5mm solid #c9a227;background:#fbf7ea;padding:2mm 3mm;margin:2mm 0 3mm;break-inside:avoid}
 .dua{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
 .kotak{border:1px solid #d6dce6;border-radius:2mm;padding:2.4mm 3mm;break-inside:avoid}
-pre{font-family:"Roboto Mono",Menlo,monospace;font-size:8.6pt;background:#f4f6fa;border:1px solid #d6dce6;border-radius:1.6mm;padding:2mm 3mm;margin:1mm 0 2.5mm;white-space:pre-wrap}
+pre{font-family:"Roboto Mono",Menlo,monospace;font-size:8.6pt;background:#f4f6fa;border:1px solid #d6dce6;border-radius:1.6mm;padding:2mm 3mm;margin:1mm 0 2.5mm;white-space:pre-wrap;break-inside:avoid}
 .kaki{font-size:8pt;color:#6b778c;margin-top:4mm;border-top:1px solid #d6dce6;padding-top:2mm}
 </style>
 </head>
@@ -118,6 +118,7 @@ pre{font-family:"Roboto Mono",Menlo,monospace;font-size:8.6pt;background:#f4f6fa
 </ol>
 
 <h2>6. Sesudah terbang: membaca hasil</h2>
+<p><b>Cara cepat:</b> serahkan folder foto ke operator posko. Skrip <i>drone_termal.py</i> membaca semua foto sekaligus, lalu menghasilkan CSV titik bara dan pesan WhatsApp yang siap dikirim. <b>Cara manual</b> bila tidak ada laptop posko:</p>
 <ol>
   <li>Salin semua foto dari kartu memori ke laptop. Beri nama folder: <i>cluster_tanggal_penerbangan</i>, misalnya <i>K0029_2026-10-29_terbang1</i>.</li>
   <li>Buka foto R-JPEG di <b>DJI Thermal Analysis Tool 3</b> (gratis). Isi emisivitas dan jarak seperti setelan kamera.</li>
