@@ -420,7 +420,7 @@ const Bagikan = {
     const h = this.hariIni(), pr = S.meta.prioritas || [];
     return [...pr, ...semua.filter(k => !pr.includes(k)).sort((a, b) => (h.per[b] || 0) - (h.per[a] || 0))];
   },
-  /* titik panas hari kalender WIB per provinsi & kab (sensor utama, keyakinan sedang dan tinggi; sama dengan KPI peta saat rentang "Hari ini") */
+  /* titik panas hari kalender WIB per provinsi & kab (sensor utama, semua keyakinan sejak 28 Okt 2026; sama dengan KPI peta saat rentang "Hari ini") */
   hariIni() {
     if (this._hari) return this._hari;
     /* Hotspot mundur (pemilik, 28 Okt 2026): selama S.hariKosong (index.html hitung(): belum ada satu titik terhitung bertanggal hari ini, rentang apa pun; gambar selalu tentang hari ini) yang dihitung hari terakhir berdata,
@@ -1032,7 +1032,7 @@ const Bagikan = {
       "Riwayat kejadian: DIBI BNPB. Fitur banjir masih uji coba; cek peringatan resmi BMKG dan BPBD sebelum bertindak."];
     const db = S.meta.dbscan || {};
     return [
-      "Titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, lokasi unik ± 375 m per hari kalender WIB.",
+      "Titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), semua tingkat keyakinan, lokasi unik ± 375 m per hari kalender WIB.",
       `Cluster: titik dikelompokkan (DBSCAN radius ${fmt(db.eps_km)} km, jendela ${fmt(db.jendela_hari)} hari); aktif ${fmt(db.aktif_jam)} jam, di gambut ${fmt(db.aktif_gambut_jam)} jam.`,
       `Status kompleks: ${S.meta.status.join(", ")}; dari ukuran front aktif, bahaya cuaca, kekeringan gambut (DC), dan risiko wilayah.`,
       "Bahaya cuaca: Fire Weather Index sistem Kanada dari prakiraan BMKG/Open-Meteo; kelas rendah 0–1, sedang 2–6, tinggi 7–13, sangat tinggi di atas 13.",

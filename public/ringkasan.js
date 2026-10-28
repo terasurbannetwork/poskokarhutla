@@ -20,7 +20,7 @@ const Ringkasan = (() => {
     "63": "101/Antasari", "64": "091/Aji Surya Natakesuma", "53": "161/Wira Sakti", "93": "174/Anim Ti Waninggap"};
   const JENIS = {resmi: "Resmi", satelit: "Satelit", model: "Model", berita: "Berita"};
   const SUMBER = {
-    titik: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, lokasi unik per hari",
+    titik: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), semua tingkat keyakinan, lokasi unik per hari",
     kompleks: "Cluster: titik panas 7 hari digabung DBSCAN 1,5 km, status dari aturan keparahan + cuaca (tab Metode)",
     asap: "CAMS (Copernicus) via Open-Meteo × penduduk WorldPop; hanya sel dengan cluster searah angin ≤ 300 km",
     ansambel: "Ansambel ECMWF 51 anggota (fwi_ansambel.json), rata-rata sel 0,5° per provinsi",
