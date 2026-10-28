@@ -75,5 +75,6 @@
   "0071_foto_label.sql": "2bfecbdab64896afde784844bce9cbe3f8cb942ba91cfe25efd1c3bcd946d0fd",
   "0072_tugas_api_level.sql": "70265b9aa218b7b52319f3a10d2921ab2850f6d7975cf7bf5d9a262bd85ad0e7",
   "0073_sippa_fase3.sql": "49ea2cad2ffe1ce96346341d4100efe7572f8c71b411e384c5589ab9648f6ade",
-  "0074_sippa_lapangan_diterima.sql": "75654818a095e73439fa2eb6815e965e94ba8fd72093ec559e748e5c8f9f7d7b"
+  "0074_sippa_lapangan_diterima.sql": "75654818a095e73439fa2eb6815e965e94ba8fd72093ec559e748e5c8f9f7d7b",
+  "0075_satelit_granul.sql": "fee0e47feab34ef7f492daaa7bd53b677796a3121633facbbdb52734245fa179"
 }

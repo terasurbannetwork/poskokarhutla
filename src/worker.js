@@ -59,6 +59,7 @@ import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka
 import {himawariDibuat} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
+import {jedaSatelit, bersihkanGranul, ringkasGranul} from "./satelit.js";
 import * as Ews from "./ews.js";   // namespace, dibaca saat jalan: ews.js dan worker.js saling impor, jadi ews.js bisa diimpor sendirian
 
 const JAM = 3600e3, HARI = 24 * JAM, CRON_TITIK = "15 */3 * * *", CRON_GEMPA = "* * * * *";
@@ -758,6 +759,12 @@ const W = {
     }
     if (url.pathname.startsWith("/ubin/")) return layaniUbin(req, env, ctx);   // ubin PMTiles dari R2 (src/ubin.js)
     if (url.pathname === "/api/titik" && req.method === "GET") return cacheTepi(req, ctx, 600, () => titikTerbaru(env));
+    /* jeda terukur lintasan satelit -> data tampil (ringkasan harian satelit_ringkas 0075, src/satelit.js): publik, GET/HEAD saja, tanpa parameter, cache tepi 6 jam; dibaca tle.py dan kartu satelit.
+       Satu baris D1 per miss, tidak pernah menghitung dari granul di jalur permintaan (ringkasan dihitung cron menit 19). Belum ada = 503 tanpa cache. */
+    if (url.pathname === "/api/satelit/jeda") {
+      if (req.method !== "GET" && req.method !== "HEAD") return gagal(405, "hanya GET atau HEAD", {allow: "GET, HEAD"});
+      return cacheTepi(req, ctx, 6 * 3600, () => jedaSatelit(env), true);
+    }
     if (url.pathname === "/api/himawari" && req.method === "GET") return cacheTepi(req, ctx, 300, async () => {   // hotspot Himawari: R2 data/himawari.json (diunggah Action 30 menit); hilang = kosong, bukan 500
       return new Response(JSON.stringify(await himawariRespons(env)), {headers: {"content-type": "application/json; charset=utf-8"}});
     });
@@ -841,6 +848,7 @@ const W = {
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
+      if (m === 19) try { const h = await ringkasGranul(env, sekarang); if (!h.lewat) console.log("satelit ringkas", JSON.stringify(h)); } catch (e) { console.error("satelit ringkas", e?.message); }   // ringkasan jeda satelit 30 hari: jam 13 UTC, atau bila belum ada / > 25 jam (src/satelit.js); invokasi sendiri, tabel 0075 belum ada = dilewati
       if (m === 20) try { console.log("uji lapangan", JSON.stringify(await jalankanUji(env, sekarang))); } catch (e) { console.error("uji lapangan", e?.message); }   // sampel kontrol mingguan, kedaluwarsa kontrol, penilaian api terlewat (Q2); tiap jam, murah bila tak ada pekerjaan
       if (m === 23) try { console.log("drop", JSON.stringify(await nilaiDropTertunda(env, sekarang))); } catch (e) { console.error("drop", e?.message); }   // L11: nilai drop heli yang jendela 6 jamnya lewat, tiap jam
       try { const h = await ulangiKabar(env, sekarang); if (h.coba) console.log("kabar ulang", JSON.stringify(h)); } catch (e) { console.error("kabar ulang", e?.message); }   // kabar seketika yang gagal: coba lagi (jeda 1/5/15/60 menit)
@@ -878,6 +886,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanInstansi(env, Date.now()); } catch (e) { console.error("instansi", e?.message); }   // migrasi 0029 belum jalan = cron lain tetap jalan
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
+    try { await bersihkanGranul(env, sekarang); } catch (e) { console.error("granul satelit", e?.message); }   // migrasi 0075 belum jalan = cron lain tetap jalan; sekali sehari (jam 04 UTC), buang granul > 400 hari
     try { await bersihkanSippa(env, sekarang); } catch (e) { console.error("sippa", e?.message); }   // migrasi 0058 belum jalan = cron lain tetap jalan; ringkas+buang telemetri > 30 hari, alarm diam
     try { await bersihkanUjiBanjir(env, Date.now()); } catch (e) { console.error("uji banjir", e?.message); }   // retensi 12 bulan
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan

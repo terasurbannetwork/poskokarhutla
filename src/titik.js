@@ -6,6 +6,7 @@
    wilayah dicari dari geo/provinsi.json + pusat kecamatan terdekat (banjir/data/pusat_kec.json), bukan poligon
    kecamatan penuh, jadi titik di pantai/perbatasan bisa sedikit berbeda dari data harian. */
 import {alarmTitikSippa} from "./sippa_titik.js";
+import {catatGranul, JENDELA_URAI_JAM} from "./satelit.js";
 export const SENSOR = {VIIRS_SNPP_NRT: "N", VIIRS_NOAA20_NRT: "N20", VIIRS_NOAA21_NRT: "N21", MODIS_NRT: "M"};
 export const SENSOR_UTAMA = ["M", "N", "N20", "N21"];   // semua dihitung sebagai lokasi unik di peramban (AngkaKawasan.unik), sama dengan hotspot.json
 const BBOX = [94, -11.5, 141.5, 6.5], JAM = 3600e3, SIMPAN = 8, MAKS_BYTE = 1.8e6, KEC_CADANGAN_KM = 8;
@@ -40,7 +41,7 @@ export function keyakinan(sensor, conf) {
 }
 
 /* CSV FIRMS -> titik sah. Baris rusak (angka bukan angka, tanggal/jam salah, di luar kotak, waktu di masa depan) dibuang. */
-export function uraiCSV(teks, sensor, kini, jendelaJam = 24) {
+export function uraiCSV(teks, sensor, kini, jendelaJam = JENDELA_URAI_JAM) {
   const baris = String(teks).trim().split(/\r?\n/), kepala = (baris.shift() || "").split(",");
   const i = n => kepala.indexOf(n);
   if (i("latitude") < 0 || i("longitude") < 0 || i("acq_date") < 0 || i("acq_time") < 0) return {galat: `${sensor}: bukan CSV FIRMS: ${String(teks).slice(0, 80)}`, titik: [], rusak: 0};
@@ -140,8 +141,11 @@ export async function perbaruiTitik(env, kini = Date.now()) {
   let sippa; try { sippa = await alarmTitikSippa(env, titik, sebelumnya, kini);
     if (!sippa.lewat) await env.DB.prepare("INSERT INTO titik_proses_sippa (id, putaran) VALUES (1, (SELECT max(id) FROM titik_terbaru)) ON CONFLICT (id) DO UPDATE SET putaran = excluded.putaran").run(); }
   catch (e) { sippa = {galat: String(e?.message || e).slice(0, 120)}; console.error("titik: alarm SIPPA", sippa.galat); }   // tabel 0067 belum ada = galat dicatat, putaran tetap sah
+  /* 0075: riwayat kedatangan per granul (sensor, menit akuisisi) dari CSV yang sama, terlihat = putaran ini. SESUDAH alarm SIPPA (alarm kebakaran dekat kompleks tak boleh menunggu catatan statistik);
+     batch TERPISAH dari titik_terbaru dan tidak pernah melempar (tabel belum ada / galat D1 = satu console.warn), supaya putaran titik tetap sah. Sensor galat tidak menyumbang baris. */
+  const granul = await catatGranul(env, hasil, kini);
   if (!masker) console.error("titik: masker titik_palsu.json tak terbaca, putaran tetap disimpan tanpa penyaringan");
-  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat, sippa};
+  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat, sippa, granul};
 }
 
 export async function titikTerbaru(env) {

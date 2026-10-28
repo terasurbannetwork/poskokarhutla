@@ -150,6 +150,26 @@ benar" → keluar dari peta. Kata kasar ditolak; tautan dan nomor HP di teks pub
 Batas yang disengaja (ponytail): wilayah ringkasan = pusat kecamatan terdekat (perkiraan, bukan poligon);
 `/api/titik` ~1 MB JSON (gzip ~200 KB) dikirim utuh — tambahkan `?sejak=` bila terasa berat.
 
+## Jeda kedatangan data satelit (src/satelit.js, migrations/0075_satelit_granul.sql)
+
+Tiap putaran titik (`perbaruiTitik`, menit 15 tiap 3 jam UTC) mencatat granul FIRMS yang sudah diurai, SESUDAH alarm SIPPA: satu baris `satelit_granul` per (sensor `M`/`N`/`N20`/`N21`,
+menit akuisisi) dengan jumlah deteksi `n` dan `terlihat` = waktu putaran yang PERTAMA melihatnya (`INSERT OR IGNORE`, tidak pernah ditimpa). Jeda terukur = `terlihat - akuisisi`,
+yaitu sampai titik itu muncul di `/api/titik`. Tanpa panggilan FIRMS baru dan tanpa SELECT di putaran; sensor galat tidak menulis. `CHECK (terlihat >= akuisisi)`: granul yang jam
+satelitnya masih di depan jam Worker dilewati dan tercatat di putaran berikutnya. Tabel belum ada = satu `console.warn`, putaran tetap sah. Dipangkas 400 hari sekali sehari (jam 04 UTC,
+cron bersih-bersih menit 17). Perkiraan: ~100-250 granul baru per hari. Kolom `sumber` ('worker' | 'pipeline') dicadangkan untuk fase 2 (titik.yml ikut menulis); penulis 'pipeline' BELUM ADA, semua baris kini 'worker'.
+
+Arti jeda: latensi FIRMS + tunggu putaran Worker berikutnya (±3 jam) = "sampai tampil di aplikasi", BUKAN latensi FIRMS murni. Jendela urai CSV Worker (24 jam, `JENDELA_URAI_JAM`) membatasi
+jeda yang bisa tercatat: granul yang baru muncul sesudahnya tidak pernah tercatat, jadi respons memuat `batas_jeda_menit` (1440).
+
+Ringkasan harian: endpoint TIDAK menghitung dari granul per permintaan (miss cache tepi terjadi per pusat data, tiap miss membaca ribuan baris). Cron menit 19 (`ringkasGranul`, invokasi
+sendiri) menghitung ringkasan 30 hari sekali sehari pada jam 13 UTC (sebelum `tle.py`, data.yml 14.20 UTC), atau bila barisnya belum ada sama sekali (deploy pertama), atau bila lebih tua dari
+25 jam (13.19 gagal), lalu UPSERT ke satu baris `satelit_ringkas` (id = 1, isi = teks JSON respons). Jam lain dengan ringkasan segar hanya membaca satu baris.
+
+`GET /api/satelit/jeda` (publik, GET/HEAD, tanpa parameter, cache tepi 6 jam) meneruskan baris `satelit_ringkas` itu: jendela 30 hari, per sensor `n` (granul), `lintasan` (gugus granul berurutan
+dengan celah > 45 menit), `hari_ada` (tanggal WIB berbeda), `median_menit`, `p90_menit` (nearest-rank), dan rincian `siang` (akuisisi WIB 06.00-17.59) / `malam` (juga `n`, `lintasan`, median, p90).
+`mulai_catat` = putaran pertama tabel; granul dengan akuisisi sebelum itu tidak dihitung (putaran pertama melihat 24 jam data lama sekaligus). Tabel atau baris belum ada = 503 `{"galat":"data belum tersedia"}`
+(tanpa cache, detail hanya ke log). Pemakai: `scripts/data/tle.py` (jeda_data_menit terukur) dan kartu "Satelit berikutnya". Uji: `tests/warga/satelit_granul.test.mjs`.
+
 ## Statistik, admin, dan kotak pesan
 
 ```bash

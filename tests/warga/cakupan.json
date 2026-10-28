@@ -2,6 +2,9 @@
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
     "GET /admin/drone": "admin moderator, staf peran apa pun, dan akun instansi aktif membuka /admin/drone",
+    "table satelit_granul": "satelit granul: migrasi 0075 idempoten (dua kali lagi tanpa galat), CHECK",
+    "table satelit_ringkas": "satelit granul: migrasi 0075 idempoten (dua kali lagi tanpa galat), CHECK",
+    "GET /api/satelit/jeda": "satelit jeda: rute publik GET 200 JSON (bentuk kontrak)",
     "table foto_label": "label foto: migrasi 0071 idempoten; CHECK kelas dan jenis_objek; unik per pelabel",
     "GET /api/labelfoto/antre": "label foto: antre terbaru dulu, hanya yang lolos moderasi dan belum saya label, paginasi",
     "POST /api/labelfoto/simpan": "label foto: simpan, ubah, dan dua pelabel pada satu foto",
