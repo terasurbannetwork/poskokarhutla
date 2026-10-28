@@ -8,7 +8,7 @@ MAKS = 10
 
 def norm_id(x):
     """'166', 'K166', 'k0166' -> 'K0166'"""
-    m = re.fullmatch(r"[Kk]?\s*(\d{1,4})", str(x).strip())
+    m = re.fullmatch(r"[Kk]?\s*(\d{1,5})", str(x).strip())
     if not m:
         raise ValueError(f"id kompleks tidak dikenal: {x!r} (contoh K0166)")
     return f"K{int(m.group(1)):04d}"
@@ -41,7 +41,7 @@ def bangun(ids, kel, aks):
 def uji():
     assert norm_id("166") == "K0166" and norm_id("k0166") == "K0166" and norm_id(" K9321 ") == "K9321"
     assert parse_ids("K0166, 9321 K7357;166") == ["K0166", "K9321", "K7357"]
-    for buruk in ("", "abc", ",".join(str(i) for i in range(1, 12)), "K12345"):
+    for buruk in ("", "abc", ",".join(str(i) for i in range(1, 12)), "K123456"):
         try:
             parse_ids(buruk)
         except ValueError:

@@ -13,7 +13,7 @@ PIN = {"K2628": "2026-10-14", "K9037": "2026-10-04"}  # adegan bersih yang dipil
 GULUNG_M = 20      # asumsi panjang satu gulung selang layflat
 SERAP_NOZZLE = 160  # L/menit nozzle konvensional di petak pembanding
 JARAK_PENDEK_KM = 0.5  # renlap otomatis: air terdekat dari petak <= ini = selang pendek (bagian A), selebihnya selang panjang (bagian B)
-PROV = {"14": "Riau", "15": "Jambi", "16": "Sumatera Selatan", "61": "Kalimantan Barat", "62": "Kalimantan Tengah", "63": "Kalimantan Selatan"}
+PROV = {"14": "Riau", "15": "Jambi", "16": "Sumatera Selatan", "61": "Kalimantan Barat", "62": "Kalimantan Tengah", "63": "Kalimantan Selatan", "64": "Kalimantan Timur"}
 
 
 def cincin(x, y, r):
@@ -116,7 +116,7 @@ def titik_segmen(p, a, b):
 
 def proyeksi(m, la, lo):
     if m.get("epsg"):
-        E, N = C.ke_utm(la, lo, m["epsg"] % 100)
+        E, N = C.ke_utm(la, lo, m["epsg"] % 100, C.epsg_selatan(m["epsg"]))
         return round((E - m["E0"]) / m["res"], 1), round((m["N0"] - N) / m["res"], 1)
     x, y = mxy(la, lo, m["z"])
     return round(x - m["x0"], 1), round(y - m["y0"], 1)
@@ -313,7 +313,7 @@ def main():
                        "km": round(md["w"] * md["m_per_px"] / 1000, 1)})
         else:
             ms = json.load(open(f"{OUT}/img/{kid}_s2.json"))
-            E, N = C.ke_utm(ms["lat"], ms["lon"], ms["epsg"] % 100)
+            E, N = C.ke_utm(ms["lat"], ms["lon"], ms["epsg"] % 100, C.epsg_selatan(ms["epsg"]))
             md = {"img": f"img/{kid}_s2.jpg", "epsg": ms["epsg"], "E0": E - kmb * 500, "N0": N + kmb * 500, "res": kmb * 1000 / ms["px"],
                   "w": ms["px"], "h": ms["px"], "m_per_px": kmb * 1000 / ms["px"], "tgl": ms["tgl"], "jam_utc": ms["jam_utc"],
                   "satelit": ms["satelit"], "adegan": ms["adegan"], "km": kmb}

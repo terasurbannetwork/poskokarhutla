@@ -3,10 +3,14 @@
 ada di data lokasi (s dari analisis.py); tidak ada data = kalimat tidak ditulis, atau ditulis "wajib dibor/dicek". Tidak ada nama
 perusahaan. Placeholder {L} {gulung} {air_nama} {air_d} {p_lance} {kaki_km} {kaki_mnt} diisi cetak.isi(), jadi kurung kurawal
 dari data tidak boleh masuk. Self-check tanpa jaringan: python3 teks_renlap.py"""
-import re
+import os, re
 from teks import UMUM as UMUM_PILOT
 
-SUMBER_PENDEK = ("Sumber: titik panas NASA FIRMS lewat Centurisk97; gambut 1:250.000 Kementan dan kanal, sumur bor BRGM lewat PRIMS; "
+MOR = os.environ.get("RENLAP_GAMBUT") == "moratorium"      # keputusan SIPPA 63: Kaltim memakai gambut indikatif moratorium (PIPPIB), bukan peta 1:250.000
+G_NAMA = "peta gambut indikatif moratorium (PIPPIB)" if MOR else "peta gambut resmi 1:250.000"
+G_SUMBER = ("gambut indikatif moratorium PIPPIB (KLHK) dan kanal, sumur bor BRGM lewat PRIMS; " if MOR
+            else "gambut 1:250.000 Kementan dan kanal, sumur bor BRGM lewat PRIMS; ")
+SUMBER_PENDEK = ("Sumber: titik panas NASA FIRMS lewat Centurisk97; " + G_SUMBER[:-2] + "; "
                  "air, jalan, rute: OpenStreetMap dan model akses SIPPA (perkiraan); citra Sentinel-2 atau Esri; cuaca FWI Centurisk97 dan Open-Meteo.")
 
 
@@ -23,7 +27,8 @@ def umum(D):
     """teks umum satu dossier (pengganti teks.UMUM): tanpa jadwal, lokasi, dan kabupaten pilot Kalteng"""
     S = D["situs"]; R = D["ringkas"]
     luar = [s["no"] for s in S if not s["gambut_prims"]]
-    cek = (f"<p>{R.get('n_gambut', len(S))} dari {len(S)} lokasi berada di dalam peta gambut resmi 1:250.000 (Kementan, lewat PRIMS BRGM). "
+    cek = (f"<p>{R.get('n_gambut', len(S))} dari {len(S)} lokasi berada di dalam " + (G_NAMA + " (KLHK, lewat PRIMS BRGM). " if MOR else G_NAMA + " (Kementan, lewat PRIMS BRGM). ")
+           + ("Peta itu indikatif dan batasnya kasar, jadi tiap titik wajib dicek di lapangan. " if MOR else "")
            + (f"Lokasi {', '.join(str(x) for x in luar)} tidak tercatat di peta itu, jadi periksa dulu apakah benar gambut. " if luar else "")
            + "Peta itu <b>tidak mencantumkan kedalaman</b>, jadi kedalaman gambut di tiap lokasi <b>wajib dibor</b> sebelum petak dipasang.</p>"
            "<p><b>Aturan ganti:</b> tiap petak dibor saat survei. Kalau gambutnya kurang dari 50 cm (bukan gambut) atau kurang dari 1 m (lance tembus ke tanah biasa), "
@@ -69,7 +74,7 @@ def teks_otomatis(s):
 
     # kedalaman gambut: tidak ada di data, selalu wajib dibor
     if not s["gambut_prims"]:
-        dalam = "Tidak tercatat di peta gambut resmi; periksa dulu apakah gambut, wajib dibor"
+        dalam = "Tidak tercatat di " + G_NAMA.replace("peta gambut ", "peta gambut ") + "; periksa dulu apakah gambut, wajib dibor"
     elif 0 < s["gambut_tepi_km"] <= 0.5:
         dalam = f"Di pinggir sebaran gambut ({n(s['gambut_tepi_km'], 1)} km dari batasnya): kemungkinan tipis, wajib dibor"
     else:
@@ -102,7 +107,7 @@ def teks_otomatis(s):
            "Data ketinggian ikut menghitung tinggi pohon; ukur beda tinggi dengan GPS saat survei."
 
     # catatan rute
-    cat = [f"Berangkat dari {bersih(a['dari']['nama'])}."]
+    cat = []     # titik berangkat sudah langkah 1 di alur perjalanan; tidak diulang di sini
     if a["ujung"] == "perahu":
         cat.append(f"Bagian akhir lewat perahu ({a['menit']['perahu']} menit); titik turun perahu di peta adalah perkiraan model.")
     if a.get("saran"):
@@ -141,7 +146,7 @@ def teks_otomatis(s):
     if not tg:
         sulit.append("Tidak ada bara gambut yang layak diuji di dekat sini; lokasi dipakai untuk latihan atau survei.")
     if not s["gambut_prims"]:
-        sulit.append("Lokasi tidak tercatat di peta gambut resmi. Pastikan dulu tanahnya gambut sebelum memasang petak.")
+        sulit.append("Lokasi tidak tercatat di " + G_NAMA + ". Pastikan dulu tanahnya gambut sebelum memasang petak.")
     sulit.append("Tebal gambut di titik ini belum diketahui; bor dulu sebelum menyuntik dengan lance 1,5 m.")
     sulit.append("Letak air di peta bisa meleset puluhan meter dan banyaknya air saat kemarau belum diketahui; cek dengan galah.")
 
