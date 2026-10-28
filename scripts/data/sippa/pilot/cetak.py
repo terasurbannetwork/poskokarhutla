@@ -155,6 +155,8 @@ def uji(s):
 
 
 def bagian(s):
+    if EKSTRA.get("satu_daftar"):     # satu daftar prioritas: tanpa Bagian A/B, hanya jenis selang
+        return "SELANG PANJANG" if s.get("paksa") else "SELANG PENDEK"
     return "BAGIAN A, SELANG PENDEK" if not s.get("paksa") else "BAGIAN B, SELANG PANJANG"
 
 
@@ -647,6 +649,8 @@ def halaman_ringkas():
     kab = ", ".join(f"{n.replace('Kota Palangkaraya','Palangka Raya')} {ang(v)}" for n, v in R["kab"][:2])
     tabelA = ('<h2 class="bag">Bagian A: selang pendek, pompa dekat api</h2><table class="utama">' + KOLOM
               + "".join(baris_ringkas(s) for s in A) + "</table>") if A else ""
+    if EKSTRA.get("satu_daftar"):   # EKSTRA {"satu_daftar": judul}: semua lokasi satu tabel urut prioritas, selang pendek dan panjang digabung
+        tabelA = f'<h2 class="bag">{EKSTRA["satu_daftar"]}</h2><table class="utama">{KOLOM}{"".join(baris_ringkas(s) for s in S)}</table>'
     satu = (f'<section class="hal potret"><header class="kepala1"><div class="sup">BNPB SIPPA, SISTEM PIPA PORTABEL KARHUTLA DAN BANJIR</div>'
             f'<div class="baris1"><h1>{R.get("judul", "Pilot Kalimantan Tengah: 10 lokasi uji")}</h1><div class="kanan">Kondisi per {ACUAN}<br>Dossier tim lapangan, {2 + 3 * len(S) + (len(ALAT) + 7) // 8} halaman</div></div></header>'
             f'<div class="kpi4"><div><b class="oranye">{ang(R["kalteng48"])}</b><span>titik api {R["wilayah"] + " " + R["tgl_label"] if GENERIK else "Kalteng 25–26 Okt"}</span></div>'
@@ -657,7 +661,11 @@ def halaman_ringkas():
             f'<div class="dua1"><div class="kartu"><div class="kj">Cek gambut</div>{UMUM["cek_gambut"]}</div>'
             f'<div class="kartu"><div class="kj">Yang perlu diputuskan</div><ol class="rapat">{"".join(f"<li>{x}</li>" for x in UMUM["putus"])}</ol></div></div>'
             f'{SUMBER.format(acuan=ACUAN)}</section>')
-    if B:
+    if B and EKSTRA.get("satu_daftar"):   # tabel sudah di halaman 1; halaman 2 hanya cara kerja selang panjang
+        Ls = [s["hid"]["L"] for s in B]
+        judul2 = "Cara uji dan keselamatan"
+        isi2 = f'<p class="gagasan">{UMUM["panjang"].replace("RENTANG", f"{ang(min(Ls) / 1000, 1)}–{ang(max(Ls) / 1000, 1)} km")}</p>'
+    elif B:
         Ls = [s["hid"]["L"] for s in B]
         rentang = f"{ang(min(Ls) / 1000, 1)}–{ang(max(Ls) / 1000, 1)} km"
         judul2 = "Bagian B: selang panjang, pompa di tepi jalan"
