@@ -1,14 +1,16 @@
 """Jalur operasional uji PROSPEKTIF J4 (PRAREG-J4.md bagian 3, 4, 5, 6, 7). Satu skrip, lima langkah; semuanya append-only ke data/banjir/genangan/ (dilacak git).
   hujan    GSMaP NRT per jam (hourly_G, cadangan hourly) 30 sel 0,1 derajat untuk satu hari WIB -> j4_hujan_jam.jsonl            (butuh GSMAP_USER/GSMAP_PASS)
+           Hanya TOTAL harian (jumlah 24 jam per sel) yang masuk prakiraan; bentuk jam NRT bukan bagian vonis (keputusan pemilik 28 Okt 2026, "Samakan").
   pemicu   rata-rata 42 kecamatan m1_hujan.jsonl >= X (34) dan X2 (30), aturan run beruntun + jendela tak tumpang tindih -> j4_kejadian.jsonl
-  prakira  kejadian terpilih tanpa prediksi, pada D+2 sampai D+6: hujan jam + debit Flood API -> mesin.mjs --dem-100m -> j4_prakira/<D>.raster.gz
-           + baris rantai-hash di j4_prediksi.jsonl
+  prakira  kejadian terpilih tanpa prediksi, pada D+2 sampai D+9: total harian GSMaP NRT x bentuk jam ERA5 (Open-Meteo archive, ~5 hari lag; = konstruksi kalibrasi gsmap_dis)
+           + debit Flood API -> mesin.mjs --dem-100m -> j4_prakira/<D>.raster.gz + baris rantai-hash di j4_prediksi.jsonl.
+           ERA5 jam jendela 96 jam belum lengkap: kode keluar 3, coba lagi esok (TANPA pengganti); lewat D+9 dicatat di j4_gagal.jsonl.
   label    D+3 sampai D+9, HANYA bila baris prediksinya sudah ada di origin/main: PetaBencana tersaring dan tanpa saring -> j4_label.jsonl
   nilai    kriteria bagian 5 dan 6 -> j4_vonis.json SEKALI (menolak bila kunci_j4 `cek` merah); `nilai --pratinjau` hanya mencetak
 Kegagalan unduh atau prakiraan: SELALU satu baris di j4_gagal.jsonl (tanggal, tahap, alasan, percobaan); kejadian itu keluar dan tidak diulang sesudah label atau hasil lain terlihat.
 Hanya DUA percobaan pada hari yang sama sebelum prediksi tersimpan (jumlahnya dicatat). Env J4_DIR hanya untuk uji lokal.
 Pakai:  python3 scripts/banjir/genangan/j4_operasi.py hujan|pemicu|prakira|label|nilai [--tanggal YYYY-MM-DD] [--pratinjau] | uji
-Kode keluar: 0 beres atau tak ada kerja, 1 gagal tercatat, 2 kunci/login hilang, 3 di luar jendela.
+Kode keluar: 0 beres atau tak ada kerja, 1 gagal tercatat, 2 kunci/login hilang, 3 di luar jendela atau menunggu ERA5 (coba lagi besok).
 """
 import base64, datetime as dt, gzip, hashlib, json, math, os, platform, subprocess, sys, tempfile, urllib.parse
 
@@ -25,6 +27,7 @@ LON = [106.6, 106.7, 106.8, 106.9, 107.0]; LAT = [-6.4, -6.3, -6.2, -6.1]   # ti
 MESIN = ["--faktor", "12", "--jam", str(JAM), "--cn", "80", "--muka", "0.6", "--rentang", "1", "--skala-subsiden", "1", "--skala-hulu", "1", "--radius-hulu-km", "10",
          "--tanggul", "2.5", "--agregasi", "mean", "--cekungan-maks", "0.5", "--hujan", "gsmap_jam"]
 HUJAN_ANT_HARI = 7                                    # antecedent 168 jam sebelum mulai (mesin.mjs)
+PRAKIRA_AWAL, PRAKIRA_AKHIR = 2, 9                    # hari sesudah D; akhir = sama dengan penutup jendela label (D+9), supaya prediksi terakhir masih bisa dilabeli
 MIN_KEJADIAN, MIN_LAPORAN_JUMLAH, KEJADIAN_VONIS, TGL_VONIS, TGL_LABEL_TUTUP = 6, 150, 10, dt.date(2027, 4, 30), dt.date(2027, 5, 8)
 BATAS_KELUAR = 0.20
 
@@ -155,19 +158,44 @@ def bilinear(fl, lons, lats, lon, lat):
     return s / w if w else None
 
 
-def bangun_hujan(rows, mulai):
-    """rows {tanggal ISO: baris j4_hujan_jam}; -> (berkas mesin {'gsmap_jam': 20 titik}, hari_hilang_di_jendela). Antecedent yang hilang = None (dihitung 0 oleh mesin)."""
-    waktu, per = [], {(la, lo): [] for la in LAT for lo in LON}; hilang = []
-    for k in range(-HUJAN_ANT_HARI, JAM // 24):
-        d = mulai + dt.timedelta(days=k); r = rows.get(iso(d)); ok = r is not None and not r.get("dikeluarkan")
-        if not ok and k >= 0:
-            hilang.append(iso(d))
-        for h in range(24):
-            waktu.append(f"{iso(d)}T{h:02d}:00")
-            for (la, lo), s in per.items():
-                v = bilinear(r["mm"][h], r["lon"], r["lat"], lo, la) if ok and r["mm"][h] is not None else None
-                s.append(None if v is None else round(v, 4))
-    return {"gsmap_jam": [{"lat": la, "lon": lo, "waktu": waktu, "mm": mm} for (la, lo), mm in per.items()]}, hilang
+def ambil_era5(a, b):
+    """ERA5 jam (Open-Meteo archive, models=era5, zona WIB) di 20 titik hujan, a..b ISO inklusif; format sama dengan hujan_jam.tarik. Hari yang belum terbit = None."""
+    import bersama
+    sel = [(la, lo) for la in sorted(LAT) for lo in LON]
+    q = {"latitude": ",".join(str(la) for la, _ in sel), "longitude": ",".join(str(lo) for _, lo in sel), "start_date": a, "end_date": b, "hourly": "precipitation", "models": "era5", "timezone": "Asia/Bangkok"}
+    d = bersama.ambil_json("https://archive-api.open-meteo.com/v1/archive?" + urllib.parse.urlencode(q, safe=","))
+    d = d if isinstance(d, list) else [d]
+    assert len(d) == len(sel), len(d)
+    return [{"lat": la, "lon": lo, "waktu": x["hourly"]["time"], "mm": x["hourly"]["precipitation"]} for (la, lo), x in zip(sel, d)]
+
+
+def bangun_hujan(rows, mulai, era):
+    """Konstruksi KALIBRASI (mesin.mjs gsmap_dis): total harian GSMaP di tiap titik (bilinear atas total harian sel = jumlah 24 jam) x bentuk jam ERA5 titik itu, dinormalkan ke total;
+    ERA5 hari itu nol -> total/24. rows {tanggal ISO: baris j4_hujan_jam}; era = 20 titik {lat, lon, waktu, mm} dari ambil_era5.
+    -> ({'gsmap_jam': 20 titik hasil, 'era5': ERA5 mentah (pembanding J3)}, hari_gsmap_hilang_di_jendela, hari_era5_belum_lengkap_di_jendela).
+    Hari antecedent tanpa GSMaP tetap ERA5 mentah (perilaku mesin untuk hari tanpa total); hari jendela tanpa GSMaP = hilang, TIDAK diisi."""
+    waktu = [f"{iso(mulai + dt.timedelta(days=k))}T{h:02d}:00" for k in range(-HUJAN_ANT_HARI, JAM // 24) for h in range(24)]
+    hasil, mentah, hilang, belum = [], [], [], set()
+    for e in era:
+        pe = dict(zip(e["waktu"], e["mm"])); raw = [pe.get(w) for w in waktu]; out = []
+        for n, k in enumerate(range(-HUJAN_ANT_HARI, JAM // 24)):
+            d = mulai + dt.timedelta(days=k); r = rows.get(iso(d)); ok = r is not None and not r.get("dikeluarkan"); sh = raw[n * 24:(n + 1) * 24]
+            if k >= 0:
+                if not ok:
+                    hilang.append(iso(d))
+                if any(x is None for x in sh):
+                    belum.add(iso(d))
+            T = None
+            if ok:
+                tot = []
+                for c in range(len(r["lon"]) * len(r["lat"])):
+                    v = [j[c] for j in r["mm"] if j is not None and j[c] is not None]
+                    tot.append(sum(v) if v else None)
+                T = bilinear(tot, r["lon"], r["lat"], e["lon"], e["lat"])
+            sx = [x or 0 for x in sh]; z = sum(sx)
+            out += [None if x is None else round(x, 4) for x in raw[n * 24:(n + 1) * 24]] if T is None else [round(T * x / z if z > 1e-9 else T / 24, 4) for x in sx]
+        hasil.append({"lat": e["lat"], "lon": e["lon"], "waktu": waktu, "mm": out}); mentah.append({"lat": e["lat"], "lon": e["lon"], "waktu": waktu, "mm": raw})
+    return {"gsmap_jam": hasil, "era5": mentah}, sorted(set(hilang)), sorted(belum)
 
 
 # ------------------------------------------------------------------ pemicu
@@ -245,12 +273,22 @@ def rantai_ok(rows):
     return True
 
 
-def prakira(tgl, sidik_kode, mesin=jalankan_mesin, flood=ambil_flood):
+def prakira(tgl, sidik_kode, mesin=jalankan_mesin, flood=ambil_flood, era5=ambil_era5):
     mulai = tgl - dt.timedelta(days=2); h = hari_ini()
-    if not (tgl + dt.timedelta(days=2) <= h <= tgl + dt.timedelta(days=6)):
-        print(f"{tgl}: di luar jendela prakira D+2..D+6", file=sys.stderr); return 3
+    if h < tgl + dt.timedelta(days=PRAKIRA_AWAL):
+        print(f"{tgl}: belum D+{PRAKIRA_AWAL}", file=sys.stderr); return 3
     rows = {r["tanggal"]: r for r in baca_jsonl(f("j4_hujan_jam.jsonl"))}
-    hj, hilang = bangun_hujan(rows, mulai)
+    try:
+        era = era5(iso(mulai - dt.timedelta(days=HUJAN_ANT_HARI)), iso(min(mulai + dt.timedelta(days=JAM // 24 - 1), h))); err_era = None
+    except Exception as e:
+        era, err_era = [], f"ERA5: {type(e).__name__}: {str(e)[-200:]}"
+    hj, hilang, belum = bangun_hujan(rows, mulai, era) if era else (None, [], ["tak ada data"])
+    if belum:
+        if h > tgl + dt.timedelta(days=PRAKIRA_AKHIR):
+            return gagal(tgl, "prakira", f"ERA5 jam jendela tidak lengkap sampai D+{PRAKIRA_AKHIR}: {belum}" + (f" ({err_era})" if err_era else ""))
+        print(f"{tgl}: ERA5 jam belum lengkap ({belum}); coba lagi besok", file=sys.stderr); return 3
+    if h > tgl + dt.timedelta(days=PRAKIRA_AKHIR):
+        return gagal(tgl, "prakira", f"lewat D+{PRAKIRA_AKHIR}, prakira tidak dijalankan")
     if hilang:
         return gagal(tgl, "prakira", f"hujan jam jendela hilang/dikeluarkan: {hilang}")
     pred = baca_jsonl(f("j4_prediksi.jsonl"))
@@ -415,9 +453,9 @@ def nilai(pratinjau=False):
             R = skor_j4.baca_raster(os.path.join(DIR, "j4_prakira", f"{t}.raster.gz")); R["z"] = z
             if sha_b(open(os.path.join(DIR, "j4_prakira", f"{t}.raster.gz"), "rb").read()) != p["sha_raster"]:
                 print(f"  {t}: raster tak cocok dengan hash prediksi: dilewati", file=sys.stderr); continue
-            with tempfile.TemporaryDirectory() as tt:   # pembanding J3 (hujan sama, Kd 2): dijalankan ulang dari masukan yang disimpan
+            with tempfile.TemporaryDirectory() as tt:   # pembanding J3 SEPERTI DIKUNCI (ERA5 mentah x2, Kd 2; PRAREG 5): dijalankan ulang dari masukan yang disimpan
                 mk = json.load(gzip.open(os.path.join(DIR, "j4_prakira", f"{t}.masukan.json.gz"), "rt")); rj3 = os.path.join(tt, "j3.gz")
-                jalankan_mesin(t, p["mulai"], mk, rj3, os.path.join(tt, "k.json"), ("--kd", "2")); Rj3 = skor_j4.baca_raster(rj3)
+                jalankan_mesin(t, p["mulai"], mk, rj3, os.path.join(tt, "k.json"), ("--kd", "2", "--hujan", "era5", "--skala-hujan", "2")); Rj3 = skor_j4.baca_raster(rj3)
             ms["saring"].append(hitung_kejadian(R, l["tersaring"], inarisk, Rj3))
             if l["tanpa_saring"]:
                 ms["tanpa_saring"].append(hitung_kejadian(R, l["tanpa_saring"], inarisk))
@@ -439,46 +477,30 @@ def nilai(pratinjau=False):
 
 
 # ------------------------------------------------------------------ uji kering (LOKAL: butuh data/raw gitignored)
-def kering(ev="2020-01", puncak="2020-01-01", online=True, ant_hari=1, eksak=False):
-    """Putar ulang satu kejadian kalibrasi lewat jalur operasional (DEM panggang, hujan jam -> bangun_hujan, hulu Flood API, prakira) dan bandingkan AUC dengan cache kalibrasi (M0_G_kd8).
-    ant_hari = hari antecedent yang diisi (cache ERA5 kalibrasi hanya punya 1 hari sebelum mulai; operasional memakai 7). GSMaP NRT per jam 2020 tidak ada tanpa login: jam disintesis dari GSMaP harian gauge v8 x bentuk jam ERA5 titik terdekat, jadi yang diuji = DEM+alur panggang, rakitan hujan jam, hulu, prakira, skor
-    tanpa DEM penuh; BUKAN kesetaraan NRT vs gauge."""
-    global DIR
+def kering(ev="2020-01", puncak="2020-01-01", online=True, ant_hari=1):
+    """Putar ulang satu kejadian kalibrasi lewat jalur operasional (DEM panggang, bangun_hujan = total harian GSMaP x bentuk ERA5, hulu Flood API, prakira, skor tanpa DEM penuh)
+    dan bandingkan AUC dengan cache kalibrasi (M0_G_kd8). Total harian GSMaP v8 gauge (gsmap_harian.json) disuap sebagai 'sel' bernilai total/24 per jam (jumlah 24 jam = total persis); ERA5 jam dari cache kalibrasi.
+    ant_hari = hari antecedent yang diisi (cache ERA5 kalibrasi hanya punya 1 hari sebelum mulai; operasional memakai 7). GSMaP NRT 2020 tak ada tanpa login: yang diuji = pipa dan konstruksi hujan, BUKAN kesetaraan NRT vs gauge."""
+    global DIR, hari_ini
     p = dt.date.fromisoformat(puncak); gs = json.load(open(os.path.join(AKAR, "data/banjir/genangan/gsmap_harian.json"))); gl = gs["meta"]["grid"]
-    era = json.load(open(os.path.join(AKAR, "data/raw/banjir/genangan/hujan_jam", ev + ".json")))["era5"]; global hari_ini
+    era = json.load(open(os.path.join(AKAR, "data/raw/banjir/genangan/hujan_jam", ev + ".json")))["era5"]
     ci, cj = [(i, lo) for i, lo in enumerate(gl["lon"]) if 106.55 - 1e-6 <= lo <= 107.05 + 1e-6], [(j, la) for j, la in enumerate(gl["lat"]) if -6.45 - 1e-6 <= la <= -6.05 + 1e-6]
-    lon, lat = [lo for _, lo in ci], [la for _, la in cj]; waktu = era[0]["waktu"]
-    if eksak:   # isolasi pipa: deret 20 titik persis seperti mesin.mjs gsmap_dis (bilinear harian x bentuk ERA5 titik itu), disuap sebagai "sel" di 20 titik -> bilinear jam = identitas
-        lon, lat = LON, sorted(LAT, reverse=True)
+    lon, lat = [lo for _, lo in ci], [la for _, la in cj]
     with tempfile.TemporaryDirectory() as t:
         DIR = t
         for k in range(-ant_hari, 4):
-            d = p - dt.timedelta(days=2) + dt.timedelta(days=k); tot = gs["hari"].get(iso(d)); jam = []
-            for h in range(24):
-                row = []
-                if eksak:
-                    for la in lat:
-                        for lo in lon:
-                            e = next(s for s in era if abs(s["lat"] - la) < 1e-6 and abs(s["lon"] - lo) < 1e-6); ix = waktu.index(f"{iso(d)}T00:00") if f"{iso(d)}T00:00" in waktu else None
-                            sh = [x or 0 for x in e["mm"][ix:ix + 24]] if ix is not None else [1.0] * 24; T = bilinear(tot, gl["lon"], gl["lat"], lo, la) if tot else None
-                            row.append(sh[h] if T is None else (T * sh[h] / sum(sh) if sum(sh) > 1e-9 else T / 24))
-                    jam.append(row); continue
-                for j, la in cj:
-                    for i, lo in ci:
-                        e = min(era, key=lambda s: abs(s["lat"] - la) + abs(s["lon"] - lo)); sh = [x or 0 for x in e["mm"][waktu.index(f"{iso(d)}T00:00"):][:24]] if f"{iso(d)}T00:00" in waktu else [1.0] * 24
-                        v = tot[j * len(gl["lon"]) + i] if tot else None
-                        row.append(None if v is None else (v * sh[h] / sum(sh) if sum(sh) > 1e-9 else v / 24))
-                jam.append(row)
+            d = p - dt.timedelta(days=2) + dt.timedelta(days=k); tot = gs["hari"].get(iso(d))
+            jam = [[None if tot[j * len(gl["lon"]) + i] is None else tot[j * len(gl["lon"]) + i] / 24 for j, _ in cj for i, _ in ci] if tot else None] * 24
             tambah(f("j4_hujan_jam.jsonl"), baris_hujan(d, jam, "G" * 24, lon, lat))
         hari_ini = lambda: p + dt.timedelta(days=2)
         flood = ambil_flood if online else (lambda la, lo, a, b: next(v["kejadian"][ev]["q"] for v in json.load(open(os.path.join(AKAR, "public/banjir/data/genangan/hulu.json")))["titik"].values() if v["snap"] == [la, lo]))
-        if prakira(p, "kering", jalankan_mesin, flood):
+        if prakira(p, "kering", jalankan_mesin, flood, lambda a, b: era):
             return 1
         R = skor_j4.baca_raster(os.path.join(t, "j4_prakira", f"{p}.raster.gz")); R["z"] = z_panggang()
         lap = skor_j4.muat_label(iso(p - dt.timedelta(days=2)), JAM); m = skor_j4.nilai(R, lap, n_null=5)
         ref = json.load(open(os.path.join(AKAR, f"data/raw/banjir/genangan/j4_kal/{ev}_M0_G_kd{KD}.metrik.json")))
         print(json.dumps({"kejadian": ev, "n_laporan": m["n_laporan"], "auc_operasional": m["auc"], "auc_kalibrasi": ref["auc"], "selisih": m["auc"] - ref["auc"],
-                          "luas_basah": [m["luas_basah"], ref["luas_basah"]], "heuristik_auc": [m["heuristik"]["auc"], ref["heuristik"]["auc"]], "hulu": "Flood API" if online else "hulu.json", "antecedent_hari": ant_hari, "eksak": eksak}))
+                          "luas_basah": [m["luas_basah"], ref["luas_basah"]], "heuristik_auc": [m["heuristik"]["auc"], ref["heuristik"]["auc"]], "hulu": "Flood API" if online else "hulu.json", "antecedent_hari": ant_hari}))
     return 0
 
 
@@ -504,12 +526,19 @@ def uji():
         # rantai hash
         r1 = {"tanggal": "a", "prev": "0" * 64}; r1["hash"] = hash_baris(r1); r2 = {"tanggal": "b", "prev": r1["hash"]}; r2["hash"] = hash_baris(r2)
         assert rantai_ok([r1, r2]) and not rantai_ok([r2, r1]) and not rantai_ok([{**r1, "tanggal": "x"}, r2])
-        # bangun_hujan: hari jendela hilang tercatat; antecedent hilang = None; panjang 264 jam x 20 titik
+        # bangun_hujan = konstruksi kalibrasi: total harian GSMaP (jumlah 24 jam sel) x bentuk ERA5 dinormalkan; ERA5 nol -> total/24; jendela tanpa GSMaP = hilang; ERA5 kosong = belum
         mulai = dt.date(2026, 12, 10); sel = {"lon": [106.55, 106.65, 106.75, 106.85, 106.95, 107.05], "lat": [-6.05, -6.15, -6.25, -6.35, -6.45]}
         row = lambda d: {"tanggal": iso(d), "lon": sel["lon"], "lat": sel["lat"], "dikeluarkan": False, "mm": [[2.0] * 30 for _ in range(24)]}
+        wk = [f"{iso(mulai + dt.timedelta(days=k))}T{h:02d}:00" for k in range(-7, 4) for h in range(24)]
+        era_f = lambda f_: [{"lat": la, "lon": lo, "waktu": wk, "mm": [f_(i) for i in range(len(wk))]} for la in sorted(LAT) for lo in LON]
+        era_ok = era_f(lambda i: 1.0 if i % 24 == 12 else 0.0)            # semua hujan di jam 12
         rr = {iso(mulai + dt.timedelta(days=k)): row(mulai + dt.timedelta(days=k)) for k in range(0, 3)}
-        hj, hilang = bangun_hujan(rr, mulai); assert hilang == [iso(mulai + dt.timedelta(days=3))], hilang
-        s0 = hj["gsmap_jam"][0]; assert len(hj["gsmap_jam"]) == 20 and len(s0["mm"]) == 264 == len(s0["waktu"]) and s0["mm"][0] is None and s0["mm"][7 * 24] == 2.0 and s0["waktu"][7 * 24] == f"{mulai}T00:00"
+        hj, hilang, belum = bangun_hujan(rr, mulai, era_ok); assert hilang == [iso(mulai + dt.timedelta(days=3))] and not belum, (hilang, belum)
+        s0 = hj["gsmap_jam"][0]; assert len(hj["gsmap_jam"]) == 20 and len(s0["mm"]) == 264 == len(s0["waktu"])
+        assert abs(s0["mm"][7 * 24 + 12] - 48.0) < 1e-6 and sum(s0["mm"][7 * 24:7 * 24 + 24]) - 48.0 < 1e-6 and s0["mm"][7 * 24] == 0 and s0["mm"][0] == 0.0, "total harian 24 x 2 = 48 mm, bentuk ERA5 (jam 12)"
+        assert hj["era5"][0]["mm"][12] == 1.0, "ERA5 mentah disimpan (pembanding J3)"
+        hj2, _, _ = bangun_hujan(rr, mulai, era_f(lambda i: 0.0)); assert abs(hj2["gsmap_jam"][0]["mm"][7 * 24 + 5] - 2.0) < 1e-6, "ERA5 nol -> total/24"
+        hj3, _, belum = bangun_hujan(rr, mulai, era_f(lambda i: None if i >= 7 * 24 + 80 else 0.0)); assert belum == [iso(mulai + dt.timedelta(days=3))], belum
         # label: ditolak bila prediksi belum ada di origin; tersimpan sekali; di luar jendela
         tgl = dt.date.today() - dt.timedelta(days=4)
         p = {"tanggal": str(tgl), "prev": "0" * 64}; p["hash"] = hash_baris(p); tambah(f("j4_prediksi.jsonl"), p)
@@ -524,17 +553,25 @@ def uji():
         for k in range(-2, 2):
             d = tgl2 + dt.timedelta(days=k); tambah(f("j4_hujan_jam.jsonl"), row(d))
         flood = lambda la, lo, a, b: [10.0] * 7
+        era_x = lambda a, b: era_ok2(a)
+        era_ok2 = lambda a: [{"lat": la, "lon": lo, "waktu": [f"{(dt.date.fromisoformat(a) + dt.timedelta(days=k)).isoformat()}T{h:02d}:00" for k in range(11) for h in range(24)], "mm": [0.5] * 264} for la in sorted(LAT) for lo in LON]
         def mesin_palsu(tg, mu, masukan, ras, kel):
             open(ras, "wb").write(b"raster"); json.dump({"sebaran_kedalaman_puncak_m": {"persen_ge10cm": 1.5}}, open(kel, "w"))
-        assert prakira(tgl2, "sidik-x", mesin_palsu, flood) == 0
+        assert prakira(tgl2, "sidik-x", mesin_palsu, flood, era_x) == 0
         pd = baca_jsonl(f("j4_prediksi.jsonl")); assert rantai_ok(pd) and pd[-1]["prev"] == pd[-2]["hash"] and pd[-1]["sha_raster"] == sha_b(b"raster") and os.path.exists(f("j4_prakira/%s.masukan.json.gz" % tgl2))
         def rusak(*a):
             raise RuntimeError("mesin mati")
         tgl3 = dt.date.today() - dt.timedelta(days=3)
         for k in range(-2, 2):
             tambah(f("j4_hujan_jam.jsonl"), row(tgl3 + dt.timedelta(days=k)))
-        assert prakira(tgl3, "s", rusak, flood) == 1 and baca_jsonl(f("j4_gagal.jsonl"))[-1]["percobaan"] == 2 and not os.path.exists(f("j4_prakira/%s.raster.gz" % tgl3))
-        assert prakira(dt.date.today(), "s", mesin_palsu, flood) == 3, "belum D+2"
+        assert prakira(tgl3, "s", rusak, flood, era_x) == 1 and baca_jsonl(f("j4_gagal.jsonl"))[-1]["percobaan"] == 2 and not os.path.exists(f("j4_prakira/%s.raster.gz" % tgl3))
+        assert prakira(dt.date.today(), "s", mesin_palsu, flood, era_x) == 3, "belum D+2"
+        # ERA5 belum lengkap: kode 3 tanpa catatan gagal (coba besok); lewat D+9: satu baris gagal
+        era_kosong = lambda a, b: [{**e, "mm": [None] * 264} for e in era_ok2(a)]; n_g = len(baca_jsonl(f("j4_gagal.jsonl")))
+        tgl4 = dt.date.today() - dt.timedelta(days=5)
+        assert prakira(tgl4, "s", mesin_palsu, flood, era_kosong) == 3 and len(baca_jsonl(f("j4_gagal.jsonl"))) == n_g and not [r for r in baca_jsonl(f("j4_prediksi.jsonl")) if r["tanggal"] == str(tgl4)]
+        tgl5 = dt.date.today() - dt.timedelta(days=10)
+        assert prakira(tgl5, "s", mesin_palsu, flood, era_kosong) == 1 and baca_jsonl(f("j4_gagal.jsonl"))[-1]["tanggal"] == str(tgl5)
         # vonis: model sempurna lulus, tak lebih baik dari acak tidak; kejadian keluar > 20% menahan; syarat waktu
         nx = ny = 40; N = nx * ny; kc = array.array("h", [0] * N); hm = array.array("f", [0.0] * N)
         for j in range(10, 20):
@@ -565,7 +602,7 @@ if __name__ == "__main__":
     if c == ["uji"]:
         uji()
     elif c == ["kering"]:
-        sys.exit(kering(online="--offline" not in a, ant_hari=int(a[a.index("--ant") + 1]) if "--ant" in a else 1, eksak="--eksak" in a))
+        sys.exit(kering(online="--offline" not in a, ant_hari=int(a[a.index("--ant") + 1]) if "--ant" in a else 1))
     elif c == ["hujan"]:
         sys.exit(hujan(tgl or hari_ini() - dt.timedelta(days=1)))
     elif c in (["pemicu"], ["prakira"], ["label"]):
