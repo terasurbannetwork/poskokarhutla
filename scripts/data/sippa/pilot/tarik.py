@@ -69,7 +69,16 @@ way["waterway"~"river|canal"]({s_},{w},{n},{e});node["place"~"village|town|hamle
                 prims(big if lap in ("gwl", "rencana_sumur_bor", "infrastruktur_pembasahan_3r", "adm_desa") else bd, lap, f)
         g = f"{OUT}/g_{k}.json"            # peta gambut 1:250.000 di sekitar kompleks (dibaca analisis.py)
         if not os.path.exists(g) or os.path.getsize(g) < 50:
-            prims(big, "gambut_250k", g)
+            if os.environ.get("RENLAP_GAMBUT") == "moratorium":    # keputusan SIPPA 63: Kaltim tak punya poligon gambut_250k; pakai MOR_GAMBUT (PIPPIB, indikatif)
+                prims(big, "moratorium", g)
+                try:
+                    fc = json.load(open(g))
+                    fc["features"] = [x for x in fc["features"] if (x.get("properties") or {}).get("pippib_15") == "MOR_GAMBUT"]
+                    json.dump(fc, open(g, "w"))
+                except Exception:
+                    os.remove(g)
+            else:
+                prims(big, "gambut_250k", g)
         la, lo = s["kel"]["lat"], s["kel"]["lon"]
         curl(f"https://api.open-meteo.com/v1/forecast?latitude={la}&longitude={lo}&daily=precipitation_sum,precipitation_probability_max,"
              f"wind_speed_10m_max,wind_direction_10m_dominant,temperature_2m_max,relative_humidity_2m_min&timezone=Asia%2FJakarta&forecast_days=7",

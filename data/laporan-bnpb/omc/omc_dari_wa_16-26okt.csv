@@ -1,0 +1,63 @@
+tanggal_operasi,provinsi,pesawat,sortie,nacl_kg,dry_ice_kg,sasaran,hujan_dilaporkan,catatan,sumber
+2026-10-16,Kalimantan Barat,PK-SCH,2,1800,0,Ketapang;Kayong Utara,Sambas;Singkawang;Mempawah;Sintang;Landak;Kubu Raya;Kayong Utara;Ketapang;Bengkayang;Pontianak (ringan-lebat),,WA Laporan Karhutla 17 Okt
+2026-10-16,Kalimantan Tengah,PK-FPU,2,2000,0,Kotawaringin Timur;Katingan;Seruyan;Kotawaringin Barat;Pulang Pisau,Kotawaringin Barat (sedang-lebat),,WA Laporan Karhutla 17 Okt
+2026-10-16,Kalimantan Tengah,PK-SNL,2,2000,0,Pulang Pisau;Palangka Raya;Katingan,Kotawaringin Barat (sedang-lebat),dari Syamsudin Noor,WA Laporan Karhutla 17 Okt
+2026-10-16,Kalimantan Selatan,PK-SNK,1,1000,0,Hulu Sungai Selatan;Hulu Sungai Tengah;Balangan;Tabalong,Tapin;Tabalong;Balangan;Hulu Sungai Tengah;Hulu Sungai Selatan;Hulu Sungai Utara (ringan),,WA Laporan Karhutla 17 Okt
+2026-10-16,Sumatera Selatan,PK-SNP,1,0,800,Palembang (Bandara SMB II),,dari Radin Inten II Lampung; jarak pandang naik bertahap ke 3,5 km malam hari,WA Laporan Karhutla 17 Okt
+2026-10-16,Sumatera Selatan,CASA NC-212 A-2117,1,0,800,Palembang,,,WA Laporan Karhutla 17 Okt
+2026-10-17,Kalimantan Barat,PK-SCH,1,1000,0,Ketapang;Kayong Utara,Sanggau;Sintang;Bengkayang;Landak;Sambas;Mempawah;Kubu Raya;Ketapang (ringan-lebat),,WA Laporan Karhutla 18 Okt
+2026-10-17,Kalimantan Tengah,PK-SNL,1,1000,0,Pulang Pisau;Palangka Raya;Kapuas,Murung Raya;Gunung Mas;Barito Selatan;Kotawaringin Barat;Kotawaringin Timur (ringan),dari Syamsudin Noor,WA Laporan Karhutla 18 Okt
+2026-10-17,Kalimantan Tengah,PK-SNK,1,1000,0,Barito Timur;Barito Selatan,Murung Raya;Gunung Mas;Barito Selatan;Kotawaringin Barat;Kotawaringin Timur (ringan),kemungkinan penerbangan yang sama dengan baris Kalsel PK-SNK hari ini,WA Laporan Karhutla 18 Okt
+2026-10-17,Kalimantan Selatan,PK-SNK,1,1000,0,Tabalong;Barito Timur;Barito Selatan,,kemungkinan penerbangan yang sama dengan baris Kalteng PK-SNK hari ini,WA Laporan Karhutla 18 Okt
+2026-10-17,Sumatera Selatan,PK-SNP,1,0,800,Palembang (Bandara SMB II),,dari Radin Inten II Lampung,WA Laporan Karhutla 18 Okt
+2026-10-17,Sumatera Selatan,CASA NC-212 A-2117,2,800,800,timur-tenggara Palembang (dry ice);timur laut Palembang;OKI;Ogan Ilir (NaCl),,1 sortie dry ice + 1 sortie NaCl,WA Laporan Karhutla 18 Okt
+2026-10-18,Kalimantan Barat,PK-SCH,1,1000,0,Ketapang;Kayong Utara,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;Ketapang (ringan-lebat),,WA Laporan Karhutla 19 Okt
+2026-10-18,Kalimantan Tengah,PK-SNL,1,1000,0,Kapuas;Barito Selatan,Kapuas,PK-FPU tidak terbang (visibilitas),WA Laporan Karhutla 19 Okt
+2026-10-18,Kalimantan Tengah,PK-SNK,1,1000,0,Barito Timur;Barito Selatan,Kapuas,lintas provinsi bersama Kalsel; kemungkinan sama dengan salah satu sortie Kalsel PK-SNK hari ini,WA Laporan Karhutla 19 Okt
+2026-10-18,Kalimantan Selatan,PK-SNK,2,2000,0,Tapin;Barito Selatan;Barito Timur;Banjar;Barito Kuala;Kotabaru,Hulu Sungai Utara (radar),,WA Laporan Karhutla 19 Okt
+2026-10-18,Sumatera Selatan,tidak dirinci,4,800,2400,Palembang;Banyuasin;OKI;Ogan Ilir,Tol Palindra (ringan),3 sortie dry ice + 1 sortie NaCl; dry ice dari Lampung berakhir 18 Okt,WA Laporan Karhutla 19 Okt
+2026-10-19,Kalimantan Barat,PK-SCH,2,1800,0,Ketapang;Kayong Utara,Sambas;Sintang;Singkawang;Bengkayang;Landak;Mempawah;Pontianak;Kubu Raya;Sanggau;Sekadau;Melawi;Kayong Utara;Ketapang (ringan-lebat),kedua sasaran hujan (Laporan Pemantauan Hujan Pasca OMC 19 Okt),WA Laporan Karhutla 20 Okt
+2026-10-19,Kalimantan Tengah,PK-FPU,1,1000,0,Katingan;Kotawaringin Timur;Seruyan;Kotawaringin Barat,Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,,WA Laporan Karhutla 20 Okt
+2026-10-19,Kalimantan Tengah,PK-SNL,1,1000,0,Kapuas;Barito Selatan,Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,,WA Laporan Karhutla 20 Okt
+2026-10-19,Kalimantan Tengah,PK-SNK,1,1000,0,Barito Timur;Barito Selatan;Tabalong (Kalsel),Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,sama dengan sortie 1 Kalsel PK-SNK (disebut eksplisit); hanya dihitung di sini,WA Laporan Karhutla 20 Okt
+2026-10-19,Kalimantan Tengah,CASA A-2107,2,800,800,Palangka Raya (dry ice);Pulang Pisau;Kotawaringin Timur (NaCl),Barito Selatan;Seruyan;Kotawaringin Timur;Kotawaringin Barat,,WA Laporan Karhutla 20 Okt
+2026-10-19,Kalimantan Selatan,PK-SNK,1,1000,0,Banjar;Barito Kuala;Delta Barito,tidak terpantau hujan (radar 24 jam),sortie 1 (Tabalong-Barito) sudah di baris Kalteng,WA Laporan Karhutla 20 Okt
+2026-10-19,Sumatera Selatan,CASA A-2117,3,800,1600,timur laut-timur Palembang;tenggara Palembang (dry ice);Ogan Ilir;OKI;Banyuasin (NaCl),Pemulutan Ogan Ilir;Kikim Timur Lahat (sangat ringan),jarak pandang Palembang 700 m pagi ke 7 km pukul 10.30,WA Laporan Karhutla 20 Okt
+2026-10-20,Kalimantan Barat,PK-SCH,1,1000,0,Ketapang;Kayong Utara,Sambas;Singkawang;Bengkayang;Landak;Mempawah;Kubu Raya;Sanggau;Ketapang;Pontianak (ringan-lebat),,WA Laporan Karhutla 21 Okt
+2026-10-20,Kalimantan Tengah,PK-SNL,3,800,1500,Palangka Raya (dry ice);Kotawaringin Timur;perbatasan Seruyan-Kotawaringin Barat (NaCl),Kotawaringin Barat (Pangkalan Bun),2 sortie dry ice 1.000 + 500 kg; Rekap Dry Ice 20 Okt menyebut 2 sortie dry ice PK-SNL,WA Laporan Karhutla 21 Okt; Rekap Dry Ice 20 Okt
+2026-10-20,Kalimantan Tengah,CASA A-2107,3,0,2400,Palangka Raya,Kotawaringin Barat (Pangkalan Bun),PM2.5 pagi turun 1.907 ke 1.200 (Rekap Dry Ice),WA Laporan Karhutla 21 Okt; Rekap Dry Ice 20 Okt
+2026-10-20,Sumatera Selatan,CASA A-2117,1,0,800,timur laut-timur Palembang,,pukul 11.29-13.04 WIB; jarak pandang 1 ke 3 km,WA Laporan Karhutla 21 Okt; Rekap Dry Ice 20 Okt
+2026-10-21,Kalimantan Barat,PK-SCH,2,1800,0,Ketapang;Kayong Utara,Sambas;Singkawang;Pontianak;Bengkayang;Landak;Kubu Raya;Sanggau;Ketapang (ringan-sedang),,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Tengah,PK-FPU,2,2000,0,Kotawaringin Timur;Seruyan;Kotawaringin Barat;Pulang Pisau;Katingan,Kotawaringin Barat,,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Tengah,PK-SNL,1,0,1000,Palangka Raya,Kotawaringin Barat,,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Tengah,PK-SNC,1,0,1000,Palangka Raya,Kotawaringin Barat,,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Tengah,CASA A-2103,1,0,800,Palangka Raya,Kotawaringin Barat,,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Tengah,CASA A-2107,2,0,1600,Palangka Raya,Kotawaringin Barat,,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Tengah,CASA A-2119,1,800,0,Kapuas;Pulang Pisau;Katingan,Kotawaringin Barat,,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Tengah,PK-SNK,1,1000,0,Barito Timur;Tabalong (Kalsel),Kotawaringin Barat,sama dengan sortie 1 Kalsel PK-SNK (disebut eksplisit); hanya dihitung di sini,WA Laporan Karhutla 22 Okt
+2026-10-21,Kalimantan Selatan,PK-SNK,1,1000,0,Kotabaru;Tanah Bumbu;Banjar;Barito Kuala,,sortie 1 (Tabalong-Barito Timur) sudah di baris Kalteng,WA Laporan Karhutla 22 Okt
+2026-10-21,Sumatera Selatan,CASA A-2117,3,0,2400,timur;tenggara;barat daya;barat laut Palembang,,jarak pandang 200 m pagi ke 2,5 km pukul 14.30,WA Laporan Karhutla 22 Okt
+2026-10-21,Sumatera Selatan,CASA A-2104,1,0,800,sekitar bandara dan kota Palembang,,,WA Laporan Karhutla 22 Okt
+2026-10-21,Sumatera Selatan,PK-SNP,2,800,800,Palembang (dry ice blocking);Palembang;Banyuasin (NaCl),,dari Lampung,WA Laporan Karhutla 22 Okt
+2026-10-23,Kalimantan Barat,PK-SCH,1,1000,0,Sekadau;Ketapang;Sintang,Sambas;Bengkayang;Landak;Sanggau;Sekadau;Sintang;Ketapang (ringan-sedang radar),,WA Laporan Karhutla 24 Okt
+2026-10-23,Kalimantan Tengah,tidak dirinci,8,2000,5200,Katingan;Kotawaringin Timur;Seruyan;Kotawaringin Barat (NaCl);Palangka Raya (dry ice),Murung Raya (22 Okt),,WA Laporan Karhutla 24 Okt
+2026-10-23,Kalimantan Selatan,PK-SNK,1,1000,0,Kotabaru;Tanah Bumbu;Tanah Laut,Kotabaru,,WA Laporan Karhutla 24 Okt
+2026-10-23,Sumatera Selatan,CASA A-2117;CASA A-2104;PK-SNP;PK-IKC,6,0,4900,Palembang dan sekitarnya,,,WA Laporan Karhutla 24 Okt
+2026-10-23,Sumatera Selatan,Hercules C-130H A-1319,1,2200,0,Banyuasin;OKI,,,WA Laporan Karhutla 24 Okt
+2026-10-24,Kalimantan Tengah,tidak dirinci,8,3000,4500,Palangka Raya (dry ice);Palangka Raya;Katingan;Pulang Pisau;Kotawaringin Timur;Kotawaringin Barat (NaCl),Seruyan (deras),dari Syamsudin Noor; PK-FPU siaga,WA Laporan Karhutla 25 Okt
+2026-10-24,Kalimantan Selatan,PK-SNK,2,2000,0,Tanah Laut;Kotabaru;Barito Kuala;Tapin;Hulu Sungai Selatan;Hulu Sungai Utara;Balangan,Tapin;Kotabaru,,WA Laporan Karhutla 25 Okt
+2026-10-24,Sumatera Selatan,CASA A-2117;CASA A-2104;PK-SNP;PK-IKC,4,0,3300,Palembang dan sekitarnya,Musi Banyuasin;Palembang;Banyuasin;OKI (bervariasi),jarak pandang Palembang 10 km pukul 09.00-15.00,WA Laporan Karhutla 25 Okt
+2026-10-24,Sumatera Selatan,Hercules C-130H A-1319;CASA A-2104;PK-IKC,4,8800,0,Banyuasin;OKI;Musi Banyuasin,Musi Banyuasin;Palembang;Banyuasin;OKI (bervariasi),,WA Laporan Karhutla 25 Okt
+2026-10-26,Kalimantan Tengah,PK-FPU,3,3000,0,Gunung Mas;Katingan;Kotawaringin Timur;Seruyan;Pulang Pisau;Kapuas;Barito Selatan,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,,WA Laporan Karhutla 27 Okt
+2026-10-26,Kalimantan Tengah,PK-SNL,1,1000,0,Pulang Pisau;Katingan;Palangka Raya,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,,WA Laporan Karhutla 27 Okt
+2026-10-26,Kalimantan Tengah,A-2105,2,1600,0,Pulang Pisau;Katingan,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,,WA Laporan Karhutla 27 Okt
+2026-10-26,Kalimantan Tengah,A-2904,2,4000,0,Kotawaringin Timur;Seruyan;Kotawaringin Barat;Sukamara;Lamandau;Katingan;Palangka Raya;Kapuas;Barito Selatan;Barito Timur,Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,,WA Laporan Karhutla 27 Okt
+2026-10-26,Kalimantan Tengah,Hercules A-1328,1,4800,0,Pulang Pisau;Palangka Raya;Katingan;Kotawaringin Barat;Kotabaru (Kalsel);Hulu Sungai Selatan (Kalsel),Palangka Raya;Kotawaringin Barat;Kotawaringin Timur;Barito Utara;Pulang Pisau,lintas provinsi Kalsel; hanya dihitung di sini,WA Laporan Karhutla 27 Okt
+2026-10-26,Sumatera Selatan,Hercules A-1319,1,4800,0,OKI;OKU;OKU Timur,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),dry ice nihil 26 Okt,WA Laporan Karhutla 27 Okt
+2026-10-26,Sumatera Selatan,CASA A-2104,2,1600,0,OKI;Banyuasin,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),,WA Laporan Karhutla 27 Okt
+2026-10-26,Sumatera Selatan,PK-IKC,2,2000,0,Banyuasin;OKI,Pangkalan Lampam OKI (deras);Air Sugihan OKI (ringan);Banyuasin (deras),,WA Laporan Karhutla 27 Okt
+2026-10-22,Kalimantan Tengah,tidak dirinci,7,1000,5000,Murung Raya;Gunung Mas;Palangka Raya;TNTP,Murung Raya,,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Sumatera Selatan,tidak dirinci,9,1800,5800,Palembang dan sekitarnya;lintas Lampung-OKU Timur,,dilaporkan perbaikan jarak pandang dan penurunan PM2.5 (klaim laporan),WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Kalimantan Barat,tidak ada OMC,0,0,0,,Sambas;Singkawang;Mempawah;Sintang (ringan radar),awan potensial belum mendukung,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Kalimantan Selatan,tidak ada OMC,0,0,0,,,armada siaga,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)
+2026-10-22,Jambi,tidak ada OMC,0,0,0,,,armada siaga; BMKG peringatkan hujan sedang-lebat Muaro Jambi dan Tanjung Jabung Timur,WA Laporan Penanganan Karhutla 23 Okt (Mensesneg)

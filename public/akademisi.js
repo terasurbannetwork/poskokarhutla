@@ -1,5 +1,5 @@
 /* /akademisi: direktori pakar kebencanaan, hanya staf BNPB dan admin. Data dari GET /api/akademisi (R2, bersesi; src/akademisi.js).
-   Baris = [id, nama, kampus, [rumpun], h, karya, sitasi, orcid, [topik], foto, idSinta, prodi, subjek, status (s terdaftar SINTA, x tidak ada, "" belum dicek)].
+   Baris = [id, nama, kampus, [rumpun], h, karya, sitasi, orcid, [topik], foto, idSinta, prodi, subjek, status (s terdaftar SINTA, x tidak ada, "" belum dicek), logo kampus].
    Semua teks dari luar di-escape. CSP: tanpa inline (galat foto ditangkap lewat listener capture). */
 (() => {
   "use strict";
@@ -37,10 +37,12 @@
     ? `<img class="ak-foto${besar ? " besar" : ""}" src="${esc(o[9])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-inisial="${esc(inisial(o[1]))}">`
     : `<span class="ak-foto${besar ? " besar" : ""}" aria-hidden="true">${esc(inisial(o[1]))}</span>`;
   const sub = o => esc(o[11] ? `${o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, "")}, ${o[2]}` : o[2]);
+  const logo = o => o[14] ? `<img class="ak-logo" src="${esc(o[14])}" alt="Logo ${esc(o[2])}" loading="lazy" referrerpolicy="no-referrer">` : "";
+  const sosok = (o, besar) => `<span class="ak-sosok${besar ? " besar" : ""}">${foto(o, besar)}${logo(o)}</span>`;
 
   function kartu(o, i) {
     return `<button type="button" class="ak-orang" data-i="${i}">
-      <div class="ak-atas">${foto(o)}<div class="ak-nama"><h3>${esc(o[1])}</h3><p>${sub(o)}</p></div></div>
+      <div class="ak-atas">${sosok(o)}<div class="ak-nama"><h3>${esc(o[1])}</h3><p>${sub(o)}</p></div></div>
       <div class="ak-pil">${o[3].map((r, j) => pilRumpun(r, j === 0)).join("")}</div>
       ${metrik(o)}
     </button>`;
@@ -67,7 +69,7 @@
   function buka(o) {
     const tautan = [[`https://openalex.org/${o[0]}`, "OpenAlex"], o[10] && [`https://sinta.kemdiktisaintek.go.id/authors/profile/${o[10]}`, "SINTA"],
       o[7] && [`https://orcid.org/${o[7]}`, "ORCID"]].filter(Boolean);
-    $("akDIsi").innerHTML = `<div class="ak-atas">${foto(o, true)}<div class="ak-nama"><h2 id="akDNama">${esc(o[1])}</h2><p>${sub(o)}</p>
+    $("akDIsi").innerHTML = `<div class="ak-atas">${sosok(o, true)}<div class="ak-nama"><h2 id="akDNama">${esc(o[1])}</h2><p>${sub(o)}</p>
         <p class="ak-tanda${o[13] === "s" ? " ok" : ""}">${o[13] === "s" ? "Terdaftar di SINTA" : o[13] === "x" ? "Tidak ditemukan di SINTA" : "Belum dicocokkan dengan SINTA"}</p></div></div>
       ${metrik(o)}
       <div class="ak-dbagian"><h3>Rumpun bahaya</h3><div class="ak-pil">${o[3].map((r, j) => pilRumpun(r, j === 0)).join("")}</div></div>
@@ -85,8 +87,12 @@
     const per = {}, perK = {};
     semua.forEach(o => { o[3].forEach(r => { per[r] = (per[r] || 0) + 1; }); perK[o[2]] = (perK[o[2]] || 0) + 1; });
     const dosen = semua.filter(o => o[13] === "s").length;
-    $("akAngka").innerHTML = [[semua.length, "pakar terhimpun"], [Object.keys(perK).length, "kampus dan lembaga"], [dosen, "terdaftar di SINTA"],
-      [semua.filter(o => o[4] >= 20).length, "h-index 20 ke atas"]].map(([n, l]) => `<div><b>${angka(n)}</b><span>${l}</span></div>`).join("");
+    $("akAngka").innerHTML = [
+      [semua.length, "pakar terhimpun", '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c3 0 5.5 2 5.5 5"/>', "#e8590c"],
+      [Object.keys(perK).length, "kampus dan lembaga", '<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5M22 9v6"/>', "#4263eb"],
+      [dosen, "terdaftar di SINTA", '<path d="M12 3l2.5 2 3.2-.3.8 3.1 2.7 1.8-1.3 3 1.3 3-2.7 1.8-.8 3.1-3.2-.3L12 21l-2.5-2-3.2.3-.8-3.1L2.8 14.4l1.3-3-1.3-3 2.7-1.8.8-3.1 3.2.3z"/><path d="m8.5 12 2.5 2.5 4.5-5"/>', "#2b8a3e"],
+      [semua.filter(o => o[4] >= 20).length, "h-index 20 ke atas", '<path d="M12 3l2.7 5.6 6.1.9-4.4 4.3 1 6.1L12 17l-5.4 2.9 1-6.1-4.4-4.3 6.1-.9z"/>', "#f08c00"]]
+      .map(([n, l, d, w]) => `<div><span class="ak-kpi-ikon" style="--w:${w}">${ikon(d, w)}</span><b>${angka(n)}</b><span>${l}</span></div>`).join("");
     $("akRumpun").innerHTML = `<button type="button" data-r="" aria-pressed="true">Semua</button>` +
       d.rumpun.slice().sort((a, b) => (per[b] || 0) - (per[a] || 0)).map(r => { const [l, ic, w] = RUMPUN[r] || [r, "", "#6b7280"];
         return `<button type="button" data-r="${esc(r)}" aria-pressed="false">${ic ? ikon(ic, w) : ""}${esc(l)}<span>${angka(per[r] || 0)}</span></button>`; }).join("");
@@ -120,7 +126,9 @@
   // foto gagal dimuat (Scholar menghapus/menolak): ganti lingkaran inisial
   document.addEventListener("error", e => {
     const img = e.target;
-    if (img.tagName !== "IMG" || !img.classList.contains("ak-foto")) return;
+    if (img.tagName !== "IMG") return;
+    if (img.classList.contains("ak-logo")) { img.remove(); return; }
+    if (!img.classList.contains("ak-foto")) return;
     const s = document.createElement("span"); s.className = img.className; s.textContent = img.dataset.inisial; s.setAttribute("aria-hidden", "true");
     img.replaceWith(s);
   }, true);

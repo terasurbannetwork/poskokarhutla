@@ -46,8 +46,19 @@ ACUAN = wib(R["acuan"], "%d %b %Y, %H.%M")
 HARI = R.get("hari_fwi", "2026-10-26")                  # tanggal baris FWI yang dipakai kartu cuaca
 DARI = len(D["situs"])
 teks_renlap.HARI_FWI[0] = HARI
+GN2 = "gambut indikatif PIPPIB" if teks_renlap.MOR else "peta gambut resmi"
+GN = teks_renlap.G_NAMA if GENERIK else "peta gambut resmi"
 if GENERIK:
     UMUM = teks_renlap.umum(D)                           # teks umum renlap: tanpa jadwal dan nama lokasi pilot Kalteng
+    # RENLAP_EKSTRA = berkas JSON {judul, uji:{id:teks}, putus:[...], gagasan, cek_gambut}: penimpa tulisan tangan per dossier (mis. pilot provinsi lain)
+    EKSTRA = json.load(open(os.environ["RENLAP_EKSTRA"])) if os.environ.get("RENLAP_EKSTRA") else {}
+    for _k in ("putus", "gagasan", "cek_gambut", "panjang"):
+        if _k in EKSTRA:
+            UMUM[_k] = EKSTRA[_k]
+    if "judul" in EKSTRA:
+        R["judul"] = EKSTRA["judul"]
+else:
+    EKSTRA = {}
 
 
 def target(s):
@@ -133,6 +144,8 @@ def baris(k, v):
 
 
 def uji(s):
+    if s["id"] in EKSTRA.get("uji", {}):
+        return EKSTRA["uji"][s["id"]]
     if s["id"] in UJI:
         return UJI[s["id"]]
     if GENERIK and not s.get("paksa"):
@@ -155,7 +168,7 @@ def kepala(s, sub):
 def air(s):
     """sumber air petak: dict jenis, nama, lat, lon, d_km, garis"""
     c = s["air_calon"][0]
-    nama = c["jenis"].split(" (")[0]
+    nama = {"danau_kolam": "danau atau kolam", "anak_sungai": "anak sungai"}.get(c["jenis"].split(" (")[0], c["jenis"].split(" (")[0])
     return {**c, "nama": nama[0].lower() + nama[1:] if not nama.startswith("Sungai ") else nama}
 
 
@@ -313,12 +326,25 @@ def peta_detail(s):
         pa = q
         dekat_parkir = True
     perahu = s["akses"]["ujung"] == "perahu"
+    lu = ((18, -14, "start") if kiri else (-18, -14, "end")) if dekat else (-16, -14, "end")
+    if lu[2] == "start" and u[0] > W - 190:         # label tidak boleh terpotong tepi peta
+        lu = (-18, -14, "end")
+    elif lu[2] == "end" and u[0] < 190:
+        lu = (18, -14, "start")
     o.append(tautan(T["ujung"], penanda(*u, "#334155", n_parkir, "o", 13)
-             + label(*u, "Turun perahu" if perahu else "Parkir mobil",
-                     *(((18, -14, "start") if kiri else (-18, -14, "end")) if dekat else (-16, -14, "end")))))
+             + label(*u, "Turun perahu" if perahu else "Parkir mobil", *lu)))
+    # label petak: sisi bawaan; bila penanda lain (pompa, parkir, kaki) menutupinya, pindah ke sisi lawan, lalu ke bawah
+    def _tutup(arah):
+        return any(0 < (q[0] - tp[0]) * arah < 190 and abs(q[1] - tp[1]) < 40 for q in (pa, u, (mx, my)))
+    arah0 = -1 if kiri else 1
+    if not _tutup(arah0):
+        lp = ((-20, -14, "end") if kiri else (20, -14, "start")) if dekat else ((-20, -12, "end") if kiri else (18, -12, "start"))
+    elif not _tutup(-arah0):
+        lp = (-20, -14, "end") if arah0 > 0 else (20, -14, "start")
+    else:
+        lp = (0, 38, "middle")
     o.append(tautan(tg, penanda(*tp, "#ea580c", n_petak, "o", 14)
-             + label(*tp, "Petak uji" if s["target"] else "Petak latihan",
-                     *(((-20, -14, "end") if kiri else (20, -14, "start")) if dekat else ((-20, -12, "end") if kiri else (18, -12, "start"))))))
+             + label(*tp, "Petak uji" if s["target"] else "Petak latihan", *lp)))
     o.append(tautan(airt, penanda(*pa, "#0369a1", n_pompa, "o", 12)
              + label(*pa, "Pompa", *((16, 18, "start") if dekat_parkir
                                       else (0, 30, "middle")), kls="lbl kecil")))
@@ -343,7 +369,7 @@ WARNA = [("#ff8a1f", "Oranye terang", "api atau bara"), ("#9d1d4f", "Merah tua s
 
 def legenda(s):
     ada = ADA.get(s["id"], set())
-    return '<div class="legenda">' + "".join(f"<span>{ikon}{e(nm)}</span>" for k, ikon, nm in SIMBOL if k in ada) + "</div>"
+    return '<div class="legenda">' + "".join(f"<span>{ikon}{e('Petak latihan' if k == 'petak' and not s['target'] else nm)}</span>" for k, ikon, nm in SIMBOL if k in ada) + "</div>"
 
 
 def keterangan(s):
@@ -407,9 +433,9 @@ def sidebar(s):
         h.append('<tr><td>Peluang, %</td>' + "".join(f"<td>{x}</td>" for x in cu["precipitation_probability_max"]) + "</tr></table>")
     h.append("</div>")
     h.append('<div class="kartu"><div class="kj">Lahan dan riwayat</div><table>')
-    h.append(baris_kartu("Gambut", f'<b>Ya</b>, di peta gambut resmi; kedalaman: {t["dalam"]}' if s.get("gambut_prims", True)
-                         else f'<b>Tidak tercatat</b> di peta gambut resmi 1:250.000; kedalaman: {t["dalam"]}'))
-    h.append(baris_kartu("Tahun ada api", f'<b>{k["kekerapan_sel22"]}</b> dari 14 tahun (2012–2025)'))
+    h.append(baris_kartu("Gambut", f'<b>Ya</b>, di {GN}; kedalaman: {t["dalam"]}' if s.get("gambut_prims", True)
+                         else f'<b>Tidak tercatat</b> di ' + (GN if GENERIK else 'peta gambut resmi 1:250.000') + '; ' + (t["dalam"].split("; ", 1)[1] if t["dalam"].startswith("Tidak tercatat") and "; " in t["dalam"] else f'kedalaman: {t["dalam"]}')))
+    h.append(baris_kartu("Tahun ada api", f'<b>{k["kekerapan_sel22"]}</b> dari 14 tahun (2012–2025)' if k["kekerapan_sel22"] is not None else "Belum ada data riwayat tahunan di wilayah ini"))
     h.append(baris_kartu("Desa", f'{e(s["desa"]["desa"])}, Kec. {e(s["desa"]["kecamatan"])}'))
     h.append(baris_kartu("Kesatuan hidrologis gambut", e(s["khg"]["nama_khg"].replace("KHG ", ""))))
     h.append("</table></div>")
@@ -483,13 +509,14 @@ def halaman_jalan(s):
     o, leg = peta_rute(s)
     daftar = lambda xs: "<ul>" + "".join(f"<li>{isi(s, x)}</li>" for x in xs) + "</ul>"
     pj = [x["z"] for x in s["profil_jalan"] if x["z"] is not None]
+    catat = '<p class="catat">' + isi(s, t["rute_catatan"]) + "</p>" if t["rute_catatan"] else ""
     return (f'<section class="hal lanskap">{kepala(s, "2 DARI 3, PERJALANAN DAN PERSIAPAN")}<div class="isi-jalan">'
             f'<div class="kol"><div class="kartu"><div class="kj">Peta rute</div><div class="bingkai">{"".join(o)}</div>'
             f'<div class="legenda">{leg}</div></div>'
             f'<div class="kartu"><div class="kj">Naik-turun jalur jalan kaki</div>{profil_svg(s, "profil_jalan")}'
             f'<div class="ket">{"Naik-turun ± " + ang(max(pj) - min(pj), 0) + " m. " if pj else ""}Data ketinggian ikut menghitung tinggi pohon, jadi angka nyata bisa lebih kecil. Head pompa ada di halaman pemasangan.</div></div></div>'
             f'<div class="kol"><div class="kartu"><div class="kj">Alur perjalanan, ± {menit_total(s)} menit sampai petak</div>{kartu_alur(s, False)}'
-            f'<p class="catat">{isi(s, t["rute_catatan"])}</p></div>'
+            f'{catat}</div>'
             f'<div class="kartu"><div class="kj">Tips lokasi ini</div>{daftar(t["tips"])}</div></div>'
             f'<div class="kol"><div class="kartu"><div class="kj">Barang yang dibawa</div>{tabel_kit(s)}<p class="ket">Gambar dan spesifikasi tiap barang ada di lampiran di akhir dossier.</p></div></div>'
             f'</div></section>')
@@ -516,7 +543,7 @@ def peta_tata(s):
     if relay:
         for k in range(1, relay["n_ruas"]):
             rx, ry = a[0] + (yx - a[0]) * k / relay["n_ruas"], a[1] + (yy - a[1]) * k / relay["n_ruas"]
-            o.append(penanda(rx, ry, "#b45309", "+", "s", 11) + label(rx, ry, "Pompa tambahan", 16, 5, kls="lbl kecil"))
+            o.append(penanda(rx, ry, "#b45309", "+", "s", 11) + (label(rx, ry, "Pompa tambahan", 16, -16, kls="lbl kecil") if k == 1 else ""))
     for lb, fa, fb in (("L1", 0.9, -0.75), ("L2", 2.2, -0.75), ("K1", 0.9, 0.75), ("K2", 2.2, 0.75)):
         cx = yx + ux * fa * s10 * 1.25 + nx * fb * s10 * 1.25
         cy = yy + uy * fa * s10 * 1.25 + ny * fb * s10 * 1.25
@@ -525,8 +552,11 @@ def peta_tata(s):
                  f'<text x="{cx:.1f}" y="{cy + 5:.1f}" class="nomor" style="font-size:14px">{lb}</text>')
     o.append(f'<circle cx="{yx:.1f}" cy="{yy:.1f}" r="7" fill="#fff" stroke="#f97316" stroke-width="3"/>')
     o.append(tautan(airt, penanda(*a, "#0369a1", "P", "s", 13)))
-    o.append(label(a[0] - ux * 22, a[1] - uy * 22, "Pompa", 0, 5, "end" if ux > 0 else "start"))
-    o.append(label(a[0] - nx * 58, a[1] - ny * 58, w["nama"].capitalize() + ", sumber air", 0, 5, "middle", "lbl kecil biru"))
+    px_, ancp = a[0] - ux * 22, "end" if ux > 0 else "start"
+    if (ancp == "end" and px_ < 85) or (ancp == "start" and px_ > W - 85):       # label tidak boleh terpotong tepi peta
+        px_, ancp = a[0] + ux * 22, "start" if ancp == "end" else "end"
+    o.append(label(px_, a[1] - uy * 22, "Pompa", 0, 5, ancp))
+    o.append(label(min(max(a[0] - nx * 58, 100), W - 100), a[1] - ny * 58, w["nama"].capitalize() + ", sumber air", 0, 5, "middle", "lbl kecil biru"))
     mx, my = (a[0] + yx) / 2, (a[1] + yy) / 2
     if L >= 100:
         o.append(label(mx, my, f"selang ± {ang(s['hid']['L'])} m", -nx * 26, -ny * 26 + 4, "middle", "lbl kecil"))
@@ -606,8 +636,8 @@ KOLOM = ('<colgroup><col style="width:5mm"><col style="width:47mm"><col style="w
          '<th>Sumber air dan selang</th><th>Waktu sampai petak</th><th>Untuk uji apa</th></tr>')
 
 SUMBER = ('<div class="sumber">Sumber: titik api NASA FIRMS (VIIRS S-NPP, NOAA-20, NOAA-21, MODIS) lewat Centurisk97, acuan {acuan}, dihitung sebagai lokasi unik per hari WIB. '
-          'Gambut: peta 1:250.000 Kementan BBSDLP di PRIMS BRGM; kanal, sumur bor, sekat kanal: PRIMS BRGM; batas desa: BIG RBI lewat PRIMS. '
-          'Air, jalan, dan rute: OpenStreetMap dan model akses SIPPA (perkiraan, belum diukur). Citra: Sentinel-2 L2A (Copernicus), Esri World Imagery. '
+          + ('Gambut: peta indikatif moratorium PIPPIB (KLHK) di PRIMS BRGM; kanal' if teks_renlap.MOR else 'Gambut: peta 1:250.000 Kementan BBSDLP di PRIMS BRGM; kanal') + ', sumur bor, sekat kanal: PRIMS BRGM; batas desa: BIG RBI lewat PRIMS. '
+          + 'Air, jalan, dan rute: OpenStreetMap dan model akses SIPPA (perkiraan, belum diukur). Citra: Sentinel-2 L2A (Copernicus), Esri World Imagery. '
           'Cuaca: indeks FWI Centurisk97 dan prakiraan Open-Meteo. Kedalaman gambut: penelitian per kawasan, wajib dibor. Tidak memuat nama pemegang izin.</div>')
 
 
@@ -620,7 +650,7 @@ def halaman_ringkas():
     satu = (f'<section class="hal potret"><header class="kepala1"><div class="sup">BNPB SIPPA, SISTEM PIPA PORTABEL KARHUTLA DAN BANJIR</div>'
             f'<div class="baris1"><h1>{R.get("judul", "Pilot Kalimantan Tengah: 10 lokasi uji")}</h1><div class="kanan">Kondisi per {ACUAN}<br>Dossier tim lapangan, {2 + 3 * len(S) + (len(ALAT) + 7) // 8} halaman</div></div></header>'
             f'<div class="kpi4"><div><b class="oranye">{ang(R["kalteng48"])}</b><span>titik api {R["wilayah"] + " " + R["tgl_label"] if GENERIK else "Kalteng 25–26 Okt"}</span></div>'
-            f'<div><b class="kecilb">{kab}</b><span>kabupaten terbanyak</span></div><div><b>{R.get("n_gambut", 10)} dari {len(S)}</b><span>lokasi di dalam peta gambut resmi</span></div>'
+            f'<div><b class="kecilb">{kab}</b><span>kabupaten terbanyak</span></div><div><b>{R.get("n_gambut", 10)} dari {len(S)}</b><span>lokasi di dalam {GN2}</span></div>'
             f'<div><b>{len(A)} + {len(B)}</b><span>lokasi selang pendek dan selang panjang</span></div></div>'
             f'<p class="gagasan">{UMUM["gagasan"]}</p>'
             f'{tabelA}'
@@ -649,7 +679,7 @@ for s in D["situs"]:
     if s["id"] not in TEKS:
         TEKS[s["id"]] = teks_panjang(s["id"], s) if s["id"] in DALAM_PANJANG else teks_renlap.teks_otomatis(s)
 
-html = (f'<!doctype html><html lang="id"><head><meta charset="utf-8"><title>SIPPA Pilot Kalteng: dossier lapangan</title>'
+html = (f'<!doctype html><html lang="id"><head><meta charset="utf-8"><title>SIPPA: dossier lapangan</title>'
         f'<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"><style>{open(f"{HERE}/gaya.css").read()}{CSS_RENLAP if GENERIK else ""}</style></head><body>'
         + halaman_ringkas() + "".join(halaman_peta(s) + halaman_jalan(s) + halaman_pasang(s) for s in D["situs"]) + halaman_lampiran(ACUAN) + "</body></html>")
 if GENERIK:      # halaman lanskap diberi baris sumber dan kondisi; istilah satelit "titik panas", bukan "titik api"
