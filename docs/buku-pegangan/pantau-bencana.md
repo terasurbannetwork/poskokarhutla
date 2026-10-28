@@ -4,8 +4,8 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
-Disegarkan 27 Okt 2026\
-commit 61efb5f6
+Disegarkan 28 Okt 2026\
+commit 1a94c45a
 
 [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Katalog modul dan design system](#katalog-modul-dan-design-system) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
 
@@ -20,6 +20,20 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
    - **Model genangan DKI: M0 gagal uji, M1 dibekukan** (pemilik: *"Tahan uji. Ganti sumber hujan M0 ke GSMaP"*, lalu *"Lanjut M1"*). M0 (kurva hujan pemicu, GSMaP harian 1.771 hari) diuji sekali pada 2024-2025: ETS 0,174 lawan klimatologi bulanan 0,180, vonis GAGAL, label hipotesis (`docs/banjir/KRITERIA-M0.md`, `RISET-MODEL-GENANGAN.md` §9). M1 (model tangki per kecamatan dengan suku dasar per kecamatan) dibekukan 28 Okt dengan sidik `778f2309`, uji prospektif musim 2026/27 sampai 30 Apr 2027 (`KRITERIA-M1.md`, tafsir n_musim harfiah di `KRITERIA-M1-TAFSIR.md`); pengumpul harian `m1_prospektif.yml` 22.30 dan 04.30 WIB.
    - **Pos tinggi air DKI dan Tangerang tampil** (58 pos berambang resmi): DSDA dibaca dari JSON resmi `datatmalaststatus.json` (satuan mm), parser diperketat atas temuan guard-api.
    - **Insiden kuota baca D1** (`5338162a`): produksi galat 500 setelah 5 juta baris baca/hari habis; status SIHKA kini berjeda 3 jam. Pemilik wajib menerapkan migrasi 0072 ke D1 produksi.
+   - **Hitungan hotspot memasukkan keyakinan rendah** (`4262986d`, `d9c0ac8f`), membalik aturan 25 Okt "sedang dan tinggi saja". Sebabnya riset bara gambut (`scripts/data/RISET-BARA-GAMBUT.md`): gambut membara bersuhu rendah dan tertutup asap, jadi jatuh ke kelas rendah. Luas, faktor insiden, rasio NOAA-20/S-NPP, garis dasar S-NPP, dan cluster tetap sedang dan tinggi karena koefisiennya diukur di sana. Riwayat titik 2015 dan 2019 sampai 2026 dibangun ulang dengan semua keyakinan (`613b409c`). Persistensi bara = minimal dua tanggal dan satu deteksi malam (18.00 sampai 06.00 WIB), masih hipotesis. Tab Metode tetap disembunyikan atas permintaan pemilik.
+   - **Drone gambut** (`e951d056`, `c00b6773`, `cdd000a6`, `b58da88a`): ikon drone di cluster gambut membara membuka `/admin/drone` (staf, instansi, dan akun Centurisk97) berisi rute sapuan per baterai dan KMZ; SOP lapangan PDF 3 halaman; `drone_termal.py` mengubah foto termal R-JPEG DJI jadi CSV titik bara. KMZ belum pernah diuji di DJI Pilot 2. Gerbang `drone-rute`.
+   - **Lintasan satelit di pil jam data** (`250d8580`, `b0ef8068`, `925e7c9e`, `9cb33bfe`, `b2929f43`): popover lintasan dengan navigasi kemarin, sekarang, besok; perkiraan data masuk memakai jeda terukur dari riwayat granul FIRMS di D1 (migrasi 0075, `/api/satelit/jeda`, `4112f872`); pemberitahuan bila data FIRMS belum masuk.
+   - **Hotspot tidak lagi 0 saat FIRMS belum terbit** (`bda139fd`): FIRMS berhenti menerbitkan sejak 27 Okt sekitar 20.25 WIB dan tabel sempat menulis 0 di semua provinsi. Kini tampil data terakhir bertanggal. Gerbang `hotspot-mundur`.
+   - **Pipeline siap S-NPP berhenti 1 Nov** (`61c63fdb`): titik beralih ke NOAA-20 dengan rasio 0,97 dan label proksi di layar.
+   - **Banjir**: kejadian Siaga dan Awas jadi alarm berbunyi berlabel Deteksi, bukan status resmi BPBD (`40d6ac7f`); akun pemirsa (Pusdatin, Dirdalops) bisa membuka halaman banjir sesuai tab miliknya (`119c8111`); animasi rintik hujan di area sedang hujan BMKG mulai zoom 9 (`f1eb52ae`).
+   - **Genangan Jakarta: J3 gagal, J4 dikunci** (`5dd2c2d5`, `ceddfc49`). Kalibrasi J3 berpraregistrasi gagal pada data uji 2024-08 dan 2025-04; label ujinya laporan latihan PetaBencana dan 2024-08 tanpa hujan (`DIAGNOSIS-J3.md`). J4 prospektif musim 2026/27 dijangkar di `ceddfc49`: lulus cukup lebih baik dari acak, X 34 mm final, hujan operasional total GSMaP NRT dikali bentuk jam ERA5. Workflow `genangan_j4.yml` harian 05.30 WIB. Berkas bersidik (`sim_genangan.js`, `umum.py`, `wilayah.py`, `mesin.mjs`, dan lainnya) tidak disunting sampai Apr 2027 tanpa `kunci_j4.py cek`.
+   - **Direktori pakar `/akademisi`** (`535d15eb` dan seterusnya): khusus staf BNPB dan admin karena UU PDP. Repo publik, jadi data pakar tidak pernah masuk repo; satu JSON di R2 dilayani `/api/akademisi`, karya dari OpenAlex dan ORCID publik, rincian SINTA di lembar detail, label Diaspora. PDDikti di balik reCAPTCHA tidak dipanen massal.
+   - **Kepala situs wajib di semua halaman centurisk97.id**: pemilik melihat `/akademisi` berpalet abu sendiri tanpa kepala situs, lalu memutus tiap halaman memakai kepala navy bersama dan token Centurisk97. Halaman 404 dan 500 kini berkepala situs, dan `/syarat` (syarat dan ketentuan) ditambahkan (`993f40b6`).
+   - **SIPPA keputusan 60 dan 61** (`4a22f969`): data tujuh provinsi, Renlap Generator, halaman `/renlap`, pilot Kalimantan Timur dengan gambut moratorium PIPPIB (`6d852b42`, `451e3279`).
+   - **OMC karhutla**: rekap sortie, NaCl, dan dry ice per provinsi sampai 28 Okt, uji efek OMC berpraregistrasi, dan verifikasi klaim hujan; deck 3 slide dan aturan PPT butir 69 sampai 73.
+   - **Kajian Neraca Air Pulau Jawa (draf)**: buku 55 halaman dan deck 14 slide (`a9f0f3ef`).
+   - **Peluang bisnis data**: pemilik memutus gas untuk draf KRB kabupaten/kota dan bukti gakkum karhutla per konsesi, tidak untuk PBB bangunan baru, EUDR, asuransi/bank, dan utilitas; semuanya dicatat dulu lalu dibangun bersama nanti (*"nanti dulu"*).
+   - **Gerbang baru**: `gerbang-jalur-mutlak` (berkas terlacak tanpa jalur absolut mesin lokal, juga di CI), `waktu-kluster` (laci cluster tidak lagi "Invalid Date WIB"), `gerbang-antrean-data`.
 1. 27 Okt 2026
    - **Musim hujan: perbaikan karhutla dibawa ke banjir** (`46d543a0`, pemilik: *"semua gas"*). Arsip harian wilayah `public/banjir/data/wilayah_hari.json` dan `hari/<tgl>.json` dibaca layar dan generator laporan; kejadian dihitung dari `kejadian_kode` unik, istilahnya "terpapar", rob kosong bila tidak dipantau. Uji prospektif banjir didaftarkan lebih dulu di `scripts/banjir/PRAREG-PROSPEKTIF.md` dan dijangkar ke commit `46d543a0` (`70182aa6`); fungsi skornya tidak boleh disunting.
    - **Menu bencana membuka Banjir, Longsor & Rob** (`01bee004`), bukan lagi "Soon". Peta banjir dirombak sepanjang hari: lapisan Sedang hujan dari nowcast BMKG menyala bawaan (`9965ab93`); tab Status hanya menampilkan status wilayah dan Wilayah Siaga, pos air, titik sungai, rob, hujan 3 hari, dan citra dinyalakan dari Overlay (`fd3c0a1a`); pos tinggi air ala kartu rob, sungai bergradasi, kepala sidebar ala karhutla, gelembung Zoom membuka laci wilayah dan Rincian membuka pop-up riwayat; kartu hover pos tanpa nama pengelola dan pil Normal cukup ikon (`ba320f0d`); teks laju air, hitung mundur hulu, dan kalender rob memakai jam WIB, tanpa presisi palsu, berpil hipotesis, tanpa istilah teknis (`ac5506bb`).
@@ -305,6 +319,8 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 | Radius permukiman tugas dan nama perusahaan di tugas | Bawaan 5 km dan tampil | `RANCANGAN-API-PADAM.md` |
 | Target SLA | Kini vonis hanya konfirmasi 6 jam dan kabar 24 jam | `RENCANA-LANJUT.md` |
 | CSP dan daftar iframe panel presiden | Belum diputus | `docs/presiden/KONTRAK.md` |
+| SIPPA: anggaran dibuka moderator atau Super Admin, pagu nasional terlihat staf provinsi, penerima pinjam teks bebas | Belum dijawab | memori `sippa-program-61` |
+| Peluang bisnis data: tawaran PLN dan telco di daftar swasta | Ditawarkan ulang, belum dijawab | memori `peluang-bisnis-data` |
 | Kapan `/bnpb` masuk nav utama | Sesudah migrasi 0022 sampai 0028 diterapkan dan uji layar hijau di produksi | `docs/bnpb/STATUS.md` |
 | Daftar 21 Kodam untuk akun instansi | Dicek pemilik sebelum akun massal dibagikan | memori `ruang-instansi` |
 | Nama jenis bencana gaya DIBI di ekspor Meja | Dicocokkan pemilik ke istilah DIBI resmi | `/api/meja/ekspor` |
@@ -353,8 +369,10 @@ Pulihkan Tentang di Centurisk97: hapus aturan `html[data-situs=w]` di `public/in
 | Warga | `/warga` Lapor Warga multi-bahaya, `/peringatan` langganan email, `/foto`, `/statistik` |
 | Ruang Koordinasi | `/bnpb`, `/relawan`, `/kampus`, `/alun-alun`, `/riset`, `/risiko`, `/sitrep`, `/kebutuhan`, `/meja`, `/bnpb/kebakaran` |
 | Ruang Instansi | `/instansi`, `/lapangan`, `/lacak#token` |
-| Admin | `/admin`, `/admin/relawan`, `/admin/alun`, `/admin/riset`, `/admin/meja`, `/admin/pimpinan`, `/admin/pengingat`, `/admin/gakkum` |
-| SIPPA | `/pipa` layar staf pipa portabel, 16 layar (Ringkas, Data, Peta, Hitung, Pemicu, Studio, 3D, Kit, Pemeliharaan, Air tanah, Akses, Log, A/B, Telemetri, Laporan, Lapangan luring di `/pipa/lapangan`); `/uji-pilot#t=<token>` uji pilot Kalteng tanpa login; dokumen di `data/kajian-bnpb/pipa/` |
+| Admin | `/admin`, `/admin/relawan`, `/admin/alun`, `/admin/riset`, `/admin/meja`, `/admin/pimpinan`, `/admin/pengingat`, `/admin/gakkum`, `/admin/drone` rute sapuan drone gambut dan KMZ |
+| Staf BNPB | `/akademisi` direktori pakar kebencanaan, data dari R2 lewat `/api/akademisi` |
+| Halaman statis | `/tentang`, `/privasi`, `/syarat`; 404 dan 500 berkepala situs |
+| SIPPA | `/renlap` Renlap Generator; `/pipa` layar staf pipa portabel, 16 layar (Ringkas, Data, Peta, Hitung, Pemicu, Studio, 3D, Kit, Pemeliharaan, Air tanah, Akses, Log, A/B, Telemetri, Laporan, Lapangan luring di `/pipa/lapangan`); `/uji-pilot#t=<token>` uji pilot Kalteng tanpa login; dokumen di `data/kajian-bnpb/pipa/` |
 | Pendataan | `/pendataan` Satu Data BNPB Fase 1, 10 unit sasaran, daftar mandiri disetujui Super Admin |
 | Uji lapangan | `/api/uji-lapangan` agregat tanpa PIC, WA, atau koordinat; sel n<5 ditahan |
 | Simulasi | `/sim?titik=bromo` atau `lat,lon`, langsung menghitung dan membuka 3D |
@@ -393,6 +411,7 @@ Aturan A1 sampai A25 (`docs/multi-bencana/RENCANA-20-JAM.md` §1) dipindai sebel
 
 ### Header dan menu
 
+- Tiap halaman centurisk97.id, termasuk halaman khusus staf seperti `/akademisi`, memakai kepala situs navy bersama (`/inti/kepala.js`, `kepala.css`, `tema.css`, `gaya.css`) dan token Centurisk97, tidak pernah palet lokal halaman (28 Okt).
 - Tab rata tengah, ikon tampil di desktop; di bawah 1280 px tab pindah ke menu garis tiga.
 - HP 640 px ke bawah: pilihan bencana dan tombol tema disembunyikan.
 
@@ -1661,10 +1680,10 @@ Daftar lengkap berikut cara memulihkannya hidup di memori `fitur-disembunyikan`.
 
 ### Data yang perlu diingat
 
-- S-NPP berhenti 1 Nov 2026; `insiden.py` pindah ke NOAA-20 (rasio 0,89).
+- S-NPP berhenti 1 Nov 2026; `insiden.py` pindah ke NOAA-20 (rasio 0,89); pipeline titik memakai NOAA-20 dengan rasio 0,97 dan label proksi.
 - Graf jalan dan titik air diarsipkan permanen ke R2 (`graf.yml`); cache Actions sempat terusir karena cache `data-` 11,6 GB melewati batas 10 GB.
 - Riwayat titik 2026 Jan sampai Jun dibangun ulang dari arsip VIIRS S-NPP; 37 hari tanpa S-NPP diisi NOAA-20 × 0,978.
-- Titik panas sejak 25 Okt = lokasi unik 4 satelit (`titik_unik.py`), sel sekitar 375 m sekali per hari, keyakinan sedang dan tinggi, tanpa sumber panas tetap; kawah tetap dihitung. Luas karhutla peta: faktor NOAA-20 4,12 dan NOAA-21 4,16 per titik.
+- Titik panas sejak 25 Okt = lokasi unik 4 satelit (`titik_unik.py`), sel sekitar 375 m sekali per hari, tanpa sumber panas tetap; kawah tetap dihitung. Sejak 28 Okt hitungan memasukkan keyakinan rendah (`KEYAKINAN_MIN` 0); luas, faktor, rasio, dan cluster tetap sedang dan tinggi. Luas karhutla peta: faktor NOAA-20 4,12 dan NOAA-21 4,16 per titik.
 - Gambut sejak 26 Okt dari peta 1:250.000 Kementan lewat PRIMS; Kaltim masih dari GFW (kebesaran).
 - Status wilayah = tingkat terberat antara api dan asap kebakaran (PM2,5 CAMS, ambang PermenLHK P.14/2020).
 - Model sebaran memakai NOAA-21 sesudah 1 Nov 2026 13.00 UTC.
@@ -1731,6 +1750,8 @@ Produksi sudah di migrasi 0049, tetapi per 22 Okt belum ada satu pun akun instan
 | `laporan-karhutla-deck`, `laporan-konpers`, `laporan-koordalops` | angka hanya dari snapshot atau isian, bagian kosong tidak dikarang, tanpa " · ", Matador terbaca | `npm run uji:agen` |
 | `siklus_insiden`, `presiden`, `sla_koreksi` | satu siklus insiden dari cron sampai SLA; panel presiden; uji cron di luar jendela push 3 jam | `npm run uji:warga` |
 | `peta-kab` | kartu peta kabupaten | `npm run uji:agen` |
+| `gerbang-jalur-mutlak`, `gerbang-antrean-data` | berkas terlacak tanpa jalur absolut mesin lokal (juga `jalur-mutlak.yml` di CI); `terbit.yml` tanpa pemicu push supaya `titik.yml` tidak terusir dari antrean | `npm run uji:agen` |
+| `hotspot-mundur`, `waktu-kluster`, `drone-rute` | tabel Hotspot tidak menulis 0 saat FIRMS belum terbit; laci cluster tanpa tanggal tidak sah; rute drone menutup sel dan KMZ sah | `npm run uji:agen` |
 | `aktor-sawit`, `status-wilayah`, `konteks-jalan` | jendela sawit-saja kartu Perusahaan; status banjir wilayah di kotak cari; jalan dan sungai dari vektor basemap | `npm run uji:agen` |
 | `tests/warga/*` | route, skema D1, API, foto, OG, EWS, Ruang Koordinasi, Ruang Instansi di Miniflare sungguhan | `npm run uji:warga` |
 | `tests/banjir`, `tests/udara`, `tests/<bencana>` | pipeline dan kontrak tiap bencana | `npm run uji:banjir`, `npm run uji:udara` |
@@ -1748,6 +1769,8 @@ Semuanya: `npm run uji`. Commit hanya bila tiap suite mencetak `fail 0`; grep pa
 
 | Tanggal | Insiden | Pelajaran |
 | --- | --- | --- |
+| 28 Okt | Produksi galat 500: kuota baca D1 Free 5 juta baris/hari habis oleh status SIHKA dan pindaian `tugas_api` | Status SIHKA berjeda 3 jam, indeks `tugas_api`; cek D1 insights sebelum menambah kueri cron |
+| 28 Okt | FIRMS berhenti terbit sejak 27 Okt sekitar 20.25 WIB, tabel Hotspot menulis 0 di semua provinsi | Tampilkan data terakhir bertanggal; gerbang `hotspot-mundur` |
 | 27 Okt | Peta belum padam macet sejak 25 Okt 18.04 WIB: salinan cache tanpa kunci faktor selalu gagal uji, `continue-on-error` menyembunyikannya | Pembanding cache memakai hari terakhir lalu waktu dibuat; uji gagal atas cache kembali ke versi repo dengan peringatan |
 | 27 Okt | Terbit merah sejak 20.03 WIB: data zona SIPPA dipanen ulang tapi ujinya tertinggal | Data dan ujinya didorong bersama |
 | 27 Okt | SIHKA menolak Worker (HTTP 525), stempel macet sejak 17.23 WIB | Cadangan dev-tunnels lewat `SIHKA_CADANGAN` |
@@ -1796,8 +1819,11 @@ Yang tidak bisa dikerjakan sesi agent:
 7. Pastikan secret `SUPER_ADMIN` memuat awalan hash akun supaya tombol isi dan hapus dummy muncul.
 8. Cek daftar 21 Kodam dan nama jenis bencana DIBI.
 9. Putuskan kapan `/bnpb` masuk nav utama.
-10. Terapkan migrasi D1 yang menunggu ke produksi: SIPPA 0056 sampai 0059 dan 0067, banjir 0064 `push_banjir` dan 0065 `uji_banjir`, serta 0060, 0062, 0063, 0066, 0068, 0069 bila belum.
+10. Terapkan migrasi D1 yang menunggu ke produksi: SIPPA 0056 sampai 0059, 0067, 0070, 0073, 0074; 0072 indeks `tugas_api`; 0075 riwayat granul satelit; banjir 0064 `push_banjir` dan 0065 `uji_banjir`, serta 0060, 0062, 0063, 0066, 0068, 0069 bila belum.
 11. Jawab bentrok penutup gelap format lembaga dan kirim logo BNPB vektor dari Humas untuk merek PPT `bnpb`.
+15. Unggah data SIPPA tujuh provinsi ke R2 `sippa/` dan pasang secret Renlap (`GITHUB_TOKEN` worker, `RENLAP_KUNCI`, `CLOUDFLARE_*` di GitHub).
+16. Putar ulang kunci OpenAlex yang sempat ditempel di chat 28 Okt (kini secret worker `OPENALEX_KEY`).
+17. Kirim nama pakar diaspora untuk `/akademisi` (tidak bisa ditemukan otomatis).
 12. Putuskan apakah petugas instansi (bukan admin atau pemirsa) boleh membuka `/uji-lapangan`; Turnstile unggah foto dari form itu belum diuji.
 13. Turnstile `/pendataan` belum aktif di produksi.
 14. Hapus branch lain yang muncul selain main; sesi agent dilarang menghapus branch.
