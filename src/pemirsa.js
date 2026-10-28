@@ -31,10 +31,12 @@ export async function pemirsaSesi(env, req, kini = Date.now()) {
   SESI.set(req, p);
   return p;
 }
-/* murni: halaman yang dibuka pemirsa -> null (boleh) atau alamat tab pertamanya. /kompleks bagian dari Insight; /sim/K0001 = tab sim. */
+/* murni: halaman yang dibuka pemirsa -> null (boleh) atau alamat tab pertamanya. /kompleks bagian dari Insight; /sim/K0001 = tab sim.
+   Banjir ikut tab yang sama (pemilik 28 Okt 2026): /banjir/ = peta, /banjir/<tab> = tab itu, selain itu ke /banjir/<tab pertama>. */
 export function arahPemirsa(p, pathname) {
-  const seg = pathname.split("/")[1] || "", tab = seg === "kompleks" ? "insight" : seg;
-  return p.tab.includes(tab) ? null : "/" + p.tab[0];
+  const s = pathname.split("/"), banjir = s[1] === "banjir";
+  const seg = (banjir ? s[2] || "peta" : s[1]) || "", tab = seg === "kompleks" ? "insight" : seg;
+  return p.tab.includes(tab) ? null : (banjir ? "/banjir/" : "/") + p.tab[0];
 }
 
 /* dipanggil form /admin/masuk sesudah akun admin gagal: {token, tab} atau null. Batas laju: cekLaju per IP di form masuk. */

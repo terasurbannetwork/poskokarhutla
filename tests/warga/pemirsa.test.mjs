@@ -36,6 +36,8 @@ uji("pemirsa: daftar tab sama dengan trigger 0036 dan tab menu public/index.html
   for (const k of Object.keys(TAB)) assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
   assert.equal(cekTab(["berita", "berita"]), null); assert.equal(cekTab([]), null); assert.deepEqual(cekTab(["foto"]), ["foto"]);
   assert.equal(arahPemirsa({tab: ["insight"]}, "/kompleks"), null); assert.equal(arahPemirsa({tab: ["sim"]}, "/sim/K0001"), null); assert.equal(arahPemirsa({tab: ["berita"]}, "/"), "/berita");
+  assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/"), null); assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/peta"), null);
+  assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/rob"), "/banjir/peta"); assert.equal(arahPemirsa({tab: ["berita"]}, "/banjir/"), "/banjir/berita");
 });
 
 uji("pemirsa: hanya Super Admin membuat dan melihat daftar; isian salah 400", async () => {
@@ -69,9 +71,12 @@ uji("pemirsa: tab miliknya terbuka dengan data-pemirsa-tab dan no-store; tab dan
   const b = await situs("/berita", {cookie});
   assert.equal(b.status, 200); const t = await b.text();
   assert.match(t.match(/<html[^>]*>/)[0], /data-pemirsa-tab="berita"/); assert.match(b.headers.get("cache-control"), /no-store/);
-  for (const j of ["/", "/peta", "/insight", "/sim/K0001", "/laporan", "/banjir"]) {
+  for (const j of ["/", "/peta", "/insight", "/sim/K0001", "/laporan"]) {
     const r = await situs(j, {cookie}); assert.equal(r.status, 303, j); assert.equal(r.headers.get("location"), "/berita", j);
   }
+  /* banjir ikut tab yang sama: tab miliknya terbuka, tab banjir lain dialihkan ke tab miliknya di banjir */
+  for (const j of ["/banjir", "/banjir/", "/banjir/rob"]) { const r = await situs(j, {cookie}); assert.equal(r.status, 303, j); assert.equal(r.headers.get("location"), "/banjir/berita", j); }
+  const bb = await situs("/banjir/berita", {cookie}); assert.equal(bb.status, 200, "/banjir/berita"); await bb.arrayBuffer();
   const dok = await situs("/api", {cookie}); assert.equal(dok.status, 200, "pemirsa boleh membaca dokumentasi /api"); assert.match(dok.headers.get("cache-control"), /no-store/); await dok.arrayBuffer();
   const ad = await situs("/admin/statistik", {cookie}); assert.equal(ad.status, 303); assert.match(ad.headers.get("location"), /^\/admin\/masuk/);
   assert.equal((await api("GET", "/api/pemirsa/admin/daftar", undefined, {cookie})).s, 403, "pemirsa bukan admin");
