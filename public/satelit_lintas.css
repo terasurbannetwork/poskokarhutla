@@ -1,18 +1,18 @@
-/* satelit_lintas.css: pil jam data (#upd) jadi tombol + popover "Lintasan satelit di atas Indonesia" di index.html (isi digambar satelit_lintas.js).
-   Warna dari token :root index.html (terang/gelap); status penanda dibedakan BENTUK, bukan hanya warna. */
+/* satelit_lintas.css: pil jam data (#upd) jadi tombol + popover "Lintasan satelit di atas Indonesia" di index.html (isi digambar satelit_lintas.js), kontrol hari Kemarin | Sekarang | Besok
+   (tombol segmen .seg app) dan tab Hari ini | Besok di kartu "Satelit berikutnya". Warna dari token :root index.html (terang/gelap); status penanda dibedakan BENTUK, bukan hanya warna. */
 button#upd{border:0;margin:0;cursor:pointer;font-family:inherit}
 button#upd:hover,button#upd[aria-expanded="true"]{background:oklch(100% 0 0 / .24)}
 button#upd::after{content:"";width:5px;height:5px;flex:none;border-right:2px solid currentColor;border-bottom:2px solid currentColor;transform:rotate(45deg) translateY(-2px);opacity:.8}
 button#upd[aria-expanded="true"]::after{transform:rotate(-135deg) translateY(-1px)}
 
 .lp-pop{--lp-tunda:var(--warn);position:fixed;z-index:55;left:var(--lp-x,8px);top:var(--lp-y,66px);width:min(560px,calc(100vw - 16px));max-height:calc(100dvh - var(--lp-y,66px) - 12px);overflow-x:hidden;overflow-y:auto;overscroll-behavior:contain;
-  background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);padding:12px 14px;font-size:12px;line-height:1.45}
+  background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:14px;box-shadow:var(--shadow-lg);--lp-pr:14px;--lp-pl:14px;padding:0 var(--lp-pr) 12px var(--lp-pl);font-size:12px;line-height:1.45}   /* padding-top 0: .lp-atas (lengket) membawa padding atasnya sendiri, jadi top:0 sama di semua engine */
 @supports (color:color-mix(in oklch,red,blue)){.lp-pop{--lp-tunda:color-mix(in oklch,var(--warn) 80%,black)}}
 .lp-pop[hidden]{display:none}
 .lp-pop:focus{outline:none}
 /* <= 768 px: lembar selebar layar tepat di bawah kepala (variabel --lp-x/--lp-y dari JS diabaikan) */
 @media (max-width:768px){.lp-pop{left:0;right:0;top:var(--top,58px);width:auto;max-height:calc(100dvh - var(--top,58px));border-width:0 0 1px;border-radius:0 0 16px 16px;
-  padding:12px max(14px,env(safe-area-inset-right)) 14px max(14px,env(safe-area-inset-left))}}
+  --lp-pr:max(14px,env(safe-area-inset-right));--lp-pl:max(14px,env(safe-area-inset-left));padding:0 var(--lp-pr) 14px var(--lp-pl)}}
 .lp-kepala{display:flex;align-items:center;justify-content:space-between;gap:8px;margin:0 0 8px}
 .lp-judul{display:flex;align-items:center;gap:6px;font:800 13px/1.3 var(--display);color:var(--ink)}
 .lp-judul .as-ik{margin:0;vertical-align:0}
@@ -43,6 +43,7 @@ button#upd[aria-expanded="true"]::after{transform:rotate(-135deg) translateY(-1p
 .m-tertunda{fill:var(--card);stroke:var(--lp-tunda);stroke-width:3}
 .m-menunggu{fill:var(--card);stroke:var(--ink2);stroke-width:1.5}
 .m-perkiraan{fill:none;stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:2.5 2}
+.m-belumMuat{fill:none;stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:.5 3;stroke-linecap:round}
 .lp-h{margin:10px 0 4px}
 /* tabel: gaya global index.html untuk thead th (kepala navy melekat, rata tengah !important, warna gelap di tema gelap) dan tbody td (sel besar) ditimpa:
    kepala kecil abu-abu rata kiri, daftar ringkas seperti tabel kartu wilayah. Selektor diberi .lp-pop + table supaya menang dari :root[data-theme] thead th */
@@ -57,4 +58,45 @@ button#upd[aria-expanded="true"]::after{transform:rotate(-135deg) translateY(-1p
 .lp-pop table.lp-t tbody tr.lp-r1 td{border-bottom:0;padding-bottom:1px}
 .lp-pop table.lp-t tbody td.lp-ket{padding:0 0 4px;font-size:10.5px;font-weight:400;color:var(--ink2);white-space:normal}
 .lp-kaki{margin:10px 0 0;font-size:10.5px;color:var(--ink2)}
+/* kepala + kontrol hari lengket di atas saat isi bergulir (JS membungkusnya .lp-atas): padding kiri/kanan popover dibatalkan margin negatif, padding atas dibawa sendiri (top:0).
+   Layar pendek (HP landscape): tidak lengket, supaya isi tidak tinggal sedikit */
+.lp-atas{position:sticky;top:0;z-index:2;background:var(--card);margin:0 calc(-1 * var(--lp-pr)) 12px calc(-1 * var(--lp-pl));padding:12px var(--lp-pr) 10px var(--lp-pl);border-bottom:1px solid var(--line)}
+@media (max-height:500px){.lp-atas{position:static}}
+.lp-atas .lp-kepala{margin:0 0 8px}
+/* tombol segmen app (.seg .penuh): dua baris, nama hari + tanggal singkat; target sentuh >= 40 px */
+.lp-pop .lp-seg{box-shadow:none;border-radius:14px;overflow:visible}
+.lp-pop .lp-seg button{display:flex;flex-direction:column;align-items:center;justify-content:center;gap:1px;min-height:44px;padding:4px 6px;border-radius:11px;line-height:1.2;min-width:0}
+.lp-pop .lp-seg .lp-hl{font-size:12.5px;font-weight:700}
+.lp-pop .lp-seg .lp-ht{font-size:10.5px;font-weight:500;font-variant-numeric:tabular-nums;opacity:.9;white-space:nowrap}
+.lp-pop .lp-seg button:focus-visible{outline:2px solid var(--info);outline-offset:1px}
+@media (min-width:769px){.lp-pop .lp-seg button{min-height:40px}}
+/* ringkasan Kemarin/Besok: butir satu baris dipisah titik tengah; tanpa kotak KPI */
+.lp-rk{line-height:1.6}
+.lp-c{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.lp-c0{font-weight:800}
+.lp-c>span{font-weight:500;color:var(--ink2)}
+.lp-sep{margin:0 5px;color:var(--ink2)}
+.lp-jml{white-space:nowrap}
+.lp-ring.lp-r2{margin:-2px 0 6px;font-size:12px;color:var(--ink2)}
+.lp-r2 b{color:var(--ink);font-variant-numeric:tabular-nums}
+.lp-kb{margin:2px 0 4px}
+/* tabel hari: kolom pertama = jam (tebal lewat <b>), satelit biasa; kepala periode 6 jam di tengah tabel; status boleh turun baris */
+.lp-pop table.lp-t.lp-th tbody td:first-child{font-weight:400}
+.lp-pop table.lp-t tbody tr.lp-pr th{padding:9px 0 3px;border-bottom:1px solid var(--line);background:none;text-align:left;font:700 10.5px/1.3 var(--font);color:var(--ink2);white-space:normal}
+.lp-pop table.lp-t tbody tr.lp-pr th>span+span{margin-left:6px;font-weight:500;font-variant-numeric:tabular-nums}
+.lp-pop table.lp-t tbody td.lp-st{white-space:normal}
+.lp-pop table.lp-t.lp-kem thead th:last-child{padding-left:14px}
+.lp-pop table.lp-t.lp-kem tbody td.lp-st{padding-left:32px;text-indent:-18px}   /* jarak dari kolom Deteksi + indentasi gantung: baris kedua sejajar teks, bukan penanda */
+.lp-st .lp-sw{vertical-align:-3px;margin-right:4px}
+.lp-st .lp-sl{display:block;margin:0;text-indent:0}
+.lp-pop table.lp-t tbody td .lp-sl{font-weight:500}
+
+/* kartu Satelit berikutnya: tab Hari ini | Besok (.seg penuh), kepala periode dan keterangan Besok */
+.lintas-k .lk-seg{margin:0 0 8px;box-shadow:none}
+.lintas-k .lk-seg button{min-height:34px;font-size:12px}
+.lintas-k .lk-seg button:focus-visible{outline:2px solid var(--info);outline-offset:1px}
+@media (max-width:768px){.lintas-k .lk-seg button{min-height:40px}}
+.lintas-k tr.lk-pr td{padding:7px 4px 2px;border-bottom:1px solid var(--line);font-weight:700;font-size:10.5px;color:var(--ink2)}
+.lintas-k tr.lk-pr td>span+span{margin-left:6px;font-weight:500;font-variant-numeric:tabular-nums}
+.lintas-k .lk-kap{margin:4px 0 0;font-size:10.5px;color:var(--ink2)}
 @media print{.lp-pop{display:none}}

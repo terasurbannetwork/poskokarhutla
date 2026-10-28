@@ -1539,7 +1539,8 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
     </button>
   </div>
 </header>
-<!-- popover pil jam data: lintasan satelit 24 jam lalu s.d. 12 jam ke depan (isi digambar satelit_lintas.js) -->
+<!-- popover pil jam data: lintasan satelit di atas Indonesia per hari WIB. Kontrol hari Kemarin | Sekarang | Besok disisipkan satelit_lintas.js (kepala + kontrol dibungkus .lp-atas yang lengket): Kemarin dan Besok = 00.00 sampai 24.00 WIB, Sekarang = 24 jam ke belakang sampai 12 jam ke depan; tampilan awal mengikuti "Tanggal data" (S.rentang), ganti hari tidak mengubah peta. Isi (.lp-isi) digambar satelit_lintas.js -->
+<!-- (kartu "Satelit berikutnya" di panel wilayah: tab Hari ini | Besok dari satelit_lintas.js lewat SatelitLintas.kartu(), dipanggil renderDaftar) -->
 <div class="lp-pop" id="lintasPop" role="dialog" aria-labelledby="lintasJudul" tabindex="-1" hidden>
   <div class="lp-kepala"><span class="lp-judul" id="lintasJudul"><svg class="as-ik" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m13 7-3 3 4 4 3-3zM9 11 5 7l2-2 4 4M15 13l4 4-2 2-4-4"/><path d="M4 20a8 8 0 0 0 8-8"/></svg>Lintasan satelit di atas Indonesia</span>
     <button type="button" class="lp-x" aria-label="Tutup"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></div>
