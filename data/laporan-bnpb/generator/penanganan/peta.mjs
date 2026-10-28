@@ -63,7 +63,10 @@ s += bul.slice(0, 7).map((r, n) => {
   lencana.push(pos);
   return `<g transform="translate(${pos[0].toFixed(1)},${pos[1].toFixed(1)})"><circle r="7.5" class="rk"/><text y="3.4" class="rk-t">${n + 1}</text></g>`; }).join('');
 const OR = process.env.BENCANA === 'banjir' ? '#2F6FB5' : '#D9600B';   // lingkaran banjir biru (penanganan_banjir.py), karhutla oranye
-const css = `.pp{fill:#DCE1E7;stroke:#fff;stroke-width:.6}.pp-on{fill:#051C2C;stroke:#fff;stroke-width:.8}
+// Roboto disematkan sebagai data URL: headless shell tidak selalu melihat font sistem dan jatuh ke serif (pemilik 28 Okt: font wajib Roboto)
+const FONT = ['Roboto[wdth,wght].ttf', 'Roboto-Regular.ttf'].map(n => os.homedir() + '/Library/Fonts/' + n).find(f => fs.existsSync(f));
+if (!FONT) throw new Error('Roboto tidak ditemukan di ~/Library/Fonts');
+const css = `@font-face{font-family:Roboto;font-weight:100 900;src:url(data:font/ttf;base64,${fs.readFileSync(FONT).toString('base64')})}.pp{fill:#DCE1E7;stroke:#fff;stroke-width:.6}.pp-on{fill:#051C2C;stroke:#fff;stroke-width:.8}
 .pc{fill:${OR};stroke:#fff;stroke-width:1.5;fill-opacity:.95}.pa{font:800 14px Roboto;fill:#fff;text-anchor:middle}
 .pn{font:700 9.5px Roboto;fill:#fff;text-anchor:middle;opacity:.95}.pl{stroke:${OR};stroke-width:1.2}
 .pk{fill:#fff;stroke:#A9B4C2;stroke-width:.8}.pt-t{font:10px Roboto}.pt-n{font-weight:600;fill:#6B7280}.pt-v{font-weight:800;fill:#1A1A1A}\n.rk{fill:#fff;stroke:${OR};stroke-width:1.8}.rk-t{font:800 9.5px Roboto;fill:#1A1A1A;text-anchor:middle}`;
