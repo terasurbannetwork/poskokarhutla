@@ -58,8 +58,11 @@ def ringkas(f):
 
 # ---- saring laporan latihan (J4, PRAREG-J4.md). Pola ditemukan dari teks arsip 2016-2026 (DIAGNOSIS-J3.md H4 + penelusuran 28 Okt 2026);
 # ini kesimpulan dari pola, BUKAN konfirmasi PetaBencana. Aturan dievaluasi berurutan, yang pertama cocok dicatat. Hanya tipe `flood` yang dipakai.
-RE_AWAL = re.compile(r"^[#\s_]*(duta|hkb|hkn|trainer|bakrie|smpn?\b|youth4gotongroyong|112_bpbdjkt|bpbd\s+[a-z.]+(\s+[a-z.]+){0,3}\s*$)", re.I)   # nama pelatih/duta/sekolah peserta pelatihan
+RE_AWAL = re.compile(r"^[#\s_]*(duta|hkb|hkn|trainer|bakrie(?!.*\b(banjir|genang\w*|air|terendam)\b)|smpn?\b|youth4gotongroyong|112_bpbdjkt|bpbd\s+[a-z.]+(\s+[a-z.]+){0,3}\s*$)", re.I)   # nama pelatih/duta/sekolah peserta pelatihan; "Bakrie Tower banjir" (lokasi) lolos
 RE_KATA = re.compile(r"\b(simulasi|latihan|pelatihan|uji\s*coba|percobaan|sosialisasi|gladi|drill|testing|re-?test|training|pelatih|tes|test|hkb|hkn|112challange)\b", re.I)
+RE_MINTA = re.compile(r"\b(tolong|mohon|bantuan|evakuasi|pompa)\b", re.I)                       # "BPBD ..." berisi permintaan = laporan warga nyata, bukan nama peserta
+RE_NEGASI_SOS = re.compile(r"\b(belum|tidak|tanpa|kurang)\b[^.\n]{0,15}\bsosialisasi\b", re.I)    # "belum ada sosialisasi dari kelurahan": keluhan, bukan penanda pelatihan
+RE_ISI = re.compile(r"\b(banjir|genangan|air)\b", re.I)
 BURST_MAKS = 20        # lebih dari ini laporan di satu sel 0,001 derajat dalam satu hari WIB = latihan massal
 
 
@@ -67,8 +70,13 @@ def latihan(r):
     """Nama aturan bila laporan (hasil ringkas) tampak latihan/uji; None bila lolos aturan TEKS (aturan burst di saring)."""
     t = r.get("teks") or ""
     if RE_AWAL.search(t):
+        if re.match(r"^[#\s_]*bpbd\b", t, re.I) and RE_MINTA.search(t):
+            return None
         return "awal"
-    if RE_KATA.search(t):
+    kata = {k.lower() for k in RE_KATA.findall(t)}
+    if kata == {"sosialisasi"} and RE_NEGASI_SOS.search(t) and RE_ISI.search(t):
+        return None
+    if kata:
         return "kata"
     return None
 
@@ -178,9 +186,11 @@ def uji():
     contoh = [mk("1", "flood", "Duta Widi Iskandar Rangkuti"), mk("2", "flood", "HKB 2025 uji"), mk("3", "flood", "TRAINER JATMIKO"), mk("4", "flood", "Bakrie Reino"), mk("5", "flood", "SMP negeri 11 Jakarta"),
               mk("6", "flood", "BPBD ASLIN AMARDAN"), mk("7", "flood", "SIMULASI PELAPORAN BENCANA\nNama: X"), mk("8", "flood", "Tes ngeteh"), mk("9", "wind", "pohon tumbang"),
               mk("10", "flood", "Banjir di Jl. Raya, tinggi 40 cm"), mk("11", "flood", ""), mk("12", "flood", "BPBD tolong pompa segera kami sudah 2 hari terendam"), mk("13", "flood", "#drainaseburuk keruk"),
-              mk("14", "flood", "Tolong, air masuk rumah (testimoni warga)")]
+              mk("14", "flood", "Tolong, air masuk rumah (testimoni warga)"),
+              mk("15", "flood", "Bakrie Tower banjir setinggi lutut"), mk("16", "flood", "BPBD tolong pompa"), mk("17", "flood", "BPBD mohon bantuan evakuasi"),
+              mk("18", "flood", "belum ada sosialisasi dari kelurahan, air naik di gang"), mk("19", "flood", "Sosialisasi banjir di sekolah"), mk("20", "flood", "belum ada sosialisasi dari kelurahan")]
     bersih, rk = saring(contoh)
-    assert [r["id"] for r in bersih] == ["10", "11", "12", "13", "14"] and rk["bukan_flood"] == 1 and rk["awal"] == 6 and rk["kata"] == 2, (rk, [r["id"] for r in bersih])
+    assert [r["id"] for r in bersih] == ["10", "11", "12", "13", "14", "15", "16", "17", "18"] and rk["bukan_flood"] == 1 and rk["awal"] == 6 and rk["kata"] == 4, (rk, [r["id"] for r in bersih])
     ramai = [mk(str(i), "flood", "banjir", lon=106.82801) for i in range(BURST_MAKS + 1)] + [mk("x", "flood", "banjir", lon=106.9)]
     b2, r2 = saring(ramai); assert len(b2) == 1 and r2["burst"] == BURST_MAKS + 1, r2     # lebih dari 20 di satu sel/hari = latihan massal
     assert ringkas(dict(f, properties=dict(f["properties"], disaster_type="wind", text=" halo ")))["tipe"] == "wind" and r["tipe"] is None and r["teks"] == ""
