@@ -699,6 +699,21 @@
     ["tertunda", "Tertunda", KET_TUNDA], ["menunggu", "Menunggu masuk", KET_MENUNGGU.bawaan], ["perkiraan", "Perkiraan lintasan", ""],
     ["belumMuat", "Data belum termuat", "Data titik panas jam lintasan ini belum termuat, jadi lintasan ini belum bisa dinilai; bukan bukti tidak ada deteksi"]];   // keterangan "menunggu" menurut m.jedaR.mode (ketLegenda)
   var ketLegenda = function (l, m) { return l[0] === "menunggu" ? KET_MENUNGGU[m.jedaR ? m.jedaR.mode : "bawaan"] : l[2]; };
+  /* tooltip penanda grafik: #tip bersama (inti/tip.js, [data-tip] muncul seketika saat pointerover, juga ketuk di HP), bukan <title> bawaan peramban yang lambat.
+     Markup tp2 sendiri (berisi <div>, jadi rapikanTip tidak mengubahnya); tiap label simpul teks sendiri supaya i18n.js menerjemahkannya */
+  function tipLintas(p, m) {
+    var now = m.now, st = p.riwayat && p.status !== "belumMuat" ? (p.n ? "masuk" : "masuk0") : p.status, kv = [];
+    var hr = function (ms) { var d = penandaHari(ms, now); return (d ? "<span>" + d + "</span> " : "") + jam(ms) + " WIB"; };
+    var lab = LEGENDA.filter(function (l) { return l[0] === st; })[0];
+    kv.push([p.riwayat ? "Jam deteksi" : "Lewat", hr(p.ms)]);
+    if (st === "masuk") kv.push(["Deteksi", p.n.toLocaleString("id-ID")]);
+    if (st === "masuk0") kv.push(["Deteksi", "0"]);
+    if (!p.riwayat && p.data && (st === "menunggu" || st === "perkiraan")) kv.push(["Data siap", hr(p.data)]);
+    if (st === "tertunda") { if (p.batas) kv.push(["Batas tunggu", hr(p.batas)]); kv.push(["Telat", teksTelat(p.telatMenit)]); }
+    if (st === "menunggu" && p.sejak) kv.push(["Belum diambil lagi sejak", hr(p.sejak)]);
+    return '<div class="tp2-h"><b translate="no">' + esc(p.nama) + "</b><small>" + (lab ? lab[1] : st) + '</small></div><div class="tp2-kv">' +
+      kv.map(function (r) { return "<span>" + r[0] + "</span><b>" + r[1] + "</b>"; }).join("") + "</div>";
+  }
 
   /* Kemarin/Besok: sumbu 00.00 sampai 24.00 WIB (tanda 06/12/18), tanpa garis "sekarang" dan baris tanggal; Sekarang: 24 jam ke belakang sampai 12 jam ke depan */
   function svgGrafik(m, W) {
@@ -723,7 +738,7 @@
       b.lintas.forEach(function (p) {
         var cx = X(p.ms);
         if (!hari && p === m.terbaru) s += '<circle class="lp-halo" cx="' + cx + '" cy="' + y + '" r="9"/><text class="lp-tb" translate="no" x="' + cx + '" y="' + (y - 11) + '" text-anchor="middle">' + jam(p.ms) + "</text>";
-        s += '<circle class="m-' + p.status + '" cx="' + cx + '" cy="' + y + '" r="' + JARI[p.status] + '"><title>' + esc(judulLintas(p, m.now)) + "</title></circle>";
+        s += '<g class="lp-t" data-tip="' + esc(tipLintas(p, m)) + '"><circle class="lp-hit" cx="' + cx + '" cy="' + y + '" r="11"/><circle class="m-' + p.status + '" cx="' + cx + '" cy="' + y + '" r="' + JARI[p.status] + '"/></g>';
       });
     });
     return s + "</svg>";

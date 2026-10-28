@@ -50,6 +50,7 @@ button#upd.upd-telat{padding-left:23px;background-image:radial-gradient(circle a
 .lp-halo{fill:none;stroke:var(--ink);stroke-width:1.5}
 /* penanda lintasan: terisi = data masuk; titik kecil = masuk tanpa deteksi; cincin tebal = tertunda; cincin tipis = menunggu kiriman; cincin putus-putus = perkiraan */
 .m-masuk,.m-masuk0{fill:var(--ok)}
+.lp-hit{fill:transparent}.lp-t{cursor:default}.lp-t:hover .lp-hit{fill:var(--line)}
 .m-tertunda{fill:var(--card);stroke:var(--lp-tunda);stroke-width:3}
 .m-menunggu{fill:var(--card);stroke:var(--ink2);stroke-width:1.5}
 .m-perkiraan{fill:none;stroke:var(--ink2);stroke-width:1.5;stroke-dasharray:2.5 2}
