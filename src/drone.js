@@ -29,7 +29,7 @@ export const halamanDrone = ctx => `<!doctype html>
 <body data-staf="1" data-super="${ctx.super ? 1 : 0}">
 <header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep staf">Drone</span>
-  <nav aria-label="Halaman"><a href="/">🗺️ Peta</a><a href="/admin/drone" aria-current="page">🛸 Atur drone gambut</a></nav>
+  <nav aria-label="Halaman"><a href="/">🗺️ Peta</a><a href="/admin/drone" aria-current="page">🛸 Atur drone gambut</a><a href="/panduan/sop-drone-gambut.pdf" download>📄 SOP lapangan (PDF)</a></nav>
   ${ctx.nama ? `<span class="ad-staf-nama">${esc(ctx.nama)}</span>` : ""}
 </header>
 <main class="ad-wrap dr-wrap">

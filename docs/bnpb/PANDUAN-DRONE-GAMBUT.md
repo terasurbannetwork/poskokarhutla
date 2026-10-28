@@ -54,7 +54,7 @@ Ikon drone di peta tampil untuk semua pengunjung. Halaman rutenya tetap hanya un
    Periksa di layar remote: ketinggian, kecepatan, aksi kamera, dan zona larangan terbang. Ubah di sana bila perlu.
 10. **Terbang** satu penerbangan per baterai, sesuai urutan. Ganti baterai di titik lepas landas.
 11. **Setelah terbang:** baca foto termal (bagian 5), lalu unggah titik panasnya ke tugas lewat **Akun Instansi,
-    tugas, Drone termal (CSV)**. Format CSV-nya persis seperti ini:
+    tugas, tab Drone**. Format CSV-nya persis seperti ini:
 
     ```
     lat,lon,suhu_c,waktu
@@ -136,7 +136,16 @@ FlightHub 2 sebagai rute dan dijalankan oleh dock. **Mengirim otomatis dari hala
 karena butuh tiga hal: dock yang terpasang, jembatan DJI Cloud API atau FlightHub 2 OpenAPI, dan rute worker
 bertabel misi. Alurnya sudah dirancang di `RENCANA-DRONE.md` bagian 6–7 (`scripts/bnpb/drone.py`).
 
-## 7. Yang belum diuji
+## 7. SOP lapangan (PDF)
+
+Versi ringkas siap cetak untuk regu: `public/panduan/sop-drone-gambut.pdf` (diunduh dari tombol di halaman
+/admin/drone). Sumbernya `docs/bnpb/sop-drone-gambut.html`; cetak ulang sesudah mengubahnya:
+
+```bash
+"/Applications/Google Chrome.app/Contents/MacOS/Google Chrome" --headless --no-pdf-header-footer --print-to-pdf=public/panduan/sop-drone-gambut.pdf docs/bnpb/sop-drone-gambut.html
+```
+
+## 8. Yang belum diuji
 
 - **KMZ belum pernah dibuka di DJI Pilot 2 atau FlightHub 2 sungguhan.**
   - Yang sudah terbukti: zip-nya sah (dibaca pembaca zip Python), XML-nya terurai, dan jumlah titik cocok dengan

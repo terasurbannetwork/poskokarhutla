@@ -1,0 +1,184 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<title>SOP Lapangan Drone Termal untuk Gambut Membara</title>
+<!-- Sumber PDF public/panduan/sop-drone-gambut.pdf. Cetak ulang: lihat docs/bnpb/PANDUAN-DRONE-GAMBUT.md bagian "SOP lapangan (PDF)". -->
+<style>
+@page{size:A4;margin:12mm 13mm 13mm}
+*{box-sizing:border-box}
+body{font-family:Roboto,Arial,sans-serif;font-size:9.3pt;line-height:1.34;color:#13233a;margin:0}
+h1{font-size:19pt;margin:0 0 2mm;color:#0b2545;letter-spacing:-.2px}
+h2{font-size:12pt;margin:4mm 0 1.8mm;color:#0b2545;border-bottom:1.6px solid #c9a227;padding-bottom:1mm;break-after:avoid}
+h3{font-size:10pt;margin:3mm 0 1.2mm;color:#1d4e89;break-after:avoid}
+p{margin:0 0 1.8mm}
+.sub{color:#4b5a73;font-size:9.4pt;margin-bottom:3mm}
+.pita{display:flex;gap:3mm;margin:3mm 0 1mm}
+.pita div{flex:1;border:1px solid #d6dce6;border-radius:2.5mm;padding:2mm 2.6mm;background:#f4f6fa}
+.pita b{display:block;font-size:12.5pt;color:#b42318}
+.pita span{font-size:8.4pt;color:#4b5a73}
+table{width:100%;border-collapse:collapse;margin:1.5mm 0 2.5mm;font-size:9pt;break-inside:avoid}
+th{background:#0b2545;color:#fff;font-weight:600;text-align:center;padding:1.6mm 2mm}
+td{border-bottom:1px solid #d6dce6;padding:1.5mm 2mm;vertical-align:top}
+tr:nth-child(even) td{background:#f7f8fb}
+td:first-child{font-weight:600;width:32%}
+ul.cek{list-style:none;padding:0;margin:0 0 2mm}
+ul.cek li{position:relative;padding:.8mm 0 .8mm 6.5mm;border-bottom:1px dotted #d6dce6;break-inside:avoid}
+ul.cek li::before{content:"";position:absolute;left:0;top:1.6mm;width:3.4mm;height:3.4mm;border:1.3px solid #0b2545;border-radius:.6mm}
+ol{margin:0 0 2mm;padding-left:5mm}ol li{margin:.6mm 0}
+.awas{border-left:3.5mm solid #b42318;background:#fdf1ef;padding:2mm 3mm;margin:2mm 0 3mm;break-inside:avoid}
+.awas b{color:#8a1c12}
+.catat{border-left:3.5mm solid #c9a227;background:#fbf7ea;padding:2mm 3mm;margin:2mm 0 3mm;break-inside:avoid}
+.dua{display:grid;grid-template-columns:1fr 1fr;gap:5mm}
+.kotak{border:1px solid #d6dce6;border-radius:2mm;padding:2.4mm 3mm;break-inside:avoid}
+pre{font-family:"Roboto Mono",Menlo,monospace;font-size:8.6pt;background:#f4f6fa;border:1px solid #d6dce6;border-radius:1.6mm;padding:2mm 3mm;margin:1mm 0 2.5mm;white-space:pre-wrap}
+.kaki{font-size:8pt;color:#6b778c;margin-top:4mm;border-top:1px solid #d6dce6;padding-top:2mm}
+</style>
+</head>
+<body>
+
+<h1>SOP Lapangan Drone Termal untuk Gambut Membara</h1>
+<p class="sub">Untuk regu BPBD, Manggala Agni, TNI, Polri, MPA, dan pilot drone yang dikirim ke cluster gambut yang ditandai membara di peta Centurisk97. Versi 28 Oktober 2026.</p>
+
+<div class="pita">
+  <div><b>120 m</b><span>ketinggian maksimal, siang hari saja</span></div>
+  <div><b>100 m</b><span>ketinggian sapuan bawaan, kamera tegak lurus</span></div>
+  <div><b>30%</b><span>sisa baterai: wajib pulang</span></div>
+  <div><b>10 m/detik</b><span>angin hembus di atas ini: jangan terbang</span></div>
+</div>
+
+<h2>1. Tujuan</h2>
+<p>Bara gambut terbakar di bawah permukaan, bersuhu rendah, dan sering tertutup asap, jadi satelit kerap tidak melihatnya. Drone termal yang terbang rendah bisa menunjuk letak bara sampai beberapa meter, supaya regu memadamkan di tempat yang benar dan tidak berjalan di atas gambut yang berongga.</p>
+<p>Drone dikirim ke cluster yang di peta diberi <b>ikon drone</b> (bulat biru tua berbingkai emas). Halaman <b>Atur drone gambut</b> menyusun rutenya dan menyiapkan berkas misi (KMZ) untuk tiap penerbangan.</p>
+
+<h2>2. Perlengkapan yang dibawa</h2>
+<div class="dua">
+<ul class="cek">
+  <li>Drone termal (Mavic 3T, Matrice 30T, atau setara) dan remote</li>
+  <li>Baterai penuh: jumlah penerbangan di halaman drone + 1 cadangan</li>
+  <li>Pengisi daya baterai, genset atau power bank besar</li>
+  <li>Kartu memori kosong (minimal 64 GB) + 1 cadangan</li>
+  <li>Berkas KMZ tiap penerbangan, sudah disalin ke remote</li>
+  <li>Peta cetak lokasi dan titik lepas landas</li>
+</ul>
+<ul class="cek">
+  <li>HP dengan aplikasi peta dan WhatsApp, power bank</li>
+  <li>Termometer tusuk atau batang besi 1,5 m (cek bara)</li>
+  <li>APD: masker N95, kacamata, sarung tangan, sepatu bot</li>
+  <li>Air minum, kotak P3K, rompi terang</li>
+  <li>Surat tugas dan nomor kontak posko serta pos komando heli</li>
+  <li>Bendera atau kerucut penanda titik lepas landas</li>
+</ul>
+</div>
+
+<h2>3. Sebelum berangkat (di posko)</h2>
+<ol>
+  <li><b>Buka halaman Atur drone gambut</b> lewat ikon drone di peta, atau lewat pop-up cluster, tombol <b>Atur drone ke gambut ini</b>.</li>
+  <li><b>Pilih drone</b> yang dibawa. Isi waktu terbang satu baterai sesuai baterai yang dibawa, bukan angka brosur.</li>
+  <li><b>Tentukan titik lepas landas</b> dengan mengklik peta: tepi jalan, tanggul kanal, atau lahan mineral yang bisa dicapai kendaraan. Usahakan dalam 2 km dari sasaran supaya drone tetap terlihat.</li>
+  <li><b>Unduh KMZ</b> tiap penerbangan, lalu salin ke remote lewat kabel USB atau kartu microSD.</li>
+  <li><b>Cek cuaca</b>: angin hembus di bawah 10 m/detik, tidak hujan, jarak pandang cukup. Prakiraan ada di peta Centurisk97 dan BMKG.</li>
+  <li><b>Koordinasi ruang udara</b> dengan pos komando: apakah ada helikopter water bombing atau pesawat modifikasi cuaca di sekitar lokasi hari itu. Catat frekuensi radio atau nomor HP pengatur lalu lintas udara posko.</li>
+  <li><b>Isi baterai</b> drone dan remote sampai penuh. Kosongkan kartu memori.</li>
+</ol>
+
+<h2>4. Di lokasi, sebelum lepas landas</h2>
+<div class="awas"><b>Jangan pernah berdiri, berjalan, atau lepas landas di atas gambut yang sedang membara.</b> Permukaan bisa terlihat padam padahal di bawahnya rongga bara yang bisa ambles. Lepas landas dari tanah mineral, jalan, tanggul, atau lahan yang sudah dipastikan dingin.</div>
+<ul class="cek">
+  <li>Titik lepas landas di sisi <b>datangnya angin</b> (asap menjauh dari pilot), terbuka, tanpa kabel dan pohon tinggi di atasnya</li>
+  <li>Kalibrasi kompas bila diminta remote. Tunggu sinyal GPS stabil dan titik pulang (home point) tercatat</li>
+  <li>Impor KMZ di DJI Pilot 2: <b>Rute, Impor rute (KMZ/KML)</b>. Pastikan garis rute jatuh di atas sel gambut dan tidak menabrak zona larangan terbang</li>
+  <li>Cek di layar rute: ketinggian 100 m (maksimal 120 m), kecepatan sekitar 6 m/detik, ketinggian pulang 120 m, aksi saat sinyal putus = pulang</li>
+  <li>Setel kamera termal sesuai tabel di bawah, lalu <b>nyalakan kamera 5 sampai 10 menit</b> sebelum terbang supaya pembacaan suhunya stabil</li>
+  <li>Beri tahu pos komando: lepas landas pukul berapa, berapa lama, ketinggian berapa</li>
+</ul>
+
+<h3>Setelan kamera termal (DJI Pilot 2)</h3>
+<table>
+  <tr><th>Setelan</th><th>Isi</th><th>Alasan</th></tr>
+  <tr><td>Format foto</td><td>R-JPEG (radiometrik)</td><td>Hanya R-JPEG menyimpan suhu tiap piksel</td></tr>
+  <tr><td>Mode gain</td><td>High gain. Low gain bila ada api menyala</td><td>High gain lebih peka untuk bara bersuhu rendah</td></tr>
+  <tr><td>Emisivitas</td><td>0,95</td><td>Perkiraan untuk tanah organik dan abu</td></tr>
+  <tr><td>Jarak objek</td><td>Sama dengan ketinggian terbang (100 m)</td><td>Koreksi suhu karena udara</td></tr>
+  <tr><td>Suhu dan kelembapan udara</td><td>Dari BMKG atau termometer di lokasi</td><td>Koreksi suhu karena udara</td></tr>
+  <tr><td>Alarm suhu</td><td>Calon bara: suhu latar + 10 °C. Bara kuat: 50 °C ke atas</td><td>Ambang awal; setel ulang dari pengalaman regu</td></tr>
+  <tr><td>Palet tampilan</td><td>White Hot atau Ironbow</td><td>Hanya tampilan, data suhu tetap sama</td></tr>
+</table>
+
+<div class="catat"><b>Jam terbang terbaik:</b> pagi setelah matahari terbit, sekitar pukul 06.00 sampai 08.00 WIB, atau sore menjelang matahari terbenam. Tanah belum atau tidak lagi dipanasi matahari, jadi bara paling menonjol. Siang terik membuat tanah gundul dan abu sama panasnya dengan bara tipis. <b>Terbang malam dilarang</b> tanpa izin khusus Kemenhub (PM 37 Tahun 2020).</div>
+
+<h2>5. Saat terbang</h2>
+<ol>
+  <li><b>Mulai misi</b> dari remote. Drone naik, menuju lajur pertama, lalu menyapu bolak-balik dan memotret otomatis.</li>
+  <li><b>Pantau layar termal.</b> Titik terang atau berwarna panas di atas gambut adalah calon bara. Catat waktunya. Remote juga menyimpan foto berkoordinat.</li>
+  <li><b>Pandang drone</b> atau tugaskan satu pengamat khusus. Jangan biarkan drone menghilang di balik asap tebal.</li>
+  <li><b>Pulang di 30% baterai</b> atau saat remote memperingatkan, walaupun lajur belum selesai. Lanjutkan sisanya di penerbangan berikut.</li>
+  <li><b>Hentikan dan pulang segera</b> bila helikopter atau pesawat mendekat, angin menguat, hujan turun, sinyal putus-putus, atau regu darat masuk ke bawah jalur terbang.</li>
+  <li>Ganti baterai di titik lepas landas, lalu jalankan KMZ penerbangan berikutnya sesuai urutan.</li>
+</ol>
+
+<h2>6. Sesudah terbang: membaca hasil</h2>
+<ol>
+  <li>Salin semua foto dari kartu memori ke laptop. Beri nama folder: <i>cluster_tanggal_penerbangan</i>, misalnya <i>K0029_2026-10-29_terbang1</i>.</li>
+  <li>Buka foto R-JPEG di <b>DJI Thermal Analysis Tool 3</b> (gratis). Isi emisivitas dan jarak seperti setelan kamera.</li>
+  <li>Cari foto dengan suhu maksimum di atas ambang alarm. Catat suhu maksimum, koordinat foto, dan waktunya.</li>
+  <li>Posisi foto adalah posisi drone. Karena kamera tegak lurus, bara ada dalam radius sekitar 45 m dari titik itu pada ketinggian 100 m. Bila drone punya pengukur jarak laser (Matrice 4TD), pakai koordinat laser yang lebih tepat.</li>
+</ol>
+
+<h2>7. Melapor</h2>
+<h3>a. Unggah titik bara ke tugas</h3>
+<p>Di <b>Akun Instansi</b>, buka tugas cluster itu, tab <b>Drone</b>, isi nama alat (misalnya DJI Mavic 3T), lalu unggah berkas CSV dengan baris judul persis seperti ini:</p>
+<pre>lat,lon,suhu_c,waktu
+-2.73512,114.20177,63.5,2026-10-29T07:12:00+07:00
+-2.73780,114.20540,48.0,2026-10-29T07:15:30+07:00</pre>
+<p>Ketentuan: maksimal 2.000 titik per tugas, titik dalam 5 km dari lokasi tugas, waktu dalam 7 hari terakhir, angka desimal memakai titik.</p>
+
+<h3>b. Pesan singkat ke posko (WhatsApp)</h3>
+<pre>LAPOR DRONE GAMBUT
+Cluster: K0029, Kab. Pulang Pisau
+Terbang: 29 Okt 2026, 06.40 s.d. 08.10 WIB, 3 penerbangan
+Bara ditemukan: 12 titik, suhu maks 63 °C
+Titik terpanas: -2.73512, 114.20177
+Sebaran: memanjang di sisi barat kanal, sekitar 600 m
+Saran: penyekatan dan pembasahan di sisi barat kanal
+Pilot: (nama, instansi, nomor HP)</pre>
+
+<h3>c. Kedalaman bara (bila regu darat masuk)</h3>
+<p>Setelah drone menunjuk lokasi, regu darat dapat memastikan dengan termometer tusuk atau batang besi. Isi <b>Kedalaman bara terukur (cm)</b> di laporan tugas. Angka ini dipakai untuk mengoreksi taksiran kedalaman gambut terbakar di sistem, jadi sangat berharga walau hanya beberapa titik.</p>
+
+<h2>8. Keselamatan</h2>
+<div class="dua">
+<div class="kotak">
+<h3>Pilot dan regu</h3>
+<ul class="cek">
+  <li>Masker N95 dan kacamata sepanjang di lokasi</li>
+  <li>Jangan masuk ke area yang ditunjuk bara tanpa batang penguji</li>
+  <li>Selalu berdua, jangan sendirian di lahan gambut</li>
+  <li>Kenali jalan keluar dan arah angin sebelum mulai</li>
+</ul>
+</div>
+<div class="kotak">
+<h3>Drone dan ruang udara</h3>
+<ul class="cek">
+  <li>Maksimal 120 m, siang hari, drone tetap terlihat (PM 37/2020)</li>
+  <li>Jauhi bandara dan zona larangan yang muncul di remote</li>
+  <li>Utamakan helikopter dan pesawat: drone mengalah dan mendarat</li>
+  <li>Drone terdaftar di SIDOPI Kemenhub, pilot bersertifikat</li>
+</ul>
+</div>
+</div>
+
+<h2>9. Bila terjadi masalah</h2>
+<table>
+  <tr><th>Keadaan</th><th>Tindakan</th></tr>
+  <tr><td>Sinyal remote putus</td><td>Drone pulang sendiri ke titik lepas landas. Jangan mengejar; tunggu di titik lepas landas.</td></tr>
+  <tr><td>Baterai cepat habis</td><td>Pulang. Kurangi waktu terbang di halaman drone, unduh ulang KMZ yang lebih pendek.</td></tr>
+  <tr><td>KMZ gagal diimpor</td><td>Kode drone mungkin salah. Ekspor satu rute contoh dari remote, salin tiga kode drone dari berkas waylines.wpml ke bagian Lanjutan di halaman drone, lalu unduh ulang.</td></tr>
+  <tr><td>Layar termal kabur atau suhu melompat</td><td>Kamera belum stabil. Mendarat, biarkan menyala 10 menit.</td></tr>
+  <tr><td>Drone jatuh di lahan gambut</td><td>Jangan diambil bila lahan masih membara. Catat koordinat terakhir, laporkan ke posko.</td></tr>
+</table>
+
+<div class="kaki">Sumber: panduan lengkap docs/bnpb/PANDUAN-DRONE-GAMBUT.md (setelan sensor, kode drone, dan yang belum diuji) dan rencana armada docs/bnpb/RENCANA-DRONE.md. Ambang suhu, emisivitas, dan penanda gambut membara masih perlu diperbaiki dari hasil lapangan; laporkan pengalaman regu ke posko. Berkas misi (KMZ) dari halaman drone belum diuji di DJI Pilot 2 sungguhan, jadi uji dulu di lahan terbuka sebelum dipakai di lokasi api.</div>
+
+</body>
+</html>

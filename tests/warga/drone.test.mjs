@@ -31,6 +31,7 @@ const halamanOk = (r, sup) => {
   assert.match(r.h.get("content-security-policy"), /img-src 'self' data: blob: https:\/\/\*\.openfreemap\.org/, "peta dasar openfreemap diizinkan CSP");
   assert.match(r.h.get("content-security-policy"), /script-src 'self'(;|$)/, "skrip hanya dari situs sendiri (MapLibre dari /vendor)");
   assert.equal(r.h.get("cache-control"), "private, no-store");
+  assert.match(r.t, /href="\/panduan\/sop-drone-gambut\.pdf" download/, "tombol unduh SOP lapangan");
   for (const s of ["/vendor/maplibre/maplibre-gl.js", "/laporan_koordalops.js", "/admin/drone_rute.js", "/admin/drone.js"]) assert.ok(r.t.includes(`src="${s}`), s);
 };
 
