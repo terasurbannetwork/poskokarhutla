@@ -25,6 +25,8 @@ T_NAVY, T_ORG, T_MERAH, T_KER, T_SLATE = 'E6EAF0', 'FBE7D6', 'F8DDE0', 'F4ECDC',
 NAMA = {k: v['nama'].replace('Kepulauan ', 'Kep. ') for k, v in json.load(open(os.path.join(AKAR, 'public', 'data', 'laporan.json')))['prov'].items()}
 SINGKAT = {'Kep. Bangka Belitung': 'Kep. Babel', 'Nusa Tenggara Timur': 'NTT', 'Nusa Tenggara Barat': 'NTB', 'Papua Barat Daya': 'Papua Barat Daya',
            'Jawa Barat': 'Jabar', 'Jawa Tengah': 'Jateng', 'Jawa Timur': 'Jatim', 'DI Yogyakarta': 'DIY'}   # 27 Okt: lima provinsi Jawa berdesakan di peta
+JENIS_SINGKAT = {'gempabumi': 'gempa', 'karhutla': 'karhutla', 'banjir': 'banjir', 'angin': 'angin', 'kekeringan': 'kekeringan', 'lainnya': 'kebakaran'}
+angka_id = lambda t: float(t.replace('.', '').replace(',', '.'))
 PENDEK = lambda k: SINGKAT.get(NAMA[k]) or re.sub(r'^(Kalimantan|Sumatera|Sulawesi) ', lambda m: m.group(1)[:3] + '. ', NAMA[k])
 # kawasan yang dilaporkan BPBD tanpa nama kabupaten: kecamatan pembentuknya (sama dengan kotak kawasan paparan Jatim 231026)
 KAWASAN = {'Gunung Argopuro': ['35|Probolinggo|Krucil', '35|Probolinggo|Tiris', '35|Situbondo|Sumbermalang', '35|Bondowoso|Pakem', '35|Jember|Panti',
@@ -211,19 +213,29 @@ class Deck:
 
     # ---------------------------------------------------------- isi teks yang tergantung data
     def tindak(s):
+        # 28 Okt pemilik: "berinisiatif dikit tambahin atau ganti" -> tiap kolom diisi dari angka hari itu, bukan kalimat yang sama tiap hari
         sisa = sorted((x for x in s.KH if x['tangani'] and not x['lokasi']), key=lambda x: -x['sat']['sisa'])
-        b1 = [f"•  {NAMA[x['prov']]} sisa ±{f0(x['sat']['sisa'])} ha belum padam" for x in sisa[:1]]
+        b1 = ['•  ' + ' dan '.join(f"{PENDEK(x['prov'])} ±{f0(x['sat']['sisa'])} ha" for x in sisa[:2]) + ' belum padam'] if sisa else []
         kab = [x['lokasi'].replace('Gunung ', 'Gn. ') for x in s.KH if x['lokasi'] and x['status'] == 'belum' and x['tangani']]   # Gn.: muat dua baris (26 Okt)
-        if kab:
-            b1.append('•  Pemadaman: ' + ', '.join(kab))
-        elif len(sisa) > 1:
-            b1.append(f"•  {NAMA[sisa[1]['prov']]} sisa ±{f0(sisa[1]['sat']['sisa'])} ha belum padam")
-        kota = list(dict.fromkeys(k for k, v, kat in s.w['pm'] if kat.lower() == 'berbahaya'))
-        b2 = ['•  Masker dan layanan ISPA: ' + ', '.join(kota), '•  PM2.5 tingkat Berbahaya (BMKG)'] if kota else ['•  Pemantauan kualitas udara di wilayah terdampak asap']
+        jaga = [PENDEK(x['prov']) for x in sisa[2:] if x['perhatian']]
+        if kab: b1.append('•  Pemadaman: ' + ', '.join(kab))
+        elif jaga: b1.append('•  Patroli dan pendinginan: ' + ', '.join(jaga[:3]))
+        elif len(sisa) > 2: b1.append(f"•  Pantau {len(sisa) - 2} provinsi lain dengan sisa api")
+        kota = list(dict.fromkeys(k for k, v, kat in s.w['pm'] if kat.lower() in ('berbahaya', 'sangat tidak sehat')))[:2]
+        b2 = ['•  Masker dan layanan ISPA: ' + ', '.join(kota)] if kota else ['•  Pemantauan kualitas udara di wilayah terdampak asap']
+        ungsi = []
+        for x in s.KJ:
+            m = re.search(r'([\d.]+)\s*jiwa\s*mengungsi', x.get('teks', {}).get('dampak', ''))
+            if m: ungsi.append((angka_id(m[1]), f"{JENIS_SINGKAT.get(x['jenis'], x['jenis'])} {PENDEK(x['prov']).replace('Kep. ', '')}"))
+        if ungsi: b2.append('•  Pengungsi: ' + ', '.join(f"{t} ±{f0(n)}" for n, t in sorted(ungsi, reverse=True)[:2]) + ' jiwa')
+        else: b2.append('•  PM2.5 tingkat Berbahaya (BMKG)' if kota else '•  Siaga evakuasi warga rentan di sekitar api')
         if s.KR:
-            kk = sum(x['angka'].get('kk', 0) for x in s.KR); lok = [x['lokasi'] for x in s.KR]
+            kk = sum(x['angka'].get('kk', 0) for x in s.KR)
             tk, lt = sum(x['angka'].get('tangki', 0) for x in s.KR), sum(x['angka'].get('liter', 0) for x in s.KR)
-            b3 = [f"•  Air bersih untuk ±{f0(kk)} KK di " + (f"{len(lok)} kab/kota, {len({x['prov'] for x in s.KR})} provinsi" if len(lok) > 3 else f"Kab. {', '.join(lok)}")] + ([f'•  Tersalur {f0(lt)} liter' + (f', {f0(tk)} tangki' if tk else '')] if lt else [])   # tanpa "0 tangki" bila WA tak menyebut tangki
+            b3 = [f'•  Tersalur {f0(lt)} liter' + (f', {f0(tk)} tangki' if tk else '') + f' untuk ±{f0(kk)} KK'] if lt else [f"•  Air bersih untuk ±{f0(kk)} KK di {len(s.KR)} kab/kota"]
+            kosong = [x['lokasi'] for x in s.KR if not x['angka'].get('liter')]
+            besar = max(s.KR, key=lambda x: x['angka'].get('kk', 0))
+            b3.append('•  Percepat pendataan dan distribusi: ' + ', '.join(kosong) if kosong else f"•  Terdampak terbesar: {besar['lokasi']} (±{f0(besar['angka'].get('kk', 0))} KK)")
             k3 = ('daun_p', 'Air bersih', b3)
         else:
             g = next((x for x in s.LN if x['tangani']), None)
@@ -483,10 +495,10 @@ class Deck:
                 r = (s.au(9000000, y, rp, *s.pecah(kk), 800, wn=380000, wu=200000) if s.pecah(kk) else s.tx(8650000, y, 600000, rp, [kk], sz=800, b=True, an='ctr', wrap='none'))
                 r += s.au(9640000, y, rp, *(s.pecah(jw) or ('–', 'jiwa')), 800, c=TEKS, b=False, wn=400000, wu=260000) if s.pecah(jw) or jw == 'jiwa –' else s.tx(9150000, y, 700000, rp, [jw], sz=800, c=TEKS, an='ctr', wrap='none')
                 ph_, yp = 164592, y + (rp - 164592) / 2; pl, lc = s.pecah(liter), '8A6A2E' if not b else INK
-                r += s.kotak(9930000, yp, 880000, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(9985000, yp + 32000, 100584, 100584, 'tetes_k')
-                # 28 Okt pemilik: tanpa data ditulis kata-kata, bukan strip; teks lebih kecil di tengah sisa pil supaya tidak meluber
-                r += s.au(9930000 + 620000, yp, ph_, *pl, 720, c=lc, wn=430000, wu=200000) if pl else s.tx(10100000, yp, 690000, ph_, ['belum ada data'], sz=650, c=TEKS, al='ctr', an='ctr', wrap='none')
                 tk = re.search(r'([\d.]+)', tangki)
+                pw = 880000 if pl or tk else 10870000 + 608463 - 9930000   # 28 Okt pemilik: tanpa data = "dalam proses pendataan", pil melebar ke kolom tangki
+                r += s.kotak(9930000, yp, pw, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(9985000, yp + 32000, 100584, 100584, 'tetes_k')
+                r += s.au(9930000 + 620000, yp, ph_, *pl, 720, c=lc, wn=430000, wu=200000) if pl else s.tx(10120000, yp, pw - 230000, ph_, ['dalam proses pendataan'], sz=680, c=TEKS, an='ctr', wrap='none')
                 if tk: r += (s.kotak(10870000, yp, 608463, ph_, 'FFFFFF', 'roundRect', ln=garis_c, adj=50000) + s.gambar(10910000, yp + 27432, 109728, 109728, 'truk_kering')
                              + s.au(10870000 + 300000, yp, ph_, tk[1], 'tangki', 720, c=lc, wn=120000, wu=300000))
                 return r
