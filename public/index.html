@@ -1655,6 +1655,8 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
   <section class="page scroll" id="p-pelaporan" aria-label="Laporan"><div class="wrap lp-wrap"><h2 class="lp-jd">Laporan</h2><p class="lp-sub">Pilih laporan yang mau dibuat. Angkanya diambil dari data situs ini.</p><div class="lp-grid"><a class="box lp-k" href="/laporan-bnpb"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan bencana harian</b><span>Laporan Kejadian Bencana Harian BNPB: isi angka kejadian, pratinjau, lalu unduh.</span><small>PPTX · PDF</small></a><a class="box lp-k" href="/laporan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan karhutla harian</b><span>Titik panas, luas terbakar, belum padam, dan status per provinsi dan kabupaten untuk hari terpilih.</span><small>Cetak · PDF</small></a><a class="box lp-k" href="/paparan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg><b>Laporan per daerah</b><span>Paparan karhutla satu provinsi: pilih provinsi dan tanggal, susun slide, lalu unduh.</span><small>PPTX · PDF</small></a></div><div id="arsipLaporan"></div></div></section>
   <!-- ================= TREN ================= -->
   <section class="page scroll" id="p-tren" aria-label="Tren dan riwayat titik panas"><div class="wrap"><div id="tren"></div></div></section>
+  <!-- ================= SATELIT (tab tersembunyi /satelit: riwayat lintasan, kedatangan data, deteksi per satelit; satelit_data.js dimuat malas oleh muatSatelit) ================= -->
+  <section class="page scroll" id="p-satelit" aria-label="Data satelit"><div class="wrap"><div id="satelit"></div></div></section>
   <!-- ================= KOMPLEKS ================= -->
   <section class="page scroll" id="p-kompleks" aria-label="Cluster (pindah ke Insight)"></section>
   <!-- Tentang sebagai tab (tanpa pindah halaman): tentang.html?tertanam=1 tanpa header situsnya sendiri -->
@@ -1735,7 +1737,7 @@ const SINGKAT_PROV = {12: "Sumut", 13: "Sumbar", 16: "Sumsel", 19: "Babel", 21: 
 const namaProvHtml = k => SINGKAT_PROV[k] ? `<span class="nm-pjg">${esc(namaProv(k))}</span><span class="nm-pdk" title="${esc(namaProv(k))}">${SINGKAT_PROV[k]}</span>` : esc(namaProv(k));
 
 /* ================================================================ tabs (chrome urgent, isi deferred) */
-const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["kompleks", "Cluster"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto"], ["pelaporan", "Laporan"], ["tentang", "Tentang"]];
+const TABS = [["ringkasan", "Dashboard"], ["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["satelit", "Satelit"], ["kompleks", "Cluster"], ["posko", "Posko"], ["dampak", "Dampak"], ["metode", "Metode"], ["sim", "Simulasi"], ["informasi", "Informasi"], ["foto", "Foto"], ["pelaporan", "Laporan"], ["tentang", "Tentang"]];
 /* tab lama yang sudah digabung: Prioritas -> Kompleks api; Sarana & Operasi -> Posko (tautan lama tetap jalan) */
 const ALIAS = {prioritas: ["kompleks"], sarana: ["posko", "sarana"], operasi: ["posko", "operasi"], keputusan: ["posko", "keputusan"]};
 S.poskoSub = "posko";
@@ -1752,6 +1754,13 @@ function lengkapiKluster() {
     for (const f of S.kluster.features) { const g = G[f.properties.id]; if (!g) continue; if (g[0]) f.geometry = g[0]; f.properties.api24 = g[1]; }
     S.kluster.awal = false; if (typeof peta !== "undefined" && peta) peta.getSource("kluster")?.setData(S.kluster);
   }).catch(e => { lengkapiKluster._p = null; console.warn("kluster_geo.json", e); });
+}
+/* tab Data satelit: modul (satelit_data.js + .css) dimuat malas saat tab pertama kali dibuka; janji gagal dilepas supaya buka berikutnya mencoba lagi. Mesin lintasan (satelit_lintas.js) sudah dimuat halaman ini. */
+function muatSatelit() {
+  return muatSatelit._p ||= (window.__riwayatSatelit = fetch("/data/satelit/riwayat.json", {cache: "no-cache"}).then(r => r.ok ? r.json() : null).catch(() => null), Promise.all([   /* hanya pada muat pertama: fetch riwayat berjalan bersamaan dengan memuat skrip, satelit_data.js memakai janjinya sekali */
+    new Promise((ok, no) => { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/satelit_data.css"; l.onload = ok; l.onerror = () => no(new Error("satelit_data.css")); document.head.appendChild(l); }),
+    new Promise((ok, no) => { const s = document.createElement("script"); s.src = "/satelit_data.js"; s.onload = ok; s.onerror = () => no(new Error("satelit_data.js")); document.head.appendChild(s); })
+  ])).catch(e => { muatSatelit._p = null; document.querySelectorAll('link[href="/satelit_data.css"],script[src="/satelit_data.js"]').forEach(x => x.remove()); throw e; });
 }
 /* akun pemirsa (src/pemirsa.js): worker menulis tab yang boleh dilihat di <html data-pemirsa-tab>; tab lain disembunyikan dan dialihkan ke tab pertamanya */
 const PEMIRSA = document.documentElement.dataset.pemirsaTab?.split(",").filter(Boolean) || null;
@@ -1779,15 +1788,16 @@ function bukaTab(id, dorong = true) {
     if (id === "dampak") Dampak.render();
     if (id === "ringkasan") Ringkasan.render();
     if (id === "tren") Tren.render();
+    if (id === "satelit") { const el = $("#satelit"); if (el && !el.firstElementChild) el.innerHTML = '<p style="margin:8px 0;color:var(--ink2);font-size:13px" role="status">Memuat data satelit…</p>'; muatSatelit().then(() => window.SatelitData?.render()).catch(e => console.warn("Data satelit:", e && e.message || e)); }
     if (id === "pelaporan") window.ArsipLaporan?.muat();
     if (id === "metode" && !sudah.metode) { sudah.metode = 1; lengkapiKluster().then(renderMetode); }
   });
 }
 /* 6 tab utama; sisanya di menu Lainnya supaya tidak ada tab yang terpotong */
 /* disembunyikan sementara dari menu atas (permintaan pemilik 13 Okt 2026); halamannya tetap bisa dibuka lewat tautan langsung */
-const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "metode"]); /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
+const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "metode", "satelit"]); /* satelit: tab Data satelit tersembunyi dari menu (pemilik 28 Okt 2026); pintu masuk = tautan di popover lintasan (satelit_lintas.js), /satelit; pulihkan di menu: hapus "satelit" dari set ini dan dari tab_sembunyi di bencana.json */ /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
 const IK_TAB = {pelaporan: '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>',
-  tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', kompleks: IKON.api, dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', metode: '<path d="M9 3h6M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4A1.5 1.5 0 0 0 20 19l-6-10V3"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
+  tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', satelit: '<path d="m13 7-3 3 4 4 3-3zM9 11 5 7l2-2 4 4M15 13l4 4-2 2-4-4"/><path d="M4 20a8 8 0 0 0 8-8"/>', kompleks: IKON.api, dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', metode: '<path d="M9 3h6M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4A1.5 1.5 0 0 0 20 19l-6-10V3"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
   posko: IKON.posko, informasi: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', ringkasan: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'};
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`, TB = TABS.filter(t => PEMIRSA ? PEMIRSA.includes(t[0]) : !TAB_SEMBUNYI.has(t[0]));
   $("#tabs").innerHTML = (TB.length <= 11 ? TB.map(tb).join("") : TB.slice(0, 10).map(tb).join("") + `<details class="lainnya"><summary>Lainnya</summary><div class="menu">${TB.slice(10).map(tb).join("")}</div></details>`)

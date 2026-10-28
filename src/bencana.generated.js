@@ -22,6 +22,7 @@ export default {
         "posko",
         "dampak",
         "metode",
+        "satelit",
         "sim",
         "informasi",
         "foto",
@@ -33,7 +34,8 @@ export default {
         "posko",
         "informasi",
         "kompleks",
-        "metode"
+        "metode",
+        "satelit"
       ],
       "sumber_status": [
         [
