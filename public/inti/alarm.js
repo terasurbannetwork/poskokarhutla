@@ -1,9 +1,11 @@
 /* Pop-up alarm peringatan dini (PERINGATAN-DINI.md §3), dipasang di semua halaman bencana dan /semua.
    Sumber: GET /api/peringatan/aktif (src/peringatan.js). Jajak tiap 60 dtk hanya saat tab terlihat; tiap alarm tampil sekali per
    perangkat (localStorage "pb_alarm"). Rupa meniru pop-up Situasi (public/inti/sapa.js): kepala navy, pil tingkat, tombol bulat.
-   Kartu tidak modal (pojok kanan bawah) supaya tidak menghalangi peta; teks dari API selalu di-escape. */
+   Kartu tidak modal (pojok kanan bawah) supaya tidak menghalangi peta; teks dari API selalu di-escape. Banjir ikut berbunyi (BERBUNYI). */
 (() => {
   const JEDA = 60e3, KUNCI = "pb_alarm", MAKS_INGAT = 300;
+  /* jenis yang berbunyi saat kartunya muncul (bunyi sama dengan /monitor). Peramban menolak bunyi sebelum pengunjung mengetuk halaman: gagal diam, kartu tetap tampil. */
+  const BERBUNYI = new Set(["banjir"]), SUARA = "/suara/alarm-api.mp3";
   const RUTE = {karhutla: "/", banjir: "/banjir/", gempa: "/gempa/", tsunami: "/gempa/", cuaca: "/cuaca/"};
   const WARNA = {Waspada: "#e3b94e", Siaga: "#e58a45", Awas: "#c9503a"};
   const PRIORITAS = {Waspada: 1, Siaga: 2, Awas: 3};
@@ -43,6 +45,7 @@
   function berikut() {
     if (tampil || !antre.length) return;
     const a = antre.shift(); tampil = true; tandai(a.kunci);
+    if (BERBUNYI.has(a.jenis)) try { new Audio(SUARA).play().catch(() => {}); } catch (e) {}
     const t = document.createElement("div"); t.innerHTML = kartu(a); el = t.firstElementChild; document.body.append(el);
     el.addEventListener("click", e => { if (e.target.closest("[data-tutup]")) { el.remove(); el = null; tampil = false; setTimeout(berikut, 400); } });
   }

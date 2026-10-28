@@ -8,7 +8,7 @@
    - cuaca:   nowcast BMKG (aset /banjir/data/peringatan.json) tingkat Severe -> Siaga, Extreme -> Awas.
    - karhutla: tugas api level 3 BARU (dibuat <= 6 jam, buka, bukan dummy) -> Siaga. Alarm Himawari TIDAK ikut: alarm siaga hanyalah perkiraan 2 km; baru setelah VIIRS membuat tugas
      (alarm terkunci) insidennya ada di tugas_api dan masuk lewat aturan ini. Tabel tugas (0029) belum ada = aturan dilewati.
-   Belum ada (datanya tidak ada di Worker, tidak dikarang): banjir (kejadian_aktif_awal.json belum ada di aset).
+   - banjir:  kejadian aktif (aset /banjir/data/kejadian_aktif_awal.json, berkas hari ini atau kemarin WIB) level 2 -> Siaga, level 3 -> Awas, berlabel Deteksi.
    Keluaran: JSON /api/peringatan/aktif, CAP 1.2 /api/peringatan/aktif.cap, GeoJSON /api/peringatan/aktif.geojson (bentuk() yang sama, CORS *). */
 import {json, gagal, cacheTepi, adminOK, tolakOrigin, sha} from "./worker.js";
 import {modOK} from "./posko.js";
@@ -86,6 +86,32 @@ async function aturanCuaca(env, kini) {
   return tulis(st);
 }
 
+/* ---------------- banjir: kejadian aktif Siaga/Awas (aset /banjir/data/kejadian_aktif_awal.json, pipeline harian) ---------------- */
+/* kunci per kode + tingkat: kejadian yang naik Siaga -> Awas berbunyi sekali lagi, yang bertahan tidak. Berkas lebih tua dari kemarin WIB = diam
+   (pipeline banjir macet tidak boleh membunyikan kejadian lama). Status ini hitungan otomatis, berlabel Deteksi, bukan status resmi BPBD. */
+const TINGKAT_BANJIR = {2: "Siaga", 3: "Awas"}, BERLAKU_BANJIR = 30 * JAM;
+const hariWib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
+async function aturanBanjir(env, kini) {
+  const r = await env.ASSETS.fetch(new Request("https://aset.lokal/banjir/data/kejadian_aktif_awal.json"));
+  if (!r.ok) { r.body?.cancel(); return 0; }
+  const j = await r.json();
+  if (j.hari !== hariWib(kini) && j.hari !== hariWib(kini - HARI)) return 0;
+  const st = [];
+  for (const x of j.kejadian ?? []) {
+    const tingkat = TINGKAT_BANJIR[x?.level_tertinggi];
+    if (!tingkat || !/^B\d+$/.test(x.kode)) continue;
+    const [prov, kab] = String(x.kec?.[0] ?? "").split("|"), kec = (x.kec ?? []).map(k => k.split("|")[2]).filter(Boolean);
+    const [lat, lon] = x.pusat ?? [], ok = lat >= -11.5 && lat <= 6.5 && lon >= 94 && lon <= 142;
+    const tempat = [kec.slice(0, 3).join(", ") + (kec.length > 3 ? ` dan ${kec.length - 3} kecamatan lain` : ""), kab].filter(Boolean).join(", ");
+    const angka = [x.penduduk ? `sekitar ${Math.round(x.penduduk).toLocaleString("id-ID")} jiwa tinggal di sana` : "", x.h3_mm != null ? `hujan 3 hari ${koma(Math.round(x.h3_mm))} mm` : ""].filter(Boolean).join(", ");
+    st.push(env.DB.prepare(MASUK).bind(`banjir:${x.kode}:${tingkat.toLowerCase()}`, "banjir", tingkat, /^\d{2}$/.test(prov) ? prov : null, potong(kab, 80) || null,
+      ok ? Math.round(lat * 100) / 100 : null, ok ? Math.round(lon * 100) / 100 : null, potong(`Banjir ${tingkat} di ${tempat}`, 200),
+      potong(`Status banjir ${tingkat} di ${x.n_kec || kec.length} kecamatan${angka ? `, ${angka}` : ""}. Hitungan otomatis dari hujan dan sungai, bukan status resmi BPBD; perlu konfirmasi lapangan.`, TEKS_MAKS),
+      DETEKSI_D1, null, kini, kini + BERLAKU_BANJIR));
+  }
+  return tulis(st);
+}
+
 /* ---------------- karhutla: tugas api level 3 baru ---------------- */
 const BARU_KARHUTLA = 6 * JAM, BERLAKU_KARHUTLA = 12 * JAM;
 async function aturanKarhutla(env, kini) {
@@ -103,10 +129,10 @@ async function aturanKarhutla(env, kini) {
 }
 
 /* ---------------- satu putaran ---------------- */
-/* tidak pernah melempar. cuaca hanya tiap 10 menit (berkasnya statis, berubah sejarang itu). */
+/* tidak pernah melempar. cuaca dan banjir hanya tiap 10 menit (berkasnya statis, berubah sejarang itu). */
 export async function periksaPeringatan(env, kini = Date.now()) {
   const hasil = {};
-  const tugas = [["gempa", aturanGempa], ["karhutla", aturanKarhutla], ...(new Date(kini).getUTCMinutes() % 10 === 0 ? [["cuaca", aturanCuaca]] : [])];
+  const tugas = [["gempa", aturanGempa], ["karhutla", aturanKarhutla], ...(new Date(kini).getUTCMinutes() % 10 === 0 ? [["cuaca", aturanCuaca], ["banjir", aturanBanjir]] : [])];
   for (const [nama, f] of tugas) {
     try { hasil[nama] = await f(env, kini); }
     catch (e) { if (/no such table/i.test(e?.message)) return {lewat: "tabel peringatan belum ada (migrasi 0010)"}; console.error("peringatan", nama, e?.message); hasil[nama] = "galat"; }
@@ -173,7 +199,7 @@ export function bentukCap(daftar, kini) {
   <status>Actual</status>
   <msgType>Alert</msgType>
   <scope>Public</scope>
-  <note>Peringatan aktif Centurisk97 (gempa, tsunami, cuaca BMKG, karhutla). ${daftar.length} peringatan. Satu blok info per peringatan.</note>
+  <note>Peringatan aktif Centurisk97 (gempa, tsunami, cuaca BMKG, karhutla, banjir). ${daftar.length} peringatan. Satu blok info per peringatan.</note>
 ${daftar.map(info).join("\n")}
 </alert>
 `;
