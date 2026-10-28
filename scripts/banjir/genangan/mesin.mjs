@@ -234,6 +234,13 @@ function uji() {
     fs.writeFileSync(st, JSON.stringify({dibuka: {tanggal: "x", sidik: "abc"}}));
     assert.throws(() => muatLabel("2024-08", st, lp, () => "beda"), /terkunci/, "sidik berubah sesudah buka: terkunci lagi"); const u = muatLabel("2024-08", st, lp, () => "abc");
     assert.equal(u.length, 1, "duplikat, luar DKI, luar jendela dibuang"); assert.match(u[0].kab, /JAKARTA/i); fs.rmSync(d, {recursive: true}); }
+  { /* berkas panggang J4: tulis lalu baca = identik (float64 persis, alur, sungai bernama, blok tanpa data) */
+    const d = fs.mkdtempSync(path.join(os.tmpdir(), "pg-")), j = path.join(d, "p.gz"), nodata = -9999, f = 12, kol = 24, bar = 12, z8 = new Float32Array(kol * bar).fill(3.5);
+    for (let b = 0; b < f; b++) for (let c = 12; c < 24; c++) z8[b * kol + c] = nodata; /* blok kedua kosong */
+    const dd = turunkan(z8, kol, bar, f, nodata, "mean"), ak = Uint8Array.from([0, 3]);
+    tulisPanggang(j, {meta: {x0: 106.6, y0: -6.05, dx: 7.5e-5, dy: 7.5e-5, nodata}, z8, kol, bar, d: dd, alurKelas: ak, sungaiSel: [{nama: "Kali X", kelas: "river", sel: [1]}]});
+    const p = bacaPanggang(j); assert(p.nx === 2 && p.ny === 1 && p.z[0] === dd.z[0] && p.z[1] === 0 && p.kosong.join() === "1" && p.alurKelas[1] === 3 && p.sungai[0].nama === "Kali X" && p.meta.x0 === 106.6 && p.faktor === 12, "panggang bolak-balik");
+  }
   console.log("ok");
 }
 
@@ -261,6 +268,21 @@ export function muatLabel(kejadian, statePath = STATE_J3, berkas = P("data/raw/b
   return o;
 }
 
+/* ---------- panggang (J4 operasional): medan 100 m + alur terbakar dalam satu berkas kecil yang dilacak git ---------- */
+const b64 = t => Buffer.from(t.buffer, t.byteOffset, t.byteLength).toString("base64");
+const dariB64 = (s, T) => { const b = Buffer.from(s, "base64"); return new T(b.buffer.slice(b.byteOffset, b.byteOffset + b.length)); };
+export function tulisPanggang(jalur, {meta, z8, kol, bar, d, alurKelas, sungaiSel}) {
+  const f = 12, kosong = []; /* blok tanpa data (rata-rata 0 di mesin; +inf di skor heuristik) */
+  for (let j = 0; j < d.ny; j++) for (let i = 0; i < d.nx; i++) { let n = 0; for (let b = 0; b < f && !n; b++) for (let c = 0; c < f; c++) if (z8[(j * f + b) * kol + i * f + c] !== meta.nodata) { n = 1; break; } if (!n) kosong.push(j * d.nx + i); }
+  const isi = {versi: 1, faktor: f, agregasi: "mean", nx: d.nx, ny: d.ny, meta: {x0: meta.x0, y0: meta.y0, dx: meta.dx, dy: meta.dy}, kosong, z: b64(d.z), alurKelas: b64(alurKelas),
+    sungai: sungaiSel.map(s => ({nama: s.nama, kelas: s.kelas, sel: s.sel}))};
+  fs.writeFileSync(jalur, zlib.gzipSync(JSON.stringify(isi), {level: 9}));
+}
+export function bacaPanggang(jalur) {
+  const o = JSON.parse(zlib.gunzipSync(fs.readFileSync(jalur)).toString("utf8")); if (o.versi !== 1) throw new Error("berkas panggang versi tak dikenal");
+  return {...o, z: dariB64(o.z, Float64Array), alurKelas: dariB64(o.alurKelas, Uint8Array)};
+}
+
 /* ---------- jalan ---------- */
 function argumen() {
   const a = {kejadian: "2020-01", mulai: "2019-12-30", jam: 96, faktor: 4, hujan: "ifs", bentuk: "ifs", cn: 80, kd: 10, muka: .6, rentang: 1, skalaSubsiden: 1, hulu: true, alur: true, pintu: true, pompa: true, tanggul: TANGGUL_M, skalaHulu: 1, radiusHuluKm: 10, skalaHujan: 1, agregasi: "mean", cekungan: null, kdKec: null, raster: null, kotak: null, keluar: null};
@@ -277,6 +299,10 @@ function argumen() {
     else if (k === "--skala-hujan") a.skalaHujan = +v[++i]; /* kenop global J3 (PRAREG-J3.md), 1 = tanpa koreksi */
     else if (k === "--agregasi") a.agregasi = v[++i]; /* J4: mean (J3) | median | pNN, filter DSM saat 8 m -> dx */
     else if (k === "--cekungan-maks") a.cekungan = +v[++i]; /* J4: ganti ASUMSI.CEKUNGAN_MAKS (m) */
+    else if (k === "--dem-100m") a.dem100m = v[++i]; /* J4 operasional: medan 100 m + alur yang sudah dibakar (berkas panggang); hasil identik dengan jalur penuh */
+    else if (k === "--panggang") a.panggang = v[++i]; /* tulis berkas panggang dari DEM penuh + saluran_osm lalu berhenti (butuh --faktor 12 --agregasi mean) */
+    else if (k === "--hujan-berkas") a.hujanBerkas = v[++i]; /* ganti hujan_jam/<kejadian>.json (J4 operasional: kunci gsmap_jam) */
+    else if (k === "--hulu-berkas") a.huluBerkas = v[++i]; /* ganti public/.../hulu.json (J4 operasional: debit Flood API untuk kejadian ini) */
     else if (k === "--raster") a.raster = v[++i]; /* tulis kedalaman maks per sel (gz json) untuk skor_j3.py */
     else if (k === "--kd-kec") a.kdKec = v[++i]; /* json {"kab|kec": Kd mm/jam}; kecamatan tak tercantum memakai --kd */
     else if (k === "--radius-hulu-km") a.radiusHuluKm = +v[++i];
@@ -297,9 +323,12 @@ function muatMesin() {
 
 async function jalan() {
   const a = argumen(), SG = muatMesin(), t0 = Date.now(), log = (...x) => console.error(`[${((Date.now() - t0) / 1000).toFixed(0)} dtk]`, ...x);
-  const meta = JSON.parse(fs.readFileSync(path.join(MEDAN, "demnas_kotak.json"), "utf8"));
-  const mentah = new Float32Array(zlib.gunzipSync(fs.readFileSync(path.join(MEDAN, "demnas_kotak.f32.gz"))).buffer.slice(0));
-  (mentah.length === meta.kolom * meta.baris) || (() => { throw new Error("ukuran DEM tidak cocok dengan json"); })();
+  const bake = a.dem100m ? bacaPanggang(a.dem100m) : null;
+  if (bake && (a.faktor !== bake.faktor || a.agregasi !== bake.agregasi || a.kotak)) throw new Error(`--dem-100m butuh --faktor ${bake.faktor} --agregasi ${bake.agregasi} tanpa --kotak`);
+  if (a.panggang && (a.faktor !== 12 || a.agregasi !== "mean" || a.kotak || bake)) throw new Error("--panggang butuh --faktor 12 --agregasi mean, tanpa --kotak dan --dem-100m");
+  const meta = bake ? bake.meta : JSON.parse(fs.readFileSync(path.join(MEDAN, "demnas_kotak.json"), "utf8"));
+  const mentah = bake ? null : new Float32Array(zlib.gunzipSync(fs.readFileSync(path.join(MEDAN, "demnas_kotak.f32.gz"))).buffer.slice(0));
+  (bake || mentah.length === meta.kolom * meta.baris) || (() => { throw new Error("ukuran DEM tidak cocok dengan json"); })();
   /* potong kotak (opsional) sebelum diturunkan */
   let kol0 = 0, bar0 = 0, kol = meta.kolom, bar = meta.baris, z8 = mentah;
   if (a.kotak) { const [lo0, la0, lo1, la1] = a.kotak;
@@ -307,7 +336,7 @@ async function jalan() {
     bar0 = Math.max(0, Math.floor((meta.y0 - la1) / meta.dy)); const bar1 = Math.min(meta.baris, Math.ceil((meta.y0 - la0) / meta.dy));
     kol = kol1 - kol0; bar = bar1 - bar0; z8 = new Float32Array(kol * bar);
     for (let j = 0; j < bar; j++) z8.set(mentah.subarray((bar0 + j) * meta.kolom + kol0, (bar0 + j) * meta.kolom + kol0 + kol), j * kol); }
-  const d = turunkan(z8, kol, bar, a.faktor, meta.nodata, a.agregasi), nx = d.nx, ny = d.ny, N = nx * ny;
+  const d = bake ? {z: bake.z, nx: bake.nx, ny: bake.ny} : turunkan(z8, kol, bar, a.faktor, meta.nodata, a.agregasi), nx = d.nx, ny = d.ny, N = nx * ny;
   const lonSel = i => meta.x0 + (kol0 + (i + .5) * a.faktor) * meta.dx, latSel = j => meta.y0 - (bar0 + (j + .5) * a.faktor) * meta.dy;
   const lat0 = latSel(ny >> 1), dxm = a.faktor * meta.dx * 111320 * Math.cos(lat0 * Math.PI / 180), dym = a.faktor * meta.dy * 110574;
   if (Math.abs(dxm / dym - 1) > .01) throw new Error(`sel tidak persegi: ${dxm} x ${dym}`);
@@ -322,7 +351,8 @@ async function jalan() {
   const info = {};
   /* alur OSM: kelas, nama, sel 4-tersambung */
   const alurKelas = new Uint8Array(N), dalamKelas = new Float64Array(N), nAlur = new Float64Array(N), sungaiSel = []; /* sungaiSel: {nama, kelas, sel[]} */
-  if (a.alur) {
+  if (a.alur && bake) { alurKelas.set(bake.alurKelas); sungaiSel.push(...bake.sungai); }
+  else if (a.alur) {
     const osm = JSON.parse(fs.readFileSync(P("data/raw/banjir/genangan/saluran_osm.json"), "utf8")), urut = {river: 3, canal: 2, drain: 1}, kelasDari = [null, "drain", "canal", "river"];
     const fi = lon => (lon - lonSel(0)) / (a.faktor * meta.dx), fj = lat => (latSel(0) - lat) / (a.faktor * meta.dy);
     const r = {river: Math.floor((Math.max(1, Math.round(ALUR.river.lebar / dx)) - 1) / 2), canal: Math.floor((Math.max(1, Math.round(ALUR.canal.lebar / dx)) - 1) / 2), drain: Math.floor((Math.max(1, Math.round(ALUR.drain.lebar / dx)) - 1) / 2)};
@@ -334,6 +364,10 @@ async function jalan() {
       for (const k of mk) { if (laut[k]) continue; if (kl > alurKelas[k]) alurKelas[k] = kl; }
       if (e.tags.name) sungaiSel.push({nama: e.tags.name, kelas: w, sel: sel.filter(k => !laut[k])}); }
     /* sub-sel: alur selebar `lebar` dalam sel selebar dx menampung (lebar/dx) x isi penampang; kedalaman efektif = dalam x min(1, lebar/dx) menjaga luas penampang & tampungan per panjang alur */
+    if (a.panggang) { tulisPanggang(a.panggang, {meta, z8: mentah, kol, bar, d, alurKelas, sungaiSel}); log("panggang " + a.panggang); return; }
+  }
+  if (a.alur) {
+    const kelasDari = [null, "drain", "canal", "river"];
     for (let k = 0; k < N; k++) if (alurKelas[k]) { const w = kelasDari[alurKelas[k]]; dalamKelas[k] = ALUR[w].dalam * Math.min(1, ALUR[w].lebar / dx); nAlur[k] = ALUR[w].n; }
     info.sel_alur = {river: 0, canal: 0, drain: 0}; for (let k = 0; k < N; k++) if (alurKelas[k]) info.sel_alur[kelasDari[alurKelas[k]]]++;
   }
@@ -360,8 +394,8 @@ async function jalan() {
   const kdPeta = a.kdKec ? JSON.parse(fs.readFileSync(a.kdKec, "utf8")) : {}, kdKec = nama.map(n => kdPeta[n] ?? a.kd), kd = new Float64Array(N); for (let k = 0; k < N; k++) kd[k] = laut[k] || alur[k] ? 0 : (kec[k] >= 0 ? kdKec[kec[k]] : a.kd);
 
   /* hujan: sel hujan terdekat per sel DEM -> kelas; SCS-CN harian. Sumber: ifs | era5 (jam langsung) | gsmap_dis (total harian GSMaP x bentuk jam model --bentuk) */
-  const KUNCI = {ifs: "ecmwf_ifs", ecmwf_ifs: "ecmwf_ifs", era5: "era5"}, hj = JSON.parse(fs.readFileSync(P("data/raw/banjir/genangan/hujan_jam", a.kejadian + ".json"), "utf8"));
-  const kunciModel = a.hujan === "gsmap_dis" ? KUNCI[a.bentuk] : KUNCI[a.hujan]; if (!kunciModel) throw new Error(`--hujan ${a.hujan} tidak dikenal (ifs|era5|gsmap_dis)`);
+  const KUNCI = {ifs: "ecmwf_ifs", ecmwf_ifs: "ecmwf_ifs", era5: "era5", gsmap_jam: "gsmap_jam"}, hj = JSON.parse(fs.readFileSync(a.hujanBerkas || P("data/raw/banjir/genangan/hujan_jam", a.kejadian + ".json"), "utf8"));
+  const kunciModel = a.hujan === "gsmap_dis" ? KUNCI[a.bentuk] : KUNCI[a.hujan]; if (!kunciModel) throw new Error(`--hujan ${a.hujan} tidak dikenal (ifs|era5|gsmap_dis|gsmap_jam)`);
   let sh = hj[kunciModel]; if (!sh) throw new Error(`model hujan ${kunciModel} tidak ada`);
   if (sh.every(s => s.mm.every(x => x == null))) throw new Error(`model hujan ${kunciModel} kosong semua (null)`);
   let infoHujan = {sumber: a.hujan, model: kunciModel};
@@ -387,7 +421,7 @@ async function jalan() {
      titik snap (<= radiusHuluKm). Tanpa alur (--tanpa-alur) atau tanpa alur bernama: dilewati, dicatat. ASUMSI skala: Q GloFAS di titik snap = seluruh debit sungai
      di titik itu (skala 1 x --skala-hulu); fraksi luas DAS di dalam kotak TIDAK dihitung (luas DAS tak ada di repo). Bila titik B terletak di hilir titik A pada alur yang
      sama, B menyuntik max(0, Q_B - sum Q anak) supaya total di B tetap Q_B (tak dihitung ganda). */
-  const masuk = [], hulu = JSON.parse(fs.readFileSync(P("public/banjir/data/genangan/hulu.json"), "utf8")), dipakai = new Set(), catatHulu = [], calon = [];
+  const masuk = [], hulu = JSON.parse(fs.readFileSync(a.huluBerkas || P("public/banjir/data/genangan/hulu.json"), "utf8")), dipakai = new Set(), catatHulu = [], calon = [];
   const tglQ = new Date(a.mulai + "T00:00:00+07:00").getTime();
   if (a.hulu) for (const [n, t] of Object.entries(hulu.titik)) {
     const ev = t.kejadian[a.kejadian], kunci = t.snap.join(","); if (!ev) { catatHulu.push({nama: n, dilewati: "tanpa seri kejadian"}); continue; }

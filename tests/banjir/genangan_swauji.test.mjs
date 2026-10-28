@@ -29,3 +29,10 @@ for (const s of ['skor_j3', 'kalibrasi_j3', 'vonis_j3', 'skor_j4', 'kalibrasi_j4
     assert.match(out, /ok/);
   });
 }
+
+for (const s of ['kunci_j4', 'j4_operasi']) {
+  test(`genangan/${s}.py swa-uji (jangkar origin, sidik, rantai hash, pemicu beruntun, label setelah prediksi, vonis)`, () => {
+    const out = execFileSync('python3', [`scripts/banjir/genangan/${s}.py`, 'uji'], { encoding: 'utf8', timeout: 120000 });
+    assert.match(out, /ok/);
+  });
+}
