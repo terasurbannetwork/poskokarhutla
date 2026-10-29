@@ -2,7 +2,7 @@
   "catatan": "URL tetap tiap buku. Terbitkan ulang SELALU ke url ini, tidak pernah sebagai artifact baru.",
   "buku": {
     "pantau-bencana": {
-      "url": "https://claude.ai/artifact/5sPCWCh2susGkjnmW7tL7Z",
+      "url": "https://claude.ai/artifact/XEdp3R4s42P9kG6dvyXc1Q",
       "sumber": "docs/buku-pegangan/pantau-bencana.md",
       "commit": "1a94c45a",
       "disegarkan": "2026-10-28"

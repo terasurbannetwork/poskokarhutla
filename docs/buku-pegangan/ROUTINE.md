@@ -32,7 +32,7 @@ LANGKAH 2. Sunting docs/buku-pegangan/pantau-bencana.md:
 
 LANGKAH 3. python3 docs/buku-pegangan/bangun.py pantau-bencana
 
-LANGKAH 4. Terbitkan ulang dengan tool Artifact: publish, file_path = docs/buku-pegangan/terbit/pantau-bencana.html (path absolut), url = url di ARTIFACT.json (https://claude.ai/artifact/5sPCWCh2susGkjnmW7tL7Z). Bila diminta read dulu, read url itu lalu publish lagi. TIDAK PERNAH menerbitkan sebagai artifact baru tanpa url.
+LANGKAH 4. Terbitkan ulang dengan tool Artifact: publish, file_path = docs/buku-pegangan/terbit/pantau-bencana.html (path absolut), url = url di ARTIFACT.json (https://claude.ai/artifact/XEdp3R4s42P9kG6dvyXc1Q). Bila diminta read dulu, read url itu lalu publish lagi. TIDAK PERNAH menerbitkan sebagai artifact baru tanpa url.
 
 LANGKAH 5. Perbarui "commit" (sha sungguhan HEAD) dan "disegarkan" (YYYY-MM-DD) entri pantau-bencana di ARTIFACT.json. Commit hanya tiga berkas:
 git add -- docs/buku-pegangan/pantau-bencana.md docs/buku-pegangan/terbit/pantau-bencana.html docs/buku-pegangan/ARTIFACT.json
