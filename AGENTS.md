@@ -59,6 +59,13 @@ Tiga ingatan, semuanya di repo supaya ikut ke mesin mana pun:
 | `.claude/ilmu-agent/KATALOG.md`         | tiap agent: kelas, model, bisa, tidak bisa, wilayah     | generate dari roster; jangan disunting |
 | `.claude/ilmu-agent/<nama>.md`          | peta berkas, aturan, ranjau, gerbang, Kasus             | agentnya sendiri (`ilmu.mjs kasus`)    |
 | `.claude/ilmu-agent/jejak/<nama>.jsonl` | berkas apa yang sudah diperiksa/dikerjakan, di blob apa | agentnya sendiri (`ilmu.mjs catat`)    |
+| `.claude/ilmu-agent/prompt/<bulan>.jsonl` | tiap prompt pemilik, disamarkan, berlabel agent       | hook `UserPromptSubmit` (`prompt-catat`) |
+
+**Prompt pemilik jadi konteks.** `ilmu.mjs baca <agent>` ikut menampilkan 10
+prompt terakhir berlabel agent itu; `ilmu.mjs prompt <regex>` mencari semuanya.
+Repo ini publik: penyamaran di `samarkan()` satu-satunya penjaga, jadi melemahkannya
+haram. Keputusan pemilik di prompt disuling jadi aturan lewat `ilmu.mjs kasus`;
+log prompt ikut di-commit bersama kerjaan sesi itu (`git commit -- .claude/ilmu-agent/prompt`).
 
 **Tidak ulang review tanpa menelan perubahan.** Jejak dikunci ke blob git
 berkasnya DAN hash definisi agent; `ilmu.mjs cek` menjawab `LEWATI` hanya

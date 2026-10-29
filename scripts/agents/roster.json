@@ -511,6 +511,26 @@
         "scripts/wa/**",
         "tests/wa/**"
       ]
+    },
+    {
+      "nama": "longsor",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul longsor: nowcast longsor harian per kecamatan (rumus gaya LHASA: kerentanan lereng/tanah/sesar x hujan 7 hari di atas P95), label kejadian NASA Global Landslide Catalog + DIBI, tanah SoilGrids (Curve Number), uji balik, keluaran public/longsor/data.",
+      "kapan": "scripts/longsor/**, public/longsor/**, tests/longsor/**, atau lapisan longsor disentuh atau rusak",
+      "fokus": [
+        "Python stdlib di pipeline produksi; raster besar (SoilGrids, DEM) diolah di lab.yml/lokal, yang di-commit hanya agregat per kec/sel",
+        "Hujan dari sumber yang sudah dipanen repo (Open-Meteo, IMERG/CHIRPS); jangan unduh ulang yang sudah ada",
+        "Model jujur: pembagian waktu, pembanding klimatologi, POD/FAR/AUC, tulis LOLOS atau GAGAL apa adanya"
+      ],
+      "larangan": "Jangan menyentuh worker/D1, scripts/data (milik pipa-data), scripts/banjir (milik banjir), atau .github/workflows (cukup usulan). Tanpa jadwal per menit.",
+      "bisa": "membangun & membetulkan pipeline nowcast longsor, label kejadian, dan uji baliknya",
+      "tidak": "worker dan D1; layar; modul banjir; menyunting .github/workflows",
+      "milik": [
+        "scripts/longsor/**",
+        "public/longsor/**",
+        "tests/longsor/**"
+      ]
     }
   ]
 }

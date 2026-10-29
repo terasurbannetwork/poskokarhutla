@@ -94,6 +94,14 @@ jobs:
           key: citra-${{ github.run_id }}
           restore-keys: citra-
 
+      # Rapor belajar: berapa ramalan tiap model sudah dinilai terhadap kejadian nyata, dan mana yang macet. Di sini karena
+      # semua cache data sudah dipulihkan. Riwayat bergulir lewat salinan yang tayang (tidak ada di cache mana pun). Boleh gagal.
+      - name: Rapor belajar model (boleh gagal)
+        continue-on-error: true
+        run: |
+          curl -sf --max-time 20 https://centurisk97.id/data/rapor_belajar.json -o public/data/rapor_belajar.json || true
+          python3 scripts/umum/rapor_belajar.py uji && python3 scripts/umum/rapor_belajar.py
+
       # main = produksi (`wrangler deploy`). staging = versi PRATINJAU di URL tetap (`versions upload --preview-alias`): tidak
       # dipromosikan, jadi workers.dev produksi, domain kustom, dan cron tidak berubah. Awas: staging memakai D1/R2 produksi yang
       # sama, jadi laporan uji di staging masuk DB produksi. Dipromosikan dengan merge ke main. data.yml/banjir.yml/titik.yml
