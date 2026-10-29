@@ -47,7 +47,7 @@ def _jenis_lokasi(judul):
     jenis = ('angin' if 'angin kencang' in j or 'puting beliung' in j else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j else 'kekeringan' if 'kekeringan' in j
              else 'gempabumi' if 'gempa' in j else 'banjir' if 'banjir' in j else 'lainnya')
     di = re.split(r'\s+di\s+', judul, maxsplit=1)[1] if ' di ' in judul else ''
-    if not di.startswith(('Prov.', 'Provinsi')): di = re.sub(r',\s*Prov(?:\.|insi)\s.*$', '', di)   # WA 28 Okt: "di Kota Subulussalam, Prov. Aceh"
+    if not di.startswith(('Prov.', 'Provinsi')): di = re.sub(r',?\s+Prov(?:\.|insi)\s.*$', '', di)   # WA 28 Okt: "di Kota Subulussalam, Prov. Aceh"; 29 Okt tanpa koma: "Kab. Klaten Prov. Jawa Tengah"
     if jenis == 'lainnya' and 'TPA' in judul:
         lok = re.search(r'(TPA\s+[A-Z][\w ]*?)\)?\s+di\s', judul).group(1)
     elif di.startswith(('Prov.', 'Provinsi')):
@@ -69,7 +69,8 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
     elif jenis == 'angin':
         a.update(kk=cari(r'([\d.]+)\s*KK'), kios=cari(r'(\d[\d.]*)\s*unit\s*kios'), rumah=cari(r'(\d[\d.]*)\s*unit\s*rumah'))
     elif jenis in ('gempabumi', 'banjir'):
-        a.update(meninggal=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?jiwa\s*MD'), kk=cari(r'([\d.]+)\s*KK'), mengungsi=cari(r'([\d.]+)\s*jiwa\s*mengungsi'),
+        # 29 Okt Langkat: "± 691 KK berpotensi terdampak" bukan KK terdampak; disimpan terpisah sebagai potensi_kk
+        a.update(meninggal=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?jiwa\s*MD'), kk=cari(r'([\d.]+)\s*KK(?!\s*berpotensi)'), potensi_kk=cari(r'([\d.]+)\s*KK\s*berpotensi'), mengungsi=cari(r'([\d.]+)\s*jiwa\s*mengungsi'),
                  huntara=cari(r'(\d[\d.]*)\s*unit\s*huntara'))
         # rumah rusak = RB + RS + RR (Solok 26 Okt: 19 + 9 + 33); tanpa rincian kerusakan, angka "rumah terdampak" (Tapanuli Tengah) dipisah
         rusak = [angka(m) for m in re.findall(r'(\d[\d.]*)\s*unit\s*rumah\s*R[BSR]\b', dampak)]
