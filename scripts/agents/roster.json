@@ -531,6 +531,26 @@
         "public/longsor/**",
         "tests/longsor/**"
       ]
+    },
+    {
+      "nama": "prediksi",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul /prediksi: prakiraan harian per kab/kota (514) untuk tenggang +1..+3 (hujan, titik panas, banjir, longsor, asap, rob) dibekukan append-only, dinilai prospektif lawan baseline persistensi dan klimatologi, dikalibrasi berpenjaga, digabung dengan aturan dampak jadi prediksi.json dan layar Besok/Rapor/Konfirmasi.",
+      "kapan": "scripts/prediksi/**, public/prediksi/**, tests/prediksi/**, atau arsip, skor, kalibrasi, aturan dampak /prediksi disentuh atau rusak",
+      "fokus": [
+        "Arsip public/prediksi/data/arsip/*.jsonl append-only: baris tak pernah diubah atau dihapus; jalan ulang di hari yang sama tidak menimpa",
+        "Rapor jujur: n < 30 'belum teruji', kalibrasi dipakai hanya bila Brier uji tahan 14 hari turun (fail-closed); tidak menyentuh kriteria terkunci model lain",
+        "Daftar kab dan kunci nama dibaca dari scripts/udara (kota.py, milik cuaca-udara) dan umum.py (milik banjir); jangan disalin"
+      ],
+      "larangan": "Jangan menyentuh worker/D1 (route /api/prediksi/konfirmasi milik warga-api), scripts/udara, scripts/banjir, atau .github/workflows (cukup usulan). Tidak mengarang masukan yang hilang: kode dilewati dan dicatat.",
+      "bisa": "membangun & membetulkan pembekuan prakiraan, penilaian, kalibrasi, aturan dampak, dan layar /prediksi",
+      "tidak": "worker dan D1; modul udara/banjir; menyunting .github/workflows",
+      "milik": [
+        "scripts/prediksi/**",
+        "public/prediksi/**",
+        "tests/prediksi/**"
+      ]
     }
   ]
 }
