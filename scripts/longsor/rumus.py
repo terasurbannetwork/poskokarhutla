@@ -13,6 +13,7 @@ import math
 
 CN2 = {"A": 49, "B": 69, "C": 79, "D": 84}    # pasture/range, fair (NEH-630 tabel 9-1)
 BOBOT = {"lereng": 0.6, "tanah": 0.2, "sesar": 0.2}
+BOBOT_PV = {"lereng": 0.5, "zona": 0.3, "sesar": 0.2}   # v2 (30 Okt 2026): zona PVMBG menggantikan CN SoilGrids yang nyaris konstan; TETAP, tidak dilatih
 S_TINGGI, S_SEDANG, T_AMBANG, T_DEKAT = 0.50, 0.30, 1.0, 0.8
 LERENG_NOL, LERENG_PENUH = 5.0, 30.0           # derajat: di bawah 5 tak rawan, di atas 30 penuh
 SESAR_JAUH = 50.0                              # km: di luar jarak ini skor sesar 0
@@ -91,6 +92,11 @@ def skor_sesar(km_):
 
 def kerentanan(lereng_deg, cn_, sesar_km):
     return BOBOT["lereng"] * skor_lereng(lereng_deg) + BOBOT["tanah"] * skor_tanah(cn_) + BOBOT["sesar"] * skor_sesar(sesar_km)
+
+
+def kerentanan_pv(lereng_deg, zona, sesar_km):
+    """v2: zona kerentanan Badan Geologi (0-1) menggantikan tanah. zona None (kecamatan di luar cakupan layanan) -> tak terdefinisi, panggil kerentanan()."""
+    return BOBOT_PV["lereng"] * skor_lereng(lereng_deg) + BOBOT_PV["zona"] * zona + BOBOT_PV["sesar"] * skor_sesar(sesar_km)
 
 
 def persentil(xs, p):

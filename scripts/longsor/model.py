@@ -48,6 +48,8 @@ def bangun_kerentanan():
     cn_ = dict(zip(tanah["kec"], tanah["k"]))
     f = json.load(open(os.path.join(MENTAH, "fitur_statis.json")))
     fi = {k: i for i, k in enumerate(f["kec"])}
+    pv = baca(os.path.join(KELUAR, "pvmbg.json"))
+    pz = dict(zip(pv["kec"], (r[2] for r in pv["k"]))) if pv else {}
     awal, sel = harian_sel()
     ambang = p95_sel(sel, awal, MULAI, dt.date.fromisoformat(json.load(open(os.path.join(MENTAH, "hujan.json")))["sampai"]))
     baris = []
@@ -56,13 +58,16 @@ def bangun_kerentanan():
         t = cn_.get(k["id"])
         cn = t[3] if t else CN_BAWAAN
         S = rumus.kerentanan(f["lereng_p75"][i], cn, f["sesar_km"][i])
-        baris.append([k["lat"], k["lon"], f["lereng_p75"][i], f["sesar_km"][i], cn, round(S, 3)])
+        z = pz.get(k["id"])
+        spv = rumus.kerentanan_pv(f["lereng_p75"][i], z, f["sesar_km"][i]) if z is not None else S
+        baris.append([k["lat"], k["lon"], f["lereng_p75"][i], f["sesar_km"][i], cn, round(S, 3), z, round(spv, 3)])
     simpan(os.path.join(KELUAR, "kerentanan.json"), {
         "dibuat": dt.datetime.now(WIB).strftime("%Y-%m-%d"),
         "rumus": "S = 0,6 skor_lereng(p75 lereng DEM z10; 5-30 derajat, smoothstep) + 0,2 skor_tanah(CN; 49-84) + 0,2 skor_sesar(1 - km/50). "
-                 "Tutupan lahan belum ada (bobot 0). Bobot tetap, tidak dilatih pada label.",
+                 "Tutupan lahan belum ada (bobot 0). Bobot tetap, tidak dilatih pada label. "
+                 "S_pv (v2) = 0,5 skor_lereng + 0,3 zona PVMBG (pvmbg.json) + 0,2 skor_sesar; bila zona null (di luar cakupan layanan) S_pv = S.",
         "atribusi": "DEM Terrarium (AWS Open Data); sesar GEM Global Active Faults (CC BY-SA 4.0); SoilGrids 2.0 (CC BY 4.0, ISRIC); hujan ERA5 via Open-Meteo Archive (CC BY 4.0).",
-        "kolom": ["lat", "lon", "lereng_p75", "sesar_km", "cn", "S"], "kec": [k["id"] for k in kecs], "k": baris,
+        "kolom": ["lat", "lon", "lereng_p75", "sesar_km", "cn", "S", "pv_zona", "S_pv"], "kec": [k["id"] for k in kecs], "k": baris,
         "sel_deg": 0.5, "ambang_p95_mm": {k: v for k, v in sorted(ambang.items())},
         "ambang_dasar": f"P95 hujan 7 hari ERA5 {MULAI.isoformat()}..{json.load(open(os.path.join(MENTAH, 'hujan.json')))['sampai']}"})
     print(f"kerentanan: {len(kecs)} kec, {len(ambang)} sel beramang", file=sys.stderr)
@@ -84,7 +89,7 @@ def klimatologi(dibi, kab_idx, bulan_hari, latih):
     return {key: len(v) / bulan_hari[key[1]] for key, v in ada.items()}
 
 
-def uji_balik(kej=None, kecs=None, kerent=None, hujan=None):
+def uji_balik(kej=None, kecs=None, kerent=None, hujan=None, varian="v1", hanya_pv=False):
     kej = kej or json.load(open(os.path.join(KELUAR, "kejadian.json")))
     kecs = kecs or daftar_kec()
     kerent = kerent or json.load(open(os.path.join(KELUAR, "kerentanan.json")))
@@ -93,11 +98,16 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None):
     p95 = p95_sel(sel, awal, *LATIH)
     r7 = {k: rumus.jumlah7(h) for k, h in sel.items() if k in p95}
     S = dict(zip(kerent["kec"], (r[5] for r in kerent["k"])))
-    kab_kec = {}                                   # kab -> [(S, kunci sel)]
+    PV = dict(zip(kerent["kec"], ((r[6] if len(r) > 6 else None) for r in kerent["k"])))
+    S2 = dict(zip(kerent["kec"], ((r[7] if len(r) > 7 else r[5]) for r in kerent["k"])))
+    pakai = S2 if varian == "v2" else S
+    kab_kec = {}                                   # kab -> [(S dipakai, kunci sel, S v1, zona PVMBG atau None)]
     for k in kecs:
         c = kunci_sel(*sel_hujan(k["lat"], k["lon"]))
         if c in r7 and k["id"] in S:
-            kab_kec.setdefault(f'{k["prov"]}|{k["kab"]}', []).append((S[k["id"]], c))
+            kab_kec.setdefault(f'{k["prov"]}|{k["kab"]}', []).append((pakai[k["id"]], c, S[k["id"]], PV[k["id"]]))
+    if hanya_pv:   # subset adil: kabupaten dengan >= 1 kecamatan tercakup layanan PVMBG
+        kab_kec = {kb: v for kb, v in kab_kec.items() if any(x[3] is not None for x in v)}
     kab_i = {n: i for i, n in enumerate(kej["kab"])}
     pos ={(r[1], r[0]) for r in kej["dibi"] if r[3] == 0}
     bulan_hari = {m: 0 for m in range(1, 13)}
@@ -106,7 +116,7 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None):
         bulan_hari[d.month] += 1
         d += dt.timedelta(days=1)
     clim = klimatologi(kej["dibi"], kab_i, bulan_hari, LATIH)
-    skor = {"model": ([], []), "hujan": ([], []), "S": ([], []), "klim": ([], [])}   # (positif, negatif)
+    skor = {"model": ([], []), "hujan": ([], []), "S": ([], []), "klim": ([], []), "pvmbg": ([], [])}   # (positif, negatif)
     kelas = ([], [])   # (kelas model pos, kelas model neg)
     n_hari = 0
     for kab, daftar in kab_kec.items():
@@ -115,17 +125,18 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None):
             d = dt.date(th, 1, 1)
             while d.year == th and d <= akhir:
                 i = (d - awal).days
-                tt = [(s, r7[c][i] / 10 / p95[c]) for s, c in daftar if r7[c][i] is not None and p95[c] > 0]
+                tt = [(s, r7[c][i] / 10 / p95[c], s1, zv) for s, c, s1, zv in daftar if r7[c][i] is not None and p95[c] > 0]
                 if tt:
                     ada = (ki, d.isoformat()) in pos if ki is not None else False
-                    sk = max(rumus.skor(s, t) for s, t in tt)
-                    kl = max(rumus.bahaya(s, t) for s, t in tt)
-                    rs = max(t for _, t in tt)
+                    sk = max(rumus.skor(s, t) for s, t, _, _ in tt)
+                    kl = max(rumus.bahaya(s, t) for s, t, _, _ in tt)
+                    rs = max(t for _, t, _, _ in tt)
                     cl = clim.get((ki, d.month), 0.0) if ki is not None else 0.0
                     z = 0 if not ada else 1
                     skor["model"][z].append(sk)
                     skor["hujan"][z].append(rs)
-                    skor["S"][z].append(max(s for s, _ in tt))
+                    skor["S"][z].append(max(s1 for _, _, s1, _ in tt))
+                    skor["pvmbg"][z].append(max((zv or 0.0) for _, _, _, zv in tt))
                     skor["klim"][z].append(cl)
                     kelas[z].append(kl)
                     n_hari += 1
@@ -152,13 +163,14 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None):
         hasil[nama] = {"tp": tp, "fp": fp, "fn": fn, "pod": pod and round(pod, 4), "far": far and round(far, 4),
                        "laju_peringatan": round(laju, 4), "pembanding_laju_sama": pembanding}
     am = auc["model"]
-    lawan = max(auc["hujan"] or 0, auc["klim"] or 0, auc["S"] or 0)
+    lawan = max(auc["hujan"] or 0, auc["klim"] or 0, auc["S"] or 0, auc["pvmbg"] or 0)
     pod_h = hasil["sedang_atau_tinggi"]["pembanding_laju_sama"]["hujan"]["pod"] or 0
     pod_m = hasil["sedang_atau_tinggi"]["pod"] or 0
     lolos = bool(am and am >= lawan + 0.02 and am >= 0.60 and pod_m > pod_h)
-    glc = uji_glc(kej, kecs, kerent, sel, awal, p95, r7, S)
-    return {"vonis": "LOLOS" if lolos else "GAGAL",
-            "aturan": "LOLOS bila AUC model >= AUC terbaik pembanding (hujan-saja, kerentanan-saja, klimatologi) + 0,02, AUC >= 0,60, dan POD kelas >= sedang "
+    glc = uji_glc(kej, kecs, kerent, sel, awal, p95, r7, S) if not hanya_pv else None
+    return {"varian": varian, "subset": "kabupaten tercakup PVMBG" if hanya_pv else "semua kabupaten",
+            "vonis": "LOLOS" if lolos else "GAGAL",
+            "aturan": "LOLOS bila AUC model >= AUC terbaik pembanding (hujan-saja, kerentanan-saja, klimatologi, zona PVMBG) + 0,02, AUC >= 0,60, dan POD kelas >= sedang "
                       "lebih besar dari POD hujan-saja pada laju peringatan yang sama.",
             "sasaran": "kabupaten-hari ada kejadian longsor DIBI ('Tanah Longsor' + 'Gerakan Tanah'; tanpa 'Banjir dan Tanah Longsor')",
             "pembagian_waktu": f"P95 hujan dari {LATIH[0]}..{LATIH[1]}; uji tahun {list(UJI_TAHUN)} (2024 dibuang: DIBI tidak lengkap). Tanpa parameter dilatih pada label.",
@@ -239,6 +251,18 @@ def jalan_harian():
     print(f"nowcast {isi['jendela_akhir']}: tinggi {isi['ringkas']['tinggi']}, sedang {isi['ringkas']['sedang']}", file=sys.stderr)
 
 
+def jalan_uji():
+    """Utama = v2 pada subset adil (kabupaten tercakup PVMBG); pembanding: v1 pada subset sama dan v1 pada semua kabupaten."""
+    kej, kecs = json.load(open(os.path.join(KELUAR, "kejadian.json"))), daftar_kec()
+    kerent, h = json.load(open(os.path.join(KELUAR, "kerentanan.json"))), harian_sel()
+    o = uji_balik(kej, kecs, kerent, h, "v2", True)
+    o["pembanding_varian"] = {n: {k: v[k] for k in ("varian", "subset", "vonis", "auc", "cakupan")}
+                              for n, v in (("v1_subset_pvmbg", uji_balik(kej, kecs, kerent, h, "v1", True)),
+                                           ("v1_semua", uji_balik(kej, kecs, kerent, h, "v1", False)))}
+    simpan(os.path.join(KELUAR, "uji_balik.json"), {"dibuat": dt.datetime.now(WIB).strftime("%Y-%m-%d"), **o})
+    print(o["vonis"], o["auc"], o["pembanding_varian"], file=sys.stderr)
+
+
 def diri():
     kerent = {"ambang_p95_mm": {"-6.75,107.75": 100.0}, "k": [[-6.9, 107.6, 30, 5, 84, 0.9], [-6.9, 107.6, 2, 90, 49, 0.01], [-6.9, 107.6, 20, 20, 79, 0.4]]}
     hj = {"hari_ini": "2026-10-13", "grid": [{"lat": -6.875, "lon": 107.625, "a7": 120.0}]}
@@ -274,5 +298,4 @@ def diri():
 
 if __name__ == "__main__":
     {"kerentanan": bangun_kerentanan, "harian": jalan_harian, "diri": diri,
-     "uji": lambda: (lambda o: (simpan(os.path.join(KELUAR, "uji_balik.json"), {"dibuat": dt.datetime.now(WIB).strftime("%Y-%m-%d"), **o}),
-                                print(o["vonis"], o["auc"], file=sys.stderr)))(uji_balik())}[sys.argv[1] if sys.argv[1:] else "diri"]()
+     "uji": jalan_uji}[sys.argv[1] if sys.argv[1:] else "diri"]()
