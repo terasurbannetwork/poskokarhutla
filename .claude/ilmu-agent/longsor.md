@@ -16,6 +16,7 @@ Semua di `scripts/longsor/` (stdlib kecuali `lab_*`), keluaran `public/longsor/d
 | `lab_tanah.py` | #18, lab sekali (numpy+rasterio di venv): SoilGrids WCS pasir/liat 5-15 cm -> `tanah.json` |
 | `lab_lereng.py` | lab sekali: DEM Terrarium z10 -> lereng p75 per kec + jarak sesar -> `data/raw/longsor/fitur_statis.json` (gitignored) |
 | `hujan_riwayat.py` | lab bertahap: Open-Meteo Archive harian 2017-kini per sel 0,5 derajat -> `data/raw/longsor/hujan.json` (gitignored, BERLANJUT) |
+| `pvmbg.py` | #46: `panen` (sigi.pu.go.id Hosted prakiraan_gerakan_tanah_desember_2024 -> data/raw/longsor/pvmbg/, BERLANJUT) lalu `agregat` (~20 mnt, murni Python) -> `pvmbg.json` (zona statis 0-1 per kec). Dasar uji v2 `S_pv` dan pembanding "pvmbg". |
 | `model.py` | `kerentanan` (-> `kerentanan.json`), `uji` (-> `uji_balik.json`), `harian` (-> `nowcast.json`, cocok dirantai data.yml setelah hujan banjir), `diri` |
 
 Keluaran: `kejadian.json` 230 KB, `tanah.json` 320 KB, `kerentanan.json` 460 KB, `uji_balik.json` 1 KB, `nowcast.json` ~ <50 KB (bergulir, tetap).
@@ -44,3 +45,4 @@ Indeks kec di `nowcast.json` = urutan `kec` di `kerentanan.json`.
 ## Kasus
 
 - 29 Okt 2026, uji balik pertama: GAGAL. AUC model 0,724, hujan-saja 0,704, kerentanan-saja 0,612, klimatologi kab x bulan 0,779 (325 kab, 2.091 kab-hari positif dari 355.875). Klimatologi menang karena beda laju lapor antar-kabupaten; hujan 7 hari ERA5 0,5 derajat terlalu kasar untuk longsor. Jangan "perbaiki" dengan menyetel bobot pada tahun uji.
+- 2026-10-30 · 30 Okt 2026, uji balik ke-2 (v2 = lereng 0,5 + zona PVMBG 0,3 + sesar 0,2, bobot tetap a priori; subset 272 kab bercakupan PVMBG, 170 sel hujan): GAGAL. AUC model 0,736, hujan 0,710, S 0,609, zona PVMBG saja 0,675, klimatologi 0,782. PVMBG sebagai pembanding resmi kalah dari klimatologi dan dari hujan-saja; mengganti tanah dengan zona hanya menaikkan 0,726 ke 0,736. Sumber akses jujur: vsi.esdm.go.id dan geoportal.esdm.go.id robots Disallow /, geologi.esdm.go.id/geomap dilarang, JANGAN disentuh. Yang dipakai: sigi.pu.go.id Hosted/prakiraan_gerakan_tanah_desember_2024 (200.139 poligon, nasional, 7.262/7.270 kec; unsur=zona statis, zona_perki=prakiraan Des 2024 saja). Peta litologi nasional 1:250k TIDAK ada di sigi (hanya klip lokal dan Kaltim), jadi #52 diblokir robots; zona PVMBG jadi pengganti tanah. MapServer Zona_Kerentanan_Gerakan_Tanah tanpa geometri dan tanpa paginasi. #48 DEMNAS: MENUNGGU AKUN. Open-Meteo Archive: kuota HARIAN habis di 170 sel (bukan per jam); data/raw gitignored hilang bila worktree dibuang, simpan salinan.

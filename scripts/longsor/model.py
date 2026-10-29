@@ -215,7 +215,7 @@ def nowcast_dari(kerent, hujan_json, lama=None, sekarang=None):
         sel25[(round(g["lat"] / .25 - .5), round(g["lon"] / .25 - .5))] = g["a7"]
     amb = kerent["ambang_p95_mm"]
     tinggi, sedang, tanpa = [], [], 0
-    for n, (lat, lon, ler, ses, cn, S) in enumerate(kerent["k"]):
+    for n, (lat, lon, ler, ses, cn, S, *_) in enumerate(kerent["k"]):   # kolom 6-7 = pv_zona, S_pv (v2; nowcast tetap v1 sampai v2 LOLOS)
         a7 = sel25.get((int((lat // .25)), int((lon // .25))))
         p = amb.get(kunci_sel(*sel_hujan(lat, lon)))
         if a7 is None or not p:

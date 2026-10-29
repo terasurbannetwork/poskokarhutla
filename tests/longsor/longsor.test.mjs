@@ -8,7 +8,7 @@ const py = (...a) => execFileSync("python3", a, { encoding: "utf8", stdio: ["ign
 const D = "public/longsor/data/";
 const baca = (n) => JSON.parse(readFileSync(D + n, "utf8"));
 
-for (const [berkas, arg] of [["dasar.py"], ["rumus.py"], ["model.py", "diri"], ["kejadian.py", "uji"], ["hujan_riwayat.py", "uji"]]) {
+for (const [berkas, arg] of [["dasar.py"], ["rumus.py"], ["model.py", "diri"], ["kejadian.py", "uji"], ["hujan_riwayat.py", "uji"], ["pvmbg.py", "uji"]]) {
   test(`self-check ${berkas}`, () => {
     assert.ok(py(`scripts/longsor/${berkas}`, ...(arg ? [arg] : [])).includes("uji lolos"));
   });
@@ -27,7 +27,7 @@ test("nowcast.json: berkas bergulir <= 2 MB, indeks kecamatan sah, vonis uji ter
 test("uji_balik.json: vonis LOLOS/GAGAL tegas dan konsisten dengan angkanya", { skip: !existsSync(D + "uji_balik.json") }, () => {
   const u = baca("uji_balik.json");
   assert.ok(u.vonis === "LOLOS" || u.vonis === "GAGAL");
-  const lawan = Math.max(u.auc.hujan ?? 0, u.auc.klim ?? 0, u.auc.S ?? 0);
+  const lawan = Math.max(u.auc.hujan ?? 0, u.auc.klim ?? 0, u.auc.S ?? 0, u.auc.pvmbg ?? 0);
   const pod = (x) => x.sedang_atau_tinggi;
   const lolos = u.auc.model >= lawan + 0.02 && u.auc.model >= 0.6 && pod(u.kelas).pod > (pod(u.kelas).pembanding_laju_sama.hujan.pod ?? 0);
   assert.equal(u.vonis === "LOLOS", lolos, `vonis ${u.vonis} tidak cocok dengan aturan: AUC model ${u.auc.model}, lawan ${lawan}`);
