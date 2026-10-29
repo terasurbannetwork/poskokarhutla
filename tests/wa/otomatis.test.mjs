@@ -29,7 +29,7 @@ function dunia(pesan, { gagalGenerator, gagalKirim, gagalUnggah } = {}) {
     kirimTeks: async (t, m) => { kirim.teks.push({ t, m }) },
   }
   const env = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k' }
-  const jalan = (o = {}) => jalankan({ env, dep, kenali, rumah, log: () => {}, tanggal: TGL, now: wibKe(18), ...o })
+  const jalan = (o = {}) => jalankan({ env, dep, kenali, rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL, now: wibKe(18), ...o })
   return { kirim, jalan, rumah, dep }
 }
 
@@ -185,4 +185,25 @@ test('Google Drive gagal: WA tetap terkirim tanpa link, PEMILIK dikabari sekali;
   const k = dunia(LENGKAP); let dipanggil = 0
   k.dep.unggahDrive = async () => { dipanggil++ }
   await k.jalan({ kering: true }); assert.equal(dipanggil, 0)
+})
+
+test('tanggal isi: bahan lama (tanggal isi beda) diabaikan, tidak ada laporan yang dibuat', async () => {
+  const d = dunia(LENGKAP)
+  const log = []
+  const r = await d.jalan({ tanggalIsi: (t, k) => (k === 'bmkg_pagi' ? '2026-10-27' : TGL), log: (...a) => log.push(a.join(' ')) })
+  assert.equal(d.kirim.exec.length, 0); assert.equal(d.kirim.file.length, 0)
+  assert.ok(r.every((x) => x.status === 'tunggu'))
+  assert.ok(log.some((l) => l.includes('bahan bertanggal 2026-10-27, bukan 2026-10-29')))
+})
+
+test('tanggal isi: pesan lama terbaru dilewati, yang cocok tanggalnya dipakai; D-1 dan D+1 ikut dibaca', async () => {
+  const urls = []
+  const lama = P('9', 'bmkg_pagi', 999, 'LAMA'), baru = P('2', 'bmkg_pagi', 101, 'BARU')
+  const d = dunia([...LENGKAP.filter((p) => p.id !== '2'), lama, baru])
+  const asli = d.dep.fetch
+  d.dep.fetch = async (u, o) => { urls.push(u); return asli(u, o) }
+  await d.jalan({ tanggalIsi: (t) => (t.includes('LAMA') ? '2026-10-20' : TGL) })
+  assert.deepEqual(urls.map((u) => u.split('=')[1]).sort(), ['2026-10-28', '2026-10-29', '2026-10-30'])
+  assert.equal(d.kirim.file.length, 8)
+  assert.ok(!fs.readFileSync(path.join(d.rumah, 'kerja', TGL, 'harian', 'bmkg_pagi.txt'), 'utf8').includes('LAMA'))
 })

@@ -8,7 +8,7 @@
    Jenis: tagar #karhutla / #bencana, selain itu kata kunci karhutla di teks atau nama berkas, selain itu bencana. */
 import {json, gagal, adminOK, sha, bacaBytes} from "./worker.js";
 import {KONTROL, tglSah} from "./posko.js";
-import {JENIS_LAPORAN, kenali} from "./wa_jenis.js";
+import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
 const MAKS_TEKS = 65536, MAKS_HARI = 500;
@@ -64,7 +64,9 @@ async function gerbang(env, req, kini) {
     kunci = `wa/${hariWib(kini)}/${kini}-${crypto.randomUUID().slice(0, 8)}`; tipe = (b.type || "application/octet-stream").toLowerCase();
     await env.MEDIA.put(kunci, await b.arrayBuffer(), {httpMetadata: {contentType: tipe}});
   }
-  const tanggal = tanggalDari(teks, diterima), jenis = jenisDari(teks || "", namaBerkas || "");
+  /* tanggal laporan itu sendiri menang bila wajar (14 hari ke belakang sampai besok WIB); kiriman ulang laporan lama jatuh ke harinya, bukan hari terima */
+  const jk = kenali(teks, namaBerkas), isi = jk === "laphar_pdf" ? tanggalNamaBerkas(namaBerkas) : tanggalIsi(teks, jk), hariIni = Date.parse(hariWib(diterima));
+  const tanggal = isi && Date.parse(isi) >= hariIni - 14 * 864e5 && Date.parse(isi) <= hariIni + 864e5 ? isi : tanggalDari(teks, diterima), jenis = jenisDari(teks || "", namaBerkas || "");
   const r = await env.DB.prepare("INSERT INTO wa_masuk (diterima, tanggal, jenis, dari, nama, teks, berkas, nama_berkas, tipe) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)")
     .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
   return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis});

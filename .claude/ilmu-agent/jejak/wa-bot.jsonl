@@ -3,3 +3,6 @@
 {"t":"2026-10-29T16:03:30.244+07:00","berkas":"scripts/wa/otomatis.mjs","blob":"786b8462cbf2a1fd0fa4657981473a1eecc76f60","aturan":"36ac464753f4","vonis":"dikerjakan","ringkas":"dibuat 29 Okt","sha":"213e15e1"}
 {"t":"2026-10-29T16:03:30.291+07:00","berkas":"scripts/wa/umum.cjs","blob":"d05b0a08a66f591f1c8ccbb72e91fabb7f5f8e6f","aturan":"36ac464753f4","vonis":"dikerjakan","ringkas":"dibuat 29 Okt","sha":"213e15e1"}
 {"t":"2026-10-29T17:07:54.923+07:00","berkas":"scripts/wa/drive.cjs","blob":"d2bd0be73904229a3d5cdc7b6756b33b741dec0a","aturan":"36ac464753f4","vonis":"dikerjakan","ringkas":"dibuat: Drive REST via fetch, 4 alur","sha":"edd3a9a3"}
+{"t":"2026-10-29T17:42:38.605+07:00","berkas":"scripts/wa/otomatis.mjs","blob":"ef32363f08a95d262f18b8edec3f54d43664a5bd","aturan":"36ac464753f4","vonis":"dikerjakan","ringkas":"tanggalIsi per bahan, D-1/D+1","sha":"eda3e0a0"}
+{"t":"2026-10-29T17:42:38.650+07:00","berkas":"scripts/wa/gateway/index.js","blob":"d1c6bacaa92dbc8bb409c943f12b172c5c4bc907","aturan":"36ac464753f4","vonis":"dikerjakan","ringkas":"append susulan 24 jam + terlihat.json","sha":"eda3e0a0"}
+{"t":"2026-10-29T17:42:38.694+07:00","berkas":"scripts/wa/aman.cjs","blob":"1de334a22b62a80b7c65c96a387b6036606c4b54","aturan":"36ac464753f4","vonis":"dikerjakan","ringkas":"buatTerlihat, susulanBaru","sha":"eda3e0a0"}

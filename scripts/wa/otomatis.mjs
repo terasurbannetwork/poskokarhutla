@@ -10,7 +10,10 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { kenali as kenaliAsli } from '../../src/wa_jenis.js'
+import * as jenis from '../../src/wa_jenis.js'
+
+const kenaliAsli = jenis.kenali
+const tanggalIsiAsli = jenis.tanggalIsi || (() => null) // belum ada = semua bahan ditolak (aman), bukan lolos
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
 const { muatEnv, daftar, rumah, RUMAH } = createRequire(import.meta.url)('./umum.cjs')
@@ -43,6 +46,18 @@ export function pilihTerbaru(pesan, kenali = kenaliAsli) {
     const t = (x) => Number(x.diterima) || Date.parse(x.diterima) || 0
     if (!lama || t(p) > t(lama) || (t(p) === t(lama) && String(p.id) > String(lama.id))) hasil[k] = p
   }
+  return hasil
+}
+
+// Semua pesan per jenis, terbaru dulu (untuk memilih yang tanggal isinya cocok).
+export function semuaPerJenis(pesan, kenali = kenaliAsli) {
+  const t = (x) => Number(x.diterima) || Date.parse(x.diterima) || 0
+  const hasil = {}
+  for (const p of pesan || []) {
+    const k = kenali(p.teks || '', p.nama_berkas || '') || null
+    if (k) (hasil[k] ||= []).push(p)
+  }
+  for (const l of Object.values(hasil)) l.sort((a, b) => t(b) - t(a) || String(b.id).localeCompare(String(a.id)))
   return hasil
 }
 
@@ -108,6 +123,7 @@ export async function jalankan(opsi = {}) {
   const kering = !!opsi.kering
   const dep = opsi.dep || depBawaan(env)
   const kenali = opsi.kenali || kenaliAsli
+  const tanggalIsi = opsi.tanggalIsi || tanggalIsiAsli
   const log = opsi.log || ((...a) => console.log(new Date().toISOString(), ...a))
   const dasar = opsi.rumah || RUMAH
   const tanggal = opsi.tanggal || tanggalWib(now)
@@ -137,22 +153,44 @@ export async function jalankan(opsi = {}) {
   }
 
   try {
-    let pesan
-    try {
-      const r = await dep.fetch(`${env.WORKER_URL || 'https://centurisk97.id'}/api/wa/masuk?tanggal=${encodeURIComponent(tanggal)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })
-      if (!r.ok) throw new Error('HTTP ' + r.status)
-      pesan = (await r.json()).pesan || []
-    } catch (e) { await galat('sistem', `Gagal membaca bahan dari worker: ${e.message}`); return [{ id: '-', status: 'galat' }] }
+    const geser = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 86400e3).toISOString().slice(0, 10)
+    const pesanMap = new Map()
+    for (const [i, tgl] of [[0, tanggal], [1, geser(tanggal, -1)], [2, geser(tanggal, 1)]]) {
+      try {
+        const r = await dep.fetch(`${env.WORKER_URL || 'https://centurisk97.id'}/api/wa/masuk?tanggal=${encodeURIComponent(tgl)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })
+        if (!r.ok) throw new Error('HTTP ' + r.status)
+        for (const p of (await r.json()).pesan || []) pesanMap.set(String(p.id), p)
+      } catch (e) {
+        if (i === 0) { await galat('sistem', `Gagal membaca bahan dari worker: ${e.message}`); return [{ id: '-', status: 'galat' }] }
+        log('tetangga', tgl, 'gagal dibaca:', e.message) // D-1/D+1 hanya tambahan
+      }
+    }
     delete state.gagal.sistem
-    const terpilih = pilihTerbaru(pesan, kenali)
+    const semua = semuaPerJenis([...pesanMap.values()], kenali)
+    const teksCache = new Map()
+    const teksDari = async (p) => { if (!teksCache.has(p.id)) teksCache.set(p.id, await ambilTeks(p, dep, env)); return teksCache.get(p.id) }
+    // Bahan diterima hanya bila tanggal ISINYA sendiri == tanggal laporan (kiriman ulang laporan lama tersimpan dengan tanggal hari ini).
+    const pilihSesuai = async (lap) => {
+      const terpilih = {}, teks = {}
+      for (const k of lap.butuh) {
+        for (const p of semua[k] || []) {
+          let t
+          try { t = await teksDari(p) } catch (x) { log(lap.id, k, 'teks tak terbaca:', x.message); continue }
+          const td = tanggalIsi(t, k)
+          if (td === tanggal) { terpilih[k] = p; teks[k] = t; break }
+          log(`bahan bertanggal ${td || 'tak terbaca'}, bukan ${tanggal}`, k, p.id)
+        }
+      }
+      return { terpilih, teks }
+    }
 
     for (const lap of LAPORAN) {
       const kunci = `${lap.id}:${tanggal}`
+      const { terpilih, teks: teksSesuai } = await pilihSesuai(lap)
       const c = cekSiap(lap, terpilih, now, tanggal)
       if (!c.siap) { log(lap.id, 'tunggu:', c.alasan); hasil.push({ id: lap.id, status: 'tunggu', alasan: c.alasan }); continue }
       try {
-        const teks = {}
-        for (const k of lap.butuh) teks[k] = await ambilTeks(terpilih[k], dep, env)
+        const teks = teksSesuai
         const hash = hashBahan(lap, teks)
         let e = state.laporan[kunci]
         if (e && e.hash === hash && e.selesai && (e.diunggah || kering)) { hasil.push({ id: lap.id, status: 'sudah terkirim' }); continue }

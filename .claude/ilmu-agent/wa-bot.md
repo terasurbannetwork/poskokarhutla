@@ -43,3 +43,4 @@
 ## Kasus
 - 2026-10-29 · Jalur WA otomatis dibangun 29 Okt 2026: gateway Baileys + otomatis.mjs memanggil generator harian/penanganan; kunci keandalan = state per hash bahan (kirim sekali, revisi bertanda) dan galat hanya ke PEMILIK. Tahu rusak dari tests/wa.
 - 2026-10-29 · Drive (29 Okt): drive.cjs buat({env,fetch,rumah}) agar diuji tanpa jaringan; id outbox dari Drive diturunkan dari id+modifiedTime supaya idempoten, id diproses dicatat ke drive-diproses.json SEBELUM berkas dipindah ke Sudah. Perintah 'cari ' dicegat sebelum outbox.
+- 2026-10-29 · 29 Okt: pesan saat gateway mati datang sebagai messages.upsert type append (bukan notify) dan dulu dibuang; kini diproses bila <=24 jam dan id belum di ~/.wa-bot/terlihat.json. Kiriman ulang laporan lama tersimpan bertanggal hari ini; otomatis.mjs kini mensyaratkan tanggalIsi==D per bahan (tanpa tanggalIsi di wa_jenis.js semua bahan ditolak). Tahu dari log [susulan]/[pesan] dan 'bahan bertanggal X'.

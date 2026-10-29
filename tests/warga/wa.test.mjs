@@ -56,6 +56,18 @@ uji("teks dari nomor terdaftar tersimpan dengan tanggal dan jenisnya", async () 
   assert.equal(k.j.jenis, "karhutla");
 });
 
+uji("kiriman ulang laporan lama jatuh ke tanggal isinya; di luar jendela kembali ke aturan lama", async () => {
+  const waktu = Date.parse("2026-10-29T03:00:00Z"), dari = "6281234567890";
+  const bmkg = h => `Selamat Pagi, *Bapak Kepala BNPB*,\nBerikut kami sampaikan Laporan Meteorologi dan Klimatologi (BMKG):\n\n1. PM2.5 pada hari ${h} pukul 06.00 WIB`;
+  const rekap = "*Yth. Kepala BNPB*\nMohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal 25/10/2026 pkl 07.00 WIB s.d 26/10/2026 pkl 07.00 WIB sebagai berikut:";
+  assert.equal((await kirim({dari, teks: rekap, waktu})).j.tanggal, "2026-10-26");
+  assert.equal((await kirim({dari, teks: bmkg("Senin, 26 Oktober 2026"), waktu})).j.tanggal, "2026-10-26");
+  assert.equal((await kirim({dari, teks: bmkg("Kamis, 29 Oktober 2026"), waktu})).j.tanggal, "2026-10-29");
+  assert.equal((await kirim({dari, teks: bmkg("Senin, 12 Oktober 2026"), waktu})).j.tanggal, "2026-10-29", "lewat 14 hari: aturan lama");
+  assert.equal((await kirim({dari, teks: bmkg("Sabtu, 31 Oktober 2026"), waktu})).j.tanggal, "2026-10-29", "lewat besok: aturan lama");
+  assert.equal((await kirim({dari, nama: "x", teks: "pdf", waktu, berkas: [PDF, "Laporan Harian Dit. Koordalops BNPB 27102026.docx.pdf", "application/pdf"]})).j.tanggal, "2026-10-27");
+});
+
 uji("duplikat kiriman ulang mengembalikan id yang sama", async () => {
   const o = {dari: "6281234567890", teks: "28/10/2026 ulang outbox", waktu: Date.parse("2026-10-29T02:00:00Z")};
   const a = await kirim(o), b = await kirim(o);
