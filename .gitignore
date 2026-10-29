@@ -97,3 +97,4 @@ scripts/data/sippa/pilot/dossier.*
 # Renlap Generator: folder kerja lokal (renlap.py --out)
 scripts/data/sippa/pilot/kerja/
 !scripts/wa/.env.contoh
+node_modules*/

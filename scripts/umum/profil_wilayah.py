@@ -1,11 +1,11 @@
 #!/usr/bin/env python3
 """Profil wilayah kab/kota: sumber riset (IRBI, regulasi, paparan, BPBD, GDACS/EMS) -> public/data/wilayah/NN.json
 (NN = kode provinsi 2 digit; kunci = kode BPS 4 digit) + indeks.json (kode -> nama) untuk pencarian nama.
-Pakai: python3 scripts/umum/profil_wilayah.py [DIR_SUMBER]   (DIR_SUMBER berisi data2..data5; bawaan: scratchpad riset)
+Pakai: python3 scripts/umum/profil_wilayah.py DIR_SUMBER   (DIR_SUMBER berisi data2..data5 hasil panen; wajib)
 Layar: public/inti/profil_wilayah.js. Sumber bukan data terbuka (IRBI = InaRISK BNPB), lihat teks sumber di panel."""
 import json, os, re, sys, collections
 
-SUM = sys.argv[1] if len(sys.argv) > 1 else "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/0bea84ad-6c22-4c74-8634-a2968829db3e/scratchpad"
+SUM = sys.argv[1] if len(sys.argv) > 1 else sys.exit("pakai: profil_wilayah.py DIR_SUMBER")
 KEL = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "public", "data", "wilayah")
 J = lambda p: json.load(open(os.path.join(SUM, p), encoding="utf-8"))
 # dataran tinggi Papua: cacahan bangunan satelit kurang andal (awan, atap seng kecil); DKI: atap padat menyatu
