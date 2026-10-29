@@ -4,10 +4,51 @@ Pemantauan bencana Indonesia: karhutla, banjir, dan enam bencana lain
 
 Semua selera, keputusan pemilik, gerbang, dan armada yang berlaku di situs Pantau Bencana (repo `poskokarhutla`), di satu tempat. Yang baru diputus masuk ke Riwayat, lalu ke bagian aturannya.
 
-Disegarkan 28 Okt 2026\
-commit 1a94c45a
+Disegarkan 29 Okt 2026\
+commit 219654dc
 
 [Riwayat perubahan](#riwayat-perubahan) [Keputusan pemilik](#keputusan-pemilik) [Stack & peta repo](#stack--peta-repo) [Situs per alamat](#situs-per-alamat) [Halaman & rute](#halaman--rute) [Selera tampilan](#selera-tampilan) [Angka & copy](#angka--copy) [Selera presentasi (PPT)](#selera-presentasi-ppt) [Selera laporan (DOCX/PDF) dan visualisasi data](#selera-laporan-docx-pdf-dan-visualisasi-data) [Fitur yang disembunyikan](#fitur-yang-disembunyikan) [Model & data](#model--data) [Ruang Koordinasi BNPB](#ruang-koordinasi-bnpb) [Ruang Instansi](#ruang-instansi) [Gerbang penjaga](#gerbang-penjaga) [Insiden & pelajaran](#insiden--pelajaran) [Armada agent](#armada-agent) [Tugas pemilik](#tugas-pemilik) [Katalog modul dan design system](#katalog-modul-dan-design-system) [Rencana multi-bencana](#rencana-multi-bencana) [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui)
+
+## Mulai dari sini
+
+Buku ini sekitar 320 KB, kira-kira 90 ribu token. Jangan dibaca utuh, oleh manusia maupun agent. Cari tugasnya di tabel ini, buka bab yang ditunjuk, lalu jalankan gerbangnya.
+
+| Tugas | Baca bab | Pengerja, lalu pengulas | Bukti selesai |
+| --- | --- | --- | --- |
+| Ubah tampilan, kartu, tabel, peta | Selera tampilan, Angka & copy, Fitur yang disembunyikan | `layar-peta` atau `inti-layar`, lalu `selera-angka` + `inp-reviewer` | `npm run uji:agen`, tangkapan layar desktop dan HP |
+| Tambah halaman atau tab | Halaman & rute, Resep | `layar-peta`, lalu `selera-angka` | rute ada di `tab` registry, `npm run uji:agen` |
+| Route worker, form, foto, D1 | Stack & peta repo, Gerbang penjaga, Resep | `warga-api`, lalu `guard-api` + `security-reviewer` (+ `migrasi-idempoten` untuk migrasi) | `npm run uji:warga` |
+| Model, indeks risiko, uji balik | Model & data | pengerja modulnya, lalu `validasi-model` | uji balik jalan, angka dibaca dari JSON uji |
+| Bawa fitur karhutla ke bencana lain | Katalog modul dan design system, Rencana multi-bencana | `inti-layar` / `pipa-umum` | matriks paritas diperbarui |
+| Deck PPT, laporan DOCX/PDF | Selera presentasi (PPT), Selera laporan | skill `ppt-konsultan` | gerbang QA skill |
+| SIPPA `/pipa` | `data/kajian-bnpb/pipa/KEPUTUSAN-SIPPA.md` dulu, baru buku ini | `sippa` | `npm run uji:sippa` |
+| Terbit ke produksi | Terbit dan definisi selesai, Insiden & pelajaran | sesi induk saja | `terbit.yml` hijau, aset live dan `/api/status` dicek |
+| Hemat token | Hemat token, `docs/buku-pegangan/HEMAT-TOKEN.md` | | |
+
+Cara membaca murah: `grep -n '^## ' docs/buku-pegangan/pantau-bencana.md` memberi peta bab dengan nomor baris, lalu baca rentangnya saja.
+
+### Urutan otoritas
+
+1. Kata pemilik terbaru di chat.
+2. Riwayat perubahan: entri yang lebih baru menang atas aturan lama, walau bab aturannya belum sempat disunting (contoh: hitungan hotspot dengan keyakinan rendah, 28 Okt, membalik aturan 25 Okt).
+3. Bab aturan di buku ini.
+4. Dokumen wilayah sendiri menang di wilayahnya: SIPPA mengikuti `KEPUTUSAN-SIPPA.md`, deck mengikuti `keputusan-pemilik.md` di skill `ppt-konsultan`, genangan J4 mengikuti berkas bersidik `kunci_j4.py`.
+5. `AGENTS.md` untuk cara kerja agent; memori untuk konteks yang belum masuk buku.
+
+Dua sumber bertentangan dan tidak terjawab urutan ini: tulis ke [Belum diputus](#belum-diputus) dan tanya pemilik. Arah tidak dikarang.
+
+### Sepuluh prinsip yang paling sering ditegur
+
+1. **Kurangi dan satukan, bukan tambah.** Arah tampilan sejak 13 Okt.
+2. **Disembunyikan, tidak dihapus.** Fitur yang diminta hilang tetap hidup di kode dan dicatat di Fitur yang disembunyikan.
+3. **Angka karhutla hanya dari sistem sendiri.** Hotspot, firespot, luas, belum padam, dan terdampak tidak pernah diambil dari Koordalops, walau pemilik menempelnya.
+4. **Belum lulus uji balik = pil hipotesis**, tidak disembunyikan dan tidak dijual sebagai pasti.
+5. **Klik tidak membekukan layar.** Chrome kontrol langsung, kerja berat lewat `nanti()`.
+6. **Satu kepala situs navy dan token Centurisk97** di tiap halaman centurisk97.id.
+7. **Hanya `main`**: tanpa branch agent, tanpa worktree. Stage path eksplisit karena repo di iCloud.
+8. **Tree dianggap publik dalam hitungan menit**: commit "gas" pemilik menyapu semua suntingan yang belum aman.
+9. **Penulis kode bukan pengulasnya**, dan diff agent tidak di-commit hanya karena laporannya bilang beres.
+10. **"Tayang" baru diucapkan sesudah `terbit.yml` hijau** dan aset live serta `/api/status` dicek.
 
 Terbaru di atas
 
@@ -15,6 +56,13 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 29 Okt 2026
+   - **Selera web: paragraf rata kanan-kiri, grafik selalu interaktif** (pemilik saat meninjau `/akademisi`: *"Agar justify. Lu catet lah"* dan *"grafik atau figur gini selalu pengen interaktif. Catat"*). Berlaku di semua halaman centurisk97.id dan artifact; rujukan kode `grafik()` dan `sorotGrafik()` di `public/akademisi.js` (`4ff127bc`).
+   - **`/akademisi` dirapikan** (`2730abb9`, `fc581d80`, `3a94f8f4`): kartu kembali ke foto bulat kecil, pemilih program studi bercari, judul kepala sebaris, kepala rata tengah, linimasa pendidikan dan jabatan berkartu dengan pil tahun.
+   - **Satelit** (`4f441ac5`, `3ef904f8`, `0fa0abe2`, `4d1191da`): riwayat deteksi per satelit setahun dari arsip FIRMS, dipecah per tingkat keyakinan, di tab tersembunyi Data satelit yang dibuka dari popover lintasan; `/api/satelit/jeda` meringkas jeda harian per sensor.
+   - **Kotak masuk WhatsApp laporan harian** lewat webhook Fonnte, tanpa balasan otomatis (`819e5899`).
+   - **Hemat token** (pemilik: Opus hanya merencanakan, Haiku dulu, lalu Sonnet). rtk 1.1.0 terpasang dan hooknya kini benar-benar jalan. Semua cara hemat dikumpulkan di `docs/buku-pegangan/HEMAT-TOKEN.md` dan bab Hemat token.
+   - **Buku pegangan disempurnakan**: bab baru Mulai dari sini (jalur baca per tugas, urutan otoritas, sepuluh prinsip), Merek dan warna, Terbit dan definisi selesai, Resep, Hemat token, Kamus; nomor Tugas pemilik dirapikan. Artifact pindah ke akun sekarang (`219654dc`).
 1. 28 Okt 2026
    - **Katalog modul masuk buku pegangan** (pemilik: *"gabung aja ke buku pegangan"*). Bab baru "Katalog modul dan design system": 54 modul M01 sampai M54, matriks paritas per bencana, inventaris dan 17 celah design system, 10 pekerjaan prioritas. Artifact katalog terpisah tidak dipakai lagi.
    - **Model genangan DKI: M0 gagal uji, M1 dibekukan** (pemilik: *"Tahan uji. Ganti sumber hujan M0 ke GSMaP"*, lalu *"Lanjut M1"*). M0 (kurva hujan pemicu, GSMaP harian 1.771 hari) diuji sekali pada 2024-2025: ETS 0,174 lawan klimatologi bulanan 0,180, vonis GAGAL, label hipotesis (`docs/banjir/KRITERIA-M0.md`, `RISET-MODEL-GENANGAN.md` §9). M1 (model tangki per kecamatan dengan suku dasar per kecamatan) dibekukan 28 Okt dengan sidik `778f2309`, uji prospektif musim 2026/27 sampai 30 Apr 2027 (`KRITERIA-M1.md`, tafsir n_musim harfiah di `KRITERIA-M1-TAFSIR.md`); pengumpul harian `m1_prospektif.yml` 22.30 dan 04.30 WIB.
@@ -382,6 +430,21 @@ Rute yang ada di nav wajib ada di `tab` registry; rute yatim membuat terbit mera
 ## Selera tampilan
 
 Aturan A1 sampai A25 (`docs/multi-bencana/RENCANA-20-JAM.md` §1) dipindai sebelum tiap perubahan layar. Arah sejak 13 Okt: kurangi dan satukan, bukan tambah.
+
+### Merek dan warna
+
+- Merek Centurisk97 seragam di semua host sejak 26 Okt. Token tinggal di `public/inti/tema.css`, tidak pernah disalin ke palet lokal halaman.
+- Terang: `--paper` oklch(97,6% .006 255), `--card` putih, `--ink` dan `--brand` navy oklch(25,5% .075 256), `--brand2` oklch(42% .11 255), `--accent` oklch(68% .09 252).
+- Status: `--ok` hijau, `--warn` kuning, `--bad` merah, `--info` biru. Merah juga warna angka temuan di judul kartu (`Insight.hl`).
+- Gelap: kertas navy tua oklch(18% .035 256), kartu oklch(22,5% .045 256), tulisan oklch(94% .012 255). Tidak ada latar abu gelap.
+- Radius `--r` 16 px dan `--r-sm` 10 px; tinggi kepala `--top` 58 px.
+- Huruf layar Inter, judul Plus Jakarta Sans. Deck dan laporan memakai Roboto (bab Selera presentasi).
+- Celah yang tercatat: karhutla sendiri masih menyimpan salinan token inline di `public/index.html`, belum memuat `inti/tema.css` (Katalog modul, bagian 3).
+
+### Teks dan grafik
+
+- Paragraf isi (ringkasan, bio, narasi) rata kanan-kiri: `text-align: justify` dengan `hyphens: auto` (29 Okt).
+- Tiap grafik dan figur interaktif: sentuh atau arahkan menampilkan garis bantu, titik yang disorot, dan tooltip berisi nilai serta perubahan dari titik sebelumnya. SVG diam tidak cukup (29 Okt; rujukan `public/akademisi.js`).
 
 ### Kartu Insight
 
@@ -1821,18 +1884,18 @@ Yang tidak bisa dikerjakan sesi agent:
 9. Putuskan kapan `/bnpb` masuk nav utama.
 10. Terapkan migrasi D1 yang menunggu ke produksi: SIPPA 0056 sampai 0059, 0067, 0070, 0073, 0074; 0072 indeks `tugas_api`; 0075 riwayat granul satelit; banjir 0064 `push_banjir` dan 0065 `uji_banjir`, serta 0060, 0062, 0063, 0066, 0068, 0069 bila belum.
 11. Jawab bentrok penutup gelap format lembaga dan kirim logo BNPB vektor dari Humas untuk merek PPT `bnpb`.
-15. Unggah data SIPPA tujuh provinsi ke R2 `sippa/` dan pasang secret Renlap (`GITHUB_TOKEN` worker, `RENLAP_KUNCI`, `CLOUDFLARE_*` di GitHub).
-16. Putar ulang kunci OpenAlex yang sempat ditempel di chat 28 Okt (kini secret worker `OPENALEX_KEY`).
-17. Kirim nama pakar diaspora untuk `/akademisi` (tidak bisa ditemukan otomatis).
-12. Putuskan apakah petugas instansi (bukan admin atau pemirsa) boleh membuka `/uji-lapangan`; Turnstile unggah foto dari form itu belum diuji.
-13. Turnstile `/pendataan` belum aktif di produksi.
-14. Hapus branch lain yang muncul selain main; sesi agent dilarang menghapus branch.
+12. Unggah data SIPPA tujuh provinsi ke R2 `sippa/` dan pasang secret Renlap (`GITHUB_TOKEN` worker, `RENLAP_KUNCI`, `CLOUDFLARE_*` di GitHub).
+13. Putar ulang kunci OpenAlex yang sempat ditempel di chat 28 Okt (kini secret worker `OPENALEX_KEY`).
+14. Kirim nama pakar diaspora untuk `/akademisi` (tidak bisa ditemukan otomatis).
+15. Putuskan apakah petugas instansi (bukan admin atau pemirsa) boleh membuka `/uji-lapangan`; Turnstile unggah foto dari form itu belum diuji.
+16. Turnstile `/pendataan` belum aktif di produksi.
+17. Hapus branch lain yang muncul selain main; sesi agent dilarang menghapus branch.
 
 ## Katalog modul dan design system
 
 Semua fitur karhutla sebagai modul plug-and-play yang dipasang ulang ke bencana lain, statusnya per bencana, dan inventaris design system website. Disusun dari kode nyata 27 Okt 2026; sumber `docs/multi-bencana/KATALOG-MODUL.md` (pemilik: *"gabung aja ke buku pegangan"*, 28 Okt 2026).
 
-Disusun 27 Okt 2026 dari kode di `main` (HEAD c823c39f), bukan dari ingatan. Setiap status di matriks diperiksa dengan grep terhadap `public/index.html`, `public/<bencana>/index.html`, `public/<bencana>/*.js`, dan `public/inti/**`. Bahan ini melengkapi [`MODUL-PLUG-AND-PLAY.md`](MODUL-PLUG-AND-PLAY.md) (kelas A sampai D, dipetakan 16 Okt) dan [`PAKET-FITUR.md`](PAKET-FITUR.md) (kode komponen A01 sampai C38). Nomor M di sini baru; kolom "Kode paket" menautkan ke nomor lama.
+Disusun 27 Okt 2026 dari kode di `main` (HEAD c823c39f), bukan dari ingatan. Setiap status di matriks diperiksa dengan grep terhadap `public/index.html`, `public/<bencana>/index.html`, `public/<bencana>/*.js`, dan `public/inti/**`. Bahan ini melengkapi `docs/multi-bencana/MODUL-PLUG-AND-PLAY.md` (kelas A sampai D, dipetakan 16 Okt) dan `docs/multi-bencana/PAKET-FITUR.md` (kode komponen A01 sampai C38). Nomor M di sini baru; kolom "Kode paket" menautkan ke nomor lama.
 
 Catatan sebelum membaca:
 
@@ -2132,6 +2195,105 @@ Catatan urutan: butir 1 dan 2 harus selesai sebelum butir 3, 4, 5 supaya modul b
 4. Tulis adaptor untuk M22, M38, M43 (tiga baris sampai 40 baris).
 5. Sisanya (laci, Berita, Tren, Dampak, Metode, Kejadian, Simulasi) diperlakukan sebagai C: tunggu modul bersama dari butir 2, 4, 5 di bagian 4, atau tulis dengan anatomi yang sama persis dengan karhutla dan catat sebagai hutang di sini.
 6. Tambahkan baris ke matriks bagian 2 dengan bukti grep.
+
+## Terbit dan definisi selesai
+
+### Jalur terbit
+
+1. Commit di `main` dengan path spesifik (`git commit -- <berkas>`), sesudah `npm run uji` mencetak `fail 0` di tiap suite.
+2. Push memicu `terbit.yml` (Cloudflare static assets + worker `centurisk97`). `wrangler deploy` dari laptop tidak dipakai: ia bisa menimpa produksi dengan data lokal yang lebih tua.
+3. Tunggu `terbit.yml` hijau, lalu buka aset live dan `/api/status`. Baru sesudah itu boleh bilang "tayang" (insiden 16 Okt).
+4. Migrasi D1 produksi diterapkan pemilik, bukan sesi agent; daftar yang menunggu ada di Tugas pemilik.
+5. Berkas `.github/workflows/**` di-commit pemilik lewat GitHub Desktop karena token CLI tanpa scope `workflow`.
+6. Sebelum menambah kueri cron, cek D1 insights: kuota baca Free 5 juta baris per hari pernah habis dan menjatuhkan situs (28 Okt).
+
+### Preflight sebelum bilang selesai
+
+- `npm run uji:agen` hijau sesudah `git add` (gerbang membaca berkas terlacak saja), ditambah suite modulnya (`uji:warga`, `uji:banjir`, `uji:udara`, `uji:sippa`, `uji:layar`).
+- Layar yang berubah dilihat sungguhan di peramban, desktop 1440 px dan HP 390 px, terang dan gelap.
+- Angka baru: format id-ID, satuan, sumber, dan tanggal data tertulis; tanpa " · " dan tanpa em dash.
+- Diff agent dibaca sendiri oleh sesi induk, lalu diperiksa verifier berkonteks bersih (bukan penulisnya).
+- Fitur yang dihapus dari tampilan dicatat di Fitur yang disembunyikan; keputusan baru masuk Riwayat buku ini di giliran yang sama.
+
+### Definisi selesai
+
+Selesai berarti: gerbang hijau, terbit hijau dan dicek live, buku pegangan diperbarui bila ada selera baru, dan yang belum diverifikasi disebut terang di laporan. "Sudah dikerjakan agent" belum berarti selesai.
+
+## Resep
+
+### Tambah tab atau halaman bencana
+
+1. Daftarkan di `tab` registry `public/bencana.json` lebih dulu; rute yatim membuat terbit merah (insiden 22 Okt).
+2. Pakai modul `public/inti/**` (kepala, kartu, insight, tabel, tip, pilih); jangan salin CSS atau JS antarhalaman (`gerbang-inti`).
+3. `npm run uji:agen` (`gerbang-tab-registry`, `gerbang-bencana`).
+
+### Tambah route worker atau form
+
+1. `warga-api` menulis di `src/**`; metode, gerbang admin, validasi input, batas laju sejak awal.
+2. Uji Miniflare sungguhan di `tests/warga/` (bukan mock), lalu `guard-api` dan `security-reviewer`.
+3. Halaman tanpa login memakai token di fragmen (`#t=`), bukan di jalur URL.
+
+### Tambah migrasi D1
+
+1. Nomor urut berikutnya di `migrations/`, idempoten (`IF NOT EXISTS`). Migrasi yang sudah diterapkan tidak pernah disunting.
+2. `migrasi-idempoten` memeriksa, `npm run uji:warga` menjalankannya.
+3. Masukkan nomornya ke Tugas pemilik: produksi diterapkan pemilik.
+
+### Bawa modul karhutla ke bencana lain
+
+Ikuti `docs/multi-bencana/MODUL-PLUG-AND-PLAY.md`: colok modul yang sudah ada, tidak menyalin, tidak mengarang model. Perbarui matriks status di Katalog modul.
+
+### Sembunyikan fitur atas permintaan pemilik
+
+Atribut `hidden`, flag, atau `"sembunyi": true`; fungsinya tetap ada. Catat di Fitur yang disembunyikan dan di memori `fitur-disembunyikan` berikut cara memulihkannya.
+
+### Perbarui buku pegangan ini
+
+Lihat [Cara halaman ini diperbarui](#cara-halaman-ini-diperbarui).
+
+## Hemat token
+
+Ringkasan dari `docs/buku-pegangan/HEMAT-TOKEN.md` (lengkap dengan angka ukur, 29 Okt 2026). Yang mahal bukan yang ditulis, melainkan yang dibaca ulang: tiap pesan membayar ulang seluruh konteks.
+
+| Cara | Pakai |
+| --- | --- |
+| Opus merencanakan, Haiku dulu, lalu Sonnet mengerjakan | agent repo semua bermodel; agent bawaan turun ke Sonnet lewat `CLAUDE_CODE_SUBAGENT_MODEL` |
+| Prompt agent menyebut berkas atau glob | bukan nama domain; domain membuat agent membaca segalanya |
+| Kerja kecil tetap di sesi induk | beberapa panggilan alat lebih murah daripada membayar brief agent |
+| rtk memangkas keluaran shell | `rtk gain` untuk melihat hemat; bila nol, cek `which rtk` |
+| Baca sebagian | `grep -n '^## '` lalu rentang baris; buku ini dan `public/index.html` tidak pernah dibaca utuh |
+| Batasi keluaran | `head`, `tail`, `--format` ringkas |
+| Gaya keluaran ringkas | caveman penuh |
+| Jejak agent | `ilmu.mjs cek` menjawab `LEWATI` untuk berkas yang tak berubah |
+| Aturan jadi gerbang | gerbang mekanis nol token; aturan tertulis dibayar tiap kali dibaca |
+| Sesi baru untuk tugas baru | konteks lama ikut dibayar di tiap pesan |
+
+Muatan terbesar tiap sesi, 29 Okt: ringkasan `cavemem` 26,3 KB, daftar 303 skill, nama alat MCP `rea` dan lainnya, plugin `superpowers`. Mencopotnya mengubah pengaturan global, jadi menunggu keputusan pemilik (daftar di `HEMAT-TOKEN.md` bagian 6).
+
+## Kamus
+
+| Istilah | Arti |
+| --- | --- |
+| HS, FS, CL | hotspot (titik panas satelit), firespot (titik panas hari itu yang tersentuh cluster berklasifikasi firespot menurut aturan Kemenhut SIPANTAU KARHUTLA, 22 Okt), cluster (kelompok titik) |
+| FIRMS | layanan titik panas NASA dari VIIRS (S-NPP, NOAA-20) dan MODIS |
+| Keyakinan rendah, sedang, tinggi | kelas kepercayaan deteksi FIRMS; hitungan hotspot memakai semua kelas, luas dan cluster sedang dan tinggi |
+| FWI | Fire Weather Index, indeks cuaca kebakaran |
+| PFVI | indeks kerentanan api buatan sendiri; tidak pernah menimpa status resmi |
+| Uji balik | menguji model pada data masa lalu yang tidak dipakai melatih |
+| Uji prospektif | uji ke depan dengan kriteria dikunci lebih dulu (praregistrasi) |
+| POD, FAR, ETS | peluang deteksi, rasio alarm palsu, skor ancaman setara |
+| Hipotesis | angka yang belum lulus uji; tampil dengan pil hipotesis |
+| SIPPA | sistem pipa portabel karhutla dan banjir, layar `/pipa` |
+| Renlap | rencana lapangan, Renlap Generator di `/renlap` |
+| OMC | operasi modifikasi cuaca |
+| KRB | kawasan rawan bencana (gunung api) |
+| SIHKA | telemetri tinggi muka air sungai Kementerian PU Ditjen SDA, ditarik worker ke D1 untuk banjir |
+| Koordalops, Daops | koordinasi dan daerah operasi Manggala Agni |
+| DIBI | Data Informasi Bencana Indonesia milik BNPB |
+| D1, R2 | basis data SQLite dan penyimpanan berkas Cloudflare |
+| Terbit | workflow `terbit.yml` yang menayangkan situs |
+| Gas | commit pemilik lewat GitHub Desktop yang menyapu semua suntingan di tree |
+| Paritas | kelengkapan fitur bencana lain dibanding karhutla |
 
 ## Rencana multi-bencana
 
