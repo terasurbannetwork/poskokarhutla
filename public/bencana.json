@@ -38,7 +38,8 @@
         "informasi",
         "kompleks",
         "metode",
-        "satelit"
+        "satelit",
+        "tentang"
       ],
       "sumber_status": [
         [
@@ -234,7 +235,8 @@
         "sungai",
         "keputusan",
         "sarana",
-        "replay"
+        "replay",
+        "tentang"
       ],
       "alias": {
         "simulasi": "sim"

@@ -39,7 +39,8 @@ export default {
         "informasi",
         "kompleks",
         "metode",
-        "satelit"
+        "satelit",
+        "tentang"
       ],
       "sumber_status": [
         [
@@ -235,7 +236,8 @@ export default {
         "sungai",
         "keputusan",
         "sarana",
-        "replay"
+        "replay",
+        "tentang"
       ],
       "alias": {
         "simulasi": "sim"

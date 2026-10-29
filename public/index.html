@@ -1797,7 +1797,7 @@ function bukaTab(id, dorong = true) {
 }
 /* 6 tab utama; sisanya di menu Lainnya supaya tidak ada tab yang terpotong */
 /* disembunyikan sementara dari menu atas (permintaan pemilik 13 Okt 2026); halamannya tetap bisa dibuka lewat tautan langsung */
-const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "metode", "satelit"]); /* satelit: tab Data satelit tersembunyi dari menu (pemilik 28 Okt 2026); pintu masuk = tautan di popover lintasan (satelit_lintas.js), /satelit; pulihkan di menu: hapus "satelit" dari set ini dan dari tab_sembunyi di bencana.json */ /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
+const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "metode", "satelit", "tentang"]); /* tentang: disembunyikan dari menu (pemilik 29 Okt 2026); /tentang tetap bisa dibuka langsung */ /* satelit: tab Data satelit tersembunyi dari menu (pemilik 28 Okt 2026); pintu masuk = tautan di popover lintasan (satelit_lintas.js), /satelit; pulihkan di menu: hapus "satelit" dari set ini dan dari tab_sembunyi di bencana.json */ /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
 const IK_TAB = {pelaporan: '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>',
   tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', satelit: '<path d="m13 7-3 3 4 4 3-3zM9 11 5 7l2-2 4 4M15 13l4 4-2 2-4-4"/><path d="M4 20a8 8 0 0 0 8-8"/>', kompleks: IKON.api, dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', metode: '<path d="M9 3h6M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4A1.5 1.5 0 0 0 20 19l-6-10V3"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
   monitor: '<path d="M3 12h4l3-8 4 16 3-8h4"/>', posko: IKON.posko, informasi: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', ringkasan: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'};
@@ -2689,7 +2689,7 @@ function renderDaftar() {
   const prio = new Set(S.meta.prioritas);
   /* indikator Cluster punya 4 kolom angka (Aktif, < 24 j, 1–3 hr, > 3 hr), lainnya 3 (Titik/Ha, FS, CL) */
   const G = `grid-template-columns:18px minmax(0,2fr) minmax(40px,.7fr) minmax(40px,.8fr) minmax(40px,.8fr)${u === "kl" ? " minmax(40px,.8fr)" : ""} minmax(62px,1fr) minmax(62px,1fr)`;
-  const pilUkur =`<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div></div>`;
+  const pilUkur =`<div class="tr-sw"><div class="seg penuh" role="group" aria-label="Indikator">${Object.entries(UKUR).map(([x, n]) => `<button data-uk="${x}" aria-pressed="${u === x}"${(x === "luas" || x === "belum") && j.length ? ` disabled title="Luas terbakar dan belum padam baru tersedia per provinsi"` : ""}><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_UKUR[x]}</svg>${n}</button>`).join("")}</div>${j.length ? "" : window.UnduhTabel?.tombol() || ""}</div>`;
   const sakelar = pilUkur;
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"], bulan = u === "luas" ? [...new Set(S.pk.hari.map(t => t.slice(0, 7)))].reverse() : [];
   const namaBln = b => `${BLN[+b.slice(5) - 1]} ${b.slice(0, 4)}`, blnPilih = /^\d{4}-\d{2}/.test(S.periode) ? S.periode.split(",") : [];
@@ -6940,6 +6940,9 @@ document.addEventListener("click", e => { const d = document.querySelector(".ben
 <script src="sapa.js"></script>
 <link rel="stylesheet" href="foto.css">
 <script src="foto.js"></script>
+<link rel="stylesheet" href="unduh_tabel.css">
+<script src="/inti/unduh.js"></script>
+<script src="unduh_tabel.js"></script>
 <script src="bagikan.js" data-halaman="karhutla" defer></script>
 <script src="persetujuan.js" defer></script>
 <script src="kaki.js" defer></script>

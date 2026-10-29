@@ -25,7 +25,7 @@
   const IK = d => `<svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
   const kosong = (n, ik, judul, isi) => `<tr><td colspan="${n}" class="mn-kosong"><div>${IK(ik)}<b>${judul}</b>${isi}</div></td></tr>`;
   const sat = (kelas, teks) => { const e = $("mnSat"); e.className = "mn-status " + kelas; e.innerHTML = `<i></i>${esc(teks)}`; };
-  let dimuat = false;
+  let dimuat = false, judulApi = "Deteksi api terbaru", judulBj = "Status banjir";
   let dets = [], pihak = "", hal = 0, tampil = [], terbuka = new Set(), baru = [], wa = null;
   const TG = {karhutla: null, banjir: null}, kejBaru = {karhutla: [], banjir: []}, BENCANA = ["karhutla", "banjir"];
   let sel = new URLSearchParams(location.search).get("bencana") || bacaL("mn_bencana", "karhutla"); if (!BENCANA.includes(sel)) sel = "karhutla";   // ?bencana=banjir dari pengalihan pemirsa
@@ -102,13 +102,14 @@
   function popup() {
     const jd = [];
     if (baru.length) jd.push(`<b>${baru.length}</b> deteksi api baru`);
+    if (bjBaru.length) jd.push(`<b>${bjBaru.length}</b> kecamatan siaga banjir baru`);
     for (const b of BENCANA) if (kejBaru[b].length) jd.push(`<b>${kejBaru[b].length}</b> kejadian ${b} baru`);
     $("mnMJ").innerHTML = jd.join(", ");
-    $("mnMIsi").innerHTML = (baru.length ? bagDet() : "") + BENCANA.map(bagKej).join("");
+    $("mnMIsi").innerHTML = (baru.length ? bagDet() : "") + bagBj() + BENCANA.map(bagKej).join("");
     $("mnBaca").hidden = !pihak || pihak === "pemirsa" || !idBaca().length;
     $("mnModal").hidden = false; $("mnTutup").focus();
   }
-  function tutup() { $("mnModal").hidden = true; baru = []; kejBaru.karhutla = []; kejBaru.banjir = []; }
+  function tutup() { $("mnModal").hidden = true; baru = []; kejBaru.karhutla = []; kejBaru.banjir = []; bjBaru = []; }
   async function sudahDibaca() {
     const ids = idBaca(); $("mnBaca").disabled = true;
     try { await fetch("/api/monitor/baca", {method: "POST", headers: {"x-pb": "1", "content-type": "application/json"}, body: JSON.stringify({tugas: ids})}); } catch (e) {}
@@ -134,7 +135,7 @@
       : !dimuat ? kosong(8, '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/>', "Data satelit belum masuk", "Halaman mencoba lagi tiap 5 menit.")
       : dets.length ? kosong(8, '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', "Tidak ada deteksi pada saringan ini", "Coba provinsi atau keyakinan lain.")
       : kosong(8, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada deteksi api dalam 24 jam terakhir", "");
-    $("mnJudulDet").innerHTML = dimuat ? `<b>${n.toLocaleString("id-ID")}</b> deteksi api dalam 24 jam terakhir` : "Deteksi api terbaru";
+    judulApi = dimuat ? `<b>${n.toLocaleString("id-ID")}</b> deteksi api dalam 24 jam terakhir` : "Deteksi api terbaru"; atas();
     $("mnHal").textContent = n ? `Menampilkan ${(hal * HAL + 1).toLocaleString("id-ID")}–${Math.min(n, hal * HAL + HAL).toLocaleString("id-ID")} dari ${n.toLocaleString("id-ID")} deteksi` : "";
     $("mnHal").parentElement.hidden = tot <= 1;
     $("mnPrev").disabled = hal === 0; $("mnNext").disabled = hal >= tot - 1;
@@ -196,6 +197,67 @@
     nanti(gambarTugas);
   }
 
+  /* ---------- status banjir per kecamatan (public/banjir/data/status.json: kec["prov|kab|kec"].b[hari] = 0 Normal, 1 Waspada, 2 Siaga, 3 Awas) ---------- */
+  const LVB = ["Normal", "Waspada", "Siaga", "Awas"], KLB = ["", "s", "t", "t"], HARI_ID = ["Min", "Sen", "Sel", "Rab", "Kam", "Jum", "Sab"];
+  let BJ = null, bjBaru = [];
+  const tglPdk = t => { const d = new Date(t + "T00:00:00Z"); return `${HARI_ID[d.getUTCDay()]} ${d.getUTCDate()}/${d.getUTCMonth() + 1}`; };
+  const kunciKec = (p, k, c) => `${p}|${String(k).toLowerCase()}|${String(c).toLowerCase()}`;
+  /* sudah terlapor = ada kejadian banjir yang dipantau di kecamatan yang sama; tanpa sesi tugas tak diketahui */
+  function lapBj() { const s = new Set(); for (const t of TG.banjir || []) s.add(kunciKec(t.prov, t.kab, t.kec)); return s; }
+  function bjBaris() {
+    if (!BJ) return [];
+    const p = $("mnBProv").value, lv = +$("mnBLv").value, h = +$("mnBHari").value;
+    return BJ.kec.filter(x => x.b[h] >= lv && (!p || x.pk === p)).sort((a, b) => b.b[h] - a.b[h] || (b.h3 || 0) - (a.h3 || 0));
+  }
+  function gambarBj() {
+    if (!BJ) return;
+    const L = bjBaris(), h = +$("mnBHari").value, lap = lapBj(), ada = !!TG.banjir, MAKS = 200;
+    const pil = v => `<span class="mn-p ${KLB[v]}">${LVB[v] || ""}</span>`;
+    $("mnBj").innerHTML = L.length ? L.slice(0, MAKS).map(x => { const pk = Math.max(...x.b), hk = x.b.indexOf(pk);
+      return `<tr><td>${esc(namaProv(x.pk))}</td><td>${esc(x.kab)}</td><td><b>${esc(x.kec)}</b></td><td>${pil(x.b[h])}</td><td>${pil(pk)} <span class="mn-kecil">${tglPdk(BJ.hari[hk])}</span></td>
+        <td class="k">${x.h3 == null ? "" : (+x.h3).toLocaleString("id-ID", {maximumFractionDigits: 0}) + " mm"}</td>
+        <td>${!ada ? `<span class="mn-kecil">Masuk dulu</span>` : lap.has(kunciKec(x.pk, x.kab, x.kec)) ? `<span class="mn-p h">Sudah</span>` : `<span class="mn-p t">Belum</span>`}</td></tr>`; }).join("")
+      : kosong(7, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada kecamatan pada tingkat ini", "Coba tingkat atau hari lain.");
+    $("mnBHal").textContent = L.length > MAKS ? `Menampilkan ${MAKS} dari ${L.length.toLocaleString("id-ID")} kecamatan, urut tingkat lalu hujan` : "";
+    const s2 = BJ.kec.filter(x => x.b[0] >= 2).length;
+    judulBj = `<b>${s2.toLocaleString("id-ID")}</b> kecamatan siaga banjir hari ini`; atas();
+  }
+  function isiBj() {
+    const s = $("mnBProv"), v = s.value, ada = [...new Set(BJ.kec.map(x => x.pk))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
+    s.innerHTML = `<option value="">Semua provinsi</option>` + ada.map(k => `<option value="${esc(k)}">${esc(namaProv(k))}</option>`).join(""); s.value = v;
+    const hs = $("mnBHari"), hv = hs.value; hs.innerHTML = BJ.hari.map((t, i) => `<option value="${i}">${i === 0 ? "Hari ini" : i === 1 ? "Besok" : tglPdk(t)}</option>`).join(""); hs.value = hv || "0";
+  }
+  /* kecamatan yang baru naik ke Siaga atau Awas hari ini: alarm; muat pertama hanya menanam */
+  function cekBj() {
+    const hari = BJ.hari[0], id = x => `${hari}|${x.pk}|${x.kab}|${x.kec}`, kini = BJ.kec.filter(x => x.b[0] >= 2);
+    let lama = null; try { const j = JSON.parse(localStorage.getItem("mn_seen_bj")); if (Array.isArray(j)) lama = j; } catch (e) {}
+    const set = new Set(lama || []), hasil = lama ? kini.filter(x => !set.has(id(x))) : [];
+    if (!lama || hasil.length) { for (const x of kini) set.add(id(x)); tulisL("mn_seen_bj", JSON.stringify([...set].slice(-MAKS_SEEN))); }
+    if (hasil.length) { bjBaru = bjBaru.concat(hasil); putar2x(); notif("Status banjir naik", `${hasil.length} kecamatan baru berstatus Siaga atau Awas`, "mn-bj"); popup(); }
+  }
+  function bagBj() {
+    if (!bjBaru.length) return "";
+    const lap = lapBj(), ada = !!TG.banjir, blm = bjBaru.filter(x => !lap.has(kunciKec(x.pk, x.kab, x.kec)));
+    return `<div><b>${bjBaru.length} kecamatan baru berstatus Siaga atau Awas</b>
+      ${ada ? `<p><span class="mn-p t">${blm.length} belum terlapor</span> <span class="mn-p h">${bjBaru.length - blm.length} sudah terlapor</span></p>` : `<p class="mn-kecil">Masuk sebagai staf BNPB atau BPBD untuk mengecek apakah sudah terlapor.</p>`}
+      <ul>${bjBaru.slice(0, 8).map(x => `<li>Kec. ${esc(x.kec)}, ${esc(x.kab)}, ${esc(namaProv(x.pk))} <span class="mn-p ${KLB[x.b[0]]}">${LVB[x.b[0]]}</span></li>`).join("")}</ul>${bjBaru.length > 8 ? `<p class="mn-kecil">Dan ${bjBaru.length - 8} lainnya.</p>` : ""}</div>`;
+  }
+  async function muatBj() {
+    try {
+      const r = await fetch("/banjir/data/status.json", {cache: "no-cache"}); if (!r.ok) throw 0;
+      const j = await r.json();
+      BJ = {hari: j.hari || [], kec: Object.entries(j.kec || {}).map(([k, v]) => { const [pk, kab, kec] = k.split("|"); return {pk, kab, kec, b: v.b || [0], h3: v.h3}; })};
+      const e = $("mnSatB"); e.className = "mn-status ok"; e.innerHTML = `<i></i>Status banjir ${esc(tglPdk(BJ.hari[0]))} sampai ${esc(tglPdk(BJ.hari.at(-1)))}, diperbarui harian`;
+      isiBj(); gambarBj(); cekBj();
+    } catch (x) { const e = $("mnSatB"); e.className = "mn-status gagal"; e.innerHTML = "<i></i>Status banjir gagal dimuat, mencoba lagi"; }
+  }
+  /* kepala halaman mengikuti bencana terpilih */
+  function atas() {
+    const api = sel === "karhutla";
+    $("mnJudulDet").innerHTML = api ? judulApi : judulBj;
+    $("mnSat").hidden = !api; $("mnSatB").hidden = api; $("mnKartuApi").hidden = !api; $("mnKartuBanjir").hidden = api;
+  }
+
   /* ---------- muat & polling ---------- */
   async function muatTitik() {
     try {
@@ -221,6 +283,7 @@
       const j = await r.json(), list = j.tugas || []; pihak = j.pihak || ""; TG[b] = list;
       $("mnSaya").textContent = j.saya ? [j.saya.nama, j.saya.unit].filter(Boolean).join(", ") : "";
       if (b === sel) { $("mnMasuk").hidden = true; $("mnGulir").hidden = false; gambarTugas(); }
+      if (b === "banjir" && BJ) nanti(gambarBj);
       const n = cekTugas(b, list);
       if (n.length) { kejBaru[b] = kejBaru[b].concat(n); putar2x(); notif(`Kejadian ${b} baru`, `${n.length} kejadian ${b} baru`, "mn-" + b); popup(); }
     } catch (e) {}
@@ -242,18 +305,19 @@
   function aturSeg() { for (const k of document.querySelectorAll("#mnSeg [data-b]")) k.setAttribute("aria-pressed", k.dataset.b === sel); }
   function pilihB(b) {   // chrome (tombol) urgent; tabel ditunda
     if (b === sel) return;
-    sel = b; tulisL("mn_bencana", b); aturSeg(); $("mnRingkas").hidden = true;
+    sel = b; tulisL("mn_bencana", b); aturSeg(); atas(); $("mnRingkas").hidden = true;
     nanti(gambarTugas); muatMonitor(b); muatRingkas();
   }
 
   $("mnSuara").onclick = aktifkan; $("mnTutup").onclick = tutup;
   $("mnSeg").onclick = e => { const k = e.target.closest("[data-b]"); if (k) pilihB(k.dataset.b); }; $("mnBaca").onclick = sudahDibaca;
   $("mnFProv").onchange = $("mnFKey").onchange = ubahFilter;
+  $("mnBProv").onchange = $("mnBLv").onchange = $("mnBHari").onchange = () => nanti(gambarBj);
   $("mnPrev").onclick = () => { hal--; gambarDet(); }; $("mnNext").onclick = () => { hal++; gambarDet(); };
   $("mnTugas").addEventListener("click", togol); $("mnTugas").addEventListener("keydown", togol);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("mnModal").hidden) tutup(); });
   tombolSuara(); if (typeof PilihCantik !== "undefined") PilihCantik.pasang();
-  aturSeg(); muatRingkas();
+  aturSeg(); atas(); muatRingkas(); muatBj();
   muatSemua().then(muatTitik);   // tugas dulu supaya popup pertama sudah tahu tugas terdekat
-  setInterval(muatTitik, 5 * 6e4); setInterval(muatSemua, 2 * 6e4); setInterval(muatRingkas, 5 * 6e4);
+  setInterval(muatTitik, 5 * 6e4); setInterval(muatSemua, 2 * 6e4); setInterval(muatRingkas, 5 * 6e4); setInterval(muatBj, 30 * 6e4);
 })();
