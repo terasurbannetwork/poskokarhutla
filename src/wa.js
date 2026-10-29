@@ -86,7 +86,13 @@ async function daftar(env, req, url, kini) {
   if (j && !["bencana", "karhutla"].includes(j)) return gagal(400, "jenis harus bencana atau karhutla");
   const r = await env.DB.prepare(`SELECT id, diterima, jenis, dari, nama, teks, nama_berkas, tipe, berkas IS NOT NULL AS ada_berkas FROM wa_masuk
     WHERE tanggal = ?1 ${j ? "AND jenis = ?2" : ""} ORDER BY diterima LIMIT 300`).bind(...(j ? [t, j] : [t])).all();
-  return json({tanggal: t, pesan: r.results}, 200, {"cache-control": "no-store"});
+  /* kunci/label/tanggal_isi dihitung dari kepala teks/nama berkas (wa_jenis.js, tanpa angka); tanpa ?jenis= semua baris tanggal itu kembali */
+  const pesan = r.results.map(m => {
+    const kunci = kenali(m.teks, m.nama_berkas);
+    return {...m, kunci, label: JENIS_LAPORAN.find(x => x.kunci === kunci)?.label ?? "Lain-lain",
+      tanggal_isi: kunci === "laphar_pdf" ? tanggalNamaBerkas(m.nama_berkas) : kunci ? tanggalIsi(m.teks, kunci) : null};
+  });
+  return json({tanggal: t, pesan}, 200, {"cache-control": "no-store"});
 }
 
 async function berkas(env, req, url, kini) {

@@ -90,6 +90,11 @@ uji("berkas masuk R2, dibaca admin dan mesin; bearer salah 403; tipe terlarang d
   assert.equal((await api("GET", "/api/wa/rekap?sampai=2026-10-29&hari=1", undefined, MESIN)).s, 200);
   const h = await api("GET", "/api/wa/masuk?tanggal=2026-10-28&jenis=karhutla", undefined, ADMIN);
   assert.equal(h.j.pesan.length, 1); assert.match(h.j.pesan[0].teks, /pemadaman/);
+  assert.equal(h.j.pesan[0].kunci, null); assert.equal(h.j.pesan[0].label, "Lain-lain"); assert.equal(h.j.pesan[0].tanggal_isi, null);
+  const lp = await kirim({dari: "6281234567890", teks: "", berkas: [PDF, "Laporan Harian Dit Koordalops 27102026.pdf", "application/pdf"]});
+  const semua = await api("GET", `/api/wa/masuk?tanggal=${lp.j.tanggal}`, undefined, ADMIN);   // tanpa ?jenis= : semua baris tanggal itu
+  const q = semua.j.pesan.find(m => m.nama_berkas?.startsWith("Laporan Harian"));
+  assert.ok(semua.j.pesan.length >= 2, semua.t); assert.equal(q.kunci, "laphar_pdf"); assert.equal(q.label, "Laphar PDF"); assert.equal(q.tanggal_isi, "2026-10-27");
   const x = await kirim({dari: "6281234567890", teks: "dengan exe", berkas: [PDF, "a.exe", "application/x-msdownload"]});
   assert.equal(x.j.disimpan, true);
   const l = await api("GET", `/api/wa/masuk?tanggal=${x.j.tanggal}`, undefined, ADMIN);

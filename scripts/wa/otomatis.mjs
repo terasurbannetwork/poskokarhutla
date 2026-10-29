@@ -125,6 +125,71 @@ export function depBawaan(env) {
 
 const MIME = { pptx: 'application/vnd.openxmlformats-officedocument.presentationml.presentation', pdf: 'application/pdf' }
 
+// Bahan 3 hari (D, D-1, D+1) dari worker; tanggal ISI bahan sendiri harus == tanggal laporan (kiriman ulang laporan lama tersimpan dengan tanggal hari ini).
+// Dipakai jalankan() dan perintah WA (perintah.mjs). `semua` = pesan per jenis, terbaru dulu.
+export async function ambilBahan({ env, dep, tanggal, kenali = kenaliAsli, tanggalIsi = tanggalIsiAsli, log = () => {} }) {
+  const geser = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 86400e3).toISOString().slice(0, 10)
+  const pesanMap = new Map()
+  for (const [i, tgl] of [[0, tanggal], [1, geser(tanggal, -1)], [2, geser(tanggal, 1)]]) {
+    try {
+      const r = await dep.fetch(`${env.WORKER_URL || 'https://centurisk97.id'}/api/wa/masuk?tanggal=${encodeURIComponent(tgl)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })
+      if (!r.ok) throw new Error('HTTP ' + r.status)
+      for (const p of (await r.json()).pesan || []) pesanMap.set(String(p.id), p)
+    } catch (e) {
+      if (i === 0) throw new Error(`Gagal membaca bahan dari worker: ${e.message}`)
+      log('tetangga', tgl, 'gagal dibaca:', e.message) // D-1/D+1 hanya tambahan
+    }
+  }
+  const semua = semuaPerJenis([...pesanMap.values()], kenali)
+  const teksCache = new Map()
+  const teksDari = async (p) => { if (!teksCache.has(p.id)) teksCache.set(p.id, await ambilTeks(p, dep, env)); return teksCache.get(p.id) }
+  const pilihSesuai = async (lap) => {
+    const terpilih = {}, teks = {}
+    for (const k of lap.butuh) {
+      for (const p of semua[k] || []) {
+        let t
+        try { t = await teksDari(p) } catch (x) { log(lap.id, k, 'teks tak terbaca:', x.message); continue }
+        const td = tanggalIsi(t, k)
+        if (td === tanggal) { terpilih[k] = p; teks[k] = t; break }
+        log(`bahan bertanggal ${td || 'tak terbaca'}, bukan ${tanggal}`, k, p.id)
+      }
+    }
+    return { terpilih, teks }
+  }
+  // Tanggal isi tiap bahan yang ADA per jenis (untuk menjelaskan bahan yang salah hari).
+  const tanggalAda = async (k) => {
+    const hasil = []
+    for (const p of semua[k] || []) { try { hasil.push(tanggalIsi(await teksDari(p), k) || 'tak terbaca') } catch { hasil.push('tak terbaca') } }
+    return [...new Set(hasil)]
+  }
+  return { semua, pilihSesuai, tanggalAda }
+}
+
+export function siapkanKeluaran(lap, tanggal, teks, dasar) {
+  const kerja = path.join(dasar, 'kerja', tanggal, lap.id)
+  const out = path.join(dasar, 'keluaran', tanggal)
+  fs.mkdirSync(kerja, { recursive: true }); fs.mkdirSync(out, { recursive: true })
+  const f = {}
+  for (const k of lap.butuh) { f[k] = path.join(kerja, k + '.txt'); fs.writeFileSync(f[k], teks[k]) }
+  const dasarNama = path.join(out, lap.berkas(tanggal))
+  return { kerja, out, f, berkas: ['pdf', 'pptx'].map((x) => ({ x, p: `${dasarNama}.${x}` })) }
+}
+
+export async function jalankanGenerator(lap, tanggal, f, out, kerja, dep, env = process.env) {
+  try {
+    // Seluruh pohon proses perlu Python >= 3.12 + Pillow (penanganan.py memanggil `python3` telanjang): venv di depan PATH.
+    const pyBin = rumah(env.WA_PY_BIN) || path.join(RUMAH, 'py', 'bin')
+    await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, PATH: pyBin + path.delimiter + (process.env.PATH || '') } })
+  } catch (x) {
+    const penuh = String(x.stderr || x.message || x)
+    try { fs.writeFileSync(path.join(kerja, 'galat.txt'), penuh, { mode: 0o600 }) } catch {}
+    const ujung = penuh.trim().split('\n').filter(Boolean).pop() || ''
+    throw new Error(`generator gagal (kode G1, rincian di ${path.join(kerja, 'galat.txt')}): ${ujung.slice(0, 200)}`)
+  }
+}
+
+export { kunciProses, ambilKunci, MIME }
+
 export async function jalankan(opsi = {}) {
   muatEnv()
   const env = opsi.env || process.env
@@ -162,36 +227,10 @@ export async function jalankan(opsi = {}) {
   }
 
   try {
-    const geser = (d, n) => new Date(Date.parse(d + 'T00:00:00Z') + n * 86400e3).toISOString().slice(0, 10)
-    const pesanMap = new Map()
-    for (const [i, tgl] of [[0, tanggal], [1, geser(tanggal, -1)], [2, geser(tanggal, 1)]]) {
-      try {
-        const r = await dep.fetch(`${env.WORKER_URL || 'https://centurisk97.id'}/api/wa/masuk?tanggal=${encodeURIComponent(tgl)}`, { headers: { authorization: `Bearer ${env.WA_MESIN || ''}` } })
-        if (!r.ok) throw new Error('HTTP ' + r.status)
-        for (const p of (await r.json()).pesan || []) pesanMap.set(String(p.id), p)
-      } catch (e) {
-        if (i === 0) { await galat('sistem', `Gagal membaca bahan dari worker: ${e.message}`); return [{ id: '-', status: 'galat' }] }
-        log('tetangga', tgl, 'gagal dibaca:', e.message) // D-1/D+1 hanya tambahan
-      }
-    }
+    let bahan
+    try { bahan = await ambilBahan({ env, dep, tanggal, kenali, tanggalIsi, log }) } catch (e) { await galat('sistem', e.message); return [{ id: '-', status: 'galat' }] }
     delete state.gagal.sistem
-    const semua = semuaPerJenis([...pesanMap.values()], kenali)
-    const teksCache = new Map()
-    const teksDari = async (p) => { if (!teksCache.has(p.id)) teksCache.set(p.id, await ambilTeks(p, dep, env)); return teksCache.get(p.id) }
-    // Bahan diterima hanya bila tanggal ISINYA sendiri == tanggal laporan (kiriman ulang laporan lama tersimpan dengan tanggal hari ini).
-    const pilihSesuai = async (lap) => {
-      const terpilih = {}, teks = {}
-      for (const k of lap.butuh) {
-        for (const p of semua[k] || []) {
-          let t
-          try { t = await teksDari(p) } catch (x) { log(lap.id, k, 'teks tak terbaca:', x.message); continue }
-          const td = tanggalIsi(t, k)
-          if (td === tanggal) { terpilih[k] = p; teks[k] = t; break }
-          log(`bahan bertanggal ${td || 'tak terbaca'}, bukan ${tanggal}`, k, p.id)
-        }
-      }
-      return { terpilih, teks }
-    }
+    const { pilihSesuai } = bahan
 
     for (const lap of [...LAPORAN, ...(env.LAPORAN_BANJIR === '1' ? LAPORAN_BANJIR : [])]) {
       const kunci = `${lap.id}:${tanggal}`
@@ -209,25 +248,10 @@ export async function jalankan(opsi = {}) {
           e = { hash, rev: keluar ? (e.rev || 0) + 1 : (e?.rev || 0), revisi: !!(e && (e.selesai || e.terkirim.length)), terkirim: [], selesai: false, diunggah: false }
         }
 
-        const kerja = path.join(dasar, 'kerja', tanggal, lap.id)
-        const out = path.join(dasar, 'keluaran', tanggal)
-        fs.mkdirSync(kerja, { recursive: true }); fs.mkdirSync(out, { recursive: true })
-        const f = {}
-        for (const k of lap.butuh) { f[k] = path.join(kerja, k + '.txt'); fs.writeFileSync(f[k], teks[k]) }
-        const dasarNama = path.join(out, lap.berkas(tanggal))
-        const berkas = ['pdf', 'pptx'].map((x) => ({ x, p: `${dasarNama}.${x}` }))
+        const { kerja, out, f, berkas } = siapkanKeluaran(lap, tanggal, teks, dasar)
         const ada = opsi.ada || fs.existsSync
         const sudahJadi = state.laporan[kunci]?.hash === hash && berkas.every((b) => ada(b.p)) // coba ulang kirim/unggah tanpa membangun lagi
-        if (!sudahJadi) try {
-          // Seluruh pohon proses perlu Python >= 3.12 + Pillow (penanganan.py memanggil `python3` telanjang): venv di depan PATH.
-          const pyBin = rumah(env.WA_PY_BIN) || path.join(RUMAH, 'py', 'bin')
-          await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, PATH: pyBin + path.delimiter + (process.env.PATH || '') } })
-        } catch (x) {
-          const penuh = String(x.stderr || x.message || x)
-          try { fs.writeFileSync(path.join(kerja, 'galat.txt'), penuh, { mode: 0o600 }) } catch {}
-          const ujung = penuh.trim().split('\n').filter(Boolean).pop() || ''
-          throw new Error(`generator gagal (kode G1, rincian di ${path.join(kerja, 'galat.txt')}): ${ujung.slice(0, 200)}`)
-        }
+        if (!sudahJadi) await jalankanGenerator(lap, tanggal, f, out, kerja, dep, env)
         for (const b of berkas) if (!ada(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
 
         // Unggah ke /pelaporan SEBELUM kirim WA; gagal tidak menahan WA, diulang pada jalan berikut (status terpisah dari terkirim).

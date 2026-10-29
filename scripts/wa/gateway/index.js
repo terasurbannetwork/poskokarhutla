@@ -24,7 +24,7 @@ const TOKEN = process.env.GATEWAY_TOKEN || ''
 const WORKER = (process.env.WORKER_URL || 'https://centurisk97.id').replace(/\/$/, '')
 const KUNCI = process.env.WA_KUNCI || ''
 const IZIN = new Set(daftar(process.env.WA_IZIN).map(normalWa).filter(Boolean))
-const PEMILIK = normalWa(process.env.PEMILIK)
+const PEMILIK = normalWa(daftar(process.env.PEMILIK)[0])
 const AUTH_DIR = rumah(process.env.WA_AUTH_DIR) || path.join(RUMAH, 'auth')
 const OUTBOX = path.join(RUMAH, 'outbox')
 const RUSAK = path.join(RUMAH, 'outbox-rusak')
@@ -131,6 +131,11 @@ async function simpanKeOutbox(m) {
   const dari = pengirim(k)
   if (!dari || !IZIN.has(dari)) return
   if (!teks.trim() && !media) return
+  if (!media) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
+    const P = await import('../perintah.mjs')
+    const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
+    if (cmd) { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
+  }
   if (/^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
@@ -157,6 +162,20 @@ async function simpanKeOutbox(m) {
   }
   tulis(path.join(OUTBOX, id + '.json'), JSON.stringify(e))
   drive.salin(e, lampiran)
+}
+
+async function jalankanPerintah(P, cmd, dari) {
+  const jid = dari + '@s.whatsapp.net' // selalu ke pengirim, tidak pernah ke PENERIMA
+  const kirim = async (isi) => { const x = await sendPaced(jid, isi, false); if (!x.ok) log('[perintah] balasan ditahan', x.error) }
+  await P.tangani(cmd, {
+    env: process.env, dep: (await import('../otomatis.mjs')).depBawaan(process.env), log,
+    balas: (teks) => kirim({ text: teks }),
+    balasFile: async (p, nama, caption, mimetype) => {
+      const aman = jalurKeluaran(p, KELUARAN)
+      if (!aman) throw new Error('berkas di luar keluaran')
+      await kirim({ document: { url: aman }, fileName: nama, mimetype, caption })
+    },
+  })
 }
 
 async function balasCari(m, teks) {
