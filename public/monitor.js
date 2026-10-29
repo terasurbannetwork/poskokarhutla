@@ -262,7 +262,7 @@
     $("mnSt").innerHTML = L.length ? L.map(x => `<tr><td>${esc(x.prov)}</td><td>${x.skala === "provinsi" ? "" : `<b>${esc(x.kab)}</b>`}</td><td>${x.skala === "provinsi" ? "Provinsi" : "Kab/kota"}</td>
       <td><span class="mn-p ${KLS[x.status] || ""}">${esc(x.status)}</span>${x.berakhir && x.berakhir >= kini ? ` <span class="mn-p t">Berlaku</span>` : ""}</td>
       <td class="mn-jenis">${esc(String(x.jenis || "").split(",").join(", "))}</td><td>${tglId(x.mulai)}</td><td>${tglId(x.berakhir)}</td>
-      <td>${x.tautan ? `<a href="${esc(x.tautan)}" target="_blank" rel="noopener">${esc(x.nomor)}</a>` : esc(x.nomor)}</td></tr>`).join("")
+      <td class="mn-sk">${x.tautan ? `<a href="${esc(x.tautan)}" target="_blank" rel="noopener">${esc(x.nomor)}</a>` : esc(x.nomor)}</td></tr>`).join("")
       : kosong(8, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada status pada saringan ini", "Coba saringan lain.");
     $("mnSHal").textContent = `${L.length.toLocaleString("id-ID")} SK`;
   }

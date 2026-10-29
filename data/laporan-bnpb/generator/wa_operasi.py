@@ -10,7 +10,8 @@ BULAN = {b: i + 1 for i, b in enumerate(('januari', 'februari', 'maret', 'april'
 # stasiun BMKG pm2p5-obs -> kode provinsi (kata kunci huruf besar, cocok sebagian)
 STASIUN = {'PANGKALAN': '62', 'PALANGKA': '62', 'SAMPIT': '62', 'MUARA TEWEH': '62', 'JAMBI': '15', 'PALEMBANG': '16', 'SAMARINDA': '64', 'BALIKPAPAN': '64',
            'SINTANG': '61', 'KUBU RAYA': '61', 'MEMPAWAH': '61', 'PONTIANAK': '61', 'KETAPANG': '61', 'BANJAR': '63', 'SORONG': '96', 'PEKANBARU': '14',
-           'DUMAI': '14', 'SEMARANG': '33', 'KEMAYORAN': '31', 'MAROS': '73', 'LORE LINDU': '72', 'PALU': '72', 'MERAUKE': '93', 'PANGKAL PINANG': '19', 'BANDAR LAMPUNG': '18'}
+           'DUMAI': '14', 'SEMARANG': '33', 'KEMAYORAN': '31', 'MAROS': '73', 'LORE LINDU': '72', 'PALU': '72', 'MERAUKE': '93', 'PANGKAL PINANG': '19', 'BANDAR LAMPUNG': '18',
+           'KOTOTABANG': '13', 'KOTABARU': '63'}
 
 
 def _kunci(n):
@@ -38,7 +39,7 @@ def bmkg(teks):
             raise SystemExit(f'BMKG: provinsi tak dikenal "{nama}"')
         return k
     pm, nilai = {}, []
-    for m in re.finditer(r'^[\s*\-•]*([A-Z][A-Z0-9 .]+?):?\s+([\d.,]+)\s*(?:µg/m³)?\s*\(([^)]+)\)', teks, re.M):
+    for m in re.finditer(r'^[\s*\-•]*([A-Za-z][A-Za-z0-9 .]+?)(?::\s*|\s+)([\d.,]+)\s*(?:µg/m³)?\s*\(([^)]+)\)', teks, re.M):
         st, v, kat = m.group(1).strip(), float(m.group(2).replace(',', '.')), m.group(3).strip().lower()
         nilai.append(v)
         k = next((c for kw, c in STASIUN.items() if kw in st.upper()), None)

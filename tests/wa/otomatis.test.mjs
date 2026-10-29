@@ -18,7 +18,7 @@ function dunia(pesan, { gagalGenerator, gagalKirim } = {}) {
   const dep = {
     fetch: async () => ({ ok: true, status: 200, json: async () => ({ pesan }), text: async () => '' }),
     exec: async (cmd, args, o) => {
-      kirim.exec.push(args)
+      kirim.exec.push(args); kirim.opsi = o; kirim.cmd = cmd
       if (gagalGenerator) throw Object.assign(new Error('x'), { stderr: 'baris1\nWA Koordalops s.d. bukan hari laporan' })
       const out = args[args.indexOf('--out') + 1]
       const lap = LAPORAN.find((l) => l.args(TGL, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's' }, 'o')[0] === args[0])
@@ -122,4 +122,12 @@ test('kunci: proses kedua ditolak selama yang pertama jalan', async () => {
   fs.writeFileSync(path.join(d.rumah, 'otomatis.lock'), '')
   const h = await d.jalan()
   assert.equal(h[0].status, 'masih ada proses lain'); assert.equal(d.kirim.exec.length, 0)
+})
+
+test('proses anak generator: PATH diawali WA_PY_BIN dan python3 dari sana', async () => {
+  const d = dunia(LENGKAP)
+  await d.jalan({ env: { PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_PY_BIN: '/opt/py/bin' } })
+  assert.ok(d.kirim.opsi.env.PATH.startsWith('/opt/py/bin' + path.delimiter))
+  assert.equal(d.kirim.cmd, '/opt/py/bin/python3')
+  assert.equal(d.kirim.opsi.timeout, 600000)
 })

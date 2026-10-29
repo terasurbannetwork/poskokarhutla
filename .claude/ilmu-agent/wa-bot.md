@@ -29,7 +29,7 @@
 - Limiter 3 kiriman per menit dengan jeda 15-20 dtk: kiriman ke-4 dalam semenit dapat 429. `depBawaan.pos` mengulang sampai 6 kali (25 dtk) pada 429/503; jangan menaikkan kecepatan, itu pemicu blokir.
 - JID peserta bisa `@lid` (bukan nomor): gateway membaca `senderPn`/`participantPn` lebih dulu. Bila nomor izin tak cocok, periksa field itu di log.
 - `generator/harian.py` menolak Koordalops yang `sampai` bukan hari laporan dan butuh templat `cache/templat/harian-221026.pptx`; pesan galat generator diteruskan apa adanya ke PEMILIK.
-- `python3` mesin ini bisa 3.14; generator butuh 3.12+ dan Pillow (lihat ilmu pipa-data). Set `WA_PYTHON`.
+- `python3` sistem bisa 3.9 (SyntaxError f-string); penanganan.py memanggil `python3` telanjang, jadi `otomatis.mjs` memasang `WA_PY_BIN` (bawaan `~/.wa-bot/py/bin`, venv uv 3.13 + pillow) paling depan di PATH anak proses. Symlink interpreter keluar venv kehilangan paketnya.
 - Fonnte yang masih tersambung ikut menyimpan pesan yang sama: putuskan saat gateway hidup.
 - Route worker `/api/wa/gateway`, `/api/wa/masuk`, `/api/wa/berkas` milik warga-api; kontrak diasumsikan dari tugas, belum diuji ke worker sungguhan.
 

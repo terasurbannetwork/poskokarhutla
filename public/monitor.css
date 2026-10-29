@@ -25,6 +25,21 @@ main.mn{position:static;inset:auto;max-width:1440px;margin:0 auto;padding:20px 2
 @media (prefers-reduced-motion:reduce){.mn-status.ok i{animation:none}}
 .mn-aksi{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
 .mn-saya{font-size:12.5px;color:var(--ink2);font-weight:600}
+/* kepala halaman dirapikan (29 Okt): pita kartu, kontrol sejajar tengah dan sama tinggi 40px,
+   tombol suara sekunder supaya tidak ada dua blok navy berdampingan */
+.mn-atas{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:16px 18px;align-items:center}
+.mn-atas-kiri{gap:8px}
+.mn-atas h1{letter-spacing:-.01em}
+.mn-atas .mn-aksi{gap:10px}
+.mn-atas .mn-seg{padding:3px;background:var(--paper)}
+.mn-atas .mn-seg button{min-height:34px}
+.mn-atas .mn-tbl{min-height:42px;background:var(--card);color:var(--ink);border-color:var(--line)}
+.mn-atas .mn-tbl .mn-ik{color:var(--brand2)}
+.mn-atas .mn-tbl:hover{border-color:var(--brand2)}
+.mn-atas .mn-tbl.aktif{background:color-mix(in oklch,var(--ok) 12%,var(--card));border-color:color-mix(in oklch,var(--ok) 45%,transparent);color:var(--ink)}
+.mn-atas .mn-tbl.aktif .mn-ik{color:var(--ok)}
+:root[data-theme="dark"] .mn-atas .mn-tbl:not(.mn-tbl2){color:var(--ink)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mn-atas .mn-tbl:not(.mn-tbl2){color:var(--ink)}}
 
 /* tombol pil */
 .mn-tbl{font:600 13px var(--font);background:var(--brand);color:#fff;border:1px solid transparent;border-radius:999px;padding:0 16px;min-height:40px;cursor:pointer;text-decoration:none;display:inline-flex;align-items:center;gap:8px;white-space:nowrap;transition:background .15s,transform .1s}
@@ -60,7 +75,8 @@ main.mn{position:static;inset:auto;max-width:1440px;margin:0 auto;padding:20px 2
 .mn tbody tr:hover{background:oklch(42% .11 255 / .06)}
 .mn th.k,.mn td.k{font-variant-numeric:tabular-nums}
 .mn td.mn-rinci td,.mn tr.mn-rinci td{text-align:left}
-.mn td.mn-jenis{white-space:normal;min-width:340px}
+.mn td.mn-jenis{white-space:normal;min-width:220px;max-width:300px}
+.mn td.mn-sk{white-space:normal;overflow-wrap:anywhere;min-width:140px;max-width:200px;text-align:left}   /* nomor SK panjang dibungkus, tabel tidak terpotong di kanan (29 Okt) */
 .mn td.mn-koord{font-variant-numeric:tabular-nums;color:var(--ink2)}
 .mn td.mn-kosong{text-align:center;color:var(--ink2);padding:36px 12px;white-space:normal}
 .mn td.mn-kosong > div{position:sticky;left:12px;width:calc(100vw - 90px);max-width:100%}

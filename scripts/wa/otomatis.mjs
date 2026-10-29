@@ -13,7 +13,7 @@ import { fileURLToPath, pathToFileURL } from 'node:url'
 import { kenali as kenaliAsli } from '../../src/wa_jenis.js'
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
-const { muatEnv, daftar, RUMAH } = createRequire(import.meta.url)('./umum.cjs')
+const { muatEnv, daftar, rumah, RUMAH } = createRequire(import.meta.url)('./umum.cjs')
 const GENERATOR = path.resolve(DI, '../../data/laporan-bnpb/generator')
 const execP = promisify(execFile)
 
@@ -155,7 +155,9 @@ export async function jalankan(opsi = {}) {
         const f = {}
         for (const k of lap.butuh) { f[k] = path.join(kerja, k + '.txt'); fs.writeFileSync(f[k], teks[k]) }
         try {
-          await dep.exec(env.WA_PYTHON || 'python3', lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: 10 * 60e3, maxBuffer: 20e6 })
+          // Seluruh pohon proses perlu Python >= 3.12 + Pillow (penanganan.py memanggil `python3` telanjang): venv di depan PATH.
+          const pyBin = rumah(env.WA_PY_BIN) || path.join(RUMAH, 'py', 'bin')
+          await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, PATH: pyBin + path.delimiter + (process.env.PATH || '') } })
         } catch (x) {
           const penuh = String(x.stderr || x.message || x)
           try { fs.writeFileSync(path.join(kerja, 'galat.txt'), penuh, { mode: 0o600 }) } catch {}

@@ -20,8 +20,14 @@ cd .. && cp .env.contoh .env && chmod 600 .env   # isi semua nilai
 node otomatis.mjs --kering               # uji tanpa kirim apa pun (butuh worker + WA_MESIN)
 ```
 
-Prasyarat generator (lihat `data/laporan-bnpb/generator/README.md`): python 3.12 ke atas (set `WA_PYTHON` bila `python3` bukan itu),
-templat `cache/templat/harian-221026.pptx`, `FIRMS_MAP_KEY`, node + playwright, `soffice`.
+Python generator (harus 3.12 ke atas + Pillow, seluruh pohon prosesnya; `otomatis.mjs` menaruh `~/.wa-bot/py/bin` paling depan di PATH, ubah lewat `WA_PY_BIN`):
+
+```bash
+uv venv --python 3.13 ~/.wa-bot/py && uv pip install --python ~/.wa-bot/py/bin/python pillow
+cp "<Laporan Kejadian Bencana Harian 221026.pptx milik pemilik>" data/laporan-bnpb/generator/cache/templat/harian-221026.pptx   # di luar git
+```
+
+Prasyarat lain (lihat `data/laporan-bnpb/generator/README.md`): templat di atas (jangan di-commit), `FIRMS_MAP_KEY`, node + playwright, `soffice`.
 
 1. Jalankan pertama kali di terminal: `node gateway/index.js`. Scan QR dari HP bot (WhatsApp > Perangkat Tertaut). Sesi tersimpan di `~/.wa-bot/auth`. Ctrl+C.
 2. Pasang layanan (ganti `__REPO__`, `__NODE__`, `__HOME__` di salinan plist):

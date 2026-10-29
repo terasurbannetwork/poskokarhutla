@@ -33,11 +33,11 @@ test("tiap jenis dikenali dari kepalanya, selain itu null", () => {
 
 const uji = berantai();
 const U = await siapkan("uji-wa-jenis", {r2: true, ikat: {WA_KUNCI: "kunci-wa", WA_IZIN: "628123"}}), {api} = U;
-const kirim = o => api("POST", "/api/wa/fonnte?k=kunci-wa", {sender: "628123", ...o});
+const kirim = async o => { const f = new FormData(); f.set("dari", "628123"); f.set("teks", o.message ?? ""); return (await U.mf.dispatchFetch("http://bnpb.lokal/api/wa/gateway", {method: "POST", headers: {"x-wa-kunci": "kunci-wa"}, body: f})).text(); };
 
 uji("rekap: pintu admin, dedupe tempelan ganda, hari kosong tetap ada", async () => {
   for (const o of [{message: `28/10/2026 ${REKAP("07")}`}, {message: `28/10/2026 ${REKAP("07")}`}, {message: "28/10/2026 " + CONTOH.satgas[0]},
-    {message: "", url: "", filename: "x"}, {message: "28/10/2026 obrolan biasa"}]) await kirim(o);
+    {message: ""}, {message: "28/10/2026 obrolan biasa"}]) await kirim(o);
   assert.equal((await api("GET", "/api/wa/rekap?sampai=2026-10-29&hari=3")).s, 403);
   assert.equal((await api("GET", "/api/wa/rekap?sampai=salah", undefined, ADMIN)).s, 400);
   const r = await api("GET", "/api/wa/rekap?sampai=2026-10-29&hari=3", undefined, ADMIN);

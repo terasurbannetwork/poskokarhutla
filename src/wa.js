@@ -1,16 +1,17 @@
-/* Kotak masuk WhatsApp laporan harian (pemilik 29 Okt 2026). Nomor bot di Fonnte meneruskan tiap pesan masuk ke webhook
-   POST /api/wa/fonnte?k=<WA_KUNCI>. Hanya pengirim di WA_IZIN (nomor dipisah koma, boleh 08.. atau 62..) yang disimpan; sisanya diterima 200 lalu dibuang,
-   supaya Fonnte tidak mengulang. TIDAK ADA BALASAN ke pengirim (pemilik: "cukup terima aja").
+/* Kotak masuk WhatsApp laporan harian (pemilik 29 Okt 2026). Gerbang WA milik sendiri (Baileys di Mac mini, scripts/wa/gateway/index.js) meneruskan tiap pesan
+   masuk lewat POST multipart /api/wa/gateway dengan header x-wa-kunci. Hanya pengirim di WA_IZIN (nomor dipisah koma, boleh 08.. atau 62..) yang disimpan; sisanya diterima 200 lalu dibuang.
+   TIDAK ADA BALASAN ke pengirim. Gerbang mengulang dari outbox bila gagal: baris identik (dari, diterima, teks, nama_berkas) dikembalikan, bukan digandakan.
    Pesan = bahan, bukan angka laporan: layar /laporan-bnpb mengambilnya lewat GET /api/wa/masuk lalu mengurainya dengan pengurai yang sama
-   (public/laporan_urai.js) dan petugas menekan Masukkan ke isian. Angka hotspot/firespot/luas karhutla tetap dari sistem, bukan dari WA.
+   (public/laporan_urai.js) dan petugas menekan Masukkan ke isian. Pembacaan boleh admin ATAU mesin (Authorization: Bearer WA_MESIN).
+   Angka hotspot/firespot/luas karhutla tetap dari sistem, bukan dari WA.
    Tanggal laporan: tanggal yang ditulis di awal pesan (2026-10-28, 28/10/2026, 28-10-2026), selain itu tanggal WIB saat diterima.
    Jenis: tagar #karhutla / #bencana, selain itu kata kunci karhutla di teks atau nama berkas, selain itu bencana. */
-import {json, gagal, adminOK, sha} from "./worker.js";
+import {json, gagal, adminOK, sha, bacaBytes} from "./worker.js";
 import {KONTROL, tglSah} from "./posko.js";
 import {JENIS_LAPORAN, kenali} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
-const MAKS_BODY = 262144, MAKS_TEKS = 65536, MAKS_HARI = 500;
+const MAKS_TEKS = 65536, MAKS_HARI = 500;
 const RE_KARHUTLA = /karhutla|kebakaran\s+(hutan|lahan)|pemadaman|water\s*bombing|titik\s+panas|hotspot|firespot|modifikasi\s+cuaca|\bomc\b/i;
 const TIPE_AMAN = /^(application\/pdf|image\/(png|jpeg|webp)|text\/plain|application\/vnd\.openxmlformats-officedocument\.[a-z.]+|application\/(msword|vnd\.ms-excel))$/;
 
@@ -31,44 +32,53 @@ export async function bacaTerbatas(aliran, maks) {
   const b = new Uint8Array(n); let o = 0; for (const p of potong) { b.set(p, o); o += p.byteLength; }
   return b;
 }
-async function bacaKiriman(req) {
-  if (Number(req.headers.get("content-length") || 0) > MAKS_BODY || !req.body) return null;
-  const b = await bacaTerbatas(req.body, MAKS_BODY); if (!b) return null;
-  const s = new TextDecoder().decode(b);
-  try { const o = JSON.parse(s); return o && typeof o === "object" ? o : null; } catch { return Object.fromEntries(new URLSearchParams(s)); }
-}
+const MAKS_FORM = 21 * 1024 * 1024;
+const TIPE_TERIMA = /^(image\/(png|jpeg|webp)$|application\/pdf$|application\/msword$|application\/vnd\.ms-excel$|application\/vnd\.openxmlformats-officedocument\.(wordprocessingml\.document|spreadsheetml\.sheet)$|application\/vnd\.oasis\.opendocument\.(text|spreadsheet)$|text\/(plain|csv)$)/;
+const EKS_TERIMA = /\.(docx?|xlsx?|odt|ods|txt|csv|pdf|png|jpe?g|webp)$/i;
+const bersih = (s, n) => String(s ?? "").normalize("NFC").replace(KONTROL, "").slice(0, n);
 
-async function ambilBerkas(env, u, kini) {
-  if (!/^https:\/\//i.test(u)) return null;
-  const r = await fetch(u, {signal: AbortSignal.timeout(15000), redirect: "follow"});
-  if (!r.ok || Number(r.headers.get("content-length") || 0) > MAKS_BERKAS) return null;
-  const b = r.body && await bacaTerbatas(r.body, MAKS_BERKAS); if (!b?.byteLength) return null;
-  const tipe = (r.headers.get("content-type") || "").split(";")[0].trim().toLowerCase(), kunci = `wa/${hariWib(kini)}/${kini}-${crypto.randomUUID().slice(0, 8)}`;
-  await env.MEDIA.put(kunci, b, {httpMetadata: {contentType: tipe || "application/octet-stream"}});
-  return {kunci, tipe};
-}
-
-async function terima(env, req, url, kini) {
-  if (!env.WA_KUNCI) return gagal(503, "webhook WA belum dikonfigurasi");
-  if (await sha(url.searchParams.get("k") || "") !== await sha(env.WA_KUNCI)) return gagal(403, "kunci salah");
-  const o = await bacaKiriman(req); if (!o) return gagal(400, "kiriman tidak terbaca");
-  const izin = new Set(String(env.WA_IZIN || "").split(",").map(normalNo).filter(Boolean)), dari = normalNo(o.member || o.sender);
+async function gerbang(env, req, kini) {
+  if (!env.WA_KUNCI) return gagal(503, "gerbang WA belum dikonfigurasi");
+  if (await sha(req.headers.get("x-wa-kunci") || "") !== await sha(env.WA_KUNCI)) return gagal(403, "kunci salah");
+  const ct = req.headers.get("content-type") || "";
+  if (!/^multipart\/form-data/i.test(ct)) return gagal(400, "kiriman harus multipart/form-data");
+  const bytes = await bacaBytes(req, MAKS_FORM); if (bytes.galat) return gagal(bytes.status, bytes.galat);   // dibatasi juga tanpa content-length (chunked)
+  let f; try { f = await new Response(bytes.b, {headers: {"content-type": ct}}).formData(); } catch { return gagal(400, "kiriman tidak terbaca"); }
+  const izin = new Set(String(env.WA_IZIN || "").split(",").map(normalNo).filter(Boolean)), dari = normalNo(f.get("dari"));
   if (!izin.has(dari)) return json({ok: true, disimpan: false});   // bukan pengirim terdaftar: diam, tidak disimpan
-  /* plafon harian: kunci di URL bisa bocor lewat log; pemalsu pengirim terdaftar berhenti di sini (indeks wa_masuk_tanggal, satu baca) */
-  if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE tanggal = ?").bind(hariWib(kini)).first()).n >= MAKS_HARI) return gagal(429, "plafon pesan WA hari ini tercapai");
-  const teks = String(o.message ?? o.text ?? "").normalize("NFC").replace(KONTROL, "").slice(0, MAKS_TEKS) || null;
-  const namaBerkas = o.filename ? String(o.filename).replace(KONTROL, "").slice(0, 200) : null;
-  let berkas = null;
-  if (o.url) { try { berkas = await ambilBerkas(env, String(o.url), kini); } catch (e) { console.error("wa.berkas", e?.message); } }
-  if (!teks && !berkas) return json({ok: true, disimpan: false});
-  const tanggal = tanggalDari(teks, kini), jenis = jenisDari(teks || "", namaBerkas || "");
-  await env.DB.prepare("INSERT INTO wa_masuk (diterima, tanggal, jenis, dari, nama, teks, berkas, nama_berkas, tipe) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)")
-    .bind(kini, tanggal, jenis, dari, o.name ? String(o.name).replace(KONTROL, "").slice(0, 100) : null, teks, berkas?.kunci ?? null, namaBerkas, berkas?.tipe ?? null).run();
-  return json({ok: true, disimpan: true, tanggal, jenis});
+  const w = Number(f.get("waktu")), diterima = Number.isFinite(w) && w >= kini - 7 * 864e5 && w <= kini + 5 * 60e3 ? Math.trunc(w) : kini;
+  const teks = bersih(f.get("teks"), MAKS_TEKS) || null, nama = bersih(f.get("nama"), 100) || null;
+  let b = f.get("berkas"); if (typeof b === "string" || !b?.size) b = null;
+  if (b && (b.size > MAKS_BERKAS || !(TIPE_TERIMA.test(b.type || "") || (!b.type || b.type === "application/octet-stream") && EKS_TERIMA.test(b.name || "")))) b = null;   // tipe dikenal, atau tipe kosong/umum dengan ekstensi dikenal
+  const namaBerkas = b ? bersih(b.name || "berkas", 200).replace(/[\\/]/g, "_") : null;
+  if (!teks && !b) return json({ok: true, disimpan: false});
+  /* kiriman ulang dari outbox gerbang: baris identik dikembalikan (indeks wa_masuk_dedup), SEBELUM plafon supaya ulangan sesudah plafon tetap dapat id lama.
+     ponytail: dua ulangan paralel bisa lolos bersamaan dan menggandakan baris (tanpa UNIQUE); gerbang mengirim berurutan, naikkan ke UNIQUE bila perlu. */
+  const ada = await env.DB.prepare("SELECT id, tanggal, jenis FROM wa_masuk WHERE dari = ?1 AND diterima = ?2 AND teks IS ?3 AND nama_berkas IS ?4 LIMIT 1").bind(dari, diterima, teks, namaBerkas).first();
+  if (ada) return json({ok: true, disimpan: true, id: ada.id, tanggal: ada.tanggal, jenis: ada.jenis});
+  /* plafon harian menurut waktu terima (hari WIB ini), lewat indeks wa_masuk_diterima: pemalsu pengirim terdaftar berhenti di sini */
+  const awal = Date.parse(hariWib(kini)) - 7 * 3600e3;
+  if ((await env.DB.prepare("SELECT count(*) n FROM wa_masuk WHERE diterima >= ?1 AND diterima < ?2").bind(awal, awal + 864e5).first()).n >= MAKS_HARI) return gagal(429, "plafon pesan WA hari ini tercapai");
+  let kunci = null, tipe = null;
+  if (b) {
+    kunci = `wa/${hariWib(kini)}/${kini}-${crypto.randomUUID().slice(0, 8)}`; tipe = (b.type || "application/octet-stream").toLowerCase();
+    await env.MEDIA.put(kunci, await b.arrayBuffer(), {httpMetadata: {contentType: tipe}});
+  }
+  const tanggal = tanggalDari(teks, diterima), jenis = jenisDari(teks || "", namaBerkas || "");
+  const r = await env.DB.prepare("INSERT INTO wa_masuk (diterima, tanggal, jenis, dari, nama, teks, berkas, nama_berkas, tipe) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)")
+    .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
+  return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis});
+}
+
+/* pembaca: admin ATAU mesin (Authorization: Bearer WA_MESIN, banding konstan lewat sha; WA_MESIN kosong = hanya admin) */
+async function boleh(env, req, kini) {
+  const t = /^Bearer (.+)$/.exec(req.headers.get("authorization") || "")?.[1];
+  if (env.WA_MESIN && t && await sha(t) === await sha(env.WA_MESIN)) return true;
+  return adminOK(env, req, kini);
 }
 
 async function daftar(env, req, url, kini) {
-  if (!await adminOK(env, req, kini)) return gagal(403, "perlu masuk admin");
+  if (!await boleh(env, req, kini)) return gagal(403, "perlu masuk admin");
   const t = url.searchParams.get("tanggal"), j = url.searchParams.get("jenis");
   if (!tglSah(t || "")) return gagal(400, "tanggal harus YYYY-MM-DD");
   if (j && !["bencana", "karhutla"].includes(j)) return gagal(400, "jenis harus bencana atau karhutla");
@@ -78,7 +88,7 @@ async function daftar(env, req, url, kini) {
 }
 
 async function berkas(env, req, url, kini) {
-  if (!await adminOK(env, req, kini)) return gagal(403, "perlu masuk admin");
+  if (!await boleh(env, req, kini)) return gagal(403, "perlu masuk admin");
   const id = Number(url.searchParams.get("id")); if (!Number.isSafeInteger(id)) return gagal(400, "id tidak sah");
   const r = await env.DB.prepare("SELECT berkas, nama_berkas, tipe FROM wa_masuk WHERE id = ?").bind(id).first();
   const o = r?.berkas && await env.MEDIA.get(r.berkas); if (!o) return gagal(404, "berkas tidak ada");
@@ -87,9 +97,10 @@ async function berkas(env, req, url, kini) {
     "cache-control": "private, no-store", "x-content-type-options": "nosniff", "content-security-policy": "sandbox"}});
 }
 
+/* ponytail: rekap membaca teks 14 hari lalu mengenali di JS; ~30 baris/hari cukup. Bila membengkak: simpan hasil kenali() di kolom `kunci` saat insert lalu GROUP BY. */
 /* pelacak kedatangan: per hari, jenis laporan mana yang sudah tiba (src/wa_jenis.js, tanpa membaca angka). Satu kueri lewat indeks wa_masuk_tanggal. */
 async function rekap(env, req, url, kini) {
-  if (!await adminOK(env, req, kini)) return gagal(403, "perlu masuk admin");
+  if (!await boleh(env, req, kini)) return gagal(403, "perlu masuk admin");
   const sampai = url.searchParams.get("sampai") || hariWib(kini), hari = Math.min(31, Math.max(1, Math.trunc(Number(url.searchParams.get("hari") ?? 14)) || 14));
   if (!tglSah(sampai)) return gagal(400, "sampai harus YYYY-MM-DD");
   const hariKe = i => new Date(Date.parse(sampai) - i * 864e5).toISOString().slice(0, 10), awal = hariKe(hari - 1);
@@ -107,7 +118,7 @@ async function rekap(env, req, url, kini) {
 
 export const RUTE_WA = {
   "GET /api/wa/rekap": (env, req, url, kini) => rekap(env, req, url, kini),
-  "POST /api/wa/fonnte": (env, req, url, kini) => terima(env, req, url, kini),
+  "POST /api/wa/gateway": (env, req, url, kini) => gerbang(env, req, kini),
   "GET /api/wa/masuk": (env, req, url, kini) => daftar(env, req, url, kini),
   "GET /api/wa/berkas": (env, req, url, kini) => berkas(env, req, url, kini),
 };
