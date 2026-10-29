@@ -14,6 +14,7 @@ import { kenali as kenaliAsli } from '../../src/wa_jenis.js'
 
 const DI = path.dirname(fileURLToPath(import.meta.url))
 const { muatEnv, daftar, rumah, RUMAH } = createRequire(import.meta.url)('./umum.cjs')
+const { buat: buatDrive } = createRequire(import.meta.url)('./drive.cjs')
 const GENERATOR = path.resolve(DI, '../../data/laporan-bnpb/generator')
 const execP = promisify(execFile)
 
@@ -87,6 +88,14 @@ export function depBawaan(env) {
     exec: (cmd, args, o) => execP(cmd, args, o),
     kirimFile: (target, p, filename, caption, mimetype) => pos('/send-file', { target, path: p, filename, caption, mimetype }),
     kirimTeks: (target, message) => pos('/send', { target, message }),
+    unggahDrive: (a) => buatDrive({ env }).unggahLaporan(a), // null bila Drive belum dikonfigurasi
+    unggah: async ({ tanggal, laporan, revisi, pptx, pdf }) => {
+      const f = new FormData()
+      f.set('tanggal', tanggal); f.set('laporan', laporan); f.set('revisi', String(revisi))
+      for (const [k, p] of [['pptx', pptx], ['pdf', pdf]]) f.set(k, new Blob([fs.readFileSync(p)], { type: MIME[k] }), path.basename(p))
+      const r = await fetch(`${env.WORKER_URL || 'https://centurisk97.id'}/api/wa/hasil`, { method: 'POST', headers: { authorization: `Bearer ${env.WA_MESIN || ''}` }, body: f, signal: AbortSignal.timeout(120000) })
+      if (!r.ok) throw new Error('HTTP ' + r.status)
+    },
   }
 }
 
@@ -146,15 +155,23 @@ export async function jalankan(opsi = {}) {
         for (const k of lap.butuh) teks[k] = await ambilTeks(terpilih[k], dep, env)
         const hash = hashBahan(lap, teks)
         let e = state.laporan[kunci]
-        if (e && e.hash === hash && e.selesai) { hasil.push({ id: lap.id, status: 'sudah terkirim' }); continue }
-        if (!e || e.hash !== hash) e = { hash, revisi: !!(e && (e.selesai || e.terkirim.length)), terkirim: [], selesai: false }
+        if (e && e.hash === hash && e.selesai && (e.diunggah || kering)) { hasil.push({ id: lap.id, status: 'sudah terkirim' }); continue }
+        if (!e || e.hash !== hash) {
+          // rev = nomor revisi untuk /pelaporan (0 pertama); naik hanya bila versi lama sudah keluar (terkirim atau terunggah).
+          const keluar = !!(e && (e.selesai || e.terkirim.length || e.diunggah))
+          e = { hash, rev: keluar ? (e.rev || 0) + 1 : (e?.rev || 0), revisi: !!(e && (e.selesai || e.terkirim.length)), terkirim: [], selesai: false, diunggah: false }
+        }
 
         const kerja = path.join(dasar, 'kerja', tanggal, lap.id)
         const out = path.join(dasar, 'keluaran', tanggal)
         fs.mkdirSync(kerja, { recursive: true }); fs.mkdirSync(out, { recursive: true })
         const f = {}
         for (const k of lap.butuh) { f[k] = path.join(kerja, k + '.txt'); fs.writeFileSync(f[k], teks[k]) }
-        try {
+        const dasarNama = path.join(out, lap.berkas(tanggal))
+        const berkas = ['pdf', 'pptx'].map((x) => ({ x, p: `${dasarNama}.${x}` }))
+        const ada = opsi.ada || fs.existsSync
+        const sudahJadi = state.laporan[kunci]?.hash === hash && berkas.every((b) => ada(b.p)) // coba ulang kirim/unggah tanpa membangun lagi
+        if (!sudahJadi) try {
           // Seluruh pohon proses perlu Python >= 3.12 + Pillow (penanganan.py memanggil `python3` telanjang): venv di depan PATH.
           const pyBin = rumah(env.WA_PY_BIN) || path.join(RUMAH, 'py', 'bin')
           await dep.exec(path.join(pyBin, 'python3'), lap.args(tanggal, f, out), { cwd: GENERATOR, timeout: 10 * 60e3, maxBuffer: 20e6, env: { ...process.env, PATH: pyBin + path.delimiter + (process.env.PATH || '') } })
@@ -164,11 +181,25 @@ export async function jalankan(opsi = {}) {
           const ujung = penuh.trim().split('\n').filter(Boolean).pop() || ''
           throw new Error(`generator gagal (kode G1, rincian di ${path.join(kerja, 'galat.txt')}): ${ujung.slice(0, 200)}`)
         }
-        const dasarNama = path.join(out, lap.berkas(tanggal))
-        const berkas = ['pdf', 'pptx'].map((x) => ({ x, p: `${dasarNama}.${x}` }))
-        for (const b of berkas) if (!(opsi.ada || fs.existsSync)(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
+        for (const b of berkas) if (!ada(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
 
-        const caption = (e.revisi ? 'Revisi: ' : '') + lap.judul + ' ' + tanggal
+        // Unggah ke /pelaporan SEBELUM kirim WA; gagal tidak menahan WA, diulang pada jalan berikut (status terpisah dari terkirim).
+        if (!e.diunggah && !kering) {
+          try {
+            await dep.unggah({ tanggal, laporan: lap.id, revisi: e.rev, pptx: berkas.find((b) => b.x === 'pptx').p, pdf: berkas.find((b) => b.x === 'pdf').p })
+            e.diunggah = true; delete state.gagal['unggah:' + kunci]
+          } catch (x) { await galat('unggah:' + kunci, `Unggah ke /pelaporan gagal, WA tetap dikirim, diulang jalan berikut: ${String(x.message).slice(0, 200)}`) }
+          state.laporan[kunci] = e; simpan()
+        }
+        // Salin ke Google Drive sekali per versi; gagal = WA tetap terkirim tanpa link, PEMILIK dikabari lewat galat().
+        if (!e.linkDrive && !kering && dep.unggahDrive) {
+          try {
+            e.linkDrive = (await dep.unggahDrive({ tanggal, revisi: e.revisi, berkas: berkas.map((b) => ({ p: b.p, mime: MIME[b.x] })) })) || ''
+            delete state.gagal['drive:' + kunci]
+          } catch (x) { await galat('drive:' + kunci, `Unggah ke Google Drive gagal, WA tetap dikirim tanpa link: ${String(x.message).slice(0, 200)}`) }
+          state.laporan[kunci] = e; simpan()
+        }
+        const caption = (e.revisi ? 'Revisi: ' : '') + lap.judul + ' ' + tanggal + (e.linkDrive ? '\n' + e.linkDrive : '')
         for (const t of penerima) {
           if (e.terkirim.includes(t)) continue
           for (const b of berkas) {

@@ -16,6 +16,7 @@ const {
   downloadMediaMessage, normalizeMessageContent,
 } = require('@whiskeysockets/baileys')
 const limiter = require('./limiter')
+const drive = require('../drive.cjs').buat({ kabar: (t) => kabarPemilik(t) }) // Google Drive: mati sendiri bila belum dikonfigurasi
 const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas } = require('../aman.cjs')
 
 const PORT = Number(process.env.PORT) || 3101
@@ -129,6 +130,7 @@ async function simpanKeOutbox(m) {
   const dari = pengirim(k)
   if (!dari || !IZIN.has(dari)) return
   if (!teks.trim() && !media) return
+  if (/^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
     return
@@ -136,6 +138,7 @@ async function simpanKeOutbox(m) {
   kabarPenuh = false
   const id = `${Date.now()}-${idAman(k.id)}`
   const e = { id, dari, nama: m.pushName || '', teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now() }
+  let lampiran = null
   if (media) {
     const tipe = media.mimetype || 'application/octet-stream'
     if (!mimeBoleh(tipe)) {
@@ -146,13 +149,35 @@ async function simpanKeOutbox(m) {
       const buf = await downloadMediaMessage(m, 'buffer', {}, { logger: pino({ level: 'silent' }), reuploadRequest: sock.updateMediaMessage })
       if (buf.length > BATAS_BERKAS) await kabarPemilik(`Lampiran dari ${dari} lebih dari 20 MB, tidak diteruskan.`)
       else {
-        tulis(path.join(OUTBOX, id + '.bin'), buf)
+        tulis(path.join(OUTBOX, id + '.bin'), buf); lampiran = buf
         e.berkas = { nama: adaDok ? (media.fileName || 'berkas') : `foto-${id}.jpg`, tipe }
       }
     }
   }
   tulis(path.join(OUTBOX, id + '.json'), JSON.stringify(e))
+  drive.salin(e, lampiran)
 }
+
+async function balasCari(m, teks) {
+  const r = await drive.perintahCari(teks)
+  // Selalu ke chat pribadi pengirim: link Drive tidak boleh tersebar ke anggota grup di luar WA_IZIN.
+  const jid = pengirim(m.key) + '@s.whatsapp.net'
+  try { const x = await sendPaced(jid, { text: r }, false); if (!x.ok) log('[cari] balasan ditahan', x.error) } catch (err) { log('[cari] balasan gagal', String(err.message || err)) }
+}
+
+// Berkas dari Drive/Masuk masuk ke outbox yang sama dengan pesan WA (dari = PEMILIK); id turunan id Drive jadi idempoten.
+async function masukDariDrive({ id, nama, tipe, buf, waktu }) {
+  // Worker diam-diam membuang pengirim di luar WA_IZIN, jadi pakai PEMILIK hanya bila ia terdaftar; selain itu nomor izin pertama.
+  const dari = IZIN.has(PEMILIK) ? PEMILIK : [...IZIN][0]
+  if (!dari) throw new Error('WA_IZIN kosong')
+  if (fs.existsSync(path.join(OUTBOX, id + '.json'))) return
+  if (ukuranOutbox() > BATAS_OUTBOX) throw new Error('outbox penuh')
+  tulis(path.join(OUTBOX, id + '.bin'), buf)
+  tulis(path.join(OUTBOX, id + '.json'), JSON.stringify({ id, dari, nama: 'Google Drive', teks: '', waktu, berkas: { nama, tipe } }))
+}
+const tickDrive = () => drive.tick(masukDariDrive).then(() => flushOutbox()).catch(() => {})
+setInterval(tickDrive, 5 * 60 * 1000)
+setTimeout(tickDrive, 30000)
 
 async function kirimSatu(e) {
   const f = new FormData()
@@ -209,7 +234,7 @@ function sapu() {
     if (f.endsWith('.bin') && !fs.existsSync(path.join(OUTBOX, f.replace(/\.bin$/, '.json'))) && lama(OUTBOX, f)) fs.rmSync(path.join(OUTBOX, f), { force: true })
   }
 }
-sapu(); setInterval(sapu, 6 * 3600e3)
+sapu(); setInterval(() => drive.sapu(), 6 * 3600e3); drive.sapu(); setInterval(sapu, 6 * 3600e3)
 
 let timerOtomatis = null
 function picuOtomatis() {

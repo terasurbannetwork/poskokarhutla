@@ -135,7 +135,24 @@ async function terdekat(env, req, url) {
   return json({rumpun, lat, lon, prov, pakar, kampus_tanpa_lokasi: tanpa}, 200, {"cache-control": "private, no-store"});
 }
 
-export const RUTE_AKADEMISI = {"GET /api/akademisi": (env, req) => induk(env, req),
+/* GET /api/akademisi/data/<nama>: berkas R2 akademisi/<nama>.json, nama dari daftar tetap. Satu kunci rute per nama (worker.js tidak diubah);
+   nama lain tidak punya rute, jatuh ke aset statis = 404 tanpa menyentuh R2. "baru" = akademisi/baru/YYYY-MM.json terbaru (list prefix, urut leksikal). */
+export const DATA_AKADEMISI = ["riset", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru"];
+async function dataBaca(env, req, nama) {
+  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  let kunci = `akademisi/${nama}.json`;
+  if (nama === "baru") {
+    const ks = (await env.MEDIA.list({prefix: "akademisi/baru/"})).objects.map(x => x.key).filter(k => /^akademisi\/baru\/\d{4}-\d{2}\.json$/.test(k)).sort();
+    if (!ks.length) return gagal(404, "belum ada berkas pakar baru bulanan di R2");
+    kunci = ks[ks.length - 1];
+  }
+  const o = await env.MEDIA.get(kunci);
+  return o ? polos(o) : gagal(503, `${kunci} belum diunggah ke R2`);
+}
+
+export const RUTE_AKADEMISI = {...Object.fromEntries(DATA_AKADEMISI.map(n => [`GET /api/akademisi/data/${n}`, (env, req) => dataBaca(env, req, n)])),
+  "GET /api/akademisi": (env, req) => induk(env, req),
   "GET /api/akademisi/kampus": (env, req) => berkas(env, req, "akademisi/kampus.json"),
   "GET /api/akademisi/kontak": (env, req) => berkas(env, req, "akademisi/kontak.json"),
   "GET /api/akademisi/terdekat": (env, req, url) => terdekat(env, req, url),

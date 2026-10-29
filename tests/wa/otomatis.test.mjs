@@ -12,9 +12,9 @@ const TGL = '2026-10-29'
 const P = (id, kunci, diterima, extra = '') => ({ id, diterima, teks: `[${kunci}] ${extra}`, nama_berkas: '' })
 const LENGKAP = [P('1', 'rekap_koordalops_24', 100, 'a'), P('2', 'bmkg_pagi', 101, 'b'), P('3', 'satgas', 102, 'c')]
 
-function dunia(pesan, { gagalGenerator, gagalKirim } = {}) {
+function dunia(pesan, { gagalGenerator, gagalKirim, gagalUnggah } = {}) {
   const rumah = fs.mkdtempSync(path.join(os.tmpdir(), 'wa-uji-'))
-  const kirim = { file: [], teks: [], exec: [] }
+  const kirim = { file: [], teks: [], exec: [], unggah: [], urut: [], gagalUnggah }
   const dep = {
     fetch: async () => ({ ok: true, status: 200, json: async () => ({ pesan }), text: async () => '' }),
     exec: async (cmd, args, o) => {
@@ -24,12 +24,13 @@ function dunia(pesan, { gagalGenerator, gagalKirim } = {}) {
       const lap = LAPORAN.find((l) => l.args(TGL, { rekap_koordalops_24: 'k', bmkg_pagi: 'b', satgas: 's' }, 'o')[0] === args[0])
       for (const x of ['pdf', 'pptx']) fs.writeFileSync(path.join(out, `${lap.berkas(TGL)}.${x}`), 'x')
     },
-    kirimFile: async (t, p, n, c) => { if (gagalKirim) throw new Error('gateway down'); kirim.file.push({ t, n, c }) },
+    unggah: async (a) => { kirim.urut.push('unggah'); if (kirim.gagalUnggah) throw new Error('HTTP 500'); kirim.unggah.push(a) },
+    kirimFile: async (t, p, n, c) => { kirim.urut.push('wa'); if (gagalKirim) throw new Error('gateway down'); kirim.file.push({ t, n, c }) },
     kirimTeks: async (t, m) => { kirim.teks.push({ t, m }) },
   }
   const env = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k' }
   const jalan = (o = {}) => jalankan({ env, dep, kenali, rumah, log: () => {}, tanggal: TGL, now: wibKe(18), ...o })
-  return { kirim, jalan, rumah }
+  return { kirim, jalan, rumah, dep }
 }
 
 test('pilihTerbaru: ambil pesan terbaru per jenis, jenis tak dikenal diabaikan', () => {
@@ -130,4 +131,58 @@ test('proses anak generator: PATH diawali WA_PY_BIN dan python3 dari sana', asyn
   assert.ok(d.kirim.opsi.env.PATH.startsWith('/opt/py/bin' + path.delimiter))
   assert.equal(d.kirim.cmd, '/opt/py/bin/python3')
   assert.equal(d.kirim.opsi.timeout, 600000)
+})
+
+test('unggah /pelaporan: sebelum WA, bidang benar, revisi 0 lalu 1, sekali per bahan', async () => {
+  const d = dunia(LENGKAP)
+  await d.jalan()
+  assert.equal(d.kirim.urut.indexOf('unggah') < d.kirim.urut.indexOf('wa'), true)
+  assert.deepEqual(d.kirim.unggah.map((u) => [u.tanggal, u.laporan, u.revisi]), [[TGL, 'harian', 0], [TGL, 'penanganan', 0]])
+  assert.ok(d.kirim.unggah[0].pptx.endsWith('.pptx') && d.kirim.unggah[0].pdf.endsWith('.pdf'))
+  await d.jalan()
+  assert.equal(d.kirim.unggah.length, 2)
+  LENGKAP.push(P('4', 'bmkg_pagi', 200, 'baru'))
+  try { await d.jalan() } finally { LENGKAP.pop() }
+  assert.deepEqual(d.kirim.unggah.slice(2).map((u) => u.revisi), [1, 1])
+})
+
+test('unggah gagal: WA tetap terkirim, PEMILIK dikabari sekali, diulang jalan berikut tanpa membangun/kirim ulang', async () => {
+  const d = dunia(LENGKAP, { gagalUnggah: true })
+  await d.jalan()
+  assert.equal(d.kirim.file.length, 8)
+  await d.jalan() // masih gagal: tidak ada kabar kedua, tidak ada WA kedua
+  assert.equal(d.kirim.file.length, 8)
+  assert.equal(d.kirim.teks.length, 2); assert.ok(d.kirim.teks.every((t) => t.t === '6299' && t.m.includes('Unggah')))
+  assert.equal(d.kirim.exec.length, 2)
+  d.kirim.gagalUnggah = false
+  await d.jalan()
+  assert.equal(d.kirim.unggah.length, 2); assert.equal(d.kirim.file.length, 8); assert.equal(d.kirim.exec.length, 2)
+})
+
+test('--kering melewati unggah', async () => {
+  const d = dunia(LENGKAP)
+  await d.jalan({ kering: true })
+  assert.equal(d.kirim.unggah.length, 0)
+})
+
+test('Google Drive sukses: link folder ditambahkan ke caption, unggah sekali per laporan, revisi berawalan', async () => {
+  const d = dunia(LENGKAP); const n = []
+  d.dep.unggahDrive = async (a) => { n.push(a); return 'https://drive.google.com/drive/folders/F' + n.length }
+  await d.jalan(); await d.jalan()
+  assert.equal(n.length, 2); assert.equal(n[0].tanggal, TGL); assert.equal(n[0].revisi, false)
+  assert.deepEqual(n[0].berkas.map((b) => path.extname(b.p)), ['.pdf', '.pptx'])
+  assert.equal(d.kirim.file.length, 8)
+  assert.ok(d.kirim.file.every((f) => /\nhttps:\/\/drive\.google\.com\/drive\/folders\/F\d$/.test(f.c)))
+})
+
+test('Google Drive gagal: WA tetap terkirim tanpa link, PEMILIK dikabari sekali; --kering tidak mengunggah', async () => {
+  const d = dunia(LENGKAP)
+  d.dep.unggahDrive = async () => { throw new Error('Drive HTTP 500') }
+  await d.jalan(); await d.jalan()
+  assert.equal(d.kirim.file.length, 8); assert.ok(d.kirim.file.every((f) => !f.c.includes('http')))
+  assert.equal(d.kirim.teks.filter((t) => t.m.includes('Google Drive')).length, 2) // harian + penanganan, masing-masing sekali
+  assert.ok(d.kirim.teks.every((t) => t.t === '6299'))
+  const k = dunia(LENGKAP); let dipanggil = 0
+  k.dep.unggahDrive = async () => { dipanggil++ }
+  await k.jalan({ kering: true }); assert.equal(dipanggil, 0)
 })

@@ -58,3 +58,26 @@ uji("masukan buruk = 400", async () => {
   for (const q of ["rumpun=nyasar&lat=-6&lon=107", "rumpun=banjir&lat=50&lon=107", "rumpun=banjir&lat=-6&lon=10", "rumpun=banjir&lon=107", "rumpun=banjir&lat=-6&lon=107&n=0",
     "rumpun=banjir&lat=-6&lon=107&n=21", "rumpun=banjir&lat=-6&lon=107&prov=3"]) assert.equal((await api("/api/akademisi/terdekat?" + q)).status, 400, q);
 });
+
+uji("akademisi data: tamu 401, nama di luar daftar 404, belum diunggah 503", async () => {
+  for (const n of ["riset", "baru"]) assert.equal((await api("/api/akademisi/data/" + n, {})).status, 401, n);
+  for (const n of ["induk", "../induk", "kampus", "riset.json"]) assert.equal((await api("/api/akademisi/data/" + n)).status, 404, n);
+  const r = await api("/api/akademisi/data/riset"); assert.equal(r.status, 503); assert.match(r.j.galat, /belum diunggah/);
+  assert.equal((await api("/api/akademisi/data/baru")).status, 404, "tanpa berkas bulanan");
+});
+
+uji("akademisi data: staf menerima berkas daftar tetap, no-store, nosniff, x-diperbarui", async () => {
+  for (const n of ["riset", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan"]) {
+    await R2.put(`akademisi/${n}.json`, JSON.stringify({n}));
+    const r = await mf.dispatchFetch("http://akademisi.lokal/api/akademisi/data/" + n, {headers: ADMIN});
+    assert.equal(r.status, 200, n); assert.deepEqual(await r.json(), {n});
+    assert.equal(r.headers.get("cache-control"), "private, no-store"); assert.equal(r.headers.get("x-content-type-options"), "nosniff"); assert.ok(r.headers.get("x-diperbarui"));
+  }
+});
+
+uji("akademisi data: baru memilih YYYY-MM terbaru", async () => {
+  await R2.put("akademisi/baru/2026-09.json", JSON.stringify({bulan: "09"}));
+  await R2.put("akademisi/baru/2026-10.json", JSON.stringify({bulan: "10"}));
+  await R2.put("akademisi/baru/catatan.json", JSON.stringify({bulan: "x"}));
+  const r = await api("/api/akademisi/data/baru"); assert.equal(r.status, 200); assert.equal(r.j.bulan, "10");
+});

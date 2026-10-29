@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/akademisi.css?v=22">
+<link rel="stylesheet" href="/akademisi.css?v=23">
 </head>
 <body>
 <header class="top">
@@ -39,6 +39,8 @@
 
 <div class="ak">
 
+  <nav id="akTampil" class="ak-seg ak-tampil" role="group" aria-label="Tampilan" hidden></nav>
+
   <section id="akMasuk" class="ak-panel ak-kosong" hidden>
     <h2>Masuk untuk membuka direktori</h2>
     <p>Direktori ini hanya untuk staf BNPB dan admin karena memuat data pribadi akademisi.</p>
@@ -52,6 +54,7 @@
       <label class="ak-cari"><span class="sr">Cari pakar</span>
         <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>
         <input id="akQ" type="search" autocomplete="off" placeholder="Cari nama, kampus, atau topik riset"></label>
+      <button id="akBaruTog" class="ak-tog" type="button" aria-pressed="false" hidden><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l1.8 5.2L19 10l-5.2 1.8L12 17l-1.8-5.2L5 10l5.2-1.8z"/></svg>Pakar baru bulan ini<small id="akBaruN"></small></button>
     </div>
 
     <div class="ak-baris ak-baris3">
@@ -99,6 +102,12 @@
     </div>
   </section>
 
+  <section id="akv-riset" class="ak-tampilan" hidden></section>
+  <section id="akv-kejadian" class="ak-tampilan" hidden></section>
+  <section id="akv-jurnal" class="ak-tampilan" hidden></section>
+  <section id="akv-pusat" class="ak-tampilan" hidden></section>
+  <section id="akv-pengadaan" class="ak-tampilan" hidden></section>
+
   <div id="akMuat" class="ak-daftar" aria-hidden="true"></div>
 </div>
 
@@ -133,7 +142,7 @@
   </article>
 </div>
 <div id="akTip" class="ak-gr-tip ak-bartip" hidden></div>
-<script src="/akademisi.js?v=20"></script>
+<script src="/akademisi.js?v=21"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>

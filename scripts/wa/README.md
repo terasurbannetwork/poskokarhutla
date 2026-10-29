@@ -45,5 +45,24 @@ launchctl bootout gui/$(id -u)/id.centurisk97.wa-gateway           # berhenti
 
 3. Setelah gateway ini hidup, **putuskan perangkat Fonnte** supaya pesan tidak tersimpan dua kali.
 
+## Google Drive (opsional)
+
+Akun Google pribadi pemilik lewat OAuth; berjalan di proses gateway dan `otomatis.mjs`, tanpa paket tambahan (`drive.cjs`). Tanpa konfigurasi semua alur di bawah mati diam-diam dan bot berjalan seperti biasa.
+
+Pasang sekali:
+
+1. Google Cloud Console: buat proyek, aktifkan **Google Drive API**, layar persetujuan OAuth (tambahkan akun pemilik sebagai pengguna uji), lalu buat **OAuth client ID** bertipe **Desktop app**.
+2. Isi `DRIVE_CLIENT_ID` dan `DRIVE_CLIENT_SECRET` di `scripts/wa/.env`.
+3. Buat satu folder root di Drive (mis. "Bot Laporan"), salin id-nya dari URL (`.../folders/<id>`) ke `DRIVE_ROOT`.
+4. Jalankan `node scripts/wa/drive-masuk.mjs`, buka alamat yang dicetak, setujui. Refresh token tersimpan di `~/.wa-bot/drive.json` (mode 0600) dan tidak pernah dicetak.
+5. Restart gateway (`launchctl kickstart -k gui/$(id -u)/id.centurisk97.wa-gateway`).
+
+Empat alur, semuanya di bawah folder root:
+
+- `Bahan WA/YYYY-MM-DD/` (tanggal WIB): tiap pesan dari `WA_IZIN` disalin lewat antrean lokal `~/.wa-bot/drive-antre/` (dicoba ulang tiap 5 menit; ditolak permanen pindah ke `drive-rusak/` dan pemilik dikabari; disapu 14 hari, batas 500 MB). Teks menjadi `HHMM-<nama pengirim>.txt`, lampiran `HHMM-<nama asli>`.
+- `Laporan/YYYY-MM-DD/`: PDF dan PPTX hasil generator diunggah, link folder ditambahkan ke caption WA. Drive gagal = laporan WA tetap terkirim tanpa link dan pemilik dikabari. Revisi diunggah sebagai berkas baru berawalan "Revisi ".
+- `Masuk/`: berkas yang ditaruh manusia diperiksa tiap 5 menit (Docs menjadi .docx, Sheets .xlsx, Slides .pdf; maks 20 MB, jenis sama dengan WA), dimasukkan ke outbox yang sama dengan pesan WA (dari nomor `PEMILIK`, nama "Google Drive"), lalu dipindah ke `Masuk/Sudah/`. Id Drive yang sudah diproses dicatat di `~/.wa-bot/drive-diproses.json`.
+- Perintah WA `cari <kata>` dari `WA_IZIN`: tidak diteruskan sebagai bahan; bot membalas maksimal 5 berkas (nama, tanggal ubah, link) dari pencarian nama dan isi, hanya di dalam pohon folder root.
+
 Log: `~/.wa-bot/log/`. Status kirim: `~/.wa-bot/state.json`. Keluaran: `~/.wa-bot/keluaran/<tanggal>/`.
 Ini WhatsApp Web tidak resmi: pakai nomor khusus, nomor bisa diblokir (lihat `pangantara/wa-gateway/ANTI-BAN.md`).

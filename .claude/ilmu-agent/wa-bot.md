@@ -24,6 +24,8 @@
 - Aturan jam mengikuti README generator (harian 12.00, penanganan 17.00 WIB); hari lampau dianggap sudah lewat cut-off.
 - Rahasia (`WA_KUNCI`, `WA_MESIN`, `GATEWAY_TOKEN`) hanya di `scripts/wa/.env`; sesi Baileys di `~/.wa-bot/auth`.
 
+- Unggah ke `/pelaporan`: `dep.unggah` POST `${WORKER_URL}/api/wa/hasil` (Bearer WA_MESIN; tanggal, laporan, revisi, pptx, pdf) SEBELUM kirim WA; status `diunggah` terpisah dari `selesai`; `rev` 0 lalu naik tiap revisi; gagal = kabar PEMILIK sekali, WA tetap jalan, diulang jalan berikut tanpa membangun ulang (keluaran bahan sama dipakai lagi). `--kering` tidak mengunggah.
+
 ## Ranjau yang pernah meledak
 
 - Limiter 3 kiriman per menit dengan jeda 15-20 dtk: kiriman ke-4 dalam semenit dapat 429. `depBawaan.pos` mengulang sampai 6 kali (25 dtk) pada 429/503; jangan menaikkan kecepatan, itu pemicu blokir.
@@ -40,3 +42,4 @@
 
 ## Kasus
 - 2026-10-29 · Jalur WA otomatis dibangun 29 Okt 2026: gateway Baileys + otomatis.mjs memanggil generator harian/penanganan; kunci keandalan = state per hash bahan (kirim sekali, revisi bertanda) dan galat hanya ke PEMILIK. Tahu rusak dari tests/wa.
+- 2026-10-29 · Drive (29 Okt): drive.cjs buat({env,fetch,rumah}) agar diuji tanpa jaringan; id outbox dari Drive diturunkan dari id+modifiedTime supaya idempoten, id diproses dicatat ke drive-diproses.json SEBELUM berkas dipindah ke Sudah. Perintah 'cari ' dicegat sebelum outbox.
