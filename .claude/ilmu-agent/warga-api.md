@@ -187,3 +187,4 @@ Dokumen: `WARGA.md` (§Deploy 76, §Moderasi 110, §Statistik 153, §Foto 174). 
 - 2026-10-29 · pemirsa.tab CHECK json_array_length<=7 di 0036 tak bisa diubah tanpa membangun ulang tabel; TAB kini 8 jadi cekTab tetap max 7. Tab monitor tak ada di /banjir/, arahPemirsa mengalihkan ke /monitor?bencana=banjir.
 - 2026-10-29 · Miniflare tak punya env.AI: uji jalur AI lewat fungsi murni bacaDokumen(env,...) dengan AI palsu; cache ?wa dibaca SEBELUM cek AI sehingga bisa diuji di rute nyata.
 - 2026-10-29 · Gerbang WA: tulis lewat x-wa-kunci, baca lewat adminOK atau Bearer WA_MESIN (sha banding); idempotensi kunci (dari,diterima,teks,nama_berkas) dicek SEBELUM put R2 agar tak ada berkas yatim. Helper api() uji tak bisa FormData: pakai U.mf.dispatchFetch.
+- 2026-10-29 · Daftar objek R2 per tanggal: get per objek melewati batas 50 subrequest Free; simpan meta di customMetadata dan list(include:['customMetadata']) sekali (wa.js hasilDaftar).

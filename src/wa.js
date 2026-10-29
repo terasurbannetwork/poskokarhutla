@@ -116,9 +116,81 @@ async function rekap(env, req, url, kini) {
   return json({sampai, hari, jenis: JENIS_LAPORAN, per: per.map(({lihat, ...p}) => p)}, 200, {"cache-control": "no-store"});
 }
 
+/* Hasil laporan otomatis dari bot Mac mini: R2 saja (tanpa D1). lapor-otomatis/<tanggal>/<laporan>.pptx|.pdf|.json, ditimpa tiap revisi.
+   Daftar: SATU list R2 (prefix + startAfter, include customMetadata) tanpa get per objek; .json membawa metanya juga di customMetadata
+   (get per tanggal = sampai 62 subrequest, melewati batas 50 paket Free). */
+const JENIS_HASIL = {
+  pptx: {tipe: "application/vnd.openxmlformats-officedocument.presentationml.presentation", magic: [0x50, 0x4b, 3, 4]},
+  pdf: {tipe: "application/pdf", magic: [0x25, 0x50, 0x44, 0x46, 0x2d]},
+};
+const MAKS_HASIL = 30 * 1024 * 1024, MAKS_FORM_HASIL = 60 * 1024 * 1024, LAPORAN_HASIL = ["harian", "penanganan"];
+const bacaMesin = async (env, req) => { const t = /^Bearer (.+)$/.exec(req.headers.get("authorization") || "")?.[1]; return !!(env.WA_MESIN && t && await sha(t) === await sha(env.WA_MESIN)); };
+
+async function hasilSimpan(env, req, kini) {
+  if (!await bacaMesin(env, req)) return gagal(403, "perlu kunci mesin");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum aktif");
+  const ct = req.headers.get("content-type") || "";
+  if (!/^multipart\/form-data/i.test(ct)) return gagal(400, "kiriman harus multipart/form-data");
+  const bytes = await bacaBytes(req, MAKS_FORM_HASIL); if (bytes.galat) return gagal(bytes.status, bytes.galat);
+  let f; try { f = await new Response(bytes.b, {headers: {"content-type": ct}}).formData(); } catch { return gagal(400, "kiriman tidak terbaca"); }
+  const tanggal = String(f.get("tanggal") ?? ""), laporan = String(f.get("laporan") ?? ""), rv = String(f.get("revisi") ?? "");
+  if (!tglSah(tanggal)) return gagal(400, "tanggal harus YYYY-MM-DD");
+  if (!LAPORAN_HASIL.includes(laporan)) return gagal(400, "laporan harus harian atau penanganan");
+  if (!/^\d{1,6}$/.test(rv)) return gagal(400, "revisi harus bilangan bulat >= 0");
+  const isi = {};
+  for (const [j, {tipe, magic}] of Object.entries(JENIS_HASIL)) {
+    const b = f.get(j); if (typeof b === "string" || !b?.size) return gagal(400, `berkas ${j} wajib`);
+    if (b.size > MAKS_HASIL) return gagal(413, `berkas ${j} melebihi 30 MB`);
+    const u = new Uint8Array(await b.arrayBuffer());
+    if (!magic.every((x, i) => u[i] === x)) return gagal(400, `berkas ${j} bukan ${j} sah`);
+    isi[j] = {u, nama: b.name};
+  }
+  const nama = bersih(isi.pptx.nama || `${laporan}.pptx`, 120).replace(/[^\w.\- ]/g, "_").replace(/\.pptx$/i, "") || laporan;
+  const meta = {tanggal, laporan, revisi: Number(rv), dibuat: kini, nama, ukuran: {pptx: isi.pptx.u.length, pdf: isi.pdf.u.length}};
+  const dasar = `lapor-otomatis/${tanggal}/${laporan}`;
+  for (const j of ["pptx", "pdf"]) await env.MEDIA.put(`${dasar}.${j}`, isi[j].u, {httpMetadata: {contentType: JENIS_HASIL[j].tipe}});
+  await env.MEDIA.put(`${dasar}.json`, JSON.stringify(meta), {httpMetadata: {contentType: "application/json"}, customMetadata: {m: JSON.stringify(meta)}});   // json terakhir: baris daftar muncul hanya bila kedua berkas sudah ada
+  return json({ok: true, tanggal, laporan, revisi: meta.revisi});
+}
+
+async function hasilDaftar(env, req, url, kini) {
+  if (!await boleh(env, req, kini)) return gagal(403, "perlu masuk admin");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum aktif");
+  const sampai = url.searchParams.get("sampai") || hariWib(kini), dari = url.searchParams.get("dari") || new Date(Date.parse(sampai) - 13 * 864e5).toISOString().slice(0, 10);
+  if (!tglSah(sampai) || !tglSah(dari)) return gagal(400, "dari/sampai harus YYYY-MM-DD");
+  if (dari > sampai || (Date.parse(sampai) - Date.parse(dari)) / 864e5 > 31) return gagal(400, "rentang maksimal 31 hari, dari <= sampai");
+  const hasil = [];
+  for (let kursor; ;) {
+    const l = await env.MEDIA.list({prefix: "lapor-otomatis/", startAfter: `lapor-otomatis/${dari}`, include: ["customMetadata"], limit: 1000, cursor: kursor});
+    for (const o of l.objects) {
+      const t = o.key.slice(15, 25); if (t > sampai) return json({hasil: hasil.sort(urutHasil)}, 200, {"cache-control": "no-store"});
+      if (!o.key.endsWith(".json") || !o.customMetadata?.m) continue;
+      try { hasil.push(JSON.parse(o.customMetadata.m)); } catch {}
+    }
+    if (!l.truncated) break; kursor = l.cursor;
+  }
+  return json({hasil: hasil.sort(urutHasil)}, 200, {"cache-control": "no-store"});
+}
+const urutHasil = (a, b) => a.tanggal < b.tanggal ? 1 : a.tanggal > b.tanggal ? -1 : a.laporan < b.laporan ? -1 : 1;
+
+async function hasilBerkas(env, req, url, kini) {
+  if (!await boleh(env, req, kini)) return gagal(403, "perlu masuk admin");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum aktif");
+  const q = k => url.searchParams.get(k) || "", tanggal = q("tanggal"), laporan = q("laporan"), jenis = q("jenis");
+  if (!tglSah(tanggal) || !LAPORAN_HASIL.includes(laporan) || !Object.hasOwn(JENIS_HASIL, jenis)) return gagal(400, "tanggal, laporan, atau jenis tidak sah");
+  const dasar = `lapor-otomatis/${tanggal}/${laporan}`, m = await env.MEDIA.get(`${dasar}.json`), o = m && await env.MEDIA.get(`${dasar}.${jenis}`);
+  if (!o) return gagal(404, "berkas tidak ada");
+  let nama = laporan; try { nama = JSON.parse(await m.text()).nama || laporan; } catch {}
+  return new Response(o.body, {headers: {"content-type": JENIS_HASIL[jenis].tipe, "content-disposition": `attachment; filename="${nama.replace(/[^\w.\- ]/g, "_")}.${jenis}"`,
+    "cache-control": "private, no-store", "x-content-type-options": "nosniff"}});
+}
+
 export const RUTE_WA = {
   "GET /api/wa/rekap": (env, req, url, kini) => rekap(env, req, url, kini),
   "POST /api/wa/gateway": (env, req, url, kini) => gerbang(env, req, kini),
   "GET /api/wa/masuk": (env, req, url, kini) => daftar(env, req, url, kini),
   "GET /api/wa/berkas": (env, req, url, kini) => berkas(env, req, url, kini),
+  "POST /api/wa/hasil": (env, req, url, kini) => hasilSimpan(env, req, kini),
+  "GET /api/wa/hasil": (env, req, url, kini) => hasilDaftar(env, req, url, kini),
+  "GET /api/wa/hasil/berkas": (env, req, url, kini) => hasilBerkas(env, req, url, kini),
 };

@@ -39,13 +39,27 @@ const IKON_CETAK = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stro
 const IKON_KAL = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>';
 const IKON_BUKA = '<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 6l6 6-6 6"/></svg>';
 
-const S = {hari: hariIni(), karhutla: new Set(), bnpb: new Set(), kunci: "", akses: "memuat", manual: false};
+const S = {hari: hariIni(), karhutla: new Set(), bnpb: new Set(), kunci: "", akses: "memuat", manual: false,
+  admin: false, jenis: [], rekap: null, hasil: null, buka: new Set(), no: 0};   // admin/rekap/hasil: bahan WA dan hasil otomatis, hanya admin
 
 /* tombol berkas: ikon dokumen + nama format, sebagai tautan supaya bisa dibuka di tab baru */
 const tombol = (url, label, judul, ikon = IKON_DOK, kelas = "") =>
   `<a class="ar-ik ${kelas}" href="${esc(url)}" title="${esc(judul)}" aria-label="${esc(judul)}">${ikon}<span>${esc(label)}</span></a>`;
 
+const jamWib = ms => new Date(ms + 7 * 3600e3).toISOString().slice(11, 16).replace(":", ".");
+const berkas = (h, laporan, jenis, label) => tombol(`/api/wa/hasil/berkas?tanggal=${h}&laporan=${laporan}&jenis=${jenis}`, label,
+  `Unduh ${jenis.toUpperCase()} ${laporan === "harian" ? "laporan bencana harian" : "laporan penanganan karhutla"} ${tglPanjang(h)}`);
+const hasilDari = (h, laporan) => S.hasil?.get(`${h}|${laporan}`);
+
 function selBencana(h) {
+  const x = S.admin && hasilDari(h, "harian");
+  if (x) return (S.bnpb.has(h) ? tombol(`/laporan-bnpb?tanggal=${h}`, "Buka", `Buka laporan ${tglPanjang(h)}`, IKON_BUKA, "ar-ik2")
+      : tombol(`/laporan-bnpb?tanggal=${h}`, "Isi", `Isi Laporan Kejadian Bencana Harian ${tglPanjang(h)}`, IKON_BUKA, "ar-ik2"))
+    + berkas(h, "harian", "pptx", "PPTX") + berkas(h, "harian", "pdf", "PDF")
+    + `<span class="ar-no">otomatis ${esc(jamWib(x.dibuat))} WIB${x.revisi > 0 ? `, revisi ${esc(x.revisi)}` : ""}</span>`;
+  return selBencanaBiasa(h);
+}
+function selBencanaBiasa(h) {
   if (S.akses === "tolak") return `<span class="ar-no" title="Masuk admin untuk membuka arsip laporan bencana harian">perlu masuk</span>`;
   if (S.akses === "memuat") return `<span class="ar-no">memuat…</span>`;
   if (!S.bnpb.has(h)) return `<span class="ar-no">belum dibuat</span>` +
@@ -57,7 +71,20 @@ function selBencana(h) {
 function selKarhutla(h) {
   if (!S.karhutla.has(h)) return `<span class="ar-no">tidak ada data</span>`;
   return tombol(`/laporan?hari=${h}`, "Buka", `Buka laporan karhutla harian ${tglPanjang(h)}`, IKON_BUKA, "ar-ik2")
-    + tombol(`/laporan?hari=${h}&cetak=1`, "PDF", `Cetak atau unduh PDF laporan karhutla harian ${tglPanjang(h)}`, IKON_CETAK);
+    + tombol(`/laporan?hari=${h}&cetak=1`, "PDF", `Cetak atau unduh PDF laporan karhutla harian ${tglPanjang(h)}`, IKON_CETAK)
+    + (S.admin && hasilDari(h, "penanganan") ? berkas(h, "penanganan", "pptx", "PPTX penanganan") + berkas(h, "penanganan", "pdf", "PDF penanganan") : "");
+}
+/* BAHAN MASUK (admin): "5 dari 6 wajib"; klik membuka baris rincian per jenis */
+function selBahan(h) {
+  const p = S.rekap?.get(h); if (!p) return `<td class="ar-no">${S.rekap ? "-" : "memuat…"}</td>`;
+  const wajib = S.jenis.filter(j => j.wajib), n = wajib.filter(j => p.isi?.[j.kunci]?.n > 0).length;
+  return `<td><button type="button" class="ar-bahan ${n < wajib.length ? "kurang" : "penuh"}" data-det="${h}" aria-expanded="${S.buka.has(h)}">${n} dari ${wajib.length} wajib</button></td>`;
+}
+function rincian(h) {
+  const p = S.rekap?.get(h); if (!p || !S.buka.has(h)) return "";
+  return `<tr class="ar-rinci"><td colspan="4"><ul>${S.jenis.map(j => { const x = p.isi?.[j.kunci];
+    return x?.n > 0 ? `<li class="ada">&#10003; ${esc(j.label)}, terakhir ${x.terakhir ? esc(jamWib(x.terakhir)) + " WIB" : "-"}</li>`
+      : `<li class="${j.wajib ? "belum" : "kosong"}">&#9675; ${esc(j.label)}${j.wajib ? ", belum masuk" : ""}</li>`; }).join("")}</ul></td></tr>`;
 }
 
 function gambar() {
@@ -89,8 +116,8 @@ function gambar() {
       <button type="button" class="ar-ujung" data-h="${geser(h, 7)}" title="${esc(labelPekan(geser(h, 7)))}" ${geser(h, 7) > ini ? "disabled" : ""}>${esc(labelPekan(geser(h, 7)))} &rsaquo;</button>
     </div>
   </div>
-  <div class="ar-tabel"><table><thead><tr><th>Tanggal</th><th>Laporan bencana harian</th><th>Laporan karhutla harian</th></tr></thead><tbody>
-    ${baris.map(d => `<tr class="${d === h ? "ar-on" : ""}"><td>${esc(tglPanjang(d))}</td><td>${selBencana(d)}</td><td>${selKarhutla(d)}</td></tr>`).join("")}
+  <div class="ar-tabel"><table><thead><tr><th>Tanggal</th>${S.admin ? "<th>Bahan masuk</th>" : ""}<th>Laporan bencana harian</th><th>Laporan karhutla harian</th></tr></thead><tbody>
+    ${baris.map(d => `<tr class="${d === h ? "ar-on" : ""}"><td>${esc(tglPanjang(d))}</td>${S.admin ? selBahan(d) : ""}<td>${selBencana(d)}</td><td>${selKarhutla(d)}</td></tr>${S.admin ? rincian(d) : ""}`).join("")}
   </tbody></table></div>`;
   const inp = $("#arTgl");
   inp.onchange = e => { if (e.target.value) pilih(e.target.value); };
@@ -99,12 +126,33 @@ function gambar() {
      showPicker() dari input yang disembunyikan di belakang tombol. */
   $("#arPick").onclick = () => { try { inp.showPicker(); } catch (e) { inp.focus(); inp.click(); } };
 }
-function pilih(h) { if (h > hariIni()) return; S.hari = h; S.manual = true; gambar(); }
+function pilih(h) { if (h > hariIni()) return; S.hari = h; S.manual = true; gambar(); muatBahan(); }
 
 $("#arsipLaporan")?.addEventListener("click", e => {
+  const t = e.target.closest("button[data-det]");
+  if (t) { const h = t.dataset.det; S.buka.has(h) ? S.buka.delete(h) : S.buka.add(h); gambar(); $(`#arsipLaporan button[data-det="${h}"]`)?.focus(); return; }
   const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return;
   pilih(b.dataset.h);
 });
+
+/* Bahan WA dan hasil otomatis, sekali per periode (14 hari berakhir di S.hari). 403 atau galat = bukan
+   admin: tampilan tetap persis seperti untuk pengunjung. */
+async function muatBahan() {
+  const no = ++S.no, h = S.hari, dari = geser(h, -(MAKS_BARIS - 1));
+  if (S.admin) { S.rekap = S.hasil = null; gambar(); }   // status "memuat…" dulu, data menyusul
+  try {
+    const [a, b] = await Promise.all([fetch(`/api/wa/rekap?sampai=${h}&hari=${MAKS_BARIS}`, {credentials: "same-origin"}),
+      fetch(`/api/wa/hasil?dari=${dari}&sampai=${h}`, {credentials: "same-origin"})]);
+    if (no !== S.no) return;
+    if (!a.ok) throw 0;
+    const r = await a.json(), j = b.ok ? await b.json() : {};
+    if (no !== S.no) return;
+    S.jenis = r.jenis || []; S.rekap = new Map((r.per || []).map(p => [p.tanggal, p]));
+    S.hasil = new Map((j.hasil || []).map(x => [`${x.tanggal}|${x.laporan}`, x]));
+    S.admin = true;
+  } catch (e) { if (no !== S.no) return; S.admin = false; S.rekap = S.hasil = null; }
+  gambar();
+}
 
 /* Daftar hari yang punya laporan. Dua sumber dibaca sekali saat tab dibuka; kegagalannya tidak
    mengosongkan tabel, hanya mengubah kata di selnya. */
@@ -129,6 +177,7 @@ async function muat() {
     if (ada.length && ada.at(-1) < S.hari) S.hari = ada.at(-1);
   }
   gambar();
+  muatBahan();
 }
 
 window.ArsipLaporan = {gambar, muat, pilih, S};

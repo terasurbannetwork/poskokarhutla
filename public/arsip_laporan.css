@@ -58,3 +58,13 @@
   .ar-strip{grid-template-columns:repeat(4,1fr)}
   .ar-ujung{display:none}
 }
+
+.ar-bahan{border:0;border-radius:999px;padding:3px 10px;font:800 11px var(--font);cursor:pointer;color:var(--ink)}
+.ar-bahan.kurang{background:color-mix(in srgb,var(--bad,#c9503a) 14%,var(--card));color:var(--bad,#c9503a)}
+.ar-bahan.penuh{background:color-mix(in srgb,var(--ok,#2e7d4f) 14%,var(--card));color:var(--ok,#2e7d4f)}
+.ar-rinci td{white-space:normal;background:var(--bg2,transparent);text-align:left;padding:10px 14px}
+.ar-rinci ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 18px;font-size:11.5px;text-align:left}
+.ar-rinci li{margin:0;padding:0;display:block;text-align:left;line-height:1.4}   /* kisi rata kiri, bukan sebaran flex (29 Okt) */
+.ar-rinci .ada{color:var(--ok,#2e7d4f);font-weight:700}
+.ar-rinci .belum{color:var(--bad,#c9503a);font-weight:700}
+.ar-rinci .kosong{color:var(--ink2)}
