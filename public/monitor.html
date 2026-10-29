@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
 <link rel="stylesheet" href="/inti/kartu.css">
-<link rel="stylesheet" href="/monitor.css?v=8">
+<link rel="stylesheet" href="/monitor.css?v=10">
 </head>
 <body>
 <header class="top">
@@ -71,11 +71,16 @@
   <section class="mn-kartu" id="mnKartuStatus" hidden>
     <div class="mn-judul">
       <span class="mn-eyebrow"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Status keadaan darurat BPBD</span>
-      <div class="mn-filter"><select id="mnSSkala" aria-label="Tingkat wilayah"><option value="">Provinsi dan kab/kota</option><option value="provinsi">Provinsi</option><option value="kabupaten">Kab/kota</option></select>
-      <select id="mnSProv" aria-label="Provinsi"><option value="">Semua provinsi</option></select>
-      <select id="mnSSt" aria-label="Status"><option value="">Semua status</option><option>Siaga Darurat</option><option>Tanggap Darurat</option><option>Transisi Darurat ke Pemulihan</option></select></div>
+      <div class="mn-filter"><select id="mnSProv" aria-label="Provinsi"><option value="">Semua provinsi</option></select>
+      <select id="mnSSt" aria-label="Status"><option value="">Semua status</option><option>Siaga Darurat</option><option>Tanggap Darurat</option><option>Transisi Darurat ke Pemulihan</option></select>
+      <select id="mnSKat" aria-label="Kategori"><option value="">Semua kategori</option></select>
+      <select id="mnSJen" aria-label="Jenis bencana"><option value="">Semua jenis bencana</option></select></div>
     </div>
-    <div class="mn-gulir"><table><thead><tr><th>Provinsi</th><th>Kab/kota</th><th>Tingkat</th><th>Status</th><th>Jenis bencana</th><th>Mulai</th><th>Berakhir</th><th>Nomor SK</th></tr></thead><tbody id="mnSt"><tr><td colspan="8" class="mn-kosong">Memuat status</td></tr></tbody></table></div>
+    <div class="mn-periode"><span class="mn-per-l">Periode</span>
+      <div class="mn-per-pil" id="mnSPil" role="group" aria-label="Periode cepat"><button type="button" data-p="semua" aria-pressed="true">Semua</button><button type="button" data-p="kini" aria-pressed="false">Berlaku hari ini</button><button type="button" data-p="30" aria-pressed="false">30 hari terakhir</button><button type="button" data-p="th" aria-pressed="false">Tahun ini</button></div>
+      <div class="mn-per-tgl"><label class="mn-tgl"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 11h18"/></svg><span>Dari</span><b id="mnSDariT">Awal data</b><input type="date" id="mnSDari" aria-label="Dari tanggal"></label><label class="mn-tgl"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M8 3v4M16 3v4M3 11h18"/></svg><span>Sampai</span><b id="mnSSampaiT">Akhir data</b><input type="date" id="mnSSampai" aria-label="Sampai tanggal"></label></div>
+    </div>
+    <div class="mn-gulir"><table><thead id="mnSKepala"><tr><th aria-sort="none"><button type="button" class="mn-urut" data-u="prov">Provinsi</button></th><th aria-sort="none"><button type="button" class="mn-urut" data-u="kab">Kab/kota</button></th><th aria-sort="none"><button type="button" class="mn-urut" data-u="status">Status</button></th><th aria-sort="none"><button type="button" class="mn-urut" data-u="klasifikasi">Kategori</button></th><th aria-sort="none"><button type="button" class="mn-urut" data-u="jenis">Jenis bencana</button></th><th aria-sort="descending"><button type="button" class="mn-urut" data-u="mulai">Mulai</button></th><th aria-sort="none"><button type="button" class="mn-urut" data-u="berakhir">Berakhir</button></th><th aria-sort="none"><button type="button" class="mn-urut" data-u="nomor">SK</button></th><th>Aksi</th></tr></thead><tbody id="mnSt"><tr><td colspan="9" class="mn-kosong">Memuat status</td></tr></tbody></table></div>
     <nav class="mn-hal" aria-label="Jumlah status"><span id="mnSHal"></span></nav>
   </section>
 
@@ -92,7 +97,7 @@
   <div class="mn-aksi mn-aksi-dlg"><button id="mnTutup" class="mn-tbl mn-tbl2" type="button">Tutup</button><button id="mnBaca" class="mn-tbl" type="button">Sudah dibaca</button></div></div></div>
 <script src="/inti/format.js"></script>
 <script src="/inti/pilih.js"></script>
-<script src="/monitor.js?v=10"></script>
+<script src="/monitor.js?v=13"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>

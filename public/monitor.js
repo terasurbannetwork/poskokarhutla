@@ -255,24 +255,106 @@
   const KLS = {"Siaga Darurat": "s", "Tanggap Darurat": "t", "Transisi Darurat ke Pemulihan": "h"};
   let SD = null, judulSt = "Status keadaan darurat";
   const tglId = t => t ? t.split("-").reverse().join("/") : "";
+  const jenisL = x => String(x.jenis || "").split(",").map(t => t.trim()).filter(Boolean);
+  const KAT = k => /Kering/.test(k) ? "kk" : /Geologi/.test(k) && !/Basah/.test(k) ? "kg" : /Hidro/.test(k) ? "kb" : "";
+  const urutSt = {k: "mulai", turun: true};
+  /* ikon status dan jenis bencana (29 Okt): ikon + label, judul penuh di title */
+  const SV = d => `<svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+  const IK_ST = {"Siaga Darurat": SV('<path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9M10.3 21a1.9 1.9 0 0 0 3.4 0"/>'),
+    "Tanggap Darurat": SV('<path d="M10.3 3.9 1.8 18a2 2 0 0 0 1.7 3h17a2 2 0 0 0 1.7-3L13.7 3.9a2 2 0 0 0-3.4 0zM12 9v4M12 17h.01"/>'),
+    "Transisi Darurat ke Pemulihan": SV('<path d="M3 12a9 9 0 0 1 15.5-6.2L21 8M21 3v5h-5M21 12a9 9 0 0 1-15.5 6.2L3 16M3 21v-5h5"/>')};
+  const IK_JN = [[/banjir/i, '<path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/>'],
+    [/longsor/i, '<path d="m3 20 6-11 4 6 2-3 6 8z"/><circle cx="17" cy="6" r="1.5"/>'],
+    [/cuaca/i, '<path d="M17.5 17H7a5 5 0 1 1 1-9.9A6 6 0 0 1 19.4 10 3.5 3.5 0 0 1 17.5 17zM12 13l-2 4h4l-2 4"/>'],
+    [/kebakaran/i, '<path d="M12 3c1.5 3.5 5.5 5.5 5.5 10a5.5 5.5 0 0 1-11 0c0-2 1-3.6 2.4-4.8.3 1.8 1.2 2.8 2.3 3.2C10.8 8.5 11.2 5.8 12 3z"/>'],
+    [/gelombang|abrasi/i, '<path d="M2 12c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 18c2-2 4-2 6 0s4 2 6 0 4-2 6 0M2 6c2-2 4-2 6 0s4 2 6 0 4-2 6 0"/>'],
+    [/kekeringan/i, '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.9 4.9l1.4 1.4M17.7 17.7l1.4 1.4M2 12h2M20 12h2M4.9 19.1l1.4-1.4M17.7 6.3l1.4-1.4"/>'],
+    [/gempa/i, '<path d="M2 12h4l2-6 4 12 3-9 2 3h5"/>'],
+    [/erupsi|gunung/i, '<path d="m2 21 7-11h6l7 11zM10 6l1-3M14 6l-1-3M12 6V2"/>'],
+    [/epidemi|wabah/i, '<circle cx="12" cy="12" r="5"/><path d="M12 2v5M12 17v5M2 12h5M17 12h5"/>'],
+    [/./, '<circle cx="12" cy="12" r="9"/><path d="M12 8v4M12 16h.01"/>']];
+  const ikJn = t => SV(IK_JN.find(([r]) => r.test(t))[1]);
+  const per = {dari: "", sampai: ""}, buka = new Set();
   function gambarSt() {
     if (!SD) return;
-    const sk = $("mnSSkala").value, p = $("mnSProv").value, st = $("mnSSt").value, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
-    const L = SD.filter(x => (!sk || x.skala === sk) && (!p || x.prov_kode === p) && (!st || x.status === st));
-    $("mnSt").innerHTML = L.length ? L.map(x => `<tr><td>${esc(x.prov)}</td><td>${x.skala === "provinsi" ? "" : `<b>${esc(x.kab)}</b>`}</td><td>${x.skala === "provinsi" ? "Provinsi" : "Kab/kota"}</td>
-      <td><span class="mn-p ${KLS[x.status] || ""}">${esc(x.status)}</span>${x.berakhir && x.berakhir >= kini ? ` <span class="mn-p t">Berlaku</span>` : ""}</td>
-      <td class="mn-jenis">${esc(String(x.jenis || "").split(",").join(", "))}</td><td>${tglId(x.mulai)}</td><td>${tglId(x.berakhir)}</td>
-      <td class="mn-sk">${x.tautan ? `<a href="${esc(x.tautan)}" target="_blank" rel="noopener">${esc(x.nomor)}</a>` : esc(x.nomor)}</td></tr>`).join("")
-      : kosong(8, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada status pada saringan ini", "Coba saringan lain.");
-    $("mnSHal").textContent = `${L.length.toLocaleString("id-ID")} SK`;
+    const p = $("mnSProv").value, st = $("mnSSt").value, kt = $("mnSKat").value, jn = $("mnSJen").value, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+    const nilai = x => urutSt.k === "jenis" ? jenisL(x).length : urutSt.k === "kab" ? (x.skala === "provinsi" ? "" : x.kab || "") : String(x[urutSt.k] || "");
+    const L = SD.filter(x => (!p || x.prov_kode === p) && (!st || x.status === st) && (!kt || x.klasifikasi === kt) && (!jn || jenisL(x).includes(jn))
+        && (!per.dari || (x.berakhir || x.mulai || "") >= per.dari) && (!per.sampai || (x.mulai || "") <= per.sampai))
+      .sort((a, b) => { const u = nilai(a), v = nilai(b); if (!u !== !v) return u ? -1 : 1;   /* kosong selalu di bawah */
+        const c = typeof u === "number" ? u - v : u.localeCompare(v, "id", {numeric: true}); return urutSt.turun ? -c : c; });
+    /* satu grup per provinsi, urutan grup ikut urutan baris pertamanya; SK tingkat provinsi menempati baris grup */
+    const G = new Map(); for (const x of L) { if (!G.has(x.prov_kode)) G.set(x.prov_kode, []); G.get(x.prov_kode).push(x); }
+    const isi = (x, kab) => `<td>${kab}</td>
+      <td><span class="mn-sti ${KLS[x.status] || ""}${x.berakhir && x.berakhir >= kini ? " on" : ""}" title="${esc(x.status)}${x.berakhir && x.berakhir >= kini ? ", masih berlaku" : ""}" aria-label="${esc(x.status)}">${IK_ST[x.status] || ""}</span></td>
+      <td>${x.klasifikasi ? `<span class="mn-p ${KAT(x.klasifikasi)}">${esc(x.klasifikasi)}</span>` : ""}</td>
+      <td class="mn-jenis">${jenisL(x).map(t => `<span class="mn-p mn-jn">${ikJn(t)}${esc(t)}</span>`).join("")}</td><td>${tglId(x.mulai)}</td><td>${tglId(x.berakhir)}</td>
+      <td>${x.tautan ? `<a class="mn-ikb" href="${esc(x.tautan)}" target="_blank" rel="noopener" title="${esc(x.nomor)}" aria-label="Buka SK ${esc(x.nomor)}">${IK_SK}</a>` : ""}</td>
+      <td><a class="mn-ikb mn-ikwa" href="${esc(waSt(x))}" target="_blank" rel="noopener noreferrer" title="${noBpbd(x) ? "WhatsApp Pusdalops BPBD" : "Kirim lewat WhatsApp"}" aria-label="WhatsApp ${esc(x.kab || x.prov)}">${IK_WA}</a></td>`;
+    const kosongSel = '<td></td><td></td><td></td><td></td><td></td><td></td><td></td>';
+    const auto = G.size === 1;   /* satu provinsi tersaring: langsung terbuka */
+    $("mnSt").innerHTML = L.length ? [...G].map(([kd, X]) => {
+      const pv = X.filter(x => x.skala === "provinsi"), kb = X.filter(x => x.skala !== "provinsi"), o = auto || buka.has(kd);
+      const hit = Object.keys(IK_ST).map(s => [s, kb.filter(x => x.status === s).length]).filter(([, n]) => n);
+      const ring = hit.map(([s, n]) => `<span class="mn-sti mn-kcl ${KLS[s]}" title="${n} ${esc(s)}">${IK_ST[s]}<b>${n}</b></span>`).join("");
+      const kepala = `<button type="button" class="mn-grp-b" data-g="${esc(kd)}" aria-expanded="${o}"${kb.length ? "" : " disabled"}><svg class="mn-ik mn-chev" viewBox="0 0 24 24" aria-hidden="true"><path d="m9 6 6 6-6 6"/></svg><b>${esc(X[0].prov)}</b></button>`;
+      const ringkas = kb.length ? `<span class="mn-grp-n">${kb.length} kab/kota</span>${ring}` : "";
+      const atasB = pv.length ? `<tr class="mn-grp"><td>${kepala}</td>${isi(pv[0], ringkas || '<span class="mn-grp-n">Tingkat provinsi</span>')}</tr>`
+        : `<tr class="mn-grp"><td>${kepala}</td><td><span class="mn-grp-sel">${ringkas}</span></td>${kosongSel}</tr>`;
+      const anak = [...pv.slice(1).map(x => [x, '<span class="mn-grp-n">SK provinsi</span>']), ...kb.map(x => [x, `<b>${esc(x.kab)}</b>`])]
+        .map(([x, k]) => `<tr class="mn-anak" data-ag="${esc(kd)}"${o ? "" : " hidden"}><td></td>${isi(x, k)}</tr>`).join("");
+      return atasB + anak;
+    }).join("")
+      : kosong(9, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada status pada saringan ini", "Coba saringan atau periode lain.");
+    $("mnSHal").innerHTML = `<span>${L.length.toLocaleString("id-ID")} SK di ${G.size} provinsi</span><span class="mn-leg">${Object.keys(IK_ST).map(s => `<span><span class="mn-sti mn-kcl ${KLS[s]}">${IK_ST[s]}</span>${esc(s)}</span>`).join("")}</span>`;
+  }
+  /* buka/tutup grup: hanya baris anak grup itu yang berganti hidden */
+  $("mnSt").addEventListener("click", e => { const b = e.target.closest(".mn-grp-b"); if (!b || b.disabled) return;
+    const kd = b.dataset.g, o = b.getAttribute("aria-expanded") !== "true"; b.setAttribute("aria-expanded", o); o ? buka.add(kd) : buka.delete(kd);
+    for (const r of $("mnSt").querySelectorAll(`tr[data-ag="${CSS.escape(kd)}"]`)) r.hidden = !o; });
+  /* pemilih periode ala pangantara: pil cepat + Dari/Sampai (input date native di bawah label id-ID) */
+  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const tglP = t => t ? `${+t.slice(8)} ${BLN[+t.slice(5, 7) - 1]} ${t.slice(0, 4)}` : "";
+  function aturPer(dari, sampai, pil) {
+    per.dari = dari; per.sampai = sampai; $("mnSDari").value = dari; $("mnSSampai").value = sampai;
+    $("mnSDariT").textContent = tglP(dari) || "Awal data"; $("mnSSampaiT").textContent = tglP(sampai) || "Akhir data";
+    for (const b of $("mnSPil").children) b.setAttribute("aria-pressed", b.dataset.p === pil);
+    nanti(gambarSt);
+  }
+  $("mnSPil").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (!b) return;
+    const k = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10), m = b.dataset.p;
+    if (m === "semua") aturPer("", "", m); else if (m === "kini") aturPer(k, k, m);
+    else if (m === "30") aturPer(new Date(Date.now() + 7 * 36e5 - 30 * 864e5).toISOString().slice(0, 10), k, m);
+    else aturPer(k.slice(0, 4) + "-01-01", k.slice(0, 4) + "-12-31", m); });
+  for (const id of ["mnSDari", "mnSSampai"]) {
+    $(id).addEventListener("change", () => aturPer($("mnSDari").value, $("mnSSampai").value, ""));
+    $(id).addEventListener("click", e => { try { e.currentTarget.showPicker(); } catch (x) {} });
+  }
+  /* aksi WA: nomor Pusdalops BPBD dari data/bpbd.json (publik, BNPB); tanpa nomor, wa.me memilih kontak sendiri */
+  const IK_SK = '<svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>';
+  const IK_WA = '<svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.5z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2.2-1-1 .8c-1-.4-1.9-1.3-2.3-2.3l.8-1-1-2.2z"/></svg>';
+  let BP = new Map();
+  const nmK = t => String(t || "").toLowerCase().replace(/^(kabupaten|kab\.?)\s+/, "").trim();
+  const noHp = t => { const d = String(t || "").replace(/\D/g, ""); return /^08\d{8,12}$/.test(d) ? "62" + d.slice(1) : /^628\d{8,12}$/.test(d) ? d : ""; };
+  const noBpbd = x => BP.get(x.prov_kode + "|" + (x.skala === "provinsi" ? "provinsi" : nmK(x.kab))) || "";
+  const waSt = x => { const n = noBpbd(x), w = x.skala === "provinsi" ? "Provinsi " + x.prov : x.kab + ", " + x.prov;
+    return `https://wa.me/${n}?text=${encodeURIComponent(`Status ${x.status} ${w}, SK ${x.nomor}, berlaku ${tglId(x.mulai)} sampai ${tglId(x.berakhir)}. Mohon pembaruan situasi terkini.`)}`; };
+  async function muatBpbd() {
+    try { const j = await (await fetch("/data/bpbd.json")).json();
+      for (const k of j.kantor || []) { const n = noHp(k.pusdalops); if (!n) continue;
+        const kunci = k.prov + "|" + (/provinsi/i.test(k.nama) ? "provinsi" : nmK(k.kab)); if (!BP.has(kunci)) BP.set(kunci, n); }
+    } catch (x) {}
   }
   async function muatSt() {
     const e = $("mnSatS");
     try {
       const r = await fetch("/data/status_darurat.json", {cache: "no-cache"}); if (!r.ok) throw 0;
-      const j = await r.json(); SD = (j.sk || []).slice().sort((a, b) => (b.mulai || "").localeCompare(a.mulai || ""));
+      await muatBpbd(); const j = await r.json(); SD = (j.sk || []).slice().sort((a, b) => (b.mulai || "").localeCompare(a.mulai || ""));
       const s = $("mnSProv"), ada = [...new Map(SD.map(x => [x.prov_kode, x.prov])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
       s.innerHTML = `<option value="">Semua provinsi</option>` + ada.map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join("");
+      const hit = f => [...SD.flatMap(f).reduce((m, t) => m.set(t, (m.get(t) || 0) + 1), new Map())].sort((a, b) => b[1] - a[1]).map(([t]) => `<option>${esc(t)}</option>`).join("");
+      $("mnSKat").innerHTML = `<option value="">Semua kategori</option>` + hit(x => x.klasifikasi ? [x.klasifikasi] : []);
+      $("mnSJen").innerHTML = `<option value="">Semua jenis bencana</option>` + hit(jenisL);
       const nP = SD.filter(x => x.skala === "provinsi").length;
       judulSt = `<b>${SD.length.toLocaleString("id-ID")}</b> status keadaan darurat`;
       e.className = "mn-status ok"; e.innerHTML = `<i></i>${nP} provinsi dan ${SD.length - nP} kab/kota, tahun ${esc((j.tahun || []).join(", "))}, sumber BNPB`;
@@ -344,7 +426,11 @@
   $("mnSuara").onclick = aktifkan; $("mnTutup").onclick = tutup;
   $("mnSeg").onclick = e => { const k = e.target.closest("[data-b]"); if (k) pilihB(k.dataset.b); }; $("mnBaca").onclick = sudahDibaca;
   $("mnFProv").onchange = $("mnFKey").onchange = ubahFilter;
-  $("mnSSkala").onchange = $("mnSProv").onchange = $("mnSSt").onchange = () => nanti(gambarSt);
+  $("mnSProv").onchange = $("mnSSt").onchange = $("mnSKat").onchange = $("mnSJen").onchange = () => nanti(gambarSt);
+  $("mnSKepala").addEventListener("click", e => { const b = e.target.closest("[data-u]"); if (!b) return;
+    const k = b.dataset.u; urutSt.turun = urutSt.k === k ? !urutSt.turun : k === "mulai" || k === "berakhir" || k === "jenis"; urutSt.k = k;
+    $("mnSKepala").querySelectorAll("th").forEach(th => th.setAttribute("aria-sort", th.contains(b) ? (urutSt.turun ? "descending" : "ascending") : "none"));   /* chrome urgent */
+    nanti(gambarSt); });
   $("mnBProv").onchange = $("mnBLv").onchange = $("mnBHari").onchange = () => nanti(gambarBj);
   $("mnPrev").onclick = () => { hal--; gambarDet(); }; $("mnNext").onclick = () => { hal++; gambarDet(); };
   $("mnTugas").addEventListener("click", togol); $("mnTugas").addEventListener("keydown", togol);
