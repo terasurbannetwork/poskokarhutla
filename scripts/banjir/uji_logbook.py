@@ -373,9 +373,15 @@ def main(ambil_saja=False):
     jalur = os.path.normpath(os.path.join(KELUAR, "..", "..", "data", "validasi_logbook_banjir.json"))
     sekarang = dt.datetime.now(dt.timezone(dt.timedelta(hours=7)))
     try:
-        riwayat = json.load(open(jalur)).get("riwayat") or []
+        lama = json.load(open(jalur))
     except (OSError, ValueError):
-        riwayat = []
+        lama = {}
+    # cache hujan hilang/kuota habis -> sampel menyempit: jangan timpa hasil yang lebih luas (CI berjalan diam-diam)
+    n_lama = (lama.get("sampel") or {}).get("kab_berlabel_dinilai") or 0
+    if len(lbl_ok) < n_lama:
+        print(f"LEWAT: {len(lbl_ok)} kab dinilai < {n_lama} di hasil lama; {os.path.relpath(jalur)} dibiarkan", file=sys.stderr)
+        return
+    riwayat = lama.get("riwayat") or []
     w = ((hasil.get("lb_aktif") or {}).get("hanya_kab_berlabel") or {}).get("waspada") or {}
     riwayat = [x for x in riwayat if x.get("tanggal") != sekarang.date().isoformat()][-399:] + [{
         "tanggal": sekarang.date().isoformat(), "kab_dinilai": len(lbl_ok), "ets_waspada": w.get("ets"), "pod_waspada": w.get("pod"),
