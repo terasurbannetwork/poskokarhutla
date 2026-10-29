@@ -1,0 +1,802 @@
+{
+ "dibuat": "2026-10-29",
+ "sumber": "logbook BNPB Pusdalops (public/data/logbook_kejadian.json) vs titik panas, sumber: arsip titik_hari (lengkap sejak 2026-07-03)",
+ "catatan": "LAPORAN SAJA, faktor/aturan hidup tidak diubah. Kab dicocokkan lewat nama (poligon kecamatan).",
+ "firms_tanggal_maks": null,
+ "cutoff_wib": "2026-10-27",
+ "awal_data_lengkap": "2026-07-03",
+ "jumlah_kejadian_karhutla_logbook": 883,
+ "kab_tak_cocok_atau_tanpa_titik": {
+  "73.03 Kota Bantaeng": 1,
+  "81.03 Kab. Kep. Tanimbar": 1,
+  "52.71 Kota Mataram": 1,
+  "11.73 Kab. Lhokseumawe": 1,
+  "71.03 Kab. Kep. Sangihe": 1,
+  "73.72 Kab. Pare-pare": 1,
+  "35.02 Kota Ponorogo": 1
+ },
+ "jumlah_kejadian_dipakai": 607,
+ "dibuang": {
+  "tanpa_kab_kode": 175,
+  "lewat_cutoff": 4,
+  "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 7,
+  "sebelum_awal_data_lengkap": 97
+ },
+ "deteksi": {
+  "semua": {
+   "n": 607,
+   "terdeteksi": 572,
+   "laju": 0.942,
+   "laju_ge3": 0.893
+  },
+  "kelas_ha": {
+   "<5": {
+    "n": 262,
+    "terdeteksi": 236,
+    "laju": 0.901,
+    "laju_ge3": 0.824
+   },
+   "5-50": {
+    "n": 249,
+    "terdeteksi": 242,
+    "laju": 0.972,
+    "laju_ge3": 0.932
+   },
+   "50-500": {
+    "n": 61,
+    "terdeteksi": 61,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   ">500": {
+    "n": 29,
+    "terdeteksi": 28,
+    "laju": 0.966,
+    "laju_ge3": 0.966
+   },
+   "tanpa_ha": {
+    "n": 6,
+    "terdeteksi": 5,
+    "laju": 0.833,
+    "laju_ge3": 0.833
+   }
+  },
+  "provinsi": {
+   "Aceh": {
+    "n": 29,
+    "terdeteksi": 20,
+    "laju": 0.69,
+    "laju_ge3": 0.621
+   },
+   "Jawa Barat": {
+    "n": 25,
+    "terdeteksi": 25,
+    "laju": 1.0,
+    "laju_ge3": 0.92
+   },
+   "Jawa Tengah": {
+    "n": 115,
+    "terdeteksi": 108,
+    "laju": 0.939,
+    "laju_ge3": 0.87
+   },
+   "Jawa Timur": {
+    "n": 94,
+    "terdeteksi": 91,
+    "laju": 0.968,
+    "laju_ge3": 0.947
+   },
+   "Kalimantan Selatan": {
+    "n": 10,
+    "terdeteksi": 9,
+    "laju": 0.9,
+    "laju_ge3": 0.9
+   },
+   "Kalimantan Timur": {
+    "n": 40,
+    "terdeteksi": 39,
+    "laju": 0.975,
+    "laju_ge3": 0.95
+   },
+   "Kalimantan Utara": {
+    "n": 6,
+    "terdeteksi": 6,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Kepulauan Bangka Belitung": {
+    "n": 25,
+    "terdeteksi": 25,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Kepulauan Riau": {
+    "n": 6,
+    "terdeteksi": 6,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Lampung": {
+    "n": 21,
+    "terdeteksi": 21,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Maluku": {
+    "n": 12,
+    "terdeteksi": 11,
+    "laju": 0.917,
+    "laju_ge3": 0.917
+   },
+   "Maluku Utara": {
+    "n": 9,
+    "terdeteksi": 9,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Nusa Tenggara Barat": {
+    "n": 5,
+    "terdeteksi": 4,
+    "laju": 0.8,
+    "laju_ge3": 0.8
+   },
+   "Papua Barat": {
+    "n": 7,
+    "terdeteksi": 7,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Papua Barat Daya": {
+    "n": 16,
+    "terdeteksi": 15,
+    "laju": 0.938,
+    "laju_ge3": 0.75
+   },
+   "Sulawesi Barat": {
+    "n": 11,
+    "terdeteksi": 11,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Sulawesi Selatan": {
+    "n": 69,
+    "terdeteksi": 60,
+    "laju": 0.87,
+    "laju_ge3": 0.812
+   },
+   "Sulawesi Tengah": {
+    "n": 38,
+    "terdeteksi": 38,
+    "laju": 1.0,
+    "laju_ge3": 1.0
+   },
+   "Sulawesi Tenggara": {
+    "n": 9,
+    "terdeteksi": 9,
+    "laju": 1.0,
+    "laju_ge3": 0.889
+   },
+   "Sulawesi Utara": {
+    "n": 31,
+    "terdeteksi": 30,
+    "laju": 0.968,
+    "laju_ge3": 0.871
+   },
+   "Sumatera Utara": {
+    "n": 6,
+    "terdeteksi": 5,
+    "laju": 0.833,
+    "laju_ge3": 0.667
+   }
+  },
+  "model_null": {
+   "penuh": {
+    "lewat_null_A": 123,
+    "lewat_null_B": 0,
+    "null_A_kab_sama_waktu_acak": {
+     "semua": {
+      "n": 484,
+      "diamati": 0.93,
+      "null": 0.854,
+      "lift": 1.089,
+      "lift_ci95": [
+       1.044,
+       1.145
+      ],
+      "selisih": 0.076,
+      "selisih_ci95": [
+       0.039,
+       0.117
+      ]
+     },
+     "kelas_ha": {
+      "<5": {
+       "n": 216,
+       "diamati": 0.884,
+       "null": 0.808,
+       "lift": 1.094,
+       "lift_ci95": [
+        1.025,
+        1.172
+       ],
+       "selisih": 0.076,
+       "selisih_ci95": [
+        0.022,
+        0.131
+       ]
+      },
+      "5-50": {
+       "n": 191,
+       "diamati": 0.963,
+       "null": 0.876,
+       "lift": 1.099,
+       "lift_ci95": [
+        1.049,
+        1.158
+       ],
+       "selisih": 0.087,
+       "selisih_ci95": [
+        0.044,
+        0.132
+       ]
+      },
+      "50-500": {
+       "n": 48,
+       "diamati": 1.0,
+       "null": 0.954,
+       "lift": 1.048,
+       "lift_ci95": [
+        1.012,
+        1.1
+       ],
+       "selisih": 0.046,
+       "selisih_ci95": [
+        0.012,
+        0.091
+       ]
+      },
+      ">500": {
+       "n": 23,
+       "diamati": 0.957,
+       "null": 0.891,
+       "lift": 1.074,
+       "lift_ci95": [
+        1.011,
+        1.178
+       ],
+       "selisih": 0.066,
+       "selisih_ci95": [
+        0.011,
+        0.145
+       ]
+      }
+     }
+    },
+    "null_B_waktu_sama_kab_acak": {
+     "semua": {
+      "n": 607,
+      "diamati": 0.942,
+      "null": 0.822,
+      "lift": 1.146,
+      "lift_ci95": [
+       1.108,
+       1.185
+      ],
+      "selisih": 0.12,
+      "selisih_ci95": [
+       0.089,
+       0.15
+      ]
+     },
+     "kelas_ha": {
+      "<5": {
+       "n": 262,
+       "diamati": 0.901,
+       "null": 0.784,
+       "lift": 1.149,
+       "lift_ci95": [
+        1.088,
+        1.205
+       ],
+       "selisih": 0.117,
+       "selisih_ci95": [
+        0.069,
+        0.158
+       ]
+      },
+      "5-50": {
+       "n": 249,
+       "diamati": 0.972,
+       "null": 0.831,
+       "lift": 1.17,
+       "lift_ci95": [
+        1.122,
+        1.221
+       ],
+       "selisih": 0.141,
+       "selisih_ci95": [
+        0.105,
+        0.176
+       ]
+      },
+      "50-500": {
+       "n": 61,
+       "diamati": 1.0,
+       "null": 0.914,
+       "lift": 1.094,
+       "lift_ci95": [
+        1.061,
+        1.133
+       ],
+       "selisih": 0.086,
+       "selisih_ci95": [
+        0.057,
+        0.118
+       ]
+      },
+      ">500": {
+       "n": 29,
+       "diamati": 0.966,
+       "null": 0.911,
+       "lift": 1.06,
+       "lift_ci95": [
+        0.96,
+        1.137
+       ],
+       "selisih": 0.054,
+       "selisih_ci95": [
+        -0.037,
+        0.121
+       ]
+      }
+     }
+    }
+   },
+   "ketat": {
+    "lewat_null_A": 79,
+    "lewat_null_B": 0,
+    "null_A_kab_sama_waktu_acak": {
+     "semua": {
+      "n": 528,
+      "diamati": 0.924,
+      "null": 0.772,
+      "lift": 1.197,
+      "lift_ci95": [
+       1.125,
+       1.281
+      ],
+      "selisih": 0.152,
+      "selisih_ci95": [
+       0.102,
+       0.203
+      ]
+     },
+     "kelas_ha": {
+      "<5": {
+       "n": 224,
+       "diamati": 0.871,
+       "null": 0.738,
+       "lift": 1.18,
+       "lift_ci95": [
+        1.086,
+        1.282
+       ],
+       "selisih": 0.133,
+       "selisih_ci95": [
+        0.068,
+        0.192
+       ]
+      },
+      "5-50": {
+       "n": 213,
+       "diamati": 0.962,
+       "null": 0.79,
+       "lift": 1.219,
+       "lift_ci95": [
+        1.127,
+        1.351
+       ],
+       "selisih": 0.173,
+       "selisih_ci95": [
+        0.107,
+        0.252
+       ]
+      },
+      "50-500": {
+       "n": 56,
+       "diamati": 0.982,
+       "null": 0.851,
+       "lift": 1.154,
+       "lift_ci95": [
+        1.059,
+        1.284
+       ],
+       "selisih": 0.131,
+       "selisih_ci95": [
+        0.054,
+        0.217
+       ]
+      },
+      ">500": {
+       "n": 29,
+       "diamati": 0.966,
+       "null": 0.751,
+       "lift": 1.285,
+       "lift_ci95": [
+        1.118,
+        1.51
+       ],
+       "selisih": 0.214,
+       "selisih_ci95": [
+        0.1,
+        0.326
+       ]
+      }
+     }
+    },
+    "null_B_waktu_sama_kab_acak": {
+     "semua": {
+      "n": 607,
+      "diamati": 0.932,
+      "null": 0.768,
+      "lift": 1.214,
+      "lift_ci95": [
+       1.164,
+       1.259
+      ],
+      "selisih": 0.164,
+      "selisih_ci95": [
+       0.13,
+       0.194
+      ]
+     },
+     "kelas_ha": {
+      "<5": {
+       "n": 262,
+       "diamati": 0.885,
+       "null": 0.733,
+       "lift": 1.207,
+       "lift_ci95": [
+        1.139,
+        1.277
+       ],
+       "selisih": 0.152,
+       "selisih_ci95": [
+        0.103,
+        0.199
+       ]
+      },
+      "5-50": {
+       "n": 249,
+       "diamati": 0.968,
+       "null": 0.779,
+       "lift": 1.243,
+       "lift_ci95": [
+        1.181,
+        1.306
+       ],
+       "selisih": 0.189,
+       "selisih_ci95": [
+        0.145,
+        0.229
+       ]
+      },
+      "50-500": {
+       "n": 61,
+       "diamati": 0.984,
+       "null": 0.86,
+       "lift": 1.144,
+       "lift_ci95": [
+        1.077,
+        1.204
+       ],
+       "selisih": 0.124,
+       "selisih_ci95": [
+        0.068,
+        0.169
+       ]
+      },
+      ">500": {
+       "n": 29,
+       "diamati": 0.966,
+       "null": 0.808,
+       "lift": 1.195,
+       "lift_ci95": [
+        1.066,
+        1.308
+       ],
+       "selisih": 0.158,
+       "selisih_ci95": [
+        0.056,
+        0.233
+       ]
+      }
+     }
+    }
+   },
+   "definisi": "200 undian per kejadian, seed 20261029, pagar +-14 hari dari kejadian logbook karhutla; penuh=[mulai-3,akhir], ketat=[mulai-1,mulai+1]; selisih/lift dengan selang 95% bootstrap antar-kab"
+  },
+  "vonis_null": "Deteksi 93.0% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 85.4% (lift 1.089), kab acak sewaktu 82.2% (lift 1.146); pada jendela ketat +-1 hari: diamati 92.4% vs 77.2% / 76.8%."
+ },
+ "luas": {
+  "n": 447,
+  "definisi": "rasio = luas satelit (titik unik-harian kab pada jendela x 4,14 ha) / ha BPBD, kejadian tunggal di kab, ha>0, titik>=1",
+  "rasio": {
+   "n": 447,
+   "median": 16.56,
+   "q1": 4.14,
+   "q3": 51.101
+  },
+  "rasio_median_ci95": [
+   12.833,
+   19.57
+  ],
+  "galat_log_mean_abs": 2.847,
+  "galat_log_sd": 1.913,
+  "faktor_saran_ha_per_titik": 0.25,
+  "faktor_saran_ci95": [
+   0.212,
+   0.323
+  ],
+  "per_kelas_ha": {
+   "5-50": {
+    "n": 193,
+    "median": 12.006,
+    "q1": 3.764,
+    "q3": 33.672
+   },
+   "50-500": {
+    "n": 39,
+    "median": 2.206,
+    "q1": 0.947,
+    "q3": 8.19
+   },
+   "<5": {
+    "n": 197,
+    "median": 35.19,
+    "q1": 12.232,
+    "q3": 91.08
+   },
+   ">500": {
+    "n": 18,
+    "median": 0.431,
+    "q1": 0.169,
+    "q3": 0.866
+   }
+  },
+  "titik_le5": {
+   "rasio": {
+    "n": 75,
+    "median": 3.312,
+    "q1": 1.429,
+    "q3": 7.214
+   },
+   "median_ci95": [
+    2.071,
+    5.176
+   ]
+  },
+  "per_provinsi": {
+   "Aceh": {
+    "n": 15,
+    "median": 11.333,
+    "q1": 3.209,
+    "q3": 21.767
+   },
+   "Jawa Barat": {
+    "n": 25,
+    "median": 12.834,
+    "q1": 5.796,
+    "q3": 57.96
+   },
+   "Jawa Tengah": {
+    "n": 75,
+    "median": 9.315,
+    "q1": 3.745,
+    "q3": 26.317
+   },
+   "Jawa Timur": {
+    "n": 82,
+    "median": 26.319,
+    "q1": 9.108,
+    "q3": 72.967
+   },
+   "Kalimantan Selatan": {
+    "n": 9,
+    "median": 62.581,
+    "q1": 7.452,
+    "q3": 103.5
+   },
+   "Kalimantan Timur": {
+    "n": 28,
+    "median": 24.84,
+    "q1": 4.466,
+    "q3": 115.006
+   },
+   "Kepulauan Bangka Belitung": {
+    "n": 21,
+    "median": 33.672,
+    "q1": 9.66,
+    "q3": 80.365
+   },
+   "Kepulauan Riau": {
+    "n": 6,
+    "median": 12.124,
+    "q1": 5.151,
+    "q3": 15.969
+   },
+   "Lampung": {
+    "n": 19,
+    "median": 20.7,
+    "q1": 6.9,
+    "q3": 40.749
+   },
+   "Maluku": {
+    "n": 8,
+    "median": 150.293,
+    "q1": 95.996,
+    "q3": 450.537
+   },
+   "Maluku Utara": {
+    "n": 7,
+    "median": 7.59,
+    "q1": 1.581,
+    "q3": 12.88
+   },
+   "Sulawesi Barat": {
+    "n": 9,
+    "median": 17.595,
+    "q1": 10.764,
+    "q3": 20.7
+   },
+   "Sulawesi Selatan": {
+    "n": 52,
+    "median": 23.978,
+    "q1": 7.935,
+    "q3": 45.096
+   },
+   "Sulawesi Tengah": {
+    "n": 20,
+    "median": 20.976,
+    "q1": 2.429,
+    "q3": 51.06
+   },
+   "Sulawesi Tenggara": {
+    "n": 9,
+    "median": 5.053,
+    "q1": 1.115,
+    "q3": 13.248
+   },
+   "Sulawesi Utara": {
+    "n": 20,
+    "median": 4.244,
+    "q1": 1.656,
+    "q3": 7.151
+   },
+   "Sumatera Utara": {
+    "n": 5,
+    "median": 5.52,
+    "q1": 4.14,
+    "q3": 28.98
+   }
+  }
+ },
+ "durasi": {
+  "n": 219,
+  "definisi": "selisih = tanggal padam kita (titik terakhir rangkaian + 2 hari) - surut logbook; positif = kita padam lebih lambat",
+  "selisih_hari": {
+   "n": 219,
+   "median": 5.0,
+   "q1": 1.0,
+   "q3": 20.0
+  },
+  "selisih_median_ci95": [
+   4,
+   7
+  ],
+  "logbook_durasi_median": 1.0,
+  "kita_durasi_median": 6.0,
+  "kita_lebih_lambat_pct": 81.3
+ },
+ "kesenjangan_pelaporan": {
+  ">=10_titik_per_minggu": {
+   "kab_minggu": 4540,
+   "ada_kejadian_logbook": 665,
+   "tanpa_kejadian": 3875,
+   "pct_tanpa_kejadian": 85.4,
+   "kode_prov_terbanyak_tanpa_kejadian": [
+    [
+     "53",
+     285
+    ],
+    [
+     "35",
+     281
+    ],
+    [
+     "62",
+     218
+    ],
+    [
+     "16",
+     213
+    ],
+    [
+     "73",
+     173
+    ]
+   ]
+  },
+  ">=30_titik_per_minggu": {
+   "kab_minggu": 3045,
+   "ada_kejadian_logbook": 458,
+   "tanpa_kejadian": 2587,
+   "pct_tanpa_kejadian": 85.0,
+   "kode_prov_terbanyak_tanpa_kejadian": [
+    [
+     "53",
+     212
+    ],
+    [
+     "62",
+     204
+    ],
+    [
+     "16",
+     187
+    ],
+    [
+     "35",
+     173
+    ],
+    [
+     "63",
+     156
+    ]
+   ]
+  },
+  ">=100_titik_per_minggu": {
+   "kab_minggu": 1543,
+   "ada_kejadian_logbook": 214,
+   "tanpa_kejadian": 1329,
+   "pct_tanpa_kejadian": 86.1,
+   "kode_prov_terbanyak_tanpa_kejadian": [
+    [
+     "62",
+     171
+    ],
+    [
+     "63",
+     128
+    ],
+    [
+     "61",
+     120
+    ],
+    [
+     "16",
+     118
+    ],
+    [
+     "53",
+     95
+    ]
+   ]
+  }
+ },
+ "riwayat": [
+  {
+   "tanggal": "2026-10-29",
+   "n": 607,
+   "laju_deteksi": 0.942,
+   "durasi_selisih_median": 5.0,
+   "null_A": 0.854,
+   "lift_A": 1.089,
+   "null_B": 0.822,
+   "lift_B": 1.146,
+   "ketat_diamati": 0.924,
+   "ketat_lift_A": 1.197,
+   "ketat_lift_B": 1.214
+  }
+ ]
+}
