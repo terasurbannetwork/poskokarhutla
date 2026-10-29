@@ -214,10 +214,11 @@ class Deck:
     # ---------------------------------------------------------- isi teks yang tergantung data
     def tindak(s):
         # 28 Okt pemilik: "berinisiatif dikit tambahin atau ganti" -> tiap kolom diisi dari angka hari itu, bukan kalimat yang sama tiap hari
-        sisa = sorted((x for x in s.KH if x['tangani'] and not x['lokasi']), key=lambda x: -x['sat']['sisa'])
-        b1 = ['•  ' + ' dan '.join(f"{PENDEK(x['prov'])} ±{f0(x['sat']['sisa'])} ha" for x in sisa[:2]) + ' belum padam'] if sisa else []
+        sisa = sorted((x for x in s.KH if x['tangani'] and (not x['lokasi'] or x['lokasi'] not in KAWASAN)), key=lambda x: -x['sat']['sisa'])   # 29 Okt: kabupaten (Merauke) ikut
+        nm = lambda x: x['lokasi'] or PENDEK(x['prov'])
+        b1 = ['•  ' + ' dan '.join(f"{nm(x)} ±{f0(x['sat']['sisa'])} ha" for x in sisa[:2]) + ' belum padam'] if sisa else []
         kab = [x['lokasi'].replace('Gunung ', 'Gn. ') for x in s.KH if x['lokasi'] and x['status'] == 'belum' and x['tangani']]   # Gn.: muat dua baris (26 Okt)
-        jaga = [PENDEK(x['prov']) for x in sisa[2:] if x['perhatian']]
+        jaga = [nm(x) for x in sisa[2:] if x['perhatian']]
         if kab: b1.append('•  Pemadaman: ' + ', '.join(kab))
         elif jaga: b1.append('•  Patroli dan pendinginan: ' + ', '.join(jaga[:3]))
         elif len(sisa) > 2: b1.append(f"•  Pantau {len(sisa) - 2} provinsi lain dengan sisa api")
@@ -253,6 +254,7 @@ class Deck:
                                                                          ('rumah', 'rumah rusak', 'rumah_slate', SLATE)) if a.get(k)]
             if a.get('rumah_dampak') and len(stat) < 3: stat.append((f"±{f0(a['rumah_dampak'])}", 'rumah terdampak', 'rumah_slate', SLATE))
             if a.get('kk') and len(stat) < 3: stat.append((f"±{f0(a['kk'])}", 'KK terdampak', 'orang_slate', SLATE))
+            if a.get('potensi_kk') and len(stat) < 3: stat.append((f"±{f0(a['potensi_kk'])}", 'KK berpotensi terdampak', 'orang_slate', SLATE))
             return {'pil': pil, 'stat': stat}
         if x['jenis'] == 'angin':
             rusak = ', '.join(t for t in (f"{f0(a['kios'])} kios" if a.get('kios') else '', f"{f0(a['rumah'])} rumah" if a.get('rumah') else '') if t)
@@ -420,7 +422,8 @@ class Deck:
             o += s.au(3291840 + 820000, y, rp, f"± {f0(sa['kum'])}", 'ha', int(sz_n * .98), wn=820000)
             if x['tangani']:
                 ph = int(min(250000, rp * .66)); yy = y + (rp - ph) / 2; ic = int(ph * .62)
-                o += s.kotak(4739006, yy, 1152584, ph, T_NAVY, 'roundRect', adj=50000) + s.gambar(4812158, yy + (ph - ic) / 2, ic, ic, 'api_n') + s.au(4985894 + 370000, yy, ph, f0(sa['hot']), s.lbl_hot, sz_p, c=NAVY, wn=360000, wu=480000)
+                o += s.kotak(4739006, yy, 1152584, ph, T_NAVY, 'roundRect', adj=50000) + s.gambar(4812158, yy + (ph - ic) / 2, ic, ic, 'api_n') + (s.au(4985894 + 370000, yy, ph, f0(sa['hot']), s.lbl_hot, sz_p, c=NAVY, wn=360000, wu=480000) if sa['hot'] is not None   # None: website menulis "–" (29 Okt)
+                                                                                                                                       else s.au(4985894 + 370000, yy, ph, '–', s.lbl_hot, sz_p, c=NAVY, wn=360000, wu=480000))   # 29 Okt: sama dengan website ("–")
                 sis = s.sisa_teks(sa)
                 o += s.kotak(5964742, yy, 1155436, ph, T_ORG, 'roundRect', adj=50000) + s.gambar(6037894, yy + (ph - ic) / 2, ic, ic, 'api_o2') + (s.tx(6211630, yy, 260000, ph, ['sisa'], sz=sz_p, b=True, c=ORG, an='ctr', wrap='none') + s.au(6211630 + 690000, yy, ph, f"± {f0(sa['sisa'])}", 'ha', sz_p, c=ORG, wn=420000, wu=180000)
                                                                                                                if round(sa['sisa']) or not sa.get('api') else s.tx(6211630, yy, 899404, ph, [sis], sz=sz_p, b=True, c=ORG, an='ctr', wrap='none'))
@@ -628,7 +631,8 @@ class Deck:
             jd = s.tx(548640, 292608, 10454335, 822960, [[(t, c, True) for t, c, _ in s.judul_banjir()]], sz=2200, an='b')
             F['ppt/slides/slide5.xml'] = (awal + ''.join(tetap) + jd + body + akhir).encode()
             rel = F['ppt/slides/_rels/slide3.xml.rels'].decode()
-            keep = ''.join(r for r in re.findall(r'<Relationship [^>]*/>', rel) if 'Id="rId1"' in r or '/image"' not in r)
+            # 29 Okt: catatan slide 3 tidak ikut disalin; dua slide berbagi satu notesSlide = PowerPoint minta perbaiki berkas
+            keep = ''.join(r for r in re.findall(r'<Relationship [^>]*/>', rel) if ('Id="rId1"' in r or '/image"' not in r) and '/notesSlide"' not in r)
             nama = lambda p: 'h-' + os.path.relpath(p, s.ke).replace('/', '-')
             F['ppt/slides/_rels/slide5.xml.rels'] = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + keep
                 + ''.join(f'<Relationship Id="{r}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{nama(p)}"/>' for p, r in s.MED.items()) + '</Relationships>').encode()
