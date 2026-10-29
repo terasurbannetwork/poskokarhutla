@@ -51,12 +51,18 @@ Pola tiga lapis dari MBG: (1) **penunjuk** di `CLAUDE.md` dan router `AGENTS.md`
 - Routine harian `pembaru-buku-pegangan-pb` berhenti tanpa menulis bila hari sepi, dan membaca `git log` sejak commit terakhir, bukan seluruh buku.
 - Artifact merender Markdown di peramban, jadi sumbernya cukup satu berkas `.md`; HTML terbit dibangun ulang, tidak disunting.
 
-## 6. Tuas yang butuh keputusan pemilik
+## 6. Tuas global yang sudah dijalankan (29 Okt 2026, pemilik: *"Jalankan semua"*)
 
-Belum diterapkan karena mengubah pengaturan global di luar repo:
+Cadangan sebelum diubah: `~/.claude/cadangan-hemat-2026-10-29/` (`settings.json` dan `claude.json`). Berlaku mulai sesi baru.
 
-1. Copot hook SessionStart `cavemem` atau seluruh `cavemem` (hemat sekitar 7 ribu token tiap sesi).
-2. Arsipkan skill yang tidak dipakai di repo ini (pemasaran, video, media sosial).
-3. Matikan MCP `rea`, `hermes`, dan `browseros-neo` untuk proyek ini bila tidak dipakai.
-4. Copot plugin `superpowers` bila alur brainstorming dan rencananya tidak dipakai.
-5. Gabungkan memori kembar dan memori PPT yang sudah dipindah ke skill (`selera-ppt-final` sudah menunjuk ke sana).
+| # | Tuas | Yang diubah | Cara memulihkan |
+| --- | --- | --- | --- |
+| 1 | `cavemem` dicopot | lima hook (SessionStart, UserPromptSubmit, PostToolUse, Stop, SessionEnd) dan MCP `cavemem` dibuang dari `~/.claude/settings.json`. Paketnya tetap terpasang; datanya utuh | `cavemem install --ide claude-code`, atau salin balik `settings.json` dari cadangan |
+| 2 | 209 skill diarsipkan | pemasaran, media sosial, SEO, iklan, video, dan HyperFrames dipindah dari `~/.claude/skills` ke `~/.claude/skills-arsip` (daftar di `DAFTAR.txt`). Tersisa 94: kode, desain, gerak, uji, caveman, ponytail, `ppt-konsultan`, `graphify`. Berlaku untuk semua repo | `mv ~/.claude/skills-arsip/<nama> ~/.claude/skills/` |
+| 3 | MCP dimatikan untuk repo ini | `rea`, `hermes`, `browseros-neo` masuk `disabledMcpServers` proyek `poskokarhutla` di `~/.claude.json`. Repo lain tetap memakainya | hapus nama dari `disabledMcpServers`, atau aktifkan lewat pengaturan konektor |
+| 4 | Plugin `superpowers` dimatikan | `enabledPlugins` jadi `false` | setel balik ke `true` |
+| 5 | Memori kembar digabung | `tanpa-titik-pemisah` dilebur ke `tanpa-titik-tengah`; `disk-worktree` dilebur ke `hanya-main`. Memori PPT tidak digabung karena sebagian aturannya (pil keyakinan, D-40 10%, "DIBI mencatat") belum ada di `keputusan-pemilik.md` | |
+
+Perkiraan hemat tiap sesi baru: sekitar 7 ribu token dari `cavemem`, sekitar 1,5 ribu dari `superpowers`, dan sebagian besar daftar skill serta nama alat MCP. Angka pastinya diukur lagi di sesi berikut.
+
+Belum: `voicebox` masih terdaftar walau gagal tersambung; kunci `cavemem` di teks `autoMode` tidak disentuh.
