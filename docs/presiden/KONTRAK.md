@@ -83,6 +83,7 @@ Widget `peringatan` (nowcast BMKG) dibuang 22 Okt 2026: umpannya harian sedangka
 | `luas` | Luas terbakar resmi SiPongi per tahun dan provinsi teratas | `luas_resmi.json` | Kementerian Kehutanan |
 | `berulang` | Kecamatan langganan yang terbakar lagi tahun ini | `sejarah.json` | Pemda: pencegahan permanen |
 | `pencegahan` | Paket pencegahan dan perkiraan biaya untuk provinsi teratas | `preventif.json` | Bappenas, Kemendagri |
+| `rob` | Kabupaten dan kota pesisir yang pasang astronomisnya tinggi 14 hari ke depan, digabung model rob bila belum basi, dan yang tanpa posko dalam 50 km | `public/banjir/data/rob_presiden.json` (dari `scripts/banjir/rob_presiden.py`) | BPBD pesisir, BNPB: siaga rob dan posko |
 | `kesegaran` | Umur tiap sumber data dibanding batasnya (`per` = waktu pemeriksaan) | `dibuat` atau tanggal akhir tiap berkas (tabel `WAKTU` di kode) | Pengelola platform |
 
 Generator boleh menggugurkan widget yang sumbernya tidak memadai, asal

@@ -218,6 +218,18 @@
         "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/97ceb9e2-a06b-41b8-a855-d20a7aec52da/scratchpad/uji.vars"
       ],
       "port": 8791
+    },
+    {
+      "name": "wt-ui",
+      "runtimeExecutable": "python3",
+      "runtimeArgs": [
+        "-m",
+        "http.server",
+        "8813",
+        "--directory",
+        "/private/tmp/claude-501/-Users-alfatehanseptianta-Documents-GitHub-poskokarhutla/1c872e4b-e72a-4cd0-be00-f27da710fd08/scratchpad/wt/public"
+      ],
+      "port": 8813
     }
   ]
 }
