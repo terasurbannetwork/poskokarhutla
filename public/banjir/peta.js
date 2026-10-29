@@ -186,6 +186,7 @@ const Peta = {
       const ps = PosUkur.hit(e.point); if (ps) return PosUkur.buka(ps);
       const ph_ = PosHujan.hit(e.point); if (ph_) return PosHujan.buka(ph_);
       if (typeof LapisEkstra !== "undefined" && LapisEkstra.klik(e)) return;
+      if (typeof LapisAir !== "undefined" && LapisAir.klik(e)) return;
       const pt_ = PosUkur.hitPasut(e.point); if (pt_) return PosUkur.bukaPasut(pt_);   /* pos tinggi air: kartu ringan langsung, grafik menyusul */
       const rb_ = peta.getLayer("rob") && peta.queryRenderedFeatures(e.point, {layers: ["rob"]});
       if (rb_ && rb_.length) return Rob.titik(rb_[0].properties.i);
@@ -285,7 +286,7 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
     renderLegenda();
   }); });
 $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
-  const k = i.dataset.l, map = {pos: [], hujanukur: [], peluang: [], kejadian: [], pompa: [], gfm: [], padam: [], subsiden: [], posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
+  const k = i.dataset.l, map = {pos: [], hujanukur: [], peluang: [], kejadian: [], pompa: [], gfm: [], padam: [], subsiden: [], bendungan: [], embung: [], pasut30: [], pospu: [], posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
   if (k === "hujan" || k === "h3") nanti(() => { Peta.pasangLapis("hujan"); if (!peta.getLayer("hujan")) return; const on = Peta.lihat("hujan") || Peta.lihat("h3"); peta.setLayoutProperty("hujan", "visibility", on ? "visible" : "none");
     const g = Peta.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); renderLegenda(); });
   else { if (["sungai", "rob", "satelit"].includes(k)) Peta.pasangLapis(k); map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); }
@@ -295,6 +296,7 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   if (k === "hujanukur") PosHujan.tampil(i.checked);
   if (k === "peluang") Eksp.tampil(i.checked);
   if (typeof LapisEkstra !== "undefined" && LapisEkstra.nyala) LapisEkstra.ubah(k, i.checked);
+  if (typeof LapisAir !== "undefined") LapisAir.ubah(k, i.checked);
   renderLegenda(); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderLegenda() {
@@ -307,7 +309,7 @@ function renderLegenda() {
     ${T("sungai") ? `<div class="lbl">Debit sungai (GloFAS)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw dot" style="background:#3f7fb8"></i>di bawah banjir 2 tahunan</span>${[1, 2, 3].map(l => `<span><i class="sw dot" style="background:${WARNA_LV[l]}"></i>≥ banjir ${[0, 2, 5, 20][l]} tahunan</span>`).join("")}</div>` : ""}
     ${T("rob") && S.rob ? `<div class="lbl">Pasang laut (rob)</div><div class="leg" style="margin:4px 0 8px"><span><b style="color:#2b8c86">▲</b> normal</span>${[1, 2, 3].map(l => `<span><b style="color:${WARNA_LV[l]}">▲</b> ${["", "≥ persentil 95", "≥ persentil 99", "di atas rekor"][l]}</span>`).join("")}</div>` : ""}
     ${hj ? `<div class="lbl">${Peta.lihat("h3") && !Peta.lihat("hujan") ? "Hujan 3 hari puncak" : "Hujan harian"} (model Open-Meteo, mm)</div><div class="legscale">${[3, 12, 35, 75, 125, 200].map(v => `<i style="background:rgb(${gradasi(ST_HUJAN, v).slice(0, 3).join(",")})"></i>`).join("")}</div>
-      <div class="legnum">${(Peta.lihat("h3") && !Peta.lihat("hujan") ? [5, 25, 70, 150, 250, 400] : [1, 20, 50, 100, 150, 250]).map(v => `<span>${v}</span>`).join("")}</div>` : ""}${PosUkur.legenda()}${Eksp.legenda()}${typeof LapisEkstra !== "undefined" ? LapisEkstra.legenda() : ""}${typeof Posko !== "undefined" ? Posko.legenda() : ""}</div></details>`;
+      <div class="legnum">${(Peta.lihat("h3") && !Peta.lihat("hujan") ? [5, 25, 70, 150, 250, 400] : [1, 20, 50, 100, 150, 250]).map(v => `<span>${v}</span>`).join("")}</div>` : ""}${PosUkur.legenda()}${Eksp.legenda()}${typeof LapisEkstra !== "undefined" ? LapisEkstra.legenda() : ""}${typeof LapisAir !== "undefined" ? LapisAir.legenda() : ""}${typeof Posko !== "undefined" ? Posko.legenda() : ""}</div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o});
   $("#legenda").querySelectorAll(".lg-g").forEach(g => { if (!g.querySelector(":scope > :not(.lbl)")) g.remove(); }); }   /* kelompok tanpa item (judul kosong) tidak dirender */
 

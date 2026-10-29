@@ -1,0 +1,53 @@
+/* Profil wilayah (public/inti/profil_wilayah.js): dialog kartu Insight, pil, grafik SVG interaktif. Token dari tema.css. */
+dialog.pw{width:min(720px,calc(100vw - 20px));max-height:calc(100dvh - 24px);padding:0;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow-lg);overflow:hidden;--pw-o:#d9732b}
+dialog.pw[open]{display:flex;flex-direction:column}
+dialog.pw::backdrop{background:oklch(20% .05 256 / .45)}
+.pw-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px 12px;background:var(--card);border-bottom:1px solid var(--line)}
+.pw-hd h2{margin:6px 0 2px;font:800 20px/1.25 var(--display);letter-spacing:-.01em}
+.pw-hd p{margin:0;font-size:12.5px;color:var(--ink2)}
+.pw-x{flex:none;width:32px;height:32px;display:grid;place-items:center;border:0;border-radius:10px;background:var(--surface);color:var(--ink);cursor:pointer}
+.pw-x:hover{background:var(--brand);color:#fff}
+.pw-bd{overflow-y:auto;padding:14px 16px 18px;display:grid;gap:12px;overscroll-behavior:contain}
+.pw-kos{margin:0;padding:24px 8px;text-align:center;color:var(--ink2)}
+.pw-k{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px 12px;min-width:0}
+.pw-ey{display:inline-flex;align-items:center;gap:6px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch,var(--brand2) 12%,transparent);padding:3px 9px;border-radius:999px}
+.pw-ey svg{width:12px;height:12px}
+.pw-t{margin:8px 0 10px;font-size:16px;line-height:1.4;font-weight:600;text-align:justify;text-wrap:pretty}
+.pw-o{color:var(--pw-o,#d9732b);font-weight:800}
+.pw-sub{margin:12px 0 6px;font-size:12px;color:var(--ink2)}
+.pw-ft{margin:12px 0 0;padding-top:9px;border-top:1px solid var(--line);font-size:11.5px;line-height:1.45;color:var(--ink2);text-align:justify}
+.pw-pils{display:flex;flex-wrap:wrap;gap:6px;margin:0 0 8px}
+.pw-pil{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:600;background:var(--surface);color:var(--ink);border:1px solid var(--line);cursor:default}
+.pw-pil b{font-variant-numeric:tabular-nums}
+.pw-pil svg{width:12px;height:12px}
+.pw-pil.pw-t1{background:color-mix(in oklch,#d9732b 16%,transparent);border-color:color-mix(in oklch,#d9732b 40%,transparent)}
+.pw-pil.pw-info{background:color-mix(in oklch,var(--info) 16%,transparent);border-color:color-mix(in oklch,var(--info) 40%,transparent)}
+.pw-pil.pw-ok{background:color-mix(in oklch,var(--ok) 16%,transparent);border-color:color-mix(in oklch,var(--ok) 40%,transparent)}
+.pw-pil.pw-no{background:color-mix(in oklch,var(--bad) 12%,transparent);border-color:color-mix(in oklch,var(--bad) 35%,transparent)}
+.pw-pil.pw-hi::before,.pw-pil.pw-md::before{content:"";width:8px;height:8px;border-radius:50%;background:#c9503a}
+.pw-pil.pw-md::before{background:#d29a2b}
+.pw-g{display:block;width:100%;height:auto;max-height:230px;touch-action:pan-y}
+.pw-ax{font-size:9px;fill:var(--ink2)}
+.pw-axb{font-weight:700;fill:var(--brand2)}
+.pw-amb{stroke:var(--ink2);stroke-width:1;stroke-dasharray:4 3;opacity:.55}
+.pw-brk{stroke:var(--brand2);stroke-width:1;stroke-dasharray:2 3}
+.pw-g circle{pointer-events:none}
+.pw-bar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:2px 0 10px;gap:2px;background:var(--surface)}
+.pw-bar i{display:block;min-width:3px}
+.pw-ls{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
+.pw-ls li{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.4;min-width:0}
+.pw-ls li > .pw-pil{flex:none;margin-top:1px}
+.pw-ls li > span{min-width:0;overflow-wrap:anywhere}
+.pw-ls small{display:block;color:var(--ink2);font-size:11.5px}
+.pw-ls a,.pw-baris a{color:var(--brand2);text-decoration:underline;text-underline-offset:2px}
+.pw-kon li > svg{flex:none;margin-top:2px;color:var(--ink2)}
+.pw-baris{margin:4px 0 0;font-size:13px;line-height:1.45}
+.pw-lagi{margin-top:10px;border:1px solid var(--line);background:var(--surface);color:var(--ink);border-radius:999px;padding:6px 14px;font-size:12px;font-weight:700;cursor:pointer}
+.pw-lagi:hover{background:var(--brand);color:#fff}
+.pw-tip{position:fixed;z-index:70;pointer-events:none;max-width:260px;background:var(--card);color:var(--ink);border:1px solid var(--line);border-radius:12px;box-shadow:var(--shadow-lg);padding:8px 11px;font-size:12px;line-height:1.5;opacity:0;transition:opacity .1s}
+.pw-tip.on{opacity:1}
+.pw-btn svg{width:15px;height:15px}
+@media (max-width:480px){
+  dialog.pw{width:100vw;max-height:100dvh;border-radius:0}
+  .pw-bd{padding:10px 10px 16px}.pw-k{padding:12px 12px 10px}.pw-t{font-size:15px}
+}

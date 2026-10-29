@@ -1602,6 +1602,8 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
         <details open><summary>Lahan</summary>
           <label><input type="checkbox" data-l="gambut"> Lahan gambut</label>
           <label><input type="checkbox" data-l="khg"> Kesatuan Hidrologis Gambut (KHG)</label>
+          <label><input type="checkbox" data-l="pippib"> Peta moratorium PIPPIB 2026-I</label>
+          <label><input type="checkbox" data-l="terbakar"> Areal terbakar (Kemenhut)</label>
           <label hidden><input type="checkbox" data-l="konsesi"> Konsesi (sawit, HTI, HPH, tambang)</label><!-- kotak asli; dikendalikan pil "Batas izin" di ubin Konsesi (lapisan5.js SUB.konsesig) -->
           <label hidden><input type="checkbox" data-l="kawasan"> Kawasan hutan (fungsi)</label><!-- peta 2017 disembunyikan: diganti kwskemenhut; input dipertahankan karena Peta.pasang() membacanya -->
         </details>
@@ -1675,6 +1677,7 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
 <script src="/inti/tip.js"></script>
 <script src="/inti/peluang.js"></script>
 <script src="/inti/tabel.js"></script>
+<script src="/inti/profil_wilayah.js" defer></script>
 <script src="/arsip_laporan.js" defer></script>
 <script src="/riwayat_nasional.js"></script>
 <script src="/riwayat_sel.js" defer></script>
@@ -1994,7 +1997,7 @@ const Peta = {
   lapisAwal() { const l = peta.getStyle().layers.find(l => l.type === "symbol"); return l && l.id; },
   pasang() {
     if (peta.getSource("titik")) return;
-    setTimeout(() => ["angin", "asap", "pm10", "hujan", "gambut", "khg", "kawasan", "konsesi", "udara", "metar", "himawari"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
+    setTimeout(() => ["angin", "asap", "pm10", "hujan", "gambut", "khg", "kawasan", "konsesi", "pippib", "terbakar", "udara", "metar", "himawari"].forEach(k => this.lihat(k) && (k === "angin" || !peta.getLayer(k)) && Lapis.pasang(k)), 0);
     const bawahLabel = this.lapisAwal();
     peta.addSource("satelit", {type: "raster", tileSize: 256, maxzoom: 18,
       tiles: ["https://server.arcgisonline.com/ArcGIS/rest/services/World_Imagery/MapServer/tile/{z}/{y}/{x}"], attribution: "Citra © Esri, Maxar, Earthstar"});
@@ -2258,6 +2261,26 @@ const Peta = {
 const hwLalu = u => u < 10 ? "< 10 menit" : u < 120 ? fmt(u) + " menit" : fmt(Math.round(u / 60)) + " jam";
 const Lapis = {
   cache: {},
+  /* lapisan Kemenhut berubin: sumber geojson kosong, isi = ubin 5x5 derajat (PIPPIB) atau provinsi (areal terbakar) yang bersinggungan dengan tampilan; ubin diunduh sekali (cache berisi janji) */
+  tahunTb: 2026, _kgId: {}, _kgSig: {},
+  kgDir: n => n === "pippib" ? "data/lahan/pippib/" : `data/kemenhut/terbakar_${Lapis.tahunTb}/`,
+  async kgSiap(n) { this._kgSig[n] = ""; peta.addSource(n, {type: "geojson", data: {type: "FeatureCollection", features: []}});
+    if (!this._kgMove) this._kgMove = peta.on("moveend", () => ["pippib", "terbakar"].forEach(k => peta.getLayer(k) && nanti(() => this.kgIsi(k)))); },
+  async kgIsi(n) {
+    if (!peta.getLayer(n) || peta.getLayoutProperty(n, "visibility") === "none" || peta.getZoom() < 5.5) return;
+    const id = this._kgId[n] = (this._kgId[n] || 0) + 1, dir = this.kgDir(n);
+    try { const ik = this.cache[dir] ||= await muatJSON(dir + "indeks.json"), b = peta.getBounds(), w = b.getWest(), e = b.getEast(), so = b.getSouth(), u = b.getNorth();
+      const ada = Object.entries(n === "pippib" ? ik.ubin : ik.prov).filter(([k, v]) => { const [a, c, d, f] = n === "pippib" ? (([x, y]) => [x - .5, y - .5, x + 5.5, y + 5.5])(k.split("_").map(Number)) : v.bb; return a < e && d > w && c < u && f > so; }).map(([k]) => k);
+      const fs = await Promise.all(ada.map(k => this.cache[dir + k] ||= muatJSON(dir + k + ".json").then(d => d.features, er => { delete this.cache[dir + k]; throw er; })));
+      const sig = dir + ada.join(); if (id !== this._kgId[n] || sig === this._kgSig[n]) return;
+      this._kgSig[n] = sig; peta.getSource(n)?.setData({type: "FeatureCollection", features: fs.flat()});
+    } catch (er) { console.warn("lapisan Kemenhut", n, er); } },
+  kgKlik(n) { peta.on("click", n, e => { const f = e.features?.[0]; if (!f) return; const p = f.properties, ik = this.cache[this.kgDir(n)];
+    const ha = fmt(Math.round(p.ha * 10) / 10), bln = t => `${+String(t).slice(6, 8)} ${["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"][+String(t).slice(4, 6) - 1]} ${String(t).slice(0, 4)}`;
+    tampilTip(n === "pippib"
+      ? kartuTip({judul: ik?.kelas?.[p.k] || "PIPPIB", daftar: [[`${ha} ha`, "luas"], [esc(ik?.remark?.[p.r] || "-"), "keterangan"], ["2026-I", "revisi"]], kaki: "Sumber: Kemenhut (PIPPIB 2026-I), Kepmenhut 2438/2026"})
+      : kartuTip({judul: "Areal terbakar " + Lapis.tahunTb, kepala: ikon("api", "#c9503a"), daftar: [[`${ha} ha`, "luas"], [esc(p.kab || "-"), "kabupaten"], [p.t ? bln(p.t) : "-", "tanggal citra"], [Lapis.tahunTb, "tahun"]], kaki: "Sumber: Kemenhut (areal terbakar)"}), e.originalEvent); });
+    peta.on("mouseenter", n, () => peta.getCanvas().style.cursor = "pointer"); peta.on("mouseleave", n, () => peta.getCanvas().style.cursor = ""); },
   /* Himawari: satu fetch + satu interval untuk lapisan himawari (satu lapisan "Api baru"; hwbaru digabung ke sini, pemilik 22 Okt 2026); baris lama 7 kolom = n 1, u0 u, baru 0 */
   hwFitur(baru) { const d = this.cache.hwMeta; if (!d || !Array.isArray(d.baris)) return {type: "FeatureCollection", features: []};
     return (this._hwG && this._hwG.d === d ? this._hwG : (this._hwG = {d, semua: this.hwGrup(d.baris), baru: this.hwGrup(d.baris.filter(b => b[9] === 1))}))[baru ? "baru" : "semua"]; },
@@ -2315,6 +2338,16 @@ const Lapis = {
         peta.addLayer({id: "khg", type: "line", source: "khg", paint: {"line-color": "#f2c879", "line-width": lb, "line-dasharray": [3, 2]}}, "wil-line");
         peta.addLayer({id: "khg-lbl", type: "symbol", source: "khg", minzoom: 8, layout: {"text-field": ["get", "nama"], "text-size": 11, "text-font": ["Noto Sans Bold"], "text-max-width": 12},
           paint: {"text-color": "#f7dca6", "text-halo-color": "#2a1a0c", "text-halo-width": 1.6}}); },
+      /* PIPPIB 2026-I (Kepmenhut 2438/2026) dan areal terbakar Kemenhut: ubin/provinsi dimuat malas menurut tampilan peta (kgIsi), bukan satu berkas nasional */
+      pippib: async () => { await this.kgSiap("pippib");
+        const w = ["match", ["get", "k"], 1, "#2f7fa8", 2, "#2e9460", 3, "#8a5a2b", "#888"];
+        peta.addLayer({id: "pippib", type: "fill", source: "pippib", minzoom: 5.5, paint: {"fill-color": w, "fill-opacity": .3}}, "wil-line");
+        peta.addLayer({id: "pippib-line", type: "line", source: "pippib", minzoom: 7, paint: {"line-color": w, "line-width": .7, "line-opacity": .7}}, "wil-line");
+        this.kgKlik("pippib"); this.kgIsi("pippib"); },
+      terbakar: async () => { await this.kgSiap("terbakar");
+        peta.addLayer({id: "terbakar", type: "fill", source: "terbakar", minzoom: 5.5, paint: {"fill-color": "#e0472b", "fill-opacity": .55}}, "wil-line");
+        peta.addLayer({id: "terbakar-line", type: "line", source: "terbakar", minzoom: 7, paint: {"line-color": "#a3260f", "line-width": .8}}, "wil-line");
+        this.kgKlik("terbakar"); this.kgIsi("terbakar"); },
       kawasan: async () => { const d = this.cache.kawasan ||= await muatJSON("data/lahan/kawasan.geojson");
         const w = ["match", ["get", "fungsi"], "HK", "#1f7a3a", "THR", "#1f7a3a", "HL", "#5a9e74", "HP", "#9ccc65", "HPT", "#c5e1a5", "HPK", "#e6ee9c", "#cccccc"];
         peta.addSource("kawasan", {type: "geojson", data: d}); peta.addLayer({id: "kawasan", type: "fill", source: "kawasan", paint: {"fill-color": w, "fill-opacity": .35}}, "wil-line");
@@ -3019,13 +3052,13 @@ const UBIN_IK = {titik: '<circle cx="7" cy="8" r="2"/><circle cx="16" cy="7" r="
 const UBIN = {titik: ["#2a1d17", "#ff8a3d", "titik"], kluster: ["#5a1d1a", "#e0533b", "api"], wilayah: ["#f4c48a", "#d4572f", "peta"], udara: ["#1d4e89", "#7fb2e5", "pesawat"], himawari: ["#0b3a5c", "#4fc3e8", "titik"], hwbaru: ["#5b0f6b", "#e879f9", "api"],
   fwi: ["#5a9e74", "#c9503a", "api"], pfvi: ["#4a3426", "#c9503a", "api"], angin: ["#1f5f8b", "#5fc0c9", "angin"], asap: ["#6d6a66", "#c8b9a6", "asap"], pm10: ["#5b4f45", "#d9b98c", "asap"], aqi: ["#7a2b3f", "#e3b94e", "aqi"], hujan: ["#1d4e89", "#69a7e8", "hujan"], metar: ["#0b2545", "#5f6fb0", "mata"],
   hutan: ["#1f5a3a", "#5fae6e", "hutan"], konsesig: ["#7a4bb0", "#e58a45", "pabrik"], plkemenhut: ["#4d6b2a", "#c2cf72", "lapisan"], kebun: ["#6b4f1d", "#d2a24a", "kebun"], kwskemenhut: ["#245c3a", "#7ab37a", "pohon"],
-  gambut: ["#4a3426", "#a0764f", "daun"], khg: ["#5a3a1c", "#c9a27a", "kanal"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
+  gambut: ["#4a3426", "#a0764f", "daun"], khg: ["#5a3a1c", "#c9a27a", "kanal"], pippib: ["#1f5f7a", "#5fb3d4", "perisai"], terbakar: ["#7a1d10", "#f2693f", "api"], kawasan: ["#245c3a", "#7ab37a", "pohon"], konsesi: ["#7a4bb0", "#e58a45", "pabrik"], hilang: ["#6b2b2b", "#e07a5f", "hilang"],
   kanal: ["#16405c", "#4fa3c4", "kanal"], jalan: ["#4b5563", "#c7ccd4", "jalan"], satelit: ["#13324d", "#4d8a5e", "satelit"], posko: ["#0b2545", "#3b6fb0", "posko"], daops: ["#1f5f5b", "#5fb3a9", "perisai"],
   penduduk: ["#5f2b5f", "#e58ab0", "orang"], fasilitas: ["#3b3b8a", "#9b8de0", "gedung"], peringatan: ["#7a3b0b", "#f2b544", "peringatan"], foto: ["#8a3b1d", "#f2a35e", "kamera"],
   kabluas: ["#3F5F80", "#7f9fc0", "lapisan"], langganan: ["#6e1a12", "#f29b54", "api"], kabbelum: ["#D9600B", "#f2a35e", "peringatan"]};   /* warna deck BNPB: luas = biru baja, belum padam = oranye */
 /* nama pendek untuk ubin (satu kategori sebaris); nama lengkap muncul di tooltip */
 const UBIN_PENDEK = {langganan: "Langganan api", aqi: "AQI", pm10: "PM10",udara: "Pangkalan udara", fwi: "FWI", pfvi: "Api gambut", metar: "METAR", kawasan: "Kawasan hutan", kwskemenhut: "Kawasan hutan", hutan: "Hutan", plkemenhut: "Tutupan lahan", konsesig: "Konsesi", konsesi: "Konsesi", hilang: "Hutan hilang",
-  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Cluster", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam"};
+  kanal: "Kanal", jalan: "Jalan & sungai", daops: "Manggala Agni", foto: "Foto", kluster: "Cluster", wilayah: "Wilayah", gambut: "Gambut", khg: "KHG", pippib: "Moratorium", terbakar: "Areal terbakar", satelit: "Satelit", kabluas: "Luas terbakar", kabbelum: "Belum padam"};
 function ubinLapis() { const L = $("#lapis"); if (!L) return;
   L.querySelectorAll("details").forEach(d => { const ls = [...d.children].filter(x => x.tagName === "LABEL"); if (!ls.length) return;
     let gr = d.querySelector(":scope > .ub-gr"); if (!gr) { gr = document.createElement("div"); gr.className = "ub-gr"; d.append(gr); }
@@ -3046,10 +3079,11 @@ $("#lapis").addEventListener("change", e => { const i = e.target.closest("input"
   /* Himawari (titik 10 menit + api baru) tidak punya tombol sendiri: ikut tombol Satelit (pemilik, 19 Okt 2026) */
   if (i.dataset.l === "satelit") ["himawari"].forEach(k => { const h = $(`#lapis input[data-l="${k}"]`); if (h && h.checked !== i.checked) { h.checked = i.checked; h.dispatchEvent(new Event("change", {bubbles: true})); } });
   const map = {titik: ["titik"], kluster: ["kl-fill", "kl-line", "kl-pt", "kl-pt3", "kl-drone", "prio-klaster", "prio-n", "prio-1", "prio-lbl"], wilayah: ["wil-fill"], fwi: ["fwi"], pfvi: ["pfvi"], satelit: ["satelit"], daops: ["daops", "daops-lbl"], posko: ["posko", "posko-lbl"],
-    angin: ["angin"], langganan: ["langganan"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], konsesi: ["konsesi", "konsesi-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
+    angin: ["angin"], langganan: ["langganan"], gambut: ["gambut"], khg: ["khg", "khg-sar", "khg-lbl"], kawasan: ["kawasan", "kawasan-line"], metar: ["metar", "metar-lbl"], himawari: ["himawari", "himawari-klaster", "himawari-n"], konsesi: ["konsesi", "konsesi-line"], pippib: ["pippib", "pippib-line"], terbakar: ["terbakar", "terbakar-line"], asap: ["asap"], pm10: ["pm10"], aqi: ["aqi", "aqi-lbl", "aqi-nama"], hujan: ["hujan"], udara: ["udara", "udara-r", "udara-lbl"]}[i.dataset.l];
   if (i.dataset.l === "angin") { i.checked ? Angin.mulai() : (Angin.henti(), peta.getLayer("angin") && peta.setLayoutProperty("angin", "visibility", "none")); garisWaktu(); renderLegenda(); return; }
   if (i.checked && !peta.getLayer(map[0])) { nanti(() => Lapis.pasang(i.dataset.l)); garisWaktu(); renderLegenda(); return; }
   map.forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none"));
+  if (i.checked && (i.dataset.l === "pippib" || i.dataset.l === "terbakar")) nanti(() => Lapis.kgIsi(i.dataset.l));
   garisWaktu();
   renderLegenda(); });
 /* mode peta: pintasan ke tampilan sekarang, riwayat (panel + warna wilayah), atau cuaca gaya Windy (FWI, angin, asap) */
@@ -3063,6 +3097,9 @@ $("#modePeta")?.addEventListener("click", e => { const b = e.target.closest("but
   if (m === "cuaca") set("titik", true);
   Kini.tampil(m === "kini"); renderLegenda();
   const pm = $(`#panelMode [data-m="${m === "riw" ? "riw" : "wil"}"]`); if (pm.getAttribute("aria-pressed") !== "true") pm.click(); });
+/* tahun areal terbakar: pil aktif langsung (urgent), ubin tahun baru dimuat sesudahnya */
+$("#legenda").addEventListener("click", e => { const b = e.target.closest("#tbThn button"); if (!b) return; Lapis.tahunTb = +b.dataset.thn;
+  b.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(() => { Lapis.kgIsi("terbakar"); renderLegenda(); }); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 function renderFwiHari() {
   const hari = S.fwi.grid[0].hari, i0 = hari.findIndex(h => h.tgl === S.fwi.hari_ini);
@@ -3125,6 +3162,8 @@ function renderLegenda() {
     `}
     ${Peta.lihat("gambut") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:#6b4a2b;opacity:.6"></i>Lahan gambut (sumber: lihat Metode)</span></div>` : ""}
     ${Peta.lihat("khg") ? `<div class="leg" style="margin-top:8px"><span><i class="sw" style="background:none;border-top:2px dashed #e0a94a;height:0;margin-top:6px"></i>Batas KHG (BRGM PRIMS)</span></div>` : ""}
+    ${Peta.lihat("pippib") ? `<div class="lbl" style="margin-top:8px">Moratorium PIPPIB 2026-I</div><div class="leg" style="margin-top:4px">${[["#2f7fa8", "Kawasan"], ["#2e9460", "Primer"], ["#8a5a2b", "Gambut"]].map(([w, t]) => `<span><i class="sw" style="background:${w};opacity:.6"></i>${t}</span>`).join("")}<span>Sumber: Kemenhut (PIPPIB 2026-I), tampil mulai zoom 6</span></div>` : ""}
+    ${Peta.lihat("terbakar") ? `<div class="lbl" style="margin-top:8px">Areal terbakar Kemenhut</div><div class="seg" id="tbThn" style="margin:4px auto 0;width:max-content">${[2025, 2026].map(y => `<button data-thn="${y}" aria-pressed="${Lapis.tahunTb === y}">${y}</button>`).join("")}</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#e0472b;opacity:.7"></i>Areal terbakar ${Lapis.tahunTb}</span><span>Sumber: Kemenhut (areal terbakar), tampil mulai zoom 6</span></div>` : ""}
     ${Peta.lihat("kawasan") ? `<div class="lbl" style="margin-top:8px">Kawasan hutan</div><div class="leg" style="margin-top:4px">${[["#1f7a3a", "Konservasi / Tahura (BKSDA, Taman Nasional)"], ["#5a9e74", "Hutan lindung (pemda)"], ["#9ccc65", "Hutan produksi (pemegang PBPH)"], ["#c5e1a5", "Produksi terbatas"], ["#e6ee9c", "Produksi dapat dikonversi"]].map(([c, n]) => `<span><i class="sw" style="background:${c}"></i>${n}</span>`).join("")}</div>` : ""}
     ${Peta.lihat("konsesi") ? `<div class="lbl" style="margin-top:8px">Konsesi (data sekitar 2014)</div><div class="leg" style="margin-top:4px"><span><i class="sw" style="background:#c98a3c"></i>Sawit (IUP/HGU)</span><span><i class="sw" style="background:#2f6f8f"></i>HPH (hutan alam)</span></div>` : ""}
     ${Peta.lihat("udara") ? `<div class="lbl" style="margin-top:8px">Dukungan udara</div><div class="leg" style="margin-top:4px"><span><i class="sw dot" style="background:#d06a33;border:2px solid #fff"></i>Pangkalan helikopter (lingkar 100 km)</span><span><i class="sw dot" style="background:#fff;border:2px solid #d06a33"></i>Pangkalan aju helikopter</span><span><i class="sw dot" style="background:#2f6f8f;border:2px solid #fff"></i>Pangkalan modifikasi cuaca</span></div>` : ""}
@@ -3206,7 +3245,7 @@ const Laci = {
             return `<rect x="${k * bw + bw * .15}" y="${24 - hh}" width="${bw * .7}" height="${hh}" rx=".8" fill="${j === v.length - 1 ? "#c9503a" : "#e58a45"}" data-tip="<b>${th[j]}</b><br>${fmt(x)} titik"/>${x ? `<text x="${k * bw + bw / 2}" y="${22 - hh}" text-anchor="middle" font-size="2.9" font-weight="700" fill="var(--ink2)" pointer-events="none">${lb(x)}</text>` : ""}<text x="${k * bw + bw / 2}" y="31" text-anchor="middle" font-size="2.6" fill="var(--ink2)" opacity=".8">'${String(th[j]).slice(2)}</text>`; }).join("")}</svg>`).join(""); })()}
         ${rw ? `<button class="btn btn-gelap" data-analisa style="justify-self:end">Analisa lengkap ›</button>` : ""}`; })();
     const ps = S.poskoDari.get(p.id), bp = bpbdDekat(p.lat, p.lon), dk = daopsDekat(p.lat, p.lon);
-    el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">Cluster ${esc(p.id)}</span><h2 title="${esc(p.kec)}, ${esc(p.kab)}">${esc(p.kec)}, ${esc(p.kab)}</h2>
+    el.innerHTML = `<div class="hd"><div class="hd-isi"><span class="hd-ey">Cluster ${esc(p.id)}</span><h2 title="${esc(p.kec)}, ${esc(p.kab)}" data-prov="${esc(p.prov)}">${esc(p.kec)}, ${esc(p.kab)}</h2>
       <div class="hd-meta"><span class="pill l${p.level}">${esc(S.meta.status[p.level])}</span>${firespotHtml(p)}<span class="hd-ko" title="Koordinat pusat cluster"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg>${p.lat.toFixed(4)}, ${p.lon.toFixed(4)}</span></div></div>
       <div class="hd-aksi"><button class="ik-btn" id="keSim" title="Simulasikan 72 jam" aria-label="Simulasikan 72 jam"><svg viewBox="0 0 24 24"><path d="M12 3c1.5 3.3 5 5.3 5 9.6a5 5 0 0 1-10 0c0-2 .9-3.5 2.2-4.7.2 1.7 1.2 2.7 2.2 3C10.6 8.3 11.2 5.6 12 3Z"/></svg></button>
         <a class="ik-btn" target="_blank" rel="noopener" href="https://www.google.com/maps?q=${p.lat},${p.lon}" title="Buka di Google Maps" aria-label="Buka di Google Maps"><svg viewBox="0 0 24 24"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/></svg></a>
