@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **25 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **26 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,7 +13,7 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (16)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (17)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
@@ -33,6 +33,7 @@ Cara memakai katalog ini:
 | `neraca-air` | sonnet | membangun & membetulkan pipeline neraca air Jawa dan paket datanya | layar web; pipeline karhutla/banjir/kekeringan; memvalidasi modelnya sendiri (itu validasi-model) | `scripts/air/neraca/**`, `public/data/neraca_air/**`, `data/kajian-bnpb/neraca-air/**` |
 | `wa-bot` | sonnet | membangun & membetulkan gateway Baileys, pengatur otomatis, plist launchd, dan uji tanpa jaringan untuknya | worker dan D1 (warga-api); isi generator laporan (pipa-data); layar publik | `scripts/wa/**`, `tests/wa/**` |
 | `longsor` | sonnet | membangun & membetulkan pipeline nowcast longsor, label kejadian, dan uji baliknya | worker dan D1; layar; modul banjir; menyunting .github/workflows | `scripts/longsor/**`, `public/longsor/**`, `tests/longsor/**` |
+| `prediksi` | sonnet | membangun & membetulkan pembekuan prakiraan, penilaian, kalibrasi, aturan dampak, dan layar /prediksi | worker dan D1; modul udara/banjir; menyunting .github/workflows | `scripts/prediksi/**`, `public/prediksi/**`, `tests/prediksi/**` |
 
 ## Pengerja platform — kerja menyeberang domain (layar, uji, gerbang, mesin, migrasi) (2)
 
