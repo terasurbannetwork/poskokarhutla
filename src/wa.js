@@ -8,7 +8,8 @@
 import {json, gagal, adminOK, sha} from "./worker.js";
 import {KONTROL, tglSah} from "./posko.js";
 
-const MAKS_BODY = 262144, MAKS_TEKS = 65536, MAKS_BERKAS = 20 * 1024 * 1024, MAKS_HARI = 500;
+export const MAKS_BERKAS = 20 * 1024 * 1024;
+const MAKS_BODY = 262144, MAKS_TEKS = 65536, MAKS_HARI = 500;
 const RE_KARHUTLA = /karhutla|kebakaran\s+(hutan|lahan)|pemadaman|water\s*bombing|titik\s+panas|hotspot|firespot|modifikasi\s+cuaca|\bomc\b/i;
 const TIPE_AMAN = /^(application\/pdf|image\/(png|jpeg|webp)|text\/plain|application\/vnd\.openxmlformats-officedocument\.[a-z.]+|application\/(msword|vnd\.ms-excel))$/;
 
@@ -23,7 +24,7 @@ export function tanggalDari(teks, kini) {
 export const jenisDari = (teks, nama) => /#karhutla\b/i.test(teks) ? "karhutla" : /#bencana\b/i.test(teks) ? "bencana" : RE_KARHUTLA.test(`${teks} ${nama}`) ? "karhutla" : "bencana";
 
 /* baca aliran per potong dan berhenti di batas: tanpa content-length (chunked) kiriman besar tidak dimuat utuh dulu. null = melewati batas. */
-async function bacaTerbatas(aliran, maks) {
+export async function bacaTerbatas(aliran, maks) {
   const potong = [], baca = aliran.getReader(); let n = 0;
   for (let x; !(x = await baca.read()).done;) { n += x.value.byteLength; if (n > maks) { await baca.cancel(); return null; } potong.push(x.value); }
   const b = new Uint8Array(n); let o = 0; for (const p of potong) { b.set(p, o); o += p.byteLength; }

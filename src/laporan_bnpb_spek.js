@@ -3,6 +3,7 @@
    (pola yang sama dengan src/hukum_spek.js). */
 export const MODEL_URAI = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
 export const MAKS_URAI = 12000, HARI = 24 * 3600e3, BATAS_URAI_HARI = 200;
+export const BATAS_BACA_HARI = 300;   // /api/laporan-bnpb/baca: toMarkdown + OCR per hari, seluruh admin
 const MAKS_KEJADIAN = 60;
 const MEDAN_SALIN = ["judul", "lokasi", "dampak", "status_penetapan", "pendampingan", "kondisi"];
 export const SKEMA_URAI = {type: "object", properties: {kejadian: {type: "array", items: {type: "object", properties: {
