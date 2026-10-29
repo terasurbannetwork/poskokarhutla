@@ -35,8 +35,25 @@
     [6, "Sitasi", "Dikutip peneliti lain", '<path d="M7 7h4v6H5v-2c0-2 1-4 2-4zM15 7h4v6h-6v-2c0-2 1-4 2-4z"/>']];
   const metrik = o => `<div class="ak-metrik">${METRIK.map(([i, l, t, d]) => `<div title="${t}"><span class="ak-mlabel">${ikon(d, "currentColor")}${l}</span><b>${angka(o[i])}</b></div>`).join("")}</div>`;
 
-  const st = {q: "", kampus: "", prodi: "", sumber: "s", urut: 4, rumpun: "", hal: 1, kJenis: "k"};
+  const st = {q: "", prov: "", kampus: "", prodi: "", sumber: "s", urut: 4, rumpun: "", hal: 1, kJenis: "k"};
   let semua = [], hasil = [], perK = {}, logoK = {}, tunda = 0;
+  const PROV = {11: "Aceh", 12: "Sumatera Utara", 13: "Sumatera Barat", 14: "Riau", 15: "Jambi", 16: "Sumatera Selatan", 17: "Bengkulu", 18: "Lampung", 19: "Kepulauan Bangka Belitung", 21: "Kepulauan Riau",
+    31: "DKI Jakarta", 32: "Jawa Barat", 33: "Jawa Tengah", 34: "DI Yogyakarta", 35: "Jawa Timur", 36: "Banten", 51: "Bali", 52: "Nusa Tenggara Barat", 53: "Nusa Tenggara Timur",
+    61: "Kalimantan Barat", 62: "Kalimantan Tengah", 63: "Kalimantan Selatan", 64: "Kalimantan Timur", 65: "Kalimantan Utara", 71: "Sulawesi Utara", 72: "Sulawesi Tengah", 73: "Sulawesi Selatan",
+    74: "Sulawesi Tenggara", 75: "Gorontalo", 76: "Sulawesi Barat", 81: "Maluku", 82: "Maluku Utara", 91: "Papua", 92: "Papua Barat", 93: "Papua Selatan", 94: "Papua Tengah", 95: "Papua Pegunungan", 96: "Papua Barat Daya"};
+  let kampusInfo = {}, kontak = {}, peta = new Map(), dp = new Set(), tokenS = 0, sibuk = false;
+  const DP_KEY = "ak-dp", PERLU_KEY = "ak-dp-perlu";
+  const nanti = f => window.requestIdleCallback ? requestIdleCallback(f, {timeout: 300}) : setTimeout(f, 0);
+  const provK = k => kampusInfo[k]?.prov || null, provO = o => provK(o[2]);
+  const provNama = v => PROV[v] || "";
+  const cocokProv = o => !st.prov || (st.prov === "?" ? !provO(o) : provO(o) === st.prov);
+  const cocokProvK = k => !st.prov || (st.prov === "?" ? !provK(k) : provK(k) === st.prov);
+  const emailOk = e => typeof e === "string" && /^[^\s@<>"']+@[^\s@<>"']+$/.test(e);
+  const IKON_PIN = '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', IKON_MAIL = '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
+    IKON_TANDA = '<path d="M6 4h12v17l-6-4-6 4z"/>', IKON_WEB = '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>';
+  /* email: dari ORCID (kontak.json), kalau tidak ada email resmi kampus; tak ada keduanya = null */
+  const emailDari = o => { const a = [].concat(kontak[o[0]]?.email || []).filter(emailOk); if (a.length) return {list: a, sumber: "ORCID"};
+    const k = [].concat(kampusInfo[o[2]]?.email || []).filter(emailOk); return k.length ? {list: k, sumber: "Email kampus"} : null; };
 
   const foto = (o, besar) => o[9]
     ? `<img class="ak-foto${besar ? " besar" : ""}" src="${esc(o[9])}" alt="" loading="lazy" referrerpolicy="no-referrer" data-inisial="${esc(inisial(o[1]))}">`
@@ -52,9 +69,10 @@
   const prodiDari = o => o[11] ? o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, "") : "";
   const kartu = (o, i) => { const prodi = prodiDari(o);
     return `<div class="ak-orang" role="button" tabindex="0" data-i="${i}" aria-label="Buka profil ${esc(o[1])}">
+      <label class="ak-pilih" title="Tambah ke daftar pendek"><input type="checkbox" data-dp="${esc(o[0])}" aria-label="Tambah ${esc(o[1])} ke daftar pendek"${dp.has(o[0]) ? " checked" : ""}><span class="ak-cek"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span></label>
       <span class="ak-atas">${sosok(o)}<span class="ak-nama"><h3>${esc(o[1])}</h3>${o[13] === "s" || o[15] === "diaspora" ? `<span class="ak-lencana">${o[13] === "s" ? `<em class="ak-l-sinta">SINTA</em>` : ""}${o[15] === "diaspora" ? `<em class="ak-l-diaspora">Diaspora</em>` : ""}</span>` : ""}</span></span>
       <span class="ak-kartu-label">
-        <button type="button" class="ak-lbl-inst" data-fk="kampus" data-v="${esc(o[2])}" title="Saring: ${esc(o[2])}">${esc(o[2])}</button>
+        <button type="button" class="ak-lbl-inst" data-kp="${esc(o[2])}" title="Profil kampus ${esc(o[2])}">${esc(o[2])}</button>
         ${prodi ? `<button type="button" class="ak-lbl-prodi" data-fk="prodi" data-v="${esc(prodi)}" title="Saring program studi ini">${esc(prodi)}</button>` : ""}
       </span>
       <span class="ak-pil">${o[3].map((r, j) => `<button type="button" class="ak-r${j === 0 ? " utama" : ""}" data-fk="rumpun" data-v="${esc(r)}" style="--w0:${(RUMPUN[r] || [])[2] || "#6b7280"}">${(RUMPUN[r] || [])[1] ? ikon(RUMPUN[r][1], RUMPUN[r][2]) : ""}${esc((RUMPUN[r] || [r])[0])}</button>`).join("")}</span>
@@ -63,7 +81,7 @@
 
   function saring() {
     const q = st.q.toLowerCase();
-    hasil = semua.filter(o => (!st.rumpun || o[3].includes(st.rumpun)) && (!st.kampus || o[2] === st.kampus) && (!st.prodi || prodiDari(o) === st.prodi)
+    hasil = semua.filter(o => cocokProv(o) && (!st.rumpun || o[3].includes(st.rumpun)) && (!st.kampus || o[2] === st.kampus) && (!st.prodi || prodiDari(o) === st.prodi)
       && (q || st.sumber === "" || (st.sumber === "s" ? o[13] === "s" : o[13] !== "x")) && (!q || o._cari.includes(q)));   // cari nama = semua sumber
     const u = st.urut;
     hasil.sort(u === 1 ? (a, b) => a[1].localeCompare(b[1], "id") : (a, b) => b[u] - a[u] || b[4] - a[4]);
@@ -84,7 +102,7 @@
   /* ---------- pemilih kampus dan lembaga ---------- */
   function daftarKampus() {
     const q = $("akKQ").value.trim().toLowerCase();
-    const isi = Object.entries(perK).filter(([k]) => jenisK(k) === st.kJenis && (!q || k.toLowerCase().includes(q))).sort((a, b) => b[1] - a[1]);
+    const isi = Object.entries(perK).filter(([k]) => jenisK(k) === st.kJenis && cocokProvK(k) && (!q || k.toLowerCase().includes(q))).sort((a, b) => b[1] - a[1]);
     const semuaBtn = `<button type="button" role="option" data-k="" aria-selected="${!st.kampus}"><span>${st.kJenis === "k" ? "Semua universitas dan kampus" : "Semua lembaga"}</span></button>`;
     $("akKDaftar").innerHTML = (q ? "" : semuaBtn) + (isi.length ? isi.slice(0, 300).map(([k, n]) =>
       `<button type="button" role="option" data-k="${esc(k)}" aria-selected="${k === st.kampus}">${logoKecil(k)}<span>${esc(k)}</span><small>${angka(n)}</small></button>`).join("")
@@ -102,10 +120,31 @@
     bukaKampus(false); saring();
   }
 
+  /* ---------- pemilih provinsi: lewat kampus.json; tanpa data = disembunyikan ---------- */
+  function daftarProv() {
+    const q = $("akVQ").value.trim().toLowerCase(), n = {};
+    semua.forEach(o => { const v = provO(o) || "?"; n[v] = (n[v] || 0) + 1; });
+    const isi = Object.entries(n).filter(([v]) => v !== "?" && (!q || provNama(v).toLowerCase().includes(q))).sort((a, b) => b[1] - a[1]);
+    const btn = (v, t, c) => `<button type="button" role="option" data-v="${v}" aria-selected="${v === st.prov}"><span>${esc(t)}</span>${c != null ? `<small>${angka(c)}</small>` : ""}</button>`;
+    $("akVDaftar").innerHTML = (q ? "" : btn("", "Semua provinsi")) + isi.map(([v, c]) => btn(v, provNama(v) || v, c)).join("")
+      + (n["?"] && (!q || "lokasi belum diketahui".includes(q)) ? btn("?", "Lokasi belum diketahui", n["?"]) : "") + (!isi.length && q ? "<p>Tidak ada provinsi bernama itu.</p>" : "");
+  }
+  function bukaProv(buka) {
+    $("akVPop").hidden = !buka; $("akVBtn").setAttribute("aria-expanded", String(buka));
+    if (buka) { $("akVQ").value = ""; daftarProv(); $("akVQ").focus(); }
+  }
+  const labelProv = v => v === "?" ? "Lokasi belum diketahui" : v ? provNama(v) || v : "Semua provinsi";
+  function pilihProv(v) {
+    st.prov = v; $("akVIsi").innerHTML = `<em>${esc(labelProv(v))}</em>`; bukaProv(false);
+    if (st.kampus && !cocokProvK(st.kampus)) { st.kampus = ""; $("akKIsi").innerHTML = "<em>Semua kampus dan lembaga</em>"; }
+    if (st.prodi && !semua.some(o => cocokProv(o) && (!st.kampus || o[2] === st.kampus) && prodiDari(o) === st.prodi)) st.prodi = "";
+    saring();
+  }
+
   /* ---------- pemilih program studi: daftar ikut kampus terpilih ---------- */
   function daftarProdi() {
     const q = $("akPQ").value.trim().toLowerCase(), n = {};
-    semua.forEach(o => { const p = prodiDari(o); if (p && (!st.kampus || o[2] === st.kampus)) n[p] = (n[p] || 0) + 1; });
+    semua.forEach(o => { const p = prodiDari(o); if (p && cocokProv(o) && (!st.kampus || o[2] === st.kampus)) n[p] = (n[p] || 0) + 1; });
     const isi = Object.entries(n).filter(([p]) => !q || p.toLowerCase().includes(q)).sort((a, b) => b[1] - a[1]);
     $("akPDaftar").innerHTML = (q ? "" : `<button type="button" role="option" data-p="" aria-selected="${!st.prodi}"><span>Semua program studi</span></button>`)
       + (isi.length ? isi.slice(0, 300).map(([p, c]) => `<button type="button" role="option" data-p="${esc(p)}" aria-selected="${p === st.prodi}"><span>${esc(p)}</span><small>${angka(c)}</small></button>`).join("")
@@ -257,14 +296,120 @@
     }
   }
 
+  const dpTombol = id => `<button type="button" class="ak-dptog" data-dp-t="${esc(id)}" aria-pressed="${dp.has(id)}">${ikon(IKON_TANDA, "currentColor")}<span>${dp.has(id) ? "Ada di daftar pendek" : "Tambah ke daftar pendek"}</span></button>`;
+  const kontakHtml = o => { const e = emailDari(o); if (!e) return "";
+    return `<div class="ak-kontak">${ikon(IKON_MAIL, "currentColor")}${e.list.map(m => `<a href="mailto:${esc(m)}">${esc(m)}</a>`).join("")}<em class="ak-sumber">${e.sumber}</em></div>`; };
+
+  /* ---------- daftar pendek ---------- */
+  const dpSimpan = () => { try { localStorage.setItem(DP_KEY, JSON.stringify([...dp])); } catch (e) {} };
+  function dpSegarkan() {
+    $("akDpN").textContent = angka(dp.size); $("akDpBar").hidden = !dp.size; document.body.classList.toggle("ak-ada-dp", dp.size > 0);
+    if (!dp.size) { $("akDpMenu").hidden = true; document.querySelector('[data-dpa="unduh"]').setAttribute("aria-expanded", "false"); }
+    document.querySelectorAll("input[data-dp]").forEach(c => { c.checked = dp.has(c.dataset.dp); });
+    document.querySelectorAll("[data-dp-t]").forEach(b => { const a = dp.has(b.dataset.dpT); b.setAttribute("aria-pressed", String(a)); b.querySelector("span").textContent = a ? "Ada di daftar pendek" : "Tambah ke daftar pendek"; });
+  }
+  function dpUbah(id, ada) { if (ada) dp.add(id); else dp.delete(id); dpSimpan(); dpSegarkan(); if ($("akSheet").dataset.mode === "dp" && !$("akSheet").hidden) daftarDp(); }
+  function dpTambahBanyak(ors) { ors.forEach(o => dp.add(o[0])); dpSimpan(); dpSegarkan(); pesanDp(`${angka(ors.length)} pakar ditambahkan`); }
+  let pesanT = 0;
+  function pesanDp(t) { $("akDpPesan").textContent = t; clearTimeout(pesanT); if (t) pesanT = setTimeout(() => { $("akDpPesan").textContent = ""; }, 4000); }
+
+  /* lembar bawah bersama: daftar pendek dan profil kampus. Kepala tampil seketika, isi berat ditunda. */
+  function bukaSheet(mode, kepala, isiFn) {
+    const sh = $("akSheet"), tk = ++tokenS; sh.dataset.mode = mode;
+    $("akSIsi").innerHTML = kepala + '<div class="ak-dtubuh" id="akSTubuh"><div class="ak-hantu"></div></div>';
+    sh.hidden = false; document.body.style.overflow = "hidden"; sh.querySelector(".ak-x").focus();
+    nanti(() => { if (tk === tokenS && !sh.hidden) $("akSTubuh").innerHTML = isiFn(); });
+  }
+  function tutupSheet() { $("akSheet").hidden = true; tokenS++; $("akTip").hidden = true; if ($("akLembar").hidden) document.body.style.overflow = ""; }
+  const metrikK = a => `<div class="ak-metrik">${a.map(([l, d, n]) => `<div><span class="ak-mlabel">${ikon(d, "currentColor")}${l}</span><b>${angka(n)}</b></div>`).join("")}</div>`;
+  const IK_ORANG = '<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c3 0 5.5 2 5.5 5"/>';
+  const kecil = o => `<button type="button" class="ak-sbuka" data-buka="${esc(o[0])}">${foto(o)}<span><b>${esc(o[1])}</b><small>${esc(prodiDari(o) || o[2])}</small></span></button>`;
+  function daftarDp() {
+    const ors = [...dp].map(id => peta.get(id)).filter(Boolean);
+    if (!ors.length) { tutupSheet(); return; }
+    $("akSJudul").nextElementSibling.querySelector("b").textContent = angka(ors.length);
+    $("akSTubuh").innerHTML = `<ol class="ak-sdaftar">${ors.map(o => `<li>${kecil(o)}<button type="button" class="ak-shapus" data-hapus="${esc(o[0])}" aria-label="Hapus ${esc(o[1])} dari daftar pendek"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button></li>`).join("")}</ol>`;
+  }
+  function lihatDp() {
+    bukaSheet("dp", `<div class="ak-dkepala"><div class="ak-dk-atas"><div class="ak-nama"><h2 id="akSJudul">Daftar pendek pakar</h2><p><b>${angka(dp.size)}</b> pakar terpilih</p></div></div></div>`, () => { daftarDp(); return $("akSTubuh").innerHTML; });
+  }
+  const urlHost = w => String(w).replace(/^https?:\/\//i, "").replace(/\/$/, "");
+  function profilKampus(k) {
+    const info = kampusInfo[k] || {}, ors = semua.filter(o => o[2] === k), karyaN = ors.reduce((a, o) => a + (o[5] || 0), 0), sitasiN = ors.reduce((a, o) => a + (o[6] || 0), 0);
+    const web = typeof info.web === "string" && info.web ? (/^https?:\/\//i.test(info.web) ? info.web : "https://" + info.web) : "", em = [].concat(info.email || []).filter(emailOk)[0];
+    const pil = [info.kota && `<span class="ak-ptl">${ikon(IKON_PIN, "currentColor")}${esc(info.kota)}</span>`, provNama(info.prov) && `<span class="ak-ptl">${esc(provNama(info.prov))}</span>`,
+      web && `<a class="ak-ptl" href="${esc(web)}" ${LUAR}>${ikon(IKON_WEB, "currentColor")}${esc(urlHost(web))}</a>`, em && `<a class="ak-ptl" href="mailto:${esc(em)}">${ikon(IKON_MAIL, "currentColor")}${esc(em)}</a>`].filter(Boolean).join("");
+    const kepala = `<div class="ak-dkepala"><div class="ak-dk-atas">${logoKecil(k)}<div class="ak-nama"><h2 id="akSJudul">${esc(k)}</h2></div>${metrikK([["Pakar", IK_ORANG, ors.length], ["Karya", METRIK[1][3], karyaN], ["Sitasi", METRIK[2][3], sitasiN]])}</div>${pil ? `<div class="ak-pil">${pil}</div>` : ""}</div>`;
+    bukaSheet("kampus", kepala, () => {
+      const per = {}, prodi = {}; ors.forEach(o => { o[3].forEach(r => { per[r] = (per[r] || 0) + 1; }); const p = prodiDari(o); if (p) prodi[p] = (prodi[p] || 0) + 1; });
+      const baris = Object.entries(per).sort((a, b) => b[1] - a[1]), mx = baris[0]?.[1] || 1;
+      const top = ors.slice().sort((a, b) => b[4] - a[4] || b[6] - a[6]).slice(0, 10), pr = Object.entries(prodi).sort((a, b) => b[1] - a[1]).slice(0, 12);
+      const bag = (j, isi) => `<section class="ak-dbagian"><div class="ak-disi"><h3>${j}</h3>${isi}</div></section>`;
+      return (baris.length ? bag("Pakar per rumpun", `<div class="ak-bars">${baris.map(([r, n]) => { const [l, d, w] = RUMPUN[r] || [r, "", "#6b7280"];
+          return `<div class="ak-br" tabindex="0" data-t="${esc(l)}" data-n="${n}" data-p="${Math.round(n / ors.length * 100)}" data-tot="${ors.length}" style="--w0:${w}"><span class="ak-bl">${d ? ikon(d, w) : ""}${esc(l)}</span><span class="ak-bt"><i style="width:${Math.max(8, n / mx * 100)}%"><b>${angka(n)}</b></i></span></div>`; }).join("")}</div>`) : "")
+        + bag("Sepuluh pakar dengan h-index tertinggi", `<ol class="ak-sdaftar">${top.map(o => `<li>${kecil(o)}<em class="ak-hp">h-index <b>${angka(o[4])}</b></em></li>`).join("")}</ol>`)
+        + (pr.length ? bag("Program studi terkait", `<div class="ak-pil">${pr.map(([p, n]) => `<span class="ak-prodi">${esc(p)}<small>${angka(n)}</small></span>`).join("")}</div>`) : "")
+        + `<div class="ak-saksi"><button type="button" class="ak-tbl" data-sa="tambah">Tambah semua pakar teratas ke daftar pendek</button><button type="button" class="ak-tbl alt" data-sa="lihat">Lihat semua pakar kampus ini</button></div>`;
+    });
+    $("akSheet").dataset.k = k;
+  }
+
+  /* ---------- ekspor daftar pendek: pustaka dimuat malas saat klik, versi sama dengan unduh_tabel.js ---------- */
+  const NAVY = [5, 28, 44], NAVY_HEX = "051C2C";
+  const LIB = {
+    xlsx: ["https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js", () => window.XLSX],
+    docx: ["https://cdn.jsdelivr.net/npm/docx@8.5.0/build/index.umd.js", () => window.docx],
+    pdf: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js", () => window.jspdf],
+    tabel: ["https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.8.2/jspdf.plugin.autotable.min.js", () => window.jspdf?.jsPDF?.API?.autoTable]};
+  const janji = {};
+  const muat = k => janji[k] ||= new Promise((ok, gagal) => { const [src, ada] = LIB[k]; if (ada()) return ok();
+    const sc = document.createElement("script"); sc.src = src; sc.onload = ok; sc.onerror = () => { delete janji[k]; gagal(new Error("Gagal memuat pustaka " + k)); }; document.head.append(sc); });
+  const KOL = ["No", "Nama", "Kampus", "Program studi", "Provinsi", "Rumpun", "h-index", "Karya", "Sitasi", "Email", "ORCID", "SINTA"];
+  const urlOrcid = v => /^https?:/.test(v) ? v : "https://orcid.org/" + v;
+  function dataDp() {
+    const wib = new Date(Date.now() + 7 * 36e5), iso = wib.toISOString().slice(0, 10), perlu = $("akDpPerlu").value.trim();
+    const baris = [...dp].map(id => peta.get(id)).filter(Boolean).map((o, i) => { const e = emailDari(o);
+      return [i + 1, o[1], o[2], prodiDari(o), provNama(provO(o)), o[3].map(r => (RUMPUN[r] || [r])[0]).join(", "), o[4] || 0, o[5] || 0, o[6] || 0,
+        e ? e.list.join("; ") + (e.sumber === "Email kampus" ? " (kampus)" : "") : "", o[7] ? urlOrcid(o[7]) : "", o[10] ? "https://sinta.kemdiktisaintek.go.id/authors/profile/" + o[10] : ""]; });
+    return {judul: "Daftar Pendek Pakar Kebencanaan", iso, perlu, baris,
+      tanggal: wib.toLocaleDateString("id-ID", {timeZone: "UTC", weekday: "long", day: "numeric", month: "long", year: "numeric"}) + ", " + wib.toISOString().slice(11, 16) + " WIB"};
+  }
+  async function xlsx(L) { await muat("xlsx"); const X = window.XLSX, wb = X.utils.book_new();
+    const ws = X.utils.aoa_to_sheet([[L.judul], [L.tanggal], ...(L.perlu ? [["Keperluan: " + L.perlu]] : []), [], KOL, ...L.baris]);
+    ws["!cols"] = [5, 26, 34, 28, 18, 28, 9, 9, 10, 32, 38, 48].map(w => ({wch: w})); X.utils.book_append_sheet(wb, ws, "Daftar pendek");
+    return new Blob([X.write(wb, {bookType: "xlsx", type: "array"})], {type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"}); }
+  async function docx(L) { await muat("docx"); const D = window.docx, P = (x, o = {}) => new D.Paragraph({spacing: {after: 80}, ...o, children: [new D.TextRun({text: x, ...(o.run || {})})]});
+    const KANAN = new Set([0, 6, 7, 8]);
+    const sel = (x, i, kepala) => new D.TableCell({shading: kepala ? {type: D.ShadingType.CLEAR, fill: NAVY_HEX, color: "auto"} : undefined, margins: {top: 40, bottom: 40, left: 60, right: 60},
+      children: [new D.Paragraph({alignment: KANAN.has(i) ? D.AlignmentType.RIGHT : D.AlignmentType.LEFT, children: [new D.TextRun({text: String(x), bold: kepala, color: kepala ? "FFFFFF" : undefined, size: 14})]})]});
+    const anak = [P(L.judul, {run: {bold: true, size: 36, color: NAVY_HEX}}), P(L.tanggal), ...(L.perlu ? [P("Keperluan: " + L.perlu, {run: {bold: true}})] : []),
+      new D.Table({width: {size: 100, type: D.WidthType.PERCENTAGE}, rows: [new D.TableRow({tableHeader: true, children: KOL.map((x, i) => sel(x, i, true))}), ...L.baris.map(r => new D.TableRow({cantSplit: true, children: r.map((x, i) => sel(x, i))}))]})];
+    return D.Packer.toBlob(new D.Document({sections: [{properties: {page: {size: {orientation: D.PageOrientation.LANDSCAPE}, margin: {top: 720, bottom: 720, left: 720, right: 720}}}, children: anak}]})); }
+  async function pdf(L) { await muat("pdf"); await muat("tabel"); const d = new window.jspdf.jsPDF({unit: "pt", format: "a4", orientation: "landscape"});
+    d.setFont("helvetica", "bold").setFontSize(18).setTextColor(...NAVY).text(L.judul, 36, 44);
+    d.setFont("helvetica", "normal").setFontSize(10).setTextColor(60).text(L.tanggal, 36, 62); let y = 76;
+    if (L.perlu) { d.setFont("helvetica", "bold").text("Keperluan: " + L.perlu, 36, y); y += 14; }
+    d.autoTable({startY: y + 6, margin: {left: 36, right: 36, bottom: 36}, head: [KOL], body: L.baris, styles: {fontSize: 7, cellPadding: 3, textColor: 30, overflow: "linebreak"},
+      headStyles: {fillColor: NAVY, textColor: 255, fontStyle: "bold"}, columnStyles: {0: {halign: "right", cellWidth: 22}, 6: {halign: "right"}, 7: {halign: "right"}, 8: {halign: "right"}}});
+    return d.output("blob"); }
+  const FORMAT = {xlsx, docx, pdf};
+  async function eksporDp(f) {
+    if (sibuk || !dp.size) return; sibuk = true; pesanDp("Menyiapkan berkas"); await new Promise(r => setTimeout(r, 0));
+    try { const L = dataDp(); try { localStorage.setItem(PERLU_KEY, L.perlu); } catch (e) {}
+      const blob = await FORMAT[f](L), u = URL.createObjectURL(blob), a = document.createElement("a");
+      a.href = u; a.download = `daftar-pendek-pakar-${L.iso}.${f}`; document.body.append(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(u), 4e4); pesanDp("Berkas siap"); }
+    catch (e) { console.error(e); pesanDp(e.message || "Gagal membuat berkas"); }
+    finally { sibuk = false; } }
+
   function buka(o) {
     const IK = {buka: '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>'};
     const tautan = [[`https://openalex.org/${o[0]}`, "OpenAlex"], o[10] && [`https://sinta.kemdiktisaintek.go.id/authors/profile/${o[10]}`, "SINTA"],
 [`https://scholar.google.com/scholar?q=${encodeURIComponent('"' + o[1] + '"')}`, "Google Scholar"]].filter(Boolean);
     const status = o[13] === "s" ? ["ok", "Terdaftar di SINTA"] : o[13] === "x" ? ["", "Tidak ditemukan di SINTA"] : ["", "Belum dicocokkan dengan SINTA"];
     /* kepala lembar: foto, nama, institusi, label (prodi, SINTA, rumpun) dan metrik semuanya di pita navy */
-    $("akDIsi").innerHTML = `<div class="ak-dkepala"><div class="ak-dk-atas">${sosok(o, true)}<div class="ak-nama"><h2 id="akDNama">${esc(o[1])}</h2><p>${esc(o[2])}</p></div>${metrik(o)}</div>
-        <div class="ak-pil">${o[11] ? `<span class="ak-prodi">${esc(o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, ""))}</span>` : ""}<span class="ak-tanda ${status[0]}">${status[1]}</span>${o[15] === "diaspora" ? `<span class="ak-tanda diaspora">Diaspora Indonesia</span>` : ""}${o[3].map(r => pilRumpun(r)).join("")}</div></div>
+    $("akDIsi").innerHTML = `<div class="ak-dkepala"><div class="ak-dk-atas">${sosok(o, true)}<div class="ak-nama"><h2 id="akDNama">${esc(o[1])}</h2><p><button type="button" class="ak-kp" data-kp="${esc(o[2])}" title="Profil kampus">${esc(o[2])}</button></p></div>${metrik(o)}</div>
+        ${kontakHtml(o)}
+        <div class="ak-pil">${o[11] ? `<span class="ak-prodi">${esc(o[11].replace(/\s*\((S\d|D\d|Sp-?\d)\)$/, ""))}</span>` : ""}<span class="ak-tanda ${status[0]}">${status[1]}</span>${o[15] === "diaspora" ? `<span class="ak-tanda diaspora">Diaspora Indonesia</span>` : ""}${o[3].map(r => pilRumpun(r)).join("")}${dpTombol(o[0])}</div></div>
       <div class="ak-dtubuh">
         ${o[12] ? `<section class="ak-dbagian"><h3>Bidang menurut SINTA</h3><p>${esc(o[12])}</p></section>` : ""}
         <section class="ak-dbagian"><h3>Topik riset utama</h3><div class="ak-topik">${o[8].map(t => `<span>${esc(t)}</span>`).join("")}</div></section>
@@ -330,6 +475,18 @@
     const d = await r.json();
     semua = d.orang.map(o => Object.assign(o, {_cari: [o[1], o[2], o[11], o[12], ...o[8], ...o[3]].join(" ").toLowerCase()}));
     siapkan(d);
+    /* kampus.json dan kontak.json bisa belum ada (404/503): fitur provinsi dan email diam-diam hilang */
+    const ambil = async u => { try { const x = await fetch(u, {credentials: "same-origin"}); return x.ok ? await x.json() : null; } catch (e) { return null; } };
+    const [kj, kt] = await Promise.all([ambil("/api/akademisi/kampus"), ambil("/api/akademisi/kontak")]);
+    kampusInfo = kj && typeof kj === "object" && !Array.isArray(kj) ? kj : {}; kontak = kt && typeof kt === "object" && !Array.isArray(kt) ? kt : {};
+    peta = new Map(semua.map(o => [o[0], o]));
+    try { dp = new Set((JSON.parse(localStorage.getItem(DP_KEY)) || []).filter(id => peta.has(id))); $("akDpPerlu").value = localStorage.getItem(PERLU_KEY) || ""; } catch (e) { dp = new Set(); }
+    if (Object.values(kampusInfo).some(v => v?.prov)) $("akVBox").hidden = false;
+    /* tautan dalam: ?prov=32&rumpun=gempa saring daftar, ?pakar=<id OpenAlex> membuka dialog pakar (id tak dikenal diabaikan) */
+    const qs = new URLSearchParams(location.search), pv = qs.get("prov"), rp = qs.get("rumpun"), pk = qs.get("pakar");
+    if (pv && !$("akVBox").hidden && (PROV[pv] || pv === "?")) { st.prov = pv; $("akVIsi").innerHTML = `<em>${esc(labelProv(pv))}</em>`; }
+    if (rp && (d.rumpun.includes(rp) || RUMPUN[rp])) st.rumpun = rp;
+    if ((st.prov || st.rumpun) && !qs.get("sumber")) { st.sumber = ""; $("akS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === ""))); }
     $("akIsi").hidden = false;
     $("akQ").addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => { st.q = $("akQ").value.trim(); saring(); }, 200); });
     segmen("akS", "sumber", v => v);
@@ -340,36 +497,73 @@
     $("akKQ").addEventListener("input", daftarKampus);
     $("akKJenis").addEventListener("click", e => { const b = e.target.closest("button[data-j]"); if (!b) return; st.kJenis = b.dataset.j; daftarKampus(); $("akKQ").focus(); });
     $("akKDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b) pilihKampus(b.dataset.k); });
+    $("akVBtn").addEventListener("click", () => bukaProv($("akVPop").hidden));
+    $("akVQ").addEventListener("input", daftarProv);
+    $("akVDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (b) pilihProv(b.dataset.v); });
     $("akPBtn").addEventListener("click", () => bukaProdi($("akPPop").hidden));
     $("akPQ").addEventListener("input", daftarProdi);
     $("akPDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-p]"); if (b) { st.prodi = b.dataset.p; bukaProdi(false); saring(); } });
     document.addEventListener("click", e => {
-      if (!$("akKPop").hidden && !e.target.closest(".ak-kampus-pilih:not(.ak-prodi-pilih)")) bukaKampus(false);
-      if (!$("akPPop").hidden && !e.target.closest(".ak-prodi-pilih")) bukaProdi(false);
+      const w = e.target.closest(".ak-kampus-pilih");
+      if (!$("akKPop").hidden && w !== $("akKPop").parentElement) bukaKampus(false);
+      if (!$("akPPop").hidden && w !== $("akPPop").parentElement) bukaProdi(false);
+      if (!$("akVPop").hidden && w !== $("akVPop").parentElement) bukaProv(false);
+      if (!$("akDpMenu").hidden && !e.target.closest("#akDpMenu,[data-dpa=unduh]")) { $("akDpMenu").hidden = true; document.querySelector("[data-dpa=unduh]").setAttribute("aria-expanded", "false"); }
     });
     /* label di kartu menyaring; klik di bagian lain kartu membuka profil */
     $("akDaftar").addEventListener("click", e => {
+      if (e.target.closest(".ak-pilih")) { if (e.target.tagName === "INPUT") dpUbah(e.target.dataset.dp, e.target.checked); return; }
+      const kp = e.target.closest("[data-kp]"); if (kp) { profilKampus(kp.dataset.kp); return; }
       const f = e.target.closest("[data-fk]");
       if (f) { const v = f.dataset.v;
-        if (f.dataset.fk === "kampus") { st.kJenis = jenisK(v); pilihKampus(v); } else { st[f.dataset.fk] = v; saring(); }
+        st[f.dataset.fk] = v; saring();
         document.querySelector(".ak-saring").scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); return; }
       const b = e.target.closest(".ak-orang"); if (b) buka(hasil[+b.dataset.i]);
     });
     $("akDaftar").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ak-orang")) { e.preventDefault(); buka(hasil[+e.target.dataset.i]); } });
-    $("akLembar").addEventListener("click", e => { if (e.target.closest("[data-tutup]")) tutup(); });
+    $("akLembar").addEventListener("click", e => { if (e.target.closest("[data-tutup]")) { tutup(); return; }
+      const t = e.target.closest("[data-dp-t]"); if (t) { dpUbah(t.dataset.dpT, !dp.has(t.dataset.dpT)); return; }
+      const kp = e.target.closest("[data-kp]"); if (kp) profilKampus(kp.dataset.kp); });
+    /* bilah daftar pendek */
+    $("akDpBar").addEventListener("click", e => {
+      const a = e.target.closest("[data-dpa]"), f = e.target.closest("[data-dpf]");
+      if (f) { $("akDpMenu").hidden = true; document.querySelector("[data-dpa=unduh]").setAttribute("aria-expanded", "false"); nanti(() => eksporDp(f.dataset.dpf)); return; }
+      if (!a) return;
+      if (a.dataset.dpa === "lihat") lihatDp();
+      else if (a.dataset.dpa === "kosong") { dp.clear(); dpSimpan(); dpSegarkan(); }
+      else { const buka = $("akDpMenu").hidden; $("akDpMenu").hidden = !buka; a.setAttribute("aria-expanded", String(buka)); if (buka) $("akDpPerlu").focus(); } });
+    /* lembar bawah */
+    $("akSheet").addEventListener("click", e => {
+      if (e.target.closest("[data-tutup-s]")) { tutupSheet(); return; }
+      const h = e.target.closest("[data-hapus]"); if (h) { dpUbah(h.dataset.hapus, false); return; }
+      const b = e.target.closest("[data-buka]"); if (b) { const o = peta.get(b.dataset.buka); tutupSheet(); if (o) buka(o); return; }
+      const sa = e.target.closest("[data-sa]"); if (!sa) return;
+      const k = $("akSheet").dataset.k;
+      if (sa.dataset.sa === "tambah") dpTambahBanyak(semua.filter(o => o[2] === k).sort((x, y) => y[4] - x[4] || y[6] - x[6]).slice(0, 10));
+      else { st.kJenis = jenisK(k); if (st.prov && !cocokProvK(k)) pilihProv(""); pilihKampus(k); tutupSheet(); document.querySelector(".ak-hasil").scrollIntoView({block: "start"}); } });
+    /* tooltip batang rumpun: berlaku untuk pointer dan fokus papan ketik */
+    const tipBar = (e, br) => { const tip = $("akTip"); if (!br) { tip.hidden = true; return; }
+      tip.innerHTML = `<b>${esc(br.dataset.t)}</b><span><i style="background:${br.style.getPropertyValue("--w0")}"></i>${angka(br.dataset.n)} pakar</span><small>${esc(br.dataset.p)}% dari ${angka(br.dataset.tot)} pakar kampus</small>`;
+      tip.hidden = false; const r = br.getBoundingClientRect(), x = e.clientX ?? r.left + 40, y = e.clientY ?? r.top;
+      tip.style.left = Math.min(Math.max(8, x + 12), innerWidth - tip.offsetWidth - 8) + "px"; tip.style.top = Math.max(8, y - tip.offsetHeight - 12) + "px"; };
+    $("akSheet").addEventListener("pointermove", e => tipBar(e, e.target.closest(".ak-br")));
+    $("akSheet").addEventListener("pointerleave", () => { $("akTip").hidden = true; });
+    $("akSheet").addEventListener("focusin", e => { const b = e.target.closest(".ak-br"); if (b) tipBar({}, b); });
+    $("akSheet").addEventListener("focusout", () => { $("akTip").hidden = true; });
     $("akLembar").addEventListener("pointermove", sorotGrafik);
     $("akLembar").addEventListener("pointerleave", () => document.querySelectorAll(".ak-grafik.aktif").forEach(f => { f.classList.remove("aktif"); f.querySelector(".ak-gr-tip").hidden = true; }));
     $("akLembar").addEventListener("pointerout", e => { const f = e.target.closest?.(".ak-grafik"); if (f && !f.contains(e.relatedTarget)) { f.classList.remove("aktif"); f.querySelector(".ak-gr-tip").hidden = true; } });
     document.addEventListener("keydown", e => {
       if (e.key !== "Escape") return;
-      if (!$("akLembar").hidden) tutup(); else if (!$("akKPop").hidden) { bukaKampus(false); $("akKBtn").focus(); } else if (!$("akPPop").hidden) { bukaProdi(false); $("akPBtn").focus(); }
+      if (!$("akSheet").hidden) tutupSheet(); else if (!$("akDpMenu").hidden) { $("akDpMenu").hidden = true; document.querySelector("[data-dpa=unduh]").setAttribute("aria-expanded", "false"); } else if (!$("akLembar").hidden) tutup(); else if (!$("akVPop").hidden) { bukaProv(false); $("akVBtn").focus(); } else if (!$("akKPop").hidden) { bukaKampus(false); $("akKBtn").focus(); } else if (!$("akPPop").hidden) { bukaProdi(false); $("akPBtn").focus(); }
     });
     $("akReset").addEventListener("click", () => {
-      Object.assign(st, {q: "", rumpun: "", sumber: "", prodi: ""}); $("akQ").value = "";
+      Object.assign(st, {q: "", rumpun: "", sumber: "", prodi: ""}); $("akQ").value = ""; st.prov = ""; $("akVIsi").innerHTML = "<em>Semua provinsi</em>";
       $("akS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === "")));
       pilihKampus("");
     });
-    saring();
+    saring(); dpSegarkan();
+    const o = pk && peta.get(pk); if (o) nanti(() => buka(o));
   }
 
   /* kepala situs: menu garis tiga (layar sempit) dan tema terang/gelap, sama dengan halaman lain */

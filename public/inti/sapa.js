@@ -118,6 +118,17 @@ button.sp-p:focus-visible,.sp-pn:focus-visible{outline:3px solid #e3b94e;outline
 .sp-pk-a a{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:13px;font-weight:700;text-decoration:none}
 .sp-pk-a a:hover{background:color-mix(in oklch,var(--ink) 5%,var(--card))}.sp-pk-a a:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
 .sp-pk-a a.wa{background:#1f8f4e;border-color:#1f8f4e;color:#fff}.sp-pk-a a.kecil{border:0;background:none;color:var(--ink2);min-height:0;padding:0 4px;font-weight:600;text-decoration:underline}
+/* pakar terdekat: baris ringkas, foto atau inisial, pil jarak dan h-index */
+.sp-pkr-h{margin:0;padding:14px 16px 6px;display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px;font-weight:700;color:var(--ink)}
+.sp-pkr{display:grid;grid-template-columns:36px minmax(0,1fr) auto auto;align-items:center;gap:10px;padding:10px 16px;border-top:1px solid var(--line);font-size:13px}
+.sp-pkr-f{position:relative;display:grid;place-items:center;width:36px;height:36px;border-radius:50%;overflow:hidden;background:color-mix(in oklch,#1d4e89 14%,var(--card));color:#1d4e89;font-size:12px;font-weight:800}
+.sp-pkr-f img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.sp-pkr-n{display:grid;min-width:0}.sp-pkr-n a{font-weight:700;color:var(--ink);text-decoration:none;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sp-pkr-n a:hover{text-decoration:underline}
+.sp-pkr-n span{font-size:12px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.sp-pkr-n small{font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.sp-pkr-p{display:flex;flex-wrap:wrap;justify-content:flex-end;gap:5px}
+.sp-pkr-m{display:grid;place-items:center;width:32px;height:32px;border-radius:50%;border:1px solid var(--line);color:var(--ink)}.sp-pkr-m:hover{background:color-mix(in oklch,var(--ink) 5%,var(--card))}
+.sp-pkr a:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+@media (max-width:560px){.sp-pkr{grid-template-columns:36px minmax(0,1fr) auto;row-gap:6px}.sp-pkr-p{grid-column:2;grid-row:2;justify-content:flex-start}.sp-pkr-m{grid-column:3;grid-row:1}}
 </style>`);
   /* html: isi dialog; saatKlik(e, d): penangan klik tambahan (return true bila sudah ditangani); tombol [data-tutup] dan latar menutup */
   function dialog(html, saatKlik, kunci) {
@@ -125,7 +136,7 @@ button.sp-p:focus-visible,.sp-pn:focus-visible{outline:3px solid #e3b94e;outline
     d.innerHTML = html; document.body.appendChild(d);
     d.addEventListener("click", e => { if (saatKlik?.(e, d)) return; if (e.target.closest("[data-tutup]") || e.target === d) d.close(); });
     d.addEventListener("close", () => { tandai(kunci); d.remove(); });
-    d.showModal(); pantauan(d, kunci); return d;
+    d.showModal(); pantauan(d, kunci); pakar(d, kunci); return d;
   }
   /* ---------- bagian "Pantauan dan tindak lanjut": hitungan agregat publik dari /api/pantau/ringkas, hanya untuk bencana di PANTAU ---------- */
   const PANTAU = ["karhutla", "banjir"];
@@ -153,6 +164,50 @@ button.sp-p:focus-visible,.sp-pn:focus-visible{outline:3px solid #e3b94e;outline
       try { const isi = d.isConnected && r && r.total && d.querySelector(".sp-isi");
         if (isi && !d.querySelector(".sp-pantau")) isi.insertAdjacentHTML("beforeend", bagianPantau(r)); } catch (e) {}
     });
+  }
+  /* ---------- bagian "Pakar terdekat": hanya staf (API 401 untuk publik, lalu tidak ada apa pun yang tampil) ---------- */
+  const PAKAR = {karhutla: ["karhutla", "Karhutla"], banjir: ["banjir", "Banjir"], gempa: ["gempa", "Gempa bumi"]};   /* bencana -> [kunci RUMPUN akademisi.js, label] */
+  const pakarCache = {};   /* satu fetch per bencana per muat halaman */
+  const globalS = () => { try { return typeof S !== "undefined" ? S : null; } catch (e) { return null; } };
+  /* lokasi dari yang sudah dimuat popup: karhutla = baris provinsi pertama (data-sppv = kode), banjir = baris provinsi pertama (nama -> kode lewat S.meta.provinsi),
+     gempa = episenter gempa M 5+ terbaru di S.gempa. Mengembalikan {kode, nama, lat?, lon?} atau null. */
+  const lokasiPakar = (id, d) => {
+    const s = globalS();
+    if (id === "karhutla") { const b = d.querySelector(".sp-pn[data-sppv]"); return b ? {kode: b.dataset.sppv, nama: b.textContent.trim()} : null; }
+    if (id === "banjir") { const nama = d.querySelector(".sp-ps .sp-pv>b")?.textContent.trim(), kode = Object.entries(s?.meta?.provinsi || {}).find(([, n]) => n === nama)?.[0];
+      return kode ? {kode, nama} : null; }
+    if (id === "gempa") { const g = (s?.gempa || []).filter(x => x.m >= 5 && isFinite(x.lat) && isFinite(x.lon)).sort((a, b) => b.t - a.t)[0]; if (!g) return null;
+      const kode = /^\d{2}$/.test(g.prov || "") ? g.prov : "", w = typeof wilayahPendek === "function" ? wilayahPendek(g.wilayah) : g.wilayah;
+      return {kode, nama: (kode && s.nama?.[kode]) || w || "lokasi gempa", lat: +g.lat, lon: +g.lon}; }
+    return null;
+  };
+  /* titik tengah provinsi: kotak pembatas poligon terbesar dari /geo/provinsi.json (sudah di cache peramban, dimuat halaman) */
+  const pusatProv = async kode => { const g = await fetch("/geo/provinsi.json").then(r => r.json()), f = g.features.find(x => x.properties.kode === kode); if (!f) return null;
+    const polys = f.geometry.type === "Polygon" ? [f.geometry.coordinates] : f.geometry.coordinates, ring = polys.map(p => p[0]).sort((a, b) => b.length - a.length)[0];
+    const xs = ring.map(c => c[0]), ys = ring.map(c => c[1]); return {lon: (Math.min(...xs) + Math.max(...xs)) / 2, lat: (Math.min(...ys) + Math.max(...ys)) / 2}; };
+  const muatPakar = (id, d) => pakarCache[id] ||= (async () => {
+    const l = lokasiPakar(id, d); if (!l) return null;
+    if (l.lat == null) { const c = await pusatProv(l.kode); if (!c) return null; Object.assign(l, c); }
+    const q = new URLSearchParams({rumpun: PAKAR[id][0], lat: l.lat.toFixed(4), lon: l.lon.toFixed(4), n: 6}); if (l.kode) q.set("prov", l.kode);
+    const r = await fetch("/api/akademisi/terdekat?" + q); if (!r.ok) return null;
+    const j = await r.json(); return j?.pakar?.length ? {l, pakar: j.pakar} : null;
+  })().catch(() => null);
+  const aman = u => /^(https?:\/\/|\/(?!\/))/.test(u || "") ? esc(u) : "";   // http(s) atau jalur situs sendiri; "//host" ditolak
+  const inisial = n => String(n || "?").replace(/^(prof|dr|ir|drs|dra)\.?\s+/gi, "").split(/[\s,]+/).filter(Boolean).slice(0, 2).map(w => w[0].toUpperCase()).join("");
+  const barisPakar = p => { const em = (p.email || []).find(e => /^[^\s@<>"]+@[^\s@<>"]+$/.test(e)), f = aman(p.foto);
+    return `<div class="sp-pkr"><span class="sp-pkr-f">${esc(inisial(p.nama))}${f ? `<img src="${f}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}</span>
+      <span class="sp-pkr-n"><a href="/akademisi?pakar=${encodeURIComponent(p.id)}" target="_blank" rel="noopener">${esc(p.nama)}</a><span>${esc(p.kampus)}</span>${p.prodi ? `<small>${esc(p.prodi)}</small>` : ""}</span>
+      <span class="sp-pkr-p">${p.km != null ? pil(`${angka(Math.round(p.km))} km`, "prov") : ""}${p.h != null ? pil(`h ${angka(p.h)}`, "gambut") : ""}${p.luar_prov ? pil("luar provinsi", "oranye") : ""}</span>
+      ${em ? `<a class="sp-pkr-m" href="mailto:${esc(em)}" aria-label="Email ${esc(p.nama)}" rel="noopener">${ik("surat")}</a>` : "<span></span>"}</div>`; };
+  const bagianPakar = (id, {l, pakar}) => { const [rk, lb] = PAKAR[id], q = new URLSearchParams({...(l.kode && {prov: l.kode}), rumpun: rk});
+    return `<section class="sp-sek sp-pakar"><h4>Pakar terdekat</h4><div class="sp-panel"><p class="sp-pkr-h">Pakar terdekat untuk ${esc(l.nama)}${pil(esc(lb), "oranye")}</p>${pakar.slice(0, 6).map(barisPakar).join("")}
+      <div class="sp-pk-a"><a class="kecil" href="/akademisi?${q}" target="_blank" rel="noopener">Lihat semua pakar ${esc(lb.toLowerCase())}${l.kode ? ` di ${esc(l.nama)}` : ""}</a></div></div></section>`; };
+  function pakar(d, kunci) {
+    const id = idDari(kunci); if (!PAKAR[id]) return;
+    IK.surat ||= '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>';
+    muatPakar(id, d).then(r => { try { const isi = d.isConnected && r && d.querySelector(".sp-isi");
+      if (isi && !d.querySelector(".sp-pakar")) { isi.insertAdjacentHTML("beforeend", bagianPakar(id, r));
+        d.querySelectorAll(".sp-pkr-f img").forEach(i => i.addEventListener("error", () => i.remove(), {once: true})); } } catch (e) {} });
   }
   /* tunggu spanduk persetujuan selesai supaya dua lapisan tidak bertumpuk */
   const mulai = fn => { const m = () => document.querySelector(".pv-kartu") ? document.addEventListener("pb-persetujuan", () => setTimeout(fn, 400), {once: true}) : fn();

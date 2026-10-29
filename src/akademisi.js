@@ -83,6 +83,61 @@ export function ringkasOrcid(r) {
   return {publik: !!(biografi || pendidikan.length || pekerjaan.length || karya), biografi, pendidikan, pekerjaan};
 }
 
+/* GET /api/akademisi/kampus dan /kontak: berkas pendamping induk.json (koordinat kampus, email ORCID), staf saja, 503 bila belum diunggah. */
+const polos = o => new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", "x-content-type-options": "nosniff", "x-diperbarui": o.uploaded.toISOString()}});
+async function berkas(env, req, kunci) {
+  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const o = await env.MEDIA.get(kunci);
+  return o ? polos(o) : gagal(503, `${kunci} belum diunggah ke R2`);
+}
+
+/* GET /api/akademisi/terdekat: pakar serumpun terurut jarak haversine ke kampusnya. induk+kampus+kontak dimuat sekali per isolate, TTL 10 menit.
+   ponytail: cache memori per isolate (5 MB hasil urai); unggahan baru terlihat paling lama 10 menit, naikkan ke indeks per rumpun di R2 bila lambat. */
+const RUMPUN_SAH = new Set(["gempa", "tsunami", "gunung api", "banjir", "longsor", "karhutla", "hidrometeorologi", "iklim", "pesisir", "geologi", "manajemen bencana", "kesehatan bencana", "penginderaan jauh"]);
+const TTL = 600000;
+let simpan = null;
+async function muat(env) {
+  if (simpan && Date.now() - simpan.t < TTL) return simpan.d;
+  const [a, b, c] = await Promise.all(["induk", "kampus", "kontak"].map(k => env.MEDIA.get(`akademisi/${k}.json`)));
+  if (!a || !b) return null;
+  const d = {induk: (await a.json()).orang || [], kampus: await b.json(), kontak: c ? await c.json() : {}};
+  simpan = {t: Date.now(), d}; return d;
+}
+const rad = x => x * Math.PI / 180;
+const jarak = (a, b, c, d) => 12742 * Math.asin(Math.sqrt(Math.sin(rad(c - a) / 2) ** 2 + Math.cos(rad(a)) * Math.cos(rad(c)) * Math.sin(rad(d - b) / 2) ** 2));
+async function terdekat(env, req, url) {
+  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const q = url.searchParams, rumpun = q.get("rumpun") || "", lat = Number(q.get("lat")), lon = Number(q.get("lon")), prov = q.get("prov"), nn = q.get("n");
+  const n = nn === null ? 6 : Number(nn);
+  if (!RUMPUN_SAH.has(rumpun)) return gagal(400, "rumpun tidak dikenal");
+  if (!q.get("lat") || !q.get("lon") || !(lat >= -12 && lat <= 7) || !(lon >= 94 && lon <= 142)) return gagal(400, "lat harus -12..7 dan lon 94..142");
+  if (prov !== null && !/^\d{2}$/.test(prov)) return gagal(400, "prov harus 2 angka");
+  if (!Number.isInteger(n) || n < 1 || n > 20) return gagal(400, "n harus 1..20");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const d = await muat(env);
+  if (!d) return gagal(503, "data akademisi atau kampus belum diunggah ke R2");
+  let tanpa = 0; const cocok = [];
+  for (const o of d.induk) {
+    if (!(o[3] || []).includes(rumpun)) continue;
+    const k = d.kampus[o[2]];
+    if (!k || typeof k.lat !== "number" || typeof k.lon !== "number") { tanpa++; continue; }
+    cocok.push({id: o[0], nama: o[1], kampus: o[2], prodi: o[11] || "", h: o[4] || 0, sitasi: o[6] || 0, foto: o[9] || "", km: Math.round(jarak(lat, lon, k.lat, k.lon) * 10) / 10,
+      prov: k.prov || null, email: d.kontak[o[0]]?.email || []});
+  }
+  const urut = a => a.sort((x, y) => x.km - y.km || y.h - x.h);
+  let pakar;
+  if (prov === null) pakar = urut(cocok).slice(0, n);
+  else {
+    const dalam = urut(cocok.filter(x => x.prov === prov)).slice(0, n);
+    pakar = dalam.concat(urut(cocok.filter(x => x.prov !== prov)).slice(0, n - dalam.length).map(x => ({...x, luar_prov: true})));
+  }
+  return json({rumpun, lat, lon, prov, pakar, kampus_tanpa_lokasi: tanpa}, 200, {"cache-control": "private, no-store"});
+}
+
 export const RUTE_AKADEMISI = {"GET /api/akademisi": (env, req) => induk(env, req),
+  "GET /api/akademisi/kampus": (env, req) => berkas(env, req, "akademisi/kampus.json"),
+  "GET /api/akademisi/kontak": (env, req) => berkas(env, req, "akademisi/kontak.json"),
+  "GET /api/akademisi/terdekat": (env, req, url) => terdekat(env, req, url),
   "GET /api/akademisi/karya/:id": (env, req, url, kini, ctx, id) => karya(env, req, ctx, id, url),
   "GET /api/akademisi/sinta/:id": (env, req, url, kini, ctx, id) => sinta(env, req, id)};

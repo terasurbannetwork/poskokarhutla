@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/akademisi.css?v=21">
+<link rel="stylesheet" href="/akademisi.css?v=22">
 </head>
 <body>
 <header class="top">
@@ -54,7 +54,15 @@
         <input id="akQ" type="search" autocomplete="off" placeholder="Cari nama, kampus, atau topik riset"></label>
     </div>
 
-    <div class="ak-baris">
+    <div class="ak-baris ak-baris3">
+      <div class="ak-kampus-pilih ak-prov-pilih" id="akVBox" hidden>
+        <button id="akVBtn" class="ak-kbtn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ak-ikon ak-kik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/></svg><span id="akVIsi"><em>Semua provinsi</em></span>
+          <svg class="ak-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
+        <div id="akVPop" class="ak-kpop" hidden>
+          <label class="ak-kcari"><span class="sr">Cari provinsi</span><input id="akVQ" type="search" autocomplete="off" placeholder="Cari provinsi"></label>
+          <div id="akVDaftar" class="ak-kdaftar" role="listbox" aria-label="Provinsi"></div>
+        </div>
+      </div>
       <div class="ak-kampus-pilih">
         <button id="akKBtn" class="ak-kbtn" type="button" aria-haspopup="listbox" aria-expanded="false"><svg class="ak-ikon ak-kik" viewBox="0 0 24 24" aria-hidden="true"><path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/></svg><span id="akKIsi"><em>Semua kampus dan lembaga</em></span>
           <svg class="ak-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
@@ -72,6 +80,8 @@
           <div id="akPDaftar" class="ak-kdaftar" role="listbox" aria-label="Program studi"></div>
         </div>
       </div>
+    </div>
+    <div class="ak-baris">
       <div class="ak-seg" id="akS" role="group" aria-label="Sumber">
         <button type="button" data-v="bukanx" aria-pressed="false"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 10 12 5l9 5-9 5z"/><path d="M7 12v4c2 2 8 2 10 0v-4"/></svg>Dosen Indonesia</button><button type="button" data-v="s" aria-pressed="true"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3l2.5 2 3.2-.3.8 3.1 2.7 1.8-1.3 3 1.3 3-2.7 1.8-.8 3.1-3.2-.3L12 21l-2.5-2-3.2.3-.8-3.1L2.8 14.4l1.3-3-1.3-3 2.7-1.8.8-3.1 3.2.3z"/><path d="m8.5 12 2.5 2.5 4.5-5"/></svg>Terdaftar di SINTA</button><button type="button" data-v="" aria-pressed="false"><svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c3 0 5.5 2 5.5 5"/></svg>Semua</button>
       </div>
@@ -99,7 +109,31 @@
     <div id="akDIsi"></div>
   </article>
 </div>
-<script src="/akademisi.js?v=19"></script>
+
+<div id="akDpBar" class="ak-dpbar" hidden role="region" aria-label="Daftar pendek pakar">
+  <p><b id="akDpN">0</b> pakar di daftar pendek<span id="akDpPesan" role="status"></span></p>
+  <div class="ak-dpaksi">
+    <button type="button" class="ak-dpb" data-dpa="lihat"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 6h12M8 12h12M8 18h12M4 6h.01M4 12h.01M4 18h.01"/></svg>Lihat</button>
+    <button type="button" class="ak-dpb" data-dpa="kosong"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M5 7h14M10 7V4h4v3M7 7l1 13h8l1-13"/></svg>Kosongkan</button>
+    <button type="button" class="ak-dpb utama" data-dpa="unduh" aria-haspopup="menu" aria-expanded="false"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M12 4v11m0 0-4-4m4 4 4-4M5 19h14"/></svg>Unduh</button>
+  </div>
+  <div id="akDpMenu" class="ak-dpmenu" role="menu" hidden>
+    <label for="akDpPerlu">Keperluan (opsional)</label>
+    <input id="akDpPerlu" type="text" maxlength="120" autocomplete="off" placeholder="Contoh: FGD gempa Cianjur">
+    <button type="button" role="menuitem" data-dpf="xlsx"><svg viewBox="0 0 24 24" aria-hidden="true"><rect x="4" y="3" width="16" height="18" rx="2"/><path d="M4 9h16M4 15h16M10 3v18"/></svg>Excel</button>
+    <button type="button" role="menuitem" data-dpf="docx"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>Word</button>
+    <button type="button" role="menuitem" data-dpf="pdf"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 17v-4h1.5a1.2 1.2 0 0 1 0 2.4H9"/></svg>PDF</button>
+  </div>
+</div>
+<div id="akSheet" class="ak-lembar ak-sheet" hidden>
+  <div class="ak-latar" data-tutup-s></div>
+  <article class="ak-dlg" role="dialog" aria-modal="true" aria-labelledby="akSJudul">
+    <button class="ak-x" type="button" data-tutup-s aria-label="Tutup"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6 6 18"/></svg></button>
+    <div id="akSIsi"></div>
+  </article>
+</div>
+<div id="akTip" class="ak-gr-tip ak-bartip" hidden></div>
+<script src="/akademisi.js?v=20"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>
