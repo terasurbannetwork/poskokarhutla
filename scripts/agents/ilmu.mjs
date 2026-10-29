@@ -334,7 +334,7 @@ export function labelPrompt(teks, roster = muatRoster()) {
 }
 
 // Pesan otomatis harness, bukan suara pemilik.
-const OTOMATIS = /^\s*<(task-notification|side-sessions-event|ci-monitor-event|system-reminder)/
+const OTOMATIS = /^\s*<(task-notification|side-sessions-event|ci-monitor-event|system-reminder|agent-message)/
 
 function cmdPromptCatat() {
   // Hook: tidak boleh pernah menahan prompt, apa pun yang terjadi.

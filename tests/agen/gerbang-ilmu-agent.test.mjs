@@ -145,6 +145,7 @@ test('prompt pemilik tercatat, disamarkan, berlabel, dan hook tak pernah menahan
   assert.equal(kirim(JSON.stringify({ session_id: 'abcdef123456', prompt })).status, 0)
   assert.equal(kirim('bukan json').status, 0, 'stdin rusak membuat hook gagal: prompt pemilik bisa tertahan')
   assert.equal(kirim(JSON.stringify({ prompt: '<task-notification>x</task-notification>' })).status, 0)
+  assert.equal(kirim(JSON.stringify({ prompt: '<agent-message from="a1">laporan subagent</agent-message>' })).status, 0)
 
   const r = spawnSync('node', ['scripts/agents/ilmu.mjs', 'prompt'], { cwd: ROOT, encoding: 'utf8', env })
   assert.match(r.stdout, /1 dari 1 prompt/, `harus tepat 1 prompt tercatat (notifikasi otomatis dilewati):\n${r.stdout}`)
