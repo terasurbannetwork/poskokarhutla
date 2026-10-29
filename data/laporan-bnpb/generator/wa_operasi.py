@@ -10,7 +10,7 @@ BULAN = {b: i + 1 for i, b in enumerate(('januari', 'februari', 'maret', 'april'
 # stasiun BMKG pm2p5-obs -> kode provinsi (kata kunci huruf besar, cocok sebagian)
 STASIUN = {'PANGKALAN': '62', 'PALANGKA': '62', 'SAMPIT': '62', 'MUARA TEWEH': '62', 'JAMBI': '15', 'PALEMBANG': '16', 'SAMARINDA': '64', 'BALIKPAPAN': '64',
            'SINTANG': '61', 'KUBU RAYA': '61', 'MEMPAWAH': '61', 'PONTIANAK': '61', 'KETAPANG': '61', 'BANJAR': '63', 'SORONG': '96', 'PEKANBARU': '14',
-           'DUMAI': '14', 'LORE LINDU': '72', 'PALU': '72', 'MERAUKE': '93', 'PANGKAL PINANG': '19', 'BANDAR LAMPUNG': '18'}
+           'DUMAI': '14', 'SEMARANG': '33', 'KEMAYORAN': '31', 'MAROS': '73', 'LORE LINDU': '72', 'PALU': '72', 'MERAUKE': '93', 'PANGKAL PINANG': '19', 'BANDAR LAMPUNG': '18'}
 
 
 def _kunci(n):
@@ -21,7 +21,7 @@ def _kunci(n):
 def kode_prov():
     """nama provinsi (dinormalkan) -> kode, dari public/data/laporan.json (nama sama dengan layar)."""
     out = {_kunci(v['nama']): k for k, v in json.load(open(os.path.join(AKAR, 'public/data/laporan.json')))['prov'].items()}
-    out.update({_kunci('DI Yogyakarta'): '34', _kunci('Yogyakarta'): '34', _kunci('Jakarta'): '31'})
+    out.update({_kunci('DI Yogyakarta'): '34', _kunci('Yogyakarta'): '34', _kunci('Daerah Istimewa Yogyakarta'): '34', _kunci('Jakarta'): '31'})
     return out
 
 

@@ -292,7 +292,9 @@ else:
         assert s1.count(f'<a:t>{hr}</a:t>') == n_, f'label {hr} muncul {s1.count(f"<a:t>{hr}</a:t>")} kali, harusnya {n_}'
     # tanggal judul (21) dan subjudul (20) sama-sama jadi hari laporan; lewat penanda supaya deck 20 atau 21 Okt
     # tidak menghitung angka yang baru saja ditulis sebagai token templat yang belum diganti
-    s1 = rep(s1, '<a:t>21</a:t>', '<a:t>@hari@</a:t>'); s1 = rep(s1, '<a:t>20</a:t>', '<a:t>@harisub@</a:t>')
+    def rep_sesudah(s, jangkar, a, b):   # sel tabel bisa bernilai 20 atau 21 juga: ganti token pertama sesudah jangkar teksnya
+        j = s.index(a, s.index(jangkar)); return s[:j] + b + s[j + len(a):]
+    s1 = rep_sesudah(s1, 'per Tanggal ', '<a:t>21</a:t>', '<a:t>@hari@</a:t>'); s1 = rep_sesudah(s1, 'padam pada </a:t>', '<a:t>20</a:t>', '<a:t>@harisub@</a:t>')
     s1 = s1.replace('<a:t>@hari@</a:t>', f'<a:t>{PAR["hari"]}</a:t>').replace('<a:t>@harisub@</a:t>', f'<a:t>{PAR.get("hari_ha", PAR["hari"])}</a:t>')
     s1 = rep(s1, '<a:t> Oktober </a:t>', f'<a:t> {PAR["bulan"]} </a:t>')   # bulan judul   # subjudul: '... telah padam pada 21 Okt'
     for a in (' teratas; ±', ') dari ±', ' Okt, belum padam ±'):   # ± templat (hitam) dibuang; ± ikut angka oranye di atas
