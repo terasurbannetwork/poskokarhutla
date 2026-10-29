@@ -10,6 +10,7 @@ import { execFile } from 'node:child_process'
 import { promisify } from 'node:util'
 import { createRequire } from 'node:module'
 import { fileURLToPath, pathToFileURL } from 'node:url'
+import { peringatanBanjir } from './peringatan_banjir.mjs'
 import * as jenis from '../../src/wa_jenis.js'
 
 const kenaliAsli = jenis.kenali
@@ -29,6 +30,14 @@ export const LAPORAN = [
   { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], jam: 17,
     berkas: (d) => `Laporan Penanganan Pengendalian Karhutla ${ddmmyy(d)}`,
     args: (d, f, out) => ['penanganan.py', '--tanggal', d, '--jam', '17:00', '--bmkg', f.bmkg_pagi, '--operasi', f.satgas, '--out', out] },
+]
+
+// Padanan banjir (penanganan_banjir.py): angkanya dari situs yang tayang, tanpa bahan WA (butuh kosong). Cut-off 17.00 WIB seperti penanganan.
+// Tidak diunggah ke /pelaporan (worker hanya menerima harian atau penanganan). Matikan dengan LAPORAN_BANJIR=0 di .env.
+export const LAPORAN_BANJIR = [
+  { id: 'penanganan_banjir', judul: 'Laporan Penanganan Banjir, Longsor dan Rob', butuh: [], jam: 17, unggah: false,
+    berkas: (d) => `Laporan Penanganan Banjir Longsor dan Rob ${ddmmyy(d)}`,
+    args: (d, f, out) => ['penanganan_banjir.py', '--tanggal', d, '--out', out] },
 ]
 
 export const ddmmyy = (d) => `${d.slice(8, 10)}${d.slice(5, 7)}${d.slice(2, 4)}`
@@ -184,7 +193,7 @@ export async function jalankan(opsi = {}) {
       return { terpilih, teks }
     }
 
-    for (const lap of LAPORAN) {
+    for (const lap of [...LAPORAN, ...(env.LAPORAN_BANJIR === '0' ? [] : LAPORAN_BANJIR)]) {
       const kunci = `${lap.id}:${tanggal}`
       const { terpilih, teks: teksSesuai } = await pilihSesuai(lap)
       const c = cekSiap(lap, terpilih, now, tanggal)
@@ -193,7 +202,7 @@ export async function jalankan(opsi = {}) {
         const teks = teksSesuai
         const hash = hashBahan(lap, teks)
         let e = state.laporan[kunci]
-        if (e && e.hash === hash && e.selesai && (e.diunggah || kering)) { hasil.push({ id: lap.id, status: 'sudah terkirim' }); continue }
+        if (e && e.hash === hash && e.selesai && (e.diunggah || kering || lap.unggah === false)) { hasil.push({ id: lap.id, status: 'sudah terkirim' }); continue }
         if (!e || e.hash !== hash) {
           // rev = nomor revisi untuk /pelaporan (0 pertama); naik hanya bila versi lama sudah keluar (terkirim atau terunggah).
           const keluar = !!(e && (e.selesai || e.terkirim.length || e.diunggah))
@@ -222,7 +231,7 @@ export async function jalankan(opsi = {}) {
         for (const b of berkas) if (!ada(b.p)) throw new Error('keluaran tidak ada: ' + path.basename(b.p))
 
         // Unggah ke /pelaporan SEBELUM kirim WA; gagal tidak menahan WA, diulang pada jalan berikut (status terpisah dari terkirim).
-        if (!e.diunggah && !kering) {
+        if (lap.unggah !== false && !e.diunggah && !kering) {
           try {
             await dep.unggah({ tanggal, laporan: lap.id, revisi: e.rev, pptx: berkas.find((b) => b.x === 'pptx').p, pdf: berkas.find((b) => b.x === 'pdf').p })
             e.diunggah = true; delete state.gagal['unggah:' + kunci]
@@ -254,6 +263,8 @@ export async function jalankan(opsi = {}) {
         hasil.push({ id: lap.id, status: 'galat', alasan: x.message })
       }
     }
+    const pb = await peringatanBanjir({ env, dep, tanggal, state, simpan, kering, log, galat, jamWib: opsi.tanggal && tanggal !== tanggalWib(now) ? 24 : jamWib(now) })
+    if (pb.status !== 'mati') hasil.push(pb)
     return hasil
   } finally { lepas() }
 }

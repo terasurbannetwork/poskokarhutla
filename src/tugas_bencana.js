@@ -37,6 +37,16 @@ export const DAFTAR_BENCANA = Object.keys(BENCANA);
 /* baris tugas_bencana yang tak ada = karhutla */
 export const bencanaId = v => Object.hasOwn(BENCANA, v) ? v : "karhutla";
 export const labelBencana = v => BENCANA[bencanaId(v)];
+/* Kata penutup tugas per bahaya di atas kolom padam_pada/padam_verif (satu alur, dua kosakata). Tanpa entri = kosakata api (karhutla, dan bahaya lain seperti sebelumnya).
+   Banjir: "terverifikasi" = data pantauan banjir masih menyatakan reda 48 jam sesudah dilaporkan surut; BUKAN citra satelit. */
+const TUTUP = {banjir: {
+  judul: "Sudah surut belum?", lapor: "Dilaporkan surut", pil_lapor: "Surut dilaporkan", verif: "Surut terverifikasi", lagi: "Banjir naik lagi", pil_lagi: "Banjir naik lagi", cek: "Surut",
+  hasil: {api_ada: "banjir ada", bukan_api: "bukan banjir", sudah_padam: "sudah surut"}, status: {menyala: "masih tergenang", bara: "mulai surut", padam: "sudah surut"},
+  catatan: "Surut terverifikasi berarti data pantauan banjir tidak lagi menandai lokasi ini selama 48 jam sesudah dilaporkan surut. Ini bukan citra satelit, jadi lapangan tetap perlu mengecek genangan sisa.",
+  label: {padam_dilaporkan: "Surut dilaporkan. Menunggu 48 jam data pantauan banjir untuk disebut terverifikasi.",
+    padam_terverifikasi: "Surut terverifikasi: data pantauan banjir tidak lagi menandai lokasi ini selama 48 jam. Genangan sisa tetap mungkin, cek lapangan.",
+    muncul_lagi: "Banjir naik lagi sesudah dilaporkan surut. Tugas dibuka kembali."}}};
+export const tutupBencana = v => TUTUP[v] ?? null;
 /* ?bencana= : kosong = semua (null); dikenal = id; selain itu undefined (tolak 400) */
 export const bacaBencana = v => v == null || v === "" ? null : Object.hasOwn(BENCANA, v) ? v : undefined;
 /* butir berkas sudah reda menurut aturan bahayanya (butir yang sama sekali tak ada ditangani pemanggil) */

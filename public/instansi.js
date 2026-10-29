@@ -410,7 +410,7 @@
             : `<div><dt>Jenis</dt><dd>${esc(t.bencana_nama || km.nama)}</dd></div>${tingkat ? `<div><dt>Tingkat</dt><dd>${esc(tingkat)}</dd></div>` : ""}`}</dl>
         ${!api ? rekomendasiResmi(t.rekomendasi) : c ? `<div class="in-cara"><div>${pil("Perkiraan, belum divalidasi lapangan", "emas")}</div><p><span class="k">Cara padam utama</span><b>${esc(c.utama)}</b></p>${c.lengkap.length ? `<p><span class="k">Pelengkap</span>${esc(c.lengkap.join(", "))}</p>` : ""}</div>` : ""}</div>
       ${buka ? formLapor(t) : `<p class="in-kosong">Tugas ini sudah ditutup (${t.status === "padam" ? km.tutup : km.st.bukan_api.toLowerCase()}).</p>`}
-      ${api && window.Tugaskan ? window.Tugaskan.padamBlok(t) : ""}${api && t.padam?.boleh_cek_ulang ? formCekUlang(t) : ""}
+      ${(api || t.padam?.judul) && window.Tugaskan ? window.Tugaskan.padamBlok(t) : ""}${api && t.padam?.boleh_cek_ulang ? formCekUlang(t) : ""}
       <div id="kartuApi"></div>
       ${window.AksesKartu ? window.AksesKartu.html(t.akses) : ""}
       <div id="tgWadah"></div>

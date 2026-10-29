@@ -22,7 +22,7 @@ import {catatAwalTugas} from "./alarm_himawari.js";
 import {kabarLevel3} from "./kabar.js";
 import {modAtauStaf, dalamWilayahStaf, dariStaf, stafNyata, P_VALIDASI, P_KONSESI} from "./staf.js";
 import {bersihkanPenugasan, dummyPenugasan, hapusDummyPenugasan, PERAN} from "./penugasan.js";
-import {BENCANA, DAFTAR_BENCANA, bencanaId, labelBencana, bacaBencana, butirReda, pasKartuBencana} from "./tugas_bencana.js";
+import {BENCANA, DAFTAR_BENCANA, bencanaId, labelBencana, tutupBencana, bacaBencana, butirReda, pasKartuBencana} from "./tugas_bencana.js";
 import {bacaUji, ujiAda, GALAT_BELUM, stmtUji, stmtUjiTugasBaru} from "./uji_lapangan.js";
 
 const MENIT = 60e3, JAM = 36e5, HARI = 24 * JAM, TENGGAT_KONFIRMASI = 6 * JAM, TENGGAT_KABAR = 24 * JAM, SESI_UMUR = 30 * HARI, GABUNG_KM = 2, JAUH_KM = 5;
@@ -315,6 +315,9 @@ export function bolehCekUlang(t, kini) {
 }
 export function infoPadam(t, kini) {
   if (!t.padam_verif) return null;
+  const tb = tutupBencana(t.bencana);
+  if (tb) return {status: t.padam_verif, tingkat: {padam_terverifikasi: "hijau", muncul_lagi: "merah", padam_dilaporkan: "emas"}[t.padam_verif], label: tb.label[t.padam_verif], pada: t.padam_pada, verif_pada: t.verif_pada, cek_ulang: false, cek_ulang_pada: null, boleh_cek_ulang: false, jadwal_cek_ulang: null,
+    muncul: t.padam_verif === "muncul_lagi" ? t.muncul ?? null : null, judul: tb.judul, pil: {padam_dilaporkan: tb.pil_lapor, padam_terverifikasi: tb.verif, muncul_lagi: tb.pil_lagi}[t.padam_verif], catatan: tb.catatan};
   const jam = t.padam_pada == null ? 0 : (kini - t.padam_pada) / JAM, ulang = t.cek_ulang_pada != null, lahan = lahanTugas(t), jd = lahan.gambut ? jadwalCekUlang(t, kini) : null;
   const tungguCek = lahan.gambut && !ulang && jam >= JAM_PADAM_VERIF;   // satelit bersih 48 jam tetapi cek ulang H+1 belum ada
   const L = {padam_terverifikasi: ["hijau", "Padam terverifikasi: tidak terdeteksi satelit 48 jam. Bara bawah permukaan tetap mungkin, cek ulang lapangan."],
@@ -348,7 +351,7 @@ const bentukTugas = (t, kini, muncul, kartu = null, bencana = "karhutla") => {
   const jenis = jenisTugas(kartu);
   const {sekarang, mulai_doc, padam_doc, mulai_manual, luas_konf, lahan_obs, kunjungan, ...x} = t, rek = jsonAman(t.rekomendasi), s = jsonAman(sekarang);
   const kontrol = kartu?.uji === "kontrol";
-  return {...x, bencana, bencana_nama: BENCANA[bencana].nama, jenis, ...(kontrol ? TEKS_KONTROL : teksJenis(jenis)), ...(kontrol ? {uji: "kontrol"} : {}), rekomendasi: rek, akses: jsonAman(t.akses), kartu, padam: infoPadam({...t, muncul}, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
+  return {...x, bencana, bencana_nama: BENCANA[bencana].nama, jenis, ...(kontrol ? TEKS_KONTROL : teksJenis(jenis)), ...(kontrol ? {uji: "kontrol"} : {}), rekomendasi: rek, akses: jsonAman(t.akses), kartu, padam: infoPadam({...t, muncul, bencana}, kini), ciri: ciriTugas(t), ...tenggat(t, kini),
     sekarang: s && {...s, personel_efektif: s.personel ?? s.personel_terlihat ?? null}, luas_terkonfirmasi: luas_konf, kebutuhan_konf: kebutuhanTerkonfirmasi(rek, luas_konf), kurang: kekurangan(rek, s, luas_konf),
     /* "terdokumentasi" = waktu FOTO/VIDEO, bukan jam mulai atau padam yang sebenarnya */
     dokumentasi: {mulai: mulai_doc, padam: padam_doc, durasi_ms: mulai_doc != null && padam_doc != null && padam_doc >= mulai_doc ? padam_doc - mulai_doc : null, mulai_manual}};
@@ -1611,10 +1614,28 @@ async function dummyHapus(env) {
       AND NOT EXISTS (SELECT 1 FROM usulan_kontak_pt u WHERE u.akun_id = instansi_akun.id)`)]);
   return json({ok: true, ...n, dilewati: {akun: await hitung("instansi_akun"), tugas: await hitung("tugas_api")}});
 }
+/* tombol 🧪 pada tab bencana (banjir dst): tiga tugas contoh di kabupaten dummy yang baru dibuat: buka, surut dilaporkan, surut terverifikasi. Hapus ikut 🧹 (tugas_bencana CASCADE). */
+async function dummyTugasBencana(env, kini, bc) {
+  const ks = (await env.DB.prepare("SELECT DISTINCT prov, kab FROM tugas_api WHERE dummy = 1 LIMIT 2").all()).results; if (!ks.length) return 0;
+  const S = [["buka", null, null, null, 3], ["padam", "padam_dilaporkan", 6, 6, 20], ["padam", "padam_terverifikasi", 55, 3, 70]], st = [];
+  S.forEach(([status, pv, pj, vj, umur], i) => {
+    const id = acak(8), k = ks[i % ks.length], dibuat = kini - umur * JAM;
+    st.push(env.DB.prepare("INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, padam_verif, padam_pada, verif_pada, dummy) VALUES (?, ?, ?, ?, ?, ?, 2, 0, NULL, ?, ?, ?, ?, ?, ?, 1)")
+      .bind(id, k.prov, k.kab, `Kecamatan Contoh ${bc} ${i + 1}`, -2.5 - i * 0.05, 114.1 + i * 0.03, dibuat, dibuat, status, pv, pj == null ? null : kini - pj * JAM, vj == null ? null : kini - vj * JAM),
+      env.DB.prepare("INSERT INTO tugas_bencana (tugas_id, bencana) VALUES (?, ?)").bind(id, bc));
+  });
+  try { await env.DB.batch(st); } catch (e) { if (tanpaBencana(e)) return 0; throw e; }
+  return S.length;
+}
 async function dummy(env, req, kini) {
   const mod = await superOK(env, req); if (!mod) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
   const b = await bacaBody(req); if (b.galat) return gagal(b.status || 400, b.galat);
-  if (b.o.aksi === "isi") return dummyIsi(env, kini, mod);
+  if (b.o.aksi === "isi") {
+    const bc = b.o.bencana, r = await dummyIsi(env, kini, mod);
+    if (r.status !== 201 || !bc || bc === "karhutla") return r;
+    if (!tutupBencana(bc)) return r;   // ponytail: contoh tugas non-karhutla baru ada untuk banjir; bahaya lain menunggu kosakata penutupnya
+    const o = await r.json(); return json({...o, tugas: o.tugas + await dummyTugasBencana(env, kini, bc), bencana: bc}, 201);
+  }
   if (b.o.aksi === "hapus") return dummyHapus(env);
   return gagal(400, "aksi harus isi/hapus");
 }
