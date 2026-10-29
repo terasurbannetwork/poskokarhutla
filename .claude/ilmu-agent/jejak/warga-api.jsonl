@@ -625,3 +625,4 @@
 {"t":"2026-10-29T18:02:22.077+07:00","berkas":"src/tugas_bencana.js","blob":"852878cf2e846265468f92740b535d262308e3c7","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"TUTUP banjir: kosakata surut di atas padam_pada/padam_verif","sha":"6a6025bd"}
 {"t":"2026-10-29T18:02:22.129+07:00","berkas":"src/instansi.js","blob":"17d7ff25fafcb36c8821820c83c0842c865d8470","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"infoPadam banjir + dummy bencana=banjir","sha":"6a6025bd"}
 {"t":"2026-10-29T18:02:22.181+07:00","berkas":"src/operasi_lapangan.js","blob":"0815f8f173b7d030a2a2248823e8eda8d6f40202","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"linimasa label surut","sha":"6a6025bd"}
+{"t":"2026-10-30T00:55:45.099+07:00","berkas":"src/adsb.js","blob":"c3f5b63cf83c4d353777a3ab6e2123a98263b45e","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"panen ADS-B per jam adsb.fi, 7 lingkaran, menit 46 dispatcher, migrasi 0079","sha":"e8039d8f"}

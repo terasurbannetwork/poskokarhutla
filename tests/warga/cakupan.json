@@ -10,6 +10,7 @@
     "GET /api/wa/hasil/berkas": "hasil WA: unduh oleh admin dan bearer, parameter buruk 400, hilang 404",
     "GET /api/wa/rekap": "rekap: pintu admin, dedupe tempelan ganda, hari kosong tetap ada",
     "GET /admin/drone": "admin moderator, staf peran apa pun, dan akun instansi aktif membuka /admin/drone",
+    "table adsb_posisi": "adsb: migrasi 0079 idempoten, CHECK heli, kunci (hex, menit)",
     "table satelit_granul": "satelit granul: migrasi 0075 idempoten (dua kali lagi tanpa galat), CHECK",
     "table satelit_ringkas": "satelit granul: migrasi 0075 idempoten (dua kali lagi tanpa galat), CHECK",
     "GET /api/satelit/jeda": "satelit jeda: rute publik GET 200 JSON (bentuk kontrak)",
