@@ -12,8 +12,8 @@ let D = null;
 /* klik beruntun pada kontrol yang sama digabung: fn yang sudah antre tidak diantre lagi (st sudah mutakhir saat fn jalan) */
 const antre = new Set();
 const nanti = fn => { if (antre.has(fn)) return; antre.add(fn); let ok = false; const go = () => { if (!ok) { ok = true; antre.delete(fn); fn(); } }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
-/* merek per alamat: *.workers.dev = Centurisk97, selain itu Pantau Bencana (pemilik, 17 Okt 2026); data laporan.json ikut diganti di tt() */
-const MEREK = document.documentElement.dataset.situs === "w" ? "Centurisk97" : "Pantau Bencana";
+/* merek per alamat: *.workers.dev = Centurisk97, selain itu Centurisk97 (pemilik, 17 Okt 2026); data laporan.json ikut diganti di tt() */
+const MEREK = "Centurisk97";
 const tt = s => String(s ?? "").replace(/\s*[—–]\s*/g, ", ").replace(/Centurisk97/g, MEREK);
 const tgl = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"});
 const tglPanjang = s => new Date(s + "T00:00:00Z").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "UTC"});
@@ -479,7 +479,7 @@ function kartuSumber() {
 
 /* ---------- tiga kartu musim & luas (tugas 2): musim_harian.json (dimuat malas, X.mh) + laporan.json luas_banding. Ikut pemilih provinsi kartu (pilih) ---------- */
 /* semua teks label metode/sumber di sini supaya gampang diganti (validasi-model bisa mengubahnya) */
-const CATATAN_TITIK = "Lokasi unik ± 375 m per hari dari NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, di dalam batas provinsi, hari WIB; sumber panas tetap (industri, tambang, PLTU) dibuang, gunung api dan lepas pantai tidak disaring.";
+const CATATAN_TITIK = "Lokasi unik ± 375 m per hari dari NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), semua tingkat keyakinan, di dalam batas provinsi, hari WIB; sumber panas tetap (industri, tambang, PLTU) dibuang, gunung api dan lepas pantai tidak disaring.";
 const SUMBER_MUSIM = `NASA FIRMS; tahun berjalan dari data harian ${MEREK}`;
 const MULAI = [0, 31, 60, 91, 121, 152, 182, 213, 244, 274, 305, 335];   /* awal tiap bulan, kalender kabisat (0 = 1 Jan, 59 = 29 Feb) */
 const li = h => MULAI[+h.slice(5, 7) - 1] + (+h.slice(8) - 1);

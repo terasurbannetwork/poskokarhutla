@@ -151,7 +151,7 @@ def susun(kota, r24, prak, lint, atr, ren):
                      hari_lengkap=hari[-2], sorot=sorot(prak, lint, atr), prakiraan=prakiraan, tambahan=tambahan,
                      sumber=[{"nama": "CAMS (Copernicus Atmosphere Monitoring Service) via Open-Meteo", "url": "https://open-meteo.com/en/docs/air-quality-api", "catatan": "PM2,5 per jam, perkiraan model ~40 km, bukan ISPU resmi KLHK"},
                              {"nama": "Open-Meteo Forecast", "url": "https://open-meteo.com/en/docs", "catatan": "angin 10 m/925/850 hPa, tinggi lapisan batas"},
-                             {"nama": "NASA FIRMS (VIIRS) lewat kompleks api Pantau Bencana", "url": "https://firms.modaps.eosdis.nasa.gov", "catatan": "titik panas dan FRP"},
+                             {"nama": "NASA FIRMS (VIIRS) lewat kompleks api Centurisk97", "url": "https://firms.modaps.eosdis.nasa.gov", "catatan": "titik panas dan FRP"},
                              {"nama": "WRI Global Power Plant Database v1.3", "url": "https://github.com/wri/global-power-plant-database", "catatan": "PLTU batu bara (CC BY 4.0)"},
                              {"nama": "METAR via Iowa Environmental Mesonet", "url": "https://mesonet.agron.iastate.edu", "catatan": "jarak pandang dan cuaca bandara, uji galat model"},
                              {"nama": "WorldPop 2026", "url": "https://www.worldpop.org", "catatan": "penduduk 1 km (CC BY 4.0)"},

@@ -14,6 +14,10 @@
   const STATUS = {aktif: "Aktif", ganti: "Belum ganti sandi", dicabut: "Dicabut"};
   const ST_INSTANSI = {belum_klaim: "Belum diklaim", menunggu: "Menunggu verifikasi", aktif: "Aktif", ditolak: "Ditolak", dicabut: "Dicabut"};
   let D = null, P = null, pmUbah = null, F = {status: "", q: ""}, ubahId = null, rahasia = null, jadwal = 0;
+  /* pesan siap kirim untuk wa.me (penerima dipilih di WhatsApp); sandi ikut tersimpan di chat penerima, jadi pesan menyarankan menggantinya */
+  const pesanWA = r => r.pemirsa
+    ? `Akun Centurisk97 untuk ${r.nama}\nMasuk: ${location.origin}/admin/masuk\nUsername: ${r.username}\nSandi: ${r.sandi}\n\nJangan bagikan sandi ini ke orang lain.`
+    : `Akun Centurisk97 untuk ${r.nama}\nMasuk: ${location.origin}/admin/pantau\nUsername: ${r.username}\nSandi: ${r.sandi}\n\nSaat masuk pertama Anda wajib membuat sandi baru.`;
   const statusDari = s => s.status === "dicabut" ? "dicabut" : s.wajib_ganti ? "ganti" : "aktif";
 
   /* ---------- ringkasan dan kontrol (berubah seketika) ---------- */
@@ -22,7 +26,9 @@
     const kartu = (k, l, v, kls = "") => h("button", {class: "ak-kartu " + kls, type: "button", "data-status": k, "aria-pressed": String(F.status === k)}, h("b", {teks: angka(v)}), h("span", {teks: l}));
     app.replaceChildren(
       rahasia ? h("div", {class: "ak-rahasia-kotak", role: "status"}, h("p", {teks: `Akun untuk ${rahasia.nama}. Tampil sekali, salin dan serahkan langsung ke orangnya:`}),
-        h("code", {class: "ak-rahasia", teks: `Username: ${rahasia.username}\nSandi: ${rahasia.sandi}`}), h("small", {teks: "Staf: masuk di /admin/pantau lalu wajib membuat sandi baru. Pemirsa: masuk di halaman login situs."})) : null,
+        h("code", {class: "ak-rahasia", teks: `Username: ${rahasia.username}\nSandi: ${rahasia.sandi}`}),
+        h("a", {class: "ak-btn utama ak-wa", href: "https://wa.me/?text=" + encodeURIComponent(pesanWA(rahasia)), target: "_blank", rel: "noopener noreferrer", teks: "Kirim ke WA"}),
+        h("small", {teks: "Staf: masuk di /admin/pantau lalu wajib membuat sandi baru. Pemirsa: masuk di halaman login situs."})) : null,
       h("div", {class: "ak-ringkas"}, kartu("", "Akun staf", D.staf.length), kartu("aktif", "Aktif", n("aktif")), kartu("ganti", "Belum ganti sandi", n("ganti"), n("ganti") ? "kuning" : ""), kartu("dicabut", "Dicabut", n("dicabut"))),
       panelBuat(),
       h("section", {class: "ak-panel"},
@@ -96,7 +102,8 @@
     ...Object.entries(P.tab).map(([k, l]) => h("label", {class: "ak-cek"}, h("input", {type: "checkbox", name: "tab", value: k, checked: pilih.includes(k)}), l)));
   function panelPemirsa() {
     if (!P) return h("section", {class: "ak-panel"}, h("h2", {teks: "Akun pemirsa"}), h("p", {class: "ak-redup", teks: "Akun pemirsa belum diaktifkan (migrasi D1 0036_pemirsa belum diterapkan)."}));
-    const f = h("form", {class: "ak-form", "data-pm-buat": "1"}, h("div", {class: "ak-grid"}, h("label", null, "Nama", h("input", {name: "nama", required: true, placeholder: "Nama orang atau lembaga", autocomplete: "off"}))),
+    const f = h("form", {class: "ak-form", "data-pm-buat": "1"}, h("div", {class: "ak-grid"}, h("label", null, "Nama", h("input", {name: "nama", required: true, placeholder: "Nama orang atau lembaga", autocomplete: "off"})),
+      h("label", null, "Sandi awal (opsional)", h("input", {name: "sandi", type: "text", minlength: "8", maxlength: "64", placeholder: "Kosongkan untuk sandi acak", autocomplete: "new-password", spellcheck: "false"}))),
       cekTab(["berita"]), h("p", {class: "ak-galat", role: "alert"}), tombol("Buat akun pemirsa", {type: "submit"}, "utama"));
     const xs = P.pemirsa, rows = xs.flatMap(p => { const hidup = p.status === "aktif";
       return [h("tr", {"data-pm": p.id, class: hidup ? "" : "redup"},
@@ -146,9 +153,9 @@
   app.addEventListener("submit", async e => {
     const pf = e.target.closest("[data-pm-buat], [data-pm-ubah]");
     if (pf) { e.preventDefault(); const fd = new FormData(pf), b = pf.querySelector("[type=submit]"), baru = pf.dataset.pmBuat; b.disabled = true;
-      const x = await Admin.kirim(baru ? "/api/pemirsa/admin/buat" : "/api/pemirsa/admin/" + pf.dataset.pmUbah, baru ? {nama: fd.get("nama"), tab: fd.getAll("tab")} : {aksi: "ubah", tab: fd.getAll("tab")}).catch(() => gagalJaringan); b.disabled = false;
+      const x = await Admin.kirim(baru ? "/api/pemirsa/admin/buat" : "/api/pemirsa/admin/" + pf.dataset.pmUbah, baru ? {nama: fd.get("nama"), tab: fd.getAll("tab"), sandi: fd.get("sandi") || undefined} : {aksi: "ubah", tab: fd.getAll("tab")}).catch(() => gagalJaringan); b.disabled = false;
       if (!x.ok) { pf.querySelector(".ak-galat").textContent = x.j.galat || `Gagal (${x.status})`; return; }
-      rahasia = baru ? {nama: x.j.pemirsa.nama, username: x.j.username, sandi: x.j.sandi} : null; pmUbah = null; return muat(); }
+      rahasia = baru ? {nama: x.j.pemirsa.nama, username: x.j.username, sandi: x.j.sandi, pemirsa: true} : null; pmUbah = null; return muat(); }
     const f = e.target.closest("[data-ubah]"); if (!f) return;
     e.preventDefault(); const fd = new FormData(f), b = f.querySelector("[type=submit]"); b.disabled = true;
     const x = await Admin.kirim("/api/staf/admin/" + f.dataset.ubah, {aksi: "ubah", peran: fd.getAll("peran"), wilayah: fd.getAll("wilayah")}).catch(() => ({ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}})); b.disabled = false;
@@ -161,10 +168,12 @@
     const pb = e.target.closest("[data-pm-aksi]");
     if (pb) { const id = pb.closest("[data-pm]").dataset.pm, p = P.pemirsa.find(x => x.id === id), a = pb.dataset.pmAksi;
       if (a === "ubah-buka") { pmUbah = pmUbah === id ? null : id; gambarPemirsa(); return; }
-      if (!confirm(a === "cabut" ? `Cabut akun pemirsa ${p.nama}? Ia langsung keluar dan tidak bisa masuk lagi.` : `Reset sandi ${p.nama}? Sandi lama langsung tidak berlaku.`)) return;
-      pb.disabled = true; const x = await Admin.kirim("/api/pemirsa/admin/" + id, {aksi: a}).catch(() => gagalJaringan); pb.disabled = false;
+      let sandi;
+      if (a === "cabut") { if (!confirm(`Cabut akun pemirsa ${p.nama}? Ia langsung keluar dan tidak bisa masuk lagi.`)) return; }
+      else { sandi = prompt(`Reset sandi ${p.nama}. Sandi lama langsung tidak berlaku.\nKetik sandi baru (8 sampai 64 karakter), atau kosongkan untuk sandi acak:`, ""); if (sandi === null) return; }
+      pb.disabled = true; const x = await Admin.kirim("/api/pemirsa/admin/" + id, {aksi: a, sandi: sandi || undefined}).catch(() => gagalJaringan); pb.disabled = false;
       if (!x.ok) { alert(x.j.galat || `Gagal (${x.status})`); return; }
-      rahasia = a === "reset" ? {nama: p.nama, username: p.username, sandi: x.j.sandi} : null; return muat(); }
+      rahasia = a === "reset" ? {nama: p.nama, username: p.username, sandi: x.j.sandi, pemirsa: true} : null; return muat(); }
     const b = e.target.closest("[data-aksi]"); if (!b) return;
     const id = b.closest("[data-staf]").dataset.staf, s = D.staf.find(x => x.id === id), a = b.dataset.aksi;
     if (a === "ubah-buka") { ubahId = ubahId === id ? null : id; tunda(); return; }

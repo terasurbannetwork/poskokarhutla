@@ -12,6 +12,7 @@ import {modOK, superOK, tx, wib, RUTE_POSKO} from "./posko.js";
 import {tenggat, tautanTagih, PROV, RUTE_INSTANSI, durasi as jam, ciriTugas, butirApiMunculLagi, butirCekUlang, bencanaPer} from "./instansi.js";
 import {labelBencana} from "./tugas_bencana.js";
 import {PERAN, P_VALIDASI, stafSesi, stafTertahan, stmtStaf, jejakStmt, sandiBaru, bungkusStaf, tanpaTabelStaf} from "./staf.js";
+import {P_SIPPA_TULIS} from "./sippa.js";
 import {alarmKeselamatan} from "./penugasan.js";
 import {butirInventarisLama, butirP3k} from "./inventaris.js";
 import {butirKorban} from "./korban.js";
@@ -44,6 +45,10 @@ export const JENIS = {
   p3k_kedaluwarsa: {label: "Barang P3K kedaluwarsa atau hampir kedaluwarsa", peran: ["pusdalops"], tautan: "/admin/inventaris"},
   p3k_stok: {label: "Stok P3K di bawah ambang", peran: ["pusdalops"], tautan: "/admin/inventaris"},
   sippa_alarm: {label: "Alarm telemetri kit SIPPA", peran: ["pusdalops"], tautan: "/pipa/telemetri"},
+  sippa_titik: {label: "Titik panas baru dekat kompleks SIPPA zona A atau B", peran: ["pusdalops"], tautan: "/pipa/peta"},   // SP-103: ditulis cron FIRMS (src/sippa_titik.js)
+  sippa_sos: {label: "SOS dari regu SIPPA di lapangan", peran: ["pusdalops"], tautan: "/pipa/peta"},   // SP-123: tombol SOS di form lapangan (src/sippa.js, tabel sippa_lapangan)
+  sippa_selesai: {label: "Gelar SIPPA selesai", peran: ["pusdalops"], tautan: "/pipa/log"},   // SP-127: laporan selesai gelar dari regu
+  sippa_mingguan_siap: {label: "Laporan mingguan SIPPA siap", peran: ["pusdalops"], tautan: "/pipa/laporan"},   // SP-145 butir 46: tiap Jumat 08.00 WIB; butir membawa tautan ?minggu=YYYY-Www sendiri
   sippa_mingguan: {label: "Laporan mingguan SIPPA belum dibuat", peran: ["pusdalops"], tautan: "/pipa/laporan"},   // SP-045, ADR-11: terhitung dari sippa_kit dan sippa_laporan, tanpa tabel dan cron baru   // src/sippa.js: sippa_alarm terbuka (DT §6.3.1); tanpa push baru
 };
 const LUAS = ["koordalops", "pimpinan"];
@@ -117,6 +122,27 @@ async function alarmSippa(env, kini, a) {
   return R.map(r => ({id: `sippa-alarm:${r.id}`, jenis: "sippa_alarm", judul: `Kit ${r.kit_kode}, ${r.tag}: ${LABEL_ALARM[r.kode]}`, rincian: r.nilai != null ? `Terukur ${angkaPendek(r.nilai)}, ambang ${angkaPendek(r.ambang)}, menyala ${jam(kini - r.mulai)} (ambang asumsi-kebijakan)` : `Menyala ${jam(kini - r.mulai)}`,
     provs: r.prov ? [r.prov] : [], kab: r.kab, dibuat: r.mulai, tenggat: null, prioritas: ["dry_run", "tekanan_lebih", "co_tinggi"].includes(r.kode) ? 1 : 2, dummy: r.dummy}));
 }
+/* SP-103: titik panas baru dalam 2 km dari kompleks zona A atau B; butir hidup 24 jam sejak alarm (sama dengan jendela anti-duplikat penulisnya). Id memuat waktu, jadi alarm 24 jam berikutnya butir baru. */
+async function sippaTitik(env, kini, a) {
+  const R = (await env.DB.prepare(`SELECT kompleks_id, prov, kab, zona, jarak_km, dibuat, dummy FROM sippa_titik_dekat WHERE dibuat > ? ${dumSql(a)} ORDER BY dibuat DESC LIMIT 500`).bind(kini - HARI).all()).results;
+  return R.map(r => ({id: `sippa-titik:${r.kompleks_id}:${r.dibuat}`, jenis: "sippa_titik", judul: `Titik panas baru ${angkaPendek(r.jarak_km)} km dari kompleks ${r.kompleks_id} (zona ${r.zona}${r.kab ? ", " + r.kab : ""})`,
+    rincian: "Cek pemicu dan kelayakan kompleks di SIPPA (zona konservatif, jarak garis lurus)", provs: [r.prov], kab: r.kab, dibuat: r.dibuat, tenggat: null, prioritas: r.zona === "A" ? 1 : 2, dummy: r.dummy}));
+}
+/* SP-123 SOS (prioritas 1) dan SP-127 gelar selesai (prioritas 2) dari form lapangan HP; hidup 24 jam sejak diterima, id memuat id butir jadi tiap SOS berdiri sendiri. Provinsi dari tugas di server. */
+const bulat2 = v => typeof v === "number" ? Math.round(v * 100) / 100 : v;   // pimpinan (peran baca) melihat koordinat SOS kasar 0,01 seperti log SIPPA
+const kodeData = s => { try { return JSON.parse(s) ?? {}; } catch (e) { return {}; } };
+async function sippaLapangan(env, kini, a) {
+  const penuh = a.admin || a.peran.some(p => P_SIPPA_TULIS.includes(p));   // koordinat penuh hanya peran tulis SIPPA (bukan sekadar 'selain pimpinan')
+  const R = (await env.DB.prepare(`SELECT l.id, l.jenis, l.kompleks_id, l.prov, l.data, l.diterima, l.dummy, t.nama_regu, t.kab FROM sippa_lapangan l JOIN sippa_tugas t ON t.id = l.tugas_id
+    WHERE l.jenis IN ('sos', 'selesai') AND l.diterima > ? ${dumSql(a, "l.dummy")} ORDER BY l.diterima DESC LIMIT 500`).bind(kini - HARI).all()).results;
+  return R.map(r => {
+    const d = kodeData(r.data), tempat = r.kompleks_id ?? r.kab;
+    return r.jenis === "sos" ? {id: `sippa-sos:${r.id}`, jenis: "sippa_sos", judul: `SOS dari regu ${r.nama_regu} (${tempat})`, rincian: `Koordinat ${penuh ? d.lat : bulat2(d.lat)}, ${penuh ? d.lon : bulat2(d.lon)}${d.pesan ? ". " + d.pesan : ""}`,
+        provs: [r.prov], kab: r.kab, dibuat: r.diterima, tenggat: null, prioritas: 1, dummy: r.dummy}
+      : {id: `sippa-selesai:${r.id}`, jenis: "sippa_selesai", judul: `Gelar selesai di ${tempat}, ${d.alat_kembali?.length ?? 0} alat kembali, ${d.alat_hilang?.length ?? 0} hilang`, rincian: d.catatan ?? `Regu ${r.nama_regu}`,
+        provs: [r.prov], kab: r.kab, dibuat: r.diterima, tenggat: null, prioritas: 2, dummy: r.dummy};
+  });
+}
 const kodeProv = s => { try { const x = JSON.parse(s); return Array.isArray(x) ? x : []; } catch (e) { return []; } };
 async function akunMenunggu(env, kini, a) {
   const R = (await env.DB.prepare(`SELECT id, wilayah, cakupan, dikirim, dummy FROM instansi_akun WHERE status = 'menunggu' ${dumSql(a)} ORDER BY dikirim LIMIT 500`).all()).results;
@@ -155,7 +181,24 @@ async function sippaMingguan(env, kini, a) {
   return [{id: `sippa-mingguan:${tgl}`, jenis: "sippa_mingguan", judul: `${K.length} kit SIPPA bertugas (${banjir} banjir, ${K.length - banjir} gelar), belum ada laporan mingguan dalam 7 hari terakhir`,
     rincian: "Buka Laporan, pilih Mingguan, buat PDF, lalu centang Arsipkan", provs: [...new Set(K.map(k => k.prov).filter(Boolean))], kab: null, dibuat: waktu, tenggat: batas, prioritas: kini > batas ? 1 : 2, dummy: K.every(k => k.dummy) ? 1 : 0}];
 }
-const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi, cekUlangJatuhTempo, keselamatan, alarmSippa, sippaMingguan];
+/* SP-145 butir 46: Jumat 08.00 WIB sampai Senin 08.00 WIB, selama ada kit bertugas. Id memuat minggu ISO, jadi satu butir per minggu tanpa tabel dan tanpa cron baru (ADR-11). Murni, diuji. */
+export function mingguSiap(kini) {
+  const wib = kini + 7 * JAM, hariKe = Math.floor(wib / HARI), dow = (new Date(wib).getUTCDay() + 6) % 7;   // 0 = Senin
+  let jumat = (hariKe - ((dow - 4 + 7) % 7)) * HARI + 8 * JAM;
+  if (jumat > wib) jumat -= 7 * HARI;
+  if (wib - jumat > 3 * HARI) return null;
+  const kam = new Date(Math.floor(jumat / HARI) * HARI + (3 - 4) * HARI), th = kam.getUTCFullYear();   // Kamis pekan itu menentukan tahun ISO
+  return {minggu: `${th}-W${String(Math.floor((kam - Date.UTC(th, 0, 1)) / HARI / 7) + 1).padStart(2, "0")}`, dibuat: jumat - 7 * JAM};
+}
+async function sippaMingguanSiap(env, kini, a) {
+  const m = mingguSiap(kini); if (!m) return [];
+  const K = (await env.DB.prepare(`SELECT prov, dummy FROM sippa_kit WHERE status IN ('gelar', 'banjir') ${dumSql(a)} LIMIT 500`).all()).results;
+  if (!K.length) return [];
+  if (await env.DB.prepare(`SELECT 1 FROM sippa_laporan WHERE jenis = 'mingguan' AND waktu >= ? ${dumSql(a)} LIMIT 1`).bind(m.dibuat).first()) return [];   // sudah diarsipkan pekan ini: butir hilang
+  return [{id: `sippa-mingguan-siap:${m.minggu}`, jenis: "sippa_mingguan_siap", judul: `Laporan mingguan SIPPA ${m.minggu} siap dibuat dari ${K.length} kit bertugas`, rincian: "Buka Laporan, periksa ringkasan pekan ini, buat PDF, lalu centang Arsipkan",
+    tautan: `/pipa/laporan?jenis=mingguan&minggu=${m.minggu}`, provs: [...new Set(K.map(k => k.prov).filter(Boolean))], kab: null, dibuat: m.dibuat, tenggat: null, prioritas: 2, dummy: K.every(k => k.dummy) ? 1 : 0}];
+}
+const DETEKTOR = [tugasApi, panggilan, akunMenunggu, usulanKontak, laporanHarianProvinsi, omcTanpaHasil, inventarisLama, korbanBaru, p3kButir, apiMunculLagi, cekUlangJatuhTempo, keselamatan, alarmSippa, sippaTitik, sippaMingguan, sippaMingguanSiap, sippaLapangan];
 
 /* tabel sumber yang belum dimigrasi (mis. 0018 atau 0029) melewati detektornya saja; 0030 belum ada ditangani pembungkus rute */
 async function kumpulkan(env, kini, a) {
@@ -177,7 +220,7 @@ async function butirUntuk(env, kini, a, asal) {
   const tagih = bolehTagih(a) ? await tautanTagih(env, mentah.filter(b => b.tugas).map(b => b.tugas), kini, asal) : new Map();
   const butir = mentah.sort(urut).map(({tugas: t, provs, ...b}) => {
     const p = tugas.get(b.id), prov = provs[0] ?? null;
-    return {...b, label: JENIS[b.jenis].label, tautan: JENIS[b.jenis].tautan, prov, provs, prov_nama: prov ? PROV[prov]?.[1] ?? prov : "Nasional", umur: kini - b.dibuat, terlambat: b.tenggat != null && kini > b.tenggat,
+    return {...b, label: JENIS[b.jenis].label, tautan: b.tautan ?? JENIS[b.jenis].tautan, prov, provs, prov_nama: prov ? PROV[prov]?.[1] ?? prov : "Nasional", umur: kini - b.dibuat, terlambat: b.tenggat != null && kini > b.tenggat,
       status: p?.status ?? "baru", ditugaskan_ke: p?.ditugaskan_ke ? {id: p.ditugaskan_ke, nama: nama.get(p.ditugaskan_ke) ?? "staf"} : null, catatan: p?.catatan ?? null, alasan: p?.alasan ?? null, diubah: p?.diubah ?? null,
       tagih: t ? tagih.get(t.id) ?? [] : undefined};
   });

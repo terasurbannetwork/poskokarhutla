@@ -3,31 +3,34 @@
    Tidak ada data di berkas ini: data hanya dari /api/sippa/* bersesi. Dimuat sebagai <script type="module"> oleh cangkang halamanSippa. */
 import {ikon} from "./ikon.js";
 import {memuat, kosong, galat, luring, menunggu, basi, waktu} from "./keadaan.js";
-import {bolehDummy, pasangDummy, ambilPesan} from "./dummy.js";
+import {bolehDummy, pasangDummy, ambilPesan, layarDummy} from "./dummy.js";
 
 const GRUP = [
   {k: "ringkas", n: "Ringkas", i: "layout-dashboard"},
   {kel: "Rencana", item: [{k: "peta", n: "Peta", i: "peta"}, {k: "hitung", n: "Hitung", i: "calculator"}, {k: "pemicu", n: "Pemicu", i: "siren"}, {k: "studio", n: "Studio", i: "sliders-horizontal"}, {k: "3d", n: "3D", i: "box"}]},
-  {kel: "Operasi", item: [{k: "kit", n: "Kit", i: "warehouse"}, {k: "pelihara", n: "Pelihara", i: "wrench"}, {k: "log", n: "Log", i: "timer"}, {k: "ab", n: "A/B", i: "flask-conical"}, {k: "telemetri", n: "Telemetri", i: "activity"}]},
+  {kel: "Operasi", item: [{k: "kit", n: "Kit", i: "warehouse"}, {k: "pelihara", n: "Pelihara", i: "wrench"}, {k: "air", n: "Air tanah", i: "cloud-check"}, {k: "log", n: "Log", i: "timer"}, {k: "ab", n: "A/B", i: "flask-conical"}, {k: "telemetri", n: "Telemetri", i: "activity"}]},
   {kel: "Keluaran", item: [{k: "laporan", n: "Laporan", i: "file-text"}, {k: "data", n: "Data", i: "database"}]},
 ];
 const SEMUA = GRUP.flatMap(g => g.item || [g]);
-export const LAYAR = SEMUA.map(x => x.k);
+/* aset = rincian /pipa/aset/:id (PRD §9.4.12): modul layar, bukan butir menu; judulnya ada di sini supaya tampil() menemukannya */
+const RINCIAN = [{k: "aset", n: "Rincian aset"}, {k: "akses", n: "Akses"}];   // akses (jembatan): disembunyikan dari menu atas permintaan pemilik 27 Okt, rute tetap
+export const LAYAR = [...SEMUA, ...RINCIAN].map(x => x.k);
 const BAWAH = ["ringkas", "peta", "kit", "log"];
 const href = k => k === "ringkas" ? "/pipa" : `/pipa/${k}`;
 const VERSI_ZONA = [["k", "Konservatif"], ["o", "Optimistis"], ["v", "Terverifikasi"]];
 const BASI_MS = 48 * 36e5;   // data harian lebih tua dari 48 jam = basi (PRD §9.2.1)
 const GAGAL_LAYAR = "Layar tidak bisa ditampilkan. Coba lagi.";
 
-/* /pipa -> ringkas; /pipa/<layar>; /pipa/kit/<id 16 heks>; selain itu null (404 sopan) */
+/* /pipa -> ringkas; /pipa/<layar>; /pipa/kit/<id 16 heks>; /pipa/aset/<id 16 heks> (wajib id); selain itu null (404 sopan) */
 export function cocokkanJalur(path) {
   const m = /^\/pipa(?:\/([^/]+))?(?:\/([^/]+))?\/?$/.exec(path);
   if (!m) return null;
   const [, a, b] = m;
   if (a === undefined) return {layar: "ringkas"};
   if (a === "ringkas" || !LAYAR.includes(a)) return null;
-  if (b !== undefined) return a === "kit" && /^[0-9a-f]{16}$/.test(b) ? {layar: "kit", id: b} : null;
-  return {layar: a};
+  const id = b !== undefined && /^[0-9a-f]{16}$/.test(b) ? b : null;
+  if (b !== undefined) return (a === "kit" || a === "aset") && id ? {layar: a, id} : null;
+  return a === "aset" ? null : {layar: a};
 }
 
 /* ---------- pemuat skrip inti (bila cangkang belum memuatnya) ---------- */
@@ -71,7 +74,7 @@ function mulai(akar) {
   const isi = akar.closest("main") ? el("div", "sp-isi", {id: "sp-isi", tabindex: "-1"}) : el("main", "sp-isi", {id: "sp-isi", tabindex: "-1"});
   const bawah = el("nav", "sp-bawah", {"aria-label": "Menu utama"});
   const lain = el("div", "sp-lainnya", {id: "sp-lainnya", hidden: ""});
-  const tautan = x => { const a = el("a", "", {href: href(x.k), "data-layar": x.k}); a.innerHTML = `${ikon(x.i)}<span>${x.n}</span>`; return a; };
+  const tautan = x => { const a = el("a", "", {href: href(x.k), "data-layar": x.k}); a.innerHTML = `${ikon(x.i)}<span>${esc(x.n)}</span>`; return a; };
 
   rel.append(tautan(GRUP[0]));
   GRUP.slice(1).forEach(g => {
@@ -94,7 +97,7 @@ function mulai(akar) {
   VERSI_ZONA.forEach(([k, n]) => { const b = el("button", "", {type: "button", role: "radio", "aria-checked": String(k === konteks.zona), "data-zona": k, tabindex: k === konteks.zona ? "0" : "-1"}); b.textContent = n; seg.append(b); });
   /* waktu data dari layar (konteks.setPer), bukan konstanta; pil basi dari keadaan.js bila lebih tua dari 48 jam */
   const batas = el("span", "sp-data-per");
-  const tulisPer = () => { batas.replaceChildren(konteks.per == null ? "Data per –" : `Data per ${waktu(konteks.per)}`); if (konteks.per != null && Date.now() - konteks.per > BASI_MS) batas.append(" ", basi(konteks.per)); };
+  const tulisPer = () => { batas.hidden = konteks.per == null; batas.replaceChildren(konteks.per == null ? "Data per –" : `Data per ${waktu(konteks.per)}`); if (konteks.per != null && Date.now() - konteks.per > BASI_MS) batas.append(" ", basi(konteks.per)); };
   tulisPer();
   const pita = el("div", "sp-pita");
   const info = el("div", "sp-pita sp-info", {role: "status"});   // hasil isi/hapus dummy: di bilah konteks supaya tidak terhapus saat layar dimuat
@@ -112,7 +115,7 @@ function mulai(akar) {
   tema.addEventListener("click", () => { const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; terapkanTema(t); simpan("sp-tema", t); });
   /* tombol dummy 🧪 🧹 (DS §3.19): Super Admin saja, di header kanan sebelum tema, sama di tiap layar */
   const kepala = document.querySelector(".ad-top") || bilah;
-  if (bolehDummy(document.body?.dataset)) pasangDummy(kepala, {layar: () => cocokkanJalur(location.pathname)?.layar ?? "", kirim: (u, b) => konteks.kirim(u, b), pesan: tulisInfo});
+  if (bolehDummy(document.body?.dataset)) pasangDummy(kepala, {layar: () => layarDummy(cocokkanJalur(location.pathname)?.layar), kirim: (u, b) => konteks.kirim(u, b), pesan: tulisInfo});
   kepala.append(tema);
 
   /* luring */
@@ -128,8 +131,8 @@ function mulai(akar) {
     modul = null; konteks.setPer(null); tulisInfo("");
     const c = cocokkanJalur(location.pathname);
     if (!c) { tandaiAktif(null); isi.replaceChildren(kosong("Halaman tidak ada. Pilih layar dari menu SIPPA.")); return; }
-    const x = SEMUA.find(y => y.k === c.layar);
-    tandaiAktif(c.layar); document.title = `${x.n} | SIPPA | Pantau Bencana`;
+    const x = [...SEMUA, ...RINCIAN].find(y => y.k === c.layar);
+    tandaiAktif(c.layar); document.title = `${x.n} | SIPPA | Centurisk97`;
     isi.replaceChildren(memuat());
     let m;
     try { m = await import(`./layar_${c.layar}.js`); }

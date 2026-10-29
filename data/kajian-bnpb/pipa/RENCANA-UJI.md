@@ -146,7 +146,7 @@ Invarian dan penolakan:
 - **Hanya menambah hambatan.** Untuk 200 keadaan acak berbenih tetap: `keras(gerbangSippa(assess(s)))` ≥ `keras(assess(s))` dan himpunan kode keras asli adalah himpunan bagian dari himpunan sesudah. Pesan gagal mencetak benih dan kode yang hilang.
 - **Deterministik.** `assess(s)` dua kali untuk keadaan sama memberi P10/P50/P90 identik bit per bit; keadaan berbeda satu medan memberi benih berbeda.
 - **Angka tidak berubah.** Konstanta `G`, `BASES`, `PIPE`, `COST`, `QBASE`, `N` di berkas port sama dengan salinan beku `tests/sippa/fixtures/studio_konstanta.json` yang diekstrak sekali dari berkas pemilik. Tiap perbedaan di luar baris berkomentar `SIPPA:` gagal.
-- **Larangan keputusan 50.** Preset S3 dengan koridor 3 memberi gerbang keras `jaringan_permanen`; kedalaman 5,1 m memberi H-DALAM; status "GO" tidak muncul di keluaran mana pun; skor tertinggi pada kolom NO-GO tidak pernah disorot sebagai terbaik.
+- **Larangan keputusan 50 dan 60.** Preset S2 dan S3 selalu memberi gerbang keras `jaringan_permanen`, S1 tidak; kedalaman 5,1 m memberi H-DALAM; status "GO" tidak muncul di keluaran mana pun; skor tertinggi pada kolom NO-GO tidak pernah disorot sebagai terbaik.
 - **Heli menunggu.** `sippa.heli.biaya_jam` berstatus `menunggu`, tidak masuk TCO, dan nilai Rp130 juta/jam tidak ada di berkas (grep di uji).
 - **Hitungan skema nyata.** Teks "30 dimensi/93 pilihan" tidak ada; jumlah dimensi dan pilihan dihitung dari skema dan sama dengan 32 dan 100.
 

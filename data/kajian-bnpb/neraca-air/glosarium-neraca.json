@@ -1,0 +1,106 @@
+{
+ "singkatan": [
+  {
+   "singkatan": "CHIRPS",
+   "kepanjangan": "Climate Hazards Group InfraRed Precipitation with Station data",
+   "kajian": [
+    "sippa",
+    "neraca-air"
+   ],
+   "periksa": false,
+   "alasan": "nama produk data berbahasa Inggris; kepanjangannya memuat kata Inggris yang tidak dikenal kamus id_ID (T-10), sehingga dieja di Daftar Singkatan saja"
+  },
+  {
+   "singkatan": "BSN",
+   "kepanjangan": "Badan Standardisasi Nasional",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "singkatan": "NASA",
+   "kepanjangan": "National Aeronautics and Space Administration",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "singkatan": "POWER",
+   "kepanjangan": "Prediction Of Worldwide Energy Resources",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "singkatan": "FAO",
+   "kepanjangan": "Food and Agriculture Organization",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "singkatan": "GloFAS",
+   "kepanjangan": "Global Flood Awareness System",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "singkatan": "LH",
+   "kepanjangan": "Lingkungan Hidup",
+   "kajian": [
+    "neraca-air"
+   ],
+   "periksa": false,
+   "alasan": "hanya dalam bentuk rujukan peraturan Permen LH 17/2009"
+  },
+  {
+   "singkatan": "DDL",
+   "kepanjangan": "Daya Dukung Lingkungan Hidup",
+   "kajian": [
+    "neraca-air"
+   ]
+  }
+ ],
+ "istilah": [
+  {
+   "istilah": "neraca kemarau andalan",
+   "definisi": "persentil kedua puluh dari total neraca air Juni sampai Oktober tiap tahun selama 1991 sampai 2025; negatif berarti kekurangan air pada sedikitnya satu dari lima tahun",
+   "sumber": "kajian neraca air, RANCANGAN NA-05",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "istilah": "kebutuhan konsumtif",
+   "definisi": "kebutuhan domestik, ternak, dan industri ditambah kebutuhan irigasi dikurangi aliran balik",
+   "sumber": "kajian neraca air",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "istilah": "reanalisis",
+   "definisi": "rekonstruksi cuaca masa lalu dari model yang diasimilasi pengamatan",
+   "sumber": "Copernicus Climate Change Service",
+   "kajian": [
+    "neraca-air"
+   ]
+  },
+  {
+   "istilah": "sub-DAS",
+   "definisi": "bagian daerah aliran sungai; dalam kajian ini satuan HydroBASINS level sembilan",
+   "sumber": "HydroBASINS v1c",
+   "kajian": [
+    "neraca-air"
+   ]
+  }
+ ],
+ "kata_tambahan": [
+  "dioperasikan",
+  "diremehkan",
+  "meremehkan",
+  "km²",
+  "evapotranspirasi"
+ ]
+}

@@ -58,3 +58,28 @@
   .ar-strip{grid-template-columns:repeat(4,1fr)}
   .ar-ujung{display:none}
 }
+
+.ar-bahan{border:0;border-radius:999px;padding:3px 10px;font:800 11px var(--font);cursor:pointer;color:var(--ink)}
+.ar-bahan.kurang{background:color-mix(in srgb,var(--bad,#c9503a) 14%,var(--card));color:var(--bad,#c9503a)}
+.ar-bahan.penuh{background:color-mix(in srgb,var(--ok,#2e7d4f) 14%,var(--card));color:var(--ok,#2e7d4f)}
+.ar-rinci td{white-space:normal;background:var(--bg2,transparent);text-align:left;padding:10px 14px}
+.ar-rinci ul{margin:0;padding:0;list-style:none;display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:6px 18px;font-size:11.5px;text-align:left}
+.ar-rinci li{margin:0;padding:0;display:block;text-align:left;line-height:1.4}   /* kisi rata kiri, bukan sebaran flex (29 Okt) */
+.ar-rinci .ada{color:var(--ok,#2e7d4f);font-weight:700}
+.ar-rinci .belum{color:var(--bad,#c9503a);font-weight:700}
+.ar-rinci .kosong{color:var(--ink2)}
+
+/* semua kiriman WA per tanggal (admin): satu kolom, tiap kiriman menumpuk supaya terbaca di lebar ponsel */
+.ar-jk{display:block;margin:12px 0 6px;font:800 11.5px var(--font);color:var(--ink)}
+.ar-kirim{display:block;margin:0;padding:0;list-style:none}
+.ar-kir{display:block;padding:8px 0;border-top:1px solid var(--line);font-size:11.5px;line-height:1.45}
+.ar-kk{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}
+.ar-pil{border-radius:999px;background:color-mix(in oklab,var(--brand2) 14%,transparent);color:var(--brand2);padding:2px 8px;font:800 10.5px var(--font)}
+.ar-pil.netral{background:var(--line);color:var(--ink2)}
+.ar-teks{margin:4px 0 0;color:var(--ink);overflow-wrap:anywhere}
+pre.ar-teks{white-space:pre-wrap;font:inherit;background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px}
+.ar-lagi{border:0;background:none;padding:2px 0;color:var(--brand2);font:800 11px var(--font);cursor:pointer}
+.ar-kir .ar-ik{margin:4px 0 0;max-width:100%}
+.ar-kir .ar-ik span{overflow:hidden;text-overflow:ellipsis}
+.ar-warn{margin-top:4px;color:var(--bad,#c9503a);font-weight:700;font-size:11px}
+.ar-rinci ul.ar-kirim{display:block}   /* daftar kiriman selebar baris, bukan ikut kisi checklist */

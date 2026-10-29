@@ -9,11 +9,19 @@
 .sr:focus{position:static;width:auto;height:auto;clip:auto}
 
 /* cangkang: bilah konteks, rel, isi, bilah bawah */
-.sp-cangkang{display:grid;gap:var(--sp-4);min-width:0}
-.sp-konteks{position:sticky;top:var(--top);z-index:5;display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3);padding:var(--sp-2) 0;background:var(--paper)}
+.sp-cangkang{display:grid;gap:var(--sp-4);min-width:0;box-sizing:border-box;max-width:1680px;margin-inline:auto;padding-inline:var(--sp-6)}
+.sp-isi>*{min-width:0}
+/* bilah konteks = header peta utama (header.top kepala.css): pita gradien penuh lebar, kontrol putih di atasnya */
+.sp-konteks{position:sticky;top:0;z-index:30;display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3);min-height:var(--top,58px);box-sizing:border-box;margin-inline:calc(50% - 50vw);padding:var(--sp-2) 14px;background:var(--gradien);color:#fff}
+.sp-konteks .ad-seg{background:color-mix(in srgb,#fff 14%,transparent)}
+.sp-konteks .ad-seg button{color:color-mix(in srgb,#fff 82%,transparent)}
+.sp-konteks .ad-seg button[aria-checked="true"]{color:var(--ink)}
+.sp-konteks .sp-data-per{border-color:color-mix(in srgb,#fff 45%,transparent);color:#fff}
+.sp-konteks .sp-data-per .sp-yakin{background:color-mix(in srgb,#fff 16%,transparent);border-color:transparent;color:#fff}
+.sp-konteks .sp-tema{background:color-mix(in srgb,#fff 14%,transparent);color:#fff;border:0}
 .sp-pita{flex-basis:100%;min-width:0}.sp-pita:empty{display:none}
 .sp-badan{display:grid;grid-template-columns:232px minmax(0,1fr);gap:var(--sp-6);align-items:start}
-.sp-rel{position:sticky;top:calc(var(--top) + 56px);display:grid;gap:var(--sp-1);padding:var(--sp-2);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
+.sp-rel{position:sticky;top:calc(var(--top) + 12px);display:grid;gap:var(--sp-1);padding:var(--sp-2);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
 .sp-rel ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
 .sp-rel-kel{margin:var(--sp-3) var(--sp-2) 2px}
 .sp-rel a,.sp-bawah a,.sp-lainnya a,.sp-lain-tombol{display:flex;align-items:center;gap:var(--sp-2);min-height:38px;padding:0 var(--sp-3);border-radius:12px;color:var(--ink);font-size:13px;font-weight:700;text-decoration:none;transition:background var(--sp-sedang),color var(--sp-sedang)}
@@ -54,7 +62,13 @@
 .sp-kontrol{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3)}
 .sp-chips{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
 .sp-tgl{display:inline-flex;align-items:center;gap:var(--sp-2);font-size:12.5px;font-weight:600;color:var(--ink2)}
-.sp-tgl input{min-height:36px;border:0;border-radius:var(--r-sm);background:var(--surface);color:var(--ink);padding:0 var(--sp-3);font:inherit}
+.sp-tgl-w{position:relative;display:inline-flex;min-width:0}
+.sp-tgl-btn{display:inline-flex;align-items:center;justify-content:flex-start;min-height:36px;border:0;border-radius:var(--r-sm);background:var(--surface);color:var(--ink);padding:0 var(--sp-3);font:inherit;font-weight:600;cursor:pointer;white-space:nowrap}
+.sp-tgl-btn b{font-weight:inherit}
+.sp-tgl-w>.sp-tgl-in,.sp-form .sp-tgl-w>.sp-tgl-in{position:absolute;inset:0;width:100%;height:100%;min-height:0;padding:0;border:0;opacity:0;pointer-events:none}
+.sp-form .sp-tgl-btn{min-height:44px;width:100%}
+.sp-form .sp-tgl-w{display:flex}
+@media (max-width:767px){.sp-tgl-btn{min-height:44px}}
 .sp-grafik{width:100%;height:auto;display:block;color:var(--ink)}
 .sp-grafik .sp-sumbu{stroke:var(--line);stroke-width:1}
 .sp-grafik .sp-teks{fill:var(--ink2);font-size:11px}
@@ -165,7 +179,7 @@
   .sp-seg-lebar,.sp-konteks .ad-seg{width:100%}.sp-konteks .ad-seg button{flex:1;padding:0 var(--sp-2)}
   .sp-konteks .pc,.sp-konteks select{width:100%}
 }
-@media (max-width:560px){.sp-cangkang{gap:var(--sp-3)}}
+@media (max-width:560px){.sp-cangkang{gap:var(--sp-3);padding-inline:var(--sp-4)}}
 @media (prefers-reduced-motion:reduce){*,*::before,*::after{animation:none!important;transition:none!important}}
 
 /* form lapangan luring /pipa/lapangan (SP-011; DS §3.7.2). Satu tangan, kontras tinggi, sentuh >= 56px. Token lapangan.css dengan cadangan; gelap mengikuti prefers-color-scheme. */
@@ -283,7 +297,9 @@
 .sp-tingkat.t-gelar{--w:var(--bad);background:color-mix(in srgb,var(--bad) 12%,transparent)}.sp-tingkat.t-gelar::before{background:var(--w);border-radius:0;transform:rotate(45deg)}
 .sp-tingkat.t-basi{--w:var(--ink3);border-style:dashed}.sp-tingkat.t-basi::before{border-style:dashed}
 .sp-sub{display:block;margin-top:2px;color:var(--ink2);font-size:11.5px;font-weight:500;line-height:1.35;white-space:normal}
-.sp-tabel-pemicu td{vertical-align:top}.sp-tabel-pemicu td.n{white-space:nowrap}
+.sp-tabel-pemicu td[data-label="Tingkat"]{white-space:nowrap}.sp-tabel-pemicu td{vertical-align:top}
+.sp-basi{margin:0;border-left:4px solid var(--warn);font-size:14px;line-height:1.5}.sp-basi b{font-weight:800}
+#sp-p-banner:empty{display:none}.sp-tabel-pemicu td.n{white-space:nowrap}
 .sp-tabel-pemicu tr.sp-terpilih{background:color-mix(in srgb,var(--info) 8%,transparent)}
 .sp-kab{all:unset;cursor:pointer;font-weight:800;color:var(--ink);text-decoration:underline;text-decoration-color:transparent;text-underline-offset:3px;min-height:24px;transition:text-decoration-color var(--sp-cepat)}
 .sp-kab[aria-pressed="true"]{text-decoration-color:var(--emas)}
@@ -380,3 +396,85 @@
 .sp-dialog-aksi .ad-tombol{min-height:44px;padding:0 var(--sp-5)}
 .sp-tombol-bahaya{background:var(--bad);color:#fff;border-color:var(--bad)}
 @media (prefers-reduced-motion:reduce){.sp-dummy[aria-busy="true"] button:first-child{animation:none}}
+/* keputusan hari ini (SP-100 sampai SP-102): pil Jalan dan Tunda berkata, warna hanya penegas */
+.sp-putusan{display:inline-flex;align-items:center;min-height:22px;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:800;border:1.5px solid currentColor}
+.sp-putusan.jalan{color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,transparent)}
+.sp-putusan.tunda{color:var(--ink2)}
+.sp-tabel-prioritas td small{display:block;margin-top:2px;color:var(--ink2);font-size:11.5px;line-height:1.35;white-space:normal}
+.sp-tabel-prioritas td.n,.sp-tabel-prioritas th.n{text-align:right;font-variant-numeric:tabular-nums}
+.sp-keputusan{margin:0 0 var(--sp-3);padding-left:var(--sp-5);font-size:13px}
+.sp-keputusan li{margin-bottom:6px;line-height:1.45}
+
+/* ============ rupa 27 Okt: tenang, rapat, tanpa ruang kosong (aturan pemilik A1, A3, A5, A7, A18) ============
+   Lapisan terakhir: menimpa rupa lama tanpa mengubah kelas. Satu aksen navy, pil berwarna lembut tanpa garis tebal,
+   isi selebar layar, kondisi kosong jadi satu kartu rapi. */
+.sp-cangkang{max-width:none;padding-inline:var(--sp-5)}
+.sp-badan{grid-template-columns:216px minmax(0,1fr);gap:var(--sp-5)}
+.sp-isi{gap:var(--sp-5)}
+.sp-judul{font-size:24px;letter-spacing:-.025em;margin-top:2px}
+
+/* rel: panel putih rata, butir aktif berwarna lembut + bilah kiri, bukan gradien bercincin emas */
+.sp-rel{padding:var(--sp-2) var(--sp-2) var(--sp-3);box-shadow:none;border:1px solid var(--line)}
+.sp-rel a{position:relative;min-height:36px;font-weight:600;color:var(--ink2)}
+.sp-rel a .sp-ikon{opacity:.8}
+.sp-rel a[aria-current="page"]{background:color-mix(in srgb,var(--navy2) 10%,var(--card));color:var(--navy);box-shadow:none;font-weight:800}
+.sp-rel a[aria-current="page"] .sp-ikon{opacity:1}
+.sp-rel a[aria-current="page"]::before{content:"";position:absolute;left:0;top:8px;bottom:8px;width:3px;border-radius:3px;background:var(--navy2)}
+.sp-rel-kel{font-size:10.5px;letter-spacing:.08em;color:var(--ink3)}
+@media (hover:hover) and (pointer:fine){.sp-rel a:not([aria-current]):hover{background:var(--surface);color:var(--ink)}}
+
+/* tombol, chip, tab: aktif = isi navy lembut, bukan blok gradien; tombol utama tetap navy pekat */
+.sp-isi .ad-chip{height:34px;box-shadow:none;background:var(--card);border:1px solid var(--line);color:var(--ink2);font-weight:600}
+.sp-isi .ad-chip[aria-pressed="true"]{background:color-mix(in srgb,var(--navy2) 11%,var(--card));border-color:color-mix(in srgb,var(--navy2) 35%,transparent);color:var(--navy);box-shadow:none;font-weight:700}
+.sp-isi .ad-tombol:not(.utama){box-shadow:none;border:1px solid var(--line);background:var(--card)}
+.sp-isi .ad-tombol.utama,.sp-isi .ad-tombol.utama:hover{background:var(--navy);color:#fff;border:0;box-shadow:none}
+.sp-isi .ad-tabs{box-shadow:none;border:1px solid var(--line)}
+.ad-tabs button[aria-selected="true"],.sp-isi .ad-tabs button[aria-pressed="true"]{background:var(--navy);box-shadow:none}
+
+/* pil keyakinan, status, tingkat: berwarna lembut seperti pil Insight; garis tipis, isi tipis */
+.sp-yakin,.sp-status,.sp-pemicu,.sp-vonis,.sp-gerbang,.sp-tingkat,.sp-jadwal,.sp-laik,.sp-data-per{border-width:1px;background:color-mix(in srgb,var(--w,var(--ink3)) 10%,var(--card));border-color:color-mix(in srgb,var(--w,var(--ink3)) 45%,transparent);font-weight:700;font-size:11px;height:22px}
+.sp-yakin.resmi{background:var(--ink);border-color:var(--ink)}
+.sp-konteks .sp-data-per{background:color-mix(in srgb,#fff 10%,transparent);border-color:color-mix(in srgb,#fff 30%,transparent)}
+.sp-data-per[hidden]{display:none}
+
+/* kartu: satu rupa, sudut 16, bayangan halus, tanpa kepala bergradien */
+.sp-isi .ex,.sp-isi .ad-tabel-wadah,.sp-panel-pel,.sp-batas,.sp-jelajah,.sp-berjalan,.sp-pindai,.sp-stat div{border:1px solid var(--line);box-shadow:0 1px 2px color-mix(in srgb,var(--ink) 4%,transparent);border-radius:16px}
+#insight .ex-hd{background:var(--card)}
+.sp-isi .ex-ft,.sp-isi .ex .sumber{color:var(--ink3)}
+
+/* kondisi kosong satu layar: satu kartu di tengah dengan ikon, bukan sebaris teks di ruang kosong */
+.sp-isi>div>p.ad-kosong:only-child,.sp-isi>div>div>p.ad-kosong:only-child,.sp-panel-pel>div>p.ad-kosong:only-child{display:grid;justify-items:center;gap:var(--sp-3);margin:0;padding:56px var(--sp-6);background:var(--card);border:1px dashed color-mix(in srgb,var(--ink3) 45%,transparent);border-radius:16px;text-align:center;font-size:14px;line-height:1.55;color:var(--ink2);max-width:none}
+.sp-isi>div>p.ad-kosong:only-child::before,.sp-isi>div>div>p.ad-kosong:only-child::before{content:"";width:30px;height:30px;background:var(--navy2);-webkit-mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-6l-2 3h-4l-2-3H2'/%3E%3Cpath d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/%3E%3C/svg%3E") center/contain no-repeat;mask:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='black' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M22 12h-6l-2 3h-4l-2-3H2'/%3E%3Cpath d='M5.45 5.11 2 12v6a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-6l-3.45-6.89A2 2 0 0 0 16.76 4H7.24a2 2 0 0 0-1.79 1.11z'/%3E%3C/svg%3E") center/contain no-repeat}
+.sp-panel-pel>div>p.ad-kosong:only-child{padding:32px var(--sp-5);border:0;background:var(--surface)}
+
+/* Ringkas: baris selalu penuh (flex), kartu kosong disembunyikan oleh layar_ringkas.js */
+#insight.sp-ringkas{display:flex;flex-wrap:wrap;gap:var(--sp-4)}
+.sp-ringkas>.sp-slot{flex:1 1 340px}
+.sp-ringkas>.sp-slot.lebar{flex:2 1 680px}
+.sp-ringkas>.sp-slot[hidden]{display:none}
+.sp-ringkas>[data-kartu="keputusan"]{order:1}.sp-ringkas>[data-kartu="zona"]{order:2}.sp-ringkas>[data-kartu="pemicu"]{order:3}
+.sp-ringkas>[data-kartu="kit"]{order:4}.sp-ringkas>[data-kartu="pilot"]{order:5}.sp-ringkas>[data-kartu="gerak"]{order:6}.sp-ringkas>[data-kartu="alarm"]{order:7}
+
+:root[data-theme="dark"] .sp-rel a[aria-current="page"]{color:#fff}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .sp-rel a[aria-current="page"]{color:#fff}}
+@media (max-width:1279px){.sp-badan{grid-template-columns:64px minmax(0,1fr)}.sp-rel a[aria-current="page"]::before{display:none}}
+@media (max-width:767px){.sp-badan{grid-template-columns:minmax(0,1fr)}}
+.sp-kontrol[hidden]{display:none}
+.sp-ringkas>[data-kartu="keputusan"]{flex-basis:100%}
+/* bilah atas penuh tanpa 100vw: 100vw ikut menghitung lebar scrollbar tegak sehingga halaman bergeser ke samping (scrollbar bawah di semua layar) */
+.sp-konteks{margin-inline:calc(-1 * var(--sp-5))}
+@media (max-width:560px){.sp-konteks{margin-inline:calc(-1 * var(--sp-4))}}
+#sp-air-isi{display:grid;gap:var(--sp-4);min-width:0}
+/* Studio: angka matriks bawaannya estimasi model; pil itu hanya mengulang di tiap baris. Yang beda (asumsi kebijakan, menunggu) tetap tampil. */
+.sp-tabel-studio tbody th .sp-yakin.estimasi-model{display:none}
+
+/* fase 2 form lapangan (keputusan 61): SOS, pengingat tekanan, hasil hitung; tanpa warna tertanam */
+.sp-lapangan .lp-sos{position:sticky;top:0;z-index:6;width:100%;min-height:72px;margin:0;border:0;border-radius:0;background:var(--bad,crimson);color:#fff;font-size:22px;font-weight:800;touch-action:none;user-select:none;-webkit-user-select:none;overflow:hidden}
+.sp-lapangan .lp-sos.menahan{animation:lp-tahan 2s linear forwards}
+@keyframes lp-tahan{from{box-shadow:inset 0 0 0 0 var(--navy)}to{box-shadow:inset 100vw 0 0 0 var(--navy)}}
+.lp-sos-panel{max-width:560px;margin:8px auto;padding:14px;border-radius:14px;background:var(--card);box-shadow:0 0 0 3px var(--bad,crimson);display:grid;gap:10px}
+.lp-sos-panel[hidden],.lp-pengingat[hidden],.lp-sos[hidden]{display:none}
+.lp-sos-panel p{margin:0;font-weight:700}
+.lp-pengingat{max-width:560px;margin:8px auto;padding:12px 14px;border-radius:14px;background:var(--card);box-shadow:0 0 0 3px var(--warn,goldenrod);display:grid;gap:8px}
+.lp-pengingat p{margin:0;font-weight:700}
+.lp-hasil{margin:8px 0;font-size:20px;font-weight:700}

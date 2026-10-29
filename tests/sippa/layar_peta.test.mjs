@@ -1,6 +1,6 @@
 /* SP-032: logika murni layar Peta /pipa/peta (PRD §9.4.2, DS §3.6 §4.2, RU §2.3 P1-P7). Pembangun menghasilkan data atau teks tanpa peramban;
    perakit MapLibre dan DOM dibuktikan di peramban preview. Data nyata data/sippa/keluaran/{zona,kelayakan_kompleks,kelayakan_sel}.json
-   dipakai sebagai masukan supaya angka judul = angka berkas (A188, A198, A469) dan Terverifikasi berbeda tepat di kompleks yang dicek. */
+   dipakai sebagai masukan supaya angka judul = angka berkas (A188, A199, A470) dan Terverifikasi berbeda tepat di kompleks yang dicek. */
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
@@ -10,21 +10,21 @@ import {readFileSync} from "node:fs";
 const P = await import("../../public/pipa/layar_peta.js");
 const nyata = n => JSON.parse(readFileSync(new URL(`../../data/sippa/keluaran/${n}.json`, import.meta.url), "utf8"));
 const teks = h => h.replace(/<[^>]*>/g, "");
-const zona = nyata("zona"), komp = nyata("kelayakan_kompleks").kompleks;
+const zona = nyata("zona"), komp = nyata("kelayakan_kompleks").kompleks.filter(k => k.prov === "62");   // berkas memuat 6 provinsi sejak 27 Okt 2026; layar menyaring per provinsi, angka uji = Kalteng
 
 /* ---------- P1: kartu judul dan ringkasan dari zona.json ---------- */
-test("judulPeta: angka persis zona.json, versi kendala.json A188 dan semua jalan OSM A469 (P1)", () => {
+test("judulPeta: angka persis zona.json, versi kendala.json A188 dan semua jalan OSM A470 (P1)", () => {
   const j = P.judulPeta(zona, "62", "Kalteng");
-  assert.equal(j.teks, "188 dari 865 kompleks Kalteng di zona A (versi kendala.json); 469 bila semua jalan OSM termasuk track dihitung");
-  assert.deepEqual([j.k, j.o, j.n], [188, 469, 865]);
+  assert.equal(j.teks, "188 dari 865 kompleks Kalteng di zona A (versi kendala.json); 470 bila semua jalan OSM termasuk track dihitung");
+  assert.deepEqual([j.k, j.o, j.n], [188, 470, 865]);
   assert.equal(P.judulPeta(zona, "99", "X"), null, "provinsi tanpa baris = null, bukan angka karangan");
 });
 
-test("ringkasanZona: tabel 4 zona x 4 versi dari zona.json, jalan utama OSM A198, tanpa jalan 16 km 44, median air dan jalan (P1)", () => {
+test("ringkasanZona: tabel 4 zona x 4 versi dari zona.json, jalan utama OSM A199, tanpa jalan 16 km 44, median air dan jalan (P1)", () => {
   const r = P.ringkasanZona(zona, "62", komp, {});
   assert.deepEqual(r.baris.map(b => b.zona), ["A", "B", "C", "D"]);
   const a = r.baris[0];
-  assert.deepEqual([a.k.n, a.u.n, a.o.n], [188, 198, 469]);
+  assert.deepEqual([a.k.n, a.u.n, a.o.n], [188, 199, 470]);
   assert.equal(a.v.n, 188, "tanpa cek jalan, Terverifikasi = Konservatif");
   assert.equal(r.baris.reduce((s, b) => s + b.k.n, 0), 865);
   assert.equal(r.tanpaJalan16, 44);
@@ -50,13 +50,13 @@ test("zonaVersi dan hitungPerZona: Terverifikasi berbeda dari Konservatif tepat 
   assert.notDeepEqual(hv, hk);
   const harap = {...hk}; for (const k of beda) { harap[k.zona_k]--; harap[k.zona_o]++; }
   assert.deepEqual(hv, harap, "selisih hanya dari 10 kompleks yang dicek");
-  assert.deepEqual(P.hitungPerZona(komp, "o", {}), {A: 469, B: 158, C: 167, D: 71, n: 865});
+  assert.deepEqual(P.hitungPerZona(komp, "o", {}), {A: 470, B: 158, C: 166, D: 71, n: 865});
 });
 
 test("ringkasanHtml: tabel empat baris berhuruf dan berpola, angka zona.json, baris tanpa jalan 16 km dan median; kosong berkalimat", () => {
   const h = P.ringkasanHtml(P.ringkasanZona(zona, "62", komp, {}), "k"), t = teks(h);
   assert.match(h, /<caption class="sr">/); assert.equal([...h.matchAll(/<tbody>.*?<\/tbody>/gs)][0][0].match(/<tr>/g).length, 4);
-  for (const s of ["188", "198", "469", "21,7%", "Tanpa jalan kendaraan dalam 16 km: 44", "1,02 km dan jalan 2,27 km"]) assert.ok(t.includes(s), `ringkasan tanpa "${s}"`);
+  for (const s of ["188", "199", "470", "21,7%", "Tanpa jalan kendaraan dalam 16 km: 44", "1,02 km dan jalan 2,27 km"]) assert.ok(t.includes(s), `ringkasan tanpa "${s}"`);
   assert.match(h, /sp-pola-a/); assert.match(P.ringkasanHtml(null), /ad-kosong/);
 });
 
@@ -127,13 +127,13 @@ test("satuanLapisan: sakelar kompleks dan sel hanya mengubah visibility, tanpa s
 });
 
 /* ---------- saringan dan daftar (P5) ---------- */
-const SEMUA = {zona: new Set(["A", "B", "C", "D"]), bakar3: false, gsw: new Set(["permanen", "musiman", "tak_terdeteksi"]), kab: "", cari: "", versi: "k"};
-test("saringKompleks: zona A konservatif 188, optimistis 469, tahun terbakar, GSW, kabupaten, dan kotak cari", () => {
+const SEMUA = {zona: new Set(["A", "B", "C", "D"]), bakar: 0, tahunAkhir: 2025, gsw: new Set(["permanen", "musiman", "tak_terdeteksi"]), kab: "", cari: "", versi: "k"};
+test("saringKompleks: zona A konservatif 188, optimistis 470, tahun terbakar, GSW, kabupaten, dan kotak cari", () => {
   assert.equal(P.saringKompleks(komp, SEMUA, {}).length, 865);
   assert.equal(P.saringKompleks(komp, {...SEMUA, zona: new Set(["A"])}, {}).length, 188);
-  assert.equal(P.saringKompleks(komp, {...SEMUA, zona: new Set(["A"]), versi: "o"}, {}).length, 469);
+  assert.equal(P.saringKompleks(komp, {...SEMUA, zona: new Set(["A"]), versi: "o"}, {}).length, 470);
   assert.equal(P.saringKompleks(komp, {...SEMUA, zona: new Set()}, {}).length, 0);
-  assert.equal(P.saringKompleks(komp, {...SEMUA, bakar3: true}, {}).length, komp.filter(k => k.terbakar_n_2km >= 3).length);
+  assert.equal(P.saringKompleks(komp, {...SEMUA, bakar: 3}, {}).length, komp.filter(k => k.terbakar_akhir > 2022).length, "terbakar dalam 3 tahun terakhir = terbakar_akhir 2023 ke atas");
   assert.equal(P.saringKompleks(komp, {...SEMUA, gsw: new Set(["permanen"])}, {}).length, 120);
   assert.equal(P.saringKompleks(komp, {...SEMUA, kab: "Seruyan"}, {}).length, komp.filter(k => k.kab === "Seruyan").length);
   assert.deepEqual(P.saringKompleks(komp, {...SEMUA, cari: " k0008 "}, {}), ["K0008"], "id tanpa peduli huruf besar dan spasi");
@@ -193,12 +193,12 @@ test("saranHtml: sarana dan alasan berangka dari saranSarana, tautan Hitung, pil
 });
 
 /* ---------- legenda, daftar, formulir ---------- */
-test("legendaHtml: empat zona berhuruf, berpola, beserta arti dan jumlah; ukuran titik; sumber dan tanggal data; basi bila > 400 hari", () => {
-  const h = P.legendaHtml({A: 188, B: 418, C: 89, D: 170, n: 865}, {per: "2026-10-25", sumber: "OpenStreetMap (ODbL) via Overpass", versi: "Konservatif", kini: Date.parse("2026-10-26")}), t = teks(h);
+test("legendaHtml: empat zona berhuruf, berpola, beserta arti dan jumlah; ukuran titik; tanpa baris sumber; basi bila > 400 hari", () => {
+  const h = P.legendaHtml({A: 188, B: 418, C: 89, D: 170, n: 865}, {per: "2026-10-25", versi: "Konservatif", kini: Date.parse("2026-10-26")}), t = teks(h);
   for (const z of ["A", "B", "C", "D"]) { assert.ok(t.includes(z)); assert.match(h, new RegExp(`sp-pola-${z.toLowerCase()}`)); }
   for (const n of ["188", "418", "89", "170"]) assert.ok(t.includes(n));
-  assert.match(t, /Sumber: OpenStreetMap \(ODbL\) via Overpass/); assert.match(t, /25 Okt 2026/); assert.match(t, /0–2/); assert.doesNotMatch(h, /basi/);
-  assert.match(P.legendaHtml({A: 1, B: 0, C: 0, D: 0, n: 1}, {per: "2024-01-01", sumber: "x", versi: "k", kini: Date.parse("2026-10-26")}), /basi, per/);
+  assert.doesNotMatch(t, /Sumber/); assert.match(t, /0–2/); assert.doesNotMatch(h, /basi/);
+  assert.match(P.legendaHtml({A: 1, B: 0, C: 0, D: 0, n: 1}, {per: "2024-01-01", versi: "k", kini: Date.parse("2026-10-26")}), /basi, per/);
 });
 
 test("polaSvg: empat pola berbeda, SVG dekoratif", () => {
@@ -244,7 +244,7 @@ test("kerangkaPeta: bilah memuat satuan, chip zona A-D, terbakar 3 tahun, tiga G
   assert.match(h, /role="region" aria-label="Peta kelayakan kit"/);
   assert.match(h, /data-satuan="kompleks"/); assert.match(h, /data-satuan="sel"/);
   for (const z of "ABCD") assert.match(h, new RegExp(`data-zona="${z}"`));
-  assert.equal([...h.matchAll(/data-gsw="/g)].length, 3); assert.match(h, /data-saring="bakar3"/); assert.match(h, /aria-label="Cari kompleks"/); assert.match(h, /data-aksi="daftar"/);
+  assert.equal([...h.matchAll(/data-gsw="/g)].length, 3); assert.match(h, /data-saring="bakar"/); assert.match(h, /aria-label="Cari kompleks"/); assert.match(h, /data-aksi="daftar"/);
   assert.match(h, /Seruyan/); assert.doesNotMatch(h, /[—·]/);
 });
 

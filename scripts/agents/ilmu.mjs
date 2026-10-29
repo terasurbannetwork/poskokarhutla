@@ -28,7 +28,7 @@ import path from 'node:path'
 import crypto from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 
-// Stempel WIB (UTC+7): zona yang dipakai layar Pantau Bencana.
+// Stempel WIB (UTC+7): zona yang dipakai layar Centurisk97.
 const stempelWib = () => new Date(Date.now() + 7 * 3600_000).toISOString().replace('Z', '+07:00')
 const hariIniWib = () => stempelWib().slice(0, 10)
 

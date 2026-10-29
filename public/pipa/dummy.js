@@ -8,6 +8,9 @@ const KUNCI_PESAN = "sp-dummy-pesan";
 const angka = n => typeof fmt === "function" ? fmt(n) : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
 const jumlah = o => Object.values(o && typeof o === "object" ? o : {}).reduce((s, n) => s + (Number.isFinite(n) ? n : 0), 0);
 
+/* rincian aset tidak punya pengisi sendiri: dummy-nya rantai pelihara (aset, inspeksi); jalur yang tidak cocok layar mana pun = "" (ditolak sebelum jaringan) */
+export const layarDummy = layar => layar === "aset" ? "pelihara" : (layar ?? "");
+
 /* hanya Super Admin: data-super dari cangkang halamanSippa ("1" persis) */
 export const bolehDummy = data => data?.super === "1";
 

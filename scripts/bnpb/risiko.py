@@ -296,7 +296,10 @@ def kap_dinamis(agregat, pend_kab, hari):
         meta["alasan"] = "tidak tersedia (gagal, 404, atau bentuk lain)"
         return {}, meta
     meta["dibuat"] = agregat.get("dibuat")
-    u = umur(hari, (agregat.get("dibuat") or "")[:10])
+    d = agregat.get("dibuat")   # teks ISO, atau epoch milidetik (API kapasitas sejak 27 Okt 2026)
+    if isinstance(d, (int, float)) and not isinstance(d, bool):
+        d = dt.datetime.fromtimestamp(d / 1000, WIB).date().isoformat()
+    u = umur(hari, (d if isinstance(d, str) else "")[:10])
     if u is None or u > UMUR_KAPASITAS_MAKS or u < 0:
         meta["alasan"] = f"basi atau tanpa tanggal (umur {u} hari, maks {UMUR_KAPASITAS_MAKS})"
         return {}, meta
@@ -447,6 +450,8 @@ def cek_dinamis(src, hari, dasar, ix):
     assert kap_dinamis({"dibuat": T, "kab": {"32|Bogor": {"siap": 99, "jam30": 0}}}, pk, hari)[0] == {}, "jam30 = 0 (tak pernah bertugas) tidak dihitung"
     assert kap_dinamis({"dibuat": T, "kab": {"32|Bogor": {"siap": 99}}}, pk, hari)[0] == {}, "tanpa jam30 tidak dihitung"
     assert kap_dinamis({"dibuat": T, "kab": {"32|Bogor": {"siap": 99, "jam30": 1}}}, pk, hari)[0] == {"32|Bogor": 1.0}
+    ms = int(dt.datetime.fromisoformat(hari + "T08:00+07:00").timestamp() * 1000)   # API kapasitas mengirim epoch ms sejak 27 Okt 2026
+    assert kap_dinamis({"dibuat": ms, "kab": {"32|Bogor": {"siap": 99, "jam30": 1}}}, pk, hari)[0] == {"32|Bogor": 1.0}, "dibuat epoch ms harus dibaca sebagai tanggal"
     # dua kunci yang dinormalkan ke kabupaten sama dijumlahkan, bukan ditimpa (6 + 6 = 12 >= 10; jam 0 + 3 > 0)
     d, _ = kap_dinamis({"dibuat": T, "kab": {"32|Kab. Bogor": {"siap": 6, "jam30": 0}, "32|Bogor": {"siap": 6, "jam30": 3}}}, pk, hari)
     assert d == {"32|Bogor": round(12 / 20, 3)}, d

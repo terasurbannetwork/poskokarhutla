@@ -3,7 +3,7 @@
 Rencana lengkap, vendor, sensor, regulasi, dan hitungan armada: docs/bnpb/RENCANA-DRONE.md.
 
 Alur satu putaran (dijalankan tiap 10 menit, sama dengan irama Himawari-9):
-  1. kandidat  /api/himawari (Pantau Bencana). Gerbang keras, supaya drone hanya untuk api yang layak:
+  1. kandidat  /api/himawari (Centurisk97). Gerbang keras, supaya drone hanya untuk api yang layak:
                KECIL = lewati: FRP < 30 MW (kelas "kecil" lingkaran Himawari di peta).
                SEKILAS = lewati: < 3 pindaian 10 menit (belum bertahan 20 menit), level < 2, atau tak terlihat lagi > 60 menit.
   2. skor      FRP (MW), lama bertahan, "api baru" (Himawari melihat sebelum NASA FIRMS), level 3 = menyala: 0-100.
@@ -28,7 +28,7 @@ Alur satu putaran (dijalankan tiap 10 menit, sama dengan irama Himawari-9):
                sebanyak baterai cukup), atau cincin 8 titik radius 1,8 km mengelilingi dock bila tak ada stasiun.
                Mencari bara yang belum cukup besar untuk satelit. Patroli tidak menghalangi misi api (bukan "api yang sama").
 
-Data gambut: DC dari /data/fwi.json Pantau Bencana (kisi 0,5 derajat, hari ini WIB; kasar, sekitar 55 km, jadi pendukung,
+Data gambut: DC dari /data/fwi.json Centurisk97 (kisi 0,5 derajat, hari ini WIB; kasar, sekitar 55 km, jadi pendukung,
 bukan penentu blok). TMAT dari berkas armada.tmat: JSON hasil GET /api/ops/tmat ({stasiun: [...]}) atau CSV unggahan
 (id, lat, lon, tmat_cm, waktu, sumber); tmat_cm negatif = muka air di bawah permukaan. Stasiun terdekat <= 10 km dan
 pembacaan <= 72 jam; lebih jauh/tua dianggap tidak ada.
@@ -296,7 +296,7 @@ def kmz(d, pts, armada, nama, poi=None):
 {_aksi(i, -90 if atas else -45)}</Placemark>""")
     kepala = '<?xml version="1.0" encoding="UTF-8"?>\n<kml xmlns="http://www.opengis.net/kml/2.2" xmlns:wpml="http://www.dji.com/wpmz/1.0.6"><Document>'
     nama = escape(nama)
-    template = f"{kepala}<wpml:author>Pantau Bencana</wpml:author>{cfg}<Folder><name>{nama}</name></Folder></Document></kml>"
+    template = f"{kepala}<wpml:author>Centurisk97</wpml:author>{cfg}<Folder><name>{nama}</name></Folder></Document></kml>"
     wayline = (f"{kepala}{cfg}<Folder><wpml:templateId>0</wpml:templateId><wpml:executeHeightMode>relativeToStartPoint</wpml:executeHeightMode>"
                f"<wpml:waylineId>0</wpml:waylineId><wpml:distance>{j * 1000:.0f}</wpml:distance><wpml:duration>{menit * 60:.0f}</wpml:duration>"
                f"<wpml:autoFlightSpeed>{MISI['laju_ms']}</wpml:autoFlightSpeed>{''.join(tanda)}</Folder></Document></kml>")

@@ -82,8 +82,8 @@ def baca_opsional(jalur, kolom):
         return {}
     out = {}
     for r in csv.DictReader(open(jalur)):
-        v = {k: float(r[k]) for k in kolom}
-        if any(x < 0 for x in v.values()):
+        v = {k: (float(r[k]) if r[k].strip() else None) for k in kolom}   # kosong = null (komponen tak tersedia)
+        if any(x is not None and x < 0 for x in v.values()):
             raise ValueError(f"{jalur} {r['kode']}: nilai negatif {v}")
         out[r["kode"]] = v
     return out
@@ -115,7 +115,7 @@ def statis(kab, kota_bps, proy_bps, ternak, industri):
         d = out[k]
         d["nama"], d["prov"] = r["nama"], r["prov_kode"]
         d["irigasi_ha"] = float(r["irigasi_permukaan_ha"] or 0)
-        d["ternak"] = sum(ternak[k][j] * L_TERNAK[j] for j in L_TERNAK) * 365 / 1e9 if k in ternak else None
+        d["ternak"] = sum((ternak[k][j] or 0) * L_TERNAK[j] for j in L_TERNAK) * 365 / 1e9 if k in ternak else None
         d["industri"] = industri[k]["tenaga_kerja"] * L_KARYAWAN * 365 / 1e9 if k in industri else None
         for j in ("domestik_2025", "domestik_2030", "ternak", "industri"):
             if d[j] is not None:

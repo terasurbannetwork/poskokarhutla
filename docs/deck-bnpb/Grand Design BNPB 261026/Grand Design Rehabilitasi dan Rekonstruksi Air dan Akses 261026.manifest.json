@@ -1,0 +1,3695 @@
+{
+ "spek": "deck-rehab",
+ "pesan_kunci": "Waktu pulih air dan akses diusulkan menjadi ukuran keberhasilan rehabilitasi dan rekonstruksi; program jembatan diikat ke rencana RR dan baseline layanan air dibentuk paling lambat 2027.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "deck-rehab#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    126,
+    446.4,
+    120,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: masjid yang tetap berdiri setelah tsunami Aceh, Banda Aceh, 2005; USGS, domain publik, Wikimedia Commons",
+    "Senin, 26 Oktober 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "8C9AA8",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "F6B26B",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ]
+  },
+  {
+   "nomor": 2,
+   "jenis": "kartu-angka",
+   "asal": "deck-rehab#2",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "2",
+    "DIBI BNPB 2018–2025; Kementerian PU (rilis Februari dan Mei 2026); Kementerian Sekretariat Negara, Agustus 2026; Perban BNPB tentang hibah RR"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F4C3A0",
+     "garis"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Waktu pulih air dan akses diusulkan menjadi ukuran keberhasilan rehabilitasi dan rekonstruksi, dengan empat keputusan Kepala BNPB",
+   "pesan": "Tesis dan empat keputusan Kepala BNPB dengan temuan penopang",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 3,
+   "jenis": "temuan-grafik",
+   "asal": "deck-rehab#3",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "3",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "DIBI BNPB 2018–2025 (olah Pantau Bencana); Kementerian PU, Mei 2026; seri jembatan baru terisi sejak 2018"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "arah"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "AEBBCB",
+     "skala.netral"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "D9600B",
+     "arah"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A1. Bencana alam merusak {{angka:rehab.dibi.jembatan_rusak.2018_2025}} jembatan pada 2018–2025, {{angka:rehab.dibi.jembatan_rusak.2025}} di antaranya pada 2025",
+   "pesan": "Beban akses naik tajam pada 2025",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 4,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#4",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "4",
+    "DIBI BNPB, kejadian besar; BRR NAD–Nias (2009); rencana RR Kabupaten Cianjur; Perban BNPB tentang rencana RR; Kemenko PMK (2026)"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "3F5F80",
+     "pil"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A2. Enam kejadian besar sejak 2009 masing-masing merusak lebih dari {{angka:rehab.preseden.ambang_rumah_rusak}} rumah menurut DIBI",
+   "pesan": "Enam kejadian besar sebagai preseden beban RR",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 5,
+   "jenis": "temuan-peta",
+   "asal": "deck-rehab#5",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+     "sistem_referensi": "WGS84 geografis",
+     "proyeksi": "ekuirektangular",
+     "resmi": false,
+     "catatan": "Batas wilayah bukan rujukan resmi",
+     "inset": false,
+     "skala_batang": false,
+     "skala_pojok": null,
+     "skala_kena_darat": 0,
+     "skala_alas": false,
+     "label_laut": false
+    },
+    "resmi": false,
+    "batas": [
+     77.71829550321208,
+     101.0,
+     644.345704496788,
+     372.4
+    ],
+    "label": [],
+    "ukuran_label_pt": 8
+   },
+   "struktur": [
+    "25 Okt 2026",
+    "5",
+    "Sumber batas: Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi); WGS84 geografis; ekuirektangular; Batas wilayah bukan rujukan resmi",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "DIBI BNPB 2018–2025 (olah Pantau Bencana)"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "aksen"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A3. Enam provinsi menanggung {{angka:rehab.dibi.jembatan_rusak.porsi_6prov_persen|fmt=1|persen}} jembatan rusak pada 2018–2025",
+   "pesan": "Jembatan rusak terkonsentrasi di enam provinsi",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 6,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#6",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "6",
+    "Kementerian Sekretariat Negara, Agustus 2026; Sekretariat Kabinet, Maret 2026; Polri; Kementerian PU"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "B1. Program jembatan TNI AD mengerjakan {{angka:rehab.jembatan.garuda.titik_2026_08}} titik, {{angka:rehab.jembatan.garuda.titik_wilayah_bencana_2026_08}} di daerah bencana; biaya satuan dan tautan ke rencana RR tidak diumumkan",
+   "pesan": "Program jembatan yang ada tidak terikat ke rencana RR",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 7,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#7",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "7",
+    "Kementerian PU (rilis Februari dan Mei 2026); JSCE (2011); Kementerian PUPR (2023)"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "5B7A99",
+     "pil"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "B2. {{angka:rehab.pipa.sumatra2025.persen_fungsi_mei2026|fmt=1|persen}} dari {{angka:rehab.pipa.sumatra2025.spam_terdampak}} SPAM Sumatra berfungsi pada Mei 2026, tetapi jiwa yang kembali mendapat air tidak tercatat",
+   "pesan": "SPAM Sumatra pulih sebagai unit; jiwa terlayani tidak diketahui",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 8,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#8",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "8",
+    "Kementerian PU, Februari 2026; Kementerian ESDM; Permenkes air minum; Keppres cekungan air tanah; Perka BNPB kebutuhan dasar (2008)"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "B3. Baru {{angka:rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026}} dari {{angka:rehab.pipa.sumatra2025.sumur_bor_feb2026}} sumur bor Kementerian PU untuk Sumatra 2025 selesai per Februari 2026, tanpa data E. coli sumur darurat",
+   "pesan": "Air tanah: sumur Sumatra belum selesai dan mutu tidak dilaporkan",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 9,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#9",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "9",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "DIBI BNPB; Kementerian PU; BRR NAD–Nias; pengolahan kajian ini"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "C1. Lantai skenario tertinggi: gempa Padang 2009 merusak {{angka:rehab.lantai.gempa.padang2009.rumah_rusak}} rumah dan banjir Sumatra 2025 {{angka:rehab.lantai.banjir.sumatra2025.rumah_rusak}}",
+   "pesan": "Kartu ringkas beban RR tujuh jenis bencana",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 10,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#10",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "10",
+    "DIBI BNPB; PuSGeN 2024; NRR 2025; pengolahan kajian ini"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "C2. Kemungkinan lima tahun hanya dinilai untuk musim hujan setara lantai ({{angka:hidromet.nasional.lantai.peluang_5_musim|fmt=1|persen}}) dan megathrust Jawa ({{angka:geologi.jawa_gabungan.peluang_5th|fmt=2|persen}})",
+   "pesan": "Dampak RR dinilai untuk semua jenis, kemungkinan hanya untuk dua",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 11,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#11",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "11",
+    "Perban BNPB tentang hibah RR dan Dana Bersama; Juklak Dana Bersama; Permendes PDT tentang Dana Desa 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "D1. Hibah RR mengecualikan {{angka:rehab.hukum.hibah_rr_larangan_pembiayaan_huruf}} jenis pembiayaan, termasuk aset rusak milik pemerintah desa dan lahan",
+   "pesan": "Hibah RR tidak menjangkau aset desa dan lahan",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 12,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#12",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "12",
+    "DIBI BNPB; Juklak BNPB standar data dan hibah RR; Perban BNPB penyelenggaraan RR"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "D2. Berdasarkan data DIBI, terdapat {{angka:rehab.dibi.kolom_dampak_n}} kolom dampak dan {{angka:rehab.dibi.kolom_air_n}} kolom air, sehingga pemulihan air tidak dapat diukur dari data BNPB",
+   "pesan": "DIBI tidak mencatat air dan status jalan",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 13,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#13",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "13",
+    "Perban BNPB tentang rencana RR dan hibah RR; Perka BNPB kebutuhan dasar dan perbaikan darurat; analisis kajian ini"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "pil"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F4C3A0",
+     "garis"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "E1. Sebelas program dalam lima pilar membentuk alur tiga lapis, empat di antaranya sudah ada",
+   "pesan": "Sebelas program dalam lima pilar dengan status",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 14,
+   "jenis": "tabel-peringkat",
+   "asal": "deck-rehab#14",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    47.5,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "14",
+    "PP penanggulangan bencana; PP SPAM; UU jalan; UU sumber daya air; Perban BNPB; analisis kajian ini"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "E2. Sembilan kelompok lembaga memegang tugas berbeda di tiap lapis pemulihan",
+   "pesan": "Mandat tertulis lembaga per lapis dan sektor",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 15,
+   "jenis": "rekomendasi",
+   "asal": "deck-rehab#15",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "15",
+    "R-E01",
+    "R-E04",
+    "R-E06",
+    "R-E11",
+    "R-E02",
+    "R-E03",
+    "R-E05",
+    "R-E07"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "E3. Langkah {{sorot:100 hari}} pertama dan awal peta jalan {{sorot:2026–2027}} disertai rincian dan penanggung jawab",
+   "pesan": "Delapan rekomendasi pertama: empat dalam 100 hari",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "rekomendasi",
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 16,
+   "jenis": "rekomendasi",
+   "asal": "deck-rehab#16",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "16",
+    "R-E08",
+    "R-E09",
+    "R-E10",
+    "R-E12",
+    "R-E14",
+    "R-E15",
+    "R-E13"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "E4. Rekomendasi lanjutan peta jalan {{sorot:2026–2027}} dan arah {{sorot:2028–2030}} (lanjutan)",
+   "pesan": "Tujuh rekomendasi lanjutan sampai 2030",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": "rekomendasi",
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 17,
+   "jenis": "kesimpulan",
+   "asal": "deck-rehab#17",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "25 Okt 2026",
+    "17",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "DIBI BNPB 2018–2025; Kementerian PU (Februari dan Mei 2026); Kementerian Sekretariat Negara, Agustus 2026; Perban BNPB"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "aksen"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "DCEBF8",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Delapan temuan berangka tentang air dan akses pascabencana mendasari keputusan yang diminta dari Kepala BNPB",
+   "pesan": "Delapan kesimpulan berangka dan keputusan yang sama dengan Pesan Kunci",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ]
+  },
+  {
+   "nomor": 18,
+   "jenis": "penutup",
+   "asal": "deck-rehab#18",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "Foto: masjid yang tetap berdiri setelah tsunami Aceh, Banda Aceh, 2005; USGS, domain publik, Wikimedia Commons",
+    "Grand Design Rehabilitasi dan Rekonstruksi Air dan Akses Pascabencana 2026–2030, Senin, 26 Oktober 2026"
+   ],
+   "warna": [
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "F28C28",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ]
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2018_2025",
+   "opsi": "|",
+   "tampil": "3.833",
+   "nilai": 3833,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam (kode 101–109)",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2025",
+   "opsi": "|",
+   "tampil": "1.088",
+   "nilai": 1088,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2018_2025",
+   "opsi": "|",
+   "tampil": "3.833",
+   "nilai": 3833,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam (kode 101–109)",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2025",
+   "opsi": "|",
+   "tampil": "1.088",
+   "nilai": 1088,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.dibi.rumah_rb.porsi_2018_2025_persen",
+   "opsi": "|fmt=1|persen",
+   "tampil": "62,4%",
+   "nilai": 62.4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026",
+   "opsi": "|persen",
+   "tampil": "67%",
+   "nilai": 67,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.akses.sumatra2025.jalan_jembatan_nasional_persen_fungsi_mei2026",
+   "opsi": "|persen",
+   "tampil": "100%",
+   "nilai": 100,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.persen_fungsi_mei2026",
+   "opsi": "|fmt=1|persen",
+   "tampil": "95,5%",
+   "nilai": 95.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.spam_terdampak",
+   "opsi": "|",
+   "tampil": "178",
+   "nilai": 178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.jembatan.garuda.titik_2026_08",
+   "opsi": "|",
+   "tampil": "3.008",
+   "nilai": 3008,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.jembatan.polri_mpp.jumlah_total_2026_08",
+   "opsi": "|",
+   "tampil": "895",
+   "nilai": 895,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.hukum.hibah_rr_larangan_pembiayaan_huruf",
+   "opsi": "|",
+   "tampil": "7",
+   "nilai": 7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.dibi.kolom_air_n",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; olahan",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.dibi.kolom_dampak_n",
+   "opsi": "|",
+   "tampil": "19",
+   "nilai": 19,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck-rehab#2"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2018_2025",
+   "opsi": "|",
+   "tampil": "3.833",
+   "nilai": 3833,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam (kode 101–109)",
+   "naskah": "deck-rehab#3"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2025",
+   "opsi": "|",
+   "tampil": "1.088",
+   "nilai": 1088,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+   "naskah": "deck-rehab#3"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.porsi_banjir_persen",
+   "opsi": "|fmt=1|persen",
+   "tampil": "89,2%",
+   "nilai": 89.2,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam",
+   "naskah": "deck-rehab#3"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.prov.aceh.2025",
+   "opsi": "|",
+   "tampil": "480",
+   "nilai": 480,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, Provinsi Aceh, bencana alam",
+   "naskah": "deck-rehab#3"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.sumatra3prov.2025",
+   "opsi": "|",
+   "tampil": "744",
+   "nilai": 744,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, Aceh, Sumatera Utara, Sumatera Barat, bencana alam",
+   "naskah": "deck-rehab#3"
+  },
+  {
+   "kunci": "rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026",
+   "opsi": "|persen",
+   "tampil": "67%",
+   "nilai": 67,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#3"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.porsi_6prov_persen",
+   "opsi": "|fmt=1|persen",
+   "tampil": "54,5%",
+   "nilai": 54.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "naskah": "deck-rehab#3"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "392",
+   "nilai": 392.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "275",
+   "nilai": 275.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "433",
+   "nilai": 433.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "487",
+   "nilai": 487.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "505",
+   "nilai": 505.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "342",
+   "nilai": 342.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "258",
+   "nilai": 258.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "445",
+   "nilai": 445.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/jembatan_tahun.csv#jumlah",
+   "tampil": "1.088",
+   "nilai": 1088.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, bencana alam, cakupan bencana; patahan seri 2024"
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#ubah",
+   "tampil": "naik 177,6%",
+   "nilai": 177.55102040816325,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2018",
+   "tampil": "29,8%",
+   "nilai": -29.846938775510207,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2019",
+   "tampil": "57,5%",
+   "nilai": 57.45454545454546,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2020",
+   "tampil": "12,5%",
+   "nilai": 12.471131639722865,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2021",
+   "tampil": "3,7%",
+   "nilai": 3.696098562628337,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2022",
+   "tampil": "32,3%",
+   "nilai": -32.27722772277228,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2023",
+   "tampil": "24,6%",
+   "nilai": -24.561403508771928,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2024",
+   "tampil": "72,5%",
+   "nilai": 72.48062015503875,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck-rehab#3#persen:2025",
+   "tampil": "144,5%",
+   "nilai": 144.4943820224719,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, bencana alam, cakupan bencana; Pengolahan data Pantau Bencana dari patahan seri 2024",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#jembatan_rusak",
+   "tampil": "1.021",
+   "nilai": 1021.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan, bencana alam, cakupan bencana"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#jembatan_rusak",
+   "tampil": "39",
+   "nilai": 39.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan, bencana alam, cakupan bencana"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#jembatan_rusak",
+   "tampil": "12",
+   "nilai": 12.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan, bencana alam, cakupan bencana"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#jembatan_rusak",
+   "tampil": "7",
+   "nilai": 7.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan, bencana alam, cakupan bencana"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#jembatan_rusak",
+   "tampil": "6",
+   "nilai": 6.0,
+   "naskah": "deck-rehab#3",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan, bencana alam, cakupan bencana"
+  },
+  {
+   "kunci": "rehab.preseden.ambang_rumah_rusak",
+   "opsi": "|",
+   "tampil": "50.000",
+   "nilai": 50000,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Ambang pilihan penyusun atas DIBI BNPB, kejadian besar",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "brr.aceh2004.rumah_rusak",
+   "opsi": "|",
+   "tampil": "139.195",
+   "nilai": 139195,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias, The Scattered Beads hlm. x",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "brr.aceh2004.meninggal",
+   "opsi": "|",
+   "tampil": "127.720",
+   "nilai": 127720,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias (2009), halaman capaian 4 tahun",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "r3p.cianjur2022.rumah_rusak",
+   "opsi": "|",
+   "tampil": "114.315",
+   "nilai": 114315,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "R3P Gempa Bumi Kabupaten Cianjur 2022, SK Bupati 360/KEP.401-BPBD/BPBD/2022 tahap II hasil reviu BNPB",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "perban2017_5.r3p_hari_maks",
+   "opsi": "|",
+   "tampil": "90",
+   "nilai": 90,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 5/2017",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "perban2017_5.r3p_masa_tahun",
+   "opsi": "|",
+   "tampil": "3",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 5/2017",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "sumatra2025.r3p_aceh_hari_selesai",
+   "opsi": "|",
+   "tampil": "35",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan Pantau Bencana dari Kemenko PMK (11 Mar 2026) dan DIBI",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "sumatra2025.r3p_aceh_hari_ke_bnpb",
+   "opsi": "|",
+   "tampil": "41",
+   "nilai": 41,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan Pantau Bencana dari Kemenko PMK (11 Mar 2026) dan DIBI",
+   "naskah": "deck-rehab#4"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rusak",
+   "tampil": "271.540",
+   "nilai": 271540.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rb",
+   "tampil": "119.005",
+   "nilai": 119005.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#mengungsi",
+   "tampil": "6.554",
+   "nilai": 6554.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rusak",
+   "tampil": "217.855",
+   "nilai": 217855.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rb",
+   "tampil": "75.160",
+   "nilai": 75160.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#mengungsi",
+   "tampil": "406.202",
+   "nilai": 406202.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rusak",
+   "tampil": "110.214",
+   "nilai": 110214.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rb",
+   "tampil": "34.166",
+   "nilai": 34166.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#mengungsi",
+   "tampil": "212.719",
+   "nilai": 212719.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rusak",
+   "tampil": "54.268",
+   "nilai": 54268.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rb",
+   "tampil": "5.882",
+   "nilai": 5882.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#mengungsi",
+   "tampil": "58.192",
+   "nilai": 58192.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rusak",
+   "tampil": "57.337",
+   "nilai": 57337.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rb",
+   "tampil": "13.730",
+   "nilai": 13730.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#mengungsi",
+   "tampil": "115.382",
+   "nilai": 115382.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rusak",
+   "tampil": "228.006",
+   "nilai": 228006.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#rb",
+   "tampil": "62.956",
+   "nilai": 62956.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/preseden.csv#mengungsi",
+   "tampil": "970.876",
+   "nilai": 970876.0,
+   "naskah": "deck-rehab#4",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.porsi_6prov_persen",
+   "opsi": "|fmt=1|persen",
+   "tampil": "54,5%",
+   "nilai": 54.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "naskah": "deck-rehab#5"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.porsi_6prov_persen",
+   "opsi": "|fmt=1|persen",
+   "tampil": "54,5%",
+   "nilai": 54.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB",
+   "naskah": "deck-rehab#5"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.prov.aceh.2025",
+   "opsi": "|",
+   "tampil": "480",
+   "nilai": 480,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, Provinsi Aceh, bencana alam",
+   "naskah": "deck-rehab#5"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.sumatra3prov.2025",
+   "opsi": "|",
+   "tampil": "744",
+   "nilai": 744,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, Aceh, Sumatera Utara, Sumatera Barat, bencana alam",
+   "naskah": "deck-rehab#5"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2025",
+   "opsi": "|",
+   "tampil": "1.088",
+   "nilai": 1088,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+   "naskah": "deck-rehab#5"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "633",
+   "nilai": 633.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "521",
+   "nilai": 521.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "280",
+   "nilai": 280.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "236",
+   "nilai": 236.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "215",
+   "nilai": 215.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "204",
+   "nilai": 204.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "194",
+   "nilai": 194.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "192",
+   "nilai": 192.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "136",
+   "nilai": 136.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "csv:data/turunan/gambar-rehab/peta_jembatan_prov.csv#nilai",
+   "tampil": "123",
+   "nilai": 123.0,
+   "naskah": "deck-rehab#5",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap provinsi tahunan, bencana alam"
+  },
+  {
+   "kunci": "rehab.jembatan.garuda.titik_2026_08",
+   "opsi": "|",
+   "tampil": "3.008",
+   "nilai": 3008,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#6"
+  },
+  {
+   "kunci": "rehab.jembatan.garuda.titik_wilayah_bencana_2026_08",
+   "opsi": "|",
+   "tampil": "798",
+   "nilai": 798,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#6"
+  },
+  {
+   "kunci": "rehab.jembatan.garuda.selesai_2026_08",
+   "opsi": "|",
+   "tampil": "2.500",
+   "nilai": 2500,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#6"
+  },
+  {
+   "kunci": "rehab.jembatan.polri_mpp.selesai_2026_08",
+   "opsi": "|",
+   "tampil": "874",
+   "nilai": 874,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#6"
+  },
+  {
+   "kunci": "rehab.jembatan.pu.gantung_2025_unit",
+   "opsi": "|",
+   "tampil": "43",
+   "nilai": 43,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (ePPID), 16 Oktober 2025",
+   "naskah": "deck-rehab#6"
+  },
+  {
+   "kunci": "rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026",
+   "opsi": "|persen",
+   "tampil": "67%",
+   "nilai": 67,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#6"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.sumatra3prov.2025",
+   "opsi": "|",
+   "tampil": "744",
+   "nilai": 744,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, Aceh, Sumatera Utara, Sumatera Barat, bencana alam",
+   "naskah": "deck-rehab#6"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.persen_fungsi_mei2026",
+   "opsi": "|fmt=1|persen",
+   "tampil": "95,5%",
+   "nilai": 95.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.spam_terdampak",
+   "opsi": "|",
+   "tampil": "178",
+   "nilai": 178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "rehab.pipa.pulih.kobe_90",
+   "opsi": "|",
+   "tampil": "38",
+   "nilai": 38,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE, Nojima 2011",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "rehab.pipa.pulih.tohoku_90",
+   "opsi": "|",
+   "tampil": "36",
+   "nilai": 36,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "JSCE, Nojima 2011",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "rehab.pipa.cianjur.hidran_puncak",
+   "opsi": "|",
+   "tampil": "172",
+   "nilai": 172,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Penanganan Gempa Cianjur 2022 (Kementerian PUPR)",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.persen_fungsi_mei2026",
+   "opsi": "|fmt=1|persen",
+   "tampil": "95,5%",
+   "nilai": 95.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.spam_terdampak",
+   "opsi": "|",
+   "tampil": "178",
+   "nilai": 178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "rehab.akses.sumatra2025.jembatan_daerah_persen_fungsi_mei2026",
+   "opsi": "|persen",
+   "tampil": "67%",
+   "nilai": 67,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#7"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/pulih_sumatra.csv#persen",
+   "tampil": "81,2%",
+   "nilai": 81.2,
+   "naskah": "deck-rehab#7",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (rilis Februari dan Mei 2026)"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/pulih_sumatra.csv#persen",
+   "tampil": "95,5%",
+   "nilai": 95.5,
+   "naskah": "deck-rehab#7",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (rilis Februari dan Mei 2026)"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/pulih_sumatra.csv#persen",
+   "tampil": "100,0%",
+   "nilai": 100.0,
+   "naskah": "deck-rehab#7",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (rilis Februari dan Mei 2026)"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/pulih_sumatra.csv#persen",
+   "tampil": "94,0%",
+   "nilai": 94.0,
+   "naskah": "deck-rehab#7",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (rilis Februari dan Mei 2026)"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/pulih_sumatra.csv#persen",
+   "tampil": "67,0%",
+   "nilai": 67.0,
+   "naskah": "deck-rehab#7",
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU (rilis Februari dan Mei 2026)"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026",
+   "opsi": "|",
+   "tampil": "37",
+   "nilai": 37,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.sumur_bor_feb2026",
+   "opsi": "|",
+   "tampil": "128",
+   "nilai": 128,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data per 2 Februari 2026)",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "airjawa.nasional.cat_jumlah",
+   "opsi": "|",
+   "tampil": "421",
+   "nilai": 421,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Keputusan Presiden Nomor 26 Tahun 2011 tentang Penetapan Cekungan Air Tanah",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "rehab.akuifer.sumur_bg_jiwa_per_sumur",
+   "opsi": "|",
+   "tampil": "2.000",
+   "nilai": 2000,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian ESDM, rilis 27 Juni 2019 (SP No. 416.Pers/04/SJI/2019)",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "rehab.akuifer.permenkes_ecoli_maks",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Permenkes 2/2023",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "perka_2008.air_minum_liter_hari",
+   "opsi": "|fmt=1|satuan",
+   "tampil": "2,5 liter per orang per hari",
+   "nilai": 2.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 7/2008",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "perka_2008.jamban_orang",
+   "opsi": "|",
+   "tampil": "20",
+   "nilai": 20,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 7/2008",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "perka_2008.hunian_m2_orang",
+   "opsi": "|satuan",
+   "tampil": "3 m² per orang",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perka BNPB 7/2008",
+   "naskah": "deck-rehab#8"
+  },
+  {
+   "kunci": "rehab.lantai.gempa.padang2009.rumah_rusak",
+   "opsi": "|",
+   "tampil": "271.540",
+   "nilai": 271540.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "rehab.lantai.banjir.sumatra2025.rumah_rusak",
+   "opsi": "|",
+   "tampil": "228.006",
+   "nilai": 228006.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "rehab.lantai.gempa.padang2009.rumah_rusak",
+   "opsi": "|",
+   "tampil": "271.540",
+   "nilai": 271540.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, kejadian besar",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "rehab.lantai.banjir.sumatra2025.rumah_rusak",
+   "opsi": "|",
+   "tampil": "228.006",
+   "nilai": 228006.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "brr.aceh2004.rumah_rusak",
+   "opsi": "|",
+   "tampil": "139.195",
+   "nilai": 139195,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "BRR NAD–Nias, The Scattered Beads hlm. x",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2025",
+   "opsi": "|",
+   "tampil": "1.088",
+   "nilai": 1088,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.spam_terdampak",
+   "opsi": "|",
+   "tampil": "178",
+   "nilai": 178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "dibi.sumatra2025.mengungsi",
+   "opsi": "|",
+   "tampil": "970.876",
+   "nilai": 970876.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, banjir dan longsor Sumatra 2025",
+   "naskah": "deck-rehab#9"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/lantai.csv#rumah",
+   "tampil": "271.540",
+   "nilai": 271540.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/lantai.csv#rumah",
+   "tampil": "139.195",
+   "nilai": 139195.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/lantai.csv#rumah",
+   "tampil": "110.214",
+   "nilai": 110214.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/lantai.csv#rumah",
+   "tampil": "228.006",
+   "nilai": 228006.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/lantai.csv#rumah",
+   "tampil": "8.582",
+   "nilai": 8582.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/lantai.csv#rumah",
+   "tampil": "12.404",
+   "nilai": 12404.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+  },
+  {
+   "kunci": "csv:data/turunan/deck-rehab/lantai.csv#rumah",
+   "tampil": "33.820",
+   "nilai": 33820.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB; Kementerian PU; BRR NAD–Nias"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#rumah_rusak",
+   "tampil": "248.361",
+   "nilai": 248361.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan 2025, bencana alam"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#rumah_rusak",
+   "tampil": "26.058",
+   "nilai": 26058.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan 2025, bencana alam"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#rumah_rusak",
+   "tampil": "8.582",
+   "nilai": 8582.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan 2025, bencana alam"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#rumah_rusak",
+   "tampil": "3.035",
+   "nilai": 3035.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan 2025, bencana alam"
+  },
+  {
+   "kunci": "csv:data/dibi/rekap_nasional_tahunan.csv#rumah_rusak",
+   "tampil": "304",
+   "nilai": 304.0,
+   "naskah": "deck-rehab#9",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, rekap nasional tahunan 2025, bencana alam"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.peluang_5_musim",
+   "opsi": "|fmt=1|persen",
+   "tampil": "23,7%",
+   "nilai": 23.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, 18 musim hujan 2008/2009–2025/2026",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "geologi.jawa_gabungan.peluang_5th",
+   "opsi": "|fmt=2|persen",
+   "tampil": "0,83%",
+   "nilai": 0.83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; turunan",
+   "sumber": "Pengolahan dari periode ulang PuSGeN 2024 (asumsi Poisson)",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "hidromet.nasional.lantai.peluang_5_musim",
+   "opsi": "|fmt=1|persen",
+   "tampil": "23,7%",
+   "nilai": 23.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB, 18 musim hujan 2008/2009–2025/2026",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "geologi.jawa_gabungan.peluang_5th",
+   "opsi": "|fmt=2|persen",
+   "tampil": "0,83%",
+   "nilai": 0.83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; turunan",
+   "sumber": "Pengolahan dari periode ulang PuSGeN 2024 (asumsi Poisson)",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.periode_kemungkinan_tahun",
+   "opsi": "|",
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.pita1_batas_persen",
+   "opsi": "|fmt=1|persen",
+   "tampil": "0,2%",
+   "nilai": 0.2,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.pita2_atas_persen",
+   "opsi": "|persen",
+   "tampil": "1%",
+   "nilai": 1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.pita2_atas_persen",
+   "opsi": "|persen",
+   "tampil": "1%",
+   "nilai": 1,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.pita4_bawah_persen",
+   "opsi": "|persen",
+   "tampil": "5%",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.pita4_bawah_persen",
+   "opsi": "|persen",
+   "tampil": "5%",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.pita5_batas_persen",
+   "opsi": "|persen",
+   "tampil": "25%",
+   "nilai": 25,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "nrr_2025.pita5_batas_persen",
+   "opsi": "|persen",
+   "tampil": "25%",
+   "nilai": 25,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "terverifikasi",
+   "sumber": "Cabinet Office (2025), National Risk Register",
+   "naskah": "deck-rehab#10"
+  },
+  {
+   "kunci": "rehab.hukum.hibah_rr_larangan_pembiayaan_huruf",
+   "opsi": "|",
+   "tampil": "7",
+   "nilai": 7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "naskah": "deck-rehab#11"
+  },
+  {
+   "kunci": "perban2024_4.hibah_tahapan",
+   "opsi": "|",
+   "tampil": "9",
+   "nilai": 9,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "naskah": "deck-rehab#11"
+  },
+  {
+   "kunci": "perban2024_4.laporan_berkala_bulan",
+   "opsi": "|",
+   "tampil": "3",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "naskah": "deck-rehab#11"
+  },
+  {
+   "kunci": "perban2026_1.laporan_akhir.hari",
+   "opsi": "|",
+   "tampil": "60",
+   "nilai": 60,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 32 ayat (4)",
+   "naskah": "deck-rehab#11"
+  },
+  {
+   "kunci": "perban2026_1.dokumen_tambahan.hari_kerja",
+   "opsi": "|",
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 20 ayat (4)",
+   "naskah": "deck-rehab#11"
+  },
+  {
+   "kunci": "perban2026_1.pertimbangan.hari_kerja",
+   "opsi": "|",
+   "tampil": "10",
+   "nilai": 10,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 23 ayat (3)",
+   "naskah": "deck-rehab#11"
+  },
+  {
+   "kunci": "perban2026_1.tim.masa_kerja_tahun",
+   "opsi": "|",
+   "tampil": "2",
+   "nilai": 2,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 1/2026, Pasal 28 ayat (3)",
+   "naskah": "deck-rehab#11"
+  },
+  {
+   "kunci": "rehab.dibi.kolom_dampak_n",
+   "opsi": "|",
+   "tampil": "19",
+   "nilai": 19,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "rehab.dibi.kolom_air_n",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; olahan",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2018_2025",
+   "opsi": "|",
+   "tampil": "3.833",
+   "nilai": 3833,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam (kode 101–109)",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.spam_terdampak",
+   "opsi": "|",
+   "tampil": "178",
+   "nilai": 178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "rehab.dibi.kolom_air_n",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; olahan",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "juklak2022_3.kaji_cepat_jam",
+   "opsi": "|",
+   "tampil": "24",
+   "nilai": 24,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 3/2022",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "juklak2022_3.laporan_lanjutan_jam",
+   "opsi": "|",
+   "tampil": "72",
+   "nilai": 72,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Juklak BNPB 3/2022",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "perban2017_5.r3p_hari_maks",
+   "opsi": "|",
+   "tampil": "90",
+   "nilai": 90,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 5/2017",
+   "naskah": "deck-rehab#12"
+  },
+  {
+   "kunci": "peta_jalan.hari100.hari0_1nov2026",
+   "opsi": "|teks",
+   "tampil": "9 Februari 2027",
+   "nilai": "9 Februari 2027",
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Peta jalan kajian (KERANGKA prinsip 11)",
+   "naskah": "deck-rehab#13"
+  },
+  {
+   "kunci": "peta_jalan.hari100.hari0_15nov2026",
+   "opsi": "|teks",
+   "tampil": "23 Februari 2027",
+   "nilai": "23 Februari 2027",
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Peta jalan kajian (KERANGKA prinsip 11)",
+   "naskah": "deck-rehab#13"
+  },
+  {
+   "kunci": "peta_jalan.hari100.hari0_30nov2026",
+   "opsi": "|teks",
+   "tampil": "10 Maret 2027",
+   "nilai": "10 Maret 2027",
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Peta jalan kajian (KERANGKA prinsip 11)",
+   "naskah": "deck-rehab#13"
+  },
+  {
+   "kunci": "lembaga.peran.baris_total",
+   "opsi": "|",
+   "tampil": "129",
+   "nilai": 129,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "lembaga.peran.baris_tertulis",
+   "opsi": "|",
+   "tampil": "76",
+   "nilai": 76,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "lembaga.peran.lembaga_n",
+   "opsi": "|",
+   "tampil": "35",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan Pantau Bencana dari peraturan yang dikutip paket lembaga",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "lembaga.air.baris_total",
+   "opsi": "|",
+   "tampil": "31",
+   "nilai": 31,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; olah; asumsi-kebijakan cakupan",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "lembaga.air.baris_tertulis",
+   "opsi": "|",
+   "tampil": "23",
+   "nilai": 23,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; olah; asumsi-kebijakan cakupan; baris bersumber resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "lembaga.air.baris_bnpb",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan; olah; asumsi-kebijakan cakupan",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "lembaga.celah.n_air",
+   "opsi": "|",
+   "tampil": "6",
+   "nilai": 6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; disimpulkan penyusun dari teks resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "lembaga.celah.n",
+   "opsi": "|",
+   "tampil": "17",
+   "nilai": 17,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; 14 dari 17 disimpulkan penyusun dari teks resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari peraturan perundang-undangan (paket lembaga)",
+   "naskah": "deck-rehab#14"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2018_2025",
+   "opsi": "|",
+   "tampil": "3.833",
+   "nilai": 3833,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam (kode 101–109)",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.2025",
+   "opsi": "|",
+   "tampil": "1.088",
+   "nilai": 1088,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2025, bencana alam",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.dibi.jembatan_rusak.porsi_banjir_persen",
+   "opsi": "|fmt=1|persen",
+   "tampil": "89,2%",
+   "nilai": 89.2,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana dari DIBI BNPB 2018–2025, bencana alam",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.jembatan.garuda.titik_2026_08",
+   "opsi": "|",
+   "tampil": "3.008",
+   "nilai": 3008,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.jembatan.polri_mpp.jumlah_total_2026_08",
+   "opsi": "|",
+   "tampil": "895",
+   "nilai": 895,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian Sekretariat Negara, 13 Agustus 2026",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.persen_fungsi_mei2026",
+   "opsi": "|fmt=1|persen",
+   "tampil": "95,5%",
+   "nilai": 95.5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.spam_terdampak",
+   "opsi": "|",
+   "tampil": "178",
+   "nilai": 178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 11 Mei 2026 (data per 7 Mei 2026)",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.sumur_bor_selesai_feb2026",
+   "opsi": "|",
+   "tampil": "37",
+   "nilai": 37,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.pipa.sumatra2025.sumur_bor_feb2026",
+   "opsi": "|",
+   "tampil": "128",
+   "nilai": 128,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Kementerian PU, rilis ePPID 5 Februari 2026 (data per 2 Februari 2026)",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.hukum.hibah_rr_larangan_pembiayaan_huruf",
+   "opsi": "|",
+   "tampil": "7",
+   "nilai": 7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 4/2024",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.dibi.kolom_air_n",
+   "opsi": "|",
+   "tampil": "0",
+   "nilai": 0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi; olahan",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "rehab.dibi.kolom_dampak_n",
+   "opsi": "|",
+   "tampil": "19",
+   "nilai": 19,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB, ditarik 23 Okt 2026",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "perban2017_5.r3p_hari_maks",
+   "opsi": "|",
+   "tampil": "90",
+   "nilai": 90,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 5/2017",
+   "naskah": "deck-rehab#17"
+  },
+  {
+   "kunci": "perban2017_5.r3p_masa_tahun",
+   "opsi": "|",
+   "tampil": "3",
+   "nilai": 3,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Perban BNPB 5/2017",
+   "naskah": "deck-rehab#17"
+  }
+ ],
+ "catatan": [
+  [
+   "deck-rehab#1",
+   "judul_baris",
+   3
+  ],
+  [
+   "deck-rehab#2",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#3",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#4",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#5",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#6",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#7",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#8",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#9",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#10",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#11",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#12",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#13",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#14",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#15",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#16",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck-rehab#17",
+   "judul_baris",
+   2
+  ]
+ ],
+ "masukan": {
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/angka.json": "33ce2fc7c6172cf74956f2aab3b593e6fa495e6f7d2885d1b069262502ce229c",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/dibi/kejadian_besar.csv": "c7dfb4b3ad8a79011b331de694652e834ce98c10256e03bd1af8a5dd6c14d7cc",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/dibi/rekap_nasional_tahunan.csv": "8ac3f6779a14d7139aae4e1a77dfad9be3fb81e34715f77864c732d46807acdd",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/celah_dana.csv": "1e49aa374cee922c724cae73c432220de003d0069e4774649150591a893cb788",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/data_hilang.csv": "0adea03cd38b30429bb4a69fe594b2414b67d31de10f5ca393a16c76de7350f0",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/lantai.csv": "58049064c88bf56237e8081b02d0e9051f3cc9ef50ba7267a6931b5e8503c34a",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/mandat.csv": "2b7bdabb3a80669dd37a9942a74825da67a3fab3fe7dc544a1469dfb42815d64",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/matriks.csv": "e115dfdc157652155ff3df731fcbccf20a1602f6e3e60371df10bdf2498aec7d",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/preseden.csv": "a290601b2cc3d4f6db984a0649cacd017ae720f843cbb912086b66e9bd383443",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/program.csv": "b1ec2bae5d5f53fa221963258c68ebd191561864e9e21defda43e126cd731be0",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/program_jembatan.csv": "cb87296251eb058832faa9264eb3ed7772e216b7bf50cc746995440035ec65f5",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/pulih_sumatra.csv": "84b8386a86d5dc18c685675addeffacb2a182eed4c4340b437ec5ffd6c073f65",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/deck-rehab/sumur.csv": "6bb2bb9bcf6eee381d30aee011ff575d0324038fd67e23841f1f18c1a1676f69",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/gambar-rehab/jembatan_tahun.csv": "83f3af0629320f1ccd380b137a79714dc6f829f24cf04bc365ac7aff6922c041",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/data/turunan/gambar-rehab/peta_jembatan_prov.csv": "cdecd03c261476d9f4f85efe97dd377832597a2340733b23fc79d8f296584bd3",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/foto/sampul-rehab.jpg": "f255891367eea0f83b28f31cc900d157bd595002661463aaf4e384ad7e1086ac",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "eb6f78ed04ce137b12676b4ac674ad81e93f90251023c28e17c6a7ea3981f2c2",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-jembatan-provinsi.json": "39f2661869d2784159b5b3d9313a79c43ddbe985ac407659bcb3d712c08201c9",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/peta/peta-jembatan-provinsi.png": "0f0676b733e314c44321c6cdf73979a21fb8dd32597f78093b480acbb558b87b",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/spek/deck-rehab.json": "9543f61833a6a81d9d570bcd26c64b0da7558954d1530ae8a4b6f02f079c411a",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/tema.json": "429409c8028989f47864739f21228c5c33c91a90171c6baee5b040f647a26953",
+  "../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
+ }
+}

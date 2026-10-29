@@ -1,4 +1,4 @@
-"""Hari Tanpa Hujan (HTH) "Deteksi Pantau Bencana" -> public/data/kekeringan_hth.json + cache data/raw/kekeringan/harian.json
+"""Hari Tanpa Hujan (HTH) "Deteksi Centurisk97" -> public/data/kekeringan_hth.json + cache data/raw/kekeringan/harian.json
 
 Sumber: Open-Meteo forecast API (model gabungan, ET0 FAO-56 Penman-Monteith), per sel 0,5 derajat (kunci sel = kunci tanah.json),
 `daily=precipitation_sum,et0_fao_evapotranspiration&past_days=92&forecast_days=16`, zona waktu Asia/Jakarta.
@@ -281,7 +281,7 @@ def hitung(harian, penduduk, pusat, lama=LAMA_SERI):
     kab_terdampak = [sum(1 for w in ag["kab"].values() if w["total"] and w["j31"][d] / w["total"] >= BATAS_WIL) for d in range(lama)]
     ag["kab31"] = kab_terdampak
     isi = {"dibuat": harian["dibuat"], "hari": tgl[t_ref], "tgl30": tgl[t_ref - lama + 1:t_ref + 1], "ambang_mm": AMBANG_MM,
-           "batas_kelas": list(BATAS_KELAS), "kelas": list(NAMA_KELAS), "label": "Deteksi Pantau Bencana",
+           "batas_kelas": list(BATAS_KELAS), "kelas": list(NAMA_KELAS), "label": "Deteksi Centurisk97",
            "catatan": f"HTH = hari berturut-turut terakhir dengan hujan < {AMBANG_MM:g} mm sampai kemarin; data 92 hari ke belakang, jadi nilai terbesar 93. "
                       "Hujan: Open-Meteo (model gabungan), bukan pos BMKG; hasilnya bisa beda dari peta HTH BMKG.",
            "terpanjang": terpanjang, "nasional": {"total": nas["total"], "maks": nas["maks"][-1], "pop": nas["pop"][-1], "j31": nas["j31"][-1], "j61": nas["j61"][-1], "kab31": kab_terdampak[-1],

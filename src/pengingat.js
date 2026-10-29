@@ -74,6 +74,9 @@ async function bantuan(env, kini, dummy) {
    JSON hilang/404/usang/rusak = null (jenis dilewati, antrean tidak dipangkas). */
 const SITUS = "https://centurisk97.id", RE_TGL = /^\d{4}-\d\d-\d\d$/;
 const hash16 = async s => [...new Uint8Array(await crypto.subtle.digest("SHA-256", new TextEncoder().encode(s))).slice(0, 8)].map(x => x.toString(16).padStart(2, "0")).join("");
+async function bacaAset(env, jalur) {
+  try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal" + jalur)); if (!r.ok) { r.body?.cancel(); return null; } return await r.json(); } catch (e) { return null; }
+}
 async function prioritas(env, kini, dummy) {
   let d;
   try { const r = await env.ASSETS.fetch(new Request("https://aset.lokal/banjir/data/risiko_prioritas.json")); if (!r.ok) { r.body?.cancel(); return null; } d = await r.json(); } catch (e) { return null; }
@@ -91,19 +94,42 @@ async function prioritas(env, kini, dummy) {
       prov: /^\d{2}$/.test(String(k.prov)) ? String(k.prov) : null, kab: kab.length >= 2 ? kab : null, segar: true,
       muatan: JSON.stringify({kec, kab, kelas, bahaya, jiwa, bpbd: nama, wa, hari: d.hari})});
   }
+  /* kejadian banjir AKTIF (kejadian_aktif_awal.json, kode B0007 ...): satu baris per (kejadian, kabupaten) ke BPBD kabupaten itu, jenis sama (muatan.teks menggantikan baris "Kec. ..."). BPBD diambil dari
+     risiko_prioritas.json (kecamatan mana pun di kabupaten itu); tidak ketemu = "BPBD tujuan belum ada". Berkas kejadian hilang/rusak/basi (> 3 hari) = baris kejadian dilewati dan yang lama DIPERTAHANKAN (kejadianHilang). */
+  const kej = await bacaAset(env, "/banjir/data/kejadian_aktif_awal.json");
+  if (!kej || !RE_TGL.test(kej.hari) || !Array.isArray(kej.kejadian) || kej.kejadian.length >= BATAS_BACA || Math.abs(Date.parse(wib(kini)) - Date.parse(kej.hari)) > 3 * HARI) { out.kejadianHilang = true; return out; }
+  const bpbdKab = new Map(), pendKec = new Map();
+  for (const k of sah) { const kk = `${k.prov}|${k.kab}`; if (!bpbdKab.has(kk)) bpbdKab.set(kk, k.bpbd || {}); pendKec.set(`${k.prov}|${k.kab}|${k.kec}`, Number.isFinite(k.pend) ? k.pend : 0); }
+  const NAMA = ["Aman", "Waspada", "Siaga", "Awas"], kejOut = [];
+  for (const e of kej.kejadian) {
+    if (!e || typeof e.kode !== "string" || !/^B\d{3,6}$/.test(e.kode) || !Number.isInteger(e.level_tertinggi) || e.level_tertinggi < 1 || e.level_tertinggi > 3 || !Array.isArray(e.kec)) continue;
+    const per = new Map();
+    for (const kunci of e.kec) { const [pv, kab, kc] = String(kunci).split("|"); if (!/^\d{2}$/.test(pv) || !kab || !kc) continue; const g = per.get(`${pv}|${kab}`) ?? {pv, kab, kecs: []}; g.kecs.push(kc); per.set(`${pv}|${kab}`, g); }
+    for (const [kk, g] of per) {
+      const b = bpbdKab.get(kk) || {}, nama = String(b.nama || "").slice(0, 60), wa = dummy ? (kejOut.length ? "6281200000000" : null) : normalWA(b.pusdalops), sekab = b.sekab === true;
+      const jiwa = Math.round(g.kecs.reduce((a, kc) => a + (pendKec.get(`${kk}|${kc}`) ?? 0), 0) || (per.size === 1 && Number.isFinite(e.penduduk) ? e.penduduk : 0)), kelas = NAMA[e.level_tertinggi], kab = g.kab.slice(0, 60);
+      const daftarKec = g.kecs.slice(0, 3).join(", ") + (g.kecs.length > 3 ? ` dan ${g.kecs.length - 3} lain` : "");
+      kejOut.push({jenis: "prioritas_dampak", sumber_id: await hash16(`${dummy ? "dummy|" : ""}kej|${e.kode}|${kk}`), keadaan: `j${e.level_tertinggi}`,
+        judul: `Banjir aktif ${e.kode}, ${kab}: ${kelas}, ${g.kecs.length} kecamatan, ±${jiwa.toLocaleString("id-ID")} jiwa`,
+        rincian: `${nama ? `BPBD ${nama}${!sekab && Number.isFinite(b.km) ? `, terdekat ${b.km} km` : ""}` : "BPBD tujuan belum ada"}; kecamatan ${daftarKec}`,
+        prov: g.pv, kab: kab.length >= 2 ? kab : null, segar: true,
+        muatan: JSON.stringify({kec: e.kode, kab, kelas, bahaya: "banjir aktif", jiwa, bpbd: nama, wa, hari: kej.hari, teks: `Banjir aktif ${e.kode} (sejak ${String(e.sejak || kej.hari).slice(0, 10)}): ${kelas}, ${daftarKec}, ${kab}, ±${jiwa.toLocaleString("id-ID")} jiwa`.slice(0, 220)})});
+    }
+  }
+  out.push(...(dummy ? kejOut.slice(0, 2) : kejOut));
   return out;
 }
 const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan], [["prioritas_dampak"], prioritas]];
 
 /* Cron harian (idempoten: dua kali jalan = tidak ada baris baru). dummy=1 membaca sumber dummy untuk tombol 🧪. */
 export async function buatPengingat(env, kini = Date.now(), {dummy = 0, hanya = null} = {}) {
-  const hari = wib(kini), baru = [], utuh = [], per = Object.fromEntries(DAFTAR_JENIS.map(j => [j, 0]));
+  let jagaKej = 0; const hari = wib(kini), baru = [], utuh = [], per = Object.fromEntries(DAFTAR_JENIS.map(j => [j, 0]));
   for (const [jenis, f] of TIAP) {
     if (hanya && !jenis.some(j => hanya.includes(j))) continue;
     let r;
     try { r = await f(env, kini, dummy); } catch (e) { if (/no such table/i.test(String(e?.message || e))) continue; throw e; }   // modul sumber belum dimigrasi: lewati
     if (!r) continue;   // terpotong BATAS_BACA: jangan memangkas antrean dari daftar yang tidak lengkap
-    utuh.push(...jenis); baru.push(...r);
+    utuh.push(...jenis); baru.push(...r); if (r.kejadianHilang) jagaKej = 1;
   }
   let dibuat = 0;
   for (let i = 0; i < baru.length; i += 50) {
@@ -117,8 +143,8 @@ export async function buatPengingat(env, kini = Date.now(), {dummy = 0, hanya = 
     .bind(p.judul.slice(0, 160), p.rincian?.slice(0, 300) ?? null, p.muatan, p.jenis, p.sumber_id, p.keadaan, dummy)));
   /* kondisi sudah hilang -> baris basi dihapus (hanya untuk jenis yang daftarnya lengkap) */
   const ada = JSON.stringify(baru.map(p => `${p.jenis}|${p.sumber_id}|${p.keadaan}`));
-  const hapus = utuh.length ? (await env.DB.prepare(`DELETE FROM pengingat WHERE dummy = ?1 AND jenis IN (SELECT value FROM json_each(?2)) AND NOT (jenis = 'prioritas_dampak' AND status IN ('dikirim', 'selesai')) AND (jenis || '|' || sumber_id || '|' || keadaan) NOT IN (SELECT value FROM json_each(?3))`)
-    .bind(dummy, JSON.stringify(utuh), ada).run()).meta.changes : 0;
+  const hapus = utuh.length ? (await env.DB.prepare(`DELETE FROM pengingat WHERE dummy = ?1 AND jenis IN (SELECT value FROM json_each(?2)) AND NOT (jenis = 'prioritas_dampak' AND status IN ('dikirim', 'selesai')) AND NOT (?4 = 1 AND jenis = 'prioritas_dampak' AND keadaan LIKE 'j%') AND (jenis || '|' || sumber_id || '|' || keadaan) NOT IN (SELECT value FROM json_each(?3))`)
+    .bind(dummy, JSON.stringify(utuh), ada, jagaKej).run()).meta.changes : 0;
   return {tanggal: hari, dibuat, dihapus: hapus, per_jenis: per};
 }
 
@@ -139,7 +165,7 @@ export function kelompokPrioritas(rows) {
   return [...per.values()].map(g => {
     const hari = g.baris.map(b => b.m.hari).sort().at(-1), jiwa = g.baris.reduce((a, b) => a + (b.m.jiwa || 0), 0);
     const teks = [`Prioritas dampak, data risiko ${tgl(hari)}`, `Kepada BPBD ${g.bpbd || "tujuan"}${g.wa ? " (Pusdalops)" : ""}: kecamatan berikut berisiko tinggi dengan bahaya harian aktif.`,
-      ...g.baris.slice(0, MAKS_TEKS).map((b, i) => `${i + 1}. Kec. ${b.m.kec}, ${b.m.kab}: ${b.m.kelas}, ${b.m.bahaya}, ±${(b.m.jiwa || 0).toLocaleString("id-ID")} jiwa`),
+      ...g.baris.slice(0, MAKS_TEKS).map((b, i) => `${i + 1}. ${b.m.teks || `Kec. ${b.m.kec}, ${b.m.kab}: ${b.m.kelas}, ${b.m.bahaya}, ±${(b.m.jiwa || 0).toLocaleString("id-ID")} jiwa`}`),
       ...(g.baris.length > MAKS_TEKS ? [`dan ${g.baris.length - MAKS_TEKS} kecamatan lain`] : []), `Rincian: ${SITUS}/risiko`].join("\n");
     return {bpbd: g.bpbd, wa: g.wa, tautan: g.wa ? `https://wa.me/${g.wa}?text=${encodeURIComponent(teks)}` : null, teks, ids: g.baris.map(b => b.id), kecamatan: g.baris.length, jiwa};
   }).sort((a, b) => b.jiwa - a.jiwa);
@@ -167,7 +193,7 @@ export function susunEmail(rows, kini = Date.now(), asal = "") {
   const FONT = "font:14px/1.55 Arial,sans-serif;color:#1d2733";
   const html = `<div style="${FONT}"><p>Ringkasan pengingat Ruang Koordinasi (${rows.length}):</p>` + per.map(([j, a]) => `<h3 style="margin:14px 0 4px;font:700 15px Arial,sans-serif">${esc(JENIS[j])} (${a.length})</h3><ul style="margin:0;padding-left:18px">` +
     a.map(r => `<li>${esc(r.judul)}${r.rincian ? ` <span style="color:#5b6773">| ${esc(r.rincian)}</span>` : ""}${w(r) ? ` <span style="color:#5b6773">| ${esc(w(r))}</span>` : ""}</li>`).join("") + "</ul>").join("") + "</div>";
-  return {subject: `[Pantau Bencana] ${rows.length} pengingat Ruang Koordinasi`, teks: `Ringkasan pengingat Ruang Koordinasi (${rows.length}):\n\n${teks}`, html};
+  return {subject: `[Centurisk97] ${rows.length} pengingat Ruang Koordinasi`, teks: `Ringkasan pengingat Ruang Koordinasi (${rows.length}):\n\n${teks}`, html};
 }
 async function kirim(env, req, kini) {
   const mod = await modOK(env, req); if (!mod) return tolakMod();

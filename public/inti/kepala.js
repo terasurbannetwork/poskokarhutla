@@ -19,8 +19,8 @@ async function gambar(d) {
   const r = await fetch("/bencana.json");
   if (!r.ok) throw new Error(r.status);
   /* TAMPIL berisi id = hanya itu yang bisa dibuka dari menu, sisanya berlabel "Soon". Kosong = semua bencana berstatus aktif
-     terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026). */
-  const TAMPIL = new Set(["karhutla"]);
+     terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026). */
+  const TAMPIL = new Set(["karhutla", "banjir"]);
   const daftar = (await r.json()).bencana.filter(b => IKON[b.ikon]);
   const buka = b => !TAMPIL.size ? b.status === "aktif" : TAMPIL.has(b.id);
   const semua = d.dataset.bencana === "semua";   /* beranda semua bencana: judul ringkasan tetap, tiap bencana hidup jadi tautan */

@@ -2,6 +2,10 @@
 
 Pakai:  python3 scripts/data/harian.py
 Butuh FIRMS_MAP_KEY (env atau .env). Open-Meteo dan BNPB tidak butuh kunci.
+
+S-NPP berhenti didistribusikan 1 Nov 2026 13.00 UTC (firms_sumber.SNPP_AKHIR, satu-satunya tempat batas ditulis): sebelum batas galat/kepala-saja VIIRS_SNPP_NRT hanya
+::warning (sensor lain tetap fatal bila galat); sesudahnya sensor itu tidak diminta sama sekali. Jendela unduhan yang S-NPP-nya tak ada diisi deteksi S-NPP dari
+hotspot.json jalan sebelumnya (snpp_warisan; habis sendiri setelah 7 hari). Uji tanpa jaringan: python3 scripts/data/harian.py uji (jangan jalankan tanpa argumen: itu produksi).
 """
 import csv, datetime as dt, io, json, math, os, socket, sys, time, urllib.error, urllib.request
 from concurrent.futures import ThreadPoolExecutor
@@ -23,13 +27,14 @@ SENSOR = ["VIIRS_SNPP_NRT", "VIIRS_NOAA20_NRT", "VIIRS_NOAA21_NRT", "MODIS_NRT"]
 HARI = 7
 
 # Hitungan utama (keputusan pemilik 25 Okt 2026): LOKASI UNIK ~375 m per hari kalender WIB dari MODIS + S-NPP + NOAA-20 + NOAA-21,
-# keyakinan sedang/tinggi saja (definisi di titik_unik.py). Sengaja tidak sama dengan SiPongi/GIS BNPB (titik mentah M+N+N20).
+# semua keyakinan sejak 28 Okt 2026 (definisi di titik_unik.py); cluster/kompleks tetap sedang/tinggi. Sengaja tidak sama dengan SiPongi/GIS BNPB (titik mentah M+N+N20).
 # Titik keyakinan rendah tetap ada di berkas titik dan digambar di peta; kolom "hitung" hotspot.json menandai deteksi yang dihitung.
 import titik_unik as TU  # noqa: E402
 # Kejadian api (FEDS, Chen dkk. 2022; Indradjad dkk. 2024): VIIRS 3 satelit, keyakinan nominal+tinggi,
 # DBSCAN Haversine eps adaptif hingga 1,5 km, minPts 1 (titik tunggal tetap kejadian), jendela 7 hari,
 # aktif bila terdeteksi <= 72 jam (168 jam di gambut kering).
 EPS_KM, MIN_PTS, JENDELA_HARI, AKTIF_JAM, AKTIF_GAMBUT_JAM = 1.5, 1, 7, 72, 168
+SEL_DRONE = 300   # maks sel 375 m per kompleks di bara.sel (~15 KB per kompleks); 300 sel = ~4.200 ha, lebih dari sehari terbang satu drone
 R_BUMI = 6371.0088
 
 # Klasifikasi firespot ala Kemenhut SIPANTAU KARHUTLA (paparan pembentukan firespot, 22 Okt 2026): saringan "api nyata?" DI DEPAN
@@ -155,18 +160,84 @@ ambil.__wrapped__ = _ambil
 
 
 # ---------------------------------------------------------------- hotspot
-def hotspot(k, w):
-    hari_ini = dt.datetime.now(dt.timezone.utc).date()
+# Ukuran piksel PROKSI untuk deteksi S-NPP yang diwarisi dari hotspot.json (berkas itu tidak menyimpan scan/track): rata-rata ukuran piksel S-NPP NYATA, 47.488 titik n/h
+# tarball FIRMS mentah 15-22 Okt 2026 (scan 0,455 km, track 0,456 km, px = rata-rata max(scan, track) = 0,493; p10-p90 scan 0,38-0,56, track 0,36-0,63). Bawaan 0 / 0,4 membuat
+# kompleks yang hanya berisi S-NPP warisan kehilangan luas garis luar median -14% (p10 -33%) dan terpecah +12% (4.854 -> 5.442 kluster pada uji 18-20 Okt); proksi ini
+# memulihkannya ke median 0% (p10 -18%, p90 +13%) dan +3% kluster. Kompleks yang memuat titik warisan diberi `snpp_proksi` = jumlah titiknya (garis luar / luas / pemisahan
+# kompleksnya perkiraan). Alternatif menyimpan scan/track S-NPP ditolak: butuh berkas sampingan ~3 MB di public/data atau cache baru di workflow (di luar wilayah pipa-data).
+PIKSEL_SNPP_PROKSI = {"scan": 0.455, "track": 0.456, "px": 0.493}
+PETA_SENSOR = {"VIIRS_SNPP_NRT": "N", "VIIRS_NOAA20_NRT": "N20", "VIIRS_NOAA21_NRT": "N21", "MODIS_NRT": "M"}
+
+
+def sensor_diminta(sekarang):
+    """SENSOR yang diminta ke FIRMS. Sesudah FS.SNPP_AKHIR (S-NPP berhenti didistribusikan, 1 Nov 2026 13:00 UTC) VIIRS_SNPP_NRT tidak diminta lagi sama sekali."""
+    return [s for s in SENSOR if not (s == FS.SNPP_NRT and FS.snpp_berhenti(sekarang))]
+
+
+def snpp_warisan(jalur, hari_ini, batas, tanpa):
+    """Deteksi S-NPP yang masih di dalam jendela 7 hari, dibaca dari hotspot.json jalan sebelumnya (hotspot.json ikut cache/repo), untuk jendela unduhan
+    yang S-NPP-nya tidak ada (`tanpa` = set tanggal-awal-mundur 4 / 9 dari hotspot()). Tanpa ini seluruh deteksi S-NPP 7 hari terakhir lenyap sekaligus
+    pada jalan pertama sesudah batas (dan, sebelum batas, tiap kali S-NPP gagal): angka hari-hari lampau di jendela melompat turun lalu naik lagi.
+    Yang diwarisi hanya titik, frp, keyakinan, kecamatan, dan waktu (dibulatkan ke menit; hotspot.json menyimpan jam relatif 0,01 jam); ukuran piksel (scan/track)
+    tidak tersimpan: titik warisan memakai PIKSEL_SNPP_PROKSI (rata-rata nyata) dan ditandai `proksi` True. Berkas tak ada/rusak = tidak ada warisan.
+    Warisan habis sendiri: jendela 7 hari bergeser, tak ada deteksi S-NPP baru, jadi sesudah 7 hari tak ada lagi yang diwarisi."""
+    if not tanpa:
+        return []
+    out = []
+    try:
+        h = json.load(open(jalur))
+        K = {n: i for i, n in enumerate(h["kolom"])}
+        acuan = dt.datetime.fromisoformat(h["acuan"])
+        for b in h.get("baris", []):
+            if b[K["sensor"]] != "N" or not isinstance(b[K["jam"]], (int, float)):
+                continue
+            t = acuan + dt.timedelta(hours=b[K["jam"]])
+            t = (t + dt.timedelta(seconds=30)).replace(second=0, microsecond=0)   # acq_time FIRMS berresolusi menit
+            if t < batas or t.date() > hari_ini:
+                continue
+            if (4 if t.date() >= hari_ini - dt.timedelta(days=4) else 9) not in tanpa:
+                continue
+            out.append({"lat": b[K["lat"]], "lon": b[K["lon"]], "t": t, "s": "N", "frp": b[K["frp"]], "c": b[K["keyakinan"]],
+                        "adm": h["wilayah"][b[K["wilayah"]]].split("|"), "proksi": True, **PIKSEL_SNPP_PROKSI})
+    except (OSError, ValueError, KeyError, TypeError, IndexError):
+        return []   # berkas lama rusak/bentuk lain: tanpa warisan, bukan galat
+    return out
+
+
+def penanda_proksi(pts):
+    """{"snpp_proksi": jumlah titik warisan} bila kompleks memuat titik S-NPP warisan (ukuran piksel proksi), selain itu {} (kunci absen = ukuran nyata semua)."""
+    n = sum(1 for p in pts if p.get("proksi"))
+    return {"snpp_proksi": n} if n else {}
+
+
+def hotspot(k, w, sekarang=None, lama=None):
+    """Titik panas 7 hari dari FIRMS NRT. Galat sensor selain S-NPP tetap fatal (tidak berubah). S-NPP: galat atau balasan kosong sebelum batas = ::warning dan
+    jalan diteruskan; sesudah FS.SNPP_AKHIR tidak diminta sama sekali. Jendela tanpa S-NPP diisi deteksi S-NPP dari `lama` (jalur hotspot.json sebelumnya)."""
+    sekarang = sekarang or dt.datetime.now(dt.timezone.utc)
+    hari_ini = sekarang.date()
     tugas = []
-    for s in SENSOR:  # DATE = tanggal AWAL jendela, rentang maks 5 hari: dua jendela = 10 hari UTC, lalu dipotong 7 x 24 jam
+    for s in sensor_diminta(sekarang):  # DATE = tanggal AWAL jendela, rentang maks 5 hari: dua jendela = 10 hari UTC, lalu dipotong 7 x 24 jam
         for mulai in (4, 9):
-            tugas.append((s, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/{s}/{BBOX}/5/{hari_ini - dt.timedelta(days=mulai)}"))
+            tugas.append((s, mulai, f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/{s}/{BBOX}/5/{hari_ini - dt.timedelta(days=mulai)}"))
+
+    def tarik(t):
+        s, mulai, url = t
+        if s != FS.SNPP_NRT:
+            return s, mulai, ambil(url)
+        try:   # satu percobaan ulang saja: sumbernya bisa saja sudah mati lebih awal dari jadwal
+            isi = ambil(url, coba=2)
+            list(FS.csv_sah(isi))   # balasan 200 yang bukan CSV (galat kunci/kuota) juga gagal
+            return s, mulai, isi
+        except Exception as e:
+            print(f"::warning title=S-NPP gagal::{s} {mulai}: {FS.sensor_url(type(e).__name__ + ': ' + str(e))}; jalan diteruskan tanpa jendela S-NPP ini", file=sys.stderr)
+            return s, mulai, None
+
     with ThreadPoolExecutor(4) as ex:
-        teks = list(ex.map(lambda t: (t[0], ambil(t[1])), tugas))
-    batas = dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI)
+        teks = list(ex.map(tarik, tugas))
+    batas = sekarang - dt.timedelta(days=HARI)
     titik, lihat = [], set()
-    for sensor, isi in teks:
-        for r in csv.DictReader(io.StringIO(isi)):
+    for sensor, _mulai, isi in teks:
+        for r in csv.DictReader(io.StringIO(isi or "")):
             conf = r.get("confidence", "")
             if sensor.startswith("MODIS"):  # BRIN: rendah 0-29, sedang 30-79, tinggi 80-100
                 kc = 0 if not conf.isdigit() or int(conf) < 30 else 1 if int(conf) < 80 else 2
@@ -184,12 +255,19 @@ def hotspot(k, w):
             if not adm:
                 continue  # laut atau negara tetangga
             titik.append({
-                "lat": lat, "lon": lon, "t": t, "s": {"VIIRS_SNPP_NRT": "N", "VIIRS_NOAA20_NRT": "N20",
-                                                      "VIIRS_NOAA21_NRT": "N21", "MODIS_NRT": "M"}[sensor],
+                "lat": lat, "lon": lon, "t": t, "s": PETA_SENSOR[sensor],
                 "frp": round(float(r.get("frp") or 0), 1), "c": kc, "adm": adm,
                 "px": max(float(r.get("scan") or .4), float(r.get("track") or .4)),  # ukuran piksel sebenarnya (km)
                 "scan": float(r.get("scan") or 0), "track": float(r.get("track") or 0),  # jejak piksel untuk garis luar kompleks
             })
+    # jendela unduhan yang S-NPP-nya tidak ada (tidak diminta, gagal, atau balasan kepala saja): deteksi S-NPP lamanya di jendela 7 hari dipertahankan
+    ada_snpp = {m for s, m, isi in teks if s == FS.SNPP_NRT and isi and any(True for _ in csv.DictReader(io.StringIO(isi)))}
+    tanpa = {4, 9} - ada_snpp
+    if lama and tanpa:
+        warisan = snpp_warisan(lama, hari_ini, batas, tanpa)
+        print(f"S-NPP: {'tidak diminta (berhenti sejak ' + FS.SNPP_AKHIR.strftime('%Y-%m-%d %H:%MZ') + ')' if FS.snpp_berhenti(sekarang) else 'tidak tersedia'}"
+              f" untuk jendela {sorted(tanpa)}; {len(warisan)} deteksi S-NPP lama diwarisi dari hotspot.json sebelumnya", file=sys.stderr)
+        titik += warisan
     titik.sort(key=lambda p: p["t"])
     return titik
 
@@ -380,7 +458,7 @@ def main():
     hari_ini = sekarang.date().isoformat()
 
     print("hotspot...", file=sys.stderr)
-    titik = hotspot(kunci(), w)
+    titik = hotspot(kunci(), w, lama=os.path.join(KELUAR, "hotspot.json"))
     # Titik di sel sumber panas statis (smelter, tambang, kilang, PLTU; titik_palsu.json) bukan kebakaran: tidak dihitung untuk
     # jumlah titik, kompleks, status, dan harian30. Gunung api (kawah) tetap dihitung. Matikan: TITIK_PALSU=0.
     industri = {"aktif": False, "titik": 0, "jenis": {}}
@@ -401,7 +479,7 @@ def main():
         import harian30
         harian30.perbarui(KELUAR, titik, kunci(), w, ambil, BBOX, hari_ini, dt.datetime.now(dt.timezone.utc) - dt.timedelta(days=HARI))
     except Exception as e:
-        print("harian30 gagal:", e, file=sys.stderr)
+        print(f"::warning title=harian30 gagal::{FS.sensor_url(e)}; harian30.json dibiarkan", file=sys.stderr)
 
     lama = os.path.join(KELUAR, "fwi.json")
     if os.environ.get("FWI") == "0" and os.path.exists(lama) and json.load(open(lama)).get("hari_ini") == hari_ini:
@@ -431,6 +509,11 @@ def main():
     viirs = [p for p in titik if p["s"] != "M" and p["c"] >= 1 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI)
              and not A.gunung_api(p["lat"], p["lon"])]
     label, inti = dbscan(viirs)
+    # VIIRS keyakinan rendah per piksel 375 m: hanya untuk persistensi bara gambut (gambut_bara.py), tidak ikut cluster
+    rendah = {}
+    for p in titik:
+        if p["s"] != "M" and p["c"] == 0 and p["t"] >= kini - dt.timedelta(days=JENDELA_HARI):
+            rendah.setdefault(pix(p), []).append(p)
     kluster = {}
     for p, l in zip(viirs, label):
         kluster.setdefault(l, []).append(p)
@@ -515,8 +598,13 @@ def main():
         bentuk, luas_ha = garis_api(pts)
         bara = None  # gambut bawah permukaan (gambut_bara.py): hanya jejak piksel yang jatuh di peta gambut
         if lv >= 2 and di_gambut:
-            bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"]) for p in pts if GAMBUT.cari(p["lon"], p["lat"])],
-                             luas_ha, wt_dekat(grid, g, lat0, lon0))
+            # + titik keyakinan rendah di piksel yang sama (menambah tanggal/malam, bukan jejak baru); malam = 18.00-06.00 WIB
+            pb = pts + [q for x in {pix(p) for p in pts} for q in rendah.get(x, ())]
+            bara = GB.hitung([(pix(p), tgl(p["t"]).isoformat(), p["frp"], not 6 <= p["t"].astimezone(WIB).hour < 18)
+                              for p in pb if GAMBUT.cari(p["lon"], p["lat"])], luas_ha, wt_dekat(grid, g, lat0, lon0))
+            if bara:   # sel piksel 375 m -> pusat [lat, lon, persisten] untuk rute sapuan drone (/admin/drone); dibatasi SEL_DRONE, yang persisten didahulukan
+                sp = sorted(bara.pop("sp"), key=lambda x: -x[2])[:SEL_DRONE]
+                bara["sel"] = [[round(i * TU.SEL, 5), round(j * TU.SEL / math.cos(math.radians(i * TU.SEL)), 5), p] for i, j, p in sp]
         adm = w.cari(lon0, lat0) or max((p["adm"] for p in pts), key=[p["adm"] for p in pts].count)
         fitur.append({
             "type": "Feature",
@@ -541,6 +629,7 @@ def main():
                                                      (h or {}).get("dc") if (di_gambut or not ada_gambut) else 0, jd), RISIKO.get("|".join(adm), 0)),
                 "level": lv, "status": STATUS[lv], "firespot": fs, "pola": pola,
                 **({"fs_ini": fs_ini} if fs_ini else {}),
+                **penanda_proksi(pts),
                 **({"bara": bara} if bara else {}),
             }})
 
@@ -576,7 +665,7 @@ def main():
     di_konsesi = (lambda lon, lat: (lambda k: bool(k) and k.get("aktif") is not False)(KONSESI.cari(lon, lat))) if KONSESI.indeks else None
     tugas = tugas_kompleks(fitur, kini, dekat_permukiman, di_konsesi)  # sebelum pemangkasan INTI: butuh api24 dan level asal
     # berkas ringan: kompleks rendah (level 0-1) cukup atribut inti; teks status diambil dari level di peramban
-    INTI = {"id", "lat", "lon", "n", "px24", "hari", "level", "prov", "kab", "kec", "teramati", "jam_sejak", "fwi", "dc", "gambut", "risiko", "luas", "sev", "firespot", "pola", "fs_ini"}
+    INTI = {"id", "lat", "lon", "n", "px24", "hari", "level", "prov", "kab", "kec", "teramati", "jam_sejak", "fwi", "dc", "gambut", "risiko", "luas", "sev", "firespot", "pola", "fs_ini", "snpp_proksi"}
     for f in fitur:
         q = f["properties"]
         q.pop("status", None)
@@ -839,7 +928,123 @@ def hitung_otomatis():
           f"otomatis pemadaman {sum(k['otomatis'] for k in tk1 if k['jenis'] == 'pemadaman')}, otomatis verifikasi {sum(k['otomatis'] for k in ver)}")
 
 
+def uji_snpp():
+    """Berhentinya S-NPP (FS.SNPP_AKHIR) tanpa jaringan: (a) CSV kepala saja, (b) galat HTTP, masing-masing sebelum dan sesudah batas. (c) baris hilang dari
+    data_availability tidak menyentuh hotspot() (tidak memakainya), diuji di firms_sumber.py dan harian30.py."""
+    import tempfile
+    class W:
+        def cari(self, lon, lat):
+            return ["62", "Kab", "Kec"]
+    HDR = "latitude,longitude,acq_date,acq_time,confidence,frp,scan,track\n"
+    PRA, SESUDAH = dt.datetime(2026, 10, 30, 12, 0, tzinfo=dt.timezone.utc), dt.datetime(2026, 11, 2, 12, 0, tzinfo=dt.timezone.utc)
+    def baris(sen, t, lat=-2.0, lon=113.0):
+        return f"{lat},{lon},{t:%Y-%m-%d},{t:%H%M},{'nominal' if sen == 'MODIS_NRT' else 'n'},5.0,0.5,0.5\n".replace("nominal", "60")
+    def pabrik(mode, gagal_jendela=None, sensor_lain_gagal=None):
+        urls = []
+        def fake(url, coba=4, json_=False):
+            urls.append(url)
+            sen, mulai = url.split("/")[-4], dt.date.fromisoformat(url.split("/")[-1])
+            if sen == "VIIRS_SNPP_NRT" and (gagal_jendela is None or mulai == gagal_jendela):
+                if mode == "a":
+                    return HDR
+                if mode == "b":
+                    raise RuntimeError("HTTP Error 400: Bad Request " + url)
+            if sen == sensor_lain_gagal:
+                raise RuntimeError("HTTP Error 500")
+            hasil = HDR
+            for n in range(5):   # satu deteksi per hari jendela, jam 05.00 UTC
+                t = dt.datetime.combine(mulai + dt.timedelta(days=n), dt.time(5, 0), dt.timezone.utc)
+                hasil += baris(sen, t, lon=113.0 + n * 0.1 + (sen == "VIIRS_SNPP_NRT") * 0.01)
+            return hasil
+        return fake, urls
+    def lama(d, sekarang):
+        """hotspot.json jalan sebelumnya: acuan 2 jam sebelum `sekarang`; N di W1, N di W2, N terlalu tua, N20, M."""
+        acuan = sekarang - dt.timedelta(hours=2)
+        rel = lambda t: round((t - acuan).total_seconds() / 3600, 2)
+        T = lambda hari, jam, menit: dt.datetime.combine(sekarang.date() - dt.timedelta(days=hari), dt.time(jam, menit), dt.timezone.utc)
+        rows = [[-3.0, 112.0, rel(T(2, 6, 30)), "N", 7.5, 1, 0, "xx-xx", 1],        # jendela 4 (>= hari_ini-4 UTC)
+                [-3.1, 112.1, rel(T(5, 5, 0)), "N", 3.0, 2, 0, "xx-xx", 1],         # jendela 9 (< hari_ini-4), masih di dalam 7 hari
+                [-3.2, 112.2, rel(T(12, 5, 0)), "N", 1.0, 1, 0, "xx-xx", 1],        # lebih tua dari 7 hari: tidak diwarisi
+                [-3.3, 112.3, rel(T(2, 7, 0)), "N20", 1.0, 1, 0, "xx-xx", 1],       # bukan S-NPP: tidak diwarisi
+                [-3.4, 112.4, rel(T(2, 7, 0)), "M", 1.0, 1, 0, "xx-xx", 1]]
+        j = os.path.join(d, "hotspot.json")
+        json.dump({"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib", "hitung"], "acuan": acuan.isoformat(), "wilayah": ["61|Lama|KecLama"], "baris": rows}, open(j, "w"))
+        return j
+    def sensor(titik, s):
+        return [p for p in titik if p["s"] == s]
+    def tangkap(*a):   # -> (titik, teks stderr)
+        import contextlib
+        err = io.StringIO()
+        with contextlib.redirect_stderr(err):
+            return hotspot("K", W(), *a), err.getvalue()
+    tidur = []
+    time_sleep, time.sleep = time.sleep, lambda x: tidur.append(x)
+    ambil_asli = globals()["ambil"]
+    try:
+        with tempfile.TemporaryDirectory() as d:
+            # --- SEBELUM batas
+            j = lama(d, PRA)
+            fake, urls = pabrik("0"); globals()["ambil"] = fake
+            t0, err0 = tangkap(PRA, j)
+            assert "::warning" not in err0 and "diwarisi" not in err0
+            assert sum("VIIRS_SNPP_NRT" in u for u in urls) == 2 and sensor(t0, "N") and all(abs(p["lon"] - round(p["lon"], 2)) < 1e-9 for p in sensor(t0, "N")), "normal: S-NPP diminta dan terbaca dari FIRMS"
+            assert not [p for p in sensor(t0, "N") if p["adm"] == ["61", "Lama", "KecLama"]], "S-NPP utuh: tidak ada warisan"
+            for mode in ("a", "b"):   # (a) kepala saja, (b) galat: sensor lain utuh, S-NPP diwarisi dari hotspot.json sebelumnya
+                fake, urls = pabrik(mode); globals()["ambil"] = fake
+                t1, err1 = tangkap(PRA, j)
+                assert ("::warning title=S-NPP gagal" in err1) == (mode == "b") and "2 deteksi S-NPP lama diwarisi" in err1, (mode, err1)
+                assert "400" in err1 or mode == "a"
+                assert {"N20", "N21", "M"} <= {p["s"] for p in t1}, (mode, "sensor lain harus tetap terbaca")
+                warisan = [p for p in sensor(t1, "N") if p["adm"] == ["61", "Lama", "KecLama"]]
+                assert [p["frp"] for p in warisan] == [3.0, 7.5] and warisan[1]["t"] == dt.datetime(2026, 10, 28, 6, 30, tzinfo=dt.timezone.utc) and warisan[0]["c"] == 2, (mode, warisan)
+                assert all(p["s"] != "N" for p in t1 if p not in warisan), "tidak ada deteksi S-NPP baru dari balasan kosong/galat"
+            fake, urls = pabrik("b", gagal_jendela=PRA.date() - dt.timedelta(days=9)); globals()["ambil"] = fake   # hanya jendela 9 yang gagal
+            t2, _ = tangkap(PRA, j)
+            assert [p["frp"] for p in sensor(t2, "N") if p["adm"] == ["61", "Lama", "KecLama"]] == [3.0], "hanya jendela yang gagal diwarisi (S-NPP 5 hari lalu, bukan 2 hari lalu)"
+            assert any(p["adm"] == ["62", "Kab", "Kec"] for p in sensor(t2, "N")), "jendela 4 tetap dari FIRMS"
+            fake, urls = pabrik("0", sensor_lain_gagal="VIIRS_NOAA20_NRT"); globals()["ambil"] = fake
+            try:
+                tangkap(PRA, j); raise SystemExit("galat sensor lain (NOAA-20) harus tetap fatal")
+            except RuntimeError as e:
+                assert "500" in str(e)
+            # --- SESUDAH batas: S-NPP tidak diminta sama sekali, tidak ada tidur, deteksi S-NPP lama dalam 7 hari diwarisi
+            j = lama(d, SESUDAH)
+            for mode in ("0", "a", "b"):   # (a)/(b)/normal tidak membedakan: tak ada permintaan S-NPP
+                fake, urls = pabrik(mode); globals()["ambil"] = fake
+                tidur.clear()
+                t3, err3 = tangkap(SESUDAH, j)
+                assert "::warning" not in err3 and "tidak diminta" in err3 and "2 deteksi S-NPP lama diwarisi" in err3, err3
+                assert not [u for u in urls if "VIIRS_SNPP" in u] and len(urls) == 6 and not tidur, (mode, urls, tidur)
+                assert sorted(p["frp"] for p in sensor(t3, "N")) == [3.0, 7.5] and {"N20", "N21", "M"} <= {p["s"] for p in t3}, (mode, sensor(t3, "N"))
+            t4, _ = tangkap(SESUDAH + dt.timedelta(days=8), j)   # 8 hari kemudian: semua deteksi S-NPP lama keluar dari jendela 7 hari
+            assert not sensor(t4, "N"), "warisan habis sendiri"
+            t5, _ = tangkap(SESUDAH, os.path.join(d, "tidak_ada.json"))
+            assert t5 and not sensor(t5, "N"), "tanpa hotspot.json lama: tanpa warisan, tanpa galat"
+            open(os.path.join(d, "rusak.json"), "w").write("{bukan json")
+            assert not sensor(tangkap(SESUDAH, os.path.join(d, "rusak.json"))[0], "N")
+        # ukuran piksel PROKSI untuk titik warisan: bukan 0 / 0,4 bawaan (kompleks warisan tak boleh menyusut luas garis luarnya dan tak boleh terpecah)
+        for p in sensor(t3, "N"):
+            assert p["proksi"] is True and (p["scan"], p["track"], p["px"]) == (0.455, 0.456, 0.493), p
+        assert all("proksi" not in p for p in t3 if p["s"] != "N") and all("proksi" not in p for p in t0), "titik FIRMS nyata tidak ditandai proksi"
+        import garis_api as _g
+        kisi = [{"lat": -3.0 + i * 0.0034, "lon": 112.0 + j * 0.0034, "scan": 0.455, "track": 0.456, "px": 0.493, "t": PRA, "s": "N", "c": 1, "frp": 1.0, "adm": ["62", "A", "B"]} for i in range(6) for j in range(6)]
+        nol = [dict(q, scan=0.0, track=0.0, px=0.4) for q in kisi]
+        luas_p, luas_0 = _g.garis(kisi)[1], _g.garis(nol)[1]
+        assert luas_p > luas_0 * 1.1, (luas_p, luas_0)   # bawaan nol menyusutkan garis luar; proksi memulihkannya
+        assert penanda_proksi([{"proksi": True}, {}, {"proksi": True}]) == {"snpp_proksi": 2} and penanda_proksi([{}, {"s": "N"}]) == {}
+        assert sensor_diminta(PRA) == SENSOR and "VIIRS_SNPP_NRT" not in sensor_diminta(SESUDAH) and len(sensor_diminta(SESUDAH)) == 3
+        # S-NPP lama yang diwarisi tetap jadi kompleks lewat jalur yang sama dengan titik FIRMS (dbscan/titik_unik tidak bergantung pada asal titik)
+        p0 = {"lat": -3.0, "lon": 112.0, "t": PRA, "s": "N", "frp": 1.0, "c": 1, "adm": ["62", "A", "B"], "px": .4, "scan": 0.0, "track": 0.0}
+        lab, _ = dbscan([p0, dict(p0, s="N20", px=.4)])
+        assert lab == [0, 0]
+    finally:
+        globals()["ambil"] = ambil_asli
+        time.sleep = time_sleep
+
+
 def uji():
+    uji_snpp()
+    print("harian uji: S-NPP berhenti OK")
     # IPv4 didahulukan, IPv6 tetap ada sebagai cadangan
     palsu = [(socket.AF_INET6, 1, 6, "", ("fd00::1", 443, 0, 0)), (socket.AF_INET, 1, 6, "", ("198.118.194.34", 443))]
     asli, socket.getaddrinfo = _getaddrinfo_asli, None

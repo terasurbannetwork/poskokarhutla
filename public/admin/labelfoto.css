@@ -1,0 +1,29 @@
+/* Admin Label kerusakan: foto besar kiri, tombol kelas + statistik kanan. Token warna dan tombol dari admin.css. */
+.lf-contoh{margin:0 0 12px;padding:8px 14px;border-radius:12px;font-weight:800;font-size:12.5px;background:color-mix(in srgb,var(--c6) 16%,transparent);color:color-mix(in srgb,var(--c6) 80%,var(--ink))}
+.lf-grid{display:grid;grid-template-columns:minmax(0,1.6fr) minmax(300px,1fr);gap:16px;align-items:start}
+.lf-kiri,.lf-kanan{display:grid;gap:12px;min-width:0}
+.lf-foto{background:#0b1220;border-radius:16px;overflow:hidden;min-height:320px;display:flex;align-items:center;justify-content:center;box-shadow:var(--bayang)}
+.lf-foto img{width:100%;max-height:72vh;object-fit:contain;display:block}
+.lf-kosong{color:#cbd5e1;padding:32px;text-align:center;margin:0}
+.lf-nav{display:flex;justify-content:space-between;align-items:center;gap:8px}
+.lf-redup{color:var(--ink2);font-size:12.5px;margin:0}
+.lf-label{margin-top:4px}
+.lf-info{display:flex;flex-direction:column;gap:2px;font-size:13.5px;background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:var(--bayang)}
+.lf-info b{font:800 15px var(--display)}
+.lf-info span{color:var(--ink2);font-variant-numeric:tabular-nums}
+.lf-kelas{display:grid;grid-template-columns:1fr 1fr;gap:8px}
+.lf-k{height:52px;justify-content:flex-start;gap:10px;font-size:14px;border-left:5px solid var(--kl,var(--line))}
+.lf-k[aria-pressed="true"]{outline:2px solid var(--kl);background:color-mix(in srgb,var(--kl) 14%,var(--card))}
+.lf-k kbd{font:700 12px var(--display);background:var(--surface);color:var(--ink);border-radius:6px;padding:2px 7px}
+.lf-rusak_berat{--kl:#c0392b}.lf-rusak_sedang{--kl:#e67e22}.lf-rusak_ringan{--kl:#d4ac0d}.lf-tidak_rusak{--kl:#27ae60}.lf-bukan_bangunan{--kl:#7f8c8d}.lf-tidak_jelas{--kl:#8e44ad}
+.lf-jenis{display:flex;flex-wrap:wrap;gap:6px}
+.lf-jenis .ad-chip[aria-pressed="true"]{background:var(--gradien);color:#fff}
+.lf-galat{margin:0;color:var(--c1);font-weight:700;font-size:13px}
+.lf-stat{background:var(--card);border-radius:16px;padding:12px 14px;box-shadow:var(--bayang);display:grid;gap:8px}
+.lf-stat p{margin:0}
+.lf-kalimat{font-size:14px}
+.lf-bar{display:grid;gap:5px}
+.lf-bar div{display:grid;grid-template-columns:104px 1fr 34px;gap:8px;align-items:center;font-size:12.5px}
+.lf-bar b{text-align:right;font-variant-numeric:tabular-nums}
+.lf-b{display:block;height:10px;border-radius:5px;background:var(--kl);min-width:2px}
+@media (max-width:860px){.lf-grid{grid-template-columns:1fr}}

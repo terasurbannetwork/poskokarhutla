@@ -62,11 +62,11 @@ test("OG: tab, kejadian, dan halaman utama bencana baru dari registry", () => {
   const B = salinan(); B.bencana.push(baru);
   const u = s => new URL(S + s);
   assert.equal(metaRute(u("/uji1/"), M, B).judul, "Baru");
-  assert.equal(metaRute(u("/uji1/tren"), M, B).judul, "Tren · Pantau Bencana Bencana Baru");
+  assert.equal(metaRute(u("/uji1/tren"), M, B).judul, "Tren · Centurisk97 Bencana Baru");
   assert.equal(metaRute(u("/uji1/k/X0001"), M, B).url, S + "/uji1/k/X0001");
-  assert.equal(metaRute(u("/peta"), M, B).judul, "Peta · Pantau Bencana Karhutla");
+  assert.equal(metaRute(u("/peta"), M, B).judul, "Peta · Centurisk97 Karhutla");
   assert.equal(metaRute(u("/uji1/tren"), M), null, "registry asli tidak mengenalnya");
-  assert.equal(metaRute(u("/gempa/peta"), M, B).judul, "Peta · Pantau Bencana Gempa & Tsunami", "gempa (aktif) punya OG");
+  assert.equal(metaRute(u("/gempa/peta"), M, B).judul, "Peta · Centurisk97 Gempa & Tsunami", "gempa (aktif) punya OG");
   const MATI = salinan(); MATI.bencana.find(b => b.id === "gempa").status = "mati";
   assert.equal(metaRute(u("/gempa/peta"), M, MATI), null, "gempa mati tidak punya OG");
 });
@@ -75,9 +75,9 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   const r = await worker.fetch(new Request("https://contoh.test/sitemap.xml"), {}, {});
   assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /xml/);
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
-  for (const j of ["/", "/semua", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
+  for (const j of ["/", "/semua", "/peta", "/insight", "/berita", "/tren", "/dampak", "/metode", "/tentang", "/privasi"])   /* metode karhutla kembali di menu (pemilik 29 Okt 2026) */ assert.ok(loc.includes(j), j);
   for (const j of ["/gempa/", "/gempa/peta", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/sim", "/gempa/foto", "/gempa/tentang"]) assert.ok(loc.includes(j), `${j} gempa aktif harus ada`);
-  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/metode", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
+  for (const j of ["/posko", "/informasi", "/kompleks", "/ringkasan", "/cuaca/metode", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
   for (const j of ["/banjir/", "/banjir/peta", "/banjir/berita", "/banjir/foto"]) assert.ok(loc.includes(j), `${j} banjir aktif harus ada`);
   for (const id of ["cuaca", "udara", "gunungapi", "kekeringan"]) for (const t of ["", "peta", "insight", "berita", "tren", "dampak", "foto", "tentang"]) assert.ok(loc.includes(`/${id}/${t}`), `/${id}/${t} aktif harus ada`);
   assert.ok(!x.includes("terasurban"));

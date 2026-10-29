@@ -101,9 +101,8 @@ uji("situs Centurisk97 (*.workers.dev): semua halaman Tentang dialihkan ke peta;
 });
 
 uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
-  /* selain *.workers.dev, worker (layaniHTML) mengganti merek HANYA di <title>, meta content, title/alt/aria-label, .lp-kop b.
-     Kata di komentar skrip/badan tidak disentuh, jadi uji meniru penggantian yang sama (bukan seluruh berkas). */
-  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8").replace(/(<title>[^<]*?)Centurisk97/, "$1Pantau Bencana");
+  /* merek tidak lagi ditulis ulang per alamat (semua berkas sudah "Centurisk97"), jadi isinya sama persis dengan berkas */
+  const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8");
   for (const j of ["/peta", "/kompleks/", "/k/K0001", "/sim/K0123", "/prioritas"]) {
     const r = await panggil("GET", j);
     assert.equal(r.status, 200, `GET ${j} = ${r.status}`);
@@ -492,7 +491,10 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   const tmp = mkdtempSync(path.join(tmpdir(), "uji-registry-"));
   cpSync(path.join(AKAR, "src"), path.join(tmp, "src"), {recursive: true});
   mkdirSync(path.join(tmp, "public")); for (const f of ["informasi_jenis.js", "ews_tindakan.js", "laporan_karhutla_spek.js", "laporan_karhutla_wa.js", "laporan_bencana_spek.js", "laporan_bencana_wa.js"]) copyFileSync(path.join(AKAR, "public", f), path.join(tmp, "public", f));
-  mkdirSync(path.join(tmp, "public/pipa")); copyFileSync(path.join(AKAR, "public/pipa/formulir.js"), path.join(tmp, "public/pipa/formulir.js"));   // src/sippa.js mengimpor formulir.js langsung (ADR-03)
+  mkdirSync(path.join(tmp, "public/pipa")); copyFileSync(path.join(AKAR, "public/pipa/formulir.js"), path.join(tmp, "public/pipa/formulir.js"));
+  copyFileSync(path.join(AKAR, "public/pipa/pelihara.js"), path.join(tmp, "public/pipa/pelihara.js"));   // src/sippa.js mengimpor fungsi pemeliharaan murni langsung (SP-093)   // src/sippa.js mengimpor formulir.js langsung (ADR-03)
+  copyFileSync(path.join(AKAR, "public/pipa/uji_pilot_spek.js"), path.join(tmp, "public/pipa/uji_pilot_spek.js"));   // src/uji_pilot.js mengimpor aturan isian langsung
+  mkdirSync(path.join(tmp, "public/bnpb")); copyFileSync(path.join(AKAR, "public/bnpb/pendataan_spek.js"), path.join(tmp, "public/bnpb/pendataan_spek.js"));   // src/pendataan.js mengimpor spek bersama langsung
   writeFileSync(path.join(tmp, "src/bencana.generated.js"), `export default ${JSON.stringify(B)};\n`);
   const mf2 = new Miniflare({...opsi(), scriptPath: path.join(tmp, "src/worker.js"), modulesRoot: tmp, d1Databases: {DB: "uji-registry"}});
   try {
@@ -549,12 +551,14 @@ uji("titik panas 3 jam: CSV rusak dibuang, keyakinan dikodekan, kembar dihapus, 
   assert.ok(!B.some(b => b[0] === -5.5), "titik Laut Jawa harus dibuang");
   assert.equal(Math.max(...B.map(b => b[2])), 0, "titik terbaru harus jam 0 terhadap acuan");
   assert.ok(r.j.galat.some(g => g.includes("VIIRS_NOAA20_NRT")), "galat sensor gagal harus dicatat");
+  const m1 = new Date(Math.floor(t1 / 60e3) * 60e3).toISOString();   // jam CSV hanya sampai menit
+  assert.deepEqual(r.j.terakhir_sensor, {M: m1, N: m1}, "terakhir_sensor: hanya sensor yang punya deteksi (N20 galat, N21 kosong tidak ditulis)");
   for (let i = 0; i < 9; i++) await (await mf.getWorker()).scheduled({cron: "15 */3 * * *"});
   assert.equal((await DB.prepare("SELECT count(*) n FROM titik_terbaru").first()).n, 8, "hanya 8 putaran terakhir disimpan");
 });
 
 uji("GET /cuaca/simulasi menyajikan public/cuaca/simulasi.html, /udara/simulasi index.html udara, /cuaca/peta index.html cuaca (registry `halaman`)", async () => {
-  const baca = f => readFileSync(path.join(AKAR, "public", f), "utf8"), judul = t => t.match(/<title>[^<]*<\/title>/)?.[0].replace("Centurisk97", "Pantau Bencana");   // worker menukar merek di <title>
+  const baca = f => readFileSync(path.join(AKAR, "public", f), "utf8"), judul = t => t.match(/<title>[^<]*<\/title>/)?.[0];
   const sim = await panggil("GET", "/cuaca/simulasi");
   assert.equal(sim.status, 200); assert.equal(judul(sim.teks), judul(baca("cuaca/simulasi.html")), "judul halaman simulasi cuaca");
   assert.ok(sim.teks.length > 1000 && sim.teks.includes("sim_layar.js"), "isi simulasi.html, bukan index.html");
@@ -575,4 +579,27 @@ uji("status: jeda satelit dari meta.json, tanpa ambang dan tanpa data_terakhir t
     r = await panggil("GET", "/api/status");
     assert.ok(!("jeda_satelit" in r.j.sumber), "tanpa data_terakhir: tidak ada angka, bukan nol");
   } finally { if (lama === undefined) delete ASET_UJI["/data/meta.json"]; else ASET_UJI["/data/meta.json"] = lama; }
+});
+
+/* jeda per sensor: terakhir_sensor putaran titik_terbaru terakhir (json_extract di D1) -> sumber.jeda_sensor; tanpa ambang, tidak pernah 503.
+   N berhenti 1 Nov 2026 13:00 UTC (produk S-NPP dihentikan): uji ini memakai jam sungguhan, jadi harapan N mengikuti tanggalnya; batas persisnya di jeda_sensor.test.mjs. */
+uji("status: jeda_sensor per sensor dari putaran titik terakhir (4 sensor, sensor hilang, putaran lama tanpa medan), tidak pernah 503", async () => {
+  const dibuat = KINI + 1000, iso = jam => new Date(dibuat - Math.round(jam * JAM)).toISOString(), berhenti = Date.now() >= Date.UTC(2026, 10, 1, 13);
+  const sisip = async isi => (await DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(dibuat, JSON.stringify({baris: [], ...isi})).run()).meta.last_row_id;
+  const N = (terakhir, umur) => berhenti ? {berhenti: true} : {terakhir, umur_jam: umur};
+  const ids = [];
+  try {
+    ids.push(await sisip({terakhir_sensor: {M: iso(1.5), N: iso(8.3), N20: iso(0.4), N21: iso(4.9)}}));
+    let r = await panggil("GET", "/api/status");
+    assert.deepEqual(r.j.sumber.jeda_sensor, {M: {terakhir: iso(1.5), umur_jam: 1.5}, N: N(iso(8.3), 8.3), N20: {terakhir: iso(0.4), umur_jam: 0.4}, N21: {terakhir: iso(4.9), umur_jam: 4.9}}, r.teks);
+    assert.ok(!r.j.basi.includes("jeda_sensor") && !("jeda_sensor" in r.j.uji), "jeda tanpa ambang tidak boleh membuat 503");
+    const dasar = {status: r.status, ok: r.j.ok, basi: r.j.basi};
+    ids.push(await sisip({terakhir_sensor: {M: iso(2), N20: iso(3)}}));   // N dan N21 tidak punya deteksi
+    r = await panggil("GET", "/api/status");
+    assert.deepEqual(r.j.sumber.jeda_sensor, {M: {terakhir: iso(2), umur_jam: 2}, N: berhenti ? {berhenti: true} : {terakhir: null, umur_jam: null}, N20: {terakhir: iso(3), umur_jam: 3}, N21: {terakhir: null, umur_jam: null}}, r.teks);
+    ids.push(await sisip({}));   // putaran ditulis sebelum perubahan ini: tanpa angka, bukan nol
+    r = await panggil("GET", "/api/status");
+    assert.ok(!("jeda_sensor" in r.j.sumber), "putaran tanpa terakhir_sensor: tidak dilaporkan");
+    assert.deepEqual({status: r.status, ok: r.j.ok, basi: r.j.basi}, dasar, "ada/tidaknya jeda_sensor tidak mengubah status, ok, maupun basi");
+  } finally { for (const id of ids) await DB.prepare("DELETE FROM titik_terbaru WHERE id = ?").bind(id).run(); }
 });

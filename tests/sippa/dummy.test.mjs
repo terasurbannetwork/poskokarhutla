@@ -66,3 +66,11 @@ test("app.js memasang tombol dummy hanya lewat bolehDummy dan memuat ulang penuh
   assert.match(app, /location\.reload\(\)/);
   assert.match(app, /Isi data dummy untuk layar ini/); assert.match(app, /Hapus seluruh data dummy SIPPA/);
 });
+
+test("SP-053: tiap layar di router (termasuk rincian aset) memetakan ke kunci RANTAI_DUMMY yang diterima server; jalur liar = kosong (ditolak sebelum jaringan)", async () => {
+  const {LAYAR} = await import("../../public/pipa/app.js"), {layarDummy} = await import("../../public/pipa/dummy.js");
+  const src = readFileSync(new URL("../../src/sippa.js", import.meta.url), "utf8");
+  const kunci = new Set([...(/export const LAYAR_SIPPA = \[([^\]]*)\]/.exec(src)[1].match(/"([^"]+)"/g) || []).map(s => s.slice(1, -1)), "ringkas", "lapangan"]);
+  for (const l of LAYAR) assert.ok(kunci.has(layarDummy(l)), `layar ${l} -> ${layarDummy(l)} tidak ada di RANTAI_DUMMY`);
+  assert.equal(layarDummy("aset"), "pelihara"); assert.equal(layarDummy(undefined), ""); assert.equal(layarDummy(null), "");
+});

@@ -380,6 +380,7 @@ uji("instansi: tenggat terlambat 6 jam untuk konfirmasi dan 24 jam untuk kabar, 
   /* admin pantau: daftar terlambat dengan tombol tagih wa.me ke PIC lapangan, bukan data lain */
   assert.equal((await api("GET", "/api/instansi/admin/pantau")).s, 403); assert.equal((await adm("GET", "/api/instansi/admin/pantau", undefined, GERBANG)).s, 403);
   const p = (await adm("GET", "/api/instansi/admin/pantau")).j, lt = p.terlambat.find(x => x.id === kabarBasi);
+  assert.ok(!/Invalid Date|undefined/.test(JSON.stringify(p.terlambat)), "ciri tugas terlambat tanpa tanggal kosong"); assert.match(lt.ciri, /terdeteksi \d+ \w+ \d\d\.\d\d WIB/);
   assert.equal(p.terlambat.length, 2); assert.equal(lt.langkah, "kabar"); assert.ok(lt.lewat_jam >= 1);
   const pic = lt.tagih.find(x => x.untuk.startsWith("PIC lapangan")); assert.match(pic.tautan, /^https:\/\/wa\.me\/6281233334444\?text=/); assert.match(decodeURIComponent(pic.tautan), /belum ada kabar terbaru.*24 jam/);
   const tanpaPic = p.terlambat.find(x => x.id === basi).tagih; assert.ok(tanpaPic.every(x => !x.untuk.startsWith("PIC lapangan")), "belum ada PIC: tagih ke wakil akun bila ada");
@@ -486,7 +487,7 @@ uji("instansi: konfirmasi wajib PIC dan media, satu isian 1 dan 10 media, 11 dit
     for (const [salah, alasan] of [[{status_api: "padam"}, "padam bukan status konfirmasi api ada"], [{status_api: "menyala", hasil: "bukan_api"}, "status api pada bukan api"], [{status_api: "mati"}, "status asing"]]) assert.equal((await api("POST", `/api/instansi/konfirmasi/${t3}`, KONF([m3], salah), h)).s, 400, alasan);
     const ok3 = await api("POST", `/api/instansi/konfirmasi/${t3}`, KONF([m3], {status_api: "bara"}), h); assert.equal(ok3.s, 201, ok3.t); assert.equal((await DB.prepare("SELECT status_api FROM tugas_isian WHERE id = ?").bind(ok3.j.id).first()).status_api, "bara"); }
   for (const k of ["bukan_api", "sudah_padam"]) {
-    const t2 = await tugasBaru("62", "Seruyan"), mm = (await unggah(h, t2, {media: jpeg(0)})).j.id, rr = await api("POST", `/api/instansi/konfirmasi/${t2}`, KONF([mm], {hasil: k}), h); assert.equal(rr.s, 201, rr.t);
+    const t2 = await tugasBaru("62", "Seruyan"), mm = (await unggah(h, t2, {media: jpeg(0)})).j.id, rr = await api("POST", `/api/instansi/konfirmasi/${t2}`, KONF([mm], {hasil: k, ...(k === "bukan_api" ? {alasan_bukan_api: "tidak_ada_bekas"} : {})}), h); assert.equal(rr.s, 201, rr.t);
     assert.equal((await DB.prepare("SELECT status FROM tugas_api WHERE id = ?").bind(t2).first()).status, k === "bukan_api" ? "bukan_api" : "padam", `hasil ${k} menutup tugas`);
     assert.equal((await api("POST", `/api/instansi/kabar/${t2}`, KABAR([]), h)).s, 409, "tugas ditutup tidak bisa diberi kabar");
   }
@@ -928,7 +929,7 @@ uji("instansi: idempotensi klien_id per tugas, PIC terakhir per kabupaten dari s
 uji("instansi: tanpa migrasi 0029 rute menjawab 503 yang jelas dan cron tidak melempar", async () => {
   const mf0 = bangun("uji-instansi-tanpa-0029", false), D0 = await mf0.getD1Database("DB");
   try {
-    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046", "0050", "0054"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
+    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046", "0050", "0054", "0072"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
     await D0.batch(pecah(lama).map(x => D0.prepare(x)));
     const kuki = {cookie: "sesi_instansi=" + "a".repeat(64)};
     for (const [m, j, body, h] of [["POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: "x"}, {}], ["GET", "/api/instansi/saya", undefined, kuki], ["GET", "/api/instansi/tugas", undefined, kuki], ["POST", "/api/instansi/gantisandi", {}, kuki],

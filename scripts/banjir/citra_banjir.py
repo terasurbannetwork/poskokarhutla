@@ -3,7 +3,7 @@
 Pakai:  python3 scripts/banjir/citra_banjir.py                 # semua daerah di public/banjir/data/bukti/index.json
         python3 scripts/banjir/citra_banjir.py "32|Bogor" "11|Aceh Selatan"   # daerah tertentu (boleh beberapa proses paralel)
         python3 scripts/banjir/citra_banjir.py uji             # uji fungsi murni (luring)
-Jalankan sesudah bukti_das.py, manual dan jarang. Hasil: PNG di public/banjir/data/bukti/citra/ dan blok "citra" di <slug>.json.
+Jalankan sesudah bukti_das.py, manual dan jarang (banjir.yml: workflow_dispatch input `bukti`). Hasil: PNG di public/banjir/data/bukti/citra/ dan blok "citra" di <slug>.json.
 
 - Sentinel-2 L2A (Earth Search / Element84, COG terbuka, pola scripts/data/citra.py): kotak 12 km di sel 5 km tempat hutan hilang terbanyak
   sejak 2021 di dalam DAS (titik_hilang). "Sebelum" = adegan paling bersih (awan terendah, kotak tertutup penuh) Jun 2019 - Okt 2020;

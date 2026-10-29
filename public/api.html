@@ -3,8 +3,8 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
-<title>API data · Pantau Bencana</title>
-<meta name="description" content="Cara mengambil data Pantau Bencana lewat API: titik panas, laporan karhutla, cuaca, dan data berkunci untuk mitra. Data publik tanpa kunci.">
+<title>API data · Centurisk97</title>
+<meta name="description" content="Cara mengambil data Centurisk97 lewat API: titik panas, laporan karhutla, cuaca, dan data berkunci untuk mitra. Data publik tanpa kunci.">
 <meta name="theme-color" content="#0b2545">
 <style>
 :root{--paper:#f3f5f9;--card:#fff;--ink:#14213d;--ink2:#56607a;--line:#e1e5ee;--navy:#0b2545;--navy2:#13315c;--brand:#1d4e89;--soft:#e8eef8;--kode:#0e1a33;--kodeInk:#e6ecf7;--hijau:#1f7a4d;--hijauBg:#e3f4ea;--jingga:#a14b12;--jinggaBg:#fbeee2;color-scheme:light}
@@ -68,7 +68,7 @@ ul{padding-left:20px;margin:6px 0}li{margin:3px 0}
 </head>
 <body>
 <header class="kepala"><div class="isi">
-  <a class="merek" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg><span data-merek>Pantau Bencana</span> · API</a>
+  <a class="merek" href="/"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m8 7-5 5 5 5M16 7l5 5-5 5"/></svg><span data-merek>Centurisk97</span> · API</a>
   <div class="kanan">
     <a class="tombol" href="/api/v1"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h10"/></svg><span>Daftar endpoint</span></a>
     <a class="tombol" href="/peta"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/></svg><span>Kembali ke Peta</span></a>
@@ -76,7 +76,7 @@ ul{padding-left:20px;margin:6px 0}li{margin:3px 0}
 </div></header>
 
 <div class="pembuka"><div class="isi">
-  <h1 data-merek-teks>API data Pantau Bencana</h1>
+  <h1 data-merek-teks>API data Centurisk97</h1>
   <p>Ambil data titik panas, laporan karhutla, cuaca, dan kualitas udara langsung dari program Anda. Semua hanya baca, jawaban berformat JSON.</p>
   <div class="pilar">
     <a href="#publik"><span class="lc publik">Tanpa kunci</span><b>Data publik</b><span>Titik panas, laporan harian, FWI, udara, peringatan BMKG.</span></a>
@@ -182,7 +182,7 @@ const {jumlah, laporan} = await r.json();</code></pre></div>
   <p>Tambahkan server MCP jenis HTTP di pengaturan klien Anda. Tanpa kunci, hapus bagian <code>headers</code>; yang tersedia tool publik saja.</p>
   <div class="kode"><pre><code>{
   "mcpServers": {
-    "pantau-bencana": {
+    "centurisk97": {
       "url": "https://centurisk97.id/mcp",
       "headers": {"X-API-Key": "pb_GANTI_DENGAN_KUNCI_ANDA"}
     }
@@ -259,7 +259,7 @@ const {jumlah, laporan} = await r.json();</code></pre></div>
 <script>
 /* contoh mengikuti alamat yang sedang dibuka (centurisk97.id atau *.workers.dev); merek Centurisk97 di situs Centurisk97 */
 for (const c of document.querySelectorAll("code")) c.textContent = c.textContent.replaceAll("https://centurisk97.id", location.origin);
-if (/centurisk97/.test(location.hostname)) { for (const m of document.querySelectorAll("[data-merek]")) m.textContent = "Centurisk97"; for (const m of document.querySelectorAll("[data-merek-teks]")) m.textContent = m.textContent.replace("Pantau Bencana", "Centurisk97"); document.title = "API data · Centurisk97"; }
+
 /* tombol salin di tiap blok kode */
 for (const k of document.querySelectorAll(".kode")) {
   const b = document.createElement("button"); b.className = "salin"; b.type = "button"; b.textContent = "Salin";

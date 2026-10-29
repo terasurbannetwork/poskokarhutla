@@ -46,7 +46,7 @@ export function sitemap(asal, B = REGISTRY) {
     j.add(b.rute);
     for (const t of tabRute(b)) if (b.tab.includes(t) && !(b.tab_sembunyi || []).includes(t)) j.add(akar(b) ? `/${t}` : `${dasar(b)}/${t}`);
   }
-  j.add("/tentang"); j.add("/privasi");
+  j.add("/tentang"); j.add("/privasi"); j.add("/syarat");
   const esc = s => s.replace(/&/g, "&amp;").replace(/</g, "&lt;");
   return `<?xml version="1.0" encoding="UTF-8"?>\n<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">\n${[...j].map(p => `<url><loc>${esc(asal + p)}</loc></url>`).join("\n")}\n</urlset>\n`;
 }

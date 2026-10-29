@@ -1,0 +1,23 @@
+/* SIPPA: gaya kesiapan kit, katalog alat, dan lampu titik panas (SP-104, SP-107, SP-113). Dimuat layar Kit, Pelihara, dan Peta; bukan pipa.css. Hanya token tema; tanpa warna tertanam dan tanpa gaya sebaris. */
+.sp-siap-judul{margin:0 0 var(--sp-2);font-size:15px}
+.sp-siap{list-style:none;margin:0;padding:0;display:grid;gap:var(--sp-2)}
+.sp-siap li{display:grid;grid-template-columns:1fr auto;gap:2px var(--sp-3);padding:var(--sp-2) 0;border-top:1px solid var(--line)}
+.sp-siap small{grid-column:1/-1;color:var(--ink2)}
+.sp-siap-n{font-weight:700}
+.sp-katalog{margin-top:var(--sp-5)}
+.sp-judul-kecil{font-size:18px;margin:0 0 var(--sp-1)}
+.sp-katalog-kisi{display:grid;gap:var(--sp-3);grid-template-columns:repeat(auto-fill,minmax(250px,1fr));margin-top:var(--sp-3)}
+.sp-alat{background:var(--card);border:1px solid var(--line);border-radius:var(--r);padding:var(--sp-3);display:grid;gap:var(--sp-2);align-content:start}
+.sp-alat figure{margin:0}
+.sp-alat img{width:100%;height:auto;aspect-ratio:4/3;object-fit:cover;border-radius:6px;display:block;background:var(--surface)}
+.sp-alat h3{margin:0;font-size:15px}
+.sp-alat p{margin:0;font-size:13px;color:var(--ink2)}
+.sp-alat ul{margin:0;padding-left:18px;font-size:12.5px;display:grid;gap:2px}
+.sp-alat-jml{color:var(--ink)}
+/* lampu titik panas: huruf di dalam bentuk, warna hanya penegas (keputusan 52) */
+.sp-leg-lampu{list-style:none;margin:0;padding:0;display:grid;gap:4px;font-size:12px}
+.sp-leg-lampu li{display:flex;align-items:center;gap:var(--sp-2)}
+.sp-lampu{--w:var(--ink3);flex:none;width:18px;height:18px;border-radius:50%;border:2px solid var(--w);background:var(--w);color:var(--paper);font:700 11px/14px sans-serif;text-align:center;font-style:normal}
+.sp-lampu-hijau{--w:var(--ok)}.sp-lampu-kuning{--w:var(--warn);color:var(--ink)}.sp-lampu-merah{--w:var(--bad)}
+.sp-riwayat{margin-top:var(--sp-3)}
+.sp-swir{margin:var(--sp-2) 0 0;display:grid;gap:2px}

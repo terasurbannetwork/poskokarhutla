@@ -16,8 +16,8 @@
   const tautanKerja = b => { const sumber = b.id.split(":")[1] ?? "", tab = b.jenis.startsWith("api_") ? "pantau" : b.jenis === "akun_menunggu" ? "validasi" : b.jenis === "usulan_kontak" ? "kontak" : "";
     return b.tautan + (tab && sumber ? `#${tab}/${sumber}` : ""); };
   const waktu = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "";
-  /* ?ke= dari halaman SIPPA (/pipa*, ADR-05): sesudah masuk staf, hanya jalur yang cocok ^/pipa(/|$) diikuti (alamat sama asal; URL penuh atau jalur lain diabaikan) */
-  const KE_PIPA = /^\/pipa(\/|$)/;
+  /* ?ke= dari halaman SIPPA (/pipa*, ADR-05) atau Atur drone gambut (/admin/drone, src/drone.js): sesudah masuk staf, hanya jalur yang cocok diikuti (alamat sama asal; URL penuh atau jalur lain diabaikan) */
+  const KE_PIPA = /^\/(pipa|admin\/drone)(\/|$|\?)/;
   const keAsal = new URLSearchParams(location.search).get("ke") || "";
   const ke = KE_PIPA.test(keAsal) ? keAsal : null;
   const pergiPipa = () => { if (ke == null) return false; location.href = ke; return true; };

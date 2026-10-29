@@ -2,10 +2,10 @@
   "catatan": "URL tetap tiap buku. Terbitkan ulang SELALU ke url ini, tidak pernah sebagai artifact baru.",
   "buku": {
     "pantau-bencana": {
-      "url": "https://claude.ai/artifact/5sPCWCh2susGkjnmW7tL7Z",
+      "url": "https://claude.ai/artifact/XEdp3R4s42P9kG6dvyXc1Q",
       "sumber": "docs/buku-pegangan/pantau-bencana.md",
-      "commit": "0cdb2e0e+",
-      "disegarkan": "2026-10-23"
+      "commit": "219654dc",
+      "disegarkan": "2026-10-29"
     },
     "rencana-multi-bencana": {
       "url": "https://claude.ai/artifact/7yMBxxVZjfFi6TQvkdcR85",
@@ -16,8 +16,8 @@
     "utama": {
       "url": "https://claude.ai/artifact/PCc5A2wAdrSww3ebnxEiSn",
       "sumber": "docs/buku-pegangan/rujukan/utama.md",
-      "commit": "fa93e79",
-      "disegarkan": "2026-10-16"
+      "commit": "ab82e6a7+",
+      "disegarkan": "2026-10-26"
     },
     "mbg-bangka": {
       "url": "https://claude.ai/artifact/PX1dDyp7XU4qsfqwM823jK",

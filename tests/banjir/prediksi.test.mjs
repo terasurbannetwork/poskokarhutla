@@ -8,7 +8,7 @@ import { existsSync, readFileSync } from "node:fs";
 const D = "public/banjir/data/";
 const baca = (f) => JSON.parse(readFileSync(D + f, "utf8"));
 
-for (const s of ["status", "ansambel_hujan", "prospektif", "uji_balik", "seri_status", "kejadian_aktif"]) {
+for (const s of ["status", "ansambel_hujan", "prospektif", "uji_balik", "seri_status", "kejadian_aktif", "wilayah_hari", "jaga_banjir", "pos_sungai"]) {
   test(`swa-uji ${s}.py lulus`, () => {
     const out = execFileSync("python3", [`scripts/banjir/${s}.py`, "uji"], { encoding: "utf8" });
     assert.match(out, /ok/, `${s}.py uji tidak mencetak ok: ${out}`);

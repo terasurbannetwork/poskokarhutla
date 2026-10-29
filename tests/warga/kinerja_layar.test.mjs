@@ -80,6 +80,9 @@ else {
   });
   test("filter hari dan urut tulis ke URL; urut mengubah barisnya; drill ke kabupaten", async () => {
     mode = "ok"; await buka("/admin/kinerja?tab=proses");
+    /* uji sebelumnya sudah memuat hari=7: tanpa dikosongkan, tunggu di bawah lolos seketika dan klik urut mengenai tabel lama
+       yang lalu dihapus kerangka muat() (querySelector null, flaky di CI) */
+    dipanggil.length = 0;
     await tab.klikTeks("[data-hari]", "^7 hari$"); await tab.tungguFungsi("location.search.includes('hari=7')");
     assert.equal(await tab.eval("document.querySelector('[data-hari=\"7\"]').getAttribute('aria-pressed')"), "true");
     for (let i = 0; i < 40 && !dipanggil.some(q => q.includes("hari=7")); i++) await new Promise(r => setTimeout(r, 100));

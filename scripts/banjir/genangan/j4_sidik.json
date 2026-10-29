@@ -1,0 +1,27 @@
+{
+ "berkas": {
+  "public/banjir/data/bahaya.json": "c027554414a597dd406ca90ae6c62fefda091f8973aea3303b00662acd2b5c87",
+  "public/banjir/data/genangan/hulu.json": "13e49352eb5aca6f55acf0bb9da6b6e44233f994fb6ef76d62cfb94b6ab9da94",
+  "public/banjir/data/genangan/pompa.json": "94bb8d702dda3bb452d55996a4cd55011e9cf9149f148bebc7a7e1e53b9d4cf5",
+  "public/banjir/data/subsiden_literatur.json": "087ce121a019dcfd2775c5b73d5aae962e36809f2bad3e8772a50319726281ba",
+  "public/banjir/sim_genangan.js": "d32b5dd5762dcba44a5277d1b41a0dfa2c2e7d61a1435272d69f7dcf616fdbe2",
+  "public/geo/kecamatan/31.json": "3250c62e8a7262da7af590179a7746b316f882cf21037374982e5592f1b78a88",
+  "scripts/banjir/genangan/PRAREG-J4.md": "90bb4648c9ca855244fd3b5e57d7896c067d2a3bbfc763c5231d5458821ac0b0",
+  "scripts/banjir/genangan/bersama.py": "4790c878329be9c8a029fcf0a7f86c9f97bf5b384cb99681174c4339a2d47910",
+  "scripts/banjir/genangan/j4_kalibrasi.json": "416a4e2928c151315ebe9a9e86f7baeff39e2d0f3e2ce455f9e037c2fa849323",
+  "scripts/banjir/genangan/j4_medan_100m.json.gz": "49d38b9348963a41899335eb72180a42efd911f100a872570d07908952b2af95",
+  "scripts/banjir/genangan/j4_operasi.py": "99878bfe9722a6cf4de8eeb7b4a050c5a3a1dc40e18d147fb9c6203396394f44",
+  "scripts/banjir/genangan/kalibrasi_j4.py": "dbb425bf9fbcf4217bbc18afd4377229a6dc318842b6f6a8492172dfa9620aaf",
+  "scripts/banjir/genangan/kunci_j3.py": "11526f61aa484ce8906d785d66fd7cf2c3c730886365dc6d699b3198478af11c",
+  "scripts/banjir/genangan/kunci_j4.py": "4dce321d163a11de85c6f141cd9231bec31540b3a969413de7accc2f1bb1038a",
+  "scripts/banjir/genangan/mesin.mjs": "65824598b409cd6a6534440db140efb474d4d1cba11b0c2ea178f72ba59751ca",
+  "scripts/banjir/genangan/petabencana.py": "0d813a1682170770b5d34edcb15d034b981ea5287b988de9613dd7f118510b17",
+  "scripts/banjir/genangan/skor_j3.py": "fa957cdf7715fef8ff8246fe495a3e79329464568571a18e1813c97994d8752e",
+  "scripts/banjir/genangan/skor_j4.py": "b4e6bb3a7aa2c51254b155bfd244d95f0fc12f48f4da53c90a2d456066ea4c85",
+  "scripts/banjir/umum.py": "026656b01691fb0fdcb4ac2c1b1bc5c81237eb5d4e92ae99399ae42e24d0c411",
+  "scripts/banjir/wilayah.py": "8f198f09ce42aefc2e708c0122bb1fc81dbc3665ae4e34d76e728d81830e486d"
+ },
+ "jangkar_commit": "ceddfc49af1fbb1d33dd34c1213ad78227d6e005",
+ "jangkar_tanggal": "2026-10-28",
+ "sidik": "e5d65748690af73e2d62294d8e839d1336bf164e36a8ed651434844e00ab96f3"
+}

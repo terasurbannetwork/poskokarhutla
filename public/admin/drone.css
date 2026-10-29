@@ -1,0 +1,28 @@
+/* Atur drone gambut (/admin/drone): panel kiri + peta kanan; satu kolom di ponsel. Token dari admin.css. */
+.dr-wrap{max-width:1440px}
+.dr-tata{display:grid;grid-template-columns:minmax(300px,380px) 1fr;gap:16px;align-items:start}
+.dr-panel{display:grid;gap:14px;min-width:0}
+.dr-panel h2{margin:0;font:800 15px var(--display);color:var(--ink)}
+.dr-daftar{list-style:none;margin:0;padding:0;display:grid;gap:6px;max-height:300px;overflow:auto}
+.dr-daftar button{width:100%;text-align:left;display:grid;gap:2px;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--card);color:var(--ink);font:500 13px var(--font);cursor:pointer}
+.dr-daftar button[aria-pressed="true"]{border-color:var(--navy2);box-shadow:inset 0 0 0 1px var(--navy2);background:var(--surface)}
+.dr-daftar span{color:var(--ink2)}.dr-daftar small{color:var(--ink3);font-size:12px}
+.dr-form[hidden]{display:none}
+.dr-form{display:grid;gap:10px;padding:14px;border:1px solid var(--line);border-radius:14px;background:var(--card)}
+.dr-form label{display:grid;gap:4px;font:600 12px var(--font);color:var(--ink2)}
+.dr-form input,.dr-form select{font:500 14px var(--font);color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:10px;padding:8px 10px;min-width:0}
+.dr-form details{display:grid;gap:8px}.dr-form summary{cursor:pointer;font:600 12px var(--font);color:var(--ink2)}
+.dr-tiga{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.dr-kpi{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}
+.dr-kpi div{padding:10px 12px;border-radius:12px;background:var(--surface);display:grid}
+.dr-kpi b{font:800 18px var(--display);color:var(--ink)}.dr-kpi span{font-size:12px;color:var(--ink2)}
+.dr-ket{margin:0;font-size:12px;color:var(--ink2)}
+.dr-awas{margin:0;padding:8px 10px;border-radius:10px;background:color-mix(in srgb,#b42318 10%,var(--card));color:#8a1c12;font-size:12.5px}
+.dr-terbang{margin:0;padding-left:18px;display:grid;gap:6px;font-size:13px}
+.dr-terbang li{display:flex;gap:8px;align-items:center;justify-content:space-between;flex-wrap:wrap}
+.dr-peta{position:sticky;top:12px;min-width:0}
+#drPeta{height:min(78vh,760px);border-radius:16px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.dr-legenda{display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center;margin:8px 0 0;font-size:12px;color:var(--ink2)}
+.dr-legenda i{display:inline-block;width:12px;height:12px;border-radius:3px;margin-right:4px;vertical-align:-1px}
+.dr-l1{background:#b42318;opacity:.7}.dr-l0{background:#e8a33d;opacity:.7}.dr-lr{height:3px!important;background:#0b2545}.dr-ll{border-radius:50%!important;background:#c9a227;box-shadow:0 0 0 2px #0b2545}
+@media (max-width:860px){.dr-tata{grid-template-columns:1fr}.dr-peta{position:static}#drPeta{height:60vh}}

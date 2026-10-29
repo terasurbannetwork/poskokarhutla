@@ -3,7 +3,7 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<title>Uji Lapangan Karhutla | Pantau Bencana</title>
+<title>Uji Lapangan Karhutla | Centurisk97</title>
 <meta name="description" content="Protokol uji lapangan dan hasilnya: seberapa tepat deteksi, luas, dan status padam platform dibandingkan kenyataan di lapangan.">
 <meta name="robots" content="noindex">
 <meta name="theme-color" content="#0b2545">
@@ -14,7 +14,7 @@
 </head>
 <body class="uj-badan">
 <header class="top">
-  <div class="mark"><a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><b>Uji Lapangan Karhutla</b></div>
+  <div class="mark"><a class="logo" href="/" title="Centurisk97"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><b>Uji Lapangan Karhutla</b></div>
 </header>
 <main class="uj">
   <h1>Uji lapangan: apakah platform ini benar?</h1>
@@ -53,6 +53,20 @@
   <div id="ujHasil" class="uj-tabel-bungkus" hidden></div>
   <div id="ujRincian"></div>
 
+  <h2 id="isi-banjir">D. Data uji banjir</h2>
+  <form id="ujbForm" class="uj-kartu ujb" autocomplete="off">
+    <label>Sampel<select name="sampel"><option value="genangan">Genangan ditemukan</option><option value="kontrol">Kontrol, lokasi Aman</option></select></label>
+    <label>Kecamatan<select name="kec" required><option value="">Pilih</option></select></label>
+    <div class="ujb-lok"><button type="button" id="ujbLokasi" class="lp-tombol"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21s-7-6.2-7-11a7 7 0 0 1 14 0c0 4.8-7 11-7 11z"/><circle cx="12" cy="10" r="2.5"/></svg>Lokasi GPS</button><span id="ujbLokasiInfo" class="uj-redup">Belum diambil</span></div>
+    <label data-ujb-genangan>Tinggi genangan (cm)<input name="tinggi" type="number" inputmode="numeric" min="1" max="1000" step="1"></label>
+    <label data-ujb-genangan>Lama genang (jam)<input name="lama" type="number" inputmode="numeric" min="0" max="720" step="1"></label>
+    <label data-ujb-genangan>Luas kira-kira (ha), opsional<input name="luas" type="number" inputmode="decimal" min="0" step="any"></label>
+    <label data-ujb-genangan class="ujb-foto"><svg viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/></svg>Foto bergeotag, opsional<input name="foto" type="file" accept="image/jpeg,image/png,image/webp"></label>
+    <label data-ujb-genangan class="ujb-setuju"><input name="setuju" type="checkbox">Foto dan lokasinya boleh tayang publik</label>
+    <div class="uj-aksi"><button type="submit" id="ujbKirim" class="lp-tombol">Kirim</button></div>
+    <p id="ujbStatus" class="uj-redup" role="status" aria-live="polite"></p>
+  </form>
+
   <h2 id="jujur">C. Catatan jujur</h2>
   <ul class="uj-jujur" id="ujCatatan">
     <li>Tugas otomatis hanya untuk level 3 dan level 2 bersyarat, jadi dari tugas saja hanya cluster yang sudah dicurigai yang pernah dikunjungi. Karena itu ada sampel kontrol acak; angka Q1 ditimbang kebalikan peluang terpilihnya.</li>
@@ -61,6 +75,7 @@
   </ul>
   <p class="uj-redup">Kolom Vonis hanya menunjuk satu dari tiga keadaan: belum cukup data, lolos, atau gagal menurut ambang yang dibekukan. Q2 deskriptif: belum punya ambang lolos.</p>
 </main>
+<script src="/instansi_uji.js" defer></script>
 <script src="/instansi_uji_halaman.js" defer></script>
 </body>
 </html>

@@ -7,14 +7,14 @@
 <link rel="icon" href="/img/logo.svg?v=2" type="image/svg+xml">
 <script src="/i18n.js"></script>
 <meta name="description" content="Situasi hari ini untuk semua bencana di Indonesia dalam satu peta: karhutla, banjir, gempa, dan lainnya.">
-<link rel="canonical" href="https://pantau.terasurban.com/semua">
+<link rel="canonical" href="https://centurisk97.id/semua">
 <meta name="theme-color" content="#0b2545">
 <meta property="og:type" content="website">
-<meta property="og:site_name" content="Pantau Bencana">
+<meta property="og:site_name" content="Centurisk97">
 <meta property="og:locale" content="id_ID">
-<meta property="og:title" content="Semua bencana · Pantau Bencana">
+<meta property="og:title" content="Semua bencana · Centurisk97">
 <meta property="og:description" content="Situasi hari ini untuk semua bencana di Indonesia dalam satu peta.">
-<meta property="og:url" content="https://pantau.terasurban.com/semua">
+<meta property="og:url" content="https://centurisk97.id/semua">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
@@ -31,27 +31,31 @@
 <body>
 <header class="top">
   <div class="mark">
-    <a class="logo" href="/" title="Pantau Bencana"><img src="/img/logo.svg?v=2" alt="Pantau Bencana" width="30" height="30"></a><details class="bencana" data-bencana="semua" data-tanpa-segera><summary>Semua bencana</summary><div class="menu"><a href="/">Karhutla</a><a href="/banjir/">Banjir, Longsor &amp; Rob</a></div></details>
+    <a class="logo" href="/" title="Centurisk97"><img src="/img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="semua" data-tanpa-segera><summary>Semua bencana</summary><div class="menu"><a href="/">Karhutla</a><a href="/banjir/">Banjir, Longsor &amp; Rob</a></div></details>
   </div>
   <div class="stat">
     <button class="iconbtn" id="bagikan" aria-label="Bagikan" title="Bagikan"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>
     <button class="iconbtn" id="tema" aria-label="Ganti tema terang/gelap" title="Ganti tema"><svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8Z"/></svg></button>
   </div>
 </header>
-<main>
-  <section class="peta-bagian" aria-label="Peta semua bencana">
+<main data-fase="tanggap">
+  <nav class="fase-bar" aria-label="Fase penanganan bencana"><div class="seg" id="fase" role="group"><button type="button" data-f="pra" aria-pressed="false">Pra-bencana</button><button type="button" data-f="tanggap" aria-pressed="true">Tanggap Darurat</button><button type="button" data-f="pasca" aria-pressed="false">Pasca-bencana</button></div></nav>
+  <section class="peta-bagian" data-fase="pra tanggap" aria-label="Peta semua bencana">
     <div id="peta"></div>
     <div class="saring" id="saring" role="group" aria-label="Pilih bencana"></div>
     <div class="dok"><div class="box" id="legenda"></div></div>
   </section>
-  <section class="kartu-bagian" id="kartu" aria-label="Situasi hari ini"></section>
-  <section class="analisis" id="kejadian" aria-label="Kejadian aktif"></section>
-  <section class="analisis" id="pbBerita" aria-label="Peringatan dari berita" hidden></section>
-  <section class="analisis" id="analisis" aria-label="Outlook dan bahaya ke depan"></section>
+  <section class="kartu-bagian" id="kartu" data-fase="tanggap" aria-label="Situasi hari ini"></section>
+  <section class="analisis" id="darurat" data-fase="tanggap" aria-label="Status darurat"></section>
+  <section class="analisis" id="kejadian" data-fase="tanggap" aria-label="Kejadian aktif"></section>
+  <section class="analisis" id="pbBerita" data-fase="pra" aria-label="Peringatan dari berita" hidden></section>
+  <section class="analisis" id="analisis" data-fase="pra" aria-label="Outlook dan bahaya ke depan"></section>
+  <section class="analisis" id="dampak" data-fase="pasca" aria-label="Dampak bencana"></section>
 </main>
 <div class="toast" id="toast" role="status"></div>
 <div id="tip" role="tooltip"></div>
 <script src="/inti/format.js"></script>
+<script src="/inti/nanti.js"></script>
 <script src="/inti/tip.js"></script>
 <script src="/inti/kartu.js"></script>
 <script src="/inti/tabel.js"></script>
@@ -61,5 +65,6 @@
 <script type="module" src="/inti/kepala.js"></script>
 <script type="module" src="/semua/semua.js"></script>
 <script src="/inti/alarm.js" defer></script>
+<link rel="stylesheet" href="/inti/asisten.css"><script src="/inti/asisten.js" defer></script>
 </body>
 </html>

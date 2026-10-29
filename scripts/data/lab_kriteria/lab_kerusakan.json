@@ -1,0 +1,58 @@
+{
+ "arah_dicoba": ["mutlak", "naik", "turun"],
+ "bootstrap": {"benih": 20261028, "blok_derajat": 0.05, "tingkat_ci": 0.9, "ulang": 1000},
+ "catatan_tulis": "Dikunci SEBELUM hasil SAR dilihat. Ditulis 28 Okt 2026 setelah pencocokan data kebenaran (survei rumah rusak BNPB, 24.427 titik) dan ketersediaan adegan, sebelum satu pun piksel perubahan dihitung.",
+ "kejadian": {
+  "cianjur_2022": {
+   "dalam_km": 10,
+   "jenis_sumber": "kerak",
+   "kotak": [106.95, -7.0, 107.3, -6.65],
+   "magnitudo": 5.6,
+   "pusat": [-6.84, 107.05],
+   "sesudah_maks_hari": 5,
+   "tanggal": "2022-11-21",
+   "waktu_utc": "06:21"
+  }
+ },
+ "kebenaran": {
+  "metrik_utama": "rusak_total",
+  "sumber": "BNPB gis.bnpb.go.id rumah_rusak_cianjur/MapServer/0 (survei InaRisk+Rutena, 24.427 rumah per 1 Des 2022); BUKAN cacah resmi total (DIBI/SK: puluhan ribu lebih)",
+  "unit_dievaluasi": "sel 1 km (0,01 derajat) berisi >= min_bangunan_sel bangunan, di dalam kecamatan survei berstitik >= min_titik_kecamatan",
+  "unit_pelengkap": "kecamatan (dilaporkan, tidak menentukan vonis)"
+ },
+ "lolos": {
+  "presisi_k_selisih_min": 0.0,
+  "ci_selisih_bawah_min": 0.0,
+  "min_rho_uji": 0.3,
+  "min_sel_uji": 40,
+  "selisih_plasebo_min": 0.05,
+  "selisih_pembanding_min": 0.05
+ },
+ "min_bangunan_sel": 30,
+ "min_titik_kecamatan": 100,
+ "model": {
+  "ambang_z_dicoba": [2.0, 3.0],
+  "langkah_m": 40,
+  "lantai_sd": "median sd pra-kejadian seluruh kotak (sd per piksel tak boleh lebih kecil)",
+  "multilook": "rerata linear antar-piksel pada langkah_m, lalu dB",
+  "n_sebelum": 5,
+  "polarisasi_dicoba": ["VV", "VH", "VV+VH"],
+  "skor_sel": "jumlah bangunan sel x bagian piksel (jendela 3x3 di sekitar pusat sel 110 m) yang berubah kuat menurut arah dan ambang",
+  "vv_vh_gabung": "maks(|z_VV|, |z_VH|) per piksel (arah mutlak); untuk naik/turun: z gabungan = z dengan |z| terbesar"
+ },
+ "pembanding": {
+  "naif_utama": "bangunan sel x MMI sel (scripts/gempa/guncangan.py, GMPE pusat BMKG)",
+  "naif_tambahan": ["bangunan sel saja", "MMI sel saja"],
+  "wajib_kalahkan": "yang TERKUAT di antara ketiganya pada sel uji"
+ },
+ "plasebo": "skor yang sama dihitung dari adegan SEBELUM kejadian (adegan pra-kejadian terakhir sebagai 'sesudah', 5 adegan sebelumnya sebagai tumpukan). Model harus mengalahkannya >= selisih_plasebo_min; bila tidak, korelasinya struktur lahan (kota/vegetasi), bukan kerusakan.",
+ "presisi_k": {"min_k": 10, "pecahan": 0.1},
+ "pemilihan_hiperparameter": "kombinasi (polarisasi, arah, ambang_z) dengan rho Spearman tertinggi pada sel KALIBRASI; seri: urutan daftar di atas. Tidak disentuh lagi setelah memilih.",
+ "split_kecamatan": {
+  "aturan": "kecamatan memenuhi min_titik_kecamatan diurut menurun jumlah titik survei; urutan ganjil -> kalibrasi, genap -> uji",
+  "kalibrasi": ["Cugenang", "Cianjur", "Cilaku", "Karangtengah", "Cipanas", "Mande"],
+  "uji": ["Pacet", "Warungkondang", "Gekbrong", "Sukaresmi", "Cibeber"]
+ },
+ "sebelum_adegan": {"orbit": "relatif yang adegan sesudahnya paling dini setelah kejadian; arah sama; 5 adegan terakhir sebelum kejadian + 1 tambahan untuk plasebo"},
+ "versi": 1
+}

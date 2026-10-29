@@ -4,9 +4,10 @@
    public/laporan_bnpb.js; penggambaran slide memakai teks apa adanya (tidak pernah innerHTML), jadi teks mentah aman. */
 import {json, gagal, adminOK, bacaBody} from "./worker.js";
 import {laju} from "./bnpb.js";
-import {MODEL_URAI, MAKS_URAI, HARI, BATAS_URAI_HARI, SKEMA_URAI, SISTEM_URAI, ULANG_URAI, uraiJson, rapat, periksaSalinan} from "./laporan_bnpb_spek.js";
+import {MODEL_URAI, MAKS_URAI, HARI, BATAS_URAI_HARI, BATAS_BACA_HARI, SKEMA_URAI, SISTEM_URAI, ULANG_URAI, uraiJson, rapat, periksaSalinan} from "./laporan_bnpb_spek.js";
 export {MODEL_URAI, periksaSalinan};
 import {KONTROL, tglSah} from "./posko.js";
+import {bacaTerbatas, MAKS_BERKAS} from "./wa.js";
 
 export const JENIS_LAPORAN = ["harian", "presiden"];
 const MAKS_ISI = 98304, MAKS_TEKS = 2000, MAKS_LARIK = 200, MAKS_KUNCI = 80, MAKS_DALAM = 6;
@@ -117,7 +118,79 @@ async function uraiModel(env, req, kini) {
   return json({kejadian, catatan, dibuang: dibuang.slice(0, 10), terpotong, model: MODEL_URAI}, 200, {"cache-control": "no-store"});
 }
 
+/* Baca dokumen jadi teks (POST /api/laporan-bnpb/baca): DOCX/XLSX/PDF/dst lewat env.AI.toMarkdown, foto lewat model penglihatan (toMarkdown hanya
+   MENGGAMBARKAN foto). Hasil ?wa=<id> disimpan di R2 `${berkas}.teks.json` karena OCR memakan neuron. PDF scan tidak dirasterisasi di worker. */
+export const MODEL_OCR = "@cf/meta/llama-4-scout-17b-16e-instruct";
+const MAKS_TEKS_BACA = 200000;
+const PROMPT_OCR = "Salin SEMUA teks pada gambar ini persis seperti tertulis. Baris tabel tulis sebagai satu baris dengan pemisah ' | '. Jangan meringkas, jangan menerjemahkan, jangan menambah angka atau kata yang tidak ada di gambar.";
+const TIPE_DOK = {pdf: "application/pdf", docx: "application/vnd.openxmlformats-officedocument.wordprocessingml.document", xlsx: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+  xls: "application/vnd.ms-excel", odt: "application/vnd.oasis.opendocument.text", ods: "application/vnd.oasis.opendocument.spreadsheet", csv: "text/csv", html: "text/html", htm: "text/html"};
+const TIPE_GAMBAR = {jpg: "image/jpeg", jpeg: "image/jpeg", png: "image/png", webp: "image/webp"};
+/* tipe dari content-type bila dikenal, selain itu dari ekstensi nama (WA sering mengirim application/octet-stream) */
+function jenisBerkas(nama, tipe) {
+  const t = String(tipe || "").split(";")[0].trim().toLowerCase(), e = (String(nama).match(/\.([a-z0-9]+)$/i)?.[1] || "").toLowerCase();
+  if (/^image\/(jpeg|png|webp)$/.test(t)) return {gambar: true, tipe: t};
+  if (TIPE_GAMBAR[e]) return {gambar: true, tipe: TIPE_GAMBAR[e]};
+  if (/^(application\/pdf|text\/(csv|html)|application\/vnd\.(openxmlformats-officedocument\.(wordprocessingml\.document|spreadsheetml\.sheet)|ms-excel|oasis\.opendocument\.(text|spreadsheet)))$/.test(t)) return {gambar: false, tipe: t, pdf: t === "application/pdf"};
+  if (TIPE_DOK[e]) return {gambar: false, tipe: TIPE_DOK[e], pdf: e === "pdf"};
+  return null;
+}
+function base64(b) { let s = ""; for (let i = 0; i < b.length; i += 0x8000) s += String.fromCharCode.apply(null, b.subarray(i, i + 0x8000)); return btoa(s); }
+
+export async function bacaDokumen(env, {nama, bytes, tipe}) {
+  const j = jenisBerkas(nama, tipe); if (!j) return {galat: 415, pesan: "jenis berkas belum didukung"};
+  if (typeof env.AI?.run !== "function") return {galat: 503, pesan: "model tidak tersedia di server ini"};
+  if (j.gambar) {
+    if (bytes.byteLength > 4 * 1048576) return {galat: 413, pesan: "foto terlalu besar untuk OCR (maks 4 MB), kecilkan dulu"};
+    const o = await env.AI.run(MODEL_OCR, {temperature: 0, max_tokens: 4000, messages: [{role: "user", content: [{type: "text", text: PROMPT_OCR},
+      {type: "image_url", image_url: {url: `data:${j.tipe};base64,${base64(bytes)}`}}]}]});
+    const teks = String(o?.response ?? o?.choices?.[0]?.message?.content ?? "").trim();
+    return {nama, jenis: "ocr", teks: teks.slice(0, MAKS_TEKS_BACA), ...(teks ? {} : {catatan: "model tidak menemukan teks pada gambar"})};
+  }
+  const dok = {name: nama, blob: new Blob([bytes], {type: j.tipe})};
+  let h;
+  if (j.pdf) { try { h = await env.AI.toMarkdown(dok, {conversionOptions: {pdf: {metadata: false}}}); } catch (e) { h = null; } }   // opsi tak dikenal: ulangi tanpa opsi
+  h = h || await env.AI.toMarkdown(dok);
+  const r = Array.isArray(h) ? h[0] : h, md = String(r?.data ?? "");
+  const out = {nama, jenis: "markdown", teks: md.slice(0, MAKS_TEKS_BACA)};
+  if (r?.format === "error" || r?.error) { console.error("lbnpb.baca md", String(r.error || r.data || "").slice(0, 200)); return {galat: 502, pesan: "dokumen tidak terbaca"}; }
+  if (j.pdf && md.replace(/^#+.*$/gm, "").replace(/\s+/g, "").length < 200) out.catatan = "PDF hasil scan: kirim sebagai foto untuk OCR";
+  return out;
+}
+
+async function bacaRute(env, req, url, kini) {
+  if (!await adminOK(env, req, kini)) return tolak();
+  let nama, tipe, bytes, simpan = null;
+  const wa = url.searchParams.get("wa");
+  if (wa !== null) {
+    if (!/^\d{1,15}$/.test(wa)) return gagal(400, "id tidak sah");
+    const id = Number(wa);
+    const r = await env.DB.prepare("SELECT berkas, nama_berkas, tipe FROM wa_masuk WHERE id = ?").bind(id).first();
+    const o = r?.berkas && await env.MEDIA?.get(r.berkas); if (!o) return gagal(404, "berkas tidak ada");
+    nama = r.nama_berkas || "berkas"; tipe = r.tipe || "";
+    const c = await env.MEDIA.get(r.berkas + ".teks.json");
+    if (c) { try { return json(await c.json(), 200, {"cache-control": "no-store"}); } catch (e) { /* cache rusak: baca ulang */ } }
+    if (!jenisBerkas(nama, tipe)) return gagal(415, "jenis berkas belum didukung");
+    bytes = new Uint8Array(await o.arrayBuffer()); simpan = r.berkas + ".teks.json";
+  } else {
+    if (Number(req.headers.get("content-length") || 0) > MAKS_BERKAS) return gagal(413, "berkas lebih dari 20 MB");
+    if (!req.body) return gagal(400, "berkas kosong");
+    try { nama = decodeURIComponent(req.headers.get("x-nama-berkas") || "").replace(KONTROL, "").slice(0, 200) || "berkas"; } catch (e) { return gagal(400, "x-nama-berkas tidak sah"); }
+    tipe = req.headers.get("content-type") || "";
+    if (!jenisBerkas(nama, tipe)) return gagal(415, "jenis berkas belum didukung");
+    if (typeof env.AI?.run !== "function") return gagal(503, "model tidak tersedia di server ini");   // sebelum membaca 20 MB
+    bytes = await bacaTerbatas(req.body, MAKS_BERKAS); if (!bytes) return gagal(413, "berkas lebih dari 20 MB"); if (!bytes.byteLength) return gagal(400, "berkas kosong");
+  }
+  const g = await laju(env, "global", "lbnpb.baca", [[HARI, BATAS_BACA_HARI]], kini); if (g) return g;   // plafon biaya model; cache di atas tetap gratis
+  let h;
+  try { h = await bacaDokumen(env, {nama, bytes, tipe}); } catch (e) { console.error("lbnpb.baca AI", e?.message); return gagal(502, "model gagal membaca berkas ini"); }
+  if (h.galat) return gagal(h.galat, h.pesan);
+  if (simpan && h.teks) await env.MEDIA.put(simpan, JSON.stringify(h), {httpMetadata: {contentType: "application/json"}});
+  return json(h, 200, {"cache-control": "no-store"});
+}
+
 export const RUTE_LAPORAN_BNPB = {
+  "POST /api/laporan-bnpb/baca": (env, req, url, kini) => bacaRute(env, req, url, kini),
   "GET /api/laporan-bnpb": (env, req, url) => baca(env, req, url),
   "POST /api/laporan-bnpb": (env, req, url, kini) => simpan(env, req, url, kini),
   "POST /api/laporan-bnpb/urai": (env, req, url, kini) => uraiModel(env, req, kini),

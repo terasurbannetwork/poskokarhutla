@@ -16,7 +16,7 @@ export const PITA_HP = "Simulator dirancang untuk laptop. Di ponsel hanya tab Ba
 export const PITA_LAMBAT = "Simulasi lambat di peramban ini: Monte Carlo berjalan di utas utama dan bisa menahan layar sebentar.";
 export const TAB = [["bandingkan", "Bandingkan semua"], ["ringkasan", "Ringkasan"], ["hidraulika", "Hidraulika"], ["biaya", "Biaya & BOQ"], ["risiko", "Risiko & gerbang"], ["simulasi", "Simulasi & sensitivitas"], ["matriks", "Matriks 100 pilihan"], ["batas", "Batas alat"]];
 export const TAB_HP = ["bandingkan", "ringkasan"];
-const VERSI_STUDIO = "1";   // ?v= mesin dan pekerja: naikkan bila studio_mesin.js atau studio_pekerja.js berubah
+const VERSI_STUDIO = "2";   // ?v= mesin dan pekerja: naikkan bila studio_mesin.js atau studio_pekerja.js berubah
 const MAKS_BYTE = 32768, MAKS_PEMBANDING = 6, MAKS_TUKANG = 12;
 const NAMA_PRESET = {S0: "Kit SIPPA relay", S0B: "Kit relay dan modul banjir", S1: "Portable", S2: "Semi-permanen", S3: "Backbone permanen"};
 const JUDUL_PIL = {"estimasi-model": "Estimasi model", "asumsi-kebijakan": "Asumsi kebijakan", menunggu: "Menunggu", hipotesis: "Hipotesis"};
@@ -145,7 +145,7 @@ export function susunKolom(state, tersimpan = [], konst = KONST) {
   const dasar = state.sippa ? {...M.defaultState(), ...keu} : (({sippa, manfaat: _, ...r}) => r)(state);
   const kol = [];
   for (const k of ["S0", "S0B"]) { const st = {...M.presetSippa(k), ...keu}; kol.push({kode: k, nama: NAMA_PRESET[k], asal: "preset", hasil: M.gerbangSippa(st, M.assess(st), konst), manfaat}); }
-  M.compare({...M.defaultState(), ...dasar}).forEach((h, i) => { const kode = ["S1", "S2", "S3"][i]; kol.push({kode, nama: NAMA_PRESET[kode], asal: "preset", hasil: M.gerbangSippa(h.s, h, konst), manfaat, ditutup: kode === "S3"}); });
+  M.compare({...M.defaultState(), ...dasar}).forEach((h, i) => { const kode = ["S1", "S2", "S3"][i]; kol.push({kode, nama: NAMA_PRESET[kode], asal: "preset", hasil: M.gerbangSippa(h.s, h, konst), manfaat, ditutup: kode !== "S1"}); });
   tersimpan.slice(0, MAKS_PEMBANDING).forEach((t, i) => { const st = bersihkan(t.state); kol.push({kode: `U${i + 1}`, nama: t.nama, id: t.id, asal: "tersimpan", hasil: nilaiHasil(st, konst), manfaat: st.manfaat || MANFAAT_BAWAAN}); });
   return kol;
 }
@@ -366,7 +366,7 @@ function kepalaKolom(c) {
   const nogo = c.hasil.decision === "NO-GO", x = hit(c.hasil);
   return `<th scope="col" class="sp-kol${nogo ? " sp-kol-nogo" : ""}" data-kode="${lolos(c.kode)}"><b class="sp-kode">${lolos(c.kode)}</b><span class="sp-nama">${lolos(c.nama)}</span>${pilVonis(c.hasil.decision)}
     <span class="sp-hit-baris"><span class="sp-hit keras" title="Hambatan keras">${x.keras} keras</span><span class="sp-hit syarat" title="Hambatan bersyarat">${x.syarat} syarat</span><span class="sp-hit catatan" title="Catatan">${x.catatan} catatan</span></span>
-    ${c.ditutup ? `<span class="sp-status putus sp-tutup">ditutup sampai G5</span>` : ""}${nogo ? `<small class="sp-alasan">${lolos(c.hasil.hard[0])}</small>` : ""}</th>`;
+    ${c.ditutup ? `<span class="sp-status putus sp-tutup">ditutup</span>` : ""}${nogo ? `<small class="sp-alasan">${lolos(c.hasil.hard[0])}</small>` : ""}</th>`;
 }
 function selHtml(x) {
   const isi = x.html ?? (x.menunggu ? `–${pil("menunggu")}` : lolos(x.teks));
@@ -379,12 +379,12 @@ export function tabBandingkanHtml(baris, kolom) {
     <tbody>${baris.map(r => `<tr data-k="${r.k}"><th scope="row"><span class="sp-ukuran">${lolos(r.label)}</span>${pil(r.yakin)}</th>${r.sel.map(selHtml).join("")}</tr>`).join("")}</tbody></table></div>`;
   const kartu = `<div class="sp-kartu-skenario">${kolom.map((c, i) => {
     const nogo = c.hasil.decision === "NO-GO", keras = c.hasil.hard;
-    return `<article class="sp-skenario${nogo ? " sp-kol-nogo" : ""}" aria-labelledby="sk-${lolos(c.kode)}"><header class="sp-skenario-kepala"><b class="sp-kode" id="sk-${lolos(c.kode)}">${lolos(c.kode)}</b><span class="sp-nama">${lolos(c.nama)}</span>${pilVonis(c.hasil.decision)}${c.ditutup ? '<span class="sp-status putus sp-tutup">ditutup sampai G5</span>' : ""}</header>
+    return `<article class="sp-skenario${nogo ? " sp-kol-nogo" : ""}" aria-labelledby="sk-${lolos(c.kode)}"><header class="sp-skenario-kepala"><b class="sp-kode" id="sk-${lolos(c.kode)}">${lolos(c.kode)}</b><span class="sp-nama">${lolos(c.nama)}</span>${pilVonis(c.hasil.decision)}${c.ditutup ? '<span class="sp-status putus sp-tutup">ditutup</span>' : ""}</header>
       <dl class="sp-skenario-angka">${BARIS_KARTU.map(k => { const r = baris.find(b => b.k === k); return `<div><dt>${lolos(r.label)}</dt><dd>${selHtml(r.sel[i]).replace(/^<td[^>]*>|<\/td>$/g, "")}</dd></div>`; }).join("")}</dl>
       ${keras.length ? `<ul class="sp-skenario-keras" aria-label="Hambatan keras">${keras.slice(0, 3).map(t => `<li>${lolos(t)}</li>`).join("")}${keras.length > 3 ? `<li class="ad-redup">dan ${tampil(keras.length - 3)} hambatan keras lain</li>` : ""}</ul>` : '<p class="sp-skenario-keras">Hambatan keras: tidak ada</p>'}
       <button type="button" class="ad-tombol" data-rincian="${lolos(c.kode)}">Rincian</button></article>`;
   }).join("")}</div>`;
-  return `${tabel}${kartu}${sumber(`${SUMBER_MESIN}; ${MANFAAT_TEKS} ${pil("asumsi-kebijakan", "Asumsi kebijakan")}. S1 sampai S3 memakai kondisi lokasi dan anggaran keadaanmu; S0 dan S0B preset kit SIPPA dengan anggaran yang sama. S3 ditutup sampai G5. Biaya heli per jam menunggu angka BNPB (slot sippa.heli.biaya_jam), pembanding resmi > Rp200 juta per sorti satu jam (BNPB, September 2023). Baris tanpa kolom berbingkai berarti belum ada pembeda di antara kolom yang bukan NO-GO.`)}`;
+  return `${tabel}${kartu}${sumber(`${SUMBER_MESIN}; ${MANFAAT_TEKS} ${pil("asumsi-kebijakan", "Asumsi kebijakan")}. S1 sampai S3 memakai kondisi lokasi dan anggaran keadaanmu; S0 dan S0B preset kit SIPPA dengan anggaran yang sama. S2 dan S3 jaringan pipa tetap, ditutup (keputusan 60); angkanya hanya pembanding. Biaya heli per jam menunggu angka BNPB (slot sippa.heli.biaya_jam), pembanding resmi > Rp200 juta per sorti satu jam (BNPB, September 2023). Baris tanpa kolom berbingkai berarti belum ada pembeda di antara kolom yang bukan NO-GO.`)}`;
 }
 export function rincianKolomHtml(baris, kolom, i) {
   return `<dl class="sp-rincian">${baris.map(r => `<div><dt>${lolos(r.label)}</dt><dd>${selHtml(r.sel[i]).replace(/^<td[^>]*>|<\/td>$/g, "")}</dd></div>`).join("")}</dl>${kolom[i].hasil.hard.length ? `<h4 class="sp-sub-judul">Hambatan keras</h4><ul class="sp-daftar-risiko">${kolom[i].hasil.hard.map(t => `<li>${lolos(t)}</li>`).join("")}</ul>` : ""}`;
@@ -550,7 +550,7 @@ export async function pasang(akar, konteks) {
   catch (e) { if (!sinyal.aborted) akar.replaceChildren(galat(0, e.message, () => pasang(akar, konteks))); return; }
   if (sinyal.aborted) return;
 
-  const st = {state: stateAwal("S2"), preset: "S2", tab: "bandingkan", daftar: null, daftarGalat: null, tandai: [], cacheState: new Map(), kolom: [], hasil: null, cari: "", mcCache: new Map(), mcTerakhir: new Map(), memo: {}};
+  const st = {state: stateAwal("S0"), preset: "S0", tab: "bandingkan", daftar: null, daftarGalat: null, tandai: [], cacheState: new Map(), kolom: [], hasil: null, cari: "", mcCache: new Map(), mcTerakhir: new Map(), memo: {}};
   const mc = buatMc();
   hentikan.push(() => mc.tutup());
   const ponsel = () => matchMedia("(max-width: 767px)").matches;
@@ -599,7 +599,7 @@ export async function pasang(akar, konteks) {
     semua("[data-man-aktif]").forEach(i => { i.checked = m[i.dataset.manAktif].aktif; });
     semua("[data-man-isi]").forEach(i => { const [a, b] = i.dataset.manIsi.split("."); i.value = desimal(m[a][b]); });
     semua("[data-man-syarat]").forEach(i => { i.checked = m.irigasi.syarat[Number(i.dataset.manSyarat)]; });
-    semua("[data-preset]").forEach(b => { const on = b.dataset.preset === st.preset; b.setAttribute("aria-checked", String(on)); b.tabIndex = on || (!st.preset && b.dataset.preset === "S2") ? 0 : -1; });
+    semua("[data-preset]").forEach(b => { const on = b.dataset.preset === st.preset; b.setAttribute("aria-checked", String(on)); b.tabIndex = on || (!st.preset && b.dataset.preset === "S0") ? 0 : -1; });
   }
 
   /* ----- hitung dan gambar: sesudah frame tercat, hanya keadaan terakhir (peleburan) ----- */
@@ -751,7 +751,7 @@ export async function pasang(akar, konteks) {
     if (!st.daftar) { slotPb.replaceChildren(memuat()); return; }
     if (!st.daftar.length) { slotPb.replaceChildren(kosong("Belum ada skenario tersimpan. Simpan keadaan ini supaya bisa dibandingkan di tab Bandingkan semua.")); return; }
     const penuh = st.tandai.length >= MAKS_PEMBANDING;
-    slotPb.innerHTML = `<ul class="sp-pembanding-daftar">${st.daftar.map(x => {
+    slotPb.innerHTML = `<ul class="sp-pembanding-daftar">${/* aman: x.id dan x.ringkas hanya dibaca untuk logika, semua teks ke HTML lewat lolos */ st.daftar.map(x => {
       const on = st.tandai.includes(x.id), v = x.ringkas?.vonis;
       return `<li><label class="sp-sakelar sp-pb-isi"><input type="checkbox" data-tersimpan="${lolos(x.id)}"${on ? " checked" : ""}${!on && penuh ? " disabled" : ""}><span>${lolos(x.nama)}${v && VONIS[v] ? ` ${pilVonis(v)}` : ""}<small class="sp-bantu">${lolos(waktu(x.waktu))}${x.dummy ? ", data contoh" : ""}</small></span></label>
         <span class="sp-pb-aksi"><button type="button" class="ad-tombol" data-muat="${lolos(x.id)}" aria-label="Muat skenario ${lolos(x.nama)} ke penyunting">Muat</button>${boleh.aktif ? `<button type="button" class="ad-tombol bahaya" data-hapus="${lolos(x.id)}" aria-label="Hapus skenario ${lolos(x.nama)}">Hapus</button>` : ""}</span></li>`;
@@ -773,17 +773,17 @@ export async function pasang(akar, konteks) {
   slotPb.addEventListener("change", async e => {
     const c = e.target.closest("[data-tersimpan]"); if (!c) return;
     const id = c.dataset.tersimpan;
-    if (!c.checked) { st.tandai = st.tandai.filter(x => x !== id); gambarPembanding(); jadwalkan(); return; }
+    if (!c.checked) { st.tandai = st.tandai.filter(x => x !== id); nanti(gambarPembanding); jadwalkan(); return; }
     if (st.tandai.length >= MAKS_PEMBANDING) { c.checked = false; return; }
     st.tandai.push(id); c.disabled = true;
     try { await ambilState(id); } catch (err) { if (sinyal.aborted || err.name === "AbortError") return; st.tandai = st.tandai.filter(x => x !== id); kabari(`Skenario tidak bisa dimuat: ${err.message}`); }
-    gambarPembanding(); jadwalkan();
+    nanti(gambarPembanding); jadwalkan();
   }, {signal: sinyal});
   slotPb.addEventListener("click", async e => {
     const m = e.target.closest("[data-muat]"), h = e.target.closest("[data-hapus]");
     if (m) {
       m.disabled = true; m.textContent = "Memuat";
-      try { const x = await ambilState(m.dataset.muat); st.state = bersihkan(x.state); st.preset = null; sinkronKontrol(true); segarkan(); kabari(`Skenario ${x.nama} dimuat ke penyunting.`); }
+      try { const x = await ambilState(m.dataset.muat); st.state = bersihkan(x.state); st.preset = null; sinkronKontrol(true); jadwalkan(); kabari(`Skenario ${x.nama} dimuat ke penyunting.`); }
       catch (err) { if (!sinyal.aborted && err.name !== "AbortError") kabari(`Skenario tidak bisa dimuat: ${err.message}`); }
       finally { m.disabled = false; m.textContent = "Muat"; }
     } else if (h) {
@@ -824,7 +824,7 @@ export async function pasang(akar, konteks) {
     if (f.size > MAKS_BYTE) { kabari(`Berkas ${tampil(Math.round(f.size / 1024))} KB melewati batas 32 KB. Impor berkas ekspor Studio.`); return; }
     const r = impor(await f.text());
     if (r.galat) { kabari(r.galat); return; }
-    st.state = r.state; st.preset = null; sinkronKontrol(true); segarkan(); kabari(`Keadaan diimpor dari ${f.name}. Hasil dihitung ulang.`);
+    st.state = r.state; st.preset = null; sinkronKontrol(true); jadwalkan(); kabari(`Keadaan diimpor dari ${f.name}. Hasil dihitung ulang.`);
   }, {signal: sinyal});
   akar.addEventListener("click", e => {
     const b = e.target.closest("[data-aksi],[data-rincian]");
@@ -841,7 +841,7 @@ export async function pasang(akar, konteks) {
     else if (a === "ekspor") { unduh("studio-skenario.json", JSON.stringify(ekspor(st.state, st.hasil), null, 2), "application/json"); kabari("Keadaan diekspor sebagai studio-skenario.json."); }
     else if (a === "boq") { unduh("boq-studio.csv", boqCsv(st.hasil), "text/csv;charset=utf-8"); kabari("BOQ diunduh sebagai boq-studio.csv."); }
     else if (a === "matriks") nanti(() => { unduh("matriks-100-pilihan.csv", matriksCsv(st.memo.m100?.nilai || matriks100(st.state)), "text/csv;charset=utf-8"); kabari("Matriks 100 pilihan diunduh."); });
-    else if (a === "atur-ulang") konfirmasi("Atur ulang semua pilihan?", "Semua isian kembali ke contoh Kalimantan Tengah (S2, semi-permanen) dan manfaat kembali 0.", "Atur ulang", () => { st.state = stateAwal("S2"); st.preset = "S2"; sinkronKontrol(true); segarkan(); kabari("Semua isian diatur ulang ke preset S2."); });
+    else if (a === "atur-ulang") konfirmasi("Atur ulang semua pilihan?", "Semua isian kembali ke contoh Kalimantan Tengah (S0, kit SIPPA relay) dan manfaat kembali 0.", "Atur ulang", () => { st.state = stateAwal("S0"); st.preset = "S0"; sinkronKontrol(true); segarkan(); kabari("Semua isian diatur ulang ke preset S0."); });
   }, {signal: sinyal});
 
   /* ----- vonis dan kontrol menempel di bawah bilah konteks ----- */

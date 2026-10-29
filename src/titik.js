@@ -5,9 +5,31 @@
    0/1/2 dengan ambang BRIN), dedup (lat4, lon4, waktu, sensor), titik di luar wilayah Indonesia dibuang. Bedanya:
    wilayah dicari dari geo/provinsi.json + pusat kecamatan terdekat (banjir/data/pusat_kec.json), bukan poligon
    kecamatan penuh, jadi titik di pantai/perbatasan bisa sedikit berbeda dari data harian. */
+import {alarmTitikSippa} from "./sippa_titik.js";
+import {catatGranul, JENDELA_URAI_JAM} from "./satelit.js";
 export const SENSOR = {VIIRS_SNPP_NRT: "N", VIIRS_NOAA20_NRT: "N20", VIIRS_NOAA21_NRT: "N21", MODIS_NRT: "M"};
 export const SENSOR_UTAMA = ["M", "N", "N20", "N21"];   // semua dihitung sebagai lokasi unik di peramban (AngkaKawasan.unik), sama dengan hotspot.json
 const BBOX = [94, -11.5, 141.5, 6.5], JAM = 3600e3, SIMPAN = 8, MAKS_BYTE = 1.8e6, KEC_CADANGAN_KM = 8;
+/* Produk VIIRS S-NPP (N) dihentikan NASA 1 Nov 2026 13:00 UTC: sesudahnya jeda N tidak dihitung (bukan umur yang terus membesar seperti alarm). */
+export const SNPP_BERHENTI = Date.UTC(2026, 10, 1, 13);
+
+/* Jeda per sensor untuk /api/status (sumber.jeda_sensor): umur = putaran dibuat - deteksi terbaru sensor itu. `terakhir` = medan `terakhir_sensor` putaran
+   (sensor -> ISO), objek atau teks JSON-nya (hasil json_extract D1, supaya isi putaran sampai 1,8 MB tak perlu di-JSON.parse di Worker). Putaran tanpa medan itu
+   (ditulis sebelum perubahan ini) -> null: tidak ada angka, bukan "semua hilang". Sensor tanpa deteksi dalam 24 jam -> {terakhir: null, umur_jam: null}.
+   `galat` = medan `galat` putaran (larik teks "<SENSOR FIRMS>: ...", atau teks JSON-nya dari json_extract): sensor yang namanya ada di sana gagal ditarik pada putaran itu
+   dan diberi `galat: true`, supaya beda dari sensor yang memang tak punya deteksi. */
+export function jedaSensor(terakhir, dibuat, kini, galat = null) {
+  let o = terakhir; if (typeof o === "string") { try { o = JSON.parse(o); } catch (e) { return null; } }
+  if (!o || typeof o !== "object" || Array.isArray(o) || !Number.isFinite(dibuat)) return null;
+  let g = galat; if (typeof g === "string") { try { g = JSON.parse(g); } catch (e) { g = null; } }
+  const gagal = new Set((Array.isArray(g) ? g : []).map(x => SENSOR[String(x).split(":")[0]]).filter(Boolean)), out = {};
+  for (const s of SENSOR_UTAMA) {
+    const t = typeof o[s] === "string" ? Date.parse(o[s]) : NaN;
+    out[s] = s === "N" && kini >= SNPP_BERHENTI ? {berhenti: true}
+      : {...Number.isNaN(t) ? {terakhir: null, umur_jam: null} : {terakhir: new Date(t).toISOString(), umur_jam: Math.max(0, Math.round((dibuat - t) / JAM * 10) / 10)}, ...gagal.has(s) ? {galat: true} : {}};
+  }
+  return out;
+}
 
 export const km = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };
 const tglWIB = t => new Date(t + 7 * JAM).toISOString().slice(5, 10);
@@ -19,7 +41,7 @@ export function keyakinan(sensor, conf) {
 }
 
 /* CSV FIRMS -> titik sah. Baris rusak (angka bukan angka, tanggal/jam salah, di luar kotak, waktu di masa depan) dibuang. */
-export function uraiCSV(teks, sensor, kini, jendelaJam = 24) {
+export function uraiCSV(teks, sensor, kini, jendelaJam = JENDELA_URAI_JAM) {
   const baris = String(teks).trim().split(/\r?\n/), kepala = (baris.shift() || "").split(",");
   const i = n => kepala.indexOf(n);
   if (i("latitude") < 0 || i("longitude") < 0 || i("acq_date") < 0 || i("acq_time") < 0) return {galat: `${sensor}: bukan CSV FIRMS: ${String(teks).slice(0, 80)}`, titik: [], rusak: 0};
@@ -82,13 +104,14 @@ export async function muatMasker(env) {
 /* ---------------- satu putaran: ambil, urai, simpan ---------------- */
 export async function perbaruiTitik(env, kini = Date.now()) {
   if (!env.FIRMS_MAP_KEY) return {lewat: "FIRMS_MAP_KEY belum diset"};
-  const hasil = await Promise.all(Object.keys(SENSOR).map(async s => {
+  const hasil = await Promise.all(Object.keys(SENSOR).filter(s => !(SENSOR[s] === "N" && kini >= SNPP_BERHENTI)).map(async s => {   // S-NPP tak diminta lagi sesudah dihentikan NASA: tanpa galat percuma tiap 3 jam
     try {
       const r = await fetch(`https://firms.modaps.eosdis.nasa.gov/api/area/csv/${env.FIRMS_MAP_KEY}/${s}/${BBOX.join(",")}/2`);
       return r.ok ? uraiCSV(await r.text(), s, kini) : {galat: `${s}: HTTP ${r.status}`, titik: [], rusak: 0};
     } catch (e) { return {galat: `${s}: ${e.message}`, titik: [], rusak: 0}; }
   }));
-  const galat = hasil.filter(h => h.galat).map(h => h.galat);
+  /* galat tersaji mentah di /api/titik (isi putaran) dan log: kunci FIRMS (ikut di URL, jadi di e.message, atau dipantulkan badan FIRMS) diganti "***" SEBELUM dipotong 80 karakter */
+  const galat = hasil.filter(h => h.galat).map(h => String(h.galat).split(env.FIRMS_MAP_KEY).join("***").slice(0, 80));
   if (galat.length === hasil.length) return {galat};             // semua sensor gagal: putaran lama tetap dipakai
   const W = await wilayah(env), masker = await muatMasker(env), lihat = new Set(), tabel = new Map(), titik = []; let palsu = 0;
   for (const p of hasil.flatMap(h => h.titik).sort((a, b) => a.t - b.t)) {
@@ -99,17 +122,30 @@ export async function perbaruiTitik(env, kini = Date.now()) {
     titik.push({...p, w: tabel.get(w)});
   }
   const acuan = titik.length ? titik[titik.length - 1].t : kini;
+  /* deteksi terbaru per sensor dari semua titik sah CSV (sebelum masker/wilayah: laut dan industri tetap bukti sensor itu sudah tiba di FIRMS); sensor tanpa titik tidak ditulis */
+  const terakhir = {}; for (const h of hasil) for (const p of h.titik) if (!(terakhir[p.s] >= p.t)) terakhir[p.s] = p.t;
   const isi = {kolom: ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"], acuan: new Date(acuan).toISOString(), dibuat: new Date(kini).toISOString(),
     wilayah: [...tabel.keys()], sensor_utama: SENSOR_UTAMA, galat,
+    terakhir_sensor: Object.fromEntries(SENSOR_UTAMA.filter(s => s in terakhir).map(s => [s, new Date(terakhir[s]).toISOString()])),
     baris: titik.map(p => [p.lat, p.lon, Math.round((p.t - acuan) / JAM * 100) / 100, p.s, p.frp, p.c, p.w, tglWIB(p.t)])};
   let teks = JSON.stringify(isi);
   while (teks.length > MAKS_BYTE && isi.baris.length) { isi.baris = isi.baris.slice(Math.ceil(isi.baris.length * .1)); teks = JSON.stringify(isi); }   // buang yang tertua
+  /* SP-103: pembanding = putaran terakhir yang alarmnya berhasil diproses (titik_proses_sippa), bukan sekadar putaran sebelumnya: putaran yang dilewati/galat tidak menghilangkan titik barunya */
+  let sebelumnya = null;
+  try { sebelumnya = (await env.DB.prepare("SELECT isi FROM titik_terbaru WHERE id = (SELECT putaran FROM titik_proses_sippa WHERE id = 1)").first())?.isi
+    ?? (await env.DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first())?.isi ?? null; } catch (e) { /* migrasi 0067 belum ada: alarm di bawah juga gagal dan dicatat */ }
   await env.DB.batch([
     env.DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(kini, teks),
     env.DB.prepare(`DELETE FROM titik_terbaru WHERE id NOT IN (SELECT id FROM titik_terbaru ORDER BY id DESC LIMIT ${SIMPAN})`),
   ]);
+  let sippa; try { sippa = await alarmTitikSippa(env, titik, sebelumnya, kini);
+    if (!sippa.lewat) await env.DB.prepare("INSERT INTO titik_proses_sippa (id, putaran) VALUES (1, (SELECT max(id) FROM titik_terbaru)) ON CONFLICT (id) DO UPDATE SET putaran = excluded.putaran").run(); }
+  catch (e) { sippa = {galat: String(e?.message || e).slice(0, 120)}; console.error("titik: alarm SIPPA", sippa.galat); }   // tabel 0067 belum ada = galat dicatat, putaran tetap sah
+  /* 0075: riwayat kedatangan per granul (sensor, menit akuisisi) dari CSV yang sama, terlihat = putaran ini. SESUDAH alarm SIPPA (alarm kebakaran dekat kompleks tak boleh menunggu catatan statistik);
+     batch TERPISAH dari titik_terbaru dan tidak pernah melempar (tabel belum ada / galat D1 = satu console.warn), supaya putaran titik tetap sah. Sensor galat tidak menyumbang baris. */
+  const granul = await catatGranul(env, hasil, kini);
   if (!masker) console.error("titik: masker titik_palsu.json tak terbaca, putaran tetap disimpan tanpa penyaringan");
-  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat};
+  return {titik: isi.baris.length, palsu, ...(masker ? {} : {masker: "tak terbaca"}), rusak: hasil.reduce((a, h) => a + h.rusak, 0), galat, sippa, granul};
 }
 
 export async function titikTerbaru(env) {

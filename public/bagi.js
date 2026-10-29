@@ -181,13 +181,13 @@ function qr(b) {
   const c = QR.kanvas(utm(ctx.url, "qr", ctx.kampanye)); c.setAttribute("role", "img"); c.setAttribute("aria-label", t("qr"));
   p.querySelector("canvas").replaceWith(c); catat("qr");
 }
-function unduhQr() { const c = dlg.querySelector("#bsQr canvas"); c.toBlob(b => simpan(b, `qr-${ctx.kampanye || "pantau-bencana"}.png`)); }
+function unduhQr() { const c = dlg.querySelector("#bsQr canvas"); c.toBlob(b => simpan(b, `qr-${ctx.kampanye || "centurisk97"}.png`)); }
 function simpan(blob, nama) { const a = D.createElement("a"); a.href = URL.createObjectURL(blob); a.download = nama; D.body.appendChild(a); a.click(); a.remove(); setTimeout(() => URL.revokeObjectURL(a.href), 5000); }
 async function gambar(b) {
   b.setAttribute("aria-busy", "true"); st(t("siapkan"));
   try {
     const blob = await gbr; if (!blob) throw new Error("kosong");
-    const nama = `pantau-bencana-${ctx.kampanye || "ringkasan"}-${new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10)}.png`, f = new File([blob], nama, {type: "image/png"});
+    const nama = `centurisk97-${ctx.kampanye || "ringkasan"}-${new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10)}.png`, f = new File([blob], nama, {type: "image/png"});
     if (ponsel() && navigator.canShare?.({files: [f]})) {
       try { await navigator.share({files: [f], text: ctx.teks + " " + utm(ctx.url, "gambar", ctx.kampanye)}); catat("gambar-perangkat"); st(""); return; }
       catch (er) { if (er.name === "AbortError") { st(""); return; } }

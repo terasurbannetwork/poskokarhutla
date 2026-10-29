@@ -8,14 +8,28 @@
 .db-bmkg summary{list-style:none;cursor:pointer;padding:7px 10px;font-weight:700;display:flex;align-items:center;gap:7px}
 .db-bmkg summary::-webkit-details-marker{display:none}
 .db-bmkg summary i{flex:none;width:8px;height:8px;border-radius:50%;background:#e58a45;box-shadow:0 0 0 3px rgb(229 138 69 / .3)}
-.db-bmkg>div{padding:0 10px 8px;max-height:45vh;overflow-y:auto}
-.db-bmkg p{margin:0 0 6px;line-height:1.35}
-.db-bmkg small{color:var(--ink2)}
-.db-bmkg .db-cat{display:block;font-size:11px}
+.db-bmkg>div{padding:0 10px 8px;max-height:45vh;overflow-y:auto;overflow-x:hidden}
+.db-bmkg{max-width:none;box-sizing:border-box}
+.db-ik{width:14px;height:14px;flex:none;vertical-align:-2px}
+.db-rk{display:flex;flex-wrap:wrap;gap:4px;margin-bottom:6px}
+.db-pl{display:inline-flex;align-items:center;gap:4px;padding:2px 7px;border-radius:999px;background:var(--surface);color:var(--ink2);font-size:10.5px;font-weight:600;white-space:nowrap}
+.db-pl .db-ik{width:12px;height:12px}
+.db-bmkg h4{display:flex;align-items:center;gap:5px;margin:8px 0 4px;font-size:11px;font-weight:700;letter-spacing:-.1px}
+.db-bmkg h4 em{margin-left:auto;font-style:normal;font-weight:500;font-size:10px;color:var(--ink2);white-space:nowrap}
+.db-r{display:grid;grid-template-columns:18px minmax(0,1fr) auto;gap:6px;align-items:start;padding:6px 7px;margin-bottom:4px;border:1px solid var(--line);border-radius:8px;background:var(--card)}
+.db-ij{padding-top:1px}
+.db-t{min-width:0}
+.db-t b{display:block;font-size:12px;line-height:1.3;overflow-wrap:anywhere}
+.db-s{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:var(--ink2);font-size:10.5px;line-height:1.3;overflow-wrap:anywhere}
+.db-k{display:flex;flex-direction:column;align-items:flex-end;gap:2px;max-width:92px}
+.db-lv{padding:1px 6px;border-radius:999px;font-size:10px;font-weight:700;line-height:1.35;text-align:center}
+.db-k small{font-size:9.5px;white-space:nowrap;color:var(--ink2)}
+.db-bmkg .db-cat{display:flex;align-items:center;gap:5px;margin-top:6px;font-size:10.5px;color:var(--ink2)}
+.db-info{display:inline-flex;cursor:help;margin-left:auto}
 canvas.db-angin{position:absolute;inset:0;pointer-events:none;z-index:1;display:none}
 /* <= 900 px: garis waktu pindah ke atas (top 112 px), pita turun di bawahnya */
 @media (max-width:900px){.tools .db-bmkg{margin-top:62px}}
-@media (max-width:640px){.db-bmkg{max-width:230px}.db-pita{font-size:10px;gap:2px}}
+@media (max-width:640px){.db-pita{font-size:10px;gap:2px}}
 .db-cara{display:grid;gap:8px;margin-top:10px;padding:10px 0 0;border-top:1px solid var(--line);font-size:12px;color:var(--ink2)}   /* tanpa wadah abu (pemilik, 15 Okt 2026) */
 .db-cara > div:first-child{display:flex;gap:8px;align-items:center}
 .db-cb{display:inline-block;min-width:38px;padding:2px 0;border-radius:5px;text-align:center;font-weight:700;font-size:11px;font-variant-numeric:tabular-nums;border:1px solid var(--line)}

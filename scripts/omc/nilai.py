@@ -663,7 +663,7 @@ def jalankan(sorties=None, berkas=HASIL, arsip_berkas=ARSIP, sekarang=None, seja
     hasil = {"dibuat": dibuat, "diperbarui": sekarang.strftime("%Y-%m-%dT%H:%M:%SZ"), "sortie": len(sorties), "episode": eps,
              "ringkas": ringkas(eps, plas), "plasebo": plas, "ambang": {k: v["ambang"] for k, v in plas.items()},
              "keterbatasan": KETERBATASAN, "label": {"pm25": "BMKG", "jarak_pandang": "METAR (diolah IEM)", "hujan": "METAR (diolah IEM)",
-                                                       "evaluasi": "Pantau Bencana"},
+                                                       "evaluasi": "Centurisk97"},
              "catatan": FOOTER}
     kb = alat.simpan(berkas, hasil)
     alat.log(f"omc_hasil: {len(eps)} episode dari {len(sorties)} sortie; {kb / 1024:.0f} KB")

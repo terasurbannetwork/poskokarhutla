@@ -1,4 +1,4 @@
-"""Uji balik kekeringan "Deteksi Pantau Bencana" -> public/data/kekeringan_ujibalik.json
+"""Uji balik kekeringan "Deteksi Centurisk97" -> public/data/kekeringan_ujibalik.json
 
 Dua pertanyaan, dijawab dengan angka apa adanya (termasuk yang buruk):
 
@@ -294,7 +294,7 @@ def bangun(pow_sel, oni, penduduk, pusat, sekarang, kej=None, setel2=None):
         kejadian["setel"] = ambang.setel(pow_sel, peta, obs, f"{ym[0]}-{ym[1]:02d}")
         if setel2:
             kejadian["setel2"] = setel2   # putaran 2 dibekukan (uji satu kali); dijalankan lewat ambang2.py jalan, hanya dibawa ke berkas baru
-    isi = {"dibuat": sekarang.isoformat(timespec="minutes"), "lengkap": True, "versi": VERSI, "label": "Deteksi Pantau Bencana", "loo": True, "sel": len(pow_sel),
+    isi = {"dibuat": sekarang.isoformat(timespec="minutes"), "lengkap": True, "versi": VERSI, "label": "Deteksi Centurisk97", "loo": True, "sel": len(pow_sel),
             "periode": [TAHUN[0], TAHUN[-1]], "klimatologi": list(SPI.DASAR),
             "catatan": "Angka apa adanya. SPI dihitung dengan tahun yang diuji dibuang dari gamma baku (tinggal-satu-tahun). Bagian aturan menguji SPI-3 terhadap tahun kering yang dikenal; "
                        "bagian prospek menguji model cadangan bersyarat ENSO, bukan SEAS5 (hindcast tidak tersedia). Sel bertetangga berkorelasi, sampel efektif ~35 tahun.",

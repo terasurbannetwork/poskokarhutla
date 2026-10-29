@@ -1,0 +1,1325 @@
+{
+ "meta": {
+  "label": "estimasi-model",
+  "versi": "v1 (NA-05)",
+  "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+  "satuan": "juta m³ (Mm³) kecuali disebut",
+  "kemarau": "Juni-Oktober",
+  "parameter_model": {
+   "taw_mm": 130.0,
+   "kc": 1.0,
+   "alpha": 0.6,
+   "k_bulan": 2.0,
+   "label": "asumsi-kebijakan, kalibrasi GloFAS di NA-06"
+  },
+  "dibangun_dari": "public/data/neraca_air/*.json; scripts/air/neraca/{kebutuhan,topologi}.json; data/kajian-bnpb/neraca-air/mentah/validasi_hitung.json"
+ },
+ "jawa": {
+  "n_kab": 119,
+  "luas_km2": 132499,
+  "pend_2025": 158738001,
+  "pend_2030": 163754799,
+  "P": 340910.42,
+  "ETa": 155032.18,
+  "R": 185589.73,
+  "R_miliar": 185.58973,
+  "domestik": 5931.39,
+  "irigasi": 37668.67,
+  "irigasi_sni": 94716.52,
+  "irigasi_persen_sni": 39.76990497539394,
+  "ternak": 145.65,
+  "industri": 747.68,
+  "total": 44493.97,
+  "konsumtif": 33193.37,
+  "konsumtif_2030": 33510.32,
+  "konsumtif_2030_naik_persen": 0.9548593589623344,
+  "irigasi_persen_total": 84.66016855767197,
+  "domestik_persen_total": 13.330772686725863,
+  "rasio_C_R_persen": 17.885348505006178,
+  "R_kemarau": 28840.88,
+  "C_kemarau": 9329.43,
+  "R_kemarau_persen_tahunan": 15.540127139578251,
+  "rasio_C_R_kemarau_persen": 32.34793806569009,
+  "rasio_C_R_kemarau_2030_persen": 32.80791016085501,
+  "ET_persen_P": 45.47592883784544
+ },
+ "hitung": {
+  "N_tahunan_neg": 2,
+  "N2030_tahunan_neg": 2,
+  "N_kemarau_neg": 16,
+  "N80_kemarau_neg": 68,
+  "N_1997_neg": 99,
+  "industri_kosong": 44,
+  "industri_ada": 75,
+  "kota_kecil": 32,
+  "hilir_waduk": 35,
+  "ddl_defisit": 83,
+  "ddl_defisit_N_positif": 81,
+  "ddl_defisit_pend": 112487340,
+  "N80_neg_kota_kecil": 27,
+  "N80_neg_pend": 83354683,
+  "N80_neg_dibi_ada": 46,
+  "N80_pos_dibi_ada": 48,
+  "N80_pos": 51,
+  "rasio_kemarau_lebih_100": 47,
+  "bulan_defisit_5_plus": 10,
+  "waduk_aktif": 5,
+  "subdas": 555,
+  "dibi_median_neg": 1.0,
+  "dibi_rerata_neg": 2.021241176470588,
+  "dibi_total_neg": 137.4444,
+  "dibi_median_pos": 4.0,
+  "dibi_rerata_pos": 5.06971568627451,
+  "dibi_total_pos": 258.5555,
+  "N80_neg_dibi_persen": 67.6470588235294,
+  "N80_pos_dibi_persen": 94.11764705882354
+ },
+ "skenario": [
+  {
+   "skenario": "klim",
+   "label": "Rerata 1991–2025",
+   "P_kemarau": 64051,
+   "R_kemarau": 28841,
+   "C_kemarau": 9329,
+   "rasio_C_R_persen": 32.3,
+   "n_kab_neg": 16,
+   "jumlah_neg": -195
+  },
+  {
+   "skenario": "1997",
+   "label": "1997",
+   "P_kemarau": 17342,
+   "R_kemarau": 6286,
+   "C_kemarau": 13289,
+   "rasio_C_R_persen": 211.4,
+   "n_kab_neg": 99,
+   "jumlah_neg": -6707
+  },
+  {
+   "skenario": "2015",
+   "label": "2015",
+   "P_kemarau": 16898,
+   "R_kemarau": 9070,
+   "C_kemarau": 13031,
+   "rasio_C_R_persen": 143.7,
+   "n_kab_neg": 63,
+   "jumlah_neg": -2553
+  },
+  {
+   "skenario": "2019",
+   "label": "2019",
+   "P_kemarau": 17090,
+   "R_kemarau": 8337,
+   "C_kemarau": 13303,
+   "rasio_C_R_persen": 159.6,
+   "n_kab_neg": 74,
+   "jumlah_neg": -3467
+  },
+  {
+   "skenario": "2023",
+   "label": "2023",
+   "P_kemarau": 29933,
+   "R_kemarau": 11949,
+   "C_kemarau": 11401,
+   "rasio_C_R_persen": 95.4,
+   "n_kab_neg": 47,
+   "jumlah_neg": -1488
+  }
+ ],
+ "prov": [
+  {
+   "prov_nama": "Banten",
+   "n_kab": 8,
+   "pend_2025": 14248999,
+   "R_tahunan": 16821,
+   "konsumtif_tahunan": 2052,
+   "rasio_C_R_persen": 12.2,
+   "n_N_kemarau_neg": 0,
+   "n_N80_neg": 3,
+   "n_industri_kosong": 0
+  },
+  {
+   "prov_nama": "DI Yogyakarta",
+   "n_kab": 5,
+   "pend_2025": 4064600,
+   "R_tahunan": 3265,
+   "konsumtif_tahunan": 780,
+   "rasio_C_R_persen": 23.9,
+   "n_N_kemarau_neg": 1,
+   "n_N80_neg": 3,
+   "n_industri_kosong": 5
+  },
+  {
+   "prov_nama": "DKI Jakarta",
+   "n_kab": 6,
+   "pend_2025": 11034000,
+   "R_tahunan": 547,
+   "konsumtif_tahunan": 529,
+   "rasio_C_R_persen": 96.8,
+   "n_N_kemarau_neg": 5,
+   "n_N80_neg": 6,
+   "n_industri_kosong": 1
+  },
+  {
+   "prov_nama": "Jawa Barat",
+   "n_kab": 27,
+   "pend_2025": 52785702,
+   "R_tahunan": 65718,
+   "konsumtif_tahunan": 9166,
+   "rasio_C_R_persen": 13.9,
+   "n_N_kemarau_neg": 1,
+   "n_N80_neg": 10,
+   "n_industri_kosong": 0
+  },
+  {
+   "prov_nama": "Jawa Tengah",
+   "n_kab": 35,
+   "pend_2025": 35958598,
+   "R_tahunan": 55275,
+   "konsumtif_tahunan": 8789,
+   "rasio_C_R_persen": 15.9,
+   "n_N_kemarau_neg": 4,
+   "n_N80_neg": 18,
+   "n_industri_kosong": 0
+  },
+  {
+   "prov_nama": "Jawa Timur",
+   "n_kab": 38,
+   "pend_2025": 40646102,
+   "R_tahunan": 43964,
+   "konsumtif_tahunan": 11876,
+   "rasio_C_R_persen": 27.0,
+   "n_N_kemarau_neg": 5,
+   "n_N80_neg": 28,
+   "n_industri_kosong": 38
+  }
+ ],
+ "validasi": {
+  "n_muara": 12,
+  "rasio_median": 1.0075160164441719,
+  "rasio_min": 0.6886734363043449,
+  "rasio_maks": 1.3059571372780934,
+  "rasio_kemarau_median": 1.3387087111758897,
+  "rasio_kemarau_min": 0.5457867413711441,
+  "rasio_kemarau_maks": 2.190744582507693,
+  "r_median": 0.8518976057803911,
+  "R_skala_bps": 185867.89339303173,
+  "bps_R": 175558.0,
+  "selisih_bps_persen": 5.872642313669396,
+  "selisih_bps_2020_persen": 16.94950232409682,
+  "alpha": 0.6,
+  "k_bulan": 2.0,
+  "kering_median_1997": 0.2459584449348479,
+  "kering_median_2015": 0.7183604738380547,
+  "kering_median_2019": 1.0139274484929741,
+  "kering_median_2023": 1.5826863624310752,
+  "kering_nol_1997": 5,
+  "jratunseluna_2019": 8.490019767811058,
+  "ambang_rendah": 0.8,
+  "ambang_tinggi": 1.25,
+  "ambang_bps_persen": 15,
+  "ambang_luas_rendah": 0.5,
+  "ambang_luas_tinggi": 2,
+  "ambang_r": 0.8
+ },
+ "parameter": {
+  "taw_mm": 130.0,
+  "kc": 1.0,
+  "alpha": 0.6,
+  "k_bulan": 2.0,
+  "dom_kota": 120,
+  "dom_desa": 60,
+  "sapi": 40,
+  "kambing": 5,
+  "babi": 6,
+  "unggas": 0.6,
+  "industri_L": 500,
+  "efisiensi_persen": 65.0,
+  "aliran_balik_persen": 30.0,
+  "perkolasi": 2.0,
+  "penyiapan": 250.0,
+  "hujan_efektif_persen": 70.0,
+  "mt3_persen": 50.0,
+  "sni_L_det_ha": 1.0,
+  "khla": 1600,
+  "n_sel": 1308,
+  "subdas_rerata_km2": 248.0,
+  "n_subdas": 534,
+  "tahun_iklim": 35,
+  "n_titik_power": 88,
+  "tarum_barat_L_det": 6200
+ },
+ "kab": [
+  {
+   "kode": "3101",
+   "nama": "Kab. Administrasi Kepulauan Seribu",
+   "N_tahunan": 1.4,
+   "N_kemarau": 0.12,
+   "N80_kemarau": -0.02,
+   "N_kemarau_1997": -0.02,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3171",
+   "nama": "Kota Administrasi Jakarta Pusat",
+   "N_tahunan": 4.4,
+   "N_kemarau": -8.95,
+   "N80_kemarau": -10.16,
+   "N_kemarau_1997": -11.3,
+   "qin_persen": 35.9
+  },
+  {
+   "kode": "3172",
+   "nama": "Kota Administrasi Jakarta Utara",
+   "N_tahunan": 34.5,
+   "N_kemarau": -21.56,
+   "N80_kemarau": -25.43,
+   "N_kemarau_1997": -27.22,
+   "qin_persen": 28.4
+  },
+  {
+   "kode": "3173",
+   "nama": "Kota Administrasi Jakarta Barat",
+   "N_tahunan": 9.5,
+   "N_kemarau": -24.27,
+   "N80_kemarau": -28.32,
+   "N_kemarau_1997": -30.3,
+   "qin_persen": 33.3
+  },
+  {
+   "kode": "3174",
+   "nama": "Kota Administrasi Jakarta Selatan",
+   "N_tahunan": 82.6,
+   "N_kemarau": -7.4,
+   "N80_kemarau": -18.83,
+   "N_kemarau_1997": -21.1,
+   "qin_persen": 21.8
+  },
+  {
+   "kode": "3175",
+   "nama": "Kota Administrasi Jakarta Timur",
+   "N_tahunan": 162.7,
+   "N_kemarau": -12.26,
+   "N80_kemarau": -31.71,
+   "N_kemarau_1997": -35.38,
+   "qin_persen": 43.0
+  },
+  {
+   "kode": "3201",
+   "nama": "Kab. Bogor",
+   "N_tahunan": 9600.7,
+   "N_kemarau": 2217.23,
+   "N80_kemarau": 589.56,
+   "N_kemarau_1997": 195.77,
+   "qin_persen": 29.0
+  },
+  {
+   "kode": "3202",
+   "nama": "Kab. Sukabumi",
+   "N_tahunan": 11480.4,
+   "N_kemarau": 2575.76,
+   "N80_kemarau": 526.83,
+   "N_kemarau_1997": 260.35,
+   "qin_persen": 27.4
+  },
+  {
+   "kode": "3203",
+   "nama": "Kab. Cianjur",
+   "N_tahunan": 18098.3,
+   "N_kemarau": 4535.82,
+   "N80_kemarau": 1971.36,
+   "N_kemarau_1997": 1544.54,
+   "qin_persen": 58.6
+  },
+  {
+   "kode": "3204",
+   "nama": "Kab. Bandung",
+   "N_tahunan": 3760.1,
+   "N_kemarau": 546.51,
+   "N80_kemarau": 62.38,
+   "N_kemarau_1997": -34.22,
+   "qin_persen": 21.1
+  },
+  {
+   "kode": "3205",
+   "nama": "Kab. Garut",
+   "N_tahunan": 6345.0,
+   "N_kemarau": 1366.75,
+   "N80_kemarau": 293.94,
+   "N_kemarau_1997": 98.11,
+   "qin_persen": 10.3
+  },
+  {
+   "kode": "3206",
+   "nama": "Kab. Tasikmalaya",
+   "N_tahunan": 6032.8,
+   "N_kemarau": 1671.26,
+   "N80_kemarau": 181.92,
+   "N_kemarau_1997": -36.84,
+   "qin_persen": 12.8
+  },
+  {
+   "kode": "3207",
+   "nama": "Kab. Ciamis",
+   "N_tahunan": 10918.8,
+   "N_kemarau": 2001.92,
+   "N80_kemarau": 354.62,
+   "N_kemarau_1997": 78.71,
+   "qin_persen": 70.7
+  },
+  {
+   "kode": "3208",
+   "nama": "Kab. Kuningan",
+   "N_tahunan": 2671.9,
+   "N_kemarau": 296.27,
+   "N80_kemarau": 39.37,
+   "N_kemarau_1997": -2.65,
+   "qin_persen": 19.2
+  },
+  {
+   "kode": "3209",
+   "nama": "Kab. Cirebon",
+   "N_tahunan": 2305.0,
+   "N_kemarau": 134.58,
+   "N80_kemarau": -128.88,
+   "N_kemarau_1997": -166.16,
+   "qin_persen": 56.0
+  },
+  {
+   "kode": "3210",
+   "nama": "Kab. Majalengka",
+   "N_tahunan": 6367.9,
+   "N_kemarau": 739.22,
+   "N80_kemarau": 103.21,
+   "N_kemarau_1997": 12.52,
+   "qin_persen": 66.3
+  },
+  {
+   "kode": "3211",
+   "nama": "Kab. Sumedang",
+   "N_tahunan": 5527.8,
+   "N_kemarau": 701.5,
+   "N80_kemarau": 158.16,
+   "N_kemarau_1997": 100.35,
+   "qin_persen": 50.8
+  },
+  {
+   "kode": "3212",
+   "nama": "Kab. Indramayu",
+   "N_tahunan": 7008.7,
+   "N_kemarau": 623.71,
+   "N80_kemarau": -204.41,
+   "N_kemarau_1997": -300.31,
+   "qin_persen": 79.0
+  },
+  {
+   "kode": "3213",
+   "nama": "Kab. Subang",
+   "N_tahunan": 3093.8,
+   "N_kemarau": 210.63,
+   "N80_kemarau": -175.54,
+   "N_kemarau_1997": -240.41,
+   "qin_persen": 31.4
+  },
+  {
+   "kode": "3214",
+   "nama": "Kab. Purwakarta",
+   "N_tahunan": 8887.2,
+   "N_kemarau": 2092.05,
+   "N80_kemarau": 986.2,
+   "N_kemarau_1997": 824.63,
+   "qin_persen": 79.4
+  },
+  {
+   "kode": "3215",
+   "nama": "Kab. Karawang",
+   "N_tahunan": 9679.1,
+   "N_kemarau": 3087.61,
+   "N80_kemarau": 2411.0,
+   "N_kemarau_1997": 1528.03,
+   "qin_persen": 84.6
+  },
+  {
+   "kode": "3216",
+   "nama": "Kab. Bekasi",
+   "N_tahunan": 11888.9,
+   "N_kemarau": 3484.35,
+   "N80_kemarau": 2766.83,
+   "N_kemarau_1997": 1609.92,
+   "qin_persen": 91.1
+  },
+  {
+   "kode": "3217",
+   "nama": "Kab. Bandung Barat",
+   "N_tahunan": 12500.6,
+   "N_kemarau": 2689.36,
+   "N80_kemarau": 1112.07,
+   "N_kemarau_1997": 928.16,
+   "qin_persen": 82.1
+  },
+  {
+   "kode": "3218",
+   "nama": "Kab. Pangandaran",
+   "N_tahunan": 5183.3,
+   "N_kemarau": 1214.44,
+   "N80_kemarau": 203.75,
+   "N_kemarau_1997": 38.47,
+   "qin_persen": 59.0
+  },
+  {
+   "kode": "3271",
+   "nama": "Kota Bogor",
+   "N_tahunan": 246.5,
+   "N_kemarau": 54.95,
+   "N80_kemarau": 7.54,
+   "N_kemarau_1997": -5.1,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3272",
+   "nama": "Kota Sukabumi",
+   "N_tahunan": 90.4,
+   "N_kemarau": 18.78,
+   "N80_kemarau": -2.16,
+   "N_kemarau_1997": -5.99,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3273",
+   "nama": "Kota Bandung",
+   "N_tahunan": 584.0,
+   "N_kemarau": 43.89,
+   "N80_kemarau": -34.39,
+   "N_kemarau_1997": -44.02,
+   "qin_persen": 67.3
+  },
+  {
+   "kode": "3274",
+   "nama": "Kota Cirebon",
+   "N_tahunan": 24.3,
+   "N_kemarau": -4.2,
+   "N80_kemarau": -6.41,
+   "N_kemarau_1997": -6.48,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3275",
+   "nama": "Kota Bekasi",
+   "N_tahunan": 854.0,
+   "N_kemarau": 124.64,
+   "N80_kemarau": -13.67,
+   "N_kemarau_1997": -31.93,
+   "qin_persen": 77.0
+  },
+  {
+   "kode": "3276",
+   "nama": "Kota Depok",
+   "N_tahunan": 237.2,
+   "N_kemarau": 29.78,
+   "N80_kemarau": -19.2,
+   "N_kemarau_1997": -21.59,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3277",
+   "nama": "Kota Cimahi",
+   "N_tahunan": 328.6,
+   "N_kemarau": 36.48,
+   "N80_kemarau": -7.13,
+   "N_kemarau_1997": -12.97,
+   "qin_persen": 86.4
+  },
+  {
+   "kode": "3278",
+   "nama": "Kota Tasikmalaya",
+   "N_tahunan": 435.6,
+   "N_kemarau": 95.43,
+   "N80_kemarau": -3.78,
+   "N_kemarau_1997": -20.8,
+   "qin_persen": 23.2
+  },
+  {
+   "kode": "3279",
+   "nama": "Kota Banjar",
+   "N_tahunan": 4341.0,
+   "N_kemarau": 791.87,
+   "N80_kemarau": 139.57,
+   "N_kemarau_1997": 40.46,
+   "qin_persen": 94.2
+  },
+  {
+   "kode": "3301",
+   "nama": "Kab. Cilacap",
+   "N_tahunan": 24301.5,
+   "N_kemarau": 4427.85,
+   "N80_kemarau": 722.73,
+   "N_kemarau_1997": 70.34,
+   "qin_persen": 81.5
+  },
+  {
+   "kode": "3302",
+   "nama": "Kab. Banyumas",
+   "N_tahunan": 10130.4,
+   "N_kemarau": 1686.37,
+   "N80_kemarau": 230.45,
+   "N_kemarau_1997": 30.5,
+   "qin_persen": 70.1
+  },
+  {
+   "kode": "3303",
+   "nama": "Kab. Purbalingga",
+   "N_tahunan": 4897.5,
+   "N_kemarau": 764.42,
+   "N80_kemarau": 115.18,
+   "N_kemarau_1997": 33.02,
+   "qin_persen": 51.4
+  },
+  {
+   "kode": "3304",
+   "nama": "Kab. Banjarnegara",
+   "N_tahunan": 5512.4,
+   "N_kemarau": 797.84,
+   "N80_kemarau": 119.11,
+   "N_kemarau_1997": 31.39,
+   "qin_persen": 52.2
+  },
+  {
+   "kode": "3305",
+   "nama": "Kab. Kebumen",
+   "N_tahunan": 3529.5,
+   "N_kemarau": 618.97,
+   "N80_kemarau": 61.58,
+   "N_kemarau_1997": -49.1,
+   "qin_persen": 18.6
+  },
+  {
+   "kode": "3306",
+   "nama": "Kab. Purworejo",
+   "N_tahunan": 2324.9,
+   "N_kemarau": 267.06,
+   "N80_kemarau": -8.02,
+   "N_kemarau_1997": -75.42,
+   "qin_persen": 30.0
+  },
+  {
+   "kode": "3307",
+   "nama": "Kab. Wonosobo",
+   "N_tahunan": 2483.8,
+   "N_kemarau": 330.19,
+   "N80_kemarau": 48.51,
+   "N_kemarau_1997": 1.9,
+   "qin_persen": 13.2
+  },
+  {
+   "kode": "3308",
+   "nama": "Kab. Magelang",
+   "N_tahunan": 4900.0,
+   "N_kemarau": 490.73,
+   "N80_kemarau": -16.08,
+   "N_kemarau_1997": -94.18,
+   "qin_persen": 61.6
+  },
+  {
+   "kode": "3309",
+   "nama": "Kab. Boyolali",
+   "N_tahunan": 2587.2,
+   "N_kemarau": 323.14,
+   "N80_kemarau": 59.67,
+   "N_kemarau_1997": -41.51,
+   "qin_persen": 45.3
+  },
+  {
+   "kode": "3310",
+   "nama": "Kab. Klaten",
+   "N_tahunan": 2776.9,
+   "N_kemarau": 394.81,
+   "N80_kemarau": 106.28,
+   "N_kemarau_1997": -134.92,
+   "qin_persen": 76.2
+  },
+  {
+   "kode": "3311",
+   "nama": "Kab. Sukoharjo",
+   "N_tahunan": 5841.3,
+   "N_kemarau": 760.51,
+   "N80_kemarau": 228.76,
+   "N_kemarau_1997": -91.5,
+   "qin_persen": 90.7
+  },
+  {
+   "kode": "3312",
+   "nama": "Kab. Wonogiri",
+   "N_tahunan": 3175.0,
+   "N_kemarau": 186.97,
+   "N80_kemarau": -9.48,
+   "N_kemarau_1997": -105.14,
+   "qin_persen": 38.0
+  },
+  {
+   "kode": "3313",
+   "nama": "Kab. Karanganyar",
+   "N_tahunan": 7056.9,
+   "N_kemarau": 849.26,
+   "N80_kemarau": 250.51,
+   "N_kemarau_1997": -83.93,
+   "qin_persen": 82.2
+  },
+  {
+   "kode": "3314",
+   "nama": "Kab. Sragen",
+   "N_tahunan": 6742.3,
+   "N_kemarau": 806.73,
+   "N80_kemarau": 185.72,
+   "N_kemarau_1997": -94.82,
+   "qin_persen": 81.9
+  },
+  {
+   "kode": "3315",
+   "nama": "Kab. Grobogan",
+   "N_tahunan": 4709.0,
+   "N_kemarau": 379.57,
+   "N80_kemarau": -89.55,
+   "N_kemarau_1997": -155.01,
+   "qin_persen": 55.7
+  },
+  {
+   "kode": "3316",
+   "nama": "Kab. Blora",
+   "N_tahunan": 20837.8,
+   "N_kemarau": 1927.73,
+   "N80_kemarau": 385.47,
+   "N_kemarau_1997": -12.28,
+   "qin_persen": 91.0
+  },
+  {
+   "kode": "3317",
+   "nama": "Kab. Rembang",
+   "N_tahunan": 450.4,
+   "N_kemarau": -14.74,
+   "N80_kemarau": -66.56,
+   "N_kemarau_1997": -80.1,
+   "qin_persen": 12.1
+  },
+  {
+   "kode": "3318",
+   "nama": "Kab. Pati",
+   "N_tahunan": 1614.4,
+   "N_kemarau": 55.15,
+   "N80_kemarau": -83.94,
+   "N_kemarau_1997": -132.62,
+   "qin_persen": 36.6
+  },
+  {
+   "kode": "3319",
+   "nama": "Kab. Kudus",
+   "N_tahunan": 733.0,
+   "N_kemarau": 26.94,
+   "N80_kemarau": -45.3,
+   "N_kemarau_1997": -84.29,
+   "qin_persen": 51.1
+  },
+  {
+   "kode": "3320",
+   "nama": "Kab. Jepara",
+   "N_tahunan": 1050.8,
+   "N_kemarau": -19.78,
+   "N80_kemarau": -83.66,
+   "N_kemarau_1997": -111.28,
+   "qin_persen": 19.5
+  },
+  {
+   "kode": "3321",
+   "nama": "Kab. Demak",
+   "N_tahunan": 4265.2,
+   "N_kemarau": 486.76,
+   "N80_kemarau": 163.26,
+   "N_kemarau_1997": -187.42,
+   "qin_persen": 75.0
+  },
+  {
+   "kode": "3322",
+   "nama": "Kab. Semarang",
+   "N_tahunan": 1412.1,
+   "N_kemarau": 105.35,
+   "N80_kemarau": -78.32,
+   "N_kemarau_1997": -115.76,
+   "qin_persen": 10.9
+  },
+  {
+   "kode": "3323",
+   "nama": "Kab. Temanggung",
+   "N_tahunan": 2392.7,
+   "N_kemarau": 238.82,
+   "N80_kemarau": 12.04,
+   "N_kemarau_1997": -25.86,
+   "qin_persen": 36.9
+  },
+  {
+   "kode": "3324",
+   "nama": "Kab. Kendal",
+   "N_tahunan": 1349.4,
+   "N_kemarau": 111.55,
+   "N80_kemarau": -28.66,
+   "N_kemarau_1997": -53.28,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3325",
+   "nama": "Kab. Batang",
+   "N_tahunan": 2039.9,
+   "N_kemarau": 185.75,
+   "N80_kemarau": -17.04,
+   "N_kemarau_1997": -36.84,
+   "qin_persen": 41.5
+  },
+  {
+   "kode": "3326",
+   "nama": "Kab. Pekalongan",
+   "N_tahunan": 1624.9,
+   "N_kemarau": 194.49,
+   "N80_kemarau": -6.69,
+   "N_kemarau_1997": -29.71,
+   "qin_persen": 1.1
+  },
+  {
+   "kode": "3327",
+   "nama": "Kab. Pemalang",
+   "N_tahunan": 2870.0,
+   "N_kemarau": 366.41,
+   "N80_kemarau": 15.45,
+   "N_kemarau_1997": -19.42,
+   "qin_persen": 20.7
+  },
+  {
+   "kode": "3328",
+   "nama": "Kab. Tegal",
+   "N_tahunan": 2725.6,
+   "N_kemarau": 332.24,
+   "N80_kemarau": -32.67,
+   "N_kemarau_1997": -65.6,
+   "qin_persen": 35.4
+  },
+  {
+   "kode": "3329",
+   "nama": "Kab. Brebes",
+   "N_tahunan": 6158.0,
+   "N_kemarau": 750.94,
+   "N80_kemarau": 13.27,
+   "N_kemarau_1997": -71.86,
+   "qin_persen": 47.7
+  },
+  {
+   "kode": "3371",
+   "nama": "Kota Magelang",
+   "N_tahunan": 25.1,
+   "N_kemarau": 1.2,
+   "N80_kemarau": -1.31,
+   "N_kemarau_1997": -1.93,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3372",
+   "nama": "Kota Surakarta",
+   "N_tahunan": 1302.6,
+   "N_kemarau": 184.28,
+   "N80_kemarau": 65.53,
+   "N_kemarau_1997": -6.45,
+   "qin_persen": 95.8
+  },
+  {
+   "kode": "3373",
+   "nama": "Kota Salatiga",
+   "N_tahunan": 68.3,
+   "N_kemarau": 3.35,
+   "N80_kemarau": -4.59,
+   "N_kemarau_1997": -6.78,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3374",
+   "nama": "Kota Semarang",
+   "N_tahunan": 984.5,
+   "N_kemarau": 60.04,
+   "N80_kemarau": -23.6,
+   "N_kemarau_1997": -33.19,
+   "qin_persen": 55.2
+  },
+  {
+   "kode": "3375",
+   "nama": "Kota Pekalongan",
+   "N_tahunan": 30.8,
+   "N_kemarau": -1.65,
+   "N80_kemarau": -6.66,
+   "N_kemarau_1997": -7.83,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3376",
+   "nama": "Kota Tegal",
+   "N_tahunan": 11.1,
+   "N_kemarau": -4.67,
+   "N80_kemarau": -7.03,
+   "N_kemarau_1997": -7.38,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3401",
+   "nama": "Kab. Kulon Progo",
+   "N_tahunan": 2394.1,
+   "N_kemarau": 234.1,
+   "N80_kemarau": 1.99,
+   "N_kemarau_1997": -32.58,
+   "qin_persen": 72.6
+  },
+  {
+   "kode": "3402",
+   "nama": "Kab. Bantul",
+   "N_tahunan": 4937.9,
+   "N_kemarau": 416.29,
+   "N80_kemarau": -23.84,
+   "N_kemarau_1997": -81.6,
+   "qin_persen": 90.4
+  },
+  {
+   "kode": "3403",
+   "nama": "Kab. Gunungkidul",
+   "N_tahunan": 1422.7,
+   "N_kemarau": 111.52,
+   "N80_kemarau": 16.16,
+   "N_kemarau_1997": -33.29,
+   "qin_persen": 12.3
+  },
+  {
+   "kode": "3404",
+   "nama": "Kab. Sleman",
+   "N_tahunan": 1169.5,
+   "N_kemarau": 55.5,
+   "N80_kemarau": -80.88,
+   "N_kemarau_1997": -110.62,
+   "qin_persen": 52.8
+  },
+  {
+   "kode": "3471",
+   "nama": "Kota Yogyakarta",
+   "N_tahunan": 23.5,
+   "N_kemarau": -0.74,
+   "N80_kemarau": -2.33,
+   "N_kemarau_1997": -3.24,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3501",
+   "nama": "Kab. Pacitan",
+   "N_tahunan": 1569.0,
+   "N_kemarau": 135.1,
+   "N80_kemarau": 25.13,
+   "N_kemarau_1997": -18.76,
+   "qin_persen": 5.3
+  },
+  {
+   "kode": "3502",
+   "nama": "Kab. Ponorogo",
+   "N_tahunan": 1930.0,
+   "N_kemarau": 69.39,
+   "N80_kemarau": -49.14,
+   "N_kemarau_1997": -121.82,
+   "qin_persen": 34.2
+  },
+  {
+   "kode": "3503",
+   "nama": "Kab. Trenggalek",
+   "N_tahunan": 1343.9,
+   "N_kemarau": 90.27,
+   "N80_kemarau": 2.7,
+   "N_kemarau_1997": -37.33,
+   "qin_persen": 19.7
+  },
+  {
+   "kode": "3504",
+   "nama": "Kab. Tulungagung",
+   "N_tahunan": 2194.0,
+   "N_kemarau": 121.31,
+   "N80_kemarau": -44.47,
+   "N_kemarau_1997": -99.37,
+   "qin_persen": 61.1
+  },
+  {
+   "kode": "3505",
+   "nama": "Kab. Blitar",
+   "N_tahunan": 5114.9,
+   "N_kemarau": 401.98,
+   "N80_kemarau": -3.27,
+   "N_kemarau_1997": -101.74,
+   "qin_persen": 64.7
+  },
+  {
+   "kode": "3506",
+   "nama": "Kab. Kediri",
+   "N_tahunan": 7420.0,
+   "N_kemarau": 450.74,
+   "N80_kemarau": -85.22,
+   "N_kemarau_1997": -181.31,
+   "qin_persen": 80.4
+  },
+  {
+   "kode": "3507",
+   "nama": "Kab. Malang",
+   "N_tahunan": 4301.3,
+   "N_kemarau": 258.01,
+   "N80_kemarau": -28.29,
+   "N_kemarau_1997": -130.35,
+   "qin_persen": 25.8
+  },
+  {
+   "kode": "3508",
+   "nama": "Kab. Lumajang",
+   "N_tahunan": 2340.3,
+   "N_kemarau": 131.47,
+   "N80_kemarau": -60.86,
+   "N_kemarau_1997": -113.76,
+   "qin_persen": 32.0
+  },
+  {
+   "kode": "3509",
+   "nama": "Kab. Jember",
+   "N_tahunan": 3318.8,
+   "N_kemarau": 108.8,
+   "N80_kemarau": -172.64,
+   "N_kemarau_1997": -246.74,
+   "qin_persen": 16.8
+  },
+  {
+   "kode": "3510",
+   "nama": "Kab. Banyuwangi",
+   "N_tahunan": 2019.8,
+   "N_kemarau": 85.37,
+   "N80_kemarau": -114.92,
+   "N_kemarau_1997": -173.52,
+   "qin_persen": 4.5
+  },
+  {
+   "kode": "3511",
+   "nama": "Kab. Bondowoso",
+   "N_tahunan": 1963.5,
+   "N_kemarau": 49.91,
+   "N80_kemarau": -50.08,
+   "N_kemarau_1997": -84.49,
+   "qin_persen": 24.0
+  },
+  {
+   "kode": "3512",
+   "nama": "Kab. Situbondo",
+   "N_tahunan": 1139.4,
+   "N_kemarau": -22.56,
+   "N80_kemarau": -81.79,
+   "N_kemarau_1997": -106.46,
+   "qin_persen": 33.8
+  },
+  {
+   "kode": "3513",
+   "nama": "Kab. Probolinggo",
+   "N_tahunan": 1695.3,
+   "N_kemarau": 46.44,
+   "N80_kemarau": -59.15,
+   "N_kemarau_1997": -97.76,
+   "qin_persen": 14.8
+  },
+  {
+   "kode": "3514",
+   "nama": "Kab. Pasuruan",
+   "N_tahunan": 8950.3,
+   "N_kemarau": 421.26,
+   "N80_kemarau": -94.27,
+   "N_kemarau_1997": -148.33,
+   "qin_persen": 86.9
+  },
+  {
+   "kode": "3515",
+   "nama": "Kab. Sidoarjo",
+   "N_tahunan": 17844.1,
+   "N_kemarau": 920.44,
+   "N80_kemarau": -76.37,
+   "N_kemarau_1997": -111.61,
+   "qin_persen": 96.9
+  },
+  {
+   "kode": "3516",
+   "nama": "Kab. Mojokerto",
+   "N_tahunan": 12820.1,
+   "N_kemarau": 663.1,
+   "N80_kemarau": -70.78,
+   "N_kemarau_1997": -116.06,
+   "qin_persen": 92.2
+  },
+  {
+   "kode": "3517",
+   "nama": "Kab. Jombang",
+   "N_tahunan": 10197.8,
+   "N_kemarau": 516.49,
+   "N80_kemarau": -117.84,
+   "N_kemarau_1997": -190.27,
+   "qin_persen": 89.9
+  },
+  {
+   "kode": "3518",
+   "nama": "Kab. Nganjuk",
+   "N_tahunan": 6083.5,
+   "N_kemarau": 309.64,
+   "N80_kemarau": -84.35,
+   "N_kemarau_1997": -153.63,
+   "qin_persen": 81.2
+  },
+  {
+   "kode": "3519",
+   "nama": "Kab. Madiun",
+   "N_tahunan": 4918.7,
+   "N_kemarau": 212.73,
+   "N80_kemarau": -54.24,
+   "N_kemarau_1997": -108.07,
+   "qin_persen": 77.2
+  },
+  {
+   "kode": "3520",
+   "nama": "Kab. Magetan",
+   "N_tahunan": 4262.7,
+   "N_kemarau": 178.25,
+   "N80_kemarau": -64.3,
+   "N_kemarau_1997": -106.7,
+   "qin_persen": 83.1
+  },
+  {
+   "kode": "3521",
+   "nama": "Kab. Ngawi",
+   "N_tahunan": 9978.5,
+   "N_kemarau": 881.63,
+   "N80_kemarau": 98.55,
+   "N_kemarau_1997": -152.49,
+   "qin_persen": 84.7
+  },
+  {
+   "kode": "3522",
+   "nama": "Kab. Bojonegoro",
+   "N_tahunan": 35288.1,
+   "N_kemarau": 3100.26,
+   "N80_kemarau": 606.05,
+   "N_kemarau_1997": -63.5,
+   "qin_persen": 93.8
+  },
+  {
+   "kode": "3523",
+   "nama": "Kab. Tuban",
+   "N_tahunan": 21443.7,
+   "N_kemarau": 1719.01,
+   "N80_kemarau": 305.11,
+   "N_kemarau_1997": -108.72,
+   "qin_persen": 94.4
+  },
+  {
+   "kode": "3524",
+   "nama": "Kab. Lamongan",
+   "N_tahunan": 22647.3,
+   "N_kemarau": 1734.16,
+   "N80_kemarau": 252.59,
+   "N_kemarau_1997": -173.81,
+   "qin_persen": 94.3
+  },
+  {
+   "kode": "3525",
+   "nama": "Kab. Gresik",
+   "N_tahunan": 20481.4,
+   "N_kemarau": 1549.38,
+   "N80_kemarau": 253.91,
+   "N_kemarau_1997": -75.15,
+   "qin_persen": 95.3
+  },
+  {
+   "kode": "3526",
+   "nama": "Kab. Bangkalan",
+   "N_tahunan": 753.2,
+   "N_kemarau": 28.55,
+   "N80_kemarau": -9.66,
+   "N_kemarau_1997": -20.93,
+   "qin_persen": 3.3
+  },
+  {
+   "kode": "3527",
+   "nama": "Kab. Sampang",
+   "N_tahunan": 877.0,
+   "N_kemarau": 31.43,
+   "N80_kemarau": 3.21,
+   "N_kemarau_1997": -9.93,
+   "qin_persen": 20.2
+  },
+  {
+   "kode": "3528",
+   "nama": "Kab. Pamekasan",
+   "N_tahunan": 400.5,
+   "N_kemarau": -0.39,
+   "N80_kemarau": -16.48,
+   "N_kemarau_1997": -24.45,
+   "qin_persen": 3.5
+  },
+  {
+   "kode": "3529",
+   "nama": "Kab. Sumenep",
+   "N_tahunan": 1319.6,
+   "N_kemarau": 44.57,
+   "N80_kemarau": 0.26,
+   "N_kemarau_1997": -13.67,
+   "qin_persen": 11.6
+  },
+  {
+   "kode": "3571",
+   "nama": "Kota Kediri",
+   "N_tahunan": 351.0,
+   "N_kemarau": 18.62,
+   "N80_kemarau": -8.6,
+   "N_kemarau_1997": -13.31,
+   "qin_persen": 84.0
+  },
+  {
+   "kode": "3572",
+   "nama": "Kota Blitar",
+   "N_tahunan": 121.2,
+   "N_kemarau": 7.18,
+   "N80_kemarau": -4.29,
+   "N_kemarau_1997": -7.2,
+   "qin_persen": 77.6
+  },
+  {
+   "kode": "3573",
+   "nama": "Kota Malang",
+   "N_tahunan": 846.2,
+   "N_kemarau": 44.09,
+   "N80_kemarau": -10.45,
+   "N_kemarau_1997": -19.3,
+   "qin_persen": 86.3
+  },
+  {
+   "kode": "3574",
+   "nama": "Kota Probolinggo",
+   "N_tahunan": -12.2,
+   "N_kemarau": -9.76,
+   "N80_kemarau": -11.28,
+   "N_kemarau_1997": -12.23,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3575",
+   "nama": "Kota Pasuruan",
+   "N_tahunan": -5.6,
+   "N_kemarau": -6.56,
+   "N80_kemarau": -7.77,
+   "N_kemarau_1997": -8.7,
+   "qin_persen": 8.8
+  },
+  {
+   "kode": "3576",
+   "nama": "Kota Mojokerto",
+   "N_tahunan": 932.4,
+   "N_kemarau": 39.2,
+   "N80_kemarau": -3.71,
+   "N_kemarau_1997": -4.88,
+   "qin_persen": 98.2
+  },
+  {
+   "kode": "3577",
+   "nama": "Kota Madiun",
+   "N_tahunan": 1164.0,
+   "N_kemarau": 54.76,
+   "N80_kemarau": -4.95,
+   "N_kemarau_1997": -7.69,
+   "qin_persen": 97.0
+  },
+  {
+   "kode": "3578",
+   "nama": "Kota Surabaya",
+   "N_tahunan": 110.5,
+   "N_kemarau": -35.78,
+   "N80_kemarau": -43.23,
+   "N_kemarau_1997": -45.48,
+   "qin_persen": 0.9
+  },
+  {
+   "kode": "3579",
+   "nama": "Kota Batu",
+   "N_tahunan": 324.7,
+   "N_kemarau": 22.54,
+   "N80_kemarau": 1.83,
+   "N_kemarau_1997": -4.88,
+   "qin_persen": 17.4
+  },
+  {
+   "kode": "3601",
+   "nama": "Kab. Pandeglang",
+   "N_tahunan": 6440.7,
+   "N_kemarau": 1378.7,
+   "N80_kemarau": 320.2,
+   "N_kemarau_1997": 62.57,
+   "qin_persen": 17.6
+  },
+  {
+   "kode": "3602",
+   "nama": "Kab. Lebak",
+   "N_tahunan": 8274.1,
+   "N_kemarau": 2074.92,
+   "N80_kemarau": 622.81,
+   "N_kemarau_1997": 198.26,
+   "qin_persen": 12.5
+  },
+  {
+   "kode": "3603",
+   "nama": "Kab. Tangerang",
+   "N_tahunan": 1808.9,
+   "N_kemarau": 357.35,
+   "N80_kemarau": -10.65,
+   "N_kemarau_1997": -87.58,
+   "qin_persen": 55.6
+  },
+  {
+   "kode": "3604",
+   "nama": "Kab. Serang",
+   "N_tahunan": 4709.0,
+   "N_kemarau": 1151.65,
+   "N80_kemarau": 238.31,
+   "N_kemarau_1997": -1.5,
+   "qin_persen": 64.3
+  },
+  {
+   "kode": "3671",
+   "nama": "Kota Tangerang",
+   "N_tahunan": 259.7,
+   "N_kemarau": 28.36,
+   "N80_kemarau": -33.06,
+   "N_kemarau_1997": -45.28,
+   "qin_persen": 66.0
+  },
+  {
+   "kode": "3672",
+   "nama": "Kota Cilegon",
+   "N_tahunan": 155.1,
+   "N_kemarau": 26.33,
+   "N80_kemarau": -1.52,
+   "N_kemarau_1997": -3.69,
+   "qin_persen": 0.0
+  },
+  {
+   "kode": "3673",
+   "nama": "Kota Serang",
+   "N_tahunan": 493.0,
+   "N_kemarau": 96.81,
+   "N80_kemarau": 5.4,
+   "N_kemarau_1997": -9.91,
+   "qin_persen": 57.4
+  },
+  {
+   "kode": "3674",
+   "nama": "Kota Tangerang Selatan",
+   "N_tahunan": 733.9,
+   "N_kemarau": 116.99,
+   "N80_kemarau": 1.59,
+   "N_kemarau_1997": -13.28,
+   "qin_persen": 75.2
+  }
+ ]
+}

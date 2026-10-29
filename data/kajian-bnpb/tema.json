@@ -163,6 +163,16 @@
       "kata_kunci": ["BNPB", "kebakaran hutan dan lahan", "gambut", "kit relay portabel", "injeksi bawah permukaan", "banjir", "SIPPA"],
       "cakupan_sampul": "Cakupan: 865 kompleks api Kalimantan Tengah dan 18 provinsi rawan kebakaran hutan dan lahan, dengan pemakaian ganda pada musim banjir."
     },
+    "neraca-air": {
+      "judul": "Neraca Air Pulau Jawa per Kabupaten/Kota",
+      "subjudul": "Pasokan dan Kebutuhan Air Bulanan, Musim Kemarau Juni–Oktober, dan Tahun Kering 1997, 2015, 2019, dan 2023",
+      "judul_pendek": "Kajian Neraca Air Pulau Jawa",
+      "nama_berkas": "Kajian Neraca Air Pulau Jawa {DDMMYY}",
+      "batas_halaman_isi": null,
+      "lampiran": "ABCD",
+      "kata_kunci": ["BNPB", "neraca air", "kekeringan", "Pulau Jawa", "kabupaten/kota", "musim kemarau", "estimasi model"],
+      "cakupan_sampul": "Cakupan: seluruh kabupaten/kota di enam provinsi Pulau Jawa, pasokan air permukaan lawan kebutuhan domestik, irigasi, ternak, dan industri per bulan."
+    },
     "penerbit": "Badan Nasional Penanggulangan Bencana",
     "terbit": "Oktober 2026"
   },
@@ -668,7 +678,7 @@
     "area_isi_y_pt": [101, 500],
     "kata_per_slide": [180, 290],
     "blok_per_slide": [3, 4],
-    "judul_kotak": {"x_pt": 43.2, "y_pt": 21.6, "tinggi_pt": [47.5, 65], "lebar_pt": 823, "lebar_dengan_pil_pt": 644, "anchor": "bawah"},
+    "judul_kotak": {"x_pt": 43.2, "y_pt": 21.6, "tinggi_pt": [47.5, 65], "lebar_pt": 838, "lebar_dengan_pil_pt": 644, "anchor": "bawah"},
     "garis": {"y_pt": [95, 507.6], "tebal_pt": 0.75, "warna": "garis-kuat"},
     "logo": {"x_pt": 889.4, "y_pt": 28.8, "lebar_pt": 27.4, "tinggi_pt": 34.6},
     "footer": {"teks": "Badan Nasional Penanggulangan Bencana  |  Copyright 2026", "y_pt": 512.6, "ukuran_pt": 8.5, "warna": "teks"},
@@ -857,6 +867,7 @@
     "sampul_belakang": {"teks_dari_atas_cm": 9, "logo_tinggi_mm": 18, "baris_pt": 10.5, "ringkas_pt": 9.5, "ringkas_sebelum_pt": 24},
     "pembatas_lampiran": {"judul_dari_atas_cm": 9, "daftar_pt": 10.5},
     "sampul_foto": {
+      "neraca-air": {"berkas": "gambar/foto/air-bengawan-solo-kering.jpg", "judul": "Bengawan Solo pada musim kemarau, Juli 2015", "pengarang": "Crisco 1492", "lisensi": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Bengawan_Solo_River_during_dry_season,_2015-07-31_01.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"},
       "air": {"berkas": "gambar/foto/sampul-air.jpg", "judul": "Waduk Jatiluhur, Purwakarta", "pengarang": "Cep Budhi Darma", "lisensi": "CC BY-SA 4.0", "url": "https://commons.wikimedia.org/wiki/File:Jatiluhur_12.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"},
       "rehab": {"berkas": "gambar/foto/sampul-rehab.jpg", "judul": "Masjid yang tetap berdiri di antara puing setelah tsunami Aceh, Banda Aceh, Januari 2005", "pengarang": "USGS", "lisensi": "PD", "url": "https://commons.wikimedia.org/wiki/File:Aceh_2004_tsunami_standing_mosque_USGS.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"},
       "mitigasi": {"berkas": "gambar/foto/sampul-mitigasi-raung.jpg", "judul": "Gunung Raung menyemburkan abu, dilihat dari Selat Bali, Banyuwangi, 2015", "pengarang": "consigliere ivan from Bontang, Indonesia", "lisensi": "CC BY 2.0", "url": "https://commons.wikimedia.org/wiki/File:Eruption_of_Raung_Volcano_(2015)_from_Bali_strait_at_dawn.jpg", "potong": "dipotong selebar halaman dan setinggi 55% halaman"}
@@ -878,11 +889,11 @@
           "Peraturan Badan Nasional Penanggulangan Bencana Nomor 1 Tahun 2025 tentang Rencana Nasional Penanggulangan Bencana Tahun 2025–2029"
         ]
       },
-      "batas_data_kajian": {"rehab": "25 Oktober 2026"}
+      "batas_data_kajian": {"rehab": "25 Oktober 2026", "neraca-air": "27 Oktober 2026"}
     }
   },
   "qa": {
-    "pustaka": {"_catatan": "L65 Buku Pegangan: ambang kajian final (manifest pustaka.status final); draf hanya diperiksa keutuhan kunci", "bab_min": 8, "kajian_min": {"air": 50, "mitigasi": 80, "rehab": 50, "sippa": 50}, "resmi_primer_min_persen": 50},
+    "pustaka": {"_catatan": "L65 Buku Pegangan: ambang kajian final (manifest pustaka.status final); draf hanya diperiksa keutuhan kunci", "bab_min": 8, "kajian_min": {"air": 50, "mitigasi": 80, "rehab": 50, "sippa": 50, "neraca-air": 50}, "resmi_primer_min_persen": 50},
     "_catatan": "Kenop gerbang qa/periksa.py yang bukan token desain. Nama gaya dicocokkan ke rantai gaya Word tanpa beda huruf; kepala kolom ke teks kepala yang dikapitalkan.",
     "gaya_kapital_boleh": ["Label Bagian", "Kepala Tabel", "Pil", "Label Pita", "Judul Bagian Depan", "Judul Daftar Isi"],
     "gaya_pustaka": ["Pustaka", "Bibliography"],

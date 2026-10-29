@@ -74,7 +74,7 @@ uji("GET /pipa dan layar: pusdalops 200 berkepala lengkap; tamu 303 ke /admin/pa
   assert.equal(a.h.get("x-robots-tag"), "noindex, nofollow"); assert.equal(a.h.get("referrer-policy"), "same-origin"); assert.match(a.h.get("content-type"), /^text\/html; charset=utf-8/);
   const csp = a.h.get("content-security-policy");
   assert.match(csp, /openfreemap\.org/); assert.doesNotMatch(csp, /unsafe-inline|cdn|unpkg|jsdelivr/i); assert.match(csp, /script-src 'self'(;|$)/); assert.match(csp, /worker-src 'self' blob:/);
-  assert.match(a.t, /<html lang="id">/); assert.match(a.t, /<title>SIPPA, Pantau Bencana<\/title>/); assert.match(a.t, /<script type="module" src="\/pipa\/app\.js\?v=\d+"><\/script>/);
+  assert.match(a.t, /<html lang="id">/); assert.match(a.t, /<title>SIPPA, Centurisk97<\/title>/); assert.match(a.t, /<script type="module" src="\/pipa\/app\.js\?v=\d+"><\/script>/);
   assert.match(a.t, /data-staf="1"/); assert.match(a.t, /data-peran="pusdalops"/); assert.match(a.t, /data-layar="peta"/); assert.match(a.t, /data-tulis="1"/); assert.match(a.t, /data-super="0"/);
   assert.doesNotMatch(a.t, /—|·/, "tanpa em dash atau titik tengah di cangkang");
   for (const l of LAYAR_SIPPA) { const r = await man("/pipa/" + l, pus.g); assert.equal(r.s, 200, `/pipa/${l}`); assert.match(r.t, new RegExp(`data-layar="${l}"`)); }
@@ -434,7 +434,7 @@ uji("GET log.csv dan probe.csv: CSV aman injeksi rumus, koordinat dibulatkan 0,0
   assert.equal((await sip("GET", "/log.csv?sejak=9&sampai=1", undefined, pim.h)).s, 400);
   const pr = await mf.dispatchFetch("http://bnpb.lokal/api/sippa/probe.csv", {headers: pim.h}); const pc = await pr.text();
   assert.equal(pr.status, 200); assert.match(pr.headers.get("content-disposition"), /^attachment; filename="sippa-probe-\d{8}\.csv"$/); assert.match(pr.headers.get("content-type"), /^text\/csv; charset=utf-8/);
-  const pk = pc.trim().split("\r\n"); assert.equal(pk[0], "id,log_id,tugas_id,petak_id,titik,tahap,kedalaman_cm,suhu_c,waktu,oleh"); assert.ok(pk.length >= 3, "probe dari kiriman lapangan"); assert.ok(pk.slice(1).every(b => b.split(",").length >= 10));
+  const pk = pc.trim().split("\r\n"); assert.equal(pk[0], "id,log_id,tugas_id,petak_id,titik,tahap,kedalaman_cm,suhu_c,waktu,oleh,dummy"); assert.ok(pk.length >= 3, "probe dari kiriman lapangan"); assert.ok(pk.slice(1).every(b => b.split(",").length >= 10));
   assert.equal((await sip("GET", "/probe.csv?petak=PETAK-1", undefined, pim.h)).s, 200); assert.equal((await sip("GET", "/probe.csv?tugas=xyz", undefined, pim.h)).s, 400); assert.equal((await sip("GET", "/probe.csv?sejak=b", undefined, pim.h)).s, 400); assert.equal((await sip("GET", "/probe.csv")).s, 401);
   const wp = await (await mf.dispatchFetch("http://bnpb.lokal/api/sippa/probe.csv", {headers: pus61.h})).text(); assert.equal(wp.trim().split("\r\n").length, 1, "wilayah 61 tidak melihat probe tugas prov 62");
   /* laju 60 per jam per pelaku; GET lain tidak dihitung */
@@ -659,6 +659,15 @@ uji("GET /api/sippa/ab dan ab.csv: B 200 {petak, unggah}, filter aoi dan lengan,
   const d = await sip("POST", "/dummy/isi", {layar: "ab"}, ADMIN); assert.equal(d.s, 200, d.t); assert.ok(await hitung("sippa_petak", "dummy = 1") > 0 && await hitung("sippa_ab_unggah", "dummy = 1") > 0, "dummy layar ab mengisi petak dan unggahan");
   assert.ok(!(await sip("GET", "/ab?aoi=DUMMY-AOI", undefined, pim.h)).j.petak.length, "dummy tersaring dari staf nyata"); assert.ok((await sip("GET", "/ab?aoi=DUMMY-AOI", undefined, ADMIN)).j.petak.length > 0, "admin melihat dummy");
   assert.equal((await sip("POST", "/dummy/isi", {layar: "ab"}, ADMIN)).s, 409);
+});
+uji("SP-052: rantai dummy tiap layar menunjuk pengisi yang ada; A/B dummy memberi tiga vonis G4 dan n 10/10/6/8 (vonisG4 sungguhan)", async () => {
+  const {RANTAI_DUMMY, PENGISI, LAYAR_SIPPA} = await import("../../src/sippa.js"), {vonisG4} = await import("../../public/pipa/hitung.js");
+  for (const l of LAYAR_SIPPA) assert.ok(Object.hasOwn(RANTAI_DUMMY, l), `layar ${l} tanpa entri RANTAI_DUMMY`);
+  for (const [l, ns] of Object.entries(RANTAI_DUMMY)) for (const n of ns) assert.equal(typeof PENGISI[n], "function", `${l}: pengisi ${n} tidak ada`);
+  assert.deepEqual(Object.keys(RANTAI_DUMMY).filter(l => !RANTAI_DUMMY[l].length).sort(), ["3d", "data", "hitung"], "hanya layar R2/hitung yang boleh tanpa pengisi");
+  const r = (await DB.prepare("SELECT * FROM sippa_petak WHERE aoi = 'DUMMY-AOI' AND dummy = 1").all()).results, per = l => r.filter(x => x.lengan === l).map(x => ({...x, tanggal_perlakuan: "2027-01-01"}));
+  assert.deepEqual(["konvensional", "lance", "lance_surfaktan", "sekat_rewetting"].map(l => per(l).length), [10, 10, 6, 8]);
+  assert.deepEqual(["lance", "lance_surfaktan", "sekat_rewetting"].map(l => vonisG4(per(l), per("konvensional")).vonis), ["LULUS", "BELUM BISA DIPUTUS", "TIDAK LULUS"], "tanggal digeser lewat pilot_sampai supaya vonis keluar");
 });
 uji("POST /api/sippa/ab-status/:id: moderator 200 ke ditinjau_evaluator (idempoten), pusdalops 403, status liar 400, id acak 404, tamu 401; laju 20", async () => {
   const id = (await DB.prepare("SELECT id FROM sippa_ab_unggah WHERE dummy = 0 LIMIT 1").first()).id, j0 = await jejak();
@@ -1296,7 +1305,7 @@ uji("POST /lapangan/kirim butir inspeksi: pasca_gelar komponen kit tugasnya dite
 uji("GET /api/sippa/aset dan /aset/:id: bentuk badan dengan inspeksi_terakhir dan mutu_terakhir; filter liar 400; tamu 401, verifikator 403; staf 61 tidak melihat prov 62 (404 identik); GET tanpa laju", async () => {
   const l = await sip("GET", "/aset", undefined, pim.h); assert.equal(l.s, 200, l.t); cekKepala(l, "aset"); assert.equal(l.j.n, l.j.aset.length);
   const a2 = l.j.aset.find(x => x.id === A2.id); for (const f of ["id", "kode", "kelas", "nama", "status", "sumber", "pemilik_aset", "pemelihara", "prov", "kab", "lat", "lon", "rencana_ganti", "keyakinan", "inspeksi_terakhir", "mutu_terakhir"]) assert.ok(f in a2, `kolom ${f}`);
-  assert.ok(!("atribut" in a2), "daftar ringkas tanpa atribut"); assert.equal(a2.inspeksi_terakhir.jenis, "mutu_air"); assert.deepEqual({e: a2.mutu_terakhir.e_coli_cfu, lolos: a2.mutu_terakhir.lolos}, {e: 3, lolos: false}, "3 CFU = tidak laik minum"); assert.ok(a2.mutu_terakhir.waktu > 0);
+  assert.deepEqual(a2.atribut.zona_konservasi, "rusak", "daftar memuat atribut terurai (tabel sumur /pipa/air)"); assert.equal(a2.inspeksi_terakhir.jenis, "mutu_air"); assert.deepEqual({e: a2.mutu_terakhir.e_coli_cfu, lolos: a2.mutu_terakhir.lolos}, {e: 3, lolos: false}, "3 CFU = tidak laik minum"); assert.ok(a2.mutu_terakhir.waktu > 0);
   assert.equal(l.j.aset.find(x => x.id === A1.id).inspeksi_terakhir, null); assert.equal(l.j.aset.find(x => x.id === A1.id).mutu_terakhir, null);
   assert.ok(l.j.aset.every((x, i, d) => !i || d[i - 1].kode <= x.kode), "urut kode");
   const f = await sip("GET", "/aset?kelas=sumur_bor&prov=62&status=berfungsi&sumber=badan_geologi", undefined, pim.h); assert.deepEqual(f.j.aset.map(x => x.id), [A2.id]);
@@ -1397,6 +1406,7 @@ uji("SP-045: butir sippa_mingguan: tanpa kit aktif tidak ada; kit banjir tanpa l
   const butir = async (h = pus.h) => { const r = await api("GET", "/api/pantau", undefined, h); assert.equal(r.s, 200, r.t); return {r, b: r.j.butir.filter(x => x.jenis === "sippa_mingguan")}; };
   const laporan = (jenis, waktu) => DB.prepare("INSERT INTO sippa_laporan (id, jenis, parameter, oleh, waktu, dummy) VALUES (?, ?, '{}', 'staf:uji045', ?, 0)").bind(crypto.randomUUID().replace(/-/g, "").slice(0, 16), jenis, waktu).run();
   try {
+    await DB.prepare("DELETE FROM sippa_laporan WHERE jenis = 'mingguan' AND dummy = 0").run();   // isolasi: uji laporan di atas mengarsipkan satu mingguan nyata < 7 hari
     await DB.prepare("UPDATE sippa_kit SET status = 'gudang'").run();
     assert.equal((await butir()).b.length, 0, "tanpa kit gelar atau banjir tidak ada butir");
     await DB.prepare("INSERT INTO sippa_kit (id, kode, jenis, status, prov, dibuat, diubah, dummy) VALUES (?2, 'SIPPA-845', 'banjir', 'banjir', '62', ?1, ?1, 0)").bind(Date.now(), KID).run();

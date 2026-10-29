@@ -24,22 +24,17 @@ const Bagikan = {
   get T() { return this.tema[this.hal]; },
   siap() { return this.T ? !!this.T.siap() : typeof S !== "undefined" && !!S.meta; },
   acuan() { return this.T ? this.T.acuan() : S.acuan || S.meta.dibuat; },
-  get K() {
-    let k = this._K();
-    /* *.workers.dev bermerek Centurisk97 (pemilik, 17 Okt 2026) */
-    if (SITUS_W) k = {...k, nama: k.nama.replace("Pantau Bencana", "Centurisk97"), pendek: "Centurisk97", akhir: "#Centurisk97"};
-    return this.en() ? {...k, nama: k.nama.replace("Pantau Bencana", "Disaster Monitoring"), pendek: "Disaster Monitoring", akhir: "#DisasterMonitoring"} : k;
-  },
+  get K() { return this._K(); },
   /* tema dari registry (medan `bagikan`); literal di bawah hanya cadangan sebelum bencana.json terbaca */
   /* nama pendek bencana untuk label ekspor ("Insight karhutla", "Tren banjir", ...): id halaman, kecuali yang namanya lebih dari satu kata */
   namaBencana() { return {cuaca: "cuaca ekstrem", udara: "kualitas udara", gunungapi: "gunung api"}[this.hal] || this.hal; },
   _K() {
     const r = this.reg?.[this.hal]?.bagikan, a = this.hal === "banjir"
-      ? {nama: "Pantau Bencana · Banjir, Longsor & Rob", pendek: "Pantau Bencana", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
-        tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#PantauBencana"}
-      : this.T ? {nama: "Pantau Bencana", pendek: "Pantau Bencana", sumber: "", tagar: [], akhir: "#PantauBencana"}
-      : {nama: "Pantau Bencana · Karhutla", pendek: "Pantau Bencana", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
-        tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#PantauBencana"};
+      ? {nama: "Centurisk97 · Banjir, Longsor & Rob", pendek: "Centurisk97", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
+        tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#Centurisk97"}
+      : this.T ? {nama: "Centurisk97", pendek: "Centurisk97", sumber: "", tagar: [], akhir: "#Centurisk97"}
+      : {nama: "Centurisk97 · Karhutla", pendek: "Centurisk97", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
+        tagar: ["#karhutla", "#kabutasap", "#kebakaranhutan", "#titikpanas"], akhir: "#Centurisk97"};
     return r ? {...a, nama: r.nama, sumber: "Sumber: " + r.sumber, tagar: r.tagar} : a;
   },
 
@@ -260,7 +255,7 @@ const Bagikan = {
     const kpi = [
       {l: "Piksel api 24 jam", s: "Piksel 24 j", v: fmt(p.px24), ket: `± ${fmt(Math.round(p.px24 * 14))} ha garis api aktif`, ks: `± ${fmt(Math.round(p.px24 * 14))} ha`, w: this.LV[3]},
       {l: "Hari menyala", s: "Hari menyala", v: fmt(p.hari), ket: "dalam 7 hari terakhir", ks: "7 hari terakhir", w: this.LV[2]},
-      {l: "Luas indikatif", s: "Luas", v: fmt(Math.round(p.luas)) + " ha", ket: `rentang ${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha`, ks: "indikatif", w: this.LV[2]},
+      {l: "Luas indikatif", s: "Luas", v: fmt(Math.round(p.luas)) + " ha", ket: `rentang ${fmt(Math.round(p.luas * .3))}–${fmt(Math.round(p.luas))} ha${p.snpp_proksi > 0 ? ", perkiraan" : ""}`, ks: p.snpp_proksi > 0 ? "perkiraan" : "indikatif", w: this.LV[2]},   /* snpp_proksi: kompleks memuat titik S-NPP warisan, ukuran pikselnya diperkirakan */
       {l: "Bahaya cuaca (FWI)", s: "FWI", v: p.cuaca ? fmt(p.fwi) : "–", ket: p.cuaca ? "bahaya cuaca " + FWI_KELAS[kf][0].toLowerCase() : "tidak tersedia", ks: p.cuaca ? FWI_KELAS[kf][0].toLowerCase() : "–", w: this.LV[kf]},
     ];
     const rows = [...dk.slice(0, 4).map(d => ({n: d.nama, v: Math.round(d.jarak), t: fmt(Math.round(d.jarak)) + " km", w: this.LV[1]})), ...(bp ? [{n: bp.nama, v: Math.round(bp.jarak), t: fmt(Math.round(bp.jarak)) + " km", w: this.LV[0]}] : [])];
@@ -269,7 +264,7 @@ const Bagikan = {
       ...(p.cuaca ? [{lv: kf, t: `Cuaca: suhu ${fmt(p.t)} °C, kelembapan ${fmt(p.rh)}%, angin ${fmt(p.ws)} km/jam.`}] : []),
       /* pola lokasi (watak_kluster.py `wt`, VIIRS 2012-2025 jendela ~16 km); bagian yang datanya kosong tidak ditulis */
       ...(p.wt ? [{lv: p.wt.lg || p.wt.k >= 2 ? 2 : 1, t: [p.wt.lg ? `Lokasi langganan: terbakar ${p.wt.a} dari ${p.wt.n} tahun` : p.wt.a ? `Terbakar ${p.wt.a} dari ${p.wt.n} tahun` : `Tidak pernah terbakar besar dalam ${p.wt.n} tahun terakhir`,
-        p.wt.rs >= 1 ? `seminggu ini ${fmt(p.wt.rs >= 10 ? Math.round(p.wt.rs) : p.wt.rs)} kali rata-rata setahun` : null, p.wt.md ? `dulu rata-rata ${fmt(p.wt.md)} hari` : null,
+        p.wt.rs >= 1 ? `seminggu ini ${p.wt.n7_proksi ? "±" : ""}${fmt(p.wt.rs >= 10 ? Math.round(p.wt.rs) : p.wt.rs)} kali rata-rata setahun${p.wt.n7_proksi ? " (setara S-NPP, sebagian NOAA-20)" : ""}` : null, p.wt.md ? `dulu rata-rata ${fmt(p.wt.md)} hari` : null,
         p.wt.akhir ? `musim sampai ${new Date(p.wt.akhir + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", timeZone: "UTC"})}` : null,
         p.wt.k >= 2 ? "sering kambuh, mop-up 14 hari" : null].filter(Boolean).join(", ") + "."}] : [])];
     return {tpl: "kompleks", prov: p.prov, lv: p.level, label: `Cluster ${p.id}`, judul: `${p.kec}, ${p.kab}`,
@@ -309,7 +304,7 @@ const Bagikan = {
   slug: s => String(s).toLowerCase().normalize("NFD").replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, ""),
   tglPanjang() { return new Date(this.tanggal() + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"}); },
   /* alamat yang dicetak di gambar: domain publik, bukan localhost/pratinjau */
-  situs() { const h = /^(localhost|127\.|\[::1\])/.test(location.host) || location.host.endsWith(".pages.dev") ? "pantau.terasurban.com" : location.host;
+  situs() { const h = /^(localhost|127\.|\[::1\])/.test(location.host) || location.host.endsWith(".pages.dev") ? "centurisk97.id" : location.host;
     return h; /* cukup domain, tanpa /insight dsb. (pemilik, 14 Okt 2026) */ },
   tautan() {
     if (this._urlKhusus) return this._urlKhusus; /* dibuka dari laci kompleks: tautan langsung /k/K0001 */
@@ -334,7 +329,7 @@ const Bagikan = {
   teksPendek() {
     if (this.T) return `${this.T.teksWil("")} ${this.en() ? "Follow" : "Pantau"} ${this.K.nama}:`;
     const d = this.data("");
-    return this.hal === "banjir" ? `${d.kpi[0].v} kecamatan berstatus banjir hari ini (${d.kpi[0].ket}). Pantau ${this.K.nama}:` : `${d.kpi[0].v} titik panas dan ${d.kpi[2].v} cluster prioritas pemadaman hari ini. Pantau ${this.K.nama}:`;
+    return this.hal === "banjir" ? `${d.kpi[0].v} kecamatan berstatus banjir hari ini (${d.kpi[0].ket}). Pantau ${this.K.nama}:` : (m => m ? `${d.kpi[0].v} titik panas pada data terakhir (${m.pdk}) dan ${d.kpi[2].v} cluster prioritas pemadaman. Pantau ${this.K.nama}:` : `${d.kpi[0].v} titik panas dan ${d.kpi[2].v} cluster prioritas pemadaman hari ini. Pantau ${this.K.nama}:`)(this.hariIni().mdr);
   },
 
   /* ---------------------------------------------------------------- bagikan sekali ketuk (bagi.js)
@@ -368,8 +363,9 @@ const Bagikan = {
       return E ? `${nm}: ${d.kpi[0].v} sub-districts on flood alert, 3-day rain up to ${d.kpi[1].v} (${tg}).` : `${nm}: ${d.kpi[0].v} kecamatan berstatus banjir, hujan 3 hari hingga ${d.kpi[1].v} (${tg}).`; }
     const kl = k ? klusterDi(k) : S.kluster.features, n3 = kl.filter(f => f.properties.level === 3).length, h = this.hariIni(), R = this.ringkasanD();
     const jw = R ? (k ? R.P?.[k]?.jiwa : R.kpi?.jiwaNas) : 0;
-    const dua = jw ? (E ? `${this.jiwa(jw)} people exposed to smoke` : `${this.jiwa(jw)} jiwa terpapar asap`) : (E ? `${this.n(k ? h.per[k] : h.tot)} hotspots today` : `${this.n(k ? h.per[k] : h.tot)} titik panas hari ini`);
-    return E ? `${nm}: ${this.n(n3)} priority fire complexes, ${dua} (${tg}).` : `${nm}: ${this.n(n3)} cluster prioritas, ${dua} (${tg}).`;
+    const mdr = !jw && h.mdr, n = this.n(k ? h.per[k] : h.tot);   /* mundur: titik panas bertanggal data terakhir, tanpa tanggal laporan di ujung */
+    const dua = jw ? (E ? `${this.jiwa(jw)} people exposed to smoke` : `${this.jiwa(jw)} jiwa terpapar asap`) : mdr ? (E ? `${n} hotspots in the latest data (${mdr.pdk})` : `${n} titik panas pada data terakhir (${mdr.pdk})`) : (E ? `${n} hotspots today` : `${n} titik panas hari ini`), ujung = mdr ? "" : ` (${tg})`;
+    return E ? `${nm}: ${this.n(n3)} priority fire complexes, ${dua}${ujung}.` : `${nm}: ${this.n(n3)} cluster prioritas, ${dua}${ujung}.`;
   },
   konteks(jenis, a) {
     const E = this.en(), tg = this.tglPendek(), o = location.origin, L = E ? "Live map:" : "Pantau langsung:";
@@ -424,30 +420,36 @@ const Bagikan = {
     const h = this.hariIni(), pr = S.meta.prioritas || [];
     return [...pr, ...semua.filter(k => !pr.includes(k)).sort((a, b) => (h.per[b] || 0) - (h.per[a] || 0))];
   },
-  /* titik panas hari kalender WIB per provinsi & kab (sensor utama, keyakinan sedang dan tinggi; sama dengan KPI peta saat rentang "Hari ini") */
+  /* titik panas hari kalender WIB per provinsi & kab (sensor utama, semua keyakinan sejak 28 Okt 2026; sama dengan KPI peta saat rentang "Hari ini") */
   hariIni() {
     if (this._hari) return this._hari;
-    const per = {}, kab = {}; let tot = 0, tinggi = 0;
-    for (const b of S.titik || []) { if (b[7] !== S.hariIni || !S.dihitung?.(b)) continue; const w = S.wilKunci[b[6]]; if (!w) continue;
+    /* Hotspot mundur (pemilik, 28 Okt 2026): selama S.hariKosong (index.html hitung(): belum ada satu titik terhitung bertanggal hari ini, rentang apa pun; gambar selalu tentang hari ini) yang dihitung hari terakhir berdata,
+       bukan hari ini yang kosong; mdr = teks bertanggalnya (tgl "Sel 27 Okt", pdk "27 Okt", jam "19.21"). Tanpa mundur tetap selalu hari ini, tak ikut pilihan Kemarin */
+    const m = S.hariKosong, kunci = m ? m.hari.slice(5) : S.hariIni, per = {}, kab = {}; let tot = 0, tinggi = 0;
+    for (const b of S.titik || []) { if (b[7] !== kunci || !S.dihitung?.(b)) continue; const w = S.wilKunci[b[6]]; if (!w) continue;
       per[w[0]] = (per[w[0]] || 0) + 1; kab[w[1]] = (kab[w[1]] || 0) + 1; tot++; if (b[5] === 2) tinggi++; }
-    return this._hari = {per, kab, tot, tinggi};
+    const loc = this.en() ? "en-GB" : "id-ID", z = {timeZone: "Asia/Jakarta"}, d = m && new Date(m.hari + "T12:00:00+07:00"),
+      mdr = m && {tgl: d.toLocaleDateString(loc, {...z, weekday: "short", day: "numeric", month: "short"}).replace(",", ""), pdk: d.toLocaleDateString(loc, {...z, day: "numeric", month: "short"}),
+        jam: new Date(m.jam).toLocaleTimeString(loc, {...z, hour: "2-digit", minute: "2-digit"})};
+    return this._hari = {per, kab, tot, tinggi, kunci, mdr};
   },
   polos(html) { return new DOMParser().parseFromString(String(html), "text/html").body.textContent.replace(/\s+/g, " ").trim(); },
   data(k) { return this._d?.[k || "-"] || ((this._d ||= {})[k || "-"] = this.T ? this.T.data(k) : this.hal === "banjir" ? this.dataBanjir(k) : this.dataApi(k)); },
   dataApi(k) {
     const h = this.hariIni(), kl = k ? klusterDi(k) : S.kluster.features, lvN = [0, 1, 2, 3].map(l => kl.filter(f => f.properties.level === l).length);
     const fw = k ? S.wilayah[k]?.fwi_maks : Math.max(0, ...Object.keys(S.meta.provinsi).map(p => S.wilayah[p]?.fwi_maks || 0)), kf = fw == null ? 0 : kelasFWI(fw);
-    const n = k ? h.per[k] || 0 : h.tot, lv = Math.max(0, ...kl.map(f => f.properties.level));
+    const n = k ? h.per[k] || 0 : h.tot, lv = Math.max(0, ...kl.map(f => f.properties.level)), mdr = h.mdr;
     const kpi = [
-      {l: "Titik panas hari ini", s: "Titik panas", v: fmt(n), ket: k ? "hari ini (WIB)" : `hari ini (WIB) · ${fmt(h.tinggi)} keyakinan tinggi`, ks: "hari ini (WIB)", w: this.LV[3], ik: "api"},
+      mdr ? {l: `Titik panas ${mdr.tgl}`, s: `Titik ${mdr.pdk}`, v: fmt(n), ket: `data terakhir s.d. ${mdr.jam} WIB${k ? "" : ` · ${fmt(h.tinggi)} keyakinan tinggi`}`, ks: `s.d. ${mdr.jam} WIB`, w: this.LV[3], ik: "api"}
+      : {l: "Titik panas hari ini", s: "Titik panas", v: fmt(n), ket: k ? "hari ini (WIB)" : `hari ini (WIB) · ${fmt(h.tinggi)} keyakinan tinggi`, ks: "hari ini (WIB)", w: this.LV[3], ik: "api"},
       {l: "Cluster aktif", s: "Cluster", v: fmt(kl.length), ket: "aktif 72 jam terakhir", ks: "aktif 72 jam", w: this.LV[2], ik: "lapis"},
       {l: "Prioritas pemadaman", s: "Prioritas", v: fmt(lvN[3]), ket: `${fmt(lvN[2])} lain siaga pemadaman`, ks: `+${fmt(lvN[2])} siaga`, w: this.LV[3], ik: "awas"},
       {l: "FWI maksimum", s: "FWI maks", v: fmt(fw), ket: fw == null ? "–" : "bahaya cuaca " + FWI_KELAS[kf][0].toLowerCase(), ks: fw == null ? "–" : FWI_KELAS[kf][0].toLowerCase(), w: this.LV[kf], ik: "cuaca"},
     ];
     let rows, jb, jp;
-    if (!k) { rows = Object.entries(h.per).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([p, v]) => ({n: namaProv(p), k: p, v, t: fmt(v), w: this.LV[S.wilayah[p]?.level ?? 0]})); jb = "Titik panas terbanyak hari ini"; jp = "Titik panas hari ini"; }
+    if (!k) { rows = Object.entries(h.per).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([p, v]) => ({n: namaProv(p), k: p, v, t: fmt(v), w: this.LV[S.wilayah[p]?.level ?? 0]})); jb = mdr ? `Titik panas terbanyak ${mdr.tgl}` : "Titik panas terbanyak hari ini"; jp = mdr ? `Titik panas ${mdr.tgl}` : "Titik panas hari ini"; }
     else {
-      rows = Object.entries(h.kab).filter(([x]) => x.startsWith(k + "|")).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([x, v]) => ({n: x.split("|")[1], v, t: fmt(v), w: this.LV[3]})); jb = "Kabupaten/kota dengan titik panas terbanyak hari ini"; jp = "Titik panas per kabupaten";
+      rows = Object.entries(h.kab).filter(([x]) => x.startsWith(k + "|")).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([x, v]) => ({n: x.split("|")[1], v, t: fmt(v), w: this.LV[3]})); jb = mdr ? `Kabupaten/kota dengan titik panas terbanyak ${mdr.tgl}` : "Kabupaten/kota dengan titik panas terbanyak hari ini"; jp = "Titik panas per kabupaten";
       if (!rows.length) { const c = {}; kl.forEach(f => c[f.properties.kab] = (c[f.properties.kab] || 0) + 1);
         rows = Object.entries(c).sort((a, b) => b[1] - a[1]).slice(0, 5).map(([x, v]) => ({n: x, v, t: fmt(v), w: this.LV[2]})); jb = "Kabupaten/kota dengan cluster terbanyak"; jp = "Cluster per kabupaten"; }
     }
@@ -690,7 +692,7 @@ const Bagikan = {
   },
   /* panel di kertas putih: abu netral sangat muda, tanpa bayangan (pemilik, 15 Okt 2026) */
   kartu(x, a, b, w, h, r = 26) { x.fillStyle = "#f5f6f8"; x.beginPath(); x.roundRect(a, b, w, h, r); x.fill(); },
-  /* logo Pantau Bencana (radar), sama dengan img/logo.svg; polos = siluet putih untuk watermark */
+  /* logo Centurisk97 (radar), sama dengan img/logo.svg; polos = siluet putih untuk watermark */
   logo(x, a, b, s, polos) {
     x.save(); x.translate(a, b); x.scale(s / 64, s / 64);
     if (!polos) { const g = x.createLinearGradient(0, 0, 64, 64); g.addColorStop(0, "#ff9a3d"); g.addColorStop(1, "#d63c2a"); x.fillStyle = g; x.beginPath(); x.roundRect(0, 0, 64, 64, 16); x.fill(); }
@@ -788,7 +790,7 @@ const Bagikan = {
     else if (k === "rek") this.rek(x, a, b, w, h, d.rek);
     else if (k === "peta") await this.petaBlok(x, a, b, w, h, d);
     else if (k === "ex") { const img = f => new Promise(ok => { const i = new Image(); i.onload = () => ok(i); i.onerror = () => ok(null); i.src = this.dasar + f; });
-      /* QR langsung ke https://pantau.terasurban.com (koreksi galat H, jadi logo di tengah tetap terbaca) */
+      /* QR langsung ke https://centurisk97.id (koreksi galat H, jadi logo di tengah tetap terbaca) */
       this._qr ||= Promise.all([img("img/qr-pantau.png"), img("img/teras-urban-mark-navy.png"), img("img/logo.svg?v=2")]); this.exBlok(x, a, b, w, h, d, ...(SITUS_W ? [null, null, (await this._qr)[2]] : await this._qr)); }   /* QR & logo Teras Urban tidak tampil di *.workers.dev */
   },
   /* ubin KPI gaya Oyenza: panel abu tanpa garis, ikon dalam lingkaran lembut, label kecil, angka besar, keterangan sebagai pil (pemilik, 15 Okt 2026) */
@@ -948,7 +950,7 @@ const Bagikan = {
     if (this.T) isi = this.T.keterangan?.(d, tg) || `${d.judul}, ${tg}. ${d.sub}.`;
     else if (this.hal === "banjir") isi = `${d.tpl === "provinsi" ? d.judul : "Situasi banjir, longsor, dan rob"}, ${tg}: ${K[0]} kecamatan berstatus banjir (${d.kpi[0].ket}). Hujan 3 hari terlebat ${K[1]}, ${K[2]} titik sungai di atas ambang banjir 2 tahunan, ${K[3]} titik pantai berstatus rob.`;
     else isi = d.tpl === "kompleks" ? `${d.label} di ${d.judul}: ${d.sub}.`
-      : `${d.tpl === "provinsi" ? d.judul : "Indonesia"}, ${tg}. Satelit mendeteksi ${K[0]} titik panas hari ini. Dari ${K[1]} cluster yang aktif, ${K[2]} perlu diprioritaskan untuk dipadamkan. Bahaya cuaca kebakaran (FWI) mencapai ${K[3]}, kategori ${d.kpi[3].ket.replace(/^bahaya cuaca /, "")}.`;
+      : `${d.tpl === "provinsi" ? d.judul : "Indonesia"}, ${tg}. ${(m => m ? `Belum ada data titik panas NASA FIRMS untuk hari ini. Data terakhir ${m.tgl} s.d. ${m.jam} WIB: satelit mendeteksi ${K[0]} titik panas.` : `Satelit mendeteksi ${K[0]} titik panas hari ini.`)(this.hariIni().mdr)} Dari ${K[1]} cluster yang aktif, ${K[2]} perlu diprioritaskan untuk dipadamkan. Bahaya cuaca kebakaran (FWI) mencapai ${K[3]}, kategori ${d.kpi[3].ket.replace(/^bahaya cuaca /, "")}.`;
     const rek = d.tpl === "provinsi" && d.rek[0] ? `\n\nLangkah utama: ${d.rek[0].t}.` : "";
     return `${isi}${top ? `\n\nPaling banyak di ${top}.` : ""}${rek}\n\nPeta dan data lengkapnya: https://${this.situs()}\n\n${tagar}`;
   },
@@ -1001,7 +1003,7 @@ const Bagikan = {
     }
     const h = this.hariIni(), R = Object.keys(S.meta.provinsi).map(k => { const kl = klusterDi(k); return {k, n: h.per[k] || 0, kl: kl.length, p: kl.filter(f => f.properties.level === 3).length, s: kl.filter(f => f.properties.level === 2).length, w: S.wilayah[k] || {}}; })
       .sort((a, b) => b.n - a.n || b.kl - a.kl);
-    return {kepala: ["Provinsi", "Status", "Titik hari ini", "Cluster aktif", "Prioritas", "Siaga", "FWI maks"], angka: [2, 3, 4, 5, 6],
+    return {kepala: ["Provinsi", "Status", h.mdr ? `Titik ${h.mdr.pdk}` : "Titik hari ini", "Cluster aktif", "Prioritas", "Siaga", "FWI maks"], angka: [2, 3, 4, 5, 6],
       baris: R.map(r => [namaProv(r.k), S.meta.status[r.w.level ?? 0], r.n, r.kl, r.p, r.s, r.w.fwi_maks ?? null]), aktif: R.filter(r => r.n || r.kl).length};
   },
   /* kompleks prioritas (karhutla) / kecamatan siaga-awas (banjir) */
@@ -1030,7 +1032,7 @@ const Bagikan = {
       "Riwayat kejadian: DIBI BNPB. Fitur banjir masih uji coba; cek peringatan resmi BMKG dan BPBD sebelum bertindak."];
     const db = S.meta.dbscan || {};
     return [
-      "Titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, lokasi unik ± 375 m per hari kalender WIB.",
+      "Titik panas: NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), semua tingkat keyakinan, lokasi unik ± 375 m per hari kalender WIB.",
       `Cluster: titik dikelompokkan (DBSCAN radius ${fmt(db.eps_km)} km, jendela ${fmt(db.jendela_hari)} hari); aktif ${fmt(db.aktif_jam)} jam, di gambut ${fmt(db.aktif_gambut_jam)} jam.`,
       `Status kompleks: ${S.meta.status.join(", ")}; dari ukuran front aktif, bahaya cuaca, kekeringan gambut (DC), dan risiko wilayah.`,
       "Bahaya cuaca: Fire Weather Index sistem Kanada dari prakiraan BMKG/Open-Meteo; kelas rendah 0–1, sedang 2–6, tinggi 7–13, sangat tinggi di atas 13.",
@@ -1080,8 +1082,8 @@ const Bagikan = {
     } else {
       const h = this.hariIni(), hr = Object.keys(S.wilayah[Object.keys(S.wilayah)[0]]?.harian || {}).sort(), pk = new Map(), ang = new Map();
       for (const x of S.posko || []) { pk.set(x.prov, (pk.get(x.prov) || 0) + 1); ang.set(x.prov, (ang.get(x.prov) || 0) + anggaran(S.semuaPosko.get(x.id)).total); }
-      const tg = {}; for (const b of S.titik) if (b[7] === S.hariIni && S.dihitung(b) && b[5] === 2) { const p = S.wilKunci[b[6]]?.[0]; tg[p] = (tg[p] || 0) + 1; }
-      tambah("Provinsi", ["Kode", "Provinsi", "Status", "Titik panas hari ini (WIB)", "Keyakinan tinggi hari ini", ...hr.map(t => "Titik " + t), "Cluster aktif", "Prioritas pemadaman", "Siaga pemadaman", "Patroli terpadu", "FWI maks", "FWI rata-rata", "DC maks", "FFMC maks", "Posko lapangan", "Anggaran posko (Rp)", "Pantauan harian BNPB"],
+      const tg = {}; for (const b of S.titik) if (b[7] === h.kunci && S.dihitung(b) && b[5] === 2) { const p = S.wilKunci[b[6]]?.[0]; tg[p] = (tg[p] || 0) + 1; }
+      tambah("Provinsi", ["Kode", "Provinsi", "Status", h.mdr ? `Titik panas ${h.mdr.tgl}` : "Titik panas hari ini (WIB)", h.mdr ? `Keyakinan tinggi ${h.mdr.tgl}` : "Keyakinan tinggi hari ini", ...hr.map(t => "Titik " + t), "Cluster aktif", "Prioritas pemadaman", "Siaga pemadaman", "Patroli terpadu", "FWI maks", "FWI rata-rata", "DC maks", "FFMC maks", "Posko lapangan", "Anggaran posko (Rp)", "Pantauan harian BNPB"],
         Object.keys(S.meta.provinsi).map(k => { const w = S.wilayah[k] || {}, kl = klusterDi(k), n = l => kl.filter(f => f.properties.level === l).length;
           return [k, namaProv(k), S.meta.status[w.level ?? 0], h.per[k] || 0, tg[k] || 0, ...hr.map(t => w.harian?.[t] ?? 0), kl.length, n(3), n(2), n(1), w.fwi_maks ?? null, w.fwi_rata ?? null, w.dc_maks ?? null, w.ffmc_maks ?? null, pk.get(k) || 0, Math.round(ang.get(k) || 0), S.meta.bnpb?.[k] ? "ya" : "tidak"]; })
           .sort((a, b) => b[3] - a[3] || b[5 + hr.length] - a[5 + hr.length]));

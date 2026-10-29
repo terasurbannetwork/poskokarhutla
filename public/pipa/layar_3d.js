@@ -2,7 +2,7 @@
    Butuh global public/inti: fmt, esc, nanti (dimuat cangkang atau app.js). Logika murni dan runtime three di adegan.js (three hanya dimuat di layar ini).
    Semua angka dari hidraulika() di hitung.js, sama dengan kalkulator; panel teks memuat angka yang sama dengan kanvas (alternatif aksesibel). */
 import {hidraulika, KONST} from "./hitung.js";
-import {buatAdegan, tataKomponen, angkaPanel, cekKedalaman, dariKompleks, SKALA_TEKANAN, TEPI_BAR, INFO_KOMPONEN} from "./adegan.js";
+import {buatAdegan, tataKomponen, angkaPanel, cekKedalaman, dariKompleks, rentangWaktu, KECEPATAN, SKALA_TEKANAN, TEPI_BAR, INFO_KOMPONEN} from "./adegan.js";
 import {galat, menunggu} from "./keadaan.js";
 import {ikon} from "./ikon.js";
 
@@ -76,8 +76,11 @@ export async function pasang(akar, konteks) {
         <div class="sp-3d-kamera" role="group" aria-label="Kontrol kamera">
           <button type="button" class="ad-tombol" data-kam="kiri">Putar kiri</button><button type="button" class="ad-tombol" data-kam="kanan">Putar kanan</button>
           <button type="button" class="ad-tombol" data-kam="dekat">Perbesar</button><button type="button" class="ad-tombol" data-kam="jauh">Perkecil</button>
-          <button type="button" class="ad-tombol" data-kam="reset">Atur ulang</button>
-          <button type="button" class="ad-tombol" data-anim aria-pressed="${st.anim}">${st.anim ? "Jeda animasi" : "Putar animasi"}</button></div>
+          <button type="button" class="ad-tombol" data-kam="reset">Atur ulang</button></div>
+        <div class="sp-3d-waktu" role="group" aria-label="Linimasa animasi">
+          <button type="button" class="ad-tombol" data-anim aria-pressed="${st.anim}">${st.anim ? "Jeda animasi" : "Putar animasi"}</button>
+          <div class="ad-seg" role="radiogroup" aria-label="Kecepatan animasi">${KECEPATAN.map(k => `<button type="button" role="radio" aria-checked="${k === 1}" tabindex="${k === 1 ? 0 : -1}" data-kec="${k}">${fmt(k)}x</button>`).join("")}</div>
+          <label class="sp-3d-geser" data-geser-waktu hidden><span class="sr">Waktu simulasi, dalam menit</span><input type="range" data-waktu min="0" max="30" step="1" value="0"><output data-waktu-teks>t = 0 menit</output></label></div>
         <ul class="sa-legenda" data-legenda hidden aria-label="Skala tekanan selang"></ul>
         <p class="sa-catat" data-catat hidden>Ilustrasi, bukan model panas terkalibrasi (model M04 belum dikalibrasi)</p>
       </section>
@@ -112,8 +115,9 @@ export async function pasang(akar, konteks) {
     try { hasil = hitung(); pesan(""); } catch (e) { if (!(e instanceof RangeError)) throw e; pesan(e.message); return; }
     q1("[data-angka]").innerHTML = angkaPanel(hasil).map(htmlKartu).join("");
     const ju = q1("[data-legenda]"); ju.hidden = st.adegan !== "jalur";
-    if (st.adegan === "jalur") ju.innerHTML = SKALA_TEKANAN.map(s => `<li><i class="sa-sw sa-k${s.kelas}"></i>${esc(LABEL_SKALA[s.kunci](hasil.p_batas_bar))}</li>`).join("");
+    if (st.adegan === "jalur") ju.innerHTML = SKALA_TEKANAN.map(s => `<li><i class="sa-sw sa-k${esc(s.kelas)}"></i>${esc(LABEL_SKALA[s.kunci](hasil.p_batas_bar))}</li>`).join("");
     q1("[data-catat]").hidden = st.adegan !== "injeksi";
+    const rw = rentangWaktu(st.adegan, hasil); q1("[data-geser-waktu]").hidden = !rw.ada; if (rw.ada) q1("[data-waktu]").max = String(rw.maks);
     const profilKompleks = !!st.kompleks && st.kompleks.elev_air_m != null && st.kompleks.elev_kompleks_m != null && Math.abs(st.p.dz_m - (st.kompleks.elev_kompleks_m - st.kompleks.elev_air_m)) < 0.05;
     q1("[data-pil-adegan]").innerHTML = st.adegan === "jalur" ? (profilKompleks ? pil("DSM berkanopi, ilustrasi", "estimasi-model", "Elevasi GLO-30 berkanopi sampai DEMNAS tiba") : pil("Garis lurus dari beda elevasi", "asumsi-kebijakan")) : pil("Skala ilustrasi", "asumsi-kebijakan");
     const sk = q1("[data-sec-komp]"); sk.hidden = st.adegan !== "susunan";
@@ -136,7 +140,8 @@ export async function pasang(akar, konteks) {
     jadwalkan();
   }
   akar.addEventListener("input", e => {
-    const r = e.target.closest("[data-k]"), n = e.target.closest("[data-kn]");
+    const r = e.target.closest("[data-k]"), n = e.target.closest("[data-kn]"), w = e.target.closest("[data-waktu]");
+    if (w) { q1("[data-waktu-teks]").textContent = `t = ${fmt(w.valueAsNumber)} menit`; adegan?.cari(w.valueAsNumber); return; }
     if (r) ubah(r.dataset.k, r.valueAsNumber, false); else if (n) ubah(n.dataset.kn, n.valueAsNumber, true);
   }, {signal: sinyal});
 
@@ -153,17 +158,23 @@ export async function pasang(akar, konteks) {
   };
   grupRadio(".sp-3d-atas .ad-seg", b => { st.adegan = b.dataset.adegan; setLabel("anim", ""); setLabel("skala", ""); jadwalkan(); });
   grupRadio("[data-form] .ad-seg", b => { st.p.dn_mm = +b.dataset.dn; jadwalkan(); });
+  grupRadio(".sp-3d-waktu .ad-seg", b => adegan?.kecepatan(+b.dataset.kec));
 
   /* komponen: chip dan klik kanvas; kartu info berubah di handler (murah), pewarnaan 3D lewat jadwalkan */
   const pilihKomponen = id => { st.pilih = id; jadwalkan(); };
   q1("[data-chip-komp]").addEventListener("click", e => { const b = e.target.closest("[data-komp]"); if (!b) return; q1("[data-chip-komp]").querySelectorAll(".ad-chip").forEach(x => x.setAttribute("aria-pressed", String(x === b))); st.pilih = b.dataset.komp; q1("[data-kartu-komp]").innerHTML = htmlKartuKomponen(st.pilih, tataKomponen(st.p.n_lance)); nanti(() => adegan?.pilih(st.pilih)); }, {signal: sinyal});
 
   /* kamera dan animasi */
-  q1(".sp-3d-kamera").addEventListener("click", e => {
+  q1(".sp-3d-kanvas").addEventListener("click", e => {
     const t = e.target.closest("button"); if (!t) return;
     if (t.dataset.kam) return adegan?.kamera(t.dataset.kam);
     if (t.hasAttribute("data-anim")) { st.anim = !st.anim; t.setAttribute("aria-pressed", String(st.anim)); t.textContent = st.anim ? "Jeda animasi" : "Putar animasi"; adegan?.animasi(st.anim); }
   }, {signal: sinyal});
+  /* linimasa: nilai dari adegan ke penggeser, kecuali saat pengguna sedang menggeser */
+  const dariWaktu = (m, maks) => {
+    const sl = q1("[data-waktu]"); if (!sl || !maks || sl.matches(":active")) return;
+    sl.max = String(maks); sl.value = String(Math.floor(m)); q1("[data-waktu-teks]").textContent = `t = ${fmt(Math.floor(m))} menit`;
+  };
 
   /* kompleks: pilih dari daftar (tulis id), terapkan panjang, Δz, dan elevasi trase dari kelayakan_kompleks */
   const infoKompleks = () => {
@@ -211,10 +222,10 @@ export async function pasang(akar, konteks) {
   muatKompleks();
 
   try {
-    const a = await buatAdegan(wadah, {animasiAwal: st.anim, onPilih: pilihKomponen, onLabel: setLabel});
+    const a = await buatAdegan(wadah, {animasiAwal: st.anim, onPilih: pilihKomponen, onLabel: setLabel, onWaktu: dariWaktu});
     if (sinyal.aborted) { a.lepas(); return; }
     adegan = a;
-    if (!a.webgl) akar.querySelector(".sp-3d-kamera").hidden = true;
+    if (!a.webgl) akar.querySelectorAll(".sp-3d-kamera, .sp-3d-waktu").forEach(x => { x.hidden = true; });
     segarkan();
   } catch (e) {
     if (sinyal.aborted) return;

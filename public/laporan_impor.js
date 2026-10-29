@@ -35,21 +35,36 @@ async function bacaPdf(buf) {
   return items;
 }
 
-/* bacaBerkas(file) -> {teks, items, catatan}. PDF memberi items (koordinat); teks biasa tidak,
-   dan panggilnya harus memberi tahu bahwa tabel status daerah tak ikut terbaca. */
+/* bacaServer({wa}|{file}) -> {teks, catatan}: Word, Excel, gambar, atau PDF pindai dibaca server (POST /api/laporan-bnpb/baca).
+   wa = id lampiran kotak masuk WA (tanpa badan); file = berkas unggahan (badan mentah). */
+async function bacaServer({wa, file}) {
+  const o = {method: "POST", credentials: "same-origin"};
+  if (!wa) o.headers = {"content-type": file.type || "application/octet-stream", "x-nama-berkas": encodeURIComponent(file.name || "berkas")}, o.body = file;
+  const r = await fetch("/api/laporan-bnpb/baca" + (wa ? `?wa=${encodeURIComponent(wa)}` : ""), o);
+  const j = await r.json().catch(() => ({}));
+  if (!r.ok) throw new Error(j.galat || (r.status === 503 ? "pembaca berkas di server tidak tersedia" : "server menolak (" + r.status + ")"));
+  if (!String(j.teks || "").trim()) throw new Error("tidak ada teks yang terbaca");
+  return {teks: j.teks, catatan: j.catatan || ""};
+}
+const PDF_KOSONG = 80;   // di bawah ini (huruf) dianggap hasil pindai
+const teksItems = items => items.reduce((n, i) => n + i.str.trim().length, 0);
+
+/* bacaBerkas(file) -> {teks, items, catatan}. PDF bertulisan memberi items (koordinat); jenis lain dibaca server dan tanpa items,
+   sehingga tabel status daerah tak ikut terbaca. */
 async function bacaBerkas(file) {
   if (!file) throw new Error("Tidak ada berkas");
   if (file.size > MAKS_BERKAS) throw new Error(`Berkas ${Math.round(file.size / 1048576)} MB, maksimal ${MAKS_BERKAS / 1048576} MB`);
   const nama = (file.name || "").toLowerCase();
   if (nama.endsWith(".pdf") || file.type === "application/pdf") {
     const items = await bacaPdf(await file.arrayBuffer());
-    if (!items.length) throw new Error("PDF ini tidak memuat teks (kemungkinan hasil pindai). Unggah PDF dari dokumen aslinya, atau tempel teksnya.");
-    return {items, teks: window.LaporanUrai.tataLetak(items), catatan: ""};
+    if (teksItems(items) >= PDF_KOSONG) return {items, teks: window.LaporanUrai.tataLetak(items), catatan: ""};
+    try { return {items: null, ...(await bacaServer({file}))}; }
+    catch (e) { throw new Error("PDF ini tidak memuat teks (hasil pindai) dan pembacaan di server gagal: " + e.message); }
   }
-  if (/\.(txt|md|csv)$/.test(nama) || /^text\//.test(file.type || "")) return {items: null, teks: await file.text(), catatan: ""};
-  if (/\.docx?$/.test(nama)) throw new Error("Berkas Word belum bisa dibaca langsung. Simpan dulu sebagai PDF (Berkas > Unduh > PDF), lalu unggah PDF-nya.");
-  throw new Error("Jenis berkas belum didukung. Unggah PDF laphar, atau tempel teksnya.");
+  if (/\.(txt|md)$/.test(nama) || /^text\/(plain|markdown)/.test(file.type || "")) return {items: null, teks: await file.text(), catatan: ""};
+  if (/\.(docx?|xlsx?|odt|ods|csv|jpe?g|png|webp)$/.test(nama) || /^image\//.test(file.type || "")) return {items: null, ...(await bacaServer({file}))};
+  throw new Error("Jenis berkas belum didukung. Unggah PDF, Word, Excel, atau foto, atau tempel teksnya.");
 }
 
-window.LaporanImpor = {bacaBerkas, bacaPdf, MAKS_BERKAS};
+window.LaporanImpor = {bacaBerkas, bacaPdf, bacaServer, teksItems, PDF_KOSONG, MAKS_BERKAS};
 })();

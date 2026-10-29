@@ -241,7 +241,7 @@ function renderLegenda() {
     ${grid && m === "dc" ? `<div class="lbl">Kode kekeringan (DC)</div><div class="leg" style="margin:4px 0 8px">${[[50, "< 80 rendah"], [150, "80 sedang"], [250, "190 tinggi"], [350, "300 sangat tinggi"], [500, "≥ 425 ekstrem"]].map(([v, t]) => sw(warnaTangga("dc", v), t)).join("")}</div>` : ""}
     ${Peta.lihat("embung") && S.embung ? `<div class="lbl">Embung, waduk, bendungan (OpenStreetMap)</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#1d6fa5"></i>lingkaran = jumlah objek per kabupaten (titik bukan lokasi embung), ${fmt(S.embung.total)} objek se-Indonesia; kasar, tidak lengkap</span></div>` : ""}
     ${Peta.lihat("gambut") && S.bukti?.gambut?.daftar?.length ? `<div class="lbl">Konsesi berlahan gambut di sel Siaga atau Awas</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#7a4a2c"></i>${fmt(S.bukti.gambut.daftar.length)} cluster teratas (menurut DC) dari ${fmt(S.bukti.gambut.n_kering)}, tanpa nama perusahaan; indikator kasar per sel 0,5°</span></div>` : ""}
-    <div class="lbl" style="margin-top:2px">Deteksi Pantau Bencana</div></div></details>`;
+    <div class="lbl" style="margin-top:2px">Deteksi Centurisk97</div></div></details>`;
   LG?.susunLegenda($("#legenda"), {saatBuka: o => legBuka = o}); }
 
 /* ================================================================ popup wilayah */
@@ -257,7 +257,7 @@ const Analisa = {
       ${kot("Jiwa di wilayah kering", rb(a.jiwa[0]), `dari ${rb(a.total)} jiwa`)}${kot("Jiwa Awas", a.jiwa[2] ? rb(a.jiwa[2]) : "–", "di kecamatan Awas")}
       ${a.spi3 != null ? kot("SPI " + spiBulan(), F2(a.spi3), katSpi(a.spi3)) : ""}${a.mm3 != null ? kot("Hujan 3 bulan", fmt(a.mm3) + " mm", sp ? "sampai " + spiBulan() : "") : ""}${a.pct != null ? kot("Tanah", fmt(a.pct), "persentil") : ""}${a.dc != null ? kot("Kode DC", fmt(a.dc), "rata-rata tertimbang") : ""}
       ${!kab ? kot("Kabupaten/kota", `${fmt(a.kab_n[0])}`, `${fmt(a.kab_n[2])} Awas`) : ""}</div>
-      <p class="fnd">Deteksi Pantau Bencana</p>`;
+      <p class="fnd">Deteksi Centurisk97</p>`;
     const isi = `<div id="skBlok"></div>` + dasar + this.blokLain(kunci, kab);
     this.buka(isi, kepala); this.isiSK(kunci, kab); },
   /* blok HTH, prakiraan SEAS5, padi, IRBI: tiap blok dibuang bila datanya tidak ada */

@@ -105,7 +105,7 @@ function tutup() {
 /* ---------------------------------------------------------------- angin & abu */
 async function hitungAngin() {
   const s = S, ga = s.abu?.gunung?.find(x => x.id === s.id);
-  let a = anginSekarang(ga?.angin); s.anginSumber = a ? "angin prakiraan harian Pantau Bencana (Open-Meteo, ECMWF IFS)" : "";
+  let a = anginSekarang(ga?.angin); s.anginSumber = a ? "angin prakiraan harian Centurisk97 (Open-Meteo, ECMWF IFS)" : "";
   if (!a) { try { a = await anginOpenMeteo(s.g.lat, s.g.lon); s.anginSumber = "angin prakiraan Open-Meteo (ECMWF IFS), diambil langsung"; } catch (e) { console.error("angin:", e); } }
   if (S === s) s.angin = a;
 }
@@ -392,7 +392,7 @@ function hasilKartu() {
   const bagian = [abuTxt, laharTxt, r ? `awan panas sampai ${hl(BULAT(r.pdc_km, 1) + " km")}${kec}` : ""].filter(Boolean);
   if (!bagian.length) { h.innerHTML = `<p class="sm-msg">Menghitung…</p>`; return; }
   const judul = "Skenario: " + bagian.join(", ") + ".";
-  h.innerHTML = Kartu.kartu("Hasil simulasi", judul, r ? `<p class="sm-msg">Lahar menutup ${BULAT(r.lahar_km2, 1)} km² lembah dan awan panas ${BULAT(r.pdc_km2, 1)} km².${catatan} Putar waktunya di bawah peta.</p>` : "", "Model skenario Pantau Bencana (abu_model.js dan LAHARZ)");
+  h.innerHTML = Kartu.kartu("Hasil simulasi", judul, r ? `<p class="sm-msg">Lahar menutup ${BULAT(r.lahar_km2, 1)} km² lembah dan awan panas ${BULAT(r.pdc_km2, 1)} km².${catatan} Putar waktunya di bawah peta.</p>` : "", "Model skenario Centurisk97 (abu_model.js dan LAHARZ)");
 }
 const utamaPdcMenit = I => Math.max(0, ...I.map(i => i.pdc_menit || 0));
 const arahMata = d => ["utara", "timur laut", "timur", "tenggara", "selatan", "barat daya", "barat", "barat laut"][Math.round(d / 45) % 8];

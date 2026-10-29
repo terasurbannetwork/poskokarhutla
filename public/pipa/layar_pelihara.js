@@ -3,22 +3,25 @@
    Jadwal dihitung KLIEN dengan SippaPelihara.jadwal() dari pelihara.js (satu-satunya tempat interval, laju, dan kelas K1-K10). Semua interval dan laju
    berlabel asumsi-kebijakan. Butuh global public/inti: fmt, esc, jamWIB, paginasi, nanti. Tanpa toFixed; semua teks data lewat esc. */
 import {KELAS, KELAS_ASET, kelasDari, jadwal, laikGelar, stokMin, biayaTahun} from "./pelihara.js";
-import {peranKlien, kirimPost, bukaDialog, tutupDialog} from "./layar_kit.js";
+import {peranKlien, kirimPost, bukaDialog, tutupDialog, muatGayaKit} from "./layar_kit.js";
+import {katalogHtml} from "./katalog_alat.js";
+import {sukuCadangHtml, muatGayaLapangan} from "./lapangan_staf.js";
 import {memuat, kosong, galat} from "./keadaan.js";
+import {daftarBeli, teksBeli, servisPompa, servisHtml} from "./logistik.js";
 
 const HARI = 864e5, WIB = 7 * 36e5, PER_HAL = 25, TUNGGU_HARI = 60;
 export const STATUS_JADWAL = ["terlambat", "segera", "aman", "belum_pernah"];
 export const TEKS_STATUS = {terlambat: "Terlambat", segera: "Segera", aman: "Aman", belum_pernah: "Belum pernah"};
 export const SKOR_KATA = ["Baik", "Rusak ringan", "Rusak berat", "Hilang atau afkir"];
 const URUT_STATUS = {terlambat: 0, segera: 1, belum_pernah: 2, aman: 3};
-const NAMA_KELAS = {K1: "Pompa", K2: "Selang", K3: "Hidraulik", K4: "Sensor", K5: "APD", K6: "Koridor", K7: "Sumur", K8: "Pipa sementara", K9: "Jembatan darurat", K10: "Jembatan pantau"};
+const NAMA_KELAS = {K1: "Pompa", K2: "Selang", K3: "Hidraulik", K4: "Sensor", K5: "APD", K7: "Sumur", K8: "Pipa sementara", K9: "Jembatan darurat", K10: "Jembatan pantau"};
 const NAMA_BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 /* unit dilayani per kit gambut (PRD §6.1, BOM di src/sippa.js GAMBUT) untuk stok_min = ceil(laju x kit x satuan x (1 + 60/180)); kode di luar daftar tanpa minimum.
    Payload /api/sippa/pelihara tidak membawa jumlah per kit, jadi daftar ini asumsi-kebijakan sampai server mengirim BOM per gudang. */
 export const SATUAN_KIT = {"P-101": 2, "IMP-101": 2, "SF-101": 2, "C-101": 20, "I-101": 8, "H-101": 1000, "H-201": 500, "T-101": 8, "Q-101": 20};
 const JENIS_SAH = ["pra_gelar", "pasca_gelar", "berkala", "pra_musim", "tahunan", "servis", "uji_tekanan", "mutu_air"];   // himpunan bagian JENIS_INSPEKSI di src/sippa.js
 const TEKS_JENIS = {pra_gelar: "Pra-gelar", pasca_gelar: "Pasca-gelar", berkala: "Berkala", pra_musim: "Pra-musim", tahunan: "Tahunan", servis: "Servis", uji_tekanan: "Uji tekanan", mutu_air: "Uji mutu air"};
-const TINDAKAN = [["tidak_ada", "Tidak ada"], ["perbaiki", "Perbaiki"], ["ganti", "Ganti"], ["afkir", "Afkir"], ["uji_ulang", "Uji ulang"], ["serahkan", "Serahkan"]];
+const TINDAKAN = [["tidak_ada", "Tidak ada"], ["perbaiki", "Perbaiki"], ["ganti", "Ganti"], ["afkir", "Afkir"], ["uji_ulang", "Uji ulang"], ["serahkan", "Serahkan"], ["tunggu_suku_cadang", "Tunggu suku cadang"]];
 const SATUAN_STOK = ["unit", "m", "set", "paket", "liter"], ALASAN_STOK = [["terima", "Terima"], ["pakai", "Pakai"], ["pindah", "Pindah"], ["koreksi", "Koreksi"], ["afkir", "Afkir"]];
 const RE_BOM = /^[A-Z]{1,4}-\d{1,6}$/;
 
@@ -205,9 +208,9 @@ export function kalenderHtml(k) {
 export function stokHtml(baris, peran) {
   const bawah = baris.filter(b => b.bawah).length, tulis = peran === "W" || peran === "M";
   const isi = baris.length ? `<div class="ad-tabel-wadah"><table class="ad-tabel sp-tabel-stok"><caption class="sr">Stok suku cadang per gudang</caption><thead><tr>${["Gudang", "Kode", "Saldo", "Minimum", "Keterangan"].map(k => `<th scope="col">${k}</th>`).join("")}</tr></thead><tbody>`
-    + baris.map(b => `<tr>${td("Gudang", esc(b.gudang))}${td("Kode", esc(b.kode_bom))}${td("Saldo", `${esc(fmt(b.saldo))} ${esc(b.satuan)}`, "n")}${td("Minimum", b.min == null ? "–" : esc(fmt(b.min)), "n")}${td("Keterangan", b.bawah ? `<span class="sp-laik">di bawah minimum</span>` : b.min == null ? `<span class="sp-sub">tanpa minimum</span>` : "")}</tr>`).join("")
+    + baris.map(b => `<tr>${td("Gudang", esc(b.gudang))}${td("Kode", esc(b.kode_bom))}${td("Saldo", `${esc(fmt(b.saldo))} ${esc(b.satuan)}`, "n")}${td("Minimum", b.min == null ? "–" : esc(fmt(b.min)), "n")}${td("Keterangan", b.bawah ? `<span class="sp-laik">di bawah minimum</span> ${esc(teksBeli(b))}` : b.min == null ? `<span class="sp-sub">tanpa minimum</span>` : "")}</tr>`).join("")
     + `</tbody></table></div>` : `<p class="ad-kosong">Belum ada stok tercatat. Catat penerimaan suku cadang lewat tombol Catat stok.</p>`;
-  return `<section class="sp-panel-pel" aria-labelledby="sp-stok-h"><div class="sp-panel-kepala"><h2 class="sp-sub-judul" id="sp-stok-h">${bawah > 0 ? `${esc(fmt(bawah))} kode di bawah minimum` : "Stok suku cadang"}</h2>${tulis ? `<button type="button" class="ad-tombol" data-stok>Catat stok</button>` : ""}</div>${isi}`
+  return `<section class="sp-panel-pel" aria-labelledby="sp-stok-h"><div class="sp-panel-kepala"><h2 class="sp-sub-judul" id="sp-stok-h">${bawah > 0 ? `${esc(fmt(bawah))} kode di bawah minimum, ${esc(fmt(daftarBeli(baris).length))} perlu dibeli` : "Stok suku cadang"}</h2>${tulis ? `<button type="button" class="ad-tombol" data-stok>Catat stok</button>` : ""}</div>${isi}`
     + `<p class="ad-catat">Minimum = pembulatan ke atas dari laju pakai x unit dilayani x (1 + ${esc(fmt(TUNGGU_HARI))}/180), unit dilayani dari BOM kit gambut (PRD §6.10.5). ${pilYakin("asumsi-kebijakan", "asumsi-kebijakan", JUDUL_ASUMSI)}</p></section>`;
 }
 
@@ -273,12 +276,22 @@ export async function pasang(akar, konteks) {
     if (sinyal.aborted) return;
     const d = st.d, laik = kitTidakLaik(d, st.rows), stok = barisStok(d), r = ringkasan(st.rows, laik, stok), per = d.per ?? st.kini;
     konteks.setPer?.(per);
-    if (!st.rows.length && !stok.length) { isi.replaceChildren(kosong("Belum ada butir pemeliharaan. Butir muncul dari komponen kit dan aset yang dicatat staf.")); return; }
+    if (!st.rows.length && !stok.length) { muatGayaKit(); const k = el("div"); k.innerHTML = katalogHtml(); isi.replaceChildren(kosong("Belum ada butir pemeliharaan. Butir muncul dari komponen kit dan aset yang dicatat staf."), k); return; }   // katalog alat mengisi layar kosong (SP-113)
     isi.innerHTML = isiKartuHtml(r, laik, per) + kontrolHtml(hitungChip(st.rows, st), st) + `<div id="sp-pel-tabel"></div>`
-      + `<div class="sp-dua">${kalenderHtml(kalender(st.rows, st.kini))}${stokHtml(stok, peran)}</div>${biayaHtml(biayaKelas(d))}`;
-    gambarTabel();
+      + `<div class="sp-dua">${kalenderHtml(kalender(st.rows, st.kini))}${stokHtml(stok, peran)}</div>${servisHtml(servisPompa(d))}${biayaHtml(biayaKelas(d))}<section class="sp-suku" id="sp-suku" hidden></section>`;
+    gambarTabel(); nanti(muatSuku);
   };
 
+  /* SP-131: alat menunggu suku cadang; rute belum ada (404) atau galat = bagian ini disembunyikan, bukan baris "menunggu" */
+  const muatSuku = async () => {
+    const w = isi.querySelector("#sp-suku"); if (!w || sinyal.aborted) return;
+    try {
+      const [j] = await Promise.all([konteks.ambil("/api/sippa/suku-cadang", sinyal), muatGayaLapangan()]);
+      if (sinyal.aborted) return;
+      const rows = (j.komponen || []).filter(r => !konteks.prov || r.prov == null || r.prov === konteks.prov);
+      w.innerHTML = `<h2 class="sp-sub">Alat menunggu suku cadang</h2>${sukuCadangHtml(rows, Date.now())}`; w.hidden = false;
+    } catch (e) { if (e?.name === "AbortError" || sinyal.aborted) return; if (e.status == null) console.error(e); w.hidden = true; }
+  };
   let acMuat = null;
   const muat = async (senyap = false) => {
     acMuat?.abort(); const ac = acMuat = new AbortController(); sinyal.addEventListener("abort", () => ac.abort(), {once: true});   // jawaban basi tidak pernah menimpa yang terbaru

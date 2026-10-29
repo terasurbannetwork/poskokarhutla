@@ -242,7 +242,7 @@
     d.innerHTML = `<h1>Rencana aksi periode operasi</h1><p>${esc([t.kec, t.kab].filter(Boolean).join(", "))}, lintang ${ang(t.lat, 4)}, bujur ${ang(t.lon, 4)}. Status periode: ${esc(kapital(p.status))}.</p>
       <table><tbody>${r("Periode", `${tgl(p.mulai)} sampai ${tgl(p.selesai)}`)}${r("Sasaran", p.sasaran)}${r("Penanggung jawab", p.pj)}${r("Sektor", p.sektor.join(", "))}${r("Regu", p.regu.join(", "))}${r("Alat", p.alat)}${r("Cuaca", p.cuaca)}${r("Komunikasi", p.komunikasi)}${r("Keselamatan", p.keselamatan)}</tbody></table>
       <h2>Serah terima</h2>${serah.length ? `<table><tbody>${serah.map(x => `<tr><td>${esc(tgl(x.waktu))}</td><td>Dari ${esc(x.dari)} ke ${esc(x.ke)}</td><td>${esc(x.catatan || "")}</td></tr>`).join("")}</tbody></table>` : `<p>Belum ada serah terima.</p>`}
-      <div class="op-ttd"><div>Disusun oleh<br><br><br>(.......................)</div><div>Disetujui oleh<br><br><br>(.......................)</div></div><p class="op-kecil">Dicetak ${esc(tgl(Date.now()))} dari Pantau Bencana. Isi mengikuti data saat dicetak.</p>`;
+      <div class="op-ttd"><div>Disusun oleh<br><br><br>(.......................)</div><div>Disetujui oleh<br><br><br>(.......................)</div></div><p class="op-kecil">Dicetak ${esc(tgl(Date.now()))} dari Centurisk97. Isi mengikuti data saat dicetak.</p>`;
     document.body.append(d); window.addEventListener("afterprint", () => d.remove(), {once: true}); window.print();
   }
 
@@ -283,8 +283,8 @@
 
   async function tampilLinimasa() {
     const j = await ambil(`/api/ops/linimasa/${S.t.id}`, "Linimasa belum bisa dimuat"), r = j.respons || {};
-    return `<section class="op-bagian"><h3>Waktu respons sejak terdeteksi</h3><div class="op-pils">${pil(`Konfirmasi ${lamaF(r.konfirmasi_menit)}`, "", "cek")}${pil(`Regu tiba ${lamaF(r.tiba_menit)}`, "", "lokasi")}${pil(`Padam ${lamaF(r.padam_menit)}`, "", "air")}${pil(`Terverifikasi satelit ${lamaF(r.terverifikasi_menit)}`, "", "cek")}</div></section>
-      <section class="op-bagian"><h3>Linimasa</h3><ol class="op-linimasa">${j.linimasa.map(e => { const [n, k] = PERISTIWA[e.jenis] || [kapital(e.jenis), ""]; return `<li><span class="op-jam">${esc(tgl(e.waktu))}</span>${pil(n, k)}<span>${esc(e.ket)}</span></li>`; }).join("") || `<li class="op-kecil">Belum ada kejadian.</li>`}</ol></section>
+    return `<section class="op-bagian"><h3>Waktu respons sejak terdeteksi</h3><div class="op-pils">${pil(`Konfirmasi ${lamaF(r.konfirmasi_menit)}`, "", "cek")}${pil(`Regu tiba ${lamaF(r.tiba_menit)}`, "", "lokasi")}${pil(`${j.kata?.padam || "Padam"} ${lamaF(r.padam_menit)}`, "", "air")}${pil(`${j.kata?.terverifikasi || "Terverifikasi satelit"} ${lamaF(r.terverifikasi_menit)}`, "", "cek")}</div></section>
+      <section class="op-bagian"><h3>Linimasa</h3><ol class="op-linimasa">${j.linimasa.map(e => { let [n, k] = PERISTIWA[e.jenis] || [kapital(e.jenis), ""]; if (j.kata) n = {padam: j.kata.padam, muncul_lagi: j.kata.lagi, terverifikasi: j.kata.terverifikasi}[e.jenis] || n; return `<li><span class="op-jam">${esc(tgl(e.waktu))}</span>${pil(n, k)}<span>${esc(e.ket)}</span></li>`; }).join("") || `<li class="op-kecil">Belum ada kejadian.</li>`}</ol></section>
       <section class="op-bagian"><h3>Catatan pelajaran</h3>${j.pelajaran.length ? `<ul class="op-daftar">${j.pelajaran.map(x => `<li class="op-baris"><p>${esc(x.catatan)}</p><p class="op-kecil">${esc(tgl(x.dibuat))}</p></li>`).join("")}</ul>` : `<p class="op-kecil">Belum ada catatan pelajaran.</p>`}
         <form data-f="pelajaran" novalidate><label>Apa yang perlu diingat dari tugas ini?<textarea name="catatan" maxlength="1000" rows="3"></textarea></label><button type="submit" class="op-tombol utama">Simpan catatan pelajaran</button></form></section>`;
   }

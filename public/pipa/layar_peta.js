@@ -5,10 +5,15 @@
    Gaya di layar_peta.css (dimuat layar ini). Tidak ada data di berkas ini. Butuh global public/inti: fmt, esc, jamWIB, Kartu, nanti, PilihCantik (opsional). */
 import {saranSarana, zonaTerverifikasi} from "./hitung.js";
 import {memuat, kosong, galat as kotakGalat} from "./keadaan.js";
-import {kirimPost, bukaDialog, tutupDialog, peranKlien} from "./layar_kit.js";
+import {kirimPost, bukaDialog, tutupDialog, peranKlien, muatGayaKit} from "./layar_kit.js";
+import {buatKonteks, lampuTitik, propsTitik, titikDariProps, popupTitik, legendaLampuHtml, swirHtml, riwayatHtml, riwayatSingkat, muatRincian} from "./kesiapan.js";
 import {ikon} from "./ikon.js";
+import {KOSONG_GEO, LAPISAN_LAP, geoLapangan, lapisanLapangan, legendaLapanganHtml, debitHtml, muatButir, muatGayaLapangan} from "./lapangan_staf.js";
+import {JENIS_BRGM, LAPISAN_BRGM, kotakProv, geoBrgm, lapisanBrgm, namaGambarBrgm, legendaBrgmHtml, brgmBaris, airAsinTeks} from "./brgm.js";
+import {cekRenlap, badanRenlap, ubahPilihan, hasilBuatHtml, MAKS_RENLAP} from "./renlap.js";
+import {tombolKeputusan, badanKeputusan, PUTUSAN, BATAS_ALASAN} from "./keputusan.js";
 
-export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", sel: "/api/sippa/data/kelayakan_sel", zona: "/api/sippa/data/zona", cek: "/api/sippa/jalan-cek", aoi: "/api/sippa/aoi"};
+export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", sel: "/api/sippa/data/kelayakan_sel", zona: "/api/sippa/data/zona", cek: "/api/sippa/jalan-cek", aoi: "/api/sippa/aoi", prioritas: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", log: "/api/sippa/log?jenis=karhutla", brgm: "/api/sippa/data/brgm_pembasahan", keputusan: "/api/sippa/keputusan", renlap: "/api/sippa/renlap"};
 
 /* warna hex setara token PRD §9.4.2 (MapLibre tidak membaca var(--ok)); pola dan huruf membawa makna, warna saja tidak cukup (keputusan 52, DS §2.1.5) */
 export const ZONA_META = {
@@ -31,6 +36,8 @@ const RE_KOMPLEKS = /^K\d{1,10}$/, RE_SEL = /^s\d{1,6}_\d{1,6}$/;
 const km = n => n == null ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 2});
 const tanggal = ms => new Date(ms).toLocaleDateString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", year: "numeric"});
 const pil = (teks, kelas = "asumsi-kebijakan", judul = "") => `<span class="sp-yakin ${kelas}"${judul ? ` title="${esc(judul)}"` : ""}>${esc(teks)}</span>`;
+const BELUM = "belum dihitung";
+const ang = (n, sat = "") => n == null ? BELUM : `${fmt(n)}${sat}`;   // null = belum dihitung (provinsi baru), bukan 0 dan bukan "–"
 const hl = n => `<span class="hl">${esc(fmt(n))}</span>`;
 const persen = (x, n) => n ? `${fmt(100 * x / n)}%` : "–";
 
@@ -86,15 +93,15 @@ export function ringkasanZona(z, prov, kompleks, cek) {
     median: Object.fromEntries(["k", "u", "o"].map(x => [x, {air: b[x]?.median_air_km ?? null, jalan: b[x]?.median_jalan_km ?? null}])),
   };
 }
-const KOLOM_RINGKAS = [["k", "Konservatif", "versi kendala.json"], ["u", "Jalan utama OSM", "tersier ke atas x semua air"], ["o", "Semua jalan OSM", "optimistis, termasuk track"], ["v", "Terverifikasi", "optimistis hanya di kompleks yang cek jalan hujannya lolos"]];
+const KOLOM_RINGKAS = [["k", "Konservatif", "versi kendala.json", "Kons."], ["u", "Jalan utama OSM", "tersier ke atas x semua air", "Utama OSM"], ["o", "Semua jalan OSM", "optimistis, termasuk track", "Semua OSM"], ["v", "Terverifikasi", "optimistis hanya di kompleks yang cek jalan hujannya lolos", "Terv."]];
 export function ringkasanHtml(r, versiAktif = "k") {
   if (!r) return `<p class="ad-kosong">Belum ada ringkasan zona untuk provinsi ini.</p>`;
-  const kepala = KOLOM_RINGKAS.map(([v, n, ket]) => `<th scope="col" class="n${v === versiAktif ? " aktif" : ""}" title="${esc(ket)}">${esc(n)}</th>`).join("");
+  const kepala = KOLOM_RINGKAS.map(([v, n, ket, pendek]) => `<th scope="col" class="n${v === versiAktif ? " aktif" : ""}" title="${esc(ket)}"><abbr title="${esc(n)}">${esc(pendek)}</abbr></th>`).join("");
   const baris = r.baris.map(b => `<tr><th scope="row"><span class="sp-yakin zona-pil z-${b.zona}">${polaSvg(b.zona)}${b.zona}</span></th>${KOLOM_RINGKAS.map(([v, n]) => `<td class="n${v === versiAktif ? " aktif" : ""}" data-label="${esc(n)}"><b>${esc(fmt(b[v].n))}</b> <span class="sp-pct">${esc(b[v].pct)}</span></td>`).join("")}</tr>`).join("");
   const m = r.median;
   return `<div class="ad-tabel-wadah sp-ringkas-zona"><table class="ad-tabel"><caption class="sr">Jumlah kompleks per zona menurut empat versi jarak</caption><thead><tr><th scope="col">Zona</th>${kepala}</tr></thead><tbody>${baris}</tbody></table></div>
-    <ul class="sp-daftar sp-ringkas-cat"><li>Tanpa jalan kendaraan dalam 16 km: <b>${esc(fmt(r.tanpaJalan16))}</b> kompleks (semua jalan OSM).</li>
-    <li>Median jarak air ${esc(km(m.o.air))} km dan jalan ${esc(km(m.o.jalan))} km (semua jalan OSM); versi kendala.json ${esc(km(m.k.air))} km dan ${esc(km(m.k.jalan))} km.</li></ul>`;
+    <div class="sp-ringkas-cat"><p>Tanpa jalan kendaraan dalam 16 km: <b>${esc(fmt(r.tanpaJalan16))}</b> kompleks (semua jalan OSM).</p>
+    <p>Median jarak air ${esc(km(m.o.air))} km dan jalan ${esc(km(m.o.jalan))} km (semua jalan OSM); versi kendala.json ${esc(km(m.k.air))} km dan ${esc(km(m.k.jalan))} km.</p></div>`;
 }
 
 /* ---------- satuan, simbol, lapisan peta ---------- */
@@ -130,8 +137,7 @@ export function lapisanKompleks(kunci) {
     {id: "kompleks-huruf", type: "symbol", source: "kompleks", minzoom: 10,
       layout: {"text-field": ["get", kunci], "text-font": ["Noto Sans Bold"], "text-size": 10, "text-anchor": "left", "text-offset": [1.1, 0], "text-allow-overlap": false},
       paint: {"text-color": "#ffffff", "text-halo-color": "#0b1220", "text-halo-width": 1.6}},
-    {id: "kompleks-sorot", type: "circle", source: "kompleks", paint: {"circle-radius": 14, "circle-opacity": 0, "circle-stroke-color": "#c9a227", "circle-stroke-width": 3,
-      "circle-stroke-opacity": ["case", ["boolean", ["feature-state", "dipilih"], false], 1, 0]}},
+    {id: "kompleks-sorot", type: "circle", source: "kompleks", paint: {"circle-radius": 14, "circle-opacity": 0}},   // area klik saja; kompleks terpilih tidak diberi cincin (pemilik 27 Okt)
   ];
 }
 export function lapisanSel(ramp) {
@@ -140,6 +146,38 @@ export function lapisanSel(ramp) {
     {id: "sel-garis", type: "line", source: "sel", layout: {visibility: "none"}, paint: {"line-color": ["match", ["get", "zona"], ...ZONA.flatMap(z => [z, ZONA_META[z].warna]), "rgba(0,0,0,0)"], "line-width": 1}},
   ];
 }
+/* jalan dan air OSM dari ubin openmaptiles peta dasar (tanpa unduhan tambahan); ubin hanya memuat parit, drain, dan track di zoom 13–14 */
+const WARNA_OSM = gelap => ({jalan: gelap ? "#e2b878" : "#8a5a2b", air: gelap ? "#5cd6ea" : "#0b8fae"}), WARNA_API = "#ff3b1f";
+const KELAS_UTAMA = ["motorway", "trunk", "primary", "secondary", "tertiary"];
+function lapisanJalanAir(gelap) {
+  const w = WARNA_OSM(gelap), lebar = (utama, lain) => ["match", ["get", "class"], ...utama, lain];
+  return [
+    {id: "osm-air", type: "line", source: "openmaptiles", "source-layer": "waterway", paint: {"line-color": w.air, "line-opacity": 0.9,
+      "line-width": ["interpolate", ["linear"], ["zoom"], 6, lebar([["river", "canal"], 1.2], 0.5), 13, lebar([["river", "canal"], 3], 1.2)]}},
+    {id: "osm-jalan", type: "line", source: "openmaptiles", "source-layer": "transportation", filter: ["match", ["get", "class"], [...KELAS_UTAMA, "minor", "service"], true, false],
+      layout: {"line-cap": "round"}, paint: {"line-color": w.jalan, "line-opacity": 0.85,
+      "line-width": ["interpolate", ["linear"], ["zoom"], 6, lebar([KELAS_UTAMA, 1.4], 0.5), 13, lebar([KELAS_UTAMA, 3], 1.4)]}},
+    {id: "osm-track", type: "line", source: "openmaptiles", "source-layer": "transportation", filter: ["==", ["get", "class"], "track"],
+      paint: {"line-color": w.jalan, "line-opacity": 0.85, "line-width": 1.2, "line-dasharray": [2, 1.5]}},
+  ];
+}
+const LAPISAN_OSM = [["osm-air", "air"], ["osm-jalan", "jalan"], ["osm-track", "jalan"], ["api-kini", "api"], ["api-huruf", "api"]];
+/* titik panas 24 jam terakhir dari /api/titik (FIRMS lewat worker, publik) di provinsi terpilih; kolom wilayah = "kodeprov|kab|kec" */
+export function geoApi(j, prov, ctx = null) {
+  if (!j || !Array.isArray(j.baris) || !Array.isArray(j.wilayah)) return {type: "FeatureCollection", features: []};
+  const ok = j.wilayah.map(w => String(w).split("|")[0] === prov);
+  /* ctx (SP-107) memberi tiap titik lampu hijau, kuning, merah, atau abu dengan huruf H, K, M, ?; tanpa ctx titik tetap satu warna */
+  return {type: "FeatureCollection", features: j.baris.filter(b => ok[b[6]]).map(b => {
+    const l = ctx ? lampuTitik(b[0], b[1], ctx) : null;
+    return {type: "Feature", geometry: {type: "Point", coordinates: [b[1], b[0]]}, properties: l ? propsTitik(l) : {}};
+  })};
+}
+export const WARNA_LAMPU = {hijau: "#20a04e", kuning: "#eba002", merah: "#d72828", abu: "#8a94a6"};
+const lapisanApi = () => [
+  {id: "api-kini", type: "circle", source: "api", paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 6, ["case", ["has", "lampu"], 5, 2.5], 12, ["case", ["has", "lampu"], 9, 5]],
+    "circle-color": ["match", ["get", "lampu"], "hijau", WARNA_LAMPU.hijau, "kuning", WARNA_LAMPU.kuning, "merah", WARNA_LAMPU.merah, "abu", WARNA_LAMPU.abu, WARNA_API], "circle-opacity": 0.9, "circle-stroke-color": "#ffffff", "circle-stroke-width": 0.8}},
+  {id: "api-huruf", type: "symbol", source: "api", filter: ["has", "lampu"], layout: {"text-field": ["get", "huruf"], "text-font": ["Noto Sans Bold"], "text-size": 10, "text-allow-overlap": true, "text-ignore-placement": true}, paint: {"text-color": "#ffffff", "text-halo-color": "#0b1220", "text-halo-width": 1}},
+];
 const LAPISAN_KOMPLEKS = ["kompleks-pola", "kompleks-huruf", "kompleks-sorot"], LAPISAN_SEL = ["sel-isi", "sel-garis"];
 /* hanya pasangan [idLapisan, visibility]: pemanggil memakai setLayoutProperty, tidak pernah addSource (P2) */
 export function satuanLapisan(satuan) {
@@ -151,7 +189,7 @@ export function satuanLapisan(satuan) {
 /* ---------- saringan, urutan, halaman ---------- */
 export function saringKompleks(daftar, st, cek) {
   const q = (st.cari || "").trim().toLowerCase();
-  return daftar.filter(k => st.zona.has(zonaVersi(k, st.versi, cek)) && (!st.bakar3 || k.terbakar_n_2km >= 3) && st.gsw.has(k.gsw) && (!st.kab || k.kab === st.kab)
+  return daftar.filter(k => st.zona.has(zonaVersi(k, st.versi, cek)) && (!st.bakar || (k.terbakar_akhir ?? -Infinity) > st.tahunAkhir - st.bakar) && (k.gsw == null || st.gsw.has(k.gsw)) && (!st.kab || k.kab === st.kab)
     && (!q || k.id.toLowerCase().includes(q) || String(k.kab ?? "").toLowerCase().includes(q))).map(k => k.id);
 }
 export const filterPeta = ids => ["in", ["get", "id"], ["literal", ids]];
@@ -189,14 +227,17 @@ export function rincianKompleks(k, cek, versi, meta = {}) {
       ${baris("Gambut", k.gambut ? "ya" : "tidak")}
       ${baris("Jarak air", `kendala.json ${esc(km(k.air_km_lama))} km; semua OSM ${esc(km(k.air_km_semua))} km; saluran kecil ${esc(km(k.air_km_kecil))} km${k.air_jenis ? ` (${esc(k.air_jenis)})` : ""}`)}
       ${baris("Jarak jalan", jalan.map(esc).join("; "))}
-      ${baris("Beda elevasi air", `${esc(fmt(k.beda_air_m))} m terhadap kompleks ${pil("DSM berkanopi", "asumsi-kebijakan", "Beda elevasi dari DSM Copernicus GLO-30 yang menyertakan kanopi; ukur ulang dengan DEMNAS atau GNSS")}`)}
-      ${baris("Air permukaan (GSW)", esc(NAMA_GSW[k.gsw] ?? k.gsw ?? "–"))}
-      ${baris("Terbakar (MCD64A1)", `${esc(fmt(k.terbakar_n_2km))} tahun dalam 2 km; ${esc(fmt(k.terbakar_n_5km))} tahun dalam 5 km${k.terbakar_akhir ? `; terakhir ${esc(k.terbakar_akhir)}` : ""}`)}
-      ${baris("Kekerapan sel (VIIRS)", `${esc(fmt(k.kekerapan_sel22))} dari 14 tahun aktif (sel 2,2 km)`)}
-      ${baris("Curah hujan (CHIRPS)", `anomali Jul–Okt tahun terakhir ${esc(fmt(k.chirps_anom_akhir_pct))}%`)}
+      ${baris("Beda elevasi air", k.beda_air_m == null ? BELUM : `${esc(fmt(k.beda_air_m))} m terhadap kompleks ${pil("DSM berkanopi", "asumsi-kebijakan", "Beda elevasi dari DSM Copernicus GLO-30 yang menyertakan kanopi; ukur ulang dengan DEMNAS atau GNSS")}`)}
+      ${baris("Air di citra satelit", esc(NAMA_GSW[k.gsw] ?? BELUM))}
+      ${baris("Air asin", airAsinTeks(k).html)}
+      ${baris("Sekat kanal dan sumur bor BRGM", brgmBaris(k))}
+      ${baris("Terbakar (MCD64A1)", k.terbakar_n_2km == null ? BELUM : `${esc(fmt(k.terbakar_n_2km))} tahun dalam 2 km; ${esc(ang(k.terbakar_n_5km))} tahun dalam 5 km${k.terbakar_akhir ? `; terakhir ${esc(k.terbakar_akhir)}` : ""}`)}
+      ${baris("Kekerapan sel (VIIRS)", k.kekerapan_sel22 == null ? BELUM : `${esc(fmt(k.kekerapan_sel22))} dari 14 tahun aktif (sel 2,2 km)`)}
+      ${baris("Curah hujan (CHIRPS)", k.chirps_anom_akhir_pct == null ? BELUM : `anomali Jul–Okt tahun terakhir ${esc(fmt(k.chirps_anom_akhir_pct))}%`)}
       ${baris("Status lahan", `${esc(NAMA_LAHAN[k.kaw] ?? k.kaw ?? "–")}; KHG ${k.khg ? esc(k.khg) : "belum dipetakan"}`)}
-      ${baris("Waktu tempuh", k.jam_tiba == null ? "belum dihitung" : `${esc(fmt(k.jam_tiba))} jam ${pil("Estimasi model", "estimasi-model", "Waktu tempuh dari akses.json, model akses; bukan uji lapangan")}`)}
+      ${baris("Waktu tempuh", k.jam_tiba == null ? BELUM : `${esc(fmt(k.jam_tiba))} jam ${pil("Estimasi model", "estimasi-model", "Waktu tempuh dari akses.json, model akses; bukan uji lapangan")}`)}
     </dl>
+    ${meta.log === undefined ? "" : riwayatHtml(k, meta.log)}${swirHtml(k.lat, k.lon)}
     <p class="ad-catat">Sumber: ${esc(SUMBER_RINCIAN)}${esc(per)}. Jarak garis lurus, dibatasi 16 km.</p></div>`;
 }
 
@@ -212,11 +253,12 @@ export function saranHtml(k, versi, apiAktif, cek) {
     <p class="ad-catat">Panjang trase diisi jarak air x 1,2 (faktor liku, asumsi kebijakan), beda elevasi dari DSM; keduanya bisa diubah di layar Hitung.</p>` : ""}</div>`;
 }
 
-export function popupKompleks(k, versi, cek) {
+export function popupKompleks(k, versi, cek, log) {
   const j = jarakVersi(k, versi, cek), s = saranSarana(k, versi, false, cek[k.id]), t = tautanHitung(k.id);
   return `<div class="sp-pop"><div class="sp-pop-kepala"><b tabindex="-1">${esc(k.id)}</b><span>${esc(k.kab ?? "–")}</span></div>
     <div class="sp-pil-baris">${pilZona(k.zona_k, "konservatif")}${pilZona(k.zona_o, "optimistis")}${pilZona(zonaVersi(k, "v", cek), "terverifikasi")}</div>
-    <dl class="sp-dl sp-dl-kecil">${baris("Air", `${esc(km(j.air))} km`)}${baris("Jalan", j.jalan == null ? "tanpa jalan kendaraan" : `${esc(km(j.jalan))} km`)}${baris("Beda elevasi", `${esc(fmt(k.beda_air_m))} m ${pil("DSM berkanopi")}`)}${baris("Terbakar", `${esc(fmt(k.terbakar_n_2km))} tahun`)}</dl>
+    <dl class="sp-dl sp-dl-kecil">${baris("Air", `${esc(km(j.air))} km`)}${baris("Jalan", j.jalan == null ? "tanpa jalan kendaraan" : `${esc(km(j.jalan))} km`)}${baris("Beda elevasi", k.beda_air_m == null ? BELUM : `${esc(fmt(k.beda_air_m))} m ${pil("DSM berkanopi")}`)}${baris("Terbakar", k.terbakar_n_2km == null ? BELUM : `${esc(fmt(k.terbakar_n_2km))} tahun${k.terbakar_akhir ? `, terakhir ${esc(k.terbakar_akhir)}` : ""}`)}${airAsinTeks(k).asin ? baris("Air asin", airAsinTeks(k).html) : ""}${baris("BRGM", brgmBaris(k))}${log === undefined ? "" : baris("Gelar SIPPA", esc(riwayatSingkat(k.id, log) ?? "riwayat tidak bisa dimuat"))}</dl>
+    ${swirHtml(k.lat, k.lon)}
     <p class="sp-pop-saran">${esc(s.sarana)}</p>
     <div class="sp-pop-aksi"><button type="button" class="ad-tombol" data-aksi="rincian" data-id="${esc(k.id)}">Rincian di panel</button>${t ? `<a class="ad-tombol" href="${esc(t)}" data-aksi="hitung">Hitung hidraulika</a>` : ""}</div></div>`;
 }
@@ -227,28 +269,31 @@ export function popupSel(p) {
 }
 
 /* ---------- legenda ---------- */
-export function legendaHtml(jumlah, {per, sumber, versi, kini = Date.now()}) {
+export function legendaHtml(jumlah, {per, versi, gelap = false, kini = Date.now(), lampu = false, brgm = false, bakarAda = true}) {
+  const osm = WARNA_OSM(gelap), garis = (w, putus = false) => `<svg class="sp-osm" width="16" height="6" aria-hidden="true"><line x1="0" y1="3" x2="16" y2="3" stroke="${w}" stroke-width="${putus ? 2 : 3}"${putus ? ' stroke-dasharray="4 3"' : ""}/></svg>`;   // atribut SVG, bukan gaya sebaris (CSP style-src 'self')
   const baris = ZONA.map(z => `<li>${polaSvg(z)}<b>${z}</b><span>${esc(ZONA_META[z].arti)}</span><span class="n">${esc(fmt(jumlah[z]))}</span></li>`).join("");
   const ramp = ["1–2", "3–4", "5–6", "7–9", "10–14"].map((t, i) => `<li><i class="sp-ramp sp-ramp-${i + 1}"></i>${t}</li>`).join("");
   const lama = basiPeta(per, kini) ? ` ${pil(`basi, per ${tanggal(Date.parse(per))}`, "asumsi-kebijakan", "Data lebih tua dari 400 hari")}` : "";
   return `<b class="sp-leg-judul">Zona kelayakan, versi ${esc(NAMA_VERSI[versi] ?? versi)}</b>
     <ul class="sp-leg-zona">${baris}</ul>
     <b class="sp-leg-judul">Tahun terbakar (MCD64A1, 2 km)</b>
-    <ul class="sp-leg-ukuran"><li><i class="sp-u sp-u4"></i>0–2</li><li><i class="sp-u sp-u6"></i>3–5</li><li><i class="sp-u sp-u8"></i>6 atau lebih</li></ul>
+    ${bakarAda ? `<ul class="sp-leg-ukuran"><li><i class="sp-u sp-u4"></i>0–2</li><li><i class="sp-u sp-u6"></i>3–5</li><li><i class="sp-u sp-u8"></i>6 atau lebih</li></ul>` : `<p class="sp-leg-sumber">Tahun terbakar ${BELUM} untuk provinsi ini; semua titik kecil.</p>`}
+    <ul class="sp-leg-ukuran sp-leg-osm"><li>${garis(osm.jalan)}Jalan</li><li>${garis(osm.jalan, true)}Track</li><li>${garis(osm.air)}Air</li><li><svg class="sp-osm" width="10" height="10" aria-hidden="true"><circle cx="5" cy="5" r="4" fill="${WARNA_API}" stroke="#ffffff"/></svg>Titik panas 24 jam</li></ul>
     <div class="sp-leg-sel"><b class="sp-leg-judul">Sel 2,2 km, tahun aktif VIIRS</b>
     <ul class="sp-leg-ramp">${ramp}</ul></div>
-    <p class="sp-leg-sumber">Sumber: ${esc(sumber)}, data per ${esc(per ? tanggal(Date.parse(per)) : "–")}${lama}</p>`;
+    ${lampu ? legendaLampuHtml() : ""}${brgm ? legendaBrgmHtml() : ""}${lama ? `<p class="sp-leg-sumber">${lama}</p>` : ""}`;   // sumber dan tanggal dihapus atas permintaan pemilik (27 Okt); pil basi tetap
 }
 
 /* ---------- daftar kompleks (alternatif aksesibel peta) ---------- */
-const KOLOM_DAFTAR = [["zona", "Zona", true], ["id", "Kompleks", true], ["kab", "Kabupaten", true], ["air", "Air (km)", true], ["jalan", "Jalan (km)", true], ["terbakar", "Terbakar (tahun)", false], ["gsw", "GSW", false]];
+const KOLOM_DAFTAR = [["zona", "Zona", true], ["id", "Kompleks", true], ["kab", "Kabupaten", true], ["air", "Air (km)", true], ["jalan", "Jalan (km)", true], ["terbakar", "Terbakar (tahun)", false], ["gsw", "Air (satelit)", false]];
 export function tabelDaftarHtml(rows, versi, cek, st = {}) {
   if (!rows.length) return `<p class="ad-kosong">Tidak ada kompleks yang cocok dengan saringan.</p>`;
   const aktif = st.urut || "zona", arah = st.turun ? "descending" : "ascending";
-  const kepala = KOLOM_DAFTAR.map(([k, n]) => `<th scope="col"${aktif === k ? ` aria-sort="${arah}"` : ""}${["air", "jalan", "terbakar"].includes(k) ? ' class="n"' : ""}><button type="button" data-k="${k}" aria-label="Urutkan menurut ${esc(n)}">${esc(n)}<i>${aktif === k ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("");
+  const pilihBanyak = st.renlap instanceof Set;
+  const kepala = (pilihBanyak ? `<th scope="col"><span class="sr">Pilih untuk renlap</span></th>` : "") + KOLOM_DAFTAR.map(([k, n]) => `<th scope="col"${aktif === k ? ` aria-sort="${arah}"` : ""}${["air", "jalan", "terbakar"].includes(k) ? ' class="n"' : ""}><button type="button" data-k="${k}" aria-label="Urutkan menurut ${esc(n)}">${esc(n)}<i>${aktif === k ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("");
   const isi = rows.map(k => {
     const j = jarakVersi(k, versi, cek), z = zonaVersi(k, versi, cek), td = (l, v, hp, n) => `<td${n ? ' class="n"' : ""} data-label="${l}"${hp ? " data-hp" : ""}>${v}</td>`;
-    return `<tr class="sp-klik">${td("Zona", `<span class="sp-yakin zona-pil z-${z}">${polaSvg(z)}${z}</span>`, true)}${td("Kompleks", `<button type="button" class="sp-baris-id" data-id="${esc(k.id)}">${esc(k.id)}</button>`, true)}${td("Kabupaten", esc(k.kab ?? "–"), true)}${td("Air (km)", esc(km(j.air)), true, true)}${td("Jalan (km)", j.jalan == null ? "tanpa jalan" : esc(km(j.jalan)), true, true)}${td("Terbakar (tahun)", esc(fmt(k.terbakar_n_2km)), false, true)}${td("GSW", esc(NAMA_GSW[k.gsw] ?? k.gsw ?? "–"), false)}</tr>`;
+    return `<tr class="sp-klik">${pilihBanyak ? td("Pilih", `<input type="checkbox" data-renlap="${esc(k.id)}" aria-label="Pilih ${esc(k.id)} untuk renlap"${st.renlap.has(k.id) ? " checked" : ""}>`, true) : ""}${td("Zona", `<span class="sp-yakin zona-pil z-${z}">${polaSvg(z)}${z}</span>`, true)}${td("Kompleks", `<button type="button" class="sp-baris-id" data-id="${esc(k.id)}">${esc(k.id)}</button>`, true)}${td("Kabupaten", esc(k.kab ?? "–"), true)}${td("Air (km)", esc(km(j.air)), true, true)}${td("Jalan (km)", j.jalan == null ? "tanpa jalan" : esc(km(j.jalan)), true, true)}${td("Terbakar (tahun)", esc(ang(k.terbakar_n_2km)), false, true)}${td("GSW", esc(NAMA_GSW[k.gsw] ?? BELUM), false)}</tr>`;
   }).join("");
   return `<div class="ad-tabel-wadah sp-daftar-peta"><table class="ad-tabel"><caption class="sr">Daftar kompleks menurut zona ${esc(NAMA_VERSI[versi] ?? versi)}</caption><thead><tr>${kepala}</tr></thead><tbody>${isi}</tbody></table></div>`;
 }
@@ -275,27 +320,35 @@ export function badanAoi(id, prov, alasan) {
 const LAYERS = `<svg class="sp-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m12.83 2.18a2 2 0 0 0-1.66 0L2.6 6.08a1 1 0 0 0 0 1.83l8.58 3.91a2 2 0 0 0 1.66 0l8.58-3.9a1 1 0 0 0 0-1.83Z"/><path d="m22 17.65-9.17 4.16a2 2 0 0 1-1.66 0L2 17.65"/><path d="m22 12.65-9.17 4.16a2 2 0 0 1-1.66 0L2 12.65"/></svg>`;
 const DAFTAR = `<svg class="sp-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg>`;
 const CARI = `<svg class="sp-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="11" cy="11" r="8"/><path d="m21 21-4.3-4.3"/></svg>`;
-const TEKS_GSW = {permanen: "GSW permanen", musiman: "GSW musiman", tak_terdeteksi: "GSW tidak terdeteksi"};
+const TEKS_GSW = {permanen: "Air sepanjang tahun", musiman: "Air musiman", tak_terdeteksi: "Air tak terlihat satelit"};   // GSW = JRC Global Surface Water; singkatan tidak tampil
 
-export function kerangkaPeta({kabupaten = [], hitung = {}} = {}) {
-  const chipZona = ZONA.map(z => `<button type="button" class="ad-chip sp-chip-zona z-${z}" aria-pressed="true" data-zona="${z}" title="Zona ${z}: ${esc(ZONA_META[z].arti)}">${polaSvg(z)}<span>${z}</span><b>${esc(fmt(hitung[z]))}</b></button>`).join("");
-  const chipGsw = Object.keys(TEKS_GSW).map(g => `<button type="button" class="ad-chip" aria-pressed="true" data-gsw="${g}">${esc(TEKS_GSW[g])}</button>`).join("");
+const PILIHAN_BAKAR = [1, 2, 3, 5, 10];   // "terbakar dalam x tahun terakhir", dihitung dari terbakar_akhir (MCD64A1)
+export function kerangkaPeta({kabupaten = [], hitung = {}, tanpaBakar = false} = {}) {
+  const chipZona = ZONA.map(z => `<button type="button" class="sp-chip sp-chip-zona z-${z}" aria-pressed="true" data-zona="${z}" title="Zona ${z}: ${esc(ZONA_META[z].arti)}">${polaSvg(z)}<span>${z}</span><b>${esc(fmt(hitung[z]))}</b></button>`).join("");
+  const chipGsw = Object.keys(TEKS_GSW).map(g => `<button type="button" class="sp-chip" aria-pressed="true" data-gsw="${g}">${esc(TEKS_GSW[g])}</button>`).join("");
   return `<p class="ad-spanduk sp-laptop" role="note">Layar ini dirancang untuk laptop.</p>
   <div class="sp-peta-utama">
     <div class="sp-peta-bilah" role="group" aria-label="Kontrol peta">
+      <label class="sp-cari">${CARI}<input type="search" aria-label="Cari kompleks" placeholder="Cari id kompleks atau kabupaten" autocomplete="off" data-saring="cari"></label>
+      <div class="sp-peta-aksi"><button type="button" class="ad-tombol" data-aksi="daftar">${DAFTAR}Daftar</button>
+        <button type="button" class="ad-tombol sp-ikon-tombol" data-aksi="lapisan" aria-label="Lapisan peta" aria-expanded="false" aria-controls="sp-lapisan">${LAYERS}</button></div>
       <div class="ad-seg sp-seg-satuan" role="radiogroup" aria-label="Satuan peta"><button type="button" role="radio" aria-checked="true" data-satuan="kompleks" tabindex="0">Per kompleks</button><button type="button" role="radio" aria-checked="false" data-satuan="sel" tabindex="-1">Per sel 2,2 km</button></div>
       <button type="button" class="ad-tombol sp-saring-tombol" data-aksi="saring" aria-expanded="false" aria-controls="sp-saring">${ikon("sliders-horizontal")}Saring</button>
       <div class="sp-saring" id="sp-saring">
-        <div class="sp-chips" role="group" aria-label="Zona yang ditampilkan">${chipZona}</div>
-        <div class="sp-chips" role="group" aria-label="Saringan lain"><button type="button" class="ad-chip" aria-pressed="false" data-saring="bakar3">Terbakar 3 tahun atau lebih</button>${chipGsw}</div>
         <div class="sp-saring-isian"><select aria-label="Kabupaten" data-saring="kab"><option value="">Semua kabupaten</option>${kabupaten.map(k => `<option value="${esc(k)}">${esc(k)}</option>`).join("")}</select>
-          <label class="sp-cari">${CARI}<input type="search" aria-label="Cari kompleks" placeholder="Cari id atau kabupaten" autocomplete="off" data-saring="cari"></label></div>
+          <select aria-label="Riwayat terbakar" data-saring="bakar"${tanpaBakar ? ` disabled title="Riwayat terbakar ${BELUM} untuk provinsi ini"` : ""}><option value="0">Semua riwayat terbakar</option>${PILIHAN_BAKAR.map(n => `<option value="${n}">Terbakar dalam ${n} tahun terakhir</option>`).join("")}</select></div>
+        <div class="sp-chips" role="group" aria-label="Zona yang ditampilkan"><span class="sp-chip-label">Zona</span>${chipZona}</div>
+        <div class="sp-chips" role="group" aria-label="Air di citra satelit"><span class="sp-chip-label">Air</span>${chipGsw}</div>
       </div>
-      <div class="sp-peta-aksi"><button type="button" class="ad-tombol" data-aksi="daftar">${DAFTAR}Daftar</button>
-        <button type="button" class="ad-tombol sp-ikon-tombol" data-aksi="lapisan" aria-label="Lapisan peta" aria-expanded="false" aria-controls="sp-lapisan">${LAYERS}</button></div>
       <div class="sp-lapisan-menu" id="sp-lapisan" hidden>
         <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="huruf" checked> Huruf zona di peta (zoom 10 ke atas)</label>
         <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="titik"> Titik kompleks di atas sel</label>
+        <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="api" checked> Titik panas 24 jam terakhir (FIRMS)</label>
+        <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="jalan" checked> Jalan OSM (track putus-putus)</label>
+        <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="air" checked> Sungai, kanal, dan parit OSM</label>
+        <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="brgm"> Sekat kanal dan sumur bor BRGM</label>
+        <label class="sp-sakelar"><input type="checkbox" role="switch" data-lapisan="lapangan" checked> Jejak GPS, titik bor, dan SOS regu (kompleks terpilih)</label>
+        <p class="ad-catat">Track dan parit kecil baru tampil di zoom 13 ke atas. Lapisan BRGM memuat berkas besar (sekitar 3,6 MB) saat pertama dinyalakan; tampil dari zoom 7.</p>
       </div>
     </div>
     <div class="sp-peta-bidang">
@@ -307,7 +360,7 @@ export function kerangkaPeta({kabupaten = [], hitung = {}} = {}) {
   </div>
   <aside class="sp-peta-panel sp-lembar" data-tinggi="intip" aria-label="Ringkasan zona dan rincian kompleks">
     <button type="button" class="sp-lembar-pegangan" data-aksi="lembar" aria-label="Ubah tinggi panel: intip" aria-expanded="false"><span></span><b class="sp-intip"></b></button>
-    <div class="sp-panel-judul"></div><div class="sp-panel-ringkas"></div><div class="sp-panel-rincian" aria-live="polite"></div>
+    <div class="sp-panel-ringkas"></div><div class="sp-panel-rincian" aria-live="polite"></div>
   </aside>`;
 }
 
@@ -324,6 +377,7 @@ export function lepas() {
   hentikan.forEach(f => { try { f(); } catch { /* pembersih boleh gagal */ } }); hentikan = [];
   try { peta?.remove(); } catch { /* peta sudah dilepas */ }
   peta = null; tutupDialog();
+  document.querySelector(".sp-cangkang")?.classList.remove("sp-mode-peta");
 }
 
 /* gaya dan pustaka dimuat sekali; layar menunggu gaya agar tidak berkedip polos */
@@ -335,7 +389,7 @@ function muatGaya() {
     l.onload = l.onerror = () => ok(); sebelum ? sebelum.before(l) : document.head.append(l); setTimeout(ok, 1500);
   });
   const dasar = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() ? [] : GAYA_DASAR.map(h => pasangLink(h, h.slice(6), document.querySelector('link[href*="/pipa/pipa.css"]')));
-  return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=1", "peta")]);
+  return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=6", "peta"), muatGayaKit()]);
 }
 let pustaka = null;
 function muatMapLibre() {
@@ -355,6 +409,17 @@ function ambilSekali(konteks, url, sinyal) {
 const bungkus = f => Promise.resolve().then(f).then(ok => ({ok}), e => e?.name === "AbortError" ? {batal: true} : {galat: e});
 
 /* gambar penanda zona: warna + pola + garis luar --card + cincin dalam gelap (DS §3.6); dipasang sekali per gaya peta */
+/* penanda BRGM: bentuk + huruf (S kotak, B segitiga, L lingkaran); isi kosong = rencana; dipasang sekali per gaya peta */
+function gambarBrgm(jenis, rencana, gelap) {
+  const S = 32, c = document.createElement("canvas"); c.width = c.height = S;
+  const g = c.getContext("2d"), warna = "#7c5cd6", tepi = gelap ? "#131c30" : "#ffffff";
+  const bentuk = () => { g.beginPath(); if (jenis === "sekat_kanal") g.rect(6, 6, 20, 20); else if (jenis === "sumur_bor") { g.moveTo(16, 3); g.lineTo(29, 27); g.lineTo(3, 27); g.closePath(); } else g.arc(16, 16, 11, 0, Math.PI * 2); };
+  bentuk(); g.lineJoin = "round"; g.lineWidth = 6; g.strokeStyle = tepi; g.stroke();
+  bentuk(); g.fillStyle = rencana ? tepi : warna; g.fill(); g.lineWidth = 2.4; g.strokeStyle = warna; g.stroke();
+  g.fillStyle = rencana ? warna : "#ffffff"; g.font = "bold 13px sans-serif"; g.textAlign = "center"; g.textBaseline = "middle"; g.fillText(JENIS_BRGM[jenis].huruf, 16, jenis === "sumur_bor" ? 21 : 17);
+  return g.getImageData(0, 0, S, S);
+}
+
 function gambarZona(z, gelap) {
   const S = 32, c = document.createElement("canvas"); c.width = c.height = S;
   const g = c.getContext("2d"), warna = ZONA_META[z].warna, tepi = gelap ? "#131c30" : "#ffffff", dalam = campur(warna, "#000000", 0.6);
@@ -373,6 +438,7 @@ const TEKS_TINGGI = {intip: "intip", setengah: "setengah", penuh: "penuh"};
 
 export async function pasang(akar, konteks) {
   lepas(); ctrl = new AbortController();
+  akar.closest(".sp-cangkang")?.classList.add("sp-mode-peta");   // peta penuh layar (layar_peta.css)
   const sinyal = ctrl.signal, prov = konteks.prov, versi = KUNCI_ZONA[konteks.zona] ? konteks.zona : "k", kini = Date.now();
   const namaProv = (typeof Wilayah !== "undefined" && Wilayah.PROV?.[prov]) || `provinsi ${prov}`;
   const peran = peranKlien(document.body?.dataset), tulis = bolehTulis(peran);
@@ -398,40 +464,35 @@ export async function pasang(akar, konteks) {
   konteks.setPer?.(dataK.per ? Date.parse(dataK.per) : null);
 
   /* ---------- keadaan layar ---------- */
-  const st = {satuan: "kompleks", zona: new Set(ZONA), bakar3: false, gsw: new Set(Object.keys(NAMA_GSW)), kab: "", cari: "", versi, pilih: null, api: false};
+  const st = {satuan: "kompleks", zona: new Set(ZONA), bakar: 0, tahunAkhir: Math.max(...semua.map(k => k.terbakar_akhir ?? -Infinity)), gsw: new Set(Object.keys(NAMA_GSW)), kab: "", cari: "", versi, pilih: null, api: false};
   const kabupaten = [...new Set(semua.map(k => k.kab).filter(Boolean))].sort((a, b) => a.localeCompare(b));
   const peKomp = Object.fromEntries(semua.map(k => [k.id, k]));
-  let geoK = geoKompleks(semua, cek), geoS = null, selMuat = false, popup = null, ids = semua.map(k => k.id), gagalDasar = false;
+  let titikJ = null, ctxLampu = null, logGelar, geoApiK = null, geoBrgmK = null, geoLapK = KOSONG_GEO, butirLap = [], butirLapUntuk = null, brgmMuat = false, geoK = geoKompleks(semua, cek), geoS = null, selMuat = false, popup = null, ids = semua.map(k => k.id), gagalDasar = false;
 
-  wadah.innerHTML = kerangkaPeta({kabupaten, hitung: hitungPerZona(semua, versi, cek)});
+  const bakarAda = Number.isFinite(st.tahunAkhir);   // provinsi baru: terbakar_akhir null semua
+  wadah.innerHTML = kerangkaPeta({kabupaten, hitung: hitungPerZona(semua, versi, cek), tanpaBakar: !bakarAda});
   const q = s => wadah.querySelector(s), semuaQ = s => [...wadah.querySelectorAll(s)];
   const pita = q(".sp-peta-pita"), muatEl = q(".sp-muat");
   if (!rc.ok) { pita.hidden = false; pita.textContent = "Cek jalan tidak bisa dimuat; Terverifikasi sama dengan Konservatif sementara."; }
-  try { if (typeof PilihCantik !== "undefined") { PilihCantik.hias(q('select[data-saring="kab"]')); PilihCantik.pasang(); } } catch { /* pemilih biasa tetap jalan */ }
+  try { if (typeof PilihCantik !== "undefined") { PilihCantik.hias(q('select[data-saring="kab"]')); PilihCantik.hias(q('select[data-saring="bakar"]')); PilihCantik.pasang(); } } catch { /* pemilih biasa tetap jalan */ }
 
   /* ---------- panel: kartu judul, ringkasan, rincian ---------- */
-  const namaTampil = namaProv;
   function gambarPanel() {
-    const j = dataZ ? judulPeta(dataZ, prov, namaTampil) : null, sumber = "OpenStreetMap (ODbL) via Overpass 24–25 Okt 2026, jarak garis lurus; kompleks api kendala.json";
-    const per = dataZ?.per ? `, data per ${tanggal(Date.parse(dataZ.per))}` : "";
+    const j = dataZ ? judulPeta(dataZ, prov, namaProv) : null;
     q(".sp-intip").textContent = j ? j.teks : "Ringkasan zona";
-    q(".sp-panel-judul").innerHTML = j
-      ? Kartu.kartu("Zona", `${hl(j.k)} dari ${hl(j.n)} kompleks ${esc(namaTampil)} di zona A (versi kendala.json); ${hl(j.o)} bila semua jalan OSM termasuk track dihitung`,
-        `<div class="sp-pil-baris">${pil("Terverifikasi", "terverifikasi", "Jarak dihitung dari data OSM yang ditarik")}${pil("Batas atas OSM", "asumsi-kebijakan", "Versi semua jalan OSM memuat jalan track yang belum tentu dapat dilalui pickup pada musim hujan")}</div>`, esc(sumber + per))
-      : `<p class="ad-kosong">Ringkasan zona belum tersedia (zona.json belum diunggah). Peta tetap memakai kelayakan_kompleks.json.</p>`;
     q(".sp-panel-ringkas").innerHTML = ringkasanHtml(dataZ ? ringkasanZona(dataZ, prov, semua, cek) : null, st.versi);
   }
   function gambarLegenda() {
     const jumlah = st.versi === "v" ? hitungPerZona(semua, "v", cek) : (() => { const b = dataZ && barisZona(dataZ, prov, st.versi); return b || hitungPerZona(semua, st.versi, cek); })();
-    q("#sp-leg-badan").innerHTML = legendaHtml(jumlah, {per: dataK.per, sumber: "OSM (ODbL) via Overpass, Copernicus GLO-30, JRC GSW, MODIS MCD64A1, VIIRS S-NPP", versi: st.versi});
+    q("#sp-leg-badan").innerHTML = legendaHtml(jumlah, {per: dataK.per, versi: st.versi, gelap: sebagaiGelap(), lampu: !!ctxLampu, brgm: !!q('[data-lapisan="brgm"]')?.checked, bakarAda}) + (geoLapK.features.length && q('[data-lapisan="lapangan"]')?.checked ? legendaLapanganHtml() + (tulis ? "" : `<p class="sp-leg-sumber">lokasi dibulatkan ±1 km untuk peran baca</p>`) : "");
   }
   function gambarRincian() {
     const wad = q(".sp-panel-rincian"), k = st.pilih && peKomp[st.pilih];
-    if (!k) { wad.innerHTML = `<p class="ad-kosong">Pilih kompleks di peta atau di Daftar untuk melihat rincian dan saran sarana.</p>`; return; }
+    if (!k) { wad.replaceChildren(); return; }
     const c = cek[k.id];
     q(".sp-peta-panel").dataset.pilih = "1";   // di ponsel rincian naik ke atas lembar
-    wad.innerHTML =`${rincianKompleks(k, cek, st.versi, {per: dataK.per})}${saranHtml(k, st.versi, st.api, c)}
-      <div class="sp-aksi-panel"><button type="button" class="ad-tombol" data-aksi="cek" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Catat cek jalan</button><button type="button" class="ad-tombol" data-aksi="aoi" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Usulkan sebagai calon AOI</button></div>${tulis ? "" : `<p class="ad-catat">Mencatat cek jalan dan mengusulkan AOI butuh peran tulis.</p>`}
+    wad.innerHTML =`${rincianKompleks(k, cek, st.versi, {per: dataK.per, log: logGelar})}${butirLapUntuk === k.id ? debitHtml(butirLap) : ""}${saranHtml(k, st.versi, st.api, c)}
+      <div class="sp-aksi-panel"><button type="button" class="ad-tombol" data-aksi="cek" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Catat cek jalan</button><button type="button" class="ad-tombol" data-aksi="renlap" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Buat renlap</button><button type="button" class="ad-tombol" data-aksi="aoi" ${tulis ? "" : 'disabled title="Perlu peran tulis"'}>Usulkan sebagai calon AOI</button>${tombolKeputusan(k, tulis)}</div>${tulis ? "" : `<p class="ad-catat">Mencatat cek jalan, putusan, dan mengusulkan AOI butuh peran tulis.</p>`}
       ${c ? `<p class="ad-catat">Cek jalan musim hujan terakhir: ${esc(c.hasil)} (${esc(jamWIB(c.waktu))}).</p>` : ""}`;
   }
   gambarPanel(); gambarLegenda(); gambarRincian();
@@ -448,6 +509,9 @@ export async function pasang(akar, konteks) {
     const s = satuanLapisan(st.satuan), titik = q('[data-lapisan="titik"]').checked, huruf = q('[data-lapisan="huruf"]').checked;
     for (const [id, v] of s.kompleks) peta.setLayoutProperty(id, "visibility", id === "kompleks-huruf" && !huruf ? "none" : titik && st.satuan === "sel" ? "visible" : v);
     if (peta.getLayer("sel-isi")) for (const [id, v] of s.sel) peta.setLayoutProperty(id, "visibility", v);
+    for (const [id, kunci] of LAPISAN_OSM) if (peta.getLayer(id)) peta.setLayoutProperty(id, "visibility", q(`[data-lapisan="${kunci}"]`).checked ? "visible" : "none");
+    for (const id of LAPISAN_BRGM) if (peta.getLayer(id)) peta.setLayoutProperty(id, "visibility", q('[data-lapisan="brgm"]').checked ? "visible" : "none");
+    for (const id of LAPISAN_LAP) if (peta.getLayer(id)) peta.setLayoutProperty(id, "visibility", q('[data-lapisan="lapangan"]').checked ? "visible" : "none");
     muatEl.hidden = !(st.satuan === "sel" && !peta.getLayer("sel-isi"));
     if (!muatEl.hidden) { muatEl.classList.add("kecil"); muatEl.textContent = "Memuat sel 2,2 km"; }
   };
@@ -459,9 +523,13 @@ export async function pasang(akar, konteks) {
   }
   function pasangLapisan() {
     for (const z of ZONA) if (!peta.hasImage(`zona-${z}`)) peta.addImage(`zona-${z}`, gambarZona(z, sebagaiGelap()), {pixelRatio: 2});
-    if (!peta.getSource("kompleks")) {
-      peta.addSource("kompleks", {type: "geojson", data: geoK, promoteId: "id"});
-      for (const l of lapisanKompleks(KUNCI_ZONA[st.versi])) peta.addLayer(l);
+    if (peta.getSource("openmaptiles") && !peta.getLayer("osm-air")) for (const l of lapisanJalanAir(sebagaiGelap())) peta.addLayer(l);   // di bawah titik kompleks
+    /* satu pintu addSource (uji perakit): titik panas di bawah titik kompleks, kompleks di atas */
+    if (geoBrgmK) for (const j of Object.keys(JENIS_BRGM)) for (const rc of [false, true]) if (!peta.hasImage(namaGambarBrgm(j, rc ? "rencana" : "ada"))) peta.addImage(namaGambarBrgm(j, rc ? "rencana" : "ada"), gambarBrgm(j, rc, sebagaiGelap()), {pixelRatio: 2});
+    const sumber = [["api", geoApiK, lapisanApi, {}], ["brgm", geoBrgmK, lapisanBrgm, {}], ["lapangan", geoLapK, lapisanLapangan, {}], ["kompleks", geoK, () => lapisanKompleks(KUNCI_ZONA[st.versi]), {promoteId: "id"}]];
+    for (const [id, data, lapis, opsi] of sumber) if (data && !peta.getSource(id)) {
+      peta.addSource(id, {type: "geojson", data, ...opsi});
+      for (const l of lapis()) peta.addLayer(l, id !== "kompleks" && peta.getLayer("kompleks-pola") ? "kompleks-pola" : undefined);
     }
     tambahSel(); terapkanSatuan(); terapkanSaringan();
     if (st.pilih) peta.setFeatureState({source: "kompleks", id: st.pilih}, {dipilih: true});
@@ -473,6 +541,7 @@ export async function pasang(akar, konteks) {
     const k = peKomp[id]; if (!k) return;
     if (peta?.getSource("kompleks")) { if (st.pilih) peta.setFeatureState({source: "kompleks", id: st.pilih}, {dipilih: false}); peta.setFeatureState({source: "kompleks", id}, {dipilih: true}); }   // sorot seketika
     st.pilih = id; st.api = false;
+    if (butirLapUntuk !== id) { butirLap = []; geoLapK = KOSONG_GEO; tulisData("lapangan", geoLapK); nanti(() => muatLapangan(id)); }
     if (terbang && peta) peta.easeTo({center: [k.lon, k.lat], zoom: Math.max(peta.getZoom(), 11), duration: 400});
     nanti(() => {
       if (sinyal.aborted) return;
@@ -480,11 +549,43 @@ export async function pasang(akar, konteks) {
       if (ponsel()) { if (buka) aturLembar("setengah"); }
       else if (peta) {
         popup?.remove();
-        popup = new maplibregl.Popup({closeButton: true, maxWidth: "340px", className: "sp-pop-wadah", offset: 12}).setLngLat([k.lon, k.lat]).setHTML(popupKompleks(k, st.versi, cek)).addTo(peta);
+        popup = new maplibregl.Popup({closeButton: true, maxWidth: "340px", className: "sp-pop-wadah", offset: 12}).setLngLat([k.lon, k.lat]).setHTML(popupKompleks(k, st.versi, cek, logGelar)).addTo(peta);
         popup.getElement().querySelector(".sp-pop-kepala b")?.focus({preventScroll: true});
       }
     });
   }
+  /* titik panas bergambar ulang bila lampu baru tersedia: satu pintu setData, sumber dibuat sekali */
+  function segarApi() {
+    if (!titikJ) return;
+    geoApiK = geoApi(titikJ, prov, ctxLampu);
+    if (!tulisData("api", geoApiK) && peta?.isStyleLoaded()) pasangLapisan();
+  }
+  /* SP-110: BRGM dimuat malas, hanya saat sakelar pertama kali dinyalakan; disaring ke kotak provinsi aktif dalam nanti() */
+  const TEKS_BRGM = "Memuat lapisan BRGM";
+  /* INP: pita "Memuat" tampil seketika di handler change (urgent); muatBrgm sendiri jalan sesudah satu frame */
+  const pitaBrgm = nyala => { if (nyala && !brgmMuat) { pita.hidden = false; pita.textContent = TEKS_BRGM; } };
+  function muatBrgm() {
+    if (brgmMuat) return; brgmMuat = true; pita.hidden = false; pita.textContent = TEKS_BRGM;
+    ambilSekali(konteks, JALUR.brgm, sinyal).then(d => nanti(() => {
+      if (sinyal.aborted) return;
+      geoBrgmK = geoBrgm(d, kotakProv(semua));
+      if (pita.textContent === TEKS_BRGM) pita.hidden = true;
+      if (!tulisData("brgm", geoBrgmK) && peta?.isStyleLoaded()) pasangLapisan();
+    }), e => { if (e?.name === "AbortError" || sinyal.aborted) return; brgmMuat = false; pita.hidden = false; pita.textContent = e.status === 404 ? "Data BRGM belum diunggah pipeline (data.yml)." : "Lapisan BRGM tidak bisa dimuat. Nyalakan sakelarnya lagi untuk mencoba."; });
+  }
+  /* fase 2: jejak GPS, titik bor, SOS, dan debit regu untuk kompleks terpilih; rute belum ada atau kosong = tidak ada lapisan dan tidak ada pesan */
+  let acLap = null;
+  function muatLapangan(id) {
+    acLap?.abort(); const ac = acLap = new AbortController(); sinyal.addEventListener("abort", () => ac.abort(), {once: true});
+    Promise.all([muatButir(konteks.ambil, {kompleks: id, jenis: ["jejak", "bor", "sos", "debit"]}, ac.signal), muatGayaLapangan()]).then(([butir]) => nanti(() => {
+      if (ac.signal.aborted || st.pilih !== id) return;
+      butirLap = butir; butirLapUntuk = id; geoLapK = geoLapangan(butir);
+      if (!tulisData("lapangan", geoLapK) && peta?.isStyleLoaded()) pasangLapisan();
+      gambarRincian(); gambarLegenda();
+    }), e => { if (e?.name !== "AbortError") console.error(e); });
+  }
+  /* satu-satunya pintu setData: true bila sumber sudah ada */
+  function tulisData(id, data) { const src = peta?.getSource?.(id); if (src) src.setData(data); return !!src; }
   function aturLembar(t) {
     const l = q(".sp-lembar"), b = q('[data-aksi="lembar"]');
     l.dataset.tinggi = t; l.scrollTop = 0; b.setAttribute("aria-label", `Ubah tinggi panel: ${TEKS_TINGGI[t]}`); b.setAttribute("aria-expanded", String(t !== "intip"));
@@ -494,9 +595,9 @@ export async function pasang(akar, konteks) {
     await muatMapLibre();
     if (sinyal.aborted) return;
     const titik = new maplibregl.LngLatBounds(); semua.forEach(k => titik.extend([k.lon, k.lat]));
-    peta = new maplibregl.Map({container: "sp-peta-kanvas", style: DASAR(), bounds: titik, fitBoundsOptions: {padding: 32, animate: false}, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false});
+    peta = new maplibregl.Map({container: "sp-peta-kanvas", style: DASAR(), bounds: titik, fitBoundsOptions: {padding: ponsel() ? 32 : 40, animate: false}, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false});
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
-    peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-left");
+    peta.addControl(new maplibregl.ScaleControl({unit: "metric"}), "bottom-right");
     const ukur = new ResizeObserver(() => peta?.resize());   // wadah berubah tinggi (lembar, saringan, orientasi): kanvas mengikuti
     ukur.observe(q("#sp-peta-kanvas")); hentikan.push(() => ukur.disconnect());
     peta.on("style.load", pasangLapisan);
@@ -515,20 +616,52 @@ export async function pasang(akar, konteks) {
       popup = new maplibregl.Popup({closeButton: true, maxWidth: "340px", className: "sp-pop-wadah", offset: 6}).setLngLat(e.lngLat).setHTML(popupSel(p)).addTo(peta);
       popup.getElement().querySelector(".sp-pop-kepala b")?.focus({preventScroll: true});
     });
-    for (const id of ["kompleks-sorot", "sel-isi"]) { peta.on("mouseenter", id, () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", id, () => { peta.getCanvas().style.cursor = ""; }); }
+    peta.on("click", "api-kini", e => {
+      if (peta.queryRenderedFeatures(e.point, {layers: ["kompleks-sorot"]}).length) return;
+      const pr = e.features?.[0]?.properties; if (!pr?.lampu) return;
+      popup?.remove();
+      popup = new maplibregl.Popup({closeButton: true, maxWidth: "340px", className: "sp-pop-wadah", offset: 8}).setLngLat(e.lngLat).setHTML(popupTitik(titikDariProps(pr))).addTo(peta);
+      popup.getElement().querySelector(".sp-pop-kepala b")?.focus({preventScroll: true});
+    });
+    for (const id of ["kompleks-sorot", "sel-isi", "api-kini"]) { peta.on("mouseenter", id, () => { peta.getCanvas().style.cursor = "pointer"; }); peta.on("mouseleave", id, () => { peta.getCanvas().style.cursor = ""; }); }
     /* tema: ganti gaya dasar, lalu style.load memasang ulang gambar, sumber, dan lapisan */
-    const amati = new MutationObserver(() => { if (peta && !gagalDasar) { popup?.remove(); peta.setStyle(DASAR(), {diff: false}); } });
+    const amati = new MutationObserver(() => { gambarLegenda(); if (peta && !gagalDasar) { popup?.remove(); peta.setStyle(DASAR(), {diff: false}); } });
     amati.observe(document.documentElement, {attributes: true, attributeFilter: ["data-theme"]}); hentikan.push(() => amati.disconnect());
     peta.once("load", () => (globalThis.requestIdleCallback || (f => setTimeout(f, 400)))(() => nanti(bacaSel)));
+    fetch("/api/titik", {signal: sinyal}).then(r => r.ok ? r.json() : null).then(j => {
+      if (sinyal.aborted || !j) return;
+      titikJ = j; nanti(segarApi);
+    }).catch(() => { /* titik panas opsional: peta kelayakan tetap jalan */ });
+    /* SP-107 dan SP-112: konteks lampu (prioritas, kit siap) dan log gelar dimuat terpisah; gagal = titik tetap satu warna, riwayat berkata tidak bisa dimuat */
+    bungkus(async () => {
+      const [pri, kj] = await Promise.all([konteks.ambil(JALUR.prioritas, sinyal), konteks.ambil(`${JALUR.kit}?prov=${encodeURIComponent(prov)}`, sinyal)]);
+      return buatKonteks(semua, pri, kj.kit || [], await muatRincian(konteks.ambil, kj.kit || [], sinyal));
+    }).then(h => { if (h.ok && !sinyal.aborted) { ctxLampu = h.ok; gambarLegenda(); nanti(segarApi); } });
+    bungkus(() => konteks.ambil(JALUR.log, sinyal)).then(h => { if (sinyal.aborted || h.batal) return; logGelar = h.ok ? h.ok.log || [] : null; if (st.pilih) gambarRincian(); });
   } catch (e) {
     muatEl.hidden = true; pita.hidden = false; pita.textContent = "Peta tidak bisa dimuat. Daftar kompleks tetap bisa dipakai."; if (e?.name !== "AbortError") console.error(e);
   }
 
   /* ---------- daftar kompleks (dialog) ---------- */
+  /* SP-140: renlap dari kompleks terpilih. Token dan tautan HP hanya ada di balasan buat, jadi langsung ditampilkan dengan peringatan simpan. */
+  async function buatRenlap(daftarId) {
+    const g = cekRenlap(daftarId); if (g.length) { konteks.pesan?.(g[0].alasan); return; }
+    const isiD = document.createElement("div"); isiD.textContent = "Membuat renlap";
+    bukaDialog("Buat renlap", isiD);
+    isiD.addEventListener("click", async e => {
+      const b = e.target.closest("[data-salin-renlap]"); if (!b) return;
+      b.textContent = "Menyalin";
+      try { await navigator.clipboard.writeText(b.dataset.salinRenlap); b.textContent = "Tersalin"; } catch { b.textContent = "Salin gagal; salin dari kotak"; }
+    });
+    try { isiD.innerHTML = hasilBuatHtml(await kirimPost(JALUR.renlap, badanRenlap(daftarId)), location.origin); }
+    catch (x) { isiD.textContent = x.message || "Renlap gagal dibuat. Coba lagi."; }
+  }
   function bukaDaftar() {
-    const s = {urut: null, turun: false, hal: 0}, isi = document.createElement("div"), kepala = document.createElement("p");
+    const s = {urut: null, turun: false, hal: 0, renlap: tulis ? new Set() : undefined}, isi = document.createElement("div"), kepala = document.createElement("p");
     kepala.className = "ad-catat"; isi.append(kepala);
-    const tubuh = document.createElement("div"), nav = document.createElement("div"); isi.append(tubuh, nav);
+    const tubuh = document.createElement("div"), nav = document.createElement("div"), bar = document.createElement("div"); isi.append(tubuh, nav);
+    if (tulis) { bar.className = "sp-aksi"; bar.innerHTML = `<button type="button" class="ad-tombol" data-renlap-buat disabled>Buat renlap</button>`; isi.append(bar); }
+    const segarBar = () => { const b = bar.querySelector("button"); if (!b) return; b.disabled = !s.renlap.size; b.textContent = s.renlap.size ? `Buat renlap (${fmt(s.renlap.size)} dari maks ${fmt(MAKS_RENLAP)} dipilih)` : "Buat renlap"; };
     const gambar = () => {
       const ada = new Set(ids), urut = urutDaftar(semua.filter(k => ada.has(k.id)), st.versi, cek, s.urut, s.turun), hal = potong(urut, s.hal);
       kepala.textContent = `${fmt(urut.length)} dari ${fmt(semua.length)} kompleks menurut saringan peta, zona versi ${NAMA_VERSI[st.versi]}.`;
@@ -536,10 +669,17 @@ export async function pasang(akar, konteks) {
     };
     gambar();
     const d = bukaDialog("Daftar kompleks", isi); d.classList.add("sp-dialog-daftar");
+    d.addEventListener("change", e => {
+      const c = e.target.closest("[data-renlap]"); if (!c) return;
+      const r = ubahPilihan(s.renlap, c.dataset.renlap, c.checked);
+      if (r.penuh) { c.checked = false; konteks.pesan?.(`Paling banyak ${fmt(MAKS_RENLAP)} kompleks per renlap.`); return; }
+      s.renlap = r.set; segarBar();
+    });
     d.addEventListener("click", e => {
       const u = e.target.closest("th button[data-k]"), h = e.target.closest(".pgn-b"), b = e.target.closest(".sp-baris-id");
       if (u) { const k = u.dataset.k; s.turun = s.urut === k ? !s.turun : false; s.urut = k; s.hal = 0; u.closest("tr").querySelectorAll("th").forEach(t => { const on = t.contains(u); on ? t.setAttribute("aria-sort", s.turun ? "descending" : "ascending") : t.removeAttribute("aria-sort"); t.querySelector("i").textContent = on ? (s.turun ? "↓" : "↑") : ""; }); nanti(gambar); }
       else if (h && !h.disabled) { s.hal = Number(h.dataset.h); h.setAttribute("aria-current", "page"); nanti(gambar); }
+      else if (e.target.closest("[data-renlap-buat]")) { const ids = [...s.renlap]; nanti(() => buatRenlap(ids)); }
       else if (b) { d.close(); pilih(b.dataset.id, {terbang: true}); }
     });
   }
@@ -569,10 +709,18 @@ export async function pasang(akar, konteks) {
       return {galat: r.galat, kirim: async () => {
         await kirimPost(JALUR.cek, r.badan);
         const j = await konteks.ambil(JALUR.cek, sinyal); cek = cekTerbaru(j.cek || []);
-        geoK = geoKompleks(semua, cek); peta?.getSource("kompleks")?.setData(geoK);   // sekali setelah tulis, bukan saat menyaring
+        geoK = geoKompleks(semua, cek); tulisData("kompleks", geoK);   // sekali setelah tulis, bukan saat menyaring
         gambarPanel(); gambarLegenda(); gambarRincian(); terapkanSaringan();
         konteks.pesan?.(`Cek jalan ${k.id} dicatat: ${r.badan.hasil} pada musim ${r.badan.musim}.`);
       }};
+    });
+  }
+  function dialogKeputusan(k) {
+    formDialog(`Catat putusan ${k.id}`, `<label>Putusan<select name="putusan">${Object.entries(PUTUSAN).map(([v, n]) => `<option value="${v}">${esc(n)}</option>`).join("")}</select></label>
+      <label>Alasan (${BATAS_ALASAN.min} sampai ${BATAS_ALASAN.maks} huruf)<textarea name="alasan" rows="3" maxlength="${BATAS_ALASAN.maks}"></textarea></label>
+      <p class="ad-catat">Putusan tercatat atas namamu di jejak keputusan dan perubahan (layar Log). Ini catatan keputusan staf, bukan perintah gelar.</p>`, f => {
+      const r = badanKeputusan(f, k.id);
+      return {galat: r.galat, kirim: async () => { await kirimPost(JALUR.keputusan, r.badan); konteks.pesan?.(`Putusan ${r.badan.putusan} untuk ${k.id} dicatat.`); }};
     });
   }
   function dialogAoi(target, label) {
@@ -587,7 +735,7 @@ export async function pasang(akar, konteks) {
   let jedaCari = 0;
   const tombolNyala = (b, on) => b.setAttribute("aria-pressed", String(on));
   wadah.addEventListener("click", e => {
-    const t = e.target, satuan = t.closest("[data-satuan]"), zonaB = t.closest("[data-zona]"), gswB = t.closest("[data-gsw]"), sar = t.closest('[data-saring="bakar3"]'), aksi = t.closest("[data-aksi]");
+    const t = e.target, satuan = t.closest("[data-satuan]"), zonaB = t.closest("[data-zona]"), gswB = t.closest("[data-gsw]"), aksi = t.closest("[data-aksi]");
     if (satuan && satuan.getAttribute("aria-checked") !== "true") {
       semuaQ("[data-satuan]").forEach(b => { const on = b === satuan; b.setAttribute("aria-checked", String(on)); b.tabIndex = on ? 0 : -1; });
       st.satuan = satuan.dataset.satuan; q(".sp-peta-leg").dataset.satuan = st.satuan; popup?.remove();
@@ -595,7 +743,6 @@ export async function pasang(akar, konteks) {
       nanti(terapkanSatuan);
     } else if (zonaB) { const on = zonaB.getAttribute("aria-pressed") !== "true"; tombolNyala(zonaB, on); on ? st.zona.add(zonaB.dataset.zona) : st.zona.delete(zonaB.dataset.zona); nanti(terapkanSaringan); }
     else if (gswB) { const on = gswB.getAttribute("aria-pressed") !== "true"; tombolNyala(gswB, on); on ? st.gsw.add(gswB.dataset.gsw) : st.gsw.delete(gswB.dataset.gsw); nanti(terapkanSaringan); }
-    else if (sar) { st.bakar3 = sar.getAttribute("aria-pressed") !== "true"; tombolNyala(sar, st.bakar3); nanti(terapkanSaringan); }
     else if (aksi) {
       const a = aksi.dataset.aksi, k = st.pilih && peKomp[st.pilih];
       if (a === "daftar") nanti(bukaDaftar);
@@ -604,6 +751,8 @@ export async function pasang(akar, konteks) {
       else if (a === "legenda") { const buka = aksi.getAttribute("aria-expanded") !== "true"; aksi.setAttribute("aria-expanded", String(buka)); q(".sp-peta-leg").classList.toggle("buka", buka); }
       else if (a === "lembar") aturLembar(tinggiLembar[(tinggiLembar.indexOf(q(".sp-lembar").dataset.tinggi) + 1) % 3]);
       else if (a === "cek" && k && tulis) dialogCek(k);
+      else if (a === "putusan" && k && tulis) dialogKeputusan(k);
+      else if (a === "renlap" && k && tulis) nanti(() => buatRenlap([k.id]));
       else if (a === "aoi" && k && tulis) dialogAoi(k.id, `kompleks ${k.id}`);
       else if (a === "hitung" && !(e.metaKey || e.ctrlKey || e.shiftKey || e.button)) { e.preventDefault(); history.pushState(null, "", aksi.getAttribute("href")); dispatchEvent(new PopStateEvent("popstate")); }
     }
@@ -611,8 +760,12 @@ export async function pasang(akar, konteks) {
   wadah.addEventListener("change", e => {
     const t = e.target;
     if (t.matches('[data-saring="kab"]')) { st.kab = t.value; nanti(terapkanSaringan); }
+    else if (t.matches('[data-saring="bakar"]')) { st.bakar = Number(t.value) || 0; nanti(terapkanSaringan); }
     else if (t.matches("[data-api]")) { st.api = t.checked; const k = peKomp[st.pilih], c = k && cek[k.id]; if (k) nanti(() => { const s = q(".sp-saran"); if (s) s.outerHTML = saranHtml(k, st.versi, st.api, c); }); }
-    else if (t.matches("[data-lapisan]")) nanti(terapkanSatuan);
+    else if (t.matches("[data-lapisan]")) {
+      if (t.dataset.lapisan === "brgm") { pitaBrgm(t.checked); if (t.checked) nanti(muatBrgm); nanti(gambarLegenda); }
+      nanti(terapkanSatuan);
+    }
   });
   wadah.addEventListener("input", e => { if (e.target.matches('[data-saring="cari"]')) { clearTimeout(jedaCari); const v = e.target.value; jedaCari = setTimeout(() => { st.cari = v; nanti(terapkanSaringan); }, 150); } });
   wadah.addEventListener("keydown", e => {

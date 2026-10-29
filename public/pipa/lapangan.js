@@ -3,10 +3,11 @@
    bila ada #lapangan atau #app. Hanya impor relatif ke modul pipa, supaya ikut tersimpan service worker. Semua teks lewat textContent.
    INP: ketukan stopwatch dan Kirim sekarang mengubah tombol seketika, simpan dan kirim lewat nanti() (anggaran form lapangan < 100 ms). */
 import {ikon} from "./ikon.js";
-import {cekButir, MEDAN, KEDALAMAN_CM} from "./formulir.js";
-import {tambah, tambahFoto, jumlah, daftar, perbaiki, kirimSemua, keluar, buangSemua, kodeTersimpan, idbSiap, buangKadaluarsa} from "./antre.js";
+import {cekButir, MEDAN, KEDALAMAN_CM, JENIS_FASE2, TAHAP_FOTO, LANGKAH_PERIKSA, MODA_JEJAK, TITIK_TEKANAN, KEBUTUHAN_DEBIT_LPS, SOS_TAHAN_MS, hitungDebit, bandingDebit, TINDAKAN_TUNGGU, peringatanBor, peringatanTekanan, pengingatTekanan, tambahTitikJejak, panjangJejakM} from "./formulir.js";
+import {tambah, tambahFoto, hapus, jumlah, daftar, perbaiki, kirimSemua, keluar, buangSemua, kodeTersimpan, idbSiap, buangKadaluarsa} from "./antre.js";
 
-const LS_KODE = "sippa.kode", LS_TERKIRIM = "sippa.terkirim", LS_DRAF = "sippa.draf.";
+const LS_KODE = "sippa.kode", LS_TERKIRIM = "sippa.terkirim", LS_DRAF = "sippa.draf.", LS_PERIKSA = "sippa.periksa.", LS_TEKANAN = "sippa.tekanan.";
+const NOMOR_DARURAT = [["112", "Darurat umum"], ["117", "Call center BNPB"]];
 const MELESET_MS = 10 * 60000, KIRIM_BERKALA_MS = 60000;
 const MSG_KODE_MATI = "Kode penugasan ini sudah tidak berlaku. Minta kode baru ke perencana.";
 const KODE_RE =/(?:^#|^|&)k=([0-9a-f]{26})(?=&|$)/i, KODE_BARE = /^[0-9a-f]{26}$/i;
@@ -79,10 +80,38 @@ export function daftarPeriksa(kit) {
     .map(c => ({sasaran_jenis: "komponen", sasaran_id: c.id, kode_bom: c.kode_bom, nama: String(c.nama ?? c.kode_bom), skor: null}));
 }
 /* satu butir per komponen yang dinilai; temuan hanya melekat pada skor > 0; jam operasi hanya komponen K1 (pompa) */
-export function bangunInspeksi({jenis, nilai, jam = {}, temuan = ""}, kini = Date.now()) {
+export function bangunInspeksi({jenis, nilai, jam = {}, temuan = "", tunggu = new Set()}, kini = Date.now()) {
   const t = String(temuan).trim();
   return nilai.filter(n => Number.isInteger(n.skor)).map(n => bersih({jenis, sasaran_jenis: n.sasaran_jenis, sasaran_id: n.sasaran_id, skor: n.skor,
-    jam_operasi: awalanK1(n.kode_bom) && typeof jam[n.sasaran_id] === "number" ? jam[n.sasaran_id] : undefined, temuan: n.skor > 0 && t ? t : undefined, waktu_klien: kini}));
+    jam_operasi: awalanK1(n.kode_bom) && typeof jam[n.sasaran_id] === "number" ? jam[n.sasaran_id] : undefined, temuan: n.skor > 0 && t ? t : undefined, tindakan: n.skor > 0 && tunggu.has(n.sasaran_id) ? TINDAKAN_TUNGGU : undefined, waktu_klien: kini}));
+}
+
+/* SP-123: titik kumpul dari data tugas bila server mengirimnya (teks, atau {nama, lat, lon}); selain itu null dan layar bilang belum dicatat */
+export function titikKumpul(tugas) {
+  const t = tugas?.titik_kumpul;
+  if (typeof t === "string" && t.trim()) return {nama: t.trim()};
+  if (t && typeof t === "object" && typeof t.nama === "string" && t.nama.trim()) return {nama: t.nama.trim(), lat: Number.isFinite(t.lat) ? t.lat : undefined, lon: Number.isFinite(t.lon) ? t.lon : undefined};
+  return null;
+}
+/* SP-127: daftar alat selesai gelar dari kit.komponen (kode BOM unik, urut); tanpa komponen dari server daftarnya kosong dan layar meminta kode alat hilang diketik */
+export function daftarAlat(kit) {
+  if (!kit || !Array.isArray(kit.komponen)) return [];
+  const lihat = new Set(); const hasil = [];
+  for (const c of kit.komponen) if (c && typeof c.kode_bom === "string" && !lihat.has(c.kode_bom)) { lihat.add(c.kode_bom); hasil.push({kode_bom: c.kode_bom, nama: String(c.nama ?? c.kode_bom)}); }
+  return hasil.sort((a, b) => a.kode_bom.localeCompare(b.kode_bom));
+}
+/* butir selesai: yang tidak ditandai hilang dianggap kembali; kode ketikan dibersihkan (huruf besar, tanpa duplikat) */
+export function bangunSelesai({alat = [], hilang = [], ketik = "", catatan = ""}, kini = Date.now()) {
+  const tambahan = String(ketik).split(/[\s,;]+/).map(k => k.trim().toUpperCase()).filter(Boolean);
+  const hilangSemua = [...new Set([...hilang, ...tambahan])];
+  return bersih({waktu: kini, alat_kembali: alat.map(a => a.kode_bom).filter(k => !hilangSemua.includes(k)), alat_hilang: hilangSemua, catatan: String(catatan).trim()});
+}
+
+/* SP-129: kalimat hasil debit; null = isian belum lengkap */
+export function kalimatDebit(lps) {
+  const b = bandingDebit(lps);
+  if (!b) return "Isi semua kolom dengan angka lebih dari 0 untuk melihat debit.";
+  return `Debit ${angka(b.lps)} liter per detik, ${b.cukup ? "cukup" : "kurang"} untuk satu kit (butuh ${angka(KEBUTUHAN_DEBIT_LPS)} liter per detik).`;
 }
 
 /* Pita sinkron (DS §2.1.3, §3.7.2): empat keadaan, satu kalimat. Alasan penolakan hanya ditampilkan bila tepat satu butir ditolak. */
@@ -156,7 +185,9 @@ export function pasang(akar) {
   strip.append(tulisStripIkon, tulisStripTeks, kirimSekarang);
   const pita = el("div", "sp-pita-lp", null, {role: "status"});
   const isi = el("main", "lp-isi", null, {id: "lp-isi"});
-  akar.replaceChildren(kop, strip, pita, isi);
+  const sos = tombol("SOS: tahan 2 detik", "lp-sos besar", null); sos.hidden = true;
+  const panelSos = el("section", "lp-sos-panel", null, {role: "alert", hidden: ""}), pengingat = el("div", "lp-pengingat", null, {role: "status", hidden: ""});
+  akar.replaceChildren(kop, strip, sos, panelSos, pengingat, pita, isi);
 
   const pitaTulis = (...teks) => pita.replaceChildren(...teks.filter(Boolean).map(t => el("p", "lp-banner", kal(t))));
   function tulisStrip() {
@@ -185,7 +216,7 @@ export function pasang(akar) {
   }
 
   /* ----- layar ----- */
-  function ganti(...simpul) { isi.replaceChildren(...simpul); isi.querySelector("h2")?.focus(); }
+  function ganti(...simpul) { sos.hidden = !S.tugas; isi.replaceChildren(...simpul); isi.querySelector("h2")?.focus(); }
   const kembaliKeTugas = () => { S.tampil = "tugas"; tampilTugas(); };
 
   async function tampilMasuk(pesan) {
@@ -248,12 +279,12 @@ export function pasang(akar) {
   const wadahAntre = el("div", "sp-antre");
   function gambarAntre(tolak) {
     wadahAntre.replaceChildren(...tolak.map(b => {
-      const k = el("div", "sp-antre-butir"), t = tombol("Perbaiki", "", () => tampilPerbaiki(b));
+      const k = el("div", "sp-antre-butir"), t = JENIS_FASE2.includes(b.jenis) ? tombol("Buang", "", () => urgentLalu(t, "Membuang...", async () => { await hapus(b.id); await segarkan(); })) : tombol("Perbaiki", "", () => tampilPerbaiki(b));
       k.append(el("p", "", kal(`${JENIS_LABEL[b.jenis] || b.jenis} ditolak: ${b.alasan}`)), t);
       return k;
     }));
   }
-  const JENIS_LABEL = {log: "Sesi gelar", probe: "Probe", bbm: "BBM", gerak: "Pindah kit", inspeksi: "Inspeksi"};
+  const JENIS_LABEL = {log: "Sesi gelar", probe: "Probe", bbm: "BBM", gerak: "Pindah kit", inspeksi: "Inspeksi", periksa: "Daftar periksa", sos: "SOS", tekanan: "Tekanan", jejak: "Jejak", selesai: "Laporan selesai", bor: "Bor", debit: "Debit air"};
 
   function tampilTugas() {
     const t = S.tugas.tugas, kit = S.tugas.kit;
@@ -269,8 +300,10 @@ export function pasang(akar) {
         await tampilMasuk();
       });
     });
-    const aksi = [tombol("Mulai sesi gelar", "utama besar", () => tampilSesi()), tombol("Catat probe", "", () => tampilProbe()), tombol("Catat BBM", "", () => tampilBbm())];
+    const aksi = [tombol("Mulai sesi gelar", "utama besar", () => tampilSesi()), tombol("Daftar periksa", "", () => tampilPeriksa()), tombol("Foto bukti", "", () => tampilFoto()), tombol("Catat tekanan", "", () => tampilTekanan()),
+      tombol("Catat probe", "", () => tampilProbe()), tombol("Catat bor", "", () => tampilBor()), tombol("Ukur debit air", "", () => tampilDebit()), tombol(rek ? "Jejak sedang direkam" : "Rekam jejak", "", () => tampilJejak()), tombol("Catat BBM", "", () => tampilBbm())];
     if (kit) aksi.push(tombol("Inspeksi komponen", "", () => tampilInspeksi()), tombol("Pindah kit", "", () => tampilGerak()));
+    aksi.push(tombol("Lapor selesai gelar", "", () => tampilSelesai()));
     ganti(blok("Tugas", ...info), wadahAntre, blok("Catat", ...aksi), keluarT);
     segarkan();
   }
@@ -387,19 +420,21 @@ export function pasang(akar) {
     ganti(blok("BBM", aksi.el, jenis.el, liter.el, tiket.el), err, simpan, tombol("Kembali", "", kembaliKeTugas));
   }
 
+  const cekTunggu = w => { const l = el("label", "lp-pil"); l.append(w, el("span", "", "Menunggu suku cadang")); return l; };
   /* inspeksi pra/pasca gelar: kondisi tiap komponen sebagai segmen berlabel kata, komponen yang tak dinilai dilewati (DS §4.15, DT §6.6) */
   function tampilInspeksi() {
     S.tampil = "inspeksi";
     const daftarK = daftarPeriksa(S.tugas.kit), kembali = tombol("Kembali", "", kembaliKeTugas);
     if (!daftarK.length) { ganti(blok("Inspeksi komponen", el("p", "lp-pesan galat", "Daftar komponen kit belum diterima dari server. Hubungi perencana untuk memperbarui tugas ini.", {role: "alert"})), kembali); return; }
     const jenis = pil("Jenis inspeksi", [["pra_gelar", "Pra-gelar"], ["pasca_gelar", "Pasca-gelar"]], "pra_gelar");
-    const baris = daftarK.map(c => ({c, g: pil(`Kondisi ${c.kode_bom}`, KATA_SKOR.map((k, i) => [i, k]), null), j: awalanK1(c.kode_bom) ? isian(`Jam operasi ${c.kode_bom} sejak servis`, {mode: "decimal"}) : null}));
+    const baris = daftarK.map(c => ({c, g: pil(`Kondisi ${c.kode_bom}`, KATA_SKOR.map((k, i) => [i, k]), null), w: Object.assign(el("input"), {type: "checkbox"}), j: awalanK1(c.kode_bom) ? isian(`Jam operasi ${c.kode_bom} sejak servis`, {mode: "decimal"}) : null}));
     const temuan = el("textarea", "", null, {maxlength: "1000", "aria-label": "Temuan", rows: "3"});
     const err = el("div", "lp-pesan galat", null, {role: "alert"}), simpan = tombol("Simpan inspeksi", "utama besar");
     simpan.addEventListener("click", () => urgentLalu(simpan, "Menyimpan...", async () => {
       const dinilai = baris.map(({c, g}) => ({...c, skor: g.nilai()})), jam = {};
       for (const {c, j} of baris) if (j) { const v = angkaDari(j.input); if (typeof v === "string") { err.replaceChildren(el("p", "", kal(`Jam operasi ${c.kode_bom} harus angka`))); return; } if (v !== undefined) jam[c.sasaran_id] = v; }
-      const butir = bangunInspeksi({jenis: jenis.nilai(), nilai: dinilai, jam, temuan: temuan.value});
+      const tunggu = new Set(baris.filter(b => b.w.checked).map(b => b.c.sasaran_id));
+      const butir = bangunInspeksi({jenis: jenis.nilai(), nilai: dinilai, jam, temuan: temuan.value, tunggu});
       if (!butir.length) { err.replaceChildren(el("p", "", "Nilai kondisi minimal satu komponen.")); return; }
       /* semua butir diperiksa dulu: satu yang salah = tidak ada yang tersimpan setengah */
       const salah = butir.map(b => cekButir("inspeksi", {id: "0".repeat(16), ...b}, opsiTugas())).find(c => !c.ok);
@@ -407,7 +442,7 @@ export function pasang(akar) {
       for (const b of butir) { const r = await tambah({jenis: "inspeksi", data: b, tugas_id: tid()}, opsiTugas()); if (!r.ok) { if (r.galat) tulisGalat(err, "inspeksi", r.galat); else err.replaceChildren(el("p", "", r.pesan)); return; } }
       await segarkan(); kembaliKeTugas(); if (navigator.onLine !== false) tunda(kirim);
     }));
-    ganti(blok("Inspeksi komponen", jenis.el), ...baris.map(({c, g, j}) => blok(`${c.kode_bom} ${c.nama}`, g.el, ...(j ? [j.el] : []))), blok("Temuan", temuan), err, simpan, kembali);
+    ganti(blok("Inspeksi komponen", jenis.el), ...baris.map(({c, g, j, w}) => blok(`${c.kode_bom} ${c.nama}`, g.el, ...(j ? [j.el] : []), cekTunggu(w))), blok("Temuan", temuan), err, simpan, kembali);
   }
 
   /* pindah kit: hanya gelar, bongkar, kembali (DT §6.2 kolom K); dari_status dari kit tugas, server menolak bila staf sudah memindahnya */
@@ -432,6 +467,197 @@ export function pasang(akar) {
     }));
     ganti(blok("Pindah kit", aksi.el, lokasi.el, ambil, infoGps), err, simpan, tombol("Kembali", "", kembaliKeTugas));
   }
+
+  /* ====== fase 2 (keputusan 61): daftar periksa, foto bukti, SOS, tekanan, jejak, selesai, bor, debit ====== */
+  /* posisi: satu bacaan GPS dengan batas 10 detik; null bila ditolak atau tidak ada */
+  const posisi = () => new Promise(ok => {
+    if (!navigator.geolocation) return ok(S.gps || null);
+    navigator.geolocation.getCurrentPosition(p => { S.gps = {lat: p.coords.latitude, lon: p.coords.longitude}; ok(S.gps); }, () => ok(S.gps || null), {enableHighAccuracy: true, timeout: 10000, maximumAge: 30000});
+  });
+  const GALAT_GPS = "Lokasi belum terbaca. Pindah ke tempat terbuka lalu coba lagi.";
+  const lima = n => n.toLocaleString("id-ID", {minimumFractionDigits: 5, maximumFractionDigits: 5});
+  async function simpanButir(jenis, data, err) {
+    const r = await tambah({jenis, data: bersih(data), tugas_id: tid()}, opsiTugas());
+    if (!r.ok) { if (r.galat) tulisGalat(err, jenis, r.galat); else err.replaceChildren(el("p", "", r.pesan)); return false; }
+    return true;
+  }
+  const selesaiSimpan = async () => { await segarkan(); kembaliKeTugas(); if (navigator.onLine !== false) tunda(kirim); };
+  const petakIsi = (id) => { const i = isian("Petak", {daftar: id, maks: 40}), d = el("datalist", "", null, {id}); for (const p of S.tugas.petak || []) d.append(Object.assign(el("option"), {value: p})); return {el: i.el, input: i.input, daftar: d}; };
+
+  /* SP-120 daftar periksa: satu ketukan satu langkah berjam, tersimpan di ponsel dan masuk antrean seketika */
+  function tampilPeriksa() {
+    S.tampil = "periksa";
+    const kunci = LS_PERIKSA + tid(), sudah = (() => { try { return JSON.parse(baca(kunci)) || {}; } catch { return {}; } })();
+    const petak = petakIsi("lp-petak3"), err = el("div", "lp-pesan galat", null, {role: "alert"}), daftarEl = el("ol", "sp-stopwatch", null, {"aria-label": "Langkah kerja"});
+    const gambarDaftar = () => daftarEl.replaceChildren(...LANGKAH_PERIKSA.map(([kode, label]) => {
+      const li = el("li");
+      if (sudah[kode] != null) { li.className = "sudah"; li.append(el("span", "", label), el("time", "", jam(sudah[kode]))); return li; }
+      const b = el("button", "", label, {type: "button"});
+      b.addEventListener("click", () => {
+        if (b.disabled) return;
+        const ms = Date.now(); b.disabled = true; b.textContent = `${label} ${jam(ms)}`;   // jam tampil seketika
+        if (navigator.vibrate) navigator.vibrate(30);
+        tunda(async () => {
+          const ok = await simpanButir("periksa", {langkah: kode, waktu: ms, petak_id: petak.input.value.trim()}, err);
+          if (!ok) { b.disabled = false; b.textContent = label; return; }
+          sudah[kode] = ms; tulis(kunci, JSON.stringify(sudah)); gambarDaftar(); segarkan(); if (navigator.onLine !== false) tunda(kirim);
+        });
+      });
+      li.append(b); return li;
+    }));
+    gambarDaftar();
+    ganti(blok("Daftar periksa", el("p", "lp-kecil", "Ketuk tiap langkah saat selesai. Jamnya tercatat otomatis."), petak.el, petak.daftar, daftarEl), err, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* SP-121 foto bukti per tahap dengan lokasi GPS; berangkat lewat antrean foto, server membuat butirnya */
+  function tampilFoto() {
+    S.tampil = "foto";
+    const tahap = pil("Tahap", TAHAP_FOTO, "tiba"), berkas = el("input", "", null, {type: "file", accept: "image/jpeg,image/webp", capture: "environment", "aria-label": "Ambil foto"});
+    const info = el("p", "lp-kecil", "", {role: "status"}), err = el("div", "lp-pesan galat", null, {role: "alert"}), simpan = tombol("Simpan foto", "utama besar");
+    simpan.addEventListener("click", () => urgentLalu(simpan, "Mengambil lokasi...", async () => {
+      const f = berkas.files[0];
+      if (!f) { err.replaceChildren(el("p", "", "Ambil foto dulu.")); return; }
+      const p = await posisi();
+      if (!p) { err.replaceChildren(el("p", "", GALAT_GPS)); return; }
+      const r = await tambahFoto(f, null, {tahap: tahap.nilai(), lat: p.lat, lon: p.lon, tugas_id: tid()});
+      if (!r.ok) { err.replaceChildren(el("p", "", kal(r.pesan))); return; }
+      info.textContent = kal(`Foto tersimpan, lokasi ${lima(p.lat)}; ${lima(p.lon)}`); berkas.value = "";
+      if (navigator.onLine !== false) tunda(kirim);
+    }));
+    ganti(blok("Foto bukti", tahap.el, berkas, info), err, simpan, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* SP-125 tekanan; pengingat tiap 10 menit saat sesi aktif (sudah air mengalir, belum selesai) */
+  const sesiAktif = () => { try { const t = JSON.parse(baca(LS_DRAF + tid()))?.tahap || {}; return t.t_air_mengalir != null && t.t_selesai == null ? t.t_air_mengalir : null; } catch { return null; } };
+  const tekananTerakhir = () => Number(baca(LS_TEKANAN + tid())) || null;
+  let pengingatDiam = 0, konteksBunyi = null;   // satu AudioContext bersama
+  function periksaPengingat() {
+    if (!S.tugas) { pengingat.hidden = true; return; }
+    const mulaiAir = sesiAktif(), pe = pengingatTekanan({aktif: mulaiAir != null, terakhir: Math.max(tekananTerakhir() || 0, mulaiAir || 0), kini: Date.now()});
+    if (!pe.perlu) { pengingat.hidden = true; return; }
+    if (!pengingat.hidden) return;
+    pengingat.replaceChildren(el("p", "", "Sudah 10 menit. Catat tekanan sekarang."), tombol("Catat tekanan", "utama", () => tampilTekanan()), tombol("Nanti", "kecil", () => { pengingat.hidden = true; pengingatDiam = Date.now(); }));
+    if (Date.now() - pengingatDiam < 180000) return;
+    pengingat.hidden = false;
+    if (navigator.vibrate) navigator.vibrate([200, 100, 200]);
+    try { const a = (konteksBunyi ||= new AudioContext()), o = a.createOscillator(); o.connect(a.destination); o.frequency.value = 880; o.start(); o.stop(a.currentTime + 0.25); } catch { /* bunyi butuh izin peramban; getar dan banner tetap muncul */ }
+  }
+  const pengingatTimer = setInterval(() => tunda(periksaPengingat), 30000);
+  function tampilTekanan() {
+    S.tampil = "tekanan"; pengingat.hidden = true;
+    const titik = pil("Titik ukur", TITIK_TEKANAN, "lance"), bar = isian("Tekanan (bar)", {mode: "decimal"}), petak = petakIsi("lp-petak4");
+    const awas = el("p", "lp-pesan galat", "", {role: "status"}), err = el("div", "lp-pesan galat", null, {role: "alert"}), simpan = tombol("Simpan tekanan", "utama besar");
+    const tulisAwas = () => { const v = angkaDari(bar.input); awas.textContent = typeof v === "number" ? peringatanTekanan(titik.nilai(), v) || "" : ""; };
+    bar.input.addEventListener("input", tulisAwas); titik.el.addEventListener("change", tulisAwas);
+    simpan.addEventListener("click", () => urgentLalu(simpan, "Menyimpan...", async () => {
+      const ms = Date.now();
+      if (!(await simpanButir("tekanan", {titik: titik.nilai(), bar: angkaDari(bar.input), waktu: ms, petak_id: petak.input.value.trim()}, err))) return;
+      tulis(LS_TEKANAN + tid(), String(ms)); await selesaiSimpan();
+    }));
+    ganti(blok("Tekanan", titik.el, bar.el, awas, petak.el, petak.daftar), err, simpan, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* SP-128 bor: kedalaman gambut per petak dengan peringatan aturan ganti petak */
+  function tampilBor() {
+    S.tampil = "bor";
+    const cm = isian("Tebal gambut (cm)", {mode: "decimal"}), petak = petakIsi("lp-petak5"), cat = isian("Catatan", {maks: 200});
+    const awas = el("p", "lp-pesan galat", "", {role: "status"}), err = el("div", "lp-pesan galat", null, {role: "alert"}), simpan = tombol("Simpan bor", "utama besar");
+    cm.input.addEventListener("input", () => { const v = angkaDari(cm.input); awas.textContent = typeof v === "number" ? peringatanBor(v) || "" : ""; });
+    simpan.addEventListener("click", () => urgentLalu(simpan, "Mengambil lokasi...", async () => {
+      const p = await posisi(); if (!p) { err.replaceChildren(el("p", "", GALAT_GPS)); return; }
+      if (await simpanButir("bor", {petak_id: petak.input.value.trim(), lat: p.lat, lon: p.lon, kedalaman_cm: angkaDari(cm.input), waktu: Date.now(), catatan: cat.input.value.trim()}, err)) await selesaiSimpan();
+    }));
+    ganti(blok("Bor tebal gambut", petak.el, petak.daftar, cm.el, awas, cat.el), err, simpan, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* SP-129 debit air: pelampung atau ember, hasil L/s langsung dibanding kebutuhan satu kit */
+  function tampilDebit() {
+    S.tampil = "debit";
+    const metode = pil("Cara ukur", [["pelampung", "Pelampung di kanal"], ["ember", "Ember"]], "pelampung");
+    const f = {lebar: isian("Lebar kanal (m)", {mode: "decimal"}), dalam: isian("Dalam air (m)", {mode: "decimal"}), kec: isian("Kecepatan pelampung (m per detik)", {mode: "decimal"}),
+      vol: isian("Isi ember (liter)", {mode: "decimal"}), detik: isian("Waktu terisi (detik)", {mode: "decimal"})};
+    const kolomPelampung = el("div", "", null), kolomEmber = el("div", "", null);
+    kolomPelampung.append(f.lebar.el, f.dalam.el, f.kec.el); kolomEmber.append(f.vol.el, f.detik.el);
+    const hasil = el("p", "lp-hasil", "", {role: "status"}), err = el("div", "lp-pesan galat", null, {role: "alert"}), simpan = tombol("Simpan debit", "utama besar");
+    const ambilIsi = () => metode.nilai() === "ember" ? {metode: "ember", volume_l: angkaDari(f.vol.input), detik: angkaDari(f.detik.input)}
+      : {metode: "pelampung", lebar_m: angkaDari(f.lebar.input), dalam_m: angkaDari(f.dalam.input), kecepatan_ms: angkaDari(f.kec.input)};
+    const tulisHasil = () => { kolomPelampung.hidden = metode.nilai() === "ember"; kolomEmber.hidden = !kolomPelampung.hidden; hasil.textContent = kalimatDebit(hitungDebit(ambilIsi())); };
+    tulisHasil();
+    for (const k of Object.values(f)) k.input.addEventListener("input", tulisHasil);
+    metode.el.addEventListener("change", tulisHasil);
+    simpan.addEventListener("click", () => urgentLalu(simpan, "Mengambil lokasi...", async () => {
+      const p = await posisi(); if (!p) { err.replaceChildren(el("p", "", GALAT_GPS)); return; }
+      if (await simpanButir("debit", {...ambilIsi(), lat: p.lat, lon: p.lon, waktu: Date.now()}, err)) await selesaiSimpan();
+    }));
+    ganti(blok("Debit air", metode.el, kolomPelampung, kolomEmber, hasil), err, simpan, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* SP-126 jejak GPS: tetap direkam walau layar lain dibuka; berhenti dan kirim dari layar ini */
+  let rek = null;
+  function mulaiRekam(moda) {
+    if (!navigator.geolocation) return false;
+    rek = {moda, titik: [], id: null};
+    rek.id = navigator.geolocation.watchPosition(p => { const t = tambahTitikJejak(rek.titik, [p.coords.latitude, p.coords.longitude, Date.now()]); if (t !== rek.titik) { rek.titik = t; S.gps = {lat: p.coords.latitude, lon: p.coords.longitude}; rek.ubah?.(); } }, () => { /* izin ditolak: layar Jejak menampilkan 0 titik */ }, {enableHighAccuracy: true, maximumAge: 5000});
+    return true;
+  }
+  function tampilJejak() {
+    S.tampil = "jejak";
+    const moda = pil("Moda", MODA_JEJAK, rek?.moda || "jalan_kaki"), status = el("p", "lp-hasil", "", {role: "status"}), err = el("div", "lp-pesan galat", null, {role: "alert"});
+    const tulisStatus = () => { status.textContent = rek ? `Merekam: ${angka(rek.titik.length)} titik, ${angka(Math.round(panjangJejakM(rek.titik)))} m` : "Belum merekam."; };
+    const mulai = tombol("Mulai rekam", "utama besar"), henti = tombol("Berhenti dan simpan", "besar");
+    const atur = () => { mulai.hidden = !!rek; henti.hidden = !rek; tulisStatus(); if (rek) rek.ubah = tulisStatus; };
+    mulai.addEventListener("click", () => { if (!mulaiRekam(moda.nilai())) { err.replaceChildren(el("p", "", "GPS tidak tersedia di peramban ini.")); return; } atur(); });
+    henti.addEventListener("click", () => urgentLalu(henti, "Menyimpan...", async () => {
+      const r = rek; if (!r) return;
+      if (r.titik.length < 2) { err.replaceChildren(el("p", "", "Titik belum cukup. Berjalan dulu beberapa langkah, atau batalkan.")); return; }
+      if (!(await simpanButir("jejak", {titik: r.titik, moda: r.moda}, err))) return;
+      navigator.geolocation.clearWatch(r.id); rek = null; await selesaiSimpan();
+    }));
+    const batal = tombol("Batalkan rekaman", "kecil", () => { if (rek) { navigator.geolocation.clearWatch(rek.id); rek = null; } atur(); });
+    atur();
+    ganti(blok("Rekam jejak", el("p", "lp-kecil", "Titik disimpan tiap 20 m atau 30 detik, paling banyak 500. Biarkan layar ini aktif."), moda.el, status, mulai, henti, batal), err, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* SP-127 laporan selesai gelar: alat kit dicentang kembali atau hilang */
+  function tampilSelesai() {
+    S.tampil = "selesai";
+    const alat = daftarAlat(S.tugas.kit), baris = alat.map(a => { const w = Object.assign(el("input"), {type: "checkbox"}), l = el("label", "lp-pil"); l.append(w, el("span", "", `${a.kode_bom} ${a.nama} hilang`)); return {a, w, l}; });
+    const ketik = isian("Kode alat hilang (pisahkan koma)", {maks: 200}), cat = el("textarea", "", null, {maxlength: "500", "aria-label": "Catatan", rows: "3"});
+    const err = el("div", "lp-pesan galat", null, {role: "alert"}), simpan = tombol("Simpan laporan selesai", "utama besar");
+    simpan.addEventListener("click", () => urgentLalu(simpan, "Menyimpan...", async () => {
+      const d = bangunSelesai({alat, hilang: baris.filter(b => b.w.checked).map(b => b.a.kode_bom), ketik: alat.length ? "" : ketik.input.value, catatan: cat.value});
+      if (await simpanButir("selesai", d, err)) await selesaiSimpan();
+    }));
+    ganti(blok("Laporan selesai gelar", alat.length ? el("p", "lp-kecil", "Semua alat dianggap kembali. Centang yang hilang.") : el("p", "lp-kecil", "Daftar alat kit belum diterima dari server. Ketik kode alat yang hilang, atau kosongkan bila semua kembali."),
+      ...(alat.length ? baris.map(b => b.l) : [ketik.el]), blok("Catatan", cat)), err, simpan, tombol("Kembali", "", kembaliKeTugas));
+  }
+
+  /* SP-123 SOS: tahan 2 detik, lokasi diambil, butir masuk antrean dan langsung dicoba kirim */
+  async function kirimSos() {
+    sos.textContent = "Mengambil lokasi..."; sos.disabled = true;
+    const p = await posisi(); sos.disabled = false; sos.textContent = SOS_LABEL;
+    const kumpul = titikKumpul(S.tugas?.tugas), baris = [];
+    if (!p) baris.push(el("p", "lp-pesan galat", "Lokasi belum terbaca, SOS belum tersimpan. Hubungi nomor di bawah, lalu tahan tombol SOS lagi di tempat terbuka."));
+    else {
+      const err = el("div"), ok = await simpanButir("sos", {lat: p.lat, lon: p.lon, waktu: Date.now()}, err);
+      baris.push(ok ? el("p", "lp-sos-ok", "SOS tersimpan dan dikirim begitu ada sinyal. Tetap di tempat aman.") : err);
+      if (ok) { segarkan(); tunda(kirim); }
+    }
+    baris.push(el("p", "", kumpul ? `Titik kumpul: ${kumpul.nama}${kumpul.lat != null && kumpul.lon != null ? ` (${lima(kumpul.lat)}; ${lima(kumpul.lon)})` : ""}` : "Titik kumpul: ujung jalan tempat kendaraan siaga."));
+    for (const [no, nama] of NOMOR_DARURAT) baris.push(Object.assign(el("a", "lp-tombol", `${nama}: ${no}`), {href: `tel:${no}`}));
+    baris.push(tombol("Tutup", "kecil", () => { panelSos.hidden = true; }));
+    panelSos.replaceChildren(el("h2", "", "SOS", {tabindex: "-1"}), ...baris); panelSos.hidden = false; panelSos.querySelector("h2").focus();
+    if (navigator.vibrate) navigator.vibrate([300, 100, 300]);
+  }
+  const SOS_LABEL = "SOS: tahan 2 detik";
+  let tahanSos = null, terkirimSos = false;
+  const lepasSos = () => { if (tahanSos) { clearTimeout(tahanSos); tahanSos = null; } sos.classList.remove("menahan"); if (!sos.disabled) sos.textContent = SOS_LABEL; };
+  const mulaiSos = () => { if (tahanSos || sos.disabled) return; sos.classList.add("menahan"); sos.textContent = "Tahan terus..."; tahanSos = setTimeout(() => { tahanSos = null; terkirimSos = true; lepasSos(); kirimSos(); }, SOS_TAHAN_MS); };
+  sos.addEventListener("click", () => { if (terkirimSos) { terkirimSos = false; return; } pitaTulis("Tahan tombol SOS selama 2 detik untuk mengirim, jangan hanya diketuk"); });
+  sos.addEventListener("pointerdown", mulaiSos); sos.addEventListener("contextmenu", e => e.preventDefault());
+  for (const ev of ["pointerup", "pointercancel", "pointerleave"]) sos.addEventListener(ev, lepasSos);
+  sos.addEventListener("keydown", e => { if ((e.key === " " || e.key === "Enter") && !e.repeat) { e.preventDefault(); mulaiSos(); } });
+  sos.addEventListener("keyup", e => { if (e.key === " " || e.key === "Enter") lepasSos(); });
 
   /* Perbaiki butir ditolak: satu isian per medan butir (dari MEDAN), lalu cekButir dan kembali menunggu */
   function tampilPerbaiki(b) {
@@ -463,7 +689,7 @@ export function pasang(akar) {
   const berkala = setInterval(() => { if (document.visibilityState === "visible") tunda(kirim); }, KIRIM_BERKALA_MS);
   addEventListener("online", () => tunda(kirim));
   document.addEventListener("visibilitychange", () => { if (document.visibilityState === "visible") tunda(kirim); });
-  pasang.lepas = () => clearInterval(berkala);
+  pasang.lepas = () => { clearInterval(berkala); clearInterval(pengingatTimer); if (rek) navigator.geolocation.clearWatch(rek.id); };
   /* isian lebih dari 14 hari milik kode yang mustahil terkirim: dibuang dan jumlahnya diberitahukan (SP-015) */
   tunda(async () => { const k = await buangKadaluarsa().catch(() => null); if (k?.butir) pitaTulis(`${angka(k.butir)} isian lebih dari 14 hari dibuang dari antrean karena tidak mungkin terkirim lagi.`); await mulai(); });
 }

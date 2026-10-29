@@ -348,7 +348,8 @@ export function bandingProporsi(xa, na, xb, nb) {
 
 /* Vonis G4 (DT §5.5.1): LULUS | TIDAK LULUS | BELUM BISA DIPUTUS; data pilot tidak pernah diberi vonis (vonis null) */
 const haDingin30 = p => p.dingin_72j === 1 && p.nyala_30h === 0 ? p.luas_m2 / 10000 : 0;
-const adaPilot = p => p.pilot === true || /^PILOT/i.test(p.aoi ?? "") || (p.tanggal_perlakuan != null && p.tanggal_perlakuan <= KONST.pilot_sampai);
+/* baris dummy (peragaan Super Admin, RU B1) tidak jatuh ke jendela pilot hanya karena tanggalnya; tanda eksplisit pilot dan AOI PILOT tetap berlaku */
+const adaPilot = p => p.pilot === true || /^PILOT/i.test(p.aoi ?? "") || (p.dummy !== 1 && p.dummy !== true && p.tanggal_perlakuan != null && p.tanggal_perlakuan <= KONST.pilot_sampai);
 const memotongNol = ci => !ci || (ci[0] <= 0 && ci[1] >= 0);
 function biayaPerHaArm(ps) {
   const ha = ps.reduce((s, p) => s + haDingin30(p), 0), rp = ps.reduce((s, p) => s + (p.biaya_rp ?? 0), 0);

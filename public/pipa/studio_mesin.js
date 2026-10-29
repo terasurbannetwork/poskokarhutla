@@ -304,10 +304,7 @@
    if(N(s.flowLPM)>serap)hard.push(`H-SERAP: Debit ${fx(N(s.flowLPM),0)} L/min tidak terserap ${fx(N(sp.n_lance),0)} lance (paling banyak ${fx(serap,0)} L/min).`);
    if(N(sp.dalam_m)>K.dalam_maks_m)hard.push(`H-DALAM: Kedalaman injeksi ${fx(N(sp.dalam_m),1)} m melewati batas ${fx(K.dalam_maks_m,0)} m (keputusan 50).`);
   }
-  if(s.strategy==='backbone'){
-   if(N(sp&&sp.koridor!=null?sp.koridor:1)>2)hard.push('jaringan_permanen: Jaringan permanen lebih dari 2 koridor ditutup (keputusan 50).');
-   conditional.push('Backbone permanen ditutup sampai uji G5 lulus; angka ditampilkan sebagai pembanding, bukan rekomendasi.');
-  }
+  if(s.strategy==='semi'||s.strategy==='backbone')hard.push('jaringan_permanen: Jaringan pipa tetap (semi-permanen dan backbone) ditutup; SIPPA hanya kit portabel. Angka tampil sebagai pembanding (keputusan 60).');
   if(hasil.hyd.availableLPMin<K.g1_rasio*N(s.flowLPM))conditional.push(`H-AIR: Sumber air bersih ${fx(hasil.hyd.availableLPMin,0)} L/menit kurang dari ${fx(K.g1_rasio,1)} kali debit operasi ${fx(N(s.flowLPM),0)} L/menit.`);
   const decision=hard.length?'NO-GO':conditional.length?'HOLD / VALIDASI':'KONDISIONAL';
   const riskRisk=Math.min(100,Math.round(hard.length*20+conditional.length*6+hasil.soft.length*2+(s.access==='remote'?8:0)+(s.security==='high'?6:0)));

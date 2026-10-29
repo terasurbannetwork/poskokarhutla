@@ -58,6 +58,7 @@ export function dalamWilayahStaf(req, provs) {
   const s = SESI.get(req);
   return !s || !s.wilayah.length || provs.some(p => s.wilayah.includes(p));
 }
+export const wilayahStaf = req => SESI.get(req)?.wilayah ?? [];   // kosong = nasional (atau bukan staf)
 /* pelaku staf (sesi) yang BUKAN akun dummy: rute lama yang dibuka untuk staf menyaring baris dummy darinya */
 export const stafNyata = req => { const s = SESI.get(req); return !!s && !s.dummy; };
 export const dariStaf = mod => typeof mod === "string" && mod.startsWith("staf:");
@@ -65,7 +66,7 @@ export const dariStaf = mod => typeof mod === "string" && mod.startsWith("staf:"
 /* ================================================================ masuk, keluar, saya, ganti sandi */
 const cookieSet = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${umur}`;
 const hashSandi = (garam, sandi) => sha(garam + sandi);
-export async function sandiBaru() { const sandi = sandiAcak(), garam = acak(16); return {sandi, garam, sandi_sha: await hashSandi(garam, sandi)}; }
+export async function sandiBaru(sandi = sandiAcak()) { const garam = acak(16); return {sandi, garam, sandi_sha: await hashSandi(garam, sandi)}; }
 const gagalBanyak = async (env, kunci, aksi, maks, kini) => (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
 const catatLaju = (env, kunci, aksi, kini) => env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(kunci, aksi, kini);
 export const jejakStmt = (env, oleh, obyek, aksi, ke, catatan, kini, dummy = 0) => env.DB.prepare("INSERT INTO pantau_jejak (waktu, oleh, obyek, aksi, ke, catatan, dummy) VALUES (?, ?, ?, ?, ?, ?, ?)").bind(kini, oleh, obyek, aksi, ke ?? null, catatan ?? null, dummy);

@@ -126,7 +126,7 @@ uji("gel2/W6: aturan karhutla: tugas level 3 baru -> Siaga satu kali; level 2, l
   await sisip("alarm_himawari", {id: id16(), lat: -4, lon: 116, pertama: kini - 30 * MENIT, terakhir: kini - 10 * MENIT, status: "siaga"});
   await cron(kini); await cron(kini + 1000);
   const rows = (await DB.prepare("SELECT * FROM peringatan").all()).results; assert.equal(rows.length, 1, "satu peringatan, putaran ulang tidak menggandakan"); const p = rows[0];
-  assert.equal(p.kunci, `karhutla:${createHash("sha256").update("pk|" + baru).digest("hex").slice(0, 12)}:siaga`, "id tugas tidak keluar di kunci publik"); assert.equal(p.jenis, "karhutla"); assert.equal(p.tingkat, "Siaga"); assert.equal(p.sumber, "Deteksi Pantau Bencana"); assert.equal(p.prov, "62"); assert.equal(p.lat, -2.57); assert.equal(p.lon, 114.43, "dibulatkan 0,01");
+  assert.equal(p.kunci, `karhutla:${createHash("sha256").update("pk|" + baru).digest("hex").slice(0, 12)}:siaga`, "id tugas tidak keluar di kunci publik"); assert.equal(p.jenis, "karhutla"); assert.equal(p.tingkat, "Siaga"); assert.equal(p.sumber, "Deteksi Pantau Bencana"); assert.equal((await api("GET", "/api/peringatan/aktif")).j.peringatan.find(x => x.kunci === p.kunci)?.sumber, "Deteksi Centurisk97", "API menampilkan merek Centurisk97, nilai D1 lama tidak bocor"); assert.equal(p.prov, "62"); assert.equal(p.lat, -2.57); assert.equal(p.lon, 114.43, "dibulatkan 0,01");
   assert.match(p.judul, /Api level 3 baru di Kec Uji, Katingan, Kalimantan Tengah/); assert.match(p.teks, /9 titik panas/); assert.match(p.teks, /120 ha/); assert.equal(p.berlaku_hingga, baru && p.dibuat + 0 + (p.berlaku_hingga - p.dibuat), "berlaku");
   assert.ok(p.berlaku_hingga > kini + 10 * JAM && p.berlaku_hingga <= kini + 13 * JAM);
   const cap = uraiXml((await api("GET", "/api/peringatan/aktif.cap")).t), i = anak(cap, "info"); assert.equal(i.length, 1); assert.equal(satu(i[0], "category").teks, "Fire"); assert.equal(satu(i[0], "event").teks, "Kebakaran hutan dan lahan"); assert.equal(satu(satu(i[0], "area"), "circle").teks, "-2.57,114.43 0");
@@ -178,7 +178,8 @@ uji("gel2/W8: /api/pipa/lapangan: regu_maks/regu_rata, luas awal dan maks, lahan
   assert.equal(B[t].instansi_hash, createHash("sha256").update("instansi|" + a).digest("hex").slice(0, 12)); assert.match(B[t].instansi_hash, /^[0-9a-f]{12}$/); assert.strictEqual(B[t4].instansi_hash, null); assert.strictEqual(B[t4].regu_maks, null); assert.equal(B[t4].jumlah_isian, 0); assert.strictEqual(B[t4].luas_satelit_awal_ha, null);
   assert.ok(!r.t.includes(a) && !/Rahasia|akun|pic_/i.test(r.t), "id akun dan nama tidak keluar");
   assert.deepEqual(Object.keys(B[t]).sort(), ["alat_dipakai", "diubah", "id", "instansi_hash", "jumlah_isian", "kab", "kedalaman_bara_cm", "lahan", "lahan_peta_gambut", "lat", "lon", "luas_garis_ha", "luas_lapangan_ha", "luas_satelit_awal_ha", "luas_satelit_ha", "luas_satelit_maks_ha",
-    "mulai_padam", "padam_ha", "padam_pada", "padam_verif", "personel", "prov", "regu", "regu_maks", "regu_rata", "status_api"].sort());
+    "mulai_padam", "padam_ha", "padam_pada", "padam_verif", "personel", "prov", "regu", "regu_maks", "regu_rata", "status_api",
+    "status", "hasil", "konfirmasi_pada", "alasan_bukan_api", "sumber_konfirmasi", "isian_petugas"].sort());
 });
 
 uji("gel2/0046: tugas baru dari cron menyimpan luas satelit awal sekali; versi berikutnya yang lebih luas menaikkan luas_ha tetapi bukan luas awal", async () => {

@@ -4,6 +4,12 @@
 import {MEDAN} from "./formulir.js";
 import {ikon} from "./ikon.js";
 import {memuat, kosong, galat} from "./keadaan.js";
+import {ringkasDepot, kesiapanHtml, muatRincian, kitTerpotong} from "./kesiapan.js";
+import {katalogHtml} from "./katalog_alat.js";
+import {pasangTanggal} from "./tanggal.js";
+import {laikGelar} from "./pelihara.js";
+import {segmenModul, liniModulHtml, kitLaikBanjir, tujuanBanjir, panelBanjirHtml} from "./logistik.js";
+import {tabelPinjamHtml, formPinjamHtml, cekFormPinjam, badanPinjam, badanKembali, jalurPinjamKembali, beritaAcaraHtml, kehilanganDepot, kehilanganDepotHtml, muatGayaLapangan} from "./lapangan_staf.js";
 
 /* ---------- mesin keadaan kit (DT §6.2). Pasangan sah = CHECK sippa_gerak di 0056; uji membandingkan keduanya. ---------- */
 export const STATUS = ["gudang", "depot", "gelar", "banjir", "servis", "hilang", "pensiun"];
@@ -71,7 +77,7 @@ export const persenKehilangan = komp => {
 /* dibandingkan pada nilai yang TAMPIL (satu desimal): "5%" tidak pernah bersanding dengan "di bawah ambang"; tepat di ambang = mencapai (PRD: kehilangan harus < 5%) */
 export const tingkatKehilangan = p => { const r = p == null ? null : Math.round(p * 10) / 10; return r != null && r >= 20 ? "k15" : r != null && r >= 5 ? "u8" : "normal"; };
 export const komponenKurang = komp => komp.filter(x => x.kondisi === "hilang").length;
-const TINGKAT = {normal: "di bawah ambang U8 (5%)", u8: "mencapai ambang U8 (5%)", k15: "mencapai 20%: NO-GO koridor tetap (K-15)"};
+const TINGKAT = {normal: "di bawah ambang U8 (5%)", u8: "mencapai ambang U8 (5%)", k15: "mencapai 20% (ambang K-15): pengamanan kit ditinjau sebelum gelar berikut"};
 
 /* kartu judul daftar: "3 kit: 2 di gudang Palangka Raya, 1 di banjir Kapuas; kehilangan komponen musim ini 1,2%" */
 export function ringkasKit(kits, pct) {
@@ -80,6 +86,20 @@ export function ringkasKit(kits, pct) {
   for (const k of kits) { const kunci = `${k.status}|${k.lokasi || ""}`; grup.set(kunci, (grup.get(kunci) || 0) + 1); }
   const bagian = [...grup].map(([kunci, n]) => { const [s, l] = kunci.split("|"); return `${fmt(n)} di ${s}${l ? " " + l : ""}`; }).join(", ");
   return `${fmt(kits.length)} kit: ${bagian}${pct != null ? `; kehilangan komponen musim ini ${fmt(pct)}%` : ""}`;
+}
+
+/* judul kartu layar: satu klausa pendek; rincian status ada di pilStatusKit, lokasi di tooltip pil */
+export function judulKit(kits, pct) {
+  if (!kits.length) return "Belum ada kit terdaftar";
+  return `${fmt(kits.length)} kit${pct != null ? `; kehilangan komponen musim ini ${fmt(pct)}%` : ""}`;
+}
+/* satu pil per status (urutan siklus hidup STATUS), jumlah id-ID; nama lokasi unik di title */
+export function pilStatusKit(kits) {
+  return STATUS.map(s => {
+    const k = kits.filter(x => x.status === s); if (!k.length) return "";
+    const lok = [...new Set(k.map(x => x.lokasi).filter(Boolean))].join(", ");
+    return `<span class="sp-status ${esc(s)}"${lok ? ` title="${esc(lok)}"` : ""}>${esc(`${fmt(k.length)} ${(LABEL_STATUS[s] ?? s)}`)}</span>`;
+  }).join("");
 }
 
 /* pemakaian tercatat dari tab Pemakaian dan BBM: jam pompa, air banjir, BBM keluar */
@@ -192,7 +212,7 @@ export function tabKomponenHtml(komp, peran, {ubah = false, per = null} = {}) {
 }
 
 /* garis waktu gerak, terbaru di atas; antar-provinsi dibandingkan dengan butir sebelumnya */
-export function tabGerakHtml(gerak, kit, peran, per = null) {
+export function tabGerakHtml(gerak, kit, peran, per = null, kini = Date.now()) {
   const urut = [...gerak].sort((a, b) => a.waktu - b.waktu);
   let prev = null;
   const butir = urut.map(g => { const antar = g.prov && prev && g.prov !== prev; if (g.prov) prev = g.prov; return {g, antar}; }).reverse().map(({g, antar}) => {
@@ -202,7 +222,7 @@ export function tabGerakHtml(gerak, kit, peran, per = null) {
       ${g.catatan ? `<p class="ad-catat">${esc(g.catatan)}</p>` : ""}${buka && (peran === "W" || peran === "M") ? `<button type="button" class="ad-tombol" data-tiba="${esc(g.id)}">Konfirmasi tiba</button>` : ""}</li>`;
   });
   const lini = butir.length ? `<ol class="sp-lini" aria-label="${esc(`Riwayat gerak kit ${kit.kode}`)}">${butir.join("")}</ol>${sumberTeks(per)}` : `<p class="ad-kosong">Kit ini belum pernah bergerak sejak dibuat.</p>`;
-  return lini + tombolGerakHtml(kit, peran);
+  return liniModulHtml(segmenModul(gerak, kini)) + lini + tombolGerakHtml(kit, peran);
 }
 
 export const tabPemakaianHtml = (pakai, per = null) => tabel(["Tanggal", "Jenis", "Kelas", "Jam pompa", "BBM", "Air", "Air banjir"],
@@ -240,12 +260,12 @@ export function lepas() { ctrl?.abort(); ctrl = null; tutupKamera(); tutupDialog
 const kotakGalat = (daftar) => { const e = el("div", "ad-galat"); e.setAttribute("role", "alert"); const ul = el("ul"); daftar.forEach(g => ul.append(el("li", "", g))); e.append(ul); return e; };
 
 /* form gerak: dipakai layar ini dan SP-043 (rencana banjir). rencana = hanya gerak yang boleh terencana; alasan = kunci ke satu alasan. */
-export function formGerak(kit, {rencana = false, alasan = null, peran = peranSaya(), sesudah = () => {}} = {}) {
+export function formGerak(kit, {rencana = false, alasan = null, peran = peranSaya(), sesudah = () => {}, awal = {}} = {}) {
   const opsi = opsiGerak(kit.status, peran).filter(o => (!rencana || o.rencana) && (!alasan || o.alasan === alasan));
   const f = el("form", "sp-form"); f.noValidate = true;
   if (!opsi.length) { f.append(kosong("Tidak ada gerak yang sah dari status ini untuk perananmu.")); return f; }
   const label = o => o.alasan === "koreksi" ? `Koreksi status menjadi ${NAMA_STATUS[o.ke_status]}` : TEKS_ALASAN[o.alasan];
-  f.innerHTML = `<label>Gerak <select name="gerak">${opsi.map(o => `<option value="${o.alasan}:${o.ke_status}">${esc(label(o))}</option>`).join("")}</select></label>
+  f.innerHTML = `<label>Gerak <select name="gerak">${opsi.map(o => `<option value="${esc(o.alasan)}:${esc(o.ke_status)}">${esc(label(o))}</option>`).join("")}</select></label>
     <label data-g="rencana"><input type="checkbox" name="rencana"${rencana ? " checked" : ""}> Jadwalkan dulu (kit baru berpindah saat tiba dikonfirmasi)</label>
     <label>Lokasi tujuan <input name="ke_lokasi" maxlength="${MEDAN.gerak.ke_lokasi.maks}"></label>
     <label>Kabupaten atau kota <input name="kab" maxlength="${MEDAN.gerak.kab.maks}"></label>
@@ -262,6 +282,7 @@ export function formGerak(kit, {rencana = false, alasan = null, peran = peranSay
     q("eta").hidden = !r; q("angkut").hidden = !(o.wajib.includes("pengangkut") || r); q("minta").hidden = !o.wajib.includes("permintaan_dari");
     kirim.textContent = o.alasan === "koreksi" ? "Simpan koreksi" : label(o); kirim.classList.toggle("bahaya", o.alasan === "hilang" || o.alasan === "pensiun");
   };
+  for (const [n, v] of Object.entries(awal)) if (f.elements[n] && v != null) f.elements[n].value = v;   // isian awal (mis. tujuan banjir dari panel)
   f.addEventListener("change", sesuaikan); sesuaikan();
   f.addEventListener("submit", async e => {
     e.preventDefault();
@@ -334,24 +355,60 @@ function dialogTugaskan(kit, sesudahTutup) {
 }
 
 /* ---------- layar ---------- */
+/* gaya kesiapan dan katalog (layar_kit.css) dimuat sekali oleh layar Kit, Pelihara, dan Peta */
+export function muatGayaKit() {
+  return new Promise(ok => {
+    if (document.querySelector('link[data-sp="kit"]')) return ok();
+    const l = document.createElement("link"); l.rel = "stylesheet"; l.href = "/pipa/layar_kit.css?v=1"; l.dataset.sp = "kit";
+    l.onload = l.onerror = () => ok(); document.head.append(l); setTimeout(ok, 1500);
+  });
+}
+
 export async function pasang(akar, konteks) {
   lepas(); ctrl = new AbortController();
   return konteks.id ? rincian(akar, konteks) : daftar(akar, konteks);
 }
 
 async function daftar(akar, konteks) {
-  const sinyal = ctrl.signal, st = {status: new Set(STATUS), jenis: new Set(Object.keys(JENIS_KIT)), kit: [], kehilangan: null, per: null};
+  const sinyal = ctrl.signal, st = {status: new Set(STATUS), jenis: new Set(Object.keys(JENIS_KIT)), kit: [], kehilangan: null, per: null, rincian: {}, rinciMuat: false};
+  muatGayaKit();
   akar.innerHTML = `<h1 class="sp-judul">Kit</h1><div id="sp-kit-isi"></div>`;
   const isi = akar.querySelector("#sp-kit-isi");
   const baru = () => {
-    isi.innerHTML = `<div id="sp-kit-kartu"></div>
+    isi.innerHTML = `<div id="sp-kit-kartu"></div><div id="sp-kit-siap"></div>
       <div class="sp-kontrol" role="group" aria-label="Penyaring kit"><button type="button" class="ad-tombol sp-besar" data-pindai aria-expanded="false" aria-controls="sp-pindai">Pindai QR</button>
         <div class="sp-chips" role="group" aria-label="Status">${STATUS.map(s => `<button type="button" class="ad-chip" data-status="${s}" aria-pressed="true">${NAMA_STATUS[s]}</button>`).join("")}</div>
         <div class="sp-chips" role="group" aria-label="Jenis">${Object.entries(JENIS_KIT).map(([k, n]) => `<button type="button" class="ad-chip" data-jenis="${k}" aria-pressed="true">${n}</button>`).join("")}</div></div>
       <section class="sp-pindai" id="sp-pindai" hidden><div class="sp-pindai-video" hidden></div><p class="sp-pindai-info" role="status"></p>
         <form class="sp-pindai-form"><label>Kode kit <input name="kode" placeholder="SIPPA-001" autocomplete="off" maxlength="40"></label><button type="submit" class="ad-tombol">Buka kit</button></form></section>
-      <div id="sp-kit-tabel"></div>`;
-    gambar();
+      <div id="sp-kit-tabel"></div><section class="sp-pinjam" id="sp-kit-pinjam" hidden></section><section class="sp-pinjam" id="sp-kit-hilang" hidden></section><section class="sp-pinjam" id="sp-kit-banjir" hidden></section><div id="sp-kit-katalog">${katalogHtml()}</div>`;
+    gambar(); gambarSiap(); nanti(() => { pasangPinjam(isi, konteks, sinyal, st.kit); muatHilangDepot(isi, konteks, sinyal); muatBanjir(); });
+    /* rincian kit di depot dimuat sesudah daftar tampil: laik dan BBM tidak menahan layar */
+    if (!st.rinciMuat) { st.rinciMuat = true; muatRincian(konteks.ambil, st.kit, sinyal).then(r => { if (!sinyal.aborted) { st.rincian = r; gambarSiap(); } }); }
+  };
+  const gambarSiap = () => {
+    const w = isi.querySelector("#sp-kit-siap"); if (!w || sinyal.aborted) return;
+    w.hidden = !st.kit.length;   // tanpa kit: satu kondisi kosong saja di bawah, bukan tiga (aturan pemilik A18)
+    w.innerHTML = Kartu.kartu("Kit siap gelar", esc("Kit siap gelar per depot"), kesiapanHtml(ringkasDepot(st.kit, st.rincian), kitTerpotong(st.kit)), `inventaris SIPPA, ${st.per == null ? "per –" : "per " + jamWIB(st.per)}`);
+    gambarBanjir();
+  };
+  /* SP-144 butir 40: panel pindah ke banjir; status banjir dibaca dari public/banjir/data/status.json, gagal baca = daftar tujuan kosong berpil basi */
+  const gambarBanjir = () => {
+    const w = isi.querySelector("#sp-kit-banjir"); if (!w || sinyal.aborted || !st.banjir) return;
+    const laik = Object.fromEntries(Object.entries(st.rincian).map(([id, r]) => [id, laikGelar(r.komponen, []).laik]));
+    const pilih = w.querySelector("[data-tujuan-banjir]")?.value;
+    w.innerHTML = panelBanjirHtml({kits: kitLaikBanjir(st.kit, laik), tujuan: st.banjir, kini: Date.now(), peran: peranSaya()}); w.hidden = false;
+    const s = w.querySelector("[data-tujuan-banjir]"); if (s && pilih) s.value = pilih;
+  };
+  const muatBanjir = async () => {
+    try { st.banjir = tujuanBanjir(await konteks.ambil("/banjir/data/status.json", sinyal), Date.now()); }
+    catch (e) { if (e?.name === "AbortError" || sinyal.aborted) return; st.banjir = tujuanBanjir(null, Date.now()); }
+    gambarBanjir();
+  };
+  const pindahBanjir = id => {
+    const kit = st.kit.find(k => k.id === id), pilih = isi.querySelector("[data-tujuan-banjir]")?.value ?? "", [prov, kab] = pilih.split("|");
+    if (!kit) return;
+    bukaDialog(`Pindah ${kit.kode} ke banjir`, formGerak(kit, {alasan: "pindah_banjir", peran: peranSaya(), awal: {ke_lokasi: kab, kab, prov}, sesudah: () => { tutupDialog(); konteks.pesan?.(`${kit.kode} dicatat pindah ke banjir.`); muat(); }}));
   };
   const gambar = () => {
     if (sinyal.aborted) return;
@@ -359,7 +416,8 @@ async function daftar(akar, konteks) {
     const pct = st.kehilangan?.musim_pct ?? null, per = st.per;
     konteks.setPer?.(per);
     const tingkat = tingkatKehilangan(pct);
-    isi.querySelector("#sp-kit-kartu").innerHTML = Kartu.kartu("Kit", esc(ringkasKit(st.kit, pct)), `<div class="sp-pil-baris">${pct != null ? pilYakin(TINGKAT[tingkat], "asumsi-kebijakan", "Ambang 5% (U8) dan 20% (K-15) ditetapkan sebagai asumsi kebijakan") : ""}${pilYakin("Inventaris staf", "terverifikasi", "Diisi dan diperiksa staf lewat layar ini")}</div>`, `inventaris SIPPA, ${per == null ? "per –" : "per " + jamWIB(per)}`);
+    for (const sel of ["#sp-kit-kartu", ".sp-kontrol"]) isi.querySelector(sel).hidden = !st.kit.length;
+    isi.querySelector("#sp-kit-kartu").innerHTML = Kartu.kartu("Kit", esc(judulKit(st.kit, pct)), `<div class="sp-pil-baris">${pilStatusKit(st.kit)}${pct != null ? pilYakin(TINGKAT[tingkat], "asumsi-kebijakan", "Ambang 5% (U8) dan 20% (K-15) ditetapkan sebagai asumsi kebijakan") : ""}${pilYakin("Inventaris staf", "terverifikasi", "Diisi dan diperiksa staf lewat layar ini")}</div>`, `inventaris SIPPA, ${per == null ? "per –" : "per " + jamWIB(per)}`);
     isi.querySelector("#sp-kit-tabel").innerHTML = st.kit.length ? tabel(KEPALA_KIT, baris.map(barisKitHtml), "Tidak ada kit yang cocok dengan penyaring.", per) : `<p class="ad-kosong">Belum ada kit. Kit dibuat oleh moderator; unit pertama SIPPA-001.</p>`;
   };
   let terjadwal = false;
@@ -399,6 +457,8 @@ async function daftar(akar, konteks) {
   akar.addEventListener("click", e => {
     const c = e.target.closest("[data-status],[data-jenis]");
     if (c) { const on = c.getAttribute("aria-pressed") !== "true"; c.setAttribute("aria-pressed", on); const [h, k] = c.dataset.status ? ["status", c.dataset.status] : ["jenis", c.dataset.jenis]; st[h][on ? "add" : "delete"](k); jadwalkan(); return; }
+    const pb = e.target.closest("[data-pindah-banjir]");
+    if (pb) { pindahBanjir(pb.dataset.pindahBanjir); return; }
     const p = e.target.closest("[data-pindai]");
     if (p) { const buka = p.getAttribute("aria-expanded") !== "true"; p.setAttribute("aria-expanded", buka); isi.querySelector("#sp-pindai").hidden = !buka; if (buka) nanti(mulaiKamera); else tutupKamera(); return; }
     const a = e.target.closest("a.sp-kit-kode");
@@ -406,6 +466,64 @@ async function daftar(akar, konteks) {
   }, {signal: sinyal});
   akar.addEventListener("submit", e => { const f = e.target.closest(".sp-pindai-form"); if (f) { e.preventDefault(); bukaDariTeks(f.elements.kode.value); } }, {signal: sinyal});
   await muat();
+}
+
+/* ---------- SP-130 pinjam-pakai dan berita acara; SP-131/37 kehilangan komponen per depot per musim ---------- */
+function cetakBA(p, namaKit) {
+  const area = el("div", "sp-cetak-area"); area.innerHTML = beritaAcaraHtml(p, {namaKit});
+  document.body.append(area); document.body.classList.add("sp-mencetak");
+  const bersih = () => { document.body.classList.remove("sp-mencetak"); area.remove(); removeEventListener("afterprint", bersih); };
+  addEventListener("afterprint", bersih); print();
+}
+async function pasangPinjam(isi, konteks, sinyal, kits) {
+  const w = isi.querySelector("#sp-kit-pinjam"); if (!w) return;
+  pasangTanggal();
+  const peran = peranSaya(), tulis = peran === "W" || peran === "M", namaKit = Object.fromEntries(kits.map(k => [k.id, k.kode]));
+  let rows = [], per = null;
+  const gambar = () => { if (sinyal.aborted) return; w.innerHTML = `<h2 class="sp-sub">Pinjam-pakai kit dan alat</h2>${tulis ? `<div class="sp-aksi-kepala"><button type="button" class="ad-tombol" data-pinjam-baru>Catat pinjam</button></div>` : ""}${tabelPinjamHtml(rows, {peran, namaKit, per})}`; w.hidden = false; };
+  const muat = async () => {
+    try { const [j] = await Promise.all([konteks.ambil(`/api/sippa/pinjam?prov=${encodeURIComponent(konteks.prov)}`, sinyal), muatGayaLapangan()]); if (sinyal.aborted) return; rows = j.pinjam || []; per = Date.now(); gambar(); }
+    catch (e) { if (e?.name === "AbortError" || sinyal.aborted) return; if (e.status == null) console.error(e); w.hidden = true; }   // rute belum ada: bagian disembunyikan
+  };
+  const dialog = (judul, html, cek, kirim, selesai) => {
+    const wrap = el("div"); wrap.innerHTML = html;
+    const f = wrap.firstElementChild, slot = f.querySelector(".sp-galat-slot"), btn = f.querySelector("button[type=submit]");
+    bukaDialog(judul, f);
+    f.addEventListener("submit", async e => {
+      e.preventDefault(); if (btn.disabled) return;
+      const nilai = Object.fromEntries([...new FormData(f)].map(([k, v]) => [k, typeof v === "string" ? v : ""])), salah = cek(nilai);
+      if (salah.length) { slot.replaceChildren(kotakGalat(salah)); return; }
+      btn.disabled = true; btn.setAttribute("aria-busy", "true"); slot.replaceChildren();
+      try { await kirimPost(...kirim(nilai)); tutupDialog(); konteks.pesan?.(selesai); await muat(); }
+      catch (er) { slot.replaceChildren(kotakGalat([er.message])); btn.disabled = false; btn.removeAttribute("aria-busy"); }
+    });
+  };
+  akar_klik(isi, sinyal, e => {
+    const t = e.target;
+    if (t.closest("[data-pinjam-baru]")) dialog("Catat pinjam", formPinjamHtml(kits), n => Object.values(cekFormPinjam(n)), n => ["/api/sippa/pinjam", badanPinjam({...n, prov: konteks.prov})], "Pinjam tercatat. Berita acara siap dicetak.");
+    const k = t.closest("[data-kembali]");
+    if (k) dialog("Kembalikan pinjaman", `<form class="sp-form" novalidate><label>Kondisi saat kembali (boleh kosong)<input name="kondisi" maxlength="200"></label><div class="sp-galat-slot" role="alert"></div><button type="submit" class="ad-tombol">Catat kembali</button></form>`,
+      () => [], n => [jalurPinjamKembali(k.dataset.kembali), badanKembali(n)], "Pinjaman dicatat kembali.");
+    const b = t.closest("[data-ba]");
+    if (b) {
+      if (b.getAttribute("aria-busy") === "true") return;
+      const p = rows.find(x => x.id === b.dataset.ba);
+      if (p) { b.setAttribute("aria-busy", "true"); nanti(() => { try { cetakBA(p, namaKit); } catch (er) { console.error(er); } b.removeAttribute("aria-busy"); }); }
+    }
+  });
+  await muat();
+}
+const akar_klik = (isi, sinyal, f) => isi.addEventListener("click", f, {signal: sinyal});
+async function muatHilangDepot(isi, konteks, sinyal) {
+  const w = isi.querySelector("#sp-kit-hilang"); if (!w) return;
+  try {
+    const q = m => konteks.ambil(`/api/sippa/kit?prov=${encodeURIComponent(konteks.prov)}&musim=${m}`, sinyal);
+    const [karhutla, banjir] = await Promise.all([q("karhutla"), q("banjir"), muatGayaLapangan()]);
+    if (sinyal.aborted) return;
+    const baris = kehilanganDepot({karhutla, banjir});
+    if (!baris.length) return;
+    w.innerHTML = `<h2 class="sp-sub">Kehilangan komponen per depot per musim</h2>${kehilanganDepotHtml(baris, Date.now())}`; w.hidden = false;
+  } catch (e) { if (e?.name !== "AbortError" && e.status == null) console.error(e); }
 }
 
 async function rincian(akar, konteks) {

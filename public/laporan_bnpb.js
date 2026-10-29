@@ -157,13 +157,15 @@ function kartuHtml(b) {
 const imporHtml = () => `<div class="lb-impor">
     <textarea id="lbUraiTeks" rows="5" spellcheck="false" placeholder="Tempel di sini rekap WA Dit. Koordalops (Mohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal ...)"></textarea>
     <div class="lb-impor-aksi">
+      <button type="button" class="pp-btn kecil" data-a="uraiWa" title="Pesan dan berkas yang dikirim ke nomor WA laporan pada tanggal ini">Ambil dari WA</button>
       <button type="button" class="pp-btn kecil" data-a="urai">Urai teks</button>
-      <label class="pp-btn kecil ke2 lb-imp">Unggah laphar PDF<input type="file" id="lbUraiBerkas" accept=".pdf,.txt,application/pdf,text/plain" hidden></label>
+      <label class="pp-btn kecil ke2 lb-imp">Unggah laphar atau lampiran<input type="file" id="lbUraiBerkas" accept=".pdf,.txt,.docx,.doc,.xlsx,.xls,.odt,.ods,.csv,.jpg,.jpeg,.png,.webp,application/pdf,text/plain,image/*" hidden></label>
       <button type="button" class="pp-btn kecil ke2" data-a="uraiModel" title="Untuk teks yang bentuknya tidak dikenali pengurai">Urai dengan model</button>
       <button type="button" class="pp-btn kecil" data-a="uraiMasuk" disabled>Masukkan ke isian</button>
     </div>
     <div class="lb-impor-st" id="lbUraiSt" role="status" aria-live="polite"></div>
     <pre class="lb-impor-pv" id="lbUraiPv" hidden></pre>
+    <p class="lb-ket"><a href="/pelaporan">Laporan masuk dan hasil otomatis ada di Arsip laporan harian (/pelaporan)</a></p>
   </div>`;
 const htmlBlok = b => `<summary>${esc(b.judul)}${b.tabel ? ` <small>${(ambil(S.isi, b.tabel) || []).length} baris</small>` : ""}${b.kartu ? ` <small>${(ambil(S.isi, b.kartu) || []).length} kejadian</small>` : ""}</summary>
     ${b.ket ? `<p class="lb-ket">${esc(b.ket)}</p>` : ""}${(b.tombol || []).map(([a, l]) => `<button type="button" class="pp-btn kecil ke2" data-a="${a}">${esc(l)}</button>`).join("")}
@@ -196,6 +198,7 @@ $("#lbForm").addEventListener("click", e => {
   else if (a === "naik") { const i = +b.closest("tr").dataset.i; if (!i) return; [arr[i - 1], arr[i]] = [arr[i], arr[i - 1]]; }
   else if (a === "isiSatelit") return isiSatelit();
   else if (a === "urai") return uraiTempel();
+  else if (a === "uraiWa") return uraiDariWa();
   else if (a === "uraiModel") return uraiModel();
   else if (a === "uraiMasuk") return uraiMasuk();
   else return;
@@ -245,6 +248,52 @@ async function uraiBerkas(file) {
     if (!h.bentuk) { pasangHasil(null); return uraiSt(`${file.name} terbaca, tapi bentuknya bukan laphar Dit. Koordalops. Coba tombol Urai dengan model.`); }
     pasangHasil(h, file.name);
   } catch (e) { pasangHasil(null); uraiSt(e.message); }
+}
+/* kotak masuk WA (src/wa.js): SEMUA kiriman hari itu dibaca (teks pesan dan tiap lampiran: PDF, Word, Excel, foto), digabung menurut urutan masuk, lalu diurai.
+   Satu-satunya PDF tanpa kiriman lain tetap lewat jalur koordinat pdf.js (tabel lebih baik). */
+async function uraiDariWa() {
+  uraiSt("Mengambil kiriman WA…");
+  try {
+    const {pesan} = await api(`/api/wa/masuk?tanggal=${S.tanggal}&jenis=bencana`);
+    if (!pesan.length) return uraiSt(`Belum ada kiriman WA untuk ${LB.tglP(S.tanggal)}.`);
+    const adaPdf = p => p.ada_berkas && /pdf/i.test(p.tipe || p.nama_berkas || "");
+    const lamp = pesan.filter(p => p.ada_berkas), pdf = lamp.filter(adaPdf);
+    const MAKS_LAMP = 20, dilewati = new Set(lamp.slice(0, -MAKS_LAMP).map(p => p.id));   // tiap lampiran = satu panggilan model; ambil 20 terakhir
+    const tunggal = pdf.length === 1 && lamp.length === 1 && !pesan.some(p => (p.teks || "").trim());
+    if (tunggal) {
+      const r = await fetch(`/api/wa/berkas?id=${pdf[0].id}`, {credentials: "same-origin"}); if (!r.ok) throw new Error("berkas WA gagal diunduh");
+      return uraiBerkas(new File([await r.blob()], pdf[0].nama_berkas || "laphar.pdf", {type: "application/pdf"}));
+    }
+    const gagal = [], tulis = [];
+    let n = 0;
+    for (const p of pesan) {
+      const bagian = [];
+      if ((p.teks || "").trim()) bagian.push(p.teks.trim());
+      if (p.ada_berkas && dilewati.has(p.id)) gagal.push(`${p.nama_berkas || "lampiran " + p.id}: dilewati, lebih dari ${MAKS_LAMP} lampiran hari ini`);
+      else if (p.ada_berkas) {
+        uraiSt(`Membaca ${++n} dari ${lamp.length - dilewati.size} lampiran WA (${p.nama_berkas || "tanpa nama"})…`);
+        await new Promise(r => setTimeout(r, 0));   // beri layar kesempatan menggambar status sebelum kerja berat
+        try {
+          let t = "";
+          if (adaPdf(p)) {   // pdf.js dulu; hampir tanpa huruf (hasil pindai) atau gagal dibuka -> server
+            try {
+              const r = await fetch(`/api/wa/berkas?id=${p.id}`, {credentials: "same-origin"}); if (!r.ok) throw new Error("berkas WA gagal diunduh");
+              const items = await window.LaporanImpor.bacaPdf(await r.arrayBuffer());
+              if (window.LaporanImpor.teksItems(items) >= window.LaporanImpor.PDF_KOSONG) t = window.LaporanUrai.tataLetak(items);
+            } catch (e) { t = ""; }
+          }
+          if (!t.trim()) t = (await window.LaporanImpor.bacaServer({wa: p.id})).teks;
+          bagian.push(t.trim());
+        } catch (e) { gagal.push(`${p.nama_berkas || "lampiran " + p.id}: ${e.message}`); }
+      }
+      if (bagian.length) tulis.push(bagian.join("\n\n"));
+    }
+    const teks = tulis.join("\n\n");
+    if (!teks) return uraiSt(`${pesan.length} kiriman WA hari ini, tapi tidak ada teks yang bisa diurai.${gagal.length ? " Gagal dibaca: " + gagal.join("; ") : ""}`);
+    $("#lbUraiTeks").value = teks.length > 200000 ? teks.slice(0, 200000) : teks;
+    uraiTempel();
+    if (gagal.length) uraiSt(`${$("#lbUraiSt")?.textContent || ""} Gagal dibaca (${gagal.length}): ${gagal.join("; ")}`);
+  } catch (e) { uraiSt("Gagal mengambil kiriman WA: " + e.message); }
 }
 async function uraiModel() {
   const teks = (S.uraiTeks || $("#lbUraiTeks").value || "").trim();

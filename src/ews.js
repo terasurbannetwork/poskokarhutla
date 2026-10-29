@@ -41,7 +41,7 @@ export const SIM_AWAS_KM = 2, SIM_AWAS_P = 0.50, SIM_SIAGA_KM = 5, SIM_SIAGA_P =
 export const SIM_UMUR = 36 * JAM;                 // jejak_api.json dianggap segar bila kini - acuan <= ini DAN status "ok"; selain itu diabaikan dan "jejak" masuk basi_sumber
 const SIM_JAM = [24, 48, 72];
 const SIM_GRID = 0.1;                             // derajat (>= 11 km di lintang Indonesia) > SIM_SIAGA_KM, jadi 3x3 sel cukup
-const SIM_SUMBER = "Simulasi penjalaran api Pantau Bencana (model data, prakiraan, bukan kepastian)";
+const SIM_SUMBER = "Simulasi penjalaran api Centurisk97 (model data, prakiraan, bukan kepastian)";
 export const CUACA_DEPAN = 24 * JAM;              // peringatan nowcast BMKG yang aktif sekarang atau mulai dalam 24 jam
 const CUACA_TINGKAT = {Moderate: 2, Severe: 3, Extreme: 3};   // CAP: lainnya (Minor dst.) = 1
 /* gempa terasa (km) menurut magnitudo: [M minimal, radius]. Aproksimasi kasar jarak guncangan terasa (skala MMI >= III-IV) dari praktik BMKG/USGS. */

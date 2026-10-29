@@ -21,6 +21,7 @@ const EMAIL = {EMAIL_API_KEY: "kunci-uji", EMAIL_FROM: "Pantau <p@contoh.id>", E
 /* aset uji: sama dengan harness, kecuali risiko_prioritas.json yang dikendalikan per instans (null = 404). Uji lama tidak boleh ketambahan 113 baris prioritas dari berkas nyata. */
 const asetDengan = kontrol => async req => {
   const p = decodeURIComponent(new URL(req.url).pathname), f = path.join(AKAR, "public", p);
+  if (p === "/banjir/data/kejadian_aktif_awal.json") return new Response("tidak ada", {status: 404});   // baris kejadian aktif diuji di banjir_perluasan.test.mjs
   if (p === "/banjir/data/risiko_prioritas.json") return kontrol.prio == null ? new Response("tidak ada", {status: 404}) : new Response(kontrol.prio);
   return existsSync(f) && !p.endsWith("/") ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };

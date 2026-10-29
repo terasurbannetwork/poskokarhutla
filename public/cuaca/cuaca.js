@@ -16,7 +16,7 @@ const SEKARANG = () => { const q = new URLSearchParams(location.search).get("sek
 const tglWIB = t => new Date(t + 7 * 36e5).toISOString().slice(0, 10);
 const tglPendek = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "short", day: "numeric", month: "short"});
 const OFS = {WIB: "+07:00", WITA: "+08:00", WIT: "+09:00"};
-/* skala hujan harian BMKG (mm): lebat 50, sangat lebat 100, ekstrem 150. Embusan (km/jam) 54, 72, 90 = 15, 20, 25 m/s adalah ambang hipotesis Pantau Bencana, bukan kelas BMKG; kartu Hujan dan Angin memakai ambang sel prakiraan ini, bukan ambang tingkat kecamatan (pil ambang hanya di kartu Status dan Sarana) */
+/* skala hujan harian BMKG (mm): lebat 50, sangat lebat 100, ekstrem 150. Embusan (km/jam) 54, 72, 90 = 15, 20, 25 m/s adalah ambang hipotesis Centurisk97, bukan kelas BMKG; kartu Hujan dan Angin memakai ambang sel prakiraan ini, bukan ambang tingkat kecamatan (pil ambang hanya di kartu Status dan Sarana) */
 const ST_HUJAN = [[0, [120, 170, 230, 0]], [1, [150, 205, 240, 90]], [5, [110, 180, 235, 150]], [20, [60, 140, 220, 200]], [50, [40, 80, 200, 225]], [100, [110, 50, 190, 235]], [150, [190, 40, 140, 245]], [250, [120, 20, 60, 250]]];
 const ST_ANGIN = [[0, [120, 200, 190, 0]], [25, [140, 205, 190, 70]], [40, [190, 215, 130, 150]], [54, [227, 185, 78, 215]], [72, [229, 138, 69, 235]], [90, [201, 80, 58, 245]], [130, [120, 20, 40, 250]]];
 const WARNA_LV = ["#5a9e74", "#e3b94e", "#e58a45", "#c9503a"];
@@ -30,7 +30,7 @@ const GEL = [["tinggi", "Tinggi", "2,5 sampai 4 m", "#3f7fb8"], ["sangat_tinggi"
 
 /* ================================================================ state */
 const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: [], kec: null, gel: null, sik: null, sar: null, ver: null, dmp: null};
-/* tingkat Pantau Bencana (registry cuaca.tingkat); ganti dari /bencana.json bila terbaca */
+/* tingkat Centurisk97 (registry cuaca.tingkat); ganti dari /bencana.json bila terbaca */
 let TINGKAT = [["Normal", "#9aa4b2"], ["Waspada", "#e0b400"], ["Siaga", "#e8743b"], ["Awas", "#d64545"]];
 const warnaT = t => TINGKAT[t]?.[1] || TINGKAT[0][1], namaT = t => TINGKAT[t]?.[0] || "";
 const pilT = t => `<span class="pl" style="--w:${warnaT(t)}">${namaT(t)}</span>`;

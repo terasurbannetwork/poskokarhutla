@@ -1,10 +1,21 @@
 "use strict";
 /* ================================================================ cari */
+/* hasil cari: pil status banjir hari terpilih + kejadian aktif terdekat, hitungan murni dari AngkaKawasan (public/angka_kawasan.js, sama dengan kartu desa di peta utama) */
+const NM_ST = ["Aman", "Waspada", "Siaga", "Awas"];
+function infoWil(i, K) {
+  const p = i.k.split("|"), r = AngkaKawasan.statusWilayah(S.st.kec, p.length === 3 ? {p: p[0], kab: p[1], kec: p[2]} : {p: p[0]}, S.hari, S.b);
+  if (!r.total) return "";
+  const td = S.st.hari[S.hari], tglData = td && td !== new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10) ? `<br><small>data ${new Date(td + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"})}</small>` : "";
+  const e = AngkaKawasan.kejadianTerdekat(K, r.keys, null);
+  return `<span class="pill l${r.lv}" style="float:right">${NM_ST[r.lv]}</span>${tglData}${e ? `<br><small>Wilayah Siaga (prakiraan) ${esc(e.kode)}</small>` : ""}`; }
+function gambarHasil(hs, K) { const h = $("#hasil");
+  h.innerHTML = hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}${infoWil(i, K)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan di wilayah berstatus.</div>`; h.hidden = false; }
 $("#cari").addEventListener("input", async e => {
   const q = e.target.value.trim().toLowerCase(), h = $("#hasil"); if (q.length < 2) { h.hidden = true; return; }
-  const idx = [...Object.entries(S.meta.provinsi).map(([k, n]) => ({k, n, j: "Provinsi"})), ...Object.keys(S.st.kec).map(k => { const p = k.split("|"); return {k, n: p[2], j: "Kec. · " + p[1]}; })];
+  const idx = [...Object.entries(S.meta.provinsi).map(([k, n]) => ({k, n, j: "Provinsi"})), ...Object.keys(S.st.kec).map(k => { const p = k.split("|"); return {k, n: p[2], j: "Kec. " + p[1]}; })];
   const hs = idx.filter(i => i.n.toLowerCase().includes(q)).slice(0, 12);
-  h.innerHTML = hs.length ? hs.map(i => `<button data-k="${esc(i.k)}">${esc(i.n)}<br><small>${esc(i.j)}</small></button>`).join("") : `<div class="kosong" style="padding:12px">Tidak ditemukan di wilayah berstatus.</div>`; h.hidden = false; });
+  gambarHasil(hs, KejAktif.K || []);                                      // urgent: daftar langsung, kejadian menyusul
+  if (!KejAktif.K) { const K = await KejAktif.muatAwal(); if ($("#cari").value.trim().toLowerCase() === q) gambarHasil(hs, K); } });
 $("#hasil").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; $("#hasil").hidden = true; $("#cari").value = ""; const p = b.dataset.k.split("|");
   if (p.length === 3) { S.jalur = p.slice(0, 2); Peta.aturWilayah().then(() => Analisa.wilayah(b.dataset.k)); } else turun(b.dataset.k); });
 

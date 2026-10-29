@@ -127,7 +127,7 @@
 /* tabel matriks (DS §3.4 varian c): kolom ukuran lengket kiri, kepala skenario berisi vonis dan hambatan */
 .sp-tabel-studio{min-width:max-content}
 .sp-tabel-studio thead th{text-transform:none;letter-spacing:0;text-align:left;vertical-align:top;white-space:normal;min-width:176px;max-width:210px;padding:10px 12px 12px;font-size:12px;font-weight:600}
-.sp-tabel-studio thead th.sp-sudut{min-width:230px;max-width:260px;position:sticky;left:0;z-index:4;background:var(--navy,#0b2545);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;vertical-align:bottom}
+.sp-tabel-studio thead th.sp-sudut{min-width:230px;max-width:260px;position:sticky;left:0;z-index:4;background:var(--navy);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;vertical-align:bottom}
 .sp-tabel-studio thead th.sp-kol{display:table-cell}
 .sp-tabel-studio thead th .sp-kode{display:block;font:800 20px/1.15 var(--display)}
 .sp-tabel-studio thead th .sp-nama{display:block;margin:1px 0 6px;font-weight:600;opacity:.92;overflow-wrap:anywhere}

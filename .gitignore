@@ -82,3 +82,18 @@ data/jejak_regu.tmp
 public/data/kabar/
 # SIPPA: buku besar, ringkasan, dan laporan tiket (TIKET.md §1.1), tidak pernah ter-commit
 .superpowers/
+
+# dossier pilot SIPPA: berkas antara pembangun lokal (scripts/data/sippa/pilot/README.md)
+scripts/data/sippa/pilot/raw/
+scripts/data/sippa/pilot/img/
+scripts/data/sippa/pilot/ubin/
+scripts/data/sippa/pilot/foto/
+scripts/data/sippa/pilot/live_*.json
+scripts/data/sippa/pilot/g_*.json
+scripts/data/sippa/pilot/data.json
+scripts/data/sippa/pilot/situs.json
+scripts/data/sippa/pilot/dossier.*
+
+# Renlap Generator: folder kerja lokal (renlap.py --out)
+scripts/data/sippa/pilot/kerja/
+!scripts/wa/.env.contoh

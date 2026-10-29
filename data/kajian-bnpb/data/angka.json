@@ -24287,6 +24287,1419 @@
    "keyakinan": "terverifikasi; media, sekunder, hanya lampiran rekonsiliasi (KEPUTUSAN-AWAL R3)",
    "sumber": "BNPB, diberitakan Republika 10 Jan 2026",
    "catatan": "rilis primer BNPB tidak ditemukan per 25 Okt 2026"
+  },
+  "tesis.neraca-air": {
+   "nilai": "Menurut model neraca air kajian ini, Pulau Jawa menghasilkan air permukaan terbarukan {{angka:neraca.jawa.r_miliar|satuan}}, dan kebutuhan konsumtif 2025 hanya {{angka:neraca.jawa.rasio_c_r_persen|persen}} darinya. Air cukup dalam setahun tetapi kurang di sebagian kab/kota pada musim kemarau, ketika rasio pulau naik menjadi {{angka:neraca.jawa.rasio_c_r_kemarau_persen|persen}} pada Juni–Oktober dan {{angka:neraca.hitung.n80_kemarau_neg}} kab/kota kekurangan air pada sedikitnya satu dari lima tahun bila kebutuhan irigasi potensial dipenuhi. Aliran kemarau model belum lolos validasi, sehingga peringkat kab/kota dipakai sebagai daftar periksa kesiapan kemarau; peringkat itu belum cocok dengan catatan kejadian kekeringan DIBI, jadi dipasangkan dengan data penyaluran air bersih BPBD.",
+   "pustaka": "pantaubencana-2026-neraca-air",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "catatan": "kalimat tesis kajian neraca-air; hanya klaim \"Aman dikutip\" HASIL.md ditambah definisi N80 dan catatan validasi Jun-Okt; dipanggil {{angka:tesis.neraca-air|teks}} di Ringkasan Eksekutif, Bab 8, sampul belakang, dan slide Pesan Kunci"
+  },
+  "neraca.jawa.p": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.P",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "bermakna": 3
+  },
+  "neraca.jawa.eta": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.ETa",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "bermakna": 3
+  },
+  "neraca.jawa.r": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.R",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "bermakna": 3
+  },
+  "neraca.jawa.r_miliar": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.R_miliar",
+   "satuan": "miliar m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "bermakna": 3
+  },
+  "neraca.jawa.domestik": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.domestik",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.irigasi": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.irigasi",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.irigasi_sni": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.irigasi_sni",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.ternak": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.ternak",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.industri": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.industri",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.total": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.total",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.konsumtif": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.konsumtif",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.konsumtif_2030": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.konsumtif_2030",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.r_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.R_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.c_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.C_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.irigasi_persen_sni": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.irigasi_persen_sni",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.konsumtif_2030_naik_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.konsumtif_2030_naik_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.irigasi_persen_total": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.irigasi_persen_total",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.domestik_persen_total": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.domestik_persen_total",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.r_kemarau_persen_tahunan": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.R_kemarau_persen_tahunan",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.rasio_c_r_kemarau_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.rasio_C_R_kemarau_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.rasio_c_r_kemarau_2030_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.rasio_C_R_kemarau_2030_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.et_persen_p": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.ET_persen_P",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.jawa.pend_2025": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.pend_2025",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model",
+   "sumber": "WorldPop R2025A diskala ke BPS Proyeksi Penduduk menurut Provinsi 2010–2035"
+  },
+  "neraca.jawa.n_kab": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kode wilayah Kemendagri, paket air-jawa kab_jawa.csv",
+   "cacah": true
+  },
+  "neraca.jawa.luas_km2": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "jawa.luas_km2",
+   "satuan": "km²",
+   "keyakinan": "resmi",
+   "sumber": "Batas kab/kota BIG di public/geo/kabupaten, sampel kisi 0,01 derajat"
+  },
+  "neraca.hitung.n_tahunan_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N_tahunan_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.n2030_tahunan_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N2030_tahunan_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.n_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.n80_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.n_1997_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N_1997_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.industri_kosong": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.industri_kosong",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "cacah": true
+  },
+  "neraca.hitung.industri_ada": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.industri_ada",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "cacah": true
+  },
+  "neraca.hitung.kota_kecil": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.kota_kecil",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "cacah": true
+  },
+  "neraca.hitung.hilir_waduk": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.hilir_waduk",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "cacah": true
+  },
+  "neraca.hitung.ddl_defisit": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.ddl_defisit",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.ddl_defisit_n_positif": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.ddl_defisit_N_positif",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.ddl_defisit_pend": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.ddl_defisit_pend",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.hitung.n80_neg_kota_kecil": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_neg_kota_kecil",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.n80_neg_pend": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_neg_pend",
+   "satuan": "jiwa",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.hitung.n80_neg_dibi_ada": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_neg_dibi_ada",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.n80_pos_dibi_ada": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_pos_dibi_ada",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.n80_pos": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_pos",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.rasio_kemarau_lebih_100": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.rasio_kemarau_lebih_100",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.bulan_defisit_5_plus": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.bulan_defisit_5_plus",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.hitung.waduk_aktif": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.waduk_aktif",
+   "satuan": "waduk",
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "cacah": true
+  },
+  "neraca.hitung.subdas": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.subdas",
+   "satuan": "sub-DAS",
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "cacah": true
+  },
+  "neraca.hitung.dibi_median_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.dibi_median_neg",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2015–2025 (kejadian lintas kab/kota dibagi rata), dikelompokkan menurut neraca kemarau andalan model",
+   "cacah": true
+  },
+  "neraca.hitung.dibi_rerata_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.dibi_rerata_neg",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2015–2025 (kejadian lintas kab/kota dibagi rata), dikelompokkan menurut neraca kemarau andalan model",
+   "cacah": true
+  },
+  "neraca.hitung.dibi_total_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.dibi_total_neg",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2015–2025 (kejadian lintas kab/kota dibagi rata), dikelompokkan menurut neraca kemarau andalan model",
+   "cacah": true
+  },
+  "neraca.hitung.dibi_median_pos": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.dibi_median_pos",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2015–2025 (kejadian lintas kab/kota dibagi rata), dikelompokkan menurut neraca kemarau andalan model",
+   "cacah": true
+  },
+  "neraca.hitung.dibi_rerata_pos": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.dibi_rerata_pos",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2015–2025 (kejadian lintas kab/kota dibagi rata), dikelompokkan menurut neraca kemarau andalan model",
+   "cacah": true
+  },
+  "neraca.hitung.dibi_total_pos": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.dibi_total_pos",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "DIBI BNPB 2015–2025 (kejadian lintas kab/kota dibagi rata), dikelompokkan menurut neraca kemarau andalan model",
+   "cacah": true
+  },
+  "neraca.hitung.n80_neg_dibi_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_neg_dibi_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.hitung.n80_pos_dibi_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "hitung.N80_pos_dibi_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.klim.p_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=klim].P_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.klim.r_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=klim].R_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.klim.c_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=klim].C_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.klim.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=klim].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.klim.n_kab_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=klim].n_kab_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.skenario.klim.jumlah_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=klim].jumlah_neg",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.1997.p_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=1997].P_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.1997.r_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=1997].R_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.1997.c_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=1997].C_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.1997.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=1997].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.1997.n_kab_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=1997].n_kab_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.skenario.1997.jumlah_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=1997].jumlah_neg",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2015.p_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2015].P_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2015.r_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2015].R_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2015.c_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2015].C_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2015.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2015].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2015.n_kab_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2015].n_kab_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.skenario.2015.jumlah_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2015].jumlah_neg",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2019.p_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2019].P_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2019.r_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2019].R_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2019.c_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2019].C_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2019.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2019].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2019.n_kab_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2019].n_kab_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.skenario.2019.jumlah_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2019].jumlah_neg",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2023.p_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2023].P_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2023.r_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2023].R_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2023.c_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2023].C_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2023.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2023].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.skenario.2023.n_kab_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2023].n_kab_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.skenario.2023.jumlah_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "skenario[skenario=2023].jumlah_neg",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.prov.banten.n_n80_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Banten].n_N80_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.banten.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Banten].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.prov.banten.n_kab": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Banten].n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kode wilayah Kemendagri",
+   "cacah": true
+  },
+  "neraca.prov.banten.n_n_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Banten].n_N_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.yogyakarta.n_n80_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DI Yogyakarta].n_N80_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.yogyakarta.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DI Yogyakarta].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.prov.yogyakarta.n_kab": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DI Yogyakarta].n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kode wilayah Kemendagri",
+   "cacah": true
+  },
+  "neraca.prov.yogyakarta.n_n_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DI Yogyakarta].n_N_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.dki_jakarta.n_n80_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DKI Jakarta].n_N80_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.dki_jakarta.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DKI Jakarta].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.prov.dki_jakarta.n_kab": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DKI Jakarta].n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kode wilayah Kemendagri",
+   "cacah": true
+  },
+  "neraca.prov.dki_jakarta.n_n_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=DKI Jakarta].n_N_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.jawa_barat.n_n80_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Barat].n_N80_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.jawa_barat.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Barat].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.prov.jawa_barat.n_kab": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Barat].n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kode wilayah Kemendagri",
+   "cacah": true
+  },
+  "neraca.prov.jawa_barat.n_n_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Barat].n_N_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.jawa_tengah.n_n80_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Tengah].n_N80_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.jawa_tengah.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Tengah].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.prov.jawa_tengah.n_kab": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Tengah].n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kode wilayah Kemendagri",
+   "cacah": true
+  },
+  "neraca.prov.jawa_tengah.n_n_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Tengah].n_N_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.jawa_timur.n_n80_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Timur].n_N80_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.prov.jawa_timur.rasio_c_r_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Timur].rasio_C_R_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.prov.jawa_timur.n_kab": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Timur].n_kab",
+   "satuan": "kab/kota",
+   "keyakinan": "resmi",
+   "sumber": "Kode wilayah Kemendagri",
+   "cacah": true
+  },
+  "neraca.prov.jawa_timur.n_n_kemarau_neg": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "prov[prov_nama=Jawa Timur].n_N_kemarau_neg",
+   "satuan": "kab/kota",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "cacah": true
+  },
+  "neraca.validasi.n_muara": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.n_muara",
+   "satuan": "sungai",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "cacah": true
+  },
+  "neraca.validasi.rasio_median": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_median",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.rasio_min": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_min",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.rasio_maks": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_maks",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.rasio_kemarau_median": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_kemarau_median",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.rasio_kemarau_min": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_kemarau_min",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.rasio_kemarau_maks": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_kemarau_maks",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.r_median": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.r_median",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.r_skala_bps": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.R_skala_bps",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "bermakna": 3
+  },
+  "neraca.validasi.bps_r": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.bps_R",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "BPS (2020) Statistik Lingkungan Hidup Indonesia, mengutip Radhika dkk. (2017)",
+   "bermakna": 3
+  },
+  "neraca.validasi.selisih_bps_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.selisih_bps_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.selisih_bps_2020_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.selisih_bps_2020_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "bermakna": 3
+  },
+  "neraca.validasi.alpha": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.alpha",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.k_bulan": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.k_bulan",
+   "satuan": "bulan",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.kering_median_1997": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.kering_median_1997",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.kering_median_2015": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.kering_median_2015",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.kering_median_2019": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.kering_median_2019",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.kering_median_2023": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.kering_median_2023",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.kering_nol_1997": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.kering_nol_1997",
+   "satuan": "sungai",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "cacah": true
+  },
+  "neraca.validasi.jratunseluna_2019": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.jratunseluna_2019",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.ambang_rendah": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.ambang_rendah",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.ambang_tinggi": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.ambang_tinggi",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.ambang_bps_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.ambang_bps_persen",
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.ambang_luas_rendah": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.ambang_luas_rendah",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.ambang_luas_tinggi": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.ambang_luas_tinggi",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.ambang_r": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.ambang_r",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017"
+  },
+  "neraca.validasi.ambang_luas": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.ambang_luas_rendah",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "jalur_rendah": "validasi.ambang_luas_rendah",
+   "jalur_tinggi": "validasi.ambang_luas_tinggi"
+  },
+  "neraca.validasi.rasio_rentang": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_median",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "jalur_rendah": "validasi.rasio_min",
+   "jalur_tinggi": "validasi.rasio_maks"
+  },
+  "neraca.validasi.rasio_kemarau_rentang": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "validasi.rasio_kemarau_median",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "jalur_rendah": "validasi.rasio_kemarau_min",
+   "jalur_tinggi": "validasi.rasio_kemarau_maks"
+  },
+  "neraca.param.taw_mm": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.taw_mm",
+   "satuan": "mm",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.kc": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.kc",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.alpha": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.alpha",
+   "satuan": "",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.k_bulan": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.k_bulan",
+   "satuan": "bulan",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.dom_kota": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.dom_kota",
+   "satuan": "liter per kapita per hari",
+   "keyakinan": "resmi",
+   "sumber": "SNI 19-6728.1-2002 bagian 5"
+  },
+  "neraca.param.dom_desa": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.dom_desa",
+   "satuan": "liter per kapita per hari",
+   "keyakinan": "resmi",
+   "sumber": "SNI 19-6728.1-2002 bagian 5"
+  },
+  "neraca.param.sapi": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.sapi",
+   "satuan": "liter per ekor per hari",
+   "keyakinan": "resmi",
+   "sumber": "SNI 19-6728.1-2002 Tabel 4"
+  },
+  "neraca.param.kambing": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.kambing",
+   "satuan": "liter per ekor per hari",
+   "keyakinan": "resmi",
+   "sumber": "SNI 19-6728.1-2002 Tabel 4"
+  },
+  "neraca.param.babi": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.babi",
+   "satuan": "liter per ekor per hari",
+   "keyakinan": "resmi",
+   "sumber": "SNI 19-6728.1-2002 Tabel 4"
+  },
+  "neraca.param.unggas": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.unggas",
+   "satuan": "liter per ekor per hari",
+   "keyakinan": "resmi",
+   "sumber": "SNI 19-6728.1-2002 Tabel 4"
+  },
+  "neraca.param.industri_l": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.industri_L",
+   "satuan": "liter per pekerja per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pedoman Kementerian PU 2005, dikutip sekunder"
+  },
+  "neraca.param.efisiensi_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.efisiensi_persen",
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.aliran_balik_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.aliran_balik_persen",
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.perkolasi": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.perkolasi",
+   "satuan": "mm per hari",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.penyiapan": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.penyiapan",
+   "satuan": "mm",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.hujan_efektif_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.hujan_efektif_persen",
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.mt3_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.mt3_persen",
+   "satuan": "%",
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)"
+  },
+  "neraca.param.sni_l_det_ha": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.sni_L_det_ha",
+   "satuan": "liter per detik per hektare",
+   "keyakinan": "resmi",
+   "sumber": "SNI 19-6728.1-2002"
+  },
+  "neraca.param.khla": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.khla",
+   "satuan": "m³ per kapita per tahun",
+   "keyakinan": "resmi",
+   "sumber": "Permen LH 17/2009, Lampiran"
+  },
+  "neraca.param.n_sel": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.n_sel",
+   "satuan": "sel",
+   "keyakinan": "resmi",
+   "sumber": "Kisi iklim 0,1 derajat yang menyentuh kab/kota Jawa",
+   "cacah": true
+  },
+  "neraca.param.subdas_rerata_km2": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.subdas_rerata_km2",
+   "satuan": "km²",
+   "keyakinan": "resmi",
+   "sumber": "HydroBASINS v1c level 09"
+  },
+  "neraca.param.n_subdas": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.n_subdas",
+   "satuan": "sub-DAS",
+   "keyakinan": "resmi",
+   "sumber": "HydroBASINS v1c level 09",
+   "cacah": true
+  },
+  "neraca.param.tahun_iklim": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.tahun_iklim",
+   "satuan": "tahun",
+   "keyakinan": "resmi",
+   "sumber": "CHIRPS v2.0 1991–2025",
+   "cacah": true
+  },
+  "neraca.param.n_titik_power": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.n_titik_power",
+   "satuan": "titik",
+   "keyakinan": "resmi",
+   "sumber": "NASA POWER kisi 0,5 derajat",
+   "cacah": true
+  },
+  "neraca.param.tarum_barat_l_det": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "parameter.tarum_barat_L_det",
+   "satuan": "liter per detik",
+   "keyakinan": "resmi",
+   "sumber": "Dinas Sumber Daya Air Provinsi DKI Jakarta, 28 Juli 2026"
+  },
+  "neraca.kab.n80_1.nama": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].nama",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_1.n80": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N80_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_1.n1997": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N_kemarau_1997",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_1.n_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_2.nama": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3213].nama",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_2.n80": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3213].N80_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_2.n1997": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3213].N_kemarau_1997",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_2.n_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3213].N_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_3.nama": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3509].nama",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_3.n80": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3509].N80_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_3.n1997": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3509].N_kemarau_1997",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n80_3.n_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3509].N_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n97_1.nama": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].nama",
+   "satuan": "",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n97_1.n80": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N80_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n97_1.n1997": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N_kemarau_1997",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.n97_1.n_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.jakut.n_tahunan": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3172].N_tahunan",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.jakut.n_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3172].N_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.jakut.n80": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3172].N80_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.jakut.qin_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3172].qin_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.surabaya.n_tahunan": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3578].N_tahunan",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.surabaya.n_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3578].N_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.surabaya.n80": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3578].N80_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.surabaya.qin_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3578].qin_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.indramayu.n_tahunan": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N_tahunan",
+   "satuan": "juta m³ per tahun",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.indramayu.n_kemarau": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.indramayu.n80": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].N80_kemarau",
+   "satuan": "juta m³",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "neraca.kab.indramayu.qin_persen": {
+   "berkas": "neraca-air/neraca.json",
+   "jalur": "kab[kode=3212].qin_persen",
+   "satuan": "%",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
   }
  }
 }

@@ -355,8 +355,8 @@ test("cekInspeksiLapangan: yang salah DITOLAK per medan (jenis staf, sasaran ase
 });
 
 test("INSPEKSI_LAPANGAN: tindakan sama dengan CHECK sippa_inspeksi di 0059; jenis operator = JENIS_LAPANGAN di src/sippa.js", () => {
-  const sql = readFileSync(new URL("../../migrations/0059_sippa_aset_pelihara.sql", import.meta.url), "utf8");
-  const cek = /tindakan IN \(([^)]*)\)/.exec(sql); assert.ok(cek, "CHECK tindakan tidak ditemukan di 0059");
+  const sql = readFileSync(new URL("../../migrations/0070_sippa_lapangan_pinjam.sql", import.meta.url), "utf8");
+  const cek = /tindakan IN \(([^)]*)\)/.exec(sql); assert.ok(cek, "CHECK tindakan tidak ditemukan di 0070");
   assert.deepEqual([...F.INSPEKSI_LAPANGAN.tindakan].sort(), [...cek[1].matchAll(/'([a-z_]+)'/g)].map(m => m[1]).sort());
   const kode = readFileSync(new URL("../../src/sippa.js", import.meta.url), "utf8"), jl = /JENIS_LAPANGAN = \[([^\]]*)\]/.exec(kode);
   assert.ok(jl, "JENIS_LAPANGAN tidak ditemukan"); assert.deepEqual([...F.INSPEKSI_LAPANGAN.jenis].sort(), [...jl[1].matchAll(/"([a-z_]+)"/g)].map(m => m[1]).sort());

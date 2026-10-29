@@ -10,7 +10,7 @@
   const TOKEN = (String(location.hash).match(/^#([0-9a-f]{36})$/) || [])[1] || "";   // token di fragmen: tidak dikirim ke server, tidak masuk log atau Referer
   const JEDA_MS = 45000;   // paling sering satu kiriman per 45 detik; server membatasi 4 per menit per tautan
   const OPSI_GPS = {enableHighAccuracy: true, maximumAge: 30000, timeout: 60000};
-  let info = null, watchId = null, terakhirKirim = 0, berangkat = false, sudahPeringatan = false, wake = null, mati = false, kirimBerjalan = false, tibaSudah = false, selesaiSiap = false, posisiAkhir = null;
+  let pesanAntrean = false, info = null, watchId = null, terakhirKirim = 0, berangkat = false, sudahPeringatan = false, wake = null, mati = false, kirimBerjalan = false, tibaSudah = false, selesaiSiap = false, posisiAkhir = null;
 
   async function api(metode, jalur, body, keepalive) {
     const h = {"x-lacak": TOKEN, ...(metode === "POST" ? {"x-pb": "1"} : {}), ...(body === undefined ? {} : {"content-type": "application/json"})};
@@ -19,14 +19,15 @@
     const j = await r.json().catch(() => ({}));
     return {ok: r.ok, status: r.status, j, simpanan: r.headers.get("x-dari-cache") ? Number(r.headers.get("x-disimpan")) || 1 : 0};
   }
-  const pesan = (t, k) => { const p = $("pesanUtama"); p.textContent = t || ""; p.className = "lk-pesan " + (k || ""); p.hidden = !t; };
+  const pesan = (t, k) => { pesanAntrean = false; const p = $("pesanUtama"); p.textContent = t || ""; p.className = "lk-pesan " + (k || ""); p.hidden = !t;
+    if (t && k === "galat" && p.getBoundingClientRect().bottom < 0) p.scrollIntoView({behavior: "smooth", block: "start"}); };   // pesan di puncak halaman; tombol Selesai/Berangkat jauh di bawahnya
   const jamLokal = () => new Date().toLocaleTimeString("id-ID", {hour: "2-digit", minute: "2-digit"});
   const jarakKm = (a, b, c, d) => { const r = Math.PI / 180, x = (d - b) * r * Math.cos((a + c) / 2 * r), y = (c - a) * r; return Math.hypot(x, y) * 6371; };
   const status = (t, k) => { const s = $("statusPosisi"); s.textContent = t; s.className = "lk-status " + (k || ""); };
 
   /* ---- tampilan ---- */
   function matikan(j) {
-    mati = true; berangkat = false; hentikanWatch();
+    mati = true; berangkat = false; hentikanWatch(); window.LacakLapor?.bersihkan(TOKEN);   // foto, lokasi, dan catatan tautan mati tidak tertinggal di ponsel
     $("isi").hidden = true; $("tampilanMati").hidden = false; $("matiTeks").textContent = j.galat || "Tautan ini tidak bisa dipakai lagi.";
     pesan(j.galat || "Tautan ini tidak bisa dipakai lagi.", j.alasan === "selesai" ? "ok" : "galat");
   }
@@ -37,7 +38,7 @@
   }
   async function segarkanInfo() {
     if (mati || !berangkat || document.visibilityState === "hidden") return;
-    const r = await api("GET", "info"); if (r.status === 410) return matikan(r.j); if (r.ok) { info.angin = r.j.angin; gambarAngin(); }
+    const r = await api("GET", "info"); if (r.status === 410) return matikan(r.j); if (r.ok) { info.angin = r.j.angin; gambarAngin(); window.LacakLapor?.perbarui(r.j.lapor); }
   }
   setInterval(segarkanInfo, 5 * 60e3);
   function gambar() {
@@ -48,8 +49,13 @@
     $("navWadah").innerHTML = `<a class="lk-tombol utama" href="${esc(nav)}" target="_blank" rel="noopener noreferrer">Navigasi ke lokasi (Google Maps)</a>`;
     $("kartuAkses").innerHTML = window.AksesKartu ? window.AksesKartu.html(info.akses) : "";
     $("cara").innerHTML = t.cara?.length ? `<section class="lk-kartu"><h2>Cara pemadaman</h2><span class="ak-pil">Perkiraan, belum divalidasi lapangan</span><ol>${t.cara.map(c => `<li>${esc(c)}</li>`).join("")}</ol>${t.alat?.length ? `<p class="lk-kecil">Alat: ${esc(t.alat.join(", "))}</p>` : ""}</section>` : "";
-    if (t.ditutup) pesan("Tugas ini sudah ditutup oleh pihak yang menugaskan. Hubungi mereka sebelum berangkat.", "galat");
-    gambarCek(); gambarAngin();
+    pesanTutup(); gambarCek(); gambarAngin();
+  }
+  /* tugas bisa ditutup oleh laporan petugas sendiri (bukan api, sudah padam): sesudah tiba cukup Selesai */
+  function pesanTutup() {
+    if (!info.tugas.ditutup) return;
+    if (!tibaSudah) return pesan("Tugas ini sudah ditutup oleh pihak yang menugaskan. Hubungi mereka sebelum berangkat.", "galat");
+    pesan(info.lapor?.langkah === "cekulang" ? "Api sudah padam. Kirim cek ulang di bawah bila diminta, lalu tekan Selesai saat kamu meninggalkan lokasi." : "Tugas ini sudah ditutup. Tekan Selesai saat kamu meninggalkan lokasi.");
   }
   function gambarCek() {
     const c = info.checklist || {}, r = info.ringkas;
@@ -58,7 +64,7 @@
   }
   function tombolJalan() {
     const b = $("bBerangkat");
-    b.textContent = berangkat ? "Sedang berangkat, posisi dikirim" : sudahPeringatan ? "Tetap berangkat" : "Mulai berangkat"; b.disabled = berangkat || mati;
+    b.textContent = berangkat ? "Sedang berangkat, posisi dikirim" : sudahPeringatan ? "Tetap berangkat" : "Mulai berangkat"; b.disabled = berangkat || mati || (info.tugas.ditutup && tibaSudah);
     $("bTiba").disabled = !berangkat || tibaSudah; $("bTiba").textContent = tibaSudah ? "Sudah tiba" : "Tiba di lokasi"; $("bSelesai").disabled = !berangkat && !tibaSudah;
     $("bSelesai").textContent = selesaiSiap ? "Ketuk lagi untuk menyelesaikan" : "Selesai";
   }
@@ -126,6 +132,7 @@
     if (r.ok) { tibaSudah = true; tombolJalan(); pesan("Tiba di lokasi tercatat. Tetap kirim posisi sampai kamu menekan Selesai.", "ok"); }
   });
   $("bSelesai").addEventListener("click", async () => {
+    if (window.LacakLapor?.menunggu()) { pesan("Masih ada laporan atau foto yang belum terkirim. Kirim atau hapus dulu, lalu tekan Selesai: sesudah Selesai tautan ini mati.", "galat"); pesanAntrean = true; selesaiSiap = false; return tombolJalan(); }
     if (!selesaiSiap) { selesaiSiap = true; tombolJalan(); return; }   // dua ketukan: Selesai mengakhiri tautan
     const r = await api("POST", "selesai", {}); selesaiSiap = false;
     if (r.ok) return matikan({galat: "Tugas selesai. Terima kasih, posisimu tidak lagi dikirim.", alasan: "selesai"});
@@ -157,9 +164,13 @@
     if (r.status === 404) return matikan({galat: "Tautan ini tidak dikenal. Periksa lagi tautan dari WhatsApp."});
     if (r.status === 410) return matikan(r.j);
     if (!r.ok) { pesan(r.j.galat || "Tugas belum bisa dimuat. Periksa sinyal lalu muat ulang halaman.", "galat"); return; }
-    info = r.j; $("isi").hidden = false; pesan(""); gambar();
+    info = r.j; tibaSudah = !!info.penugasan.tiba_pada; $("isi").hidden = false; pesan(""); gambar();
+    window.LacakLapor?.mulai({token: TOKEN, lapor: info.lapor, mati: matikan, antreanKosong: () => { if (pesanAntrean) { pesanAntrean = false; pesan(""); } }, segarkan: async () => {
+      const x = await api("GET", "info"); if (x.status === 410) return void matikan(x.j); if (!x.ok) return;
+      info.tugas = x.j.tugas; info.lapor = x.j.lapor; tibaSudah = tibaSudah || !!x.j.penugasan.tiba_pada; pesanTutup(); tombolJalan(); return x.j.lapor;   // laporan terkirim = tiba (server), tugas bisa tertutup
+    }});   // lapor dari lokasi: public/lacak_lapor.js
     if (r.simpanan) pesan(`Tanpa sinyal. Menampilkan tugas yang tersimpan${r.simpanan > 1 ? " sejak " + new Date(r.simpanan).toLocaleString("id-ID", {day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}) : ""}. Posisi baru terkirim saat sinyal kembali.`, "galat");
-    if (info.penugasan.berangkat_pada) { berangkat = true; tibaSudah = !!info.penugasan.tiba_pada; status("Melanjutkan pengiriman posisi…", ""); mulaiWatch(); jagaLayar(); }
+    if (info.penugasan.berangkat_pada) { berangkat = true; status("Melanjutkan pengiriman posisi…", ""); mulaiWatch(); jagaLayar(); }
     tombolJalan();
   })();
 })();

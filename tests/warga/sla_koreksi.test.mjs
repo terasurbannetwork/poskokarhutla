@@ -13,7 +13,7 @@ const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, SUPER = {
 const uji = berantai(), b64 = b => Buffer.from(b).toString("base64url");
 const {privateKey} = generateKeyPairSync("ec", {namedCurve: "prime256v1"}), jwk = privateKey.export({format: "jwk"});
 const KUNCI = {VAPID_PUBLIK: b64(Buffer.concat([Buffer.from([4]), Buffer.from(jwk.x, "base64url"), Buffer.from(jwk.y, "base64url")])), VAPID_PRIVAT: jwk.d, VAPID_SUBJEK: "mailto:pemilik@contoh.id"};
-const IKAT = {...KUNCI, FIRMS_MAP_KEY: "kunci-firms", EMAIL_API_KEY: "re_uji", EMAIL_FROM: "Pantau Bencana <kabar@centurisk97.id>", EMAIL_TO: "pos@contoh.id", PIPA_TOKEN: "token-pipa-uji"};
+const IKAT = {...KUNCI, FIRMS_MAP_KEY: "kunci-firms", EMAIL_API_KEY: "re_uji", EMAIL_FROM: "Centurisk97 <kabar@centurisk97.id>", EMAIL_TO: "pos@contoh.id", PIPA_TOKEN: "token-pipa-uji"};
 
 /* jaringan luar; GAGAL_* = berapa panggilan berikutnya dijawab 500 (kegagalan sementara) */
 let GAGAL_SURAT = 0, GAGAL_PUSH = 0; const surel = [], dorong = [];

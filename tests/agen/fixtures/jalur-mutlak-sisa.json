@@ -1,0 +1,321 @@
+{
+  ".claude/ilmu-agent/inti-layar.md": {
+    "alfatehanseptianta": 1,
+    "priyankaalfatehan28": 1
+  },
+  ".claude/launch.json": {
+    "priyankaalfatehan28": 1
+  },
+  "data/kajian-bnpb/bangun/air_jawa_bps.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/kajian-bnpb/bangun/kontrak/pdf.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/kajian-bnpb/data/air-jawa/README.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/gambar/air/.wadah.html": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/gambar/mitigasi/.wadah.html": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/gambar/neraca-air/.wadah.html": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/gambar/neraca-air/lembar.html": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/gambar/rehab/.wadah.html": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/air.manifest.json": {
+    "alfatehanseptianta": 3953
+  },
+  "data/kajian-bnpb/keluaran/final/Grand Design Mitigasi Bencana Indonesia 2026-2030.manifest.json": {
+    "alfatehanseptianta": 9759
+  },
+  "data/kajian-bnpb/keluaran/mitigasi.manifest.json": {
+    "alfatehanseptianta": 9759
+  },
+  "data/kajian-bnpb/keluaran/neraca-air.manifest.json": {
+    "alfatehanseptianta": 2289
+  },
+  "data/kajian-bnpb/keluaran/qa/log-air.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/qa/log-contoh.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/qa/log-m.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/qa/log-m58.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/qa/log-mitigasi.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/qa/log-neraca-air.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/qa/log-rehab-test.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/qa/log-rehab.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/keluaran/rehab.manifest.json": {
+    "alfatehanseptianta": 2560
+  },
+  "data/kajian-bnpb/pipa/KERANGKA-BUKU.md": {
+    "alfatehanseptianta": 2
+  },
+  "data/kajian-bnpb/pipa/TIKET.md": {
+    "alfatehanseptianta": 2
+  },
+  "data/kajian-bnpb/pipa/baca-C.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/pipa/sumber/README.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/kajian-bnpb/riset/D-inventaris-platform.md": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/generator/harian_ikon.mjs": {
+    "priyankaalfatehan28": 1
+  },
+  "data/laporan-bnpb/generator/harian_peta.mjs": {
+    "priyankaalfatehan28": 1
+  },
+  "data/laporan-bnpb/generator/penanganan/ikon.mjs": {
+    "priyankaalfatehan28": 1
+  },
+  "data/laporan-bnpb/generator/penanganan/peta.mjs": {
+    "priyankaalfatehan28": 1
+  },
+  "data/laporan-bnpb/harian-2026-10-23/data.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/harian-2026-10-23/ikon.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/harian-2026-10-23/peta.mjs": {
+    "alfatehanseptianta": 3
+  },
+  "data/laporan-bnpb/harian-2026-10-24/data.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/harian-2026-10-24/ikon.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/harian-2026-10-24/peta.mjs": {
+    "alfatehanseptianta": 3
+  },
+  "data/laporan-bnpb/metode-2026-10-25/buat.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/metode-2026-10-25/kalibrasi_noaa.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/metode-2026-10-25/kalibrasi_unik.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/omc/OMC_Karhutla_16-27Okt2026.pptx": {
+    "priyankaalfatehan28": 26
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-24/app.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-24/data.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-24/ikon.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-24/peta.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-24/render.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-25/buat.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-25/data.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-25/ikon.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-jambi-2026-10-25/render.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-lampung-2026-10-24/app.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-lampung-2026-10-24/data.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/paparan-lampung-2026-10-24/ikon.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/paparan-lampung-2026-10-24/peta.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/paparan-lampung-2026-10-24/render.mjs": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/cek_tampil.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/hitung3.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/hitung_nasional.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/peta.mjs": {
+    "alfatehanseptianta": 3
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/tambah_peta.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/putaran-1.json": {
+    "alfatehanseptianta": 5
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/putaran-2.json": {
+    "alfatehanseptianta": 3
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a1.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a3.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a5.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a6.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a7.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/audit/a8.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/cek.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/deck.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/extra.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/mentah.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/verif.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-1/verif_raw.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/banding.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah2.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah3.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah4.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/celah5.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/dek.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/dek2.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/s/cek.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/s/lebar.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/survei.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-21/verifikasi/skrip-putaran-2/ulang.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-22/hitung3.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-22/hitung_nasional.py": {
+    "alfatehanseptianta": 2
+  },
+  "data/laporan-bnpb/satelit-2026-10-22/peta.mjs": {
+    "alfatehanseptianta": 3
+  },
+  "data/laporan-bnpb/satelit-2026-10-22/tambah_peta.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-23/peta.mjs": {
+    "alfatehanseptianta": 3
+  },
+  "data/laporan-bnpb/satelit-2026-10-23/tambah_peta.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/laporan-bnpb/satelit-2026-10-24/peta.mjs": {
+    "alfatehanseptianta": 3
+  },
+  "data/laporan-bnpb/satelit-2026-10-24/tambah_peta.py": {
+    "alfatehanseptianta": 1
+  },
+  "data/raw/sebaran/ekstra.log": {
+    "alfatehanseptianta": 4
+  },
+  "data/raw/sebaran/latih_final2.log": {
+    "alfatehanseptianta": 2
+  },
+  "docs/audit-metode/2026-10-21/HASIL.md": {
+    "alfatehanseptianta": 1
+  },
+  "docs/audit-metode/2026-10-21/mentah/pedoman-deck-keputusan.json": {
+    "alfatehanseptianta": 38
+  },
+  "docs/audit-metode/2026-10-21/mentah/telaah-cuaca-ekstrem.json": {
+    "alfatehanseptianta": 1
+  },
+  "docs/audit-metode/2026-10-21/workflow-audit.js": {
+    "alfatehanseptianta": 1
+  },
+  "docs/buku-pegangan/ROUTINE.md": {
+    "priyankaalfatehan28": 2
+  },
+  "docs/buku-pegangan/rujukan/utama.md": {
+    "priyankaalfatehan28": 1
+  },
+  "docs/buku-pegangan/terbit/utama.html": {
+    "priyankaalfatehan28": 1
+  },
+  "docs/deck-bnpb/Pedoman Identitas Presentasi BNPB.pptx": {
+    "priyankaalfatehan28": 34
+  },
+  "scripts/air/neraca/tarik_bps.mjs": {
+    "alfatehanseptianta": 2
+  }
+}

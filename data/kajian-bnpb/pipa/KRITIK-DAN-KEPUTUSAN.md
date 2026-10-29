@@ -28,7 +28,7 @@ Gagasan intinya benar: bara gambut harus dibasahi di bawah permukaan, dan water 
 | Lance injeksi dangkal (0-1,5 m) + probe suhu | **GO bersyarat** | G2 bench + G4 A/B | Fisika benar; efektivitas lapangan belum terbukti, hanya lab [1] dan satu uji lapangan [Santoso 2021] |
 | Relay layflat portabel DN100/DN65, 0,5-1,5 km | **GO bersyarat** | G1, G2, G3 | Mengisi celah nyata: sumber air 300 m s.d. 2 km dari bara, di luar jangkauan nyaman selang pompa jinjing |
 | Trunk 6 inci 2.000 LPM @ 10 bar, 2 km | **NO-GO sebagai standar** | Hanya bila G4 menunjukkan regu bisa menyerap > 10 L/s di satu lokasi | Debit trunk 3-10 kali lebih besar dari yang bisa diserap 8-16 lance (§2, K-01, K-09) |
-| HDPE semi-permanen (OD200) "pasang-bongkar TNI" | **NO-GO untuk pasang-bongkar**; GO bersyarat sebagai koridor tetap maksimal 2 | Koridor 1 km terbakar ≥ 7 dari 14 tahun, ≥ 3 kali kit portabel dipakai di koridor itu selama pilot, izin lahan, rencana anti-pencurian | 2 km HDPE OD200 beratnya sekitar 20 ton dan butuh 160-an sambungan fusi; tidak bisa digelar-bongkar cepat di gambut |
+| HDPE semi-permanen (OD200) "pasang-bongkar TNI" | **NO-GO**, juga sebagai koridor tetap (keputusan 60, 27 Okt 2026) | – | 2 km HDPE OD200 beratnya sekitar 20 ton dan butuh 160-an sambungan fusi; tidak bisa digelar-bongkar cepat di gambut |
 | Backbone permanen 5 km | **NO-GO** sampai ada data 3 musim | Tidak dibuka sebelum G5 | Investasi terbenam pada api yang episodik; tanpa bukti utilisasi |
 | Injeksi 5-15 m, sumur resapan 6-10 m | **NO-GO** | Tidak ada | Bara tidak berada di kedalaman itu (K-07) |
 | Geolistrik + sumur dalam 50-100 m | **NO-GO sebagai default** | Hanya di lokasi tanpa air permukaan dan sumur dangkal gagal | Sumur dangkal Rp1,5-6 juta, sekitar 3 jam per titik, sudah jadi praktik lapangan |
@@ -46,7 +46,7 @@ Gagasan intinya benar: bara gambut harus dibasahi di bawah permukaan, dan water 
 | --- | --- | --- | --- |
 | Rp1,185 M per jaringan 2 km, 100 set nasional (Rp364 M) | Rp364 M | **NO-GO** | Hidraulika tidak konsisten, utilisasi tidak dihitung, harga tanpa RFQ, belum ada uji lapangan |
 | S1 Portable | Rp4,50 M | **GO bersyarat, dirombak** | Bentuk yang benar; dipecah jadi 3 kit di 3 lokasi dengan lengan A/B (§4) |
-| S2 Semi-permanen | Rp11,34 M | **HOLD** | Dibuka hanya bila gerbang koridor terpenuhi setelah musim pilot pertama |
+| S2 Semi-permanen | Rp11,34 M | **NO-GO** | Jaringan pipa tetap ditutup (keputusan 60) |
 | S3 Backbone | Rp26,70 M | **NO-GO** | Lihat tabel komponen |
 
 ### 1.3 Lima gerbang
@@ -162,7 +162,7 @@ Format tiap kritik: klaim, bukti atau hitungan, vonis, perbaikan.
 
 - **Bukti:** FMEA pemilik memberi skor 9; pompa Rp190 juta dan kopling logam di lokasi terpencil adalah sasaran. Aset tetap di koridor tanpa penjagaan lebih rentan daripada aset di gudang.
 - **Vonis:** argumen tambahan untuk portabel tersimpan.
-- **Perbaikan:** penanda QR + geofence, gudang terkunci, kopling dan pompa selalu kembali ke gudang; target kehilangan < 5% komponen per musim, NO-GO koridor tetap bila > 20%.
+- **Perbaikan:** penanda QR + geofence, gudang terkunci, kopling dan pompa selalu kembali ke gudang; target kehilangan < 5% komponen per musim; di atas 20% pengamanan kit ditinjau sebelum gelar berikut.
 
 ### K-16 Panas pada HDPE dan layflat
 
@@ -200,7 +200,7 @@ Hibrida empat lapis, dipilih karena api Kalteng episodik dalam waktu tetapi beru
 1. **Pencegahan di sel inti (setiap tahun):** sekat kanal dan rewetting, ditambah sumur dangkal pra-posisi, di sel 2,2 km yang aktif ≥ 7 dari 14 tahun.
 2. **Kit relay portabel pra-posisi (hanya tahun kering):** layflat DN100/DN65 0,5-1,5 km, dua pompa kelas VE1500, manifold, 8 lance, flowmeter, probe suhu. Disimpan di gudang YonTP/Daops, dipindah ke depot depan saat prakiraan musim menunjukkan kemarau di atas normal. Dipakai saat sumber air berjarak 300 m s.d. 2 km dari bara.
 3. **Protokol perimeter-inti-verifikasi:** probe multi-kedalaman, injeksi dangkal, cek ulang 24 jam, 72 jam, 7 dan 30 hari. Drone termal untuk menyaring permukaan.
-4. **Koridor semi-permanen paling banyak 2**, hanya setelah musim pilot pertama, bila gerbang koridor terpenuhi.
+4. ~~Koridor semi-permanen paling banyak 2~~ dicabut (keputusan 60, 27 Okt 2026): lokasi kronis dilayani lapis 1 (sekat kanal, sumur dangkal) dan depot kit terdekat, tanpa pipa tetap.
 
 Heli water bombing tetap untuk menahan front di lokasi yang tidak tercapai regu darat dalam 6 jam (aturan `jam_tiba` platform). OMC tetap keputusan BMKG/Kemenhut berdasarkan peluang awan, bukan bagian dari usulan ini.
 
@@ -244,7 +244,7 @@ Rekomendasi: satu AOI mudah (Palangka Raya, untuk G3 dan latihan), satu AOI mene
 
 - Jaringan pipa nasional 100 set atau 50 kluster sebelum ada satu hasil A/B.
 - Pipa HDPE yang "dipasang-bongkar" TNI tiap musim.
-- Backbone permanen 5 km.
+- Backbone permanen 5 km dan koridor HDPE semi-permanen (keputusan 60).
 - Injeksi lebih dalam dari 2 m sebagai doktrin; sumur resapan 6-10 m.
 - Sumur dalam 50-100 m sebagai standar.
 - Menghitung manfaat banjir atau irigasi dalam kelayakan.
@@ -326,24 +326,24 @@ Pembanding dokumen pemilik: S1 Portable Rp4,50 M CAPEX untuk satu lokasi tanpa l
 | Item | Rentang (Rp M) | Dasar |
 | --- | --- | --- |
 | 14 kit portabel (2 per kabupaten prioritas: Kapuas, Pulang Pisau, Palangka Raya, Katingan, Seruyan, Kotim, Kobar) | 16,75 | per kit di atas |
+| 6 kit portabel tambahan dari dana koridor (keputusan 60), penempatan menurut pemakaian musim pilot dan Pemicu | 7,18 | Rp1,196 M per kit (16,75 / 14) |
 | 7 depot (kontainer, tangki BBM, radio, alat, drone) | 3,84 | Rp549 juta/depot, asumsi |
-| Koridor semi-permanen, maksimal 2 (masing-masing HDPE OD200 1.500 m + OD110 500 m, pompa diesel skid, rumah pompa panggung, katup/sensor, pemasangan, izin, survei) | 7,34 | HDPE terverifikasi (harga pemasok Apr 2026: Rp1,743 M + Rp0,176 M per koridor); sisanya asumsi Rp1,75 M |
 | 60 sekat kanal di sel inti | 1,24-3,90 | Rp20,6-65 juta/unit |
 | 300 sumur dangkal | 0,45-1,80 | Rp1,5-6 juta/titik |
 | Pelatihan dan sertifikasi 300 personel (YonTP, Manggala Agni, MPA) | 0,50-1,00 | asumsi |
-| **Subtotal CAPEX** | **30,1-34,6** | |
-| **CAPEX + kontingensi 25%** | **37,6-43,3** | |
+| **Subtotal CAPEX** | **29,9-34,4** | |
+| **CAPEX + kontingensi 25%** | **37,4-43,1** | |
 
 | OPEX per tahun | Tahun kering (Rp M) | Tahun basah (Rp M) |
 | --- | --- | --- |
-| BBM 28 pompa × 240 jam × 22 L | 1,85-2,29 | sekitar 20% |
+| BBM 40 pompa × 240 jam × 22 L | 2,64-3,27 | sekitar 20% |
 | Pemeliharaan 5-8% perangkat | 1,40-2,20 | sama |
-| Insentif 14 regu × 60 hari | 1,89-3,15 | latihan saja |
-| Mobilisasi 14 kit | 0,98-2,94 | sebagian |
+| Insentif 20 regu × 60 hari | 2,70-4,50 | latihan saja |
+| Mobilisasi 20 kit | 1,40-4,20 | sebagian |
 | Data dan evaluasi | 0,30-0,60 | sama |
-| **Total** | **6,4-11,2** | **2,6-4,5** [asumsi 40% tahun kering] |
+| **Total** | **8,4-14,8** | **3,4-5,9** [asumsi 40% tahun kering] |
 
-**TCO 5 tahun Kalteng** (2 tahun kering + 3 tahun basah, tanpa diskonto, tanpa nilai sisa, tanpa penggantian layflat): Rp37,6-43,3 M + Rp20,6-35,9 M = **Rp58-79 M**.
+**TCO 5 tahun Kalteng** (2 tahun kering + 3 tahun basah, tanpa diskonto, tanpa nilai sisa, tanpa penggantian layflat): Rp37,4-43,1 M + Rp27,0-47,3 M = **Rp64-90 M**. BBM, insentif, dan mobilisasi diskala linear dari 14 ke 20 kit (keputusan 60); pemeliharaan dan data tetap.
 
 Pembanding dokumen pemilik: TCO 5 tahun S3 Backbone saja Rp33,7 M untuk satu koridor 5 km; rencana nasional A1 Rp364 M.
 
@@ -360,7 +360,7 @@ Pembanding dokumen pemilik: TCO 5 tahun S3 Backbone saja Rp33,7 M untuk satu kor
 | Sumur bor dangkal | Rp1,5-6 juta/titik | LPDS 2016, Mongabay 2015 |
 | Regu darat konvensional | Rp2,25-3,75 juta per regu-hari; 0,5-2,8 ha/regu/hari | 15 orang × Rp150-250 ribu [asumsi tarif]; kasus Manggala Agni 2026 |
 
-Cara membaca: TCO 5 tahun jaringan kit Kalteng (Rp58-79 M) setara sekitar 48-66 heli-hari, atau kurang dari dua hari operasi seluruh armada water bombing nasional. Ini **bukan** bukti kit lebih murah per ha, karena heli dan kit mengerjakan tugas berbeda. Ini hanya menunjukkan bahwa harga pilot kecil dibanding pengeluaran yang sudah terjadi, sehingga menguji dengan benar lebih murah daripada membeli besar lalu salah.
+Cara membaca: TCO 5 tahun jaringan kit Kalteng (Rp64-90 M, 20 kit) setara sekitar 53-75 heli-hari, atau kurang dari dua hari operasi seluruh armada water bombing nasional. Ini **bukan** bukti kit lebih murah per ha, karena heli dan kit mengerjakan tugas berbeda. Ini hanya menunjukkan bahwa harga pilot kecil dibanding pengeluaran yang sudah terjadi, sehingga menguji dengan benar lebih murah daripada membeli besar lalu salah.
 
 ### 4.4 Ambang impas yang harus dibuktikan pilot
 
@@ -436,7 +436,7 @@ Urutan dan perkiraan waktu (mulai November 2026):
 | 10 | MoU pinjam pakai BMN dengan YonTP/Kodam dan Daops; pelatihan operator | dokumen + latihan | Mei-Jun 2027 | BNPB + TNI + Kemenhut |
 | 11 | Pengadaan 3 kit, kalkulator hidraulika dan log time-motion di platform | pengadaan + platform | Mei-Jun 2027 | BNPB + repo ini |
 | 12 | Musim pilot 1: time-motion (G3), A/B, cek ulang 24 jam s.d. 30 hari | kajian lapangan | Jul-Nov 2027 | Satgas Karhutla Kalteng |
-| 13 | Laporan antara + keputusan buka/tidak koridor semi-permanen | dokumen | Des 2027-Jan 2028 | evaluator |
+| 13 | Laporan antara + penempatan kit tambahan | dokumen | Des 2027-Jan 2028 | evaluator |
 | 14 | Musim pilot 2 | kajian lapangan | Jul-Nov 2028 | Satgas |
 | 15 | Evaluasi independen (G4/G5) dan grand design formal versi keputusan | dokumen | Des 2028-Mar 2029 | evaluator + BNPB |
 | 16 | Bila lulus: rencana skala Kalteng 2029-2033, baru kemudian provinsi lain | dokumen | 2029 | BNPB |

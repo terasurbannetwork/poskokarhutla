@@ -5,6 +5,7 @@ name: Bersihkan cache lama
 on:
   schedule:
     - cron: "50 */3 * * *"   # 10 menit sesudah titik.yml, tiap 3 jam
+    - cron: "25 10 * * *"    # putaran titik tambahan "10 9" mulai ± 09.45 UTC, disusul putaran 3-jam ± 10.15: dua salinan data- (1,4 GB) dalam satu jendela
   workflow_dispatch:
 
 permissions:

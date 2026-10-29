@@ -1,0 +1,52 @@
+{
+ "png": "peta-n80.png",
+ "kolom": "N80_kemarau_mm",
+ "ambang_kelas": [
+  -100,
+  -25,
+  0,
+  150
+ ],
+ "legenda": [
+  {
+   "warna": "skala.air.1",
+   "label": "Kurang >100"
+  },
+  {
+   "warna": "skala.air.2",
+   "label": "Kurang 25–100"
+  },
+  {
+   "warna": "skala.air.3",
+   "label": "Kurang 0–25"
+  },
+  {
+   "warna": "skala.air.4",
+   "label": "Sisa 0–150"
+  },
+  {
+   "warna": "skala.air.5",
+   "label": "Sisa >150"
+  }
+ ],
+ "jumlah_per_kelas": [
+  23,
+  32,
+  13,
+  28,
+  23
+ ],
+ "poligon_kab": 119,
+ "tanpa_data": 0,
+ "unsur_peta": {
+  "sumber_batas": "public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "Ekuirektangular",
+  "catatan": "Batas wilayah bukan rujukan resmi"
+ },
+ "masukan": {
+  "data/kajian-bnpb/data/neraca-air/kab.csv": "8e1067992fa8417a43790e58d9352d0bb2f1237a88b05652e8693bdaffb68bfd",
+  "data/kajian-bnpb/data/air-jawa/peta_kab.geojson": "539105cd387ed4f257a2a208e9be7a1ddb3cc6376b8e05419479eba08264afeb",
+  "public/geo/provinsi.json": "aeec8694cb5dc8991707bbdc9acc24682b5dbf4a8e27d84f4b98473e3a425344"
+ }
+}

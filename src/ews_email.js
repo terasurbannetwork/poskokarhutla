@@ -17,7 +17,7 @@ const daftar = a => `<table role="presentation" cellpadding="0" cellspacing="0" 
 const bungkus = (judulPendek, isi, kaki) => `<!doctype html><html lang="id"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>${esc(judulPendek)}</title></head>
 <body style="margin:0;padding:0;background:#eef2f6"><table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background:#eef2f6"><tr><td align="center" style="padding:20px 10px">
 <table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:100%;max-width:600px;background:#ffffff;border-radius:12px;border-collapse:separate;overflow:hidden">
-<tr><td style="background:${BIRU};padding:14px 24px;font:700 15px ${FONT};color:#ffffff">Pantau Bencana &middot; Peringatan Dini</td></tr>
+<tr><td style="background:${BIRU};padding:14px 24px;font:700 15px ${FONT};color:#ffffff">Centurisk97 &middot; Peringatan Dini</td></tr>
 <tr><td style="padding:22px 24px 8px;font:14px/1.55 ${FONT};color:#1d2733">${isi}</td></tr>
 <tr><td style="padding:14px 24px 22px;border-top:1px solid #e3e8ee;font:12px/1.55 ${FONT};color:#5b6773">${kaki}</td></tr>
 </table></td></tr></table></body></html>`;
@@ -34,7 +34,7 @@ export function emailKonfirmasi({wilayah, bencana, waspada, tautan}) {
 <b>Bencana yang dipantau:</b> ${esc(nama.join(", "))}<br><b>Tingkat:</b> ${waspada ? "mulai Waspada" : "mulai Siaga"}${bencana.some(b => b === "gempa" || b === "tsunami") ? "; gempa dan tsunami selalu dikirim" : ""}</td></tr></table>
 ${tombol(tautan, "Ya, kirimi saya peringatan")}
 <p style="margin:12px 0 0;color:#5b6773">Tautan berlaku 48 jam. Kalau bukan Anda yang meminta, abaikan email ini dan tidak ada yang terjadi.</p>`,
-  "Email ini dikirim karena alamat Anda dipakai di halaman Peringatan Dini Pantau Bencana.");
+  "Email ini dikirim karena alamat Anda dipakai di halaman Peringatan Dini Centurisk97.");
   const text = `Konfirmasi langganan Peringatan Dini\n\nLokasi: ${lokasi(wilayah)}\nBencana: ${nama.join(", ")}\n\nKonfirmasi (berlaku 48 jam): ${tautan}\n\nKalau bukan Anda yang meminta, abaikan email ini.`;
   return {subject, html, text};
 }
@@ -69,7 +69,7 @@ ${tombol(`${asal}/sim/${encodeURIComponent(sim[0].kompleks)}`, "Lihat simulasi",
 ${rincian ? `<ul style="margin:14px 0 0;padding-left:18px;color:#34414e">${rincian}</ul>` : ""}
 ${blokSim}<h2 style="margin:22px 0 4px;font:700 17px ${FONT};color:#12202e">Yang perlu Anda lakukan</h2>${blok}
 ${tombol(peta, "Lihat peta")}
-<p style="margin:12px 0 0;color:#5b6773">Sumber: ${esc([...new Set(urut.map(x => BENCANA[x.b].sumber)), ...(sim.length ? [sim[0].sumber || "Simulasi penjalaran api Pantau Bencana"] : [])].join("; "))}. Prakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.</p>`,
+<p style="margin:12px 0 0;color:#5b6773">Sumber: ${esc([...new Set(urut.map(x => BENCANA[x.b].sumber)), ...(sim.length ? [sim[0].sumber || "Simulasi penjalaran api Centurisk97"] : [])].join("; "))}. Prakiraan, bukan kepastian. Ikuti arahan BPBD/BMKG setempat.</p>`,
   kakiUmum(wilayah, "Anda menerima email ini karena berlangganan Peringatan Dini untuk lokasi di atas dan lokasi itu sedang diprakirakan berisiko.", tautanBerhenti));
   const text = `${subject}\n\n` + peringatan.map(p => `- ${HARI[p.hari]}: ${BENCANA[p.bencana].nama}, ${TINGKAT[p.tingkat].nama}`).join("\n") + "\n\nYang perlu Anda lakukan:\n" +
     urut.map(({b, t}) => `${BENCANA[b].nama}\n` + tindakanUntuk(b, t).map((x, i) => `${i + 1}. ${x}`).join("\n")).join("\n\n") +

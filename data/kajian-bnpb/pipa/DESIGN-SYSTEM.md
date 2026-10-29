@@ -1931,7 +1931,7 @@ Desktop:
 |12 butir terlambat, 3 kit tidak laik gelar, 2 suku cadang di bawah minimum               |
 |Sumber: SIPPA D1 (inspeksi, komponen, log, stok), per 14.30 WIB                          |
 +-----------------------------------------------------------------------------------------+
-| [3.5 chip kelas] (Semua)(K1 Pompa)(K2 Selang)(K3 Hidraulik)(K4 Sensor)(K5 APD)(K6 Koridor)|
+| [3.5 chip kelas] (Semua)(K1 Pompa)(K2 Selang)(K3 Hidraulik)(K4 Sensor)(K5 APD)(K7 Sumur)|
 |                  (K7 Sumur)(K8 Pipa sementara)(K9 Jembatan darurat)(K10 Jembatan pantau) |
 | [3.5 chip status] (Terlambat 12)(Segera 9)(Aman 140)(Belum pernah 6)                    |
 | [3.4 tabel] Butir | Kelas | Kit atau lokasi | Inspeksi terakhir | Skor | Jatuh tempo |    |

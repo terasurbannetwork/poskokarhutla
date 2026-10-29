@@ -1,0 +1,4436 @@
+{
+ "spek": "deck",
+ "pesan_kunci": "Air Pulau Jawa cukup dalam setahun tetapi kurang di sebagian kab/kota pada musim kemarau; peringkat kab/kota model dipakai sebagai daftar periksa kemarau 2027 bersama data BPBD sambil data pos duga dan waduk diminta untuk validasi.",
+ "slide": [
+  {
+   "nomor": 1,
+   "jenis": "sampul",
+   "asal": "deck#1",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    126,
+    446.4,
+    120,
+    3
+   ],
+   "peta": null,
+   "struktur": [
+    "Foto: Bengawan Solo pada musim kemarau, Juli 2015; Crisco 1492, CC BY-SA 4.0, Wikimedia Commons",
+    "Rabu, 28 Oktober 2026"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "8C9AA8",
+     "aksen"
+    ],
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "F6B26B",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": []
+  },
+  {
+   "nomor": 2,
+   "jenis": "kartu-angka",
+   "asal": "deck#2",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "2",
+    "Pengolahan data Pantau Bencana, model neraca air kajian ini; BPS 2020; GloFAS; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "aksen"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "DCEBF8",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "F4C3A0",
+     "garis"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Pesan Kunci: air Jawa cukup setahun, kurang di sebagian kab/kota saat kemarau, dan dua keputusan",
+   "pesan": "Tesis, lima temuan, dan dua keputusan yang diminta",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     873.6,
+     182.6,
+     "Pesan kunci"
+    ]
+   ]
+  },
+  {
+   "nomor": 3,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#3",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "3",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "Pengolahan data Pantau Bencana: CHIRPS 1991–2025, NASA POWER, HydroBASINS, BPS, WorldPop; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "aksen"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCE3EB",
+     "garis"
+    ],
+    [
+     "DCEBF8",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A1. Kebutuhan konsumtif Jawa {{angka:neraca.jawa.rasio_c_r_persen|persen}} dari limpasan tahunan, naik ke {{angka:neraca.jawa.rasio_c_r_kemarau_persen|persen}} pada Juni–Oktober",
+   "pesan": "Setahun air cukup, kemarau tidak",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     541.6,
+     182.6,
+     "Limpasan lokal dan kebutuhan konsumtif bulanan Pulau Jawa, j"
+    ],
+    [
+     595.6,
+     220.8,
+     321.2,
+     182.6,
+     "Cara membaca"
+    ]
+   ]
+  },
+  {
+   "nomor": 4,
+   "jenis": "temuan-peta",
+   "asal": "deck#4",
+   "keluarga": [
+    "kering"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "public/geo Pantau Bencana (asal belum terdokumentasi)",
+     "sistem_referensi": "WGS84 geografis",
+     "proyeksi": "Ekuirektangular",
+     "catatan": "Batas wilayah bukan rujukan resmi"
+    },
+    "resmi": false,
+    "batas": [
+     43.2,
+     215.09956,
+     574.0320000000002,
+     417.70044
+    ],
+    "label": [],
+    "ukuran_label_pt": 8
+   },
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "4",
+    "Sumber batas: public/geo Pantau Bencana (asal belum terdokumentasi); WGS84 geografis; Ekuirektangular; Batas wilayah bukan rujukan resmi",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "Pengolahan data Pantau Bencana, model neraca air kajian ini, iklim 1991–2025 dan kebutuhan 2025; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "6E5424",
+     "skala.emas"
+    ],
+    [
+     "A07A32",
+     "skala.emas"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C4A262",
+     "skala.emas"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCC79C",
+     "skala.emas"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "F4ECDC",
+     "skala.emas"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A2. Di {{angka:neraca.hitung.rasio_kemarau_lebih_100}} kab/kota kebutuhan Juni–Oktober melebihi limpasan lokalnya; kab/kota ini bergantung pada aliran dari hulu",
+   "pesan": "Kab/kota yang tak bisa memenuhi kemarau dari limpasannya sendiri",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     584.8,
+     220.8,
+     332.0,
+     258.2,
+     "Cara membaca"
+    ]
+   ]
+  },
+  {
+   "nomor": 5,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#5",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "5",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "Pengolahan data Pantau Bencana: penelusuran aliran HydroBASINS, model neraca air kajian ini; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "A3. Air Kabupaten Indramayu {{angka:neraca.kab.indramayu.qin_persen|persen}} berasal dari hulu; delapan dari sepuluh surplus lokal terbesar ada di Jawa Barat dan Banten",
+   "pesan": "Surplus lokal di hulu menjadi pasokan hilir",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     541.6,
+     258.2,
+     "Sepuluh kab/kota dengan surplus lokal tahunan terbesar"
+    ],
+    [
+     595.6,
+     220.8,
+     321.2,
+     258.2,
+     "Cara membaca"
+    ]
+   ]
+  },
+  {
+   "nomor": 6,
+   "jenis": "temuan-peta",
+   "asal": "deck#6",
+   "keluarga": [
+    "basah"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "public/geo Pantau Bencana (asal belum terdokumentasi)",
+     "sistem_referensi": "WGS84 geografis",
+     "proyeksi": "Ekuirektangular",
+     "catatan": "Batas wilayah bukan rujukan resmi"
+    },
+    "resmi": false,
+    "batas": [
+     43.2,
+     215.09956,
+     574.0320000000002,
+     417.70044
+    ],
+    "label": [],
+    "ukuran_label_pt": 8
+   },
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "6",
+    "Sumber batas: public/geo Pantau Bencana (asal belum terdokumentasi); WGS84 geografis; Ekuirektangular; Batas wilayah bukan rujukan resmi",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "Pengolahan data Pantau Bencana, model neraca air kajian ini, iklim 1991–2025 dan kebutuhan 2025; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "skala.air"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "skala.air"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "68A8E0",
+     "skala.air"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A4CAEE",
+     "skala.air"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCEBF8",
+     "skala.air"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "B1. {{angka:neraca.hitung.n80_kemarau_neg}} kab/kota kekurangan air Juni–Oktober pada sedikitnya satu dari lima tahun bila irigasi potensial dipenuhi",
+   "pesan": "Neraca kemarau andalan menunjuk kab/kota prioritas",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     584.8,
+     220.8,
+     332.0,
+     258.2,
+     "Definisi dan batas"
+    ]
+   ]
+  },
+  {
+   "nomor": 7,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#7",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "7",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "11",
+    "12",
+    "13",
+    "14",
+    "15",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "8",
+    "9",
+    "10",
+    "Pengolahan data Pantau Bencana, model neraca air kajian ini; indikasi urutan, estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "B2. {{angka:neraca.kab.n80_1.nama|teks}} mencatat neraca kemarau andalan {{angka:neraca.kab.n80_1.n80|satuan}}, terendah di Pulau Jawa",
+   "pesan": "Kekurangan terdalam di kabupaten beririgasi luas",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     137,
+     541.6,
+     342,
+     "Dua belas kab/kota dengan neraca kemarau andalan terendah"
+    ],
+    [
+     595.6,
+     137,
+     321.2,
+     342,
+     "Cara membaca"
+    ]
+   ]
+  },
+  {
+   "nomor": 8,
+   "jenis": "temuan-grafik",
+   "asal": "deck#8",
+   "keluarga": [
+    "kering"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "8",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "Pengolahan data Pantau Bencana, model neraca air kajian ini; GloFAS; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "B08A3E",
+     "kategori.kering"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCC79C",
+     "skala.emas"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "B3. Iklim 1997 membuat neraca Juni–Oktober negatif di {{angka:neraca.skenario.1997.n_kab_neg}} kab/kota, dibanding {{angka:neraca.skenario.klim.n_kab_neg}} pada iklim rerata",
+   "pesan": "Tahun kering menaikkan jumlah kab/kota defisit berlipat",
+   "jenis_slide": "grafik",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "grafik",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     541.6,
+     258.2,
+     "Kab/kota dengan neraca Juni–Oktober negatif per skenario ikl",
+     "grafik"
+    ],
+    [
+     595.6,
+     220.8,
+     321.2,
+     258.2,
+     "Arah bias"
+    ]
+   ]
+  },
+  {
+   "nomor": 9,
+   "jenis": "temuan-peta",
+   "asal": "deck#9",
+   "keluarga": [
+    "basah"
+   ],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": {
+    "legenda": true,
+    "unsur_peta": {
+     "sumber_batas": "public/geo Pantau Bencana (asal belum terdokumentasi)",
+     "sistem_referensi": "WGS84 geografis",
+     "proyeksi": "Ekuirektangular",
+     "catatan": "Batas wilayah bukan rujukan resmi"
+    },
+    "resmi": false,
+    "batas": [
+     43.2,
+     215.09956,
+     574.0320000000002,
+     417.70044
+    ],
+    "label": [],
+    "ukuran_label_pt": 8
+   },
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "9",
+    "Sumber batas: public/geo Pantau Bencana (asal belum terdokumentasi); WGS84 geografis; Ekuirektangular; Batas wilayah bukan rujukan resmi",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "Pengolahan data Pantau Bencana, model neraca air kajian ini; Permen LH 17/2009; bukan status resmi"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "1B5A93",
+     "skala.air"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "2F86D1",
+     "skala.air"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "68A8E0",
+     "skala.air"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A4CAEE",
+     "skala.air"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "DCEBF8",
+     "skala.air"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "B4. Cara daya dukung Permen LH menandai {{angka:neraca.hitung.ddl_defisit}} kab/kota defisit; {{angka:neraca.hitung.ddl_defisit_n_positif}} di antaranya punya neraca tahunan positif",
+   "pesan": "Status gaya Permen LH berbeda dengan neraca bulanan",
+   "jenis_slide": "peta",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "peta",
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "peta",
+    "ikon"
+   ],
+   "panel": [
+    [
+     584.8,
+     220.8,
+     332.0,
+     258.2,
+     "Mengapa berbeda"
+    ]
+   ]
+  },
+  {
+   "nomor": 10,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#10",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "10",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "6",
+    "7",
+    "Pengolahan data Pantau Bencana; GloFAS Copernicus lewat Open-Meteo; BPS 2020; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "C1. Aliran tahunan model {{angka:neraca.validasi.rasio_rentang|rentang}} kali GloFAS di {{angka:neraca.validasi.n_muara}} muara; median Juni–Oktober {{angka:neraca.validasi.rasio_kemarau_median}} kali",
+   "pesan": "Validasi tahunan lolos, kemarau belum",
+   "jenis_slide": "tabel",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     541.6,
+     258.2,
+     "Debit model dibanding GloFAS per muara, 1991–2024"
+    ],
+    [
+     595.6,
+     220.8,
+     321.2,
+     258.2,
+     "Batas validasi"
+    ]
+   ]
+  },
+  {
+   "nomor": 11,
+   "jenis": "tabel-peringkat",
+   "asal": "deck#11",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "11",
+    "1",
+    "2",
+    "3",
+    "4",
+    "5",
+    "Analisis kajian ini; BPS; tabel waduk kajian ini"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "C8102E",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "D9600B",
+     "angka-judul"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "F4C3A0",
+     "garis"
+    ],
+    [
+     "FCF1F2",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "C2. Kebutuhan industri kosong di {{angka:neraca.hitung.industri_kosong}} kab/kota dan lima dari enam tampungan waduk bersumber sekunder",
+   "pesan": "Lima celah data menahan label estimasi model",
+   "jenis_slide": "matriks",
+   "judul_bentuk": "temuan",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": [
+    [
+     43.2,
+     220.8,
+     541.6,
+     182.6,
+     "Celah data dan pemegangnya, dengan akibat pada angka"
+    ],
+    [
+     595.6,
+     220.8,
+     321.2,
+     182.6,
+     "Pemakaian sekarang"
+    ]
+   ]
+  },
+  {
+   "nomor": 12,
+   "jenis": "rekomendasi",
+   "asal": "deck#12",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "12"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "pil"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "E6EAF0",
+     "pil"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ],
+    [
+     "FFFFFF",
+     "pil"
+    ]
+   ],
+   "judul_spek": "Rekomendasi {{sorot:100 hari}} dan peta jalan {{sorot:2026–2027}}: langkah, rincian, penanggung jawab",
+   "pesan": "Lima rekomendasi: dua pemakaian dan tiga permintaan data",
+   "jenis_slide": "rekomendasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [
+    "tabel"
+   ],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": []
+  },
+  {
+   "nomor": 13,
+   "jenis": "kesimpulan",
+   "asal": "deck#13",
+   "keluarga": [],
+   "judul": [
+    43.2,
+    21.6,
+    644,
+    65,
+    2
+   ],
+   "peta": null,
+   "struktur": [
+    "27 Okt 2026, 23.59 WIB",
+    "13",
+    "01",
+    "02",
+    "03",
+    "04",
+    "05",
+    "06",
+    "07",
+    "08",
+    "Pengolahan data Pantau Bencana, model neraca air kajian ini; GloFAS; BPS; estimasi model"
+   ],
+   "warna": [
+    [
+     "051C2C",
+     "inti"
+    ],
+    [
+     "051C2C",
+     "pil"
+    ],
+    [
+     "1A1A1A",
+     "inti"
+    ],
+    [
+     "2E3440",
+     "inti"
+    ],
+    [
+     "4A9BE0",
+     "aksen"
+    ],
+    [
+     "6B7280",
+     "inti"
+    ],
+    [
+     "A9B4C2",
+     "inti"
+    ],
+    [
+     "BFC5CC",
+     "inti"
+    ],
+    [
+     "D9600B",
+     "aksen"
+    ],
+    [
+     "DCE1E7",
+     "inti"
+    ],
+    [
+     "E6EAF0",
+     "permukaan"
+    ],
+    [
+     "FBE7D6",
+     "permukaan"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "Kesimpulan: delapan temuan berangka tentang neraca air Jawa dan keputusan yang diminta",
+   "pesan": "Delapan kesimpulan berangka dan keputusan yang diminta",
+   "jenis_slide": "navigasi",
+   "judul_bentuk": "deskriptif",
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "logo",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon",
+    "ikon"
+   ],
+   "panel": []
+  },
+  {
+   "nomor": 14,
+   "jenis": "penutup",
+   "asal": "deck#14",
+   "keluarga": [],
+   "judul": null,
+   "peta": null,
+   "struktur": [
+    "Foto: Bengawan Solo pada musim kemarau, Juli 2015; Crisco 1492, CC BY-SA 4.0, Wikimedia Commons",
+    "Neraca Air Pulau Jawa per Kabupaten/Kota, Rabu, 28 Oktober 2026"
+   ],
+   "warna": [
+    [
+     "C9D1E3",
+     "aksen"
+    ],
+    [
+     "F28C28",
+     "aksen"
+    ],
+    [
+     "FFFFFF",
+     "inti"
+    ]
+   ],
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
+   "seri": null,
+   "visual": [],
+   "gambar": [
+    "foto",
+    "logo"
+   ],
+   "panel": []
+  }
+ ],
+ "angka": [
+  {
+   "kunci": "neraca.jawa.rasio_c_r_kemarau_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 32%",
+   "nilai": 32.34793806569009,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.hitung.n80_kemarau_neg",
+   "opsi": "|",
+   "tampil": "68",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_kemarau_median",
+   "opsi": "|",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.3387087111758897,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 18%",
+   "nilai": 17.885348505006178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_kemarau_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 32%",
+   "nilai": 32.34793806569009,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.jawa.r_miliar",
+   "opsi": "|satuan",
+   "tampil": "sekitar 186 miliar m³ per tahun",
+   "nilai": 185.58973,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.validasi.selisih_bps_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 5,9%",
+   "nilai": 5.872642313669396,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.jawa.r_kemarau_persen_tahunan",
+   "opsi": "|persen",
+   "tampil": "sekitar 16%",
+   "nilai": 15.540127139578251,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 18%",
+   "nilai": 17.885348505006178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.hitung.n80_kemarau_neg",
+   "opsi": "|",
+   "tampil": "68",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.prov.jawa_timur.n_n80_neg",
+   "opsi": "|",
+   "tampil": "28",
+   "nilai": 28,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.prov.jawa_tengah.n_n80_neg",
+   "opsi": "|",
+   "tampil": "18",
+   "nilai": 18,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.skenario.1997.n_kab_neg",
+   "opsi": "|",
+   "tampil": "99",
+   "nilai": 99,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.skenario.2015.n_kab_neg",
+   "opsi": "|",
+   "tampil": "63",
+   "nilai": 63,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_kemarau_median",
+   "opsi": "|",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.3387087111758897,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_median",
+   "opsi": "|",
+   "tampil": "sekitar 1,0",
+   "nilai": 1.0075160164441719,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.validasi.n_muara",
+   "opsi": "|",
+   "tampil": "12",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.hitung.industri_kosong",
+   "opsi": "|",
+   "tampil": "44",
+   "nilai": 44,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "naskah": "deck#2"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 18%",
+   "nilai": 17.885348505006178,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_kemarau_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 32%",
+   "nilai": 32.34793806569009,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.r_miliar",
+   "opsi": "|",
+   "tampil": "sekitar 186",
+   "nilai": 185.58973,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.irigasi_persen_total",
+   "opsi": "|persen",
+   "tampil": "sekitar 85%",
+   "nilai": 84.66016855767197,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.r_kemarau_persen_tahunan",
+   "opsi": "|persen",
+   "tampil": "sekitar 16%",
+   "nilai": 15.540127139578251,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.irigasi",
+   "opsi": "|ringkas|satuan",
+   "tampil": "sekitar 38.000 juta m³ per tahun",
+   "nilai": 37668.67,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.domestik",
+   "opsi": "|ringkas|satuan",
+   "tampil": "sekitar 5.900 juta m³ per tahun",
+   "nilai": 5931.39,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.pend_2025",
+   "opsi": "|ringkas",
+   "tampil": "sekitar 160 juta",
+   "nilai": 158738001,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "WorldPop R2025A diskala ke BPS Proyeksi Penduduk menurut Provinsi 2010–2035",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.industri",
+   "opsi": "|satuan",
+   "tampil": "sekitar 750 juta m³ per tahun",
+   "nilai": 747.68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.hitung.industri_ada",
+   "opsi": "|",
+   "tampil": "75",
+   "nilai": 75,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 27.000",
+   "nilai": 26792.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 1.000",
+   "nilai": 1009.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 30.000",
+   "nilai": 30106.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 560",
+   "nilai": 560.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 27.000",
+   "nilai": 27213.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 7.300",
+   "nilai": 7278.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 20.000",
+   "nilai": 19781.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 2.000",
+   "nilai": 2043.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 14.000",
+   "nilai": 13842.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 3.400",
+   "nilai": 3385.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 8.300",
+   "nilai": 8253.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 3.300",
+   "nilai": 3308.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 5.200",
+   "nilai": 5188.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 1.300",
+   "nilai": 1311.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 3.400",
+   "nilai": 3386.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 1.700",
+   "nilai": 1654.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 4.000",
+   "nilai": 3983.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 1.700",
+   "nilai": 1722.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 8.000",
+   "nilai": 8031.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 1.300",
+   "nilai": 1334.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 16.000",
+   "nilai": 15768.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 8.400",
+   "nilai": 8412.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#R",
+   "tampil": "sekitar 23.000",
+   "nilai": 23246.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/bulanan.csv#konsumtif",
+   "tampil": "sekitar 1.200",
+   "nilai": 1177.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/provinsi.csv#rasio_C_R_persen",
+   "tampil": "sekitar 97",
+   "nilai": 96.8,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/provinsi.csv#rasio_C_R_persen",
+   "tampil": "sekitar 27",
+   "nilai": 27.0,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/provinsi.csv#rasio_C_R_persen",
+   "tampil": "sekitar 24",
+   "nilai": 23.9,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/provinsi.csv#rasio_C_R_persen",
+   "tampil": "sekitar 16",
+   "nilai": 15.9,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/provinsi.csv#rasio_C_R_persen",
+   "tampil": "sekitar 14",
+   "nilai": 13.9,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/provinsi.csv#rasio_C_R_persen",
+   "tampil": "sekitar 12",
+   "nilai": 12.2,
+   "naskah": "deck#3",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "neraca.param.aliran_balik_persen",
+   "opsi": "|persen",
+   "tampil": "30%",
+   "nilai": 30.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.irigasi_persen_sni",
+   "opsi": "|persen",
+   "tampil": "sekitar 40%",
+   "nilai": 39.76990497539394,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.param.aliran_balik_persen",
+   "opsi": "|persen",
+   "tampil": "30%",
+   "nilai": 30.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "SNI 19-6728.1-2002; FAO-56; parameter model kajian ini (asumsi kebijakan)",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.jawa.irigasi_persen_sni",
+   "opsi": "|persen",
+   "tampil": "sekitar 40%",
+   "nilai": 39.76990497539394,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#3"
+  },
+  {
+   "kunci": "neraca.hitung.rasio_kemarau_lebih_100",
+   "opsi": "|",
+   "tampil": "47",
+   "nilai": 47,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "neraca.hitung.rasio_kemarau_lebih_100",
+   "opsi": "|",
+   "tampil": "47",
+   "nilai": 47,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "neraca.kab.indramayu.qin_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 79%",
+   "nilai": 79.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "turunan:deck#4#legenda:peta-rasio:0",
+   "tampil": "≤ 25%",
+   "nilai": null,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#4#legenda:peta-rasio:1",
+   "tampil": "25–50%",
+   "nilai": null,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#4#legenda:peta-rasio:2",
+   "tampil": "50–100%",
+   "nilai": null,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#4#legenda:peta-rasio:3",
+   "tampil": "100–200%",
+   "nilai": null,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#4#legenda:peta-rasio:4",
+   "tampil": "> 200%",
+   "nilai": null,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#rasio_C_R_kemarau_persen",
+   "tampil": "sekitar 700",
+   "nilai": 697.8,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#rasio_C_R_kemarau_persen",
+   "tampil": "sekitar 630",
+   "nilai": 629.9,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#rasio_C_R_kemarau_persen",
+   "tampil": "sekitar 620",
+   "nilai": 616.6,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#rasio_C_R_kemarau_persen",
+   "tampil": "sekitar 550",
+   "nilai": 552.1,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#rasio_C_R_kemarau_persen",
+   "tampil": "sekitar 540",
+   "nilai": 535.9,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#rasio_C_R_kemarau_persen",
+   "tampil": "sekitar 420",
+   "nilai": 421.1,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#rasio_C_R_kemarau_persen",
+   "tampil": "sekitar 320",
+   "nilai": 322.4,
+   "naskah": "deck#4",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_kemarau_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 32%",
+   "nilai": 32.34793806569009,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_kemarau_2030_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 33%",
+   "nilai": 32.80791016085501,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_kemarau_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 32%",
+   "nilai": 32.34793806569009,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "neraca.jawa.rasio_c_r_kemarau_2030_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 33%",
+   "nilai": 32.80791016085501,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#4"
+  },
+  {
+   "kunci": "neraca.kab.indramayu.qin_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 79%",
+   "nilai": 79.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "neraca.kab.indramayu.qin_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 79%",
+   "nilai": 79.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "neraca.kab.jakut.qin_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 28%",
+   "nilai": 28.4,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 8.200",
+   "nilai": 8222.1,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 27",
+   "nilai": 27.4,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 7.300",
+   "nilai": 7287.6,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 59",
+   "nilai": 58.6,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 7.200",
+   "nilai": 7196.1,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 13",
+   "nilai": 12.5,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 6.700",
+   "nilai": 6668.9,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 29",
+   "nilai": 29.0,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 5.700",
+   "nilai": 5670.4,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 10",
+   "nilai": 10.3,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 5.200",
+   "nilai": 5244.1,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 18",
+   "nilai": 17.6,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 5.200",
+   "nilai": 5201.5,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 13",
+   "nilai": 12.8,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 4.200",
+   "nilai": 4158.7,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 82",
+   "nilai": 81.5,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 3.000",
+   "nilai": 3048.2,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 71",
+   "nilai": 70.7,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#R_minus_C_tahunan",
+   "tampil": "sekitar 3.000",
+   "nilai": 3040.2,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 26",
+   "nilai": 25.8,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 98",
+   "nilai": 98.2,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 97",
+   "nilai": 97.0,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 97",
+   "nilai": 96.9,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 96",
+   "nilai": 95.8,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 95",
+   "nilai": 95.3,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 94",
+   "nilai": 94.4,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 94",
+   "nilai": 94.3,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#qin_persen",
+   "tampil": "sekitar 94",
+   "nilai": 94.2,
+   "naskah": "deck#5",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "neraca.param.n_subdas",
+   "opsi": "|satuan",
+   "tampil": "534 sub-DAS",
+   "nilai": 534,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "HydroBASINS v1c level 09",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "neraca.param.subdas_rerata_km2",
+   "opsi": "|satuan",
+   "tampil": "248 km²",
+   "nilai": 248.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "HydroBASINS v1c level 09",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "neraca.param.n_subdas",
+   "opsi": "|satuan",
+   "tampil": "534 sub-DAS",
+   "nilai": 534,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "HydroBASINS v1c level 09",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "neraca.param.subdas_rerata_km2",
+   "opsi": "|satuan",
+   "tampil": "248 km²",
+   "nilai": 248.0,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "HydroBASINS v1c level 09",
+   "naskah": "deck#5"
+  },
+  {
+   "kunci": "neraca.hitung.n80_kemarau_neg",
+   "opsi": "|",
+   "tampil": "68",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.prov.jawa_timur.n_n80_neg",
+   "opsi": "|",
+   "tampil": "28",
+   "nilai": 28,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.prov.jawa_tengah.n_n80_neg",
+   "opsi": "|",
+   "tampil": "18",
+   "nilai": 18,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.prov.jawa_barat.n_n80_neg",
+   "opsi": "|",
+   "tampil": "10",
+   "nilai": 10,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "turunan:deck#6#legenda:peta-n80:0",
+   "tampil": "Kurang >100",
+   "nilai": null,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#6#legenda:peta-n80:1",
+   "tampil": "Kurang 25–100",
+   "nilai": null,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#6#legenda:peta-n80:2",
+   "tampil": "Kurang 0–25",
+   "nilai": null,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#6#legenda:peta-n80:3",
+   "tampil": "Sisa 0–150",
+   "nilai": null,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#6#legenda:peta-n80:4",
+   "tampil": "Sisa >150",
+   "nilai": null,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau_mm",
+   "tampil": "sekitar -220",
+   "nilai": -224.4,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau_mm",
+   "tampil": "sekitar -220",
+   "nilai": -222.5,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau_mm",
+   "tampil": "sekitar -210",
+   "nilai": -205.5,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau_mm",
+   "tampil": "sekitar -200",
+   "nilai": -202.5,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau_mm",
+   "tampil": "sekitar -200",
+   "nilai": -201.1,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau_mm",
+   "tampil": "sekitar -190",
+   "nilai": -190.0,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau_mm",
+   "tampil": "sekitar -190",
+   "nilai": -185.0,
+   "naskah": "deck#6",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "neraca.hitung.n80_neg_kota_kecil",
+   "opsi": "|",
+   "tampil": "27",
+   "nilai": 27,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.hitung.n80_kemarau_neg",
+   "opsi": "|",
+   "tampil": "68",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.hitung.n80_neg_pend",
+   "opsi": "|ringkas",
+   "tampil": "sekitar 83 juta",
+   "nilai": 83354683,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.hitung.n_kemarau_neg",
+   "opsi": "|",
+   "tampil": "16",
+   "nilai": 16,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.hitung.n80_neg_kota_kecil",
+   "opsi": "|",
+   "tampil": "27",
+   "nilai": 27,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.hitung.n80_kemarau_neg",
+   "opsi": "|",
+   "tampil": "68",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.hitung.n80_neg_pend",
+   "opsi": "|ringkas",
+   "tampil": "sekitar 83 juta",
+   "nilai": 83354683,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.hitung.n_kemarau_neg",
+   "opsi": "|",
+   "tampil": "16",
+   "nilai": 16,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#6"
+  },
+  {
+   "kunci": "neraca.kab.n80_1.nama",
+   "opsi": "|teks",
+   "tampil": "Kab. Indramayu",
+   "nilai": "Kab. Indramayu",
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "neraca.kab.n80_1.n80",
+   "opsi": "|satuan",
+   "tampil": "sekitar -200 juta m³",
+   "nilai": -204.41,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#7"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 7.000",
+   "nilai": 7008.7,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -200",
+   "nilai": -204.41,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -300",
+   "nilai": -300.31,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 3.100",
+   "nilai": 3093.8,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -180",
+   "nilai": -175.54,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -240",
+   "nilai": -240.41,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 3.300",
+   "nilai": 3318.8,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -170",
+   "nilai": -172.64,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -250",
+   "nilai": -246.74,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 2.300",
+   "nilai": 2305.0,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -130",
+   "nilai": -128.88,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -170",
+   "nilai": -166.16,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 10.000",
+   "nilai": 10197.8,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -120",
+   "nilai": -117.84,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -190",
+   "nilai": -190.27,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 2.000",
+   "nilai": 2019.8,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -110",
+   "nilai": -114.92,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -170",
+   "nilai": -173.52,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 9.000",
+   "nilai": 8950.3,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -94",
+   "nilai": -94.27,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -150",
+   "nilai": -148.33,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 4.700",
+   "nilai": 4709.0,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -90",
+   "nilai": -89.55,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -160",
+   "nilai": -155.01,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 7.400",
+   "nilai": 7420.0,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -85",
+   "nilai": -85.22,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -180",
+   "nilai": -181.31,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 6.100",
+   "nilai": 6083.5,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -84",
+   "nilai": -84.35,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -150",
+   "nilai": -153.63,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 1.600",
+   "nilai": 1614.4,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -84",
+   "nilai": -83.94,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -130",
+   "nilai": -132.62,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 1.100",
+   "nilai": 1050.8,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -84",
+   "nilai": -83.66,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -110",
+   "nilai": -111.28,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 1.100",
+   "nilai": 1139.4,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -82",
+   "nilai": -81.79,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -110",
+   "nilai": -106.46,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 1.200",
+   "nilai": 1169.5,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -81",
+   "nilai": -80.88,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -110",
+   "nilai": -110.62,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_tahunan",
+   "tampil": "sekitar 1.400",
+   "nilai": 1412.1,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N80_kemarau",
+   "tampil": "sekitar -78",
+   "nilai": -78.32,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau_1997",
+   "tampil": "sekitar -120",
+   "nilai": -115.76,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -36",
+   "nilai": -35.78,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -24",
+   "nilai": -24.27,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -23",
+   "nilai": -22.56,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -22",
+   "nilai": -21.56,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -20",
+   "nilai": -19.78,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -15",
+   "nilai": -14.74,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -12",
+   "nilai": -12.26,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -9,8",
+   "nilai": -9.76,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -9,0",
+   "nilai": -8.95,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#N_kemarau",
+   "tampil": "sekitar -7,4",
+   "nilai": -7.4,
+   "naskah": "deck#7",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "neraca.skenario.1997.n_kab_neg",
+   "opsi": "|",
+   "tampil": "99",
+   "nilai": 99,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.skenario.klim.n_kab_neg",
+   "opsi": "|",
+   "tampil": "16",
+   "nilai": 16,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.skenario.2015.rasio_c_r_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 140%",
+   "nilai": 143.7,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.skenario.2019.rasio_c_r_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 160%",
+   "nilai": 159.6,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "csv:data/neraca-air/skenario.csv#n_kab_neg",
+   "tampil": "sekitar 16",
+   "nilai": 16.0,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, kebutuhan 2025"
+  },
+  {
+   "kunci": "csv:data/neraca-air/skenario.csv#n_kab_neg",
+   "tampil": "sekitar 99",
+   "nilai": 99.0,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, kebutuhan 2025"
+  },
+  {
+   "kunci": "csv:data/neraca-air/skenario.csv#n_kab_neg",
+   "tampil": "sekitar 63",
+   "nilai": 63.0,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, kebutuhan 2025"
+  },
+  {
+   "kunci": "csv:data/neraca-air/skenario.csv#n_kab_neg",
+   "tampil": "sekitar 74",
+   "nilai": 74.0,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, kebutuhan 2025"
+  },
+  {
+   "kunci": "csv:data/neraca-air/skenario.csv#n_kab_neg",
+   "tampil": "sekitar 47",
+   "nilai": 47.0,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini, kebutuhan 2025"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_1997",
+   "tampil": "sekitar 0",
+   "nilai": 0.0,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_2019",
+   "tampil": "sekitar 1,8",
+   "nilai": 1.79,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_1997",
+   "tampil": "sekitar 0",
+   "nilai": 0.0,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_2019",
+   "tampil": "sekitar 0,13",
+   "nilai": 0.13,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_1997",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.3,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_2019",
+   "tampil": "sekitar 1,7",
+   "nilai": 1.69,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_1997",
+   "tampil": "sekitar 0,41",
+   "nilai": 0.41,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_2019",
+   "tampil": "sekitar 1,6",
+   "nilai": 1.62,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_1997",
+   "tampil": "sekitar 0,24",
+   "nilai": 0.24,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_2019",
+   "tampil": "sekitar 1,2",
+   "nilai": 1.19,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_1997",
+   "tampil": "sekitar 0,73",
+   "nilai": 0.73,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_2019",
+   "tampil": "sekitar 4,6",
+   "nilai": 4.6,
+   "naskah": "deck#8",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "neraca.validasi.kering_nol_1997",
+   "opsi": "|",
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.n_muara",
+   "opsi": "|",
+   "tampil": "12",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.jratunseluna_2019",
+   "opsi": "|",
+   "tampil": "sekitar 8,5",
+   "nilai": 8.490019767811058,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.kering_median_1997",
+   "opsi": "|",
+   "tampil": "sekitar 0,25",
+   "nilai": 0.2459584449348479,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.kering_median_2023",
+   "opsi": "|",
+   "tampil": "sekitar 1,6",
+   "nilai": 1.5826863624310752,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.kering_nol_1997",
+   "opsi": "|",
+   "tampil": "5",
+   "nilai": 5,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.n_muara",
+   "opsi": "|",
+   "tampil": "12",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.jratunseluna_2019",
+   "opsi": "|",
+   "tampil": "sekitar 8,5",
+   "nilai": 8.490019767811058,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.kering_median_1997",
+   "opsi": "|",
+   "tampil": "sekitar 0,25",
+   "nilai": 0.2459584449348479,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.validasi.kering_median_2023",
+   "opsi": "|",
+   "tampil": "sekitar 1,6",
+   "nilai": 1.5826863624310752,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#8"
+  },
+  {
+   "kunci": "neraca.hitung.ddl_defisit",
+   "opsi": "|",
+   "tampil": "83",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "neraca.hitung.ddl_defisit_n_positif",
+   "opsi": "|",
+   "tampil": "81",
+   "nilai": 81,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "neraca.hitung.ddl_defisit",
+   "opsi": "|",
+   "tampil": "83",
+   "nilai": 83,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "neraca.hitung.ddl_defisit_pend",
+   "opsi": "|ringkas",
+   "tampil": "sekitar 110 juta",
+   "nilai": 112487340,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "turunan:deck#9#legenda:peta-ddl:0",
+   "tampil": "≤0,25",
+   "nilai": null,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#9#legenda:peta-ddl:1",
+   "tampil": "0,25–0,5",
+   "nilai": null,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#9#legenda:peta-ddl:2",
+   "tampil": "0,5–1",
+   "nilai": null,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#9#legenda:peta-ddl:3",
+   "tampil": "1–2",
+   "nilai": null,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:deck#9#legenda:peta-ddl:4",
+   "tampil": ">2",
+   "nilai": null,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana dari Model neraca air kajian ini",
+   "dari": []
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#ddl_rasio_SA_DA",
+   "tampil": "sekitar 0,020",
+   "nilai": 0.02,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#ddl_rasio_SA_DA",
+   "tampil": "sekitar 0,020",
+   "nilai": 0.02,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#ddl_rasio_SA_DA",
+   "tampil": "sekitar 0,030",
+   "nilai": 0.03,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#ddl_rasio_SA_DA",
+   "tampil": "sekitar 0,040",
+   "nilai": 0.04,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#ddl_rasio_SA_DA",
+   "tampil": "sekitar 0,040",
+   "nilai": 0.04,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "csv:data/neraca-air/kab.csv#ddl_rasio_SA_DA",
+   "tampil": "sekitar 0,040",
+   "nilai": 0.04,
+   "naskah": "deck#9",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana, model neraca air kajian ini"
+  },
+  {
+   "kunci": "neraca.param.khla",
+   "opsi": "|satuan",
+   "tampil": "1.600 m³ per kapita per tahun",
+   "nilai": 1600,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Permen LH 17/2009, Lampiran",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "neraca.param.khla",
+   "opsi": "|satuan",
+   "tampil": "1.600 m³ per kapita per tahun",
+   "nilai": 1600,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Permen LH 17/2009, Lampiran",
+   "naskah": "deck#9"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_rentang",
+   "opsi": "|rentang",
+   "tampil": "0,69–1,31",
+   "nilai": 1.0075160164441719,
+   "rendah": 0.6886734363043449,
+   "tinggi": 1.3059571372780934,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.n_muara",
+   "opsi": "|",
+   "tampil": "12",
+   "nilai": 12,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_kemarau_median",
+   "opsi": "|",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.3387087111758897,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_median",
+   "opsi": "|",
+   "tampil": "sekitar 1,0",
+   "nilai": 1.0075160164441719,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.r_median",
+   "opsi": "|",
+   "tampil": "sekitar 0,85",
+   "nilai": 0.8518976057803911,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_kemarau_median",
+   "opsi": "|",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.3387087111758897,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 0,90",
+   "nilai": 0.9,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,0",
+   "nilai": 1.04,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 0,69",
+   "nilai": 0.69,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 0,55",
+   "nilai": 0.55,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 0,93",
+   "nilai": 0.93,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.32,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 1,0",
+   "nilai": 1.04,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,7",
+   "nilai": 1.7,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 1,1",
+   "nilai": 1.08,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,2",
+   "nilai": 1.23,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 0,98",
+   "nilai": 0.98,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,4",
+   "nilai": 1.36,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 1,0",
+   "nilai": 1.04,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 2,2",
+   "nilai": 2.19,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 0,78",
+   "nilai": 0.78,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 0,66",
+   "nilai": 0.66,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 0,96",
+   "nilai": 0.96,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,5",
+   "nilai": 1.53,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.31,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,8",
+   "nilai": 1.79,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 1,2",
+   "nilai": 1.15,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 1,4",
+   "nilai": 1.43,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio",
+   "tampil": "sekitar 1,0",
+   "nilai": 1.04,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#rasio_kemarau",
+   "tampil": "sekitar 0,86",
+   "nilai": 0.86,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS lewat Open-Meteo"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#r_bulanan",
+   "tampil": "sekitar 0,61",
+   "nilai": 0.61,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#r_bulanan",
+   "tampil": "sekitar 0,63",
+   "nilai": 0.63,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#r_bulanan",
+   "tampil": "sekitar 0,72",
+   "nilai": 0.72,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#r_bulanan",
+   "tampil": "sekitar 0,82",
+   "nilai": 0.82,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#r_bulanan",
+   "tampil": "sekitar 0,83",
+   "nilai": 0.83,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#r_bulanan",
+   "tampil": "sekitar 0,84",
+   "nilai": 0.84,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "csv:data/neraca-air/muara.csv#r_bulanan",
+   "tampil": "sekitar 0,86",
+   "nilai": 0.86,
+   "naskah": "deck#10",
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana; GloFAS"
+  },
+  {
+   "kunci": "neraca.validasi.ambang_rendah",
+   "opsi": "|fmt=2",
+   "tampil": "0,80",
+   "nilai": 0.8,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.ambang_tinggi",
+   "opsi": "|fmt=2",
+   "tampil": "1,25",
+   "nilai": 1.25,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.selisih_bps_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 5,9%",
+   "nilai": 5.872642313669396,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.selisih_bps_2020_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 16,9%",
+   "nilai": 16.94950232409682,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.hitung.n80_neg_dibi_persen",
+   "opsi": "|persen|cacah",
+   "tampil": "68%",
+   "nilai": 67.6470588235294,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.hitung.n80_pos_dibi_persen",
+   "opsi": "|persen|cacah",
+   "tampil": "94%",
+   "nilai": 94.11764705882354,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.ambang_rendah",
+   "opsi": "|fmt=2",
+   "tampil": "0,80",
+   "nilai": 0.8,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.ambang_tinggi",
+   "opsi": "|fmt=2",
+   "tampil": "1,25",
+   "nilai": 1.25,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "asumsi-kebijakan",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.selisih_bps_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 5,9%",
+   "nilai": 5.872642313669396,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.validasi.selisih_bps_2020_persen",
+   "opsi": "|persen",
+   "tampil": "sekitar 16,9%",
+   "nilai": 16.94950232409682,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.hitung.n80_neg_dibi_persen",
+   "opsi": "|persen|cacah",
+   "tampil": "68%",
+   "nilai": 67.6470588235294,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.hitung.n80_pos_dibi_persen",
+   "opsi": "|persen|cacah",
+   "tampil": "94%",
+   "nilai": 94.11764705882354,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#10"
+  },
+  {
+   "kunci": "neraca.hitung.industri_kosong",
+   "opsi": "|",
+   "tampil": "44",
+   "nilai": 44,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "naskah": "deck#11"
+  },
+  {
+   "kunci": "neraca.hitung.industri_kosong",
+   "opsi": "|",
+   "tampil": "44",
+   "nilai": 44,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "naskah": "deck#11"
+  },
+  {
+   "kunci": "neraca.hitung.hilir_waduk",
+   "opsi": "|",
+   "tampil": "35",
+   "nilai": 35,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "naskah": "deck#11"
+  },
+  {
+   "kunci": "neraca.jawa.r_miliar",
+   "opsi": "|satuan",
+   "tampil": "sekitar 186 miliar m³ per tahun",
+   "nilai": 185.58973,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "neraca.jawa.r_kemarau_persen_tahunan",
+   "opsi": "|persen",
+   "tampil": "sekitar 16%",
+   "nilai": 15.540127139578251,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "neraca.jawa.irigasi_persen_total",
+   "opsi": "|persen",
+   "tampil": "sekitar 85%",
+   "nilai": 84.66016855767197,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "neraca.hitung.n80_kemarau_neg",
+   "opsi": "|",
+   "tampil": "68",
+   "nilai": 68,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "neraca.skenario.1997.n_kab_neg",
+   "opsi": "|",
+   "tampil": "99",
+   "nilai": 99,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "neraca.validasi.rasio_kemarau_median",
+   "opsi": "|",
+   "tampil": "sekitar 1,3",
+   "nilai": 1.3387087111758897,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "estimasi-model",
+   "sumber": "Pengolahan data Pantau Bencana: debit model lawan GloFAS v4 (Copernicus, lewat Open-Meteo) di dua belas muara 1991–2024; BPS 2020 mengutip Radhika dkk. 2017",
+   "naskah": "deck#13"
+  },
+  {
+   "kunci": "neraca.hitung.industri_kosong",
+   "opsi": "|",
+   "tampil": "44",
+   "nilai": 44,
+   "rendah": null,
+   "tinggi": null,
+   "keyakinan": "resmi",
+   "sumber": "Cakupan data paket neraca-air (BPS, HydroBASINS, tabel waduk)",
+   "naskah": "deck#13"
+  }
+ ],
+ "catatan": [
+  [
+   "deck#1",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#2",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#3",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#4",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#5",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#6",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#7",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#8",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#9",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#10",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#11",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#12",
+   "judul_baris",
+   2
+  ],
+  [
+   "deck#13",
+   "judul_baris",
+   2
+  ]
+ ],
+ "masukan": {
+  "data/kajian-bnpb/bangun/pptx/templat/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
+  "data/kajian-bnpb/data/angka.json": "33e7832da3a9e2cf8983f4c30425f73c6440028fae351c160c834324643448f6",
+  "data/kajian-bnpb/data/neraca-air/bulanan.csv": "99e437b6de1869ff2393f02bd1a7f600987ce5a5704f9a21e491d9b6fa80de2a",
+  "data/kajian-bnpb/data/neraca-air/celah.csv": "6c30200a2d469f92417d37b2ab04eae7e98a466ccb76923574fe6ad8a59e23ab",
+  "data/kajian-bnpb/data/neraca-air/kab.csv": "8e1067992fa8417a43790e58d9352d0bb2f1237a88b05652e8693bdaffb68bfd",
+  "data/kajian-bnpb/data/neraca-air/muara.csv": "6aef6da78a50a09ce39317373db651d20f2b5b5cb5f26163a75f493c084e85dc",
+  "data/kajian-bnpb/data/neraca-air/neraca.json": "dff5df0b388d340e66e8c3511a18f3aae0131e5d9499ca4d0a4255ae91c9d0a4",
+  "data/kajian-bnpb/data/neraca-air/provinsi.csv": "75ab298e2097d8cbdb94b64fbb67b00cfdb56c0c55c4e32fa9a0511d4ea04469",
+  "data/kajian-bnpb/data/neraca-air/skenario.csv": "ad4458dfc53a16c158627b2bfeae0a8f2c9dfeb7d8f5b6fd747dc98deca895c3",
+  "data/kajian-bnpb/data/neraca-air/waduk.csv": "847c31a5a3abd3ad67fefd1ae41653aa286a7a60046bbcb95bd66bc6b3a6e169",
+  "data/kajian-bnpb/gambar/foto/air-bengawan-solo-kering.jpg": "2325d82bd5d35f5b31ce00ff6dff9334d18520bfe5f5f64af806692f952d8898",
+  "data/kajian-bnpb/gambar/neraca-air/deck/peta-ddl.json": "9b732c865c19f34b954300fe1daeb1127e29f6ee1035b5fe29336955952f3462",
+  "data/kajian-bnpb/gambar/neraca-air/deck/peta-ddl.png": "727d38e9067addf03fdae755cf428b44f0f26dab36441a8a8faa2bdde8f4283e",
+  "data/kajian-bnpb/gambar/neraca-air/deck/peta-n80.json": "2b2ed55229acc4640d012a8d23f86c0a423b3f011c51c55403ec9aeb818304c8",
+  "data/kajian-bnpb/gambar/neraca-air/deck/peta-n80.png": "7124c63ba3ee342d81750c3e95ff117b7b14851dbb582fb0e42b0d23f66564c8",
+  "data/kajian-bnpb/gambar/neraca-air/deck/peta-rasio.json": "72af01af0b711756b13a2766ebcd1d78bb892d4853f6319c4e8fc86fe2cb47ca",
+  "data/kajian-bnpb/gambar/neraca-air/deck/peta-rasio.png": "96a24c96e401baafe25b7ec02bfbdd1b5e5dfbd90b327a9765592634b541d368",
+  "data/kajian-bnpb/naskah/neraca-air/deck.json": "5294c4f7613b2d583037f5fbd1eb22ae42856951fe486d44fd8ce4851f535f94",
+  "data/kajian-bnpb/tema.json": "0dff3969e2c3fca842fe11595f898f8537e0d68318bc34520c58cc978775cab3",
+  "public/img/lembaga/sumber-bnpb.png": "eb6f78ed04ce137b12676b4ac674ad81e93f90251023c28e17c6a7ea3981f2c2"
+ }
+}

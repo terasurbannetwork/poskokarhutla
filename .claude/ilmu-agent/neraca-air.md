@@ -10,14 +10,17 @@ Wilayahmu: `scripts/air/neraca/**`, `public/data/neraca_air/**`, `data/kajian-bn
 Rancangan dan keputusan pemilik: `data/kajian-bnpb/neraca-air/RANCANGAN.md` (bagian "Keputusan pemilik (26 Okt 2026)"
 menang atas isi di atasnya).
 
-- `topologi.py` (sekali, lokal): HydroBASINS v1c **level 09** (`data/raw/banjir/das/hybas_au_lev09_v1c.zip`; Jawa ada di zip "au", BUKAN "as", dibaca
+- `topologi.py` (sekali, lokal): HydroBASINS v1c **level 09** (`data/raw/banjir/das/hybas_as_lev09_v1c.zip`, dibaca
   `lahan.baca_shp` dari scripts/scrape) x `data/kajian-bnpb/data/air-jawa/peta_kab.geojson` (119 kab, kode Kemendagri)
   x sel iklim 0,1 derajat, lewat kisi sampel 0,01 derajat (`rasterkan` = scanline even-odd, sisi dikelompokkan per
   baris). Keluaran `topologi.json`: `subdas{id: {nd, km2, kab{kode: {sel: km2}}}}`, `titik{id_waduk: subdas}`, `meta`.
   Id negatif `-kode` = celah pantai tanpa sub-DAS, langsung ke laut.
-- `iklim.py`: Open-Meteo Archive `models=era5_seamless` (era5_land TIDAK punya hujan di Open-Meteo, dicek 27 Okt 2026) harian `precipitation_sum` + `et0_fao_evapotranspiration` 1991-2025 ->
-  jumlah bulanan per sel (`iklim.json`: `sel{"lat,lon": {p[420], et0[420], elev}}`). `--prov 34` = sel sub-DAS yang
-  menyentuh provinsi + semua hulunya; `--semua [--maks N]` = seluruh Jawa. Bulan bolong ditolak, tidak diisi.
+- `iklim_global.py` (JALUR UTAMA sejak 27 Okt 2026): hujan CHIRPS v2.0 0,05 derajat via IRI (netCDF-3, `chirps` potongan 5 tahun) +
+  ET0 FAO-56 PM bulanan dari NASA POWER 88 titik 0,5 derajat (`power`, via curl), `gabung` -> `iklim.json` (p, et0, elev, dan
+  p_era5/et0_era5 di 18 sel DIY sebagai pembanding). Mentah di `data/kajian-bnpb/neraca-air/mentah/{power_jawa,chirps_jawa}.json`.
+- `iklim.py`: PEMBANDING ERA5 Open-Meteo (`era5_seamless`, kuota ~54 sel/hari); jangan jalankan di atas iklim.json hasil global.
+- `masukan_bps.py` (`ternak`, `industri`) + `tarik_bps.mjs` (Playwright tahan galat): `masukan/{ternak,industri}_kab.csv` dari tabel BPS.
+- `glofas.py` (tarik debit muara 12 sungai), `validasi.py` (NA-06, kalibrasi alpha/k), `hasil.py` (HASIL.md otomatis).
 - `kebutuhan.py`: `kebutuhan.json` per kab: penduduk 2025/2030 (WorldPop 2026 diskala ke BPS Proyeksi 2010-2035
   per provinsi), pangsa perkotaan dipaskan ke BPS, domestik SNI 2002 (120/60 L), `irigasi_ha` (= `irigasi_permukaan_ha`
   kab_jawa.csv), ternak/industri dari `data/kajian-bnpb/neraca-air/masukan/{ternak,industri}_kab.csv` (kosong = null).
@@ -54,4 +57,8 @@ menang atas isi di atasnya).
 - Pemeriksa: `validasi-model` untuk metode/angka; kamu tidak memverifikasi kerjamu sendiri (AGENTS.md §3.2).
 
 ## Kasus
-- 2026-10-27 · NA-00..05 dibangun. Jawa ada di hybas_au_lev09 (zip as memberi 0 sub-DAS di kotak Jawa); lev09: 534 sub-DAS, rerata 248 km2, 21 celah semu, 1.308 sel 0,1 derajat, luas 132.499 km2 (BPS 132.698). Open-Meteo era5_land precipitation_sum null di Jawa -> pakai era5_seamless (hujan ERA5 0,25). Cirata+Jatiluhur jatuh di satu sub-DAS lev09 -> tampungan digabung. DIY subset 83 sel (~15.200 bobot, lebih dari kuota harian); iklim.py mengurut DAS terkecil dulu supaya jalan terpotong kuota tetap menyisakan DAS utuh. iCloud: zip dataless butuh 11 jam untuk terunduh.
+- 2026-10-27 · urllib (Python 3.15) ke NASA POWER menggantung berpuluh detik per panggilan padahal curl 1-2 dtk dari mesin yang sama (88 titik: ~2 jam vs 1 menit); untuk POWER pakai subprocess curl --max-time. Tahu dari faulthandler: macet di recv_into dalam ambil().
+- 2026-10-27 · IRI Data Library CHIRPS: biaya permintaan ~ jumlah bulan, bukan luas (kotak 1x1 derajat x 420 bulan timeout >100 dtk); satu permintaan 420 bulan terpotong max-time 600 dtk dengan HTTP 200 dan berkas terpotong. Pecah per 5 tahun (60 bulan ~4,7 MB, 4-8 mnt), curl --max-time 900, coba ulang 3x; baca_nc3 menolak berkas terpotong lewat offset.
+- 2026-10-27 · Tabel BPS: URL dinamis (#3) ber-token sama dipakai lintas host provinsi (jateng.bps.go.id dll) dengan ?year=2024, jadi satu token = satu tabel kab per provinsi. Tabel statis tipe 2 tidak muncul di innerText: ambil 'table tr' per sel (tarik_bps.mjs bagian #TABEL). Mesin pencari: DuckDuckGo memblokir cepat, Brave via curl+UA browser jalan tapi juga kena batas laju.
+- 2026-10-27 · flood-api.open-meteo.com: batas per JAM (429 'Hourly API request limit') habis oleh kisi multi-lokasi x deret panjang. Cari sel sungai dengan kisi 1 tahun saja, lalu tarik deret penuh satu sel; tunggu reset jam.
+- 2026-10-27 · Label statistik harus sama dengan hitungannya: jumlah persentil-20 bulanan BUKAN persentil-20 total musim (68 vs 73 kab negatif); N80_kemarau kini persentil-20 dari 35 total Jun-Okt tahunan. Arah bias skenario kering bergantung tahun (1997 memadamkan aliran, 2019/2023 melebihi GloFAS di Jratunseluna): jangan menulis 'batas atas'. Pilih parameter dengan data tahun kering, bukan median rerata saja.

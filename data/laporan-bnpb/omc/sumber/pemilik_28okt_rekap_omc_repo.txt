@@ -1,0 +1,30 @@
+Sumber: rekap OMC yang ditempel pemilik 28 Okt 2026 ("Ini ada data dari repo"). Disalin apa adanya.
+
+Dry ice dan NaCl per hari
+Tgl | Sumsel (Palembang dan sekitarnya) | Kalteng (dari Syamsudin Noor/Tjilik Riwut) | Lainnya
+19 | 2 sortie, 1.600 kg dry ice + 1 sortie, 800 kg NaCl (Ogan Ilir, OKI, Banyuasin) | - | -
+20 | 1 sortie, 800 kg dry ice | 5 sortie, 3.900 kg dry ice (Palangka Raya) + 800 kg NaCl (Kotim, Seruyan, Kobar) | Lampung nihil, tak ada awan
+21 | 5 sortie, 4.000 kg dry ice | 4.400 kg dry ice (Palangka Raya) + 3.800 kg NaCl (Kotim, Seruyan, Kobar, Pulpis, Katingan, Bartim, Kapuas) | Kalbar PK-SCH 2 sortie, 1.800 kg NaCl (Ketapang, Kayong Utara)
+22 | 7 sortie, 5.800 kg dry ice + 2 sortie, 1.800 kg NaCl | 6 sortie, 5.000 kg dry ice + 1.000 kg NaCl (Murung Raya, Gunung Mas) | Kalbar nihil, BMKG tak merekomendasikan
+23 | 6 sortie, 4.900 kg dry ice + Hercules 2.200 kg NaCl (Banyuasin, OKI) | 8 sortie: 5.000 kg dry ice + 2.000 kg NaCl | Kalbar 1.000 kg NaCl (Sekadau, Ketapang, Sintang); Kalsel 1.000 kg NaCl (Kotabaru, Tanbu, Tala); Lampung 2.000 kg NaCl (TNWK, Lambar)
+24 | 4 sortie, 3.300 kg dry ice + 4 sortie, 8.800 kg NaCl | 5.300 kg dry ice + 3.000 kg NaCl (CN-295 ke Pulpis, Kotim, Kobar) | Lampung 2.000 kg NaCl; Kalsel PK-SNK 2.000 kg NaCl*; Jabar (Kertajati) mulai
+*Laporan tertanggal 25 Okt; tanggal operasinya kemungkinan 24 Okt.
+Total Sumsel per 24 Okt: 39 sortie, 22.800 kg dry ice + 16.000 kg NaCl.
+Selisih sumber 23 Okt: WA menulis dry ice Kalteng 5.200 kg, Koordalops menjumlah 5.000 kg.
+
+Hujan yang dilaporkan sebagai hasil OMC:
+Kalteng: 20 dan 21 Okt Kotawaringin Barat; 22 Okt Murung Raya; 24 Okt hujan deras Seruyan; 25 Okt Palangka Raya, Kobar, Kotim, Barito Utara, Pulang Pisau; 23 Okt belum ada info.
+Kalbar (radar BMKG): 21 Okt ringan-sedang Sambas, Singkawang, Pontianak, Bengkayang, Landak, Kubu Raya, Sanggau, Ketapang; 23 Okt Sambas, Bengkayang, Landak, Sanggau, Sekadau, Sintang, Ketapang.
+Lampung: 23 Okt ringan di TNWK dan Lampung Barat; 24 Okt ringan Lampung Timur, Lampung Tengah, TNWK, lebat Way Kanan.
+Jabar 24-25 Okt: ringan-sedang sisi barat Ciremai, Ciamis, Sumedang, Tasikmalaya, Majalengka, Purwakarta; sisi timur Ciremai (yang terbakar) belum hujan.
+Kalsel: hujan Kotabaru 23 Okt menurut WA; radar BMKG di laporan Koordalops mencatat tidak ada hujan di Kalsel.
+Sumsel: dry ice dipakai menembus asap, bukan untuk hujan. Hujan sangat ringan 19 Okt Pemulutan (Ogan Ilir) dan Kikim Timur (Lahat), tak terukur penakar; hujan ringan sore 24 Okt sekitar Palembang; 20-23 Okt belum ada laporan hujan.
+Jarak pandang Palembang naik setelah penyemaian: 19 Okt 700 m ke 7 km; 20 Okt 1 ke 3 km; 22 Okt naik sampai 2,5 km; 23 Okt naik sampai 6 km; 24 Okt naik sampai 10 km. Semua kembali turun sore hari.
+Hubungan sebab-akibat OMC dengan hujan ini klaim laporan, belum diuji.
+
+Periode OMC sebelumnya:
+Jambi (PK-ALA): 5-12 Jun 13 sortie 12.991 kg NaCl; 26 Agu-2 Sep 8 sortie 8.000 kg; 2-5 Okt 5 sortie 5.000 kg; 9-13 Okt 9 sortie 9.000 kg; sesudahnya pindah ke Jabar.
+Riau: 15 Feb-10 Mar dan 7-27 Apr; ditutup 25 Sep karena musim hujan.
+Sumsel: 22-26 Agu.
+Kalbar: 22 Agu-23 Okt (data BMKG). PK-SCH pindah ke Jatim 24 Okt.
+Kalteng: 26 Agu-27 Okt (data BMKG).

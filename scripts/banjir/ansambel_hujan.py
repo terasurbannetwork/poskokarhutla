@@ -8,6 +8,8 @@ Sebaran per anggota (untuk prakiraan72.json, peluang status per kecamatan), bila
 (None = anggota tak lengkap; nilai kosong tidak dikarang):
   m2  [51]      jumlah hari ke-0 dan ke-1 (tambah hujan teramati kemarin = H3 hari ini)
   m3  [3][51]   jumlah 3 hari mulai hari ke-0, ke-1, ke-2 (= H3 untuk hari ke-1, ke-2, ke-3)
+  h7  [2]       cakrawala 7 hari (hari +1..+7): [P(minimal satu hari >= 50 mm), P(jumlah 7 hari >= 150 mm)]; anggota dengan hari kosong
+                dibuang kecuali sudah terbukti lewat ambang. Cakrawala besok/lusa/3 hari = p50[1], p50[2], p3[1] (indeks 0 = hari ini WIB).
   q   [3][HARI] persentil 10/50/90 hujan harian (mm, bulat) seluruh anggota, untuk peluang_banjir.py (rentang p10..p90)
 Penambahan ini hanya mengubah isi respons yang sudah diambil: panggilan TETAP. Berkas naik ~250 KB (349 titik x 204 bilangan).
 
@@ -37,8 +39,16 @@ def peluang(anggota, ambang):
     return round(sum(x >= ambang for x in v) / len(v), 2) if v else None
 
 
+def h7(seri):
+    """[P(minimal satu hari +1..+7 >= 50 mm), P(jumlah +1..+7 >= 150 mm)] dari ANGGOTA (bukan dari marginal per hari)."""
+    w = [s[1:8] for s in seri]
+    ada = [True if any(x is not None and x >= 50 for x in a) else (None if len(a) < 7 or None in a else False) for a in w]
+    jum = [None if len(a) < 7 or None in a else sum(a) for a in w]
+    return [peluang(ada, .5), peluang(jum, 150)]
+
+
 def olah(daily):
-    """daily Open-Meteo ansambel -> (hari, p50, p100, p3, jumlah anggota, m2, m3) untuk HARI hari pertama."""
+    """daily Open-Meteo ansambel -> (hari, p50, p100, p3, jumlah anggota, m2, m3, q, h7) untuk HARI hari pertama."""
     seri = [v for k, v in daily.items() if k.startswith("precipitation_sum")]
     jml = lambda s, a, n: None if len(s[a:a + n]) < n or any(x is None for x in s[a:a + n]) else round(sum(s[a:a + n]))
     m2, m3 = [jml(s, 0, 2) for s in seri], [[jml(s, a, 3) for s in seri] for a in range(3)]
@@ -51,7 +61,7 @@ def olah(daily):
         p3.append(peluang(tiga, 100))
     q = [[None if not (v := sorted(s[d] for s in seri if s[d] is not None)) else round(v[min(len(v) - 1, int(f * (len(v) - 1) + .5))])
           for d in range(HARI)] for f in (.1, .5, .9)]
-    return daily["time"][:HARI], p50, p100, p3, len(seri), m2, m3, q
+    return daily["time"][:HARI], p50, p100, p3, len(seri), m2, m3, q, h7(seri)
 
 
 def main():
@@ -72,8 +82,8 @@ def main():
                 q = {"latitude": ",".join(str(g["lat"]) for g in b), "longitude": ",".join(str(g["lon"]) for g in b),
                      "models": m, "daily": "precipitation_sum", "forecast_days": HARI + 2, "timezone": "Asia/Jakarta"}
                 for g, d in zip(b, per_lokasi(ambil(URL + "?" + urllib.parse.urlencode(q), batas_waktu=240))):
-                    hari, p50, p100, p3, n, m2, m3, q = olah(d["daily"])
-                    keluar.append({"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "p50": p50, "p100": p100, "p3": p3, "m2": m2, "m3": m3, "q": q})
+                    hari, p50, p100, p3, n, m2, m3, q, c7 = olah(d["daily"])
+                    keluar.append({"lat": g["lat"], "lon": g["lon"], "prov": g["prov"], "p50": p50, "p100": p100, "p3": p3, "m2": m2, "m3": m3, "q": q, "h7": c7})
                 w = len(b) * max(1.0, n / 10)
                 total += w
                 print(f"  {m} {len(keluar)}/{len(titik)} ({n} anggota, kuota ~{total:.0f})", file=sys.stderr)
@@ -97,7 +107,7 @@ def main():
 def uji():
     daily = {"time": [f"d{i}" for i in range(10)], "precipitation_sum": [60] * 10,
              "precipitation_sum_member01": [0, 0, 120, 0, 0, 0, 0, 0, 40, 40], "precipitation_sum_member02": [None] + [10] * 9}
-    hari, p50, p100, p3, n, m2, m3, q = olah(daily)
+    hari, p50, p100, p3, n, m2, m3, q, c7 = olah(daily)
     assert n == 3 and hari[0] == "d0" and len(p50) == HARI, hari
     assert p50[0] == 0.5 and p50[2] == 0.67 and p100[2] == 0.33, (p50, p100)
     assert p3[0] == 1.0 and p3[1] == 0.67 and p3[3] == 0.33 and p3[7] == 0.33, p3  # anggota 2 kosong hari 0 -> tak dihitung
@@ -106,6 +116,15 @@ def uji():
     assert m2 == [120, 0, None] and m3[0] == [180, 120, None] and m3[1] == [180, 120, 30] and len(m3) == 3, (m2, m3)
     assert [x[2] for x in q] == [10, 60, 120] and q[0][0] == 0 and len(q) == 3, q  # hari 2: anggota 60, 120, 10; hari 0: 60, 0, kosong (dibuang)
     assert peluang([None], 50) is None
+    # cakrawala: 3 anggota, hari +1..+7 (indeks 1..7). A: satu hari 60 (jumlah 60); B: 30 x7 = 210 (tak ada hari >= 50); C: 20 x7 = 140
+    # marginal per hari tak menjawab: P(satu hari >= 50) = 1/3 padahal tiap hari marginalnya <= 1/3; jumlah >= 150 hanya B
+    ang = {"time": [f"d{i}" for i in range(10)], "precipitation_sum": [0, 60, 0, 0, 0, 0, 0, 0, 0, 0],
+           "precipitation_sum_b": [0] + [30] * 9, "precipitation_sum_c": [0] + [20] * 9}
+    r = olah(ang)
+    assert r[8] == [0.33, 0.33], r[8]
+    assert r[1][1] == 0.33 and r[3][1] == 0.0, (r[1], r[3])  # besok P(>=50)=1/3; jumlah +1..+3: A 60, B 90, C 60 -> tak ada >= 100
+    s7 = h7([[0, 60, 0, 0, 0, 0, 0, 0], [0, 10, 10, 10, 10, 10, 10, None], [0, 10, 10, 10, 10, 10, 10, 10], [0, 80, 80, 80, 0, 0, 0, 0]])
+    assert s7 == [0.67, 0.33], s7  # anggota 2 kosong dibuang (belum terbukti); lewat: 60, 80/80/80 ; jumlah >= 150: hanya 240
     print("ok ansambel_hujan")
 
 

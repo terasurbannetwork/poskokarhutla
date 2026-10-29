@@ -42,15 +42,23 @@ python3 harian.py --tanggal 2026-10-25 --koordalops wa_koordalops.txt --bmkg wa_
 
 Aturan pemilik yang dikunci di kode: status karhutla ikut sisa belum padam data kita; provinsi berstatus Prioritas di website wajib masuk;
 perlu perhatian semua jenis; luas karhutla hanya angka kita; tiap pil berikon; panel setinggi isinya; tanpa titik tengah dan em dash.
+**Halaman banjir** (slide 4, sebelum penutup; sisipan otomatis bila ada data): status banjir per provinsi, kejadian aktif, titik rob Waspada atau lebih,
+hujan 3 hari terbesar, rob 1 sampai 3 hari ke depan. Sumber hanya sistem kita (`public/banjir/data`), dibaca `banjir_data.py`:
+`wilayah_hari.json` bila harinya = hari laporan, kalau tidak `status.json` + `rob.json` + `kejadian_aktif_awal.json` + `prakiraan72.json`.
+Provinsi berstatus Awas atau Siaga wajib masuk (baris tidak dipotong); hari laporan tidak ada di sumber atau tidak ada satu pun Siaga/Awas,
+kejadian aktif, atau rob = halaman tidak dibuat (bukan diisi 0). `terpapar_jiwa` (kolom TERPAPAR) hanya tampil bila sumbernya membawanya. Uji: `python3 banjir_data.py`.
+
 Kawasan tanpa kabupaten (mis. Gunung Arjuno) dipetakan ke kecamatan di `KAWASAN` (harian.py); nama kabupaten WA yang tidak ada di data
 website menghentikan generator dengan pesan jelas.
 
 ## Penanganan
 
 `Laporan Penanganan Pengendalian Karhutla DDMMYY` (2 slide: peta, tabel). Aturan pemilik 25 Okt 2026: cut-off **17.00 WIB**
-hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara s.d. 17.00 (catatan kaki "Angka D sementara,
-data s.d. 17.00 WIB."); tabel punya **empat** kelompok berbintang FIRESPOT, HOTSPOT, LUAS TERBAKAR, BELUM PADAM, tiga hari
-masing-masing; halaman "Operasi Penanganan Karhutla" **dibuang** (sumbernya teks WA satgas, tidak ada untuk hari lampau).
+hari laporan; kolom D-2, D-1, D dengan D = hari laporan, angka D sementara s.d. 17.00 (catatan kaki cukup teks baku sumber data;
+kalimat Firespot dan "Angka D sementara" dibuang pemilik 27 Okt 2026); tabel punya **empat** kelompok berbintang, tiga hari
+masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan slide peta); halaman "Operasi Penanganan Karhutla"
+**dibuang** (sumbernya teks WA satgas, tidak ada untuk hari lampau), kecuali teks WA satgas hari itu diberikan lewat `--operasi wa.txt`
+(27 Okt 2026; contoh `../satelit-2026-10-27/wa-satgas.txt`).
 
     cd data/laporan-bnpb/generator
     python3 penanganan.py --tanggal 2026-10-25                      # --jam 17:00 bawaan, --out ~/Downloads bawaan
@@ -66,5 +74,29 @@ masing-masing; halaman "Operasi Penanganan Karhutla" **dibuang** (sumbernya teks
 - Pil PM2,5 + cuaca tanpa `--bmkg`: `pil_sendiri.py` (rata-rata provinsi CAMS + ambang P.14/2020, hujan/angin Open-Meteo
   dengan kelas BMKG; uji `python3 pil_sendiri.py`). Dengan `--bmkg`: `wa_operasi.py` (uji `python3 wa_operasi.py`).
 - Skrip deck di `penanganan/`: `kisi.py` (geometri kolom, dipakai bersama), `ganti.py` (tabel, baca param.json),
-  `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil), `sementara.py`, `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
+  `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil, slide operasi), `ikon.mjs` (ikon Pemda; ikon FIRESPOT disalin dari deck 25 Okt), `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
 - Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) butuh `penanganan/logo/<kode>.png`; tanpa itu generator berhenti dengan pesan jelas.
+
+## Penanganan banjir, longsor dan rob
+
+`penanganan_banjir.py` membuat kembaran deck Penanganan untuk banjir. Hasilnya 2 slide: peta status dan tabel 6 provinsi, dengan
+kolom D-2, D-1, dan D. Mesin dan templatnya sama dengan deck karhutla (`penanganan/*`), dipilih lewat env `BENCANA=banjir` yang
+dipasang skrip ini sendiri. Tanpa env itu, deck karhutla keluar sama persis byte demi byte.
+
+```bash
+cd data/laporan-bnpb/generator
+~/.claude/skills/ppt-konsultan/bnpb/.venv/bin/python penanganan_banjir.py --tanggal 2026-10-27 --out ~/Downloads
+```
+
+- Angkanya diambil dari situs yang tayang (`https://centurisk97.id/banjir/data/laporan.json` dan `hari/<tanggal>.json`), karena
+  data banjir harian tidak di-commit ke git. `public/banjir/data/laporan.json` di repo memang tertinggal.
+- Isi kolom:
+  - BANJIR: kecamatan Siaga atau Awas banjir.
+  - LONGSOR: kecamatan Siaga atau Awas longsor.
+  - ROB SIAGA: titik pantau rob BMKG berstatus Siaga. Provinsi tanpa titik pantau ditulis "–".
+  - TERPAPAR: penduduk kecamatan Siaga atau Awas banjir, dalam ribu jiwa.
+- Pil di tiap baris tabel: status banjir provinsi hari D, dan hujan 3 hari tertinggi kecamatan.
+- Angka ini status prakiraan, bukan kejadian lapangan. Rumah terendam dan pengungsi tidak ada di sistem kita.
+- Arsip `hari/` baru mulai 27 Okt 2026, jadi hari sebelum itu tidak bisa dibuat.
+- Python yang dipakai harus versi 3.12 ke atas dan punya Pillow; subprosesnya ikut memakai python yang sama.
+- Peta digambar lewat playwright. Kalau browser bawaan playwright tidak ada, yang dipakai Google Chrome yang terpasang.

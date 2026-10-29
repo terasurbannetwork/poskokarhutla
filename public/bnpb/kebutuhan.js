@@ -43,7 +43,7 @@
     el("kartu").innerHTML = `<section class="bn-kartu kb-utama"><h2><span class="kb-ikon-kartu" data-w="c2">${ikon("rupiah")}</span>Total perkiraan ${hor} hari</h2>
         <div class="bn-angka">${rpR(n.rp_rendah, n.rp_tinggi)}</div><div class="bn-label">Titik tengah ${rpK(n.rp_total)}, rentang dari tahun paling sepi sampai paling ramai dan 1,5 sampai 6 jam heli per cluster</div>
         <div class="bn-label">${fmt(n.prov_berangka)} provinsi berangka, tahun ${esc(tahun.join(", "))}. Titik per cluster berasal dari kondisi cluster saat ini, bukan dari tahun-tahun itu.</div>
-        <div class="bn-label">Sumber: ${esc(D.dasar.titik_panas)}; ${esc(D.dasar.operasi)}; ${esc(D.dasar.penduduk)}; tarif dan koefisien asumsi kerja tim Pantau Bencana.</div>
+        <div class="bn-label">Sumber: ${esc(D.dasar.titik_panas)}; ${esc(D.dasar.operasi)}; ${esc(D.dasar.penduduk)}; tarif dan koefisien asumsi kerja tim Centurisk97.</div>
         <div class="kb-rincian"><span class="bn-pil" data-w="c3">${ikon("heli")}Heli ${rpK(n.rp_heli)}</span><span class="bn-pil" data-w="c4">${ikon("regu")}Regu ${rpK(n.rp_regu)}</span><span class="bn-pil" data-w="c1">${ikon("masker")}Masker ${rpK(n.rp_masker)}</span></div></section>`
       + k("heli", "Water bombing", fmt(n.jam_terbang) + " jam", `terbang, ${fmt(n.kompleks)} cluster`, "c3")
       + k("regu", "Regu darat", bulat(n.regu_rata) + " regu", `rata-rata siaga · ${fmt(n.regu_hari)} regu-hari`, "c4")

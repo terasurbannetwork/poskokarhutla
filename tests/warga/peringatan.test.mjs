@@ -23,7 +23,7 @@ test("tingkatGempa: Waspada M>=5 atau MMI IV, Siaga M>=6 dangkal, M kecil tanpa 
   assert.equal(tingkatGempa({m: 4.2, dalam: 10, mmi_maks: 4}), "Waspada");
 });
 
-let mf, worker, DB, cuaca = null;   // cuaca = isi tiruan nowcast (null = berkas asli)
+let mf, worker, DB, cuaca = null, banjir = null;   // cuaca = isi tiruan nowcast (null = berkas asli); banjir = isi tiruan kejadian aktif (null = 404, berkas repo basi)
 const sumber = {};
 const luar = async req => {
   const u = new URL(req.url);
@@ -34,6 +34,7 @@ const luar = async req => {
 const aset = async req => {
   const p = decodeURIComponent(new URL(req.url).pathname);
   if (p === "/banjir/data/peringatan.json" && cuaca) return new Response(JSON.stringify({nowcast: cuaca}));
+  if (p === "/banjir/data/kejadian_aktif_awal.json") return banjir ? new Response(JSON.stringify(banjir)) : new Response("tidak ada", {status: 404});
   const f = path.join(AKAR, "public", p);
   return existsSync(f) ? new Response(readFileSync(f)) : new Response("tidak ada", {status: 404});
 };
@@ -158,6 +159,31 @@ uji("satu baris melanggar CHECK tidak membunuh alarm sah lain; sejak > 7 hari di
   assert.equal(dekat, semua, "sejak 8 hari lalu = tanpa sejak");
   const o = await api("/api/admin/peringatan/x-yz/cabut", {method: "POST", headers: {...ADMIN, origin: "bukan url ::"}});
   assert.equal(o.status, 403);
+});
+
+uji("banjir: kejadian level 2 = Siaga, level 3 = Awas berlabel Deteksi; naik Siaga ke Awas berbunyi lagi, bertahan tidak; berkas basi diam", async () => {
+  const hari = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
+  const k = (kode, level, kec = ["13|Pesisir Selatan|Bayang"]) => ({kode, sejak: hari(Date.now()), level_tertinggi: level, n_kec: kec.length, kec, prov: ["13"], penduduk: 42718, h3_mm: 95.3, pusat: [-1.25, 100.531]});
+  const n = async () => (await baris("SELECT count(*) n FROM peringatan WHERE jenis = 'banjir'"))[0].n;
+  try {
+    banjir = {hari: "2026-01-01", kejadian: [k("B0901", 3)]};
+    await tik(T10 + 6000e3);
+    assert.equal(await n(), 0, "berkas lebih tua dari kemarin WIB tidak berbunyi");
+    banjir = {hari: hari(Date.now()), kejadian: [k("B0901", 2), k("B0902", 3, ["13|Agam|Tanjung Raya", "13|Agam|Lubuk Basung", "13|Agam|Ampek Nagari", "13|Agam|Palembayan"]), k("B0903", 1), k("X1", 3)]};
+    await tik(T10 + 6600e3);
+    const r = await baris("SELECT * FROM peringatan WHERE jenis = 'banjir' ORDER BY kunci");
+    assert.deepEqual(r.map(x => [x.kunci, x.tingkat, x.sumber, x.prov]), [["banjir:B0901:siaga", "Siaga", "Deteksi Pantau Bencana", "13"], ["banjir:B0902:awas", "Awas", "Deteksi Pantau Bencana", "13"]]);
+    assert.equal(r[0].judul, "Banjir Siaga di Bayang, Pesisir Selatan");
+    assert.equal(r[1].judul, "Banjir Awas di Tanjung Raya, Lubuk Basung, Ampek Nagari dan 1 kecamatan lain, Agam");
+    assert.match(r[0].teks, /42\.718 jiwa/); assert.match(r[0].teks, /bukan status resmi/);
+    assert.equal(r[0].lat, -1.25); assert.ok(r[0].berlaku_hingga > Date.now());
+    await tik(T10 + 7200e3);
+    assert.equal(await n(), 2, "kejadian yang bertahan tidak berbunyi ulang");
+    banjir.kejadian[0].level_tertinggi = 3;
+    await tik(T10 + 7800e3);
+    assert.equal((await baris("SELECT count(*) n FROM peringatan WHERE kunci = 'banjir:B0901:awas'"))[0].n, 1, "naik ke Awas = alarm baru");
+    assert.ok((await api("/api/peringatan/aktif")).j.peringatan.some(x => x.jenis === "banjir" && x.sumber === "Deteksi Centurisk97"));
+  } finally { banjir = null; }
 });
 
 uji("galat D1 (tabel hilang): /aktif tetap 200 daftar kosong, cron diam tanpa mematahkan putaran lain", async () => {

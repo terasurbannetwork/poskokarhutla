@@ -88,7 +88,7 @@ const Metode = (() => {
     const c = z => fmt(sum(v => v[z] || 0)), bnpb = (B.syarat || []).includes("genangan_bnpb");
     return bab(0, "gedung", "Sekolah, fasilitas kesehatan, dan bangunan publik rawan", "fasilitas yang berdiri di tempat berbahaya",
       `Kami mencocokkan lokasi sekolah, fasilitas kesehatan, dan bangunan publik (balai kota, kantor polisi, pemadam kebakaran) dengan jejak sesar aktif, perkiraan guncangan sesar terdekat, dan pesisir rendah. Dari ${fmt(dinilai)} fasilitas yang dinilai di ${fmt(prov)} provinsi, yang memenuhi paling sedikit satu syarat masuk daftar. Cacah bukan sensus: sekolah dan klinik tanpa tag OpenStreetMap tidak terhitung, dan provinsi yang tidak muncul bukan berarti aman.`,
-      `${ptg("<b>Sumber lokasi.</b> Sekolah dari Dapodik Kemendikbudristek dan EMIS Kemenag, serta data rumah sakit dan puskesmas Pantau Bencana, di provinsi yang datanya ada. Provinsi lain memakai OpenStreetMap (ODbL 1.0, kontributor OpenStreetMap), yang kelengkapannya beragam.")}
+      `${ptg("<b>Sumber lokasi.</b> Sekolah dari Dapodik Kemendikbudristek dan EMIS Kemenag, serta data rumah sakit dan puskesmas Centurisk97, di provinsi yang datanya ada. Provinsi lain memakai OpenStreetMap (ODbL 1.0, kontributor OpenStreetMap), yang kelengkapannya beragam.")}
        ${ptg(`<b>Di atas sesar</b> (${c("atas_sesar")}): jarak 1 km atau kurang dari jejak sesar aktif GEM (Styron dan Pagani 2020, CC BY-SA 4.0).`)}
        ${ptg(`<b>Zona guncangan tinggi</b> (${c("mmi_tinggi")}): MMI VII atau lebih pada skenario sesar terdekat (60 km atau kurang) yang pecah utuh sepanjang jejaknya. Itu bisa melebihi segmen yang nyata pecah sekaligus. Magnitudo skenario dari panjang jejak (Wells dan Coppersmith 1994), dipotong M 7,8, kedalaman kerak 10 km, tanpa efek tapak, dengan model guncangan yang sama seperti bab Guncangan.`)}
        ${ptg(`<b>Pesisir rendah</b> (${c("genangan")}): proksi topografi (ketinggian 10 m atau kurang dan 2 km atau kurang dari garis pantai), bukan peta bahaya tsunami. Ketinggian dari ubin AWS Terrain Tiles (sekitar 150 m).`)}
@@ -105,7 +105,7 @@ const Metode = (() => {
     `Setiap hari kami menerbitkan ringkasan gempa dan status resmi tsunami. <a href="/gempa/laporan.html">Buka laporan harian</a>.`, "", ["Angka harian mengikuti sumber data pada saat laporan dibuat dan bisa direvisi sumbernya."]);
   const batas = () => bab(0, "batas", "Batas model", "apa yang tidak bisa dikatakan platform ini",
     "Platform ini tidak meramal kapan dan di mana gempa utama terjadi. Yang kami tampilkan adalah data gempa yang sudah terjadi, perkiraan guncangan dan susulan dari model, dan status resmi tsunami dari BMKG dan PTWC.",
-    "", ["Status resmi tsunami (BMKG, PTWC) tampil apa adanya dan terpisah dari Tingkat Pantau Bencana; kami tidak menurunkannya sendiri.", "Bila BMKG tidak menyebut tsunami, kami menulis \"BMKG tidak menyebut tsunami\", bukan \"aman\".",
+    "", ["Status resmi tsunami (BMKG, PTWC) tampil apa adanya dan terpisah dari Tingkat Centurisk97; kami tidak menurunkannya sendiri.", "Bila BMKG tidak menyebut tsunami, kami menulis \"BMKG tidak menyebut tsunami\", bukan \"aman\".",
       "Perkiraan model dikalibrasi dari data historis dan diuji dengan aturan yang sama sebelum terbit; model yang kalah dari pembanding sederhana tidak ditampilkan."]);
   function sumber(meta, bm) {
     const L = ["BMKG: gempa terkini, gempa M 5+, gempa dirasakan, dan status tsunami (autogempa, gempaterkini, gempadirasakan), diperbarui tiap menit",

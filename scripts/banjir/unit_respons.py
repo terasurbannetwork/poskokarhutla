@@ -1,4 +1,4 @@
-"""Unit respons banjir (Basarnas, pos SAR, BPBD) -> public/banjir/data/unit_respons.json. Statis, jalan bulanan.
+"""Unit respons banjir (Basarnas, pos SAR, BPBD) -> public/banjir/data/unit_respons.json. Berubah pelan: banjir.yml menjalankannya tiap tanggal 1 WIB (dan bila berkas belum ada).
 
 Sumber: OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap): emergency=disaster_response|rescue_station|
 ses_station|water_rescue|mountain_rescue, dan office=government yang namanya memuat Basarnas / Kantor SAR / BPBD /

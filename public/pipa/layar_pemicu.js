@@ -122,13 +122,33 @@ export const kepalaTabel = () => `<thead><tr>${KOLOM.map(k => `<th scope="col">$
 const td = (label, isi, n) => `<td${n ? ' class="n"' : ""} data-label="${esc(label)}">${isi}</td>`;
 const pilKit = k => `<span class="sp-status ${esc(k.status)}">${esc(k.status === "gudang" ? "di gudang" : k.status === "depot" ? "di depot depan" : k.status)}</span>`;
 
+/* sel Tingkat: satu pil (dan pil sebab pendek bila basi); saran tindakan dan rincian sebab di tooltip, plus .sr untuk pembaca layar, bukan baris kecil yang membungkus */
+export function selTingkat(x) {
+  const {tampil} = x, saran = TINDAKAN[x.tingkat];
+  if (tampil.kunci === "basi") return `<span class="sp-tingkat t-basi" title="${esc(tampil.teks)}">basi</span><span class="sr">${esc(tampil.teks)}</span>`;
+  const sebab = "PRA-POSISI dan GELAR: –, data ansambel basi";
+  /* basi sudah di spanduk atas; per baris cukup untuk pembaca layar, bukan pil yang diulang tiap baris (pemilik A1, 28 Okt) */
+  return `<span class="sp-tingkat t-${KELAS[tampil.kunci]}" title="${esc(saran)}">${esc(tampil.teks)}</span>`
+    + (tampil.basi && tampil.kunci === "SIAGA" ? `<span class="sr">${esc(sebab)}</span>` : "") + `<span class="sr">${esc(saran)}</span>`;
+}
+
+/* spanduk di atas layar: data basi tidak boleh terbaca sebagai aman. Kosong bila ansambel dan titik panas segar. */
+export function bannerBasi(d, kini) {
+  const a = basiAnsambel(d, kini), t = basiTitik(d, kini);
+  if (!a && !t) return "";
+  const judul = a && t ? "Data ansambel dan titik panas basi" : a ? "Data ansambel basi" : "Data titik panas basi";
+  const rinci = (a ? `Ansambel FWI dibuat ${waktuIso(d.ansambel_dibuat)}, lebih tua dari 36 jam: PRA-POSISI dan GELAR tidak dihitung, jadi SIAGA bukan berarti aman. ` : "")
+    + (t ? `Acuan titik panas ${waktuIso(d.titik24_acuan)}, lebih tua dari 36 jam: jumlah titik dan tingkat GELAR bisa tertinggal. ` : "") + "Tunggu pembaruan harian sebelum memutuskan.";
+  return `<p class="ad-spanduk sp-basi" role="status"><b>${esc(judul)}.</b> ${esc(rinci)}</p>`;
+}
+
 export function barisHtml(m, {pilih, peran}) {
   if (!m.length) return `<p class="ad-kosong">Tidak ada kabupaten pada tingkat ini. Pilih tingkat lain atau Semua.</p>`;
   return m.map((x, i) => {
     const {b, tampil} = x, tulis = peran === "W" || peran === "M";
-    const tingkat = `<span class="sp-tingkat t-${KELAS[tampil.kunci]}">${esc(tampil.teks)}</span>` + (tampil.basi && tampil.kunci === "SIAGA" ? `<small class="sp-sub">PRA-POSISI dan GELAR: –, data ansambel basi</small>` : "") + (tampil.kunci === "basi" ? "" : `<small class="sp-sub">${esc(TINDAKAN[x.tingkat])}</small>`);
-    const hari = x.hari != null ? `${esc(fmt(x.hari))} dari 7` : x.basiA ? "–, data ansambel basi" : "–";
-    const titik = x.titik == null ? "–" : `${esc(fmt(x.titik))}${x.titikBasi ? " " + pil("data titik basi", "asumsi-kebijakan", "Acuan titik panas lebih tua dari 36 jam") : ""}`;
+    const tingkat = selTingkat(x);
+    const hari = x.hari != null ? `${esc(fmt(x.hari))} dari 7` : x.basiA ? `–<span class="sr">, data ansambel basi</span>` : "–";
+    const titik = x.titik == null ? "–" : `${esc(fmt(x.titik))}${x.titikBasi ? `<span class="sr">, data titik basi</span>` : ""}`;
     const kit = x.kit ? `<a class="sp-kit-kode" href="/pipa/kit/${esc(x.kit.kit.id)}">${esc(x.kit.kit.kode)}</a>, ${esc(fmt(x.kit.km))} km ${pilKit(x.kit.kit)}` : "–";
     const depot = !x.pusat ? "–" : x.depot ? `${esc(x.depot.kit.lokasi ?? x.depot.kit.kode)}, ${esc(fmt(x.depot.km))} km` : "belum ada kit di depot";
     const aksi = x.rencana && tulis ? `<button type="button" class="ad-tombol" data-rencana="${i}">Buat rencana pra-posisi</button>` : "";
@@ -194,7 +214,7 @@ export async function pasang(akar, konteks) {
   };
 
   const kerangka = () => {
-    isi.innerHTML = `<div id="sp-p-kartu"></div>
+    isi.innerHTML = `<div id="sp-p-banner"></div><div id="sp-p-kartu"></div>
       <div class="sp-kontrol" role="group" aria-label="Penyaring tingkat"><div class="sp-chips" id="sp-p-chip"></div>
         <button type="button" class="ad-tombol" data-jelajah aria-expanded="false" aria-controls="sp-p-jelajah">Jelajahi ambang</button></div>
       <section class="sp-jelajah" id="sp-p-jelajah" hidden aria-label="Jelajah ambang">
@@ -223,6 +243,7 @@ export async function pasang(akar, konteks) {
     if (basiT) pils.push(pil("titik panas basi", "asumsi-kebijakan", "titik24 lebih tua dari 36 jam"));
     if (st.jelajah) pils.push(pil("Jelajah ambang, tidak disimpan", "hipotesis"));
     const ringkas = ringkasPemicu(m.map(x => ({...x.b, tingkat: x.tingkat})), basiA);
+    isi.querySelector("#sp-p-banner").innerHTML = bannerBasi(d, Date.now());
     isi.querySelector("#sp-p-kartu").innerHTML = Kartu.kartu("Pemicu", esc(ringkas), `<div class="sp-pil-baris">${pils.join("")}</div><p class="ad-catat">Tingkat adalah saran bagi staf, bukan perintah gelar; keputusan tetap di perencana.</p>`, esc(sumberIsi(d)));
     return m;
   };

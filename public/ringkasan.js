@@ -20,7 +20,7 @@ const Ringkasan = (() => {
     "63": "101/Antasari", "64": "091/Aji Surya Natakesuma", "53": "161/Wira Sakti", "93": "174/Anim Ti Waninggap"};
   const JENIS = {resmi: "Resmi", satelit: "Satelit", model: "Model", berita: "Berita"};
   const SUMBER = {
-    titik: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), keyakinan sedang dan tinggi, lokasi unik per hari",
+    titik: "NASA FIRMS (MODIS, VIIRS S-NPP, NOAA-20, NOAA-21), semua tingkat keyakinan, lokasi unik per hari",
     kompleks: "Cluster: titik panas 7 hari digabung DBSCAN 1,5 km, status dari aturan keparahan + cuaca (tab Metode)",
     asap: "CAMS (Copernicus) via Open-Meteo × penduduk WorldPop; hanya sel dengan cluster searah angin ≤ 300 km",
     ansambel: "Ansambel ECMWF 51 anggota (fwi_ansambel.json), rata-rata sel 0,5° per provinsi",
@@ -450,7 +450,7 @@ const Ringkasan = (() => {
       const kering = PRIO.filter(k => D.P[k].pE >= .5).map(namaProv);
       return [
         per ? `Pemerintah mengerahkan ${fmt(per)} personel gabungan (TNI, Polri, BPBD, Manggala Agni, Masyarakat Peduli Api, dan regu perusahaan) serta ${fmt(udara)} unit pesawat dan helikopter di ${fmt(rows.length)} provinsi pantauan BNPB.` : "",
-        `Pemadaman diprioritaskan pada ${fmt(D.kpi.k3)} cluster terbesar yang dipantau satelit setiap 3 jam; daftar dan lokasinya terbuka di ${document.documentElement.dataset.situs === "w" ? "Centurisk97" : "Pantau Bencana"}.`,
+        `Pemadaman diprioritaskan pada ${fmt(D.kpi.k3)} cluster terbesar yang dipantau satelit setiap 3 jam; daftar dan lokasinya terbuka di ${"Centurisk97"}.`,
         kota.length ? `Warga ${daftar(kota.map(esc))} diimbau memakai masker N95, mengurangi kegiatan di luar ruang, dan melindungi anak, lansia, ibu hamil, serta penderita penyakit paru. Keadaan darurat: hubungi 112.` : "Warga di wilayah berasap diimbau memakai masker N95 dan mengurangi kegiatan di luar ruang. Keadaan darurat: hubungi 112.",
         kering.length ? `Cuaca 3 hari ke depan sangat mendukung api di ${daftar(kering.map(esc))}; masyarakat diminta tidak membakar dalam bentuk apa pun.` : "",
         "Membuka lahan dengan membakar dilarang (UU 32/2009 Pasal 69; UU 39/2014 Pasal 56) dan pelakunya diproses hukum.",

@@ -17,7 +17,7 @@ from laporan import baca, DATA, WIB, BULAN  # noqa: E402  (pembaca JSON + zona w
 KELUAR = os.path.join(DATA, "presiden")
 VERSI = "presiden/1"
 IDS = ["situasi", "provinsi", "kejadian", "konsesi", "gambut", "cuaca", "asap", "penerbangan", "sumberdaya", "dampak",
-       "luas", "berulang", "pencegahan", "kesegaran"]   # peringatan BMKG dibuang 22 Okt 2026: umpan harian, nowcast berlaku 3 jam, selalu basi
+       "luas", "berulang", "pencegahan", "rob", "kesegaran"]   # peringatan BMKG dibuang 22 Okt 2026: umpan harian, nowcast berlaku 3 jam, selalu basi
 BARIS_MAKS, ANGKA_MAKS = 10, 4
 # kecamatan "langganan": terbakar (>= TITIK_TAHUN titik di setahun) pada >= MIN_ULANG tahun lalu, dan >= MIN_INI titik tahun ini
 TITIK_TAHUN, MIN_ULANG, MIN_INI = 20, 5, 50
@@ -100,6 +100,7 @@ WAKTU = {
     "luas_resmi": ("Luas terbakar SiPongi", 24 * 100, lambda j, c: j["sampai"][max(j["sampai"])]),
     "sejarah": ("Riwayat titik panas", 24 * 60, lambda j, c: j["dibuat"]),
     "preventif": ("Paket pencegahan", 24 * 60, lambda j, c: j["dibuat"]),
+    "../banjir/data/rob_presiden": ("Prakiraan laut untuk rob", 36, lambda j, c: j["model_sampai"] or j["dibuat"]),   # dibuat harian oleh scripts/banjir/rob_presiden.py
     "aktor_karhutla": ("Perusahaan dan titik panas", 240, lambda j, c: j["periode"]["terkini"]["acuan"]),
 }
 
@@ -854,12 +855,63 @@ def w_kesegaran(c):
                 "Luas terbakar resmi SiPongi memang lama karena baru dirilis sampai Juli.")
 
 
+ROB_LV = {1: "Waspada", 2: "Siaga", 3: "Awas"}
+
+
+def w_rob(c):
+    r = c.j("../banjir/data/rob_presiden")
+    kab = r["kab"]
+    if not kab:
+        raise Kosong("tidak ada kabupaten atau kota pesisir berisiko dalam 14 hari")
+    mulai = dt.date.fromisoformat(r["mulai"])
+    akhir = mulai + dt.timedelta(days=r["hari"] - 1)
+    basi = r["model_basi"]
+
+    def puncak(k):
+        return next((h for h in k["hari"] if h["puncak"]), k["hari"][0])
+    cacah = {}
+    for k in kab:
+        t = puncak(k)["tgl"]
+        cacah[t] = cacah.get(t, 0) + 1
+    tp = dt.date.fromisoformat(min(cacah, key=lambda t: (-cacah[t], t)))
+    lv = [k for k in kab if (k["lv_maks"] or 0) >= 1]
+    tanpa_posko = sum(1 for k in kab if not k["posko"])
+    if basi or not lv:
+        judul = f"{K(fid(len(kab)))} kabupaten dan kota pesisir diperkirakan pasang astronomis tinggi pada {tgl(mulai)} sampai {tgl(akhir)}, puncaknya {tgl(tp)}"
+        angka_ = [angka("Pasang tinggi (astronomis)", len(kab), "kabupaten dan kota")]
+    else:
+        judul = f"{K(fid(len(lv)))} kabupaten dan kota pesisir berpotensi rob pada {tgl(mulai)} sampai {tgl(akhir)}, {fid(sum(1 for k in kab if (k['lv_maks'] or 0) >= 2))} di antaranya level Siaga atau Awas"
+        angka_ = [angka("Berpotensi rob", len(lv), "kabupaten dan kota"),
+                  angka("Level Siaga atau Awas", sum(1 for k in kab if (k["lv_maks"] or 0) >= 2), "kabupaten dan kota")]
+    angka_ += [angka("Puncak pasang terbanyak", cacah[tp.isoformat()], "kabupaten dan kota", tampil=f"{tgl(tp)}, {fid(cacah[tp.isoformat()])} kabupaten dan kota"),
+               angka(f"Tanpa posko dalam {fid(r['ambang']['posko_km'])} km", tanpa_posko, "kabupaten dan kota")]
+
+    def nama_posko(k):
+        if not k["posko"]:
+            return f"Belum ada posko dalam {fid(r['ambang']['posko_km'])} km"
+        unik = {p["nama"]: p for p in reversed(k["posko"])}   # lapangan dan kabupaten bisa sama nama; ambil yang terdekat
+        return ", ".join(f"{p['nama']} ({fid(p['km'], 1)} km)" for p in sorted(unik.values(), key=lambda p: p["km"])[:2])
+    baris = [{"kab": k["kab"], "prov": k["prov"], "puncak": tgl(dt.date.fromisoformat(puncak(k)["tgl"])), "hari": len(k["hari"]),
+              "level": ROB_LV.get(k["lv_maks"]) or "Pasang tinggi (astronomis)", "posko": nama_posko(k)} for k in kab[:BARIS_MAKS]]
+    cat = ("Prakiraan laut belum diperbarui, jadi level rob (Waspada, Siaga, Awas) tidak dinyatakan; daftar ini hanya dari gaya pasang astronomis. " if basi else "") + \
+          "Pasang tinggi (astronomis) adalah indeks gaya pasang, bukan tinggi muka air. Muka laut model global tanpa datum lokal, ambang dari iklim model sendiri. Posko adalah lokasi usulan, bukan posko terdata."
+    return dict(
+        judul=judul, angka=angka_,
+        kolom=[kol("kab", "Kabupaten atau kota"), kol("prov", "Provinsi"), kol("puncak", "Puncak"), kol("hari", "Hari berisiko", "angka"),
+               kol("level", "Status", "pill"), kol("posko", "Posko terdekat")],
+        baris=baris,
+        tindak_lanjut=tindak(("BPBD kabupaten dan kota", f"Siagakan posko dan periksa pintu air serta tanggul menjelang {tgl(tp)}."),
+                             ("BNPB", "Pantau pasang tinggi di kabupaten dan kota yang belum punya posko dalam jangkauan.")),
+        sumber="Open-Meteo Marine SMOC, gaya pasang astronomis, lokasi posko usulan",
+        catatan=cat)
+
+
 WIDGET = {  # id -> (label pill, fungsi)
     "situasi": ("Situasi", w_situasi), "provinsi": ("Provinsi", w_provinsi), "kejadian": ("Kejadian api", w_kejadian),
     "konsesi": ("Areal izin", w_konsesi), "gambut": ("Gambut", w_gambut), "cuaca": ("Cuaca", w_cuaca), "asap": ("Asap", w_asap),
     "penerbangan": ("Penerbangan", w_penerbangan), "sumberdaya": ("Sumber daya", w_sumberdaya), "dampak": ("Dampak", w_dampak),
     "luas": ("Luas terbakar", w_luas), "berulang": ("Langganan", w_berulang), "pencegahan": ("Pencegahan", w_pencegahan),
-    "kesegaran": ("Kesegaran data", w_kesegaran),
+    "rob": ("Rob pesisir", w_rob), "kesegaran": ("Kesegaran data", w_kesegaran),
 }
 
 

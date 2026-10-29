@@ -89,7 +89,7 @@
       m.kalimat ? kalimat(m.kalimat) : null,
       m.sebelum != null && m.sesudah != null && m.kontrol_sebelum != null && m.kontrol_sesudah != null ? grafik(m) : null,
       m.bendera?.length ? h("div", {class: "om-bendera"}, ...m.bendera.map(b => pil("⚑ " + (BENDERA[b] || b.replaceAll("_", " ")), "bendera"))) : null,
-      h("p", {class: "om-sumber", teks: `Sumber: ${(label || {})[m.nama] || sumber}, diolah Pantau Bencana`}),
+      h("p", {class: "om-sumber", teks: `Sumber: ${(label || {})[m.nama] || sumber}, diolah Centurisk97`}),
       h("p", {class: "om-footer", teks: FOOTER}));
   }
   function panelHasil() {

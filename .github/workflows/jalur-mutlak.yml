@@ -1,0 +1,30 @@
+name: Gerbang jalur mutlak
+
+# Aturan: berkas yang dilacak git tidak memuat jalur lokal mutlak (folder home dan folder sementara macOS); jalur proyek ditulis
+# RELATIF saja. Jalur mutlak jalan di laptop penulisnya, mati di runner dan di mesin orang lain. (Contoh literalnya sengaja tak
+# ditulis di sini: berkas ini ikut dipindai gerbangnya.)
+# `npm run uji:agen` selama ini hanya jalan di terbit.yml (dispatch manual, sebelum deploy), jadi push biasa dan PR lolos tanpa gerbang.
+# Workflow ini menjalankan SATU gerbang itu di tiap push (cabang mana pun) dan pull_request.
+# Sengaja ringan: tanpa `npm ci` (uji hanya memakai bawaan Node + git), tanpa cache, di luar grup `data` supaya tidak menyerobot slot
+# antre pipeline (lihat terbit_antre.yml: satu slot menunggu, run baru mengusir yang lama). Tidak menulis apa pun ke repo.
+# Push dari data.yml/titik.yml/banjir.yml dkk memakai GITHUB_TOKEN, jadi tidak memicu workflow ini (tak ada yang memakai PAT).
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  jalur-mutlak:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Uji jalur mutlak (gerbang)
+        run: node --test tests/agen/gerbang-jalur-mutlak.test.mjs

@@ -123,7 +123,7 @@
       const angka = h("span", {class: "sr-angka"}, h("b", {teks: F(r.angka, r.utama?.desimal | 0)}), h("small", {teks: ada(r.angka) ? " " + (r.satuan || "") : ""}));
       return [titik, r.tingkat ? pil(r.tingkat.nama, "perisai", r.tingkat.warna) : h("span", {class: "bn-label", teks: "tanpa tingkat"}), angka, tren, tglPendek(r.tgl)];
     });
-    return kartu("Kejadian aktif dan tingkat respons", "api", tabel(["Bencana", "Tingkat respons", "Angka utama", "Tren 24 jam", "Data"], baris), "laporan harian tiap bencana (hari lengkap terakhir), registry tingkat Pantau Bencana");
+    return kartu("Kejadian aktif dan tingkat respons", "api", tabel(["Bencana", "Tingkat respons", "Angka utama", "Tren 24 jam", "Data"], baris), "laporan harian tiap bencana (hari lengkap terakhir), registry tingkat Centurisk97");
   }
   function sNaik(l) {
     const isi = l.length ? tabel(["Bencana", "Wilayah", "Provinsi", "Sebelumnya", "Terbaru", "Perubahan"], l.map(x => [x.b.nama, x.nama, x.prov, {t: x.dari, n: 1}, {t: x.ke, n: 1}, pil(x.naik, "naik", "var(--c1)")]))
@@ -148,10 +148,10 @@
     return kartu("Lapor Warga 24 jam", "warga", isi, "Lapor Warga" + (prov ? ", seluruh Indonesia (laporan belum dipilah per provinsi)" : ""));
   }
   function sRelawan(R) {
-    if (!R) return kartu("Relawan", "warga", belum("Relawan belum aktif."), "Relawan Pantau Bencana");
+    if (!R) return kartu("Relawan", "warga", belum("Relawan belum aktif."), "Relawan Centurisk97");
     const isi = h("div", {class: "sr-isi"}, h("div", {class: "sr-ukurbaris"}, ukuran(prov ? "Relawan aktif" : "Siap tugas", F(R.siap), prov ? PROV[prov] : null), R.bertugas == null ? null : ukuran("Bertugas sekarang", F(R.bertugas), prov ? "nasional" : null), ukuran("Jam kerja sah", F(R.jam, 1), prov ? "nasional" : null)),
       R.ahli.length ? h("div", {class: "sr-pils"}, ...R.ahli.map(a => pil(`${a.nama} ${F(a.n)}`, "alat", "var(--c7)"))) : null);
-    return kartu("Relawan", "warga", isi, "Relawan Pantau Bencana (siap tugas per provinsi, keahlian nasional)");
+    return kartu("Relawan", "warga", isi, "Relawan Centurisk97 (siap tugas per provinsi, keahlian nasional)");
   }
   function sMeja(M) {
     if (!M) return kartu("Logistik dan kaji cepat", "kotak", belum("Meja Kerja belum aktif."), "Meja Kerja BPBD");
@@ -180,7 +180,7 @@
     if (m.relawan) L.push("", "*Relawan*", `- ${prov ? "Relawan aktif" : "Siap tugas"} ${F(m.relawan.siap)}${prov ? " di " + PROV[prov] : ""}${m.relawan.bertugas == null ? "" : `, bertugas sekarang ${F(m.relawan.bertugas)}`}`);
     if (m.meja) { L.push("", "*Logistik dan kaji cepat*"); for (const x of m.meja) L.push(`- ${x.nama}: ${F(x.n)} catatan, ${F(x.bahaya)} perlu perhatian`); }
     if (m.alun) L.push("", "*Alun-alun*", `- Permintaan bantuan terbuka ${F(m.alun.terbuka)}${m.alun.lebih ? "+" : ""}, ditangani ${F(m.alun.ditangani)}`);
-    L.push("", "Sumber: Pantau Bencana (BMKG, NASA FIRMS, PVMBG, Posko, Lapor Warga)", location.origin + "/sitrep" + (ARSIP || prov ? "?" + [ARSIP ? "tgl=" + ARSIP.tgl : "", prov ? "prov=" + prov : ""].filter(Boolean).join("&") : ""));
+    L.push("", "Sumber: Centurisk97 (BMKG, NASA FIRMS, PVMBG, Posko, Lapor Warga)", location.origin + "/sitrep" + (ARSIP || prov ? "?" + [ARSIP ? "tgl=" + ARSIP.tgl : "", prov ? "prov=" + prov : ""].filter(Boolean).join("&") : ""));
     return L.join("\n").replace(/\u2014/g, "-");
   }
 
@@ -192,12 +192,12 @@
     model = {kini: ARSIP ? ARSIP.dibuat : Date.now(), kej: kejadian(), naik: wilayahNaik(), neraca: N, warga: wargaHitung(), relawan: relawanHitung(), meja: mejaHitung(), alun: alunHitung()};
     const dataTgl = model.kej.map(r => r.dibuat).filter(Boolean).sort().pop();
     const kop = h("header", {class: "sr-kop"}, h("img", {src: "/img/logo.svg?v=2", alt: "", width: 40, height: 40}),
-      h("div", null, h("h2", {class: "sr-judul", teks: "Laporan situasi harian"}), h("p", {class: "bn-label", teks: "Pantau Bencana · Ruang Koordinasi"})),
+      h("div", null, h("h2", {class: "sr-judul", teks: "Laporan situasi harian"}), h("p", {class: "bn-label", teks: "Centurisk97 · Ruang Koordinasi"})),
       h("div", {class: "sr-pils"}, pil(namaWil(), "peta", "var(--navy2)"), ARSIP ? pil("Arsip " + tglPendek(ARSIP.tgl) + ", 07.00 WIB", "kotak", "var(--c2)") : pil(wib(model.kini, {day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB", null, "var(--c7)"),
         dataTgl ? pil("Data terbaru " + jamWIB(dataTgl), null, "var(--c5)") : null));
     const grid = h("div", {class: "sr-grid"}, sNeraca(N), sWarga(model.warga), sRelawan(model.relawan), sMeja(model.meja), sAlun(model.alun));
     lap.replaceChildren(kop, sKejadian(model.kej), sNaik(model.naik), grid);
-    document.title = `Laporan situasi ${namaWil()} · Pantau Bencana`;
+    document.title = `Laporan situasi ${namaWil()} · Centurisk97`;
   }
 
   function pesan(t, ok) { const e = $("pesan"); e.textContent = t; e.className = "bn-pesan " + (ok ? "ok" : "galat"); clearTimeout(pesan.t); pesan.t = setTimeout(() => { e.textContent = ""; }, 4000); }

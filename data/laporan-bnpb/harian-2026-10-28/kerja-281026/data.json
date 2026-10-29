@@ -1,0 +1,481 @@
+{
+ "hari": "2026-10-28",
+ "cutoff": "2026-10-28T07:00+07:00",
+ "kejadian": [
+  {
+   "jenis": "karhutla",
+   "prov": "64",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": true,
+   "sat": {
+    "kum": 125188,
+    "sisa": 461,
+    "hot": 433
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "93",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "sat": {
+    "kum": 291200,
+    "sisa": 373,
+    "hot": 292
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "73",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": false,
+   "sat": {
+    "kum": 33140,
+    "sisa": 95,
+    "hot": 47
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "74",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": true,
+   "sat": {
+    "kum": 27667,
+    "sisa": 79,
+    "hot": 93
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "72",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": false,
+   "sat": {
+    "kum": 43686,
+    "sisa": 64,
+    "hot": 91
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "63",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": false,
+   "sat": {
+    "kum": 105022,
+    "sisa": 62,
+    "hot": 28
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "16",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {},
+   "tangani": true,
+   "perhatian": true,
+   "sat": {
+    "kum": 212726,
+    "sisa": 35,
+    "hot": 70
+   }
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "14",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {
+    "ha": 20714.53
+   },
+   "teks": {
+    "dampak": "Estimasi luas lahan terbakar ± 20.714,53 ha (BPBDPK Riau, 01 januari s.d 27 oktober 2026), Luas lahan terbakar (target yang akan dipadamkan) per 27 Okt 2026 ± 0,5 ha",
+    "status_darurat": "Siaga Darurat  TMT 13/02/2026  s.d 30/11/2026",
+    "kondisi": "Target luas lahan yang dipadamkan per 27 Okt 2026 ± 0,5 ha; luas yang berhasil dipadamkan 0,5 ha; sisa luasan lahan yang masih dalam penanganan 0 ha"
+   },
+   "sat": {
+    "kum": 26943,
+    "sisa": 0,
+    "hot": 0
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "15",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {
+    "ha": 5167.84
+   },
+   "teks": {
+    "dampak": "Estimasi luas lahan terbakar seluas ± 5.167,84 ha (berdasarkan Sipongi Kemenhut + laporan BPBD s.d 27 oktober 2026), Luas lahan terbakar (target yang akan dipadamkan) per 27 Okt 2026 ± 73.5 ha",
+    "status_darurat": "Siaga darurat TMT 27/04/2026 s.d 30/11/2026",
+    "kondisi": "Target luas lahan yang dipadamkan per 27 Okt 2026  ± 73.5 ha, luas yang berhasil dipadamkan ± 15,5 Ha; sisa luas lahan yang masih dalam penanganan ± 58 ha"
+   },
+   "sat": {
+    "kum": 35248,
+    "sisa": 0,
+    "hot": 19
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "19",
+   "lokasi": "Bangka Selatan",
+   "status": "berjalan",
+   "angka": {},
+   "teks": {
+    "dampak": "± 470 KK / 1.528 jiwa terdampak, ± 92 KK / 307 jiwa mengungsi",
+    "status_darurat": "-",
+    "kondisi": "85 unit tenda huntara ditempati oleh pengungsi sejumlah 92 KK"
+   },
+   "sat": {
+    "kum": 12805,
+    "sisa": 0,
+    "hot": 1
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "18",
+   "lokasi": "Lampung Selatan",
+   "status": "selesai",
+   "angka": {
+    "ha": 3.0
+   },
+   "teks": {
+    "dampak": "± 3 ha lahan terbakar",
+    "status_darurat": "-",
+    "kondisi": "Api sudah berhasil dipadamkan, dan kondisi di lokasi saat ini sudah aman kondusif"
+   },
+   "sat": {
+    "kum": 1339,
+    "sisa": 0,
+    "hot": 0
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "32",
+   "lokasi": "Kuningan",
+   "status": "berjalan",
+   "angka": {},
+   "teks": {
+    "dampak": "Lahan terbakar masih dalam pendataan",
+    "status_darurat": "Siaga darurat TMT 01/10/2026 s.d 31/10/2026",
+    "kondisi": "Pantauan satgas darat, tidak ada temuan asap pada hari ini, 27 Okt 2026 dan hujan secara merata telah turun di Kawasan Gn. Ciremai"
+   },
+   "sat": {
+    "kum": 251,
+    "sisa": 0,
+    "hot": 0
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "karhutla",
+   "prov": "73",
+   "lokasi": "Toraja Utara",
+   "status": "selesai",
+   "angka": {
+    "ha": 7.0
+   },
+   "teks": {
+    "dampak": "± 7 ha lahan terbakar",
+    "status_darurat": "-",
+    "kondisi": "Api berhasil dipadamkan"
+   },
+   "sat": {
+    "kum": 644,
+    "sisa": 0,
+    "hot": 0
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "banjir",
+   "prov": "11",
+   "lokasi": "Subulussalam",
+   "status": "belum",
+   "angka": {
+    "kk": 469.0,
+    "rumah_dampak": 177.0
+   },
+   "teks": {
+    "dampak": "± 469 KK terdampak, ± 177 unit rumah terdampak",
+    "status_darurat": "-",
+    "kondisi": "Sebagian gampong air sudah surut, dan sebagian lagi air masih menggenangi pemukiman warga"
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Labuhanbatu",
+   "status": "selesai",
+   "angka": {
+    "kk": 520.0,
+    "rumah_dampak": 520.0
+   },
+   "teks": {
+    "dampak": "± 520 KK terdampak, ± 520 unit rumah terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Banjir sudah surut"
+   },
+   "tangani": false,
+   "perhatian": false
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Asahan",
+   "status": "belum",
+   "angka": {
+    "kk": 405.0,
+    "rumah_dampak": 405.0
+   },
+   "teks": {
+    "dampak": "± 405 KK terdampak, ± 405 unit rumah terdampak",
+    "status_darurat": "-",
+    "kondisi": "Banjir belum surut"
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "banjir",
+   "prov": "12",
+   "lokasi": "Deli Serdang",
+   "status": "belum",
+   "angka": {
+    "kk": 146.0
+   },
+   "teks": {
+    "dampak": "±146 KK / 573 jiwa terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "Banjir berangsur surut dengan TMA ± 10-15 cm"
+   },
+   "tangani": true,
+   "perhatian": true
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Sragen",
+   "status": "berjalan",
+   "angka": {
+    "kk": 5500.0,
+    "jiwa": 18495.0,
+    "tangki": 12.0,
+    "liter": 56000.0
+   },
+   "teks": {
+    "dampak": "± 5.500 KK / ± 18.495 jiwa terdampak",
+    "status_darurat": "Siaga darurat TMT 01/06/2026 s.d 31/12/2026",
+    "kondisi": "BPBD melaksanakan pendistribusian air bersih sebanyak 12 Tangki / 56.000 Liter"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Boyolali",
+   "status": "berjalan",
+   "angka": {
+    "kk": 12022.0,
+    "jiwa": 57311.0,
+    "tangki": 22.0,
+    "liter": 122000.0
+   },
+   "teks": {
+    "dampak": "± 12.022 KK / 57.311 jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga darurat TMT 21/07/2026 s.d 31/10/2026",
+    "kondisi": "BPBD Kab. Boyolali telah mendistribusikan bantuan air bersih dengan volume sebanyak 22 tangki (122.000 liter) kepada warga."
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "33",
+   "lokasi": "Klaten",
+   "status": "berjalan",
+   "angka": {
+    "kk": 5136.0,
+    "jiwa": 17127.0,
+    "tangki": 18.0,
+    "liter": 90000.0
+   },
+   "teks": {
+    "dampak": "± 5.136 KK / 17.127 Jiwa terdampak (pendataan)",
+    "status_darurat": "Siaga darurat TMT 01/08/2026 s.d 31/10/2026",
+    "kondisi": "BPBD Kab Klaten melaksanakan kegiatan pendistribusian air bersih sebanyak 18 Tangki / 90.000 Liter Penerima manfaat per-hari ini 935 KK / 3.136 Jiwa"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "35",
+   "lokasi": "Nganjuk",
+   "status": "berjalan",
+   "angka": {
+    "kk": 397.0,
+    "jiwa": 1269.0,
+    "liter": 8000.0
+   },
+   "teks": {
+    "dampak": "±397 KK / 1.269 jiwa terdampak",
+    "status_darurat": "Siaga darurat TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "BPBD melakukan distribusi air bersih di Dusun Sendang Gogor Desa Ngepung sebanyak : 8.000 liter (289 KK 962 Jiwa)"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "lainnya",
+   "prov": "35",
+   "lokasi": "TPA Supit Urang",
+   "status": "berjalan",
+   "angka": {
+    "ha": 15.5
+   },
+   "teks": {
+    "dampak": "± 15,5 ha lahan terbakar",
+    "status_darurat": "Siaga darurat TMT 07/10/2026 s.d 01/12/2026",
+    "kondisi": "Tim Gabungan akan melanjutkan upaya pembasahan lokasi yang masih terdapat kepulan asap"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "gempabumi",
+   "prov": "53",
+   "lokasi": "",
+   "status": "berjalan",
+   "angka": {
+    "meninggal": 156.0,
+    "kk": 17707.0,
+    "mengungsi": 27345.0,
+    "transisi_sd": "2026-12-27"
+   },
+   "teks": {
+    "dampak": "156 (seratus lima puluh enam) jiwa MD, ± 17.707 KK terdampak, luka-luka: ± 1.620 jiwa (pendataan), ± 27.345 jiwa mengungsi",
+    "status_darurat": "Transisi darurat ke pemulihan TMT 27/09/2026 s.d 27/12/2026",
+    "kondisi": "Hasil sementara Progres Huntara per tanggal 27 Oktober 2026 di 7 Kabupaten terdampak yang sudah terbangun 100% sebanyak 240 unit"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "angin",
+   "prov": "63",
+   "lokasi": "Banjar",
+   "status": "berjalan",
+   "angka": {
+    "kk": 35.0
+   },
+   "teks": {
+    "dampak": "± 35 KK terdampak",
+    "status_darurat": "-",
+    "kondisi": "Data nama warga, jumlah KK dan jiwa, tingkat kerusakan rumah, serta kondisi fasilitas pendidikan masih dalam proses pendataan dan verifikasi lebih lanjut."
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "73",
+   "lokasi": "Bulukumba",
+   "status": "berjalan",
+   "angka": {
+    "kk": 445.0,
+    "jiwa": 1730.0,
+    "liter": 46600.0
+   },
+   "teks": {
+    "dampak": "445 KK / 1.730 jiwa terdampak",
+    "status_darurat": "-",
+    "kondisi": "BPBD menyalurkan bantuan air bersih 46.600 liter kepada 207 KK/830 jiwa di Ds. Benteng Palioi, Kec. Kindang"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "73",
+   "lokasi": "Bone",
+   "status": "berjalan",
+   "angka": {
+    "kk": 805.0,
+    "jiwa": 3723.0,
+    "liter": 85100.0
+   },
+   "teks": {
+    "dampak": "± 805 KK / 3.723 jiwa terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "BPBD Kab. Bone menyalurkan air sebanyak 85.100 liter"
+   },
+   "tangani": true,
+   "perhatian": false
+  },
+  {
+   "jenis": "kekeringan",
+   "prov": "81",
+   "lokasi": "Seram Bagian Barat",
+   "status": "berjalan",
+   "angka": {
+    "kk": 95.0,
+    "jiwa": 297.0
+   },
+   "teks": {
+    "dampak": "± 95 KK / 297 jiwa terdampak (pendataan)",
+    "status_darurat": "-",
+    "kondisi": "± 95 KK / 297 jiwa terdampak (masih dalam pendataan) dengan rincian"
+   },
+   "tangani": true,
+   "perhatian": false
+  }
+ ],
+ "prioritas_baru": [
+  "93",
+  "16",
+  "63",
+  "64",
+  "72",
+  "73",
+  "74"
+ ]
+}

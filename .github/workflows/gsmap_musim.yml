@@ -1,0 +1,60 @@
+name: Panen GSMaP harian musim hujan Jakarta
+
+# Hujan harian GSMaP 0,1 derajat (JAXA, versi gauge) untuk M0 genangan DKI (scripts/banjir/genangan/pemicu.py,
+# keputusan pemilik 27 Okt 2026). Akun FTP JAXA hanya ada sebagai secret, jadi panen hanya bisa di sini.
+# Manual saja; tiap run menggabung hari baru ke data/banjir/genangan/gsmap_harian.json (hari yang sudah ada dilewati),
+# jadi rentang panjang boleh dicicil beberapa run.
+on:
+  workflow_dispatch:
+    inputs:
+      dari:
+        description: "Bulan awal (YYYY-MM), hanya Nov-Apr yang dipanen"
+        default: "2016-11"
+      sampai:
+        description: "Bulan akhir (YYYY-MM)"
+        default: "2025-12"
+
+concurrency:
+  group: gsmap-musim
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  panen:
+    runs-on: ubuntu-latest
+    timeout-minutes: 340
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Self-check parser
+        run: python3 scripts/banjir/genangan/gsmap.py uji
+
+      # kode 2 = login JAXA gagal: run merah dengan pesan jelas; kode lain bukan nol = gagal sebagian, hasil yang ada tetap di-commit
+      - name: Panen GSMaP harian
+        env:
+          GSMAP_USER: ${{ secrets.GSMAP_USER }}
+          GSMAP_PASS: ${{ secrets.GSMAP_PASS }}
+        run: |
+          kode=0
+          python3 scripts/banjir/genangan/gsmap.py musim --dari "${{ inputs.dari }}" --sampai "${{ inputs.sampai }}" || kode=$?
+          if [ "$kode" = 2 ]; then echo "::error::login FTP JAXA gagal (periksa secret GSMAP_USER/GSMAP_PASS)"; exit 2; fi
+          [ "$kode" = 0 ] || echo "::warning::panen GSMaP selesai sebagian (kode $kode)"
+
+      - name: Commit hasil
+        if: ${{ always() }}
+        run: |
+          G="data/banjir/genangan/gsmap_harian.json"
+          [ -e "$G" ] || { echo "::warning::$G tidak terbentuk"; exit 0; }
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add "$G"
+          git diff --cached --quiet -- "$G" && exit 0
+          git commit -q -m "data: GSMaP harian Jakarta ${{ inputs.dari }} sampai ${{ inputs.sampai }}" -- "$G"
+          for i in 1 2 3; do git pull -q --rebase --autostash && git push -q && exit 0; sleep 10; done
+          echo "::error::push GSMaP gagal"; exit 1

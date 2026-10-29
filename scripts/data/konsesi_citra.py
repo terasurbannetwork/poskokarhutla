@@ -60,8 +60,7 @@ def swir(item, lat, lon, km, berkas):
     def kanal(k):
         c = C.COG(A[k]["href"])
         x0, y0, r0, kiri, atas = jendela(item, k, lat, lon, km)
-        rb = (A[k].get("raster:bands") or [{}])[0]
-        sk, of = rb.get("scale", 1e-4), rb.get("offset", 0)
+        sk, of = C.skala_offset(item, k)
         res = max(20, km * 1000 / PX)
         v = c.contoh(C.level_untuk(c, r0, res), x0, y0, r0, kiri, atas, km * 1000, PX)[0]
         return array("B", (0 if d == 0 else max(0, min(255, int((d * sk + of) * 2.5 * 255))) for d in v))

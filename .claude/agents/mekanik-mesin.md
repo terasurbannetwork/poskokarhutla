@@ -47,6 +47,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `package.json`
 - `package-lock.json`
 - `scripts/agents/**`
+- `scripts/akademisi/**`
 - `.gitignore`
 - `.env.example`
 - `AGENTS.md`

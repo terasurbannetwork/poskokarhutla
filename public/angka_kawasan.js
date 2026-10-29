@@ -1,7 +1,7 @@
 "use strict";
 /* angka_kawasan.js: hotspot, luas terbakar, belum padam di dalam satu poligon (kawasan atau konsesi dari kotak cari), hitungan murni tanpa DOM.
    Rumus = scripts/data/peta_karhutla.py versi kabupaten (deck BNPB), dijalankan pada baris hotspot.json di peramban:
-   - hot   = titik yang dihitung (dihitung(r), di halaman = S.dihitung: lokasi unik ~375 m per hari WIB, 4 satelit, keyakinan sedang/tinggi;
+   - hot   = titik yang dihitung (dihitung(r), di halaman = S.dihitung: lokasi unik ~375 m per hari WIB, 4 satelit, semua keyakinan sejak 28 Okt 2026;
              unik() di bawah) pada hari WIB terpilih (sama dengan angka Hotspot panel peta);
    - luas  = (titik NOAA-20 x F.N20 + titik NOAA-21 x F.N21) / 2, keyakinan nominal/tinggi hari itu, dibulatkan sekali setengah ke atas
              (kalibrasi langsung ke luas resmi BNPB per satelit, keputusan pemilik 25 Okt 2026); satelit yang hari itu tak punya titik se-Indonesia
@@ -21,7 +21,7 @@ const n2x = r => (r[3] === "N20" || r[3] === "N21") && r[5] >= 1;
    -> Set baris yang dihitung. Baris data harian dan /api/titik digabung di peramban, jadi kolom "hitung" berkas tidak dipakai di sini. */
 const SENSOR_UNIK = new Set(["M", "N", "N20", "N21"]);
 const selUnik = (lat, lon) => Math.round(lat / G) + "," + Math.round(lon * Math.cos(lat * Math.PI / 180) / G);
-function unik(baris, kmin = 1) {
+function unik(baris, kmin = 0) {   /* kmin 0 = semua keyakinan (titik_unik.KEYAKINAN_MIN, pemilik 28 Okt 2026) */
   const lihat = new Set(), out = new Set();
   for (const r of [...baris].sort((a, b) => a[2] - b[2])) {
     if (!SENSOR_UNIK.has(r[3]) || r[5] < kmin) continue;
@@ -56,5 +56,31 @@ function hitung(baris, bb, dalam, dihitung, hari) {
   return {hot, titik: L.length, bertahan: tahan, luas: bul(luas), belum: bul(belum)};
 }
 
-g.AngkaKawasan = {G, F, sel, selUnik, unik, hitung};
+/* STATUS BANJIR WILAYAH (kotak cari, hasil desa/kec/kab/prov): murni, membaca public/banjir/data/status.json apa adanya (kec: {"prov|kab|kec": {b:[4 level], l:[4 level]}})
+   dan kejadian_aktif_awal.json. Tingkat wilayah = tertinggi dari kecamatan di dalamnya (0 Normal/Aman, 1 Waspada, 2 Siaga, 3 Awas) pada hari ke-d.
+   Nama dicocokkan tanpa "Kab./Kota", huruf besar, dan tanda baca. w = {p: "11", kab?: "Aceh Barat", kec?: "Jeumpa"}; tanpa kab/kec = seluruh provinsi. */
+const nm = s => (s || "").toLowerCase().replace(/\b(kabupaten|kab|kota administrasi|kota adm|kota)\b\.?/g, " ").replace(/[^a-z0-9]+/g, " ").trim();
+function kecWilayah(kec, w) {
+  const kb = nm(w.kab), kc = nm(w.kec), out = [];
+  for (const k of Object.keys(kec || {})) { const [p, kab, c] = k.split("|");
+    if (p === w.p && (!kb || nm(kab) === kb) && (!kc || nm(c) === kc)) out.push(k); }
+  return out;
+}
+function statusWilayah(kec, w, d = 0, jenis = "b") {
+  const keys = kecWilayah(kec, w), n = [0, 0, 0, 0];
+  for (const k of keys) { const v = kec[k][jenis]?.[d]; if (v >= 0 && v <= 3) n[v]++; }
+  const lv = n[3] ? 3 : n[2] ? 2 : n[1] ? 1 : 0;
+  return {lv, n, total: keys.length, keys};
+}
+/* kejadian aktif untuk wilayah: yang memuat salah satu kecamatannya (skor tertinggi dulu), bila tak ada yang terdekat dari pusat wilayah dalam maxKm */
+function kejadianTerdekat(kej, keys, pusat, maxKm = 100) {
+  const ada = new Set(keys), urut = [...(kej || [])].sort((a, b) => (b.skor || 0) - (a.skor || 0)), di = urut.find(e => (e.kec || []).some(k => ada.has(k)));
+  if (di) return {...di, km: 0};
+  if (!pusat) return null;
+  const rad = Math.PI / 180, jr = ([la1, lo1], [la2, lo2]) => 12742 * Math.asin(Math.sqrt(Math.sin((la2 - la1) * rad / 2) ** 2 + Math.cos(la1 * rad) * Math.cos(la2 * rad) * Math.sin((lo2 - lo1) * rad / 2) ** 2));
+  let best = null; for (const e of urut) if (e.pusat) { const km = jr(pusat, e.pusat); if (km <= maxKm && (!best || km < best.km)) best = {...e, km}; }
+  return best;
+}
+
+g.AngkaKawasan = {G, F, sel, selUnik, unik, hitung, statusWilayah, kejadianTerdekat};
 })(typeof window !== "undefined" ? window : globalThis);

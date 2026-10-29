@@ -1,0 +1,30 @@
+# Sumber label banjir prospektif Jakarta (J4)
+
+Diselidiki 28 Okt 2026 dari mesin ini (curl, UA jelas, tanpa login, tanpa token). Yang tidak bisa dijangkau ditulis apa adanya; tidak ada endpoint tak terdokumentasi yang dicoba (percobaan membuka `marker.php?<hash>` milik gis-bpbd ditolak pengaman sesi, dan memang bukan antarmuka publik).
+
+## Ringkasan
+
+| Sumber | URL / akses | Cakupan | Format | Legal / syarat | Status untuk J4 |
+| --- | --- | --- | --- | --- | --- |
+| PetaBencana.id (arsip laporan) | `https://data.petabencana.id/reports/archive?geoformat=geojson&admin=ID-JK&start=..&end=..` (bebas, tanpa kunci, maks 217 hari per kueri) | titik laporan warga, kedalaman cm (80%), teks, foto; sejak Mei 2025 hanya ~20 laporan per hari; 28 Okt: 14 laporan 10-28 Okt, 7 flood, 3 di antaranya "SIMULASI" | GeoJSON | respons tanpa pernyataan lisensi; atribusi "PetaBencana.id", simpan titik hanya sebagai agregat atau turunan | LABEL UTAMA (satu-satunya yang otomatis dan terjangkau hari ini); lemah di volume |
+| BPBD DKI, Monitoring Banjir | `https://bpbd.jakarta.go.id/infobanjir` (HTML; menanam dasbor Jakarta Satu dan `bpbd.jakarta.go.id/peta-banjir/`) | "daerah genangan banjir di atas 30 cm" per RT/RW/kelurahan, dari Pusdalops BPBD | tampilan peta (iframe); tidak ada API/unduhan yang dinyatakan | data resmi; jalur formal: `https://bpbd.jakarta.go.id/permohonan-data` (form: identitas, KTP, surat permohonan, dikirim lewat email) | CADANGAN 1, butuh surat resmi (pemilik/instansi). Kirim sekarang; jangan scraping |
+| Open data BPBD (GIS) | `https://gis-bpbd.jakarta.go.id/open-data-bpbd/` | rekap kejadian banjir/kebakaran/angin/longsor/pohon tumbang per kelurahan, tahun 2018-2025 | dasbor Google Maps; data lewat endpoint internal | tidak ada pernyataan lisensi; tahun 2026 belum ada | tidak dipakai untuk uji peristiwa (agregat tahunan per kelurahan) |
+| Jakarta Satu (ArcGIS) | `jakartasatu.jakarta.go.id/server/rest/services/Banjir_Jakarta` | folder Banjir_Jakarta terdaftar | ArcGIS REST | layer menjawab 499 Token Required (`docs/banjir/RISET-SUMBER-DATA.md`); token dasbor bukan hak publik | tertutup; sama dengan jalur permohonan BPBD |
+| Pantau Banjir DKI (DSDA) | `pantaubanjir.jakarta.go.id`, API `sisteminformasibanjir.jakarta.go.id/api/...` | tinggi air pintu air/pos, rumah pompa | JSON | 401 tanpa token | tertutup; yang terbuka (`poskobanjir.dsdadki.web.id/datatmalaststatus.json`) hanya tinggi air sungai, BUKAN genangan; dipakai M1 sebagai pendamping |
+| JAKI (Jakarta Kini) | `https://jaki.jakarta.go.id` (aplikasi Next.js) | laporan warga (penerus Qlue) | tidak ada API publik yang dinyatakan | laporan warga individual, data pribadi | tidak dijangkau; ajukan lewat Jakarta Smart City bersama permohonan BPBD |
+| Satu Data Jakarta | `satudata.jakarta.go.id`, `data.jakarta.go.id` | dataset daerah; pencarian `genangan`/`banjir` tidak terjawab dari mesin ini (koneksi di-reset) | CKAN | per dataset | belum diperiksa; periksa dari browser |
+| uji_banjir D1 milik kita | migrasi `0065_uji_banjir.sql`, `src/uji_banjir.js`, POST `/api/instansi/uji-banjir`, GET agregat `/api/uji-lapangan/banjir` | petugas lapangan: sampel `genangan` (tinggi, luas, lama, foto geotag) DAN `kontrol` (lokasi dicek dan TIDAK tergenang); koordinat dibulatkan 0,001 | D1 | milik kita; agregat tanpa koordinat; migrasi 0064/0065 belum diterapkan di produksi, akun instansi nol | CADANGAN 2 dan satu-satunya sumber NEGATIF sejati. Butuh (a) migrasi diterapkan, (b) petugas mengisi, (c) rute ekspor admin berkoordinat (belum ada; pemilik `warga-api`) |
+| Copernicus GFM / Sentinel-1 | STAC `stac.eodc.eu`, WMS `geoserver.gfm.eodc.eu/geoserver/gfm/wms` | 20 m, lewat 6-12 hari, malam hari; J1 mengukur ~75% luas DKI ter-mask (bayangan gedung) | raster | terbuka (Copernicus) | hanya pemeriksaan waras area terbuka (utara, tambak, ruang terbuka); bukan label |
+| Berita (Kompas, Detik, Antara, dll) | web | RT/kelurahan terendam, kedalaman, tanggal, lazim muncul untuk kejadian besar | teks | hak cipta ada pada teks; fakta (lokasi, tanggal, kedalaman) bukan; simpan hanya hasil ekstraksi + URL, jangan salin teks | pemeriksaan silang tingkat kejadian (ada/tidak ada banjir hari itu), manual; bukan label titik |
+
+## Usulan
+
+- Label UTAMA: PetaBencana, hanya `disaster_type = flood`, dengan saring latihan `petabencana.py saring` (aturan terdaftar di PRAREG-J4). Alasan: otomatis, terbuka, berjembatan ke label kalibrasi (sumber sama), dapat dijangkarkan sebelum musim. Kelemahan diterima terang-terangan: volume kecil (sekitar 20 per hari), bias pelapor, nol bukti kering, residu laporan latihan tanpa kata kunci (nama saja).
+- Label CADANGAN 1: genangan RT/RW BPBD DKI lewat permohonan data resmi. Kalau datang, ia membuat kejadian bisa dinilai pada tingkat RW, dan menggantikan PetaBencana sebagai utama hanya lewat amandemen tertulis SEBELUM datanya dibuka.
+- Label CADANGAN 2: `uji_banjir` (genangan + kontrol). Hanya sumber dengan negatif nyata; mensyaratkan keputusan pemilik di luar wilayah `banjir` (migrasi produksi, akun, ekspor).
+- Silang: berita (manual, per kejadian) dan GFM (area terbuka).
+- Aturan keras: tidak ada sumber yang ditambahkan SESUDAH label musim dibuka; sumber baru = amandemen sebelum dilihat.
+
+## Catatan temuan penyaringan PetaBencana
+
+Penelusuran seluruh arsip (27.930 laporan, 2016-12 sampai 2026-10): tipe flood 20.362, lainnya 7.568. Teks berawalan nama peserta pelatihan: "duta" 4.918, "hkb" 2.496, "trainer" 2.029, "smp/smpn" 398 (2024), "bakrie ..." 81 (2024), "bpbd <nama>" 222, "#youth4gotongroyong" 280 (2021-2023), "#112_bpbdjkt" 194 (2020); kata kunci latihan: simulasi, latihan, pelatihan, tes/test/testing/retest, training, uji coba, percobaan, sosialisasi, gladi, drill. Sesudah saring: 10.402 laporan flood bersih. Pada empat kejadian kalibrasi saringan membuang < 1% laporan flood (label kalibrasi memang bersih). Residu tersisa (2024-11 puncak 100 per hari memuat banyak nama saja) tidak terdeteksi dari teks; aturan burst (> 20 laporan per sel 0,001 derajat per hari) menangkap 235.

@@ -6,7 +6,7 @@
    - Kontak perusahaan diinput admin; tidak pernah ada di rute publik (publik hanya /api/neraca dan /api/paparan/templat).
    ponytail: buatAntrean mengurai konsesi2026/<prov>.json (~2,5 MB) per provinsi bertitik; di Workers Free (CPU 10 ms) bisa tak muat,
    karena itu ia jalan di invokasi cron SENDIRI (menit 16). Bila terpotong: pecah per provinsi atau indeks bbox statis. */
-import {json, gagal, acak, sha, shaBytes, adminOK, bacaBody, bacaBytes, cacheTepi, normalWA, dekatApi, ipHash, gagalSudahBanyak, catatGagal} from "./worker.js";
+import {akunGerbang, json, gagal, acak, sha, shaBytes, adminOK, bacaBody, bacaBytes, cacheTepi, normalWA, dekatApi, ipHash, gagalSudahBanyak, catatGagal} from "./worker.js";
 import {wilayah, cariWilayah, dalam} from "./titik.js";
 import {jenisBerkas} from "./foto.js";
 import {nilaiGps} from "./gps.js";
@@ -43,7 +43,7 @@ const adm = async (env, req) => (await adminOK(env, req)) || null;
 export const awalan = async d => new Set((await Promise.all(String(d || "").split(",").map(x => x.trim()).filter(Boolean).map(sha))).map(a => a.slice(0, 12)));
 export const modOK = async (env, req) => {
   const m = await adminOK(env, req); if (!m) return null;
-  return (await awalan(env.AKUN_SITUS)).has(m) && !(await awalan(env.ADMIN_TOKEN)).has(m) ? null : m;
+  return (await awalan(akunGerbang(env).join(","))).has(m) && !(await awalan(env.ADMIN_TOKEN)).has(m) ? null : m;
 };
 export const superOK = async (env, req) => {
   const m = await modOK(env, req); if (!m) return null;

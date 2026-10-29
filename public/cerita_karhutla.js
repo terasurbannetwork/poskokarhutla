@@ -433,10 +433,10 @@ if (typeof Insight !== "undefined" && Array.isArray(Insight.EX) && !Insight.EX.i
 
 /* bagikan bab cerita (peta bergerak tidak bisa jadi gambar): lembar bagikan tautan ke bab itu */
 document.addEventListener("click", e => { const b = e.target.closest?.("[data-ctbagi]"); if (!b) return;
-  const merek = document.documentElement.dataset.situs === "w" ? "Centurisk97" : "Pantau Bencana";   /* situs Centurisk97 (pemilik, 19 Okt 2026) */
+  const merek = "Centurisk97";   /* situs Centurisk97 (pemilik, 19 Okt 2026) */
   const h = b.closest(".ct-bab")?.querySelector("h3")?.textContent.replace(/\s+/g, " ").trim() || merek;
   const url = location.origin + (b.closest("#tren") ? "/tren" : "/insight") + "#ct-" + b.dataset.ctbagi;
-  if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". " + (window.T ? window.T("Lihat di Pantau Bencana:") : "Lihat di Pantau Bencana:").replace("Pantau Bencana", merek), url, kampanye: "cerita"});
+  if (window.Bagi?.buka) window.Bagi.buka({judul: h, teks: h + ". " + (window.T ? window.T("Lihat di Centurisk97:") : "Lihat di Centurisk97:").replace("Centurisk97", merek), url, kampanye: "cerita"});
   else if (navigator.share) navigator.share({title: h, url}).catch(() => {}); else navigator.clipboard?.writeText(url); });
 
 /* rekam bab peta bergerak (Musim 2026) jadi video 1080×1350: kanvas peta + tanggal, angka, judul, merek; diputar dari awal sampai selesai */
@@ -453,7 +453,7 @@ Cerita.rekamVideo = async function (onProg) {
     const g = x.createLinearGradient(0, 0, W, 300); g.addColorStop(0, "#1d4e89"); g.addColorStop(1, "#0b2545");
     x.fillStyle = "#eef2f7"; x.fillRect(0, 0, W, H); x.fillStyle = g; x.fillRect(0, 0, W, 300);
     if (logo) x.drawImage(logo, 60, 50, 64, 64);
-    x.fillStyle = "#fff"; x.font = "800 30px Inter, sans-serif"; x.fillText(window.Bagikan?.K?.nama || "Pantau Bencana · Karhutla", 140, 84);
+    x.fillStyle = "#fff"; x.font = "800 30px Inter, sans-serif"; x.fillText(window.Bagikan?.K?.nama || "Centurisk97 · Karhutla", 140, 84);
     x.font = "800 46px Inter, sans-serif"; bungkus(judul, W - 120).forEach((l, i) => x.fillText(l, 60, 175 + i * 54));
     /* peta, dipotong cover ke kotak 960×860 */
     const bx = 60, by = 330, bw = 960, bh = 860, s = Math.max(bw / src.width, bh / src.height), sw = bw / s, sh = bh / s;
@@ -463,7 +463,7 @@ Cerita.rekamVideo = async function (onProg) {
     const ov = q("#ct-ovl"), d = tx(ov?.querySelector(".ct-ov-d")?.textContent), n = tx(ov?.querySelector(".ct-ov-n")?.textContent);
     x.fillStyle = "rgba(255,255,255,.94)"; x.beginPath(); x.roundRect(bx + 24, by + 24, 360, 150, 18); x.fill();
     x.fillStyle = "#0b2545"; x.font = "800 56px Inter, sans-serif"; x.fillText(d, bx + 48, by + 98); x.font = "600 24px Inter, sans-serif"; x.fillStyle = "#4a5a72"; x.fillText(n, bx + 48, by + 144);
-    x.fillStyle = "#0b2545"; x.font = "700 28px Inter, sans-serif"; x.fillText("pantau.terasurban.com", 60, H - 70);
+    x.fillStyle = "#0b2545"; x.font = "700 28px Inter, sans-serif"; x.fillText("centurisk97.id", 60, H - 70);
     x.fillStyle = "#4a5a72"; x.font = "500 22px Inter, sans-serif"; x.textAlign = "right"; x.fillText("Sumber: NASA FIRMS VIIRS", W - 60, H - 70); x.textAlign = "left";
   };
   const [lo] = this.rentang(); this.henti(); this.set(lo); await new Promise(r => setTimeout(r, 600));

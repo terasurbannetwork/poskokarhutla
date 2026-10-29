@@ -20,15 +20,22 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
       URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
+      PIPA: titik|data|banjir|gempa|lintas|statis|udara|titik_palsu   # workflow ber-grup `data` selain terbit.yml; sama dengan terbit_antre.yml
     steps:
       - name: Jalankan ulang jadwal yang terusir antrean (boleh gagal)
         continue-on-error: true
         run: |
-          # grup concurrency "data" hanya menyimpan SATU run antre: run terjadwal yang kalah dari run lain dibatalkan tanpa job (titik.yml 22 Okt 2026). Bila run terakhir sebuah workflow cancelled dan tak ada yang antre/jalan, picu sekali.
-          for w in titik.yml data.yml banjir.yml udara.yml lintas.yml; do
+          # grup concurrency "data" hanya menyimpan SATU run antre: run terjadwal yang kalah dari run lain dibatalkan tanpa job (titik.yml 22 Okt 2026).
+          # Bila run terakhir sebuah workflow cancelled dan tak ada yang antre/jalan, picu sekali. Dispatch ikut masuk slot antre itu, jadi:
+          # (a) tak memicu bila slot sedang terisi run pipeline lain yang menunggu (menggeser yang sudah antre cuma bertukar korban), (b) paling banyak
+          # satu pemicuan per putaran jaga (urutan daftar = prioritas).
+          menunggu() { for s in queued pending waiting requested; do gh api "repos/$GH_REPO/actions/runs?status=$s&per_page=100" --jq '.workflow_runs[] | "\(.path) \(.status) \(.id)"' || true; done | grep -E "workflows/($PIPA)\.yml" || true; }
+          antre=$(menunggu)
+          [ -z "$antre" ] || { echo "slot antre grup data terisi ($(echo "$antre" | tr '\n' ';')): tidak memicu ulang"; exit 0; }
+          for w in titik.yml data.yml banjir.yml gempa.yml udara.yml lintas.yml; do
             [ "$(gh run list --workflow "$w" -L 1 --json conclusion --jq '.[0].conclusion')" = cancelled ] || continue
-            [ -z "$(gh run list --workflow "$w" --json status --jq '.[] | select(.status == "queued" or .status == "in_progress") | .status')" ] || continue
-            gh workflow run "$w" && echo "$w terusir antrean, dipicu ulang" || true
+            [ -z "$(gh run list --workflow "$w" --json status --jq '.[] | select(.status != "completed") | .status')" ] || continue
+            gh workflow run "$w" && { echo "$w terusir antrean, dipicu ulang"; break; } || true
           done
       - name: Periksa /api/status, terbitkan ulang bila basi
         run: |
@@ -40,7 +47,10 @@ jobs:
           echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
           # terbit sekali per 3 jam saja (hanya run sukses atau yang masih jalan dihitung; gagal/cancelled tidak): kalau sumbernya sendiri yang basi (FIRMS mati), terbit ulang tiap jam tak menolong
           sejak=$(date -u -d '-3 hours' +%Y-%m-%dT%H:%M:%SZ)
-          if [ -z "$(gh run list --workflow terbit.yml --created ">=$sejak" --json databaseId,status,conclusion --jq '.[] | select(.status != "completed" or .conclusion == "success") | .databaseId')" ]; then
+          menunggu() { for s in queued pending waiting requested; do gh api "repos/$GH_REPO/actions/runs?status=$s&per_page=100" --jq '.workflow_runs[] | "\(.path) \(.status) \(.id)"' || true; done | grep -E "workflows/($PIPA)\.yml" || true; }
+          if [ -n "$(menunggu)" ]; then
+            echo "slot antre grup data terisi run pipeline; terbit.yml dipicu ditunda (dispatch akan mengusirnya)"
+          elif [ -z "$(gh run list --workflow terbit.yml --created ">=$sejak" --json databaseId,status,conclusion --jq '.[] | select(.status != "completed" or .conclusion == "success") | .databaseId')" ]; then
             gh workflow run terbit.yml && echo "terbit.yml dipicu"
           else
             echo "terbit.yml sudah jalan < 3 jam lalu; sumbernya yang perlu diperiksa"

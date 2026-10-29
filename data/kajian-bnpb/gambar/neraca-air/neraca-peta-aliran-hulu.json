@@ -1,0 +1,358 @@
+{
+ "nama": "neraca-peta-aliran-hulu",
+ "keterangan": "Pangsa aliran masuk dari kab/kota hulu dalam ketersediaan air tahunan per kab/kota di Pulau Jawa, rerata 1991–2025 (%)",
+ "sumber": "Pengolahan data Pantau Bencana, penelusuran aliran HydroBASINS level 9; estimasi model (batas tetap seperlima)",
+ "catatan": "Ketersediaan = limpasan lokal + aliran masuk dari hulu, sesudah pemakaian di hulu.",
+ "mode": "docx",
+ "ukuran_pt": [
+  467.72,
+  203.31
+ ],
+ "ukuran_cm": [
+  16.5,
+  7.17
+ ],
+ "legenda": true,
+ "entri_legenda": [
+  {
+   "label": "≤ 20% (36)",
+   "jenis": "kotak",
+   "warna": "#DCE3EB"
+  },
+  {
+   "label": "20–40% (21)",
+   "jenis": "kotak",
+   "warna": "#AEBBCB"
+  },
+  {
+   "label": "40–60% (16)",
+   "jenis": "kotak",
+   "warna": "#7F93AA"
+  },
+  {
+   "label": "60–80% (18)",
+   "jenis": "kotak",
+   "warna": "#4F6A88"
+  },
+  {
+   "label": "> 80% (28)",
+   "jenis": "kotak",
+   "warna": "#24384F"
+  }
+ ],
+ "hex": {
+  "#FFFFFF": [
+   "luar-cakupan",
+   "batas",
+   "latar",
+   "pil-isi"
+  ],
+  "#A9B4C2": [
+   "batas"
+  ],
+  "#AEBBCB": [
+   "skala",
+   "legenda"
+  ],
+  "#DCE3EB": [
+   "skala",
+   "legenda"
+  ],
+  "#7F93AA": [
+   "skala",
+   "legenda"
+  ],
+  "#4F6A88": [
+   "skala",
+   "legenda"
+  ],
+  "#24384F": [
+   "skala",
+   "legenda"
+  ],
+  "#D3DBE5": [
+   "inset"
+  ],
+  "#6B7280": [
+   "inset",
+   "teks"
+  ],
+  "#BFC5CC": [
+   "garis"
+  ],
+  "#2E3440": [
+   "skala-batang",
+   "teks",
+   "pemandu"
+  ],
+  "#1A1A1A": [
+   "teks"
+  ]
+ },
+ "kotak": [
+  {
+   "x": 358.74,
+   "y": 35.92,
+   "w": 4.49,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "0"
+  },
+  {
+   "x": 422.93,
+   "y": 35.92,
+   "w": 26.52,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "200 km"
+  },
+  {
+   "x": 433.6,
+   "y": 6.92,
+   "w": 5.19,
+   "h": 8,
+   "jenis": "skala",
+   "grup": "skala",
+   "teks": "U"
+  },
+  {
+   "x": 56.72,
+   "y": 23.87,
+   "w": 49.26,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-31",
+   "teks": "DKI Jakarta"
+  },
+  {
+   "x": 202.45,
+   "y": 99.56,
+   "w": 57.47,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-34",
+   "teks": "DI Yogyakarta"
+  },
+  {
+   "x": 193.32,
+   "y": 72.94,
+   "w": 55.78,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-33",
+   "teks": "Jawa Tengah"
+  },
+  {
+   "x": 89.06,
+   "y": 58.76,
+   "w": 48.11,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-32",
+   "teks": "Jawa Barat"
+  },
+  {
+   "x": 35.11,
+   "y": 39.26,
+   "w": 33.01,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-36",
+   "teks": "Banten"
+  },
+  {
+   "x": 296.25,
+   "y": 96.28,
+   "w": 49.95,
+   "h": 12.8,
+   "jenis": "label",
+   "grup": "lbl-35",
+   "teks": "Jawa Timur"
+  },
+  {
+   "x": 24.68,
+   "y": 156.11,
+   "w": 148.3,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-24",
+   "teks": "Pangsa aliran dari hulu (jumlah kab/kota)"
+  },
+  {
+   "x": 24.68,
+   "y": 155.11,
+   "w": 148.3,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-24",
+   "teks": "Pangsa aliran dari hulu (jumlah kab/kota)"
+  },
+  {
+   "x": 196.99,
+   "y": 156.11,
+   "w": 37.37,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-182",
+   "teks": "≤ 20% (36)"
+  },
+  {
+   "x": 182.99,
+   "y": 155.11,
+   "w": 51.37,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-182",
+   "teks": "≤ 20% (36)"
+  },
+  {
+   "x": 258.36,
+   "y": 156.11,
+   "w": 45.56,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-244",
+   "teks": "20–40% (21)"
+  },
+  {
+   "x": 244.36,
+   "y": 155.11,
+   "w": 59.56,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-244",
+   "teks": "20–40% (21)"
+  },
+  {
+   "x": 327.92,
+   "y": 156.11,
+   "w": 45.56,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-313",
+   "teks": "40–60% (16)"
+  },
+  {
+   "x": 313.92,
+   "y": 155.11,
+   "w": 59.56,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-313",
+   "teks": "40–60% (16)"
+  },
+  {
+   "x": 397.48,
+   "y": 156.11,
+   "w": 45.56,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg0-383",
+   "teks": "60–80% (18)"
+  },
+  {
+   "x": 383.48,
+   "y": 155.11,
+   "w": 59.56,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg0-383",
+   "teks": "60–80% (18)"
+  },
+  {
+   "x": 222.12,
+   "y": 169.11,
+   "w": 37.48,
+   "h": 8,
+   "jenis": "legenda",
+   "grup": "leg1-208",
+   "teks": "> 80% (28)"
+  },
+  {
+   "x": 208.12,
+   "y": 168.11,
+   "w": 51.48,
+   "h": 10,
+   "jenis": "legenda",
+   "grup": "leg1-208",
+   "teks": "> 80% (28)"
+  },
+  {
+   "x": 3,
+   "y": 181.11,
+   "w": 438.1,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "Batas wilayah bukan rujukan resmi. Sumber batas: Pantau Bencana, asal belum terdokumentasi; WGS84 geografis; proyeksi"
+  },
+  {
+   "x": 3,
+   "y": 190.71,
+   "w": 130.44,
+   "h": 8,
+   "jenis": "teks",
+   "grup": "kaki",
+   "teks": "ekuirektangular, paralel baku 7,2° LS."
+  }
+ ],
+ "jenis": "peta",
+ "pesan": "G19",
+ "besaran": "rasio",
+ "cakupan": "jawa",
+ "tingkat": "kab",
+ "kelas": {
+  "ramp": "netral",
+  "batas": [
+   20,
+   40,
+   60,
+   80
+  ],
+  "label": [
+   "≤ 20%",
+   "20–40%",
+   "40–60%",
+   "60–80%",
+   "> 80%"
+  ],
+  "warna": [
+   "skala.netral.1",
+   "skala.netral.2",
+   "skala.netral.3",
+   "skala.netral.4",
+   "skala.netral.5"
+  ],
+  "rumus": "batas tetap seperlima",
+  "resmi": false,
+  "jumlah": [
+   36,
+   21,
+   16,
+   18,
+   28
+  ],
+  "tanpa_data": 0
+ },
+ "unsur_peta": {
+  "sumber_batas": "Batas wilayah public/geo Pantau Bencana (asal belum terdokumentasi)",
+  "sistem_referensi": "WGS84 geografis",
+  "proyeksi": "ekuirektangular, paralel baku 7,2° LS",
+  "resmi": false,
+  "catatan": "Batas wilayah bukan rujukan resmi",
+  "inset": true,
+  "skala_batang": true,
+  "skala_pojok": "kanan atas",
+  "skala_kena_darat": 0,
+  "skala_alas": false,
+  "label_laut": false
+ },
+ "label_diminta": 6,
+ "label_terlewat": [],
+ "provinsi_teratas": null,
+ "simbol": 0,
+ "simbol_digeser": 0,
+ "putaran_geser": 0
+}

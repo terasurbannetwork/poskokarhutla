@@ -1,0 +1,138 @@
+/* satelit_data.css: halaman "Data satelit" (tab tersembunyi #p-satelit di index.html, isi digambar satelit_data.js; dimuat malas bersama skripnya).
+   Rupa mengikuti mock v4 yang disetujui pemilik (28 Okt 2026) di atas komponen kartu Insight app (pil kategori, judul beraksen merah, kaki legenda + sumber). Semua selektor di bawah #satelit supaya
+   tidak menyentuh halaman lain. Warna dari token :root index.html (terang/gelap); kotak kalender dibedakan juga oleh BENTUK (tanda seru, cincin), bukan hanya warna. */
+#satelit{--b1:#cfe2f9;--b2:#7fb1ec;--b3:#2a78d6;--b4:#123f74;--k0:#a9b3c2;max-width:1180px;margin:0 auto}
+:root[data-theme="dark"] #satelit{--b1:#1f3b63;--b2:#2f68ad;--b3:#4f95e6;--b4:#a9d0ff;--k0:#5b6576}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #satelit{--b1:#1f3b63;--b2:#2f68ad;--b3:#4f95e6;--b4:#a9d0ff;--k0:#5b6576}}
+
+/* ---------- kepala halaman + pemilih rentang */
+#satelit .sd-kepala{display:flex;align-items:flex-end;justify-content:space-between;gap:14px;flex-wrap:wrap;margin:0 0 18px}
+#satelit .sd-jd{margin:0 0 6px;font-family:var(--display);font-size:clamp(22px,3vw,30px);color:var(--ink)}
+#satelit .sd-kepala p{margin:0;color:var(--ink2);font-size:14px;max-width:70ch;line-height:1.5}
+#satelit .sd-kembali{display:inline-flex;gap:6px;align-items:center;margin-bottom:6px;font-size:13px;color:var(--ink2);text-decoration:none}
+#satelit .sd-kembali:hover{color:var(--ink);text-decoration:underline}
+#satelit .sd-kembali:focus-visible{outline:2px solid var(--info);outline-offset:2px;border-radius:4px}
+#satelit .sd-rentang{display:flex;flex-direction:column;align-items:flex-end;gap:8px;margin-top:8px}
+#satelit .sd-tgl{display:flex;align-items:center;gap:8px;flex-wrap:wrap;font-size:12.5px;color:var(--ink2)}
+#satelit .sd-tgl label{display:inline-flex;align-items:center;gap:6px;font-weight:600}
+#satelit .sd-tgl input[type=date]{height:34px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);padding:0 12px;font:600 12.5px var(--font);box-shadow:var(--shadow)}
+#satelit .sd-tgl input[type=date]:focus-visible{outline:2px solid var(--info);outline-offset:1px}
+#satelit .sd-tgl input[aria-invalid=true]{border-color:var(--bad)}
+#satelit .sd-ket-tgl{min-height:16px;max-width:46ch;text-align:right;font-size:12px;color:var(--ink2)}
+#satelit .sd-ket-tgl.galat{color:var(--bad);font-weight:600}
+#satelit .sd-status{margin:0 0 12px;font-size:12.5px;color:var(--ink2)}
+#satelit .sd-status[hidden]{display:none}
+@media (max-width:640px){#satelit .sd-rentang{align-items:stretch;width:100%}#satelit .sd-ket-tgl{text-align:left}#satelit .sd-rentang .seg{align-self:flex-start}}
+
+/* ---------- kisi kartu: dua kolom di layar lebar, kartu .lebar melintang penuh */
+#satelit .sd-grid{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;transition:opacity .15s}
+#satelit .sd-grid.sibuk{opacity:.6}
+#satelit .sd-slot{min-width:0}
+#satelit .sd-slot:empty{display:none}
+@media (min-width:1180px){#satelit .sd-grid{grid-template-columns:minmax(0,1fr) minmax(0,1fr)}#satelit .sd-slot.lebar{grid-column:1/-1}}   /* dua kolom baru dari 1180 px: tabel Ringkasan/Kejadian (~540 px) tak muat di setengah lebar di bawah itu */
+@media (prefers-reduced-motion:reduce){#satelit .sd-grid{transition:none}}
+
+/* ---------- kartu Insight di bawah #satelit (aturan sama dengan #tren/#metode di index.html) */
+#satelit .ex{margin:0;padding:0;border-radius:18px;overflow:hidden;background:var(--card);border:1px solid var(--line);box-shadow:var(--shadow)}
+#satelit .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+#satelit .ex-bd{padding:16px 22px 10px}
+#satelit .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+#satelit .ex-ft em{font-style:italic;opacity:.9}
+#satelit .ex-ey{display:inline-block;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px;margin-bottom:8px}
+#satelit .ex-ey:empty{display:none}
+#satelit .ex h3{font-size:21px;line-height:1.3;max-width:none;letter-spacing:-.01em}
+#satelit .ex .hl{color:var(--bad)}
+#satelit .ex svg:not(.lp-sw){display:block;width:100%;height:auto;overflow:visible}
+#satelit .ex svg text{fill:currentColor}
+#satelit .ex svg.lp-sw{display:inline-block;width:14px;height:14px;flex:none}
+#satelit .ex-leg{flex:1 1 100%;justify-content:center}
+#satelit .ex [data-tip]{cursor:pointer}
+@media (max-width:640px){#satelit .ex-hd{padding:16px 16px 12px}#satelit .ex-bd{padding:14px 16px 8px}#satelit .ex-ft{padding:10px 16px 14px}#satelit .ex h3{font-size:18px}}
+
+/* ---------- keterangan kecil dan keadaan kosong (dalam badan kartu) */
+#satelit .sd-ket{margin:0 0 10px;font-size:12.5px;color:var(--ink2)}
+#satelit .sd-cat{margin:10px 0 4px;font-size:11.5px;color:var(--ink2)}
+#satelit .sd-kosong{border:1px dashed var(--line);border-radius:12px;padding:12px 14px;color:var(--ink2);font-size:12.5px;line-height:1.5;margin-bottom:10px}
+
+/* ---------- kalender lintasan (jam x hari). .r = baris (display:contents: sel ikut kisi); label hari = tombol */
+#satelit .sd-kalwrap{min-width:0}
+#satelit .sd-kalwrap.sd-pdk,#satelit .sd-kalwrap.sd-rp{max-height:620px;overflow:auto;overscroll-behavior:contain}
+#satelit .sdk{display:grid;grid-template-columns:86px repeat(24,minmax(0,1fr));gap:3px;font-size:11px;user-select:none}
+#satelit .sdk .r{display:contents}
+#satelit .sdk .h{color:var(--ink2);text-align:center;font-variant-numeric:tabular-nums}
+#satelit .sdk.sd-pdk .h,#satelit .sdk.sd-rp .h{position:sticky;top:0;z-index:2;background:var(--card);padding-bottom:2px}
+#satelit .sdk .d{display:flex;align-items:center;gap:4px;margin:0;padding:0 4px 0 0;border:0;border-radius:4px;background:none;color:var(--ink);font:600 12px var(--font);white-space:nowrap;text-align:left;cursor:pointer;align-self:center}
+#satelit .sdk .d small{color:var(--ink2);font-weight:500;font-size:inherit}
+#satelit .sdk .d:hover{text-decoration:underline}
+#satelit .sdk .d:focus-visible{outline:2px solid var(--info);outline-offset:1px}
+#satelit .sdk .r.pilih>.d{outline:2px solid var(--brand);outline-offset:1px}
+#satelit .sdk .c{aspect-ratio:1/1;border-radius:4px;background:var(--surface);position:relative}
+#satelit .sdk.sd-pdk .c{aspect-ratio:auto;height:22px}
+#satelit .sdk.sd-rp .c{aspect-ratio:auto;height:11px;border-radius:2px}
+#satelit .sdk.sd-rp{gap:2px 3px}
+#satelit .sdk.sd-rp .d{font-size:10.5px}
+#satelit .sdk .c.b1{background:var(--b1)}#satelit .sdk .c.b2{background:var(--b2)}#satelit .sdk .c.b3{background:var(--b3)}#satelit .sdk .c.b4{background:var(--b4)}
+#satelit .sdk .c.k{background:var(--k0)}
+#satelit .sdk .c.t{background:#f5a524}
+#satelit .sdk .c.t::after{content:"!";position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-weight:800;color:#3d2600;font-size:11px}
+#satelit .sdk.sd-rp .c.t::after{font-size:9px}
+#satelit .sdk .c.w{background:transparent;box-shadow:inset 0 0 0 2px var(--ink2)}
+#satelit .sdk .c.f{background:transparent;outline:1.5px dashed var(--ink2);outline-offset:-2px;opacity:.7}
+#satelit .sdk .c.bm{background:transparent;outline:1.5px dotted var(--ink2);outline-offset:-2px;opacity:.6}
+#satelit .sdk .c.x{opacity:.35}
+#satelit .sdk .c[data-tip]:hover,#satelit .sdk .c[data-lazy]:hover{outline:2px solid var(--ink);outline-offset:1px}
+@media (max-width:640px){#satelit .sdk{grid-template-columns:62px repeat(24,minmax(0,1fr));gap:2px}#satelit .sdk:not(.sd-rp) .c{aspect-ratio:auto;height:24px;border-radius:3px}#satelit .sdk .d{font-size:11px}#satelit .sdk .d small{display:none}}
+
+/* ---------- tabel kartu (Ringkasan, Kejadian). Layar sempit: ditumpuk, tiap sel membawa labelnya sendiri (.sd-lb tersembunyi di layar lebar) */
+#satelit .sd-tw{max-width:100%;overflow-x:auto}   /* tabel kartu setengah lebar: tak pernah terpotong; bila tetap tak muat bergulir mendatar */
+#satelit .sd-muat{border:1px solid var(--line);border-radius:18px;background:var(--card);padding:18px 22px;color:var(--ink2);font-size:13px}
+#satelit .sd-muat-hal{margin:8px 0;color:var(--ink2);font-size:13px}
+#satelit table.sd-t{width:100%;border-collapse:collapse;font-size:13px}
+#satelit table.sd-t th{padding:6px 10px 6px 0;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink2);font:700 11px/1.3 var(--font);letter-spacing:.04em;text-transform:uppercase;text-align:left!important;vertical-align:top;position:static}
+#satelit table.sd-t th.n{text-align:right!important}
+#satelit table.sd-t td{padding:8px 10px 8px 0;border-bottom:1px solid var(--line);color:var(--ink);text-align:left;vertical-align:top}
+#satelit table.sd-t td.n{text-align:right;font-variant-numeric:tabular-nums}
+#satelit table.sd-t td.sd-sl{color:var(--ink2)}
+#satelit table.sd-t th:last-child,#satelit table.sd-t td:last-child{padding-right:0}
+#satelit .sd-lb{display:none}
+#satelit .sd-pr{color:var(--ink2);font-weight:500}
+#satelit .sd-chip{display:inline-flex;align-items:center;white-space:nowrap;border-radius:999px;padding:3px 10px;background:#fff1d6;color:#7a4b00;font-size:12px;font-weight:600}
+:root[data-theme="dark"] #satelit .sd-chip{background:#4a3410;color:#ffcf7a}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) #satelit .sd-chip{background:#4a3410;color:#ffcf7a}}
+@media (max-width:640px){
+  #satelit table.sd-t thead{display:none}
+  #satelit table.sd-t,#satelit table.sd-t tbody,#satelit table.sd-t tr,#satelit table.sd-t td{display:block;width:100%}
+  #satelit table.sd-t tr{padding:8px 0;border-bottom:1px solid var(--line)}
+  #satelit table.sd-t td{border:0;padding:2px 0;text-align:left!important;display:flex;justify-content:space-between;gap:12px}
+  #satelit table.sd-t td:first-child{font-size:14px}
+  #satelit .sd-lb{display:inline;color:var(--ink2);font-size:11.5px}
+  #satelit table.sd-t td:first-child .sd-lb{display:none}
+  #satelit table.sd-t td:first-child{display:block}
+}
+
+/* ---------- tabel Rincian = tabel popover lintasan (satelit_lintas.js: table.lp-t) tampil di halaman; gaya popover hanya berlaku di .lp-pop, jadi diulang di sini dengan skala halaman */
+#satelit .sd-ri{min-width:0;overflow-x:auto}
+#satelit .sd-ri table.lp-t{width:100%;border-collapse:collapse;font-size:13px}
+#satelit .sd-ri table.lp-t thead th{position:static;padding:6px 14px 6px 0;background:none;border:0;border-bottom:1px solid var(--line);border-radius:0;color:var(--ink2);font:700 11px/1.3 var(--font);letter-spacing:.04em;text-transform:uppercase;text-align:left!important;white-space:normal;vertical-align:top}
+#satelit .sd-ri table.lp-t thead th.t{text-align:right!important;padding-right:0}
+#satelit .sd-ri table.lp-t tbody td{padding:7px 14px 7px 0;border-bottom:1px solid var(--line);color:var(--ink);font-variant-numeric:tabular-nums;white-space:nowrap;text-align:left}
+#satelit .sd-ri table.lp-t tbody td.t{text-align:right;padding-right:0}
+#satelit .sd-ri table.lp-t tbody td.lp-st{white-space:normal}
+#satelit .sd-ri table.lp-t.lp-kem thead th:last-child{padding-left:14px}
+#satelit .sd-ri table.lp-t.lp-kem tbody td.lp-st{padding-left:14px}
+#satelit .sd-ri table.lp-t tbody tr.lp-pr th{padding:12px 0 4px;border-bottom:1px solid var(--line);background:none;text-align:left;font:700 11.5px/1.3 var(--font);color:var(--ink2);white-space:normal}
+#satelit .sd-ri table.lp-t tbody tr.lp-pr th>span+span{margin-left:6px;font-weight:500;font-variant-numeric:tabular-nums}
+#satelit .sd-ri .lp-st .lp-sw{vertical-align:-3px;margin-right:6px}
+#satelit .sd-ri .lp-sl{margin-left:6px;font-size:11px;font-weight:500;color:var(--ink2)}
+#satelit .sd-ri .lp-st .lp-sl{display:inline}
+#satelit .lp-leg{display:flex;flex-wrap:wrap;gap:4px 14px;margin:0 0 10px;color:var(--ink2);font-size:11.5px}
+#satelit .lp-leg>span{display:inline-flex;align-items:center;gap:5px}
+@media (max-width:640px){
+  #satelit .sd-ri{overflow-x:visible}
+  #satelit .sd-ri table.lp-t thead{display:none}
+  #satelit .sd-ri table.lp-t,#satelit .sd-ri table.lp-t tbody{display:block;width:100%}
+  #satelit .sd-ri table.lp-t tbody tr.lp-pr{display:block}
+  #satelit .sd-ri table.lp-t tbody tr:not(.lp-pr){display:grid;grid-template-columns:64px minmax(0,1fr) auto;column-gap:10px;padding:7px 0;border-bottom:1px solid var(--line)}
+  #satelit .sd-ri table.lp-t tbody tr:not(.lp-pr) td{border:0;padding:1px 0;white-space:normal}
+  #satelit .sd-ri table.lp-t.lp-kem tbody tr:not(.lp-pr) td.lp-st{grid-column:2/-1;padding-left:0}
+}

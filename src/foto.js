@@ -190,7 +190,7 @@ async function unggah(env, req, url, kini) {
     if (exifJarak > EXIF_JARAK_MAKS) return gagal(400, `foto diambil ${(exifJarak / 1000).toFixed(1)} km dari posisi Anda sekarang; unggah dari lokasi pengambilan`);
   }
   if (Number.isFinite(eT) && eT <= kini + 10 * MENIT) {
-    if (kini - eT > EXIF_UMUR_MAKS) return gagal(400, `foto diambil ${Math.round((kini - eT) / HARI)} hari lalu; hanya foto 48 jam terakhir`);
+    if (kini - eT > EXIF_UMUR_MAKS) return gagal(400, `foto diambil ${Math.round((kini - eT) / HARI).toLocaleString("id-ID")} hari lalu; hanya foto 48 jam terakhir`);
     diambil = Math.min(eT, kini); exifWaktu = 1;
   }
 

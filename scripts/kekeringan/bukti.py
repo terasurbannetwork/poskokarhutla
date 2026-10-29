@@ -147,7 +147,7 @@ def tulis():
         p = x["pct1"] if x["pct1"] is not None else x["pct0"]
         sel[(x["lat"], x["lon"])] = {"prov": x["prov"], "lv": x["lv"], "dc": x["dc"], "spi3": x["spi3"], "pct": p}
     lama = baca(KELUAR, {}) or {}
-    out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "status_dibuat": meta["dibuat"], "label": "Deteksi Pantau Bencana"}
+    out = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "status_dibuat": meta["dibuat"], "label": "Deteksi Centurisk97"}
     g = gambut(d("public/data/kompleks_konsesi.json")["kompleks"], sel, meta["hari_ini"])
     if g:
         seri = [s for s in (lama.get("gambut") or {}).get("seri", []) if s["tgl"] != g["tgl"]] + [{"tgl": g["tgl"], "n_kering": g["n_kering"], "n_gambut": g["n_gambut"]}]

@@ -3,7 +3,7 @@
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import path from "node:path";
-import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
+import {siapkan, berantai, ADMIN, GERBANG_ORANG, sha256} from "./_bnpb.mjs";
 import {AKAR, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";   // dulu: worker.js dan api_v1.js saling impor (pola semua modul rute)
 import {CAKUPAN, DATA} from "../../src/api_v1.js";
@@ -105,7 +105,7 @@ uji("indeks /api/v1 mencantumkan semua endpoint beserta kebutuhan kuncinya; /api
   for (const nama of Object.keys(DATA)) assert.ok(j.includes(`/api/v1/data/${nama}`), nama);
   for (const x of ["/api/v1/rumah-rusak", "/api/v1/rumah-rusak/rekap", "/api/v1/bangunan/terpapar", "/api/v1/bangunan/kec", "/api/v1/bangunan/grid", "/api/v1/laporan-bnpb"]) assert.equal(r.j.endpoint.find(e => e.jalur === x)?.kunci, true, x);
   assert.equal(r.j.endpoint.find(e => e.jalur === "/api/v1/data/meta").kunci, false);
-  const d = await api("GET", "/api"); assert.equal(d.s, 200); assert.match(d.t, /API data Pantau Bencana/); assert.match(d.h.get("content-type"), /text\/html/);
+  const d = await api("GET", "/api"); assert.equal(d.s, 200); assert.match(d.t, /API data Centurisk97/); assert.match(d.h.get("content-type"), /text\/html/);
   assert.equal((await api("GET", "/api/v1/tidak-ada")).s, 404);
   assert.equal((await api("POST", "/api/v1/data/meta", {})).s, 405);
 });
@@ -250,6 +250,7 @@ uji("hak akses kunci: buat = Super Admin; daftar dan cabut = moderator ke atas; 
   const buat = {nama: "Mitra Gerbang", cakupan: ["bangunan"]};
   for (const [h, nama] of [[GERBANG, "gerbang"], [MOD2, "moderator biasa"]]) assert.equal((await api("POST", "/api/kunci-api/admin/buat", buat, h)).s, 403, `${nama} tidak boleh menerbitkan`);
   assert.equal((await api("GET", "/api/kunci-api/admin/daftar", undefined, GERBANG)).s, 403, "gerbang tidak boleh melihat daftar");
+  assert.equal((await api("GET", "/api/kunci-api/admin/daftar", undefined, GERBANG_ORANG)).s, 403, "akun gerbang per-orang (AKUN_SITUS_DUMMY) juga bukan moderator");
   assert.equal((await api("POST", "/api/kunci-api/admin/cabut/" + baru.id, {}, GERBANG)).s, 403, "gerbang tidak boleh mencabut");
   assert.equal(await n("kunci_api", "nama = 'Mitra Gerbang'"), 0);
   const d = await api("GET", "/api/kunci-api/admin/daftar", undefined, MOD2); assert.equal(d.s, 200); assert.equal(d.j.bisa_buat, false, "moderator biasa: halaman menampilkan pesan SUPER_ADMIN");

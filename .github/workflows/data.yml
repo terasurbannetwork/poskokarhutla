@@ -12,6 +12,10 @@ on:
         description: "1 = unggah juga berkas tahunan SIPPA ke R2 sippa/"
         required: false
         default: "0"
+      satelit_anggaran:
+        description: "Anggaran permintaan FIRMS untuk riwayat deteksi per satelit (/satelit). Kosong = bawaan skrip (60). Isi mundur penuh sejak 1 Jan ~250 permintaan: pecah 2-3 jalan @100 supaya muat batas 45 menit"
+        required: false
+        default: ""
 
 concurrency:
   group: data
@@ -65,13 +69,19 @@ jobs:
           for f in $(git ls-files 'public/data/kluster_hari/*.json'); do
             [[ "$(basename "$f" .json)" < "$kini" ]] && git checkout HEAD -- "$f"
           done; true
+          # arsip titik per hari dari CSV FIRMS standar (commit) menang atas salinan NRT di cache (scripts/data/titik_hari.py)
+          for f in $(git ls-files 'public/data/titik_hari/2*.json'); do git checkout HEAD -- "$f"; done; true
 
-      # sekali jalan: musim_harian.json dibangun ulang (latar median; 25 Okt 2026: lokasi unik 4 satelit, titik_unik.py); cache data- lama
-      # (latar atau definisi lain) tidak boleh menang. Cache yang sudah baru -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache baru.
-      - name: Pulihkan musim_harian dari repo bila cache berdefinisi lama
+      # sekali jalan: riwayat titik dibangun ulang lokal dengan definisi titik_unik.py terkini (25 Okt 2026: lokasi unik 4 satelit; 28 Okt 2026: semua
+      # keyakinan). Cache data- berdefinisi lama tidak boleh menang atas versi repo: musim_harian.json (latar median + "semua keyakinan"), titik_tahun.json
+      # dan titik_hari/indeks.json ("semua keyakinan" di definisi/sumber). Cache yang sudah baru -> dibiarkan (bergulir). Hapus langkah ini sesudah semua cache baru.
+      - name: Pulihkan riwayat titik dari repo bila cache berdefinisi lama
         run: |
-          python3 -c "import json,sys; m=json.load(open('public/data/musim_harian.json')); sys.exit(0 if m['latar']['stat']=='median' and m['definisi'].startswith('Lokasi unik') else 1)" 2>/dev/null \
+          python3 -c "import json,sys; m=json.load(open('public/data/musim_harian.json')); sys.exit(0 if m['latar']['stat']=='median' and 'semua keyakinan' in m['definisi'] else 1)" 2>/dev/null \
             || { f=$(git ls-files public/data/musim_harian.json); git ls-files -z -- $f | xargs -0 -r git checkout HEAD --; }
+          for f in $(git ls-files public/data/titik_tahun.json public/data/titik_hari/indeks.json); do
+            python3 -c "import json,sys; sys.exit(0 if 'semua keyakinan' in json.load(open(sys.argv[1])).get('sumber', '') else 1)" "$f" 2>/dev/null || git checkout HEAD -- "$f"
+          done
 
       # koefisien operasi dikalibrasi dari isian lapangan (Bearer PIPA_TOKEN); token kosong = dilewati dengan log, berkas lama/bawaan dipakai
       - name: Kalibrasi koefisien dari isian lapangan (boleh gagal)
@@ -90,6 +100,47 @@ jobs:
         env:
           FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
         run: python3 scripts/data/harian.py || { echo "::error title=harian.py gagal::FIRMS/BNPB tidak terjangkau; langkah lain lanjut dengan titik terakhir dari cache"; exit 1; }
+
+      # arsip titik per hari 2026 untuk kalender Tanggal lain di peta (scripts/data/titik_hari.py): hari utuh >= ambang dari hotspot.json
+      - name: Arsip titik panas per hari
+        continue-on-error: true
+        run: python3 scripts/data/titik_hari.py dari-hotspot
+
+      # riwayat deteksi per satelit setahun untuk tab tersembunyi /satelit -> public/data/satelit/riwayat.json (scripts/data/satelit_riwayat.py).
+      # KUMULATIF: ikut cache data- seperti khg_hari.json/musim_harian.json (+ salinan situs live lewat _isi.json bila cache hilang, dan `git add public/data` di jalur
+      # tanpa token). Cache kecil sendiri di bawah menjamin kemajuan isi mundur selamat walau langkah keras sesudahnya (Uji aturan) gagal sebelum cache data- disimpan.
+      # Dipulihkan SESUDAH data-: bila menimpa, ia versi yang disimpan langsung sesudah skrip jalan, jadi paling baru.
+      - name: Pulihkan riwayat deteksi per satelit
+        uses: actions/cache/restore@v4
+        with:
+          path: public/data/satelit/riwayat.json
+          key: satelit-riwayat-${{ github.run_id }}
+          restore-keys: satelit-riwayat-
+
+      # jadwal harian memakai anggaran bawaan skrip (60 permintaan FIRMS, batas 20 menit); dispatch dengan satelit_anggaran = isi mundur besar sekali jalan
+      # (batas 45 menit; job 90 menit, jadi jalankan dengan cache data- hangat). Tanpa FIRMS_MAP_KEY skrip keluar 0 tanpa menyentuh berkas. Gagal tidak menahan terbit.
+      - name: Riwayat deteksi per satelit (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 50
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+          SATELIT_ANGGARAN: ${{ github.event.inputs.satelit_anggaran }}
+        run: |
+          arg=(); batas=20
+          case "$SATELIT_ANGGARAN" in
+            '') ;;
+            *[!0-9]*) echo "::warning title=satelit_anggaran::input bukan angka; anggaran bawaan skrip dipakai" ;;
+            *) arg=(--anggaran "$SATELIT_ANGGARAN"); batas=45 ;;
+          esac
+          python3 -I scripts/data/satelit_riwayat.py --uji && timeout "${batas}m" python3 -I scripts/data/satelit_riwayat.py "${arg[@]}" \
+            || { echo "::warning title=Riwayat satelit gagal::satelit_riwayat.py gagal atau melewati batas waktu; riwayat.json lama dibiarkan"; exit 1; }
+
+      - name: Simpan riwayat deteksi per satelit
+        if: always() && hashFiles('public/data/satelit/riwayat.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: public/data/satelit/riwayat.json
+          key: satelit-riwayat-${{ github.run_id }}
 
       - name: Kompleks x konsesi (perusahaan)
         run: python3 scripts/data/konsesi_kompleks.py
@@ -354,6 +405,14 @@ jobs:
           python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py || echo "::warning title=kendala::kendala.py gagal; berkas lamanya dibiarkan"
           python3 scripts/data/taktik.py uji && python3 scripts/data/taktik.py || echo "::warning title=taktik::taktik.py gagal; tugas_kompleks.json tanpa rekomendasi"
 
+      # langkah sendiri: isi mundur FIRMS bisa lama, jangan sampai menghabiskan batas waktu kendala/taktik di atas
+      - name: Prioritas pembasahan KHG (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
+
       # SIPPA: pemicu pra-posisi harian (DESAIN-TEKNIS §7.4). Hanya ke R2 sippa/ (dibaca Worker untuk staf), BUKAN public/data.
       # pemicu.py menerima --keluar <dir> (bukan env), jadi /tmp/sippa dipakai lewat argumen.
       - name: Pemicu SIPPA (boleh gagal)
@@ -364,6 +423,7 @@ jobs:
           mkdir -p /tmp/sippa
           python3 scripts/data/sippa/pemicu.py uji || { echo "::error title=Pemicu SIPPA swauji merah::pemicu.py uji gagal"; exit 1; }
           python3 scripts/data/sippa/pemicu.py --keluar /tmp/sippa
+          python3 scripts/data/sippa/prioritas.py uji && python3 scripts/data/sippa/prioritas.py --keluar /tmp/sippa || echo "::warning title=Prioritas SIPPA::prioritas.py gagal; peringkat memakai berkas lama"
 
       - name: Unggah SIPPA ke R2 (boleh gagal)
         if: steps.sippa_pemicu.outcome == 'success'
@@ -375,8 +435,9 @@ jobs:
           set -e
           sha256sum /tmp/sippa/pemicu.json
           npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/pemicu.json --file /tmp/sippa/pemicu.json --content-type application/json --remote
+          if [ -f /tmp/sippa/prioritas.json ]; then npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/prioritas.json --file /tmp/sippa/prioritas.json --content-type application/json --remote; fi
           if [ "${{ github.event.inputs.sippa_tahunan }}" = "1" ]; then
-            for f in kelayakan_kompleks kelayakan_sel zona sel22 kit_nasional aoi_calon; do
+            for f in kelayakan_kompleks kelayakan_sel zona sel22 kit_nasional aoi_calon brgm_pembasahan konsesi_kompleks akses_kompleks; do
               if [ -f data/sippa/keluaran/$f.json ]; then
                 sha256sum data/sippa/keluaran/$f.json
                 npx --yes wrangler@4.42.0 r2 object put poskokarhutla-foto/sippa/$f.json --file data/sippa/keluaran/$f.json --content-type application/json --remote
@@ -398,7 +459,6 @@ jobs:
         continue-on-error: true
         timeout-minutes: 15
         run: python3 scripts/data/luas_citra.py uji && python3 scripts/data/luas_citra.py
-          python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
 
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
       - name: Indeks iklim ENSO/IOD (boleh gagal)
@@ -413,6 +473,9 @@ jobs:
         run: |
           python3 scripts/data/keputusan.py
           python3 scripts/data/bnpb_gis.py
+          # SK status keadaan darurat (CKAN data.bnpb.go.id) dan kejadian + dampak DIBI 365 hari, untuk /semua
+          python3 scripts/umum/status_darurat.py uji && python3 scripts/umum/status_darurat.py || echo "::warning title=status_darurat::gagal; berkas lamanya dibiarkan"
+          python3 scripts/umum/dibi_kejadian.py uji && python3 scripts/umum/dibi_kejadian.py || echo "::warning title=dibi_kejadian::gagal; berkas lamanya dibiarkan"
 
       - name: Rekomendasi pangkalan udara
         run: python3 scripts/data/udara_rekom.py
@@ -445,6 +508,15 @@ jobs:
       - name: Prakiraan asap CAMS (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/asap.py
+
+      # elemen orbit (TLE) 4 satelit dari CelesTrak -> public/data/tle.json, dibaca layar untuk "Satelit berikutnya melintas pukul ...".
+      # Berkas bergulir lewat cache data- (BUKAN di daftar git checkout HEAD) dan terbit bersama public/data; gagal = tle.json lama dibiarkan.
+      - name: Elemen orbit satelit TLE (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 3
+        run: |
+          python3 scripts/data/tle.py uji || { echo "::error title=TLE uji merah::tle.py uji gagal; tle.json lama dibiarkan"; exit 1; }
+          python3 scripts/data/tle.py || { echo "::warning title=TLE gagal::CelesTrak tidak terjangkau; tle.json lama dibiarkan"; exit 1; }
 
       - name: Data pelengkap (boleh gagal, data lama tetap dipakai)
         continue-on-error: true

@@ -1,4 +1,8 @@
-"""NA-03 Iklim bulanan per sel 0,1 derajat: ERA5 seamless via Open-Meteo Archive 1991-2025 -> iklim.json (di-commit).
+"""PEMBANDING (bukan jalur utama sejak 27 Okt 2026, lihat iklim_global.py: CHIRPS + NASA POWER, semua Jawa tanpa kuota).
+Jalur ini menulis iklim.json berformat sama tetapi sumber ERA5; JANGAN dijalankan di atas iklim.json hasil iklim_global.py
+(cache iklim.json lama dipakai sebagai p_era5/et0_era5 oleh iklim_global.py gabung; cadangannya: salin dulu ke tempat lain).
+
+NA-03 Iklim bulanan per sel 0,1 derajat: ERA5 seamless via Open-Meteo Archive 1991-2025 -> iklim.json (di-commit).
 
 MODEL: `models=era5_seamless`, BUKAN `era5_land`. Dicek 27 Okt 2026: Open-Meteo mengembalikan precipitation_sum null
 untuk era5_land di Jawa (1995 dan 2024, harian dan per jam; suhu ada). era5_seamless = ERA5-Land bila ada, ERA5 0,25

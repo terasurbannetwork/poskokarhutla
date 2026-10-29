@@ -236,6 +236,11 @@ uji("keluar: cookie dihapus, POST dari origin lain ditolak", async () => {
   const r = await panggil("POST", "/admin/keluar", "");
   assert.equal(r.status, 303); assert.match(r.h.get("set-cookie"), /sesi_admin=;.*Max-Age=0/);
   assert.equal((await panggil("POST", "/admin/keluar", "", {h: {origin: "https://jahat.contoh"}})).status, 403);
+  /* halaman admin ber-Referrer-Policy no-referrer: form sama-situs datang dengan Origin "null"; sah hanya bila Sec-Fetch-Site same-origin */
+  const kue = {cookie: "sesi_admin=apa.saja", origin: "null"};
+  assert.equal((await panggil("POST", "/admin/keluar", "", {h: {...kue, "sec-fetch-site": "same-origin"}})).status, 303, "Keluar dari halaman admin sendiri");
+  assert.equal((await panggil("POST", "/admin/keluar", "", {h: {...kue, "sec-fetch-site": "cross-site"}})).status, 403, "Origin null lintas situs");
+  assert.equal((await panggil("POST", "/admin/keluar", "", {h: kue})).status, 403, "Origin null tanpa Sec-Fetch-Site");
 });
 
 /* ================================================================ kotak pesan */
@@ -344,8 +349,8 @@ uji("hit HTML: rute HTML dilayani dari aset, aset lain tidak lewat jalur ini", a
   const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8"), bj = readFileSync(path.join(AKAR, "public/banjir/index.html"), "utf8");
   /* Worker sengaja menulis ulang meta og:/twitter:/canonical per rute (src/og_meta.js) dan atribut pil data-pb-*;
      selain itu isi harus sama persis dengan berkas */
-  /* ... dan merek: selain *.workers.dev, "Centurisk97" di judul/meta jadi "Pantau Bencana" (17 Okt 2026) */
-  const tanpaPil = t => t.replace(/ data-pb-(online|tampil)="\d+"/g, "").replace(/Centurisk97/g, "Pantau Bencana")
+  /* ... dan merek: selain *.workers.dev, "Centurisk97" di judul/meta jadi "Centurisk97" (17 Okt 2026) */
+  const tanpaPil = t => t.replace(/ data-pb-(online|tampil)="\d+"/g, "")
     .replace(/<meta (?:property="og:[^"]+"|name="twitter:[^"]+")[^>]*>|<link rel="canonical"[^>]*>/g, "<meta-og>");
   for (const [j, isi] of [["/", idx], ["/peta", idx], ["/k/K0009", idx], ["/banjir/", bj], ["/banjir", bj]]) {
     const r = await panggil("GET", j, undefined, {h: {"accept-language": "id"}});
@@ -386,16 +391,15 @@ uji("centurisk97.id: halaman terkunci sampai masuk, ?ke= dibawa pulang, domain l
   assert.equal((await buka("/f/0123456789abcdef")).status, 303, "tautan foto ikut terkunci");
   assert.notEqual((await panggil("GET", "/")).status, 303, "domain lain tidak terkunci");
   const f = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA}});
-  const tf = await f.text(); assert.match(tf, /action="\/admin\/masuk\?ke=%2Fpeta"/); assert.match(tf, /<h1>Centurisk 97<\/h1>/, "merek Centurisk 97 di centurisk97.id");
-  assert.match((await panggil("GET", "/admin/masuk")).teks, /<h1>Pantau Bencana<\/h1>/, "domain lain tetap Pantau Bencana");
+  const tf = await f.text(); assert.match(tf, /action="\/admin\/masuk\?ke=%2Fpeta"/); assert.match(tf, /<h1>Centurisk97<\/h1>/, "merek Centurisk97 di centurisk97.id");
+  assert.match((await panggil("GET", "/admin/masuk")).teks, /<h1>Centurisk97<\/h1>/, "domain lain tetap Centurisk97");
   const ok = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=%2Fpeta", {method: "POST", redirect: "manual", body: MASUK,
     headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded", origin: "https://centurisk97.id"}});
   assert.equal(ok.status, 303); assert.equal(ok.headers.get("location"), "/peta");
   const kue = ok.headers.get("set-cookie").split(";")[0];
   const hl = await buka("/peta", {cookie: kue}); assert.equal(hl.status, 200, "sesi membuka halaman");
-  /* centurisk97.id = situs Centurisk97 seperti *.workers.dev: data-situs=w (tanpa Tentang & Chat Admin, data perusahaan), judul tidak diganti (19 Okt 2026) */
-  const th = await hl.text(); assert.match(th, /<html[^>]* data-situs="w"/); assert.match(th, /<title>Centurisk97<\/title>/); assert.doesNotMatch(th, /<title>Pantau Bencana/);
-  assert.doesNotMatch(th, /<meta [^>]*content="[^"]*Pantau Bencana|alt="Pantau Bencana"|title="Pantau Bencana"/, "meta, logo: Centurisk97");
+  /* centurisk97.id = situs Centurisk97 seperti *.workers.dev: data-situs=w (tanpa Tentang & Chat Admin, data perusahaan), merek Centurisk97 langsung dari berkas (26 Okt 2026) */
+  const th = await hl.text(); assert.match(th, /<html[^>]* data-situs="w"/); assert.match(th, /<title>Centurisk97<\/title>/);
   for (const ke of ["//jahat.id", "/\\jahat.id", "https://jahat.id"]) {
     const x = await mf.dispatchFetch("https://centurisk97.id/admin/masuk?ke=" + encodeURIComponent(ke), {method: "POST", redirect: "manual", body: MASUK,
       headers: {"cf-connecting-ip": ipBaru(), "user-agent": UA, "content-type": "application/x-www-form-urlencoded"}});

@@ -49,6 +49,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `tests/warga/**`
 - `public/warga/**`
 - `public/admin/**`
+- `public/panduan/**`
 - `scripts/warga/**`
 - `public/foto.*`
 - `public/titik_live.js`

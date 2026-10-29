@@ -48,7 +48,7 @@ export const ADAPTOR = {
     return {titik: lv < 0 ? [] : g.grid.filter(r => r[lv] >= 2).map(r => [r[1], r[0], 5 + r[lv], r[lv] === 3 ? "Awas" : "Siaga"]),
       judul: t[2] ? `${Kartu.hl(fmt(t[2]) + " kabupaten/kota")} berstatus Awas di ${fmt(N.prov_n[2])} provinsi, ${fmt(t[1])} Siaga, ${fmt(t[0])} Waspada` : `Belum ada kabupaten/kota berstatus Awas; ${Kartu.hl(fmt(t[1] + t[0]) + " kabupaten/kota")} Siaga atau Waspada`,
       pil: [...(t[2] ? [[`${fmt(t[2])} kabupaten/kota Awas`, "#c9503a"]] : []), [`${fmt(t[1])} Siaga`, "#e58a45"], [`${fmt(t[0])} Waspada`, "#e3b94e"], ...(m.dibuat ? [dataPil(m.dibuat)] : [])],
-      sumber: b.bagikan?.sumber || "Deteksi Pantau Bencana", legenda: [[b.warna, "Sel Siaga atau Awas (ukuran = tingkat)"]]};
+      sumber: b.bagikan?.sumber || "Deteksi Centurisk97", legenda: [[b.warna, "Sel Siaga atau Awas (ukuran = tingkat)"]]};
   },
   async udara(b) {
     const u = await ambil("/data/udara_kualitas.json"), asap = await ambil("/data/asap.json").catch(() => null);

@@ -213,7 +213,7 @@ Ditambah `qa.pustaka.kajian_min.sippa = 50` (PRD §8.3; separuh resmi atau prime
    desain** di bab tempat keputusan teknisnya diambil, dalam kalimat positif ("titik kerja ditetapkan di ujung
    manifold 2–4 bar karena ..."). Dilarang di naskah: frasa yang merujuk dokumen awal sebagai salah ("dokumen awal
    keliru", "klaim sebelumnya", "tidak berdasar"), daftar kesalahan, tabel putusan NO-GO per dokumen pemilik, dan
-   angka Rp364 M. Pilihan yang ditutup (backbone permanen, injeksi dalam, sumur dalam sebagai bawaan, baja dan pipa
+   angka Rp364 M. Pilihan yang ditutup (backbone permanen, koridor HDPE semi-permanen, injeksi dalam, sumur dalam sebagai bawaan, baja dan pipa
    tertanam, HDPE pasang-bongkar) ditulis sebagai **batas desain** berikut alasan fisik dan biayanya (Bab 7.6).
 3. **"Terbukti" hanya dengan uji yang dikutip.** Kata "terbukti" dan turunannya hanya untuk sekat kanal dan
    pembasahan ulang dengan rujukan program resmi, dan untuk hasil uji lapangan yang dikutip dari naskah aslinya. Untuk
@@ -249,7 +249,7 @@ Ditambah `qa.pustaka.kajian_min.sippa = 50` (PRD §8.3; separuh resmi atau prime
    dipinjam lawan dibeli) dan BCR (inti, + banjir, + banjir + irigasi).
 9. **Gerbang mendahului belanja.** Tiap tingkat anggaran T0–T4 hanya dibuka setelah gerbangnya lulus (Bab 18.2).
    Pengadaan 81 kit nasional ditulis "rencana bersyarat, bukan pengadaan" di tiap tabel, peta, dan slide. Tidak ada
-   skenario jaringan permanen nasional; koridor semi-permanen paling banyak 2 dan hanya setelah musim pilot pertama.
+   jaringan pipa tetap dalam bentuk apa pun: tanpa koridor semi-permanen dan tanpa backbone (keputusan 60).
 10. **Doktrin kedalaman.** Injeksi 0–1,5 m; lengan uji 3–5 m hanya di petak yang probe 1,0 m masih > 50 °C setelah
     injeksi 1,5 m; tidak pernah > 5 m. Kalimat, tabel, atau gambar yang menyebut kedalaman injeksi > 5 m ditolak.
 11. **Gambar teknik tingkat konstruksi, tetap wajib disahkan.** Tiap gambar teknik memuat blok pengesahan insinyur
@@ -572,7 +572,7 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
     Dasar desain: aset tetap akan diam di sebagian besar tahun, sehingga aset harus bergerak.
   - 3.2 Tabel ambang ≥ 3/5/7/10 dari 14 tahun: porsi sel lawan porsi deteksi.
   - 3.3 72% deteksi 2019 dan 85% deteksi 2023 di sel aktif ≥ 3 tahun sebelumnya: dasar pra-posisi; hanya 61 sel aktif
-    ≥ 10 tahun: dasar batas koridor semi-permanen.
+    ≥ 10 tahun: lokasi kronis jarang, jadi aset tetap tidak dibenarkan (keputusan 60).
   - 3.4 MODIS MCD64A1 2001–2025: jumlah tahun terbakar per kompleks (jendela 2,3 km dan 5 km).
   - 3.5 CHIRPS anomali Juli–Oktober per tahun; empat tahun terkering 2006, 2015, 2002, 2019; hubungan dengan pemicu
     pra-posisi (Bab 10.2).
@@ -783,9 +783,8 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
   4. Pilihan teknis apa yang ditutup, dan mengapa?
 - **Isi per subbab:**
   - 7.1 Hibrida empat lapis KD §3.1: pencegahan di sel inti (sekat kanal dan pembasahan ulang, sumur dangkal
-    pra-posisi); kit relay portabel pra-posisi pada tahun kering; protokol perimeter-inti-verifikasi; koridor
-    semi-permanen paling banyak 2 setelah musim pilot pertama dengan syarat KD (koridor 1 km terbakar ≥ 7 dari 14
-    tahun, kit dipakai ≥ 3 kali, izin lahan, rencana anti-pencurian).
+    pra-posisi); kit relay portabel pra-posisi pada tahun kering; protokol perimeter-inti-verifikasi. Tanpa
+    koridor semi-permanen (keputusan 60): lokasi kronis dilayani sekat kanal, sumur dangkal, dan depot kit terdekat.
   - 7.2 Tabel doktrin zona PRD §5.1 (arti, doktrin, sarana inti, yang tidak dilakukan).
   - 7.3 Kit gambut (2 pompa N+1, layflat DN100 1.000 m, DN65 500 m, 8 lance, manifold, flowmeter, sensor, APD 20
     orang) dan kit mineral (tanpa lance dan node suhu, DN100 800 m, 10 nozzle).
@@ -796,8 +795,8 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
   - 7.6 Batas desain sebagai kalimat positif: debit kerja kit 300 L/min (5 L/s) karena delapan lance menyerap paling
     banyak 320 L/min; 600 L/min dengan delapan lance ditulis sebagai contoh konfigurasi yang ditolak (NO-GO
     serapan); jumlah lance per kit dipastikan bench G2; tanpa trunk 2.000 L/min
-    sebagai standar; HDPE hanya untuk koridor dan di luar perimeter aktif (2 km HDPE OD200 sekitar 20 ton dan sekitar
-    160 sambungan fusi); tanpa backbone permanen; injeksi ≤ 5 m; sumur dalam 50–100 m hanya pengecualian; tanpa baja
+    sebagai standar; tanpa HDPE dan tanpa jaringan pipa tetap (2 km HDPE OD200 sekitar 20 ton dan sekitar
+    160 sambungan fusi, tidak tahan bara; keputusan 60); injeksi ≤ 5 m; sumur dalam 50–100 m hanya pengecualian; tanpa baja
     berlapis dan pipa tertanam (sekitar 2,7 kali harga HDPE, merusak hidrologi gambut); umur HDPE 50 tahun berlaku
     pada kondisi standar, tidak di gambut terbakar.
 - **Angka wajib:** `sippa.kit.debit_operasi_ls` (5 L/s, asumsi-kebijakan); `sippa.kit.debit_operasi_l_min` (300 L/min,
@@ -805,7 +804,7 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
   `sippa.kit.panjang_dn65_m` (500 m); `sippa.kit.lance_n` (8); `sippa.modul_banjir.debit_min_ls` (100 L/s, head 3–5
   m, asumsi-kebijakan); `sippa.hdpe.od200_2km_ton` (sekitar 20 ton, estimasi-model); `sippa.hdpe.od200_2km_sambungan`
   (sekitar 160, estimasi-model); `sippa.baja.rasio_harga_hdpe` (sekitar 2,7, asumsi-kebijakan); `sippa.sumur.biaya_titik`
-  (Rp1,5–6 juta, terverifikasi sampai dibuka ke dokumen resmi); `sippa.koridor.maks_n` (2). Semua dari
+  (Rp1,5–6 juta, terverifikasi sampai dibuka ke dokumen resmi). Semua dari
   `data/sippa/parameter.csv` (satu tabel parameter dengan kolom sumber, PRD §6) atau pustaka.
 - **Objek:** Gambar 7.1 diagram empat lapis (G21 diagram berikon, ulang dari Gambar 1.1 tidak boleh: Gambar 1.1
   ringkas alur, Gambar 7.1 rinci per lapis dengan sarana; generator `teknik/lapis.mjs` mode rinci); Tabel 7.1 doktrin
@@ -1135,7 +1134,7 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
   - 15.8 PRD §6.10.8 dan layar `/pipa/pelihara` (Bab 20.7).
 - **Angka wajib:** `sippa.pelihara.kelas_n` (10); `sippa.pelihara.interval.<kelas>.<jenis>_hari` dan `.jam` dari
   `data/sippa/pelihara.csv` (dibangkitkan dari `public/pipa/pelihara.js`, asumsi-kebijakan); `sippa.pelihara.laju.<kelas>`
-  (K1 8%, K2 6%, K3 5%, K4 8%, K5 10%, K6 2%, K7 3%, K9 2%; asumsi-kebijakan); `sippa.pelihara.kit_gambut.laju_tertimbang`
+  (K1 8%, K2 6%, K3 5%, K4 8%, K5 10%, K7 3%, K9 2%; asumsi-kebijakan); `sippa.pelihara.kit_gambut.laju_tertimbang`
   (sekitar 7%, estimasi-model dari BOM); `sippa.pelihara.biaya_tahun.<kelas>` dan `.total_t2` (estimasi-model,
   `bangun/sippa_keuangan.py`); `sippa.pelihara.stok_min.<kode>` (asumsi-kebijakan); `sippa.opex.servis_persen_capex`
   (5–8%); `sippa.target.kehilangan_komponen_persen` (< 5%); `rehab.hukum.hibah_rr_larangan_pembiayaan_huruf` (7).
@@ -1286,7 +1285,7 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
 | `sippa.rab.t1` | Rp1,1–2,1 M | asumsi-kebijakan |
 | `sippa.rab.t2.kd` | Rp10,5–14,7 M | asumsi-kebijakan |
 | `sippa.rab.t2.pinjam`, `sippa.rab.t2.beli` | Rp13,7–18,9 M; Rp16,2–21,4 M | asumsi-kebijakan |
-| `sippa.rab.t3.capex`, `sippa.rab.t3.tco5` | Rp37,6–43,3 M; Rp58–79 M | asumsi-kebijakan |
+| `sippa.rab.t3.capex`, `sippa.rab.t3.tco5` | Rp37,4–43,1 M; Rp64–90 M | asumsi-kebijakan |
 | `sippa.rab.t4.capex` | dihitung dari per-kit T2 dan `kit_nasional.json` (tanpa angka dokumen awal) | asumsi-kebijakan |
 | `sippa.rab.kit_gambut`, `.kit_mineral`, `.modul_banjir` | dari BOM | campuran |
 | `sippa.opex.lokasi_tahun.tambahan` | Rp276–439 juta | asumsi-kebijakan |
@@ -1363,7 +1362,7 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
     untuk lapangan.
   - 20.2 Status kit, jejak gerak, kehilangan komponen per musim (U8).
   - 20.3 Formulir lapangan luring yang terkirim saat ada sinyal; ekspor CSV untuk evaluator independen.
-  - 20.4 Simulator membandingkan semua skenario dengan gerbang keras (menolak backbone > 2 koridor, kedalaman > 5 m,
+  - 20.4 Simulator membandingkan semua skenario dengan gerbang keras (menolak semi-permanen dan backbone, kedalaman > 5 m,
     debit tak terserap); simulasi Three.js pola `public/sim_*` untuk pemahaman ruang, bukan bukti.
   - 20.5 Format pesan dan laju sampel; kerangka siap terima data sejak 2026, sensor mulai 2027.
   - 20.6 Batas alat (G22, G23); manfaat bawaan nol; keluaran alat bukan Data Bencana (Perban BNPB 1/2023).
@@ -1394,8 +1393,8 @@ yang tetap menjadi produsennya); kunci pustaka rehab di `pustaka.json` dipakai a
   - 21.1 Hari ke-0 = tanggal penetapan nota putusan (KD-1); keputusan 14 hari pertama (§3.5).
   - 21.2 Minggu 44–53 PRD §4.1 yang jatuh di 100 hari.
   - 21.3 Bulan demi bulan 2027 PRD §4.2.
-  - 21.4 Tahun demi tahun 2028–2030 PRD §4.3; skala Kalteng 14 kit dan 7 depot hanya bila G5; nasional bertahap mulai
-    provinsi gambut terbesar; paling banyak 25 kit tambahan dan 2 koridor pada 2030.
+  - 21.4 Tahun demi tahun 2028–2030 PRD §4.3; skala Kalteng 20 kit dan 7 depot hanya bila G5; nasional bertahap mulai
+    provinsi gambut terbesar; paling banyak 25 kit tambahan pada 2030.
   - 21.5 Indikator U3–U9 PRD §1.3 (vonis pilot, A/B, waktu gelar, efikasi, keutuhan aset, pemakaian ganda).
   - 21.6 Laporan pilot (minggu 46), laporan mingguan operasi banjir, laporan antara Desember 2027, evaluasi G4/G5,
     evaluasi akhir horizon 2030; semua dari laporan PDF otomatis `/pipa/laporan`.
@@ -1460,7 +1459,7 @@ terbesar). Tidak ada batas (keputusan 11).
 | C | Dasbor 18 Provinsi | satu halaman per provinsi bertemplat identik (L20): kartu angka, peta, luas per tahun 2015–2025, zona bila ada, kit dan depot, musim banjir pasangan, data yang belum ada | `csv: data/sippa/profil_provinsi.csv`; peta `sippa-p-<kode>` | `90-lampiran-c.md` |
 | D | Daftar Bahan sampai Baut dan Kriteria Terima | BOM kit gambut, kit mineral, modul banjir, depot, gudang: kode, uraian kelas kinerja, jumlah, satuan, titik kerja, material, kriteria terima, uji (FAT, tekanan 1,5 kali, kebocoran), interval pemeliharaan, suku cadang per musim, rujukan datasheet (satu-satunya kolom yang boleh memuat merek). Baut, mur, ring, gasket dihitung **dari gambar** SIPPA-G-04, G-05, G-06, G-09 (jumlah per sambungan flensa menurut kelas PN di gambar), bukan diperkirakan; sambungan Storz tanpa baut ditulis "0, sambungan tanpa baut". Baris tanpa gambar bertanda "menunggu gambar" | `csv: data/sippa/bom_rinci.csv` | `90-lampiran-d.md` |
 | E | Rencana Anggaran Biaya Rinci | `harga.csv` lengkap (kode, uraian, satuan, harga, sumber, tanggal, keyakinan, rentang, per), RAB T0–T4, OPEX per tahun 2026–2030 tahun kering dan basah, arus kas dan diskonto 8%, NPV dan BCR 3 × 3, sebaran Monte Carlo, tabel kepekaan | `csv:` dari `data/sippa/keuangan_*.csv` | `90-lampiran-e.md` |
-| F | Gambar Teknik SIPPA-G-01 sampai SIPPA-G-12 | daftar gambar, kriteria terima, lalu 12 lembar A3 lipat: G-01 susunan kit relay; G-02 P&ID kit relay; G-03 detail lance 1,5 m dan teleskopik 3–5 m; G-04 manifold DN100 ke 4 × DN65; G-05 depot depan kontainer 20 kaki; G-06 gudang induk YonTP; G-07 rumah pompa panggung (hanya koridor); G-08 profil trase contoh dari DEMNAS; G-09 modul banjir GA dan P&ID; G-10 telemetri dan daya; G-11 diagram zona A–D dan alur keputusan sarana; G-12 tata letak petak A/B dan grid probe. Blok judul: nomor, revisi, skala, satuan, tanggal, digambar, diperiksa, blok pengesahan insinyur berlisensi kosong, catatan wajib pengesahan | PDF A3 dari `bangun/visual/teknik/*.mjs`; halaman PDF disisipkan pembangun DOCX | `90-lampiran-f.md` (pengantar dan daftar; lembar disisipkan) |
+| F | Gambar Teknik SIPPA-G-01 sampai SIPPA-G-12 | daftar gambar, kriteria terima, lalu 12 lembar A3 lipat: G-01 susunan kit relay; G-02 P&ID kit relay; G-03 detail lance 1,5 m dan teleskopik 3–5 m; G-04 manifold DN100 ke 4 × DN65; G-05 depot depan kontainer 20 kaki; G-06 gudang induk YonTP; G-07 dicabut (keputusan 60); G-08 profil trase contoh dari DEMNAS; G-09 modul banjir GA dan P&ID; G-10 telemetri dan daya; G-11 diagram zona A–D dan alur keputusan sarana; G-12 tata letak petak A/B dan grid probe. Blok judul: nomor, revisi, skala, satuan, tanggal, digambar, diperiksa, blok pengesahan insinyur berlisensi kosong, catatan wajib pengesahan | PDF A3 dari `bangun/visual/teknik/*.mjs`; halaman PDF disisipkan pembangun DOCX | `90-lampiran-f.md` (pengantar dan daftar; lembar disisipkan) |
 | G | Prosedur Operasi Standar dan Formulir | SOP-01 sampai SOP-06 bernomor (tujuan, pelaku RACI, prasyarat, langkah bernomor, titik berhenti, formulir, rujukan); formulir G3-lite, probe empat kedalaman, BBM, gerak kit, survei trase, inspeksi pasca-musim | teks; formulir juga `pipa/formulir/*.pdf` | `90-lampiran-g.md` |
 | H | Protokol Pilot dan Uji A/B | protokol pilot Oktober 2026 (lokasi, alat, urutan sesi, data yang dicatat, vonis); protokol A/B pra-registrasi empat lengan (hipotesis, outcome primer dan sekunder, ukuran petak, pengacakan petak, n, analisis, aturan berhenti, etika: tidak menyalakan gambut, persetujuan pemegang hak); formulir analisis | teks + tabel; salinan `pipa/protokol-ab.md` | `90-lampiran-h.md` |
 | I | Draf Surat Permintaan Data | 13 surat berkop BNPB (keputusan 27 mencabut rehab Q15). Tiga baru dari bahan rehab: Kementerian PU (Bina Marga, Cipta Karya, SDA: jembatan, SPAM, waktu pulih per kab/kota), Mabes TNI AD (daftar jembatan dan sumur Satgas), Mabes Polri (daftar Jembatan Merah Putih Presisi dan sumur); surat Badan Geologi diperluas dengan CAT, zona konservasi, sumur 2019–2026, dan surat BNPB internal dengan kolom DIBI dan stok bailey DSP. Sepuluh semula: BIG; BWS Kalimantan II; walidata KHG atau badan restorasi gambut yang berlaku; BMKG; BPBD Kalteng dan kabupaten pilot; Manggala Agni; Badan Geologi; ATR/BPN dan pemda; LKPP dan penyedia; BNPB internal), ID data D01–D36 pemilik dipertahankan, format dan tenggat | teks; salinan `pipa/surat/*.md` | `90-lampiran-i.md` |
@@ -1505,7 +1504,7 @@ Rekomendasi yang pemimpinnya bukan BNPB masuk `kelompok: lintas`.
 | SR-13 | Uji irigasi di satu kabupaten | infrastruktur | baru | Direktorat Pengelolaan Logistik dan Peralatan | Kementerian Pertanian; BPBD | 2026-2027 | catatan pinjam dan syarat keras terpenuhi | Bab 11; KD-7 |
 | SR-14 | Gelar latihan basah tahunan | kapasitas | baru | Direktorat Kesiapsiagaan | BPBD; Kemenhut (Manggala Agni) | 2028-2030 | gerbang G6 tiap lokasi tiap tahun | Bab 10 |
 | SR-15 | Putus gerbang efikasi dan skala | data | baru | Deputi Bidang Sistem dan Strategi; Deputi Bidang Penanganan Darurat | – | 2028-2030 | laporan evaluasi independen G4/G5 | Bab 16 |
-| SR-16 | Siapkan skala Kalteng bila lulus | infrastruktur | baru | Deputi Bidang Logistik dan Peralatan | BPBD Kalteng; Kemenhut | 2028-2030 | rencana 14 kit dan 7 depot terhubung G5 | Bab 6, 18, 21 |
+| SR-16 | Siapkan skala Kalteng bila lulus | infrastruktur | baru | Deputi Bidang Logistik dan Peralatan | BPBD Kalteng; Kemenhut | 2028-2030 | rencana 20 kit dan 7 depot terhubung G5 | Bab 6, 18, 21 |
 | SR-17 | Tahapkan rencana nasional bersyarat | pembiayaan | baru | Biro Perencanaan; Deputi Bidang Logistik dan Peralatan | Bappenas; Kemenkeu | 2028-2030 | paling banyak 25 kit pada 2030 setelah G5 | Bab 6, 18 |
 | SR-18 | Rumuskan opsi peran konsesi | regulasi | baru | Deputi Bidang Pencegahan | Kemenhut; KLH | 2028-2030 | naskah opsi dengan syarat tertulis | Bab 17 |
 | SR-19 | Serahkan harga kontrak heli | data | baru | Direktorat Dukungan Sumber Daya Darurat; Biro Keuangan | – | 100-hari | slot heli terisi di `angka.json` | Bab 18; KD-5 |

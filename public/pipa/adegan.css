@@ -7,17 +7,41 @@
 .sp-3d-kanvas{display:grid;gap:var(--sp-3);min-width:0;padding:var(--sp-4);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
 .sp-3d-atas{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-3)}
 .sp-3d .ad-seg button{min-height:44px;height:auto}
-.sp-3d-wadah{position:relative;height:clamp(360px,62vh,640px);border-radius:var(--r-sm);background:linear-gradient(180deg,color-mix(in srgb,var(--info) 9%,var(--surface)),var(--surface));overflow:hidden;contain:layout paint}
+.sp-3d-wadah{position:relative;height:clamp(360px,62vh,640px);border-radius:var(--r-sm);background:linear-gradient(180deg,color-mix(in srgb,var(--info) 14%,var(--surface)),var(--surface));overflow:hidden;contain:layout paint}
 .sp-3d-pentas{position:absolute;inset:0}
 .sp-3d-kanvas-el{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
 .sp-3d-kanvas-el:active{cursor:grabbing}
 .sp-muat{position:absolute;inset:0;display:grid;place-content:center;gap:var(--sp-3);justify-items:center;color:var(--ink2);font-size:13px;font-weight:700}
 .sp-muat .sp-kerangka{width:160px;min-height:12px;height:12px;border-radius:999px}
 .sa-lb{position:absolute;left:var(--sp-3);bottom:var(--sp-3);right:var(--sp-3);display:flex;flex-wrap:wrap;gap:var(--sp-2);pointer-events:none}
-.sa-lb span{padding:5px 10px;border-radius:999px;background:color-mix(in srgb,var(--card) 92%,transparent);color:var(--ink);font-size:12px;font-weight:700;box-shadow:0 1px 3px rgb(11 37 69 / .14)}
+.sa-lb span{padding:5px 10px;border-radius:999px;background:color-mix(in srgb,var(--card) 92%,transparent);color:var(--ink);font-size:12px;font-weight:700;box-shadow:0 1px 3px color-mix(in srgb,var(--ink) 14%,transparent)}
 .sa-lb span:empty{display:none}
 .sp-3d-kamera{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
-.sp-3d-kamera[hidden]{display:none}
+.sp-3d-kamera[hidden]{display:none}.sp-3d-waktu{display:flex;flex-wrap:wrap;align-items:center;gap:var(--sp-3) var(--sp-4)}
+.sp-3d-waktu[hidden],.sp-3d-geser[hidden]{display:none}
+.sp-3d-waktu .ad-tombol{min-height:44px;padding:0 var(--sp-4)}
+.sp-3d-waktu .ad-tombol[aria-pressed="true"]{background:var(--surface)}
+.sp-3d-waktu .ad-seg button{min-width:52px}
+.sp-3d-geser{flex:1 1 220px;display:flex;align-items:center;gap:var(--sp-3);min-width:0}
+.sp-3d-geser input{flex:1;min-width:0;min-height:44px;accent-color:var(--brand2);cursor:pointer;margin:0}
+.sp-3d-geser output{min-width:92px;font-size:12.5px;font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums;text-align:right}
+.sa-lapis{position:absolute;inset:0;overflow:hidden;pointer-events:none}
+.sa-etiket{position:absolute;left:0;top:0;translate:-50% calc(-100% - 12px);display:grid;gap:1px;padding:4px 9px 5px;border-radius:8px;background:color-mix(in srgb,var(--card) 90%,transparent);box-shadow:0 1px 4px color-mix(in srgb,var(--ink) 22%,transparent);font-size:11.5px;line-height:1.25;white-space:nowrap;will-change:transform}
+.sa-etiket[hidden]{display:none}
+.sa-r-kiri{translate:calc(-100% - 9px) -50%}
+.sa-r-kanan{translate:9px -50%}
+.sa-r-bawah{translate:-50% 12px}
+.sa-r-kiri::after,.sa-r-kanan::after{top:50%;width:9px;height:2px;margin:-1px 0 0}
+.sa-r-kiri::after{left:100%}
+.sa-r-kanan::after{left:-9px}
+.sa-r-bawah::after{top:-10px}
+.sa-etiket::after{content:"";position:absolute;left:50%;top:100%;width:2px;height:10px;margin-left:-1px;background:color-mix(in srgb,var(--ink) 55%,transparent)}
+.sa-etiket b{font-weight:800;color:var(--ink)}
+.sa-etiket span{font-weight:600;color:var(--ink2);font-variant-numeric:tabular-nums}
+.sa-etiket span:empty{display:none}
+.sa-skala{position:absolute;right:var(--sp-3);top:var(--sp-3);display:grid;justify-items:end;gap:3px;padding:5px 9px 4px;border-radius:8px;background:color-mix(in srgb,var(--card) 90%,transparent);box-shadow:0 1px 3px color-mix(in srgb,var(--ink) 14%,transparent);pointer-events:none;font-size:11.5px;font-weight:700;color:var(--ink)}
+.sa-skala i{display:block;height:7px;min-width:10px;border:2px solid var(--ink);border-top:0}
+
 .sp-3d-kamera .ad-tombol{min-height:44px;padding:0 var(--sp-4)}
 .sp-3d-kamera .ad-tombol[aria-pressed="true"]{background:var(--surface)}
 .sa-legenda{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-4);font-size:12.5px;font-weight:600;color:var(--ink2)}
@@ -104,6 +128,8 @@
   .sp-3d{gap:var(--sp-3)}
   .sp-3d-kanvas{padding:var(--sp-3)}
   .sp-3d-wadah{height:56vh;min-height:300px}
+  .sa-etiket{padding:2px 6px;font-size:10.5px}
+  .sa-etiket.sa-kecil,.sa-e-sumber,.sa-e-bara,.sa-e-air,.sa-e-dz,.sa-e-zona{display:none}
   .sp-3d-atas .ad-seg{width:100%}.sp-3d-atas .ad-seg button{flex:1;padding:0 var(--sp-2)}
   .sp-3d-kamera .ad-tombol{flex:1 1 calc(33% - var(--sp-2));padding:0 var(--sp-2)}
   .sp-3d-panel{display:flex;flex-direction:column}
@@ -112,3 +138,6 @@
   .sp-angka b{font-size:19px}
 }
 @media (prefers-reduced-motion:reduce){.sp-3d-kontrol summary::after{transition:none}}
+
+.sa-etiket.sa-kecil{padding:1px 6px;border-radius:6px;font-size:10.5px;box-shadow:none}
+.sa-etiket.sa-kecil b{font-weight:700;color:var(--ink2)}

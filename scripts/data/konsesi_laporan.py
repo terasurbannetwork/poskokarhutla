@@ -6,6 +6,9 @@ Pakai:  python3 scripts/data/konsesi_laporan.py        # -> public/data/konsesi2
 Titik: VIIRS S-NPP keyakinan nominal/tinggi. Arsip lokal data/raw/sebaran/viirs_veg_panjang.pkl (api vegetasi, s.d. titik
 terakhir arsip), lalu disambung FIRMS area API VIIRS_SNPP_NRT (FIRMS_MAP_KEY di .env / env) sampai hari ini. Hari = kalender
 WIB (konvensi SiPongi). Arsip tidak ada di Actions, jadi skrip ini dijalankan manual lalu hasilnya di-commit.
+S-NPP berhenti didistribusikan 1 Nov 2026 13.00 UTC (firms_sumber.SNPP_AKHIR): laporan SENGAJA tetap berdefinisi S-NPP (satu sensor, titik & piksel unik per konsesi
+tidak bisa dibagi rasio N20/N), jadi VIIRS_SNPP_NRT hanya diminta untuk hari <= 1 Nov 2026 (menurut tanggal data, kapan pun dijalankan) dan laporan berhenti di titik S-NPP terakhir
+("sampai" di index.json jujur); galat FIRMS = ::warning dan laporan berhenti di titik terakhir yang sudah ada, bukan mati.
 
 Luas indikasi terbakar = jumlah piksel VIIRS 375 m unik yang kemasukan titik x 14,06 ha, dipotong luas konsesi. Ini jejak
 piksel, bukan peta luas bakar resmi; satu piksel bisa terbakar sebagian. Kejadian = rangkaian hari bertitik dengan jeda <= 2 hari.
@@ -15,6 +18,7 @@ import bisect, csv, datetime as dt, io, json, math, os, pickle, re, sys, urllib.
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from aktor_walhi import Indeks, Kompleks, cincin, di_dalam, kunci  # noqa: E402
+import firms_sumber as FS  # noqa: E402
 from wilayah import Wilayah  # noqa: E402
 
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "../..")
@@ -83,6 +87,32 @@ def kunci_firms():
     return k
 
 
+def tambah_nrt(akhir, k, sekarang, ambil):
+    """[(waktu UTC, lat, lon, frp)] FIRMS VIIRS_SNPP_NRT keyakinan n/h sesudah `akhir` sampai `sekarang`, paling jauh tanggal FS.SNPP_AKHIR (aturan menurut tanggal data: dijalankan
+    sesudah batas pun hari <= 1 Nov masih diminta, hari sesudahnya tidak ada datanya); galat atau balasan bukan CSV = ::warning dan berhenti dengan yang sudah terkumpul (tidak melempar)."""
+    out = []
+    if akhir.date() >= FS.SNPP_AKHIR.date():
+        print(f"::warning title=S-NPP berhenti::VIIRS_SNPP_NRT tidak ada sesudah {FS.SNPP_AKHIR:%Y-%m-%d %H:%M} UTC; laporan konsesi berhenti di {akhir:%Y-%m-%d %H:%M} UTC", file=sys.stderr)
+        return out
+    hari, kini = akhir.date(), min(sekarang.date(), FS.SNPP_AKHIR.date())
+    while hari <= kini:
+        n = min(5, (kini - hari).days + 1)
+        try:
+            teks = ambil(f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/VIIRS_SNPP_NRT/{BBOX}/{n}/{hari.isoformat()}")
+            baris = list(FS.csv_sah(teks))
+        except Exception as e:
+            print(f"::warning title=S-NPP NRT gagal::{FS.sensor_url(type(e).__name__ + ': ' + str(e))}; laporan berhenti di titik yang sudah ada", file=sys.stderr)
+            break
+        for r in baris:
+            if r["confidence"] not in ("n", "h"):
+                continue
+            w = dt.datetime.strptime(r["acq_date"] + r["acq_time"].zfill(4), "%Y-%m-%d%H%M").replace(tzinfo=dt.timezone.utc)
+            if w > akhir:
+                out.append((w, float(r["latitude"]), float(r["longitude"]), float(r["frp"])))
+        hari += dt.timedelta(days=n)
+    return out
+
+
 def titik():
     """[(waktu UTC, lat, lon, frp)] sejak 1 Jan 2026 WIB."""
     v = pickle.load(open(VIIRS, "rb"))
@@ -95,20 +125,9 @@ def titik():
     if not k:
         print("FIRMS_MAP_KEY tidak ada: titik berhenti di", akhir, file=sys.stderr)
         return out, akhir
-    hari, kini = akhir.date(), dt.datetime.now(dt.timezone.utc).date()
-    tambah = 0
-    while hari <= kini:
-        n = min(5, (kini - hari).days + 1)
-        url = f"https://firms.modaps.eosdis.nasa.gov/api/area/csv/{k}/VIIRS_SNPP_NRT/{BBOX}/{n}/{hari.isoformat()}"
-        teks = urllib.request.urlopen(url, timeout=120).read().decode()
-        for r in csv.DictReader(io.StringIO(teks)):
-            if r["confidence"] not in ("n", "h"):
-                continue
-            w = dt.datetime.strptime(r["acq_date"] + r["acq_time"].zfill(4), "%Y-%m-%d%H%M").replace(tzinfo=dt.timezone.utc)
-            if w > akhir:
-                out.append((w, float(r["latitude"]), float(r["longitude"]), float(r["frp"])))
-                tambah += 1
-        hari += dt.timedelta(days=n)
+    tambah_fix = tambah_nrt(akhir, k, dt.datetime.now(dt.timezone.utc), lambda u: urllib.request.urlopen(u, timeout=120).read().decode())
+    out += tambah_fix
+    tambah = len(tambah_fix)
     out.sort()
     print(f"arsip s.d. {akhir:%Y-%m-%d %H:%M} UTC + {tambah} titik FIRMS NRT", file=sys.stderr)
     return out, out[-1][0]
@@ -304,7 +323,7 @@ def bangun():
            "sampai": (akhir + WIB).strftime("%Y-%m-%d %H:%M WIB"), "dari": "2026-01-01",
            "sumber_titik": "NASA FIRMS VIIRS S-NPP 375 m, keyakinan nominal/tinggi (arsip SP + NRT)",
            "sumber_konsesi": sumber, "ha_piksel": round(HA_PIKSEL, 2), "jeda_kejadian": JEDA,
-           "celah": "FIRMS kosong 8 Mei - 1 Jun 2026", "prov": []}
+           "celah": "Satelit S-NPP tanpa data: 10-12 Mar, 28-30 Apr, 1-2 Jun, 11-16 Jul, 3 Agu 2026", "prov": []}
     for kd, rs in sorted(prov.items()):
         rs.sort(key=lambda r: -r["titik"])
         with open(os.path.join(KELUAR, f"{kd}.json"), "w") as f:
@@ -329,7 +348,40 @@ def tulis_ringkas(kd, nama, rs):
         json.dump({"prov": kd, "nama": nama, "perusahaan": baris}, f, ensure_ascii=False, separators=(",", ":"))
 
 
+def uji_tambah_nrt():
+    """tambah_nrt tanpa jaringan: sebelum SNPP_AKHIR (normal, galat, kepala saja), sesudahnya tidak diminta sama sekali."""
+    import contextlib
+    HDR = "latitude,longitude,acq_date,acq_time,confidence,frp\n"
+    akhir = dt.datetime(2026, 10, 29, 6, 0, tzinfo=dt.timezone.utc)
+    urls, err = [], io.StringIO()
+    def ambil(mode):
+        def f(u):
+            urls.append(u)
+            if mode == "galat":
+                raise RuntimeError("HTTP Error 400: Bad Request " + u)
+            if mode == "kosong":
+                return HDR
+            return HDR + "-2.0,113.0,2026-10-29,0900,n,3.5\n-2.0,113.1,2026-10-29,0900,l,3.5\n-2.0,113.2,2026-10-29,0500,h,3.5\n"   # tinggi tapi sebelum akhir, rendah: ditolak
+        return f
+    with contextlib.redirect_stderr(err):
+        r = tambah_nrt(akhir, "RAHASIA999", FS.PRA, ambil("ok"))
+        assert [x[1:] for x in r] == [(-2.0, 113.0, 3.5)] and urls and all("/VIIRS_SNPP_NRT/" in u for u in urls), r
+        urls.clear()
+        assert tambah_nrt(akhir, "RAHASIA999", FS.PRA, ambil("galat")) == [] and urls, "galat sebelum batas: peringatan, bukan mati"
+        assert "::warning title=S-NPP NRT gagal" in err.getvalue() and "RAHASIA999" not in err.getvalue(), err.getvalue()
+        assert tambah_nrt(akhir, "K", FS.PRA, ambil("kosong")) == []
+        urls.clear()
+        r2 = tambah_nrt(akhir, "K", FS.SESUDAH, ambil("ok"))
+        assert r2 and urls and max(dt.date.fromisoformat(u.split("/")[-1]) for u in urls) <= FS.SNPP_AKHIR.date(), "dijalankan sesudah batas: hari <= 1 Nov tetap diminta, tidak lebih"
+        assert [u.split("/")[-2:] for u in urls] == [["4", "2026-10-29"]], urls   # satu permintaan 4 hari: 29 Okt s.d. 1 Nov
+        urls.clear()
+        assert tambah_nrt(dt.datetime(2026, 11, 1, 12, 0, tzinfo=dt.timezone.utc), "K", FS.SESUDAH, ambil("ok")) == [] and not urls, "arsip sudah sampai tanggal batas: tak ada yang diminta"
+        urls.clear()
+        assert tambah_nrt(akhir, "K", FS.SESUDAH, ambil("galat")) == [] and len(urls) == 1, "sesudah batas, galat: peringatan dan berhenti"
+
+
 def uji():
+    uji_tambah_nrt()
     idx = json.load(open(os.path.join(KELUAR, "index.json")))
     assert idx["prov"], "index.json tanpa provinsi"
     for p in idx["prov"]:

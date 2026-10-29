@@ -27,6 +27,24 @@
         "formulir.js": "0aec5cf728837c4edd59b8081f557558a939366fed064a6cb5b689e96c2e3d65",
         "ikon.js": "933309865cdaa07ee668345dcc251997c7006ab829f4b8caaec2f5393836ad51"
       }
+    },
+    "4": {
+      "sw": 4,
+      "sha256": {
+        "lapangan.js": "5efa7e0d905528a6e8a760c0b636656070e8a6f4d2832af8e28d610f697c9fd5",
+        "antre.js": "92479399cd0173469b15e69ec0140a5c3e2678b0f73e363e7358dc1b71b504d5",
+        "formulir.js": "9f4410bfcaa03d9f08df0e81650f02b428d5707a27a06eb25a607b80cc3054c6",
+        "ikon.js": "933309865cdaa07ee668345dcc251997c7006ab829f4b8caaec2f5393836ad51"
+      }
+    },
+    "5": {
+      "sw": 5,
+      "sha256": {
+        "lapangan.js": "65962473f208632bfe01c500bc42da13057e6b81ea4b601a6d7bc4676b5dae9e",
+        "antre.js": "92479399cd0173469b15e69ec0140a5c3e2678b0f73e363e7358dc1b71b504d5",
+        "formulir.js": "9f4410bfcaa03d9f08df0e81650f02b428d5707a27a06eb25a607b80cc3054c6",
+        "ikon.js": "933309865cdaa07ee668345dcc251997c7006ab829f4b8caaec2f5393836ad51"
+      }
     }
   },
   "css": {
@@ -48,6 +66,31 @@
     "4": {
       "sha256": {
         "pipa.css": "917bb9bc14b9e0efc36b9c90ff0f6daa60a2389373f04588c9f4130e6c1a8ed9"
+      }
+    },
+    "5": {
+      "sha256": {
+        "pipa.css": "3ec76d8c7a430ea8f57f2950a71286cb3519baf92f3d2ffdcab717415d74d0db"
+      }
+    },
+    "6": {
+      "sha256": {
+        "pipa.css": "d76a2e993b24a3df5881641fecc02b28a6cc9500d729e1763ae3c45ad7795374"
+      }
+    },
+    "7": {
+      "sha256": {
+        "pipa.css": "c8971cba0345a07f7c686f8928154f9272fd8ab7cc07af81d5c6e863d4eb0de5"
+      }
+    },
+    "8": {
+      "sha256": {
+        "pipa.css": "1bac1c9197835bb3aa3e7fb0a1aa420d0e404e285e1d2878e93acd4e93b45ad3"
+      }
+    },
+    "9": {
+      "sha256": {
+        "pipa.css": "f20b1cfdff4d46d5212a39f20331d616a3f856e539d9812ebcb8aca0b8a33bd3"
       }
     }
   }
