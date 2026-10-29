@@ -64,7 +64,7 @@ const Peta = {
       if (w) p.style.setProperty("--lp", w + "px"); if (t) p.style.setProperty("--tw", t + "px"); };
     const ro = new ResizeObserver(lebar); ro.observe($(".panel")); ro.observe($(".tools")); lebar();
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
-    peta.once("load", () => window.NASA?.pasang(peta, ["imerg", "modis721"]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
+    peta.once("load", () => window.NASA?.pasang(peta, ["imerg", "modis721", ["plkemenhut", "Tutupan lahan"]]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
     peta.touchZoomRotate.disableRotation();
     import("../inti/peta/konteks.js").then(m => m.pasang(peta, "banjir")).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
@@ -285,7 +285,7 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
     Posko.tampil(S.mode !== "riwayat"); Gelembung.segarkan();
     renderLegenda();
   }); });
-$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
+$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta || i.dataset.l?.startsWith("nasa_")) return;   /* nasa_* diurus inti/peta/nasa.js */
   const k = i.dataset.l, map = {pos: [], hujanukur: [], peluang: [], kejadian: [], pompa: [], gfm: [], padam: [], subsiden: [], bendungan: [], embung: [], pasut30: [], pospu: [], posko: ["posko", "posko-lbl"], wilayah: ["wil-fill"], sungai: ["sungai"], rob: ["rob"], satelit: ["satelit"]}[k];
   if (k === "hujan" || k === "h3") nanti(() => { Peta.pasangLapis("hujan"); if (!peta.getLayer("hujan")) return; const on = Peta.lihat("hujan") || Peta.lihat("h3"); peta.setLayoutProperty("hujan", "visibility", on ? "visible" : "none");
     const g = Peta.gambarHujan(); peta.getSource("hujan").updateImage({url: g.url, coordinates: g.kor}); renderLegenda(); });

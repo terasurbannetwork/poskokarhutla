@@ -54,6 +54,7 @@ const Peta = {
       if (w) p.style.setProperty("--lp", w + "px"); if (t) p.style.setProperty("--tw", t + "px"); };
     const ro = new ResizeObserver(lebar); ro.observe($(".panel")); ro.observe($(".tools")); lebar();
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
+    window.NASA?.pasang(peta, [["plkemenhut", "Tutupan lahan"]]);   /* tutupan lahan Kemenhut dari lapisan_tambahan.json, inti/peta/nasa.js */
     peta.touchZoomRotate.disableRotation();
     import("../inti/peta/konteks.js").then(m => m.pasang(peta, "gempa")).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
@@ -205,7 +206,7 @@ function renderPita() {
 
 /* ---------- Overlay ---------- */
 const setLapis = (k, on) => { const i = document.querySelector(`#lapis input[data-l="${k}"]`); if (i && i.checked !== on) { i.checked = on; i.dispatchEvent(new Event("change", {bubbles: true})); } };
-$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l;
+$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return; const k = i.dataset.l; if (k?.startsWith("nasa_")) return;
   Promise.resolve(["lempeng", "sesar", "riwayat", "kekerapan", "bahaya", "satelit"].includes(k) ? Peta.pasangLapis(k) : 0).then(() => { (LAPIS_PETA[k] || []).forEach(l => peta.getLayer(l) && peta.setLayoutProperty(l, "visibility", i.checked ? "visible" : "none")); renderLegenda(); }); });
 $("#lapisBtn").onclick = () => $("#lapis").classList.toggle("buka");
 $("#lapisLipat").onclick = e => { const b = e.currentTarget, det = document.querySelectorAll("#lapis details"), tutup = [...det].some(d => d.open); det.forEach(d => d.open = !tutup); b.classList.toggle("tutup", tutup); };

@@ -120,3 +120,39 @@ untuk memastikan kegagalan yang sudah terlihat, periode 2024-2025 terpakai tanpa
   sel dihitung dari H3 hari latih, termasuk hari yang sedang dinilai pada baris latih (tidak pada validasi/uji). (c) `bahaya_b` InaRISK
   belum terbukti bebas dari DIBI (InaRISK disusun dari data kejadian historis); bila ya, model mewarisi sebagian label. (d) laju
   `frek_dibi` ekspansif tahun pertama latih memakai DIBI 2008-2015 yang lebih kurang lengkap dari tahun-tahun belakangan.
+
+## 11. LAB tutupan lahan tahunan (29 Oktober 2026): TIDAK DIUSULKAN
+
+Pertanyaan: apakah porsi dan perubahan tutupan lahan tahunan memperbaiki GBDT kabupaten-hari? Skrip lab terpisah `scripts/banjir/lab_tutupan.py`
+(mengimpor `model_kab.py`/`uji_balik.py`, tidak mengubahnya; keluaran `data/raw/banjir/lab_tutupan/`). Uji 2024-2025 TIDAK dibuka.
+
+- Sumber: Impact Observatory Annual LULC v02 (10 m, 2017-2023, CC BY 4.0) lewat STAC Microsoft Planetary Computer; COG dibaca terdesimasi
+  100 x 100 contoh per sel hujan 0,25 derajat per tahun (98 sel x 7 tahun, ~1 menit dengan 6 utas). Awan (kelas 10) dan nodata keluar dari penyebut.
+  Fitur kab = rata-rata atas sel hujan kab itu.
+- Tanpa bocor waktu: kejadian tahun T memakai tutupan <= T-1. Batas data: IO 2017-2023, sehingga tahun latih 2016-2017 tidak punya fitur.
+- Sampel: 37 kab yang seluruh sel ERA5-nya sudah di cache (MODEL_KAB_SEBAGIAN; 4 dari 102 sel sampel penuh belum ada, jadi `model_kab.py latih`
+  penuh belum bisa jalan). Bukan sampel penuh 39 kab.
+- Fitur: V1 = `lc_built`, `lc_trees`, `lc_fveg` (porsi T-1). V2 = V1 + `lc_d_built1`, `lc_d_trees1` (T-1 dikurangi T-2). Kehilangan trees di hulu/DAS
+  TIDAK diuji (butuh poligon DAS per kab; hanya porsi tree di sel kab).
+- Pembagian: latih 2018-2021 (V1) atau 2019-2021 (V2; delta butuh T-2 >= 2017), validasi 2022-2023. Hiperparameter TETAP dari `kandidat.json`
+  sebagian (dalam 3, lr 0,05, 140 pohon), tidak disetel ulang; model dasar (15 fitur) dan model +tutupan dilatih pada barisan SAMA, rata-rata tiga
+  biji (1, 2, 3), Platt di validasi seperti `latih`. Metrik tetap yang sudah ada: ETS pada jumlah alarm = aturan Waspada/Siaga, dETS berpasangan,
+  CI95 bootstrap blok kab x tahun 1.000 ulangan biji 11, Brier skill.
+
+Hasil validasi 2022-2023 (27.010 kab-hari, 308 kejadian, 37 kab):
+
+| | AUC dasar -> baru | BSS baru vs dasar (CI95) | dETS Waspada (alarm 7.417) | dETS Siaga (alarm 945) |
+| --- | --- | --- | --- | --- |
+| V1 level, latih 602 kejadian | 0,7993 -> 0,8137 | +0,0003 [-0,0023, +0,0029] | +0,0008 [-0,0006, +0,0026] | -0,0036 [-0,0154, +0,0084] |
+| V2 +delta, latih 475 kejadian | 0,7993 -> 0,8094 | +0,0002 [-0,0017, +0,0021] | +0,0008 [-0,0008, +0,0026] | -0,0018 [-0,0109, +0,0066] |
+
+Semua CI melewati nol; dETS Siaga titik negatif; ETS Waspada 0,0187 -> 0,0195 (POD 0,724 -> 0,744). Kenaikan AUC kecil tidak menjadi perbaikan Brier atau ETS.
+Per biji dETS Siaga berganti tanda (V1 -0,0064/-0,0009/-0,0036; V2 +0,0027/-0,0036/+0,0009). Kriteria (batas bawah CI95 dETS > 0 di kedua level) tidak
+terpenuhi untuk keduanya. **Keputusan: fitur tutupan tidak diusulkan; tidak ada pasokan JSON tutupan.**
+
+Catatan kejujuran: dua varian diuji (multiplisitas) dan keduanya gagal, jadi tidak ada koreksi yang perlu. Hasil negatif ini berlaku untuk 37 kab dan label DIBI
+tingkat kab-hari yang berisik; tutupan IO berubah kecil dan berderau antar-tahun (klasifikasi ulang tiap tahun), sedangkan tutupan statis sebagian sudah
+tertangkap `frek_dibi` dan `bahaya_b`. Hiperparameter diambil dari `kandidat.json` yang disetel pada validasi 2022-2023 yang sama
+dengan fitur dasar (validasi dipakai ganda untuk Platt dan hiper); biasnya menguntungkan model dasar, jadi searah dengan hasil negatif, bukan
+melemahkannya (catatan validasi-model 29 Okt 2026). Mengulang: `V=<venv numpy+rasterio>; $V scripts/banjir/lab_tutupan.py ambil; python3 scripts/banjir/lab_tutupan.py jalan`
+(swauji: `python3 scripts/banjir/lab_tutupan.py uji`).
