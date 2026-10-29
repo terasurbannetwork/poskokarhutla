@@ -25,11 +25,12 @@ export function susun(peluang, tanggal, { top = TOP, ambang = AMBANG } = {}) {
     blok.push({ t, n: baris.length, baris: baris.slice(0, top) })
   }
   if (!blok.some((b) => b.n)) return null
-  const dibuat = String(peluang.dibuat || '').slice(0, 10)
-  const isi = blok.map((b) => `${tglId(b.t)}\n` + (b.n ? b.baris.map((x) => `- ${x.nama}: ${pct(x.a)} hujan 50 mm atau lebih (${kata(x.a)})` + (x.b >= ambang ? `, ${pct(x.b)} hujan 100 mm atau lebih` : '')).join('\n') + (b.n > b.baris.length ? `\n(${b.n - b.baris.length} kabupaten lain di atas ambang)` : '') : '- tidak ada kabupaten dengan peluang 10% atau lebih'))
+  const wibIso = peluang.dibuat ? new Date(Date.parse(peluang.dibuat) + 7 * 3600e3).toISOString() : ''
+  const dibuat = wibIso.slice(0, 10), jamBuat = wibIso.slice(11, 16).replace(':', '.')
+  const isi = blok.map((b) => `${tglId(b.t)}\n` + (b.n ? b.baris.map((x) => `- ${x.nama}: ${pct(x.a)} hujan 50 mm atau lebih (${kata(x.a)})` + (x.b >= ambang ? `, ${pct(x.b)} hujan 100 mm atau lebih` : '')).join('\n') + (b.n > b.baris.length ? `\n(${b.n - b.baris.length} kabupaten lain di atas ambang)` : '') : `- tidak ada kabupaten dengan peluang ${pct(ambang)} atau lebih`))
   return [`Peringatan dini hujan lebat per kabupaten, ${tglId(tanggal)}`, '', ...isi.flatMap((s) => [s, '']),
-    `Peluang kabupaten adalah nilai tertinggi dari titik prakiraan (kotak 1 derajat) di wilayahnya, bukan peluang di seluruh kabupaten. Hanya kabupaten dengan peluang 10% atau lebih yang ditulis. Ini peluang hujan, bukan status banjir.`,
-    `Sumber: ECMWF IFS ansambel ${peluang.anggota || 51} anggota lewat Open-Meteo, dibuat ${tglId(dibuat).replace(/^\w+, /, "")}, pengolahan Pantau Bencana (centurisk97.id/banjir).`].join('\n')
+    `Peluang kabupaten adalah nilai tertinggi dari titik prakiraan (kotak 1 derajat) di wilayahnya, bukan peluang di seluruh kabupaten. Hanya kabupaten dengan peluang ${pct(ambang)} atau lebih yang ditulis. Ini peluang hujan, bukan status banjir.`,
+    `Sumber: ECMWF IFS ansambel ${peluang.anggota || 51} anggota lewat Open-Meteo, dibuat ${tglId(dibuat).replace(/^\w+, /, "")} pukul ${jamBuat} WIB, pengolahan Centurisk97 (centurisk97.id/banjir).`].join('\n')
 }
 
 // Kirim sekali per tanggal ke tiap penerima. Mengembalikan status untuk log/hasil.

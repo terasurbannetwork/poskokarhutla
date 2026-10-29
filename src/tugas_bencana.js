@@ -46,7 +46,7 @@ const TUTUP = {banjir: {
   label: {padam_dilaporkan: "Surut dilaporkan. Menunggu 48 jam data pantauan banjir untuk disebut terverifikasi.",
     padam_terverifikasi: "Surut terverifikasi: data pantauan banjir tidak lagi menandai lokasi ini selama 48 jam. Genangan sisa tetap mungkin, cek lapangan.",
     muncul_lagi: "Banjir naik lagi sesudah dilaporkan surut. Tugas dibuka kembali."}}};
-export const tutupBencana = v => TUTUP[v] ?? null;
+export const tutupBencana = v => typeof v === "string" && Object.hasOwn(TUTUP, v) ? TUTUP[v] : null;
 /* ?bencana= : kosong = semua (null); dikenal = id; selain itu undefined (tolak 400) */
 export const bacaBencana = v => v == null || v === "" ? null : Object.hasOwn(BENCANA, v) ? v : undefined;
 /* butir berkas sudah reda menurut aturan bahayanya (butir yang sama sekali tak ada ditangani pemanggil) */

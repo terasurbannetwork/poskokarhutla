@@ -877,11 +877,11 @@ def w_rob(c):
     lv = [k for k in kab if (k["lv_maks"] or 0) >= 1]
     tanpa_posko = sum(1 for k in kab if not k["posko"])
     if basi or not lv:
-        judul = f"Pasang astronomis tinggi diperkirakan di {K(fid(len(kab)))} kabupaten dan kota pesisir pada {tgl(mulai)} sampai {tgl(akhir)}, puncaknya {tgl(tp)}"
-        angka_ = [angka("Kabupaten dan kota pesisir pasang tinggi (astronomis)", len(kab), "kabupaten dan kota")]
+        judul = f"{K(fid(len(kab)))} kabupaten dan kota pesisir diperkirakan pasang astronomis tinggi pada {tgl(mulai)} sampai {tgl(akhir)}, puncaknya {tgl(tp)}"
+        angka_ = [angka("Pasang tinggi (astronomis)", len(kab), "kabupaten dan kota")]
     else:
-        judul = f"{K(fid(len(lv)))} kabupaten dan kota pesisir berpotensi rob pada {tgl(mulai)} sampai {tgl(akhir)}, {fid(sum(1 for k in kab if k['lv_maks'] >= 2))} di antaranya level Siaga atau Awas"
-        angka_ = [angka("Kabupaten dan kota berpotensi rob", len(lv), "kabupaten dan kota"),
+        judul = f"{K(fid(len(lv)))} kabupaten dan kota pesisir berpotensi rob pada {tgl(mulai)} sampai {tgl(akhir)}, {fid(sum(1 for k in kab if (k['lv_maks'] or 0) >= 2))} di antaranya level Siaga atau Awas"
+        angka_ = [angka("Berpotensi rob", len(lv), "kabupaten dan kota"),
                   angka("Level Siaga atau Awas", sum(1 for k in kab if (k["lv_maks"] or 0) >= 2), "kabupaten dan kota")]
     angka_ += [angka("Puncak pasang terbanyak", cacah[tp.isoformat()], "kabupaten dan kota", tampil=f"{tgl(tp)}, {fid(cacah[tp.isoformat()])} kabupaten dan kota"),
                angka(f"Tanpa posko dalam {fid(r['ambang']['posko_km'])} km", tanpa_posko, "kabupaten dan kota")]
