@@ -44,6 +44,8 @@ COCOK_KM = 1.5
 MAKS_KOMPLEKS, MAKS_DETIK, MAKS_BYTE = 1500, 600, 3_000_000
 JEJAK = os.environ.get("AKSES_JEJAK") or os.path.join(AKAR, "data/jejak_regu.json")
 JEJAK_SAMBUNG_KM, JEJAK_LAJU = 0.3, LAJU["track"]
+# SIPPA SP-027: 865 kompleks Kalteng (prov 62) dari paket kajian pipa ikut dihitung supaya jam_tiba terisi (sebelumnya hanya 71).
+KALTENG_CSV = os.path.join(AKAR, "data/kajian-bnpb/pipa/data/kompleks.csv")
 
 
 def km(a1, o1, a2, o2):
@@ -335,9 +337,20 @@ def pasangkan_akses(daftar, titik, maks_km=COCOK_KM):
     return out
 
 
-def pilih_kompleks(kluster, tugas):
+def muat_kalteng(path=KALTENG_CSV):
+    """kompleks.csv SIPPA -> [{id: "S<id>", lat, lon, prov: "62"}]. Berkas tak ada/rusak = [] (akses harian tetap jalan).
+    Id diberi awalan S supaya tak bentrok dengan id kluster harian (K0001...); pencocokan ke layar tetap lewat lokasi."""
+    try:
+        import csv
+        return [{"id": "S" + r["id"], "lat": float(r["lat"]), "lon": float(r["lon"]), "prov": "62"} for r in csv.DictReader(open(path))]
+    except (OSError, ValueError, KeyError):
+        return []
+
+
+def pilih_kompleks(kluster, tugas, tambahan=None):
     """Level 3 di provinsi prioritas (kluster.json, perilaku lama) DITAMBAH semua kompleks tugas_kompleks.json (semua provinsi), tanpa dobel id,
-    terpenting dulu (level lalu n24), paling banyak MAKS_KOMPLEKS. -> daftar properti dengan id, lat, lon."""
+    terpenting dulu (level lalu n24), paling banyak MAKS_KOMPLEKS. -> daftar properti dengan id, lat, lon.
+    tambahan (kompleks Kalteng SIPPA) masuk hanya bila tak ada kompleks terpilih dalam COCOK_KM (satu entri per lokasi), dan terakhir."""
     ada = {}
     for f in kluster:
         p = f["properties"]
@@ -346,7 +359,11 @@ def pilih_kompleks(kluster, tugas):
     for t in (tugas or {}).get("kompleks", []):
         if isinstance(t.get("lat"), (int, float)) and isinstance(t.get("lon"), (int, float)):
             ada.setdefault(t["id"], t)
-    return sorted(ada.values(), key=lambda p: (-(p.get("level") or 0), -(p.get("n24") or 0), p["id"]))[:MAKS_KOMPLEKS]
+    urut = sorted(ada.values(), key=lambda p: (-(p.get("level") or 0), -(p.get("n24") or 0), p["id"]))
+    for t in tambahan or []:
+        if not any(km(t["lat"], t["lon"], p["lat"], p["lon"]) <= COCOK_KM for p in urut if isinstance(p.get("lat"), (int, float)) and isinstance(p.get("lon"), (int, float))):
+            urut.append(t)
+    return urut[:MAKS_KOMPLEKS]
 
 
 def harian():
@@ -358,7 +375,8 @@ def harian():
     except (OSError, ValueError):
         tugas = None
     lama = sum(1 for f in kl if f["properties"].get("level") == 3 and f["properties"].get("prov") in PRIORITAS)
-    kompleks = pilih_kompleks(kl, tugas)
+    kalteng = muat_kalteng()
+    kompleks = pilih_kompleks(kl, tugas, kalteng)
     simpul, sisi, n_jejak, n_sambung = tambah_jejak([tuple(s) for s in g["simpul"]], g["sisi"], muat_jejak())
     hasil = akses(simpul, sisi, kompleks, markas(), detik=MAKS_DETIK)
     air = None
@@ -372,7 +390,7 @@ def harian():
     except Exception as e:     # sumber air/DEM gagal tidak boleh menjatuhkan rute
         print(f"akses: air_dem dilewati ({e.__class__.__name__}: {e})", file=sys.stderr)
     out = {"_meta": {"laju_kmj": LAJU, "kaki_kmj": KAKI_KMJ, "batas_jam": BATAS_JAM, "kompleks": len(kompleks), "terjangkau": len(hasil),
-                     "level3_prioritas_lama": lama, "dari_tugas": len((tugas or {}).get("kompleks", [])), "jejak_regu": {"ruas": n_jejak, "sambungan": n_sambung},
+                     "level3_prioritas_lama": lama, "dari_tugas": len((tugas or {}).get("kompleks", [])), "kalteng_sippa": len(kalteng), "jejak_regu": {"ruas": n_jejak, "sambungan": n_sambung},
                      **({"air": air} if air else {}),
                      "sumber": "OpenStreetMap (ODbL), (c) kontributor OpenStreetMap",
                      "catatan": "Perkiraan perencanaan: kondisi jalan, banjir, portal perusahaan, dan izin lewat tidak dimodelkan."}}
@@ -445,6 +463,21 @@ def uji():
     tg_ = {"kompleks": [{"id": "A", "lat": 0, "lon": 100, "level": 3}, {"id": "C", "lat": 1, "lon": 101, "level": 2, "n24": 9}, {"id": "D", "level": 2}]}
     assert [p["id"] for p in pilih_kompleks(kl_, tg_)] == ["A", "C"], pilih_kompleks(kl_, tg_)   # B bukan prioritas dan tak ada di tugas; D tanpa koordinat
     assert pilih_kompleks(kl_, None) == [kl_[0]["properties"]]
+    # SP-027: kompleks Kalteng SIPPA ditambahkan di ujung; yang <= COCOK_KM dari kompleks terpilih tidak dobel; semua provinsi lain tak berubah
+    kt = [{"id": "S1", "lat": 0.0, "lon": 100.0, "prov": "62"}, {"id": "S2", "lat": 5.0, "lon": 100.0, "prov": "62"}, {"id": "S3", "lat": 6.0, "lon": 100.0, "prov": "62"}]
+    ps = pilih_kompleks(kl_, tg_, kt)
+    assert [p["id"] for p in ps] == ["A", "C", "S2", "S3"], ps   # S1 berimpit dengan A
+    assert len(ps) > len(pilih_kompleks(kl_, tg_)), "jumlah entri Kalteng harus naik"
+    assert len(pilih_kompleks([], None, [dict(kt[1], id=f"S{i}", lat=i) for i in range(MAKS_KOMPLEKS + 5)])) == MAKS_KOMPLEKS
+    ent = {"lat": 5.0, "lon": 100.0, "kaki_km": 1.0, "dari": [{"dari": "A", "kode": "A", "jenis": "daops", "km_jalan": 9.9, "jam": 1.5}]}
+    assert len(json.dumps({"_meta": {}, **{p["id"]: ent for p in pilih_kompleks([], None, [dict(kt[1], id=f"S{i}", lat=i * 0.1) for i in range(865)])}}).encode()) < MAKS_BYTE
+    import tempfile
+    with tempfile.TemporaryDirectory() as d:
+        pc = os.path.join(d, "k.csv")
+        open(pc, "w").write("id,lat,lon\nK0001,-3.12,112.16\n")
+        assert muat_kalteng(pc) == [{"id": "SK0001", "lat": -3.12, "lon": 112.16, "prov": "62"}]
+        assert muat_kalteng(os.path.join(d, "tidak_ada.csv")) == []
+    assert len(muat_kalteng()) in (0, 865), "kompleks.csv Kalteng harus 865 baris (atau tak ada)"
 
 if __name__ == "__main__":
     uji()

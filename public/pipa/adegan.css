@@ -1,0 +1,114 @@
+/* cadangan token: halaman /pipa memuat admin.css tanpa tema.css, jadi --ok, --info, --warn, --bad, --f2, --accent, --brand2, --r tidak terdefinisi.
+   :where() berspesifisitas nol: tema.css (bila dimuat) tetap menang, selain itu token jatuh ke palet admin.css. */
+:where(:root){--ok:var(--c4);--warn:var(--c3);--bad:var(--c1);--info:var(--c5);--f2:var(--c2);--accent:var(--c5);--brand2:var(--navy2);--r:16px;--r-sm:10px;--top:58px}
+/* SIPPA /pipa/3d: gaya layar Simulasi 3D (DS §3.17 dan §4.10). Dimuat layar_3d.js lewat <link> saat layar dibuka; token dari DS §2, tanpa gaya sebaris (CSP style-src 'self').
+   Skala tekanan: .sa-k0 sampai .sa-k4 dipakai legenda dan diagram SVG; warna kanvas WebGL dibaca dari token yang sama (adegan.js SKALA_TEKANAN). */
+.sp-3d{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:var(--sp-5);align-items:start}
+.sp-3d-kanvas{display:grid;gap:var(--sp-3);min-width:0;padding:var(--sp-4);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang)}
+.sp-3d-atas{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:var(--sp-3)}
+.sp-3d .ad-seg button{min-height:44px;height:auto}
+.sp-3d-wadah{position:relative;height:clamp(360px,62vh,640px);border-radius:var(--r-sm);background:linear-gradient(180deg,color-mix(in srgb,var(--info) 9%,var(--surface)),var(--surface));overflow:hidden;contain:layout paint}
+.sp-3d-pentas{position:absolute;inset:0}
+.sp-3d-kanvas-el{display:block;width:100%;height:100%;touch-action:none;cursor:grab}
+.sp-3d-kanvas-el:active{cursor:grabbing}
+.sp-muat{position:absolute;inset:0;display:grid;place-content:center;gap:var(--sp-3);justify-items:center;color:var(--ink2);font-size:13px;font-weight:700}
+.sp-muat .sp-kerangka{width:160px;min-height:12px;height:12px;border-radius:999px}
+.sa-lb{position:absolute;left:var(--sp-3);bottom:var(--sp-3);right:var(--sp-3);display:flex;flex-wrap:wrap;gap:var(--sp-2);pointer-events:none}
+.sa-lb span{padding:5px 10px;border-radius:999px;background:color-mix(in srgb,var(--card) 92%,transparent);color:var(--ink);font-size:12px;font-weight:700;box-shadow:0 1px 3px rgb(11 37 69 / .14)}
+.sa-lb span:empty{display:none}
+.sp-3d-kamera{display:flex;flex-wrap:wrap;gap:var(--sp-2)}
+.sp-3d-kamera[hidden]{display:none}
+.sp-3d-kamera .ad-tombol{min-height:44px;padding:0 var(--sp-4)}
+.sp-3d-kamera .ad-tombol[aria-pressed="true"]{background:var(--surface)}
+.sa-legenda{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:var(--sp-2) var(--sp-4);font-size:12.5px;font-weight:600;color:var(--ink2)}
+.sa-legenda[hidden],.sa-catat[hidden]{display:none}
+.sa-legenda li{display:inline-flex;align-items:center;gap:var(--sp-2)}
+.sa-sw{display:inline-block;width:28px;height:8px;border-radius:999px;background:var(--bad)}
+.sa-legenda li:last-child .sa-sw{background:repeating-linear-gradient(90deg,var(--bad) 0 6px,transparent 6px 9px)}   /* pola selain warna: di atas batas = putus-putus */
+.sa-sw.sa-k1{background:var(--warn)}.sa-sw.sa-k2{background:var(--info)}.sa-sw.sa-k3{background:var(--ok)}
+.sa-catat{margin:0;padding:var(--sp-2) var(--sp-3);border-radius:var(--r-sm);background:color-mix(in srgb,var(--warn) 16%,var(--card));box-shadow:0 0 0 1px color-mix(in srgb,var(--warn) 45%,transparent);font-size:12.5px;font-weight:700}
+
+/* diagram SVG 2D (tanpa WebGL) */
+.sa-diagram{position:absolute;inset:0;display:grid;align-content:start;gap:var(--sp-3);padding:var(--sp-4);overflow:auto}
+.sa-svg{width:100%;height:auto;max-height:100%;color:var(--ink)}
+.sa-svg rect{stroke:var(--ink2);stroke-width:1}
+.sa-svg text{fill:var(--ink);font-size:10px;font-weight:700}
+.sa-k-pompa rect{fill:color-mix(in srgb,var(--info) 45%,var(--card))}
+.sa-k-hidrolik rect{fill:color-mix(in srgb,var(--accent) 40%,var(--card))}
+.sa-k-sensor rect{fill:color-mix(in srgb,var(--warn) 55%,var(--card))}
+.sa-k-lance rect{fill:color-mix(in srgb,var(--ok) 55%,var(--card))}
+.sa-svg line{stroke-width:5;stroke-linecap:round}
+.sa-svg line.sa-k0,.sa-svg line.sa-k4{stroke:var(--bad)}.sa-svg line.sa-k1{stroke:var(--warn)}.sa-svg line.sa-k2{stroke:var(--info)}.sa-svg line.sa-k3{stroke:var(--ok)}
+.sa-svg line.sa-k4{stroke-dasharray:9 5}
+.sa-svg line.sa-sumbu{stroke:var(--line);stroke-width:1}
+.sa-svg line.sa-batas{stroke:var(--ink);stroke-width:1.5;stroke-dasharray:5 4}
+.sa-svg .sa-teks{fill:var(--ink2);font-size:11px;font-weight:600}
+.sa-svg .sa-gambut{fill:color-mix(in srgb,var(--ink3) 30%,var(--card));stroke:none}
+.sa-svg .sa-bara{fill:var(--f2);stroke:none}
+.sa-svg .sa-front{fill:color-mix(in srgb,var(--info) 35%,transparent);stroke:var(--info);stroke-width:1.5}
+.sa-svg line.sa-lance{stroke:var(--ok);stroke-width:4}
+
+/* panel kanan: angka, kontrol, komponen */
+.sp-3d-panel{display:grid;gap:var(--sp-4);min-width:0;align-content:start}
+.sp-h2{margin:0 0 var(--sp-3);font:800 15px/1.2 var(--display);letter-spacing:-.01em}
+.sp-angka-kisi{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:var(--sp-3);margin:0}
+.sp-angka{display:grid;align-content:start;gap:2px;margin:0;padding:var(--sp-3) var(--sp-4);background:var(--card);border-radius:var(--r);box-shadow:var(--bayang);min-width:0}
+.sp-angka dd{display:grid;gap:3px;margin:0}
+.sp-angka dt{margin:0}
+.sp-angka b{display:inline-flex;align-items:center;gap:6px;font:800 22px/1.15 var(--display);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.sp-angka small{color:var(--ink2);font-size:12px;line-height:1.35}
+.sp-angka .sp-sumber{font-size:11px;color:var(--ink3)}
+.sp-angka-lebar{grid-column:1/-1}
+.sp-angka.lewat b{color:var(--bad)}
+.sp-angka.lewat b .sp-ikon{width:16px;height:16px;flex:none}
+.sp-sumber{color:var(--ink2)}
+.sp-3d-kontrol{background:var(--card);border-radius:var(--r);box-shadow:var(--bayang);padding:0 var(--sp-4)}
+.sp-3d-kontrol summary{display:flex;align-items:center;min-height:48px;font:800 15px var(--display);cursor:pointer;list-style:none}
+.sp-3d-kontrol summary::-webkit-details-marker{display:none}
+.sp-3d-kontrol summary::after{content:"";margin-left:auto;width:8px;height:8px;border-right:2px solid var(--ink2);border-bottom:2px solid var(--ink2);transform:rotate(45deg);transition:transform var(--sp-sedang)}
+.sp-3d-kontrol[open] summary::after{transform:rotate(-135deg)}
+.sp-3d-kontrol .sp-form{padding-bottom:var(--sp-4);gap:var(--sp-4)}
+.sp-baris{display:grid;gap:6px}
+.sp-baris>label,.sp-etiket{display:flex;align-items:baseline;justify-content:space-between;gap:var(--sp-2);font-size:12.5px;font-weight:700;color:var(--ink)}
+.sp-nilai{font-weight:700;color:var(--ink2);font-variant-numeric:tabular-nums;text-align:right}
+.sp-geser{display:grid;grid-template-columns:minmax(0,1fr) 92px;gap:var(--sp-3);align-items:center}
+.sp-geser input[type=range]{width:100%;min-height:44px;accent-color:var(--brand2);cursor:pointer;margin:0}
+.sp-geser input[type=number],.sp-geser input[type=text]{width:100%;text-align:right;font-variant-numeric:tabular-nums}
+.sp-geser input[type=text]{grid-column:1/-1;text-align:left;text-transform:uppercase}
+.sp-form input[aria-invalid="true"]{box-shadow:0 0 0 2px var(--bad)}
+.sp-peringatan[hidden]{display:none}
+.sp-kompleks-info{margin:0;font-size:12.5px;color:var(--ink2);line-height:1.6}
+.sp-kompleks-info:empty{display:none}
+.sp-kompleks-info .sp-yakin{margin:0 2px;vertical-align:middle}
+.sp-3d-komp{background:var(--card);border-radius:var(--r);box-shadow:var(--bayang);padding:var(--sp-4);min-width:0}
+.sp-3d-komp[hidden]{display:none}
+.sp-3d-komp .sp-chips{margin-bottom:var(--sp-3)}
+.sp-3d-komp .ad-chip{min-height:44px;display:inline-flex;align-items:center}
+.sp-komponen{display:grid;gap:var(--sp-2)}
+.sp-komponen header{display:flex;align-items:center;gap:var(--sp-2);flex-wrap:wrap}
+.sp-komponen header b{font:800 18px var(--display)}
+.sp-komponen p{margin:0;font-size:13px}
+.sp-komponen dl{display:grid;gap:var(--sp-2);margin:0}
+.sp-komponen dl div{display:grid;gap:1px}
+.sp-komponen dt{font-size:11px;font-weight:800;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2)}
+.sp-komponen dd{margin:0;font-size:13px}
+.sp-hp-saja{display:none;margin:0}
+
+/* HP: kanvas 56vh, angka di bawahnya, kontrol akordeon */
+@media (max-width:1279px){.sp-3d{grid-template-columns:minmax(0,1fr) 300px}}
+@media (max-width:900px){
+  .sp-3d{grid-template-columns:minmax(0,1fr)}
+}
+@media (max-width:767px){
+  .sp-hp-saja{display:block}
+  .sp-3d{gap:var(--sp-3)}
+  .sp-3d-kanvas{padding:var(--sp-3)}
+  .sp-3d-wadah{height:56vh;min-height:300px}
+  .sp-3d-atas .ad-seg{width:100%}.sp-3d-atas .ad-seg button{flex:1;padding:0 var(--sp-2)}
+  .sp-3d-kamera .ad-tombol{flex:1 1 calc(33% - var(--sp-2));padding:0 var(--sp-2)}
+  .sp-3d-panel{display:flex;flex-direction:column}
+  .sp-3d-angka{order:1}.sp-3d-kontrol{order:2}.sp-3d-komp{order:3}
+  .sp-angka-kisi{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .sp-angka b{font-size:19px}
+}
+@media (prefers-reduced-motion:reduce){.sp-3d-kontrol summary::after{transition:none}}

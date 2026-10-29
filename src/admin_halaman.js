@@ -184,7 +184,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
 <link href="/admin/admin.css?v=7" rel="stylesheet">
-<link href="/pipa/pipa.css?v=1" rel="stylesheet">
+<link href="/pipa/pipa.css?v=4" rel="stylesheet">
 </head>
 <body data-staf="1" data-peran="${esc(ctx.peran.join(","))}" data-layar="${esc(layar)}" data-tulis="${ctx.tulis ? 1 : 0}" data-mod="${ctx.mod ? 1 : 0}" data-super="${ctx.super ? 1 : 0}" data-nama="${esc(ctx.nama || "")}">
 <div id="app"><p class="ad-redup">Memuat SIPPA…</p></div>
@@ -194,7 +194,7 @@ export const halamanSippa = (layar, ctx) => `<!doctype html>
 <script src="/inti/tabel.js"></script>
 <script src="/inti/nanti.js"></script>
 <script src="/inti/kartu.js"></script>
-<script type="module" src="/pipa/app.js?v=1"></script>
+<script type="module" src="/pipa/app.js?v=2"></script>
 </body></html>`;
 /* /pipa/lapangan: form luring operator berkode, tanpa sesi dan tanpa data staf; gaya dan skrip hanya 'self' (CSP_LAPANGAN di src/posko.js) */
 export const halamanSippaLapangan = () => `<!doctype html>
@@ -205,12 +205,12 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <meta name="robots" content="noindex,nofollow">
 <title>SIPPA Lapangan, Pantau Bencana</title>
 <link href="/admin/admin.css?v=7" rel="stylesheet">
-<link href="/pipa/pipa.css?v=1" rel="stylesheet">
+<link href="/pipa/pipa.css?v=4" rel="stylesheet">
 </head>
 <body>
 <div id="app"><p>Memuat form lapangan…</p></div>
 <noscript><p>Form lapangan butuh JavaScript aktif.</p></noscript>
-<script type="module" src="/pipa/lapangan.js?v=2"></script>
+<script type="module" src="/pipa/lapangan.js?v=3"></script>
 </body></html>`;
 
 /* halaman publik /statistik (tanpa login). Data dari /api/publik. */

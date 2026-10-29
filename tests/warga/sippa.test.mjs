@@ -4,10 +4,11 @@
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
 import path from "node:path";
+import {createHash} from "node:crypto";
 import {AKAR, JPEG_SAH, WEBP_SAH, badanPanjang} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
-import {P_SIPPA_BACA, P_SIPPA_TULIS, LAYAR_SIPPA, ALASAN_TRANSISI, RANTAI_DUMMY, PENGISI} from "../../src/sippa.js";
+import {P_SIPPA_BACA, P_SIPPA_TULIS, LAYAR_SIPPA, ALASAN_TRANSISI, RANTAI_DUMMY, PENGISI, dariDatar, nilaiAlarm, bersihkanSippa, AMBANG_ALARM, KODE_ALARM} from "../../src/sippa.js";
 import {HALAMAN_STAF} from "../../src/admin_halaman.js";
 import {FORMULIR_VERSI} from "../../public/pipa/formulir.js";
 
@@ -50,9 +51,9 @@ const foto = async (kode, bytes = JPEG_SAH, h = {}) => {
 };
 
 /* ---------------------------------------------------------------- konstanta dan skema bersama */
-uji("konstanta: peran, 11 layar, alasan transisi = pasangan CHECK 0056, hak halaman staf = P_SIPPA_BACA", () => {
+uji("konstanta: peran, 14 layar, alasan transisi = pasangan CHECK 0056, hak halaman staf = P_SIPPA_BACA", () => {
   assert.deepEqual(P_SIPPA_BACA, ["pusdalops", "koordalops", "pimpinan"]); assert.deepEqual(P_SIPPA_TULIS, ["pusdalops", "koordalops"]);
-  assert.deepEqual(LAYAR_SIPPA, ["peta", "hitung", "pemicu", "kit", "log", "ab", "studio", "3d", "telemetri", "laporan", "data"]);
+  assert.deepEqual(LAYAR_SIPPA, ["peta", "hitung", "pemicu", "kit", "log", "ab", "studio", "3d", "telemetri", "laporan", "data", "pelihara", "air", "akses"]);
   assert.deepEqual(HALAMAN_STAF.pipa, P_SIPPA_BACA, "HALAMAN_STAF.pipa harus sama dengan hak API (satu sumber)");
   const sql = teks("migrations/0056_sippa_inti.sql"), blok = sql.match(/dari_status \|\| '>' \|\| ke_status IN \(([\s\S]*?)\)\),/)[1];
   const check = [...blok.matchAll(/'([a-z]+>[a-z]+)'/g)].map(m => m[1]).sort();
@@ -483,7 +484,7 @@ uji("dummy: Super Admin mengisi layar log (rantai hulu ke hilir, tiap angka buka
   assert.equal(await hitung("sippa_komponen", "dummy = 1 AND kit_id IN (SELECT id FROM sippa_kit WHERE dummy = 0)"), 0);
   /* lapangan memakai rantai yang sama; isi lagi tanpa dummy baru = 409 */
   assert.equal((await sip("POST", "/dummy/isi", {layar: "lapangan", sejak, sampai}, ADMIN)).s, 409); assert.equal((await sip("POST", "/dummy/isi", {layar: "ringkas", sejak, sampai}, ADMIN)).s, 409);
-  assert.equal((await sip("POST", "/dummy/isi", {layar: "peta"}, ADMIN)).s, 200, "layar yang pengisinya belum ada: 200 tanpa baris");
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "hitung"}, ADMIN)).s, 200, "layar yang pengisinya belum ada: 200 tanpa baris");
   /* hapus: nol dummy, baris nyata utuh */
   const h = await sip("POST", "/dummy/hapus", {}, ADMIN); assert.equal(h.s, 200, h.t); assert.ok(h.j.dihapus.sippa_log_gelar > 0 && h.j.dihapus.sippa_kit >= 7, JSON.stringify(h.j));
   for (const t of ["sippa_kit", "sippa_komponen", "sippa_tugas", "sippa_log_gelar", "sippa_probe", "sippa_bbm", "sippa_gerak", "sippa_foto"]) assert.equal(await hitung(t, "dummy = 1"), 0, `${t} masih punya dummy`);
@@ -495,6 +496,286 @@ uji("dummy: Super Admin mengisi layar log (rantai hulu ke hilir, tiap angka buka
   assert.equal((await sip("POST", "/dummy/isi", {layar: "log", sejak, sampai}, ADMIN)).s, 200, "sesudah hapus, isi lagi berhasil (gerbang menghitung baris hidup)");
   await isiLaju(ADM, "sippa.dummy", 30); assert.equal((await sip("POST", "/dummy/hapus", {}, ADMIN)).s, 429, "laju 30 per jam"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(ADM).run();
   assert.equal((await sip("POST", "/dummy/hapus", {}, ADMIN)).s, 200);
+});
+
+/* ---------------------------------------------------------------- SP-029: rute data R2, ringkas, cek jalan, usul AOI */
+const NAMA_DATA = ["kelayakan_kompleks", "kelayakan_sel", "zona", "sel22", "kit_nasional", "pemicu", "aoi_calon", "akses_kompleks", "cat", "jembatan_dibi", "program_jembatan"];
+const dataGet = (nama, h) => mf.dispatchFetch("http://bnpb.lokal/api/sippa/data/" + nama, {headers: h}).then(async r => ({s: r.status, h: r.headers, t: await r.text()}));
+uji("GET /api/sippa/data/:nama: tamu 401 identik untuk berkas ada dan tidak ada; staf 404 belum_ada bila belum diunggah atau kosong; 200 aliran apa adanya; > 8 MB 500; nama liar 404; peran salah 403; tanpa laju", async () => {
+  for (const n of NAMA_DATA) await R2.delete("sippa/" + n + ".json");
+  await R2.put("sippa/zona.json", JSON.stringify({versi: "sippa_zona/1", isi: [1, 2]}));   // satu ada, satu tidak
+  const ada = await dataGet("zona"), tidak = await dataGet("sel22"), liar = await dataGet("tidak_dikenal");
+  assert.equal(ada.s, 401); assert.equal(ada.t, tidak.t, "badan 401 tamu sama untuk berkas ada dan tidak ada"); assert.equal(ada.t, liar.t, "dan sama untuk nama yang tidak dikenal");
+  assert.equal(ada.h.get("cache-control"), "private, no-store"); assert.match(ada.h.get("vary") || "", /cookie/i);
+  const ok = await dataGet("zona", pim.h); assert.equal(ok.s, 200, ok.t); assert.equal(ok.t, JSON.stringify({versi: "sippa_zona/1", isi: [1, 2]}), "isi R2 sampai apa adanya");
+  assert.match(ok.h.get("content-type"), /^application\/json; charset=utf-8/); assert.equal(ok.h.get("x-content-type-options"), "nosniff"); assert.match(ok.h.get("vary") || "", /cookie/i); assert.match(ok.h.get("cache-control"), /^private/);
+  const belum = await dataGet("sel22", pim.h); assert.equal(belum.s, 404); assert.equal(JSON.parse(belum.t).status, "belum_ada");
+  await R2.put("sippa/sel22.json", ""); const kosong = await dataGet("sel22", pim.h); assert.equal(kosong.s, 404, "objek 0 byte = belum ada"); assert.equal(JSON.parse(kosong.t).status, "belum_ada");
+  await R2.put("sippa/sel22.json", new Uint8Array(8 * 1024 * 1024 + 1).fill(32)); const besar = await dataGet("sel22", pim.h); assert.equal(besar.s, 500); assert.equal(JSON.parse(besar.t).status, "terlalu_besar");
+  for (const n of ["tidak_dikenal", "pemicu_x", "0123456789abcdef"]) { const r = await dataGet(n, pim.h); assert.equal(r.s, 404, n); assert.equal(JSON.parse(r.t).status, "tidak_dikenal", n); }
+  for (const n of ["ZONA", "../zona", "zona.json", "zona%2f..%2fsel22"]) assert.notEqual((await dataGet(n, pim.h)).s, 200, `${n} tidak boleh mengalir`);
+  assert.equal((await dataGet("zona", ver.h)).s, 403, "verifikator tak berhak"); assert.equal((await dataGet("zona", GERBANG)).s, 403, "akun gerbang bukan staf BNPB");
+  assert.equal((await dataGet("zona", {cookie: pim.g.cookie + "x"})).s, 401, "cookie sesi yang diutak-atik = tamu");
+  assert.equal((await sip("POST", "/data/zona", {}, pus.h)).s, 405, "hanya GET");
+  for (const n of NAMA_DATA) { await R2.put("sippa/" + n + ".json", JSON.stringify({n})); const r = await dataGet(n, pus61.h); assert.equal(r.s, 200, `${n}: ${r.t}`); assert.equal(JSON.parse(r.t).n, n, "data turunan nasional: staf wilayah ikut membaca"); }
+  const n0 = await hitung("laju_bnpb"); for (let i = 0; i < 30; i++) assert.equal((await dataGet("zona", pim.h)).s, 200); assert.equal(await hitung("laju_bnpb"), n0, "GET data tidak menulis laju (ADR-06)");
+});
+uji("GET /api/sippa/ringkas: tamu 401, verifikator 403; bentuk DT §4.3; angka sama dengan hitungan SQL sendiri; dummy hanya untuk admin; wilayah 61 tidak melihat kit 62; pemicu_dibuat dari MEDIA.head; tanpa laju", async () => {
+  await R2.delete("sippa/pemicu.json");
+  assert.equal((await sip("GET", "/ringkas")).s, 401); assert.equal((await sip("GET", "/ringkas", undefined, ver.h)).s, 403);
+  const r = await sip("GET", "/ringkas", undefined, pim.h); assert.equal(r.s, 200, r.t); cekKepala(r, "ringkas");
+  for (const f of ["kit", "log", "alarm_aktif", "gerak_terakhir", "per", "pemicu_dibuat"]) assert.ok(f in r.j, `ringkas memuat ${f}`);
+  for (const s of ["gudang", "depot", "gelar", "banjir", "servis", "hilang", "pensiun"]) assert.equal(typeof r.j.kit.per_status[s], "number", `per_status.${s}`);
+  assert.ok("hilang_komponen_pct" in r.j.kit); assert.equal(r.j.pemicu_dibuat, null, "belum ada objek pemicu: null, bukan 0"); assert.equal(r.j.alarm_aktif, 0, "tabel alarm (0058) belum ada: 0");
+  const nyata = await DB.prepare("SELECT status, count(*) n FROM sippa_kit WHERE dummy = 0 GROUP BY status").all();
+  for (const x of nyata.results) assert.equal(r.j.kit.per_status[x.status], x.n, `per_status.${x.status} = hitungan SQL`);
+  const nk = await hitung("sippa_log_gelar", "dummy = 0 AND jenis = 'karhutla' AND NOT EXISTS (SELECT 1 FROM sippa_log_gelar x WHERE x.koreksi_dari = sippa_log_gelar.id)"); assert.equal(r.j.log.n_karhutla, nk);
+  assert.ok(Math.abs(r.j.per - Date.now()) < 60e3);
+  await R2.put("sippa/pemicu.json", "{}"); const p = await sip("GET", "/ringkas", undefined, pim.h); assert.ok(Math.abs(p.j.pemicu_dibuat - Date.now()) < 120e3, `pemicu_dibuat ${p.j.pemicu_dibuat}`);
+  /* dummy: isi lewat layar ringkas, hitung ulang dari baris dummy */
+  const sejak = Date.now() - 20 * HARI, sampai = Date.now() - HARI;
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "ringkas", sejak, sampai}, ADMIN)).s, 200);
+  const a = await sip("GET", "/ringkas", undefined, ADMIN); assert.equal(a.s, 200, a.t);
+  const dk = await DB.prepare("SELECT status, count(*) n FROM sippa_kit GROUP BY status").all(); for (const x of dk.results) assert.equal(a.j.kit.per_status[x.status], x.n, `admin: per_status.${x.status} = semua baris`);
+  const ls = (await DB.prepare("SELECT t_tiba, t_air_mengalir FROM sippa_log_gelar WHERE jenis = 'karhutla' ORDER BY (t_air_mengalir - t_tiba)").all()).results.map(l => (l.t_air_mengalir - l.t_tiba) / JAM);
+  const med = ls.length % 2 ? ls[(ls.length - 1) / 2] : (ls[ls.length / 2 - 1] + ls[ls.length / 2]) / 2;
+  assert.equal(a.j.log.n_karhutla, ls.length); assert.ok(Math.abs(a.j.log.p50_jam - med) <= 0.05, `p50_jam ${a.j.log.p50_jam} vs median ${med}`); assert.equal(a.j.log.n_kecil, ls.length < 5, "n_kecil: kurang dari 5 ulangan (gerbang G3)");
+  assert.ok(a.j.gerak_terakhir.length >= 1 && a.j.gerak_terakhir.length <= 10); for (const g of a.j.gerak_terakhir) { for (const f of ["id", "kit_id", "kit_kode", "dari_status", "ke_status", "alasan", "waktu"]) assert.ok(f in g, `gerak_terakhir.${f}`); assert.ok(!("lat" in g) && !("oleh" in g), "tanpa koordinat dan pelaku"); }
+  assert.deepEqual(a.j.gerak_terakhir.map(g => g.waktu), a.j.gerak_terakhir.map(g => g.waktu).sort((x, y) => y - x), "terbaru dulu");
+  const s = await sip("GET", "/ringkas", undefined, pim.h); assert.ok(s.j.kit.per_status.gudang <= a.j.kit.per_status.gudang && !s.j.gerak_terakhir.some(g => /^SIPPA-9\d\d$/.test(g.kit_kode)), "staf nyata tidak melihat dummy");
+  const w = await sip("GET", "/ringkas", undefined, pus61.h); assert.equal(Object.values(w.j.kit.per_status).reduce((x, y) => x + y, 0) - await hitung("sippa_kit", "dummy = 0 AND prov = '61'"), 0, "wilayah 61: tepat kit provinsi 61 (kit tanpa provinsi tak terlihat), nol kit 62"); assert.equal(w.j.log.n_karhutla, 0); const g61 = new Set((await DB.prepare("SELECT g.id FROM sippa_gerak g JOIN sippa_kit k ON k.id = g.kit_id WHERE g.dummy = 0 AND (g.prov = '61' OR k.prov = '61')").all()).results.map(x => x.id)); assert.deepEqual(w.j.gerak_terakhir.filter(g => !g61.has(g.id)), [], "wilayah 61: hanya gerak yang menyentuh provinsi 61 (tujuan atau asal kit)");
+  const n0 = await hitung("laju_bnpb"); for (let i = 0; i < 20; i++) assert.equal((await sip("GET", "/ringkas", undefined, pus.h)).s, 200); assert.equal(await hitung("laju_bnpb"), n0, "GET ringkas tanpa laju");
+  assert.equal((await sip("POST", "/dummy/hapus", {}, ADMIN)).s, 200);
+});
+uji("GET dan POST /api/sippa/jalan-cek: W 201 dengan jejak; pimpinan 403, tamu 401; masukan liar 400; wilayah 61 tidak boleh menulis prov 62 dan tidak melihatnya; filter kompleks; laju 600; GET tanpa laju", async () => {
+  const bd = (o = {}) => ({kompleks_id: "K0001", prov: "62", musim: "kemarau", hasil: "lolos", kendaraan: "pickup_4x4", catatan: "Jalan tanah, kering", ...o});
+  assert.equal((await sip("GET", "/jalan-cek")).s, 401); assert.equal((await sip("GET", "/jalan-cek", undefined, ver.h)).s, 403);
+  assert.deepEqual((await sip("GET", "/jalan-cek", undefined, pim.h)).j, {cek: []}); for (const q of ["kompleks=k1", "kompleks=K12x", "kompleks=", "kompleks=K1%27"]) assert.equal((await sip("GET", "/jalan-cek?" + q, undefined, pim.h)).s, 400, q);
+  const j0 = await jejak(), n0 = await hitung("sippa_jalan_cek");
+  const ok = await sip("POST", "/jalan-cek", bd(), pus.h); assert.equal(ok.s, 201, ok.t); cekKepala(ok, "jalan-cek");
+  const baris = await DB.prepare("SELECT * FROM sippa_jalan_cek WHERE id = ?").bind(ok.j.cek.id).first(); assert.equal(baris.oleh, pus.kunci); assert.equal(baris.dummy, 0); assert.equal(baris.kompleks_id, "K0001"); assert.ok(Math.abs(baris.waktu - Date.now()) < 60e3, "waktu dari server");
+  assert.equal(await jejak(), j0 + 1, "satu baris jejak"); assert.equal(await hitung("sippa_jalan_cek"), n0 + 1);
+  assert.equal((await sip("POST", "/jalan-cek", {kompleks_id: "K0002", prov: "62", musim: "hujan", hasil: "gagal"}, koor.h)).s, 201, "tanpa kendaraan dan catatan");
+  const n1 = await hitung("sippa_jalan_cek");
+  assert.equal((await sip("POST", "/jalan-cek", bd(), pim.h)).s, 403); assert.equal((await sip("POST", "/jalan-cek", bd())).s, 401); assert.equal((await sip("POST", "/jalan-cek", bd(), pus.g)).s, 401, "sesi tanpa x-pb"); assert.equal((await sip("POST", "/jalan-cek", bd(), ver.h)).s, 403);
+  const liar = [{kompleks_id: "X1"}, {kompleks_id: "k1"}, {kompleks_id: 5}, {kompleks_id: undefined}, {prov: "6"}, {prov: "AB"}, {prov: 62}, {musim: "semi"}, {musim: undefined}, {hasil: "mungkin"}, {hasil: undefined}, {kendaraan: "roket"}, {catatan: "x".repeat(501)}, {catatan: 7}, {foto_id: "zz"}, {foto_id: "0123456789abcdef"}];
+  for (const l of liar) { const r = await sip("POST", "/jalan-cek", bd(l), pus.h); assert.equal(r.s, 400, `${JSON.stringify(l)}: ${r.s} ${r.t}`); assert.ok(r.j?.galat, "pesan galat menyebut medan"); }
+  assert.equal((await sip("POST", "/jalan-cek", [1], pus.h)).s, 400); assert.equal((await sip("POST", "/jalan-cek", "{rusak", pus.h)).s, 400);
+  assert.equal(await hitung("sippa_jalan_cek"), n1, "masukan liar tidak menulis");
+  assert.equal((await sip("POST", "/jalan-cek", bd({catatan: "x".repeat(500)}), pus.h)).s, 201, "tepat 500 sah");
+  const w = await sip("POST", "/jalan-cek", bd(), pus61.h); assert.equal(w.s, 404, "wilayah 61 menulis prov 62 = tidak tersedia"); assert.equal((await sip("POST", "/jalan-cek", bd({prov: "61", kompleks_id: "K0900"}), pus61.h)).s, 201);
+  const sem = (await sip("GET", "/jalan-cek", undefined, pim.h)).j.cek; assert.ok(sem.length >= 4 && sem.every(c => ["id", "kompleks_id", "prov", "musim", "hasil", "waktu"].every(f => f in c)));
+  assert.deepEqual(sem.map(c => c.waktu), sem.map(c => c.waktu).sort((a, b) => b - a), "terbaru dulu");
+  const w61 = (await sip("GET", "/jalan-cek", undefined, pus61.h)).j.cek; assert.ok(w61.length === 1 && w61[0].prov === "61", "wilayah 61 hanya melihat provinsinya");
+  assert.ok((await sip("GET", "/jalan-cek?kompleks=K0002", undefined, pim.h)).j.cek.every(c => c.kompleks_id === "K0002"));
+  const l0 = await hitung("laju_bnpb"); for (let i = 0; i < 30; i++) assert.equal((await sip("GET", "/jalan-cek", undefined, pim.h)).s, 200); assert.equal(await hitung("laju_bnpb"), l0, "GET tanpa laju");
+  await isiLaju(pus.kunci, "sippa.tulis", 600); assert.equal((await sip("POST", "/jalan-cek", bd(), pus.h)).s, 429, "laju 600 per jam"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(pus.kunci).run();
+});
+uji("POST /api/sippa/aoi: W 201 status usul dengan jejak; pimpinan 403, tamu 401; kompleks atau sel wajib; masukan liar 400; wilayah 61 tidak boleh usul prov 62; status kiriman klien diabaikan; laju 120", async () => {
+  const bd = (o = {}) => ({kompleks_id: "K0001", prov: "62", alasan: "Kompleks sering terbakar, belum ada kit di dekatnya", ...o});
+  const j0 = await jejak(), n0 = await hitung("sippa_aoi_usul");
+  const ok = await sip("POST", "/aoi", bd({status: "terpilih", oleh: "orang-lain", dummy: 1}), pus.h); assert.equal(ok.s, 201, ok.t); cekKepala(ok, "aoi");
+  const b = await DB.prepare("SELECT * FROM sippa_aoi_usul WHERE id = ?").bind(ok.j.aoi.id).first(); assert.equal(b.status, "usul", "status tidak bisa diisi klien"); assert.equal(b.oleh, pus.kunci); assert.equal(b.dummy, 0); assert.equal(b.sel, null);
+  assert.equal(await jejak(), j0 + 1); assert.equal(await hitung("sippa_aoi_usul"), n0 + 1);
+  assert.equal((await sip("POST", "/aoi", {sel: "s650_1000", prov: "62", alasan: "Sel kekerapan tinggi tanpa kompleks"}, koor.h)).s, 201, "hanya sel");
+  assert.equal((await sip("POST", "/aoi", {kompleks_id: "K0001", sel: "s650_1000", prov: "62", alasan: "Keduanya sekaligus"}, koor.h)).s, 201, "kompleks dan sel");
+  const n1 = await hitung("sippa_aoi_usul");
+  assert.equal((await sip("POST", "/aoi", bd(), pim.h)).s, 403); assert.equal((await sip("POST", "/aoi", bd())).s, 401); assert.equal((await sip("POST", "/aoi", bd(), pus.g)).s, 401); assert.equal((await sip("POST", "/aoi", bd(), ver.h)).s, 403);
+  const liar = [{kompleks_id: "X1"}, {kompleks_id: 7}, {kompleks_id: undefined, sel: "s12"}, {kompleks_id: undefined, sel: "S1_2"}, {kompleks_id: undefined, sel: "s1_2 "}, {prov: "6"}, {prov: undefined}, {alasan: "abcd"}, {alasan: "    a   "}, {alasan: "x".repeat(501)}, {alasan: undefined}, {alasan: 12345}];
+  for (const l of liar) { const r = await sip("POST", "/aoi", bd(l), pus.h); assert.equal(r.s, 400, `${JSON.stringify(l)}: ${r.s} ${r.t}`); assert.ok(r.j?.galat); }
+  assert.equal((await sip("POST", "/aoi", {prov: "62", alasan: "Tanpa kompleks dan tanpa sel"}, pus.h)).s, 400, "kompleks_id atau sel wajib"); assert.equal(await hitung("sippa_aoi_usul"), n1, "masukan liar tidak menulis");
+  assert.equal((await sip("POST", "/aoi", bd({alasan: "abcde"}), pus.h)).s, 201, "tepat 5 sah"); assert.equal((await sip("POST", "/aoi", bd({alasan: "x".repeat(500)}), pus.h)).s, 201, "tepat 500 sah");
+  assert.equal((await sip("POST", "/aoi", bd(), pus61.h)).s, 404, "wilayah 61 usul prov 62"); assert.equal((await sip("POST", "/aoi", bd({prov: "61"}), pus61.h)).s, 201);
+  await isiLaju(pus.kunci, "sippa.aoi", 120); assert.equal((await sip("POST", "/aoi", bd(), pus.h)).s, 429, "laju 120 per jam"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(pus.kunci).run();
+});
+uji("dummy layar peta: mengisi cek jalan dan usul AOI di periode yang terpampang, isi kedua 409, hanya admin melihat, hapus menyisakan baris nyata", async () => {
+  const sejak = Date.now() - 20 * HARI, sampai = Date.now() - HARI, nyata = async () => [await hitung("sippa_jalan_cek", "dummy = 0"), await hitung("sippa_aoi_usul", "dummy = 0")], sebelum = await nyata();
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "peta", sejak, sampai}, pus.h)).s, 403);
+  const r = await sip("POST", "/dummy/isi", {layar: "peta", sejak, sampai}, ADMIN); assert.equal(r.s, 200, r.t); assert.ok(r.j.dibuat.sippa_jalan_cek >= 3 && r.j.dibuat.sippa_aoi_usul >= 2, JSON.stringify(r.j.dibuat));
+  const d = (await DB.prepare("SELECT * FROM sippa_jalan_cek WHERE dummy = 1").all()).results; for (const c of d) assert.ok(c.waktu >= sejak && c.waktu <= sampai, "periode yang terpampang");
+  assert.ok(new Set(d.map(c => c.hasil)).size === 2 && new Set(d.map(c => c.musim)).size === 2, "lolos dan gagal, kemarau dan hujan bervariasi (bukan angka sama rata)");
+  assert.ok(new Set((await DB.prepare("SELECT status FROM sippa_aoi_usul WHERE dummy = 1").all()).results.map(x => x.status)).size >= 2, "status AOI bervariasi");
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "peta", sejak, sampai}, ADMIN)).s, 409);
+  assert.ok(!(await sip("GET", "/jalan-cek", undefined, pim.h)).j.cek.some(c => d.some(x => x.id === c.id)), "staf nyata tidak melihat dummy"); assert.ok((await sip("GET", "/jalan-cek", undefined, ADMIN)).j.cek.some(c => c.dummy === 1), "admin melihat");
+  assert.equal((await sip("POST", "/dummy/hapus", {}, ADMIN)).s, 200); assert.equal(await hitung("sippa_jalan_cek", "dummy = 1"), 0); assert.equal(await hitung("sippa_aoi_usul", "dummy = 1"), 0); assert.deepEqual(await nyata(), sebelum, "baris nyata utuh");
+});
+
+/* ---------------------------------------------------------------- SP-035: A/B, skenario, laporan */
+const KEPALA_AB = "petak_id,aoi,prov,lengan,pasangan_id,tanggal_perlakuan,luas_m2,regu_hari,air_m3,surfaktan_l,biaya_rp,dingin_24j,dingin_72j,nyala_7h,nyala_30h,nyala_90h,catatan";
+const barisAb = (o = {}) => { const b = {petak_id: "P-001", aoi: "AOI-1", prov: "62", lengan: "lance", pasangan_id: "", tanggal_perlakuan: "2026-09-01", luas_m2: 5000, regu_hari: 4, air_m3: 120, surfaktan_l: 0, biaya_rp: 2500000, dingin_24j: 1, dingin_72j: 1, nyala_7h: 0, nyala_30h: 0, nyala_90h: "", catatan: "ok", ...o};
+  return KEPALA_AB.split(",").map(k => b[k]).join(","); };
+const unggahAb = (baris, h = pus.h, pisah = ",") => sip("POST", "/ab/unggah", [KEPALA_AB, ...baris].map(x => pisah === "," ? x : x.replace(/,(?=(?:[^"]*"[^"]*")*[^"]*$)/g, pisah)).join("\n") + "\n", h);
+const adaPetak = aoi => hitung("sippa_petak", "aoi = ?", aoi);
+uji("POST /api/sippa/ab/unggah: W 201 {unggah_id, n}; satu baris salah = 400 dengan baris dan kolom dan 0 baris tersimpan; sha sama 409; titik koma dikenali; pimpinan 403; tamu 401", async () => {
+  const j0 = await jejak(), n0 = await hitung("sippa_petak");
+  const r = await unggahAb([barisAb({petak_id: "P-001"}), barisAb({petak_id: "P-002", lengan: "konvensional", nyala_90h: 1})]);
+  assert.equal(r.s, 201, r.t); assert.equal(r.j.n, 2); assert.match(r.j.unggah_id, /^[0-9a-f]{16}$/); cekKepala(r, "ab/unggah");
+  assert.equal(await adaPetak("AOI-1"), 2); assert.equal(await jejak(), j0 + 1, "satu jejak per unggahan");
+  const u = await DB.prepare("SELECT * FROM sippa_ab_unggah WHERE id = ?").bind(r.j.unggah_id).first(); assert.equal(u.status, "draf"); assert.equal(u.n_baris, 2); assert.equal(u.dummy, 0);
+  const p = await DB.prepare("SELECT * FROM sippa_petak WHERE petak_id = 'P-002'").first(); assert.equal(p.sumber, "unggah"); assert.equal(p.nyala_90h, 1); assert.equal(p.unggah_id, r.j.unggah_id);
+  const kembar = await unggahAb([barisAb({petak_id: "P-001"}), barisAb({petak_id: "P-002", lengan: "konvensional", nyala_90h: 1})]); assert.equal(kembar.s, 409, "sha sama"); assert.equal(await adaPetak("AOI-1"), 2);
+  /* satu baris salah: tidak ada yang tersimpan; nomor baris berhitung dari baris kepala = 1 */
+  const salah = await unggahAb([barisAb({aoi: "AOI-2", petak_id: "Q-001"}), barisAb({aoi: "AOI-2", petak_id: "Q-002", lengan: "lance", surfaktan_l: 5}), barisAb({aoi: "AOI-2", petak_id: "Q-003", lengan: "tidakada"}), barisAb({aoi: "AOI-2", petak_id: "Q-004", tanggal_perlakuan: "2999-01-01"})]);
+  assert.equal(salah.s, 400, salah.t); assert.match(salah.j.galat, /3 baris salah, tidak ada yang disimpan/); assert.equal(await adaPetak("AOI-2"), 0, "0 baris tersimpan");
+  assert.deepEqual(salah.j.rincian.map(x => `${x.baris}:${x.kolom}`), ["3:surfaktan_l", "4:lengan", "5:tanggal_perlakuan"]); for (const x of salah.j.rincian) assert.ok(x.alasan.length > 5);
+  /* titik koma dikenali dari baris kepala; koma desimal diterima di berkas titik koma */
+  const tk = await unggahAb([barisAb({aoi: "AOI-3", petak_id: "S-001", luas_m2: '"1500,5"'})], pus.h, ";"); assert.equal(tk.s, 201, tk.t); assert.equal((await DB.prepare("SELECT luas_m2 FROM sippa_petak WHERE aoi = 'AOI-3'").first()).luas_m2, 1500.5);
+  assert.equal((await unggahAb([barisAb({aoi: "AOI-4", petak_id: "T-001", lengan: "lance_surfaktan", surfaktan_l: 5})])).s, 201, "surfaktan > 0 sah di lengan surfaktan");
+  const gandaDalam = await unggahAb([barisAb({aoi: "AOI-5", petak_id: "U-001"}), barisAb({aoi: "AOI-5", petak_id: "U-001"})]); assert.equal(gandaDalam.s, 400); assert.equal(gandaDalam.j.rincian[0].kolom, "petak_id"); assert.equal(await adaPetak("AOI-5"), 0);
+  const gandaLama = await unggahAb([barisAb({aoi: "AOI-1", petak_id: "P-001", catatan: "beda"})]); assert.equal(gandaLama.s, 400, "petak yang sudah ada di basis data ditolak per baris"); assert.equal(gandaLama.j.rincian[0].kolom, "petak_id");
+  assert.equal((await unggahAb([barisAb({aoi: "AOI-6", petak_id: "P-001"})])).s, 201, "aoi beda, petak sama: sah");
+  for (const [ket, o, kol] of [["luas 0", {luas_m2: 0}, "luas_m2"], ["luas 100001", {luas_m2: 100001}, "luas_m2"], ["luas huruf", {luas_m2: "abc"}, "luas_m2"], ["petak 2 huruf", {petak_id: "ab"}, "petak_id"], ["aoi kosong", {aoi: ""}, "aoi"], ["prov 1 digit", {prov: "6"}, "prov"],
+    ["tanggal 31 Feb", {tanggal_perlakuan: "2026-02-31"}, "tanggal_perlakuan"], ["tanggal besok", {tanggal_perlakuan: new Date(Date.now() + 2 * HARI).toISOString().slice(0, 10)}, "tanggal_perlakuan"], ["dingin 2", {dingin_24j: 2}, "dingin_24j"], ["biaya pecahan", {biaya_rp: "1.5"}, "biaya_rp"],
+    ["biaya negatif", {biaya_rp: -1}, "biaya_rp"], ["regu 1001", {regu_hari: 1001}, "regu_hari"], ["air 100001", {air_m3: 100001}, "air_m3"], ["catatan 501", {catatan: "x".repeat(501)}, "catatan"]]) {
+    const x = await unggahAb([barisAb({aoi: "AOI-9", petak_id: "Z-001", ...o})]); assert.equal(x.s, 400, `${ket}: ${x.t}`); assert.equal(x.j.rincian[0].kolom, kol, ket);
+  }
+  assert.equal(await adaPetak("AOI-9"), 0);
+  assert.equal((await sip("POST", "/ab/unggah", "petak_id,aoi\nA-001,X\n", pus.h)).s, 400, "kolom wajib hilang"); assert.equal((await sip("POST", "/ab/unggah", KEPALA_AB + ",sakti\n" + barisAb({aoi: "AOI-7"}) + ",1\n", pus.h)).s, 400, "kolom asing"); assert.equal((await sip("POST", "/ab/unggah", "", pus.h)).s, 400);
+  assert.equal((await sip("POST", "/ab/unggah", new Uint8Array([0xff, 0xfe, 0x41]), pus.h)).s, 400, "bukan UTF-8");
+  assert.equal((await unggahAb([barisAb({aoi: "AOI-8", petak_id: "K-001", catatan: '"=1+1, ""x"""'})])).s, 201); assert.equal((await DB.prepare("SELECT catatan FROM sippa_petak WHERE aoi = 'AOI-8'").first()).catatan, '=1+1, "x"');
+  assert.equal((await unggahAb([barisAb({aoi: "AOI-10"})], pim.h)).s, 403); assert.equal((await unggahAb([barisAb({aoi: "AOI-10"})], {})).s, 401); assert.equal((await unggahAb([barisAb({aoi: "AOI-10"})], ver.h)).s, 403);
+  assert.equal(await adaPetak("AOI-10"), 0); assert.ok(await hitung("sippa_petak") > n0);
+});
+uji("POST /ab/unggah: 1.048.577 byte 413, 2.001 baris 400, 2.000 baris sah 201 (atomik); rincian paling banyak 50; staf wilayah 61 tidak boleh menulis prov 62; laju 20", async () => {
+  assert.equal((await sip("POST", "/ab/unggah", "x".repeat(1048577), pus.h)).s, 413);
+  const baris = (n, aoi) => Array.from({length: n}, (_, i) => barisAb({aoi, petak_id: "B-" + String(i).padStart(5, "0")}));
+  const lebih = await unggahAb(baris(2001, "AOI-B1")); assert.equal(lebih.s, 400, lebih.t); assert.match(lebih.j.galat, /2\.000/); assert.equal(await adaPetak("AOI-B1"), 0);
+  const pas = await unggahAb(baris(2000, "AOI-B2")); assert.equal(pas.s, 201, pas.t.slice(0, 300)); assert.equal(pas.j.n, 2000); assert.equal(await adaPetak("AOI-B2"), 2000);
+  const banyak = await unggahAb(Array.from({length: 120}, (_, i) => barisAb({aoi: "AOI-R", petak_id: "R-" + String(i).padStart(4, "0"), lengan: "tidakada"}))); assert.equal(banyak.s, 400); assert.equal(banyak.j.rincian.length, 50); assert.match(banyak.j.galat, /120 baris salah/);
+  const w = await unggahAb([barisAb({aoi: "AOI-W", petak_id: "W-001", prov: "62"})], pus61.h); assert.equal(w.s, 400, w.t); assert.equal(w.j.rincian[0].kolom, "prov"); assert.equal(await adaPetak("AOI-W"), 0);
+  assert.equal((await unggahAb([barisAb({aoi: "AOI-W", petak_id: "W-002", prov: ""})], pus61.h)).s, 400, "staf berwilayah wajib mengisi prov");
+  assert.equal((await unggahAb([barisAb({aoi: "AOI-W", petak_id: "W-003", prov: "61"})], pus61.h)).s, 201);
+  await isiLaju(pus.kunci, "sippa.ab", 20); assert.equal((await unggahAb([barisAb({aoi: "AOI-L", petak_id: "L-001"})])).s, 429, "laju 20"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(pus.kunci).run();
+});
+uji("GET /api/sippa/ab dan ab.csv: B 200 {petak, unggah}, filter aoi dan lengan, filter liar 400; CSV aman injeksi rumus; wilayah 61 hanya miliknya; tamu 401; laju csv 60; baris dummy tersaring", async () => {
+  const r = await sip("GET", "/ab", undefined, pim.h); assert.equal(r.s, 200, r.t); cekKepala(r, "ab"); assert.ok(r.j.petak.length >= 2 && r.j.unggah.length >= 2);
+  const f = await sip("GET", "/ab?aoi=AOI-1&lengan=konvensional", undefined, pim.h); assert.deepEqual(f.j.petak.map(p => p.petak_id), ["P-002"]);
+  assert.equal((await sip("GET", "/ab?lengan=liar", undefined, pim.h)).s, 400); assert.equal((await sip("GET", "/ab?aoi=" + "x".repeat(41), undefined, pim.h)).s, 400); assert.equal((await sip("GET", "/ab")).s, 401); assert.equal((await sip("GET", "/ab", undefined, ver.h)).s, 403);
+  const w = await sip("GET", "/ab?aoi=AOI-W", undefined, pus61.h); assert.ok(w.j.petak.length > 0 && w.j.petak.every(p => p.prov === "61"), "staf 61 hanya melihat prov 61"); assert.equal((await sip("GET", "/ab?aoi=AOI-1", undefined, pus61.h)).j.petak.length, 0);
+  await DB.prepare("UPDATE sippa_petak SET catatan = ? WHERE petak_id = 'P-002' AND aoi = 'AOI-1'").bind("=HYPERLINK(1)").run();
+  const c = await mf.dispatchFetch("http://bnpb.lokal/api/sippa/ab.csv", {headers: pim.h}); const t = await c.text(); assert.equal(c.status, 200); assert.match(c.headers.get("content-disposition"), /^attachment; filename="sippa-ab-\d{8}\.csv"$/); assert.match(t, /'=HYPERLINK\(1\)/); assert.ok(t.startsWith("petak_id,"));
+  assert.equal((await sip("GET", "/ab.csv")).s, 401);
+  await isiLaju(pim.kunci, "sippa.csv", 60); assert.equal((await sip("GET", "/ab.csv", undefined, pim.h)).s, 429, "laju csv 60"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(pim.kunci).run();
+  const d = await sip("POST", "/dummy/isi", {layar: "ab"}, ADMIN); assert.equal(d.s, 200, d.t); assert.ok(await hitung("sippa_petak", "dummy = 1") > 0 && await hitung("sippa_ab_unggah", "dummy = 1") > 0, "dummy layar ab mengisi petak dan unggahan");
+  assert.ok(!(await sip("GET", "/ab?aoi=DUMMY-AOI", undefined, pim.h)).j.petak.length, "dummy tersaring dari staf nyata"); assert.ok((await sip("GET", "/ab?aoi=DUMMY-AOI", undefined, ADMIN)).j.petak.length > 0, "admin melihat dummy");
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "ab"}, ADMIN)).s, 409);
+});
+uji("POST /api/sippa/ab-status/:id: moderator 200 ke ditinjau_evaluator (idempoten), pusdalops 403, status liar 400, id acak 404, tamu 401; laju 20", async () => {
+  const id = (await DB.prepare("SELECT id FROM sippa_ab_unggah WHERE dummy = 0 LIMIT 1").first()).id, j0 = await jejak();
+  assert.equal((await sip("POST", "/ab-status/" + id, {status: "ditinjau_evaluator"}, pus.h)).s, 403); assert.equal((await sip("POST", "/ab-status/" + id, {status: "ditinjau_evaluator"})).s, 401);
+  assert.equal((await sip("POST", "/ab-status/" + id, {status: "draf"}, MOD2)).s, 400); assert.equal((await sip("POST", "/ab-status/" + id, {}, MOD2)).s, 400); assert.equal((await sip("POST", "/ab-status/0123456789abcdef", {status: "ditinjau_evaluator"}, MOD2)).s, 404);
+  assert.equal((await DB.prepare("SELECT status FROM sippa_ab_unggah WHERE id = ?").bind(id).first()).status, "draf");
+  const r = await sip("POST", "/ab-status/" + id, {status: "ditinjau_evaluator"}, MOD2); assert.equal(r.s, 200, r.t); assert.equal(r.j.status, "ditinjau_evaluator"); assert.equal(await jejak(), j0 + 1);
+  assert.equal((await sip("POST", "/ab-status/" + id, {status: "ditinjau_evaluator"}, MOD2)).s, 200); assert.equal(await jejak(), j0 + 1, "ulang idempoten tanpa jejak kedua");
+  assert.equal((await sip("GET", "/ab", undefined, pim.h)).j.unggah.find(u => u.id === id).status, "ditinjau_evaluator");
+  await isiLaju(MOD, "sippa.ab", 20); assert.equal((await sip("POST", "/ab-status/" + id, {status: "ditinjau_evaluator"}, MOD2)).s, 429); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(MOD).run();
+});
+const stateS = {n_lance: 8, q_lpm: 300, trase: [[0, 0], [1, 1]]};
+uji("skenario: W 201 simpan, GET daftar tanpa state kecuali ?id=, hapus lunak oleh pembuat atau moderator, orang lain 403; nama 2 huruf, state bukan objek, state 32.769 byte 400; laju 120", async () => {
+  const j0 = await jejak();
+  const r = await sip("POST", "/skenario", {nama: "Uji pompa A", state: stateS, versi_mesin: "studio-1", ringkas: {vonis: "KONDISIONAL"}}, pus.h); assert.equal(r.s, 201, r.t); assert.match(r.j.id, /^[0-9a-f]{16}$/); assert.equal(await jejak(), j0 + 1);
+  for (const [ket, b] of [["nama 2 huruf", {nama: "ab", state: stateS, versi_mesin: "studio-1"}], ["nama 81", {nama: "x".repeat(81), state: stateS, versi_mesin: "studio-1"}], ["state larik", {nama: "Uji B", state: [1], versi_mesin: "studio-1"}], ["state teks", {nama: "Uji B", state: "x", versi_mesin: "studio-1"}],
+    ["state null", {nama: "Uji B", state: null, versi_mesin: "studio-1"}], ["versi 1 huruf", {nama: "Uji B", state: stateS, versi_mesin: "v"}], ["ringkas larik", {nama: "Uji B", state: stateS, versi_mesin: "studio-1", ringkas: [1]}], ["tanpa state", {nama: "Uji B", versi_mesin: "studio-1"}]]) assert.equal((await sip("POST", "/skenario", b, pus.h)).s, 400, ket);
+  assert.equal((await sip("POST", "/skenario", {nama: "Uji tepi", state: {a: "x".repeat(32768 - 8)}, versi_mesin: "studio-1"}, pus.h)).s, 201, "tepat 32.768 byte sah");
+  assert.equal((await sip("POST", "/skenario", {nama: "Uji besar", state: {a: "x".repeat(32769 - 8)}, versi_mesin: "studio-1"}, pus.h)).s, 400, "32.769 byte");
+  assert.equal((await sip("POST", "/skenario", {nama: "Uji B", state: stateS, versi_mesin: "studio-1"}, pim.h)).s, 403); assert.equal((await sip("POST", "/skenario", {nama: "Uji B", state: stateS, versi_mesin: "studio-1"})).s, 401);
+  const d = await sip("GET", "/skenario", undefined, pim.h); assert.equal(d.s, 200); const e = d.j.skenario.find(s => s.id === r.j.id); assert.ok(e && !("state" in e), "daftar tanpa state"); assert.equal(e.nama, "Uji pompa A"); assert.equal(e.oleh, pus.kunci); assert.deepEqual(e.ringkas, {vonis: "KONDISIONAL"});
+  const s1 = await sip("GET", "/skenario?id=" + r.j.id, undefined, pim.h); assert.equal(s1.s, 200); assert.deepEqual(s1.j.skenario[0].state, stateS); assert.equal((await sip("GET", "/skenario?id=0123456789abcdef", undefined, pim.h)).s, 404); assert.equal((await sip("GET", "/skenario?id=zz", undefined, pim.h)).s, 400); assert.equal((await sip("GET", "/skenario")).s, 401);
+  assert.equal((await sip("POST", "/skenario-hapus/" + r.j.id, {}, koor.h)).s, 403, "W lain tidak boleh menghapus"); assert.equal((await sip("POST", "/skenario-hapus/" + r.j.id, {}, pim.h)).s, 403); assert.equal((await sip("POST", "/skenario-hapus/" + r.j.id)).s, 401);
+  assert.equal((await sip("POST", "/skenario-hapus/0123456789abcdef", {}, pus.h)).s, 404); assert.equal(await hitung("sippa_skenario", "id = ? AND dihapus IS NULL", r.j.id), 1);
+  const h = await sip("POST", "/skenario-hapus/" + r.j.id, {}, pus.h); assert.equal(h.s, 200, h.t); assert.equal(await hitung("sippa_skenario", "id = ? AND dihapus IS NOT NULL", r.j.id), 1, "hapus lunak: baris tetap"); assert.ok(!(await sip("GET", "/skenario", undefined, pim.h)).j.skenario.some(s => s.id === r.j.id));
+  assert.equal((await sip("GET", "/skenario?id=" + r.j.id, undefined, pim.h)).s, 404, "yang dihapus tidak terbaca");
+  const r2 = await sip("POST", "/skenario", {nama: "Uji milik koor", state: stateS, versi_mesin: "studio-1"}, koor.h); assert.equal((await sip("POST", "/skenario-hapus/" + r2.j.id, {}, MOD2)).s, 200, "moderator boleh");
+  await isiLaju(pus.kunci, "sippa.skenario", 120); assert.equal((await sip("POST", "/skenario", {nama: "Uji laju", state: stateS, versi_mesin: "studio-1"}, pus.h)).s, 429, "laju 120"); assert.equal((await sip("POST", "/skenario-hapus/" + r.j.id, {}, pus.h)).s, 429); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(pus.kunci).run();
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "studio"}, ADMIN)).s, 200); assert.ok(await hitung("sippa_skenario", "dummy = 1") > 0, "dummy studio"); assert.ok(!(await sip("GET", "/skenario", undefined, pim.h)).j.skenario.some(s => s.dummy === 1), "dummy tersaring dari staf nyata");
+});
+const PDF = new TextEncoder().encode("%PDF-1.4\n1 0 obj<<>>endobj\ntrailer<<>>\n%%EOF\n");
+const kirimLaporan = async (meta, pdf, h = pus.h) => { const f = new FormData(); f.append("meta", typeof meta === "string" ? meta : JSON.stringify(meta)); if (pdf) f.append("berkas", new File([pdf], "x.pdf", {type: "application/pdf"}));
+  const {body, headers} = await badanPanjang(f, h); const r = await mf.dispatchFetch("http://bnpb.lokal/api/sippa/laporan", {method: "POST", body, headers}); const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch (e) {} return {s: r.status, j, t, h: r.headers}; };
+uji("laporan: W 201 dengan PDF di R2 sippa-laporan/<id>.pdf dari server; GET daftar; berkas attachment + CSP sandbox; tanpa %PDF- 400; meta bukan JSON 400; 8.193 byte 400; 10.485.761 byte 413; tamu 401; laju 30", async () => {
+  const j0 = await jejak(), r = await kirimLaporan({jenis: "pilot", prov: "62", parameter: {dari: "2026-10-01", sampai: "2026-10-26"}}, PDF); assert.equal(r.s, 201, r.t); assert.match(r.j.id, /^[0-9a-f]{16}$/); assert.equal(await jejak(), j0 + 1);
+  const b = await DB.prepare("SELECT * FROM sippa_laporan WHERE id = ?").bind(r.j.id).first(); assert.equal(b.ada_berkas, 1); assert.equal(b.ukuran, PDF.length); assert.equal(b.sha, createHash("sha256").update(PDF).digest("hex")); assert.equal(b.jenis, "pilot"); assert.equal(b.prov, "62"); assert.equal(b.oleh, pus.kunci);
+  const o = await R2.get("sippa-laporan/" + r.j.id + ".pdf"); assert.ok(o, "objek R2 dari id server"); assert.equal(o.httpMetadata.contentType, "application/pdf"); assert.equal((await o.arrayBuffer()).byteLength, PDF.length);
+  const dl = await sip("GET", "/laporan", undefined, pim.h); assert.equal(dl.s, 200); const e = dl.j.laporan.find(x => x.id === r.j.id); assert.ok(e && e.ada_berkas === 1 && e.jenis === "pilot"); assert.equal((await sip("GET", "/laporan?jenis=musim", undefined, pim.h)).j.laporan.length, 0); assert.equal((await sip("GET", "/laporan?jenis=liar", undefined, pim.h)).s, 400); assert.equal((await sip("GET", "/laporan")).s, 401);
+  const g = await mf.dispatchFetch("http://bnpb.lokal/api/sippa/laporan-berkas/" + r.j.id, {headers: pim.h}); assert.equal(g.status, 200); assert.equal(g.headers.get("content-type"), "application/pdf"); assert.equal(g.headers.get("content-security-policy"), "sandbox"); assert.equal(g.headers.get("x-content-type-options"), "nosniff");
+  assert.match(g.headers.get("content-disposition"), /^attachment; filename="sippa-pilot-62-\d{8}\.pdf"$/); assert.equal((await g.arrayBuffer()).byteLength, PDF.length);
+  assert.equal((await mf.dispatchFetch("http://bnpb.lokal/api/sippa/laporan-berkas/" + r.j.id)).status, 401); assert.equal((await sip("GET", "/laporan-berkas/0123456789abcdef", undefined, pim.h)).s, 404);
+  const k = await kirimLaporan({jenis: "mingguan", parameter: {minggu: 44}}); assert.equal(k.s, 201, k.t); assert.equal(await hitung("sippa_laporan", "id = ? AND ada_berkas = 0 AND sha IS NULL", k.j.id), 1); assert.equal((await sip("GET", "/laporan-berkas/" + k.j.id, undefined, pim.h)).s, 404, "tanpa berkas");
+  const palsu = await kirimLaporan({jenis: "pilot", parameter: {}}, new TextEncoder().encode("<html>bukan pdf</html>")); assert.equal(palsu.s, 400, palsu.t); assert.match(palsu.j.galat, /PDF/);
+  assert.equal((await kirimLaporan("{bukan json", PDF)).s, 400); assert.equal((await kirimLaporan({jenis: "liar", parameter: {}}, PDF)).s, 400); assert.equal((await kirimLaporan({jenis: "pilot", parameter: "teks"}, PDF)).s, 400); assert.equal((await kirimLaporan({jenis: "pilot"}, PDF)).s, 400); assert.equal((await kirimLaporan({jenis: "pilot", prov: "6", parameter: {}}, PDF)).s, 400);
+  const meta8193 = JSON.stringify({jenis: "pilot", parameter: {a: "x".repeat(8193)}}); assert.ok(new TextEncoder().encode(meta8193).length > 8192); assert.equal((await kirimLaporan(meta8193, PDF)).s, 400, "meta > 8.192 byte");
+  const pdfBesar = new Uint8Array(10485761); pdfBesar.set(PDF); assert.equal((await kirimLaporan({jenis: "pilot", parameter: {}}, pdfBesar)).s, 413, "PDF 10.485.761 byte");
+  assert.equal((await kirimLaporan({jenis: "pilot", parameter: {}}, new Uint8Array(0))).s, 400, "PDF kosong");
+  assert.equal(await hitung("sippa_laporan", "ada_berkas = 1"), 1, "yang ditolak tidak meninggalkan baris"); assert.equal((await R2.list({prefix: "sippa-laporan/"})).objects.length, 1, "yang ditolak tidak meninggalkan objek R2");
+  assert.equal((await kirimLaporan({jenis: "pilot", parameter: {}}, PDF, pim.h)).s, 403); assert.equal((await kirimLaporan({jenis: "pilot", parameter: {}}, PDF, {})).s, 401);
+  assert.equal((await kirimLaporan({jenis: "pilot", prov: "62", parameter: {}}, PDF, pus61.h)).s, 404, "staf 61 tidak boleh menulis prov 62"); assert.equal((await sip("GET", "/laporan", undefined, pus61.h)).j.laporan.length, 0, "staf 61 tidak melihat laporan prov 62"); assert.equal((await sip("GET", "/laporan-berkas/" + r.j.id, undefined, pus61.h)).s, 404);
+  await isiLaju(pus.kunci, "sippa.laporan", 30); assert.equal((await kirimLaporan({jenis: "pilot", parameter: {}}, PDF)).s, 429, "laju 30"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(pus.kunci).run();
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "laporan"}, ADMIN)).s, 200); assert.ok(await hitung("sippa_laporan", "dummy = 1") > 0, "dummy laporan"); assert.ok((await sip("GET", "/laporan", undefined, pim.h)).j.laporan.every(x => x.dummy !== 1));
+  const h = await sip("POST", "/dummy/hapus", {}, ADMIN); assert.equal(h.s, 200, h.t); for (const t of ["sippa_petak", "sippa_ab_unggah", "sippa_skenario", "sippa_laporan"]) assert.equal(await hitung(t, "dummy = 1"), 0, `${t} masih punya dummy`); assert.ok(await hitung("sippa_petak", "dummy = 0") > 0, "baris nyata utuh");
+});
+
+/* ---------------------------------------------------------------- dummy tiga layar R4 (SP-096; PRD §9.14, RENCANA-UJI §7.5) */
+uji("dummy R4: pelihara, air, akses terisi tanpa nol palsu (empat status jadwal, pil tidak laik gelar, stok di bawah minimum, zona sumur, mutu air tiga rupa, jembatan dengan dan tanpa rencana ganti); isi kedua 409; staf nyata tidak melihat; hapus menyisakan baris nyata", async () => {
+  const {jadwal, laikGelar, stokMin, kelasDari, KELAS_ASET} = await import("../../public/pipa/pelihara.js");
+  const R4 = ["pelihara", "air", "akses"], tabel = ["sippa_aset", "sippa_inspeksi", "sippa_stok_gerak"];
+  /* baris nyata lebih dulu: harus utuh sesudah hapus */
+  const rn = await sip("POST", "/aset", {kelas: "sumur_bor", nama: "Sumur nyata", sumber: "pemda", pemilik_aset: "Pemda nyata", keyakinan: "terverifikasi", prov: "62", atribut: {kedalaman_m: 40}}, pus.h); assert.equal(rn.s, 201, rn.t);
+  const sn = await sip("POST", "/stok", {gudang: "Gudang nyata", kode_bom: "C-101", nama: "Gasket nyata", delta: 5, satuan: "set", alasan: "terima"}, pus.h); assert.equal(sn.s, 201, sn.t);
+  const nyata = async () => Object.fromEntries(await Promise.all(tabel.map(async t => [t, await hitung(t, "dummy = 0")])));
+  const sebelum = await nyata(); assert.ok(sebelum.sippa_aset >= 1 && sebelum.sippa_stok_gerak >= 1);
+  for (const l of R4) { assert.equal((await sip("POST", "/dummy/isi", {layar: l}, pus.h)).s, 403, `${l}: pusdalops bukan Super Admin`); assert.equal((await sip("POST", "/dummy/isi", {layar: l})).s, 401, `${l}: tamu`); }
+  assert.equal(await hitung("sippa_aset", "dummy = 1"), 0, "tolakan tidak menulis");
+
+  /* pelihara */
+  const p = await sip("POST", "/dummy/isi", {layar: "pelihara"}, ADMIN); assert.equal(p.s, 200, p.t);
+  for (const t of ["sippa_kit", "sippa_komponen", "sippa_log_gelar", "sippa_aset", "sippa_inspeksi", "sippa_stok_gerak"]) assert.ok(p.j.dibuat[t] > 0, `rantai pelihara mengisi ${t}: ${JSON.stringify(p.j.dibuat)}`);
+  const d = (await sip("GET", "/pelihara", undefined, ADMIN)).j, kini = d.per, terakhir = new Map();
+  for (const i of d.inspeksi_terakhir) { const k = `${i.sasaran_jenis}:${i.sasaran_id}`; if (!(terakhir.get(k) >= i.waktu)) terakhir.set(k, i.waktu); }
+  const butir = [];
+  for (const c of d.komponen) { const kelas = kelasDari(c.kode_bom); if (kelas) butir.push({kelas, j: jadwal({kelas}, terakhir.get("komponen:" + c.id) ?? null, kelas === "K1" ? d.jam_sejak_servis[c.kit_id] ?? null : null, kini)}); }
+  for (const a of d.aset) { const kelas = KELAS_ASET[a.kelas]; butir.push({kelas, j: jadwal({kelas}, terakhir.get("aset:" + a.id) ?? null, null, kini)}); }
+  const status = new Set(butir.map(b => b.j.status)); for (const s of ["terlambat", "segera", "aman", "belum_pernah"]) assert.ok(status.has(s), `status jadwal ${s} tidak muncul; ada ${[...status]}`);
+  const kit903 = (await DB.prepare("SELECT id FROM sippa_kit WHERE kode = 'SIPPA-903'").first()).id, komp903 = d.komponen.filter(c => c.kit_id === kit903);
+  const laik = laikGelar(komp903.map(c => ({kode_bom: c.kode_bom, kondisi: c.kondisi})), []); assert.equal(laik.laik, false, `kit SIPPA-903 harus tidak laik gelar: ${JSON.stringify(komp903.map(c => [c.kode_bom, c.kondisi]))}`);
+  assert.ok(komp903.some(c => c.kondisi === "rusak_berat" && kelasDari(c.kode_bom) === "K1"), "satu komponen K1 skor 2 (rusak_berat)");
+  assert.ok(Math.max(...Object.values(d.jam_sejak_servis)) > 0, "jam pompa sejak servis bukan nol");
+  const dm = d.stok.filter(s => s.gudang === "Gudang dummy"); assert.ok(dm.length >= 2 && dm.every(s => s.saldo > 0), `saldo stok dummy bukan nol: ${JSON.stringify(dm)}`);
+  const nKit = d.n_kit_per_gudang["Gudang dummy"]; assert.ok(nKit > 0, "kit per gudang bukan nol");
+  assert.ok(dm.some(s => s.saldo < stokMin(s.kode_bom, nKit)) && dm.some(s => s.saldo >= stokMin(s.kode_bom, nKit)), `satu kode di bawah stok minimum, satu di atas: ${JSON.stringify(dm)} n=${nKit}`);
+  assert.equal(await hitung("sippa_aset", "dummy = 1 AND kode NOT GLOB 'AS-9[0-9][0-9][0-9]'"), 0, "kode dummy 9000 ke atas");
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "pelihara"}, ADMIN)).s, 409, "isi kedua pelihara");
+
+  /* air */
+  const a = await sip("POST", "/dummy/isi", {layar: "air"}, ADMIN); assert.equal(a.s, 200, a.t); assert.ok(a.j.dibuat.sippa_aset >= 6 && a.j.dibuat.sippa_inspeksi >= 3, JSON.stringify(a.j.dibuat));
+  const sumur = (await sip("GET", "/aset?kelas=sumur_bor", undefined, ADMIN)).j.aset.filter(s => s.dummy === 1); assert.ok(sumur.length >= 6, `${sumur.length} sumur dummy`);
+  const zona = new Map(); for (const s of sumur) { const at = JSON.parse((await DB.prepare("SELECT atribut FROM sippa_aset WHERE id = ?").bind(s.id).first()).atribut); zona.set(at.zona_konservasi, at); }
+  for (const z of ["aman", "rawan", "kritis"]) assert.ok(zona.has(z), `zona ${z} tidak ada; ada ${[...zona.keys()]}`);
+  assert.ok(zona.get("kritis").rekomendasi_bg, "sumur kritis bawa rekomendasi Badan Geologi");
+  assert.ok(sumur.some(s => s.mutu_terakhir?.lolos === true) && sumur.some(s => s.mutu_terakhir?.lolos === false && s.mutu_terakhir.e_coli_cfu > 0) && sumur.some(s => s.mutu_terakhir === null), "mutu air: lolos, gagal E. coli, belum diuji");
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "air"}, ADMIN)).s, 409, "isi kedua air");
+
+  /* akses */
+  const k = await sip("POST", "/dummy/isi", {layar: "akses"}, ADMIN); assert.equal(k.s, 200, k.t);
+  const jb = (await DB.prepare("SELECT kelas, rencana_ganti, sumber, atribut FROM sippa_aset WHERE dummy = 1 AND kelas LIKE 'jembatan_%'").all()).results;
+  assert.ok(jb.some(j => j.kelas === "jembatan_darurat" && j.rencana_ganti > kini) && jb.some(j => j.kelas === "jembatan_darurat" && j.rencana_ganti === null), "jembatan darurat dengan dan tanpa rencana ganti");
+  const perm = jb.filter(j => j.kelas === "jembatan_permanen"); assert.ok(perm.length >= 2 && new Set(perm.map(j => j.sumber)).size >= 2 && new Set(perm.map(j => JSON.parse(j.atribut).program)).size >= 2, "dua jembatan permanen dari sumber program berbeda");
+  assert.ok(jb.every(j => j.kelas !== "jembatan_permanen" || !j.rencana_ganti), "permanen tidak punya rencana ganti");
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "akses"}, ADMIN)).s, 409, "isi kedua akses");
+
+  /* staf nyata tidak melihat dummy; admin melihat */
+  const nyataAset = (await sip("GET", "/aset", undefined, pim.h)).j.aset; assert.ok(nyataAset.every(x => !x.kode.startsWith("AS-9")), "aset dummy tersaring untuk staf nyata");
+  const dp = (await sip("GET", "/pelihara", undefined, pim.h)).j; assert.ok(dp.komponen.every(c => !/^SIPPA-9/.test(c.kit_kode)) && dp.stok.every(s => s.gudang !== "Gudang dummy"), "pelihara tanpa dummy untuk staf nyata");
+  assert.ok((await sip("GET", "/stok", undefined, pim.h)).j.stok.every(s => s.gudang !== "Gudang dummy"));
+
+  /* hilir tanpa hulu: pengisi melapor 0 baris dan tidak menulis (KELAS C) */
+  const env = await mf.getBindings(), cc = {kini: Date.now(), sejak: Date.now() - 20 * HARI, sampai: Date.now(), ada: false};
+  await sip("POST", "/dummy/hapus", {}, ADMIN);
+  for (const t of tabel) assert.equal(await hitung(t, "dummy = 1"), 0, `${t} masih punya dummy sesudah hapus`);
+  assert.deepEqual(await nyata(), sebelum, "baris nyata utuh");
+  for (const nama of ["isiInspeksiKit"]) { const x = await PENGISI[nama](env, cc); assert.equal(Object.values(x).reduce((a2, b) => a2 + b, 0), 0, `${nama} tanpa hulu harus 0 baris: ${JSON.stringify(x)}`); }
+  assert.equal(await hitung("sippa_inspeksi", "dummy = 1"), 0);
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "akses"}, ADMIN)).s, 200, "sesudah hapus, isi lagi berhasil");
+  await sip("POST", "/dummy/hapus", {}, ADMIN); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(ADM).run();
 });
 
 /* ---------------------------------------------------------------- akun gerbang dan kontrak klien public/pipa */
@@ -622,13 +903,524 @@ uji("SP-015: kitBuat memakai dummyStaf, bukan literal 0, pada INSERT kit dan kom
 /* ---------------------------------------------------------------- tanpa migrasi, rute lama utuh, tulis/baca peran tanpa penjaga */
 uji("tanpa tabel sippa_*: semua rute /api/sippa menjawab 503 sopan; rute lain repo tetap 200", async () => {
   const T = await siapkan("uji-sippa-tanpa-migrasi", {r2: true});
-  await T.DB.batch(["sippa_bbm", "sippa_probe", "sippa_log_gelar", "sippa_foto", "sippa_jalan_cek", "sippa_aoi_usul", "sippa_gerak", "sippa_tugas", "sippa_komponen", "sippa_kit"].map(t => T.DB.prepare(`DROP TABLE ${t}`)));
+  await T.DB.batch(["sippa_laporan", "sippa_skenario", "sippa_petak", "sippa_ab_unggah", "sippa_bbm", "sippa_probe", "sippa_log_gelar", "sippa_foto", "sippa_jalan_cek", "sippa_aoi_usul", "sippa_gerak", "sippa_tugas", "sippa_komponen", "sippa_kit"].map(t => T.DB.prepare(`DROP TABLE ${t}`)));
   const pesan = {galat: "Migrasi SIPPA belum diterapkan di basis data", status: "tanpa_migrasi"};
   const kasus = [["GET", "/kit", undefined], ["GET", "/kit/0123456789abcdef", undefined], ["POST", "/kit", {kode: "SIPPA-101", jenis: "gambut", templat: "gambut"}], ["POST", "/kit/0123456789abcdef", {lokasi: "x"}], ["POST", "/komponen/0123456789abcdef", {baru: [{kode_bom: "X-1", nama: "ab", jumlah: 1, satuan: "unit"}]}],
     ["POST", "/gerak/0123456789abcdef", {alasan: "gelar", ke_status: "gelar"}], ["POST", "/tiba/0123456789abcdef", {}], ["POST", "/tugas", {nama_regu: "Regu", unsur: "mpa", prov: "62", kab: "Kab", berlaku_hari: 1}], ["POST", "/tugas-cabut/0123456789abcdef", {}],
-    ["GET", "/log", undefined], ["GET", "/log.csv", undefined], ["GET", "/probe.csv", undefined], ["POST", "/log", {jenis: "latihan"}], ["GET", "/foto/0123456789abcdef", undefined], ["POST", "/dummy/isi", {layar: "log"}], ["POST", "/dummy/hapus", {}]];
+    ["GET", "/ringkas", undefined], ["GET", "/jalan-cek", undefined], ["POST", "/jalan-cek", {kompleks_id: "K0001", prov: "62", musim: "kemarau", hasil: "lolos"}], ["POST", "/aoi", {kompleks_id: "K0001", prov: "62", alasan: "Usul uji tanpa migrasi"}],
+    ["GET", "/log", undefined], ["GET", "/log.csv", undefined], ["GET", "/probe.csv", undefined], ["POST", "/log", {jenis: "latihan"}], ["GET", "/foto/0123456789abcdef", undefined], ["POST", "/dummy/isi", {layar: "log"}], ["POST", "/dummy/hapus", {}],
+    ["GET", "/ab", undefined], ["GET", "/ab.csv", undefined], ["GET", "/skenario", undefined], ["GET", "/laporan", undefined], ["POST", "/skenario", {nama: "Uji B", state: {}, versi_mesin: "studio-1"}], ["POST", "/ab-status/0123456789abcdef", {status: "ditinjau_evaluator"}],
+    ["POST", "/skenario-hapus/0123456789abcdef", {}], ["GET", "/laporan-berkas/0123456789abcdef", undefined]];
   for (const [m, j, b] of kasus) { const r = await T.api(m, "/api/sippa" + j, b, ADMIN); assert.equal(r.s, 503, `${m} ${j}: ${r.s} ${r.t.slice(0, 120)}`); assert.deepEqual(r.j, pesan, `${m} ${j}`); }
   const kd = "a".repeat(26); for (const [m, j, b] of [["GET", "/lapangan/saya"], ["POST", "/lapangan/kirim", {}], ["POST", "/gerak/0123456789abcdef", {alasan: "gelar", ke_status: "gelar"}]]) { const r = await T.api(m, "/api/sippa" + j, b, {"x-kode": kd}); assert.equal(r.s, 503, `${m} ${j} (kode): ${r.s} ${r.t}`); }
   const f = await T.api("GET", "/api/warga/konfig"); assert.equal(f.s, 200, "rute lain repo tetap 200 (/api/titik tidak dipakai: 404 sah sebelum cron FIRMS pertama)"); assert.equal((await T.api("GET", "/api/warga")).s, 200); 
   assert.equal((await T.api("GET", "/pipa/lapangan")).s, 200, "halaman tidak menyentuh tabel");
+});
+
+/* ---------------------------------------------------------------- SP-050 telemetri, perangkat, alarm (migrasi 0058, keputusan 38) */
+const iso = t => new Date(t).toISOString(), tglWib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
+const tel = async (token, b, h = {}) => {
+  const r = await mf.dispatchFetch("http://bnpb.lokal/api/sippa/telemetri", {method: "POST", headers: {...(token ? {authorization: "Bearer " + token} : {}), "content-type": "application/json", ...h}, body: typeof b === "string" ? b : JSON.stringify(b)});
+  const t = await r.text(); let j = null; try { j = JSON.parse(t); } catch (e) {}
+  return {s: r.status, j, t, h: r.headers};
+};
+const bersihLaju = () => DB.prepare("DELETE FROM laju_bnpb WHERE aksi IN ('sippa.perangkat', 'sippa.kit_buat')").run();
+const kitTel = async kode => { await bersihLaju(); const r = await sip("POST", "/kit", {kode, jenis: "gambut", prov: "62", kab: "Kota Palangka Raya"}, MOD2); assert.equal(r.s, 201, r.t); return r.j.kit; };
+const perTel = async (kit_id, tag, jenis, satuan, x = {}) => { const r = await sip("POST", "/perangkat", {kit_id, tag, jenis, satuan, ...x}, MOD2); assert.equal(r.s, 201, `${tag}: ${r.t}`); return r.j; };
+const rakit = async (kode, daftar) => {
+  const kit = await kitTel(kode), gw = await perTel(kit.id, "U-102", "gateway", "-"), per = {};
+  for (const [tag, jenis, satuan, x] of daftar) per[tag] = (await perTel(kit.id, tag, jenis, satuan, x)).perangkat;
+  return {kit, kode, token: gw.token, gw: gw.perangkat, per};
+};
+/* bacaan = [[tag, detik relatif sekarang, nilai, satuan]] */
+const kirimT = (K, bacaan, x = {}) => tel(K.token, {kit: K.kode, dikirim: iso(Date.now()), sumber: "gateway", bacaan: bacaan.map(([tag, dt, nilai, satuan]) => ({tag, waktu: iso(Date.now() + dt * 1000), nilai, ...(satuan ? {satuan} : {})})), ...x});
+const alarmDi = (kit_id, kode) => DB.prepare("SELECT * FROM sippa_alarm WHERE kit_id = ?" + (kode ? " AND kode = ?" : "") + " ORDER BY mulai, rowid").bind(...(kode ? [kit_id, kode] : [kit_id])).all().then(r => r.results);
+const barisT = kit_id => DB.prepare("SELECT * FROM sippa_telemetri WHERE kit_id = ? ORDER BY diterima, rowid").bind(kit_id).all().then(r => r.results);
+const dekat = (a, b, ket) => assert.ok(Math.abs(a - b) < 1e-9, `${ket}: ${a} bukan ${b}`);
+const butirPantau = async h => (await api("GET", "/api/pantau", undefined, h)).j.butir.filter(b => b.jenis === "sippa_alarm");
+let T1tel, K151;
+const PER_ISI = [["PT-102", "tekanan", "bar", {min_sah: 0, maks_sah: 12, tag_datar: "PT102_bar"}], ["FT-101", "debit", "m3/jam", {min_sah: 0, maks_sah: 90, tag_datar: "FT101_m3h"}],
+  ["T-103", "suhu_gambut", "C", {kedalaman_cm: 50, min_sah: -10, maks_sah: 120, tag_datar: "T03_50cm_C"}], ["GWT-101", "muka_air_tanah", "m", {tag_datar: "GWT01_m"}]];
+
+uji("POST /api/sippa/perangkat dan perangkat-cabut: M 201, gateway selalu bertoken 64 heks tampil sekali dan hanya sha256 tersimpan; pusdalops, pimpinan, akun gerbang 403; tamu 401; masukan liar 400; tag kembar 409; laju 60", async () => {
+  const kit = await kitTel("SIPPA-150"), j0 = await jejak();
+  const g = await sip("POST", "/perangkat", {kit_id: kit.id, tag: "U-102", jenis: "gateway", satuan: "-"}, MOD2);
+  assert.equal(g.s, 201, g.t); cekKepala(g, "perangkat"); assert.match(g.j.token, /^[0-9a-f]{64}$/, "gateway selalu mendapat token"); assert.equal(g.j.perangkat.bertoken, true); assert.equal(g.j.perangkat.kit_kode, "SIPPA-150");
+  assert.ok(!("token_sha" in g.j.perangkat) && !("prov" in g.j.perangkat), "tanpa token_sha dan prov"); assert.doesNotMatch(JSON.stringify(g.j.perangkat), new RegExp(g.j.token));
+  const baris = await DB.prepare("SELECT * FROM sippa_perangkat WHERE id = ?").bind(g.j.perangkat.id).first();
+  assert.equal(baris.token_sha, sha256(g.j.token), "hanya sha256 yang tersimpan"); assert.ok(!Object.values(baris).includes(g.j.token), "token polos tidak tersimpan di kolom mana pun"); assert.equal(await jejak(), j0 + 1);
+  const s = await sip("POST", "/perangkat", {kit_id: kit.id, tag: "PT-101", jenis: "tekanan", satuan: "bar", min_sah: -1, maks_sah: 12, interval_s: 30}, MOD2);
+  assert.equal(s.s, 201, s.t); assert.equal(s.j.token, undefined, "sensor tanpa beri_token tidak bertoken"); assert.equal(s.j.perangkat.bertoken, false); assert.equal(s.j.perangkat.interval_s, 30); assert.equal(s.j.perangkat.aktif, 1);
+  const b = await sip("POST", "/perangkat", {kit_id: kit.id, tag: "FT-101", jenis: "debit", satuan: "m3/jam", beri_token: true, tag_datar: "FT101_m3h"}, MOD2); assert.equal(b.s, 201); assert.match(b.j.token, /^[0-9a-f]{64}$/);
+  assert.notEqual(b.j.token, g.j.token, "tiap token acak");
+  for (const [n, h] of [["pusdalops", pus.h], ["pimpinan", pim.h], ["koordalops", koor.h], ["verifikator", ver.h], ["akun gerbang", GERBANG]]) assert.equal((await sip("POST", "/perangkat", {kit_id: kit.id, tag: "T-101", jenis: "suhu_gambut", satuan: "C"}, h)).s, 403, n);
+  assert.equal((await sip("POST", "/perangkat", {kit_id: kit.id, tag: "T-101", jenis: "suhu_gambut", satuan: "C"})).s, 401, "tamu");
+  const n0 = await hitung("sippa_perangkat"), dasar = {kit_id: kit.id, tag: "PT-102", jenis: "tekanan", satuan: "bar"};
+  for (const liar of [{tag: "pt-101"}, {tag: "PT_101"}, {tag: "PT-1234567890"}, {tag: 5}, {jenis: "angin"}, {satuan: "kg"}, {kedalaman_cm: 20}, {min_sah: 5, maks_sah: 5}, {min_sah: "a"}, {interval_s: 5}, {interval_s: 3601}, {interval_s: 60.5},
+    {tag_datar: "a b"}, {tag_datar: "x".repeat(21)}, {beri_token: "ya"}, {kit_id: "x"}, {kit_id: "0123456789abcdef"}, {kit_id: undefined}]) { const r = await sip("POST", "/perangkat", {...dasar, ...liar}, MOD2); assert.equal(r.s, 400, `${JSON.stringify(liar)}: ${r.s} ${r.t}`); }
+  assert.equal(await hitung("sippa_perangkat"), n0, "masukan liar tidak menulis baris");
+  assert.equal((await sip("POST", "/perangkat", {kit_id: kit.id, tag: "PT-101", jenis: "tekanan", satuan: "bar"}, MOD2)).s, 409, "tag kembar di kit sama");
+  assert.equal((await sip("POST", "/perangkat", {kit_id: kit.id, tag: "FT-102", jenis: "debit", satuan: "m3/jam", tag_datar: "FT101_m3h"}, MOD2)).s, 409, "tag_datar kembar di kit sama");
+  const lain = await kitTel("SIPPA-149"); assert.equal((await sip("POST", "/perangkat", {kit_id: lain.id, tag: "PT-101", jenis: "tekanan", satuan: "bar"}, MOD2)).s, 201, "tag sama di kit lain sah");
+  await isiLaju(MOD, "sippa.perangkat", 60); assert.equal((await sip("POST", "/perangkat", dasar, MOD2)).s, 429, "laju 60 per jam"); await bersihLaju();
+  /* cabut */
+  const j1 = await jejak(), c = await sip("POST", "/perangkat-cabut/" + s.j.perangkat.id, {}, MOD2); assert.equal(c.s, 200, c.t); assert.deepEqual(c.j, {id: s.j.perangkat.id, aktif: 0}); cekKepala(c, "cabut");
+  assert.equal((await DB.prepare("SELECT aktif FROM sippa_perangkat WHERE id = ?").bind(s.j.perangkat.id).first()).aktif, 0); assert.equal(await jejak(), j1 + 1);
+  assert.equal((await sip("POST", "/perangkat-cabut/" + s.j.perangkat.id, {}, MOD2)).s, 200, "cabut ulang idempoten"); assert.equal(await jejak(), j1 + 1, "tanpa jejak kedua");
+  for (const [n, h] of [["pusdalops", pus.h], ["pimpinan", pim.h]]) assert.equal((await sip("POST", "/perangkat-cabut/" + b.j.perangkat.id, {}, h)).s, 403, n);
+  assert.equal((await sip("POST", "/perangkat-cabut/" + b.j.perangkat.id, {})).s, 401); assert.equal((await sip("POST", "/perangkat-cabut/0123456789abcdef", {}, MOD2)).s, 404);
+  assert.equal((await DB.prepare("SELECT aktif FROM sippa_perangkat WHERE id = ?").bind(b.j.perangkat.id).first()).aktif, 1, "yang ditolak tidak berubah");
+});
+
+uji("dariDatar: bentuk datar paket pemilik dipecah per kunci; POST /telemetri menyimpan bentuk bersarang dan datar sebagai baris identik; tag tanpa padanan tag_datar ditandai tag_asing (E2)", async () => {
+  const T1 = Date.now() - 60e3; T1tel = T1;
+  const datar = {site_id: "SIPPA-151", utc_time: iso(T1), PT102_bar: 4.8, T03_50cm_C: 61.2, sensor_quality: 0.9, source: "gateway"};
+  assert.deepEqual(dariDatar(datar), {kit: "SIPPA-151", dikirim: iso(T1), sumber: "gateway", sensor_quality: 0.9, asing: [], bacaan: [
+    {tag_datar: "PT102_bar", awalan: "PT", nomor: "102", kedalaman_cm: null, satuan: "bar", nilai: 4.8, waktu: iso(T1)}, {tag_datar: "T03_50cm_C", awalan: "T", nomor: "03", kedalaman_cm: 50, satuan: "C", nilai: 61.2, waktu: iso(T1)}]});
+  assert.deepEqual(dariDatar({site_id: "S", utc_time: "x", FT101_m3h: 1, GWT01_m: 2, rusak: 3, "PT-1_bar": 4}).bacaan.map(b => [b.awalan, b.nomor, b.satuan]), [["FT", "101", "m3/jam"], ["GWT", "01", "m"]]);
+  assert.deepEqual(dariDatar({site_id: "S", utc_time: "x", rusak: 3, "PT-1_bar": 4}).asing, ["rusak", "PT-1_bar"], "kunci yang bukan pola dilaporkan, bukan ditelan");
+  const K = await rakit("SIPPA-151", PER_ISI); K151 = K;
+  const nested = {kit: "SIPPA-151", dikirim: iso(T1), sumber: "gateway", bacaan: [{tag: "PT-102", waktu: iso(T1), nilai: 4.8, satuan: "bar"}, {tag: "T-103", waktu: iso(T1), nilai: 61.2, satuan: "C", kedalaman_cm: 50}]};
+  const a = await tel(K.token, nested); assert.equal(a.s, 202, a.t); cekKepala(a, "telemetri"); assert.deepEqual(a.j, {diterima: 2, ditandai: [], ganda: false});
+  let baris = await barisT(K.kit.id); assert.equal(baris.length, 1, "satu baris per PESAN, bukan per bacaan"); const r0 = baris[0];
+  assert.equal(r0.id, sha256(sha256(K.token) + JSON.stringify(nested)).slice(0, 32), "id = 32 heks pertama sha256(token_sha + badan)"); assert.equal(r0.pengirim_id, K.gw.id); assert.equal(r0.n, 2); assert.equal(r0.n_mutu2, 0);
+  assert.equal(r0.t_awal, T1); assert.equal(r0.t_akhir, T1); assert.deepEqual(JSON.parse(r0.bacaan), [["PT-102", T1, 4.8, 0, null], ["T-103", T1, 61.2, 0, 50]]); assert.equal(r0.dummy, 0);
+  const lagi = await tel(K.token, nested); assert.equal(lagi.s, 202); assert.deepEqual(lagi.j, {diterima: 0, ditandai: [], ganda: true}, "kirim ulang pesan sama = ganda"); assert.equal((await barisT(K.kit.id)).length, 1, "ganda tidak menulis baris kedua");
+  const f = await tel(K.token, datar); assert.equal(f.s, 202, f.t); assert.deepEqual(f.j, {diterima: 2, ditandai: [], ganda: false});
+  baris = await barisT(K.kit.id); assert.equal(baris.length, 2); assert.notEqual(baris[1].id, r0.id); assert.equal(baris[1].bacaan, r0.bacaan, "bentuk datar menghasilkan bacaan identik dengan bentuk bersarang: hanya satu bentuk yang disimpan");
+  const g = await tel(K.token, {site_id: "SIPPA-151", utc_time: iso(T1 + 1000), XX99_bar: 1, FT101_m3h: 12.5, GWT01_m: 2.4, nonsens: 1, source: "gateway"});
+  assert.equal(g.s, 202, g.t); assert.equal(g.j.diterima, 2); assert.deepEqual(g.j.ditandai.map(x => x.alasan), ["tag_asing", "tag_asing"]); assert.deepEqual(g.j.ditandai.map(x => x.tag).sort(), ["XX99_bar", "nonsens"]);
+  const q = await tel(K.token, {site_id: "SIPPA-151", utc_time: iso(T1 + 2000), PT102_bar: 5, sensor_quality: 0.3, source: "gateway"}); assert.equal(q.s, 202);
+  assert.equal(JSON.parse((await barisT(K.kit.id)).at(-1).bacaan)[0][3], 1, "sensor_quality < 0,5 = mutu 1 (diragukan)");
+});
+
+uji("POST /api/sippa/telemetri: token salah, tanpa token, dicabut 401; > 300 token salah per IP 429 tetapi token sah lolos; kit lain, waktu, satuan, nilai, tag asing; di luar rentang tersimpan mutu 2; 501 bacaan 400; 65.537 byte 413; pesan ke-121 per jam 429", async () => {
+  const K = K151, T1 = T1tel, n0 = (await barisT(K.kit.id)).length;
+  const s401 = async (token, ket, h = {}) => { const r = await tel(token, {kit: "SIPPA-151", dikirim: iso(Date.now()), bacaan: []}, h); assert.equal(r.s, 401, ket); assert.ok(r.j.galat); assert.equal(r.h.get("www-authenticate"), "Bearer"); };
+  await s401(null, "tanpa Authorization"); await s401("0".repeat(64), "token salah"); await s401("abc", "token pendek"); await s401(K.token + "0", "token kepanjangan");
+  const ip2 = {"cf-connecting-ip": "203.0.113.51"}, k2 = sha256("garam-uji|203.0.113.51"); await s401("1".repeat(64), "salah dari IP 2", ip2); await s401("2".repeat(64), "salah lagi", ip2);
+  assert.equal(await hitung("laju_bnpb", "aksi = 'sippa.token_gagal' AND kunci = ?", k2), 2, "tiap token salah dihitung per IP");
+  const ip = {"cf-connecting-ip": "203.0.113.50"}, kunci = sha256("garam-uji|203.0.113.50"); await isiLaju(kunci, "sippa.token_gagal", 300);
+  assert.equal((await tel("3".repeat(64), {kit: "SIPPA-151", bacaan: []}, ip)).s, 429, "lewat 300 token salah per jam per IP");
+  assert.equal((await tel(K.token, {kit: "SIPPA-151", dikirim: iso(Date.now()), sumber: "gateway", bacaan: [{tag: "PT-102", waktu: iso(Date.now() - 45e3), nilai: 4.2, satuan: "bar"}]}, ip)).s, 202, "token sah tidak ikut terkunci");
+  const g2 = await perTel(K.kit.id, "U-103", "gateway", "-"), ok2 = await tel(g2.token, {kit: "SIPPA-151", bacaan: [{tag: "PT-102", waktu: iso(Date.now() - 30e3), nilai: 3.3}]}); assert.equal(ok2.s, 202, ok2.t);
+  assert.equal((await sip("POST", "/perangkat-cabut/" + g2.perangkat.id, {}, MOD2)).s, 200); await s401(g2.token, "token perangkat yang dicabut");
+  /* isi pesan */
+  const bad = async (b, s, ket) => { const r = await tel(K.token, b, ip2); assert.equal(r.s, s, `${ket}: ${r.s} ${r.t.slice(0, 120)}`); return r; };
+  await bad("bukan json", 400, "bukan JSON"); await bad("[]", 400, "larik"); await bad({kit: "SIPPA-151", bacaan: []}, 400, "bacaan kosong"); await bad({kit: "SIPPA-151"}, 400, "tanpa bacaan"); await bad({kit: "SIPPA-150", bacaan: [{tag: "PT-102", waktu: iso(Date.now()), nilai: 1}]}, 400, "kit bukan milik token");
+  const banyak = n => ({kit: "SIPPA-151", dikirim: iso(Date.now()), bacaan: Array.from({length: n}, (_, i) => ({tag: "PT-102", waktu: iso(Date.now() - 20e3 - i), nilai: 1 + i / 1000}))});
+  await bad(banyak(501), 400, "501 bacaan"); assert.equal((await tel(K.token, banyak(500), ip2)).j.diterima, 500, "500 bacaan sah"); const b500 = (await barisT(K.kit.id)).at(-1); assert.equal(b500.n, 500);
+  const besar = JSON.stringify(banyak(3)); await bad(besar + " ".repeat(65537 - besar.length), 413, "65.537 byte");
+  const kirim1 = (dt, nilai, x = {}) => tel(K.token, {kit: "SIPPA-151", dikirim: iso(Date.now()), bacaan: [{tag: "PT-102", waktu: iso(Date.now() + dt * 1000), nilai, satuan: "bar", ...x}]}, ip2), n1 = (await barisT(K.kit.id)).length;
+  let r = await kirim1(360, 5); assert.equal(r.s, 202); assert.equal(r.j.diterima, 0); assert.match(r.j.ditandai[0].alasan, /5 menit di depan/); r = await kirim1(-31 * 86400, 5); assert.match(r.j.ditandai[0].alasan, /30 hari/);
+  r = await kirim1(-10, 5, {satuan: "psi"}); assert.match(r.j.ditandai[0].alasan, /satuan/); r = await kirim1(-11, "5"); assert.match(r.j.ditandai[0].alasan, /nilai harus angka/); r = await kirim1(-12, 5, {waktu: "kemarin"}); assert.match(r.j.ditandai[0].alasan, /waktu tidak sah/);
+  r = await kirim1(-13, 5, {kedalaman_cm: 1.5}); assert.match(r.j.ditandai[0].alasan, /kedalaman/); r = await kirim1(-14, 5, {tag: "PT-999"}); assert.deepEqual(r.j.ditandai, [{tag: "PT-999", alasan: "tag_asing"}]);
+  assert.equal((await barisT(K.kit.id)).length, n1, "bacaan yang ditolak per butir tidak menulis baris");
+  r = await kirim1(240, 5); assert.equal(r.j.diterima, 1, "4 menit di depan masih sah");
+  r = await kirim1(-15, 15); assert.equal(r.j.diterima, 1, "di luar min_sah..maks_sah DISIMPAN, bukan dibuang"); const luar = (await barisT(K.kit.id)).at(-1); assert.equal(luar.n_mutu2, 1); assert.equal(JSON.parse(luar.bacaan)[0][3], 2); assert.equal(JSON.parse(luar.bacaan)[0][2], 15);
+  assert.ok((await barisT(K.kit.id)).length > n0);
+  /* batas 120 pesan per jam per pengirim, dihitung dari baris tabel (tanpa tulisan laju) */
+  const L = await rakit("SIPPA-152", [PER_ISI[0]]), T = Date.now(), seed = k => DB.batch(Array.from({length: k}, (_, i) => DB.prepare("INSERT INTO sippa_telemetri (id, pengirim_id, kit_id, diterima, t_awal, t_akhir, n, bacaan) VALUES (?, ?, ?, ?, ?, ?, 1, '[]')")
+    .bind(sha256("seed" + L.kit.id + i).slice(0, 32), L.gw.id, L.kit.id, T - 1000 - i * 1000, T - 60e3, T - 60e3)));
+  await seed(119); const lj0 = await hitung("laju_bnpb");
+  assert.equal((await kirimT(L, [["PT-102", -30, 4, "bar"]])).s, 202, "pesan ke-120 masih lolos"); assert.equal(await hitung("laju_bnpb"), lj0, "batas dihitung dari tabel telemetri, tanpa tulisan laju");
+  const ke121 = await kirimT(L, [["PT-102", -29, 4, "bar"]]); assert.equal(ke121.s, 429, ke121.t); assert.equal(ke121.h.get("retry-after"), "3600"); assert.equal((await barisT(L.kit.id)).length, 120, "pesan ke-121 tidak ditulis");
+  await DB.prepare("UPDATE sippa_telemetri SET diterima = ? WHERE kit_id = ?").bind(Date.now() - 2 * JAM, L.kit.id).run();
+  assert.equal((await kirimT(L, [["PT-102", -28, 4, "bar"]])).s, 202, "jendela satu jam bergeser: pesan lama tidak dihitung");
+});
+
+uji("GET /api/sippa/perangkat, /telemetri: B 200 tanpa token; terakhir dan nilai terakhir; seri naik menurut waktu dengan ambang; sejak > 30 hari dan masukan liar 400; wilayah 61 tidak melihat; tamu 401, verifikator 403", async () => {
+  const K = K151, T1 = T1tel;
+  const r = await sip("GET", "/perangkat", undefined, pus.h); assert.equal(r.s, 200, r.t); cekKepala(r, "perangkat"); assert.doesNotMatch(r.t, /token_sha|"token"|"prov"|[0-9a-f]{64}/, "tanpa token atau sha dan tanpa prov");
+  const p = r.j.perangkat, kit151 = p.filter(x => x.kit_kode === "SIPPA-151"); assert.ok(kit151.length >= 5, `${kit151.length} perangkat di kit 151`);
+  const gwt = kit151.find(x => x.tag === "GWT-101"); assert.equal(gwt.terakhir, T1 + 1000); assert.equal(gwt.nilai_terakhir, 2.4); assert.equal(gwt.mutu_terakhir, 0); assert.equal(gwt.satuan, "m"); assert.equal(gwt.tag_datar, "GWT01_m");
+  const gw = kit151.find(x => x.jenis === "gateway" && x.aktif === 1 && x.tag === "U-102"); assert.equal(gw.bertoken, true); assert.ok(gw.terakhir > T1, "gateway: terakhir = waktu terima pesan terakhir"); assert.equal(gw.nilai_terakhir, null);
+  const sensor = kit151.find(x => x.tag === "PT-102"); assert.equal(sensor.bertoken, false); assert.equal(typeof sensor.nilai_terakhir, "number"); assert.ok([0, 1, 2].includes(sensor.mutu_terakhir)); assert.equal(sensor.min_sah, 0); assert.equal(sensor.maks_sah, 12);
+  const sepi = p.find(x => x.kit_kode === "SIPPA-150" && x.tag === "PT-101"); assert.equal(sepi.terakhir, null); assert.equal(sepi.nilai_terakhir, null, "perangkat yang belum pernah mengirim: kosong, bukan nol");
+  assert.equal((await sip("GET", "/perangkat", undefined, pim.h)).s, 200); assert.equal((await sip("GET", "/perangkat", undefined, koor.h)).s, 200); assert.equal((await sip("GET", "/perangkat")).s, 401); assert.equal((await sip("GET", "/perangkat", undefined, ver.h)).s, 403);
+  assert.ok((await sip("GET", "/perangkat", undefined, pus61.h)).j.perangkat.every(x => !["SIPPA-150", "SIPPA-151", "SIPPA-152"].includes(x.kit_kode)), "staf wilayah 61 tidak melihat kit provinsi 62");
+  /* seri */
+  const s = await sip("GET", `/telemetri?perangkat=${gwt.id}&sejak=${T1 + 500}`, undefined, pus.h); assert.equal(s.s, 200, s.t); cekKepala(s, "seri"); assert.deepEqual(s.j, {seri: [[T1 + 1000, 2.4, 0]], ambang: {min_sah: null, maks_sah: null}, terpotong: false});
+  const pt = await sip("GET", `/telemetri?perangkat=${sensor.id}`, undefined, pim.h); assert.equal(pt.s, 200); assert.deepEqual(pt.j.ambang, {min_sah: 0, maks_sah: 12}); assert.ok(pt.j.seri.length >= 500, `${pt.j.seri.length} titik`);
+  for (let i = 1; i < pt.j.seri.length; i++) assert.ok(pt.j.seri[i - 1][0] <= pt.j.seri[i][0], "seri naik menurut waktu"); assert.ok(pt.j.seri.some(x => x[2] === 2 && x[1] === 15), "bacaan mutu 2 ikut tampil");
+  assert.deepEqual((await sip("GET", `/telemetri?perangkat=${gwt.id}&harian=1`, undefined, pus.h)).j, {harian: [], ambang: {min_sah: null, maks_sah: null}});
+  for (const q of ["", "?perangkat=x", `?perangkat=${gwt.id.toUpperCase()}`, `?perangkat=${gwt.id}&sejak=${Date.now() - 31 * HARI}`, `?perangkat=${gwt.id}&sejak=abc`, `?perangkat=${gwt.id}&sejak=-5`, `?perangkat=${gwt.id}&harian=2`]) assert.equal((await sip("GET", "/telemetri" + q, undefined, pus.h)).s, 400, q);
+  assert.equal((await sip("GET", `/telemetri?perangkat=${gwt.id}&sejak=${Date.now() - 29 * HARI}`, undefined, pus.h)).s, 200, "29 hari lalu masih sah");
+  assert.equal((await sip("GET", "/telemetri?perangkat=0123456789abcdef", undefined, pus.h)).s, 404); assert.equal((await sip("GET", `/telemetri?perangkat=${gwt.id}`, undefined, pus61.h)).s, 404, "di luar wilayah = tidak ada");
+  assert.equal((await sip("GET", `/telemetri?perangkat=${gwt.id}`)).s, 401); assert.equal((await sip("GET", `/telemetri?perangkat=${gwt.id}`, undefined, ver.h)).s, 403);
+  assert.equal((await mf.dispatchFetch("http://bnpb.lokal/api/sippa/telemetri?perangkat=" + gwt.id, {headers: {authorization: "Bearer " + K.token}})).status, 401, "token perangkat tidak bisa membaca apa pun");
+});
+
+uji("alarm (E3, satu kasus per kode): hisap_rendah, debit_rendah, dry_run, tekanan_lebih, belum_dingin, co_tinggi, bbm_rendah terbuka sekali dan tertutup otomatis saat pulih", async () => {
+  const ya = async (K, kode, n) => { const a = (await alarmDi(K.kit.id)).filter(x => x.ditutup == null); assert.deepEqual(a.map(x => x.kode), n ? Array(n).fill(kode) : [], `alarm terbuka ${kode}`); return a; };
+  const total = async K => (await alarmDi(K.kit.id)).length, tutupOto = async (K, kode) => { const a = await alarmDi(K.kit.id, kode); assert.equal(a.length, 1, `${kode}: tepat satu baris`); assert.ok(a[0].ditutup > 0, `${kode} tertutup`); assert.equal(a[0].ditutup_oleh, "otomatis"); };
+  /* hisap_rendah: PT-101 < -0,6 bar; tutup sesudah 2 bacaan berturut di atas */
+  let K = await rakit("SIPPA-180", [["PT-101", "tekanan", "bar", {min_sah: -5, maks_sah: 12}]]);
+  assert.equal((await kirimT(K, [["PT-101", -60, -0.9, "bar"]])).s, 202); let a = await ya(K, "hisap_rendah", 1); assert.equal(a[0].perangkat_id, K.per["PT-101"].id); assert.equal(a[0].nilai, -0.9); dekat(a[0].ambang, -0.6, "ambang NPSH");
+  await kirimT(K, [["PT-101", -50, -0.8, "bar"]]); assert.equal(await total(K), 1, "terbuka SEKALI: bacaan rendah berikutnya tidak membuka alarm kedua");
+  await kirimT(K, [["PT-101", -40, -0.5, "bar"]]); await ya(K, "hisap_rendah", 1); await kirimT(K, [["PT-101", -30, -0.4, "bar"]]); await ya(K, "hisap_rendah", 0); await tutupOto(K, "hisap_rendah");
+  /* debit_rendah: FT < 20% x 18 m3/jam selama RPM > 0 lebih dari 2 menit */
+  K = await rakit("SIPPA-181", [["FT-101", "debit", "m3/jam", {min_sah: 0, maks_sah: 90}], ["RPM-101", "rpm", "rpm", {min_sah: 0, maks_sah: 4000}]]);
+  await kirimT(K, [["RPM-101", -300, 1500, "rpm"], ["FT-101", -300, 2, "m3/jam"]]); assert.equal(await total(K), 0); await kirimT(K, [["FT-101", -200, 2, "m3/jam"]]); assert.equal(await total(K), 0, "100 detik belum 2 menit");
+  await kirimT(K, [["FT-101", -170, 2, "m3/jam"]]); a = await ya(K, "debit_rendah", 1); assert.equal(a[0].nilai, 2); dekat(a[0].ambang, 3.6, "20% debit operasi 18 m3/jam");
+  await kirimT(K, [["FT-101", -60, 15, "m3/jam"]]); await ya(K, "debit_rendah", 0); await tutupOto(K, "debit_rendah"); assert.equal(await total(K), 1);
+  /* debit rendah tanpa pompa hidup (RPM 0) bukan alarm */
+  K = await rakit("SIPPA-188", [["FT-101", "debit", "m3/jam", {min_sah: 0, maks_sah: 90}], ["RPM-101", "rpm", "rpm", {min_sah: 0, maks_sah: 4000}]]);
+  await kirimT(K, [["RPM-101", -300, 0, "rpm"], ["FT-101", -300, 1, "m3/jam"], ["FT-101", -100, 1, "m3/jam"], ["FT-101", -10, 0, "m3/jam"]]); assert.equal(await total(K), 0, "pompa mati: tidak ada alarm debit atau dry-run");
+  /* dry_run: FT = 0 dan RPM > 0 selama 30 detik; tutup saat debit > 0 */
+  K = await rakit("SIPPA-182", [["FT-101", "debit", "m3/jam", {min_sah: 0, maks_sah: 90}], ["RPM-101", "rpm", "rpm", {min_sah: 0, maks_sah: 4000}]]);
+  await kirimT(K, [["RPM-101", -100, 1500, "rpm"], ["FT-101", -100, 0, "m3/jam"]]); assert.equal(await total(K), 0, "satu bacaan belum 30 detik");
+  await kirimT(K, [["FT-101", -60, 0, "m3/jam"]]); a = await ya(K, "dry_run", 1); assert.equal(a[0].nilai, 0); assert.equal(a[0].ambang, 0); assert.equal(await total(K), 1, "40 detik: dry_run saja, debit_rendah belum 2 menit");
+  await kirimT(K, [["FT-101", -10, 5, "m3/jam"]]); await ya(K, "dry_run", 0); await tutupOto(K, "dry_run");
+  /* tekanan_lebih: PT-102 > 0,88 x PN 10 bar x f 1 */
+  K = await rakit("SIPPA-183", [["PT-102", "tekanan", "bar", {min_sah: 0, maks_sah: 12}]]);
+  await kirimT(K, [["PT-102", -30, 8.5, "bar"]]); assert.equal(await total(K), 0, "8,5 bar di bawah 8,8"); await kirimT(K, [["PT-102", -20, 9.0, "bar"]]); a = await ya(K, "tekanan_lebih", 1); assert.equal(a[0].nilai, 9); dekat(a[0].ambang, 8.8, "0,88 x PN");
+  await kirimT(K, [["PT-102", -10, 8.0, "bar"]]); await ya(K, "tekanan_lebih", 0); await tutupOto(K, "tekanan_lebih");
+  /* belum_dingin: T > 50 C hanya pada tahap 24 jam sesudah t_selesai */
+  K = await rakit("SIPPA-184", [["T-103", "suhu_gambut", "C", {kedalaman_cm: 50, min_sah: -10, maks_sah: 120}]]);
+  await kirimT(K, [["T-103", -60, 55, "C"]]); assert.equal(await total(K), 0, "belum ada gelar selesai 24 jam: panas wajar");
+  await DB.prepare("INSERT INTO sippa_log_gelar (id, kit_id, jenis, t_tiba, t_selesai, waktu_klien, diterima, oleh) VALUES (?, ?, 'karhutla', ?, ?, ?, ?, 'tugas:abc')").bind(crypto.randomUUID(), K.kit.id, Date.now() - 30 * JAM, Date.now() - 25 * JAM, Date.now(), Date.now()).run();
+  await kirimT(K, [["T-103", -30, 54, "C"]]); a = await ya(K, "belum_dingin", 1); assert.equal(a[0].nilai, 54); assert.equal(a[0].ambang, 50); await kirimT(K, [["T-103", -10, 49, "C"]]); await ya(K, "belum_dingin", 0); await tutupOto(K, "belum_dingin");
+  /* co_tinggi: rerata 15 menit > 35 ppm */
+  K = await rakit("SIPPA-185", [["CO-101", "co", "ppm", {min_sah: 0, maks_sah: 500}]]);
+  await kirimT(K, [["CO-101", -600, 20, "ppm"]]); assert.equal(await total(K), 0); await kirimT(K, [["CO-101", -300, 60, "ppm"]]); a = await ya(K, "co_tinggi", 1); assert.equal(a[0].nilai, 40); assert.equal(a[0].ambang, 35);
+  await kirimT(K, [["CO-101", -60, 10, "ppm"], ["CO-101", -30, 5, "ppm"]]); await ya(K, "co_tinggi", 0); await tutupOto(K, "co_tinggi");
+  /* bbm_rendah: BBM < 20% */
+  K = await rakit("SIPPA-186", [["BBM-101", "bbm", "%", {min_sah: 0, maks_sah: 100}]]);
+  await kirimT(K, [["BBM-101", -30, 15, "%"]]); a = await ya(K, "bbm_rendah", 1); assert.equal(a[0].nilai, 15); assert.equal(a[0].ambang, 20); await kirimT(K, [["BBM-101", -10, 60, "%"]]); await ya(K, "bbm_rendah", 0); await tutupOto(K, "bbm_rendah");
+  /* fungsi murni: tanpa seri tidak ada butir; kondisi yang tidak berubah tidak menghasilkan butir; tiap kode alarm dikenal CHECK */
+  assert.deepEqual(nilaiAlarm([{id: "p", tag: "PT-102", jenis: "tekanan", satuan: "bar"}], new Map(), {kini: Date.now()}), []);
+  assert.deepEqual(nilaiAlarm([{id: "p", tag: "PT-101", jenis: "tekanan", satuan: "bar"}], new Map([["PT-101", [[1, -0.2]]]]), {kini: Date.now()}), [], "satu bacaan aman belum menutup");
+  const sqlKode = [...teks("migrations/0058_sippa_telemetri.sql").match(/kode IN \(([^)]*)\)/)[1].matchAll(/'([a-z_]+)'/g)].map(m => m[1]); assert.deepEqual(KODE_ALARM, sqlKode, "KODE_ALARM sama dengan CHECK sippa_alarm.kode");
+  assert.equal(AMBANG_ALARM.npsh_bar, -0.6); assert.equal(AMBANG_ALARM.co_ppm, 35); assert.equal(AMBANG_ALARM.suhu_c, 50);
+});
+
+uji("GET /api/sippa/alarm dan POST /alarm-tutup/:id: B 200 tanpa prov; W menutup dengan jejak, ulang 409; pimpinan 403, tamu 401, wilayah 61 404; ditutup manual tidak dibuka lagi 30 menit; butir Meja Pantau sippa_alarm hilang sendiri saat tertutup", async () => {
+  const K = await rakit("SIPPA-187", [PER_ISI[0]]); await kirimT(K, [["PT-102", -20, 9.5, "bar"]]);
+  const [al] = await alarmDi(K.kit.id); assert.equal(al.kode, "tekanan_lebih"); assert.equal(al.ditutup, null);
+  const aktif = await sip("GET", "/alarm?aktif=1", undefined, pus.h); assert.equal(aktif.s, 200, aktif.t); cekKepala(aktif, "alarm");
+  const mine = aktif.j.alarm.find(x => x.id === al.id); assert.ok(mine, "alarm aktif tampil"); assert.equal(mine.tag, "PT-102"); assert.equal(mine.kit_kode, "SIPPA-187"); assert.equal(mine.kode, "tekanan_lebih"); assert.ok(!("prov" in mine)); assert.ok(aktif.j.alarm.every(x => x.ditutup == null), "aktif=1: hanya yang terbuka");
+  const semua = await sip("GET", "/alarm", undefined, pim.h); assert.equal(semua.s, 200); assert.ok(semua.j.alarm.some(x => x.ditutup != null) && semua.j.alarm.some(x => x.ditutup == null), "riwayat memuat yang tertutup dan terbuka"); assert.ok(semua.j.alarm.length <= 500);
+  assert.equal((await sip("GET", "/alarm?aktif=2", undefined, pus.h)).s, 400); assert.equal((await sip("GET", "/alarm")).s, 401); assert.equal((await sip("GET", "/alarm", undefined, ver.h)).s, 403);
+  assert.ok(!(await sip("GET", "/alarm?aktif=1", undefined, pus61.h)).j.alarm.some(x => x.id === al.id), "wilayah 61 tidak melihat alarm provinsi 62");
+  /* Meja Pantau */
+  const butir = async h => (await api("GET", "/api/pantau", undefined, h)).j.butir.filter(b => b.jenis === "sippa_alarm");
+  const bp = (await butir(pus.h)).find(b => b.id === "sippa-alarm:" + al.id); assert.ok(bp, "pusdalops melihat butir"); assert.equal(bp.label, "Alarm telemetri kit SIPPA"); assert.equal(bp.tautan, "/pipa/telemetri"); assert.equal(bp.prov, "62");
+  assert.match(bp.judul, /SIPPA-187.*PT-102/); assert.match(bp.rincian, /Terukur 9,5, ambang 8,8/); assert.doesNotMatch(bp.judul + bp.rincian, /—|·/); assert.equal(bp.prioritas, 1, "tekanan lebih = keselamatan"); assert.equal(bp.dummy, 0);
+  assert.ok((await butir(koor.h)).some(b => b.id === bp.id) && (await butir(ADMIN)).some(b => b.id === bp.id)); assert.equal((await butir(ver.h)).length, 0, "peran verifikator tidak melihat"); assert.ok(!(await butir(pus61.h)).some(b => b.id === bp.id), "wilayah 61 tidak melihat");
+  /* tutup */
+  for (const [n, h, s] of [["pimpinan", pim.h, 403], ["verifikator", ver.h, 403], ["tamu", {}, 401], ["wilayah 61", pus61.h, 404], ["pusdalops tanpa x-pb", pus.g, 401]]) assert.equal((await sip("POST", "/alarm-tutup/" + al.id, {}, h)).s, s, n);
+  assert.equal((await sip("POST", "/alarm-tutup/0123456789abcdef", {}, pus.h)).s, 404); const j0 = await jejak();
+  const t = await sip("POST", "/alarm-tutup/" + al.id, {}, pus.h); assert.equal(t.s, 200, t.t); assert.equal(t.j.alarm.ditutup_oleh, pus.kunci); assert.ok(t.j.alarm.ditutup > 0); assert.equal(await jejak(), j0 + 1);
+  const baris = await DB.prepare("SELECT ditutup, ditutup_oleh FROM sippa_alarm WHERE id = ?").bind(al.id).first(); assert.equal(baris.ditutup_oleh, pus.kunci); assert.ok(baris.ditutup > 0);
+  assert.equal((await sip("POST", "/alarm-tutup/" + al.id, {}, pus.h)).s, 409, "sudah tertutup"); assert.equal(await jejak(), j0 + 1);
+  assert.ok(!(await butir(pus.h)).some(b => b.id === bp.id), "butir hilang sendiri saat alarm tertutup");
+  /* kondisi masih berlangsung: ditutup manual tidak dibuka lagi dalam 30 menit (hemat kuota tulis) */
+  await kirimT(K, [["PT-102", -10, 9.6, "bar"]]); assert.equal((await alarmDi(K.kit.id)).length, 1, "tidak dibuka ulang oleh bacaan berikutnya"); assert.equal((await alarmDi(K.kit.id))[0].ditutup_oleh, pus.kunci);
+  await DB.prepare("UPDATE sippa_alarm SET ditutup = ? WHERE id = ?").bind(Date.now() - 31 * 60e3, al.id).run(); await kirimT(K, [["PT-102", -5, 9.7, "bar"]]); assert.equal((await alarmDi(K.kit.id, "tekanan_lebih")).filter(x => x.ditutup == null).length, 1, "lewat 30 menit: terbuka lagi");
+  await isiLaju(ADM, "sippa.tulis", 600); const buka = (await alarmDi(K.kit.id)).find(x => x.ditutup == null); assert.equal((await sip("POST", "/alarm-tutup/" + buka.id, {}, ADMIN)).s, 429, "laju 600 per jam"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(ADM).run();
+});
+
+uji("bersihkanSippa lewat cron menit 17 yang ada: pesan 31 hari lalu diringkas per hari WIB (n, min, maks, rerata berbobot, mutu 2) lalu dihapus, 29 hari tetap; perangkat diam > 3 x interval membuka alarm diam dan menutup saat bicara", async () => {
+  const S = new Date(); S.setUTCHours(20, 17, 0, 0);   // 03.17 WIB: jam ringkas harian (sekali sehari, bukan tiap jam: kuota baca D1)
+  const K = await rakit("SIPPA-190", [PER_ISI[0]]), noon = k => Math.floor((S.getTime() - k * HARI + 7 * JAM) / HARI) * HARI - 7 * JAM + 12 * JAM, t31 = noon(31), t29 = noon(29), pid = K.per["PT-102"].id;
+  const sisip = (id, t, bacaan) => DB.prepare("INSERT INTO sippa_telemetri (id, pengirim_id, kit_id, diterima, t_awal, t_akhir, n, n_mutu2, bacaan) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(sha256(id + K.kit.id).slice(0, 32), K.gw.id, K.kit.id, t, t, t + 1000, bacaan.length, bacaan.filter(x => x[3] === 2).length, JSON.stringify(bacaan)).run();
+  await sisip("a", t31, [["PT-102", t31, 4, 0, null], ["PT-102", t31 + 1000, 6, 2, null], ["XX-999", t31, 99, 0, null]]); await sisip("b", t29, [["PT-102", t29, 7, 0, null]]);
+  const w = await mf.getWorker(); await w.scheduled({cron: "17 * * * *", scheduledTime: S.getTime() - 6 * JAM});
+  assert.equal(await hitung("sippa_telemetri_harian", "perangkat_id = ?", pid), 0, "jam 14 UTC: belum waktunya meringkas"); assert.equal(await hitung("sippa_telemetri", "kit_id = ? AND diterima = ?", K.kit.id, t31), 1, "pesan 31 hari belum dihapus");
+  await w.scheduled({cron: "17 * * * *", scheduledTime: S.getTime()});
+  const h = await DB.prepare("SELECT * FROM sippa_telemetri_harian WHERE perangkat_id = ?").bind(pid).all(); assert.equal(h.results.length, 1, JSON.stringify(h.results)); const r = h.results[0];
+  assert.equal(r.hari, tglWib(t31)); assert.equal(r.n, 2, "tag tanpa perangkat tidak diringkas"); assert.equal(r.min, 4); assert.equal(r.maks, 6); assert.equal(r.rerata, 5); assert.equal(r.n_mutu2, 1); assert.equal(r.dummy, 0);
+  assert.equal(await hitung("sippa_telemetri", "kit_id = ? AND t_akhir < ?", K.kit.id, S.getTime() - 30 * HARI), 0, "pesan > 30 hari dihapus"); assert.equal(await hitung("sippa_telemetri", "kit_id = ? AND diterima = ?", K.kit.id, t29), 1, "29 hari tetap");
+  const env0 = await mf.getBindings(), kiniNon20 = S.getTime() - 6 * JAM; await sisip("c", t31, [["PT-102", t31 + 2000, 10, 0, null]]);
+  const bukan = await bersihkanSippa(env0, kiniNon20); assert.deepEqual([bukan.diringkas, bukan.dihapus], [0, 0], "di luar jam 20 UTC tidak meringkas"); assert.equal(await hitung("sippa_telemetri", "kit_id = ? AND diterima = ?", K.kit.id, t31), 1);
+  assert.equal((await bersihkanSippa(env0, kiniNon20, {paksa: true})).dihapus, 1, "paksa: operator atau uji meringkas di luar jam 20 UTC");
+  await sisip("d", t31, [["PT-102", t31 + 3000, 2, 0, null]]); await w.scheduled({cron: "17 * * * *", scheduledTime: S.getTime()});
+  const g = await DB.prepare("SELECT * FROM sippa_telemetri_harian WHERE perangkat_id = ?").bind(pid).first(); assert.equal(g.n, 4); assert.equal(g.min, 2); assert.equal(g.maks, 10); dekat(g.rerata, 5.5, "rerata digabung berbobot n: (5 x 2 + 10 + 2) / 4"); assert.equal(g.n_mutu2, 1);
+  const hr = await sip("GET", `/telemetri?perangkat=${pid}&harian=1`, undefined, pus.h); assert.equal(hr.s, 200); assert.deepEqual(hr.j.harian.map(x => [x.hari, x.n, x.min, x.maks]), [[tglWib(t31), 4, 2, 10]], "GET harian membaca ringkasan yang lebih tua dari 30 hari");
+  assert.match(teks("src/worker.js"), /async function bersihSemua[\s\S]*bersihkanSippa\(env/, "bersihkanSippa dipanggil dari bersihSemua (cron menit 17), bukan jadwal baru"); assert.doesNotMatch(teks("wrangler.jsonc"), /sippa/i);
+  /* diam */
+  const D = await rakit("SIPPA-191", [PER_ISI[0], PER_ISI[1]]); assert.equal((await kirimT(D, [["PT-102", -20, 5, "bar"]])).s, 202);
+  const tua = Date.now() - 10 * 60e3; await DB.prepare("UPDATE sippa_telemetri SET diterima = ?, t_awal = ?, t_akhir = ? WHERE kit_id = ?").bind(tua, tua, tua, D.kit.id).run(); await DB.prepare("UPDATE sippa_perangkat SET dibuat = ? WHERE kit_id = ?").bind(Date.now() - 86400e3, D.kit.id).run();
+  const env = await mf.getBindings(), a = await bersihkanSippa(env, Date.now()); assert.ok(a.diam >= 3, JSON.stringify(a));
+  const diam = await alarmDi(D.kit.id, "diam"); assert.deepEqual(diam.map(x => x.perangkat_id).sort(), [D.gw.id, D.per["PT-102"].id, D.per["FT-101"].id].sort(), "gateway, PT-102 (tak ada bacaan 3 menit), FT-101 (tak pernah): semuanya diam"); assert.ok(diam.every(x => x.ambang === 180 && x.ditutup == null && x.nilai == null));
+  await bersihkanSippa(env, Date.now()); assert.equal((await alarmDi(D.kit.id, "diam")).length, 3, "cron berikutnya tidak membuka alarm kembar");
+  assert.equal((await kirimT(D, [["PT-102", -5, 5.1, "bar"]])).s, 202); const sesudah = await alarmDi(D.kit.id, "diam");
+  assert.deepEqual(sesudah.filter(x => x.ditutup == null).map(x => x.perangkat_id), [D.per["FT-101"].id], "yang baru bicara (gateway dan PT-102) tertutup; FT-101 tetap diam"); assert.ok(sesudah.filter(x => x.ditutup != null).every(x => x.ditutup_oleh === "otomatis"));
+  const dicabut = await sip("POST", "/perangkat-cabut/" + D.per["FT-101"].id, {}, MOD2); assert.equal(dicabut.s, 200); assert.equal((await alarmDi(D.kit.id, "diam")).filter(x => x.ditutup == null).length, 0, "perangkat dicabut: alarmnya ikut tertutup");
+  assert.equal((await alarmDi(D.kit.id, "diam")).find(x => x.perangkat_id === D.per["FT-101"].id).ditutup_oleh, "dicabut"); await bersihkanSippa(env, Date.now()); assert.equal((await alarmDi(D.kit.id, "diam")).filter(x => x.ditutup == null).length, 0, "perangkat nonaktif tidak diperiksa");
+});
+
+uji("dummy: Super Admin mengisi layar telemetri (kit, perangkat, 96 pesan 24 jam, 7 hari ringkasan, satu alarm tertutup dan satu aktif), isi kedua 409, staf nyata tidak melihat, hapus menyisakan baris nyata dan hilir tanpa hulu 0 baris", async () => {
+  const nyata = async () => ({perangkat: await hitung("sippa_perangkat", "dummy = 0"), tel: await hitung("sippa_telemetri", "dummy = 0"), harian: await hitung("sippa_telemetri_harian", "dummy = 0"), alarm: await hitung("sippa_alarm", "dummy = 0"), kit: await hitung("sippa_kit", "dummy = 0"), jejak: await jejak()});
+  const sebelum = await nyata(), sampai = Date.now() - 5 * 60e3, sejak = sampai - 30 * HARI;
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "telemetri"}, MOD2)).s, 403); assert.equal((await sip("POST", "/dummy/isi", {layar: "telemetri"}, pus.h)).s, 403);
+  const r = await sip("POST", "/dummy/isi", {layar: "telemetri", sejak, sampai}, ADMIN); assert.equal(r.s, 200, r.t); cekKepala(r, "dummy telemetri");
+  assert.equal(r.j.dibuat.sippa_perangkat, 4); assert.equal(r.j.dibuat.sippa_telemetri, 96); assert.equal(r.j.dibuat.sippa_telemetri_harian, 21); assert.equal(r.j.dibuat.sippa_alarm, 2); assert.ok(r.j.dibuat.sippa_kit >= 7, JSON.stringify(r.j.dibuat));
+  const p = (await DB.prepare("SELECT * FROM sippa_perangkat WHERE dummy = 1").all()).results; assert.deepEqual(p.map(x => x.tag).sort(), ["FT-101", "PT-102", "T-103", "U-102"]); assert.ok(p.find(x => x.tag === "U-102").token_sha, "gateway dummy bertoken (CHECK)");
+  const baris = (await DB.prepare("SELECT * FROM sippa_telemetri WHERE dummy = 1 ORDER BY t_akhir").all()).results; assert.equal(baris.length, 96); assert.ok(baris.every(x => x.t_akhir > sampai - 24 * JAM && x.t_akhir <= sampai), "24 jam yang terpampang, bukan hari ini");
+  const nilai = tag => baris.map(x => JSON.parse(x.bacaan).find(b => b[0] === tag)[2]); for (const tag of ["PT-102", "FT-101", "T-103"]) { assert.ok(new Set(nilai(tag)).size > 20, `${tag}: angka bervariasi, bukan konstanta`); assert.ok(nilai(tag).some(v => v !== 0)); }
+  assert.ok(baris.some(x => x.n_mutu2 === 1) && baris.every(x => x.n === 3), "satu pesan memuat mutu 2"); assert.ok(nilai("T-103")[95] > 50 && nilai("T-103")[0] > nilai("T-103")[95], "suhu mendingin tetapi masih di atas 50 C");
+  const al = (await DB.prepare("SELECT * FROM sippa_alarm WHERE dummy = 1 ORDER BY mulai").all()).results; assert.equal(al.filter(x => x.ditutup != null).length, 1); assert.equal(al.filter(x => x.ditutup == null).length, 1); assert.deepEqual(al.map(x => x.kode).sort(), ["belum_dingin", "tekanan_lebih"]);
+  assert.equal(await hitung("sippa_telemetri_harian", "dummy = 1 AND n > 0 AND maks > min"), 21);
+  const lagi = await sip("POST", "/dummy/isi", {layar: "telemetri", sejak, sampai}, ADMIN); assert.equal(lagi.s, 409, lagi.t); assert.match(lagi.j.galat, /sudah ada untuk periode/);
+  /* staf nyata tidak melihat dummy; admin melihat */
+  const dpt = p.find(x => x.tag === "PT-102").id;
+  assert.ok(!(await sip("GET", "/perangkat", undefined, pim.h)).j.perangkat.some(x => x.dummy === 1), "perangkat dummy tersaring"); assert.ok(!(await sip("GET", "/alarm", undefined, pim.h)).j.alarm.some(x => x.dummy === 1), "alarm dummy tersaring");
+  assert.equal((await sip("GET", `/telemetri?perangkat=${dpt}`, undefined, pim.h)).s, 404, "seri dummy 404 untuk staf nyata"); assert.ok(!(await butirPantau(pim.h)).some(b => b.dummy === 1), "butir dummy tersaring untuk staf nyata");
+  const ad = await sip("GET", `/telemetri?perangkat=${dpt}`, undefined, ADMIN); assert.equal(ad.s, 200); assert.equal(ad.j.seri.length, 96); assert.ok(ad.j.seri.some(x => x[2] === 2), "mutu 2 terlihat"); assert.deepEqual(ad.j.ambang, {min_sah: 0, maks_sah: 12});
+  const hr = await sip("GET", `/telemetri?perangkat=${dpt}&harian=1`, undefined, ADMIN); assert.equal(hr.j.harian.length, 7); assert.ok(hr.j.harian.every(x => x.n === 96 && x.maks > x.min && x.rerata >= x.min && x.rerata <= x.maks));
+  assert.ok((await sip("GET", "/perangkat", undefined, ADMIN)).j.perangkat.some(x => x.dummy === 1 && x.tag === "PT-102" && x.nilai_terakhir != null)); assert.ok((await sip("GET", "/alarm?aktif=1", undefined, ADMIN)).j.alarm.some(x => x.dummy === 1 && x.kode === "belum_dingin"));
+  assert.ok((await butirPantau(ADMIN)).some(b => b.dummy === 1), "Meja Pantau admin melihat butir dummy"); const env = await mf.getBindings(); const cr = await bersihkanSippa(env, Date.now());
+  assert.equal(await hitung("sippa_alarm", "dummy = 1 AND kode = 'diam'"), 0, "perangkat dummy tidak pernah memicu diam"); assert.ok(cr.diam >= 0);
+  const h = await sip("POST", "/dummy/hapus", {}, ADMIN); assert.equal(h.s, 200, h.t); for (const [t, n] of [["sippa_perangkat", 4], ["sippa_telemetri", 96], ["sippa_telemetri_harian", 21], ["sippa_alarm", 2]]) assert.equal(h.j.dihapus[t], n, t);
+  for (const t of ["sippa_perangkat", "sippa_telemetri", "sippa_telemetri_harian", "sippa_alarm", "sippa_kit"]) assert.equal(await hitung(t, "dummy = 1"), 0, `${t} masih punya dummy`); assert.deepEqual(await nyata(), sebelum, "baris nyata utuh");
+  const c = {kini: Date.now(), sejak, sampai, ada: false}; for (const nama of ["isiPerangkat", "isiTelemetri", "isiHarian", "isiAlarm"]) { const x = await PENGISI[nama](env, c); assert.equal(Object.values(x).reduce((a, b) => a + b, 0), 0, `${nama} tanpa hulu harus 0 baris: ${JSON.stringify(x)}`); }
+  assert.deepEqual(RANTAI_DUMMY.telemetri, ["isiKit", "isiPerangkat", "isiTelemetri", "isiHarian", "isiAlarm"]); assert.equal((await sip("POST", "/dummy/isi", {layar: "telemetri", sejak, sampai}, ADMIN)).s, 200, "sesudah hapus, isi lagi berhasil");
+  assert.equal((await sip("POST", "/dummy/hapus", {}, ADMIN)).s, 200);
+});
+
+uji("tanpa tabel 0058 (kode tiba sebelum migrasi): semua rute telemetri menjawab 503 sopan, token sah tetap 503 bukan 401, Meja Pantau dan rute 0056 tetap 200, cron tidak jatuh", async () => {
+  const T = await siapkan("uji-sippa-tanpa-0058", {r2: true});
+  await T.DB.batch(["sippa_alarm", "sippa_telemetri_harian", "sippa_telemetri", "sippa_perangkat"].map(t => T.DB.prepare(`DROP TABLE ${t}`)));
+  const pesan = {galat: "Migrasi SIPPA belum diterapkan di basis data", status: "tanpa_migrasi"}, id = "0123456789abcdef";
+  const k0 = await T.api("POST", "/api/sippa/kit", {kode: "SIPPA-101", jenis: "gambut", prov: "62", kab: "Kota Palangka Raya"}, MOD2); assert.equal(k0.s, 201, k0.t);   // kit 0056 nyata: validasi kit lolos, lalu tabel 0058 yang hilang
+  for (const [m, j, b] of [["GET", "/perangkat"], ["POST", "/perangkat", {kit_id: k0.j.kit.id, tag: "PT-101", jenis: "tekanan", satuan: "bar"}], ["POST", "/perangkat-cabut/" + id, {}], ["GET", "/telemetri?perangkat=" + id], ["GET", "/alarm"], ["POST", "/alarm-tutup/" + id, {}]]) {
+    const r = await T.api(m, "/api/sippa" + j, b, ADMIN); assert.equal(r.s, 503, `${m} ${j}: ${r.s} ${r.t.slice(0, 120)}`); assert.deepEqual(r.j, pesan, `${m} ${j}`);
+  }
+  const t = await T.api("POST", "/api/sippa/telemetri", {kit: "SIPPA-101", bacaan: []}, {authorization: "Bearer " + "a".repeat(64)}); assert.equal(t.s, 503, t.t); assert.deepEqual(t.j, pesan);
+  assert.equal((await T.api("GET", "/api/sippa/kit", undefined, ADMIN)).s, 200, "rute 0056 tetap hidup"); assert.equal((await T.api("GET", "/api/pantau", undefined, ADMIN)).s, 200, "Meja Pantau melewati detektor yang tabelnya belum ada");
+  await (await T.mf.getWorker()).scheduled({cron: "17 * * * *"}); assert.equal((await T.api("GET", "/api/warga/konfig")).s, 200, "cron menit 17 tidak menjatuhkan worker");
+});
+
+/* ---------------------------------------------------------------- SP-093 aset, inspeksi, pelihara, stok (migrasi 0059, keputusan 56) */
+{   // rantai uji sendiri: kegagalan uji SP-035 atau SP-050 di atas tidak boleh menyembunyikan hasil blok ini (status D1 yang dipakai di sini hanya dari kit1 sampai kit3)
+const uji = berantai();
+const asetB =(o = {}) => ({kelas: "pompa_sumur", nama: "Pompa sumur Kelurahan Pahandut", sumber: "bpbd", pemilik_aset: "BPBD Kota Palangka Raya", prov: "62", kab: "Kota Palangka Raya", atribut: {kw: 5.5}, keyakinan: "terverifikasi", ...o});
+const sumurB = (atribut, o = {}) => asetB({kelas: "sumur_bor", nama: "Sumur bor Kereng Bangkirai", atribut, ...o});
+const asetBaru = async (o, h = pus.h) => { const r = await sip("POST", "/aset", o, h); assert.equal(r.s, 201, r.t); return r.j.aset; };
+const komp3 = (kit, kode) => DB.prepare("SELECT id, kondisi, dicek FROM sippa_komponen WHERE kit_id = ? AND kode_bom = ?").bind(kit, kode).first();
+let K93, T93, S93, J93, A1, A2, A3;
+uji("SP-093 siapkan: kit SIPPA-170 dengan tugas, dan halaman /pipa/pelihara, /pipa/air, /pipa/akses, /pipa/aset/:id", async () => {
+  await bersihLaju();
+  const k = await sip("POST", "/kit", {kode: "SIPPA-170", jenis: "gambut", templat: "gambut", prov: "62", kab: "Kota Palangka Raya", lokasi: "Gudang Pahandut"}, MOD2); assert.equal(k.s, 201, k.t); K93 = k.j.kit.id;
+  const t = await tugasBaru({kit_id: K93, nama_regu: "Regu Inspeksi"}); assert.equal(t.s, 201, t.t); T93 = t.j.tugas.id; S93 = t.j.kode;
+  const t2 = await tugasBaru({nama_regu: "Regu Tanpa Kit"}); J93 = t2.j.kode;
+  for (const l of ["pelihara", "air", "akses"]) { const r = await man("/pipa/" + l, pus.g); assert.equal(r.s, 200, l); assert.match(r.t, new RegExp(`data-layar="${l}"`)); assert.equal((await man("/pipa/" + l)).s, 303, `${l} tamu`); assert.equal((await man("/pipa/" + l, ver.g)).s, 403, `${l} verifikator`); }
+  const a = await man("/pipa/aset/0123456789abcdef", pus.g); assert.equal(a.s, 200); assert.match(a.t, /data-layar="aset"/);
+  assert.equal((await man("/pipa/aset/0123456789abcdef")).s, 303, "tamu"); assert.equal((await man("/pipa/aset/0123456789abcdef", ver.g)).s, 403, "verifikator"); assert.equal((await man("/pipa/aset/0123456789abcde", pus.g)).s, 404, "15 heks"); assert.equal((await man("/pipa/aset", pus.g)).s, 404, "tanpa id bukan layar");
+});
+uji("POST /api/sippa/aset: W 201 kode AS-#### urut dari server dengan jejak; pimpinan 403, tamu 401; kelas, atribut, koordinat, sumur kritis tanpa rekomendasi 400; atribut 4.097 byte 400; wilayah 61 untuk 62 404; laju 120", async () => {
+  const j0 = await jejak();
+  A1 = await asetBaru(asetB({kode: "AS-0999", atribut: {kw: 5.5, sumber_daya: "genset"}}));
+  assert.match(A1.kode, /^AS-\d{4}$/); assert.notEqual(A1.kode, "AS-0999", "kode dari klien diabaikan"); assert.equal(A1.status, "rencana"); assert.deepEqual(A1.atribut, {kw: 5.5, sumber_daya: "genset"}); assert.equal(A1.oleh, pus.kunci); assert.equal(A1.dummy, 0);
+  assert.equal(await jejak(), j0 + 1, "satu baris jejak"); assert.equal(await hitung("pantau_jejak", "obyek = ?", "sippa_aset:" + A1.id), 1);
+  A2 = await asetBaru(sumurB({kedalaman_m: 60, zona_konservasi: "kritis", rekomendasi_bg: "Rek. Teknis Badan Geologi 12/2026"}, {sumber: "badan_geologi", status: "berfungsi"}));
+  assert.equal(Number(A2.kode.slice(3)), Number(A1.kode.slice(3)) + 1, "nomor urut berikutnya"); assert.equal(A2.atribut.rekomendasi_bg, "Rek. Teknis Badan Geologi 12/2026");
+  A3 = await asetBaru(asetB({kelas: "jembatan_darurat", nama: "Jembatan Bailey Sei Kapuas", sumber: "tniad", pemilik_aset: "Pemkab Kapuas", atribut: {jenis: "bailey", bentang_m: 30}, lat: -3.0, lon: 114.3, keyakinan: "resmi"}));
+  assert.equal(A3.rencana_ganti, null, "tanpa rencana_ganti diterima (pil tanpa jadwal ganti di layar)"); assert.equal(A3.lat, -3);
+  assert.equal((await asetBaru(sumurB({zona_konservasi: "aman"}))).kelas, "sumur_bor", "zona aman tanpa rekomendasi lolos");
+  for (const [n, h] of [["pimpinan", pim.h], ["verifikator", ver.h], ["akun gerbang", GERBANG]]) { const x = await sip("POST", "/aset", asetB(), h); assert.equal(x.s, 403, n); assert.ok(x.j.galat); }
+  assert.equal((await sip("POST", "/aset", asetB())).s, 401, "tamu"); assert.equal((await sip("POST", "/aset", asetB(), {cookie: pus.g.cookie})).s, 401, "sesi staf tanpa x-pb");
+  const n0 = await hitung("sippa_aset");
+  const kon = [["kelas liar", {kelas: "helikopter"}], ["kelas bukan teks", {kelas: 5}], ["kelas hilang", {kelas: undefined}], ["atribut bukan objek", {atribut: [1]}], ["atribut teks", {atribut: "x"}], ["atribut medan liar", {atribut: {kw: 5, warna: "merah"}}], ["atribut wajib kosong", {atribut: {}}],
+    ["sumur kritis tanpa rekomendasi", sumurB({zona_konservasi: "kritis"})], ["sumur rusak tanpa rekomendasi", sumurB({zona_konservasi: "rusak", rekomendasi_bg: "  "})], ["lat di luar kotak", {lat: 20, lon: 114}], ["lon di luar kotak", {lat: -3, lon: 150}], ["lat teks", {lat: "-3"}],
+    ["atribut 4.097 byte", {atribut: {kw: 5, sumber_daya: "x".repeat(4097)}}], ["nama 1 huruf", {nama: "A"}], ["pemilik 2 huruf", {pemilik_aset: "ab"}], ["sumber liar", {sumber: "swasta"}], ["keyakinan liar", {keyakinan: "pasti"}], ["keyakinan hilang", {keyakinan: undefined}],
+    ["status liar", {status: "hancur"}], ["prov 1 digit", {prov: "6"}], ["prov hilang", {prov: undefined}], ["rencana_ganti pecahan", {rencana_ganti: 1.5}], ["kit_id tidak ada", {kit_id: "0123456789abcdef"}], ["kit_id cacat", {kit_id: "xyz"}],
+    ["jembatan darurat tanpa pemilik", {kelas: "jembatan_darurat", pemilik_aset: undefined, atribut: {jenis: "bailey", bentang_m: 30}}]];
+  for (const [ket, o] of kon) { const x = await sip("POST", "/aset", {...asetB(), ...o}, pus.h); assert.equal(x.s, 400, `${ket}: ${x.t}`); assert.ok(x.j.galat, ket); }
+  assert.match((await sip("POST", "/aset", sumurB({zona_konservasi: "kritis"}), pus.h)).j.galat, /rekomendasi_bg/, "galat menyebut nama medan");
+  assert.equal(await hitung("sippa_aset"), n0, "masukan liar tidak menulis");
+  assert.equal((await sip("POST", "/aset", asetB({prov: "62"}), pus61.h)).s, 404, "wilayah 61 tidak boleh menulis prov 62"); assert.equal((await sip("POST", "/aset", asetB({prov: "61", kab: "Kab X"}), pus61.h)).s, 201);
+  await isiLaju(koor.kunci, "sippa.aset", 120); assert.equal((await sip("POST", "/aset", asetB(), koor.h)).s, 429); assert.equal((await sip("POST", "/aset", asetB(), pus.h)).s, 201, "pelaku lain tetap lolos"); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(koor.kunci).run();
+  const raw = await DB.prepare("INSERT INTO sippa_aset (id, kode, kelas, nama, sumber, pemilik_aset, prov, atribut, keyakinan, dibuat, diubah, oleh) VALUES ('aaaaaaaaaaaaaaaa', 'AS-0500', 'sumur_bor', 'Sumur liar', 'bpbd', 'BPBD', '62', '{\"zona_konservasi\":\"kritis\"}', 'resmi', 1, 1, 'uji')").run().then(() => "lolos", e => String(e.message));
+  assert.match(raw, /CHECK/, "SQL langsung: CHECK 0059 menolak sumur kritis tanpa rekomendasi");
+});
+uji("POST /api/sippa/aset/:id: W 200 hanya status, pemelihara, rencana_ganti, rujukan, atribut (digabung lalu cekAset ulang); medan lain 400; pimpinan 403; wilayah 61 404; laju 600", async () => {
+  const j0 = await jejak(), r = await sip("POST", "/aset/" + A3.id, {status: "berfungsi", rencana_ganti: Date.now() + 90 * HARI, pemelihara: "Zeni TNI AD", atribut: {beban_ton: 40}, rujukan: "BA serah terima 7/2026"}, pus.h);
+  assert.equal(r.s, 200, r.t); assert.equal(r.j.aset.status, "berfungsi"); assert.ok(r.j.aset.rencana_ganti > Date.now()); assert.deepEqual(r.j.aset.atribut, {jenis: "bailey", bentang_m: 30, beban_ton: 40}, "atribut digabung, bukan diganti"); assert.equal(r.j.aset.pemelihara, "Zeni TNI AD");
+  assert.equal(await jejak(), j0 + 1);
+  const h = await sip("POST", "/aset/" + A3.id, {atribut: {beban_ton: null}}, pus.h); assert.equal(h.s, 200); assert.deepEqual(h.j.aset.atribut, {jenis: "bailey", bentang_m: 30}, "null menghapus kunci");
+  const w = await sip("POST", "/aset/" + A2.id, {atribut: {zona_konservasi: "rusak"}}, pus.h); assert.equal(w.s, 200, "rekomendasi lama tetap ada sesudah digabung");
+  for (const [ket, o] of [["kelas", {kelas: "sumur_bor"}], ["prov", {prov: "61"}], ["kode", {kode: "AS-0001"}], ["nama", {nama: "Baru"}], ["badan kosong", {}], ["status liar", {status: "hancur"}], ["status null", {status: null}], ["atribut bukan objek", {atribut: 5}], ["atribut medan liar", {atribut: {warna: 1}}], ["bentang 301", {atribut: {bentang_m: 301}}], ["rencana_ganti teks", {rencana_ganti: "besok"}], ["atribut 4.097 byte", {atribut: {jenis: "lain", program: "x".repeat(130), kw: 1, x: "y".repeat(4000)}}]]) {
+    const x = await sip("POST", "/aset/" + A3.id, o, pus.h); assert.equal(x.s, 400, `${ket}: ${x.t}`);
+  }
+  const hapusRek = await sip("POST", "/aset/" + A2.id, {atribut: {rekomendasi_bg: null}}, pus.h); assert.equal(hapusRek.s, 400, "menghapus rekomendasi di zona rusak ditolak"); assert.match(hapusRek.j.galat, /rekomendasi_bg/);
+  assert.equal((await sip("POST", "/aset/" + A3.id, {status: "rusak"}, pim.h)).s, 403); assert.equal((await sip("POST", "/aset/" + A3.id, {status: "rusak"})).s, 401);
+  assert.equal((await sip("POST", "/aset/" + A3.id, {status: "rusak"}, pus61.h)).s, 404, "di luar wilayah"); assert.equal((await sip("POST", "/aset/0123456789abcdef", {status: "rusak"}, pus.h)).s, 404);
+  await isiLaju(koor.kunci, "sippa.tulis", 600); assert.equal((await sip("POST", "/aset/" + A3.id, {status: "rusak"}, koor.h)).s, 429); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(koor.kunci).run();
+});
+uji("POST /api/sippa/inspeksi: komponen skor 2 menjadi rusak_berat dengan dicek = waktu (P8); mutu_air tanpa e_coli_cfu 400 dan dengan 3 201 (A2); komponen bukan milik kit, skor 4, uji_tekanan tanpa tekanan_bar, ukuran 400; pimpinan 403; K 401; wilayah 404; laju 600", async () => {
+  const cp = await komp3(K93, "P-101"), j0 = await jejak();
+  const r = await sip("POST", "/inspeksi", {sasaran_jenis: "komponen", sasaran_id: cp.id, kit_id: K93, jenis: "berkala", skor: 2, temuan: "Impeller aus", tindakan: "ganti"}, pus.h);
+  assert.equal(r.s, 201, r.t); cekKepala(r, "inspeksi"); assert.equal(r.j.inspeksi.skor, 2); assert.equal(r.j.inspeksi.prov, "62", "prov dari kit"); assert.equal(await jejak(), j0 + 1, "jejak satu baris");
+  const k = await komp3(K93, "P-101"); assert.equal(k.kondisi, "rusak_berat"); assert.equal(k.dicek, r.j.inspeksi.waktu, "dicek = waktu inspeksi (trigger 0059)");
+  assert.equal((await sip("GET", "/kit/" + K93, undefined, pus.h)).j.komponen.find(c => c.id === cp.id).kondisi, "rusak_berat", "layar Kit membaca kolom yang sama");
+  const b = await sip("POST", "/inspeksi", {sasaran_jenis: "komponen", sasaran_id: cp.id, kit_id: K93, jenis: "berkala", skor: 0}, pus.h); assert.equal(b.s, 201); assert.equal((await komp3(K93, "P-101")).kondisi, "baik", "skor 0 memulihkan");
+  const kt = await sip("POST", "/inspeksi", {sasaran_jenis: "kit", sasaran_id: K93, jenis: "tahunan", skor: 1, jam_operasi: 12.5}, pus.h); assert.equal(kt.s, 201, kt.t); assert.equal(kt.j.inspeksi.kit_id, K93);
+  const m0 = await sip("POST", "/inspeksi", {sasaran_jenis: "aset", sasaran_id: A2.id, jenis: "mutu_air", skor: 0}, pus.h); assert.equal(m0.s, 400, m0.t); assert.match(m0.j.galat, /e_coli_cfu/);
+  assert.equal((await sip("POST", "/inspeksi", {sasaran_jenis: "aset", sasaran_id: A2.id, jenis: "mutu_air", skor: 0, hasil: {e_coli_cfu: "tiga"}}, pus.h)).s, 400, "e_coli_cfu harus angka");
+  const m3 = await sip("POST", "/inspeksi", {sasaran_jenis: "aset", sasaran_id: A2.id, jenis: "mutu_air", skor: 2, hasil: {e_coli_cfu: 3}, tindakan: "uji_ulang"}, pus.h); assert.equal(m3.s, 201, m3.t); assert.equal(m3.j.inspeksi.hasil.e_coli_cfu, 3); assert.equal(m3.j.inspeksi.kit_id, null);
+  const kon = [["skor 4", {skor: 4}], ["skor -1", {skor: -1}], ["skor pecahan", {skor: 1.5}], ["skor teks", {skor: "1"}], ["jenis liar", {jenis: "visual"}], ["sasaran_jenis liar", {sasaran_jenis: "gudang"}], ["sasaran_id cacat", {sasaran_id: "xyz"}], ["tindakan liar", {tindakan: "bakar"}],
+    ["uji_tekanan tanpa tekanan_bar", {jenis: "uji_tekanan"}], ["temuan 1.001", {temuan: "x".repeat(1001)}], ["hasil 2.049 byte", {hasil: {x: "y".repeat(2049)}}], ["hasil bukan objek", {hasil: [1]}], ["jam_operasi negatif", {jam_operasi: -1}],
+    ["komponen kit lain", {sasaran_id: (await DB.prepare("SELECT id FROM sippa_komponen WHERE kit_id = ? LIMIT 1").bind(kit2).first()).id}], ["komponen tanpa kit_id", {kit_id: undefined}], ["foto tidak ada", {foto_id: "0123456789abcdef"}]];
+  for (const [ket, o] of kon) { const x = await sip("POST", "/inspeksi", {sasaran_jenis: "komponen", sasaran_id: cp.id, kit_id: K93, jenis: "berkala", skor: 1, ...o}, pus.h); assert.equal(x.s, 400, `${ket}: ${x.t}`); assert.ok(x.j.galat); }
+  assert.equal((await sip("POST", "/inspeksi", {sasaran_jenis: "komponen", sasaran_id: cp.id, kit_id: K93, jenis: "uji_tekanan", skor: 1, hasil: {tekanan_bar: 9}}, pus.h)).s, 201, "uji_tekanan dengan tekanan_bar lolos");
+  const sa = await sip("POST", "/inspeksi", {sasaran_jenis: "aset", sasaran_id: A3.id, jenis: "serah_terima", skor: 0, tindakan: "serahkan", kit_id: kit1}, pus.h); assert.equal(sa.s, 201, sa.t); assert.equal(sa.j.inspeksi.kit_id, null, "kit_id kiriman diabaikan untuk aset");
+  assert.equal((await sip("POST", "/inspeksi", {sasaran_jenis: "kit", sasaran_id: K93, kit_id: kit1, jenis: "tahunan", skor: 1}, pus.h)).s, 400, "kit_id harus sama dengan sasaran_id");
+  assert.equal(await hitung("sippa_inspeksi", "dummy = 0"), 6, "hanya yang sah tertulis");
+  const dasar = {sasaran_jenis: "komponen", sasaran_id: cp.id, kit_id: K93, jenis: "berkala", skor: 1};
+  assert.equal((await sip("POST", "/inspeksi", dasar, pim.h)).s, 403, "pimpinan"); assert.equal((await sip("POST", "/inspeksi", dasar, ver.h)).s, 403, "verifikator"); assert.equal((await sip("POST", "/inspeksi", dasar)).s, 401, "tamu");
+  assert.equal((await sip("POST", "/inspeksi", {...dasar, jenis: "pra_gelar"}, {"x-kode": S93})).s, 401, "operator berkode tidak lewat rute ini");
+  assert.equal((await sip("POST", "/inspeksi", dasar, pus61.h)).s, 404, "kit di luar wilayah"); assert.equal((await sip("POST", "/inspeksi", {...dasar, sasaran_jenis: "aset", sasaran_id: A1.id}, pus61.h)).s, 404, "aset di luar wilayah");
+  assert.equal((await sip("POST", "/inspeksi", {sasaran_jenis: "aset", sasaran_id: "0123456789abcdef", jenis: "berkala", skor: 0}, pus.h)).s, 404);
+  assert.equal(await hitung("sippa_inspeksi", "dummy = 0"), 6, "penolakan wilayah tidak menulis");
+  await isiLaju(koor.kunci, "sippa.tulis", 600); assert.equal((await sip("POST", "/inspeksi", dasar, koor.h)).s, 429); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(koor.kunci).run();
+  const upd = await DB.prepare("UPDATE sippa_inspeksi SET skor = 0").run().then(() => "lolos", e => String(e.message)); assert.match(upd, /sippa_insp_tetap/, "tambah-saja");
+});
+uji("POST /lapangan/kirim butir inspeksi: pasca_gelar komponen kit tugasnya diterima dan menurunkan kondisi (P10); komponen kit lain, jenis tahunan, aset, kit lain, tugas tanpa kit, id bukan UUID ditolak per butir; kirim ulang = ganda; batas 200 butir", async () => {
+  const cp = await komp3(K93, "H-101"), kitLain = (await DB.prepare("SELECT id FROM sippa_komponen WHERE kit_id = ? LIMIT 1").bind(kit2).first()).id;
+  const ib = (o = {}) => ({id: uuid(), sasaran_jenis: "komponen", sasaran_id: cp.id, jenis: "pasca_gelar", skor: 1, temuan: "Layflat lecet", waktu_klien: Date.now() - 1000, ...o});
+  const sah = ib(), t = ib({jenis: "tahunan"}), kl = ib({sasaran_id: kitLain}), kitSendiri = ib({sasaran_jenis: "kit", sasaran_id: K93, jenis: "pra_gelar", skor: 0}), kitAsing = ib({sasaran_jenis: "kit", sasaran_id: kit1}), aset = ib({sasaran_jenis: "aset", sasaran_id: A1.id}), buruk = ib({id: "bukan-uuid"}), skor = ib({skor: 4});
+  const j0 = await jejak(), r = await kirim(S93, {inspeksi: [sah, t, kl, kitSendiri, kitAsing, aset, buruk, skor]}); assert.equal(r.s, 200, r.t);
+  assert.deepEqual(r.j.diterima.sort(), [sah.id, kitSendiri.id].sort()); assert.equal(r.j.ditolak.length, 6, JSON.stringify(r.j.ditolak));
+  const alasan = id => r.j.ditolak.find(x => x.id === id)?.alasan; assert.match(alasan(t.id), /hanya untuk staf/); assert.match(alasan(kl.id), /bukan bagian dari kit tugas/); assert.match(alasan(kitAsing.id), /bukan bagian dari kit tugas/); assert.match(alasan(aset.id), /komponen atau kit/); assert.match(alasan(skor.id), /skor/); assert.ok(r.j.ditolak.some(x => /UUID v4/.test(x.alasan)));
+  assert.equal(await jejak(), j0 + 1, "satu jejak kiriman");
+  const k = await komp3(K93, "H-101"); assert.equal(k.kondisi, "rusak_ringan"); assert.equal(k.dicek, sah.waktu_klien, "waktu jam perangkat dipakai bila masuk akal");
+  const baris = await DB.prepare("SELECT * FROM sippa_inspeksi WHERE id = ?").bind(sah.id).first(); assert.equal(baris.oleh, "tugas:" + T93); assert.equal(baris.prov, "62"); assert.equal(baris.kit_id, K93); assert.equal(baris.tindakan, "tidak_ada"); assert.equal(baris.hasil, "{}");
+  const u = await kirim(S93, {inspeksi: [sah]}); assert.deepEqual(u.j.ganda, [sah.id]); assert.equal(await hitung("sippa_inspeksi", "id = ?", sah.id), 1, "kirim ulang tidak menulis dua kali");
+  const tk = await kirim(J93, {inspeksi: [ib()]}); assert.match(tk.j.ditolak[0].alasan, /tidak punya kit/);
+  assert.equal((await kirim(S93, {inspeksi: Array.from({length: 201}, () => ib())})).s, 400, "201 butir"); assert.equal((await kirim(S93, {inspeksi: "x"})).s, 400, "inspeksi harus larik");
+  assert.equal((await kirim(S93, {inspeksi: Array.from({length: 150}, () => ib()), log: Array.from({length: 51}, () => logB())})).s, 400, "inspeksi ikut batas 200 butir gabungan");
+});
+uji("GET /api/sippa/aset dan /aset/:id: bentuk badan dengan inspeksi_terakhir dan mutu_terakhir; filter liar 400; tamu 401, verifikator 403; staf 61 tidak melihat prov 62 (404 identik); GET tanpa laju", async () => {
+  const l = await sip("GET", "/aset", undefined, pim.h); assert.equal(l.s, 200, l.t); cekKepala(l, "aset"); assert.equal(l.j.n, l.j.aset.length);
+  const a2 = l.j.aset.find(x => x.id === A2.id); for (const f of ["id", "kode", "kelas", "nama", "status", "sumber", "pemilik_aset", "pemelihara", "prov", "kab", "lat", "lon", "rencana_ganti", "keyakinan", "inspeksi_terakhir", "mutu_terakhir"]) assert.ok(f in a2, `kolom ${f}`);
+  assert.ok(!("atribut" in a2), "daftar ringkas tanpa atribut"); assert.equal(a2.inspeksi_terakhir.jenis, "mutu_air"); assert.deepEqual({e: a2.mutu_terakhir.e_coli_cfu, lolos: a2.mutu_terakhir.lolos}, {e: 3, lolos: false}, "3 CFU = tidak laik minum"); assert.ok(a2.mutu_terakhir.waktu > 0);
+  assert.equal(l.j.aset.find(x => x.id === A1.id).inspeksi_terakhir, null); assert.equal(l.j.aset.find(x => x.id === A1.id).mutu_terakhir, null);
+  assert.ok(l.j.aset.every((x, i, d) => !i || d[i - 1].kode <= x.kode), "urut kode");
+  const f = await sip("GET", "/aset?kelas=sumur_bor&prov=62&status=berfungsi&sumber=badan_geologi", undefined, pim.h); assert.deepEqual(f.j.aset.map(x => x.id), [A2.id]);
+  for (const q of ["kelas=helikopter", "status=hancur", "sumber=swasta", "prov=6", "prov=62%27"]) assert.equal((await sip("GET", "/aset?" + q, undefined, pim.h)).s, 400, q);
+  assert.equal((await sip("GET", "/aset")).s, 401); assert.equal((await sip("GET", "/aset", undefined, ver.h)).s, 403);
+  const w = await sip("GET", "/aset", undefined, pus61.h); assert.ok(w.j.aset.length > 0 && w.j.aset.every(x => x.prov === "61"), "wilayah 61 hanya miliknya");
+  const d = await sip("GET", "/aset/" + A2.id, undefined, pim.h); assert.equal(d.s, 200, d.t); assert.deepEqual(d.j.aset.atribut.zona_konservasi, "rusak"); assert.equal(d.j.inspeksi.length, 1); assert.equal(d.j.inspeksi[0].hasil.e_coli_cfu, 3);
+  const luar = await sip("GET", "/aset/" + A2.id, undefined, pus61.h), acak2 = await sip("GET", "/aset/0123456789abcdef", undefined, pus61.h); assert.equal(luar.s, 404); assert.equal(luar.t, acak2.t, "404 di luar wilayah identik dengan id tidak ada"); assert.equal((await sip("GET", "/aset/" + A2.id)).s, 401);
+  const n0 = await hitung("laju_bnpb"); for (let i = 0; i < 30; i++) assert.equal((await sip("GET", i % 2 ? "/aset" : "/aset/" + A2.id, undefined, pim.h)).s, 200); assert.equal(await hitung("laju_bnpb"), n0, "GET tanpa laju (ADR-06)");
+});
+uji("POST/GET /api/sippa/stok: saldo 10 lalu -11 = 409 'stok tidak cukup' dan saldo tetap 10, -10 menjadi 0 (P9); pimpinan 403; delta 0, satuan, kode, alasan liar 400; GET filter gudang; laju 600", async () => {
+  const j0 = await jejak(), st = o => ({gudang: "Gudang Palangka Raya", kode_bom: "C-101", nama: "Gasket kopling Storz", delta: 10, satuan: "set", alasan: "terima", ...o});
+  const r = await sip("POST", "/stok", st({}), pus.h); assert.equal(r.s, 201, r.t); assert.equal(r.j.stok.saldo, 10); assert.equal(await jejak(), j0 + 1);
+  const k = await sip("POST", "/stok", st({delta: -11, alasan: "pakai"}), pus.h); assert.equal(k.s, 409, k.t); assert.match(k.j.galat, /stok tidak cukup/); assert.equal(await jejak(), j0 + 1, "penolakan tidak menulis jejak");
+  const saldo = async () => (await sip("GET", "/stok?gudang=" + encodeURIComponent("Gudang Palangka Raya"), undefined, pim.h)).j.stok.find(x => x.kode_bom === "C-101")?.saldo;
+  assert.equal(await saldo(), 10, "saldo tetap 10"); assert.equal((await sip("POST", "/stok", st({delta: -10, alasan: "pakai"}), pus.h)).s, 201); assert.equal(await saldo(), 0);
+  assert.equal((await sip("POST", "/stok", st({delta: -1, alasan: "pakai"}), pus.h)).s, 409, "saldo 0 tak bisa dikurangi");
+  await sip("POST", "/stok", st({gudang: "Gudang Banjarmasin", kode_bom: "SF-101", nama: "Elemen filter", delta: 4, satuan: "unit"}), pus.h);
+  const g = await sip("GET", "/stok", undefined, pim.h); assert.equal(g.s, 200); cekKepala(g, "stok"); assert.ok(g.j.stok.some(x => x.gudang === "Gudang Banjarmasin" && x.saldo === 4 && x.nama === "Elemen filter" && x.satuan === "unit"));
+  const kon = [["delta 0", {delta: 0}], ["delta teks", {delta: "5"}], ["delta 100001", {delta: 100001}], ["satuan liar", {satuan: "kg"}], ["alasan liar", {alasan: "hilang"}], ["kode bom liar", {kode_bom: "kopling"}], ["kode bom 13 huruf", {kode_bom: "ABCD-12345678"}], ["gudang 2 huruf", {gudang: "ab"}], ["nama 1 huruf", {nama: "x"}], ["kit tidak ada", {kit_id: "0123456789abcdef"}]];
+  for (const [ket, o] of kon) { const x = await sip("POST", "/stok", st(o), pus.h); assert.equal(x.s, 400, `${ket}: ${x.t}`); }
+  assert.equal((await sip("POST", "/stok", st({}), pim.h)).s, 403); assert.equal((await sip("POST", "/stok", st({}))).s, 401); assert.equal((await sip("GET", "/stok")).s, 401);
+  assert.equal((await sip("GET", "/stok?gudang=ab", undefined, pim.h)).s, 400, "gudang 2 huruf");
+  await isiLaju(koor.kunci, "sippa.tulis", 600); assert.equal((await sip("POST", "/stok", st({}), koor.h)).s, 429); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(koor.kunci).run();
+  const n0 = await hitung("laju_bnpb"); for (let i = 0; i < 20; i++) assert.equal((await sip("GET", "/stok", undefined, pim.h)).s, 200); assert.equal(await hitung("laju_bnpb"), n0, "GET tanpa laju");
+});
+uji("GET /api/sippa/pelihara dan pelihara.csv: bentuk DT §4.3; jam_sejak_servis dihitung dari log sesudah servis terakhir; filter kelas dan prov; CSV aman injeksi rumus; tamu 401; liar 400; GET tanpa laju, CSV laju 60", async () => {
+  const lg = {id: "c".repeat(16), tugas_id: T93, kit_id: K93, prov: "62", jenis: "karhutla", kelas_medan: "II", t_tiba: Date.now() - 3 * HARI, jam_pompa: 30, waktu_klien: Date.now() - 3 * HARI, diterima: Date.now(), oleh: "tugas:" + T93, dummy: 0};
+  await DB.prepare("INSERT INTO sippa_log_gelar (id, tugas_id, kit_id, prov, jenis, kelas_medan, t_tiba, jam_pompa, waktu_klien, diterima, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)").bind(...Object.values(lg)).run();
+  const r = await sip("GET", "/pelihara", undefined, pim.h); assert.equal(r.s, 200, r.t); cekKepala(r, "pelihara");
+  for (const k of ["komponen", "aset", "inspeksi_terakhir", "jam_sejak_servis", "stok", "n_kit_per_gudang", "per"]) assert.ok(k in r.j, `kunci ${k}`);
+  const c = r.j.komponen.find(x => x.kit_id === K93 && x.kode_bom === "P-101"); for (const f of ["id", "kit_id", "kit_kode", "kit_status", "kode_bom", "nama", "kondisi", "dicek"]) assert.ok(f in c, `komponen.${f}`); assert.equal(c.kit_kode, "SIPPA-170"); assert.equal(c.kit_status, "gudang");
+  assert.equal(r.j.jam_sejak_servis[K93], 30, "belum pernah servis: semua jam log"); assert.ok(r.j.aset.some(x => x.id === A1.id) && r.j.aset.every(x => !("atribut" in x)), "aset ringkas");
+  assert.ok(r.j.inspeksi_terakhir.some(i => i.sasaran_jenis === "aset" && i.sasaran_id === A2.id && i.jenis === "mutu_air" && i.skor === 2)); assert.ok(r.j.stok.some(x => x.kode_bom === "C-101" && x.saldo === 0)); assert.ok(r.j.n_kit_per_gudang["Gudang Pahandut"] >= 1); assert.ok(Math.abs(r.j.per - Date.now()) < 60e3);
+  const cp = await komp3(K93, "P-101"), sv = await sip("POST", "/inspeksi", {sasaran_jenis: "komponen", sasaran_id: cp.id, kit_id: K93, jenis: "servis", skor: 0, jam_operasi: 30}, pus.h); assert.equal(sv.s, 201, sv.t);
+  assert.equal((await sip("GET", "/pelihara", undefined, pim.h)).j.jam_sejak_servis[K93], 0, "servis tercatat: jam sejak servis dihitung ulang dari log sesudahnya");
+  const k1 = await sip("GET", "/pelihara?kelas=K7", undefined, pim.h); assert.ok(k1.j.komponen.length === 0 && k1.j.aset.length > 0 && k1.j.aset.every(x => ["sumur_bor", "pompa_sumur"].includes(x.kelas)), "filter kelas K7");
+  const p63 = await sip("GET", "/pelihara?prov=63", undefined, pim.h); assert.ok(p63.j.komponen.every(x => x.kit_id === kit3) && p63.j.aset.length === 0);
+  const w = await sip("GET", "/pelihara?prov=62", undefined, pus61.h); assert.equal(w.j.komponen.length, 0, "wilayah 61 tidak melihat kit 62"); assert.equal(w.j.aset.length, 0, "dan tidak melihat aset 62");
+  const w2 = await sip("GET", "/pelihara", undefined, pus61.h); assert.ok(w2.j.aset.every(x => x.prov === "61") && w2.j.aset.length > 0 && !w2.j.aset.some(x => x.id === A1.id), "tanpa filter: hanya aset prov 61");
+  for (const q of ["kelas=K11", "kelas=k1", "prov=6", "prov=abc"]) assert.equal((await sip("GET", "/pelihara?" + q, undefined, pim.h)).s, 400, q);
+  assert.equal((await sip("GET", "/pelihara")).s, 401); assert.equal((await sip("GET", "/pelihara", undefined, ver.h)).s, 403);
+  await DB.prepare("UPDATE sippa_aset SET nama = '=HYPERLINK(\"http://x\")' WHERE id = ?").bind(A1.id).run();
+  const cs = await mf.dispatchFetch("http://bnpb.lokal/api/sippa/pelihara.csv", {headers: pim.h}), tx = await cs.text(); assert.equal(cs.status, 200, tx.slice(0, 200)); assert.match(cs.headers.get("content-type"), /^text\/csv; charset=utf-8/); assert.match(cs.headers.get("content-disposition"), /^attachment; filename="sippa-pelihara-\d{8}\.csv"$/);
+  const baris = tx.trim().split("\r\n"); assert.equal(baris[0], "sasaran,kode,kelas,nama,status,jatuh_tempo,alasan"); assert.ok(baris.length > 20, `${baris.length} baris`); assert.match(tx, /'=HYPERLINK/, "sel berawalan = diberi tanda petik"); assert.ok(!/(^|,)=HYPERLINK/m.test(tx));
+  assert.match(tx, /aset,AS-\d{4},K7,.*,(aman|segera|terlambat|belum_pernah),/); assert.match(tx, /komponen,SIPPA-170 P-101,K1,.*,(aman|segera|terlambat|belum_pernah),/);
+  assert.equal((await sip("GET", "/pelihara.csv?kelas=K99", undefined, pim.h)).s, 400); assert.equal((await sip("GET", "/pelihara.csv")).s, 401);
+  const n0 = await hitung("laju_bnpb"); for (let i = 0; i < 30; i++) assert.equal((await sip("GET", "/pelihara", undefined, pim.h)).s, 200); assert.equal(await hitung("laju_bnpb"), n0, "GET JSON tanpa laju");
+  await isiLaju(pim.kunci, "sippa.csv", 60); assert.equal((await sip("GET", "/pelihara.csv", undefined, pim.h)).s, 429); await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ?").bind(pim.kunci).run();
+});
+uji("dummy: staf nyata tidak pernah menerima baris dummy = 1 dari aset, aset/:id, pelihara, stok; admin melihat; hapus dummy membuang aset, inspeksi, dan stok dummy dan menyisakan yang nyata", async () => {
+  const D = "d".repeat(16);
+  await DB.batch([DB.prepare("INSERT INTO sippa_aset (id, kode, kelas, nama, sumber, pemilik_aset, prov, atribut, keyakinan, dibuat, diubah, oleh, dummy) VALUES (?, 'AS-9001', 'pompa_sumur', 'Pompa dummy', 'bpbd', 'BPBD Dummy', '62', '{\"kw\":3}', 'asumsi-kebijakan', 1, 1, 'dummy', 1)").bind(D),
+    DB.prepare("INSERT INTO sippa_inspeksi (id, sasaran_jenis, sasaran_id, jenis, skor, prov, oleh, waktu, dummy) VALUES (?, 'aset', ?, 'berkala', 0, '62', 'dummy', 1, 1)").bind("e".repeat(16), D),
+    DB.prepare("INSERT INTO sippa_stok_gerak (id, gudang, kode_bom, nama, delta, satuan, alasan, oleh, waktu, dummy) VALUES (?, 'Gudang Dummy', 'C-101', 'Gasket dummy', 7, 'set', 'terima', 'dummy', 1, 1)").bind("f".repeat(16))]);
+  assert.ok((await sip("GET", "/aset", undefined, ADMIN)).j.aset.some(x => x.id === D), "admin melihat dummy");
+  for (const h of [pim.h, pus.h]) {
+    assert.ok(!(await sip("GET", "/aset", undefined, h)).j.aset.some(x => x.id === D), "daftar aset"); assert.equal((await sip("GET", "/aset/" + D, undefined, h)).s, 404, "rincian aset dummy 404");
+    const p = (await sip("GET", "/pelihara", undefined, h)).j; assert.ok(!p.aset.some(x => x.id === D) && !p.stok.some(x => x.gudang === "Gudang Dummy") && !p.inspeksi_terakhir.some(x => x.sasaran_id === D), "pelihara");
+    assert.ok(!(await sip("GET", "/stok", undefined, h)).j.stok.some(x => x.gudang === "Gudang Dummy"), "stok");
+  }
+  assert.equal((await sip("POST", "/aset/" + D, {status: "berfungsi"}, pus.h)).s, 404, "staf nyata tidak menulis aset dummy");
+  assert.ok((await sip("GET", "/pelihara", undefined, ADMIN)).j.stok.some(x => x.gudang === "Gudang Dummy")); assert.equal((await sip("GET", "/aset/" + D, undefined, ADMIN)).j.inspeksi.length, 1);
+  const nyata = [await hitung("sippa_aset", "dummy = 0"), await hitung("sippa_inspeksi", "dummy = 0"), await hitung("sippa_stok_gerak", "dummy = 0")];
+  const h = await sip("POST", "/dummy/hapus", {}, ADMIN); assert.equal(h.s, 200, h.t); assert.equal(h.j.dihapus.sippa_aset, 1); assert.equal(h.j.dihapus.sippa_inspeksi, 1); assert.equal(h.j.dihapus.sippa_stok_gerak, 1);
+  assert.deepEqual([await hitung("sippa_aset", "dummy = 0"), await hitung("sippa_inspeksi", "dummy = 0"), await hitung("sippa_stok_gerak", "dummy = 0")], nyata, "baris nyata utuh");
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "pelihara"}, ADMIN)).s, 200, "layar baru sah untuk dummy"); for (const l of ["air", "akses"]) assert.equal((await sip("POST", "/dummy/isi", {layar: l}, ADMIN)).s, 200, l);
+});
+uji("tanpa tabel 0059 (kode tiba sebelum migrasi): rute aset, inspeksi, pelihara, stok menjawab 503 sopan; rute 0056 dan halaman tetap 200; kirim lapangan dengan butir inspeksi tidak jatuh", async () => {
+  const T = await siapkan("uji-sippa-tanpa-0059", {r2: true});
+  await T.DB.batch(["sippa_inspeksi", "sippa_stok_gerak", "sippa_aset"].map(t => T.DB.prepare(`DROP TABLE ${t}`)));
+  const pesan = {galat: "Migrasi SIPPA belum diterapkan di basis data", status: "tanpa_migrasi"}, id = "0123456789abcdef";
+  const k0 = await T.api("POST", "/api/sippa/kit", {kode: "SIPPA-101", jenis: "gambut", prov: "62", kab: "Kota Palangka Raya"}, MOD2); assert.equal(k0.s, 201, k0.t);
+  for (const [m, j, b] of [["GET", "/aset"], ["GET", "/aset/" + id], ["POST", "/aset", asetB()], ["POST", "/aset/" + id, {status: "rusak"}], ["POST", "/inspeksi", {sasaran_jenis: "aset", sasaran_id: id, jenis: "berkala", skor: 0}],
+    ["GET", "/pelihara"], ["GET", "/pelihara.csv"], ["GET", "/stok"], ["POST", "/stok", {gudang: "Gudang Uji", kode_bom: "C-101", nama: "Gasket", delta: 1, satuan: "set", alasan: "terima"}], ["POST", "/dummy/hapus", {}]]) {
+    const r = await T.api(m, "/api/sippa" + j, b, ADMIN); assert.equal(r.s, 503, `${m} ${j}: ${r.s} ${r.t.slice(0, 120)}`); assert.deepEqual(r.j, pesan, `${m} ${j}`);
+  }
+  assert.equal((await T.api("GET", "/api/sippa/kit", undefined, ADMIN)).s, 200, "rute 0056 tetap hidup"); assert.equal((await T.api("GET", "/pipa/pelihara", undefined, ADMIN)).s, 200, "cangkang halaman tidak menyentuh tabel");
+  const tg = await T.api("POST", "/api/sippa/tugas", {kit_id: k0.j.kit.id, nama_regu: "Regu Uji", unsur: "mpa", prov: "62", kab: "Kab", berlaku_hari: 1}, ADMIN); assert.equal(tg.s, 201, tg.t);
+  const kp = (await T.DB.prepare("SELECT id FROM sippa_komponen WHERE kit_id = ? LIMIT 1").bind(k0.j.kit.id).first()).id;
+  const l = await T.api("POST", "/api/sippa/lapangan/kirim", {jam_kirim: Date.now(), log: [], inspeksi: [{id: uuid(), sasaran_jenis: "komponen", sasaran_id: kp, jenis: "pasca_gelar", skor: 0}]}, {"x-kode": tg.j.kode}); assert.equal(l.s, 503, l.t);
+  assert.deepEqual((await T.api("POST", "/api/sippa/lapangan/kirim", {jam_kirim: Date.now(), log: [], probe: []}, {"x-kode": tg.j.kode})).j.diterima, [], "kirim tanpa butir inspeksi tetap jalan");
+});
+}
+
+/* ---------------------------------------------------------------- SP-045: pengingat mingguan = butir terhitung Meja Pantau (ADR-11), tanpa tabel dan tanpa cron baru */
+uji("SP-045: awalMingguSippa murni: Senin 07.40 WIB tepat memulai pekan; sebelum itu masih pekan lalu", async () => {
+  const {awalMingguSippa} = await import("../../src/pantau.js");
+  const wib = t => Date.parse(t + "+07:00");
+  assert.equal(awalMingguSippa(wib("2026-10-26T07:40:00")).tgl, "2026-10-26", "Senin tepat 07.40");
+  assert.equal(awalMingguSippa(wib("2026-10-26T07:39:59")).tgl, "2026-10-19", "Senin 07.39 masih pekan lalu");
+  assert.equal(awalMingguSippa(wib("2026-10-28T12:00:00")).tgl, "2026-10-26", "Rabu ikut pekan Senin 26");
+  assert.equal(awalMingguSippa(wib("2026-11-01T23:59:00")).tgl, "2026-10-26", "Minggu malam ikut pekan Senin 26");
+  assert.equal(awalMingguSippa(wib("2026-10-26T07:40:00")).waktu, wib("2026-10-26T07:40:00"));
+});
+uji("SP-045: butir sippa_mingguan: tanpa kit aktif tidak ada; kit banjir tanpa laporan mingguan 7 hari satu butir; laporan mingguan menghilangkannya; peran dan wilayah menyaring", async () => {
+  const snap = (await DB.prepare("SELECT id, status FROM sippa_kit").all()).results, KID = "0045000000000001";
+  const butir = async (h = pus.h) => { const r = await api("GET", "/api/pantau", undefined, h); assert.equal(r.s, 200, r.t); return {r, b: r.j.butir.filter(x => x.jenis === "sippa_mingguan")}; };
+  const laporan = (jenis, waktu) => DB.prepare("INSERT INTO sippa_laporan (id, jenis, parameter, oleh, waktu, dummy) VALUES (?, ?, '{}', 'staf:uji045', ?, 0)").bind(crypto.randomUUID().replace(/-/g, "").slice(0, 16), jenis, waktu).run();
+  try {
+    await DB.prepare("UPDATE sippa_kit SET status = 'gudang'").run();
+    assert.equal((await butir()).b.length, 0, "tanpa kit gelar atau banjir tidak ada butir");
+    await DB.prepare("INSERT INTO sippa_kit (id, kode, jenis, status, prov, dibuat, diubah, dummy) VALUES (?2, 'SIPPA-845', 'banjir', 'banjir', '62', ?1, ?1, 0)").bind(Date.now(), KID).run();
+    const a = await butir(); assert.equal(a.b.length, 1, "kit banjir tanpa laporan mingguan: satu butir");
+    const x = a.b[0]; assert.match(x.id, /^sippa-mingguan:\d{4}-\d{2}-\d{2}$/); assert.equal(x.tautan, "/pipa/laporan"); assert.equal(x.label, a.r.j.jenis.sippa_mingguan); assert.ok(!x.dummy);
+    assert.match(x.judul, /1 kit/); assert.doesNotMatch(x.judul + x.rincian, /—|·|terbukti/);
+    assert.deepEqual(x.provs, ["62"]);
+    assert.equal((await butir(koor.h)).b.length, 1, "koordalops melihat semua jenis"); assert.equal((await butir(pim.h)).b.length, 1, "pimpinan membaca");
+    assert.equal((await butir(ver.h)).b.length, 0, "verifikator bukan penangan laporan SIPPA"); assert.equal((await butir(pus61.h)).b.length, 0, "wilayah 61 tidak mencakup kit di 62");
+    assert.equal((await api("GET", "/api/pantau", undefined, {})).s, 401, "tamu ditolak");
+    await laporan("kejadian", Date.now() - 1000); await laporan("mingguan", Date.now() - 8 * HARI);
+    assert.equal((await butir()).b.length, 1, "laporan jenis lain atau mingguan lebih lama dari 7 hari tidak menghilangkan butir");
+    await laporan("mingguan", Date.now() - 2 * HARI);
+    assert.equal((await butir()).b.length, 0, "sesudah laporan mingguan diarsipkan butir hilang");
+    await DB.prepare("DELETE FROM sippa_laporan WHERE oleh = 'staf:uji045'").run(); await DB.prepare("UPDATE sippa_kit SET status = 'gelar' WHERE id = ?").bind(KID).run();
+    assert.equal((await butir()).b.length, 1, "kit gelar juga memicu"); await DB.prepare("UPDATE sippa_kit SET status = 'servis' WHERE id = ?").bind(KID).run();
+    assert.equal((await butir()).b.length, 0, "kit servis tidak memicu");
+  } finally {
+    await DB.prepare("DELETE FROM sippa_kit WHERE id = ?").bind(KID).run(); await DB.prepare("DELETE FROM sippa_laporan WHERE oleh = 'staf:uji045'").run();
+    for (const k of snap) await DB.prepare("UPDATE sippa_kit SET status = ? WHERE id = ?").bind(k.status, k.id).run();
+  }
+});
+uji("SP-045: tanpa tabel sippa_*, Meja Pantau tetap 200 (detektor dilewati)", async () => {
+  const T = await siapkan("uji-sippa-pantau-tanpa-tabel", {r2: true});
+  await T.DB.batch(["sippa_bbm", "sippa_probe", "sippa_log_gelar", "sippa_foto", "sippa_jalan_cek", "sippa_aoi_usul", "sippa_gerak", "sippa_tugas", "sippa_komponen", "sippa_kit"].map(t => T.DB.prepare(`DROP TABLE ${t}`)));
+  const r = await T.api("GET", "/api/pantau", undefined, ADMIN); assert.equal(r.s, 200, r.t.slice(0, 200)); assert.ok(!r.j.butir.some(b => b.jenis === "sippa_mingguan"));
 });

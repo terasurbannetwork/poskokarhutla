@@ -32,7 +32,7 @@ import {RUTE_PENUGASAN, halamanLacak} from "./penugasan.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
-import {RUTE_SIPPA} from "./sippa.js";
+import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
 import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
@@ -571,8 +571,8 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), id = tgl ? tgl[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];
-  const kunci = tgl ? tgl[1] + "/:tanggal" : id ? jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), id = tgl ? tgl[2] : nama ? nama[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks
+  const kunci = tgl ? tgl[1] + "/:tanggal" : nama ? nama[1] + "/:nama" : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
@@ -825,6 +825,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanInstansi(env, Date.now()); } catch (e) { console.error("instansi", e?.message); }   // migrasi 0029 belum jalan = cron lain tetap jalan
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
+    try { await bersihkanSippa(env, sekarang); } catch (e) { console.error("sippa", e?.message); }   // migrasi 0058 belum jalan = cron lain tetap jalan; ringkas+buang telemetri > 30 hari, alarm diam
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
     try { await bersihkanArsipSitrep(env, Date.now()); } catch (e) { console.error("arsip sitrep", e?.message); }   // retensi 400 hari

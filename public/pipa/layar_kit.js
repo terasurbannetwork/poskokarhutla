@@ -24,7 +24,7 @@ export const ALASAN_TRANSISI = {...DASAR, koreksi: PASANGAN_SAH};
 const HANYA_MODERATOR = new Set(["hilang", "ditemukan", "pensiun", "koreksi"]);
 const WAJIB_CATATAN = new Set(["hilang", "koreksi"]);
 const WAJIB_PESAN = {catatan: "Catatan wajib diisi. Tulis alasan singkat.", pengangkut: "Pengangkut wajib diisi. Pilih pengangkut dari daftar.", permintaan_dari: "Permintaan dari wajib diisi. Tulis nama instansi atau peminta."};
-const TEKS_ALASAN = {pra_posisi: "Pra-posisi ke depot", gelar: "Gelar", bongkar: "Bongkar ke depot", kembali: "Kembali ke gudang", pindah_banjir: "Pindah ke banjir", servis: "Kirim servis",
+export const TEKS_ALASAN = {pra_posisi: "Pra-posisi ke depot", gelar: "Gelar", bongkar: "Bongkar ke depot", kembali: "Kembali ke gudang", pindah_banjir: "Pindah ke banjir", servis: "Kirim servis",
   hilang: "Tandai hilang", ditemukan: "Tandai ditemukan", pensiun: "Pensiunkan", koreksi: "Koreksi status"};
 const NAMA_STATUS = {gudang: "gudang", depot: "depot depan", gelar: "digelar", banjir: "dipakai banjir", servis: "servis", hilang: "hilang", pensiun: "pensiun"};
 const TEKS_PENGANGKUT = {yontp: "YonTP", bpbd: "BPBD", daops: "Daops", manggala_agni: "Manggala Agni", lain: "Lain"};
@@ -224,7 +224,7 @@ const pergi = jalur => { history.pushState(null, "", jalur + location.search); d
 
 let ctrl = null, dialogTerbuka = null, kamera = null;
 function tutupKamera() { if (kamera) { clearInterval(kamera.timer); kamera.strim?.getTracks().forEach(t => t.stop()); kamera = null; } }
-function bukaDialog(judul, isi) {
+export function bukaDialog(judul, isi) {
   tutupDialog();
   const d = el("dialog", "sp-dialog dlg"), kepala = el("div", "dh"), h = el("h3", "", judul), x = el("button", "");
   h.tabIndex = -1; x.type = "button"; x.setAttribute("aria-label", "Tutup"); x.innerHTML = ikon("x");
@@ -234,7 +234,7 @@ function bukaDialog(judul, isi) {
   document.body.append(d); d.showModal(); h.focus(); dialogTerbuka = d;
   return d;
 }
-function tutupDialog() { dialogTerbuka?.close(); dialogTerbuka = null; }
+export function tutupDialog() { dialogTerbuka?.close(); dialogTerbuka = null; }
 export function lepas() { ctrl?.abort(); ctrl = null; tutupKamera(); tutupDialog(); document.body?.classList.remove("sp-mencetak"); document.querySelectorAll(".sp-cetak-area").forEach(e => e.remove()); }
 
 const kotakGalat = (daftar) => { const e = el("div", "ad-galat"); e.setAttribute("role", "alert"); const ul = el("ul"); daftar.forEach(g => ul.append(el("li", "", g))); e.append(ul); return e; };

@@ -3,7 +3,7 @@
 import test from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-import {cekButir} from "../../public/pipa/formulir.js";
+import {cekButir} from "../../public/pipa/formulir.js";   // SP-094 memakai juga cekButir("inspeksi")
 
 const L = await import("../../public/pipa/lapangan.js");
 const baca = p => readFileSync(new URL(p, import.meta.url), "utf8");
@@ -160,6 +160,37 @@ test("keamanan: lapangan.js menulis teks hanya lewat textContent; satu-satunya i
   assert.doesNotMatch(s, /\beval\(|new Function\(/);
   assert.doesNotMatch(s, /[—·]/); assert.doesNotMatch(s, /toFixed/); assert.doesNotMatch(s, /terbukti/i);
   assert.doesNotMatch(s, /location\.search|searchParams/, "kode tidak pernah dibaca dari query");
+});
+
+/* SP-094: dialog inspeksi pra/pasca gelar (DT §6.6 butir 1). Kontrak lapangan/saya memang belum memuat kit.id dan kit.komponen: layar membacanya bila ada. */
+const idk = s => s.padEnd(16, "0");
+test("bangunInspeksi: satu butir per komponen yang dinilai; temuan hanya untuk skor > 0; jam operasi hanya untuk komponen K1; hasil lolos cekButir inspeksi", async () => {
+  const nilai = [{sasaran_jenis: "komponen", sasaran_id: idk("p"), kode_bom: "P-101", skor: 2}, {sasaran_jenis: "komponen", sasaran_id: idk("c"), kode_bom: "C-101", skor: 0}, {sasaran_jenis: "komponen", sasaran_id: idk("q"), kode_bom: "Q-101", skor: null}];
+  const b = L.bangunInspeksi({jenis: "pra_gelar", nilai, jam: {[idk("p")]: 12.5, [idk("c")]: 99}, temuan: " selang bocor "}, 5);
+  assert.deepEqual(b, [
+    {jenis: "pra_gelar", sasaran_jenis: "komponen", sasaran_id: idk("p"), skor: 2, jam_operasi: 12.5, temuan: "selang bocor", waktu_klien: 5},
+    {jenis: "pra_gelar", sasaran_jenis: "komponen", sasaran_id: idk("c"), skor: 0, waktu_klien: 5}]);
+  for (const x of b) assert.equal(cekButir("inspeksi", {id: "0123456789abcdef", ...x}).ok, true, JSON.stringify(x));
+  assert.deepEqual(L.bangunInspeksi({jenis: "pasca_gelar", nilai: [{...nilai[2]}]}, 5), [], "tidak ada yang dinilai = tidak ada butir");
+  assert.deepEqual(L.bangunInspeksi({jenis: "pasca_gelar", nilai: [{sasaran_jenis: "kit", sasaran_id: idk("k"), skor: 1}], temuan: ""}, 7), [{jenis: "pasca_gelar", sasaran_jenis: "kit", sasaran_id: idk("k"), skor: 1, waktu_klien: 7}]);
+});
+
+test("AWALAN_K1 dan KATA_SKOR: awalan sama dengan KELAS_BOM kelas K1; kata skor sama dengan layar Pemeliharaan; kit tanpa daftar komponen tidak mengarang butir", async () => {
+  const {KELAS_BOM} = await import("../../public/pipa/pelihara.js");
+  (0, eval)(baca("../../public/inti/format.js").replace(/^"use strict";?/, "") + ";globalThis.fmt=fmt;globalThis.esc=esc;globalThis.jamWIB=jamWIB;");
+  const {SKOR_KATA} = await import("../../public/pipa/layar_pelihara.js");
+  assert.deepEqual([...L.AWALAN_K1].sort(), Object.entries(KELAS_BOM).filter(([, k]) => k === "K1").map(([a]) => a).sort());
+  assert.deepEqual(L.KATA_SKOR, SKOR_KATA);
+  assert.deepEqual(L.daftarPeriksa(null), []); assert.deepEqual(L.daftarPeriksa({kode: "SIPPA-001"}), [], "kontrak lapangan/saya tanpa kit.komponen");
+  assert.deepEqual(L.daftarPeriksa({id: idk("k"), komponen: [{id: idk("p"), kode_bom: "P-101", nama: "Pompa"}]}), [{sasaran_jenis: "komponen", sasaran_id: idk("p"), kode_bom: "P-101", nama: "Pompa", skor: null}]);
+  assert.deepEqual(L.daftarPeriksa({id: idk("k"), komponen: [{id: "liar", kode_bom: "P-101", nama: "x"}]}), [], "id komponen liar dibuang");
+});
+
+test("dialog inspeksi di sumber: tombol Inspeksi dan Simpan lewat urgentLalu, label jenis inspeksi, tanpa innerHTML tambahan", () => {
+  const s = baca("../../public/pipa/lapangan.js");
+  assert.match(s, /tombol\("Inspeksi komponen"/); assert.match(s, /inspeksi: "Inspeksi"/);
+  assert.match(s, /urgentLalu\(simpan, "Menyimpan\.\.\.", async \(\) => \{\s*const dinilai/, "simpan inspeksi lewat urgentLalu");
+  assert.match(s, /Daftar komponen kit belum diterima dari server/);
 });
 
 test("ukuran sentuh: tombol lapangan dan stopwatch >= 56 px, tombol utama lengket 66 px; status sinkron aria-live polite", () => {

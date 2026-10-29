@@ -1,0 +1,189 @@
+#url https://www.bps.go.id/id/statistics-table/1/MTI3NiMx/persentase-penduduk-daerah-perkotaan-hasil-proyeksi-penduduk-menurut-provinsi-2015---2035.html
+#ditarik 2026-10-26T12:24:24.294Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Tabel Publikasi Indikator Kependudukan SUPAS 2025 telah tersedia dalam bentuk Tabel Statistik yang dapat diakses pada Menu Produk > Direktori. Klik disini untuk mengakses laman tersebut.
+
+Dalam rangka percepatan transformasi tata kelola penyelenggaraan pemerintahan, layanan kunjungan langsung PST pada hari Jumat dialihkan menjadi layanan online: pst.bps.go.id
+
+Beranda
+
+Produk - Tabel Statistik
+
+Kependudukan dan Migrasi
+
+Persentase Penduduk Daerah Perkotaan Hasil Proyeksi Penduduk menurut Provinsi, 2015 - 2035
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Kependudukan dan Migrasi
+Tenaga Kerja
+Pendidikan
+Kesehatan
+Konsumsi dan Pendapatan
+Perlindungan Sosial
+Pemukiman dan Perumahan
+Hukum dan Kriminal
+Budaya
+Aktivitas Politik dan Komunitas Lainnya
+Penggunaan Waktu
+
+Statistik Ekonomi
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Persentase Penduduk Daerah Perkotaan Hasil Proyeksi Penduduk menurut Provinsi, 2015 - 2035
+
+Terakhir Diperbarui : 17 September 2020
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+Persentase Penduduk Daerah Perkotaan menurut Provinsi, 2010-2035
+						
+Provinsi	Tahun
+2010	2015	2020	2025	2030	2035
+Aceh	28,1	30,5	33,2	36,2	39,5	43,2
+Sumatera Utara	49,2	52,6	56,3	60,1	64,1	68,1
+Sumatera Barat	38,7	44,2	49,6	54,6	59,4	63,8
+Riau	39,2	39,6	40,1	40,7	41,2	41,8
+Jambi	30,7	32,0	33,3	34,8	36,5	38,2
+Sumatera Selatan	35,8	36,5	37,3	38,2	39,1	40,1
+Bengkulu	31,0	31,7	32,6	33,5	34,5	35,6
+Lampung	25,7	28,3	31,3	34,6	38,3	42,4
+Kepulauan Bangka Belitung	49,2	52,5	56,0	59,7	63,5	67,4
+Kepulauan Riau	82,8	83,0	83,3	83,8	84,5	85,3
+ 						
+DKI Jakarta	100,0	100,0	100,0	100,0	100,0	100,0
+Jawa Barat	65,7	72,9	78,7	83,1	86,6	89,3
+Jawa Tengah	45,7	48,4	51,3	54,3	57,5	60,8
+DI Yogyakarta	66,4	70,5	74,6	78,0	81,3	84,1
+Jawa Timur	47,6	51,1	54,7	58,6	62,6	66,7
+Banten	67,0	67,7	69,9	73,7	78,8	84,9
+ 						
+Bali	60,2	65,5	70,2	74,3	77,8	81,2
+Nusa Tenggara Barat	41,7	45,4	49,4	53,6	58,1	62,7
+Nusa Tenggara Timur	19,3	21,6	24,3	27,3	30,7	34,6
+ 						
+Kalimantan Barat	30,2	33,1	36,2	39,8	43,7	47,9
+Kalimantan Tengah	33,5	36,6	40,2	44,1	48,3	52,9
+Kalimantan Selatan	42,1	45,1	48,4	52,0	55,8	59,8
+Kalimantan Timur	63,2	66,0	68,9	71,8	74,8	77,7
+ 						
+Sulawesi Utara	45,2	49,8	54,7	59,2	63,9	68,7
+Sulawesi Tengah	24,3	27,2	30,5	34,2	38,4	43,1
+Sulawesi Selatan	36,7	40,6	45,0	49,8	54,9	59,6
+Sulawesi Tenggara	27,4	31,2	35,0	39,4	43,6	48,3
+Gorontalo	34,0	39,0	44,0	48,9	53,5	58,4
+Sulawesi Barat	22,9	22,9	23,0	23,0	23,1	23,1
+ 						
+Maluku	37,1	38,0	38,9	39,9	41,0	42,1
+Maluku Utara	27,1	27,8	28,5	29,2	29,9	30,6
+ 						
+Papua Barat	29,9	32,3	34,9	37,8	40,9	44,4
+Papua	26,0	28,4	31,2	34,2	37,7	41,5
+ 	 	 	 	 	 	
+INDONESIA	49,8	53,3	56,7	60,0	63,4	66,6
+Tabel Terkait
+Proyeksi Penduduk menurut provinsi, 2010 - 2035
+Dependency Ratio Hasil Proyeksi Penduduk
+Jumlah Penduduk Hasil Proyeksi Menurut Provinsi dan Jenis Kelamin (Ribu Jiwa)
+Persentase Penduduk Miskin (P0) Menurut Provinsi dan Daerah (Persen)
+Jumlah Penduduk Hasil Sensus Penduduk (SP) dan Survei Penduduk Antar Sensus (SUPAS) menurut Provinsi, 1971 - 2015
+Persentase Penduduk yang Menggunakan Komputer menurut Provinsi dan Klasifikasi Daerah (Persen)
+Persentase Penduduk Miskin (P0) Menurut Daerah
+Persentase Penduduk yang Memiliki/Menguasai Telepon Seluler Menurut Provinsi dan Klasifikasi Daerah
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik(BPS - Statistics Indonesia)
+
+Jl. Dr. Sutomo 6-8
+
+Jakarta 10710 Indonesia
+
+Telp (62-21) 3841195; 3842508; 3810291
+
+Faks (62-21) 3857046
+
+Mailbox : bpshq@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik

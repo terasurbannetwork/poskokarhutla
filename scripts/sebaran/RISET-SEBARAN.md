@@ -297,10 +297,20 @@ antar-lipatan); bobot kelas & fokal hanya menggeser peluang, dan ambang sudah me
 (dipertahankan sebagai opsi; tidak dipakai karena aturan pilih = AP tertinggi). Kisi: kedalaman 5 / 150 pohon / lr 0,06
 (AP 0,486) > 4/150 (0,484) > 3/300 (0,479). Terpilih B (38 fitur) dan U (B + 4 fitur ulang + NOAA-20).
 
-**Ambang WASPADA** (dipilih di luar-lipatan, peluang terkalibrasi Platt): 4,84% = recall 70%, presisi 19%, 10 dari tiap
+> **Dihitung ulang 26 Okt 2026 dengan peta gambut baru (PRIMS/BBSDLP, `b502f0d2`).** Seluruh angka `lolos` di bagian ini (CV,
+> Platt, ambang, tabel, per lahan, selang) kini dari `lolos.py cv | selang | akhir | selang` pada `lolos_baris.pkl` yang
+> kolom `gambut` + strata-nya diganti dari poligon baru di sel deteksi pertama (alur `bangun` tidak dijalankan ulang;
+> penggantinya diverifikasi: dengan poligon lama kolom tersimpan terbentuk ulang 438.217 dari 438.217 baris). Angka lama
+> (GFW/Gumbricht) tersimpan di git `b502f0d2^` sebagai pembanding: ambang 4,84%, Platt (−0,2751; 0,9249), gambut = 41,5% titik uji.
+> Dengan peta baru gambut tinggal 17,8% titik (77.843 dari 438.217 baris; lama 44,5%). Yang TIDAK dihitung ulang: strata
+> pada `uji_awal.pkl` (500 deteksi pertama) dan `sebaran_kasus.json` (123 kasus) masih dari peta lama, jadi kolom per lahan
+> dua himpunan itu dan cakupan selang uji-2 per lahan tetap berlabel lama; model sel (`hasil.json`) juga dilatih dengan
+> fitur gambut lama (uji baris: AUC sama, 0,9156 vs 0,9151).
+
+**Ambang WASPADA** (dipilih di luar-lipatan, peluang terkalibrasi Platt): 4,92% = recall 70%, presisi 19,6%, 10 dari tiap
 100 titik baru ditandai. Ambang biaya (anggapan: api besar terlewat 10× lebih mahal dari alarm palsu, p ≥ 1/11):
-recall 58%, presisi 30%. Ramal ulang: ambang 10,1%. Per tahun (luar-lipatan) recall 45–74% (tahun sepi seperti 2020/2022
-lebih rendah, n lolos kecil); per lahan recall gambut 76%, mineral 52%, sabana 47% (ambang tunggal; lahan mineral/sabana
+recall 58%, presisi 30%. Ramal ulang: ambang 9,7%. Per tahun (luar-lipatan) recall 44–76% (tahun sepi seperti 2020/2022
+lebih rendah, n lolos kecil); per lahan recall gambut 81%, mineral 60%, sabana 61% (ambang tunggal; lahan mineral/sabana
 jarang lolos sehingga ambang global tidak menjangkaunya).
 
 **Sebelum → sesudah** (uji 2024–2026 = LIHAT KEDUA, sedikit optimistis; kasus 2015–2023 memakai prediksi luar-lipatan):
@@ -309,26 +319,29 @@ jarang lolos sehingga ambang global tidak menjangkaunya).
 | --- | --- | --- | --- | --- | --- |
 | 500 deteksi pertama uji (42 lolos) | lama, MC ≥ 50% | 0,70 | 21% | 90% | 0,2% |
 | 〃 | lama, MC ≥ 20% | 0,70 | 31% | 43% | 3,7% |
-| 〃 | **baru** | **0,81** | **64%** | 22% | 20,5% |
-| 〃 | baru, ramal ulang 14 j | 0,84 | 62% | 32% | 12,0% |
-| Semua titik baru uji (97.749; 2.922 lolos) | baru | 0,908 | 67% | 22% | 7,5% |
-| 〃 | baru, ramal ulang 14 j | 0,955 | 76% | 37% | 4,0% |
+| 〃 | **baru** | **0,81** | **67%** | 22% | 21,8% |
+| 〃 | baru, ramal ulang 14 j | 0,84 | 60% | 29% | 13,3% |
+| Semua titik baru uji (97.749; 2.922 lolos) | baru | 0,908 | 68% | 21% | 7,9% |
+| 〃 | baru, ramal ulang 14 j | 0,955 | 77% | 36% | 4,1% |
 | 123 kasus (58 lolos) | lama, MC ≥ 50% | 0,72 | 31% | 86% | 4,6% |
-| 〃 | **baru** | **0,83** | **64%** | 76% | 18,5% |
-| 〃 | baru, ramal ulang 14 j | 0,90 | 72% | 79% | 16,9% |
+| 〃 | **baru** | **0,83** | **67%** | 75% | 20,0% |
+| 〃 | baru, ramal ulang 14 j | 0,89 | 76% | 80% | 16,9% |
 
-Kelas "besar" (≥ 1.000 ha) di 123 kasus: benar 34% → 72% (ramal ulang 75%); "sedang" 53% → 49% (ulang 60%); "tetap kecil"
-100% → 100%. Akurasi seluruhnya 65% → 73%. Uji per lahan (semua titik baru): gambut AUC 0,88, recall 73%, presisi 22%,
-alarm palsu 14%; mineral 0,92 / 52% / 21% / 2,9%; sabana 0,92 / 57% / 24% / 2,8%. Per tahun uji: 2024 recall 63%,
-2025 54%, 2026 68%. Harga yang dibayar jelas: 500 titik uji yang diperkaya api ≥ 3 sel (dan 46% gambut) membuat 1 dari 5
+Kelas "besar" (≥ 1.000 ha) di 123 kasus: benar 34% → 75% (ramal ulang 78%); "sedang" 53% → 51% (ulang 62%); "tetap kecil"
+100% → 98% (ulang 100%). Akurasi seluruhnya 65% → 74%. Uji per lahan (semua titik baru): gambut AUC 0,87, recall 81%, presisi 22%,
+alarm palsu 24%; mineral 0,90 / 58% / 20% / 5,2%; sabana 0,90 / 62% / 19% / 5,5% (peta lama: gambut 0,88 / 73% / 22% / 14%;
+mineral 0,92 / 52% / 21% / 2,9%; sabana 0,92 / 57% / 24% / 2,8%). Per tahun uji: 2024 recall 63%,
+2025 56%, 2026 68%. Harga yang dibayar jelas: 500 titik uji yang diperkaya api ≥ 3 sel (dan 46% gambut) membuat 1 dari 5
 api kecil ikut ditandai; pada populasi titik baru sebenarnya 1 dari 13. Pada ramal ulang, titik yang sudah ≥ 10 sel pada
 14 jam dikeluarkan pun AUC masih 0,93 (recall 64%, presisi 24%).
 
 **Selang luas terkalibrasi (konformal, `lolos.py selang`).** CQR di ruang log(1 + sel baru): P10/P90 Monte Carlo dilebarkan
 q per lahan × tanda WASPADA × hari, dikalibrasi pada 540 titik awal deteksi pertama 2015–2023 dengan model sel yang tidak
-melihat tahunnya. q = 0 untuk titik non-WASPADA (sudah ≥ 80% tercakup), gambut-WASPADA 0,41/0,69/0,69, gabungan-WASPADA
-0/0,69/0,69. Cakupan 24/48/72 j: uji 2024–2026 76/72/70% → **78/75/73%** (deteksi pertama 80/76/74%; gambut 73/64/61%
-→ 77/69/67%); 123 kasus 52/48/42% → 55/57/55%; kelas "besar" 3% → 22% pada 72 jam. **Belum tercapai untuk api yang benar-benar
+melihat tahunnya. q = 0 untuk titik non-WASPADA (sudah ≥ 80% tercakup), WASPADA (semua lahan) 0,69/0,69/0,69. Dengan peta gambut baru kelompok
+gambut tak lagi punya q sendiri (< 40 titik kalibrasi per tanda; memakai gabungan `*`); peta lama: gambut-WASPADA 0,41/0,69/0,69,
+gabungan-WASPADA 0/0,69/0,69. Cakupan 24/48/72 j: uji 2024–2026 76/72/70% → **80/75/73%** (deteksi pertama 81/77/74%; gambut
+[strata lama] 73/64/61% → 78/70/67%); 123 kasus 52/48/42% → 61/57/55%; kelas "besar" 3% → 22% pada 72 jam. Kalibrasi
+ini dijalankan di mesin yang sebagian berkas cuacanya tak terbaca: peristiwa dengan berkas macet dibuang dari undian 540 titik. **Belum tercapai untuk api yang benar-benar
 besar**: selang 80% pada populasi memang meleset untuk ~10% teratas, dan pustaka kasus diperkaya api terbesar tiap tahun.
 Cakupan pada populasi mendekati 80%; untuk api besar selang tetap terlalu sempit dan tanda WASPADA-lah yang memberi
 peringatan, bukan rentangnya.

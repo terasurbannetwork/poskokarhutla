@@ -371,6 +371,38 @@ test("SP-015 buangKadaluarsa(): butir dan fotonya lebih tua 14 hari dibuang deng
   assert.deepEqual([...idb.isi.foto.keys()], ["f2"]);
 });
 
+/* SP-094: butir inspeksi pra/pasca gelar masuk antrean yang sama (DT §6.6 butir 1) dan terkirim di larik `inspeksi` bersama log */
+const inspeksi = (skor = 0, sasaran = "0123456789abcdef") => ({jenis: "inspeksi", data: {jenis: "pra_gelar", sasaran_jenis: "komponen", sasaran_id: sasaran, skor, waktu_klien: Date.now()}, tugas_id: "T1"});
+const diterimaSemua = r => ({status: 200, json: {diterima: ["log", "probe", "bbm", "gerak", "inspeksi"].flatMap(j => (r.badan[j] || []).map(b => b.id)), ganda: [], ditolak: [], jam_server: Date.now()}});
+
+test("SP-094 inspeksi: tersimpan luring tanpa fetch, terkirim di larik inspeksi bersama log, antrean kosong sesudahnya", async () => {
+  const {A, idb, panggilan} = await siap({balas: diterimaSemua});
+  assert.equal((await A.tambah(inspeksi(0))).ok, true); assert.equal((await A.tambah(inspeksi(2, "fedcba9876543210"))).ok, true); await A.tambah(log());
+  assert.equal(panggilan.length, 0); assert.equal(idb.isi.butir.size, 3);
+  for (const v of idb.isi.butir.values()) if (v.jenis === "inspeksi") assert.match(v.id, UUID);
+  const h = await A.kirimSemua(T1);
+  assert.equal(panggilan.length, 1); assert.deepEqual([panggilan[0].badan.log.length, panggilan[0].badan.inspeksi.length], [1, 2]);
+  assert.deepEqual(panggilan[0].badan.inspeksi.map(b => b.skor).sort(), [0, 2]);
+  assert.equal(h.diterima, 3); assert.equal((await A.jumlah()).total, 0);
+});
+
+test("SP-094 inspeksi: butir yang melanggar cekButir ditolak saat tambah (skor 4, jenis staf); kiriman tanpa inspeksi tetap membawa larik kosong", async () => {
+  const {A, idb, panggilan} = await siap({balas: diterimaSemua});
+  assert.equal((await A.tambah(inspeksi(4))).ok, false);
+  const r = await A.tambah({...inspeksi(0), data: {...inspeksi(0).data, jenis: "tahunan"}}); assert.equal(r.ok, false); assert.equal(r.galat[0].medan, "jenis");
+  assert.equal(idb.isi.butir.size, 0);
+  await A.tambah(bbm()); await A.kirimSemua(T1);
+  assert.deepEqual(panggilan[0].badan.inspeksi, []);
+});
+
+test("SP-094 inspeksi: server menolak satu butir (komponen bukan milik kit tugas): tetap di antrean berstatus ditolak dengan alasan server, butir sah terhapus", async () => {
+  const {A, panggilan} = await siap({balas: r => ({status: 200, json: {diterima: r.badan.inspeksi.slice(0, 1).map(b => b.id), ganda: [], ditolak: r.badan.inspeksi.slice(1).map(b => ({id: b.id, alasan: "sasaran bukan bagian dari kit tugas ini"})), jam_server: Date.now()}})});
+  await A.tambah(inspeksi(0)); await A.tambah(inspeksi(1, "fedcba9876543210"));
+  const h = await A.kirimSemua(T1);
+  assert.equal(panggilan.length, 1); assert.equal(h.diterima, 1); assert.equal(h.ditolak, 1);
+  const sisa = await A.daftar(T1); assert.equal(sisa.length, 1); assert.equal(sisa[0].keadaan, "ditolak"); assert.match(sisa[0].alasan, /bukan bagian dari kit tugas/);
+});
+
 test("antre.js tidak menulis markup; teks tanpa em dash atau titik tengah", async () => {
   const {readFileSync} = await import("node:fs");
   const s = readFileSync(new URL("../../public/pipa/antre.js", import.meta.url), "utf8");

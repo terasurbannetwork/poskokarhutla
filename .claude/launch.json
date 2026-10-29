@@ -158,6 +158,15 @@
         "IP_SALT:garam-lokal"
       ],
       "port": 8801
+    },
+    {
+      "name": "sippa-code",
+      "runtimeExecutable": "bash",
+      "runtimeArgs": [
+        "-c",
+        "cd /Users/alfatehanseptianta/Code/poskokarhutla && npx wrangler d1 migrations apply poskowarga --local --persist-to .wrangler/sippa >/dev/null 2>&1; npx wrangler dev --local --port 8802 --persist-to .wrangler/sippa --var SESI_KUNCI:kunci-lokal --var ADMIN_TOKEN:uji:sandi-uji --var SUPER_ADMIN:fee6957b3172 --var IP_SALT:garam-lokal"
+      ],
+      "port": 8802
     }
   ]
 }

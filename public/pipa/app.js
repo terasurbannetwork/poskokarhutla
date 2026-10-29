@@ -3,11 +3,12 @@
    Tidak ada data di berkas ini: data hanya dari /api/sippa/* bersesi. Dimuat sebagai <script type="module"> oleh cangkang halamanSippa. */
 import {ikon} from "./ikon.js";
 import {memuat, kosong, galat, luring, menunggu, basi, waktu} from "./keadaan.js";
+import {bolehDummy, pasangDummy, ambilPesan} from "./dummy.js";
 
 const GRUP = [
   {k: "ringkas", n: "Ringkas", i: "layout-dashboard"},
   {kel: "Rencana", item: [{k: "peta", n: "Peta", i: "peta"}, {k: "hitung", n: "Hitung", i: "calculator"}, {k: "pemicu", n: "Pemicu", i: "siren"}, {k: "studio", n: "Studio", i: "sliders-horizontal"}, {k: "3d", n: "3D", i: "box"}]},
-  {kel: "Operasi", item: [{k: "kit", n: "Kit", i: "warehouse"}, {k: "log", n: "Log", i: "timer"}, {k: "ab", n: "A/B", i: "flask-conical"}, {k: "telemetri", n: "Telemetri", i: "activity"}]},
+  {kel: "Operasi", item: [{k: "kit", n: "Kit", i: "warehouse"}, {k: "pelihara", n: "Pelihara", i: "wrench"}, {k: "log", n: "Log", i: "timer"}, {k: "ab", n: "A/B", i: "flask-conical"}, {k: "telemetri", n: "Telemetri", i: "activity"}]},
   {kel: "Keluaran", item: [{k: "laporan", n: "Laporan", i: "file-text"}, {k: "data", n: "Data", i: "database"}]},
 ];
 const SEMUA = GRUP.flatMap(g => g.item || [g]);
@@ -53,6 +54,11 @@ function mulai(akar) {
       catch (e) { if (e.name === "AbortError") throw e; const g = new Error("Tidak bisa terhubung ke server."); g.status = 0; throw g; }
       if (!r.ok) { let m = ""; try { m = (await r.json()).galat || ""; } catch { /* badan bukan JSON */ } const g = new Error(m); g.status = r.status; throw g; }
       return r.json();
+    },
+    /* POST JSON -> {ok, status, j}; x-pb wajib untuk sesi staf. Galat jaringan = status 0, bukan lemparan. */
+    async kirim(url, body) {
+      try { const r = await fetch(url, {method: "POST", credentials: "same-origin", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(body)}); return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))}; }
+      catch { return {ok: false, status: 0, j: {}}; }
     }};
 
   /* kerangka */
@@ -91,7 +97,9 @@ function mulai(akar) {
   const tulisPer = () => { batas.replaceChildren(konteks.per == null ? "Data per –" : `Data per ${waktu(konteks.per)}`); if (konteks.per != null && Date.now() - konteks.per > BASI_MS) batas.append(" ", basi(konteks.per)); };
   tulisPer();
   const pita = el("div", "sp-pita");
-  bilah.append(sel, seg, batas, pita);
+  const info = el("div", "sp-pita sp-info", {role: "status"});   // hasil isi/hapus dummy: di bilah konteks supaya tidak terhapus saat layar dimuat
+  bilah.append(sel, seg, batas, pita, info);
+  const tulisInfo = t => info.replaceChildren(...(t ? [el("p", "ad-spanduk", t)] : []));
 
   badan.append(rel, isi);
   akar.append(lompat, bilah, badan, bawah, lain);
@@ -102,7 +110,10 @@ function mulai(akar) {
   const terapkanTema = t => { document.documentElement.dataset.theme = t; tema.innerHTML = ikon(t === "dark" ? "sun" : "moon"); tema.setAttribute("aria-pressed", String(t === "dark")); };
   terapkanTema(baca("sp-tema") || (matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light"));
   tema.addEventListener("click", () => { const t = document.documentElement.dataset.theme === "dark" ? "light" : "dark"; terapkanTema(t); simpan("sp-tema", t); });
-  (document.querySelector(".ad-top") || bilah).append(tema);
+  /* tombol dummy 🧪 🧹 (DS §3.19): Super Admin saja, di header kanan sebelum tema, sama di tiap layar */
+  const kepala = document.querySelector(".ad-top") || bilah;
+  if (bolehDummy(document.body?.dataset)) pasangDummy(kepala, {layar: () => cocokkanJalur(location.pathname)?.layar ?? "", kirim: (u, b) => konteks.kirim(u, b), pesan: tulisInfo});
+  kepala.append(tema);
 
   /* luring */
   const tandaiLuring = () => pita.replaceChildren(...(navigator.onLine === false ? [luring(konteks.per)] : []));
@@ -114,7 +125,7 @@ function mulai(akar) {
   async function tampil() {
     const g = ++giliran;
     try { modul?.lepas?.(); } catch { /* layar lama boleh rusak saat dilepas */ }
-    modul = null; konteks.setPer(null);
+    modul = null; konteks.setPer(null); tulisInfo("");
     const c = cocokkanJalur(location.pathname);
     if (!c) { tandaiAktif(null); isi.replaceChildren(kosong("Halaman tidak ada. Pilih layar dari menu SIPPA.")); return; }
     const x = SEMUA.find(y => y.k === c.layar);
@@ -157,6 +168,7 @@ function mulai(akar) {
   });
 
   tampil();
+  const sisa = ambilPesan(); if (sisa) tulisInfo(sisa);   // hasil isi atau hapus sebelum muat ulang, tampil sekali
 }
 
 /* masuk: hanya di halaman cangkang (ada #app), bukan saat diimpor uji Node */

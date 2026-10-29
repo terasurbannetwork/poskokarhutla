@@ -468,6 +468,26 @@
         "public/pesisir/**",
         "tests/pesisir/**"
       ]
+    },
+    {
+      "nama": "neraca-air",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja neraca air Pulau Jawa per kab/kota: topologi HydroBASINS x kab, iklim ERA5-Land bulanan, kebutuhan per sektor, bak Thornthwaite-Mather + routing antar-kab, keluaran public/data/neraca_air.",
+      "kapan": "scripts/air/neraca/**, public/data/neraca_air/**, atau data/kajian-bnpb/neraca-air/** disentuh atau rusak",
+      "fokus": [
+        "RANCANGAN.md bagian 'Keputusan pemilik (26 Okt 2026)' menang atas isi rancangan sebelumnya",
+        "Python 3.12 stdlib; tiap skrip punya subperintah uji (konservasi massa, masukan salah ditolak, invarian bukan potret)",
+        "Semua angka neraca berlabel estimasi-model sampai validasi NA-06 (GloFAS + BPS 2020) lolos; tabel waduk/transfer satu sumber per baris"
+      ],
+      "larangan": "Jangan menyunting scripts/kekeringan, scripts/banjir, scripts/data (impor saja). Jangan membuat halaman web (keputusan pemilik 7). Jangan deploy, commit, push, atau melonggarkan gerbang.",
+      "bisa": "membangun & membetulkan pipeline neraca air Jawa dan paket datanya",
+      "tidak": "layar web; pipeline karhutla/banjir/kekeringan; memvalidasi modelnya sendiri (itu validasi-model)",
+      "milik": [
+        "scripts/air/neraca/**",
+        "public/data/neraca_air/**",
+        "data/kajian-bnpb/neraca-air/**"
+      ]
     }
   ]
 }

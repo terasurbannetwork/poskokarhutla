@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 """Tarik data publik kajian pipa/kit gambut Kalteng (prov 62), hitung atribut per kompleks.
-Pakai:  python3 pipa_data.py <langkah>   langkah: dasar osm dem gsw bakar chirps wc matriks
+Pakai:  python3 pipa_data.py <langkah>   langkah: dasar osm dem gsw bakar chirps wc matriks matriks_gudang (stdlib saja; uji_matriks_gudang = self-check)
 Perlu: python3 sistem (osgeo/gdal + numpy). Mentah -> data/raw/pipa, olahan -> data/kajian-bnpb/pipa/data.
 """
 import csv, json, math, os, sys, subprocess
@@ -402,6 +402,59 @@ def matriks():
     L += ['', f'Kompleks tanpa jalan di data lama (None): {sum(x is None for x in jl)}; tanpa jalan kendaraan OSM dalam {CAP_KM:.0f} km: {sum(int(r["jalan_kend_terpotong"]) for r in o)}.']
     open(f'{OUT}/matriks_jarak.md', 'w').write('\n'.join(L) + '\n')
     print('lama', dict(cL), 'baru', dict(cB), 'reproduksi', reproduksi)
+
+# ---------- SP-027 Matriks jarak kompleks ke gudang (Daops) ----------
+# Gudang = Daops terdekat (PRD 5.6: gudang YonTP terdekat Daops; alamat gudang final belum ada, asumsi A-gudang). estimasi-model.
+def baris_gudang(k, ak, daops, posko):
+    """k: baris kompleks.csv; ak: entri akses_kompleks.json (atau None); daops/posko: daftar {kode,nama,lat,lon}. -> satu baris csv.
+    Jarak garis lurus SELALU terisi (semua kompleks, semua Daops). jam_tiba hanya dari rute realistis; selain itu kosong + alasan."""
+    la, lo = float(k['lat']), float(k['lon'])
+    d = min(daops, key=lambda x: hav(la, lo, x['lat'], x['lon']))
+    p = min(posko, key=lambda x: hav(la, lo, x['lat'], x['lon']))
+    o = dict(id=k['id'], kab=k['kab'], daops_kode=d['kode'], daops_nama=d['nama'], daops_garis_km=round(hav(la, lo, d['lat'], d['lon']), 1),
+             posko_kode=p['kode'], posko_nama=p['nama'], posko_garis_km=round(hav(la, lo, p['lat'], p['lon']), 1),
+             daops_rute_kode='', daops_rute_jam='', jam_tiba='', jam_tiba_batas_atas='', jam_tiba_alasan='')
+    if not ak:
+        o['jam_tiba_alasan'] = 'belum dihitung: kompleks tidak ada di akses_kompleks.json'
+        return o
+    r = ak.get('daops')
+    if r and r.get('total_menit') is not None:
+        o['daops_rute_kode'] = r['kode']; o['daops_rute_jam'] = round(r['total_menit'] / 60, 1)
+    if ak.get('kaki_tak_realistis') or ak.get('tak_terjangkau') or ak.get('total_menit') is None:
+        o['jam_tiba_alasan'] = ('belum dihitung: jalan kaki dari jalan atau sungai terdekat > 5 km, andalkan udara' if ak.get('kaki_tak_realistis')
+                                else 'belum dihitung: tak terjangkau lewat jalan dan sungai dalam graf')
+        if ak.get('total_menit') is not None: o['jam_tiba_batas_atas'] = round(ak['total_menit'] / 60, 1)
+    else:
+        o['jam_tiba'] = round(ak['total_menit'] / 60, 1)
+    return o
+
+def matriks_gudang():
+    rows = list(csv.DictReader(open(f'{OUT}/kompleks.csv')))
+    pub = lambda n: json.load(open(f'{R}/public/data/{n}'))
+    daops = [dict(kode=x['kode'], nama=x['nama'], lat=x['lat'], lon=x['lon']) for x in pub('daops.json')]
+    posko = [dict(kode=x['id'], nama=x['nama'], lat=x['lat'], lon=x['lon']) for x in pub('posko.json')['posko']]
+    ak = {c['id']: c for c in json.load(open(f'{R}/data/sippa/keluaran/akses_kompleks.json'))['kompleks']}
+    out = [baris_gudang(k, ak.get(k['id']), daops, posko) for k in rows]
+    uji_matriks_gudang(out)
+    tulis_csv('matriks_gudang.csv', out)
+    n = sum(1 for o in out if o['jam_tiba'] != '')
+    print(len(out), 'kompleks punya jarak gudang;', n, 'jam_tiba terisi,', len(out) - n, 'berlabel belum dihitung dengan alasan')
+
+def uji_matriks_gudang(out=None):
+    """Invarian (bukan potret data): tiap kompleks punya jarak gudang; jam_tiba terisi XOR beralasan; Daops terdekat benar-benar terdekat."""
+    dp = [dict(kode='D1', nama='satu', lat=0.0, lon=100.0), dict(kode='D2', nama='dua', lat=0.0, lon=101.0)]
+    ps = [dict(kode='P1', nama='p', lat=0.0, lon=100.5)]
+    k = dict(id='K', kab='X', lat=0.0, lon=100.9)
+    a = baris_gudang(k, dict(total_menit=150, daops=dict(kode='D2', total_menit=30)), dp, ps)
+    assert a['daops_kode'] == 'D2' and a['jam_tiba'] == 2.5 and a['daops_rute_jam'] == 0.5 and a['jam_tiba_alasan'] == '', a
+    b = baris_gudang(k, dict(total_menit=900, kaki_tak_realistis=True, daops=None), dp, ps)
+    assert b['jam_tiba'] == '' and b['jam_tiba_batas_atas'] == 15.0 and 'andalkan udara' in b['jam_tiba_alasan'] and b['daops_garis_km'] > 0, b
+    assert 'tidak ada' in baris_gudang(k, None, dp, ps)['jam_tiba_alasan']
+    assert 'tak terjangkau' in baris_gudang(k, dict(total_menit=None, tak_terjangkau=True), dp, ps)['jam_tiba_alasan']
+    for o in out or []:
+        assert o['daops_garis_km'] != '' and o['posko_garis_km'] != '', o['id']
+        assert (o['jam_tiba'] != '') != bool(o['jam_tiba_alasan']), ('jam_tiba harus terisi atau beralasan, tidak keduanya', o)
+    if out: assert len(out) == 865, len(out)
 
 if __name__ == '__main__':
     for s in sys.argv[1:]: globals()[s]()

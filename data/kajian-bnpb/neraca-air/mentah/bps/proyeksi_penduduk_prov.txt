@@ -1,0 +1,234 @@
+#url https://www.bps.go.id/id/statistics-table/2/MTg4NiMy/jumlah-penduduk-hasil-proyeksi-menurut-provinsi-dan-jenis-kelamin.html
+#ditarik 2026-10-26T12:24:51.213Z
+Badan Pusat Statistik
+BADAN PUSAT STATISTIK
+
+Beranda
+
+Rencana Terbit
+
+Produk
+
+Layanan
+
+Informasi Publik
+
+Tabel Publikasi Indikator Kependudukan SUPAS 2025 telah tersedia dalam bentuk Tabel Statistik yang dapat diakses pada Menu Produk > Direktori. Klik disini untuk mengakses laman tersebut.
+
+Dalam rangka percepatan transformasi tata kelola penyelenggaraan pemerintahan, layanan kunjungan langsung PST pada hari Jumat dialihkan menjadi layanan online: pst.bps.go.id
+
+Beranda
+
+Produk - Tabel Statistik
+
+Kependudukan dan Migrasi
+
+Jumlah Penduduk Hasil Proyeksi Menurut Provinsi dan Jenis Kelamin
+
+Subjek
+
+Statistik Demografi dan Sosial
+
+Kependudukan dan Migrasi
+Tenaga Kerja
+Pendidikan
+Kesehatan
+Konsumsi dan Pendapatan
+Perlindungan Sosial
+Pemukiman dan Perumahan
+Hukum dan Kriminal
+Budaya
+Aktivitas Politik dan Komunitas Lainnya
+Penggunaan Waktu
+
+Statistik Ekonomi
+
+Statistik Lingkungan Hidup dan Multi-domain
+
+Jumlah Penduduk Hasil Proyeksi Menurut Provinsi dan Jenis Kelamin (Ribu Jiwa), 2020
+
+Terakhir Diperbarui : 26 Agustus 2026
+
+Kembali
+Unduh
+ JSON
+ Bagikan
+2020
+Freeze judul kolom
+
+38 Provinsi
+
+
+
+
+Jumlah Penduduk Hasil Proyeksi Menurut Provinsi dan Jenis Kelamin (Ribu Jiwa)
+
+
+
+
+Laki-Laki
+
+	
+
+Perempuan
+
+	
+
+Jumlah
+
+
+
+
+2020
+
+	
+
+2020
+
+	
+
+2020
+
+
+ACEH	2.691,8	2.696,3	5.388,1
+SUMATERA UTARA	7.392,7	7.405,7	14.798,4
+SUMATERA BARAT	2.760,6	2.785,1	5.545,7
+RIAU	3.553,2	3.398,0	6.951,2
+JAMBI	1.831,3	1.772,9	3.604,2
+SUMATERA SELATAN	4.358,0	4.242,8	8.600,8
+BENGKULU	1.015,2	979,1	1.994,3
+LAMPUNG	4.364,3	4.170,6	8.534,8
+KEP. BANGKA BELITUNG	756,9	712,9	1.469,8
+KEP. RIAU	1.179,0	1.130,5	2.309,5
+DKI JAKARTA	5.267,8	5.308,6	10.576,4
+JAWA BARAT	25.111,2	24.454,0	49.565,2
+JAWA TENGAH	17.237,3	17.500,9	34.738,2
+DI YOGYAKARTA	1.935,4	1.983,8	3.919,2
+JAWA TIMUR	19.722,2	20.233,7	39.955,9
+BANTEN	6.557,9	6.337,4	12.895,3
+BALI	2.221,4	2.193,1	4.414,4
+NUSA TENGGARA BARAT	2.563,9	2.662,0	5.225,9
+NUSA TENGGARA TIMUR	2.731,6	2.781,8	5.513,4
+KALIMANTAN BARAT	2.591,4	2.513,5	5.104,9
+KALIMANTAN TENGAH	1.394,9	1.291,4	2.686,3
+KALIMANTAN SELATAN	2.156,7	2.111,9	4.268,6
+KALIMANTAN TIMUR	1.902,9	1.761,8	3.664,7
+KALIMANTAN UTARA	374,1	334,2	708,4
+SULAWESI UTARA	1.279,6	1.233,4	2.512,9
+SULAWESI TENGAH	1.565,1	1.516,6	3.081,7
+SULAWESI SELATAN	4.348,5	4.540,3	8.888,8
+SULAWESI TENGGARA	1.352,9	1.350,6	2.703,5
+GORONTALO	593,5	592,8	1.186,3
+SULAWESI BARAT	692,2	686,0	1.378,1
+MALUKU	900,4	886,7	1.787,1
+MALUKU UTARA	637,3	615,0	1.252,3
+PAPUA BARAT	518,1	468,0	986,0
+PAPUA BARAT DAYA	-	-	-
+PAPUA	1.777,7	1.615,4	3.393,1
+PAPUA SELATAN	-	-	-
+PAPUA TENGAH	-	-	-
+PAPUA PEGUNUNGAN	-	-	-
+INDONESIA	135.337,0	134.266,4	269.603,4
+
+Keterangan Data :
+
+Keterangan Data :
+
+Definisi Indikator: Banyaknya orang yang berdomisili di wilayah Negara Kesatuan Republik Indonesia selama satu tahun atau lebih dan/atau mereka yang berdomisili kurang dari satu tahun tetapi berniat menetap
+
+Sumber : Proyeksi Penduduk Indonesia 2015 - 2045 Hasil SUPAS 2015
+
+Catatan:
+- Hasil Proyeksi Penduduk Indonesia 2015–2045 (Pertengahan tahun/Juni)
+
+- Proyeksi dibuat dengan metode kohor komponen berdasarkan asumsi kecenderungan fertilitas, mortalitas, serta migrasi (migrasi internasional dan migrasi risen antar provinsi) yang paling mungkin terjadi selama periode 30 tahun yang akan datang.
+
+Tabel Terkait
+Jumlah Penduduk menurut Provinsi dan Jenis Kelamin
+Persentase Penduduk Daerah Perkotaan Hasil Proyeksi Penduduk menurut Provinsi, 2015 - 2035
+Jumlah Penduduk Hasil SP2020 menurut Wilayah dan Jenis Kelamin (Orang)
+Dependency Ratio Hasil Proyeksi Penduduk
+Jumlah Penduduk Menurut Provinsi, Generasi, dan Jenis Kelamin, 2025
+Proyeksi Penduduk menurut provinsi, 2010 - 2035
+Rasio Jenis Kelamin Menurut Provinsi, Hasil SUPAS
+Persentase Penduduk menurut Provinsi dan Jenis Kelamin (Persen)
+
+BADAN PUSAT STATISTIK
+
+Badan Pusat Statistik(BPS - Statistics Indonesia)
+
+Jl. Dr. Sutomo 6-8
+
+Jakarta 10710 Indonesia
+
+Telp (62-21) 3841195; 3842508; 3810291
+
+Faks (62-21) 3857046
+
+Mailbox : bpshq@bps.go.id
+
+Manual
+
+S&K
+
+Daftar Tautan
+
+Tentang Kami
+
+Profil BPS
+PPID
+Kebijakan Diseminasi
+
+Tautan Lainnya
+
+ASEAN Stats
+Reformasi Birokrasi
+Layanan Pengadaan Secara Elektronik
+Politeknik Statistika STIS
+Pusdiklat BPS
+JDIH BPS
+Government Public Relation
+
+21 Oktober 2026, 16:44 WIB
+
+FCE Meeting 2026 Siapkan Jakarta Vision untuk Ekonomi Kreatif Global
+
+21 Oktober 2026, 16:40 WIB
+
+Ratusan Hektar Karhutla Berangsur Padam, Inovasi OMC Dry Ice Efektif Urai Asap
+
+20 Oktober 2026, 14:07 WIB
+
+Dua Tahun Pemerintahan Presiden Prabowo, Investasi Tembus Rp3.923,2 Triliun dan Serap 5,49 Juta Tenaga Kerja
+
+20 Oktober 2026, 08:40 WIB
+
+Dua Tahun Asta Cita, Jutaan Umat Rasakan Manfaat Kinerja Kemenag
+
+19 Oktober 2026, 10:30 WIB
+
+Indonesia Siap Gelar WCCE 2026 Jakarta Perkuat Diplomasi Ekraf Global
+
+19 Oktober 2026, 09:35 WIB
+
+Dua Hari OMC 2,4 Ton Dry Ice Disemai di Langit Sumsel
+
+16 Oktober 2026, 20:01 WIB
+
+Penumpang Internasional Kini Bisa Pesan Whoosh Lewat All Indonesia
+
+16 Oktober 2026, 18:14 WIB
+
+WCCE 2026 Perkuat Kepemimpinan Ekonomi Kreatif Indonesia di Tingkat Global
+
+16 Oktober 2026, 12:10 WIB
+
+BNPB Semai 1.600 Kilogram Dry Ice untuk Atasi Asap Karhutla Sumsel
+
+15 Oktober 2026, 14:02 WIB
+
+Hotspot Nasional 372 Titik, Kemenhut Perkuat Penanganan Lapangan dan Perlindungan TN Tanjung Puting
+
+Sumber dari Kementerian Komunikasi dan Digital
+
+Hak Cipta © 2023 Badan Pusat Statistik
