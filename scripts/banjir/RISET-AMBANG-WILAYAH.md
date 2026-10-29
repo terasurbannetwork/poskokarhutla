@@ -119,15 +119,15 @@ Proses latar penunggu DIBI hanya boleh menjalankan `ambil`; `latih` dan `buka` d
 
 ## Hasil
 
-**Belum dijalankan (19 Okt 2026): data latih tidak ada di mesin mana pun yang terjangkau.**
-- `data/raw/banjir/dibi_tanggal.json` (tanggal DIBI 2008-2025) tidak ada di checkout lokal dan tidak di-commit
-  (`.gitignore` `data/raw/banjir/*`). `kejadian.json` hanya memuat baris harian 2023-2026 (11.374 baris: 2023 628,
-  2024 2.608, 2025 6.406, 2026 1.732), jadi tidak cukup untuk latih 2016-2021 maupun validasi 2022-2023.
-- API DIBI (`dibi.bnpb.go.id/api/v1/chart/data`) tidak menjawab dari lokal (timeout 60-300 dtk, 19.05-19.40 WIB) dan dari
-  CI hari yang sama (timeout, lalu HTTP 520). Salinan berkasnya hidup di cache Actions `banjir-*` (riwayat.py CI
-  mencetak "musim dari DIBI BNPB 2008-2025"), yang tidak bisa diunduh tanpa langkah workflow.
-- Cache ERA5 uji balik (`data/raw/banjir/uji_balik/`, ~28 MB) juga tidak ada lokal; `ambil` mengunduhnya (~8.200
-  panggilan berbobot, ~2,5 jam) setelah sampel bisa disusun dari DIBI.
+**Latih dan validasi dijalankan 29 Okt 2026** (39 kab, 104 sel ERA5 lengkap). Uji 2024-2025 BELUM dibuka; `pakai` = false.
 
-Urutan saat data ada: `ambang_wilayah.py ambil` -> `latih` (tulis hasil latih/validasi di sini) -> `buka` sekali.
-Uji 2024-2025 belum pernah dibuka; protokol di atas tetap berlaku.
+- Periksa (a): porsi alarm Waspada yang dipicu `imax` saja = 0,000, jadi kisi iw tetap {20}.
+- Periksa (b), orakel in-sample latih: dPOD +0,016, dFAR -0,002, dETS +0,002. Batas atas yang optimistis pun jauh dari
+  syarat LAYAK dFAR <= -0,03.
+- Latih 2016-2021 dan validasi 2022-2023: aturan per wilayah memberi alarm yang PERSIS sama dengan aturan sekarang (validasi:
+  POD 0,529, FAR 0,977, CSI 0,022, ETS 0,011, laju alarm 0,28). Keenam kombinasi eps x n_min memberi selisih nol.
+- Kenop final (pasang ulang 2016-2023, eps 0,02, n_min 80): nasional k 0,8; 32 kab k 0,8 (= aturan sekarang), 7 kab k 0,6.
+
+**Kesimpulan: ambang per wilayah tidak memperbaiki aturan.** Pengali ambang H3 bukan tuas yang membatasi; FAR ~0,98 berasal
+dari sinyal hujan itu sendiri (lihat RISET-MODEL-KAB.md: model dengan fitur statis dan tanah menaikkan POD Waspada 0,53 -> 0,72
+pada jumlah alarm sama). Uji tidak disarankan dibuka: validasi dan orakel sudah menunjukkan selisih nol.

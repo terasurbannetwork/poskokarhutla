@@ -78,11 +78,33 @@ SEBAGAI pelengkap berlabel (status resmi tidak ditimpa). Tidak lulus: aturan tet
 
 ## 8. Hasil validasi 2022-2023
 
-BELUM ADA untuk sampel penuh. Per 27 Okt 2026 malam baru 25 dari 104 sel ERA5 ter-cache (kuota harian Open-Meteo habis), jadi hanya
-10 kabupaten yang lengkap. `MODEL_KAB_SEBAGIAN=1 python3 scripts/banjir/model_kab.py latih` menjalankan pipa pada 10 kabupaten itu
-(21.720 baris latih, 145 kejadian; 7.300 baris validasi, 27 kejadian) ke `data/raw/banjir/model_kab_sebagian/`: HANYA pratinjau pipa,
-terlalu tipis untuk vonis (CI lebar, `buka` menolak mode ini). Setelah kuota pulih (00.00 UTC = 07.00 WIB):
-`python3 scripts/banjir/model_kab.py ambil` (lanjut dari cache) lalu `python3 scripts/banjir/model_kab.py latih` (perkiraan 5-10 menit).
+Dijalankan 29 Okt 2026 pada sampel penuh: 39 kab, 104 sel ERA5. Latih 84.708 baris (939 kejadian), validasi 28.470 baris (344
+kejadian, laju 1,21%). Terpilih kedalaman 3, laju belajar 0,1, 70 pohon (logloss validasi 0,05811). Ablasi membuang kelompok
+`anteseden`; kelompok akhir: aturan, hujan, musim, statis, tanah. Sidik `e20232cfb3fb0b1a`, sidik kriteria `c890cedf7b4ca4dd`.
+Uji 2024-2025 BELUM dibuka.
+
+| | AUC | Brier | BSS vs klim (CI95) |
+| --- | --- | --- | --- |
+| model GBDT | 0,7925 | 0,01170 | +0,0128 [+0,0074, +0,0175] |
+| regresi logistik | 0,7876 | 0,01171 | +0,0117 [+0,0053, +0,0185] |
+| klimatologi kab-bulan | 0,7100 | 0,01185 | |
+| aturan status.py | 0,6308 | 0,01189 | -0,0037 [-0,0084, +0,0011] |
+
+dETS pada jumlah alarm sama dengan aturan (CI95 bootstrap blok kab x tahun):
+
+| | >= Waspada (7.965 alarm) | >= Siaga (1.012 alarm) |
+| --- | --- | --- |
+| model - aturan | +0,0085 [+0,0041, +0,0133] | +0,0329 [+0,0112, +0,0516] |
+| model - regresi logistik | +0,0012 [-0,0011, +0,0036] | +0,0033 [-0,0063, +0,0149] |
+| model - klimatologi | +0,0069 [+0,0033, +0,0103] | +0,0219 [+0,0069, +0,0347] |
+
+Pada Waspada, POD naik dari 0,529 (aturan) ke 0,724 (model) dengan jumlah alarm sama; FAR 0,977 -> 0,969. Pada Siaga, POD naik
+dari 0,099 ke 0,218.
+
+Pratinjau kriteria §7 di validasi: butir 1, 3, 4, 5 terpenuhi; **butir 2 tidak** (CI dETS model - regresi logistik melewati nol di
+kedua level). Artinya model jauh lebih baik dari aturan sekarang, tetapi keunggulannya atas regresi logistik biasa tidak terbukti.
+Bila pola ini berulang di uji, vonis `buka` = TIDAK LULUS. Membuka uji tetap keputusan pemilik dan hanya sekali; kalau dibuka hanya
+untuk memastikan kegagalan yang sudah terlihat, periode 2024-2025 terpakai tanpa hasil.
 
 ## 9. Ranjau
 
