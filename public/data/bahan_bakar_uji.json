@@ -1,0 +1,93 @@
+{
+ "dibuat": "2026-10-30",
+ "provinsi": [
+  "62",
+  "16",
+  "61",
+  "93",
+  "64",
+  "63",
+  "15",
+  "53",
+  "14"
+ ],
+ "cfg": {
+  "dalam": 5,
+  "pohon": 150,
+  "lr": 0.06
+ },
+ "n_fitur_dasar": 38,
+ "fitur_tambah": [
+  "h_rata",
+  "h_maks",
+  "W"
+ ],
+ "baris": 26140,
+ "catatan": "dua lengan pada himpunan baris yang sama; metrik berbobot (negatif x20); uji 2024-26 = LIHAT KEDUA (lolos.py sudah pernah dinilai di sini)",
+ "luar_lipatan_2015_2023": {
+  "n": 20009,
+  "lolos": 7773,
+  "tanpa": {
+   "auc": 0.9047,
+   "brier": 0.02058,
+   "ap": 0.4919,
+   "ambang_recall70": 0.051,
+   "presisi": 0.194,
+   "recall": 0.7,
+   "f1": 0.3036
+  },
+  "dengan": {
+   "auc": 0.9047,
+   "brier": 0.02058,
+   "ap": 0.492,
+   "ambang_recall70": 0.0509,
+   "presisi": 0.196,
+   "recall": 0.7,
+   "f1": 0.3063
+  },
+  "d_auc": [
+   0.0,
+   -0.0006,
+   0.00069
+  ],
+  "d_brier": [
+   0.0,
+   -7e-05,
+   8e-05
+  ]
+ },
+ "uji_2024_2026": {
+  "n": 6131,
+  "lolos": 2467,
+  "tanpa": {
+   "auc": 0.9075,
+   "brier": 0.02218,
+   "ap": 0.4818,
+   "ambang_recall70": 0.051,
+   "presisi": 0.224,
+   "recall": 0.694,
+   "f1": 0.3384
+  },
+  "dengan": {
+   "auc": 0.9065,
+   "brier": 0.02229,
+   "ap": 0.475,
+   "ambang_recall70": 0.0509,
+   "presisi": 0.225,
+   "recall": 0.689,
+   "f1": 0.3398
+  },
+  "d_auc": [
+   -0.001,
+   -0.00216,
+   4e-05
+  ],
+  "d_brier": [
+   0.00011,
+   -9e-05,
+   0.0003
+  ]
+ },
+ "vonis": "GAGAL",
+ "aturan": "LOLOS bila AUC uji 2024-26 naik DAN Brier uji tidak memburuk (RENCANA-PANEN #7); model produksi TIDAK diganti apa pun vonisnya"
+}
