@@ -69,5 +69,5 @@ Ini WhatsApp Web tidak resmi: pakai nomor khusus, nomor bisa diblokir (lihat `pa
 
 ## Banjir
 
-- Laporan Penanganan Banjir, Longsor dan Rob (`penanganan_banjir.py`) berjalan otomatis sesudah 17.00 WIB tanpa bahan WA (angkanya dari situs yang tayang), dikirim PDF + PPTX ke `PENERIMA`. Tidak diunggah ke `/pelaporan` (worker hanya menerima harian dan penanganan). Matikan dengan `LAPORAN_BANJIR=0`. Halaman banjir di laporan harian sudah otomatis ikut bila `public/banjir/data/wilayah_hari.json` hari itu ada di repo mesin.
+- Laporan Penanganan Banjir, Longsor dan Rob (`penanganan_banjir.py`) berjalan otomatis sesudah 17.00 WIB tanpa bahan WA (angkanya dari situs yang tayang), dikirim PDF + PPTX ke `PENERIMA`. Tidak diunggah ke `/pelaporan` (worker hanya menerima harian dan penanganan). Mati bawaan; hidupkan dengan `LAPORAN_BANJIR=1` setelah contoh deck diperiksa. Halaman banjir di laporan harian sudah otomatis ikut bila `public/banjir/data/wilayah_hari.json` hari itu ada di repo mesin.
 - Peringatan dini hujan lebat per kabupaten H+1..H+3 (`peringatan_banjir.mjs`): teks sekali sehari sesudah 07.00 WIB, hanya bila `peluang.json` situs dibuat hari itu. Penerima `PENERIMA_PERINGATAN_BANJIR`, kosong = mati.

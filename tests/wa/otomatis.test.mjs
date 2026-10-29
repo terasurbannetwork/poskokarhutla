@@ -242,7 +242,7 @@ test('laporan banjir: butuh tanpa bahan WA, jalan sesudah 17.00, tidak diunggah 
   const d = dunia([])
   const exec = async (cmd, args) => { d.kirim.exec.push(args); const out = args[args.indexOf('--out') + 1]; for (const x of ['pdf', 'pptx']) fs.writeFileSync(path.join(out, `Laporan Penanganan Banjir Longsor dan Rob 291026.${x}`), 'x') }
   const dep = { ...d.dep, exec }
-  const env = { PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k' }
+  const env = { PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '1' }
   const o = { env, dep, kenali, rumah: d.rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL }
   assert.equal((await jalankan({ ...o, now: wibKe(16) })).find((x) => x.id === 'penanganan_banjir').status, 'tunggu')
   await jalankan({ ...o, now: wibKe(18) })

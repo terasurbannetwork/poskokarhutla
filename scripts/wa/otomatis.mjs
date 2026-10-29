@@ -33,7 +33,7 @@ export const LAPORAN = [
 ]
 
 // Padanan banjir (penanganan_banjir.py): angkanya dari situs yang tayang, tanpa bahan WA (butuh kosong). Cut-off 17.00 WIB seperti penanganan.
-// Tidak diunggah ke /pelaporan (worker hanya menerima harian atau penanganan). Matikan dengan LAPORAN_BANJIR=0 di .env.
+// Tidak diunggah ke /pelaporan (worker hanya menerima harian atau penanganan). MATI bawaan; hidupkan dengan LAPORAN_BANJIR=1 di .env setelah contoh deck diperiksa pemilik.
 export const LAPORAN_BANJIR = [
   { id: 'penanganan_banjir', judul: 'Laporan Penanganan Banjir, Longsor dan Rob', butuh: [], jam: 17, unggah: false,
     berkas: (d) => `Laporan Penanganan Banjir Longsor dan Rob ${ddmmyy(d)}`,
@@ -193,7 +193,7 @@ export async function jalankan(opsi = {}) {
       return { terpilih, teks }
     }
 
-    for (const lap of [...LAPORAN, ...(env.LAPORAN_BANJIR === '0' ? [] : LAPORAN_BANJIR)]) {
+    for (const lap of [...LAPORAN, ...(env.LAPORAN_BANJIR === '1' ? LAPORAN_BANJIR : [])]) {
       const kunci = `${lap.id}:${tanggal}`
       const { terpilih, teks: teksSesuai } = await pilihSesuai(lap)
       const c = cekSiap(lap, terpilih, now, tanggal)

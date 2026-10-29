@@ -889,7 +889,8 @@ def w_rob(c):
     def nama_posko(k):
         if not k["posko"]:
             return f"Belum ada posko dalam {fid(r['ambang']['posko_km'])} km"
-        return ", ".join(f"{p['nama']} ({fid(p['km'], 1)} km)" for p in k["posko"][:2])
+        unik = {p["nama"]: p for p in reversed(k["posko"])}   # lapangan dan kabupaten bisa sama nama; ambil yang terdekat
+        return ", ".join(f"{p['nama']} ({fid(p['km'], 1)} km)" for p in sorted(unik.values(), key=lambda p: p["km"])[:2])
     baris = [{"kab": k["kab"], "prov": k["prov"], "puncak": tgl(dt.date.fromisoformat(puncak(k)["tgl"])), "hari": len(k["hari"]),
               "level": ROB_LV.get(k["lv_maks"]) or "Pasang tinggi (astronomis)", "posko": nama_posko(k)} for k in kab[:BARIS_MAKS]]
     cat = ("Prakiraan laut belum diperbarui, jadi level rob (Waspada, Siaga, Awas) tidak dinyatakan; daftar ini hanya dari gaya pasang astronomis. " if basi else "") + \
