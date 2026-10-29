@@ -1,5 +1,18 @@
 {
   "env": {
     "CLAUDE_CODE_SUBAGENT_MODEL": "sonnet"
+  },
+  "hooks": {
+    "UserPromptSubmit": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "node \"$CLAUDE_PROJECT_DIR/scripts/agents/ilmu.mjs\" prompt-catat",
+            "timeout": 10
+          }
+        ]
+      }
+    ]
   }
 }
