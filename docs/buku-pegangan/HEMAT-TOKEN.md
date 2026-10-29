@@ -60,9 +60,9 @@ Cadangan sebelum diubah: `~/.claude/cadangan-hemat-2026-10-29/` (`settings.json`
 | 1 | `cavemem` dicopot | lima hook (SessionStart, UserPromptSubmit, PostToolUse, Stop, SessionEnd) dan MCP `cavemem` dibuang dari `~/.claude/settings.json`. Paketnya tetap terpasang; datanya utuh | `cavemem install --ide claude-code`, atau salin balik `settings.json` dari cadangan |
 | 2 | 209 skill diarsipkan | pemasaran, media sosial, SEO, iklan, video, dan HyperFrames dipindah dari `~/.claude/skills` ke `~/.claude/skills-arsip` (daftar di `DAFTAR.txt`). Tersisa 94: kode, desain, gerak, uji, caveman, ponytail, `ppt-konsultan`, `graphify`. Berlaku untuk semua repo | `mv ~/.claude/skills-arsip/<nama> ~/.claude/skills/` |
 | 3 | MCP dimatikan untuk repo ini | `rea` dan `hermes` masuk `disabledMcpServers` proyek `poskokarhutla` di `~/.claude.json`. Repo lain tetap memakainya. `browseros-neo` sempat dimatikan lalu dinyalakan lagi atas permintaan pemilik (*"browseros neo bisa dong"*) | hapus nama dari `disabledMcpServers`, atau aktifkan lewat pengaturan konektor |
-| 4 | Plugin `superpowers` dimatikan | `enabledPlugins` jadi `false` | setel balik ke `true` |
+| 4 | Plugin `superpowers` sempat dimatikan | dinyalakan lagi atas permintaan pemilik (*"Nyalakan lagi"*), jadi tetap memakan sekitar 1,5 ribu token tiap sesi | |
 | 5 | Memori kembar digabung | `tanpa-titik-pemisah` dilebur ke `tanpa-titik-tengah`; `disk-worktree` dilebur ke `hanya-main`. Memori PPT tidak digabung karena sebagian aturannya (pil keyakinan, D-40 10%, "DIBI mencatat") belum ada di `keputusan-pemilik.md` | |
 
-Perkiraan hemat tiap sesi baru: sekitar 7 ribu token dari `cavemem`, sekitar 1,5 ribu dari `superpowers`, dan sebagian besar daftar skill serta nama alat MCP. Angka pastinya diukur lagi di sesi berikut.
+Perkiraan hemat tiap sesi baru: sekitar 7 ribu token dari `cavemem`, dan sebagian besar daftar skill serta nama alat MCP. Angka pastinya diukur lagi di sesi berikut.
 
 Belum: `voicebox` masih terdaftar walau gagal tersambung; kunci `cavemem` di teks `autoMode` tidak disentuh.

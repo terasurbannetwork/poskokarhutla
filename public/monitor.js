@@ -18,6 +18,14 @@
   const namaProv = k => PROV[k] || ("Provinsi " + k);
   const km = (a, b, c, d) => { const r = Math.PI / 180, x = Math.sin((c - a) * r / 2) ** 2 + Math.cos(a * r) * Math.cos(c * r) * Math.sin((d - b) * r / 2) ** 2; return 12742 * Math.asin(Math.sqrt(x)); };
 
+  /* dimuat sebagai tab di beranda (iframe): kepala situs disembunyikan, tema ikut induk */
+  if (self !== top) { document.documentElement.classList.add("tertanam");
+    try { const P = parent.document.documentElement, ikut = () => { if (P.dataset.theme) document.documentElement.dataset.theme = P.dataset.theme; };
+      ikut(); new MutationObserver(ikut).observe(P, {attributes: true, attributeFilter: ["data-theme"]}); } catch (e) {} }
+  const IK = d => `<svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+  const kosong = (n, ik, judul, isi) => `<tr><td colspan="${n}" class="mn-kosong"><div>${IK(ik)}<b>${judul}</b>${isi}</div></td></tr>`;
+  const sat = (kelas, teks) => { const e = $("mnSat"); e.className = "mn-status " + kelas; e.innerHTML = `<i></i>${esc(teks)}`; };
+  let dimuat = false;
   let dets = [], tugas = null, pihak = "", hal = 0, tampil = [], terbuka = new Set(), baru = [];
 
   /* ---------- deteksi ---------- */
@@ -97,7 +105,7 @@
     try { if ("Notification" in window && Notification.permission === "default") await Notification.requestPermission(); } catch (e) {}
     tombolSuara();
   }
-  function tombolSuara() { const b = $("mnSuara"), on = suaraAktif(); b.textContent = on ? "Suara dan notifikasi aktif" : "Aktifkan suara dan notifikasi"; b.classList.toggle("aktif", on); }
+  function tombolSuara() { const b = $("mnSuara"), on = suaraAktif(); b.querySelector("span").textContent = on ? "Suara dan notifikasi aktif" : "Aktifkan suara dan notifikasi"; b.classList.toggle("aktif", on); }
 
   /* ---------- tabel deteksi (dipaginasi, 100 baris per halaman) ---------- */
   function saring() {
@@ -107,15 +115,18 @@
   function gambarDet() {
     const n = tampil.length, tot = Math.max(1, Math.ceil(n / HAL)); hal = Math.min(hal, tot - 1);
     $("mnDet").innerHTML = n ? tampil.slice(hal * HAL, hal * HAL + HAL).map(d =>
-      `<tr><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}">${KEY[d.key] || ""}</span></td><td>${koord(d.lat, d.lon)}</td></tr>`).join("")
-      : `<tr><td colspan="8" class="mn-kosong">Tidak ada deteksi pada filter ini.</td></tr>`;
-    $("mnJudulDet").innerHTML = `<b style="color:var(--or)">${n.toLocaleString("id-ID")}</b> deteksi dalam 24 jam terakhir`;
-    $("mnHal").textContent = `Halaman ${hal + 1} dari ${tot}`;
+      `<tr><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}">${KEY[d.key] || ""}</span></td><td class="mn-koord">${koord(d.lat, d.lon)}</td></tr>`).join("")
+      : !dimuat ? kosong(8, '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/>', "Data satelit belum masuk", "Halaman mencoba lagi tiap 5 menit.")
+      : dets.length ? kosong(8, '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', "Tidak ada deteksi pada saringan ini", "Coba provinsi atau keyakinan lain.")
+      : kosong(8, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada deteksi api dalam 24 jam terakhir", "");
+    $("mnJudulDet").innerHTML = dimuat ? `<b>${n.toLocaleString("id-ID")}</b> deteksi api dalam 24 jam terakhir` : "Deteksi api terbaru";
+    $("mnHal").textContent = n ? `Menampilkan ${(hal * HAL + 1).toLocaleString("id-ID")}–${Math.min(n, hal * HAL + HAL).toLocaleString("id-ID")} dari ${n.toLocaleString("id-ID")} deteksi` : "";
+    $("mnHal").parentElement.hidden = tot <= 1;
     $("mnPrev").disabled = hal === 0; $("mnNext").disabled = hal >= tot - 1;
   }
   function isiProv() {
     const s = $("mnFProv"), v = s.value, ada = [...new Set(dets.map(d => d.pk))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
-    s.innerHTML = `<option value="">Semua</option>` + ada.map(k => `<option value="${esc(k)}">${esc(namaProv(k))}</option>`).join(""); s.value = v;
+    s.innerHTML = `<option value="">Semua provinsi</option>` + ada.map(k => `<option value="${esc(k)}">${esc(namaProv(k))}</option>`).join(""); s.value = v;
   }
   const nanti = f => (window.requestIdleCallback || (g => setTimeout(g, 1)))(f);
   function ubahFilter() { hal = 0; nanti(() => { saring(); gambarDet(); }); }   // kontrol (select) urgent; tabel ditunda
@@ -140,8 +151,8 @@
   function gambarTugas() {
     const tb = $("mnTugas");
     if (!tugas) return;
-    $("mnJudulTugas").innerHTML = `<b style="color:var(--or)">${tugas.length}</b> kejadian dipantau`;
-    if (!tugas.length) { tb.innerHTML = `<tr><td colspan="7" class="mn-kosong">Belum ada kejadian.</td></tr>`; return; }
+    $("mnJudulTugas").innerHTML = `<b>${tugas.length.toLocaleString("id-ID")}</b> kejadian dipantau`;
+    if (!tugas.length) { tb.innerHTML = kosong(7, '<path d="M9 11l3 3 8-8"/>', "Belum ada kejadian dipantau", ""); return; }
     tb.innerHTML = tugas.map(t => {
       const g = t.groundcheck, x = t.tindak, hs = g ? (HASIL[g.hasil] || [g.hasil, ""]) : null, st = STATUS[t.status] || [t.status, ""];
       const buka = terbuka.has(t.id);
@@ -168,12 +179,12 @@
   /* ---------- muat & polling ---------- */
   async function muatTitik() {
     try {
-      const r = await fetch("/api/titik", {cache: "no-cache"}); if (!r.ok) return;
-      const j = await r.json(); dets = urai(j);
-      $("mnSat").textContent = `Data satelit diperbarui ${jam(Date.parse(j.dibuat || j.acuan))} WIB`;
+      const r = await fetch("/api/titik", {cache: "no-cache"}); if (!r.ok) { sat("gagal", "Data satelit belum tersedia, mencoba lagi tiap 5 menit"); gambarDet(); return; }
+      const j = await r.json(); dets = urai(j); dimuat = true;
+      sat("ok", `Data satelit diperbarui ${jam(Date.parse(j.dibuat || j.acuan))} WIB`);
       const b = cekBaru(dets); isiProv(); saring(); gambarDet();
       if (b.length) alarm(b);
-    } catch (e) { $("mnSat").textContent = "Data satelit gagal dimuat, mencoba lagi"; }
+    } catch (e) { sat("gagal", "Data satelit gagal dimuat, mencoba lagi"); }
   }
   async function muatMonitor() {
     try {
@@ -192,7 +203,7 @@
   $("mnPrev").onclick = () => { hal--; gambarDet(); }; $("mnNext").onclick = () => { hal++; gambarDet(); };
   $("mnTugas").addEventListener("click", togol); $("mnTugas").addEventListener("keydown", togol);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("mnModal").hidden) tutup(); });
-  tombolSuara();
+  tombolSuara(); if (typeof PilihCantik !== "undefined") PilihCantik.pasang();
   muatMonitor().then(muatTitik);   // tugas dulu supaya popup pertama sudah tahu tugas terdekat
   setInterval(muatTitik, 5 * 6e4); setInterval(muatMonitor, 2 * 6e4);
 })();

@@ -2268,7 +2268,7 @@ Ringkasan dari `docs/buku-pegangan/HEMAT-TOKEN.md` (lengkap dengan angka ukur, 2
 | Aturan jadi gerbang | gerbang mekanis nol token; aturan tertulis dibayar tiap kali dibaca |
 | Sesi baru untuk tugas baru | konteks lama ikut dibayar di tiap pesan |
 
-Muatan terbesar tiap sesi, 29 Okt: ringkasan `cavemem` 26,3 KB, daftar 303 skill, nama alat MCP `rea` dan lainnya, plugin `superpowers`. Pemilik memutus *"Jalankan semua"* (29 Okt): `cavemem` dan `superpowers` dicopot, 209 skill diarsipkan ke `~/.claude/skills-arsip`, MCP `rea` dan `hermes` dimatikan untuk repo ini (`browseros-neo` tetap hidup), memori kembar digabung. Cara memulihkan di `HEMAT-TOKEN.md` bagian 6.
+Muatan terbesar tiap sesi, 29 Okt: ringkasan `cavemem` 26,3 KB, daftar 303 skill, nama alat MCP `rea` dan lainnya, plugin `superpowers`. Pemilik memutus *"Jalankan semua"* (29 Okt): `cavemem` dicopot (`superpowers` sempat dimatikan lalu dinyalakan lagi), 209 skill diarsipkan ke `~/.claude/skills-arsip`, MCP `rea` dan `hermes` dimatikan untuk repo ini (`browseros-neo` tetap hidup), memori kembar digabung. Cara memulihkan di `HEMAT-TOKEN.md` bagian 6.
 
 ## Kamus
 
