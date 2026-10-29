@@ -15,9 +15,7 @@
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
 <link rel="stylesheet" href="/inti/kartu.css">
-<link rel="stylesheet" href="/monitor.css?v=3">
-</head>
-<body>
+<link rel="stylesheet" href="/monitor.css?v=4">
 </head>
 <body>
 <header class="top">
@@ -46,6 +44,7 @@
     <span class="mn-bulat"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg></span>
     <p><b>Tindak lanjut tiap kejadian</b> terbuka untuk staf Dit. Dalops dan BPBD.</p>
     <div class="mn-aksi"><a class="mn-tbl" href="/instansi" target="_top">Masuk sebagai BPBD</a><a class="mn-tbl mn-tbl2" href="/admin" target="_top">Masuk sebagai staf BNPB</a></div>
+    <div class="mn-aksi mn-kontak"><a class="mn-tbl mn-tbl2" href="/daftar-kontak?kategori=bpbd" target="_top"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M18 8v6M15 11h6"/></svg>Daftar staf BPBD</a><a class="mn-tbl mn-tbl2 mn-wa" href="#" target="_blank" rel="noopener" hidden><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.5z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2.2-1-1 .8c-1-.4-1.9-1.3-2.3-2.3l.8-1-1-2.2z"/></svg>Hubungi lewat WA</a></div>
   </section>
 
   <section class="mn-kartu">
@@ -59,8 +58,10 @@
   </section>
 
   <section class="mn-kartu" id="mnTugasKartu">
-    <div class="mn-judul"><span class="mn-eyebrow"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Tindak lanjut</span><h2 id="mnJudulTugas">Kejadian dipantau</h2></div>
-    <div class="mn-gulir"><table><thead><tr><th>Lokasi</th><th>Terdeteksi sejak</th><th>Dibaca Dalops</th><th>Dibaca BPBD</th><th>Groundcheck</th><th>Tindak lanjut</th><th>Status</th></tr></thead><tbody id="mnTugas"><tr><td colspan="7" class="mn-kosong">Memuat</td></tr></tbody></table></div>
+    <div class="mn-judul"><span class="mn-eyebrow"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Tindak lanjut</span><h2 id="mnJudulTugas">Kejadian dipantau</h2><div class="mn-seg" id="mnSeg" role="group" aria-label="Jenis bencana"><button type="button" data-b="karhutla" aria-pressed="true"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1.5 3.5 5.5 5.5 5.5 10a5.5 5.5 0 0 1-11 0c0-2 1-3.6 2.4-4.8.3 1.8 1.2 2.8 2.3 3.2C10.8 8.5 11.2 5.8 12 3z"/></svg>Karhutla</button><button type="button" data-b="banjir" aria-pressed="false"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/></svg>Banjir</button></div></div>
+    <div id="mnRingkas" class="mn-ringkas" hidden></div>
+    <div class="mn-gulir" id="mnGulir"><table><thead><tr><th>Lokasi</th><th id="mnThSejak">Terdeteksi sejak</th><th>Dibaca Dalops</th><th>Dibaca BPBD</th><th>Groundcheck</th><th>Tindak lanjut</th><th>Status</th></tr></thead><tbody id="mnTugas"><tr><td colspan="7" class="mn-kosong">Memuat</td></tr></tbody></table></div>
+    <div class="mn-aksi mn-kontak"><a class="mn-tbl mn-tbl2" href="/daftar-kontak?kategori=bpbd" target="_top"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0 1 13 0M18 8v6M15 11h6"/></svg>Daftar staf BPBD</a><a class="mn-tbl mn-tbl2 mn-wa" href="#" target="_blank" rel="noopener" hidden><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.5z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2.2-1-1 .8c-1-.4-1.9-1.3-2.3-2.3l.8-1-1-2.2z"/></svg>Hubungi lewat WA</a></div>
   </section>
 </main>
 <div id="mnModal" class="mn-modal" hidden><div class="mn-dlg" role="dialog" aria-modal="true" aria-labelledby="mnMJ">
@@ -69,7 +70,7 @@
   <div class="mn-aksi mn-aksi-dlg"><button id="mnTutup" class="mn-tbl mn-tbl2" type="button">Tutup</button><button id="mnBaca" class="mn-tbl" type="button">Sudah dibaca</button></div></div></div>
 <script src="/inti/format.js"></script>
 <script src="/inti/pilih.js"></script>
-<script src="/monitor.js?v=5"></script>
+<script src="/monitor.js?v=7"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>

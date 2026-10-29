@@ -107,6 +107,17 @@ button.sp-p:focus-visible,.sp-pn:focus-visible{outline:3px solid #e3b94e;outline
   .sp-as .sp-th,.sp-ar{grid-template-columns:minmax(0,1fr) 96px 58px 58px}.sp-ar{font-size:12.5px}
   .sp-bs.rata .sp-b,.sp-th.b{grid-template-columns:minmax(0,1fr) 108px 40px 40px}.sp-bs.rata .sp-b>i,.sp-th.b>:nth-child(3){display:none}
   .sp-cs.rata .sp-c{grid-template-columns:32px 1fr;row-gap:2px}.sp-cs.rata .sp-c p{grid-column:2}.sp-th.c{grid-template-columns:1fr}.sp-th.c>:last-child{display:none}}
+/* pantauan dan tindak lanjut: kepala gelap, tabel digulir di dalam panelnya */
+.sp-pt2{overflow-x:auto}.sp-pt2>*{min-width:640px}
+.sp-pt2>.sp-th,.sp-pt2>.sp-pr{grid-template-columns:minmax(110px,1.2fr) repeat(6,minmax(70px,1fr))}
+.sp-pt2>.sp-th{background:#0b2545;color:#fff;border-radius:15px 15px 0 0}
+.sp-pt2>.sp-pr{font-size:13px}.sp-pt2 .sp-p{font-size:11px;padding:3px 8px}
+.sp-pk-h{margin:0;padding:14px 16px 4px;font-size:14px;color:var(--ink)}.sp-pk-h b{color:#e8743b;font-size:20px;font-variant-numeric:tabular-nums}
+.sp-pk-k{padding:14px 16px;color:var(--ink2);font-size:13.5px}
+.sp-pk-a{display:flex;flex-wrap:wrap;align-items:center;gap:8px;padding:12px 16px;border-top:1px solid var(--line)}
+.sp-pk-a a{display:inline-flex;align-items:center;gap:6px;min-height:36px;padding:0 14px;border-radius:999px;border:1px solid var(--line);background:var(--card);color:var(--ink);font-size:13px;font-weight:700;text-decoration:none}
+.sp-pk-a a:hover{background:color-mix(in oklch,var(--ink) 5%,var(--card))}.sp-pk-a a:focus-visible{outline:3px solid #e3b94e;outline-offset:2px}
+.sp-pk-a a.wa{background:#1f8f4e;border-color:#1f8f4e;color:#fff}.sp-pk-a a.kecil{border:0;background:none;color:var(--ink2);min-height:0;padding:0 4px;font-weight:600;text-decoration:underline}
 </style>`);
   /* html: isi dialog; saatKlik(e, d): penangan klik tambahan (return true bila sudah ditangani); tombol [data-tutup] dan latar menutup */
   function dialog(html, saatKlik, kunci) {
@@ -114,7 +125,34 @@ button.sp-p:focus-visible,.sp-pn:focus-visible{outline:3px solid #e3b94e;outline
     d.innerHTML = html; document.body.appendChild(d);
     d.addEventListener("click", e => { if (saatKlik?.(e, d)) return; if (e.target.closest("[data-tutup]") || e.target === d) d.close(); });
     d.addEventListener("close", () => { tandai(kunci); d.remove(); });
-    d.showModal(); return d;
+    d.showModal(); pantauan(d, kunci); return d;
+  }
+  /* ---------- bagian "Pantauan dan tindak lanjut": hitungan agregat publik dari /api/pantau/ringkas, hanya untuk bencana di PANTAU ---------- */
+  const PANTAU = ["karhutla", "banjir"];
+  const idDari = k => !k || k === KUNCI ? "karhutla" : k.replace(/^pb_sapa_/, "");
+  const angka = n => Number(n || 0).toLocaleString("id-ID");
+  const ringkas = {};   /* satu fetch per bencana per muat halaman */
+  const muatRingkas = id => ringkas[id] ||= fetch("/api/pantau/ringkas?bencana=" + encodeURIComponent(id))
+    .then(r => r.ok ? r.json() : null).catch(() => null);
+  const esc = t => String(t ?? "").replace(/[&<>"]/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;"}[c]));
+  const bagianPantau = r => {
+    const t = r.total || {}, ada = (t.kejadian || 0) > 0;
+    const dari = (n, y) => `<em class="sp-p ${n >= y ? "prov" : "oranye"}">${angka(n)} dari ${angka(y)}</em>`;
+    const baris = (r.prov || []).slice(0, 8).map(p => `<div class="sp-pr"><b>${esc(p.nama)}</b><span>${angka(p.kejadian)}</span>${[p.dimonitor, p.diinfokan, p.groundcheck, p.tindak, p.selesai].map(n => dari(n, p.kejadian)).join("")}</div>`).join("");
+    const tabel = ada ? `<div class="sp-pt2"><div class="sp-th"><span>Provinsi</span><span>Kejadian</span><span>Dimonitor Dalops</span><span>Diinfokan ke BPBD</span><span>Groundcheck</span><span>Tindak lanjut</span><span>Selesai</span></div>${baris}</div>` : "";
+    const kepala = ada ? `<p class="sp-pk-h"><b>${angka(t.kejadian)}</b> kejadian dipantau dalam 3 hari terakhir</p>` : `<p class="sp-pk-k">Belum ada kejadian yang dipantau</p>`;
+    const wa = /^\d{8,15}$/.test(r.wa || "") ? `<a class="wa" href="https://wa.me/${r.wa}" target="_blank" rel="noopener">${ik("jam")}Hubungi lewat WA</a>` : "";
+    const aksi = `<div class="sp-pk-a"><a href="/daftar-kontak?kategori=bpbd">${ik("awas")}Daftar staf BPBD</a>${wa}<a class="kecil" href="/monitor" data-monitor>Buka Monitor</a></div>`;
+    return `<section class="sp-sek sp-pantau"><h4>Pantauan dan tindak lanjut</h4><div class="sp-panel">${kepala}${tabel}${aksi}</div></section>`;
+  };
+  function pantauan(d, kunci) {
+    const id = idDari(kunci); if (!PANTAU.includes(id)) return;
+    d.addEventListener("click", e => { const a = e.target.closest("[data-monitor]"); if (!a) return;
+      if (typeof window.bukaTab === "function" && document.querySelector('#tabs [data-t="monitor"]')) { e.preventDefault(); d.close(); window.bukaTab("monitor"); } });
+    muatRingkas(id).then(r => {
+      try { const isi = d.isConnected && r && r.total && d.querySelector(".sp-isi");
+        if (isi && !d.querySelector(".sp-pantau")) isi.insertAdjacentHTML("beforeend", bagianPantau(r)); } catch (e) {}
+    });
   }
   /* tunggu spanduk persetujuan selesai supaya dua lapisan tidak bertumpuk */
   const mulai = fn => { const m = () => document.querySelector(".pv-kartu") ? document.addEventListener("pb-persetujuan", () => setTimeout(fn, 400), {once: true}) : fn();

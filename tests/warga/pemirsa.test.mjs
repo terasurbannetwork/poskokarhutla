@@ -12,6 +12,7 @@ const uji = berantai();
 const U = await siapkan("uji-pemirsa");
 const {DB, api, n, mf} = U;
 const SQL = readFileSync(path.join(AKAR, "migrations/0036_pemirsa.sql"), "utf8");
+const SQL_DAFTAR = readFileSync(path.join(AKAR, "migrations/0077_pemirsa_monitor.sql"), "utf8");   // migrasi terbaru yang mendefinisikan daftar tab di trigger
 let ipN = 0;
 /* permintaan ke alamat terkunci centurisk97.id, tanpa mengikuti pengalihan */
 const situs = (j, h = {}, init = {}) => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", ...init, headers: {"cf-connecting-ip": `198.51.100.${++ipN % 250}`, ...h}});
@@ -22,21 +23,27 @@ let A = null, cookie = null;
 
 uji("pemirsa: migrasi 0036 idempoten dan trigger menolak tab asing atau berulang", async () => {
   await DB.batch(pecah(SQL).map(s => DB.prepare(s)));   // dijalankan kedua kalinya
+  await DB.batch(pecah(SQL_DAFTAR).map(s => DB.prepare(s)));   // 0077 juga idempoten
   const sisip = tab => DB.prepare("INSERT INTO pemirsa (id, username, nama, tab, garam, sandi_sha, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?)")
     .bind("f".repeat(16), "lihatuji", "Uji", tab, "a".repeat(32), "0".repeat(64), Date.now()).run();
   await assert.rejects(sisip('["berita","admin"]'), /tab pemirsa tidak sah/);
   await assert.rejects(sisip('["berita","berita"]'), /tab pemirsa tidak sah/);
+  await sisip('["monitor"]'); await DB.prepare("DELETE FROM pemirsa WHERE username = 'lihatuji'").run();   // 'monitor' sah sejak 0077
   assert.equal(await n("pemirsa"), 0);
 });
 
-uji("pemirsa: daftar tab sama dengan trigger 0036 dan tab menu public/index.html", () => {
-  const diTrigger = SQL.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
+uji("pemirsa: daftar tab sama dengan trigger 0077 dan tab menu public/index.html", () => {
+  const diTrigger = SQL_DAFTAR.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
   assert.deepEqual(diTrigger, Object.keys(TAB));
   const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8"), tabs = idx.match(/const TABS = (\[.+\]);/)[1];
   for (const k of Object.keys(TAB)) assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
   assert.equal(cekTab(["berita", "berita"]), null); assert.equal(cekTab([]), null); assert.deepEqual(cekTab(["foto"]), ["foto"]);
   assert.equal(arahPemirsa({tab: ["insight"]}, "/kompleks"), null); assert.equal(arahPemirsa({tab: ["sim"]}, "/sim/K0001"), null); assert.equal(arahPemirsa({tab: ["berita"]}, "/"), "/berita");
   assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/"), null); assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/peta"), null);
+  assert.equal(arahPemirsa({tab: ["peta", "monitor"]}, "/banjir/"), null); assert.equal(arahPemirsa({tab: ["peta", "monitor"]}, "/banjir/peta"), null);
+  assert.equal(arahPemirsa({tab: ["monitor"]}, "/monitor"), null); assert.equal(arahPemirsa({tab: ["berita"]}, "/monitor"), "/berita");
+  assert.equal(arahPemirsa({tab: ["peta", "monitor"]}, "/banjir/monitor"), "/monitor?bencana=banjir", "monitor tak punya tab di /banjir/");
+  assert.equal(arahPemirsa({tab: ["monitor"]}, "/banjir/"), "/monitor?bencana=banjir"); assert.equal(arahPemirsa({tab: ["monitor", "peta"]}, "/banjir/rob"), "/banjir/peta");
   assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/rob"), "/banjir/peta"); assert.equal(arahPemirsa({tab: ["berita"]}, "/banjir/"), "/banjir/berita");
 });
 

@@ -10,7 +10,7 @@ import {sandiBaru} from "./staf.js";
 
 const HARI = 24 * 3600e3, SESI_UMUR = 30 * HARI, COOKIE = "sesi_pemirsa";
 /* daftar tetap: sama dengan trigger pemirsa_tab_sah di 0036 dan tab menu atas public/index.html (dijaga pemirsa.test.mjs) */
-export const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", sim: "Simulasi", foto: "Foto"};
+export const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", sim: "Simulasi", monitor: "Monitor", foto: "Foto"};
 const SESI = new WeakMap();   // permintaan -> baris pemirsa (gerbang dan layaniHTML membaca sekali)
 
 const tabelBelum = e => /no such table: pemirsa/i.test(String(e?.message || e));
@@ -36,7 +36,10 @@ export async function pemirsaSesi(env, req, kini = Date.now()) {
 export function arahPemirsa(p, pathname) {
   const s = pathname.split("/"), banjir = s[1] === "banjir";
   const seg = (banjir ? s[2] || "peta" : s[1]) || "", tab = seg === "kompleks" ? "insight" : seg;
-  return p.tab.includes(tab) ? null : (banjir ? "/banjir/" : "/") + p.tab[0];
+  /* Monitor tidak punya tab di /banjir/: pemirsa ber-tab monitor melihat banjir lewat /monitor?bencana=banjir (migrasi 0077) */
+  const pb = banjir ? p.tab.find(x => x !== "monitor") : p.tab[0], ke = pb ? (banjir ? "/banjir/" : "/") + pb : "/monitor?bencana=banjir";
+  if (banjir && tab === "monitor") return p.tab.includes("monitor") ? "/monitor?bencana=banjir" : ke;
+  return p.tab.includes(tab) ? null : ke;
 }
 
 /* dipanggil form /admin/masuk sesudah akun admin gagal: {token, tab} atau null. Batas laju: cekLaju per IP di form masuk. */

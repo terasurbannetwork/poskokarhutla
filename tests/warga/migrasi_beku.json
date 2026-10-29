@@ -77,5 +77,6 @@
   "0073_sippa_fase3.sql": "49ea2cad2ffe1ce96346341d4100efe7572f8c71b411e384c5589ab9648f6ade",
   "0074_sippa_lapangan_diterima.sql": "75654818a095e73439fa2eb6815e965e94ba8fd72093ec559e748e5c8f9f7d7b",
   "0075_satelit_granul.sql": "fee0e47feab34ef7f492daaa7bd53b677796a3121633facbbdb52734245fa179",
-  "0076_wa_masuk.sql": "2be7f4da25ff3cd53bc4efdbcfdd98cb34ff2b990a4e18126029064150a15c12"
+  "0076_wa_masuk.sql": "2be7f4da25ff3cd53bc4efdbcfdd98cb34ff2b990a4e18126029064150a15c12",
+  "0077_pemirsa_monitor.sql": "138d681fab14b4fa8b942f4268d591454f78eae627f22ef95de3ac9e87506ccb"
 }

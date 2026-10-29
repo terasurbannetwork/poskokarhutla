@@ -19,6 +19,7 @@
     "GET /admin/labelfoto": "label foto: semua rute admin saja (403 tanpa token)",
     "table monitor_baca": "tabel monitor_baca belum ada",
     "GET /api/monitor": "dalops: lihat seluruh negeri",
+    "GET /api/pantau/ringkas": "/api/pantau/ringkas: publik, hitungan benar",
     "POST /api/monitor/baca": "POST baca: sekali per pembaca",
     "GET /api/monitor/media/:id": "media: di luar wilayah 404",
     "GET /api/monitor/thumb/:id": "tanpa sesi: 401 JSON",

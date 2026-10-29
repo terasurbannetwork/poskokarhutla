@@ -1,4 +1,4 @@
-/* Monitor Deteksi Api (/monitor). API: GET /api/titik (publik), GET /api/monitor (sesi), POST /api/monitor/baca.
+/* Monitor Deteksi Api (/monitor). API: GET /api/titik (publik), GET /api/monitor?bencana=karhutla|banjir (sesi), GET /api/pantau/ringkas (publik), POST /api/monitor/baca.
    Alarm: deteksi baru dengan keyakinan >= 1 -> suara 2x + popup (+ Notification bila tab tersembunyi). */
 (() => {
   "use strict";
@@ -26,7 +26,9 @@
   const kosong = (n, ik, judul, isi) => `<tr><td colspan="${n}" class="mn-kosong"><div>${IK(ik)}<b>${judul}</b>${isi}</div></td></tr>`;
   const sat = (kelas, teks) => { const e = $("mnSat"); e.className = "mn-status " + kelas; e.innerHTML = `<i></i>${esc(teks)}`; };
   let dimuat = false;
-  let dets = [], tugas = null, pihak = "", hal = 0, tampil = [], terbuka = new Set(), baru = [];
+  let dets = [], pihak = "", hal = 0, tampil = [], terbuka = new Set(), baru = [], wa = null;
+  const TG = {karhutla: null, banjir: null}, kejBaru = {karhutla: [], banjir: []}, BENCANA = ["karhutla", "banjir"];
+  let sel = new URLSearchParams(location.search).get("bencana") || bacaL("mn_bencana", "karhutla"); if (!BENCANA.includes(sel)) sel = "karhutla";   // ?bencana=banjir dari pengalihan pemirsa
 
   /* ---------- deteksi ---------- */
   function urai(j) {
@@ -61,21 +63,23 @@
       main();
     } catch (e) {}
   }
-  function notif(n) {
+  function notif(judul, isi, tag) {
     if (!document.hidden || !("Notification" in window) || Notification.permission !== "granted") return;
-    try { new Notification("Deteksi api baru", {body: `${n} deteksi baru (sedang atau tinggi)`, tag: "mn-api"}); } catch (e) {}
+    try { new Notification(judul, {body: isi, tag}); } catch (e) {}
   }
   function alarm(list) {
     const kuat = list.filter(d => d.key >= 1);
     if (!kuat.length) return;
     baru = baru.concat(kuat);
-    putar2x(); notif(kuat.length); popup();
+    putar2x(); notif("Deteksi api baru", `${kuat.length} deteksi baru (sedang atau tinggi)`, "mn-api"); popup();
   }
   function dekat() {
-    return (tugas || []).filter(t => t.status === "buka" && baru.some(d => km(t.lat, t.lon, d.lat, d.lon) <= JARAK_KM));
+    return (TG.karhutla || []).filter(t => t.status === "buka" && baru.some(d => km(t.lat, t.lon, d.lat, d.lon) <= JARAK_KM));
   }
-  function popup() {
-    const tg = baru.filter(d => d.key === 2).length, sd = baru.length - tg, kab = new Map();
+  const LV = t => t.level ?? t.tingkat;
+  const bacaPil = (n, a) => `<span class="mn-p ${a && a.length ? "h" : "t"}">${n} ${a && a.length ? "sudah baca" : "belum baca"}</span>`;
+  function bagDet() {
+    const tugas = TG.karhutla, tg = baru.filter(d => d.key === 2).length, sd = baru.length - tg, kab = new Map();
     for (const d of baru) { const k = `${d.kab}, ${namaProv(d.pk)}`; kab.set(k, (kab.get(k) || 0) + 1); }
     const top = [...kab].sort((a, b) => b[1] - a[1]).slice(0, 5), tdk = dekat();
     /* sudah terlapor = ada kejadian (status apa pun) yang dipantau dalam JARAK_KM dari deteksi itu; tanpa sesi tugas tak diketahui */
@@ -85,19 +89,30 @@
     const cekLapor = !tugas ? `<p class="mn-kecil">Masuk sebagai staf BNPB atau BPBD untuk mengecek apakah deteksi ini sudah terlapor.</p>`
       : `<p><span class="mn-p t">${blm.length} belum terlapor</span> <span class="mn-p h">${baru.length - blm.length} sudah terlapor</span></p>`
         + (blm.length ? `<ul>${[...blmKab].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, n]) => `<li>${esc(k)}: ${n}</li>`).join("")}</ul>` : "");
-    $("mnMJ").innerHTML = `<b>${baru.length}</b> deteksi api baru`;
-    $("mnMIsi").innerHTML = `<p><span class="mn-p t">${tg} tinggi</span> <span class="mn-p s">${sd} sedang</span></p>
+    return `<p><span class="mn-p t">${tg} tinggi</span> <span class="mn-p s">${sd} sedang</span></p>
       <div><b>Sudah terlapor?</b>${cekLapor}</div>
       <div><b>Kabupaten terbanyak</b><ul>${top.map(([k, n]) => `<li>${esc(k)}: ${n}</li>`).join("")}</ul></div>
       <div><b>Tugas terbuka dalam ${JARAK_KM} km</b>${tdk.length ? `<ul>${tdk.map(t => `<li>${esc(t.kec)}, ${esc(t.kab)}, ${esc(t.prov_nama || namaProv(t.prov))}</li>`).join("")}</ul>` : `<p class="mn-kecil">Tidak ada.</p>`}</div>`;
-    $("mnBaca").hidden = !tdk.length || !pihak;
+  }
+  function bagKej(b) {
+    const l = kejBaru[b]; if (!l.length) return "";
+    return `<div><b>${l.length} kejadian ${b} baru</b><ul>${l.slice(0, 8).map(t => `<li>${esc(t.kec)}, ${esc(t.kab)}, ${esc(t.prov_nama || namaProv(t.prov))} ${LV(t) != null ? `<span class="mn-p s">${esc(LV(t))}</span> ` : ""}${bacaPil("Dalops", t.baca?.dalops)} ${bacaPil("BPBD", t.baca?.bpbd)}</li>`).join("")}</ul>${l.length > 8 ? `<p class="mn-kecil">Dan ${l.length - 8} lainnya.</p>` : ""}</div>`;
+  }
+  const idBaca = () => [...new Set([...dekat().map(t => t.id), ...BENCANA.flatMap(b => kejBaru[b].map(t => t.id))])];
+  function popup() {
+    const jd = [];
+    if (baru.length) jd.push(`<b>${baru.length}</b> deteksi api baru`);
+    for (const b of BENCANA) if (kejBaru[b].length) jd.push(`<b>${kejBaru[b].length}</b> kejadian ${b} baru`);
+    $("mnMJ").innerHTML = jd.join(", ");
+    $("mnMIsi").innerHTML = (baru.length ? bagDet() : "") + BENCANA.map(bagKej).join("");
+    $("mnBaca").hidden = !pihak || pihak === "pemirsa" || !idBaca().length;
     $("mnModal").hidden = false; $("mnTutup").focus();
   }
-  function tutup() { $("mnModal").hidden = true; baru = []; }
+  function tutup() { $("mnModal").hidden = true; baru = []; kejBaru.karhutla = []; kejBaru.banjir = []; }
   async function sudahDibaca() {
-    const ids = dekat().map(t => t.id); $("mnBaca").disabled = true;
+    const ids = idBaca(); $("mnBaca").disabled = true;
     try { await fetch("/api/monitor/baca", {method: "POST", headers: {"x-pb": "1", "content-type": "application/json"}, body: JSON.stringify({tugas: ids})}); } catch (e) {}
-    $("mnBaca").disabled = false; tutup(); muatMonitor();
+    $("mnBaca").disabled = false; tutup(); muatSemua();
   }
   async function aktifkan() {
     tulisL("mn_suara", "1");
@@ -133,8 +148,12 @@
 
   /* ---------- tindak lanjut ---------- */
   const pilBaca = a => a && a.length ? (l => `<span class="mn-p h">${esc(l.nama)}, ${jam(l.waktu)}</span>`)(a.reduce((x, y) => y.waktu > x.waktu ? y : x)) : `<span class="mn-p t">Belum</span>`;
-  const HASIL = {api_ada: ["Api ada", "t"], bukan_api: ["Bukan api", ""], sudah_padam: ["Sudah padam", "h"]};
-  const STATUS = {buka: ["Terbuka", "s"], padam: ["Padam", "h"], bukan_api: ["Bukan api", ""]};
+  const HASIL = {karhutla: {api_ada: ["Api ada", "t"], bukan_api: ["Bukan api", ""], sudah_padam: ["Sudah padam", "h"]},
+    banjir: {banjir_ada: ["Banjir ada", "t"], api_ada: ["Banjir ada", "t"], bukan_banjir: ["Bukan banjir", ""], bukan_api: ["Bukan banjir", ""], sudah_surut: ["Sudah surut", "h"], sudah_padam: ["Sudah surut", "h"]}};
+  const STATUS = {karhutla: {buka: ["Terbuka", "s"], padam: ["Padam", "h"], bukan_api: ["Bukan api", ""]},
+    banjir: {buka: ["Terbuka", "s"], surut: ["Surut", "h"], padam: ["Surut", "h"], selesai: ["Selesai", "h"], bukan_banjir: ["Bukan banjir", ""], bukan_api: ["Bukan banjir", ""]}};
+  const polos = v => { const x = String(v ?? "").replace(/_/g, " ").trim(); return x.charAt(0).toUpperCase() + x.slice(1); };
+  const petaS = (m, v) => m[sel][v] || [polos(v), ""];
   function foto(m, t) {
     const med = m.jenis === "video" ? `<video src="${esc(m.url)}" poster="${esc(m.thumb || "")}" controls preload="none" playsinline></video>` : `<img src="${esc(m.thumb || m.url)}" alt="" loading="lazy">`;
     const lat = m.lat ?? t.lat, lon = m.lon ?? t.lon;
@@ -146,15 +165,16 @@
     if (g) h += `<b>Groundcheck</b>, ${esc(g.oleh || g.pic_nama || "")}${g.jarak_km != null ? `, ${(+g.jarak_km).toFixed(1)} km dari titik` : ""}${g.gps_curiga ? ` <span class="mn-p t">GPS dicurigai</span>` : ""}<div class="mn-foto">${(g.media || []).map(m => foto(m, t)).join("") || `<span class="mn-kecil">Tanpa foto.</span>`}</div>`;
     if (x) h += `<b>Tindakan</b>: ${esc(x.tindakan)}${x.kendala?.length ? `, kendala: ${esc([].concat(x.kendala).join(", "))}` : ""}<div class="mn-foto">${(x.media || []).map(m => foto(m, t)).join("") || `<span class="mn-kecil">Tanpa foto.</span>`}</div>`;
     h = h || `<span class="mn-kecil">Belum ada groundcheck atau tindakan.</span>`;
-    return pihak ? h + `<p><button type="button" class="mn-tbl mn-tbl2" data-baca="${esc(t.id)}">Tandai sudah dibaca</button></p>` : h;
+    return pihak && pihak !== "pemirsa" ? h + `<p><button type="button" class="mn-tbl mn-tbl2" data-baca="${esc(t.id)}">Tandai sudah dibaca</button></p>` : h;
   }
   function gambarTugas() {
-    const tb = $("mnTugas");
-    if (!tugas) return;
-    $("mnJudulTugas").innerHTML = `<b>${tugas.length.toLocaleString("id-ID")}</b> kejadian dipantau`;
+    const tb = $("mnTugas"), tugas = TG[sel], bj = sel === "banjir";
+    $("mnThSejak").textContent = bj ? "Dilaporkan sejak" : "Terdeteksi sejak";
+    if (!tugas) { tb.innerHTML = kosong(7, '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/>', "Memuat", ""); return; }
+    $("mnJudulTugas").innerHTML = `<b>${tugas.length.toLocaleString("id-ID")}</b> kejadian ${bj ? "banjir " : ""}dipantau`;
     if (!tugas.length) { tb.innerHTML = kosong(7, '<path d="M9 11l3 3 8-8"/>', "Belum ada kejadian dipantau", ""); return; }
     tb.innerHTML = tugas.map(t => {
-      const g = t.groundcheck, x = t.tindak, hs = g ? (HASIL[g.hasil] || [g.hasil, ""]) : null, st = STATUS[t.status] || [t.status, ""];
+      const g = t.groundcheck, x = t.tindak, hs = g ? petaS(HASIL, g.hasil) : null, st = petaS(STATUS, t.status);
       const buka = terbuka.has(t.id);
       return `<tr class="mn-baris" data-id="${esc(t.id)}" tabindex="0" aria-expanded="${buka}"><td><b>${esc(t.kec)}</b>, ${esc(t.kab)}, ${esc(t.prov_nama || namaProv(t.prov))}</td>
         <td>${tglJam(t.dibuat)}</td><td>${pilBaca(t.baca?.dalops)}</td><td>${pilBaca(t.baca?.bpbd)}</td>
@@ -166,7 +186,7 @@
   async function bacaSatu(b) {
     b.disabled = true;
     try { await fetch("/api/monitor/baca", {method: "POST", headers: {"x-pb": "1", "content-type": "application/json"}, body: JSON.stringify({tugas: [b.dataset.baca]})}); } catch (e) {}
-    muatMonitor();
+    muatSemua();
   }
   function togol(e) {
     const bb = e.target.closest("[data-baca]"); if (bb) { if (e.type === "click") bacaSatu(bb); return; }
@@ -186,24 +206,54 @@
       if (b.length) alarm(b);
     } catch (e) { sat("gagal", "Data satelit gagal dimuat, mencoba lagi"); }
   }
-  async function muatMonitor() {
+  function bacaSeenT(b) { try { const j = JSON.parse(localStorage.getItem("mn_seen_t_" + b)); return Array.isArray(j) ? j : null; } catch (e) { return null; } }
+  /* kejadian baru per bencana; muat pertama (belum ada daftar): hanya menanam, tanpa alarm */
+  function cekTugas(b, list) {
+    const lama = bacaSeenT(b), set = new Set(lama || []), hasil = lama ? list.filter(t => !set.has(t.id)) : [];
+    if (!lama || hasil.length) { for (const t of list) set.add(t.id); tulisL("mn_seen_t_" + b, JSON.stringify([...set].slice(-MAKS_SEEN))); }
+    return hasil;
+  }
+  async function muatMonitor(b) {
     try {
-      const r = await fetch("/api/monitor", {cache: "no-store"});
-      if (r.status === 401) { $("mnMasuk").hidden = false; $("mnTugasKartu").hidden = true; tugas = null; return; }
-      if (!r.ok) return;
-      const j = await r.json(); tugas = j.tugas || []; pihak = j.pihak || "";
-      $("mnMasuk").hidden = true; $("mnTugasKartu").hidden = false;
+      const r = await fetch("/api/monitor?bencana=" + b, {cache: "no-store"});
+      if (r.status === 401) { TG[b] = null; if (b === sel) { $("mnMasuk").hidden = false; $("mnGulir").hidden = true; } return; }
+      if (!r.ok) { if (b === sel) { $("mnGulir").hidden = false; $("mnTugas").innerHTML = kosong(7, '<circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16.5v.5"/>', "Data tindak lanjut belum tersedia", "Coba lagi sebentar."); } return; }
+      const j = await r.json(), list = j.tugas || []; pihak = j.pihak || ""; TG[b] = list;
       $("mnSaya").textContent = j.saya ? [j.saya.nama, j.saya.unit].filter(Boolean).join(", ") : "";
-      gambarTugas();
+      if (b === sel) { $("mnMasuk").hidden = true; $("mnGulir").hidden = false; gambarTugas(); }
+      const n = cekTugas(b, list);
+      if (n.length) { kejBaru[b] = kejBaru[b].concat(n); putar2x(); notif(`Kejadian ${b} baru`, `${n.length} kejadian ${b} baru`, "mn-" + b); popup(); }
     } catch (e) {}
   }
+  const muatSemua = () => Promise.all(BENCANA.map(muatMonitor));
+  /* ringkasan publik per bencana: terlihat juga sebelum masuk */
+  async function muatRingkas() {
+    const b = sel, e = $("mnRingkas");
+    try {
+      const r = await fetch("/api/pantau/ringkas?bencana=" + b, {cache: "no-store"});
+      if (!r.ok) { if (b === sel) e.hidden = true; return; }
+      const j = await r.json(); if (b !== sel) return;
+      const t = j.total || {}, n = v => (+v || 0).toLocaleString("id-ID"), pl = (v, l) => `<span class="mn-p"><b>${n(v)}</b>&nbsp;${l}</span>`;
+      e.innerHTML = `<span class="mn-ang"><b>${n(t.kejadian)}</b> kejadian</span>${pl(t.dimonitor, "dimonitor Dalops")}${pl(t.diinfokan, "diinfokan ke BPBD")}${pl(t.groundcheck, "groundcheck")}${pl(t.tindak, "tindak lanjut")}${pl(t.selesai, "selesai")}`;
+      e.hidden = false; wa = j.wa || null; kontak();
+    } catch (x) { if (b === sel) e.hidden = true; }
+  }
+  function kontak() { for (const a of document.querySelectorAll(".mn-wa")) { a.hidden = !wa; if (wa) a.href = "https://wa.me/" + encodeURIComponent(wa); } }
+  function aturSeg() { for (const k of document.querySelectorAll("#mnSeg [data-b]")) k.setAttribute("aria-pressed", k.dataset.b === sel); }
+  function pilihB(b) {   // chrome (tombol) urgent; tabel ditunda
+    if (b === sel) return;
+    sel = b; tulisL("mn_bencana", b); aturSeg(); $("mnRingkas").hidden = true;
+    nanti(gambarTugas); muatMonitor(b); muatRingkas();
+  }
 
-  $("mnSuara").onclick = aktifkan; $("mnTutup").onclick = tutup; $("mnBaca").onclick = sudahDibaca;
+  $("mnSuara").onclick = aktifkan; $("mnTutup").onclick = tutup;
+  $("mnSeg").onclick = e => { const k = e.target.closest("[data-b]"); if (k) pilihB(k.dataset.b); }; $("mnBaca").onclick = sudahDibaca;
   $("mnFProv").onchange = $("mnFKey").onchange = ubahFilter;
   $("mnPrev").onclick = () => { hal--; gambarDet(); }; $("mnNext").onclick = () => { hal++; gambarDet(); };
   $("mnTugas").addEventListener("click", togol); $("mnTugas").addEventListener("keydown", togol);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("mnModal").hidden) tutup(); });
   tombolSuara(); if (typeof PilihCantik !== "undefined") PilihCantik.pasang();
-  muatMonitor().then(muatTitik);   // tugas dulu supaya popup pertama sudah tahu tugas terdekat
-  setInterval(muatTitik, 5 * 6e4); setInterval(muatMonitor, 2 * 6e4);
+  aturSeg(); muatRingkas();
+  muatSemua().then(muatTitik);   // tugas dulu supaya popup pertama sudah tahu tugas terdekat
+  setInterval(muatTitik, 5 * 6e4); setInterval(muatSemua, 2 * 6e4); setInterval(muatRingkas, 5 * 6e4);
 })();

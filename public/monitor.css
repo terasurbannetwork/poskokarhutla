@@ -66,6 +66,16 @@ main.mn{position:static;inset:auto;max-width:1440px;margin:0 auto;padding:20px 2
 .mn-kosong b{display:block;color:var(--ink);font-size:13.5px;margin-bottom:2px}
 
 /* paginasi */
+/* pilihan bencana, ringkasan, kontak */
+.mn-seg{display:inline-flex;gap:2px;padding:3px;border-radius:999px;background:var(--surface);border:1px solid var(--line)}
+.mn-seg button{font:600 13px var(--font);display:inline-flex;align-items:center;gap:6px;min-height:34px;padding:0 14px;border:0;border-radius:999px;background:transparent;color:var(--ink2);cursor:pointer}
+.mn-seg button[aria-pressed="true"]{background:var(--brand);color:#fff}
+:root[data-theme="dark"] .mn-seg button[aria-pressed="true"]{color:oklch(18% .035 256)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mn-seg button[aria-pressed="true"]{color:oklch(18% .035 256)}}
+.mn-ringkas{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.mn-ang{font-size:15px;font-weight:700;margin-right:4px}.mn-ang b{color:var(--f2);font-size:20px;font-weight:800}
+.mn-ringkas .mn-p b{color:var(--ink);margin-right:3px}
+.mn-kontak{padding-top:2px}
 .mn-hal{display:flex;flex-wrap:wrap;gap:8px;align-items:center;justify-content:space-between;font-size:12.5px;color:var(--ink2)}
 .mn-hal div{display:flex;gap:6px}
 
@@ -96,6 +106,7 @@ main.mn{position:static;inset:auto;max-width:1440px;margin:0 auto;padding:20px 2
 .mn-dlg h2{font-size:20px;font-weight:800}.mn-dlg h2 b{color:var(--f2)}
 #mnMIsi{display:grid;gap:12px;font-size:13.5px}
 #mnMIsi > div{background:var(--paper);border-radius:12px;padding:10px 12px;display:grid;gap:6px}
+#mnMIsi li .mn-p{margin:0 0 0 4px}
 #mnMIsi ul{margin:0;padding-left:18px;display:grid;gap:2px}
 #mnMIsi p{display:flex;flex-wrap:wrap;gap:6px}
 #mnMIsi .mn-kecil,.mn-kecil{color:var(--ink2);font-size:12.5px}
@@ -105,5 +116,6 @@ main.mn{position:static;inset:auto;max-width:1440px;margin:0 auto;padding:20px 2
   main.mn{padding:14px 16px 40px}
   .mn-atas .mn-aksi,.mn-atas .mn-tbl{width:100%;justify-content:center}
   .mn-filter,.mn-filter .pc{width:100%}
-  .mn-masuk .mn-aksi{width:100%}.mn-masuk .mn-tbl{flex:1;justify-content:center}
+  .mn-masuk .mn-aksi,.mn-kontak{width:100%}.mn-masuk .mn-tbl,.mn-kontak .mn-tbl{flex:1;justify-content:center}
+  .mn-judul .mn-seg{width:100%}.mn-seg button{flex:1;justify-content:center}
 }
