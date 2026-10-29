@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
 <link rel="stylesheet" href="/inti/kartu.css">
-<link rel="stylesheet" href="/monitor.css?v=5">
+<link rel="stylesheet" href="/monitor.css?v=6">
 </head>
 <body>
 <header class="top">
@@ -35,9 +35,9 @@
     <div class="mn-atas-kiri">
       <span class="mn-eyebrow"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 12h4l3-8 4 16 3-8h4"/></svg>Monitor bencana</span>
       <h1 id="mnJudulDet">Deteksi terbaru</h1>
-      <p id="mnSat" class="mn-status"><i></i>Data satelit belum dimuat</p><p id="mnSatB" class="mn-status" hidden><i></i>Status banjir belum dimuat</p>
+      <p id="mnSat" class="mn-status"><i></i>Data satelit belum dimuat</p><p id="mnSatB" class="mn-status" hidden><i></i>Status banjir belum dimuat</p><p id="mnSatS" class="mn-status" hidden><i></i>Status keadaan darurat belum dimuat</p>
     </div>
-    <div class="mn-aksi"><span id="mnSaya" class="mn-saya"></span><div class="mn-seg" id="mnSeg" role="group" aria-label="Jenis bencana"><button type="button" data-b="karhutla" aria-pressed="true"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1.5 3.5 5.5 5.5 5.5 10a5.5 5.5 0 0 1-11 0c0-2 1-3.6 2.4-4.8.3 1.8 1.2 2.8 2.3 3.2C10.8 8.5 11.2 5.8 12 3z"/></svg>Karhutla</button><button type="button" data-b="banjir" aria-pressed="false"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/></svg>Banjir</button></div><button id="mnSuara" class="mn-tbl" type="button"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span>Aktifkan suara dan notifikasi</span></button></div>
+    <div class="mn-aksi"><span id="mnSaya" class="mn-saya"></span><div class="mn-seg" id="mnSeg" role="group" aria-label="Jenis bencana"><button type="button" data-b="karhutla" aria-pressed="true"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3c1.5 3.5 5.5 5.5 5.5 10a5.5 5.5 0 0 1-11 0c0-2 1-3.6 2.4-4.8.3 1.8 1.2 2.8 2.3 3.2C10.8 8.5 11.2 5.8 12 3z"/></svg>Karhutla</button><button type="button" data-b="banjir" aria-pressed="false"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/></svg>Banjir</button><button type="button" data-b="status" aria-pressed="false"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Status</button></div><button id="mnSuara" class="mn-tbl" type="button"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M11 5 6 9H3v6h3l5 4zM15.5 8.5a5 5 0 0 1 0 7M18.5 5.5a9 9 0 0 1 0 13"/></svg><span>Aktifkan suara dan notifikasi</span></button></div>
   </section>
 
   <section id="mnMasuk" class="mn-masuk" hidden>
@@ -68,6 +68,17 @@
     <nav class="mn-hal" aria-label="Jumlah baris banjir"><span id="mnBHal"></span></nav>
   </section>
 
+  <section class="mn-kartu" id="mnKartuStatus" hidden>
+    <div class="mn-judul">
+      <span class="mn-eyebrow"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/></svg>Status keadaan darurat BPBD</span>
+      <div class="mn-filter"><select id="mnSSkala" aria-label="Tingkat wilayah"><option value="">Provinsi dan kab/kota</option><option value="provinsi">Provinsi</option><option value="kabupaten">Kab/kota</option></select>
+      <select id="mnSProv" aria-label="Provinsi"><option value="">Semua provinsi</option></select>
+      <select id="mnSSt" aria-label="Status"><option value="">Semua status</option><option>Siaga Darurat</option><option>Tanggap Darurat</option><option>Transisi Darurat ke Pemulihan</option></select></div>
+    </div>
+    <div class="mn-gulir"><table><thead><tr><th>Provinsi</th><th>Kab/kota</th><th>Tingkat</th><th>Status</th><th>Jenis bencana</th><th>Mulai</th><th>Berakhir</th><th>Nomor SK</th></tr></thead><tbody id="mnSt"><tr><td colspan="8" class="mn-kosong">Memuat status</td></tr></tbody></table></div>
+    <nav class="mn-hal" aria-label="Jumlah status"><span id="mnSHal"></span></nav>
+  </section>
+
   <section class="mn-kartu" id="mnTugasKartu">
     <div class="mn-judul"><span class="mn-eyebrow"><svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true"><path d="M9 11l3 3 8-8"/><path d="M20 12v7a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h9"/></svg>Tindak lanjut</span><h2 id="mnJudulTugas">Kejadian dipantau</h2></div>
     <div id="mnRingkas" class="mn-ringkas" hidden></div>
@@ -81,7 +92,7 @@
   <div class="mn-aksi mn-aksi-dlg"><button id="mnTutup" class="mn-tbl mn-tbl2" type="button">Tutup</button><button id="mnBaca" class="mn-tbl" type="button">Sudah dibaca</button></div></div></div>
 <script src="/inti/format.js"></script>
 <script src="/inti/pilih.js"></script>
-<script src="/monitor.js?v=8"></script>
+<script src="/monitor.js?v=9"></script>
 <script type="module" src="/inti/kepala.js"></script>
 </body>
 </html>

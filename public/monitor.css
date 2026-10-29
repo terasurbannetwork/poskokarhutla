@@ -52,13 +52,15 @@ main.mn{position:static;inset:auto;max-width:1440px;margin:0 auto;padding:20px 2
 /* tabel standar: kepala navy teks putih, sudut atas membulat */
 .mn-gulir{overflow-x:auto;border-radius:12px;border:1px solid var(--line);-webkit-overflow-scrolling:touch}
 .mn table{border-collapse:collapse;width:100%;min-width:760px;font-size:12.5px}
-.mn thead th{background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;text-align:left;white-space:nowrap;border:0}
+.mn thead th{background:var(--brand);color:#fff;font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.06em;padding:10px 12px;text-align:center;white-space:nowrap;border:0}
 :root[data-theme="dark"] .mn thead th{color:oklch(18% .035 256)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .mn thead th{color:oklch(18% .035 256)}}
-.mn td{padding:9px 12px;border-top:1px solid var(--line);vertical-align:middle;white-space:nowrap}
+.mn td{padding:9px 12px;text-align:center;border-top:1px solid var(--line);vertical-align:middle;white-space:nowrap}
 .mn tbody tr:nth-child(even){background:oklch(50% .05 255 / .025)}
 .mn tbody tr:hover{background:oklch(42% .11 255 / .06)}
-.mn th.k,.mn td.k{text-align:right;font-variant-numeric:tabular-nums}
+.mn th.k,.mn td.k{font-variant-numeric:tabular-nums}
+.mn td.mn-rinci td,.mn tr.mn-rinci td{text-align:left}
+.mn td.mn-jenis{white-space:normal;min-width:340px}
 .mn td.mn-koord{font-variant-numeric:tabular-nums;color:var(--ink2)}
 .mn td.mn-kosong{text-align:center;color:var(--ink2);padding:36px 12px;white-space:normal}
 .mn td.mn-kosong > div{position:sticky;left:12px;width:calc(100vw - 90px);max-width:100%}

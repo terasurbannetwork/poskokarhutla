@@ -28,7 +28,7 @@
   let dimuat = false, judulApi = "Deteksi api terbaru", judulBj = "Status banjir";
   let dets = [], pihak = "", hal = 0, tampil = [], terbuka = new Set(), baru = [], wa = null;
   const TG = {karhutla: null, banjir: null}, kejBaru = {karhutla: [], banjir: []}, BENCANA = ["karhutla", "banjir"];
-  let sel = new URLSearchParams(location.search).get("bencana") || bacaL("mn_bencana", "karhutla"); if (!BENCANA.includes(sel)) sel = "karhutla";   // ?bencana=banjir dari pengalihan pemirsa
+  let sel = new URLSearchParams(location.search).get("bencana") || bacaL("mn_bencana", "karhutla"); if (!BENCANA.includes(sel) && sel !== "status") sel = "karhutla";   // ?bencana=banjir dari pengalihan pemirsa
 
   /* ---------- deteksi ---------- */
   function urai(j) {
@@ -251,11 +251,41 @@
       isiBj(); gambarBj(); cekBj();
     } catch (x) { const e = $("mnSatB"); e.className = "mn-status gagal"; e.innerHTML = "<i></i>Status banjir gagal dimuat, mencoba lagi"; }
   }
+  /* ---------- status keadaan darurat semua BPBD (public/data/status_darurat.json, SK dari data.bnpb.go.id) ---------- */
+  const KLS = {"Siaga Darurat": "s", "Tanggap Darurat": "t", "Transisi Darurat ke Pemulihan": "h"};
+  let SD = null, judulSt = "Status keadaan darurat";
+  const tglId = t => t ? t.split("-").reverse().join("/") : "";
+  function gambarSt() {
+    if (!SD) return;
+    const sk = $("mnSSkala").value, p = $("mnSProv").value, st = $("mnSSt").value, kini = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+    const L = SD.filter(x => (!sk || x.skala === sk) && (!p || x.prov_kode === p) && (!st || x.status === st));
+    $("mnSt").innerHTML = L.length ? L.map(x => `<tr><td>${esc(x.prov)}</td><td>${x.skala === "provinsi" ? "" : `<b>${esc(x.kab)}</b>`}</td><td>${x.skala === "provinsi" ? "Provinsi" : "Kab/kota"}</td>
+      <td><span class="mn-p ${KLS[x.status] || ""}">${esc(x.status)}</span>${x.berakhir && x.berakhir >= kini ? ` <span class="mn-p t">Berlaku</span>` : ""}</td>
+      <td class="mn-jenis">${esc(String(x.jenis || "").split(",").join(", "))}</td><td>${tglId(x.mulai)}</td><td>${tglId(x.berakhir)}</td>
+      <td>${x.tautan ? `<a href="${esc(x.tautan)}" target="_blank" rel="noopener">${esc(x.nomor)}</a>` : esc(x.nomor)}</td></tr>`).join("")
+      : kosong(8, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada status pada saringan ini", "Coba saringan lain.");
+    $("mnSHal").textContent = `${L.length.toLocaleString("id-ID")} SK`;
+  }
+  async function muatSt() {
+    const e = $("mnSatS");
+    try {
+      const r = await fetch("/data/status_darurat.json", {cache: "no-cache"}); if (!r.ok) throw 0;
+      const j = await r.json(); SD = (j.sk || []).slice().sort((a, b) => (b.mulai || "").localeCompare(a.mulai || ""));
+      const s = $("mnSProv"), ada = [...new Map(SD.map(x => [x.prov_kode, x.prov])).entries()].sort((a, b) => a[1].localeCompare(b[1]));
+      s.innerHTML = `<option value="">Semua provinsi</option>` + ada.map(([k, n]) => `<option value="${esc(k)}">${esc(n)}</option>`).join("");
+      const nP = SD.filter(x => x.skala === "provinsi").length;
+      judulSt = `<b>${SD.length.toLocaleString("id-ID")}</b> status keadaan darurat`;
+      e.className = "mn-status ok"; e.innerHTML = `<i></i>${nP} provinsi dan ${SD.length - nP} kab/kota, tahun ${esc((j.tahun || []).join(", "))}, sumber BNPB`;
+      atas(); gambarSt();
+    } catch (x) { e.className = "mn-status gagal"; e.innerHTML = "<i></i>Status keadaan darurat gagal dimuat"; }
+  }
   /* kepala halaman mengikuti bencana terpilih */
   function atas() {
-    const api = sel === "karhutla";
-    $("mnJudulDet").innerHTML = api ? judulApi : judulBj;
-    $("mnSat").hidden = !api; $("mnSatB").hidden = api; $("mnKartuApi").hidden = !api; $("mnKartuBanjir").hidden = api;
+    const api = sel === "karhutla", bj = sel === "banjir", st = sel === "status";
+    $("mnJudulDet").innerHTML = api ? judulApi : bj ? judulBj : judulSt;
+    $("mnSat").hidden = !api; $("mnSatB").hidden = !bj; $("mnSatS").hidden = !st;
+    $("mnKartuApi").hidden = !api; $("mnKartuBanjir").hidden = !bj; $("mnKartuStatus").hidden = !st; $("mnTugasKartu").hidden = st;
+    if (st) $("mnMasuk").hidden = true;   // kembali dari Status: muatMonitor menampilkannya lagi bila belum masuk
   }
 
   /* ---------- muat & polling ---------- */
@@ -292,6 +322,7 @@
   /* ringkasan publik per bencana: terlihat juga sebelum masuk */
   async function muatRingkas() {
     const b = sel, e = $("mnRingkas");
+    if (b === "status") return;
     try {
       const r = await fetch("/api/pantau/ringkas?bencana=" + b, {cache: "no-store"});
       if (!r.ok) { if (b === sel) e.hidden = true; return; }
@@ -306,18 +337,20 @@
   function pilihB(b) {   // chrome (tombol) urgent; tabel ditunda
     if (b === sel) return;
     sel = b; tulisL("mn_bencana", b); aturSeg(); atas(); $("mnRingkas").hidden = true;
+    if (b === "status") { if (!SD) muatSt(); return; }
     nanti(gambarTugas); muatMonitor(b); muatRingkas();
   }
 
   $("mnSuara").onclick = aktifkan; $("mnTutup").onclick = tutup;
   $("mnSeg").onclick = e => { const k = e.target.closest("[data-b]"); if (k) pilihB(k.dataset.b); }; $("mnBaca").onclick = sudahDibaca;
   $("mnFProv").onchange = $("mnFKey").onchange = ubahFilter;
+  $("mnSSkala").onchange = $("mnSProv").onchange = $("mnSSt").onchange = () => nanti(gambarSt);
   $("mnBProv").onchange = $("mnBLv").onchange = $("mnBHari").onchange = () => nanti(gambarBj);
   $("mnPrev").onclick = () => { hal--; gambarDet(); }; $("mnNext").onclick = () => { hal++; gambarDet(); };
   $("mnTugas").addEventListener("click", togol); $("mnTugas").addEventListener("keydown", togol);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("mnModal").hidden) tutup(); });
   tombolSuara(); if (typeof PilihCantik !== "undefined") PilihCantik.pasang();
-  aturSeg(); atas(); muatRingkas(); muatBj();
+  aturSeg(); atas(); muatRingkas(); muatBj(); if (sel === "status") muatSt();
   muatSemua().then(muatTitik);   // tugas dulu supaya popup pertama sudah tahu tugas terdekat
   setInterval(muatTitik, 5 * 6e4); setInterval(muatSemua, 2 * 6e4); setInterval(muatRingkas, 5 * 6e4); setInterval(muatBj, 30 * 6e4);
 })();
