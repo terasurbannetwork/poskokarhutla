@@ -15,6 +15,14 @@ Pembanding (diumumkan sebelum melihat data uji):
   persistensi   skor = ada banjir di kabupaten hari d (jika d berawan: tidak ada skor -> dihitung sebagai 0)
   klimatologi   skor = frekuensi kabupaten x bulan di data latih (dihaluskan ke frekuensi kabupaten)
 Metrik   AUC (peringkat Mann-Whitney), skor Brier, skill Brier terhadap klimatologi; CI 95% bootstrap blok kabupaten x tahun, 1.000 ulangan.
+REVISI 30 Okt 2026 (sebelum model dilatih ulang): (a) baris TIDAK lagi disaring tutupan d+1 (tak diketahui saat prakiraan); sasaran = terdeteksi
+tanpa syarat. (b) sampel kab dipilih dari hari banjir DIBI <= 2023 saja, maks MAKS_KAB kab dan MAKS_SEL sel/kab. (c) validasi_aturan memakai baris,
+sasaran, dan pembelahan yang sama dengan model; vonis LOLOS bila batas bawah CI95 selisih ETS aturan - persistensi > 0.
+SASARAN GFM (Sentinel-1, ditulis SEBELUM melihat hasil): y_gfm(kab,d) = 1 bila ada lintasan S1 pada d+1..d+3 dengan area teramati >= 50% kab dan
+luas tergenang/teramati > P90 kab itu (dihitung dari lintasan <= 2023, lantai 0,1%); baris hanya ada bila >= 1 lintasan seperti itu (jadwal orbit
+diketahui lebih dulu, bukan cuaca). Persistensi = status lintasan terakhir <= d (<= 12 hari); klimatologi = kab x bulan. Aturan LOLOS sama. Air tetap
+sudah dikeluarkan GFM (reference water); sawah TIDAK di-mask (repo tak punya tutupan lahan piksel; tutupan.py perkiraan 5,6 km): P90 per kab menormalkan
+sebagian. Piksel ter-mask GFM terbaca kering lewat titiler (batas).
 Aturan LOLOS (ditulis sebelum uji): AUC model - AUC pembanding terbaik > 0 dengan batas bawah CI 95% > 0, DAN skill Brier terhadap
 klimatologi > 0. Selain itu GAGAL, apa adanya.
 
@@ -38,6 +46,8 @@ LATIH_AKHIR = dt.date(2023, 12, 31)
 FITUR = ["ln(1+r3)", "ln(1+a7)", "dq3", "dq1"]
 L2 = 1.0
 ULANG = 1000
+MAKS_KAB = int(os.environ.get("MCDWD_MAKS_KAB", 14))
+MAKS_SEL = 5     # sel ERA5/GloFAS per kabupaten (kuota Open-Meteo: ~126 bobot per sel GloFAS, 10.000 per hari)
 KELUARAN = os.path.join(KELUAR, "mcdwd_model.json")
 FLOOD_API = "https://flood-api.open-meteo.com/v1/flood"
 GLO_DIR = os.path.join(MENTAH, "glofas_hist")
@@ -270,16 +280,17 @@ def bangun_dataset():
             tg1 = (d + dt.timedelta(days=1)).isoformat()
             if tg1 not in arsip or d.year > 2025 or d > dt.date(2025, 12, 30):
                 continue
+            # (a) tutupan awan d+1 TIDAK diketahui saat prakiraan: baris tidak disaring olehnya. Sasaran = "terdeteksi" tanpa syarat
+            # (hari berawan = tak terdeteksi). Tutupan d+1 hanya disimpan (tut1) untuk diagnosis, bukan untuk memilih baris.
             f1, tut1 = mcdwd.banjir_valid(arsip[tg1][ik[kab]])
-            if tut1 is None or tut1 < MIN_TUTUPAN:
-                continue
             i = tgl_ke_i(tg)
             x = max_fitur([fitur_hari(era[c], glo[c], i) for c in cs])
             if x is None:
                 continue
             f0, tut0 = mcdwd.banjir_valid(arsip[tg][ik[kab]])
+            lv = max(ub.level_harian(era[(c[0], c[1])], [c[2], c[3]], "banjir", ub.BERLAKU["banjir"], [i + 1])[0] for c in cells if (c[0], c[1]) in era)
             baris.append({"kab": kab, "tgl": tg, "x": x, "y": int(f1 >= MIN_PX),
-                          "y0": None if tut0 is None or tut0 < MIN_TUTUPAN else int(f0 >= MIN_PX), "bln": d.month, "f1": f1})
+                          "y0": int(f0 >= MIN_PX), "bln": d.month, "f1": f1, "tut1": tut1, "lv": lv})
     return baris
 
 
@@ -383,6 +394,15 @@ def uji():
     assert o["vonis"] == "LOLOS" and o["auc"]["model"] > 0.7, o["alasan"]
     o2, _ = latih_uji(sintetis(0, 12), 100)
     assert o2["vonis"] == "GAGAL", o2["alasan"]
+    # validasi aturan: alarm = sasaran sempurna -> LOLOS; persistensi acak -> selisih ETS positif
+    r = random.Random(5)
+    bs = []
+    for kab in range(8):
+        for h in range(400):
+            y = int(r.random() < .1)
+            bs.append({"kab": str(kab), "tgl": (dt.date(2024, 1, 1) + dt.timedelta(days=h)).isoformat(), "y": y, "y0": int(r.random() < .1), "lv": 1 if y else 0})
+    v = validasi_aturan({}, bs, 100)
+    assert v["vonis"] == "LOLOS" and v["ets_aturan"] == 1.0, v
     print("ok")
 
 
@@ -393,9 +413,15 @@ def buat_sampel():
     ub = sel_era5()
     dibi = os.environ.get("MCDWD_DIBI", os.path.join(MENTAH, "dibi_tanggal.json"))
     ev = ub.peristiwa(json.load(open(dibi)))
+    # (b) peringkat kabupaten HANYA dari hari banjir DIBI <= LATIH_AKHIR (tahun uji tak boleh ikut memilih sampel); longsor tak dihitung
+    batas = ub.hari_ke(LATIH_AKHIR)
+    ev = {"banjir": {k: {h for h in v if h <= batas} for k, v in ev["banjir"].items()}, "longsor": {}}
     sk = ub.sel_per_kab()
-    kabs = ub.pilih(ev, sk)
-    out = {"kabs": kabs, "cells": {k: [[s[0], s[1], b[0], b[1]] for s, b in sk[k].items()] for k in kabs}}
+    # hanya kabupaten yang SEMUA selnya sudah di cache ERA5 (tanpa unduhan baru), lalu paling banyak MAKS_KAB teratas per jumlah hari latih
+    sk = {k: v for k, v in sk.items() if v and len(v) <= MAKS_SEL and all(os.path.exists(jalur_era5(*s)) for s in v)}
+    kabs = sorted(ub.pilih(ev, sk), key=lambda k: (-len(ev["banjir"].get(k, ())), k))[:MAKS_KAB]
+    out = {"kabs": sorted(kabs), "cells": {k: [[s[0], s[1], b[0], b[1]] for s, b in sk[k].items()] for k in kabs},
+           "dasar": f"hari banjir DIBI <= {LATIH_AKHIR}", "hari_latih": {k: len(ev["banjir"].get(k, ())) for k in kabs}}
     simpan(os.path.join(MENTAH, "mcdwd", "sampel.json"), out)
     return out
 
@@ -411,73 +437,30 @@ def sel_glofas_ada(S):
 
 
 # ------------------------------------------------------------------ validasi (a): aturan status.py vs MCDWD
-def validasi_aturan(S, arsip, peta):
-    ub = sel_era5()
-    ik = {k: i for i, k in enumerate(peta["kab"])}
-    import mcdwd
-    era = {}
-    tabel = {"semua": {}, "2021-2023": {}, "2024-2025": {}}
-    pers = {"semua": [0, 0, 0, 0], "2021-2023": [0, 0, 0, 0], "2024-2025": [0, 0, 0, 0]}
-    n_kab = 0
-    for kab in S["kabs"]:
-        cs = [c for c in S["cells"][kab] if os.path.exists(jalur_era5(c[0], c[1]))]
-        if not cs or kab not in ik:
-            continue
-        for c in cs:
-            if (c[0], c[1]) not in era:
-                try:
-                    era[c[0], c[1]] = ub.deret(json.load(gzip.open(jalur_era5(c[0], c[1]))))
-                except Exception:
-                    era[c[0], c[1]] = None
-        cs = [c for c in cs if era[c[0], c[1]] is not None]
-        if not cs:
-            continue
-        n_kab += 1
-        tgls = sorted(t for t in arsip if "2021-03-22" <= t <= "2025-12-29")
-        hari, ev, ok = [], {}, {}
-        for t in tgls:
-            d = dt.date.fromisoformat(t)
-            t1 = (d + dt.timedelta(days=1)).isoformat()
-            if t1 not in arsip:
-                continue
-            f0, v0 = mcdwd.banjir_valid(arsip[t][ik[kab]])
-            f1, v1 = mcdwd.banjir_valid(arsip[t1][ik[kab]])
-            kej = f0 >= MIN_PX or f1 >= MIN_PX
-            valid = (v0 is not None and v0 >= MIN_TUTUPAN) or (v1 is not None and v1 >= MIN_TUTUPAN)
-            if kej or valid:
-                hari.append(t)
-                ev[t] = kej
-        idx = [tgl_ke_i(t) for t in hari]
-        lv = [max(z) for z in zip(*(ub.level_harian(era[c[0], c[1]], [c[2], c[3]], "banjir", ub.BERLAKU["banjir"], idx) for c in cs))]
-        for t, l in zip(hari, lv):
-            y = t[:4]
-            per = "2021-2023" if y <= "2023" else "2024-2025"
-            for nama in ("semua", per):
-                blok = tabel[nama].setdefault((kab, y), [[0, 0, 0, 0] for _ in ub.LEVEL])
-                o = ev[t]
-                for i, L in enumerate(ub.LEVEL):
-                    blok[i][(0 if o else 1) if l >= L else (2 if o else 3)] += 1
-        # persistensi: alarm hari e = ada deteksi (valid) hari e-1
-        for j, t in enumerate(hari):
-            if j == 0 or tgl_ke_i(hari[j - 1]) != tgl_ke_i(t) - 1:
-                continue
-            f_ = mcdwd.banjir_valid(arsip[hari[j - 1]][ik[kab]])
-            alarm = f_[0] >= MIN_PX
-            o = ev[t]
-            per = "2021-2023" if t[:4] <= "2023" else "2024-2025"
-            for nama in ("semua", per):
-                pers[nama][(0 if o else 1) if alarm else (2 if o else 3)] += 1
-    out = {"n_kab": n_kab, "definisi": f"kejadian = >= {MIN_PX} piksel banjir MODIS (~2 km) di kab pada hari e atau e+1; hanya hari dengan kejadian atau tutupan >= {MIN_TUTUPAN}; "
-           "alarm = level_banjir() status.py (k=0,8, H3 e-1..e+1 ERA5 sempurna, bahaya InaRISK) maks atas sel sampel"}
-    for nama, blok in tabel.items():
-        out[nama] = {}
-        for i, L in enumerate(ub.LEVEL.values()):
-            r = ub.ringkas(blok, i)
-            out[nama][f">={L}"] = r
-        out[nama]["persistensi_deteksi_kemarin"] = {**{m: None if v is None else round(v, 3) for m, v in skor_kontingensi(*pers[nama]).items()},
-                                                    "n": dict(zip("abcd", pers[nama]))}
-        n = [sum(b[0][i] for b in blok.values()) for i in range(4)]
-        out[nama]["laju_kejadian"] = round((n[0] + n[2]) / sum(n), 4)
+def ets_dari(alarm, y):
+    a, b, c, d = kontingensi(alarm, y)
+    return skor_kontingensi(a, b, c, d)["ets"]
+
+
+def validasi_aturan(S, baris, ulang=ULANG):
+    """(c) Aturan level_banjir() status.py (ERA5 sempurna) pada BARIS, SASARAN, dan PEMBELAHAN YANG SAMA dengan model (uji >= 2024-01-01):
+    alarm = level >= waspada pada hari d+1 (H3 d..d+2), kejadian = y (terdeteksi d+1). Pembanding persistensi = y0 (terdeteksi d).
+    Aturan dipra-nyatakan: LOLOS bila batas bawah CI95 (blok kab x tahun) selisih ETS aturan - persistensi > 0. baris[i]['lv'] wajib ada."""
+    uji_ = [b for b in baris if b["tgl"] > str(LATIH_AKHIR) and "lv" in b]
+    blok = defaultdict(lambda: [[], [], []])
+    for b in uji_:
+        k = blok[b["kab"], b["tgl"][:4]]
+        k[0].append(int(b["lv"] >= 1)); k[1].append(b["y"]); k[2].append(b["y0"])
+    f = lambda L, j: ets_dari([x for b in L for x in b[j]], [x for b in L for x in b[1]])
+    d = bootstrap_blok(dict(enumerate(blok.values())), lambda L: None if None in (f(L, 0), f(L, 2)) else f(L, 0) - f(L, 2), ulang)
+    sem = [[], [], []]
+    for b in blok.values():
+        for j in range(3):
+            sem[j] += b[j]
+    out = {"n_uji": len(sem[1]), "ets_aturan": f(list(blok.values()), 0), "ets_persistensi": f(list(blok.values()), 2),
+           "selisih_ets": None if d[0] is None else round(d[0], 4), "ci95": d[1],
+           "kontingensi_aturan": kontingensi(sem[0], sem[1]), "kontingensi_persistensi": kontingensi(sem[2], sem[1])}
+    out["vonis"] = "LOLOS" if d[1] and d[1][0] > 0 else "GAGAL"
     return out
 
 
@@ -544,7 +527,7 @@ def main(a):
         print(len(baris), "baris", file=sys.stderr)
         hasil, (w, mu, sd) = latih_uji(baris)
         peta = mcdwd.muat_peta()
-        val = validasi_aturan(S, mcdwd.baca_arsip(), peta)
+        val = validasi_aturan(S, baris)
         hasil["w"], hasil["mu"], hasil["sd"] = [round(v, 6) for v in w], [round(v, 6) for v in mu], [round(v, 6) for v in sd]
         tulis(hasil, val)
         print(json.dumps({k: hasil[k] for k in ("n_latih", "n_uji", "positif_latih", "positif_uji", "auc", "brier", "skill_brier_vs_klim", "vonis", "alasan")}, indent=1, ensure_ascii=False))
