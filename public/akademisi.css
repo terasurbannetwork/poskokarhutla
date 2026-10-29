@@ -16,10 +16,8 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-ringkas div{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:12px;row-gap:4px;align-items:center;padding:0 32px;border-left:1px solid oklch(100% 0 0 / .14);min-width:0}
 .ak-ringkas div:first-child{padding-left:0;border-left:0}
 .ak-ringkas svg{grid-row:1/3;width:40px;height:40px;padding:9px;border-radius:12px;fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;background:oklch(100% 0 0 / .1)}
-.ak-ringkas div:first-child svg{stroke:#ffa86b;background:oklch(75% .14 55 / .18)}
 .ak-ringkas b{font-family:var(--display);font-size:clamp(22px,2.4vw,30px);line-height:1;font-weight:800;letter-spacing:-.02em;color:#fff;font-variant-numeric:tabular-nums}
-.ak-ringkas div:first-child b{color:#ffa86b}
-.ak-ringkas span{font-size:12.5px;line-height:1.3;color:oklch(100% 0 0 / .7);white-space:nowrap}
+.ak-ringkas span{font-size:12.5px;line-height:1.3;color:#fff;white-space:nowrap}
 .ak-panel{background:var(--card);border:1px solid var(--line);border-radius:var(--r);box-shadow:var(--shadow);padding:24px}
 .ak-kosong{display:grid;gap:10px;justify-items:start}
 .ak-kosong p{color:var(--ink2)}
