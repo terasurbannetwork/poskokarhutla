@@ -542,3 +542,29 @@ VONIS: **TIDAK LULUS**. Rincian: `{"dETS_waspada_vs_aturan": false, "dETS_waspad
  }
 }
 ```
+
+## 12. Percobaan debit GloFAS: hasil validasi 2024-2025 (30 Okt 2026)
+
+Protokol: `PRAREG-DEBIT.md`, kode `model_kab_debit.py`. Dilatih 30 Okt 2026 01.05 WIB; sidik `48c0a9930917b4f5`, sidik kriteria
+`238c3db98f88e122` (jangkar `model_kab_debit.sidik`). Latih 2016-2023 (113.178 kab-hari, 1.283 kejadian), validasi 2024-2025
+(28.509 kab-hari, 388 kejadian). Uji A (2026-01..09) dan Uji B (2026-11..2027-04) BELUM dibuka.
+
+Kelompok terpilih menurut logloss M0: GBDT (0,0633 lawan regresi logistik 0,0646).
+
+| | AUC | Brier | logloss |
+| --- | --- | --- | --- |
+| M0 tanpa debit | 0,8045 | 0,01314 | 0,06330 |
+| M1 dengan debit | 0,7989 | 0,01315 | 0,06364 |
+| klimatologi | 0,7040 | 0,01332 | 0,06856 |
+
+Selisih M1 - M0 (CI95, batas terlebar dari dua skema blok):
+- Brier skill: -0,0008 [-0,0045, +0,0028];
+- dETS Waspada (9.258 alarm): -0,0006 [-0,0020, +0,0008];
+- dETS Siaga (1.575 alarm): +0,0023 [-0,0059, +0,0102].
+
+MDE80 pada ~200 kejadian: Waspada 0,0029, Siaga 0,0138 (hanya derau evaluasi; daya sebenarnya lebih rendah).
+
+Bacaan: di validasi, debit GloFAS tidak menambah keterampilan. AUC, Brier, logloss, dan dETS Waspada sedikit lebih buruk; hanya
+Siaga yang titiknya positif, dengan CI lebar. Validasi ini sudah terbuka (dipakai untuk setel dan Platt), jadi bukan vonis.
+Bila pola sama di Uji A, aturan kesia-siaan (dETS Waspada titik <= 0) akan menghentikan percobaan. Uji A dibuka sesudah
+2026-11-15 sesuai protokol.
