@@ -38,7 +38,6 @@ export default {
         "posko",
         "informasi",
         "kompleks",
-        "metode",
         "satelit",
         "tentang"
       ],
