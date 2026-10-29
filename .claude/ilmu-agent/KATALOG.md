@@ -1,7 +1,7 @@
 # Katalog armada agent — pengetahuan orkestrator
 
 > DI-GENERATE dari `scripts/agents/roster.json` (`npm run agents:build`). Jangan disunting tangan.
-> Armada: **23 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
+> Armada: **24 agent**. Aturan memakainya dan otoritas membuat agent baru: `AGENTS.md` §1.5.
 
 Cara memakai katalog ini:
 
@@ -13,7 +13,7 @@ Cara memakai katalog ini:
    muncul, panggil `general-purpose` dengan prompt "Kamu adalah <nama>: baca `.claude/agents/<nama>.md`
    dan jalankan `node scripts/agents/ilmu.mjs baca <nama>` dulu".
 
-## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (14)
+## Pengerja domain — memiliki wilayah berkas, boleh menyunting di wilayahnya (15)
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
@@ -31,6 +31,7 @@ Cara memakai katalog ini:
 | `ruang-bnpb` | sonnet | membangun halaman publik Ruang Koordinasi BNPB dan pipeline indeks risiko/kebutuhan | worker & D1; model sebaran; deploy | `public/bnpb/**`, `scripts/bnpb/**`, `tests/bnpb/**` +4 |
 | `pesisir` | sonnet | membangun & membetulkan pipeline abrasi garis pantai dan keluarannya | worker dan D1; layar banjir; karhutla; menyunting .github/workflows | `scripts/pesisir/**`, `public/pesisir/**`, `tests/pesisir/**` |
 | `neraca-air` | sonnet | membangun & membetulkan pipeline neraca air Jawa dan paket datanya | layar web; pipeline karhutla/banjir/kekeringan; memvalidasi modelnya sendiri (itu validasi-model) | `scripts/air/neraca/**`, `public/data/neraca_air/**`, `data/kajian-bnpb/neraca-air/**` |
+| `wa-bot` | sonnet | membangun & membetulkan gateway Baileys, pengatur otomatis, plist launchd, dan uji tanpa jaringan untuknya | worker dan D1 (warga-api); isi generator laporan (pipa-data); layar publik | `scripts/wa/**`, `tests/wa/**` |
 
 ## Pengerja platform — kerja menyeberang domain (layar, uji, gerbang, mesin, migrasi) (2)
 

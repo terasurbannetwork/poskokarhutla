@@ -213,17 +213,24 @@ class Deck:
 
     # ---------------------------------------------------------- isi teks yang tergantung data
     def tindak(s):
+        # kolom "Yang akan dilakukan BNPB" satu baris tanpa bungkus (wrap none, 8,2 pt, lebar ±3,3 inci): ±56 huruf muat.
+        # 29 Okt pemilik ("jelek banget"): "Pemadaman: TN Way Kambas, Karanganyar, Gn. Argopuro, Enrekang" meluap ke kolom sebelah.
+        def muat(awal, nama, batas=56):
+            for n in range(len(nama), 0, -1):
+                t = awal + ', '.join(nama[:n]) + (f' dan {len(nama) - n} lainnya' if n < len(nama) else '')
+                if len(t) <= batas: return t
+            return awal + nama[0][:max(batas - len(awal) - 1, 8)] + '…'
         # 28 Okt pemilik: "berinisiatif dikit tambahin atau ganti" -> tiap kolom diisi dari angka hari itu, bukan kalimat yang sama tiap hari
         sisa = sorted((x for x in s.KH if x['tangani'] and (not x['lokasi'] or x['lokasi'] not in KAWASAN)), key=lambda x: -x['sat']['sisa'])   # 29 Okt: kabupaten (Merauke) ikut
         nm = lambda x: x['lokasi'] or PENDEK(x['prov'])
         b1 = ['•  ' + ' dan '.join(f"{nm(x)} ±{f0(x['sat']['sisa'])} ha" for x in sisa[:2]) + ' belum padam'] if sisa else []
         kab = [x['lokasi'].replace('Gunung ', 'Gn. ') for x in s.KH if x['lokasi'] and x['status'] == 'belum' and x['tangani']]   # Gn.: muat dua baris (26 Okt)
         jaga = [nm(x) for x in sisa[2:] if x['perhatian']]
-        if kab: b1.append('•  Pemadaman: ' + ', '.join(kab))
-        elif jaga: b1.append('•  Patroli dan pendinginan: ' + ', '.join(jaga[:3]))
+        if kab: b1.append(muat('•  Pemadaman: ', kab))
+        elif jaga: b1.append(muat('•  Patroli dan pendinginan: ', jaga[:3]))
         elif len(sisa) > 2: b1.append(f"•  Pantau {len(sisa) - 2} provinsi lain dengan sisa api")
         kota = list(dict.fromkeys(k for k, v, kat in s.w['pm'] if kat.lower() in ('berbahaya', 'sangat tidak sehat')))[:2]
-        b2 = ['•  Masker dan layanan ISPA: ' + ', '.join(kota)] if kota else ['•  Pemantauan kualitas udara di wilayah terdampak asap']
+        b2 = [muat('•  Masker dan layanan ISPA: ', kota)] if kota else ['•  Pemantauan kualitas udara di wilayah terdampak asap']
         ungsi = []
         for x in s.KJ:
             m = re.search(r'([\d.]+)\s*jiwa\s*mengungsi', x.get('teks', {}).get('dampak', ''))

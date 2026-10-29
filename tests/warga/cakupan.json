@@ -5,6 +5,7 @@
     "POST /api/wa/fonnte": "kunci salah ditolak, pengirim asing diam tidak disimpan",
     "GET /api/wa/masuk": "berkas dari url Fonnte masuk R2 dan hanya admin yang bisa membacanya",
     "GET /api/wa/berkas": "berkas dari url Fonnte masuk R2 dan hanya admin yang bisa membacanya",
+    "GET /api/wa/rekap": "rekap: pintu admin, dedupe tempelan ganda, hari kosong tetap ada",
     "GET /admin/drone": "admin moderator, staf peran apa pun, dan akun instansi aktif membuka /admin/drone",
     "table satelit_granul": "satelit granul: migrasi 0075 idempoten (dua kali lagi tanpa galat), CHECK",
     "table satelit_ringkas": "satelit granul: migrasi 0075 idempoten (dua kali lagi tanpa galat), CHECK",

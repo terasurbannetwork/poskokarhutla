@@ -165,6 +165,7 @@ const imporHtml = () => `<div class="lb-impor">
     </div>
     <div class="lb-impor-st" id="lbUraiSt" role="status" aria-live="polite"></div>
     <pre class="lb-impor-pv" id="lbUraiPv" hidden></pre>
+    <div class="lb-masuk" id="lbMasuk" aria-live="polite"></div>
   </div>`;
 const htmlBlok = b => `<summary>${esc(b.judul)}${b.tabel ? ` <small>${(ambil(S.isi, b.tabel) || []).length} baris</small>` : ""}${b.kartu ? ` <small>${(ambil(S.isi, b.kartu) || []).length} kejadian</small>` : ""}</summary>
     ${b.ket ? `<p class="lb-ket">${esc(b.ket)}</p>` : ""}${(b.tombol || []).map(([a, l]) => `<button type="button" class="pp-btn kecil ke2" data-a="${a}">${esc(l)}</button>`).join("")}
@@ -353,6 +354,32 @@ async function muatDaftar() {
   catch (e) { S.daftar = []; if (e.status === 403) status("Belum masuk: laporan tidak bisa disimpan. Masuk lewat /admin/masuk."); }
   $("#lbDaftar").innerHTML = `<option value="">Laporan tersimpan…</option>` + S.daftar.map(d => `<option value="${d.tanggal}"${d.tanggal === S.tanggal ? " selected" : ""}>${LB.tglP(d.tanggal)}</option>`).join("");
 }
+/* panel "Laporan masuk": GET /api/wa/rekap, 14 hari berakhir di S.tanggal; klik kepala kolom = ganti tanggal */
+let _masukNo = 0;
+const jamWib = ms => new Date(ms + 7 * 3600e3).toISOString().slice(11, 16).replace(":", ".");
+async function muatMasuk() {
+  const el = $("#lbMasuk"); if (!el) return;
+  const no = ++_masukNo, tgl = S.tanggal; el.textContent = "Memuat…";
+  let r;
+  try { r = await api(`/api/wa/rekap?sampai=${tgl}&hari=14`); }
+  catch (e) { if (no === _masukNo && $("#lbMasuk")) $("#lbMasuk").textContent = e.status === 403 ? "Masuk sebagai admin untuk melihat laporan masuk." : `Laporan masuk gagal dimuat: ${e.message}`; return; }
+  if (no !== _masukNo || !$("#lbMasuk")) return;
+  const ada = (p, k) => p.isi?.[k]?.n > 0, ini = r.per.find(p => p.tanggal === tgl) || r.per[0];
+  const wajib = r.jenis.filter(j => j.wajib), masuk = ini ? wajib.filter(j => ada(ini, j.kunci)) : [], belum = wajib.filter(j => !masuk.includes(j));
+  const nf = n => n.toLocaleString("id-ID");
+  const kalimat = `${nf(masuk.length)} dari ${nf(wajib.length)} laporan wajib sudah masuk untuk ${LB.tglK(tgl)}.${belum.length ? ` Belum: ${belum.map(j => j.label).join(", ")}.` : ""}`;
+  const sel = (p, j, k) => { const x = p.isi?.[j.kunci], n = x?.n || 0;
+    return n > 0 ? `<td class="lb-ms ada" title="${esc(`${nf(n)} kiriman, terakhir ${x.terakhir ? jamWib(x.terakhir) + " WIB" : "-"}`)}">&#10003;</td>`
+      : `<td class="lb-ms ${j.wajib ? "belum" : "kosong"}" title="${esc(`Belum ada kiriman${j.wajib ? " (wajib)" : ""}`)}">&#9675;</td>`; };
+  const kep = r.per.map(p => `<th scope="col"${p.tanggal === tgl ? ' class="pilih"' : ""}><button type="button" data-tgl="${p.tanggal}" title="${esc(LB.tglP(p.tanggal))}">${p.tanggal.slice(8)}/${p.tanggal.slice(5, 7)}</button></th>`).join("");
+  const baris = r.jenis.map(j => `<tr><th scope="row">${esc(j.label)}</th>${r.per.map(p => sel(p, j)).join("")}</tr>`).join("")
+    + `<tr><th scope="row">Lain-lain</th>${r.per.map(p => p.lain > 0 ? `<td class="lb-ms ada" title="${esc(`${nf(p.lain)} kiriman lain`)}">${nf(p.lain)}</td>` : `<td class="lb-ms kosong">&#9675;</td>`).join("")}</tr>`;
+  el.innerHTML = `<p class="lb-masuk-k">${esc(kalimat)}</p><div class="lb-masuk-t"><table><thead><tr><th></th>${kep}</tr></thead><tbody>${baris}</tbody></table></div>`;
+}
+$("#lbForm").addEventListener("click", async e => {
+  const b = e.target.closest("#lbMasuk button[data-tgl]"); if (!b || b.dataset.tgl === S.tanggal) return;
+  status(`Membuka laporan ${LB.tglP(b.dataset.tgl)}…`); await jeda(); buka(b.dataset.tgl, {dariTerakhir: true});
+});
 async function buka(tanggal, {dariTerakhir = false} = {}) {
   tulisDraf();
   S.tanggal = tanggal; $("#lbTgl").value = tanggal;
@@ -365,7 +392,7 @@ async function buka(tanggal, {dariTerakhir = false} = {}) {
   }
   S.isi = {...BARU[S.jenis](tanggal), ...(isi || {})}; S.ubah = !!asal && asal !== "tersimpan di server";
   $("#lbSimpan").classList.toggle("perlu", S.ubah);
-  gambarForm(); status(asal ? `Laporan ${LB.tglP(tanggal)}: ${asal}.` : `Laporan baru ${LB.tglP(tanggal)}. Isi angkanya, pratinjau berubah langsung.`); jadwalkan();
+  gambarForm(); status(asal ? `Laporan ${LB.tglP(tanggal)}: ${asal}.` : `Laporan baru ${LB.tglP(tanggal)}. Isi angkanya, pratinjau berubah langsung.`); jadwalkan(); muatMasuk();
 }
 async function simpan() {
   const b = $("#lbSimpan"); b.disabled = true; status("Menyimpan…");

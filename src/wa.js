@@ -7,6 +7,7 @@
    Jenis: tagar #karhutla / #bencana, selain itu kata kunci karhutla di teks atau nama berkas, selain itu bencana. */
 import {json, gagal, adminOK, sha} from "./worker.js";
 import {KONTROL, tglSah} from "./posko.js";
+import {JENIS_LAPORAN, kenali} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
 const MAKS_BODY = 262144, MAKS_TEKS = 65536, MAKS_HARI = 500;
@@ -86,7 +87,26 @@ async function berkas(env, req, url, kini) {
     "cache-control": "private, no-store", "x-content-type-options": "nosniff", "content-security-policy": "sandbox"}});
 }
 
+/* pelacak kedatangan: per hari, jenis laporan mana yang sudah tiba (src/wa_jenis.js, tanpa membaca angka). Satu kueri lewat indeks wa_masuk_tanggal. */
+async function rekap(env, req, url, kini) {
+  if (!await adminOK(env, req, kini)) return gagal(403, "perlu masuk admin");
+  const sampai = url.searchParams.get("sampai") || hariWib(kini), hari = Math.min(31, Math.max(1, Math.trunc(Number(url.searchParams.get("hari") ?? 14)) || 14));
+  if (!tglSah(sampai)) return gagal(400, "sampai harus YYYY-MM-DD");
+  const hariKe = i => new Date(Date.parse(sampai) - i * 864e5).toISOString().slice(0, 10), awal = hariKe(hari - 1);
+  const r = await env.DB.prepare("SELECT id, diterima, tanggal, nama_berkas, substr(teks, 1, 1500) teks FROM wa_masuk WHERE tanggal BETWEEN ?1 AND ?2 ORDER BY diterima").bind(awal, sampai).all();
+  const per = Array.from({length: hari}, (_, i) => ({tanggal: hariKe(i), isi: {}, lain: 0, lihat: new Set()})), peta = new Map(per.map(p => [p.tanggal, p]));
+  for (const m of r.results) {
+    const p = peta.get(m.tanggal); if (!p) continue;
+    const k = kenali(m.teks, m.nama_berkas), sidik = `${k}|${k === "laphar_pdf" ? m.nama_berkas : m.teks ?? m.nama_berkas}`;
+    if (k) { const e = p.isi[k] ??= {n: 0, terakhir: 0}; e.terakhir = Math.max(e.terakhir, m.diterima); if (!p.lihat.has(sidik)) e.n++; }
+    else if (!p.lihat.has(sidik)) p.lain++;
+    p.lihat.add(sidik);
+  }
+  return json({sampai, hari, jenis: JENIS_LAPORAN, per: per.map(({lihat, ...p}) => p)}, 200, {"cache-control": "no-store"});
+}
+
 export const RUTE_WA = {
+  "GET /api/wa/rekap": (env, req, url, kini) => rekap(env, req, url, kini),
   "POST /api/wa/fonnte": (env, req, url, kini) => terima(env, req, url, kini),
   "GET /api/wa/masuk": (env, req, url, kini) => daftar(env, req, url, kini),
   "GET /api/wa/berkas": (env, req, url, kini) => berkas(env, req, url, kini),

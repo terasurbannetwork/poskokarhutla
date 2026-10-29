@@ -490,6 +490,26 @@
         "public/data/neraca_air/**",
         "data/kajian-bnpb/neraca-air/**"
       ]
+    },
+    {
+      "nama": "wa-bot",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja bot WhatsApp di Mac mini: gateway Baileys (terima bahan, kirim PDF/PPT), pengatur otomatis yang menjalankan generator laporan harian dan penanganan begitu bahan lengkap, layanan launchd.",
+      "kapan": "scripts/wa/** disentuh atau rusak, atau alur kirim laporan otomatis lewat WA bermasalah",
+      "fokus": [
+        "Generator deterministik; tidak ada LLM yang mengurai angka untuk laporan yang terkirim",
+        "Laporan hanya terkirim bila pengurai lolos; galat dikirim ke nomor pemilik saja, bukan ke penerima",
+        "Angka hotspot, firespot, luas terbakar, luas belum padam hanya dari sistem; angka satgas lain boleh",
+        "Nomor bot khusus, jeda kirim anti-blokir, rahasia di .env lokal di luar git"
+      ],
+      "larangan": "Jangan menyentuh worker/D1 (warga-api), generator data/laporan-bnpb/generator (pipa-data), atau public/**. Tidak push, tidak deploy, tidak mengirim WA sungguhan saat uji.",
+      "bisa": "membangun & membetulkan gateway Baileys, pengatur otomatis, plist launchd, dan uji tanpa jaringan untuknya",
+      "tidak": "worker dan D1 (warga-api); isi generator laporan (pipa-data); layar publik",
+      "milik": [
+        "scripts/wa/**",
+        "tests/wa/**"
+      ]
     }
   ]
 }

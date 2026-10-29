@@ -54,3 +54,16 @@
 .lb-layar-msg[hidden]{display:none}
 .lb-layar-stage{position:absolute;left:50%;top:50%;transform-origin:50% 50%}
 @media (max-width:1100px){.lb-badan{grid-template-columns:1fr}.lb-isian{position:static;max-height:none}}
+
+.lb-masuk{display:grid;gap:6px;min-width:0}
+.lb-masuk-k{margin:0;font-size:12px;font-weight:600;color:var(--ink)}
+.lb-masuk-t{overflow-x:auto;max-width:100%;border:1px solid var(--line);border-radius:10px;background:var(--card)}
+.lb-masuk-t table{border-collapse:collapse;font-size:11px;white-space:nowrap}
+.lb-masuk-t th,.lb-masuk-t td{padding:4px 7px;border-bottom:1px solid var(--line);text-align:center}
+.lb-masuk-t tbody th{text-align:left;font-weight:600;color:var(--ink);position:sticky;left:0;background:var(--card)}
+.lb-masuk-t thead button{all:unset;cursor:pointer;font:600 11px/1.2 system-ui,sans-serif;color:var(--ink2)}
+.lb-masuk-t thead th.pilih{background:color-mix(in srgb,var(--bad,#c9503a) 12%,var(--card))}
+.lb-masuk-t thead th.pilih button{color:var(--ink);font-weight:800}
+.lb-ms.ada{color:var(--ok,#2e7d4f);font-weight:800}
+.lb-ms.kosong{color:var(--ink2);opacity:.45}
+.lb-ms.belum{color:var(--bad,#c9503a);background:color-mix(in srgb,var(--bad,#c9503a) 12%,var(--card))}
