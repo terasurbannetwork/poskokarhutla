@@ -241,7 +241,7 @@ export async function jalankan(opsi = {}) {
         // Salin ke Google Drive sekali per versi; gagal = WA tetap terkirim tanpa link, PEMILIK dikabari lewat galat().
         if (!e.linkDrive && !kering && dep.unggahDrive) {
           try {
-            e.linkDrive = (await dep.unggahDrive({ tanggal, revisi: e.revisi, berkas: berkas.map((b) => ({ p: b.p, mime: MIME[b.x] })) })) || ''
+            e.linkDrive = (await dep.unggahDrive({ tanggal, laporan: lap.id, revisi: e.revisi, berkas: berkas.map((b) => ({ p: b.p, mime: MIME[b.x] })) })) || ''
             delete state.gagal['drive:' + kunci]
           } catch (x) { await galat('drive:' + kunci, `Unggah ke Google Drive gagal, WA tetap dikirim tanpa link: ${String(x.message).slice(0, 200)}`) }
           state.laporan[kunci] = e; simpan()
