@@ -156,3 +156,389 @@ tertangkap `frek_dibi` dan `bahaya_b`. Hiperparameter diambil dari `kandidat.jso
 dengan fitur dasar (validasi dipakai ganda untuk Platt dan hiper); biasnya menguntungkan model dasar, jadi searah dengan hasil negatif, bukan
 melemahkannya (catatan validasi-model 29 Okt 2026). Mengulang: `V=<venv numpy+rasterio>; $V scripts/banjir/lab_tutupan.py ambil; python3 scripts/banjir/lab_tutupan.py jalan`
 (swauji: `python3 scripts/banjir/lab_tutupan.py uji`).
+
+## 10. Hasil uji 2024-2025 (dibuka 2026-10-29, sidik `e20232cfb3fb0b1a`, sidik kriteria `c890cedf7b4ca4dd`)
+
+VONIS: **TIDAK LULUS**. Rincian: `{"dETS_waspada_vs_aturan": false, "dETS_waspada_vs_lr": false, "dETS_waspada_vs_klimatologi": true, "dETS_siaga_vs_aturan": false, "dETS_siaga_vs_lr": false, "dETS_siaga_vs_klimatologi": true, "brier_skill_ci_bawah": true, "penjaga_auc_lr": false}`
+
+```json
+{
+ "n": 28509,
+ "kej": 388,
+ "laju": 0.0136,
+ "kab": 39,
+ "probabilitas": {
+  "model": {
+   "auc": 0.7671674358635016,
+   "brier": 0.013189318098963445,
+   "logloss": 0.06539013932556799,
+   "brier_skill_vs_klim": 0.011530623711635046,
+   "bss_ci": [
+    0.007212479195408794,
+    0.015493787458293662
+   ]
+  },
+  "lr": {
+   "auc": 0.7696480635779769,
+   "brier": 0.013187593671427399,
+   "logloss": 0.06522299447809415,
+   "brier_skill_vs_klim": 0.011659860401371347,
+   "bss_ci": [
+    0.007723599271825199,
+    0.015285855428351036
+   ]
+  },
+  "klimatologi": {
+   "auc": 0.6767928872908202,
+   "brier": 0.013343173208348318,
+   "logloss": 0.069485320056496
+  },
+  "aturan": {
+   "auc": 0.6666777258951284,
+   "brier": 0.013312597369672226,
+   "logloss": 0.0689259825243542,
+   "brier_skill_vs_klim": 0.0022914967976321865,
+   "bss_ci": [
+    -0.002049669766937434,
+    0.006800915735933111
+   ]
+  }
+ },
+ "waspada": {
+  "alarm": 9258,
+  "laju_alarm": 0.3247,
+  "seri_di_ambang": {
+   "model": 1,
+   "lr": 1,
+   "klimatologi": 57
+  },
+  "aturan": {
+   "pod": 0.6237,
+   "far": 0.9739,
+   "csi": 0.0257,
+   "pss": 0.3031,
+   "ets": 0.0125,
+   "ci": {
+    "pod": [
+     0.546,
+     0.698
+    ],
+    "far": [
+     0.968,
+     0.979
+    ],
+    "csi": [
+     0.02,
+     0.032
+    ],
+    "pss": [
+     0.237,
+     0.375
+    ],
+    "ets": [
+     0.009,
+     0.016
+    ]
+   }
+  },
+  "model": {
+   "pod": 0.7113,
+   "far": 0.9702,
+   "csi": 0.0295,
+   "pss": 0.3919,
+   "ets": 0.0162,
+   "ci": {
+    "pod": [
+     0.593,
+     0.808
+    ],
+    "far": [
+     0.965,
+     0.976
+    ],
+    "csi": [
+     0.024,
+     0.035
+    ],
+    "pss": [
+     0.294,
+     0.478
+    ],
+    "ets": [
+     0.012,
+     0.02
+    ]
+   }
+  },
+  "lr": {
+   "pod": 0.6985,
+   "far": 0.9707,
+   "csi": 0.0289,
+   "pss": 0.3789,
+   "ets": 0.0157,
+   "ci": {
+    "pod": [
+     0.59,
+     0.793
+    ],
+    "far": [
+     0.965,
+     0.976
+    ],
+    "csi": [
+     0.023,
+     0.034
+    ],
+    "pss": [
+     0.295,
+     0.458
+    ],
+    "ets": [
+     0.012,
+     0.019
+    ]
+   }
+  },
+  "klimatologi": {
+   "pod": 0.5387,
+   "far": 0.9774,
+   "csi": 0.0221,
+   "pss": 0.2169,
+   "ets": 0.0089,
+   "ci": {
+    "pod": [
+     0.417,
+     0.65
+    ],
+    "far": [
+     0.973,
+     0.982
+    ],
+    "csi": [
+     0.018,
+     0.026
+    ],
+    "pss": [
+     0.128,
+     0.31
+    ],
+    "ets": [
+     0.006,
+     0.013
+    ]
+   }
+  },
+  "d_ets_lr_vs_aturan": {
+   "nilai": 0.0032,
+   "ci": [
+    0.0001,
+    0.0062
+   ]
+  },
+  "d_ets_klimatologi_vs_aturan": {
+   "nilai": -0.0036,
+   "ci": [
+    -0.0081,
+    0.0005
+   ]
+  },
+  "d_ets_model_vs_aturan": {
+   "nilai": 0.0037,
+   "ci": [
+    -0.0004,
+    0.0078
+   ]
+  },
+  "d_ets_model_vs_lr": {
+   "nilai": 0.0005,
+   "ci": [
+    -0.0016,
+    0.0028
+   ]
+  },
+  "d_ets_model_vs_klimatologi": {
+   "nilai": 0.0073,
+   "ci": [
+    0.0041,
+    0.011
+   ]
+  },
+  "d_ets_model_vs_aturan_pulau_minggu": {
+   "nilai": 0.0037,
+   "ci": [
+    0.0014,
+    0.0062
+   ],
+   "blok": 636
+  }
+ },
+ "siaga": {
+  "alarm": 1575,
+  "laju_alarm": 0.0552,
+  "seri_di_ambang": {
+   "model": 1,
+   "lr": 1,
+   "klimatologi": 62
+  },
+  "aturan": {
+   "pod": 0.1933,
+   "far": 0.9524,
+   "csi": 0.0397,
+   "pss": 0.14,
+   "ets": 0.0287,
+   "ci": {
+    "pod": [
+     0.134,
+     0.261
+    ],
+    "far": [
+     0.938,
+     0.966
+    ],
+    "csi": [
+     0.028,
+     0.052
+    ],
+    "pss": [
+     0.085,
+     0.203
+    ],
+    "ets": [
+     0.018,
+     0.04
+    ]
+   }
+  },
+  "model": {
+   "pod": 0.2526,
+   "far": 0.9378,
+   "csi": 0.0525,
+   "pss": 0.2001,
+   "ets": 0.0415,
+   "ci": {
+    "pod": [
+     0.158,
+     0.358
+    ],
+    "far": [
+     0.923,
+     0.95
+    ],
+    "csi": [
+     0.041,
+     0.063
+    ],
+    "pss": [
+     0.122,
+     0.283
+    ],
+    "ets": [
+     0.031,
+     0.051
+    ]
+   }
+  },
+  "lr": {
+   "pod": 0.25,
+   "far": 0.9384,
+   "csi": 0.052,
+   "pss": 0.1974,
+   "ets": 0.041,
+   "ci": {
+    "pod": [
+     0.153,
+     0.362
+    ],
+    "far": [
+     0.927,
+     0.95
+    ],
+    "csi": [
+     0.04,
+     0.061
+    ],
+    "pss": [
+     0.119,
+     0.286
+    ],
+    "ets": [
+     0.031,
+     0.049
+    ]
+   }
+  },
+  "klimatologi": {
+   "pod": 0.183,
+   "far": 0.9549,
+   "csi": 0.0375,
+   "pss": 0.1295,
+   "ets": 0.0265,
+   "ci": {
+    "pod": [
+     0.074,
+     0.305
+    ],
+    "far": [
+     0.944,
+     0.97
+    ],
+    "csi": [
+     0.023,
+     0.047
+    ],
+    "pss": [
+     0.047,
+     0.219
+    ],
+    "ets": [
+     0.013,
+     0.035
+    ]
+   }
+  },
+  "d_ets_lr_vs_aturan": {
+   "nilai": 0.0123,
+   "ci": [
+    -0.0006,
+    0.0239
+   ]
+  },
+  "d_ets_klimatologi_vs_aturan": {
+   "nilai": -0.0022,
+   "ci": [
+    -0.0186,
+    0.0114
+   ]
+  },
+  "d_ets_model_vs_aturan": {
+   "nilai": 0.0128,
+   "ci": [
+    -0.0007,
+    0.0248
+   ]
+  },
+  "d_ets_model_vs_lr": {
+   "nilai": 0.0006,
+   "ci": [
+    -0.007,
+    0.0086
+   ]
+  },
+  "d_ets_model_vs_klimatologi": {
+   "nilai": 0.015,
+   "ci": [
+    0.0063,
+    0.0275
+   ]
+  },
+  "d_ets_model_vs_aturan_pulau_minggu": {
+   "nilai": 0.0128,
+   "ci": [
+    0.003,
+    0.022
+   ],
+   "blok": 636
+  }
+ }
+}
+```
