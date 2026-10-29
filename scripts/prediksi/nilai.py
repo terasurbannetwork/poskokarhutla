@@ -409,7 +409,7 @@ def uji():
         assert g1["frek"] == 1.0 and g1["mae_mulai"] == 2.0 and g1["mae_lama"] == 1.0 and g1["mae_tot"] == 7.0, g1
         assert s["kode"]["ASP"]["status"] == "menunggu" and "stasiun" in s["kode"]["ASP"]["alasan"]
         am = D.baca(jalur_amatan("HJN", d))
-        assert am["2026-09-14"]["j"] == "final" and am["2026-09-19"]["j"] == "sementara"
+        assert am["2026-09-14"]["j"] == "final" and am["2026-09-15"]["j"] == "sementara"
         assert "2026-09-20" not in am, "sasaran hari ini belum matang, tidak diamati"
         # jalan kedua: tidak mengunduh ulang yang sudah final
         dipanggil.clear()

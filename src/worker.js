@@ -35,6 +35,7 @@ import {RUTE_UJI_PILOT} from "./uji_pilot.js";
 import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
+import {RUTE_PREDIKSI} from "./prediksi.js";
 import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
 import {RUTE_DRONE} from "./drone.js";
 import {RUTE_WA} from "./wa.js";
@@ -568,6 +569,7 @@ const RUTE = {
   ...RUTE_UJI,   // uji lapangan karhutla: GET /api/uji-lapangan agregat Q1-Q5, tanpa data pribadi (src/uji_lapangan.js)
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
+  ...RUTE_PREDIKSI,   // /prediksi fase 2: konfirmasi lapangan (src/prediksi.js)
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
   ...RUTE_WA,   // kotak masuk WA laporan harian lewat gerbang Baileys, tanpa balasan (src/wa.js)
   ...RUTE_DRONE,   // atur drone ke gambut membara: halaman staf/instansi /admin/drone (src/drone.js, docs/bnpb/PANDUAN-DRONE-GAMBUT.md)
@@ -650,6 +652,7 @@ export const HTML_RUTE = [
   [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
   [/^\/monitor\/?$/, "/monitor.html", "/monitor"],   // monitor peringatan api untuk staf BNPB dan BPBD (public/monitor*, src/monitor.js); tetap tertutup di centurisk97.id, tiap API menjaga sesinya
   [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
+  [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); di balik login, TIDAK di PUBLIK_TANPA_SESI
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */

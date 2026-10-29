@@ -1,0 +1,49 @@
+name: Prediksi harian
+
+# Sekali sehari 08.50 WIB, setelah banjir.yml (07.20 WIB): bekukan prediksi, nilai yang matang, kalibrasi berpenjaga, terbitkan JSON.
+# Hanya meng-commit public/prediksi/data/**; tampilan terbit lewat terbit.yml, bukan dari sini.
+on:
+  schedule:
+    - cron: "50 1 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  prediksi:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      # riwayat penuh: arsip append-only dijaga dari menyusut (keluar kode 3)
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji mandiri
+        run: |
+          for s in catat nilai kalibrasi terbit; do python3 scripts/prediksi/$s.py uji; done
+
+      - name: Catat, nilai, kalibrasi, terbit
+        run: |
+          python3 scripts/prediksi/catat.py
+          python3 scripts/prediksi/nilai.py
+          python3 scripts/prediksi/kalibrasi.py
+          python3 scripts/prediksi/terbit.py
+
+      - name: Commit data prediksi
+        run: |
+
+
+
+exit 0
+
+          for i in 1 2 3; do git pull -q --rebase && exit 0; sleep $((i * 5)); done
+          echo "::error::push data prediksi gagal"; exit 1

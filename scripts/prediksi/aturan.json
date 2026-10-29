@@ -16,7 +16,7 @@
         {"v": "HJN.tot", "op": ">=", "nilai": 50, "sumber": "BMKG: hujan lebat >= 50 mm/24 jam"},
         {"v": "HJN.sm", "op": ">=", "nilai": 0.45, "sumber": "tanah jenuh: kelembapan 3-27 cm >= 0,45 m3/m3 (ambang status.py SM_JENUH)"}
       ],
-      "paparan": {"jenis": "kec_bahaya", "bahaya": "banjir", "ambang": 0.666, "sumber": "kecamatan berindeks bahaya banjir InaRISK tinggi (>= 0,666)"},
+      "paparan": {"jenis": "kec_bahaya", "bahaya": "banjir", "ambang": 0.666, "sumber": "kecamatan berindeks bahaya banjir InaRISK tinggi (>= 0,666, nilai tertinggi 10 titik per kecamatan); seluruh penduduk kecamatan itu = batas atas"},
       "mengungsi": {"jenis_dibi": ["Banjir", "Banjir Bandang", "Banjir Genangan", "Banjir dan Tanah Longsor"]}
     },
     {
@@ -26,7 +26,7 @@
         {"v": "HJN.tot", "op": ">=", "nilai": 100, "sumber": "BMKG: hujan sangat lebat >= 100 mm/24 jam"},
         {"v": "HJN.tot3", "op": ">=", "nilai": 150, "sumber": "jumlah 3 hari >= 150 mm (RANCANGAN aturan longsor)"}
       ],
-      "paparan": {"jenis": "kec_bahaya", "bahaya": "longsor", "ambang": 0.666, "sumber": "kecamatan berindeks bahaya longsor InaRISK tinggi (>= 0,666), pengganti lereng curam"},
+      "paparan": {"jenis": "kec_bahaya", "bahaya": "longsor", "ambang": 0.666, "sumber": "kecamatan berindeks bahaya longsor InaRISK tinggi (>= 0,666), pengganti lereng curam; seluruh penduduk kecamatan itu = batas atas"},
       "mengungsi": {"jenis_dibi": ["Tanah Longsor", "Gerakan Tanah", "Banjir dan Tanah Longsor"]}
     },
     {

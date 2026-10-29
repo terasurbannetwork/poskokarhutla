@@ -38,7 +38,7 @@ jobs:
     env:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
-      PIPA: titik|data|banjir|gempa|lintas|statis|udara|titik_palsu
+      PIPA: titik|data|banjir|gempa|lintas|prediksi|statis|udara|titik_palsu
     steps:
       - name: Redam, lalu tunggu slot antre grup data bebas dari pipeline
         shell: bash

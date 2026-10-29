@@ -170,7 +170,7 @@ def evaluasi(a, kab, n):
     return None if None in hasil or not hasil else True
 
 
-def terbit(akar=D.AKAR, folder=None, data=None, entri=None):
+def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
     data = data or D.DATA
     daftar = D.kab(akar)
     cari = D.pencari(daftar)

@@ -1,6 +1,9 @@
 {
   "_catatan": "Registri cakupan Lapor Warga + titik 3 jam. Tiap rute di src/worker.js dan tiap tabel/trigger di migrations/ WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada) atau 'dikecualikan' (nilai = alasan). 'antre' = utang eksplisit, hanya boleh menyusut (gerbang menolak kalau bertambah).",
   "diuji": {
+    "table prediksi_konfirmasi": "POST: kode regu sah tersimpan, kirim ulang menimpa",
+    "POST /api/prediksi/konfirmasi": "POST: field salah ditolak 400 dan tidak tersimpan",
+    "GET /api/prediksi/konfirmasi": "GET /api/prediksi/konfirmasi: tanpa token 401",
     "table wa_masuk": "teks dari nomor terdaftar tersimpan dengan tanggal dan jenisnya",
     "POST /api/wa/gateway": "kunci salah ditolak, pengirim asing diam tidak disimpan",
     "GET /api/wa/masuk": "berkas masuk R2, dibaca admin dan mesin",
