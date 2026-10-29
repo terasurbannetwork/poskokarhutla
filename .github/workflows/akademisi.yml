@@ -1,0 +1,42 @@
+name: Perbarui direktori akademisi
+
+# Sebulan sekali (tgl 1, 03.00 WIB): segarkan metrik pakar dari OpenAlex dan tambah pakar baru di R2
+# (poskokarhutla-foto, akademisi/induk.json). Data TIDAK di repo dan TIDAK dicetak; ringkasan hanya hitungan.
+# Tidak commit dan tidak deploy, jadi di luar grup `data`. Kolom SINTA dipertahankan (lihat scripts/akademisi/perbarui.py).
+on:
+  schedule:
+    - cron: "0 20 1 * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Coba saja: tulis lokal, tanpa unggah ke R2"
+        type: boolean
+        default: true
+
+concurrency:
+  group: akademisi
+  cancel-in-progress: false
+
+jobs:
+  perbarui:
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Uji aturan gabung
+        run: python3 scripts/akademisi/uji_perbarui.py
+
+      - name: Perbarui induk akademisi
+        env:
+          OPENALEX_KEY: ${{ secrets.OPENALEX_KEY }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          # jadwal = unggah sungguhan; dispatch = ikut input (default coba saja)
+          DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run && '--dry-run' || '' }}
+        run: |
+          [ -n "$OPENALEX_KEY" ] || { echo "OPENALEX_KEY belum dipasang"; exit 1; }
+          python3 scripts/akademisi/perbarui.py $DRY

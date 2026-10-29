@@ -37,7 +37,7 @@ Cara memakai katalog ini:
 
 | Agent | Model | Bisa | Tidak bisa | Wilayah |
 | --- | --- | --- | --- | --- |
-| `mekanik-mesin` | sonnet | merawat workflow, skrip npm, settings, mesin agent | logika domain di skrip yang dipanggil workflow | `.github/workflows/**`, `package.json`, `package-lock.json` +5 |
+| `mekanik-mesin` | sonnet | merawat workflow, skrip npm, settings, mesin agent | logika domain di skrip yang dipanggil workflow | `.github/workflows/**`, `package.json`, `package-lock.json` +6 |
 | `penulis-gerbang` | sonnet | menulis gerbang dan uji integrasi lintas modul | memperbaiki kode domain yang digerbang | `tests/agen/**`, `tests/beban/**` |
 
 ## Pemeriksa — read-only, verifier berkonteks bersih (AGENTS.md §3.2) (7)
