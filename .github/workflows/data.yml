@@ -405,6 +405,14 @@ jobs:
           python3 scripts/data/kendala.py --uji && python3 scripts/data/kendala.py || echo "::warning title=kendala::kendala.py gagal; berkas lamanya dibiarkan"
           python3 scripts/data/taktik.py uji && python3 scripts/data/taktik.py || echo "::warning title=taktik::taktik.py gagal; tugas_kompleks.json tanpa rekomendasi"
 
+      # langkah sendiri: isi mundur FIRMS bisa lama, jangan sampai menghabiskan batas waktu kendala/taktik di atas
+      - name: Prioritas pembasahan KHG (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          FIRMS_MAP_KEY: ${{ secrets.FIRMS_MAP_KEY }}
+        run: python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
+
       # SIPPA: pemicu pra-posisi harian (DESAIN-TEKNIS §7.4). Hanya ke R2 sippa/ (dibaca Worker untuk staf), BUKAN public/data.
       # pemicu.py menerima --keluar <dir> (bukan env), jadi /tmp/sippa dipakai lewat argumen.
       - name: Pemicu SIPPA (boleh gagal)
@@ -451,7 +459,6 @@ jobs:
         continue-on-error: true
         timeout-minutes: 15
         run: python3 scripts/data/luas_citra.py uji && python3 scripts/data/luas_citra.py
-          python3 scripts/data/khg_prioritas.py --uji && python3 scripts/data/khg_prioritas.py || echo "::warning title=khg::khg_prioritas.py gagal; berkas lamanya dibiarkan"
 
       # ONI & status CPC bulanan, DMI mingguan: cukup tiap Senin (atau bila berkas belum ada)
       - name: Indeks iklim ENSO/IOD (boleh gagal)

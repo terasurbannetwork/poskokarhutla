@@ -70,8 +70,16 @@
     const tg = baru.filter(d => d.key === 2).length, sd = baru.length - tg, kab = new Map();
     for (const d of baru) { const k = `${d.kab}, ${namaProv(d.pk)}`; kab.set(k, (kab.get(k) || 0) + 1); }
     const top = [...kab].sort((a, b) => b[1] - a[1]).slice(0, 5), tdk = dekat();
+    /* sudah terlapor = ada kejadian (status apa pun) yang dipantau dalam JARAK_KM dari deteksi itu; tanpa sesi tugas tak diketahui */
+    const terlapor = d => tugas.some(t => km(t.lat, t.lon, d.lat, d.lon) <= JARAK_KM);
+    const blm = tugas ? baru.filter(d => !terlapor(d)) : [], blmKab = new Map();
+    for (const d of blm) { const k = `${d.kec ? "Kec. " + d.kec + ", " : ""}${d.kab}, ${namaProv(d.pk)}`; blmKab.set(k, (blmKab.get(k) || 0) + 1); }
+    const cekLapor = !tugas ? `<p class="mn-kecil">Masuk sebagai staf BNPB atau BPBD untuk mengecek apakah deteksi ini sudah terlapor.</p>`
+      : `<p><span class="mn-p t">${blm.length} belum terlapor</span> <span class="mn-p h">${baru.length - blm.length} sudah terlapor</span></p>`
+        + (blm.length ? `<ul>${[...blmKab].sort((a, b) => b[1] - a[1]).slice(0, 8).map(([k, n]) => `<li>${esc(k)}: ${n}</li>`).join("")}</ul>` : "");
     $("mnMJ").innerHTML = `<b>${baru.length}</b> deteksi api baru`;
     $("mnMIsi").innerHTML = `<p><span class="mn-p t">${tg} tinggi</span> <span class="mn-p s">${sd} sedang</span></p>
+      <div><b>Sudah terlapor?</b>${cekLapor}</div>
       <div><b>Kabupaten terbanyak</b><ul>${top.map(([k, n]) => `<li>${esc(k)}: ${n}</li>`).join("")}</ul></div>
       <div><b>Tugas terbuka dalam ${JARAK_KM} km</b>${tdk.length ? `<ul>${tdk.map(t => `<li>${esc(t.kec)}, ${esc(t.kab)}, ${esc(t.prov_nama || namaProv(t.prov))}</li>`).join("")}</ul>` : `<p class="mn-kecil">Tidak ada.</p>`}</div>`;
     $("mnBaca").hidden = !tdk.length || !pihak;

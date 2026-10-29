@@ -258,6 +258,17 @@ jobs:
           python3 scripts/bnpb/risiko.py --cek && python3 scripts/bnpb/risiko.py
           python3 scripts/bnpb/prioritas.py --cek && python3 scripts/bnpb/prioritas.py
 
+      # citra satelit punya cache sendiri (PNG besar, tidak ikut cache data-); jalur harus sama persis dengan simpanannya.
+      # Dipulihkan SEBELUM citra.py dan disimpan sesudahnya (pola data.yml); dulu dipulihkan sesudah, sehingga hasil run ini tertimpa cache lama.
+      - name: Pulihkan citra satelit
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            public/data/citra
+            public/data/citra.json
+          key: citra-${{ github.run_id }}
+          restore-keys: citra-
+
       # citra satelit ikut tiap 3 jam supaya galeri Insight & laci kompleks tidak pernah kosong (cache gambar dipakai ulang, jadi cepat)
       - name: Citra satelit kompleks prioritas (boleh gagal)
         continue-on-error: true
@@ -265,6 +276,15 @@ jobs:
         env:
           CITRA_DETIK: "300"
         run: python3 scripts/data/citra.py
+
+      - name: Simpan citra satelit
+        if: always() && hashFiles('public/data/citra.json') != ''
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            public/data/citra
+            public/data/citra.json
+          key: citra-${{ github.run_id }}
 
       - name: Gambar pratinjau tautan (boleh gagal)
         continue-on-error: true
@@ -279,16 +299,6 @@ jobs:
 
       - name: Salin peringatan BMKG terbaru
         run: cp public/banjir/data/peringatan.json public/data/ 2>/dev/null || true
-
-      # citra satelit punya cache sendiri (PNG besar, tidak ikut cache data-); jalur harus sama persis dengan simpanannya
-      - name: Pulihkan citra satelit
-        uses: actions/cache/restore@v4
-        with:
-          path: |
-            public/data/citra
-            public/data/citra.json
-          key: citra-${{ github.run_id }}
-          restore-keys: citra-
 
       - name: Terbitkan ke Cloudflare
         env:

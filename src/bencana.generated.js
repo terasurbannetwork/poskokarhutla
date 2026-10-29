@@ -24,11 +24,15 @@ export default {
         "metode",
         "satelit",
         "sim",
+        "monitor",
         "informasi",
         "foto",
         "pelaporan",
         "tentang"
       ],
+      "halaman": {
+        "monitor": "monitor.html"
+      },
       "tab_sembunyi": [
         "ringkasan",
         "posko",
