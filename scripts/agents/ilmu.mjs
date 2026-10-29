@@ -336,12 +336,15 @@ export function labelPrompt(teks, roster = muatRoster()) {
 // Pesan otomatis harness, bukan suara pemilik.
 const OTOMATIS = /^\s*<(task-notification|side-sessions-event|ci-monitor-event|system-reminder|agent-message)/
 
+// Perintah kendali sesi ("lanjut", "push") tidak membawa konteks apa pun.
+const KENDALI = /^(lanjut(kan)?|gas|ok(e|ay)?|ya|y|push|commit( \+ push)?|tolong coba lagi|coba lagi|solve|selesaikan|sori.{0,20}|masih ada|berapa lama( lagi)?|beraoa lama)[.!?\s]*$/i
+
 function cmdPromptCatat() {
   // Hook: tidak boleh pernah menahan prompt, apa pun yang terjadi.
   try {
     const m = JSON.parse(fs.readFileSync(0, 'utf8'))
     const asli = String(m.prompt ?? '').trim()
-    if (asli.length < 4 || OTOMATIS.test(asli)) return
+    if (asli.length < 4 || OTOMATIS.test(asli) || KENDALI.test(asli)) return
     const prompt = samarkan(asli)
     const t = stempelWib()
     const baris = { t, sesi: String(m.session_id ?? '').slice(0, 8), prompt, ...labelPrompt(prompt) }
