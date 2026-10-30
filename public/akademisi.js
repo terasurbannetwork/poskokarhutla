@@ -1409,8 +1409,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   }
   /* kartu tip wilayah peta: judul, angka ukuran terpilih dengan satuan, lalu baris fakta berlabel */
   /* lambang wilayah (lambang_wilayah.json: {prov: {kode: {logo}}, kab: {"kode|Nama Kab": {logo}}}), dimuat malas, opsional */
-  let LAMBANG = null; const muatLambang = () => LAMBANG ? Promise.resolve(LAMBANG) : (LAMBANG = {prov: {}, kab: {}}, ambilData("lambang_wilayah").then(d => { if (d && typeof d === "object") LAMBANG = {prov: d.prov || {}, kab: d.kab || {}}; if (typeof isiSide === "function" && $("akSideT")) nanti(isiSide); return LAMBANG; }));
-  const lambangUrl = (kode, kab) => urlOk(((kab ? LAMBANG?.kab?.[kode + "|" + kab] : LAMBANG?.prov?.[kode]) || {}).logo);
+  let LAMBANG = null; const muatLambang = () => LAMBANG ? LAMBANG.p : (LAMBANG = {kab: {}}, LAMBANG.p = fetch("/lambang/kabkota.json").then(r => r.ok ? r.json() : {}).catch(() => ({})).then(d => { LAMBANG.kab = d || {}; if (typeof isiSide === "function" && $("akSideT")) nanti(isiSide); return LAMBANG; }));
+  const lambangUrl = (kode, kab) => { if (!kode) return ""; if (!kab) return /^\d{2}$/.test(String(kode)) ? `/lambang/provinsi/${kode}.png` : ""; const slug = LAMBANG?.kab?.[kode + "|" + kab]; return slug ? `/lambang/kabkota/${slug}.png` : ""; };
   const lambangHtml = (url, px) => url ? `<img class="ak-lw" src="${esc(url)}" alt="" width="${px}" height="${px}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="ak-lw ak-lw0" style="width:${px}px;height:${px}px">${ikon(IKON_PIN, "currentColor")}</span>`;
   const turunanLb = x => /^(stasiun|balai|pos |kantor sar|lpp rri|rri |tvri|unit )/i.test(String(x.nama || "")) || /^(bmkg|sar|rri)$/i.test(String(x.sub || ""));
   const tipLogos = a => { const pakai = new Set(), hasil = [], skor = x => (strat("L:" + x.id) ? 1000 : 0) + (terhLb(x.id)[0] || 0) + bobot(x), urut = a.slice().sort((p, q) => skor(q) - skor(p)), kat = new Set();
@@ -2397,8 +2397,14 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     const [pdk, pjg] = namaInovasi(x);
     return barisKaya({attr: typeof attr === "string" ? attr : `data-inid="${esc(x.id)}"`, logo: lgoIkon([urlOk(x.foto_url)].filter(Boolean), ikJenis(x.jenis), w), nama: pdk, sub: pjg, oleh: olehHtml(pb?.lembaga_id, pb?.nama),
       jelas: x.ringkasan || `${kapital(x.jenis || "inovasi")}${x.tahun ? ", sejak " + x.tahun : ""}.`, pil: pilStatus(x.status, STATUS_IN[x.status]) + pilJenis(x.jenis) + pilRumpunN(x.rumpun) + (x.trl ? pilMini(IK_BAR, "TRL " + x.trl) : "") + (dlist(x.paten).length || x.paten === true ? pilMini(IKL.jenis, "Paten") : "") + (x.tahun ? pilMini(IKL.tahun, "Sejak " + x.tahun) : "") + (np ? pilMini(IKON_PIN, angka(np) + " lokasi pakai") : "") + pilContoh(x)}); };
+  /* logo pemilik sistem data: lembaga di direktori, lalu logo_pemilik.json (nama pemilik persis), lalu ikon; pemilik ganda "A dan B" = dua logo kecil bertumpuk */
+  let LOGO_PEM = null; const muatLogoPem = () => { if (LOGO_PEM) return; LOGO_PEM = {}; ambilData("logo_pemilik").then(d => { if (d && typeof d === "object" && !Array.isArray(d)) LOGO_PEM = d; }); };
+  const logoPemUrl = n => { n = String(n || "").trim(); const e = LOGO_PEM?.[n]; if (urlOk(e?.logo)) return [e.logo]; const y = n && lbArr.find(z => namaLb(z).includes(nrm(n))); return y ? chainLogo(y) : []; };
+  const logoSd = (x, own, aw) => { if (own) return lgoIkon(chainLogo(own), IK_DB, aw); const a = logoPemUrl(x.pemilik); if (a.length) return lgoIkon(a, IK_DB, aw);
+    const bagi = String(x.pemilik || "").split(/\s+dan\s+|\s*[\/;&]\s*/).map(t => t.trim()).filter(Boolean).slice(0, 2); if (bagi.length > 1) { const l = bagi.map(logoPemUrl); if (l.some(z => z.length)) return `<span class="ak-lg2">${l.map(z => lgoIkon(z, IK_DB, aw, true)).join("")}</span>`; }
+    return lgoIkon([], IK_DB, aw); };
   const barisSd = (x, attr) => { const own = x.lembaga_id && lbMap.get(x.lembaga_id), [al, aw] = AKSES[x.akses] || [x.akses || "Akses belum tercatat", "#6b7280"], nJ = strs(x.jenis_data).length;
-    return barisKaya({attr: typeof attr === "string" ? attr : `data-sd="${esc(x.id)}"`, logo: lgoIkon(own ? chainLogo(own) : [], IK_DB, aw), nama: x.nama, sub: x.kepanjangan, oleh: olehHtml(x.lembaga_id, x.pemilik),
+    return barisKaya({attr: typeof attr === "string" ? attr : `data-sd="${esc(x.id)}"`, logo: logoSd(x, own, aw), nama: x.nama, sub: x.kepanjangan, oleh: olehHtml(x.lembaga_id, x.pemilik),
       jelas: x.uraian || `${x.nama} menyediakan data ${strs(x.jenis_data).slice(0, 4).join(", ") || "kebencanaan"}.`, pil: pilStatus(al, aw) + pilJenis(strs(x.jenis_data)[0]) + pilRumpunN(x.rumpun) + pilContoh(x), fakta: nJ ? `${angka(nJ)} jenis data` : ""}); };
   /* "Kepada <logo> BNPB, <logo> BMKG +n": pelaksana dicocokkan ke lembaga, bisa diklik ke profilnya */
   const kepadaHtml = (pel, tambah) => { const a = pel.filter(v => !/^(republic of )?indonesia$|^pemerintah indonesia$/i.test(String(v).trim())); const bagian = a.slice(0, 2).map(v => { const k = nrm(v), l = lbArr.find(y => namaLb(y).includes(k) || (y.singkatan && nrm(y.singkatan) === k)); const kt = l && (KAT[l.kategori] || KAT.riset);
@@ -2572,7 +2578,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     ambilData(nama).then(d => { if (!sah(d)) { gagal(); return; } nanti(() => { try { p.innerHTML = ""; bangun(p, d); segarBencana(); } catch (e) { console.error(e); delete sudah[v]; p.innerHTML = kosongHtml(esc((VIEW[v] || ["Tampilan"])[0])); } }); });
   }
   function pasangTampil(v, sub) {
-    pasangCari(); nanti(() => siapGraf().then(() => { if ($("akLL") && lbHasil.length) gambarLb(false); if ($("akPjL") && typeof gambarPj === "function") gambarPj(false); if ($("akPdStack") && reStk) reStk(); })); nanti(muatGrafLogo); nanti(muatFotoPakar); nanti(muatStrat); nanti(muatDiaspora); nanti(muatBFoto); nanti(muatLambang);
+    pasangCari(); nanti(() => siapGraf().then(() => { if ($("akLL") && lbHasil.length) gambarLb(false); if ($("akPjL") && typeof gambarPj === "function") gambarPj(false); if ($("akPdStack") && reStk) reStk(); })); nanti(muatGrafLogo); nanti(muatFotoPakar); nanti(muatStrat); nanti(muatDiaspora); nanti(muatBFoto); nanti(muatLambang); nanti(muatLogoPem);
     segarBencana(); $("akBencana").hidden = false;
     $("akBencana").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; const r = b.dataset.r === GL.r ? "" : b.dataset.r; setChip("akBencana", r); nanti(() => setBencana(r)); });
     $("akPkSeg").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; pkSub = b.dataset.v; setSeg("akPkSeg", pkSub); pasangPkSeg("pakar"); });
@@ -2596,10 +2602,14 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const sinkron = (id, val, n = 0) => { const b = document.querySelector(`#${id} [data-v="${val}"]`); if (b) { if (b.getAttribute("aria-pressed") !== "true") b.click(); } else if (n < 40) setTimeout(() => sinkron(id, val, n + 1), 150); };
   /* urutan: tab utama, sub-tab (sub-tab di dalam panel ikut dihitung), baru pilihan bencana */
   /* segmen sub-tampilan tiap view (Peta/Daftar/Proyek mitra, Skema/Proyek/Negara donor, dst.) dipindah ke wadah kepala navy, hanya yang view aktif tampil; panel bencana tetap di bawah kepala */
+  /* pilihan bencana hanya tampil di tab yang benar-benar disaringnya; Riset daerah punya chip rumpun sendiri, Aset riset, Pusat studi, dan Wilayah tidak disaring */
+  const BENCANA_VIEW = new Set(["pakar", "tokoh", "lembaga", "inovasi", "sistem_data", "pendanaan", "pustaka", "dok", "buku", "berita", "kejadian"]);
   function letakBencana() { const bp = document.querySelector(".ak-bpanel"), ak = document.querySelector(".ak"), nav = document.querySelector(".ak-kepala-nav"); if (!bp || !ak || !nav) return;
-    document.querySelectorAll("[id^=akv-]").forEach(v => { const f = v.firstElementChild; if (f?.matches?.(".ak-seg")) { f.dataset.heroView = v.id.slice(4); f.classList.remove("ak-segmeng"); nav.append(f); } });
+    document.querySelectorAll("[id^=akv-]").forEach(v => { const f = v.firstElementChild; if (f?.matches?.(".ak-seg")) { const vw = v.id.slice(4); nav.querySelectorAll(`[data-hero-view="${vw}"]`).forEach(lama => lama.remove()); if (f.id) nav.querySelectorAll(`#${CSS.escape(f.id)}`).forEach(lama => lama.remove());   // panel digambar ulang: segmen lama dibuang, jangan menumpuk
+      f.dataset.heroView = vw; f.classList.remove("ak-segmeng"); nav.append(f); } });
     nav.querySelectorAll("[data-hero-view]").forEach(e => { e.hidden = e.dataset.heroView !== tampilSkrg; });
-    if (ak.firstElementChild !== bp) ak.prepend(bp); }
+    if (ak.firstElementChild !== bp) ak.prepend(bp);
+    bp.hidden = !BENCANA_VIEW.has(tampilSkrg); }
   /* panel diisi asinkron: tiap kali isi panel tingkat atas berganti, letak pilihan bencana dihitung ulang */
   const amatPanel = new MutationObserver(() => letakBencana());
   document.querySelectorAll("[id^=akv-]").forEach(v => amatPanel.observe(v, {childList: true}));
@@ -2668,7 +2678,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     if (c.dataset.inid) { const x = inArr.find(y => y.id === c.dataset.inid); if (x) sheetIn(x); return; }
     if (c.dataset.in != null) { const x = inHasil[+c.dataset.in]; if (x) sheetIn(x); } else if (c.dataset.sd) { const x = sdArr.find(y => y.id === c.dataset.sd); if (x) { sheetDetail(x.nama, kartuSd(x)); terhubungDi("S:" + x.id); } } else { const x = pdArr.find(y => y.id === c.dataset.sk); if (x) lembarSkema(x); } }, true);
   document.addEventListener("load", e => { const i = e.target; if (i.tagName === "IMG" && i.closest?.(".ak-pinlogo") && (i.naturalWidth < 10 || i.naturalHeight < 10)) i.remove(); }, true);
-  document.addEventListener("error", e => { if (e.target.matches?.(".ak-prod-foto")) e.target.remove(); }, true);   /* foto gagal muat: kembali ke area warna rumpun */
+  document.addEventListener("error", e => {
+    if (e.target.tagName === "IMG" && e.target.classList?.contains("ak-lw")) { const sp = document.createElement("span"); sp.className = "ak-lw ak-lw0"; sp.style.cssText = `width:${e.target.width}px;height:${e.target.width}px`; sp.innerHTML = ikon(IKON_PIN, "currentColor"); e.target.replaceWith(sp); return; } if (e.target.matches?.(".ak-prod-foto")) e.target.remove(); }, true);   /* foto gagal muat: kembali ke area warna rumpun */
   document.addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches?.("[data-in],[data-inid],[data-sd],[data-sk],[data-href],[data-lb].ak-bkr")) { e.preventDefault(); e.target.click(); } });
   document.addEventListener("submit", e => { const f = e.target.closest("[data-korf]"); if (f) { e.preventDefault(); kirimKoreksi(f); } });
   document.addEventListener("click", e => {
