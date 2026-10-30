@@ -5,6 +5,7 @@ import {memuat, galat as kotakGalat} from "./keadaan.js";
 import {bukaDialog, kirimPost} from "./layar_kit.js";
 import {cekRenlap, hasilBuatHtml, teksKoordinat} from "./renlap.js";
 import {bacaKoordinat, pilihKandidat, urlOsrmTable, bacaOsrm, gabungMatriks, susunRencana, tautanSemua, tautanTim, tautanHari, kunjunganUntukServer, MAKS_LOKASI, MAKS_TIM} from "./kunjungan.js";
+import {muatMapLibre} from "../inti/maplibre.js";
 
 export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", akses: "/api/sippa/data/akses_kompleks", konsesi: "/api/sippa/data/konsesi_kompleks", titik: "/data/hotspot72.json", kluster: "/data/kluster.json", palsu: "/data/titik_palsu.json", renlap: "/api/sippa/renlap"};
 const OSRM_BATAS_MS = 15000;
@@ -18,14 +19,6 @@ export function lepas() {
   peta = null;
 }
 
-let pustaka = null;
-function muatMapLibre() {
-  if (globalThis.maplibregl) return Promise.resolve();
-  return pustaka ??= new Promise((ok, gagal) => {
-    const c = document.createElement("link"); c.rel = "stylesheet"; c.href = "/vendor/maplibre/maplibre-gl.css"; document.head.append(c);
-    const s = document.createElement("script"); s.src = "/vendor/maplibre/maplibre-gl.js"; s.onload = ok; s.onerror = () => gagal(new Error("Pustaka peta tidak bisa dimuat.")); document.head.append(s);
-  }).catch(e => { pustaka = null; throw e; });
-}
 function muatGaya() {
   return new Promise(ok => {
     if (document.querySelector('link[data-sp="kunjungan"]')) return ok();
