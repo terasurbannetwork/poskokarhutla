@@ -1776,3 +1776,23 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-pjk{align-self:start}
 .ak-pjk-n,.ak-pjk-f{margin-top:0!important}
 .ak-pjk-a .ak-lgo-d .ak-ini[hidden]{display:none}
+
+.ak-sdt thead th.r,.ak-sdt thead th:not(:first-child){width:70px!important}
+.ak-sdt thead button{padding:10px 10px 10px 4px!important}
+.ak-sdt thead button i{position:absolute!important;right:2px!important;font-size:8px;line-height:1}
+.ak-sdt thead th.r,.ak-sdt thead th:not(:first-child),.ak-sdt td:not(:first-child){width:62px!important}
+/* label wilayah di atas panel: kecil, tanpa jumlah lembaga */
+.ak-side-label{height:28px;gap:6px;padding:0 4px 0 11px}
+.ak-side-label b{font-size:12.5px;font-weight:700}
+.ak-side-label #akSideN{display:none}
+.ak-sl-back,.ak-sl-lipat{width:20px;height:20px}
+.ak-sl-back svg,.ak-sl-lipat svg{width:12px;height:12px}
+.ak-sdt thead button{gap:5px!important;align-items:center}
+.ak-sdt thead button .ak-ikon{width:13px!important;height:13px!important;flex:none;opacity:.85}
+.ak-sdt thead th.r{width:84px!important}
+.ak-sdt td:first-child{max-width:170px}
+.ak-sdt td{padding-top:6px!important;padding-bottom:6px!important;line-height:1.25}
+.ak-ptlayer button[hidden]{display:none!important}
+.ak-sdt thead i{position:static!important;margin-left:1px;font-size:7px!important;min-width:0!important}
+.ak-sdt thead button{letter-spacing:.03em!important;padding-right:6px!important}
+.ak-pta .maplibregl-ctrl-bottom-right{margin-bottom:28px}
