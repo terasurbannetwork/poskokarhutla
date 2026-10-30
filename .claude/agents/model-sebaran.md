@@ -48,6 +48,8 @@ Berkas milikmu (glob paling spesifik menang):
 - `public/insight_sebaran*.js`
 - `public/sim_*`
 - `public/cerita_karhutla.*`
+- `public/data/bahan_bakar.json`
+- `public/data/bahan_bakar_uji.json`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.
