@@ -1796,3 +1796,62 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-sdt thead i{position:static!important;margin-left:1px;font-size:7px!important;min-width:0!important}
 .ak-sdt thead button{letter-spacing:.03em!important;padding-right:6px!important}
 .ak-pta .maplibregl-ctrl-bottom-right{margin-bottom:28px}
+
+/* G16 ringkasan wilayah */
+.ak-rw>.ak-judulv{font-size:11px!important;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)!important;margin:0 0 12px!important}
+.ak-wstrip{margin-bottom:14px}
+.ak-wstrip>div>svg{width:24px;height:24px}
+.ak-wstrip b{color:var(--ink)!important;font-size:24px!important}
+.ak-tkt{display:inline-block;font-style:normal;font-size:10.5px;font-weight:700;color:#fff;border-radius:999px;padding:1px 8px;margin-left:4px}
+.ak-evgrid{margin:4px 0 12px}
+.ak-evb{display:grid;grid-template-columns:minmax(0,1.2fr) minmax(40px,1fr) auto;align-items:center;gap:10px;padding:5px 4px}
+.ak-evn{display:flex;align-items:center;gap:7px;font-size:13px;font-weight:600;color:var(--ink);overflow:hidden;white-space:nowrap;text-overflow:ellipsis}
+.ak-evn svg{width:15px;height:15px;flex:none;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+.ak-evb b{font-size:12.5px;font-variant-numeric:tabular-nums}
+.ak-wpil .ak-mp-b{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;background:var(--surface);font-size:11.5px;font-weight:700;color:var(--ink);cursor:pointer}
+.ak-wpil .ak-mp-b:hover{background:var(--brand);color:#fff}
+.ak-wpil .ak-mp-b svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:1.9}
+
+/* G16 judul bagian wilayah kecil kapital di dalam kartu */
+.ak-lA>.ak-judulv{font-size:11px!important;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2)!important;margin:0 0 12px!important}
+.ak-lA>.ak-judulv small{background:var(--surface);border-radius:999px;padding:0 8px;font-size:11px;margin-left:6px;text-transform:none;letter-spacing:0}
+.ak-bti.off{opacity:.3;cursor:default;pointer-events:none}
+.ak-belum{font-style:italic;color:#98a2b3!important;font-size:11.5px}
+.ak-bsum{display:inline-flex;align-items:center;gap:5px;font-size:12px;color:var(--ink2)}
+.ak-bsum a{display:inline-grid;color:var(--brand2)}.ak-bsum svg{width:12px;height:12px;fill:none;stroke:currentColor;stroke-width:2}
+.ak-dot3{width:8px;height:8px;border-radius:50%;background:#f2b01e;display:inline-block}
+.ak-wl2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:2px 16px}
+@media (max-width:900px){.ak-wl2{grid-template-columns:minmax(0,1fr)}}
+.ak-katj{margin-top:14px}.ak-katj svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9}
+.ak-kk{display:inline-flex;align-items:center;gap:8px;margin-right:6px}
+.ak-kk small{font-size:11px;color:var(--ink2)}
+.ak-kk a{display:inline-grid;color:#8793a6}.ak-kk a:hover{color:var(--brand2)}.ak-kk svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round;stroke-linejoin:round}
+
+.ak-sideleg{display:none!important}
+.ak-ublg{display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:8px}
+.ak-ubl{all:unset;box-sizing:border-box;display:flex;align-items:center;gap:10px;padding:8px 10px;border:1px solid var(--line);border-radius:12px;cursor:pointer;min-width:0}
+.ak-ubl:hover{border-color:var(--brand2);background:var(--surface)}
+.ak-ubl>span:last-child{display:grid;min-width:0}.ak-ubl b{font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ak-ubl small{font-size:11.5px;color:var(--ink2)}
+.ak-ubl .ak-lgo{width:34px;height:34px}
+.ak-tipw-lg{display:flex;gap:4px;padding-top:6px}.ak-tipw-lg .ak-lgo{width:22px;height:22px;border-radius:50%}
+.ak-tipw-top em{display:inline-flex;align-items:center;gap:6px;font-style:normal}.ak-tipw-top .ak-lgo{width:20px;height:20px}
+.ak-salur{display:block;color:var(--ink2)}
+.ak-pjk-r{margin:0;font-size:12.5px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:left}
+
+/* G16 berita berthumbnail */
+.ak-brt{list-style:none;margin:0 0 8px;padding:0;display:grid;gap:10px}
+.ak-brt-r{display:grid;grid-template-columns:72px minmax(0,1fr);gap:12px;align-items:start}
+.ak-brt-t{display:grid;place-items:center;width:72px;height:54px;border-radius:8px;overflow:hidden;background:var(--surface);color:#98a2b3}
+.ak-brt-t img{width:100%;height:100%;object-fit:cover}.ak-brt-t svg{width:24px;height:24px;fill:none;stroke:currentColor;stroke-width:1.6}
+.ak-brt-j{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;font-size:13.5px;font-weight:700;color:var(--ink);text-decoration:none;line-height:1.35}
+.ak-brt-j:hover{color:var(--brand2)}
+.ak-brt-r small{display:block;font-size:11.5px;color:var(--ink2);margin-top:2px}
+/* G16 J4: kelompok 1 butir selebar penuh, pil membungkus, uraian dua baris penuh */
+.ak-drawer .ak-bkl,.ak-drawer .ak-psgrid,.ak-drawer .ak-jgrid{grid-template-columns:repeat(auto-fit,minmax(300px,1fr))!important}
+.ak-bkr .ak-pil{flex-wrap:wrap!important;overflow:visible}
+.ak-bkr .ak-ket,.ak-bkr p.ak-ket{-webkit-line-clamp:3}
+
+.ak-ib-saring{position:absolute;top:14px;right:62px;width:36px;height:36px;background:oklch(100% 0 0 / .14)!important}
+.ak-sheet[data-mode="grup"] .ak-dkepala{padding:20px 24px 18px;position:relative}
+.ak-sheet[data-mode="grup"] .ak-dk-atas .ak-lgo{width:44px;height:44px}
+.ak-sheet[data-mode="grup"] .ak-dk-atas .ak-mt-t{margin-right:110px}
