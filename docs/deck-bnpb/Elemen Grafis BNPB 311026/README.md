@@ -10,7 +10,7 @@ penempatan ditentukan mesin per jenis halaman. Kode: `scripts/elemen.py`; katalo
 - Segitiga yang menyerupai lambang dilarang pedoman merek BNPB (26 Okt: "pakai gambar asli, bukan segitiga gambaran").
 - Kotak yang ditebar acak "ga natural": elemen harus berjangkar dan bersinggungan sudut ke sudut.
 
-## Pustaka (21 elemen)
+## Pustaka (27 elemen)
 
 kotak_tangga, piksel, gelombang, bilah, chevron, halftone, arsir, seperempat, silang, cincin_target, lingkaran_tangga,
 sinyal, orbit, kotak_garis, siku_fokus, setengah, pelangi, horizon, simpul, progres_batang, kotak_tumpuk. Makna tiap
@@ -37,9 +37,7 @@ elemen ada di `elemen.MAKNA` dan halaman katalog.
 
 ## Berkas di folder ini
 
-- `Katalog Elemen Grafis BNPB 311026.pdf` dan `.pptx`: satu halaman per elemen, empat varian warna (oranye, biru
-  lembaga, navy dan abu, putih di atas foto), nama, dan makna. Semua bentuk di PPTX native, bisa disalin ke deck lain.
-- `kode/elemen.py`: salinan pustaka elemen dari skill `ppt-konsultan` (`~/.claude/skills/ppt-konsultan/bnpb/scripts/`).
-  Mesin deck BNPB memakai versi di skill; salinan ini untuk riwayat dan dipakai ulang.
-- `kode/katalog_elemen.py`: pembuat katalog. Jalankan dari folder skill:
-  `.venv/bin/python scripts/katalog_elemen.py KELUAR.pptx`.
+- `Katalog Elemen Grafis BNPB 311026.pdf` dan `.pptx`: satu halaman per elemen, empat varian warna palet hiasan.
+- `PALET.md`: palet sistem, kontras, dan pasangan warna terlarang.
+- `kode/`: salinan `elemen.py` dan `katalog_elemen.py` dari skill `ppt-konsultan`.
+- Halaman katalog daring: https://claude.ai/artifact/H3ScSZeP2yohaA9sdDf4zz

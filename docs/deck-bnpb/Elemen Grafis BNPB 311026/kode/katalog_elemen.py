@@ -12,8 +12,8 @@ sys.path.insert(0, str(SINI))
 from deck import Deck, Kanvas, ke_pdf  # noqa: E402
 import elemen  # noqa: E402
 
-VARIAN = [('Oranye', ['oranye', 'navy']), ('Biru lembaga', ['biru-lembaga', 'oranye']), ('Navy dan abu', ['navy', 'skala.netral.2']),
-          ('Putih di atas foto', ['kertas', 'oranye'])]
+VARIAN = [('Oranye dan navy', ['oranye', 'navy']), ('Navy dan oranye', ['navy', 'oranye']), ('Navy dan abu-biru', ['navy', 'skala.netral.2']),
+          ('Putih di atas foto', ['kertas', 'oranye'])]   # palet hiasan: tanpa biru lembaga (bertabrakan dengan biru data), tanpa merah
 
 
 def main():
