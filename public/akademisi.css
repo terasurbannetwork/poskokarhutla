@@ -1685,3 +1685,28 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-pjk-f div{display:grid;grid-template-columns:14px 64px minmax(0,1fr);align-items:center;gap:8px;font-size:12px}
 .ak-pjk-f .ak-ikon{width:13px;height:13px;color:var(--ink2)}
 .ak-pjk-f dt{margin:0;color:var(--ink2)}.ak-pjk-f dd{margin:0;font-weight:600;color:var(--ink);white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ak-in-f .ak-mp,.ak-in-f .ak-mp.ak-mp-l{white-space:normal!important;overflow:visible!important;text-overflow:clip!important;height:auto!important;min-height:20px;max-width:100%}
+.ak-bkr .ak-bkr-t .ak-pil{display:flex;flex-wrap:wrap!important;overflow:visible!important;white-space:normal}
+.ak-bkr .ak-bkr-t .ak-pil>*{max-width:100%;flex:0 1 auto;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+
+/* G14 kartu lembaga: grid seragam, ikon kontak polos di kaki */
+.ak-orggrid{align-items:stretch}
+.ak-org{display:flex!important;flex-direction:column;gap:10px}
+.ak-org .ak-qrow{margin-top:auto;gap:12px;padding-top:4px}
+.ak-qk{width:auto!important;height:auto!important;border:0!important;background:none!important;border-radius:0!important;color:#8793a6!important}
+.ak-qk:hover{color:var(--brand2)!important}
+.ak-qk svg{width:16px!important;height:16px!important}
+.ak-org .ak-ket,.ak-org p.ak-ket{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ak-dkepala .ak-dk-atas .ak-mt-t{margin-right:104px}
+.ak-jab{color:var(--ink2);font-size:12.5px}
+.ak-ik-l{display:inline-grid;place-items:center;width:22px;height:22px;color:var(--brand2);vertical-align:middle}
+.ak-ik-l svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9}
+.ak-rj{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ak-rj li{border-top:1px solid var(--line);padding-top:10px}.ak-rj li:first-child{border-top:0;padding-top:0}
+.ak-rj-a{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.ak-rj-a b{font-size:13.5px;color:var(--ink)}
+.ak-rj-a .ak-ik-l{margin-left:auto}
+.ak-rj p{margin:4px 0 0;font-size:13px;color:var(--ink2);text-align:left}
+/* G14 satu sistem pil: tinggi 22, huruf 11.5, ikon 12 di kiri */
+.ak-org .ak-pil>*,.ak-bkr .ak-pil>*,.ak-orang .ak-pil>*,.ak-psk .ak-pil>*,.ak-mps>*{display:inline-flex;align-items:center;gap:4px;height:22px;min-height:0;padding:0 9px;border-radius:999px;font-size:11.5px;font-weight:600;line-height:1;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;text-transform:none;letter-spacing:0}
+.ak-org .ak-pil svg,.ak-bkr .ak-pil svg,.ak-orang .ak-pil svg,.ak-psk .ak-pil svg,.ak-mps svg{width:12px;height:12px;flex:none}
