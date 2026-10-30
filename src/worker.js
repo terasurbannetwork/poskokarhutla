@@ -718,6 +718,7 @@ export async function cacheTepi(req, ctx, detik, buat, tanpaQuery = false) {
   if (c) { const ada = await c.match(kunci); if (ada) return ada; }
   const r = await buat();
   if (r.status !== 200) return r;
+  if (r.headers.has("x-jangan-simpan")) { const h = new Headers(r.headers); h.delete("x-jangan-simpan"); h.set("cache-control", "no-store"); return new Response(r.body, {status: 200, headers: h}); }   // jawaban sementara (mis. AI gagal)
   const h = new Headers(r.headers); h.set("cache-control", `public, max-age=${detik}`);
   const out = new Response(r.body, {status: 200, headers: h});
   if (c) ctx?.waitUntil?.(c.put(kunci, out.clone()).catch(() => {}));

@@ -98,9 +98,13 @@
     const u = st.urut;
     hasil.sort(u === 1 ? (a, b) => a[1].localeCompare(b[1], "id") : (a, b) => b[u] - a[u] || b[4] - a[4]);
     st.hal = 1;
+    chromeSaring();
+    gambar(false);
+  }
+  /* chrome filter (chip, label tombol) diperbarui seketika di jalur klik; saring() yang berat lewat nanti */
+  function chromeSaring() {
     document.querySelectorAll("#akRumpun button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.r ? st.rumpun.has(b.dataset.r) : !st.rumpun.size)));
     $("akPIsi").innerHTML = `<em>${esc(st.prodi || "Semua program studi")}</em>`;
-    gambar(false);
   }
 
   function gambar(gulir) {
@@ -838,8 +842,8 @@
     $("akQ").addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => { st.q = $("akQ").value.trim(); saring(); }, 200); });
     segmen("akS", "sumber", v => v);
     segmen("akU", "urut", v => +v);
-    $("akRumpun").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; st.rumpun = balik(st.rumpun, b.dataset.r); saring(); });
-    $("akHal").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return; st.hal = +b.dataset.h; gambar(true); });
+    $("akRumpun").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; st.rumpun = balik(st.rumpun, b.dataset.r); chromeSaring(); nanti(saring); });
+    $("akHal").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return; st.hal = +b.dataset.h; b.setAttribute("aria-current", "page"); nanti(() => gambar(true)); });
     $("akKBtn").addEventListener("click", () => bukaKampus($("akKPop").hidden));
     $("akKQ").addEventListener("input", daftarKampus);
     $("akKJenis").addEventListener("click", e => { const b = e.target.closest("button[data-j]"); if (!b) return; st.kJenis = b.dataset.j; daftarKampus(); $("akKQ").focus(); });
@@ -849,7 +853,7 @@
     $("akVDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; const s = balik(st.prov, b.dataset.v); tandai($("akVDaftar"), "v", s); st.prov = s; isiProv(); nanti(() => aturProv(s)); });
     $("akPBtn").addEventListener("click", () => bukaProdi($("akPPop").hidden));
     $("akPQ").addEventListener("input", daftarProdi);
-    $("akPDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-p]"); if (b) { st.prodi = b.dataset.p; bukaProdi(false); saring(); } });
+    $("akPDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-p]"); if (b) { st.prodi = b.dataset.p; bukaProdi(false); chromeSaring(); nanti(saring); } });
     document.addEventListener("click", e => {
       const w = e.target.closest(".ak-kampus-pilih");
       if (!$("akKPop").hidden && w !== $("akKPop").parentElement) bukaKampus(false);
@@ -863,8 +867,8 @@
       const kp = e.target.closest("[data-kp]"); if (kp) { profilKampus(kp.dataset.kp); return; }
       const f = e.target.closest("[data-fk]");
       if (f) { const v = f.dataset.v;
-        st[f.dataset.fk] = st[f.dataset.fk] instanceof Set ? new Set([v]) : v; saring();
-        document.querySelector(".ak-saring").scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); return; }
+        st[f.dataset.fk] = st[f.dataset.fk] instanceof Set ? new Set([v]) : v; chromeSaring(); isiKampus(); isiProv();
+        nanti(() => { saring(); document.querySelector(".ak-saring").scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); }); return; }
       const b = e.target.closest(".ak-orang"); if (b) buka(hasil[+b.dataset.i]);
     });
     $("akDaftar").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ak-orang")) { e.preventDefault(); buka(hasil[+e.target.dataset.i]); } });
