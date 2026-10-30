@@ -1875,3 +1875,27 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-segmeng{position:static!important}
 .ak-seg[hidden]{display:none!important}
 .ak-kepala-nav>.ak-seg{width:100%}
+.ak-bg .ak-bkl,.ak-dbagian .ak-bkl,.ak-sheet .ak-bkl{display:grid;grid-template-columns:repeat(auto-fit,minmax(380px,1fr))}
+@media (max-width:600px){.ak-bg .ak-bkl,.ak-dbagian .ak-bkl,.ak-sheet .ak-bkl{grid-template-columns:minmax(0,1fr)}}
+.ak-brt~.ak-rbtn{justify-self:start;width:fit-content;display:inline-flex;margin-top:4px}
+.ak-lA{min-width:0}#akPdStack,.ak-stk,.ak-stk-r{min-width:0;max-width:100%}.ak-stk-jn{overflow-x:auto}
+/* kiprah: pil peran ukuran isi, linimasa tanpa kolom tahun kosong */
+.ak-kiprah-tk > .ak-izin,.ak-bg > .ak-izin{justify-self:start;width:auto;display:inline-flex;align-items:center;height:22px;padding:0 10px;border-radius:999px;font-size:11px}
+.ak-linimasa li.tanpa-th{grid-template-columns:minmax(0,1fr)}
+.ak-linimasa li.tanpa-th > b{display:none}
+.ak-linimasa li{grid-template-columns:44px minmax(0,1fr)}
+/* metrik kepala: ukuran seragam dan lebih kecil */
+.ak-dkepala .ak-metrik b,.ak-dkepala .ak-metrik > div:first-child b,.ak-dkepala .ak-dk-atas > .ak-metrik b{font-size:18px!important;line-height:1.15!important;font-weight:800!important;letter-spacing:0!important}
+.ak-dkepala .ak-metrik .ak-mlabel,.ak-dkepala .ak-metrik span{font-size:11px!important}
+.ak-dkepala .ak-dk-atas > .ak-metrik{padding:6px 2px!important;border-radius:12px!important}
+.ak-dkepala .ak-dk-atas > .ak-metrik > div{padding:2px 14px!important;min-width:76px}
+/* pakar sejenis: kolom metrik tidak menimpa nama */
+.ak-pkl-2s > li .ak-pkbtn{display:grid!important;grid-template-columns:40px minmax(0,1fr)!important;grid-template-areas:"f t" "m m"!important;gap:8px 12px!important}
+.ak-pkl-2s > li .ak-sosok{grid-area:f}.ak-pkl-2s > li .ak-pkn{grid-area:t;min-width:0}
+.ak-pkl-2s > li .ak-pkm{grid-area:m;justify-content:flex-start!important;border-top:1px solid var(--line);padding-top:8px}
+/* tooltip grafik: terang, bukan gelap (permintaan pemilik) */
+.ak-gr-tip{background:#fff!important;color:var(--ink)!important;border:1px solid var(--line);box-shadow:0 10px 26px rgb(15 30 60 / .16)}
+.ak-gr-tip b{color:var(--ink2);opacity:1!important}
+.ak-gr-tip span{color:var(--ink)}
+.ak-gr-tip small,.ak-gr-tip em{color:var(--ink2)!important}
+.ak-stk-jn button{flex:none!important;min-width:auto!important}
