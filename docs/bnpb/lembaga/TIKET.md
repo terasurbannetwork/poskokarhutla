@@ -69,7 +69,7 @@ Setiap tiket panen menyerahkan:
 | L42 | Analisa: peta sebaran di atas indeks risiko provinsi, tabel kesenjangan wilayah, matriks provinsi x bidang, grafik komposisi; semuanya interaktif dengan tooltip | layar-peta | L40 | angka analisa sama dengan hitungan ulang dari `lembaga.json` (skrip cek) |
 | L43 | Proyek mitra (3W): tabel dengan saringan provinsi, donor, sektor, dan label keterbatasan IATI | layar-peta | L22 | jumlah dan nilai total sama dengan berkas |
 | L4I | Tab Inovasi (PRD §6.7): ringkasan dan grafik, saringan, kartu, peta penerapan, tautan ke profil pembuat | layar-peta | L30 | uji browser: saringan rumpun dan status jalan, klik titik penerapan membuka kartu |
-| L4D | Tab Sistem data (PRD §6.8): ringkasan, saringan, kartu, pil "Sudah dipakai Pantau Bencana", tautan ke profil pemilik | layar-peta | L30 | uji browser: saringan akses dan rumpun jalan |
+| L4D | Tab Sistem data (PRD §6.8): ringkasan, saringan, kartu, pil "Sudah dipakai Centurisk97", tautan ke profil pemilik | layar-peta | L30 | uji browser: saringan akses dan rumpun jalan |
 | L44 | Lembaga terdekat di pop-up kejadian, di samping pakar terdekat | layar-peta | L31 | pop-up kejadian karhutla Riau menampilkan BPBD, Manggala Agni, dan PMI terdekat |
 | L45 | Tombol "Ringkas temuan" di Riset daerah, dengan tautan per temuan dan label ringkasan otomatis | layar-peta | L32 | ringkasan banjir Jawa Tengah tampil, dan tiap temuan bertaut karya |
 | L46 | Aset riset di tab Pusat studi | layar-peta | L22 | saringan jenis dan provinsi jalan |
@@ -95,3 +95,14 @@ Setiap tiket panen menyerahkan:
 5. L50 sampai L52.
 6. Commit dengan path spesifik.
 7. `terbit.yml` hijau, lalu periksa aset tayang dan `/api/status`.
+
+## Fase 6: pengayaan strategis (PRD §6.19–6.21)
+
+- [ ] E1 BPBD: kelas, Pusdalops, TRC, armada, dokumen KRB/RPB/Renkon, Destana, DIBI 5 tahun, piket → `bpbd_kapasitas.json`
+- [ ] E2 Relawan/donasi/LSM + CSR: bidang, jangkauan, kerahan, sertifikasi, respons, klaster; bantuan, aset pinjam, fasilitas, kontak CSR → `kapasitas_lembaga.json`
+- [ ] E3 Pakar + tokoh: bisa_untuk, lapangan, bahasa, karya kunci; keterlibatan, jangkauan, isu, catatan reputasi → `pengayaan_orang.json`
+- [ ] E4 Inovasi + sistem data + pendanaan: TRL, harga, paten/SNI/e-katalog; akses/frekuensi/cakupan; siklus/tenggat/plafon/syarat/focal point → `pengayaan_produk.json`
+- [ ] E5 Pustaka ringkasan + wilayah celah (hitung) → `pengayaan_pustaka.json`, `wilayah_celah.json`
+- [ ] E6 hubung.mjs: gabung E1–E5, sisi `mendanai/melaksanakan/memakai` bersumber, skor kapasitas + celah → graf.json, kuadran.json (uji di tests/agen/hubung.test.mjs)
+- [ ] E7 Layar: lembar per entitas menampilkan butir baru; tab/ panel Kuadran; layar Jaringan dukungan
+- [ ] E8 Pengulas bersih (angka, INP, keamanan), cek acak 30 butir baru ≥90% cocok, unggah R2 (izin pemilik), commit, tayang

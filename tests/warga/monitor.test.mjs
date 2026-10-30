@@ -5,7 +5,7 @@ import {AKAR} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";
 
-const JAM = 3600e3, PB = {"x-pb": "1"}, uji = berantai(), SANDI = "SandiUji23456789";
+const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai(), SANDI = "SandiUji23456789";
 const U = await siapkan("uji-monitor", {r2: true}), {DB, api, mf} = U;
 let ipN = 0;
 const ip = () => ({"cf-connecting-ip": `198.51.100.${++ipN % 250}`});

@@ -12,7 +12,7 @@ import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";
 import {buatTugas, TAHAN_BUKAN_API} from "../../src/instansi.js";
 
-const JAM = 3600e3, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 /* api harness + multipart dengan content-length eksplisit seperti peramban (unggahan tanpa panjang ditolak 411) */
 const pakai = S => async (metode, j, body, h = {}) => {
   if (!(body instanceof FormData)) return S.api(metode, j, body, h);

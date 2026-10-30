@@ -19,6 +19,7 @@ import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
+import {layaniKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
@@ -36,6 +37,7 @@ import {RUTE_PUSH, kirimPushDaerah} from "./push.js";
 import {RUTE_SLA, catatRiwayatStatus} from "./sla.js";
 import {RUTE_PIPA} from "./pipa.js";
 import {RUTE_PREDIKSI} from "./prediksi.js";
+import {RUTE_LABEL} from "./label.js";
 import {RUTE_SIPPA, bersihkanSippa} from "./sippa.js";
 import {RUTE_DRONE} from "./drone.js";
 import {RUTE_WA} from "./wa.js";
@@ -61,6 +63,7 @@ import {perbaruiSihka, perbaruiSungaiResmi, perbaruiHujan, dasarSihka, ruteSihka
 import {himawariDibuat} from "./himawari.js";
 import {periksaPeringatan, bersihkanPeringatan, layaniPeringatan} from "./peringatan.js";
 import {layaniUbin} from "./ubin.js";
+import {panenAdsb, bersihkanAdsb} from "./adsb.js";
 import {jedaSatelit, bersihkanGranul, ringkasGranul} from "./satelit.js";
 import * as Ews from "./ews.js";   // namespace, dibaca saat jalan: ews.js dan worker.js saling impor, jadi ews.js bisa diimpor sendirian
 
@@ -570,6 +573,7 @@ const RUTE = {
   ...RUTE_INSTANSI,   // akun instansi (pemda, polisi, TNI) dan tugas api per kompleks (src/instansi.js)
   ...RUTE_SLA,   // analitik SLA + data dummy (src/sla.js, 0042/0043)
   ...RUTE_PREDIKSI,   // /prediksi fase 2: konfirmasi lapangan (src/prediksi.js)
+  ...RUTE_LABEL,   // label harian teranonim, Bearer PIPA_TOKEN (src/label.js)
   ...RUTE_PIPA,   // isian lapangan teranonim untuk pipeline, Bearer PIPA_TOKEN (src/pipa.js)
   ...RUTE_WA,   // kotak masuk WA laporan harian lewat gerbang Baileys, tanpa balasan (src/wa.js)
   ...RUTE_DRONE,   // atur drone ke gambut membara: halaman staf/instansi /admin/drone (src/drone.js, docs/bnpb/PANDUAN-DRONE-GAMBUT.md)
@@ -599,12 +603,12 @@ const RUTE = {
 };
 let GABUNG = null;
 const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
-/* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin atau sesi_pendataan wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
+/* CSRF untuk POST: origin lain ditolak. POST yang membawa cookie sesi_admin, sesi_pendataan atau sesi_staf wajib Origin sama-situs: Origin kosong atau "null" (iframe tersandbox, pengalihan lintas situs)
    ditolak, karena SameSite=Lax tidak menahannya. Tanpa cookie sesi (publik, token header): seperti semula.
    Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
-  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan)=/.test(req.headers.get("cookie") || "");
+  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
@@ -612,14 +616,14 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/), id = tgl ? tgl[2] : nama ? nama[2] : rl ? rl[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/), id = tgl ? tgl[2] : nama ? nama[2] : rl ? rl[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
   const kunci = tgl ? tgl[1] + "/:tanggal" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
     return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
   }
-  if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi SameSite=Lax)
+  if (req.method === "POST" || req.method === "PATCH" || req.method === "DELETE") {   // CSRF: tulis dari origin lain ditolak (cookie sesi SameSite=Lax)
     const x = tolakOrigin(req, url); if (x) return x;
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   }
@@ -785,6 +789,9 @@ const W = {
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
+    /* Kemitraan Kampus (ADR-07): /kemitraan*, /api/kemitraan/* diserahkan ke sub-router src/kemitraan.js SEBELUM gerbang centurisk97.id di bawah:
+       modul menjaga dirinya lewat hakKm (staf, kampus, kode), jadi tamu tidak dialihkan ke /admin/masuk. Bukan rute modul, jatuh ke aset statis. */
+    if (url.pathname === "/kemitraan" || url.pathname.startsWith("/kemitraan/") || url.pathname.startsWith("/api/kemitraan/")) { const k = await layaniKm(env, req, url, ctx); if (k) return k; }
     /* centurisk97.id: semua halaman HTML wajib masuk admin dulu (pemilik 19 Okt 2026). Aset statis (JS/JSON/gambar) tidak lewat Worker. */
     /* Ruang Koordinasi: berkas /bnpb/*.html hanya lewat jalur bersihnya (halamanBnpbPublik memberi CSP ketat, no-store untuk halaman berkode);
        dibuka langsung = 301 ke jalur bersih (fragmen #k= ikut dibawa peramban), berkas tak dikenal = 404 */
@@ -861,6 +868,7 @@ const W = {
       if (m === 23) try { console.log("drop", JSON.stringify(await nilaiDropTertunda(env, sekarang))); } catch (e) { console.error("drop", e?.message); }   // L11: nilai drop heli yang jendela 6 jamnya lewat, tiap jam
       try { const h = await ulangiKabar(env, sekarang); if (h.coba) console.log("kabar ulang", JSON.stringify(h)); } catch (e) { console.error("kabar ulang", e?.message); }   // kabar seketika yang gagal: coba lagi (jeda 1/5/15/60 menit)
       try { const h = await alarmHimawari(env, sekarang); if (h.baru || h.hilang) console.log("alarm himawari", JSON.stringify(h)); } catch (e) { console.error("alarm himawari", e?.message); }   // etag R2 berubah -> tandaiBaru -> alarm_himawari + kabar Posko pusat
+      if (m === 46) try { console.log("adsb", JSON.stringify(await panenAdsb(env, sekarang))); } catch (e) { console.error("adsb", e?.message); }   // tiap jam menit 46; 7 permintaan berjeda 1,1 dtk (adsb.fi); migrasi 0086 belum jalan = dilewati
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
@@ -894,6 +902,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanInstansi(env, Date.now()); } catch (e) { console.error("instansi", e?.message); }   // migrasi 0029 belum jalan = cron lain tetap jalan
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
+    try { await bersihkanAdsb(env, sekarang); } catch (e) { console.error("adsb pangkas", e?.message); }   // migrasi 0086 belum jalan = cron lain tetap jalan; jam 05 UTC, buang > 90 hari
     try { await bersihkanGranul(env, sekarang); } catch (e) { console.error("granul satelit", e?.message); }   // migrasi 0075 belum jalan = cron lain tetap jalan; sekali sehari (jam 04 UTC), buang granul > 400 hari
     try { await bersihkanSippa(env, sekarang); } catch (e) { console.error("sippa", e?.message); }   // migrasi 0058 belum jalan = cron lain tetap jalan; ringkas+buang telemetri > 30 hari, alarm diam
     try { await bersihkanUjiBanjir(env, Date.now()); } catch (e) { console.error("uji banjir", e?.message); }   // retensi 12 bulan

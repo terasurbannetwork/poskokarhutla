@@ -7,6 +7,7 @@
     "uji:prediksi": "node --test --test-concurrency=1 tests/prediksi/*.test.mjs",
     "uji:udara": "node --test --test-concurrency=1 tests/udara/*.test.mjs",
     "uji:sippa": "node --test --test-concurrency=1 tests/sippa/*.test.mjs",
+    "uji:kemitraan": "python3 -I scripts/kemitraan/konst.py --cek && python3 -I scripts/kemitraan/kode.py --cek && python3 -I scripts/kemitraan/profil_daerah.py --cek && node --test --test-concurrency=1 tests/kemitraan/*.test.mjs tests/warga/kemitraan_*.test.mjs",
     "uji": "npm run uji:agen; a=$?; npm run uji:warga; b=$?; npm run uji:sippa; e=$?; npm run uji:banjir; c=$?; npm run uji:udara; d=$?; npm run uji:prediksi; f=$?; [ $a$b$e$c$d$f = 000000 ]",
     "dev:warga": "wrangler dev --local -c wrangler.warga.jsonc --port 8787",
     "agents:build": "node scripts/agents/build.mjs",

@@ -51,8 +51,13 @@ def csv_hari(src, u, cutoff, kunci):
         t = dt.datetime.fromtimestamp(os.path.getmtime(f), PK.UTC)
         if t >= akhir + PK.TRUST or t >= cutoff:
             return open(f).read()
+    if kunci == 'publik':   # jalan.py harian: cache/raw diisi dari unduhan publik; mesin tanpa cache itu menarik dengan kunci .env
+        kunci = kunci_firms()
     url = f'https://firms.modaps.eosdis.nasa.gov/api/area/csv/{kunci}/{src}/{PK.BBOX}/1/{u.isoformat()}'
-    teks = urllib.request.urlopen(url, timeout=600).read().decode()
+    for coba in range(4):   # FIRMS kadang macet di tengah unduhan; coba ulang lebih cepat daripada menunggu satu sambungan lama
+        try: teks = urllib.request.urlopen(url, timeout=120).read().decode(); break
+        except (TimeoutError, OSError):
+            if coba == 3: raise
     if not teks.startswith('latitude'):
         sys.exit(f'FIRMS {src} {u}: jawaban bukan CSV ({teks[:60]!r})')
     open(f, 'w').write(teks)

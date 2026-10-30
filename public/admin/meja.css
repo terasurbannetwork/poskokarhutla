@@ -16,11 +16,11 @@
 .mj-btn.utama{background:var(--gradien);color:#fff;box-shadow:none}.mj-btn.bahaya{color:var(--c1)}.mj-btn.kecil{min-height:30px;padding:0 10px;font-size:12px}.mj-btn:disabled{opacity:.5;cursor:default}
 .mj-wadah{overflow-x:auto;border-radius:14px;box-shadow:var(--bayang);background:var(--card)}
 .mj-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:720px}
-.mj-tabel thead th{background:var(--navy);color:#fff;text-align:left;padding:10px 12px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;user-select:none}
+.mj-tabel thead th{background:var(--navy);color:#fff;text-align:center;padding:10px 12px;font-size:12px;font-weight:700;white-space:nowrap;cursor:pointer;user-select:none}
 .mj-tabel thead th:first-child{border-top-left-radius:14px}.mj-tabel thead th:last-child{border-top-right-radius:14px}
 .mj-tabel thead th[aria-sort="ascending"]::after{content:" ▲"}.mj-tabel thead th[aria-sort="descending"]::after{content:" ▼"}
 .mj-tabel td{padding:10px 12px;border-top:1px solid var(--line);vertical-align:top}
-.mj-tabel td.mj-angka{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.mj-tabel td.mj-angka{text-align:center;font-variant-numeric:tabular-nums;white-space:nowrap}
 .mj-tabel tr.mj-bahaya td:first-child{box-shadow:inset 3px 0 0 var(--c1)}
 .mj-tabel tr.mj-redam td{opacity:.55}
 .mj-aksi{display:flex;gap:6px;flex-wrap:wrap}.mj-tanda{display:flex;gap:4px;flex-wrap:wrap;margin-top:4px}

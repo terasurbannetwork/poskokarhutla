@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
 import "../../src/worker.js";
 
-const JAM = 3600e3, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const U = await siapkan("uji-monitor-pemirsa", {ikat: {WA_NOMOR: "0812-3456-7890"}}), {DB, api, mf} = U;
 const id16 = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
 let ipN = 0;

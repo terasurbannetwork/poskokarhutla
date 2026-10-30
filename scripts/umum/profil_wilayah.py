@@ -21,16 +21,7 @@ for r in J("data3/bnpb/irbi.json"):
 # Pemetaan kode sumber -> kode IRBI. Sumber luar (BPS, ATLAS, regulasi, paparan) memakai kode BPS yang bisa bentrok dengan kode IRBI:
 # kode dipakai hanya bila namanya cocok nama IRBI pada kode itu; kalau tidak, dicari lewat nama; kalau tetap tak pasti, DIBUANG.
 from difflib import SequenceMatcher
-# ejaan/nama lama -> nama IRBI (pasti sama kab; bukan tebakan)
-ALIAS = {"tobasamosir": "toba", "mamujuutara": "pasangkayu", "malukutenggarabarat": "kepulauantanimbar", "simeuleu": "simeulue", "mentawai": "kepulauanmentawai",
-         "pahuwato": "pohuwato", "pangkajenekepulauan": "pangkajenedankepulauan", "padangsidempuan": "padangsidimpuan"}
-def nk(n):
-    n = (n or "").lower().strip().replace("kep.", "kepulauan")
-    while True:
-        m = re.sub(r"^(kab\.?|kabupaten|kota|adm\.?|administrasi)\s+", "", n)
-        if m == n: break
-        n = m
-    return (False, ALIAS.get(re.sub(r"[^a-z0-9]", "", n), re.sub(r"[^a-z0-9]", "", n)))
+from nama_wilayah import nk, ALIAS  # fungsi murni dipindah ke nama_wilayah.py (KM-A03)
 KOTA = lambda n: bool(re.match(r"kota\b", (n or "").lower().strip())) or ("jakarta" in (n or "").lower() and "seribu" not in (n or "").lower())  # kota Jakarta; "Kotabaru" bukan kota
 IRN = {k: v[1] for k, v in nama.items()}
 byn = collections.defaultdict(set)

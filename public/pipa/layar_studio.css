@@ -126,7 +126,7 @@
 
 /* tabel matriks (DS §3.4 varian c): kolom ukuran lengket kiri, kepala skenario berisi vonis dan hambatan */
 .sp-tabel-studio{min-width:max-content}
-.sp-tabel-studio thead th{text-transform:none;letter-spacing:0;text-align:left;vertical-align:top;white-space:normal;min-width:176px;max-width:210px;padding:10px 12px 12px;font-size:12px;font-weight:600}
+.sp-tabel-studio thead th{text-transform:none;letter-spacing:0;text-align:center;vertical-align:top;white-space:normal;min-width:176px;max-width:210px;padding:10px 12px 12px;font-size:12px;font-weight:600}
 .sp-tabel-studio thead th.sp-sudut{min-width:230px;max-width:260px;position:sticky;left:0;z-index:4;background:var(--navy);font-size:10.5px;font-weight:800;text-transform:uppercase;letter-spacing:.09em;vertical-align:bottom}
 .sp-tabel-studio thead th.sp-kol{display:table-cell}
 .sp-tabel-studio thead th .sp-kode{display:block;font:800 20px/1.15 var(--display)}
@@ -136,7 +136,7 @@
 .sp-tabel-studio thead .sp-tutup{margin-top:6px}
 .sp-tabel-studio thead .sp-alasan{display:-webkit-box;-webkit-line-clamp:4;-webkit-box-orient:vertical;overflow:hidden;margin-top:8px;font-size:11px;font-weight:500;line-height:1.35;opacity:.92}
 .sp-tabel-studio thead th.sp-kol-nogo{box-shadow:inset 0 4px 0 var(--bad)}
-.sp-tabel-studio tbody th{position:sticky;left:0;z-index:2;text-align:left;text-transform:none;letter-spacing:0;white-space:normal;background:var(--card);color:var(--ink);border-bottom:1px solid color-mix(in srgb,var(--ink) 6%,transparent);padding:9px 12px;font-size:12.5px;font-weight:700;min-width:230px;max-width:260px}
+.sp-tabel-studio tbody th{position:sticky;left:0;z-index:2;text-align:center;text-transform:none;letter-spacing:0;white-space:normal;background:var(--card);color:var(--ink);border-bottom:1px solid color-mix(in srgb,var(--ink) 6%,transparent);padding:9px 12px;font-size:12.5px;font-weight:700;min-width:230px;max-width:260px}
 .sp-tabel-studio tbody th .sp-ukuran{margin-right:6px;line-height:1.35}
 .sp-tabel-studio tbody th .sp-yakin{height:18px;font-size:10.5px;padding:0 7px;vertical-align:1px}
 .sp-tabel-studio tbody tr:last-child th{border-bottom:0}
@@ -173,7 +173,7 @@ p.sp-skenario-keras{padding:0;color:var(--ink2)}
 .sp-tabel-matriks td .sp-sub{display:block;margin-top:2px;white-space:normal;max-width:380px}
 .sp-tabel-matriks td{vertical-align:top;position:relative}.sp-tabel-matriks td.n{white-space:nowrap}
 .sp-tabel-matriks tr.sp-aktif{background:color-mix(in srgb,var(--brand2) 8%,transparent)!important;box-shadow:inset 3px 0 0 var(--brand2)}
-.sp-tabel-boq td,.sp-tabel-hid td,.sp-tabel-dep td{vertical-align:top}.sp-tabel-boq td.n,.sp-tabel-hid td.n{text-align:right;white-space:nowrap}
+.sp-tabel-boq td,.sp-tabel-hid td,.sp-tabel-dep td{vertical-align:top}.sp-tabel-boq td.n,.sp-tabel-hid td.n{text-align:center;white-space:nowrap}
 .sp-tabel-boq code{font:700 11.5px ui-monospace,SFMono-Regular,Menlo,monospace}
 .sp-tabel-dep td:first-child{font-weight:700;white-space:nowrap}
 

@@ -11,7 +11,7 @@
 .pd-ekspor,.pd-aksi{display:flex;flex-wrap:wrap;gap:6px}
 .pd-tabel-wadah{overflow-x:auto;border-radius:14px 14px 0 0;background:var(--card);box-shadow:var(--bayang)}
 .pd-tabel{width:100%;border-collapse:collapse;font-size:13px;min-width:860px}
-.pd-tabel thead th{background:var(--navy);color:#fff;text-align:left;font-size:12px;font-weight:700;padding:10px 10px;white-space:nowrap;user-select:none}
+.pd-tabel thead th{background:var(--navy);color:#fff;text-align:center;font-size:12px;font-weight:700;padding:10px 10px;white-space:nowrap;user-select:none}
 .pd-tabel thead th[data-urut]{cursor:pointer}
 .pd-tabel thead th:first-child{border-top-left-radius:14px}.pd-tabel thead th:last-child{border-top-right-radius:14px}
 .pd-tabel td{padding:10px;border-top:1px solid var(--line);vertical-align:top}

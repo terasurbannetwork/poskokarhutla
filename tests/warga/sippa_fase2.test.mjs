@@ -6,7 +6,7 @@ import {siapkan, berantai, ADMIN, MOD2} from "./_bnpb.mjs";
 import "../../src/worker.js";
 import {hitungDebit} from "../../src/sippa_lapangan.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const U = await siapkan("uji-sippa-fase2", {r2: true}), {mf, DB, api} = U;
 const sip = (m, j, b, h) => api(m, "/api/sippa" + j, b, h);
 const uuid = () => crypto.randomUUID();

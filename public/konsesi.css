@@ -12,7 +12,7 @@
 .ks-plus{margin-left:6px;padding:0 6px;border-radius:99px;background:var(--surface);border:1px solid var(--line);font:700 10.5px/1.6 var(--font);color:var(--ink2)}
 .ks-tb th[data-u]{user-select:none;white-space:nowrap}
 .ks-ar{display:inline-block;width:12px;margin-left:3px;font-style:normal;font-size:9px}
-.ks-tb td{text-align:left}.ks-tb td.n{text-align:right}.ks-tb th{text-align:center!important}
+.ks-tb td{text-align:left}.ks-tb td.n{text-align:center}.ks-tb th{text-align:center!important}
 .ks-ex{margin-bottom:14px}
 .ks-hd{display:flex;gap:12px;justify-content:space-between;align-items:flex-start;flex-wrap:wrap;margin-bottom:6px}
 .ks-hd h3{margin:0}

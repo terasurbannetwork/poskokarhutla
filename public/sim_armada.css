@@ -101,3 +101,6 @@ dl.sf-dl dt{color:var(--ink2)}dl.sf-dl dd{margin:0;color:var(--ink)}
 .sf-nol{margin:0;font-size:11.5px;color:var(--ink2)}
 @media (max-width:900px){.sf-bw{grid-template-columns:1fr}.sf-gr{display:flex;overflow-x:auto;scroll-snap-type:x mandatory}.sf-fig{flex:0 0 min(78%,260px);scroll-snap-align:start}.sf-pip{top:48px;width:calc(100% - 24px)}}
 .sf-ops{display:flex;flex-wrap:wrap;gap:6px}.sf-ops .sf-pill i{width:8px;height:8px;border-radius:50%;margin-right:6px}
+
+/* 30 Okt: pemilik minta ikon drone di peta disembunyikan dulu (lihat memori fitur-disembunyikan) */
+.sf-pl-d{display:none!important}

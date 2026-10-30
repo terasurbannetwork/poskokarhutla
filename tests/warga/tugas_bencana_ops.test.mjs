@@ -8,7 +8,7 @@ import {tugasBaruDariBerkas, tutupKedaluwarsa, bersihkanInstansi, tautkanLaporan
 import {UMUR_KAJI_CEPAT_JAM} from "../../src/tugas_bencana.js";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 
-const JAM = 3600e3, MENIT = 60e3, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, MENIT = 60e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const T0 = Date.now();
 const BERKAS = new Map();
 /* karhutla palsu tepat di lokasi banjir: kalau infoKluster tidak memeriksa jenis, tugas banjir menempel pada api ini */

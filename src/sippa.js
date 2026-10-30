@@ -1181,6 +1181,12 @@ export const PENGISI = {
     await kumpul(env, isi.map(([k, sel, status, alasan], i) => env.DB.prepare("INSERT INTO sippa_aoi_usul (id, kompleks_id, sel, prov, alasan, status, oleh, waktu, dummy) VALUES (?, ?, ?, '62', ?, ?, ?, ?, 1)").bind(acak(8), k, sel, alasan, status, OLEH_DUMMY, Math.round(c.sejak + (i + 1) * langkah))));
     return {sippa_aoi_usul: isi.length};
   },
+  async isiRenlap(env, c) {   // kunjungan, laporan: antrean renlap per status; "siap" sengaja tak ada karena butuh PDF R2 sungguhan (tautan palsu = layar bohong)
+    if (await adaDummy(env, "SELECT count(*) n FROM sippa_renlap WHERE dummy = 1 AND waktu BETWEEN ? AND ?", c.sejak, c.sampai)) { c.ada = true; return {}; }
+    const langkah = (c.sampai - c.sejak) / 4, isi = [[["K0001", "K0003"], "antre", null], [["K0007"], "jalan", null], [["K0003", "K0012"], "gagal", "dummy: generator tidak menjawab"]];
+    await kumpul(env, await Promise.all(isi.map(async ([ids, status, galat], i) => env.DB.prepare("INSERT INTO sippa_renlap (id, kompleks_ids, prov, status, token_hp_sha, oleh, waktu, galat, dummy) VALUES (?, ?, '62', ?, ?, ?, ?, ?, 1)").bind(acak(8), JSON.stringify(ids), status, await sha(acak(18)), OLEH_DUMMY, Math.round(c.sejak + (i + 1) * langkah), galat))));
+    return {sippa_renlap: isi.length};
+  },
   async isiBbm(env, c) {
     const logs = await logDummy(env, c); if (!logs.length) return {};
     if (await adaDummy(env, "SELECT count(*) n FROM sippa_bbm WHERE dummy = 1 AND log_id IN (SELECT id FROM sippa_log_gelar WHERE dummy = 1 AND t_tiba BETWEEN ? AND ?)", c.sejak, c.sampai)) { c.ada = true; return {}; }
@@ -1320,7 +1326,7 @@ const SEMUA_KIT = ["isiKit", "isiKomponen", "isiTugas", "isiGerak"], SEMUA_LOG =
 /* tabel keputusan {layar: [pengisi...]} hulu ke hilir (bukan rantai if). Layar yang datanya dari R2 atau murni hitung (hitung, 3d, data) memberi daftar kosong: 200 tanpa baris, bukan nol palsu. */
 export const RANTAI_DUMMY = {kit: SEMUA_KIT, log: SEMUA_LOG, lapangan: SEMUA_LOG, ringkas: [...SEMUA_KIT, "isiLog", "isiProbe", "isiBbm"],
   telemetri: ["isiKit", "isiPerangkat", "isiTelemetri", "isiHarian", "isiAlarm"],
-  ...Object.fromEntries(LAYAR_SIPPA.filter(l => !["kit", "log", "telemetri"].includes(l)).map(l => [l, []])), pemicu: SEMUA_KIT, peta: ["isiJalan", "isiAoi"], ab: ["isiAb"], studio: ["isiSkenario"], laporan: ["isiLaporan"],
+  ...Object.fromEntries(LAYAR_SIPPA.filter(l => !["kit", "log", "telemetri"].includes(l)).map(l => [l, []])), pemicu: SEMUA_KIT, peta: ["isiJalan", "isiAoi"], ab: ["isiAb"], studio: ["isiSkenario"], laporan: ["isiLaporan", "isiRenlap"], kunjungan: ["isiRenlap"],
   pelihara: ["isiKit", "isiKomponen", "isiTugas", "isiLog", "isiAsetPelihara", "isiInspeksiKit", "isiStok"], air: ["isiSumur"], akses: ["isiJembatan"]};
 async function dummyIsi(env, req, url, kini) {
   const a = await akses(env, req, "SA"); if (a.res) return a.res;

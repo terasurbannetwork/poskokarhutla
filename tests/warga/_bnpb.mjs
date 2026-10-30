@@ -24,7 +24,7 @@ export async function siapkan(nama, {r2 = false, ikat = {}, luar, skrip = "src/w
   /* ip: header cf-connecting-ip supaya batas laju per IP bisa diuji */
   const api = async (metode, j, body, h = {}) => {
     const isi = body === undefined ? undefined : typeof body === "string" ? body : JSON.stringify(body);
-    const r = await mf.dispatchFetch("http://bnpb.lokal" + j, {method: metode, headers: {...(body !== undefined && typeof body !== "string" ? {"content-type": "application/json"} : {}), ...h}, body: isi});
+    const r = await mf.dispatchFetch("http://bnpb.lokal" + j, {method: metode, headers: {...(/sesi_staf=/.test(h.cookie || "") ? {origin: "http://bnpb.lokal"} : {}), ...(body !== undefined && typeof body !== "string" ? {"content-type": "application/json"} : {}), ...h}, body: isi});
     const t = await r.text(); let x = null; try { x = JSON.parse(t); } catch (e) {}
     return {s: r.status, j: x, t, h: r.headers};
   };

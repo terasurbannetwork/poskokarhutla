@@ -15,7 +15,7 @@
 .pk-tb td b{font-size:12px}
 .pk-sw{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:5px;vertical-align:1px}
 .pk-rinci{margin-top:10px;padding:8px 10px;border:1px solid var(--line);border-left:4px solid var(--w);border-radius:12px;background:var(--card);font-size:12.5px}
-.pk-rinci .simangka td{text-align:right}.pk-rinci .simangka td small{display:block;color:var(--ink2);font-size:10.5px}
+.pk-rinci .simangka td{text-align:center}.pk-rinci .simangka td small{display:block;color:var(--ink2);font-size:10.5px}
 .pk-rinci .fnd{margin-top:4px}
 .pk-baris{display:flex;flex-wrap:wrap;gap:6px 10px;align-items:end;margin:6px 0;font-size:12px}
 .pk-baris>b{flex-basis:100%;font-size:12px}

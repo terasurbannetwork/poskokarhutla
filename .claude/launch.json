@@ -218,6 +218,14 @@
         "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/97ceb9e2-a06b-41b8-a855-d20a7aec52da/scratchpad/uji.vars"
       ],
       "port": 8791
+    },
+    {
+      "name": "pratinjau-direktori",
+      "runtimeExecutable": "node",
+      "runtimeArgs": [
+        "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/84f86b6e-6014-4369-aaf0-9e2224ee3f94/scratchpad/pratinjau.mjs"
+      ],
+      "port": 8795
     }
   ]
 }
