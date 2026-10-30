@@ -1855,3 +1855,23 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-sheet[data-mode="grup"] .ak-dkepala{padding:20px 24px 18px;position:relative}
 .ak-sheet[data-mode="grup"] .ak-dk-atas .ak-lgo{width:44px;height:44px}
 .ak-sheet[data-mode="grup"] .ak-dk-atas .ak-mt-t{margin-right:110px}
+
+/* G17 batang bertumpuk pemberi x tingkat penerima */
+.ak-stk-sum{margin:0 0 10px;font-size:13.5px;color:var(--ink);line-height:1.45;text-align:left}
+.ak-stk-jn{margin-bottom:10px}
+.ak-stk-leg{display:flex;flex-wrap:wrap;gap:6px 16px;margin-bottom:10px;font-size:12px;color:var(--ink2)}
+.ak-stk-leg span{display:inline-flex;align-items:center;gap:6px}.ak-stk-leg i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.ak-stk{display:grid;gap:8px}
+.ak-stk-r{display:grid;grid-template-columns:minmax(150px,230px) minmax(0,1fr) 150px;align-items:center;gap:12px}
+.ak-stk-n{display:flex;align-items:center;gap:8px;min-width:0}.ak-stk-n .ak-lgo{width:30px;height:30px;flex:none}
+.ak-stk-n b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;color:var(--ink)}
+.ak-stk-b{display:flex;height:26px;background:var(--surface);border-radius:8px;overflow:hidden;gap:1px}
+.ak-stk-s{all:unset;box-sizing:border-box;height:100%;cursor:pointer;min-width:3px}
+.ak-stk-s:hover,.ak-stk-s:focus-visible{filter:brightness(1.12);outline:2px solid #fff;outline-offset:-2px}
+.ak-stk-v{display:grid;text-align:right;line-height:1.25}.ak-stk-v b{font-size:13.5px;font-variant-numeric:tabular-nums}.ak-stk-v small{font-size:11px;color:var(--ink2)}
+@media (max-width:800px){.ak-stk-r{grid-template-columns:minmax(0,1fr) auto}.ak-stk-b{grid-column:1/-1;order:3}}
+
+/* G18 segmen sub-tampilan di kepala navy */
+.ak-segmeng{position:static!important}
+.ak-seg[hidden]{display:none!important}
+.ak-kepala-nav>.ak-seg{width:100%}
