@@ -2074,3 +2074,22 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-qk-t span{overflow:hidden;text-overflow:ellipsis;max-width:150px}
 .ak-qk-t{text-decoration:none!important}
 .ak-as .ak-lper,.ak-as .ak-lfoot{font-size:11px}
+.ak-kjk::before{display:none!important}.ak-kjk{padding:16px 16px 16px 18px!important}
+
+/* G21 pemilih kategori di kanan atas kanvas peta */
+.ak-ptaisi>#akPtKat{position:absolute;top:12px;right:56px;width:220px;z-index:9;flex:none}
+.ak-ptaisi>#akPtKat .ak-kbtn{background:oklch(100% 0 0 / .94);box-shadow:var(--shadow)}
+.ak-ptaisi>#akPtKat .ak-kpop{top:calc(100% + 8px);bottom:auto;left:auto;right:0;width:min(360px,calc(100vw - 32px));z-index:60}
+@media (max-width:700px){.ak-ptaisi>#akPtKat{top:12px;right:56px;width:170px}}
+
+.ak-sdt thead th.r,.ak-sdt thead th:not(:first-child),.ak-sdt td:not(:first-child){width:52px!important;padding-left:2px!important;padding-right:6px!important}
+.ak-sdt thead button{font-size:9.5px!important;gap:3px}
+.ak-sdt td:first-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-sdt thead th.r,.ak-sdt thead th:not(:first-child),.ak-sdt td:not(:first-child){width:46px!important;padding-right:4px!important}
+.ak-sdt thead th:not(:first-child) svg{display:none}
+.ak-sdt thead button{font-size:9px!important;letter-spacing:0!important;padding-left:2px!important}
+.ak-mp-x{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;background:var(--brand);color:#fff;font-size:12px;font-weight:700;cursor:pointer;margin-left:8px;vertical-align:middle}.ak-mp-x svg{width:13px;height:13px}
+
+/* G22 multi-pilih bencana: tanda centang kecil di kiri tombol terpilih */
+.ak-bpanel .ak-bencana button[aria-pressed="true"]:not([data-r=""])::before{content:"\2713";font-size:12px;font-weight:800;margin-right:-2px;flex:none}
+.ak-bpanel .ak-bencana button[aria-pressed="true"]::after{content:none!important}
