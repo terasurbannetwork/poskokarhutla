@@ -576,7 +576,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     semua.forEach(o => { if (!o[14] && logoK[o[2]]) o[14] = logoK[o[2]]; });   // logo kampus dipinjam dari rekan sekampus yang sudah tercocokkan SINTA
     const kampus = Object.keys(perK).filter(k => jenisK(k) === "k").length;
     const IK = ['<circle cx="9" cy="8" r="3.5"/><path d="M2.5 20c0-3.6 2.9-6 6.5-6s6.5 2.4 6.5 6"/><circle cx="17" cy="9" r="2.5"/><path d="M16 14c3 0 5.5 2 5.5 5"/>', IK_GEDUNG, KAT.inovasi[1], IKP.data];
-    const TIL = [[semua.length, "pakar", "akPakarN", "pakar", IK[0]], [null, "tokoh", "akTokohN", "tokoh", '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>'], [null, "lembaga", "akLembagaN", "lembaga", IK_GEDUNG], [null, "inovasi", "akInovasiN", "inovasi", KAT.inovasi[1]], [null, "sistem data", "akSistemN", "sistem_data", '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>'], [null, "pustaka", "akPustakaN", "pustaka", IKJ], [null, "riset", "akRisetN", "riset", '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/>']];
+    const TIL = [[semua.length, "pakar", "akPakarN", "pakar", IK[0]], [null, "tokoh", "akTokohN", "tokoh", '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>'], [null, "lembaga", "akLembagaN", "lembaga", IK_GEDUNG], [null, "inovasi", "akInovasiN", "inovasi", KAT.inovasi[1]], [null, "riset", "akRisetN", "riset", '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/>'], [null, "sistem data", "akSistemN", "sistem_data", '<ellipse cx="12" cy="6" rx="8" ry="3"/><path d="M4 6v6c0 1.7 3.6 3 8 3s8-1.3 8-3V6M4 12v6c0 1.7 3.6 3 8 3s8-1.3 8-3v-6"/>'], [null, "pustaka", "akPustakaN", "pustaka", IKJ]];
     $("akAngka").classList.add("enam", "tujuh");
     $("akAngka").innerHTML = TIL.map(([n, l, id, go, ic]) => `<div role="button" tabindex="0" data-go="${go}"><svg viewBox="0 0 24 24" aria-hidden="true">${ic}</svg><b id="${id}">${n == null ? "..." : angka(n)}</b><span>${l}</span></div>`).join("");
     const cnt = nm => ambilData(nm).then(d => dlist(Array.isArray(d) ? d : d && Object.values(d).find(Array.isArray)).length);
@@ -1782,10 +1782,15 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     $("akSheet").dataset.k = ""; terhubungDi("I:" + x.id); const tk = tokenS; ambilData("berita").then(d => { const h = brtHtml("inovasi", x.id, d); if (h) isiNanti(() => tk === tokenS, "akInBrt", h); });
   };
   document.addEventListener("click", e => { if (e.target.closest("[data-inclear]")) { IN.rumpun = ""; IN.hal = 1; nanti(() => gambarIn(false)); } });
+  /* batang ringkasan inovasi multi-pilih: terpilih berbingkai navy + centang, lainnya redup bila ada pilihan */
+  function tandaiBatangIn() { const ada = ["rumpun", "jenis", "status"].some(f => IN.fs[f].size); document.querySelectorAll('#akv-inovasi [data-bar^="in|"]').forEach(el => { const [, f, ...v] = el.dataset.bar.split("|"); if (!IN.fs[f]) return; const on = IN.fs[f].has(v.join("|")); el.setAttribute("aria-pressed", String(on)); el.classList.toggle("ak-bsel", on); el.classList.toggle("ak-bredup", ada && !on && IN.fs[f].size > 0); }); }
+  const labelIn = (f, v) => f === "rumpun" ? (RUMPUN[v] || [v])[0] : kapital(String(v));
+  document.addEventListener("click", e => { const x = e.target.closest("[data-inx]"); if (!x) return; if (x.dataset.inx === "semua") ["rumpun", "jenis", "status"].forEach(f => IN.fs[f] = new Set()); else { const [f, ...v] = x.dataset.inx.split("|"); IN.fs[f] = togglePilihan(IN.fs[f], v.join("|")); } IN.hal = 1; tandaiBatangIn(); nanti(() => gambarIn(false)); });
   function gambarIn(gulir) {
-    inHasil = inArr.filter(x => (!IN.rumpun || strs(x.rumpun).includes(IN.rumpun)) && (!IN.jenis || x.jenis === IN.jenis) && (!IN.status || x.status === IN.status) && (!IN.prov || inProv(x).includes(IN.prov)) && (!IN.pembuat || dlist(x.pembuat).some(b => b.jenis === IN.pembuat)) && (!IN.q || x._cari.includes(IN.q.toLowerCase())));
+    inHasil = inArr.filter(x => (!IN.rumpun || strs(x.rumpun).includes(IN.rumpun)) && (!IN.jenis || x.jenis === IN.jenis) && (!IN.status || x.status === IN.status) && cocokBencana(IN.fs.rumpun, strs(x.rumpun)) && cocokBencana(IN.fs.jenis, [x.jenis]) && cocokBencana(IN.fs.status, [x.status]) && (!IN.prov || inProv(x).includes(IN.prov)) && (!IN.pembuat || dlist(x.pembuat).some(b => b.jenis === IN.pembuat)) && (!IN.q || x._cari.includes(IN.q.toLowerCase())));
     const n = inHasil.length, a = (IN.hal - 1) * INPER;
-    $("akInJ").innerHTML = `<b>${angka(n)}</b> inovasi kebencanaan${IN.rumpun ? ` <button type="button" class="ak-mp ak-mp-b ak-mp-x" data-inclear="1" title="Hapus saringan rumpun">${(RUMPUN[IN.rumpun] || [])[1] ? ikon(RUMPUN[IN.rumpun][1], RUMPUN[IN.rumpun][2]) : ""}${esc((RUMPUN[IN.rumpun] || [IN.rumpun])[0])} &times;</button>` : ""}`;
+    const pilIn = ["rumpun", "jenis", "status"].flatMap(f => [...IN.fs[f]].map(v => `<button type="button" class="ak-mp ak-mp-x" data-inx="${esc(f + "|" + v)}" title="Hapus saringan">${esc(labelIn(f, v))} &times;</button>`)).join("");
+    $("akInJ").innerHTML = `<b>${angka(n)}</b> inovasi kebencanaan${pilIn ? ` ${pilIn}<button type="button" class="ak-mp ak-mp-b ak-mp-sem" data-inx="semua">Hapus semua</button>` : ""}`; tandaiBatangIn();
     $("akInL").innerHTML = n ? `<div class="ak-daftar ak-prodgrid">${inHasil.slice(a, a + INPER).map(kartuInP).join("")}</div>` : hampa("inovasi");
     $("akInH").innerHTML = navHal(IN.hal, n, INPER, "inovasi");
     petaIn(); if (gulir) gulirKe("akInJ");
@@ -1797,7 +1802,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   async function bangunInovasi(p, d) {
     if (!lbArr.length) { const l = await ambilData("lembaga"); if (l) indeksLb(l); }
     inArr = dlist(Array.isArray(d) ? d : d?.inovasi).filter(x => x && x.id && x.nama).map(x => Object.assign(x, {_cari: [x.nama, x.ringkasan, x.jenis, ...dlist(x.pembuat).map(b => b.nama), ...strs(x.mitra)].filter(Boolean).join(" ").toLowerCase()}));
-    Object.assign(IN, {rumpun: "", jenis: "", status: "", prov: "", pembuat: "", q: "", hal: 1}); inMap = null;
+    Object.assign(IN, {fs: {rumpun: new Set(), jenis: new Set(), status: new Set()}, rumpun: "", jenis: "", status: "", prov: "", pembuat: "", q: "", hal: 1}); inMap = null;
     const hit = f => { const n = {}; inArr.forEach(x => { for (const k of [].concat(f(x))) if (k) n[k] = (n[k] || 0) + 1; }); return n; }, nR = hit(x => strs(x.rumpun)), nJ = hit(x => x.jenis), nS = hit(x => x.status), nP = hit(inProv), nB = hit(x => [...new Set(dlist(x.pembuat).map(b => b.jenis))]);
     const bar = (n, warna, lab, field) => batang(Object.entries(n).sort((a, b) => b[1] - a[1]), {tab: "in", field, warna, lab, tot: inArr.length, sat: "inovasi"});
     p.innerHTML = `<section class="ak-panel ak-lA"><div class="ak-pil"><span class="ak-r utama" style="--w0:#f59f00">Ringkasan</span></div><h2 class="ak-judulv"><b>${angka(inArr.length)}</b> inovasi kebencanaan, <b>${angka(nS.terpasang || 0)}</b> terpasang</h2>
@@ -2107,10 +2112,16 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     if (e.jenis === "pakar") { const o = peta.get(e.id); return o && {nama: o[1], logo: `<span class="ak-sosok">${foto(o)}</span>`, buka: () => buka(o)}; }
     if (e.jenis === "inovasi") return {nama: "Inovasi", logo: `<span class="ak-klogo kosong" aria-hidden="true">${ikon(KAT.inovasi[1], "currentColor")}</span>`, buka: () => { IN.q = ""; tampil("inovasi"); }}; return null; };
   function kartuBr(b, i) {
-    const ents = dlist(b.entitas).map(entBr).filter(Boolean).slice(0, 3);
-    return `<article class="ak-psk ak-brk"><div class="ak-brm"><div class="ak-pil">${b.kategori ? `<span class="ak-r utama" style="--w0:#e8590c">${esc(kapital(b.kategori))}</span>` : ""}<span class="ak-lper">${esc(tglID(b.tanggal))}</span>${pilContoh(b)}</div>
-      <h3 class="ak-brj">${urlOk(b.url) ? `<a href="${esc(urlOk(b.url))}" ${LUAR}>${esc(b.judul)}</a>` : esc(b.judul)}</h3>${b.ringkas ? `<p class="ak-rata">${esc(b.ringkas)}</p>` : ""}<div class="ak-pil">${b.media ? `<span class="ak-prodi">${esc(b.media)}</span>` : ""}${strs(b.rumpun).map(r => pilRumpun(r)).join("")}</div></div>
-      ${ents.length ? `<div class="ak-bre">${ents.map((e, j) => `<button type="button" class="ak-brl" data-bre="${i}:${j}" title="${esc(e.nama)}">${e.logo}<small>${esc(e.nama)}</small></button>`).join("")}</div>` : ""}</article>`;
+    const u = urlOk(b.url), foto = urlOk(BFOTO?.[b.id]?.foto_url || b.foto_url), ents = dlist(b.entitas).map((e, idx) => [idx, entBr(e)]).filter(q => q[1]);
+    /* entitas sejenis yang banyak diringkas jadi satu chip ("Basarnas (6 kantor)") */
+    const grp = new Map(); ents.forEach(q => { const k = /^kantor sar/i.test(q[1].nama) ? "Basarnas" : q[1].nama.split(" ").slice(0, 2).join(" "); (grp.get(k) || grp.set(k, []).get(k)).push(q); });
+    const chips = []; grp.forEach((a, k) => { if (a.length >= 3) chips.push({idx: a[0][0], e: a[0][1], label: k === "Basarnas" ? `Basarnas (${a.length} kantor)` : `${k} (${a.length})`}); else a.forEach(q => chips.push({idx: q[0], e: q[1], label: q[1].nama})); });
+    const th = foto ? `<img src="${esc(foto)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : (chips[0] ? chips[0].e.logo : ikon(IK_KORAN, "currentColor"));
+    const rg = b.ringkas && !/memberitakan|diberitakan/i.test(b.ringkas) && nrm(b.ringkas) !== nrm(b.judul) ? b.ringkas : "";
+    return `<article class="ak-brk2"${u ? ` role="link" tabindex="0" ${hrefAttr(u)}` : ""}><span class="ak-brk2-t${foto ? " foto" : ""}">${th}</span><div class="ak-brk2-m"><h3>${esc(b.judul)}</h3>
+      <div class="ak-brk2-meta">${[b.media, tglID(b.tanggal)].filter(Boolean).map(esc).join(", ")}${b.kategori ? `<span class="ak-mp ak-mp-kat">${esc(kapital(b.kategori))}</span>` : ""}${pilContoh(b)}</div>${rg ? `<p class="ak-brk2-r">${esc(rg)}</p>` : ""}
+      <div class="ak-brk2-e">${chips.slice(0, 3).map(c => `<button type="button" class="ak-brk2-c" data-bre="${i}:${c.idx}" title="${esc(c.e.nama)}">${c.e.logo}<span>${esc(potong(c.label, 30))}</span></button>`).join("")}${chips.length > 3 ? `<span class="ak-r ak-r-n">+${chips.length - 3}</span>` : ""}${strs(b.rumpun).slice(0, 2).map(r => pilRumpun(r)).join("")}</div></div>
+      ${u ? `<span class="ak-brk2-x" aria-hidden="true">${ikon(IK_LUAR, "currentColor")}</span>` : ""}</article>`;
   }
   function gambarBr(gulir) {
     const q = BR.q.toLowerCase();
@@ -2421,9 +2432,14 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const terhLb = id => { const lis = GRAFNOW?.adj.get("L:" + id) || []; let p = 0, n = 0; lis.forEach(e => { if (e.to[0] === "P") p++; else if (e.to[0] === "I") n++; }); return [p, n]; };
   const barisLb = (y, attr) => { const k = KAT[y.kategori] || [y.kategori, KAT.riset[1], "#6b7280"];
     const [tp, ti] = terhLb(y.id); return barisKaya({attr: typeof attr === "string" ? attr : `data-lb="${esc(y.id)}"`, fakta: tp ? `${angka(tp)} pakar` : "", fakta2: ti ? `${angka(ti)} inovasi` : "", logo: logoLb(y), nama: judulCase(y.nama) + (y.singkatan && !nrm(y.nama).includes(nrm(y.singkatan)) ? ` (${y.singkatan})` : ""), jelas: ringkasLb(y), pil: (/^bpbd/i.test(y.nama) || /bpbd/i.test(String(y.sub || "")) ? "" : pilMini(k[1], k[0], k[2])) + pilLok(y) + pilIzin(y) + pilMitra(y) + (y.didirikan ? pilMini(IKL.tahun, "Sejak " + String(y.didirikan).slice(0, 4)) : "") + pilRumpunN(y.rumpun)}); };
+  /* thumbnail inovasi 56 px: foto (cover) bila ada, selain itu ikon jenis di kotak berwarna rumpun pertama */
+  const inThumb = (x, w) => { const f = urlOk(x.foto_url); return `<span class="ak-th56" style="--w0:${esc(w)}">${ikon(ikJenis(x.jenis), "currentColor")}${f && !x.foto_blokir ? `<img src="${esc(f)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}</span>`; };
+  const olehPlain = pb => { const n = pb?.nama; if (!n) return ""; const l = (pb.lembaga_id && lbMap.get(pb.lembaga_id)) || lbArr.find(y => namaLb(y).includes(nrm(n))), kp = !l && kampusDariNama(n), lg = l ? chainLogo(l).find(u => urlOk(u)) : kp ? urlOk(logoK[kp]) : "";
+    const ik = lg ? `<img class="ak-ol-lg" src="${esc(lg)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : "", at = l ? `data-lb="${esc(l.id)}"` : kp ? `data-kp="${esc(kp)}"` : "";
+    return `<span class="ak-oleh">oleh ${ik}${at ? `<button type="button" class="ak-oleh-n" ${at}>${esc(n)}</button>` : `<span>${esc(n)}</span>`}</span>`; };
   const barisInovasi = (x, attr) => { const pb = dlist(x.pembuat)[0], w = (RUMPUN[strs(x.rumpun)[0]] || [])[2] || "#1c7ed6", np = dlist(x.penerapan).length;
-    const [pdk, pjg] = namaInovasi(x);
-    return barisKaya({attr: typeof attr === "string" ? attr : `data-inid="${esc(x.id)}"`, logo: lgoIkon([urlOk(x.foto_url)].filter(Boolean), ikJenis(x.jenis), w), nama: pdk, sub: pjg, oleh: olehHtml(pb?.lembaga_id, pb?.nama),
+    const [pdk, pjg0] = namaInovasi(x), pjg = pjg0 && nrm(pjg0) !== nrm(pb?.nama || "") && nrm(pjg0) !== nrm(pb?.singkatan || "@@") ? pjg0 : "";
+    return barisKaya({attr: typeof attr === "string" ? attr : `data-inid="${esc(x.id)}"`, logo: inThumb(x, w), nama: pdk, sub: pjg, oleh: olehPlain(pb),
       jelas: x.ringkasan || `${kapital(x.jenis || "inovasi")}${x.tahun ? ", sejak " + x.tahun : ""}.`, pil: pilStatus(x.status, STATUS_IN[x.status]) + pilJenis(x.jenis) + pilRumpunN(x.rumpun) + (x.trl ? pilMini(IK_BAR, "TRL " + x.trl) : "") + (dlist(x.paten).length || x.paten === true ? pilMini(IKL.jenis, "Paten") : "") + (x.tahun ? pilMini(IKL.tahun, "Sejak " + x.tahun) : "") + (np ? pilMini(IKON_PIN, angka(np) + " lokasi pakai") : "") + pilContoh(x)}); };
   /* logo pemilik sistem data: lembaga di direktori, lalu logo_pemilik.json (nama pemilik persis), lalu ikon; pemilik ganda "A dan B" = dua logo kecil bertumpuk */
   let LOGO_PEM = null; const muatLogoPem = () => { if (LOGO_PEM) return; LOGO_PEM = {}; ambilData("logo_pemilik").then(d => { if (d && typeof d === "object" && !Array.isArray(d)) LOGO_PEM = d; }); };
@@ -2533,12 +2549,12 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const sekInfo = (f, v) => f === "status" ? (STATUS_ID[String(v).toLowerCase()] || [kapital(String(v)), STATUS_IN[v] || "#6b7280"]) : f === "akses" ? [(AKSES[v] || [v])[0], (AKSES[v] || [])[1] || "#6b7280"] : f === "kategori" ? [(KAT[v] || [v])[0], (KAT[v] || [])[2] || "#6b7280"] : f === "_skala" ? [kapital(String(SKALA_L[v] || v)), "#6b7280"] : [kapital(String(v || "")), "#6b7280"];
   function isiGrup() {
     const G = GRUPAKTIF, f = sekGrup(), n = {}; if (f) G.a.forEach(x => { for (const v of sekNilai(x, f)) if (v) n[v] = (n[v] || 0) + 1; });
-    const ring = f && Object.keys(n).length > 1 ? `<div class="ak-gring" role="group" aria-label="Saring isi">${Object.entries(n).sort((a, b) => b[1] - a[1]).map(([v, c]) => { const [l, w] = sekInfo(f, v); return `<button type="button" class="ak-gpil" data-gf="${esc(v)}" aria-pressed="${G.gf === v}" style="--w0:${w}"><i style="background:${w}"></i>${esc(l)}<b>${angka(c)}</b></button>`; }).join("")}</div>` : "";
-    const a = G.gf ? G.a.filter(x => sekNilai(x, f).includes(G.gf)) : G.a;
+    const ring = f && Object.keys(n).length > 1 ? `<div class="ak-gring" role="group" aria-label="Saring isi">${Object.entries(n).sort((a, b) => b[1] - a[1]).map(([v, c]) => { const [l, w] = sekInfo(f, v); return `<button type="button" class="ak-gpil" data-gf="${esc(v)}" aria-pressed="${G.gf.has(v)}" style="--w0:${w}"><i style="background:${w}"></i>${esc(l)}<b>${angka(c)}</b></button>`; }).join("")}</div>` : "";
+    const a = G.gf.size ? G.a.filter(x => sekNilai(x, f).some(z => G.gf.has(z))) : G.a;
     return ring + daftarBkr(a.slice(0, 60).map(x => itemGrup(G.tab, x))) + (a.length > 60 ? `<p class="ak-lper">Menampilkan 60 dari ${angka(a.length)}. Saring daftar untuk melihat semuanya.</p>` : "");
   }
   function grupSheet(tab, field, value) {
-    const g = GRUP[tab]; if (!g) return; const a = g.arr().filter(x => g.kel(x, field).includes(value)); GRUPAKTIF = {tab, field, value, a, gf: ""};
+    const g = GRUP[tab]; if (!g) return; const a = g.arr().filter(x => g.kel(x, field).includes(value)); GRUPAKTIF = {tab, field, value, a, gf: new Set()};
     const lab = field === "rumpun" ? (RUMPUN[value] || [value])[0] : field === "akses" ? (AKSES[value] || [value])[0] : field === "kategori" ? (KAT[value] || [value])[0] : kapital(String(SKALA_L[value] || value));
     const own = (field === "pemilik" || field === "pemberi") && lbArr.find(y => namaLb(y).includes(nrm(value)));
     const w = field === "rumpun" ? (RUMPUN[value] || [])[2] : field === "akses" ? (AKSES[value] || [])[1] : field === "kategori" ? (KAT[value] || [])[2] : field === "status" ? STATUS_IN[value] : field === "jenis" && tab === "dn" ? JENIS_DANA[value] : "#1c7ed6";
@@ -2549,11 +2565,11 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     const gg = e.target.closest("[data-g]"); if (gg && !e.target.closest("button[data-lb]")) { e.stopPropagation(); sheetG(gg.dataset.g); return; }
     const lt = e.target.closest(".ak-linimasa li span"); if (lt && !e.target.closest("a")) { lt.classList.toggle("terbuka"); return; }
     const sc = e.target.closest("[data-skcara]"); if (sc) { e.stopPropagation(); $("akSkCara")?.scrollIntoView({behavior: "smooth", block: "start"}); return; }
-    const gf = e.target.closest("[data-gf]"); if (gf && GRUPAKTIF) { e.stopPropagation(); const v = gf.dataset.gf; GRUPAKTIF.gf = GRUPAKTIF.gf === v ? "" : v; gf.parentElement.querySelectorAll("[data-gf]").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.gf === GRUPAKTIF.gf))); nanti(() => { const t = $("akSTubuh"); if (t) t.innerHTML = isiGrup(); }); return; }
+    const gf = e.target.closest("[data-gf]"); if (gf && GRUPAKTIF) { e.stopPropagation(); const v = gf.dataset.gf; GRUPAKTIF.gf = togglePilihan(GRUPAKTIF.gf, v); gf.parentElement.querySelectorAll("[data-gf]").forEach(b => b.setAttribute("aria-pressed", String(GRUPAKTIF.gf.has(b.dataset.gf)))); nanti(() => { const t = $("akSTubuh"); if (t) t.innerHTML = isiGrup(); }); return; }
     const ap = e.target.closest("[data-grapply]"); if (ap && GRUPAKTIF) { e.stopPropagation(); const {tab, field, value} = GRUPAKTIF, g = GRUP[tab]; tutupSheet();
       if (tab === "bk") { pustakaSub = "buku"; setBencana(value); return; }
       PRE = {tab, field: tab === "lb" ? (field === "kategori" ? "kat" : "skala") : field, value}; if (tab === "dn") PD.sub = "proyek"; if (tab === "lb") lbSub = "daftar"; delete sudah[g.view]; tampil(g.view); bukaView(g.view); return; }
-    const br = e.target.closest("[data-bar]"); if (br) { const [tab, field, ...v] = br.dataset.bar.split("|"); if (tab === "in" && field === "rumpun") { e.stopPropagation(); IN.rumpun = IN.rumpun === v.join("|") ? "" : v.join("|"); IN.hal = 1; nanti(() => { gambarIn(false); $("akInJ")?.scrollIntoView({block: "start", behavior: "smooth"}); }); return; } grupSheet(tab, field, v.join("|")); } }, true);
+    const br = e.target.closest("[data-bar]"); if (br) { const [tab, field, ...v] = br.dataset.bar.split("|"); if (tab === "in" && ["rumpun", "jenis", "status"].includes(field) && IN.fs) { e.stopPropagation(); IN.fs[field] = togglePilihan(IN.fs[field], v.join("|")); IN.hal = 1; tandaiBatangIn(); nanti(() => { gambarIn(false); $("akInJ")?.scrollIntoView({block: "start", behavior: "smooth"}); }); return; } grupSheet(tab, field, v.join("|")); } }, true);
   document.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches?.("[data-bar]")) { e.preventDefault(); e.target.click(); } });
   let pustakaSub = "dok";
 
@@ -2624,7 +2640,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   function setBuka(v) { const el = $("akBuka"); if (el) el.hidden = true; return; /* kalimat pembuka dihilangkan atas permintaan pemilik 30 Okt 2026; pulihkan: hapus baris ini */ const t = INTRO[v]; if (!t) { el.hidden = true; return; } if (typeof t === "string") { el.textContent = t + "."; el.hidden = false; return; }
     el.textContent = t[0] + "."; el.hidden = false; ambilData(t[1]).then(d => { const a = dlist(Array.isArray(d) ? d : d && Object.values(d).find(Array.isArray)), tg = a.map(x => String(x?.diperiksa || "")).filter(Boolean).sort().pop(); if (tampilSkrg === v) el.textContent = t[0] + (tg ? `; diperiksa ${tglID(tg)}` : "") + "."; }); }
   /* 8 tab utama; Pustaka dan Riset punya sub-tab. ?tampil= lama (berita, riset, kejadian, pusat, aset) diarahkan ke tab+sub baru */
-  const TABS = ["pakar", "lembaga", "wilayah", "inovasi", "sistem_data", "pendanaan", "pustaka", "riset"], TAB_LABEL = {riset: "Riset"};
+  const TABS = ["pakar", "lembaga", "wilayah", "inovasi", "riset", "sistem_data", "pendanaan", "pustaka"], TAB_LABEL = {riset: "Riset"};
   const SUBTAB = {pustaka: [["buku", "Buku", "pustaka"], ["dok", "Dokumen", "pustaka"], ["berita", "Berita", "berita"]], riset: [["riset", "Riset daerah", "riset"], ["kejadian", "Kejadian besar", "kejadian"], ["pusat", "Pusat studi", "pusat"], ["aset", "Aset riset", "pusat"]]};
   const LAMA = {berita: ["pustaka", "berita"], riset: ["riset", "riset"], kejadian: ["riset", "kejadian"], pusat: ["riset", "pusat"], aset: ["riset", "aset"], pustaka: ["pustaka", "dok"], buku: ["pustaka", "buku"], dokumen: ["pustaka", "dok"], tokoh: ["pakar", ""]};
   let tabSkrg = "pakar";
