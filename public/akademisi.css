@@ -2322,3 +2322,37 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 
 /* h-index hitam seperti metrik lain (pemilik 30 Okt) */
 .ak-metrik div:first-child b{color:var(--ink)}
+.ak-skor div:first-child b{color:var(--ink)}
+/* tabel BPBD rapat (pemilik 30 Okt) */
+.ak-bpt td{padding:4px 12px!important;line-height:1.2!important}
+.ak-bpt .ak-sbuka{padding:2px 6px;gap:10px}
+.ak-bpt td:first-child .ak-lgo{width:30px;height:30px;border-radius:8px}
+.ak-bpt td small{font-size:11px;line-height:1.15}
+.ak-bpt .ak-bti{width:24px;height:24px}.ak-bpt .ak-bti svg{width:14px;height:14px}
+
+/* sensor terpasang di profil wilayah: peta MapLibre + ringkasan (pemilik 30 Okt) */
+.ak-wsn{display:grid;gap:10px}
+.ak-wsn-pil{display:flex;flex-wrap:wrap;gap:5px}
+.ak-wsn-p{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 10px;border-radius:999px;font-size:11.5px;font-weight:700;cursor:pointer;color:var(--w0,var(--ink));background:color-mix(in srgb,var(--w0,#14284b) 13%,#fff)}
+.ak-wsn-p b{font-weight:800}.ak-wsn-p[aria-pressed=false]{opacity:.4;text-decoration:line-through}
+.ak-wsn-g{display:grid;grid-template-columns:minmax(0,1fr) minmax(220px,300px);gap:12px;align-items:start}
+.ak-wsn-peta{height:360px;border-radius:12px;overflow:hidden;border:1px solid var(--line);background:var(--surface)}
+.ak-wsn-t table{width:100%;border-collapse:collapse;font-size:12px}
+.ak-wsn-t th{text-align:center;padding:6px 8px;background:var(--brand);color:#fff;font-weight:700}
+.ak-wsn-t td{padding:4px 8px;border-top:1px solid var(--line)}.ak-wsn-t td:last-child{text-align:center}
+.ak-wsn-k{display:inline-flex;align-items:center;gap:5px}
+@media (max-width:800px){.ak-wsn-g{grid-template-columns:1fr}.ak-wsn-peta{height:300px}}
+/* riwayat jabatan rapat: linimasa bertitik, Kini sebaris judul, sumber jadi ikon (pemilik 30 Okt) */
+.ak-riw>li{grid-template-columns:84px 14px 1fr 26px;gap:0 10px;padding:7px 0;border-top:0;position:relative}
+.ak-riw>li::before{content:"";grid-column:2;grid-row:1;justify-self:center;width:9px;height:9px;margin-top:5px;border-radius:50%;background:#fff;border:2px solid var(--brand2,#1c4f9c);z-index:1}
+.ak-riw>li:first-child::before{background:#2f9e44;border-color:#2f9e44}
+.ak-riw>li::after{content:"";position:absolute;left:calc(84px + 10px + 6px);top:0;bottom:0;width:2px;background:var(--line)}
+.ak-riw>li:first-child::after{top:12px}.ak-riw>li:last-child::after{bottom:calc(100% - 12px)}
+.ak-riw-t{grid-column:1;grid-row:1;font-size:12.5px;line-height:1.5;white-space:nowrap}
+.ak-riw-i{grid-column:3;grid-row:1;gap:2px}
+.ak-riw-j{display:flex;flex-wrap:wrap;align-items:center;gap:4px 8px}.ak-riw-j b{font-size:13.5px;line-height:1.35;color:var(--ink)}
+.ak-riw-j .ak-izin{font-size:11px;padding:1px 8px}
+.ak-riw-l{font-size:12.5px;line-height:1.3}.ak-riw-l .ak-lgo{width:18px;height:18px}.ak-riw-l .ak-pk{font-size:12px;padding:1px 8px}
+.ak-riw-s{grid-column:4;grid-row:1;width:26px;height:26px;display:grid;place-items:center;border-radius:8px;color:var(--ink2);background:var(--surface)}
+.ak-riw-s:hover{color:var(--brand);background:#e7f1ff}.ak-riw-s svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+@media (max-width:560px){.ak-riw>li{grid-template-columns:64px 14px 1fr 26px;gap:0 8px}.ak-riw>li::after{left:calc(64px + 8px + 6px)}}
