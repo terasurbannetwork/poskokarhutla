@@ -53,7 +53,7 @@ async function akun(T, {user, jenis = "pemkab", tingkat = "kab", prov = "62", ka
   await T.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), id, kini, kini + 30 * HARI).run();
   return {id, h: {cookie: `sesi_instansi=${token}`}};
 }
-const PB = {"x-pb": "1"};
+const PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const tugas = (T, o) => T.DB.prepare(`INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, isian_terakhir, padam_verif, padam_pada, verif_pada)
   VALUES (?, ?, ?, 'Kec', -2.5, 114, 2, ?, ?, ?, ?, ?, ?, ?, ?)`).bind(randomBytes(8).toString("hex"), o.prov ?? "62", o.kab, o.dibuat, o.dibuat, o.status ?? "buka", o.konf ?? null, o.isian ?? null, o.verif ?? null, o.padam ?? null, o.verifPada ?? null).run();
 const jalankan = (T, ms) => T.mf.getWorker().then(w => w.scheduled({cron: "* * * * *", scheduledTime: ms}));

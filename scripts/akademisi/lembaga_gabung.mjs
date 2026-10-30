@@ -20,7 +20,7 @@ export const PROV = {11: "Aceh", 12: "Sumatera Utara", 13: "Sumatera Barat", 14:
   72: "Sulawesi Tengah", 73: "Sulawesi Selatan", 74: "Sulawesi Tenggara", 75: "Gorontalo", 76: "Sulawesi Barat", 81: "Maluku", 82: "Maluku Utara", 91: "Papua", 92: "Papua Barat",
   93: "Papua Selatan", 94: "Papua Tengah", 95: "Papua Pegunungan", 96: "Papua Barat Daya"};
 const FIELD = ["id", "nama", "singkatan", "kategori", "sub", "skala", "induk", "prov", "kab", "alamat", "lat", "lon", "lokasi_sumber", "web", "email", "telepon", "pusdalops", "wa", "medsos",
-  "pimpinan", "bidang", "rumpun", "izin", "mitra_bnpb", "alias", "negara", "sensor", "inovasi_produk", "logo", "catatan", "potensi_bantuan", "linkedin", "badan_hukum", "didirikan", "sdm", "kapasitas", "jaringan", "sumber", "diperiksa"];
+  "pimpinan", "bidang", "rumpun", "izin", "mitra_bnpb", "alias", "negara", "sensor", "inovasi_produk", "logo", "catatan", "potensi_bantuan", "linkedin", "badan_hukum", "didirikan", "sdm", "kapasitas", "jaringan", "sumber", "diperiksa", "status_situs"];
 const KONTAK = ["telepon", "wa", "email", "alamat", "pimpinan", "izin"];
 /* URL aman untuk href: http(s) saja, tanpa kutip atau kurung sudut, disimpan dalam bentuk ter-encode */
 export const urlAman = v => { const s = String(v ?? "").trim(); if (!s || /["'<>\s]/.test(s)) return null;
@@ -108,7 +108,7 @@ export function gabung(daftar, bpbd = [], kini = new Date()) {
     const r = bersihkan(x);
     if (!r.ok) { laporan.ditolak.push(`${x?.id || x?.nama || "?"}: ${r.alasan}`); continue; }
     laporan.dibuang += r.buang.length;
-    const l = r.l, kn = sapu(l.nama) + "|" + (l.prov || ""), kh = l.web ? hostDari(l.web) + "|" + sapu(l.nama) : null;
+    const l = r.l, kn = sapu(String(l.nama).replace(/\(.*?\)/g, " ")) + "|" + (l.prov || ""), kh = l.web ? hostDari(l.web) + "|" + sapu(l.nama) : null;
     const lama = per.get(l.id) ? l.id : kunciNama.get(kn) || (kh && kunciNama.get(kh));
     if (lama) per.set(lama, satukan(per.get(lama), l));
     else { let id = l.id, i = 2; while (per.has(id)) id = `${l.id}-${i++}`; l.id = id; per.set(id, l); kunciNama.set(kn, id); if (kh) kunciNama.set(kh, id); }

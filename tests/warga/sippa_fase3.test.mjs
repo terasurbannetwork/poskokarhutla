@@ -7,7 +7,7 @@ import {createHmac} from "node:crypto";
 import "../../src/worker.js";
 import {mingguSiap} from "../../src/pantau.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const panggilan = [];
 const luar = async req => {   // tiruan api.github.com saja
   const u = new URL(req.url);

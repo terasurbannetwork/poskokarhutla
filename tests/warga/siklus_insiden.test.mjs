@@ -25,7 +25,7 @@ const cron = ms => W.scheduled({cron: "* * * * *", scheduledTime: ms});
 const menit = (jamMs, m) => { const d = new Date(jamMs); d.setUTCMinutes(m, 0, 0); return d.getTime(); };   // menit yang tidak punya tugas cron lain (bukan 15-18, 23, >= 25)
 
 /* rute instansi persis seperti layar /instansi: header anti-CSRF x-pb pada POST */
-const PB = {"x-pb": "1"};
+const PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 let ipN = 0;
 const ins = async (metode, j, body, h = {}) => {
   const f = body instanceof FormData;

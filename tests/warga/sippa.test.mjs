@@ -12,7 +12,7 @@ import {P_SIPPA_BACA, P_SIPPA_TULIS, LAYAR_SIPPA, ALASAN_TRANSISI, RANTAI_DUMMY,
 import {HALAMAN_STAF} from "../../src/admin_halaman.js";
 import {FORMULIR_VERSI} from "../../public/pipa/formulir.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
 const U = await siapkan("uji-sippa", {r2: true}), {mf, DB, api} = U;
 const R2 = await mf.getR2Bucket("MEDIA");

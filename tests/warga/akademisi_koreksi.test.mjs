@@ -23,7 +23,7 @@ before(async () => {
 });
 after(() => mf?.dispose());
 
-const ADMIN = {"x-admin-token": "rahasia-admin"}, BIASA = {"x-admin-token": "admin-biasa"}, STAF = {cookie: "sesi_staf=" + TOKEN_STAF, "x-pb": "1"};
+const ADMIN = {"x-admin-token": "rahasia-admin"}, BIASA = {"x-admin-token": "admin-biasa"}, STAF = {cookie: "sesi_staf=" + TOKEN_STAF, "x-pb": "1", origin: "http://akademisi.lokal"};   // peramban selalu mengirim Origin pada POST; tanpa itu POST bercookie sesi_staf ditolak (tolakOrigin)
 const call = async (m, j, h = ADMIN, b) => { const r = await mf.dispatchFetch("http://akademisi.lokal" + j, {method: m, headers: {"content-type": "application/json", ...h}, body: b === undefined ? undefined : typeof b === "string" ? b : JSON.stringify(b)}); return {status: r.status, j: await r.json().catch(() => null)}; };
 const ok = {jenis: "pakar", id: "A12_x-1", butir: "email", isi: "Email lama, sudah pindah <b>kampus</b>", sumber_url: "https://kampus.ac.id/staf"};
 

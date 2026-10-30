@@ -116,6 +116,19 @@ async function sinta(env, req, id) {
   return x ? json(x, 200, {"cache-control": "private, max-age=3600"}) : gagal(404, "rincian SINTA belum dipanen");
 }
 
+/* GET /api/akademisi/gambar/<kunci>: gambar dari R2 (akademisi/gambar/<kunci>), untuk logo lembaga yang situsnya memblokir hotlink dan sampul buku hasil render PDF.
+   Staf saja (dimuat <img> same-origin, cookie ikut). SVG dilayani dengan CSP ketat + nosniff supaya skrip di dalamnya mati. */
+const KUNCI_GAMBAR = /^[a-f0-9]{16,64}\.(png|jpg|jpeg|gif|webp|ico|svg)$/, TIPE_GAMBAR = {png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", webp: "image/webp", ico: "image/x-icon", svg: "image/svg+xml"};
+async function gambar(env, req, kunci) {
+  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const m = KUNCI_GAMBAR.exec(kunci); if (!m) return gagal(404, "gambar tidak dikenal");
+  if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
+  const o = await env.MEDIA.get(`akademisi/gambar/${kunci}`); if (!o) return gagal(404, "gambar tidak ada");
+  const h = {"content-type": TIPE_GAMBAR[m[1]], "cache-control": "private, max-age=604800, immutable", "x-content-type-options": "nosniff"};
+  if (m[1] === "svg") h["content-security-policy"] = "default-src 'none'; style-src 'unsafe-inline'";
+  return new Response(o.body, {headers: h});
+}
+
 /* rekaman publik ORCID -> {publik, biografi, pendidikan, pekerjaan}; publik = ada isi yang bisa dilihat siapa pun (rekaman kosong: tautan disembunyikan layar) */
 const thn = d => Number(d?.year?.value) || null;
 function riwayat(a, jenis) {
@@ -184,7 +197,7 @@ async function terdekat(env, req, url) {
 
 /* GET /api/akademisi/data/<nama>: berkas R2 akademisi/<nama>.json, nama dari daftar tetap. Satu kunci rute per nama (worker.js tidak diubah);
    nama lain tidak punya rute, jatuh ke aset statis = 404 tanpa menyentuh R2. "baru" = akademisi/baru/YYYY-MM.json terbaru (list prefix, urut leksikal). */
-export const DATA_AKADEMISI = ["riset", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "wilayah_anggaran", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran"];
+export const DATA_AKADEMISI = ["riset", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran", "donatur_kejadian", "csr", "ahli_asing", "redaksi", "strategis", "alumni", "kalaksa", "hibah_riset", "penghargaan", "diaspora", "peneliti_muda", "prodi_beasiswa", "foto_pakar"];
 async function dataBaca(env, req, nama) {
   if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
@@ -280,9 +293,9 @@ async function ringkasan(env, req) {
 /* GET /api/akademisi/saya: {peran, super} untuk layar (tanpa memanggil /api/staf/admin/daftar). Admin token: peran "admin"; super = superOK (secret SUPER_ADMIN).
    Staf bersesi: peran = daftar peran stafnya, super false. */
 async function saya(env, req) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
-  const s = await stafSesi(env, req);   // sesi staf (bila bukan token admin)
   const adm = !!(await adminOK(env, req));
+  const s = await stafSesi(env, req);   // satu baca D1; sesi staf (bila bukan token admin)
+  if (!adm && !(s && Object.keys(PERAN).some(p => s.peran.includes(p)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   return json({peran: adm ? ["admin"] : s.peran, super: adm && !!(await superOK(env, req))}, 200, {"cache-control": "private, no-store"});
 }
 
@@ -329,4 +342,5 @@ export const RUTE_AKADEMISI = {...Object.fromEntries(DATA_AKADEMISI.map(n => [`G
   "GET /api/akademisi/terdekat": (env, req, url) => terdekat(env, req, url),
   "GET /api/akademisi/karya/:id": (env, req, url, kini, ctx, id) => karya(env, req, ctx, id, url),
   "GET /api/akademisi/riset/:id": (env, req, url, kini, ctx, id) => riset(env, req, ctx, id),
+  "GET /api/akademisi/gambar/:id": (env, req, url, kini, ctx, id) => gambar(env, req, id),
   "GET /api/akademisi/sinta/:id": (env, req, url, kini, ctx, id) => sinta(env, req, id)};

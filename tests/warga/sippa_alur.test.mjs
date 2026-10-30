@@ -8,7 +8,7 @@ import {siapkan, berantai, ADMIN, MOD2} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
 import {jadwal, laikGelar, kelasDari, KELAS_ASET} from "../../public/pipa/pelihara.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const U = await siapkan("uji-sippa-alur", {r2: true}), {mf, DB, api} = U;
 const sip = (m, j, b, h) => api(m, "/api/sippa" + j, b, h);
 const hitung = async (tabel, where = "1", ...p) => (await DB.prepare(`SELECT count(*) n FROM ${tabel} WHERE ${where}`).bind(...p).first()).n;

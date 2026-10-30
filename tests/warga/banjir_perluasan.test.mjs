@@ -56,7 +56,7 @@ async function akun(user, {tingkat = "kab", prov = "62", kab = "Pulang Pisau", s
   await U.DB.prepare("INSERT INTO instansi_sesi (token_sha, akun_id, dibuat, kedaluwarsa) VALUES (?, ?, ?, ?)").bind(sha256(token), id, kini, kini + 30 * HARI).run();
   return {id, h: {cookie: `sesi_instansi=${token}`}};
 }
-const PB = {"x-pb": "1"};
+const PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const jalankan = ms => U.mf.getWorker().then(w => w.scheduled({cron: "* * * * *", scheduledTime: ms}));
 const stat = (hari, kec) => ({hari: [hari, wib(Date.parse(hari) + HARI)], kec: Object.fromEntries(Object.entries(kec).map(([k, l]) => [k, {b: [l, 0]}]))});
 const hariT0 = wib(T0);

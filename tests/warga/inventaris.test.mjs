@@ -10,7 +10,7 @@ import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {KATEGORI, KELAS_POMPA, JENIS_GUDANG, KONDISI, STATUS, inventarisProvinsi, cekAlat, cekGudang, KATEGORI_P3K, SATUAN_P3K, cekP3k, butirP3k} from "../../src/inventaris.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 const U = await siapkan("uji-inventaris", {r2: true});
 const {DB, api, n} = U;

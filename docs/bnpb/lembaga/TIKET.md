@@ -69,7 +69,7 @@ Setiap tiket panen menyerahkan:
 | L42 | Analisa: peta sebaran di atas indeks risiko provinsi, tabel kesenjangan wilayah, matriks provinsi x bidang, grafik komposisi; semuanya interaktif dengan tooltip | layar-peta | L40 | angka analisa sama dengan hitungan ulang dari `lembaga.json` (skrip cek) |
 | L43 | Proyek mitra (3W): tabel dengan saringan provinsi, donor, sektor, dan label keterbatasan IATI | layar-peta | L22 | jumlah dan nilai total sama dengan berkas |
 | L4I | Tab Inovasi (PRD §6.7): ringkasan dan grafik, saringan, kartu, peta penerapan, tautan ke profil pembuat | layar-peta | L30 | uji browser: saringan rumpun dan status jalan, klik titik penerapan membuka kartu |
-| L4D | Tab Sistem data (PRD §6.8): ringkasan, saringan, kartu, pil "Sudah dipakai Pantau Bencana", tautan ke profil pemilik | layar-peta | L30 | uji browser: saringan akses dan rumpun jalan |
+| L4D | Tab Sistem data (PRD §6.8): ringkasan, saringan, kartu, pil "Sudah dipakai Centurisk97", tautan ke profil pemilik | layar-peta | L30 | uji browser: saringan akses dan rumpun jalan |
 | L44 | Lembaga terdekat di pop-up kejadian, di samping pakar terdekat | layar-peta | L31 | pop-up kejadian karhutla Riau menampilkan BPBD, Manggala Agni, dan PMI terdekat |
 | L45 | Tombol "Ringkas temuan" di Riset daerah, dengan tautan per temuan dan label ringkasan otomatis | layar-peta | L32 | ringkasan banjir Jawa Tengah tampil, dan tiap temuan bertaut karya |
 | L46 | Aset riset di tab Pusat studi | layar-peta | L22 | saringan jenis dan provinsi jalan |

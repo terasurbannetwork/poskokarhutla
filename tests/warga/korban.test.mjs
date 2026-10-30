@@ -13,7 +13,7 @@ import * as SP from "../../public/laporan_karhutla_spek.js";
 import {laporanKarhutla} from "../../public/laporan_karhutla_wa.js";
 import {BENCANA, KATEGORI, PENYEBAB, SUMBER, STATUS, cekKorban, korbanHari, teksKorban, butirKorban} from "../../src/korban.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, NAMA = "Siti Rahasia Korban", NAMA2 = "Budi Nama Kedua";
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, NAMA = "Siti Rahasia Korban", NAMA2 = "Budi Nama Kedua";
 const uji = berantai();
 const U = await siapkan("uji-korban", {r2: true});
 const {DB, api, n} = U;

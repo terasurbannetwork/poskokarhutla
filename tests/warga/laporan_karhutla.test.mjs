@@ -14,7 +14,7 @@ import * as S from "../../public/laporan_karhutla_spek.js";
 import {teksWA} from "../../public/laporan_karhutla_wa.js";
 import {KATEGORI} from "../../src/inventaris.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 const U = await siapkan("uji-lk", {r2: true});
 const {DB, api, mf} = U;

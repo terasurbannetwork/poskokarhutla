@@ -12,7 +12,7 @@ import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {cekPoligon, cekSortie, sortieHari, butirOmcTanpaHasil, sortieDenganHasil, BAHAN} from "../../src/omc.js";
 import {PROV} from "../../src/instansi.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 const U = await siapkan("uji-omc");
 const {DB, api, n} = U;

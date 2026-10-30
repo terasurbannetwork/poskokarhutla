@@ -302,7 +302,7 @@ Tab baru **Sistem data** menjawab "data dan sensor apa saja yang dimiliki lembag
   - **akses** (terbuka tanpa login, API terbuka, API berkunci gratis, login, permohonan resmi/surat, tertutup), format, lisensi;
   - URL portal, URL API atau unduhan bila ada, dan cara meminta data;
   - status hidup (dicek HTTP pada tanggal periksa);
-  - pil **"Sudah dipakai Pantau Bencana"** bila domainnya muncul di pipeline repo.
+  - pil **"Sudah dipakai Centurisk97"** bila domainnya muncul di pipeline repo.
 - **Ringkasan di atas**: jumlah sistem per akses, per rumpun, dan per pemilik, serta daftar "bisa langsung diambil, belum kita pakai" sebagai bahan kerja data berikutnya.
 - **Saringan**: rumpun, akses, pemilik, jenis data, sudah/belum dipakai.
 
@@ -503,3 +503,24 @@ Semua rute hanya untuk staf (`stafOK`) dan tidak membaca D1, untuk menjaga kuota
 2. Kategori 7 sampai 12 (usulan) ikut semua di gelombang pertama? Usulan: ya. Panennya murah karena daftar nasionalnya pendek.
 3. Ambang "rawan, mitra sedikit" di analisa? Usulan: kuartil bawah lembaga per juta penduduk di antara provinsi berisiko tinggi, ditulis di layar.
 4. Aset riset lewat isian mandiri di /pendataan perlu Fase 2 /pendataan (Turnstile)? Usulan: pakai jalur Fase 1 dulu.
+
+### 6.17 Paket pilihan pemilik 30 Okt (lanjutan)
+
+| Fitur | Berkas R2 | Tampil di |
+| --- | --- | --- |
+| Ketua forum PRB provinsi dan kab/kota | masuk `lembaga.json` (kategori jejaring) dan `tokoh.json` (jenis "pengurus forum PRB") | Lembaga, Tokoh, profil Wilayah |
+| Donatur korporasi per kejadian | `akademisi/donatur_kejadian.json` `{kejadian, tahun, donatur, lembaga_id, bentuk, nilai, mata_uang, penerima, sumber_url}` | profil lembaga swasta (bagian Rekam jejak), tab Pendanaan sub "Donatur per kejadian" |
+| Program CSR jangka panjang | `akademisi/csr.json` `{perusahaan, lembaga_id, program, jenis, lokasi[{prov,kab,desa}], mulai, selesai, mitra, nilai, sumber_url}` | profil lembaga swasta, profil Wilayah |
+| Peneliti dan ahli asing di Indonesia | `akademisi/ahli_asing.json` (skema tokoh + `negara`, `lembaga_induk`, `proyek`) | Pakar, segmen baru "Ahli asing" |
+| Dewan redaksi jurnal kebencanaan | `akademisi/redaksi.json` `{jurnal, issn, nama, peran, afiliasi, pakar_id, sumber_url}` | kartu dan profil pakar (lencana "Dewan redaksi"), profil jurnal |
+
+### 6.18 Paket orang dan kapasitas (pilihan pemilik 30 Okt)
+
+| Fitur | Berkas R2 | Tampil di |
+| --- | --- | --- |
+| Kepala pelaksana BPBD seluruh provinsi dan kab/kota | `akademisi/kalaksa.json` `{bpbd_id, nama, jabatan, mulai, dasar (SK/berita), sumber_url, foto_url}` | kartu dan profil BPBD (baris PIMPINAN), profil Wilayah, Tokoh jenis "pejabat daerah" |
+| Penerima hibah riset kebencanaan | `akademisi/hibah_riset.json` `{skema, pemberi, tahun, judul, ketua, pakar_id, institusi, nilai, sumber_url}` | profil pakar (bagian HIBAH RISET), Pendanaan sub "Penerima hibah" |
+| Penerima penghargaan kebencanaan | `akademisi/penghargaan.json` `{penghargaan, pemberi, tahun, penerima, jenis_penerima, entitas_id, alasan, sumber_url}` | lencana di kartu, bagian PENGHARGAAN di profil orang dan lembaga |
+| Pakar diaspora | `akademisi/diaspora.json` (skema tokoh + negara, institusi luar negeri, ORCID, karya Indonesia) | Pakar segmen "Diaspora" |
+| Peneliti muda (tesis dan disertasi) | `akademisi/peneliti_muda.json` `{nama, jenjang, judul, tahun, kampus, prodi, pembimbing, pembimbing_pakar_id, rumpun, url, sumber_url}` | Pakar segmen "Peneliti muda", profil pakar (bagian MAHASISWA BIMBINGAN) |
+| Program studi dan beasiswa kebencanaan | `akademisi/prodi_beasiswa.json` `{prodi:[{nama, jenjang, kampus, akreditasi, url}], beasiswa:[{nama, pemberi, negara, jenjang, bidang, tenggat, url}]}` | Riset sub "Studi dan beasiswa", profil kampus |
