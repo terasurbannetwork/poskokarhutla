@@ -422,7 +422,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       const top = ors.slice().sort((a, b) => b[4] - a[4] || b[6] - a[6]).slice(0, 10), pr = Object.values(prodi).map(e => ({n: e.n, v: Object.entries(e.v).sort((a, b) => b[1] - a[1])[0][0]})).sort((a, b) => b.n - a.n);
       const bag = (j, isi) => `<section class="ak-dbagian"><div class="ak-disi"><h3>${j}</h3>${isi}</div></section>`;
       return alasanStrat("K:" + k) + (baris.length ? bag("Pakar per rumpun", `<div class="ak-bars">${baris.map(([r, n]) => { const [l, d, w] = RUMPUN[r] || [r, "", "#6b7280"];
-          return barHtml({warna: w, lebar: n / mx * 100, nilai: angka(n), persen: persenTxt(n, ors.length), label: (d ? ikon(d, w) : "") + esc(l), attr: `data-t="${esc(l)}" data-n="${n}" data-p="${Math.round(n / ors.length * 100)}" data-tot="${ors.length}"`}); }).join("")}</div><p class="ak-lkaki-s">Satu pakar bisa lebih dari satu rumpun, jadi persentase tidak berjumlah 100.</p>`) : "")
+          return barHtml({warna: w, lebar: n / mx * 100, nilai: angka(n), persen: persenTxt(n, ors.length), label: (d ? ikon(d, w) : "") + esc(l), attr: `data-t="${esc(l)}" data-n="${n}" data-p="${Math.round(n / ors.length * 100)}" data-tot="${ors.length}" data-krumpun="${esc(r)}" data-kp-k="${esc(k)}" title="Lihat ${angka(n)} pakar ${esc(l)} di kampus ini"`}); }).join("")}</div><p class="ak-lkaki-s">Satu pakar bisa lebih dari satu rumpun, jadi persentase tidak berjumlah 100.</p>`) : "")
         + bagTopPk(ors)
         + (pr.length ? bag(`Program studi terkait <small class="ak-hit">${angka(pr.length)}</small>`, barProdi(pr, k)) : "")
         + '<div id="akSJur"></div>';
@@ -523,15 +523,15 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
 [`https://scholar.google.com/scholar?q=${encodeURIComponent('"' + o[1] + '"')}`, "Google Scholar"]].filter(Boolean);
     const status = o[13] === "s" ? ["ok", "Terdaftar di SINTA"] : o[13] === "x" ? ["", "Tidak ditemukan di SINTA"] : ["", "Belum dicocokkan dengan SINTA"];
     /* kepala lembar: foto, nama, institusi, label (prodi, SINTA, rumpun) dan metrik semuanya di pita navy */
-    const em = emailDari(o), kp = logoK[o[2]] && urlOk(logoK[o[2]]);
+    const em = emailDari(o);
     $("akDIsi").innerHTML = `<div class="ak-dkepala ak-dk-pk"><div class="ak-pk-grid"><div class="ak-pk-foto">${sosok(o, true)}</div>
-        <div class="ak-pk-tengah"><h2 id="akDNama">${esc(o[1])}</h2><p class="ak-pk-kp">${kp ? `<img class="ak-klogo kecil" src="${esc(kp)}" alt="" loading="lazy" referrerpolicy="no-referrer">` : ""}<button type="button" class="ak-kp" data-kp="${esc(o[2])}" title="Profil kampus">${esc(o[2])}</button></p>
+        <div class="ak-pk-tengah"><h2 id="akDNama">${esc(o[1])}</h2><p class="ak-pk-kp"><button type="button" class="ak-kp ak-kp-pil" data-kp="${esc(o[2])}" title="Buka profil kampus">${ikon(IK_KAMPUS, "currentColor")}${esc(o[2])}</button></p>
           <div class="ak-pil ak-mps">${status[0] === "ok" ? `<span class="ak-mp ak-mp-sinta">${ikon('<path d="m5 12 5 5 9-10"/>', "currentColor")}SINTA</span>` : `<span class="ak-mp ak-mp-redup">${esc(status[1])}</span>`}${tk ? pilPeranKb(tk.peran_kebencanaan) : ""}${o[15] === "diaspora" ? '<span class="ak-mp ak-mp-sinta">Diaspora</span>' : ""}${o[3].slice(0, 3).map(r => pilRumpun(r)).join("")}${em ? `<a class="ak-mp ak-mp-a" href="mailto:${esc(em.list[0])}" title="Email kampus, bukan pribadi" aria-label="Email kampus, bukan pribadi">${ikon(IKON_MAIL, "currentColor")}Email</a>` : ""}${o[7] ? `<a class="ak-mp ak-mp-a" href="${esc(urlOrcid(o[7]))}" ${LUAR} title="ORCID" aria-label="ORCID">ORCID</a>` : ""}</div></div>
-        <div class="ak-pk-angka">${metrik(o)}<a class="ak-pk-src" href="https://openalex.org/${esc(o[0])}" ${LUAR}>Sumber: OpenAlex</a></div></div>
+        <div class="ak-pk-angka">${metrik(o)}</div></div>
         <div class="ak-pojok">${dpTombol(o[0])}${koreksiBtn("pakar", o[0])}</div>${tk?.alasan ? `<p class="ak-rata ak-ringk">${esc(bersihWiki(tk.alasan))}</p>` : ""}<div class="ak-korw"></div></div>
       <div class="ak-dtubuh">${barisPakar(o)}${kiprahHtml(tk)}
         ${o[12] ? `<section class="ak-dbagian"><h3>Bidang menurut SINTA</h3><p>${esc(o[12])}</p></section>` : ""}
-        <section class="ak-dbagian"><h3>Topik riset utama</h3><div class="ak-topik">${o[8].map(t => `<span>${esc(t)}</span>`).join("")}</div></section>
+        <section class="ak-dbagian"><h3>Topik riset utama</h3><div class="ak-topik">${o[8].map(t => `<span>${ikon('<circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/>', "currentColor")}${esc(t)}</span>`).join("")}</div></section>
         <section class="ak-dbagian" id="akOrcid" hidden><h3>Pendidikan dan riwayat jabatan</h3></section>
         <section class="ak-dbagian" id="akRingkas" hidden><h3>Ringkasan</h3><p></p></section>
         <section class="ak-dbagian" id="akMetrik" hidden><h3>Metrik publikasi menurut SINTA</h3><div></div></section>
@@ -2448,7 +2448,9 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     ambilData("buku").then(d => { const a = dlist(Array.isArray(d) ? d : d?.buku).filter(b => dlist(b.penulis).some(p => p.pakar_id === id)), sek = $("akBukuP"); if (!a.length || karyaId !== id || !sek) return;
       sek.querySelector("div").innerHTML = `<ul class="ak-lsumber">${a.slice(0, 8).map(b => `<li>${urlOk(b.url) ? tautanLuar(urlOk(b.url), esc(b.judul)) : esc(b.judul)} <small class="ak-lper">${esc([b.penerbit, b.tahun].filter(Boolean).join(", "))}</small></li>`).join("")}</ul>`; sek.hidden = false; });
     ambilData("afiliasi").then(d => { const a = dlist(d?.[id]).filter(x => x && x.nama_lembaga), sek = $("akAfl"); if (!a.length || karyaId !== id || !sek) return;
-      sek.querySelector("div").innerHTML = `<ul class="ak-lsumber">${a.map(x => `<li>${x.lembaga_id ? `<button type="button" class="ak-pk" data-lb="${esc(x.lembaga_id)}">${esc(x.nama_lembaga)}</button>` : `<b>${esc(x.nama_lembaga)}</b>`} ${x.peran || x.peran_asli ? `<small class="ak-lper">${esc(x.peran || x.peran_asli)}</small>` : ""} ${x.mulai || x.selesai ? `<small class="ak-lper">${esc([x.mulai, x.selesai].filter(Boolean).join(" sampai "))}</small>` : ""} ${cip(x.sumber_url)}</li>`).join("")}</ul>`; sek.hidden = false; });
+      sek.querySelector("div").innerHTML = `<div class="ak-afg">${a.map(x => { const th = [x.mulai, x.selesai].filter(Boolean), per = kapital(String(x.peran || x.peran_asli || "").trim());
+        const isi = `${lgoIkon(logoOrg(x.nama_lembaga, x.lembaga_id), IK_GEDUNG, "#64748b")}<span class="ak-afg-t"><b>${esc(x.nama_lembaga)}</b><span class="ak-pil">${per ? `<span class="ak-mp">${ikon(IK_ORANG, "currentColor")}${esc(per)}</span>` : ""}${th.length ? `<span class="ak-mp">${ikon(IKP.tahun, "currentColor")}${th.length > 1 ? esc(th.join(" sampai ")) : "Sejak " + esc(th[0])}</span>` : ""}</span></span>`;
+        return x.lembaga_id ? `<button type="button" class="ak-afg-i" data-lb="${esc(x.lembaga_id)}">${isi}</button>` : `<div class="ak-afg-i">${isi}</div>`; }).join("")}</div>`; sek.hidden = false; });
     ambilData("berita").then(d => { const a = dlist(Array.isArray(d) ? d : d?.berita).filter(b => dlist(b?.entitas).some(e => e.jenis === "pakar" && e.id === id)).sort((x, y) => String(y.tanggal).localeCompare(String(x.tanggal))), sek = $("akBrP"); if (!a.length || karyaId !== id || !sek) return;
       sek.querySelector("div").innerHTML = `<ul class="ak-lsumber">${a.slice(0, 5).map(b => `<li>${urlOk(b.url) ? tautanLuar(urlOk(b.url), esc(b.judul)) : esc(b.judul)} <small class="ak-lper">${esc([b.media, tglID(b.tanggal)].filter(Boolean).join(", "))}</small></li>`).join("")}</ul>${a.length > 5 ? `<button type="button" class="ak-pk" data-brt="pakar:${esc(id)}">Lihat semua ${angka(a.length)} berita</button>` : ""}`; sek.hidden = false; });
     ambilData("riset").then(d => { if (!Array.isArray(d) || karyaId !== id) return; nanti(() => {
@@ -2698,6 +2700,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       const tl = e.target.closest("[data-dpl-t]"); if (tl) { dplUbah(tl.dataset.dplT, !dpl.has(tl.dataset.dplT)); return; }
       const lb = e.target.closest("[data-lb]"); if (lb) { const x = lbMap.get(lb.dataset.lb); if (x) bukaLb(x); return; }
       const b = e.target.closest("[data-buka]"); if (b) { const o = peta.get(b.dataset.buka); tutupSheet(); if (o) buka(o); return; }
+      const krm = e.target.closest("[data-krumpun]"); if (krm) { const kk = krm.dataset.kpK; st.kJenis = jenisK(kk); pilihKampus(kk); st.prodi = ""; st.bidang = krm.dataset.krumpun; $("akBd")?._label?.(); tutupSheet(); chromeSaring(); isiKampus(); nanti(() => { saring(); document.querySelector(".ak-hasil")?.scrollIntoView({block: "start"}); }); return; }
       const kpr = e.target.closest("[data-kprodi]"); if (kpr) { const kk = kpr.dataset.kpK; st.kJenis = jenisK(kk); pilihKampus(kk); st.prodi = kpr.dataset.kprodi; tutupSheet(); chromeSaring(); isiKampus(); nanti(() => { saring(); document.querySelector(".ak-hasil")?.scrollIntoView({block: "start"}); }); return; }
       const sa = e.target.closest("[data-sa]"); if (!sa) return;
       const k = $("akSheet").dataset.k;
