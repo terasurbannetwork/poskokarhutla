@@ -25,7 +25,7 @@ const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
 /* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),
    omc = PERAN_BACA (src/omc.js), posko = P_KONSESI. Dijaga tests/warga/staf_halaman.test.mjs. */
 /* semua peran staf (sama dengan Object.keys(PERAN) di src/staf.js; dijaga tests/warga/sla.test.mjs): hak baca Kinerja pemantauan = adminOK ATAU sesi staf dengan peran apa pun, dipakai halaman /admin/kinerja DAN GET /api/sla */
-export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan"];
+export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan"];   // sengaja TANPA kemitraan: peran modul Kemitraan Kampus tidak membuka /admin/kinerja dan /api/sla
 export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, omc: ["tmc", "koordalops", "pimpinan"], posko: ["analis_konsesi"],
   pipa: ["pusdalops", "koordalops", "pimpinan"]};   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
 /* halaman yang dibuka sekumpulan peran staf: [{k, ikon, label}] (layar /admin/akun menampilkannya sebagai "Akses") */

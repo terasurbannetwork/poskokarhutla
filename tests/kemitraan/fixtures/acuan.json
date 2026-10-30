@@ -1,0 +1,132 @@
+{
+  "_meta": {
+    "versi": 1,
+    "sumber": "RENCANA-UJI.md §2.1 A1-A13; rumus ALGORITMA.md; kunci per fungsi = DESAIN-TEKNIS.md §5.1",
+    "toleransi": 1e-9,
+    "aturan": "Python dan JS wajib memberi 'keluar' yang sama (selisih <= toleransi). Nilai dihitung tangan, alasannya di 'catatan'. Definisi yang ALG biarkan terbuka ditetapkan di catatan kasus dan mengikat implementator.",
+    "kasus_diperluas": "Per fungsi DT §5.1 RU minta >= 5 kasus; berkas ini baru memuat A1-A13 (+ beberapa tepi). Tiket implementasi fungsi menambah sisanya."
+  },
+  "skor_auto": [
+    {"id": "A1", "masuk": {"H": 1, "F": 1, "T": 1, "D": 1, "P": 1, "K": 1}, "keluar": 1.0,
+     "catatan": "Semua komponen 1: jumlah bobot 0.25+0.20+0.10+0.15+0.15+0.15 = 1.00, jadi S = 1.00."},
+    {"id": "A2", "masuk": {"H": 0.5, "F": 0.5, "T": null, "D": 0.5, "P": 0.5, "K": 0.5}, "keluar": 0.5,
+     "catatan": "T null dikeluarkan, bobot sisa 0.25+0.20+0.15+0.15+0.15 = 0.90. Pembilang 0.90 x 0.5 = 0.45. Dinormalkan ulang 0.45 / 0.90 = 0.50. Lima komponen >= 4 jadi tetap dihitung."},
+    {"id": "A3", "masuk": {"H": 0.8, "F": 0.6, "T": null, "D": 0.4, "P": null, "K": null}, "keluar": null,
+     "catatan": "Hanya 3 komponen non-null (H, F, D) < 4: masalah tidak dibuat, hasil null (bukan 0)."},
+    {"id": "A3b", "masuk": {"H": 0.8, "F": 0.6, "T": 0.4, "D": 0.2, "P": null, "K": null}, "keluar": 0.5571428571428572,
+     "catatan": "Tepi bawah: tepat 4 komponen lolos. Pembilang 0.25x0.8 + 0.20x0.6 + 0.10x0.4 + 0.15x0.2 = 0.20+0.12+0.04+0.03 = 0.39. Bobot ikut = 0.25+0.20+0.10+0.15 = 0.70. 0.39/0.70 = 0.557142857..."}
+  ],
+  "kelas": [
+    {"id": "A4", "masuk": {"H": 0.85, "K": 0.65, "S": 0.45}, "keluar": "P1",
+     "catatan": "S 0.45 < 0.50 sebenarnya P3, tetapi H 0.85 >= 0.80 dan K 0.65 >= 0.60: aturan H&K menang, P1."},
+    {"id": "A4b", "masuk": {"H": 0.1, "K": 0.1, "S": 0.70}, "keluar": "P1",
+     "catatan": "Batas S: 0.70 >= 0.70 (tepat di ambang, 'bila S >= 0.70') jadi P1."},
+    {"id": "A4c", "masuk": {"H": 0.79, "K": 0.9, "S": 0.5}, "keluar": "P2",
+     "catatan": "H 0.79 < 0.80 sehingga aturan H&K gagal; S 0.50 >= 0.50 jadi P2."},
+    {"id": "A4d", "masuk": {"H": 0.9, "K": 0.59, "S": 0.49}, "keluar": "P3",
+     "catatan": "H >= 0.80 tetapi K 0.59 < 0.60, S 0.49 < 0.50: P3."}
+  ],
+  "bm25": [
+    {"id": "A5", "masuk": {"q": ["banjir", "rob"], "d": {"judul": ["pemetaan", "gempa"], "isi": ["gempa", "bumi"]}, "stat": {"N": 100, "avgdl": 50, "df": {"banjir": 10, "rob": 5}}}, "keluar": 0.0,
+     "catatan": "Dokumen tanpa satu pun token kueri: f(t,d)=0 untuk semua t, tiap suku bm25 = 0, jumlah = 0 (bukan null, bukan NaN)."},
+    {"id": "A5b", "masuk": {"q": ["banjir"], "d": {"judul": ["banjir", "bah"], "isi": ["air", "naik"]}, "stat": {"N": 10, "avgdl": 4, "df": {"banjir": 1}}}, "keluar": 2.401833623188194,
+     "catatan": "Definisi: f = 2 x tf_judul + tf_isi (judul dihitung dua kali) = 2; |d| = 2 x panjang judul + panjang isi = 4+2 = 6. IDF = ln(1+(10-1+0.5)/(1+0.5)) = ln(7.3333) = 1.99243. Penyebut = 2 + 1.2 x (1-0.75+0.75 x 6/4) = 2 + 1.2 x 1.375 = 3.65. Skor = 1.99243 x 2 x 2.2 / 3.65 = 2.40183."}
+  ],
+  "skor_pakar": [
+    {"id": "A6a", "masuk": {"teks": 1, "R": 1, "L": 1, "Q": 1, "J": 1, "E": 1}, "keluar": 1.0,
+     "catatan": "Semua 1: 0.45+0.15+0.10+0.12+0.10+0.08 = 1.00."},
+    {"id": "A6b", "masuk": {"teks": 0.5, "R": 1, "L": 0, "Q": 0.5, "J": 0.3, "E": 0}, "keluar": 0.465,
+     "catatan": "0.45x0.5 = 0.225; +0.15x1 = 0.375; +0 ; +0.12x0.5 = 0.435; +0.10x0.3 = 0.465; +0 = 0.465."}
+  ],
+  "ragam": [
+    {"id": "A6", "masuk": {"n": 10, "daftar": [
+        {"id": "p1", "kampus": "K1", "skor": 0.90, "h": 10}, {"id": "p2", "kampus": "K1", "skor": 0.80, "h": 10},
+        {"id": "p3", "kampus": "K1", "skor": 0.70, "h": 10}, {"id": "p4", "kampus": "K1", "skor": 0.60, "h": 10},
+        {"id": "p5", "kampus": "K2", "skor": 0.50, "h": 10}, {"id": "p6", "kampus": "K3", "skor": 0.49, "h": 10},
+        {"id": "p7", "kampus": "K4", "skor": 0.48, "h": 10}, {"id": "p8", "kampus": "K5", "skor": 0.47, "h": 10},
+        {"id": "p9", "kampus": "K6", "skor": 0.46, "h": 10}, {"id": "p10", "kampus": "K7", "skor": 0.45, "h": 10},
+        {"id": "p11", "kampus": "K8", "skor": 0.44, "h": 10}, {"id": "p12", "kampus": "K9", "skor": 0.43, "h": 10}]},
+     "keluar": ["p1", "p2", "p5", "p6", "p7", "p8", "p9", "p10", "p11", "p12"],
+     "catatan": "Empat pakar teratas sekampus K1. Maks 2 per kampus: p3 dan p4 dilewati (tergeser keluar dari 10 teratas, bukan dipindah ke bawah). Slot 10 terisi p5..p12 (8 pakar) + p1,p2 = 10."},
+    {"id": "A7", "masuk": {"n": 10, "daftar": [
+        {"id": "x1", "kampus": "K1", "skor": 0.5, "h": 10}, {"id": "x2", "kampus": "K2", "skor": 0.5, "h": 20}]},
+     "keluar": ["x2", "x1"],
+     "catatan": "Skor sama: h-index lebih tinggi lebih dulu (x2 h=20 mendahului x1 h=10) walau x1 muncul lebih dulu di masukan. Masukan 'daftar' boleh belum terurut; ragam mengurutkan: skor turun, h turun, id naik."},
+    {"id": "A7b", "masuk": {"n": 10, "daftar": [
+        {"id": "b", "kampus": "K1", "skor": 0.5, "h": 10}, {"id": "a", "kampus": "K2", "skor": 0.5, "h": 10}]},
+     "keluar": ["a", "b"],
+     "catatan": "Skor dan h sama: id naik (a sebelum b), sehingga hasil deterministik."}
+  ],
+  "solusi": [
+    {"id": "A8", "fungsi": "kalimat", "masuk": {"abstrak": "Smith et al. Proposed a flood model with a water rise of 3.5 m. We propose an early warning system."},
+     "keluar": ["Smith et al. Proposed a flood model with a water rise of 3.5 m.", "We propose an early warning system."],
+     "catatan": "Aturan pecah: titik + spasi + huruf besar. 'et al. Proposed' memenuhi pola tetapi 'et al.' dikecualikan; '3.5' tidak diikuti spasi. Satu-satunya pemisah sah: 'm. We'. Hasil 2 kalimat."},
+    {"id": "A8b", "fungsi": "kalimat", "masuk": {"abstrak": "Penelitian Rahman dkk. Menunjukkan penurunan 2.5 persen. Methods (e.g. Kalman filter) work well. We develop a model."},
+     "keluar": ["Penelitian Rahman dkk. Menunjukkan penurunan 2.5 persen.", "Methods (e.g. Kalman filter) work well.", "We develop a model."],
+     "catatan": "'dkk. Menunjukkan' dan 'e.g. Kalman' dikecualikan walau titik+spasi+huruf besar; pemisah sah: 'persen. Methods' dan 'well. We'. Hasil 3 kalimat."},
+    {"id": "A8c", "fungsi": "solusi",
+     "masuk": {"kalimat": ["Floods are common in Java.", "We propose an early warning system for floods.", "Previous model results reduce losses."], "q": ["flood", "early", "warn"]},
+     "keluar": [{"kalimat": "We propose an early warning system for floods.", "skor": 9}, {"kalimat": "Previous model results reduce losses.", "skor": 4}],
+     "catatan": "Definisi: penanda = penanda kamus 'solusi' yang muncul sebagai substring di kalimat huruf kecil, dihitung sekali per penanda; token Q = token Q berbeda yang ada di token kalimat (setelah stem). Skor = 2 x penanda + token Q - 0.5 bila kalimat ke-1 tanpa penanda (hanya latar). K0: 0 penanda, 1 token Q (flood), ke-1 hanya latar: 0+1-0.5 = 0.5 (< 3, dibuang). K1: penanda 'we propose', 'early warning', 'system' = 3 -> 6; token Q flood, early, warn = 3; skor 9. K2: penanda 'model', 'reduce' = 2 -> 4; token Q 0; skor 4. Ambil <= 2 tertinggi dengan skor >= 3, urut skor turun."}
+  ],
+  "syarat": [
+    {"id": "A9", "masuk": {"ekspr": "rpb == false and F >= 0.6", "profil": {"rpb": false, "F": 0.7}}, "keluar": true,
+     "catatan": "rpb false == false benar; 0.7 >= 0.6 benar; digabung 'and' -> benar."},
+    {"id": "A9b", "masuk": {"ekspr": "rpb == false and F >= 0.6", "profil": {"rpb": true, "F": 0.7}}, "keluar": false,
+     "catatan": "rpb true != false -> bagian pertama salah -> salah."},
+    {"id": "A9c", "masuk": {"ekspr": "rpb == false and F >= 0.6", "profil": {"rpb": false, "F": 0.6}}, "keluar": true,
+     "catatan": "Batas: 0.6 >= 0.6 benar."},
+    {"id": "A9d", "masuk": {"ekspr": "rpb == false and F >= 0.6", "profil": {"rpb": false, "F": 0.59}}, "keluar": false,
+     "catatan": "Tepat di bawah batas: 0.59 >= 0.6 salah, jadi seluruh syarat salah."},
+    {"id": "A9e", "masuk": {"ekspr": "rpb == false and F >= 0.6", "profil": {"F": 0.9}}, "keluar": false,
+     "catatan": "Kunci 'rpb' tidak ada di profil: syarat salah (tidak menebak, tidak melempar galat)."},
+    {"id": "A9f", "masuk": {"ekspr": "H > 0.5", "profil": {"H": 0.5}}, "keluar": false,
+     "catatan": "Operator '>' ketat: 0.5 > 0.5 salah."}
+  ],
+  "susun_panduan": [
+    {"id": "A10", "masuk": {"templat": [
+        {"id": "u1", "teks": "Apa upaya {wilayah}?", "arah": "upaya", "isian": ["wilayah"]},
+        {"id": "u2", "teks": "Terjadi {n_kejadian} kejadian di {wilayah}; mengapa?", "arah": "kapasitas", "isian": ["n_kejadian", "wilayah"]}],
+        "profil": {"wilayah": "Kab. Pulang Pisau", "n_kejadian": null}},
+     "keluar": [{"id": "u1", "teks": "Apa upaya Kab. Pulang Pisau?", "arah": "upaya", "sub": []}],
+     "catatan": "Slot {n_kejadian} bernilai null: templat u2 dibuang seluruhnya. Tidak ada karakter '{' di keluaran. u1 tetap dengan slot terisi. Arah bukan 'akar' jadi sub kosong."},
+    {"id": "A10b", "masuk": {"templat": [
+        {"id": "t3", "teks": "Apa harapan {wilayah}?", "arah": "harapan", "isian": ["wilayah"]},
+        {"id": "t1", "teks": "Benarkah masalah di {wilayah}?", "arah": "konfirmasi", "isian": ["wilayah"]}],
+        "profil": {"wilayah": "Kota Bandung"}},
+     "keluar": [{"id": "t1", "teks": "Benarkah masalah di Kota Bandung?", "arah": "konfirmasi", "sub": []}, {"id": "t3", "teks": "Apa harapan Kota Bandung?", "arah": "harapan", "sub": []}],
+     "catatan": "Urutan arah konfirmasi -> akar -> kapasitas -> upaya -> kebutuhan -> harapan, bukan urutan masukan: t1 (konfirmasi) mendahului t3 (harapan). Teks 'sub' hanya diisi untuk arah 'akar' (3 tingkat Mengapa?); kasus ini sengaja tanpa arah akar karena teks sub belum ditetapkan ALG."}
+  ],
+  "cocok_donor": [
+    {"id": "A11", "masuk": {"masalah": {"B": "banjir", "A": "A3"}, "donor": {"bahaya": ["semua"], "aspek": ["A1"], "syarat_ok": false, "buka": false, "tenggat_hari": 5, "status": "belum"}}, "keluar": 0.35,
+     "catatan": "Bahaya donor 'semua' cocok dengan semua bahaya: 0.35x1. Aspek A3 tidak ada di [A1]: 0. Syarat 0, panggilan tutup 0, status bukan 'siap dijajaki' 0. Total 0.35."},
+    {"id": "A11b", "masuk": {"masalah": {"B": "banjir", "A": "A3"}, "donor": {"bahaya": ["banjir"], "aspek": ["A3"], "syarat_ok": true, "buka": true, "tenggat_hari": 21, "status": "siap dijajaki"}}, "keluar": 1.0,
+     "catatan": "Semua terpenuhi, tenggat tepat 21 hari (>= 21): 0.35+0.25+0.15+0.15+0.10 = 1.00."},
+    {"id": "A11c", "masuk": {"masalah": {"B": "banjir", "A": "A3"}, "donor": {"bahaya": ["banjir"], "aspek": ["A3"], "syarat_ok": true, "buka": true, "tenggat_hari": 20, "status": "siap dijajaki"}}, "keluar": 0.85,
+     "catatan": "Tenggat 20 hari < 21: komponen panggilan 0. 1.00 - 0.15 = 0.85."}
+  ],
+  "urut_panggil": [
+    {"id": "A12", "masuk": {"kebutuhan": ["kesehatan", "logistik"], "anggota": [
+        {"id": "b", "km": 300, "keahlian": ["kaji_cepat", "kesehatan"], "latih": true, "jam": 100},
+        {"id": "a", "km": 0, "keahlian": ["kaji_cepat", "kesehatan"], "latih": true, "jam": 100}]},
+     "keluar": [{"id": "a", "skor": 0.775}, {"id": "b", "skor": 0.39491482734714556}],
+     "catatan": "Bagian sama: keahlian_cocok = |{kesehatan}| / |{kesehatan, logistik}| = 0.5 -> 0.30x0.5 = 0.15; latih 0.15x1 = 0.15; jam 0.15x(100/200) = 0.075; jumlah 0.375. a (km 0): 0.40x exp(0) = 0.40 -> 0.775. b (km 300): 0.40 x exp(-3) = 0.40 x 0.049787068 = 0.019914827 -> 0.394914827. a lebih dulu walau masukan memuat b dahulu."},
+    {"id": "A12b", "masuk": {"kebutuhan": ["kesehatan"], "anggota": [
+        {"id": "z", "km": 50, "keahlian": ["kesehatan"], "latih": false, "jam": 0},
+        {"id": "y", "km": 50, "keahlian": ["kesehatan"], "latih": false, "jam": 0}]},
+     "keluar": [{"id": "y", "skor": 0.5426122638850533}, {"id": "z", "skor": 0.5426122638850533}],
+     "catatan": "Semua sama (seri): urut id naik, y sebelum z. Skor = 0.40 x exp(-0.5) + 0.30 x 1 = 0.40 x 0.60653066 + 0.30; keahlian_cocok 1/1 = 1 -> 0.30; latih false 0; jam 0. Skor = 0.24261226 + 0.30 = 0.54261226 untuk keduanya."}
+  ],
+  "status_perjanjian": [
+    {"id": "A13", "masuk": {"berakhir": "2026-12-29", "kini": "2026-10-30"}, "keluar": "segera_habis",
+     "catatan": "30 Okt + 60 hari: sisa Okt 1 hari (31 Okt), Nov 30 hari (30 Nov), Des 29 hari = 60 -> 29 Des. Selisih 60 <= 60: segera_habis."},
+    {"id": "A13b", "masuk": {"berakhir": "2026-12-30", "kini": "2026-10-30"}, "keluar": "aktif",
+     "catatan": "Selisih 61 hari > 60: aktif."},
+    {"id": "A13c", "masuk": {"berakhir": "2026-10-30", "kini": "2026-10-30"}, "keluar": "segera_habis",
+     "catatan": "Selisih 0 hari (berakhir hari ini) masih segera_habis; baru 'habis' bila lewat."},
+    {"id": "A13d", "masuk": {"berakhir": "2026-10-29", "kini": "2026-10-30"}, "keluar": "habis",
+     "catatan": "Berakhir kemarin (selisih -1): habis."},
+    {"id": "A13e", "masuk": {"berakhir": null, "kini": "2026-10-30"}, "keluar": "belum",
+     "catatan": "Belum ada perjanjian bertanggal: status 'belum' (PRD: belum, aktif, segera_habis, habis)."}
+  ]
+}

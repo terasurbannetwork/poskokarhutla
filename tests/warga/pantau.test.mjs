@@ -75,7 +75,7 @@ uji("migrasi 0030 idempoten; CHECK dan trigger menahan peran/wilayah liar, NIP g
   await DB.prepare("DELETE FROM staf WHERE username = 'stafcek01'").run();
 });
 uji("daftar peran dan jenis: JS == trigger migrasi == klien (tidak menyimpang)", async () => {
-  const sql = teks("migrations/0030_staf.sql"), dariSql = [...sql.match(/value NOT IN \(([^)]*)\)/)[1].matchAll(/'(\w+)'/g)].map(m => m[1]);
+  const sql = teks("migrations/0085_staf_peran_kemitraan.sql"), dariSql = [...sql.match(/value NOT IN \(([^)]*)\)/)[1].matchAll(/'(\w+)'/g)].map(m => m[1]);
   assert.deepEqual(Object.keys(PERAN).sort(), dariSql.sort());
   const klien = teks("public/admin/pantau.js");
   for (const p of Object.keys(PERAN)) assert.ok(klien.includes(`${p}:`), "klien tak mengenal peran " + p);

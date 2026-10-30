@@ -244,7 +244,7 @@ uji("sla: halaman /admin/kinerja dan GET /api/sla: hak SAMA (adminOK atau staf b
   const palsu = await hal({cookie: "sesi_staf=" + "a".repeat(64)}); assert.equal(palsu.status, 303, "sesi staf palsu = bukan staf"); assert.equal((await api("GET", "/api/sla", undefined, {cookie: "sesi_staf=" + "a".repeat(64)})).s, 403);
   for (const [nama, h] of [["admin", ADMIN], ["akun gerbang AKUN_SITUS", GERBANG]]) { assert.equal((await hal(h)).status, 200, nama + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, h)).s, 200, nama + " API"); }
   for (const peran of ["tmc", "pimpinan", "verifikator"]) { const s = await staf([peran]); assert.equal((await hal(s)).status, 200, peran + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, s)).s, 200, peran + " API"); }
-  const { SEMUA_PERAN } = await import("../../src/admin_halaman.js"), { PERAN } = await import("../../src/staf.js"); assert.deepEqual(SEMUA_PERAN, Object.keys(PERAN), "daftar peran halaman = daftar peran staf");
+  const { SEMUA_PERAN } = await import("../../src/admin_halaman.js"), { PERAN } = await import("../../src/staf.js"); const luar = Object.keys(PERAN).filter(p => !SEMUA_PERAN.includes(p)); assert.ok(SEMUA_PERAN.every(p => p in PERAN), "SEMUA_PERAN harus subhimpunan PERAN"); assert.deepEqual(luar, ["kemitraan"], "satu-satunya peran di luar SEMUA_PERAN: kemitraan (sengaja, tidak membuka kinerja/SLA)");
 });
 
 uji("sla: GET /api/pipa/lapangan: 503 tanpa PIPA_TOKEN, 401 salah/tanpa, 200 teranonim (koordinat 0,01, tanpa nama/akun/media), dummy dan sejak disaring", async () => {
