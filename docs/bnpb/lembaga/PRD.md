@@ -438,6 +438,21 @@ Panel profil kanan meniru susunan profil 1001startup.id: kepala, ringkasan bersu
 
 Field tambahan lembaga: `badan_hukum`, `didirikan`, `sdm` `{jumlah, jenis, tanggal, sumber_url}`, `kapasitas` `[{teks, sumber_url}]`, `jaringan` `[{relasi: induk|cabang|anggota|mitra|pendana|penerima, ke_id|ke_nama, bukti: resmi|iati|berita|pihak-ketiga, sumber_url, tanggal}]`, dan `yakin`.
 
+### 6.16 Paket pilihan pemilik 30 Okt (rekomendasi 8, 9, 12, 14, 15, 16, 17, 19)
+
+| Fitur | Tempat di layar | Berkas R2 | Isi pokok |
+| --- | --- | --- | --- |
+| Penyedia barang darurat | Tab Lembaga, kategori baru `penyedia` | `akademisi/penyedia.json` | Vendor tenda, perahu karet, genset, logistik, dan alat. Sumbernya katalog elektronik dan pemenang tender LPSE BNPB/BPBD yang terbuka. Isinya nama, NPWP tidak disimpan, produk, nilai kontrak, instansi pembeli, tahun, kontak, dan sumber. |
+| Kalender | Tab baru **Kalender** | `akademisi/kalender.json` | Tenggat hibah dan pinjaman (dari pendanaan), pelatihan Pusdiklat, simulasi dan HKB 26 April, rakornas, dan konferensi (AMCDRR, Global Platform, PIT IABI). Format `{id, judul, jenis, mulai, selesai, tempat, penyelenggara, url, sumber}`, ditampilkan sebagai kalender bulanan dan daftar dengan saringan. |
+| Graf hubungan | Tab baru **Jaringan** | `akademisi/graf.json` (dibangun penggabung) | Simpul orang, lembaga, inovasi, dana, buku, dan wilayah. Sisinya: bekerja di, anggota, induk, mendanai, membuat, diterapkan di, menulis, dan muncul bersama di berita (dengan bobot). Isinya graf gaya, simpul kunci (derajat dan keterantaraan), cari simpul, saring jenis sisi, dan klik yang membuka profil. |
+| Paten dan TRL | Tab Inovasi | field `paten`, `trl`, `trl_dasar` di `inovasi.json` | Paten dari PDKI bila bisa dibuka tanpa login. TRL hanya dikutip bila sumber menyebutnya. Bila tidak, ditampilkan "perkiraan TRL" dari status (purwarupa 4 sampai 6, uji lapangan 6 sampai 7, terpasang 8 sampai 9) dengan label perkiraan. Ada saringan "Siap dipasang" (TRL 7 ke atas). |
+| Pelatih dan asesor | Tab Pakar, segmen ketiga **Pelatih** | `akademisi/pelatih.json` | Asesor kompetensi PB (BNSP dan LSP PB), pelatih Pusdiklat PB, SKKNI PB yang berlaku, dan LSP serta TUK PB, berikut skema sertifikasi, wilayah, dan kontak resmi. |
+| Tim respons internasional | Tab Pendanaan, sub **Respons internasional**, atau tab Lembaga kategori internasional | `akademisi/respons_internasional.json` | Tim USAR INSARAG terklasifikasi (negara, tingkat, kontak resmi), mekanisme AADMER, AHA Centre, ERAT, dan SASOP, perjanjian bilateral kebencanaan Indonesia (dari basis data perjanjian Kemlu), serta prosedur permintaan bantuan internasional (Perka/Peraturan BNPB). |
+| Media dan kanal komunikasi risiko | Tab Lembaga kategori `komunikasi` diperluas, ditambah tokoh jenis jurnalis | `akademisi/media.json` | Media nasional dan daerah (desk bencana), stasiun RRI dan TVRI, radio komunitas (JRKI), akun resmi BPBD dan BMKG, serta wartawan desk bencana (nama, media, profil publik profesional, dan contoh liputan bersumber). |
+| Pemutakhiran bulanan | Admin, plus pil "diperbarui" di kartu | `akademisi/pemutakhiran/<yyyy-mm>.json` | Workflow bulanan: cek situs hidup, rayap ulang kontak, berita baru, dan lembaga baru. Laporan perubahan memuat berapa kontak berubah dan situs yang mati. Skrip ada di `scripts/akademisi/` tanpa data, dan hasilnya langsung ke R2. |
+
+Aset dan infrastruktur (gudang, alat berat, RS rujukan, bandara, pelabuhan, helipad) masuk **peta utama**, bukan Direktori (keputusan menunggu konfirmasi pemilik 30 Okt). Direktori hanya menautkan profil lembaga ke asetnya.
+
 ## 7. API
 
 Semua rute hanya untuk staf (`stafOK`) dan tidak membaca D1, untuk menjaga kuota baca D1 Free yang pernah menjatuhkan situs pada 28 Okt.

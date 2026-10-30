@@ -12,6 +12,7 @@ import {KOSONG_GEO, LAPISAN_LAP, geoLapangan, lapisanLapangan, legendaLapanganHt
 import {JENIS_BRGM, LAPISAN_BRGM, kotakProv, geoBrgm, lapisanBrgm, namaGambarBrgm, legendaBrgmHtml, brgmBaris, airAsinTeks} from "./brgm.js";
 import {cekRenlap, badanRenlap, ubahPilihan, hasilBuatHtml, MAKS_RENLAP} from "./renlap.js";
 import {tombolKeputusan, badanKeputusan, PUTUSAN, BATAS_ALASAN} from "./keputusan.js";
+import {muatMapLibre} from "/inti/maplibre.js";
 
 export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", sel: "/api/sippa/data/kelayakan_sel", zona: "/api/sippa/data/zona", cek: "/api/sippa/jalan-cek", aoi: "/api/sippa/aoi", prioritas: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", log: "/api/sippa/log?jenis=karhutla", brgm: "/api/sippa/data/brgm_pembasahan", keputusan: "/api/sippa/keputusan", renlap: "/api/sippa/renlap"};
 
@@ -390,14 +391,6 @@ function muatGaya() {
   });
   const dasar = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() ? [] : GAYA_DASAR.map(h => pasangLink(h, h.slice(6), document.querySelector('link[href*="/pipa/pipa.css"]')));
   return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=6", "peta"), muatGayaKit()]);
-}
-let pustaka = null;
-function muatMapLibre() {
-  if (globalThis.maplibregl) return Promise.resolve();
-  return pustaka ??= new Promise((ok, gagal) => {
-    const c = document.createElement("link"); c.rel = "stylesheet"; c.href = "/vendor/maplibre/maplibre-gl.css"; document.head.append(c);
-    const s = document.createElement("script"); s.src = "/vendor/maplibre/maplibre-gl.js"; s.onload = ok; s.onerror = () => gagal(new Error("Pustaka peta tidak bisa dimuat.")); document.head.append(s);
-  }).catch(e => { pustaka = null; throw e; });
 }
 
 /* berkas data turunan sebesar 1,6 MB dipakai ulang antar kunjungan layar dalam satu sesi */
