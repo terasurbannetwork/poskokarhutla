@@ -17,14 +17,16 @@ Belum ada yang diubah.
    | tanpa `cursor:help`            | 3                     | tidak ada                                |
    | tanpa "9 provinsi prioritas"   | 3                     | tidak ada                                |
    | kepala situs wajib             | 9 dari 34 html        | tidak ada                                |
-   | tabel rata tengah              | belum dihitung        | tidak ada                                |
+   | tabel rata tengah              | 103 aturan, 45 berkas | `gerbang-tabel-rata` (30 Okt, hijau)     |
    | paragraf justify               | belum dihitung        | tidak ada                                |
 
    Sebagian "·" dan em dash ada di komentar kode, jadi angkanya batas atas.
    Gerbangnya cukup memindai teks yang tampil saja.
 
 2. **Aturan saling bertentangan, dan tidak ada yang tahu mana yang menang.**
-   - Perataan tabel: `gaya-kartu-insight` (13 Okt) bilang kolom teks rata kiri,
+   - Perataan tabel (**DIPUTUS 30 Okt**: header tengah, kolom label kiri, kolom
+     lain termasuk angka tengah; gerbang `tests/agen/gerbang-tabel-rata.test.mjs`,
+     103 aturan CSS di 45 berkas dibetulkan). Sebelumnya: `gaya-kartu-insight` (13 Okt) bilang kolom teks rata kiri,
      `aturan-berulang` (29 Okt) bilang header DAN isi rata tengah,
      `ekspor-pdf-pangantara` bilang header tengah dan angka rata kanan,
      `ppt-tabel-dan-cutoff` bilang kolom label kiri dan sisanya tengah,
@@ -134,7 +136,7 @@ Perkiraan: 61 berkas jadi sekitar 12, indeks 9,3 KB jadi sekitar 2 KB.
 
 ## 4. Urutan kerja yang disarankan
 
-1. Pemilik memutus pertentangan: perataan tabel, lokasi repo
+1. Pemilik memutus pertentangan: ~~perataan tabel~~ (selesai 30 Okt), lokasi repo
    (~/Documents atau ~/Developer), dan AGENTS.md §3.3 soal worktree.
 2. Hook proses (H). Murah, dan langsung mencegah insiden yang paling mahal
    (stash, branch, tayang palsu).
