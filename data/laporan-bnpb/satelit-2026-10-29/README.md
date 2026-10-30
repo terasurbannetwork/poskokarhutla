@@ -26,5 +26,9 @@
   reposisi IKN); tanpa TNI/Kemenhut/Pemda/PT Sinarmas dan pesawat khusus OMC, dan slide 3 tidak memuat jam terbang, jadi tidak mengubah
   deck. Beda dengan WA/rekap 28 Okt: IKN PK-DAN sewaan BNPB (rekap: TNI), WB Kalsel 5 BNPB termasuk PK-DBM (WA: 4 BNPB + HA-5234 TNI),
   WB Riau 4 (WA 3, koreksi Ghozi 27 Okt). Deck ikut WA dan rekap 28 Okt.
+- Pemilik 29 Okt malam: luas terbakar dan belum padam harus dari hari api yang sama ("hari yang sama biar pasti"); deck di atas memasangkan
+  luas hari utuh 28 Okt dengan belum padam 29 Okt (belum_kini). Dua versi di `dua-versi/` (salinan web/ yang sama, cut-off 17.00, tally
+  760 sel masing-masing): "hari utuh 28 Okt" (Papsel 4.613 / 1.618 ha; nasional 7.696 / 2.114 ha) dan "s.d. 17.00 WIB" (Papsel 282 / 153 ha;
+  nasional 5.804 / 1.072 ha; luas dan padam 29 Okt hitungan sendiri, belum terbit di website). Bangun: `python3 dua-versi/jalan.py utuh|kini`.
 
 Bangun ulang: `PLAYWRIGHT_MJS=<playwright>/index.mjs python3 jalan.py`, lalu ekspor PDF lewat PowerPoint.
