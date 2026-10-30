@@ -93,7 +93,7 @@ def kedalaman_cm(teks):
             continue
         f = 100 if meter else 1
         lo, hi = round(lo * f), round(hi * f)
-        if 1 <= lo <= hi <= 1000:
+        if 1 <= lo <= hi <= 500:  # > 5 m = jarak/salah satuan (lihat MAKS_TINGGI_CM)
             hasil.append((lo, hi))
     return (min(a for a, _ in hasil), max(b for _, b in hasil)) if hasil else None
 
@@ -438,8 +438,41 @@ def susun_gugus(rek):
         e["kk"] = (e.get("logbook") or {}).get("kk") or (e.get("berita") or {}).get("kk")
         e["rumah"] = (e.get("logbook") or {}).get("rumah") or (e.get("dibi") or {}).get("terendam") or (e.get("berita") or {}).get("rumah")
         e["konflik"] = konflik(e)
+        e["bendera"] = []
         out.append(e)
-    return sorted(out, key=lambda e: (e["mulai"], e["kab_kode"]))
+    out.sort(key=lambda e: (e["mulai"], e["kab_kode"]))
+    bersihkan(out)
+    return out
+
+
+MAKS_TINGGI_CM = 500     # di atas ini hampir pasti salah ukur satuan ('15 meter' jarak, bukan kedalaman)
+MAKS_DURASI = 30         # hari: durasi logbook mulai->surut; lebih panjang = rentang masa darurat, bukan lama genangan
+AGREGAT_MIN, AGREGAT_KAB, AGREGAT_HARI = 1000, 2, 7
+
+
+def bersihkan(ev):
+    """Sunting ev di tempat dan catat di e['bendera'].
+    kk_agregat: nilai KK/rumah >= 1000 yang sama muncul di > 2 kab berbeda dalam 7 hari = angka provinsi/nasional
+    yang ditempel ke banyak kab -> null. durasi_ragu: durasi logbook > 30 hari -> null. tinggi_ragu: tinggi > 500 cm -> null."""
+    for f in ("kk", "rumah"):
+        per = defaultdict(list)
+        for e in ev:
+            if e.get(f) and e[f] >= AGREGAT_MIN:
+                per[e[f]].append(e)
+        for v, es in per.items():
+            # nilai yang sekali saja memenuhi syarat (> 2 kab dalam 7 hari) = angka agregat; semua baris bernilai itu dikosongkan
+            if any(len({x["kab_kode"] for x in es if abs((tgl(x["mulai"]) - tgl(e["mulai"])).days) <= AGREGAT_HARI}) > AGREGAT_KAB for e in es):
+                for e in es:
+                    e[f] = None
+                    e["bendera"].append("kk_agregat" if f == "kk" else "rumah_agregat")
+    for e in ev:
+        if e.get("durasi_hari") and e["durasi_hari"] > MAKS_DURASI:
+            e["durasi_hari"] = None
+            e["bendera"].append("durasi_ragu")
+        k = e.get("kedalaman_cm")
+        if k and max(k) > MAKS_TINGGI_CM:
+            e["kedalaman_cm"] = None
+            e["bendera"].append("tinggi_ragu")
 
 
 def konflik(e):
@@ -530,6 +563,19 @@ def uji():
     assert len(g) >= 2 and all((max(r["d1"] for r in x) - min(r["d0"] for r in x)).days <= MAKS_GUGUS + 2 for x in g)  # rantai dipotong
     ev = susun_gugus([R("34.02", "2020-01-01"), R("34.02", "2020-01-02", s="gs")])
     assert ev[0]["sumber"] == ["dibi", "gs"] and ev[0]["mulai"] == "2020-01-01" and ev[0]["rentang_hari"] == 2
+    # pembersihan label: agregat provinsi, durasi masa darurat, tinggi mustahil
+    E = lambda k, d, **x: {"kab_kode": k, "mulai": d, "kk": None, "rumah": None, "durasi_hari": None, "kedalaman_cm": None, "bendera": [], **x}
+    ev = [E(f"11.0{i}", f"2025-11-0{i + 1}", kk=124549) for i in range(3)] + [E("12.01", "2025-11-02", kk=500), E("12.02", "2025-12-30", kk=124549),
+          E("13.01", "2025-11-01", kk=1385), E("13.02", "2025-11-02", kk=1385),
+          E("14.01", "2026-01-01", durasi_hari=91, kedalaman_cm=[10, 1500]), E("14.02", "2026-01-01", durasi_hari=30, kedalaman_cm=[50, 500])]
+    bersihkan(ev)
+    assert [e["kk"] for e in ev[:3]] == [None] * 3 and all(e["bendera"] == ["kk_agregat"] for e in ev[:3])  # 3 kab dalam 7 hari
+    assert ev[3]["kk"] == 500 and ev[4]["kk"] is None and ev[5]["kk"] == 1385 and ev[6]["kk"] == 1385  # kecil / nilai sama di luar jendela ikut dikosongkan / hanya 2 kab
+    assert ev[7]["durasi_hari"] is None and ev[7]["kedalaman_cm"] is None and ev[7]["bendera"] == ["durasi_ragu", "tinggi_ragu"]
+    assert ev[8]["durasi_hari"] == 30 and ev[8]["kedalaman_cm"] == [50, 500]
+    # tinggi: jarak 'meter' tanpa kata kunci kedalaman tak diterima; kunci + 15 meter = 1500 cm -> disaring bersihkan
+    assert kedalaman_cm("ketinggian air 15 meter") is None and kedalaman_cm("ketinggian air 6 meter") is None
+    assert kedalaman_cm("ketinggian air 5 meter") == (500, 500)
     print("uji label_banjir: ok")
 
 

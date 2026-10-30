@@ -87,14 +87,50 @@ Peluang 2024-2025 (INFORMASI, bukan vonis; sudah dibuka di RISET-MODEL-KAB): {"n
 
 Aturan PRAREG §4: bila tidak lulus, model tidak tayang sebagai prediksi; yang tayang hanya sebaran empiris historis per kab berlabel 'berdasarkan N kejadian'.
 
-## 5. Contoh: hujan 200 mm / 3 hari di Aceh Tenggara (11.02)
+## 5. Contoh: hujan 200 mm / 3 hari di Aceh Tenggara (11.02)  [dibangun ulang 30 Okt 2026 dengan label bersih]
 
-Basis: 56 kejadian terlapor (latih peluang 2016-2021), 24 kejadian ber-KK dan 21 ber-rumah (latih <=2021).
+Basis: 56 kejadian terlapor (latih peluang 2016-2021), 24 kejadian ber-KK dan 21 ber-rumah (latih <=2021). Hanya rentang p10-p90 (bukan angka tunggal); model peluang TIDAK LULUS.
 
-- Kondisi kering: hujan 200 mm 3 hari di Aceh Tenggara: peluang banjir terlapor pada hari itu 7.7%; bila terjadi ~1145 KK (rentang 70-11538) dan ~145 rumah (74-8973); limpasan 89.8 mm, kelebihan atas kapasitas 65.3 mm.
-- Kondisi normal: hujan 200 mm 3 hari di Aceh Tenggara: peluang banjir terlapor pada hari itu 8.9%; bila terjadi ~1242 KK (rentang 76-12516) dan ~159 rumah (82-9823); limpasan 137.8 mm, kelebihan atas kapasitas 113.3 mm.
-- Kondisi basah: hujan 200 mm 3 hari di Aceh Tenggara: peluang banjir terlapor pada hari itu 9.4%; bila terjadi ~1288 KK (rentang 79-12984) dan ~165 rumah (85-10232); limpasan 169.6 mm, kelebihan atas kapasitas 145.1 mm.
-- tinggi air (cm): empiris p10/p50/p90 = 169/200/1500, berdasarkan 5 kejadian (tingkat: nasional+kelas).
-- lama (hari): empiris p10/p50/p90 = 5/48/86, berdasarkan 6 kejadian (tingkat: nasional+kelas).
+- Kondisi kering: peluang banjir terlapor pada hari itu 7.7%; bila terjadi jiwa terdampak (setara KK, DIBI/3,5) kira-kira 70 sampai 11538 dan rumah terendam 74 sampai 8973; limpasan 89.8 mm, kelebihan atas kapasitas 65.3 mm.
+- Kondisi normal: peluang banjir terlapor pada hari itu 8.9%; bila terjadi jiwa terdampak (setara KK, DIBI/3,5) kira-kira 76 sampai 12516 dan rumah terendam 82 sampai 9823; limpasan 137.8 mm, kelebihan atas kapasitas 113.3 mm.
+- Kondisi basah: peluang banjir terlapor pada hari itu 9.4%; bila terjadi jiwa terdampak (setara KK, DIBI/3,5) kira-kira 79 sampai 12984 dan rumah terendam 85 sampai 10232; limpasan 169.6 mm, kelebihan atas kapasitas 145.1 mm.
+- tinggi air (cm): data tidak cukup (n=0 di kab, belum ada n>=10 di kab/provinsi).
+- lama genangan (hari): data tidak cukup (n=2 di kab, belum ada n>=10 di kab/provinsi).
 
-Catatan: peluang per HARI-kab, bukan 'peluang banjir pada hujan itu'; angka KK memakai asumsi 3,5 jiwa/KK untuk DIBI. Bila vonis model di bagian 4 TIDAK LULUS, angka model di atas tidak tayang sebagai prediksi; hanya sebaran empiris historis yang boleh tayang, dengan label 'berdasarkan N kejadian'.
+Catatan: peluang per HARI-kab, bukan 'peluang banjir pada hujan itu'. Koefisien model tetap yang dibekukan (dilatih pada label sebelum pembersihan); hanya sebaran empiris tinggi/lama memakai label bersih.
+
+## 6. Tinjauan validasi-model 30 Okt 2026 dan analisis sensitivitas
+
+Analisis TAMBAHAN, bukan vonis baru. Vonis di bagian 4 tidak diubah; PRAREG, `model_dampak.py` dan `model_dampak.params.json` tidak disentuh (sidik tetap cocok). Skrip: `dampak_sensitivitas.py` (memakai params beku dan fungsi evaluasi `model_dampak` yang sama).
+
+### Temuan dan yang diubah (label_banjir.py `bersihkan`, uji ditambah)
+
+- **KK/rumah agregat**: nilai >= 1000 yang sama muncul di > 2 kab berbeda dalam 7 hari = angka provinsi/nasional yang ditempel ke banyak kab. Nilai itu dikosongkan di semua kab (bendera `kk_agregat` / `rumah_agregat`). Hasil: 12 baris KK (124549 di 8 kab, 22973 di 4 kab) dan 80 baris rumah (nilai 1000 di 77 baris, 1582 di 3). KK kosong jatuh ke DIBI menderita/3,5 bila ada.
+- **durasi_hari** adalah rentang masa darurat (mulai sampai surut pertama yang dilaporkan), bukan lama genangan. Dipertahankan hanya <= 30 hari: 11 baris dinullkan (`durasi_ragu`).
+- **Tinggi > 500 cm**: 7 baris dinullkan (`tinggi_ragu`). Parser berita `kedalaman_cm` kini menolak > 500 cm. Angka [10,1500] dan [1500,1500] berasal dari `scripts/umum/logbook_bnpb.py` (regex `TMA`, `\d{1,3}` + "m" -> x100, mis. "15 meter" jarak/ketinggian ekstrem), di luar wilayah banjir: pemiliknya perlu membatasi/meninjau regex itu.
+- Pembersihan diterapkan pada `label.json` yang sama dengan yang dipakai vonis (bukan susun ulang dari cache, karena cache berita sudah tumbuh +390 kejadian) agar hanya pembersihan yang membedakan.
+
+### Sensitivitas (uji 2024-01..2026-09, params beku)
+
+| varian | target | n | MAE B1 | MAE B0 | skill vs B0 [CI95] |
+| --- | --- | --- | --- | --- | --- |
+| label lama, semua (= vonis) | kk | 1939 | 1.545 | 1.605 | 0.037 [0.024; 0.051] |
+| label bersih, semua | kk | 1937 | 1.530 | 1.591 | 0.038 [0.023; 0.052] |
+| label bersih, semua | rumah | 1805 | 1.486 | 1.527 | 0.027 [0.015; 0.038] |
+| label bersih, KK laporan (logbook/berita) | kk | 379 | 1.603 | 1.662 | 0.036 [0.005; 0.066] |
+| label bersih, KK DIBI/3,5 | kk | 1558 | 1.513 | 1.573 | 0.038 [0.024; 0.054] |
+| fitur i-1..i, semua | kk | 1937 | 1.536 | 1.591 | 0.034 [0.019; 0.049] |
+| fitur i-1..i, KK laporan | kk | 379 | 1.615 | 1.662 | 0.028 [-0.005; 0.062] |
+| fitur i-1..i, KK DIBI/3,5 | kk | 1558 | 1.517 | 1.573 | 0.036 [0.021; 0.051] |
+| fitur i-1..i, semua | rumah | 1805 | 1.490 | 1.527 | 0.024 [0.013; 0.035] |
+
+Catatan: sebagian besar baris uji KK (1558 dari 1937) adalah DIBI/3,5, bukan logbook. Skill tidak berubah berarti oleh pembersihan label, subset, atau membuang hari i+1 (hindcast vs prakiraan); pada KK laporan dengan fitur i-1..i CI memotong nol.
+
+### Pembacaan jujur
+
+- Model besaran secara statistik hanya sedikit lebih baik dari median historis kab (MAE log1p 1,605 -> 1,545; ~4%). Tidak layak untuk mengalokasikan sumber daya.
+- KK hanya tampil sebagai RENTANG indikatif (p10-p90), tanpa angka tunggal di layar. Target dinamai: "jiwa terdampak (setara KK, DIBI/3,5)" dan "rumah terendam".
+- Peluang kejadian TIDAK LULUS.
+- Tinggi/lama empiris tampil hanya bila level kab itu sendiri atau provinsinya n >= 10; selain itu "data tidak cukup" (Aceh Tenggara: tinggi n=0, lama n=2 -> tidak tampil).
+- Penyimpangan kriteria: PRAREG §4 menulis BSS CI bawah > 0, kode memakai BSS titik > 0 untuk peluang. Tidak berpengaruh pada vonis besaran; peluang gagal pada dETS.
+- Kebocoran kecil: `fitur_banjir.maks_per_tahun` memakai maksimum tahunan seluruh seri hujan (termasuk >= 2022, juga tahun uji) untuk kapasitas C_k (R2/R5). Hanya konstanta per kab, efek diperkirakan kecil, tetapi bukan out-of-sample murni.
