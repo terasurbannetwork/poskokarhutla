@@ -14,7 +14,7 @@ Pipeline (GitHub Actions, Python 3.12 stdlib)          Worker (src/kemitraan*.js
   kode.py → profil_daerah.py → public/data/kemitraan/*   - halaman: /kemitraan, /buku, /panduan,  buku.html, panduan.html,
  kemitraan-pakar.yml bulanan tgl 2                         /daftar, /saya, /masuk, /sertifikat      daftar.html, saya.html,
   korpus.py → indeks_bm25.py → cocok_pakar.py → R2          - API /api/kemitraan/*                 masuk.html, sertifikat.html
- (pakai OPENALEX_KEY + wrangler R2)                       D1: km_* (0079–0083) + tabel lama      inti.js (helper KM), <tampilan>.js
+ (pakai OPENALEX_KEY + wrangler R2)                       D1: km_* (0080–0084) + tabel lama      inti.js (helper KM), <tampilan>.js
                                                           R2 MEDIA: kemitraan/*, akademisi/*
 ```
 Gerbang hak: staf (`stafOK` + peran baru `kemitraan`), akun KK (pola pendataan), kode
@@ -25,11 +25,11 @@ pribadi (pola relawan/meja), SA (`superOK`). Detail KM.
 ### 2.1 Baru
 | Berkas | Isi | Pemilik |
 | --- | --- | --- |
-| `migrations/0079_km_dasar.sql` | km_kampus, km_akun, km_sesi, km_anggota, km_perjanjian, km_bpbd_kode, km_jejak | warga-api |
-| `migrations/0080_km_masalah.sql` | km_masalah, km_masalah_pakar, km_kunjungan, km_jawaban, km_koreksi | warga-api |
-| `migrations/0081_km_riset.sql` | km_donor, km_panggilan_donor, km_proposal, km_konsorsium, km_hibah_panggilan, km_hibah_proposal, km_telaah, km_inovasi, km_agenda_sumber | warga-api |
-| `migrations/0082_km_satgas.sql` | km_satgas, km_satgas_anggota, km_piket, km_aktivasi, km_panggilan, km_aktivasi_laporan, km_sertifikat, km_pelajaran, km_pl_kode | warga-api |
-| `migrations/0083_km_talenta.sql` | km_magang, km_magang_lamar, km_mentor, km_desa, km_desa_catatan, km_dampingan, km_bumn, km_modul | warga-api |
+| `migrations/0080_km_dasar.sql` | km_kampus, km_akun, km_sesi, km_anggota, km_perjanjian, km_bpbd_kode, km_jejak | warga-api |
+| `migrations/0081_km_masalah.sql` | km_masalah, km_masalah_pakar, km_kunjungan, km_jawaban, km_koreksi | warga-api |
+| `migrations/0082_km_riset.sql` | km_donor, km_panggilan_donor, km_proposal, km_konsorsium, km_hibah_panggilan, km_hibah_proposal, km_telaah, km_inovasi, km_agenda_sumber | warga-api |
+| `migrations/0083_km_satgas.sql` | km_satgas, km_satgas_anggota, km_piket, km_aktivasi, km_panggilan, km_aktivasi_laporan, km_sertifikat, km_pelajaran, km_pl_kode | warga-api |
+| `migrations/0084_km_talenta.sql` | km_magang, km_magang_lamar, km_mentor, km_desa, km_desa_catatan, km_dampingan, km_bumn, km_modul | warga-api |
 | `src/kemitraan.js` | RUTE_KEMITRAAN (halaman + gerbang + dummy) | warga-api |
 | `src/kemitraan_akun.js` | daftar kampus/anggota, masuk KK, kode | warga-api |
 | `src/kemitraan_masalah.js` | masalah, kunjungan, jawaban, koreksi, pakar | warga-api |
@@ -57,10 +57,10 @@ pribadi (pola relawan/meja), SA (`superOK`). Detail KM.
 | Berkas | Perubahan |
 | --- | --- |
 | `src/worker.js` | (1) satu cabang di `rute()`: jalur berawalan `/kemitraan` atau `/api/kemitraan/` diserahkan ke `ruteKm(metode, jalur)` di `src/kemitraan.js` (ADR-07); (2) gerbang situs centurisk97.id (`adminOK`, worker.js:801) DILEWATI untuk awalan itu, karena modul menjaga dirinya lewat `hakKm`; (3) `tolakOrigin` (worker.js:605) mengenali cookie `sesi_kemitraan` |
-| `src/staf.js` + `migrations/0084_staf_peran_kemitraan.sql` | `PERAN.kemitraan = "Kemitraan kampus"`; migrasi `DROP TRIGGER IF EXISTS staf_larik_sah` dan `staf_larik_ubah`, lalu `CREATE TRIGGER` dengan daftar peran + `kemitraan` (preseden 0077), karena trigger 0030:29,37 menolak peran baru |
+| `src/staf.js` + `migrations/0085_staf_peran_kemitraan.sql` | `PERAN.kemitraan = "Kemitraan kampus"`; migrasi `DROP TRIGGER IF EXISTS staf_larik_sah` dan `staf_larik_ubah`, lalu `CREATE TRIGGER` dengan daftar peran + `kemitraan` (preseden 0077), karena trigger 0030:29,37 menolak peran baru |
 | `src/pengingat.js` | 7 detektor km (§6.4) menulis ke `km_pengingat` (ADR-06); `/admin/pengingat` membaca gabungan `pengingat` + `km_pengingat` |
 | `src/akademisi.js` | TIDAK diubah. Worker modul ini tidak pernah memuat `induk.json` (±5 MB, jauh di atas 10 ms CPU); hanya `kemitraan/cocok/<kab4>.json` dan `indeks_bm25/<B>.json` |
-| `tests/warga/migrasi_beku.json` | sha256 0079–0083 |
+| `tests/warga/migrasi_beku.json` | sha256 0080–0084 |
 | `scripts/agents/roster.json` | agent `kampus` (§2.3) |
 | `AGENTS.md` | baris peta modul + §2.2 urutan dokumen |
 | `public/inti/kepala.js` | tautan menu "Kemitraan" berikon (tiket KM-A10); disembunyikan bila `/api/kemitraan/saya` 401 |
@@ -88,7 +88,7 @@ Singkatan CHECK di bawah: `ID16` = `CHECK (length(X)=16 AND X NOT GLOB '*[^0-9a-
 `T(n,m)` = `length BETWEEN n AND m`, `TGL` = `GLOB '[0-9][0-9][0-9][0-9]-[0-9][0-9]-[0-9][0-9]'`,
 `DUM` = kolom dummy baku. Pengerja menulis CHECK lengkap, bukan singkatan.
 
-### 3.1 Migrasi 0079_km_dasar.sql
+### 3.1 Migrasi 0080_km_dasar.sql
 ```sql
 CREATE TABLE IF NOT EXISTS km_kampus (           -- perluasan institusi (0023), 1:1
   institusi_id TEXT PRIMARY KEY REFERENCES institusi(id),
@@ -162,8 +162,8 @@ CREATE TABLE IF NOT EXISTS km_jejak (
   waktu INTEGER NOT NULL, dummy … DUM
 );
 CREATE INDEX IF NOT EXISTS idx_km_jejak ON km_jejak (tabel, baris);
--- km_pl_kode (kode pribadi non-anggota: penelaah, pakar piket, pembimbing) DIBUAT DI 0079,
--- karena km_telaah (0081) merujuknya. Kolom: lihat §3.4.
+-- km_pl_kode (kode pribadi non-anggota: penelaah, pakar piket, pembimbing) DIBUAT DI 0080,
+-- karena km_telaah (0082) merujuknya. Kolom: lihat §3.4.
 -- km_pengingat: antrean pengingat modul ini (ADR-06), kolom sama dengan tabel pengingat (0028)
 -- kecuali jenis (CHECK daftar §6.4) dan sumber_id (T(1,60), boleh bukan 16 hex).
 CREATE TRIGGER IF NOT EXISTS km_jejak_beku_u BEFORE UPDATE ON km_jejak BEGIN SELECT RAISE(ABORT,'km_jejak_beku: jejak tidak boleh diubah'); END;
@@ -172,7 +172,7 @@ CREATE TRIGGER IF NOT EXISTS km_jejak_beku_d BEFORE DELETE ON km_jejak WHEN OLD.
 Catatan: relawan jalur `kampus` dengan `kampus_id` = institusi; status relawan memakai
 alur lama (terdaftar → diverifikasi → siap_tugas …). Unsur/latihan di `km_anggota`.
 
-### 3.2 Migrasi 0080_km_masalah.sql
+### 3.2 Migrasi 0081_km_masalah.sql
 ```sql
 CREATE TABLE IF NOT EXISTS km_masalah (
   id TEXT PRIMARY KEY ID16,
@@ -246,7 +246,7 @@ CREATE TABLE IF NOT EXISTS km_koreksi (
 );
 ```
 
-### 3.3 Migrasi 0081_km_riset.sql
+### 3.3 Migrasi 0082_km_riset.sql
 Tabel dan kolom kunci (pengerja menulis CHECK lengkap gaya §3):
 - `km_donor` (id, nama T(2,120), jenis `internasional|nasional|bumn|swasta|filantropi`,
   bahaya JSON array ⊂ 11 bahaya ∪ {'semua'}, aspek JSON array ⊂ A1..A10, syarat_mitra TEXT ≤ 500,
@@ -277,7 +277,7 @@ Tabel dan kolom kunci (pengerja menulis CHECK lengkap gaya §3):
   ekatalog `belum|proses|tayang`, kontak, DUM).
 - `km_agenda_sumber` (agenda_id FK riset_agenda, masalah_id FK km_masalah, PK keduanya, DUM).
 
-### 3.4 Migrasi 0082_km_satgas.sql
+### 3.4 Migrasi 0083_km_satgas.sql
 - `km_satgas` (id, institusi_id FK; `CREATE UNIQUE INDEX uq_km_satgas ON km_satgas(institusi_id) WHERE dummy=0`, ketua_relawan_id, wakil_kampus_id,
   wakil_mahasiswa_id, wakil_alumni_id (semua FK relawan nullable), radius_km 10–1000,
   status (dihitung, disimpan cache) `belum_lengkap|siap|terbatas|tidak_siap`, DUM).
@@ -288,7 +288,7 @@ Tabel dan kolom kunci (pengerja menulis CHECK lengkap gaya §3):
   Trigger: wakil_mahasiswa harus unsur mahasiswa, wakil_alumni unsur alumni (EXISTS ke km_anggota).
 - `km_satgas_anggota` (satgas_id, relawan_id, PK keduanya, DUM).
 - `km_pl_kode` (id, kode_sha SHA UNIQUE, jenis `penelaah|pakar_piket|pembimbing`, akademisi_id
-  nullable, nama T(2,80), wa, berlaku, dicabut, DUM) — kode pribadi non-anggota. **Dibuat di 0079.**
+  nullable, nama T(2,80), wa, berlaku, dicabut, DUM) — kode pribadi non-anggota. **Dibuat di 0080.**
 - `km_piket` (id, minggu TGL (Senin), rumpun (13 nilai /akademisi), akademisi_id, peran
   `utama|cadangan`, pl_kode_id FK, jawab `belum|bersedia|tidak`, dijawab INTEGER, DUM;
   UNIQUE(minggu, rumpun, akademisi_id)).
@@ -311,7 +311,7 @@ Tabel dan kolom kunci (pengerja menulis CHECK lengkap gaya §3):
 - `km_pelajaran` (id, aktivasi_id FK UNIQUE, kerangka JSON, analisis ≤ 10000, penulis_akademisi_id,
   status `draf|terbit`, DUM).
 
-### 3.5 Migrasi 0083_km_talenta.sql
+### 3.5 Migrasi 0084_km_talenta.sql
 - `km_magang` (id, penyelenggara `bnpb|bpbd`, unit T(2,120), kab4 nullable (wajib bila bpbd),
   kuota 1–50, keahlian JSON, mulai TGL, selesai TGL (> mulai), pembimbing_nama, pembimbing_wa,
   pl_kode_id (pembimbing), status `draf|buka|tutup|berjalan|selesai`, DUM).
@@ -559,7 +559,7 @@ Kode koordinator lama (`institusi.kode_sha`, halaman `/kampus`) tetap jalan; KK 
 
 ### ADR-06 Pengingat modul di tabel sendiri `km_pengingat` (DITERIMA)
 `pengingat.jenis` ber-CHECK 9 nilai dan `sumber_id` wajib 16 karakter (0028:21-22); membangun
-ulang tabel lama melanggar aturan migrasi idempoten. `km_pengingat` (0079) bentuknya sama,
+ulang tabel lama melanggar aturan migrasi idempoten. `km_pengingat` (0080) bentuknya sama,
 `jenis` = 7 nilai §6.4, `sumber_id` T(1,60). `src/pengingat.js` menjalankan detektor km dan
 menulis ke tabel itu; layar membaca UNION keduanya.
 

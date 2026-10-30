@@ -117,7 +117,7 @@ sebelum label dibuka: lolos bila skor ≥ maks(h, terdekat) + 0,10 dan κ ≥ 0,
 dibuat 2 staf (tiket KM-C09, manusia). Sampai lolos, layar memakai pil "Belum diuji".
 
 ## 3. D1 (`tests/warga/kemitraan_skema.test.mjs`)
-Untuk tiap migrasi 0079–0083: dijalankan dua kali tanpa galat; tiap tabel
+Untuk tiap migrasi 0080–0084: dijalankan dua kali tanpa galat; tiap tabel
 `| Tabel | Aturan | SQL WAJIB GAGAL | Kembar WAJIB LOLOS |`. Minimal:
 | Tabel | Aturan | WAJIB GAGAL | WAJIB LOLOS |
 | --- | --- | --- | --- |

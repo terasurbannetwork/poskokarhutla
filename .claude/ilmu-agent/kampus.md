@@ -15,11 +15,11 @@ Status 30 Okt: hanya dokumen; belum ada kode. Kerjakan tiket `KM-*` satu per ses
 | Berkas | Isi |
 | --- | --- |
 | `public/kemitraan.html`, `public/kemitraan.css`, `public/kemitraan/*.js` | layar 8 tampilan + halaman buku, panduan, daftar, masuk, saya, sertifikat |
-| `public/data/kemitraan/` | kode.json (crosswalk), daerah/<kab4>.json (548), prov/<NN>.json, ringkas.json, pertanyaan.json, kamus.json, uji_cocok.json |
+| `public/data/kemitraan/` | kode.json (crosswalk), daerah/<kab4>.json (514), prov/<NN>.json, ringkas.json, pertanyaan.json, kamus.json, uji_cocok.json |
 | `scripts/kemitraan/*.py` | konst, kode, profil_daerah, masalah, geo, teks, korpus, indeks_bm25, cocok_pakar, cocok_baru, pertanyaan, uji_cocok |
 | `tests/kemitraan/`, `tests/bnpb/kemitraan_*` | fungsi murni, paritas Py/JS, gerbang teks, layar |
 
-Bukan milikku (pakai lewat API): `src/kemitraan*.js`, `migrations/0079–0083` (warga-api);
+Bukan milikku (pakai lewat API): `src/kemitraan*.js`, `migrations/0080–0084` (warga-api);
 `.github/workflows/kemitraan*.yml` (mekanik-mesin); `/akademisi` dan R2 `akademisi/*`.
 
 Sumber data dibaca: `public/data/wilayah/NN.json` (profil wilayah IRBI, `scripts/umum/profil_wilayah.py`),
@@ -64,3 +64,4 @@ Sumber data dibaca: `public/data/wilayah/NN.json` (profil wilayah IRBI, `scripts
 - Pengulas: `selera-angka`, `inp-reviewer`, `validasi-model` (skor/uji relevansi).
 
 ## Kasus
+- 2026-10-30 · indeks.json 548 baris = 514 kab/kota (kode 4 digit) + 34 provinsi; neraca_air/kab.json berkode IRBI dan kekeringan-*.json bernomor urut sumber, keduanya BUKAN BPS, jadi kode.json bps null. Worktree agent dibuat dari origin/main, bukan main lokal: dokumen yang belum ada di origin dibaca dari checkout utama.

@@ -14,7 +14,7 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 | Batasan | Nilai |
 | --- | --- |
 | Kunci kab | kode IRBI 4 digit (`kab4`) |
-| Migrasi | 0079–0083, hanya `CREATE … IF NOT EXISTS`, sha256 ke `tests/warga/migrasi_beku.json` |
+| Migrasi | 0080–0084, hanya `CREATE … IF NOT EXISTS`, sha256 ke `tests/warga/migrasi_beku.json` |
 | Kode pribadi | `kodeBaru()` 26 hex, simpan sha saja |
 | Sandi | `hashSandi` PBKDF2 100k, ≥ 10 huruf |
 | JSON daerah | ≤ 60 KB; `ringkas.json` ≤ 120 KB |
@@ -44,11 +44,11 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 | KM-A01 | Agent `kampus` + AGENTS.md §2.2 [induk] | mekanik-mesin | I | S | belum |
 | KM-A02 | Konstanta, kamus, kasus acuan | kampus | P | M | belum |
 | KM-A03 | Crosswalk kode wilayah `kode.py` | kampus | P | M | belum |
-| KM-A04 | Migrasi 0079 dasar | warga-api | M | M | belum |
-| KM-A05 | Migrasi 0080 masalah | warga-api | M | M | belum |
-| KM-A06 | Migrasi 0081 riset dan dana | warga-api | M | M | belum |
-| KM-A07 | Migrasi 0082 satgas | warga-api | M | M | belum |
-| KM-A08 | Migrasi 0083 talenta | warga-api | M | M | belum |
+| KM-A04 | Migrasi 0080 dasar | warga-api | M | M | belum |
+| KM-A05 | Migrasi 0081 masalah | warga-api | M | M | belum |
+| KM-A06 | Migrasi 0082 riset dan dana | warga-api | M | M | belum |
+| KM-A07 | Migrasi 0083 satgas | warga-api | M | M | belum |
+| KM-A08 | Migrasi 0084 talenta | warga-api | M | M | belum |
 | KM-A09 | Cangkang rute + gerbang hak + peran staf | warga-api | W | M | belum |
 | KM-A10 | Cangkang layar + helper KM | kampus | L | M | belum |
 | KM-A11 | Gerbang teks + registri cakupan | penulis-gerbang | G | S | belum |
@@ -142,9 +142,9 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Bukti:** `python3 -I scripts/kemitraan/kode.py --cek`.
 - **Rujukan:** ALG §1; PD §2; DT ADR-01. **Ukuran:** M
 
-#### KM-A04 Migrasi 0079 dasar
+#### KM-A04 Migrasi 0080 dasar
 - **Tujuan:** tabel `km_kampus, km_akun, km_sesi, km_anggota, km_perjanjian, km_bpbd_kode, km_jejak, km_pl_kode, km_pengingat` persis DT §3.1, §3.4 (km_pl_kode), ADR-06 (km_pengingat). CHECK ditulis lengkap; CHECK tabel di AKHIR daftar kolom; UNIQUE bersyarat = `CREATE UNIQUE INDEX … WHERE`.
-- **Berkas:** `migrations/0079_km_dasar.sql`, `tests/warga/kemitraan_skema.test.mjs` (bagian 0079), `tests/warga/migrasi_beku.json`, `tests/warga/cakupan.json`.
+- **Berkas:** `migrations/0080_km_dasar.sql`, `tests/warga/kemitraan_skema.test.mjs` (bagian 0080), `tests/warga/migrasi_beku.json`, `tests/warga/cakupan.json`.
 - **Di luar:** rute; migrasi lain.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`, `penulis-gerbang`.
 - **Model:** sonnet; pemeriksa haiku.
@@ -153,9 +153,9 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Bukti:** `node --test tests/warga/kemitraan_skema.test.mjs`; `node --test tests/warga/migrasi_beku.test.mjs`.
 - **Rujukan:** DT §3, §3.1; RU §3; KM §2. **Ukuran:** M
 
-#### KM-A05 Migrasi 0080 masalah
+#### KM-A05 Migrasi 0081 masalah
 - **Tujuan:** `km_masalah` (+trigger alur, indeks unik parsial auto_id), `km_masalah_pakar`, `km_kunjungan`, `km_jawaban`, `km_koreksi` persis DT §3.2.
-- **Berkas:** `migrations/0080_km_masalah.sql`, `tests/warga/kemitraan_skema.test.mjs` (bagian 0080), `migrasi_beku.json`, `cakupan.json`.
+- **Berkas:** `migrations/0081_km_masalah.sql`, `tests/warga/kemitraan_skema.test.mjs` (bagian 0081), `migrasi_beku.json`, `cakupan.json`.
 - **Antarmuka:** daftar transisi trigger = konstanta `ALUR_MASALAH` yang nanti dipakai C03 (tulis juga di komentar migrasi).
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`.
 - **Model:** sonnet.
@@ -164,9 +164,9 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Bukti:** sama A04.
 - **Rujukan:** DT §3.2; ALUR §2. **Ukuran:** M
 
-#### KM-A06 Migrasi 0081 riset dan dana
+#### KM-A06 Migrasi 0082 riset dan dana
 - **Tujuan:** 9 tabel DT §3.3 dengan trigger `km_proposal_alur`, `km_telaah_beku`, Σbobot rubrik.
-- **Berkas:** `migrations/0081_km_riset.sql`, uji skema bagian 0081, `migrasi_beku.json`, `cakupan.json`.
+- **Berkas:** `migrations/0082_km_riset.sql`, uji skema bagian 0082, `migrasi_beku.json`, `cakupan.json`.
 - **Antarmuka:** Σbobot dijaga trigger `BEFORE INSERT/UPDATE` dengan `(SELECT SUM(json_extract(value,'$.bobot')) FROM json_each(NEW.rubrik)) <> 100` → ABORT.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`.
 - **Model:** sonnet. **Dependensi:** A04, A05 (FK km_masalah). **Paralel dengan:** A07, A08. **Isolasi:** worktree ya.
@@ -174,18 +174,18 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Bukti:** sama A04.
 - **Rujukan:** DT §3.3; ALUR §3. **Ukuran:** M
 
-#### KM-A07 Migrasi 0082 satgas
-- **Tujuan:** 9 tabel DT §3.4 (km_pl_kode sudah di 0079), trigger unsur wakil satgas, indeks unik parsial km_satgas, kolom `km_aktivasi.permintaan_id` (ADR-08).
-- **Berkas:** `migrations/0082_km_satgas.sql`, uji skema bagian 0082, `migrasi_beku.json`, `cakupan.json`.
+#### KM-A07 Migrasi 0083 satgas
+- **Tujuan:** 9 tabel DT §3.4 (km_pl_kode sudah di 0080), trigger unsur wakil satgas, indeks unik parsial km_satgas, kolom `km_aktivasi.permintaan_id` (ADR-08).
+- **Berkas:** `migrations/0083_km_satgas.sql`, uji skema bagian 0083, `migrasi_beku.json`, `cakupan.json`.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`.
 - **Model:** sonnet. **Dependensi:** A04. **Paralel dengan:** A05, A06, A08. **Isolasi:** worktree ya.
 - **Selesai bila:** RU §3 baris km_satgas hijau; `km_panggilan` UNIQUE menolak panggilan ganda; `km_aktivasi_meja` FK ke `meja_petugas`.
 - **Bukti:** sama A04.
 - **Rujukan:** DT §3.4; ALUR §4. **Ukuran:** M
 
-#### KM-A08 Migrasi 0083 talenta
+#### KM-A08 Migrasi 0084 talenta
 - **Tujuan:** 8 tabel DT §3.5, trigger alur lamaran magang, indeks parsial dampingan aktif.
-- **Berkas:** `migrations/0083_km_talenta.sql`, uji skema bagian 0083, `migrasi_beku.json`, `cakupan.json`.
+- **Berkas:** `migrations/0084_km_talenta.sql`, uji skema bagian 0084, `migrasi_beku.json`, `cakupan.json`.
 - **Pengerja / pemeriksa:** `warga-api` / `migrasi-idempoten`.
 - **Model:** sonnet. **Dependensi:** A04. **Paralel dengan:** A05–A07. **Isolasi:** worktree ya.
 - **Selesai bila:** RU §3 baris km_magang_lamar hijau; `desa_kode` liar ditolak; modul > 10 MB ditolak.
@@ -194,8 +194,8 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 
 #### KM-A09 Cangkang rute + gerbang hak + peran staf
 - **Tujuan:** `RUTE_KEMITRAAN` terpasang; fungsi gerbang `hakKm(env, req)` mengembalikan `{peran: 'ST'|'PM'|'SA'|'KK'|'AG'|'BP'|'PL'|null, ...konteks}`; halaman cangkang dilayani; 503 rapi bila tabel belum ada.
-- **Berkas:** `src/kemitraan.js`, `src/worker.js`, `src/staf.js`, `migrations/0084_staf_peran_kemitraan.sql`, `tests/warga/migrasi_beku.json`, `tests/warga/kemitraan_gerbang.test.mjs`.
-- **Antarmuka:** `export async function hakKm(env, req)`; `export const RUTE_KEMITRAAN`; `lindungi()` pola `src/relawan.js`. Urutan pencarian kode: relawan(+km_anggota) → km_bpbd_kode (berlaku, tidak dicabut) → km_pl_kode. `PERAN.kemitraan` + migrasi 0084 (DROP/CREATE trigger peran staf, preseden 0077). Sub-router `ruteKm(metode, jalur)` (ADR-07) + satu cabang di `rute()` worker. Gerbang situs centurisk97.id dilewati untuk awalan `/kemitraan` dan `/api/kemitraan/`; `tolakOrigin` mengenali `sesi_kemitraan`. Halaman DT §4.2 (isi HTML dari A10; sementara cangkang).
+- **Berkas:** `src/kemitraan.js`, `src/worker.js`, `src/staf.js`, `migrations/0085_staf_peran_kemitraan.sql`, `tests/warga/migrasi_beku.json`, `tests/warga/kemitraan_gerbang.test.mjs`.
+- **Antarmuka:** `export async function hakKm(env, req)`; `export const RUTE_KEMITRAAN`; `lindungi()` pola `src/relawan.js`. Urutan pencarian kode: relawan(+km_anggota) → km_bpbd_kode (berlaku, tidak dicabut) → km_pl_kode. `PERAN.kemitraan` + migrasi 0085 (DROP/CREATE trigger peran staf, preseden 0077). Sub-router `ruteKm(metode, jalur)` (ADR-07) + satu cabang di `rute()` worker. Gerbang situs centurisk97.id dilewati untuk awalan `/kemitraan` dan `/api/kemitraan/`; `tolakOrigin` mengenali `sesi_kemitraan`. Halaman DT §4.2 (isi HTML dari A10; sementara cangkang).
 - **Di luar:** rute fitur (C03, D01, …).
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer`.
 - **Model:** sonnet; guard-api haiku.
@@ -333,7 +333,7 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 #### KM-C03 Rute masalah, kunjungan, jawaban, koreksi
 - **Tujuan:** API DT §4.3 baris masalah/kunjungan/jawaban/koreksi + `skor_bpbd` + Jaccard saran gabung.
 - **Berkas:** `src/kemitraan_masalah.js`, `src/kemitraan_hitung.js`, `src/kemitraan.js` (daftar rute), `tests/warga/kemitraan_masalah.test.mjs`.
-- **Antarmuka:** `ALUR_MASALAH` = trigger 0080; tulis `km_jejak` tiap ubah; jawaban idempoten; konfirmasi → `tervalidasi` (ALUR §2.5.3); `masalah/ambil` membekukan bukti dari `public/data/kemitraan/daerah/<kab4>.json` (dibaca lewat `env.ASSETS`).
+- **Antarmuka:** `ALUR_MASALAH` = trigger 0081; tulis `km_jejak` tiap ubah; jawaban idempoten; konfirmasi → `tervalidasi` (ALUR §2.5.3); `masalah/ambil` membekukan bukti dari `public/data/kemitraan/daerah/<kab4>.json` (dibaca lewat `env.ASSETS`).
 - **Pengerja / pemeriksa:** `warga-api` / `guard-api`, `security-reviewer`.
 - **Model:** sonnet. **Dependensi:** A05, A09. **Paralel dengan:** D01, D05. **Isolasi:** worktree ya.
 - **Selesai bila:** RU §2.4 baris masalah; E3 sebagian (tanpa layar).
@@ -691,7 +691,7 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Rujukan:** pola `data/kajian-bnpb/pipa/PENYELARASAN.md`. **Ukuran:** M
 
 #### KM-H07 Commit, migrasi produksi, terbit [induk]
-- **Tujuan:** sesi induk meng-commit per gelombang dengan path spesifik; pemilik menerapkan migrasi 0079–0083 ke D1 produksi; secret `KM_PIPA_TOKEN`; tab "Kemitraan" untuk staf; terbit lewat `terbit.yml`.
+- **Tujuan:** sesi induk meng-commit per gelombang dengan path spesifik; pemilik menerapkan migrasi 0080–0084 ke D1 produksi; secret `KM_PIPA_TOKEN`; tab "Kemitraan" untuk staf; terbit lewat `terbit.yml`.
 - **Bukti:** `npm run uji:warga && npm run uji:agen && npm run uji:layar` hijau sebelum push; `npx wrangler d1 migrations apply poskowarga --remote -c wrangler.jsonc` (pemilik).
 - **Ukuran:** S
 
@@ -720,8 +720,8 @@ Tiket menunggu tanda panah lintas-jalur (`⇐`) sebelum mulai.
 | Jalur | Pengerja | Berkas yang dipegang | Urutan tiket |
 | --- | --- | --- | --- |
 | I | sesi induk / mekanik-mesin | roster, workflow, AGENTS.md | A01 → B05 (⇐ B04, C02) → C12 (⇐ C07, C08) → H07 |
-| M | warga-api (migrasi) | `migrations/0079–0083`, uji skema | A04 → A05 → A06 → A07 → A08 |
-| W | warga-api (worker) | `src/kemitraan*.js`, `src/worker.js`, `src/staf.js`, `src/pengingat.js`, `migrations/0084` | A09 (⇐ A04) → D05 → D01 → C03 (⇐ A05) → C08 (⇐ C07) → E01 (⇐ A06) → E03 → E04 → E05 → F01 (⇐ A07) → F02 → F03-rute → F04 → G01 (⇐ A08) → G02 → H02 → D06 → H01-rute → H03 |
+| M | warga-api (migrasi) | `migrations/0080–0084`, uji skema | A04 → A05 → A06 → A07 → A08 |
+| W | warga-api (worker) | `src/kemitraan*.js`, `src/worker.js`, `src/staf.js`, `src/pengingat.js`, `migrations/0085` | A09 (⇐ A04) → D05 → D01 → C03 (⇐ A05) → C08 (⇐ C07) → E01 (⇐ A06) → E03 → E04 → E05 → F01 (⇐ A07) → F02 → F03-rute → F04 → G01 (⇐ A08) → G02 → H02 → D06 → H01-rute → H03 |
 | P | kampus (pipeline) | `scripts/kemitraan/**`, `scripts/umum/nama_wilayah.py`, `public/data/kemitraan/**` | A02 → A03 → B01 → B02 → B03 → B04 → C01 → C02-py → C06 → C07 → C10a → (C09 manusia) → C10b → E02 (⇐ E01) |
 | L | kampus (layar) | `public/kemitraan*`, `public/kemitraan/**`, `public/inti/kepala.js` | A10 (⇐ A09) → B07 → B06 (⇐ B04) → C02-js/panduan (⇐ C02-py) → C04 (⇐ C03) → C11 (⇐ C08) → C05 → D02 (⇐ D01) → D03 → D04 → B08 → E06 (⇐ E03) → E07 (⇐ E05) → F05 (⇐ F02) → F06 → F03-layar → G03 (⇐ G02) → H01-layar → H05 |
 | G | penulis-gerbang | `tests/kemitraan/gerbang-*`, `cakupan.json`, `package.json` | A11 (⇐ A02) → H04 (⇐ H03) → H06 (⇐ H04, H05) |

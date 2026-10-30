@@ -103,7 +103,7 @@ ulang yang berubah.
 | Neraca air Jawa     | `scripts/air/neraca/**`, `data/kajian-bnpb/neraca-air/**`     | `public/data/neraca_air/*.json`; lokal, iklim ERA5-Land ditarik bertahap (belum ada workflow) | `neraca-air`    |
 | Mesin repo          | `.github/workflows/**`, `package.json`, `scripts/agents/**`   | —                                                   | `mekanik-mesin` |
 | Gerbang             | `tests/agen/**`, `tests/beban/**`                             | `npm run uji:agen`                                  | `penulis-gerbang` |
-| Kemitraan kampus `/kemitraan` | `public/kemitraan*`, `public/kemitraan/**`, `public/data/kemitraan/**`, `scripts/kemitraan/**`, `tests/kemitraan/**` (layar+pipeline); `src/kemitraan*.js`, `migrations/0079-0083` (warga-api) | D1 `km_*`, R2 `kemitraan/`; `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan | `kampus` |
+| Kemitraan kampus `/kemitraan` | `public/kemitraan*`, `public/kemitraan/**`, `public/data/kemitraan/**`, `scripts/kemitraan/**`, `tests/kemitraan/**` (layar+pipeline); `src/kemitraan*.js`, `migrations/0080-0084` (warga-api) | D1 `km_*`, R2 `kemitraan/`; `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan | `kampus` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
 
@@ -133,7 +133,7 @@ pencocokan pakar, riset dan dana, satgas kampus, talenta), baca dokumen di
 4. `ALGORITMA.md`: rumus masalah, pakar, solusi, pertanyaan, skor, uji kejujuran.
 5. `PROFIL-DAERAH.md`: skema profil dan isi buku per bab.
 6. `DESIGN-SYSTEM.md`: tiru `/akademisi`; komponen `.km-*`.
-7. `DESAIN-TEKNIS.md`: berkas, D1 0079–0083, rute, pipeline, ADR.
+7. `DESAIN-TEKNIS.md`: berkas, D1 0080–0084, rute, pipeline, ADR.
 8. `KEAMANAN-PRIVASI.md`: matriks hak, PDP, berkas.
 9. `RENCANA-UJI.md`: kriteria terima dan perintah bukti.
 10. `TIKET.md`: urutan kerja `KM-*`; ambil tiket, kerjakan hanya cakupannya.

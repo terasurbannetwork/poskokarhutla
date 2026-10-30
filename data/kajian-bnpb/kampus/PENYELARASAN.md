@@ -18,7 +18,7 @@ status relawan dan penugasan, `riset_usulan 'disetujui'`, jenis `riset_luaran`, 
 | --- | --- | --- | --- |
 | 1 | tinggi | CHECK tabel di tengah kolom; `UNIQUE … WHERE` di dalam CREATE TABLE | DT §3.1/§3.4/§3.5 diperbaiki; aturan di tiket A04 |
 | 2 | tinggi | `pengingat.jenis` ber-CHECK 9 nilai | ADR-06 `km_pengingat`; PRD F-X2, DT §6.4, H02 |
-| 3 | tinggi | trigger peran staf menolak `kemitraan` | migrasi 0084 DROP/CREATE trigger (A09) |
+| 3 | tinggi | trigger peran staf menolak `kemitraan` | migrasi 0085 DROP/CREATE trigger (A09) |
 | 4 | tinggi | router hanya `:id` di ujung | ADR-07 sub-router `ruteKm` (A09) |
 | 5 | tinggi | gerbang situs centurisk97.id mengunci halaman | awalan `/kemitraan`, `/api/kemitraan/` dilewati; `hakKm` menjaga (A09) |
 | 6 | tinggi | penjaga CPU memakai `Date.now()` | anggaran operasi `KM_MAKS_POSTING` (ALG §4.6, DT §5.2) |
@@ -45,8 +45,8 @@ status relawan dan penugasan, `riset_usulan 'disetujui'`, jenis `riset_luaran`, 
 | 27 | rendah | nama Jakarta Pusat | RU D2 |
 | 28 | rendah | bab 1–8 vs 1–9 | PRD F-M2 |
 | 29 | rendah | status dampingan beda | PRD F-T5 ikut DT |
-| 30 | rendah | `km_aktivasi_meja` tak di DT §2.1 | tercakup di 0082 (DT §3.4) |
-| 31 | rendah | FK km_telaah ke tabel 0082 | `km_pl_kode` pindah ke 0079 |
+| 30 | rendah | `km_aktivasi_meja` tak di DT §2.1 | tercakup di 0083 (DT §3.4) |
+| 31 | rendah | FK km_telaah ke tabel 0083 | `km_pl_kode` pindah ke 0080 |
 | 32 | rendah | kepala.js dan package.json tanpa tiket | A10, A11 |
 | 33 | rendah | `tolakOrigin` tak kenal cookie baru | A09 |
 | 34 | rendah | warna udara bentrok | #9c36b5 |
