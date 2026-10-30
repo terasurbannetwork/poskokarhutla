@@ -54,7 +54,7 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-kdaftar button:hover{background:var(--surface)}
 .ak-kdaftar button[aria-selected="true"]{background:#e7f1ff;color:#0b3d91;font-weight:800;box-shadow:inset 3px 0 0 #1c7ed6}
 :root[data-theme="dark"] .ak-kdaftar button[aria-selected="true"]{background:oklch(35% .08 255);color:#fff}
-.ak-kdaftar button > span:not(.ak-klogo){flex:1;min-width:0}
+.ak-kdaftar button > span:not(.ak-klogo):not(.ak-bw){flex:1;min-width:0}
 .ak-kdaftar button small{margin-left:auto;flex:none;color:var(--ink2);font-weight:700;font-variant-numeric:tabular-nums;font-size:12px;background:var(--surface);border-radius:999px;padding:2px 9px}
 .ak-kdaftar button[aria-selected="true"] small{background:#fff;color:#0b3d91}
 .ak-kdaftar[aria-multiselectable="true"] button::before{content:"";flex:none;width:17px;height:17px;border:1.5px solid #9aa4b2;border-radius:5px;background:var(--card)}
@@ -2246,3 +2246,16 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 /* batang terpilih: sorot latar lembut + garis kiri, bukan bingkai yang saling bertabrakan */
 .ak-br.ak-bsel,[data-bar].ak-bsel{outline:none!important;background:#e8effb!important;box-shadow:inset 3px 0 0 var(--brand,#14284b)!important;border-radius:8px}
 .ak-bars{row-gap:4px}
+
+/* N2 pil lokasi kampus */
+.ak-kaksi a.ak-ptl-lok:hover{background:oklch(100% 0 0 / .22)}
+/* N1 batang rumpun kampus terpilih */
+[data-kpt]{cursor:pointer}
+
+/* pemilih kampus/lembaga: teks kecil, logo+bintang tidak melebar */
+.ak-kdaftar button{font-size:12.5px;font-weight:500;gap:9px;min-height:34px;padding:4px 8px;line-height:1.25}
+.ak-kdaftar button[aria-selected="true"]{font-weight:700}
+.ak-kdaftar .ak-bw{flex:none}
+.ak-kdaftar .ak-bw .ak-bintang{width:14px;height:14px;top:-4px;right:-5px}
+.ak-kdaftar .ak-bw .ak-bintang svg{width:10px;height:10px}
+.ak-kdaftar button small{font-size:11px;padding:1px 7px}
