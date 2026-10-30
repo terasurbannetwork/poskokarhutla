@@ -40,8 +40,8 @@ jobs:
 
       - name: Unduh berkas R2 saat ini
         env:
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "CLOUDFLARE_API_TOKEN belum dipasang"; exit 1; }
           mkdir -p "$RUNNER_TEMP/kerja"
@@ -55,8 +55,8 @@ jobs:
       - name: Unggah hasil, cadangan, dan laporan
         if: env.DRY != 'true'
         env:
-        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
-        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
         run: |
           K="$RUNNER_TEMP/kerja"; TGL=$(date -u +%F); BULAN=$(date -u +%Y-%m)
           put() { npx --yes wrangler@4.42.0 r2 object put "poskokarhutla-foto/$1" --file "$2" --content-type application/json --remote; }
