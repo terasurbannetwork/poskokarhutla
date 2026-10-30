@@ -25,7 +25,7 @@ const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
 /* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),
    omc = PERAN_BACA (src/omc.js), posko = P_KONSESI. Dijaga tests/warga/staf_halaman.test.mjs. */
 /* semua peran staf (sama dengan Object.keys(PERAN) di src/staf.js; dijaga tests/warga/sla.test.mjs): hak baca Kinerja pemantauan = adminOK ATAU sesi staf dengan peran apa pun, dipakai halaman /admin/kinerja DAN GET /api/sla */
-export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan"];
+export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan"];   // sengaja TANPA kemitraan: peran modul Kemitraan Kampus tidak membuka /admin/kinerja dan /api/sla
 export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, omc: ["tmc", "koordalops", "pimpinan"], posko: ["analis_konsesi"],
   pipa: ["pusdalops", "koordalops", "pimpinan"]};   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
 /* halaman yang dibuka sekumpulan peran staf: [{k, ikon, label}] (layar /admin/akun menampilkannya sebagai "Akses") */
@@ -175,8 +175,8 @@ ${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/insta
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 
 /* SIPPA (/pipa): cangkang staf dibangkitkan worker dari string, bukan berkas .html di public/ (ADR-12): .html di public/ bisa dibuka langsung dan di host publik tanpa CSP halaman.
-   Isi layar di public/pipa/*.js (kode dan teks, tanpa data). CSP_SIPPA = CSP_ADMIN dengan tiga penggantian: peta openfreemap dan worker blob (DESAIN-TEKNIS SIPPA §4.2). */
-export const CSP_SIPPA = CSP_ADMIN.replace("img-src 'self' data:", "img-src 'self' data: blob: https://*.openfreemap.org").replace("connect-src 'self'", "connect-src 'self' https://*.openfreemap.org") + "; worker-src 'self' blob:";
+   Isi layar di public/pipa/*.js (kode dan teks, tanpa data). CSP_SIPPA = CSP_ADMIN dengan tiga penggantian: peta openfreemap, rute OSRM untuk /pipa/kunjungan (keputusan 64, izin pemilik 30 Okt 2026), dan worker blob (DESAIN-TEKNIS SIPPA §4.2). */
+export const CSP_SIPPA = CSP_ADMIN.replace("img-src 'self' data:", "img-src 'self' data: blob: https://*.openfreemap.org").replace("connect-src 'self'", "connect-src 'self' https://*.openfreemap.org https://router.project-osrm.org") + "; worker-src 'self' blob:";
 export const halamanSippa = (layar, ctx) => `<!doctype html>
 <html lang="id">
 <head>

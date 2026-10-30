@@ -14,8 +14,8 @@ import {aksesStaf, halamanAkun} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, SESI_UMUR = 30 * HARI, COOKIE = "sesi_staf";
-/* daftar tetap: sama dengan trigger staf_larik_sah di 0030 dan public/admin/pantau.js (dijaga pantau.test.mjs) */
-export const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan"};
+/* daftar tetap: sama dengan trigger staf_larik_sah (0030, dibuat ulang 0085) dan public/admin/pantau.js (dijaga pantau.test.mjs) */
+export const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan", kemitraan: "Kemitraan kampus"};
 export const P_VALIDASI = ["verifikator", "pusdalops"], P_KONSESI = ["analis_konsesi"];
 const RE_NIP = /^[0-9A-Za-z .\/-]{5,30}$/;
 const SESI = new WeakMap();   // permintaan -> baris staf yang lolos stafSesi (dibaca dalamWilayahStaf tanpa query ulang)

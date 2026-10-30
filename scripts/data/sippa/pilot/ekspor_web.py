@@ -116,6 +116,8 @@ data = {"acuan": C.ACUAN, "kalteng": C.R["kalteng48"], "kab": C.R["kab"][:2], "g
         "cek_gambut": UMUM["cek_gambut"], "putus": UMUM["putus"], "uji": UMUM["uji"], "selamat": UMUM["selamat"],
         "kerja": UMUM["kerja"], "warna": C.WARNA, "lokasi": lokasi, "alat": [{**a, "svg": tanpa_style(a["svg"])} if "svg" in a else a for a in alat]}
 if C.GENERIK:
+    if C.KUNJ:
+        data["kunjungan"] = C.KUNJ     # rencana kunjungan lengkap dengan tautan Google Maps (keputusan SIPPA 64)
     teks = json.dumps(data, ensure_ascii=False, separators=(",", ":")).replace("titik api", "titik panas").replace("Titik api", "Titik panas")
     open(f"{KELUAR}/data.json", "w").write(teks)
     print("data.json", len(teks) // 1024, "KB; gambar", len(os.listdir(IMG)), "berkas")

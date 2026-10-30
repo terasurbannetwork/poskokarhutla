@@ -12,7 +12,7 @@ import {P_SIPPA_BACA, P_SIPPA_TULIS, LAYAR_SIPPA, ALASAN_TRANSISI, RANTAI_DUMMY,
 import {HALAMAN_STAF} from "../../src/admin_halaman.js";
 import {FORMULIR_VERSI} from "../../public/pipa/formulir.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
 const U = await siapkan("uji-sippa", {r2: true}), {mf, DB, api} = U;
 const R2 = await mf.getR2Bucket("MEDIA");
@@ -51,9 +51,9 @@ const foto = async (kode, bytes = JPEG_SAH, h = {}) => {
 };
 
 /* ---------------------------------------------------------------- konstanta dan skema bersama */
-uji("konstanta: peran, 14 layar, alasan transisi = pasangan CHECK 0056, hak halaman staf = P_SIPPA_BACA", () => {
+uji("konstanta: peran, 15 layar, alasan transisi = pasangan CHECK 0056, hak halaman staf = P_SIPPA_BACA", () => {
   assert.deepEqual(P_SIPPA_BACA, ["pusdalops", "koordalops", "pimpinan"]); assert.deepEqual(P_SIPPA_TULIS, ["pusdalops", "koordalops"]);
-  assert.deepEqual(LAYAR_SIPPA, ["peta", "hitung", "pemicu", "kit", "log", "ab", "studio", "3d", "telemetri", "laporan", "data", "pelihara", "air", "akses"]);
+  assert.deepEqual(LAYAR_SIPPA, ["peta", "hitung", "pemicu", "kit", "log", "ab", "studio", "3d", "telemetri", "laporan", "data", "pelihara", "air", "akses", "kunjungan"]);
   assert.deepEqual(HALAMAN_STAF.pipa, P_SIPPA_BACA, "HALAMAN_STAF.pipa harus sama dengan hak API (satu sumber)");
   const sql = teks("migrations/0056_sippa_inti.sql"), blok = sql.match(/dari_status \|\| '>' \|\| ke_status IN \(([\s\S]*?)\)\),/)[1];
   const check = [...blok.matchAll(/'([a-z]+>[a-z]+)'/g)].map(m => m[1]).sort();
@@ -668,6 +668,13 @@ uji("SP-052: rantai dummy tiap layar menunjuk pengisi yang ada; A/B dummy member
   const r = (await DB.prepare("SELECT * FROM sippa_petak WHERE aoi = 'DUMMY-AOI' AND dummy = 1").all()).results, per = l => r.filter(x => x.lengan === l).map(x => ({...x, tanggal_perlakuan: "2027-01-01"}));
   assert.deepEqual(["konvensional", "lance", "lance_surfaktan", "sekat_rewetting"].map(l => per(l).length), [10, 10, 6, 8]);
   assert.deepEqual(["lance", "lance_surfaktan", "sekat_rewetting"].map(l => vonisG4(per(l), per("konvensional")).vonis), ["LULUS", "BELUM BISA DIPUTUS", "TIDAK LULUS"], "tanggal digeser lewat pilot_sampai supaya vonis keluar");
+});
+uji("dummy layar kunjungan: isiRenlap membuat 3 renlap dummy, ulang 409, staf nyata tidak melihatnya, admin melihat", async () => {
+  await DB.prepare("DELETE FROM sippa_renlap WHERE dummy = 1").run();
+  const d = await sip("POST", "/dummy/isi", {layar: "kunjungan"}, ADMIN); assert.equal(d.s, 200, d.t); assert.equal(d.j.dibuat.sippa_renlap, 3);
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "kunjungan"}, ADMIN)).s, 409);
+  assert.ok(!(await sip("GET", "/renlap", undefined, pim.h)).j.renlap.some(r => r.status === "gagal" && r.galat?.startsWith("dummy")), "dummy tersaring dari staf nyata");
+  assert.ok((await sip("GET", "/renlap", undefined, ADMIN)).j.renlap.some(r => r.status === "gagal"), "admin melihat dummy");
 });
 uji("POST /api/sippa/ab-status/:id: moderator 200 ke ditinjau_evaluator (idempoten), pusdalops 403, status liar 400, id acak 404, tamu 401; laju 20", async () => {
   const id = (await DB.prepare("SELECT id FROM sippa_ab_unggah WHERE dummy = 0 LIMIT 1").first()).id, j0 = await jejak();

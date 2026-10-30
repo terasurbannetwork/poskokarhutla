@@ -1,0 +1,19 @@
+/* SIPPA: gaya layar Rencana kunjungan. Warna hanya dari token. */
+.kj-grid{display:grid;grid-template-columns:minmax(300px,380px) minmax(0,1fr);gap:var(--sp-4);align-items:start}
+.kj-kolom{display:grid;gap:var(--sp-3);min-width:0}
+.kj-peta{position:relative;height:320px;border:1px solid var(--line);border-radius:var(--r,8px);overflow:hidden}
+.kj-peta.maplibregl-map{position:relative}
+.kj-form{grid-template-columns:repeat(3,1fr)}
+.kj-form .kj-cek{grid-column:1/-1;display:flex;align-items:center;gap:8px;font-weight:500}
+.kj-form input[type=number]{width:100%}
+.kj-aksi{display:inline-flex;flex-wrap:wrap;gap:var(--sp-2)}
+.kj-aksi a,.sp-aksi a.ad-tombol{display:inline-flex;align-items:center;text-decoration:none;color:inherit}
+.kj-ringkas{display:grid;gap:var(--sp-3);grid-template-columns:repeat(auto-fit,minmax(280px,1fr))}
+.kj-tim{border:1px solid var(--line);border-left-width:5px;border-radius:var(--r,8px);padding:var(--sp-3)}
+.kj-tim h3{margin:0 0 4px;font-size:15px}
+.kj-tim ul{margin:0;padding-left:18px;display:grid;gap:8px}
+.kj-t0{--tim:var(--ok)}.kj-t1{--tim:var(--info)}.kj-t2{--tim:var(--warn)}.kj-t3{--tim:var(--bad)}
+.kj-tim{border-left-color:var(--tim)}
+.kj-penanda{display:grid;place-items:center;width:26px;height:26px;border-radius:50%;background:var(--tim);color:#fff;font:700 12px/1 var(--display,inherit);border:2px solid #fff;box-shadow:0 1px 4px color-mix(in srgb,#000 40%,transparent)}
+.kj-tabel td small{color:var(--ink3)}
+@media (max-width:900px){.kj-grid{grid-template-columns:minmax(0,1fr)}.kj-peta{height:260px}.kj-form{grid-template-columns:1fr 1fr 1fr}}

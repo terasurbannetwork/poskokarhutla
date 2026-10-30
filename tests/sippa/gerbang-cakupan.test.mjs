@@ -137,7 +137,7 @@ test("penolakan: kunci yang sudah tidak ada di kode dilaporkan basi", () => {
 
 test("penolakan: modul layar tanpa layar terdaftar, dan layar tanpa modul melewati batas, dilaporkan", () => {
   assert.match(periksa(reg, {...temuan, layar: [...temuan.layar, "hantu"]}, baris, {LAYAR}).layar[0], /layar_hantu\.js tanpa layar "hantu"/);
-  assert.match(periksa(reg, {...temuan, layar: []}, baris, {LAYAR, batasLayarBelum: 11}).layar[0], /^16 layar tanpa modul > batas 11/);
+  assert.match(periksa(reg, {...temuan, layar: []}, baris, {LAYAR, batasLayarBelum: 11}).layar[0], /^17 layar tanpa modul > batas 11/);
 });
 
 test("penolakan: BATAS_ANTRE tidak naik di atas jumlah antre registri saat ini", () => {

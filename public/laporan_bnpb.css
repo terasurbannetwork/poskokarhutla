@@ -54,3 +54,12 @@
 .lb-layar-msg[hidden]{display:none}
 .lb-layar-stage{position:absolute;left:50%;top:50%;transform-origin:50% 50%}
 @media (max-width:1100px){.lb-badan{grid-template-columns:1fr}.lb-isian{position:static;max-height:none}}
+.lb-bl{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:14px 16px;box-shadow:var(--shadow);margin-bottom:14px}
+.lb-bl[hidden]{display:none}
+.lb-bl h2{margin:0 0 4px;font:700 15px var(--font);color:var(--ink)}
+.lb-bl-sub{margin:0 0 8px;font-size:12px;color:var(--ink2)}
+.lb-bl-tab{width:100%}
+.lb-bl-tab th{text-align:center}
+.lb-bl-tab td{text-align:right;padding:4px 8px;font-size:12px;font-variant-numeric:tabular-nums}
+.lb-bl-tab td.kiri{text-align:left}
+.lb-bl-tab tr[hidden]{display:none}

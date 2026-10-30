@@ -1,11 +1,13 @@
 /* /prediksi fase 2: konfirmasi lapangan (docs/prediksi/RANCANGAN.md). Skema: migrations/0079_prediksi_konfirmasi.sql.
    - POST /api/prediksi/konfirmasi: header x-kode-regu (pola posko.js lapor) ATAU sesi staf (adminOK). Upsert per (kab, tanggal, kode, pelapor).
-   - GET /api/prediksi/konfirmasi?sejak=YYYY-MM-DD: Bearer PIPA_TOKEN (pipa.js). Gabung baris regu + laporan warga (positif saja, sumber 'warga').
+   - GET /api/prediksi/konfirmasi?sejak=YYYY-MM-DD: Bearer PIPA_TOKEN (pipa.js). Gabung baris regu + groundcheck karhutla (sumber 'groundcheck') + laporan warga
+     (positif saja, sumber 'warga'). Satu kab-tanggal-kode bisa punya beberapa baris (tiap regu, groundcheck): pemakai yang menggabungkan.
    ponytail: kab = nama/kode 2-80 karakter sebebas laporan_wilayah.kab; pipeline yang menormalkan ke 514 kab. Pencocokan warga lewat nama (tanpa huruf besar). */
 import {json, gagal, adminOK, bacaBody} from "./worker.js";
 import {reguDari, tx, num, tglSah, wib} from "./posko.js";
 import {lajuIP} from "./bnpb.js";
 import {periksaToken} from "./pipa.js";
+import {KECUALI_LAIN, tanpaBencana, tanpaTabel, JAUH_KM} from "./instansi.js";
 
 const HARI = 864e5, KODE = ["HJN", "API", "BNJ", "LSR", "ASP", "ROB"];
 const RE_KAB = /^[\p{L}\p{N}][\p{L}\p{N} .,'()\/-]{1,79}$/u;
@@ -32,6 +34,22 @@ async function konfirmasi(env, req, url, kini = Date.now()) {
   return json({ok: true});
 }
 
+/* groundcheck tugas api (akun instansi dan petugas /lacak): api terlihat di lokasi = konfirmasi api_ada, atau kabar menyala/bara (kabar baru boleh sesudah
+   api_ada), per kab-tanggal WIB KUNJUNGAN (waktu GPS; isian luring bisa diterima server berjam-jam kemudian). Positif saja: "bukan api" atau "sudah padam"
+   di satu titik tidak membuktikan sekabupaten tanpa api. Hanya yang berfoto dekat (<= JAUH_KM) dan GPS tidak curiga: tautan /lacak yang diteruskan tidak
+   menjadi label. Karhutla saja (tugas_bencana), tanpa tugas, isian, atau akun dummy, tanpa nama/WA/koordinat. Tabel 0029/0047 belum ada = tanpa baris/saringan.
+   BUKAN label skor API (tugas hanya lahir di kab yang sudah punya hotspot): lihat RANCANGAN.md fase 2. */
+const SQL_GC = saring => `SELECT t.prov, t.kab, date(coalesce(i.waktu_gps, i.dibuat) / 1000 + 25200, 'unixepoch') tanggal FROM tugas_isian i
+  JOIN tugas_api t ON t.id = i.tugas_id JOIN instansi_akun a ON a.id = i.akun_id
+  WHERE coalesce(i.waktu_gps, i.dibuat) >= ? AND i.dummy = 0 AND t.dummy = 0 AND a.dummy = 0 AND i.jarak_km <= ${JAUH_KM} AND i.gps_curiga IS NULL
+    AND ((i.langkah = 'konfirmasi' AND i.hasil = 'api_ada') OR (i.langkah = 'tindakan' AND i.status_api IN ('menyala', 'bara'))) ${saring}
+  GROUP BY 1, 2, 3 ORDER BY 3, 1, 2 LIMIT 5000`;
+async function groundcheck(env, ms) {
+  const ambil = s => env.DB.prepare(SQL_GC(s)).bind(ms).all().then(r => r.results);
+  try { return await ambil(KECUALI_LAIN); }
+  catch (e) { if (tanpaBencana(e)) return ambil(""); if (tanpaTabel(e)) return []; throw e; }
+}
+
 async function baca(env, req, url, kini = Date.now()) {
   const tolak = await periksaToken(env, req); if (tolak) return tolak;
   const sejak = url.searchParams.get("sejak") || wib(kini - 7 * HARI);
@@ -41,10 +59,12 @@ async function baca(env, req, url, kini = Date.now()) {
   const w = (await env.DB.prepare(`SELECT w.kab, date(l.dibuat / 1000 + 25200, 'unixepoch') tanggal, l.bahaya FROM laporan l JOIN laporan_wilayah w ON w.laporan_id = l.id
     WHERE w.kab IS NOT NULL AND l.disembunyikan = 0 AND l.dibuat >= ? AND l.bahaya IN ('karhutla','banjir','longsor','rob','cuaca','udara') GROUP BY 1, 2, 3 LIMIT 5000`)
     .bind(Date.parse(sejak + "T00:00:00+07:00")).all()).results;
-  const ada = new Set(regu.map(r => [r.kab.toLowerCase(), r.tanggal, r.kode].join("|")));
+  const gc = (await groundcheck(env, Date.parse(sejak + "T00:00:00+07:00"))).map(r => ({prov: r.prov, kab: r.kab, tanggal: r.tanggal, kode: "API", terjadi: 1, nilai: null, catatan: null, sumber: "groundcheck"}));
+  /* warga positif lemah: tidak ditambahkan bila kab-tanggal-kode itu sudah dijawab regu atau groundcheck */
+  const kunci = r => [r.kab.toLowerCase(), r.tanggal, r.kode].join("|"), ada = new Set([...regu, ...gc].map(kunci));
   const warga = w.map(r => ({kab: r.kab, tanggal: r.tanggal, kode: BAHAYA_KODE[r.bahaya], terjadi: 1, nilai: null, catatan: null, sumber: "warga"}))
-    .filter(r => !ada.has([r.kab.toLowerCase(), r.tanggal, r.kode].join("|")));
-  return json({sejak, konfirmasi: [...regu, ...warga]}, 200, {"cache-control": "no-store"});
+    .filter(r => !ada.has(kunci(r)));
+  return json({sejak, konfirmasi: [...regu, ...gc, ...warga]}, 200, {"cache-control": "no-store"});
 }
 
 export const RUTE_PREDIKSI = {

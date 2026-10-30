@@ -6,7 +6,7 @@ import assert from "node:assert/strict";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";
 
-const JAM = 3600e3, MENIT = 60e3, PB = {"x-pb": "1"};
+const JAM = 3600e3, MENIT = 60e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 const U = await siapkan("uji-staf-keamanan", {r2: true});
 const {DB, api, n} = U;

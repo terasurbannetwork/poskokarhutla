@@ -6,7 +6,7 @@ import {randomBytes} from "node:crypto";
 import "../../src/worker.js";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 
-const JAM = 3600e3, PB = {"x-pb": "1"}, uji = berantai(), id16 = () => randomBytes(8).toString("hex");
+const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai(), id16 = () => randomBytes(8).toString("hex");
 const U = await siapkan("uji-banjir-surut"), {DB, api} = U;
 let ipN = 0; const SANDI = "SandiUji23456789";
 async function akun(username) {

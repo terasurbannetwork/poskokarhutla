@@ -9,7 +9,7 @@ import {AKAR} from "./_bantu.mjs";
 import "../../src/worker.js";
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 
-const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, SUPER = {"x-admin-token": "rahasia-admin"};
+const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, SUPER = {"x-admin-token": "rahasia-admin"};
 const uji = berantai(), b64 = b => Buffer.from(b).toString("base64url");
 const {privateKey} = generateKeyPairSync("ec", {namedCurve: "prime256v1"}), jwk = privateKey.export({format: "jwk"});
 const KUNCI = {VAPID_PUBLIK: b64(Buffer.concat([Buffer.from([4]), Buffer.from(jwk.x, "base64url"), Buffer.from(jwk.y, "base64url")])), VAPID_PRIVAT: jwk.d, VAPID_SUBJEK: "mailto:pemilik@contoh.id"};

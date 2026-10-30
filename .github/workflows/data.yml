@@ -506,6 +506,7 @@ jobs:
         run: |
           python3 scripts/umum/logbook_bnpb.py uji && python3 scripts/umum/logbook_bnpb.py || echo "::warning title=logbook_bnpb::gagal; berkas lamanya dibiarkan"
           python3 scripts/data/uji_logbook_karhutla.py uji && python3 scripts/data/uji_logbook_karhutla.py || echo "::warning title=uji_logbook_karhutla::gagal"
+          python3 scripts/data/belum_lapor.py uji && python3 scripts/data/belum_lapor.py || echo "::warning title=belum_lapor::gagal"
 
       # Banjir & longsor vs logbook butuh hujan ERA5 2026 (Open-Meteo archive, berkuota): seminggu sekali (Senin UTC), cache
       # sendiri, tiap minggu menambah kab yang dinilai. Hasil lama dibiarkan bila gagal.

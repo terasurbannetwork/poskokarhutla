@@ -872,9 +872,9 @@ async function halamanDaftar(env, url) {
 /* ================================================================ rute */
 /* digabung ke RUTE di src/worker.js. Auth: "-" publik, "kode" = x-kode (relawan atau koordinator), "mod" = modOK, "super" = superOK.
    Migrasi diterapkan manual di produksi: tabel belum ada -> 503, bukan 500. */
-const lindungi = rute => Object.fromEntries(Object.entries(rute).map(([k, f]) => [k, async (...a) => {
+export const lindungi = (rute, pesan = "fitur relawan belum diaktifkan (migrasi 0022/0023 belum diterapkan)", log = null) => Object.fromEntries(Object.entries(rute).map(([k, f]) => [k, async (...a) => {
   try { return await f(...a); }
-  catch (e) { if (/no such table/i.test(e?.message || "")) return gagal(503, "fitur relawan belum diaktifkan (migrasi 0022/0023 belum diterapkan)"); throw e; }
+  catch (e) { if (/no such table/i.test(e?.message || "")) { if (log) console.error(log, e.message); return gagal(503, pesan); } throw e; }
 }]));
 export const RUTE_RELAWAN = lindungi({
   "GET /relawan": (env, req, url) => halamanDaftar(env, url),

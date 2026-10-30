@@ -10,7 +10,7 @@ import {siapkan, berantai} from "./_bnpb.mjs";
 import {saring, gabung, panenAdsb, ringkasHarian, bersihkanAdsb, LINGKARAN, BATAS_BARIS} from "../../src/adsb.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, uji = berantai();
-const SQL = readFileSync(path.join(AKAR, "migrations/0085_adsb_posisi.sql"), "utf8");
+const SQL = readFileSync(path.join(AKAR, "migrations/0086_adsb_posisi.sql"), "utf8");
 const hex = n => n.toString(16).padStart(6, "0");
 const pesawat = (n, o = {}) => ({hex: hex(n), lat: -2, lon: 114, alt_baro: 3000, gs: 100, t: "C172", flight: "PKABC ", ...o});
 let permintaan = [], respons = () => ({ac: []});

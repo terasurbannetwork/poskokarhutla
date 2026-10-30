@@ -4,7 +4,7 @@ import assert from "node:assert/strict";
 import {randomBytes} from "node:crypto";
 import {siapkan, berantai, ADMIN, GERBANG, sha256} from "./_bnpb.mjs";
 
-const uji = berantai(), PB = {"x-pb": "1"};
+const uji = berantai(), PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const U = await siapkan("uji-drone"), {api} = U;
 const man = async (j, h = {}) => { const r = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h, redirect: "manual"}); return {s: r.status, h: r.headers, t: await r.text()}; };
 let ip = 0;

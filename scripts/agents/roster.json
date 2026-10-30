@@ -551,6 +551,31 @@
       ]
     },
     {
+      "nama": "kampus",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul Kemitraan Kampus (/kemitraan): profil daerah semua bencana + buku cetak, masalah otomatis dan belanja masalah BPBD, pencocokan pakar BM25 + paper + kutipan solusi, generator pertanyaan pendataan dan riset, layar 8 tampilan tiru /akademisi, pipeline scripts/kemitraan.",
+      "kapan": "public/kemitraan*, public/kemitraan/**, public/data/kemitraan/**, scripts/kemitraan/**, tests/kemitraan/**, tests/bnpb/kemitraan_*, atau dokumen data/kajian-bnpb/kampus disentuh atau rusak",
+      "fokus": [
+        "Baca dulu data/kajian-bnpb/kampus/ urut otoritas AGENTS.md §2.2; ambil satu tiket TIKET.md, kerjakan hanya cakupannya",
+        "Rupa tiru /akademisi: token inti/tema.css, kelas .ak-* ditautkan, komponen baru .km-* (DESIGN-SYSTEM.md)",
+        "Kunci kab = kode IRBI 4 digit lewat public/data/kemitraan/kode.json; tiap angka bersumber+bertanggal, null bukan nol; bobot hanya di konst.py = konst.js"
+      ],
+      "larangan": "Jangan menyentuh src/** dan migrations/** (milik warga-api) atau .github/workflows (milik mekanik-mesin). Data pakar (nama dosen, email, id OpenAlex) tidak pernah ditulis ke public/ atau git. Tanpa LLM, tanpa kiriman otomatis ke luar.",
+      "bisa": "membangun pipeline profil daerah, masalah, korpus+indeks+cocok pakar, generator pertanyaan, dan layar /kemitraan beserta ujinya",
+      "tidak": "worker, D1, migrasi, workflow; modul akademisi; keputusan di KEPUTUSAN-KAMPUS.md",
+      "milik": [
+        "public/kemitraan.html",
+        "public/kemitraan.css",
+        "public/kemitraan/**",
+        "public/data/kemitraan/**",
+        "scripts/kemitraan/**",
+        "tests/kemitraan/**",
+        "tests/bnpb/kemitraan_*",
+        "data/kajian-bnpb/kampus/**"
+      ]
+    },
+    {
       "nama": "prediksi",
       "kelas": "pengerja",
       "model": "sonnet",

@@ -9,7 +9,7 @@ import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 const U = await siapkan("uji-inv-perbaikan", {r2: true});
 const {DB, api, mf} = U;

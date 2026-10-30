@@ -11,7 +11,7 @@ import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), uru
 import {JENIS_GARIS, JENIS_SUMBER, KONDISI_SUMBER, STATUS_PERIODE, PRIORITAS, ALASAN_PATROLI, STATUS_PATROLI, TRANSISI, hitungEstafet, bedaTinggiM, susutBar100m, nilaiDropTertunda, luasHa, panjangKm, douglasPeucker, uraiCsv, nilaiSatuDrop} from "../../src/operasi_lapangan.js";
 import {BARANG} from "../../src/meja_spek.js";
 
-const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
+const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 let R2g; const env0 = () => ({DB: U.DB, MEDIA: R2g});   // env minimal untuk memanggil fungsi cron langsung
 const dekat = (a, b, tol, pesan) => assert.ok(Math.abs(a - b) <= tol, `${pesan ?? ""} ${a} bukan ${b} +- ${tol}`);

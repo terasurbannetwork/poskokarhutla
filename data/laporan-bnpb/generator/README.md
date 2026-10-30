@@ -40,6 +40,22 @@ python3 harian.py --tanggal 2026-10-25 --koordalops wa_koordalops.txt --bmkg wa_
 - Butuh `FIRMS_MAP_KEY` (env atau `.env` repo), node + playwright (peta dan ikon), soffice (PDF).
 - Keluaran: `<out>/Laporan Kejadian Bencana Harian DDMMYY.pptx` dan `.pdf`; berkas antara di `<out>/kerja-DDMMYY/` (data.json, peta.png).
 
+**Menjalankan di Windows** (disiapkan 30 Okt 2026):
+
+- Python 3.12 ke atas (`C:\Python314\python`); f-string di `harian.py` tidak terbaca Python 3.11. Jalankan dengan `PYTHONUTF8=1`,
+  karena teks WA berisi karakter Unicode dan `open()` di Windows bawaannya cp1252.
+- Playwright: `pw.mjs` mencari modul di `PLAYWRIGHT_MJS`, path Mac lama, lalu `cache/node/node_modules/playwright-core`
+  (pasang sekali: `npm i --prefix cache/node playwright-core@1.52.0`), dan browser di `CHROMIUM_SHELL`, headless shell
+  ms-playwright, atau Chrome/Edge terpasang.
+- PDF: `pdf.py` memakai soffice bila ada, kalau tidak PowerPoint lewat COM (`python pdf.py <berkas.pptx>`).
+- `jalan.py` harian memanggil FIRMS dengan kunci `'publik'` (cache/raw diisi manual di Mac); tanpa cache itu `satelit.py` menarik
+  dengan `FIRMS_MAP_KEY` dari `.env`.
+
+```powershell
+$env:PYTHONUTF8=1; C:\Python314\python data\laporan-bnpb\harian-2026-10-29\jalan.py
+C:\Python314\python data\laporan-bnpb\generator\pdf.py "data\laporan-bnpb\harian-2026-10-29\Laporan Kejadian Bencana Harian 291026.pptx"
+```
+
 Aturan pemilik yang dikunci di kode: status karhutla ikut sisa belum padam data kita; provinsi berstatus Prioritas di website wajib masuk;
 perlu perhatian semua jenis; luas karhutla hanya angka kita; tiap pil berikon; panel setinggi isinya; tanpa titik tengah dan em dash.
 **Halaman banjir** (slide 4, sebelum penutup; sisipan otomatis bila ada data): status banjir per provinsi, kejadian aktif, titik rob Waspada atau lebih,

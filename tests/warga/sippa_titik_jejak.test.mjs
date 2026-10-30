@@ -5,7 +5,7 @@ import assert from "node:assert/strict";
 import {siapkan, berantai, ADMIN, MOD2} from "./_bnpb.mjs";
 import "../../src/worker.js";
 
-const JAM = 3600e3, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const KEP_V = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
 const tgl = t => new Date(t).toISOString().slice(0, 10), jm = t => new Date(t).toISOString().slice(11, 16).replace(":", "");
 let BARIS = [];   // baris CSV VIIRS_SNPP_NRT putaran berjalan

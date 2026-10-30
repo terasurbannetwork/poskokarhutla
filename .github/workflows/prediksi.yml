@@ -31,6 +31,18 @@ jobs:
         run: |
           for s in catat nilai kalibrasi terbit; do python3 scripts/prediksi/$s.py uji; done
 
+      # Masukan segar dari situs live: banjir.yml/titik.yml/udara.yml menerbitkan data ini tanpa meng-commit,
+      # jadi salinan di git basi. Hanya ditimpa di runner; commit di bawah cuma public/prediksi/data.
+      - name: Tarik masukan segar dari situs
+        env:
+          LIVE: https://centurisk97.terasurbannetwork.workers.dev
+        run: |
+          for f in banjir/data/status.json banjir/data/rob.json banjir/data/hujan_ansambel.json \
+                   data/fwi_ansambel.json data/hotspot.json udara/data/prakiraan.json; do
+            curl -fsS --retry 3 --max-time 120 "$LIVE/$f" -o "public/$f.baru" && mv "public/$f.baru" "public/$f" \
+              || echo "::warning::$f gagal ditarik, pakai salinan git"
+          done
+
       - name: Catat, nilai, kalibrasi, terbit
         run: |
           python3 scripts/prediksi/catat.py
@@ -45,5 +57,6 @@ jobs:
           git add -f public/prediksi/data
           git diff --cached --quiet && exit 0
           git commit -q -m "data: prediksi harian $(TZ=Asia/Jakarta date +%F)"
+          git checkout -- .   # buang masukan segar yang ditarik dari situs (tidak di-commit) supaya pull --rebase jalan
           for i in 1 2 3; do git pull -q --rebase && git push -q && exit 0; sleep $((i * 5)); done
           echo "::error::push data prediksi gagal"; exit 1
