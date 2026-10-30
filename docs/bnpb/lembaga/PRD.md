@@ -524,3 +524,28 @@ Semua rute hanya untuk staf (`stafOK`) dan tidak membaca D1, untuk menjaga kuota
 | Pakar diaspora | `akademisi/diaspora.json` (skema tokoh + negara, institusi luar negeri, ORCID, karya Indonesia) | Pakar segmen "Diaspora" |
 | Peneliti muda (tesis dan disertasi) | `akademisi/peneliti_muda.json` `{nama, jenjang, judul, tahun, kampus, prodi, pembimbing, pembimbing_pakar_id, rumpun, url, sumber_url}` | Pakar segmen "Peneliti muda", profil pakar (bagian MAHASISWA BIMBINGAN) |
 | Program studi dan beasiswa kebencanaan | `akademisi/prodi_beasiswa.json` `{prodi:[{nama, jenjang, kampus, akreditasi, url}], beasiswa:[{nama, pemberi, negara, jenjang, bidang, tenggat, url}]}` | Riset sub "Studi dan beasiswa", profil kampus |
+
+### 6.19 Pengayaan strategis per entitas (pilihan pemilik 30 Okt)
+
+Tiap butir baru wajib bersumber URL dan tanggal periksa; yang tidak ada di sumber resmi diisi `null` dengan `alasan_kosong` ("tidak dipublikasikan", "situs menolak", "belum ditanya"). Tidak ada nilai karangan.
+
+| Entitas | Butir baru |
+| --- | --- |
+| BPBD | `kelas` (A/B), `pusdalops_24jam`, `trc_personel`, `armada` (jenis, jumlah), `dokumen` (KRB, RPB, Renkon: tahun, tautan), `destana` (jumlah desa tangguh), `kejadian_5th` (DIBI per jenis), `piket` (nomor resmi) |
+| Relawan, donasi, LSM | `bidang` (logistik, medis, SAR, dapur umum, psikososial, air bersih), `jangkauan` (prov), `kerahan` (orang, kendaraan, perahu, dapur), `sertifikasi`, `respons` (kejadian, tahun, peran, sumber), `klaster` |
+| Swasta dan CSR | `bantuan` (jenis, nilai, tanggal, kejadian), `aset_pinjam` (alat berat, gudang, armada), `lokasi_fasilitas` (titik pabrik/gudang), `kontak_csr` (hanya kanal resmi) |
+| Pakar | `bisa_untuk` (kajian, saksi ahli, narasumber media, TRC), `lapangan` (kejadian, tahun, sumber), `bahasa`, `karya_kunci` per rumpun, `kesediaan` (diisi lewat koreksi, awalnya "belum ditanya") |
+| Tokoh | `keterlibatan` per kejadian, `jangkauan` (pengikut publik), `isu`, `catatan_reputasi` (hanya fakta berita bersumber, netral; tokoh terkait kasus KPK tetap dikeluarkan) |
+| Inovasi | `trl`, `harga_unit` (sumber e-katalog/penjual), `dipakai_di`, `pembuat_kontak`, `paten`, `sni`, `ekatalog` |
+| Sistem data | `akses` (API, unduh, tertutup), `frekuensi`, `cakupan`, `pemilik` |
+| Pendanaan | `siklus`, `tenggat_berikut`, `plafon`, `syarat`, `penerima_id` (sebelumnya), `focal_point` (kanal resmi Kemenkeu/Bappenas/pemberi) |
+| Wilayah | indeks risiko, kapasitas BPBD (dari butir BPBD), lembaga/pakar terdekat, aset riset dan sensor, `celah` (risiko tinggi, mitra sedikit) |
+| Pustaka | `ringkasan` satu kalimat (berlabel "ringkasan mesin" bila dari AI), rumpun, wilayah, `dipakai_untuk`, keterkaitan pakar/lembaga lewat graf |
+
+### 6.20 Kuadran
+
+Layar sebar 2 sumbu pilihan pengguna (risiko wilayah, kapasitas BPBD, jumlah mitra, pakar, kejadian 5 tahun, dokumen lengkap) untuk BPBD/lembaga per kab/prov. Garis median membagi empat kuadran berlabel ("risiko tinggi, kapasitas rendah" dst.). Titik = logo; klik membuka profil. Tiap skor punya alasan dan sumber satu ketukan. Skor kapasitas = turunan berlabel "skor turunan", rumusnya tertulis di layar.
+
+### 6.21 Jaringan dukungan
+
+Graf siapa mendukung siapa: pemberi dana → proyek → pelaksana → kampus/lembaga → alat/inovasi/sistem. Tiap garis = sisi graf.json dengan `sumber` URL; garis tanpa sumber tidak digambar. Saring per bencana, pemberi, wilayah. Klik simpul membuka profil.

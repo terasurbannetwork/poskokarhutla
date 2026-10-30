@@ -95,3 +95,14 @@ Setiap tiket panen menyerahkan:
 5. L50 sampai L52.
 6. Commit dengan path spesifik.
 7. `terbit.yml` hijau, lalu periksa aset tayang dan `/api/status`.
+
+## Fase 6: pengayaan strategis (PRD §6.19–6.21)
+
+- [ ] E1 BPBD: kelas, Pusdalops, TRC, armada, dokumen KRB/RPB/Renkon, Destana, DIBI 5 tahun, piket → `bpbd_kapasitas.json`
+- [ ] E2 Relawan/donasi/LSM + CSR: bidang, jangkauan, kerahan, sertifikasi, respons, klaster; bantuan, aset pinjam, fasilitas, kontak CSR → `kapasitas_lembaga.json`
+- [ ] E3 Pakar + tokoh: bisa_untuk, lapangan, bahasa, karya kunci; keterlibatan, jangkauan, isu, catatan reputasi → `pengayaan_orang.json`
+- [ ] E4 Inovasi + sistem data + pendanaan: TRL, harga, paten/SNI/e-katalog; akses/frekuensi/cakupan; siklus/tenggat/plafon/syarat/focal point → `pengayaan_produk.json`
+- [ ] E5 Pustaka ringkasan + wilayah celah (hitung) → `pengayaan_pustaka.json`, `wilayah_celah.json`
+- [ ] E6 hubung.mjs: gabung E1–E5, sisi `mendanai/melaksanakan/memakai` bersumber, skor kapasitas + celah → graf.json, kuadran.json (uji di tests/agen/hubung.test.mjs)
+- [ ] E7 Layar: lembar per entitas menampilkan butir baru; tab/ panel Kuadran; layar Jaringan dukungan
+- [ ] E8 Pengulas bersih (angka, INP, keamanan), cek acak 30 butir baru ≥90% cocok, unggah R2 (izin pemilik), commit, tayang

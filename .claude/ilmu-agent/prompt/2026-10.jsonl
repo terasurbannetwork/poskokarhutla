@@ -63,6 +63,7 @@
 {"t":"2026-10-30T09:58:55.543+07:00","sesi":"a3a5d4c7","prompt":"Lembaga swasta yang mungkin akan memiliki potensi membantu. \n\nKEmudian buatkan direktori riset dan inovasi existing teknologi terkait kebencanaan apa aja sih existing inovasi di kebencanaan. Kasih ringkasan nya dan kasih semua informasinya lembaga/perusahaan yang membuat udah dicoba dimana saja gitu\".","label":[],"berkas":[]}
 {"t":"2026-10-30T09:59:47.436+07:00","sesi":"a3a5d4c7","prompt":"Kemudian kalo lu bisa scraping data bPBD juga oke sih","label":[],"berkas":[]}
 {"t":"2026-10-30T10:01:25.790+07:00","sesi":"a3a5d4c7","prompt":"Kemudian sistem\" yang dimiliki kaya SIPALAGA gitu dari BRGM coba data\" apa aja yang dimiliki oleh lembaga\" lain yang kita bisa ambil untuk data kebencanaan dan senosrnya coba dibuatkan juga direktorinya","label":[],"berkas":[]}
+{"t":"2026-10-30T10:03:44.190+07:00","sesi":"a3a5d4c7","prompt":"@\"~/Documents/GitHub/neraca-papua/\"\nBro lu paham kan arahnya ini kemana? Direktori Kebencanaan yang coba cek neraca papua ini. Semua informasi terkait kebencanaan bisa diakses disini dan lembaga atau organisasi nya yang oke. \n\nGas apa yang bisa lu rekomendasikan untuk buat lagi?","label":[],"berkas":[]}
 {"t":"2026-10-30T10:03:44.190+07:00","sesi":"a3a5d4c7","prompt":"@\"/Users/.../Documents/GitHub/neraca-papua/\"\nBro lu paham kan arahnya ini kemana? Direktori Kebencanaan yang coba cek neraca papua ini. Semua informasi terkait kebencanaan bisa diakses disini dan lembaga atau organisasi nya yang oke. \n\nGas apa yang bisa lu rekomendasikan untuk buat lagi?","label":[],"berkas":[]}
 {"t":"2026-10-30T10:04:09.279+07:00","sesi":"a3a5d4c7","prompt":"Jadi kaya all in platform","label":[],"berkas":[]}
 {"t":"2026-10-30T10:05:55.428+07:00","sesi":"a3a5d4c7","prompt":"namanya ganti dong. jangan akademisi tapi jadi direktori\n\n1. Profil wilayah: satu halaman per kab/kota. Ketik “Banjarnegara”, lalu keluar dalam satu halaman: risiko dan kejadian, BPBD dan nomornya, lembaga terdekat, pakar, sensor yang terpasang, inovasi yang pernah diterapkan, proyek donor, sistem data yang mencakupnya, dan anggaran. Ini pengikat semua tab, mirip halaman kabupaten di Neraca Papua.\n2. Pustaka dokumen: regulasi dari JDIH yang sudah ada di repo, kajian risiko (KRB, RPB, renkon) per daerah, rencana rehab-rekon (R3P), dan laporan kejadian. Semuanya dicari dan ditautkan ke wilayah dan lembaganya.","label":[],"berkas":[]}
@@ -81,6 +82,10 @@
 {"t":"2026-10-30T10:19:00.109+07:00","sesi":"a3a5d4c7","prompt":"Nah orang\" disini juga kalo pakar nih kalo dia ada lembaga lainnya juga masukkan aja nanti. Misal dia ada di IAGI atau Asosiasi Kebencanan atau gimana gitu","label":[],"berkas":[]}
 {"t":"2026-10-30T10:19:32.988+07:00","sesi":"a3a5d4c7","prompt":"Label bencananya kecilin aja kalo gitu","label":[],"berkas":[]}
 {"t":"2026-10-30T10:20:00.890+07:00","sesi":"a3a5d4c7","prompt":"Oke ini agar kurang 1 nih tolong tambahin deh biar full semua 5 x 3","label":[],"berkas":[]}
+{"t":"2026-10-30T10:33:19.289+07:00","sesi":"653ab0a5","prompt":"cek lagi sekarang apakah fitur verifikasi lapangan masih cocok? karna ada update","label":[],"berkas":[]}
+{"t":"2026-10-30T10:45:59.682+07:00","sesi":"653ab0a5","prompt":"tldr;","label":[],"berkas":[]}
+{"t":"2026-10-30T10:46:34.733+07:00","sesi":"653ab0a5","prompt":"Do this task here: “Groundcheck karhutla jadi konfirmasi API di /prediksi”","label":[],"berkas":[]}
+{"t":"2026-10-30T11:01:10.227+07:00","sesi":"653ab0a5","prompt":"so tldr?","label":[],"berkas":[]}
 {"t":"2026-10-30T10:24:11.492+07:00","sesi":"a3a5d4c7","prompt":"Apalagi bro yang strategis yang bisa lu masukin coba kasih 20","label":[],"berkas":[]}
 {"t":"2026-10-30T10:24:35.972+07:00","sesi":"a3a5d4c7","prompt":"Kenapa dihentikan semua ya?","label":[],"berkas":[]}
 {"t":"2026-10-30T10:25:44.041+07:00","sesi":"a3a5d4c7","prompt":"Oke buku buku terkait kebencanaan juga silakan kasih dan panen dan penulisnya juga siapa\" aja. Ini jadi direktori paling lengkap jadinya.","label":[],"berkas":[]}
@@ -187,3 +192,40 @@
 {"t":"2026-10-30T11:53:45.372+07:00","sesi":"a3a5d4c7","prompt":"Kalo jaringan sensor agar lu bedain adalah ini sensor ini dan itu sensor apa. Jai ada lagendanya nanti","label":[],"berkas":[]}
 {"t":"2026-10-30T11:54:08.663+07:00","sesi":"a3a5d4c7","prompt":"Sumpah terjelek","label":[],"berkas":[]}
 {"t":"2026-10-30T12:23:25.780+07:00","sesi":"a3a5d4c7","prompt":"Udah semua ga?","label":[],"berkas":[]}
+{"t":"2026-10-30T12:24:48.108+07:00","sesi":"a3a5d4c7","prompt":"Iconnya agar beda\"","label":[],"berkas":[]}
+{"t":"2026-10-30T12:25:05.375+07:00","sesi":"a3a5d4c7","prompt":"Buat sebaris","label":[],"berkas":[]}
+{"t":"2026-10-30T12:25:24.047+07:00","sesi":"a3a5d4c7","prompt":"Ini nya agar bagusin lagi label\"nnya","label":[],"berkas":[]}
+{"t":"2026-10-30T12:25:34.245+07:00","sesi":"a3a5d4c7","prompt":"Agar ini di semua dibaut dua baris ya","label":[],"berkas":[]}
+{"t":"2026-10-30T12:26:14.343+07:00","sesi":"a3a5d4c7","prompt":"Ini agar pakar lembaga baru di bawahnya  akademisi diaspora barus dibawahnya pilihan bencana","label":[],"berkas":[]}
+{"t":"2026-10-30T12:28:52.682+07:00","sesi":"a3a5d4c7","prompt":"https://1001startup.id/ Lu coba ambil inspirasi dari sini ya kira\" apa yang bisa ditambahkan","label":[],"berkas":[]}
+{"t":"2026-10-30T12:28:52.871+07:00","sesi":"a3a5d4c7","prompt":"Kemudian untuk semua data yang sudah ada. Kira\" informasi apa yang lu bisa ambil untuk masing\" semuanya?","label":[],"berkas":[]}
+{"t":"2026-10-30T12:28:52.917+07:00","sesi":"a3a5d4c7","prompt":"Agar lebih rinci informasinya. Strategis. Dan berguna","label":[],"berkas":[]}
+{"t":"2026-10-30T12:28:52.960+07:00","sesi":"a3a5d4c7","prompt":"Hilangkan","label":[],"berkas":[]}
+{"t":"2026-10-30T12:28:53.003+07:00","sesi":"a3a5d4c7","prompt":"Ini sumpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-10-30T12:30:14.888+07:00","sesi":"a3a5d4c7","prompt":"Line spacingnya agak kecilin","label":[],"berkas":[]}
+{"t":"2026-10-30T12:30:14.995+07:00","sesi":"a3a5d4c7","prompt":"Ini kenapa ga fleksibel bisa ke krii\"","label":[],"berkas":[]}
+{"t":"2026-10-30T12:30:15.032+07:00","sesi":"a3a5d4c7","prompt":"Bagusin. anjing. Agar dia di kanan ga banyak white spacenya.","label":[],"berkas":[]}
+{"t":"2026-10-30T12:31:45.165+07:00","sesi":"a3a5d4c7","prompt":"Kasih disclaimer buat label bagus rata tengah","label":[],"berkas":[]}
+{"t":"2026-10-30T12:31:45.204+07:00","sesi":"a3a5d4c7","prompt":"Anjing gw kalo akaya gini kan gw bilang lebarnya sampai ujunbg bro gw bilang","label":[],"berkas":[]}
+{"t":"2026-10-30T12:31:45.280+07:00","sesi":"a3a5d4c7","prompt":"Ini icon labgelnyamana?","label":[],"berkas":[]}
+{"t":"2026-10-30T12:31:59.111+07:00","sesi":"a3a5d4c7","prompt":"Ini agar sebaris semua. Iconnya gauah yang ada lingkarannya","label":[],"berkas":[]}
+{"t":"2026-10-30T12:32:13.531+07:00","sesi":"a3a5d4c7","prompt":"BUKA DI GOOGLE MAPS ya langsung icon aja gausah ada tulisan","label":[],"berkas":[]}
+{"t":"2026-10-30T12:32:49.287+07:00","sesi":"a3a5d4c7","prompt":"Bagusin. Jangan terllalu lebar.\n\nCUkup label\" aja","label":[],"berkas":[]}
+{"t":"2026-10-30T12:33:08.985+07:00","sesi":"a3a5d4c7","prompt":"Sumpah jelek banget","label":[],"berkas":[]}
+{"t":"2026-10-30T12:33:37.198+07:00","sesi":"a3a5d4c7","prompt":"Ini langsung icon aja kalo liaht di peta tambah ke shortlist dan lihat semua pakar","label":[],"berkas":[]}
+{"t":"2026-10-30T12:33:56.139+07:00","sesi":"a3a5d4c7","prompt":"Bagusin anjing. Jelek banget","label":[],"berkas":[]}
+{"t":"2026-10-30T12:34:34.305+07:00","sesi":"a3a5d4c7","prompt":"Ini kan ada containernya bawha\" juga lah dibuat container\" gitu","label":[],"berkas":[]}
+{"t":"2026-10-30T12:34:52.798+07:00","sesi":"a3a5d4c7","prompt":"Ini  juga. Dan inovasi ya tolong buatin jangan gini doang tapi jelasin dong","label":[],"berkas":[]}
+{"t":"2026-10-30T12:35:10.369+07:00","sesi":"a3a5d4c7","prompt":"Jelek banget sumpah","label":[],"berkas":[]}
+{"t":"2026-10-30T12:37:45.184+07:00","sesi":"a3a5d4c7","prompt":"Kuadran. Lembaga atau BPBD ditempatkan pada dua ukuran yang dipilih sendiri, misalnya kapasitas lawan risiko wilayah. Hasilnya terlihat BPBD mana yang berisiko tinggi tapi kapasitasnya rendah.\nringan siapa mendukung siapa, seperti halaman data center mereka. Pemberi dana, pelaksana, kampus, dan alat dihubungkan, tiap garis punya sumber.\n\n\nGas\nKelas BPBD (A/B), Pusdalops 24 jam atau tidak, jumlah personel TRC, armada dan peralatan, dokumen KRB/RPB/Renkon yang ada beserta tahunnya, status Desa Tangguh, kejadian 5 tahun terakhir dari DIBI, nomor piket\nBidang (logistik, medis, SAR, dapur umum, psikososial), wilayah jangkauan, kapasitas kerahan (orang, kendaraan, perahu), sertifikasi, rekam respons per kejadian, jalur koordinasi klaster\nJenis bantuan yang pernah diberikan, nilai dan tanggal, aset yang bisa dipinjam (alat berat, gudang, armada), lokasi pabrik dan gudang dekat kawasan rawan, kontak divisi CSR\nBisa dihubungi untuk apa (kajian, saksi ahli, narasumber media, TRC), pengalaman lapangan per kejadian, bahasa, karya paling relevan per bencana, kesediaan\n\tRekam keterlibatan per kejadian, jangkauan pengikut, isu yang dibawa, catatan risiko reputasi\nTRL, harga per unit, sudah dipakai di mana, pembuat dan kontak, status paten dan SNI, masuk e-katalog atau belum\nAkses (API, unduh, tertutup), frekuensi perbarui, cakupan wilayah, pemilik, \nSiklus pengajuan dan tenggat berikutnya, plafon, syarat utama, penerima Indonesia sebelumnya, kontak focal point di Kemenkeu/Bappenas\nIndeks risiko, kapasitas BPBD, lembaga dan pakar terdekat, aset riset dan sensor, celah (risiko tinggi tapi sedikit mitra)\nRangkuman satu kalimat, bencana dan wilayah, dipakai untuk apa (renkon, kajian), keterkaitan dengan pakar dan lembagaRangkuman satu kalimat, bencana dan wilayah, dipakai untuk apa (renkon, kajian), keterkaitan dengan pakar dan lembaga","label":[],"berkas":[]}
+{"t":"2026-10-30T12:39:07.912+07:00","sesi":"a3a5d4c7","prompt":"SUMPAH JELEK BANGET","label":[],"berkas":[]}
+{"t":"2026-10-30T12:39:29.722+07:00","sesi":"a3a5d4c7","prompt":"Yang gini\" agar dibuat container deh","label":[],"berkas":[]}
+{"t":"2026-10-30T12:39:36.475+07:00","sesi":"a3a5d4c7","prompt":"Mana containernya","label":[],"berkas":[]}
+{"t":"2026-10-30T12:39:49.644+07:00","sesi":"a3a5d4c7","prompt":"Bagusin dong itu kosong banget kanannya","label":[],"berkas":[]}
+{"t":"2026-10-30T12:40:05.531+07:00","sesi":"a3a5d4c7","prompt":"Gausah ada ini","label":[],"berkas":[]}
+{"t":"2026-10-30T12:40:09.056+07:00","sesi":"a3a5d4c7","prompt":"Ini terlalu banyak whitespace ya","label":[],"berkas":[]}
+{"t":"2026-10-30T12:40:34.252+07:00","sesi":"a3a5d4c7","prompt":"Ini gw ga bisa milih semua kategoriu","label":[],"berkas":[]}
+{"t":"2026-10-30T12:41:10.285+07:00","sesi":"a3a5d4c7","prompt":"Ini agar ada kontainer\"nya lah","label":[],"berkas":[]}
+{"t":"2026-10-30T12:41:31.112+07:00","sesi":"a3a5d4c7","prompt":"Sumpah ini jelek banget dan dia terlalu rapat kekiri","label":[],"berkas":[]}
+{"t":"2026-10-30T12:41:36.533+07:00","sesi":"a3a5d4c7","prompt":"Jelek sejelek jeleknya","label":[],"berkas":[]}
+{"t":"2026-10-30T12:42:24.662+07:00","sesi":"a3a5d4c7","prompt":"Bro intu itb logonya benerin deh Ada item\"nya. Kemudian untuk semua partner strategis aja yang muncul pas pertama kali keliatan defaultnya di peta","label":[],"berkas":[]}

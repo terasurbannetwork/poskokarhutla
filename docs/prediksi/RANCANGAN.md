@@ -77,6 +77,32 @@ pengungsian historis DIBI), standar Sphere 2018: air 15 L/orang/hari, hunian
   laju 120/jam/IP), `GET` untuk pipeline dengan `PIPA_TOKEN` (`src/prediksi.js`).
 - Laporan warga dicocokkan per kab-tanggal sebagai konfirmasi positif lemah;
   tidak pernah dipakai sebagai bukti "tidak terjadi".
+- Groundcheck tugas api karhutla (akun instansi dan petugas `/lacak`) ikut di
+  `GET` sebagai `sumber: "groundcheck"` (30 Okt 2026): `{prov, kab, tanggal,
+  kode: "API", terjadi: 1}`.
+  - Artinya: api terlihat di lokasi tugas pada **tanggal kunjungan** WIB
+    (waktu GPS perangkat), yaitu konfirmasi `api_ada` atau kabar menyala/bara
+    sesudahnya. Bukan tanggal api mulai, bukan hotspot satelit (bara gambut
+    sering tidak terlihat satelit), bukan "api di seluruh kab".
+  - Positif saja: "bukan api" atau "sudah padam" di satu titik tidak
+    membuktikan sekabupaten tanpa api. Absennya baris tidak berarti tidak ada
+    api: groundcheck hanya ada di kab yang punya akun instansi aktif.
+  - Disaring: foto berlokasi ≤5 km dari titik (`JAUH_KM`) dan GPS tidak
+    curiga (tautan `/lacak` yang diteruskan tidak jadi label); tanpa tugas,
+    isian, atau akun dummy; tanpa tugas bencana lain; tanpa nama/WA/koordinat.
+  - **Bukan label skor API.** Tugas hanya lahir dari klaster satelit
+    sedang/tinggi, jadi groundcheck tidak independen dari FIRMS maupun dari
+    masukan prakiraan (hotspot 3 hari, baseline persistensi). `nilai.py`
+    DILARANG meng-OR-kannya ke amatan API atau klimatologi, dan dilarang
+    menghitung Brier/reliabilitas darinya (umpan positif saja membuat p=1
+    selalu menang). Pemakaian yang sah: audit omisi FIRMS, P(FIRMS=0 |
+    groundcheck=1), bersyarat pada tugas yang ada, dengan n = jumlah tugas
+    atau kejadian, bukan kab-hari (api gambut yang menyala berhari-hari
+    menghasilkan satu baris per hari).
+  - Gabung dengan regu: positif mengalahkan nol; nol dari regu tidak
+    membatalkan groundcheck. Satu kab-tanggal-kode bisa punya beberapa baris
+    (tiap regu, groundcheck). Warga tidak ditambahkan di kab-tanggal-kode yang
+    sudah dijawab regu atau groundcheck.
 
 ## Fase 3: dampak lanjutan (IBF), belum dibangun
 
