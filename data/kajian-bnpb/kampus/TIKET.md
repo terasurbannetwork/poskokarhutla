@@ -42,17 +42,17 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 | ID | Judul | Pengerja | Jalur (§5) | Ukuran | Status |
 | --- | --- | --- | --- | --- | --- |
 | KM-A01 | Agent `kampus` + AGENTS.md §2.2 [induk] | mekanik-mesin | I | S | belum |
-| KM-A02 | Konstanta, kamus, kasus acuan | kampus | P | M | belum |
-| KM-A03 | Crosswalk kode wilayah `kode.py` | kampus | P | M | belum |
-| KM-A04 | Migrasi 0080 dasar | warga-api | M | M | belum |
-| KM-A05 | Migrasi 0081 masalah | warga-api | M | M | belum |
-| KM-A06 | Migrasi 0082 riset dan dana | warga-api | M | M | belum |
-| KM-A07 | Migrasi 0083 satgas | warga-api | M | M | belum |
-| KM-A08 | Migrasi 0084 talenta | warga-api | M | M | belum |
-| KM-A09 | Cangkang rute + gerbang hak + peran staf | warga-api | W | M | belum |
+| KM-A02 | Konstanta, kamus, kasus acuan | kampus | P | M | selesai |
+| KM-A03 | Crosswalk kode wilayah `kode.py` | kampus | P | M | selesai |
+| KM-A04 | Migrasi 0080 dasar | warga-api | M | M | selesai |
+| KM-A05 | Migrasi 0081 masalah | warga-api | M | M | selesai |
+| KM-A06 | Migrasi 0082 riset dan dana | warga-api | M | M | selesai |
+| KM-A07 | Migrasi 0083 satgas | warga-api | M | M | selesai |
+| KM-A08 | Migrasi 0084 talenta | warga-api | M | M | selesai |
+| KM-A09 | Cangkang rute + gerbang hak + peran staf | warga-api | W | M | selesai |
 | KM-A10 | Cangkang layar + helper KM | kampus | L | M | belum |
-| KM-A11 | Gerbang teks + registri cakupan | penulis-gerbang | G | S | belum |
-| KM-B01 | Profil daerah: blok umum | kampus | P | L | belum |
+| KM-A11 | Gerbang teks + registri cakupan | penulis-gerbang | G | S | selesai |
+| KM-B01 | Profil daerah: blok umum | kampus | P | L | selesai |
 | KM-B02 | Profil daerah: blok per bahaya + model | kampus | P | L | belum |
 | KM-B03 | Masalah otomatis `masalah.py` | kampus | P | M | belum |
 | KM-B04 | Ringkas + profil provinsi | kampus | P | S | belum |
