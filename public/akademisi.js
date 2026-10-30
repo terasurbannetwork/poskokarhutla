@@ -1726,7 +1726,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
   }
   function cariSaran(q) {
     const qn = nrm(q); if (qn.length < 2) return []; const tok = qn.split(" "), out = [];
-    for (const e of indeksSaran()) { let sk; if (e.sg === qn || e.n.startsWith(qn)) sk = 0; else if (e.n.includes(" " + qn)) sk = 1; else if (e.n.includes(qn) || (e.sg && e.sg.includes(qn))) sk = 2; else if (tok.every(w => e.h.includes(w))) sk = 3; else continue; out.push({e, sk}); }
+    for (const e of indeksSaran()) { let sk; if (e.sg === qn || e.n.startsWith(qn)) sk = 0; else if (e.n.includes(" " + qn)) sk = 1; else if (e.n.includes(qn) || (e.sg && e.sg.includes(qn))) sk = 2; else if (tok.every(w => (" " + e.h).includes(" " + w))) sk = 3; else continue; out.push({e, sk}); }
     out.sort((a, b) => a.sk - b.sk || (b.e.lat != null) - (a.e.lat != null) || a.e.nama.length - b.e.nama.length);
     const pakai = [], sisa = [], n = {}; for (const o of out) { n[o.e.t] = (n[o.e.t] || 0) + 1; (n[o.e.t] <= SR_KUOTA[o.e.t] ? pakai : sisa).push(o); }
     const semua = pakai.concat(sisa.slice(0, Math.max(0, 8 - pakai.length))).map(o => o.e), urut = SR_GRUP.map(g => g[0]);

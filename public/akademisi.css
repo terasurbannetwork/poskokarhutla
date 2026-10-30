@@ -2308,8 +2308,8 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-saran [data-sr]:hover,.ak-saran [data-sr][aria-selected="true"]{background:var(--surface)}
 .ak-saran [data-sr]:focus-visible{outline:2px solid var(--brand2)}
 .ak-sr-kosong{margin:0;padding:10px;font-size:12.5px;color:var(--ink2)}
-.ak-sorot{width:44px;height:44px;border-radius:50%;border:3px solid #e8b53a;box-shadow:0 0 0 4px #e8b53a40;pointer-events:none;animation:ak-sorot 1.4s ease-out 3}
-@keyframes ak-sorot{from{transform:scale(.6);opacity:1}to{transform:scale(1.5);opacity:.2}}
+.ak-sorot{width:44px;height:44px;border-radius:50%;border:3px solid #e8b53a;background:#e8b53a22;pointer-events:none;animation:ak-sorot 1.4s ease-out 3}
+@keyframes ak-sorot{from{box-shadow:0 0 0 0 #e8b53ab0}to{box-shadow:0 0 0 18px #e8b53a00}}
 .ak-sr-popw .maplibregl-popup-content{padding:6px 8px;border-radius:12px;box-shadow:var(--shadow-lg)}
 .ak-sr-pop{display:flex;align-items:center;gap:8px;max-width:260px;cursor:pointer}
 .ak-sr-pop > span:nth-child(2){display:grid;min-width:0}
