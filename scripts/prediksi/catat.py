@@ -156,13 +156,45 @@ def titik_kab(jalur, cari, kmin=1):
     return out
 
 
+def titik_hotspot(akar, cari, kmin=1):
+    """hotspot.json (7 hari bergulir, tiap hari ada) -> {tanggal: {id: n}} untuk hari LENGKAP saja.
+    Hari tanpa baris di antaranya = sepi: {} (nol sah), bukan 'tidak ada data'. Hari awal (terpotong) dan hari acuan (berjalan) dibuang."""
+    d = D.baca(os.path.join(akar, "public", "data", "hotspot.json"))
+    if not d or not d.get("baris"):
+        return {}
+    c = {n: i for i, n in enumerate(d["kolom"])}
+    ac = (dt.datetime.fromisoformat(d["acuan"]) + dt.timedelta(hours=7)).date()
+
+    def tgl(md):                      # tgl_wib "MM-DD" tanpa tahun: lewat dari acuan = tahun lalu
+        y = ac.year - (md > ac.strftime("%m-%d"))
+        return f"{y}-{md}"
+    ids = [cari(*w.split("|")[:2]) for w in d["wilayah"]]
+    awal = min(tgl(r[c["tgl_wib"]]) for r in d["baris"])
+    out, t = {}, D.geser(awal, 1)
+    while t < ac.isoformat():
+        out[t] = {}
+        t = D.geser(t, 1)
+    for r in d["baris"]:
+        h = out.get(tgl(r[c["tgl_wib"]]))
+        if h is not None and r[c["hitung"]] == 1 and r[c["keyakinan"]] >= kmin and (i := ids[r[c["wilayah"]]]):
+            h[i] = h.get(i, 0) + 1
+    return out
+
+
+def titik_harian(akar, cari, tgl, hot):
+    """Hitungan titik per kab hari `tgl`: hotspot.json dulu, titik_hari/ (hanya hari >= 1.000 titik) sebagai cadangan hari lama. None = tak teramati."""
+    if tgl in hot:
+        return hot[tgl]
+    return titik_kab(os.path.join(akar, "public", "data", "titik_hari", tgl + ".json"), cari)
+
+
 def entri_api(t, daftar, akar, cari):
-    folder = os.path.join(akar, "public", "data", "titik_hari")
-    ada = sorted(f[:10] for f in os.listdir(folder) if f[:4].isdigit() and f[:10] <= t) if os.path.isdir(folder) else []
-    if not ada or ada[-1] < D.geser(t, -2):
-        log("API: titik_hari tidak ada / basi (> 2 hari)", ada[-1:] or "kosong")
+    hot = titik_hotspot(akar, cari)
+    tiga = [titik_harian(akar, cari, D.geser(t, i), hot) for i in (-3, -2, -1)]
+    if tiga[1] is None and tiga[2] is None:
+        log("API: hotspot.json / titik_hari tidak mencakup", D.geser(t, -2), "..", D.geser(t, -1), "(basi)")
         return None
-    tiga = [titik_kab(os.path.join(folder, f + ".json"), cari) for f in ada[-3:]]
+    ada = [D.geser(t, i) for i in (-3, -2, -1)]
     fwi = D.baca(os.path.join(akar, "public", "data", "fwi_ansambel.json"), {})
     hari = [D.geser(t, i) for i in (1, 2, 3)]
     ix = [fwi["hari"].index(h) if h in fwi.get("hari", []) else None for h in hari]
@@ -180,7 +212,7 @@ def entri_api(t, daftar, akar, cari):
             skor = d / 3 if pt is None else (d / 3 + pt) / 2
             baris.append([round(0.03 + 0.94 * skor, 2), d, pt, ps])
         kab[k["id"]] = baris
-    return {"sumber": f"FIRMS lokasi unik {ada[-3]}..{ada[-1]} + ansambel FWI ECMWF", "kol": ["p", "d", "pt", "ps"],
+    return {"sumber": f"FIRMS lokasi unik {ada[0]}..{ada[-1]} + ansambel FWI ECMWF", "kol": ["p", "d", "pt", "ps"],
             "hari": hari, "kab": kab}
 
 
@@ -344,6 +376,25 @@ def uji():
         lama = D.baris_arsip(D.berkas_arsip(t, f))
         assert D.periksa_arsip(lama, []) and D.periksa_arsip(lama, [lama[0].replace("0.8", "0.9")]) and D.periksa_arsip(lama, lama + ["{}"]) is None
         D.cek_arsip(f, git=lambda rel: None)     # tidak dilacak git: lewat
+    # API dari hotspot.json sintetis: hari sepi = nol sah (bukan 'tidak ada'), hari awal & hari acuan dibuang
+    with tempfile.TemporaryDirectory() as tmp:
+        os.makedirs(os.path.join(tmp, "public", "data"))
+        k0 = daftar[0]
+        kol = ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib", "hitung"]
+        baris = [[0, 100, 0, "N", 1, 1, 0, "10-26", 1],      # hari awal (terpotong)
+                 [0, 100, 0, "N", 1, 1, 0, "10-28", 1], [0, 100, 0, "N", 1, 2, 0, "10-28", 1],
+                 [0, 100, 0, "N", 1, 0, 0, "10-28", 1],      # keyakinan rendah: tidak dihitung
+                 [0, 100, 0, "N", 1, 1, 0, "10-28", 0],      # bukan lokasi unik: tidak dihitung
+                 [0, 100, 0, "N", 1, 1, 0, "10-30", 1]]      # hari acuan (berjalan)
+        json.dump({"kolom": kol, "acuan": "2026-10-30T00:24:00+00:00", "wilayah": [k0["geo"] + "|X"], "baris": baris},
+                  open(os.path.join(tmp, "public", "data", "hotspot.json"), "w"))
+        h = titik_hotspot(tmp, cari)
+        assert h == {"2026-10-27": {}, "2026-10-28": {k0["id"]: 2}, "2026-10-29": {}}, h
+        assert titik_harian(tmp, cari, "2026-10-29", h) == {} and titik_harian(tmp, cari, "2026-09-01", h) is None
+        e = entri_api("2026-10-30", daftar, tmp, cari)
+        assert e and e["kab"][k0["id"]][0][1] == 1 and e["kab"][daftar[1]["id"]][0][1] == 0, e
+        os.remove(os.path.join(tmp, "public", "data", "hotspot.json"))
+        assert entri_api("2026-10-30", daftar, tmp, cari) is None, "tanpa hotspot.json & titik_hari: dilewati"
     # ASP & API dari berkas nyata bila ada (tanpa jaringan): bentuk sah
     for e in (entri_asp(D.hari_ini(), daftar, D.AKAR), entri_api(D.hari_ini(), daftar, D.AKAR, cari)):
         if e:
