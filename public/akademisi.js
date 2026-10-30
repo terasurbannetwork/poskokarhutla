@@ -646,7 +646,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     dft.addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; if (multi) { const y = dft.scrollTop; pilih(b.dataset.v); label(); isi(); dft.scrollTop = y; return; } tutupP(); pilih(b.dataset.v); label(); });
     k._tutup = tutupP; label(); return label;
   }
-  document.addEventListener("click", e => document.querySelectorAll(".ak-kampus-pilih[data-gen]").forEach(x => { if (!x.contains(e.target)) x._tutup?.(); }));
+  document.addEventListener("click", e => { if (!e.target.isConnected) return; document.querySelectorAll(".ak-kampus-pilih[data-gen]").forEach(x => { if (!x.contains(e.target)) x._tutup?.(); }); });
   document.addEventListener("keydown", e => { if (e.key !== "Escape") return; const a = [...document.querySelectorAll(".ak-kampus-pilih[data-gen] .ak-kpop:not([hidden])")];
     if (!a.length) return; e.stopImmediatePropagation(); a.forEach(p => p.parentElement._tutup()); });
   const pasangHal = (id, fn) => $(id).addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (b && !b.disabled) fn(+b.dataset.h); });
