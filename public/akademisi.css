@@ -1609,7 +1609,7 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-in-f{display:grid;gap:5px;align-content:start;min-width:0;font-size:13.5px;font-weight:700;color:var(--ink)}
 .ak-in-f .ak-mlabel{font-size:11px;font-weight:700;color:var(--ink2);text-transform:none}
 .ak-in-f>div{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
-.ak-in-f .ak-mp{max-width:100%;height:20px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:default}
+.ak-in-f .ak-mp{max-width:100%;height:auto;min-height:20px;white-space:normal;cursor:default}
 .ak-in-f button.ak-mp{cursor:pointer;border:0;font:inherit;font-size:11.5px}
 .ak-in-gal{display:grid;gap:4px;width:min(100%,260px);text-decoration:none}
 .ak-in-gal img{width:100%;height:150px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
@@ -1633,3 +1633,31 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-pkr > * > svg,.ak-pkr > * > img{width:12px!important;height:12px!important;flex:none;display:block;position:static;margin:0;border-radius:3px;object-fit:contain}
 .ak-pkr .ak-mp{background:var(--surface);color:var(--ink2);border:0}
 .ak-x svg{stroke:var(--brand)!important;fill:none}
+/* peta lembaga: peta naik sampai batas kepala navy; pilihan bencana melayang di atas peta */
+.ak:has(> #akv-lembaga.ak-lbpeta:not([hidden])){position:relative;padding-top:0}
+.ak:has(> #akv-lembaga.ak-lbpeta:not([hidden])) > .ak-bpanel{position:absolute;z-index:8;top:12px;left:50%;transform:translateX(-50%);width:min(1200px,calc(100% - 24px));margin:0;box-shadow:0 8px 24px rgb(15 30 60 / .16)}
+.ak:has(> #akv-lembaga.ak-lbpeta:not([hidden])) > #akv-lembaga{margin-top:0}
+#akv-lembaga.ak-lbpeta .ak-pta > .ak-side{top:112px}
+#akv-lembaga.ak-lbpeta .ak-ptlayer{top:112px!important}
+#akv-lembaga.ak-lbpeta .ak-segmeng{top:158px!important}
+#akv-lembaga.ak-lbpeta .ak-ptpanel{top:160px!important}
+#akv-lembaga.ak-lbpeta .maplibregl-ctrl-top-right{top:100px}
+@media (max-width:700px){.ak:has(> #akv-lembaga.ak-lbpeta:not([hidden])) > .ak-bpanel{position:static;transform:none;width:auto;margin:0 0 8px}#akv-lembaga.ak-lbpeta .ak-pta > .ak-side,#akv-lembaga.ak-lbpeta .ak-ptlayer,#akv-lembaga.ak-lbpeta .ak-segmeng,#akv-lembaga.ak-lbpeta .ak-ptpanel{top:auto}}
+.ak:has(> #akv-lembaga.ak-lbpeta:not([hidden])){margin-top:0}
+/* peta lembaga: panel kanan dihapus, legenda di bawah peta */
+#akv-lembaga .ak-ptpanel{display:none!important}
+.ak-legbawah{position:absolute;z-index:6;left:50%;bottom:28px;transform:translateX(-50%);display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center;max-width:calc(100% - 24px);padding:8px 16px;background:oklch(100% 0 0 / .95);border:1px solid var(--line);border-radius:999px;box-shadow:0 6px 18px rgb(15 30 60 / .14);font-size:12px;color:var(--ink)}
+.ak-legbawah b{font-weight:700;margin-right:4px}
+.ak-legbawah span{display:inline-flex;align-items:center;gap:6px;white-space:nowrap}
+.ak-legbawah i{width:18px;height:10px;border-radius:3px;display:inline-block;border:1px solid rgb(0 0 0 / .06)}
+@media (max-width:700px){.ak-legbawah{border-radius:14px;bottom:auto;top:8px;gap:8px;font-size:11px}}
+.ak:has(> #akv-lembaga.ak-lbpeta:not([hidden])){margin-top:0!important}
+
+.ak-bg>.ak-rata{margin:0}
+.ak-sumb{list-style:none;margin:0;padding:0;display:grid}
+.ak-sumb li{border-top:1px solid var(--line)}.ak-sumb li:first-child{border-top:0}
+.ak-sumb a{display:grid;grid-template-columns:16px auto minmax(0,1fr) 14px;gap:8px;align-items:center;padding:8px 0;text-decoration:none;color:var(--ink2);min-width:0}
+.ak-sumb a:hover b{text-decoration:underline}
+.ak-sumb svg{width:16px;height:16px;stroke:var(--ink2)}.ak-sumb a>svg:last-child{width:13px;height:13px;opacity:.6}
+.ak-sumb b{font-size:13px;font-weight:800;color:var(--ink);white-space:nowrap}
+.ak-sumb span{font-size:12.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap;min-width:0}
