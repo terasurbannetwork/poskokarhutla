@@ -1,1 +1,4 @@
 {"t":"2026-10-30T12:34:20.454+07:00","berkas":"scripts/kemitraan/profil_daerah.py","blob":"c56c3d9c86f0927025c516e9475f23c63adf4419","aturan":"c9e0e29673e7","vonis":"dikerjakan","ringkas":"KM-B01 blok umum, --cek hijau, 514 berkas","sha":"8701c71c"}
+{"t":"2026-10-30T16:14:14.566+07:00","berkas":"public/kemitraan/inti.js","blob":"8fb24227ba3dd7ca03f99bbf85f56c2e4fae9a93","aturan":"c9e0e29673e7","vonis":"dikerjakan","ringkas":"KM-A10 helper KM + cangkang layar; L7 L8 L9 hijau","sha":"4bd9977d"}
+{"t":"2026-10-30T16:14:15.146+07:00","berkas":"public/kemitraan.html","blob":"a10ef05c628ee8261e66472a211a7de9f76f1c44","aturan":"c9e0e29673e7","vonis":"dikerjakan","ringkas":"KM-A10 cangkang HTML tanpa inline","sha":"4bd9977d"}
+{"t":"2026-10-30T16:14:15.752+07:00","berkas":"tests/bnpb/kemitraan_layar.test.mjs","blob":"a8054050d42115e5c643e3e674fc3c6109cfb4a4","aturan":"c9e0e29673e7","vonis":"dikerjakan","ringkas":"KM-A10 8 uji cangkang, hijau 8/8","sha":"4bd9977d"}
