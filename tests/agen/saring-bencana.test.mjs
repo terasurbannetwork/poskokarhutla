@@ -2,8 +2,8 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-const akar = {}; new Function("window", readFileSync(new URL("../../public/saring_bencana.js", import.meta.url), "utf8"))(akar);
-const {cocokBencana: c, bacaBencana: b, tulisBencana: t} = akar;
+const akar = {}; new Function("window", readFileSync(new URL("../../public/fungsi_direktori.js", import.meta.url), "utf8"))(akar);
+const {cocokBencana: c, bacaBencana: b, tulisBencana: t, togglePilihan: tg} = akar;
 
 test("himpunan kosong cocok dengan semua butir", () => { assert.equal(c([], ["gempa"]), true); assert.equal(c(new Set(), []), true); });
 test("OR: cocok bila punya salah satu rumpun terpilih", () => {
@@ -18,4 +18,11 @@ test("URL: daftar koma dan URL lama satu nilai, hanya kunci sah, tanpa duplikat"
   assert.deepEqual(b("gempa", sah), ["gempa"]);
   assert.deepEqual(b("gempa,gempa,xxx,", sah), ["gempa"]);
   assert.equal(t(["gempa", "banjir"]), "gempa,banjir");
+});
+
+test("toggle pil: masuk, keluar, dan kosongkan", () => {
+  assert.deepEqual([...tg(new Set(), "pemerintah")], ["pemerintah"]);
+  assert.deepEqual([...tg(new Set(["pemerintah"]), "lsm")], ["pemerintah", "lsm"]);
+  assert.deepEqual([...tg(new Set(["pemerintah", "lsm"]), "lsm")], ["pemerintah"]);
+  assert.equal(tg(new Set(["lsm"]), "").size, 0);
 });

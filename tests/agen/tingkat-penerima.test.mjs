@@ -2,7 +2,7 @@
 import {test} from "node:test";
 import assert from "node:assert/strict";
 import {readFileSync} from "node:fs";
-const akar = {}; new Function("window", readFileSync(new URL("../../public/tingkat_penerima.js", import.meta.url), "utf8"))(akar);
+const akar = {}; new Function("window", readFileSync(new URL("../../public/fungsi_direktori.js", import.meta.url), "utf8"))(akar);
 const t = akar.tingkatPenerima;
 
 test("kementerian dan badan nasional = pusat", () => {

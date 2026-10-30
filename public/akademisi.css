@@ -2104,3 +2104,80 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 /* pemilih kategori peta: rapat ke pojok kanan atas (kontrol zoom sudah di kanan bawah) */
 #akPtKat{right:12px!important;left:auto!important;top:12px!important}
 .ak-ptaisi:has(#akPtKat) #akPtKat{margin-right:0!important}
+
+/* G23 grup pil saring multi-pilih: centang kecil di kiri pil terpilih */
+.ak-chip button[aria-pressed="true"]:not([data-r=""])::before{content:"\2713";font-size:12px;font-weight:800;margin-right:-2px;flex:none}
+.ak-chip button[aria-pressed="true"]:not([data-r=""])::after{content:none!important}
+
+/* G24 inovasi: thumbnail, oleh satu baris, deret status multi-pilih */
+.ak-th56{position:relative;display:grid;place-items:center;width:56px;height:56px;border-radius:10px;overflow:hidden;flex:none;background:color-mix(in srgb,var(--w0) 16%,#fff);color:var(--w0)}
+.ak-th56 svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.7;stroke-linecap:round;stroke-linejoin:round}
+.ak-th56 img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ak-bkr-l:has(.ak-th56){width:56px}
+.ak-oleh{display:inline-flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2)}
+.ak-ol-lg{width:18px;height:18px;object-fit:contain;border-radius:4px;background:#fff}
+.ak-oleh-n{all:unset;cursor:pointer;color:var(--ink);font-weight:600}.ak-oleh-n:hover{color:var(--brand2);text-decoration:underline}
+.ak-gpil[aria-pressed="true"]{background:var(--brand)!important;color:#fff!important;border-color:var(--brand)!important}
+.ak-gpil[aria-pressed="true"]::before{content:"\2713";font-size:12px;font-weight:800;margin-right:4px}
+.ak-gpil[aria-pressed="true"] b{color:#fff!important;background:oklch(100% 0 0 / .2)}
+
+/* G24 batang multi-pilih */
+.ak-br.ak-bsel,[data-bar].ak-bsel{outline:2px solid var(--brand);outline-offset:1px;border-radius:8px;opacity:1}
+.ak-bsel .ak-bl::before,[data-bar].ak-bsel>span:first-child::before{content:"\2713";font-weight:800;margin-right:4px;color:var(--brand)}
+.ak-bredup{opacity:.55}
+.ak-mp-sem{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;height:24px;padding:0 10px;border-radius:999px;background:var(--surface);font-size:12px;font-weight:700;color:var(--ink);cursor:pointer;margin-left:6px;vertical-align:middle}
+
+/* G25 berita: baris ringkas seragam */
+.ak-brlist{display:grid;grid-template-columns:minmax(0,1fr);gap:0 20px}
+@media (min-width:1200px){.ak-brlist{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ak-brk2{display:grid;grid-template-columns:88px minmax(0,1fr) auto;gap:14px;align-items:start;padding:14px 4px;border-bottom:1px solid var(--line);cursor:pointer;background:none}
+.ak-brk2:hover{background:var(--surface)}
+.ak-brk2-t{display:grid;place-items:center;width:88px;height:64px;border-radius:10px;overflow:hidden;background:var(--surface);color:#98a2b3}
+.ak-brk2-t img{width:100%;height:100%;object-fit:cover}.ak-brk2-t svg{width:26px;height:26px;fill:none;stroke:currentColor;stroke-width:1.6}
+.ak-brk2-t .ak-lgo,.ak-brk2-t .ak-sosok{width:44px;height:44px}
+.ak-brk2-t.foto{background:#000}
+.ak-brk2-m{min-width:0;display:grid;gap:5px}
+.ak-brk2-m h3{margin:0;font-family:inherit;font-size:15px;line-height:1.35;font-weight:800;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-transform:none;letter-spacing:0}
+.ak-brk2-meta{display:flex;align-items:center;flex-wrap:wrap;gap:6px;font-size:12px;color:var(--ink2)}
+.ak-mp-kat{background:#ffedd5!important;color:#9a3412!important}
+.ak-brk2-r{margin:0;font-size:12.5px;color:var(--ink2);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-align:left}
+.ak-brk2-e{display:flex;flex-wrap:wrap;align-items:center;gap:6px}
+.ak-brk2-c{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:5px;height:24px;padding:0 9px 0 3px;border-radius:999px;background:var(--surface);font-size:11.5px;font-weight:600;color:var(--ink);cursor:pointer;max-width:100%}
+.ak-brk2-c .ak-lgo,.ak-brk2-c .ak-sosok{width:18px;height:18px;border-radius:50%;border:0}.ak-brk2-c .ak-sosok .ak-foto{width:18px;height:18px}
+.ak-brk2-c span:last-child{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-brk2-x{color:#98a2b3;align-self:center}.ak-brk2-x svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.9}
+@media (max-width:600px){.ak-brk2{grid-template-columns:72px minmax(0,1fr)}.ak-brk2-t{width:72px;height:56px}.ak-brk2-x{display:none}}
+
+/* G26 kejadian besar: kartu seragam 4 kolom */
+.ak-kjgrid{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:14px}
+@media (max-width:1100px){.ak-kjgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}
+@media (max-width:600px){.ak-kjgrid{grid-template-columns:minmax(0,1fr)}}
+.ak-kjk2{display:flex;flex-direction:column;gap:10px;padding:16px;background:var(--card);border:1px solid var(--line);border-radius:16px;cursor:pointer;min-width:0;min-height:176px}
+.ak-kjk2:hover{box-shadow:var(--shadow);border-color:var(--brand2)}
+.ak-kj2-a{display:flex;align-items:center;gap:8px}
+.ak-kj2-ik{display:grid;place-items:center;width:36px;height:36px;border-radius:10px;background:var(--w0);flex:none}.ak-kj2-ik svg{width:20px;height:20px;fill:none;stroke:#fff;stroke-width:1.9}
+.ak-kj2-j{background:color-mix(in srgb,var(--w0) 14%,#fff)!important;color:var(--ink)!important}
+.ak-kj2-tgl{margin-left:auto;font-size:11px;color:var(--ink2);white-space:nowrap}
+.ak-kjk2 h3{margin:0;font-family:inherit;font-size:16px;line-height:1.3;font-weight:800;color:var(--ink);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;text-transform:none;letter-spacing:0}
+.ak-kj2-l{margin:0;display:flex;align-items:center;gap:6px;font-size:12px;color:var(--ink2);min-width:0}.ak-kj2-l span{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ak-kj2-l svg{width:14px;height:14px;flex:none;fill:none;stroke:currentColor}
+.ak-kj2-u{margin-top:auto;display:flex;gap:8px}
+.ak-kj2-u>div{display:grid;grid-template-columns:auto 1fr;grid-template-rows:auto auto;column-gap:6px;align-items:center;padding:6px 10px;border-radius:10px;background:var(--surface)}
+.ak-kj2-u svg{grid-row:1/3;width:16px;height:16px;fill:none;stroke:var(--brand);stroke-width:1.9}
+.ak-kj2-u b{font-size:15px;line-height:1.1;color:var(--ink)}.ak-kj2-u span{font-size:10.5px;color:var(--ink2)}
+.ak-kj2-u .nol{opacity:.45}
+
+/* G27 pusat studi dan aset riset bisa diklik */
+.ak-ps,.ak-as{cursor:pointer;transition:box-shadow .15s,border-color .15s}.ak-ps:hover,.ak-as:hover{box-shadow:var(--shadow);border-color:var(--brand2)}
+.ak-as-guna{margin:0;font-size:12.5px;color:var(--ink);text-align:left}.ak-as-guna small{font-size:10.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--ink2);margin-right:4px}
+.ak-info{display:inline-grid;vertical-align:middle;color:#98a2b3;cursor:help}.ak-info svg{width:14px;height:14px;fill:none;stroke:currentColor;stroke-width:1.9;stroke-linecap:round}
+.ak-baris4{grid-template-columns:repeat(4,minmax(0,1fr))}@media (max-width:900px){.ak-baris4{grid-template-columns:minmax(0,1fr)}}
+
+/* G28 kartu aset riset ringkas */
+#akAsL .ak-psgrid{grid-template-columns:repeat(3,minmax(0,1fr));gap:14px;align-items:start}
+@media (max-width:1000px){#akAsL .ak-psgrid{grid-template-columns:repeat(2,minmax(0,1fr))}}@media (max-width:600px){#akAsL .ak-psgrid{grid-template-columns:minmax(0,1fr)}}
+.ak-as{padding:14px;gap:8px;min-height:0}
+.ak-as-h{display:flex;gap:10px;align-items:flex-start}.ak-as-h .ak-lgo{width:36px;height:36px;flex:none}
+.ak-as-h h4{margin:0;font-size:15px;line-height:1.3;font-weight:800;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden}
+.ak-as-h small{display:block;font-size:11.5px;color:var(--ink2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-as .ak-as-guna{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;font-size:12.5px;color:var(--ink2);text-align:left}
+.ak-as .ak-kk2{margin-top:2px;padding-top:2px}
