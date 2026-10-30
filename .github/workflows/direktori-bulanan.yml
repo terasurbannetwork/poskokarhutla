@@ -2,7 +2,9 @@ name: Pemutakhiran bulanan direktori jaringan
 
 # Tgl 3 tiap bulan 01.00 UTC (08.00 WIB): cek situs lembaga hidup, rayap ulang kontak dan medsos yang diperiksa > 180 hari, logo, berita baru,
 # gabung lewat lembaga_gabung.mjs. Data TIDAK di repo: R2 poskokarhutla-foto akademisi/ -> folder kerja sementara -> R2 lagi (cadangan versi lama
-# di akademisi/cadangan/<tgl>/). Tidak commit dan tidak deploy, jadi di luar grup `data`. Logika: scripts/akademisi/pemutakhiran/.
+# di akademisi/cadangan/<tgl>/). Langkah akhir panen berita penerbit lewat RSS (berita_rss.py, saringan ketat kebencanaan, tanpa secret, hasil
+# digabung ke keluar/berita.json lalu ikut diunggah). CATATAN: RSS hanya memuat berita beberapa hari terakhir, jadi panen bulanan hanya menangkap
+# berita sekitar tanggal jalan. Tidak commit dan tidak deploy, jadi di luar grup `data`. Logika: scripts/akademisi/pemutakhiran/.
 on:
   schedule:
     - cron: "0 1 3 * *"
@@ -20,7 +22,7 @@ concurrency:
 jobs:
   mutakhir:
     runs-on: ubuntu-latest
-    timeout-minutes: 120
+    timeout-minutes: 150
     env:
       # jadwal = unggah sungguhan; dispatch = ikut input (default coba saja)
       DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
@@ -48,9 +50,14 @@ jobs:
           npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/akademisi/lembaga.json --file "$RUNNER_TEMP/kerja/lembaga.json" --remote
           # berita.json boleh belum ada
           npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/akademisi/berita.json --file "$RUNNER_TEMP/kerja/berita.json" --remote || rm -f "$RUNNER_TEMP/kerja/berita.json"
+          # tokoh.json dan inovasi.json (untuk pencocokan berita) boleh belum ada
+          for f in tokoh inovasi; do npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/akademisi/$f.json --file "$RUNNER_TEMP/kerja/$f.json" --remote || rm -f "$RUNNER_TEMP/kerja/$f.json"; done
 
       - name: Mutakhirkan
         run: python3 -I scripts/akademisi/pemutakhiran/mutakhir.py --kerja "$RUNNER_TEMP/kerja" --menit 100
+
+      - name: Panen berita penerbit (RSS, tanpa secret)
+        run: python3 -I scripts/akademisi/pemutakhiran/berita_rss.py --kerja "$RUNNER_TEMP/kerja" --menit 40
 
       - name: Unggah hasil, cadangan, dan laporan
         if: env.DRY != 'true'

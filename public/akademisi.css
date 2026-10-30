@@ -2024,3 +2024,4 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 /* bilah lapisan panel samping: satu baris, gulir mendatar bila sempit */
 .ak-side-h .ak-ptlayer,.ak-side .ak-ptlayer{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
 .ak-side-h .ak-ptlayer > button{flex:0 0 auto!important}
+.ak-pbrow{min-width:0}.ak-pbrow .ak-pk{min-width:0;max-width:100%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}.ak-pbrow .ak-pk>span{overflow:hidden;text-overflow:ellipsis}
