@@ -46,7 +46,9 @@
 
   const st = {q: "", prov: new Set(), kampus: new Set(), prodi: "", sumber: "s", urut: 4, rumpun: new Set(), bidang: "", hal: 1, kJenis: "k", baru: false};
   let baruSet = new Set();
-  let semua = [], hasil = [], perK = {}, logoK = {}, tunda = 0;
+  let semua = [], hasil = [], perK = {}, tunda = 0;
+  /* logo kampus: dari data pakar, lalu field logo di kampus.json (dibaca lewat Proxy supaya semua pemakai logoK ikut) */
+  const logoK = new Proxy({}, {get: (t, k) => t[k] || (typeof k === "string" ? kampusInfo?.[k]?.logo : undefined)});
   const PROV = {11: "Aceh", 12: "Sumatera Utara", 13: "Sumatera Barat", 14: "Riau", 15: "Jambi", 16: "Sumatera Selatan", 17: "Bengkulu", 18: "Lampung", 19: "Kepulauan Bangka Belitung", 21: "Kepulauan Riau",
     31: "DKI Jakarta", 32: "Jawa Barat", 33: "Jawa Tengah", 34: "DI Yogyakarta", 35: "Jawa Timur", 36: "Banten", 51: "Bali", 52: "Nusa Tenggara Barat", 53: "Nusa Tenggara Timur",
     61: "Kalimantan Barat", 62: "Kalimantan Tengah", 63: "Kalimantan Selatan", 64: "Kalimantan Timur", 65: "Kalimantan Utara", 71: "Sulawesi Utara", 72: "Sulawesi Tengah", 73: "Sulawesi Selatan",
@@ -2630,7 +2632,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   /* urutan: tab utama, sub-tab (sub-tab di dalam panel ikut dihitung), baru pilihan bencana */
   /* segmen sub-tampilan tiap view (Peta/Daftar/Proyek mitra, Skema/Proyek/Negara donor, dst.) dipindah ke wadah kepala navy, hanya yang view aktif tampil; panel bencana tetap di bawah kepala */
   /* pilihan bencana hanya tampil di tab yang benar-benar disaringnya; Riset daerah punya chip rumpun sendiri, Aset riset, Pusat studi, dan Wilayah tidak disaring */
-  const BENCANA_VIEW = new Set(["pakar", "pendanaan", "pustaka", "dok", "buku", "berita"]);
+  const BENCANA_VIEW = new Set(["pakar", "pustaka", "dok", "buku", "berita"]);
   function letakBencana() { const bp = document.querySelector(".ak-bpanel"), ak = document.querySelector(".ak"), nav = document.querySelector(".ak-kepala-nav"); if (!bp || !ak || !nav) return;
     document.querySelectorAll("[id^=akv-]").forEach(v => { const f = v.firstElementChild; if (f?.matches?.(".ak-seg")) { const vw = v.id.slice(4); nav.querySelectorAll(`[data-hero-view="${vw}"]`).forEach(lama => lama.remove()); if (f.id) nav.querySelectorAll(`#${CSS.escape(f.id)}`).forEach(lama => lama.remove());   // panel digambar ulang: segmen lama dibuang, jangan menumpuk
       f.dataset.heroView = vw; f.classList.remove("ak-segmeng"); nav.append(f); } });
