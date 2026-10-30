@@ -95,3 +95,29 @@ test("BPBD dan BPBA (di bawah koordinasi BNPB) tidak pernah jadi partner strateg
   const st = strategis(g, {});
   assert.ok(!st["L:bpbd-jatim"] && !st["L:bpba"]);
 });
+
+/* panen data publik 30 Okt 2026: paten, alias ROR/Wikidata, penyambung ke berkas R2 */
+test("paten menautkan pakar penemu dan kampus pemegang; alias Inggris hasil panen dikenali", async () => {
+  const D = {kampus: {"Universitas Lambung Mangkurat": {}, "Universitas Brawijaya": {}}, induk: {orang: [["A9", "Pakar Paten", "Universitas Lambung Mangkurat"]]},
+    pakar_ekstra: {A9: {paten: [{nomor: "S1", judul: "Alat pantau gambut", pemegang: "LPPM Universitas Lambung Mangkurat", sumber_url: "https://pdki-indonesia.dgip.go.id/x"}]}}};
+  const g = hubung(D), ada = (a, b, r) => g.sisi.some(s => s[0] === a && s[1] === b && s[2] === r);
+  assert.ok(ada("P:A9", "N:S1", "menemukan"));
+  assert.ok(ada("K:Universitas Lambung Mangkurat", "N:S1", "memegang paten"));
+  assert.equal(g.simpul["N:S1"].j, "paten");
+  assert.equal(cari(indeks([{id: "K:Universitas Brawijaya", nama: "Universitas Brawijaya"}]), "University of Brawijaya"), "K:Universitas Brawijaya");
+});
+
+test("penyambung panen: kab Kota beda Kabupaten, lembaga lama tidak ditimpa, daftar hitam aktif terbaca, hibah tidak dobel", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  assert.notEqual(S.kunciKab("Kota Bogor"), S.kunciKab("Kabupaten Bogor"));
+  assert.equal(S.kunciKab("Kabupaten Labuhan Batu"), S.kunciKab("Labuhanbatu"));
+  const P = {anggaran_pemda: [{prov: "32", kab: "Kabupaten Bogor", tahun: 2025, pos: "BTT", nilai_rp: 5e10}, {prov: "32", kab: "Kota Bogor", tahun: 2025, pos: "BTT", nilai_rp: 1e10}],
+    fasilitas_kritis: {kolom: ["id", "jenis", "nama", "lat", "lon", "prov", "kab", "kapasitas"], baris: [["r1", "rs", "RS A", 0, 0, "32", "Bogor", 100], ["r2", "rs", "RS B", 0, 0, "32", "Kota Bogor", 50]]}};
+  const w = S.wilayahDaya(P), kb = w.kab.find(k => k.kab === "Kabupaten Bogor"), kt = w.kab.find(k => k.kab === "Kota Bogor");
+  assert.equal(kb.apbd[2025].BTT, 5e10); assert.equal(kb.fasilitas.rs_tt, 100); assert.equal(kt.fasilitas.rs_tt, 50); assert.equal(w.prov["32"].fasilitas.rs, 2);
+  const lama = [{id: "pos-sar-x", nama: "Pos SAR Lama"}], baru = S.lembagaBaru({pos_sar: [{id: "pos-sar-x", nama: "Pos SAR Baru"}, {id: "pos-sar-y", nama: "Pos SAR Y", induk: "tidak-ada"}]}, lama);
+  assert.deepEqual(baru.map(l => l.id), ["pos-sar-y"]); assert.equal(baru[0].induk, undefined);
+  const le = S.lembagaEkstra({daftar_hitam_cocok: [{nama: "Refa Tech Solutions", cocok_ke: "katalog_penyedia", dasar: "nama ternormalkan ketat; 000.3/0560/III/2026 (aktif)"}]}, [{id: "penyedia-refa-tech-solutions", nama: "Refa Tech Solutions"}]);
+  assert.equal(le.lembaga["penyedia-refa-tech-solutions"].daftar_hitam.aktif, true);
+  assert.equal(S.hibahBaru([{judul: "Riset A", tahun: 2024}], [{judul: "riset a", tahun: 2024}, {judul: "Riset B", tahun: 2024}]).length, 1);
+});
