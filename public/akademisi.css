@@ -1917,3 +1917,47 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-sdl-h .ak-ikon{width:13px;height:13px}.ak-sdl-h span{flex:1}.ak-sdl-h em{font-style:normal;font-size:10.5px;background:var(--surface);border-radius:999px;padding:1px 8px;letter-spacing:0}
 /* tab Wilayah: pilihan bencana tidak dipakai */
 .ak:has(> #akv-wilayah:not([hidden])) > .ak-bpanel{display:none!important}
+/* tabel pembungkus tidak terkena batas lebar tooltip lama */
+.ak-tw:has(> table){max-width:none!important;width:100%;display:block}
+/* rincian bantuan per kejadian */
+.ak-rng-urut{margin-bottom:10px}
+.ak-rng{list-style:none;margin:0;padding:0;display:grid;gap:8px}
+.ak-rng li{border:1px solid var(--line);border-radius:12px;padding:10px 14px;display:grid;gap:6px;background:#fff}
+.ak-rng-a{display:grid;grid-template-columns:48px minmax(0,1fr) auto;gap:12px;align-items:baseline}
+.ak-rng-th{font-weight:800;color:var(--brand2);font-variant-numeric:tabular-nums}
+.ak-rng-a b{font-size:13.5px;font-weight:700;line-height:1.35}
+.ak-rng-v{font-weight:800;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ak-rng-b{display:block;height:6px;border-radius:999px;background:var(--surface);margin-left:60px}.ak-rng-b u{display:block;height:100%;border-radius:999px;background:#1c7ed6}
+.ak-rng-p{display:flex;flex-wrap:wrap;align-items:center;gap:4px;margin-left:60px;font-size:11px}
+.ak-rng-p > span:first-child{color:var(--ink2);font-weight:700;margin-right:4px}
+.ak-rng-s{margin-left:auto;font-size:11px;color:var(--brand2);text-decoration:none;font-weight:700}
+@media (max-width:600px){.ak-rng-b,.ak-rng-p{margin-left:0}}
+/* grafik batang: kolom nilai rata kiri dan sejajar */
+.ak-br{grid-template-columns:minmax(120px,200px) minmax(0,1fr) 150px!important}
+.ak-bv{justify-content:flex-start!important;min-width:0}
+/* pendanaan bertumpuk: segmen jenis selebar wadah, legenda rata tengah */
+.ak-stk-jn{display:flex!important;width:100%!important}.ak-stk-jn button{flex:1 1 0!important;justify-content:center}
+.ak-stk-leg{justify-content:center}
+/* grafik batang tahunan bantuan negara (interaktif) */
+.ak-thn{display:flex;align-items:flex-end;gap:4px;height:180px;padding:24px 0 22px;border-bottom:1px solid var(--line);position:relative}
+.ak-thn-k{flex:1 1 0;min-width:10px;height:100%;display:flex;flex-direction:column;justify-content:flex-end;align-items:center;position:relative;cursor:default;outline:none}
+.ak-thn-k i{display:block;width:72%;max-width:28px;background:#1c7ed6;border-radius:5px 5px 0 0;transition:background .15s}
+.ak-thn-k small{position:absolute;bottom:-18px;font-size:10px;color:var(--ink2)}
+.ak-thn-k b{position:absolute;bottom:calc(100% + 2px);left:50%;transform:translateX(-50%);white-space:nowrap;font-size:11px;font-weight:800;background:#fff;border:1px solid var(--line);border-radius:8px;padding:3px 7px;box-shadow:0 6px 16px rgb(15 30 60 / .12);opacity:0;pointer-events:none;transition:opacity .12s;z-index:2}
+.ak-thn-k:hover i,.ak-thn-k:focus-visible i{background:#0b5cad}
+.ak-thn-k:hover b,.ak-thn-k:focus-visible b{opacity:1}
+.ak-thn-k b{bottom:auto;top:-22px}
+/* penulis lembaga berlogo */
+.ak-pnl{all:unset;box-sizing:border-box;display:inline-flex;align-items:center;gap:7px;height:30px;padding:0 10px 0 5px;border:1px solid var(--line);border-radius:999px;background:#fff;font-size:12px;font-weight:700;color:var(--ink)}
+button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
+.ak-pnl img,.ak-pnl > svg{width:20px;height:20px;border-radius:50%;object-fit:contain;background:#fff;flex:none}
+.ak-pnl em{font-style:normal;font-size:11px;font-weight:800;color:var(--brand2);background:var(--surface);border-radius:999px;padding:1px 7px}
+/* grafik batang lebih rapat */
+.ak-bars{gap:0!important}
+.ak-br{min-height:28px!important;padding:2px 8px!important}
+/* sampul buku tidak memanjang */
+.ak-bk3-smp{max-height:280px;overflow:hidden;align-self:center;margin-inline:auto}
+.ak-bk3-smp img{max-height:280px;object-fit:cover}
+/* pilihan bencana di layar sempit: tidak terpotong */
+@media (max-width:1100px){.ak-bpanel .ak-bencana.ak-chip{grid-template-columns:repeat(4,minmax(0,1fr))!important}}
+@media (max-width:760px){.ak-bpanel .ak-bencana.ak-chip{grid-template-columns:repeat(3,minmax(0,1fr))!important}.ak-bpanel .ak-bencana button span{display:none}}
