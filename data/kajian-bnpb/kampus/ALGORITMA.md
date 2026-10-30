@@ -13,7 +13,8 @@ Prinsip: tanpa ML hitam, tanpa LLM (KP T-C), stdlib saja, bisa dijelaskan per an
 
 ## 1. Kunci wilayah
 
-Kunci tunggal modul = **kode IRBI 4 digit** (`public/data/wilayah/indeks.json`, 548 kab).
+Kunci tunggal modul = **kode IRBI 4 digit** (`public/data/wilayah/indeks.json`: 514 kab/kota
+berkode 4 digit + 34 baris provinsi 2 digit = 548 baris; hanya 514 yang dipakai).
 Crosswalk `public/data/kemitraan/kode.json`:
 
 ```json
@@ -28,10 +29,12 @@ Cara bangun (`scripts/kemitraan/kode.py`): pakai `peta()`/`nk()`/ALIAS dari
 `public/geo/kabupaten/<prov>.json` (poligon hanya berproperti `kab` = nama, jadi dicocokkan
 lewat nama ternormalisasi dalam prov yang sama). Sumber kode lain: `desa_cari.json` (Kemendagri,
 hanya 513 kab), `public/data/neraca_air/kab.json` dan `public/data/kejadian/kekeringan-<bps>.json`
-(BPS, sebagian). Kolom yang tak tersedia = null; tidak ada sasaran cakupan BPS.
+(BUKAN BPS: neraca_air memakai kode IRBI, berkas kekeringan memakai nomor urut sumbernya,
+mis. Kota Bandung 3211). Kolom `bps` = null untuk semua kab sampai pemilik memberi daftar BPS resmi;
+kolom bantu `kekeringan` menyimpan nomor berkas kekeringan yang cocok lewat nama (245 kab).
 
 Uji: 3171 IRBI = "Kota Administrasi Jakarta Pusat" (bukan BPS 3171 Jaksel); ≥ 500 kode
-ber-`kemendagri`; 548 ber-`pusat`; tiap null tercatat di `kode_gagal.json` dengan alasan.
+ber-`kemendagri`; 514 ber-`pusat`; tiap null tercatat di `kode_gagal.json` dengan alasan.
 
 ## 2. Taksonomi masalah
 
@@ -82,7 +85,7 @@ saran = argmax bila skor ≥ 2, else kosong. Tidak pernah menimpa pilihan penggu
 | M | model platform: kelas risiko harian rata-rata 90 hari kecamatan teratas | `risiko_kecamatan.json` (berlabel belum diuji) |
 
 Data hilang: komponen null → dikeluarkan dan bobot sisanya dinormalkan ulang; tampilkan
-"n dari 7 komponen tersedia". Bila < 4 komponen → masalah tidak dibuat.
+"n dari 6 komponen skor tersedia" (M bukti saja, tidak dihitung). Bila < 4 → masalah tidak dibuat.
 
 ### 3.2 Skor prioritas otomatis
 ```

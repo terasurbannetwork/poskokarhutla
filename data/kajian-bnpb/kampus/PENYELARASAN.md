@@ -9,7 +9,7 @@ Laporan peninjau berkonteks bersih (AGENTS.md §3.2) atas 11 dokumen, dicocokkan
 `kodeBaru` (src/bnpb.js:23), `hashSandi` (src/pendataan.js:22), `cekInstitusi`/`sisipInstitusi`/
 `statusMou` (src/relawan.js:516/543/53), hapus dummy relawan (847–855), `scheduled`
 (worker.js:840), pengingat 00:40 UTC dan bersih menit 17, `RUMPUN` (akademisi.js:15–30),
-`indeks.json` 548 kode dengan 3171 = Jakarta Pusat, relawan jalur `kampus` + `kampus_id`,
+`indeks.json` 514 kode dengan 3171 = Jakarta Pusat, relawan jalur `kampus` + `kampus_id`,
 status relawan dan penugasan, `riset_usulan 'disetujui'`, jenis `riset_luaran`, `laju_bnpb`,
 `meja_catatan.petugas_id`.
 

@@ -131,14 +131,14 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Rujukan:** ALG §2–§9; RU §2.1. **Ukuran:** M
 
 #### KM-A03 Crosswalk kode wilayah `kode.py`
-- **Tujuan:** `kode.json` (548 kab IRBI → prov, nama, bps, kemendagri, kunci_nama, pusat).
+- **Tujuan:** `kode.json` (514 kab IRBI → prov, nama, bps, kemendagri, kunci_nama, pusat).
 - **Berkas:** `scripts/kemitraan/kode.py`, `public/data/kemitraan/kode.json`, `public/data/kemitraan/kode_gagal.json`, `scripts/umum/nama_wilayah.py` (baru), `scripts/umum/profil_wilayah.py` (hanya mengimpor `nk`/`ALIAS` dari nama_wilayah; perilaku tetap).
 - **Antarmuka:** impor `peta`, `nk`, `ALIAS` PINDAHKAN `nk` dan `ALIAS` (fungsi murni) dari `scripts/umum/profil_wilayah.py` ke `scripts/umum/nama_wilayah.py`; `peta()` TIDAK dipakai (bergantung DIR_SUMBER luar; skrip itu `sys.exit` tanpa argumen). Pencocokan nama di `kode.py` memakai `nk`. Sumber kode: `public/data/wilayah/indeks.json` (IRBI), `public/data/desa_cari.json` (kemendagri, 513 kab), `public/data/neraca_air/kab.json` + `public/data/kejadian/kekeringan-*.json` (bps, sebagian), `public/geo/kabupaten/<prov>.json` (properti `kab` = nama → centroid). `--cek` assert RU §2.2 D2.
 - **Di luar:** blok profil.
 - **Pengerja / pemeriksa:** `kampus` (kode.py) + `pipa-umum` (nama_wilayah.py, profil_wilayah.py) / `validasi-model`.
 - **Model:** sonnet.
 - **Dependensi:** –. **Paralel dengan:** A02, A04–A08. **Isolasi:** worktree ya.
-- **Selesai bila:** 548 kode; ≥ 500 punya `kemendagri`; 548 punya `pusat`; `kode_gagal.json` berisi tiap null dengan alasan; 3171 = "Kota Administrasi Jakarta Pusat"; deterministik (dua kali jalan, byte sama).
+- **Selesai bila:** 514 kode; ≥ 500 punya `kemendagri`; 514 punya `pusat`; `kode_gagal.json` berisi tiap null dengan alasan; 3171 = "Kota Administrasi Jakarta Pusat"; deterministik (dua kali jalan, byte sama).
 - **Bukti:** `python3 -I scripts/kemitraan/kode.py --cek`.
 - **Rujukan:** ALG §1; PD §2; DT ADR-01. **Ukuran:** M
 
@@ -229,14 +229,14 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 ### 3.B Profil daerah dan buku
 
 #### KM-B01 Profil daerah: blok umum
-- **Tujuan:** `profil_daerah.py` membangun blok `wilayah, penduduk, sosek, irbi, inarisk_kec, kejadian, fasilitas, kapasitas, riwayat_luar, sumber` untuk 548 kab.
+- **Tujuan:** `profil_daerah.py` membangun blok `wilayah, penduduk, sosek, irbi, inarisk_kec, kejadian, fasilitas, kapasitas, riwayat_luar, sumber` untuk 514 kab.
 - **Berkas:** `scripts/kemitraan/profil_daerah.py`, `public/data/kemitraan/daerah/*.json`, `tests/kemitraan/fixtures/profil_mini/` (3 kab mini).
 - **Antarmuka:** skema PD §1 v1; tiap blok `{…, sumber, tanggal, yakin}`; peta sumber PD §2; titik→kab ray casting stdlib; `--cek` = RU §2.2 D1–D5, D7; `--kab 6211` untuk satu kab.
 - **Di luar:** blok per bahaya (B02), masalah (B03).
 - **Pengerja / pemeriksa:** `kampus` / `selera-angka` (format), `validasi-model` (tidak ada angka karangan).
 - **Model:** sonnet.
 - **Dependensi:** A03. **Paralel dengan:** A10, C01, C06. **Isolasi:** worktree ya.
-- **Selesai bila:** 548 berkas valid; null bukan nol; ≤ 60 KB; deterministik.
+- **Selesai bila:** 514 berkas valid; null bukan nol; ≤ 60 KB; deterministik.
 - **Bukti:** `python3 -I scripts/kemitraan/profil_daerah.py --cek`.
 - **Rujukan:** PD §1, §2; ALG §1. **Ukuran:** L
 
@@ -261,7 +261,7 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 - **Rujukan:** ALG §3; PD §1. **Ukuran:** M
 
 #### KM-B04 Ringkas + profil provinsi
-- **Tujuan:** `ringkas.json` (548 baris: kode, nama, prov, kelas IRBI 0/1, 3 bahaya teratas, n masalah per kelas, kejadian 2015–2025, kapasitas n/5; TANPA siluet) dan `prov/<NN>.json` (PD §4).
+- **Tujuan:** `ringkas.json` (514 baris: kode, nama, prov, kelas IRBI 0/1, 3 bahaya teratas, n masalah per kelas, kejadian 2015–2025, kapasitas n/5; TANPA siluet) dan `prov/<NN>.json` (PD §4).
 - **Berkas:** `scripts/kemitraan/profil_daerah.py` (fungsi `ringkas`, `prov`), keluaran.
 - **Pengerja / pemeriksa:** `kampus` / `selera-angka`.
 - **Model:** sonnet. **Dependensi:** B03. **Isolasi:** worktree ya.

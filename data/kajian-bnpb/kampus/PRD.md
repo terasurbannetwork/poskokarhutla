@@ -34,7 +34,7 @@ Satu modul yang:
 ### 1.3 Ukuran keberhasilan
 | Kode | Ukuran | Sasaran 2027 | Sumber hitung |
 | --- | --- | --- | --- |
-| U1 | Kab/kota dengan profil daerah siap cetak | 548 (semua kode IRBI) | pipeline `profil_daerah.py` |
+| U1 | Kab/kota dengan profil daerah siap cetak | 514 (semua kode IRBI) | pipeline `profil_daerah.py` |
 | U2 | Masalah tervalidasi pendataan | ≥ 300 di ≥ 38 prov | `km_masalah.status='tervalidasi'` |
 | U3 | Rekomendasi pakar lolos uji relevansi | nDCG@10 ≥ pembanding + 0,10 | RU §2.9 |
 | U4 | Proposal bersama diajukan ke donor | ≥ 3 (slide 28) | `km_proposal` |
@@ -72,7 +72,7 @@ Mereka tercatat sebagai kontak di `kontak_pemangku` dan muncul di lembar aktivas
 
 | Tampilan (`?tampil=`) | Isi | Hak |
 | --- | --- | --- |
-| `daerah` (bawaan) | daftar 548 kab/kota, kartu daerah, lembar profil, ikon Buku | ST, PM, BP (kabnya), KK (baca) |
+| `daerah` (bawaan) | daftar 514 kab/kota, kartu daerah, lembar profil, ikon Buku | ST, PM, BP (kabnya), KK (baca) |
 | `masalah` | belanja masalah: daftar, kategori, prioritas, pakar, pertanyaan | ST, PM, BP, KK (baca masalah terbuka) |
 | `riset` | agenda otomatis, hibah, inovasi | ST, PM, KK |
 | `dana` | kalender donor, cocok donor, konsorsium, proposal | ST, PM, KK |
@@ -132,7 +132,7 @@ magang, desa binaan, luaran. Rumus ALG §7. Simpul tanpa aktivitas 365 hari dita
 ## 5. P1 Belanja Masalah Daerah
 
 ### F-M1 Profil daerah
-- **Tujuan:** profil lengkap semua bencana per kab/kota (548 kode IRBI) dan per provinsi.
+- **Tujuan:** profil lengkap semua bencana per kab/kota (514 kode IRBI) dan per provinsi.
 - **Isi:** PD §2 (bab demi bab). Ringkasnya: gambaran wilayah, IRBI 2015–2025 per bahaya,
   InaRISK per kecamatan, riwayat kejadian 2008–2025, keluaran model platform per bahaya,
   paparan (penduduk, rentan, bangunan, sekolah, faskes), sosek BPS, kapasitas (BPBD,
@@ -321,7 +321,7 @@ kode/ID dummy bertanda; dummy tidak masuk angka dasbor.
 | Fase | Isi | Gerbang selesai |
 | --- | --- | --- |
 | A | Fondasi teknis: crosswalk kode, migrasi, rute dasar, cangkang layar | uji skema + uji layar cangkang hijau |
-| B | P1 profil daerah + buku | 548 berkas daerah, buku tercetak 3 contoh kab |
+| B | P1 profil daerah + buku | 514 berkas daerah, buku tercetak 3 contoh kab |
 | C | P1 masalah, pakar, pertanyaan, pendataan | uji relevansi berjalan; pendataan luring lolos |
 | D | Fondasi pintu kampus | daftar → setuju → kode → halaman saya |
 | E | P2 riset dan dana | siklus hibah ujung ke ujung lolos |

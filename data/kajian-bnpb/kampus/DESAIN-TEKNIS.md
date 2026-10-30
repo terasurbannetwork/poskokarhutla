@@ -499,7 +499,7 @@ PBKDF2-SHA256 100k). Sesi 12 jam, sha di `km_sesi`.
 python3 scripts/kemitraan/kode.py --cek && python3 scripts/kemitraan/kode.py
 python3 scripts/kemitraan/profil_daerah.py --cek && python3 scripts/kemitraan/profil_daerah.py
 python3 scripts/kemitraan/pertanyaan.py --cek        # salin pertanyaan.json + kamus.json ke public
-python3 scripts/kemitraan/profil_daerah.py --jaga            # tolak commit bila < 548 berkas atau tanggal mundur (jaga_segar.py TIDAK dipakai: hanya memeriksa meta/hotspot)
+python3 scripts/kemitraan/profil_daerah.py --jaga            # tolak commit bila < 514 berkas atau tanggal mundur (jaga_segar.py TIDAK dipakai: hanya memeriksa meta/hotspot)
 python3 scripts/kemitraan/cocok_baru.py                       # masalah antre → R2 + POST ekspor/cocok
 git commit -- public/data/kemitraan                         # pola commit pipeline lain
 ```
@@ -524,8 +524,8 @@ Secret: `OPENALEX_KEY`, `CLOUDFLARE_API_TOKEN`, `CLOUDFLARE_ACCOUNT_ID`, `KM_PIP
   akademisi; salin entri).
 - `_headers`: berkas statis baru ±40 → periksa `scripts/terbit/versi.py` (≤ 100 aturan;
   pakai pola `/kemitraan/*` satu aturan).
-- Performa: JSON daerah ≤ 60 KB; daftar 548 kab dari `ringkas.json` (≤ 120 KB) bukan
-  memuat 548 berkas; buku memuat 1 berkas daerah + geo prov.
+- Performa: JSON daerah ≤ 60 KB; daftar 514 kab dari `ringkas.json` (≤ 120 KB) bukan
+  memuat 514 berkas; buku memuat 1 berkas daerah + geo prov.
 - Dummy: kampus dummy bernama "Universitas Contoh N" (N 1–3), kab4 dummy memakai kab nyata
   tetapi `dummy=1`; kode surat `KM/SD/<tahun>/D…`; dasbor `WHERE dummy=0`.
 

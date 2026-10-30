@@ -55,7 +55,7 @@ ke). Semua kiriman ke luar = tombol yang ditekan manusia.
 
 ### 2.1 Profil siap sebelum siapa pun datang
 1. Harian 02.30 UTC (`kemitraan.yml`, sesudah `lintas.yml`): `kode.py` (bila sumber
-   berubah) → `profil_daerah.py` → 548 + 38 JSON → commit ke `public/data/kemitraan/`.
+   berubah) → `profil_daerah.py` → 514 + 38 JSON → commit ke `public/data/kemitraan/`.
 2. Bulanan tanggal 2 (`kemitraan-pakar.yml`): `korpus.py` → `indeks_bm25.py` →
    `cocok_pakar.py` → R2 `kemitraan/korpus|indeks_bm25|cocok/`.
 3. Tidak ada langkah manusia. Gagal sumber → blok `null` + catatan di `sumber[]`; gagal

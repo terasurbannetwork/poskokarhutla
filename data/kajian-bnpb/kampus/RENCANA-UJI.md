@@ -51,7 +51,7 @@ Per fungsi DT §5.1 ≥ 5 kasus. Wajib termasuk:
 ### 2.2 Profil daerah (pipeline)
 | No | Diberikan | Ketika | Maka | Bukti |
 | --- | --- | --- | --- | --- |
-| D1 | sumber repo saat ini | `profil_daerah.py` | 548 berkas kab + 38 prov, valid skema v1, tiap ≤ 60 KB | `profil_daerah.py --cek` |
+| D1 | sumber repo saat ini | `profil_daerah.py` | 514 berkas kab + 38 prov, valid skema v1, tiap ≤ 60 KB | `profil_daerah.py --cek` |
 | D2 | kab IRBI 3171 | baca berkas | nama "Kota Administrasi Jakarta Pusat" (persis indeks.json) | `kode.py --cek` |
 | D3 | kab tanpa DIBI 12 bln | baca `kejadian.dampak_12bln` | `null` bukan 0 | `--cek` |
 | D4 | blok non-null | – | punya sumber, tanggal, yakin | `--cek` |

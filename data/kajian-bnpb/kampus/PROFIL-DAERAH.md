@@ -3,7 +3,7 @@
 Dokumen kelima dalam urutan otoritas. Kalah dari KP, PRD, ALUR, ALG; menang atas DS, DT,
 KM, RU, TIKET. Versi 1.0, 30 Okt 2026.
 
-Profil = berkas JSON per kab `public/data/kemitraan/daerah/<kode4>.json` (548) + per prov
+Profil = berkas JSON per kab `public/data/kemitraan/daerah/<kode4>.json` (514) + per prov
 `.../prov/<NN>.json` (38), dibangun `scripts/kemitraan/profil_daerah.py` (harian, setelah
 pipeline sumber). Buku = halaman cetak `/kemitraan/buku?kab=<kode4>` yang membaca JSON itu.
 
@@ -57,11 +57,11 @@ diambil dari R2 lewat API saat dibuka akun berhak.
 | kejadian.musim | `banjir/data/riwayat.json` | kunci_nama | |
 | gempa | `gempa/data/risiko.json`, `riwayat_m5.json` (titik → kab via poligon) | kunci_nama / poligon | |
 | karhutla | `data/riwayat_wilayah/kab.json`, `data/lahan/*gambut*`, `data/khg_prioritas.json` | kunci_nama | |
-| kekeringan | `data/kekeringan_wilayah.json`, `kekeringan_riwayat.json`, `data/kejadian/kekeringan-<bps>.json` | bps | |
+| kekeringan | `data/kekeringan_wilayah.json`, `kekeringan_riwayat.json`, `data/kejadian/kekeringan-<n>.json` | `kode.json[kab4].kekeringan` (nomor berkas, bukan BPS) | 245 kab |
 | gunungapi | `gunungapi/data/paparan.json`, `gunung.json` | jarak titik gunung ke poligon kab ≤ 50 km | |
 | pesisir | `pesisir/data/abrasi.json` | transek di dalam poligon | sering null (5 situs) |
 | udara | `udara/data/riwayat.json` | prov → kab | yakin estimasi-model |
-| neraca_air | `data/neraca_air/kab.json` | bps | Jawa saja |
+| neraca_air | `data/neraca_air/kab.json` | kab4 (berkas memakai kode IRBI) | Jawa saja |
 | model | `banjir/data/risiko_kecamatan.json`, `risiko_ujibalik.json`, `gerbang_model.json`, longsor `public/longsor/data/*` | kunci_nama kec | label uji wajib |
 | fasilitas | `data/sekolah.json`, `data/fasilitas.json` (titik → kab via poligon), `risiko_kecamatan` kolom sekolah/faskes | poligon | sekolah 9 prov saja → tandai cakupan |
 | kapasitas.relawan_aktif | `/api/relawan/kapasitas` (k-anonim) diunduh pipeline | kab | < 5 → "di bawah 5" |
@@ -93,12 +93,12 @@ merek Centurisk97 kecil di kaki). Tiap halaman kaki: "Sumber: … · Data per <t
 Edisi publik (T-B, nanti): bab 8 dibuang, kontak BPBD tetap (data resmi).
 
 ## 4. Profil provinsi
-Agregat 548 → 38: jumlah/rerata tertimbang penduduk, daftar kab urut IRBI, masalah P1
+Agregat 514 → 38: jumlah/rerata tertimbang penduduk, daftar kab urut IRBI, masalah P1
 per kab, peta kab berwarna kelas. Dipakai lembar prov dan buku ringkas provinsi
 (`/kemitraan/buku?prov=NN`, bab: ringkasan, tabel kab, masalah P1 lintas kab).
 
 ## 5. Uji isi (RU §4)
-- 548 berkas ada, valid skema v1, ≤ 60 KB.
+- 514 berkas ada, valid skema v1, ≤ 60 KB.
 - Tiap blok non-null punya sumber + tanggal + yakin.
 - Pulang Pisau (6211): karhutla tidak null, gambut_ha > 0.
 - Jakarta Pusat (IRBI 3171) bukan Jakarta Selatan.
