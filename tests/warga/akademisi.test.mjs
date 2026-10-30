@@ -116,3 +116,24 @@ test("karya ?orcid= sah: ORCID ditanya hanya di halaman 1; orcid liar diabaikan"
   const r3 = await api("/api/akademisi/karya/A5017898746?orcid=jahat/../x", ADMIN);
   assert.equal(r3.j.orcid, undefined); assert.equal(minta.filter(x => x.hostname === "pub.orcid.org").length, 0);
 });
+
+test("rincian riset: staf saja; abstrak dirakit dari indeks terbalik; tanpa binding AI = ai null; OpenAlex gagal = 502; id liar tidak mencapai rute", async () => {
+  minta = [];
+  assert.equal((await api("/api/akademisi/riset/W2004123456")).status, 401);
+  assert.equal(minta.length, 0);
+  jawab = u => new Response(JSON.stringify({abstract_inverted_index: {"Peat": [0], "fires": [1], "burn": [2], ".": [3]}, topics: [{display_name: "Peatland fires", field: {display_name: "Earth Sciences"}}],
+    keywords: [{display_name: "peat"}], best_oa_location: {pdf_url: "https://contoh.org/a.pdf"}, counts_by_year: [{year: 2021, cited_by_count: 4}, {year: 2020, cited_by_count: 2}], cited_by_count: 6}));
+  const r = await api("/api/akademisi/riset/W2004123456", ADMIN);
+  assert.equal(r.status, 200);
+  assert.equal(r.j.abstrak, "Peat fires burn.");
+  assert.deepEqual(r.j.topik, [{nama: "Peatland fires", bidang: "Earth Sciences"}]);
+  assert.equal(r.j.pdf, "https://contoh.org/a.pdf");
+  assert.deepEqual(r.j.tahunan, [[2020, 2], [2021, 4]]);
+  assert.equal(r.j.ai, null);
+  assert.equal(minta[0].pathname, "/works/W2004123456"); assert.equal(minta[0].searchParams.get("api_key"), "kunci-uji");
+  jawab = () => new Response("{}", {status: 429});
+  assert.equal((await api("/api/akademisi/riset/W2004123457", ADMIN)).status, 502);
+  minta = [];
+  assert.notEqual((await api("/api/akademisi/riset/A2004123457", ADMIN)).status, 200);
+  assert.equal(minta.length, 0);
+});

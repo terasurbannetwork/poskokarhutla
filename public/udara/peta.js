@@ -24,7 +24,7 @@ const Peta = {
       if (w) p.style.setProperty("--lp", w + "px"); if (t) p.style.setProperty("--tw", t + "px"); };
     const ro = new ResizeObserver(lebar); ro.observe($(".panel")); ro.observe($(".tools")); lebar();
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 12, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
-    peta.once("load", () => window.NASA?.pasang(peta, ["co", ["aod", "Kualitas udara"]]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
+    peta.once("load", () => window.NASA?.pasang(peta, ["co", ["aod", "Kualitas udara"], ["plkemenhut", "Tutupan lahan"]]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
     peta.touchZoomRotate.disableRotation();
     import("../inti/peta/konteks.js").then(m => m.pasang(peta, "udara")).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");

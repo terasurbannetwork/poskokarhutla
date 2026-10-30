@@ -297,10 +297,20 @@ antar-lipatan); bobot kelas & fokal hanya menggeser peluang, dan ambang sudah me
 (dipertahankan sebagai opsi; tidak dipakai karena aturan pilih = AP tertinggi). Kisi: kedalaman 5 / 150 pohon / lr 0,06
 (AP 0,486) > 4/150 (0,484) > 3/300 (0,479). Terpilih B (38 fitur) dan U (B + 4 fitur ulang + NOAA-20).
 
-**Ambang WASPADA** (dipilih di luar-lipatan, peluang terkalibrasi Platt): 4,84% = recall 70%, presisi 19%, 10 dari tiap
+> **Dihitung ulang 26 Okt 2026 dengan peta gambut baru (PRIMS/BBSDLP, `b502f0d2`).** Seluruh angka `lolos` di bagian ini (CV,
+> Platt, ambang, tabel, per lahan, selang) kini dari `lolos.py cv | selang | akhir | selang` pada `lolos_baris.pkl` yang
+> kolom `gambut` + strata-nya diganti dari poligon baru di sel deteksi pertama (alur `bangun` tidak dijalankan ulang;
+> penggantinya diverifikasi: dengan poligon lama kolom tersimpan terbentuk ulang 438.217 dari 438.217 baris). Angka lama
+> (GFW/Gumbricht) tersimpan di git `b502f0d2^` sebagai pembanding: ambang 4,84%, Platt (−0,2751; 0,9249), gambut = 41,5% titik uji.
+> Dengan peta baru gambut tinggal 17,8% titik (77.843 dari 438.217 baris; lama 44,5%). Yang TIDAK dihitung ulang: strata
+> pada `uji_awal.pkl` (500 deteksi pertama) dan `sebaran_kasus.json` (123 kasus) masih dari peta lama, jadi kolom per lahan
+> dua himpunan itu dan cakupan selang uji-2 per lahan tetap berlabel lama; model sel (`hasil.json`) juga dilatih dengan
+> fitur gambut lama (uji baris: AUC sama, 0,9156 vs 0,9151).
+
+**Ambang WASPADA** (dipilih di luar-lipatan, peluang terkalibrasi Platt): 4,92% = recall 70%, presisi 19,6%, 10 dari tiap
 100 titik baru ditandai. Ambang biaya (anggapan: api besar terlewat 10× lebih mahal dari alarm palsu, p ≥ 1/11):
-recall 58%, presisi 30%. Ramal ulang: ambang 10,1%. Per tahun (luar-lipatan) recall 45–74% (tahun sepi seperti 2020/2022
-lebih rendah, n lolos kecil); per lahan recall gambut 76%, mineral 52%, sabana 47% (ambang tunggal; lahan mineral/sabana
+recall 58%, presisi 30%. Ramal ulang: ambang 9,7%. Per tahun (luar-lipatan) recall 44–76% (tahun sepi seperti 2020/2022
+lebih rendah, n lolos kecil); per lahan recall gambut 81%, mineral 60%, sabana 61% (ambang tunggal; lahan mineral/sabana
 jarang lolos sehingga ambang global tidak menjangkaunya).
 
 **Sebelum → sesudah** (uji 2024–2026 = LIHAT KEDUA, sedikit optimistis; kasus 2015–2023 memakai prediksi luar-lipatan):
@@ -309,26 +319,29 @@ jarang lolos sehingga ambang global tidak menjangkaunya).
 | --- | --- | --- | --- | --- | --- |
 | 500 deteksi pertama uji (42 lolos) | lama, MC ≥ 50% | 0,70 | 21% | 90% | 0,2% |
 | 〃 | lama, MC ≥ 20% | 0,70 | 31% | 43% | 3,7% |
-| 〃 | **baru** | **0,81** | **64%** | 22% | 20,5% |
-| 〃 | baru, ramal ulang 14 j | 0,84 | 62% | 32% | 12,0% |
-| Semua titik baru uji (97.749; 2.922 lolos) | baru | 0,908 | 67% | 22% | 7,5% |
-| 〃 | baru, ramal ulang 14 j | 0,955 | 76% | 37% | 4,0% |
+| 〃 | **baru** | **0,81** | **67%** | 22% | 21,8% |
+| 〃 | baru, ramal ulang 14 j | 0,84 | 60% | 29% | 13,3% |
+| Semua titik baru uji (97.749; 2.922 lolos) | baru | 0,908 | 68% | 21% | 7,9% |
+| 〃 | baru, ramal ulang 14 j | 0,955 | 77% | 36% | 4,1% |
 | 123 kasus (58 lolos) | lama, MC ≥ 50% | 0,72 | 31% | 86% | 4,6% |
-| 〃 | **baru** | **0,83** | **64%** | 76% | 18,5% |
-| 〃 | baru, ramal ulang 14 j | 0,90 | 72% | 79% | 16,9% |
+| 〃 | **baru** | **0,83** | **67%** | 75% | 20,0% |
+| 〃 | baru, ramal ulang 14 j | 0,89 | 76% | 80% | 16,9% |
 
-Kelas "besar" (≥ 1.000 ha) di 123 kasus: benar 34% → 72% (ramal ulang 75%); "sedang" 53% → 49% (ulang 60%); "tetap kecil"
-100% → 100%. Akurasi seluruhnya 65% → 73%. Uji per lahan (semua titik baru): gambut AUC 0,88, recall 73%, presisi 22%,
-alarm palsu 14%; mineral 0,92 / 52% / 21% / 2,9%; sabana 0,92 / 57% / 24% / 2,8%. Per tahun uji: 2024 recall 63%,
-2025 54%, 2026 68%. Harga yang dibayar jelas: 500 titik uji yang diperkaya api ≥ 3 sel (dan 46% gambut) membuat 1 dari 5
+Kelas "besar" (≥ 1.000 ha) di 123 kasus: benar 34% → 75% (ramal ulang 78%); "sedang" 53% → 51% (ulang 62%); "tetap kecil"
+100% → 98% (ulang 100%). Akurasi seluruhnya 65% → 74%. Uji per lahan (semua titik baru): gambut AUC 0,87, recall 81%, presisi 22%,
+alarm palsu 24%; mineral 0,90 / 58% / 20% / 5,2%; sabana 0,90 / 62% / 19% / 5,5% (peta lama: gambut 0,88 / 73% / 22% / 14%;
+mineral 0,92 / 52% / 21% / 2,9%; sabana 0,92 / 57% / 24% / 2,8%). Per tahun uji: 2024 recall 63%,
+2025 56%, 2026 68%. Harga yang dibayar jelas: 500 titik uji yang diperkaya api ≥ 3 sel (dan 46% gambut) membuat 1 dari 5
 api kecil ikut ditandai; pada populasi titik baru sebenarnya 1 dari 13. Pada ramal ulang, titik yang sudah ≥ 10 sel pada
 14 jam dikeluarkan pun AUC masih 0,93 (recall 64%, presisi 24%).
 
 **Selang luas terkalibrasi (konformal, `lolos.py selang`).** CQR di ruang log(1 + sel baru): P10/P90 Monte Carlo dilebarkan
 q per lahan × tanda WASPADA × hari, dikalibrasi pada 540 titik awal deteksi pertama 2015–2023 dengan model sel yang tidak
-melihat tahunnya. q = 0 untuk titik non-WASPADA (sudah ≥ 80% tercakup), gambut-WASPADA 0,41/0,69/0,69, gabungan-WASPADA
-0/0,69/0,69. Cakupan 24/48/72 j: uji 2024–2026 76/72/70% → **78/75/73%** (deteksi pertama 80/76/74%; gambut 73/64/61%
-→ 77/69/67%); 123 kasus 52/48/42% → 55/57/55%; kelas "besar" 3% → 22% pada 72 jam. **Belum tercapai untuk api yang benar-benar
+melihat tahunnya. q = 0 untuk titik non-WASPADA (sudah ≥ 80% tercakup), WASPADA (semua lahan) 0,69/0,69/0,69. Dengan peta gambut baru kelompok
+gambut tak lagi punya q sendiri (< 40 titik kalibrasi per tanda; memakai gabungan `*`); peta lama: gambut-WASPADA 0,41/0,69/0,69,
+gabungan-WASPADA 0/0,69/0,69. Cakupan 24/48/72 j: uji 2024–2026 76/72/70% → **80/75/73%** (deteksi pertama 81/77/74%; gambut
+[strata lama] 73/64/61% → 78/70/67%); 123 kasus 52/48/42% → 61/57/55%; kelas "besar" 3% → 22% pada 72 jam. Kalibrasi
+ini dijalankan di mesin yang sebagian berkas cuacanya tak terbaca: peristiwa dengan berkas macet dibuang dari undian 540 titik. **Belum tercapai untuk api yang benar-benar
 besar**: selang 80% pada populasi memang meleset untuk ~10% teratas, dan pustaka kasus diperkaya api terbesar tiap tahun.
 Cakupan pada populasi mendekati 80%; untuk api besar selang tetap terlalu sempit dan tanda WASPADA-lah yang memberi
 peringatan, bukan rentangnya.
@@ -342,3 +355,87 @@ sesudah jalan CI pertama dan nilai pertama ± 4 hari sesudahnya (belum ada angka
 
 Yang tidak dikerjakan: kedalaman gambut (poligon gambut hanya punya kode provinsi), kanal per konsesi, prakiraan hujan
 sebagai fitur terpisah (hujan24 di latih = ERA5, di prospektif = prakiraan: itulah yang diuji prospektif).
+
+## 13. Uji: perubahan tutupan lahan tahunan untuk model "akan membesar" (29 Okt 2026, `lab_tutupan.py`)
+
+**Didaftarkan SEBELUM metrik dihitung** (ekstraksi tutupan selesai lebih dulu, tanpa label). Bagian hasil di bawah ditulis sesudahnya.
+
+Pertanyaan: apakah tutupan lahan tahunan (dan perubahannya) menambah model `lolos.py` (konfigurasi B, 38 fitur, kedalaman 5 /
+150 pohon / lr 0,06, ambang = recall 70%)? Dipilih model ini, bukan model sel atau `risiko_mingguan.py`, karena (1) baris
+uji-baliknya lengkap di disk (438.217 titik api baru) sehingga seluruh uji jalan lokal tanpa mengunduh ulang FIRMS/cuaca dan
+(2) perubahan penutup lahan di sekitar titik api (hutan menjadi lahan terbuka/semak/kebun) berhubungan fisik dengan
+bahan bakar yang tersedia.
+
+**Sumber.** Impact Observatory Annual LULC v02, 10 m, 2017-2023, CC BY 4.0 (Microsoft Planetary Computer, koleksi
+`io-lulc-annual-v02`, COG Azure, token SAS anonim). Pengganti Google Dynamic World (butuh Earth Engine). Dibaca lewat
+overview 1/8 (80 m); dicek terhadap resolusi penuh pada satu jendela 3,2 km: porsi kelas sama (selisih <= 0,1 poin untuk
+pohon/tanaman/bangunan/semak). Kotak 39x39 piksel (3,1 km) di sekitar titik deteksi pertama.
+
+**Fitur (7, ditetapkan sekarang).** Dari kotak itu, porsi kelas terhadap piksel valid (bukan 0/awan; kotak dengan piksel valid
+< 50% = hilang):
+`tr_L`, `cr_L`, `ba_L`, `rg_L` (porsi pohon, tanaman, tanah terbuka, semak/padang tahun L) dan `d_tr`, `d_cr`, `d_open`
+(= tr, cr, ba+rg tahun L dikurangi tahun L-2). L = min(T-1, 2023) untuk peristiwa tahun T, jadi tutupan tahun berjalan tidak
+pernah dipakai. Nilai hilang = -9 (hilang bila L < 2017; perubahan hilang bila L-2 < 2017, yaitu T < 2020).
+Untuk 2024-2026 L = 2023 (usang 1-3 tahun; dilaporkan apa adanya).
+
+**Rancangan.** Baseline = B persis (38 fitur) dilatih ulang dengan `gbdt_np.py` (numpy); pembanding = B + 7 fitur; semua
+hiperparameter dan aturan pengambilan sampel latih (semua positif + 5% negatif, bobot 20) sama; 3 benih (skor dirata-ratakan).
+Validasi silang tinggal-satu-tahun, tahun uji 2020, 2021, 2022, 2023 (tahun yang punya perubahan; latih = semua tahun
+2015-2023 lainnya, termasuk yang fiturnya hilang). Lihat-kedua 2024-2026 (model dilatih 2015-2023) dilaporkan terpisah.
+Ablasi informasi: hanya tingkat (4 fitur), hanya perubahan (3 fitur).
+
+**Kriteria pasang (semua harus terpenuhi, ditetapkan sekarang):**
+1. delta AP (B+tutupan minus B) pada luar-lipatan 2020-2023 punya batas bawah selang 95% > 0, bootstrap berpasangan per klaster
+   (tahun x kotak 1 derajat); dan delta AUC juga batas bawah > 0.
+2. delta AP > 0 pada >= 3 dari 4 tahun uji.
+3. Lihat-kedua 2024-2026: delta AP >= 0 (estimasi titik).
+4. Presisi pada recall 70% tidak turun.
+Selain itu: tidak dipasang, model produksi tidak diubah.
+
+### Hasil (29 Okt 2026): GAGAL pada kriteria 2, TIDAK DIPASANG
+
+`venv/bin/python scripts/sebaran/lab_tutupan.py koordinat | tutupan | uji` (3 menit untuk `uji`, 8 menit untuk tutupan 14 zona x 7
+tahun; keluaran `data/raw/sebaran/tutupan/hasil_uji.json`, tidak ikut git). Baseline = B dilatih ulang dengan `gbdt_np.py`
+(bukan angka `lolos_hasil.json`, jadi sebanding hanya dengan pembandingnya di tabel ini). Semua selang = bootstrap berpasangan
+per klaster (tahun x kotak 1 derajat, 400 ulangan).
+
+| Himpunan | n (lolos) | Metrik | Baseline B | B + tutupan (7) | Selisih [selang 95%] |
+| --- | --- | --- | --- | --- | --- |
+| Luar-lipatan 2020-2023 | 52.572 (1.090) | AP | 0,4931 | 0,4944 | **+0,0013** [+0,0001; +0,0026] |
+| | | AUC | 0,9225 | 0,9234 | **+0,0009** [0,0000; +0,0018] |
+| | | Presisi @ recall 70% | 18,9% | 19,5% | +0,5 poin |
+| Lihat-kedua 2024-2026 (L = 2023) | 97.749 (2.922) | AP | 0,4709 | 0,4722 | +0,0013 [-0,0001; +0,0030] |
+| | | AUC | 0,9065 | 0,9076 | +0,0011 [+0,0005; +0,0018] |
+
+Ablasi (luar-lipatan 2020-2023): hanya **tingkat** (4 fitur) dAP +0,0014 [+0,0002; +0,0027]; hanya **perubahan** (3 fitur)
+dAP 0,0000 [-0,0002; 0,0000], dAUC 0,0000. Seluruh tambahan datang dari tingkat porsi tutupan (yang di sini mewakili tipe
+lahan/wilayah), bukan dari perubahan tutupan.
+
+Per tahun uji (dAP B+tutupan): 2020 -0,0009 (n lolos **44**), 2021 0,0000 (**3**), 2022 +0,0036 (**9**), 2023 +0,0016 (1.034).
+Pada 2024/25/26: +0,0011 / +0,0073 / +0,0011 (n lolos 46 / 39 / 2.837).
+
+Keputusan terhadap kriteria yang didaftarkan: (1) selang dAP/dAUC hanya nyaris di atas 0 (batas bawah 0,0001 dan 0,0000), (2)
+**gagal**: dAP positif hanya di 2 dari 4 tahun (2020 negatif, 2021 seri) dan tiga dari empat tahun uji praktis tanpa
+positif (2020-2022 tersisa 3-44 titik lolos karena cakupan cuaca terbatas; seluruh bukti di 2020-2023 adalah 2023), (3) lolos
+(+0,0013), (4) lolos. Kriteria 2 gagal, jadi **tidak dipasang; model produksi tidak diubah**. Terlepas dari kriteria, besar
+efeknya (+0,001 AP dari 0,49, +0,5 poin presisi) jauh di bawah derau antar-lipatan yang sudah dicatat bagian 12 (selisih
+konfigurasi di bawah 0,005 dianggap derau).
+
+Batas hasil ini: (a) tutupan dibaca di kotak 3 km dari overview 80 m, bukan 10 m; skala lain (500 m, 10 km) tidak dicoba,
+supaya tidak menambah tebakan; (b) Annual LULC v02 hanya sampai 2023, jadi peristiwa 2024-26 memakai tutupan usang 1-3 tahun,
+dan tahun 2015-2019 tidak punya fitur perubahan (jumlah tahun latih berfitur hanya 2018-2023); (c) kualitas klasifikasi
+tahunan Impact Observatory (kedip pohon-tanaman-semak antar-tahun) tidak divalidasi di sini; (d) hasil negatif ini hanya
+untuk model peluang membesar pada titik api baru, bukan untuk risiko mingguan per sel (`risiko_mingguan.py`) yang tutupannya
+berbeda skala; model itu belum diuji dengan fitur ini dan tidak ada data lokal untuk mengulangnya cepat (cuaca POWER
+perlu diunduh ulang).
+
+Jika tetap ingin dicoba lagi suatu saat: butuh tutupan 2024+ (Dynamic World, Earth Engine, atau IO v02 bila diperpanjang)
+dan lebih banyak tahun uji berlabel; bila lolos, pasok sebagai tabel per sel 0,05 derajat per tahun (JSON kecil, dihitung
+sekali per tahun lalu di-commit) agar pipeline Python stdlib tidak butuh rasterio.
+
+Catatan validasi-model (29 Okt 2026, vonis sah): kriteria 1 juga gagal tipis pada AUC (batas bawah selang 0,0000, bukan di
+atas nol). Kriteria 2 hampir tidak informatif karena 2020-2022 hanya punya 44, 3, dan 9 titik yang membesar; keputusan tidak
+dipasang sebenarnya bertumpu pada besar efek (+0,001 AP, jauh di bawah derau antar-lipatan sekitar 0,005 di §12) dan selang
+yang menyentuh nol. Selang bootstrap hanya menyampel ulang skor uji tanpa melatih ulang model, jadi terlalu sempit; biasnya
+ke arah pasang, sehingga menguatkan penolakan. Untuk uji berikutnya: daftarkan kriteria per tahun dengan minimum titik
+positif (misalnya 100), dan commit bagian kriteria sebelum metrik dihitung supaya urutannya bisa diaudit lewat git.

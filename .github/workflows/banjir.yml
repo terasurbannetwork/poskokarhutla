@@ -87,7 +87,7 @@ jobs:
           done; true
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro wilayah_hari jaga_banjir hulu unit_respons sungai_pos; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro rob_presiden wilayah_hari jaga_banjir hulu unit_respons sungai_pos; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah. Tetap gagal: run tidak jatuh, hujan.json lama bertahan,
@@ -155,6 +155,11 @@ jobs:
       - name: Posko dan rantai modul (boleh gagal)
         continue-on-error: true
         run: python3 scripts/banjir/posko.py
+
+      # Rob 14 hari + posko pesisir untuk /presiden; tanpa jaringan, butuh rob.json + pasang_astro.json + posko.json.
+      - name: Rob Panel Presiden (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/banjir/rob_presiden.py
 
       # Sesudah status.py (butuh status.json + hujan.json + bukti/*.json yang di-commit).
       - name: Telusur hulu DAS (boleh gagal)

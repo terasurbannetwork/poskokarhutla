@@ -31,6 +31,7 @@ function dunia({ token = true, folder = [], masuk = [], gagalUnggah } = {}) {
         return resp({ files: f ? [{ id: f.id }] : [] })
       }
       if (q.includes('mimeType != ')) return resp({ files: w.masuk })
+      if (q.startsWith("name = '")) return resp({ files: w.ada && q.includes(`name = '${w.ada}'`) ? [{ id: 'ADA' }] : [] })
       if (q.includes("mimeType = 'application/vnd.google-apps.folder'")) return resp({ files: w.folders.filter((f) => q.includes(`'${f.induk}' in parents`)).map((f) => ({ id: f.id })) })
       return resp({ files: [{ id: 'h1', name: 'Rekap', modifiedTime: '2026-10-28T00:00:00Z', webViewLink: 'https://drive/h1' }] })
     }
@@ -43,6 +44,7 @@ function dunia({ token = true, folder = [], masuk = [], gagalUnggah } = {}) {
     if (u.searchParams.get('fields') === 'webViewLink') return resp({ webViewLink: 'https://drive/folder' })
     return resp({}, 404)
   }
+  w.fetchAsli = fetch
   const d = buat({ env: ENV, fetch, rumah, log: () => {}, kabar: async (t) => { w.kabar.push(t) } })
   return { w, d, rumah }
 }
@@ -125,7 +127,8 @@ test('salin: bahan WA diantre lalu terunggah ke Bahan WA/tanggal WIB dengan awal
   await d.kuras(); await new Promise((r) => setTimeout(r, 50))
   const metas = w.calls.filter((c) => c.u.pathname === '/upload/drive/v3/files').map((c) => JSON.parse(c.o.body).name).sort()
   assert.deepEqual(metas, ['0305-Budi_Satgas.txt', '0305-rekap.pdf']) // 20:05 UTC = 03:05 WIB hari berikutnya
-  assert.ok(w.folders.some((f) => f.nama === '2026-10-29') && w.folders.some((f) => f.nama === 'Bahan WA'))
+  const jalur = (nama) => { const r = []; for (let f = w.folders.find((x) => x.nama === nama); f; f = w.folders.find((x) => x.id === f.induk)) r.unshift(f.nama); return r }
+  assert.deepEqual(jalur('4. Kamis, 29 Oktober 2026'), ['Bahan WA', '2026', '10. Oktober 2026', '4. 26 Oktober - 01 November 2026', '4. Kamis, 29 Oktober 2026'])
   assert.equal(fs.readdirSync(path.join(rumah, 'drive-antre')).length, 0)
 })
 
@@ -159,4 +162,43 @@ test('konfigurasi kosong: semua fungsi no-op tanpa melempar dan tanpa jaringan',
   assert.deepEqual(await d.cari('x'), [])
   assert.match(await d.perintahCari('cari x'), /belum dikonfigurasi/)
   assert.equal(n, 0); assert.equal(fs.existsSync(path.join(rumah, 'drive-antre')), false)
+})
+
+test('jalurTanggal: format contoh pemilik, minggu Senin-Minggu milik bulan Seninnya', () => {
+  const { jalurTanggal: j } = createRequire(import.meta.url)('../../scripts/wa/drive.cjs')
+  assert.deepEqual(j('2026-10-29'), ['2026', '10. Oktober 2026', '4. 26 Oktober - 01 November 2026', '4. Kamis, 29 Oktober 2026'])
+  assert.deepEqual(j('2026-10-19'), ['2026', '10. Oktober 2026', '3. 19 Oktober - 25 Oktober 2026', '1. Senin, 19 Oktober 2026'])
+  assert.deepEqual(j('2026-11-01'), ['2026', '10. Oktober 2026', '4. 26 Oktober - 01 November 2026', '7. Minggu, 01 November 2026'])
+  assert.deepEqual(j('2026-10-01'), ['2026', '9. September 2026', '4. 28 September - 04 Oktober 2026', '4. Kamis, 01 Oktober 2026'])
+  assert.deepEqual(j('2027-01-02'), ['2026', '12. Desember 2026', '4. 28 Desember 2026 - 03 Januari 2027', '6. Sabtu, 02 Januari 2027'])
+})
+
+function duniaLaporan() {
+  const x = dunia()
+  const d = buat({ env: { ...ENV, DRIVE_LAPORAN: 'LH' }, fetch: x.w.fetchAsli, rumah: x.rumah, log: () => {}, kabar: async () => {} })
+  return { ...x, d }
+}
+const jalurDari = (w, nama) => { const r = []; for (let f = w.folders.find((x) => x.nama === nama); f; f = w.folders.find((x) => x.id === f.induk)) r.unshift(f.nama); return r }
+
+test('unggahLaporan dengan DRIVE_LAPORAN: harian ke Bencana, penanganan ke Karhutla, bersusun tanggal', async () => {
+  const { w, d } = duniaLaporan()
+  const p = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'l-')), 'Lap.pdf'); fs.writeFileSync(p, 'x')
+  await d.unggahLaporan({ tanggal: '2026-10-29', laporan: 'harian', berkas: [{ p, mime: 'application/pdf' }] })
+  await d.unggahLaporan({ tanggal: '2026-10-05', laporan: 'penanganan', berkas: [{ p, mime: 'application/pdf' }] })
+  assert.deepEqual(jalurDari(w, '4. Kamis, 29 Oktober 2026'), ['1. Laporan Harian Bencana', '2026', '10. Oktober 2026', '4. 26 Oktober - 01 November 2026', '4. Kamis, 29 Oktober 2026'])
+  assert.deepEqual(jalurDari(w, '1. Senin, 05 Oktober 2026'), ['2. Laporan Harian Karhutla', '2026', '10. Oktober 2026', '1. 05 Oktober - 11 Oktober 2026', '1. Senin, 05 Oktober 2026'])
+  assert.ok(w.folders.filter((f) => f.nama.includes('Laporan Harian')).every((f) => f.induk === 'LH'))
+})
+
+test('salin: Laporan Harian Dirdalops diteruskan ke WA ikut ke 3. Laporan Harian Dirdalops menurut tanggal nama berkas, sekali saja', async () => {
+  const { w, d } = duniaLaporan()
+  const pesan = { id: 'dd1', dari: '6281', nama: 'Ops', teks: '', waktu: Date.parse('2026-10-29T01:00:00Z'), berkas: { nama: 'Laporan Harian Dit. Koordalops BNPB 28102026.docx', tipe: 'application/msword' } }
+  d.salin(pesan, Buffer.from('doc')); await d.kuras(); await new Promise((r) => setTimeout(r, 50))
+  assert.deepEqual(jalurDari(w, '3. Rabu, 28 Oktober 2026'), ['3. Laporan Harian Dirdalops', '2026', '10. Oktober 2026', '4. 26 Oktober - 01 November 2026', '3. Rabu, 28 Oktober 2026'])
+  const nama = () => w.calls.filter((c) => c.u.pathname === '/upload/drive/v3/files').map((c) => JSON.parse(c.o.body).name)
+  assert.ok(nama().includes("Laporan Harian Dit. Koordalops BNPB 28102026.docx"))
+  w.ada = 'Laporan Harian Dit. Koordalops BNPB 28102026.docx'
+  const sebelum = nama().length
+  d.salin({ ...pesan, id: 'dd2' }, Buffer.from('doc')); await d.kuras(); await new Promise((r) => setTimeout(r, 50))
+  assert.equal(nama().length - sebelum, 1) // hanya salinan Bahan WA; Dirdalops dilewati karena sudah ada
 })

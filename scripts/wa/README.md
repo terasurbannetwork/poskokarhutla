@@ -66,3 +66,18 @@ Empat alur, semuanya di bawah folder root:
 
 Log: `~/.wa-bot/log/`. Status kirim: `~/.wa-bot/state.json`. Keluaran: `~/.wa-bot/keluaran/<tanggal>/`.
 Ini WhatsApp Web tidak resmi: pakai nomor khusus, nomor bisa diblokir (lihat `pangantara/wa-gateway/ANTI-BAN.md`).
+
+## Banjir
+
+- Laporan Penanganan Banjir, Longsor dan Rob (`penanganan_banjir.py`) berjalan otomatis sesudah 17.00 WIB tanpa bahan WA (angkanya dari situs yang tayang), dikirim PDF + PPTX ke `PENERIMA`. Tidak diunggah ke `/pelaporan` (worker hanya menerima harian dan penanganan). Mati bawaan; hidupkan dengan `LAPORAN_BANJIR=1` setelah contoh deck diperiksa. Halaman banjir di laporan harian sudah otomatis ikut bila `public/banjir/data/wilayah_hari.json` hari itu ada di repo mesin.
+- Peringatan dini hujan lebat per kabupaten H+1..H+3 (`peringatan_banjir.mjs`): teks sekali sehari sesudah 07.00 WIB, hanya bila `peluang.json` situs dibuat hari itu. Penerima `PENERIMA_PERINGATAN_BANJIR`, kosong = mati.
+
+## Perintah WhatsApp (`perintah.mjs`)
+
+Hanya dari nomor `PEMILIK` (boleh beberapa, dipisah koma). Pesan perintah (teks pendek tanpa lampiran) tidak diteruskan sebagai bahan; balasan hanya ke pengirimnya, lewat jalur kirim berjeda yang sama, tidak pernah ke `PENERIMA`. Dari nomor lain: diperlakukan sebagai bahan biasa. Tanpa LLM; satu perintah sekaligus (sibuk dibalas "Sedang membuat laporan, tunggu sebentar.").
+
+- `buat harian [tanggal]` / `buat penanganan [tanggal]`: bahan dipilih dan generator dijalankan seperti `otomatis.mjs`; PPTX + PDF dikirim ke peminta saja, caption "(permintaan, belum dikirim ke penerima)". Tidak menandai terkirim, tidak mengunggah ke `/pelaporan`, tidak ke Drive. Hari lampau mengabaikan cut-off; hari ini tetap 12.00 (harian) / 17.00 (penanganan) WIB dan dibalas alasan menunggu. Bahan kurang: dibalas jenis yang kurang dan tanggal bahan yang ada.
+- `kirim ulang harian|penanganan [tanggal]`: kirim keluaran di `~/.wa-bot/keluaran/<tanggal>/` ke peminta; belum ada = dibalas tiada.
+- `status [tanggal]`: dari `GET /api/wa/rekap`: "N dari M laporan wajib masuk untuk DD Mon. Belum: ..." plus status kirim harian/penanganan hari ini dari `state.json`.
+- `bantuan`, atau kata awal buat/kirim/status yang tak dikenal: daftar perintah.
+- Tanggal: `hari ini` (bawaan, WIB), `kemarin`, `26 okt`, `26 oktober`, `26/10`, `2026-10-26`.

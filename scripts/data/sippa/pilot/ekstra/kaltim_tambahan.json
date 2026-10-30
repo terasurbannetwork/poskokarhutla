@@ -1,0 +1,17 @@
+{
+ "judul": "Pilot Kalimantan Timur: 6 lokasi prioritas tambahan",
+ "satu_daftar": "5 lokasi tambahan, api masih terdeteksi 24 jam terakhir (kondisi 30 Oktober)",
+ "putus": [
+  "Cara memilih: kluster api Kalimantan Timur yang masih terdeteksi 24 jam terakhir, berumur paling tidak 2 hari, dan menurut riwayat lokasinya biasanya bertahan 4 sampai 6 hari lagi, lalu diambil yang punya kompleks SIPPA dalam 3 km. Lokasi 1 (Long Ikis) paling kuat: 16 titik dalam 24 jam, sumber air 970 m.",
+  "Hujan Open-Meteo 31 Oktober: Paser sekitar 16 mm, Kutai Kartanegara dan Kutai Timur sekitar 9 mm. Hujan sebesar itu bisa meredam api permukaan, jadi uji paling baik hari ini atau besok pagi.",
+  "Sumber air lokasi 2 dan 3 sekitar 6 km dari petak, terlalu jauh untuk satu jalur selang. Putuskan: pompa estafet, tangki di mobil, atau lokasi itu hanya untuk survei.",
+  "Kebakaran terbesar yang paling mungkin bertahan, Waru di Penajam Paser Utara (6 sampai 8 hari, 1.170 dan 1.943 ha) dan Muara Ancalong di Kutai Timur (7 hari, gambut), belum punya kompleks SIPPA terdekat, jadi belum bisa dibuatkan rencana lapangan di sini.",
+  "Lokasi 6 (Karang Jati, Balikpapan) ditambahkan sebagai kompleks terdekat dari titik rujukan -1.2410, 116.8350: petak 2,0 km, pompa 1,5 km, parkir 1,9 km. Titik panas terdekat dari titik rujukan 1,2 km (30 Oktober dini hari, keyakinan rendah). Area ini dekat kawasan industri Kariangau, jadi pastikan dulu titik panasnya kebakaran lahan, bukan sumber panas tetap, sebelum regu berangkat.",
+  "Siapa regu pelaksana dan pompa siapa yang dipinjam: regu Manggala Agni Kaltim atau BPBD (Kutai Kartanegara, Paser, Kutai Timur). Data SIPPA belum memuat Daops Kaltim, jadi waktu sampai dihitung dari posko desa terdekat.",
+  "Izin kepala desa dan pemilik lahan, serta pengelola kawasan bila lokasi berada di kawasan hutan. Tiap sore H-1 diputuskan jalan atau tidak, dilihat dari titik panas 24 jam terakhir dan prakiraan BMKG.",
+  "Alat tambahan: 2 lance, 2 termometer tusuk, 1 bor gambut. Lance ke-3 sampai ke-8 bila mau uji penuh."
+ ],
+ "uji": {
+  "K3803": "Latihan dekat titik rujukan Balikpapan: petak 2,0 km, pompa 1,5 km, parkir 1,9 km dari -1.2410, 116.8350"
+ }
+}

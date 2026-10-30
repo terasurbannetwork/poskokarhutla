@@ -1,0 +1,58 @@
+{
+  "versi": 1,
+  "catatan": "Aturan deterministik 'jika ini maka ini' per kab per tanggal sasaran. Tiap syarat menyebut sumber ambangnya. Dampak dan kebutuhan = perkiraan, belum diuji balik.",
+  "sphere": {
+    "sumber": "Sphere Handbook 2018: air 15 L/orang/hari, hunian tertutup 3,5 m2/orang, 1 jamban per 20 orang, pangan 2.100 kkal/orang/hari",
+    "air_l": 15,
+    "hunian_m2": 3.5,
+    "jamban_per": 20,
+    "kkal": 2100
+  },
+  "aturan": [
+    {
+      "id": "banjir",
+      "maka": "Waspada banjir",
+      "semua": [
+        {"v": "HJN.tot", "op": ">=", "nilai": 50, "sumber": "BMKG: hujan lebat >= 50 mm/24 jam"},
+        {"v": "HJN.sm", "op": ">=", "nilai": 0.45, "sumber": "tanah jenuh: kelembapan 3-27 cm >= 0,45 m3/m3 (ambang status.py SM_JENUH)"}
+      ],
+      "paparan": {"jenis": "kec_bahaya", "bahaya": "banjir", "ambang": 0.666, "sumber": "kecamatan berindeks bahaya banjir InaRISK tinggi (>= 0,666, nilai tertinggi 10 titik per kecamatan); seluruh penduduk kecamatan itu = batas atas"},
+      "mengungsi": {"jenis_dibi": ["Banjir", "Banjir Bandang", "Banjir Genangan", "Banjir dan Tanah Longsor"]}
+    },
+    {
+      "id": "longsor",
+      "maka": "Waspada longsor",
+      "salah_satu": [
+        {"v": "HJN.tot", "op": ">=", "nilai": 100, "sumber": "BMKG: hujan sangat lebat >= 100 mm/24 jam"},
+        {"v": "HJN.tot3", "op": ">=", "nilai": 150, "sumber": "jumlah 3 hari >= 150 mm (RANCANGAN aturan longsor)"}
+      ],
+      "paparan": {"jenis": "kec_bahaya", "bahaya": "longsor", "ambang": 0.666, "sumber": "kecamatan berindeks bahaya longsor InaRISK tinggi (>= 0,666), pengganti lereng curam; seluruh penduduk kecamatan itu = batas atas"},
+      "mengungsi": {"jenis_dibi": ["Tanah Longsor", "Gerakan Tanah", "Banjir dan Tanah Longsor"]}
+    },
+    {
+      "id": "karhutla",
+      "maka": "Waspada karhutla",
+      "semua": [
+        {"v": "API.ps", "op": ">=", "nilai": 0.6, "sumber": "ansambel FWI ECMWF: P(FWI >= 14, Sangat Tinggi) >= 0,6"},
+        {"v": "HJN.tot3", "op": "<", "nilai": 3, "sumber": "tanpa hujan 3 hari: jumlah < 3 mm (< 1 mm/hari)"}
+      ],
+      "paparan": {"jenis": "kab", "sumber": "seluruh penduduk kab (batas atas; jiwa dalam 10 km dan luas gambut belum dihitung)"},
+      "catatan": "Syarat gambut belum dipasang: belum ada data gambut per kab di repo."
+    },
+    {
+      "id": "asap",
+      "maka": "Imbauan masker; sekolah kurangi kegiatan luar ruang",
+      "semua": [
+        {"v": "ASP.kat", "op": ">=", "nilai": 1, "sumber": "ISPU PM2,5 24 jam > 55,4 ug/m3 = Tidak sehat (P.14/2020)"}
+      ],
+      "paparan": {"jenis": "kab", "murid": true, "sumber": "seluruh penduduk kab dan murid terdaftar (Dapodik/EMIS); balita belum ada datanya"}
+    },
+    {
+      "id": "melaut",
+      "maka": "Hari tidak melaut (nelayan kecil)",
+      "aktif": false,
+      "alasan": "Gelombang >= 1,25 m / angin >= 15 kn per kab belum dibekukan di arsip prakiraan",
+      "semua": []
+    }
+  ]
+}

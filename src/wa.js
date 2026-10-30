@@ -8,7 +8,7 @@
    Jenis: tagar #karhutla / #bencana, selain itu kata kunci karhutla di teks atau nama berkas, selain itu bencana. */
 import {json, gagal, adminOK, sha, bacaBytes} from "./worker.js";
 import {KONTROL, tglSah} from "./posko.js";
-import {JENIS_LAPORAN, kenali} from "./wa_jenis.js";
+import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
 const MAKS_TEKS = 65536, MAKS_HARI = 500;
@@ -64,7 +64,9 @@ async function gerbang(env, req, kini) {
     kunci = `wa/${hariWib(kini)}/${kini}-${crypto.randomUUID().slice(0, 8)}`; tipe = (b.type || "application/octet-stream").toLowerCase();
     await env.MEDIA.put(kunci, await b.arrayBuffer(), {httpMetadata: {contentType: tipe}});
   }
-  const tanggal = tanggalDari(teks, diterima), jenis = jenisDari(teks || "", namaBerkas || "");
+  /* tanggal laporan itu sendiri menang bila wajar (14 hari ke belakang sampai besok WIB); kiriman ulang laporan lama jatuh ke harinya, bukan hari terima */
+  const jk = kenali(teks, namaBerkas), isi = jk === "laphar_pdf" ? tanggalNamaBerkas(namaBerkas) : tanggalIsi(teks, jk), hariIni = Date.parse(hariWib(diterima));
+  const tanggal = isi && Date.parse(isi) >= hariIni - 14 * 864e5 && Date.parse(isi) <= hariIni + 864e5 ? isi : tanggalDari(teks, diterima), jenis = jenisDari(teks || "", namaBerkas || "");
   const r = await env.DB.prepare("INSERT INTO wa_masuk (diterima, tanggal, jenis, dari, nama, teks, berkas, nama_berkas, tipe) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)")
     .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
   return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis});
@@ -84,7 +86,13 @@ async function daftar(env, req, url, kini) {
   if (j && !["bencana", "karhutla"].includes(j)) return gagal(400, "jenis harus bencana atau karhutla");
   const r = await env.DB.prepare(`SELECT id, diterima, jenis, dari, nama, teks, nama_berkas, tipe, berkas IS NOT NULL AS ada_berkas FROM wa_masuk
     WHERE tanggal = ?1 ${j ? "AND jenis = ?2" : ""} ORDER BY diterima LIMIT 300`).bind(...(j ? [t, j] : [t])).all();
-  return json({tanggal: t, pesan: r.results}, 200, {"cache-control": "no-store"});
+  /* kunci/label/tanggal_isi dihitung dari kepala teks/nama berkas (wa_jenis.js, tanpa angka); tanpa ?jenis= semua baris tanggal itu kembali */
+  const pesan = r.results.map(m => {
+    const kunci = kenali(m.teks, m.nama_berkas);
+    return {...m, kunci, label: JENIS_LAPORAN.find(x => x.kunci === kunci)?.label ?? "Lain-lain",
+      tanggal_isi: kunci === "laphar_pdf" ? tanggalNamaBerkas(m.nama_berkas) : kunci ? tanggalIsi(m.teks, kunci) : null};
+  });
+  return json({tanggal: t, pesan}, 200, {"cache-control": "no-store"});
 }
 
 async function berkas(env, req, url, kini) {

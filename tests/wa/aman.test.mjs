@@ -5,7 +5,7 @@ import os from 'node:os'
 import path from 'node:path'
 import { createRequire } from 'node:module'
 import { jalankan } from '../../scripts/wa/otomatis.mjs'
-const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas } = createRequire(import.meta.url)('../../scripts/wa/aman.cjs')
+const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, susulanBaru } = createRequire(import.meta.url)('../../scripts/wa/aman.cjs')
 
 test('idAman: id berbahaya jadi alfanumerik maks 12; id outbox tak sah ditolak', () => {
   const id = idAman('../../etc/passwd\0/x')
@@ -40,4 +40,21 @@ test('--tanggal tidak sah ditolak sebelum menyentuh jaringan', async () => {
   for (const t of ['2026-10-29&x=1', '../a', '29-10-2026'])
     await assert.rejects(() => jalankan({ tanggal: t, dep, env: {}, rumah: fs.mkdtempSync(path.join(os.tmpdir(), 'wa-t-')), log: () => {} }), /YYYY-MM-DD/)
   assert.equal(dipanggil, false)
+})
+
+test('buatTerlihat: id bertahan lewat restart, tercap 5000 (dibuang yang tertua), berkas 0600', () => {
+  const f = path.join(fs.mkdtempSync(path.join(os.tmpdir(), 'tl-')), 'terlihat.json')
+  const a = buatTerlihat(f, 3)
+  for (const id of ['a', 'b', 'c', 'd']) a.catat(id)
+  const b = buatTerlihat(f, 3)
+  assert.equal(b.ada('a'), false); assert.ok(['b', 'c', 'd'].every((i) => b.ada(i)))
+  assert.equal(fs.statSync(f).mode & 0o777, 0o600)
+})
+
+test('susulanBaru: hanya <= 24 jam; Long/string diterima, sampah ditolak', () => {
+  const now = Date.now(), dtk = (jam) => Math.floor((now - jam * 3600e3) / 1000)
+  assert.equal(susulanBaru(dtk(2), now), true)
+  assert.equal(susulanBaru({ toString: () => String(dtk(23)) }, now), true)
+  assert.equal(susulanBaru(dtk(25), now), false)
+  assert.equal(susulanBaru(undefined, now), false)
 })

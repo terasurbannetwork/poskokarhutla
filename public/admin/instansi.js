@@ -193,7 +193,7 @@
     const d = e.target.closest("[data-dummy]"); if (!d) return;
     if (d.dataset.dummy === "hapus" && !confirm("Hapus SEMUA data dummy instansi (akun, tugas, isian, usulan contoh)? Data asli tidak tersentuh.")) return;
     d.disabled = true;
-    const r = await kirim(`${API}/dummy`, {aksi: d.dataset.dummy});
+    const r = await kirim(`${API}/dummy`, {aksi: d.dataset.dummy, ...(bcPantau ? {bencana: bcPantau} : {})});
     const teks = r.ok ? (d.dataset.dummy === "isi" ? `Dummy dibuat: ${r.j.akun} akun, ${r.j.tugas} tugas, ${r.j.isian} isian, ${r.j.usulan} usulan kontak.` : `Dummy dihapus: ${r.j.akun} akun, ${r.j.tugas} tugas, ${r.j.isian} isian, ${r.j.usulan} usulan.`) : (r.j.galat || `Gagal (${r.status})`);
     d.disabled = false;
     if (r.ok) { hasilBuat = []; filter = {jenis: "", prov: "", status: "", hal: 0}; kerangka(); await muat(); }   // semua tab digambar ulang dari data baru (DUMMY.md syarat 6), pesan tetap tampil inline

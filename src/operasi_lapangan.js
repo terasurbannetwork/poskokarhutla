@@ -12,7 +12,7 @@ import {tx, num, modOK, superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {km} from "./titik.js";
 import {akunAktif, dalamLingkup, jsonAman, bencanaPer, PROV} from "./instansi.js";
-import {labelBencana} from "./tugas_bencana.js";
+import {labelBencana, tutupBencana} from "./tugas_bencana.js";
 import {modAtauStaf, dalamWilayahStaf, stafNyata, dariStaf} from "./staf.js";
 import {BARANG} from "./meja_spek.js";
 import {sisipLogistik} from "./meja.js";
@@ -595,10 +595,10 @@ async function linimasa(env, req, kini, id) {
     aman("SELECT waktu, sumber, jarak_km FROM tugas_muncul WHERE tugas_id = ?", id), aman("SELECT id, catatan, dibuat FROM ops_pelajaran WHERE tugas_id = ? ORDER BY dibuat", id)]);
   const drops = await nilaiDrop(env, drop, kini), E = [];
   const tambah = (waktu, jenis, ket, ref = null) => { if (waktu != null) E.push({waktu, jenis, ket, ref}); };
-  const bc = await bencanaTugas(env, t);
+  const bc = await bencanaTugas(env, t), tb = tutupBencana(bc), HL = tb?.hasil ?? HASIL_LABEL;
   tambah(t.dibuat, "deteksi", bc === "karhutla" ? `Titik api terdeteksi satelit dan tugas dibuat di ${[t.kec, t.kab].filter(Boolean).join(", ")}` : `Tugas ${labelBencana(bc).nama.toLowerCase()} dibuat di ${[t.kec, t.kab].filter(Boolean).join(", ")}`);
   tambah(t.konfirmasi_pada, "konfirmasi", "Konfirmasi lapangan diterima");
-  for (const i of isian) tambah(i.dibuat, i.langkah === "konfirmasi" ? "isian_konfirmasi" : "isian_kabar", i.langkah === "konfirmasi" ? `Isian konfirmasi: ${HASIL_LABEL[i.hasil] ?? i.hasil}` : `Kabar tindakan: api ${i.status_api}`, i.id);
+  for (const i of isian) tambah(i.dibuat, i.langkah === "konfirmasi" ? "isian_konfirmasi" : "isian_kabar", i.langkah === "konfirmasi" ? `Isian konfirmasi: ${HL[i.hasil] ?? i.hasil}` : tb ? `Kabar tindakan: ${tb.status[i.status_api] ?? i.status_api}` : `Kabar tindakan: api ${i.status_api}`, i.id);
   for (const p of pen) { tambah(p.dibuat, "penugasan", `${p.nama} ditugaskan sebagai ${p.peran}`, p.id); tambah(p.berangkat_pada, "berangkat", `${p.nama} berangkat`, p.id); tambah(p.tiba_pada, "tiba", `${p.nama} tiba di lokasi`, p.id); tambah(p.selesai_pada, "selesai_tugas", `${p.nama} selesai bertugas`, p.id); }
   for (const g of garis) tambah(g.dibuat, "garis", `Garis ${g.jenis.replace("_", " ")} dicatat, ${bulat(g.panjang_km)} km${g.luas_ha != null ? `, ${bulat(g.luas_ha, 1)} ha` : ""}`, g.id);
   for (const p of perm) tambah(p.dibuat, "permintaan", p.jenis === "heli" ? `Permintaan heli water bombing (prioritas ${p.prioritas})` : `Permintaan logistik ${p.barang}`, p.id);
@@ -607,15 +607,16 @@ async function linimasa(env, req, kini, id) {
   for (const s of serah) tambah(s.waktu, "serah", `Serah terima dari ${s.dari} ke ${s.ke}`, s.periode_id);
   for (const j of jejak) tambah(j.waktu, j.jenis === "periode" ? "periode_status" : "permintaan_status", j.ket, j.ref_id);
   const padam = t.padam_pada ?? isian.filter(i => i.status_api === "padam" || (i.langkah === "konfirmasi" && i.hasil === "sudah_padam")).map(i => i.dibuat).sort((a, b) => a - b)[0] ?? null;
-  tambah(padam, "padam", "Dilaporkan padam");
-  for (const m of muncul) tambah(m.waktu, "muncul_lagi", `Api muncul lagi (${m.sumber}${m.jarak_km != null ? `, ${bulat(m.jarak_km, 1)} km` : ""})`);
-  if (!muncul.length && t.padam_verif === "muncul_lagi") tambah(t.verif_pada, "muncul_lagi", "Api muncul lagi, tugas dibuka kembali");
+  tambah(padam, "padam", tb ? tb.lapor : "Dilaporkan padam");
+  for (const m of muncul) tambah(m.waktu, "muncul_lagi", `${tb ? tb.lagi : "Api muncul lagi"} (${m.sumber}${m.jarak_km != null ? `, ${bulat(m.jarak_km, 1)} km` : ""})`);
+  if (!muncul.length && t.padam_verif === "muncul_lagi") tambah(t.verif_pada, "muncul_lagi", `${tb ? tb.lagi : "Api muncul lagi"}, tugas dibuka kembali`);
   const terverif = t.padam_verif === "padam_terverifikasi" ? t.verif_pada : null;
-  tambah(terverif, "terverifikasi", "Padam terverifikasi satelit");
+  tambah(terverif, "terverifikasi", tb ? `${tb.verif} (data pantauan banjir, bukan citra satelit)` : "Padam terverifikasi satelit");
   tambah(t.cek_ulang_pada, "cek_ulang", "Cek ulang lapangan dilakukan");
   E.sort((a, b) => a.waktu - b.waktu);
   const tiba = pen.map(p => p.tiba_pada).filter(x => x != null).sort((a, b) => a - b)[0] ?? null;
   return json({kini, tugas: {id: t.id, kab: t.kab, kec: t.kec, status: t.status}, linimasa: E,
+    ...(tb ? {kata: {padam: tb.cek, terverifikasi: tb.verif, lagi: tb.lagi}} : {}),
     respons: {deteksi: t.dibuat, konfirmasi_menit: menitAntara(t.dibuat, t.konfirmasi_pada), tiba_menit: menitAntara(t.dibuat, tiba), padam_menit: menitAntara(t.dibuat, padam), terverifikasi_menit: menitAntara(t.dibuat, terverif)},
     pelajaran: pel});
 }

@@ -75,9 +75,9 @@ test("/sitemap.xml: halaman tetap + tab tak tersembunyi bencana aktif, domain da
   const r = await worker.fetch(new Request("https://contoh.test/sitemap.xml"), {}, {});
   assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /xml/);
   const x = await r.text(), loc = [...x.matchAll(/<loc>([^<]+)<\/loc>/g)].map(m => m[1].replace("https://contoh.test", ""));
-  for (const j of ["/", "/semua", "/peta", "/insight", "/berita", "/tren", "/dampak", "/tentang", "/privasi"]) assert.ok(loc.includes(j), j);
+  for (const j of ["/", "/semua", "/peta", "/insight", "/berita", "/tren", "/dampak", "/metode", "/tentang", "/privasi"])   /* metode karhutla kembali di menu (pemilik 29 Okt 2026) */ assert.ok(loc.includes(j), j);
   for (const j of ["/gempa/", "/gempa/peta", "/gempa/insight", "/gempa/tren", "/gempa/berita", "/gempa/dampak", "/gempa/sim", "/gempa/foto", "/gempa/tentang"]) assert.ok(loc.includes(j), `${j} gempa aktif harus ada`);
-  for (const j of ["/posko", "/metode", "/informasi", "/kompleks", "/ringkasan", "/cuaca/metode", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
+  for (const j of ["/posko", "/informasi", "/kompleks", "/ringkasan", "/cuaca/metode", "/udara/metode", "/gunungapi/metode", "/kekeringan/metode", "/banjir/posko", "/banjir/metode", "/gempa/posko", "/gempa/metode", "/gempa/ringkasan", "/gempa/informasi"]) assert.ok(!loc.includes(j), `${j} tersembunyi/mati tidak boleh ada`);
   for (const j of ["/banjir/", "/banjir/peta", "/banjir/berita", "/banjir/foto"]) assert.ok(loc.includes(j), `${j} banjir aktif harus ada`);
   for (const id of ["cuaca", "udara", "gunungapi", "kekeringan"]) for (const t of ["", "peta", "insight", "berita", "tren", "dampak", "foto", "tentang"]) assert.ok(loc.includes(`/${id}/${t}`), `/${id}/${t} aktif harus ada`);
   assert.ok(!x.includes("terasurban"));

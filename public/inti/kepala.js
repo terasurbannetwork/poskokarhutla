@@ -35,7 +35,9 @@ async function gambar(d) {
   }).join("");
   const sr = d.querySelector("summary .sr")?.outerHTML || "";
   if (!semua) d.querySelector("summary").innerHTML = svg(IKON[ini.ikon]) + sr + esc(ini.nama);
-  d.querySelector(".menu").innerHTML = butir;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
+  /* Tautan polos non-bencana (bukan entri bencana.json): Prediksi, halaman khusus masuk. */
+  const prediksi = `<hr><a href="/prediksi"${location.pathname.startsWith("/prediksi") ? ' aria-current="page"' : ""}>${svg('<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Prediksi</a>`;
+  d.querySelector(".menu").innerHTML = butir + prediksi;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
   d.classList.toggle("ada-segera", (!tanpaSegera || TAMPIL.size > 0) && daftar.some(b => !buka(b)));
 }
 

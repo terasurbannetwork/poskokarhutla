@@ -477,6 +477,63 @@ jobs:
           python3 scripts/umum/status_darurat.py uji && python3 scripts/umum/status_darurat.py || echo "::warning title=status_darurat::gagal; berkas lamanya dibiarkan"
           python3 scripts/umum/dibi_kejadian.py uji && python3 scripts/umum/dibi_kejadian.py || echo "::warning title=dibi_kejadian::gagal; berkas lamanya dibiarkan"
 
+      # Logbook Laporan Harian Pusdalops BNPB (DOCX di Drive publik) -> katalog kejadian berkedalaman/berdurasi = label uji model.
+      # Teks per hari dibawa lewat cache sendiri (~40 MB): jalan harian cuma mengunduh laporan baru. Tiap uji menilai ulang model
+      # terhadap label yang bertambah dan menyimpan riwayatnya; rapor_belajar.py membacanya. Ambang tidak disetel otomatis.
+      - name: Pulihkan teks logbook Pusdalops
+        uses: actions/cache/restore@v4
+        with:
+          path: data/raw/logbook
+          key: logbook-${{ github.run_id }}
+          restore-keys: logbook-
+
+      - name: Logbook Pusdalops dan uji model terhadapnya (boleh gagal)
+        continue-on-error: true
+        run: |
+          python3 scripts/umum/logbook_bnpb.py uji && python3 scripts/umum/logbook_bnpb.py || echo "::warning title=logbook_bnpb::gagal; berkas lamanya dibiarkan"
+          python3 scripts/data/uji_logbook_karhutla.py uji && python3 scripts/data/uji_logbook_karhutla.py || echo "::warning title=uji_logbook_karhutla::gagal"
+          python3 scripts/data/belum_lapor.py uji && python3 scripts/data/belum_lapor.py || echo "::warning title=belum_lapor::gagal"
+
+      # Banjir & longsor vs logbook butuh hujan ERA5 2026 (Open-Meteo archive, berkuota): seminggu sekali (Senin UTC), cache
+      # sendiri, tiap minggu menambah kab yang dinilai. Hasil lama dibiarkan bila gagal.
+      - name: Hari uji logbook mingguan?
+        id: senin
+        run: echo "ya=$([ "$(date -u +%u)" = 1 ] || [ "${{ github.event_name }}" = workflow_dispatch ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+
+      - name: Pulihkan hujan uji logbook
+        if: steps.senin.outputs.ya == '1'
+        uses: actions/cache/restore@v4
+        with:
+          path: |
+            data/raw/banjir/uji_logbook
+            data/raw/longsor
+          key: uji-logbook-${{ github.run_id }}
+          restore-keys: uji-logbook-
+
+      - name: Uji banjir dan longsor vs logbook (mingguan, boleh gagal)
+        if: steps.senin.outputs.ya == '1'
+        continue-on-error: true
+        timeout-minutes: 30
+        run: |
+          python3 scripts/banjir/uji_logbook.py uji && { timeout 900 python3 scripts/banjir/uji_logbook.py ambil || true; python3 scripts/banjir/uji_logbook.py; } || echo "::warning title=uji_logbook banjir::gagal"
+          python3 scripts/banjir/uji_logbook_longsor.py uji && { timeout 600 python3 scripts/banjir/uji_logbook_longsor.py ambil || true; python3 scripts/banjir/uji_logbook_longsor.py; } || echo "::warning title=uji_logbook longsor::gagal"
+
+      - name: Simpan hujan uji logbook
+        if: always() && steps.senin.outputs.ya == '1'
+        uses: actions/cache/save@v4
+        with:
+          path: |
+            data/raw/banjir/uji_logbook
+            data/raw/longsor
+          key: uji-logbook-${{ github.run_id }}
+
+      - name: Simpan teks logbook Pusdalops
+        if: always()
+        uses: actions/cache/save@v4
+        with:
+          path: data/raw/logbook
+          key: logbook-${{ github.run_id }}
+
       - name: Rekomendasi pangkalan udara
         run: python3 scripts/data/udara_rekom.py
 

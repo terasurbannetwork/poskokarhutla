@@ -36,4 +36,25 @@ function ukuranBerkas(len, batas) {
   return Number.isFinite(n) && n >= 0 && n <= batas ? n : null
 }
 
-module.exports = { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas }
+// Id pesan yang sudah diteruskan (susulan offline tidak boleh dikirim dua kali, juga lewat restart). Berkas 0600, maks `cap` id.
+function buatTerlihat(berkas, cap = 5000) {
+  let daftar = []
+  try { const j = JSON.parse(fs.readFileSync(berkas, 'utf8')); if (Array.isArray(j)) daftar = j.map(String) } catch {}
+  const set = new Set(daftar)
+  return {
+    ada: (id) => set.has(String(id)),
+    catat(id) {
+      id = String(id)
+      if (set.has(id)) return
+      set.add(id)
+      while (set.size > cap) set.delete(set.values().next().value)
+      fs.writeFileSync(berkas, JSON.stringify([...set]), { mode: 0o600 })
+      fs.chmodSync(berkas, 0o600)
+    },
+  }
+}
+
+// 'append' = susulan offline: hanya yang <= 24 jam (ts detik dari Baileys, bisa Long).
+const susulanBaru = (ts, now = Date.now()) => { const t = Number(ts?.toString?.() ?? ts) * 1000; return Number.isFinite(t) && t > 0 && now - t <= 86400e3 }
+
+module.exports = { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, susulanBaru }

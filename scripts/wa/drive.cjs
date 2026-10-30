@@ -1,7 +1,10 @@
 // Sambungan Google Drive (akun pribadi pemilik, OAuth refresh token) untuk bot WA. Tanpa paket googleapis:
 // fetch bawaan Node ke Drive REST v3. Mati diam-diam bila DRIVE_CLIENT_ID/SECRET/ROOT atau token belum ada.
-//   1. salin()         bahan WA -> antrean lokal -> <root>/Bahan WA/YYYY-MM-DD/
-//   2. unggahLaporan() PDF+PPTX -> <root>/Laporan/YYYY-MM-DD/, mengembalikan link folder
+// Semua folder harian bersusun Tahun/Bulan/Minggu/Hari (jalurTanggal), mis. 2026/10. Oktober 2026/4. 26 Oktober - 01 November 2026/4. Kamis, 29 Oktober 2026.
+//   1. salin()         bahan WA -> antrean lokal -> <root>/Bahan WA/<tanggal>/; Laporan Harian Dit. Koordalops (Dirdalops)
+//                      juga ke <DRIVE_LAPORAN>/3. Laporan Harian Dirdalops/<tanggal di nama berkas>/
+//   2. unggahLaporan() PDF+PPTX -> <DRIVE_LAPORAN>/1. Laporan Harian Bencana atau 2. Laporan Harian Karhutla/<tanggal>/
+//                      (tanpa DRIVE_LAPORAN: <root>/Laporan/<tanggal>/), mengembalikan link folder
 //   3. tick()          kuras antrean + ambil berkas baru di <root>/Masuk/ -> outbox yang sama dengan pesan WA
 //   4. perintahCari()  balasan untuk pesan "cari <kata>", terbatas pada pohon folder root
 // Diuji tests/wa/drive.test.mjs dengan fetch palsu (opsi.fetch, opsi.rumah).
@@ -25,6 +28,34 @@ const esc = (s) => String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'")
 const alnum = (s) => String(s).replace(/[^A-Za-z0-9]/g, '')
 const bersih = (s) => String(s || '').replace(/[\\/:*?"<>|\u0000-\u001f]/g, '_').trim().slice(0, 120)
 const wib = (ms) => new Date(ms + 7 * 3600e3).toISOString()
+const BULAN = ['Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni', 'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember']
+const HARI = ['Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu', 'Minggu']
+const dua = (n) => String(n).padStart(2, '0')
+// Format contoh pemilik di Drive Tim IT (28 Okt 2026): '2026-10-29' ->
+//   ['2026', '10. Oktober 2026', '4. 26 Oktober - 01 November 2026', '4. Kamis, 29 Oktober 2026']
+// Minggu = Senin-Minggu, milik bulan tempat Seninnya (1-4 Okt 2026 masuk minggu ke-5 September); hari bernomor Senin=1.
+function jalurTanggal(iso) {
+  const [y, m, d] = String(iso).split('-').map(Number)
+  const t = Date.UTC(y, m - 1, d)
+  const ke = (new Date(t).getUTCDay() + 6) % 7
+  const senin = new Date(t - ke * 864e5), minggu = new Date(t + (6 - ke) * 864e5)
+  const tgl = (x, th) => `${dua(x.getUTCDate())} ${BULAN[x.getUTCMonth()]}${th ? ' ' + x.getUTCFullYear() : ''}`
+  const ty = senin.getUTCFullYear(), tm = senin.getUTCMonth()
+  return [String(ty), `${tm + 1}. ${BULAN[tm]} ${ty}`,
+    `${Math.ceil(senin.getUTCDate() / 7)}. ${tgl(senin, ty !== minggu.getUTCFullYear())} - ${tgl(minggu, true)}`,
+    `${ke + 1}. ${HARI[ke]}, ${tgl(new Date(t), true)}`]
+}
+// Laporan otomatis -> subfolder di DRIVE_LAPORAN ("1. Laporan Harian" Tim IT BNPB). Banjir ikut Bencana.
+const KATEGORI = { harian: '1. Laporan Harian Bencana', penanganan: '2. Laporan Harian Karhutla', penanganan_banjir: '1. Laporan Harian Bencana' }
+const DIRDALOPS = '3. Laporan Harian Dirdalops'
+// Tanggal laporan Dirdalops dari nama berkas ("... Koordalops BNPB 29102026.docx"), sama dengan tanggalNamaBerkas di src/wa_jenis.js.
+function tanggalDirdalops(nama) {
+  if (!/Laporan Harian Dit\.? ?Koordalops/i.test(nama || '')) return null
+  const m = String(nama).match(/(?<!\d)(\d{2})(\d{2})(\d{4})(?!\d)/)
+  if (!m) return ''
+  const s = `${m[3]}-${m[2]}-${m[1]}`
+  return !Number.isNaN(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s ? s : ''
+}
 const permanen = (e) => e && e.status >= 400 && e.status < 500 && ![401, 408, 429].includes(e.status) && !e.token
 
 function buat(opsi = {}) {
@@ -38,6 +69,7 @@ function buat(opsi = {}) {
   const RUSAK = path.join(dasar, 'drive-rusak')
   const DIPROSES = path.join(dasar, 'drive-diproses.json')
   const ROOT = env.DRIVE_ROOT || ''
+  const LAPORAN = env.DRIVE_LAPORAN || ''
 
   let refresh = null
   try { refresh = JSON.parse(fs.readFileSync(path.join(dasar, 'drive.json'), 'utf8')).refresh_token || null } catch {}
@@ -73,8 +105,8 @@ function buat(opsi = {}) {
   }
 
   const idFolder = new Map()
-  async function pastikanFolder(jalur) {
-    let induk = ROOT
+  async function pastikanFolder(jalur, dari = ROOT) {
+    let induk = dari
     const bagian = Array.isArray(jalur) ? jalur : String(jalur).split('/').filter(Boolean)
     for (const nama of bagian) {
       const kunci = induk + '/' + nama
@@ -103,9 +135,11 @@ function buat(opsi = {}) {
   }
 
   // ── Alur 2: laporan ────────────────────────────────────────────────────
-  async function unggahLaporan({ tanggal, revisi, berkas }) {
+  async function unggahLaporan({ tanggal, laporan, revisi, berkas }) {
     if (!hidup()) return null
-    const id = await pastikanFolder(['Laporan', tanggal])
+    const id = LAPORAN && KATEGORI[laporan]
+      ? await pastikanFolder([KATEGORI[laporan], ...jalurTanggal(tanggal)], LAPORAN)
+      : await pastikanFolder(['Laporan', ...jalurTanggal(tanggal)])
     for (const b of berkas) await unggah(id, (revisi ? 'Revisi ' : '') + path.basename(b.p), b.p, b.mime)
     return (await json(`${API}/${encodeURIComponent(id)}?fields=webViewLink`)).webViewLink || null
   }
@@ -122,14 +156,19 @@ function buat(opsi = {}) {
       const w = wib(Number(m.waktu) || sekarang())
       const hhmm = w.slice(11, 13) + w.slice(14, 16)
       const pengirim = bersih(m.nama) || String(m.dari)
-      const folder = ['Bahan WA', w.slice(0, 10)]
-      const taruh = (nama, mime, isi) => {
+      const folder = ['Bahan WA', ...jalurTanggal(w.slice(0, 10))]
+      const taruh = (nama, mime, isi, tambah = {}) => {
         const id = `${sekarang()}-${alnum(m.id || Math.random().toString(36).slice(2))}-${fs.readdirSync(ANTRE).length}`
         if (isi) fs.writeFileSync(path.join(ANTRE, id + '.bin'), isi, { mode: 0o600 })
-        fs.writeFileSync(path.join(ANTRE, id + '.json'), JSON.stringify({ id, folder, nama, mime, bin: !!isi }), { mode: 0o600 })
+        fs.writeFileSync(path.join(ANTRE, id + '.json'), JSON.stringify({ id, folder, nama, mime, bin: !!isi, ...tambah }), { mode: 0o600 })
       }
       if (m.teks && m.teks.trim()) taruh(`${hhmm}-${pengirim}.txt`, 'text/plain', Buffer.from(m.teks))
       if (buf && m.berkas) taruh(`${hhmm}-${bersih(m.berkas.nama) || 'berkas'}`, m.berkas.tipe, buf)
+      const tglDir = buf && m.berkas ? tanggalDirdalops(m.berkas.nama) : null
+      // Diteruskan berkali-kali = satu salinan (unik: lewati bila nama sudah ada di folder hari itu).
+      if (tglDir !== null && LAPORAN) {
+        taruh(bersih(m.berkas.nama), m.berkas.tipe, buf, { induk: LAPORAN, folder: [DIRDALOPS, ...jalurTanggal(tglDir || w.slice(0, 10))], unik: true })
+      }
       kuras().catch(() => {})
     } catch (e) { log('salin gagal', e.message) }
   }
@@ -146,8 +185,9 @@ function buat(opsi = {}) {
         let e
         try { e = JSON.parse(fs.readFileSync(jalur, 'utf8')) } catch { continue }
         try {
-          const id = await pastikanFolder(e.folder)
-          await unggah(id, e.nama, e.bin ? path.join(ANTRE, e.id + '.bin') : Buffer.from(''), e.mime)
+          const id = await pastikanFolder(e.folder, e.induk || ROOT)
+          const ada = e.unik && (await daftarFile(`name = '${esc(e.nama)}' and '${esc(id)}' in parents and trashed = false`, 'id', 1)).length
+          if (!ada) await unggah(id, e.nama, e.bin ? path.join(ANTRE, e.id + '.bin') : Buffer.from(''), e.mime)
           fs.rmSync(jalur, { force: true }); fs.rmSync(path.join(ANTRE, e.id + '.bin'), { force: true })
         } catch (x) {
           if (permanen(x)) {
@@ -257,7 +297,7 @@ function buat(opsi = {}) {
     }
   }
 
-  return { aktif, token, pastikanFolder, unggah, unggahLaporan, salin, kuras, periksaMasuk, tick, cari, perintahCari, sapu }
+  return { aktif, jalurTanggal, token, pastikanFolder, unggah, unggahLaporan, salin, kuras, periksaMasuk, tick, cari, perintahCari, sapu }
 }
 
-module.exports = { buat }
+module.exports = { buat, jalurTanggal }

@@ -20,7 +20,7 @@ jobs:
       GH_TOKEN: ${{ github.token }}
       GH_REPO: ${{ github.repository }}
       URL_STATUS: ${{ vars.URL_STATUS || 'https://centurisk97.id/api/status' }}
-      PIPA: titik|data|banjir|gempa|lintas|statis|udara|titik_palsu   # workflow ber-grup `data` selain terbit.yml; sama dengan terbit_antre.yml
+      PIPA: titik|data|banjir|gempa|lintas|prediksi|statis|udara|titik_palsu   # workflow ber-grup `data` selain terbit.yml; sama dengan terbit_antre.yml
     steps:
       - name: Jalankan ulang jadwal yang terusir antrean (boleh gagal)
         continue-on-error: true
@@ -32,7 +32,7 @@ jobs:
           menunggu() { for s in queued pending waiting requested; do gh api "repos/$GH_REPO/actions/runs?status=$s&per_page=100" --jq '.workflow_runs[] | "\(.path) \(.status) \(.id)"' || true; done | grep -E "workflows/($PIPA)\.yml" || true; }
           antre=$(menunggu)
           [ -z "$antre" ] || { echo "slot antre grup data terisi ($(echo "$antre" | tr '\n' ';')): tidak memicu ulang"; exit 0; }
-          for w in titik.yml data.yml banjir.yml gempa.yml udara.yml lintas.yml; do
+          for w in titik.yml data.yml banjir.yml gempa.yml udara.yml lintas.yml prediksi.yml; do
             [ "$(gh run list --workflow "$w" -L 1 --json conclusion --jq '.[0].conclusion')" = cancelled ] || continue
             [ -z "$(gh run list --workflow "$w" --json status --jq '.[] | select(.status != "completed") | .status')" ] || continue
             gh workflow run "$w" && { echo "$w terusir antrean, dipicu ulang"; break; } || true

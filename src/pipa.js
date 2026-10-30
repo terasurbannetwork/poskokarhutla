@@ -20,7 +20,7 @@ async function tolakToken(env, req, kini) {
   return gagal(401, "token pipeline salah atau tidak ada");
 }
 /* null = lolos; selain itu Response */
-async function periksaToken(env, req) {
+export async function periksaToken(env, req) {
   if (!env.PIPA_TOKEN) return gagal(503, "PIPA_TOKEN belum dipasang di Worker");
   const m = /^Bearer (.+)$/.exec(req.headers.get("authorization") || "");
   return m && await sha("pipa|" + m[1]) === await sha("pipa|" + env.PIPA_TOKEN) ? null : tolakToken(env, req, Date.now());

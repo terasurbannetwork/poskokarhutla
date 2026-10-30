@@ -1,6 +1,12 @@
 """Prediksi pasang surut BMKG Maritim per stasiun -> public/banjir/data/pasut.json (data banjir rob).
 Sumber bebas: maritim.bmkg.go.id/pasut (metadata, hltide, data 10 menit). Urutan path persis; UA browser dibalas 403 (umum.ambil
-memakai UA sendiri). Datum MSL: tinggi relatif muka laut rata-rata, cm. Gagal per stasiun dilewati. `uji` = swa-uji tanpa jaringan."""
+memakai UA sendiri). Datum MSL: tinggi relatif muka laut rata-rata, cm. Gagal per stasiun dilewati. `uji` = swa-uji tanpa jaringan.
+
+Prospek 30 hari (29 Okt 2026) -> pasut_30h.json: SATU panggilan hltide per stasiun (sekitar 73 per hari, 1 per detik) untuk jendela
+[hari ini - 335, hari ini + 30]. BMKG hanya melayani prediksi dari 1 Des 2025 sampai 1 Jan 2027 (tanggal di luar itu kosong),
+jadi jendela dipotong otomatis. Ambang "pasang tinggi" = persentil 90 maksimum harian stasiun itu sendiri atas jendela itu
+(minimal 120 hari, selain itu null). Status 7 hari: tinggi bila ada hari di atas p90, sedang bila di atas p75, selain itu biasa.
+Validasi terhadap UHSLC: lihat kepala pasut_validasi.py. Belum ada klaim ketepatan di layar."""
 import datetime as dt, os, sys, time
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -11,6 +17,10 @@ JEDA = 0.4          # detik antar permintaan
 HARI_PUNCAK = 3     # hari ini .. +3
 HARI_DERET = 2      # hari ini .. +2
 HARI_BASIS = 90     # puncak tinggi ke belakang untuk persentil 90
+HARI_PROSPEK = 30   # ke depan
+HARI_JENDELA = 335  # ke belakang (BMKG hanya punya sejak 2025-12-01)
+JEDA_PROSPEK = 1.0  # detik, sopan: satu permintaan per detik
+MIN_BASIS = 120     # hari minimal untuk persentil
 
 
 def tgl(d):
@@ -49,6 +59,63 @@ def maks_harian(puncak):
         if p["jenis"] == "tinggi":
             h[p["t"][:10]] = max(h.get(p["t"][:10], p["cm"]), p["cm"])
     return h
+
+
+def maks_harian_jam(puncak):
+    """[{t, cm, jenis}] -> {tanggal: (cm, jam)} maksimum puncak tinggi per tanggal WIB."""
+    h = {}
+    for p in puncak:
+        if p["jenis"] == "tinggi" and (p["t"][:10] not in h or p["cm"] > h[p["t"][:10]][0]):
+            h[p["t"][:10]] = (p["cm"], p["t"][11:16])
+    return h
+
+
+def susun_prospek(st, harian, hari_ini):
+    """{tanggal: (cm, jam)} -> {id, nama, prov, lat, lon, p50, p75, p90, hari_basis, status7, hari:[[tgl, cm, jam]]} hari ini .. +30."""
+    nilai = [v[0] for v in harian.values()]
+    p50 = p75 = p90 = None
+    if len(nilai) >= MIN_BASIS:
+        p50, p75, p90 = persentil(nilai, 0.5), persentil(nilai, 0.75), persentil(nilai, 0.9)
+    ke = (dt.date.fromisoformat(hari_ini) + dt.timedelta(days=HARI_PROSPEK)).isoformat()
+    depan = [[d, v[0], v[1]] for d, v in sorted(harian.items()) if hari_ini <= d <= ke]
+    if not depan:
+        raise ValueError("tidak ada prediksi ke depan")
+    status = None
+    if p90 is not None:
+        m7 = max(x[1] for x in depan[:7])
+        status = "tinggi" if m7 > p90 else "sedang" if m7 > p75 else "biasa"
+    return {"id": str(st["ID"]), "nama": st["Lokasi"], "prov": st.get("Provinsi"), "lat": st["Lat"], "lon": st["Lon"],
+            "p50": p50, "p75": p75, "p90": p90, "hari_basis": len(nilai), "status7": status, "hari": depan}
+
+
+def periksa_prospek(o):
+    assert o["sumber"] and o["dibuat"] and o["stasiun"], "kosong"
+    for s in o["stasiun"]:
+        assert s["hari"] and all(len(x) == 3 and isinstance(x[1], int) for x in s["hari"]), s["id"]
+        assert s["status7"] in ("tinggi", "sedang", "biasa", None)
+        assert (s["status7"] is None) == (s["p90"] is None), s["id"]
+
+
+def prospek(meta, hari_ini):
+    hasil, gagal = [], 0
+    for st in meta:
+        try:
+            a, b = tgl(hari_ini - dt.timedelta(days=HARI_JENDELA)), tgl(hari_ini + dt.timedelta(days=HARI_PROSPEK))
+            puncak = parse_hltide(ambil(f"{U}/hltide/MSL/WIB/{st['ID']}/{a}/{b}", coba=2, batas_waktu=30))
+            hasil.append(susun_prospek(st, maks_harian_jam(puncak), hari_ini.isoformat()))
+        except Exception as e:
+            gagal += 1
+            print(f"  prospek lewati {st.get('Lokasi')}: {e}", file=sys.stderr)
+        time.sleep(JEDA_PROSPEK)
+    if gagal > len(meta) // 2:
+        sys.exit(f"prospek: terlalu banyak stasiun gagal ({gagal}/{len(meta)}), pasut_30h.json lama dipertahankan")
+    o = {"dibuat": dt.datetime.now(WIB).isoformat(timespec="seconds"), "mulai": hari_ini.isoformat(), "datum": "MSL", "satuan": "cm",
+         "sumber": "BMKG Maritim, prediksi pasang surut (maritim.bmkg.go.id/pasut/hltide/MSL/WIB)",
+         "metode": "p90 = persentil 90 maksimum harian stasiun itu sendiri atas jendela prediksi; bukan ambang banjir",
+         "stasiun": hasil}
+    periksa_prospek(o)
+    simpan(os.path.join(KELUAR, "pasut_30h.json"), o)
+    print(f"pasut_30h.json: {len(hasil)} stasiun, {gagal} gagal")
 
 
 def satu(st, hari_ini):
@@ -105,6 +172,7 @@ def main():
         sys.exit(f"terlalu banyak stasiun gagal ({gagal}/{len(meta)}), pasut.json lama dipertahankan")
     simpan(os.path.join(KELUAR, "pasut.json"), o)
     print(f"pasut.json: {len(hasil)} stasiun, {gagal} gagal")
+    prospek(meta, hari_ini)
 
 
 def uji():
@@ -133,6 +201,13 @@ def uji():
         raise SystemExit("kontrak rusak lolos")
     except AssertionError:
         pass
+    st = {"ID": 9, "Lokasi": "X", "Provinsi": "P", "Lat": -6.1, "Lon": 106.8}
+    h = {(dt.date(2026, 6, 1) + dt.timedelta(days=i)).isoformat(): (50, "10:00") for i in range(153)}   # sampai 31 Okt
+    r = susun_prospek(st, h, "2026-10-29")
+    assert r["p90"] == 50 and [x[0] for x in r["hari"]] == ["2026-10-29", "2026-10-30", "2026-10-31"] and r["status7"] == "biasa", r
+    h["2026-10-31"] = (170, "21:00")
+    assert susun_prospek(st, h, "2026-10-29")["status7"] == "tinggi"
+    assert susun_prospek(st, dict(list(h.items())[-40:]), "2026-10-29")["status7"] is None  # basis pendek
     print("pasut uji lulus")
 
 

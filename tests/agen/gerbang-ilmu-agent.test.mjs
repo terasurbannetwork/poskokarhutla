@@ -117,6 +117,47 @@ test('jejak melewati berkas yang tak berubah dan memeriksa ulang yang berubah', 
   assert.notEqual(salah.status, 0, 'vonis di luar bersih|temuan|dikerjakan diterima')
 })
 
+test('prompt pemilik tercatat, disamarkan, berlabel, dan hook tak pernah menahan', () => {
+  // Repo publik: penyamaran ini satu-satunya penjaga sebelum prompt di-commit.
+  const settings = JSON.parse(readFileSync(join(ROOT, '.claude', 'settings.json'), 'utf8'))
+  const hook = JSON.stringify(settings.hooks?.UserPromptSubmit ?? [])
+  assert.ok(hook.includes('ilmu.mjs') && hook.includes('prompt-catat'), 'hook UserPromptSubmit prompt-catat tidak terdaftar')
+
+  const dir = mkdtempSync(join(tmpdir(), 'prompt-'))
+  const env = { ...process.env, ILMU_DIR: dir }
+  const kirim = (input) =>
+    spawnSync('node', ['scripts/agents/ilmu.mjs', 'prompt-catat'], { cwd: ROOT, encoding: 'utf8', env, input })
+
+  const rahasia = [
+    'sk-ant-api03-AbCdEfGhIjKlMnOpQrStUv',
+    'ghp_0123456789abcdefghijABCDEFGHIJ',
+    'pinka@contoh.id',
+    '0812-3456-7890',
+    '+62 812 3456 7890',
+    '3201011234567890',
+    'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
+    'isi rapat rahasia',
+    'akunmesinlain',
+  ]
+  const prompt =
+    `benerin src/worker.js dan banjir rob; baca /Users/${rahasia[8]}/Downloads/x.pdf; kunci ${rahasia[0]} ${rahasia[1]}, email ${rahasia[2]}, ` +
+    `WA ${rahasia[3]} / ${rahasia[4]}, NIK ${rahasia[5]}, sha ${rahasia[6]}, password: hunter22 ` +
+    `<pasted_content id="x">${rahasia[7]}</pasted_content id="x">`
+  assert.equal(kirim(JSON.stringify({ session_id: 'abcdef123456', prompt })).status, 0)
+  assert.equal(kirim('bukan json').status, 0, 'stdin rusak membuat hook gagal: prompt pemilik bisa tertahan')
+  assert.equal(kirim(JSON.stringify({ prompt: '<task-notification>x</task-notification>' })).status, 0)
+  assert.equal(kirim(JSON.stringify({ prompt: 'Tolong coba lagi' })).status, 0)
+  assert.equal(kirim(JSON.stringify({ prompt: '<agent-message from="a1">laporan subagent</agent-message>' })).status, 0)
+
+  const r = spawnSync('node', ['scripts/agents/ilmu.mjs', 'prompt'], { cwd: ROOT, encoding: 'utf8', env })
+  assert.match(r.stdout, /1 dari 1 prompt/, `harus tepat 1 prompt tercatat (notifikasi otomatis dilewati):\n${r.stdout}`)
+  const bocor = rahasia.filter((s) => r.stdout.includes(s))
+  assert.deepEqual(bocor, [], `penyamaran bocor, ini akan terbit di repo publik: ${bocor.join(' | ')}`)
+  assert.ok(!r.stdout.includes('hunter22'), 'password: <nilai> tidak disamarkan')
+  assert.match(r.stdout, /\[banjir, warga-api\]/, `label agent salah:\n${r.stdout}`)
+  assert.match(r.stdout, /src\/worker\.js/, 'jalur berkas ikut tersamar; agent kehilangan konteks')
+})
+
 test('AGENTS.md menulis pengetahuan dan otoritas orkestrator', () => {
   const agents = readFileSync(join(ROOT, 'AGENTS.md'), 'utf8')
   assert.ok(agents.includes('### 1.5 Orkestrator'), 'AGENTS.md §1.5 hilang')
