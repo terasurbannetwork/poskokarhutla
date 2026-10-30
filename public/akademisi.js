@@ -1540,7 +1540,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     m.on("load", () => {
       m.addSource("pts", {type: "geojson", data: geoPts([])}); m.addSource("sns", {type: "geojson", data: geoSens()}); m.addSource("cho", {type: "geojson", data: {type: "FeatureCollection", features: []}});
       m.addLayer({id: "cho-fill", type: "fill", source: "cho", layout: {visibility: "none"}, paint: {"fill-color": ["get", "warna"], "fill-opacity": 0}});   // pemilik: tanpa warna sebaran; lapisan tetap untuk tip wilayah
-      m.addLayer({id: "cho-line", type: "line", source: "cho", layout: {visibility: "none"}, paint: {"line-color": "#fff", "line-width": .6}});
+      m.addLayer({id: "cho-line", type: "line", source: "cho", layout: {visibility: "none"}, paint: {"line-color": "#14284b", "line-opacity": .55, "line-width": ["interpolate", ["linear"], ["zoom"], 4, .8, 8, 1.4]}});   // batas wilayah selalu terlihat
+      m.addLayer({id: "cho-sorot", type: "line", source: "cho", filter: ["==", ["get", "i"], -1], paint: {"line-color": "#e8b53a", "line-width": 2.6}});   // wilayah di bawah kursor
       SN_KLS.forEach(x => snIkon(m, x[0]));
       m.addLayer({id: "sns-dot", type: "symbol", source: "sns", layout: {visibility: "none", "icon-image": ["get", "ikon"], "icon-size": ["interpolate", ["linear"], ["zoom"], 3, .26, 6, .38, 9, .56, 12, .8], "icon-allow-overlap": true, "icon-ignore-placement": true}});
       m.addLayer({id: "pts-dot", type: "circle", source: "pts", paint: {"circle-color": ["get", "warna"], "circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 3, 10, 6], "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": ["get", "op"]}});
@@ -1553,8 +1554,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       m.on("mouseleave", "sns-dot", () => { m.getCanvas().style.cursor = ""; $("akTip").hidden = true; });
       m.on("click", "sns-dot", e => { const x = lbMap.get(e.features[0].properties.pemilik); if (x) bukaDrawer(x); });
       m.on("mousemove", "cho-fill", e => { const titik = ["sns-dot", "pts-dot"].filter(l => m.getLayer(l)); if (titik.length && m.queryRenderedFeatures(e.point, {layers: titik}).length) return;   // titik sensor/lembaga di atas wilayah: tip titik yang menang
-        const r = PT.reg?.[e.features[0].properties.i]; if (r) tipPeta(e, tipWilayah(r)); });
-      m.on("mouseleave", "cho-fill", () => { $("akTip").hidden = true; });
+        const i = e.features[0].properties.i, r = PT.reg?.[i]; m.setFilter("cho-sorot", ["==", ["get", "i"], i]); if (r) tipPeta(e, tipWilayah(r)); });
+      m.on("mouseleave", "cho-fill", () => { $("akTip").hidden = true; m.setFilter("cho-sorot", ["==", ["get", "i"], -1]); });
       ambilData("sensor").then(d => { if (!Array.isArray(d) || !d.length) return; PT.sensorArr = d.filter(s => s && Number.isFinite(s.lat)); nanti(segarPeta); });
       ambilData("pusat_studi").then(d => { PT.pusatArr = dlist(d).filter(x => x && x.nama && x.nama_terverifikasi === true); nanti(segarPeta); });
     });
