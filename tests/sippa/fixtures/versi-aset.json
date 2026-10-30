@@ -92,6 +92,11 @@
       "sha256": {
         "pipa.css": "f20b1cfdff4d46d5212a39f20331d616a3f856e539d9812ebcb8aca0b8a33bd3"
       }
+    },
+    "10": {
+      "sha256": {
+        "pipa.css": "2c192bb019202c0a49578ea5c4ba39e108f92d53e094d488f475596738ab793e"
+      }
     }
   }
 }
