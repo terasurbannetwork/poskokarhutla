@@ -68,3 +68,23 @@ test("partner strategis: organisasi dengan banyak pakar dan dana mendapat bintan
   assert.ok(st["L:wb"].alasan.some(a => a.includes("Mendanai 2 proyek")));
   assert.ok(!st["L:kecil"]);
 });
+
+test("pakar berinisial cocok dengan tokoh bernama lengkap", () => {
+  const D = {induk: [["A1", "D. H. Natawidjaja", "BRIN", []], ["A2", "D. Natawidjaja", "BRIN", []]], tokoh: [{id: "dhn", nama: "Danny Hilman Natawidjaja"}, {id: "x", nama: "Dewi Natawidjaja"}]};
+  const g = hubung(D);
+  assert.ok(g.sisi.some(s => s[0] === "T:dhn" && s[1] === "P:A1" && s[2] === "orang yang sama"));
+  assert.ok(!g.sisi.some(s => s[0] === "T:x" && s[2] === "orang yang sama"));
+});
+
+test("pakar diaspora tersambung ke institusinya", () => {
+  const D = {lembaga: [{id: "uc", nama: "Universitas Contoh Raya", kategori: "kampus"}], diaspora: [{id: "mb", nama: "Mizan Bisri", openalex_id: "A7", institusi: "Universitas Contoh Raya"}]};
+  const g = hubung(D);
+  assert.ok(g.sisi.some(s => s[0] === "P:A7" && s[1] === "L:uc" && s[2] === "bekerja di"));
+});
+
+test("BNPB tidak pernah jadi partner strategis", () => {
+  const g = {simpul: {"L:bnpb": {j: "lembaga", n: "Badan Nasional Penanggulangan Bencana"}, "L:x": {j: "lembaga", n: "Lembaga X"}}, sisi: []};
+  for (let i = 0; i < 40; i++) { g.simpul["P:" + i] = {j: "pakar", n: "p" + i}; g.sisi.push(["P:" + i, "L:bnpb", "bekerja di"], ["P:" + i, "L:x", "bekerja di"]); }
+  const st = strategis(g, {});
+  assert.ok(!st["L:bnpb"]);
+});

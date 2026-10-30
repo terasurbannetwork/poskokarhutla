@@ -58,7 +58,9 @@ export function cari(peta, nama, akar = new Set()) {
    Tiap komponen diubah ke persentil (0..1) di antara organisasi, lalu dijumlah berbobot. Bintang: 60 skor tertinggi + 3 teratas tiap kategori lembaga,
    asal skor ≥ 0,35 dan minimal dua komponen bernilai. ponytail: bobot tetap di sini; ubah bila pemilik ingin menekankan komponen lain. */
 export function strategis(g, D) {
-  const org = Object.entries(g.simpul).filter(([id, s]) => s.j === "lembaga" || s.j === "kampus" || s.j === "organisasi").map(([id]) => id);
+  /* BNPB adalah pemakai direktori, bukan mitranya: tidak pernah diberi bintang */
+  const DIRI = /^badan nasional penanggulangan bencana\b|\bbnpb\b/i;
+  const org = Object.entries(g.simpul).filter(([id, s]) => (s.j === "lembaga" || s.j === "kampus" || s.j === "organisasi") && !DIRI.test(String(s.n || s.nama || "").trim())).map(([id]) => id);
   const m = Object.fromEntries(org.map(id => [id, {orang: 0, dana: 0, aset: 0, cabang: 0, jejak: 0, jangkau: new Set(), proyek: 0}]));
   const usd = {}; for (const d of larik(D.pendanaan?.pendanaan || D.pendanaan)) usd["D:" + d.id] = Number(d.nilai_usd) || 0;
   for (const p of larik(D.lembaga_3w)) usd["J:" + p.id] = Number(p.nilai_usd) || 0;
@@ -122,8 +124,13 @@ export function hubung(D) {
   /* tokoh yang juga pakar (nama tanpa gelar sama persis dan unik) = satu orang: pakar_id diisi, sisi "orang yang sama" */
   const gelar = n => norm(String(n).replace(/\b(prof|dr|ir|drs|dra|st|mt|msc|m sc|phd|ph d|sp|mm|ma|m si|msi|s si|ssi|h|hj)\b\.?/gi, " "));
   const pakarNama = new Map(); for (const o of larik(D.induk)) { const k = gelar(o[1]); pakarNama.set(k, pakarNama.has(k) ? null : o[0]); }
-  for (const t of larik(D.tokoh)) { const pid = t.pakar_id || pakarNama.get(gelar(t.nama)); if (pid) { t.pakar_id = pid; tepi("T:" + t.id, "P:" + pid, "orang yang sama"); } }
+  /* minimal dua inisial; nama pakar berinisial ("D. H. Natawidjaja") cocok dengan nama lengkap tokoh ("Danny Hilman Natawidjaja") bila inisial + nama belakang sama dan unik */
+  const inisial = n => { const a = String(n).split(" ").filter(Boolean); return a.length < 2 ? "" : a.slice(0, -1).map(w => w[0]).join(" ") + " " + a.at(-1); };
+  const pakarInisial = new Map(); for (const o of larik(D.induk)) { const a = norm(o[1]).split(" ").filter(Boolean); if (a.length < 3 || !a.slice(0, -1).every(w => w.length === 1)) continue; const k = a.join(" "); pakarInisial.set(k, pakarInisial.has(k) ? null : o[0]); }
+  for (const t of larik(D.tokoh)) { const pid = t.pakar_id || pakarNama.get(gelar(t.nama)) || pakarInisial.get(inisial(gelar(t.nama))); if (pid) { t.pakar_id = pid; tepi("T:" + t.id, "P:" + pid, "orang yang sama"); } }
   for (const t of larik(D.tokoh)) { const id = "T:" + t.id; node(id, "tokoh", t.nama, t.foto_url); const o = keAtauBaru(t.lembaga); if (o) { t.lembaga_id = lid(o); tepi(id, o, "berperan di"); } }
+  /* pakar diaspora: satu simpul per orang (id OpenAlex bila ada), tersambung ke institusinya di luar negeri, mis. World Bank */
+  for (const x of larik(D.diaspora)) { const id = x.openalex_id ? "P:" + x.openalex_id : "D:" + x.id; node(id, "pakar", x.nama, x.foto_url); const o = keAtauBaru(x.institusi); if (o) tepi(id, o, "bekerja di"); }
   for (const k of larik(D.kalaksa)) { const id = "T:kalaksa-" + k.bpbd_id; node(id, "tokoh", k.nama, k.foto_url); tepi(id, "L:" + k.bpbd_id, "kepala pelaksana", k.sumber_url); }
   for (const i of larik(D.inovasi)) { const id = "I:" + i.id; node(id, "inovasi", i.nama);
     for (const p of i.pembuat || []) { const o = p.lembaga_id ? "L:" + p.lembaga_id : keAtauBaru(p.nama); if (o) { p.lembaga_id = p.lembaga_id || lid(o); tepi(o, id, "membuat"); } } }
@@ -160,7 +167,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [dir, keluar] = process.argv.slice(2);
   if (!dir || !keluar) { console.error("pakai: hubung.mjs <folder data> <folder keluaran>"); process.exit(2); }
   const F = ["lembaga", "kampus", "induk", "afiliasi", "tokoh", "kalaksa", "inovasi", "sistem_data", "pendanaan", "lembaga_3w", "jurnal", "redaksi", "buku", "peneliti_muda",
-    "hibah_riset", "penghargaan", "csr", "donatur_kejadian", "aset_riset", "dokumen", "berita"];
+    "hibah_riset", "penghargaan", "csr", "donatur_kejadian", "aset_riset", "dokumen", "berita", "diaspora"];
   const D = Object.fromEntries(F.map(f => [f, baca(dir, f + ".json")]));
   const g = hubung(D);
   mkdirSync(keluar, {recursive: true});
