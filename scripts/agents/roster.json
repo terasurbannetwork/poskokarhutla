@@ -19,6 +19,7 @@
       "tidak": "model ML sebaran; tampilan layar; worker Cloudflare",
       "milik": [
         "scripts/data/**",
+        "scripts/panen/**",
         "scripts/scrape/**",
         "scripts/geo/**",
         "scripts/statistik/**",

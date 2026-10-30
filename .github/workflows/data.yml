@@ -58,7 +58,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # arsip cluster hari LAMPAU yang di-commit (dibangun ulang, mis. definisi kolom berubah) menang atas cache: cache hanya
@@ -268,6 +268,20 @@ jobs:
         with:
           path: data/raw/tanah_klim.json
           key: tanah-${{ github.run_id }}
+
+      # Panen harian #34 #35 #36 #37 #38 (30 Okt 2026, docs/panen/RENCANA-PANEN-DATA.md): keluaran berkas bergulir tetap di public/data (cache data-).
+      # Tanpa kunci wajib: reliefweb jatuh ke RSS publik bila RELIEFWEB_APPNAME kosong; rs_kapasitas mencatat MENUNGGU AKSES. Semua boleh gagal.
+      - name: Panen sinyal sosial, GDELT, ReliefWeb, internet padam, kapasitas RS (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
+        run: |
+          for s in "umum/sinyal_sosial semua" umum/reliefweb umum/internet_padam bnpb/rs_kapasitas; do
+            p=${s%% *}; a=${s#"$p"}; p=scripts/$p.py
+            case $p in *rs_kapasitas*) u=--cek;; *) u=uji;; esac
+            python3 $p $u && { python3 $p $a || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
+          done
 
       - name: Pulihkan arsip berita
         uses: actions/cache/restore@v4
