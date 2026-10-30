@@ -58,8 +58,8 @@ export function cari(peta, nama, akar = new Set()) {
    Tiap komponen diubah ke persentil (0..1) di antara organisasi, lalu dijumlah berbobot. Bintang: 60 skor tertinggi + 3 teratas tiap kategori lembaga,
    asal skor ≥ 0,35 dan minimal dua komponen bernilai. ponytail: bobot tetap di sini; ubah bila pemilik ingin menekankan komponen lain. */
 export function strategis(g, D) {
-  /* BNPB adalah pemakai direktori, bukan mitranya: tidak pernah diberi bintang */
-  const DIRI = /^badan nasional penanggulangan bencana\b|\bbnpb\b/i;
+  /* BNPB pemakai direktori, dan BPBD/BPBA di bawah koordinasinya: keduanya bukan mitra, tidak pernah diberi bintang */
+  const DIRI = /^badan nasional penanggulangan bencana\b|\bbnpb\b|^badan penanggulangan bencana\b|\bbpbd\b|\bbpba\b/i;
   const org = Object.entries(g.simpul).filter(([id, s]) => (s.j === "lembaga" || s.j === "kampus" || s.j === "organisasi") && !DIRI.test(String(s.n || s.nama || "").trim())).map(([id]) => id);
   const m = Object.fromEntries(org.map(id => [id, {orang: 0, dana: 0, aset: 0, cabang: 0, jejak: 0, jangkau: new Set(), proyek: 0}]));
   const usd = {}; for (const d of larik(D.pendanaan?.pendanaan || D.pendanaan)) usd["D:" + d.id] = Number(d.nilai_usd) || 0;

@@ -88,3 +88,10 @@ test("BNPB tidak pernah jadi partner strategis", () => {
   const st = strategis(g, {});
   assert.ok(!st["L:bnpb"]);
 });
+
+test("BPBD dan BPBA (di bawah koordinasi BNPB) tidak pernah jadi partner strategis", () => {
+  const g = {simpul: {"L:bpbd-jatim": {j: "lembaga", n: "BPBD Provinsi Jawa Timur"}, "L:bpba": {j: "lembaga", n: "Badan Penanggulangan Bencana Aceh (BPBA)"}, "L:x": {j: "lembaga", n: "Lembaga X"}}, sisi: []};
+  for (let i = 0; i < 40; i++) { g.simpul["P:" + i] = {j: "pakar", n: "p" + i}; for (const o of ["L:bpbd-jatim", "L:bpba", "L:x"]) g.sisi.push(["P:" + i, o, "bekerja di"]); }
+  const st = strategis(g, {});
+  assert.ok(!st["L:bpbd-jatim"] && !st["L:bpba"]);
+});
