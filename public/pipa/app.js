@@ -7,7 +7,7 @@ import {bolehDummy, pasangDummy, ambilPesan, layarDummy} from "./dummy.js";
 
 const GRUP = [
   {k: "ringkas", n: "Ringkas", i: "layout-dashboard"},
-  {kel: "Rencana", item: [{k: "peta", n: "Peta", i: "peta"}, {k: "hitung", n: "Hitung", i: "calculator"}, {k: "pemicu", n: "Pemicu", i: "siren"}, {k: "studio", n: "Studio", i: "sliders-horizontal"}, {k: "3d", n: "3D", i: "box"}]},
+  {kel: "Rencana", item: [{k: "peta", n: "Peta", i: "peta"}, {k: "kunjungan", n: "Kunjungan", i: "peta"}, {k: "hitung", n: "Hitung", i: "calculator"}, {k: "pemicu", n: "Pemicu", i: "siren"}, {k: "studio", n: "Studio", i: "sliders-horizontal"}, {k: "3d", n: "3D", i: "box"}]},
   {kel: "Operasi", item: [{k: "kit", n: "Kit", i: "warehouse"}, {k: "pelihara", n: "Pelihara", i: "wrench"}, {k: "air", n: "Air tanah", i: "cloud-check"}, {k: "log", n: "Log", i: "timer"}, {k: "ab", n: "A/B", i: "flask-conical"}, {k: "telemetri", n: "Telemetri", i: "activity"}]},
   {kel: "Keluaran", item: [{k: "laporan", n: "Laporan", i: "file-text"}, {k: "data", n: "Data", i: "database"}]},
 ];

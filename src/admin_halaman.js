@@ -175,8 +175,8 @@ ${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/insta
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 
 /* SIPPA (/pipa): cangkang staf dibangkitkan worker dari string, bukan berkas .html di public/ (ADR-12): .html di public/ bisa dibuka langsung dan di host publik tanpa CSP halaman.
-   Isi layar di public/pipa/*.js (kode dan teks, tanpa data). CSP_SIPPA = CSP_ADMIN dengan tiga penggantian: peta openfreemap dan worker blob (DESAIN-TEKNIS SIPPA §4.2). */
-export const CSP_SIPPA = CSP_ADMIN.replace("img-src 'self' data:", "img-src 'self' data: blob: https://*.openfreemap.org").replace("connect-src 'self'", "connect-src 'self' https://*.openfreemap.org") + "; worker-src 'self' blob:";
+   Isi layar di public/pipa/*.js (kode dan teks, tanpa data). CSP_SIPPA = CSP_ADMIN dengan tiga penggantian: peta openfreemap, rute OSRM untuk /pipa/kunjungan (keputusan 64, izin pemilik 30 Okt 2026), dan worker blob (DESAIN-TEKNIS SIPPA §4.2). */
+export const CSP_SIPPA = CSP_ADMIN.replace("img-src 'self' data:", "img-src 'self' data: blob: https://*.openfreemap.org").replace("connect-src 'self'", "connect-src 'self' https://*.openfreemap.org https://router.project-osrm.org") + "; worker-src 'self' blob:";
 export const halamanSippa = (layar, ctx) => `<!doctype html>
 <html lang="id">
 <head>

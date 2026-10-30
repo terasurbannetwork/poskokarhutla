@@ -5,7 +5,7 @@ from html import escape as e
 from analisis import proyeksi, arah, OUT
 from kumpul import km, GENERIK, HERE
 from teks import TEKS, UMUM, KIT, UJI, DALAM_PANJANG, teks_panjang
-import teks_renlap
+import teks_renlap, kunjungan
 from lampiran import halaman_lampiran, ALAT
 
 WIB = timezone(timedelta(hours=7))
@@ -59,6 +59,53 @@ if GENERIK:
         R["judul"] = EKSTRA["judul"]
 else:
     EKSTRA = {}
+
+
+# rencana kunjungan (keputusan SIPPA 64): RENLAP_KUNJUNGAN dicek ulang di sini; rusak = halaman tidak dibuat
+KUNJ = None
+if GENERIK:
+    _kj = kunjungan.valid(os.environ.get("RENLAP_KUNJUNGAN"), {s_["id"] for s_ in D["situs"]})
+    if _kj:
+        KUNJ = kunjungan.siapkan(_kj, {s_["id"]: tuple(s_["titik"]["ujung"]) for s_ in D["situs"]}, {s_["id"]: s_["no"] for s_ in D["situs"]})
+
+
+def jam_mnt(m):
+    return f"{m // 60} jam {m % 60} menit" if m >= 60 else f"{m} menit"
+
+
+def halaman_kunjungan():
+    K = KUNJ; S = {s["id"]: s for s in D["situs"]}; aw = K["awal"]
+    baris, kartu = [], []
+    for t in K["tim"]:
+        for h in t["hari"]:
+            for i in h["ids"]:
+                j = K["jarak"][i]; s = S[i]; kira = j["sumber"] == "perkiraan"
+                tdk = " <span class='abu'>(perkiraan)</span>" if kira else ""
+                baris.append(f'<tr><td>{t["no"]}</td><td>{h["no"]}</td><td class="no">{s["no"]}</td><td><b>{e(s["nama"])}</b><br><span class="abu">Kompleks {i}</span></td>'
+                             f'<td class="angka">{len(s["titik24"])}</td><td class="angka">{ang(j["lurus_km"], 1)} km</td>'
+                             f'<td class="angka">{ang(j["jalan_km"], 1)} km{tdk}</td><td class="angka">{jam_mnt(round(j["mobil_menit"]))}{tdk}</td>'
+                             f'<td class="angka">{ang(j["kaki_km"], 1)} km</td></tr>')
+    def tl(urls):
+        return ", ".join(f'<a href="{u}">Buka peta{"" if len(urls) == 1 else f" bagian {n + 1}"}</a>' for n, u in enumerate(urls))
+    for t in K["tim"]:
+        isi_hari = []
+        for h in t["hari"]:
+            inap = f' Menginap di {e(S[h["menginap"]]["nama"])}.' if h["menginap"] else ""
+            isi_hari.append(f'<li><b>Hari {h["no"]}</b>, lokasi {", ".join(str(n) for n in h["nomor"])}: {tl(h["tautan"])}. '
+                            f'Mobil {jam_mnt(h["mobil_menit"])}, jalan kaki {jam_mnt(h["kaki_menit"])}, di lokasi {jam_mnt(h["lokasi_menit"])} (asumsi), '
+                            f'jumlah <b>{jam_mnt(h["total_menit"])}</b>.{inap}</li>')
+        kartu.append(f'<div class="kartu"><div class="kj">Tim {t["no"]}</div><ul class="rapat">{"".join(isi_hari)}</ul></div>')
+    return (f'<section class="hal potret"><header class="kepala1"><div class="sup">BNPB SIPPA, RENCANA LAPANGAN</div>'
+            f'<div class="baris1"><h1>Rencana kunjungan</h1><div class="kanan">Kondisi per {ACUAN}</div></div></header>'
+            f'<p class="gagasan"><b>Titik awal</b> {koor((aw["lat"], aw["lon"]))}. Urutan tabel adalah urutan kunjungan per tim dan hari. '
+            f'Nomor lokasi sama dengan nomor di halaman lokasi. Tautan Google Maps berangkat dari titik awal (hari berikutnya dari lokasi terakhir hari sebelumnya) dan menuju titik parkir tiap lokasi.</p>'
+            f'<table class="utama"><colgroup><col style="width:8mm"><col style="width:9mm"><col style="width:11mm"><col><col style="width:16mm"><col style="width:19mm"><col style="width:25mm"><col style="width:25mm"><col style="width:19mm"></colgroup>'
+            f'<tr><th>Tim</th><th>Hari</th><th>Lokasi</th><th>Nama</th><th>Titik panas 24 jam</th><th>Jarak lurus dari titik awal</th><th>Jarak jalan dari titik sebelumnya</th><th>Waktu mobil dari titik sebelumnya</th><th>Jalan kaki dari parkir</th></tr>'
+            f'{"".join(baris)}</table>'
+            f'<div class="dua1">{"".join(kartu)}</div>'
+            f'<div class="kartu"><div class="kj">Semua lokasi, pergi dan pulang ke titik awal</div><p>{tl(K["tautan_semua"])}</p></div>'
+            f'<div class="sumber">Waktu dan jarak jalan dari OSRM (OpenStreetMap), atau perkiraan garis lurus × 1,4 pada 40 km/jam bila bertanda perkiraan. Tambah 30 sampai 50% untuk jalan kebun, feri, dan istirahat. '
+            f'Jalan kaki dihitung pergi-pulang 4 km/jam; 150 menit per lokasi adalah asumsi, bukan hasil ukur.</div></section>')
 
 
 def target(s):
@@ -652,7 +699,7 @@ def halaman_ringkas():
     if EKSTRA.get("satu_daftar"):   # EKSTRA {"satu_daftar": judul}: semua lokasi satu tabel urut prioritas, selang pendek dan panjang digabung
         tabelA = f'<h2 class="bag">{EKSTRA["satu_daftar"]}</h2><table class="utama">{KOLOM}{"".join(baris_ringkas(s) for s in S)}</table>'
     satu = (f'<section class="hal potret"><header class="kepala1"><div class="sup">BNPB SIPPA, SISTEM PIPA PORTABEL KARHUTLA DAN BANJIR</div>'
-            f'<div class="baris1"><h1>{R.get("judul", "Pilot Kalimantan Tengah: 10 lokasi uji")}</h1><div class="kanan">Kondisi per {ACUAN}<br>Dossier tim lapangan, {2 + 3 * len(S) + (len(ALAT) + 7) // 8} halaman</div></div></header>'
+            f'<div class="baris1"><h1>{R.get("judul", "Pilot Kalimantan Tengah: 10 lokasi uji")}</h1><div class="kanan">Kondisi per {ACUAN}<br>Dossier tim lapangan, {2 + (1 if KUNJ else 0) + 3 * len(S) + (len(ALAT) + 7) // 8} halaman</div></div></header>'
             f'<div class="kpi4"><div><b class="oranye">{ang(R["kalteng48"])}</b><span>titik api {R["wilayah"] + " " + R["tgl_label"] if GENERIK else "Kalteng 25–26 Okt"}</span></div>'
             f'<div><b class="kecilb">{kab}</b><span>kabupaten terbanyak</span></div><div><b>{R.get("n_gambut", 10)} dari {len(S)}</b><span>lokasi di dalam {GN2}</span></div>'
             f'<div><b>{len(A)} + {len(B)}</b><span>lokasi selang pendek dan selang panjang</span></div></div>'
@@ -678,7 +725,7 @@ def halaman_ringkas():
            f'<div class="dua1"><div class="kartu"><div class="kj">Cara menguji efektivitas, semua lokasi</div><ol class="rapat">{"".join(f"<li>{x}</li>" for x in UMUM["uji"])}</ol></div>'
            f'<div class="kartu"><div class="kj">Keselamatan, semua lokasi</div><ul class="rapat">{"".join(f"<li>{x}</li>" for x in UMUM["selamat"])}</ul></div></div>'
            f'{SUMBER.format(acuan=ACUAN)}</section>')
-    return satu + dua
+    return satu + (halaman_kunjungan() if KUNJ else "") + dua
 
 
 if GENERIK and os.environ.get("RENLAP_TANPA_TEKS_TANGAN"):   # tolak teks tulisan tangan pilot (isinya bertanggal 26 Okt): semua lokasi dari templat

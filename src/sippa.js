@@ -21,7 +21,7 @@ import {cekAset, KELAS, KELAS_ASET, kelasDari, jadwal} from "../public/pipa/peli
 
 const JAM = 3600e3, HARI = 24 * JAM;
 export const P_SIPPA_BACA = ["pusdalops", "koordalops", "pimpinan"], P_SIPPA_TULIS = ["pusdalops", "koordalops"];
-export const LAYAR_SIPPA = ["peta", "hitung", "pemicu", "kit", "log", "ab", "studio", "3d", "telemetri", "laporan", "data", "pelihara", "air", "akses"];
+export const LAYAR_SIPPA = ["peta", "hitung", "pemicu", "kit", "log", "ab", "studio", "3d", "telemetri", "laporan", "data", "pelihara", "air", "akses", "kunjungan"];
 const STATUS = ["gudang", "depot", "gelar", "banjir", "servis", "hilang", "pensiun"], JENIS_KIT = ["gambut", "mineral", "banjir", "pinjam_pilot"], UNSUR = ["manggala_agni", "bpbd", "yontp", "mpa", "lain"];
 const KONDISI = ["baik", "rusak_ringan", "rusak_berat", "hilang"], SATUAN = ["unit", "m", "set", "paket"], TEMPLAT = ["gambut", "mineral", "banjir"], JENIS_LOG = ["karhutla", "banjir", "latihan"];
 const RE_ID = /^[0-9a-f]{16}$/, RE_PROV = /^\d{2}$/, RE_KODE_KIT = /^SIPPA-\d{3}$/, RE_BOM = /^[A-Z]{1,4}-\d{1,6}$/, RE_KOMPLEKS = /^K\d{1,10}$/, RE_MS = /^\d{1,15}$/;
@@ -1790,22 +1790,52 @@ async function tolakRenlap(env, req, kini, status = 404, ip) {
   }
   return gagal(status, "tautan renlap tidak berlaku");
 }
-async function picuRenlap(env, id, ids) {
+async function picuRenlap(env, id, ids, kunjungan = "") {
   if (!env.GITHUB_TOKEN) return {ok: false, pesan: "mesin belum disambungkan"};
   try {
     const r = await fetch(`https://api.github.com/repos/${REPO_RENLAP}/actions/workflows/renlap.yml/dispatches`, {method: "POST", signal: AbortSignal.timeout(8000),
       headers: {authorization: `Bearer ${env.GITHUB_TOKEN}`, accept: "application/vnd.github+json", "x-github-api-version": "2022-11-28", "user-agent": "sippa-renlap", "content-type": "application/json"},
-      body: JSON.stringify({ref: "main", inputs: {renlap_id: id, kompleks_ids: ids.join(",")}})});
+      body: JSON.stringify({ref: "main", inputs: {renlap_id: id, kompleks_ids: ids.join(","), kunjungan}})});
     r.body?.cancel().catch(() => {});
     return r.status === 204 ? {ok: true} : {ok: false, pesan: `pemicu mesin ditolak (HTTP ${r.status})`};
   } catch (e) { return {ok: false, pesan: "pemicu mesin tidak terjangkau"}; }
 }
+/* Keputusan 64: rencana kunjungan opsional. Batas kepercayaan: dibangun ulang dari bidang tervalidasi saja, tidak pernah meneruskan masukan mentah. */
+const adaAngka = (v, a, z) => typeof v === "number" && Number.isFinite(v) && v >= a && v <= z;
+const LIMA_KUNCI = ["jalan_km", "kaki_km", "lurus_km", "mobil_menit", "sumber"];
+function cekKunjungan(k, unik) {
+  const ok = (...c) => c.every(Boolean), bulat = (v, d) => Math.round(v * d) / d, adaObj = o => o && typeof o === "object" && !Array.isArray(o);
+  if (!adaObj(k) || k.v !== 1 || !adaObj(k.awal) || !adaAngka(k.awal.lat, -11, 6) || !adaAngka(k.awal.lon, 94, 142)) return null;
+  if (!Array.isArray(k.tim) || k.tim.length < 1 || k.tim.length > 4) return null;
+  const lihat = new Set(), tim = [];
+  for (let i = 0; i < k.tim.length; i++) {
+    const t = k.tim[i]; if (!adaObj(t) || t.no !== i + 1 || !Array.isArray(t.hari) || t.hari.length < 1 || t.hari.length > 7) return null;
+    const hari = [];
+    for (let j = 0; j < t.hari.length; j++) {
+      const h = t.hari[j]; if (!adaObj(h) || h.no !== j + 1 || !Array.isArray(h.ids) || h.ids.length < 1 || h.ids.length > 10) return null;   // hari kosong ditolak: validator Python (kunjungan.py) juga menolaknya
+      for (const id of h.ids) { if (typeof id !== "string" || !RE_KOMPLEKS.test(id) || lihat.has(id)) return null; lihat.add(id); }
+      hari.push({no: j + 1, ids: [...h.ids]});
+    }
+    tim.push({no: i + 1, hari});
+  }
+  if (lihat.size !== unik.length || !unik.every(id => lihat.has(id))) return null;
+  if (!adaObj(k.jarak) || Object.keys(k.jarak).length !== unik.length) return null;
+  const jarak = {};
+  for (const id of unik) {
+    const d = k.jarak[id]; if (!adaObj(d) || Object.keys(d).sort().join() !== LIMA_KUNCI.join()) return null;
+    if (!ok(adaAngka(d.lurus_km, 0, 5000), adaAngka(d.jalan_km, 0, 5000), adaAngka(d.mobil_menit, 0, 5000), adaAngka(d.kaki_km, 0, 5000), d.sumber === "osrm" || d.sumber === "perkiraan")) return null;
+    jarak[id] = {lurus_km: bulat(d.lurus_km, 10), jalan_km: bulat(d.jalan_km, 10), mobil_menit: Math.round(d.mobil_menit), kaki_km: bulat(d.kaki_km, 10), sumber: d.sumber};
+  }
+  const t = JSON.stringify({v: 1, awal: {lat: bulat(k.awal.lat, 1e5), lon: bulat(k.awal.lon, 1e5)}, tim, jarak});
+  return t.length <= 6000 ? t : null;
+}
 async function renlapBuat(env, req, url, kini) {
   const a = await akses(env, req, "W"); if (a.res) return a.res;
   const l = await batasJam(env, a.oleh, "sippa.renlap", 20, kini); if (l) return l;
-  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat); const ids = b.o.kompleks_ids;
+  const b = await bacaBody(req, 8192); if (b.galat) return gagal(b.status || 400, b.galat); const ids = b.o.kompleks_ids;
   if (!Array.isArray(ids) || ids.length < 1 || ids.length > 10 || !ids.every(k => typeof k === "string" && RE_KOMPLEKS.test(k))) return gagal(400, "kompleks_ids harus larik 1 sampai 10 id seperti K0001");
   const unik = [...new Set(ids)];
+  let kunjungan = ""; if (b.o.kunjungan !== undefined && b.o.kunjungan !== null) { kunjungan = cekKunjungan(b.o.kunjungan, unik); if (!kunjungan) return gagal(400, "rencana kunjungan tidak sah: periksa titik awal, tim, hari, id kompleks, dan jarak"); }
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get("sippa/kelayakan_kompleks.json"); let peta = new Map();
   if (o?.size) try { peta = new Map((await o.json()).kompleks.map(k => [k.id, k.prov])); } catch (e) { /* data rusak = semua tidak ditemukan */ } else o?.body?.cancel().catch(() => {});
@@ -1815,7 +1845,7 @@ async function renlapBuat(env, req, url, kini) {
   const id = acak(8), token = acak(18), dm = dummyStaf(req, a.oleh), prov = provs[0];
   await env.DB.batch([env.DB.prepare("INSERT INTO sippa_renlap (id, kompleks_ids, prov, status, token_hp_sha, oleh, waktu, dummy) VALUES (?, ?, ?, 'antre', ?, ?, ?, ?)").bind(id, JSON.stringify(unik), prov, await sha(token), a.oleh, kini, dm),
     jejakStmt(env, a.oleh, "sippa_renlap:" + id, "renlap", unik.join(",").slice(0, 80), null, kini, dm)]);
-  const p = await picuRenlap(env, id, unik);
+  const p = await picuRenlap(env, id, unik, kunjungan);
   if (!p.ok) await env.DB.prepare("UPDATE sippa_renlap SET galat = ? WHERE id = ? AND status = 'antre'").bind(p.pesan, id).run();
   const r = await env.DB.prepare(`SELECT ${KOLOM_RENLAP} FROM sippa_renlap WHERE id = ?`).bind(id).first();
   return json({renlap: ringkasRenlap(r), token, hp: `/renlap#t=${token}&id=${id}`, ...(p.ok ? {} : {pesan: p.pesan})}, 201);   // token ditampilkan sekali; tidak bisa dibaca lagi
