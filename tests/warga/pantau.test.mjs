@@ -12,7 +12,7 @@ import {PERAN, bersihkanStaf} from "../../src/staf.js";
 import {JENIS, bersihkanPantau} from "../../src/pantau.js";
 import {LAYAR_SIPPA} from "../../src/sippa.js";
 
-const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
+const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 const U = await siapkan("uji-pantau", {r2: true});
 const {DB, api, n} = U;

@@ -20,6 +20,7 @@
   const PADAM_PENDEK = {padam_terverifikasi: ["Padam terverifikasi", "hijau"], muncul_lagi: ["Api muncul lagi", "merah"]};
   function padamPil(t) {
     const p = t?.padam; if (!p) return "";
+    if (p.pil) return pil(p.pil, {padam_terverifikasi: "hijau", muncul_lagi: "merah"}[p.status] || "emas");   // bahaya non-api: kata dari server (src/tugas_bencana.js)
     if (p.status === "padam_dilaporkan") return pil(Date.now() - p.pada >= 24 * JAM ? "Padam, belum ada titik baru 24 jam" : "Padam dilaporkan", "emas");
     const [teks, k] = PADAM_PENDEK[p.status] || ["", ""]; return teks ? pil(teks, k) : "";
   }
@@ -28,13 +29,13 @@
   /* api muncul lagi: sumber, waktu, jarak. Jadwal cek ulang H+1/H+3/H+7 (gambut atau lahan belum diketahui): pil hijau selesai, merah lewat, emas menunggu. */
   function munculJadwal(p) {
     const m = p.muncul, j = p.jadwal_cek_ulang;
-    return (m ? `<p>${pil("Api muncul lagi", "merah")} ${esc(SUMBER[m.sumber] || m.sumber)}, ${esc(tglJamWIB(m.waktu))} WIB${m.jarak_km != null ? `, ${esc(ang(m.jarak_km))} km dari titik tugas` : ""}.${m.keterangan ? " " + esc(m.keterangan) : ""}</p>` : "")
+    return (m ? `<p>${pil(p.pil || "Api muncul lagi", "merah")} ${esc(SUMBER[m.sumber] || m.sumber)}, ${esc(tglJamWIB(m.waktu))} WIB${m.jarak_km != null ? `, ${esc(ang(m.jarak_km))} km dari titik tugas` : ""}.${m.keterangan ? " " + esc(m.keterangan) : ""}</p>` : "")
       + (j ? `<p class="tg-jadwal"><span class="k">Cek ulang lapangan${p.dasar_lahan === "tidak_diketahui" ? " (lahan belum diketahui, dianggap gambut)" : ""}</span> ${j.map(x => pil(`${HARI_CEK(x.hari)} ${x.selesai != null ? "sudah" : x.terlambat ? "terlambat" : tglJamWIB(x.jatuh_tempo)}`, x.selesai != null ? "hijau" : x.terlambat ? "merah" : "emas")).join(" ")}</p>` : "");
   }
   function padamBlok(t) {
     const p = t?.padam; if (!p) return "";
-    return `<div class="in-kartu tg-padam ${esc(p.tingkat)}"><h2 class="in-sub">Sudah padam belum?</h2><p>${padamPil(t)} ${esc(p.label)}</p>${munculJadwal(p)}
-      <p class="lp-kecil">Satelit memeriksa titik panas dalam radius 2 km tiap 3 jam sesudah laporan padam. Satelit tidak melihat bara bawah permukaan, jadi lapangan tetap perlu mengecek ulang.</p>
+    return `<div class="in-kartu tg-padam ${esc(p.tingkat)}"><h2 class="in-sub">${esc(p.judul || "Sudah padam belum?")}</h2><p>${padamPil(t)} ${esc(p.label)}</p>${munculJadwal(p)}
+      <p class="lp-kecil">${esc(p.catatan || "Satelit memeriksa titik panas dalam radius 2 km tiap 3 jam sesudah laporan padam. Satelit tidak melihat bara bawah permukaan, jadi lapangan tetap perlu mengecek ulang.")}</p>
       ${p.cek_ulang ? `<p>${pil("Sudah dicek ulang lapangan", "hijau")} ${p.cek_ulang_pada ? esc(tglJamWIB(p.cek_ulang_pada)) + " WIB" : ""}</p>` : ""}</div>`;
   }
   /* satu baris metadata foto untuk galeri: jam diambil (EXIF), koordinat EXIF, jarak ke GPS perangkat dan ke titik api, tanda terverifikasi seperti layar foto publik */

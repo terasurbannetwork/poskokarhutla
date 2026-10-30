@@ -17,14 +17,14 @@ const {
 } = require('@whiskeysockets/baileys')
 const limiter = require('./limiter')
 const drive = require('../drive.cjs').buat({ kabar: (t) => kabarPemilik(t) }) // Google Drive: mati sendiri bila belum dikonfigurasi
-const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas } = require('../aman.cjs')
+const { samaAman, idAman, idSah, jalurKeluaran, mimeBoleh, ukuranBerkas, buatTerlihat, susulanBaru } = require('../aman.cjs')
 
 const PORT = Number(process.env.PORT) || 3101
 const TOKEN = process.env.GATEWAY_TOKEN || ''
 const WORKER = (process.env.WORKER_URL || 'https://centurisk97.id').replace(/\/$/, '')
 const KUNCI = process.env.WA_KUNCI || ''
 const IZIN = new Set(daftar(process.env.WA_IZIN).map(normalWa).filter(Boolean))
-const PEMILIK = normalWa(process.env.PEMILIK)
+const PEMILIK = normalWa(daftar(process.env.PEMILIK)[0])
 const AUTH_DIR = rumah(process.env.WA_AUTH_DIR) || path.join(RUMAH, 'auth')
 const OUTBOX = path.join(RUMAH, 'outbox')
 const RUSAK = path.join(RUMAH, 'outbox-rusak')
@@ -34,6 +34,7 @@ const USIA_SAPU = 14 * 86400e3
 const BATAS_BERKAS = 20 * 1024 * 1024
 const DEBOUNCE_MS = 2 * 60 * 1000
 for (const d of [RUMAH, OUTBOX, RUSAK, KELUARAN, AUTH_DIR]) { fs.mkdirSync(d, { recursive: true, mode: 0o700 }); fs.chmodSync(d, 0o700) }
+const terlihat = buatTerlihat(path.join(RUMAH, 'terlihat.json'), 5000)
 const tulis = (f, isi) => fs.writeFileSync(f, isi, { mode: 0o600 })
 
 const log = (...a) => console.log(new Date().toISOString(), ...a)
@@ -130,6 +131,11 @@ async function simpanKeOutbox(m) {
   const dari = pengirim(k)
   if (!dari || !IZIN.has(dari)) return
   if (!teks.trim() && !media) return
+  if (!media) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
+    const P = await import('../perintah.mjs')
+    const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
+    if (cmd) { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
+  }
   if (/^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
@@ -156,6 +162,20 @@ async function simpanKeOutbox(m) {
   }
   tulis(path.join(OUTBOX, id + '.json'), JSON.stringify(e))
   drive.salin(e, lampiran)
+}
+
+async function jalankanPerintah(P, cmd, dari) {
+  const jid = dari + '@s.whatsapp.net' // selalu ke pengirim, tidak pernah ke PENERIMA
+  const kirim = async (isi) => { const x = await sendPaced(jid, isi, false); if (!x.ok) log('[perintah] balasan ditahan', x.error) }
+  await P.tangani(cmd, {
+    env: process.env, dep: (await import('../otomatis.mjs')).depBawaan(process.env), log,
+    balas: (teks) => kirim({ text: teks }),
+    balasFile: async (p, nama, caption, mimetype) => {
+      const aman = jalurKeluaran(p, KELUARAN)
+      if (!aman) throw new Error('berkas di luar keluaran')
+      await kirim({ document: { url: aman }, fileName: nama, mimetype, caption })
+    },
+  })
 }
 
 async function balasCari(m, teks) {
@@ -260,10 +280,17 @@ async function startSock() {
   sock.ev.on('creds.update', saveCreds)
 
   sock.ev.on('messages.upsert', async (ev) => {
-    if (ev.type !== 'notify') return
+    if (ev.type !== 'notify' && ev.type !== 'append') return
     for (const m of ev.messages) {
       if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue
-      try { await simpanKeOutbox(m) } catch (e) { log('[masuk] galat', String((e && e.message) || e)) }
+      const susulan = ev.type === 'append'
+      const izin = IZIN.has(pengirim(m.key))
+      const id = m.key.id
+      if (susulan && (!izin || !susulanBaru(m.messageTimestamp) || terlihat.ada(id))) continue
+      const { c, teks, media } = isiPesan(m)
+      const jenis = c.documentMessage ? 'dokumen' : c.imageMessage ? 'gambar' : teks ? 'teks' : 'lain:' + (Object.keys(c)[0] || 'kosong')
+      log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : 'asing', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
+      try { await simpanKeOutbox(m); if (izin && id) terlihat.catat(id) } catch (e) { log('[masuk] galat', String((e && e.message) || e)) }
     }
     flushOutbox().catch(() => {})
   })

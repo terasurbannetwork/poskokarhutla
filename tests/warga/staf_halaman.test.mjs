@@ -16,7 +16,7 @@ import * as S from "../../public/laporan_karhutla_spek.js";
 import {cariChrome, bukaPeramban} from "../bnpb/_peramban.mjs";
 import {buatDunia} from "../bnpb/_dunia.mjs";
 
-const uji = berantai(), PB = {"x-pb": "1"}, teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
+const uji = berantai(), PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
 const U = await siapkan("uji-staf-halaman", {r2: true}), {api} = U;
 let ip = 0;
 const bikin = async (peran, wilayah = []) => {

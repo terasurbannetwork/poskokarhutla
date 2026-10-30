@@ -12,7 +12,7 @@ import {RAPOR} from "../../src/meja_spek.js";
 import {persen} from "../../src/sla.js";
 import {selTitik} from "../../src/titik.js";
 
-const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, SUPER = {"x-admin-token": "rahasia-admin"};
+const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, SUPER = {"x-admin-token": "rahasia-admin"};
 const uji = berantai();
 const b64 = b => Buffer.from(b).toString("base64url");
 const {privateKey} = generateKeyPairSync("ec", {namedCurve: "prime256v1"}), jwk = privateKey.export({format: "jwk"});

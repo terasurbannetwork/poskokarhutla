@@ -110,10 +110,11 @@ for n, k in enumerate(TOP):
     for j, key, col, *_ in KOL:
         v = o[key][I]; cur, prv = bul(nol(v)), bul(nol(o[key][IP]))   # persen dari angka yang tampil, vs 19 Okt
         pr = bul((cur - prv) / prv * 100) if prv else None
-        ar, ac = (('', 'A9B4C2') if v is None else ('baru', 'A9B4C2') if pr is None else (f'▲{f0(pr)}%', 'D9600B') if pr > 0 else (f'▼{f0(-pr)}%', '2F86D1') if pr < 0 else ('0%', '6B7280'))
+        ar, ac = (('', 'A9B4C2') if v is None else ('baru', 'A9B4C2') if pr is None and cur else ('0%', '6B7280') if not pr   # 0 setelah 0 = 0%, bukan "baru"
+                  else (f'▲{f0(pr)}%', 'D9600B') if pr > 0 else (f'▼{f0(-pr)}%', '2F86D1'))
         VW = CW[j] - 329184   # angka rata kanan di kolom tetap, persen rata kiri di kolom tetap: lurus ke bawah
         out.append(kotak(cx[j], y, VW, rh, [[('–' if v is None else f0(v), 850, True, '1A1A1A')]], algn='r', anchor='ctr'))
-        out.append(kotak(cx[j] + VW + 45720, y, 329184 - 45720, rh, [[(ar, 580, True, ac)]], algn='l', anchor='ctr'))
+        out.append(kotak(cx[j] + VW + 45720, y, 329184 - 45720, rh, [[(ar, 580, True, ac)]], algn='l', anchor='ctr', wrap='none'))   # "▲3.200%" satu baris (29 Okt)
 # 3) peta di kiri, selebar sisa panel, ditengahkan vertikal
 X0 = L; W = RX - 182880 - L; H = round(W * 1664 / 4144); Y0 = top_isi + (dasar - top_isi - H) // 2
 i = nid()

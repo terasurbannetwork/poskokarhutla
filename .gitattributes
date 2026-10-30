@@ -1,0 +1,3 @@
+# Ingatan agent cuma ditambah baris: gabung dua cabang = ambil semua baris.
+.claude/ilmu-agent/prompt/*.jsonl merge=union
+.claude/ilmu-agent/jejak/*.jsonl merge=union

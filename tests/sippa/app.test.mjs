@@ -5,8 +5,8 @@ import {cocokkanJalur, LAYAR} from "../../public/pipa/app.js";
 
 test("cocokkanJalur: /pipa = ringkas, /pipa/<layar> untuk empat belas layar plus aset, garis miring akhir diabaikan", () => {
   assert.deepEqual(cocokkanJalur("/pipa"), {layar: "ringkas"}); assert.deepEqual(cocokkanJalur("/pipa/"), {layar: "ringkas"});
-  for (const l of ["peta", "hitung", "pemicu", "kit", "pelihara", "air", "akses", "log", "ab", "studio", "3d", "telemetri", "laporan", "data"]) assert.deepEqual(cocokkanJalur("/pipa/" + l), {layar: l}, l);
-  assert.equal(LAYAR.length, 16, "ringkas + empat belas layar + aset (PRD §9, keputusan 56)");
+  for (const l of ["peta", "hitung", "pemicu", "kit", "pelihara", "air", "akses", "log", "ab", "studio", "3d", "telemetri", "laporan", "data", "kunjungan"]) assert.deepEqual(cocokkanJalur("/pipa/" + l), {layar: l}, l);
+  assert.equal(LAYAR.length, 17, "ringkas + lima belas layar + aset (PRD §9, keputusan 56 dan 64)");
 });
 
 test("cocokkanJalur: /pipa/kit/<id 16 heks> membawa id; id liar ditolak", () => {

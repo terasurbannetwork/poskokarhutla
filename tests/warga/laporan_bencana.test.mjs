@@ -16,7 +16,7 @@ import * as K from "../../public/laporan_karhutla_spek.js";
 import * as SB from "../../public/laporan_bencana_spek.js";
 import {teksWA} from "../../public/laporan_karhutla_wa.js";
 
-const HARI = 24 * 3600e3, PB = {"x-pb": "1"}, uji = berantai();
+const HARI = 24 * 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
 const id16 = () => [...crypto.getRandomValues(new Uint8Array(8))].map(b => b.toString(16).padStart(2, "0")).join("");
 

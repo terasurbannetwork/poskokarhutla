@@ -7,7 +7,7 @@ import {createHmac} from "node:crypto";
 import "../../src/worker.js";
 import {mingguSiap} from "../../src/pantau.js";
 
-const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1"}, uji = berantai();
+const JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const panggilan = [];
 const luar = async req => {   // tiruan api.github.com saja
   const u = new URL(req.url);
@@ -131,11 +131,27 @@ uji("Renlap dengan GITHUB_TOKEN: workflow_dispatch renlap.yml dengan input renla
   const n0 = panggilan.length, r = await s("POST", "/renlap", {kompleks_ids: KOMP}, h); assert.equal(r.s, 201, r.t); assert.equal(r.j.pesan, undefined);
   assert.equal(panggilan.length, n0 + 1); const c = panggilan.at(-1);
   assert.equal(c.url, "https://api.github.com/repos/terasurbannetwork/poskokarhutla/actions/workflows/renlap.yml/dispatches"); assert.equal(c.auth, "Bearer ghp_uji_token");
-  assert.deepEqual(c.body, {ref: "main", inputs: {renlap_id: r.j.renlap.id, kompleks_ids: "K0129,K0130"}}); assert.equal(r.j.renlap.status, "antre");
+  assert.deepEqual(c.body, {ref: "main", inputs: {renlap_id: r.j.renlap.id, kompleks_ids: "K0129,K0130", kunjungan: ""}}); assert.equal(r.j.renlap.status, "antre");
   mesinStatus = 404; const g = await s("POST", "/renlap", {kompleks_ids: ["K0129"]}, h); mesinStatus = 204;
   assert.equal(g.s, 201, g.t); assert.equal(g.j.renlap.status, "antre"); assert.match(g.j.pesan, /ditolak \(HTTP 404\)/); assert.match((await mf2.DB.prepare("SELECT galat FROM sippa_renlap WHERE id = ?").bind(g.j.renlap.id).first()).galat, /HTTP 404/);
 });
 
+uji("Renlap kunjungan (keputusan 64): rencana sah diteruskan kanonik ke workflow; tiap pelanggaran 400 dan tidak memicu mesin", async () => {
+  const s = (b) => mf2.api("POST", "/api/sippa/renlap", b, MOD2), jr = (sumber = "osrm") => ({lurus_km: 12.34, jalan_km: 17.06, mobil_menit: 25.6, kaki_km: 0.44, sumber});
+  const sah = () => ({v: 1, awal: {lat: -0.5012345, lon: 117.1534567}, tim: [{no: 1, hari: [{no: 1, ids: ["K0129"]}]}, {no: 2, hari: [{no: 1, ids: ["K0130"]}]}], jarak: {K0129: jr(), K0130: jr("perkiraan")}});
+  const n0 = panggilan.length, r = await s({kompleks_ids: KOMP, kunjungan: {...sah(), tambahan: "buang", awal: {...sah().awal, x: 1}}}); assert.equal(r.s, 201, r.t);
+  assert.equal(panggilan.length, n0 + 1);
+  assert.equal(panggilan.at(-1).body.inputs.kunjungan, JSON.stringify({v: 1, awal: {lat: -0.50123, lon: 117.15346}, tim: sah().tim, jarak: {K0129: {lurus_km: 12.3, jalan_km: 17.1, mobil_menit: 26, kaki_km: 0.4, sumber: "osrm"}, K0130: {lurus_km: 12.3, jalan_km: 17.1, mobil_menit: 26, kaki_km: 0.4, sumber: "perkiraan"}}}));
+  const ubah = f => { const k = sah(); f(k); return k; }, jelek = {
+    "id kurang": ubah(k => { k.tim[1].hari[0].ids = []; }), "id ganda": ubah(k => { k.tim[1].hari[0].ids = ["K0129"]; }), "id lebih": ubah(k => { k.tim[1].hari[0].ids = ["K0130", "K0131"]; }),
+    "lat buruk": ubah(k => { k.awal.lat = 40; }), "lon bukan angka": ubah(k => { k.awal.lon = "117"; }), "hari kosong": ubah(k => { k.tim[0].hari.push({no: k.tim[0].hari.length + 1, ids: []}); }), "lima tim": ubah(k => { k.tim = [1, 2, 3, 4, 5].map(no => ({no, hari: [{no: 1, ids: no === 1 ? KOMP : []}]})); }),
+    "sumber asing": ubah(k => { k.jarak.K0129.sumber = "google"; }), "kunci jarak lebih": ubah(k => { k.jarak.K0129.x = 1; }), "jarak negatif": ubah(k => { k.jarak.K0130.kaki_km = -1; }), "versi 2": ubah(k => { k.v = 2; }),
+    "no tim salah": ubah(k => { k.tim[1].no = 3; }), "jarak kunci lain": ubah(k => { k.jarak.K0999 = k.jarak.K0130; delete k.jarak.K0130; }), "string besar": "x".repeat(7000), "string kecil": "{}",
+  };
+  const n1 = panggilan.length;
+  for (const [nama, k] of Object.entries(jelek)) assert.equal((await s({kompleks_ids: KOMP, kunjungan: k})).s, 400, nama);
+  assert.equal(panggilan.length, n1, "tidak ada yang diteruskan ke GitHub");
+});
 const pasangBerkas = async id => { await R2.put(`sippa/renlap/${id}/renlap.pdf`, new Uint8Array([0x25, 0x50, 0x44, 0x46, 0x2d, 0x31])); await R2.put(`sippa/renlap/${id}/data.json`, JSON.stringify({kompleks: KOMP, judul: "Renlap uji"})); };
 const selesai = (id, b, kunciHdr, w = detik()) => sip("POST", `/renlap/${id}/selesai`, b, {"x-renlap-waktu": w, ...(kunciHdr === null ? {} : {"x-renlap-kunci": kunciHdr ?? kunci(id, w, b?.status)})});
 uji("Renlap selesai: kunci HMAC wajib, siap hanya bila berkas R2 ada, status akhir terkunci", async () => {

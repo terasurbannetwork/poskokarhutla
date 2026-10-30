@@ -1,0 +1,67 @@
+name: Pemutakhiran bulanan direktori jaringan
+
+# Tgl 3 tiap bulan 01.00 UTC (08.00 WIB): cek situs lembaga hidup, rayap ulang kontak dan medsos yang diperiksa > 180 hari, logo, berita baru,
+# gabung lewat lembaga_gabung.mjs. Data TIDAK di repo: R2 poskokarhutla-foto akademisi/ -> folder kerja sementara -> R2 lagi (cadangan versi lama
+# di akademisi/cadangan/<tgl>/). Tidak commit dan tidak deploy, jadi di luar grup `data`. Logika: scripts/akademisi/pemutakhiran/.
+on:
+  schedule:
+    - cron: "0 1 3 * *"
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: "Coba saja: jalankan penuh tanpa mengunggah ke R2"
+        type: boolean
+        default: true
+
+concurrency:
+  group: direktori-bulanan
+  cancel-in-progress: false
+
+jobs:
+  mutakhir:
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      # jadwal = unggah sungguhan; dispatch = ikut input (default coba saja)
+      DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "20"
+
+      - name: Uji logika dan penggabung
+        run: |
+          python3 -I scripts/akademisi/pemutakhiran/uji_inti.py
+          node --test tests/agen/lembaga-gabung.test.mjs tests/agen/pemutakhiran-direktori.test.mjs
+
+      - name: Unduh berkas R2 saat ini
+        env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "CLOUDFLARE_API_TOKEN belum dipasang"; exit 1; }
+          mkdir -p "$RUNNER_TEMP/kerja"
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/akademisi/lembaga.json --file "$RUNNER_TEMP/kerja/lembaga.json" --remote
+          # berita.json boleh belum ada
+          npx --yes wrangler@4.42.0 r2 object get poskokarhutla-foto/akademisi/berita.json --file "$RUNNER_TEMP/kerja/berita.json" --remote || rm -f "$RUNNER_TEMP/kerja/berita.json"
+
+      - name: Mutakhirkan
+        run: python3 -I scripts/akademisi/pemutakhiran/mutakhir.py --kerja "$RUNNER_TEMP/kerja" --menit 100
+
+      - name: Unggah hasil, cadangan, dan laporan
+        if: env.DRY != 'true'
+        env:
+        CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+        CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          K="$RUNNER_TEMP/kerja"; TGL=$(date -u +%F); BULAN=$(date -u +%Y-%m)
+          put() { npx --yes wrangler@4.42.0 r2 object put "poskokarhutla-foto/$1" --file "$2" --content-type application/json --remote; }
+          put "akademisi/cadangan/$TGL/lembaga.json" "$K/lembaga.json"
+          [ ! -f "$K/berita.json" ] || put "akademisi/cadangan/$TGL/berita.json" "$K/berita.json"
+          put "akademisi/lembaga.json" "$K/keluar/lembaga.json"
+          [ ! -f "$K/keluar/berita.json" ] || put "akademisi/berita.json" "$K/keluar/berita.json"
+          put "akademisi/pemutakhiran/$BULAN.json" "$K/keluar/pemutakhiran/$BULAN.json"

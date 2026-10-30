@@ -196,7 +196,8 @@ def ganti_operasi(s, op):
     # pil tanggal ARMADA UDARA (panel kanan, x >= 6164428) = tanggal rekap gelar pesawat, bisa sehari sesudah operasi (28 Okt 2026)
     s = re.sub(rf'(<p:sp>(?:(?!</p:sp>).)*?<a:off x="(\d+)"(?:(?!</p:sp>).)*?<a:t>){bln(D)}(</a:t>)',
                lambda m: m.group(1) + (bln(op.get('tanggal_armada') or D) if int(m.group(2)) >= 6164428 else bln(D)) + m.group(3), s, flags=re.S)
-    tot_s, tot_kg = sum(o['sortie'] for _, o in dua), sum(o['nacl'] + o['dryice'] for _, o in dua)
+    # lencana = total semua provinsi ber-OMC (subjudul "OMC di N provinsi"), bukan hanya 2 baris yang tampil (Kalsel 1 sortie, 29 Okt 2026)
+    tot_s, tot_kg = sum(o['sortie'] for o in omc.values()), sum(o['nacl'] + o['dryice'] for o in omc.values())
     rb = lambda v: f'{v:,.0f}'.replace(',', '.')   # ribuan bertitik
     lab = f'{tot_s} sortie, {rb(tot_kg)} kg'
     cx = lebar_pil(lab) - 60000

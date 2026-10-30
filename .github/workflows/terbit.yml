@@ -54,7 +54,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/wilayah public/data/lahan public/data/osm public/data/titik_palsu.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # arsip cluster hari LAMPAU yang di-commit (dibangun ulang, mis. definisi kolom berubah) menang atas cache: cache hanya
@@ -93,6 +93,14 @@ jobs:
             public/data/citra.json
           key: citra-${{ github.run_id }}
           restore-keys: citra-
+
+      # Rapor belajar: berapa ramalan tiap model sudah dinilai terhadap kejadian nyata, dan mana yang macet. Di sini karena
+      # semua cache data sudah dipulihkan. Riwayat bergulir lewat salinan yang tayang (tidak ada di cache mana pun). Boleh gagal.
+      - name: Rapor belajar model (boleh gagal)
+        continue-on-error: true
+        run: |
+          curl -sf --max-time 20 https://centurisk97.id/data/rapor_belajar.json -o public/data/rapor_belajar.json || true
+          python3 scripts/umum/rapor_belajar.py uji && python3 scripts/umum/rapor_belajar.py
 
       # main = produksi (`wrangler deploy`). staging = versi PRATINJAU di URL tetap (`versions upload --preview-alias`): tidak
       # dipromosikan, jadi workers.dev produksi, domain kustom, dan cron tidak berubah. Awas: staging memakai D1/R2 produksi yang

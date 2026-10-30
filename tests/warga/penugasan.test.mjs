@@ -14,7 +14,7 @@ import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), uru
 import {susunChecklist, jarakEta, BATAS, PERAN, KESELAMATAN, USULAN, alarmKeselamatan, anginKeRegu, tempuhMenit, bersihkanPenugasan} from "../../src/penugasan.js";
 import {infoPadam} from "../../src/instansi.js";
 
-const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1"};
+const JAM = 3600e3, MENIT = 60e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 /* aset uji: prakiraan angin per sel dikendalikan per uji (CUACA: jalur -> objek), selain itu berkas nyata di public/ seperti harness */
 const CUACA = new Map();

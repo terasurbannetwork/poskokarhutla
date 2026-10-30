@@ -1,0 +1,95 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<base href="/prediksi/">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Centurisk97 · Prediksi</title>
+<meta name="robots" content="noindex">
+<meta name="description" content="Prakiraan per kab/kota besok sampai 3 hari: hujan kapan dan berapa lama, titik panas, banjir, longsor, asap, rob, beserta rapor ketepatannya.">
+<meta name="theme-color" content="#0b2545">
+<link rel="icon" href="../img/logo.svg?v=2" type="image/svg+xml">
+<script src="../i18n.js"></script>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="../inti/kepala.css">
+<link rel="stylesheet" href="../inti/tema.css">
+<link rel="stylesheet" href="../inti/gaya.css">
+<link rel="stylesheet" href="../inti/tabel.css">
+<link rel="stylesheet" href="prediksi.css">
+</head>
+<body>
+<header class="top">
+  <div class="mark">
+    <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
+    <a class="logo" href="../" title="Centurisk97"><img src="../img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a>
+    <b>Prediksi</b>
+  </div>
+  <nav class="tabs" id="tabs" aria-label="Menu prediksi">
+    <button type="button" data-tab="besok" aria-current="page">Besok</button>
+    <button type="button" data-tab="rapor">Rapor</button>
+    <button type="button" data-tab="konfirmasi">Konfirmasi</button>
+  </nav>
+  <div class="stat"><span class="upd" id="upd">Memuat data…</span></div>
+</header>
+
+<main>
+  <section class="page scroll on" id="p-besok" aria-label="Prakiraan besok">
+    <div class="wrap pr-wrap">
+      <div class="pr-catat" id="catatan"></div>
+      <div class="tbar">
+        <input id="cari" type="search" placeholder="Cari kab/kota" autocomplete="off" aria-label="Cari kab/kota">
+        <select id="prov" aria-label="Provinsi"><option value="">Semua provinsi</option></select>
+        <select id="hari" aria-label="Hari sasaran"></select>
+        <select id="urut" aria-label="Urutkan">
+          <option value="hujan">Urut: peluang hujan lebat</option>
+          <option value="api">Urut: peluang titik panas</option>
+          <option value="asap">Urut: PM2,5</option>
+          <option value="nama">Urut: nama</option>
+        </select>
+      </div>
+      <div id="waspada"></div>
+      <div class="pr-grid" id="kartu" role="list"></div>
+      <div class="pr-lagi"><button type="button" id="lagi" hidden>Tampilkan lagi</button></div>
+    </div>
+  </section>
+
+  <section class="page scroll" id="p-rapor" aria-label="Rapor ketepatan">
+    <div class="wrap pr-wrap" id="rapor"><p class="kosong">Memuat rapor…</p></div>
+  </section>
+
+  <section class="page scroll" id="p-konfirmasi" aria-label="Konfirmasi lapangan">
+    <div class="wrap pr-wrap">
+      <div class="card pad">
+        <h2>Konfirmasi lapangan</h2>
+        <p class="pr-kecil">Untuk regu/staf: catat apakah kejadian yang diprakirakan benar terjadi. Jawaban dipakai menilai prakiraan, bukan laporan darurat.</p>
+        <form id="fk" class="pr-form">
+          <label>Kode regu <input id="kRegu" autocomplete="off" required maxlength="40"></label>
+          <label>Kab/kota <input id="kKab" list="dKab" required autocomplete="off" placeholder="Ketik nama kab/kota"></label>
+          <datalist id="dKab"></datalist>
+          <label>Tanggal kejadian <input id="kTgl" type="date" required></label>
+          <label>Jenis
+            <select id="kKode">
+              <option value="HJN">Hujan</option><option value="API">Titik panas / kebakaran</option><option value="BNJ">Banjir</option>
+              <option value="LSR">Longsor</option><option value="ASP">Asap</option><option value="ROB">Rob</option>
+            </select>
+          </label>
+          <label>Nilai (opsional) <input id="kNilai" type="number" step="any" placeholder="mis. tinggi genangan cm, hujan mm"></label>
+          <label class="pr-lebar">Catatan (opsional) <textarea id="kCat" maxlength="500" rows="2"></textarea></label>
+          <div class="pr-lebar" id="kLalu"></div>
+          <div class="pr-lebar pr-tombol">
+            <button type="submit" data-terjadi="1">Terjadi</button>
+            <button type="submit" data-terjadi="0" class="pr-tidak">Tidak terjadi</button>
+          </div>
+          <p class="pr-lebar pr-kecil" id="kHasil" role="status"></p>
+        </form>
+      </div>
+    </div>
+  </section>
+</main>
+
+<script src="../inti/format.js"></script>
+<script src="prediksi.js"></script>
+</body>
+</html>

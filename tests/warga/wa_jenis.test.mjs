@@ -5,7 +5,7 @@ import {test} from "node:test";
 import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
 const {kenali, JENIS_LAPORAN} = await import("../../src/wa_jenis.js");
 
-const REKAP = j => `*Yth. Kepala BNPB*\nCC: Deputi Penanganan Darurat\nMohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal 24/10/2026 pkl 07.00 WIB s.d 25/10/2026 pkl ${j}.00 WIB`;
+const REKAP = j => `*Yth. Kepala BNPB*\nCC: Deputi Penanganan Darurat\nMohon izin menyampaikan hasil pemantauan Dit. Koordalops BNPB tanggal 27/10/2026 pkl 07.00 WIB s.d 28/10/2026 pkl ${j}.00 WIB`;
 const BMKG = "Laporan Meteorologi dan Klimatologi (BMKG)\n_Hotspot_ ...";
 const CONTOH = {
   rekap_koordalops_24: [REKAP("07"), ""],

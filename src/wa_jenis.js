@@ -38,3 +38,24 @@ export function kenali(teks, namaBerkas) {
   if (t.includes("perkembangan kejadian") && t.includes("bpbd")) return "bpbd_kejadian";
   return null;
 }
+
+/* Tanggal yang ditulis laporan itu SENDIRI (bukan tanggal terima): kiriman ulang laporan lama tidak boleh jadi bahan hari ini (insiden 29 Okt 2026). null = tidak ketemu/tidak sah. */
+const BULAN = {januari: 1, februari: 2, maret: 3, april: 4, mei: 5, juni: 6, juli: 7, agustus: 8, september: 9, oktober: 10, november: 11, desember: 12};
+const RE_TEKS = "(\\d{1,2})\\s+(januari|februari|maret|april|mei|juni|juli|agustus|september|oktober|november|desember)\\s+(\\d{4})";
+/* sah = lolos pulang-pergi lewat Date (31/02 ditolak); tanpa impor posko.js supaya modul ini tetap murni */
+const iso = (d, b, y) => { const s = `${y}-${String(b).padStart(2, "0")}-${String(d).padStart(2, "0")}`; return !Number.isNaN(Date.parse(s)) && new Date(s).toISOString().slice(0, 10) === s ? s : null; };
+export function tanggalIsi(teks, kunci) {
+  const t = String(teks ?? "").replace(/[*_]/g, "").replace(/\s+/g, " ").trim();
+  let m;
+  if (kunci === "laphar_pdf") return null;   // tanggal ada di nama berkas, lihat tanggalNamaBerkas
+  if (kunci?.startsWith("rekap_koordalops")) return (m = t.match(/\bs\.?d\.? (\d{1,2})\/(\d{1,2})\/(\d{4})/i)) ? iso(m[1], m[2], m[3]) : null;
+  const hari = new RegExp(`pada hari [a-z']+,? ${RE_TEKS}`, "i"), awal = new RegExp(RE_TEKS, "i");
+  if (kunci?.startsWith("bmkg_") || kunci?.startsWith("pvmbg_") || kunci === "bpbd_kejadian") m = t.match(hari);
+  else if (["karhutla_mensesneg", "satgas", "gelar_armada", "dry_ice_omc", "hujan_omc"].includes(kunci)) m = t.slice(0, 300).match(awal);
+  else return null;
+  return m ? iso(m[1], BULAN[m[2].toLowerCase()], m[3]) : null;
+}
+export function tanggalNamaBerkas(nama) {
+  const m = String(nama ?? "").match(/(?<!\d)(\d{2})(\d{2})(\d{4})(?!\d)/);
+  return m ? iso(m[1], m[2], m[3]) : null;
+}

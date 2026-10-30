@@ -5,7 +5,59 @@
 Kode: `scripts/data/pfvi.py` (port + self-check), `scripts/sebaran/pfvi_balik.py` (unduh, kalibrasi, uji).
 Data antara ada di `data/raw/pfvi/` (tidak di-commit): `balik.json`, `zenodo.json`, `api.json`, `cuaca/`.
 
-## Ringkas
+## Pembaruan 26 Okt 2026: peta gambut diganti (BACA DULU)
+
+Pada 26 Okt 2026 (commit `b502f0d2`) `public/data/lahan/gambut.geojson` diganti dari **GFW Global peatland extent**
+(Gumbricht, menggelembung: 33,8 jt ha) ke **peta gambut 1:250.000 Kementan/BBSDLP via PRIMS** (11,4 jt ha; Kaltim tetap
+GFW). Seluruh bagian di BAWAH bagian ini (Ringkas, Cara uji, tabel hasil, Eskalasi, Kalibrasi) memakai **peta lama** dan
+disimpan sebagai **pembanding**; angkanya tidak diubah. Jangan mengutipnya sebagai gambaran gambut sekarang.
+
+Diulang dengan peta baru memakai kode yang sama (`pfvi_balik.py sel | api | balik | eskalasi`), pembagian waktu sama
+(setel 2015+2018, uji 2019+2023; eskalasi uji 2024-2025), ERA5 Open-Meteo yang sama. Dua perbedaan dengan angka lama di
+bawah: (1) deteksi VIIRS S-NPP diambil dari `data/raw/firms/viirs.csv` (bukan unduhan arsip negara), (2) n dan alpha
+van Genuchten TIDAK dihitung ulang (berkas Zenodo tidak ada di mesin): dipakai 3,0 / 150 cm dari tabel Kalibrasi
+(tidak bergantung pada peta gambut). Karena itu reproduksi "peta lama" mendekati, bukan identik, dengan angka lama
+(mis. aH 2,53 vs 2,20; AUC FWI≥7 0,785 vs 0,783).
+
+**Sel (≥ 30% titik 0,05° di gambut):** 89 → **48** (semua sel baru ada di himpunan lama). Provinsi lama → baru:
+Riau 21→14, Kalteng 19→14, Kalbar 19→6, Sumsel 16→6, Kaltim 7→6, Jambi 3→2, Kalsel 4→0. Porsi gambut rata-rata sel 0,66 → 0,54.
+Sel-hari uji 16.198 → 8.736.
+
+AUC uji 2019+2023, target api besok (≥ 1 titik gambut). Kolom ketiga = kontrol: 48 sel baru dengan api dari poligon
+LAMA, untuk memisahkan efek himpunan sel dari efek poligon:
+
+| Varian | Peta lama, 89 sel | Peta baru, 48 sel | Kontrol: 48 sel, api poligon lama |
+| --- | --- | --- | --- |
+| FWI ≥ 7 | 0,785 | 0,749 | 0,764 |
+| PFVI | 0,776 | 0,771 | 0,781 |
+| Gabungan FWI+PFVI (LR) | 0,808 | 0,781 | 0,795 |
+| Gabungan − FWI, selang 95% | +0,017 s.d. +0,029 | +0,021 s.d. +0,045 | +0,019 s.d. +0,044 |
+
+Target hari api besar (≥ 20 titik): FWI 0,815 → 0,805, PFVI 0,812 → 0,812, gabungan 0,839 → 0,833 (lama → baru);
+gabungan − FWI +0,014 s.d. +0,033 → +0,013 s.d. +0,044.
+
+Eskalasi (GBDT, uji 2024-2025, AUC dasar / dasar + PFVI):
+
+| | Peta lama | Peta baru |
+| --- | --- | --- |
+| Dasar | 0,883 | 0,903 |
+| Dasar + PFVI | 0,879 | 0,910 |
+| Selisih (selang 95%) | −0,004 (−0,015 s.d. +0,006) | +0,007 (−0,008 s.d. +0,019) |
+| Baris uji / membesar | 2.649 / 81 | 929 / 46 |
+
+Kesimpulan kualitatif tidak berubah: gabungan FWI+PFVI naik ~+0,02 s.d. +0,03 AUC atas FWI; PFVI sendiri tidak
+lebih baik dari FWI; PFVI tidak menambah informasi untuk eskalasi (selang melewati 0, dan positif ujinya hanya 46).
+Penurunan AUC FWI sebagian besar efek himpunan sel (48 vs 89 sel); poligon baru sendiri menambah ~−0,015.
+
+**Tidak berlaku untuk peta baru: tabel ambang (PFVI > 150 / > 225, "alarm sama FWI ≥ 7", muka air proxy < −60 cm) dan
+parameter kalibrasi.** Kalibrasi ulang di 48 sel menghasilkan optimum degenerasi (aH 7,5, bH ≈ 0, Sy 0,36 s.d. 0,40,
+bocor 0,5 s.d. 0,9 cm/hari; hal yang sama terjadi pada kontrol 48 sel dengan api poligon lama, jadi penyebabnya himpunan
+sel, bukan poligon). Akibatnya PFVI > 150 menandai nyaris nol sel-hari (recall 0,002) dan median muka air proxy
+Kalimantan 30 Sep 2019 menjadi −147 cm (di luar kisaran Zenodo −48 s.d. −77 cm). Angka ambang untuk 48 sel sengaja tidak
+dilaporkan; hanya AUC (tidak bergantung ambang) yang bisa dibandingkan. Parameter yang tertulis di tabel Kalibrasi di
+bawah tetap parameter peta lama.
+
+## Ringkas (PETA LAMA, GFW/Gumbricht; pembanding)
 
 1. **PFVI sendiri tidak lebih baik dari FWI.** Untuk api besok AUC-nya 0,767 vs 0,783 (lebih buruk, selang −0,032 s.d.
    −0,003). Untuk hari dengan api besar (≥ 20 titik) 0,811 vs 0,809, alias seri.

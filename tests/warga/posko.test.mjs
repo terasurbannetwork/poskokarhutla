@@ -13,6 +13,9 @@ import {buangExif, UNSUR, KENDALA, STATUS_LAP, SUMBER_AIR, STATUS_PANGGILAN, cek
 
 const JAM = 3600e3, MENIT = 60e3, ADMIN = {"x-admin-token": "rahasia-admin"};
 const wib = t => new Date(t + 7 * JAM).toISOString().slice(0, 10);
+// Jangkar uji neraca: laporan "60 menit lalu" tidak boleh jatuh ke hari WIB kemarin (run CI 30 Okt 00.01 WIB merah).
+// Dalam 70 menit pertama sesudah tengah malam WIB, semua laporan neraca ditaruh di 23.59 kemarin dan dibaca dengan &tgl=.
+const T0 = (() => { const t = Date.now(), m = ((t + 7 * JAM) % (24 * JAM)) / MENIT; return m < 70 ? t - (m + 1) * MENIT : t; })();
 const sha256 = s => createHash("sha256").update(s).digest("hex");
 const tgl = t => new Date(t).toISOString().slice(0, 10), jm = t => new Date(t).toISOString().slice(11, 16).replace(":", "");
 
@@ -271,7 +274,7 @@ uji("foto laporan: JPEG/WebP lewat R2 sungguhan; berkas lain, laporan regu lain,
 
 uji("neraca: agregat regu dihitung dari laporan (susulan di titik sama mengganti), publik tanpa identitas regu", async () => {
   await DB.prepare("DELETE FROM lapangan").run(); await DB.prepare("DELETE FROM neraca_harian").run();
-  const A = await buatRegu({nama: "Regu Rahasia Alfa"}), B = await buatRegu({nama: "Regu Rahasia Beta", unsur: "Manggala Agni"}), now = Date.now();
+  const A = await buatRegu({nama: "Regu Rahasia Alfa"}), B = await buatRegu({nama: "Regu Rahasia Beta", unsur: "Manggala Agni"}), now = T0;
   const kendalaA = await kirim(A.kode, lap(-2.1234, 113.5678, {luas_ha: 10, padam_ha: 4, personel: 6, kendala: ["air_jauh"]}, now - MINUTE_60()));
   assert.equal(kendalaA.s, 201, kendalaA.t);
   assert.equal((await kirim(A.kode, lap(-2.1234, 113.5678, {luas_ha: 12, padam_ha: 5, personel: 8, kendala: ["air_jauh", "asap_tebal"]}, now))).s, 201);   // susulan: mengganti
@@ -279,7 +282,7 @@ uji("neraca: agregat regu dihitung dari laporan (susulan di titik sama mengganti
   assert.equal((await kirim(B.kode, lap(-2.1234, 113.5678, {status: "tidak_ditemukan", personel: 5}, now - 2 * MENIT))).s, 201);
   const kab = (await DB.prepare("SELECT DISTINCT kab FROM lapangan").all()).results.map(x => x.kab);
   assert.equal(kab.length, 1, `titik bertetangga harus satu kabupaten: ${kab}`);
-  const r = await api("GET", "/api/neraca?prov=62");
+  const r = await api("GET", `/api/neraca?prov=62&tgl=${wib(T0)}`);
   assert.equal(r.s, 200, r.t);
   assert.deepEqual(r.j.total, {fs: 2, luas_ha: 32, padam_ha: 25, sisa_ha: 7, personel: 13, kendala: ["air_jauh", "asap_tebal", "angin_kencang"]}, r.t);
   assert.equal(r.j.kab.length, 1); assert.equal(r.j.kab[0].sumber, "regu"); assert.equal(r.j.kab[0].kab, kab[0]);
@@ -293,7 +296,7 @@ uji("neraca: agregat regu dihitung dari laporan (susulan di titik sama mengganti
 const MINUTE_60 = () => 60 * MENIT;
 
 uji("neraca rakor MENANG atas agregat regu; hapus rakor mengembalikan agregat; validasi ketat", async () => {
-  const kab = (await DB.prepare("SELECT DISTINCT kab FROM lapangan LIMIT 1").first()).kab, hari = wib(Date.now());
+  const kab = (await DB.prepare("SELECT DISTINCT kab FROM lapangan LIMIT 1").first()).kab, hari = wib(T0);
   const rakor = {tgl: hari, prov: "62", kab: kab.toUpperCase(), fs: 7, luas_ha: 50, padam_ha: 20, personel: 40, kendala: ["asap_tebal", "air_jauh"], catatan: "dari rakor"};
   for (const c of [{tgl: "kemarin"}, {prov: "6"}, {kab: ""}, {fs: -1}, {fs: 1.5}, {luas_ha: "x"}, {padam_ha: 60}, {sisa_ha: 5}, {kendala: ["hantu"]}, {kendala: ["constructor"]}, {kendala: "air_jauh"}, {catatan: "x".repeat(501)}, {personel: -2}]) {
     const r = await adm("POST", "/api/posko/neraca", {...rakor, ...c}); assert.equal(r.s, 400, JSON.stringify(c) + " " + r.t);
@@ -302,18 +305,18 @@ uji("neraca rakor MENANG atas agregat regu; hapus rakor mengembalikan agregat; v
   const ok = await adm("POST", "/api/posko/neraca", rakor); assert.equal(ok.s, 201, ok.t); assert.equal(ok.j.kab, kab, "ejaan kabupaten mengikuti baris regu");
   const baris = await DB.prepare("SELECT sumber, sisa_ha FROM neraca_harian WHERE tgl = ? ORDER BY sumber").bind(hari).all();
   assert.deepEqual(baris.results.map(x => x.sumber), ["rakor", "regu"], "dua baris ada, pembaca memilih rakor"); assert.equal(baris.results[0].sisa_ha, 30);
-  const p = await api("GET", "/api/neraca?prov=62");
+  const p = await api("GET", `/api/neraca?prov=62&tgl=${hari}`);
   assert.deepEqual(p.j.total, {fs: 7, luas_ha: 50, padam_ha: 20, sisa_ha: 30, personel: 40, kendala: ["air_jauh", "asap_tebal"]}); assert.equal(p.j.kab[0].sumber, "rakor");
   assert.ok(!p.t.includes("dari rakor"), "catatan rakor tidak keluar di rute publik");
   /* laporan regu baru TIDAK menimpa rakor */
   const g = await buatRegu({nama: "Regu Setelah Rakor"});
-  const susulan = await kirim(g.kode, lap(-2.131, 113.572, {luas_ha: 99, padam_ha: 1})); assert.equal(susulan.s, 201); assert.equal(susulan.j.kab, kab, "titik tetangga harus satu kabupaten");
-  assert.equal((await api("GET", "/api/neraca?prov=62")).j.total.luas_ha, 50, "rakor tetap menang setelah agregat berubah");
+  const susulan = await kirim(g.kode, lap(-2.131, 113.572, {luas_ha: 99, padam_ha: 1}, T0)); assert.equal(susulan.s, 201); assert.equal(susulan.j.kab, kab, "titik tetangga harus satu kabupaten");
+  assert.equal((await api("GET", `/api/neraca?prov=62&tgl=${hari}`)).j.total.luas_ha, 50, "rakor tetap menang setelah agregat berubah");
   assert.equal((await DB.prepare("SELECT luas_ha FROM neraca_harian WHERE tgl = ? AND sumber = 'regu'").bind(hari).first()).luas_ha, 131, "agregat regu tetap dihitung di belakang");
-  const adminList = await adm("GET", "/api/posko/neraca"); assert.equal(adminList.j.baris.length, 2);
+  const adminList = await adm("GET", `/api/posko/neraca?tgl=${hari}`); assert.equal(adminList.j.baris.length, 2);
   assert.equal((await adm("POST", "/api/posko/neraca/hapus", {tgl: hari, prov: "62", kab: "Tidak Ada"})).s, 404);
   assert.equal((await adm("POST", "/api/posko/neraca/hapus", {tgl: hari, prov: "62", kab})).s, 200);
-  assert.equal((await api("GET", "/api/neraca?prov=62")).j.total.luas_ha, 131, "tanpa rakor, agregat regu kembali dipakai");
+  assert.equal((await api("GET", `/api/neraca?prov=62&tgl=${hari}`)).j.total.luas_ha, 131, "tanpa rakor, agregat regu kembali dipakai");
 });
 
 uji("kontak PT: validasi, wa dinormalkan, upsert per perusahaan; impor CSV semua-atau-tidak; TIDAK bocor di rute publik", async () => {

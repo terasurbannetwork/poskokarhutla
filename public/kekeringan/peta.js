@@ -56,7 +56,7 @@ const Peta = {
       if (w) p.style.setProperty("--lp", w + "px"); if (t) p.style.setProperty("--tw", t + "px"); };
     const ro = new ResizeObserver(lebar); ro.observe($(".panel")); ro.observe($(".tools")); lebar();
     peta = new maplibregl.Map({container: "peta", style: DASAR(), center: [118, -2.4], zoom: 4.1, minZoom: 3, maxZoom: 15, attributionControl: {compact: true}, dragRotate: false, pitchWithRotate: false});
-    peta.once("load", () => window.NASA?.pasang(peta, ["smap", "suhu", ["effis_dc", "Kekeringan"]]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
+    peta.once("load", () => window.NASA?.pasang(peta, ["smap", "suhu", ["effis_dc", "Kekeringan"], ["plkemenhut", "Tutupan lahan"]]));   /* lapisan satelit NASA GIBS, inti/peta/nasa.js */
     peta.touchZoomRotate.disableRotation();
     import("../inti/peta/konteks.js").then(m => m.pasang(peta, "kekeringan")).catch(() => 0);   /* lapisan konteks (penduduk, sekolah, faskes, jalan) dari registry, inti/peta/konteks.js */
     peta.addControl(new maplibregl.NavigationControl({showCompass: false}), "bottom-right");
@@ -214,7 +214,7 @@ $("#modePeta").addEventListener("click", e => { const b = e.target.closest("butt
   setLapis("wilayah", MODE_WIL(S.mode)); setLapis("grid", !MODE_WIL(S.mode)); blnPeta();
   nanti(() => { Peta.segarkan(); if (lama === "padi" || S.mode === "padi") Peta.aturWilayah(false); renderLegenda(); }); });   /* poligon hanya digambar ulang bila warna padi masuk/keluar */
 document.addEventListener("click", e => { const b = e.target.closest("#blnPeta button"); if (!b) return; S.bln = +b.dataset.b; blnPeta(); nanti(() => { Peta.segarkan(); renderLegenda(); }); });
-$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta) return;
+$("#lapis").addEventListener("change", e => { const i = e.target.closest("input"); if (!i || !peta || i.dataset.l?.startsWith("nasa_")) return;   /* nasa_* diurus inti/peta/nasa.js */
   const k = i.dataset.l, id = {wilayah: ["wil-fill"], grid: ["grid-fill"], satelit: ["satelit"], embung: ["embung-c"], gambut: ["gambut-c"]}[k];
   if (k === "satelit") Peta.pasangSatelit();
   (i.checked && (k === "embung" || k === "gambut") ? Peta.lapisanSumber(k) : Promise.resolve()).then(() => {

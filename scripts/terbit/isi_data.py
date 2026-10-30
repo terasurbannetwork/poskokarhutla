@@ -38,7 +38,29 @@ def nyasar(rel):
     return b.startswith(".") or any(f" {i}." in b for i in range(2, 10))
 
 
-def buat(data=DATA):
+# Dihitung hanya di terbit.yml (butuh cache semua modul); titik/data/banjir.yml men-deploy tanpa berkas ini, jadi tanpa
+# salinan dari live tiap deploy mereka menghapusnya dari situs (rapor_belajar.json 404 sesudah 30 Okt 2026).
+BAWA_LIVE = ["rapor_belajar.json"]
+
+
+def bawa_live(data=DATA, live=LIVE, ambil=None):
+    """berkas BAWA_LIVE yang tidak ada lokal disalin dari live; isi yang bukan JSON (halaman galat) tidak ditulis"""
+    for rel in BAWA_LIVE:
+        p = os.path.join(data, rel)
+        if os.path.exists(p):
+            continue
+        try:
+            isi = (ambil or ambil_url)(f"{live}/data/{rel}?cek={BUSTER}", 30)
+            json.loads(isi)
+        except Exception as e:
+            print(f"::warning title=isi_data::{rel} tidak terbawa dari live: {type(e).__name__}")
+            continue
+        with open(p, "wb") as f:
+            f.write(isi)
+
+
+def buat(data=DATA, live=LIVE, ambil=None):
+    bawa_live(data, live, ambil)
     isi = {}
     for akar, _, fs in os.walk(data):
         for f in fs:
@@ -137,7 +159,15 @@ def uji():
     tulis("meta.json", b'{"dibuat":"12 Okt"}')
     tulis("lahan/gambut.geojson", b"STATIS")
     tulis("riwayat_sel/1_1 2.json", b"nyasar")
-    assert buat(d) == 2, "salinan nyasar tidak boleh masuk daftar"
+    def tak_ada(url, batas=0):
+        raise OSError("404")
+    assert buat(d, "http://live", tak_ada) == 2, "salinan nyasar tidak boleh masuk daftar"
+    # rapor_belajar.json yang tidak ada lokal dibawa dari live; halaman galat (bukan JSON) tidak ditulis; lokal tidak ditimpa
+    assert buat(d, "http://live", lambda url, batas=0: b"<html>404</html>") == 2
+    assert buat(d, "http://live", lambda url, batas=0: b'{"model":[]}') == 3
+    assert buat(d, "http://live", lambda url, batas=0: b'{"model":["lama"]}') == 3
+    assert open(os.path.join(d, "rapor_belajar.json"), "rb").read() == b'{"model":[]}', "salinan lokal tertimpa live"
+    os.remove(os.path.join(d, "rapor_belajar.json"))
     # situs live: meta lebih baru, lapisan statis sama, satu berkas rusak, satu jalur jahat
     live = {"meta.json": b'{"dibuat":"23 Okt"}', "lahan/gambut.geojson": b"STATIS", "kluster.json": b"[1,2]", "rusak.json": b"isi-asli"}
     daftar = {k: [len(v), hashlib.sha1(v).hexdigest()] for k, v in live.items()}

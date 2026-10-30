@@ -109,7 +109,8 @@ def operasi(teks):
             m = re.match(r'^\*\s*([A-Z][\w ]+?)\s*:?\s*\*(\d+) unit', baris.strip())   # "Jawa Tengah *2 unit*" (27 Okt) tanpa titik dua
             sub = re.match(r'^>\s*\*(\d+) unit\*\s*tergelar di (.+?)\s*$', baris.strip())
             if m:
-                induk = m.group(1).strip(); armada.setdefault(induk, [0, 0])[i] += int(m.group(2))
+                induk = m.group(1).strip() + ('/IKN' if 'tergelar di IKN' in baris else '')   # "Kalimantan Timur: *1 unit* tergelar di IKN" (29 Okt)
+                armada.setdefault(induk, [0, 0])[i] += int(m.group(2))
             elif sub:
                 tujuan = sub.group(2).strip(' *')
                 tujuan = 'Kalimantan Timur/IKN' if 'IKN' in tujuan else tujuan.split(',')[-1].strip()
@@ -119,8 +120,9 @@ def operasi(teks):
         nama, isi = m.group(1).strip(), m.group(2)
         nacl, dry = (_total([_angka(x) for x in re.findall(rf'([\d.]+) kg {b}', isi)]) for b in ('NaCl', 'dry ice'))
         so = re.search(r'\*(\d+) sortie', isi)
-        sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran) \*([^*]+)\*', isi.split('Hujan')[0])   # bukan "di *X*": "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
+        sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran|kg (?:NaCl|dry ice)\* di) \*([^*]+)\*', isi.split('Hujan')[0])   # "di *X*" hanya sesudah muatan ("1.000 kg NaCl* di *Muara Enim*", Sumsel 29 Okt), bukan "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
                                  for k in re.split(r',\s*(?:dan\s+)?|\s+dan\s+', x.replace('sekitar ', '')) if k.strip()))   # kab yang disasar beberapa pesawat sekali saja
+        sas = [k for i, k in enumerate(sas) if not any(a.endswith(' ' + k) for a in sas[:i])]   # "Palembang" sesudah "wilayah timur Palembang" (Sumsel 29 Okt); "OKU" sesudah "OKU Timur" tetap
         hujan = None
         h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt)
         h2 = re.search(r'Hujan\s+([a-z ]+?)\s+pada (\d+) (\w+)[^\n]*?di \*([^*]+)\*', isi)

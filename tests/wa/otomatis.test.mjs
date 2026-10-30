@@ -28,8 +28,8 @@ function dunia(pesan, { gagalGenerator, gagalKirim, gagalUnggah } = {}) {
     kirimFile: async (t, p, n, c) => { kirim.urut.push('wa'); if (gagalKirim) throw new Error('gateway down'); kirim.file.push({ t, n, c }) },
     kirimTeks: async (t, m) => { kirim.teks.push({ t, m }) },
   }
-  const env = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k' }
-  const jalan = (o = {}) => jalankan({ env, dep, kenali, rumah, log: () => {}, tanggal: TGL, now: wibKe(18), ...o })
+  const env = { PENERIMA: '6281,120@g.us', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0' }
+  const jalan = (o = {}) => jalankan({ env, dep, kenali, rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL, now: wibKe(18), ...o })
   return { kirim, jalan, rumah, dep }
 }
 
@@ -185,4 +185,68 @@ test('Google Drive gagal: WA tetap terkirim tanpa link, PEMILIK dikabari sekali;
   const k = dunia(LENGKAP); let dipanggil = 0
   k.dep.unggahDrive = async () => { dipanggil++ }
   await k.jalan({ kering: true }); assert.equal(dipanggil, 0)
+})
+
+test('tanggal isi: bahan lama (tanggal isi beda) diabaikan, tidak ada laporan yang dibuat', async () => {
+  const d = dunia(LENGKAP)
+  const log = []
+  const r = await d.jalan({ tanggalIsi: (t, k) => (k === 'bmkg_pagi' ? '2026-10-27' : TGL), log: (...a) => log.push(a.join(' ')) })
+  assert.equal(d.kirim.exec.length, 0); assert.equal(d.kirim.file.length, 0)
+  assert.ok(r.every((x) => x.status === 'tunggu'))
+  assert.ok(log.some((l) => l.includes('bahan bertanggal 2026-10-27, bukan 2026-10-29')))
+})
+
+test('tanggal isi: pesan lama terbaru dilewati, yang cocok tanggalnya dipakai; D-1 dan D+1 ikut dibaca', async () => {
+  const urls = []
+  const lama = P('9', 'bmkg_pagi', 999, 'LAMA'), baru = P('2', 'bmkg_pagi', 101, 'BARU')
+  const d = dunia([...LENGKAP.filter((p) => p.id !== '2'), lama, baru])
+  const asli = d.dep.fetch
+  d.dep.fetch = async (u, o) => { urls.push(u); return asli(u, o) }
+  await d.jalan({ tanggalIsi: (t) => (t.includes('LAMA') ? '2026-10-20' : TGL) })
+  assert.deepEqual(urls.map((u) => u.split('=')[1]).sort(), ['2026-10-28', '2026-10-29', '2026-10-30'])
+  assert.equal(d.kirim.file.length, 8)
+  assert.ok(!fs.readFileSync(path.join(d.rumah, 'kerja', TGL, 'harian', 'bmkg_pagi.txt'), 'utf8').includes('LAMA'))
+})
+
+// ---- banjir ----
+import { susun } from '../../scripts/wa/peringatan_banjir.mjs'
+const PL = (dibuat, a = 0.3) => ({ versi: 'peluang/1', anggota: 51, dibuat, wilayah: {
+  '11|A': { nama: 'Aceh Barat, Aceh', tingkat: 'kabupaten', hari: [{ t: '2026-10-30', p: [a, 0.12] }, { t: '2026-10-31', p: [0.05, 0] }] },
+  '11': { nama: 'Aceh', tingkat: 'provinsi', hari: [{ t: '2026-10-30', p: [0.9, 0.9] }] } } })
+
+test('peringatan banjir: hanya kabupaten di atas 10%, angka apa adanya, tanpa titik tengah', () => {
+  const t = susun(PL('2026-10-29T01:00:00+00:00'), TGL)
+  assert.match(t, /Jumat, 30 Oktober 2026\n- Aceh Barat, Aceh: 30% hujan 50 mm atau lebih \(mungkin\), 12% hujan 100/)
+  assert.ok(!t.includes('Aceh: 90%') && !t.includes('·') && /Sumber: ECMWF/.test(t))
+  assert.equal(susun(PL('2026-10-29T01:00:00+00:00', 0.02), TGL), null)
+})
+
+test('peringatan banjir: MATI tanpa penerima; kirim sekali ke penerima khusus; peluang basi menunggu', async () => {
+  const peluang = PL('2026-10-29T01:00:00+00:00')
+  const d = dunia([])
+  const dep = { ...d.dep, fetch: async (u) => u.includes('peluang.json') ? { ok: true, json: async () => peluang } : { ok: true, json: async () => ({ pesan: [] }) } }
+  const env = (x) => ({ PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '0', ...x })
+  const mati = await jalankan({ env: env({}), dep, kenali, rumah: d.rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL, now: wibKe(8) })
+  assert.ok(!mati.some((x) => x.id === 'peringatan_banjir')); assert.equal(d.kirim.teks.length, 0)
+  const e = env({ PENERIMA_PERINGATAN_BANJIR: '6277,6278' })
+  await jalankan({ env: e, dep, kenali, rumah: d.rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL, now: wibKe(8) })
+  assert.deepEqual(d.kirim.teks.map((x) => x.t), ['6277', '6278'])
+  await jalankan({ env: e, dep, kenali, rumah: d.rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL, now: wibKe(9) })
+  assert.equal(d.kirim.teks.length, 2)                                        // sekali per tanggal
+  const d2 = dunia([]); peluang.dibuat = '2026-10-19T01:00:00+00:00'
+  const h = await jalankan({ env: e, dep: { ...d2.dep, fetch: dep.fetch }, kenali, rumah: d2.rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL, now: wibKe(8) })
+  assert.equal(h.find((x) => x.id === 'peringatan_banjir').status, 'tunggu'); assert.equal(d2.kirim.teks.length, 0)
+})
+
+test('laporan banjir: butuh tanpa bahan WA, jalan sesudah 17.00, tidak diunggah ke /pelaporan, ke PENERIMA', async () => {
+  const d = dunia([])
+  const exec = async (cmd, args) => { d.kirim.exec.push(args); const out = args[args.indexOf('--out') + 1]; for (const x of ['pdf', 'pptx']) fs.writeFileSync(path.join(out, `Laporan Penanganan Banjir Longsor dan Rob 291026.${x}`), 'x') }
+  const dep = { ...d.dep, exec }
+  const env = { PENERIMA: '6281', PEMILIK: '6299', WORKER_URL: 'http://w', WA_MESIN: 'k', LAPORAN_BANJIR: '1' }
+  const o = { env, dep, kenali, rumah: d.rumah, log: () => {}, tanggalIsi: () => TGL, tanggal: TGL }
+  assert.equal((await jalankan({ ...o, now: wibKe(16) })).find((x) => x.id === 'penanganan_banjir').status, 'tunggu')
+  await jalankan({ ...o, now: wibKe(18) })
+  assert.deepEqual(d.kirim.exec.map((a) => a[0]), ['penanganan_banjir.py']); assert.equal(d.kirim.file.length, 2); assert.equal(d.kirim.unggah.length, 0)
+  await jalankan({ ...o, now: wibKe(19) })
+  assert.equal(d.kirim.file.length, 2)
 })
