@@ -123,3 +123,52 @@ jobs:
           done
           echo "::error title=Push lapisan bulanan gagal::git push ke main gagal 3x"
           exit 1
+
+      # ---- Panen bulanan (30 Okt 2026, docs/panen/RENCANA-PANEN-DATA.md #3 #5 #6 #13 #19 #22 #28-33 #39 #41 dan harga CPO #51). Semua boleh gagal, tiap skrip
+      # uji dulu; berkas lamanya dibiarkan bila gagal. Kunci hanya lewat nama secret; tanpa kunci skripnya sendiri menulis status MENUNGGU KUNCI (bukan angka karangan).
+      # Urutan bnpb: kerentanan, ikd, terpapar dulu, risiko_hvc terakhir (membaca ketiganya). TIDAK dijalankan di sini: GRACE-FO (butuh pip h5py), TMAT (SiPALAGA
+      # diblokir Cloudflare), kanopi/logistik/MapBiomas/PM2,5 1 km (raster besar, lab.yml), SLSTR (CDSE belum ada kunci), label_lapangan (keluaran mentah gitignored).
+      - name: Panen bulanan, GNSS, iklim stasiun, harga CPO, kerentanan BNPB, izin, menara (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 90
+        env:
+          BPS_KEY: ${{ secrets.BPS_KEY }}
+          OPENCELLID_KEY: ${{ secrets.OPENCELLID_KEY }}
+          MAPILLARY_TOKEN: ${{ secrets.MAPILLARY_TOKEN }}
+        run: |
+          jalan() { # jalan <skrip> <argumen uji> [argumen jalan...]
+            s=$1; u=$2; shift 2
+            python3 scripts/$s $u && { python3 scripts/$s "$@" || echo "::warning title=panen $s::gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $s::uji $s gagal"
+          }
+          jalan gempa/gnss.py uji ambil
+          jalan gempa/gnss.py uji hitung
+          jalan cuaca/iklim_stasiun.py uji --unduh
+          jalan panen/harga_komoditas.py uji
+          jalan bnpb/kerentanan.py --cek
+          jalan bnpb/ikd.py --cek
+          jalan bnpb/terpapar.py --cek
+          jalan bnpb/puso.py --cek
+          jalan bnpb/risiko_hvc.py --cek
+          jalan data/panen/ps.py uji panen
+          jalan data/panen/ps.py uji
+          jalan data/panen/tambang.py uji panen
+          jalan data/panen/tambang.py uji
+          jalan data/panen/hgu_api.py uji
+          jalan umum/menara.py uji
+          jalan umum/foto_dasar.py uji
+          jalan longsor/kejadian.py uji
+
+      - name: Commit panen bulanan
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B="public/gempa/data/gnss.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/longsor/data/kejadian.json"
+          for f in $B; do [ ! -e "$f" ] || git add "$f"; done
+          git diff --cached --quiet && { echo "panen bulanan tidak berubah"; exit 0; }
+          git commit -q -m "data: panen bulanan $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push panen bulanan gagal::git push ke main gagal 3x"
+          exit 1

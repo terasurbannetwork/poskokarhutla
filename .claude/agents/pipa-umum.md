@@ -45,6 +45,13 @@ Berkas milikmu (glob paling spesifik menang):
 
 - `scripts/umum/**`
 - `scripts/berita/**`
+- `public/data/foto_dasar.json`
+- `public/data/gdelt.json`
+- `public/data/internet_padam.json`
+- `public/data/logistik.json`
+- `public/data/menara.json`
+- `public/data/reliefweb.json`
+- `public/data/sinyal_sosial.json`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

@@ -69,7 +69,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # arsip hari LAMPAU yang di-commit menang atas cache (cache bisa lebih pendek/hilang; pola d6ffb475). indeks.json dari repo juga:
@@ -119,6 +119,18 @@ jobs:
         env:
           SUNGAI_B_TITIK: "6"
         run: python3 scripts/banjir/sungai.py
+
+      # Panen 30 Okt 2026 (docs/panen/RENCANA-PANEN-DATA.md #12 #14 #15 #16): semua tanpa kunci, keluaran di public/banjir/data (cache banjir-).
+      # Tiap skrip: uji dulu, lalu jalan; gagal satu tidak menahan yang lain, berkas lamanya dibiarkan. Berkas bergulir tetap, tanpa berkas harian baru.
+      # EMS publik 0 aktivasi Indonesia dan Charter berlabel sedikit: keduanya ringan (1 permintaan) dan jujur menulis indeks.
+      - name: Panen banjir, EMS, Charter, MCDWD, verifikasi SYNOP (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          for s in banjir/ems banjir/charter "banjir/mcdwd harian" "banjir/mcdwd_model prakira" cuaca/synop; do
+            p=${s%% *}; a=${s#"$p"}; p=scripts/$p.py
+            python3 $p uji && { python3 $p $a || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
+          done
 
       # prediksi pasang surut BMKG Maritim per stasiun (tanpa kuota); rob.py menyusul. public/banjir/data ikut di-add di langkah terbit
       - name: Prediksi pasang surut BMKG (boleh gagal)

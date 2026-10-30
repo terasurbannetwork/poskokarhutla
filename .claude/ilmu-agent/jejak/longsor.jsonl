@@ -1,0 +1,2 @@
+{"t":"2026-10-30T04:09:46.767+07:00","berkas":"scripts/longsor/pvmbg.py","blob":"9b75542c077ed2b2a1e22aba705568836eb754c2","aturan":"3d4a104adfa2","vonis":"dikerjakan","ringkas":"panen+agregat zona PVMBG via sigi.pu.go.id; vsi/geoportal ESDM dilarang robots","sha":"11915b7f"}
+{"t":"2026-10-30T04:09:48.201+07:00","berkas":"scripts/longsor/model.py","blob":"47afec06d95757b8e147fe9ed90251851bfa0c63","aturan":"3d4a104adfa2","vonis":"dikerjakan","ringkas":"varian v2 (S_pv), pembanding pvmbg, subset adil; vonis GAGAL AUC 0,736 vs klim 0,782","sha":"11915b7f"}

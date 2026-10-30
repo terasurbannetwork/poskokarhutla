@@ -45,11 +45,20 @@ jobs:
       - name: Laju dan peluang gempa
         run: python3 scripts/gempa/peluang_gempa.py
 
+      # Panen #21 #23 (30 Okt 2026): DART realtime (~45 hari, NOAA, tanpa kunci) dan catatan prospektif EMSC (append-only, kejadian umur >= 7 hari).
+      # Kedua boleh gagal; `hitung` berat (arsip penuh) hanya di lab. emsc `ambil` bulanan menyusul di statis.yml bila arsip mentah diperlukan.
+      - name: DART dan residu EMSC (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 10
+        run: |
+          python3 scripts/gempa/dart.py uji && { python3 scripts/gempa/dart.py realtime || echo "::warning title=dart::gagal; berkas lamanya dibiarkan"; }
+          python3 scripts/gempa/emsc.py uji && { python3 scripts/gempa/emsc.py prospektif || echo "::warning title=emsc::gagal; berkas lamanya dibiarkan"; }
+
       - name: Commit data gempa ke main
         run: |
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          B="public/gempa/data/prospektif_susulan.json public/gempa/data/laporan.json public/gempa/data/peluang.json public/gempa/data/laju.json"
+          B="public/gempa/data/prospektif_susulan.json public/gempa/data/laporan.json public/gempa/data/peluang.json public/gempa/data/laju.json public/gempa/data/dart.json public/gempa/data/emsc_prospektif.json"
           git add $B
           git diff --cached --quiet -- $B && { echo "data gempa tidak berubah"; exit 0; }
           git commit -q -m "data: gempa harian $(TZ=Asia/Jakarta date +%F)" -- $B

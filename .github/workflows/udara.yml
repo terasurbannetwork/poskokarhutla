@@ -61,7 +61,19 @@ jobs:
       - name: Jalankan pipeline udara
         env:
           WAQI_TOKEN: ${{ secrets.WAQI_TOKEN }}
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}   # tropomi.py (langkah di jalan.py): tanpa token dilewati dengan peringatan
         run: python3 scripts/udara/jalan.py || { echo "::error title=Pipeline udara gagal::scripts/udara/jalan.py gagal; public/udara/data tidak diperbarui di run ini"; exit 1; }
+
+      # Panen #9 #10: MOS PM2,5 (OpenAQ; tanpa OPENAQ_KEY memakai stasiun BMKG sebagai pengganti berlabel) dan ensambel CAMS + GEOS-CF.
+      # Berkas bergulir tetap di public/udara/data (ikut commit & cache udara-). Uji sudah jalan di langkah "Uji aturan".
+      - name: MOS PM2,5 dan ensambel GEOS-CF (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        env:
+          OPENAQ_KEY: ${{ secrets.OPENAQ_KEY }}
+        run: |
+          python3 scripts/udara/openaq_mos.py || echo "::warning title=openaq_mos::gagal; berkas lamanya dibiarkan"
+          python3 scripts/udara/geoscf.py || echo "::warning title=geoscf::gagal; berkas lamanya dibiarkan"
 
       - name: Simpan arsip udara untuk jalan berikutnya
         if: always()

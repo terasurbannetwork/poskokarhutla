@@ -44,6 +44,7 @@ Kamu **hanya** mengurus: Pengerja pipeline data karhutla: FIRMS, cuaca Open-Mete
 Berkas milikmu (glob paling spesifik menang):
 
 - `scripts/data/**`
+- `scripts/panen/**`
 - `scripts/scrape/**`
 - `scripts/geo/**`
 - `scripts/statistik/**`
@@ -51,6 +52,13 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/pasang-kunci.sh`
 - `data/**`
 - `data/sippa/**`
+- `public/data/harga_komoditas.json`
+- `public/data/hgu_api.json`
+- `public/data/ps.json`
+- `public/data/slstr_malam.json`
+- `public/data/tambang.json`
+- `public/data/tmat.json`
+- `public/data/transisi_lahan.json`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.
