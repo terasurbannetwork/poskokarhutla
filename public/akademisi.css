@@ -1591,3 +1591,45 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-bh{display:flex;flex-wrap:wrap;gap:10px}
 .ak-bh > .ak-urut,.ak-urut{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));flex:1 1 100%;width:100%!important;box-sizing:border-box}
 .ak-urut button{justify-content:center;width:100%}
+/* baris kaya: tiga kolom tetap, isi tidak pernah keluar kartu */
+.ak-bkr{display:grid!important;grid-template-columns:40px minmax(0,1fr) auto!important;gap:12px!important;align-items:start;overflow:hidden;min-width:0}
+.ak-bkr-t{min-width:0;overflow:hidden;display:grid;gap:4px}
+.ak-bkr-t > *{min-width:0;max-width:100%}
+.ak-bkr-t .ak-pil{display:flex;flex-wrap:wrap;gap:4px;overflow:visible;white-space:normal}
+.ak-bkr-t .ak-pil > *{max-width:100%;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ak-bkr-r{display:flex;align-items:center;gap:6px;align-self:center;flex:none}
+.ak-bkr-r:empty{display:none}
+.ak-bkl{display:grid;grid-template-columns:repeat(auto-fill,minmax(360px,1fr));gap:10px}
+
+/* lembar inovasi (sheetIn) */
+.ak-infoto{position:relative;width:96px;height:96px;border-radius:14px;background:#fff;display:grid;place-items:center;overflow:hidden;flex:none}
+.ak-infoto svg{width:42px;height:42px;stroke:var(--w0,#1c7ed6);fill:none}
+.ak-infoto img{position:absolute;inset:0;width:100%;height:100%;object-fit:cover}
+.ak-in-fg{display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:12px 18px}
+.ak-in-f{display:grid;gap:5px;align-content:start;min-width:0;font-size:13.5px;font-weight:700;color:var(--ink)}
+.ak-in-f .ak-mlabel{font-size:11px;font-weight:700;color:var(--ink2);text-transform:none}
+.ak-in-f>div{display:flex;flex-wrap:wrap;gap:5px;min-width:0}
+.ak-in-f .ak-mp{max-width:100%;height:20px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;cursor:default}
+.ak-in-f button.ak-mp{cursor:pointer;border:0;font:inherit;font-size:11.5px}
+.ak-in-gal{display:grid;gap:4px;width:min(100%,260px);text-decoration:none}
+.ak-in-gal img{width:100%;height:150px;object-fit:cover;border-radius:10px;border:1px solid var(--line)}
+.ak-in-gal small{font-size:11px;color:var(--ink2)}
+.ak-in-ubin{display:grid;grid-template-columns:repeat(auto-fill,minmax(220px,1fr));gap:8px}
+.ak-in-ubin a{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;padding:8px 12px;border:1px solid var(--line);border-radius:10px;text-decoration:none;color:var(--brand2)}
+.ak-in-ubin a:hover{background:var(--surface)}
+.ak-in-ubin svg{width:18px;height:18px}
+.ak-in-ubin span{display:grid;min-width:0}.ak-in-ubin b{font-size:13px;color:var(--ink);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-in-ubin small{font-size:11px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.ak-in-pakai{list-style:none;margin:0;padding:0;display:grid;gap:10px}
+.ak-in-pakai li{display:grid;grid-template-columns:auto minmax(0,1fr);gap:10px;align-items:start}
+.ak-in-pakai .ak-gmaps{margin:0;flex:none}
+.ak-in-pakai b{font-size:13.5px}.ak-in-pakai .ak-ket{margin:2px 0 4px}
+.ak-dkepala .ak-dk-atas .ak-pojok{display:flex;gap:6px}
+.ak-bkr-t,.ak-bkr-t>*{min-width:0;max-width:100%}
+.ak-bkr-t .ak-pil{flex-wrap:wrap}
+/* pil di baris orang (tokoh/pakar): satu baris, ikon di kiri, boleh membungkus ke baris berikut, tidak terpotong */
+.ak-pkr{flex-wrap:wrap!important;overflow:visible!important;row-gap:4px}
+.ak-pkr > *{display:inline-flex!important;flex-direction:row!important;align-items:center;gap:4px;height:22px;min-height:0;padding:0 9px;border-radius:999px;font-size:11px;font-weight:600;line-height:1;white-space:nowrap;max-width:100%;overflow:hidden;text-overflow:ellipsis;box-sizing:border-box}
+.ak-pkr > * > svg,.ak-pkr > * > img{width:12px!important;height:12px!important;flex:none;display:block;position:static;margin:0;border-radius:3px;object-fit:contain}
+.ak-pkr .ak-mp{background:var(--surface);color:var(--ink2);border:0}
+.ak-x svg{stroke:var(--brand)!important;fill:none}
