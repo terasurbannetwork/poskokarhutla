@@ -1979,3 +1979,10 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-side-h > .ak-ptlayer button[data-ly="sensor"]{display:inline-flex!important}
 .ak-side-h > .ak-ptlayer button small{margin-left:6px;opacity:.75;font-size:10.5px}
 .ak-side-h > .ak-ptlayer button .ak-ikon{width:13px;height:13px;margin-right:4px}
+
+.ak-kdaftar .ak-lgo{flex:none}
+.ak-ringkas.enam.tujuh{grid-template-columns:repeat(7,minmax(0,1fr))}
+@media (max-width:1000px){.ak-ringkas.enam.tujuh{grid-template-columns:repeat(4,minmax(0,1fr))}}
+@media (max-width:560px){.ak-ringkas.enam.tujuh{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.ak-kdaftar .ak-lgo.kecil{flex:none;width:18px;height:18px;border-radius:50%}.ak-kdaftar .ak-lgo.kecil svg{width:11px;height:11px}
+.ak-bpanel[hidden]{display:none!important}
