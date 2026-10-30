@@ -15,7 +15,7 @@
 <link rel="stylesheet" href="/inti/kepala.css">
 <link rel="stylesheet" href="/inti/tema.css">
 <link rel="stylesheet" href="/inti/gaya.css">
-<link rel="stylesheet" href="/akademisi.css?v=23">
+<link rel="stylesheet" href="/akademisi.css?v=24">
 </head>
 <body>
 <header class="top">
@@ -63,7 +63,7 @@
           <svg class="ak-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button>
         <div id="akVPop" class="ak-kpop" hidden>
           <label class="ak-kcari"><span class="sr">Cari provinsi</span><input id="akVQ" type="search" autocomplete="off" placeholder="Cari provinsi"></label>
-          <div id="akVDaftar" class="ak-kdaftar" role="listbox" aria-label="Provinsi"></div>
+          <div id="akVDaftar" class="ak-kdaftar" role="listbox" aria-multiselectable="true" aria-label="Provinsi"></div>
         </div>
       </div>
       <div class="ak-kampus-pilih">
@@ -72,7 +72,7 @@
         <div id="akKPop" class="ak-kpop" hidden>
           <div class="ak-seg ak-kjenis" id="akKJenis" role="group" aria-label="Jenis"><button type="button" data-j="k" aria-pressed="true">Universitas dan kampus</button><button type="button" data-j="l" aria-pressed="false">Lembaga</button></div>
           <label class="ak-kcari"><span class="sr">Cari kampus</span><input id="akKQ" type="search" autocomplete="off" placeholder="Cari kampus atau lembaga"></label>
-          <div id="akKDaftar" class="ak-kdaftar" role="listbox" aria-label="Kampus"></div>
+          <div id="akKDaftar" class="ak-kdaftar" role="listbox" aria-multiselectable="true" aria-label="Kampus"></div>
         </div>
       </div>
       <div class="ak-kampus-pilih ak-prodi-pilih">

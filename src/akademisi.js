@@ -56,6 +56,48 @@ async function karya(env, req, ctx, id, url) {
   });
 }
 
+/* GET /api/akademisi/riset/<id karya OpenAlex W...>: rincian satu karya untuk lembar riset: abstrak (dirakit dari indeks terbalik OpenAlex),
+   topik, kata kunci, PDF akses terbuka, sitasi per tahun, lalu ringkasan, penjelasan, dan kesimpulan berbahasa Indonesia dari Workers AI yang
+   HANYA bersumber dari judul + abstrak itu. Staf dulu, baru cache tepi 30 hari. AI gagal/tanpa binding = ai null, sisanya tetap tampil. */
+const ID_W = /^W\d{4,12}$/, MODEL_RISET = "@cf/meta/llama-3.3-70b-instruct-fp8-fast";
+const SKEMA_RISET = {type: "object", properties: {ringkasan: {type: "string"}, penjelasan: {type: "array", items: {type: "string"}}, kesimpulan: {type: "string"}}, required: ["ringkasan", "penjelasan", "kesimpulan"]};
+export function rakitAbstrak(idx) {
+  if (!idx || typeof idx !== "object") return "";
+  const kata = [];
+  for (const [w, pos] of Object.entries(idx)) for (const i of Array.isArray(pos) ? pos : []) if (Number.isInteger(i) && i >= 0 && i < 5000) kata[i] = w;
+  return kata.filter(Boolean).join(" ").replace(/\s+([,.;:!?)])/g, "$1").trim().slice(0, 6000);
+}
+const uraiJsonAI = r => { let x = r?.response ?? r; if (x && typeof x === "object") return x; if (typeof x !== "string") return null;
+  const a = x.indexOf("{"), b = x.lastIndexOf("}"); try { return a >= 0 && b > a ? JSON.parse(x.slice(a, b + 1)) : null; } catch (e) { return null; } };
+async function riset(env, req, ctx, id) {
+  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!ID_W.test(id)) return gagal(404, "karya tidak dikenal");
+  return cacheTepi(new Request("https://akademisi.riset/" + id), ctx, 30 * 86400, async () => {
+    const u = new URL("https://api.openalex.org/works/" + id);
+    u.searchParams.set("select", "id,display_name,abstract_inverted_index,topics,keywords,best_oa_location,language,referenced_works_count,counts_by_year,cited_by_count");
+    if (env.OPENALEX_KEY) u.searchParams.set("api_key", env.OPENALEX_KEY);
+    let w;
+    try { const r = await fetch(u, {signal: AbortSignal.timeout(8000)}); if (!r.ok) { r.body?.cancel(); return gagal(502, `OpenAlex ${r.status}`); } w = await r.json(); }
+    catch (e) { return gagal(502, "OpenAlex tidak menjawab"); }
+    const abstrak = rakitAbstrak(w.abstract_inverted_index), judul = String(w.display_name || "").slice(0, 300);
+    const topik = (w.topics || []).slice(0, 4).map(t => ({nama: String(t?.display_name || ""), bidang: String(t?.field?.display_name || "")})).filter(t => t.nama);
+    const kunci = (w.keywords || []).slice(0, 8).map(k => String(k?.display_name || "")).filter(Boolean);
+    const pdf = /^https:\/\//.test(w.best_oa_location?.pdf_url || "") ? w.best_oa_location.pdf_url : "";
+    const tahunan = (w.counts_by_year || []).filter(c => Number.isInteger(c?.year)).map(c => [c.year, c.cited_by_count ?? 0]).sort((a, b) => a[0] - b[0]);
+    let ai = null;
+    if (env.AI && abstrak.length > 200) {
+      try {
+        const x = uraiJsonAI(await env.AI.run(MODEL_RISET, {max_tokens: 900, temperature: 0.1, response_format: {type: "json_schema", json_schema: SKEMA_RISET}, messages: [
+          {role: "system", content: "Anda menyusun ringkasan artikel ilmiah untuk staf BNPB dalam bahasa Indonesia baku yang lugas. Gunakan HANYA isi judul dan abstrak yang diberikan; jangan menambah angka, tempat, atau klaim yang tidak tertulis. Jangan memakai tanda titik tengah. Balas JSON: ringkasan (2 sampai 3 kalimat: apa yang diteliti, di mana, dengan cara apa), penjelasan (3 sampai 5 butir temuan atau metode penting, tiap butir satu kalimat), kesimpulan (1 sampai 2 kalimat: kesimpulan penulis dan artinya bagi penanggulangan bencana bila abstrak menyebutnya)."},
+          {role: "user", content: `Judul: ${judul}\n\nAbstrak: ${abstrak}`}]}));
+        const t = v => typeof v === "string" ? v.trim().slice(0, 1200) : "";
+        if (x && t(x.ringkasan)) ai = {ringkasan: t(x.ringkasan), penjelasan: (Array.isArray(x.penjelasan) ? x.penjelasan : []).map(t).filter(Boolean).slice(0, 6), kesimpulan: t(x.kesimpulan)};
+      } catch (e) { ai = null; }
+    }
+    return json({abstrak, bahasa: String(w.language || ""), topik, kunci, pdf, rujukan: w.referenced_works_count ?? null, sitasi: w.cited_by_count ?? null, tahunan, ai});
+  });
+}
+
 /* GET /api/akademisi/sinta/<SINTA ID>: rincian profil SINTA hasil panen (metrik Scopus/GScholar, skor, grafik per tahun, artikel Scopus
    berkuartil). Disimpan di R2 dalam 64 pecahan (akademisi/sinta/<id % 64>.json, peta id -> rincian) supaya satu permintaan hanya mengurai
    berkas kecil. Staf saja; tidak ada rincian = 404 dan layar diam. */
@@ -157,4 +199,5 @@ export const RUTE_AKADEMISI = {...Object.fromEntries(DATA_AKADEMISI.map(n => [`G
   "GET /api/akademisi/kontak": (env, req) => berkas(env, req, "akademisi/kontak.json"),
   "GET /api/akademisi/terdekat": (env, req, url) => terdekat(env, req, url),
   "GET /api/akademisi/karya/:id": (env, req, url, kini, ctx, id) => karya(env, req, ctx, id, url),
+  "GET /api/akademisi/riset/:id": (env, req, url, kini, ctx, id) => riset(env, req, ctx, id),
   "GET /api/akademisi/sinta/:id": (env, req, url, kini, ctx, id) => sinta(env, req, id)};

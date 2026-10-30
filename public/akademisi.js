@@ -31,12 +31,18 @@
   const ikon = (d, w) => `<svg class="ak-ikon" viewBox="0 0 24 24" aria-hidden="true" style="--w:${w}">${d}</svg>`;
   const pilRumpun = (r, utama) => { const [l, d, w] = RUMPUN[r] || [r, "", "#6b7280"];
     return `<span class="ak-r${utama ? " utama" : ""}" style="--w0:${w}">${d ? ikon(d, w) : ""}${esc(l)}</span>`; };
+  /* judul HURUF BESAR SEMUA dari sumber jadi Huruf Judul; nama jurnal OpenAlex "A/A" kembar diambil satu */
+  const KECIL = new Set("a an and as at by for from in into of on or the to with via di dan untuk dari pada yang ke dengan atau dalam terhadap sebagai oleh".split(" "));
+  const rapiJudul = t => { t = String(t || "").trim(); if (!t || /\p{Ll}/u.test(t) || t.length < 16) return t;
+    return t.toLowerCase().replace(/[\p{L}\d][\p{L}\d'’-]*/gu, (w, i) => i && KECIL.has(w) && !/[:–—]\s*$/.test(t.slice(0, i)) ? w : w[0].toUpperCase() + w.slice(1)); };
+  const rapiJurnal = t => { const p = String(t || "").split("/"), n = x => x.trim().toLowerCase().replace(/^the\s+/, "");
+    return p.length === 2 && n(p[0]) === n(p[1]) ? p[0].trim() : String(t || ""); };
   const METRIK = [[4, "h-index", "Pengaruh riset", '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>'],
     [5, "Karya", "Publikasi ilmiah", '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M9 13h7M9 17h5"/>'],
     [6, "Sitasi", "Dikutip peneliti lain", '<path d="M7 7h4v6H5v-2c0-2 1-4 2-4zM15 7h4v6h-6v-2c0-2 1-4 2-4z"/>']];
   const metrik = o => `<div class="ak-metrik">${METRIK.map(([i, l, t, d]) => `<div title="${t}"><span class="ak-mlabel">${ikon(d, "currentColor")}${l}</span><b>${angka(o[i])}</b></div>`).join("")}</div>`;
 
-  const st = {q: "", prov: "", kampus: "", prodi: "", sumber: "s", urut: 4, rumpun: "", hal: 1, kJenis: "k", baru: false};
+  const st = {q: "", prov: new Set(), kampus: new Set(), prodi: "", sumber: "s", urut: 4, rumpun: new Set(), hal: 1, kJenis: "k", baru: false};
   let baruSet = new Set();
   let semua = [], hasil = [], perK = {}, logoK = {}, tunda = 0;
   const PROV = {11: "Aceh", 12: "Sumatera Utara", 13: "Sumatera Barat", 14: "Riau", 15: "Jambi", 16: "Sumatera Selatan", 17: "Bengkulu", 18: "Lampung", 19: "Kepulauan Bangka Belitung", 21: "Kepulauan Riau",
@@ -48,8 +54,12 @@
   const nanti = f => window.requestIdleCallback ? requestIdleCallback(f, {timeout: 300}) : setTimeout(f, 0);
   const provK = k => kampusInfo[k]?.prov || null, provO = o => provK(o[2]);
   const provNama = v => PROV[v] || "";
-  const cocokProv = o => !st.prov || (st.prov === "?" ? !provO(o) : provO(o) === st.prov);
-  const cocokProvK = k => !st.prov || (st.prov === "?" ? !provK(k) : provK(k) === st.prov);
+  /* provinsi, kampus, rumpun: multi pilih (Set); kosong = semua. "?" = lokasi belum diketahui */
+  const cocokProv = o => !st.prov.size || st.prov.has(provO(o) || "?");
+  const cocokProvK = k => !st.prov.size || st.prov.has(provK(k) || "?");
+  /* tandai centang di daftar pop-up tanpa menggambar ulang (gulir daftar tetap) */
+  const tandai = (box, kunci, s) => box.querySelectorAll("button[role=option]").forEach(b => b.setAttribute("aria-selected", String(b.dataset[kunci] ? s.has(b.dataset[kunci]) : !s.size)));
+  const balik = (s, v) => { const t = new Set(v ? s : []); if (v) t.has(v) ? t.delete(v) : t.add(v); return t; };
   const emailOk = e => typeof e === "string" && /^[^\s@<>"']+@[^\s@<>"']+$/.test(e);
   const IKON_PIN = '<path d="M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>', IKON_MAIL = '<rect x="3" y="5" width="18" height="14" rx="2"/><path d="m3 7 9 6 9-6"/>',
     IKON_TANDA = '<path d="M6 4h12v17l-6-4-6 4z"/>', IKON_WEB = '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18"/>';
@@ -83,12 +93,12 @@
 
   function saring() {
     const q = st.q.toLowerCase();
-    hasil = semua.filter(o => cocokProv(o) && (!st.rumpun || o[3].includes(st.rumpun)) && (!st.kampus || o[2] === st.kampus) && (!st.prodi || prodiDari(o) === st.prodi)
+    hasil = semua.filter(o => cocokProv(o) && (!st.rumpun.size || o[3].some(r => st.rumpun.has(r))) && (!st.kampus.size || st.kampus.has(o[2])) && (!st.prodi || prodiDari(o) === st.prodi)
       && (!st.baru || baruSet.has(o[0])) && (q || st.baru || st.sumber === "" || (st.sumber === "s" ? o[13] === "s" : o[13] !== "x")) && (!q || o._cari.includes(q)));   // cari nama = semua sumber
     const u = st.urut;
     hasil.sort(u === 1 ? (a, b) => a[1].localeCompare(b[1], "id") : (a, b) => b[u] - a[u] || b[4] - a[4]);
     st.hal = 1;
-    document.querySelectorAll("#akRumpun button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.r === st.rumpun)));
+    document.querySelectorAll("#akRumpun button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.r ? st.rumpun.has(b.dataset.r) : !st.rumpun.size)));
     $("akPIsi").innerHTML = `<em>${esc(st.prodi || "Semua program studi")}</em>`;
     gambar(false);
   }
@@ -105,9 +115,9 @@
   function daftarKampus() {
     const q = $("akKQ").value.trim().toLowerCase();
     const isi = Object.entries(perK).filter(([k]) => jenisK(k) === st.kJenis && cocokProvK(k) && (!q || k.toLowerCase().includes(q))).sort((a, b) => b[1] - a[1]);
-    const semuaBtn = `<button type="button" role="option" data-k="" aria-selected="${!st.kampus}"><span>${st.kJenis === "k" ? "Semua universitas dan kampus" : "Semua lembaga"}</span></button>`;
+    const semuaBtn = `<button type="button" role="option" data-k="" aria-selected="${!st.kampus.size}"><span>${st.kJenis === "k" ? "Semua universitas dan kampus" : "Semua lembaga"}</span></button>`;
     $("akKDaftar").innerHTML = (q ? "" : semuaBtn) + (isi.length ? isi.slice(0, 300).map(([k, n]) =>
-      `<button type="button" role="option" data-k="${esc(k)}" aria-selected="${k === st.kampus}">${logoKecil(k)}<span>${esc(k)}</span><small>${angka(n)}</small></button>`).join("")
+      `<button type="button" role="option" data-k="${esc(k)}" aria-selected="${st.kampus.has(k)}">${logoKecil(k)}<span>${esc(k)}</span><small>${angka(n)}</small></button>`).join("")
       : `<p>Tidak ada ${st.kJenis === "k" ? "kampus" : "lembaga"} bernama itu.</p>`);
     document.querySelectorAll("#akKJenis button").forEach(b => b.setAttribute("aria-pressed", String(b.dataset.j === st.kJenis)));
   }
@@ -115,19 +125,18 @@
     $("akKPop").hidden = !buka; $("akKBtn").setAttribute("aria-expanded", String(buka));
     if (buka) { $("akKQ").value = ""; daftarKampus(); $("akKQ").focus(); }
   }
-  function pilihKampus(k) {
-    st.kampus = k;
-    if (k && st.prodi && !semua.some(o => o[2] === k && prodiDari(o) === st.prodi)) st.prodi = "";   // prodi yang tidak ada di kampus ini dilepas
-    $("akKIsi").innerHTML = k ? `${logoKecil(k)}<em>${esc(k)}</em>` : "<em>Semua kampus dan lembaga</em>";
-    bukaKampus(false); saring();
-  }
+  const lepasProdi = () => { if (st.prodi && !semua.some(o => cocokProv(o) && (!st.kampus.size || st.kampus.has(o[2])) && prodiDari(o) === st.prodi)) st.prodi = ""; };   // prodi yang tidak ada di pilihan ini dilepas
+  const isiKampus = () => { const n = st.kampus.size, k = [...st.kampus][0];
+    $("akKIsi").innerHTML = !n ? "<em>Semua kampus dan lembaga</em>" : n === 1 ? `${logoKecil(k)}<em>${esc(k)}</em>` : `<em>${angka(n)} kampus dan lembaga</em>`; };
+  function aturKampus(s) { st.kampus = s; lepasProdi(); isiKampus(); saring(); }
+  function pilihKampus(k) { aturKampus(new Set(k ? [k] : [])); bukaKampus(false); }
 
   /* ---------- pemilih provinsi: lewat kampus.json; tanpa data = disembunyikan ---------- */
   function daftarProv() {
     const q = $("akVQ").value.trim().toLowerCase(), n = {};
     semua.forEach(o => { const v = provO(o) || "?"; n[v] = (n[v] || 0) + 1; });
     const isi = Object.entries(n).filter(([v]) => v !== "?" && (!q || provNama(v).toLowerCase().includes(q))).sort((a, b) => b[1] - a[1]);
-    const btn = (v, t, c) => `<button type="button" role="option" data-v="${v}" aria-selected="${v === st.prov}"><span>${esc(t)}</span>${c != null ? `<small>${angka(c)}</small>` : ""}</button>`;
+    const btn = (v, t, c) => `<button type="button" role="option" data-v="${v}" aria-selected="${v ? st.prov.has(v) : !st.prov.size}"><span>${esc(t)}</span>${c != null ? `<small>${angka(c)}</small>` : ""}</button>`;
     $("akVDaftar").innerHTML = (q ? "" : btn("", "Semua provinsi")) + isi.map(([v, c]) => btn(v, provNama(v) || v, c)).join("")
       + (n["?"] && (!q || "lokasi belum diketahui".includes(q)) ? btn("?", "Lokasi belum diketahui", n["?"]) : "") + (!isi.length && q ? "<p>Tidak ada provinsi bernama itu.</p>" : "");
   }
@@ -136,17 +145,18 @@
     if (buka) { $("akVQ").value = ""; daftarProv(); $("akVQ").focus(); }
   }
   const labelProv = v => v === "?" ? "Lokasi belum diketahui" : v ? provNama(v) || v : "Semua provinsi";
-  function pilihProv(v) {
-    st.prov = v; $("akVIsi").innerHTML = `<em>${esc(labelProv(v))}</em>`; bukaProv(false);
-    if (st.kampus && !cocokProvK(st.kampus)) { st.kampus = ""; $("akKIsi").innerHTML = "<em>Semua kampus dan lembaga</em>"; }
-    if (st.prodi && !semua.some(o => cocokProv(o) && (!st.kampus || o[2] === st.kampus) && prodiDari(o) === st.prodi)) st.prodi = "";
-    saring();
+  const isiProv = () => { const s = [...st.prov]; $("akVIsi").innerHTML = `<em>${esc(s.length > 1 ? `${angka(s.length)} provinsi` : labelProv(s[0] || ""))}</em>`; };
+  function aturProv(s) {
+    st.prov = s; isiProv();
+    const kp = new Set([...st.kampus].filter(cocokProvK)); if (kp.size !== st.kampus.size) { st.kampus = kp; isiKampus(); }   // kampus di luar provinsi terpilih dilepas
+    lepasProdi(); saring();
   }
+  function pilihProv(v) { aturProv(new Set(v ? [v] : [])); bukaProv(false); }
 
   /* ---------- pemilih program studi: daftar ikut kampus terpilih ---------- */
   function daftarProdi() {
     const q = $("akPQ").value.trim().toLowerCase(), n = {};
-    semua.forEach(o => { const p = prodiDari(o); if (p && cocokProv(o) && (!st.kampus || o[2] === st.kampus)) n[p] = (n[p] || 0) + 1; });
+    semua.forEach(o => { const p = prodiDari(o); if (p && cocokProv(o) && (!st.kampus.size || st.kampus.has(o[2]))) n[p] = (n[p] || 0) + 1; });
     const isi = Object.entries(n).filter(([p]) => !q || p.toLowerCase().includes(q)).sort((a, b) => b[1] - a[1]);
     $("akPDaftar").innerHTML = (q ? "" : `<button type="button" role="option" data-p="" aria-selected="${!st.prodi}"><span>Semua program studi</span></button>`)
       + (isi.length ? isi.slice(0, 300).map(([p, c]) => `<button type="button" role="option" data-p="${esc(p)}" aria-selected="${p === st.prodi}"><span>${esc(p)}</span><small>${angka(c)}</small></button>`).join("")
@@ -255,8 +265,8 @@
   const IKL = {jenis: '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5"/>', orang: '<circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-3.6 3.1-6 7-6s7 2.4 7 6"/>',
     tahun: '<rect x="4" y="5" width="16" height="15" rx="2"/><path d="M4 10h16M9 3v4M15 3v4"/>', kuartil: '<path d="M12 3a9 9 0 1 0 9 9h-9z"/><path d="M15 3.5A9 9 0 0 1 20.5 9H15z"/>'};
   /* satu baris karya (OpenAlex atau Scopus): judul + label berikon di kiri, kutipan di kolom kanan */
-  const barisKarya = k => `<li><a href="${esc(k.url)}" ${LUAR}><span class="ak-kisi"><b>${esc(k.judul)}</b>
-      <span class="ak-klabel">${k.q ? `<em class="q q${k.q}">${ikon(IKL.kuartil, "#fff")}Q${k.q}</em>` : ""}${k.jenis ? `<em class="j">${ikon(IKL.jenis, "#fff")}${esc(k.jenis)}</em>` : ""}${k.terbitan ? `<em class="t">${ikon(IKJ, "currentColor")}${esc(k.terbitan)}</em>` : ""}${k.urutan ? `<em>${ikon(IKL.orang, "currentColor")}Penulis ke-${k.urutan} dari ${k.jumlah_penulis}</em>` : ""}${k.tahun ? `<em>${ikon(IKL.tahun, "currentColor")}${k.tahun}</em>` : ""}</span></span>
+  const barisKarya = k => `<li><a href="${esc(k.url)}" ${LUAR}><span class="ak-kisi"><b>${esc(rapiJudul(k.judul))}</b>
+      <span class="ak-klabel">${k.q ? `<em class="q q${k.q}">${ikon(IKL.kuartil, "#fff")}Q${k.q}</em>` : ""}${k.jenis ? `<em class="j">${ikon(IKL.jenis, "#fff")}${esc(k.jenis)}</em>` : ""}${k.terbitan ? `<em class="t" title="${esc(rapiJurnal(k.terbitan))}">${ikon(IKJ, "currentColor")}<span>${esc(rapiJurnal(k.terbitan))}</span></em>` : ""}${k.urutan ? `<em>${ikon(IKL.orang, "currentColor")}Penulis ke-${k.urutan} dari ${k.jumlah_penulis}</em>` : ""}${k.tahun ? `<em>${ikon(IKL.tahun, "currentColor")}${k.tahun}</em>` : ""}</span></span>
       <span class="ak-kangka"><b>${angka(k.sitasi ?? 0)}</b><small>kutipan</small></span></a></li>`;
   const kst = {hal: 1, urut: "sitasi", jenis: "", cari: ""};
   let karyaTunda = 0;
@@ -341,7 +351,7 @@
     const web = typeof info.web === "string" && info.web ? (/^https?:\/\//i.test(info.web) ? info.web : "https://" + info.web) : "", em = [].concat(info.email || []).filter(emailOk)[0];
     const pil = [info.kota && `<span class="ak-ptl">${ikon(IKON_PIN, "currentColor")}${esc(info.kota)}</span>`, provNama(info.prov) && `<span class="ak-ptl">${esc(provNama(info.prov))}</span>`,
       web && `<a class="ak-ptl" href="${esc(web)}" ${LUAR}>${ikon(IKON_WEB, "currentColor")}${esc(urlHost(web))}</a>`, em && `<a class="ak-ptl" href="mailto:${esc(em)}">${ikon(IKON_MAIL, "currentColor")}${esc(em)}</a>`].filter(Boolean).join("");
-    const kepala = `<div class="ak-dkepala"><div class="ak-dk-atas">${logoKecil(k)}<div class="ak-nama"><h2 id="akSJudul">${esc(k)}</h2></div>${metrikK([["Pakar", IK_ORANG, ors.length], ["Karya", METRIK[1][3], karyaN], ["Sitasi", METRIK[2][3], sitasiN]])}</div>${pil ? `<div class="ak-pil">${pil}</div>` : ""}</div>`;
+    const kepala = `<div class="ak-dkepala"><div class="ak-dk-atas">${logoKecil(k)}<div class="ak-nama"><h2 id="akSJudul">${esc(k)}</h2>${info.alamat || Number.isFinite(info.lat) ? `<p class="ak-alamat">${ikon(IKON_PIN, "currentColor")}<span>${esc(info.alamat || [info.kota, provNama(info.prov)].filter(Boolean).join(", "))}${Number.isFinite(info.lat) && Number.isFinite(info.lon) ? ` <a href="https://www.google.com/maps/search/?api=1&query=${info.lat},${info.lon}" ${LUAR}>Lihat di peta</a>` : ""}</span></p>` : ""}</div>${metrikK([["Pakar", IK_ORANG, ors.length], ["Karya", METRIK[1][3], karyaN], ["Sitasi", METRIK[2][3], sitasiN]])}</div>${pil ? `<div class="ak-pil">${pil}</div>` : ""}</div>`;
     bukaSheet("kampus", kepala, () => {
       const per = {}, prodi = {}; ors.forEach(o => { o[3].forEach(r => { per[r] = (per[r] || 0) + 1; }); const p = prodiDari(o); if (p) prodi[p] = (prodi[p] || 0) + 1; });
       const baris = Object.entries(per).sort((a, b) => b[1] - a[1]), mx = baris[0]?.[1] || 1;
@@ -485,7 +495,7 @@
   const rpRingkas = n => { const f = (v, t) => `Rp ${(Math.round(v * 10) / 10).toLocaleString("id-ID")} ${t}`;
     return n >= 1e12 ? f(n / 1e12, "triliun") : n >= 1e9 ? f(n / 1e9, "miliar") : n >= 1e6 ? f(n / 1e6, "juta") : "Rp " + angka(n); };
   const IK_KAMPUS = '<path d="m2 9 10-5 10 5-10 5z"/><path d="M6 11v5c2 2 10 2 12 0v-5"/>', IK_SEMUA = '<rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/>';
-  const lbl = (c, ik, t) => `<em${c ? ` class="${c}"` : ""}>${ik ? ikon(ik, "currentColor") : ""}${esc(t)}</em>`;
+  const lbl = (c, ik, t) => `<em${c ? ` class="${c}"` : ""} title="${esc(t)}">${ik ? ikon(ik, "currentColor") : ""}<span>${esc(t)}</span></em>`;
   const hantuHtml = '<div class="ak-hantu"></div>';
   const kosongHtml = t => `<div class="ak-panel ak-kosong"><h2>${t}</h2><p>Data ini belum tersedia. Coba lagi nanti.</p></div>`;
   const cariKotak = (id, ph) => `<label class="ak-cari"><span class="sr">${ph}</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="${id}" type="search" autocomplete="off" placeholder="${ph}"></label>`;
@@ -540,19 +550,19 @@
     const q = R.q.toLowerCase(), key = R.kab ? R.prov + "|" + R.kab : R.prov;
     risetHasil = risetArr.filter(x => (!key || x._w.has(key)) && (!R.rumpun || dlist(x.rumpun).includes(R.rumpun)) && (!R.sumber || (R.sumber === "int") === (x.sumber === "openalex")) && (!q || x._cari.includes(q)));
   }
-  function barisRiset(x) {
+  function barisRiset(x, i) {
     const pk = dlist(x.pakar).map(id => peta.get(id)).filter(Boolean), nm = new Set(pk.map(o => o[1].toLowerCase()));
     const lain = dlist(x.penulis).filter(n => !nm.has(String(n).toLowerCase())), sisa = lain.length - 3;
     const u = urlOk(x.url) || urlDoi(x.doi) || urlOA(x.id);
-    return `<li class="ak-rr"><div class="ak-kisi"><b class="ak-rj">${u ? tautanLuar(u, esc(x.judul)) : esc(x.judul)}</b>
-      <span class="ak-klabel">${x.tahun ? lbl("", IKL.tahun, x.tahun) : ""}${x.jurnal ? lbl("t", IKJ, x.jurnal) : ""}${x.kampus ? lbl("t", IK_KAMPUS, x.kampus) : ""}${x.jenis ? lbl("j", IKL.jenis, kapital(x.jenis)) : ""}${x.oa ? lbl("s", "", "Akses terbuka") : ""}</span>
+    return `<li class="ak-rr" role="button" tabindex="0" data-ri="${i}" aria-label="Buka ringkasan ${esc(rapiJudul(x.judul))}"><div class="ak-kisi"><b class="ak-rj">${esc(rapiJudul(x.judul))}</b>
+      <span class="ak-klabel">${x.tahun ? lbl("", IKL.tahun, x.tahun) : ""}${x.jurnal ? lbl("t", IKJ, rapiJurnal(x.jurnal)) : ""}${x.kampus ? lbl("t", IK_KAMPUS, x.kampus) : ""}${x.jenis ? lbl("j", IKL.jenis, kapital(x.jenis)) : ""}${x.oa ? lbl("s", "", "Akses terbuka") : ""}</span>
       ${pk.length || lain.length ? `<span class="ak-rp">${ikon(IKL.orang, "currentColor")}${pk.slice(0, 5).map(o => `<button type="button" class="ak-pk" data-pk="${esc(o[0])}" title="Buka profil pakar">${esc(o[1])}</button>`).join("")}${lain.slice(0, 3).map(n => `<span class="ak-pn">${esc(n)}</span>`).join("")}${sisa > 0 ? `<span class="ak-pn">${angka(sisa)} penulis lain</span>` : ""}</span>` : ""}</div>
       ${x.sitasi != null ? `<span class="ak-kangka"><b>${angka(x.sitasi)}</b><small>kutipan</small></span>` : ""}</li>`;
   }
   function gambarRiset(gulir) {
     const n = risetHasil.length, a = (R.hal - 1) * RPER, wil = R.kab ? `${R.kab}, ${provT(R.prov)}` : R.prov ? provT(R.prov) : "Indonesia";
     $("akRJ").innerHTML = `<b>${angka(n)}</b> riset tentang ${esc(wil)}`;
-    $("akRL").innerHTML = n ? `<ol class="ak-rlist">${risetHasil.slice(a, a + RPER).map(barisRiset).join("")}</ol>` : `<p class="ak-khampa">Tidak ada riset yang cocok. Longgarkan saringan.</p>`;
+    $("akRL").innerHTML = n ? `<ol class="ak-rlist">${risetHasil.slice(a, a + RPER).map((x, j) => barisRiset(x, a + j)).join("")}</ol>` : `<p class="ak-khampa">Tidak ada riset yang cocok. Longgarkan saringan.</p>`;
     $("akRH").innerHTML = navHal(R.hal, n, RPER, "riset");
     if (gulir) gulirKe("akRJ");
   }
@@ -573,8 +583,43 @@
     $("akRS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; R.sumber = b.dataset.v; R.hal = 1; setSeg("akRS", R.sumber); jalan(false); });
     $("akRR").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; R.rumpun = b.dataset.r; R.hal = 1; setChip("akRR", R.rumpun); jalan(false); });
     pasangHal("akRH", h => { R.hal = h; gambarRiset(true); });
+    const bukaR = e => { if (e.target.closest("[data-pk],a")) return; const li = e.target.closest("[data-ri]"); if (li) sheetRiset(risetHasil[+li.dataset.ri]); };
+    $("akRL").addEventListener("click", bukaR);
+    $("akRL").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-ri]")) { e.preventDefault(); bukaR(e); } });
     risetSegar = () => { $("akRQ").value = R.q; lP(); lK(); kabBox(); setChip("akRR", R.rumpun); setSeg("akRS", R.sumber); jalan(false); };
     risetSegar();
+  }
+  /* lembar riset: kepala seketika; ringkasan, penjelasan, kesimpulan (Workers AI dari abstrak), abstrak asli, topik, sitasi per tahun dimuat dari worker */
+  const IK_LUAR = '<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>', IK_PDF = '<path d="M6 3h9l4 4v14H6z"/><path d="M14 3v5h5M12 11v6m-3-3 3 3 3-3"/>';
+  let risetId = "";
+  function sheetRiset(x) {
+    if (!x) return;
+    const u = urlOk(x.url) || urlDoi(x.doi) || urlOA(x.id), wid = String(x.id || "").match(/W\d{4,12}/)?.[0] || "", tk = risetId = wid || x.judul;
+    const pk = dlist(x.pakar).map(id => peta.get(id)).filter(Boolean), nm = new Set(pk.map(o => o[1].toLowerCase())), lain = dlist(x.penulis).filter(n => !nm.has(String(n).toLowerCase()));
+    const nPen = Math.max(dlist(x.penulis).length, pk.length), wil = [...new Set(dlist(x.wilayah).map(w => w?.kab || provT(w?.prov)).filter(Boolean))].slice(0, 8);
+    const sekilas = [`${kapital(x.jenis || "karya")} ini terbit${x.tahun ? ` tahun ${x.tahun}` : ""}${x.jurnal ? ` di ${rapiJurnal(x.jurnal)}` : ""}, ditulis ${angka(nPen)} penulis${pk.length ? `, ${angka(pk.length)} di antaranya pakar di direktori ini` : ""}.`,
+      wil.length ? `Wilayah kajiannya ${wil.join(", ")}.` : "", x.sitasi ? `Sudah dikutip ${angka(x.sitasi)} kali oleh peneliti lain.` : ""].filter(Boolean).join(" ");
+    const kepala = `<div class="ak-dkepala ak-rkepala"><div class="ak-pil">${dlist(x.rumpun).map(r => pilRumpun(r)).join("")}${x.oa ? '<span class="ak-tanda ok">Akses terbuka</span>' : ""}</div>
+      <div class="ak-nama"><h2 id="akSJudul">${esc(rapiJudul(x.judul))}</h2><p>${esc([x.jurnal && rapiJurnal(x.jurnal), x.tahun].filter(Boolean).join(", "))}</p></div>
+      <div class="ak-raksi">${u ? `<a class="ak-rbtn" href="${esc(u)}" ${LUAR}>${ikon(IK_LUAR, "currentColor")}Buka naskah</a>` : ""}<span id="akRPdf"></span></div></div>`;
+    bukaSheet("riset", kepala, () => metrikK([["Kutipan", METRIK[2][3], x.sitasi ?? 0], ["Penulis", IK_ORANG, nPen], ["Pakar direktori", IK_ORANG, pk.length]])
+      + `<section class="ak-dbagian ak-rai"><div class="ak-disi"><h3>Ringkasan</h3><p class="ak-rata">${esc(sekilas)}</p><div id="akRAi">${wid ? '<div class="ak-hantu"></div>' : ""}</div></div></section>`
+      + `<div id="akRLain"></div>`
+      + (pk.length || lain.length ? bagS("Penulis", `${pk.length ? `<ol class="ak-sdaftar">${pk.map(o => `<li>${kecil(o)}</li>`).join("")}</ol>` : ""}${lain.length ? `<div class="ak-pil ak-rpn">${lain.slice(0, 20).map(n => `<span class="ak-prodi">${esc(n)}</span>`).join("")}${lain.length > 20 ? `<span class="ak-prodi">${angka(lain.length - 20)} lainnya</span>` : ""}</div>` : ""}`) : ""));
+    $("akSheet").dataset.k = "";
+    if (!wid) return;
+    fetch("/api/akademisi/riset/" + wid, {credentials: "same-origin"}).then(r => r.ok ? r.json() : null).catch(() => null).then(d => nanti(() => {
+      if (risetId !== tk || $("akSheet").hidden) return;
+      const ai = $("akRAi"), ln = $("akRLain"); if (!ai || !ln) return;
+      if (!d) { ai.innerHTML = ""; return; }
+      ai.innerHTML = d.ai ? `<p class="ak-rata ak-rbesar">${esc(d.ai.ringkasan)}</p>${d.ai.penjelasan.length ? `<h4>Penjelasan</h4><ul class="ak-rbutir">${d.ai.penjelasan.map(t => `<li>${esc(t)}</li>`).join("")}</ul>` : ""}
+          ${d.ai.kesimpulan ? `<div class="ak-rsimpul"><h4>Kesimpulan</h4><p class="ak-rata">${esc(d.ai.kesimpulan)}</p></div>` : ""}<p class="ak-rcatat">Disusun mesin dari abstrak naskah. Periksa naskah asli sebelum dikutip.</p>`
+        : d.abstrak ? "" : `<p class="ak-rcatat">Abstrak naskah ini tidak tersedia di OpenAlex, jadi ringkasan isi belum bisa disusun.</p>`;
+      if (d.pdf) $("akRPdf").innerHTML = `<a class="ak-rbtn putih" href="${esc(d.pdf)}" ${LUAR}>${ikon(IK_PDF, "currentColor")}Unduh PDF</a>`;
+      ln.innerHTML = (d.tahunan?.length > 1 ? `<section class="ak-dbagian"><div class="ak-disi">${grafik(d.tahunan, "Sitasi per tahun", "#e8590c")}</div></section>` : "")
+        + (d.topik?.length || d.kunci?.length ? bagS("Topik dan kata kunci", `<div class="ak-pil">${dlist(d.topik).map(t => `<span class="ak-prodi" title="${esc(t.bidang)}">${esc(t.nama)}</span>`).join("")}${dlist(d.kunci).map(k => `<span class="ak-r">${esc(kapital(k))}</span>`).join("")}</div>`) : "")
+        + (d.abstrak ? `<details class="ak-dbagian"><summary><h3>Abstrak asli</h3></summary><div class="ak-disi"><p class="ak-rata">${esc(d.abstrak)}</p></div></details>` : "");
+    }));
   }
   function setWilRiset(prov, kab) { Object.assign(R, {prov, kab, rumpun: "", sumber: "", q: "", hal: 1}); if (risetSegar) risetSegar(); }
 
@@ -588,9 +633,10 @@
     const n = kejHasil.length, a = (K.hal - 1) * KPER;
     $("akKjJ").innerHTML = `<b>${angka(n)}</b> kejadian besar${K.jenis ? ` ${esc((RUMPUN[K.jenis] || [K.jenis])[0].toLowerCase())}` : ""}${DATA._kejDiperbarui ? `<em class="ak-tanda">Diperbarui ${esc(tglID(DATA._kejDiperbarui))}</em>` : ""}`;
     $("akKjL").innerHTML = kejHasil.slice(a, a + KPER).map((k, j) => { const lok = lokasiKej(k), r = k.riset;
-      return `<article class="ak-kjk" role="button" tabindex="0" data-kj="${a + j}" aria-label="Buka ${esc(k.nama)}"><div class="ak-pil">${pilRumpun(k.jenis, true)}</div><h3>${esc(k.nama)}</h3>
-        <p class="ak-kjm">${ikon(IKL.tahun, "currentColor")}${esc(tglID(k.tanggal) || "Tanggal belum tercatat")}</p>${lok ? `<p class="ak-kjm">${ikon(IKON_PIN, "currentColor")}${esc(lok)}</p>` : ""}
-        ${r ? `<p class="ak-kjr"><b>${angka(r.works_total ?? dlist(r.works).length)}</b> karya, ${angka(pakarKej(k).length)} pakar direktori</p>` : `<span class="ak-tanda">Data riset menyusul</span>`}</article>`; }).join("");
+      return `<article class="ak-kjk" role="button" tabindex="0" data-kj="${a + j}" aria-label="Buka ${esc(k.nama)}" style="--w0:${(RUMPUN[k.jenis] || [])[2] || "#6b7280"}">
+        <div class="ak-kjatas">${pilRumpun(k.jenis, true)}<span class="ak-kjtgl">${esc(tglID(k.tanggal) || "Tanggal belum tercatat")}</span></div><h3>${esc(k.nama)}</h3>
+        ${lok ? `<p class="ak-kjm">${ikon(IKON_PIN, "currentColor")}${esc(lok)}</p>` : ""}
+        ${r ? `<div class="ak-kjangka"><div><b>${angka(r.works_total ?? dlist(r.works).length)}</b><span>karya riset</span></div><div><b>${angka(pakarKej(k).length)}</b><span>pakar direktori</span></div></div>` : `<div class="ak-kjangka kosong"><span>Data riset menyusul</span></div>`}</article>`; }).join("");
     $("akKjH").innerHTML = navHal(K.hal, n, KPER, "kejadian");
     if (gulir) gulirKe("akKjJ");
   }
@@ -628,10 +674,10 @@
     const q = J.q.toLowerCase(); jurHasil = jurArr.filter(j => !q || j._cari.includes(q));
     const n = jurHasil.length, a = (J.hal - 1) * JPER;
     $("akJJ").innerHTML = `<b>${angka(n)}</b> jurnal kebencanaan`;
-    $("akJL").innerHTML = n ? tabelHtml([["Nama"], ["Penerbit"], ["ISSN"], ["DOAJ", "c"], ["Subjek"], ["Web"]], jurHasil.slice(a, a + JPER).map(j => {
-      const w = urlOk(j.web);
-      return [`<b>${esc(j.nama)}</b>`, esc(j.penerbit || ""), dlist(j.issn).map(esc).join(", "), j.doaj ? '<em class="ak-pl ok">DOAJ</em>' : '<em class="ak-pl">Tidak</em>',
-        `<span class="ak-pls">${dlist(j.subjek).slice(0, 3).map(s => `<em class="ak-pl">${esc(s)}</em>`).join("")}</span>`, w ? tautanLuar(w, hostLabel(w)) : ""]; })) : `<p class="ak-khampa">Tidak ada jurnal yang cocok.</p>`;
+    $("akJL").innerHTML = n ? `<div class="ak-jgrid">${jurHasil.slice(a, a + JPER).map(j => { const w = urlOk(j.web), issn = dlist(j.issn);
+      return `<article class="ak-jk"><div class="ak-jkatas"><span class="ak-jav" aria-hidden="true">${ikon(IKJ, "currentColor")}</span><div class="ak-jnama"><h4>${esc(j.nama)}</h4>${j.penerbit ? `<p>${esc(j.penerbit)}</p>` : ""}</div>${j.doaj ? '<em class="ak-jdoaj" title="Terindeks Directory of Open Access Journals">DOAJ</em>' : ""}</div>
+        ${dlist(j.subjek).length ? `<div class="ak-pil">${dlist(j.subjek).slice(0, 3).map(t => `<span class="ak-prodi">${esc(t)}</span>`).join("")}</div>` : ""}
+        <div class="ak-jkbawah">${issn.length ? `<span class="ak-issn"><b>ISSN</b>${issn.map(esc).join(", ")}</span>` : "<span></span>"}${w ? `<a class="ak-lnk" href="${esc(w)}" ${LUAR}>${ikon(IKON_WEB, "currentColor")}Kunjungi jurnal</a>` : ""}</div></article>`; }).join("")}</div>` : `<p class="ak-khampa">Tidak ada jurnal yang cocok.</p>`;
     $("akJH").innerHTML = navHal(J.hal, n, JPER, "jurnal");
     if (gulir) gulirKe("akJJ");
   }
@@ -655,11 +701,17 @@
       `<section class="ak-psgrup"><h3 class="ak-psh">${esc(provT(pv) || "Provinsi belum diketahui")}<small>${angka(a.length)}</small></h3><div class="ak-psgrid">${a.sort((x, y) => x.nama.localeCompare(y.nama, "id")).map(kartuPs).join("")}</div></section>`).join("")
       || `<p class="ak-khampa">Tidak ada pusat studi di provinsi ini.</p>`;
   }
+  /* nama induk di data pusat studi yang ditulis lain di data pakar: disamakan supaya logo dan profil kampus ketemu */
+  const INDUK_PS = {"IPB University": "Institut Pertanian Bogor", "Bina Nusantara University": "Universitas Bina Nusantara", "UIN Sultan Syarif Kasim Riau": "Universitas Islam Negeri Sultan Syarif Kasim Riau",
+    "UIN Sunan Kalijaga Yogyakarta": "Universitas Islam Negeri Sunan Kalijaga", "UIN Walisongo Semarang": "Universitas Islam Negeri Walisongo Semarang", "Universitas Khairun": "Khairun University",
+    "Universitas Kristen Satya Wacana": "Satya Wacana Christian University", "Universitas Maritim Raja Ali Haji": "Universitas Maritim Raja Ali Haji (UMRAH)",
+    "Universitas Negeri Manado": "Manado State University", "Universitas Pertahanan Republik Indonesia": "Universitas Pertahanan"};
   function kartuPs(x) {
+    x = x.induk && INDUK_PS[x.induk] && !perK[x.induk] ? {...x, induk: INDUK_PS[x.induk]} : x;
     const inst = x.kontak_level === "institusi", web = urlOk(x.web), em = emailOk(x.email) ? x.email : "", tel = typeof x.telepon === "string" ? x.telepon.trim() : "";
     const ada = x.induk && (perK[x.induk] || kampusInfo[x.induk]);
     const lk = (ik, lab, href, t) => `<a class="ak-lnk" href="${esc(href)}"${href.startsWith("http") ? " " + LUAR : ""}>${ikon(ik, "currentColor")}<em>${lab}</em>${esc(t)}</a>`;
-    return `<article class="ak-psk"><h4>${esc(x.nama)}${x.singkatan ? ` <small>(${esc(x.singkatan)})</small>` : ""}</h4>
+    return `<article class="ak-psk"><div class="ak-psatas">${x.induk ? logoKecil(x.induk) : ""}<h4>${esc(x.nama)}${x.singkatan ? ` <small>(${esc(x.singkatan)})</small>` : ""}</h4></div>
       <div class="ak-pil">${x.induk ? (ada ? `<button type="button" class="ak-lbl-inst" data-kp="${esc(x.induk)}" title="Profil kampus">${esc(x.induk)}</button>` : `<span class="ak-prodi">${esc(x.induk)}</span>`) : ""}${x.kota ? `<span class="ak-ptl ak-ptl2">${ikon(IKON_PIN, "currentColor")}${esc(x.kota)}</span>` : ""}</div>
       ${dlist(x.fokus).length ? `<div class="ak-pil">${dlist(x.fokus).slice(0, 6).map(f => `<span class="ak-r">${esc(f)}</span>`).join("")}</div>` : ""}
       <div class="ak-pil">${web ? lk(IKON_WEB, "Situs", web, urlHost(web)) : ""}${em ? lk(IKON_MAIL, inst ? "Kontak kampus" : "Email", "mailto:" + em, em) : ""}${tel ? lk('<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>', inst ? "Kontak kampus" : "Telepon", "tel:" + tel.replace(/[^\d+]/g, ""), tel) : ""}${urlOk(x.sumber_url) ? lk('<path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5"/>', "Sumber", x.sumber_url.trim(), "tautan") : ""}</div></article>`;
@@ -779,22 +831,22 @@
     if (Object.values(kampusInfo).some(v => v?.prov)) $("akVBox").hidden = false;
     /* tautan dalam: ?prov=32&rumpun=gempa saring daftar, ?pakar=<id OpenAlex> membuka dialog pakar (id tak dikenal diabaikan) */
     const qs = new URLSearchParams(location.search), pv = qs.get("prov"), rp = qs.get("rumpun"), pk = qs.get("pakar");
-    if (pv && !$("akVBox").hidden && (PROV[pv] || pv === "?")) { st.prov = pv; $("akVIsi").innerHTML = `<em>${esc(labelProv(pv))}</em>`; }
-    if (rp && (d.rumpun.includes(rp) || RUMPUN[rp])) st.rumpun = rp;
-    if ((st.prov || st.rumpun) && !qs.get("sumber")) { st.sumber = ""; $("akS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === ""))); }
+    if (pv && !$("akVBox").hidden) { st.prov = new Set(pv.split(",").filter(v => PROV[v] || v === "?")); isiProv(); }   // ?prov=32,33 boleh banyak
+    if (rp) st.rumpun = new Set(rp.split(",").filter(r => d.rumpun.includes(r) || RUMPUN[r]));
+    if ((st.prov.size || st.rumpun.size) && !qs.get("sumber")) { st.sumber = ""; $("akS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === ""))); }
     $("akIsi").hidden = false;
     $("akQ").addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => { st.q = $("akQ").value.trim(); saring(); }, 200); });
     segmen("akS", "sumber", v => v);
     segmen("akU", "urut", v => +v);
-    $("akRumpun").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; st.rumpun = b.dataset.r; saring(); });
+    $("akRumpun").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; st.rumpun = balik(st.rumpun, b.dataset.r); saring(); });
     $("akHal").addEventListener("click", e => { const b = e.target.closest("button[data-h]"); if (!b || b.disabled) return; st.hal = +b.dataset.h; gambar(true); });
     $("akKBtn").addEventListener("click", () => bukaKampus($("akKPop").hidden));
     $("akKQ").addEventListener("input", daftarKampus);
     $("akKJenis").addEventListener("click", e => { const b = e.target.closest("button[data-j]"); if (!b) return; st.kJenis = b.dataset.j; daftarKampus(); $("akKQ").focus(); });
-    $("akKDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (b) pilihKampus(b.dataset.k); });
+    $("akKDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (!b) return; const s = balik(st.kampus, b.dataset.k); tandai($("akKDaftar"), "k", s); st.kampus = s; isiKampus(); nanti(() => aturKampus(s)); });
     $("akVBtn").addEventListener("click", () => bukaProv($("akVPop").hidden));
     $("akVQ").addEventListener("input", daftarProv);
-    $("akVDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (b) pilihProv(b.dataset.v); });
+    $("akVDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; const s = balik(st.prov, b.dataset.v); tandai($("akVDaftar"), "v", s); st.prov = s; isiProv(); nanti(() => aturProv(s)); });
     $("akPBtn").addEventListener("click", () => bukaProdi($("akPPop").hidden));
     $("akPQ").addEventListener("input", daftarProdi);
     $("akPDaftar").addEventListener("click", e => { const b = e.target.closest("button[data-p]"); if (b) { st.prodi = b.dataset.p; bukaProdi(false); saring(); } });
@@ -811,7 +863,7 @@
       const kp = e.target.closest("[data-kp]"); if (kp) { profilKampus(kp.dataset.kp); return; }
       const f = e.target.closest("[data-fk]");
       if (f) { const v = f.dataset.v;
-        st[f.dataset.fk] = v; saring();
+        st[f.dataset.fk] = st[f.dataset.fk] instanceof Set ? new Set([v]) : v; saring();
         document.querySelector(".ak-saring").scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); return; }
       const b = e.target.closest(".ak-orang"); if (b) buka(hasil[+b.dataset.i]);
     });
@@ -835,7 +887,7 @@
       const sa = e.target.closest("[data-sa]"); if (!sa) return;
       const k = $("akSheet").dataset.k;
       if (sa.dataset.sa === "tambah") dpTambahBanyak(semua.filter(o => o[2] === k).sort((x, y) => y[4] - x[4] || y[6] - x[6]).slice(0, 10));
-      else { st.kJenis = jenisK(k); if (st.prov && !cocokProvK(k)) pilihProv(""); pilihKampus(k); tutupSheet(); document.querySelector(".ak-hasil").scrollIntoView({block: "start"}); } });
+      else { st.kJenis = jenisK(k); if (st.prov.size && !cocokProvK(k)) pilihProv(""); pilihKampus(k); tutupSheet(); document.querySelector(".ak-hasil").scrollIntoView({block: "start"}); } });
     /* tooltip batang rumpun: berlaku untuk pointer dan fokus papan ketik */
     const tipBar = (e, br) => { const tip = $("akTip"); if (!br) { tip.hidden = true; return; }
       tip.innerHTML = `<b>${esc(br.dataset.t)}</b><span><i style="background:${br.style.getPropertyValue("--w0")}"></i>${angka(br.dataset.n)} pakar</span><small>${esc(br.dataset.p)}% dari ${angka(br.dataset.tot)} pakar kampus</small>`;
@@ -845,7 +897,7 @@
     $("akSheet").addEventListener("pointerleave", () => { $("akTip").hidden = true; });
     $("akSheet").addEventListener("focusin", e => { const b = e.target.closest(".ak-br"); if (b) tipBar({}, b); });
     $("akSheet").addEventListener("focusout", () => { $("akTip").hidden = true; });
-    $("akLembar").addEventListener("pointermove", sorotGrafik);
+    $("akLembar").addEventListener("pointermove", sorotGrafik); $("akSheet").addEventListener("pointermove", sorotGrafik);
     $("akLembar").addEventListener("pointerleave", () => document.querySelectorAll(".ak-grafik.aktif").forEach(f => { f.classList.remove("aktif"); f.querySelector(".ak-gr-tip").hidden = true; }));
     $("akLembar").addEventListener("pointerout", e => { const f = e.target.closest?.(".ak-grafik"); if (f && !f.contains(e.relatedTarget)) { f.classList.remove("aktif"); f.querySelector(".ak-gr-tip").hidden = true; } });
     document.addEventListener("keydown", e => {
@@ -853,7 +905,7 @@
       if (!$("akSheet").hidden) tutupSheet(); else if (!$("akDpMenu").hidden) { $("akDpMenu").hidden = true; document.querySelector("[data-dpa=unduh]").setAttribute("aria-expanded", "false"); } else if (!$("akLembar").hidden) tutup(); else if (!$("akVPop").hidden) { bukaProv(false); $("akVBtn").focus(); } else if (!$("akKPop").hidden) { bukaKampus(false); $("akKBtn").focus(); } else if (!$("akPPop").hidden) { bukaProdi(false); $("akPBtn").focus(); }
     });
     $("akReset").addEventListener("click", () => {
-      Object.assign(st, {q: "", rumpun: "", sumber: "", prodi: "", baru: false}); $("akBaruTog").setAttribute("aria-pressed", "false"); $("akQ").value = ""; st.prov = ""; $("akVIsi").innerHTML = "<em>Semua provinsi</em>";
+      Object.assign(st, {q: "", rumpun: new Set(), sumber: "", prodi: "", baru: false, prov: new Set()}); $("akBaruTog").setAttribute("aria-pressed", "false"); $("akQ").value = ""; isiProv();
       $("akS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === "")));
       pilihKampus("");
     });
