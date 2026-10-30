@@ -2181,3 +2181,4 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-as-h small{display:block;font-size:11.5px;color:var(--ink2);margin-top:2px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
 .ak-as .ak-as-guna{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin:0;font-size:12.5px;color:var(--ink2);text-align:left}
 .ak-as .ak-kk2{margin-top:2px;padding-top:2px}
+.ak-as-h>div{min-width:0}.ak-as-h small{max-width:100%}

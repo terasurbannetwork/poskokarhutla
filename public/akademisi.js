@@ -787,16 +787,22 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   }
   const bagS = (j, isi) => `<section class="ak-dbagian"><div class="ak-disi"><h3>${j}</h3>${isi}</div></section>`;
   function sheetKej(k) {
-    const lok = lokasiKej(k), r = k.riset;
-    const kepala = `<div class="ak-dkepala"><div class="ak-dk-atas"><div class="ak-nama"><h2 id="akSJudul">${esc(k.nama)}</h2><p>${esc(tglID(k.tanggal))}${lok ? (k.tanggal ? ", " : "") + esc(lok) : ""}</p></div></div><div class="ak-pil">${pilRumpun(k.jenis)}</div></div>`;
+    const lok = lokasiKej(k), r = k.riset, rr = RUMPUN[k.jenis] || [], prv = dlist(k.prov).map(String);
+    const kepala = `<div class="ak-dkepala"><div class="ak-dk-atas"><span class="ak-kj2-ik" style="--w0:${rr[2] || "#6b7280"};width:44px;height:44px">${rr[1] ? ikon(rr[1], "#fff") : ""}</span><div class="ak-nama"><h2 id="akSJudul">${esc(k.nama)}</h2><p>${esc(tglID(k.tanggal))}${lok ? (k.tanggal ? ", " : "") + esc(lok) : ""}</p></div></div><div class="ak-pil">${pilRumpun(k.jenis)}</div></div>`;
     bukaSheet("kejadian", kepala, () => {
-      if (!r) return `<p class="ak-khampa">Data riset menyusul.</p>`;
-      const pk = pakarKej(k).slice(0, 10), kr = dlist(r.works).slice().sort((a, b) => (b.sitasi || 0) - (a.sitasi || 0)).slice(0, 10);
-      return (pk.length ? bagS("Pakar teratas di direktori", `<ol class="ak-sdaftar">${pk.map(p => `<li>${kecil(peta.get(p.id))}<em class="ak-hp"><b>${angka(p.n)}</b> karya${p.pertama ? `, sejak ${esc(p.pertama)}` : ""}</em></li>`).join("")}</ol>`) : "")
-        + (kr.length ? bagS("Karya teratas", `<ol class="ak-karya">${kr.map(w => barisKarya({url: urlDoi(w.doi) || urlOA(w.id), judul: w.judul, tahun: w.tahun, terbitan: w.jurnal, sitasi: w.sitasi})).join("")}</ol>`) : "")
-        || `<p class="ak-khampa">Belum ada pakar atau karya yang tercatat.</p>`;
+      const pk = r ? pakarKej(k).slice(0, 10) : [], kr = r ? dlist(r.works).slice().sort((a, b) => (b.sitasi || 0) - (a.sitasi || 0)).slice(0, 10) : [];
+      const sama = semua.filter(o => o[3].includes(k.jenis)), prov = sama.filter(o => prv.includes(String(provO(o)))).sort((a, b) => b[4] - a[4]).slice(0, 6), pakarId = new Set(pk.map(q => q.id)), nas = sama.filter(o => !pakarId.has(o[0]) && !prov.includes(o)).sort((a, b) => b[4] - a[4]).slice(0, 5);
+      const lb = lbArr.filter(x => x.kategori !== "penerbit" && prv.includes(String(x.prov)) && (/bpbd|bmkg|pvmbg|sar|basarnas|geologi/i.test(x.nama + " " + (x.sub || "")))).slice(0, 8);
+      return (kr.length ? bagS(`Karya riset tertaut, ${angka(r.works_total ?? dlist(r.works).length)}`, `<ol class="ak-karya">${kr.map(w => barisKarya({url: urlDoi(w.doi) || urlOA(w.id), judul: w.judul, tahun: w.tahun, terbitan: w.jurnal, sitasi: w.sitasi})).join("")}</ol>`) : "")
+        + (pk.length ? bagS("Pakar penulis di direktori", `<ol class="ak-sdaftar ak-pkl ak-pkl-2s">${pk.map(p => barisPk(peta.get(p.id))).join("")}</ol>`) : "")
+        + (prov.length ? bagS(`Pakar ${esc((rr[0] || k.jenis || "").toLowerCase())} di provinsi ini`, `<ol class="ak-sdaftar ak-pkl ak-pkl-2s">${prov.map(o => barisPk(o)).join("")}</ol>`) : "")
+        + (nas.length ? bagS(`Pakar ${esc((rr[0] || k.jenis || "").toLowerCase())} teratas nasional`, `<ol class="ak-sdaftar ak-pkl ak-pkl-2s">${nas.map(o => barisPk(o)).join("")}</ol>`) : "")
+        + (lb.length ? bagS("Lembaga di lokasi", daftarBkr(lb.map(x => barisLb(x)))) : "") + '<div id="akKjSd"></div><div id="akKjBr"></div><div id="akKjDk"></div>';
     });
-    $("akSheet").dataset.k = "";
+    $("akSheet").dataset.k = ""; const tk = tokenS;
+    ambilData("sistem_data").then(d => { const a = dlist(Array.isArray(d) ? d : d?.sistem).filter(q => strs(q.rumpun).includes(k.jenis)).slice(0, 6); if (a.length) isiNanti(() => tk === tokenS, "akKjSd", bagS(`Sistem data untuk ${esc((rr[0] || k.jenis || "").toLowerCase())}`, daftarBkr(a.map(q => barisSd(q))))); });
+    ambilData("berita").then(d => { const tok = tokenTempat(k.nama), a = dlist(Array.isArray(d) ? d : d?.berita).filter(b => tok.some(t => nrm(b.judul).includes(t))).slice(0, 5); if (a.length) isiNanti(() => tk === tokenS, "akKjBr", bagS("Berita terkait", `<ul class="ak-brt">${a.map(brtBaris).join("")}</ul>`)); });
+    ambilData("dokumen").then(d => { const a = dlist(Array.isArray(d) ? d : d?.dokumen).filter(q => wilDok(q).some(w => prv.includes(String(w.prov))) && /renkon|laporan|kajian|RPB|krb/i.test(String(q.jenis))).slice(0, 5); if (a.length) isiNanti(() => tk === tokenS, "akKjDk", bagS("Dokumen terkait", daftarBkr(a.map(q => barisKaya({attr: hrefAttr(urlOk(q.url)), logo: lgoIkon([], IKJ, "#14284b"), nama: q.judul, pil: pilJenis(q.jenis) + (q.tahun ? pilMini(IKL.tahun, String(q.tahun)) : "")}))))); });
   }
   function bangunKej(p, d) {
     DATA._kejDiperbarui = d.diperbarui || "";
@@ -1650,8 +1656,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   let asArr = [], asHasil = [], asSiap = false, astok = 0;
   const kontakIkon = (it) => { const a = it.filter(Boolean); return a.length ? `<div class="ak-qrow ak-kk2">${a.join("")}</div>` : ""; };
   const ikL = (href, d, tt, teks, ext) => `<a class="ak-qk${teks ? " ak-qk-t" : ""}" href="${esc(href)}"${ext ? ` ${LUAR}` : ""} title="${esc(tt)}" aria-label="${esc(tt)}">${ikon(d, "currentColor")}${teks ? `<span>${esc(teks)}</span>` : ""}</a>`;
-  const IK_ASET = {drone: IKJENIS.drone, server: IKJENIS.sistem, satelit: IKJENIS.satelit, air: '<path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/>', gelombang: '<path d="M2 12h4l2-6 4 12 3-9 2 3h5"/>', mikroskop: '<path d="M8 3h4v8H8zM10 11v3M6 21h12M9 17a4 4 0 0 0 8-4M7 17h4"/>', tanah: '<path d="M3 8c3-2 6 2 9 0s6-2 9 0M3 13c3-2 6 2 9 0s6-2 9 0M3 18c3-2 6 2 9 0s6-2 9 0"/>'};
-  const ikAset = j => { j = String(j || "").toLowerCase(); return /drone|uav/.test(j) ? IK_ASET.drone : /komputer|hpc|server|data/.test(j) ? IK_ASET.server : /satelit|stasiun bumi|penginderaan/.test(j) ? IK_ASET.satelit : /air|limnolog|hidro/.test(j) ? IK_ASET.air : /seismik|gelombang|sensor/.test(j) ? IK_ASET.gelombang : /tanah|geoteknik/.test(j) ? IK_ASET.tanah : IK_ASET.mikroskop; };
+  const IK_ASET = () => ({drone: IKJENIS.drone, server: IKJENIS.sistem, satelit: IKJENIS.satelit, air: '<path d="M12 3s6 6.2 6 10.5a6 6 0 0 1-12 0C6 9.2 12 3 12 3z"/>', gelombang: '<path d="M2 12h4l2-6 4 12 3-9 2 3h5"/>', mikroskop: '<path d="M8 3h4v8H8zM10 11v3M6 21h12M9 17a4 4 0 0 0 8-4M7 17h4"/>', tanah: '<path d="M3 8c3-2 6 2 9 0s6-2 9 0M3 13c3-2 6 2 9 0s6-2 9 0M3 18c3-2 6 2 9 0s6-2 9 0"/>'});
+  const ikAset = j => { const I = IK_ASET(); j = String(j || "").toLowerCase(); return /drone|uav/.test(j) ? I.drone : /komputer|hpc|server|data/.test(j) ? I.server : /satelit|stasiun bumi|penginderaan/.test(j) ? I.satelit : /air|limnolog|hidro/.test(j) ? I.air : /seismik|gelombang|sensor/.test(j) ? I.gelombang : /tanah|geoteknik/.test(j) ? I.tanah : I.mikroskop; };
   const unitPendek = a => [a.pemilik, String(a.unit || "").split(",")[0].trim()].filter(Boolean).join(", ");
   const kartuAs = a => { const web = urlOk(a.web), em = emailOk(a.kontak?.email) ? a.kontak.email : "", tel = typeof a.kontak?.telepon === "string" ? a.kontak.telepon.trim() : "";
     const lg = lgoIkon(logoPemilik(a.pemilik).concat(logoPemUrl(a.pemilik)), KAT.riset[1], "#2f9e44"), rp = strs(a.rumpun);
@@ -2477,7 +2483,12 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       jelas: x.ringkasan || `${kapital(x.jenis || "inovasi")}${x.tahun ? ", sejak " + x.tahun : ""}.`, pil: pilStatus(x.status, STATUS_IN[x.status]) + pilJenis(x.jenis) + pilRumpunN(x.rumpun) + (x.trl ? pilMini(IK_BAR, "TRL " + x.trl) : "") + (dlist(x.paten).length || x.paten === true ? pilMini(IKL.jenis, "Paten") : "") + (x.tahun ? pilMini(IKL.tahun, "Sejak " + x.tahun) : "") + (np ? pilMini(IKON_PIN, angka(np) + " lokasi pakai") : "") + pilContoh(x)}); };
   /* logo pemilik sistem data: lembaga di direktori, lalu logo_pemilik.json (nama pemilik persis), lalu ikon; pemilik ganda "A dan B" = dua logo kecil bertumpuk */
   let LOGO_PEM = null; const muatLogoPem = () => { if (LOGO_PEM) return; LOGO_PEM = {}; ambilData("logo_pemilik").then(d => { if (d && typeof d === "object" && !Array.isArray(d)) LOGO_PEM = d; }); };
-  const logoPemUrl = n => { n = String(n || "").trim(); const e = LOGO_PEM?.[n]; if (urlOk(e?.logo)) return [e.logo]; const y = n && lbArr.find(z => namaLb(z).includes(nrm(n))); return y ? chainLogo(y) : []; };
+  const ALIAS_ORG = {"badan perencanaan pembangunan nasional": "Bappenas", "kementerian ppn": "Bappenas", "brr": "BRR NAD-Nias", "badan rehabilitasi dan rekonstruksi": "BRR NAD-Nias", "kantor menteri negara lingkungan hidup": "KLHK", "kementerian lingkungan hidup": "KLHK", "klh": "KLHK", "kementerian lingkungan hidup dan kehutanan": "KLHK", "world bank": "World Bank", "bank dunia": "World Bank", "asian development bank": "ADB"};
+  /* satu resolver logo organisasi untuk seluruh halaman: lembaga di direktori, logo_pemilik (nama persis), alias umum; kosong = pemanggil memakai ikon/inisial */
+  const logoPemUrl = n => { n = String(n || "").trim(); const e = LOGO_PEM?.[n]; if (urlOk(e?.logo)) return [e.logo];
+    const al = ALIAS_ORG[nrm(n)] || ALIAS_ORG[nrm(n.replace(/\([^)]*\)/g, " "))]; if (al && urlOk(LOGO_PEM?.[al]?.logo)) return [LOGO_PEM[al].logo];
+    const y = n && lbArr.find(z => namaLb(z).includes(nrm(n))); if (y) { const c = chainLogo(y); if (c.length) return c; }
+    const g = n && GRAFNOW && Object.entries(GRAFNOW.simpul).find(([id, v]) => id[0] === "L" && v.logo && urlOkLogo(v.logo) && nrm(v.n || "") === nrm(n)); return g ? [g[1].logo] : []; };
   const logoSd = (x, own, aw) => { if (own) return lgoIkon(chainLogo(own), IK_DB, aw); const a = logoPemUrl(x.pemilik); if (a.length) return lgoIkon(a, IK_DB, aw);
     const bagi = String(x.pemilik || "").split(/\s+dan\s+|\s*[\/;&]\s*/).map(t => t.trim()).filter(Boolean).slice(0, 2); if (bagi.length > 1) { const l = bagi.map(logoPemUrl); if (l.some(z => z.length)) return `<span class="ak-lg2">${l.map(z => lgoIkon(z, IK_DB, aw, true)).join("")}</span>`; }
     return lgoIkon([], IK_DB, aw); };
