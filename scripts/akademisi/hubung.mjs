@@ -167,9 +167,11 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [dir, keluar] = process.argv.slice(2);
   if (!dir || !keluar) { console.error("pakai: hubung.mjs <folder data> <folder keluaran>"); process.exit(2); }
   const F = ["lembaga", "kampus", "induk", "afiliasi", "tokoh", "kalaksa", "inovasi", "sistem_data", "pendanaan", "lembaga_3w", "jurnal", "redaksi", "buku", "peneliti_muda",
-    "hibah_riset", "penghargaan", "csr", "donatur_kejadian", "aset_riset", "dokumen", "berita", "diaspora"];
+    "hibah_riset", "penghargaan", "csr", "donatur_kejadian", "aset_riset", "dokumen", "berita", "diaspora", "logo_org"];
   const D = Object.fromEntries(F.map(f => [f, baca(dir, f + ".json")]));
   const g = hubung(D);
+  /* logo organisasi hasil panen Wikimedia (logo_org.json: simpul_id -> {logo}); hanya mengisi simpul yang belum berlogo */
+  for (const [k, v] of Object.entries(D.logo_org || {})) if (g.simpul[k] && !g.simpul[k].logo && /^https:\/\/commons\.wikimedia\.org\//.test(v?.logo || "")) g.simpul[k].logo = v.logo;
   mkdirSync(keluar, {recursive: true});
   const st = strategis(g, D);
   writeFileSync(join(keluar, "strategis.json"), JSON.stringify(st));
