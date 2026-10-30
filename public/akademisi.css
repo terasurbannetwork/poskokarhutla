@@ -1986,3 +1986,17 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 @media (max-width:560px){.ak-ringkas.enam.tujuh{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .ak-kdaftar .ak-lgo.kecil{flex:none;width:18px;height:18px;border-radius:50%}.ak-kdaftar .ak-lgo.kecil svg{width:11px;height:11px}
 .ak-bpanel[hidden]{display:none!important}
+
+/* G19 tip wilayah: lambang, lebar tetap, nama 2 baris */
+.ak-tipw{width:280px;max-width:280px}
+.ak-tipw-j{display:flex;align-items:center;gap:8px}.ak-tipw-j span{font-size:13px;font-weight:800;color:var(--ink)}
+.ak-lw{flex:none;object-fit:contain;border-radius:4px;display:inline-grid;place-items:center;vertical-align:middle}
+.ak-lw0{background:var(--surface);color:#8793a6;border-radius:50%}.ak-lw0 svg{width:60%;height:60%;fill:none;stroke:currentColor;stroke-width:1.9}
+.ak-tipw-top em i{font-style:normal;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;line-height:1.3}
+.ak-tipw-lg>span{display:inline-grid}
+/* label wilayah di atas panel: versi kecil (permintaan pemilik) */
+.ak-side-label{height:24px!important;gap:5px!important;padding:0 3px 0 4px!important}
+.ak-side-label b,#akSideJ{font-size:11.5px!important;font-weight:700!important;line-height:1!important}
+.ak-sl-back,.ak-sl-lipat{width:18px!important;height:18px!important}
+.ak-sl-back svg,.ak-sl-lipat svg{width:11px!important;height:11px!important}
+.ak-side-label:not(:has(.ak-sl-back:not([hidden]))){padding-left:10px!important}
