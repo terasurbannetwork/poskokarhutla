@@ -3,7 +3,7 @@
 Pengamatan (disimpan di public/prediksi/data/amatan/<KODE>.json, {tanggal: {"j": tahap, "kab": {id: nilai}}}):
   HJN  sementara (H+1..H+5): Open-Meteo forecast API untuk tanggal lampau = analisis model, BUKAN observasi; berlabel.
        final (>= H+6): ERA5 per jam lewat Open-Meteo Archive (models=era5). Nilai = [tot, mulai, lama, puncak].
-  API  lokasi unik keyakinan sedang/tinggi dari public/data/titik_hari/<tanggal>.json (FIRMS). Matang H+1.
+  API  lokasi unik keyakinan sedang/tinggi dari public/data/hotspot.json (7 hari bergulir, hari sepi = nol); hari lama dari titik_hari/<tanggal>.json (FIRMS). Matang H+1.
   BNJ  DIBI (public/data/dibi_kejadian.json) jenis banjir; LSR jenis longsor/gerakan tanah. Hanya sasaran
   LSR  <= (DIBI 'sampai' - 14 hari): DIBI terisi susulan, sebelum itu "menunggu label".
   ASP  menunggu: belum ada stasiun PM2,5 terukur (udara: WAQI_TOKEN/OpenAQ tidak tersedia), CAMS tidak dinilai dengan CAMS.
@@ -21,7 +21,7 @@ import datetime as dt, json, os, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dasar as D
-from catat import AMBANG, PER_PANGGIL, peluang_hujan, per_hari, ringkas_hujan, titik_kab
+from catat import AMBANG, PER_PANGGIL, peluang_hujan, per_hari, ringkas_hujan, titik_harian, titik_hotspot
 
 ARSIP_API = "https://archive-api.open-meteo.com/v1/archive"
 PRAK_API = "https://api.open-meteo.com/v1/forecast"
@@ -90,10 +90,10 @@ def perbarui_hujan(entri, daftar, kini, data=None, unduh=unduh_hujan):
 
 
 def amatan_api(akar, cari, tanggal):
-    folder = os.path.join(akar, "public", "data", "titik_hari")
+    hot = titik_hotspot(akar, cari)
     out = {}
-    for t in tanggal:
-        if (c := titik_kab(os.path.join(folder, t + ".json"), cari)) is not None:
+    for t in sorted(set(tanggal) | set(hot)):
+        if (c := titik_harian(akar, cari, t, hot)) is not None:
             out[t] = {"j": "final", "kab": c}
     return out
 
@@ -281,7 +281,7 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
         am["HJN"] = perbarui_hujan(entri, daftar, kini, data, unduh)
     tgl_api = sorted({h for e in entri if e["k"] == "API" for h in e["hari"] + [D.geser(e["t"], -1)] if h < kini})
     if tgl_api:
-        # klimatologi butuh bulan yang sama sebelum sasaran: semua titik_hari bulan itu ikut dibaca
+        # klimatologi butuh bulan yang sama sebelum sasaran: semua titik_hari bulan itu ikut dibaca (+ hotspot.json di amatan_api)
         folder_t = os.path.join(akar, "public", "data", "titik_hari")
         bulan = {t[:7] for t in tgl_api}
         semua = sorted(f[:10] for f in os.listdir(folder_t) if f[:7] in bulan) if os.path.isdir(folder_t) else []
@@ -415,6 +415,18 @@ def uji():
         dipanggil.clear()
         nilai("2026-09-20", folder=f, data=d, unduh=tiruan)
         assert all(not fin for _, _, fin in dipanggil), dipanggil
+    # API: hari sepi di hotspot.json = amatan nol (bukan menunggu)
+    from catat import titik_hotspot
+    with tempfile.TemporaryDirectory() as tmp:
+        os.makedirs(os.path.join(tmp, "public", "data"))
+        k0 = daftar[0]
+        json.dump({"kolom": ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib", "hitung"],
+                   "acuan": "2026-10-30T00:24:00+00:00", "wilayah": [k0["geo"] + "|X"],
+                   "baris": [[0, 100, 0, "N", 1, 1, 0, "10-26", 1], [0, 100, 0, "N", 1, 1, 0, "10-28", 1]]},
+                  open(os.path.join(tmp, "public", "data", "hotspot.json"), "w"))
+        a = amatan_api(tmp, D.pencari(daftar), ["2026-10-29", "2026-09-01"])
+        assert a["2026-10-29"] == {"j": "final", "kab": {}} and nilai_amatan("API", a["2026-10-29"], k0["id"]) == 0, a
+        assert a["2026-10-28"]["kab"] == {k0["id"]: 1} and "2026-09-01" not in a, a
     # retro: bentuk entri sah
     e = entri_retro({1: {"2026-09-10": {"1101": [3.0, 14, 2, 14]}}, 2: {}, 3: {}})
     assert e[0]["t"] == "2026-09-09" and D.periksa_entri(dict(e[0], dibuat="x", sumber="x")) is None
