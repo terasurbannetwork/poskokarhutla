@@ -1649,7 +1649,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
   function pitaPeta() {
     if (!$("akSideT")) { $("akPita").className = "ak-side"; $("akPita").innerHTML = `<div class="ak-side-h">
       
-      <label class="ak-cari"><span class="sr">Cari wilayah</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="akSideQ" type="search" autocomplete="off" placeholder="Cari nama wilayah"></label><div class="ak-ukd" id="akSideUk" hidden><button type="button" class="ak-ukb" aria-haspopup="listbox" aria-expanded="false"><span></span><svg class="ak-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="ak-ukm" role="listbox" hidden></div></div></div><div class="ak-side-t" id="akSideT"></div><div class="ak-sideleg" id="akSideLeg" hidden></div>`;
+      <div class="ak-sr-w"><label class="ak-cari"><span class="sr">Cari lembaga, kampus, atau wilayah</span><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg><input id="akSideQ" type="search" autocomplete="off" role="combobox" aria-expanded="false" aria-controls="akSaran" aria-autocomplete="list" placeholder="Cari lembaga, kampus, atau wilayah"></label><div class="ak-saran" id="akSaran" role="listbox" hidden></div></div><div class="ak-ukd" id="akSideUk" hidden><button type="button" class="ak-ukb" aria-haspopup="listbox" aria-expanded="false"><span></span><svg class="ak-panah" viewBox="0 0 24 24" aria-hidden="true"><path d="m6 9 6 6 6-6"/></svg></button><div class="ak-ukm" role="listbox" hidden></div></div></div><div class="ak-side-t" id="akSideT"></div><div class="ak-sideleg" id="akSideLeg" hidden></div>`;
       $("akPita").insertAdjacentHTML("beforebegin", `<div class="ak-side-label" id="akSideLabel"><button type="button" class="ak-sl-back" id="akSideBack" data-sd-naik="id" hidden title="Naik satu tingkat" aria-label="Naik satu tingkat">${ikon('<path d="m15 6-6 6 6 6"/>', "currentColor")}</button><b id="akSideJ"></b><span id="akSideN"></span><button type="button" class="ak-sl-lipat" id="akSideLipat" aria-label="Lipat panel" title="Lipat panel">${ikon('<path d="m6 9 6 6 6-6"/>', "currentColor")}</button></div>`);
       $("akPita").insertAdjacentHTML("afterend", '<button type="button" class="ak-side-buka" id="akSideBuka" hidden>Panel</button>');
     }
@@ -1712,6 +1712,66 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     for (const id of ["cho-fill", "cho-line"]) m.setLayoutProperty(id, "visibility", cho ? "visible" : "none");
     if (cho) { if (PT.tingkat === "kab" && !PT.pulau) { PT.pulau = "Jawa-Bali"; setSeg("akPtPulau", PT.pulau); } nanti(petaCho); } else segarPeta();
   }
+  /* ---- pencarian di peta: lembaga (termasuk BPBD), kampus, sensor, wilayah; indeks dibuat sekali per perubahan data ---- */
+  let SR = {k: "", idx: [], aktif: -1, hasil: [], sorot: null, pop: null};
+  const SR_GRUP = [["lb", "Lembaga"], ["k", "Kampus"], ["sn", "Sensor"], ["w", "Wilayah"]], SR_KUOTA = {lb: 3, k: 2, sn: 1, w: 2};
+  function indeksSaran() {
+    const k = lbArr.length + "|" + Object.keys(kampusInfo).length + "|" + PT.sensorArr.length; if (SR.k === k) return SR.idx; SR.k = k; const a = [];
+    for (const x of lbArr) if (x.kategori !== "penerbit" && x.nama) { const kat = KAT[x.kategori]?.[0] || x.kategori || "", pv = provT(x.prov); a.push({t: "lb", x, nama: x.nama, sing: x.singkatan || "", meta: [kapital(kat), x.kab].filter(Boolean).join(", "), lat: x.lat, lon: x.lon, h: nrm([x.nama, x.singkatan, x.kab, pv].join(" "))}); }
+    for (const [n, v] of Object.entries(kampusInfo)) a.push({t: "k", k: n, nama: n, sing: "", meta: ["Kampus", v?.kota].filter(Boolean).join(", "), lat: v?.lat, lon: v?.lon, h: nrm([n, v?.kota, provT(v?.prov)].join(" "))});
+    for (const s of PT.sensorArr) a.push({t: "sn", s, nama: s.nama || "Sensor", sing: "", meta: ["Sensor", s.jaringan || s.jenis].filter(Boolean).join(", "), lat: s.lat, lon: s.lon, h: nrm([s.nama, s.jaringan, s.jenis].join(" "))});
+    for (const [kd, n] of Object.entries(PROV)) a.push({t: "w", kode: kd, nama: n, sing: "", meta: "Provinsi", h: nrm(n)});
+    const sudah = new Set(); for (const x of lbArr) if (x.prov && x.kab && !sudah.has(x.prov + "|" + x.kab)) { sudah.add(x.prov + "|" + x.kab); a.push({t: "w", kode: x.prov, kab: x.kab, nama: x.kab, sing: "", meta: "Kab/kota, " + provT(x.prov), h: nrm(x.kab + " " + provT(x.prov))}); }
+    a.forEach(e => { e.n = nrm(e.nama); e.sg = nrm(e.sing); }); return SR.idx = a;
+  }
+  function cariSaran(q) {
+    const qn = nrm(q); if (qn.length < 2) return []; const tok = qn.split(" "), out = [];
+    for (const e of indeksSaran()) { let sk; if (e.sg === qn || e.n.startsWith(qn)) sk = 0; else if (e.n.includes(" " + qn)) sk = 1; else if (e.n.includes(qn) || (e.sg && e.sg.includes(qn))) sk = 2; else if (tok.every(w => e.h.includes(w))) sk = 3; else continue; out.push({e, sk}); }
+    out.sort((a, b) => a.sk - b.sk || (b.e.lat != null) - (a.e.lat != null) || a.e.nama.length - b.e.nama.length);
+    const pakai = [], sisa = [], n = {}; for (const o of out) { n[o.e.t] = (n[o.e.t] || 0) + 1; (n[o.e.t] <= SR_KUOTA[o.e.t] ? pakai : sisa).push(o); }
+    const semua = pakai.concat(sisa.slice(0, Math.max(0, 8 - pakai.length))).map(o => o.e), urut = SR_GRUP.map(g => g[0]);
+    return semua.sort((a, b) => urut.indexOf(a.t) - urut.indexOf(b.t));
+  }
+  const ikonSaran = e => e.t === "lb" ? lgoIkon(chainLogo(e.x), (KAT[e.x.kategori] || KAT.riset)[1], (KAT[e.x.kategori] || [0, 0, "#6b7280"])[2], true)
+    : e.t === "k" ? lgoIkon([urlOk(logoK[e.k])].filter(Boolean), IK_KAMPUS, "#14284b", true)
+    : e.t === "sn" ? (() => { const f = SN_KLS.find(x => x[0] === snKls(e.s)) || SN_KLS[1]; return `<span class="ak-sr-sn">${snSvg(f[3], f[2], 20)}</span>`; })()
+    : lambangHtml(e.kab ? "" : lambangUrl(e.kode, ""), 24);
+  function isiSaran() {
+    const box = $("akSaran"), q = $("akSideQ").value; SR.hasil = cariSaran(q); SR.aktif = -1; const buka = qn => { box.hidden = !qn; $("akSideQ").setAttribute("aria-expanded", String(!!qn)); };
+    if (nrm(q).length < 2) { box.innerHTML = ""; buka(false); return; }
+    if (!SR.hasil.length) { box.innerHTML = '<p class="ak-sr-kosong">Tidak ada yang cocok.</p>'; buka(true); return; }
+    let g = "", h = ""; SR.hasil.forEach((e, i) => { if (e.t !== g) { g = e.t; h += `<h4 class="ak-sr-h">${SR_GRUP.find(x => x[0] === g)[1]}</h4>`; }
+      h += `<button type="button" role="option" id="akSr${i}" data-sr="${i}" aria-selected="false">${ikonSaran(e)}<span><b>${esc(e.nama)}</b><small>${esc(e.meta)}</small></span></button>`; });
+    box.innerHTML = h; buka(true);
+  }
+  function sorotSaran(i) { SR.aktif = i; const box = $("akSaran"); box.querySelectorAll("[data-sr]").forEach(b => b.setAttribute("aria-selected", String(+b.dataset.sr === i)));
+    const b = i >= 0 && box.querySelector(`[data-sr="${i}"]`); $("akSideQ").setAttribute("aria-activedescendant", b ? b.id : ""); if (b) { if (b.offsetTop < box.scrollTop) box.scrollTop = b.offsetTop - 4; else if (b.offsetTop + b.offsetHeight > box.scrollTop + box.clientHeight) box.scrollTop = b.offsetTop + b.offsetHeight - box.clientHeight + 4; } }
+  function lepasSorot() { SR.sorot?.remove(); SR.pop?.remove(); SR.sorot = SR.pop = null; }
+  function bukaProfilSaran(e) { if (e.t === "lb") bukaLb(e.x); else if (e.t === "k") profilKampus(e.k); else if (e.t === "sn") lembarSensor({id: e.s.id, nama: e.s.nama, jenis: e.s.jenis, jaringan: e.s.jaringan || "", pemilik: e.s.pemilik || "", status: e.s.status || "", ikon: "sn-" + snKls(e.s)}); }
+  function pilihSaran(e) {
+    const m = PT.map; $("akSaran").hidden = true; $("akSideQ").setAttribute("aria-expanded", "false"); lepasSorot();
+    if (e.t === "w") { SDP.prov = e.kode; SDP.kab = e.kab || ""; if (e.kab) terbangKab(e.kab); else terbangKe(e.kode); nanti(isiSide); return; }
+    if (!m || !Number.isFinite(e.lat) || !Number.isFinite(e.lon)) { bukaProfilSaran(e); return; }   // tanpa koordinat: langsung profil
+    const lebar = innerWidth <= 700 ? {bottom: Math.round(innerHeight * .4)} : {left: Math.round(($("akPita")?.getBoundingClientRect().width || 320) + 24)};
+    m.flyTo({center: [e.lon, e.lat], zoom: e.t === "sn" ? 12 : 14, padding: lebar, essential: true});
+    const cincin = document.createElement("div"); cincin.className = "ak-sorot"; SR.sorot = new maplibregl.Marker({element: cincin}).setLngLat([e.lon, e.lat]).addTo(m);
+    const el = document.createElement("div"); el.className = "ak-sr-pop"; el.innerHTML = `${ikonSaran(e)}<span><b>${esc(e.nama)}</b><small>${esc(e.meta)}</small></span><button type="button" title="Buka profil" aria-label="Buka profil ${esc(e.nama)}">${ikon('<path d="M5 12h14M13 6l6 6-6 6"/>', "currentColor")}</button>`;
+    el.addEventListener("click", () => bukaProfilSaran(e));
+    SR.pop = new maplibregl.Popup({closeButton: false, closeOnClick: false, offset: 16, maxWidth: "280px", className: "ak-sr-popw"}).setLngLat([e.lon, e.lat]).setDOMContent(el).addTo(m);
+  }
+  function pasangCariPeta() {
+    const q = $("akSideQ"), box = $("akSaran"); let tq = 0;
+    q.addEventListener("input", () => { clearTimeout(tq); tq = setTimeout(() => nanti(isiSaran), 120); });
+    q.addEventListener("focus", () => { if (nrm(q.value).length >= 2 && box.innerHTML) { box.hidden = false; q.setAttribute("aria-expanded", "true"); } });
+    q.addEventListener("keydown", ev => { const n = SR.hasil.length;
+      if (ev.key === "ArrowDown" || ev.key === "ArrowUp") { if (box.hidden) isiSaran(); if (!SR.hasil.length) return; ev.preventDefault(); sorotSaran(ev.key === "ArrowDown" ? (SR.aktif + 1) % SR.hasil.length : (SR.aktif - 1 + SR.hasil.length) % SR.hasil.length); }
+      else if (ev.key === "Enter") { if (box.hidden) return; ev.preventDefault(); const e = SR.hasil[SR.aktif >= 0 ? SR.aktif : 0]; if (e) pilihSaran(e); }
+      else if (ev.key === "Escape") { if (!box.hidden) { box.hidden = true; q.setAttribute("aria-expanded", "false"); } else { lepasSorot(); q.value = ""; } } });
+    box.addEventListener("mousedown", ev => ev.preventDefault());   // fokus tetap di kotak cari
+    box.addEventListener("click", ev => { const b = ev.target.closest("[data-sr]"); if (b) pilihSaran(SR.hasil[+b.dataset.sr]); });
+    document.addEventListener("click", ev => { if (!ev.target.closest(".ak-sr-w")) { box.hidden = true; q.setAttribute("aria-expanded", "false"); } });
+    PT.map.on("dragstart", lepasSorot);
+  }
   async function bangunPeta(el) {
     el.innerHTML = `<div class="ak-pta"><div class="ak-pita" id="akPita" role="group" aria-label="Wilayah"></div>
       <div class="ak-ptaisi"><div id="akMap" class="ak-map" role="application" aria-label="Peta lembaga mitra"></div>
@@ -1736,7 +1796,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     const lipat = v => { SDP.lipat = v; $("akPita").classList.toggle("lipat", v); $("akSideLabel").classList.toggle("lipat", v); $("akSideBuka").hidden = true; setTimeout(() => m.resize(), 250); };
     $("akSideLabel").addEventListener("click", e => { if (e.target.closest("#akSideBack")) return; lipat(e.target.closest("#akSideLipat") ? true : (SDP.lipat ? false : !!SDP.lipat)); });
 
-    let tq = 0; $("akSideQ").addEventListener("input", e => { clearTimeout(tq); tq = setTimeout(() => { SDP.q = e.target.value; nanti(isiSide); }, 150); });
+    pasangCariPeta();
     $("akPita").addEventListener("click", e => {
       const u = e.target.closest("[data-sd-urut]"); if (u) { const k = u.dataset.sdUrut; SDP.arah = SDP.urut === k ? -SDP.arah : (k === "nama" ? 1 : -1); SDP.urut = k; document.querySelectorAll("#akSideT th").forEach(th => { const ik = th.querySelector("[data-sd-urut]")?.dataset.sdUrut, on = ik === k; th.setAttribute("aria-sort", on ? (SDP.arah > 0 ? "ascending" : "descending") : "none"); const i = th.querySelector("i"); if (i) i.innerHTML = on ? (SDP.arah > 0 ? "&#9650;" : "&#9660;") : ""; }); nanti(isiSide); return; }
       const n = e.target.closest("[data-sd-naik]"); if (n) { if (n.dataset.sdNaik === "id") { SDP.prov = ""; SDP.kab = ""; terbangKe("id"); } else { SDP.kab = ""; terbangKe(SDP.prov); } SDP.q = ""; $("akSideQ").value = ""; nanti(isiSide); return; }
@@ -3060,6 +3120,10 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       if (t === "kampus") { profilKampus(id); return; }
       if (t === "wilayah") { WL.kode = id; delete sudah.wilayah; tampil("wilayah"); return; }
       if (t === "lembaga") { (async () => { if (!lbArr.length) { const l = await ambilData("lembaga"); if (l) indeksLb(l); } const x = lbMap.get(id); if (x) bukaLb(x); })(); return; }
+      /* inovasi, sistem data, pendanaan, tokoh: buka lembarnya langsung lewat penangan klik global yang sama dengan kartu */
+      const at = {inovasi: "inid", sistem_data: "sd", pendanaan: "sk", tokoh: "tkid"}[t];
+      if (at) { const f = document.createElement("i"); f.hidden = true; f.dataset[at] = id; document.body.append(f); f.click(); f.remove(); return; }
+      if (t === "buku") { const x = bkArr.find(b => b.id === id); if (x) { sheetBk(x); return; } }
       q = (CARI_IDX && null) || q;
     }
     const [tab, sub] = {pakar: ["pakar"], tokoh: ["pakar"], lembaga: ["lembaga", ""], inovasi: ["inovasi"], sistem_data: ["sistem_data"], pendanaan: ["pendanaan"], dokumen: ["pustaka", "dok"], buku: ["pustaka", "buku"], berita: ["pustaka", "berita"], wilayah: ["wilayah"], kampus: ["pakar"]}[t];
