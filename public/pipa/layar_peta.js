@@ -12,7 +12,7 @@ import {KOSONG_GEO, LAPISAN_LAP, geoLapangan, lapisanLapangan, legendaLapanganHt
 import {JENIS_BRGM, LAPISAN_BRGM, kotakProv, geoBrgm, lapisanBrgm, namaGambarBrgm, legendaBrgmHtml, brgmBaris, airAsinTeks} from "./brgm.js";
 import {cekRenlap, badanRenlap, ubahPilihan, hasilBuatHtml, MAKS_RENLAP} from "./renlap.js";
 import {tombolKeputusan, badanKeputusan, PUTUSAN, BATAS_ALASAN} from "./keputusan.js";
-import {muatMapLibre} from "/inti/maplibre.js";
+import {muatMapLibre} from "../inti/maplibre.js";
 
 export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", sel: "/api/sippa/data/kelayakan_sel", zona: "/api/sippa/data/zona", cek: "/api/sippa/jalan-cek", aoi: "/api/sippa/aoi", prioritas: "/api/sippa/data/prioritas", kit: "/api/sippa/kit", log: "/api/sippa/log?jenis=karhutla", brgm: "/api/sippa/data/brgm_pembasahan", keputusan: "/api/sippa/keputusan", renlap: "/api/sippa/renlap"};
 
