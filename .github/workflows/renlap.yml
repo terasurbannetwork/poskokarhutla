@@ -11,6 +11,10 @@ on:
       kompleks_ids:
         description: "id kompleks dipisah koma, paling banyak 10 (contoh K0166,K0128)"
         required: true
+      kunjungan:
+        description: "rencana kunjungan JSON dari /pipa/kunjungan (keputusan 64), divalidasi worker; kosong = tanpa halaman kunjungan"
+        required: false
+        default: ""
 
 concurrency:
   group: renlap-${{ inputs.renlap_id }}
@@ -26,6 +30,7 @@ jobs:
     env:
       RENLAP_ID: ${{ inputs.renlap_id }}
       KOMPLEKS_IDS: ${{ inputs.kompleks_ids }}
+      RENLAP_KUNJUNGAN: ${{ inputs.kunjungan }}
       RENLAP_KUNCI: ${{ secrets.RENLAP_KUNCI }}
       CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
       CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

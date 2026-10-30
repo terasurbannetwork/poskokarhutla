@@ -651,7 +651,8 @@ export const HTML_RUTE = [
   [/^\/laporan-bnpb\/?$/, "/laporan_bnpb.html", "/laporan-bnpb"],
   [/^\/dokumen\/?$/, "/dokumen.html", "/dokumen"],   // generator dokumen: laporan dan data ke Excel, PDF, Word, PowerPoint (public/dokumen*)   // input + ekspor Laporan Harian & Paparan Presiden BNPB, hanya situs Centurisk97
   [/^\/monitor\/?$/, "/monitor.html", "/monitor"],   // monitor peringatan api untuk staf BNPB dan BPBD (public/monitor*, src/monitor.js); tetap tertutup di centurisk97.id, tiap API menjaga sesinya
-  [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
+  [/^\/direktori\/?$/, "/akademisi.html", "/direktori"],   // Direktori Kebencanaan (dulu /akademisi, nama diganti pemilik 30 Okt 2026): pakar, lembaga, inovasi, sistem data
+  [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // alamat lama, dialihkan 301 ke /direktori di layaniHTML   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
   [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); di balik login, TIDAK di PUBLIK_TANPA_SESI
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
@@ -683,6 +684,7 @@ async function layaniHTML(req, env, ctx, url) {
   /* situs Centurisk97 tanpa halaman Tentang di bencana mana pun (pemilik, 19 Okt 2026): /tentang, /tentang-halaman, /<bencana>/tentang -> peta */
   const tt = situsCenturisk(url.hostname) && url.pathname.match(/^(\/[a-z]+)?\/tentang(-halaman)?\/?$/);
   if (tt) return Response.redirect(new URL(tt[1] ? `${tt[1]}/peta` : "/", url), 302);
+  if (jalur === "/akademisi") return new Response(null, {status: 301, headers: {location: "/direktori" + url.search, "cache-control": "no-store"}});
   /* laporan konsesi hanya di alamat Centurisk97 (*.workers.dev), pemilik 18 Okt 2026 */
   if ((jalur === "/laporan-konsesi" || jalur === "/laporan-bnpb") && !situsCenturisk(url.hostname) && url.hostname !== "localhost") return new Response("Tidak ditemukan", {status: 404});
   // meta og/twitter/canonical per rute dari data/og/meta.json (src/og_meta.js); gagal = HTML apa adanya

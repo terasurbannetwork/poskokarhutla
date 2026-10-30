@@ -728,7 +728,30 @@
     "renlap_tampil.tautanArah": "modelRenlap: bentuk DATA",
     "renlap_tampil.tautanRute": "modelRenlap: bentuk DATA",
     "renlap_tampil.modelRenlap": "modelRenlap: bentuk DATA",
-    "renlap_tampil.urlBoleh": "urlBoleh: hanya https"
+    "renlap_tampil.urlBoleh": "urlBoleh: hanya https",
+    "kunjungan.KECEPATAN_KMJ": "perkiraanJalan",
+    "kunjungan.MAKS_LOKASI": "batas jumlah 10",
+    "kunjungan.alasanDugaan": "dugaan konsesi lain",
+    "kunjungan.palsuDekat": "hitung 0 = deteksi ganda",
+    "kunjungan.bacaKoordinat": "bacaKoordinat",
+    "kunjungan.bacaOsrm": "bacaOsrm",
+    "kunjungan.bagiTim": "bagiTim",
+    "kunjungan.dalamIndonesia": "bacaKoordinat",
+    "kunjungan.gabungMatriks": "gabungMatriks",
+    "kunjungan.idSah": "bentuk kontrak v1",
+    "kunjungan.kmLurus": "kmLurus",
+    "kunjungan.kunjunganUntukServer": "kunjunganUntukServer",
+    "kunjungan.pecahHari": "pecahHari",
+    "kunjungan.perkiraanJalan": "perkiraanJalan",
+    "kunjungan.pilihKandidat": "urut titik panas 24 jam",
+    "kunjungan.susunRencana": "susunRencana",
+    "kunjungan.tautanHari": "tautan Google Maps",
+    "kunjungan.tautanJalur": "tautan Google Maps",
+    "kunjungan.tautanSemua": "tautan Google Maps",
+    "kunjungan.tautanTim": "tautan Google Maps",
+    "kunjungan.urlOsrmTable": "urlOsrmTable",
+    "kunjungan.urutTermurah": "urutTermurah",
+    "layar:kunjungan": "susunRencana"
   },
   "dikecualikan": {
     "ikon.js": "sprite SVG tanpa logika; gerbang-sippa menolak warna tertanam, tampilannya diperiksa di peramban preview",
@@ -790,7 +813,10 @@
     "layar_aset.pasang": "perakit DOM, dialog, dan fetch layar_aset; logika murni dan HTML diuji lewat ekspor, rakitan dan INP dibuktikan di peramban preview",
     "layar_aset.pergi": "pushState dan popstate untuk router; butuh DOM, dibuktikan di peramban preview",
     "tanggal.pasangTanggal": "pendengar klik dan change terdelegasi di dokumen; hanya buktinya di peramban (showPicker butuh gestur pengguna)",
-    "lapangan_staf.muatGayaLapangan": "menyisipkan link stylesheet ke dokumen; dibuktikan di peramban preview dan dijaga gerbang-versi-layar"
+    "lapangan_staf.muatGayaLapangan": "menyisipkan link stylesheet ke dokumen; dibuktikan di peramban preview dan dijaga gerbang-versi-layar",
+    "layar_kunjungan.JALUR": "konstanta jalur API dan berkas data layar Kunjungan; tanpa cabang logika",
+    "layar_kunjungan.pasang": "perakit MapLibre, DOM, fetch, dan OSRM layar Kunjungan; seluruh logika ada di kunjungan.js yang diuji, rakitan dibuktikan di peramban preview",
+    "layar_kunjungan.lepas": "membatalkan fetch dan melepas peta dan penanda; tanpa cabang logika, dibuktikan di peramban preview"
   },
   "antre": {}
 }

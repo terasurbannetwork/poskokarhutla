@@ -57,5 +57,6 @@ jobs:
           git add -f public/prediksi/data
           git diff --cached --quiet && exit 0
           git commit -q -m "data: prediksi harian $(TZ=Asia/Jakarta date +%F)"
+          git checkout -- .   # buang masukan segar yang ditarik dari situs (tidak di-commit) supaya pull --rebase jalan
           for i in 1 2 3; do git pull -q --rebase && git push -q && exit 0; sleep $((i * 5)); done
           echo "::error::push data prediksi gagal"; exit 1
