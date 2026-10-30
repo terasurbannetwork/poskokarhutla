@@ -754,7 +754,6 @@
     "layar:kunjungan": "susunRencana"
   },
   "dikecualikan": {
-    "layar_kit.muatMapLibre": "pemuat tag link dan script ke DOM; hanya terbukti di peramban, dipindah apa adanya dari dua layar",
     "ikon.js": "sprite SVG tanpa logika; gerbang-sippa menolak warna tertanam, tampilannya diperiksa di peramban preview",
     "layar_log.pasang": "perakit DOM dan fetch layar Log; logika rekap diuji lewat rekapKelas, rakitan layar dibuktikan di peramban preview",
     "layar_log.lepas": "hanya memanggil abort pada pengendali fetch layar; tanpa cabang logika, dibuktikan di peramban preview",

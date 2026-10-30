@@ -2,7 +2,7 @@
    Logika murni di kunjungan.js; berkas ini hanya DOM, MapLibre, dan jaringan. Data dimuat malas saat layar dibuka dan dibuang saat layar dilepas.
    Tombol Susun rencana: label berubah seketika, kerja berat (pilih, OSRM, bagi tim) lewat nanti(). Butuh global public/inti: fmt, esc, nanti. */
 import {memuat, galat as kotakGalat} from "./keadaan.js";
-import {bukaDialog, kirimPost, muatMapLibre} from "./layar_kit.js";
+import {bukaDialog, kirimPost} from "./layar_kit.js";
 import {cekRenlap, hasilBuatHtml, teksKoordinat} from "./renlap.js";
 import {bacaKoordinat, pilihKandidat, urlOsrmTable, bacaOsrm, gabungMatriks, susunRencana, tautanSemua, tautanTim, tautanHari, kunjunganUntukServer, MAKS_LOKASI, MAKS_TIM} from "./kunjungan.js";
 import {muatMapLibre} from "../inti/maplibre.js";

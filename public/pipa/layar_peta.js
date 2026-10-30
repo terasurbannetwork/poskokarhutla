@@ -5,7 +5,7 @@
    Gaya di layar_peta.css (dimuat layar ini). Tidak ada data di berkas ini. Butuh global public/inti: fmt, esc, jamWIB, Kartu, nanti, PilihCantik (opsional). */
 import {saranSarana, zonaTerverifikasi} from "./hitung.js";
 import {memuat, kosong, galat as kotakGalat} from "./keadaan.js";
-import {kirimPost, bukaDialog, tutupDialog, peranKlien, muatGayaKit, muatMapLibre} from "./layar_kit.js";
+import {kirimPost, bukaDialog, tutupDialog, peranKlien, muatGayaKit} from "./layar_kit.js";
 import {buatKonteks, lampuTitik, propsTitik, titikDariProps, popupTitik, legendaLampuHtml, swirHtml, riwayatHtml, riwayatSingkat, muatRincian} from "./kesiapan.js";
 import {ikon} from "./ikon.js";
 import {KOSONG_GEO, LAPISAN_LAP, geoLapangan, lapisanLapangan, legendaLapanganHtml, debitHtml, muatButir, muatGayaLapangan} from "./lapangan_staf.js";
