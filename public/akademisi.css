@@ -2209,3 +2209,9 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 #akTip:has(.ak-tipw){width:300px!important;max-width:300px!important;overflow:visible!important}
 #akTip .ak-tipw{width:100%!important;box-sizing:border-box}
 #akTip .ak-tipw dl > div{grid-template-columns:16px minmax(0,1fr) auto!important}
+
+/* M1 pemilih multi: kaki Selesai */
+.ak-kselesai{position:sticky;bottom:0;display:flex;justify-content:flex-end;padding:8px 10px;background:var(--card);border-top:1px solid var(--line)}
+.ak-kselesai button{font:inherit;font-size:13px;font-weight:800;color:#fff;background:#14284b;border:0;border-radius:999px;padding:6px 16px;cursor:pointer}
+/* legenda jaringan sensor: pojok kanan bawah peta, di kiri kontrol zoom */
+#akSnLeg.ak-snleg{position:absolute!important;left:auto!important;top:auto!important;right:60px!important;bottom:28px!important;z-index:6;max-width:320px}
