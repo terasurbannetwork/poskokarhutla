@@ -1900,6 +1900,9 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   }
   function bangunTokoh(p, d, dia) {
     const arr = dlist(Array.isArray(d) ? d : d?.tokoh).filter(x => x && x.id && x.nama).map(x => Object.assign(x, {_cari: [x.nama, x.peran, x.lembaga, x.institusi, x.negara].filter(Boolean).join(" ").toLowerCase()}));
+    /* urutan: Kepala BNPB yang menjabat nomor 1, lalu pejabat BNPB aktif, lalu sisanya sesuai urutan data */
+    const bobotTk = x => { const pr = String(x.peran || ""), aktif = labelPeran(pr) !== "Pernah menjabat"; return aktif && /^kepala bnpb\b/i.test(pr) ? 0 : aktif && /\bBNPB\b/.test(pr) ? 1 : 2; };
+    arr.sort((a, b) => bobotTk(a) - bobotTk(b));
     if (!dia) tkArr = arr; tkView = arr; tkMode = dia ? "diaspora" : "tokoh";
     Object.assign(TK, {q: "", jenis: "", prov: "", hal: 1});
     const hit = f => { const n = {}; tkView.forEach(x => { const k = f(x); if (k) n[k] = (n[k] || 0) + 1; }); return n; }, nJ = hit(x => x.jenis), nP = hit(x => x.prov == null ? "" : String(x.prov));
