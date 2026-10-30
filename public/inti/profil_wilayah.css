@@ -1,5 +1,5 @@
 /* Profil wilayah (public/inti/profil_wilayah.js): dialog kartu Insight, pil, grafik SVG interaktif. Token dari tema.css. */
-dialog.pw{width:min(720px,calc(100vw - 20px));max-height:calc(100dvh - 24px);padding:0;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow-lg);overflow:hidden;--pw-o:#d9732b}
+dialog.pw{width:min(720px,calc(100vw - 20px));max-height:calc(100dvh - 24px);padding:0;border:1px solid var(--line);border-radius:20px;background:var(--paper);color:var(--ink);box-shadow:var(--shadow-lg);overflow:hidden;--pw-o:var(--f2)}
 dialog.pw[open]{display:flex;flex-direction:column}
 dialog.pw::backdrop{background:oklch(20% .05 256 / .45)}
 .pw-hd{display:flex;align-items:flex-start;justify-content:space-between;gap:12px;padding:16px 18px 12px;background:var(--card);border-bottom:1px solid var(--line)}
@@ -20,7 +20,7 @@ dialog.pw::backdrop{background:oklch(20% .05 256 / .45)}
 .pw-pil{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:11.5px;font-weight:600;background:var(--surface);color:var(--ink);border:1px solid var(--line);cursor:default}
 .pw-pil b{font-variant-numeric:tabular-nums}
 .pw-pil svg{width:12px;height:12px}
-.pw-pil.pw-t1{background:color-mix(in oklch,#d9732b 16%,transparent);border-color:color-mix(in oklch,#d9732b 40%,transparent)}
+.pw-pil.pw-t1{background:color-mix(in oklch,var(--f2) 16%,transparent);border-color:color-mix(in oklch,var(--f2) 40%,transparent)}
 .pw-pil.pw-info{background:color-mix(in oklch,var(--info) 16%,transparent);border-color:color-mix(in oklch,var(--info) 40%,transparent)}
 .pw-pil.pw-ok{background:color-mix(in oklch,var(--ok) 16%,transparent);border-color:color-mix(in oklch,var(--ok) 40%,transparent)}
 .pw-pil.pw-no{background:color-mix(in oklch,var(--bad) 12%,transparent);border-color:color-mix(in oklch,var(--bad) 35%,transparent)}
@@ -34,6 +34,8 @@ dialog.pw::backdrop{background:oklch(20% .05 256 / .45)}
 .pw-g circle{pointer-events:none}
 .pw-bar{display:flex;height:14px;border-radius:999px;overflow:hidden;margin:2px 0 10px;gap:2px;background:var(--surface)}
 .pw-bar i{display:block;min-width:3px}
+.pw-bar2{display:flex;flex:1;height:10px;margin:0;gap:0;min-width:0}.pw-bar2 i{min-width:0}
+.pw-hb li{align-items:center;gap:8px}.pw-bn{flex:0 0 112px;font-size:12px}.pw-bv{flex:0 0 auto;white-space:nowrap;text-align:right;font-size:11.5px;color:var(--ink2);font-variant-numeric:tabular-nums}
 .pw-ls{list-style:none;margin:8px 0 0;padding:0;display:grid;gap:8px}
 .pw-ls li{display:flex;gap:9px;align-items:flex-start;font-size:13px;line-height:1.4;min-width:0}
 .pw-ls li > .pw-pil{flex:none;margin-top:1px}
@@ -49,5 +51,6 @@ dialog.pw::backdrop{background:oklch(20% .05 256 / .45)}
 .pw-btn svg{width:15px;height:15px}
 @media (max-width:480px){
   dialog.pw{width:100vw;max-height:100dvh;border-radius:0}
+  .pw-bn{flex-basis:76px}.pw-hb li{gap:6px}
   .pw-bd{padding:10px 10px 16px}.pw-k{padding:12px 12px 10px}.pw-t{font-size:15px}
 }

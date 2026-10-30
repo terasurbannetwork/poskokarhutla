@@ -15,6 +15,7 @@ const ProfilWilayah = (() => {
     paparan: "M16 11a3 3 0 1 0-6 0 3 3 0 0 0 6 0ZM6 20c0-3 3-5 7-5s7 2 7 5M5 9a2.5 2.5 0 1 1 0-.1",
     bpbd: "M5 4h14v16H5V4Zm4 4h6M9 12h6M9 16h3",
     riwayat: "M12 7v5l3 2M4 12a8 8 0 1 0 2.5-5.8M4 4v4h4",
+    sosek: "M4 20V10m6 10V4m6 16v-7m4 7H3", rawan: "M12 3 2 20h20L12 3Zm0 6v5m0 3h.01", medan: "M3 19 9 8l4 7 3-4 5 8H3Z",
     tutup: "M6 6l12 12M18 6 6 18", ya: "m5 12 5 5 9-10", tdk: "M6 6l12 12M18 6 6 18", tel: "M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2Z",
     surel: "M3 6h18v12H3V6Zm0 0 9 7 9-7", web: "M12 21a9 9 0 1 0 0-18 9 9 0 0 0 0 18Zm-9-9h18M12 3c3 3 3 15 0 18M12 3c-3 3-3 15 0 18", pin: "M12 21s-7-6.2-7-11.5a7 7 0 0 1 14 0C19 14.8 12 21 12 21Zm0-8.5a2.5 2.5 0 1 0 0-5 2.5 2.5 0 0 0 0 5Z"
   };
@@ -112,6 +113,54 @@ const ProfilWilayah = (() => {
       "Sumber: GDACS (kejadian di dalam batas kab/kota) dan Copernicus EMS Rapid Mapping (titik pusat area pemetaan). Gempa laut lepas pantai tidak masuk.");
   }
 
+  const pr = (v, d = 1) => fmt(v, d) + "%";
+
+  /* 6. sosial ekonomi BPS: P0 dan garis tren interaktif */
+  function sosek(d) {
+    const s = d.sk; if (!s || s.p0 == null) return "";
+    const mjOk = s.mj != null; /* p0 dan mj sama-sama Susenas BPS; pk proyeksi SP2020, basis beda, jangan dibagi */
+    const pkT = s.pk >= 1e6 ? `${fmt(s.pk / 1e6, 1)} juta` : `${fmt(Math.round(s.pk / 1e3))} ribu`;
+    const kal = `Sebanyak ${o(pr(s.p0))} penduduk ${esc(d.n)}${mjOk ? ` (sekitar ${fmt(s.mj, 1)} ribu jiwa)` : ""} hidup di bawah garis kemiskinan pada ${s.th}${s.ipm != null ? `, dengan IPM ${o(fmt(s.ipm, 2))}` : ""}${s.pk != null ? ` dan penduduk proyeksi sekitar ${pkT} jiwa` : ""}.`;
+    const tr = (s.tr || []).filter(x => x[1] != null); let svg = "";
+    if (tr.length > 1) {
+      const W = 330, H = 130, L = 30, R = 12, T = 12, B = 22, v = tr.map(x => x[1]), lo = Math.min(...v), hi = Math.max(...v), pad = Math.max(.5, (hi - lo) * .15), a = lo - pad, b = hi + pad;
+      const xs = i => L + (W - L - R) * i / (tr.length - 1), ys = x => T + (H - T - B) * (1 - (x - a) / (b - a));
+      const yt = [b, (a + b) / 2, a].map(x => `<text x="${L - 5}" y="${ys(x) + 3}" text-anchor="end" class="pw-ax">${fmt(x, 1)}</text>`).join("");
+      const xt = tr.map((x, i) => `<text x="${xs(i).toFixed(1)}" y="${H - 7}" text-anchor="middle" class="pw-ax">${x[0]}</text>`).join("");
+      const kol = tr.map((x, i) => { const dl = i ? x[1] - tr[i - 1][1] : null; return `<rect x="${(xs(i) - 14).toFixed(1)}" y="${T}" width="28" height="${H - T - B}" fill="transparent" data-tip="${esc(`<b>${x[0]}</b><br>Penduduk miskin: ${pr(x[1], 1)}${dl != null ? `<br>${dl < 0 ? "Turun" : "Naik"} ${fmt(Math.abs(dl), 1)} poin dari ${tr[i - 1][0]}` : ""}`)}"/>`; }).join("");
+      svg = `<svg class="pw-g" viewBox="0 0 ${W} ${H}" role="img" aria-label="Tren persentase penduduk miskin ${esc(d.n)}">${yt}${xt}<polyline points="${tr.map((x, i) => `${xs(i).toFixed(1)},${ys(x[1]).toFixed(1)}`).join(" ")}" fill="none" stroke="var(--pw-o)" stroke-width="2" stroke-linejoin="round" stroke-linecap="round"/>${tr.map((x, i) => `<circle cx="${xs(i).toFixed(1)}" cy="${ys(x[1]).toFixed(1)}" r="3.4" fill="var(--pw-o)" stroke="var(--card)" stroke-width="1.5"/>`).join("")}${kol}</svg><p class="pw-sub">Persentase penduduk miskin ${tr[0][0]} sampai ${tr.at(-1)[0]}</p>`;
+    }
+    const pils = [s.hl != null && pil(`Hunian layak <b>${pr(s.hl)}</b>`), s.sn != null && pil(`Sanitasi layak <b>${pr(s.sn)}</b>`), s.am != null && pil(`Air minum layak <b>${pr(s.am)}</b>`), s.b04 != null && pil(`Balita 0-4 <b>${pr(s.b04)}</b>`, "", "Persen penduduk usia 0-4 tahun (proyeksi BPS)."), s.l65 != null && pil(`Lansia 65+ <b>${pr(s.l65)}</b>`, "", "Persen penduduk usia 65 tahun ke atas (proyeksi BPS).")].filter(Boolean).join("");
+    return k("Sosial ekonomi", "sosek", kal, `${svg}<div class="pw-pils">${pils}</div>`, `Sumber: BPS (WebAPI), data ${s.th}. Jumlah penduduk dari proyeksi BPS. Hunian, sanitasi, dan air minum layak menurut definisi BPS.`);
+  }
+
+  /* 7. kecamatan rawan InaRISK: batang bertumpuk tinggi + sedang, urut terbanyak */
+  const BIK = {banjir: "Banjir", bandang: "Banjir bandang", longsor: "Tanah longsor", kekeringan: "Kekeringan", cuaca: "Cuaca ekstrem", gelombang: "Gelombang ekstrem", karhutla: "Karhutla", gunungapi: "Gunung api", likuefaksi: "Likuefaksi", gempa: "Gempa bumi", multi: "Multibahaya"};
+  function rawan(d) {
+    const r = d.ik; if (!r || !r.n) return "";
+    const L = Object.entries(r.b || {}).filter(([, v]) => v && (v[0] > 0 || v[1] > 0)).sort((x, y) => y[1][0] - x[1][0] || y[1][1] - x[1][1]); if (!L.length) return "";
+    const [h0, v0] = L.find(x => x[0] !== "multi") || L[0];
+    const kal = v0[0] > 0 ? `${o(fmt(v0[0]))} dari ${fmt(r.n)} kecamatan di ${esc(d.n)} berisiko ${o("tinggi")} ${esc((BIK[h0] || h0).toLowerCase())}, bahaya dengan kecamatan tinggi terbanyak.` : `Tidak ada kecamatan berisiko tinggi di ${esc(d.n)}; ${o(fmt(v0[1]))} dari ${fmt(r.n)} kecamatan berisiko ${o("sedang")} ${esc((BIK[h0] || h0).toLowerCase())}.`;
+    const bar = L.map(([h, [t, m]]) => `<li><span class="pw-bn">${esc(BIK[h] || h)}</span><div class="pw-bar pw-bar2" data-tip="${esc(`<b>${BIK[h] || h}</b><br>Tinggi: ${t} dari ${r.n} kecamatan<br>Sedang: ${m} dari ${r.n} kecamatan`)}" tabindex="0"><i style="width:${t / r.n * 100}%;background:#c9503a"></i><i style="width:${m / r.n * 100}%;background:#d29a2b"></i></div><span class="pw-bv">${fmt(t)} dari ${fmt(r.n)} kec.</span></li>`).join("");
+    const tp = r.t || [], sama = tp.length && tp.every(x => x[1] === tp[0][1]);
+    const top = tp.length ? `<p class="pw-sub">Kecamatan dengan nilai multibahaya tertinggi${sama ? "" : ", skala 0 sampai 1"}</p><div class="pw-pils">${tp.map(x => pil(esc(x[0]) + (sama ? "" : ` <b>${fmt(x[1], 1)}</b>`))).join("")}</div>` : "";
+    return k("Kecamatan rawan (InaRISK)", "rawan", kal, `<div class="pw-pils">${pil("Tinggi", "pw-hi")}${pil("Sedang", "pw-md")}</div><ul class="pw-ls pw-hb">${bar}</ul>${top}`,
+      "Sumber: InaRISK BNPB (IRBI 2025). Kelas kecamatan memakai nilai maksimum titik sampel di kecamatan itu, bukan rata-rata luas, sehingga cenderung tinggi. Bahaya tanpa kecamatan tinggi atau sedang tidak ditampilkan.");
+  }
+
+  /* 8. medan: dataran rendah, pesisir, air permanen, jarak ke laut dalam */
+  function medan(d) {
+    const m = d.md; if (!m) return "";
+    const ada = x => x != null, bagi = [];
+    if (ada(m.r10)) bagi.push(`${o(pr(m.r10))} daratan berada pada elevasi 10 m atau kurang${ada(m.r5) ? ` (${pr(m.r5)} pada 5 m atau kurang)` : ""}`);
+    if (ada(m.kp)) bagi.push(m.kp > 0 ? `${o(fmt(m.kp))} kecamatan pesisir` : "tanpa kecamatan pesisir");
+    if (!bagi.length && !ada(m.ap) && !ada(m.j2)) return "";
+    const kal = `${bagi.length ? `Di ${esc(d.n)}, ${bagi.join(", ")}.` : `Ringkasan medan ${esc(d.n)}.`}`;
+    const pils = [ada(m.ld) && pil(`Luas daratan <b>${fmt(m.ld)} ha</b>`), ada(m.ap) && pil(`Air permanen <b>${fmt(m.ap)} ha</b>`, "", "Tutupan air sepanjang tahun (JRC), termasuk tambak dan waduk."), ada(m.j2) && pil(`Laut 200 m <b>${fmt(m.j2, 1)} km</b>`, "", "Jarak dari pantai ke kedalaman laut 200 m (ETOPO 2022).")].filter(Boolean).join("");
+    return k("Medan", "medan", kal, pils ? `<div class="pw-pils">${pils}</div>` : "",
+      `Sumber: DEM Copernicus GLO-30 (permukaan, cenderung meremehkan dataran rendah), JRC Global Surface Water v1.4, NOAA ETOPO 2022 v1. Daratan tidak mencakup air permanen. Dihitung dari ${fmt(m.n)} kecamatan berdata.`);
+  }
+
   function pastiDlg() {
     if (dlg) return dlg;
     if (!document.querySelector('link[href*="profil_wilayah.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = new URL("profil_wilayah.css", SRC).href; document.head.appendChild(l); }
@@ -144,7 +193,7 @@ const ProfilWilayah = (() => {
       D._d = d; D.querySelector(".pw-hd")?.remove(); D.querySelector(".pw-bd")?.remove();
       /* bagian berat dirakit sesudah dialog tampil: klik tetap ringan */
       requestAnimationFrame(() => setTimeout(() => {
-        const bagian = [risiko(d, d.n), regulasi(d), paparan(d, kode), bpbd(d), riwayat(d)].filter(Boolean);
+        const bagian = [risiko(d, d.n), regulasi(d), paparan(d, kode), sosek(d), rawan(d), medan(d), bpbd(d), riwayat(d)].filter(Boolean);
         D.insertAdjacentHTML("beforeend", kepala(d.n, d.p) + `<div class="pw-bd">${bagian.join("") || `<p class="pw-kos">Belum ada data profil untuk wilayah ini.</p>`}</div>`);
       }, 0));
     } catch (e) { D.querySelector(".pw-hd")?.remove(); D.querySelector(".pw-bd")?.remove(); D.insertAdjacentHTML("beforeend", kepala("Profil wilayah") + `<div class="pw-bd"><p class="pw-kos">Profil wilayah ini belum tersedia.</p></div>`); }

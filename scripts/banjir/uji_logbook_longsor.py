@@ -549,6 +549,14 @@ def main():
         print(f"{len(kabs)} kab ({nk} kontrol), {len(sel)} sel", file=sys.stderr)
         sys.exit(0 if ambil_cuaca(sel) else 1)
     h = hitung()
+    try:
+        n_lama = (json.load(open(KELUAR)).get("sampel") or {}).get("kab_dipakai") or 0
+    except (OSError, ValueError):
+        n_lama = 0
+    # cache hujan hilang/kuota habis -> sampel menyempit: jangan timpa hasil yang lebih luas
+    if h["sampel"]["kab_dipakai"] < n_lama:
+        print(f"LEWAT: {h['sampel']['kab_dipakai']} kab < {n_lama} di hasil lama; {os.path.relpath(KELUAR)} dibiarkan", file=sys.stderr)
+        sys.exit(0)
     os.makedirs(os.path.dirname(KELUAR), exist_ok=True)
     h["riwayat"] = riwayat_baru(KELUAR, h)
     keys = ["dibuat"] + [k for k in h if k != "dibuat"]

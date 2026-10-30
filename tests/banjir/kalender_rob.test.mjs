@@ -57,7 +57,7 @@ test("hujanTitik: sel terdekat, null bila jauh", () => {
 
 test("html: 30 kotak data-tip, kalimat angka duluan, tanpa titik tengah", () => {
   const H = {sel: 0.25, hari_ini: "2026-10-27", hari: ["2026-10-27", "2026-10-28"], grid: [{lat: -6, lon: 106, h: [3, 15]}]};
-  const h = K.html({pa, hujan: H, lat: -6, lon: 106, kab: "DKI Jakarta|Kota Administrasi Jakarta Utara"});
+  const h = K.html({pa, hujan: H, lat: -6, lon: 106, kab: "DKI Jakarta|Kota Administrasi Jakarta Utara", mulai: "2026-10-27"});   /* tanggal dikunci: tanpa mulai, html memakai hari ini */
   assert.equal((h.match(/data-tip=/g) || []).length, 30);
   assert.match(h, /28 Okt: pasang kuat dan hujan 15 mm/);
   assert.match(h, /Hipotesis/); assert.ok(!/Meeus|indeks gaya/.test(h)); assert.ok(!/0,79/.test(h));
