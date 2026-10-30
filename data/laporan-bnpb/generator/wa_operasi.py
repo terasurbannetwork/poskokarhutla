@@ -126,7 +126,7 @@ def operasi(teks):
         hujan = None
         h = re.search(r'Hujan\s+\*?([^*\n]*?)\*?\s*(?:terpantau|dilaporkan|pada)[^\n]*?di \*([^*]+)\*(?:[^\n]*?pada \*?(\d+) (\w+))?', isi, re.I)   # "hujan dilaporkan" huruf kecil (Sumsel 28 Okt)
         h2 = re.search(r'Hujan\s+([a-z ]+?)\s+pada (\d+) (\w+)[^\n]*?di \*([^*]+)\*', isi)
-        h3 = re.search(r'Hujan\s+dilaporkan di ([^*\n]+?)(?: pada [^.\n]*)?\.', isi)
+        h3 = re.search(r'Hujan\s+dilaporkan (?:terjadi )?di ([^*\n]+?)(?: (?:dengan|pada) [^.\n]*)?\.', isi)   # "terjadi di X ... dengan intensitas" (Sumsel 30 Okt)
         if h2:   # "Hujan <intensitas> pada <tgl> ... di *X*" (tanggal di depan)
             hujan = {'intensitas': h2.group(1).strip().lower(), 'lokasi': h2.group(4), 'tanggal': dt.date(tanggal.year, BULAN[h2.group(3).lower()], int(h2.group(2)))}
         elif h:
