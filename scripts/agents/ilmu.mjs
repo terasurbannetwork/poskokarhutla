@@ -299,6 +299,8 @@ const SAMAR = [
   [/\b(Bearer\s+)[\w.~+/-]{16,}=*/gi, '$1[kunci]'],
   [/\b((?:api[_-]?key|token|secret|password|passwd|pwd|sandi|kata sandi)\s*[:=]\s*)\S+/gi, '$1[rahasia]'],
   [/[\w.+-]+@[\w-]+(?:\.[\w-]+)+/g, '[email]'],
+  // Jalur rumah membocorkan nama akun mesin (gerbang jalur mutlak menolaknya di repo publik).
+  [/\/(?:Users|home)\/[^/\s"']+/g, '~'],
   [/(?<![\w])(?:\+?62|0)\s?8\d{1,2}[\s.-]?\d{3,4}[\s.-]?\d{3,5}(?!\d)/g, '[telp]'],
   [/(?<!\d)\d{16}(?!\d)/g, '[nik]'],
   // Token panjang tanpa titik/garis miring (jalur berkas lolos): wajib ada angka.

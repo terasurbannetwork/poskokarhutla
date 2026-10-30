@@ -137,9 +137,10 @@ test('prompt pemilik tercatat, disamarkan, berlabel, dan hook tak pernah menahan
     '3201011234567890',
     'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
     'isi rapat rahasia',
+    'akunmesinlain',
   ]
   const prompt =
-    `benerin src/worker.js dan banjir rob; kunci ${rahasia[0]} ${rahasia[1]}, email ${rahasia[2]}, ` +
+    `benerin src/worker.js dan banjir rob; baca /Users/${rahasia[8]}/Downloads/x.pdf; kunci ${rahasia[0]} ${rahasia[1]}, email ${rahasia[2]}, ` +
     `WA ${rahasia[3]} / ${rahasia[4]}, NIK ${rahasia[5]}, sha ${rahasia[6]}, password: hunter22 ` +
     `<pasted_content id="x">${rahasia[7]}</pasted_content id="x">`
   assert.equal(kirim(JSON.stringify({ session_id: 'abcdef123456', prompt })).status, 0)
