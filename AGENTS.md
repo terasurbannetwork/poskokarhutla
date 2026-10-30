@@ -155,6 +155,17 @@ dipakai bersama. Fan-out yang membaca aman di tree yang sama; fan-out yang
 menulis pakai `isolation: "worktree"`. Commit dengan path spesifik
 (`git commit -- <berkas>`), jangan `git add -A`.
 
+### 3.4 Aturan pemilik masuk gerbang, bukan memory
+
+Tiap kali pemilik bilang "catat" atau mengulang koreksi, tanya dulu apakah
+mesin bisa memeriksanya. Kalau bisa, aturannya dijadikan gerbang uji
+(`tests/agen/**`) atau hook (`.claude/settings.json`) di giliran yang sama,
+dan pelanggaran yang sudah ada dibetulkan di commit yang sama. Memory cuma
+untuk fakta, penunjuk, dan selera yang tidak terukur. Status dan to-do masuk
+docs/TIKET. Aturan yang bertentangan dengan aturan lama ditanyakan ke pemilik,
+lalu yang kalah dihapus. Latar dan rencana kerjanya ada di
+`docs/buku-pegangan/AUDIT-ATURAN-HARNESS.md`.
+
 ## 6. Review
 
 | Permukaan berubah                          | Pengulas                                  |

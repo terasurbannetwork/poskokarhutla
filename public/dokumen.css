@@ -44,7 +44,7 @@ main.dk{max-width:1240px;margin:0 auto;padding:calc(var(--top) + 18px) 16px 48px
 .dk-angka small{grid-column:1/-1;font-size:12.5px;line-height:1.35;margin-top:2px}
 .dk-tabel{overflow-x:auto;margin-top:8px;border:1px solid var(--line);border-radius:var(--r-sm)}
 .dk-tabel table{width:100%;border-collapse:collapse;font-size:12.5px}
-.dk-tabel th{background:var(--brand);color:var(--paper);text-align:left;padding:7px 9px;font-weight:700;white-space:nowrap}
+.dk-tabel th{background:var(--brand);color:var(--paper);text-align:center;padding:7px 9px;font-weight:700;white-space:nowrap}
 .dk-tabel td{padding:6px 9px;border-top:1px solid var(--line);vertical-align:top}
 .dk-tabel tr:nth-child(even) td{background:var(--surface)}
 .dk-tabel .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}

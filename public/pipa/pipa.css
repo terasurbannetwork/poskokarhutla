@@ -401,7 +401,7 @@
 .sp-putusan.jalan{color:var(--ok);background:color-mix(in srgb,var(--ok) 10%,transparent)}
 .sp-putusan.tunda{color:var(--ink2)}
 .sp-tabel-prioritas td small{display:block;margin-top:2px;color:var(--ink2);font-size:11.5px;line-height:1.35;white-space:normal}
-.sp-tabel-prioritas td.n,.sp-tabel-prioritas th.n{text-align:right;font-variant-numeric:tabular-nums}
+.sp-tabel-prioritas td.n,.sp-tabel-prioritas th.n{text-align:center;font-variant-numeric:tabular-nums}
 .sp-keputusan{margin:0 0 var(--sp-3);padding-left:var(--sp-5);font-size:13px}
 .sp-keputusan li{margin-bottom:6px;line-height:1.45}
 

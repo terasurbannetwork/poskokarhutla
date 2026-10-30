@@ -60,6 +60,6 @@
 .lb-bl-sub{margin:0 0 8px;font-size:12px;color:var(--ink2)}
 .lb-bl-tab{width:100%}
 .lb-bl-tab th{text-align:center}
-.lb-bl-tab td{text-align:right;padding:4px 8px;font-size:12px;font-variant-numeric:tabular-nums}
+.lb-bl-tab td{text-align:center;padding:4px 8px;font-size:12px;font-variant-numeric:tabular-nums}
 .lb-bl-tab td.kiri{text-align:left}
 .lb-bl-tab tr[hidden]{display:none}

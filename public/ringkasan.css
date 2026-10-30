@@ -276,7 +276,8 @@
   #rk-cetak h2{font:700 8.6pt "Inter",Arial,sans-serif;text-transform:uppercase;letter-spacing:.1em;color:#0b2545;margin:13pt 0 5pt;padding:0}
   #rk-cetak p{margin:0 0 5pt}
   #rk-cetak table{width:100%;border-collapse:collapse;font-size:8.8pt}
-  #rk-cetak th,#rk-cetak td{border:0;border-bottom:.5pt solid #c9d1dc;padding:3pt 6pt 3pt 0;text-align:left;vertical-align:top;white-space:normal;position:static;background:none}
+  #rk-cetak td{border:0;border-bottom:.5pt solid #c9d1dc;padding:3pt 6pt 3pt 0;text-align:left;vertical-align:top;white-space:normal;position:static;background:none}
+  #rk-cetak th{border:0;border-bottom:.5pt solid #c9d1dc;padding:3pt 6pt 3pt 0;text-align:center;vertical-align:top;white-space:normal;position:static;background:none}
   #rk-cetak th{color:#4a5568;font:600 7.4pt "Inter",Arial,sans-serif;text-transform:uppercase;letter-spacing:.06em;border-bottom:.8pt solid #0b2545}
   #rk-cetak tbody tr{background:none}
   #rk-cetak .rk-hal+.rk-hal table{font-size:8.3pt}
