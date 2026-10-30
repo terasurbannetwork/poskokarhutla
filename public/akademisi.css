@@ -2000,3 +2000,27 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-sl-back,.ak-sl-lipat{width:18px!important;height:18px!important}
 .ak-sl-back svg,.ak-sl-lipat svg{width:11px!important;height:11px!important}
 .ak-side-label:not(:has(.ak-sl-back:not([hidden]))){padding-left:10px!important}
+.ak-sd-n{white-space:nowrap}.ak-sd-n .ak-lw{margin-right:6px;vertical-align:-3px}
+.ak-rw>.ak-judulv .ak-lw{margin-right:6px;vertical-align:-5px}
+/* bilah lapisan peta: selalu satu baris */
+.ak-ptlayer{display:flex!important;flex-wrap:nowrap!important;gap:6px!important;grid-template-columns:none!important;max-width:none!important;width:auto!important}
+.ak-ptlayer > button{flex:0 0 auto!important;white-space:nowrap!important;width:auto!important}
+@media (max-width:700px){.ak-ptlayer{overflow-x:auto;scrollbar-width:none;max-width:calc(100vw - 24px)!important}}
+/* bilah lapisan di kepala panel samping: empat tombol sebaris, ringkas */
+.ak-side-h .ak-ptlayer,.ak-side .ak-ptlayer{display:grid!important;grid-template-columns:repeat(4,minmax(0,1fr))!important;gap:4px!important;width:100%!important;position:static!important}
+.ak-side-h .ak-ptlayer > button,.ak-side .ak-ptlayer > button[hidden]{display:inline-flex!important}
+.ak-side-h .ak-ptlayer > button{min-width:0!important;height:28px!important;padding:0 6px!important;font-size:11px!important;gap:3px!important;justify-content:center!important;overflow:hidden}
+.ak-side-h .ak-ptlayer > button small{display:none}
+.ak-side-h .ak-ptlayer > button .ak-ikon,.ak-side-h .ak-ptlayer > button svg{width:12px;height:12px;flex:none}
+.ak-side-h .ak-ptlayer > button[hidden]{display:none!important}
+/* tabel BPBD: baris lebih rapat */
+.ak-bpt td{padding-top:5px!important;padding-bottom:5px!important;line-height:1.25!important}
+.ak-bpt td small{margin-top:0!important}
+/* pil izin: warna status tetap terbaca di dalam baris dan kartu */
+.ak-izin.berlaku,.ak-org .ak-izin.berlaku,.ak-bkr .ak-izin.berlaku,.ak-mps .ak-izin.berlaku{background:#e6f4ea!important;color:#1e6b31!important}
+.ak-izin.habis,.ak-org .ak-izin.habis,.ak-mps .ak-izin.habis{background:#fff1e0!important;color:#8a4a00!important}
+.ak-izin.dicabut,.ak-org .ak-izin.dicabut,.ak-mps .ak-izin.dicabut{background:#fde8e8!important;color:#a61e1e!important}
+.ak-izin.belum,.ak-org .ak-izin.belum,.ak-mps .ak-izin.belum{background:#eef0f3!important;color:#4b5563!important}
+/* bilah lapisan panel samping: satu baris, gulir mendatar bila sempit */
+.ak-side-h .ak-ptlayer,.ak-side .ak-ptlayer{display:flex!important;flex-wrap:nowrap!important;overflow-x:auto;scrollbar-width:none}
+.ak-side-h .ak-ptlayer > button{flex:0 0 auto!important}

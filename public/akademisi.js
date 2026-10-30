@@ -1354,7 +1354,15 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     if (PT.lapis.kampus) for (const [k, v] of Object.entries(kampusInfo)) if (!PT.kat && Number.isFinite(v?.lat) && Number.isFinite(v?.lon))
       L.push({key: "k:" + k, jenis: "kampus", lat: v.lat, lon: v.lon, nama: k, tip: k, sub: "Kampus", ik: IK_KAMPUS, logo: [urlOk(logoK[k])].filter(Boolean), warna: "#14284b", w: 1 + (perK[k] || 0) / 8 + (strat("K:" + k) ? 30 : 0), bintang: !!strat("K:" + k), buka: () => profilKampus(k)});
     if (PT.lapis.pusat) PT.pusatArr.forEach((x, i) => { const v = kampusInfo[x.induk]; if (Number.isFinite(v?.lat)) L.push({key: "p:" + i, jenis: "pusat", lat: v.lat + (i % 5) * .004, lon: v.lon + (i % 7) * .004, nama: x.singkatan || x.nama, tip: x.nama, sub: "Pusat studi", ik: IK_KAMPUS, logo: [urlOk(logoK[x.induk])].filter(Boolean), warna: "#2b8a3e", w: .5, buka: () => profilKampus(x.induk)}); });
-    return L;
+    /* titik berkoordinat identik digabung jadi satu pin bertumpuk "N lembaga": satu pin = satu item, tidak ada label, logo, atau klik yang tercampur */
+    const kel = new Map(); L.forEach(it => { if (it.jenis === "pusat" || it.bintang) return; const k = it.lat.toFixed(4) + "," + it.lon.toFixed(4); (kel.get(k) || kel.set(k, []).get(k)).push(it); });
+    const gabung = new Set(), grup = [];
+    kel.forEach((a, k) => { if (a.length < 2) return; a.forEach(it => gabung.add(it)); const kw = a.slice().sort((x, y) => y.w - x.w);
+      grup.push({key: "g:" + k, jenis: "grup", lat: a[0].lat, lon: a[0].lon, nama: `${a.length} lembaga`, tip: `${a.length} lembaga dan kampus di titik yang sama`, sub: "Titik bersama", ik: IK_GEDUNG, logo: [], warna: "#14284b", w: kw[0].w + a.length, bintang: a.some(x => x.bintang), ref: kw, buka: () => bukaGrupPin(kw)}); });
+    return L.filter(it => !gabung.has(it)).concat(grup);
+  }
+  function bukaGrupPin(a) {
+    bukaSheet("detail", `<div class="ak-dkepala"><div class="ak-dk-atas"><span class="ak-lgo ak-lgo-k" style="--w0:#14284b">${ikon(IK_GEDUNG, "currentColor")}</span><div class="ak-nama"><h2 id="akSJudul">${angka(a.length)} lembaga di titik yang sama</h2><p>Koordinat peta identik, pilih salah satu untuk membuka profilnya.</p></div></div></div>`, () => daftarBkr(a.map(it => { if (it.jenis === "lembaga") { const x = lbMap.get(it.key.slice(2)); if (x) return barisLb(x); } return barisKaya({attr: `data-kp="${esc(it.tip)}"`, logo: logoKecil(it.tip), nama: it.tip, sub: "Kampus"}); })));
   }
   const geoPts = a => ({type: "FeatureCollection", features: a.map(i => ({type: "Feature", properties: {key: i.key, warna: i.warna, op: i.redup ? .2 : 1}, geometry: {type: "Point", coordinates: [i.lon, i.lat]}}))});
   /* sensor: warna menurut jenis (palet Okabe-Ito, aman buta warna), bentuk menurut pemilik jaringan: lingkaran BMKG, berlian BIG, segitiga internasional */
@@ -1400,11 +1408,20 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     document.querySelectorAll("#akPtLayer [data-ly]").forEach(b => b.setAttribute("aria-pressed", String(!!PT.lapis[b.dataset.ly])));
   }
   /* kartu tip wilayah peta: judul, angka ukuran terpilih dengan satuan, lalu baris fakta berlabel */
+  /* lambang wilayah (lambang_wilayah.json: {prov: {kode: {logo}}, kab: {"kode|Nama Kab": {logo}}}), dimuat malas, opsional */
+  let LAMBANG = null; const muatLambang = () => LAMBANG ? Promise.resolve(LAMBANG) : (LAMBANG = {prov: {}, kab: {}}, ambilData("lambang_wilayah").then(d => { if (d && typeof d === "object") LAMBANG = {prov: d.prov || {}, kab: d.kab || {}}; if (typeof isiSide === "function" && $("akSideT")) nanti(isiSide); return LAMBANG; }));
+  const lambangUrl = (kode, kab) => urlOk(((kab ? LAMBANG?.kab?.[kode + "|" + kab] : LAMBANG?.prov?.[kode]) || {}).logo);
+  const lambangHtml = (url, px) => url ? `<img class="ak-lw" src="${esc(url)}" alt="" width="${px}" height="${px}" loading="lazy" referrerpolicy="no-referrer">` : `<span class="ak-lw ak-lw0" style="width:${px}px;height:${px}px">${ikon(IKON_PIN, "currentColor")}</span>`;
+  const turunanLb = x => /^(stasiun|balai|pos |kantor sar|lpp rri|rri |tvri|unit )/i.test(String(x.nama || "")) || /^(bmkg|sar|rri)$/i.test(String(x.sub || ""));
+  const tipLogos = a => { const pakai = new Set(), hasil = [], skor = x => (strat("L:" + x.id) ? 1000 : 0) + (terhLb(x.id)[0] || 0) + bobot(x), urut = a.slice().sort((p, q) => skor(q) - skor(p)), kat = new Set();
+    const ambil = x => { const k = (chainLogo(x)[0] || x.id); if (pakai.has(k) || hasil.length >= 5) return false; pakai.add(k); hasil.push(x); return true; };
+    urut.forEach(x => { if (!kat.has(x.kategori) && !turunanLb(x) && ambil(x)) kat.add(x.kategori); }); urut.forEach(x => { if (!turunanLb(x)) ambil(x); }); urut.forEach(x => ambil(x)); return hasil; };
+  const tipTerbesar = a => { const pool = a.filter(x => !turunanLb(x)); return (pool.length ? pool : a).slice().sort((p, q) => ((strat("L:" + q.id) ? 1000 : 0) + (terhLb(q.id)[0] || 0) + bobot(q)) - ((strat("L:" + p.id) ? 1000 : 0) + (terhLb(p.id)[0] || 0) + bobot(p)))[0]; };
   const tipWilayah = r => { const ut = PT.fmt(r.v), sat = PT.sat === "lembaga" ? "lembaga" : PT.sat;
     const baris = [[IK_GEDUNG, "Lembaga", angka(r.n)], [IK_TEL, "Berkontak", angka(r.kontak)], r.risiko != null ? [IK_BAR, "Indeks risiko", angka(Math.round(r.risiko))] : null].filter(Boolean).filter(([, l]) => !(PT.sat === "lembaga" && l === "Lembaga"));
-    return `<div class="ak-tipw"><div class="ak-tipw-j">${esc(r.nama)}</div><div class="ak-tipw-u"><b>${esc(ut)}</b> ${esc(sat)}</div>
+    return `<div class="ak-tipw"><div class="ak-tipw-j">${lambangHtml(lambangUrl(r.kode, r.key && r.key.includes("|") ? r.nama : ""), 28)}<span>${esc(r.nama)}</span></div><div class="ak-tipw-u"><b>${esc(ut)}</b> ${esc(sat)}</div>
       <dl>${baris.map(([ik, l, v]) => `<div>${ikon(ik, "currentColor")}<dt>${l}</dt><dd>${v}</dd></div>`).join("")}</dl>
-      ${r.a?.length ? `<div class="ak-tipw-lg">${r.a.slice().sort((x, y) => bobot(y) - bobot(x)).slice(0, 5).map(x => logoLb(x).replace("class=\"ak-lgo\"", "class=\"ak-lgo kecil\"")).join("")}</div>` : ""}${r.top ? `<p class="ak-tipw-top"><span>Terbesar</span><em>${logoLb(r.top).replace("class=\"ak-lgo\"", "class=\"ak-lgo kecil\"")}${esc(r.top.nama)}</em></p>` : ""}</div>`; };
+      ${r.a?.length ? `<div class="ak-tipw-lg">${tipLogos(r.a).map(x => `<span title="${esc(x.nama)}">${logoLb(x).replace("class=\"ak-lgo\"", "class=\"ak-lgo kecil\"")}</span>`).join("")}</div>` : ""}${r.a?.length ? `<p class="ak-tipw-top"><span>Terbesar</span><em>${logoLb(tipTerbesar(r.a)).replace("class=\"ak-lgo\"", "class=\"ak-lgo kecil\"")}<i>${esc(tipTerbesar(r.a).nama)}</i></em></p>` : ""}</div>`; };
   const tipPeta = (e, html) => { const t = $("akTip"); if (!html) { t.hidden = true; return; } t.innerHTML = html; t.hidden = false; const x = e.originalEvent.clientX, y = e.originalEvent.clientY;
     t.style.left = Math.min(Math.max(8, x + 12), innerWidth - t.offsetWidth - 8) + "px"; t.style.top = Math.max(8, y - t.offsetHeight - 12) + "px"; };
   const sub1 = (L, f) => { const m = new Map(); L.forEach(x => { const k = f(x); if (k == null) return; (m.get(k) || m.set(k, []).get(k)).push(x); }); return m; };
@@ -1434,7 +1451,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       $("akSideT").innerHTML = `<div class="ak-sdl-lb">${[...grup].sort((a, c) => c[1].length - a[1].length).map(([kat, a]) => { const k = KAT[kat] || [kat || "Lainnya", KAT.riset[1], "#6b7280"];
         return `<h4 class="ak-sdl-h">${ikon(k[1], k[2])}<span>${esc(kapital(k[0]))}</span><em>${angka(a.length)}</em></h4>` + a.map(x => `<button type="button" data-sd-lb="${esc(x.id)}">${logoLb(x).replace('class="ak-lgo"', 'class="ak-lgo kecil"')}<span><b>${esc(judulCase(x.nama))}</b>${x.kab || x.kota ? `<small>${ikon(IKON_PIN, "currentColor")}${esc(x.kab || x.kota)}</small>` : ""}</span></button>`).join(""); }).join("") || '<p class="ak-khampa">Tidak ada lembaga.</p>'}</div>`; return; }
     const th = (k, l, r, ik, tt) => `<th scope="col" class="${r ? "r" : ""}" title="${tt || ""}" aria-sort="${SDP.urut === k ? (SDP.arah > 0 ? "ascending" : "descending") : "none"}"><button type="button" data-sd-urut="${k}" aria-label="${tt || l}">${ik ? ikon(ik, "currentColor") : ""}<span>${l}</span><i>${SDP.urut === k ? (SDP.arah > 0 ? "&#9650;" : "&#9660;") : ""}</i></button></th>`;
-    $("akSideT").innerHTML = `<table class="ak-sdt"><thead><tr>${th("nama", "Wilayah", 0, IKON_PIN)}${th("n", "Lembaga", 1, IK_GEDUNG, "Jumlah lembaga")}${th("pk", "Pakar", 1, IK_ORANG, "Jumlah pakar dari kampus di wilayah ini")}</tr></thead><tbody>${b.rows.map(r => `<tr data-sd-baris="${esc(r.k)}"><td>${esc(SDP.prov && !/^(kota|kab\.?|kabupaten) /i.test(r.nama) ? "Kab. " + r.nama : r.nama)}</td><td class="r">${angka(r.n)}</td><td class="r${r.pk ? "" : " nol"}">${angka(r.pk)}</td></tr>`).join("") || '<tr><td colspan="3">Tidak ada wilayah.</td></tr>'}</tbody></table>`;
+    $("akSideT").innerHTML = `<table class="ak-sdt"><thead><tr>${th("nama", "Wilayah", 0, IKON_PIN)}${th("n", "Lembaga", 1, IK_GEDUNG, "Jumlah lembaga")}${th("pk", "Pakar", 1, IK_ORANG, "Jumlah pakar dari kampus di wilayah ini")}</tr></thead><tbody>${b.rows.map(r => `<tr data-sd-baris="${esc(r.k)}"><td class="ak-sd-n">${lambangHtml(SDP.prov ? lambangUrl(SDP.prov, r.k) : lambangUrl(r.k, ""), 16)}${esc(SDP.prov && !/^(kota|kab\.?|kabupaten) /i.test(r.nama) ? "Kab. " + r.nama : r.nama)}</td><td class="r">${angka(r.n)}</td><td class="r${r.pk ? "" : " nol"}">${angka(r.pk)}</td></tr>`).join("") || '<tr><td colspan="3">Tidak ada wilayah.</td></tr>'}</tbody></table>`;
   }
   async function terbangKab(kab) { const m = PT.map, a = lbArr.filter(x => x.prov === SDP.prov && x.kab === kab && Number.isFinite(x.lat)); if (!a.length) return; const lo = a.map(x => x.lon), la = a.map(x => x.lat); m.fitBounds([[Math.min(...lo) - .01, Math.min(...la) - .01], [Math.max(...lo) + .01, Math.max(...la) + .01]], {padding: 80, maxZoom: 11}); }
   /* lebar sidebar dan drawer bisa digeser (min 300px, maks 60% layar), tersimpan di localStorage */
@@ -1933,8 +1950,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   /* diaspora masuk daftar akademisi: dimuat malas sekali; yang openalex id-nya sudah ada hanya diberi tanda, yang belum ditambahkan sebagai baris pakar */
   const DIA = new Map(); let diaMuat = false;
   function muatDiaspora() { if (diaMuat) return; diaMuat = true; ambilData("diaspora").then(d => { const a = dlist(Array.isArray(d) ? d : d?.diaspora); if (!a.length) return;
-    a.forEach(x => { const id = String(x.openalex_id || "").replace(/^https?:\/\/openalex\.org\//, ""), o = id && peta.get(id); if (o) { o[15] = "diaspora"; DIA.set(o[0], x.negara || ""); return; }
-      const nid = id || "dia-" + x.id, r = [nid, x.nama, x.institusi || x.lembaga || "", strs(x.rumpun), null, dlist(x.karya_indonesia).length || null, null, x.orcid || "", [], null, null, "", "", "x", null, "diaspora"]; r._cari = [x.nama, x.institusi, x.negara].filter(Boolean).join(" ").toLowerCase(); semua.push(r); peta.set(nid, r); DIA.set(nid, x.negara || ""); });
+    a.forEach(x => { const id = String(x.openalex_id || "").replace(/^https?:\/\/openalex\.org\//, ""), o = id && peta.get(id); if (o) { o[15] = "diaspora"; if (!o[9] && urlOk(x.foto_url)) o[9] = urlOk(x.foto_url); DIA.set(o[0], x.negara || ""); return; }
+      const nid = id || "dia-" + x.id, r = [nid, x.nama, x.institusi || x.lembaga || "", strs(x.rumpun), null, dlist(x.karya_indonesia).length || null, null, x.orcid || "", [], urlOk(x.foto_url) || null, null, "", "", "x", null, "diaspora"]; r._cari = [x.nama, x.institusi, x.negara].filter(Boolean).join(" ").toLowerCase(); semua.push(r); peta.set(nid, r); DIA.set(nid, x.negara || ""); });
     nanti(() => { saring(); segarBencana(); }); }); }
   function pasangPkSeg(v) {
     if (pkSub === "diaspora") { pkSub = "akademisi"; st.sumber = "d"; setSeg("akS", "d"); }
@@ -2040,6 +2057,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     const dk = dlist(Array.isArray(dok) ? dok : dok?.dokumen).filter(d => wilDok(d).some(w => String(w.prov) === pv && (!kab || !w.kab || cocokKab(w.kab, kab))));
     B.push(bagW("Dokumen", dk.length ? daftarBkr(dk.slice(0, 15).map(d => barisKaya({attr: hrefAttr(urlOk(d.url)), logo: lgoIkon([], IKJ, (RUMPUN[strs(d.rumpun)[0]] || [])[2] || "#14284b"), nama: d.judul, pil: pilJenis(d.jenis) + (d.tahun ? pilMini(IKL.tahun, String(d.tahun)) : "") + (wilDok(d)[0] ? pilMini(IKON_PIN, wilTeks(wilDok(d)[0].kab ? wilDok(d)[0].prov + "|" + wilDok(d)[0].kab : String(wilDok(d)[0].prov))) : "")}))) : "", "pustaka dokumen", dk.length));
     el.innerHTML = B.join("");
+    muatLambang().then(() => { if (tok !== renderWil.t) return; el.querySelector(".ak-rw > .ak-judulv")?.insertAdjacentHTML("afterbegin", lambangHtml(lambangUrl(pv, kab || ""), 20) + " "); });
   }
   renderWil.t = 0;
   function miniPeta(f, titik) { const b = bbox(f), W = 600, K = W / Math.max(b[2] - b[0], .01), H = Math.max(120, Math.min(420, (b[3] - b[1]) * K)), k = Math.min(K, H / Math.max(b[3] - b[1], .01)), pt = (lo, la) => `${((lo - b[0]) * k).toFixed(1)},${((b[3] - la) * k).toFixed(1)}`;
@@ -2373,7 +2391,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   let GRAFNOW = null;
   const terhLb = id => { const lis = GRAFNOW?.adj.get("L:" + id) || []; let p = 0, n = 0; lis.forEach(e => { if (e.to[0] === "P") p++; else if (e.to[0] === "I") n++; }); return [p, n]; };
   const barisLb = (y, attr) => { const k = KAT[y.kategori] || [y.kategori, KAT.riset[1], "#6b7280"];
-    const [tp, ti] = terhLb(y.id); return barisKaya({attr: typeof attr === "string" ? attr : `data-lb="${esc(y.id)}"`, fakta: tp ? `${angka(tp)} pakar` : "", fakta2: ti ? `${angka(ti)} inovasi` : "", logo: logoLb(y), nama: judulCase(y.nama) + (y.singkatan && !new RegExp("\\(" + y.singkatan.replace(/[^\w]/g, "") + "\\)\\s*$", "i").test(y.nama) ? ` (${y.singkatan})` : ""), jelas: ringkasLb(y), pil: (/^bpbd/i.test(y.nama) || /bpbd/i.test(String(y.sub || "")) ? "" : pilMini(k[1], k[0], k[2])) + pilLok(y) + pilIzin(y) + pilMitra(y) + (y.didirikan ? pilMini(IKL.tahun, "Sejak " + String(y.didirikan).slice(0, 4)) : "") + pilRumpunN(y.rumpun)}); };
+    const [tp, ti] = terhLb(y.id); return barisKaya({attr: typeof attr === "string" ? attr : `data-lb="${esc(y.id)}"`, fakta: tp ? `${angka(tp)} pakar` : "", fakta2: ti ? `${angka(ti)} inovasi` : "", logo: logoLb(y), nama: judulCase(y.nama) + (y.singkatan && !nrm(y.nama).includes(nrm(y.singkatan)) ? ` (${y.singkatan})` : ""), jelas: ringkasLb(y), pil: (/^bpbd/i.test(y.nama) || /bpbd/i.test(String(y.sub || "")) ? "" : pilMini(k[1], k[0], k[2])) + pilLok(y) + pilIzin(y) + pilMitra(y) + (y.didirikan ? pilMini(IKL.tahun, "Sejak " + String(y.didirikan).slice(0, 4)) : "") + pilRumpunN(y.rumpun)}); };
   const barisInovasi = (x, attr) => { const pb = dlist(x.pembuat)[0], w = (RUMPUN[strs(x.rumpun)[0]] || [])[2] || "#1c7ed6", np = dlist(x.penerapan).length;
     const [pdk, pjg] = namaInovasi(x);
     return barisKaya({attr: typeof attr === "string" ? attr : `data-inid="${esc(x.id)}"`, logo: lgoIkon([urlOk(x.foto_url)].filter(Boolean), ikJenis(x.jenis), w), nama: pdk, sub: pjg, oleh: olehHtml(pb?.lembaga_id, pb?.nama),
@@ -2552,7 +2570,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     ambilData(nama).then(d => { if (!sah(d)) { gagal(); return; } nanti(() => { try { p.innerHTML = ""; bangun(p, d); segarBencana(); } catch (e) { console.error(e); delete sudah[v]; p.innerHTML = kosongHtml(esc((VIEW[v] || ["Tampilan"])[0])); } }); });
   }
   function pasangTampil(v, sub) {
-    pasangCari(); nanti(() => siapGraf().then(() => { if ($("akLL") && lbHasil.length) gambarLb(false); if ($("akPjL") && typeof gambarPj === "function") gambarPj(false); if ($("akPdStack") && reStk) reStk(); })); nanti(muatGrafLogo); nanti(muatFotoPakar); nanti(muatStrat); nanti(muatDiaspora); nanti(muatBFoto);
+    pasangCari(); nanti(() => siapGraf().then(() => { if ($("akLL") && lbHasil.length) gambarLb(false); if ($("akPjL") && typeof gambarPj === "function") gambarPj(false); if ($("akPdStack") && reStk) reStk(); })); nanti(muatGrafLogo); nanti(muatFotoPakar); nanti(muatStrat); nanti(muatDiaspora); nanti(muatBFoto); nanti(muatLambang);
     segarBencana(); $("akBencana").hidden = false;
     $("akBencana").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; const r = b.dataset.r === GL.r ? "" : b.dataset.r; setChip("akBencana", r); nanti(() => setBencana(r)); });
     $("akPkSeg").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; pkSub = b.dataset.v; setSeg("akPkSeg", pkSub); pasangPkSeg("pakar"); });
