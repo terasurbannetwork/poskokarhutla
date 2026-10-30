@@ -65,3 +65,4 @@ Sumber data dibaca: `public/data/wilayah/NN.json` (profil wilayah IRBI, `scripts
 
 ## Kasus
 - 2026-10-30 · indeks.json 548 baris = 514 kab/kota (kode 4 digit) + 34 provinsi; neraca_air/kab.json berkode IRBI dan kekeringan-*.json bernomor urut sumber, keduanya BUKAN BPS, jadi kode.json bps null. Worktree agent dibuat dari origin/main, bukan main lokal: dokumen yang belum ada di origin dibaca dari checkout utama.
+- 2026-10-30 · KM-B01: sumber tak bertanggal (sekolah, fasilitas, bahaya, wilayah/NN) diberi tanggal snapshot repo (maks tanggal DIBI/desa_cari/GDACS) + tanggal_arti=snapshot-repo; email BPBD tidak ditulis karena D5 melarang email di public/data/kemitraan; DIBI punya baris kembar (3171 22 meninggal 2x) yang dijumlahkan apa adanya; ray casting ada di profil_daerah.py (B02 boleh memindah ke geo.py).

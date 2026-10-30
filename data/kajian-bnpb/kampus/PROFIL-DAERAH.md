@@ -51,7 +51,7 @@ diambil dari R2 lewat API saat dibuka akun berhak.
 | Blok | Berkas sumber | Kunci gabung | Catatan |
 | --- | --- | --- | --- |
 | wilayah, penduduk, sosek, irbi, kapasitas(rg,bp), riwayat_luar | `public/data/wilayah/NN.json` (`profil_wilayah.py`) | kode4 | blok `md, pp, sk, ir, rg, bp, rw` |
-| inarisk_kec | `banjir/data/bahaya.json`, `gempa/data/inarisk_gempa.json`, `wilayah` blok `ik` | kunci_nama kec | 0–1, ambang tinggi ≥ 0,67, sedang ≥ 0,33 |
+| inarisk_kec | `banjir/data/bahaya.json`, `gempa/data/inarisk_gempa.json`, `wilayah` blok `ik` | kunci_nama kec | 0–1, ambang tinggi > 0,666, sedang > 0,333 (ikut `scripts/umum/profil_wilayah.py`) |
 | kejadian.tahunan | `banjir/data/kejadian.json` (2008–2025) | kunci_nama kab | jenis banjir, cuaca, gelombang, kering, longsor, rob |
 | kejadian.dampak_12bln | `data/dibi_kejadian.json` | kemendagri "NN.NN" | jendela 12 bulan bergulir |
 | kejadian.musim | `banjir/data/riwayat.json` | kunci_nama | |
