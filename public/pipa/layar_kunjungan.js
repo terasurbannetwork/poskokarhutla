@@ -5,6 +5,7 @@ import {memuat, galat as kotakGalat} from "./keadaan.js";
 import {bukaDialog, kirimPost, muatMapLibre} from "./layar_kit.js";
 import {cekRenlap, hasilBuatHtml, teksKoordinat} from "./renlap.js";
 import {bacaKoordinat, pilihKandidat, urlOsrmTable, bacaOsrm, gabungMatriks, susunRencana, tautanSemua, tautanTim, tautanHari, kunjunganUntukServer, MAKS_LOKASI, MAKS_TIM} from "./kunjungan.js";
+import {muatMapLibre} from "../inti/maplibre.js";
 
 export const JALUR = {kompleks: "/api/sippa/data/kelayakan_kompleks", akses: "/api/sippa/data/akses_kompleks", konsesi: "/api/sippa/data/konsesi_kompleks", titik: "/data/hotspot72.json", kluster: "/data/kluster.json", palsu: "/data/titik_palsu.json", renlap: "/api/sippa/renlap"};
 const OSRM_BATAS_MS = 15000;

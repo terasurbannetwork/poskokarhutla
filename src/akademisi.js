@@ -184,7 +184,7 @@ async function terdekat(env, req, url) {
 
 /* GET /api/akademisi/data/<nama>: berkas R2 akademisi/<nama>.json, nama dari daftar tetap. Satu kunci rute per nama (worker.js tidak diubah);
    nama lain tidak punya rute, jatuh ke aset statis = 404 tanpa menyentuh R2. "baru" = akademisi/baru/YYYY-MM.json terbaru (list prefix, urut leksikal). */
-export const DATA_AKADEMISI = ["riset", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "wilayah_anggaran", "berita", "pendanaan", "negara_donor", "afiliasi"];
+export const DATA_AKADEMISI = ["riset", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "wilayah_anggaran", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran"];
 async function dataBaca(env, req, nama) {
   if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
