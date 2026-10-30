@@ -2241,3 +2241,8 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-bg,.ak-bpk,.ak-bpk>.ak-bg{min-width:0;max-width:100%}.ak-ksum{display:block;white-space:normal;overflow-wrap:anywhere}.ak-ksum .ak-izin{white-space:normal}.ak-bpk-b>div{min-width:0}.ak-bpk-b>div>span{overflow-wrap:anywhere}
 @media (max-width:560px){.ak-bpk-b>div{grid-template-columns:minmax(70px,110px) 1fr 38px}.ak-bpk-w{flex-wrap:wrap}.ak-bpk-w>i{order:3}}
 .ak-bg .ak-ksum{display:block!important;white-space:normal!important;overflow-wrap:anywhere;max-width:100%}.ak-alamat>span{min-width:0;overflow-wrap:anywhere}.ak-alamat a{overflow-wrap:anywhere;word-break:break-word}.ak-bg .ak-kontak2{min-width:0;max-width:100%}
+.ak-bg{grid-template-columns:minmax(0,1fr)}.ak-bg .ak-kontak2{grid-template-columns:repeat(auto-fill,minmax(min(220px,100%),1fr))!important}.ak-bg .ak-kontak2>.ak-ksum{grid-column:1/-1}
+.ak-bg .ak-alamat a{white-space:normal!important;display:inline;overflow-wrap:anywhere}.ak-bg .ak-alamat>span{display:block;max-width:100%}
+/* batang terpilih: sorot latar lembut + garis kiri, bukan bingkai yang saling bertabrakan */
+.ak-br.ak-bsel,[data-bar].ak-bsel{outline:none!important;background:#e8effb!important;box-shadow:inset 3px 0 0 var(--brand,#14284b)!important;border-radius:8px}
+.ak-bars{row-gap:4px}
