@@ -3,7 +3,8 @@
 Kunci : OPENAQ_KEY dari env (header X-API-Key), tidak pernah ditulis ke berkas. Tanpa kunci: status "MENUNGGU KUNCI", bagian OpenAQ kosong,
         dan MOS dihitung dari stasiun PM2,5 BMKG (omc_arsip.json) SEBAGAI PENGGANTI, diberi label sumber_obs yang jujur.
 API   : GET https://api.openaq.org/v3/locations?iso=ID&parameters_id=2 (PM2,5 = parameter 2), lalu /v3/sensors/{id}/hours?datetime_from&datetime_to (batas 60 permintaan/menit:
-        jeda 1,1 dtk). Parser diuji dengan fixture bentuk dokumentasi; BELUM diuji ke respons live (kunci tidak ada).
+        jeda 1,1 dtk). Parser diuji dengan fixture bentuk dokumentasi; Parser DIUJI ke respons live 30 Okt 2026 (/locations dan /sensors/{id}/hours: value + period.datetimeFrom.utc).
+        Catatan:  ~40 sensor aktif, hampir semua AirGradient/Clarity (murah); untuk uji multi-tahun pakai openaq_arsip.py + uji_panen.py.
 Syarat: OpenAQ mengumpulkan data pemerintah/pihak ketiga dengan lisensi per sumber; tampilkan atribusi "OpenAQ" dan penyedia asal (field provider).
 Rumus : lihat pm25_mos.uji_mos. Uji: waktu 60/40, MAE vs CAMS mentah dan vs klimatologi stasiun, bootstrap per tanggal; LOLOS hanya bila keduanya lebih baik dengan batas atas selisih < 0.
 Pakai : python3 scripts/udara/openaq_mos.py | uji
@@ -31,11 +32,15 @@ def _get(path, q, kunci):
     return d
 
 
-def sensor_pm25(lokasi):
-    """Balasan /locations -> [(id_sensor, lat, lon, nama)] hanya sensor parameter pm25 dengan koordinat."""
+def sensor_pm25(lokasi, sejak=None):
+    """Balasan /locations -> [(id_sensor, lat, lon, nama)] hanya sensor parameter pm25 dengan koordinat, bukan 'indoor'.
+    sejak='YYYY-MM-DD': buang lokasi yang datetimeLast.utc-nya lebih lama (live v3: 133 lokasi ID, sebagian besar mati sejak 2016-2025)."""
     out = []
     for L in lokasi.get("results", []):
         c = L.get("coordinates") or {}
+        z = (L.get("datetimeLast") or {}).get("utc") or ""
+        if "indoor" in (L.get("name") or "").lower() or (sejak and z[:10] < sejak):
+            continue
         for s in L.get("sensors", []):
             if (s.get("parameter") or {}).get("name") == "pm25" and c.get("latitude") is not None:
                 out.append((s["id"], c["latitude"], c["longitude"], L.get("name") or str(L.get("id"))))
@@ -56,9 +61,9 @@ def jam_sensor(hours):
 
 def unduh(kunci, hari=14, maks_sensor=40):
     lok = _get("locations", {"iso": "ID", "parameters_id": 2, "limit": 1000}, kunci)
-    sen = sensor_pm25(lok)[:maks_sensor]
     t1 = dt.datetime.now(dt.timezone.utc)
     t0 = t1 - dt.timedelta(days=hari)
+    sen = sensor_pm25(lok, (t1 - dt.timedelta(days=3)).strftime("%Y-%m-%d"))[:maks_sensor]
     obs = {}
     for sid, la, lo, nama in sen:
         h = jam_sensor(_get(f"sensors/{sid}/hours", {"datetime_from": t0.strftime("%Y-%m-%dT%H:%M:%SZ"), "datetime_to": t1.strftime("%Y-%m-%dT%H:%M:%SZ"), "limit": 1000}, kunci))
@@ -69,6 +74,9 @@ def unduh(kunci, hari=14, maks_sensor=40):
 
 def jalankan():
     kunci = os.environ.get("OPENAQ_KEY")
+    if not kunci:   # worktree/checkout lokal: hanya variabel itu dari .env
+        import openaq_arsip
+        kunci = openaq_arsip.kunci_env()
     arsip = json.load(open(os.path.join(alat.OUT, "omc_arsip.json")))
     obs_b = m.obs_bmkg(arsip)
     obs_o = unduh(kunci) if kunci else {}
@@ -83,10 +91,13 @@ def jalankan():
 
 
 def uji():
-    lok = {"results": [{"id": 1, "name": "Jakarta A", "coordinates": {"latitude": -6.2, "longitude": 106.8},
+    lok = {"results": [{"id": 1, "name": "Jakarta A", "datetimeLast": {"utc": "2026-10-29T00:00:00Z"},"coordinates": {"latitude": -6.2, "longitude": 106.8},
                         "sensors": [{"id": 10, "parameter": {"name": "pm25"}}, {"id": 11, "parameter": {"name": "no2"}}]},
                        {"id": 2, "name": "Tanpa koordinat", "coordinates": {}, "sensors": [{"id": 12, "parameter": {"name": "pm25"}}]}]}
     assert sensor_pm25(lok) == [(10, -6.2, 106.8, "Jakarta A")]
+    lok["results"].append({"id": 3, "name": "AG01(indoor)", "coordinates": {"latitude": 1, "longitude": 2}, "sensors": [{"id": 13, "parameter": {"name": "pm25"}}]})
+    lok["results"].append({"id": 4, "name": "Mati", "coordinates": {"latitude": 1, "longitude": 2}, "datetimeLast": {"utc": "2016-11-09T16:00:00Z"}, "sensors": [{"id": 14, "parameter": {"name": "pm25"}}]})
+    assert sensor_pm25(lok, "2026-10-01") == [(10, -6.2, 106.8, "Jakarta A")]
     jam = {"results": [{"value": 35.5, "period": {"datetimeFrom": {"utc": "2026-10-28T03:00:00Z"}}}, {"value": -999, "period": {"datetimeFrom": {"utc": "2026-10-28T04:00:00Z"}}},
                        {"value": None, "period": {"datetimeFrom": {"utc": "2026-10-28T05:00:00Z"}}}]}
     assert jam_sensor(jam) == {"2026-10-28T03": 35.5}
