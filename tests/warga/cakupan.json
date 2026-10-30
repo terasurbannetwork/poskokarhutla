@@ -901,7 +901,17 @@
     "table km_desa_catatan": "km CHECK kolom: nilai salah DITOLAK",
     "table km_dampingan": "km CHECK kolom: nilai salah DITOLAK",
     "table km_bumn": "km CHECK kolom: nilai salah DITOLAK",
-    "table km_modul": "km CHECK kolom: nilai salah DITOLAK"
+    "table km_modul": "km CHECK kolom: nilai salah DITOLAK",
+    "GET /kemitraan": "/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id",
+    "GET /kemitraan/masuk": "/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id",
+    "GET /kemitraan/daftar": "/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id",
+    "GET /kemitraan/saya": "/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id",
+    "GET /kemitraan/buku": "/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id",
+    "GET /kemitraan/panduan": "/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id",
+    "GET /kemitraan/sertifikat/:id": "/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id",
+    "GET /api/kemitraan/saya": "peran terdeteksi benar: SA, ST, PM, KK, AG, BP, PL",
+    "GET /api/kemitraan/daerah/:kab4/pakar": "pola jalur: :id :rid :aid :kab4 cocok",
+    "POST /api/kemitraan/masalah/:id/pakar/:aid": "CSRF: POST bercookie sesi_kemitraan"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

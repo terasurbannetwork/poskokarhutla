@@ -362,8 +362,10 @@ Tabel dan kolom kunci (pengerja menulis CHECK lengkap gaya §3):
 | `GET /kemitraan/panduan?kab=&masalah=&n=` | ST, BP | cetak panduan |
 | `GET /kemitraan/daftar` | PB | form kampus/anggota (Turnstile bila ada sitekey) |
 | `GET /kemitraan/masuk` | PB | form masuk KK + atur sandi `?atur=<token>` |
-| `GET /kemitraan/saya` | AG, BP, PL | halaman berkode |
+| `GET /kemitraan/saya` | PB (cangkang) | halaman berkode: kode di `#k=` tidak sampai ke server, jadi halaman publik tanpa data; hak ditegakkan `/api/kemitraan/saya` (KM-A09) |
 | `GET /kemitraan/sertifikat/:id` | PB | verifikasi: nama tampil, kampus, peran, jam, tanggal, status; tanpa kontak |
+
+> **Catatan KM-A09 (30 Okt 2026):** `/buku` (SA/ST/PM/KK) dan `/panduan` (SA/ST) kini 303 ke `/kemitraan/masuk` tanpa sesi. Akibatnya BP (kode `#k=`) belum bisa membuka keduanya lewat navigasi. KM-B08 dan KM-C02-js wajib memutuskan: jadikan cangkang publik (data dari API berhak) atau beri BP sesi. Sampai itu, baris tabel di atas untuk BP belum terpenuhi.
 
 ### 4.3 API (ringkas; masukan divalidasi sesuai CHECK §3)
 | Metode dan jalur | Hak | Masukan | Laju | Jawaban |

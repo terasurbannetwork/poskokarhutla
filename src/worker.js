@@ -19,6 +19,7 @@ import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
+import {layaniKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
 import {RUTE_BANGUNAN} from "./bangunan.js";
@@ -604,7 +605,7 @@ const tabelRute = () => GABUNG ||= {...RUTE, ...Ews.RUTE_EWS};
    Pengecualian: halaman admin ber-Referrer-Policy no-referrer, jadi form POST sama-situs (Keluar, Masuk dengan cookie lama) dikirim peramban dengan
    Origin "null". Itu diterima HANYA bila Sec-Fetch-Site = same-origin (header terlarang, tak bisa dipalsukan halaman; iframe tersandbox mengirim cross-site). */
 export const tolakOrigin = (req, url) => {
-  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf)=/.test(req.headers.get("cookie") || "");
+  const o = req.headers.get("origin"), sesi = /(?:^|;\s*)(?:sesi_admin|sesi_pendataan|sesi_staf|sesi_kemitraan)=/.test(req.headers.get("cookie") || "");
   const kosong = !o || o === "null", samaPeramban = kosong && req.headers.get("sec-fetch-site") === "same-origin";
   if (sesi ? (!samaPeramban && (kosong || !URL.canParse(o) || new URL(o).host !== url.host)) : (!kosong && (!URL.canParse(o) || new URL(o).host !== url.host))) return gagal(403, "origin lain ditolak");
   return null;
@@ -785,6 +786,9 @@ const W = {
     /* tautan bersih halaman karhutla (/peta, /k/K0001, /sim/K0001): sajikan index.html, routing di peramban */
     if (url.pathname === "/sitemap.xml" && (req.method === "GET" || req.method === "HEAD"))
       return new Response(req.method === "HEAD" ? null : sitemap(url.origin), {headers: {"content-type": "application/xml; charset=utf-8", "cache-control": "public, max-age=3600"}});
+    /* Kemitraan Kampus (ADR-07): /kemitraan*, /api/kemitraan/* diserahkan ke sub-router src/kemitraan.js SEBELUM gerbang centurisk97.id di bawah:
+       modul menjaga dirinya lewat hakKm (staf, kampus, kode), jadi tamu tidak dialihkan ke /admin/masuk. Bukan rute modul, jatuh ke aset statis. */
+    if (url.pathname === "/kemitraan" || url.pathname.startsWith("/kemitraan/") || url.pathname.startsWith("/api/kemitraan/")) { const k = await layaniKm(env, req, url, ctx); if (k) return k; }
     /* centurisk97.id: semua halaman HTML wajib masuk admin dulu (pemilik 19 Okt 2026). Aset statis (JS/JSON/gambar) tidak lewat Worker. */
     /* Ruang Koordinasi: berkas /bnpb/*.html hanya lewat jalur bersihnya (halamanBnpbPublik memberi CSP ketat, no-store untuk halaman berkode);
        dibuka langsung = 301 ke jalur bersih (fragmen #k= ikut dibawa peramban), berkas tak dikenal = 404 */

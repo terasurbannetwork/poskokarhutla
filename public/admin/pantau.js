@@ -7,7 +7,7 @@
     for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else e.setAttribute(k, v === true ? "" : v); }
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const JAM = 36e5, HARI = 24 * JAM, POTONG = 12;
-  const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan"};
+  const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan", kemitraan: "Kemitraan kampus"};
   const STATUS = {baru: "Baru", dikerjakan: "Dikerjakan", selesai: "Selesai", abaikan: "Diabaikan"}, PRIO = {0: "Tertinggi", 1: "Segera", 2: "Penting", 3: "Biasa"};
   const angka = n => Number(n ?? 0).toLocaleString("id-ID");
   const lama = fmt.durasi;   // SATU formatter durasi semua layar (/inti/format.js): "12 menit", "6 jam 24 menit", "2 hari 3 jam"
