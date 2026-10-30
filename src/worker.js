@@ -861,7 +861,7 @@ const W = {
       if (m === 23) try { console.log("drop", JSON.stringify(await nilaiDropTertunda(env, sekarang))); } catch (e) { console.error("drop", e?.message); }   // L11: nilai drop heli yang jendela 6 jamnya lewat, tiap jam
       try { const h = await ulangiKabar(env, sekarang); if (h.coba) console.log("kabar ulang", JSON.stringify(h)); } catch (e) { console.error("kabar ulang", e?.message); }   // kabar seketika yang gagal: coba lagi (jeda 1/5/15/60 menit)
       try { const h = await alarmHimawari(env, sekarang); if (h.baru || h.hilang) console.log("alarm himawari", JSON.stringify(h)); } catch (e) { console.error("alarm himawari", e?.message); }   // etag R2 berubah -> tandaiBaru -> alarm_himawari + kabar Posko pusat
-      if (m === 46) try { console.log("adsb", JSON.stringify(await panenAdsb(env, sekarang))); } catch (e) { console.error("adsb", e?.message); }   // tiap jam menit 46; 7 permintaan berjeda 1,1 dtk (adsb.fi); migrasi 0080 belum jalan = dilewati
+      if (m === 46) try { console.log("adsb", JSON.stringify(await panenAdsb(env, sekarang))); } catch (e) { console.error("adsb", e?.message); }   // tiap jam menit 46; 7 permintaan berjeda 1,1 dtk (adsb.fi); migrasi 0085 belum jalan = dilewati
       if (m === 17) try { await bersihSemua(env, sekarang); } catch (e) { console.error("bersih", e?.message); }
     }
     if (ev.cron === CRON_TITIK) return console.log("titik", JSON.stringify(await perbaruiTitik(env)));
@@ -895,7 +895,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanInstansi(env, Date.now()); } catch (e) { console.error("instansi", e?.message); }   // migrasi 0029 belum jalan = cron lain tetap jalan
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan
-    try { await bersihkanAdsb(env, sekarang); } catch (e) { console.error("adsb pangkas", e?.message); }   // migrasi 0080 belum jalan = cron lain tetap jalan; jam 05 UTC, buang > 90 hari
+    try { await bersihkanAdsb(env, sekarang); } catch (e) { console.error("adsb pangkas", e?.message); }   // migrasi 0085 belum jalan = cron lain tetap jalan; jam 05 UTC, buang > 90 hari
     try { await bersihkanGranul(env, sekarang); } catch (e) { console.error("granul satelit", e?.message); }   // migrasi 0075 belum jalan = cron lain tetap jalan; sekali sehari (jam 04 UTC), buang granul > 400 hari
     try { await bersihkanSippa(env, sekarang); } catch (e) { console.error("sippa", e?.message); }   // migrasi 0058 belum jalan = cron lain tetap jalan; ringkas+buang telemetri > 30 hari, alarm diam
     try { await bersihkanUjiBanjir(env, Date.now()); } catch (e) { console.error("uji banjir", e?.message); }   // retensi 12 bulan
