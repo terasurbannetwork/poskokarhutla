@@ -128,13 +128,54 @@
     const p = $("mnFProv").value, k = $("mnFKey").value, batas = Date.now() - 864e5;
     tampil = dets.filter(d => d.ms >= batas && (!p || d.pk === p) && (k === "" || d.key === +k));
   }
+  /* ---------- aksi per deteksi: telepon/WA kantor BPBD (data/bpbd.json, BNPB; tanpa nomor = tombol tidak muncul), peta, salin, bagikan ---------- */
+  const A = d => `<svg class="mn-ik" viewBox="0 0 24 24" aria-hidden="true">${d}</svg>`;
+  const IA = {tel: '<path d="M5 4h4l2 5-2.5 1.5a11 11 0 0 0 5 5L15 13l5 2v4a2 2 0 0 1-2 2A16 16 0 0 1 3 6a2 2 0 0 1 2-2z"/>',
+    wa: '<path d="M3 21l1.6-4.8A8.5 8.5 0 1 1 8 19.5z"/><path d="M9 8.5c0 3.5 3 6.5 6.5 6.5l1-1.6-2.2-1-1 .8c-1-.4-1.9-1.3-2.3-2.3l.8-1-1-2.2z"/>',
+    peta: '<path d="M12 21s7-6 7-11a7 7 0 0 0-14 0c0 5 7 11 7 11z"/><circle cx="12" cy="10" r="2.5"/>',
+    gm: '<path d="M9 4 3 6v14l6-2 6 2 6-2V4l-6 2z"/><path d="M9 4v14M15 6v14"/>',
+    salin: '<rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V6a2 2 0 0 1 2-2h9"/>',
+    bagi: '<circle cx="18" cy="5" r="2.5"/><circle cx="6" cy="12" r="2.5"/><circle cx="18" cy="19" r="2.5"/><path d="m8.2 10.8 7.6-4.3M8.2 13.2l7.6 4.3"/>'};
+  const BPD = new Map(), nmKab = t => String(t || "").toLowerCase().replace(/^(kabupaten|kab\.?)\s+/, "").trim();
+  function nomorKantor(t) {   // nomor pertama yang utuh; 0xx atau 08xx; selain itu bukan nomor (nama orang, email, kosong)
+    for (const bag of String(t || "").split("/")) { const d = bag.replace(/\D/g, ""); if (/^0\d{7,12}$/.test(d)) return {tel: "+62" + d.slice(1), wa: /^08\d{8,11}$/.test(d) ? "62" + d.slice(1) : ""}; }
+    return null;
+  }
+  async function muatKantor() {
+    try { const j = await (await fetch("/data/bpbd.json")).json();
+      for (const k of j.kantor || []) { const n = nomorKantor(k.pusdalops); if (!n) continue;
+        const kunci = k.prov + "|" + (/provinsi/i.test(k.nama) ? "provinsi" : nmKab(k.kab)); if (!BPD.has(kunci)) BPD.set(kunci, n); }
+      if (BPD.size) nanti(gambarDet);
+    } catch (e) {}
+  }
+  const kantorDet = d => BPD.get(d.pk + "|" + nmKab(d.kab)) || BPD.get(d.pk + "|provinsi") || null;
+  const tautPeta = d => `/?lat=${(+d.lat).toFixed(5)}&lon=${(+d.lon).toFixed(5)}&z=13`;
+  const teksDet = d => `Deteksi api ${tglJam(d.ms)} WIB, ${[d.kec, d.kab, namaProv(d.pk)].filter(Boolean).join(", ")}. FRP ${d.frp == null ? "-" : (+d.frp).toFixed(1)}, keyakinan ${KEY[d.key] || "-"}, ${koord(d.lat, d.lon)}. ${location.origin}${tautPeta(d)}`;
+  function aksiDet(d) {
+    const n = kantorDet(d), tb = (ik, judul, atr) => `<${atr.startsWith("href") ? "a" : "button type=\"button\""} class="mn-ia" ${atr} title="${judul}" aria-label="${judul}">${A(ik)}</${atr.startsWith("href") ? "a" : "button"}>`;
+    const gm = `https://www.google.com/maps?q=${d.lat},${d.lon}`;
+    return (n ? tb(IA.tel, "Telepon BPBD", `href="tel:${n.tel}"`) + (n.wa ? tb(IA.wa, "WhatsApp BPBD", `href="https://wa.me/${n.wa}?text=${encodeURIComponent(teksDet(d))}" target="_blank" rel="noopener"`) : "") : "")
+      + tb(IA.peta, "Buka di peta Centurisk97", `href="${tautPeta(d)}" target="_blank" rel="noopener"`) + tb(IA.gm, "Buka di Google Maps", `href="${gm}" target="_blank" rel="noopener"`)
+      + tb(IA.salin, "Salin koordinat", 'data-a="salin"') + tb(IA.bagi, "Bagikan deteksi", 'data-a="bagi"');
+  }
+  async function aksiKlik(e) {
+    const b = e.target.closest("button[data-a]"), r = b && b.closest("tr[data-i]"), d = r && tampil[+r.dataset.i]; if (!d) return;
+    const tandai = j => { b.title = b.ariaLabel = j; b.classList.add("ok"); setTimeout(() => b.classList.remove("ok"), 1500); };
+    try {
+      if (b.dataset.a === "salin") { await navigator.clipboard.writeText(`${d.lat}, ${d.lon}`); tandai("Koordinat tersalin"); }
+      else if (navigator.share) await navigator.share({title: "Deteksi api", text: teksDet(d)});
+      else { await navigator.clipboard.writeText(teksDet(d)); tandai("Teks tersalin"); }
+    } catch (x) {}
+  }
+
   function gambarDet() {
     const n = tampil.length, tot = Math.max(1, Math.ceil(n / HAL)); hal = Math.min(hal, tot - 1);
+    let i0 = hal * HAL;
     $("mnDet").innerHTML = n ? tampil.slice(hal * HAL, hal * HAL + HAL).map(d =>
-      `<tr><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}">${KEY[d.key] || ""}</span></td><td class="mn-koord">${koord(d.lat, d.lon)}</td></tr>`).join("")
-      : !dimuat ? kosong(8, '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/>', "Data satelit belum masuk", "Halaman mencoba lagi tiap 5 menit.")
-      : dets.length ? kosong(8, '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', "Tidak ada deteksi pada saringan ini", "Coba provinsi atau keyakinan lain.")
-      : kosong(8, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada deteksi api dalam 24 jam terakhir", "");
+      `<tr data-i="${i0++}"><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}">${KEY[d.key] || ""}</span></td><td class="mn-koord">${koord(d.lat, d.lon)}</td><td class="mn-aksi"><span class="mn-aks">${aksiDet(d)}</span></td></tr>`).join("")
+      : !dimuat ? kosong(9, '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/>', "Data satelit belum masuk", "Halaman mencoba lagi tiap 5 menit.")
+      : dets.length ? kosong(9, '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', "Tidak ada deteksi pada saringan ini", "Coba provinsi atau keyakinan lain.")
+      : kosong(9, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada deteksi api dalam 24 jam terakhir", "");
     judulApi = dimuat ? `<b>${n.toLocaleString("id-ID")}</b> deteksi api dalam 24 jam terakhir` : "Deteksi api terbaru"; atas();
     $("mnHal").textContent = n ? `Menampilkan ${(hal * HAL + 1).toLocaleString("id-ID")}–${Math.min(n, hal * HAL + HAL).toLocaleString("id-ID")} dari ${n.toLocaleString("id-ID")} deteksi` : "";
     $("mnHal").parentElement.hidden = tot <= 1;
@@ -433,6 +474,7 @@
     nanti(gambarSt); });
   $("mnBProv").onchange = $("mnBLv").onchange = $("mnBHari").onchange = () => nanti(gambarBj);
   $("mnPrev").onclick = () => { hal--; gambarDet(); }; $("mnNext").onclick = () => { hal++; gambarDet(); };
+  $("mnDet").addEventListener("click", aksiKlik); muatKantor();
   $("mnTugas").addEventListener("click", togol); $("mnTugas").addEventListener("keydown", togol);
   document.addEventListener("keydown", e => { if (e.key === "Escape" && !$("mnModal").hidden) tutup(); });
   tombolSuara(); if (typeof PilihCantik !== "undefined") PilihCantik.pasang();
