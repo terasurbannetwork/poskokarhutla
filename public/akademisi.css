@@ -2228,3 +2228,13 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 #akPtKat .ak-kbtn{width:100%!important;box-sizing:border-box}
 #akPtKat .ak-kpop{left:0!important;right:0!important;width:100%!important;min-width:0!important;box-sizing:border-box}
 @media (max-width:700px){#akPtKat{width:calc(100vw - 24px)!important}}
+
+/* M2 profil BPBD */
+.ak-bpk{display:grid;gap:10px;margin-top:10px}.ak-bpk>.ak-bg{margin:0}
+.ak-alamat{display:flex;gap:8px;align-items:flex-start;margin:10px 0 0;font-size:13.5px}.ak-alamat svg{width:16px;height:16px;flex:none;margin-top:2px;color:#c92a2a;fill:none;stroke:currentColor;stroke-width:1.9}
+.ak-bpk-b{display:grid;gap:6px}.ak-bpk-b>div{display:grid;grid-template-columns:minmax(90px,150px) 1fr 44px;align-items:center;gap:10px;font-size:12.5px}
+.ak-bpk-b i{height:8px;border-radius:4px;background:var(--surface);overflow:hidden}.ak-bpk-b u{display:block;height:100%;background:#1c7ed6;border-radius:4px}.ak-bpk-b b{text-align:right;font-variant-numeric:tabular-nums}
+.ak-bpk-d{display:flex;flex-wrap:wrap;gap:6px}
+.ak-bpk-w{display:flex;align-items:center;gap:12px;width:100%;text-align:left;font:inherit;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:10px 12px;cursor:pointer}
+.ak-bpk-w:hover{border-color:#1c7ed6}.ak-bpk-w>span{flex:1;min-width:0;display:grid;gap:2px;font-size:14px}.ak-bpk-w em{font-style:normal;display:flex;flex-wrap:wrap;gap:2px 14px;font-size:12.5px;color:var(--ink2)}.ak-bpk-w em b{color:var(--ink)}
+.ak-bpk-w>i{font-style:normal;font-size:12px;font-weight:800;color:#fff;background:#14284b;border-radius:999px;padding:4px 12px;flex:none}
