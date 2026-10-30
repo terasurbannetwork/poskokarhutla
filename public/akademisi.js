@@ -650,7 +650,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const gulirKe = id => $(id).scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth", block: "start"});
 
   /* ----- riset daerah: indeks sekali, saring sesuai permintaan ----- */
-  const R = {prov: "", kab: "", rumpun: "", sumber: "", q: "", hal: 1}, RPER = 20;
+  const R = {rset: new Set(), prov: "", kab: "", rumpun: "", sumber: "", q: "", hal: 1}, RPER = 20;
   let risetArr = null, risetHasil = [], pakarRiset = new Map(), risetProv = {}, risetKab = {}, risetRumpun = {}, risetSegar = null, rtok = 0;
   function indeksRiset(arr) {
     if (risetArr) return;
@@ -668,7 +668,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   }
   function saringRiset() {
     const q = R.q.toLowerCase(), key = R.kab ? R.prov + "|" + R.kab : R.prov;
-    risetHasil = risetArr.filter(x => (!key || x._w.has(key)) && (!R.rumpun || dlist(x.rumpun).includes(R.rumpun)) && (!R.sumber || (R.sumber === "int") === (x.sumber === "openalex")) && (!q || x._cari.includes(q)));
+    risetHasil = risetArr.filter(x => (!key || x._w.has(key)) && cocokBencana(R.rset, dlist(x.rumpun)) && (!R.sumber || (R.sumber === "int") === (x.sumber === "openalex")) && (!q || x._cari.includes(q)));
   }
   function barisRiset(x, i) {
     const pk = dlist(x.pakar).map(id => peta.get(id)).filter(Boolean), nm = new Set(pk.map(o => o[1].toLowerCase()));
@@ -723,12 +723,12 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     let tt = 0;
     $("akRQ").addEventListener("input", e => { clearTimeout(tt); tt = setTimeout(() => { R.q = e.target.value.trim(); R.hal = 1; jalan(false); }, 250); });
     $("akRS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; R.sumber = b.dataset.v; R.hal = 1; setSeg("akRS", R.sumber); jalan(false); });
-    $("akRR").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; R.rumpun = b.dataset.r; R.hal = 1; setChip("akRR", R.rumpun); jalan(false); });
+    $("akRR").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; R.rset = togglePilihan(R.rset, b.dataset.r); R.rumpun = R.rset.size === 1 ? [...R.rset][0] : ""; R.hal = 1; tandaiPil("akRR", R.rset); nanti(() => jalan(false)); });
     pasangHal("akRH", h => { R.hal = h; gambarRiset(true); });
     const bukaR = e => { if (e.target.closest("[data-pk],a")) return; const li = e.target.closest("[data-ri]"); if (li) sheetRiset(risetHasil[+li.dataset.ri]); };
     $("akRL").addEventListener("click", bukaR);
     $("akRL").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.matches("[data-ri]")) { e.preventDefault(); bukaR(e); } });
-    risetSegar = () => { $("akRQ").value = R.q; lP(); lK(); kabBox(); setChip("akRR", R.rumpun); setSeg("akRS", R.sumber); jalan(false); };
+    risetSegar = () => { $("akRQ").value = R.q; lP(); lK(); kabBox(); tandaiPil("akRR", R.rset); setSeg("akRS", R.sumber); jalan(false); };
     risetSegar();
   }
   /* lembar riset: kepala seketika; ringkasan, penjelasan, kesimpulan (Workers AI dari abstrak), abstrak asli, topik, sitasi per tahun dimuat dari worker */
@@ -763,15 +763,15 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
         + (d.abstrak ? `<details class="ak-dbagian"><summary><h3>Abstrak asli</h3></summary><div class="ak-disi"><p class="ak-rata">${esc(d.abstrak)}</p></div></details>` : "");
     }));
   }
-  function setWilRiset(prov, kab) { Object.assign(R, {prov, kab, rumpun: "", sumber: "", q: "", hal: 1}); if (risetSegar) risetSegar(); }
+  function setWilRiset(prov, kab) { Object.assign(R, {rset: new Set(), prov, kab, rumpun: "", sumber: "", q: "", hal: 1}); if (risetSegar) risetSegar(); }
 
   /* ----- kejadian besar ----- */
-  const K = {jenis: "", hal: 1}, KPER = 18;
+  const K = {jset: new Set(), jenis: "", hal: 1}, KPER = 18;
   let kejArr = [], kejHasil = [];
   const lokasiKej = k => [...dlist(k.kab), ...dlist(k.prov).map(provT)].filter(Boolean).join(", ");
   const pakarKej = k => dlist(k.riset?.pakar).filter(p => p && peta.has(p.id));
   function gambarKej(gulir) {
-    kejHasil = kejArr.filter(k => !K.jenis || k.jenis === K.jenis);
+    kejHasil = kejArr.filter(k => cocokBencana(K.jset, [k.jenis]));
     const n = kejHasil.length, a = (K.hal - 1) * KPER;
     $("akKjJ").innerHTML = `<b>${angka(n)}</b> kejadian besar${K.jenis ? ` ${esc((RUMPUN[K.jenis] || [K.jenis])[0].toLowerCase())}` : ""}${DATA._kejDiperbarui ? `<em class="ak-tanda">Diperbarui ${esc(tglID(DATA._kejDiperbarui))}</em>` : ""}`;
     $("akKjL").innerHTML = kejHasil.slice(a, a + KPER).map((k, j) => { const lok = lokasiKej(k), r = k.riset;
@@ -801,12 +801,12 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     const n = {}; kejArr.forEach(k => { if (k.jenis) n[k.jenis] = (n[k.jenis] || 0) + 1; });
     p.innerHTML = `<div class="ak-saring"><div id="akKjC" class="ak-chip" role="group" aria-label="Jenis bencana">${chipsRumpun(Object.entries(n).sort((a, b) => b[1] - a[1]))}</div></div>
       <div class="ak-hasil"><h2 class="ak-judulv" id="akKjJ"></h2><div class="ak-kjgrid" id="akKjL"></div><nav id="akKjH" class="ak-hal" aria-label="Halaman kejadian" aria-live="polite"></nav></div>`;
-    $("akKjC").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; K.jenis = b.dataset.r; K.hal = 1; setChip("akKjC", K.jenis); nanti(() => gambarKej(false)); });
+    $("akKjC").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; K.jset = togglePilihan(K.jset, b.dataset.r); K.jenis = K.jset.size === 1 ? [...K.jset][0] : ""; K.hal = 1; tandaiPil("akKjC", K.jset); nanti(() => gambarKej(false)); });
     pasangHal("akKjH", h => { K.hal = h; gambarKej(true); });
     const buka1 = e => { const c = e.target.closest("[data-kj]"); if (c && kejHasil[+c.dataset.kj]) sheetKej(kejHasil[+c.dataset.kj]); };
     $("akKjL").addEventListener("click", buka1);
     $("akKjL").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.dataset.kj != null) { e.preventDefault(); buka1(e); } });
-    setChip("akKjC", K.jenis); gambarKej(false);
+    tandaiPil("akKjC", K.jset); gambarKej(false);
   }
 
   /* ----- jurnal ----- */
@@ -998,11 +998,11 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const pelaksanaList = v => [...new Set((Array.isArray(v) ? v : String(v || "").split(";")).map(x => String(x).trim()).filter(Boolean).map(judulCase))];
   const tahunSaja = (a, b) => { const t = [...new Set([a, b].filter(Boolean).map(t => String(t).slice(0, 4)))]; return t.join("–"); };
   const dari3w = p => ({id: p.id, judul: p.judul, donor: p.donor, pelaksana: p.pelaksana, sektor: p.sektor, prov: p.prov, usd: p.nilai_usd, asli: p.nilai_asli, mata: p.mata_uang_asli, mulai: p.mulai, selesai: p.selesai, status: p.status, url: p.sumber_url, ringkasan_id: p.ringkasan_id, judul_en: p.judul_en, salur: p.nilai_salur_usd, dok: p.tautan_dokumen});
-  const dariDana = x => ({id: x.id, judul: x.nama, donor: x.pemberi, pelaksana: x.pelaksana?.length ? x.pelaksana : x.penerima, sektor: [], prov: x.prov, usd: x.nilai_usd, asli: x.nilai, mata: x.mata_uang, mulai: x.tahun, selesai: x.selesai, status: x.status, url: urlOk(x.url) || urlOk(dlist(x.sumber)[0]?.url)});
+  const dariDana = x => ({id: x.id, judul: x.nama, donor: x.pemberi, pelaksana: x.pelaksana?.length ? x.pelaksana : x.penerima, sektor: x.sektor || [], ringkasan_id: x.ringkasan_id, judul_en: x.judul_en, salur: x.nilai_salur_usd, prov: x.prov, usd: x.nilai_usd, asli: x.nilai, mata: x.mata_uang, mulai: x.tahun, selesai: x.selesai, status: x.status, url: urlOk(x.url) || urlOk(dlist(x.sumber)[0]?.url)});
   const CATATAN_PROYEK = () => `laporan donor ke IATI (proyek mitra 3W), bisa tidak lengkap. Rupiah dihitung dengan kurs Rp ${angka(KURS_USD)} per US$ (${KURS_TGL}).`;
   const gridProyek = (a, tanpaKurs) => `<div class="ak-pjg">${a.map(kartuPj).join("")}</div>`;
   /* ---- daftar ---- */
-  const LB = {q: "", prov: "", kat: "", skala: "", bidang: "", sub: "", sensor: false, hal: 1}, LPER = 24;
+  const LB = {katSet: new Set(), q: "", prov: "", kat: "", skala: "", bidang: "", sub: "", sensor: false, hal: 1}, LPER = 24;
   let lbArr = [], lbMap = new Map(), lbCabang = new Map(), lbHasil = [], ltok = 0, lbSub = "peta", dpl = new Set();
   const DPL_KEY = "ak-dpl";
   const bacaDpl = () => { try { return new Set(JSON.parse(localStorage.getItem(DPL_KEY)) || []); } catch (e) { return new Set(); } };
@@ -1036,6 +1036,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     dpl = new Set([...bacaDpl()].filter(id => lbMap.has(id)));
   }
   const hitungLb = f => { const n = {}; lbArr.forEach(x => { const v = f(x); for (const k of [].concat(v)) if (k != null && k !== "") n[k] = (n[k] || 0) + 1; }); return n; };
+  /* grup pil saring multi-pilih: chrome (aria-pressed) diset seketika, "" = semua */
+  const tandaiPil = (id, set) => document.querySelectorAll(`#${id} button[data-r]`).forEach(b => b.setAttribute("aria-pressed", String(b.dataset.r === "" ? !set.size : set.has(b.dataset.r))));
   const chipsKat = rows => `<button type="button" data-r="" aria-pressed="true">${ikon(IK_SEMUA, "currentColor")}Semua kategori</button>` + rows.map(([k, n]) => { const [l, ic, w] = KAT[k] || [k, "", "#6b7280"];
     return `<button type="button" data-r="${esc(k)}" aria-pressed="false">${ic ? ikon(ic, w) : ""}${esc(l)}<span>${angka(n)}</span></button>`; }).join("");
   /* pola kartu pakar dipakai semua kartu direktori: foto/logo bulat, nama, lencana status, pil navy dan biru muda, rumpun, 3 metrik */
@@ -1053,13 +1055,14 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const cekPola = (id, ada) => `<label class="ak-pilih" title="Tambah ke daftar pendek"><input type="checkbox" data-dpl="${esc(id)}" aria-label="Tambah ke daftar pendek"${ada ? " checked" : ""}><span class="ak-cek"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="m5 12 5 5 9-10"/></svg></span></label>`;
   function saringLb() {
     const q = LB.q.toLowerCase();
-    lbHasil = lbArr.filter(x => (!LB.prov || x.prov === LB.prov) && (!LB.kat || x.kategori === LB.kat) && (!LB.skala || x._skala === LB.skala) && (!LB.bidang || strs(x.bidang).includes(LB.bidang)) && (!LB.sensor || dlist(x.sensor).length > 0) && (!LB.strat || strat("L:" + x.id)) && (!LB.sub || String(x.sub || "").toLowerCase() === LB.sub) && (!GL.r || glList().some(r => x._rum.has(r)) || x._rum.size === 0) && (!q || x._cari.includes(q)));
+    if (LB.kat && !LB.katSet.size) LB.katSet = new Set([LB.kat]);
+    lbHasil = lbArr.filter(x => (!LB.prov || x.prov === LB.prov) && cocokBencana(LB.katSet, [x.kategori]) && (!LB.skala || x._skala === LB.skala) && (!LB.bidang || strs(x.bidang).includes(LB.bidang)) && (!LB.sensor || dlist(x.sensor).length > 0) && (!LB.strat || strat("L:" + x.id)) && (!LB.sub || String(x.sub || "").toLowerCase() === LB.sub) && (!GL.r || glList().some(r => x._rum.has(r)) || x._rum.size === 0) && (!q || x._cari.includes(q)));
     lbHasil.sort((a, b) => !!strat("L:" + b.id) - !!strat("L:" + a.id) || (strat("L:" + b.id)?.skor || 0) - (strat("L:" + a.id)?.skor || 0));
   }
   const grupLb = x => GL.r ? (glList().some(r => x._rum.has(r)) ? "k" : "l") : "";
   function gambarLb(gulir) {
     if (GL.r) lbHasil.sort((a, b) => (grupLb(a) === "k" ? 0 : 1) - (grupLb(b) === "k" ? 0 : 1) || a.nama.localeCompare(b.nama, "id"));
-    const n = lbHasil.length, a = (LB.hal - 1) * LPER, wil = LB.prov ? ` di ${provT(LB.prov)}` : "", kat = LB.kat ? ` ${(KAT[LB.kat] || [LB.kat])[0].toLowerCase()}` : "";
+    const n = lbHasil.length, a = (LB.hal - 1) * LPER, wil = LB.prov ? ` di ${provT(LB.prov)}` : "", kat = LB.katSet.size ? ` ${[...LB.katSet].map(k => (KAT[k] || [k])[0].toLowerCase()).join(" dan ")}` : "";
     $("akLJ").innerHTML = `<b>${angka(n)}</b> lembaga${esc(kat)}${esc(wil)}`;
     $("akLL").innerHTML = n ? lbHasil.slice(a, a + LPER).map((x, j) => { const g = grupLb(x), h = g && (j === 0 || grupLb(lbHasil[a + j - 1]) !== g) ? `<h3 class="ak-lgrp">${g === "k" ? "Khusus " + esc(namaGL().toLowerCase()) : "Lintas bencana"}</h3>` : ""; return h + kartuLb(x, a + j); }).join("") : hampa("lembaga");
     $("akLH").innerHTML = navHal(LB.hal, n, LPER, "lembaga");
@@ -1080,7 +1083,10 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     $("akLSn").addEventListener("click", () => { LB.sensor = !LB.sensor; $("akLSn").setAttribute("aria-pressed", String(LB.sensor)); LB.hal = 1; jalan(false); });
     pasangPilih("akLSub", {ik: () => LB.kat && KAT[LB.kat] ? [KAT[LB.kat][1], KAT[LB.kat][2]] : null, semua: "Semua sub-kategori dunia usaha", nilai: () => LB.sub, opsi: () => Object.entries(hitungLbL(lbArr.filter(x => x.kategori === LB.kat), x => String(x.sub || "").toLowerCase())).sort((a, b) => b[1] - a[1]).map(([v, c]) => [v, kapital(v), c]), pilih: v => ubah("sub", v)});
     let tt = 0; $("akLQ").addEventListener("input", e => { clearTimeout(tt); tt = setTimeout(() => ubah("q", e.target.value.trim()), 250); });
-    $("akLC").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; setChip("akLC", b.dataset.r); $("akLSubW").hidden = !["dunia-usaha", "lsm"].includes(b.dataset.r); LB.sub = ""; ubah("kat", b.dataset.r); });
+    const terapKat = arr => { LB.katSet = new Set(arr); LB.kat = arr.length === 1 ? arr[0] : ""; tandaiPil("akLC", LB.katSet); $("akLSubW").hidden = !(arr.length === 1 && ["dunia-usaha", "lsm"].includes(arr[0])); LB.sub = ""; LB.hal = 1;
+      try { const u = new URL(location.href); arr.length ? u.searchParams.set("kat", tulisBencana(LB.katSet)) : u.searchParams.delete("kat"); history.replaceState(null, "", u); } catch (er) {} jalan(false); };
+    $("akLC").addEventListener("click", e => { const b = e.target.closest("button[data-r]"); if (!b) return; const baru = togglePilihan(LB.katSet, b.dataset.r); tandaiPil("akLC", baru); nanti(() => terapKat([...baru])); });
+    { const dk = bacaBencana(new URLSearchParams(location.search).get("kat"), Object.keys(KAT)); if (dk.length && !LB.katSet.size) { LB.katSet = new Set(dk); LB.kat = dk.length === 1 ? dk[0] : ""; tandaiPil("akLC", LB.katSet); } else if (LB.katSet.size) tandaiPil("akLC", LB.katSet); }
     pasangHal("akLH", h => { LB.hal = h; gambarLb(true); });
     const bukaK = e => { if (e.target.closest(".ak-pilih")) { if (e.target.tagName === "INPUT") dplUbah(e.target.dataset.dpl, e.target.checked); return; }
       if (e.target.closest("a")) return; const c = e.target.closest("[data-li]"); if (c && lbHasil[+c.dataset.li]) bukaLb(lbHasil[+c.dataset.li]); };
@@ -1140,7 +1146,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     g.querySelectorAll("details.ak-prov-g").forEach(d => { let ada = false; d.querySelectorAll(".ak-bkr,.ak-pkb").forEach(r => { const ok = !t || nrm(r.textContent).includes(t); r.hidden = !ok; if (ok) ada = true; }); d.hidden = !!t && !ada; if (t && ada) d.open = true; }); });
   document.addEventListener("click", e => { const w = e.target.closest("[data-wl]"); if (!w) return; const [pv, kab] = String(WL.kode || "").split("|"), k = w.dataset.wl;
     if (k === "pakar") { st.prov = new Set([pv]); pkSub = "akademisi"; tampil("pakar"); nanti(() => { chromeSaring?.(); isiProv?.(); saring(); }); return; }
-    Object.assign(LB, {prov: pv, kab: kab || "", q: k === "bpbd" ? "BPBD" : "", strat: k === "strat", hal: 1, kat: "", skala: "", bidang: "", sub: "", sensor: false}); delete sudah.lembaga; lbSub = "daftar"; tampil("lembaga"); setTimeout(() => { try { subLb("daftar"); } catch (er) {} }, 700); });
+    Object.assign(LB, {prov: pv, kab: kab || "", q: k === "bpbd" ? "BPBD" : "", strat: k === "strat", hal: 1, katSet: new Set(), kat: "", skala: "", bidang: "", sub: "", sensor: false}); delete sudah.lembaga; lbSub = "daftar"; tampil("lembaga"); setTimeout(() => { try { subLb("daftar"); } catch (er) {} }, 700); });
   let NAMA_IDX = null; const namaIdx = () => { if (!NAMA_IDX || NAMA_IDX.n !== lbArr.length) { NAMA_IDX = new Map(); NAMA_IDX.n = lbArr.length; for (const z of lbArr) for (const k of namaLb(z)) if (!NAMA_IDX.has(k)) NAMA_IDX.set(k, z.id); } return NAMA_IDX; };
   const LAZY = new Map(); let lazyN = 0;
   document.addEventListener("toggle", e => { const d = e.target; if (!d.matches?.("details[data-lazy]") || !d.open) return; const f = LAZY.get(d.dataset.lazy); if (f) { LAZY.delete(d.dataset.lazy); nanti(() => { d.querySelector(".ak-lazyisi").innerHTML = f(); }); } }, true);
@@ -1601,15 +1607,15 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const SUBL = {peta: ["akLbPeta", bangunPeta], daftar: ["akLbDaftar", bangunDaftarLb], analisa: ["akLbAnalisa", bangunAnalisa], proyek: ["akLbProyek", bangunProyek]}, subLBangun = {};
   function taruhSeg(v) { const seg = $("akLS"), isi = $("akLbPeta")?.querySelector(".ak-ptaisi"); if (!seg) return; $("akv-lembaga").classList.toggle("ak-lbpeta", v === "peta"); }
   function subLb(v) {
-    if (v === "analisa") v = "daftar";
+    if (v === "analisa" || v === "proyek") v = "daftar";
     lbSub = v; setSeg("akLS", v); taruhSeg(v);
     for (const [k, [id]] of Object.entries(SUBL)) $(id).hidden = k !== v;
     if (!subLBangun[v]) { subLBangun[v] = true; nanti(() => SUBL[v][1]($(SUBL[v][0]))); }
     dpSegarkan();
   }
   function bangunLembaga(p, d) {
-    indeksLb(d); Object.keys(subLBangun).forEach(k => delete subLBangun[k]); analisaSiap = false; pjSiap = false; Object.assign(LB, {q: "", prov: "", kat: "", skala: "", bidang: "", sub: "", sensor: false, hal: 1}); PT.map?.remove(); Object.assign(PT, {map: null, siap: false, pins: new Map(), mode: "pin"}); tutupDrawerAman(); Object.assign(PJ, {q: "", prov: "", donor: "", sektor: "", hal: 1});
-    p.innerHTML = `${segHtml("akLS", "Sub-tampilan lembaga", [["peta", "Peta", IKON_PIN], ["daftar", "Daftar", IK_GEDUNG], ["proyek", "Proyek mitra", IK_UANG]])}<div id="akLbPeta" class="ak-tampilan"></div><div id="akLbDaftar" class="ak-tampilan" hidden></div><div id="akLbAnalisa" class="ak-tampilan" hidden></div><div id="akLbProyek" class="ak-tampilan" hidden></div>`;
+    indeksLb(d); Object.keys(subLBangun).forEach(k => delete subLBangun[k]); analisaSiap = false; pjSiap = false; Object.assign(LB, {katSet: new Set(), q: "", prov: "", kat: "", skala: "", bidang: "", sub: "", sensor: false, hal: 1}); PT.map?.remove(); Object.assign(PT, {map: null, siap: false, pins: new Map(), mode: "pin"}); tutupDrawerAman(); Object.assign(PJ, {q: "", prov: "", donor: "", sektor: "", hal: 1});
+    p.innerHTML = `${segHtml("akLS", "Sub-tampilan lembaga", [["peta", "Peta", IKON_PIN], ["daftar", "Daftar", IK_GEDUNG]])}<div id="akLbPeta" class="ak-tampilan"></div><div id="akLbDaftar" class="ak-tampilan" hidden></div><div id="akLbAnalisa" class="ak-tampilan" hidden></div><div id="akLbProyek" class="ak-tampilan" hidden></div>`;
     $("akLS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (b) subLb(b.dataset.v); });
     subLb(lbSub);
   }
@@ -2151,7 +2157,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   /* ikon per jenis dana, warnanya sama dengan grafik */
   const IK_DANA = {"pinjaman": '<path d="M3 10h18M5 10V7l7-4 7 4v3M6 10v8M10 10v8M14 10v8M18 10v8M3 21h18"/>', "hibah G2G": '<path d="M4 21V4M4 4h11l-2 4 2 4H4"/>', "hibah multilateral": '<circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"/>', "dana iklim": '<path d="M7 17a4 4 0 0 1-.5-8A6 6 0 0 1 18 9a4 4 0 0 1-1 8z"/><path d="M9 20l1-2M13 20l1-2"/>', "dana riset": '<path d="M9 3h6M10 3v6l-5 9a2 2 0 0 0 2 3h10a2 2 0 0 0 2-3l-5-9V3"/><path d="M7 15h10"/>', "instrumen domestik": '<path d="M4 21V9l8-6 8 6v12z"/><path d="M9 21v-6h6v6"/>', "asuransi risiko": '<path d="M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z"/><path d="m9 12 2 2 4-4"/>'};
   const JENIS_DANA = {"pinjaman": "#1c7ed6", "hibah G2G": "#2b8a3e", "hibah multilateral": "#0b7285", "dana iklim": "#5f3dc4", "dana riset": "#e8590c", "instrumen domestik": "#495057", "asuransi risiko": "#862e9c"};
-  const PD = {tingkat: "", sub: "skema", jenis: "", pemberi: "", sasaran: "", status: "", prov: "", q: "", hal: 1}, PDPER = 18;
+  const PD = {sumberP: "", tingkat: "", sub: "skema", jenis: "", pemberi: "", sasaran: "", status: "", prov: "", q: "", hal: 1}, PDPER = 18;
   let pdArr = [], pdHasil = [], pdtok = 0;
   const nilaiAsli = x => x.nilai != null ? `${x.mata_uang && x.mata_uang !== "USD" ? esc(x.mata_uang) + " " : "US$ "}${esc(angka(x.nilai))}` : "";
   const skUmum = x => x.isi_status === "sebagian" || /pengetahuan umum/i.test(x.isi_catatan || "");
@@ -2213,7 +2219,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     $("akPdL").innerHTML = ngArr.length ? `<div class="ak-bars">${ngArr.map((n, i) => { const v = n.total_usd_kemanusiaan_id || 0, pt = persenTxt(v, tot); return barHtml({cls: "ak-ngr", warna: "#1c7ed6", lebar: v / mx * 100, nilai: esc(usdR(v)), persen: pt, label: `${i + 1}. ${esc(bendera(n.iso2))} ${esc(n.negara)}`,
       attr: `role="button" data-ng="${i}" data-tt="${esc(n.negara)}" data-tv="${esc(usdR(v))}" data-tk="${esc(angka(strs(n.badan).length) + " badan bantuan, klik untuk profil")}" data-tc="#1c7ed6"`}); }).join("")}</div>` : kosongHtml("Negara donor");
   }
-  const cocokPd = x => (!PD.jenis || x.jenis === PD.jenis) && (!PD.pemberi || x.pemberi === PD.pemberi) && (!PD.sasaran || strs(x.sasaran).includes(PD.sasaran)) && (!PD.status || x.status === PD.status)
+  const cocokPd = x => (!PD.sumberP || (x._sumber || "dir") === PD.sumberP) && (!PD.jenis || x.jenis === PD.jenis) && (!PD.pemberi || x.pemberi === PD.pemberi) && (!PD.sasaran || strs(x.sasaran).includes(PD.sasaran)) && (!PD.status || x.status === PD.status)
     && (!GL.r || cocokGL(strs(x.rumpun))) && (!PD.prov || strs(x.prov).includes(PD.prov)) && (!PD.q || x._cari.includes(PD.q.toLowerCase()));
   /* kartu Ringkasan mengikuti sub-tampilan, chip bencana, dan saringan; dibangun ulang tiap pilihan berubah */
   let stkJenis = "", rtok2 = 0;
@@ -2265,8 +2271,11 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       <div class="ak-stk-leg">${TINGKAT.map(([k, l, w]) => `<span><i style="background:${w}"></i>${l}</span>`).join("")}</div><div class="ak-stk">${baris}</div>`; }
   async function bangunDana(p, d) {
     if (!lbArr.length) { const l = await ambilData("lembaga"); if (l) indeksLb(l); }
-    pdArr = dlist(Array.isArray(d) ? d : d?.pendanaan).filter(x => x && x.nama).map(x => Object.assign(x, {_cari: [x.nama, x.pemberi, x.penerima, ...strs(x.pelaksana), ...strs(x.sasaran)].filter(Boolean).join(" ").toLowerCase()}));
-    let labPm = null; ngArr = null; Object.assign(PD, {tingkat: "", jenis: "", pemberi: "", sasaran: "", status: "", prov: "", q: "", hal: 1});
+    pdArr = dlist(Array.isArray(d) ? d : d?.pendanaan).filter(x => x && x.nama).map(x => Object.assign(x, {_sumber: "dir", _cari: [x.nama, x.pemberi, x.penerima, ...strs(x.pelaksana), ...strs(x.sasaran)].filter(Boolean).join(" ").toLowerCase()}));
+    /* proyek mitra (laporan donor IATI, lembaga_3w) digabung ke daftar proyek; proyek yang sama dengan entri direktori (judul + pemberi mirip) tidak digandakan */
+    try { const w3 = await ambilData("lembaga_3w"), kunci = x => nrm(String(x.nama || x.judul || "")).slice(0, 40) + "|" + nrm(String(x.pemberi || x.donor || "")).split(" ")[0], ada = new Set(pdArr.filter(x => x.jenis_entri === "proyek").map(kunci));
+      dlist(Array.isArray(w3) ? w3 : w3?.proyek).filter(q => q && q.judul && !ada.has(kunci(q))).forEach(q => { const x = {id: q.id, nama: q.judul, pemberi: q.donor, pelaksana: q.pelaksana, penerima: q.pelaksana, prov: q.prov, sektor: q.sektor, nilai_usd: q.nilai_usd, nilai: q.nilai_asli, mata_uang: q.mata_uang_asli, tahun: q.mulai, selesai: q.selesai, status: q.status, url: q.sumber_url, jenis_entri: "proyek", jenis: "", _sumber: "iati", ringkasan_id: q.ringkasan_id, judul_en: q.judul_en, nilai_salur_usd: q.nilai_salur_usd}; x._cari = [x.nama, x.pemberi, ...strs(x.pelaksana), ...strs(x.sektor)].filter(Boolean).join(" ").toLowerCase(); pdArr.push(x); }); } catch (e) {}
+    let labPm = null; ngArr = null; Object.assign(PD, {sumberP: "", tingkat: "", jenis: "", pemberi: "", sasaran: "", status: "", prov: "", q: "", hal: 1});
     const pr = pdArr.filter(x => x.jenis_entri === "proyek"), hit = f => { const n = {}; pdArr.forEach(x => { for (const k of [].concat(f(x))) if (k) n[k] = (n[k] || 0) + 1; }); return n; };
     const jum = f => { const n = {}; pr.forEach(x => { const k = f(x); if (k) n[k] = (n[k] || 0) + (Number(x.nilai_usd) || 0); }); return n; };
     const bar = (n, warna, field) => batang(Object.entries(n).filter(r => r[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 10), {tab: "dn", field, warna, lab: kapital, fmt: usdR});
@@ -2275,7 +2284,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       <section class="ak-panel ak-lA"><div class="ak-pil"><span class="ak-r utama" style="--w0:#2b8a3e">Ringkasan</span></div><h2 class="ak-judulv" id="akPdRH"></h2>
         <div id="akPdStack"></div>
         <p class="ak-lkaki">Sumber: direktori pendanaan, tiap entri bertaut ke sumbernya. Proyek dengan banyak penerima dibagi rata nilainya ke penerimanya. Rupiah dengan kurs Rp ${angka(KURS_USD)} per US$ (${KURS_TGL}).</p></section>
-      <div class="ak-saring" id="akPdSaring"><div class="ak-alat">${cariKotak("akPdQ", "Cari nama, pemberi, atau penerima")}</div>
+      <div class="ak-saring" id="akPdSaring"><div class="ak-alat">${cariKotak("akPdQ", "Cari nama, pemberi, atau penerima")}</div>${segHtml("akPdSrc", "Sumber proyek", [["", "Semua sumber", IK_SEMUA], ["dir", "Direktori pendanaan", IK_UANG], ["iati", "Laporan donor IATI", IK_DB]])}
         <div class="ak-baris ak-baris5">${htmlPilih("akPdJn", IK_UANG, "Cari jenis")}${htmlPilih("akPdPm", IK_GEDUNG, "Cari pemberi")}${htmlPilih("akPdSs", IK_GEDUNG, "Cari sasaran")}${htmlPilih("akPdSt", IK_BAR, "Cari status")}${htmlPilih("akPdPv", IKON_PIN, "Cari provinsi")}</div></div>
       <div class="ak-hasil"><h2 class="ak-judulv" id="akPdJ"></h2><div id="akPdL"></div><nav id="akPdH" class="ak-hal" aria-label="Halaman daftar pendanaan" aria-live="polite"></nav></div>`;
     stkJenis = ""; const isiStk = () => { isiRingkasPd(); };
@@ -2283,11 +2292,12 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     $("akPdJ").addEventListener("click", e => { if (e.target.closest("[data-pdclear]")) { PD.tingkat = ""; PD.hal = 1; nanti(() => gambarPd(false)); } });
     $("akPdStack").addEventListener("click", e => { const j = e.target.closest("[data-stkj]"); if (j) { stkJenis = j.dataset.stkj; nanti(isiRingkasPd); return; }
       const sg = e.target.closest("[data-stk]"); if (!sg) return; const [nm, k] = sg.dataset.stk.split("|"); PD.sub = "proyek"; PD.pemberi = nm; PD.tingkat = k; PD.hal = 1; setSeg("akPdS", "proyek"); labPm?.(); nanti(() => { gambarPd(false); $("akPdSaring").scrollIntoView({block: "start", behavior: "smooth"}); }); });
-    const jalan = () => { const t = ++pdtok; nanti(() => { if (t === pdtok) gambarPd(false); }); }, ubah = (k, v) => { PD[k] = v; PD.hal = 1; jalan(); }, op = (f, lab) => () => Object.entries(hit(f)).sort((a, b) => b[1] - a[1]).map(([v, c]) => [v, lab(v), c]);
-    pasangPilih("akPdJn", {ik: v => IK_DANA[v] ? [IK_DANA[v], JENIS_DANA[v]] : null, semua: "Semua jenis", nilai: () => PD.jenis, opsi: op(x => x.jenis, kapital), pilih: v => ubah("jenis", v)}); labPm = pasangPilih("akPdPm", {semua: "Semua pemberi", nilai: () => PD.pemberi, opsi: op(x => x.pemberi, v => v), pilih: v => { PD.tingkat = ""; ubah("pemberi", v); }});
-    pasangPilih("akPdSs", {semua: "Semua sasaran", nilai: () => PD.sasaran, opsi: op(x => strs(x.sasaran), kapital), pilih: v => ubah("sasaran", v)}); pasangPilih("akPdSt", {semua: "Semua status", nilai: () => PD.status, opsi: op(x => x.status, kapital), pilih: v => ubah("status", v)});
-    pasangPilih("akPdPv", {semua: "Semua provinsi", nilai: () => PD.prov, opsi: op(x => strs(x.prov), provT), pilih: v => ubah("prov", v)});
-    $("akPdS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; PD.sub = b.dataset.v; PD.hal = 1; setSeg("akPdS", PD.sub); jalan(); });
+    const jalan = () => { const t = ++pdtok; nanti(() => { if (t === pdtok) gambarPd(false); }); }, ubah = (k, v) => { PD[k] = v; PD.hal = 1; jalan(); }, op = (field, f, lab) => () => { const keep = PD[field], skema = PD.sub === "skema"; PD[field] = ""; const n = {}; try { pdArr.filter(x => (x.jenis_entri || "skema") === (skema ? "skema" : "proyek") && (!PD.tingkat || tingkatSet(x).has(PD.tingkat)) && cocokPd(x)).forEach(x => { for (const k of [].concat(f(x))) if (k) n[k] = (n[k] || 0) + 1; }); } finally { PD[field] = keep; } return Object.entries(n).sort((a, b) => b[1] - a[1]).map(([v, c]) => [v, lab(v), c]); };
+    pasangPilih("akPdJn", {ik: v => IK_DANA[v] ? [IK_DANA[v], JENIS_DANA[v]] : null, semua: "Semua jenis", nilai: () => PD.jenis, opsi: op("jenis", x => x.jenis, kapital), pilih: v => ubah("jenis", v)}); labPm = pasangPilih("akPdPm", {semua: "Semua pemberi", nilai: () => PD.pemberi, opsi: op("pemberi", x => x.pemberi, v => v), pilih: v => { PD.tingkat = ""; ubah("pemberi", v); }});
+    pasangPilih("akPdSs", {semua: "Semua sasaran", nilai: () => PD.sasaran, opsi: op("sasaran", x => strs(x.sasaran), kapital), pilih: v => ubah("sasaran", v)}); pasangPilih("akPdSt", {semua: "Semua status", nilai: () => PD.status, opsi: op("status", x => x.status, kapital), pilih: v => ubah("status", v)});
+    pasangPilih("akPdPv", {semua: "Semua provinsi", nilai: () => PD.prov, opsi: op("prov", x => strs(x.prov), provT), pilih: v => ubah("prov", v)});
+    $("akPdS").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; PD.sub = b.dataset.v; PD.hal = 1; setSeg("akPdS", PD.sub); $("akPdSrc").hidden = PD.sub !== "proyek"; jalan(); });
+    $("akPdSrc").hidden = PD.sub !== "proyek"; setSeg("akPdSrc", PD.sumberP); $("akPdSrc").addEventListener("click", e => { const b = e.target.closest("button[data-v]"); if (!b) return; PD.sumberP = b.dataset.v; PD.hal = 1; setSeg("akPdSrc", PD.sumberP); jalan(); });
     let tt = 0; $("akPdQ").addEventListener("input", e => { clearTimeout(tt); tt = setTimeout(() => ubah("q", e.target.value.trim()), 250); }); pasangHal("akPdH", h => { PD.hal = h; gambarPd(true); });
     const tip = $("akTip"); p.addEventListener("pointermove", e => { const t = e.target.closest("[data-tt]"); if (!t) { tip.hidden = true; return; }
       tip.innerHTML = `<b>${esc(t.dataset.tt)}</b><span><i style="background:${esc(t.dataset.tc)}"></i>${esc(t.dataset.tv)}</span><small>${esc(t.dataset.tk)}</small>`; tip.hidden = false; tip.style.left = Math.min(e.clientX + 12, innerWidth - tip.offsetWidth - 8) + "px"; tip.style.top = Math.max(8, e.clientY - tip.offsetHeight - 12) + "px"; });
@@ -2620,7 +2630,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   /* urutan: tab utama, sub-tab (sub-tab di dalam panel ikut dihitung), baru pilihan bencana */
   /* segmen sub-tampilan tiap view (Peta/Daftar/Proyek mitra, Skema/Proyek/Negara donor, dst.) dipindah ke wadah kepala navy, hanya yang view aktif tampil; panel bencana tetap di bawah kepala */
   /* pilihan bencana hanya tampil di tab yang benar-benar disaringnya; Riset daerah punya chip rumpun sendiri, Aset riset, Pusat studi, dan Wilayah tidak disaring */
-  const BENCANA_VIEW = new Set(["pakar", "sistem_data", "pendanaan", "pustaka", "dok", "buku", "berita"]);
+  const BENCANA_VIEW = new Set(["pakar", "pendanaan", "pustaka", "dok", "buku", "berita"]);
   function letakBencana() { const bp = document.querySelector(".ak-bpanel"), ak = document.querySelector(".ak"), nav = document.querySelector(".ak-kepala-nav"); if (!bp || !ak || !nav) return;
     document.querySelectorAll("[id^=akv-]").forEach(v => { const f = v.firstElementChild; if (f?.matches?.(".ak-seg")) { const vw = v.id.slice(4); nav.querySelectorAll(`[data-hero-view="${vw}"]`).forEach(lama => lama.remove()); if (f.id) nav.querySelectorAll(`#${CSS.escape(f.id)}`).forEach(lama => lama.remove());   // panel digambar ulang: segmen lama dibuang, jangan menumpuk
       f.dataset.heroView = vw; f.classList.remove("ak-segmeng"); nav.append(f); } });
@@ -2631,7 +2641,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const amatPanel = new MutationObserver(() => letakBencana());
   document.querySelectorAll("[id^=akv-]").forEach(v => amatPanel.observe(v, {childList: true}));
   function tampil(v, sub) {
-    if (sub === "analisa") sub = "daftar";
+    if (sub === "analisa") sub = "daftar"; if (v === "lembaga" && sub === "proyek") { v = "pendanaan"; sub = "proyek"; PD.sub = "proyek"; }
     const [tab, sb] = LAMA[v] || [v, ""], sl = SUBTAB[tab]; sub = sub || sb; if (sl && !sl.some(x => x[0] === sub)) sub = sl[0][0];
     const view = sl ? sl.find(x => x[0] === sub)[2] : tab; tabSkrg = tab;
     tampilSkrg = view;
