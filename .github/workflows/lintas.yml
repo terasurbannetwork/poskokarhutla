@@ -71,7 +71,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # Tanpa langkah "Uji aturan" bersama: tiap modul menjalankan `uji`-nya sendiri di langkahnya, jadi satu uji rusak
@@ -154,6 +154,29 @@ jobs:
           python3 scripts/kekeringan/status.py uji
           python3 scripts/kekeringan/status.py || echo "::warning title=kekeringan::status/rantai kekeringan ada yang gagal"
           python3 scripts/kekeringan/peluang_kering.py uji && python3 scripts/kekeringan/peluang_kering.py || echo "::warning title=peluang_kering::gagal"
+
+      # Panen #24 #25 #20 (30 Okt 2026): MIROVA (deret VRP 90 hari dikumpulkan sendiri di berkasnya, jadi WAJIB tahan lintas run), Copernicus GDO,
+      # nowcast longsor harian (membaca public/banjir/data/hujan.json dari cache banjir-). Proposal modulnya titik.yml/data.yml, tetapi keduanya tidak
+      # meng-commit dan public/gunungapi|kekeringan|longsor/data di luar cache ditimpa checkout main saat terbit; di sini ada commit ke main.
+      # Tanpa kunci. Semua boleh gagal; berkas lamanya dibiarkan.
+      - name: Panen MIROVA, GDO, nowcast longsor (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 25
+        run: |
+          python3 scripts/gunungapi/mirova.py uji && { python3 scripts/gunungapi/mirova.py || echo "::warning title=mirova::gagal; berkas lamanya dibiarkan"; }
+          python3 scripts/kekeringan/gdo.py uji && { python3 scripts/kekeringan/gdo.py || echo "::warning title=gdo::gagal; berkas lamanya dibiarkan"; }
+          python3 scripts/longsor/model.py diri && { python3 scripts/longsor/model.py harian || echo "::warning title=longsor::nowcast gagal; berkas lamanya dibiarkan"; }
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B="public/gunungapi/data/mirova.json public/kekeringan/data/gdo.json public/longsor/data/nowcast.json"
+          git add $B
+          git diff --cached --quiet -- $B && { echo "panen tidak berubah"; exit 0; }
+          git commit -q -m "data: panen mirova, gdo, nowcast longsor $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push panen gagal::git push ke main gagal 3x"
 
       # Berita banjir lalu berita + dampak modul lain, harian (aturan A22). Keluaran HARUS di public/banjir/data dan data/raw/banjir/berita_<id>.
       # Urutan: sesudah magma.py (dampak gunungapi membaca gunungapi_status.json). kekeringan/dampak.py sudah jalan di RANTAI status.py.

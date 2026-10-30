@@ -52,6 +52,7 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/omc/**`
 - `public/omc/**`
 - `tests/omc/**`
+- `public/data/iklim_stasiun.json`
 
 Berkas di luar wilayah: jangan sunting. Laporkan siapa pemiliknya
 (`node scripts/agents/ilmu.mjs pemilik <berkas>`) dan apa yang dibutuhkan.

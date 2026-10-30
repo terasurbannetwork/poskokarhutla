@@ -164,3 +164,22 @@ Gerbang baru (gelombang 5, `penulis-gerbang`):
 - uji yang menolak tugas Worker lebih sering dari per jam, dan menolak cron trigger tambahan di `wrangler*.jsonc`;
 - uji yang menolak workflow berjadwal lebih rapat dari per jam;
 - uji yang menolak bila jumlah berkas `public/` lewat 15.000 (75% dari plafon).
+
+## Gelombang strategis (30 Okt 2026): label dan ukuran lapangan
+
+Pelajaran gelombang 1–5: sebagian besar model kalah dari klimatologi atau
+persistensi karena **label kejadian** kurang, bukan karena fitur kurang. Baris
+di bawah menambah label dan ukuran langsung.
+
+| # | Sumber | Olahan | Dipakai model | Pemilik |
+|---|---|---|---|---|
+| 43 | Laporan regu lapangan + warga (D1) | Ekspor label harian anonim: titik, jam, padam/menyala, jenis bencana; tanpa identitas | label semua modul | warga-api |
+| 44 | Arsip OpenAQ di AWS S3 (`openaq-data-archive`, tanpa kunci) | Riwayat PM2,5 jam per stasiun Indonesia | uji ulang MOS #9/#10 dengan musim penuh | cuaca-udara |
+| 45 | SiPALAGA BRGM (muka air tanah gambut) | Seri TMAT harian per stasiun, anomali vs ambang 40 cm (PP 57/2016) | fitur model sebaran/risiko api | pipa-data |
+| 46 | PVMBG: prakiraan gerakan tanah bulanan per kecamatan + zona kerentanan | Pembanding resmi dan fitur | uji ulang longsor #20 | longsor |
+| 47 | Copernicus GFM (Sentinel-1) sebagai label banjir | Luas genangan per kab per hari, tembus awan | uji ulang MCDWD #16 | banjir |
+| 48 | DEMNAS BIG 8 m (butuh akun) | Lereng dan HAND per kec | longsor, genangan | longsor + banjir |
+| 49 | GSMaP JAXA (butuh akun) | Hujan jam 0,1° | longsor, banjir | cuaca-udara |
+| 50 | Puso BPS/Kementan (BPS_KEY) | Label kekeringan pertanian per kab/tahun | kekeringan | gunungapi-kering |
+| 51 | Harga CPO bulanan (World Bank Pink Sheet) | Anomali harga, lag 1–6 bulan | fitur api tahunan/bulanan | model-sebaran |
+| 52 | Peta geologi/litologi Badan Geologi 1:250k | Kelas batuan per kec | kerentanan longsor | longsor |
