@@ -80,5 +80,6 @@
   "0076_wa_masuk.sql": "2be7f4da25ff3cd53bc4efdbcfdd98cb34ff2b990a4e18126029064150a15c12",
   "0077_pemirsa_monitor.sql": "138d681fab14b4fa8b942f4268d591454f78eae627f22ef95de3ac9e87506ccb",
   "0078_wa_masuk_indeks.sql": "b182995773b5c49db41515ff1b79913a26cffb515444b9aa4ad5838756d2a410",
-  "0079_prediksi_konfirmasi.sql": "3ba86e5f3753c79ecd9359b5780aff9dcdc5bbd5b73f457e44ce85827b8867be"
+  "0079_prediksi_konfirmasi.sql": "3ba86e5f3753c79ecd9359b5780aff9dcdc5bbd5b73f457e44ce85827b8867be",
+  "0080_adsb_posisi.sql": "16415df82613dcad733f0fa02e8791ca872bf629f2d38479f0f8115dd9d81dc5"
 }
