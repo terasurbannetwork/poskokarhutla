@@ -1421,8 +1421,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     return `<div class="ak-tipw"><div class="ak-tipw-j">${lambangHtml(lambangUrl(r.kode, r.key && r.key.includes("|") ? r.nama : ""), 28)}<span>${esc(r.nama)}</span></div><div class="ak-tipw-u"><b>${esc(ut)}</b> ${esc(sat)}</div>
       <dl>${baris.map(([ik, l, v]) => `<div>${ikon(ik, "currentColor")}<dt>${l}</dt><dd>${v}</dd></div>`).join("")}</dl>
       ${r.a?.length ? `<div class="ak-tipw-lg">${tipLogos(r.a).map(x => `<span title="${esc(x.nama)}">${logoLb(x).replace("class=\"ak-lgo\"", "class=\"ak-lgo kecil\"")}</span>`).join("")}</div>` : ""}${r.a?.length ? `<p class="ak-tipw-top"><span>Terbesar</span><em>${logoLb(tipTerbesar(r.a)).replace("class=\"ak-lgo\"", "class=\"ak-lgo kecil\"")}<b class="ak-tipw-tn">${esc(tipTerbesar(r.a).nama)}</b></em></p>` : ""}</div>`; };
-  /* peta dasar tanpa nama jalan, nomor jalan, dan simbol jalan: yang dibaca staf adalah wilayah dan lembaga */
-  const sembunyikanJalan = m => { for (const ly of m.getStyle()?.layers || []) if (ly.type === "symbol" && /road|highway|street|transportation|shield|path|rail|ferry|aeroway|poi/i.test(ly.id + " " + (ly["source-layer"] || ""))) m.setLayoutProperty(ly.id, "visibility", "none"); };
+  /* peta dasar tanpa papan nomor jalan (mis. "3367"); nama jalan tetap tampil (keputusan pemilik) */
+  const sembunyikanJalan = m => { for (const ly of m.getStyle()?.layers || []) if (ly.type === "symbol" && /shield|road_number|ref/i.test(ly.id)) m.setLayoutProperty(ly.id, "visibility", "none"); };
   const tipPeta = (e, html) => { const t = $("akTip"); if (!html) { t.hidden = true; return; } t.innerHTML = html; t.hidden = false; const x = e.originalEvent.clientX, y = e.originalEvent.clientY;
     t.style.left = Math.min(Math.max(8, x + 12), innerWidth - t.offsetWidth - 8) + "px"; t.style.top = Math.max(8, y - t.offsetHeight - 12) + "px"; };
   const sub1 = (L, f) => { const m = new Map(); L.forEach(x => { const k = f(x); if (k == null) return; (m.get(k) || m.set(k, []).get(k)).push(x); }); return m; };
