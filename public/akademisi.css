@@ -1906,3 +1906,14 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-pjg + .ak-lkaki,.ak-pjg + small,.ak-pjg + p,.ak-bkl + .ak-lkaki,.ak-hasil .ak-lkaki{margin-top:14px!important;display:inline-flex}
 .ak-hasil > nav.ak-hal{margin-top:16px}
 .ak-baris > .ak-kampus-pilih:last-child .ak-kpop,.ak-baris > :last-child .ak-kpop{left:auto!important;right:0!important}
+.ak-orang .ak-metrik:empty,.ak-orang .ak-kaki:empty{display:none}
+#akTip:has(.ak-tipw){width:290px;max-width:290px;box-sizing:border-box;overflow:hidden}
+.ak-tipw{width:100%;max-width:none;min-width:0}
+.ak-tipw dl div{grid-template-columns:14px minmax(0,1fr) auto!important}
+.ak-tipw dd{text-align:right}
+.ak-tipw-top{overflow:hidden;text-overflow:ellipsis}
+/* daftar lembaga di panel peta: judul kelompok per kategori */
+.ak-sdl-h{position:sticky;top:0;z-index:1;display:flex;align-items:center;gap:8px;margin:0;padding:10px 12px 6px;background:var(--card,#fff);font-size:10.5px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--ink2);border-bottom:1px solid var(--line)}
+.ak-sdl-h .ak-ikon{width:13px;height:13px}.ak-sdl-h span{flex:1}.ak-sdl-h em{font-style:normal;font-size:10.5px;background:var(--surface);border-radius:999px;padding:1px 8px;letter-spacing:0}
+/* tab Wilayah: pilihan bencana tidak dipakai */
+.ak:has(> #akv-wilayah:not([hidden])) > .ak-bpanel{display:none!important}
