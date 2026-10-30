@@ -7,7 +7,7 @@ Pakai di spek slide mana pun:
 """
 import math
 
-PALET = ['oranye', 'biru-lembaga', 'navy', 'skala.netral.2']
+PALET = ['oranye', 'navy', 'skala.netral.2']   # palet hiasan BNPB (references/palet-bnpb.md): biru lembaga dan merah tidak dipakai untuk hiasan
 
 MAKNA = {
     'kotak_tangga': 'Langkah bertahap dan eskalasi penanganan',
@@ -32,6 +32,12 @@ MAKNA = {
     'simpul': 'Tahapan waktu dan peta jalan',
     'progres_batang': 'Capaian dan kemajuan',
     'kotak_tumpuk': 'Koordinasi lintas lembaga',
+    'piksel_tangga': 'Eskalasi dan peningkatan status',
+    'piksel_sebaran': 'Sebaran titik panas dan dampak',
+    'piksel_pita': 'Aliran data dan linimasa',
+    'piksel_sudut': 'Bingkai wilayah pantauan',
+    'piksel_radius': 'Radius dampak versi citra',
+    'piksel_kolom': 'Data terukur dan curah hujan',
 }
 
 
@@ -112,7 +118,7 @@ def bilah(d, kv, x, y, w, h, warna=None, **_):
 
 def chevron(d, kv, x, y, w, h, warna=None, n=3, **_):
     """Chevron berderet: tiga fase penanggulangan bencana, makin pekat ke kanan."""
-    tok = warna or ['skala.netral.2', 'biru-lembaga', 'oranye']
+    tok = warna or ['skala.netral.2', 'navy', 'oranye']
     cw = w / (n * 0.78 + 0.22)
     for i in range(n):
         kv.bentuk('chevron', x + i * cw * 0.78, y, cw, h, tok[min(i, len(tok) - 1)])
@@ -299,11 +305,91 @@ def kotak_tumpuk(d, kv, x, y, w, h, warna=None, **_):
         kv.bentuk('kotak', x + i * s * 0.33, y + h - s - i * s * 0.33, s, s, tok)
 
 
+def _grid_piksel(d, kv, x, y, w, h, warna, n, isi, aksen=None):
+    """Dasar keluarga piksel: grid n x n; isi(r, c) -> None (kosong) atau t 0..1 (0 pekat, 1 pudar)."""
+    s = min(w, h) / n
+    w0 = _w(warna, 0)
+    tok = [f'skala.{RAMP[w0]}.{k}' for k in (5, 4, 3, 2)] if w0 in RAMP else [w0] * 4
+    for r in range(n):
+        for c in range(n):
+            t = isi(r, c)
+            if t is None:
+                continue
+            tk = _w(warna, 1) if (w0 not in RAMP and aksen == (r, c)) else tok[min(3, max(0, int(t * 4)))]
+            kv.bentuk('kotak', x + c * s + s * 0.1, y + r * s + s * 0.1, s * 0.8, s * 0.8, tk)
+
+
+def piksel_tangga(d, kv, x, y, w, h, warna=None, **_):
+    """Piksel menaik bertangga dari kiri bawah: eskalasi dan peningkatan status."""
+    n = 8
+    def isi(r, c):
+        tinggi = c + 1
+        return (c / n) * 0.9 if (n - 1 - r) < tinggi and (n - 1 - r) >= tinggi - 3 else None
+    _grid_piksel(d, kv, x, y, w, h, warna, n, isi, aksen=(n - 1, 0))
+
+
+def piksel_sebaran(d, kv, x, y, w, h, warna=None, **_):
+    """Piksel menyebar dari pojok kiri bawah, makin jarang menjauh: sebaran titik panas."""
+    n = 9
+    def isi(r, c):
+        jarak = math.hypot(c, n - 1 - r) / math.hypot(n - 1, n - 1)
+        acak = ((r * 37 + c * 17) % 11) / 11
+        return jarak if acak > jarak * 1.25 - 0.1 else None
+    _grid_piksel(d, kv, x, y, w, h, warna, n, isi, aksen=(n - 2, 1))
+
+
+def piksel_pita(d, kv, x, y, w, h, warna=None, **_):
+    """Pita piksel mendatar tiga baris yang memudar dan menipis ke kanan: aliran data, linimasa."""
+    n = 10
+    def isi(r, c):
+        if r not in (4, 5, 6):
+            return None
+        t = c / (n - 1)
+        if t > 0.6 and (r + c) % 2:
+            return None
+        return t
+    _grid_piksel(d, kv, x, y, w, h, warna, n, isi, aksen=(5, 0))
+
+
+def piksel_sudut(d, kv, x, y, w, h, warna=None, **_):
+    """Piksel membentuk siku di pojok kiri atas dan kanan bawah: bingkai wilayah pantauan."""
+    n = 9
+    def isi(r, c):
+        if (r < 2 and c < 5) or (c < 2 and r < 5):
+            return (r + c) / 8
+        if (r > n - 3 and c > n - 6) or (c > n - 3 and r > n - 6):
+            return ((n - 1 - r) + (n - 1 - c)) / 8
+        return None
+    _grid_piksel(d, kv, x, y, w, h, warna, n, isi, aksen=(0, 0))
+
+
+def piksel_radius(d, kv, x, y, w, h, warna=None, **_):
+    """Lingkaran berpiksel dengan inti pekat memudar ke tepi: radius dampak versi citra."""
+    n = 11
+    m = (n - 1) / 2
+    def isi(r, c):
+        jarak = math.hypot(r - m, c - m) / m
+        return jarak if jarak <= 1.0 else None
+    _grid_piksel(d, kv, x, y, w, h, warna, n, isi, aksen=(int(m), int(m)))
+
+
+def piksel_kolom(d, kv, x, y, w, h, warna=None, **_):
+    """Kolom piksel beragam tinggi, kolom tertinggi paling pekat: data terukur, curah hujan."""
+    n = 9
+    tinggi = [3, 5, 4, 7, 9, 6, 8, 4, 2]
+    def isi(r, c):
+        tg = tinggi[c]
+        return (1 - tg / n) * 0.9 if (n - 1 - r) < tg else None
+    _grid_piksel(d, kv, x, y, w, h, warna, n, isi, aksen=(0, 4))
+
+
 ELEMEN = {'kotak_tangga': kotak_tangga, 'piksel': piksel, 'gelombang': gelombang, 'bilah': bilah,   # kontur dibuang: kusut di ukuran kecil (31 Okt)
           'chevron': chevron, 'halftone': halftone, 'arsir': arsir, 'seperempat': seperempat, 'silang': silang,
           'cincin_target': cincin_target, 'lingkaran_tangga': lingkaran_tangga, 'sinyal': sinyal, 'orbit': orbit,
           'kotak_garis': kotak_garis, 'siku_fokus': siku_fokus, 'setengah': setengah, 'pelangi': pelangi, 'horizon': horizon,
-          'simpul': simpul, 'progres_batang': progres_batang, 'kotak_tumpuk': kotak_tumpuk}
+          'simpul': simpul, 'progres_batang': progres_batang, 'kotak_tumpuk': kotak_tumpuk,
+          'piksel_tangga': piksel_tangga, 'piksel_sebaran': piksel_sebaran, 'piksel_pita': piksel_pita,
+          'piksel_sudut': piksel_sudut, 'piksel_radius': piksel_radius, 'piksel_kolom': piksel_kolom}
 
 
 def pasang(d, kv, daftar, asal=''):
