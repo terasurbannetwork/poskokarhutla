@@ -5,7 +5,7 @@
    Gaya di layar_peta.css (dimuat layar ini). Tidak ada data di berkas ini. Butuh global public/inti: fmt, esc, jamWIB, Kartu, nanti, PilihCantik (opsional). */
 import {saranSarana, zonaTerverifikasi} from "./hitung.js";
 import {memuat, kosong, galat as kotakGalat} from "./keadaan.js";
-import {kirimPost, bukaDialog, tutupDialog, peranKlien, muatGayaKit} from "./layar_kit.js";
+import {kirimPost, bukaDialog, tutupDialog, peranKlien, muatGayaKit, muatMapLibre} from "./layar_kit.js";
 import {buatKonteks, lampuTitik, propsTitik, titikDariProps, popupTitik, legendaLampuHtml, swirHtml, riwayatHtml, riwayatSingkat, muatRincian} from "./kesiapan.js";
 import {ikon} from "./ikon.js";
 import {KOSONG_GEO, LAPISAN_LAP, geoLapangan, lapisanLapangan, legendaLapanganHtml, debitHtml, muatButir, muatGayaLapangan} from "./lapangan_staf.js";
@@ -390,14 +390,6 @@ function muatGaya() {
   });
   const dasar = getComputedStyle(document.documentElement).getPropertyValue("--ok").trim() ? [] : GAYA_DASAR.map(h => pasangLink(h, h.slice(6), document.querySelector('link[href*="/pipa/pipa.css"]')));
   return Promise.all([...dasar, pasangLink("/pipa/layar_peta.css?v=6", "peta"), muatGayaKit()]);
-}
-let pustaka = null;
-function muatMapLibre() {
-  if (globalThis.maplibregl) return Promise.resolve();
-  return pustaka ??= new Promise((ok, gagal) => {
-    const c = document.createElement("link"); c.rel = "stylesheet"; c.href = "/vendor/maplibre/maplibre-gl.css"; document.head.append(c);
-    const s = document.createElement("script"); s.src = "/vendor/maplibre/maplibre-gl.js"; s.onload = ok; s.onerror = () => gagal(new Error("Pustaka peta tidak bisa dimuat.")); document.head.append(s);
-  }).catch(e => { pustaka = null; throw e; });
 }
 
 /* berkas data turunan sebesar 1,6 MB dipakai ulang antar kunjungan layar dalam satu sesi */
