@@ -1411,8 +1411,8 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
   const geoPts = a => ({type: "FeatureCollection", features: a.map(i => ({type: "Feature", properties: {key: i.key, warna: i.warna, op: i.redup ? .2 : 1}, geometry: {type: "Point", coordinates: [i.lon, i.lat]}}))});
   /* sensor: warna menurut jenis (palet Okabe-Ito, aman buta warna), bentuk menurut pemilik jaringan: lingkaran BMKG, berlian BIG, segitiga internasional */
   let snTok = 0;
-  const SN_KLS = [["ia", "Seismik BMKG (jaringan IA)", "#0072B2", "c"], ["int", "Seismik internasional (GEOFON, GSN, Pacific21)", "#CC79A7", "t"], ["mlb", "Muka laut BMKG via IOC", "#56B4E9", "c"], ["mlg", "Muka laut BIG via IOC", "#D55E00", "d"]];
-  const snKls = s => /muka laut|pasang/i.test(s.jenis || "") ? (s.pemilik === "big" ? "mlg" : "mlb") : /^IA\b/.test(s.jaringan || "") ? "ia" : "int";
+  const SN_KLS = [["ia", "Seismik BMKG (jaringan IA)", "#0072B2", "c"], ["int", "Seismik internasional (GEOFON, GSN, Pacific21)", "#CC79A7", "t"], ["mlb", "Muka laut BMKG via IOC", "#56B4E9", "c"], ["mlg", "Muka laut BIG via IOC", "#D55E00", "d"], ["tmas", "Tinggi muka air sungai SIHKA PUPR", "#009E73", "c"], ["tmad", "Tinggi muka air pemda (DSDA DKI, SIPANTAU)", "#E69F00", "c"]];
+  const snKls = s => /muka air sungai/i.test(s.jenis || "") ? (/SIHKA/i.test(s.jaringan || "") ? "tmas" : "tmad") : /muka laut|pasang/i.test(s.jenis || "") ? (s.pemilik === "big" ? "mlg" : "mlb") : /^IA\b/.test(s.jaringan || "") ? "ia" : "int";
   const snSvg = (b, w, k) => `<svg viewBox="0 0 20 20" width="${k || 16}" height="${k || 16}" aria-hidden="true">${b === "c" ? '<circle cx="10" cy="10" r="7"/>' : b === "t" ? '<path d="M10 2.5 18 16.5H2z"/>' : '<path d="M10 1.5 18.5 10 10 18.5 1.5 10z"/>'}</svg>`.replace("<svg ", `<svg fill="${w}" stroke="#fff" stroke-width="1.6" `);
   const snIkon = (m, k) => { const [id, , w, b] = SN_KLS.find(x => x[0] === k), n = "sn-" + id; if (m.hasImage(n)) return; const c = document.createElement("canvas"); c.width = c.height = 32; const g = c.getContext("2d"); g.fillStyle = w; g.strokeStyle = "#fff"; g.lineWidth = 3; g.beginPath();
     if (b === "c") g.arc(16, 16, 11, 0, 7); else if (b === "t") { g.moveTo(16, 4); g.lineTo(29, 27); g.lineTo(3, 27); g.closePath(); } else { g.moveTo(16, 3); g.lineTo(29, 16); g.lineTo(16, 29); g.lineTo(3, 16); g.closePath(); } g.stroke(); g.fill(); m.addImage(n, g.getImageData(0, 0, 32, 32), {pixelRatio: 2}); };
@@ -1449,7 +1449,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     set("strat", STRAT ? Object.values(STRAT).filter(v => v?.bintang).length : 0); set("pusat", PT.pusatArr.length); set("sensor", PT.sensorArr.length); }
   function segarPeta() {   // dipanggil setelah lapisan/kategori/data berubah
     const m = PT.map; if (!m || !PT.siap) return; segarLayerBtn();
-    PT.items = itemPeta(); if (PT.fitKat) { PT.fitKat = false; const ks = PT.kat.size ? PT.items : []; if (ks.length) { const lo = ks.map(i => i.lon), la = ks.map(i => i.lat); m.fitBounds([[Math.min(...lo) - .5, Math.min(...la) - .5], [Math.max(...lo) + .5, Math.max(...la) + .5]], {padding: innerWidth > 700 ? {top: 80, bottom: 50, left: Math.round(($("akPita")?.getBoundingClientRect().width || 340) + 36), right: 70} : {top: 70, bottom: 260, left: 40, right: 40}, maxZoom: 9, duration: 400}); } } if (!PT.fitStrat && stratOn()) { const st2 = PT.items.filter(i => i.bintang); if (st2.length) { PT.fitStrat = true; const lo = st2.map(i => i.lon), la = st2.map(i => i.lat); m.fitBounds([[Math.min(...lo) - 1, Math.min(...la) - 1], [Math.max(...lo) + 1, Math.max(...la) + 1]], {padding: innerWidth > 700 ? {top: 80, bottom: 50, left: Math.round(($("akPita")?.getBoundingClientRect().width || 340) + 36), right: 70} : {top: 70, bottom: 260, left: 40, right: 40}, animate: false, maxZoom: 6}); } } m.getSource("pts")?.setData(geoPts(PT.items)); m.getSource("sns")?.setData(geoSens());
+    PT.items = itemPeta(); if (PT.fitKat) { PT.fitKat = false; const ks = PT.kat.size ? PT.items : []; if (ks.length) { const lo = ks.map(i => i.lon), la = ks.map(i => i.lat); m.fitBounds([[Math.min(...lo) - .5, Math.min(...la) - .5], [Math.max(...lo) + .5, Math.max(...la) + .5]], {padding: innerWidth > 700 ? {top: 80, bottom: 50, left: Math.round(($("akPita")?.getBoundingClientRect().width || 340) + 36), right: 70} : {top: 70, bottom: 260, left: 40, right: 40}, maxZoom: 9, duration: 400}); } } if (!PT.fitStrat && stratOn()) { const st2 = PT.items.filter(i => i.bintang && i.lon > 94 && i.lon < 142 && i.lat > -12 && i.lat < 7); if (st2.length) { PT.fitStrat = true; const lo = st2.map(i => i.lon), la = st2.map(i => i.lat); m.fitBounds([[Math.min(...lo) - 1, Math.min(...la) - 1], [Math.max(...lo) + 1, Math.max(...la) + 1]], {padding: innerWidth > 700 ? {top: 80, bottom: 50, left: Math.round(($("akPita")?.getBoundingClientRect().width || 340) + 36), right: 70} : {top: 70, bottom: 260, left: 40, right: 40}, animate: false, maxZoom: 6}); } } m.getSource("pts")?.setData(geoPts(PT.items)); m.getSource("sns")?.setData(geoSens());
     for (const mk of PT.pins.values()) mk.remove(); PT.pins.clear(); gambarPin();
     const vis = (id, v) => { if (m.getLayer(id)) m.setLayoutProperty(id, "visibility", v ? "visible" : "none"); };
     vis("pts-dot", PT.mode === "pin"); vis("sns-dot", PT.lapis.sensor); segarSnLeg();
@@ -2981,7 +2981,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       const f = e.target.closest("[data-fk]");
       if (f) { const v = f.dataset.v;
         st[f.dataset.fk] = st[f.dataset.fk] instanceof Set ? new Set([v]) : v; chromeSaring(); isiKampus(); isiProv();
-        nanti(() => { saring(); document.querySelector(".ak-saring").scrollIntoView({block: "start", behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"}); }); return; }
+        nanti(() => { saring(); }); return; }
       const b = e.target.closest(".ak-orang"); if (b) buka(hasil[+b.dataset.i]);
     });
     $("akDaftar").addEventListener("keydown", e => { if ((e.key === "Enter" || e.key === " ") && e.target.classList.contains("ak-orang")) { e.preventDefault(); buka(hasil[+e.target.dataset.i]); } });
@@ -3009,7 +3009,7 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
       const sa = e.target.closest("[data-sa]"); if (!sa) return;
       const k = $("akSheet").dataset.k;
       if (sa.dataset.sa === "tambah") dpTambahBanyak(semua.filter(o => o[2] === k).sort((x, y) => y[4] - x[4] || y[6] - x[6]).slice(0, 10));
-      else { st.kJenis = jenisK(k); if (st.prov.size && !cocokProvK(k)) pilihProv(""); pilihKampus(k); tutupSheet(); document.querySelector(".ak-hasil").scrollIntoView({block: "start"}); } });
+      else { st.kJenis = jenisK(k); if (st.prov.size && !cocokProvK(k)) pilihProv(""); pilihKampus(k); tutupSheet(); } });
     /* tooltip batang rumpun: berlaku untuk pointer dan fokus papan ketik */
     const tipBar = (e, br) => { const tip = $("akTip"); if (!br) { tip.hidden = true; return; }
       tip.innerHTML = `<b>${esc(br.dataset.t)}</b><span><i style="background:${br.style.getPropertyValue("--w0")}"></i>${angka(br.dataset.n)} pakar</span><small>${esc(br.dataset.p)}% dari ${angka(br.dataset.tot)} pakar kampus</small>`;
