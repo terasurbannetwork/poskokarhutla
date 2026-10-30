@@ -2259,3 +2259,22 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-kdaftar .ak-bw .ak-bintang{width:14px;height:14px;top:-4px;right:-5px}
 .ak-kdaftar .ak-bw .ak-bintang svg{width:10px;height:10px}
 .ak-kdaftar button small{font-size:11px;padding:1px 7px}
+
+/* N6 riwayat jabatan tokoh */
+.ak-riw{list-style:none;margin:0;padding:0;display:grid;gap:0;position:relative}
+.ak-riw>li{display:grid;grid-template-columns:96px 1fr auto;gap:14px;align-items:start;padding:9px 0 9px 0;border-top:1px solid var(--line)}.ak-riw>li:first-child{border-top:0}
+.ak-riw-t{font-weight:800;font-variant-numeric:tabular-nums;color:var(--brand2,#1c4f9c);font-size:13px;text-align:right}
+.ak-riw-i{display:grid;gap:4px;min-width:0}.ak-riw-i>b{font-size:14px;color:var(--ink)}.ak-riw-i .ak-izin{justify-self:start}
+.ak-riw-l{display:flex;align-items:center;gap:6px;color:var(--ink2);font-size:13px}.ak-riw-l .ak-lgo{width:20px;height:20px}
+@media (max-width:560px){.ak-riw>li{grid-template-columns:72px 1fr auto;gap:10px}}
+
+/* N4 tip dan lembar sensor */
+.ak-tips{width:300px;max-width:300px;gap:6px}.ak-tips-h{display:flex;align-items:flex-start;gap:8px}.ak-tips-h b{font-size:13px;line-height:1.3;color:var(--ink)}.ak-tips-h svg{flex:none;margin-top:1px}
+.ak-tips-k{justify-self:start;color:var(--w0);background:color-mix(in srgb,var(--w0) 13%,#fff);font-weight:700}
+.ak-tips dl div{grid-template-columns:14px 62px 1fr}.ak-tips dl dt{color:var(--ink2);font-size:11.5px}.ak-tips dl dd{margin:0;font-weight:600;font-size:12px;min-width:0;overflow-wrap:anywhere}
+.ak-tips-o{display:inline-flex;align-items:center;gap:5px}.ak-tips-o .ak-lgo{width:16px;height:16px}.ak-tips-s{display:inline-flex;align-items:center;gap:5px}
+.ak-tips-s i,.ak-tips-d{display:inline-block;width:8px;height:8px;border-radius:50%;margin-right:4px}.ak-tips-s i.aktif,.ak-tips-d.aktif{background:#2b8a3e}.ak-tips-s i.lama,.ak-tips-d.lama{background:#9aa4b2}
+
+#akTip .ak-tips,#akTip .ak-tips *{font-size:12px;line-height:1.35}#akTip .ak-tips .ak-tips-h b{font-size:13px;font-weight:800}#akTip .ak-tips dd,#akTip .ak-tips dd *{font-weight:600}#akTip .ak-tips dt{font-size:11.5px;font-weight:600}#akTip .ak-tips dl div{display:grid;grid-template-columns:14px 58px minmax(0,1fr);align-items:center;gap:7px}#akTip .ak-tips .ak-tips-k{font-size:10.5px;font-weight:700;padding:2px 9px}
+#akTip .ak-tips dd{justify-self:start;text-align:left;white-space:normal;min-width:0;overflow-wrap:anywhere}
+#akTip .ak-tips dl > div{grid-template-columns:16px 58px minmax(0,1fr)!important}
