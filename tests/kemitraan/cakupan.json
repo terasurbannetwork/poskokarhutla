@@ -5,6 +5,7 @@
     "py:kode.py": "uji:kode",
     "js:konst.js": "konst.py dan konst.js identik",
     "py:profil_daerah.py": "uji:profil_daerah",
+    "py:geo.py": "uji:geo",
     "src:kemitraan.js": "peran terdeteksi benar: SA, ST, PM, KK, AG, BP, PL",
     "js:inti.js": "cangkang KM staf: delapan segmen",
     "js:daerah.js": "cangkang KM tampilan: tiap berkas mendaftar",
