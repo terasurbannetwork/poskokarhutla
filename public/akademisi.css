@@ -2093,3 +2093,14 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 /* G22 multi-pilih bencana: tanda centang kecil di kiri tombol terpilih */
 .ak-bpanel .ak-bencana button[aria-pressed="true"]:not([data-r=""])::before{content:"\2713";font-size:12px;font-weight:800;margin-right:-2px;flex:none}
 .ak-bpanel .ak-bencana button[aria-pressed="true"]::after{content:none!important}
+/* ubin lapisan peta v3: ringan, aktif = latar biru muda + teks navy + garis navy; mati = putih + abu */
+.ak-side-h .ak-ptlayer,.ak-side .ak-ptlayer{background:#fff!important;border:1px solid var(--line)!important;padding:3px!important;gap:3px!important;border-radius:12px!important}
+.ak-side-h .ak-ptlayer > button,.ak-side .ak-ptlayer > button{height:46px!important;border-radius:9px!important;background:transparent!important;color:#6b7280!important;font-size:10.5px!important;font-weight:600!important;border:1px solid transparent!important;place-items:center!important;align-content:center!important;gap:4px!important;transition:background .15s,color .15s,border-color .15s}
+.ak-side-h .ak-ptlayer > button svg,.ak-side-h .ak-ptlayer > button .ak-ikon{width:16px!important;height:16px!important;opacity:.7}
+.ak-side-h .ak-ptlayer > button[aria-pressed="true"]{background:#e8effb!important;color:#14284b!important;border-color:#b9cbea!important}
+.ak-side-h .ak-ptlayer > button[aria-pressed="true"] svg,.ak-side-h .ak-ptlayer > button[aria-pressed="true"] .ak-ikon{opacity:1;color:#1c4fa0}
+.ak-side-h .ak-ptlayer > button:hover{background:#f3f6fb!important;color:#14284b!important}
+.ak-side-h .ak-ptlayer > button:focus-visible{outline:2px solid #1c4fa0!important;outline-offset:1px}
+/* pemilih kategori peta: rapat ke pojok kanan atas (kontrol zoom sudah di kanan bawah) */
+#akPtKat{right:12px!important;left:auto!important;top:12px!important}
+.ak-ptaisi:has(#akPtKat) #akPtKat{margin-right:0!important}
