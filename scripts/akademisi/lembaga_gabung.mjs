@@ -19,6 +19,7 @@ export const PROV = {11: "Aceh", 12: "Sumatera Utara", 13: "Sumatera Barat", 14:
   53: "Nusa Tenggara Timur", 61: "Kalimantan Barat", 62: "Kalimantan Tengah", 63: "Kalimantan Selatan", 64: "Kalimantan Timur", 65: "Kalimantan Utara", 71: "Sulawesi Utara",
   72: "Sulawesi Tengah", 73: "Sulawesi Selatan", 74: "Sulawesi Tenggara", 75: "Gorontalo", 76: "Sulawesi Barat", 81: "Maluku", 82: "Maluku Utara", 91: "Papua", 92: "Papua Barat",
   93: "Papua Selatan", 94: "Papua Tengah", 95: "Papua Pegunungan", 96: "Papua Barat Daya"};
+export const JKT_KOTA = {"jakarta pusat": [-6.1865, 106.8341], "jakarta selatan": [-6.2615, 106.8106], "jakarta timur": [-6.2250, 106.9004], "jakarta barat": [-6.1674, 106.7637], "jakarta utara": [-6.1384, 106.8636]};
 const FIELD = ["id", "nama", "singkatan", "kategori", "sub", "skala", "induk", "prov", "kab", "alamat", "lat", "lon", "lokasi_sumber", "web", "email", "telepon", "pusdalops", "wa", "medsos",
   "pimpinan", "bidang", "rumpun", "izin", "mitra_bnpb", "alias", "negara", "sensor", "inovasi_produk", "logo", "catatan", "potensi_bantuan", "linkedin", "badan_hukum", "didirikan", "sdm", "kapasitas", "jaringan", "sumber", "diperiksa", "status_situs"];
 const KONTAK = ["telepon", "wa", "email", "alamat", "pimpinan", "izin"];
@@ -119,6 +120,9 @@ export function gabung(daftar, bpbd = [], kini = new Date()) {
     if (/PROVINSI/i.test(b.nama)) prov.set(b.prov, [b.lat, b.lon]); else kab.set(b.prov + "|" + sapu(b.kab).replace(/^(kabupaten|kota) /, ""), [b.lat, b.lon]); }
   { const jum = new Map(); for (const b of bpbd) if (Number.isFinite(b.lat) && !prov.has(b.prov)) { const j = jum.get(b.prov) || [0, 0, 0]; jum.set(b.prov, [j[0] + b.lat, j[1] + b.lon, j[2] + 1]); }
     for (const [p, [a, o, n]] of jum) prov.set(p, [a / n, o / n]); }   // provinsi tanpa kantor BPBD provinsi di GIS: rata-rata kantor kab/kotanya
+  /* bpbd.json tidak memuat DKI: titik tengah lima kota administrasi Jakarta (perkiraan pusat kota) */
+  for (const [n, ll] of Object.entries(JKT_KOTA)) if (!kab.has("31|" + n)) kab.set("31|" + n, ll);
+  if (!prov.has("31")) prov.set("31", JKT_KOTA["jakarta pusat"]);
   const kabNama = [...kab].map(([k, ll]) => [k.split("|")[1], k.split("|")[0], ll]).filter(([n]) => n.length > 4).sort((a, b) => b[0].length - a[0].length);
   for (const l of per.values()) {
     if (Number.isFinite(l.lat)) { l.lokasi_sumber ||= "alamat"; continue; }
@@ -126,7 +130,8 @@ export function gabung(daftar, bpbd = [], kini = new Date()) {
     if (k) [l.lat, l.lon, l.lokasi_sumber] = [...k, "kota"]; else if (p) [l.lat, l.lon, l.lokasi_sumber] = [...p, "provinsi"];
     else if (l.alamat) {   // kantor nasional tanpa prov: nama kab/kota terpanjang yang tertulis di alamatnya ("Jakarta" saja = DKI)
       const a = " " + sapu(l.alamat) + " ";
-      const hit = kabNama.find(([n]) => a.includes(" " + n + " "));
+      /* alamat Jakarta: hanya cocokkan kab/kota DKI. Tanpa ini "Kuningan" (Setiabudi), "Medan Merdeka", "Jati Padang" terbaca Kab. Kuningan, Kota Medan, Kota Padang */
+      const hit = kabNama.find(([n, p]) => (!/ jakarta /.test(a) || p === "31") && a.includes(" " + n + " "));
       if (hit) { [l.lat, l.lon] = hit[2]; l.prov ||= hit[1]; l.lokasi_sumber = "kota"; }
       else if (/ jakarta /.test(a) && prov.get("31")) { [l.lat, l.lon] = prov.get("31"); l.prov ||= "31"; l.lokasi_sumber = "provinsi"; }
     }

@@ -616,14 +616,14 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/), id = tgl ? tgl[2] : nama ? nama[2] : rl ? rl[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/), id = tgl ? tgl[2] : nama ? nama[2] : rl ? rl[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
   const kunci = tgl ? tgl[1] + "/:tanggal" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
     const ok = ["GET", "POST"].filter(m => tabel[m + " " + kunci]);
     return ok.length && req.method !== "HEAD" && req.method !== "OPTIONS" ? gagal(405, "metode tidak diizinkan", {allow: ok.join(", ")}) : null;
   }
-  if (req.method === "POST") {   // CSRF: POST dari origin lain ditolak (cookie sesi SameSite=Lax)
+  if (req.method === "POST" || req.method === "PATCH" || req.method === "DELETE") {   // CSRF: tulis dari origin lain ditolak (cookie sesi SameSite=Lax)
     const x = tolakOrigin(req, url); if (x) return x;
     if (!env.IP_SALT && !url.pathname.startsWith("/api/jejak")) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   }

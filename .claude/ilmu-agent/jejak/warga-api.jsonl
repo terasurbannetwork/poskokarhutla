@@ -638,3 +638,4 @@
 {"t":"2026-10-30T11:25:04.957+07:00","berkas":"src/akademisi.js","blob":"e6337ae397c646527dedc44f2f0f8b39d557ab7c","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"rute GET /api/akademisi/gambar/:kunci (R2, CSP svg)","sha":"5f146602"}
 {"t":"2026-10-30T11:25:05.005+07:00","berkas":"tests/warga/akademisi_gambar.test.mjs","blob":"d8fa2c04f5328172294f01edb9ff035d3bfbdf3c","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"uji gambar","sha":"5f146602"}
 {"t":"2026-10-30T12:30:52.432+07:00","berkas":"src/worker.js","blob":"246be85ab2f1d06e10b663b9063648762e8e1a65","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"tolakOrigin + sesi_staf; PB uji diberi origin","sha":"563eeae8"}
+{"t":"2026-10-30T17:51:36.712+07:00","berkas":"src/akademisi.js","blob":"e95e6f87ff0ea64c37d66a56bff9f2b768aaebcf","aturan":"61df4e4ba61c","vonis":"dikerjakan","ringkas":"riwayat BNPB: 4 rute + migrasi 0087 + uji","sha":"b5596753"}
