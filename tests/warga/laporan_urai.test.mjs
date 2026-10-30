@@ -138,3 +138,18 @@ uji("gabung status daerah: kunci provinsi + kab/kota + jenis", () => {
   assert.deepEqual(n, {tambah: 1, ubah: 1});
   assert.equal(lama[0].masa, "baru");
 });
+
+uji("laphar Pusdalops lama (Jan 2026): bagian A berhenti di 'B. Bencana Indonesia', judul tanpa 'di' tetap berprovinsi", () => {
+  const h = U.urai(fixture("laphar-pusdalops-15jan.txt"), PROV);
+  assert.equal(h.bentuk, "laphar");
+  assert.deepEqual([h.mulai, h.sampai], ["2026-01-15", "2026-01-16"]);
+  /* baris tabel SK darurat sesudah "B. Bencana Indonesia" tidak boleh terbaca sebagai entri */
+  assert.deepEqual(h.kejadian.map(k => k.entry_no), [1, 2, 12]);
+  assert.deepEqual(h.kejadian.map(k => [k.jenis, k.prov, k.lokasi]), [["banjir", "33", "Pati"], ["longsor", "33", "Jepara"], ["banjir", "13", "Agam"]]);
+  assert.match(h.kejadian[0].korban, /3\.700 KK terdampak/);
+});
+
+uji("tempatDari: ejaan provinsi format lama", () => {
+  assert.equal(U.kodeProv(U.tempatDari("Banjir di Provinsi DK. Jakarta").prov_teks, PROV), "31");
+  assert.deepEqual(U.tempatDari("Kab. Aceh Tamiang, Prov. Aceh"), {tempat: "Kab. Aceh Tamiang", prov_teks: "Aceh"});
+});

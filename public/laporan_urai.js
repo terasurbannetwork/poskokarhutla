@@ -23,7 +23,8 @@ const angkaId = s => { const t = String(s).replace(/[^\d.,]/g, ""); if (!t) retu
 
 /* ---------------------------------------------------------------- provinsi */
 const ALIAS = {"ntt": "nusa tenggara timur", "ntb": "nusa tenggara barat", "diy": "daerah istimewa yogyakarta", "di yogyakarta": "daerah istimewa yogyakarta",
-  "dki": "dki jakarta", "babel": "kepulauan bangka belitung", "kepri": "kepulauan riau", "sulsel": "sulawesi selatan", "sulut": "sulawesi utara",
+  "dki": "dki jakarta", "dk. jakarta": "dki jakarta", "dk jakarta": "dki jakarta", "daerah khusus jakarta": "dki jakarta", "jakarta": "dki jakarta",
+  "di. yogyakarta": "daerah istimewa yogyakarta", "d.i yogyakarta": "daerah istimewa yogyakarta", "d.i. yogyakarta": "daerah istimewa yogyakarta", "babel": "kepulauan bangka belitung", "kepri": "kepulauan riau", "sulsel": "sulawesi selatan", "sulut": "sulawesi utara",
   "sulteng": "sulawesi tengah", "sultra": "sulawesi tenggara", "sulbar": "sulawesi barat", "kalteng": "kalimantan tengah", "kalsel": "kalimantan selatan",
   "kalbar": "kalimantan barat", "kaltim": "kalimantan timur", "kaltara": "kalimantan utara", "sumsel": "sumatera selatan", "sumut": "sumatera utara",
   "sumbar": "sumatera barat", "jabar": "jawa barat", "jateng": "jawa tengah", "jatim": "jawa timur", "papua barat daya": "papua barat daya"};
@@ -62,7 +63,12 @@ const jenisDari = judul => (POLA_JENIS.find(([re]) => re.test(judul)) || [, "lai
 const PRA_WILAYAH = /^(Kab\.|Kabupaten|Kota|Prov\.|Provinsi|Kec\.|Kecamatan|Kel\.|Desa|Ds\.|Kawasan|Pulau|Gunung|Gn\.|TN|TPA|Taman)\b/i;
 function tempatDari(judul) {
   const bag = polos(judul).split(/\s+di\s+/i);
-  if (bag.length < 2) return {tempat: "", prov_teks: ""};
+  /* format Pusdalops lama tanpa "di": "Banjir Bandang Kab. Agam, Prov. Sumatera Barat" -> mulai dari Kab./Kota/Prov. pertama */
+  if (bag.length < 2) {
+    const w = polos(judul).search(/\b(Kab\.|Kabupaten|Kota|Prov\.|Provinsi)\s/i);
+    if (w < 0) return {tempat: "", prov_teks: ""};
+    bag.splice(0, 1, polos(judul).slice(0, w), polos(judul).slice(w));
+  }
   let sisa = bag.slice(1).join(" di ").trim().replace(/[.,;]$/, "");
   let prov_teks = "";
   const m = sisa.match(/,\s*(Provinsi|Prov\.)\s+(.+)$/i);                 // "… di Kab. X, Provinsi Y"
@@ -184,6 +190,9 @@ const RE_SEKSI = /^\s*([A-Z])\.\s+([A-Z].{2,60})\s*$/;
    dan menjorok jauh ke kanan -- dua syarat itu yang memisahkan entri dari isi. */
 const RE_JUDUL_ENTRI = /^(Bencana|Kebakaran|Karhutla|Banjir|Gempa|Kekeringan|Tanah Longsor|Longsor|Cuaca|Erupsi|Angin|Abrasi|Gelombang|Hidrometeorologi|Aktivitas)\b/i;
 const MAKS_JOROK_ENTRI = 24;
+/* laphar Pusdalops lama kadang berjudul wilayah saja ("3. Kab. Aceh Tamiang, Prov. Aceh"). Diterima hanya bila nomornya
+   tepat lanjutan entri sebelumnya DAN menyebut provinsi -- daftar kab bernomor di dalam entri tidak memenuhi keduanya. */
+const RE_JUDUL_WILAYAH = /^(Kab\.|Kabupaten|Kota)\s.+,\s*(Prov\.|Provinsi)\s*\S/i;
 
 function uraiLaphar(teks, prov, items) {
   const baris = String(teks ?? "").replace(ZW, "").replace(/ /g, " ").split(/\r?\n/);
@@ -215,9 +224,11 @@ function uraiLaphar(teks, prov, items) {
     const b0 = baris[i], b = rapi(b0);
     if (!b) continue;
     const sk = b.match(RE_SEKSI);
-    if (sk && !/^A$/.test(sk[1]) && /Rekapitulasi|Infografis|Laporan Aktivitas|Laporan Meteorologi|Komunikasi Radio|Petugas Piket|Analisis/i.test(sk[2])) { tutup(); break; }
+    /* laphar Jan-Apr 2026 (format Pusdalops lama) menutup bagian A dengan "B. Bencana Indonesia", "D. Pantauan Gunung Api",
+       "F. Prakiraan Cuaca oleh BMKG"; judul seksinya lain, hurufnya juga lain */
+    if (sk && !/^A$/.test(sk[1]) && /Rekapitulasi|Infografis|Bencana Indonesia|Pantauan Gunung|Prakiraan Cuaca|Laporan Aktivitas|Laporan Meteorologi|Komunikasi Radio|Petugas Piket|Analisis/i.test(sk[2])) { tutup(); break; }
     const e = b.match(RE_ENTRI_LAPHAR);
-    if (e && RE_JUDUL_ENTRI.test(e[2]) && Number(e[1]) > noTerakhir && b0.search(/\S/) <= MAKS_JOROK_ENTRI && !RE_LABEL_LAPHAR.test(b)) {
+    if (e && (RE_JUDUL_ENTRI.test(e[2]) || (Number(e[1]) === noTerakhir + 1 && RE_JUDUL_WILAYAH.test(e[2]))) && Number(e[1]) > noTerakhir && b0.search(/\S/) <= MAKS_JOROK_ENTRI && !RE_LABEL_LAPHAR.test(b)) {
       tutup(); noTerakhir = Number(e[1]); k = {judul: e[2], sifat: "", entry_no: noTerakhir, sumber_urai: "laphar"}; judulBuka = true; continue;
     }
     if (!k) continue;
