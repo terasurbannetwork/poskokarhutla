@@ -1,4 +1,4 @@
-/* Posisi pesawat terbuka per jam (migrasi 0079 adsb_posisi). Sumber: adsb.fi open data v3, nonkomersial, 1 permintaan/detik.
+/* Posisi pesawat terbuka per jam (migrasi 0080 adsb_posisi). Sumber: adsb.fi open data v3, nonkomersial, 1 permintaan/detik.
    Data posisi pesawat: adsb.fi (https://adsb.fi). Cron: menit ADSB_MENIT dari dispatcher "* * * * *" (tanpa jadwal baru). Kill switch env.ADSB="mati". */
 const JAM = 3600e3, HARI = 24 * JAM, WIB = 7 * JAM;
 export const ADSB_MENIT = 46, SIMPAN_HARI = 90, JAM_PANGKAS_UTC = 5, BATAS_BARIS = 500, JEDA_MS = 1100, ALT_MAKS_FT = 10000;
