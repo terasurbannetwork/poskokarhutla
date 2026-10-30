@@ -37,18 +37,26 @@ def kunci():
     return k
 
 
+def ambil(url):
+    """D.ambil dengan kunci disamarkan dari pesan galat (URL memuat kunci; galat masuk JSON yang dikomit)."""
+    try:
+        return D.ambil(url, jeda=JEDA, coba=4, batas_waktu=40)
+    except RuntimeError as e:
+        raise RuntimeError(str(e).replace(os.environ.get("BPS_KEY", "\0"), "***")) from None
+
+
 def url_var(domain, kata, hal=1):
     return f"{BASIS}/list/model/var/domain/{domain}/keyword/{urllib.parse.quote(kata)}/page/{hal}/key/{kunci()}/"
 
 
 def url_data(domain, var, tahun=None):
-    t = f"/th/{tahun}" if tahun else ""
+    t = f"/th/{tahun}" if tahun else ""   # API mewajibkan th (kode tahun = tahun - 1900; rentang "115:125")
     return f"{BASIS}/list/model/data/domain/{domain}/var/{var}{t}/key/{kunci()}/"
 
 
 def cari_var(domain, kata):
     """-> [(id, judul)] variabel BPS yang cocok dengan kata kunci."""
-    r = D.ambil(url_var(domain, kata), jeda=JEDA)
+    r = ambil(url_var(domain, kata))
     if r.get("status") != "OK" or r.get("data-availability") == "list-not-available":
         return []
     data = r.get("data") or []
@@ -64,9 +72,10 @@ def pilih_var(daftar, pola):
     return None
 
 
-def urai_data(r, var=None):
+def urai_data(r, var=None, turvar_pola=None):
     """Balasan list/model/data -> {kode vervar (str): {tahun label: nilai}} untuk variabel `var` (default: variabel tunggal).
-    Mengangkat FormatBeda bila struktur tak sesuai."""
+    `turvar_pola` (regex label): hanya turunan variabel yang cocok (mis. "Persentase" dari tabel Kemiskinan yang memuat garis, jumlah, persen);
+    tanpa itu semua turvar digabung (benar hanya bila turvar tunggal). Mengangkat FormatBeda bila struktur tak sesuai."""
     if not isinstance(r, dict) or r.get("status") != "OK" or r.get("data-availability") != "available":
         raise FormatBeda(f"data tidak tersedia: {str(r)[:120]}")
     try:
@@ -74,8 +83,16 @@ def urai_data(r, var=None):
         v = var if var is not None else (vv[0] if len(vv) == 1 else None)
         if v is None or v not in vv:
             raise FormatBeda(f"variabel {var} tak ada di balasan {vv}")
-        turvar = [t["val"] for t in r["turvar"]] or [0]
+        turvar = [t["val"] for t in r["turvar"] if turvar_pola is None or re.search(turvar_pola, t.get("label", ""), re.I)]
+        if r["turvar"] and not turvar:
+            raise FormatBeda(f"turvar {turvar_pola!r} tak ada: {[t.get('label') for t in r['turvar']]}")
+        turvar = turvar or [0]
         turtahun = [t["val"] for t in r["turtahun"]] or [0]
+        if len(turtahun) > 1:   # subperiode (bulan/semester): jangan menimpa diam-diam; pilih baris tahunan atau tolak
+            tahunan = [t["val"] for t in r["turtahun"] if re.fullmatch(r"\s*(tahun|tahunan)\s*", str(t.get("label", "")), re.I)]
+            if len(tahunan) != 1:
+                raise FormatBeda(f"turtahun ganda tanpa baris tahunan: {[t.get('label') for t in r['turtahun']][:6]}")
+            turtahun = tahunan
         out = {}
         for ver in r["vervar"]:
             for th in r["tahun"]:
@@ -114,6 +131,31 @@ def _cek():
         except FormatBeda:
             pass
     assert urai_data(dict(fix, var=[{"val": 192}, {"val": 7}]), var=192)["3301"]["2023"] == 10.6
+    fm = dict(fix, turvar=[{"val": 49, "label": "Garis Kemiskinan (Rp)"}, {"val": 55, "label": "Persentase Penduduk Miskin (persen)"}],
+              datacontent={"3301192491230": 500000, "3301192551230": 9.9, "3301192551240": 9.5})
+    assert urai_data(fm, 192, "persentase") == {"3301": {"2023": 9.9, "2024": 9.5}}, "turvar harus disaring"
+    try:
+        urai_data(fm, 192, "tidak ada")
+        raise AssertionError("turvar tak cocok harus FormatBeda")
+    except FormatBeda:
+        pass
+    try:
+        urai_data(dict(fix, turtahun=[{"val": 1, "label": "Maret"}, {"val": 2, "label": "September"}]))
+        raise AssertionError("turtahun semesteran tanpa baris tahunan harus ditolak")
+    except FormatBeda:
+        pass
+    ee = RuntimeError("x/key/rahasia/ HTTP 400")
+    os.environ["BPS_KEY"] = "rahasia"
+    try:
+        D_ambil = D.ambil
+        D.ambil = lambda *a, **k: (_ for _ in ()).throw(ee)
+        try:
+            ambil("x")
+        except RuntimeError as e:
+            assert "rahasia" not in str(e), "kunci bocor di galat"
+    finally:
+        D.ambil = D_ambil
+        os.environ.pop("BPS_KEY", None)
     dl = [(10, "Jumlah Penduduk"), (192, "Persentase Penduduk Miskin (P0) Menurut Kabupaten/Kota"), (193, "Garis Kemiskinan")]
     assert pilih_var(dl, r"persentase penduduk miskin.*kabupaten") == 192 and pilih_var(dl, "tidak ada") is None
     saved = os.environ.pop("BPS_KEY", None)

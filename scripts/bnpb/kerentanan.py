@@ -31,7 +31,11 @@ RWI_URL = ("https://data.humdata.org/dataset/76f2a2ea-ba50-40f5-b79c-db95d668b84
 RWI_BERKAS = os.path.join(D.MENTAH, "rwi_idn.csv")
 KOMPONEN = ["kep", "lan", "bal", "rwi", "mis"]
 MIN_KOMPONEN = 3
-VAR_MISKIN_POLA = r"persentase penduduk miskin.*kabupaten"
+# dua gaya judul tabel BPS provinsi: (kata kunci, pola judul, pola turvar). Gaya 1 (mis. Jawa Tengah): satu tabel memuat garis/jumlah/persentase sebagai turvar;
+# gaya 2 (mis. Aceh): tabel persentase tersendiri.
+GAYA_MISKIN = [("kemiskinan", r"^kemiskinan menurut kabupaten", "persentase"),
+               ("penduduk miskin", r"persentase penduduk miskin.*menurut kabupaten", None)]
+TAHUN_BPS = "123:125"   # kode th = tahun - 1900 (2023-2025; API membatasi 3 tahun per panggilan); terbaru yang terisi dipakai
 
 
 def luas_km2(poligon):
@@ -101,11 +105,15 @@ def miskin_bps(kodes):
     for p in sorted({k[:2] for k in kodes}):
         dom = f"{p}00"
         try:
-            vid = B.pilih_var(B.cari_var(dom, "penduduk miskin"), VAR_MISKIN_POLA)
+            vid, tp = None, None
+            for kata, pola, tp in GAYA_MISKIN:
+                vid = B.pilih_var(B.cari_var(dom, kata), pola)
+                if vid is not None:
+                    break
             if vid is None:
                 gagal.append(f"{dom}: variabel tak ditemukan")
                 continue
-            d = B.urai_data(D.ambil(B.url_data(dom, vid), jeda=B.JEDA), vid)
+            d = B.urai_data(B.ambil(B.url_data(dom, vid, TAHUN_BPS)), vid, tp)
             for kode, per in d.items():
                 t = B.terbaru(per)
                 if t and kode in kodes:
