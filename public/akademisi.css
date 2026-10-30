@@ -1587,3 +1587,7 @@ button.ak-afg-i{cursor:pointer}button.ak-afg-i:hover{background:var(--surface)}
 .ak-strip > button:hover{background:var(--surface)}
 .ak-strip > button:focus-visible{outline:2px solid var(--brand2);outline-offset:2px}
 .ak-sorot{box-shadow:0 0 0 3px oklch(75% .12 85 / .7);transition:box-shadow .3s}
+/* aturan pemilik: deretan pilihan selalu selebar wadahnya */
+.ak-bh{display:flex;flex-wrap:wrap;gap:10px}
+.ak-bh > .ak-urut,.ak-urut{display:grid!important;grid-template-columns:repeat(3,minmax(0,1fr));flex:1 1 100%;width:100%!important;box-sizing:border-box}
+.ak-urut button{justify-content:center;width:100%}
