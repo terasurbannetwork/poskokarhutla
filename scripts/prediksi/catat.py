@@ -163,6 +163,8 @@ def titik_hotspot(akar, cari, kmin=1):
     if not d or not d.get("baris"):
         return {}
     c = {n: i for i, n in enumerate(d["kolom"])}
+    if not {"hitung", "keyakinan", "wilayah", "tgl_wib"} <= c.keys():   # format lama (salinan git basi): bukan sumber sah
+        return {}
     ac = (dt.datetime.fromisoformat(d["acuan"]) + dt.timedelta(hours=7)).date()
 
     def tgl(md):                      # tgl_wib "MM-DD" tanpa tahun: lewat dari acuan = tahun lalu
