@@ -27,7 +27,7 @@
 .lb-tabel{width:100%;border-collapse:collapse;font-size:13px}
 .lb-tabel th{background:var(--navy);color:#fff;text-align:center;font-weight:700;padding:8px 10px;white-space:nowrap}
 .lb-tabel td{padding:7px 10px;border-bottom:1px solid var(--line);vertical-align:top}
-.lb-tabel td.n{text-align:right;font-variant-numeric:tabular-nums}
+.lb-tabel td.n{text-align: center;font-variant-numeric:tabular-nums}
 .lb-ikonbaris{display:flex;gap:4px;flex-wrap:wrap}
 .lb-ikonbaris span{display:inline-flex;color:var(--c1)}
 .lb-ikonbaris svg{width:15px;height:15px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
