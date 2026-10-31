@@ -122,6 +122,7 @@ function renderMetode() {
       ["6", "<code>rob.py</code>", "rob.json; arsip 15 titik baru per hari", "boleh gagal: berkas lama"],
       ["7", "<code>bahaya.py</code>, <code>kejadian.py</code>", "bahaya.json, kejadian.json (hanya bila belum ada)", "boleh gagal"],
       ["7b", "<code>bahaya.py kelas</code>, <code>uji_inarisk.py</code>", "bahaya_kelas.json, uji_inarisk.json (dijalankan manual)", "lokal"],
+      ["7c", "<code>label_kec.py</code>, <code>faktor_kec.py</code>", "label_kec_ringkas.json, faktor_kec.json (dijalankan manual; elevasi dibatasi kuota harian)", "lokal"],
       ["8", "<code>riwayat.py</code>", "riwayat.json, riwayat_grid*.json", "boleh gagal"],
       ["9", "<code>status.py</code>, <code>posko.py</code>", "status.json, prakiraan72.json, meta.json, posko.json, pusat_kec.json", "jalan berhenti"],
       ["10", "<code>seri_status.py</code>, <code>kejadian_aktif.py</code>, <code>prospektif.py</code>, <code>dampak.py</code>, <code>laporan_banjir.py</code>", "seri_status.json, kejadian_aktif_awal.json, prospektif.json (hanya bertambah), dampak.json, laporan.json", "boleh gagal: berkas lama"]])}
@@ -135,6 +136,7 @@ function renderMetode() {
       ["Peringatan resmi", "BMKG nowcast (CAP), BMKG Maritim (rob PDF, gelombang)", "harian"],
       ["Indeks bahaya", "InaRISK BNPB, raster 100 m (banjir, bandang, longsor, kekeringan, gelombang & abrasi)", "statis"],
       ["Sebaran zona bahaya", "InaRISK BNPB, semua piksel 100 m per kecamatan (computeHistograms); persen luas kelas rendah, sedang, tinggi. Diuji lawan kejadian banjir DIBI 2008–2025 per kabupaten (<code>uji_inarisk.py</code>)", "statis"],
+      ["Faktor per kecamatan", "Elevasi SRTM 90 m (Open Topo Data, kisi ≤ 25 titik), kepadatan WorldPop, zona InaRISK, jarak titik sungai GloFAS, riwayat DIBI kabupaten; persentil nasional. Label kejadian: Groundsource (Zenodo, CC BY 4.0) dipetakan ke kecamatan", "statis"],
       ["Kejadian bencana", "BNPB data.bnpb.go.id (CKAN) dan DIBI BNPB (dasbor publik)", "tahunan / saat dijalankan"],
       ["Batas wilayah, desa, kantor BPBD", "Kemendagri, OpenStreetMap, BNPB", "statis"],
       ["Peta ketinggian (simulasi genangan)", "Terrarium AWS (SRTM ± 30 m)", "diunduh peramban saat dipakai"],

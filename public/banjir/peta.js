@@ -396,6 +396,37 @@ function sebaranBahaya(kunci) {
     `<p style="margin:0 0 6px;font-size:13px">${bj.p[0] + bj.p[1] + bj.p[2] > 0 ? `<b>${pc(bj.p[0])}</b> luas wilayah di zona bahaya banjir tinggi, ${pc(bj.p[1])} sedang.` : "Tidak ada zona bahaya banjir InaRISK di wilayah ini."}</p>
     <svg viewBox="0 0 ${W} ${lap.length * 26 + 4}" width="100%" role="img" aria-label="Sebaran kelas bahaya InaRISK">${bar}</svg>
     <p class="fnd">${KLS_BHY.map(([n, w]) => `<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${w};margin:0 4px 0 0"></span>${n[0].toUpperCase() + n.slice(1)}`).join(", ")}, abu-abu di luar zona. Luas ${luas(km2)} km². Sumber: InaRISK BNPB, semua piksel 100 m di dalam batas wilayah.</p>${uji}`); }
+/* kenapa rawan: faktor per kecamatan (faktor_kec.json, scripts/banjir/faktor_kec.py) dibanding kecamatan lain se-Indonesia.
+   r = % kecamatan yang ketat lebih kecil (pct_) atau, untuk elevasi, relief, jarak sungai, ketat lebih besar (pctr_). Jarak titik sungai GloFAS tidak ditampilkan: 192 titik se-Indonesia terlalu jarang untuk kecamatan. Dimuat saat pop-up kecamatan pertama dibuka. */
+const kcl = (v, sat) => (v > 0 && v < .5 ? "<1" : fmt(Math.round(v))) + sat;
+const FKT = [  // [kolom, nama, format, balik arah, keterangan, jenis: b = bahaya, p = paparan, r = riwayat]
+  ["rendah", "Dataran rendah lokal", v => kcl(v, "% titik"), false, "Porsi titik kisi dengan elevasi di bawah p10 kabupaten + 5 m (proksi dataran banjir lokal).", "b"],
+  ["elev_p50", "Elevasi tengah", v => kcl(v, " m dpl") + (v === 0 ? " (bisa jadi tanpa data di atas laut)" : ""), true, "Median elevasi titik kisi di dalam kecamatan, SRTM 90 m.", "b"],
+  ["relief", "Beda tinggi", v => kcl(v, " m"), true, "Selisih elevasi persentil 90 dan 10 di dalam kecamatan; kecil berarti datar.", "b"],
+  ["zona_tinggi", "Zona InaRISK tinggi", v => kcl(v, "% luas"), false, "Persen luas kecamatan di kelas bahaya banjir tinggi InaRISK BNPB.", "b"],
+  ["padat", "Kepadatan penduduk", v => kcl(v, " jiwa/km²"), false, "Penduduk WorldPop 2026 dibagi luas kecamatan. Ini paparan, bukan bahaya.", "p"],
+  ["kej_100rb", "Riwayat banjir kabupaten", v => v === 0 ? "tidak tercatat DIBI" : kcl(v, " per 100.000 jiwa"), false, "Kejadian banjir dan banjir bandang DIBI 2008–2025 di kabupaten ini per 100.000 penduduk; nilai kabupaten, sama untuk semua kecamatannya.", "r"],
+];
+const KATA_PCT = {b: "Lebih rawan dari", p: "Lebih padat dari", r: "Nilai kabupaten ini lebih tinggi dari"};
+function kenapaRawan(kunci) {
+  const F = S.faktorKec;
+  if (F === undefined) { S.faktorKec = null; muatJSON("data/faktor_kec.json").then(d => { const ix = Object.fromEntries(d.baris.map((b, i) => [b[0], i])); S.faktorKec = {...d, ix, kol: Object.fromEntries(d.kolom.map((k, i) => [k, i]))}; const el = document.getElementById("kenapaRawan"); if (el) el.outerHTML = kenapaRawan(el.dataset.k); }).catch(() => { S.faktorKec = false; }); }
+  if (!F) return F === false ? "" : `<div id="kenapaRawan" data-k="${esc(kunci)}"></div>`;
+  const b = F.baris[F.ix[kunci]]; if (!b) return "";
+  const nilai = k => b[F.kol[k]];
+  const semua = FKT.map(([k, n, f, balik, tip, j]) => { const v = nilai(k), p = nilai((balik ? "pctr_" : "pct_") + k); return v == null || p == null ? {k, n, hilang: true} : {k, n, f, tip, j, v, r: p}; });
+  const rows = semua.filter(x => !x.hilang).sort((a, c) => (a.j === "b" ? 0 : 1) - (c.j === "b" ? 0 : 1) || c.r - a.r), hilang = semua.filter(x => x.hilang);
+  if (!rows.length) return "";
+  const menonjol = rows.filter(x => x.j === "b" && x.r >= 75), nB = rows.filter(x => x.j === "b").length, W = 300, L = 128, B = W - L - 4;
+  const svg = rows.map((x, i) => `<g data-tip="<b>${x.n}</b><br>${x.f(x.v)}<br>${KATA_PCT[x.j]} ${fmt(Math.round(x.r))}% kecamatan se-Indonesia<br>${esc(x.tip)}"><text x="${L - 8}" y="${i * 24 + 15}" text-anchor="end" font-size="10"${x.j === "b" ? "" : ' opacity=".7"'}>${x.n}</text><rect x="${L}" y="${i * 24 + 4}" width="${B}" height="14" rx="3" fill="var(--line, #e3e7ec)"/><rect x="${L}" y="${i * 24 + 4}" width="${Math.max(1.5, x.r / 100 * B)}" height="14" rx="3" fill="${x.j !== "b" ? "#7f93a8" : x.r >= 75 ? WARNA_LV[3] : x.r >= 50 ? WARNA_LV[2] : "#3f9a6a"}"/></g>`).join("");
+  const kal = menonjol.length ? `<b>${menonjol.length} dari ${nB}</b> faktor bahaya masuk 25% teratas se-Indonesia: ${menonjol.map(x => `${x.n[0].toLowerCase() + x.n.slice(1)} (${fmt(Math.round(x.r))}%)`).join(", ")}.`
+    : hilang.length ? `Belum ada faktor bahaya yang terambil masuk 25% teratas se-Indonesia.` : `Tidak ada faktor bahaya yang masuk 25% teratas se-Indonesia.`;
+  return `<div id="kenapaRawan" data-k="${esc(kunci)}">${lipat("Kenapa rawan banjir",
+    `<p style="margin:0 0 6px;font-size:13px">${kal}</p>
+    <svg viewBox="0 0 ${W} ${rows.length * 24 + 4}" width="100%" role="img" aria-label="Faktor bahaya banjir dibanding kecamatan lain">${svg}</svg>
+    <p class="fnd">Panjang batang = persentil se-Indonesia ke arah rawan; merah = 25% teratas, abu-abu = paparan dan riwayat kabupaten. Sorot batang untuk nilai.${hilang.length ? ` ${hilang.length} dari ${FKT.length} faktor belum terambil (${hilang.map(x => x.n.toLowerCase()).join(", ")}).` : ""}
+    Sumber: Open Topo Data SRTM 90 m, WorldPop 2026, InaRISK BNPB, DIBI 2008–2025. Data ${new Date(F.dibuat + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"})}.</p>
+    <p class="fnd"><span class="pill" style="background:${WARNA_LV[2]};color:#fff">Deskripsi, bukan ramalan</span> Faktor belum digabung jadi skor; bobotnya sedang diuji lawan kejadian.</p>`)}</div>`; }
 const Analisa = {
   /* laci rincian di kanan (seperti Laci karhutla); di tab lain jatuh ke dialog tengah. kepala = lambang + <div><h3>nama</h3><p>jenis · induk</p></div> */
   buka(html, kepala) {
@@ -426,6 +457,7 @@ const Analisa = {
       ${c ? lipat("Hujan 10 hari: 3 hari teramati dan 7 hari prakiraan", `${grafikHujan(c)}<div class="grid g4">${kot("Puncak 3 hari", fmt(Math.round(c.h3)) + " mm", kelasHujan(c.h3 / 3) + " rata-rata")}${kot("Hujan 7 hari lalu", fmt(Math.round(c.a7)) + " mm", c.a7 >= 150 ? "tanah jenuh" : c.a7 >= 70 ? "tanah basah" : "tanah relatif kering")}${kot("Hari hujan lebat", fmt(c.h.filter((x, j) => j >= S.hujan.hari.indexOf(S.hujan.hari_ini) && x >= 50).length), "≥ 50 mm, 7 hari")}${kot("Hembusan maks", fmt(Math.round(Math.max(...(c.g || [0])))) + " km/jam", "7 hari")}</div>
         <p class="fnd">Sel 0,25° terdekat (${f2(c.lat)}, ${f2(c.lon)}). Garis putus = 50 mm (lebat) dan 100 mm (sangat lebat), skala BMKG.</p>`) : ""}
       ${sg.length ? lipat("Sungai terdekat (GloFAS)", `<table class="tb3"><thead><tr><th>Titik sungai</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Jarak</th><th class="n">Status</th></tr></thead><tbody>${sg.map(t => `<tr data-sg="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b><small>${esc(t.kab)}</small></td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.d))} km</td><td class="n">${pill(t.kelas)}</td></tr>`).join("")}</tbody></table><p class="fnd">Klik baris untuk hidrograf. Q2 = debit banjir 2 tahunan dari data 1997–2025.</p>`) : ""}
+      ${jenis === "kec" && S.b === "b" ? kenapaRawan(kunci) : ""}
       ${sebaranBahaya(kunci)}
       ${bh ? lipat("Indeks bahaya InaRISK tertinggi (0–1)", tabelBahaya(bh) + `<p class="fnd">Nilai tertinggi dari 10 titik cuplik di dalam kecamatan. Angka ini yang dipakai aturan status.</p>`, false) : ""}
       ${thR.length ? lipat(`Kejadian ${NAMA_B[S.b]} tercatat BNPB`, `<svg viewBox="0 0 ${thR.length * 26} 90" width="100%" role="img" aria-label="Kejadian per tahun">${thR.map((t, j) => { const n = riw[t].kejadian || 0, h = n / mR * 64;
