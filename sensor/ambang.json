@@ -1,0 +1,61 @@
+{
+  "versi": 1,
+  "catatan": "TITIK AWAL, BUKAN KEPUTUSAN. Semua angka wajib dikalibrasi per lokasi bersama BPBD/PVMBG/BMKG setempat sebelum dipakai memicu peringatan. Nilai null = harus diisi per lokasi (tinggi muka air terhadap papan duga setempat). Dasar tiap angka ditulis di 'dasar'; yang bertanda 'PERIKSA' belum diverifikasi ke naskah aslinya.",
+  "tingkat": ["normal", "waspada", "siaga", "awas"],
+  "histeresis": "Turun satu tingkat hanya setelah 3 bacaan berturut-turut di bawah batas tingkat itu.",
+  "jenis": {
+    "tma": {
+      "aturan": [
+        {"kunci": "laju_cm_jam", "op": ">=", "waspada": 10, "siaga": 30, "awas": 60, "satuan": "cm/jam",
+         "dasar": "Laju kenaikan muka air sungai. Praktik umum peringatan banjir bandang: kenaikan puluhan cm/jam di sungai kecil-menengah tergolong cepat. Titik awal; sungai hulu curam butuh batas lebih rendah."},
+        {"kunci": "tinggi_cm", "op": ">=", "waspada": null, "siaga": null, "awas": null, "satuan": "cm di papan duga",
+         "dasar": "Isi per pos dari tinggi Siaga 4/3/2 (sistem Siaga 1-4 pos duga air setempat) atau tinggi tebing. Tanpa angka ini hanya aturan laju yang aktif."}
+      ],
+      "sumber": ["Pos duga air BPBD/BBWS setempat", "PERIKSA: pedoman siaga banjir BNPB/Kemen PUPR"]
+    },
+    "hujan": {
+      "aturan": [
+        {"kunci": "mm10", "op": ">=", "waspada": 5, "siaga": 10, "awas": 20, "satuan": "mm/10 menit",
+         "dasar": "Intensitas sesaat. 20 mm/10 menit setara 120 mm/jam: sangat ekstrem."},
+        {"kunci": "mm60", "op": ">=", "waspada": 10, "siaga": 20, "awas": 40, "satuan": "mm/jam",
+         "dasar": "Klasifikasi BMKG per jam: lebat 10-20 mm/jam, sangat lebat di atas 20 mm/jam (PERIKSA tabel BMKG terkini). 40 mm/jam dipilih sebagai awas ekstrem."}
+      ],
+      "sumber": ["BMKG, klasifikasi intensitas hujan"]
+    },
+    "longsor": {
+      "aturan": [
+        {"kunci": "laju_mm_jam", "op": ">=", "waspada": 2, "siaga": 5, "awas": 10, "satuan": "mm/jam",
+         "dasar": "Praktik peringatan dini longsor lambat-ke-cepat: kecepatan rayapan lereng naik bertingkat sebelum runtuh (fase progresif, Intrieri dkk. 2012, kecepatan jadi indikator utama). Besaran mm/jam di sini titik awal; tiap lereng punya ambang sendiri dari rekaman rayapan musim lalu."},
+        {"kunci": "geser_mm", "op": ">=", "waspada": 20, "siaga": 50, "awas": 100, "satuan": "mm kumulatif",
+         "dasar": "Total pergeseran sejak pemasangan/penyetelan nol. Titik awal; retakan 5-10 cm di lereng umumnya sudah tanda bahaya lapangan."},
+        {"kunci": "lembap", "op": ">=", "waspada": 70, "siaga": 85, "awas": 95, "satuan": "% (terkalibrasi kering=0, jenuh=100)",
+         "dasar": "Kejenuhan tanah memicu longsor dangkal akibat hujan. Hanya bermakna setelah kalibrasi kering/jenuh sensor di tanah setempat."},
+        {"kunci": "miring_x", "op": ">=", "waspada": 0.5, "siaga": 1.0, "awas": 2.0, "satuan": "derajat dari posisi nol (nilai mutlak dinilai di firmware)",
+         "dasar": "Perubahan kemiringan tiang/tanah. Titik awal. Hanya sumbu X (roll) dinilai; sumbu Y dilaporkan untuk dilihat petugas."}
+      ],
+      "sirene_lokal": {
+        "kunci": "laju_mm_jam", "nilai": 10, "konfirmasi": 2, "tahan_menit": 10,
+        "dasar": "Sirene menyala di perangkat TANPA jaringan bila laju >= nilai pada 'konfirmasi' sampel berturut-turut; menyala minimal 'tahan_menit'. Nilai ini DISALIN ke SIRENE_LAJU_MM_JAM di config.example.h dan dijaga sama oleh uji tests/sensor/test_konsistensi.py."
+      },
+      "sumber": ["Intrieri, Gigli, Casagli, Nadim 2013, Brief communication: Landslide early warning system: toolbox and general concepts, NHESS 13", "PVMBG/Badan Geologi: pedoman sistem peringatan dini gerakan tanah (PERIKSA)"]
+    },
+    "gambut": {
+      "aturan": [
+        {"kunci": "muka_air_cm", "op": "<=", "waspada": -30, "siaga": -40, "awas": -50, "satuan": "cm terhadap permukaan gambut (negatif = di bawah)",
+         "dasar": "PP 57/2016 (perubahan PP 71/2014): ekosistem gambut berfungsi budidaya dinyatakan rusak bila muka air tanah lebih dari 0,4 m di bawah permukaan gambut di titik penaatan. Maka -40 cm = batas rusak (siaga); -30 peringatan dini; -50 kering parah. PERIKSA bunyi pasal dan pengukuran (Permen LHK P.14/2017) sebelum dikutip resmi."},
+        {"kunci": "lembap", "op": "<=", "waspada": 40, "siaga": 30, "awas": 20, "satuan": "% kelembapan tanah permukaan terkalibrasi",
+         "dasar": "Gambut permukaan kering mudah terbakar; titik awal, kalibrasi ke gambut setempat."}
+      ],
+      "sumber": ["PP 57/2016 tentang Perubahan atas PP 71/2014 Perlindungan dan Pengelolaan Ekosistem Gambut (PERIKSA)", "Permen LHK P.14/2017 tata cara pengukuran muka air tanah (PERIKSA)"]
+    },
+    "gas": {
+      "aturan": [
+        {"kunci": "pm25", "op": ">=", "waspada": 55.4, "siaga": 150.4, "awas": 250.4, "satuan": "ug/m3",
+         "dasar": "Batas kategori ISPU untuk PM2.5 (sedang/tidak sehat/sangat tidak sehat) menurut Permen LHK P.14/2020 (PERIKSA angka batas). Ini ukuran udara, bukan deteksi api."},
+        {"kunci": "co_ppm", "op": ">=", "waspada": 9, "siaga": 35, "awas": 100, "satuan": "ppm",
+         "dasar": "9 ppm = batas rata-rata 8 jam (EPA NAAQS), 35 ppm = batas 1 jam EPA, 100 ppm = bahaya langsung bagi orang di sekitar sensor. Titik awal; untuk deteksi bara gambut lebih berguna kenaikan di atas dasar harian."}
+      ],
+      "sumber": ["Permen LHK P.14/2020 (ISPU)", "US EPA NAAQS untuk CO"]
+    }
+  }
+}
