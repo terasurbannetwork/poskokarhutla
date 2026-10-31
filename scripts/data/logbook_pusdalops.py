@@ -51,15 +51,18 @@ POLA_JENIS = [
     (r"modifikasi cuaca|\bOMC\b", "omc"),
     (r"\bTPA\b|\bTPS|tempat pembuangan", "lainnya"),
     (r"kebakaran (permukiman|pemukiman|rumah|gedung)", "kebakaran_permukiman"),
-    (r"karhutla|hutan dan lahan|hutan\s*/\s*lahan|kebakaran hutan|kebakaran lahan", "karhutla"),
+    (r"karhutla|karlahut|hutan dan lahan|hutan\s*/\s*lahan|kebakaran hutan|kebakaran lahan", "karhutla"),
     (r"kekeringan", "kekeringan"),
     (r"gempa|tsunami", "gempabumi"),
-    (r"banjir", "banjir"),
-    (r"longsor|gerakan tanah|pergerakan tanah|tanah bergerak", "longsor"),
+    (r"banjir|tanggul jebol", "banjir"),
+    (r"longsor|gerakan tanah|pergerakan tanah|pergeseran tanah|tanah bergerak|tanah (amblas|ambles|retak)|retakan tanah", "longsor"),
     (r"erupsi|gunung ?api|vulkan|\bG\.\s|lahar", "gunungapi"),
-    (r"cuaca ekstr|angin|puting beliung|gelombang|abrasi|pohon tumbang", "cuaca"),
+    (r"cuaca ekstr|angin|put+ing beliung|gelombang|abrasi|pohon tumbang", "cuaca"),
     (r"konflik", "konflik_sosial"),
     (r"kegagalan teknologi", "kegagalan_teknologi"),
+    # kosakata arsip 2011-2020: "Kebakaran" polos = rumah/bangunan (karhutla sudah tertangkap di atas)
+    (r"^\s*kebakaran\b", "kebakaran_permukiman"),
+    (r"kecelakaan|\blaka\b|tenggelam|hanyut", "kecelakaan"),
 ]
 POLA_JENIS = [(re.compile(p, re.I), k) for p, k in POLA_JENIS]
 
@@ -87,7 +90,7 @@ BUKAN = (r"(?!(?i:nihil|tidak|belum|masih|dalam|pendataan|sedang|aman|kondusif|d
          r"anak|balita|lansia|dewasa|bayi|siswa|pelajar|karyawan|pekerja|petani|nelayan|pengungsi|penduduk|jiwa|orang|"
          r"kab|kota|kec|desa|dusun|kel|prov|provinsi|kecamatan|kabupaten|kelurahan|tn|sm|gn|g|taman|suaka|hutan|kawasan|"
          r"stasiun|pos|pengamatan|tim|trc|regu|satgas|posko|rt|rw)\b)")
-RE_AN = re.compile(r"\b(a\s?\.\s?n\s?\.?|a/n|an\.|atas nama)\s*[:]?\s*[A-Za-z][^\n,;()|]*", re.I)
+RE_AN = re.compile(r"\b(a\s?\.\s?n\s?\.?|a/n|an\.|atas nama)\s*[:.]?\s*[A-Za-z][^\n,;()|]*", re.I)
 TEMPAT_DEPAN = (r"(?<!Kec\. )(?<!Kab\. )(?<!Kota )(?<!Ds\. )(?<!Desa )(?<!Kel\. )(?<!Dusun )(?<!Dsn\. )(?<!Kp\. )(?<!Prov\. )"
                 r"(?<!TN\. )(?<!SM\. )(?<!Gn\. )(?<!G\. )(?<!Stasiun )")
 # "Nurhayati (Perempuan, 30 Tahun)", "Hera Cipta Diara (L/38)", "Jajang (Laki-laki)", "Ai Sumarni (P) 36 Tahun",
@@ -97,8 +100,11 @@ RE_UMUR = re.compile(r"\b" + TEMPAT_DEPAN + BUKAN + NAMA_BEBAS
 KONTEKS_KORBAN = re.compile(r"MD|meninggal|korban|luka|hilang|tewas|wafat|tenggelam|tertimbun|terseret|usia|umur|tahun|\bth\b", re.I)
 # "Dafi Arahman/21 th", "Agusra/59th/L"
 RE_GARIS = re.compile(r"\b" + BUKAN + NAMA_BEBAS + r"[ \t]*/[ \t]*(" + UMUR + r"(?:[ \t]*/[ \t]*" + KELAMIN + r")?)")
+# arsip lama: "Ratna Wati/P/13 thn", "Suryati 60 th/P/MD"
+RE_GARIS_KELAMIN = re.compile(r"\b" + BUKAN + NAMA_BEBAS + r"[ \t]*/[ \t]*(" + KELAMIN + r"[ \t]*/[ \t]*" + UMUR + r")")
+RE_UMUR_GARIS = re.compile(r"\b" + BUKAN + NAMA_BEBAS + r"[ \t]+(" + UMUR + r"[ \t]*/[ \t]*" + KELAMIN + r"\b)")
 # "Suryana usia 43 Tahun", "Eva umur 18 tahun", "Zubaidah, 60 tahun"
-RE_USIA = re.compile(r"\b(?!" + KELAMIN + r"\b)" + BUKAN + NAMA_BEBAS + r"(\s*,\s*(?:usia\s+|umur\s+)?" + UMUR + r"|\s+(?:usia|umur)\s+\d{1,3})")
+RE_USIA = re.compile(r"\b(?!" + KELAMIN + r"\b)" + BUKAN + NAMA_BEBAS + r"(\s*,\s*(?:usia\s+|umur\s+)?" + UMUR + r"|\s+(?i:usia|umur|u-mur)\s+\d{1,3})")
 # "bin Marwi", "binti Siti"
 RE_BIN = re.compile(r"\b(bin|binti)[ \t]+[A-Z][A-Za-z'`]+(?:[ \t]+[A-Z][A-Za-z'`]*){0,2}")
 # "dilaporkan oleh Febri Yolanda" (tapi "dilaporkan oleh BPBD ..." tetap)
@@ -160,6 +166,8 @@ def bersih(t: str) -> str:
     t = daftar_nama(t)
     t = RE_UMUR.sub(_umur, t)
     t = RE_GARIS.sub(lambda m: "[nama]/" + m.group(1), t)
+    t = RE_GARIS_KELAMIN.sub(lambda m: "[nama]/" + m.group(1), t)
+    t = RE_UMUR_GARIS.sub(lambda m: "[nama] " + m.group(1), t)
     t = RE_USIA.sub(lambda m: "[nama]" + m.group(1), t)
     t = RE_BIN.sub(lambda m: m.group(1) + " [nama]", t)
     t = RE_OLEH.sub(lambda m: m.group(1) + " [nama]", t)
@@ -215,6 +223,10 @@ def iso(d, m, y):
         return None
 
 
+# arsip 2011-2013 menulis tanggal kejadian sebagai angka: "Kamis, 19/03/11", "27/12/11"
+RE_TGL_GARIS = re.compile(r"(?<![\d/])(\d{1,2})/(\d{1,2})/(\d{4}|\d{2})(?![\d/])")
+
+
 def semua_tgl(t: str, tahun_default=None):
     out = []
     for m in RE_TGL.finditer(t):
@@ -222,23 +234,39 @@ def semua_tgl(t: str, tahun_default=None):
         if y:
             v = iso(m.group(1), BULAN[m.group(2).lower()], y)
             if v:
-                out.append(v)
-    return out
+                out.append((m.start(), v))
+    for m in RE_TGL_GARIS.finditer(t):
+        y = m.group(3)
+        if 1 <= int(m.group(2)) <= 12:
+            v = iso(m.group(1), m.group(2), y if len(y) == 4 else "20" + y)
+            if v:
+                out.append((m.start(), v))
+    return [v for _, v in sorted(out)]
+
+
+RE_TGL_ANGKA = re.compile(r"(?<![\d.])(\d{2})\.?(\d{2})\.?(\d{4}|\d{2})(?![\d])")
 
 
 def tgl_berkas(nama: str):
     m = RE_TGL.search(nama)
-    return iso(m.group(1), BULAN[m.group(2).lower()], m.group(3)) if m and m.group(3) else None
+    if m and m.group(3):
+        return iso(m.group(1), BULAN[m.group(2).lower()], m.group(3))
+    # arsip 2011-2020: "15012018 laporan LOG BOOK", "TRC BNPB 050411", "LOGBOOK PUSDALOPS 21052013"
+    m = RE_TGL_ANGKA.search(nama)
+    if m and 1 <= int(m.group(2)) <= 12:
+        y = m.group(3)
+        return iso(m.group(1), m.group(2), y if len(y) == 4 else "20" + y)
+    return None
 
 
 # ---------------------------------------------------------------- kolom 2: waktu & jenis
 RE_REKAP = re.compile(r"\(?\s*Rekap\s+([A-Za-z]+)\s*(\d{4})?\s*No\.?\s*(\d+)\s*\)?", re.I)
-RE_HARI = re.compile(r"^(senin|selasa|rabu|kamis|jum'?at|sabtu|minggu)\b,?", re.I)
+RE_HARI = re.compile(r"^(senin|selasa|rabu|kamis|jum['’`´]?[aá]t|sabtu|minggu)\b,?", re.I)
 
 
 def urai_waktu(t: str, tahun):
     t = t.replace("\u00a0", " ")
-    m = re.search(r"\bupdate\b|\bpengkinian\b", t, re.I)
+    m = re.search(r"\bupdate\b|\bpengkinian\b|\bperkembangan\b", t, re.I)
     awal, akhir = (t[: m.start()], t[m.end():]) if m else (t, "")
     rek = RE_REKAP.search(awal)
     awal_tanpa = RE_REKAP.sub("", awal)
@@ -251,7 +279,7 @@ def urai_waktu(t: str, tahun):
     for l in awal_tanpa.split("\n"):
         l = l.strip()
         l = RE_HARI.sub("", l).strip()
-        l = RE_TGL.sub("", l)
+        l = RE_TGL_GARIS.sub("", RE_TGL.sub("", l))
         l = re.sub(r"^(" + "|".join(k for k in BULAN if len(k) > 3) + r")\b\.?\s*\d{0,4}$", "", l, flags=re.I)
         l = RE_JAM.sub("", l)
         l = re.sub(r"\b(pukul|pkl)\b\.?|\b(WIB|WITA|WIT)\b|^\d{4}$", "", l, flags=re.I).strip(" ,.:-()")
@@ -344,6 +372,7 @@ RE_REKAP_LOK = re.compile(r"\(\s*(\d+)\s*Kec[a-z]*\.?\s*/\s*([^)]*)\)", re.I)
 
 def urai_lokasi(t: str):
     t = t.replace("\u00a0", " ")
+    t = re.sub(r"\b(Prov|Kab|Kec|Kel|Ds|Dsn)\.(?=[A-Za-z])", r"\1. ", t)  # arsip lama: "Prov.NTB/Kab.Sumbawa"
     prov = []
     for m in RE_PROV.finditer(t):
         nm = m.group(1).strip(" .")
@@ -396,7 +425,7 @@ N = r"(±\s*)?(\d[\d.,]*)"
 TERBILANG = r"(?:\s*\([A-Za-z ]+\))?"
 POLA_DAMPAK = {
     "md": r"(?:MD|meninggal(?:\s+dunia)?|tewas|wafat)",
-    "hilang": r"(?:hilang|dalam pencarian)",
+    "hilang": r"(?:hilang|dalam pencarian|(?:masih\s+)?belum\s+di\s?temukan)",
     "luka": r"(?:luka(?:[- ]luka)?(?:\s+(?:berat|ringan))?|LL|LB|LR)",
     "mengungsi": r"(?:mengungsi|pengungsi)",
     "kk": r"KK",
@@ -410,9 +439,12 @@ KUAT = re.compile(r"total|jumlah|keseluruhan|seluas|sampai dengan|s\.?d", re.I)
 def hitung(teks: str, kunci: str):
     kata = POLA_DAMPAK[kunci]
     temu = []  # (nilai, kuat)
-    pola = [re.compile(N + TERBILANG + r"\s*(?:jiwa|orang|org|unit|buah)?\s*" + kata + r"\b", re.I)]
+    pola = [re.compile(N + TERBILANG + r"\s*(?:jiwa|orang|org|unit|buah)?\s*\(?" + kata + r"\b", re.I)]
     if kunci in ("md", "hilang", "luka", "mengungsi"):
         pola.append(re.compile(r"\b" + kata + r"\s*[:=]\s*" + N, re.I))
+        # arsip lama: "meninggal dunia sebanyak 56 orang", "Pengungsi 1.285 jiwa"
+        pola.append(re.compile(r"\b" + kata + r"\s+(?:sebanyak|sejumlah|berjumlah)\s+" + N, re.I))
+        pola.append(re.compile(r"\b" + kata + r"\s+" + N + r"\s*(?:jiwa|orang|org)\b", re.I))
     pos = set()
     for p in pola:
         for m in p.finditer(teks):
@@ -725,9 +757,11 @@ def proses(sumber: str, keluaran: str):
             grup.append([r])
             buka[(r["jenis"], prov)].append(len(grup) - 1)
     kejadian = []
+    # awalan = tahun logbook paling awal dalam satu kali jalan, supaya arsip 2011-2026 per tahun tidak bentrok
+    th = min((r["tgl_logbook"] for g in grup for r in g), default="2026")[2:4]
     for i, rs in enumerate(grup, 1):
         akhir = rs[-1]
-        kid = f"LB26-{i:05d}"
+        kid = f"LB{th}-{i:05d}"
         for r in rs:
             r["id_kejadian"] = kid
         ke = {

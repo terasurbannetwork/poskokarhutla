@@ -750,3 +750,6 @@
 {"t":"2026-10-31T22:55:53.825+07:00","sesi":"30422419","prompt":"Bro dari data\" ini apa yang bisa lu buat?","label":[],"berkas":[]}
 {"t":"2026-10-31T22:57:15.715+07:00","sesi":"30422419","prompt":"Jadi lu taruh dimana datanya? Masukin aja lah bro ga apa","label":[],"berkas":[]}
 {"t":"2026-10-31T22:58:40.520+07:00","sesi":"30422419","prompt":"Oke taruh di Google Drive Pribadi aja deh. Yang penting olahan datanyasemua bisa digunakan. Di cloudflare kan ada penyimpanan juga ya?","label":[],"berkas":[]}
+{"t":"2026-10-31T23:03:19.300+07:00","sesi":"e469aea5","prompt":"Apa lagi yang bisa dihapus?","label":[],"berkas":[]}
+{"t":"2026-10-31T23:04:17.904+07:00","sesi":"e469aea5","prompt":"docker gw kok ga bisa ya?","label":[],"berkas":[]}
+{"t":"2026-10-31T23:04:17.967+07:00","sesi":"e469aea5","prompt":"Ini matikan dulu aja dockernya dong","label":[],"berkas":[]}
