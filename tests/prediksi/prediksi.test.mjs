@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const DATA = join(ROOT, 'public/prediksi/data')
 
-for (const s of ['catat', 'nilai', 'kalibrasi', 'terbit']) {
+for (const s of ['catat', 'nilai', 'kalibrasi', 'terbit', 'kalender']) {
   test(`${s}.py uji`, () => {
     const out = execFileSync('python3', [join(ROOT, 'scripts/prediksi', s + '.py'), 'uji'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
     assert.match(out, /uji lulus/)
@@ -60,4 +60,18 @@ test('halaman memuat inti, bukan salinan', () => {
   const js = readFileSync(join(ROOT, 'public/prediksi/prediksi.js'), 'utf8')
   assert.match(js, /x-kode-regu/)
   assert.match(js, /\/api\/prediksi\/konfirmasi/)
+})
+
+test('kalender_risiko.json: p = tahun ada / tahun penuh, 0..1', () => {
+  const p = join(DATA, 'kalender_risiko.json')
+  if (!existsSync(p)) return
+  const d = JSON.parse(readFileSync(p, 'utf8'))
+  assert.ok(d.n_tahun > 0 && d.metode)
+  for (const [id, k] of Object.entries(d.kab)) for (const j of d.jenis) {
+    assert.equal(k[j].ada.length, 12, id)
+    k[j].ada.forEach((a, i) => {
+      assert.ok(a >= 0 && a <= d.n_tahun, `${id} ${j} ${i}`)
+      assert.equal(k[j].p[i], Math.round(a / d.n_tahun * 100) / 100)
+    })
+  }
 })

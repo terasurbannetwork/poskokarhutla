@@ -56,3 +56,15 @@ Tingkat Siaga/Awas tidak menangkap kejadian (POD <= 0,2). Tidak ada yang dilolos
 
 Hujan per jam dari gauge/radar (bukan ERA5) untuk waktu pemicu; peta kerentanan lereng/tanah per kecamatan yang membedakan di dalam kelas "tinggi";
 logbook beberapa tahun supaya tahun latih dan uji terpisah; catatan hari tanpa kejadian (negatif sungguhan) dari BPBD; koordinat kejadian, bukan nama kecamatan.
+
+## Arsip Pusdalops 2016-2022 (`uji_logbook_longsor.py --arsip`, 31 Okt 2026)
+
+**Hasil utama = 2022 (satu-satunya tahun luar-sampel):** AUC h3 x bahaya 0,66 (CI 0,52-0,75), nyaris tak memuat 0,5; Waspada ETS 0,013 (CI -0,001-0,030), FAR 0,95. Vonis mengikuti 2022: lemah. Angka gabungan 2016-2020 di bawah = konsistensi saja (ikut menyetel ambang).
+
+**Model kalah dari persisten:** ETS persisten ~0,6 (2016: 0,594) lawan Waspada 0,01-0,06, karena jendela +-1 hari membuat "kemarin berlabel" prediktor kuat. **Sampel 41 kab** dari cache uji_balik kab sering terdampak (seleksi pada hasil): POD dan laju dasar TIDAK berlaku nasional.
+
+Label: csv arsip jenis `longsor`, positif = `tgl_kejadian` -1..+1; hanya hari tercakup logbook (2016-2020 penuh, 2022 = 271 hari; 2021 tak ada). Hujan ERA5 dari cache `uji_balik`: 41 kabupaten, 104 sel, tanpa unduhan; 2011-2015 tak dinilai. Satuan kabupaten-hari, level kab = maks sel. Keluaran: `public/data/validasi_logbook_longsor_arsip.json`.
+
+Gabungan 2016-2020+2022 (4.194 hari kejadian): AUC h3 x bahaya 0,69 (CI 0,64-0,74); AUC hujan 3 hari saja 0,69. Per tahun AUC: 0,76 / 0,70 / 0,70 / 0,67 / 0,63 / 0,66. Level >= Waspada: POD 0,64, FAR 0,91, ETS 0,041 (0,029-0,056); Siaga POD 0,20 FAR 0,83 ETS 0,073; Awas POD 0,05 FAR 0,74 ETS 0,032. Alarm acak berlaju sama: POD 0,35. Jadi aturan lebih baik dari acak (AUC > 0,5, CI tak memuat 0,5) tapi lebih rendah dari AUC 2026 (0,83) dan perkalian dengan bahaya InaRISK tidak menambah apa pun dibanding hujan saja (0,69 vs 0,69). AUC menurun dari 2016 ke 2022.
+
+Catatan jujur: sama dengan banjir (kab cache bias ke yang sering berkejadian; 2016-2021 ikut dipakai uji_balik; persisten tidak adil karena jendela +-1 hari; hari tanpa laporan = negatif sehingga FAR batas atas).

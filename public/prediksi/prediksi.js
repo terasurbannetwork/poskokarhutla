@@ -2,7 +2,7 @@
 /* /prediksi: tab Besok (kartu per kab), Rapor (skor vs baseline), Konfirmasi (POST /api/prediksi/konfirmasi).
    Data: data/prediksi.json, skor.json, ujibalik.json, kalibrasi.json, lalu.json (scripts/prediksi/*.py).
    $, fmt, esc, rb dari ../inti/format.js. Angka: format id-ID, peluang dibulatkan ke 5% (tidak ada presisi palsu). */
-const PR = {d: null, skor: null, uji: null, kal: null, lalu: null, n: 60, tab: "besok"};
+const PR = {d: null, skor: null, uji: null, kal: null, lalu: null, kalender: null, n: 60, tab: "besok"};
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"];
 const ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
 const KODE_NAMA = {HJN: "Hujan", API: "Titik panas", BNJ: "Banjir", LSR: "Longsor", ASP: "Asap PM2,5", ROB: "Rob"};
@@ -19,13 +19,30 @@ function pil(v) {
   if (!v) return "";
   const kls = v[0] === "mengalahkan baseline" ? "ok" : v[0] === "belum teruji" ? "abu" : "buruk";
   const t = v[0] === "belum teruji" ? `belum teruji${v[1] ? ` (n ${fmt(v[1])})` : ""}` : `${v[0]}, n ${fmt(v[1])}`;
-  return `<span class="pr-pil ${kls}" title="Rapor ketepatan prakiraan ini">${esc(t)}${v[3] ? " · terkalibrasi" : ""}</span>`;
+  return `<span class="pr-pil ${kls}" title="Rapor ketepatan prakiraan ini">${esc(t)}${v[3] ? ", terkalibrasi" : ""}</span>`;
 }
 
 const sumber = kode => {
   const k = PR.d.kode[kode];
   return k ? `<span class="pr-src" title="Dibekukan ${esc(jamWIB(k.dibuat))}">Sumber: ${esc(k.sumber)}; terbit ${esc(tgl(k.terbit))}</span>` : "";
 };
+
+const ribu = v => rb(v).replace(/ rb$/, " ribu").replace(/ jt$/, " juta");
+const BULAN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+const BULAN_PENUH = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+const JENIS_KAL = {banjir: "Banjir", longsor: "Longsor", cuaca: "Cuaca ekstrem", karhutla: "Karhutla"};
+const pk = p => p == null ? "–" : p < 0.05 ? "<5%" : `${Math.round(p * 20) * 5}%`;
+
+/* Kalender risiko (kalender_risiko.json): referensi kedua dari logbook Pusdalops, bukan pengganti klimatologi di rapor. */
+function barisKal(k, n) {
+  const kk = PR.kalender?.kab[k.id], hari = PR.d.kode.HJN?.hari?.[n - 1];
+  if (!kk || !hari) return "";
+  const m = +hari.slice(5, 7) - 1;
+  const isi = ["banjir", "longsor", "karhutla"].filter(j => kk[j].ada[m] > 0).sort((a, b) => kk[b].ada[m] - kk[a].ada[m])
+    .map(j => `${JENIS_KAL[j].toLowerCase()} di ${fmt(kk[j].ada[m])} dari ${fmt(PR.kalender.n_tahun)} tahun${kk[j].kecil ? " (sampel kecil)" : ""}`).join(", ");
+  if (!isi) return "";
+  return `<div class="pr-b"><b>${BULAN_PENUH[m]} tercatat:</b> ${isi} <span class="pr-pil abu" title="${esc(PR.kalender.metode)}">kejadian tercatat, logbook Pusdalops</span></div>`;
+}
 
 function kartu(k, n) {
   const v = (kode, c) => PR.d.kode[kode]?.vonis[`${c}|${n}`];
@@ -34,7 +51,7 @@ function kartu(k, n) {
   if (h) {
     const [p1, p20, p50, tot, mulai, lama, , m] = ["p1", "p20", "p50", "tot", "mulai", "lama", "puncak", "m"].map(c => kol("HJN", h, c));
     const kapan = mulai == null ? "tidak ada jam hujan ≥0,5 mm" : `mulai ${jam(mulai)} WIB, lama ±${fmt(lama)} jam, total ${mm(tot)}`;
-    baris.push(`<div class="pr-b"><b>Hujan</b> ${kapan}<br>peluang ≥1 mm ${persen(p1)} · ≥20 mm ${persen(p20)} · ≥50 mm ${persen(p50)}
+    baris.push(`<div class="pr-b"><b>Hujan</b> ${kapan}<br>peluang ≥1 mm ${persen(p1)}, ≥20 mm ${persen(p20)}, ≥50 mm ${persen(p50)}
       ${m ? "" : '<span class="pr-pil abu" title="Tanpa ansambel: skor kasar dari jumlah hujan deterministik">skor kasar</span>'} ${pil(v("HJN", "p20"))}</div>`);
   }
   const a = k.API?.[n - 1];
@@ -47,7 +64,8 @@ function kartu(k, n) {
   if (s) baris.push(`<div class="pr-b"><b>Asap</b> PM2,5 ±${fmt(kol("ASP", s, "pm"))} µg/m³, ${ISPU[kol("ASP", s, "kat")]} <span class="pr-pil abu">belum teruji</span></div>`);
   const r = k.ROB?.[n - 1];
   if (r) baris.push(`<div class="pr-b"><b>Rob</b> ${kol("ROB", r, "lewat") ? "muka laut melewati p95" : "di bawah p95"} <span class="pr-pil abu">belum teruji</span></div>`);
-  return `<article class="card pr-k" role="listitem"><h3>${esc(k.nama)}</h3><p class="pr-kecil">${esc(k.pn)} · ${rb(k.jiwa)} jiwa</p>${baris.join("") || '<p class="pr-kecil">Tidak ada prakiraan untuk hari ini.</p>'}</article>`;
+  baris.push(barisKal(k, n));
+  return `<article class="card pr-k" role="listitem"><h3>${esc(k.nama)}</h3><p class="pr-kecil">${esc(k.pn)}, ${ribu(k.jiwa)} jiwa</p>${baris.join("") || '<p class="pr-kecil">Tidak ada prakiraan untuk hari ini.</p>'}</article>`;
 }
 
 function saring() {
@@ -74,9 +92,9 @@ function gambarBesok() {
     const syarat = [...(a.semua || []), ...(a.salah_satu || [])].map(s => esc(s.sumber)).join(a.salah_satu ? " ATAU " : "; ");
     const rinci = xs.slice(0, 40).map(x => {
       const d = x.dampak, kb = d.kebutuhan;
-      return `<li><b>${esc(nama[x.kab]?.nama)}</b>: ${rb(d.jiwa)} jiwa terpapar${d.sekolah != null ? `, ${fmt(d.sekolah)} sekolah, ${fmt(d.faskes)} faskes` : ""}${d.murid ? `, ${rb(d.murid)} murid` : ""}${kb ? `; perkiraan mengungsi ${rb(kb.mengungsi)}: air ${rb(kb.air_l)} L/hari, hunian ${rb(kb.hunian_m2)} m², ${rb(kb.jamban)} jamban, pangan ${rb(kb.kkal)} kkal/hari` : ""}</li>`;
+      return `<li><b>${esc(nama[x.kab]?.nama)}</b>: ${ribu(d.jiwa)} jiwa terpapar${d.sekolah != null ? `, ${fmt(d.sekolah)} sekolah, ${fmt(d.faskes)} faskes` : ""}${d.murid ? `, ${ribu(d.murid)} murid` : ""}${kb ? `; perkiraan mengungsi ${ribu(kb.mengungsi)}: air ${ribu(kb.air_l)} L/hari, hunian ${ribu(kb.hunian_m2)} m², ${ribu(kb.jamban)} jamban, pangan ${ribu(kb.kkal)} kkal/hari` : ""}</li>`;
     }).join("");
-    return `<details class="card pad pr-w"><summary><b>${esc(a.maka)}</b>: ${fmt(xs.length)} kab/kota, ${rb(jiwa)} jiwa terpapar${ungsi ? `, perkiraan mengungsi ${rb(ungsi)}` : ""} <span class="pr-pil abu">perkiraan, belum diuji balik</span></summary>
+    return `<details class="card pad pr-w"><summary><b>${esc(a.maka)}</b>: ${fmt(xs.length)} kab/kota, ${ribu(jiwa)} jiwa terpapar${ungsi ? `, perkiraan mengungsi ${ribu(ungsi)}` : ""} <span class="pr-pil abu">perkiraan, belum diuji balik</span></summary>
       <p class="pr-kecil">Jika: ${syarat}. Paparan: ${esc(a.paparan?.sumber || "")}.${a.catatan ? " " + esc(a.catatan) : ""} Kebutuhan: ${esc(PR.d.sphere.sumber)}.</p><ul>${rinci}</ul>${xs.length > 40 ? `<p class="pr-kecil">dan ${fmt(xs.length - 40)} lainnya; persempit dengan filter.</p>` : ""}</details>`;
   }).join("");
 }
@@ -98,11 +116,27 @@ function gambarRapor() {
   let h = `<div class="head"><div><h2>Rapor ketepatan</h2><p class="pr-kecil">Brier lebih kecil = lebih baik. Prakiraan harus lebih baik dari persistensi (besok = hari terakhir lengkap) dan klimatologi (frekuensi bulan yang sama). Vonis butuh ≥30 pasangan.</p></div></div>`;
   h += `<section class="card pad pr-sek"><h2>Prospektif</h2><p class="pr-kecil">${esc(s?.catatan || "skor.json belum ada")}</p>${s ? Object.entries(s.kode).map(([kd, g]) => tabelSkor(kd, g)).join("") : ""}</section>`;
   h += `<section class="card pad pr-sek"><h2>Uji balik retrospektif</h2>${u ? `<p class="pr-kecil">${esc(u.catatan)} Periode ${esc(u.periode.join(" s.d. "))}, ${fmt(u.n_terbit)} hari terbit.</p>${tabelSkor("HJN", u.kode.HJN)}` : '<p class="pr-kecil">Belum dijalankan.</p>'}</section>`;
+  h += kalenderRapor();
   const kp = (k?.peluang || []).concat(k?.jumlah || []);
   h += `<section class="card pad pr-sek"><h2>Kalibrasi otomatis</h2><p class="pr-kecil">${esc(k?.aturan?.metode || "kalibrasi.json belum ada")}. Dipakai ${fmt(k?.ringkas?.dipakai || 0)}, ditolak ${fmt(k?.ringkas?.ditolak || 0)}, menunggu ${fmt(k?.ringkas?.menunggu || 0)}.</p>
     ${kp.length ? `<div class="tw"><table><thead><tr><th>Grup</th><th>Status</th><th class="n">n fit / uji</th><th>Alasan</th></tr></thead><tbody>${kp.map(x =>
       `<tr><td>${esc(x.kode || x.besaran)} ${esc(x.ambang ?? x.prov)} +${x.tenggang}</td><td>${esc(x.status)}</td><td class="n">${fmt(x.n_fit)} / ${fmt(x.n_uji)}</td><td>${esc(x.alasan)}</td></tr>`).join("")}</tbody></table></div>` : ""}</section>`;
   $("#rapor").innerHTML = h;
+}
+
+function kalenderRapor() {
+  const kal = PR.kalender;
+  if (!kal) return '<section class="card pad pr-sek"><h2>Kalender risiko</h2><p class="pr-kecil">kalender_risiko.json belum ada.</p></section>';
+  const id = idKab($("#kalKab")?.value || "") || PR.d.kab[0].id, kk = kal.kab[id], m0 = new Date(Date.now() + 7 * 36e5).getUTCMonth();
+  const baris = !kk ? '<p class="pr-kecil">Kab/kota ini tidak ada di logbook (nama wilayah tidak cocok).</p>' : kal.jenis.map(j => {
+    const x = kk[j], mx = Math.max(0.05, ...x.p.map(v => v || 0));
+    return `<div class="pr-kal"><b>${JENIS_KAL[j]}</b> ${x.kecil ? '<span class="pr-pil buruk">sampel kecil</span>' : ""}<div class="pr-bars" role="img" aria-label="Peluang bulanan ${JENIS_KAL[j]}">${x.p.map((v, i) =>
+      `<span class="pr-bar${i === m0 ? " ini" : ""}" tabindex="0" style="height:${Math.round((v || 0) / mx * 100)}%" title="${BULAN[i]}: ${fmt(x.ada[i])} dari ${fmt(kal.n_tahun)} tahun${x.ada[i] ? " ada kejadian" : ""}"></span>`).join("")}</div></div>`;
+  }).join("");
+  return `<section class="card pad pr-sek" id="kalender"><h2>Kalender risiko dari logbook</h2>
+    <p class="pr-kecil">Referensi kedua, berdampingan dengan klimatologi: klimatologi di atas memakai pengamatan harian yang baru dikumpulkan sistem ini; kalender memakai logbook Pusdalops tahun penuh ${esc(kal.tahun_penuh[0])} sampai ${esc(kal.tahun_penuh.at(-1))} (${fmt(kal.n_tahun)} tahun), sehingga cocok untuk sisi dampak banjir dan longsor. Angka \"N dari ${fmt(kal.n_tahun)} tahun\" = tahun yang bulan itu punya minimal satu kejadian tercatat. Kab/kota dengan kurang dari ${fmt(kal.kecil_di_bawah)} kejadian ditandai sampel kecil. Belum diuji lawan prakiraan.</p>
+    <label class="pr-kecil">Kab/kota <input id="kalKab" list="dKab" value="${esc(PR.d.kab.find(k => k.id === id).nama)}" autocomplete="off"></label>
+    <div id="kalIsi">${baris}</div></section>`;
 }
 
 function laluKab() {
@@ -146,7 +180,7 @@ function pilihTab(t) {
 async function ambil(f) { try { const r = await fetch("data/" + f, {cache: "no-cache"}); return r.ok ? r.json() : null; } catch { return null; } }
 
 async function mulai() {
-  [PR.d, PR.skor, PR.uji, PR.kal, PR.lalu] = await Promise.all(["prediksi.json", "skor.json", "ujibalik.json", "kalibrasi.json", "lalu.json"].map(ambil));
+  [PR.d, PR.skor, PR.uji, PR.kal, PR.lalu, PR.kalender] = await Promise.all(["prediksi.json", "skor.json", "ujibalik.json", "kalibrasi.json", "lalu.json", "kalender_risiko.json"].map(ambil));
   if (!PR.d) { $("#kartu").innerHTML = '<p class="kosong">Data prediksi belum tersedia.</p>'; $("#upd").textContent = "Data belum ada"; return; }
   $("#upd").textContent = "Diperbarui " + jamWIB(PR.d.dibuat);
   const hj = PR.d.kode.HJN || Object.values(PR.d.kode)[0];
@@ -179,3 +213,10 @@ $("#fk").addEventListener("submit", kirim);
 $("#kKab").addEventListener("change", laluKab);
 $("#kTgl").addEventListener("change", laluKab);
 mulai();
+
+document.addEventListener("change", e => {
+  if (e.target.id !== "kalKab") return;
+  const s = document.createElement("div");
+  s.innerHTML = kalenderRapor();
+  $("#kalIsi").innerHTML = s.querySelector("#kalIsi").innerHTML;
+});

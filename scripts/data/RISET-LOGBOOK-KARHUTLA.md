@@ -51,3 +51,22 @@ Selang 95% = bootstrap antar-kab (1.000 ulang). Jendela penuh = [mulai-3, akhir]
 Per kelas ha (jendela penuh, null B): <5 ha lift 1,16; 5-50 1,17; 50-500 1,12; >500 1,10. Null A: 1,10 / 1,10 / 1,03 / 1,09. Jendela ketat: lift 1,17-1,25 di semua kelas. Selang tiap sel ada di JSON (`deteksi.model_null`); `riwayat` membawa `null_A/B`, `lift_A/B`, `ketat_*`.
 
 **Vonis (bahasa biasa):** Dari 94 kejadian dari 100 yang dilaporkan BPBD ada titik panas di kabnya, tetapi kalau kejadiannya kita taruh di minggu acak atau di kab acak yang tidak melapor, 77-85 dari 100 tetap "terdeteksi". Jadi sebagian besar angka 94% adalah kemarau, bukan kecerdasan deteksi; nilai tambah nyatanya sekitar 8-17 poin persen (lift 1,1-1,2), nyata secara statistik tetapi jauh lebih kecil dari kesan 94%. Alat ini sah untuk menyatakan "titik panas tidak meleset dari laporan", bukan untuk menyatakan "titik panas menemukan kejadian yang dilaporkan". Pembuktian per api tetap butuh koordinat kejadian. Catatan: kab yang tak punya titik sama sekali di arsip tidak ikut jadi kandidat null B (cenderung menaikkan null sedikit).
+
+## Arsip 2014-2022 (31 Okt 2026)
+`python3 scripts/data/uji_logbook_karhutla.py arsip` -> `public/data/validasi_logbook_karhutla_arsip.json` (2026 tak disentuh). Logbook CSV Pusdalops vs FIRMS lokal/unduhan (MODIS + S-NPP 2014-2018; + NOAA-20 2019+); jendela [mulai-3, terakhir_dicatat]; kab bernol titik tetap dihitung (deteksi 0). 2011-2013 dan 2021 tidak diuji.
+
+| Tahun | n | Deteksi | Null A (kab sama) | Lift A | Null B (kab acak) | Lift B [CI95] |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2014 | 57 | 68,4% | 41,2% | 1,66 | 73,5% | 0,93 [0,69-1,14] |
+| 2015 | 121 | 78,5% | 36,7% | 2,14 | 74,6% | 1,05 [0,92-1,17] |
+| 2016 | 52 | 71,2% | 39,4% | 1,81 | 58,2% | 1,22 [0,90-1,58] |
+| 2017 | 166 | 80,7% | 26,4% | 3,07 | 69,6% | 1,16 [1,01-1,28] |
+| 2018 | 498 | 83,5% | 32,6% | 2,57 | 61,3% | 1,38 [1,27-1,46] |
+| 2019 | 749 | 85,0% | 41,8% | 2,04 | 61,6% | 1,38 [1,28-1,46] |
+| 2020 | 331 | 84,3% | 38,5% | 2,19 | 56,7% | 1,49 [1,35-1,61] |
+| 2022 | 156 | 82,1% | 39,7% | 2,07 | 60,7% | 1,35 [1,16-1,50] |
+
+Baca: waktu (kab sama, hari acak) selalu dikalahkan; terhadap kab acak sewaktu, 2014-2016 TIDAK lebih baik (CI mencakup 1), 2017-2022 lift 1,16-1,49 (2017 tipis). Deteksi mentah bergantung sensor dan musim, bandingkan lift. Tanpa laporan dianggap tanpa api, jadi kedua pembanding konservatif. 2022 hanya 272 hari tercatat. Kab dicocokkan ke poligon sekarang.
+
+## Silang DIBI x logbook
+`python3 scripts/data/silang_dibi_logbook.py` -> `public/data/silang_dibi_logbook.json`. DIBI harian hanya Okt 2025-Okt 2026 (tak beririsan), jadi jendela +-3 hari tidak mungkin; dipakai DIBI tahunan per kab x jenis 2015-2022, pencocokan sel (kab, tahun, jenis). Logbook ada di DIBI 79,5%, DIBI ada di logbook 88,8%; gempa terendah (38,6% / 75%). DIBI sebagian besar bersumber laporan Pusdalops: ini kesepakatan dua turunan satu sumber, bukan validasi independen. Kejadian DIBI tak terpetakan ke kab (67-157/tahun) tidak ikut dihitung.

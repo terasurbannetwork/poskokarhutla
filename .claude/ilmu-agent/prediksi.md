@@ -48,3 +48,4 @@ Belum ada workflow `/prediksi` dan belum ada `tests/prediksi/`: jadwal harian ya
 - Pemeriksa: `selera-angka` untuk kartu/angka layar, `inp-reviewer` untuk klik tab/konfirmasi, `validasi-model` untuk perubahan skor, kalibrasi, baseline.
 
 ## Kasus
+- 2026-10-31 · Kalender risiko (kalender.py -> kalender_risiko.json) memakai rekap logbook_riwayat.json yang hanya punya hitungan bulan lintas tahun; peluang = 1-exp(-kejadian/tahun efektif) adalah batas atas, 'N dari M tahun' butuh bulan x tahun dari logbook_bersih.py (pipa-data). Ia referensi kedua di layar, tidak mengganti Klim di nilai.py. 5 kab (Kota Metro, Kep. Seribu, Banggai Kep., Konawe Kep., Kep. Aru) tak cocok nama geo.

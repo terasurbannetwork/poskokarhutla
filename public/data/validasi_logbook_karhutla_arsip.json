@@ -1,0 +1,968 @@
+{
+ "dibuat": "2026-11-01",
+ "sumber": "logbook Pusdalops arsip (data/pusdalops/logbook_kejadian.csv) vs titik panas lokal (data/raw/firms), definisi titik_unik.py",
+ "catatan": "LAPORAN SAJA. Deteksi = ada >=1 titik unik di kab pada [mulai-3, terakhir_dicatat]. null_A = kab sama, waktu acak jauh dari kejadian; null_B = waktu sama, kab acak sewilayah provinsi; lift = deteksi / null. Sensor berbeda per tahun (2014-2018: MODIS + S-NPP; 2019+: ditambah NOAA-20), jadi bandingkan lift, bukan deteksi mentah. Kab dicocokkan nama ke poligon kab sekarang (pemekaran dan kab tak cocok dibuang). 2022 hanya 272 hari tercatat: hari tak tercatat ikut jadi sampel null (bias konservatif). Kab bernol titik sepanjang tahun TETAP dihitung (deteksi 0; angka di 'dibuang' hanya penanda). Tanpa laporan dianggap tanpa api, jadi kedua pembanding konservatif. Lift yang selang 95%-nya mencakup 1 = tidak lebih baik dari pembanding (lihat vonis_lift). 2011-2013 (5 kejadian) dan 2021 (hilang) tidak diuji. Durasi dan luas tidak diuji (arsip tanpa tanggal surut).",
+ "tahun": [
+  {
+   "tahun": 2014,
+   "n": 57,
+   "dibuang": {
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 15
+   },
+   "sensor_baris": {
+    "N": 633788,
+    "M": 129764
+   },
+   "deteksi": {
+    "n": 57,
+    "terdeteksi": 39,
+    "laju": 0.684,
+    "laju_ge3": 0.561
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 13,
+     "terdeteksi": 9,
+     "laju": 0.692,
+     "laju_ge3": 0.462
+    },
+    "5-50": {
+     "n": 9,
+     "terdeteksi": 7,
+     "laju": 0.778,
+     "laju_ge3": 0.556
+    },
+    "50-500": {
+     "n": 9,
+     "terdeteksi": 6,
+     "laju": 0.667,
+     "laju_ge3": 0.667
+    },
+    ">500": {
+     "n": 10,
+     "terdeteksi": 5,
+     "laju": 0.5,
+     "laju_ge3": 0.5
+    },
+    "tanpa_ha": {
+     "n": 16,
+     "terdeteksi": 12,
+     "laju": 0.75,
+     "laju_ge3": 0.625
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 57,
+     "diamati": 0.684,
+     "null": 0.412,
+     "lift": 1.659,
+     "lift_ci95": [
+      1.358,
+      2.341
+     ],
+     "selisih": 0.272,
+     "selisih_ci95": [
+      0.169,
+      0.397
+     ]
+    },
+    "null_B": {
+     "n": 57,
+     "diamati": 0.684,
+     "null": 0.735,
+     "lift": 0.931,
+     "lift_ci95": [
+      0.692,
+      1.14
+     ],
+     "selisih": -0.05,
+     "selisih_ci95": [
+      -0.223,
+      0.1
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 57,
+     "diamati": 0.649,
+     "null": 0.346,
+     "lift": 1.876,
+     "lift_ci95": [
+      1.491,
+      2.673
+     ],
+     "selisih": 0.303,
+     "selisih_ci95": [
+      0.199,
+      0.42
+     ]
+    },
+    "null_B": {
+     "n": 57,
+     "diamati": 0.649,
+     "null": 0.683,
+     "lift": 0.95,
+     "lift_ci95": [
+      0.691,
+      1.179
+     ],
+     "selisih": -0.034,
+     "selisih_ci95": [
+      -0.217,
+      0.115
+     ]
+    }
+   },
+   "vonis": "Deteksi 68.4% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 41.2% (lift 1.659), kab acak sewaktu 73.5% (lift 0.931); pada jendela ketat +-1 hari: diamati 64.9% vs 34.6% / 68.3%.",
+   "kab_nol_titik_tetap_dihitung": 15,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "tidak lebih baik dari kab acak sewaktu"
+   }
+  },
+  {
+   "tahun": 2015,
+   "n": 121,
+   "dibuang": {
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 11
+   },
+   "sensor_baris": {
+    "N": 937397,
+    "M": 192647
+   },
+   "deteksi": {
+    "n": 121,
+    "terdeteksi": 95,
+    "laju": 0.785,
+    "laju_ge3": 0.669
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 32,
+     "terdeteksi": 25,
+     "laju": 0.781,
+     "laju_ge3": 0.656
+    },
+    "5-50": {
+     "n": 31,
+     "terdeteksi": 24,
+     "laju": 0.774,
+     "laju_ge3": 0.71
+    },
+    "50-500": {
+     "n": 11,
+     "terdeteksi": 9,
+     "laju": 0.818,
+     "laju_ge3": 0.818
+    },
+    ">500": {
+     "n": 3,
+     "terdeteksi": 3,
+     "laju": 1.0,
+     "laju_ge3": 1.0
+    },
+    "tanpa_ha": {
+     "n": 44,
+     "terdeteksi": 34,
+     "laju": 0.773,
+     "laju_ge3": 0.591
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 121,
+     "diamati": 0.785,
+     "null": 0.367,
+     "lift": 2.138,
+     "lift_ci95": [
+      1.727,
+      2.75
+     ],
+     "selisih": 0.418,
+     "selisih_ci95": [
+      0.319,
+      0.511
+     ]
+    },
+    "null_B": {
+     "n": 121,
+     "diamati": 0.785,
+     "null": 0.746,
+     "lift": 1.053,
+     "lift_ci95": [
+      0.921,
+      1.174
+     ],
+     "selisih": 0.039,
+     "selisih_ci95": [
+      -0.06,
+      0.13
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 121,
+     "diamati": 0.719,
+     "null": 0.299,
+     "lift": 2.406,
+     "lift_ci95": [
+      1.884,
+      3.201
+     ],
+     "selisih": 0.42,
+     "selisih_ci95": [
+      0.31,
+      0.519
+     ]
+    },
+    "null_B": {
+     "n": 121,
+     "diamati": 0.719,
+     "null": 0.663,
+     "lift": 1.085,
+     "lift_ci95": [
+      0.894,
+      1.247
+     ],
+     "selisih": 0.056,
+     "selisih_ci95": [
+      -0.071,
+      0.16
+     ]
+    }
+   },
+   "vonis": "Deteksi 78.5% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 36.7% (lift 2.138), kab acak sewaktu 74.6% (lift 1.053); pada jendela ketat +-1 hari: diamati 71.9% vs 29.9% / 66.3%.",
+   "kab_nol_titik_tetap_dihitung": 11,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "tidak lebih baik dari kab acak sewaktu"
+   }
+  },
+  {
+   "tahun": 2016,
+   "n": 52,
+   "dibuang": {
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 11
+   },
+   "sensor_baris": {
+    "N": 154541,
+    "M": 32708
+   },
+   "deteksi": {
+    "n": 52,
+    "terdeteksi": 37,
+    "laju": 0.712,
+    "laju_ge3": 0.635
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 17,
+     "terdeteksi": 11,
+     "laju": 0.647,
+     "laju_ge3": 0.471
+    },
+    "5-50": {
+     "n": 16,
+     "terdeteksi": 12,
+     "laju": 0.75,
+     "laju_ge3": 0.688
+    },
+    "50-500": {
+     "n": 9,
+     "terdeteksi": 8,
+     "laju": 0.889,
+     "laju_ge3": 0.889
+    },
+    "tanpa_ha": {
+     "n": 10,
+     "terdeteksi": 6,
+     "laju": 0.6,
+     "laju_ge3": 0.6
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 52,
+     "diamati": 0.712,
+     "null": 0.394,
+     "lift": 1.805,
+     "lift_ci95": [
+      1.524,
+      2.236
+     ],
+     "selisih": 0.317,
+     "selisih_ci95": [
+      0.207,
+      0.417
+     ]
+    },
+    "null_B": {
+     "n": 52,
+     "diamati": 0.712,
+     "null": 0.582,
+     "lift": 1.222,
+     "lift_ci95": [
+      0.897,
+      1.58
+     ],
+     "selisih": 0.129,
+     "selisih_ci95": [
+      -0.062,
+      0.308
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 52,
+     "diamati": 0.635,
+     "null": 0.303,
+     "lift": 2.092,
+     "lift_ci95": [
+      1.675,
+      2.722
+     ],
+     "selisih": 0.331,
+     "selisih_ci95": [
+      0.205,
+      0.452
+     ]
+    },
+    "null_B": {
+     "n": 52,
+     "diamati": 0.635,
+     "null": 0.488,
+     "lift": 1.301,
+     "lift_ci95": [
+      0.917,
+      1.699
+     ],
+     "selisih": 0.147,
+     "selisih_ci95": [
+      -0.038,
+      0.323
+     ]
+    }
+   },
+   "vonis": "Deteksi 71.2% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 39.4% (lift 1.805), kab acak sewaktu 58.2% (lift 1.222); pada jendela ketat +-1 hari: diamati 63.5% vs 30.3% / 48.8%.",
+   "kab_nol_titik_tetap_dihitung": 11,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "tidak lebih baik dari kab acak sewaktu"
+   }
+  },
+  {
+   "tahun": 2017,
+   "n": 166,
+   "dibuang": {
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 16
+   },
+   "sensor_baris": {
+    "N": 112295,
+    "M": 23387
+   },
+   "deteksi": {
+    "n": 166,
+    "terdeteksi": 134,
+    "laju": 0.807,
+    "laju_ge3": 0.657
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 80,
+     "terdeteksi": 68,
+     "laju": 0.85,
+     "laju_ge3": 0.675
+    },
+    "5-50": {
+     "n": 35,
+     "terdeteksi": 30,
+     "laju": 0.857,
+     "laju_ge3": 0.771
+    },
+    "50-500": {
+     "n": 9,
+     "terdeteksi": 7,
+     "laju": 0.778,
+     "laju_ge3": 0.667
+    },
+    ">500": {
+     "n": 3,
+     "terdeteksi": 1,
+     "laju": 0.333,
+     "laju_ge3": 0.333
+    },
+    "tanpa_ha": {
+     "n": 39,
+     "terdeteksi": 28,
+     "laju": 0.718,
+     "laju_ge3": 0.538
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 164,
+     "diamati": 0.811,
+     "null": 0.264,
+     "lift": 3.067,
+     "lift_ci95": [
+      2.185,
+      4.248
+     ],
+     "selisih": 0.547,
+     "selisih_ci95": [
+      0.399,
+      0.655
+     ]
+    },
+    "null_B": {
+     "n": 166,
+     "diamati": 0.807,
+     "null": 0.696,
+     "lift": 1.16,
+     "lift_ci95": [
+      1.008,
+      1.281
+     ],
+     "selisih": 0.111,
+     "selisih_ci95": [
+      0.005,
+      0.192
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 166,
+     "diamati": 0.759,
+     "null": 0.192,
+     "lift": 3.958,
+     "lift_ci95": [
+      2.822,
+      5.412
+     ],
+     "selisih": 0.567,
+     "selisih_ci95": [
+      0.45,
+      0.665
+     ]
+    },
+    "null_B": {
+     "n": 166,
+     "diamati": 0.759,
+     "null": 0.602,
+     "lift": 1.261,
+     "lift_ci95": [
+      1.123,
+      1.38
+     ],
+     "selisih": 0.157,
+     "selisih_ci95": [
+      0.075,
+      0.226
+     ]
+    }
+   },
+   "vonis": "Deteksi 81.1% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 26.4% (lift 3.067), kab acak sewaktu 69.6% (lift 1.16); pada jendela ketat +-1 hari: diamati 75.9% vs 19.2% / 60.2%.",
+   "kab_nol_titik_tetap_dihitung": 16,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "lebih baik dari pembanding"
+   }
+  },
+  {
+   "tahun": 2018,
+   "n": 498,
+   "dibuang": {
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 23,
+    "sebelum_awal_data_lengkap": 1
+   },
+   "sensor_baris": {
+    "N": 226289,
+    "M": 46632
+   },
+   "deteksi": {
+    "n": 498,
+    "terdeteksi": 416,
+    "laju": 0.835,
+    "laju_ge3": 0.697
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 236,
+     "terdeteksi": 197,
+     "laju": 0.835,
+     "laju_ge3": 0.691
+    },
+    "5-50": {
+     "n": 128,
+     "terdeteksi": 117,
+     "laju": 0.914,
+     "laju_ge3": 0.797
+    },
+    "50-500": {
+     "n": 18,
+     "terdeteksi": 13,
+     "laju": 0.722,
+     "laju_ge3": 0.722
+    },
+    ">500": {
+     "n": 6,
+     "terdeteksi": 3,
+     "laju": 0.5,
+     "laju_ge3": 0.5
+    },
+    "tanpa_ha": {
+     "n": 110,
+     "terdeteksi": 86,
+     "laju": 0.782,
+     "laju_ge3": 0.6
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 497,
+     "diamati": 0.837,
+     "null": 0.326,
+     "lift": 2.571,
+     "lift_ci95": [
+      2.182,
+      3.085
+     ],
+     "selisih": 0.511,
+     "selisih_ci95": [
+      0.44,
+      0.575
+     ]
+    },
+    "null_B": {
+     "n": 494,
+     "diamati": 0.842,
+     "null": 0.613,
+     "lift": 1.375,
+     "lift_ci95": [
+      1.268,
+      1.462
+     ],
+     "selisih": 0.229,
+     "selisih_ci95": [
+      0.166,
+      0.28
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 498,
+     "diamati": 0.785,
+     "null": 0.25,
+     "lift": 3.137,
+     "lift_ci95": [
+      2.655,
+      3.814
+     ],
+     "selisih": 0.535,
+     "selisih_ci95": [
+      0.469,
+      0.597
+     ]
+    },
+    "null_B": {
+     "n": 494,
+     "diamati": 0.791,
+     "null": 0.524,
+     "lift": 1.509,
+     "lift_ci95": [
+      1.372,
+      1.623
+     ],
+     "selisih": 0.267,
+     "selisih_ci95": [
+      0.196,
+      0.322
+     ]
+    }
+   },
+   "vonis": "Deteksi 83.7% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 32.6% (lift 2.571), kab acak sewaktu 61.3% (lift 1.375); pada jendela ketat +-1 hari: diamati 78.5% vs 25.0% / 52.4%.",
+   "kab_nol_titik_tetap_dihitung": 23,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "lebih baik dari pembanding"
+   }
+  },
+  {
+   "tahun": 2019,
+   "n": 749,
+   "dibuang": {
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 60,
+    "sebelum_awal_data_lengkap": 1
+   },
+   "sensor_baris": {
+    "N20": 476206,
+    "M": 100104,
+    "N": 474995
+   },
+   "deteksi": {
+    "n": 749,
+    "terdeteksi": 637,
+    "laju": 0.85,
+    "laju_ge3": 0.74
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 375,
+     "terdeteksi": 323,
+     "laju": 0.861,
+     "laju_ge3": 0.733
+    },
+    "5-50": {
+     "n": 198,
+     "terdeteksi": 172,
+     "laju": 0.869,
+     "laju_ge3": 0.808
+    },
+    "50-500": {
+     "n": 42,
+     "terdeteksi": 35,
+     "laju": 0.833,
+     "laju_ge3": 0.833
+    },
+    ">500": {
+     "n": 9,
+     "terdeteksi": 2,
+     "laju": 0.222,
+     "laju_ge3": 0.222
+    },
+    "tanpa_ha": {
+     "n": 125,
+     "terdeteksi": 105,
+     "laju": 0.84,
+     "laju_ge3": 0.656
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 748,
+     "diamati": 0.852,
+     "null": 0.418,
+     "lift": 2.036,
+     "lift_ci95": [
+      1.784,
+      2.351
+     ],
+     "selisih": 0.433,
+     "selisih_ci95": [
+      0.37,
+      0.497
+     ]
+    },
+    "null_B": {
+     "n": 749,
+     "diamati": 0.85,
+     "null": 0.616,
+     "lift": 1.38,
+     "lift_ci95": [
+      1.281,
+      1.46
+     ],
+     "selisih": 0.234,
+     "selisih_ci95": [
+      0.18,
+      0.276
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 749,
+     "diamati": 0.813,
+     "null": 0.335,
+     "lift": 2.428,
+     "lift_ci95": [
+      2.107,
+      2.818
+     ],
+     "selisih": 0.478,
+     "selisih_ci95": [
+      0.419,
+      0.535
+     ]
+    },
+    "null_B": {
+     "n": 749,
+     "diamati": 0.813,
+     "null": 0.55,
+     "lift": 1.477,
+     "lift_ci95": [
+      1.366,
+      1.574
+     ],
+     "selisih": 0.263,
+     "selisih_ci95": [
+      0.211,
+      0.307
+     ]
+    }
+   },
+   "vonis": "Deteksi 85.2% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 41.8% (lift 2.036), kab acak sewaktu 61.6% (lift 1.38); pada jendela ketat +-1 hari: diamati 81.3% vs 33.5% / 55.0%.",
+   "kab_nol_titik_tetap_dihitung": 60,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "lebih baik dari pembanding"
+   }
+  },
+  {
+   "tahun": 2020,
+   "n": 331,
+   "dibuang": {
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 14,
+    "sebelum_awal_data_lengkap": 2
+   },
+   "sensor_baris": {
+    "N": 110859,
+    "M": 21299,
+    "N20": 113025
+   },
+   "deteksi": {
+    "n": 331,
+    "terdeteksi": 279,
+    "laju": 0.843,
+    "laju_ge3": 0.713
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 206,
+     "terdeteksi": 175,
+     "laju": 0.85,
+     "laju_ge3": 0.694
+    },
+    "5-50": {
+     "n": 63,
+     "terdeteksi": 56,
+     "laju": 0.889,
+     "laju_ge3": 0.825
+    },
+    "50-500": {
+     "n": 5,
+     "terdeteksi": 4,
+     "laju": 0.8,
+     "laju_ge3": 0.8
+    },
+    ">500": {
+     "n": 4,
+     "terdeteksi": 2,
+     "laju": 0.5,
+     "laju_ge3": 0.5
+    },
+    "tanpa_ha": {
+     "n": 53,
+     "terdeteksi": 42,
+     "laju": 0.792,
+     "laju_ge3": 0.66
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 331,
+     "diamati": 0.843,
+     "null": 0.385,
+     "lift": 2.187,
+     "lift_ci95": [
+      1.851,
+      2.579
+     ],
+     "selisih": 0.457,
+     "selisih_ci95": [
+      0.377,
+      0.535
+     ]
+    },
+    "null_B": {
+     "n": 331,
+     "diamati": 0.843,
+     "null": 0.567,
+     "lift": 1.486,
+     "lift_ci95": [
+      1.354,
+      1.61
+     ],
+     "selisih": 0.276,
+     "selisih_ci95": [
+      0.203,
+      0.334
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 331,
+     "diamati": 0.81,
+     "null": 0.298,
+     "lift": 2.715,
+     "lift_ci95": [
+      2.241,
+      3.275
+     ],
+     "selisih": 0.511,
+     "selisih_ci95": [
+      0.423,
+      0.59
+     ]
+    },
+    "null_B": {
+     "n": 331,
+     "diamati": 0.81,
+     "null": 0.506,
+     "lift": 1.6,
+     "lift_ci95": [
+      1.431,
+      1.744
+     ],
+     "selisih": 0.304,
+     "selisih_ci95": [
+      0.223,
+      0.367
+     ]
+    }
+   },
+   "vonis": "Deteksi 84.3% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 38.5% (lift 2.187), kab acak sewaktu 56.7% (lift 1.486); pada jendela ketat +-1 hari: diamati 81.0% vs 29.8% / 50.6%.",
+   "kab_nol_titik_tetap_dihitung": 14,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "lebih baik dari pembanding"
+   }
+  },
+  {
+   "tahun": 2022,
+   "n": 156,
+   "dibuang": {
+    "sebelum_awal_data_lengkap": 3,
+    "kab_tak_cocok_atau_nol_titik_sepanjang_tahun": 11
+   },
+   "sensor_baris": {
+    "N20": 69541,
+    "N": 62137,
+    "M": 13778
+   },
+   "deteksi": {
+    "n": 156,
+    "terdeteksi": 128,
+    "laju": 0.821,
+    "laju_ge3": 0.654
+   },
+   "deteksi_kelas_ha": {
+    "<5": {
+     "n": 110,
+     "terdeteksi": 88,
+     "laju": 0.8,
+     "laju_ge3": 0.645
+    },
+    "5-50": {
+     "n": 35,
+     "terdeteksi": 31,
+     "laju": 0.886,
+     "laju_ge3": 0.657
+    },
+    "50-500": {
+     "n": 3,
+     "terdeteksi": 3,
+     "laju": 1.0,
+     "laju_ge3": 1.0
+    },
+    ">500": {
+     "n": 1,
+     "terdeteksi": 0,
+     "laju": 0.0,
+     "laju_ge3": 0.0
+    },
+    "tanpa_ha": {
+     "n": 7,
+     "terdeteksi": 6,
+     "laju": 0.857,
+     "laju_ge3": 0.714
+    }
+   },
+   "penuh": {
+    "null_A": {
+     "n": 156,
+     "diamati": 0.821,
+     "null": 0.397,
+     "lift": 2.069,
+     "lift_ci95": [
+      1.736,
+      2.418
+     ],
+     "selisih": 0.424,
+     "selisih_ci95": [
+      0.337,
+      0.493
+     ]
+    },
+    "null_B": {
+     "n": 156,
+     "diamati": 0.821,
+     "null": 0.607,
+     "lift": 1.351,
+     "lift_ci95": [
+      1.163,
+      1.501
+     ],
+     "selisih": 0.213,
+     "selisih_ci95": [
+      0.104,
+      0.292
+     ]
+    }
+   },
+   "ketat": {
+    "null_A": {
+     "n": 156,
+     "diamati": 0.795,
+     "null": 0.318,
+     "lift": 2.503,
+     "lift_ci95": [
+      2.064,
+      2.971
+     ],
+     "selisih": 0.477,
+     "selisih_ci95": [
+      0.388,
+      0.546
+     ]
+    },
+    "null_B": {
+     "n": 156,
+     "diamati": 0.795,
+     "null": 0.522,
+     "lift": 1.524,
+     "lift_ci95": [
+      1.328,
+      1.688
+     ],
+     "selisih": 0.273,
+     "selisih_ci95": [
+      0.177,
+      0.351
+     ]
+    }
+   },
+   "vonis": "Deteksi 82.1% terhadap kebetulan: kab yang sama di waktu acak terdeteksi 39.7% (lift 2.069), kab acak sewaktu 60.7% (lift 1.351); pada jendela ketat +-1 hari: diamati 79.5% vs 31.8% / 52.2%.",
+   "kab_nol_titik_tetap_dihitung": 11,
+   "vonis_lift": {
+    "null_A_kab_sama_waktu_acak": "lebih baik dari pembanding",
+    "null_B_waktu_sama_kab_acak": "lebih baik dari pembanding"
+   }
+  }
+ ],
+ "gabungan_berbobot_n": {
+  "n": 2130,
+  "deteksi": 0.828,
+  "null_A": 0.374,
+  "lift_A": 2.257,
+  "null_B": 0.623,
+  "lift_B": 1.342
+ }
+}

@@ -373,6 +373,7 @@ RE_REKAP_LOK = re.compile(r"\(\s*(\d+)\s*Kec[a-z]*\.?\s*/\s*([^)]*)\)", re.I)
 def urai_lokasi(t: str):
     t = t.replace("\u00a0", " ")
     t = re.sub(r"\b(Prov|Kab|Kec|Kel|Ds|Dsn)\.(?=[A-Za-z])", r"\1. ", t)  # arsip lama: "Prov.NTB/Kab.Sumbawa"
+    t = re.sub(r"\bKep\.\s*", "Kepulauan ", t)  # "Kab. Kep. Seribu", "Kab. Banggai Kep." (titik memutus nama)
     prov = []
     for m in RE_PROV.finditer(t):
         nm = m.group(1).strip(" .")

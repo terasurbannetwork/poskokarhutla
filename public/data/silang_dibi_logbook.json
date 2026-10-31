@@ -1,0 +1,870 @@
+{
+ "dibuat": "2026-11-01",
+ "sumber": "logbook Pusdalops arsip vs DIBI tahunan per kab (public/data/bnpb/dibi_kab_tahun.json)",
+ "batas": "DIBI harian tidak beririsan dengan logbook arsip, jadi jendela +-3 hari tidak dihitung. Dicocokkan per sel (kab, tahun, jenis): sel ada/tidak ada, plus jumlah kejadian. Ini batas atas kecocokan; logbook = laporan harian Pusdalops, DIBI = rekap kejadian resmi, jadi cakupan memang berbeda. Jenis yang dibandingkan: banjir, longsor, karhutla, kekeringan, cuaca, gempa.",
+ "tahun": [
+  2015,
+  2016,
+  2017,
+  2018,
+  2019,
+  2020,
+  2022
+ ],
+ "kab_dibi_terpetakan": 430,
+ "kejadian_dibi_tak_terpetakan_per_tahun": {
+  "2015": 67,
+  "2016": 85,
+  "2017": 106,
+  "2018": 145,
+  "2019": 87,
+  "2020": 157,
+  "2022": 134
+ },
+ "semua": {
+  "sel_logbook": 6135,
+  "persen_logbook_ada_di_dibi": 79.5,
+  "sel_dibi": 5492,
+  "persen_dibi_ada_di_logbook": 88.8,
+  "kejadian_logbook": 22620,
+  "kejadian_dibi": 21184,
+  "rasio_logbook_per_dibi": 1.07
+ },
+ "per_jenis": {
+  "banjir": {
+   "sel_logbook": 2060,
+   "persen_logbook_ada_di_dibi": 85.6,
+   "sel_dibi": 1907,
+   "persen_dibi_ada_di_logbook": 92.4,
+   "kejadian_logbook": 6960,
+   "kejadian_dibi": 6621,
+   "rasio_logbook_per_dibi": 1.05
+  },
+  "cuaca": {
+   "sel_logbook": 1555,
+   "persen_logbook_ada_di_dibi": 88.6,
+   "sel_dibi": 1531,
+   "persen_dibi_ada_di_logbook": 90.0,
+   "kejadian_logbook": 6308,
+   "kejadian_dibi": 6872,
+   "rasio_logbook_per_dibi": 0.92
+  },
+  "gempa": {
+   "sel_logbook": 416,
+   "persen_logbook_ada_di_dibi": 38.5,
+   "sel_dibi": 210,
+   "persen_dibi_ada_di_logbook": 76.2,
+   "kejadian_logbook": 640,
+   "kejadian_dibi": 121,
+   "rasio_logbook_per_dibi": 5.29
+  },
+  "karhutla": {
+   "sel_logbook": 717,
+   "persen_logbook_ada_di_dibi": 75.5,
+   "sel_dibi": 630,
+   "persen_dibi_ada_di_logbook": 85.9,
+   "kejadian_logbook": 2450,
+   "kejadian_dibi": 2402,
+   "rasio_logbook_per_dibi": 1.02
+  },
+  "kekeringan": {
+   "sel_logbook": 254,
+   "persen_logbook_ada_di_dibi": 75.2,
+   "sel_dibi": 261,
+   "persen_dibi_ada_di_logbook": 73.2,
+   "kejadian_logbook": 430,
+   "kejadian_dibi": 301,
+   "rasio_logbook_per_dibi": 1.43
+  },
+  "longsor": {
+   "sel_logbook": 1133,
+   "persen_logbook_ada_di_dibi": 74.5,
+   "sel_dibi": 953,
+   "persen_dibi_ada_di_logbook": 88.6,
+   "kejadian_logbook": 5832,
+   "kejadian_dibi": 4867,
+   "rasio_logbook_per_dibi": 1.2
+  }
+ },
+ "per_tahun": {
+  "2015": {
+   "sel_logbook": 701,
+   "persen_logbook_ada_di_dibi": 73.0,
+   "sel_dibi": 579,
+   "persen_dibi_ada_di_logbook": 88.4,
+   "kejadian_logbook": 2114,
+   "kejadian_dibi": 1611,
+   "rasio_logbook_per_dibi": 1.31
+  },
+  "2016": {
+   "sel_logbook": 758,
+   "persen_logbook_ada_di_dibi": 75.5,
+   "sel_dibi": 621,
+   "persen_dibi_ada_di_logbook": 92.1,
+   "kejadian_logbook": 3122,
+   "kejadian_dibi": 2189,
+   "rasio_logbook_per_dibi": 1.43
+  },
+  "2017": {
+   "sel_logbook": 862,
+   "persen_logbook_ada_di_dibi": 75.9,
+   "sel_dibi": 695,
+   "persen_dibi_ada_di_logbook": 94.1,
+   "kejadian_logbook": 3429,
+   "kejadian_dibi": 2740,
+   "rasio_logbook_per_dibi": 1.25
+  },
+  "2018": {
+   "sel_logbook": 920,
+   "persen_logbook_ada_di_dibi": 80.2,
+   "sel_dibi": 892,
+   "persen_dibi_ada_di_logbook": 82.7,
+   "kejadian_logbook": 3333,
+   "kejadian_dibi": 3137,
+   "rasio_logbook_per_dibi": 1.06
+  },
+  "2019": {
+   "sel_logbook": 1088,
+   "persen_logbook_ada_di_dibi": 84.7,
+   "sel_dibi": 988,
+   "persen_dibi_ada_di_logbook": 93.2,
+   "kejadian_logbook": 3915,
+   "kejadian_dibi": 3695,
+   "rasio_logbook_per_dibi": 1.06
+  },
+  "2020": {
+   "sel_logbook": 926,
+   "persen_logbook_ada_di_dibi": 80.2,
+   "sel_dibi": 896,
+   "persen_dibi_ada_di_logbook": 82.9,
+   "kejadian_logbook": 3765,
+   "kejadian_dibi": 4438,
+   "rasio_logbook_per_dibi": 0.85
+  },
+  "2022": {
+   "sel_logbook": 880,
+   "persen_logbook_ada_di_dibi": 83.8,
+   "sel_dibi": 821,
+   "persen_dibi_ada_di_logbook": 89.8,
+   "kejadian_logbook": 2942,
+   "kejadian_dibi": 3374,
+   "rasio_logbook_per_dibi": 0.87
+  }
+ },
+ "per_jenis_tahun": {
+  "banjir": {
+   "2015": {
+    "sel_logbook": 220,
+    "persen_logbook_ada_di_dibi": 84.1,
+    "sel_dibi": 207,
+    "persen_dibi_ada_di_logbook": 89.4,
+    "kejadian_logbook": 617,
+    "kejadian_dibi": 497,
+    "rasio_logbook_per_dibi": 1.24
+   },
+   "2016": {
+    "sel_logbook": 288,
+    "persen_logbook_ada_di_dibi": 86.1,
+    "sel_dibi": 260,
+    "persen_dibi_ada_di_logbook": 95.4,
+    "kejadian_logbook": 1071,
+    "kejadian_dibi": 768,
+    "rasio_logbook_per_dibi": 1.39
+   },
+   "2017": {
+    "sel_logbook": 306,
+    "persen_logbook_ada_di_dibi": 83.0,
+    "sel_dibi": 271,
+    "persen_dibi_ada_di_logbook": 93.7,
+    "kejadian_logbook": 1082,
+    "kejadian_dibi": 920,
+    "rasio_logbook_per_dibi": 1.18
+   },
+   "2018": {
+    "sel_logbook": 282,
+    "persen_logbook_ada_di_dibi": 85.1,
+    "sel_dibi": 265,
+    "persen_dibi_ada_di_logbook": 90.6,
+    "kejadian_logbook": 832,
+    "kejadian_dibi": 808,
+    "rasio_logbook_per_dibi": 1.03
+   },
+   "2019": {
+    "sel_logbook": 297,
+    "persen_logbook_ada_di_dibi": 84.8,
+    "sel_dibi": 266,
+    "persen_dibi_ada_di_logbook": 94.7,
+    "kejadian_logbook": 802,
+    "kejadian_dibi": 741,
+    "rasio_logbook_per_dibi": 1.08
+   },
+   "2020": {
+    "sel_logbook": 322,
+    "persen_logbook_ada_di_dibi": 87.9,
+    "sel_dibi": 309,
+    "persen_dibi_ada_di_logbook": 91.6,
+    "kejadian_logbook": 1343,
+    "kejadian_dibi": 1451,
+    "rasio_logbook_per_dibi": 0.93
+   },
+   "2022": {
+    "sel_logbook": 345,
+    "persen_logbook_ada_di_dibi": 87.2,
+    "sel_dibi": 329,
+    "persen_dibi_ada_di_logbook": 91.5,
+    "kejadian_logbook": 1213,
+    "kejadian_dibi": 1436,
+    "rasio_logbook_per_dibi": 0.84
+   }
+  },
+  "cuaca": {
+   "2015": {
+    "sel_logbook": 193,
+    "persen_logbook_ada_di_dibi": 86.5,
+    "sel_dibi": 188,
+    "persen_dibi_ada_di_logbook": 88.8,
+    "kejadian_logbook": 604,
+    "kejadian_dibi": 558,
+    "rasio_logbook_per_dibi": 1.08
+   },
+   "2016": {
+    "sel_logbook": 211,
+    "persen_logbook_ada_di_dibi": 87.7,
+    "sel_dibi": 199,
+    "persen_dibi_ada_di_logbook": 93.0,
+    "kejadian_logbook": 825,
+    "kejadian_dibi": 647,
+    "rasio_logbook_per_dibi": 1.28
+   },
+   "2017": {
+    "sel_logbook": 213,
+    "persen_logbook_ada_di_dibi": 87.3,
+    "sel_dibi": 196,
+    "persen_dibi_ada_di_logbook": 94.9,
+    "kejadian_logbook": 909,
+    "kejadian_dibi": 855,
+    "rasio_logbook_per_dibi": 1.06
+   },
+   "2018": {
+    "sel_logbook": 224,
+    "persen_logbook_ada_di_dibi": 89.3,
+    "sel_dibi": 223,
+    "persen_dibi_ada_di_logbook": 89.7,
+    "kejadian_logbook": 951,
+    "kejadian_dibi": 1064,
+    "rasio_logbook_per_dibi": 0.89
+   },
+   "2019": {
+    "sel_logbook": 250,
+    "persen_logbook_ada_di_dibi": 90.8,
+    "sel_dibi": 238,
+    "persen_dibi_ada_di_logbook": 95.4,
+    "kejadian_logbook": 1246,
+    "kejadian_dibi": 1364,
+    "rasio_logbook_per_dibi": 0.91
+   },
+   "2020": {
+    "sel_logbook": 242,
+    "persen_logbook_ada_di_dibi": 86.4,
+    "sel_dibi": 262,
+    "persen_dibi_ada_di_logbook": 79.8,
+    "kejadian_logbook": 951,
+    "kejadian_dibi": 1336,
+    "rasio_logbook_per_dibi": 0.71
+   },
+   "2022": {
+    "sel_logbook": 222,
+    "persen_logbook_ada_di_dibi": 91.9,
+    "sel_dibi": 225,
+    "persen_dibi_ada_di_logbook": 90.7,
+    "kejadian_logbook": 822,
+    "kejadian_dibi": 1048,
+    "rasio_logbook_per_dibi": 0.78
+   }
+  },
+  "gempa": {
+   "2015": {
+    "sel_logbook": 52,
+    "persen_logbook_ada_di_dibi": 25.0,
+    "sel_dibi": 19,
+    "persen_dibi_ada_di_logbook": 68.4,
+    "kejadian_logbook": 80,
+    "kejadian_dibi": 21,
+    "rasio_logbook_per_dibi": 3.81
+   },
+   "2016": {
+    "sel_logbook": 68,
+    "persen_logbook_ada_di_dibi": 16.2,
+    "sel_dibi": 17,
+    "persen_dibi_ada_di_logbook": 64.7,
+    "kejadian_logbook": 93,
+    "kejadian_dibi": 9,
+    "rasio_logbook_per_dibi": 10.33
+   },
+   "2017": {
+    "sel_logbook": 46,
+    "persen_logbook_ada_di_dibi": 56.5,
+    "sel_dibi": 35,
+    "persen_dibi_ada_di_logbook": 74.3,
+    "kejadian_logbook": 63,
+    "kejadian_dibi": 15,
+    "rasio_logbook_per_dibi": 4.2
+   },
+   "2018": {
+    "sel_logbook": 71,
+    "persen_logbook_ada_di_dibi": 38.0,
+    "sel_dibi": 40,
+    "persen_dibi_ada_di_logbook": 67.5,
+    "kejadian_logbook": 144,
+    "kejadian_dibi": 22,
+    "rasio_logbook_per_dibi": 6.55
+   },
+   "2019": {
+    "sel_logbook": 47,
+    "persen_logbook_ada_di_dibi": 72.3,
+    "sel_dibi": 42,
+    "persen_dibi_ada_di_logbook": 81.0,
+    "kejadian_logbook": 59,
+    "kejadian_dibi": 24,
+    "rasio_logbook_per_dibi": 2.46
+   },
+   "2020": {
+    "sel_logbook": 53,
+    "persen_logbook_ada_di_dibi": 30.2,
+    "sel_dibi": 22,
+    "persen_dibi_ada_di_logbook": 72.7,
+    "kejadian_logbook": 77,
+    "kejadian_dibi": 11,
+    "rasio_logbook_per_dibi": 7.0
+   },
+   "2022": {
+    "sel_logbook": 79,
+    "persen_logbook_ada_di_dibi": 41.8,
+    "sel_dibi": 35,
+    "persen_dibi_ada_di_logbook": 94.3,
+    "kejadian_logbook": 124,
+    "kejadian_dibi": 19,
+    "rasio_logbook_per_dibi": 6.53
+   }
+  },
+  "karhutla": {
+   "2015": {
+    "sel_logbook": 62,
+    "persen_logbook_ada_di_dibi": 40.3,
+    "sel_dibi": 32,
+    "persen_dibi_ada_di_logbook": 78.1,
+    "kejadian_logbook": 124,
+    "kejadian_dibi": 45,
+    "rasio_logbook_per_dibi": 2.76
+   },
+   "2016": {
+    "sel_logbook": 30,
+    "persen_logbook_ada_di_dibi": 63.3,
+    "sel_dibi": 29,
+    "persen_dibi_ada_di_logbook": 65.5,
+    "kejadian_logbook": 53,
+    "kejadian_dibi": 177,
+    "rasio_logbook_per_dibi": 0.3
+   },
+   "2017": {
+    "sel_logbook": 88,
+    "persen_logbook_ada_di_dibi": 51.1,
+    "sel_dibi": 45,
+    "persen_dibi_ada_di_logbook": 100.0,
+    "kejadian_logbook": 216,
+    "kejadian_dibi": 94,
+    "rasio_logbook_per_dibi": 2.3
+   },
+   "2018": {
+    "sel_logbook": 120,
+    "persen_logbook_ada_di_dibi": 80.0,
+    "sel_dibi": 109,
+    "persen_dibi_ada_di_logbook": 88.1,
+    "kejadian_logbook": 536,
+    "kejadian_dibi": 523,
+    "rasio_logbook_per_dibi": 1.02
+   },
+   "2019": {
+    "sel_logbook": 211,
+    "persen_logbook_ada_di_dibi": 87.2,
+    "sel_dibi": 191,
+    "persen_dibi_ada_di_logbook": 96.3,
+    "kejadian_logbook": 923,
+    "kejadian_dibi": 733,
+    "rasio_logbook_per_dibi": 1.26
+   },
+   "2020": {
+    "sel_logbook": 107,
+    "persen_logbook_ada_di_dibi": 82.2,
+    "sel_dibi": 129,
+    "persen_dibi_ada_di_logbook": 68.2,
+    "kejadian_logbook": 370,
+    "kejadian_dibi": 583,
+    "rasio_logbook_per_dibi": 0.63
+   },
+   "2022": {
+    "sel_logbook": 99,
+    "persen_logbook_ada_di_dibi": 84.8,
+    "sel_dibi": 95,
+    "persen_dibi_ada_di_logbook": 88.4,
+    "kejadian_logbook": 228,
+    "kejadian_dibi": 247,
+    "rasio_logbook_per_dibi": 0.92
+   }
+  },
+  "kekeringan": {
+   "2015": {
+    "sel_logbook": 22,
+    "persen_logbook_ada_di_dibi": 18.2,
+    "sel_dibi": 5,
+    "persen_dibi_ada_di_logbook": 80.0,
+    "kejadian_logbook": 47,
+    "kejadian_dibi": 7,
+    "rasio_logbook_per_dibi": 6.71
+   },
+   "2016": {
+    "sel_logbook": 1,
+    "persen_logbook_ada_di_dibi": 0.0,
+    "sel_dibi": 0,
+    "persen_dibi_ada_di_logbook": null,
+    "kejadian_logbook": 1,
+    "kejadian_dibi": 0,
+    "rasio_logbook_per_dibi": null
+   },
+   "2017": {
+    "sel_logbook": 32,
+    "persen_logbook_ada_di_dibi": 50.0,
+    "sel_dibi": 16,
+    "persen_dibi_ada_di_logbook": 100.0,
+    "kejadian_logbook": 49,
+    "kejadian_dibi": 19,
+    "rasio_logbook_per_dibi": 2.58
+   },
+   "2018": {
+    "sel_logbook": 48,
+    "persen_logbook_ada_di_dibi": 95.8,
+    "sel_dibi": 101,
+    "persen_dibi_ada_di_logbook": 45.5,
+    "kejadian_logbook": 73,
+    "kejadian_dibi": 126,
+    "rasio_logbook_per_dibi": 0.58
+   },
+   "2019": {
+    "sel_logbook": 121,
+    "persen_logbook_ada_di_dibi": 81.0,
+    "sel_dibi": 112,
+    "persen_dibi_ada_di_logbook": 87.5,
+    "kejadian_logbook": 179,
+    "kejadian_dibi": 119,
+    "rasio_logbook_per_dibi": 1.5
+   },
+   "2020": {
+    "sel_logbook": 26,
+    "persen_logbook_ada_di_dibi": 92.3,
+    "sel_dibi": 24,
+    "persen_dibi_ada_di_logbook": 100.0,
+    "kejadian_logbook": 77,
+    "kejadian_dibi": 26,
+    "rasio_logbook_per_dibi": 2.96
+   },
+   "2022": {
+    "sel_logbook": 4,
+    "persen_logbook_ada_di_dibi": 75.0,
+    "sel_dibi": 3,
+    "persen_dibi_ada_di_logbook": 100.0,
+    "kejadian_logbook": 4,
+    "kejadian_dibi": 4,
+    "rasio_logbook_per_dibi": 1.0
+   }
+  },
+  "longsor": {
+   "2015": {
+    "sel_logbook": 152,
+    "persen_logbook_ada_di_dibi": 77.6,
+    "sel_dibi": 128,
+    "persen_dibi_ada_di_logbook": 92.2,
+    "kejadian_logbook": 642,
+    "kejadian_dibi": 483,
+    "rasio_logbook_per_dibi": 1.33
+   },
+   "2016": {
+    "sel_logbook": 160,
+    "persen_logbook_ada_di_dibi": 68.1,
+    "sel_dibi": 116,
+    "persen_dibi_ada_di_logbook": 94.0,
+    "kejadian_logbook": 1079,
+    "kejadian_dibi": 588,
+    "rasio_logbook_per_dibi": 1.84
+   },
+   "2017": {
+    "sel_logbook": 177,
+    "persen_logbook_ada_di_dibi": 71.8,
+    "sel_dibi": 132,
+    "persen_dibi_ada_di_logbook": 96.2,
+    "kejadian_logbook": 1110,
+    "kejadian_dibi": 837,
+    "rasio_logbook_per_dibi": 1.33
+   },
+   "2018": {
+    "sel_logbook": 175,
+    "persen_logbook_ada_di_dibi": 73.7,
+    "sel_dibi": 154,
+    "persen_dibi_ada_di_logbook": 83.8,
+    "kejadian_logbook": 797,
+    "kejadian_dibi": 594,
+    "rasio_logbook_per_dibi": 1.34
+   },
+   "2019": {
+    "sel_logbook": 162,
+    "persen_logbook_ada_di_dibi": 77.8,
+    "sel_dibi": 139,
+    "persen_dibi_ada_di_logbook": 90.6,
+    "kejadian_logbook": 706,
+    "kejadian_dibi": 714,
+    "rasio_logbook_per_dibi": 0.99
+   },
+   "2020": {
+    "sel_logbook": 176,
+    "persen_logbook_ada_di_dibi": 69.9,
+    "sel_dibi": 150,
+    "persen_dibi_ada_di_logbook": 82.0,
+    "kejadian_logbook": 947,
+    "kejadian_dibi": 1031,
+    "rasio_logbook_per_dibi": 0.92
+   },
+   "2022": {
+    "sel_logbook": 131,
+    "persen_logbook_ada_di_dibi": 85.5,
+    "sel_dibi": 134,
+    "persen_dibi_ada_di_logbook": 83.6,
+    "kejadian_logbook": 551,
+    "kejadian_dibi": 620,
+    "rasio_logbook_per_dibi": 0.89
+   }
+  }
+ },
+ "kesenjangan_provinsi": {
+  "semua": {
+   "dibi_tanpa_logbook_kejadian": [
+    [
+     "Nusa Tenggara Timur",
+     155
+    ],
+    [
+     "Sumatera Selatan",
+     92
+    ],
+    [
+     "Kalimantan Barat",
+     89
+    ],
+    [
+     "Jawa Tengah",
+     88
+    ],
+    [
+     "Kalimantan Timur",
+     78
+    ]
+   ],
+   "logbook_tanpa_dibi_kejadian": [
+    [
+     "DKI Jakarta",
+     295
+    ],
+    [
+     "Jawa Timur",
+     293
+    ],
+    [
+     "Aceh",
+     138
+    ],
+    [
+     "Jawa Tengah",
+     100
+    ],
+    [
+     "Bengkulu",
+     96
+    ]
+   ]
+  },
+  "banjir": {
+   "dibi_tanpa_logbook_kejadian": [
+    [
+     "Sumatera Selatan",
+     42
+    ],
+    [
+     "Kalimantan Barat",
+     28
+    ],
+    [
+     "Nusa Tenggara Timur",
+     26
+    ],
+    [
+     "Sumatera Utara",
+     18
+    ],
+    [
+     "Bali",
+     17
+    ]
+   ],
+   "logbook_tanpa_dibi_kejadian": [
+    [
+     "DKI Jakarta",
+     257
+    ],
+    [
+     "Jawa Timur",
+     43
+    ],
+    [
+     "Bengkulu",
+     33
+    ],
+    [
+     "Sulawesi Tenggara",
+     31
+    ],
+    [
+     "Papua",
+     31
+    ]
+   ]
+  },
+  "cuaca": {
+   "dibi_tanpa_logbook_kejadian": [
+    [
+     "Nusa Tenggara Timur",
+     64
+    ],
+    [
+     "Sumatera Selatan",
+     33
+    ],
+    [
+     "Sumatera Barat",
+     31
+    ],
+    [
+     "Jawa Barat",
+     21
+    ],
+    [
+     "Kalimantan Barat",
+     21
+    ]
+   ],
+   "logbook_tanpa_dibi_kejadian": [
+    [
+     "Jawa Timur",
+     30
+    ],
+    [
+     "Sulawesi Selatan",
+     27
+    ],
+    [
+     "Aceh",
+     21
+    ],
+    [
+     "Jawa Barat",
+     20
+    ],
+    [
+     "Sulawesi Tenggara",
+     20
+    ]
+   ]
+  },
+  "gempa": {
+   "dibi_tanpa_logbook_kejadian": [
+    [
+     "Bali",
+     7
+    ],
+    [
+     "Nusa Tenggara Timur",
+     4
+    ],
+    [
+     "Jawa Barat",
+     3
+    ],
+    [
+     "Nusa Tenggara Barat",
+     2
+    ],
+    [
+     "Jawa Timur",
+     2
+    ]
+   ],
+   "logbook_tanpa_dibi_kejadian": [
+    [
+     "Maluku",
+     59
+    ],
+    [
+     "Jawa Timur",
+     40
+    ],
+    [
+     "Sulawesi Utara",
+     29
+    ],
+    [
+     "Bengkulu",
+     27
+    ],
+    [
+     "Aceh",
+     21
+    ]
+   ]
+  },
+  "karhutla": {
+   "dibi_tanpa_logbook_kejadian": [
+    [
+     "Kalimantan Timur",
+     57
+    ],
+    [
+     "Kalimantan Selatan",
+     34
+    ],
+    [
+     "Kalimantan Barat",
+     30
+    ],
+    [
+     "Kep. Bangka Belitung",
+     27
+    ],
+    [
+     "Jambi",
+     22
+    ]
+   ],
+   "logbook_tanpa_dibi_kejadian": [
+    [
+     "Jawa Timur",
+     82
+    ],
+    [
+     "Jawa Tengah",
+     27
+    ],
+    [
+     "Kalimantan Barat",
+     21
+    ],
+    [
+     "Jambi",
+     19
+    ],
+    [
+     "Riau",
+     14
+    ]
+   ]
+  },
+  "kekeringan": {
+   "dibi_tanpa_logbook_kejadian": [
+    [
+     "Nusa Tenggara Timur",
+     23
+    ],
+    [
+     "Jawa Timur",
+     12
+    ],
+    [
+     "Jawa Barat",
+     10
+    ],
+    [
+     "Jawa Tengah",
+     6
+    ],
+    [
+     "Banten",
+     5
+    ]
+   ],
+   "logbook_tanpa_dibi_kejadian": [
+    [
+     "Jawa Tengah",
+     26
+    ],
+    [
+     "Jawa Timur",
+     24
+    ],
+    [
+     "Jawa Barat",
+     9
+    ],
+    [
+     "Nusa Tenggara Timur",
+     7
+    ],
+    [
+     "Nusa Tenggara Barat",
+     6
+    ]
+   ]
+  },
+  "longsor": {
+   "dibi_tanpa_logbook_kejadian": [
+    [
+     "Jawa Tengah",
+     43
+    ],
+    [
+     "Nusa Tenggara Timur",
+     37
+    ],
+    [
+     "Bali",
+     18
+    ],
+    [
+     "Sumatera Barat",
+     14
+    ],
+    [
+     "Sumatera Selatan",
+     13
+    ]
+   ],
+   "logbook_tanpa_dibi_kejadian": [
+    [
+     "Jawa Timur",
+     74
+    ],
+    [
+     "Aceh",
+     56
+    ],
+    [
+     "Bali",
+     26
+    ],
+    [
+     "Sumatera Barat",
+     26
+    ],
+    [
+     "Sulawesi Selatan",
+     22
+    ]
+   ]
+  }
+ }
+}

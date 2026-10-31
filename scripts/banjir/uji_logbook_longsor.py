@@ -16,6 +16,8 @@ Dampak: meninggal/rumah menurut kelas bahaya longsor kecamatan (Spearman + media
 Pakai:  python3 scripts/banjir/uji_logbook_longsor.py ambil   unduh hujan 2026 (lanjut bila putus/kuota)
         python3 scripts/banjir/uji_logbook_longsor.py         hitung -> JSON
         python3 scripts/banjir/uji_logbook_longsor.py uji     swauji luring data mainan
+        python3 scripts/banjir/uji_logbook_longsor.py --arsip uji arsip Pusdalops 2016-2022 (tanpa jaringan; hujan dari cache uji_balik)
+                                                              -> public/data/validasi_logbook_longsor_arsip.json
 """
 import datetime as dt, difflib, gzip, json, math, os, random, re, sys, time
 from collections import Counter, defaultdict
@@ -463,6 +465,75 @@ def dampak_dari(baris, ulang=500, seed=5):
     return out
 
 
+# ------------------------------------------------------------------ ARSIP Pusdalops (--arsip)
+KELUAR_ARSIP = os.path.join(AKAR, "public/data/validasi_logbook_longsor_arsip.json")
+
+
+def arsip_main():
+    """Label arsip csv (jenis longsor, positif = tgl_kejadian -1..+1, hanya hari tercakup logbook), hujan ERA5 cache uji_balik,
+    kabupaten-hari; level kab = maks sel. Memakai penolong uji_logbook.arsip_*; aturan level_longsor BERLAKU tidak diubah."""
+    import uji_logbook as ulb
+    ub = ulb.ub
+    sk, kabs, cuaca, baris, cakup = ulb.arsip_siapkan()
+    tahun = sorted(cakup)
+    print(f"arsip longsor: {len(kabs)}/{len(sk)} kab, {len(cuaca)} sel, tahun {tahun}", file=sys.stderr)
+    lab = ulb.arsip_label(baris, "longsor", lebar_jendela=1)
+    lv = ulb.arsip_level("longsor", sk, kabs, cuaca, tahun)
+    blok = ulb.arsip_blok(lv, lab, cakup)
+    # AUC skor kontinu (maks sel h3*bahaya_longsor) per (kab, tahun): histogram bin, seri = 0,5
+    g = BERLAKU["geser"]
+    hist = {n: {} for n in ("h3_x_bahaya", "h3_saja", "bahaya_saja")}
+    for kab in kabs:
+        for y, ada in cakup.items():
+            h = {n: (Counter(), Counter()) for n in hist}
+            for d, _ in lv[kab].items():
+                if d.year != y or d not in ada:
+                    continue
+                e, o = ub.hari_ke(d), 0 if d in lab.get(kab, ()) else 1
+                h3 = {s: sum(cuaca[s]["p"][e + g:e + g + 3]) for s in sk[kab]}
+                h["h3_x_bahaya"][o][round(max(h3[s] * b[1] for s, b in sk[kab].items()))] += 1
+                h["h3_saja"][o][round(max(h3.values()))] += 1
+                h["bahaya_saja"][o][round(max(b[1] for b in sk[kab].values()) * 20)] += 1
+            if sum(h["h3_saja"][0].values()):
+                for n in hist:
+                    hist[n][(kab, y)] = h[n]
+    auc = {}
+    for n, hh in hist.items():
+        auc[n] = {}
+        for y in [*(str(t) for t in tahun), "gabungan"]:
+            sub = {k: v for k, v in hh.items() if y == "gabungan" or k[1] == int(y)}
+            a, c = auc_ci(sub) if sub else (None, None)
+            auc[n][y] = {"auc": None if a is None else round(a, 3), "ci95": c}
+    hasil = ulb.arsip_ringkas(blok, ulang=ULANG)
+    for y, x in hasil.items():
+        w, p_ = x["waspada"], x["persisten"]
+        print(f"longsor {y:9s} kab={x['kab']:3d} kejadian-hari={x['kejadian_hari']:5d} AUC h3xb {auc['h3_x_bahaya'][y]['auc']} {auc['h3_x_bahaya'][y]['ci95']} "
+              f"h3 {auc['h3_saja'][y]['auc']} | waspada POD {w['pod']} FAR {w['far']} ETS {w['ets']} {w['ci'].get('ets')} | persisten POD {p_['pod']} FAR {p_['far']} ETS {p_['ets']} | acak POD {w['acak']['pod']}")
+    try:
+        n_lama = json.load(open(KELUAR_ARSIP)).get("sampel", {}).get("kab_dinilai") or 0
+    except (OSError, ValueError):
+        n_lama = 0
+    if len(kabs) < n_lama:
+        print(f"LEWAT: {len(kabs)} kab < {n_lama} di hasil lama; {os.path.relpath(KELUAR_ARSIP)} dibiarkan", file=sys.stderr)
+        return
+    json.dump({"dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
+               "aturan": "scripts/banjir/status.py:level_longsor, parameter " + json.dumps(BERLAKU) + " (tidak diubah)",
+               "tahun_dinilai": tahun,
+               "sampel": {"kab_dinilai": len(kabs), "kab_geo_total": len(sk), "sel": len(cuaca),
+                          "pemilihan": "kab yang semua selnya ada di cache uji_balik (bias ke kab yang sering berkejadian)"},
+               "label": "Pusdalops arsip jenis longsor, positif = tgl_kejadian -1..+1 hari, hanya hari tercakup logbook (kabupaten-hari)",
+               "utama": {"keterangan": "2022 = satu-satunya tahun luar-sampel; vonis mengikuti 2022", "tahun": 2022,
+                         "hasil": hasil.get("2022"), "auc": {n: auc[n].get("2022") for n in auc}},
+               "gabungan_keterangan": "blok 'gabungan' dan 2016-2020 = konsistensi (2016-2020 ikut menyetel ambang), bukan luar-sampel",
+               "hasil": hasil, "auc": auc,
+               "catatan": "MODEL KALAH DARI PERSISTEN (ETS persisten ~0,6 vs Waspada 0,01-0,06): jendela +-1 hari membuat 'kemarin berlabel' prediktor kuat. "
+                          "Kab sampel (41) dari cache uji_balik yang dibangun dari kab sering terdampak: POD dan laju dasar TIDAK berlaku nasional. Aturan longsor tidak dipilih di arsip ini, tetapi 2016-2025 sudah dipakai uji_balik untuk memilih K/geser/jenuh pada banjir+longsor "
+                          "(longsor 2024 bolong): bukan luar-sampel murni. 2021 tak ada arsip; 2022 parsial. Kab tanpa laporan bukan pasti tanpa longsor: FAR batas atas. "
+                          "Pembanding: persisten (alarm bila kemarin berlabel), acak (POD = laju alarm, FAR = laju dasar), dan AUC 0,5."},
+              open(KELUAR_ARSIP, "w"), ensure_ascii=False, indent=1)
+    print(os.path.relpath(KELUAR_ARSIP), "ditulis", file=sys.stderr)
+
+
 # ------------------------------------------------------------------ swauji
 def uji():
     # skor
@@ -538,6 +609,8 @@ def riwayat_baru(jalur_json, h, maks=400):
 
 def main():
     mode = sys.argv[1] if len(sys.argv) > 1 else "hitung"
+    if mode == "--arsip":
+        return arsip_main()
     if mode == "uji":
         return uji()
     if mode == "ambil":

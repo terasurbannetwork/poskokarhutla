@@ -22,8 +22,10 @@ galat leave-one-kab-out vs penaksir konstan. SIGNAL bila batas bawah CI rho > 0,
 Pakai:  python3 scripts/banjir/uji_logbook.py ambil   unduh ERA5 2026 yang belum di cache (data/raw/banjir/uji_logbook)
         python3 scripts/banjir/uji_logbook.py         (tanpa jaringan) hitung dengan sel yang sudah ada (kab yang selnya lengkap)
         python3 scripts/banjir/uji_logbook.py uji     swauji luring
+        python3 scripts/banjir/uji_logbook.py --arsip   uji arsip Pusdalops 2016-2022 (tanpa jaringan; hujan dari cache uji_balik)
+                                                        -> public/data/validasi_logbook_banjir_arsip.json
 """
-import datetime as dt, gzip, json, math, os, random, re, sys
+import csv, datetime as dt, gzip, json, math, os, random, re, sys
 from collections import defaultdict
 
 sys.path.insert(0, os.path.dirname(__file__))
@@ -401,6 +403,177 @@ def main(ambil_saja=False):
     print(f"{os.path.relpath(jalur)} ditulis", file=sys.stderr)
 
 
+# ------------------------------------------------------------------ ARSIP Pusdalops 2011-2022 (--arsip)
+# Label: data/pusdalops/logbook_kejadian.csv (kab_kode 'pp|Nama' = kunci ub.sel_per_kab). Hujan: ERA5 cache uji_balik (2015-12-22..2026-01-03),
+# jadi hanya kabupaten yang SEMUA selnya sudah di cache dan hanya 2016-2025 yang bisa dinilai; tidak ada unduhan di mode ini.
+# Hari dinilai = hari yang tercakup logbook (tahun penuh: semua hari; tahun parsial: hari yang punya kejadian dicatat/terakhir dicatat):
+# tak ada laporan di hari yang tak tercakup BUKAN negatif.
+CSV_ARSIP = os.path.join(AKAR, "data/pusdalops/logbook_kejadian.csv")
+RIWAYAT_LB = os.path.join(AKAR, "public/data/logbook_riwayat.json")
+KELUAR_ARSIP = os.path.join(AKAR, "public/data/validasi_logbook_banjir_arsip.json")
+NAMA_LV = ("waspada", "siaga", "awas")
+
+
+def tgl_aman(s):
+    try:
+        return dt.date.fromisoformat(s)
+    except (ValueError, TypeError):
+        return None
+
+
+def arsip_baca():
+    """-> (baris csv, {tahun: set(date) hari tercakup}) hanya tahun 2016..2025 yang ada di logbook_riwayat.hari_tercatat."""
+    baris = list(csv.DictReader(open(CSV_ARSIP, encoding="utf-8")))
+    ht = json.load(open(RIWAYAT_LB))["hari_tercatat"]
+    cakup = {}
+    for y in sorted(int(k) for k in ht):
+        if not 2016 <= y <= 2025:
+            continue
+        if ht[str(y)] >= 365:
+            cakup[y] = {dt.date(y, 1, 1) + dt.timedelta(i) for i in range((dt.date(y + 1, 1, 1) - dt.date(y, 1, 1)).days)}
+        else:   # parsial: hari yang punya berkas = hari tampil sebagai pertama/terakhir dicatat
+            cakup[y] = {d for r in baris for d in map(tgl_aman, (r["pertama_dicatat"], r["terakhir_dicatat"])) if d and d.year == y}
+    return baris, cakup
+
+
+def arsip_label(baris, jenis, lebar_jendela=0, aktif=False):
+    """-> {kab: set(date)} untuk kejadian `jenis`. Hari = tgl_kejadian (atau pertama_dicatat bila kosong), +-lebar_jendela;
+    aktif=True: sampai terakhir_dicatat maks MAKS_AKTIF hari. Kejadian lintas kab dihitung di tiap kab."""
+    out = defaultdict(set)
+    for r in baris:
+        if r["jenis"] != jenis:
+            continue
+        a = tgl_aman(r["tgl_kejadian"]) or tgl_aman(r["pertama_dicatat"])
+        if not a or not 2009 <= a.year <= 2022:
+            continue
+        z = a
+        if aktif:
+            t = tgl_aman(r["terakhir_dicatat"])
+            z = min(max(t, a), a + dt.timedelta(MAKS_AKTIF)) if t else a
+        hari = {a + dt.timedelta(i) for i in range(-lebar_jendela, (z - a).days + lebar_jendela + 1)}
+        for k in filter(None, r["kab_kode"].split("; ")):
+            out[k] |= hari
+    return out
+
+
+def arsip_siapkan():
+    """-> (sk, kabs_lengkap, cuaca, baris, cakup). Kab lengkap = semua selnya di cache uji_balik."""
+    baris, cakup = arsip_baca()
+    sk = ub.sel_per_kab()
+    kabs = sorted(k for k in sk if all(os.path.exists(ub.jalur(*s)) for s in sk[k]))
+    cuaca = {}
+    for s in {s for k in kabs for s in sk[k]}:
+        with gzip.open(ub.jalur(*s), "rt") as f:
+            cuaca[s] = ub.deret(json.load(f))
+    return sk, kabs, cuaca, baris, cakup
+
+
+def arsip_level(jenis, sk, kabs, cuaca, tahun):
+    """-> {kab: {date: level kab}} untuk hari-hari tahun `tahun` yang ada di jendela ERA5 (aturan BERLAKU, level kab = maks sel)."""
+    hari = {}
+    for y in tahun:
+        for e in range(max(ub.hari_ke(dt.date(y, 1, 1)), 7), min(ub.hari_ke(dt.date(y, 12, 31)), ub.hari_ke(ub.AKHIR) - 2) + 1):
+            hari[e] = ub.AWAL + dt.timedelta(e)
+    idx = sorted(hari)
+    out = {}
+    for kab in kabs:
+        lv = [max(t) for t in zip(*(ub.level_harian(cuaca[s], b, jenis, BERLAKU[jenis], idx) for s, b in sk[kab].items()))]
+        out[kab] = {hari[e]: l for e, l in zip(idx, lv)}
+    return out
+
+
+def arsip_blok(lv, label, cakup):
+    """-> {(kab, tahun): [[a,b,c,d] untuk waspada, siaga, awas, PERSISTEN]}; hanya hari tercakup logbook.
+    Persisten = alarm di hari d bila hari d-1 berlabel (pembanding tanpa hujan)."""
+    blok = {}
+    for kab, per_hari in lv.items():
+        kej = label.get(kab, set())
+        for y, ada in cakup.items():
+            t = [[0, 0, 0, 0] for _ in range(len(LEVEL) + 1)]
+            n = 0
+            for d, l in per_hari.items():
+                if d.year != y or d not in ada:
+                    continue
+                n += 1
+                o = d in kej
+                for i, L in enumerate(LEVEL):
+                    t[i][(0 if o else 1) if l >= L else (2 if o else 3)] += 1
+                p = (d - dt.timedelta(1)) in kej
+                t[3][(0 if o else 1) if p else (2 if o else 3)] += 1
+            if n:
+                blok[(kab, y)] = t
+    return blok
+
+
+def arsip_ringkas(blok, ulang=ULANG):
+    """-> {'2018': {...}, ..., 'gabungan': {...}}: tiap level skor + CI95 (bootstrap blok kab-tahun), persisten, dan pembanding acak
+    (alarm acak berlaju sama: POD = laju alarm, FAR = laju dasar)."""
+    def satu(b):
+        n_tot = [sum(v[0][i] for v in b.values()) for i in range(4)]
+        out = {"kab": len({k[0] for k in b}), "hari_kab": sum(n_tot), "kejadian_hari": n_tot[0] + n_tot[2]}
+        for i, L in enumerate(LEVEL):
+            n = jumlah(b, sorted(b), i)
+            s = skor(*n)
+            out[LEVEL[L]] = {**{m: None if v is None else round(v, 3) for m, v in s.items()}, "ci": bootstrap(b, i, ulang),
+                             "n": dict(zip("abcd", n)), "acak": {"pod": round((n[0] + n[1]) / sum(n), 3), "far": round((n[0] + n[2]) / sum(n), 4)}}
+        s = skor(*jumlah(b, sorted(b), 3))
+        out["persisten"] = {m: None if v is None else round(v, 3) for m, v in s.items()}
+        return out
+    out = {}
+    for y in sorted({k[1] for k in blok}):
+        out[str(y)] = satu({k: v for k, v in blok.items() if k[1] == y})
+    out["gabungan"] = satu(blok)
+    return out
+
+
+def arsip_main():
+    sk, kabs, cuaca, baris, cakup = arsip_siapkan()
+    tahun = sorted(cakup)
+    print(f"arsip: {len(kabs)}/{len(sk)} kab dengan hujan lengkap, {len(cuaca)} sel, tahun tercakup {tahun}", file=sys.stderr)
+    lv = arsip_level("banjir", sk, kabs, cuaca, tahun)
+    hasil = {}
+    for nama, kw in (("lb_mulai", {}), ("lb_aktif", {"aktif": True})):
+        lab = arsip_label(baris, "banjir", **kw)
+        blok = arsip_blok(lv, lab, cakup)
+        berlabel = {k[0] for k, v in blok.items() if v[0][0] + v[0][2] > 0}
+        r = {"semua_kab_cache": arsip_ringkas(blok), "hanya_kab_berlabel": arsip_ringkas({k: v for k, v in blok.items() if k[0] in berlabel}),
+             "kab_berlabel": len(berlabel)}
+        r["vonis_gabungan"] = vonis({"waspada": r["hanya_kab_berlabel"]["gabungan"]["waspada"]})
+        hasil[nama] = r
+        for sub in ("semua_kab_cache", "hanya_kab_berlabel"):
+            for y, x in r[sub].items():
+                w = x["waspada"]
+                print(f"{nama:8s} {sub:18s} {y:9s} kab={x['kab']:3d} kejadian-hari={x['kejadian_hari']:5d} waspada POD {w['pod']} FAR {w['far']} ETS {w['ets']} {w['ci'].get('ets')}"
+                      f" | persisten ETS {x['persisten']['ets']} POD {x['persisten']['pod']} FAR {x['persisten']['far']} | acak POD {w['acak']['pod']}")
+        print(f"{nama} VONIS gabungan (kab berlabel, waspada): {r['vonis_gabungan']}")
+    n_kab = len(kabs)
+    try:
+        n_lama = json.load(open(KELUAR_ARSIP)).get("sampel", {}).get("kab_dinilai") or 0
+    except (OSError, ValueError):
+        n_lama = 0
+    if n_kab < n_lama:   # cache hilang -> sampel menyempit: jangan timpa hasil lebih luas
+        print(f"LEWAT: {n_kab} kab < {n_lama} di hasil lama; {os.path.relpath(KELUAR_ARSIP)} dibiarkan", file=sys.stderr)
+        return
+    simpan(KELUAR_ARSIP, {
+        "dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
+        "tahun_dinilai": tahun, "aturan": BERLAKU["banjir"], "kriteria": {"ets_lulus_batas_bawah_ci": ETS_LULUS},
+        "sampel": {"kab_dinilai": n_kab, "kab_geo_total": len(sk), "sel": len(cuaca),
+                   "pemilihan": "kab yang semua selnya ada di cache uji_balik (dipilih dulu menurut jumlah hari kejadian DIBI/logbook 2016-2025, jadi bias ke kab yang sering banjir)"},
+        "utama": {"keterangan": "2022 = satu-satunya tahun luar-sampel (BERLAKU dipilih di 2016-2021); vonis mengikuti 2022",
+                  **{n: {"tahun": 2022, "hanya_kab_berlabel": hasil[n]["hanya_kab_berlabel"].get("2022"),
+                         "vonis": vonis({"waspada": hasil[n]["hanya_kab_berlabel"]["2022"]["waspada"]}) if "2022" in hasil[n]["hanya_kab_berlabel"] else None}
+                     for n in hasil}},
+        "label": hasil,
+        "label_gabungan_keterangan": "blok 'gabungan' dan tahun 2016-2020 = konsistensi (2016-2020 ikut menyetel ambang), BUKAN bukti luar-sampel",
+        "catatan": "MODEL KALAH DARI PERSISTEN pada lb_mulai (ETS persisten > ETS Waspada): label berhari-jamak membuat 'kemarin berlabel' prediktor kuat, hujan tidak menambah. "
+                   "Kab sampel (41) berasal dari cache uji_balik yang dibangun dari kab sering terdampak (seleksi pada hasil): POD dan laju dasar TIDAK berlaku nasional. "
+                   "Uji arsip Pusdalops (tgl_kejadian). 2016-2025 bukan luar-sampel murni: BERLAKU dipilih di 2016-2021 (uji_balik), jadi 2022 ke atas "
+                   "saja yang luar-sampel; 2016-2020 dipakai memilih ambang dan hanya konsistensi. Tahun tanpa arsip (2021) tak dinilai; 2022 parsial (hanya hari tercakup). "
+                   "Hujan ERA5 sebagai prakiraan sempurna. Kab tanpa laporan bukan pasti tanpa banjir: FAR batas atas. Pembanding: persisten (alarm bila kemarin berlabel) dan acak.",
+    })
+    print(f"{os.path.relpath(KELUAR_ARSIP)} ditulis", file=sys.stderr)
+
+
 # ------------------------------------------------------------------ swauji
 def uji():
     assert rank([3, 1, 1, 2]) == [4.0, 1.5, 1.5, 3.0], rank([3, 1, 1, 2])
@@ -463,4 +636,7 @@ def uji():
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    uji() if a == ["uji"] else main(ambil_saja=a == ["ambil"])
+    if a == ["--arsip"]:
+        arsip_main()
+    else:
+        uji() if a == ["uji"] else main(ambil_saja=a == ["ambil"])
