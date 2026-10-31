@@ -1,6 +1,7 @@
 // Peta titik panas per provinsi 20 Okt 2026, port dari public/laporan.js kartuPeta() (algoritma label sama).
 import fs from 'node:fs';
 import os from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { luncur } from '../pw.mjs';
 const g = JSON.parse(fs.readFileSync(new URL('../../../../public/geo/provinsi.json', import.meta.url)));
 const A = JSON.parse(fs.readFileSync('angka_nasional.json')).prov;
@@ -27,10 +28,24 @@ for (const f of g.features) {
 const rows = Object.entries(A).map(([k, o]) => ({k, t: o.hot[I] || 0})).filter(r => r.t > 0).sort((a, b) => b.t - a.t);
 const mx = Math.max(1, rows[0]?.t || 0), rad = t => 5 + 33 * Math.sqrt(t / mx), ada = new Set(rows.map(r => r.k));
 let s = Object.entries(d).map(([k, p]) => `<path d="${p}" class="${ada.has(k) ? 'pp-on' : 'pp'}"/>`).join('');
-const bul = rows.filter(r => c[r.k]).map(r => ({...r, x: c[r.k][0], y: c[r.k][1], r: rad(r.t)}));
+const bul = rows.filter(r => c[r.k]).map(r => ({...r, x: c[r.k][0], y: c[r.k][1], ax: c[r.k][0], ay: c[r.k][1], r: rad(r.t)}));
+// Lingkaran bertumpuk didorong saling menjauh (Sulsel tertimpa Sultra, angka Gorontalo tertutup Sulteng, 31 Okt 2026): yang kecil bergeser
+// lebih jauh, semuanya ditarik pelan ke titik tengah provinsinya; 80 putaran terakhir tanpa tarikan supaya pasti tidak bertumpuk.
+for (let it = 0; it < 480; it++) {
+  let tumpuk = false;
+  for (let i = 0; i < bul.length; i++) for (let j = i + 1; j < bul.length; j++) {
+    const a = bul[i], b = bul[j], dx = b.x - a.x, dy = b.y - a.y, dd = Math.hypot(dx, dy) || .01, kurang = a.r + b.r + 2 - dd;
+    if (kurang <= 0) continue;
+    tumpuk = true;
+    const wa = b.r ** 2 / (a.r ** 2 + b.r ** 2), ux = dx / dd, uy = dy / dd;
+    a.x -= ux * kurang * wa; a.y -= uy * kurang * wa; b.x += ux * kurang * (1 - wa); b.y += uy * kurang * (1 - wa);
+  }
+  if (it < 400) for (const r of bul) { r.x += (r.ax - r.x) * .02; r.y += (r.ay - r.y) * .02; }
+  else if (!tumpuk) break;
+}
 s += bul.slice().reverse().map(r => `<circle cx="${r.x.toFixed(1)}" cy="${r.y.toFixed(1)}" r="${r.r.toFixed(1)}" class="pc"/>`).join('');
 s += bul.filter(r => r.r >= 22).map(r => `<text x="${r.x.toFixed(1)}" y="${(r.y + 2).toFixed(1)}" class="pa">${fmt(r.t)}</text>`
-  + `<text x="${r.x.toFixed(1)}" y="${(r.y + 14).toFixed(1)}" class="pn">${SINGKAT[r.k] || ''}</text>`).join('');
+  + `<text x="${r.x.toFixed(1)}" y="${(r.y + 14).toFixed(1)}" class="pn" style="font-size:${Math.min(9.5, (2 * r.r - 10) / (0.58 * (SINGKAT[r.k] || ' ').length)).toFixed(1)}px">${SINGKAT[r.k] || ''}</text>`).join('');   // nama panjang (Gorontalo) dikecilkan supaya muat di lingkaran
 const LH = 17, pil = [], kena = (x, y, w) => x < 2 || x + w > PW - 2 || y < 2 || y + LH > PH - 2
   || pil.some(q => x < q[0] + q[2] + 3 && x + w + 3 > q[0] && y < q[1] + LH + 3 && y + LH + 3 > q[1])
   || bul.some(c => { const nx = Math.max(x, Math.min(c.x, x + w)), ny = Math.max(y, Math.min(c.y, y + LH)); return (nx - c.x) ** 2 + (ny - c.y) ** 2 < (c.r + 2) ** 2; });
@@ -67,7 +82,7 @@ const OR = process.env.BENCANA === 'banjir' ? '#2F6FB5' : '#D9600B';   // lingka
 // Mesin tanpa Roboto di ~/Library/Fonts memakai salinan repo public/vendor/roboto (Regular + Bold; tebal 600-900 jatuh ke Bold)
 const muka = (f, w) => `@font-face{font-family:Roboto;font-weight:${w};src:url(data:font/ttf;base64,${fs.readFileSync(f).toString('base64')})}`;
 const FONT = ['Roboto[wdth,wght].ttf', 'Roboto-Regular.ttf'].map(n => os.homedir() + '/Library/Fonts/' + n).find(f => fs.existsSync(f));
-const VENDOR = new URL('../../../../public/vendor/roboto/', import.meta.url).pathname;
+const VENDOR = fileURLToPath(new URL('../../../../public/vendor/roboto/', import.meta.url));   // pathname di Windows = /D:/..., salah (30 Okt)
 const css = `${FONT ? muka(FONT, '100 900') : muka(VENDOR + 'Roboto-Regular.ttf', '100 500') + muka(VENDOR + 'Roboto-Bold.ttf', '600 900')}.pp{fill:#DCE1E7;stroke:#fff;stroke-width:.6}.pp-on{fill:#051C2C;stroke:#fff;stroke-width:.8}
 .pc{fill:${OR};stroke:#fff;stroke-width:1.5;fill-opacity:.95}.pa{font:800 14px Roboto;fill:#fff;text-anchor:middle}
 .pn{font:700 9.5px Roboto;fill:#fff;text-anchor:middle;opacity:.95}.pl{stroke:${OR};stroke-width:1.2}

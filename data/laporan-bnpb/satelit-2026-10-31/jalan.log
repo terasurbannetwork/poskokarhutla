@@ -1,0 +1,21 @@
+website: harian30 2026-10-31T19:11+07:00 | peta_karhutla 2026-10-31T19:12+07:00 s.d. 2026-10-30 | hotspot.json titik terakhir 2026-10-31T08:35:00+00:00 | belum_kini 2026-10-31T19:12+07:00
+uji luas 2026-10-30: sendiri 9008 ha vs website 9009 ha; beda > 5 ha: tidak ada
+VERSI per sekarang | 2026-10-31 s.d. data terakhir: luas 6029 ha, padam 3974 ha belum padam 2244 ha
+6 provinsi tabel (hotspot 2026-10-31 ): ['93', '74', '72', '62', '53', '73'] [609, 433, 424, 400, 261, 229]
+selisih hotspot sendiri vs website (hari, prov, sendiri, website): [('2026-10-28', '52', 75, 74), ('2026-10-28', '64', 904, 905), ('2026-10-28', '71', 57, 58), ('2026-10-28', '74', 285, 288), ('2026-10-28', '75', 63, 64), ('2026-10-28', '81', 273, 274), ('2026-10-28', '93', 2924, 2930), ('2026-10-29', '52', 280, 279), ('2026-10-29', '53', 336, 333), ('2026-10-29', '62', 452, 453), ('2026-10-29', '63', 164, 165), ('2026-10-29', '64', 507, 505), ('2026-10-29', '72', 470, 476), ('2026-10-29', '73', 348, 346), ('2026-10-29', '74', 558, 559), ('2026-10-29', '81', 281, 282), ('2026-10-29', '92', 74, 75), ('2026-10-29', '93', 744, 742), ('2026-10-30', '16', 46, 45), ('2026-10-30', '62', 1020, 1021)] (25 sel)
+firespot website 2026-10-31 nasional 1671
+sel ok 72 beda 0 | jumlah cocok
+Traceback (most recent call last):
+  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\satelit-2026-10-31\jalan.py", line 168, in <module>
+    penanganan.bangun(D, JAM, None, S, os.path.join(S, 'wa-satgas.txt'), ha_utuh=True, belum_kini=False, luas_00=True)   # label kolom = hari kalender (sama dengan 301026)
+    ~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\Project\Work\BNPB\poskokarhutla\data\laporan-bnpb\generator\penanganan.py", line 106, in bangun
+    shutil.copy(os.path.join(kerja, f), out)
+    ~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\shutil.py", line 489, in copy
+    copyfile(src, dst, follow_symlinks=follow_symlinks)
+    ~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "C:\Python314\Lib\shutil.py", line 315, in copyfile
+    with open(dst, 'wb') as fdst:
+         ~~~~^^^^^^^^^^^
+PermissionError: [Errno 13] Permission denied: 'D:\\Project\\Work\\BNPB\\poskokarhutla\\data\\laporan-bnpb\\satelit-2026-10-31\\Laporan Penanganan Pengendalian Karhutla 311026.pdf'
