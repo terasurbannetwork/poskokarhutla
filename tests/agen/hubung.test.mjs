@@ -141,3 +141,14 @@ test("penjaga unggah bulanan: berkas yang menyusut lebih dari 5% dibatalkan, uku
   assert.equal(J.ukuran({lembaga: {a: 1, b: 1}, kampus: {c: 1}}), 3); assert.equal(J.ukuran({a: {}, b: {}, c: {}, d: {}}), 4);
   assert.equal(J.susut(100, 96), false); assert.equal(J.susut(100, 94), true); assert.equal(J.susut(0, 0), false);
 });
+
+test("skor kesiapan: komponen persentil, minimal tiga komponen, kuadran prioritas = risiko tinggi dan kesiapan rendah, Kota Administrasi cocok", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const rk = {kolom: ["prov", "kab", "kec", "risiko", "pend"], kec: [["31", "Kota Administrasi Jakarta Barat", "a", 10, 2e6], ["32", "Kabupaten Bogor", "b", 60, 5e6], ["32", "Kota Bogor", "c", 20, 1e6]]};
+  const wd = {kab: [{prov: "31", kab: "Kota Jakarta Barat", fasilitas: {rs_tt: 9000, puskesmas: 70}}, {prov: "32", kab: "Kabupaten Bogor", apbd: {2025: {BTT: 1e10}}, fasilitas: {rs_tt: 2000, puskesmas: 100}},
+    {prov: "32", kab: "Kota Bogor", apbd: {2025: {BTT: 2e10}}, fasilitas: {rs_tt: 3000, puskesmas: 25}}]};
+  const k = S.kesiapanDaerah(wd, rk, {orang: [["p1", "A", "IPB"]]}, {IPB: {prov: "32"}}, [{id: "l1", nama: "X", prov: "32", kab: "Kota Bogor", kategori: "lsm"}]).baris;
+  assert.ok(k["31|K:jakartabarat"] && k["31|K:jakartabarat"].nama_rk === "Kota Administrasi Jakarta Barat");
+  assert.equal(k["32|bogor"].kuadran, "prioritas"); assert.ok(k["32|K:bogor"].skor > k["32|bogor"].skor);
+  assert.ok(Object.values(k).every(r => r.skor == null || (r.skor >= 0 && r.skor <= 100)));
+});

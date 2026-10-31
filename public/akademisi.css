@@ -2444,3 +2444,9 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-jj-rsk{display:flex;justify-content:space-between;gap:12px;align-items:baseline}.ak-jj-rsk a{color:#14284b;text-decoration:none}.ak-jj-rsk a:hover{color:var(--brand2)}
 .ak-jj-rsk small{flex:none;font-size:12px;color:var(--ink2)}
 .ak-jj-rs p{margin:0;font-size:13.5px;line-height:1.5;text-align:justify;color:var(--ink)}
+/* skor kesiapan dan peta kesenjangan (wilayah_daya.kesiapan) */
+.ak-ks-b{margin-top:10px}
+.ak-ks-peta{width:100%;height:auto;margin:6px 0 8px}.ak-ks-peta path{cursor:pointer;transition:fill-opacity .12s}.ak-ks-peta path:hover{fill-opacity:1;stroke:#0b2545;stroke-width:1.4}
+.ak-ks-leg{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 10px;font-size:12.5px}.ak-ks-l{display:inline-flex;align-items:center;gap:6px}.ak-ks-l i{width:12px;height:12px;border-radius:3px;display:inline-block}
+.ak-ks-k{font-weight:700;text-align:left;color:var(--ink)}.ak-n{text-align:right;font-variant-numeric:tabular-nums}
+.ak-wlcetak{margin-right:8px;vertical-align:middle}

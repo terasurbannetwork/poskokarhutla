@@ -927,6 +927,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
   function jejakIntl(e) {
     if (!e) return "";
     const H = [], lnk = (u, t, pil) => barisKaya({attr: hrefAttr(urlOk(u)), logo: lgoIkon([], IKJ, "#14284b"), nama: t, pil});
+    if (e.gdacs) H.push(bagS("Level siaga internasional", daftarBkr([lnk(e.gdacs.url, `GDACS ${e.gdacs.level === "Red" ? "Merah" : e.gdacs.level === "Orange" ? "Oranye" : e.gdacs.level === "Green" ? "Hijau" : e.gdacs.level}${e.gdacs.severitas ? ", " + e.gdacs.severitas : ""}`, e.gdacs.skor != null ? pilMini(IK_BAR, "skor " + String(e.gdacs.skor).replace(".", ",")) : "")])));
     if (e.fts?.total_usd) H.push(bagS(`Bantuan internasional tercatat ${esc(usdR(e.fts.total_usd))}`, daftarBkr(dlist(e.fts.donor).map(x => barisKaya({logo: lgoIkon(logoOrg(x.nama, null), IK_UANG, "#2b8a3e"), nama: x.nama, fakta: x.usd ? usdR(x.usd) : ""}))) + `<small class="ak-lper">Sumber OCHA FTS, dana dibayar dan dijanjikan ${cip(e.fts.url)}</small>`));
     if (dlist(e.satelit).length) H.push(bagS(`Aktivasi citra satelit ${angka(e.satelit.length)}`, daftarBkr(e.satelit.map(x => lnk(x.url, `${x.mekanisme || "Aktivasi satelit"}${x.peminta ? ", diminta " + x.peminta : ""}`, x.tanggal ? pilMini(IKL.tahun, tglID(x.tanggal)) : "")))));
     if (dlist(e.dokumen).length) H.push(bagS("Kajian kerusakan dan pemulihan", daftarBkr(e.dokumen.map(x => lnk(x.url, x.judul, pilJenis(x.jenis) + (x.tahun ? pilMini(IKL.tahun, String(x.tahun)) : ""))))));
@@ -1367,7 +1368,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       + bagB("Bidang", bid.length || strs(x.rumpun).length ? `<div class="ak-pil ak-mps">${bid.map(b => pilMini(IKL.jenis, kapital(String(b).trim()))).join("")}${strs(x.rumpun).map(r => pilRumpun(r)).join("")}</div>` : "")
       + (dlist(x.sensor).length ? bagB("Sensor", daftarBkr(dlist(x.sensor).map(barisSensor))) : "")
       + (dlist(x.inovasi_produk).length ? bagB("Inovasi", daftarBkr(dlist(x.inovasi_produk).map(barisProduk))) : "")
-      + `<div id="${pre}Izin"></div><div id="${pre}Sd"></div><div id="${pre}Dana"></div><div id="${pre}Proy"></div><div id="${pre}Jur"></div>`
+      + `<div id="${pre}Izin"></div><div id="${pre}Kap"></div><div id="${pre}Sd"></div><div id="${pre}Dana"></div><div id="${pre}Proy"></div><div id="${pre}Jur"></div>`
       + bagB("Kantor pusat", !bp && (x.alamat || Number.isFinite(x.lat)) ? `<p>${x.alamat ? `<a href="${esc(urlPeta(x))}" ${LUAR}>${esc(x.alamat)}</a>` : esc(lok)} ${tautPeta(x)} ${cip(sumberButir(x, "alamat")?.url)}</p>${x.lokasi_sumber ? `<small class="ak-lper">Titik peta ditentukan dari ${esc(x.lokasi_sumber)}</small>` : ""}` : "")
       + `<div id="${pre}Brt"></div>`
       + (bp ? "" : bagB("Sumber", sumberRapi(sumberUnik(x).map(a => a[0])) + lbPeriksa(x)))
@@ -1377,7 +1378,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     const isiAsync = cek => {
       if (bp) isiBpbd(x, cek, pre);
       ambilData("berita").then(d => { const h = brtHtml("lembaga", x.id, d); if (h) isiNanti(cek, pre + "Brt", h); });
-      ambilData("lembaga_ekstra").then(d => { const h = izinLb(d?.lembaga?.[x.id]); if (h) isiNanti(cek, pre + "Izin", h); });
+      ambilData("lembaga_ekstra").then(d => { const e = d?.lembaga?.[x.id], h = izinLb(e), k = kapLb(e); if (h) isiNanti(cek, pre + "Izin", h); if (k) isiNanti(cek, pre + "Kap", k); });
       ambilData("lembaga_3w").then(d => { const a = Array.isArray(d) ? proyekLembaga(d, x) : []; if (a.length) isiNanti(cek, pre + "Proy", bagB(`Proyek mitra (3W) ${angka(a.length)}`, `${tabelProyek(a.slice(0, 20))}<span class="ak-tanda">Data dilaporkan donor ke IATI, bisa tidak lengkap</span>`)); });
       ambilData("pendanaan").then(d => { const a = dlist(Array.isArray(d) ? d : d?.pendanaan).filter(y => y.lembaga_id === x.id); if (a.length) { const pr = a.filter(y => y.jenis_entri === "proyek"), sk = a.filter(y => y.jenis_entri !== "proyek"); isiNanti(cek, pre + "Dana", bagB(`Pendanaan ${angka(a.length)}`, (sk.length ? daftarBkr(sk.slice(0, 10).map(y => barisDana(y))) : "") + (pr.length ? gridProyek(pr.slice(0, 12).map(dariDana)) : ""))); } });
       ambilData("sistem_data").then(d => { const a = dlist(Array.isArray(d) ? d : d?.sistem).filter(y => y.lembaga_id === x.id); if (a.length) isiNanti(cek, pre + "Sd", bagB(`Sistem data ${angka(a.length)}`, daftarBkr(a.map(barisSd)))); });
@@ -1395,6 +1396,17 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       e.pub ? barisB("Izin PUB", `<b>${esc(e.pub.nomor || "")}</b>`, "", "tertulis di laman lembaga, belum dicek ke Kemensos") : "",
       e.badan_hukum ? barisB("Badan hukum", `<b>${esc(e.badan_hukum.sk)}</b>`, urlOk(e.badan_hukum.sumber_url), e.badan_hukum.catatan) : "", idn ? barisB("Identitas", `<span class="ak-pil">${idn}</span>`) : ""].join("");
     return r ? bagB("Izin dan integritas", `<div class="ak-bgrup">${r}</div>`) : "";
+  }
+  /* armada (kantor SAR) dan dana kebencanaan dari laporan tahunan lembaga filantropi (lembaga_ekstra, panen 31 Okt 2026) */
+  /* pos kemanusiaan umum (lebih luas dari bencana) ditulis dengan labelnya sendiri, tidak disebut dana bencana */
+  const kmn = v => { if (v == null) return ""; if (typeof v === "number") return `pos kemanusiaan (lebih luas dari bencana) <b>${esc(rpRingkas(v))}</b>`;
+    const n = v.nilai ?? v.nilai_rp ?? v.disalurkan ?? v.dihimpun; return n != null ? `${esc(v.label || "pos kemanusiaan (lebih luas dari bencana)")} <b>${esc(rpRingkas(n))}</b>` : ""; };
+  function kapLb(e) {
+    if (!e) return "";
+    const ar = dlist(e.armada), dn = dlist(e.dana).slice().sort((a, b) => String(b.tahun).localeCompare(String(a.tahun)));
+    const r = [ar.length ? barisB("Armada", ar.map(a => `<b>${esc([a.jumlah != null ? angka(a.jumlah) : "", a.jenis, a.nama, a.kelas].filter(Boolean).join(" "))}</b>`).join(", "), urlOk(ar[0].sumber_url)) : "",
+      ...dn.slice(0, 3).map(d => barisB(`Dana ${d.tahun || ""}`, [d.bencana_dihimpun != null ? `<b>${esc(rpRingkas(d.bencana_dihimpun))}</b> dihimpun untuk bencana` : "", d.bencana_disalurkan != null ? `<b>${esc(rpRingkas(d.bencana_disalurkan))}</b> disalurkan` : "", d.penerima != null ? `<b>${esc(angka(d.penerima))}</b> penerima manfaat` : "", d.bencana_dihimpun == null && d.total != null ? `total dihimpun <b>${esc(rpRingkas(d.total))}</b>` : "", kmn(d.kemanusiaan)].filter(Boolean).join(", "), urlOk(d.sumber_url), [d.jenis_angka, d.opini ? "opini " + d.opini : ""].filter(Boolean).join(", ")))].join("");
+    return r ? bagB("Kapasitas armada dan dana", `<div class="ak-bgrup">${r}</div>`) : "";
   }
   /* profil BPBD: kesiapan, kalaksa, kejadian 5 tahun, dokumen, wilayah, pakar dan lembaga setempat (bpbd_kapasitas, kalaksa, DIBI, risiko kecamatan) */
   function isiBpbd(x, cek, pre) {
@@ -2372,8 +2384,9 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     const pilW = [["lembaga", IK_GEDUNG, lbW.length, "lembaga"], ["pakar", IK_ORANG, pkW, "pakar"], ["bpbd", IK_TEL, bpW2, "BPBD"], ["strat", STAR_D, stW, "partner strategis"]].filter(r => r[2] > 0);
     B.push(bagW(`Ringkasan ${esc(wlNama)}`, rata != null || ev.length ? `<div class="ak-strip ak-wstrip" style="--n:4">${tiles.map(([ik, w, n, l, k]) => `<div title="${esc(k)}">${ikon(ik, w)}<span><b>${esc(n)}</b><small>${l}${k ? "" : ""}</small>${k ? "" : ""}</span></div>`).join("")}</div>
         ${evAll.length ? `<div class="ak-prgrid ak-evgrid">${evTop.map(([j, n]) => { const k = rJ(j), r = RUMPUN[k] || [], w = r[2] || "#6b7280"; return `<div class="ak-evb" title="${esc(j)}, ${angka(n)} kejadian"><span class="ak-evn">${ikon(r[1] || IK_BAR, w)}${esc(j)}</span><i class="ak-prb-b"><u style="width:${Math.max(3, n / evMx * 100).toFixed(1)}%;background:${w}"></u></i><b>${angka(n)}</b></div>`; }).join("")}${evSisa ? `<div class="ak-evb"><span class="ak-evn">${ikon(IK_BAR, "#6b7280")}Lainnya</span><i class="ak-prb-b"><u style="width:${Math.max(3, evSisa / evMx * 100).toFixed(1)}%;background:#6b7280"></u></i><b>${angka(evSisa)}</b></div>` : ""}</div>` : ""}
-        ${pilW.length ? `<div class="ak-pil ak-mps ak-wpil">${pilW.map(([k, ik, n, l]) => `<button type="button" class="ak-mp ak-mp-b" data-wl="${k}">${ikon(ik, "currentColor")}${angka(n)} ${l}</button>`).join("")}</div>` : ""}` : "", `indeks risiko kecamatan (${esc(tglID(rk?.hari))}, dirata-ratakan); penduduk WorldPop per kecamatan; kejadian ${esc(dibi?.sumber || "DIBI BNPB")}`));
-    B.push(...dayaWil(wd, pv, kab));
+        ${pilW.length ? `<div class="ak-pil ak-mps ak-wpil">${pilW.map(([k, ik, n, l]) => `<button type="button" class="ak-mp ak-mp-b" data-wl="${k}">${ikon(ik, "currentColor")}${angka(n)} ${l}</button>`).join("")}</div>` : ""}` : "", `<button type="button" class="ak-rbtn ak-rbtn-b ak-wlcetak" data-wlcetak="1">Unduh profil PDF</button> indeks risiko kecamatan (${esc(tglID(rk?.hari))}, dirata-ratakan); penduduk WorldPop per kecamatan; kejadian ${esc(dibi?.sumber || "DIBI BNPB")}`));
+    B.push(...dayaWil(wd, pv, kab, geoK));
+    wilCetak = {pv, kab, nama: wlNama, wd, rata, kls, pend, ev: ev.reduce((a, x) => a + (x.kejadian || 1), 0), evTop, kec: kec.length};
     const L = lbArr.filter(x => x.kategori !== "penerbit"), bp = L.filter(x => /bpbd/i.test(x.sub || "") || /^bpbd/i.test(x.nama)), bpW = bp.filter(x => x.prov === pv && (!kab || !x.kab || cocokKab(x.kab, kab) || /provinsi/i.test(x.nama)));
     const kartuBpbd = x => { const tels = strs(x.telepon), wa = strs(x.wa)[0], u = urlPeta(x), pt = u && (x.alamat || Number.isFinite(x.lat)), sm = dlist(x.sumber).find(sv => sv && urlOk(sv.url) && (sv.butir === "telepon" || sv.butir === "wa")), dom = sm ? hostDari2(urlOk(sm.url)) : "";
       return `<div class="ak-bp"><h3 class="ak-bpn">${esc(judulCase(x.nama))}</h3><small class="ak-lper">${/pusdalops/i.test(JSON.stringify(x.sumber || "") + (x.sub || "")) ? "Pusdalops 24 jam" : "Kantor"}</small>
@@ -2420,12 +2433,68 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     muatLambang().then(() => { if (tok !== renderWil.t) return; el.querySelector(".ak-rw > .ak-judulv")?.insertAdjacentHTML("afterbegin", lambangHtml(lambangUrl(pv, kab || ""), 48)); });
   }
   renderWil.t = 0;
+  /* PDF profil daerah (bahan rapat): halaman cetak bergaya pangantara, isi dari data yang sama dengan layar */
+  let wilCetak = null;
+  document.addEventListener("click", e => { if (!e.target.closest("[data-wlcetak]") || !wilCetak) return; e.stopPropagation(); cetakWil().catch(er => console.error(er)); });
+  async function cetakWil() {
+    const C = wilCetak, {pv, kab, wd} = C, o = kab ? dlist(wd?.kab).find(r => r.prov === pv && kkN(r.kab) === kkN(kab)) || {} : wd?.prov?.[pv] || {}, P = wd?.prov?.[pv] || {};
+    const th = Object.keys(o.apbd || {}).sort().reverse().find(t => o.apbd[t].BTT != null), a = th ? o.apbd[th] : {}, f = o.fasilitas || {}, ks = kab ? ksBaris(wd, pv, kab) : null;
+    const lb = lbArr.filter(x => x.kategori !== "penerbit" && x.prov === pv && (!kab || (x.kab && cocokKab(x.kab, kab)))).sort((x, y) => (y._skor || 0) - (x._skor || 0));
+    const bp = lb.filter(x => /^bpbd/i.test(x.nama) || /bpbd/i.test(String(x.sub || ""))), pk = semua.filter(o => provO(o) === pv).sort((x, y) => y[4] - x[4]).slice(0, 15);
+    const wib = new Date(Date.now() + 7 * 36e5), tanggal = wib.toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "long", year: "numeric"});
+    const sel = (l, v) => v == null || v === "" ? "" : `<tr><td>${esc(l)}</td><td class="n">${esc(v)}</td></tr>`, tb = (j, r) => r ? `<h2 class="sub">${esc(j)}</h2><table class="kv"><tbody>${r}</tbody></table>` : "";
+    const tabel = (j, kol, lebar, baris) => baris.length ? `<h2 class="sub">${esc(j)}</h2><table><colgroup>${lebar.map(w => `<col style="width:${w}%">`).join("")}</colgroup><thead><tr>${kol.map(k => `<th>${esc(k)}</th>`).join("")}</tr></thead><tbody>${baris.map((r, i) => `<tr><td class="c">${i + 1}</td>${r.map(c => `<td>${c}</td>`).join("")}</tr>`).join("")}</tbody></table>` : "";
+    const isi = tb("Ringkasan", sel("Indeks risiko (rata-rata kecamatan)", C.rata != null ? `${angka(Math.round(C.rata))} dari 100${C.kls ? ", " + kapital(String(C.kls)) : ""}` : null) + sel("Penduduk", C.pend ? angka(Math.round(C.pend)) + " jiwa" : null) + sel("Kecamatan", C.kec ? angka(C.kec) : null) + sel("Kejadian bencana tercatat DIBI", C.ev ? angka(C.ev) : null))
+      + (ks?.skor != null ? tb("Kesiapan daerah", sel("Skor kesiapan", `${angka(ks.skor)} dari 100`) + sel("Peringkat nasional", `${angka(ks.peringkat)} dari ${angka(wd.kesiapan.jumlah)}`) + sel(`Peringkat di ${provT(pv)}`, `${angka(ks.peringkat_prov)} dari ${angka(ks.jumlah_prov)}`) + sel("Kuadran", (KUADRAN[ks.kuadran] || [""])[0]) + KOMP_K.map(([k, l, ket]) => sel(`Komponen ${l.toLowerCase()} (${ket})`, ks.komp[k] == null ? null : `persentil ${angka(ks.komp[k])}`)).join("")) : "")
+      + tb(`Kapasitas fiskal ${th || ""}`, sel("Anggaran belanja tak terduga", a.BTT != null ? rpRingkas(a.BTT) : null) + sel("Realisasi BTT", a["BTT realisasi"] > 0 ? rpRingkas(a["BTT realisasi"]) : null) + sel("Belanja BPBD", a["belanja BPBD"] != null ? rpRingkas(a["belanja BPBD"]) : null) + sel("Total anggaran belanja daerah", a["total belanja"] != null ? rpRingkas(a["total belanja"]) : null))
+      + tb("Fasilitas kritis", sel("Rumah sakit", f.rs ? `${angka(f.rs)}${f.rs_tt ? `, ${angka(f.rs_tt)} tempat tidur` : ""}` : null) + sel("Puskesmas", f.puskesmas ? angka(f.puskesmas) : null) + sel("Bandara dan landasan", f.bandara ? angka(f.bandara) : null) + sel("Pelabuhan", f.pelabuhan ? angka(f.pelabuhan) : null) + sel("Gudang Bulog", f.gudang_bulog ? angka(f.gudang_bulog) : null) + sel("SPBU", f.spbu ? angka(f.spbu) : null) + sel("Menara BTS", f.bts ? angka(f.bts) : null))
+      + tb(`Infrastruktur ${provT(pv)}`, sel("Jalan nasional mantap", P.jalan?.nasional ? `${String(Math.round(((P.jalan.nasional.baik_pct || 0) + (P.jalan.nasional.sedang_pct || 0)) * 10) / 10).replace(".", ",")}%` : null) + sel("Jembatan nasional", P.jembatan ? angka(P.jembatan.jumlah) : null) + sel("Sekolah melapor SPAB", P.spab ? `${P.spab.persen}% dari ${angka(P.spab.total)}` : null))
+      + tabel("BPBD dan nomornya", ["No", "BPBD", "Telepon", "WA", "Email"], [4, 40, 20, 16, 20], bp.map(x => [`<span class="nm">${esc(judulCase(x.nama))}</span>`, esc(strs(x.telepon).slice(0, 2).map(telF).join(", ")), esc(strs(x.wa).slice(0, 1).map(telF).join(", ")), `<span class="em">${esc(strs(x.email).slice(0, 1).join(", "))}</span>`]))
+      + tabel("Lembaga setempat", ["No", "Lembaga", "Kategori", "Kontak"], [4, 46, 18, 32], lb.filter(x => !bp.includes(x)).slice(0, 25).map(x => [`<span class="nm">${esc(x.nama)}</span>`, esc(KAT[x.kategori]?.[0] || x.kategori || ""), `<span class="em">${kontakCetak(x)}</span>`]))
+      + tabel(`Pakar di ${provT(pv)}`, ["No", "Pakar", "Kampus", "h-index"], [4, 40, 44, 12], pk.map(o => [`<span class="nm">${esc(o[1])}</span>`, esc(o[2]), `<span class="n">${angka(o[4] || 0)}</span>`]));
+    const html = `<!doctype html><html lang="id"><head><meta charset="utf-8"><title>Profil ${esc(C.nama)}</title><style>${CSS_CETAK.replace("size:A4 landscape", "size:A4 portrait").replace("Sumber data: OpenAlex, SINTA, ORCID", "Sumber data: DJPK, SIRS Kemenkes, OpenStreetMap, PU, DIBI BNPB, direktori lembaga dan pakar")}${CSS_CETAK_TBL}
+h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.kv td:first-child{width:62%;color:#3d4f6b}table.kv td.n{text-align:right;font-weight:700}td .n{font-variant-numeric:tabular-nums}</style></head><body>
+<div class="band"><div><div class="br">Direktori Jaringan Kebencanaan, profil daerah</div><h1>${esc(kab ? `${C.nama}, ${provT(pv)}` : C.nama)}</h1></div><dl><div><dt>Dicetak</dt><dd>${esc(tanggal)}</dd></div></dl></div><div class="aksen"></div>${isi}</body></html>`;
+    return cetakHalaman(html);
+  }
+  /* skor kesiapan dan peta kesenjangan (wilayah_daya.kesiapan, rumus di scripts/akademisi/sambung_panen.mjs kesiapanDaerah) */
+  const KUADRAN = {prioritas: ["Risiko tinggi, kesiapan rendah", "#c92a2a"], siaga: ["Risiko tinggi, kesiapan memadai", "#e8590c"], perkuat: ["Risiko rendah, kesiapan rendah", "#e0a100"], aman: ["Risiko rendah, kesiapan memadai", "#2b8a3e"]};
+  const KOMP_K = [["fiskal", "Fiskal", "anggaran BTT per jiwa"], ["faskes", "Faskes", "tempat tidur RS dan puskesmas per penduduk"], ["lembaga", "Lembaga", "lembaga direktori per 100.000 jiwa"], ["pakar", "Pakar", "pakar di provinsi per 1 juta jiwa"]];
+  /* kunci kab sama persis dengan kunciKab di scripts/akademisi/sambung_panen.mjs ("Kota Administrasi X" = "Kota X", kurung dan spasi dibuang) */
+  const kkN = n => { n = String(n || "").replace(/^kota\s+adm(inistrasi|\.)?\s+/i, "Kota "); return (/^kota\b/i.test(n) ? "K:" : "") + nrm(n.replace(/\(.*?\)/g, " ").replace(/^(kabupaten|kab\.?|kota|administrasi)\s+/i, "")).replace(/ /g, ""); };
+  const ksBaris = (wd, pv, kab) => wd?.kesiapan?.baris?.[pv + "|" + kkN(kab)] || null;
+  const ksNama = r => r.nama_rk || String(r.kab || "").replace(/^Kabupaten\s+/i, "");
+  function kesiapanWil(wd, pv, kab, geoK) {
+    const K = wd?.kesiapan; if (!K?.baris) return "";
+    const SUMBER = "skor kesiapan direktori: rata-rata persentil fiskal (BTT per jiwa, DJPK), faskes (tempat tidur RS SIRS dan puskesmas per penduduk), lembaga direktori per penduduk, dan pakar di provinsi per penduduk; risiko = indeks risiko kecamatan dirata-ratakan; kesenjangan = persentil risiko dikurangi persentil kesiapan";
+    if (kab) { const r = ksBaris(wd, pv, kab); if (!r || r.skor == null) return "";
+      const [lq, wq] = KUADRAN[r.kuadran] || ["", "#6b7280"];
+      const bar = KOMP_K.map(([k, l, ket]) => r.komp[k] == null ? "" : `<div title="${esc(ket)}"><span>${esc(l)}</span><i><u style="width:${Math.max(3, r.komp[k])}%;background:${r.komp[k] < 34 ? "#c92a2a" : r.komp[k] < 67 ? "#e0a100" : "#2b8a3e"}"></u></i><b>${angka(r.komp[k])}</b></div>`).join("");
+      return bagW("Kesiapan daerah", ubinW([[IK_BAR, wq, `${angka(r.skor)} dari 100`, "Skor kesiapan"], [IK_BAR, "#1c3d78", `${angka(r.peringkat)} dari ${angka(K.jumlah)}`, "Peringkat nasional"],
+        [IK_BAR, "#1c3d78", `${angka(r.peringkat_prov)} dari ${angka(r.jumlah_prov)}`, `Peringkat di ${provT(pv)}`], [IK_BAR, wq, r.kesenjangan == null ? null : (r.kesenjangan > 0 ? "+" : "") + angka(r.kesenjangan), lq || "Kesenjangan"]])
+        + `<div class="ak-bpk-b ak-ks-b">${bar}</div>`, SUMBER + "; komponen dalam persentil 0 sampai 100 terhadap semua kab/kota"); }
+    const rows = Object.values(K.baris).filter(r => r.prov === pv && r.skor != null);
+    if (!rows.length) return "";
+    const pr = rows.filter(r => r.kuadran === "prioritas").sort((a, b) => b.kesenjangan - a.kesenjangan);
+    const peta = geoK?.features?.length ? petaKesenjangan(geoK, wd, pv) : "";
+    const leg = Object.entries(KUADRAN).filter(([q]) => rows.some(r => r.kuadran === q)).map(([q, [l, w]]) => `<span class="ak-ks-l"><i style="background:${w}"></i>${esc(l)} <b>${angka(rows.filter(r => r.kuadran === q).length)}</b></span>`).join("");
+    const daftar = pr.length ? `<div class="ak-bpt"><table><thead><tr><th>Kab/kota</th><th>Skor kesiapan</th><th>Indeks risiko</th><th>Kesenjangan</th></tr></thead><tbody>${pr.slice(0, 12).map(r => `<tr><td><button type="button" class="ak-btn0 ak-ks-k" data-wlbuka="${esc(pv + "|" + ksNama(r))}">${esc(r.kab)}</button></td><td class="ak-n">${angka(r.skor)}</td><td class="ak-n">${String(r.risiko).replace(".", ",")}</td><td class="ak-n">+${angka(r.kesenjangan)}</td></tr>`).join("")}</tbody></table></div>` : "";
+    return bagW("Peta kesenjangan kesiapan", `${peta}<div class="ak-ks-leg">${leg}</div>${daftar}`, SUMBER + "; kuadran memakai median nasional; arahkan kursor ke peta untuk rincian, klik untuk membuka kab/kota", rows.length);
+  }
+  function petaKesenjangan(geo, wd, pv) {
+    const fs = geo.features.filter(f => f.geometry), bb = fs.reduce((a, f) => { const b = bbox(f); return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; }, [180, 90, -180, -90]);
+    const W = 640, k = W / Math.max(bb[2] - bb[0], .01), H = Math.min(460, Math.max(160, (bb[3] - bb[1]) * k)), kk = Math.min(k, H / Math.max(bb[3] - bb[1], .01));
+    const pt = (lo, la) => `${((lo - bb[0]) * kk).toFixed(1)},${((bb[3] - la) * kk).toFixed(1)}`;
+    const path = g => (g.type === "Polygon" ? [g.coordinates] : g.coordinates).map(p => p.map(r => "M" + r.map(c => pt(c[0], c[1])).join("L") + "Z").join("")).join("");
+    return `<svg class="ak-peta ak-ks-peta" viewBox="0 0 ${W} ${Math.round(H)}" role="img" aria-label="Peta kesenjangan kesiapan per kab/kota">${fs.map(f => { const nm = f.properties.kab, r = ksBaris(wd, pv, nm), [l, w] = KUADRAN[r?.kuadran] || ["Data belum lengkap", "#ced4da"];
+      return `<path d="${path(f.geometry)}" fill="${w}" fill-opacity=".85" stroke="#fff" stroke-width=".8" data-wlbuka="${esc(pv + "|" + nm)}"><title>${esc(nm)}: ${esc(l)}${r?.skor != null ? `, skor kesiapan ${r.skor}, indeks risiko ${String(r.risiko).replace(".", ",")}` : ""}</title></path>`; }).join("")}</svg>`;
+  }
   /* kapasitas daerah dari panen data publik 30 Okt 2026 (wilayah_daya di R2): APBD DJPK, IKD/IRB, fasilitas kritis, jalan, jembatan, SPAB */
   const ubinW = a => { a = a.filter(r => r[2] != null && r[2] !== ""); return a.length ? `<div class="ak-strip ak-wstrip ak-daya">${a.map(([ik, w, n, l]) => `<div>${ikon(ik, w)}<span><b>${esc(n)}</b><small>${esc(l)}</small></span></div>`).join("")}</div>` : ""; };
   const pctW = v => v == null ? null : Number(v).toLocaleString("id-ID", {maximumFractionDigits: 1}) + "%";
-  function dayaWil(wd, pv, kab) {
+  function dayaWil(wd, pv, kab, geoK) {
     if (!wd) return [];
-    const kw = n => kunciKab(String(n || "").replace(/^kota\s+adm(inistrasi|\.)?\s+/i, "Kota ")).replace(/ /g, ""), sama = (a, b) => kw(a) === kw(b), P = wd.prov?.[pv] || {};
+    const sama = (a, b) => kkN(a) === kkN(b), P = wd.prov?.[pv] || {};
     const o = kab ? dlist(wd.kab).find(r => r.prov === pv && sama(r.kab, kab)) || {} : P, H = [];
     const th = Object.keys(o.apbd || {}).sort().reverse().find(t => o.apbd[t].BTT != null || o.apbd[t]["total belanja"] != null), a = th ? o.apbd[th] : {};
     const ikd = dlist(o.kinerja).find(k => /^IKD/.test(k.indikator)), irb = dlist(o.kinerja).find(k => /^IRB/.test(k.indikator)), dd = o.dana_desa && Object.entries(o.dana_desa).sort().pop();
@@ -2434,9 +2503,15 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       [IK_UANG, "#2b8a3e", dd ? rpRingkas(dd[1]) : null, `Pagu Dana Desa ${dd?.[0] || ""}, semua penggunaan`], [IK_BAR, "#7048e8", ikd ? String(ikd.nilai).replace(".", ",") : null, `Indeks Ketahanan Daerah ${ikd?.tahun || ""}${ikd?.kelas ? ", " + ikd.kelas : ""}`],
       [IK_BAR, "#862e9c", irb ? String(irb.nilai).replace(".", ",") : null, `Indeks Risiko Bencana ${irb?.tahun || ""}`]]);
     if (fis) H.push(bagW("Kapasitas fiskal dan ketahanan", fis, `APBD dari Portal Data SIKD DJPK Kemenkeu${o.apbd_sumber ? " " + cip(o.apbd_sumber) : ""}; Dana Desa dari TKDD DJPK; IKD dan IRB dari dokumen BNPB${ikd?.sumber_url ? " " + cip(ikd.sumber_url) : ""}`));
+    const ks = kesiapanWil(wd, pv, kab, geoK); if (ks) H.push(ks);
+    const bh = dlist(o.bahaya).filter(b => b.indeks != null).sort((a, b) => b.indeks - a.indeks), bhMx = bh[0]?.indeks || 1, KLS_W = {tinggi: "#c92a2a", sedang: "#e0a100", rendah: "#2b8a3e"};
+    if (bh.length) H.push(bagW("Risiko per jenis bencana", `<div class="ak-bpk-b ak-ks-b">${bh.map(b => `<div title="${esc(kapital(b.jenis))}: skor ${esc(String(b.indeks).replace(".", ","))}${b.kelas ? ", kelas " + esc(b.kelas) : ""}"><span>${esc(kapital(b.jenis))}</span><i><u style="width:${Math.max(3, b.indeks / bhMx * 100).toFixed(1)}%;background:${KLS_W[b.kelas] || "#6b7280"}"></u></i><b>${esc(String(Math.round(b.indeks * 10) / 10).replace(".", ","))}</b></div>`).join("")}</div>`,
+      `skor Indeks Risiko Bencana Indonesia per jenis bencana, InaRISK BNPB ${cip(bh[0].sumber_url)}; warna menurut kelas risiko (merah tinggi, kuning sedang, hijau rendah)`));
     const f = o.fasilitas || {}, fas = ubinW([[IK_GEDUNG, "#c92a2a", f.rs ? angka(f.rs) : null, `Rumah sakit${f.rs_tt ? `, ${angka(f.rs_tt)} tempat tidur` : ""}`], [IK_GEDUNG, "#e8590c", f.puskesmas ? angka(f.puskesmas) : null, "Puskesmas"],
       [IKON_PIN, "#1c7ed6", f.bandara ? angka(f.bandara) : null, "Bandara dan landasan"], [IKON_PIN, "#0b7285", f.pelabuhan ? angka(f.pelabuhan) : null, "Pelabuhan"], [IK_GEDUNG, "#2b8a3e", f.gudang_bulog ? angka(f.gudang_bulog) : null, "Gudang Bulog"],
-      [IKON_PIN, "#495057", f.spbu ? angka(f.spbu) : null, "SPBU"], [IKON_PIN, "#7048e8", f.bts ? angka(f.bts) : null, "Menara BTS"]]);
+      [IKON_PIN, "#495057", f.spbu ? angka(f.spbu) : null, "SPBU"], [IKON_PIN, "#7048e8", f.bts ? angka(f.bts) : null, "Menara BTS"],
+      [IK_TEL, "#c92a2a", o.psc119 ? (dlist(o.psc119.telepon)[0] ? telF(dlist(o.psc119.telepon)[0]) : "Ada") : null, `PSC 119${o.psc119?.status ? ", " + o.psc119.status : ""}`],
+      [IK_GEDUNG, "#e8590c", o.damkar?.pos != null ? angka(o.damkar.pos) : null, `Pos damkar${o.damkar?.armada != null ? `, ${angka(o.damkar.armada)} mobil pemadam` : ""}${o.damkar?.tahun ? ` (${o.damkar.tahun})` : ""}`]]);
     if (fas) H.push(bagW("Fasilitas kritis", fas, "RS dan tempat tidur dari SIRS Kemenkes; puskesmas dari daftar Kemenkes; bandara, pelabuhan, gudang Bulog, SPBU, dan BTS dari OpenStreetMap (cakupan SPBU, BTS, dan gudang Bulog belum lengkap, jadi angkanya batas bawah)"));
     const jn = P.jalan?.nasional, jp = P.jalan?.provinsi, jb = P.jembatan, sp = P.spab, jbR = jb?.kondisi ? ["rusak", "kritis", "runtuh_putus"].reduce((t, k) => t + (jb.kondisi[k] || 0), 0) : null;
     const inf = ubinW([[IK_BAR, "#2b8a3e", jn ? pctW((jn.baik_pct || 0) + (jn.sedang_pct || 0)) : null, `Jalan nasional mantap ${jn?.tahun || ""}, ${jn ? angka(Math.round(jn.total_km)) : ""} km`], [IK_BAR, "#c92a2a", jn ? pctW(jn.rusak_berat_pct) : null, "Jalan nasional rusak berat"],
@@ -2930,9 +3005,27 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     const src = sumberRapi(dlist(x.sumber).map(sv => sv?.url));
     bukaSheet("detail", kep, () => bag("Ringkasan", (skOk(x.uraian) ? `<p class="ak-rata">${esc(x.uraian)}</p>` : "") + (f.length ? `<dl class="ak-lbr">${f.map(([k, v]) => `<div><dt>${k}</dt><dd>${k === "Besaran" ? kapital(v) : esc(kapital(v))}</dd></div>`).join("")}</dl>` : ""))
       + bag("Cara mengajukan", langkah.length ? `<ol class="ak-langkah">${langkah.map(t => `<li>${esc(t)}</li>`).join("")}</ol>` : "", "akSkCara") + bag("Kontak", kon ? `<div class="ak-lkontak">${kon}</div>` : "")
-      + bag("Contoh penerima di Indonesia", cp.length ? daftarBkr(cp) : "") + bag("Proyek terkait dari pemberi yang sama", rel.length ? gridProyek(rel.map(dariDana)) : "")
+      + '<div id="akSkCocok"></div>' + bag("Contoh penerima di Indonesia", cp.length ? daftarBkr(cp) : "") + bag("Proyek terkait dari pemberi yang sama", rel.length ? gridProyek(rel.map(dariDana)) : "")
       + bag("Sumber", src) + (x.diperiksa ? `<p class="ak-lper ak-skd-p">Diperiksa ${esc(tglID(x.diperiksa))}</p>` : ""));
-    $("akSheet").dataset.k = ""; terhubungDi("D:" + x.id);
+    $("akSheet").dataset.k = ""; terhubungDi("D:" + x.id); const tk = tokenS;
+    ambilData("wilayah_daya").then(wd => { const h = cocokSkema(x, wd); if (h) isiNanti(() => tk === tokenS, "akSkCocok", h); });
+  }
+  /* siapa yang paling cocok mengajukan (permintaan pemilik 31 Okt 2026): pakar menurut rumpun dan kata kunci di topiknya, kampus asal pakar itu,
+     lembaga sejenis, dan BPBD di kab/kota kuadran prioritas (risiko tinggi, kesiapan rendah) bila sasarannya pemerintah daerah */
+  function cocokSkema(x, wd) {
+    const rp = strs(x.rumpun), kw = [...strs(x.kata_kunci), ...String(x.bidang || "").split(/[,;]/)].map(t => nrm(t)).filter(t => t.length >= 4), sas = nrm(strs(x.sasaran).join(" ") + " " + strs(x.syarat_pemohon).join(" "));
+    if (!rp.length && !kw.length) return "";
+    const skor = o => { if (!provO(o)) return 0; const top = nrm(strs(o[8]).join(" ")), h = kw.filter(t => top.includes(t)).length, r = strs(o[3]).filter(z => rp.includes(z)).length; return h || (r && !kw.length) ? 3 * h + r + Math.log1p(o[4] || 0) * .3 : 0; };   /* hanya pakar berkampus Indonesia; kata kunci lebih berat dari rumpun */
+    const pk = semua.map(o => [o, skor(o)]).filter(r => r[1] > 0).sort((a, b) => b[1] - a[1]), H = [];
+    if (pk.length) H.push(`<h4 class="ak-dpgrup ak-katj">${ikon(IK_ORANG, "currentColor")}<b>Pakar</b><small class="ak-hit">${angka(pk.length)}</small></h4><ol class="ak-sdaftar ak-pkl ak-pkl-2s">${pk.slice(0, 6).map(([o]) => barisPk(o)).join("")}</ol>`);
+    if (/kampus|universit|perguruan|akademi|peneliti|research/.test(sas) || !sas) { const km = new Map(); pk.slice(0, 80).forEach(([o]) => km.set(o[2], (km.get(o[2]) || 0) + 1));
+      const top = [...km].sort((a, b) => b[1] - a[1]).slice(0, 6); if (top.length) H.push(`<h4 class="ak-dpgrup ak-katj">${ikon(IK_KAMPUS, "currentColor")}<b>Kampus</b></h4><div class="ak-pil">${top.map(([k, n]) => `<button type="button" class="ak-mp ak-mp-b" data-kp="${esc(k)}">${esc(k)} <b>${angka(n)}</b></button>`).join("")}</div>`); }
+    if (/lsm|ngo|masyarakat sipil|organisasi|civil|yayasan|komunitas/.test(sas)) { const lb = lbArr.filter(y => /lsm|kerelawanan|keagamaan|jejaring/.test(y.kategori) && strs(y.rumpun).some(r => rp.includes(r))).sort((a, b) => (b._skor || 0) - (a._skor || 0)).slice(0, 6);
+      if (lb.length) H.push(`<h4 class="ak-dpgrup ak-katj">${ikon(IK_GEDUNG, "currentColor")}<b>Lembaga</b></h4>${daftarBkr(lb.map(barisLb))}`); }
+    if (/pemda|pemerintah daerah|local government|subnational/.test(sas) && wd?.kesiapan?.baris) { const pr = Object.values(wd.kesiapan.baris).filter(r => r.kuadran === "prioritas").sort((a, b) => b.kesenjangan - a.kesenjangan).slice(0, 8);
+      const bp = pr.map(r => lbArr.find(y => /^bpbd/i.test(y.nama) && y.prov === r.prov && y.kab && cocokKab(y.kab, ksNama(r)))).filter(Boolean);
+      if (bp.length) H.push(`<h4 class="ak-dpgrup ak-katj">${ikon(IK_TEL, "currentColor")}<b>BPBD di daerah prioritas</b></h4>${daftarBkr(bp.map(barisLb))}`); }
+    return H.length ? `<section class="ak-dbagian"><div class="ak-disi"><h3>Cocok mengajukan</h3>${H.join("")}<p class="ak-lper">Dicocokkan dari kata kunci dan rumpun skema terhadap topik pakar berkampus di Indonesia, kampus asal pakar itu, lembaga sejenis, dan BPBD di kab/kota berisiko tinggi dengan kesiapan rendah.</p></div></section>` : "";
   }
   /* grafik ringkasan bisa diklik: daftar butir kelompok dengan penjelasannya, plus tombol saring */
   let PRE = null, GRUPAKTIF = null;
@@ -3144,7 +3237,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     const pk = e.target.closest("[data-pk]"); if (pk) { const o = peta.get(pk.dataset.pk); if (o) buka(o); return; }
     const tks = e.target.closest("[data-tks]"); if (tks) { const x = tkArr.find(y => y.id === tks.dataset.tks); if (x) sheetTk(x); return; }
     const kr = e.target.closest("[data-kor]"); if (kr) { const w = kr.closest(".ak-dkepala, .ak-bn, .ak-disi, #akDrIsi, #akSIsi")?.querySelector(".ak-korw") || document.querySelector("#akDrawer:not([hidden]) .ak-korw, #akSheet:not([hidden]) .ak-korw"); if (w) w.innerHTML = w.innerHTML ? "" : formKor(...kr.dataset.kor.split(/:(.*)/s)); return; }
-    const wl = e.target.closest("[data-wl]"); if (wl) { WL.kode = wl.dataset.wl; delete sudah.wilayah; tutup(); tutupSheet(); tampil("wilayah"); return; }
+    const wl = e.target.closest("[data-wl],[data-wlbuka]"); if (wl) { WL.kode = wl.dataset.wlbuka || wl.dataset.wl; delete sudah.wilayah; tutup(); tutupSheet(); tampil("wilayah"); return; }
     const bt = e.target.closest("[data-brt]"); if (bt) { lihatBerita(bt.dataset.brt); return; }
     const rw = e.target.closest("[data-rw]"); if (rw) { const [p, k] = rw.dataset.rw.split("|"); tutup(); setWilRiset(p, k || ""); tampil("riset"); }
   });
