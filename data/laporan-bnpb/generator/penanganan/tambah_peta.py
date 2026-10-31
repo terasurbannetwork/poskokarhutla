@@ -121,7 +121,7 @@ i = nid()
 out.append(f'<p:pic><p:nvPicPr><p:cNvPr id="{i}" name="Peta hotspot 20 Okt"/><p:cNvPicPr><a:picLocks noChangeAspect="1"/></p:cNvPicPr><p:nvPr/></p:nvPicPr>'
            f'<p:blipFill><a:blip r:embed="rIdPeta"/><a:stretch><a:fillRect/></a:stretch></p:blipFill><p:spPr><a:xfrm><a:off x="{X0}" y="{Y0}"/><a:ext cx="{W}" cy="{H}"/></a:xfrm><a:prstGeom prst="rect"><a:avLst/></a:prstGeom></p:spPr></p:pic>')
 # 4) legenda di bawah panel, posisi & ukuran sama dengan slide tabel
-LEG = [('ellipse', 'D9600B', 'Ukuran lingkaran sebanding jumlah titik panas'), ('rect', '051C2C', 'Provinsi dengan titik panas'), ('rect', 'DCE1E7', 'Tanpa titik panas'),
+LEG = [('ellipse', 'D9600B', 'Ukuran lingkaran sebanding jumlah hotspot'), ('rect', '051C2C', 'Provinsi dengan hotspot'), ('rect', 'DCE1E7', 'Tanpa hotspot'),
        ('rect', 'D9600B', 'naik dari hari sebelumnya'), ('rect', '2F86D1', 'turun dari hari sebelumnya')]
 if BANJIR:
     LEG = [('ellipse', '2F6FB5', 'Ukuran lingkaran sebanding kecamatan Siaga atau Awas banjir'), ('rect', '051C2C', 'Provinsi dengan kecamatan Siaga atau Awas'),

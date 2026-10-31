@@ -1,5 +1,17 @@
 # Generator laporan BNPB
 
+## Semua PPT lewat deck.py (pemilik 31 Okt 2026)
+
+"Kalo bentuknya dalam ppt semuanya harus pasti ke deck.py." Generator tetap menghitung data dan menggambar slide isi;
+`lewat_deck.py` lalu membingkai ulang berkasnya dengan mesin deck BNPB (`~/.claude/skills/ppt-konsultan/bnpb/scripts/deck.py`,
+atau setel `DECK_BNPB`): sampul dan penutup templat terbaru, pita kaki navy, warna dipaskan ke palet, penanda bagian, dan
+gerbang QA deck.py. Format di `deck.py` (`FORMAT`): `harian`, `penanganan`, `daerah`, `kajian`.
+
+- `harian.py` sudah lewat deck.py (slide 1 jadi sampul, "Terima kasih" jadi penutup, sisanya slide `impor`).
+- `penanganan.py` BELUM: templatnya memakai huruf 4,5 pt (batas deck.py 6 pt), perlu ditata ulang dulu.
+- Mesin tanpa skill (Windows) berhenti dengan pesan jelas; jalankan langkah akhir di Mac yang punya skill.
+- Gerbang QA deck.py GAGAL = berkas tetap dibuat, proses berhenti; baca `qa/` sebelum menyerahkan.
+
 ## Bahan Pusdalops di layar (/laporan-bnpb)
 
 Sejak 25 Okt 2026 bahan harian Dit. Koordalops juga bisa dimasukkan lewat layar, tanpa menjalankan

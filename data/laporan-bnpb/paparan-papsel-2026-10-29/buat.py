@@ -119,7 +119,7 @@ for i in (1, 2, 3):
     S[i].T('22 Okt 2026, 23.00 WIB', CUT)
     S[i].T('*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).', '*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS). 24 Okt ditandai celah lintasan satelit di FIRMS: titik hari itu bisa terlalu rendah.')
 S[4].T('*Data berdasarkan Geographic Information System (GIS) dengan satelit NASA (FIRMS: VIIRS dan MODIS).', '*Status banjir dan longsor serta hujan 3 hari terbesar (jendela 29 Okt–3 Nov): sistem pantau banjir kita dari prakiraan hujan '
-       'Open-Meteo. Kejadian: DIBI BNPB 2008–2025. Hujan dan angin: WA BMKG 29 Okt.')
+       'Open-Meteo. Kejadian: DIBI BNPB 2008–2025. Hujan dan angin: WA BMKG 29 Okt. Kecamatan: 80 berbatas di peta BIG; Tomor Birip dan Sor Ep (Asmat) belum berbatas, ikut distrik induk.')
 
 # ================================================================== SLIDE 1: provinsi
 s1 = S[1]

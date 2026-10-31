@@ -364,20 +364,20 @@ class Deck:
         # pemilik 27 Okt: daftar memuat semua bencana yang ditangani, bukan karhutla saja; jenis terbanyak diringkas satu baris bila tak muat
         lain = [x for x in s.KR + s.LN if x['tangani']]
         baris = [('kh', x) for x in sorted(s.KH_T, key=lambda x: -x['sat']['sisa'])] + [('satu', x) for x in lain]
-        MAKS = (5300000 - 3840480) // 164592
+        MAKS = (5250000 - 3840480) // 164592
         while len(baris) > MAKS:
             hit = Counter(x['jenis'] for k, x in baris if k == 'satu')
             if not hit or hit.most_common(1)[0][1] < 2: break
             j = hit.most_common(1)[0][0]; xs = [x for k, x in baris if k == 'satu' and x['jenis'] == j]
             i = next(n for n, (k, x) in enumerate(baris) if k == 'satu' and x['jenis'] == j)
             baris = [b for b in baris if not (b[0] == 'satu' and b[1]['jenis'] == j)]; baris.insert(i, ('grup', xs))
-        MAKS2 = (5300000 - 3840480) // 128016   # 30 Okt: 13 karhutla + 5 grup bertumpuk; baris >= 1,28 juta EMU, karhutla sisa terkecil digabung
+        MAKS2 = (5250000 - 3840480) // 128016   # 30 Okt: 13 karhutla + 5 grup bertumpuk; baris >= 1,28 juta EMU, karhutla sisa terkecil digabung
         if s.LAMPIRAN and len(baris) > MAKS2:
             kh = [b for b in baris if b[0] == 'kh']; sisa_b = len(baris) - len(kh); simpan = max(MAKS2 - sisa_b - 1, 3)
             if len(kh) > simpan + 1:
                 baris = kh[:simpan] + [('khgrup', [x for _, x in kh[simpan:]])] + [b for b in baris if b[0] != 'kh']
         o += s.garis(8668512, 3557016, 2809951, 'E5E7EB') + s.tx(8668512, 3621024, 2864815, 182880, [f'BENCANA DALAM PENANGANAN ({s.N_TOT - s.N_SEL})'], sz=750, b=True, c=MERAH, spc=100)
-        rp = min(164592, (5300000 - 3840480) // max(1, len(baris))); XE = 11180000   # ujung kanan angka pil; satuan terpanjang ("rumah") masih di dalam pil
+        rp = min(164592, (5250000 - 3840480) // max(1, len(baris))); XE = 11180000   # ujung kanan angka pil; satuan terpanjang ("rumah") masih di dalam pil
         def ringkas(xs):
             a = {m: sum(x['angka'].get(m, 0) for x in xs) for m in ('kk', 'rumah', 'rumah_dampak', 'mengungsi', 'jiwa', 'ha')}
             ha = f0(a['ha']) if a['ha'] == int(a['ha']) else str(round(a['ha'], 1)).replace('.', ',')   # TPA 28 Okt: ±15,5 ha, bukan "penanganan"
@@ -918,7 +918,7 @@ class Deck:
             F[f'ppt/slides/slide{i}.xml'] = (sk[:a] + ''.join(simpan) + jd + body + sk[b:]).encode()
             rel = F[f'ppt/slides/_rels/slide{i}.xml.rels'].decode()
             tetap = ''.join(r for r in re.findall(r'<Relationship [^>]*/>', rel) if 'Id="rId1"' in r or '/image"' not in r)
-            nama = lambda p: 'h-' + os.path.relpath(p, s.ke).replace('/', '-')
+            nama = lambda p: 'h-' + os.path.relpath(p, s.ke).replace(os.sep, '-').replace('/', '-')   # Windows: os.sep '\\' bikin nama bagian zip rusak (31 Okt)
             F[f'ppt/slides/_rels/slide{i}.xml.rels'] = ('<?xml version="1.0" encoding="UTF-8" standalone="yes"?><Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">' + tetap
                 + ''.join(f'<Relationship Id="{r}" Type="http://schemas.openxmlformats.org/officeDocument/2006/relationships/image" Target="../media/{nama(p)}"/>' for p, r in s.MED.items()) + '</Relationships>').encode()
             for p in s.MED: F[f'ppt/media/{nama(p)}'] = open(p, 'rb').read()
@@ -931,7 +931,7 @@ class Deck:
             rel = F['ppt/slides/_rels/slide3.xml.rels'].decode()
             # 29 Okt: catatan slide 3 tidak ikut disalin; dua slide berbagi satu notesSlide = PowerPoint minta perbaiki berkas
             keep = ''.join(r for r in re.findall(r'<Relationship [^>]*/>', rel) if ('Id="rId1"' in r or '/image"' not in r) and '/notesSlide"' not in r)
-            nama = lambda p: 'h-' + os.path.relpath(p, s.ke).replace('/', '-')
+            nama = lambda p: 'h-' + os.path.relpath(p, s.ke).replace(os.sep, '-').replace('/', '-')   # Windows: os.sep '\\' bikin nama bagian zip rusak (31 Okt)
             if catatan:   # 30 Okt: catatan pembicara sendiri (bukan berbagi notesSlide3, itu membuat PowerPoint minta perbaiki berkas)
                 nx = re.sub(r'<p:extLst>.*?</p:extLst>', '', F['ppt/notesSlides/notesSlide3.xml'].decode(), flags=re.S).replace('<a:t>3</a:t>', f'<a:t>{hal}</a:t>')
                 par = ''.join(f'<a:p><a:r><a:rPr lang="id-ID" dirty="0"/><a:t>{escape(b)}</a:t></a:r></a:p>' if b else '<a:p><a:endParaRPr lang="id-ID"/></a:p>' for b in catatan)
@@ -1017,7 +1017,11 @@ def utama():
         subprocess.run(['node', os.path.join(DI, 'harian_ikon.mjs'), ke], check=True, stdout=subprocess.DEVNULL)
     nama = os.path.join(os.path.abspath(g.out), f'Laporan Kejadian Bencana Harian {tanggal:%d%m%y}.pptx')
     dk = Deck(ke, D, wa, w, tanggal, jam); dk.bangun(g.templat, nama)
-    import pdf; pdf.ke_pdf(nama, os.path.abspath(g.out))   # soffice, atau PowerPoint di Windows
+    # semua PPT lewat deck.py (pemilik 31 Okt 2026): sampul, penutup, pita kaki navy, palet, QA dari mesin deck BNPB
+    import lewat_deck
+    mulai = dt.datetime.strptime(wa['mulai'], '%Y-%m-%d %H.%M'); sampai = dt.datetime.strptime(wa['sampai'], '%Y-%m-%d %H.%M')
+    jm = lambda t: f'{t.day} {BULAN[t.month - 1]} {t.year}, {t:%H.%M}'
+    lewat_deck.bingkai(nama, 'harian', 'Laporan Kejadian Bencana Harian', f'Periode {jm(mulai)} sampai {jm(sampai)} WIB', tanggal)
     print('ok', nama, '| cut-off', D['cutoff'], '| hari data', D['hari'], '| kejadian', dk.N_TOT, 'karhutla', len(dk.KH), 'ditangani', len(dk.KH_T),
           'perlu perhatian', len(dk.SER), 'selesai', dk.N_SEL, '| Prioritas ditambah', D['prioritas_baru'])
 
