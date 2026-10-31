@@ -42,6 +42,12 @@ Satu M0, dua hipotesis, dua kontras utama:
   ulang atas sel valid. Bila semua sel kabupaten nodata pada suatu hari, baris dikeluarkan dari SEMUA model; bila semua sel
   hulu nodata, `hu*` dihitung hilang dan baris juga dikeluarkan dari semua model. Kabupaten yang semua selnya nodata permanen
   dikeluarkan dari semua kontras dan tidak diganti; daftar dan jumlah sel nodata per kabupaten disidik.
+- **Bulan yang belum ada di server (dicek 1 Nov 2026):** listing p25 tidak memuat 2025-05, 2026-04, dan 2026-05. Hari-hari
+  itu mengikuti aturan hari hilang (dikeluarkan dari semua model; 2025-05 jatuh di validasi). Tidak diisi dari p05 atau
+  sumber lain. Untuk Uji A, aturan kelengkapan manifest di §4 berlaku: bila 2026-04 dan 2026-05 tidak pernah terbit,
+  `sia` tertunda, dan bila CHIRPS v2.0 berhenti terbit, kontras dinyatakan "tidak dapat dinilai".
+- **Luas basin untuk ambang 10%** = luas geometrik poligon basin (km2, dihitung dari geometri, setara `SUB_AREA`); luas sel =
+  luas geometrik sel 0,25 derajat. Plafon 20.000 km2 memakai `SUB_AREA`.
 - **Uji asap sebelum `latih`:** `ambil` membaca satu hari di 3 sel pesisir dan 3 sel darat dari URL p25 final dan menulis
   hasilnya (nilai, nodata atau tidak) ke manifest.
 - **DAS hulu:** HydroBASINS v1c level 9, berkas `hybas_as_lev09_v1c.zip` dan `hybas_au_lev09_v1c.zip` dimuat bersama (ID unik
@@ -160,6 +166,24 @@ Lulus berarti kelompok itu boleh dipasang sebagai pelengkap berlabel. Status res
   menggembungkan keterampilan mutlak), dan tanggal logbook kasar menggeser label beberapa hari terhadap jendela fitur. Efeknya
   pada kontras tidak diukur selain lewat kontrol DIBI saja di §5.
 - Sampel 39 kabupaten dipilih dari yang sering banjir (kejadian <= 2021). Hasil tidak otomatis berlaku nasional.
+
+## 6a. Tafsir pelaksanaan (ditetapkan sebelum `latih`)
+
+1. "Peluang dirata-rata": tiap biji GBDT dipasangi Platt sendiri di seluruh validasi, lalu peluang terkalibrasi dirata-rata.
+2. Kontrol DIBI-saja memakai kelompok dan hiperparameter terpilih model berlabel gabungan, hanya dilatih ulang dengan y DIBI.
+3. Pemilihan hiperparameter memakai biji 1 (`HIPER_TETAP` model_kab.py); lima biji hanya untuk model akhir.
+4. MDE dihitung untuk 200 kejadian (sama dengan perkiraan PRAREG-DEBIT untuk Uji A+B). Ambang "(daya rendah)" di §5
+   memakai MDE daya 80% (`mde_80`) > 0,02 dETS Waspada.
+5. `buka` jalan bila minimal satu kontras lolos `sia`; kontras yang dihentikan dilaporkan "tidak terbukti (dihentikan di
+   Uji A)". Bila semua dihentikan, `buka` ditolak.
+6. Kelengkapan manifest: semua hari 2015-12-01 sampai akhir jendela harus ada di cache, kecuali 2025-05 (validasi, sudah
+   dikeluarkan). 2026-04 dan 2026-05 yang hilang menunda `sia` dan `buka`.
+7. ERA5 2026 untuk `sia`/`buka` diambil lewat `model_kab_debit.cuaca_sampai`; hash ERA5 dan CHIRPS per sel untuk jendela uji
+   dikunci di `sia.json` dan dicek ulang saat `buka`. (Menggantikan aturan "hash sama dengan sidik DEBIT" di §7, karena sidik
+   DEBIT tidak memuat hash 2026.)
+8. Uji asap sel pesisir dan darat dipenuhi oleh laporan `sel_chirps_nodata_hari` dan `sel_nodata_permanen` di `latih.json`.
+9. `MK.LATIH`, `MK.VALIDASI`, `MK.UJI` ditambal ke 2016-2023, 2024-2025, 2026-2027 saat impor; nilainya ikut sidik.
+10. Sel dengan nilai hilang di jendela `c3` gugur untuk baris itu; maksimum kabupaten atas sel yang tersisa.
 
 ## 7. Kode dan sidik
 
