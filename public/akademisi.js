@@ -1970,6 +1970,8 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
   function subPs(v) { psSub = v; setSeg("akPS", v); $("akPsA").hidden = v !== "pusat"; $("akPsB").hidden = v !== "aset"; if (v === "aset") nanti(() => bangunAset($("akPsB"))); }
 
   /* ---- tombol dummy (DUMMY.md): dua ikon, Super Admin saja, isi mengikuti tab yang terbuka; data contoh hidup di klien, tanpa tulis ke server ---- */
+  /* uji layar (tests/agen/direktori-layar.test.mjs) memakai data contoh yang sama dengan tombol dummy, supaya contoh dan layar tidak menyimpang */
+  window.__akContoh = () => dataContoh();
   function dataContoh() {
     const wib = new Date(Date.now() + 7 * 36e5), tgl = wib.toISOString().slice(0, 10), mu = (n, h) => "+6281" + String(1000000 + n * 7919 + h).slice(0, 8), sm = (b, u) => ({butir: b, url: u, diperiksa: tgl});
     const mk = (id, nama, singkatan, kategori, o = {}) => { const web = `https://contoh-${id}.example.org`; return {id, nama: nama + " (contoh)", singkatan, kategori, skala: "provinsi", prov: null, bidang: ["tanggap darurat"], web,
