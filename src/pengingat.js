@@ -18,8 +18,9 @@ export const SEGERA_HARI = 60, SEGERA_LALU_HARI = 30;
 export const JENIS = {
   mou_relawan: "MoU relawan hampir habis", pks_riset: "PKS riset hampir habis", logistik_lambat: "Logistik belum disetujui", dsp_spj: "DSP belum SPJ",
   renkon: "Rencana kontinjensi", rehab_macet: "Rehab-rekon macet", stok_rendah: "Stok gudang menipis", bantuan_terbuka: "Butuh bantuan belum ditangani",
-  prioritas_dampak: "Prioritas dampak: kirim ke BPBD"};
+  prioritas_dampak: "Prioritas dampak: kirim ke BPBD", logbook_lanjutan: "Logbook: kejadian belum diperbarui", sensor_ambang: "Sensor lapangan melewati ambang", sensor_lapor: "Laporan desa lewat radio mesh"};
 export const DAFTAR_JENIS = Object.keys(JENIS);
+export const TANPA_DUMMY = ["sensor_ambang", "sensor_lapor"];   // lahir dari kiriman alat (src/sensor.js), bukan dari halaman bertombol dummy; logbook_lanjutan ikut tombol dummy logbook
 export const STATUS = ["baru", "dikirim", "selesai", "abaikan"];
 const tolakMod = () => gagal(403, "hanya untuk moderator ke atas (bukan akun gerbang situs)");
 const tabelBelum = f => async (...a) => {
@@ -119,7 +120,20 @@ async function prioritas(env, kini, dummy) {
   out.push(...(dummy ? kejOut.slice(0, 2) : kejOut));
   return out;
 }
-const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan], [["prioritas_dampak"], prioritas]];
+/* Logbook (migrasi 0088): kejadian buka tanpa entri baru >= 24 jam (h1) atau >= 72 jam (h3). Satu indeks (status, terakhir), tanpa JOIN.
+   keadaan memuat tanggal WIB entri terakhir: entri baru lalu macet lagi = baris baru; baris yang sudah tidak berlaku (entri masuk, kejadian ditutup) ikut dihapus pembersih buatPengingat.
+   Teks siap kirim ke BPBD pelapor lewat src/wa.js belum ada: kejadian tidak menyimpan nomor WA, jadi hanya antrean dan teks judul/rincian. */
+async function logbookLanjutan(env, kini, dummy) {
+  const rows = (await env.DB.prepare(`SELECT id, jenis, prov, kab, kec, desa, terakhir FROM logbook_kejadian WHERE status = 'buka' AND terakhir <= ? AND dummy = ? ORDER BY terakhir LIMIT ${BATAS_BACA}`).bind(kini - HARI, dummy).all()).results;
+  if (rows.length >= BATAS_BACA) return null;
+  return rows.map(k => {
+    const jam = Math.floor((kini - k.terakhir) / JAM), h3 = jam >= 72, tempat = [k.desa, k.kec, k.kab].filter(Boolean).join(", ");
+    return {jenis: "logbook_lanjutan", sumber_id: k.id, keadaan: `${h3 ? "h3" : "h1"}:${wib(k.terakhir)}`,
+      judul: `Logbook ${k.jenis.replace(/_/g, " ")} ${k.kab}: belum ada pembaruan ${h3 ? "72" : "24"} jam`.slice(0, 160),
+      rincian: `${tempat}; entri terakhir ${wib(k.terakhir)}, ${jam} jam lalu. Tambahkan entri lanjutan atau tutup kejadian.`.slice(0, 300), prov: k.prov, kab: k.kab};
+  });
+}
+const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan], [["prioritas_dampak"], prioritas], [["logbook_lanjutan"], logbookLanjutan]];
 
 /* Cron harian (idempoten: dua kali jalan = tidak ada baris baru). dummy=1 membaca sumber dummy untuk tombol 🧪. */
 export async function buatPengingat(env, kini = Date.now(), {dummy = 0, hanya = null} = {}) {
@@ -235,7 +249,7 @@ async function dummy(env, req, kini) {
   if (b.o.aksi === "hapus") return json({ok: true, pengingat: (await env.DB.prepare("DELETE FROM pengingat WHERE dummy = 1").run()).meta.changes});
   if (b.o.aksi !== "isi") return gagal(400, "aksi harus isi/hapus");
   if ((await env.DB.prepare("SELECT count(*) n FROM pengingat WHERE dummy = 1").first()).n) return gagal(409, "data dummy sudah ada; hapus dulu dengan 🧹");
-  const r = await buatPengingat(env, kini, {dummy: 1}), kosong = DAFTAR_JENIS.filter(j => !r.per_jenis[j]);
+  const r = await buatPengingat(env, kini, {dummy: 1}), kosong = DAFTAR_JENIS.filter(j => !TANPA_DUMMY.includes(j) && !r.per_jenis[j]);
   if (!r.dibuat) return gagal(409, "belum ada data dummy sumber: isi dulu 🧪 di Relawan, Riset, Meja Kerja, dan Alun-alun");
   return json({ok: true, pengingat: r.dibuat, per_jenis: r.per_jenis, kosong}, 201);
 }
