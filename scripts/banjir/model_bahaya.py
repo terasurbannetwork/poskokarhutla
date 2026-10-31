@@ -22,6 +22,11 @@ PRA-REGISTRASI (31 Okt 2026, ditulis dan di-commit SEBELUM label kecamatan ada d
                Model boleh tampil sebagai "terkalibrasi" di layar hanya bila L1 DAN L2 lolos; selain itu label
                "Hipotesis, belum lolos uji" dan penjelasan faktor tetap tampil sebagai deskripsi, bukan ramalan.
   Dilaporkan tanpa vonis: AUC B_riw, presisi/recall/F1 pada 25% skor teratas, kinerja per pulau.
+Amandemen 31 Okt 2026, sesudah label_kec.json jadi tetapi SEBELUM hubungan label dengan fitur mana pun dilihat:
+  Label utama memakai n_th (kejadian unik kecamatan-tanggal, poligon dihitung di kecamatan titik beratnya). Sebagian
+  besar poligon melintasi beberapa kecamatan (median bentang ~15 km), jadi label ini sebagian bermakna "kawasan".
+  Uji kepekaan TANPA vonis: label n_th_tunggal (hanya poligon kecil di satu kecamatan, 879 kecamatan).
+  Groundsource berasal dari berita dan condong ke kota; karena itu pembanding kepadatan (L2) adalah syarat utama.
 Penjelasan per kecamatan: kontribusi faktor j = b_j x z_ij (z = nilai terstandar). Tiga kontribusi terbesar ditulis,
 beserta tandanya. Ini menjelaskan MODEL, bukan sebab fisik di lapangan.
 
