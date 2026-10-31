@@ -488,7 +488,7 @@ jobs:
           python3 scripts/data/keputusan.py
           python3 scripts/data/bnpb_gis.py
           # SK status keadaan darurat (CKAN data.bnpb.go.id) dan kejadian + dampak DIBI 365 hari, untuk /semua
-          python3 scripts/umum/status_darurat.py uji && python3 scripts/umum/status_darurat.py || echo "::warning title=status_darurat::gagal; berkas lamanya dibiarkan"
+          python3 scripts/umum/status_darurat.py uji && { python3 scripts/umum/status_darurat.py || { echo "::warning title=status_darurat::sumber gagal; kolom turunan dihitung ulang dari berkas lama"; python3 scripts/umum/status_darurat.py ulang; }; } || echo "::warning title=status_darurat::gagal; berkas lamanya dibiarkan"
           python3 scripts/umum/dibi_kejadian.py uji && python3 scripts/umum/dibi_kejadian.py || echo "::warning title=dibi_kejadian::gagal; berkas lamanya dibiarkan"
           # saran status darurat: sesudah status_darurat + dibi_kejadian; sinyal karhutla/banjir dari berkas lokal (titik.yml memperbaruinya tiap 3 jam)
           python3 scripts/umum/saran_status.py uji && python3 scripts/umum/saran_status.py || echo "::warning title=saran_status::gagal; berkas lamanya dibiarkan"
