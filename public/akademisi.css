@@ -1969,7 +1969,7 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-bpanel.ak-sembunyi{display:none!important}
 .ak-komp:has(> div:nth-child(3)){grid-template-columns:repeat(3,minmax(0,1fr))}
 @media (max-width:900px){.ak-komp:has(> div:nth-child(3)){grid-template-columns:minmax(0,1fr)}}
-.ak-l-negara{font-style:normal;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--ink);background:var(--surface);border-radius:999px;padding:1px 8px}
+.ak-lencana .ak-l-negara,.ak-l-negara{font-style:normal;display:inline-flex;align-items:center;gap:4px;font-size:11px;font-weight:700;color:var(--ink);background:var(--surface);border-radius:999px;padding:1px 8px}
 #akSideUk,.ak-side .ak-ukd{display:none!important}
 /* lapisan peta di panel samping: 4 tombol selebar panel */
 .ak-side-h > .ak-ptlayer{position:static!important;display:grid!important;grid-template-columns:repeat(2,minmax(0,1fr));gap:6px;max-width:none!important;margin:0;padding:0;background:none;box-shadow:none;transform:none}
@@ -2451,3 +2451,10 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-ks-k{font-weight:700;text-align:left;color:var(--ink)}.ak-n{text-align:right;font-variant-numeric:tabular-nums}
 .ak-wlcetak{margin-right:8px;vertical-align:middle}
 .ak-ks-ws{margin:10px 0 0;padding-left:18px;font-size:13px}.ak-ks-ws li{margin:2px 0}
+/* kotak cari peta di kiri pemilih kategori (pojok kanan atas kanvas) */
+.ak-ptaisi>#akPtCari{position:absolute;top:12px;right:364px;width:300px;z-index:9}
+.ak-ptaisi>#akPtCari input{background:oklch(100% 0 0 / .94);box-shadow:var(--shadow)}
+@media (max-width:1100px){.ak-ptaisi>#akPtCari{width:220px}}
+@media (max-width:700px){.ak-ptaisi>#akPtCari{top:62px;right:12px;width:calc(100vw - 24px)}}
+/* Fakta: isian berchip banyak (Bencana terkait, Afiliasi) memakai satu baris penuh, tidak menumpuk di kolom 210px */
+.ak-in-f:has(> div > :nth-child(4)){grid-column:1/-1}

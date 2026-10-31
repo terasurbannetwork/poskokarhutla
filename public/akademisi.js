@@ -689,7 +689,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       const b = e.target.closest("button[data-v]"); if (!b) return;
       st[kunci] = ubah(b.dataset.v);
       $(id).querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x === b)));
-      nanti(saring);
+      nanti(() => { saring(); if (kunci === "sumber") segarBencana(); });   // angka bilah bencana ikut sumber (Semua/SINTA/...)
     });
   }
 
@@ -1848,6 +1848,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
         <aside class="ak-drawer" id="akDrawer" role="dialog" aria-labelledby="akDrNama" hidden><button type="button" class="ak-drtutup" id="akDrTutup">${ikon('<path d="M6 6l12 12M18 6 6 18"/>', "currentColor")}Tutup</button><div id="akDrIsi"></div></aside></div></div>`;
     { const pil = $("akPtKat"); if (pil) el.querySelector(".ak-ptaisi").append(pil); }   /* pemilih kategori di pojok kanan atas kanvas peta */
     pitaPeta();
+    { const sr = $("akSideQ")?.closest(".ak-sr-w"); if (sr) { sr.id = "akPtCari"; el.querySelector(".ak-ptaisi").append(sr); } }   /* kotak cari di samping pemilih kategori, tetap ada walau panel dilipat */
     try { await muatMapLib(); } catch (e) { $("akMap").innerHTML = '<p class="ak-khampa">Peta tidak bisa dimuat. Periksa koneksi lalu muat ulang.</p>'; return; }
     const gelap = document.documentElement.dataset.theme ? document.documentElement.dataset.theme === "dark" : matchMedia("(prefers-color-scheme: dark)").matches;
     const m = PT.map = new maplibregl.Map({container: "akMap", style: "https://tiles.openfreemap.org/styles/" + (gelap ? "dark" : "positron"), bounds: [[94, -11.5], [141.5, 6.5]], fitBoundsOptions: {padding: 10}, minZoom: 3, maxZoom: 16, dragRotate: false, pitchWithRotate: false,
@@ -3567,7 +3568,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     });
     saring(); dpSegarkan();
     $("akBaruTog").addEventListener("click", () => { st.baru = !st.baru; $("akBaruTog").setAttribute("aria-pressed", String(st.baru)); nanti(saring); });
-    nanti(muatBaru); nanti(pasangDummyAk); nanti(muatAfiliasi);
+    nanti(muatBaru); nanti(muatAfiliasi);   // tombol dummy 🧪/🧹 disembunyikan atas permintaan pemilik 31 Okt; pulihkan: nanti(pasangDummyAk)
     pasangTampil((qs.get("tampil") || (!pk && !pv && !rp && bacaTampil()) || "pakar"), qs.get("sub") || "");
     if (qs.get("tampil") === "lembaga" && (qs.get("sub") === "analisa" || qs.get("sub") === "daftar")) { let n = 0; const t = setInterval(() => { if ($("akLS") && lbArr.length) { clearInterval(t); subLb("daftar"); } else if (++n > 40) clearInterval(t); }, 300); }
     const o = pk && peta.get(pk); if (o) nanti(() => buka(o));
