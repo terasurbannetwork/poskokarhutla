@@ -2500,13 +2500,24 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
   const kkN = n => { n = String(n || "").replace(/^kota\s+adm(inistrasi|\.)?\s+/i, "Kota "); return (/^kota\b/i.test(n) ? "K:" : "") + nrm(n.replace(/\(.*?\)/g, " ").replace(/^(kabupaten|kab\.?|kota|administrasi)\s+/i, "")).replace(/ /g, ""); };
   const ksBaris = (wd, pv, kab) => wd?.kesiapan?.baris?.[pv + "|" + kkN(kab)] || null;
   const ksNama = r => r.nama_rk || String(r.kab || "").replace(/^Kabupaten\s+/i, "");
+  /* hasil uji balik skor lawan dampak DIBI (ujiKesiapan di sambung_panen.mjs); belum lulus = label hipotesis supaya skor tidak dibaca sebagai ukuran pasti */
+  const rKs = v => (v < 0 ? "\u2212" : "") + (Math.round(Math.abs(v) * 100) / 100).toLocaleString("id-ID"), dKs = v => v.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  function ujiKs(u) {
+    if (!u?.korelasi) return "";
+    const ks = u.korelasi.skor, kj = u.korelasi.kesenjangan, q = u.kuadran || {}, lab = u.lulus ? ["Teruji", "#2b8a3e"] : ["Hipotesis", "#e0a100"];
+    const u0 = dlist(u.lolos)[0];
+    const isi = u.lulus && u0 ? `Di ${angka(u.n)} kab/kota, data DIBI ${u.dari} sampai ${u.sampai}: makin rendah skor kesiapan, makin besar ${u.ukuran?.[u0] || u0} (r ${rKs(ks[u0].r)}). Ini keterkaitan, bukan bukti sebab.`
+      : `Belum terbukti. Di ${angka(u.n)} kab/kota, data DIBI ${u.dari} sampai ${u.sampai}, skor kesiapan tidak berkaitan dengan korban per kejadian (meninggal r ${rKs(ks.mati.r)}, rumah rusak berat r ${rKs(ks.rusak.r)}). Kesenjangan hanya berkaitan lemah (rumah rusak berat r ${rKs(kj.rusak.r)}, meninggal r ${rKs(kj.mati.r)}, terdampak r ${rKs(kj.dampak.r)}).`;
+    const qd = q.prioritas?.n && q.aman?.n ? ` Median meninggal per kejadian, deskriptif dan belum diuji: kuadran prioritas ${dKs(q.prioritas.mati)}, aman ${dKs(q.aman.mati)}.` : "";
+    return `<p class="ak-ks-uji"><span class="ak-mp" style="--w0:${lab[1]}">${lab[0]}</span> ${esc(isi + qd)}</p>`;
+  }
   function kesiapanWil(wd, pv, kab, geoK) {
     const K = wd?.kesiapan; if (!K?.baris) return "";
     const SUMBER = "skor kesiapan direktori: rata-rata persentil fiskal (BTT per jiwa, DJPK), faskes (tempat tidur RS SIRS dan puskesmas per penduduk), lembaga direktori per penduduk, dan pakar di provinsi per penduduk; beban = rata-rata persentil risiko (indeks risiko kecamatan) dan kebutuhan warga (kemiskinan, air minum, sanitasi, IPM dari BPS; kerawanan pangan dari IKP Bapanas); kesenjangan = persentil beban dikurangi persentil kesiapan";
     if (kab) { const r = ksBaris(wd, pv, kab); if (!r || r.skor == null) return "";
       const [lq, wq] = KUADRAN[r.kuadran] || ["", "#6b7280"];
       const bar = KOMP_K.map(([k, l, ket]) => r.komp[k] == null ? "" : `<div title="${esc(ket)}"><span>${esc(l)}</span><i><u style="width:${Math.max(3, r.komp[k])}%;background:${r.komp[k] < 34 ? "#c92a2a" : r.komp[k] < 67 ? "#e0a100" : "#2b8a3e"}"></u></i><b>${angka(r.komp[k])}</b></div>`).join("");
-      return bagW("Kesiapan daerah", ubinW([[IK_BAR, wq, `${angka(r.skor)} dari 100`, "Skor kesiapan"], [IK_BAR, "#1c3d78", `${angka(r.peringkat)} dari ${angka(K.jumlah)}`, "Peringkat nasional"],
+      return bagW("Kesiapan daerah", ujiKs(K.uji) + ubinW([[IK_BAR, wq, `${angka(r.skor)} dari 100`, "Skor kesiapan"], [IK_BAR, "#1c3d78", `${angka(r.peringkat)} dari ${angka(K.jumlah)}`, "Peringkat nasional"],
         [IK_BAR, "#1c3d78", `${angka(r.peringkat_prov)} dari ${angka(r.jumlah_prov)}`, `Peringkat di ${provT(pv)}`], [IK_BAR, wq, r.kesenjangan == null ? null : (r.kesenjangan > 0 ? "+" : "") + angka(r.kesenjangan), lq || "Kesenjangan"]])
         + `<div class="ak-bpk-b ak-ks-b">${bar}</div>` + (r.kebutuhan != null ? `<h4 class="ak-dpgrup ak-katj">${ikon(IK_ORANG, "currentColor")}<b>Kebutuhan warga ${angka(r.kebutuhan)} dari 100</b></h4><div class="ak-bpk-b">${BUTUH_K.filter(([k]) => r.butuh?.[k] != null).map(([k, l]) => `<div><span>${esc(l)}</span><i><u style="width:${Math.max(3, r.butuh[k])}%;background:${r.butuh[k] >= 67 ? "#c92a2a" : r.butuh[k] >= 34 ? "#e0a100" : "#2b8a3e"}"></u></i><b>${angka(r.butuh[k])}</b></div>`).join("")}</div>` : ""), SUMBER + "; komponen dalam persentil 0 sampai 100 terhadap semua kab/kota"); }
     const rows = Object.values(K.baris).filter(r => r.prov === pv && r.skor != null);
@@ -2515,7 +2526,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     const peta = geoK?.features?.length ? petaKesenjangan(geoK, wd, pv) : "";
     const leg = Object.entries(KUADRAN).filter(([q]) => rows.some(r => r.kuadran === q)).map(([q, [l, w]]) => `<span class="ak-ks-l"><i style="background:${w}"></i>${esc(l)} <b>${angka(rows.filter(r => r.kuadran === q).length)}</b></span>`).join("");
     const daftar = pr.length ? `<div class="ak-bpt"><table><thead><tr><th>Kab/kota</th><th>Skor kesiapan</th><th>Indeks risiko</th><th>Kebutuhan warga</th><th>Kesenjangan</th></tr></thead><tbody>${pr.slice(0, 12).map(r => `<tr><td><button type="button" class="ak-btn0 ak-ks-k" data-wlbuka="${esc(pv + "|" + ksNama(r))}">${esc(r.kab)}</button></td><td class="ak-n">${angka(r.skor)}</td><td class="ak-n">${String(r.risiko).replace(".", ",")}</td><td class="ak-n">${r.kebutuhan != null ? angka(r.kebutuhan) : "\u2013"}</td><td class="ak-n">+${angka(r.kesenjangan)}</td></tr>`).join("")}</tbody></table></div>` : "";
-    return bagW("Peta kesenjangan kesiapan", `${peta}<div class="ak-ks-leg">${leg}</div>${daftar}`, SUMBER + "; kuadran memakai median nasional; arahkan kursor ke peta untuk rincian, klik untuk membuka kab/kota", rows.length);
+    return bagW("Peta kesenjangan kesiapan", `${ujiKs(K.uji)}${peta}<div class="ak-ks-leg">${leg}</div>${daftar}`, SUMBER + "; kuadran memakai median nasional; arahkan kursor ke peta untuk rincian, klik untuk membuka kab/kota", rows.length);
   }
   function petaKesenjangan(geo, wd, pv) {
     const fs = geo.features.filter(f => f.geometry), bb = fs.reduce((a, f) => { const b = bbox(f); return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; }, [180, 90, -180, -90]);

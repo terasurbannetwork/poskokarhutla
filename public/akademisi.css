@@ -2458,3 +2458,5 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 @media (max-width:700px){.ak-ptaisi>#akPtCari{top:62px;right:12px;width:calc(100vw - 24px)}}
 /* Fakta: isian berchip banyak (Bencana terkait, Afiliasi) memakai satu baris penuh, tidak menumpuk di kolom 210px */
 .ak-in-f:has(> div > :nth-child(4)){grid-column:1/-1}
+.ak-ks-uji{margin:4px 0 10px;font-size:12.5px;line-height:1.5;color:var(--ink2);text-align:justify}
+.ak-ks-uji .ak-mp{margin-right:4px;vertical-align:1px}

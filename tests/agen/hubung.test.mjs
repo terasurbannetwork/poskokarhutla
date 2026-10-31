@@ -164,3 +164,20 @@ test("kebutuhan warga menaikkan beban; tesis disaring ketat dan dicocokkan ke ka
   const t = S.tesisKampus([{judul: "Pemetaan rawan banjir Kota Semarang", kampus: "Diponegoro University", tahun: 2024}, {judul: "Cekaman kekeringan pada tanaman padi", kampus: "Diponegoro University"}], {"Universitas Diponegoro": {}});
   assert.deepEqual(Object.keys(t), ["Universitas Diponegoro"]); assert.equal(t["Universitas Diponegoro"].length, 1);
 });
+
+test("uji balik kesiapan: lulus hanya bila skor rendah memang menanggung korban per kejadian lebih besar; data DIBI nyata belum lulus", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const baris = {}, nama = {}, rows = [];
+  for (let i = 0; i < 120; i++) { const kode = String(1100 + i); nama[kode] = "Kab. Uji " + String.fromCharCode(65 + (i % 26)) + String.fromCharCode(65 + Math.floor(i / 26));
+    baris[kode.slice(0, 2) + "|" + S.kunciKab(nama[kode])] = {skor: i, kesenjangan: 50 - i, kuadran: i < 60 ? "prioritas" : "aman"};
+    rows.push([kode, 2020, "banjir", 4, Math.round((120 - i) / 10), 0, 100, 0, 120 - i], [kode, 2020, "karhutla", 50, 0, 0, 0, 0, 0]); }
+  const dibi = {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak", "mengungsi", "rumah_rusak_berat"], baris: rows};
+  const u = S.ujiKesiapan(baris, dibi, nama);
+  assert.equal(u.n, 120); assert.ok(u.lulus, "skor rendah = rusak per kejadian tinggi, harus lulus");
+  for (const r of rows) if (r[2] === "banjir") r[8] = 5;   // dampak rata: skor tidak membedakan apa-apa
+  for (const r of rows) if (r[2] === "banjir") r[4] = 1;
+  assert.equal(S.ujiKesiapan(baris, dibi, nama).lulus, false);
+  /* data nyata di repo: korelasi skor lawan dampak dekat nol (31 Okt 2026), jadi layar wajib berlabel hipotesis sampai rumus diperbaiki */
+  const {readFileSync} = await import("node:fs");
+  assert.match(readFileSync(new URL("../../public/akademisi.js", import.meta.url), "utf8"), /u\.lulus \? \["Teruji"[^\]]*\] : \["Hipotesis"/);
+});

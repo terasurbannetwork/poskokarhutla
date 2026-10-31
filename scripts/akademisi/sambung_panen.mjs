@@ -192,6 +192,31 @@ export function kesiapanDaerah(wd, rk, induk0, kampus, lembaga) {
   return {jumlah: ada.length, hari_risiko: rk.hari || null, baris: hasil};
 }
 
+/* uji balik skor kesiapan lawan dampak nyata DIBI: kalau skor benar mengukur kesiapan, kab/kota berskor rendah mestinya menanggung korban dan kerusakan
+   per kejadian lebih besar. Dampak per kejadian (bukan jumlah kejadian) supaya frekuensi bahaya tidak ikut terhitung; karhutla dan kekeringan dikecualikan
+   (korbannya tidak tercatat sebanding per kejadian). Spearman, kab/kota dengan paling sedikit 3 kejadian. Lulus = skor berkorelasi negatif (r <= -0,1)
+   dan nyata (|t| >= 2) dengan paling sedikit satu ukuran dampak; tidak lulus = layar memberi label hipotesis.
+   Batas: skor memakai data kapasitas sekarang, dampak dari tahun lalu; itu menguji kecocokan, bukan ramalan. */
+export function ujiKesiapan(baris, dibi, namaKab, dari = 2015) {
+  const kol = c => dibi.kolom.indexOf(c), key = {}; for (const [kode, nama] of Object.entries(namaKab)) key[kode] = kode.slice(0, 2) + "|" + kunciKab(String(nama).replace(/^Kab\. Administrasi /, "Kab. ").replace(/\bKep\. /, "Kepulauan ").replace(/ dan /, " "));
+  const agg = {}; let sampai = dari;
+  for (const r of dibi.baris || []) { const th = r[kol("tahun")], j = r[kol("jenis")], k = key[r[kol("kab")]]; if (th < dari || j === "karhutla" || j === "kekeringan" || !k || !baris[k]) continue;
+    sampai = Math.max(sampai, th); const a = agg[k] ||= {kej: 0, mati: 0, dampak: 0, rusak: 0};
+    a.kej += r[kol("kejadian")] || 0; a.mati += r[kol("meninggal_hilang")] || 0; a.dampak += (r[kol("terdampak")] || 0) + (r[kol("mengungsi")] || 0); a.rusak += r[kol("rumah_rusak_berat")] || 0; }
+  const ks = Object.keys(agg).filter(k => agg[k].kej >= 3 && baris[k].skor != null && baris[k].kesenjangan != null);
+  const rank = x => { const o = x.map((v, i) => i).sort((a, b) => x[a] - x[b]), r = []; for (let i = 0; i < o.length;) { let j = i; while (j + 1 < o.length && x[o[j + 1]] === x[o[i]]) j++; for (let t = i; t <= j; t++) r[o[t]] = (i + j) / 2; i = j + 1; } return r; };
+  const sp = (a, b) => { const ra = rank(a), rb = rank(b), n = a.length, m = (n - 1) / 2; let c = 0, va = 0, vb = 0; for (let i = 0; i < n; i++) { c += (ra[i] - m) * (rb[i] - m); va += (ra[i] - m) ** 2; vb += (rb[i] - m) ** 2; }
+    const r = va && vb ? c / Math.sqrt(va * vb) : 0; return {r: Math.round(r * 1000) / 1000, t: Math.round(r * Math.sqrt((n - 2) / Math.max(1e-9, 1 - r * r)) * 10) / 10}; };
+  const UK = {mati: "meninggal dan hilang per kejadian", dampak: "terdampak dan mengungsi per kejadian", rusak: "rumah rusak berat per kejadian"};
+  const y = u => ks.map(k => agg[k][u] / agg[k].kej), korelasi = {};
+  for (const x of ["skor", "kesenjangan"]) korelasi[x] = Object.fromEntries(Object.keys(UK).map(u => [u, sp(ks.map(k => baris[k][x]), y(u))]));
+  const med = a => { a = [...a].sort((p, q) => p - q); return a.length ? (a.length % 2 ? a[(a.length - 1) / 2] : (a[a.length / 2 - 1] + a[a.length / 2]) / 2) : null; };
+  const kuadran = Object.fromEntries(["prioritas", "siaga", "perkuat", "aman"].map(q => { const g = ks.filter(k => baris[k].kuadran === q);
+    return [q, {n: g.length, mati: Math.round(med(g.map(k => agg[k].mati / agg[k].kej)) * 1000) / 1000, rusak: Math.round(med(g.map(k => agg[k].rusak / agg[k].kej)) * 100) / 100}]; }));
+  const lolos = Object.keys(UK).filter(u => korelasi.skor[u].r <= -0.1 && korelasi.skor[u].t <= -2), lulus = ks.length >= 100 && lolos.length > 0;
+  return {dari, sampai, n: ks.length, ukuran: UK, korelasi, kuadran, lulus, lolos, sumber_url: "https://dibi.bnpb.go.id"};
+}
+
 /* tesis, disertasi, dan skripsi kebencanaan dari repositori kampus (OAI-PMH): saringan judul ketat, karena kata "kekeringan" atau "banjir" juga muncul
    di judul agronomi dan teknik biasa; nama kampus repositori dicocokkan ke kampus direktori lewat indeks dan alias hubung.mjs */
 const TESIS_YA = /bencana|banjir|longsor|gempa|tsunami|erupsi|gunung ?api|lahar|kebakaran hutan|karhutla|mitigasi|kesiapsiagaan|evakuasi|tanggap darurat|pengungsi|rawan|abrasi|\brob\b|disaster|flood|landslide|earthquake|volcan|wildfire|evacuat|hazard/i;
@@ -250,6 +275,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (sb.length) { P.aktivasi_satelit = [...larik(P.aktivasi_satelit), ...sb]; simpanPanen("aktivasi_satelit", P.aktivasi_satelit); }
   const wd = wilayahDaya(P), le = lembagaEkstra(P, lbSemua), pe = pakarEkstra(P, R.induk), ke = kejadianEkstra(P, R.kejadian?.kejadian || R.kejadian);
   wd.kesiapan = kesiapanDaerah(wd, JSON.parse(readFileSync(new URL("../../public/banjir/data/risiko_kecamatan.json", import.meta.url), "utf8")), R.induk, R.kampus, lbSemua);
+  const hvc = JSON.parse(readFileSync(new URL("../../public/data/bnpb/risiko_hvc.json", import.meta.url), "utf8")).kab;
+  wd.kesiapan.uji = ujiKesiapan(wd.kesiapan.baris, JSON.parse(readFileSync(new URL("../../public/data/bnpb/dibi_kab_tahun.json", import.meta.url), "utf8")), Object.fromEntries(Object.entries(hvc).map(([k, v]) => [k, v.nama])));
   tulis("wilayah_daya", wd);
   const ts = P.tesis_kebencanaan ? tesisKampus(P.tesis_kebencanaan, R.kampus) : {}; if (Object.keys(ts).length) tulis("tesis", ts);   /* hasil kosong tidak ditulis, jadi tidak menimpa R2 */ tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
   console.log(JSON.stringify({lembaga_baru: lbBaru.length, hibah_baru: hb.length, skema_radar: rs.length, wilayah_kab: wd.kab.length, wilayah_prov: Object.keys(wd.prov).length,

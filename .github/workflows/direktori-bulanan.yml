@@ -81,6 +81,9 @@ jobs:
           mkdir -p "$K/lama"; cp "$SB"/{lembaga,hibah_riset,pendanaan}.json "$K/lama/"
           for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra tesis graf strategis; do get "$f" "$K/lama"; done
           python3 -I scripts/akademisi/pemutakhiran/panen_publik.py --panen "$PN" --menit 45
+          # panen manual (hanya lewat browser, tidak bisa dari runner): APBD DJPK, izin LAZ SIMZAT, paten PDKI. Data APBD tanpa tahun lalu
+          # atau tiap Februari = anotasi peringatan di halaman run, supaya panen ulang tahunan tidak terlupa
+          node -e 'const a=require(process.argv[1]),y=new Date().getUTCFullYear(),t=Math.max(...a.map(r=>r.tahun||0));if(t<y-1)console.log(`::warning::APBD DJPK di direktori baru sampai ${t}; panen ulang manual (anggaran_pemda, dana_desa_bencana)`);if(new Date().getUTCMonth()===1)console.log("::warning::Panen ulang tahunan direktori: APBD DJPK, izin LAZ SIMZAT, paten PDKI (manual lewat browser, lalu sambung_panen.mjs dan hubung.mjs)")' "$PN/anggaran_pemda.json" || true
           node scripts/akademisi/sambung_panen.mjs "$PN" "$SB" "$K/sambung_keluar"
           cp "$K/sambung_keluar"/{lembaga,pakar_ekstra,hibah_riset,pendanaan}.json "$SB/"
           node scripts/akademisi/hubung.mjs "$SB" "$K/graf_keluar"
