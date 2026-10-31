@@ -124,7 +124,7 @@ def perkaya(sk, dibi):
     j = [o["jeda_kejadian_hari"] for o in sk if o["jeda_kejadian_hari"] is not None]
     return {"kab_lewat_batas": sum(o["lewat_batas"] for o in kab), "kab_total": len(kab), "prov_lewat_batas": sum(o["lewat_batas"] for o in prov),
             "prov_total": len(prov), "jeda_median_hari": statistics.median(j) if j else None, "jeda_n": len(j),
-            "tanggal_janggal": sum(o["tanggal_janggal"] for o in sk)}
+            "tanggal_janggal": sum(o["tanggal_janggal"] for o in sk), "sk_terakhir_mulai": max((o["mulai"] for o in sk), default=None)}
 
 
 def catatan_masa(dibi, ringkas, n_jeda):
@@ -137,6 +137,23 @@ def catatan_masa(dibi, ringkas, n_jeda):
     else:
         c += "jeda_kejadian_hari null semua: public/data/dibi_kejadian.json tidak terbaca."
     return c
+
+
+def tahun_berjalan(tahun, sekarang=None):
+    """Peringatan paket tahun berjalan (WIB): (tahun_berjalan, ada, kalimat catatan atau '')."""
+    n = sekarang or dt.datetime.now(dt.timezone(dt.timedelta(hours=7)))
+    ada = n.year in tahun
+    return n.year, ada, "" if ada else (f" Peringatan: Paket SK tahun {n.year} belum terbit di data.bnpb.go.id per {n.date().isoformat()}; "
+                                       "SK yang berlaku tahun ini belum terbaca.")
+
+
+def pasang_tahun(d, tahun):
+    """Isi tahun_berjalan/tahun_berjalan_ada + kalimat peringatan di catatan (idempoten); cetak ::warning:: di GitHub Actions."""
+    th, ada, w = tahun_berjalan(tahun)
+    d["catatan"] = d["catatan"].split(" Peringatan:")[0] + w
+    d["tahun_berjalan"], d["tahun_berjalan_ada"] = th, ada
+    if w and os.environ.get("GITHUB_ACTIONS"):
+        print("::warning::" + w.replace(" Peringatan: ", "", 1), flush=True)
 
 
 def baca_dibi():
@@ -189,12 +206,14 @@ def jalan():
     tanpa_titik = sum(1 for x in sk if x["lat"] is None)
     dibi = baca_dibi()
     ringkas = perkaya(sk, dibi)
-    simpan(KELUAR, {
+    d = {
         "sumber": "data.bnpb.go.id (CKAN) kompilasi data status keadaan darurat bencana seluruh Indonesia", "tahun": sorted(paket),
         "catatan": f"{buang} baris dibuang (tanpa tanggal mulai atau status tak dikenal). berakhir null = tanggal berakhir kosong di sumber. "
                    f"Titik kabupaten dari resource 'Kabupaten yang Menetapkan'; skala provinsi memakai pusat kotak provinsi; "
                    f"{tanpa_titik} SK tanpa titik. Data tahun berjalan menyusul dari BNPB." + catatan_masa(dibi, ringkas, sum(1 for x in sk if x["jeda_kejadian_hari"] is not None)),
-        "ringkas": ringkas, "sk": sk})
+        "ringkas": ringkas, "sk": sk}
+    pasang_tahun(d, paket)
+    simpan(KELUAR, d)
     print(f"status_darurat: tahun {sorted(paket)}, {len(sk)} SK, {buang} dibuang, {tanpa_titik} tanpa titik, ringkas {ringkas}")
 
 
@@ -205,6 +224,7 @@ def ulang():
     ringkas = perkaya(d["sk"], dibi)
     d["catatan"] = d["catatan"].split(" Masa berlaku:")[0] + catatan_masa(dibi, ringkas, sum(1 for x in d["sk"] if x["jeda_kejadian_hari"] is not None))
     d["ringkas"] = ringkas
+    pasang_tahun(d, d["tahun"])
     _muat("umum_kejadian", "scripts/umum/kejadian.py").simpan(KELUAR, d)
     print(f"status_darurat ulang: {ringkas}")
 
@@ -249,6 +269,11 @@ def uji():
     rg = perkaya([dict(sk), dict(sk, mulai="2025-01-01", berakhir="2025-01-20"), dict(sk, skala="provinsi", mulai="2025-01-01", berakhir="2025-02-05")], dibi)
     assert (rg["kab_lewat_batas"], rg["kab_total"], rg["prov_lewat_batas"], rg["prov_total"], rg["jeda_median_hari"]) == (1, 2, 1, 1, 2)
     assert rg["jeda_n"] == 1 and rg["tanggal_janggal"] == 0
+    assert rg["sk_terakhir_mulai"] == "2025-03-10" and perkaya([], dibi)["sk_terakhir_mulai"] is None
+    W = dt.timezone(dt.timedelta(hours=7))
+    assert tahun_berjalan([2025], dt.datetime(2026, 1, 1, 6, 0, tzinfo=W))[:2] == (2026, False)   # 31 Des 23:00 UTC = 1 Jan WIB
+    assert tahun_berjalan([2025], dt.datetime(2026, 1, 1, 6, 0, tzinfo=W))[2].endswith("2026-01-01; SK yang berlaku tahun ini belum terbaca.")
+    assert tahun_berjalan([2025, 2026], dt.datetime(2026, 5, 1, tzinfo=W)) == (2026, True, "")
     print("uji status_darurat: ok")
 
 

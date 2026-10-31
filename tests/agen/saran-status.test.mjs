@@ -65,3 +65,11 @@ test('status_darurat.json: kolom masa berlaku konsisten dengan ringkas', () => {
   assert.equal(d.ringkas.jeda_n, d.sk.filter(x => x.jeda_kejadian_hari !== null).length)
   assert.ok(d.sk.filter(x => x.tanggal_janggal).every(x => x.hari === null && x.lewat_batas === false))
 })
+test('status_darurat.json: peringatan tahun berjalan', () => {
+  const d = baca('public/data/status_darurat.json')
+  assert.equal(typeof d.tahun_berjalan, 'number')
+  assert.equal(typeof d.tahun_berjalan_ada, 'boolean')
+  assert.equal(d.tahun_berjalan_ada, d.tahun.includes(d.tahun_berjalan))
+  assert.equal(/Paket SK tahun \d{4} belum terbit/.test(d.catatan), !d.tahun_berjalan_ada)
+  assert.ok(d.ringkas.sk_terakhir_mulai === null || /^\d{4}-\d{2}-\d{2}$/.test(d.ringkas.sk_terakhir_mulai))
+})

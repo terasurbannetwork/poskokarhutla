@@ -9,7 +9,8 @@
   "Digabung 24 Oktober 2026 dari naskah/air/bukti/bab-01 sampai bab-10.angka.json. Kunci yang sudah ada tidak ditimpa. Usulan pengganti bab-03 untuk hidromet.jawa.lanina.pd_renas.korban_jiwa (faktor peringatan dini tanpa longsor, KERANGKA §2 butir 10) didaftar sebagai hidromet.jawa.lanina.pd_renas_tanpa_longsor.korban_jiwa. Pustaka bab-04/bab-06 esdm-2023-air-tanah (siaran pers lain) menjadi esdm-2023-pengendalian-air-tanah.",
   "Digabung 24 Oktober 2026 dari naskah/air/bukti/bab-01 sampai bab-10.angka.json. Kunci yang sudah ada tidak ditimpa. Usulan pengganti bab-03 untuk hidromet.jawa.lanina.pd_renas.korban_jiwa (faktor peringatan dini tanpa longsor, KERANGKA §2 butir 10) didaftar sebagai hidromet.jawa.lanina.pd_renas_tanpa_longsor.korban_jiwa. Pustaka bab-04/bab-06 esdm-2023-air-tanah (siaran pers lain) menjadi esdm-2023-pengendalian-air-tanah.",
   "Digabung 25 Oktober 2026 dari naskah/mitigasi/bukti/bab-01 sampai bab-13.angka.json: 1.195 kunci baru, 11 identik, 53 kunci sudah ada dan beda tidak ditimpa (50 beda catatan/sumber saja, nilai sama). Beda nilai: r3p.cianjur2022.kerugian tetap Rp0,57 T (kerugian saja, R3P Cianjur); usulan bab-04 Rp4,55 T adalah kerusakan + kerugian, jadi bab-04 dialihkan ke kunci baru r3p.cianjur2022.kerusakan_kerugian_rp. r3p.cianjur2022.kerusakan_kerugian tetap 4,55 triliun rupiah (untuk opsi satuan); pemakai opsi rupiah di bab-06 dialihkan ke kunci _rp. dibi.alam.per100rb.2025_bps2026 tetap satuan 'per 100.000 jiwa'. Kunci pustaka usulan yang duplikat (URL/DOI/judul sama) dialihkan ke kunci pustaka.json yang sudah ada.",
-  "Digabung 26 Oktober 2026 dari naskah/rehab/bukti/bab-01 sampai bab-12.angka.json untuk kajian rehab: 700 kunci baru namespace rehab.* (dan turunannya); kunci yang sudah ada tidak ditimpa, bila dua bab mengusulkan kunci sama nilai bab lebih awal dipakai. Kunci lama rehab.pipa.lombok.sumur_bor_darurat tidak digabung (diganti rehab.pipa.lombok.sumur_jiat_diaktifkan, bukti bab-07 Catatan perbaikan)."
+  "Digabung 26 Oktober 2026 dari naskah/rehab/bukti/bab-01 sampai bab-12.angka.json untuk kajian rehab: 700 kunci baru namespace rehab.* (dan turunannya); kunci yang sudah ada tidak ditimpa, bila dua bab mengusulkan kunci sama nilai bab lebih awal dipakai. Kunci lama rehab.pipa.lombok.sumur_bor_darurat tidak digabung (diganti rehab.pipa.lombok.sumur_jiat_diaktifkan, bukti bab-07 Catatan perbaikan).",
+  "Ditambah 31 Oktober 2026 dari Buku Data 2024, Renstra, LAKIP 2025, Pedoman Status 2016. TIGA DERET IRB nasional berbeda dan tidak boleh dibandingkan satu sama lain (LAKIP 2025 hal. 18): (1) metode lama bnpb.renstra.irb_lama.2019 144,02 dan .2024 128,52 (= irbi.nasional.2019 dan .2024); (2) KRB 2021 bnpb.lkip2025.irb.nasional_2024_krb2021 171,95 dan .nasional_2025_kerentanan2021 170,17; (3) kerentanan SEB bnpb.lkip2025.irb.baseline_2026_2029 147,95. Meninggal dan hilang dipisah; Buku Data 2024 menggabung 603 (540 + 63) dan 2023 hanya 308 gabungan. LARANGAN (butir 47, tidak ada mekanisme gerbang untuk larangan angka di registri ini, jadi hanya tercatat di sini): luas karhutla nasional dari Buku Data BNPB tidak boleh dipakai. Tabel L14 (hlm. 156) hanya luas per provinsi dari catatan kejadian BNPB (jumlah hitungan penyusun ±9.819 ha), BUKAN luas nasional, dan sengaja TIDAK didaftarkan sebagai angka. Luas karhutla hanya dari sistem Centurisk97 (peta_karhutla.json)."
  ],
  "angka": {
   "irbi.nasional.2015": {
@@ -25,7 +26,8 @@
    "jalur": "tabel[irbi_tren_2015_2024.csv].baris[tingkat=nasional,metode=rerata_sederhana].y2024",
    "satuan": "",
    "keyakinan": "resmi",
-   "sumber": "InaRISK BNPB, IRBI 2024"
+   "sumber": "InaRISK BNPB, IRBI 2024",
+   "catatan": "tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
   },
   "irbi.nasional.persen_2015_2024": {
    "berkas": "irbi/irbi.json",
@@ -293,7 +295,7 @@
    "satuan": "",
    "keyakinan": "resmi",
    "sumber": "InaRISK BNPB, IRBI 2019",
-   "catatan": "tahun_cocok_resmi Renstra BNPB 2025–2029"
+   "catatan": "tahun_cocok_resmi Renstra BNPB 2025–2029; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
   },
   "irbi.nasional.persen_2019_2024": {
    "berkas": "irbi/irbi.json",
@@ -18059,7 +18061,7 @@
    "satuan": "%",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025, IKSS 1.1",
-   "catatan": "target 1,2%, tidak tercapai (capaian 85,83%); dihitung dengan kerentanan 2021: (171,95 - 170,17) / 171,95"
+   "catatan": "target 1,2%, tidak tercapai (capaian 85,83%); dihitung dengan kerentanan 2021: (171,95 - 170,17) / 171,95; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
   },
   "bnpb.lkip2025.irb.nasional_2025_kerentanan2021": {
    "nilai": 170.17,
@@ -18067,7 +18069,7 @@
    "satuan": "indeks",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
-   "catatan": "IRB 2025 dihitung ulang dengan kerentanan 2021 agar sebanding dengan IRB 2024 versi LKIP"
+   "catatan": "IRB 2025 dihitung ulang dengan kerentanan 2021 agar sebanding dengan IRB 2024 versi LKIP; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
   },
   "bnpb.lkip2025.irb.nasional_2024_krb2021": {
    "nilai": 171.95,
@@ -18075,7 +18077,7 @@
    "satuan": "indeks",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
-   "catatan": "IRB 2024 dengan bahaya dan kerentanan KRB 2021; bertentangan dengan seri IRBI 2024 = 128,52 (irbi.nasional.2024); ditulis berdampingan"
+   "catatan": "IRB 2024 dengan bahaya dan kerentanan KRB 2021; bertentangan dengan seri IRBI 2024 = 128,52 (irbi.nasional.2024); ditulis berdampingan; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
   },
   "bnpb.lkip2025.irb.baseline_2026_2029": {
    "nilai": 147.95,
@@ -18083,7 +18085,7 @@
    "satuan": "indeks",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
-   "catatan": "rerata IRB nasional 2025 dengan kerentanan proyeksi SEB Kemendagri-Bappenas; baseline 2026-2029; sama nilainya dengan irbi.nasional.2025_rerata (bab-03) yang kini bersumber resmi"
+   "catatan": "rerata IRB nasional 2025 dengan kerentanan proyeksi SEB Kemendagri-Bappenas; baseline 2026-2029; sama nilainya dengan irbi.nasional.2025_rerata (bab-03) yang kini bersumber resmi; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
   },
   "bnpb.lkip2025.kapasitas.prov_minimal_sedang_persen.2025": {
    "nilai": 50,
@@ -25700,6 +25702,121 @@
    "satuan": "%",
    "keyakinan": "estimasi-model",
    "sumber": "Pengolahan data Pantau Bencana: model neraca air Thornthwaite-Mather dan penelusuran aliran antar-kab/kota, hujan CHIRPS v2.0 1991–2025, ET0 NASA POWER, kebutuhan 2025"
+  },
+  "bnpb.bd24.kejadian.2023": {
+   "nilai": 5400,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 3, 6",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "angka resmi BNPB (Pusdatinkom); berbeda dari DIBI tarik 23 Okt 2026 (dibi.nasional.kejadian.2023), pakai kunci ini bila sumbernya Buku Data"
+  },
+  "bnpb.bd24.kejadian.2024": {
+   "nilai": 3472,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 3, 6",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "terendah dalam lima tahun; DIBI tarik 23 Okt 2026 memberi 3.548 (dibi.nasional.kejadian.2024), tanggal data berbeda; jumlah kolom L2 per provinsi 3.475"
+  },
+  "bnpb.lkip2025.kejadian.2025": {
+   "nilai": 4727,
+   "pustaka": "bnpb-2026-lkip2025, hlm. 7",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "hasil verifikasi Pusdatinkom; hidrometeorologi 99,26%, geologi 0,74%; tidak dipecah per jenis di LAKIP"
+  },
+  "bnpb.bd24.meninggal.2024": {
+   "nilai": 540,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 3",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "HANYA meninggal; jangan dipakai sebagai 'meninggal dan hilang'. Buku Data juga menulis meninggal+hilang = 603 (hlm. 6, Tabel L1), naik 95,78% dari 308 pada 2023; angka 308 itu gabungan, bukan meninggal saja"
+  },
+  "bnpb.bd24.hilang.2024": {
+   "nilai": 63,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 3",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "pasangan bnpb.bd24.meninggal.2024; keduanya terpisah, gabungan 603 (540 + 63) bukan satu angka 'meninggal'"
+  },
+  "bnpb.bd24.meninggal_hilang.2023": {
+   "nilai": 308,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 6",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "gabungan meninggal dan hilang (Buku Data tidak memisahkannya untuk 2023); banding hanya dengan bnpb.bd24.meninggal_hilang.2024"
+  },
+  "bnpb.bd24.meninggal_hilang.2024": {
+   "nilai": 603,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 6, 110 (Tabel L1)",
+   "satuan": "jiwa",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "gabungan meninggal 540 + hilang 63; naik 95,78% dari 308 (2023)"
+  },
+  "bnpb.renstra.irb_lama.2019": {
+   "nilai": 144.02,
+   "pustaka": "bnpb-2025-renstra, hlm. 53",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), Tabel 1.6",
+   "catatan": "deret IRB metode lama (KRB lama, kerentanan lama), baseline Tabel 1.6; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18); deret lain: bnpb.lkip2025.irb.nasional_2024_krb2021 (171,95), bnpb.lkip2025.irb.baseline_2026_2029 (147,95); akumulasi turun 10,76% 2019 ke 2024"
+  },
+  "bnpb.renstra.irb_lama.2024": {
+   "nilai": 128.52,
+   "pustaka": "bnpb-2025-renstra, hlm. 53",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), Tabel 1.6",
+   "catatan": "deret IRB metode lama (KRB lama, kerentanan lama), capaian Tabel 1.6, tercapai terhadap target 129,62; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18); deret lain: bnpb.lkip2025.irb.nasional_2024_krb2021 (171,95), bnpb.lkip2025.irb.baseline_2026_2029 (147,95); akumulasi turun 10,76% 2019 ke 2024"
+  },
+  "bnpb.lkip2025.kerugian_pdb_persen.target_2025": {
+   "nilai": 0.137,
+   "pustaka": "bnpb-2026-lkip2025, hlm. 14",
+   "satuan": "% PDB",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025, Perjanjian Kinerja 10 Jan 2025",
+   "catatan": "target PK 2025; di Renstra/RPJMN tertulis 0,1370%; setelah PK diubah 21 Okt 2025 indikator ini turun menjadi Indikator Tujuan; capaian 0,217% (bnpb.lkip2025.kerugian_pdb_persen.2025) tidak memuat Siklon Tropis Senyar"
+  },
+  "bnpb.renstra.kerugian_pdb_persen.target_2029": {
+   "nilai": 0.135,
+   "pustaka": "bnpb-2025-renstra, hlm. 85",
+   "satuan": "% PDB",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025), Tabel 2.1",
+   "catatan": "0,1350% pada 2029 (0,1370% 2025, 0,1365% 2026, 0,1360% 2027, 0,1355% 2028); sumber RPJMN 2025–2029"
+  },
+  "bnpb.pedoman2016.masa_status.kab": {
+   "pustaka": "bnpb-2016-pedoman-status-darurat, hlm. 15",
+   "satuan": "hari",
+   "keyakinan": "resmi",
+   "sumber": "Pedoman Penetapan Status Keadaan Darurat Bencana (BNPB, 2016)",
+   "rendah": 7,
+   "tinggi": 14,
+   "catatan": "masa berlaku status kab/kota; dapat diperpanjang atau diperpendek atas kajian lapangan, perpanjangan wajib SK"
+  },
+  "bnpb.pedoman2016.masa_status.prov": {
+   "pustaka": "bnpb-2016-pedoman-status-darurat, hlm. 15",
+   "satuan": "hari",
+   "keyakinan": "resmi",
+   "sumber": "Pedoman Penetapan Status Keadaan Darurat Bencana (BNPB, 2016)",
+   "rendah": 14,
+   "tinggi": 30,
+   "catatan": "14 hari sampai 1 bulan (1 bulan dicatat 30 hari); dapat diperpanjang atau diperpendek atas kajian lapangan"
+  },
+  "bnpb.pedoman2016.masa_status.nasional": {
+   "pustaka": "bnpb-2016-pedoman-status-darurat, hlm. 15",
+   "satuan": "bulan",
+   "keyakinan": "resmi",
+   "sumber": "Pedoman Penetapan Status Keadaan Darurat Bencana (BNPB, 2016)",
+   "rendah": 1,
+   "tinggi": 3,
+   "catatan": "1 sampai 3 bulan; dapat diperpanjang atau diperpendek atas kajian lapangan"
   }
  }
 }

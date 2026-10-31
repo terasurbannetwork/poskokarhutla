@@ -15302,5 +15302,96 @@
   "publisher": "Direktorat Jenderal Sumber Daya Air",
   "verifikasi": "sekunder",
   "note": "hanya dikutip sekunder (jurnal pemakai) untuk debit andalan 80% dan cara hitung kebutuhan air irigasi; teks belum dibuka"
+ },
+ {
+  "id": "bnpb-2016-rbi",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     10
+    ]
+   ]
+  },
+  "title": "RBI, Risiko Bencana Indonesia",
+  "publisher": "Badan Nasional Penanggulangan Bencana, Direktorat Pengurangan Risiko Bencana",
+  "publisher-place": "Jakarta",
+  "verifikasi": "primer",
+  "note": "Terbit Oktober 2016; data kajian risiko bencana BNPB 2015, peta skala 1:250.000. Catatan baca: pustaka/1-rbi.md. Sampul 'Buku RBI_Final_low.pdf', 218 hlm. PDF (nomor buku = nomor PDF). URL belum dicatat."
+ },
+ {
+  "id": "bnpb-2025-buku-data-2024",
+  "type": "book",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2025,
+     6,
+     13
+    ]
+   ]
+  },
+  "title": "Data Bencana Indonesia 2024",
+  "volume": "3",
+  "publisher": "Pusat Data, Informasi, dan Komunikasi Kebencanaan (Pusdatinkom) BNPB",
+  "publisher-place": "Jakarta",
+  "verifikasi": "primer",
+  "note": "Buku Data 2024, Volume 3, ISSN 2830-635X, terbit 13 Juni 2025 (nama berkas 20250613). Nomor halaman = nomor cetak (PDF = cetak + 18). Tidak ada total luas karhutla nasional: Tabel L14 (hlm. 156) hanya luas per provinsi dari catatan kejadian BNPB, jangan dijumlah jadi angka nasional. Catatan baca: pustaka/2-buku-data-2024.md. URL belum dicatat."
+ },
+ {
+  "id": "pdc-2020-ndpba",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Pacific Disaster Center"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2020
+    ]
+   ]
+  },
+  "title": "Indonesia, Penilaian Dasar Kesiapsiagaan Bencana Nasional: Perangkat Berbasis Data untuk Penilaian Risiko dan Membangun Ketangguhan (NDPBA Indonesia, Final Report Bahasa)",
+  "publisher": "Pacific Disaster Center bekerja sama dengan BNPB",
+  "verifikasi": "primer",
+  "note": "Hak cipta 2020; memuat peristiwa sampai April 2021, jadi finalisasi sekitar 2021. 272 hlm., nomor cetak = nomor PDF. Didanai Pemerintah AS lewat INDOPACOM. Catatan baca: pustaka/4-ndpba.md. URL belum dicatat."
+ },
+ {
+  "id": "bnpb-2016-pedoman-status-darurat",
+  "type": "report",
+  "author": [
+   {
+    "literal": "Badan Nasional Penanggulangan Bencana",
+    "singkatan": "BNPB"
+   }
+  ],
+  "issued": {
+   "date-parts": [
+    [
+     2016,
+     3
+    ]
+   ]
+  },
+  "title": "Pedoman Penetapan Status Keadaan Darurat Bencana",
+  "publisher": "Badan Nasional Penanggulangan Bencana",
+  "publisher-place": "Jakarta",
+  "verifikasi": "primer",
+  "note": "Kata pengantar Kepala BNPB Willem Rampangilei, 10 Maret 2016. Pindaian 25 hlm. tanpa lapisan teks; masa berlaku status per tingkat di hlm. 15. Catatan baca: pustaka/6-pedoman-status-darurat.md. URL belum dicatat."
  }
 ]

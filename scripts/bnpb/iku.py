@@ -81,6 +81,7 @@ def sistem_kita():
 def bangun():
     return {
         "dibuat": time.strftime("%Y-%m-%dT%H:%M", time.localtime()) + "+07:00",
+        "tahun_data": "LAKIP BNPB 2025 (capaian 2019-2025), Renstra BNPB 2025-2029 (target 2025-2029); raster InaRISK: tahun sumber tidak tertulis",
         "sumber": [
             {"id": "lakip", "dokumen": LAK, "hal": "xi, 18-22, 35-37, 112-113"},
             {"id": "renstra", "dokumen": REN, "hal": "53, 71, 85, 133-134"},
