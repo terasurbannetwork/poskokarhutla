@@ -1,7 +1,7 @@
 # Catatan: NDPBA Indonesia, Final Report (Bahasa)
 
-Sumber teks: /private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/3c607330-233a-449f-b5b6-16ae3ecb5632/scratchpad/pdf/4.txt (hasil pdftotext).
-PDF asli: /Users/priyankaalfatehan28/Downloads/NDPBA_IDN_Final_Report_Bahasa.pdf
+Sumber teks: (teks ekstrak sementara, tidak disimpan) (hasil pdftotext).
+PDF asli: berkas PDF "NDPBA_IDN_Final_Report_Bahasa.pdf"
 Nomor halaman "(hal. N)" = nomor cetak di kaki halaman = nomor halaman PDF (PDF 272 halaman; sudah dicocokkan). Daftar isi dokumen: hal. 12-13 (nomor di daftar isi bergeser 1-2 halaman dari isi nyata).
 Catatan umum: hasil pdftotext untuk grafik peta (risiko ancaman-spesifik per provinsi, hal. 62-65) HANYA berisi legenda, tanpa angka; tabel peringkat 5 komponen utama terbaca lengkap (34 provinsi).
 

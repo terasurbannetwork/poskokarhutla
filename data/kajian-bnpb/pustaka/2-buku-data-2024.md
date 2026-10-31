@@ -1,7 +1,7 @@
 # Catatan: Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Juni 2025)
 
-Sumber teks: /private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/3c607330-233a-449f-b5b6-16ae3ecb5632/scratchpad/pdf/2.txt
-PDF: /Users/priyankaalfatehan28/Downloads/20250613_Buku Data 2024.pdf
+Sumber teks: (teks ekstrak sementara, tidak disimpan)
+PDF: berkas PDF "20250613_Buku Data 2024.pdf"
 Aturan halaman: (hal. N) = nomor cetak. Halaman PDF = nomor cetak + 18. Halaman romawi (vi, vii) = PDF hal. 8, 9.
 Catatan pembacaan: Tabel 1.1, Tabel 1.2, Gambar 1.3 s.d. 1.12 berupa gambar; angkanya saya baca dari render PDF. Tabel L1 s.d. L19 berupa teks. Tabel kab/kota L3, L5, L7, L9, L11, L13, L15, L17, L19 TIDAK disalin penuh di sini (hanya yang penting); sisanya dipindai sebagian untuk mencari peringkat teratas.
 

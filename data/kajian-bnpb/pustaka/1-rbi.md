@@ -1,6 +1,6 @@
 # Catatan: Buku RBI, Risiko Bencana Indonesia (BNPB)
 
-Sumber: `/Users/priyankaalfatehan28/Downloads/Buku RBI_Final_low.pdf` (218 halaman PDF; nomor halaman buku = nomor halaman PDF). Teks: `.../scratchpad/pdf/1.txt` (5.810 baris). Hampir semua tabel dan peta di badan buku berupa gambar; angkanya dibaca dari citra halaman (ditandai "gambar") dan dicocokkan dengan Lampiran per-kabupaten (teks). Semua angka di bawah dikutip persis; ketidakkonsistenan dokumen ditandai "CATATAN".
+Sumber: berkas PDF "Buku RBI_Final_low.pdf" (218 halaman PDF; nomor halaman buku = nomor halaman PDF). Teks: (teks ekstrak sementara) (5.810 baris). Hampir semua tabel dan peta di badan buku berupa gambar; angkanya dibaca dari citra halaman (ditandai "gambar") dan dicocokkan dengan Lampiran per-kabupaten (teks). Semua angka di bawah dikutip persis; ketidakkonsistenan dokumen ditandai "CATATAN".
 
 ## 1. Identitas dokumen
 - Judul: **RBI, Risiko Bencana Indonesia** (sampul hal. 1-6).
@@ -593,7 +593,7 @@ Provinsi | Sosial (jiwa) | Fisik (Rp juta) | Ekonomi (Rp juta) | Lingkungan (ha)
 - Catatan: nama di lampiran memuat salah label (mis. "Kota Ciamis", "Kota Banyuasin", "Kota Alor", "Kota Wakatobi", "Kota Lamandau", "Kota Sintang"); gunakan nama dengan hati-hati.
 
 ### P. Data kabupaten penuh
-Lampiran per kabupaten/kota ada di `/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/3c607330-233a-449f-b5b6-16ae3ecb5632/scratchpad/pdf/1.txt` baris 2311-5810 (gempa 2311, tsunami 2973, gunungapi 3305, longsor 3448, banjir 4033, karhutla 4677, banjir bandang 5288). Baris provinsi (semua kelas R/S/T) sudah diekstrak ke `.../scratchpad/prov.txt` (skrip `prov.py`). Dua baris provinsi kehilangan satu kolom karena "-" kosong di PDF: Tsunami Sulawesi Selatan (Fisik) dan Gunungapi Sulawesi Utara; gunakan Tabel 16 dan 17 untuk nilai sedang-tinggi yang benar.
+Lampiran per kabupaten/kota ada di (teks ekstrak sementara, tidak disimpan) baris 2311-5810 (gempa 2311, tsunami 2973, gunungapi 3305, longsor 3448, banjir 4033, karhutla 4677, banjir bandang 5288). Baris provinsi (semua kelas R/S/T) sudah diekstrak ke (teks ekstrak sementara) (skrip `prov.py`). Dua baris provinsi kehilangan satu kolom karena "-" kosong di PDF: Tsunami Sulawesi Selatan (Fisik) dan Gunungapi Sulawesi Utara; gunakan Tabel 16 dan 17 untuk nilai sedang-tinggi yang benar.
 
 ## 5. Kesimpulan dan rekomendasi dokumen
 - Hal. 137 (Penutup): hasil kajian risiko "hanya merupakan informasi"; perlu upaya konkret untuk mewujudkan PRB; buku disusun membantu penyelenggaraan PRB; kajian adalah satu pendekatan, keterbatasan metodologi dan data dapat menghasilkan informasi berbeda; akan terus disempurnakan seiring masukan dan perkembangan metodologi serta data.

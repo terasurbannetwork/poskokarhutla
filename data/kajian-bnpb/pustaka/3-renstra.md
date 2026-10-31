@@ -1,6 +1,6 @@
 # Catatan Renstra BNPB 2025-2029 (Perban BNPB No. 5 Tahun 2025)
 
-Sumber teks: scratchpad/pdf/3.txt (hasil pdftotext, 11.519 baris). Nomor halaman "(hal. N)" = nomor halaman cetak Lampiran I (angka "- N -" di kaki halaman), bukan halaman PDF. Halaman Perban (batang tubuh) bernomor 1-4 sebelum Lampiran.
+Sumber teks: hasil pdftotext sementara (tidak disimpan) (hasil pdftotext, 11.519 baris). Nomor halaman "(hal. N)" = nomor halaman cetak Lampiran I (angka "- N -" di kaki halaman), bukan halaman PDF. Halaman Perban (batang tubuh) bernomor 1-4 sebelum Lampiran.
 
 ## 1. IDENTITAS DAN DASAR HUKUM
 
