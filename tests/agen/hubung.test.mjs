@@ -174,6 +174,7 @@ test("uji balik kesiapan: lulus hanya bila skor rendah memang menanggung korban 
   const dibi = {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak", "mengungsi", "rumah_rusak_berat"], baris: rows};
   const u = S.ujiKesiapan(baris, dibi, nama);
   assert.equal(u.n, 120); assert.ok(u.lulus, "skor rendah = rusak per kejadian tinggi, harus lulus");
+  assert.ok(u.per_jenis.banjir?.teruji, "per jenis: banjir teruji"); assert.equal(u.per_jenis.karhutla?.teruji, false, "karhutla tanpa korban: tidak teruji");
   for (const r of rows) if (r[2] === "banjir") r[8] = 5;   // dampak rata: skor tidak membedakan apa-apa
   for (const r of rows) if (r[2] === "banjir") r[4] = 1;
   assert.equal(S.ujiKesiapan(baris, dibi, nama).lulus, false);

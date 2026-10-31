@@ -2510,7 +2510,10 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     const u0 = dlist(u.lolos)[0];
     const isi = u.lulus && u0 ? `Di ${angka(u.n)} kab/kota, data DIBI ${u.dari} sampai ${u.sampai}: makin rendah skor kesiapan, makin besar ${u.ukuran?.[u0] || u0} (r ${rKs(ks[u0].r)}). Ini keterkaitan, bukan bukti sebab.`
       : `Belum terbukti. Di ${angka(u.n)} kab/kota, data DIBI ${u.dari} sampai ${u.sampai}, skor kesiapan tidak berkaitan dengan korban per kejadian (meninggal r ${rKs(ks.mati.r)}, rumah rusak berat r ${rKs(ks.rusak.r)}). Kesenjangan hanya berkaitan lemah (rumah rusak berat r ${rKs(kj.rusak.r)}, meninggal r ${rKs(kj.mati.r)}, terdampak r ${rKs(kj.dampak.r)}).`;
-    const qd = q.prioritas?.n && q.aman?.n ? ` Median meninggal per kejadian, deskriptif dan belum diuji: kuadran prioritas ${dKs(q.prioritas.mati)}, aman ${dKs(q.aman.mati)}.` : "";
+    const JN = {banjir: "banjir", longsor: "longsor", cuaca: "cuaca ekstrem", karhutla: "karhutla", gempa: "gempa", abrasi: "abrasi", kekeringan: "kekeringan"};
+    const pj = Object.entries(u.per_jenis || {}), ya = pj.filter(([, v]) => v.teruji), tdk = pj.filter(([, v]) => !v.teruji);
+    const jn = ya.length ? ` Per jenis bencana, skor berkaitan dengan korban untuk ${ya.map(([j, v]) => `${JN[j] || j} (meninggal r ${rKs(v.mati.r)}, ${angka(v.n)} kab/kota)`).join(", ")}, tetapi tidak untuk ${tdk.map(([j]) => JN[j] || j).join(", ")}.` : "";
+    const qd = jn + (q.prioritas?.n && q.aman?.n ? ` Median meninggal per kejadian, deskriptif dan belum diuji: kuadran prioritas ${dKs(q.prioritas.mati)}, aman ${dKs(q.aman.mati)}.` : "");
     return `<p class="ak-ks-uji"><span class="ak-mp" style="--w0:${lab[1]}">${lab[0]}</span> ${esc(isi + qd)}</p>`;
   }
   function kesiapanWil(wd, pv, kab, geoK) {

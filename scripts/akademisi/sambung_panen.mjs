@@ -197,10 +197,10 @@ export function kesiapanDaerah(wd, rk, induk0, kampus, lembaga) {
    (korbannya tidak tercatat sebanding per kejadian). Spearman, kab/kota dengan paling sedikit 3 kejadian. Lulus = skor berkorelasi negatif (r <= -0,1)
    dan nyata (|t| >= 2) dengan paling sedikit satu ukuran dampak; tidak lulus = layar memberi label hipotesis.
    Batas: skor memakai data kapasitas sekarang, dampak dari tahun lalu; itu menguji kecocokan, bukan ramalan. */
-export function ujiKesiapan(baris, dibi, namaKab, dari = 2015) {
+export function ujiKesiapan(baris, dibi, namaKab, dari = 2015, opsi = {}) {
   const kol = c => dibi.kolom.indexOf(c), key = {}; for (const [kode, nama] of Object.entries(namaKab)) key[kode] = kode.slice(0, 2) + "|" + kunciKab(String(nama).replace(/^Kab\. Administrasi /, "Kab. ").replace(/\bKep\. /, "Kepulauan ").replace(/ dan /, " "));
   const agg = {}; let sampai = dari;
-  for (const r of dibi.baris || []) { const th = r[kol("tahun")], j = r[kol("jenis")], k = key[r[kol("kab")]]; if (th < dari || j === "karhutla" || j === "kekeringan" || !k || !baris[k]) continue;
+  for (const r of dibi.baris || []) { const th = r[kol("tahun")], j = r[kol("jenis")], k = key[r[kol("kab")]]; if (th < dari || (!opsi.jenis && (j === "karhutla" || j === "kekeringan")) || !k || !baris[k]) continue;
     sampai = Math.max(sampai, th); const a = agg[k] ||= {kej: 0, mati: 0, dampak: 0, rusak: 0};
     a.kej += r[kol("kejadian")] || 0; a.mati += r[kol("meninggal_hilang")] || 0; a.dampak += (r[kol("terdampak")] || 0) + (r[kol("mengungsi")] || 0); a.rusak += r[kol("rumah_rusak_berat")] || 0; }
   const ks = Object.keys(agg).filter(k => agg[k].kej >= 3 && baris[k].skor != null && baris[k].kesenjangan != null);
@@ -214,7 +214,11 @@ export function ujiKesiapan(baris, dibi, namaKab, dari = 2015) {
   const kuadran = Object.fromEntries(["prioritas", "siaga", "perkuat", "aman"].map(q => { const g = ks.filter(k => baris[k].kuadran === q);
     return [q, {n: g.length, mati: Math.round(med(g.map(k => agg[k].mati / agg[k].kej)) * 1000) / 1000, rusak: Math.round(med(g.map(k => agg[k].rusak / agg[k].kej)) * 100) / 100}]; }));
   const lolos = Object.keys(UK).filter(u => korelasi.skor[u].r <= -0.1 && korelasi.skor[u].t <= -2), lulus = ks.length >= 100 && lolos.length > 0;
-  return {dari, sampai, n: ks.length, ukuran: UK, korelasi, kuadran, lulus, lolos, sumber_url: "https://dibi.bnpb.go.id"};
+  /* per jenis (n >= 100): ambang lebih ketat t <= -3 karena banyak uji sekaligus (sekitar 7 jenis x 3 ukuran, setara koreksi Bonferroni) */
+  const per_jenis = {}; if (!opsi.jenis) for (const j of [...new Set((dibi.baris || []).map(r => r[kol("jenis")]))]) {
+    const u = ujiKesiapan(baris, {...dibi, baris: dibi.baris.filter(r => r[kol("jenis")] === j)}, namaKab, dari, {jenis: j}); if (u.n < 100) continue;
+    per_jenis[j] = {n: u.n, ...u.korelasi.skor, teruji: Object.values(u.korelasi.skor).some(v => v.r <= -0.1 && v.t <= -3)}; }
+  return {dari, sampai, n: ks.length, ukuran: UK, korelasi, kuadran, lulus, lolos, per_jenis, sumber_url: "https://dibi.bnpb.go.id"};
 }
 
 /* tesis, disertasi, dan skripsi kebencanaan dari repositori kampus (OAI-PMH): saringan judul ketat, karena kata "kekeringan" atau "banjir" juga muncul
