@@ -27,6 +27,9 @@ Amandemen 31 Okt 2026, sesudah label_kec.json jadi tetapi SEBELUM hubungan label
   besar poligon melintasi beberapa kecamatan (median bentang ~15 km), jadi label ini sebagian bermakna "kawasan".
   Uji kepekaan TANPA vonis: label n_th_tunggal (hanya poligon kecil di satu kecamatan, 879 kecamatan).
   Groundsource berasal dari berita dan condong ke kota; karena itu pembanding kepadatan (L2) adalah syarat utama.
+Amandemen 31 Okt 2026 (temuan pemeriksa, sebelum model pernah dijalankan): fitur riwayat DIBI kabupaten memakai
+  kejadian 2008-2021 saja (kolom kej_100rb_latih), supaya kejadian periode uji 2022-2025 tidak bocor ke fitur.
+  Label dibangun ulang sesudah bug pembaca WKB Polygon dibetulkan; angka lama label tidak dipakai.
 Penjelasan per kecamatan: kontribusi faktor j = b_j x z_ij (z = nilai terstandar). Tiga kontribusi terbesar ditulis,
 beserta tandanya. Ini menjelaskan MODEL, bukan sebab fisik di lapangan.
 
