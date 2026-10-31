@@ -669,6 +669,13 @@ uji("SP-052: rantai dummy tiap layar menunjuk pengisi yang ada; A/B dummy member
   assert.deepEqual(["konvensional", "lance", "lance_surfaktan", "sekat_rewetting"].map(l => per(l).length), [10, 10, 6, 8]);
   assert.deepEqual(["lance", "lance_surfaktan", "sekat_rewetting"].map(l => vonisG4(per(l), per("konvensional")).vonis), ["LULUS", "BELUM BISA DIPUTUS", "TIDAK LULUS"], "tanggal digeser lewat pilot_sampai supaya vonis keluar");
 });
+uji("dummy layar kunjungan: isiRenlap membuat 3 renlap dummy, ulang 409, staf nyata tidak melihatnya, admin melihat", async () => {
+  await DB.prepare("DELETE FROM sippa_renlap WHERE dummy = 1").run();
+  const d = await sip("POST", "/dummy/isi", {layar: "kunjungan"}, ADMIN); assert.equal(d.s, 200, d.t); assert.equal(d.j.dibuat.sippa_renlap, 3);
+  assert.equal((await sip("POST", "/dummy/isi", {layar: "kunjungan"}, ADMIN)).s, 409);
+  assert.ok(!(await sip("GET", "/renlap", undefined, pim.h)).j.renlap.some(r => r.status === "gagal" && r.galat?.startsWith("dummy")), "dummy tersaring dari staf nyata");
+  assert.ok((await sip("GET", "/renlap", undefined, ADMIN)).j.renlap.some(r => r.status === "gagal"), "admin melihat dummy");
+});
 uji("POST /api/sippa/ab-status/:id: moderator 200 ke ditinjau_evaluator (idempoten), pusdalops 403, status liar 400, id acak 404, tamu 401; laju 20", async () => {
   const id = (await DB.prepare("SELECT id FROM sippa_ab_unggah WHERE dummy = 0 LIMIT 1").first()).id, j0 = await jejak();
   assert.equal((await sip("POST", "/ab-status/" + id, {status: "ditinjau_evaluator"}, pus.h)).s, 403); assert.equal((await sip("POST", "/ab-status/" + id, {status: "ditinjau_evaluator"})).s, 401);

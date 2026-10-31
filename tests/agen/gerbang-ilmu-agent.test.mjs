@@ -13,6 +13,7 @@ import { execFileSync, spawnSync } from 'node:child_process'
 import { existsSync, mkdtempSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { join, dirname } from 'node:path'
 import { tmpdir } from 'node:os'
+import { createHash } from 'node:crypto'
 import { fileURLToPath } from 'node:url'
 
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '..', '..')
@@ -138,10 +139,12 @@ test('prompt pemilik tercatat, disamarkan, berlabel, dan hook tak pernah menahan
     'a1b2c3d4e5f6a1b2c3d4e5f6a1b2c3d4e5f6a1b2',
     'isi rapat rahasia',
     'akunmesinlain',
+    Buffer.from('VGVsa29tIFVuaXZlcnNpdHk=', 'base64').toString().split(' ')[0],
+    Buffer.from('TWFuZGFzYXJp', 'base64').toString(),
   ]
   const prompt =
     `benerin src/worker.js dan banjir rob; baca /Users/${rahasia[8]}/Downloads/x.pdf; kunci ${rahasia[0]} ${rahasia[1]}, email ${rahasia[2]}, ` +
-    `WA ${rahasia[3]} / ${rahasia[4]}, NIK ${rahasia[5]}, sha ${rahasia[6]}, password: hunter22 ` +
+    `WA ${rahasia[3]} / ${rahasia[4]}, NIK ${rahasia[5]}, sha ${rahasia[6]}, password: hunter22, usulan FIT ${rahasia[9]} ${rahasia[10]} ` +
     `<pasted_content id="x">${rahasia[7]}</pasted_content id="x">`
   assert.equal(kirim(JSON.stringify({ session_id: 'abcdef123456', prompt })).status, 0)
   assert.equal(kirim('bukan json').status, 0, 'stdin rusak membuat hook gagal: prompt pemilik bisa tertahan')
@@ -156,6 +159,24 @@ test('prompt pemilik tercatat, disamarkan, berlabel, dan hook tak pernah menahan
   assert.ok(!r.stdout.includes('hunter22'), 'password: <nilai> tidak disamarkan')
   assert.match(r.stdout, /\[banjir, warga-api\]/, `label agent salah:\n${r.stdout}`)
   assert.match(r.stdout, /src\/worker\.js/, 'jalur berkas ikut tersamar; agent kehilangan konteks')
+})
+
+test('usulan mitra yang dikaji tidak meninggalkan jejak asal di berkas repo', () => {
+  // Keputusan pemilik 31 Okt 2026. Daftar kata hanya berupa sidik sha256 (16 hex) supaya gerbang ini sendiri tidak
+  // menjadi jejak. TUNGGAL = nama penulis, konferensi, DOI; PASANGAN = nama lembaga + kata pendampingnya.
+  const sidik = (w) => createHash('sha256').update(w).digest('hex').slice(0, 16)
+  const TUNGGAL = new Set(['5b7d2abec77710ce', '3c9adfbe6531723c', '43c8a6e716c71970', 'c345de11d77b4b2a'])
+  const PASANGAN = new Set(['f6de262eddc67b23', '400e4c87d154119b']), INDUK = '609330f183447365'
+  const berkas = execFileSync('git', ['ls-files', '--', 'scripts', 'docs', 'public', '.claude/ilmu-agent', 'tests'], { cwd: ROOT, encoding: 'utf8', maxBuffer: 64 << 20 })
+    .split('\n').filter((f) => /\.(?:md|py|mjs|js|html|jsonl|txt)$/.test(f) && !f.includes(' 2.'))
+  const tembolok = new Map(), h = (w) => tembolok.get(w) ?? (tembolok.set(w, sidik(w)), tembolok.get(w))
+  const kena = berkas.filter((f) => {
+    let teks
+    try { teks = readFileSync(join(ROOT, f), 'utf8').toLowerCase() } catch { return false }
+    const k = teks.match(/[a-z0-9]+/g) ?? []
+    return k.some((w, i) => TUNGGAL.has(h(w)) || (h(w) === INDUK && ((i && PASANGAN.has(sidik(k[i - 1] + ' ' + w))) || PASANGAN.has(sidik(w + ' ' + (k[i + 1] ?? ''))))))
+  })
+  assert.deepEqual(kena, [], `jejak usulan mitra: ${kena.join(', ')}`)
 })
 
 test('AGENTS.md menulis pengetahuan dan otoritas orkestrator', () => {

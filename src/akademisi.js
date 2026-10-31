@@ -2,7 +2,7 @@
    Data pribadi ribuan dosen TIDAK boleh di public/ (aset statis) maupun di repo (repo publik): satu berkas JSON di R2 MEDIA,
    kunci akademisi/induk.json, diunggah dari mesin pemilik (scripts tidak ikut repo). Rute ini hanya meneruskan berkas itu setelah sesi lolos. */
 import {gagal, json, cacheTepi, bacaBody, adminOK} from "./worker.js";
-import {stafOK, stafSesi, PERAN} from "./staf.js";
+import {stafOK, stafSesi, stafPeran, PERAN} from "./staf.js";
 import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 
@@ -197,7 +197,7 @@ async function terdekat(env, req, url) {
 
 /* GET /api/akademisi/data/<nama>: berkas R2 akademisi/<nama>.json, nama dari daftar tetap. Satu kunci rute per nama (worker.js tidak diubah);
    nama lain tidak punya rute, jatuh ke aset statis = 404 tanpa menyentuh R2. "baru" = akademisi/baru/YYYY-MM.json terbaru (list prefix, urut leksikal). */
-export const DATA_AKADEMISI = ["riset", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran", "donatur_kejadian", "csr", "ahli_asing", "redaksi", "strategis", "alumni", "kalaksa", "hibah_riset", "penghargaan", "diaspora", "peneliti_muda", "prodi_beasiswa", "foto_pakar"];
+export const DATA_AKADEMISI = ["riset", "logo_pemilik", "bpbd_kapasitas", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran", "donatur_kejadian", "csr", "ahli_asing", "redaksi", "strategis", "alumni", "kalaksa", "hibah_riset", "penghargaan", "diaspora", "peneliti_muda", "prodi_beasiswa", "foto_pakar", "wilayah_daya", "lembaga_ekstra", "pakar_ekstra", "kejadian_ekstra", "tesis"];
 async function dataBaca(env, req, nama) {
   if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
@@ -213,7 +213,7 @@ async function dataBaca(env, req, nama) {
 
 /* GET /api/akademisi/lembaga/terdekat: lembaga terurut jarak haversine; akademisi/lembaga.json dimuat per isolate, TTL 10 menit (data lembaga dari cache isolat; gerbang staf tetap membaca D1 untuk sesi).
    kategori opsional dari 12 nilai tetap; sub opsional (mis. BPBD, SAR, palang merah) dicocokkan tanpa peduli huruf besar. */
-const KATEGORI_LEMBAGA = new Set(["pemerintah", "kerelawanan", "donasi", "jejaring", "internasional", "mitra-internasional", "keagamaan", "dunia-usaha", "komunikasi", "profesi", "kesehatan", "riset", "inovasi", "lsm"]);
+const KATEGORI_LEMBAGA = new Set(["pemerintah", "kerelawanan", "tanggap-ormas", "donasi", "jejaring", "internasional", "mitra-internasional", "keagamaan", "dunia-usaha", "komunikasi", "profesi", "kesehatan", "riset", "inovasi", "lsm"]);
 let simpanL = null;
 async function muatLembaga(env) {
   if (simpanL && Date.now() - simpanL.t < TTL) return simpanL.d;
@@ -330,6 +330,63 @@ async function koreksiDaftar(env, req) {
   return json({koreksi}, 200, {"cache-control": "private, no-store"});
 }
 
+/* Riwayat dengan BNPB (migrations/0087): semua staf menambah; ubah/hapus hanya penulis (oleh = identitas sesi, bukan body) atau admin.
+   Satu query terindeks per GET (target atau kejadian), maks 200 baris. ponytail: tanpa kursor; target dengan >200 riwayat terpotong ke yang terbaru. */
+const JENIS_RIWAYAT = new Set(["undangan", "narasumber", "kontrak", "penugasan", "lapangan", "lainnya"]), JENIS_TARGET = new Set(["pakar", "tokoh", "lembaga"]);
+const RE_KUNCI = /^[a-zA-Z0-9_.:-]{1,80}$/, RE_TGL = /^\d{4}-\d{2}-\d{2}$/;
+const tglSah = t => typeof t === "string" && RE_TGL.test(t) && new Date(t + "T00:00:00Z").toISOString().slice(0, 10) === t;
+const KOLOM_RIWAYAT = "id, jenis_target, target_id, jenis, tanggal, tanggal_selesai, judul, kejadian_id, catatan, penilaian, oleh, oleh_nama, dibuat, diubah";
+/* periksa objek utuh (POST: body; PATCH: baris lama + body); balik {galat} atau {v} */
+function cekRiwayat(o) {
+  const judul = teks(o.judul), catatan = o.catatan == null ? "" : teks(o.catatan), sel = o.tanggal_selesai || null, kej = o.kejadian_id || null, nilai = o.penilaian ?? null;
+  if (!JENIS_RIWAYAT.has(o.jenis)) return {galat: "jenis tidak dikenal"};
+  if (!tglSah(o.tanggal)) return {galat: "tanggal harus YYYY-MM-DD"};
+  if (sel !== null && (!tglSah(sel) || sel < o.tanggal)) return {galat: "tanggal_selesai harus YYYY-MM-DD dan tidak sebelum tanggal"};
+  if (!judul || judul.length > 200) return {galat: "judul 1 sampai 200 huruf"};
+  if (kej !== null && (typeof kej !== "string" || !RE_KUNCI.test(kej))) return {galat: "kejadian_id tidak sah"};
+  if (catatan === null || catatan.length > 2000) return {galat: "catatan maksimal 2000 huruf"};
+  if (nilai !== null && !(Number.isInteger(nilai) && nilai >= 1 && nilai <= 5)) return {galat: "penilaian bilangan bulat 1 sampai 5"};
+  return {v: {jenis: o.jenis, tanggal: o.tanggal, tanggal_selesai: sel, judul, kejadian_id: kej, catatan, penilaian: nilai}};
+}
+async function riwayatDaftar(env, req, url) {
+  const oleh = await stafOK(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const jt = url.searchParams.get("jenis_target"), tid = url.searchParams.get("target_id"), kej = url.searchParams.get("kejadian_id");
+  let q;
+  if (jt != null || tid != null) {
+    if (!JENIS_TARGET.has(jt) || !RE_KUNCI.test(tid || "")) return gagal(400, "jenis_target dan target_id tidak sah");
+    q = env.DB.prepare(`SELECT ${KOLOM_RIWAYAT} FROM akademisi_riwayat WHERE jenis_target = ? AND target_id = ? ORDER BY tanggal DESC, id DESC LIMIT 200`).bind(jt, tid);
+  } else if (RE_KUNCI.test(kej || "")) q = env.DB.prepare(`SELECT ${KOLOM_RIWAYAT} FROM akademisi_riwayat WHERE kejadian_id = ? ORDER BY tanggal DESC, id DESC LIMIT 200`).bind(kej);
+  else return gagal(400, "isi jenis_target+target_id atau kejadian_id");
+  return json({riwayat: (await q.all()).results.map(({oleh: o, ...r}) => ({...r, milik: !String(oleh).startsWith("staf:") || o === oleh}))   /* oleh mentah (hash token admin) tidak dikirim ke layar */}, 200, {"cache-control": "private, no-store"});
+}
+async function riwayatBuat(env, req) {
+  const oleh = await stafOK(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const bb = await bacaBody(req, 4096); if (bb.galat) return gagal(bb.status || 400, bb.galat);
+  const {jenis_target: jt, target_id: tid} = bb.o;
+  if (!JENIS_TARGET.has(jt)) return gagal(400, "jenis_target tidak dikenal");
+  if (typeof tid !== "string" || !RE_KUNCI.test(tid)) return gagal(400, "target_id tidak sah");
+  const c = cekRiwayat(bb.o); if (c.galat) return gagal(400, c.galat);
+  const x429 = await laju(env, String(oleh), "riwayat_akademisi", [[3600e3, 60]]); if (x429) return x429;
+  const v = c.v, kini = new Date().toISOString(), nama = String(oleh).startsWith("staf:") ? ((await stafSesi(env, req))?.nama || "Staf").slice(0, 120) : "Admin";   // nama disimpan sekali saat tulis: GET tanpa join
+  const r = await env.DB.prepare("INSERT INTO akademisi_riwayat (jenis_target, target_id, jenis, tanggal, tanggal_selesai, judul, kejadian_id, catatan, penilaian, oleh, oleh_nama, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
+    .bind(jt, tid, v.jenis, v.tanggal, v.tanggal_selesai, v.judul, v.kejadian_id, v.catatan, v.penilaian, String(oleh), nama, kini).run();
+  return json({riwayat: {id: r.meta.last_row_id, jenis_target: jt, target_id: tid, ...v, oleh_nama: nama, dibuat: kini, diubah: null, milik: true}}, 201, {"cache-control": "no-store"});
+}
+/* PATCH dan DELETE: baris dimuat, lalu hanya penulis atau admin lolos */
+async function riwayatUbahHapus(env, req, id) {
+  const adm = await adminOK(env, req), oleh = adm || await stafPeran(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const lama = await env.DB.prepare(`SELECT ${KOLOM_RIWAYAT} FROM akademisi_riwayat WHERE id = ?`).bind(Number(id)).first();
+  if (!lama) return gagal(404, "riwayat tidak ada");
+  if (!adm && lama.oleh !== oleh) return gagal(403, "hanya penulis atau admin");
+  if (req.method === "DELETE") { await env.DB.prepare("DELETE FROM akademisi_riwayat WHERE id = ?").bind(lama.id).run(); return json({ok: true}, 200, {"cache-control": "no-store"}); }
+  const bb = await bacaBody(req, 4096); if (bb.galat) return gagal(bb.status || 400, bb.galat);
+  const c = cekRiwayat({...lama, ...bb.o}); if (c.galat) return gagal(400, c.galat);
+  const v = c.v, kini = new Date().toISOString();
+  await env.DB.prepare("UPDATE akademisi_riwayat SET jenis = ?, tanggal = ?, tanggal_selesai = ?, judul = ?, kejadian_id = ?, catatan = ?, penilaian = ?, diubah = ? WHERE id = ?")
+    .bind(v.jenis, v.tanggal, v.tanggal_selesai, v.judul, v.kejadian_id, v.catatan, v.penilaian, kini, lama.id).run();
+  const {oleh: _o, ...tanpaOleh} = lama; return json({riwayat: {...tanpaOleh, ...v, diubah: kini, milik: true}}, 200, {"cache-control": "no-store"});
+}
+
 export const RUTE_AKADEMISI = {...Object.fromEntries(DATA_AKADEMISI.map(n => [`GET /api/akademisi/data/${n}`, (env, req) => dataBaca(env, req, n)])),
   "GET /api/akademisi": (env, req) => induk(env, req),
   "GET /api/akademisi/kampus": (env, req) => berkas(env, req, "akademisi/kampus.json"),
@@ -338,6 +395,10 @@ export const RUTE_AKADEMISI = {...Object.fromEntries(DATA_AKADEMISI.map(n => [`G
   "GET /api/akademisi/saya": (env, req) => saya(env, req),
   "GET /api/akademisi/koreksi": (env, req) => koreksiDaftar(env, req),
   "POST /api/akademisi/koreksi": (env, req) => koreksiBuat(env, req),
+  "GET /api/akademisi/riwayat": (env, req, url) => riwayatDaftar(env, req, url),
+  "POST /api/akademisi/riwayat": (env, req) => riwayatBuat(env, req),
+  "PATCH /api/akademisi/riwayat/:id": (env, req, url, kini, ctx, id) => riwayatUbahHapus(env, req, id),
+  "DELETE /api/akademisi/riwayat/:id": (env, req, url, kini, ctx, id) => riwayatUbahHapus(env, req, id),
   "POST /api/akademisi/ringkasan": (env, req) => ringkasan(env, req),
   "GET /api/akademisi/terdekat": (env, req, url) => terdekat(env, req, url),
   "GET /api/akademisi/karya/:id": (env, req, url, kini, ctx, id) => karya(env, req, ctx, id, url),

@@ -7061,7 +7061,10 @@ $("#simPlay").onclick = () => { const s = $("#simT"); if (Sim._putar) { clearInt
   else if (TABS.some(t => t[0] === h) || ALIAS[h]) bukaTab(h, false);
   else bukaTab("peta", false); /* Dashboard disembunyikan: halaman awal = Peta */
   /* tunggu peta selesai menggambar pertama kali (ukuran panel sudah final), baru bingkai Indonesia */
-  if (!h.startsWith("k/") && !S.jalur?.length) { setTimeout(() => !S.jalur?.length && petaIndonesia(false), 600); }
+  /* tautan titik dari /monitor: /?lat=..&lon=..&z=.. membingkai titik itu, bukan Indonesia */
+  const ptk = new URLSearchParams(location.search), tLat = +ptk.get("lat"), tLon = +ptk.get("lon");
+  if (ptk.has("lat") && ptk.has("lon") && Math.abs(tLat) <= 90 && Math.abs(tLon) <= 180 && !h.startsWith("k/")) peta.jumpTo({center: [tLon, tLat], zoom: Math.min(15, Math.max(3, +ptk.get("z") || 12))});
+  else if (!h.startsWith("k/") && !S.jalur?.length) { setTimeout(() => !S.jalur?.length && petaIndonesia(false), 600); }
 })();
 /* panel kiri & kanan bisa ditarik untuk dilebarkan; lebar diingat per perangkat */
 function lebarPanel() { const w = document.querySelector(".panel")?.getBoundingClientRect().width, t = document.querySelector(".tools")?.getBoundingClientRect().width;

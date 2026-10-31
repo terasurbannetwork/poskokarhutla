@@ -243,6 +243,8 @@ async function muatData() {
   Object.assign(S, {meta, st, hujan, sungai}); S.geo.prov = prov;
   S.rob = await muatJSON("data/rob.json").catch(() => null);
   muatJSON("data/bahaya.json").then(d => S.bahaya = d.kec || {}).catch(() => {});
+  muatJSON("data/bahaya_kelas.json").then(d => S.bahayaKelas = d).catch(() => {});
+  muatJSON("data/uji_inarisk.json").then(d => S.ujiInarisk = d).catch(() => {});
   muatJSON("data/kejadian.json").then(d => S.kejadian = d).catch(() => {});
   /* sel hujan: indeks cepat lat,lon -> sel */
   S.selHujan = new Map(hujan.grid.map(g => [g.lat.toFixed(2) + "," + g.lon.toFixed(2), g]));

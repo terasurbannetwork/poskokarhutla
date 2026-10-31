@@ -1,0 +1,12 @@
+{
+  "_catatan": "Registri cakupan Kemitraan Kampus di luar worker dan D1 (TEST.md, RU §1). Tiap ekspor public/kemitraan/hitung.js dan src/kemitraan_hitung.js, tiap modul public/kemitraan/*.js (js:<berkas>), tiap src/kemitraan*.js (src:<berkas>), dan tiap skrip scripts/kemitraan/*.py (py:<berkas>) WAJIB ada di 'diuji' (nilai = potongan nama uji yang benar-benar ada di tests/kemitraan/*.test.mjs, tests/warga/kemitraan_*.test.mjs, tests/bnpb/kemitraan_*.test.mjs; atau 'uji:<skrip>' untuk self-check --cek) atau 'dikecualikan' (nilai = alasan >= 15 huruf). 'antre' hanya boleh menyusut (BATAS_ANTRE di gerbang-cakupan.test.mjs, sekarang 0). Dijaga oleh tests/kemitraan/gerbang-cakupan.test.mjs.",
+  "diuji": {
+    "py:konst.py": "uji:konst",
+    "py:kode.py": "uji:kode",
+    "js:konst.js": "konst.py dan konst.js identik",
+    "py:profil_daerah.py": "uji:profil_daerah",
+    "src:kemitraan.js": "peran terdeteksi benar: SA, ST, PM, KK, AG, BP, PL"
+  },
+  "dikecualikan": {},
+  "antre": {}
+}

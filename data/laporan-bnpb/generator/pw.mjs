@@ -8,7 +8,7 @@ import { pathToFileURL, fileURLToPath } from 'node:url';
 
 const DI = path.dirname(fileURLToPath(import.meta.url));
 const ada = p => p && fs.existsSync(p);
-const MAC_MJS = '/Users/priyankaalfatehan28/Developer/worth-it/node_modules/playwright/index.mjs';
+const MAC_MJS = path.join(os.homedir(), 'Developer', 'worth-it', 'node_modules', 'playwright', 'index.mjs');
 const MAC_SHELL = os.homedir() + '/Library/Caches/ms-playwright/chromium_headless_shell-1248/chrome-headless-shell-mac-arm64/chrome-headless-shell';
 
 async function modul() {

@@ -170,6 +170,9 @@ const xml = x => String(x ?? "").replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "
 const capWaktu = t => new Date(t).toISOString().replace(/\.\d+Z$/, "+00:00");
 const CAP_KATEGORI = {gempa: "Geo", tsunami: "Geo", cuaca: "Met", karhutla: "Fire", banjir: "Met"}, CAP_TINGKAT = {Awas: ["Extreme", "Immediate"], Siaga: ["Severe", "Expected"], Waspada: ["Moderate", "Expected"]};
 const CAP_PASTI = {gempa: "Observed", tsunami: "Likely", cuaca: "Likely", karhutla: "Likely", banjir: "Likely"}, CAP_EVENT = {gempa: "Gempa bumi", tsunami: "Potensi tsunami", cuaca: "Cuaca ekstrem", karhutla: "Kebakaran hutan dan lahan", banjir: "Banjir"};
+/* senderName jujur soal asal: sumber BMKG/InaTEWS = diteruskan dari mereka; Deteksi = hitungan kita sendiri, tegas bukan BMKG dan bukan InaTEWS */
+const CAP_SITUS = "https://centurisk97.id/";
+const namaPengirim = sumber => /^(BMKG|InaTEWS)$/.test(sumber) ? `Centurisk97, meneruskan ${sumber}` : `Centurisk97, ${sumber} (hitungan otomatis, bukan peringatan BMKG atau InaTEWS)`;
 export function bentukCap(daftar, kini) {
   const info = p => {
     const [sev, urg] = CAP_TINGKAT[p.tingkat] ?? ["Unknown", "Unknown"], lokasi = [p.kab, PROV[p.prov]?.[1]].filter(Boolean).join(", ") || "Indonesia";
@@ -182,10 +185,12 @@ export function bentukCap(daftar, kini) {
     <certainty>${CAP_PASTI[p.jenis] ?? "Unknown"}</certainty>
     <effective>${capWaktu(Date.parse(p.dibuat))}</effective>
     <expires>${capWaktu(Date.parse(p.berlaku_hingga))}</expires>
-    <senderName>Centurisk97 (${xml(p.sumber)})</senderName>
+    <senderName>${xml(namaPengirim(p.sumber))}</senderName>
     <headline>${xml(p.judul)}</headline>
-    <description>${xml(p.teks)}</description>${p.sumber_url ? `\n    <web>${xml(p.sumber_url)}</web>` : ""}
+    <description>${xml(p.teks)}</description>
+    <web>${xml(/^https?:\/\//i.test(p.sumber_url || "") ? p.sumber_url : CAP_SITUS)}</web>
     <parameter><valueName>kunci</valueName><value>${xml(p.kunci)}</value></parameter>
+    <parameter><valueName>sumber</valueName><value>${xml(p.sumber)}</value></parameter>
     <area>
       <areaDesc>${xml(lokasi)}</areaDesc>${p.lat != null && p.lon != null ? `\n      <circle>${p.lat},${p.lon} 0</circle>` : ""}${p.prov ? `\n      <geocode><valueName>BPS</valueName><value>${xml(p.prov)}</value></geocode>` : ""}
     </area>

@@ -19,3 +19,10 @@ test("status_situs bertahan lewat penggabung dan gabung ulang bersifat tetap", (
   const b = gabung(a, [], new Date("2026-10-30")).hasil;
   assert.deepEqual(b.map(x => [x.id, x.telepon, x.status_situs, x.diperiksa]), a.map(x => [x.id, x.telepon, x.status_situs, x.diperiksa]));
 });
+
+test("workflow bulanan: isi tiap blok env menjorok lebih dalam dari kunci env (YAML sah)", async () => {
+  const {readFileSync} = await import("node:fs");
+  const b = readFileSync(new URL("../../.github/workflows/direktori-bulanan.yml", import.meta.url), "utf8").split("\n");
+  b.forEach((l, i) => { const m = l.match(/^(\s*)env:\s*$/); if (!m) return; const n = b[i + 1] || ""; const ind = n.match(/^\s*/)[0].length;
+    if (ind <= m[1].length) throw new Error(`baris ${i + 2}: isi env tidak menjorok`); });
+});

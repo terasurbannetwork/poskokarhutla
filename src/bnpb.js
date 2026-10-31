@@ -23,21 +23,21 @@ export const lajuIP = async (env, req, aksi, batas, kini) => laju(env, await ipH
 export const kodeBaru = async () => { const kode = acak(13); return {kode, kode_sha: await sha(kode)}; };
 
 /* Cari pemegang kode dari header `x-kode`. cari(kode_sha) -> baris atau null (modul menulis SELECT-nya sendiri, termasuk syarat dicabut).
-   Kode sah lolos dulu; hanya tebakan salah dihitung per IP, > 300 gagal per jam = 429. Tidak dikenal dan dicabut dijawab sama (403). */
-export async function pemegangKode(env, req, modul, cari, kini = Date.now()) {
+   Kode sah lolos dulu; hanya tebakan salah dihitung per IP, > `maks` (default 300) gagal per jam = 429. Tidak dikenal dan dicabut dijawab sama (403). */
+export async function pemegangKode(env, req, modul, cari, kini = Date.now(), maks = 300) {
   if (!env.IP_SALT) return gagal(503, "server belum dikonfigurasi (IP_SALT)");
   const k = (req.headers.get("x-kode") || "").trim().toLowerCase();
   const r = /^[0-9a-f]{26}$/.test(k) ? await cari(await sha(k)) : null;
   if (r) return r;   // kode sah lolos tanpa menyentuh penghitung kegagalan
   const ip = await ipHash(env, req), aksi = modul + ".kode_gagal";
   const n = (await env.DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(ip, aksi, kini - JAM).first()).n;
-  if (n >= 300) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
+  if (n >= maks) return gagal(429, "terlalu banyak kode salah dari jaringan ini; coba lagi nanti", {"retry-after": "3600"});
   await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(ip, aksi, kini).run();
   return gagal(403, "kode tidak berlaku (salah atau sudah dicabut); minta tautan baru dari admin");
 }
 
 /* Halaman publik Ruang Koordinasi dari public/bnpb/<berkas>.html dengan CSP ketat (tanpa skrip/gaya inline). */
-const CSP = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+export const CSP = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 /* turnstile: true = halaman berformulir publik; bila TURNSTILE_SITEKEY diset, CSP mengizinkan widget challenges.cloudflare.com (skrip + bingkai) */
 const CSP_TS = CSP.replace("script-src 'self'", "script-src 'self' https://challenges.cloudflare.com").replace("frame-ancestors", "frame-src https://challenges.cloudflare.com; frame-ancestors");
 export async function halamanBnpbPublik(env, url, berkas, {pribadi = false, turnstile = false} = {}) {
@@ -54,6 +54,7 @@ export const bersihkanBnpb = (env, kini = Date.now()) => env.DB.prepare("DELETE 
 export const RUTE_BNPB = {
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
   "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),
+  "GET /kinerja-bnpb": (env, req, url) => halamanBnpbPublik(env, url, "kinerja"),
   "GET /sitrep": (env, req, url) => halamanBnpbPublik(env, url, "sitrep"),
   "GET /kebutuhan": (env, req, url) => halamanBnpbPublik(env, url, "kebutuhan"),
   /* bukan "/kebakaran": jalur itu disisakan untuk entri registry bencana bila kelak ada */

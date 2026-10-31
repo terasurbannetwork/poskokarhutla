@@ -103,6 +103,7 @@ ulang yang berubah.
 | Neraca air Jawa     | `scripts/air/neraca/**`, `data/kajian-bnpb/neraca-air/**`     | `public/data/neraca_air/*.json`; lokal, iklim ERA5-Land ditarik bertahap (belum ada workflow) | `neraca-air`    |
 | Mesin repo          | `.github/workflows/**`, `package.json`, `scripts/agents/**`   | —                                                   | `mekanik-mesin` |
 | Gerbang             | `tests/agen/**`, `tests/beban/**`                             | `npm run uji:agen`                                  | `penulis-gerbang` |
+| Kemitraan kampus `/kemitraan` | `public/kemitraan*`, `public/kemitraan/**`, `public/data/kemitraan/**`, `scripts/kemitraan/**`, `tests/kemitraan/**` (layar+pipeline); `src/kemitraan*.js`, `migrations/0080-0084` (warga-api) | D1 `km_*`, R2 `kemitraan/`; `kemitraan.yml` harian, `kemitraan-pakar.yml` bulanan | `kampus` |
 
 ### 2.1 SIPPA (pipa portabel karhutla dan banjir): baca dulu, baru bangun
 
@@ -120,6 +121,25 @@ data pipa), baca dokumen di `data/kajian-bnpb/pipa/` dengan urutan otoritas ini:
 Fitur, layar, atau bab yang tidak ada di dokumen itu tidak dibuat. Bila dokumen
 bertentangan atau kurang, berhenti dan tanya pemilik; jangan mengarang arah.
 
+### 2.2 Kemitraan Kampus (`/kemitraan`): baca dulu, baru bangun
+
+Sebelum menyentuh apa pun tentang Kemitraan Kampus (profil daerah, belanja masalah,
+pencocokan pakar, riset dan dana, satgas kampus, talenta), baca dokumen di
+`data/kajian-bnpb/kampus/` dengan urutan otoritas ini:
+
+1. `KEPUTUSAN-KAMPUS.md`: keputusan pemilik, menang atas semuanya.
+2. `PRD.md`: lingkup, peran, fitur F-*, larangan.
+3. `ALUR.md`: alur ujung ke ujung tiap peran dan status.
+4. `ALGORITMA.md`: rumus masalah, pakar, solusi, pertanyaan, skor, uji kejujuran.
+5. `PROFIL-DAERAH.md`: skema profil dan isi buku per bab.
+6. `DESIGN-SYSTEM.md`: tiru `/akademisi`; komponen `.km-*`.
+7. `DESAIN-TEKNIS.md`: berkas, D1 0080–0084, rute, pipeline, ADR.
+8. `KEAMANAN-PRIVASI.md`: matriks hak, PDP, berkas.
+9. `RENCANA-UJI.md`: kriteria terima dan perintah bukti.
+10. `TIKET.md`: urutan kerja `KM-*`; ambil tiket, kerjakan hanya cakupannya.
+
+Aturan berhentinya sama dengan §2.1.
+
 ## 3. Bentuk kerja
 
 ### 3.2 Verifier wajib konteks bersih
@@ -134,6 +154,17 @@ Checkout utama sering dipegang beberapa sesi Claude sekaligus dan index git-nya
 dipakai bersama. Fan-out yang membaca aman di tree yang sama; fan-out yang
 menulis pakai `isolation: "worktree"`. Commit dengan path spesifik
 (`git commit -- <berkas>`), jangan `git add -A`.
+
+### 3.4 Aturan pemilik masuk gerbang, bukan memory
+
+Tiap kali pemilik bilang "catat" atau mengulang koreksi, tanya dulu apakah
+mesin bisa memeriksanya. Kalau bisa, aturannya dijadikan gerbang uji
+(`tests/agen/**`) atau hook (`.claude/settings.json`) di giliran yang sama,
+dan pelanggaran yang sudah ada dibetulkan di commit yang sama. Memory cuma
+untuk fakta, penunjuk, dan selera yang tidak terukur. Status dan to-do masuk
+docs/TIKET. Aturan yang bertentangan dengan aturan lama ditanyakan ke pemilik,
+lalu yang kalah dihapus. Latar dan rencana kerjanya ada di
+`docs/buku-pegangan/AUDIT-ATURAN-HARNESS.md`.
 
 ## 6. Review
 

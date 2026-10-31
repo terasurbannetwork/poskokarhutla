@@ -56,6 +56,9 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 31 Okt 2026
+   - **Semua halaman deck terang, termasuk penutup dan pembatas Lampiran** (*"Jadikan terang"*, meneguhkan *"Semua terang"* 26 Okt). Mesin `ppt-konsultan`: `gelap_untuk` dikosongkan di 12 tema proyek, warna pembatas jadi navy dan teks di putih, 10 spek lama dibersihkan dari sampul gelap, `deck.py` menolak halaman berlatar navy, dan `tema.py` punya uji negatifnya. Navy tetap untuk bidang kecil (pil tanggal, kepala tabel, baris total).
+   - **Dua sistem desain**: Centurisk97 untuk web (dari `public/inti/`) dan BNPB untuk deck dan laporan (dari tema mesin deck dan Elemen Grafis BNPB), terpisah tetapi saling merujuk untuk aturan bahasa, angka, dan sumber data.
 1. 29 Okt 2026
    - **Selera web: paragraf rata kanan-kiri, grafik selalu interaktif** (pemilik saat meninjau `/akademisi`: *"Agar justify. Lu catet lah"* dan *"grafik atau figur gini selalu pengen interaktif. Catat"*). Berlaku di semua halaman centurisk97.id dan artifact; rujukan kode `grafik()` dan `sorotGrafik()` di `public/akademisi.js` (`4ff127bc`).
    - **`/akademisi` dirapikan** (`2730abb9`, `fc581d80`, `3a94f8f4`): kartu kembali ke foto bulat kecil, pemilih program studi bercari, judul kepala sebaris, kepala rata tengah, linimasa pendidikan dan jabatan berkartu dengan pil tahun.

@@ -1,60 +1,29 @@
-"""Laporan Penanganan Pengendalian Karhutla 301026, cut-off 17.00 WIB. Cara = versi "kini" deck 291026 (../satelit-2026-10-29/dua-versi/jalan.py),
-pilihan pemilik 29 Okt malam: luas terbakar dan belum padam dari hari api yang sama ("hari yang sama biar pasti", "gunakan 282 dan 153").
-Semua angka dari berkas website tayang (unduh ulang tiap jalan, simpan di web/), WA kalah bila beda:
-- hotspot: harian30.json semua hari;
-- kolom 28 dan 29 Okt: luas, belum padam, padam = peta_karhutla.json hari itu sendiri;
-- kolom 30 Okt (s.d. data terakhir): belum padam = belum_kini.json; luas dan padam = hitungan sendiri dari hotspot.json website
-  (rumus peta_karhutla: titik NOAA-20/21 nominal/tinggi x 4,12 / 4,16 ha, dibagi 2; padam = titik 28 Okt yang sel 3x3-nya tanpa deteksi
-  29-30 Okt). Diuji terhadap hari terbit 29 Okt (dicetak);
-- firespot: kluster.json (hari ini) dan kluster_hari/<hari>.json kolom 4 (hari lampau);
-- pil PM2,5: udara/data/riwayat.json website;
-- slide operasi: WA satgas 30 Okt (wa-satgas.txt; operasi 29 Okt). WA tanpa rekap instansi dan armadanya (58 unit) beda dengan rekap 28 Okt
-  (59 unit), jadi baris PEMILIK tidak tampil (bnpb.pemilik tanpa rekap).
-Jalankan (Windows): $env:PYTHONUTF8=1; C:\\Python314\\python data\\laporan-bnpb\\satelit-2026-10-30\\jalan.py"""
-import csv, datetime as dt, io, json, os, sys, types, urllib.request
+"""Laporan Penanganan Pengendalian Karhutla 301026, cut-off 17.00 WIB, dari salinan website 18.07 WIB (web/; titik.yml 17.30, lintasan
+terakhir 14.56 WIB). Cara sama dengan ../satelit-2026-10-29/dua-versi/jalan.py. Luas terbakar dan belum padam selalu dari hari api yang sama
+(pemilik 29 Okt: "hari yang sama biar pasti"):
+    python3 jalan.py utuh   -> luas, belum padam, padam = hari utuh website (29 Okt), dilabeli tanggal cut-off 00.00 (kolom 30 Okt)
+    python3 jalan.py kini   -> kolom 28/29 Okt = hari itu sendiri (website); kolom 30 Okt = s.d. data terakhir: belum padam =
+                               belum_kini.json website; luas dan padam = hitungan sendiri dari hotspot.json website (rumus peta_karhutla)
+Hotspot: harian30.json; firespot: kluster.json (hari ini) dan kluster_hari/<hari>.json kolom 4; pil PM2,5: riwayat udara website;
+slide operasi: wa-satgas.txt (argumen ke-2 untuk teks lain)."""
+import csv, datetime as dt, io, json, os, sys
 from collections import Counter
+VERSI = sys.argv[1]
+assert VERSI in ('utuh', 'kini'), 'pakai: python3 jalan.py utuh|kini [wa.txt]'
 S = os.path.dirname(os.path.abspath(__file__)); G = os.path.normpath(os.path.join(S, '..', 'generator')); sys.path.insert(0, G); os.chdir(G)
-import satelit, penanganan, cuaca_riwayat
+WA = os.path.abspath(os.path.join(S, sys.argv[2] if len(sys.argv) > 2 else 'wa-satgas.txt'))
+import satelit, penanganan
 D, JAM = dt.date(2026, 10, 30), '17:00'
-KEMARIN, LUSA = D - dt.timedelta(days=1), D - dt.timedelta(days=2)
-md = lambda d: d.strftime('%m-%d')
-
-
-class _Hari(dt.date):   # jalan ulang hari lain tetap memakai cuaca tarikan hari laporan
-    @classmethod
-    def today(cls): return D
-
-
-cuaca_riwayat.dt = types.SimpleNamespace(date=_Hari, timedelta=dt.timedelta)
-
-
-def unduh(url, ke):
-    # salinan web/ yang sudah ada dipakai ulang (terbitan 17.31 WIB, sesudah cut-off): jalan ulang tidak menggeser angka bila website
-    # sudah terbit lagi. BARU=1 memaksa unduh ulang.
-    if os.path.exists(ke) and not os.environ.get('BARU'):
-        return json.load(open(ke, encoding='utf-8'))
-    os.makedirs(os.path.dirname(ke), exist_ok=True)
-    for coba in range(3):
-        try:
-            b = urllib.request.urlopen(urllib.request.Request(url, headers={'User-Agent': 'Mozilla/5.0'}), timeout=300).read(); break
-        except (TimeoutError, OSError):
-            if coba == 2: raise
-    open(ke, 'wb').write(b)
-    return json.loads(b)
-
-
-web = lambda f: unduh(f'https://centurisk97.id/data/{f}', os.path.join(S, 'web', f.replace('/', '-')))
+UTC_WEB = {'2026-10-29', '2026-10-30'}   # cache/raw ditarik 29 Okt 11.01 WIB: UTC 29 Okt belum lengkap
+web = lambda f: json.load(open(os.path.join(S, 'web', f.replace('/', '-'))))
 P, H, HS, KL, KINI = web('peta_karhutla.json'), web('harian30.json'), web('hotspot.json'), web('kluster.json'), web('belum_kini.json')
-KH = {d: web(f'kluster_hari/{d}.json')['w'] for d in ((D - dt.timedelta(days=i)).isoformat() for i in (3, 2, 1))}
-assert KINI['hari'] == D.isoformat() and P['hari'][-1] == KEMARIN.isoformat(), (KINI['hari'], P['hari'][-1])
-assert H['hari_ini'] == D.isoformat(), H['hari_ini']
+KH = {d: web(f'kluster_hari/{d}.json')['w'] for d in ('2026-10-27', '2026-10-28', '2026-10-29')}
+assert KINI['hari'] == D.isoformat() and P['hari'][-1] == '2026-10-29' and H['hari_ini'] == D.isoformat(), (KINI['hari'], P['hari'][-1])
 print('website: harian30', H['dibuat'], '| peta_karhutla', P['dibuat'], 's.d.', P['hari'][-1], '| hotspot.json titik terakhir', HS['acuan'], '| belum_kini', KINI['dibuat'])
 
-# hotspot.json -> CSV FIRMS per sumber per hari UTC (hari UTC kemarin dan hari ini); hari lain dari cache/raw atau tarikan FIRMS
 SENSOR = {'MODIS_NRT': 'M', 'VIIRS_SNPP_NRT': 'N', 'VIIRS_NOAA20_NRT': 'N20', 'VIIRS_NOAA21_NRT': 'N21'}
 ACUAN = dt.datetime.fromisoformat(HS['acuan'])
 KOL = ['latitude', 'longitude', 'scan', 'track', 'acq_date', 'acq_time', 'satellite', 'confidence', 'frp', 'daynight']
-UTC_WEB = {KEMARIN.isoformat(), D.isoformat()}
 
 
 def csv_web(src, u):
@@ -67,10 +36,16 @@ def csv_web(src, u):
     return b.getvalue()
 
 
-asli_csv = satelit.csv_hari
-satelit.csv_hari = lambda src, u, cutoff, kunci: csv_web(src, u.isoformat()) if u.isoformat() in UTC_WEB else asli_csv(src, u, cutoff, kunci)
+def csv_hari(src, u, cutoff, kunci):
+    if u.isoformat() in UTC_WEB:
+        return csv_web(src, u.isoformat())
+    f = os.path.join(satelit.CACHE, f'{src}-{u.isoformat()}.csv')
+    if not os.path.exists(f):
+        sys.exit(f'cache {f} tidak ada')
+    return open(f).read()
 
-# luas dan padam hari laporan s.d. data terakhir: rumus peta_karhutla.py atas baris NOAA-20/21 n/h hotspot.json
+
+# luas dan padam s.d. data terakhir: rumus peta_karhutla.py atas baris NOAA-20/21 n/h hotspot.json (semua baris, termasuk hitung=0)
 SISI, F = 0.003375, {'N20': 4.12, 'N21': 4.16}
 DET = {}
 for lat, lon, jam, sen, frp, yak, wil, tgl, hit in HS['baris']:
@@ -83,80 +58,88 @@ def luas_sendiri(rows):
     return {p: round(sum(c[(p, s)] * f for s, f in F.items()) / 2) for p in {p for p, _ in c}}
 
 
-def padam_sendiri(hari_api, sesudah):
-    ada = {c for t in sesudah for _, _, c in DET.get(md(t), [])}
-    return luas_sendiri([r for r in DET.get(md(hari_api), []) if not any((r[2][0] + i, r[2][1] + j) in ada for i in (-1, 0, 1) for j in (-1, 0, 1))])
+def padam_sendiri(hari, kemudian):
+    ada = {c for t in kemudian for _, _, c in DET[t]}
+    return luas_sendiri([r for r in DET[hari] if not any((r[2][0] + i, r[2][1] + j) in ada for i in (-1, 0, 1) for j in (-1, 0, 1))])
 
 
-LUAS_D, PADAM_D = luas_sendiri(DET.get(md(D), [])), padam_sendiri(LUSA, (KEMARIN, D))
-# uji rumus terhadap hari yang sudah terbit (kemarin): nasional dan per provinsi
-j = P['hari'].index(KEMARIN.isoformat()); uji = luas_sendiri(DET.get(md(KEMARIN), []))
-web_l = {k: v['luas'][j] or 0 for k, v in P['prov'].items()}
-print(f'uji luas {KEMARIN}: sendiri {sum(uji.values())} ha vs website {round(sum(web_l.values()))} ha;',
-      'beda > 5 ha:', {k: (uji.get(k, 0), round(web_l.get(k, 0))) for k in set(uji) | set(web_l) if abs(uji.get(k, 0) - web_l.get(k, 0)) > 5} or 'tidak ada')
-print(f'{D} s.d. data terakhir: luas {sum(LUAS_D.values())} ha, padam {sum(PADAM_D.values())} ha, belum padam {round(sum(KINI["prov"].values()))} ha')
+LUAS_KINI, PADAM_KINI = luas_sendiri(DET['10-30']), padam_sendiri('10-28', ('10-29', '10-30'))
+# uji rumus pada hari yang sudah terbit (29 Okt): hitungan sendiri vs peta_karhutla.json
+j = P['hari'].index('2026-10-29')
+for m, a in (('luas', luas_sendiri(DET['10-29'])), ('padam', padam_sendiri('10-27', ('10-28', '10-29')))):
+    print(f'uji {m} 29 Okt: sendiri {sum(a.values()):,} vs website {sum((o[m][j] or 0) for o in P["prov"].values()):,} ha')
 
+satelit.csv_hari = csv_hari
+satelit.kunci_firms = lambda k=None: 'cache'
 asli = satelit.hitung
 
 
 def hitung_web(t, jam, n, kunci=None):
     a = asli(t, jam, n, kunci)
-    beda = []
     for i, d in enumerate(a['hari']):
         if d in H['hari']:
-            for k, o in a['prov'].items():
-                w = H['prov'].get(k, [0] * len(H['hari']))[H['hari'].index(d)]
-                if o['hot'][i] != w: beda.append((d, k, o['hot'][i], w))
-                o['hot'][i] = w
-    print('selisih hotspot sendiri vs website (hari, prov, sendiri, website):', beda[:20] or 'tidak ada', f'({len(beda)} sel)' if beda else '')
+            for k, o in a['prov'].items(): o['hot'][i] = H['prov'].get(k, [0] * len(H['hari']))[H['hari'].index(d)]
     nol = {m: [0] * len(P['hari']) for m in ('luas', 'belum', 'padam')}
     for k, o in a['prov'].items():
         pk = P['prov'].get(k) or nol
         for i, d in enumerate(a['hari']):
-            if d == D.isoformat():
-                o['luas'][i], o['belum'][i], o['padam'][i] = LUAS_D.get(k, 0), KINI['prov'].get(k, 0), PADAM_D.get(k, 0)
+            if VERSI == 'utuh':   # hari utuh d-1, dilabeli d (luas_00)
+                jj = P['hari'].index((dt.date.fromisoformat(d) - dt.timedelta(days=1)).isoformat())
+                for m in ('luas', 'belum', 'padam'): o[m][i] = pk[m][jj] or 0
+            elif d == D.isoformat():
+                o['luas'][i], o['belum'][i], o['padam'][i] = LUAS_KINI.get(k, 0), KINI['prov'].get(k, 0), PADAM_KINI.get(k, 0)
             else:
                 for m in ('luas', 'belum', 'padam'): o[m][i] = pk[m][P['hari'].index(d)] or 0
     return a
 
 
-# Firespot keempat hari diambil dari website (kluster_hari tiga hari lalu + kluster.json hari ini), jadi hitungan sendiri firespot_hari.seri
-# tidak dijalankan: ia menarik cuaca 92 hari untuk 612 sel (25 tarikan Open-Meteo, +-2 menit tiap tarikan karena kuota) hanya untuk dibuang.
-# Cuaca cukup untuk pil 6 baris tabel: grid dibatasi ke sel 6 provinsi hotspot teratas hari laporan (rata-rata per provinsi tidak berubah).
-iH = H['hari'].index(D.isoformat())
-TOP6 = set(sorted(H['prov'], key=lambda k: -(H['prov'][k][iH] or 0))[:6])
-asli_grid = cuaca_riwayat.H.grid_darat
-cuaca_riwayat.H.grid_darat = lambda w: [g for g in asli_grid(w) if g[2] in TOP6]
-# Pil hanya memakai hujan dan angin hari laporan, diambil langsung dari data per jam hari itu; riwayat 92 hari cuma untuk FWI (tak dipakai pil).
-# 3 hari cukup dan jauh lebih ringan bagi kuota Open-Meteo (30 Okt: tarikan 92 hari tertahan kuota 429).
-cuaca_riwayat.PAST = 3
-print('6 provinsi tabel (hotspot', D, '):', sorted(TOP6, key=lambda k: -H['prov'][k][iH]), [H['prov'][k][iH] for k in sorted(TOP6, key=lambda k: -H['prov'][k][iH])])
+asli_fs = penanganan.firespot_hari.seri
 
 
 def firespot_web(hari_akhir, n, jam='17:00', kunci=None):
-    hari = [(hari_akhir - dt.timedelta(days=n - 1 - i)).isoformat() for i in range(n)]
-    fs = {}
+    fs, hari = asli_fs(hari_akhir, n, jam, kunci)
     kini = Counter()
     for f in KL['features']:
         for k, v in (f['properties'].get('fs_ini') or {}).items(): kini[k.split('|')[0]] += v
-    for k in set(kini) | {k for w in KH.values() for k in w if '|' not in k}:
+    for k in set(fs) | set(kini) | {k for w in KH.values() for k in w if '|' not in k}:
         baris = fs.setdefault(k, [0] * n)
         for i, d in enumerate(hari):
-            assert d == H['hari_ini'] or d in KH, f'firespot {d} tidak ada di website'
-            baris[i] = kini.get(k, 0) if d == H['hari_ini'] else (KH[d].get(k) or [0] * 5)[4]
-    print('firespot website', hari[-1], 'nasional', sum(v[-1] for v in fs.values()))
+            w = kini.get(k, 0) if d == H['hari_ini'] else (KH[d].get(k) or [0] * 5)[4] if d in KH else None
+            if w is not None: baris[i] = w
     return fs, hari
 
 
 import pil_sendiri
 pil_sendiri.RIWAYAT = os.path.join(S, 'web', 'udara-riwayat.json')
-unduh('https://centurisk97.id/udara/data/riwayat.json', pil_sendiri.RIWAYAT)
+wa = penanganan.wa_operasi
+asli_op = wa.operasi
 
-asli_op = penanganan.wa_operasi.operasi
-# pil ARMADA UDARA bertanggal laporan WA (sama dengan deck 281026 dan 291026), bukan hari kegiatan
-penanganan.wa_operasi.operasi = lambda teks: (lambda op: {**op, 'tanggal_armada': op['tanggal_laporan']})(asli_op(teks))
+
+def operasi_web(teks):
+    """WA 30 Okt tanpa rekap gelar: baris PEMILIK dari rekap instansi 28 Okt (pemilik 29 Okt: "ikuti data kemarin kalau ada"), dikurangi
+    satu-satunya beda yang mengubah instansi: patroli/OMC Jawa Timur 1 -> 0 = PK-SCH, OMC BNPB (rekap 28 Okt "JAWA TIMUR: A. BNPB 1 Unit OMC").
+    Kalsel 9 -> 8 dan Kalteng 2 -> 3 patroli/OMC = satu unit pindah, instansinya tetap. Pil ARMADA UDARA bertanggal laporan WA."""
+    op = asli_op(teks)
+    if op['pemilik']:
+        return op
+    o28 = asli_op(open(os.path.join(S, '..', 'satelit-2026-10-28', 'wa-satgas.txt')).read())
+    beda = {k: (o28['armada'].get(k), op['armada'].get(k)) for k in set(op['armada']) | set(o28['armada']) if op['armada'].get(k) != o28['armada'].get(k)}
+    assert beda == {'Jawa Timur': ([1, 1], [0, 1]), 'Kalimantan Selatan': ([9, 5], [8, 5]), 'Kalimantan Tengah': ([2, 8], [3, 8])}, beda
+    pemilik = {**o28['pemilik'], 'BNPB': o28['pemilik']['BNPB'] - 1}
+    assert sum(pemilik.values()) == sum(map(sum, op['armada'].values())), pemilik
+    return {**op, 'pemilik': pemilik, 'tanggal_armada': op['tanggal_laporan']}
+
+
+wa.operasi = operasi_web
 satelit.hitung = hitung_web
 penanganan.satelit = satelit
 penanganan.firespot_hari.seri = firespot_web
-penanganan.bangun(D, JAM, None, S, os.path.join(S, 'wa-satgas.txt'), ha_utuh=True, belum_kini=False, luas_00=True)
-json.dump(json.load(open(os.path.join(G, 'cache', f'penanganan-{D:%d%m%y}', 'angka.json'))), open(os.path.join(S, 'angka.json'), 'w'))
+try:
+    penanganan.bangun(D, JAM, None, S, WA, ha_utuh=True, belum_kini=False, luas_00=True)
+except FileNotFoundError as e:   # soffice tak terpasang di mesin ini: PDF diekspor lewat PowerPoint
+    assert 'soffice' in str(e), e
+kerja = os.path.join(G, 'cache', f'penanganan-{D:%d%m%y}')
+nama = f'Laporan Penanganan Pengendalian Karhutla {D:%d%m%y} - ' + ('hari utuh 29 Okt' if VERSI == 'utuh' else f's.d. {JAM.replace(":", ".")} WIB')
+open(os.path.join(S, nama + '.pptx'), 'wb').write(open(os.path.join(kerja, f'Laporan Penanganan Pengendalian Karhutla {D:%d%m%y}.pptx'), 'rb').read())
+open(os.path.join(S, f'angka-{VERSI}.json'), 'w').write(open(os.path.join(kerja, 'angka.json')).read())
+print('ok', nama)

@@ -310,8 +310,14 @@ const SAMAR = [
   [/\b(?=[A-Za-z_-]*\d)[A-Za-z0-9_-]{40,}\b/g, '[token]'],
 ]
 
+// Asal usulan mitra yang dikaji tidak boleh tercatat di repo publik (keputusan pemilik 31 Okt 2026). Disimpan sebagai
+// sidik sha256 (16 hex) per kata supaya daftarnya sendiri tidak meninggalkan jejak. Tambah kata: sidikKata('kata').
+export const sidikKata = (w) => crypto.createHash('sha256').update(String(w).toLowerCase()).digest('hex').slice(0, 16)
+export const SIDIK_MITRA = new Set(['609330f183447365', '5b7d2abec77710ce', '3c9adfbe6531723c', '43c8a6e716c71970', 'c345de11d77b4b2a'])
+const samarMitra = (t) => t.replace(/[A-Za-z0-9]+/g, (w) => (SIDIK_MITRA.has(sidikKata(w)) ? '[mitra]' : w))
+
 export function samarkan(teks) {
-  let t = String(teks)
+  let t = samarMitra(String(teks))
   for (const [re, ganti] of SAMAR) t = t.replace(re, ganti)
   return t.length > PROMPT_MAKS ? t.slice(0, PROMPT_MAKS) + ` …[+${t.length - PROMPT_MAKS} karakter]` : t
 }

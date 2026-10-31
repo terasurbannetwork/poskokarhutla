@@ -41,7 +41,8 @@
 .dk-nav button svg{background:var(--w)!important;color:#fff!important}
 .dk-nav button:hover{border-color:var(--w);background:color-mix(in oklch, var(--w) 14%, var(--card))}
 /* tabel Dampak: teks rata kiri, angka tengah, satu baris per sel, zebra + hover */
-.dk-tw.dk-tw thead th,.dk-tw.dk-tw tbody td{text-align:left}
+.dk-tw.dk-tw tbody td{text-align:left}
+.dk-tw.dk-tw thead th{text-align:center}
 .dk-tw.dk-tw thead th.n,.dk-tw.dk-tw tbody td.n{text-align:center}
 .dk-tw tbody td{padding:11px 10px;vertical-align:middle;white-space:normal} /* boleh turun baris supaya tabel muat tanpa geser (pemilik, 14 Okt 2026) */
 .dk-tw tbody td .pill,.dk-tw tbody td em{white-space:nowrap}

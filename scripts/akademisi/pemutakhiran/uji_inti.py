@@ -49,4 +49,42 @@ import berita as B
 socket.getaddrinfo = lambda h, *a, **k: [(2, 1, 6, "", ("127.0.0.1", 443))]
 assert B.ambil("tes") is None
 socket.getaddrinfo = asli
+# berita_rss: saringan kebencanaan, KPK, foto arsip, dedupe Google -> penerbit, host_aman dipakai (tanpa jaringan)
+import berita_rss as RS
+lem = [{"id": "bpbd-x", "nama": "Badan Penanggulangan Bencana Daerah Riau", "kategori": "pemerintah"}, {"id": "perum-bulog", "nama": "Perum Bulog Nasional", "kategori": "dunia-usaha"},
+       {"id": "media-x", "nama": "Harian Contoh Daerah", "kategori": "komunikasi"}]
+tm, kt = RS.bangun_istilah(lem, [{"id": "tk", "nama": "Budi Santoso Raharjo"}], [])
+rx = RS.penanda(tm)
+assert "media-x" not in kt and kt["perum-bulog"] == "dunia-usaha"
+ck = lambda j, r="": RS.saring(j, r, RS.cocokkan(tm, rx, j, r), kt)
+assert ck("Badan Penanggulangan Bencana Daerah Riau salurkan bantuan") == {("lembaga", "bpbd-x")}
+assert ck("Perum Bulog Nasional awasi beras") == set(), "dunia usaha tanpa kata kebencanaan dibuang"
+assert ck("Perum Bulog Nasional kirim beras ke korban banjir") == {("lembaga", "perum-bulog")}
+assert ck("Harian Contoh Daerah menulis soal cuaca") == set(), "media bukan dateline"
+assert ck("Budi Santoso Raharjo resmikan posko") == {("tokoh", "tk")}
+assert ck("Budi Santoso Raharjo jadi tersangka korupsi") == set() and ck("OTT KPK Badan Penanggulangan Bencana Daerah Riau") == set()
+assert RS.foto_arsip("https://img.x.id/2023/05/a.jpg", "2026") and not RS.foto_arsip("https://img.x.id/2025/05/a.jpg", "2026") and not RS.foto_arsip("https://x.id/a.jpg", "2026")
+assert RS.foto_bersih("https://img.x.id/2020/a.jpg", "2026-10-30") is None and RS.foto_bersih("ftp://x/a.jpg", "2026-10-30") is None
+g = {"id": "g1", "judul": "BPBD Riau salurkan bantuan korban banjir Pekanbaru", "tanggal": "2026-10-20", "url": "https://news.google.com/rss/a", "sumber": "Google News RSS",
+     "entitas": [{"jenis": "lembaga", "id": "lain"}]}
+tua = {"id": "t", "judul": "Berita tua sekali", "tanggal": "2025-01-01", "url": "https://x/tua", "entitas": []}
+nb = {"id": "p1", "judul": "BPBD Riau salurkan bantuan korban banjir Pekanbaru", "tanggal": "2026-10-20", "url": "https://antaranews.com/p", "entitas": [{"jenis": "lembaga", "id": "bpbd-x"}]}
+h, nbaru, nganti = RS.gabung([g, tua], [nb, dict(nb)], kini)
+assert (nbaru, nganti, len(h)) == (1, 1, 1) and h[0]["url"] == nb["url"] and {e["id"] for e in h[0]["entitas"]} == {"bpbd-x", "lain"}, h
+assert RS.gabung(h, [dict(nb, judul="Judul lain sama sekali berbeda")], kini)[1] == 0, "URL sama tak digandakan"
+h2 = RS.gabung(h, [dict(nb, url="https://detik.com/p")], kini)
+assert h2[1] == 0, "versi penerbit sudah ada: judul mirip tidak digandakan"
+socket.getaddrinfo = lambda h, *a, **k: [(2, 1, 6, "", ("127.0.0.1", 443))]
+assert RS.muat("https://antaranews.com/rss", R.Host()) == (0, ""), "muat memakai host_aman"
+socket.getaddrinfo = asli
+hb = R.Host(); hb.blok = True
+assert RS.muat("https://x.id/", hb) == (0, "")
+assert RS.urai("<rss><channel><item><title>A b</title><link>https://x.id/1?utm_x=1</link><pubDate>Thu, 29 Oct 2026 10:00:00 +0700</pubDate><media:content url='https://i.x.id/2026/a.jpg'/></item></channel></rss>")[0]["foto_url"] == "https://i.x.id/2026/a.jpg"
 print("uji_inti: OK")
+
+# panen_publik: pengurai daftar hitam inaproc (JSON di-escape di skrip Next.js); struktur berubah = None, bukan larik kosong
+import panen_publik as PP
+h = 'x = "\\"blacklists\\":{\\"blacklists\\":[{\\"skNumber\\":\\"SK1\\",\\"status\\":\\"PUBLISHED\\",\\"startDate\\":\\"2026-10-29T09:18:58Z\\",\\"expiredDate\\":\\"2028-10-29T00:00:00Z\\",\\"provider\\":{\\"name\\":\\"CV. A\\"}}],\\"total\\":1}"'
+assert PP.daftar_hitam(h) == [{"nama": "CV. A", "sk": "SK1", "status": "PUBLISHED", "mulai": "2026-10-29", "berakhir": "2028-10-29"}], PP.daftar_hitam(h)
+assert PP.daftar_hitam("<html>tanpa data</html>") is None
+print("panen_publik: OK")

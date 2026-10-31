@@ -86,9 +86,8 @@
 .sp-panel-ringkas{background:var(--card);border-radius:var(--r,16px);box-shadow:var(--bayang);padding:var(--sp-3) var(--sp-4) var(--sp-4)}
 .sp-panel-rincian{display:grid;gap:var(--sp-4)}
 .sp-ringkas-zona{box-shadow:none;border-radius:8px}
-.sp-ringkas-zona .ad-tabel th.n,.sp-ringkas-zona .ad-tabel td.n{text-align:right;font-variant-numeric:tabular-nums}
+.sp-ringkas-zona .ad-tabel th.n,.sp-ringkas-zona .ad-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
 .sp-ringkas-zona th.aktif,.sp-ringkas-zona td.aktif{background:color-mix(in srgb,var(--info) 9%,transparent)}
-.sp-ringkas-zona th[scope="row"]{text-align:left}
 .sp-pct{display:block;color:var(--ink2);font-size:11.5px;font-weight:600}
 .sp-ringkas-zona .ad-tabel th,.sp-ringkas-zona .ad-tabel td{padding:8px 6px;white-space:normal;line-height:1.25}
 .sp-ringkas-zona .ad-tabel thead th{font-size:10px}
@@ -129,7 +128,7 @@
 
 /* daftar kompleks (dialog) dan formulir */
 .sp-dialog-daftar{width:min(980px,calc(100vw - 24px))}
-.sp-daftar-peta .ad-tabel td.n,.sp-daftar-peta .ad-tabel th.n{text-align:right;font-variant-numeric:tabular-nums}
+.sp-daftar-peta .ad-tabel td.n,.sp-daftar-peta .ad-tabel th.n{text-align:center;font-variant-numeric:tabular-nums}
 .sp-baris-id{min-height:32px;padding:0;border:0;background:none;color:var(--brand2);font:inherit;font-weight:800;text-decoration:underline;text-underline-offset:3px;cursor:pointer}
 .sp-form-aksi{display:flex;flex-wrap:wrap;gap:var(--sp-2);justify-content:flex-end}
 .sp-form-galat:empty{display:none}

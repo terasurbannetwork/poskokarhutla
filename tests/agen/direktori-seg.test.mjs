@@ -29,3 +29,11 @@ test("tidak ada titik tengah dan tidak ada merek lama di layar direktori", () =>
     assert.ok(!/pantau bencana/i.test(t), f + " memuat merek lama");
   }
 });
+
+test("semua grup pilihan lain (.ak-urut, .ak-segmeng dikecualikan) juga selebar wadah", () => {
+  for (const sel of [".ak-urut"]) {
+    const d = aturan(sel) + ";" + aturan(".ak-bh > .ak-urut");
+    assert.match(d, /width:\s*100%/, `${sel} width 100%`);
+    assert.match(d, /display:\s*(flex|grid)/, `${sel} flex/grid`);
+  }
+});

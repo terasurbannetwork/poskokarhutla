@@ -1,0 +1,105 @@
+{
+ "_catatan": "Utang tally batas BIG vs Kemendagri (pemilik 31 Okt 2026). Hanya boleh menyusut; dicek batas.py uji. BIG 0 = biasanya nama kab beda kunci (perlu pemetaan nama), bukan poligon hilang.",
+ "kab": {
+  "12|Batu Bara": [
+   11,
+   12
+  ],
+  "12|Kota Padangsidimpuan": [
+   0,
+   6
+  ],
+  "12|Kota Tanjungbalai": [
+   0,
+   6
+  ],
+  "17|Mukomuko": [
+   0,
+   15
+  ],
+  "21|Karimun": [
+   12,
+   14
+  ],
+  "21|Natuna": [
+   15,
+   17
+  ],
+  "35|Tulungagung": [
+   20,
+   19
+  ],
+  "61|Mempawah": [
+   10,
+   9
+  ],
+  "71|Kep. Siau Tagulandang Biaro": [
+   0,
+   10
+  ],
+  "72|Banggai": [
+   23,
+   24
+  ],
+  "72|Morowali": [
+   9,
+   10
+  ],
+  "72|Toli-Toli": [
+   0,
+   10
+  ],
+  "73|Kota Parepare": [
+   0,
+   4
+  ],
+  "73|Pangkajene dan Kepulauan": [
+   0,
+   13
+  ],
+  "73|Takalar": [
+   10,
+   12
+  ],
+  "74|Konawe": [
+   27,
+   28
+  ],
+  "75|Pohuwato": [
+   12,
+   13
+  ],
+  "81|Seram Bagian Timur": [
+   15,
+   16
+  ],
+  "91|Kepulauan Yapen": [
+   16,
+   17
+  ],
+  "92|Manokwari": [
+   9,
+   14
+  ],
+  "93|Asmat": [
+   23,
+   25
+  ],
+  "94|Paniai": [
+   23,
+   24
+  ],
+  "95|Pegunungan Bintang": [
+   33,
+   34
+  ],
+  "95|Tolikara": [
+   45,
+   46
+  ],
+  "96|Sorong": [
+   29,
+   30
+  ]
+ }
+}

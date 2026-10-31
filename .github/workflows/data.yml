@@ -58,7 +58,7 @@ jobs:
             public/data/tren_karhutla.json 'public/data/sebaran_*.json' public/data/sejarah.json public/data/sejarah_modis.json \
             public/data/riwayat_grid.json public/data/riwayat_sel public/data/riwayat_desa public/data/riwayat_langganan.json public/data/riwayat_sel_uji.json public/data/riwayat_hierarki.json public/data/riwayat_wilayah public/data/kalibrasi_wilayah.json public/data/prioritas_uji.json public/data/luas_resmi.json public/data/luas_satelit.json public/data/udara.json \
             public/data/daops.json public/data/preventif.json public/data/operasi_resmi.json public/data/aktor_karhutla.json public/data/aktor_greenpeace.json public/data/konsesi2026 public/data/factsheet_karhutla.json \
-            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json)
+            public/data/kontak.json public/data/mitra.json public/data/tim.json public/data/pabrik_sawit.json public/data/cari.json public/data/kawasan_cari.json public/data/kawasan_cari.geojson public/data/desa_cari.json public/data/sekolah.json public/data/lahan public/data/osm public/data/titik_palsu.json public/data/iklim_stasiun.json public/data/harga_komoditas.json public/data/ps.json public/data/tambang.json public/data/hgu_api.json public/data/menara.json public/data/foto_dasar.json public/data/bnpb/kerentanan.json public/data/bnpb/ikd.json public/data/bnpb/terpapar.json public/data/bnpb/risiko_hvc.json public/data/bnpb/puso.json)
           git ls-files -z -- $f | xargs -0 -r git checkout HEAD --
 
       # arsip cluster hari LAMPAU yang di-commit (dibangun ulang, mis. definisi kolom berubah) menang atas cache: cache hanya
@@ -269,6 +269,20 @@ jobs:
           path: data/raw/tanah_klim.json
           key: tanah-${{ github.run_id }}
 
+      # Panen harian #34 #35 #36 #37 #38 (30 Okt 2026, docs/panen/RENCANA-PANEN-DATA.md): keluaran berkas bergulir tetap di public/data (cache data-).
+      # Tanpa kunci wajib: reliefweb jatuh ke RSS publik bila RELIEFWEB_APPNAME kosong; rs_kapasitas mencatat MENUNGGU AKSES. Semua boleh gagal.
+      - name: Panen sinyal sosial, GDELT, ReliefWeb, internet padam, kapasitas RS (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 20
+        env:
+          RELIEFWEB_APPNAME: ${{ secrets.RELIEFWEB_APPNAME }}
+        run: |
+          for s in "umum/sinyal_sosial semua" umum/reliefweb umum/internet_padam bnpb/rs_kapasitas; do
+            p=${s%% *}; a=${s#"$p"}; p=scripts/$p.py
+            case $p in *rs_kapasitas*) u=--cek;; *) u=uji;; esac
+            python3 $p $u && { python3 $p $a || echo "::warning title=panen $p::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=panen $p::uji $p gagal"
+          done
+
       - name: Pulihkan arsip berita
         uses: actions/cache/restore@v4
         with:
@@ -476,6 +490,8 @@ jobs:
           # SK status keadaan darurat (CKAN data.bnpb.go.id) dan kejadian + dampak DIBI 365 hari, untuk /semua
           python3 scripts/umum/status_darurat.py uji && python3 scripts/umum/status_darurat.py || echo "::warning title=status_darurat::gagal; berkas lamanya dibiarkan"
           python3 scripts/umum/dibi_kejadian.py uji && python3 scripts/umum/dibi_kejadian.py || echo "::warning title=dibi_kejadian::gagal; berkas lamanya dibiarkan"
+          # saran status darurat: sesudah status_darurat + dibi_kejadian; sinyal karhutla/banjir dari berkas lokal (titik.yml memperbaruinya tiap 3 jam)
+          python3 scripts/umum/saran_status.py uji && python3 scripts/umum/saran_status.py || echo "::warning title=saran_status::gagal; berkas lamanya dibiarkan"
 
       # Logbook Laporan Harian Pusdalops BNPB (DOCX di Drive publik) -> katalog kejadian berkedalaman/berdurasi = label uji model.
       # Teks per hari dibawa lewat cache sendiri (~40 MB): jalan harian cuma mengunduh laporan baru. Tiap uji menilai ulang model
@@ -614,6 +630,11 @@ jobs:
       - name: Ringkasan ringan (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/ringkasan.py
+
+      # IKU BNPB (kerugian terhadap PDB) dari sumber statis + bnpb/ikd.json; harian cukup. SEBELUM laporan.py: presiden.py membacanya.
+      - name: IKU BNPB (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/bnpb/iku.py --uji && python3 scripts/bnpb/iku.py
 
       # laporan harian + kurva musim (musim_harian.json ditimpa perbarui() di dalamnya). musim_harian.json SENGAJA tidak di daftar
       # git checkout HEAD: ia bergulir lewat cache data-; versi repo hanya dasar saat cache kosong.

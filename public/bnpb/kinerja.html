@@ -1,0 +1,41 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Kinerja BNPB, Centurisk97</title>
+<meta name="description" content="Indikator kinerja utama BNPB 2025: kapasitas daerah, indeks risiko bencana, kerugian terhadap PDB, dan peringatan dini, dengan sumber dokumen dan halaman.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
+<link href="/bnpb/bnpb.css" rel="stylesheet">
+<link href="/inti/kartu.css" rel="stylesheet">
+<link href="/bnpb/kinerja.css?v=1" rel="stylesheet">
+</head>
+<body>
+<header class="ad-top">
+  <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a>
+  <span class="ad-sep">Kinerja</span>
+</header>
+<main class="bn-wrap">
+  <div class="bn-judul">
+    <h1>Kinerja BNPB</h1>
+    <span class="bn-pil" id="pilSumber"></span>
+    <span class="bn-pil" id="pilHari"></span>
+  </div>
+  <p id="pesan" class="bn-pesan" role="status">Memuat data kinerja…</p>
+  <div id="isi" hidden>
+    <section class="kj-bagian" id="kapasitas" aria-label="Kapasitas daerah"></section>
+    <section class="kj-bagian" id="irb" aria-label="Indeks Risiko Bencana"></section>
+    <section class="kj-bagian" id="pdb" aria-label="Kerugian terhadap PDB"></section>
+    <section class="kj-bagian" id="peringatan" aria-label="Peringatan dini"></section>
+  </div>
+</main>
+<div id="tip" role="tooltip"></div>
+<script src="/inti/format.js"></script>
+<script src="/inti/tip.js"></script>
+<script src="/inti/tabel.js"></script>
+<script src="/inti/nanti.js"></script>
+<script src="/bnpb/kinerja.js?v=1"></script>
+</body>
+</html>
