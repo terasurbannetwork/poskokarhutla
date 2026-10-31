@@ -52,11 +52,11 @@ export function lembagaEkstra(P, lembaga) {
   for (const z of larik(P.izin_zakat)) { const id = cari(pz, z.nama); if (id) (ke(id).sk ||= []).push({nomor: z.sk_nomor, berlaku_sampai: z.berlaku_sampai, pemberi: z.pemberi_izin, status: z.status, sumber_url: z.sumber_url}); }
   /* label izin juga dari status SK (BMH misalnya berizin di SIMZAT walau laman cocoknya hanya menyebut badan hukum); SK berizin didahulukan */
   for (const o of Object.values(L)) if (o.sk) { o.sk.sort((a, b) => (b.status === "berizin") - (a.status === "berizin"));
-    o.izin = [...new Set([...(o.izin || []), ...o.sk.map(z => z.status === "berizin" ? "laz berizin" : /baznas/i.test(z.status) ? "laz direkomendasikan baznas" : null).filter(Boolean)])]; }
+    o.izin = [...new Set([...(o.izin || []), ...o.sk.map(z => z.status === "berizin" ? (z.berlaku_sampai && z.berlaku_sampai < new Date().toISOString().slice(0, 10) ? "izin laz berakhir" : "laz berizin") : /baznas/i.test(z.status) ? "laz direkomendasikan baznas" : null).filter(Boolean)])]; }
   for (const r of larik(P.badan_hukum)) if (ada.has(r.lembaga_id) && r.sk_kemenkumham) ke(r.lembaga_id).badan_hukum = {sk: r.sk_kemenkumham, sumber_url: r.sumber_url, catatan: "tertulis di laman lembaga, belum dicek ke AHU"};
   for (const r of larik(P.izin_pub)) if (ada.has(r.lembaga_id)) ke(r.lembaga_id).pub = {nomor: r.nomor_izin, status: r.status};
   for (const r of larik(P.daftar_hitam_cocok)) { const id = r.cocok_ke === "lembaga" ? r.id : "penyedia-" + norm(r.nama).replace(/ /g, "-"); if (!ada.has(id)) continue;
-    const sk = r.dasar.replace(/^nama ternormalkan ketat;\s*/, "").split(/,\s*(?=[A-Z0-9])/).filter(x => /\((aktif|berakhir)\)/.test(x)), aktif = sk.filter(x => /\(aktif\)/.test(x)), th = sk.flatMap(x => x.match(/(?<!\d)20\d\d(?!\d)/g) || []).map(Number).sort();
+    const sk = r.dasar.replace(/^nama ternormalkan ketat;\s*/, "").split(/(?<=\((?:aktif|berakhir)\)),\s*/).filter(x => /\((aktif|berakhir)\)/.test(x)), aktif = sk.filter(x => /\(aktif\)/.test(x)), th = sk.flatMap(x => x.match(/(?<!\d)20\d\d(?!\d)/g) || []).map(Number).sort();
     if (!sk.length) continue;
     ke(id).daftar_hitam = {aktif: aktif.length > 0, kali: sk.length, sk_aktif: aktif.map(x => x.replace(/\s*\(aktif\)$/, "")), tahun: th.length ? [th[0], th.at(-1)] : null, catatan: "dicocokkan dari nama penyedia di daftar hitam LKPP, belum dicek NPWP"}; }
   for (const r of larik(P.ror_kampus?.cocok)) if (r.entitas_id?.startsWith("L:") && ada.has(r.entitas_id.slice(2))) ke(r.entitas_id.slice(2)).ror = r.ror_id;
