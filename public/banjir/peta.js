@@ -371,6 +371,31 @@ function tabelBahaya(bh) {
   const baris = [["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"], ["kering", "Kekeringan"], ["gelombang", "Gelombang ekstrem & abrasi"]].filter(([k]) => bh[k] != null).map(([k, n]) => { const [kl, ik, w] = kelasBhy(bh[k]);
     return `<tr><td><span style="display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" width="15" height="15" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="${IK_BHY[k]}"/></svg>${n}</span></td><td class="n" style="font-variant-numeric:tabular-nums">${bh[k].toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2})}</td><td style="text-align:center"><span class="pill pa-pil" style="background:${w};color:#fff">${PosAir.ikonPil(ik)}${kl}</span></td></tr>`; }).join("");
   return `<table class="tb3"><thead><tr><th>Bahaya</th><th>Indeks</th><th>Kelas</th></tr></thead><tbody>${baris}</tbody></table>`; }
+/* sebaran kelas InaRISK (bahaya_kelas.json, scripts/banjir/bahaya.py kelas): persen luas wilayah per kelas, dijumlah
+   berbobot luas kecamatan untuk kabupaten/provinsi; plus hasil uji InaRISK lawan kejadian DIBI (uji_inarisk.json) */
+const KLS_BHY = [["tinggi", WARNA_LV[3]], ["sedang", WARNA_LV[2]], ["rendah", "#3f9a6a"]];
+function sebaranBahaya(kunci) {
+  const K = S.bahayaKelas?.kec; if (!K) return "";
+  const gagal = new Set((S.bahayaKelas.gagal || []).map(g => g.split("|").slice(0, 3).join("|")));
+  if (gagal.has(kunci)) return lipat("Sebaran zona bahaya InaRISK", `<p class="fnd">Data zona InaRISK untuk wilayah ini belum terambil.</p>`, false);
+  const kec = K[kunci] ? [K[kunci]] : Object.entries(K).filter(([k]) => k.startsWith(kunci + "|")).map(([, v]) => v);
+  const km2 = kec.reduce((a, v) => a + v.km2, 0); if (!km2) return "";
+  const lap = [["banjir", "Banjir"], ["bandang", "Banjir bandang"], ["longsor", "Tanah longsor"]].map(([k, n]) => {
+    const p = [2, 1, 0].map(i => kec.reduce((a, v) => a + (v[k]?.[i] || 0) * v.km2, 0) / km2); return {k, n, p, luar: Math.max(0, 100 - p[0] - p[1] - p[2])}; });
+  const pc = v => v > 0 && v < .5 ? "<1%" : fmt(Math.round(v)) + "%", W = 300, L = 112, B = W - L;
+  const luas = v => v < 10 ? v.toLocaleString("id-ID", {maximumFractionDigits: 1}) : fmt(Math.round(v));
+  const bar = lap.map((r, i) => { let x = L;
+    const seg = r.p.map((v, j) => { const w = v / 100 * B, s = w > .3 ? `<rect x="${x}" y="${i * 26 + 4}" width="${w}" height="16" fill="${KLS_BHY[j][1]}" data-tip="<b>${r.n}, kelas ${KLS_BHY[j][0]}</b><br>${pc(v)} luas wilayah, ${luas(v / 100 * km2)} km²"/>` : ""; x += w; return s; }).join("");
+    return `<text x="${L - 8}" y="${i * 26 + 16}" text-anchor="end" font-size="10">${r.n}</text><rect x="${L}" y="${i * 26 + 4}" width="${B}" height="16" rx="3" fill="var(--line, #e3e7ec)" data-tip="<b>${r.n}</b><br>${pc(r.luar)} luas wilayah di luar zona bahaya"/>${seg}`; }).join("");
+  const bj = lap[0], U = S.ujiInarisk, rx = U?.rho_x_yres, r0 = U?.rho_x_y, v2 = U?.vonis?.["V2 selaras di luar jumlah penduduk"];
+  const ang = v => v.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2}).replace("-", "−");
+  const uji = rx && r0 ? `<p class="fnd"><span class="pill" style="background:${v2 ? "#3f9a6a" : WARNA_LV[2]};color:#fff">${v2 ? "Selaras dengan kejadian" : "Belum terbukti selaras"}</span>
+    Diuji lawan ${fmt(U.n_kejadian)} kejadian banjir dan banjir bandang ${U.y.match(/\d{4}-\d{4}/)?.[0]?.replace("-", "–") || ""} di ${fmt(U.n_kab)} kabupaten. Kabupaten dengan zona banjir lebih luas memang lebih sering banjir (korelasi peringkat ${ang(r0[0])}).
+    Sesudah jumlah penduduk diperhitungkan, korelasinya ${v2 ? "tetap" : "turun menjadi"} ${ang(rx[0])} (selang 95% ${ang(rx[1])} sampai ${ang(rx[2])}). Sumber: BNPB DIBI, uji Centurisk97.</p>` : "";
+  return lipat("Sebaran zona bahaya InaRISK",
+    `<p style="margin:0 0 6px;font-size:13px">${bj.p[0] + bj.p[1] + bj.p[2] > 0 ? `<b>${pc(bj.p[0])}</b> luas wilayah di zona bahaya banjir tinggi, ${pc(bj.p[1])} sedang.` : "Tidak ada zona bahaya banjir InaRISK di wilayah ini."}</p>
+    <svg viewBox="0 0 ${W} ${lap.length * 26 + 4}" width="100%" role="img" aria-label="Sebaran kelas bahaya InaRISK">${bar}</svg>
+    <p class="fnd">${KLS_BHY.map(([n, w]) => `<span style="display:inline-block;width:9px;height:9px;border-radius:2px;background:${w};margin:0 4px 0 0"></span>${n[0].toUpperCase() + n.slice(1)}`).join(", ")}, abu-abu di luar zona. Luas ${luas(km2)} km². Sumber: InaRISK BNPB, semua piksel 100 m di dalam batas wilayah.</p>${uji}`); }
 const Analisa = {
   /* laci rincian di kanan (seperti Laci karhutla); di tab lain jatuh ke dialog tengah. kepala = lambang + <div><h3>nama</h3><p>jenis · induk</p></div> */
   buka(html, kepala) {
@@ -401,7 +426,8 @@ const Analisa = {
       ${c ? lipat("Hujan 10 hari: 3 hari teramati dan 7 hari prakiraan", `${grafikHujan(c)}<div class="grid g4">${kot("Puncak 3 hari", fmt(Math.round(c.h3)) + " mm", kelasHujan(c.h3 / 3) + " rata-rata")}${kot("Hujan 7 hari lalu", fmt(Math.round(c.a7)) + " mm", c.a7 >= 150 ? "tanah jenuh" : c.a7 >= 70 ? "tanah basah" : "tanah relatif kering")}${kot("Hari hujan lebat", fmt(c.h.filter((x, j) => j >= S.hujan.hari.indexOf(S.hujan.hari_ini) && x >= 50).length), "≥ 50 mm, 7 hari")}${kot("Hembusan maks", fmt(Math.round(Math.max(...(c.g || [0])))) + " km/jam", "7 hari")}</div>
         <p class="fnd">Sel 0,25° terdekat (${f2(c.lat)}, ${f2(c.lon)}). Garis putus = 50 mm (lebat) dan 100 mm (sangat lebat), skala BMKG.</p>`) : ""}
       ${sg.length ? lipat("Sungai terdekat (GloFAS)", `<table class="tb3"><thead><tr><th>Titik sungai</th><th class="n">Puncak 7 hari</th><th class="n">Q2</th><th class="n">Jarak</th><th class="n">Status</th></tr></thead><tbody>${sg.map(t => `<tr data-sg="${t.i}" style="cursor:pointer"><td><b>${esc(t.kec)}</b><small>${esc(t.kab)}</small></td><td class="n num">${fmt(Math.round(t.puncak))} m³/s</td><td class="n num">${fmt(Math.round(t.q2))}</td><td class="n num">${fmt(Math.round(t.d))} km</td><td class="n">${pill(t.kelas)}</td></tr>`).join("")}</tbody></table><p class="fnd">Klik baris untuk hidrograf. Q2 = debit banjir 2 tahunan dari data 1997–2025.</p>`) : ""}
-      ${bh ? lipat(`<span title="Sampel raster InaRISK BNPB di titik tengah kecamatan.">Indeks bahaya InaRISK (0–1)</span>`, tabelBahaya(bh)) : ""}
+      ${sebaranBahaya(kunci)}
+      ${bh ? lipat("Indeks bahaya InaRISK tertinggi (0–1)", tabelBahaya(bh) + `<p class="fnd">Nilai tertinggi dari 10 titik cuplik di dalam kecamatan. Angka ini yang dipakai aturan status.</p>`, false) : ""}
       ${thR.length ? lipat(`Kejadian ${NAMA_B[S.b]} tercatat BNPB`, `<svg viewBox="0 0 ${thR.length * 26} 90" width="100%" role="img" aria-label="Kejadian per tahun">${thR.map((t, j) => { const n = riw[t].kejadian || 0, h = n / mR * 64;
           return `<rect x="${j * 26 + 3}" y="${72 - h}" width="20" height="${Math.max(1, h)}" rx="3" fill="#3f7fb8" data-tip="<b>${t}</b><br>${fmt(n)} kejadian${riw[t].meninggal != null ? `<br>${fmt(riw[t].meninggal)} meninggal · ${rb(riw[t].terdampak || 0)} terdampak` : ""}"/><text x="${j * 26 + 13}" y="${68 - h}" text-anchor="middle" font-size="9.5">${n || ""}</text><text x="${j * 26 + 13}" y="86" text-anchor="middle" font-size="9" opacity=".6">${t.slice(2)}</text>`; }).join("")}</svg>
         <p class="fnd">Total ${fmt(thR.reduce((a, t) => a + (riw[t].kejadian || 0), 0))} kejadian, ${thR[0]}–${thR.at(-1)}. Sumber: BNPB (data.bnpb.go.id).</p>`, false) : ""}
