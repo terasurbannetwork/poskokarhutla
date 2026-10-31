@@ -182,3 +182,44 @@ test("uji balik kesiapan: lulus hanya bila skor rendah memang menanggung korban 
   const {readFileSync} = await import("node:fs");
   assert.match(readFileSync(new URL("../../public/akademisi.js", import.meta.url), "utf8"), /u\.lulus \? \["Teruji"[^\]]*\] : \["Hipotesis"/);
 });
+
+test("gelombang 4: desa, SPM, Satu Data per kab; Sentinel Asia tertaut ke satu kejadian; UKRI hanya riset bencana tentang Indonesia", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const w = S.wilayahDaya({indeks_desa: {baris: [{prov: "53", kab: "Kabupaten Kupang", tahun: 2024, n_desa: 160, skor_rata: 0.6, ekologi_rata: 0.55, status: {Tertinggal: 20}, sumber_url: "u"}]},
+    spm_bencana: {baris: [{prov: "53", kab: "Kabupaten Kupang", tahun: 2024, capaian_persen: 80, sumber_url: "u"}, {prov: "53", kab: "Kabupaten Kupang", tahun: 2025, capaian_persen: 90, sumber_url: "u"}]},
+    dataset_satudata: {baris: [{prov: "53", kab: "Kabupaten Kupang", judul: "Data kejadian bencana banjir", sumber_url: "u"}, {prov: "53", kab: "Kabupaten Kupang", judul: "Jumlah sapi potong", sumber_url: "u"}]}});
+  const k = w.kab.find(r => r.kab === "Kabupaten Kupang");
+  assert.equal(k.idm.n_desa, 160); assert.equal(k.spm.tahun, 2025); assert.equal(k.satudata.n, 1, "dataset bukan kebencanaan disaring");
+  const kj = [{id: "palu", jenis: "gempa", tanggal: "2018-09-28", prov: ["72"]}, {id: "lombok", jenis: "gempa", tanggal: "2018-08-05", prov: ["52"]}];
+  const sa = S.sentinelAsia([{id: "1", tanggal: "2018-09-29", "jenis bencana": "Earthquake", prov: "72", sumber_url: "u"}, {id: "2", tanggal: "2018-09-30", "jenis bencana": "Flood", sumber_url: "u"},
+    {id: "3", tanggal: "2018-08-10", "jenis bencana": "Earthquake", prov: null, sumber_url: "u"}], kj, []);
+  assert.deepEqual(sa.map(x => x.kejadian_id), ["palu", null, "lombok"]);
+  const u = S.hibahUkri([{judul: "Flood risk in Central Java", mulai: "2019-01-01", peneliti: ["A"], sumber_url: "u"}, {judul: "Solar2Wave energy", kecocokan_indonesia: "organisasi", sumber_url: "u"}, {judul: "Flood risk in Bangladesh", sumber_url: "u"}]);
+  assert.deepEqual(u.map(x => x.judul), ["Flood risk in Central Java"]);
+});
+
+test("proyek internasional: yang sudah ada dilewati (id, nama, nilai), yang bukan kebencanaan dibuang, IATI tanpa kurs USD tidak ikut total", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const ada = [{id: "wb-p1", jenis_entri: "proyek", nama: "Flood Management in North Java Project", pemberi: "ADB", nilai_usd: 250000000}];
+  const r = S.proyekBaru({baris: [{id: "P1", sumber: "Bank Dunia", pemberi: "World Bank", judul: "Disaster X", nilai_usd: 1}, {id: "ADB-9", pemberi: "Asian Development Bank", judul: "Flood Management in North Java", nilai_usd: 250000000},
+    {id: "AU-1", pemberi: "Australian Aid", judul: "Sustainable Cities", nilai_eur: 5}, {id: "AU-2", pemberi: "Australian Aid", judul: "Palu earthquake response", nilai_eur: 7}]}, ada);
+  assert.deepEqual(r.map(x => x.id), ["iati-au-2"]); assert.equal(r[0].nilai_usd, null); assert.equal(r[0].mata_uang, "EUR"); assert.deepEqual(r[0].rumpun, ["gempa"]);
+});
+
+test("penyandang dana pakar: dihitung per karya unik, hanya pakar direktori, diurutkan dari pemberi terbanyak", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const b = [["A1", "NSF", "d1", 2020], ["A1", "NSF", "d1", 2020], ["A1", "NSF", "d2", 2022], ["A1", "BRIN", "d3", 2023], ["A9", "NSF", "d4", 2021]].map(([pakar_id, funder, karya_doi, tahun]) => ({pakar_id, funder, karya_doi, tahun, karya_judul: karya_doi, sumber_url: "u"}));
+  const x = S.pakarEkstra({pendanaan_pakar: {baris: b}}, {orang: [["A1", "Pakar"]]});
+  assert.deepEqual(x.A1.dana.map(f => [f.nama, f.karya, f.tahun]), [["NSF", 2, 2022], ["BRIN", 1, 2023]]); assert.equal(x.A9, undefined);
+});
+
+test("perbaikan pemeriksa gelombang 4: tesis berulang dihitung sekali, anak IATI tidak dobel, Jakarta dari IATI bukan lokasi, Satu Data kepegawaian dibuang", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const t = S.tesisKampus(Array.from({length: 5}, () => ({judul: "Pemetaan rawan  banjir\nKota Bengkulu", penulis: "A", tahun: 2020, kampus: "Universitas Bengkulu"})), {"Universitas Bengkulu": {}});
+  assert.equal(t["Universitas Bengkulu"].length, 1); assert.equal(t["Universitas Bengkulu"][0].judul, "Pemetaan rawan banjir Kota Bengkulu");
+  const p = S.proyekBaru({baris: [{id: "GB-1-201571-101", pemberi: "FCDO", judul: "Disaster risk reduction West Sumatra"}, {id: "NL-1-9", pemberi: "Red Cross", judul: "Earthquake response Manokwari, West Papua", lokasi: [{prov: "31"}]}]},
+    [], [{id: "gb-1-201571", judul: "DRR Mercy Corps", donor: "FCDO"}]);
+  assert.deepEqual(p.map(x => [x.id, x.prov]), [["iati-nl-1-9", ["91"]]]); assert.equal(p[0].jenis, null);
+  const w = S.wilayahDaya({dataset_satudata: {baris: [{prov: "53", kab: "Kabupaten Kupang", judul: "Data pegawai BPBD", sumber_url: "u"}, {prov: "53", kab: "Kabupaten Kupang", judul: "Mitigasi emisi GRK", sumber_url: "u"}]}});
+  assert.equal(w.kab.length, 0);
+});
