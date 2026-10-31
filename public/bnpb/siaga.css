@@ -1,0 +1,41 @@
+/* Siaga pra-musim (/bnpb/siaga). Memakai logbook.css untuk tabel, chip, kosong. Tanpa gaya inline (CSP). */
+.sg-pilih{display:grid;gap:12px}
+.sg-bulan{display:grid;gap:6px;grid-template-columns:repeat(12,minmax(0,1fr))}
+.sg-bulan label{display:flex;align-items:center;justify-content:center;border:1px solid var(--line);border-radius:10px;padding:8px 2px;font-size:12px;font-weight:800;cursor:pointer;background:var(--card)}
+.sg-bulan input{position:absolute;opacity:0;pointer-events:none}
+.sg-bulan label:has(input:checked){background:var(--navy);color:#fff;border-color:var(--navy)}
+.sg-bulan label:has(input:focus-visible){outline:2px solid var(--c5);outline-offset:1px}
+@media (max-width:640px){.sg-bulan{grid-template-columns:repeat(6,minmax(0,1fr))}}
+.sg-kal{display:grid;gap:10px}
+.sg-baris{display:grid;grid-template-columns:96px minmax(0,1fr);gap:10px;align-items:center}
+.sg-baris>b{font-size:13px;display:flex;gap:6px;align-items:center}
+.sg-baris>b svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sg-svg{width:100%;height:auto;display:block}
+.sg-svg text{fill:var(--ink2);font:600 13px var(--font,inherit);text-anchor:middle}
+.sg-svg .dasar{stroke:var(--line);stroke-width:1}
+.sg-svg .bat{fill:color-mix(in srgb,var(--ink) 22%,var(--card));cursor:pointer}
+.sg-svg .bat.musim{fill:var(--c1)}
+.sg-svg .bat.kecil{opacity:.45}
+.sg-svg g:hover .bat{opacity:.8}
+.sg-svg .pilih{fill:none;stroke:var(--navy);stroke-width:2;rx:4}
+.sg-sop{display:grid;gap:12px}
+.sg-sop h3{font-size:14px;font-weight:800;display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.sg-tugas{list-style:none;margin:0;padding:0;display:grid;gap:6px}
+.sg-tugas li{display:grid;grid-template-columns:auto minmax(0,1fr) auto;gap:10px;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px 12px;font-size:13px}
+.sg-tugas li.selesai .tx{text-decoration:line-through;color:var(--ink3)}
+.sg-tugas input{accent-color:var(--navy2);width:18px;height:18px}
+.sg-tugas small{display:block;color:var(--ink2);font-weight:600}
+.sg-stok{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(210px,1fr))}
+.sg-stok div{border:1px solid var(--line);border-radius:12px;padding:10px 12px;display:flex;gap:10px;align-items:center;font-size:13px;font-weight:700}
+.sg-stok svg{width:20px;height:20px;fill:none;stroke:var(--c5);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sg-toggle{display:grid;grid-template-columns:1fr 1fr;gap:8px;max-width:360px}
+.sg-toggle label{display:flex;gap:6px;justify-content:center;align-items:center;border:1px solid var(--line);border-radius:12px;padding:8px;font-size:13px;font-weight:700;cursor:pointer}
+.sg-toggle input{position:absolute;opacity:0;pointer-events:none}
+.sg-toggle label:has(input:checked){background:color-mix(in srgb,var(--c5) 14%,transparent);border-color:color-mix(in srgb,var(--c5) 55%,transparent)}
+.sg-toggle svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sg-bulanini{font-weight:800}
+@media print{
+  body{background:#fff}.ad-top,.sg-pilih,.sg-tidakcetak,.bn-aksi{display:none!important}
+  .bn-blok{box-shadow:none;break-inside:avoid}
+}
+.sg-sop h3>svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
