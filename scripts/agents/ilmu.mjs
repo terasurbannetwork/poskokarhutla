@@ -306,6 +306,8 @@ const SAMAR = [
   // Jalur rumah mesin lokal (folder pengguna) bocor nama dan memicu gerbang jalur mutlak di CI.
   [/\/(Users|home)\/[^/\s"'\\]+/g, '/$1/...'],
   [/-(Users|home)-[A-Za-z0-9._]+-/g, '-$1-...-'],
+  // Folder sementara macOS (private var folders, private tmp) juga jalur mutlak mesin lokal.
+  [/\/private\/(?:var|tmp)\/[^\s"'\\]*/g, '/private/...'],
   // Token panjang tanpa titik/garis miring (jalur berkas lolos): wajib ada angka.
   [/\b(?=[A-Za-z_-]*\d)[A-Za-z0-9_-]{40,}\b/g, '[token]'],
 ]

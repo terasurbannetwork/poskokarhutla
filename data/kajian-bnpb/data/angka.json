@@ -10116,7 +10116,12 @@
    "satuan": "kejadian",
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB 2024",
-   "catatan": "cakupan kejadian bencana (Juklak 7/2023)"
+   "catatan": "cakupan kejadian bencana (Juklak 7/2023)",
+   "setara": [
+    "bnpb.bd24.kejadian.2024",
+    "bnpb.bd24.kejadian.2024_tabel_l2",
+    "dibi.nasional.kejadian_ckan.2024"
+   ]
   },
   "dibi.nasional.kejadian_semua_laporan.2024": {
    "berkas": "dibi/rekap_nasional_tahunan.csv",
@@ -10180,7 +10185,11 @@
    "satuan": "kejadian",
    "keyakinan": "resmi",
    "sumber": "DIBI BNPB 2024",
-   "catatan": "= CKAN 207"
+   "catatan": "= CKAN 207",
+   "setara": [
+    "bnpb.bd24.longsor.2024_teks",
+    "bnpb.bd24.longsor.2024_tabel"
+   ]
   },
   "dibi.nasional.nonalam_sosial.kejadian.2025": {
    "nilai": 363,
@@ -11933,7 +11942,12 @@
    "pustaka": "bnpb-2025-ckan",
    "satuan": "kejadian",
    "keyakinan": "resmi",
-   "sumber": "BNPB, data.bnpb.go.id, Jumlah Kejadian Bencana Menurut Jenis 2010–2024"
+   "sumber": "BNPB, data.bnpb.go.id, Jumlah Kejadian Bencana Menurut Jenis 2010–2024",
+   "setara": [
+    "bnpb.bd24.kejadian.2024",
+    "bnpb.bd24.kejadian.2024_tabel_l2",
+    "dibi.nasional.kejadian.2024"
+   ]
   },
   "dibi.nasional.meninggal.2021": {
    "berkas": "dibi/rekap_nasional_tahunan.csv",
@@ -18069,7 +18083,10 @@
    "satuan": "indeks",
    "keyakinan": "resmi",
    "sumber": "Laporan Kinerja BNPB Tahun 2025",
-   "catatan": "IRB 2025 dihitung ulang dengan kerentanan 2021 agar sebanding dengan IRB 2024 versi LKIP; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
+   "catatan": "IRB 2025 dihitung ulang dengan kerentanan 2021 agar sebanding dengan IRB 2024 versi LKIP; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)",
+   "setara": [
+    "bnpb.lkip2025.irb.nasional_2025_rumus"
+   ]
   },
   "bnpb.lkip2025.irb.nasional_2024_krb2021": {
    "nilai": 171.95,
@@ -25717,7 +25734,12 @@
    "satuan": "kejadian",
    "keyakinan": "resmi",
    "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
-   "catatan": "terendah dalam lima tahun; DIBI tarik 23 Okt 2026 memberi 3.548 (dibi.nasional.kejadian.2024), tanggal data berbeda; jumlah kolom L2 per provinsi 3.475"
+   "catatan": "terendah dalam lima tahun; DIBI tarik 23 Okt 2026 memberi 3.548 (dibi.nasional.kejadian.2024), tanggal data berbeda; jumlah kolom L2 per provinsi 3.475",
+   "setara": [
+    "bnpb.bd24.kejadian.2024_tabel_l2",
+    "dibi.nasional.kejadian.2024",
+    "dibi.nasional.kejadian_ckan.2024"
+   ]
   },
   "bnpb.lkip2025.kejadian.2025": {
    "nilai": 4727,
@@ -25817,6 +25839,178 @@
    "rendah": 1,
    "tinggi": 3,
    "catatan": "1 sampai 3 bulan; dapat diperpanjang atau diperpendek atas kajian lapangan"
+  },
+  "bnpb.bd24.kejadian.2024_tabel_l2": {
+   "nilai": 3475,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 110-111",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "jumlah kolom kejadian Tabel L2 per provinsi dan grafik per bulan (Gambar 1.8); total resmi 3.472 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.kejadian.2024",
+    "dibi.nasional.kejadian.2024",
+    "dibi.nasional.kejadian_ckan.2024"
+   ]
+  },
+  "bnpb.bd24.longsor.2024_teks": {
+   "nilai": 201,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 6",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "angka di teks; tabel menulis 207 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.longsor.2024_tabel",
+    "dibi.nasional.longsor.kejadian.2024"
+   ]
+  },
+  "bnpb.bd24.longsor.2024_tabel": {
+   "nilai": 207,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 110",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "angka Tabel 1.1 dan L1; teks hal. 6 menulis 201 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.longsor.2024_teks",
+    "dibi.nasional.longsor.kejadian.2024"
+   ]
+  },
+  "bnpb.bd24.kekeringan.2024_tabel": {
+   "nilai": 89,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 110",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "angka Tabel 1.1, L1, dan L12 (rekap resmi); teks bab 13 menulis 54 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.kekeringan.2024_teks_bab13"
+   ]
+  },
+  "bnpb.bd24.kekeringan.2024_teks_bab13": {
+   "nilai": 54,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 90-91",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "angka di teks bab 13; tabel rekap menulis 89 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.kekeringan.2024_tabel"
+   ]
+  },
+  "bnpb.lkip2025.irb.nasional_2025_rumus": {
+   "nilai": 170.19,
+   "pustaka": "bnpb-2026-lkip2025, hlm. 19",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "angka yang dipakai di rumus penurunan 1,03%; teks menulis 170,17 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.lkip2025.irb.nasional_2025_kerentanan2021"
+   ]
+  },
+  "bnpb.lkip2025.dukman.pagu_teks": {
+   "nilai": 309068219000,
+   "pustaka": "bnpb-2026-lkip2025, hlm. 17",
+   "satuan": "rupiah",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "pagu Dukungan Manajemen di teks dan Lampiran 10; Tabel 3.19/3.23 menulis Rp309.100.981.000 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.lkip2025.dukman.pagu_tabel"
+   ]
+  },
+  "bnpb.lkip2025.dukman.pagu_tabel": {
+   "nilai": 309100981000,
+   "pustaka": "bnpb-2026-lkip2025, hlm. 99, 101",
+   "satuan": "rupiah",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "pagu Dukungan Manajemen di Tabel 3.19/3.23; teks dan Lampiran 10 menulis Rp309.068.219.000 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.lkip2025.dukman.pagu_teks"
+   ]
+  },
+  "bnpb.bd24.jabar.kejadian_2024_teks_l2": {
+   "nilai": 461,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 7, 110",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "Jawa Barat di teks hal. 7 dan Tabel L2; Gambar 1.11 menulis 457 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.jabar.kejadian_2024_gambar"
+   ]
+  },
+  "bnpb.bd24.jabar.kejadian_2024_gambar": {
+   "nilai": 457,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 9",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "Jawa Barat di Gambar 1.11; teks dan L2 menulis 461 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.jabar.kejadian_2024_teks_l2"
+   ]
+  },
+  "bnpb.bd24.sumsel.kejadian_2024_teks": {
+   "nilai": 272,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 7",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "Sumatera Selatan di teks; Tabel L2 dan Gambar 1.11 menulis 271 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.sumsel.kejadian_2024_tabel"
+   ]
+  },
+  "bnpb.bd24.sumsel.kejadian_2024_tabel": {
+   "nilai": 271,
+   "pustaka": "bnpb-2025-buku-data-2024, hlm. 9, 110",
+   "satuan": "kejadian",
+   "keyakinan": "resmi",
+   "sumber": "Buku Data Bencana Indonesia 2024 (BNPB, terbit 13 Jun 2025)",
+   "catatan": "Sumatera Selatan di Tabel L2 dan Gambar 1.11; teks hal. 7 menulis 272 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.bd24.sumsel.kejadian_2024_teks"
+   ]
+  },
+  "bnpb.renstra.rb.target_2025": {
+   "nilai": 77.18,
+   "pustaka": "bnpb-2025-renstra, hlm. 86",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Renstra BNPB 2025–2029 (Perban BNPB 5/2025)",
+   "catatan": "target Indeks RB 2025 di Renstra dan PK perubahan; teks LAKIP hal. 72 menulis 75,05 dan PK awal 75,01 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.lkip2025.rb.target_2025_teks",
+    "bnpb.lkip2025.rb.target_2025_pk_awal"
+   ]
+  },
+  "bnpb.lkip2025.rb.target_2025_teks": {
+   "nilai": 75.05,
+   "pustaka": "bnpb-2026-lkip2025, hlm. 72",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "target Nilai RB 2025 di teks hal. 72; Renstra 77,18 dan PK awal 75,01 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.renstra.rb.target_2025",
+    "bnpb.lkip2025.rb.target_2025_pk_awal"
+   ]
+  },
+  "bnpb.lkip2025.rb.target_2025_pk_awal": {
+   "nilai": 75.01,
+   "pustaka": "bnpb-2026-lkip2025, Tabel 2.3",
+   "satuan": "indeks",
+   "keyakinan": "resmi",
+   "sumber": "Laporan Kinerja BNPB Tahun 2025",
+   "catatan": "target Indeks RB 2025 di PK awal (10 Jan 2025); Renstra 77,18 dan teks hal. 72 75,05 (pemeriksa konsistensi, rekomendasi 100)",
+   "setara": [
+    "bnpb.renstra.rb.target_2025",
+    "bnpb.lkip2025.rb.target_2025_teks"
+   ]
   }
  }
 }
