@@ -54,6 +54,7 @@ export const bersihkanBnpb = (env, kini = Date.now()) => env.DB.prepare("DELETE 
 export const RUTE_BNPB = {
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
   "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),
+  "GET /kinerja-bnpb": (env, req, url) => halamanBnpbPublik(env, url, "kinerja"),
   "GET /sitrep": (env, req, url) => halamanBnpbPublik(env, url, "sitrep"),
   "GET /kebutuhan": (env, req, url) => halamanBnpbPublik(env, url, "kebutuhan"),
   /* bukan "/kebakaran": jalur itu disisakan untuk entri registry bencana bila kelak ada */

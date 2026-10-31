@@ -144,6 +144,11 @@ jobs:
           python3 scripts/data/watak_kluster.py uji && python3 scripts/data/watak_kluster.py || echo "::warning title=watak::watak_kluster.py gagal; cluster tanpa pola lokasi"
           python3 scripts/data/kabar_kab.py --uji && python3 scripts/data/kabar_kab.py || echo "::warning title=kabar::kabar_kab.py gagal; /kabar memakai data sebelumnya"
 
+      # saran status darurat dihitung ulang tiap 3 jam supaya sinyal kluster.json segar (titik.yml selalu deploy; tak commit, jadi tak bentrok push)
+      - name: Saran status darurat (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/umum/saran_status.py uji && python3 scripts/umum/saran_status.py || echo "::warning title=saran_status::gagal; berkas lamanya dibiarkan"
+
       - name: Laporan harian & kurva musim (boleh gagal)
         id: laporan
         continue-on-error: true

@@ -6,7 +6,7 @@ import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
-import {tingkatGempa} from "../../src/peringatan.js";
+import {tingkatGempa, bentukCap} from "../../src/peringatan.js";
 
 const JAM = 3600e3;
 const T10 = Math.floor(Date.now() / 600e3) * 600e3;   // menit kelipatan 10: gempaterkini + aturan cuaca ikut jalan
@@ -211,4 +211,28 @@ uji("cache tepi /aktif: 30 dtk, kunci hanya jalur + sejak dibulatkan ke menit (p
     assert.equal((await get("/api/peringatan/aktif?sejak=" + s)).j.n, 2, "sejak sah = kunci lain");
     assert.equal((await get("/api/peringatan/aktif?sejak=" + (s + 12345))).j.n, 2, "sejak dibulatkan ke menit: kunci sama dengan sebelumnya");
   } finally { await mf2.dispose(); }
+});
+
+test("bentukCap: elemen wajib CAP 1.2, escaping XML, pengirim jujur (Deteksi bukan BMKG, tsunami InaTEWS)", () => {
+  const kini = Date.parse("2026-10-31T03:00:00Z"), dasar = {kab: null, lat: null, lon: null, sumber_url: null, dibuat: iso(kini - JAM), berlaku_hingga: iso(kini + JAM)};
+  const daftar = [
+    {...dasar, kunci: "banjir:B1:siaga", jenis: "banjir", tingkat: "Siaga", prov: "31", judul: `Banjir <Siaga> & "uji" 'x'`, teks: "a\u0001b </description><evil/>", sumber: "Deteksi Centurisk97", lat: -6.2, lon: 106.8},
+    {...dasar, kunci: "tsunami:G1:awas", jenis: "tsunami", tingkat: "Awas", prov: null, judul: "Peringatan potensi tsunami", teks: "uji", sumber: "InaTEWS", sumber_url: "https://inatews.bmkg.go.id/"},
+  ];
+  const x = bentukCap(daftar, kini);
+  assert.match(x, /^<\?xml version="1.0" encoding="UTF-8"\?>\n<alert xmlns="urn:oasis:names:tc:emergency:cap:1.2">/);
+  for (const t of ["identifier", "sender", "sent", "status", "msgType", "scope"]) assert.match(x, new RegExp(`<${t}>[^<]+</${t}>`), t);
+  assert.match(x, /<sent>2026-10-31T03:00:00\+00:00<\/sent>/, "waktu berzona, bukan Z");
+  assert.equal(x.match(/<info>/g).length, 2, "satu info per peringatan");
+  for (const t of ["language", "category", "event", "urgency", "severity", "certainty", "senderName", "headline", "description", "web", "expires", "areaDesc"]) assert.equal(x.match(new RegExp(`<${t}>[^<]+</${t}>`, "g")).length, 2, t);
+  assert.match(x, /<circle>-6.2,106.8 0<\/circle>/);
+  assert.match(x, /<geocode><valueName>BPS<\/valueName><value>31<\/value><\/geocode>/);
+  assert.match(x, /Banjir &lt;Siaga&gt; &amp; &quot;uji&quot; &apos;x&apos;/);
+  assert.doesNotMatch(x, /<evil\/>|\u0001/);
+  assert.match(x, /<web>https:\/\/centurisk97\.id\/<\/web>/, "Deteksi tanpa sumber_url tetap punya web");
+  const [banjir, tsunami] = x.split("<info>").slice(1);
+  assert.match(banjir, /<senderName>Centurisk97, Deteksi Centurisk97 \(hitungan otomatis, bukan peringatan BMKG atau InaTEWS\)<\/senderName>/);
+  assert.match(tsunami, /<senderName>Centurisk97, meneruskan InaTEWS<\/senderName>/);
+  assert.match(tsunami, /<severity>Extreme<\/severity>/);
+  assert.match(bentukCap([], kini), /<alert [^>]+>[\s\S]*<\/alert>/, "daftar kosong tetap alert sah");
 });

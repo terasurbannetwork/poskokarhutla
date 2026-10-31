@@ -161,6 +161,64 @@ const ProfilWilayah = (() => {
       `Sumber: DEM Copernicus GLO-30 (permukaan, cenderung meremehkan dataran rendah), JRC Global Surface Water v1.4, NOAA ETOPO 2022 v1. Daratan tidak mencakup air permanen. Dihitung dari ${fmt(m.n)} kecamatan berdata.`);
   }
 
+
+  /* 0. Hari ini: SK berlaku, saran status, peringatan aktif, kapasitas, tindakan pedoman. Data dimuat sekali (cache), kartu diisi setelah datang. */
+  const WST = {"Siaga Darurat": "#e3b94e", "Tanggap Darurat": "#c9503a", "Transisi Darurat ke Pemulihan": "#4f8fc4"};   /* sama dengan WARNA di semua/darurat.js */
+  const spil = (t, w) => `<span class="pw-pil" style="border-color:${w || "var(--line)"};background:color-mix(in oklch,${w || "var(--ink2)"} 18%,transparent)">${esc(t)}</span>`;
+  const tglWIB = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+  const tgl = t => { const x = new Date(String(t).slice(0, 10) + "T12:00:00Z"); return isNaN(x) ? "" : x.toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "UTC"}); };
+  const tglEpoch = v => isNaN(+v) ? tgl(v) : tgl(new Date(v * (v < 1e11 ? 1000 : 1) + 7 * 36e5).toISOString());
+  /* data statis dimuat sekali (diulang bila sumber penting gagal); peringatan aktif dimuat ulang bila umur > 60 detik */
+  let hi = null, per = null, perT = 0;
+  const statis = () => hi || (hi = (async () => {
+    const u = f => muat(new URL(f, DATA).href).catch(() => null);
+    const [sd, ss, ikd, M] = await Promise.all([u("../status_darurat.json"), u("../saran_status.json"), u("../bnpb/ikd.json"), import(new URL("status_pedoman.js", SRC).href)]);
+    if (!sd || !ss || !ikd) hi = null;
+    return {sd, ss, ikd, M};
+  })());
+  async function muatHariIni() {
+    const S = await statis();
+    if (Date.now() - perT > 6e4) { perT = Date.now(); per = muat("/api/peringatan/aktif").catch(() => { perT = 0; return null; }); }
+    return {...S, per: await per};
+  }
+  const cocokPer = (p, d, kode) => {
+    if (!p?.kab || norm(p.kab) !== norm(d.n)) return false;
+    if (/^(kota|kab)/i.test(p.kab.trim()) && /^kota\b/i.test(p.kab.trim()) !== /^kota\b/i.test(d.n.trim())) return false;
+    return !/^\d{2}$/.test(String(p.prov ?? "")) || String(p.prov) === kode.slice(0, 2);
+  };
+  function hariIni(d, kode, H) {
+    const {sd, ss, ikd, per, M} = H, h = tglWIB(), bag = [];
+    /* 1. SK berlaku */
+    const sk = sd && Array.isArray(sd.sk) ? M.skBerlaku(sd.sk, kode, h) : null;
+    const li = sk && sk.map(x => {
+      const sisa = M.sisaHari(x, h), prov = x.skala === "provinsi", lw = x.lewat_batas ? `<small><b>${esc(M.TEKS_LEWAT)}</b></small>` : "";
+      return `<li>${spil(x.status, WST[x.status])}<span>${esc(String(x.jenis).replace(/,(?=\S)/g, ", "))}${prov ? `, SK tingkat provinsi (${esc(x.prov)})` : ""}<small>SK ${esc(x.nomor)}, ${x.berakhir ? `sampai ${esc(tgl(x.berakhir))}${sisa != null ? `, sisa ${fmt(sisa)} hari` : ""}` : "belum ada tanggal berakhir"}${x.hari != null ? `, berjalan ${fmt(x.hari)} hari` : ""}</small>${lw}${aman(x.tautan) ? `<small><a href="${aman(x.tautan)}" target="_blank" rel="noopener noreferrer">Lihat SK</a></small>` : ""}</span></li>`; }).join("");
+    bag.push(k("Hari ini: status darurat", "risiko", !sd ? "Data SK status darurat BNPB belum dapat dimuat." : sk.length ? `Ada ${o(fmt(sk.length))} SK status darurat yang berlaku hari ini untuk ${esc(d.n)}.` : esc(M.kalimatTanpaSK(d.n, sd.tahun, h, tgl)),
+      li ? `<ul class="pw-ls">${li}</ul>` : "", sd ? `Sumber: ${esc(sd.sumber || "SK status darurat BNPB")}${sd.dibuat ? `, data ${esc(tgl(sd.dibuat))}` : ""}. Data SK terakhir mencakup tahun ${esc((sd.tahun || []).join(", "))}.` : ""));
+    /* 2. saran */
+    const sr = ss && ss.kab ? (ss.kab[kode] || []) : null;
+    bag.push(k(esc(M.labelSaran(ss, h)), "regulasi", !ss ? "Saran status belum tersedia." : sr.length ? `${sr.some(x => !x.basi) ? `Ada ${o(fmt(sr.filter(x => !x.basi).length))} saran status berdata terkini untuk ${esc(d.n)}` : `Belum ada saran berdata terkini untuk ${esc(d.n)}`}${sr.some(x => x.basi) ? `, ${fmt(sr.filter(x => x.basi).length)} saran berdata lama di bawah` : ""}. Ini saran untuk rapat koordinasi, bukan penetapan.` : `Tidak ada saran status untuk ${esc(d.n)} pada data terakhir.`,
+      sr && sr.length ? `<ul class="pw-ls">${sr.map(x => `<li>${spil(x.saran, x.basi ? null : WST[x.saran])}${x.basi ? `<span class="pw-pil">Data lama${x.umur_hari != null ? `, ${fmt(x.umur_hari)} hari` : ""}</span>` : ""}${x.hipotesis ? `<span class="pw-pil" style="border-color:#b8a46a;background:color-mix(in oklch,#b8a46a 20%,transparent)" data-tip="Ambang kekeringan belum lolos uji balik" tabindex="0">Hipotesis</span>` : ""}<span>${esc(x.jenis)}<small>${esc(M.rapiTanggal(x.alasan))}</small>${x.sk ? `<small>SK terkait: ${esc(x.sk.nomor)}, ${esc(x.sk.status)}${x.sk.berakhir ? `, sampai ${esc(tgl(x.sk.berakhir))}` : ""}</small>` : ""}${x.omc ? `<small><b>Status siaga dibutuhkan agar OMC dapat dibiayai Dana Siap Pakai</b></small>` : ""}</span></li>`).join("")}</ul>` : "",
+      ss ? `Sumber: sinyal pipeline Centurisk97 dan SK BNPB${M.rentang(ss.sinyal_dari, ss.sinyal_sampai) ? `, sinyal ${esc(M.rentang(ss.sinyal_dari, ss.sinyal_sampai))}` : ""}. ${esc(M.rapiTanggal(ss.catatan || ""))}` : ""));
+    /* 3. peringatan aktif */
+    const pr = per && Array.isArray(per.peringatan) ? per.peringatan.filter(p => cocokPer(p, d, kode)) : null;
+    bag.push(k("Hari ini: peringatan aktif", "rawan", !per ? "Peringatan aktif belum dapat dimuat saat ini, jadi belum bisa dipastikan ada atau tidaknya." : pr.length ? `Ada ${o(fmt(pr.length))} peringatan aktif di ${esc(d.n)}.` : `Tidak ada peringatan aktif tercatat untuk ${esc(d.n)}.`,
+      pr && pr.length ? `<ul class="pw-ls">${pr.map(p => `<li>${pil(esc(p.tingkat || "Peringatan"), "pw-t1")}<span>${esc(p.judul)}<small>${esc(p.jenis || "")}${p.sumber ? `, ${esc(p.sumber)}` : ""}${p.berlaku_hingga ? `, berlaku hingga ${esc(tglEpoch(p.berlaku_hingga))}` : ""}</small></span></li>`).join("")}</ul>` : "",
+      "Sumber: peringatan aktif Centurisk97 (BMKG, PetaBencana, sistem sendiri)."));
+    /* 4. kapasitas */
+    const kp = ikd && ikd.kab ? ikd.kab[kode] : null, am = ikd?.kelas_ambang;
+    bag.push(k("Hari ini: kapasitas daerah", "sosek", !ikd ? "Data kapasitas belum dapat dimuat." : kp ? `Kapasitas ${esc(d.n)} kelas ${o(esc(kp.kelas))}, nilai ${o(fmt(kp.c, 2))} dari 1.` : `Tidak ada nilai kapasitas untuk ${esc(d.n)} di data raster.`,
+      kp ? `<div class="pw-pils">${pil(`Kelas <b>${esc(kp.kelas)}</b>`, kp.kelas === "rendah" ? "pw-no" : kp.kelas === "tinggi" ? "pw-ok" : "")}${pil(`Nilai <b>${fmt(kp.c, 2)}</b>`)}</div>` : "",
+      `Kapasitas (raster InaRISK, bukan IKD resmi).${am ? ` Rendah di bawah ${fmt(am.rendah_di_bawah, 2)}, tinggi di atas ${fmt(am.tinggi_di_atas, 2)}.` : ""} ${esc(ikd?.catatan || "")}`));
+    /* 5. tindakan menurut pedoman */
+    const dari = sk && sk.length ? ["SK yang berlaku", sk] : sr && sr.length ? ["status yang disarankan", sr.map(x => ({status: x.saran}))] : null;
+    const st = dari ? [...new Set(dari[1].map(x => x.status))] : [];
+    const isi = st.length ? st.map(s => `<p class="pw-t" style="margin:8px 0 0;font-size:14px">${spil(s, WST[s])}</p><ul class="pw-ls">${M.tindakan(s).map(t => `<li><span>${esc(t)}</span></li>`).join("")}</ul>`).join("")
+      : `<ul class="pw-ls">${M.TENGGAT.map(t => `<li><span>${esc(t)}</span></li>`).join("")}</ul>`;
+    bag.push(k("Hari ini: tindakan menurut pedoman", "bpbd", st.length ? `Tindakan menurut pedoman untuk ${esc(dari[0])}.` : "Belum ada status berlaku atau disarankan. Tenggat menurut pedoman:", isi, `Sumber: ${esc(M.SUMBER_PEDOMAN)}, ${M.HAL_TINDAKAN}; tenggat hal. 13.`));
+    return bag.join("");
+  }
+
   function pastiDlg() {
     if (dlg) return dlg;
     if (!document.querySelector('link[href*="profil_wilayah.css"]')) { const l = document.createElement("link"); l.rel = "stylesheet"; l.href = new URL("profil_wilayah.css", SRC).href; document.head.appendChild(l); }
@@ -193,8 +251,11 @@ const ProfilWilayah = (() => {
       D._d = d; D.querySelector(".pw-hd")?.remove(); D.querySelector(".pw-bd")?.remove();
       /* bagian berat dirakit sesudah dialog tampil: klik tetap ringan */
       requestAnimationFrame(() => setTimeout(() => {
-        const bagian = [risiko(d, d.n), regulasi(d), paparan(d, kode), sosek(d), rawan(d), medan(d), bpbd(d), riwayat(d)].filter(Boolean);
+        const bagian = [`<div class="pw-hari" data-kode="${esc(kode)}">${k("Hari ini", "risiko", "Memuat status darurat, saran, peringatan, dan kapasitas...", "")}</div>`, risiko(d, d.n), regulasi(d), paparan(d, kode), sosek(d), rawan(d), medan(d), bpbd(d), riwayat(d)].filter(Boolean);
         D.insertAdjacentHTML("beforeend", kepala(d.n, d.p) + `<div class="pw-bd">${bagian.join("") || `<p class="pw-kos">Belum ada data profil untuk wilayah ini.</p>`}</div>`);
+        /* bagian Hari ini: isi menyusul begitu data datang, tanpa menahan dialog */
+        muatHariIni().then(H => { const e = D.querySelector(".pw-hari"); if (e && e.dataset.kode === String(kode)) e.innerHTML = hariIni(d, String(kode), H); })
+          .catch(() => { hi = null; const e = D.querySelector(".pw-hari"); if (e) e.innerHTML = k("Hari ini", "risiko", "Status darurat, saran, dan peringatan belum dapat dimuat saat ini.", ""); });
       }, 0));
     } catch (e) { D.querySelector(".pw-hd")?.remove(); D.querySelector(".pw-bd")?.remove(); D.insertAdjacentHTML("beforeend", kepala("Profil wilayah") + `<div class="pw-bd"><p class="pw-kos">Profil wilayah ini belum tersedia.</p></div>`); }
   }

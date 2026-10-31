@@ -490,6 +490,8 @@ jobs:
           # SK status keadaan darurat (CKAN data.bnpb.go.id) dan kejadian + dampak DIBI 365 hari, untuk /semua
           python3 scripts/umum/status_darurat.py uji && python3 scripts/umum/status_darurat.py || echo "::warning title=status_darurat::gagal; berkas lamanya dibiarkan"
           python3 scripts/umum/dibi_kejadian.py uji && python3 scripts/umum/dibi_kejadian.py || echo "::warning title=dibi_kejadian::gagal; berkas lamanya dibiarkan"
+          # saran status darurat: sesudah status_darurat + dibi_kejadian; sinyal karhutla/banjir dari berkas lokal (titik.yml memperbaruinya tiap 3 jam)
+          python3 scripts/umum/saran_status.py uji && python3 scripts/umum/saran_status.py || echo "::warning title=saran_status::gagal; berkas lamanya dibiarkan"
 
       # Logbook Laporan Harian Pusdalops BNPB (DOCX di Drive publik) -> katalog kejadian berkedalaman/berdurasi = label uji model.
       # Teks per hari dibawa lewat cache sendiri (~40 MB): jalan harian cuma mengunduh laporan baru. Tiap uji menilai ulang model
@@ -628,6 +630,11 @@ jobs:
       - name: Ringkasan ringan (boleh gagal)
         continue-on-error: true
         run: python3 scripts/data/ringkasan.py
+
+      # IKU BNPB (kerugian terhadap PDB) dari sumber statis + bnpb/ikd.json; harian cukup. SEBELUM laporan.py: presiden.py membacanya.
+      - name: IKU BNPB (boleh gagal)
+        continue-on-error: true
+        run: python3 scripts/bnpb/iku.py --uji && python3 scripts/bnpb/iku.py
 
       # laporan harian + kurva musim (musim_harian.json ditimpa perbarui() di dalamnya). musim_harian.json SENGAJA tidak di daftar
       # git checkout HEAD: ia bergulir lewat cache data-; versi repo hanya dasar saat cache kosong.

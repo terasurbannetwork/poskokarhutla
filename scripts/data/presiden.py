@@ -16,7 +16,7 @@ from laporan import baca, DATA, WIB, BULAN  # noqa: E402  (pembaca JSON + zona w
 
 KELUAR = os.path.join(DATA, "presiden")
 VERSI = "presiden/1"
-IDS = ["situasi", "provinsi", "kejadian", "konsesi", "gambut", "cuaca", "asap", "penerbangan", "sumberdaya", "dampak",
+IDS = ["situasi", "kerugian", "provinsi", "kejadian", "konsesi", "gambut", "cuaca", "asap", "penerbangan", "sumberdaya", "dampak",
        "luas", "berulang", "pencegahan", "rob", "kesegaran"]   # peringatan BMKG dibuang 22 Okt 2026: umpan harian, nowcast berlaku 3 jam, selalu basi
 BARIS_MAKS, ANGKA_MAKS = 10, 4
 # kecamatan "langganan": terbakar (>= TITIK_TAHUN titik di setahun) pada >= MIN_ULANG tahun lalu, dan >= MIN_INI titik tahun ini
@@ -101,6 +101,7 @@ WAKTU = {
     "sejarah": ("Riwayat titik panas", 24 * 60, lambda j, c: j["dibuat"]),
     "preventif": ("Paket pencegahan", 24 * 60, lambda j, c: j["dibuat"]),
     "../banjir/data/rob_presiden": ("Prakiraan laut untuk rob", 36, lambda j, c: j["model_sampai"] or j["dibuat"]),   # dibuat harian oleh scripts/banjir/rob_presiden.py
+    "bnpb/iku": ("Kerugian ekonomi terhadap PDB", 24 * 400, lambda j, c: f"{j['kerugian_pdb']['realisasi'][-1]['tahun']}-12"),   # data tahunan (LAKIP), basi bila lebih dari setahun lebih satu kuartal
     "aktor_karhutla": ("Perusahaan dan titik panas", 240, lambda j, c: j["periode"]["terkini"]["acuan"]),
 }
 
@@ -746,6 +747,41 @@ def w_luas(c):
                 "berbeda definisi dan ada di kartu Dampak.")
 
 
+def pr(x):
+    """persen PDB, empat desimal tanpa nol di ujung: 0,137 / 0,1365"""
+    return fid(x, 4).rstrip("0").rstrip(",")
+
+
+def w_kerugian(c):
+    k = c.j("bnpb/iku").get("kerugian_pdb")
+    if not k or not k.get("realisasi") or not k.get("target"):
+        raise Kosong("bnpb/iku.json tidak memuat kerugian_pdb")
+    r = k["realisasi"][-1]
+    th = r["tahun"]
+    tg_ = {x["tahun"]: x["v"] for x in k["target"]}
+    if th not in tg_:
+        raise Kosong(f"target RPJMN {th} tidak ada")
+    t, akhir = tg_[th], max(tg_)
+    sel = round(r["v"] - t, 4)
+    arah = "di atas" if sel > 0 else "di bawah" if sel < 0 else "sama dengan"
+    rp = f"Rp{fid(r['kerugian_rp_t'], 1)} triliun"
+    sel_t = f"{pr(abs(sel))} poin persen"
+    return dict(
+        per=f"{th}-12",
+        judul=f"Kerugian ekonomi langsung akibat bencana mencapai {K(pr(r['v']) + '%')} dari PDB {th} ({rp}{', belum termasuk Siklon Senyar' if 'Senyar' in (r.get('catatan') or '') else ''}), {arah} target RPJMN {pr(t)}%"
+              + (f" dengan selisih {sel_t}" if sel else "") + f"; target turun ke {pr(tg_[akhir])}% pada {akhir} (angka tercatat sampai Desember {th})",
+        angka=[angka(f"Kerugian ekonomi langsung {th} terhadap PDB", r["v"], "persen PDB", tampil=f"{pr(r['v'])}% dari PDB"),
+               angka(f"Target RPJMN {th}", t, "persen PDB", tampil=f"{pr(t)}% dari PDB"),
+               angka("Selisih dari target", sel, "poin persen", tampil=f"{sel_t} {arah} target" if sel else "sama dengan target"),
+               angka(f"Kerugian ekonomi langsung {th}", r["kerugian_rp_t"], "triliun rupiah", tampil=rp)],
+        kolom=[kol("tahun", "Tahun"), kol("target", "Target RPJMN (persen PDB)"), kol("real", "Tercatat (persen PDB)")],
+        baris=[{"tahun": str(y), "target": pr(v), "real": next((pr(x["v"]) for x in k["realisasi"] if x["tahun"] == y), "belum ada")} for y, v in sorted(tg_.items())][:BARIS_MAKS],
+        tindak_lanjut=tindak(("BNPB", f"Sampaikan angka {th} yang sudah memasukkan dampak Siklon Tropis Senyar setelah penghitungan kerugian dan kebutuhan pascabencana (R3P) selesai."),
+                             ("Bappenas", f"Pantau lintasan target RPJMN sampai {pr(tg_[akhir])}% pada {akhir} dan tinjau intervensi pencegahan dan mitigasi bila selisihnya tetap {arah} target.")),
+        sumber="LAKIP BNPB 2025 (hal. 18); Renstra BNPB 2025-2029 (hal. 85 dan 98), target RPJMN 2025-2029 Prioritas Nasional 8",
+        catatan=(r["catatan"][:1].upper() + r["catatan"][1:].rstrip(".") + ". " if r.get("catatan") else "") + "Indikator tujuan Renstra BNPB; data tahunan, bukan harian.")
+
+
 def langganan(c):
     """-> (sejarah, indeks tahun ini, [(kunci 'prov|kab|kec', titik tahun ini, tahun bertitik, rata-rata tahun lalu)] urut turun)"""
     s = c.j("sejarah")
@@ -907,7 +943,7 @@ def w_rob(c):
 
 
 WIDGET = {  # id -> (label pill, fungsi)
-    "situasi": ("Situasi", w_situasi), "provinsi": ("Provinsi", w_provinsi), "kejadian": ("Kejadian api", w_kejadian),
+    "situasi": ("Situasi", w_situasi), "kerugian": ("Kerugian", w_kerugian), "provinsi": ("Provinsi", w_provinsi), "kejadian": ("Kejadian api", w_kejadian),
     "konsesi": ("Areal izin", w_konsesi), "gambut": ("Gambut", w_gambut), "cuaca": ("Cuaca", w_cuaca), "asap": ("Asap", w_asap),
     "penerbangan": ("Penerbangan", w_penerbangan), "sumberdaya": ("Sumber daya", w_sumberdaya), "dampak": ("Dampak", w_dampak),
     "luas": ("Luas terbakar", w_luas), "berulang": ("Langganan", w_berulang), "pencegahan": ("Pencegahan", w_pencegahan),
@@ -1360,6 +1396,21 @@ def uji_butir(ws, now):
     if W("gambut"):
         w = W("gambut")
         assert w["per"][:10] == S("khg_prioritas")["jendela_7h"][1] and all(b["kanal"] % 100 == 0 for b in w["baris"])
+    if W("kerugian"):
+        w = W("kerugian")
+        assert len(w["angka"]) == 4 and w["grafik"] is None and "Senyar" in w["catatan"]
+    assert pr(0.137) == "0,137" and pr(0.1365) == "0,1365" and pr(0.217) == "0,217"
+    with tempfile.TemporaryDirectory() as d2:   # berkas sementara: skema iku.json kerugian_pdb
+        os.makedirs(os.path.join(d2, "bnpb"))
+        json.dump({"kerugian_pdb": {"satuan": "persen PDB", "realisasi": [{"tahun": 2025, "v": 0.217, "kerugian_rp_t": 51.3, "pdb_rp_t": 23656.2, "catatan": "dampak Siklon Senyar belum dihitung"}],
+                   "target": [{"tahun": 2025 + i, "v": v} for i, v in enumerate([0.137, 0.1365, 0.136, 0.1355, 0.135])], "sumber": "uji"}},
+                  open(os.path.join(d2, "bnpb", "iku.json"), "w"))
+        wk = rakit("kerugian", Ctx(d2, now))
+        assert wk["status"] == "ok" and wk["per"].startswith("2025-12-31"), wk
+        assert "[[0,217%]]" in wk["judul"] and "(Rp51,3 triliun, belum termasuk Siklon Senyar)" in wk["judul"] and "0,08 poin persen" in wk["judul"] and "0,135% pada 2029" in wk["judul"], wk["judul"]
+        assert [a["nilai"] for a in wk["angka"]] == [0.217, 0.137, 0.08, 51.3] and wk["baris"][1] == {"tahun": "2026", "target": "0,1365", "real": "belum ada"}
+        assert "Senyar belum dihitung" in wk["catatan"] and not any(" · " in t for t in _teks(wk))
+        assert rakit("kerugian", Ctx(os.path.join(d2, "x"), now))["status"] == "kosong"
     assert vonis_pendek("Dalam 7 hari ke depan, bahaya api Tinggi diperkirakan meliputi sebagian Kalimantan Barat pada puncaknya") == "Tinggi, sebagian wilayah"
     assert vonis_pendek("bahaya api Tinggi tidak diperkirakan di Riau pada satu skenario pun") == "Tidak diperkirakan"
     assert tenggat_teks(10, dt.date(2026, 10, 14)) == "Nov 2026" and tenggat_teks(4, dt.date(2026, 10, 14)) == "Mei 2027"

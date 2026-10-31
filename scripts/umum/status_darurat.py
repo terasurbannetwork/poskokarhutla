@@ -6,12 +6,14 @@ kompilasi-data-status-keadaan-darurat-bencana-seluruh-indonesia-tahun-YYYY), sem
 Resource 1 "Data Status Keadaan Darurat Bencana YYYY" = baris SK; resource 2 "Kabupaten yang Menetapkan..." = lat/lon per id_kab.
 Skala provinsi: titik = pusat kotak public/geo/provinsi.json.
 
-{"dibuat","sumber","tahun","catatan","sk":[{nomor,prov_kode,prov,kab_kode|null,kab,skala,jenis,klasifikasi,status,mulai,berakhir|null,tautan,lat,lon}]}
+{"dibuat","sumber","tahun","catatan","ringkas","sk":[{nomor,prov_kode,prov,kab_kode|null,kab,skala,jenis,klasifikasi,status,mulai,berakhir|null,tautan,lat,lon,
+  hari,batas_hari,lewat_batas,jeda_kejadian_hari}]}
+Masa berlaku (Pedoman Penetapan Status Keadaan Darurat BNPB 2016 hal. 15): kab/kota 7-14 hari, provinsi 14 hari-1 bulan, nasional 1-3 bulan; lebih dari itu butuh SK perpanjangan.
 status dinormalkan ke Siaga Darurat | Tanggap Darurat | Transisi Darurat ke Pemulihan.
 
-Pakai:  python3 scripts/umum/status_darurat.py   |   python3 scripts/umum/status_darurat.py uji
+Pakai:  python3 scripts/umum/status_darurat.py   |   ... uji   |   ... ulang (tanpa jaringan: hitung ulang kolom masa/jeda)
 """
-import importlib.util, json, os, re, sys, urllib.parse
+import datetime as dt, importlib.util, json, os, re, statistics, sys, urllib.parse
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 KELUAR = os.path.join(AKAR, "public/data/status_darurat.json")
@@ -75,6 +77,75 @@ def pusat_provinsi():
     return out
 
 
+BATAS_HARI = {"kabupaten": 14, "provinsi": 31, "nasional": 92}
+JEDA_JENDELA = 30  # hari ke belakang dari mulai SK untuk mencari kejadian DIBI pemicunya
+# kelas bencana -> potongan huruf kecil pada teks jenis SK maupun jenis DIBI (satu teks bisa memuat banyak kelas)
+KELAS = {"karhutla": ("kebakaran hutan", "kebakaran lahan"), "banjir": ("banjir",), "longsor": ("longsor", "gerakan tanah"),
+         "kekeringan": ("kekeringan",), "cuaca": ("cuaca ekstrem", "angin", "puting beliung", "topan"),
+         "gunungapi": ("gunung api", "gunungapi", "erupsi")}
+
+
+def kelas_jenis(teks):
+    t = str(teks or "").lower()
+    return {k for k, ws in KELAS.items() if any(w in t for w in ws)}
+
+
+def tgl_ke_hari(t):
+    return dt.date.fromisoformat(t)
+
+
+def masa(o):
+    """Tambah hari / batas_hari / lewat_batas ke entri SK (hari inklusif; null bila berakhir null)."""
+    h = (tgl_ke_hari(o["berakhir"]) - tgl_ke_hari(o["mulai"])).days + 1 if o["berakhir"] else None
+    o["tanggal_janggal"] = h is not None and h < 1   # berakhir sebelum mulai: salah ketik di sumber, tak dihitung
+    o["hari"] = None if o["tanggal_janggal"] else h
+    o["batas_hari"] = BATAS_HARI[o["skala"]]
+    o["lewat_batas"] = o["hari"] is not None and o["hari"] > o["batas_hari"]
+    return o
+
+
+def jeda_kejadian(o, dibi):
+    """Selisih hari mulai SK - tanggal kejadian DIBI terdekat (<= mulai, <= JEDA_JENDELA hari) di kab sama, jenis cocok; None bila tak ketemu
+    atau jendela keluar dari cakupan DIBI (dibi = isi dibi_kejadian.json)."""
+    if not o["kab_kode"] or not dibi or o["mulai"] < dibi["dari"]:
+        return None
+    m, kl = tgl_ke_hari(o["mulai"]), kelas_jenis(o["jenis"])
+    ada = [(m - tgl_ke_hari(k["tanggal"])).days for k in dibi["kejadian"]
+           if k["kab_kode"] == o["kab_kode"] and kelas_jenis(k["jenis"]) & kl and 0 <= (m - tgl_ke_hari(k["tanggal"])).days <= JEDA_JENDELA]
+    return min(ada) if ada else None
+
+
+def perkaya(sk, dibi):
+    """Isi kolom masa + jeda ke tiap SK; kembalikan ringkasan akar."""
+    for o in sk:
+        masa(o)
+        o["jeda_kejadian_hari"] = jeda_kejadian(o, dibi)
+    kab, prov = [o for o in sk if o["skala"] == "kabupaten"], [o for o in sk if o["skala"] == "provinsi"]
+    j = [o["jeda_kejadian_hari"] for o in sk if o["jeda_kejadian_hari"] is not None]
+    return {"kab_lewat_batas": sum(o["lewat_batas"] for o in kab), "kab_total": len(kab), "prov_lewat_batas": sum(o["lewat_batas"] for o in prov),
+            "prov_total": len(prov), "jeda_median_hari": statistics.median(j) if j else None, "jeda_n": len(j),
+            "tanggal_janggal": sum(o["tanggal_janggal"] for o in sk)}
+
+
+def catatan_masa(dibi, ringkas, n_jeda):
+    c = (" Masa berlaku: hari = berakhir - mulai + 1; batas 14 hari kabupaten, 31 hari provinsi, 92 nasional (Pedoman Penetapan Status Keadaan Darurat BNPB 2016 hal. 15); "
+         "lewat_batas = berlaku lebih lama dari batas (butuh SK perpanjangan; SK perpanjangan bisa terhitung sebagai SK terpisah di sumber). "
+         "tanggal_janggal = berakhir sebelum mulai (hari null, tidak dihitung lewat batas). ")
+    if dibi:
+        c += (f"jeda_kejadian_hari = hari dari kejadian DIBI sejenis terdekat di kabupaten yang sama sampai mulai SK (jendela {JEDA_JENDELA} hari); null bila tak ketemu. "
+              f"DIBI hanya memuat {dibi['dari']} s.d. {dibi['sampai']}, jadi SK yang mulai sebelum {dibi['dari']} otomatis null ({n_jeda} SK punya jeda).")
+    else:
+        c += "jeda_kejadian_hari null semua: public/data/dibi_kejadian.json tidak terbaca."
+    return c
+
+
+def baca_dibi():
+    try:
+        return json.load(open(os.path.join(AKAR, "public/data/dibi_kejadian.json"), encoding="utf-8"))
+    except (OSError, ValueError):
+        return None
+
+
 def baris(ambil, rid):
     out, a = [], 0
     while True:
@@ -116,13 +187,26 @@ def jalan():
                         buang += 1
     sk.sort(key=lambda x: (x["mulai"], x["nomor"]), reverse=True)
     tanpa_titik = sum(1 for x in sk if x["lat"] is None)
+    dibi = baca_dibi()
+    ringkas = perkaya(sk, dibi)
     simpan(KELUAR, {
         "sumber": "data.bnpb.go.id (CKAN) kompilasi data status keadaan darurat bencana seluruh Indonesia", "tahun": sorted(paket),
         "catatan": f"{buang} baris dibuang (tanpa tanggal mulai atau status tak dikenal). berakhir null = tanggal berakhir kosong di sumber. "
                    f"Titik kabupaten dari resource 'Kabupaten yang Menetapkan'; skala provinsi memakai pusat kotak provinsi; "
-                   f"{tanpa_titik} SK tanpa titik. Data tahun berjalan menyusul dari BNPB.",
-        "sk": sk})
-    print(f"status_darurat: tahun {sorted(paket)}, {len(sk)} SK, {buang} dibuang, {tanpa_titik} tanpa titik")
+                   f"{tanpa_titik} SK tanpa titik. Data tahun berjalan menyusul dari BNPB." + catatan_masa(dibi, ringkas, sum(1 for x in sk if x["jeda_kejadian_hari"] is not None)),
+        "ringkas": ringkas, "sk": sk})
+    print(f"status_darurat: tahun {sorted(paket)}, {len(sk)} SK, {buang} dibuang, {tanpa_titik} tanpa titik, ringkas {ringkas}")
+
+
+def ulang():
+    """Tanpa jaringan: hitung ulang kolom masa/jeda pada berkas keluaran yang ada."""
+    d = json.load(open(KELUAR, encoding="utf-8"))
+    dibi = baca_dibi()
+    ringkas = perkaya(d["sk"], dibi)
+    d["catatan"] = d["catatan"].split(" Masa berlaku:")[0] + catatan_masa(dibi, ringkas, sum(1 for x in d["sk"] if x["jeda_kejadian_hari"] is not None))
+    d["ringkas"] = ringkas
+    _muat("umum_kejadian", "scripts/umum/kejadian.py").simpan(KELUAR, d)
+    print(f"status_darurat ulang: {ringkas}")
 
 
 def uji():
@@ -141,8 +225,32 @@ def uji():
     assert ubah(dict(r, status_keadaan_darurat="?"), {}, {}) is None
     assert POLA_PAKET.match("kompilasi-data-status-keadaan-darurat-bencana-seluruh-indonesia-tahun-2025")
     assert set(pusat_provinsi()) >= {"11", "35", "96"}
+    # masa berlaku: 15 hari kab lewat batas, 14 hari tidak; inklusif; provinsi 31 vs 32; berakhir null tidak lewat
+    b = lambda sk, m, a: masa(dict(r2(sk), mulai=m, berakhir=a))
+    r2 = lambda sk: {"skala": sk, "kab_kode": "35.14", "jenis": "Banjir"}
+    assert b("kabupaten", "2025-01-01", "2025-01-15")["hari"] == 15 and b("kabupaten", "2025-01-01", "2025-01-15")["lewat_batas"] is True
+    assert b("kabupaten", "2025-01-01", "2025-01-14")["hari"] == 14 and b("kabupaten", "2025-01-01", "2025-01-14")["lewat_batas"] is False
+    assert b("provinsi", "2025-01-01", "2025-01-31")["lewat_batas"] is False and b("provinsi", "2025-01-01", "2025-02-01")["lewat_batas"] is True
+    n = b("kabupaten", "2025-01-01", None)
+    assert n["hari"] is None and n["lewat_batas"] is False and n["batas_hari"] == 14 and n["tanggal_janggal"] is False
+    jg = b("kabupaten", "2025-03-10", "2025-03-01")
+    assert jg["tanggal_janggal"] is True and jg["hari"] is None and jg["lewat_batas"] is False
+    # jeda: kejadian terdekat <= mulai, jenis cocok, kab sama, jendela 30 hari, di luar cakupan DIBI = None
+    dibi = {"dari": "2025-01-01", "sampai": "2025-12-31", "kejadian": [
+        {"tanggal": "2025-03-05", "jenis": "Banjir Bandang", "kab_kode": "35.14"}, {"tanggal": "2025-03-08", "jenis": "Banjir", "kab_kode": "35.14"},
+        {"tanggal": "2025-03-09", "jenis": "Banjir", "kab_kode": "35.15"}, {"tanggal": "2025-03-09", "jenis": "Kekeringan", "kab_kode": "35.14"},
+        {"tanggal": "2025-03-12", "jenis": "Banjir", "kab_kode": "35.14"}]}
+    sk = dict(r2("kabupaten"), mulai="2025-03-10", berakhir="2025-03-20")
+    assert jeda_kejadian(sk, dibi) == 2                              # 8 Mar; 12 Mar sesudah mulai, kab/jenis lain diabaikan
+    assert jeda_kejadian(dict(sk, mulai="2025-05-01"), dibi) is None  # di luar jendela 30 hari
+    assert jeda_kejadian(dict(sk, mulai="2024-12-31"), dibi) is None  # sebelum cakupan DIBI
+    assert jeda_kejadian(dict(sk, kab_kode=None), dibi) is None and jeda_kejadian(sk, None) is None
+    assert kelas_jenis("Banjir,Tanah longsor,Cuaca ekstrem") == {"banjir", "longsor", "cuaca"} and kelas_jenis("Gempabumi") == set()
+    rg = perkaya([dict(sk), dict(sk, mulai="2025-01-01", berakhir="2025-01-20"), dict(sk, skala="provinsi", mulai="2025-01-01", berakhir="2025-02-05")], dibi)
+    assert (rg["kab_lewat_batas"], rg["kab_total"], rg["prov_lewat_batas"], rg["prov_total"], rg["jeda_median_hari"]) == (1, 2, 1, 1, 2)
+    assert rg["jeda_n"] == 1 and rg["tanggal_janggal"] == 0
     print("uji status_darurat: ok")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else jalan()
+    uji() if sys.argv[1:] == ["uji"] else ulang() if sys.argv[1:] == ["ulang"] else jalan()
