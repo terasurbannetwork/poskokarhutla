@@ -1,8 +1,7 @@
 # Uji peta bahaya banjir InaRISK lawan kejadian, dan rancangan peta bahaya yang bisa dijelaskan
 
 Tanggal: 31 Oktober 2026. Skrip: `scripts/banjir/bahaya.py kelas` (sebaran kelas) dan `scripts/banjir/uji_inarisk.py`
-(uji). Keluaran: `public/banjir/data/bahaya_kelas.json`, `public/banjir/data/uji_inarisk.json`. Pemicu: usulan riset FIT
-Telkom University "Penguatan InaRISK melalui Explainable GIS" (Hakim & Mandasari, ICoICT 2026, DOI 10.1109/ICoICT71118.2026.11664790).
+(uji). Keluaran: `public/banjir/data/bahaya_kelas.json`, `public/banjir/data/uji_inarisk.json`.
 
 ## 1. Sebaran kelas per kecamatan
 
@@ -46,15 +45,11 @@ Yang TIDAK boleh disimpulkan:
 - Ketepatan batas zona di lapangan. Untuk itu perlu label poligon atau titik (Groundsource, PetaBencana, citra radar
   Copernicus GFM) per kecamatan atau kelurahan.
 
-## 3. Kaitannya dengan usulan Telkom
+## 3. Akibatnya bagi peta bahaya baru
 
-Usulan itu menguji satu kejadian (Desember 2025) secara kualitatif. Ukurannya, GVF 0,957 dan Spearman > 0,94, menilai
-kerapian kelas dan kestabilan bobot, bukan ketepatan. Uji di atas adalah H1 mereka pada skala nasional, dan hasilnya
-menunjukkan tantangan sebenarnya: pembanding penduduk sangat kuat. Peta usulan baru perlu mengalahkan penduduk, bukan
-hanya mengalahkan InaRISK.
-
-Yang layak diminta dari mitra: DEMNAS 8 m, RBI 1:25.000, batas kelurahan, dan uji pemahaman petugas.
-Yang kita tawarkan: label 26.800 kejadian (`label_banjir.py`) dan protokol uji ini.
+Mengukur kerapian kelas (misalnya GVF Jenks) atau kestabilan bobot (Spearman antar-bobot) tidak sama dengan menguji
+ketepatan. Peta bahaya baru, dari pihak mana pun, harus diuji lawan kejadian yang tidak dipakai menyetelnya, dan harus
+mengalahkan pembanding penduduk, bukan hanya mengalahkan InaRISK.
 
 ## 4. Rancangan peta bahaya banjir yang bisa dijelaskan (urutan kerja)
 

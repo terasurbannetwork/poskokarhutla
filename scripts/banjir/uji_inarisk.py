@@ -1,7 +1,6 @@
 """Uji peta bahaya banjir InaRISK lawan kejadian banjir DIBI per kabupaten -> public/banjir/data/uji_inarisk.json
 
-Pertanyaan (H1 usulan FIT Telkom University, "Penguatan InaRISK", Okt 2026): seberapa cocok peta bahaya banjir InaRISK
-dengan kejadian banjir yang tercatat? Usulan itu baru menguji satu kejadian secara kualitatif. Di sini diuji dengan
+Pertanyaan: seberapa cocok peta bahaya banjir InaRISK dengan kejadian banjir yang tercatat? Diuji dengan
 semua kejadian DIBI 2008-2025 di semua kabupaten yang punya peta InaRISK dan data penduduk.
 
 Data:
