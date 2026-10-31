@@ -197,7 +197,7 @@ async function terdekat(env, req, url) {
 
 /* GET /api/akademisi/data/<nama>: berkas R2 akademisi/<nama>.json, nama dari daftar tetap. Satu kunci rute per nama (worker.js tidak diubah);
    nama lain tidak punya rute, jatuh ke aset statis = 404 tanpa menyentuh R2. "baru" = akademisi/baru/YYYY-MM.json terbaru (list prefix, urut leksikal). */
-export const DATA_AKADEMISI = ["riset", "logo_pemilik", "bpbd_kapasitas", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran", "donatur_kejadian", "csr", "ahli_asing", "redaksi", "strategis", "alumni", "kalaksa", "hibah_riset", "penghargaan", "diaspora", "peneliti_muda", "prodi_beasiswa", "foto_pakar", "wilayah_daya", "lembaga_ekstra", "pakar_ekstra", "kejadian_ekstra"];
+export const DATA_AKADEMISI = ["riset", "logo_pemilik", "bpbd_kapasitas", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran", "donatur_kejadian", "csr", "ahli_asing", "redaksi", "strategis", "alumni", "kalaksa", "hibah_riset", "penghargaan", "diaspora", "peneliti_muda", "prodi_beasiswa", "foto_pakar", "wilayah_daya", "lembaga_ekstra", "pakar_ekstra", "kejadian_ekstra", "tesis"];
 async function dataBaca(env, req, nama) {
   if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
@@ -213,7 +213,7 @@ async function dataBaca(env, req, nama) {
 
 /* GET /api/akademisi/lembaga/terdekat: lembaga terurut jarak haversine; akademisi/lembaga.json dimuat per isolate, TTL 10 menit (data lembaga dari cache isolat; gerbang staf tetap membaca D1 untuk sesi).
    kategori opsional dari 12 nilai tetap; sub opsional (mis. BPBD, SAR, palang merah) dicocokkan tanpa peduli huruf besar. */
-const KATEGORI_LEMBAGA = new Set(["pemerintah", "kerelawanan", "donasi", "jejaring", "internasional", "mitra-internasional", "keagamaan", "dunia-usaha", "komunikasi", "profesi", "kesehatan", "riset", "inovasi", "lsm"]);
+const KATEGORI_LEMBAGA = new Set(["pemerintah", "kerelawanan", "tanggap-ormas", "donasi", "jejaring", "internasional", "mitra-internasional", "keagamaan", "dunia-usaha", "komunikasi", "profesi", "kesehatan", "riset", "inovasi", "lsm"]);
 let simpanL = null;
 async function muatLembaga(env) {
   if (simpanL && Date.now() - simpanL.t < TTL) return simpanL.d;

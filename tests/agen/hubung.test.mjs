@@ -152,3 +152,15 @@ test("skor kesiapan: komponen persentil, minimal tiga komponen, kuadran priorita
   assert.equal(k["32|bogor"].kuadran, "prioritas"); assert.ok(k["32|K:bogor"].skor > k["32|bogor"].skor);
   assert.ok(Object.values(k).every(r => r.skor == null || (r.skor >= 0 && r.skor <= 100)));
 });
+
+test("kebutuhan warga menaikkan beban; tesis disaring ketat dan dicocokkan ke kampus direktori", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const rk = {kolom: ["prov", "kab", "kec", "risiko", "pend"], kec: [["53", "Manggarai Timur", "a", 30, 3e5], ["32", "Kota Bandung", "b", 30, 2.5e6]]};
+  const bps = (m, i) => ({"Persentase penduduk miskin (P0)": {nilai: m}, "Garis Kemiskinan": {nilai: 900000}, IPM: {nilai: i}});
+  const wd = {kab: [{prov: "53", kab: "Kabupaten Manggarai Timur", bps: bps(25, 62), ikp: {skor: 40}}, {prov: "32", kab: "Kota Bandung", bps: bps(4, 82), ikp: {skor: 85}}]};
+  const k = S.kesiapanDaerah(wd, rk, [], {}, []).baris;
+  assert.ok(k["53|manggaraitimur"].kebutuhan > k["32|K:bandung"].kebutuhan, "kab miskin, IPM rendah, rawan pangan = kebutuhan lebih tinggi");
+  assert.equal(k["53|manggaraitimur"].butuh.miskin, 75);   // P0 dipakai, bukan Garis Kemiskinan
+  const t = S.tesisKampus([{judul: "Pemetaan rawan banjir Kota Semarang", kampus: "Diponegoro University", tahun: 2024}, {judul: "Cekaman kekeringan pada tanaman padi", kampus: "Diponegoro University"}], {"Universitas Diponegoro": {}});
+  assert.deepEqual(Object.keys(t), ["Universitas Diponegoro"]); assert.equal(t["Universitas Diponegoro"].length, 1);
+});

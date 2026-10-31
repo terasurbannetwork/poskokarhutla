@@ -9,7 +9,7 @@
 import {readFileSync, writeFileSync} from "node:fs";
 import {fileURLToPath} from "node:url";
 
-export const KATEGORI = new Set(["kerelawanan", "donasi", "pemerintah", "jejaring", "internasional", "mitra-internasional", "keagamaan", "dunia-usaha", "komunikasi", "profesi", "kesehatan", "riset", "penerbit", "inovasi", "lsm"]);
+export const KATEGORI = new Set(["kerelawanan", "tanggap-ormas", "donasi", "pemerintah", "jejaring", "internasional", "mitra-internasional", "keagamaan", "dunia-usaha", "komunikasi", "profesi", "kesehatan", "riset", "penerbit", "inovasi", "lsm"]);
 export const SKALA = new Set(["nasional", "provinsi", "kabkota", "internasional"]);
 export const BIDANG = new Set(["tanggap darurat", "SAR", "logistik", "kesehatan", "psikososial", "air dan sanitasi", "hunian", "pangan", "pendidikan", "perlindungan", "rehab-rekon",
   "PRB dan kesiapsiagaan", "pendanaan", "komunikasi", "data dan pemetaan", "riset"]);

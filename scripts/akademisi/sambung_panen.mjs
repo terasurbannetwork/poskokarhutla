@@ -36,6 +36,14 @@ export function wilayahDaya(P) {
   for (const r of larik(P.inarisk_bahaya)) if (r.prov && r.kab && r.jenis && r.indeks != null) (ke(r.prov, r.kab).bahaya ||= []).push({jenis: r.jenis, indeks: r.indeks, kelas: r.kelas || null, sumber_url: r.sumber_url});
   for (const r of larik(P.psc119)) if ((r.prov || r.kode_prov) && r.kab) ke(r.kode_prov || r.prov, r.kab).psc119 = {telepon: [].concat(r.telepon || [], r.wa || []), status: r.status || null, sumber_url: r.sumber_url};
   for (const r of larik(P.damkar)) if ((r.prov || r.kode_prov) && r.kab) ke(r.kode_prov || r.prov, r.kab).damkar = {pos: r.pos_damkar ?? null, armada: r.armada ?? null, personel: r.personel ?? null, tahun: r.tahun || null, sumber_url: r.sumber_url};
+  /* gelombang 3 (31 Okt): Indeks Ketahanan Pangan Bapanas (edisi 2024 didahulukan: 2025-2026 tidak jelas terukur atau proyeksi), masjid dan musala SIMAS, hibah RR, kerentanan BPS, titik darurat OSM */
+  for (const r of larik(P.ikp)) { const kp = r.kode_prov || r.prov; if (!kp || !r.kab || r.skor == null) continue; const o = ke(String(kp).slice(0, 2), r.kab);
+    if (!o.ikp || (r.tahun === 2024 && o.ikp.tahun !== 2024)) o.ikp = {skor: r.skor, peringkat: r.peringkat ?? null, kelompok: r.kelompok_prioritas ?? null, tahun: r.tahun, sumber_url: r.sumber_url}; }
+  for (const r of larik(P.rumah_ibadah)) { const kp = r.kode_prov || r.prov; if (kp && r.kab) ke(String(kp).slice(0, 2), r.kab).ibadah = {masjid: r.masjid ?? null, musala: r.musala ?? null, sumber_url: r.sumber_url}; }
+  for (const r of larik(P.kerentanan_bps)) if (r.prov && r.kab && r.nilai != null) ((ke(String(r.prov), r.kab).bps ||= {})[r.indikator] = {nilai: r.nilai, satuan: r.satuan || null, tahun: r.tahun || null, sumber_url: r.sumber_url});
+  const od = P.osm_darurat; if (od?.baris) { const ci = c => od.kolom.indexOf(c); for (const b of od.baris) { const kp = b[ci("prov")], kb = b[ci("kab")], j = b[ci("jenis")]; if (!kp || !j) continue;
+    for (const o of [pv(kp), kb ? ke(kp, kb) : null].filter(Boolean)) { const t = o.darurat ||= {}; t[j] = (t[j] || 0) + 1; } } }
+  /* ponytail: sirene tsunami belum disambung: sumbernya campuran rekap 2018, daftar kota 2024, dan rekap kab 2026 tanpa koordinat, dijumlah akan dobel */
   /* jalan, jembatan, SPAB: per provinsi */
   const jl = P.jalan_kondisi || {}, namaKe = {};
   for (const s of ["nasional_per_provinsi_2025", "provinsi_per_provinsi_2025"]) for (const r of larik(jl[s])) { namaKe[norm(r.provinsi)] = r.kd_prov;
@@ -141,7 +149,10 @@ export const radarSkema = (radar, ada) => larik(radar).filter(r => !ada.has("rad
      lembaga = lembaga direktori berkantor di kab/kota itu per 100.000 jiwa (tanpa penerbit dan penyedia e-Katalog);
      pakar   = pakar direktori di provinsinya per 1 juta jiwa provinsi (tingkat provinsi, belum per kab).
    Skor = 100 x rata-rata komponen yang tersedia, minimal 3 komponen. Kesenjangan = persentil risiko dikurangi persentil kesiapan (x100).
-   Kuadran memakai median: risiko tinggi dan kesiapan rendah = prioritas. Kelas BPBD tidak dipakai: 352 dari 354 BPBD belum terisi.
+   Kebutuhan = rata-rata persentil kerentanan warga (31 Okt): kemiskinan, tanpa air minum layak, tanpa sanitasi layak, IPM rendah (BPS; lansia
+   dan disabilitas per kab belum terbuka tanpa kunci API), dan kerawanan pangan (100 dikurangi skor IKP Bapanas). Beban = rata-rata persentil risiko dan kebutuhan
+   (kebutuhan hilang = risiko saja). Kesenjangan = persentil beban dikurangi persentil kesiapan (x100).
+   Kuadran memakai median: beban tinggi dan kesiapan rendah = prioritas. Kelas BPBD tidak dipakai: 352 dari 354 BPBD belum terisi.
    ponytail: bobot sama rata; ubah bila pemilik ingin menekankan komponen tertentu. */
 export function kesiapanDaerah(wd, rk, induk0, kampus, lembaga) {
   const kol = c => rk.kolom.indexOf(c), K = new Map();
@@ -152,7 +163,10 @@ export function kesiapanDaerah(wd, rk, induk0, kampus, lembaga) {
   const induk = Array.isArray(induk0) ? induk0 : induk0?.orang || [], nPk = {}; for (const o of induk) { const p = kampus?.[o[2]]?.prov; if (p) nPk[p] = (nPk[p] || 0) + 1; }
   const pendProv = {}; for (const o of K.values()) pendProv[o.prov] = (pendProv[o.prov] || 0) + o.pend;
   const baris = [...K].map(([k, o]) => { const w = W.get(k) || {}, th = Object.keys(w.apbd || {}).sort().reverse().find(t => w.apbd[t].BTT != null), f = w.fasilitas || {}, pend = o.pend || null;
-    return {k, prov: o.prov, kab: w.kab || o.kab, pend, risiko: o.rs.length ? o.rs.reduce((a, b) => a + b, 0) / o.rs.length : null,
+    const bps = w.bps || {}, cari1 = re => { const k = Object.keys(bps).find(x => re.test(x)); return k ? Number(bps[k].nilai) : null; }, inv = v => v == null || !Number.isFinite(v) ? null : 100 - v;
+    const butuh = {miskin: cari1(/penduduk miskin|\bP0\b/i), lansia: cari1(/lansia|60/i), disabilitas: cari1(/disabil/i), air: inv(cari1(/akses air minum layak/i)), sanitasi: inv(cari1(/akses sanitasi layak/i)),
+      ipm: inv(cari1(/^IPM$|indeks pembangunan manusia/i)), pangan: w.ikp?.skor != null ? 100 - w.ikp.skor : null};   /* hunian layak baru 37 kab (NTT, Lampung): tidak dipakai supaya kab lain tidak tertimbang beda */
+    return {k, prov: o.prov, kab: w.kab || o.kab, pend, butuh, risiko: o.rs.length ? o.rs.reduce((a, b) => a + b, 0) / o.rs.length : null,
       v: {fiskal: th && pend ? w.apbd[th].BTT / pend : null, tt: f.rs_tt && pend ? f.rs_tt / pend * 1e4 : null, pkm: f.puskesmas && pend ? f.puskesmas / pend * 1e5 : null,
         lembaga: pend ? (nLb.get(k) || 0) / pend * 1e5 : null, pakar: pendProv[o.prov] ? (nPk[o.prov] || 0) / pendProv[o.prov] * 1e6 : null}}; });
   /* persentil peringkat tengah: nilai kembar mendapat posisi rata-ratanya */
@@ -161,16 +175,33 @@ export function kesiapanDaerah(wd, rk, induk0, kampus, lembaga) {
   const P = Object.fromEntries(["fiskal", "tt", "pkm", "lembaga", "pakar"].map(k => [k, pers(k)])), rata = a => { a = a.filter(x => x != null); return a.length ? a.reduce((s, x) => s + x, 0) / a.length : null; };
   for (const b of baris) { const fk = rata([P.tt(b.v.tt), P.pkm(b.v.pkm)]); b.komp = {fiskal: P.fiskal(b.v.fiskal), faskes: fk, lembaga: P.lembaga(b.v.lembaga), pakar: P.pakar(b.v.pakar)};
     const a = Object.values(b.komp).filter(x => x != null); b.skor = a.length >= 3 ? Math.round(rata(a) * 100) : null; }
-  const pR = pctl(baris.map(b => b.risiko).filter(x => x != null)), pS = pctl(baris.map(b => b.skor).filter(x => x != null));
+  const PB = Object.fromEntries(["miskin", "lansia", "disabilitas", "air", "sanitasi", "ipm", "pangan"].map(k => [k, pctl(baris.map(b => b.butuh[k]).filter(x => x != null && Number.isFinite(x)))]));
+  for (const b of baris) { const a = Object.entries(b.butuh).map(([k, v]) => v == null || !Number.isFinite(v) ? null : PB[k](v)); b.kebutuhan = rata(a); b.butuhP = Object.fromEntries(Object.keys(b.butuh).map((k, i) => [k, a[i]])); }
+  const pR0 = pctl(baris.map(b => b.risiko).filter(x => x != null));
+  for (const b of baris) { const r = pR0(b.risiko); b.beban = r == null ? null : b.kebutuhan == null ? r : (r + b.kebutuhan) / 2; }
+  const pR = pctl(baris.map(b => b.beban).filter(x => x != null)), pS = pctl(baris.map(b => b.skor).filter(x => x != null));
   const ada = baris.filter(b => b.skor != null).sort((a, b) => b.skor - a.skor); ada.forEach((b, i) => { b.peringkat = i + 1; });
-  const hasil = {}; for (const b of baris) { const r = pR(b.risiko), q = pS(b.skor), dalamProv = ada.filter(x => x.prov === b.prov);
+  const hasil = {}; for (const b of baris) { const r = pR(b.beban), q = pS(b.skor), dalamProv = ada.filter(x => x.prov === b.prov);
     hasil[b.k] = {prov: b.prov, kab: b.kab, nama_rk: K.get(b.k).kab, skor: b.skor, risiko: b.risiko == null ? null : Math.round(b.risiko * 10) / 10, kesenjangan: r == null || q == null ? null : Math.round((r - q) * 100),
       kuadran: r == null || q == null ? null : (r >= 0.5 ? (q < 0.5 ? "prioritas" : "siaga") : (q < 0.5 ? "perkuat" : "aman")),
       peringkat: b.peringkat || null, peringkat_prov: b.peringkat ? dalamProv.indexOf(b) + 1 : null, jumlah_prov: dalamProv.length,
       komp: Object.fromEntries(Object.entries(b.komp).map(([k, v]) => [k, v == null ? null : Math.round(v * 100)])),
+      kebutuhan: b.kebutuhan == null ? null : Math.round(b.kebutuhan * 100), butuh: Object.fromEntries(Object.entries(b.butuhP).filter(([, v]) => v != null).map(([k, v]) => [k, Math.round(v * 100)])),
       nilai: {btt_per_jiwa: b.v.fiskal == null ? null : Math.round(b.v.fiskal), tt_per_10rb: b.v.tt == null ? null : Math.round(b.v.tt * 10) / 10, puskesmas_per_100rb: b.v.pkm == null ? null : Math.round(b.v.pkm * 10) / 10,
         lembaga_per_100rb: b.v.lembaga == null ? null : Math.round(b.v.lembaga * 10) / 10, pakar_prov_per_1jt: b.v.pakar == null ? null : Math.round(b.v.pakar * 10) / 10}}; }
   return {jumlah: ada.length, hari_risiko: rk.hari || null, baris: hasil};
+}
+
+/* tesis, disertasi, dan skripsi kebencanaan dari repositori kampus (OAI-PMH): saringan judul ketat, karena kata "kekeringan" atau "banjir" juga muncul
+   di judul agronomi dan teknik biasa; nama kampus repositori dicocokkan ke kampus direktori lewat indeks dan alias hubung.mjs */
+const TESIS_YA = /bencana|banjir|longsor|gempa|tsunami|erupsi|gunung ?api|lahar|kebakaran hutan|karhutla|mitigasi|kesiapsiagaan|evakuasi|tanggap darurat|pengungsi|rawan|abrasi|\brob\b|disaster|flood|landslide|earthquake|volcan|wildfire|evacuat|hazard/i;
+const TESIS_TIDAK = /cekaman|tanaman|varietas|benih|drought stress|salinitas|kultur|ternak|kekeringan fisiologis/i;
+export function tesisKampus(rows, kampus) {
+  const pk = indeks(Object.keys(kampus || {}).map(n => ({id: n, nama: n, alias: kampus[n]?.alias}))), out = {};
+  for (const r of larik(rows)) { if (!r.judul || !TESIS_YA.test(r.judul) || TESIS_TIDAK.test(r.judul)) continue; const k = cari(pk, r.kampus); if (!k) continue;
+    (out[k] ||= []).push({judul: r.judul, penulis: r.penulis || null, tahun: r.tahun || null, jenjang: r.jenjang || null, rumpun: r.rumpun || [], url: r.url}); }
+  for (const k of Object.keys(out)) out[k].sort((a, b) => (b.tahun || 0) - (a.tahun || 0));
+  return out;
 }
 
 /* pemutakhiran bulanan (panen_publik.py): daftar hitam LKPP mentah dicocokkan ketat ke nama lembaga (termasuk penyedia e-Katalog); nama yang
@@ -200,7 +231,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const P = Object.fromEntries(["anggaran_pemda", "dana_desa_bencana", "kinerja_pemda", "fasilitas_kritis", "jalan_kondisi", "jembatan", "spab", "izin_cocok", "izin_zakat", "badan_hukum", "izin_pub",
     "daftar_hitam_cocok", "ror_kampus", "wikidata_lembaga", "paten", "paten_cocok", "orcid_pakar", "aktivasi_satelit", "dokumen_pascabencana", "reliefweb_kejadian", "fts_kejadian",
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
-    "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi"].map(f => [f, baca(dp, f)]));
+    "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
+    "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});
@@ -218,7 +250,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (sb.length) { P.aktivasi_satelit = [...larik(P.aktivasi_satelit), ...sb]; simpanPanen("aktivasi_satelit", P.aktivasi_satelit); }
   const wd = wilayahDaya(P), le = lembagaEkstra(P, lbSemua), pe = pakarEkstra(P, R.induk), ke = kejadianEkstra(P, R.kejadian?.kejadian || R.kejadian);
   wd.kesiapan = kesiapanDaerah(wd, JSON.parse(readFileSync(new URL("../../public/banjir/data/risiko_kecamatan.json", import.meta.url), "utf8")), R.induk, R.kampus, lbSemua);
-  tulis("wilayah_daya", wd); tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
+  tulis("wilayah_daya", wd);
+  const ts = P.tesis_kebencanaan ? tesisKampus(P.tesis_kebencanaan, R.kampus) : {}; if (Object.keys(ts).length) tulis("tesis", ts);   /* hasil kosong tidak ditulis, jadi tidak menimpa R2 */ tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
   console.log(JSON.stringify({lembaga_baru: lbBaru.length, hibah_baru: hb.length, skema_radar: rs.length, wilayah_kab: wd.kab.length, wilayah_prov: Object.keys(wd.prov).length,
     lembaga_ekstra: Object.keys(le.lembaga).length, kampus_ekstra: Object.keys(le.kampus).length, daftar_hitam: Object.values(le.lembaga).filter(x => x.daftar_hitam).length,
     pakar_paten: Object.values(pe).filter(x => x.paten).length, pakar_orcid: Object.values(pe).filter(x => x.orcid).length,

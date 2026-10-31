@@ -2450,3 +2450,4 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-ks-leg{display:flex;flex-wrap:wrap;gap:6px 16px;margin:0 0 10px;font-size:12.5px}.ak-ks-l{display:inline-flex;align-items:center;gap:6px}.ak-ks-l i{width:12px;height:12px;border-radius:3px;display:inline-block}
 .ak-ks-k{font-weight:700;text-align:left;color:var(--ink)}.ak-n{text-align:right;font-variant-numeric:tabular-nums}
 .ak-wlcetak{margin-right:8px;vertical-align:middle}
+.ak-ks-ws{margin:10px 0 0;padding-left:18px;font-size:13px}.ak-ks-ws li{margin:2px 0}
