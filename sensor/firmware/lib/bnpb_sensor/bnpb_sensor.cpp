@@ -4,6 +4,7 @@
 #include <esp_sleep.h>
 #include <driver/rtc_io.h>
 #include <time.h>
+#include <mbedtls/md.h>
 
 #if defined(MODE_LORAWAN)
 #include <RadioLib.h>
@@ -105,8 +106,12 @@ bool kirim(const W&, const char* nilaiJson, float volt) { return selulerKirim(ni
 // Node Meshtastic memakai Serial Module mode TEXTMSG: baris yang kita cetak disiarkan ke mesh sebagai teks.
 bool kirim(const W& w, const char*, float) {
   Serial2.begin(MESH_BAUD, SERIAL_8N1, MESH_RX, MESH_TX);
+  // ekor = 8 byte pertama HMAC-SHA256(KUNCI_HMAC, payload): gateway menolak siaran palsu/diubah
+  uint8_t mac[32];
+  mbedtls_md_hmac(mbedtls_md_info_from_type(MBEDTLS_MD_SHA256), (const uint8_t*)KUNCI_HMAC, strlen(KUNCI_HMAC), w.b, w.n, mac);
   Serial2.print("SENSOR " ALAT_ID " ");
   for (int i = 0; i < w.n; i++) Serial2.printf("%02x", w.b[i]);
+  for (int i = 0; i < 8; i++) Serial2.printf("%02x", mac[i]);
   Serial2.print("\n");
   Serial2.flush();
   delay(3000);

@@ -59,7 +59,8 @@ class Pengirim:
         self.url, self.kunci_dari, self.post, self.sekarang = url, kunci_dari, post, sekarang
         self.folder = folder
         self.ditolak = os.path.join(folder, "ditolak")
-        os.makedirs(self.ditolak, exist_ok=True)
+        os.makedirs(self.ditolak, mode=0o700, exist_ok=True)
+        os.chmod(folder, 0o700)
 
     def _berkas(self):
         return sorted(f for f in os.listdir(self.folder) if f.endswith(".json"))
@@ -68,7 +69,7 @@ class Pengirim:
         waktu = waktu or iso(self.sekarang())
         nama = "%019d-%s.json" % (time.time_ns(), alat)
         tmp = os.path.join(self.folder, nama + ".tmp")
-        with open(tmp, "w", encoding="utf-8") as f:
+        with os.fdopen(os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_TRUNC, 0o600), "w", encoding="utf-8") as f:
             json.dump({"alat": alat, "waktu": waktu, "nilai": nilai, "baterai": baterai, "rssi": rssi}, f)
         os.replace(tmp, os.path.join(self.folder, nama))
         for lama in self._berkas()[:-MAKS_ANTREAN]:

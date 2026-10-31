@@ -6,6 +6,7 @@ TTN: Webhooks > Custom, header yang sama. Hanya stdlib.
 """
 import argparse
 import base64
+import hmac
 import json
 import os
 import sys
@@ -47,13 +48,15 @@ def proses(ev, cfg, pengirim):
     return {"alat": alat[0], "jenis": d["jenis"], "seq": d["seq"]}
 
 
-def buat_server(cfg, pengirim, port):
+def buat_server(cfg, pengirim, port, host="127.0.0.1"):
     class H(BaseHTTPRequestHandler):
         def do_POST(self):
-            if self.headers.get("X-Webhook-Token") != cfg["rahasia_webhook"]:
+            if not hmac.compare_digest(self.headers.get("X-Webhook-Token", "").encode(), cfg["rahasia_webhook"].encode()):
                 return self._balas(401, "tanda salah")
             try:
-                n = int(self.headers.get("Content-Length", "0"))
+                n = int(self.headers.get("Content-Length", "-1"))
+                if n < 0:
+                    return self._balas(411, "Content-Length wajib")
                 if n > 65536:
                     return self._balas(413, "terlalu besar")
                 if "event=up" in self.path or self.path.startswith("/uplink"):
@@ -69,7 +72,7 @@ def buat_server(cfg, pengirim, port):
 
         def log_message(self, *a):
             pass
-    return ThreadingHTTPServer(("0.0.0.0", port), H)
+    return ThreadingHTTPServer((host, port), H)
 
 
 def muat_cfg(path):
@@ -83,7 +86,10 @@ if __name__ == "__main__":
     ap = argparse.ArgumentParser()
     ap.add_argument("--config", default="gateway.json")
     ap.add_argument("--port", type=int, default=8090)
+    ap.add_argument("--host", default="127.0.0.1", help="bawaan hanya lokal; publikkan lewat reverse proxy TLS")
     a = ap.parse_args()
     cfg, pg = muat_cfg(a.config)
+    if "GANTI" in cfg["rahasia_webhook"] or len(cfg["rahasia_webhook"]) < 16:
+        sys.exit("rahasia_webhook masih contoh/terlalu pendek: ganti dengan acak panjang")
     print("webhook LoRaWAN di :%d -> %s" % (a.port, cfg["url"]))
-    buat_server(cfg, pg, a.port).serve_forever()
+    buat_server(cfg, pg, a.port, a.host).serve_forever()

@@ -77,7 +77,8 @@ flowchart LR
 
 - LoRaWAN: wilayah AS923 (Indonesia). Aktivasi OTAA. Satu gateway outdoor menjangkau 2-5 km di perbukitan (perkiraan; uji lapangan wajib).
 - Seluler: untuk lokasi bersinyal tanpa gateway; paling boros daya, paling sederhana.
-- Meshtastic: untuk desa tanpa sinyal; sensor mencetak `SENSOR <id> <hex>` ke Serial Module node (mode TEXTMSG). Keterbatasan: siaran mesh tanpa konfirmasi, kapasitas rendah.
+- Meshtastic: untuk desa tanpa sinyal; sensor mencetak `SENSOR <id> <hex payload><hex mac>` ke Serial Module node (mode TEXTMSG). `mac` = 8 byte pertama HMAC-SHA256(kunci alat, payload biner), jadi teks 16 heks lebih panjang dari payload. Gateway menolak: node pengirim tak terdaftar (`alat.<x>.nodes` di gateway.json), MAC salah, tanpa MAC, atau seq sama dengan siaran sebelumnya. Keterbatasan: siaran mesh tanpa konfirmasi, kapasitas rendah.
+- Broker MQTT Meshtastic WAJIB pribadi (Mosquitto/EMQX dengan user+sandi dan TLS port 8883) dan kanal mesh WAJIB dienkripsi PSK acak (kanal selain default; di aplikasi Meshtastic: Channels > buat PSK 256-bit, bagikan hanya ke node resmi, aktifkan "MQTT uplink" pada kanal itu). `meshtastic_mqtt.py` menolak jalan bila host `meshtastic.org`, user kosong, atau sandi masih `GANTI`. Broker publik + kanal bawaan berarti siapa pun dapat menyiarkan teks palsu atau membaca laporan.
 - Bacaan terputus: gateway menyimpan di `antrean/` dan mengirim ulang berurutan. Bacaan usang (> 9 menit) dikirim dengan `waktu`=kini dan `waktu_asli`=waktu ukur (maks 24 jam).
 
 ## Daftar belanja (perkiraan harga Indonesia, cek ulang saat membeli)
@@ -142,6 +143,7 @@ python3 sensor/gateway/lorawan_webhook.py --config gateway.json --port 8090
 pip install paho-mqtt && python3 sensor/gateway/meshtastic_mqtt.py --config gateway.json
 ```
 ChirpStack v4: Application > Integrations > HTTP, URL `http://host:8090/uplink`, header `X-Webhook-Token`. TTN: Webhooks > Custom dengan header sama.
+Webhook mengikat 127.0.0.1 secara bawaan (`--host` untuk mengubah) dan menolak jalan bila `rahasia_webhook` masih `GANTI`/pendek. Buka ke ChirpStack/TTN lewat reverse proxy TLS (Caddy/nginx) ke 127.0.0.1:8090, bukan port polos. Token dibandingkan dengan `hmac.compare_digest`; Content-Length negatif/> 64 KB ditolak. Folder `antrean/` dibuat 0700, berkasnya 0600.
 Jalankan sebagai layanan (systemd/launchd) agar hidup kembali setelah mati listrik.
 
 ## Simulator
@@ -205,3 +207,5 @@ Anggap alat ini sebagai pelengkap titik panas satelit dan laporan warga, bukan p
 2. `waktu` = waktu kirim (+-10 menit); `waktu_asli` = waktu ukur sampai 24 jam. Gateway membuang bacaan lebih tua dari 24 jam ke `antrean/ditolak/`.
 3. `LAPOR` ke `POST /api/sensor/lapor`; bila gagal kirim, disimpan di `antrean/lapor.jsonl`.
 4. `null` di `nilai` = sensor rusak: jangan dinilai ambang.
+
+> Perlu kompilasi ulang: varian Meshtastic di `bnpb_sensor.cpp` (menambah ekor MAC) belum dikompilasi sesudah perubahan ini.

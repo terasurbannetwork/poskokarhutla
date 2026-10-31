@@ -43,6 +43,8 @@
 - `kunci_hash` di spec ambigu dengan HMAC (butuh rahasia asli); lihat Pertanyaan terbuka di `sensor/README.md`.
 
 
+- Teks Meshtastic `SENSOR` wajib: node terdaftar (`nodes`), MAC 8 byte HMAC(kunci_alat,payload), seq tidak berulang; broker pribadi + PSK. Webhook: loopback, compare_digest, tolak GANTI. Antrean 0700/0600. Firmware meshtastic berubah, PERLU KOMPILASI ULANG.
+
 ## Gerbang yang menghakimi
 
 

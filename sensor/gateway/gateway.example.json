@@ -5,7 +5,7 @@
   "folder_antrean": "antrean",
   "rahasia_webhook": "GANTI-DENGAN-ACAK-PANJANG",
   "alat": {
-    "tma-bjn-01": {"id": "TMA-BJN-01", "kunci": "GANTI-DARI-kunci_alat.py", "tinggi_pasang_cm": 500}
+    "tma-bjn-01": {"id": "TMA-BJN-01", "kunci": "GANTI-DARI-kunci_alat.py", "tinggi_pasang_cm": 500, "nodes": ["!GANTI-id-node-radio"]}
   },
-  "mqtt": {"host": "mqtt.meshtastic.org", "port": 1883, "user": "", "sandi": "", "topik": "msh/ID/2/json/#"}
+  "mqtt": {"host": "GANTI-broker-pribadi.contoh.id", "port": 8883, "tls": true, "user": "gateway", "sandi": "GANTI", "topik": "msh/ID/2/json/KANAL-PRIBADI/#"}
 }

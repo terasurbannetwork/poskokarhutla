@@ -12,7 +12,7 @@ from sensor.gateway import lorawan_webhook, meshtastic_mqtt
 from sensor.gateway.penanda import Pengirim, epoch, iso, tanda
 
 KUNCI = "kunci-uji-gateway"
-CFG = {"alat_gateway": {"id": "GW-1", "kunci": KUNCI}, "alat": {"tma-bjn-01": {"id": "TMA-BJN-01", "kunci": KUNCI, "tinggi_pasang_cm": 500}},
+CFG = {"alat_gateway": {"id": "GW-1", "kunci": KUNCI}, "alat": {"tma-bjn-01": {"id": "TMA-BJN-01", "kunci": KUNCI, "tinggi_pasang_cm": 500, "nodes": ["!abcd"]}},
        "rahasia_webhook": "r", "url": "x"}
 
 
@@ -131,10 +131,27 @@ class TestGateway(unittest.TestCase):
             lorawan_webhook.proses({"deviceInfo": {"deviceName": "asing"}, "data": data}, CFG, self.pg)
 
     def test_meshtastic_sensor_dan_lapor(self):
-        hexp = payload.encode("tma", 1, 3.9, {"tinggi_cm": 300.0, "laju_cm_jam": 0, "n": 9}).hex()
-        pesan = {"type": "text", "sender": "!abcd", "payload": {"text": "SENSOR TMA-BJN-01 " + hexp}}
-        self.assertEqual(meshtastic_mqtt.proses(pesan, CFG, self.pg), "sensor")
+        import hashlib
+        import hmac as hm
+        isi = payload.encode("tma", 1, 3.9, {"tinggi_cm": 300.0, "laju_cm_jam": 0, "n": 9})
+        mac = hm.new(KUNCI.encode(), isi, hashlib.sha256).digest()[:8]
+
+        def msg(hexs, sender="!abcd"):
+            return {"type": "text", "sender": sender, "payload": {"text": "SENSOR TMA-BJN-01 " + hexs}}
+        meshtastic_mqtt._seq_terakhir.clear()
+        self.assertEqual(meshtastic_mqtt.proses(msg((isi + mac).hex()), CFG, self.pg), "sensor")
         self.assertEqual(self.w.terima[-1]["nilai"]["tinggi_cm"], 300.0)
+        n = len(self.w.terima)
+        meshtastic_mqtt._seq_terakhir.clear()
+        palsu = [msg((isi + mac).hex(), "!asing"),                      # node tak terdaftar
+                 msg(isi.hex() + "00" * 8),                              # MAC salah
+                 msg(isi.hex()),                                         # tanpa MAC
+                 msg((isi[:5] + b"\x7f" + isi[6:] + mac).hex())]         # isi diubah
+        for p in palsu:
+            self.assertIsNone(meshtastic_mqtt.proses(p, CFG, self.pg))
+        self.assertEqual(meshtastic_mqtt.proses(msg((isi + mac).hex()), CFG, self.pg), "sensor")
+        self.assertIsNone(meshtastic_mqtt.proses(msg((isi + mac).hex()), CFG, self.pg))   # ulang seq sama
+        self.assertEqual(len(self.w.terima), n + 1)
         got = []
         lap = {"type": "text", "sender": "!abcd", "payload": {"text": "lapor bjn-02 sungai naik 2 meter, 3 rumah terendam"}}
         self.assertEqual(meshtastic_mqtt.proses(lap, CFG, self.pg, tulis_lapor=got.append), "lapor")
@@ -143,6 +160,32 @@ class TestGateway(unittest.TestCase):
         self.assertTrue(got[0]["teks"].startswith("BJN-02 sungai naik"))
         self.assertIsNone(meshtastic_mqtt.parse_lapor("halo semua"))
         self.assertIsNone(meshtastic_mqtt.proses({"type": "text", "payload": {"text": "halo"}}, CFG, self.pg))
+
+    def test_antrean_dan_lapor_izin_pribadi(self):
+        import stat
+        self.pg.kirim("TMA-BJN-01", {"tinggi_cm": 1.0}, 3.9, -90)
+        self.assertEqual(stat.S_IMODE(os.stat(self.tmp.name).st_mode), 0o700)
+        d = os.path.join(self.tmp.name, "lapor")
+        meshtastic_mqtt._tulis_lapor({"alat": {}, "url": "x", "folder_antrean": d}, {"alat": "g"})
+        self.assertEqual(stat.S_IMODE(os.stat(d).st_mode), 0o700)
+        self.assertEqual(stat.S_IMODE(os.stat(os.path.join(d, "lapor.jsonl")).st_mode), 0o600)
+
+    def test_webhook_token_dan_content_length(self):
+        import http.client
+        cfg = dict(CFG, rahasia_webhook="rahasia-panjang-uji-1234")
+        srv = lorawan_webhook.buat_server(cfg, self.pg, 0)
+        self.assertEqual(srv.server_address[0], "127.0.0.1")
+        threading.Thread(target=srv.serve_forever, daemon=True).start()
+        try:
+            def kirim(h):
+                c = http.client.HTTPConnection("127.0.0.1", srv.server_port)
+                c.putrequest("POST", "/uplink"); [c.putheader(k, v) for k, v in h.items()]; c.endheaders()
+                r = c.getresponse().status; c.close(); return r
+            self.assertEqual(kirim({"X-Webhook-Token": "salah", "Content-Length": "2"}), 401)
+            self.assertEqual(kirim({"X-Webhook-Token": cfg["rahasia_webhook"], "Content-Length": "-5"}), 411)
+            self.assertEqual(kirim({"X-Webhook-Token": cfg["rahasia_webhook"], "Content-Length": "999999"}), 413)
+        finally:
+            srv.shutdown()
 
     def test_ujung_ke_ujung_simulator_ke_worker_palsu(self):
         from sensor.sim.simulasi import deret
