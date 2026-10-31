@@ -218,12 +218,12 @@ besaran KK dan rumah LULUS dengan skill kecil (0,03-0,04). Tahap ini menambah ke
 
 | Tahap | Status |
 | --- | --- |
-| 0 Label bersatu | belum mulai |
-| 1 Hujan hulu | belum mulai |
-| 2 IMERG | belum mulai |
+| 0 Label bersatu | selesai 1 Nov 2026: `scripts/banjir/label_bersatu.py`, ringkasan `public/banjir/data/label_bersatu_ringkas.json`; GFM dan MODIS belum layak jadi label |
+| 1 Hujan hulu | protokol `PRAREG-HULU.md` dan kode `model_kab_hulu.py` di-commit 1 Nov 2026 sebelum data dibuka; 22 dari 39 kabupaten sampel punya hulu |
+| 2 Hujan satelit | CHIRPS (pengganti IMERG) dibekukan bersama Tahap 1; IMERG menunggu token Earthdata |
 | 3a GloFAS | protokol beku, menunggu 2027-06-01 |
-| 3b Arsip pos | arsip D1 berjalan sejak 19 Okt 2026; ekspor permanen ke R2 belum ada |
-| 3c Flood Hub | menunggu kunci API pemilik |
+| 3b Arsip pos | ekspor harian ke R2 (`arsip_pos.py`, langkah `banjir.yml`), diuji nyata 19-20 Okt; sisanya disusul workflow 7 hari per jalan |
+| 3c Flood Hub | pengambil `floodhub.py` siap; langkah `banjir.yml` aktif begitu secret `GOOGLE_FLOOD_API_KEY` ada |
 | 4 Ganti satuan | menunggu 0-3 |
 | 5 Label tajam | belum mulai |
 | 6 Perluasan dampak | model dasar LULUS lemah; fitur paparan menunggu kunci HAND |
