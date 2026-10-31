@@ -30,6 +30,11 @@ Amandemen 31 Okt 2026, sesudah label_kec.json jadi tetapi SEBELUM hubungan label
 Amandemen 31 Okt 2026 (temuan pemeriksa, sebelum model pernah dijalankan): fitur riwayat DIBI kabupaten memakai
   kejadian 2008-2021 saja (kolom kej_100rb_latih), supaya kejadian periode uji 2022-2025 tidak bocor ke fitur.
   Label dibangun ulang sesudah bug pembaca WKB Polygon dibetulkan; angka lama label tidak dipakai.
+Amandemen 31 Okt 2026, sesudah label diperbaiki dan SEBELUM hubungan label-fitur dilihat (yang dilihat hanya sebaran
+  label sendiri): 87% kecamatan punya >= 1 kejadian 2022-2025, sehingga label biner tak membedakan. Label diganti:
+  Y_uji   = 1 bila jumlah kejadian n_th 2022-2025 >= persentil 75 seluruh 7.270 kecamatan (kecamatan tanpa entri = 0);
+  Y_latih = 1 bila jumlah kejadian n_th 2016-2021 >= persentil 75-nya; B_riw = jumlah kejadian 2016-2021 (peringkat).
+  Kepekaan tanpa vonis: sama dengan n_th_tunggal.
 Penjelasan per kecamatan: kontribusi faktor j = b_j x z_ij (z = nilai terstandar). Tiga kontribusi terbesar ditulis,
 beserta tandanya. Ini menjelaskan MODEL, bukan sebab fisik di lapangan.
 
