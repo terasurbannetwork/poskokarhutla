@@ -42,8 +42,8 @@ Tahap 0 sampai 2 dirancang untuk membedakan keduanya.
    PRAREG-DEBIT dan uji prospektif).
 6. **Sampel kabupaten dipilih dari kejadian sampai tahun latih terakhir saja** (pola `model_kab.py`), dibekukan sidik
    sebelum uji. Groundsource tidak dipakai untuk memilih sampel atau sebagai fitur frekuensi.
-7. **Logbook itu label, bukan fitur.** Logbook Pusdalops: 8.172 kejadian banjir 2011-2022 (2021 hanya 14 baris, 2022
-   hanya 271 hari berkas, 2011-2013 tipis), tingkat kabupaten. Hujan ERA5 di cache mulai Des 2015; mengunduh 2011-2015
+7. **Logbook itu label, bukan fitur.** Logbook Pusdalops: 9.046 baris banjir 2011-2023 sesudah arsip 2023 masuk
+   (2021 hanya 14 baris, 2022 dan 2023 sebagian, 2011-2013 tipis), tingkat kabupaten. Hujan ERA5 di cache mulai Des 2015; mengunduh 2011-2015
    menambah sekitar 1.800 hari.
 8. **Status resmi tidak ditimpa diam-diam.** Model yang lulus prospektif dipasang sebagai pelengkap dengan pil "teruji"
    dan angkanya. Mengganti `status.py` adalah keputusan pemilik.
@@ -74,7 +74,7 @@ kontrol cakupan media.
 
 | Sumber | Rentang | Kerapatan | Sudah ada |
 | --- | --- | --- | --- |
-| Logbook Pusdalops | 2011-2022 | kabupaten, tanggal kasar | `data/pusdalops/logbook_kejadian.csv` |
+| Logbook Pusdalops | 2011-2023 | kabupaten, tanggal kasar | `data/pusdalops/logbook_kejadian.csv` |
 | DIBI BNPB | 2008-sekarang, terisi susulan | kabupaten | `data/raw/banjir/dibi_tanggal.json` (hanya dibaca) |
 | Google Groundsource (poligon dari berita) | 2016-2025 (berhenti 29 Jan 2026), 303.329 poligon di kecamatan, tumbuh 5 kali dari 2016 ke 2025 | kecamatan | `scripts/banjir/label_kec.py` |
 | Copernicus GFM (radar Sentinel-1) | katalog mulai 2015, cakupan dicek di langkah ini | piksel radar, lintasan beberapa hari | `scripts/banjir/genangan_nasional.py` |
@@ -104,7 +104,11 @@ belum pernah diuji terhadap label. Tahap ini membangun fitur baru, bukan sekadar
 - Bukti siap: dETS M1 - M0 arsip dengan selang di `public/data/validasi_hulu_arsip.json`, lalu arsip prospektif berjalan.
 - Pengerja: `banjir`, dibantu `neraca-air` untuk keluaran bulanan. Pemeriksa: `validasi-model`.
 
-### Tahap 2: Hujan satelit IMERG
+### Tahap 2: Hujan satelit (CHIRPS sekarang, IMERG menyusul)
+
+Pembaruan 1 Nov 2026: token Earthdata di `.env` lokal ternyata kosong, jadi uji pertama memakai CHIRPS v2.0 harian
+(satelit + penakar, terbuka tanpa login, kisi 0,25 derajat sama dengan ERA5). Protokolnya `scripts/banjir/PRAREG-HULU.md`
+(Tahap 1 dan 2 dibekukan bersama). Langkah IMERG di bawah menjadi protokol terpisah begitu token tersedia.
 
 ERA5 0,25 derajat menghaluskan hujan deras singkat. GPM IMERG Final (0,1 derajat, per 30 menit, 2000-sekarang) lebih dekat
 ke hujan konvektif.
@@ -173,7 +177,7 @@ besaran KK dan rumah LULUS dengan skill kecil (0,03-0,04). Tahap ini menambah ke
 
 1. M0 = model dampak berlaku. M1 = M0 + penduduk WorldPop di zona rendah dekat sungai (HAND MERIT Hydro,
    `scripts/banjir/hand_kab.py`, menunggu kunci pemilik), luas genangan GFM bila ada, jumlah kecamatan tersentuh.
-2. Target tambahan dari logbook 2011-2022: `rumah_terendam` (3.285 baris), `kk` (4.067), `jiwa` (1.635).
+2. Target tambahan dari logbook 2011-2023: `rumah_terendam` (3.379 baris), `kk` (4.763), `jiwa` (2.017).
 3. Protokol baru `PRAREG-DAMPAK-PAPARAN.md` dengan periode uji baru (prospektif); kriteria `PRAREG-DAMPAK.md` tidak diubah.
 4. Bila lolos, kartu `/prediksi` dan `dampak.json` menampilkan rentang terdampak berlabel "perkiraan".
 
@@ -206,7 +210,7 @@ besaran KK dan rumah LULUS dengan skill kecil (0,03-0,04). Tahap ini menambah ke
 | --- | --- | --- |
 | Daftar waitlist Google Flood Forecasting API, lalu kirim ID Google Cloud Project lewat balasan email persetujuan | 3c | https://developers.google.com/flood-forecasting |
 | Aktifkan API, buat kunci API, simpan sebagai secret `GOOGLE_FLOOD_API_KEY` di GitHub | 3c | Google Cloud console, GitHub Settings > Secrets |
-| Pastikan secret `EARTHDATA_TOKEN` aktif dan akunnya sudah menyetujui aplikasi GES DISC | 2 | urs.earthdata.nasa.gov |
+| Isi `EARTHDATA_TOKEN` di `.env` lokal (sekarang kosong) dan pastikan secret GitHub-nya aktif, akun sudah menyetujui aplikasi GES DISC | 2 (IMERG) | urs.earthdata.nasa.gov |
 | Isi formulir MERIT Hydro, simpan `MERIT_USER` dan `MERIT_PASS` di `.env` | 6 | https://global-hydrodynamics.github.io/MERIT_Hydro/ |
 | Setujui pemasangan model yang lulus prospektif sebagai pelengkap status resmi | tiap vonis LULUS | keputusan |
 

@@ -87,7 +87,7 @@ jobs:
           done; true
 
       - name: Uji aturan
-        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro rob_presiden wilayah_hari jaga_banjir hulu unit_respons sungai_pos; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
+        run: for s in hujan ansambel_hujan sungai bahaya kejadian status uji_balik rob posko peringatan pasut riwayat seri_status kejadian_aktif prospektif dampak laporan_banjir peluang_banjir pasang_astro rob_presiden wilayah_hari jaga_banjir hulu unit_respons sungai_pos floodhub; do if [ -f scripts/banjir/$s.py ]; then python3 scripts/banjir/$s.py uji; fi; done
 
       # 13 Okt 2026: Open-Meteo mengirim JSON rusak 5x berturut-turut, job gagal, data banjir tidak terbit sehari.
       # Satu ulangan setelah 10 menit sebelum menyerah. Tetap gagal: run tidak jatuh, hujan.json lama bertahan,
@@ -136,6 +136,14 @@ jobs:
       - name: Prediksi pasang surut BMKG (boleh gagal)
         continue-on-error: true
         run: python3 scripts/banjir/pasut.py
+
+      # Google Flood Hub (Peta Jalan 3c): tanpa secret GOOGLE_FLOOD_API_KEY skrip keluar 0 (dilewati); gagal tidak menimpa floodhub.json lama
+      - name: Google Flood Hub (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 15
+        env:
+          GOOGLE_FLOOD_API_KEY: ${{ secrets.GOOGLE_FLOOD_API_KEY }}
+        run: python3 scripts/banjir/floodhub.py tarik
 
       - name: Banjir rob
         continue-on-error: true
@@ -242,6 +250,18 @@ jobs:
       - name: Arsip wilayah banjir per hari (boleh gagal)
         continue-on-error: true
         run: python3 scripts/banjir/wilayah_hari.py
+
+      # Arsip permanen TMA pos (D1 sihka_baca dihapus sesudah 180 hari): maks 7 hari/jalan, paling lama dulu; data/raw/banjir ikut cache.
+      # Gagal-lunak: tidak pernah menggagalkan run banjir. Membaca D1 lewat PK per pos (bukan pindai tabel), ±6 ribu baris/hari.
+      - name: Arsip TMA pos ke R2 (boleh gagal)
+        continue-on-error: true
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          [ -n "$CLOUDFLARE_API_TOKEN" ] || { echo "::warning title=arsip pos::tanpa token Cloudflare, dilewati"; exit 0; }
+          python3 scripts/banjir/arsip_pos.py uji
+          python3 scripts/banjir/arsip_pos.py susul --maks 7 || echo "::warning title=arsip pos::susul gagal, dicoba lagi besok"
 
       - name: Simpan data banjir untuk jalan berikutnya
         if: always()
