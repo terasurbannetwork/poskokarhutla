@@ -1587,6 +1587,8 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
           <label><input type="checkbox" data-l="kabbelum"> Masih terdeteksi per kabupaten (perkiraan satelit)</label>
           <label><input type="checkbox" data-l="permukiman"> Kebakaran permukiman per kabupaten (Logbook Pusdalops 2014-2020)</label><!-- kebakaran_permukiman.js; saling eksklusif dengan kabluas/kabbelum -->
+          <label><input type="checkbox" data-l="rd-musim"> Musim berjalan: jenis bencana dominan per bulan (Logbook Pusdalops 2014-2020)</label><!-- riwayat_daerah.js; saling eksklusif dengan lapisan kabupaten lain -->
+          <label><input type="checkbox" data-l="rd-langgan"> Langganan bencana: banjir dan longsor tiap tahun (Logbook Pusdalops 2014-2020)</label>
           <label><input type="checkbox" data-l="langganan"> Lokasi langganan api (pencegahan)</label><!-- riwayat_sel.py langganan: jendela ~16 km terbakar >= 1/3 tahun 2012-2025 -->
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label><input type="checkbox" data-l="foto"> Foto lapangan warga</label>
@@ -2241,6 +2243,7 @@ const Peta = {
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (window.Risiko7?.klik(e)) return;   /* overlay eksperimental Peluang api 7 hari (hanya akun masuk): klik = popup sel, bukan turun ke wilayah */
       if (window.KebPermukiman?.klik(e)) return;
+      if (window.RiwayatDaerah?.klik(e)) return;
       if (window.PetaKab?.klik(e)) return;   /* overlay Luas terbakar / Belum padam: klik = popup kabupaten, bukan turun ke wilayah */
       if (w.length) return pilihWilayah(w[0].properties.kunci, e.lngLat);
     });
@@ -7084,7 +7087,7 @@ function lebarPanel() { const w = document.querySelector(".panel")?.getBoundingC
 document.addEventListener("click", e => { const d = document.querySelector(".bencana"); if (d && d.open && !e.target.closest(".bencana")) d.open = false; });
 </script>
 <script src="peta_karhutla.js"></script>
-<script src="peta_kab.js"></script><script src="kebakaran_permukiman.js"></script><!-- sebelum lapisan5.js: legendanya ikut hitungan kolom legenda lapisan5 -->
+<script src="peta_kab.js"></script><script src="kebakaran_permukiman.js"></script><script src="riwayat_daerah.js"></script><!-- sebelum lapisan5.js: legendanya ikut hitungan kolom legenda lapisan5 -->
 <script src="risiko7.js"></script><!-- eksperimental, hanya akun masuk (anonim: berhenti di baris pertama); sebelum lapisan5.js dengan alasan sama -->
 
 <script src="lapisan5.js"></script>
