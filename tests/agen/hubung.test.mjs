@@ -121,3 +121,23 @@ test("penyambung panen: kab Kota beda Kabupaten, lembaga lama tidak ditimpa, daf
   assert.equal(le.lembaga["penyedia-refa-tech-solutions"].daftar_hitam.aktif, true);
   assert.equal(S.hibahBaru([{judul: "Riset A", tahun: 2024}], [{judul: "riset a", tahun: 2024}, {judul: "Riset B", tahun: 2024}]).length, 1);
 });
+
+test("pemutakhiran bulanan: daftar hitam dicocokkan ketat (batal diabaikan, nama ganda dilewati), aktivasi CEMS baru ditautkan ke kejadian", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const lb = [{id: "refa", nama: "Refa Tech Solutions"}, {id: "pos", nama: "PT Pos Indonesia"}, {id: "ganda1", nama: "CV Maju Jaya"}, {id: "ganda2", nama: "PT Maju Jaya"}];
+  const c = S.daftarHitamCocok([{nama: "REFA TECH SOLUTIONS", sk: "SK1", status: "PUBLISHED"}, {nama: "PT. POS INDONESIA", sk: "SK2", status: "CANCELED"}, {nama: "CV. Maju Jaya", sk: "SK3", status: "EXPIRED"}], lb);
+  assert.deepEqual(c.map(x => [x.id, x.dasar]), [["refa", "nama ternormalkan ketat; SK1 (aktif)"]]);
+  assert.match(S.daftarHitamCocok([{nama: "Refa Tech Solutions", sk: "SK9", status: "PUBLISHED", berakhir: "2026-01-01"}], lb, "2026-10-31")[0].dasar, /SK9 \(berakhir\)/);
+  const le = S.lembagaEkstra({daftar_hitam_cocok: c}, lb); assert.equal(le.lembaga.refa.daftar_hitam.aktif, true);
+  const kj = [{id: "cianjur", jenis: "gempa", tanggal: "2022-11-21"}, {id: "semeru", jenis: "gunung api", tanggal: "2022-12-04"}];
+  const b = S.satelitCems([{code: "EMSR641", category: {slug: "earthquake", name: "Earthquake"}, name: "Earthquake in Indonesia", activationTime: "2022-11-22T09:26:00"},
+    {code: "EMSR1", category: {slug: "flood", name: "Flood"}, name: "Flood", activationTime: "2022-11-22T00:00:00"}, {code: "EMSR2", category: {slug: "earthquake"}, activationTime: "2023-01-01"}], kj, [{kode: "EMSR2"}]);
+  assert.deepEqual(b.map(x => [x.kode, x.kejadian_id]), [["EMSR641", "cianjur"], ["EMSR1", null]]);
+});
+
+test("penjaga unggah bulanan: berkas yang menyusut lebih dari 5% dibatalkan, ukuran dibaca dari bentuk berkasnya", async () => {
+  const J = await import("../../scripts/akademisi/pemutakhiran/jaga_unggah.mjs");
+  assert.equal(J.ukuran([1, 2, 3]), 3); assert.equal(J.ukuran({diperbarui: "x", kab: [1, 2], prov: {a: 1}}), 2);
+  assert.equal(J.ukuran({lembaga: {a: 1, b: 1}, kampus: {c: 1}}), 3); assert.equal(J.ukuran({a: {}, b: {}, c: {}, d: {}}), 4);
+  assert.equal(J.susut(100, 96), false); assert.equal(J.susut(100, 94), true); assert.equal(J.susut(0, 0), false);
+});

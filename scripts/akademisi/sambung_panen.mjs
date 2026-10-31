@@ -122,25 +122,50 @@ export const radarSkema = (radar, ada) => larik(radar).filter(r => !ada.has("rad
   sasaran: [].concat(r.syarat_pemohon || []), nilai: r.nilai_maks ?? null, mata_uang: r.mata_uang || null, tenggat: r.tenggat || null, siklus: r.siklus || null, status: "dibuka",
   rumpun: r.rumpun || [], url: r.url, sumber: [{url: r.sumber_url}], diperiksa: r.diperiksa}));
 
+/* pemutakhiran bulanan (panen_publik.py): daftar hitam LKPP mentah dicocokkan ketat ke nama lembaga (termasuk penyedia e-Katalog); nama yang
+   cocok ke dua lembaga atau lebih dilewati. Hasilnya berbentuk sama dengan daftar_hitam_cocok panen pertama. */
+const namaUsaha = n => norm(n).replace(/\b(pt|cv|tbk|persero|ud|fa|koperasi)\b/g, " ").replace(/\s+/g, " ").trim();
+export function daftarHitamCocok(mentah, lembaga, kini = new Date().toISOString().slice(0, 10)) {
+  const peta = new Map(); for (const l of lembaga) { const k = namaUsaha(l.nama); if (k.length >= 6) peta.set(k, peta.has(k) ? null : l.id); }
+  const g = new Map(); for (const x of larik(mentah)) { if (!/^(PUBLISHED|EXPIRED)$/.test(x.status)) continue; const id = peta.get(namaUsaha(x.nama)); if (!id) continue;
+    (g.get(id) || g.set(id, {nama: x.nama, cocok_ke: "lembaga", id, sk: []}).get(id)).sk.push(`${x.sk} (${x.status === "PUBLISHED" && !(x.berakhir && x.berakhir < kini) ? "aktif" : "berakhir"})`); }
+  return [...g.values()].map(({sk, ...r}) => ({...r, dasar: "nama ternormalkan ketat; " + sk.join(", ")}));
+}
+/* aktivasi Copernicus EMS baru untuk Indonesia: ditautkan ke kejadian direktori bila jenis sepadan dan tanggal aktivasi 0 sampai 14 hari setelah kejadian */
+const JENIS_CEMS = {flood: ["banjir", "hidrometeorologi"], earthquake: ["gempa", "tsunami"], volcan: ["gunung api"], mass: ["longsor"], fire: ["karhutla"], storm: ["hidrometeorologi"]};
+export function satelitCems(cems, kejadian, lama) {
+  const ada = new Set(larik(lama).map(a => a.kode).filter(Boolean)), baru = [];
+  for (const c of larik(cems)) { if (ada.has(c.code)) continue; const t = String(c.activationTime || "").slice(0, 10), j = JENIS_CEMS[c.category?.slug] || [];
+    const k = larik(kejadian).filter(k => j.includes(k.jenis) && k.tanggal && (Date.parse(t) - Date.parse(k.tanggal)) / 864e5 >= 0 && (Date.parse(t) - Date.parse(k.tanggal)) / 864e5 <= 14);
+    baru.push({id: "cems-" + c.code.toLowerCase(), kejadian: c.name, kejadian_id: k.length === 1 ? k[0].id : null, tanggal: t, jenis_bencana: c.category?.name || null, mekanisme: "CEMS", kode: c.code, peminta: null,
+      url: `https://mapping.emergency.copernicus.eu/activations/${c.code}/`, sumber_url: "https://mapping.emergency.copernicus.eu/activations/api/activations/", diperiksa: new Date().toISOString().slice(0, 10)}); }
+  return baru;
+}
+
 if (process.argv[1] === fileURLToPath(import.meta.url)) {
   const [dp, dr, out] = process.argv.slice(2);
   if (!dp || !dr || !out) { console.error("pakai: sambung_panen.mjs <folder panen> <folder data R2 kini> <folder keluaran>"); process.exit(2); }
   const baca = (d, f) => existsSync(join(d, f + ".json")) ? JSON.parse(readFileSync(join(d, f + ".json"), "utf8")) : null;
   const P = Object.fromEntries(["anggaran_pemda", "dana_desa_bencana", "kinerja_pemda", "fasilitas_kritis", "jalan_kondisi", "jembatan", "spab", "izin_cocok", "izin_zakat", "badan_hukum", "izin_pub",
     "daftar_hitam_cocok", "ror_kampus", "wikidata_lembaga", "paten", "paten_cocok", "orcid_pakar", "aktivasi_satelit", "dokumen_pascabencana", "reliefweb_kejadian", "fts_kejadian",
-    "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana"].map(f => [f, baca(dp, f)]));
+    "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});
   const tulis = (f, d) => { writeFileSync(join(out, f + ".json"), JSON.stringify(d)); return f; };
   const lbLama = larik(R.lembaga), lbBaru = lembagaBaru(P, lbLama), lbSemua = [...lbLama, ...lbBaru];
   tulis("lembaga", Array.isArray(R.lembaga) ? lbSemua : {...R.lembaga, lembaga: lbSemua});
-  const hb = hibahBaru(larik(R.hibah_riset), larik(P.hibah_riset_baru)); tulis("hibah_riset", [...larik(R.hibah_riset), ...hb]);
+  const hb = hibahBaru(larik(R.hibah_riset), larik(P.hibah_riset_baru)); tulis("hibah_riset", Array.isArray(R.hibah_riset) || !R.hibah_riset ? [...larik(R.hibah_riset), ...hb] : {...R.hibah_riset, [Object.keys(R.hibah_riset).find(k => Array.isArray(R.hibah_riset[k]))]: [...larik(R.hibah_riset), ...hb]});
   const pd = larik(R.pendanaan), rs = radarSkema(P.radar_dana, new Set(pd.map(x => x.id))); tulis("pendanaan", Array.isArray(R.pendanaan) ? [...pd, ...rs] : {...R.pendanaan, pendanaan: [...pd, ...rs]});
+  /* hasil panen ulang bulanan disimpan kembali ke <keluar>/panen supaya bulan depan menjadi dasar */
+  mkdirSync(join(out, "panen"), {recursive: true}); const simpanPanen = (f, d) => writeFileSync(join(out, "panen", f + ".json"), JSON.stringify(d));
+  if (P.daftar_hitam_mentah) { P.daftar_hitam_cocok = daftarHitamCocok(P.daftar_hitam_mentah, lbSemua); simpanPanen("daftar_hitam_cocok", P.daftar_hitam_cocok); }
+  const sb = P.cems_idn ? satelitCems(P.cems_idn, R.kejadian?.kejadian || R.kejadian, P.aktivasi_satelit) : [];
+  if (sb.length) { P.aktivasi_satelit = [...larik(P.aktivasi_satelit), ...sb]; simpanPanen("aktivasi_satelit", P.aktivasi_satelit); }
   const wd = wilayahDaya(P), le = lembagaEkstra(P, lbSemua), pe = pakarEkstra(P, R.induk), ke = kejadianEkstra(P, R.kejadian?.kejadian || R.kejadian);
   tulis("wilayah_daya", wd); tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
   console.log(JSON.stringify({lembaga_baru: lbBaru.length, hibah_baru: hb.length, skema_radar: rs.length, wilayah_kab: wd.kab.length, wilayah_prov: Object.keys(wd.prov).length,
     lembaga_ekstra: Object.keys(le.lembaga).length, kampus_ekstra: Object.keys(le.kampus).length, daftar_hitam: Object.values(le.lembaga).filter(x => x.daftar_hitam).length,
     pakar_paten: Object.values(pe).filter(x => x.paten).length, pakar_orcid: Object.values(pe).filter(x => x.orcid).length,
-    kejadian_ekstra: Object.keys(ke).length}, null, 1));
+    kejadian_ekstra: Object.keys(ke).length, satelit_baru: sb.length}, null, 1));
 }

@@ -5,6 +5,9 @@ name: Pemutakhiran bulanan direktori jaringan
 # di akademisi/cadangan/<tgl>/). Langkah akhir panen berita penerbit lewat RSS (berita_rss.py, saringan ketat kebencanaan, tanpa secret, hasil
 # digabung ke keluar/berita.json lalu ikut diunggah). CATATAN: RSS hanya memuat berita beberapa hari terakhir, jadi panen bulanan hanya menangkap
 # berita sekitar tanggal jalan. Tidak commit dan tidak deploy, jadi di luar grup `data`. Logika: scripts/akademisi/pemutakhiran/.
+# Sejak 31 Okt 2026 juga: panen ulang daftar hitam LKPP dan aktivasi Copernicus EMS (panen_publik.py), lalu semua data panen publik di R2
+# akademisi/panen/ disambung ulang (sambung_panen.mjs: wilayah_daya, lembaga_ekstra, pakar_ekstra, kejadian_ekstra) dan graf dibangun ulang
+# (hubung.mjs). DJPK, SIMZAT, dan PDKI menolak akses tanpa browser: dipanen manual tahunan lalu diunggah ke akademisi/panen/.
 on:
   schedule:
     - cron: "0 1 3 * *"
@@ -22,7 +25,7 @@ concurrency:
 jobs:
   mutakhir:
     runs-on: ubuntu-latest
-    timeout-minutes: 150
+    timeout-minutes: 240
     env:
       # jadwal = unggah sungguhan; dispatch = ikut input (default coba saja)
       DRY: ${{ github.event_name == 'workflow_dispatch' && inputs.dry_run }}
@@ -38,7 +41,7 @@ jobs:
       - name: Uji logika dan penggabung
         run: |
           python3 -I scripts/akademisi/pemutakhiran/uji_inti.py
-          node --test tests/agen/lembaga-gabung.test.mjs tests/agen/pemutakhiran-direktori.test.mjs
+          node --test tests/agen/lembaga-gabung.test.mjs tests/agen/pemutakhiran-direktori.test.mjs tests/agen/hubung.test.mjs
 
       - name: Unduh berkas R2 saat ini
         env:
@@ -59,6 +62,32 @@ jobs:
       - name: Panen berita penerbit (RSS, tanpa secret)
         run: python3 -I scripts/akademisi/pemutakhiran/berita_rss.py --kerja "$RUNNER_TEMP/kerja" --menit 40
 
+      - name: Panen ulang data publik, sambung, dan bangun ulang graf
+        env:
+          CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+          CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+        run: |
+          K="$RUNNER_TEMP/kerja"; PN="$K/panen"; SB="$K/sambung"; mkdir -p "$PN" "$SB" "$K/keluar"
+          # tiga kali coba; tetap gagal = berkas dihapus, lalu daftar WAJIB di bawah menghentikan job sebelum apa pun diunggah
+          get() { for i in 1 2 3; do npx --yes wrangler@4.42.0 r2 object get "poskokarhutla-foto/akademisi/$1.json" --file "$2/$(basename "$1").json" --remote >/dev/null && return 0; sleep 5; done; rm -f "$2/$(basename "$1").json"; }
+          for f in anggaran_pemda dana_desa_bencana kinerja_pemda fasilitas_kritis jalan_kondisi jembatan spab izin_cocok izin_zakat badan_hukum izin_pub daftar_hitam_cocok ror_kampus wikidata_lembaga paten paten_cocok orcid_pakar aktivasi_satelit dokumen_pascabencana reliefweb_kejadian fts_kejadian pos_sar pmi_kab lpbi_nu forum_prb_baru tim_respons katalog_penyedia hibah_riset_baru radar_dana daftar_hitam_mentah cems_idn logo_org; do get "panen/$f" "$PN"; done
+          for f in kampus induk afiliasi kalaksa sistem_data pendanaan lembaga_3w jurnal redaksi buku peneliti_muda hibah_riset penghargaan csr donatur_kejadian aset_riset dokumen diaspora kejadian; do get "$f" "$SB"; done
+          cp "$PN/logo_org.json" "$SB/" 2>/dev/null || true
+          # lembaga, berita, tokoh, inovasi: versi yang baru dimutakhirkan langkah sebelumnya
+          for f in lembaga berita tokoh inovasi; do if [ -f "$K/keluar/$f.json" ]; then cp "$K/keluar/$f.json" "$SB/"; elif [ -f "$K/$f.json" ]; then cp "$K/$f.json" "$SB/"; fi; done
+          for f in anggaran_pemda dana_desa_bencana kinerja_pemda fasilitas_kritis jalan_kondisi jembatan spab izin_cocok izin_zakat badan_hukum daftar_hitam_cocok ror_kampus wikidata_lembaga paten paten_cocok orcid_pakar aktivasi_satelit dokumen_pascabencana reliefweb_kejadian fts_kejadian pos_sar tim_respons katalog_penyedia; do [ -s "$PN/$f.json" ] || { echo "WAJIB tidak terunduh: panen/$f"; exit 1; }; done
+          for f in lembaga kampus induk kejadian hibah_riset pendanaan; do [ -s "$SB/$f.json" ] || { echo "WAJIB tidak terunduh: $f"; exit 1; }; done
+          # versi kini untuk penjaga susut dan cadangan
+          mkdir -p "$K/lama"; cp "$SB"/{lembaga,hibah_riset,pendanaan}.json "$K/lama/"
+          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra graf strategis; do get "$f" "$K/lama"; done
+          python3 -I scripts/akademisi/pemutakhiran/panen_publik.py --panen "$PN" --menit 45
+          node scripts/akademisi/sambung_panen.mjs "$PN" "$SB" "$K/sambung_keluar"
+          cp "$K/sambung_keluar"/{lembaga,pakar_ekstra,hibah_riset,pendanaan}.json "$SB/"
+          node scripts/akademisi/hubung.mjs "$SB" "$K/graf_keluar"
+          node scripts/akademisi/pemutakhiran/jaga_unggah.mjs "$K/lama" "$K/sambung_keluar" lembaga hibah_riset pendanaan wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra
+          node scripts/akademisi/pemutakhiran/jaga_unggah.mjs "$K/lama" "$K/graf_keluar" graf strategis
+          cp "$K/sambung_keluar/lembaga.json" "$K/keluar/lembaga.json"
+
       - name: Unggah hasil, cadangan, dan laporan
         if: env.DRY != 'true'
         env:
@@ -72,3 +101,8 @@ jobs:
           put "akademisi/lembaga.json" "$K/keluar/lembaga.json"
           [ ! -f "$K/keluar/berita.json" ] || put "akademisi/berita.json" "$K/keluar/berita.json"
           put "akademisi/pemutakhiran/$BULAN.json" "$K/keluar/pemutakhiran/$BULAN.json"
+          # data panen publik: cadangan graf lama, lalu hasil sambung, graf baru, dan berkas panen yang dipanen ulang
+          for f in "$K"/lama/*.json; do [ "$(basename "$f")" = lembaga.json ] || put "akademisi/cadangan/$TGL/$(basename "$f")" "$f"; done
+          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra hibah_riset pendanaan; do put "akademisi/$f.json" "$K/sambung_keluar/$f.json"; done
+          put "akademisi/graf.json" "$K/graf_keluar/graf.json"; put "akademisi/strategis.json" "$K/graf_keluar/strategis.json"
+          for f in "$K"/sambung_keluar/panen/*.json "$K"/panen/daftar_hitam_mentah.json "$K"/panen/cems_idn.json; do [ ! -f "$f" ] || put "akademisi/panen/$(basename "$f")" "$f"; done
