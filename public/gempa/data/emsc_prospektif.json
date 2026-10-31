@@ -1,1 +1,1 @@
-{"dibekukan":"2026-10-29T17:52Z","beku_sejak":"2026-10-29T03:26:42.990Z","sidik_koreksi":"515867f67152789d","koreksi_beku":{"jenis":"raw"},"aturan":"Append-only: kejadian dengan umur >= 7 hari dan t > beku_sejak ditambahkan sekali, tak pernah diubah.","kejadian":[]}
+{"dibekukan":"2026-10-29T17:52Z","beku_sejak":"2026-10-29T03:26:42.990Z","sidik_koreksi":"515867f67152789d","koreksi_beku":{"jenis":"raw"},"aturan":"Append-only: kejadian dengan umur >= 7 hari dan t > beku_sejak ditambahkan sekali, tak pernah diubah.","kejadian":[],"diperbarui":"2026-10-31T02:07Z"}
