@@ -1,113 +1,85 @@
-# Logbook Pusdalops: dari arsip ke sistem kerja
+# Aksi antisipatif desa langganan
 
-Tanggal: 1 November 2026. Status: rancangan, menunggu review pemilik.
+Tanggal: 1 November 2026. Status: disetujui pemilik untuk dikerjakan (program 8 jam), versi 2.
+Versi 1 (daftar fitur A–E) digantikan oleh strategi tiga lapis di bawah; komponennya tetap terpakai.
 
-## Latar
+## Diagnosis dari logbook Pusdalops 2011–2023 (37.992 kejadian)
 
-Arsip logbook harian Pusdalops BNPB 2011–2022 sudah terurai: 34.881 kejadian, 97,6% berkode
-kab/kota (`prov|nama`). Hasil yang sudah ada dan di-commit (2683dcc6):
+| Masalah | Bukti |
+| ------- | ----- |
+| Tahu terlambat atau tidak tahu | Kebakaran lahan Jawa hanya 1–5% hari-titik api yang dilaporkan; Papua 0,3–1 kejadian per kab per tahun |
+| Tahu sepotong | Median satu kejadian dilaporkan satu kali; korban terhitung ganda |
+| Tidak terjangkau | Akses putus 923 entri, sinyal putus 306 |
+| Barang tidak di tempat | Logistik/BBM 431, sumber air pemadaman 283, alat berat 206 |
+| Prediksi harian lemah | Banjir dari hujan gagal luar-sampel 2022 (ETS 0,006), kalah dari persisten |
+| Musiman sangat pasti | 85 kab banjir dan 52 kab longsor 7 dari 7 tahun (2014–2020) |
 
-- `data/pusdalops/logbook_kejadian.csv` (versi bersih, tanpa teks bebas), `public/data/logbook_riwayat.json`
-  (rekap kab x jenis x bulan/tahun, `tahun_ada`, `bulan_penuh`), data mentah di R2 privat
-  `internal/pusdalops-logbook/`.
-- Uji balik arsip (banjir gagal di luar-sampel 2022, longsor AUC 0,66, karhutla lift 2,26),
-  silang DIBI, kalender `/prediksi`, lapisan peta kebakaran permukiman, dasbor tren (artifact).
+Kesimpulan: bertindak pada kepastian musim di desa langganan, bukan menunggu ramalan harian.
+Prakiraan harian dan sensor dipakai untuk eskalasi.
 
-Yang kita pelajari dari data dan memengaruhi rancangan ini:
+## Tiga lapis
 
-1. Satu aturan hujan nasional gagal; pola musim berbeda antardaerah (Maluku, Maluku Utara,
-   Sulawesi Tengah dan Tenggara memuncak Juni–Agustus, bukan Desember–Februari).
-2. Pelaporan berat ke Jawa; provinsi Papua mencatat 0,3–1 kejadian per kab per tahun.
-3. Median satu kejadian hanya dilaporkan satu kali: hampir tidak ada laporan lanjutan.
-4. Input bebas melahirkan 1.423 ejaan kab/kota dan korban terhitung ganda.
-5. Kendala lapangan terbanyak: akses jalan terputus (923), logistik/BBM (431), sinyal (306),
-   sumber air untuk pemadaman (283), personel (248).
+1. **Siapkan sebelum musim** (akses, logistik, alat berat, air): daftar desa langganan terisolir,
+   saran stok penyangga per bulan, kontrak siaga alat berat, SIPPA di karhutla langganan, SOP pra-musim.
+2. **Mata di desa** (tak terlapor, laporan sekali, sinyal): pelapor desa lewat WA dengan pengingat
+   lanjutan H+1/H+3; daftar daerah senyap harian (sinyal satelit/cuaca tanpa laporan); sensor
+   lapangan; radio mesh LoRa untuk desa tanpa sinyal.
+3. **Satu catatan baku** (mutu data, belajar): form logbook terstruktur, laporan otomatis, kalibrasi
+   ulang kalender tiap akhir musim.
 
-## Sub-proyek dan urutan
+## Komponen yang dibangun sekarang dan pemiliknya
 
-Kelima sub-proyek bebas satu sama lain kecuali yang ditandai. Tiap sub-proyek mendapat rencana
-implementasi sendiri (skill writing-plans) sebelum dikerjakan.
+| Kode | Komponen | Berkas | Pengerja |
+| ---- | -------- | ------ | -------- |
+| L1 | API logbook + sensor + migrasi D1 | `src/logbook.js`, `src/sensor.js`, `migrations/0088_logbook.sql`, `migrations/0089_sensor.sql`, `tests/warga/**` | `warga-api` |
+| L2 | Layar staf: form logbook, daerah senyap, desa terisolir, stok, SOP | `public/bnpb/logbook*`, `public/bnpb/senyap*`, `public/bnpb/siaga*`, `scripts/bnpb/**`, `tests/bnpb/**` | `ruang-bnpb` |
+| L3 | Data: daerah senyap harian, desa terisolir | `scripts/data/senyap.py`, `scripts/data/desa_terisolir.py`, `public/data/senyap.json`, `data/pusdalops/desa_terisolir.csv` | `pipa-data` |
+| S | Sensor: firmware, gateway, simulator, ambang | `sensor/**`, `tests/sensor/**` | `sensor` (agent baru) |
+| P | Peta publik: riwayat dan musim | `public/index.html`, `public/riwayat_daerah.js` | `layar-peta` |
+| K | Peta kolaborasi + permintaan data + deck | `docs/kolaborasi/**`, deck di `docs/deck-bnpb/` | general-purpose + skill `ppt-konsultan` |
 
-| Kode | Sub-proyek | Bergantung pada | Pengerja |
-| ---- | ---------- | --------------- | -------- |
-| D | Input logbook baku | — | `warga-api` (rute, D1) + `ruang-bnpb` (layar) |
-| C | Laporan otomatis | D (untuk data baru; arsip bisa langsung) | `ruang-bnpb` + mesin deck |
-| B1 | Ambang hujan per kab | — | `banjir`, `longsor` → `validasi-model` |
-| B2 | Deteksi daerah senyap | — | `pipa-data` |
-| B3 | Saran stok logistik bulanan | kalender (sudah ada) | `ruang-bnpb` |
-| B4 | Rantai bencana | — | `prediksi` |
-| A | Peta publik riwayat dan musim | — | `layar-peta` |
-| E | SOP pra-musim dan insight | kalender, kendala | `ruang-bnpb` |
+## Kontrak L1 (dipakai L2, S)
 
-Urutan yang diusulkan: D lebih dulu (akar mutu data); A, B1, B2 paralel karena memakai arsip;
-lalu C, B3, B4, E.
+Semua rute staf memakai `stafOK(env, req, ["pusdalops","koordalops","pimpinan"])` dari `src/staf.js`.
 
-## D. Input logbook baku
+### Logbook
 
-Tujuan: entri baru langsung terstruktur, tanpa salah ejaan wilayah, korban tidak ganda.
+- `logbook_kejadian(id TEXT PK, jenis, prov, kab, kec, desa, lat, lon, mulai TEXT ISO, status 'buka'|'tutup', dibuat, diubah)`
+- `logbook_entri(id TEXT PK, kejadian_id FK, waktu, md, hilang, luka, mengungsi_jiwa, mengungsi_kk,
+  rumah_rb, rumah_rs, rumah_rr, rumah_terendam, luas_ha, kendala TEXT JSON array kode, kebutuhan TEXT JSON array kode,
+  catatan, sumber_instansi, oleh, dibuat)`. Angka dampak = nilai terkini, entri lanjutan menimpa, tidak menjumlah.
+- Wilayah memakai kunci `prov|nama` yang sama dengan `public/geo` dan `logbook_riwayat.json`.
+- Kode kendala: `akses, logistik, sinyal, air, personel, alat_berat, gambut, cuaca, data, dana, malam, sosial, listrik, angin`.
+- Kode kebutuhan: `makanan, tenda, sandang, air_bersih, obat, perahu, material, alat_berat, pompa, dana`.
+- Rute:
+  - `POST /api/logbook/kejadian` buat kejadian + entri pertama.
+  - `POST /api/logbook/kejadian/:id/entri` entri lanjutan.
+  - `GET /api/logbook/buka?kab=` kejadian buka di kab (14 hari) untuk tombol "lanjutan dari".
+  - `GET /api/logbook/hari?tgl=YYYY-MM-DD` entri periode 07.00–07.00 WIB (bahan laporan harian).
+  - `POST /api/logbook/kejadian/:id/tutup`.
+- Pemeriksa wajar memakai batas seperti `BATAS_WAJAR` di `scripts/umum/laphar_arsip.py`; angka di atas batas ditolak kecuali `yakin: true`.
+- Pengingat lanjutan: kejadian buka tanpa entri baru 24 jam dan 72 jam masuk antrean `src/pengingat.js`
+  (bila BPBD pelapor punya nomor WA, teks pengingat siap dikirim lewat `src/wa.js`; pengiriman tetap lewat alur yang ada).
 
-- Layar staf di `/bnpb/logbook` (login staf yang sudah ada). Satu entri = satu kejadian atau
-  satu pembaruan atas kejadian yang sudah ada.
-- Wilayah dipilih dari daftar `public/geo` (prov → kab/kota → kecamatan → desa), bukan diketik.
-- Tombol "Lanjutan dari kejadian…": daftar kejadian terbuka di kab yang sama 14 hari terakhir.
-  Pembaruan menimpa angka dampak terakhir, tidak menambah kejadian baru (memperbaiki temuan 3 dan 4).
-- Kolom korban terstruktur: meninggal, hilang, luka, mengungsi (jiwa/KK), rumah RB/RS/RR/terendam,
-  luas (ha). Pemeriksa wajar memakai `BATAS_WAJAR` yang sudah ada di `scripts/umum/laphar_arsip.py`.
-- Kolom kendala dan kebutuhan berupa pilihan (kategori dari analisis arsip) plus catatan bebas.
-- Impor dari WA: pesan bahan masuk lewat `src/wa.js`, diurai jadi draf entri yang dikonfirmasi petugas.
-- Simpan di D1, migrasi baru bernomor urut (diperiksa `migrasi-idempoten`); migrasi produksi
-  dijalankan pemilik.
-- Pertanyaan terbuka: siapa pengisi (Pusdalops saja, atau juga BPBD). Rancangan ini mulai dari
-  Pusdalops; akses BPBD menyusul sebagai peran baru tanpa mengubah skema.
+### Sensor
 
-## C. Laporan otomatis
+- `sensor_alat(id TEXT PK, jenis 'tma'|'hujan'|'longsor'|'gambut'|'gas', kab, desa, lat, lon, ambang JSON, kunci_hash, aktif, dibuat)`
+- `sensor_baca(alat_id, waktu, nilai JSON, baterai, rssi, PRIMARY KEY(alat_id, waktu))`
+- `POST /api/sensor/baca`: badan `{alat, waktu, nilai:{...}, baterai, rssi}`, tanda tangan HMAC-SHA256 badan
+  dengan kunci per alat di header `X-Sensor-Tanda`; ditolak bila tanda salah, alat tidak aktif, atau waktu >10 menit dari kini.
+  Batas laju per alat. Ambang terlewati → baris di `peringatan` yang ada atau antrean pengingat.
+- `GET /api/sensor/status` (staf): alat, bacaan terakhir, umur bacaan, status ambang.
+- Gateway (LoRaWAN ChirpStack/TTN webhook, Meshtastic MQTT, atau seluler langsung) menerjemahkan ke kontrak ini.
 
-- Laporan harian Pusdalops: dari entri D hari itu (07.00–07.00 WIB) ke deck harian lewat mesin
-  `~/Documents/Laporan-Harian-BNPB/mesin` dan `src/laporan_bnpb.js`; bisa dikirim lewat bot WA.
-- Laporan musim per provinsi: kejadian musim berjalan dibanding rata-rata 2014–2020 per jenis.
-- Rapor kelancaran lapor BPBD: hari dengan laporan, jumlah laporan lanjutan, keterlambatan.
-- Angka korban di laporan hanya dari entri D (terstruktur), tidak dari arsip lama.
+## Batasan
 
-## B. Peringatan dan operasi
+- Repo publik: data mentah logbook hanya di `data/raw` dan R2 privat; yang terbit agregat tanpa korban arsip.
+- Migrasi produksi, secret alat, dan deploy dijalankan pemilik. Subagent tidak commit atau push.
+- Tiap layar lewat `selera-angka` + `inp-reviewer`; rute lewat `guard-api` + `security-reviewer`;
+  migrasi lewat `migrasi-idempoten`; angka model lewat `validasi-model`.
 
-- B1 Ambang hujan per kab: dari logbook 2014–2020 + ERA5, cari ambang hujan 1/3/7 hari per kab
-  yang memisahkan hari berkejadian; uji luar-sampel di 2022 dan 2026; pembanding persisten wajib.
-  Hanya menggantikan aturan nasional di kab yang lulus.
-- B2 Daerah senyap: harian, kab dengan sinyal kuat (hujan di atas ambang B1, titik api, peringatan
-  BMKG) tanpa laporan logbook/DIBI → daftar telepon untuk Pusdalops di `/bnpb`.
-- B3 Saran stok: per gudang/provinsi per bulan, dari kalender kab dan kebutuhan terbanyak per jenis
-  (makanan, tenda/terpal, sandang, air bersih untuk banjir; terpal dan material untuk longsor).
-- B4 Rantai: 15,8% banjir diikuti longsor di kab yang sama dalam 3 hari; satu kejadian memicu siaga
-  jenis lanjutan untuk kab itu dan tetangganya.
+## Pilot
 
-## A. Peta publik
-
-- "Riwayat bencana di daerahmu": cari kab/kecamatan, tampil kejadian 2014–2020 per jenis, bulan
-  rawan, "N dari 7 tahun". Kecamatan hanya bila nama kecamatan di logbook cocok dengan geo.
-- Peta musim berjalan: geser bulan, warna per kab = jenis dominan bulan itu.
-- Peta langganan bencana: kab dengan kejadian 7 dari 7 tahun, ditumpuk penduduk.
-- Data terbuka agregat per kab per bulan (CSV) di `public/data`.
-- Semua tanpa angka korban dari arsip, tanpa teks bebas, dengan catatan bias pelaporan.
-
-## E. SOP pra-musim dan insight
-
-- Daftar periksa per kab per bulan dari kalender, kendala terbanyak, dan kebutuhan terbanyak.
-- Musim lokal: Maluku dan Sulawesi bagian tengah/timur siaga banjir Juni–Agustus; Aceh dan Riau
-  siaga karhutla Februari–Maret.
-- Laporan insight berkala (dasbor tren diperluas): pola per daerah, lonjakan, tren, kendala.
-
-## Batasan yang berlaku untuk semua
-
-- Repo publik: data mentah logbook tetap di `data/raw` dan R2 privat; yang terbit hanya agregat.
-- Angka korban arsip tidak dipakai di mana pun.
-- Tiap angka kinerja model melewati `validasi-model`; tiap layar melewati `selera-angka` dan `inp-reviewer`.
-- Tidak ada deploy atau migrasi produksi dari subagent.
-
-## Kriteria selesai per sub-proyek
-
-- D: entri baru tersimpan dengan kode wilayah valid, lanjutan tidak menambah kejadian, uji `npm run uji:warga` hijau.
-- C: laporan harian terbentuk dari entri D tanpa sunting manual untuk satu hari uji.
-- B1: tabel ambang per kab + skor luar-sampel 2022/2026 lawan persisten, divalidasi.
-- B2: daftar senyap harian muncul di `/bnpb` dengan alasan tiap baris.
-- A: lapisan dan pencarian tampil di peta, uji layar hijau, dicek di browser.
-- E: daftar periksa per kab per bulan tersedia di `/bnpb` dan bisa diekspor.
+Kluster longsor Jawa Tengah (Banjarnegara, Banyumas, Cilacap, Magelang, Temanggung), musim November–Maret.
+Ukuran: laporan per kejadian median 1 → ≥3; waktu tahu dalam jam; stok tersedia sebelum kejadian;
+persentase sinyal tanpa laporan yang ditelepon.
