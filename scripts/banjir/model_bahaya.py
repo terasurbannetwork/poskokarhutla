@@ -177,9 +177,150 @@ def kontribusi(b, x, nama, n=3):
     return sorted(k, key=lambda t: -abs(t[1]))[:n]
 
 
-# ======================================================================== data (diisi sesudah faktor_kec.json dan label ada)
+# ======================================================================== data
+# (nama, kolom faktor_kec.json, ubahan). Urutan = urutan pra-registrasi.
+FITUR = [
+    ("InaRISK zona sedang+tinggi", ("zona_sedang", "zona_tinggi"), lambda a, b: a + b),
+    ("InaRISK zona tinggi", ("zona_tinggi",), lambda a: a),
+    ("Elevasi tengah (log)", ("elev_p50",), lambda a: math.log1p(max(0.0, a))),
+    ("Beda tinggi", ("relief",), lambda a: a),
+    ("Dataran rendah lokal", ("rendah",), lambda a: a),
+    ("Kepadatan (log)", ("padat",), lambda a: math.log1p(a)),
+    ("Pesisir", ("pesisir",), lambda a: a),
+    ("Jarak titik sungai (log)", ("jarak_sungai",), lambda a: math.log1p(a)),
+    ("Riwayat DIBI kabupaten 2008-2021", ("kej_100rb_latih",), lambda a: a),
+]
+PULAU = {"1": "Sumatra", "2": "Sumatra", "3": "Jawa", "5": "Bali dan Nusa Tenggara", "6": "Kalimantan", "7": "Sulawesi",
+         "8": "Maluku", "9": "Papua"}
+
+
+def baca_fitur(faktor):
+    """faktor_kec.json -> (kunci, matriks nilai dengan None, nama fitur)."""
+    kol = {k: i for i, k in enumerate(faktor["kolom"])}
+    kunci, M = [], []
+    for b in faktor["baris"]:
+        kunci.append(b[0])
+        baris = []
+        for _, cs, f in FITUR:
+            vs = [b[kol[c]] if c in kol else None for c in cs]
+            baris.append(None if any(v is None for v in vs) else float(f(*vs)))
+        M.append(baris)
+    return kunci, M, [n for n, _, _ in FITUR]
+
+
+def saring_null(M, nama, maks=MAKS_NULL):
+    """Buang fitur yang null di > maks baris (TANPA melihat label). -> (M, nama, dibuang)."""
+    n = len(M)
+    simpan_j = [j for j in range(len(nama)) if sum(1 for r in M if r[j] is None) / n <= maks]
+    buang = [nama[j] for j in range(len(nama)) if j not in simpan_j]
+    return [[r[j] for j in simpan_j] for r in M], [nama[j] for j in simpan_j], buang
+
+
+def label_dari(kunci, lab, a, b, kolom="n_th"):
+    """Jumlah kejadian per kecamatan tahun a..b (kecamatan tanpa entri = 0)."""
+    return [sum(c for t, c in (lab.get(k) or {}).get(kolom, {}).items() if a <= int(t) <= b) for k in kunci]
+
+
+def kuartil_atas(nilai):
+    batas = sorted(nilai)[int(.75 * len(nilai))]
+    return [1 if v >= batas else 0 for v in nilai], batas
+
+
+def isi_standar(M, latih, uji):
+    """Isi null dengan median baris latih, standarkan dengan rata/simpangan baris latih. -> (Xlatih, Xuji, med, rata, sd)."""
+    p = len(M[0])
+    med, rata, sd = [], [], []
+    for j in range(p):
+        v = sorted(M[i][j] for i in latih if M[i][j] is not None)
+        med.append(v[len(v) // 2] if v else 0.0)
+    isi = lambda i: [M[i][j] if M[i][j] is not None else med[j] for j in range(p)]
+    XL = [isi(i) for i in latih]
+    for j in range(p):
+        m, s = standar([x[j] for x in XL])
+        rata.append(m); sd.append(s)
+    z = lambda x: [(x[j] - rata[j]) / sd[j] for j in range(p)]
+    return [z(x) for x in XL], [z(isi(i)) for i in uji], med, rata, sd
+
+
+def jalankan(kunci, M, nama, lab, kolom="n_th"):
+    """Alur pra-registrasi penuh. -> dict hasil (tanpa keluaran per kecamatan)."""
+    M, nama, buang = saring_null(M, nama)
+    y_latih, batas_l = kuartil_atas(label_dari(kunci, lab, *TAHUN_LATIH, kolom))
+    hit_uji = label_dari(kunci, lab, *TAHUN_UJI, kolom)
+    y_uji, batas_u = kuartil_atas(hit_uji)
+    riw = label_dari(kunci, lab, *TAHUN_LATIH, kolom)
+    prov = [k.split("|")[0] for k in kunci]
+    lp = lipatan(prov)
+    skor = [0.0] * len(kunci)
+    for f in range(LIPAT):
+        latih = [i for i, p in enumerate(prov) if lp[p] != f]
+        uji = [i for i, p in enumerate(prov) if lp[p] == f]
+        XL, XU, *_ = isi_standar(M, latih, uji)
+        b = logistik(XL, [y_latih[i] for i in latih])
+        for i, x in zip(uji, XU):
+            skor[i] = skor_logit(b, x)
+    j_ina = nama.index("InaRISK zona sedang+tinggi") if "InaRISK zona sedang+tinggi" in nama else None
+    j_pad = nama.index("Kepadatan (log)") if "Kepadatan (log)" in nama else None
+    ina = [r[j_ina] if j_ina is not None and r[j_ina] is not None else 0.0 for r in M]
+    pad = [r[j_pad] if j_pad is not None and r[j_pad] is not None else 0.0 for r in M]
+    pil = lambda d, idx: [d[i] for i in idx]
+    A = lambda s: (lambda idx: auc(pil(s, idx), pil(y_uji, idx)))
+    selisih = lambda s1, s2: (lambda idx: auc(pil(s1, idx), pil(y_uji, idx)) - auc(pil(s2, idx), pil(y_uji, idx)))
+    h = {"n_kec": len(kunci), "fitur": nama, "fitur_dibuang_null": buang, "batas_kuartil": {"latih": batas_l, "uji": batas_u},
+         "laju_dasar_uji": round(sum(y_uji) / len(y_uji), 3),
+         "auc": {"model": bootstrap_blok(A(skor), prov), "inarisk": bootstrap_blok(A(ina), prov),
+                 "kepadatan": bootstrap_blok(A(pad), prov), "riwayat_2016_2021": bootstrap_blok(A(riw), prov)},
+         "selisih_model_inarisk": bootstrap_blok(selisih(skor, ina), prov),
+         "selisih_model_kepadatan": bootstrap_blok(selisih(skor, pad), prov),
+         "prf_25_teratas": {"model": prf_atas(skor, y_uji), "inarisk": prf_atas(ina, y_uji), "kepadatan": prf_atas(pad, y_uji)},
+         "per_pulau": {}}
+    for kd, pulau in sorted(set(PULAU.items()), key=lambda t: t[1]):
+        idx = [i for i, p in enumerate(prov) if p[0] == kd]
+        if idx and pulau not in h["per_pulau"]:
+            idx = [i for i, p in enumerate(prov) if PULAU.get(p[0]) == pulau]
+            h["per_pulau"][pulau] = {"n": len(idx), "auc_model": round(auc(pil(skor, idx), pil(y_uji, idx)), 3),
+                                     "auc_inarisk": round(auc(pil(ina, idx), pil(y_uji, idx)), 3),
+                                     "auc_kepadatan": round(auc(pil(pad, idx), pil(y_uji, idx)), 3)}
+    l1, l2 = h["selisih_model_inarisk"][1] > 0, h["selisih_model_kepadatan"][1] > 0
+    h["vonis"] = {"L1 lebih baik dari InaRISK": l1, "L2 lebih baik dari kepadatan": l2, "terkalibrasi": l1 and l2}
+    return h, M, nama, y_latih
+
+
 def main():
-    raise SystemExit("Menunggu faktor_kec.json dan label_kec.json; pemuat ditulis sesudah skema faktor tetap.")
+    faktor = json.load(open(os.path.join(DATA, "faktor_kec.json")))
+    lab = json.load(open(os.environ.get("MODEL_LABEL", LABEL)))["kec"]
+    kunci, M, nama = baca_fitur(faktor)
+    h, M2, nama2, y_latih = jalankan(kunci, M, nama, lab)
+    peka, *_ = jalankan(kunci, M, nama, lab, kolom="n_th_tunggal")
+    h["kepekaan_label_tunggal"] = {k: peka[k] for k in ("auc", "selisih_model_inarisk", "selisih_model_kepadatan", "vonis")}
+    # model tampilan: dilatih pada semua kecamatan dengan Y_latih (model yang sama dengan yang diuji)
+    semua = list(range(len(kunci)))
+    X, _, med, rata, sd = isi_standar(M2, semua, [])
+    b = logistik(X, [y_latih[i] for i in semua])
+    skor = [skor_logit(b, x) for x in X]
+    urut = sorted(range(len(skor)), key=lambda i: skor[i])
+    pct = [0] * len(skor)
+    for r, i in enumerate(urut):
+        pct[i] = round(100 * r / len(skor))
+    h.update({
+        "dibuat": __import__("time").strftime("%Y-%m-%d"),
+        "label": "Terkalibrasi" if h["vonis"]["terkalibrasi"] else "Hipotesis, belum lolos uji",
+        "pertanyaan": "Apakah faktor per kecamatan dengan bobot dari kejadian lebih tepat menunjuk kecamatan paling sering banjir daripada InaRISK dan kepadatan penduduk?",
+        "label_uji": "kuartil atas jumlah kejadian banjir Groundsource 2022-2025 per kecamatan",
+        "ci": "selang 95% bootstrap 1.000 ulangan atas provinsi; format [titik, bawah, atas]",
+        "bobot": {n: round(v, 3) for n, v in zip(nama2, b[1:])},
+        "standar": {"median_isi": med, "rata": rata, "sd": sd},
+        "kolom_kec": ["persentil skor (0-100)", "3 kontribusi terbesar [indeks fitur, nilai]"],
+        "kec": {k: [pct[i], [[nama2.index(n), round(v, 2)] for n, v in kontribusi(b, X[i], nama2)]] for i, k in enumerate(kunci)},
+        "batas": ["Label dari berita (Groundsource): condong ke kota dan daerah ber-media.",
+                  "Kontribusi menjelaskan MODEL, bukan sebab fisik di lapangan.",
+                  "Elevasi 90 m dari kisi <= 25 titik; HAND tidak tersedia."],
+    })
+    with open(os.path.join(DATA, "model_bahaya.json"), "w") as f:
+        json.dump(h, f, ensure_ascii=False, separators=(",", ":"))
+    print(json.dumps({k: h[k] for k in ("n_kec", "fitur_dibuang_null", "laju_dasar_uji", "auc", "selisih_model_inarisk",
+                                        "selisih_model_kepadatan", "vonis", "per_pulau", "kepekaan_label_tunggal")},
+                     ensure_ascii=False, indent=1))
 
 
 def uji():
@@ -207,6 +348,16 @@ def uji():
     assert t == 1.0 and lo == 1.0
     assert prf_atas([4, 3, 2, 1], [1, 0, 0, 0])["presisi"] == 1.0
     assert [n for n, _ in kontribusi([0, .1, -2, 1], [1, 1, 1], ["a", "b", "c"], 2)] == ["b", "c"]
+    M, nama, buang = saring_null([[1, None], [2, None], [3, 4], [4, None], [5, 6]], ["a", "b"])
+    assert nama == ["a"] and buang == ["b"] and M[0] == [1]
+    assert kuartil_atas([1, 2, 3, 4, 5, 6, 7, 8]) == ([0, 0, 0, 0, 0, 0, 1, 1], 7)
+    assert label_dari(["x", "y"], {"x": {"n_th": {"2015": 9, "2016": 2, "2021": 1, "2022": 5}}}, 2016, 2021) == [3, 0]
+    XL, XU, med, rata, sd = isi_standar([[1.0], [None], [3.0], [10.0]], [0, 1, 2], [3])
+    assert med == [3.0] and XU[0][0] > 2  # null diisi median latih, uji distandarkan dengan statistik latih
+    fk = {"kolom": ["kunci", "zona_sedang", "zona_tinggi", "elev_p50", "relief", "rendah", "padat", "pesisir", "jarak_sungai", "kej_100rb_latih"],
+          "baris": [["11|A|a", 10, 5, None, 3, 50, 100, 0, 2, 1.5]]}
+    k, Mf, nm = baca_fitur(fk)
+    assert k == ["11|A|a"] and Mf[0][0] == 15 and Mf[0][2] is None and abs(Mf[0][5] - math.log1p(100)) < 1e-12
     print("ok model_bahaya")
 
 
