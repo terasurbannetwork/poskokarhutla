@@ -2,7 +2,7 @@
 
 Pertanyaan (H1 usulan FIT Telkom University, "Penguatan InaRISK", Okt 2026): seberapa cocok peta bahaya banjir InaRISK
 dengan kejadian banjir yang tercatat? Usulan itu baru menguji satu kejadian secara kualitatif. Di sini diuji dengan
-semua kejadian DIBI 2008-2025 di semua kabupaten yang ada di dua sumber.
+semua kejadian DIBI 2008-2025 di semua kabupaten yang punya peta InaRISK dan data penduduk.
 
 Data:
   X  = InaRISK banjir per kabupaten = persen luas kabupaten di zona sedang + tinggi (bahaya_kelas.json, dijumlah
@@ -21,7 +21,12 @@ Vonis DITULIS SEBELUM DATA DIBUKA (31 Okt 2026). Yang menentukan hanya X utama (
   V2 di luar P    : batas bawah CI95 rho(X, Y_res) > 0
   V3 kelas > lama : batas bawah CI95 [rho(X, Y_res) - rho(X_lama, Y_res)] > 0   (bootstrap berpasangan)
   V4 stabil       : V2 berlaku di 2008-2016 DAN di 2017-2025 (masing-masing dengan Y_res periodenya)
-Hasil ditulis apa adanya, termasuk bila gagal. Batas: DIBI dicatat per kabupaten, jadi uji per kecamatan atau
+Hasil ditulis apa adanya, termasuk bila gagal.
+Amandemen 31 Okt 2026, SEBELUM data dibuka (temuan pemeriksa validasi-model): kabupaten yang ada di peta tetapi tidak
+di DIBI diberi Y = 0 (bukan dibuang; membuang = memilih sampel menurut hasil); X_lama ikut berbobot luas kecamatan
+seperti X (supaya V3 hanya membandingkan sebaran kelas lawan nilai tertinggi); kabupaten dengan kecamatan yang gagal
+terambil di bahaya_kelas.json dibuang dan dihitung; presisi/recall kuartil atas memakai peringkat (nilai seri tidak
+menggelembungkan positif) dan tidak ikut vonis karena tanpa selang. Batas: DIBI dicatat per kabupaten, jadi uji per kecamatan atau
 kelurahan belum mungkin; DIBI hanya kejadian yang dilaporkan, bukan semua genangan.
 
 Pakai:  python3 scripts/banjir/uji_inarisk.py   |   python3 scripts/banjir/uji_inarisk.py uji
@@ -83,45 +88,55 @@ def bootstrap(fungsi, n, ulang=ULANG, benih=BENIH):
 
 
 def prf(x, y):
-    """Presisi, recall, F1: positif = kuartil atas masing-masing deret."""
-    ax, ay = sorted(x)[int(.75 * len(x))], sorted(y)[int(.75 * len(y))]
-    tp = sum(1 for a, b in zip(x, y) if a >= ax and b >= ay)
-    pp, ap = sum(1 for a in x if a >= ax), sum(1 for b in y if b >= ay)
+    """Presisi, recall, F1: positif = peringkat (rata-rata untuk seri) di atas 75% n, per deret."""
+    n = len(x)
+    px, py = [r > .75 * n for r in peringkat(x)], [r > .75 * n for r in peringkat(y)]
+    tp = sum(1 for a, b in zip(px, py) if a and b)
+    pp, ap = sum(px), sum(py)
     p, r = (tp / pp if pp else 0.0), (tp / ap if ap else 0.0)
     return {"presisi": round(p, 3), "recall": round(r, 3), "f1": round(2 * p * r / (p + r), 3) if p + r else 0.0,
             "acak": round(ap / len(y), 3)}
 
 
-def susun(kelas, lama, kejadian, pend):
-    """-> daftar kabupaten {kab, x, x_lama, p, y: {tahun: n}} yang ada di semua sumber."""
-    kab = {}
+def susun(kelas, lama, kejadian, pend, gagal=()):
+    """-> (daftar kabupaten {kab, x, x_lama, p, y: {tahun: n}}, hitungan yang jatuh per alasan).
+    Kabupaten tanpa baris DIBI diberi y kosong (= 0 kejadian)."""
+    kab, rusak = {}, {k.rsplit("|", 2)[0] for k in gagal}
     for k, v in kelas.items():
         kk = k.rsplit("|", 1)[0]
-        a = kab.setdefault(kk, {"km2": 0.0, "zona": 0.0, "tinggi": 0.0, "lama": [], "p": 0})
+        if kk.endswith("|None"):
+            continue
+        a = kab.setdefault(kk, {"km2": 0.0, "zona": 0.0, "tinggi": 0.0, "lama": 0.0, "km2_lama": 0.0, "p": 0})
         b = v.get("banjir", [0, 0, 0])
         a["km2"] += v["km2"]
         a["zona"] += (b[1] + b[2]) * v["km2"]
         a["tinggi"] += b[2] * v["km2"]
     for k, v in lama.items():
         kk = k.rsplit("|", 1)[0]
-        if kk in kab:
-            kab[kk]["lama"].append(v.get("banjir", 0.0))
+        if kk in kab and k in kelas:
+            kab[kk]["lama"] += v.get("banjir", 0.0) * kelas[k]["km2"]
+            kab[kk]["km2_lama"] += kelas[k]["km2"]
     for k, n in pend.items():
         if k in kab:
             kab[k]["p"] += n
-    out = []
+    out, jatuh = [], {"kecamatan_gagal": 0, "tanpa_luas_atau_indeks_lama": 0, "tanpa_penduduk": 0, "tanpa_dibi_jadi_0": 0}
     for kk, a in sorted(kab.items()):
-        j = kejadian.get(kk)
-        if not j or not a["km2"] or not a["lama"] or not a["p"]:
-            continue
+        if kk in rusak:
+            jatuh["kecamatan_gagal"] += 1; continue
+        if not a["km2"] or not a["km2_lama"]:
+            jatuh["tanpa_luas_atau_indeks_lama"] += 1; continue
+        if not a["p"]:
+            jatuh["tanpa_penduduk"] += 1; continue
+        j = kejadian.get(kk) or {}
+        jatuh["tanpa_dibi_jadi_0"] += not j
         y = {}
         for jenis in JENIS:
             for t, n in j.get(jenis, {}).items():
                 if TAHUN[0] <= int(t) <= TAHUN[1]:
                     y[int(t)] = y.get(int(t), 0) + n
         out.append({"kab": kk, "x": a["zona"] / a["km2"], "x_tinggi": a["tinggi"] / a["km2"],
-                    "x_lama": sum(a["lama"]) / len(a["lama"]), "p": a["p"], "y": y})
-    return out
+                    "x_lama": a["lama"] / a["km2_lama"], "p": a["p"], "y": y})
+    return out, jatuh
 
 
 def nilai(rows):
@@ -165,7 +180,8 @@ def nilai(rows):
 
 
 def muat():
-    kelas = json.load(open(os.path.join(DATA, "bahaya_kelas.json")))["kec"]
+    bk = json.load(open(os.path.join(DATA, "bahaya_kelas.json")))
+    kelas = bk["kec"]
     lama = json.load(open(os.path.join(DATA, "bahaya.json")))["kec"]
     kejadian = json.load(open(os.path.join(DATA, "kejadian.json")))["kab"]
     rk = json.load(open(os.path.join(DATA, "risiko_kecamatan.json")))
@@ -174,13 +190,13 @@ def muat():
     for r in rk["kec"]:
         k = f"{r[ip]}|{r[ik]}"
         pend[k] = pend.get(k, 0) + (r[ipd] or 0)
-    return kelas, lama, kejadian, pend
+    return kelas, lama, kejadian, pend, bk.get("gagal", [])
 
 
 def main():
-    rows = susun(*muat())
+    rows, jatuh = susun(*muat())
     h = nilai(rows)
-    h.update({
+    h.update({"jatuh": jatuh,
         "dibuat": __import__("time").strftime("%Y-%m-%d"),
         "pertanyaan": "Apakah kabupaten dengan zona bahaya banjir InaRISK lebih luas lebih sering mengalami banjir tercatat?",
         "x": "persen luas kabupaten di zona bahaya banjir InaRISK sedang + tinggi",
@@ -208,9 +224,17 @@ def uji():
     p = prf([1, 2, 3, 4, 5, 6, 7, 8], [1, 2, 3, 4, 5, 6, 7, 8])
     assert p["presisi"] == 1 and p["recall"] == 1 and p["acak"] == .25
     kelas = {"11|A|a": {"km2": 10, "banjir": [0, 20, 30]}, "11|A|b": {"km2": 30}}
-    rows = susun(kelas, {"11|A|a": {"banjir": .8}, "11|A|b": {"banjir": 0}},
-                 {"11|A": {"banjir": {"2010": 3, "2030": 9}, "bandang": {"2020": 1}}}, {"11|A": 1000})
-    assert len(rows) == 1 and abs(rows[0]["x"] - 12.5) < 1e-9 and rows[0]["y"] == {2010: 3, 2020: 1} and rows[0]["x_lama"] == .4
+    kelas["12|B|c"] = {"km2": 5, "banjir": [0, 0, 10]}
+    kelas["13|C|d"] = {"km2": 5}
+    rows, jatuh = susun(kelas, {"11|A|a": {"banjir": .8}, "11|A|b": {"banjir": 0}, "12|B|c": {"banjir": 1}, "13|C|d": {"banjir": 0}},
+                        {"11|A": {"banjir": {"2010": 3, "2030": 9}, "bandang": {"2020": 1}}},
+                        {"11|A": 1000, "12|B": 500, "13|C": 9}, gagal=["13|C|d|banjir"])
+    a = rows[0]
+    assert len(rows) == 2 and abs(a["x"] - 12.5) < 1e-9 and a["y"] == {2010: 3, 2020: 1} and abs(a["x_lama"] - .2) < 1e-9
+    assert rows[1]["kab"] == "12|B" and rows[1]["y"] == {}  # tanpa DIBI = 0 kejadian, tidak dibuang
+    assert jatuh == {"kecamatan_gagal": 1, "tanpa_luas_atau_indeks_lama": 0, "tanpa_penduduk": 0, "tanpa_dibi_jadi_0": 1}
+    # nilai seri: 6 dari 8 bernilai 0 -> tidak ada yang positif berlebih
+    assert prf([0, 0, 0, 0, 0, 0, 5, 9], [1, 2, 3, 4, 5, 6, 7, 8])["presisi"] == 1
     print("ok uji_inarisk")
 
 
