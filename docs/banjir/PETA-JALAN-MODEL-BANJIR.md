@@ -219,7 +219,7 @@ besaran KK dan rumah LULUS dengan skill kecil (0,03-0,04). Tahap ini menambah ke
 | Tahap | Status |
 | --- | --- |
 | 0 Label bersatu | selesai 1 Nov 2026: `scripts/banjir/label_bersatu.py`, ringkasan `public/banjir/data/label_bersatu_ringkas.json`; GFM dan MODIS belum layak jadi label |
-| 1 Hujan hulu | protokol `PRAREG-HULU.md` dan kode `model_kab_hulu.py` di-commit 1 Nov 2026 sebelum data dibuka; 22 dari 39 kabupaten sampel punya hulu |
+| 1 Hujan hulu | protokol `PRAREG-HULU.md` dan kode `model_kab_hulu.py` di-commit 1 Nov 2026 sebelum data dibuka; 22 dari 39 kabupaten sampel punya hulu. Latih selesai dan sidik `08aef5bbab265d33` dibekukan 1 Nov 2026. Angka validasi 2024-2025 (bukan vonis): hujan CHIRPS lokal menaikkan BSS +0,0037 (CI98,3 di atas nol tipis), hujan hulu menambah +0,0021 (CI melintasi nol), ETS pada jumlah alarm sama belum berbeda. Vonis dari Uji A (sia paling cepat 15 Feb 2027) dan Uji B (buka paling cepat 15 Sep 2027). Catatan: CHIRPS April dan Mei 2026 belum ada di server CHC, sementara gerbang kelengkapan `sia` hanya menerima Mei 2025 sebagai bulan hilang; unduh ulang sebelum Feb 2027, dan bila server tetap kosong, pengecualiannya diputuskan lewat amandemen protokol, bukan dengan menyunting kode beku |
 | 2 Hujan satelit | CHIRPS (pengganti IMERG) dibekukan bersama Tahap 1; IMERG menunggu token Earthdata |
 | 3a GloFAS | protokol beku, menunggu 2027-06-01 |
 | 3b Arsip pos | ekspor harian ke R2 (`arsip_pos.py`, langkah `banjir.yml`), diuji nyata 19-20 Okt; sisanya disusul workflow 7 hari per jalan |
