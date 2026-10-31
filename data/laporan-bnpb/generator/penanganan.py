@@ -76,8 +76,8 @@ def bangun(D, jam, bmkg, out, operasi=None, ha_utuh=False, belum_kini=False, lua
               open(os.path.join(kerja, 'param.json'), 'w'))
     P = os.path.join(SINI, 'penanganan')
     jalankan('node', os.path.join(P, 'peta.mjs'), cwd=kerja)
-    jalankan('python3', '-I', '-W', 'ignore', os.path.join(P, 'ganti.py'), kerja, 't1.pptx', cwd=kerja)
-    jalankan('python3', '-I', os.path.join(P, 'tambah_peta.py'), 't1.pptx', 'peta-20okt.png', 'angka_nasional.json', *(['operasi'] if operasi else []), cwd=kerja)
+    jalankan(sys.executable, '-X', 'utf8', '-E', '-W', 'ignore', os.path.join(P, 'ganti.py'), kerja, 't1.pptx', cwd=kerja)
+    jalankan(sys.executable, '-X', 'utf8', '-E', os.path.join(P, 'tambah_peta.py'), 't1.pptx', 'peta-20okt.png', 'angka_nasional.json', *(['operasi'] if operasi else []), cwd=kerja)
     bm = wa_operasi.bmkg(open(bmkg).read()) if bmkg else pil_sendiri.bahan(D, cuaca_riwayat.hitung(D, D)[D.isoformat()])
     op = wa_operasi.operasi(open(operasi).read()) if operasi else None
     src = lambda n: open(os.path.join(kerja, 'deck', 'x', 'ppt', 'slides', n)).read()
@@ -94,13 +94,13 @@ def bangun(D, jam, bmkg, out, operasi=None, ha_utuh=False, belum_kini=False, lua
     zo.close()
     nama = f'Laporan Penanganan Pengendalian Karhutla {D:%d%m%y}.pptx'
     shutil.copy(os.path.join(kerja, 't2.pptx'), os.path.join(kerja, nama))   # catatan kaki "Angka D sementara" dibuang (pemilik 27 Okt 2026)
-    print(jalankan('python3', '-I', os.path.join(P, 'cek6.py'), nama, cwd=kerja).strip())
+    print(jalankan(sys.executable, '-X', 'utf8', '-E', os.path.join(P, 'cek6.py'), nama, cwd=kerja).strip())
     z = zipfile.ZipFile(os.path.join(kerja, nama))
     for n in z.namelist():
         if re.match(r'ppt/slides/slide\d+\.xml$', n):
             teks = ''.join(re.findall(r'<a:t>([^<]*)</a:t>', z.read(n).decode()))
             assert '·' not in teks and '—' not in teks, f'titik tengah / em dash di {n}'
-    jalankan('soffice', '--headless', '--convert-to', 'pdf', nama, cwd=kerja)
+    import pdf; pdf.ke_pdf(os.path.join(kerja, nama))   # soffice, atau PowerPoint di Windows (30 Okt)
     os.makedirs(out, exist_ok=True)
     for f in (nama, nama[:-4] + 'pdf'):
         shutil.copy(os.path.join(kerja, f), out)

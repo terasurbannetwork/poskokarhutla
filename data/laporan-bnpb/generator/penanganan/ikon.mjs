@@ -4,8 +4,9 @@
 // Pakai: PLAYWRIGHT_MJS=<playwright>/index.mjs node ikon.mjs   -> ikon/pemda.png
 import fs from 'node:fs';
 import os from 'node:os';
+import { fileURLToPath } from 'node:url';
 import { luncur } from '../pw.mjs';
-const KE = new URL('ikon/', import.meta.url).pathname; fs.mkdirSync(KE, {recursive: true});
+const KE = fileURLToPath(new URL('ikon/', import.meta.url)); fs.mkdirSync(KE, {recursive: true});
 const IKON = {
   pemda: ['#051C2C', '<path d="M3 22h18"/><path d="M6 18v-7"/><path d="M10 18v-7"/><path d="M14 18v-7"/><path d="M18 18v-7"/><path d="M12 2l8 5H4z"/>'],
   // kepala kolom deck banjir (penanganan_banjir.py), putih di atas kotak warna: air, longsor, rob, jiwa terpapar
