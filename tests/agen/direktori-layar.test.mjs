@@ -93,9 +93,10 @@ else {
   });
 
   test("dialog pakar: bidang keahlian dan rekan penulis tampil, nama rekan membuka profilnya", async () => {
-    data.pakar_ekstra = {A9000: {topik: [{nama: "Flood Risk Assessment and Management", karya: 7}], rekan: [{id: "A9001", karya: 3, tahun: 2025}]}};
+    data.pakar_ekstra = {A9000: {topik: [{nama: "Flood Risk Assessment and Management", karya: 7}], rekan: [{id: "A9001", karya: 3, tahun: 2025}], jabatan: {sekarang: {organisasi: "Universitas Uji", negara: "ID", mulai: "2019-01"}, riwayat: [{organisasi: "Lembaga Lama", peran: "Peneliti", mulai: "2010", selesai: "2018"}], sumber_url: "https://orcid.org/0000-0000-0000-0000"}}};
     await T.buka(asal + "/akademisi.html?pakar=A9000", {tunggu: ".ak-rekan-p"});
     assert.match(await T.eval(`document.querySelector(".ak-topik-p").innerText`), /Flood Risk Assessment/);
+    assert.match(await T.eval(`document.querySelector(".ak-jabatan-p").innerText`), /Universitas Uji[\s\S]*sejak 2019[\s\S]*Lembaga Lama[\s\S]*2010 sampai 2018/);
     await T.eval(`document.querySelector('.ak-rekan-p [data-buka="A9001"]').click()`);
     await T.tungguFungsi(`/Pakar Uji 2\\b/.test(document.getElementById("akLembar").innerText)`);
     assert.deepEqual(galatJs(), []);

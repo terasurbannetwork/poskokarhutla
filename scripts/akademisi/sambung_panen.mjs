@@ -116,6 +116,10 @@ export function pakarEkstra(P, induk0) {
   for (const c of larik(P.paten_cocok)) for (const i of c.inventor || []) if (ada.has(i.pakar_id)) { const p = paten.get(c.nomor_permohonan); if (!p) continue;
     (ke(i.pakar_id).paten ||= []).push({judul: p.judul, nomor: p.nomor_paten || p.nomor_permohonan, jenis: p.jenis, status: p.status, tanggal: p.tanggal_diberi || p.tanggal_permohonan, pemegang: (p.pemegang || []).map(x => x.pemegang || x).join(", "), sumber_url: p.sumber_url}); }
   for (const o of larik(P.orcid_pakar?.cocok)) if (ada.has(o.pakar_id)) ke(o.pakar_id).orcid = o.orcid;
+  /* riwayat jabatan dari ORCID (atau OpenAlex bila ORCID tidak ada): hanya pekerjaan sekarang dan lima riwayat terakhir; status asing/diaspora di daftar pakar tetap milik perbarui.py, di sini tidak diubah */
+  for (const r of larik(P.orcid_afiliasi)) if (ada.has(r.pakar_id) && (r.sekarang?.organisasi || larik(r.riwayat).length))
+    ke(r.pakar_id).jabatan = {sekarang: r.sekarang?.organisasi ? {organisasi: r.sekarang.organisasi, negara: r.sekarang.negara || null, mulai: r.sekarang.mulai || null} : null,
+      riwayat: larik(r.riwayat).filter(x => x.organisasi).slice(0, 5).map(x => ({organisasi: x.organisasi, negara: x.negara || null, peran: x.peran || null, mulai: x.mulai || null, selesai: x.selesai || null})), sumber_url: r.sumber_url || null};
   /* dataset terbuka kebencanaan (Zenodo dan repositori data lain) yang pembuatnya pakar direktori; dicocokkan lewat ORCID saja */
   const orc = new Map(); for (const o of larik(induk)) if (o[7]) orc.set(String(o[7]).replace(/^https?:\/\/orcid\.org\//, ""), o[0]); for (const [id, v] of Object.entries(X)) if (v.orcid) orc.set(v.orcid, id);
   for (const d of larik(P.dataset_terbuka)) { const sudah = new Set(); for (const p of larik(d.pembuat)) { const id = p.orcid && orc.get(p.orcid); if (!id || sudah.has(id)) continue; sudah.add(id);
@@ -440,7 +444,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
     "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
     "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan",
-    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga", "infra_air", "ifrc_go", "cerf", "zakat_resmi", "hot_tm"].map(f => [f, baca(dp, f)]));
+    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga", "infra_air", "ifrc_go", "cerf", "zakat_resmi", "hot_tm", "orcid_afiliasi"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus", "lembaga_3w"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});
