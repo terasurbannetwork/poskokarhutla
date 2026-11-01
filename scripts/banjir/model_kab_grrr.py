@@ -302,6 +302,12 @@ def terpasang():
         sys.exit("pasang() belum dipanggil: model_kab_grrr hanya boleh dijalankan sebagai skrip (__main__), ditolak")
 
 
+def cuaca_penuh(sel, akhir):
+    """Deret ERA5 utuh (ub.AKHIR asli) walau HU.data_uji menambal ub.AKHIR ke akhir jendela; cache selalu 2015-12-22..AKHIR_LATIH (amandemen A1)."""
+    with HU.tambal_ub(HU.AKHIR_LATIH):
+        return MK.muat_cuaca(sel)
+
+
 def pasang(keluar=KELUAR):
     """HANYA dari __main__ (atau swauji). Menunjuk variabel modul HU/MK ke percobaan ini di proses ini saja (berkas tidak disentuh)."""
     HU.KELUAR, HU.SIDIK_JEJAK = keluar, SIDIK_JEJAK
@@ -311,6 +317,7 @@ def pasang(keluar=KELUAR):
     HU.sidik_kriteria, HU.sidik_penuh, HU.cek_kelengkapan = sidik_kriteria, sidik_penuh, cek_kelengkapan
     HU.SIA_DARI = HU.BUKA_DARI = DARI
     HU.AKHIR_SIA, HU.AKHIR_BUKA = AKHIR_SIA, AKHIR_BUKA
+    HU.cuaca_sampai = cuaca_penuh
     MK.LATIH, MK.VALIDASI, MK.UJI = LATIH, VALIDASI, UJI
 
 
@@ -693,6 +700,28 @@ def uji():
     assert aktif("M0G") == HU.AKTIF["M0"] + [NH, NH + 1] and aktif("M3") == HU.AKTIF["M3"] and FITUR[NH:] == GF
     xx = [1.0] * len(FITUR)
     assert len(x_lr_g(xx)) == len(FITUR) and x_lr_g(xx)[NH:] == [math.log1p(1.0), 1.0] and HU.x_lr_h is x_lr_g
+    # 7b. A1: ub.AKHIR ditambal ke tanggal lebih awal tetap memberi deret utuh lewat cuaca_penuh; tanpa cuaca_penuh gagal (assert pembeda)
+    import tempfile
+    a0, a1, jl, al = ub.AWAL, ub.AKHIR, ub.jalur, HU.AKHIR_LATIH
+    with tempfile.TemporaryDirectory() as td:
+        try:
+            ub.AWAL, ub.AKHIR = dt.date(2020, 1, 1), dt.date(2020, 1, 20)
+            HU.AKHIR_LATIH = ub.AKHIR
+            hr = [(dt.date(2020, 1, 1) - dt.date(1970, 1, 1)).days * 86400 + 86400 * i for i in range(20)]
+            resp = {"utc_offset_seconds": 0, "daily": {"time": hr, "precipitation_sum": [1.0] * 20, "soil_moisture_7_to_28cm_mean": [0.3] * 20},
+                    "hourly": {"time": hr, "precipitation": [0.5] * 20}}
+            ub.jalur = lambda la, lo: os.path.join(td, f"{la}_{lo}.json.gz")
+            with gzip.open(ub.jalur(1, 2), "wt") as f:
+                json.dump(resp, f)
+            with HU.tambal_ub(dt.date(2020, 1, 10)):
+                try:
+                    MK.muat_cuaca([(1, 2)])
+                    raise AssertionError("tanpa cuaca_penuh seharusnya gagal")
+                except ValueError as ex:
+                    assert "deret harian tidak utuh" in str(ex)
+                assert len(cuaca_penuh([(1, 2)], dt.date(2020, 1, 10))[(1, 2)]["p"]) == 20 and ub.AKHIR == dt.date(2020, 1, 10)
+        finally:
+            ub.AWAL, ub.AKHIR, ub.jalur, HU.AKHIR_LATIH = a0, a1, jl, al
     HU._GRRR_DIPASANG = False
     HU._tolak(terpasang, "pasang() belum dipanggil")
     HU._tolak(lambda: latih(), "pasang() belum dipanggil")
