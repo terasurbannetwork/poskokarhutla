@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const DATA = join(ROOT, 'public/prediksi/data')
 
-for (const s of ['catat', 'nilai', 'kalibrasi', 'terbit', 'kalender']) {
+for (const s of ['catat', 'nilai', 'kalibrasi', 'terbit', 'kalender', 'koreksi']) {
   test(`${s}.py uji`, () => {
     const out = execFileSync('python3', [join(ROOT, 'scripts/prediksi', s + '.py'), 'uji'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
     assert.match(out, /uji lulus/)
@@ -74,4 +74,18 @@ test('kalender_risiko.json: p = tahun ada / tahun penuh, 0..1', () => {
       assert.equal(k[j].p[i], Math.round(a / d.n_tahun * 100) / 100)
     })
   }
+})
+
+test('koreksi bulanan: riwayat append-only, versi aktif konsisten', () => {
+  const r = join(DATA, 'koreksi_riwayat.jsonl')
+  if (!existsSync(r)) return
+  const baris = readFileSync(r, 'utf8').split('\n').filter(Boolean).map((b) => JSON.parse(b))
+  const k = new Set()
+  for (const b of baris) {
+    assert.ok(['dipakai', 'ditolak', 'menunggu'].includes(b.status))
+    assert.ok(!k.has(b.bulan + b.grup), `${b.bulan} ${b.grup} dicatat dua kali`)
+    k.add(b.bulan + b.grup)
+  }
+  const a = JSON.parse(readFileSync(join(DATA, 'kalibrasi_aktif.json'), 'utf8'))
+  assert.equal(a.versi, new Set(baris.filter((b) => b.status === 'dipakai').map((b) => b.bulan)).size)
 })

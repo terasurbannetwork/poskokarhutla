@@ -10,6 +10,7 @@ const KODE_NAMA = {HJN: "Hujan", API: "Titik panas", BNJ: "Banjir", LSR: "Longso
 const persen = p => p == null ? "–" : p < 0.05 ? "<5%" : p > 0.95 ? ">95%" : `${Math.round(p * 20) * 5}%`;
 const mm = v => v == null ? "–" : v < 1 ? "<1 mm" : `±${fmt(Math.round(v))} mm`;
 const jam = h => h == null ? "–" : `±${String(h).padStart(2, "0")}.00`;
+const tglPanjang = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric", timeZone: "Asia/Jakarta"});
 const tgl = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Jakarta"});
 // ["2014",..,"2020","2024","2025"] -> "2014–2020 dan 2024–2025": runtun bersambung digabung
 const rentangTahun = th => {
@@ -124,6 +125,8 @@ function gambarRapor() {
   h += `<section class="card pad pr-sek"><h2>Prospektif</h2><p class="pr-kecil">${esc(s?.catatan || "skor.json belum ada")}</p>${s ? Object.entries(s.kode).map(([kd, g]) => tabelSkor(kd, g)).join("") : ""}</section>`;
   h += `<section class="card pad pr-sek"><h2>Uji balik retrospektif</h2>${u ? `<p class="pr-kecil">${esc(u.catatan)} Periode ${esc(u.periode.join(" s.d. "))}, ${fmt(u.n_terbit)} hari terbit.</p>${tabelSkor("HJN", u.kode.HJN)}` : '<p class="pr-kecil">Belum dijalankan.</p>'}</section>`;
   h += kalenderRapor();
+  const ka = PR.aktif;
+  h += `<section class="card pad pr-sek"><h2>Koreksi bulanan banjir</h2><p class="pr-kecil">${ka?.versi ? `Versi koreksi yang dipakai: ${ka.versi}${ka.setel ? `, disusun ulang ${tglPanjang(ka.setel)}` : ""}.` : "Belum ada koreksi yang lolos uji: prakiraan banjir memakai angka model apa adanya."} Disusun ulang sebulan sekali. Versi baru hanya dipakai bila lebih akurat pada hari-hari uji yang tidak ikut disusun. Prakiraan yang sudah terbit tidak berubah. Sumber: data kejadian DIBI BNPB dan logbook Pusdalops.</p></section>`;
   const kp = (k?.peluang || []).concat(k?.jumlah || []);
   h += `<section class="card pad pr-sek"><h2>Kalibrasi otomatis</h2><p class="pr-kecil">${esc(k?.aturan?.metode || "kalibrasi.json belum ada")}. Dipakai ${fmt(k?.ringkas?.dipakai || 0)}, ditolak ${fmt(k?.ringkas?.ditolak || 0)}, menunggu ${fmt(k?.ringkas?.menunggu || 0)}.</p>
     ${kp.length ? `<div class="tw"><table><thead><tr><th>Grup</th><th>Status</th><th class="n">n fit / uji</th><th>Alasan</th></tr></thead><tbody>${kp.map(x =>
@@ -187,7 +190,7 @@ function pilihTab(t) {
 async function ambil(f) { try { const r = await fetch("data/" + f, {cache: "no-cache"}); return r.ok ? r.json() : null; } catch { return null; } }
 
 async function mulai() {
-  [PR.d, PR.skor, PR.uji, PR.kal, PR.lalu, PR.kalender] = await Promise.all(["prediksi.json", "skor.json", "ujibalik.json", "kalibrasi.json", "lalu.json", "kalender_risiko.json"].map(ambil));
+  [PR.d, PR.skor, PR.uji, PR.kal, PR.lalu, PR.kalender, PR.aktif] = await Promise.all(["prediksi.json", "skor.json", "ujibalik.json", "kalibrasi.json", "lalu.json", "kalender_risiko.json", "kalibrasi_aktif.json"].map(ambil));
   if (!PR.d) { $("#kartu").innerHTML = '<p class="kosong">Data prediksi belum tersedia.</p>'; $("#upd").textContent = "Data belum ada"; return; }
   $("#upd").textContent = "Diperbarui " + jamWIB(PR.d.dibuat);
   const hj = PR.d.kode.HJN || Object.values(PR.d.kode)[0];

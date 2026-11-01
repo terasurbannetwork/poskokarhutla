@@ -47,8 +47,10 @@ def vonis(skor, kode, ambang, n):
     return [g[0]["vonis"], g[0]["n_banding"], g[0].get("bss_klimatologi")]
 
 
-def peta_kal(kal):
+def peta_kal(kal, aktif=None):
+    """aktif = kalibrasi_aktif.json (koreksi.py, BNJ): menambah peta, tak menimpa kalibrasi.json."""
     p = {(x["kode"], x["ambang"], x["tenggang"]): x["peta"] for x in kal.get("peluang", []) if x["status"] == "dipakai" and x.get("peta")}
+    p.update({(g.split("|")[0], int(g.split("|")[1]), int(g.split("|")[2])): v["peta"] for g, v in ((aktif or {}).get("grup") or {}).items() if v.get("peta")})
     r = {(x["besaran"], x["tenggang"], x["prov"]): x["rasio"] for x in kal.get("jumlah", []) if x["status"] == "dipakai"}
     return p, r
 
@@ -64,7 +66,7 @@ def baris_tampil(e, kab_id, prov, pk, rk):
         v = dict(zip(kol, r))
         for c in TAMPIL[e["k"]]:
             a = AMBANG_KOL.get((e["k"], c))
-            if a is not None and (peta := pk.get((e["k"], a, n))):
+            if a is not None and v[c] is not None and (peta := pk.get((e["k"], a, n))):
                 v[c] = round(terapkan(peta, v[c]), 2)
         if e["k"] == "HJN":
             for c in ("tot", "lama"):
@@ -180,7 +182,7 @@ def terbit(akar=D.AKAR, folder=None, data=None, entri=None, kini=None):
         sys.exit("terbit: arsip kosong; jalankan catat.py dulu")
     skor = D.baca(os.path.join(data, "skor.json"), {})
     kal = D.baca(os.path.join(data, "kalibrasi.json"), {})
-    pk, rk = peta_kal(kal)
+    pk, rk = peta_kal(kal, D.baca(os.path.join(data, "kalibrasi_aktif.json"), {}))
     at = json.load(open(os.path.join(SINI, "aturan.json")))
     aturan = [a for a in at["aturan"] if a.get("aktif", True)]
     pap = paparan(akar, daftar, cari, aturan)
@@ -293,6 +295,11 @@ def uji():
     pk = {("HJN", 20, 1): [(0.05, 0.1), (0.4, 0.9)]}
     r = baris_tampil(e, "1101", "11", pk, {("tot", 1, "11"): 1.5})
     assert r[0][:4] == [0.9, 0.9, 0.05, 15.0] and r[1] is None, r
+    pb, _ = peta_kal({}, {"grup": {"BNJ|1|2": {"peta": [(0.0, 0.1), (1.0, 0.9)]}, "BNJ|1|3": {"peta": None}}})
+    assert list(pb) == [("BNJ", 1, 2)], "kalibrasi aktif BNJ ikut, peta kosong tidak"
+    eb = {"k": "BNJ", "kol": ["lv", "ps"], "kab": {"1101": [[1, None], [1, 0.25], None]}}
+    rb = baris_tampil(eb, "1101", "11", pb, {})
+    assert rb[0] == [1, None] and rb[1] == [1, 0.3], rb  # ps kosong tidak dikalibrasi (tidak dikarang); 0,25 -> 0,3
     assert vonis({}, "HJN", 1, 1) == ["belum teruji", 0, None]
     # terbit utuh dari entri sintetis, berkas nyata repo untuk paparan; keluaran sah
     t = "2026-10-29"
