@@ -327,3 +327,33 @@ Butir berikut pernah ditulis di draf, tetapi kode belum mengerjakannya. Karena i
   - gerbang 5% resampel kemiringan gagal;
   - angka daya dari `daya`.
 - 1 Nov 2026: keputusan pemilik "pakai yang ada". Draf dipecah jadi Jalur A (IMERG Early, arsip memutuskan, pembagian musim beku, 2025-03 dikeluarkan) dan Jalur B (prospektif). Uji arsip A0 "hanya menolak" diganti Jalur A. `klim` Jalur B dibatasi ke musim 2016/17-2021/22.
+
+## 11. Amandemen
+
+### A1 (1 Nov 2026, sesudah jangkar 0ad40db0, sebelum model ada dan sebelum uji dibuka)
+
+**Kejadian.** Jangkar pertama memakai commit `50305ad8`, dan berkas sidiknya di-commit di `0ad40db0`. Run unduhan IMERG Actions **41314881450** (bulan 2017-01) gagal total:
+- hasilnya `0 slot baru, 1488 gagal`;
+- tiap balasan OPeNDAP (365 karakter) tercatat "balasan tak terurai" oleh diagnosa `imerg_unduh`;
+- format balasan live menaruh nama variabel di depan indeks (`precipitation[0][i], v, ...`), sedangkan `imerg.parse` (milik `cuaca-udara`) hanya mengenali baris yang diawali indeks (`[0][i], ...`), sehingga mengembalikan `{}`.
+
+**Belum ada satu pun data IMERG yang terunduh.**
+
+**Latih yang gagal (dicatat jujur).** Sesudah jangkar, sesi induk menjalankan `nowcast_jkt.py latih --jalur A` satu kali. Yang terjadi:
+1. `muat_label()` lolos kunci. Ia memuat ke memori seluruh arsip label tersaring dan cache mentah, **semua musim termasuk musim uji**, karena `muat_label` tidak menyaring per peran. Ia juga menghitung `sha_label` atas semuanya.
+2. `susun()` hanya membangun baris untuk peran latih dan validasi pada L = 1 (`peran(t, L)`): label y untuk baris itu dan klim dari baris latih.
+3. `latih()` lalu berhenti dengan "matriks singular", karena semua baris punya fitur hujan `None` (cache IMERG kosong), sehingga himpunan latih dan validasi kosong.
+
+Akibatnya:
+- tidak ada model yang ditulis;
+- tidak ada koefisien, skor, atau hitungan yang dicetak; jejak galat hanya berisi tumpukan panggilan;
+- label musim uji **tidak dipakai di perhitungan apa pun dan tidak tampil**, tetapi sempat termuat ke memori dan ikut masuk hash;
+- label latih dan validasi L = 1 sempat dihitung di memori tanpa ditampilkan.
+
+**Perubahan (satu-satunya):**
+1. `scripts/cuaca/imerg.py` `parse` (perbaikan `cuaca-udara`): nama variabel di depan indeks kini opsional, dengan fixture live 7 x 7 di ujinya. Hash `getsource(parse)` di sidik berubah, sehingga kunci harus diperbarui.
+2. `nowcast_jkt.py`, prosedural saja:
+   - `jangkar --amandemen "A<n>: alasan"`: menolak bila alasan kosong, bila belum pernah dijangkar, atau bila model/penanda buka sudah ada; rekaman jangkar lama disimpan di `riwayat`;
+   - `latih` memeriksa kelengkapan IMERG (>= 95% slot 30 menit tiap bulan Nov-Apr musim latih dan validasi, `imerg_lengkap`) **sebelum** memanggil `muat_label`, supaya label tidak lagi dibaca ketika hujan belum ada.
+
+Fitur, latensi, model, kalibrasi, pembagian musim, pembanding, dan kriteria lulus **tidak berubah**. Uji belum pernah dibuka. Sidik baru ditulis oleh `jangkar --amandemen` sesudah ketiga berkas di-commit dan di-push.

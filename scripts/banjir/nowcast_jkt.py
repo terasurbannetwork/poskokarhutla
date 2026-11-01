@@ -8,7 +8,7 @@
   fitur_hujan --t ISO                                      JALUR A: fitur hujan IMERG 42 kecamatan pada t (latensi LAT_IMERG)
   uji                                                      swa-uji luring (pembeda latensi + kausal, korelasi silang, hitung bulanan, musim)
 
-  sidik | jangkar                                          cetak sidik | SEKALI (sesi induk, sesudah push): tulis nowcast_jkt_sidik.json
+  sidik | jangkar [--amandemen "A<n>: alasan"]            cetak sidik | sesi induk sesudah push: tulis nowcast_jkt_sidik.json; ulang hanya beramandemen
   latih --jalur A | nilai --jalur A                        DITOLAK sebelum kunci sah (muat_label); nilai hanya sekali (penanda nowcast_jkt.buka)
   daya [--ulang N] [--B N]                                 sintetik daya syarat 3 (kemiringan kalibrasi), tanpa label
 
@@ -845,20 +845,62 @@ def cmd_sidik(_):
     print(sidik_sekarang()); return 0
 
 
-def cmd_jangkar(_):
-    """SEKALI, oleh sesi induk sesudah berkas beku di-commit dan di-push. Menolak bila sudah ada, berkas kotor, atau HEAD belum di origin/main."""
+def tulis_jangkar(amandemen=None, git=None, berkas=None, model=None, buka=None):
+    """Jangkar pertama (amandemen None) atau jangkar ulang beramandemen. -> pesan galat atau None.
+    Amandemen hanya sah bila sudah pernah dijangkar, alasan diisi, dan BELUM ada model maupun penanda buka;
+    rekaman jangkar lama disimpan utuh di `riwayat` (urut waktu)."""
     import subprocess
-    if os.path.exists(SIDIK_KUNCI):
-        print("sudah dijangkar", file=sys.stderr); return 2
-    g = lambda *x: subprocess.run(["git", *x], cwd=AKAR, capture_output=True, text=True)
+    berkas, model, buka = berkas or SIDIK_KUNCI, model or MODEL_BERKAS, buka or BUKA
+    g = git or (lambda *x: subprocess.run(["git", *x], cwd=AKAR, capture_output=True, text=True))
+    ada = os.path.exists(berkas)
+    if amandemen is None and ada:
+        return "sudah dijangkar: pakai --amandemen \"A<n>: alasan\""
+    if amandemen is not None:
+        if not amandemen.strip():
+            return "alasan amandemen wajib diisi"
+        if not ada:
+            return "belum pernah dijangkar: amandemen tidak berlaku"
+        if os.path.exists(model) or os.path.exists(buka):
+            return "model atau penanda buka sudah ada: amandemen ditolak (label latih/uji sudah dipakai)"
     if g("status", "--porcelain", "--", *SIDIK_DAFTAR).stdout.strip():
-        print("berkas beku kotor: commit dulu", file=sys.stderr); return 2
+        return "berkas beku kotor: commit dulu"
     head = g("rev-parse", "HEAD").stdout.strip()
     if g("merge-base", "--is-ancestor", head, "origin/main").returncode:
-        print("HEAD belum di origin/main: push dulu", file=sys.stderr); return 2
-    json.dump({"sidik": sidik_sekarang(), "jangkar_commit": head, "jangkar_tanggal": dt.date.today().isoformat(), "manifes": manifes()},
-              open(SIDIK_KUNCI, "w"), indent=1, sort_keys=True)
+        return "HEAD belum di origin/main: push dulu"
+    rek = {"sidik": sidik_sekarang(), "jangkar_commit": head, "jangkar_tanggal": dt.date.today().isoformat(), "manifes": manifes()}
+    if amandemen is not None:
+        lama = json.load(open(berkas))
+        rek["amandemen"] = amandemen.strip()
+        rek["riwayat"] = lama.pop("riwayat", []) + [lama]
+    json.dump(rek, open(berkas, "w"), indent=1, sort_keys=True)
+    return None
+
+
+def cmd_jangkar(a):
+    """oleh sesi induk sesudah berkas beku di-commit dan di-push; ulang hanya lewat --amandemen (PRAREG bagian Amandemen)."""
+    salah = tulis_jangkar(getattr(a, "amandemen", None))
+    if salah:
+        print(salah, file=sys.stderr); return 2
     print("tertulis", SIDIK_KUNCI, "(commit dan push berkas ini)"); return 0
+
+
+def imerg_lengkap(seri, perans=("latih", "validasi"), min_porsi=0.95):
+    """-> [bulan kurang] : tiap bulan Nov-Apr musim `perans` harus punya >= min_porsi slot 30 menit (sel mana pun). Diperiksa SEBELUM label dibaca."""
+    ada = {}
+    for c in seri.values():
+        for e in c:
+            b = dt.datetime.fromtimestamp(e - 1, dt.timezone.utc).strftime("%Y-%m"); ada.setdefault(b, set()).add(e)
+    kurang = []
+    for m in (x for k in perans for x in MUSIM[k]):
+        y = int(m[:4])
+        for yy, mm in [(y, 11), (y, 12)] + [(y + 1, k) for k in range(1, 5)]:
+            b = f"{yy}-{mm:02d}"
+            if b in BULAN_TERLARANG | BULAN_TERLIHAT_A:
+                continue
+            hari = (dt.date(yy + mm // 12, mm % 12 + 1, 1) - dt.date(yy, mm, 1)).days
+            if len(ada.get(b, ())) < min_porsi * 48 * hari:
+                kurang.append(b)
+    return kurang
 
 
 def baris_jalur_a(perans, L, label, mentah, seri):
@@ -873,8 +915,11 @@ def baris_jalur_a(perans, L, label, mentah, seri):
 def cmd_latih(a):
     if os.path.exists(MODEL_BERKAS):                 # model/penanda dulu, baru label
         print("model sudah ada (dibekukan); latih ulang = kriteria baru", file=sys.stderr); return 2
-    D = muat_label()                                 # menolak sebelum kunci
     seri, par = baca_imerg(), {}
+    kurang = imerg_lengkap(seri)                     # hujan lengkap dulu; label tak dibaca bila hujan belum ada (A1)
+    if kurang:
+        print(f"IMERG belum lengkap untuk {len(kurang)} bulan latih/validasi (mis. {kurang[:3]}): label tidak dibaca", file=sys.stderr); return 2
+    D = muat_label()                                 # menolak sebelum kunci
     for L in TENGGANG:
         lat, val = baris_jalur_a({"validasi"}, L, D["label"], D["mentah"], seri)
         ok = lambda r: [b for b in r if None not in (b["h1"], b["h3"], b["h6"], b["a24"])]
@@ -1047,6 +1092,27 @@ def uji():
     except RuntimeError as e:
         assert "tipe flood" in str(e)
     os.remove(tmpl)
+    # 7c. jangkar beramandemen: alasan wajib, riwayat disimpan, ditolak bila model/penanda buka sudah ada
+    d0 = os.path.join(os.environ.get("TMPDIR", "/tmp"), f"nowcast_jkt_jangkar_{os.getpid()}")
+    os.makedirs(d0, exist_ok=True); sk, mdl, bk = (os.path.join(d0, x) for x in ("sidik.json", "model.json", "buka"))
+    class G:
+        def __init__(self, out="", rc=0): self.stdout, self.returncode = out, rc
+    gitb = lambda *x: G("deadbeef\n") if x[0] == "rev-parse" else G()
+    kw = dict(git=gitb, berkas=sk, model=mdl, buka=bk)
+    assert "belum pernah" in tulis_jangkar("A1: x", **kw)
+    assert tulis_jangkar(None, **kw) is None and "sudah dijangkar" in tulis_jangkar(None, **kw)
+    assert "wajib" in tulis_jangkar("  ", **kw)
+    open(mdl, "w").write("{}")
+    assert "ditolak" in tulis_jangkar("A1: x", **kw); os.remove(mdl)
+    open(bk, "w").write("x")
+    assert "ditolak" in tulis_jangkar("A1: x", **kw); os.remove(bk)
+    assert "kotor" in tulis_jangkar("A1: x", git=lambda *x: G("M x") if x[0] == "status" else G("deadbeef"), berkas=sk, model=mdl, buka=bk)
+    assert tulis_jangkar("A1: parse", **kw) is None and tulis_jangkar("A2: lagi", **kw) is None
+    J = json.load(open(sk))
+    assert J["amandemen"] == "A2: lagi" and [r.get("amandemen") for r in J["riwayat"]] == [None, "A1: parse"] and all("riwayat" not in r for r in J["riwayat"])
+    os.remove(sk); os.rmdir(d0)
+    # 7d. latih menolak sebelum membaca label bila hujan IMERG belum lengkap
+    assert len(imerg_lengkap({})) == 6 * 6 and imerg_lengkap({(0, 0): {epoch(dt.datetime(2017, 1, 1, tzinfo=dt.timezone.utc)) + 1800 * k: 0.0 for k in range(48 * 31)}}).count("2017-01") == 0
     # 7b. syarat 4: positif hilang > 10% gagal; z dua-proporsi terpoolkan
     rh = [{"t": dt.datetime(2023, 1, 1, tzinfo=WIB) + dt.timedelta(hours=i), "y": int(i % 10 == 0), "musim": "x",
            "p": {"hujan": None if i % 10 == 0 and i < 300 else 0.1, "klim": 0.1, "persistensi": 0.1}} for i in range(2000)]
@@ -1179,7 +1245,8 @@ def pengurai():
     for n in ("latih", "nilai"):
         sp.add_parser(n).add_argument("--jalur", choices=["A"], required=True)
     p = sp.add_parser("daya"); p.add_argument("--ulang", type=int, default=8); p.add_argument("--B", type=int, default=400)
-    for n in ("sidik", "jangkar", "uji"):
+    sp.add_parser("jangkar").add_argument("--amandemen", help='jangkar ulang beramandemen, mis. "A1: alasan"; ditolak bila model/penanda buka ada')
+    for n in ("sidik", "uji"):
         sp.add_parser(n)
     return ap, sp
 

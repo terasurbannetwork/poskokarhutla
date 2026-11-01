@@ -7,7 +7,7 @@ Auth: Authorization: Bearer $EARTHDATA_TOKEN; header hanya diteruskan ke *.earth
 Per kab: maks dan rata-rata hujan harian atas sel 0,1 derajat di titik tengah kecamatannya (pusat_kec.json, kunci "prov|kab" sama dengan cuaca_prospektif).
 Arsip cuaca_imerg_arsip_<YYYY-MM>.json {"terbit": {tgl: {"run":"L", "kab": {"prov|kab": [maks, rata]}}}}: HANYA Late Run, kab dengan maks >= 10 mm
 (yang tidak tertulis = di bawah itu); entri tak pernah diubah, berkas rusak = berhenti (aturan prospektif_cuaca.py).
-FORMAT ASCII LIVE BELUM DIKONFIRMASI (data butuh token; fixture uji dibangun dari dokumentasi Hyrax): parse() sengaja longgar dan main() mencatat
+Format ASCII LIVE (3B-HHR-E, 1 Nov 2026): baris 'precipitation[t][i_lon], v, ...' tanpa header; parse() menerima itu dan bentuk dokumentasi Hyrax (jalur harian .nc4 belum terverifikasi live) dan main() mencatat
 baris "skema IMERG" di log CI; bila gagal, langkah memberi peringatan dan berkas lama tidak disentuh.
 Pakai: python3 scripts/cuaca/imerg.py   |   ... uji
 """
@@ -50,19 +50,22 @@ def buka(token):
 
 
 def parse(teks):
-    """ASCII OPeNDAP (DAP2) -> {(i_lon, i_lat): mm}. Baris data: '[t][i_lon], v, v, ...' (nilai sepanjang lat, mulai I_LAT[0]); -9999.9 dibuang."""
+    """ASCII OPeNDAP (DAP2) -> {(i_lon, i_lat): mm}. Dua bentuk baris data: LIVE 'precipitation[t][i_lon], v, ...' (nama variabel di baris) dan
+    dokumentasi '[t][i_lon], v, ...' di bawah header 'precipitation.precipitation, [..]'. Nilai sepanjang lat, mulai I_LAT[0]; -9999.9 dibuang."""
     out, bagian, ada = {}, "", None
     for g in teks.splitlines():
         g = g.strip()
-        m = re.match(r"^((?:\[\d+\])+),\s*(.*)$", g)
+        m = re.match(r"^([A-Za-z_.]*)((?:\[\d+\])+),\s*(.*)$", g)
         if not m:
             if g and not g.startswith("-") and ("," in g or "[" in g) and "{" not in g and ";" not in g:
                 bagian = g
             continue
+        if m.group(1):
+            bagian = m.group(1)
         if "precipitation" not in bagian or re.search(r"\.(lon|lat|time)\b", bagian):
             continue
-        idx = [int(x) for x in re.findall(r"\[(\d+)\]", m.group(1))]
-        for j, v in enumerate(m.group(2).split(",")):
+        idx = [int(x) for x in re.findall(r"\[(\d+)\]", m.group(2))]
+        for j, v in enumerate(m.group(3).split(",")):
             v = float(v)
             if v > HILANG:
                 out[(idx[-1], j)] = v
@@ -214,6 +217,12 @@ precipitation.lat, [4]
     isi, b1 = tambah(isi, "2026-10-31", {"run": "L", "kab": {}})
     isi, b2 = tambah(isi, "2026-10-31", {"run": "L", "kab": {"x": [1, 1]}})
     assert b1 and not b2 and isi["terbit"]["2026-10-31"]["kab"] == {}
+    live = "Dataset: 3B-HHR-E.MS.MRG.3IMERG.20170101-S000000-E002959.0000.V07B.HDF5\n" + "".join(
+        f"precipitation[0][{i}], " + ", ".join(["0", "0", "0", "0", "0.06", "0", "0"] if i in (4, 5) else ["0"] * 7) + "\n" for i in range(7))
+    l = parse(live)
+    assert len(l) == 49 and l[(4, 4)] == 0.06 and l[(5, 4)] == 0.06 and l[(0, 0)] == 0, l
+    l2 = parse(live + "precipitation[0][7], -9999.9, 1\nlon[3], 94.0, 94.1\nlat[1], 1.0\ntime[1], 5\n")
+    assert len(l2) == 50 and (7, 0) not in l2 and l2[(7, 1)] == 1.0, l2
     print("imerg uji ok")
 
 
