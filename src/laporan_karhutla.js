@@ -551,9 +551,10 @@ export async function butirLaporanKarhutla(env, kini, bolehDummy) {
 const KAB_TANPA = "TANPA KABUPATEN/KOTA";
 async function formatKhusus(env, req, url, kini) {
   const p = await pelaku(env, req, kini); if (p instanceof Response) return p;
+  const lj = await laju(env, ("lk:" + p.oleh).slice(0, 64), "format_khusus", [[JAM, 60]], kini); if (lj) return lj;
   const kode = url.searchParams.get("prov") || "", tanggal = url.searchParams.get("tanggal") || wib(kini);
   if (!/^\d{2}$/.test(kode) || !S.NAMA_PROV[kode]) return gagal(400, "prov harus kode BPS dua angka provinsi karhutla (mis. 62)");
-  if (!S.tglSah(tanggal)) return gagal(400, "tanggal harus YYYY-MM-DD");
+  if (!adaTanggal(tanggal, kini)) return gagal(400, "tanggal harus YYYY-MM-DD yang sah dan tidak lebih dari besok");
   if (p.tipe === "pemprov" && !p.cakupan.includes(kode)) return gagal(404, "tidak ditemukan");
   const hari = await ambilHari(env, tanggal) ?? hariMaya(tanggal), sumber = "prov:" + kode;
   const k = await env.DB.prepare("SELECT isi FROM lk_kiriman WHERE tanggal_laporan = ? AND sumber = ?").bind(tanggal, sumber).first();
@@ -564,17 +565,17 @@ async function formatKhusus(env, req, url, kini) {
   for (const f of isi.fs ?? []) { const g = (f.kab ?? "").trim().toUpperCase() || KAB_TANPA; if (!grup.has(g)) grup.set(g, []); grup.get(g).push(f); }
   const upaya = [...(isi.upaya?.pilihan ?? []).map(x => S.UPAYA[x]), isi.upaya?.teks].filter(Boolean).join(", ");
   const jam = new Date(kini + 7 * 3600e3).toISOString(), stamp = `${jam.slice(8, 10)}/${jam.slice(5, 7)}/${jam.slice(0, 4)} ${jam.slice(11, 16)} WIB`;
-  const r2 = x => Math.round(x * 100) / 100;
+  const r2 = x => Number.isFinite(x) ? Math.round(x * 100) / 100 : 0, nom = x => Number.isFinite(x) ? x : null;
   const baris = [[], ["", "PERKEMBANGAN HARIAN SETIAP TITIK/LOKASI YANG TERBAKAR", null, null, null, null, null, stamp], [], ["", "NO.", "TITIK/LOKASI", "LUAS TERBAKAR", "LUAS DIPADAMKAN", "STATUS", "UPAYA", "KENDALA", "KET"], []];
   const gabung = [];
   for (const [kab, daftar] of [...grup].sort((a, b) => a[0].localeCompare(b[0], "id"))) {
     baris.push([null, `${kab}`]);
     const awal = baris.length + 1; let tb = 0, tp = 0;
     daftar.forEach((f, i) => {
-      const padam = f.padam_darat_ha == null && f.padam_udara_ha == null ? null : r2((f.padam_darat_ha ?? 0) + (f.padam_udara_ha ?? 0));
-      tb += f.target_ha ?? 0; tp += padam ?? 0;
+      const padam = nom(f.padam_darat_ha) == null && nom(f.padam_udara_ha) == null ? null : r2((nom(f.padam_darat_ha) ?? 0) + (nom(f.padam_udara_ha) ?? 0));
+      tb += nom(f.target_ha) ?? 0; tp += padam ?? 0;
       const idTgl = /^FS-\d{2}-(\d{8})-/.exec(f.fs_id)?.[1], lanjutan = lama.has(f.fs_id) || (idTgl != null && idTgl < td);
-      baris.push([null, i + 1, [f.lokasi, f.kec ? "Kec. " + f.kec : null].filter(Boolean).join(", ") || f.fs_id, f.target_ha ?? "-", padam ?? "-", f.status === "padam" ? "Padam" : "Belum Padam", i === 0 ? upaya : null, f.kendala || "-", lanjutan ? "Lanjutan" : "Baru"]);
+      baris.push([null, i + 1, [f.lokasi, f.kec ? "Kec. " + f.kec : null].filter(Boolean).join(", ") || f.fs_id, nom(f.target_ha) ?? "-", padam ?? "-", f.status === "padam" ? "Padam" : "Belum Padam", i === 0 ? upaya : null, f.kendala || "-", lanjutan ? "Lanjutan" : "Baru"]);
     });
     if (upaya && daftar.length > 1) gabung.push(`G${awal}:G${awal + daftar.length - 1}`);
     baris.push([null, "TOTAL", null, r2(tb), r2(tp)], []);

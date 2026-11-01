@@ -1,6 +1,6 @@
 "use strict";
 /* Tab Tren: gerak garis pantai per situs (Landsat), kejadian "Banjir Rob" DIBI per tahun, dan catatan jujur tentang logbook.
-   Logbook Pusdalops tidak punya jenis gelombang pasang atau abrasi sendiri, jadi tidak ada deret logbook yang dikarang. */
+   Logbook Pusdalops punya jenis resmi gelombang_pasang (kode DIBI 103: gelombang pasang, gelombang tinggi, abrasi); kartu Logbook memakai kuncinya langsung. Rob sendiri ada di jenis banjir (kode 101) dan dihitung dari label rob_kejadian.json. */
 const WARNA_SITUS = ["#c9503a", "#e58a45", "#3f8f6b", "#3f7fb8", "#7a4fc4"];
 const Tren = {
   exPantai() { if (!S.abr) return ""; const D = Pesisir.seriSitus(S.abr); if (!D.length) return "";
@@ -28,10 +28,12 @@ const Tren = {
       GrafikP.batangV(cols, {lebar: lebarKartu(), tinggi: 190}) + GrafikP.tumpuk(rows, {lebar: lebarKartu()})
       + cat(`Batang atas: kejadian per bulan kalender, semua tahun ${R.rentang[0].slice(0, 4)} sampai ${R.rentang[1].slice(0, 4)} digabung. Batang bawah: sepuluh kabupaten dan kota dengan laporan terbanyak, dibagi empat musim. Satu kejadian adalah satu tanggal laporan di satu kabupaten; laporan kembar antarsumber digabung. Ini hitungan laporan BPBD dan Pusdalops, bukan jumlah hari banjir: tahun atau wilayah tanpa laporan belum tentu tanpa rob, dan logbook belum penuh tiap tahun. Label ini dipakai untuk menguji prakiraan rob; uji balik terhadap prakiraan yang diarsipkan menunggu arsip prakiraan terkumpul.`),
       "Rekap Pusdalops BNPB banjir rob 2023-2024, logbook Pusdalops, DIBI BNPB; olahan Centurisk97, dibuat " + tglTahun((R.dibuat || "").slice(0, 10)), MS.map(([nm, , w]) => [w, nm])); },
-  exLogbook(L) { if (!L?.jenis) return ""; const mirip = L.jenis.filter(j => /pasang|abrasi|rob|gelombang/i.test(j));
-    if (mirip.length) return "";   /* bila suatu hari logbook punya jenis sendiri, kartu ini diganti deret nyata */
-    return kartuP("Logbook", "catatan", "Logbook tidak punya jenis untuk gelombang pasang, rob, atau abrasi, sehingga kejadian semacam itu tidak bisa dipisahkan dari jenis yang ada",
-      cat(`Logbook harian mengelompokkan kejadian ke ${fmt(L.jenis.length)} jenis (${L.jenis.map(j => esc(j.replace(/_/g, " "))).join(", ")}). Gelombang pasang, rob, dan abrasi tidak punya jenis sendiri; kejadiannya tercampur di banjir, cuaca, atau lainnya. Tanpa kolom yang menandainya, deret tahunan dari logbook hanya bisa ditebak, jadi tidak ditampilkan. Riwayat kejadian rob di atas bersumber dari DIBI, yang punya kategori sendiri.`), "Logbook Pusdalops BNPB, dibuat " + tglTahun((L.dibuat || "").slice(0, 10))); },
+  exLogbook(L) { const J = "gelombang_pasang", N = L?.nasional; if (!L?.jenis?.includes(J) || !N) return "";
+    const ys = Object.keys(N).filter(y => N[y][J] != null).sort(); if (!ys.length) return ""; const tot = ys.reduce((a, y) => a + N[y][J], 0), penuh = new Set(L.tahun_penuh || []);
+    const cols = ys.map(y => ({n: y, v: N[y][J], w: penuh.has(y) ? "#4f9be0" : "#9aa4b2", txt: fmt(N[y][J]), tip: `<b>${y}</b><br>Kejadian: ${fmt(N[y][J])}<br>Hari tercatat: ${fmt(L.hari_tercatat?.[y] ?? 0)}${penuh.has(y) ? "" : "<br>Tahun belum penuh tercatat"}`}));
+    return kartuP("Logbook", "ombak", `${Kartu.hl(fmt(tot) + " kejadian")} berjenis gelombang pasang tercatat di logbook Pusdalops ${ys[0]} sampai ${ys[ys.length - 1]}`,
+      GrafikP.batangV(cols, {lebar: lebarKartu(), tinggi: 200}) + cat("Jenis resmi logbook (kode DIBI 103) memuat gelombang pasang, gelombang tinggi, dan abrasi; rob dicatat di jenis banjir sehingga tidak ikut di sini. Batang abu-abu: tahun dengan hari tercatat belum penuh, jangan dibandingkan dengan tahun lain."),
+      "Logbook Pusdalops BNPB, dibuat " + tglTahun((L.dibuat || "").slice(0, 10)), [["#4f9be0", "Tahun penuh tercatat"], ["#9aa4b2", "Tahun belum penuh"]]); },
   async render() { const el = $("#tren"); if (el._ok) return; el._ok = 1;
     const [L, R] = await Promise.all([opsi("../data/logbook_riwayat.json"), opsi("data/rob_kejadian.json")]), h = [this.exPantai(), this.exRob(), this.exKalender(R), this.exLogbook(L)].filter(Boolean);
     el.innerHTML = h.length ? `<div class="gp-kartu">${h.join("")}</div>` : `<p class="kosong">Belum ada data yang terbaca.</p>`; }

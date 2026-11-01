@@ -3,7 +3,7 @@
    Kontrol pilihan bereaksi seketika; isi berat digambar lewat nanti() (/inti/nanti.js). */
 (() => {
   "use strict";
-  const {PROV, ikon, h, F, label, BLN, muat, kunciKab, tutup} = window.Wilayah;
+  const {PROV, ikon, h, F, label, namaJenis, urutJenis, BLN, muat, kunciKab, tutup} = window.Wilayah;
   const lanjutNanti = fn => (window.nanti || (f => setTimeout(f, 0)))(fn);
   const cache = new Map();
   const ambil = u => cache.get(u) || cache.set(u, fetch(u).then(async r => r.ok ? {ok: true, j: await r.json()} : {ok: false, s: r.status}).catch(() => ({ok: false, s: 0}))
@@ -17,8 +17,7 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const tip = (judul, ...baris) => `<b>${esc(judul)}</b><br>${baris.map(esc).join("<br>")}`;
   const NS = "http://www.w3.org/2000/svg";
-  const JN = {kebakaran_permukiman: "Kebakaran permukiman", gempabumi: "Gempa bumi", gunungapi: "Gunung api", kegagalan_teknologi: "Gagal teknologi", konflik_sosial: "Konflik sosial", omc: "OMC", karhutla: "Karhutla"};
-  const nJ = j => JN[j] || label(j);
+  const nJ = namaJenis;
   const TOPIK = {normalisasi_sungai: "Normalisasi sungai", tanggul: "Tanggul dan penahan", relokasi: "Relokasi dan hunian", jalur_evakuasi: "Jalur evakuasi", peringatan_dini: "Peringatan dini", sosialisasi: "Sosialisasi dan edukasi", alat_berat: "Alat berat",
     drainase: "Drainase", imbauan_kewaspadaan: "Imbauan kewaspadaan", logistik: "Logistik", patroli_karhutla: "Patroli karhutla", perbaikan_jalan_jembatan: "Perbaikan jalan dan jembatan", reboisasi_konservasi: "Reboisasi dan konservasi", sekat_kanal_embung: "Sekat kanal dan embung", status_darurat: "Status darurat"};
   const thRingkas = (a = []) => { const t = a.map(Number).sort((x, y) => x - y), o = []; for (let i = 0; i < t.length;) { let j = i; while (t[j + 1] === t[j] + 1) j++; o.push(j > i ? `${t[i]}–${t[j]}` : `${t[i]}`); i = j + 1; } return o.length < 3 ? o.join(" dan ") : `${o.slice(0, -1).join(", ")}, dan ${o.at(-1)}`; };
@@ -53,7 +52,7 @@
   panel.jam = async (kotak) => {
     const r = await ambil("/data/bnpb/logbook_jam.json");
     if (!r.ok) return put(kotak, kosong("peringatan", "Data jam kejadian belum terbit (logbook_jam.json)."));
-    const D = r.j, js = Object.keys(D.jenis).filter(j => (D.jenis[j].terbuang?.terpakai || 0) > 0).sort((a, b) => D.jenis[b].terbuang.terpakai - D.jenis[a].terbuang.terpakai);
+    const D = r.j, js = Object.keys(D.jenis).filter(j => (D.jenis[j].terbuang?.terpakai || 0) > 0).sort(urutJenis);
     let jenis = js.includes("banjir") ? "banjir" : js[0], prov = "";
     const isi = h("div"), gambar = () => {
       const d = D.jenis[jenis], a = prov ? d.prov?.[prov] : d.nasional, tot = (a || []).reduce((x, y) => x + y, 0);
@@ -82,7 +81,7 @@
   panel.terlibat = async (kotak) => {
     const r = await ambil("/data/bnpb/logbook_terlibat.json");
     if (!r.ok) return put(kotak, kosong("peringatan", "Data pihak terlibat belum terbit (logbook_terlibat.json)."));
-    const D = r.j, js = Object.keys(D.jenis).filter(j => D.jenis[j].n_kejadian_berisi > 0).sort((a, b) => D.jenis[b].n_kejadian - D.jenis[a].n_kejadian);
+    const D = r.j, js = Object.keys(D.jenis).filter(j => D.jenis[j].n_kejadian_berisi > 0).sort(urutJenis);
     let jenis = js.includes("banjir") ? "banjir" : js[0], w = {prov: "", kab: ""};
     const isi = h("div"), MIN = 5;
     const gambar = () => {
@@ -127,7 +126,7 @@
     const muatProv = async () => { put(isi, kosong("tunggu", "Memuat desa…")); berkas = null; const p = prov; const b = await ambil(`/data/bnpb/desa_langganan/${p}.json`); if (p !== prov) return; berkas = b; gambar(); };
     const sP = pilihan("Provinsi", Object.entries(PROV).map(([p, t]) => [p, t]), prov, v => { prov = v; maks = 30; lanjutNanti(muatProv); });
     const ang = deretan("lbambang", "Ambang tahun", [4, 5, 6, 7, 8, 9].map(a => [a, `${a} dari 9 tahun`, "kalender"]), ambang, v => { ambang = +v; maks = 30; lanjutNanti(gambar); });
-    const sj = deretan("lbdesajenis", "Jenis kejadian", [["", "Semua jenis", "daftar"], ...["banjir", "longsor", "cuaca", "karhutla", "kekeringan", "kebakaran_permukiman"].map(j => [j, nJ(j), j])], jenis, v => { jenis = v; maks = 30; lanjutNanti(gambar); });
+    const sj = deretan("lbdesajenis", "Jenis kejadian", [["", "Semua jenis", "daftar"], ...["banjir", "longsor", "gelombang_pasang", "cuaca", "kekeringan", "karhutla", "kebakaran_permukiman"].map(j => [j, nJ(j), j])], jenis, v => { jenis = v; maks = 30; lanjutNanti(gambar); });
     put(kotak, bungkus("Provinsi", sP), ang, sj, isi);
     muatProv();
   };
@@ -223,7 +222,7 @@
         kaki(`Terbaru dulu, paling banyak 40 per kabupaten/kota dan jenis. Teks dipotong dan disamarkan; hanya untuk staf. Kategori dari kata kunci, bisa kurang atau lebih. Tanda "di luar tahun dasar" = kejadian di luar tahun yang dipakai angka rapor. Hari selesai hanya ada bila petugas menulisnya di kolom kondisi. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(berkas.j.tahun_dasar)}.`));
     };
     const muatProv = async () => { put(isi, kosong("tunggu", "Memuat kejadian…")); berkas = null; const p = w.prov, b = await ambil(`/api/logbook/turunan/serupa_${p}`); if (p !== w.prov) return; berkas = b;
-      if (b.ok) { const ada = new Set(); for (const o of Object.values(b.j.kab || {})) Object.keys(o).forEach(j => ada.add(j)); const js = ["banjir", "longsor", "cuaca", "karhutla", "kekeringan", ...[...ada].sort()].filter((j, i, a) => ada.has(j) && a.indexOf(j) === i); if (js.length && !js.includes(jenis)) jenis = js[0];
+      if (b.ok) { const ada = new Set(); for (const o of Object.values(b.j.kab || {})) Object.keys(o).forEach(j => ada.add(j)); const js = [...ada].sort(urutJenis); if (js.length && !js.includes(jenis)) jenis = js[0];
         jenisSeg.replaceWith(jenisSeg = deretan("lbserupa", "Jenis kejadian", js.map(j => [j, nJ(j), j]), jenis, v => { jenis = v; maks = MAKS0; lanjutNanti(gambar); })); }
       gambar(); };
     const wl = await wilayah(v => { const baru = v.prov !== w.prov; w = v; maks = MAKS0; lanjutNanti(baru ? muatProv : gambar); }, {wajibProv: true, awalProv: "33"});
@@ -273,7 +272,7 @@
         c && jenis === "banjir" && !bolehMed(c) ? kaki(`Median tidak ditampilkan di ${lingkup}: kejadian yang dilaporkan selesai kurang dari 30 atau lebih dari 90% tidak pernah dilaporkan selesai.`) : null,
         jenis === "karhutla" ? kaki("Karhutla: hanya jumlah kejadian dan persen yang tak dilaporkan selesai. Median 1 hari dari catatan Pusdalops tidak bisa dibaca sebagai lama penanganan, jadi tidak ditampilkan.") : null,
         w.kab && !kb ? kaki(`${namaKab(w.kab)} kurang dari 5 kejadian ${nJ(jenis).toLowerCase()}; yang ditampilkan angka ${lingkup}.`) : null,
-        kaki(`Angka ini ${MED}, yaitu kejadian yang catatan kondisinya menyebut padam, surut, atau tertangani tanpa penyangkal. Kejadian yang tak pernah dilaporkan selesai tidak ikut, jadi ini batas bawah yang bias, bukan lama penanganan sebenarnya: lama sebenarnya hampir pasti lebih panjang. Persen tak dilaporkan selesai campuran antara belum selesai dan berhenti dilaporkan. Bar merah = median, bar abu = persentil 75. Median hanya untuk banjir dengan minimal 30 kejadian dilaporkan selesai dan tidak lebih dari 90% tak dilaporkan selesai. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(D.tahun_dasar)}.`));
+        jenis === "banjir" ? kaki(`Angka ini ${MED}, yaitu kejadian yang catatan kondisinya menyebut padam, surut, atau tertangani tanpa penyangkal. Kejadian yang tak pernah dilaporkan selesai tidak ikut, jadi ini batas bawah yang bias, bukan lama penanganan sebenarnya: lama sebenarnya hampir pasti lebih panjang. Persen tak dilaporkan selesai campuran antara belum selesai dan berhenti dilaporkan. Bar merah = median, bar abu = persentil 75. Median hanya untuk banjir dengan minimal 30 kejadian dilaporkan selesai dan tidak lebih dari 90% tak dilaporkan selesai. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(D.tahun_dasar)}.`) : kaki(`Persen tak dilaporkan selesai campuran antara belum selesai dan berhenti dilaporkan. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(D.tahun_dasar)}.`));
     };
     const wl = await wilayah(v => { w = v; maks = 15; lanjutNanti(gambar); });
     put(kotak, deretan("lblama", "Jenis kejadian", JL.map(j => [j, nJ(j), j]), jenis, v => { jenis = v; maks = 15; lanjutNanti(gambar); }), wl.node, isi);

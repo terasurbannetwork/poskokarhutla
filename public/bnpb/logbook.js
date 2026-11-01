@@ -4,10 +4,10 @@
    Draf formulir disimpan di localStorage supaya isian setengah jadi tidak hilang. Tanpa gaya/skrip inline (CSP); teks data lewat textContent. */
 (() => {
   "use strict";
-  const {PROV, ikon, h, F, label, muat, desaKab, kunciKab, tutup} = window.Wilayah;
+  const {PROV, ikon, h, F, label, namaJenis, urutJenis, muat, desaKab, kunciKab, tutup} = window.Wilayah;
   const app = document.getElementById("app"), DRAF = "logbook_draf_v1";
-  const JENIS = ["banjir", "longsor", "cuaca", "karhutla", "kebakaran_permukiman", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "kegagalan_teknologi", "konflik_sosial", "lainnya"];
-  const JENIS_NAMA = {kebakaran_permukiman: "Kebakaran permukiman", kegagalan_teknologi: "Gagal teknologi", konflik_sosial: "Konflik sosial", gempabumi: "Gempa bumi", gunungapi: "Gunung api", karhutla: "Karhutla"};
+  /* sama dengan JENIS di src/logbook.js (daftar putih worker); urutan resmi dari Wilayah. Jenis baru (gelombang_pasang dst) menunggu worker menerimanya. */
+  const JENIS = ["banjir", "longsor", "cuaca", "karhutla", "kebakaran_permukiman", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "kegagalan_teknologi", "konflik_sosial", "lainnya"].sort(urutJenis);
   const KENDALA = {akses: "Akses putus", logistik: "Logistik/BBM", sinyal: "Sinyal putus", air: "Sumber air", personel: "Personel kurang", alat_berat: "Alat berat", gambut: "Gambut", cuaca: "Cuaca", data: "Data belum ada", dana: "Dana", malam: "Malam hari", sosial: "Sosial", listrik: "Listrik padam", angin: "Angin kencang"};
   const KEBUTUHAN = {makanan: "Makanan", tenda: "Tenda", sandang: "Sandang", air_bersih: "Air bersih", obat: "Obat", perahu: "Perahu", material: "Material", alat_berat: "Alat berat", pompa: "Pompa", dana: "Dana"};
   /* urutan: [kunci, label, satuan]; batas wajar = BATAS_WAJAR di scripts/umum/laphar_arsip.py */
@@ -51,7 +51,7 @@
     const lanj = h("select", {name: "lanjut"}); el.lanjut = lanj;
     el.pesanLanjut = h("p", {class: "lb-p", hidden: true});
     f.append(h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Kejadian"),
-      h("div", {class: "lb-seg", role: "radiogroup", "aria-label": "Jenis kejadian"}, JENIS.map(j => radio("jenis", j, JENIS_NAMA[j] || label(j), j, false))),
+      h("div", {class: "lb-seg", role: "radiogroup", "aria-label": "Jenis kejadian"}, JENIS.map(j => radio("jenis", j, namaJenis(j), j, false))),
       h("div", {class: "bn-baris"}, sel("prov", "Provinsi"), sel("kab", "Kabupaten/kota"), sel("kec", "Kecamatan"), sel("desa", "Desa/kelurahan")),
       h("div", {class: "lb-lanjut"}, h("label", {class: "bn-isian"}, "Lanjutan dari kejadian", lanj), el.pesanLanjut),
       h("div", {class: "bn-baris"}, isi("mulai", "Mulai kejadian (WIB)", {type: "datetime-local", max: wibLokal()}), isi("lat", "Lintang (opsional)", {inputmode: "decimal", placeholder: "-7,25"}), isi("lon", "Bujur (opsional)", {inputmode: "decimal", placeholder: "112,75"}))));
@@ -99,7 +99,7 @@
     if (el.kab.value !== k.kode) return;   // pengguna sudah pindah kab
     if (!r.ok) { el.pesanLanjut.hidden = false; el.pesanLanjut.textContent = r.s === 503 ? "Tabel logbook belum dibuat di server (migrasi menunggu pemilik)." : "Daftar kejadian terbuka belum bisa dimuat."; return; }
     buka = r.j.kejadian || r.j.daftar || (Array.isArray(r.j) ? r.j : []);
-    opsi(el.lanjut, buka.map(e => [e.id, `${label(e.jenis || "kejadian")}, ${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}, mulai ${String(e.mulai || "").slice(0, 10)}`]), buka.length ? "Kejadian baru (bukan lanjutan)" : "Tidak ada kejadian terbuka 14 hari terakhir");
+    opsi(el.lanjut, buka.map(e => [e.id, `${namaJenis(e.jenis || "kejadian")}, ${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}, mulai ${String(e.mulai || "").slice(0, 10)}`]), buka.length ? "Kejadian baru (bukan lanjutan)" : "Tidak ada kejadian terbuka 14 hari terakhir");
   }
   function pilihLanjut() {
     lanjutId = el.lanjut.value || null;
@@ -201,7 +201,7 @@
       const wil = [e.desa, e.kec, String(e.kab || "").split("|").pop()].filter(Boolean).join(", ");
       const wk = e.waktu ? new Date(e.waktu).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit"}).replace(".", ":") : "";
       const kd = larik(e.kendala);
-      tb.append(h("tr", null, h("td", {teks: wk}), h("td", null, pil(JENIS_NAMA[e.jenis] || label(e.jenis || "lainnya"), "info", e.jenis || "lainnya")), h("td", null, e.status === "tutup" ? pil("Ditutup", "ok", "ok") : pil("Buka", "tunggu", "tunggu")), h("td", {teks: wil}),
+      tb.append(h("tr", null, h("td", {teks: wk}), h("td", null, pil(namaJenis(e.jenis || "lainnya"), "info", e.jenis || "lainnya")), h("td", null, e.status === "tutup" ? pil("Ditutup", "ok", "ok") : pil("Buka", "tunggu", "tunggu")), h("td", {teks: wil}),
         h("td", {teks: ringkasDampak(e)}), h("td", null, h("div", {class: "lb-ikonbaris"}, kd.map(k => h("span", {title: KENDALA[k] || k}, ikon(k)))))));
     }
     boxHari.replaceChildren(h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Jam", "Jenis", "Status", "Wilayah", "Dampak", "Kendala"].map(t => h("th", {teks: t})))), tb)),

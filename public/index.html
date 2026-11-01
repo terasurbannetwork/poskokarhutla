@@ -2238,7 +2238,7 @@ const Peta = {
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
         const kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
         return new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#c9503a"><div><small>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s]}</small><b>Titik panas</b></div></div>
-          <div class="kg">${kb("Umur deteksi", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
+          <div class="kg">${kb("Umur deteksi", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan sel", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
           ${aksiLokasi(t[0].geometry.coordinates[1], t[0].geometry.coordinates[0], "Titik panas " + ({N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s] || ""))}<div class="kk">Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (window.Risiko7?.klik(e)) return;   /* overlay eksperimental Peluang api 7 hari (hanya akun masuk): klik = popup sel, bukan turun ke wilayah */

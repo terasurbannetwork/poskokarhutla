@@ -3,7 +3,7 @@
    Angka pipeline tidak dihitung ulang di layar. Tanpa gaya/skrip inline (CSP); teks data lewat textContent. */
 (() => {
   "use strict";
-  const {PROV, ikon, h, F, label, BLN} = window.Wilayah;
+  const {PROV, ikon, h, F, label, namaJenis, urutJenis, BLN} = window.Wilayah;
   const app = document.getElementById("app"), KUNCI = "siaga_kab_v1", DUMMY = "siaga_dummy";
   const J4 = ["banjir", "longsor", "cuaca", "karhutla"];
   const HARI = 864e5;
@@ -53,14 +53,14 @@
       const ln = document.createElementNS(svg.namespaceURI, "line"); ln.setAttribute("class", "dasar"); ln.setAttribute("x1", 0); ln.setAttribute("x2", W); ln.setAttribute("y1", 104); ln.setAttribute("y2", 104); svg.append(ln);
       p.forEach((pv, i) => {
         const g = document.createElementNS(svg.namespaceURI, "g"), hh = Math.max(3, pv * 96), r = document.createElementNS(svg.namespaceURI, "rect");
-        g.setAttribute("data-tip", tip(`${label(j)}, ${BLN[i]}`, `Ada kejadian: ${v.ada[j][i]} dari ${D.n_tahun} tahun penuh`, pv >= D.ambang_musim ? "Masuk musim" : "Di luar musim"));
+        g.setAttribute("data-tip", tip(`${namaJenis(j)}, ${BLN[i]}`, `Ada kejadian: ${v.ada[j][i]} dari ${D.n_tahun} tahun penuh`, pv >= D.ambang_musim ? "Masuk musim" : "Di luar musim"));
         r.setAttribute("class", "bat" + (pv >= D.ambang_musim ? " musim" : "")); r.setAttribute("x", i * 80 + 8); r.setAttribute("width", 64); r.setAttribute("y", 104 - hh); r.setAttribute("height", hh); r.setAttribute("rx", 3);
         const t = document.createElementNS(svg.namespaceURI, "text"); t.setAttribute("x", i * 80 + 40); t.setAttribute("y", 119); t.textContent = BLN[i].slice(0, 3);
         g.append(r, t);
         if (i + 1 === bulan) { const o = document.createElementNS(svg.namespaceURI, "rect"); o.setAttribute("class", "pilih"); o.setAttribute("x", i * 80 + 3); o.setAttribute("y", 2); o.setAttribute("width", 74); o.setAttribute("height", 120); g.append(o); }
         svg.append(g);
       });
-      rows.append(h("div", {class: "sg-baris"}, h("b", null, ikon(j), label(j)), svg));
+      rows.append(h("div", {class: "sg-baris"}, h("b", null, ikon(j), namaJenis(j)), svg));
     }
     return blok("kalender", `Kalender risiko ${v.nama}`, rows, kaki(`Tinggi batang = bagian dari ${D.n_tahun} tahun penuh (${thRingkas(D.tahun_penuh)}) yang punya kejadian di bulan itu. Batang merah = masuk musim (ada kejadian di ${Math.ceil(D.ambang_musim * D.n_tahun)} tahun atau lebih). Kotak = bulan terpilih.`));
   }
@@ -68,7 +68,7 @@
   function sop(T) {
     const v = D.kab[kode], cek = lokal("siaga_sop") || {};
     const isi = T.length ? T.map(({jenis, m, mulai, berjalan, tugas}) => h("div", {class: "sg-sop"},
-      h("h3", null, ikon(jenis), label(jenis), pil(`musim ${rentang(m.bulan)}`, "info", "kalender"), pil(berjalan ? "musim berjalan" : `mulai sekitar ${blnTh(mulai)}`, berjalan ? "bahaya" : "tunggu", berjalan ? "peringatan" : "tunggu")),
+      h("h3", null, ikon(jenis), namaJenis(jenis), pil(`musim ${rentang(m.bulan)}`, "info", "kalender"), pil(berjalan ? "musim berjalan" : `mulai sekitar ${blnTh(mulai)}`, berjalan ? "bahaya" : "tunggu", berjalan ? "peringatan" : "tunggu")),
       h("ul", {class: "sg-tugas"}, tugas.map(t => { const c = h("input", {type: "checkbox", checked: !!cek[t.id], "aria-label": t.tugas});
         c.addEventListener("change", () => { const s = lokal("siaga_sop") || {}; c.checked ? s[t.id] = 1 : delete s[t.id]; lokal("siaga_sop", s); c.closest("li").classList.toggle("selesai", c.checked); });
         return h("li", {class: cek[t.id] ? "selesai" : ""}, c, h("span", null, h("span", {class: "tx", teks: t.tugas}), h("small", {teks: `sekitar ${blnTh(t.tgl)}, usulan: ${t.pj}`})), pil(t.status[0], t.status[1], t.status[2])); }))))
@@ -87,7 +87,7 @@
 
   function stok(T) {
     const v = D.kab[kode], aktif = T.filter(t => t.berjalan || (t.mulai - ref) / HARI <= 90);
-    const isi = aktif.length ? aktif.map(t => h("div", {class: "sg-sop"}, h("h3", null, ikon(t.jenis), label(t.jenis), pil(`${F(Math.round(t.m.kejadian_th * D.n_tahun))} kejadian dalam ${D.n_tahun} tahun di musim`, "info", "daftar")),
+    const isi = aktif.length ? aktif.map(t => h("div", {class: "sg-sop"}, h("h3", null, ikon(t.jenis), namaJenis(t.jenis), pil(`${F(Math.round(t.m.kejadian_th * D.n_tahun))} kejadian dalam ${D.n_tahun} tahun di musim`, "info", "daftar")),
       h("div", {class: "sg-stok"}, D.stok[t.jenis].map(s => h("div", null, ikon(s.kode), s.nama)))))
       : [kosong("logistik", "Tidak ada musim yang berjalan atau mulai dalam 90 hari ke depan di bulan terpilih.")];
     return blok("logistik", `Saran stok penyangga ${v.nama}`, ...isi, kaki("Daftar jenis barang menurut kebutuhan per jenis kejadian (kode kebutuhan logbook). Jumlah belum dihitung: logbook arsip tidak memuat kebutuhan, jadi tentukan jumlah dari data penduduk dan standar pelayanan minimal setempat."));
@@ -119,9 +119,9 @@
       const kabRows = Object.entries(d.kab[kk] || {}).map(([k, a]) => ({k, n: jml(a, bl), den, nas: d.nasional[k] || 0, nasDen: d.n_kejadian_berisi})).filter(r => r.n).sort((a, b) => b.n - a.n);
       const alatRows = Object.entries(d.alat_nasional || {}).map(([k, n]) => ({k, n: jml(d.alat_kab?.[kk]?.[k], bl), den: denA, nas: n, nasDen: d.alat_berisi})).sort((a, b) => b.nas - a.nas);
       const cukup = den >= MIN_BERISI;
-      return h("div", {class: "sg-sop"}, h("h3", null, ikon(j), label(j), pil(`musim ${jendela}`, "info", "kalender"), pil(cukup ? `${F(den)} kejadian berisi di kab/kota dari ${F(jml(kb.n_kejadian, bl))}` : `${F(d.n_kejadian_berisi)} kejadian berisi secara nasional dari ${F(d.n_kejadian)}`, "info", "daftar")),
+      return h("div", {class: "sg-sop"}, h("h3", null, ikon(j), namaJenis(j), pil(`musim ${jendela}`, "info", "kalender"), pil(cukup ? `${F(den)} kejadian berisi di kab/kota dari ${F(jml(kb.n_kejadian, bl))}` : `${F(d.n_kejadian_berisi)} kejadian berisi secara nasional dari ${F(d.n_kejadian)}`, "info", "daftar")),
         cukup ? tabelKeb("Kebutuhan", kabRows, jendela)
-          : [kosong("data", `Belum cukup data di kab ini: hanya ${F(den)} kejadian ${label(j).toLowerCase()} berisi kolom kebutuhan pada bulan musim (${jendela}), kurang dari ${MIN_BERISI}. Di bawah ini pola nasional, bukan kab/kota ini.`), d.n_kejadian_berisi >= MIN_BERISI ? tabelKeb("Kebutuhan", nas) : null],
+          : [kosong("data", `Belum cukup data di kab ini: hanya ${F(den)} kejadian ${namaJenis(j).toLowerCase()} berisi kolom kebutuhan pada bulan musim (${jendela}), kurang dari ${MIN_BERISI}. Di bawah ini pola nasional, bukan kab/kota ini.`), d.n_kejadian_berisi >= MIN_BERISI ? tabelKeb("Kebutuhan", nas) : null],
         denA >= MIN_BERISI ? [h("h4", {class: "sg-sub", teks: "Peralatan yang dikerahkan"}), tabelKeb("Peralatan", alatRows, jendela)]
           : d.alat_berisi >= MIN_BERISI ? [h("h4", {class: "sg-sub", teks: "Peralatan yang dikerahkan, pola nasional"}), tabelKeb("Peralatan", alatRows.map(r => ({...r, den: null})))] : kaki(`Peralatan: hanya ${F(d.alat_berisi)} kejadian yang mengisinya, terlalu sedikit untuk persentase.`));
     }) : [kosong("logistik", `Tidak ada jenis yang masuk musim di ${BLN[bulan - 1]} untuk ${v.nama}. Pilih bulan lain.`)];
@@ -135,11 +135,11 @@
   function perkiraanStok() {
     const kp = kode.slice(0, 2), namaP = PROV[kp] || kp, judul = `Perkiraan stok per bulan ${namaP}`;
     if (!KB) return blok("logistik", judul, kosong("peringatan", "Data kebutuhan logbook belum terbit."));
-    const js = J4.filter(j => KB.jenis[j]?.prov_bulan?.[kp]);
+    const js = Object.keys(KB.jenis).filter(j => j !== "omc" && KB.jenis[j]?.prov_bulan?.[kp]).sort(urutJenis);
     if (!js.length) return blok("logistik", judul, kosong("tunggu", `Belum ada kejadian berkebutuhan tercatat di ${namaP}.`));
     if (!js.includes(jenisStok)) jenisStok = js[0];
     const seg = h("div", {class: "lb-seg", role: "radiogroup", "aria-label": "Jenis kejadian"}), kotak = h("div", {class: "lb-isi"});
-    for (const j of js) { const i = h("input", {type: "radio", name: "sgstokj", value: j, checked: j === jenisStok}); i.addEventListener("change", () => { jenisStok = j; requestAnimationFrame(isi); }); seg.append(h("label", null, i, ikon(j), label(j))); }
+    for (const j of js) { const i = h("input", {type: "radio", name: "sgstokj", value: j, checked: j === jenisStok}); i.addEventListener("change", () => { jenisStok = j; requestAnimationFrame(isi); }); seg.append(h("label", null, i, ikon(j), namaJenis(j))); }
     const sorot = new Set([0, 1, 2].map(x => (bulan - 1 + x) % 12));
     const isi = () => {
       const d = KB.jenis[jenisStok], pb = d.prov_bulan[kp], n = KB.n_tahun_dasar, nk = pb.n_kejadian;
@@ -149,18 +149,18 @@
         if (est.some(x => x)) rows.push({k, est, jml: est.reduce((x, y) => x + (y || 0), 0)}); }
       rows.sort((a, b) => b.jml - a.jml);
       const berisiTh = pb.n_berisi.reduce((x, y) => x + y, 0) * n;
-      if (berisiTh < MIN_BERISI) return kotak.replaceChildren(kosong("data", `Belum cukup data di ${namaP}: hanya ${F(Math.round(berisiTh))} kejadian ${label(jenisStok).toLowerCase()} mengisi kolom kebutuhan di tahun dasar, kurang dari ${MIN_BERISI}.`));
+      if (berisiTh < MIN_BERISI) return kotak.replaceChildren(kosong("data", `Belum cukup data di ${namaP}: hanya ${F(Math.round(berisiTh))} kejadian ${namaJenis(jenisStok).toLowerCase()} mengisi kolom kebutuhan di tahun dasar, kurang dari ${MIN_BERISI}.`));
       /* grafik kejadian per bulan, bulan sorotan merah */
       const W = 960, svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), mx = Math.max(...nk, 0.1);
       svg.setAttribute("viewBox", `0 0 ${W} 150`); svg.setAttribute("class", "sg-svg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", `Rata-rata kejadian ${jenisStok} per bulan di ${namaP}`);
       const ln = document.createElementNS(svg.namespaceURI, "line"); ln.setAttribute("class", "dasar"); ln.setAttribute("x1", 0); ln.setAttribute("x2", W); ln.setAttribute("y1", 126); ln.setAttribute("y2", 126); svg.append(ln);
       nk.forEach((v, i) => { const g = document.createElementNS(svg.namespaceURI, "g"), hh = Math.max(v ? 3 : 0, 110 * v / mx), r = document.createElementNS(svg.namespaceURI, "rect"), t = document.createElementNS(svg.namespaceURI, "text");
-        g.setAttribute("data-tip", tip(`${label(jenisStok)}, ${BLN[i]}`, `Rata-rata ${pecah(v)} kejadian per tahun`, `Mengisi kolom kebutuhan: ${pecah(pb.n_berisi[i], 2)} per tahun`, sorot.has(i) ? "Bulan ini dan dua bulan berikutnya" : ""));
+        g.setAttribute("data-tip", tip(`${namaJenis(jenisStok)}, ${BLN[i]}`, `Rata-rata ${pecah(v)} kejadian per tahun`, `Mengisi kolom kebutuhan: ${pecah(pb.n_berisi[i], 2)} per tahun`, sorot.has(i) ? "Bulan ini dan dua bulan berikutnya" : ""));
         r.setAttribute("class", "bat" + (sorot.has(i) ? " musim" : "")); r.setAttribute("x", i * 80 + 8); r.setAttribute("width", 64); r.setAttribute("y", 126 - hh); r.setAttribute("height", hh); r.setAttribute("rx", 3);
         t.setAttribute("x", i * 80 + 40); t.setAttribute("y", 144); t.textContent = BLN[i].slice(0, 3); g.append(r, t); svg.append(g); });
       const tb = h("tbody");
       for (const {k, est} of rows.slice(0, 12)) tb.append(h("tr", null, h("td", null, h("span", {class: "sg-keb"}, ikon(IKK[k] || k), KEB[k] || label(k))), est.map((x, m) => h("td", {class: "n" + (sorot.has(m) ? " sg-sorot" : ""), teks: x == null ? "–" : pecah(x)}))));
-      kotak.replaceChildren(h("div", {class: "lb-ringkas"}, pil(`${pecah(nk.reduce((x, y) => x + y, 0))} kejadian ${label(jenisStok).toLowerCase()} per tahun di ${namaP}`, "info", "daftar"), pil(`${F(Math.round(berisiTh))} kejadian mengisi kolom kebutuhan`, "tunggu", "peringatan"), pil("bukan jumlah barang", "tunggu", "senyap")), svg,
+      kotak.replaceChildren(h("div", {class: "lb-ringkas"}, pil(`${pecah(nk.reduce((x, y) => x + y, 0))} kejadian ${namaJenis(jenisStok).toLowerCase()} per tahun di ${namaP}`, "info", "daftar"), pil(`${F(Math.round(berisiTh))} kejadian mengisi kolom kebutuhan`, "tunggu", "peringatan"), pil("bukan jumlah barang", "tunggu", "senyap")), svg,
         h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Kebutuhan, kejadian per tahun", ...BLN.map((b, m) => b.slice(0, 3))].map((t, m) => h("th", {class: m && sorot.has(m - 1) ? "sg-sorot" : "", teks: t})))), tb)),
         kaki(`Perkiraan kejadian per tahun yang membutuhkan tiap kategori = kejadian berkategori itu dibagi kejadian yang mengisi kolom kebutuhan (atau peralatan), dikali semua kejadian di bulan itu. Ini mengandaikan kejadian yang tidak mengisi kolom sama kebutuhannya dengan yang mengisi, dan belum tentu benar. Rata-rata ${F(n)} tahun dasar (${thRingkas(KB.tahun_dasar)}); kolom merah muda = bulan ini dan dua bulan berikutnya. Tanda – = kurang dari 3 kejadian yang mengisi di bulan itu, terlalu sedikit untuk dijadikan perkiraan. Perkiraan kasar dari laporan Pusdalops, bukan stok yang harus disiapkan. Menampilkan 12 kategori teratas.`));
     };
@@ -172,7 +172,7 @@
   function susulan() {
     const v = D.kab[kode], kk = `${kode.slice(0, 2)}|${v.nama}`, judul = `Bencana susulan ${v.nama}`;
     if (!SU) return blok("peringatan", judul, kosong("peringatan", "Data bencana susulan belum terbit (logbook_susulan.json)."));
-    const NJ = x => x === "gempabumi" ? "gempa bumi" : label(x).toLowerCase(), J = NJ, baris = [];
+    const NJ = x => namaJenis(x).toLowerCase(), J = NJ, baris = [];
     for (const [kunci, p] of Object.entries(SU.pasangan)) {
       const a = kunci.split(">"), c = p.kab?.[kk], nas = p.nasional, sama = a[0] === a[1];
       const nol = x => x.ci95 && x.ci95[0] <= 1 && x.ci95[1] >= 1;   // ci95 null = tanpa klaim lift

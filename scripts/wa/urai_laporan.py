@@ -2,7 +2,9 @@
 """Ubah laporan WA BPBD (teks bebas) menjadi isian kontrak POST /api/logbook/kejadian.
 
 Tanpa LLM: memakai ulang pengurai arsip logbook (scripts/data/logbook_pusdalops.py) dan
-menambah pemetaan teks kendala/kebutuhan ke kode kontrak. Hasil WAJIB diperiksa staf;
+menambah pemetaan teks kendala/kebutuhan ke kode kontrak. Kunci `isian` TETAP (kontrak lama);
+nama, kode DIBI, status, kriteria menonjol (Lapjol) dan ambang Laphar mengikuti panduan resmi Pusdalops
+BNPB lewat `panduan_resmi.json` (kunci `resmi`, `menonjol`, `masuk_laphar`). Hasil WAJIB diperiksa staf;
 `kosong` menyebut medan wajib yang tak terbaca.
 
     python3 scripts/wa/urai_laporan.py < laporan.txt
@@ -47,6 +49,9 @@ KEBUTUHAN = {
     "pompa": r"pompa|alkon|selang",
     "dana": r"\bdana\b|anggaran|biaya|\bbtt\b",
 }
+PANDUAN = json.load(open(os.path.join(os.path.dirname(os.path.abspath(__file__)), "panduan_resmi.json"), encoding="utf8"))
+RE_STATUS = re.compile(r"(perpanjangan[^\n.;,]{0,25}?)?\b(siaga|tanggap|transisi)\s+darurat", re.I)
+STATUS_BAKU = {"siaga": "Siaga Darurat", "tanggap": "Tanggap Darurat", "transisi": "Transisi Darurat ke Pemulihan"}
 KENDALA = {k: re.compile(p, re.I) for k, p in KENDALA.items()}
 KEBUTUHAN = {k: re.compile(p, re.I) for k, p in KEBUTUHAN.items()}
 WAJIB = ("jenis", "prov", "kab", "mulai")
@@ -57,6 +62,68 @@ RE_PECAH = re.compile(r"\s*[,;]\s*(?=(?:Kec(?:amatan)?|Desa|Ds|Kel(?:urahan)?|Ka
 
 def kode(teks: str, tabel: dict) -> list:
     return [k for k, p in tabel.items() if p.search(teks or "")]
+
+
+def jenis_resmi(kunci, teks: str):
+    """kunci jenis internal + teks -> entri jenis panduan (Logbook h2) atau None. Cuaca dan gempabumi dibelah per teks."""
+    t = (teks or "").lower()
+    if kunci == "cuaca":
+        kode = "103" if re.search(r"gelombang|abrasi|banjir rob", t) and not re.search(r"puting beliung|angin", t) else "104"
+    elif kunci == "gempabumi":
+        kode = "108" if "tsunami" in t and "gempa" not in t else "107"
+    elif kunci in (None, "lainnya"):  # nama kejadian resmi yang tak ditangkap pola internal (hujan es, awan panas, wabah, ...)
+        kode = next((x["kode"] for x in PANDUAN["jenis"] if any(n in t for n in x["nama_kejadian"])), None)
+    else:
+        kode = next((j["kode"] for j in PANDUAN["jenis"] if j["kunci"] == kunci), None)
+    return next((j for j in PANDUAN["jenis"] if j["kode"] == kode), None)
+
+
+def menonjol(j, i: dict, terdampak_jiwa=None) -> dict:
+    """Kriteria Lapjol (panduan_resmi.json). j = entri jenis. -> {"ya": bool, "alasan": [teks]}. Tanpa LLM."""
+    k = (j or {}).get("menonjol")
+    if not k:
+        return {"ya": False, "alasan": []}
+    n = lambda v: v or 0
+    kk, orang = n(i["mengungsi_kk"]), max(n(i["mengungsi_jiwa"]), n(terdampak_jiwa))
+    rusak = n(i["rumah_rb"]) + n(i["rumah_rs"]) + n(i["rumah_rr"])
+    sebab = []
+    if "ha_saja" in k:
+        if n(i["luas_ha"]) >= k["ha_saja"]:
+            sebab.append(f"{i['luas_ha']:g} ha terbakar, ambang {k['ha_saja']} ha")
+    else:
+        if "kk" in k and kk >= k["kk"]:
+            sebab.append(f"{kk} KK terdampak/mengungsi, ambang {k['kk']} KK")
+        if "orang" in k and orang >= k["orang"]:
+            sebab.append(f"{orang} orang terdampak/mengungsi, ambang {k['orang']} orang")
+        md_hl = n(i["md"]) + (n(i["hilang"]) if k.get("korban") == "md_hilang" else 0)
+        if k.get("korban") and md_hl:
+            sebab.append(f"ada korban {'MD/hilang' if k['korban'] == 'md_hilang' else 'MD'}")
+        if "rumah_rusak" in k and rusak >= k["rumah_rusak"]:
+            sebab.append(f"{rusak} rumah rusak, ambang {k['rumah_rusak']}")
+        if "ha" in k and n(i["luas_ha"]) >= k["ha"]:
+            sebab.append(f"{i['luas_ha']:g} ha lahan terdampak, ambang {k['ha']} ha")
+        if k.get("ada_dampak") and (n(terdampak_jiwa) or any(n(i[m]) for m in (
+                "md", "hilang", "luka", "mengungsi_jiwa", "mengungsi_kk", "rumah_rb", "rumah_rs", "rumah_rr", "rumah_terendam"))):
+            sebab.append("ada data akibat terhadap manusia/kerusakan")
+    return {"ya": bool(sebab), "alasan": [f"{x} ({k['hal']})" for x in sebab]}
+
+
+def masuk_laphar(i: dict, terdampak_jiwa, status) -> dict:
+    """Ambang kejadian masuk Laporan Harian (Laphar h2 G.2)."""
+    n = lambda v: v or 0
+    a = PANDUAN["ambang_laphar"]["salah_satu"]
+    s = []
+    if n(i["md"]) >= a["md"]:
+        s.append("ada yang meninggal")
+    if max(n(i["luka"]), n(i["mengungsi_jiwa"]), n(terdampak_jiwa)) >= a["orang_terdampak_luka_mengungsi"]:
+        s.append("50 orang atau lebih terdampak/luka/mengungsi")
+    if n(i["rumah_rb"]) + n(i["rumah_rs"]) + n(i["rumah_rr"]) >= a["unit_rusak_rumah_atau_fasilitas_publik"]:
+        s.append("5 unit atau lebih rumah rusak")
+    if n(i["luas_ha"]) >= a["ha"]:
+        s.append("1 ha atau lebih lahan")
+    if status:
+        s.append("ada penetapan status darurat")
+    return {"ya": bool(s), "alasan": [f"{x} ({PANDUAN['ambang_laphar']['hal']})" for x in s]}
 
 
 def urai(teks: str, tahun=None) -> dict:
@@ -95,7 +162,22 @@ def urai(teks: str, tahun=None) -> dict:
         "catatan": "\n".join(x for x in (ket["kronologi"], ket["upaya"], ket["kondisi"]) if x),
         "sumber_instansi": (re.search(r"^\s*sumber(?: informasi)?\s*:\s*(.+)$", t, re.I | re.M) or [None, None])[1],
     }
-    return {"isian": isian, "kosong": [m for m in WAJIB if not isian.get(m)]}
+    j = jenis_resmi(jenis, kepala)
+    nama = next((x for x in sorted(j["nama_kejadian"], key=len, reverse=True) if x in kepala.lower()), None) if j else None
+    st = RE_STATUS.search(t)
+    status = {"tingkat": STATUS_BAKU[st[2].lower()], "perpanjangan": bool(st[1])} if st else None
+    resmi = {
+        "kode_dibi": j["kode"] if j else None,
+        "jenis_bencana": j["nama"] if j else None,
+        "nama_kejadian": nama.capitalize() if nama else (j["nama"] if j else None),
+        "dampak": {"meninggal": isian["md"], "hilang": isian["hilang"], "luka_sakit": isian["luka"],
+                   "kk_terdampak_atau_mengungsi": isian["mengungsi_kk"], "mengungsi_orang": isian["mengungsi_jiwa"],
+                   "terdampak_orang": dam["jiwa"], "rumah_rb": isian["rumah_rb"], "rumah_rs": isian["rumah_rs"],
+                   "rumah_rr": isian["rumah_rr"], "rumah_terdampak": isian["rumah_terendam"], "lahan_ha": isian["luas_ha"]},
+        "status_darurat": status,
+    }
+    return {"isian": isian, "kosong": [m for m in WAJIB if not isian.get(m)], "resmi": resmi,
+            "menonjol": menonjol(j, isian, dam["jiwa"]), "masuk_laphar": masuk_laphar(isian, dam["jiwa"], status)}
 
 
 if __name__ == "__main__":

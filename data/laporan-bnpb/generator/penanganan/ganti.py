@@ -198,7 +198,7 @@ LOGO = {}   # provinsi tanpa baris di templat BNPB: salin baris Kaltim, ganti na
 NAMA_PROV = {k: v['nama'] for k, v in json.load(open(os.path.join(AKAR, 'public/data/laporan.json')))['prov'].items()}
 for kode in [k for k in TOP6 if k not in SUMBER]:
     jalur = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'logo', f'{kode}.png')
-    if BANJIR and not os.path.exists(jalur):   # provinsi banjir di luar baris karhutla: lambang dari layar (sumber logo/81-82 juga)
+    if not os.path.exists(jalur):   # provinsi di luar baris templat dan logo/: lambang dari layar (semua kode BPS 11-96)
         jalur = os.path.join(AKAR, 'public', 'lambang', 'provinsi', f'{kode}.png')
     if not os.path.exists(jalur):
         sys.exit(f'{NAMA_PROV[kode]} ({kode}) masuk 6 teratas tetapi tak punya baris di templat: taruh lambangnya di {jalur}')

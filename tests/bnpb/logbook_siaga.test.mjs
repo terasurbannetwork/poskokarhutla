@@ -54,6 +54,8 @@ const RAPOR = {min_n: 10, periode: {dasar: ["2014", "2015"], terpisah: ["2024", 
   kab: {"33|Cilacap": {dasar: sel(735, 1), 2025: sel(68, 1)}, "33|Banyumas": {dasar: sel(120, 2)}, "33|Kecil": {dasar: sel(3, 5)}}, prov: {33: {dasar: sel(900, 1)}}, nasional: {dasar: sel(5000, 1)}, nama_prov: {33: "Jawa Tengah"}};
 const rek = (th, n, j) => ({tahun: th, n_kejadian: n, n_per_tahun: {}, jenis: j, berulang: th.length >= 3});
 const REKOM = {berulang_bila_tahun_ge: 3, catatan: ["Topik kata kunci kasar."], topik: {}, kab: {"33|Cilacap": {tanggul: rek(["2016", "2020", "2025"], 4, {banjir: 4}), drainase: rek(["2019"], 1, {banjir: 1}), imbauan_kewaspadaan: rek(["2011", "2012", "2013"], 74, {cuaca: 30})}}, nasional: {tanggul: rek(["2016", "2020", "2025"], 40, {banjir: 40})}};
+const pn = (n, ns, med, lay) => ({n, n_selesai: ns, n_tak_selesai: n - ns, median_dilaporkan: med, p75_dilaporkan: med + 1, tak_selesai_pct: Math.round(1000 * (n - ns) / n) / 10, layak_median: lay});
+const PENANGANAN = {min_n: 5, tahun_dasar: ["2014", "2015"], catatan: [], nasional: {banjir: pn(1000, 400, 1, true), karhutla: pn(500, 200, 1, true)}, prov: {}, kab: {"33|Cilacap": {banjir: pn(80, 40, 2, true)}, "33|Banyumas": {banjir: pn(60, 10, 1, false)}}};
 let server, base;
 const jalankan = () => new Promise(ok => {
   server = http.createServer(async (req, res) => {
@@ -69,6 +71,7 @@ const jalankan = () => new Promise(ok => {
       if (p === "/api/logbook/dummy") return json(200, {ok: true});
       if (p === "/api/logbook/turunan/rapor_bpbd") return json(200, RAPOR);
       if (p === "/api/logbook/turunan/rekomendasi") return json(200, REKOM);
+      if (p === "/api/logbook/turunan/penanganan") return json(200, PENANGANAN);
       return json(404, {galat: "tidak ada"});
     }
     const f = path.join(PUB, decodeURIComponent(p));
@@ -146,9 +149,9 @@ else {
     await bersih("lanjutan");
   });
 
-  test("siaga: lima kartu, kalender berkotak tooltip, ganti bulan, CSV, dummy", async () => {
+  test("siaga: delapan kartu, kalender berkotak tooltip, ganti bulan, CSV, dummy", async () => {
     await tab.buka(base + "/bnpb/siaga.html", {tunggu: ".sg-svg"});
-    assert.deepEqual(await tab.eval("[...document.querySelectorAll('.bn-blok h2')].map(h => h.innerText.replace(/\\s+/g, ' ')).filter(t => !/^Siaga/.test(t))").then(a => a.map(t => t.split(' ')[0])), ["Kalender", "Templat", "Saran", "Kebutuhan", "Desa", "Daerah"]);
+    assert.deepEqual(await tab.eval("[...document.querySelectorAll('.bn-blok h2')].map(h => h.innerText.replace(/\\s+/g, ' ')).filter(t => !/^Siaga/.test(t))").then(a => a.map(t => t.split(' ')[0])), ["Kalender", "Templat", "Saran", "Kebutuhan", "Perkiraan", "Bencana", "Desa", "Daerah"]);
     assert.ok(await tab.eval("document.querySelectorAll('.sg-svg g[data-tip]').length >= 24"));
     assert.equal(await tab.eval("document.querySelectorAll('.sg-bulan input').length"), 12);
     await tab.eval("document.querySelectorAll('.sg-bulan input')[10].click()");
@@ -190,7 +193,7 @@ else {
   test("logbook: bagian turunan (jam, pihak, desa, rapor, rekomendasi) dengan data nyata dan rute staf tiruan", async () => {
     S.log.length = 0;
     await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
-    assert.equal(await tab.eval("document.querySelectorAll('input[name=lbtab]').length"), 6);
+    assert.equal(await tab.eval("document.querySelectorAll('input[name=lbtab]').length"), 8);
     const buka = async (v, tunggu) => { await tab.klik(`input[name=lbtab][value=${v}]`); await tab.tungguFungsi(tunggu, 20000); };
     /* jam rawan */
     await buka("jam", "document.querySelectorAll('.lb-svg g[data-tip]').length === 24");
@@ -229,6 +232,33 @@ else {
     /* kembali ke Catat: formulir tampil lagi */
     await tab.klik("input[name=lbtab][value=catat]"); assert.equal(await tab.eval("document.querySelector('.lb-kolom').hidden"), false);
     assert.equal(S.log.filter(x => /turunan\/rapor_bpbd/.test(x.p)).length, 1, "rapor dimuat sekali");
+  });
+
+  test("siaga: bencana susulan jujur (hari yang sama, tanpa klaim bila selang mencakup 1, tanpa urut lift)", async () => {
+    const SU = JSON.parse(readFileSync(`${PUB}/data/bnpb/logbook_susulan.json`, "utf8"));
+    assert.ok(SU.ci_metode);
+    await tab.buka(base + "/bnpb/siaga.html", {tunggu: ".sg-svg"});
+    const blok = "[...document.querySelectorAll('.bn-blok')].find(b => /^Bencana susulan/.test(b.querySelector('h2')?.innerText.trim()))";
+    const t = await tab.eval(`${blok}.innerText`);
+    assert.match(t, /tercatat 1–3 hari kemudian pada [\d,]+ dari 100 kejadian/);
+    assert.match(t, /Tercatat di hari yang sama: [\d,]+ dari 100 .*sebagian satu laporan gabungan/);
+    assert.match(t, /bootstrap blok kab-tahun/); assert.doesNotMatch(t, /peringkat|tertinggi|terbanyak/i);
+    const nol = Object.values(SU.pasangan).some(p => p.nasional.ci95 && p.nasional.ci95[0] <= 1 && p.nasional.ci95[1] >= 1);
+    if (nol) assert.match(t, /tidak berbeda dari kebetulan/);
+    await bersih("susulan");
+  });
+
+  test("logbook: lama penanganan, median hanya banjir yang layak, karhutla tanpa median", async () => {
+    await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
+    await tab.klik("input[name=lbtab][value=lama]"); await tab.tungguFungsi("/dilaporkan selesai/.test(document.querySelector('.lb-turunan')?.innerText || '')", 20000);
+    let t = await tab.eval("document.querySelector('.lb-turunan').innerText");
+    assert.match(t, /Median 1 hari/); assert.match(t, /median dari kejadian yang dilaporkan selesai/); assert.match(t, /batas bawah yang bias/);
+    assert.match(t, /Cilacap/); assert.doesNotMatch(t, /Banyumas/, "kab tidak layak_median masuk peringkat");
+    await tab.klik("input[name=lblama][value=karhutla]"); await tab.tungguFungsi("/Karhutla: hanya jumlah/.test(document.querySelector('.lb-turunan').innerText)");
+    t = await tab.eval("document.querySelector('.lb-turunan').innerText");
+    assert.match(t, /200 dari 500 dilaporkan selesai/); assert.doesNotMatch(t, /Median \d+ hari di|persentil 75|median dari kejadian/);
+    assert.equal(await tab.eval("document.querySelectorAll('.lb-turunan .lb-svg').length"), 0);
+    await bersih("lama");
   });
 
   test("logbook: rapor dan rekomendasi tanpa sesi staf menampilkan pesan akses, bukan layar kosong", async () => {

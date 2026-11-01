@@ -51,11 +51,15 @@ def baca(berkas_sensor, tahun, sd, cari, industri):
 
 
 def tandai_unik(titik):
-    """hitung=1 untuk titik pertama tiap sel ~375 m (urut jam, lalu urutan sensor M, N, N20, N21)"""
-    lihat = set()
+    """hitung=1 untuk titik pertama tiap sel ~375 m (urut jam, lalu urutan sensor M, N, N20, N21); keyakinan "c" titik itu dinaikkan
+    ke yang tertinggi di selnya (h > n > l), supaya jumlah sel keyakinan tinggi tidak terpangkas oleh deteksi pertama yang rendah."""
+    lihat, tinggi = set(), {}
+    for p in titik:
+        k = TU.sel(p["lat"], p["lon"]); tinggi[k] = max(tinggi.get(k, p["c"]), p["c"])
     for p in sorted(titik, key=lambda p: (p["jam"], TU.SENSOR.index(p["s"]))):
         k = TU.sel(p["lat"], p["lon"])
         p["hitung"] = int(k not in lihat); lihat.add(k)
+        if p["hitung"]: p["c"] = tinggi[k]
     return sum(p["hitung"] for p in titik)
 
 
@@ -138,6 +142,9 @@ def uji():
          {"lat": -2.5, "lon": 113.0, "jam": 13.5, "s": "M", "frp": 9, "c": 1, "adm": "62|A|C"}]
     assert tandai_unik(t) == 2, "dua sel berbeda"
     assert [p["hitung"] for p in t] == [0, 1, 1], "yang lebih dulu di sel sama yang dihitung"
+    u = [{"lat": -3.0, "lon": 114.0, "jam": 1.0, "s": "N", "frp": 1, "c": 0, "adm": "62|A|B"},
+         {"lat": -3.0, "lon": 114.0, "jam": 2.0, "s": "N20", "frp": 1, "c": 2, "adm": "62|A|B"}]
+    assert tandai_unik(u) == 1 and [(p["hitung"], p["c"]) for p in u] == [(1, 2), (0, 2)], "rendah dulu lalu tinggi -> sel tinggi"
     b = berkas_hari("2026-08-05", t)
     assert b["kolom"] == KOLOM_PADAT and b["wilayah"] == ["62|A|B", "62|A|C"]
     assert b["baris"] == [[-2.0, 113.0, 1.5, 1, 3, 2, 0], [-2.5, 113.0, 13.5, 0, 9, 1, 1]], b["baris"]

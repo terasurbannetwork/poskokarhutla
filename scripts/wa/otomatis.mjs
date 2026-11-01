@@ -1,6 +1,7 @@
 // Pengatur otomatis laporan harian: baca bahan WA dari worker, jalankan generator DETERMINISTIK
 // (data/laporan-bnpb/generator/*.py, tanpa LLM), kirim PDF + PPTX lewat gateway lokal.
 //   node scripts/wa/otomatis.mjs [--tanggal YYYY-MM-DD] [--kering]
+// --cutoff = pemicu jam (launchd 12.05 dan 17.05): bangun dengan bahan yang ada; laporan tak bisa dibangun dikabari ke PEMILIK.
 // --kering = jalan penuh kecuali memanggil gateway (tidak /send-file, tidak /send; hanya log).
 // Galat HANYA dikabarkan ke PEMILIK (sekali per galat yang sama), tidak pernah ke PENERIMA.
 import fs from 'node:fs'
@@ -27,9 +28,9 @@ export const LAPORAN = [
   { id: 'harian', judul: 'Laporan Kejadian Bencana Harian', butuh: ['rekap_koordalops_24', 'bmkg_pagi'], jam: 12,
     berkas: (d) => `Laporan Kejadian Bencana Harian ${ddmmyy(d)}`,
     args: (d, f, out) => ['harian.py', '--tanggal', d, '--koordalops', f.rekap_koordalops_24, '--bmkg', f.bmkg_pagi, '--jam', '12:00', '--out', out] },
-  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], jam: 17,
+  { id: 'penanganan', judul: 'Laporan Penanganan Pengendalian Karhutla', butuh: ['bmkg_pagi', 'satgas'], opsional: true, jam: 17, // opsional: mode --cutoff membangun dari data sistem walau bahan WA belum ada (penanganan.py menerima --bmkg/--operasi opsional)
     berkas: (d) => `Laporan Penanganan Pengendalian Karhutla ${ddmmyy(d)}`,
-    args: (d, f, out) => ['penanganan.py', '--tanggal', d, '--jam', '17:00', '--bmkg', f.bmkg_pagi, '--operasi', f.satgas, '--out', out] },
+    args: (d, f, out) => ['penanganan.py', '--tanggal', d, '--jam', '17:00', ...(f.bmkg_pagi ? ['--bmkg', f.bmkg_pagi] : []), ...(f.satgas ? ['--operasi', f.satgas] : []), '--out', out] },
 ]
 
 // Padanan banjir (penanganan_banjir.py): angkanya dari situs yang tayang, tanpa bahan WA (butuh kosong). Cut-off 17.00 WIB seperti penanganan.
@@ -71,8 +72,9 @@ export function semuaPerJenis(pesan, kenali = kenaliAsli) {
 }
 
 // Siap = semua jenis wajib ada DAN (hari laporan sudah lewat ATAU jam WIB >= cut-off).
-export function cekSiap(lap, terpilih, now, tanggal) {
-  const kurang = lap.butuh.filter((k) => !terpilih[k])
+// cutoff=true (pemicu jam): laporan `opsional` tetap siap tanpa bahan WA; yang tidak opsional (harian: generator wajib Koordalops) tetap menunggu.
+export function cekSiap(lap, terpilih, now, tanggal, cutoff = false) {
+  const kurang = (cutoff && lap.opsional ? [] : lap.butuh).filter((k) => !terpilih[k])
   if (kurang.length) return { siap: false, alasan: 'bahan belum lengkap: ' + kurang.join(', ') }
   if (tanggal === tanggalWib(now) && jamWib(now) < lap.jam) return { siap: false, alasan: `belum cut-off ${lap.jam}.00 WIB` }
   return { siap: true }
@@ -170,7 +172,7 @@ export function siapkanKeluaran(lap, tanggal, teks, dasar) {
   const out = path.join(dasar, 'keluaran', tanggal)
   fs.mkdirSync(kerja, { recursive: true }); fs.mkdirSync(out, { recursive: true })
   const f = {}
-  for (const k of lap.butuh) { f[k] = path.join(kerja, k + '.txt'); fs.writeFileSync(f[k], teks[k]) }
+  for (const k of lap.butuh) { if (teks[k] == null) continue; f[k] = path.join(kerja, k + '.txt'); fs.writeFileSync(f[k], teks[k]) }
   const dasarNama = path.join(out, lap.berkas(tanggal))
   return { kerja, out, f, berkas: ['pdf', 'pptx'].map((x) => ({ x, p: `${dasarNama}.${x}` })) }
 }
@@ -235,8 +237,16 @@ export async function jalankan(opsi = {}) {
     for (const lap of [...LAPORAN, ...(env.LAPORAN_BANJIR === '1' ? LAPORAN_BANJIR : [])]) {
       const kunci = `${lap.id}:${tanggal}`
       const { terpilih, teks: teksSesuai } = await pilihSesuai(lap)
-      const c = cekSiap(lap, terpilih, now, tanggal)
-      if (!c.siap) { log(lap.id, 'tunggu:', c.alasan); hasil.push({ id: lap.id, status: 'tunggu', alasan: c.alasan }); continue }
+      const c = cekSiap(lap, terpilih, now, tanggal, !!opsi.cutoff)
+      if (!c.siap) {
+        log(lap.id, 'tunggu:', c.alasan); hasil.push({ id: lap.id, status: 'tunggu', alasan: c.alasan })
+        // Pemicu jam lewat cut-off tetapi laporan tak bisa dibangun: kabari PEMILIK sekali (bukan di slide).
+        if (opsi.cutoff && !kering && pemilik && jamWib(now) >= lap.jam && !/belum cut-off/.test(c.alasan) && state.gagal['cutoff:' + kunci] !== c.alasan) {
+          state.gagal['cutoff:' + kunci] = c.alasan; simpan()
+          try { await dep.kirimTeks(pemilik, `${lap.judul} ${tanggal} belum bisa dibuat pada cut-off ${lap.jam}.00 WIB: ${c.alasan}. Kirim bahannya, bot membangun otomatis.`.slice(0, 600)) } catch (x) { log('kabar pemilik gagal', x.message) }
+        }
+        continue
+      }
       try {
         const teks = teksSesuai
         const hash = hashBahan(lap, teks)
@@ -281,7 +291,7 @@ export async function jalankan(opsi = {}) {
           state.laporan[kunci] = e; simpan()
         }
         if (!kering) { e.selesai = true; state.laporan[kunci] = e; delete state.gagal[kunci]; simpan() }
-        hasil.push({ id: lap.id, status: kering ? 'kering' : 'terkirim', revisi: e.revisi })
+        hasil.push({ id: lap.id, status: kering ? 'kering' : 'terkirim', revisi: e.revisi, ...(lap.butuh.some((k) => teks[k] == null) ? { bahanBelumMasuk: lap.butuh.filter((k) => teks[k] == null) } : {}) })
       } catch (x) {
         await galat(kunci, x.message)
         hasil.push({ id: lap.id, status: 'galat', alasan: x.message })
@@ -304,7 +314,7 @@ async function ambilTeks(p, dep, env) {
 if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
   const a = process.argv.slice(2)
   const i = a.indexOf('--tanggal')
-  jalankan({ tanggal: i >= 0 ? a[i + 1] : undefined, kering: a.includes('--kering') })
+  jalankan({ tanggal: i >= 0 ? a[i + 1] : undefined, kering: a.includes('--kering'), cutoff: a.includes('--cutoff') })
     .then((h) => { console.log(JSON.stringify(h)); process.exit(h.some((x) => x.status === 'galat') ? 1 : 0) })
     .catch((e) => { console.error(e); process.exit(1) })
 }

@@ -211,6 +211,52 @@ Sumber: BPBD Kab. Demak"""
 FIX2 = "Karhutla\nSelasa, 14 Agustus 2024 pukul 13.10 WITA\nDesa Sebangau, Kec. Kahayan, Kab. Pulang Pisau, Prov. Kalimantan Tengah\nLuas terbakar ±12,5 ha\nKendala: lahan gambut dan air sulit"
 
 
+def hasil(teks, tahun=2025):
+    return ul.urai(teks, tahun)
+
+
+def uji_panduan():
+    """Kasus dari contoh Lapjol h5 dan ambang h2; kode dari Logbook h2."""
+    sp = ul.PANDUAN
+    assert [j["kode"] for j in sp["jenis"]] == ["101", "102", "103", "104", "105", "106", "107", "108", "109", "201", "202", "203", "301"]
+    assert all(j["hal"] and (j["menonjol"] is None or j["menonjol"]["hal"]) for j in sp["jenis"])
+    # Lapjol h5 contoh 1: banjir bandang Bantaeng, 1.295 KK + MD/hilang -> menonjol, kode 101, Tanggap Darurat
+    a = hasil("Banjir Bandang\nSenin, 07 Juli 2025 pukul 10.00 WITA\nKab. Bantaeng\nProv. Sulawesi Selatan\n"
+              "2 (dua) orang MD, 3 orang hilang, 5 orang LB, ±1.295 KK terdampak, 1 unit rumah RB\nTanggap Darurat TMT 7/07/2025 s.d. 20/07/2025")
+    assert a["resmi"]["kode_dibi"] == "101" and a["resmi"]["jenis_bencana"] == "Banjir" and a["resmi"]["nama_kejadian"] == "Banjir bandang", a["resmi"]
+    assert a["resmi"]["status_darurat"] == {"tingkat": "Tanggap Darurat", "perpanjangan": False}, a["resmi"]
+    assert a["menonjol"]["ya"] and any("Lapjol h2 G.2.a" in x for x in a["menonjol"]["alasan"]) and a["masuk_laphar"]["ya"], a
+    # contoh 3: karhutla Nias Utara, 10 ha -> menonjol; ambang 2 ha
+    b = hasil("Karhutla\nSelasa, 01 Juli 2025 pukul 12.00 WIB\nKab. Nias Utara\nProv. Sumatera Utara\nLuas terbakar ±10 ha\nTanggap Darurat TMT 1/07/2025")
+    assert b["resmi"]["kode_dibi"] == "106" and b["menonjol"]["ya"], b
+    assert not hasil("Karhutla\nSelasa, 01 Juli 2025 pukul 12.00 WIB\nKab. Nias Utara\nProv. Sumatera Utara\nLuas terbakar 1,5 ha")["menonjol"]["ya"]
+    # contoh 2: kekeringan Kendal, 200 KK -> menonjol (ambang 200 KK); perpanjangan terbaca
+    c = hasil("Kekeringan\nSenin, 06 Juli 2025\nKab. Kendal\nProv. Jawa Tengah\n±200 KK terdampak\nPerpanjangan kesatu siaga darurat TMT 6/7/2025")
+    assert c["resmi"]["kode_dibi"] == "105" and c["menonjol"]["ya"], c
+    assert c["resmi"]["status_darurat"] == {"tingkat": "Siaga Darurat", "perpanjangan": True}, c["resmi"]
+    # ambang bawah: banjir 40 KK tanpa korban tidak menonjol; dengan 1 hilang menonjol (G.2.a baris 2)
+    base = "Banjir\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\n40 KK terdampak\n"
+    assert not hasil(base)["menonjol"]["ya"] and hasil(base + "1 orang hilang")["menonjol"]["ya"]
+    # kekeringan: hilang saja bukan kriteria (hanya MD)
+    assert not hasil("Kekeringan\nSenin, 07 Juli 2025\nKab. Kendal\nProv. Jawa Tengah\n1 orang hilang")["menonjol"]["ya"]
+    # longsor: 10 rumah rusak menonjol walau tanpa korban; gempa dengan dampak menonjol; kebakaran permukiman tidak punya kriteria
+    d = hasil("Tanah Longsor\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\n5 unit rumah RB, 5 unit rumah RR")
+    assert d["resmi"]["kode_dibi"] == "102" and d["menonjol"]["ya"], d
+    assert hasil("Gempa Bumi\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\n2 unit rumah RR")["menonjol"]["ya"]
+    e = hasil("Kebakaran Pemukiman\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\n3 orang MD")
+    assert e["resmi"]["kode_dibi"] == "202" and not e["menonjol"]["ya"] and e["masuk_laphar"]["ya"], e
+    # Laphar h2 G.2: 5 rumah rusak masuk laphar; tanpa dampak tidak
+    assert hasil("Angin Kencang\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\n5 unit rumah RR")["masuk_laphar"]["ya"]
+    g = hasil("Angin Puting Beliung\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\n2 unit rumah RR")
+    assert g["resmi"]["kode_dibi"] == "104" and not g["masuk_laphar"]["ya"] and not g["menonjol"]["ya"], g
+    assert hasil("Gelombang Pasang\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\n12 KK terdampak")["resmi"]["kode_dibi"] == "103"
+    assert hasil("Hujan Es\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat")["resmi"]["kode_dibi"] == "104"
+    assert hasil("Wabah penyakit\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat")["resmi"]["kode_dibi"] == "201"
+    # privasi: keluaran tidak membawa nama/telepon pelapor
+    p = json.dumps(hasil("Banjir\nSenin, 07 Juli 2025\nKab. Bogor\nProv. Jawa Barat\nPelapor: Budi Santoso 081234567890\n60 KK terdampak"), ensure_ascii=False)
+    assert "Budi" not in p and "0812345" not in p, p
+
+
 def uji():
     h = ul.urai(FIX, 2026)
     i = h["isian"]
@@ -234,6 +280,7 @@ def uji():
          "kendala": "akses jalan terputus", "kebutuhan": "tenda", "sumber_instansi": ["BPBD Kab. Demak"]}
     n, hs, _, _ = skor([{"masukan": masukan_dari(r), "target": target_dari(r), "tahun": 2026}])
     assert n == 1 and hs["jenis"][0] == 1 and hs["kab"][0] == 1 and hs["md"][0] == 1 and hs["tgl_mulai"][0] == 1, hs
+    uji_panduan()
     print("uji urai_laporan: OK")
 
 

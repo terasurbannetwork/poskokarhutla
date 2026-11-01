@@ -23,8 +23,9 @@ async function gambar(d) {
      terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026). */
   const TAMPIL = new Set(["karhutla", "banjir", "pesisir", "cuaca"]);
   const reg = (await r.json()).bencana;
-  /* urutan menu (pemilik, 1 Nov 2026): Karhutla, Banjir, Pesisir, Gempa, Cuaca, Gunung api, Kekeringan; sisanya (udara) di belakang */
-  const URUT = ["karhutla", "banjir", "pesisir", "gempa", "cuaca", "gunungapi", "kekeringan"];
+  /* urutan menu (pemilik, 1 Nov 2026, dikonfirmasi ulang): Karhutla, Banjir, Cuaca Ekstrem tepat di bawah Banjir, lalu Pesisir,
+     Gempa, Gunung api, Kekeringan; sisanya (udara) di belakang */
+  const URUT = ["karhutla", "banjir", "cuaca", "pesisir", "gempa", "gunungapi", "kekeringan"];
   const nomor = b => (n => n < 0 ? URUT.length : n)(URUT.indexOf(b.id));
   const lengkap = reg.slice().sort((x, y) => nomor(x) - nomor(y)).filter(b => IKON[b.ikon]);
   const daftar = lengkap.filter(b => b.menu !== false);   /* menu:false = halaman hidup tapi bukan jenis bencana BNPB (udara) */
