@@ -107,6 +107,8 @@ else {
     await T.eval(`document.querySelector('#akDnL [data-dn="L:laz-a"]').click()`);
     await T.tungguFungsi(`!document.querySelector('[data-rinci="L:laz-a"]').hidden`);
     assert.match(await T.eval(`document.querySelector('[data-rinci="L:laz-a"]').innerText`), /Rp 750 juta/);
+    assert.match(await T.eval(`document.querySelector(".ak-dnprov").innerText`), /Jawa Barat[\s\S]*8\.246\.258/);
+    assert.equal(await T.eval(`document.querySelectorAll(".ak-dnprov tr.ak-dn-kurang").length`), 1);
     await T.eval(`document.querySelector('#akDnB [data-v="peralatan"]').click()`);
     await T.tungguFungsi(`/^1 pemberi$/.test(document.getElementById("akDnJd").textContent) && /PT Contoh Peduli/.test(document.getElementById("akDnL").innerText)`);
     assert.deepEqual(galatJs(), []);

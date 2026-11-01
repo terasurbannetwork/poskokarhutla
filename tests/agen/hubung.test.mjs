@@ -270,3 +270,18 @@ test("donasi bencana: digabung per pemberi, ganda 7 hari disatukan, ACT dibuang,
   assert.equal(r2.aksi.length, 3, "barang berbeda tanpa nilai tidak disatukan; judul yang menyebut ACT tidak membuang pemberi lain");
   assert.equal(r2.aksi.find(a => a.sumber_url === "u").nilai_rp, 2000000);
 });
+
+test("usulan tim pakar per kejadian: rumpun atau keahlian wajib, kampus provinsi terdampak dan rekan menambah, peneliti asing dilewati", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const orang = [["A1", "Gempa Palu", "Universitas Tadulako", ["gempa"], 10], ["A2", "Gempa Jauh", "Institut Contoh", ["gempa"], 30], ["A3", "Banjir Saja", "Universitas Tadulako", ["banjir"], 50],
+    ["A4", "Rekan A1", "Institut Contoh", ["geologi"], 5], ["A5", "Asing", "Universitas Tadulako", ["gempa"], 60, 0, 0, "", [], "", "", "", "", "", "", "asing"], ["A6", "Topik Saja", "Institut Contoh", ["pesisir"], 8]];
+  const T = S.timPakar([{id: "palu", jenis: "gempa", prov: ["72"], riset: {works: [{pakar: ["A2"]}]}}], {orang}, {"Universitas Tadulako": {prov: "72"}},
+    {topik_pakar: {baris: [{pakar_id: "A6", topik: [{nama: "Earthquake and Tsunami Effects"}]}]}, rekan_pakar: {baris: [{a: "A1", b: "A4", karya: 2}]}}, 4);
+  const ids = T.palu.map(p => p.id);
+  assert.ok(!ids.includes("A3") && !ids.includes("A5"), "banjir saja dan peneliti asing tidak diusulkan");
+  assert.equal(ids[0], "A2", "pernah meneliti kejadian ini dan h-index tinggi");
+  assert.ok(ids.includes("A6") && T.palu.find(p => p.id === "A1").alasan.includes("kampus di provinsi terdampak"));
+  assert.ok(T.palu.find(p => p.id === "A4").alasan.some(a => /menulis bersama/.test(a)));
+  const R = S.ringkasBantuanProv([{prov: "72", kunci: "a", nilai_rp: 5}, {prov: "72", kunci: "b"}, {prov: "7", kunci: "c"}], {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak"], baris: [["7271", 2020, "gempa", 40, 1, 0, 1000], ["7271", 2015, "gempa", 99, 0, 0, 9]]});
+  assert.deepEqual(R.map(x => [x.prov, x.aksi, x.pemberi, x.kejadian, x.terdampak, x.per100]), [["72", 2, 2, 40, 1000, 5]]);
+});
