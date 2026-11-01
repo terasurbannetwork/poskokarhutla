@@ -1,5 +1,5 @@
 """Satukan berkas renlap asli ke deck: tiap halaman jadi slide gambar sebelum penutup, lalu PDF ulang.
-Jalankan dengan venv mesin BNPB sesudah deck.py: python gabung_lampiran.py"""
+Jalankan dengan venv mesin BNPB tepat sesudah deck.py (sekali saja, karena menambah slide): python gabung_lampiran.py"""
 import subprocess, sys, tempfile
 from pathlib import Path
 from pptx import Presentation
@@ -21,8 +21,8 @@ W, H = prs.slide_width, prs.slide_height
 kosong = min(prs.slide_layouts, key=lambda l: len(l.placeholders))
 tmp = Path(tempfile.mkdtemp())
 for judul, pdf, per in LAMP:
-    subprocess.run(['pdftoppm', '-r', '150', '-png', str(pdf), str(tmp / pdf.stem[:10])], check=True)
-    hal = sorted(tmp.glob(pdf.stem[:10] + '-*.png'))
+    subprocess.run(['pdftoppm', '-r', '130', '-jpeg', '-jpegopt', 'quality=82', str(pdf), str(tmp / pdf.stem[:10])], check=True)
+    hal = sorted(tmp.glob(pdf.stem[:10] + '-*.jpg'))
     for i in range(0, len(hal), per):
         s = prs.slides.add_slide(kosong)
         for ph in list(s.placeholders):
@@ -43,7 +43,7 @@ for judul, pdf, per in LAMP:
             s.shapes.add_picture(str(g), x, int(top + (tinggi - h) / 2), w, h)
 # penutup tetap halaman terakhir
 ids = prs.slides._sldIdLst
-penutup = [e for e in ids][len(ids) - 1 - sum(-(-len(sorted(tmp.glob(p.stem[:10] + '-*.png'))) // n) for _, p, n in LAMP)]
+penutup = [e for e in ids][len(ids) - 1 - sum(-(-len(sorted(tmp.glob(p.stem[:10] + '-*.jpg'))) // n) for _, p, n in LAMP)]
 ids.remove(penutup); ids.append(penutup)
 prs.save(DECK)
 print('slide', len(prs.slides), 'pdf', ke_pdf(DECK))
