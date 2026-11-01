@@ -14,8 +14,8 @@ Langkah:
 
 Metode `kec`: kisi sampling 0,002 derajat (~222 m di ekuator, ~2 piksel sumber). Poligon tiap kelas diisi ke raster
 (titik tengah sel di dalam poligon = basah, aturan genap-ganjil sehingga lubang benar); kecamatan diisi dengan aturan
-yang sama, lalu sel dihitung per kelas. Kelas bersarang: sel dihitung pada kelas TERTINGGI yang meliputinya, lalu persen
-kumulatif (sedang = sedang + tinggi, dst.) tidak dipakai: yang disimpan persen per kelas eksklusif tinggi/sedang/rendah.
+yang sama, lalu sel dihitung per kelas. Kelas bersarang: tiap sel dihitung pada kelas TERTINGGI yang meliputinya, jadi yang disimpan persen per kelas
+eksklusif tinggi/sedang/rendah (bukan kumulatif).
 Galat sampling ~ 0,5/sqrt(N) titik-persentase untuk N sel kecamatan (N = 1.000 sel ~ 49 km2: paling buruk +-1,6 poin);
 kecamatan di bawah ~10 km2 (N < 200) kurang dapat diandalkan. Batas kecamatan = public/geo/kecamatan (sudah disederhanakan).
 
@@ -131,6 +131,8 @@ def isi_poligon(cincin_daftar, lon0, lat1, res, baris, kolom, lari):
 
 
 def cincin_fitur(g):
+    if "coordinates" not in g:   # GeometryCollection kosong (ubin tanpa genangan)
+        return []
     bagian = g["coordinates"] if g["type"] == "MultiPolygon" else [g["coordinates"]]
     return [[tuple(p[:2]) for p in ring] for poly in bagian for ring in poly]
 
@@ -234,9 +236,9 @@ def luas_cincin(r):
 
 def sederhana(geom, eps, luas_min):
     """MultiPolygon -> daftar poligon [[ring luar, lubang...]] disederhanakan; ring luar < luas_min (deg2) dan lubang
-    < luas_min dibuang; koordinat dibulatkan 4 desimal (~11 m)."""
+    < luas_min dibuang; koordinat dibulatkan 3 desimal (~110 m)."""
     out = []
-    bagian = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+    bagian = (geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]) if "coordinates" in geom else []
     for poly in bagian:
         cin = []
         for i, ring in enumerate(poly):
@@ -252,7 +254,7 @@ def sederhana(geom, eps, luas_min):
                 if i == 0:
                     break
                 continue
-            cin.append([[round(x, 4), round(y, 4)] for x, y in s] + [[round(s[0][0], 4), round(s[0][1], 4)]])
+            cin.append([[round(x, 3), round(y, 3)] for x, y in s] + [[round(s[0][0], 3), round(s[0][1], 3)]])
         else:
             if cin:
                 out.append(cin)
@@ -270,7 +272,7 @@ def titik_dalam(ring):
     return ((xs[0] + xs[1]) / 2, y) if len(xs) >= 2 else ring[0]
 
 
-def lapisan(eps=0.0015, luas_min=1.5e-6):
+def lapisan(eps=0.003, luas_min=4e-6):
     """Per provinsi (kode dari kecamatan yang memuat titik dalam poligon); poligon di luar daratan RI dibuang."""
     ub = berkas_ubin()
     assert len(ub) >= 100, f"hanya {len(ub)} ubin; jalankan tarik dulu"
@@ -298,8 +300,11 @@ def lapisan(eps=0.0015, luas_min=1.5e-6):
         fit = [{"type": "Feature", "properties": {"k": NAMA[k - 1]},
                 "geometry": {"type": "MultiPolygon", "coordinates": d[k]}} for k in (1, 2, 3) if d[k]]
         simpan(os.path.join(sd, f"{kode}.json"), {"type": "FeatureCollection", "sumber": SUMBER, "features": fit})
-        idx[kode] = os.path.getsize(os.path.join(sd, f"{kode}.json"))
-    simpan(os.path.join(sd, "indeks.json"), {"sumber": SUMBER, "bytes": idx})
+        xy = [p for k in (1, 2, 3) for poly in d[k] for p in poly[0]]
+        idx[kode] = {"bytes": os.path.getsize(os.path.join(sd, f"{kode}.json")),
+                     "kotak": [min(p[0] for p in xy), min(p[1] for p in xy), max(p[0] for p in xy), max(p[1] for p in xy)]}
+    simpan(os.path.join(sd, "indeks.json"), {"sumber": SUMBER, "prov": idx})
+    idx = {k: v["bytes"] for k, v in idx.items()}
     tot = sum(idx.values())
     print(f"{len(idx)} provinsi, total {tot / 1e6:.1f} MB, terbesar {max(idx.values()) / 1e6:.2f} MB, {buang} poligon di luar RI dibuang")
 
