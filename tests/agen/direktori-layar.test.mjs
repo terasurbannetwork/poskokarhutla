@@ -17,7 +17,7 @@ const INDUK = {diperbarui: "2026-10-31", sumber: "uji", rumpun: RUMPUN,
   orang: Array.from({length: 24}, (_, i) => [`A${9000 + i}`, `Pakar Uji ${i + 1}`, i % 2 ? "Universitas Contoh Timur" : "Institut Contoh Barat", [RUMPUN[i % 4]], 10 + i, 50 + i, 900 + i * 10, "", ["Topik uji"], "", "", "", "", "", ""])};
 const KAMPUS = {"Universitas Contoh Timur": {prov: "53"}, "Institut Contoh Barat": {prov: "32"}};
 /* kesiapan satu kab NTT, dengan hasil uji balik belum lulus: layar wajib berlabel Hipotesis */
-const WILAYAH = {diperbarui: "2026-10-31", prov: {}, kab: [{prov: "53", kab: "Kabupaten Kupang", fasilitas: {rs: 2, rs_tt: 150, puskesmas: 20}}],
+const WILAYAH = {diperbarui: "2026-10-31", prov: {}, kab: [{prov: "53", kab: "Kabupaten Kupang", fasilitas: {rs: 2, rs_tt: 150, puskesmas: 20}, podes: {desa_peringatan_dini: 12, jumlah_desa: 177, terdampak: {banjir: 30}, tahun: 2021}, rentan: {lansia: 20000, balita: 35000, total: 400000, tahun: 2025}}],
   kesiapan: {jumlah: 1, baris: {"53|kupang": {prov: "53", kab: "Kabupaten Kupang", nama_rk: "Kupang", skor: 30, risiko: 40, kesenjangan: 35, kuadran: "prioritas", peringkat: 1, peringkat_prov: 1, jumlah_prov: 1,
     komp: {fiskal: 20, faskes: 30, lembaga: 10, pakar: 60}, kebutuhan: 80, butuh: {miskin: 90, pangan: 70}, nilai: {}}},
     uji: {dari: 2015, sampai: 2025, n: 474, lulus: false, lolos: [], ukuran: {mati: "meninggal", dampak: "terdampak", rusak: "rusak"},
@@ -72,6 +72,9 @@ else {
     await T.buka(`${asal}/akademisi.html?tampil=wilayah&wilayah=53`, {tunggu: ".ak-ks-uji"});
     const t = await T.eval(`[...document.querySelectorAll(".ak-ks-uji")].map(e => e.innerText).join(" | ")`);
     assert.match(t, /^Hipotesis\b/); assert.match(t, /474 kab\/kota/); assert.doesNotMatch(t, /Teruji/);
+    await T.buka(`${asal}/akademisi.html?tampil=wilayah&wilayah=53&kab=Kabupaten%20Kupang`, {tunggu: ".ak-ks-uji"});
+    await T.tungguFungsi(`/Kesiapan desa dan penduduk rentan/i.test(document.body.innerText)`);
+    const k = await T.eval(`document.body.innerText`); assert.match(k, /12 desa/); assert.match(k, /20\.000/); assert.match(k, /Banjir 30 desa/);
     assert.deepEqual(galatJs(), []);
   });
 

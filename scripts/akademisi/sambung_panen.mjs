@@ -53,6 +53,14 @@ export function wilayahDaya(P) {
   for (const r of larik(P.dataset_satudata).filter(r => r.prov && r.kab && SD_YA.test(r.judul) && !SD_TIDAK.test(r.judul)).sort((a, b) => (b.tahun_terakhir || 0) - (a.tahun_terakhir || 0))) {
     const t = ke(r.prov, r.kab).satudata ||= {n: 0, contoh: []}; t.n++; if (t.contoh.length < 5) t.contoh.push({judul: r.judul, penerbit: r.publisher && !/^(tahunan|bulanan|harian|mingguan|triwulan|semester|insidental)/i.test(r.publisher) ? r.publisher : null, url: r.sumber_url}); }
   /* dokumen perencanaan kebencanaan per kab: rencana kontinjensi (tabel BNPB 2005-2020) dan perda penanggulangan bencana (peraturan.go.id) */
+  /* BPS WebAPI per kab (panen 1 Nov 2026): kesiapan desa dari tabel Potensi Desa (tahun berbeda per kab, cakupan sebagian) dan penduduk lansia/balita; tautan WebAPI butuh kunci, jadi yang disimpan hanya domain dan nomor tabel BPS; tidak masuk skor kesiapan karena cakupannya belum menyeluruh */
+  const PODES = ["desa_peringatan_dini", "desa_peringatan_tsunami", "desa_rambu_jalur_evakuasi", "desa_perlengkapan_keselamatan", "desa_mitigasi_sungai_tanggul", "jumlah_desa"];
+  for (const r of larik(P.podes_kesiapan)) { if (!/^\d{4}$/.test(String(r.kode_kab || "")) || !r.nama) continue; const v = Object.fromEntries(PODES.filter(f => Number.isFinite(r[f])).map(f => [f, r[f]]));
+    const dt = r.desa_terdampak && typeof r.desa_terdampak === "object" ? Object.fromEntries(Object.entries(r.desa_terdampak).filter(([, n]) => Number.isFinite(n) && n > 0)) : null;
+    if (!Object.keys(v).length && !(dt && Object.keys(dt).length)) continue;
+    ke(String(r.kode_kab).slice(0, 2), r.nama).podes = {...v, terdampak: dt && Object.keys(dt).length ? dt : null, tahun: r.tahun || null, tahun_terdampak: r.tahun_terdampak || r.tahun || null, bps: {domain: r.domain || null, tabel: r.var_id ?? null}}; }
+  for (const r of larik(P.penduduk_rentan)) { if (!/^\d{4}$/.test(String(r.kode_kab || "")) || !r.nama || !Number.isFinite(r.penduduk_total)) continue;
+    ke(String(r.kode_kab).slice(0, 2), r.nama).rentan = {lansia: Number.isFinite(r.lansia_65plus) ? r.lansia_65plus : null, balita: Number.isFinite(r.balita_0_4) ? r.balita_0_4 : null, total: r.penduduk_total, tahun: r.tahun || null, ribuan: /ribu/i.test(r.catatan || ""), bps: {domain: r.domain || null, tabel: r.var_id ?? null}}; }
   for (const r of larik(P.dokumen_prb)) if (r.prov && r.kab && r.judul) (ke(r.prov, r.kab).dokumen_prb ||= []).push({jenis: r.jenis, judul: String(r.judul).replace(/\s*\(kolom sumber:.*\)\s*$/, ""), tahun: r.tahun || null, sumber_url: r.sumber_url});
   /* ponytail: sirene tsunami belum disambung: sumbernya campuran rekap 2018, daftar kota 2024, dan rekap kab 2026 tanpa koordinat, dijumlah akan dobel */
   /* jalan, jembatan, SPAB: per provinsi */
@@ -358,7 +366,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
     "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
     "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan",
-    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka"].map(f => [f, baca(dp, f)]));
+    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus", "lembaga_3w"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});

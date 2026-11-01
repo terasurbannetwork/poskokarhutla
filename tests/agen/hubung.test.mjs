@@ -242,3 +242,12 @@ test("direktori gelombang 5: topik ketat, rekan dua arah, GLIDE lalu EM-DAT", as
   const k2 = S.kejadianEkstra({emdat_idn: {baris: [em[1]]}}, [...kej, {id: "marapi2", jenis: "gunung api", tanggal: "2023-12-05"}]);
   assert.ok(!!k2.marapi?.emdat !== !!k2.marapi2?.emdat || (!k2.marapi?.emdat && !k2.marapi2?.emdat), "satu catatan EM-DAT tidak dipakai dua kejadian");
 });
+
+test("BPS per kab: Podes dan penduduk rentan masuk wilayah lewat kode kab, tanpa tautan berkunci", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const w = S.wilayahDaya({podes_kesiapan: {baris: [{kode_kab: "1371", nama: "Kota Padang", desa_peringatan_dini: 32, desa_terdampak: {banjir: 51, gempa: 0}, tahun: 2024, var_id: "610", domain: "1300", sumber_url: "https://webapi.bps.go.id/x/key/***/"}, {kode_kab: "13", nama: "Sumbar", desa_peringatan_dini: 1}]},
+    penduduk_rentan: {baris: [{kode_kab: "1371", nama: "Kota Padang", lansia_65plus: 50000, balita_0_4: 60000, penduduk_total: 950000, tahun: 2025}, {kode_kab: "1372", nama: "Kota Solok", lansia_65plus: 1}]}});
+  const p = w.kab.find(k => k.prov === "13" && /padang/i.test(k.kab));
+  assert.equal(p.podes.desa_peringatan_dini, 32); assert.deepEqual(p.podes.terdampak, {banjir: 51}); assert.equal(p.podes.sumber_url, undefined); assert.deepEqual(p.podes.bps, {domain: "1300", tabel: "610"});
+  assert.equal(p.rentan.lansia, 50000); assert.equal(w.kab.length, 1, "kode bukan 4 digit dan baris tanpa total penduduk dibuang");
+});
