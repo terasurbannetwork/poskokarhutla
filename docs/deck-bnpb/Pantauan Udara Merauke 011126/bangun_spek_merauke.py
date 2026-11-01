@@ -59,7 +59,7 @@ PUSTAKA = [
 SAMPUL = {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subjudul': 0.9, 'foto': 'foto/udara-20.jpg', 'kota': 'Jakarta', 'kredit': 'Foto: pantauan udara tim BNPB',
           'logo_kanan': 'foto/berakhlak-hd.png', 'kepada': 'Ditujukan khusus untuk Kepala BNPB',
           'subjudul': 'Kabupaten Merauke, Papua Selatan, 31 Oktober 2026',
-          'penyaji': {'nama': 'Tim IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}}
+          'penyaji': {'nama': 'Tim Ahli BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}}
 
 RINGKAS = {
     'jenis': 'galeri', 'jenis_slide': 'navigasi', 'judul_bentuk': 'deskriptif', 'pesan': 'Ringkasan pantauan',
@@ -181,8 +181,8 @@ RTL = {
         {'kode': 'R-1', 'jenis': 'kapasitas', 'langkah': 'Padamkan cluster Jagebob', 'waktu': 'segera', 'rincian': 'Water bombing dan regu darat diarahkan ke CP-4 sampai CP-5, memakai sungai terdekat sebagai titik isi air.', 'lembaga': ['Deputi Penanganan Darurat', 'BPBD Papua Selatan', 'Manggala Agni']},
         {'kode': 'R-2', 'jenis': 'regulasi', 'langkah': 'Hentikan pembakaran PT MSJ', 'waktu': 'segera', 'rincian': 'Perusahaan dipanggil untuk klarifikasi, diminta menghentikan pembakaran dan memadamkan api di areal serta sekitarnya.', 'lembaga': ['Pemkab Merauke', 'Kementerian Pertanian']},
         {'kode': 'R-3', 'jenis': 'regulasi', 'langkah': 'Tegakkan hukum pembakaran', 'waktu': 'sepekan', 'rincian': 'Foto udara, video, dan data hotspot diserahkan sebagai bahan penyelidikan dugaan pembakaran lahan.', 'lembaga': ['Kementerian Lingkungan Hidup', 'Polri']},
-        {'kode': 'R-4', 'jenis': 'data', 'langkah': 'Perbarui rute tiap pagi', 'waktu': 'segera', 'rincian': 'Renlap rute udara diperbarui tiap pagi dari hotspot terbaru dan prakiraan asap sebelum helikopter lepas landas.', 'lembaga': ['Pusdalops BNPB', 'Tim IT BNPB']},
-        {'kode': 'R-5', 'jenis': 'kapasitas', 'langkah': 'Pompa portabel dekat air', 'waktu': 'sepekan', 'rincian': 'Renlap darat SIPPA disusun untuk Merauke: petak, sumber air, panjang selang, dan rencana kunjungan regu.', 'lembaga': ['Tim IT BNPB', 'BPBD Papua Selatan']},
+        {'kode': 'R-4', 'jenis': 'data', 'langkah': 'Perbarui rute tiap pagi', 'waktu': 'segera', 'rincian': 'Renlap rute udara diperbarui tiap pagi dari hotspot terbaru dan prakiraan asap sebelum helikopter lepas landas.', 'lembaga': ['Pusdalops BNPB', 'Tim Ahli BNPB']},
+        {'kode': 'R-5', 'jenis': 'kapasitas', 'langkah': 'Pompa portabel dekat air', 'waktu': 'sepekan', 'rincian': 'Renlap darat SIPPA disusun untuk Merauke: petak, sumber air, panjang selang, dan rencana kunjungan regu.', 'lembaga': ['Tim Ahli BNPB', 'BPBD Papua Selatan']},
         {'kode': 'R-6', 'jenis': 'kapasitas', 'langkah': 'Lindungi warga dari asap', 'waktu': 'sepekan', 'rincian': 'Masker dan layanan ISPA disiapkan di Kurik, Semangga, dan Jagebob.', 'lembaga': ['Dinas Kesehatan', 'BPBD Papua Selatan']}],
 }
 
