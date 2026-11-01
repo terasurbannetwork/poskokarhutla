@@ -552,7 +552,7 @@ const RUTE = {
   "GET /admin": () => new Response(null, {status: 303, headers: {location: "/admin/statistik"}}),
   "GET /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
   "POST /admin/masuk": (env, req, url, kini) => St.masuk(env, req, kini, halamanMasuk),
-  "POST /admin/keluar": async (env, req) => { await hapusSesiPemirsa(env, req); const k = St.keluar(); k.headers.append("set-cookie", cookiePemirsa("", 0)); return k; },   // keluar = sesi admin dan pemirsa
+  "POST /admin/keluar": async (env, req) => { await hapusSesiPemirsa(env, req); const k = await St.keluar(env, req); k.headers.append("set-cookie", cookiePemirsa("", 0)); return k; },   // keluar = sesi admin dan pemirsa
   "GET /admin/statistik": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanStatistik()),
   "GET /admin/pesan": (env, req, url, kini) => St.halamanAdmin(env, req, kini, halamanPesan()),
   "GET /statistik": (env, req, url, kini, ctx) => { catatHTML(env, req, "/statistik", ctx); return halamanPublik(); },

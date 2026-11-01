@@ -215,13 +215,28 @@ export async function buatSesi(env, mod, kini) {
   const isi = `${kini + SESI_UMUR}.${mod}`;
   return isi + "." + hex(await crypto.subtle.sign("HMAC", await kunciHMAC(env), new TextEncoder().encode(isi)));
 }
-/* sah bila tanda HMAC cocok (perbandingan waktu-tetap oleh subtle.verify), belum kedaluwarsa, dan token moderatornya masih ada di ADMIN_TOKEN */
-export async function sesiOK(env, req, kini, modSah) {
+/* cookie sesi yang tanda HMAC-nya sah dan belum kedaluwarsa -> [_, exp, moderator, tanda] (perbandingan waktu-tetap oleh subtle.verify), selain itu null */
+async function sesiSah(env, req, kini) {
   if (!env.SESI_KUNCI) return null;
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=(\\d+)\\.([0-9a-f]{12})\\.([0-9a-f]{64})`));
-  if (!m || Number(m[1]) <= kini || !modSah.includes(m[2])) return null;
+  if (!m || Number(m[1]) <= kini) return null;
   const tanda = new Uint8Array(m[3].match(/../g).map(h => parseInt(h, 16)));
-  return await crypto.subtle.verify("HMAC", await kunciHMAC(env), tanda, new TextEncoder().encode(`${m[1]}.${m[2]}`)) ? m[2] : null;
+  return await crypto.subtle.verify("HMAC", await kunciHMAC(env), tanda, new TextEncoder().encode(`${m[1]}.${m[2]}`)) ? m : null;
+}
+/* sah bila tanda cocok, belum kedaluwarsa, token moderatornya masih ada di ADMIN_TOKEN, dan belum dicabut lewat /admin/keluar */
+export async function sesiOK(env, req, kini, modSah) {
+  const m = await sesiSah(env, req, kini);
+  if (!m || !modSah.includes(m[2])) return null;
+  return await sesiDicabut(env, m[3]) ? null : m[2];
+}
+/* Keluar mencabut cookie di SERVER, bukan cuma di peramban (uji Setneg 1 Nov 2026): tanda HMAC-nya dicatat di laju_bnpb (0022, dibersihkan
+   cron setelah 2 hari > umur sesi 12 jam). Dibaca hanya sesudah tanda sah, satu lookup indeks. Tabel belum ada/galat D1 = tidak dicabut (gagal-terbuka,
+   sama seperti sebelum fitur ini), supaya admin tidak terkunci massal saat D1 bermasalah. */
+const AKSI_CABUT = "sesi.cabut";
+async function sesiDicabut(env, tanda) {
+  if (!env.DB) return false;
+  try { return !!await env.DB.prepare("SELECT 1 FROM laju_bnpb WHERE kunci = ? AND aksi = ? LIMIT 1").bind(tanda, AKSI_CABUT).first(); }
+  catch (e) { console.error("sesi cabut baca", e?.message); return false; }
 }
 /* Lax, bukan Strict: tautan dari WhatsApp/surel ke situs terkunci harus tetap membawa sesi; POST tetap dijaga cek origin di rute() */
 const cookie = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${umur}`;
@@ -253,7 +268,12 @@ export async function masuk(env, req, kini, halamanMasuk) {
   const r = alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
   r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
 }
-export const keluar = () => alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
+export async function keluar(env, req, kini = Date.now()) {
+  const m = await sesiSah(env, req, kini);   // hanya cookie sah yang dicatat: cookie karangan tidak bisa membanjiri D1 lewat /admin/keluar
+  if (m && env.DB) try { await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(m[3], AKSI_CABUT, kini).run(); }
+    catch (e) { console.error("sesi cabut tulis", e?.message); }
+  return alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
+}
 /* Kerangka halaman admin: undefined = admin penuh (token, akun gerbang, atau sesi admin); {nama, peran} = sesi staf; staf tak masuk = {nama: null, peran: []} (layar masuk staf ada di halaman Meja Pantau). */
 export async function kerangka(env, req, kini = Date.now()) {
   if (await adminOK(env, req, kini)) return undefined;
