@@ -1,0 +1,962 @@
+{
+ "dibuat": "2026-11-01",
+ "satuan": "kejadian = gugus kab-hari berjangkar +1 hari; kecamatan terpisah (hanya gs, berita, pb)",
+ "aturan_direvisi": "1 Nov 2026 sesudah tinjauan cakupan, sebelum label dipakai menilai model mana pun",
+ "aturan_keyakinan": {
+  "TINGGI": "RESMI+MEDIA, RESMI+WARGA, atau logbook dengan angka dampak",
+  "SEDANG": "RESMI saja (dibi dan/atau logbook; satu grup, independensi tak terbukti)",
+  "RENDAH": "tanpa RESMI: media (gs, berita) atau warga (pb) saja",
+  "tinggi_tanpa_media": "TINGGI tanpa gs/berita (logbook berdampak atau RESMI+WARGA): dasar uji stabil antartahun",
+  "grup": {
+   "RESMI": [
+    "dibi",
+    "lb"
+   ],
+   "MEDIA": [
+    "gs",
+    "berita"
+   ],
+   "WARGA": [
+    "pb"
+   ]
+  }
+ },
+ "negatif_per_kab": "kab-tahun terliput media hanya bila >= 5 poligon Groundsource; di bawahnya hari tanpa kejadian = tak_teramati, bukan tidak_ada_laporan (negatif lemah)",
+ "episode": "baris BUKAN jumlah banjir; hitung per episode (rantai per kab tanpa putus, maks 14 hari)",
+ "penanda": "parsial_2026 = tahun berjalan; jendela_j3 = hari di jendela uji J3 pada SEMUA sumber: dikecualikan, jangan dipakai menilai",
+ "sumber": {
+  "dibi": "DIBI BNPB banjir+bandang (tanggal laporan, terisi susulan)",
+  "lb": "logbook Pusdalops, hari mulai per kab (CSV sekarang sampai 2026; hari tercakup dari arsip, 2011-2013 dan 2022-2023 parsial)",
+  "gs": "Google Groundsource 2016-2025 (berita, poligon->kecamatan)",
+  "berita": "berita.json 1.500 artikel berkab, rentang pendek",
+  "pb": "PetaBencana laporan warga (DKI dan sekitarnya); dikecualikan: jendela uji J3 terkunci"
+ },
+ "belum_layak": {
+  "gfm": "pilot 34 kab-hari",
+  "mcdwd": "tanpa ambang, 90 hari",
+  "arsip_pos_sihka": "tinggi muka air sejak 19 Okt 2026, bukan label kejadian",
+  "laporan_warga_d1": "tak ada ekspor di repo; query D1 produksi butuh PK (kuota baca)"
+ },
+ "kejadian_kab_per_tahun_per_tingkat": {
+  "2008": {
+   "TINGGI": 0,
+   "SEDANG": 415,
+   "RENDAH": 0,
+   "jumlah": 415
+  },
+  "2009": {
+   "TINGGI": 0,
+   "SEDANG": 478,
+   "RENDAH": 0,
+   "jumlah": 478
+  },
+  "2010": {
+   "TINGGI": 0,
+   "SEDANG": 960,
+   "RENDAH": 0,
+   "jumlah": 960
+  },
+  "2011": {
+   "TINGGI": 28,
+   "SEDANG": 523,
+   "RENDAH": 0,
+   "jumlah": 551
+  },
+  "2012": {
+   "TINGGI": 59,
+   "SEDANG": 512,
+   "RENDAH": 0,
+   "jumlah": 571
+  },
+  "2013": {
+   "TINGGI": 316,
+   "SEDANG": 498,
+   "RENDAH": 0,
+   "jumlah": 814
+  },
+  "2014": {
+   "TINGGI": 421,
+   "SEDANG": 287,
+   "RENDAH": 0,
+   "jumlah": 708
+  },
+  "2015": {
+   "TINGGI": 384,
+   "SEDANG": 267,
+   "RENDAH": 0,
+   "jumlah": 651
+  },
+  "2016": {
+   "TINGGI": 908,
+   "SEDANG": 205,
+   "RENDAH": 2688,
+   "jumlah": 3801
+  },
+  "2017": {
+   "TINGGI": 954,
+   "SEDANG": 219,
+   "RENDAH": 3306,
+   "jumlah": 4479
+  },
+  "2018": {
+   "TINGGI": 787,
+   "SEDANG": 218,
+   "RENDAH": 2900,
+   "jumlah": 3905
+  },
+  "2019": {
+   "TINGGI": 791,
+   "SEDANG": 179,
+   "RENDAH": 2906,
+   "jumlah": 3876
+  },
+  "2020": {
+   "TINGGI": 1516,
+   "SEDANG": 280,
+   "RENDAH": 5670,
+   "jumlah": 7466
+  },
+  "2021": {
+   "TINGGI": 1614,
+   "SEDANG": 353,
+   "RENDAH": 6031,
+   "jumlah": 7998
+  },
+  "2022": {
+   "TINGGI": 1475,
+   "SEDANG": 175,
+   "RENDAH": 7177,
+   "jumlah": 8827
+  },
+  "2023": {
+   "TINGGI": 1126,
+   "SEDANG": 191,
+   "RENDAH": 5412,
+   "jumlah": 6729
+  },
+  "2024": {
+   "TINGGI": 1623,
+   "SEDANG": 196,
+   "RENDAH": 8971,
+   "jumlah": 10790
+  },
+  "2025": {
+   "TINGGI": 2382,
+   "SEDANG": 468,
+   "RENDAH": 10954,
+   "jumlah": 13804
+  },
+  "2026": {
+   "TINGGI": 650,
+   "SEDANG": 196,
+   "RENDAH": 1838,
+   "jumlah": 2684
+  }
+ },
+ "kejadian_kec_per_tahun_per_tingkat": {
+  "2016": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 7073,
+   "jumlah": 7073
+  },
+  "2017": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 8586,
+   "jumlah": 8586
+  },
+  "2018": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 7538,
+   "jumlah": 7538
+  },
+  "2019": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 7917,
+   "jumlah": 7917
+  },
+  "2020": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 15211,
+   "jumlah": 15211
+  },
+  "2021": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 16807,
+   "jumlah": 16807
+  },
+  "2022": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 18944,
+   "jumlah": 18944
+  },
+  "2023": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 14027,
+   "jumlah": 14027
+  },
+  "2024": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 23777,
+   "jumlah": 23777
+  },
+  "2025": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 31569,
+   "jumlah": 31569
+  },
+  "2026": {
+   "TINGGI": 0,
+   "SEDANG": 0,
+   "RENDAH": 5387,
+   "jumlah": 5387
+  }
+ },
+ "tinggi_dengan_dan_tanpa_media_per_tahun": {
+  "2011": {
+   "tinggi_tanpa_media": 28,
+   "pangsa_media_persen": 0.0
+  },
+  "2012": {
+   "tinggi_tanpa_media": 59,
+   "pangsa_media_persen": 0.0
+  },
+  "2013": {
+   "tinggi_tanpa_media": 316,
+   "pangsa_media_persen": 0.0
+  },
+  "2014": {
+   "tinggi_tanpa_media": 421,
+   "pangsa_media_persen": 0.0
+  },
+  "2015": {
+   "tinggi_tanpa_media": 383,
+   "tinggi_dengan_media": 1,
+   "pangsa_media_persen": 0.3
+  },
+  "2016": {
+   "tinggi_dengan_media": 658,
+   "tinggi_tanpa_media": 250,
+   "pangsa_media_persen": 72.5
+  },
+  "2017": {
+   "tinggi_dengan_media": 682,
+   "tinggi_tanpa_media": 272,
+   "pangsa_media_persen": 71.5
+  },
+  "2018": {
+   "tinggi_dengan_media": 617,
+   "tinggi_tanpa_media": 170,
+   "pangsa_media_persen": 78.4
+  },
+  "2019": {
+   "tinggi_dengan_media": 648,
+   "tinggi_tanpa_media": 143,
+   "pangsa_media_persen": 81.9
+  },
+  "2020": {
+   "tinggi_dengan_media": 1287,
+   "tinggi_tanpa_media": 229,
+   "pangsa_media_persen": 84.9
+  },
+  "2021": {
+   "tinggi_dengan_media": 1385,
+   "tinggi_tanpa_media": 229,
+   "pangsa_media_persen": 85.8
+  },
+  "2022": {
+   "tinggi_dengan_media": 1256,
+   "tinggi_tanpa_media": 219,
+   "pangsa_media_persen": 85.2
+  },
+  "2023": {
+   "tinggi_dengan_media": 1000,
+   "tinggi_tanpa_media": 126,
+   "pangsa_media_persen": 88.8
+  },
+  "2024": {
+   "tinggi_dengan_media": 1433,
+   "tinggi_tanpa_media": 190,
+   "pangsa_media_persen": 88.3
+  },
+  "2025": {
+   "tinggi_dengan_media": 2178,
+   "tinggi_tanpa_media": 204,
+   "pangsa_media_persen": 91.4
+  },
+  "2026": {
+   "tinggi_dengan_media": 183,
+   "tinggi_tanpa_media": 467,
+   "pangsa_media_persen": 28.2
+  }
+ },
+ "episode_kab_per_tahun": {
+  "2008": 415,
+  "2009": 477,
+  "2010": 950,
+  "2011": 548,
+  "2012": 569,
+  "2013": 803,
+  "2014": 698,
+  "2015": 648,
+  "2016": 3520,
+  "2017": 3960,
+  "2018": 3551,
+  "2019": 3478,
+  "2020": 6567,
+  "2021": 6873,
+  "2022": 7726,
+  "2023": 5887,
+  "2024": 9156,
+  "2025": 11318,
+  "2026": 2131
+ },
+ "groundsource_per_kab_tahun": {
+  "2016": {
+   "kab_dengan_gs": 416,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 309,
+   "gs_n_median": 14,
+   "gs_n_p90": 74,
+   "gs_n_maks": 768
+  },
+  "2017": {
+   "kab_dengan_gs": 437,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 353,
+   "gs_n_median": 18,
+   "gs_n_p90": 78,
+   "gs_n_maks": 581
+  },
+  "2018": {
+   "kab_dengan_gs": 420,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 335,
+   "gs_n_median": 16,
+   "gs_n_p90": 83,
+   "gs_n_maks": 376
+  },
+  "2019": {
+   "kab_dengan_gs": 448,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 368,
+   "gs_n_median": 18,
+   "gs_n_p90": 88,
+   "gs_n_maks": 458
+  },
+  "2020": {
+   "kab_dengan_gs": 459,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 397,
+   "gs_n_median": 30,
+   "gs_n_p90": 165,
+   "gs_n_maks": 1187
+  },
+  "2021": {
+   "kab_dengan_gs": 496,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 439,
+   "gs_n_median": 35,
+   "gs_n_p90": 179,
+   "gs_n_maks": 758
+  },
+  "2022": {
+   "kab_dengan_gs": 488,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 446,
+   "gs_n_median": 43,
+   "gs_n_p90": 212,
+   "gs_n_maks": 906
+  },
+  "2023": {
+   "kab_dengan_gs": 477,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 436,
+   "gs_n_median": 32,
+   "gs_n_p90": 146,
+   "gs_n_maks": 496
+  },
+  "2024": {
+   "kab_dengan_gs": 504,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 468,
+   "gs_n_median": 53,
+   "gs_n_p90": 222,
+   "gs_n_maks": 632
+  },
+  "2025": {
+   "kab_dengan_gs": 509,
+   "kab_semesta": 518,
+   "kab_terliput_ge5": 484,
+   "gs_n_median": 69,
+   "gs_n_p90": 329,
+   "gs_n_maks": 1247
+  }
+ },
+ "lb_hari_tercakup_per_tahun": {
+  "2011": 50,
+  "2012": 76,
+  "2013": 175,
+  "2014": 365,
+  "2015": 364,
+  "2016": 366,
+  "2017": 365,
+  "2018": 365,
+  "2019": 365,
+  "2020": 366,
+  "2021": 343,
+  "2022": 272,
+  "2023": 327,
+  "2024": 365,
+  "2025": 365,
+  "2026": 305
+ },
+ "cakupan_per_sumber_per_tahun": {
+  "dibi": {
+   "2008": {
+    "kejadian": 415,
+    "hari_terliput": 0
+   },
+   "2009": {
+    "kejadian": 478,
+    "hari_terliput": 0
+   },
+   "2010": {
+    "kejadian": 960,
+    "hari_terliput": 0
+   },
+   "2011": {
+    "kejadian": 541,
+    "hari_terliput": 0
+   },
+   "2012": {
+    "kejadian": 556,
+    "hari_terliput": 0
+   },
+   "2013": {
+    "kejadian": 664,
+    "hari_terliput": 0
+   },
+   "2014": {
+    "kejadian": 545,
+    "hari_terliput": 0
+   },
+   "2015": {
+    "kejadian": 476,
+    "hari_terliput": 0
+   },
+   "2016": {
+    "kejadian": 780,
+    "hari_terliput": 366
+   },
+   "2017": {
+    "kejadian": 921,
+    "hari_terliput": 365
+   },
+   "2018": {
+    "kejadian": 808,
+    "hari_terliput": 365
+   },
+   "2019": {
+    "kejadian": 724,
+    "hari_terliput": 365
+   },
+   "2020": {
+    "kejadian": 1353,
+    "hari_terliput": 366
+   },
+   "2021": {
+    "kejadian": 1565,
+    "hari_terliput": 365
+   },
+   "2022": {
+    "kejadian": 1388,
+    "hari_terliput": 365
+   },
+   "2023": {
+    "kejadian": 1134,
+    "hari_terliput": 365
+   },
+   "2024": {
+    "kejadian": 1364,
+    "hari_terliput": 366
+   },
+   "2025": {
+    "kejadian": 2444,
+    "hari_terliput": 365
+   },
+   "2026": {
+    "kejadian": 658,
+    "hari_terliput": 0
+   }
+  },
+  "lb": {
+   "2008": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2009": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2010": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2011": {
+    "kejadian": 38,
+    "hari_terliput": 50
+   },
+   "2012": {
+    "kejadian": 73,
+    "hari_terliput": 76
+   },
+   "2013": {
+    "kejadian": 499,
+    "hari_terliput": 175
+   },
+   "2014": {
+    "kejadian": 583,
+    "hari_terliput": 365
+   },
+   "2015": {
+    "kejadian": 566,
+    "hari_terliput": 364
+   },
+   "2016": {
+    "kejadian": 1002,
+    "hari_terliput": 366
+   },
+   "2017": {
+    "kejadian": 1028,
+    "hari_terliput": 365
+   },
+   "2018": {
+    "kejadian": 792,
+    "hari_terliput": 365
+   },
+   "2019": {
+    "kejadian": 785,
+    "hari_terliput": 365
+   },
+   "2020": {
+    "kejadian": 1285,
+    "hari_terliput": 366
+   },
+   "2021": {
+    "kejadian": 1234,
+    "hari_terliput": 343
+   },
+   "2022": {
+    "kejadian": 1188,
+    "hari_terliput": 272
+   },
+   "2023": {
+    "kejadian": 748,
+    "hari_terliput": 327
+   },
+   "2024": {
+    "kejadian": 1357,
+    "hari_terliput": 365
+   },
+   "2025": {
+    "kejadian": 1804,
+    "hari_terliput": 365
+   },
+   "2026": {
+    "kejadian": 761,
+    "hari_terliput": 305
+   }
+  },
+  "gs": {
+   "2008": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2009": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2010": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2011": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2012": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2013": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2014": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2015": {
+    "kejadian": 1,
+    "hari_terliput": 0
+   },
+   "2016": {
+    "kejadian": 3345,
+    "hari_terliput": 366
+   },
+   "2017": {
+    "kejadian": 3534,
+    "hari_terliput": 365
+   },
+   "2018": {
+    "kejadian": 3353,
+    "hari_terliput": 365
+   },
+   "2019": {
+    "kejadian": 3516,
+    "hari_terliput": 365
+   },
+   "2020": {
+    "kejadian": 6859,
+    "hari_terliput": 366
+   },
+   "2021": {
+    "kejadian": 7338,
+    "hari_terliput": 365
+   },
+   "2022": {
+    "kejadian": 8371,
+    "hari_terliput": 365
+   },
+   "2023": {
+    "kejadian": 6316,
+    "hari_terliput": 365
+   },
+   "2024": {
+    "kejadian": 10289,
+    "hari_terliput": 366
+   },
+   "2025": {
+    "kejadian": 13102,
+    "hari_terliput": 365
+   },
+   "2026": {
+    "kejadian": 1845,
+    "hari_terliput": 0
+   }
+  },
+  "berita": {
+   "2008": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2009": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2010": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2011": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2012": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2013": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2014": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2015": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2016": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2017": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2018": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2019": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2020": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2021": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2022": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2023": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2024": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2025": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2026": {
+    "kejadian": 158,
+    "hari_terliput": 10
+   }
+  },
+  "pb": {
+   "2008": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2009": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2010": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2011": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2012": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2013": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2014": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2015": {
+    "kejadian": 0,
+    "hari_terliput": 0
+   },
+   "2016": {
+    "kejadian": 1,
+    "hari_terliput": 18
+   },
+   "2017": {
+    "kejadian": 652,
+    "hari_terliput": 365
+   },
+   "2018": {
+    "kejadian": 234,
+    "hari_terliput": 365
+   },
+   "2019": {
+    "kejadian": 89,
+    "hari_terliput": 365
+   },
+   "2020": {
+    "kejadian": 281,
+    "hari_terliput": 366
+   },
+   "2021": {
+    "kejadian": 163,
+    "hari_terliput": 365
+   },
+   "2022": {
+    "kejadian": 108,
+    "hari_terliput": 365
+   },
+   "2023": {
+    "kejadian": 132,
+    "hari_terliput": 365
+   },
+   "2024": {
+    "kejadian": 197,
+    "hari_terliput": 361
+   },
+   "2025": {
+    "kejadian": 76,
+    "hari_terliput": 360
+   },
+   "2026": {
+    "kejadian": 33,
+    "hari_terliput": 199
+   }
+  }
+ },
+ "hari_tak_teramati_per_tahun": {
+  "2011": 315,
+  "2012": 290,
+  "2013": 190,
+  "2015": 1
+ },
+ "tumpang_tindih_persen": {
+  "dibi>lb": {
+   "n_a": 14158,
+   "n_ada_b": 9497,
+   "persen": 67.1
+  },
+  "dibi>gs": {
+   "n_a": 12481,
+   "n_ada_b": 8946,
+   "persen": 71.7
+  },
+  "dibi>berita": {
+   "n_a": 12,
+   "n_ada_b": 11,
+   "persen": 91.7
+  },
+  "dibi>pb": {
+   "n_a": 151,
+   "n_ada_b": 57,
+   "persen": 37.7
+  },
+  "lb>dibi": {
+   "n_a": 11223,
+   "n_ada_b": 8044,
+   "persen": 71.7
+  },
+  "lb>gs": {
+   "n_a": 11223,
+   "n_ada_b": 8363,
+   "persen": 74.5
+  },
+  "lb>berita": {
+   "n_a": 12,
+   "n_ada_b": 11,
+   "persen": 91.7
+  },
+  "lb>pb": {
+   "n_a": 239,
+   "n_ada_b": 128,
+   "persen": 53.6
+  },
+  "gs>dibi": {
+   "n_a": 66023,
+   "n_ada_b": 8946,
+   "persen": 13.5
+  },
+  "gs>lb": {
+   "n_a": 63889,
+   "n_ada_b": 8306,
+   "persen": 13.0
+  },
+  "gs>berita": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "gs>pb": {
+   "n_a": 2089,
+   "n_ada_b": 683,
+   "persen": 32.7
+  },
+  "berita>dibi": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "berita>lb": {
+   "n_a": 158,
+   "n_ada_b": 11,
+   "persen": 7.0
+  },
+  "berita>gs": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "berita>pb": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "pb>dibi": {
+   "n_a": 1933,
+   "n_ada_b": 75,
+   "persen": 3.9
+  },
+  "pb>lb": {
+   "n_a": 1914,
+   "n_ada_b": 158,
+   "persen": 8.3
+  },
+  "pb>gs": {
+   "n_a": 1933,
+   "n_ada_b": 785,
+   "persen": 40.6
+  },
+  "pb>berita": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "dibi>lb_musim_hujan_nov_apr": {
+   "n_a": 9805,
+   "n_ada_b": 6461,
+   "persen": 65.9
+  },
+  "lb>dibi_musim_hujan_nov_apr": {
+   "n_a": 7392,
+   "n_ada_b": 5366,
+   "persen": 72.6
+  }
+ },
+ "kab_tak_cocok": {
+  "logbook": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0
+  },
+  "dibi": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0
+  },
+  "berita": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0
+  },
+  "pb": {
+   "jumlah_baris": 4,
+   "kunci_unik": 1
+  }
+ },
+ "catatan": [
+  "Teramati = ada sumber yang beroperasi padat, BUKAN bukti negatif: media dan logbook bias ke tempat ber-media/dilaporkan.",
+  "Tumpang-tindih A>B = persen kejadian bersumber A (hari jangkar terliput B) yang juga punya B; tanpa cakupan B tidak dihitung.",
+  "Berita hanya rentang artikel di berita.json (sepuluh hari, Oktober 2026): bukan arsip; pb hanya DKI.",
+  "gs dan berita satu grup (keduanya berita); jangan dihitung dua sumber independen."
+ ],
+ "baris": {
+  "kab": 79507,
+  "kec": 156836,
+  "logbook_n_pasangan": 14629
+ }
+}
