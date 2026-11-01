@@ -28,7 +28,7 @@ PROTOKOL = os.path.join(AKAR, "scripts/banjir/PRAREG-SIAGA-PERSENTIL.md")
 LB = os.path.join(AKAR, "public/data/logbook_kejadian.json")
 DIBI = os.path.join(MENTAH, "dibi_tanggal.json")
 REL_LOG, REL_SKOR, REL_SIDIK = "public/banjir/data/siaga_persentil_log.json", "public/banjir/data/siaga_persentil_skor.json", "scripts/banjir/siaga_persentil.sidik"
-JANGKAR_COMMIT = ""   # commit yang memuat protokol + kode + sidik; diisi SESUDAH commit pendaftaran. Di luar sidik. Kosong = vonis tidak dikunci.
+JANGKAR_COMMIT = "17256d9cb33c0fa9962b875d4a60b370ed4821c8"   # commit yang memuat protokol + kode + sidik; diisi SESUDAH commit pendaftaran. Di luar sidik. Kosong = vonis tidak dikunci.
 HARI = 4
 JENIS_LB = {"banjir", "banjir_bandang", "banjir_longsor"}
 BELUM, LULUS, TIDAK_LULUS, TIDAK_MEYAKINKAN = "BELUM CUKUP", "LULUS", "TIDAK LULUS", "TIDAK MEYAKINKAN"
