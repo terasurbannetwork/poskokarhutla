@@ -1,0 +1,186 @@
+name: Unduh arsip IMERG Jakarta (nowcast Jalur A)
+
+# Spesifikasi: scripts/banjir/PRAREG-NOWCAST-JKT.md bagian A.6. Hanya dispatch manual.
+# Satu job per bulan Nov-Apr (60 bulan 2016-11..2026-04), ~30 menit per bulan (~88.800 permintaan OPeNDAP, ~1,2 dtk masing-masing).
+# Keluaran HANYA ke R2 poskokarhutla-foto/arsip/imerg_jkt/<bulan>.jsonl.gz (~3-5 MB total); tidak ada commit data, tidak menerbitkan.
+# Sengaja DI LUAR grup concurrency `data`: unduhan berjam-jam tidak boleh menahan titik.yml/data.yml.
+# Melanjutkan: berkas bulan dipulihkan dari R2 dulu, unduhan hanya menambah slot yang belum ada.
+on:
+  workflow_dispatch:
+    inputs:
+      bulan_awal:
+        description: "Bulan awal YYYY-MM (Nov-Apr saja yang dipakai)"
+        default: "2016-11"
+      bulan_akhir:
+        description: "Bulan akhir YYYY-MM"
+        default: "2026-04"
+      bulan:
+        description: "Opsional: daftar bulan dipisah koma (mis. 2016-11,2016-12); menggantikan awal/akhir"
+        default: ""
+      maks_paralel:
+        description: "Job paralel (sopan ke GES DISC)"
+        default: "3"
+      probe:
+        description: "Jalankan job probe GSMaP (cadangan)"
+        type: boolean
+        default: false
+
+concurrency:
+  group: nowcast-jkt-imerg
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  siapkan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matriks: ${{ steps.m.outputs.matriks }}
+    steps:
+      - id: m
+        env:
+          AWAL: ${{ inputs.bulan_awal }}
+          AKHIR: ${{ inputs.bulan_akhir }}
+          DAFTAR: ${{ inputs.bulan }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, re
+          d = os.environ["DAFTAR"].replace(" ", "")
+          if d:
+              b = d.split(",")
+          else:
+              a, z = os.environ["AWAL"], os.environ["AKHIR"]
+              b = [f"{y}-{m:02d}" for y in range(int(a[:4]), int(z[:4]) + 1) for m in (1, 2, 3, 4, 11, 12) if a <= f"{y}-{m:02d}" <= z]
+          assert b and all(re.fullmatch(r"\d{4}-(0[1-4]|1[12])", x) for x in b), f"bulan tidak sah: {b}"
+          print("matriks=" + json.dumps({"bulan": sorted(set(b))}))
+          PY
+
+  unduh:
+    needs: siapkan
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      max-parallel: ${{ fromJSON(inputs.maks_paralel || '3') }}
+      matrix: ${{ fromJSON(needs.siapkan.outputs.matriks) }}
+    env:
+      BULAN: ${{ matrix.bulan }}
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pulihkan berkas bulan dari R2 (boleh gagal)
+        continue-on-error: true
+        run: |
+          mkdir -p data/raw/banjir/nowcast_jkt/imerg
+          # objek belum ada = unduhan mulai dari nol
+          npx --yes wrangler@4.42.0 r2 object get "poskokarhutla-foto/arsip/imerg_jkt/$BULAN.jsonl.gz" --file "data/raw/banjir/nowcast_jkt/imerg/$BULAN.jsonl.gz" --remote \
+            || { rm -f "data/raw/banjir/nowcast_jkt/imerg/$BULAN.jsonl.gz"; echo "belum ada di R2, mulai dari nol"; }
+
+      - name: Uji mandiri
+        run: python3 scripts/banjir/nowcast_jkt.py uji
+
+      # timeout shell (bukan timeout-minutes) supaya langkah unggah sesudahnya tetap jalan dengan kemajuan yang sudah didapat.
+      # Kode 1 = tidak ada kemajuan; 124 = habis waktu (sebagian maju, ulang dispatch untuk melanjutkan).
+      - name: Unduh IMERG Early bulan ini
+        run: |
+          set +e
+          EARTHDATA_TOKEN=${{ secrets.EARTHDATA_TOKEN }} timeout 2400 python3 scripts/banjir/nowcast_jkt.py imerg_unduh --bulan "$BULAN"
+          rc=$?
+          echo "rc=$rc" >> "$GITHUB_ENV"
+          [ "$rc" = 124 ] && echo "::warning title=imerg $BULAN::habis waktu, sebagian terunduh; dispatch ulang untuk melanjutkan"
+          exit 0
+
+      # Hitung baris (satu baris = satu slot), unggah hanya bila LEBIH LENGKAP dari objek R2 (pola arsip_pos: get dulu, jangan timpa).
+      - name: Unggah ke R2 bila lebih lengkap, catat jumlah slot
+        run: |
+          set -e
+          F="data/raw/banjir/nowcast_jkt/imerg/$BULAN.jsonl.gz"
+          mkdir -p hitung
+          [ -f "$F" ] || { echo "$BULAN 0" > "hitung/$BULAN.txt"; echo "::warning title=imerg $BULAN::tidak ada berkas"; exit 0; }
+          LOKAL=$(zcat "$F" | wc -l)
+          R2=0
+          if npx --yes wrangler@4.42.0 r2 object get "poskokarhutla-foto/arsip/imerg_jkt/$BULAN.jsonl.gz" --file /tmp/r2.jsonl.gz --remote > /tmp/r2.log 2>&1; then
+            R2=$(zcat /tmp/r2.jsonl.gz | wc -l)
+          fi
+          echo "$BULAN: lokal $LOKAL slot, R2 $R2 slot"
+          if [ "$LOKAL" -gt "$R2" ]; then
+            npx --yes wrangler@4.42.0 r2 object put "poskokarhutla-foto/arsip/imerg_jkt/$BULAN.jsonl.gz" --file "$F" --content-type application/gzip --remote
+            echo "$BULAN $LOKAL" > "hitung/$BULAN.txt"
+          else
+            echo "R2 sudah sama/lebih lengkap, tidak ditimpa"
+            echo "$BULAN $R2" > "hitung/$BULAN.txt"
+          fi
+          # kode 1 dari imerg_unduh = tidak ada kemajuan DAN ada galat: job merah supaya terlihat
+          [ "${rc:-0}" = 1 ] && { echo "::error title=imerg $BULAN::imerg_unduh keluar 1 (tanpa kemajuan)"; exit 1; }
+          exit 0
+
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: hitung-${{ matrix.bulan }}
+          path: hitung/${{ matrix.bulan }}.txt
+          if-no-files-found: ignore
+
+  ringkasan:
+    needs: [siapkan, unduh]
+    if: always() && needs.siapkan.result == 'success'
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          pattern: hitung-*
+          path: hitung
+          merge-multiple: true
+      - name: Periksa slot per bulan = 48 x hari
+        run: |
+          python3 - <<'PY'
+          import calendar, glob, sys
+          kurang = 0
+          for f in sorted(glob.glob("hitung/*.txt")):
+              b, n = open(f).read().split(); n = int(n)
+              y, m = map(int, b.split("-")); perlu = 48 * calendar.monthrange(y, m)[1]
+              ok = n == perlu; kurang += not ok
+              print(f"{'ok    ' if ok else 'KURANG'} {b}: {n}/{perlu} slot")
+          print(f"{kurang} bulan belum lengkap")
+          if kurang: print("::warning title=imerg::ada bulan belum lengkap; dispatch ulang (bulan=...) untuk melanjutkan")
+          PY
+
+  probe_gsmap:
+    if: inputs.probe
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      # Hanya mengimpor scripts/banjir/genangan/gsmap.py (dibekukan sidik J4: jangan disunting).
+      - name: Probe arsip GSMaP NRT 2016-11-01
+        env:
+          GSMAP_USER: ${{ secrets.GSMAP_USER }}
+          GSMAP_PASS: ${{ secrets.GSMAP_PASS }}
+        run: |
+          [ -n "$GSMAP_USER" ] && [ -n "$GSMAP_PASS" ] || { echo "::error::secret GSMAP_USER/GSMAP_PASS kosong"; exit 1; }
+          python3 - <<'PY'
+          import datetime as dt, os, sys
+          sys.path.insert(0, "scripts/banjir/genangan")
+          import gsmap
+          f = gsmap.sambung(os.environ["GSMAP_USER"], os.environ["GSMAP_PASS"])
+          folder = "/realtime_ver/v8/hourly_G/2016/11/01"
+          try:
+              ada = f.nlst(folder)
+          except Exception as e:
+              print(f"(a) {folder}/ TIDAK ada: {e}"); sys.exit(0)
+          print(f"(a) {folder}/ ada: {len(ada)} entri")
+          if ada:
+              f.voidcmd("TYPE I")
+              print(f"(b) ftp.size {ada[0]} = {f.size(ada[0])} byte")
+          PY
