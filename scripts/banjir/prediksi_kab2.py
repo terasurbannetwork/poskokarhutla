@@ -16,6 +16,7 @@ Kab yang selnya hilang/berlubang di hujan.json dilewati dan dicatat, tidak diisi
 Arsip: satu baris per (terbit, kab, sasaran); baris lama tidak pernah diubah, ulang jalan hari yang sama tidak menggandakan.
 Pakai:  python3 scripts/banjir/prediksi_kab2.py   |   ... salin   |   ... uji
 """
+import shutil
 import bisect, datetime as dt, importlib.util, json, math, os, subprocess, sys, tempfile
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
@@ -28,7 +29,8 @@ _s.loader.exec_module(G)
 
 KAND_RAW = os.path.join(MENTAH, "model_kab2_ops/kandidat.json")
 KAND = os.path.join(AKAR, "data/banjir/kab2_ops/kandidat.json")
-SAMPEL = os.path.join(MENTAH, "model_kab2/sampel.json")
+SAMPEL_RAW = os.path.join(MENTAH, "model_kab2/sampel.json")
+SAMPEL = os.path.join(AKAR, "data/banjir/kab2_ops/sampel.json")   # salinan terlacak; data/raw tidak ada di CI
 HUJAN = os.path.join(KELUAR, "hujan.json")
 ARSIP = os.path.join(AKAR, "data/banjir/arsip_kab2")
 SIDIK = "scripts/banjir/model_kab2_ops.sidik"
@@ -165,6 +167,9 @@ def jalan():
         print(f"sidik kandidat {kand.get('sidik')} != sidik HEAD {sh}: ditolak", file=sys.stderr)
         return 2
     hujan, sam = json.load(open(HUJAN)), json.load(open(SAMPEL))
+    if set(sam["sk"]) != set(kand["kab"]) or {(c[0], c[1]) for v in sam["sk"].values() for c in v} != {tuple(c) for c in kand["sel"]}:
+        print(f"sampel {SAMPEL} tidak cocok dengan kab/sel kandidat: ditolak", file=sys.stderr)
+        return 2
     now = dt.datetime.now(WIB)
     if hujan.get("hari_ini") != now.date().isoformat():
         print(f"hujan.json hari_ini {hujan.get('hari_ini')} != hari WIB {now.date()}: basi, tidak ada prakiraan", file=sys.stderr)
@@ -205,7 +210,7 @@ def uji():
                        {"bias": 0.0, "pohon": [], "platt": {"mu": 0, "sd": 1, "b0": 2.0, "b1": 1.0}}]}
     assert abs(peluang(mod, [0]) - (0.5 + G.sigmoid(2.0)) / 2) < 1e-12                  # rerata per biji, Platt per biji
     kand = {"sidik": "s1", "kab": ["99|X"], "frek": {"99|X": 0.01}, "pers_batas": pers, "fitur": ["h1", "h3", "a7", "imax", "pers_h3", "sm", "bulan_sin", "bulan_cos", "frek_dibi", "bahaya_b", "level_aturan"],
-            "fitur_aktif": ["h1", "h3", "imax", "pers_h3", "sm", "bulan_sin", "bulan_cos", "frek_dibi", "bahaya_b", "level_aturan"], "model": mod}
+            "fitur_aktif": ["h1", "h3", "imax", "pers_h3", "sm", "bulan_sin", "bulan_cos", "frek_dibi", "bahaya_b", "level_aturan"], "model": mod, "sel": [c[:2] for c in sel]}
     sam = {"sk": {"99|X": sel}}
     terbit = dt.date.fromisoformat(hari[3])
     b, lewat = baris_hari(kand, sam, hujan, terbit, "2026-11-04T07:30:00+07:00")
@@ -266,6 +271,8 @@ def uji():
             assert jalan() == 2                                                             # sidik kandidat != HEAD
             json.dump({**kand, "sidik": "head1"}, open(KAND, "w")); json.dump(sam, open(SAMPEL, "w")); json.dump({**hujan, "hari_ini": "2000-01-01"}, open(HUJAN, "w"))
             assert jalan() == 4 and not os.path.exists(ARSIP)
+            json.dump({**kand, "sidik": "head1", "sel": kand["sel"][:-1]}, open(KAND, "w"))
+            assert jalan() == 2 and not os.path.exists(ARSIP)                               # sampel tak cocok dengan sel kandidat
     finally:
         sidik_head, KAND, HUJAN, SAMPEL, ARSIP = asli
     print("ok prediksi_kab2")
@@ -276,5 +283,9 @@ if __name__ == "__main__":
         uji()
     elif sys.argv[1:] == ["salin"]:
         sys.exit(salin() or 0)
+    elif sys.argv[1:] == ["salin-sampel"]:
+        if os.path.exists(SAMPEL) and open(SAMPEL, "rb").read() != open(SAMPEL_RAW, "rb").read():
+            sys.exit(f"{SAMPEL} sudah ada dengan isi beda: ditolak")
+        shutil.copyfile(SAMPEL_RAW, SAMPEL)
     else:
         sys.exit(jalan())
