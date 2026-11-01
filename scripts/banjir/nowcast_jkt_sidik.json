@@ -1,0 +1,21 @@
+{
+ "jangkar_commit": "50305ad89566e705aa3486e32d5b048e6f29b396",
+ "jangkar_tanggal": "2026-11-01",
+ "manifes": {
+  "fungsi:scripts/cuaca/imerg.py:parse": "1b6cb9282caa18b9b8918e0fb7b1c1f17ff7dcb010d67ebf4f65919cf8885a9a",
+  "hasil:jendela_j3()": "001ea586c2e3359383b9988148b95d6c16b879934ca6342176fbf645dc93b89a",
+  "konstanta:scripts/cuaca/imerg.py:HILANG": "-9000",
+  "public/banjir/data/pusat_kec.json": "ff6b5151d60fc0d4cced5e306c702b3eed77441a75b20bbeb5ca32af0ca37e31",
+  "public/geo/kecamatan/31.json": "3250c62e8a7262da7af590179a7746b316f882cf21037374982e5592f1b78a88",
+  "scripts/banjir/PRAREG-NOWCAST-JKT.md": "49e763c9c749432f3013efba5542a74c70d2eb4663278162923666ea0ced57c0",
+  "scripts/banjir/genangan/bersama.py": "4790c878329be9c8a029fcf0a7f86c9f97bf5b384cb99681174c4339a2d47910",
+  "scripts/banjir/genangan/kunci_j4.py": "4dce321d163a11de85c6f141cd9231bec31540b3a969413de7accc2f1bb1038a",
+  "scripts/banjir/genangan/mesin.mjs": "65824598b409cd6a6534440db140efb474d4d1cba11b0c2ea178f72ba59751ca",
+  "scripts/banjir/genangan/petabencana.py": "0d813a1682170770b5d34edcb15d034b981ea5287b988de9613dd7f118510b17",
+  "scripts/banjir/lab_genangan_radar.py": "1990efb87670931570f0836293eb434b81f84159370742475f048fbeee7bad65",
+  "scripts/banjir/nowcast_jkt.py": "9e3260983a805b200602e65f7281196bbee0ff28c3c44e1ab14fc07f50212ef2",
+  "scripts/banjir/umum.py": "026656b01691fb0fdcb4ac2c1b1bc5c81237eb5d4e92ae99399ae42e24d0c411",
+  "scripts/banjir/wilayah.py": "8f198f09ce42aefc2e708c0122bb1fc81dbc3665ae4e34d76e728d81830e486d"
+ },
+ "sidik": "75c085f14b5f77b318ee550a30bd59ed1ebec43841e7d7af6407b70bf1e88cba"
+}
