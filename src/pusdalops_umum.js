@@ -21,6 +21,12 @@ export const tabelBelum = f => async (...a) => {
   catch (e) { if (/no such table/i.test(String(e?.message || e))) return gagal(503, "modul operasi Pusdalops belum diaktifkan (migrasi 0096_pusdalops_operasi, atau 0088_logbook untuk tautan kejadian, belum diterapkan)"); throw e; }
 };
 
+/* modul Gelombang 3 (migrasi 0098): 503 menyebut migrasinya, bukan 0096 */
+export const tabelBelum3 = f => async (...a) => {
+  try { return await f(...a); }
+  catch (e) { if (/no such table/i.test(String(e?.message || e))) return gagal(503, "modul Pusdalops Gelombang 3 belum diaktifkan (migrasi 0098_pusdalops_gelombang3 belum diterapkan)"); throw e; }
+};
+
 /* teks bebas: tanpa karakter kontrol, tanpa nomor telepon/surel (privasi: instansi/tim, bukan orang). min 0 = boleh kosong -> null */
 export function teks(v, nama, maks, min = 0) {
   if (v == null || v === "") { if (min) tolak(`${nama} wajib`); return null; }

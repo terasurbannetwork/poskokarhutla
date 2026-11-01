@@ -83,6 +83,21 @@
   const bulanIni = ms => tglWIB(ms).slice(0, 7);
   const bulanTeks = b => { const [y, m] = b.split("-").map(Number); return `${["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"][m - 1]} ${y}`; };
 
+  /* ---------- Gelombang 3: SK aktif, peringatan berantai, antrean medsos (hanya penyajian; angka dihitung server) ---------- */
+  const fmt2 = n => n == null || !Number.isFinite(Number(n)) ? "–" : String(Math.round(Number(n) * 100) / 100).replace(".", ",");
+  const sisaHariTeks = d => d == null ? "TMT selesai belum diisi" : d < 0 ? `lewat ${fmt(-d)} hari` : d === 0 ? "berakhir hari ini" : `${fmt(d)} hari`;
+  const skTone = x => x.perlu_cek ? "bahaya" : x.sisa_hari != null && x.sisa_hari <= 7 ? "tunggu" : "ok";
+  /* alasan perlu cek: kejadian selesai, atau tanpa entri lebih dari 7 hari (aturan server); "" bila tidak perlu */
+  const alasanCek = x => !x.perlu_cek ? "" : x.kejadian_selesai ? "Kejadian sudah selesai" : x.tanpa_entri_hari != null ? `Tanpa entri ${fmt(x.tanpa_entri_hari)} hari` : "Perlu dicek";
+  /* peringatan berantai: urut sisa waktu (paling cepat habis dulu), BUKAN menurut lift; salinan, tidak mengubah masukan */
+  const urutSisaJam = a => [...a].sort((x, y) => x.sisa_jam - y.sisa_jam || String(x.kab).localeCompare(String(y.kab), "id") || String(x.susulan).localeCompare(String(y.susulan)));
+  const sisaJamTeks = j => j < 1 ? "kurang dari 1 jam lagi" : j < 48 ? `${fmt(Math.round(j))} jam lagi` : `${fmt(Math.floor(j / 24))} hari lagi`;
+  const liftTeks = p => `lift ${fmt(p.lift)} kali, ci95 ${Array.isArray(p.ci95) ? fmt(p.ci95[0]) + " sampai " + fmt(p.ci95[1]) : "–"}, n ${fmt(p.n)}`;
+  const menitTeks = m => m == null ? "–" : m < 60 ? `${fmt(Math.round(m))} menit` : m < 1440 ? `${fmt(Math.round(m / 6) / 10)} jam` : `${fmt(Math.round(m / 144) / 10)} hari`;
+  const bulanSingkat = b => { const [y, m] = String(b).split("-").map(Number); return m ? `${BLN[m - 1]} ${y}` : String(b); };
+  const SUMBER_MEDSOS = {medsos: "Media sosial", tv: "Televisi"};
+
   g.OperasiPusdalops = {LAYANAN, NAMA_LAYANAN, KONDISI, NAMA_KONDISI, KELOMPOK, NAMA_KELOMPOK, NAMA_JENIS_PEMULIHAN, NAMA_STATUS, NAMA_KATEGORI, NAMA_HASIL, NAMA_SLOT,
-    fmt, angka, tglIndo, basiK, umurK, umurTeksJam, persen, fmtPersen, toneKetaatan, tonePemulihan, statusRingkas, basi, umurJam, umurTeks, wibTeks, tglWIB, sumber, slotBawaan, pohon, kebutuhanTeks, layananTeks, hitungBasi, teksWa, ketaatan, bulanIni, bulanTeks, BASI_MS};
+    fmt, angka, tglIndo, basiK, umurK, umurTeksJam, persen, fmtPersen, toneKetaatan, tonePemulihan, statusRingkas, basi, umurJam, umurTeks, wibTeks, tglWIB, sumber, slotBawaan, pohon, kebutuhanTeks, layananTeks, hitungBasi, teksWa, ketaatan, bulanIni, bulanTeks, BASI_MS,
+    fmt2, sisaHariTeks, skTone, alasanCek, urutSisaJam, sisaJamTeks, liftTeks, menitTeks, bulanSingkat, SUMBER_MEDSOS};
 })(globalThis);

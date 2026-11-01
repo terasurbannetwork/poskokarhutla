@@ -20,6 +20,14 @@
 .lb-peringatan label{display:flex;gap:8px;align-items:center;font-weight:800}
 .lb-peringatan[hidden]{display:none}
 .lb-lanjut{display:grid;gap:8px}
+.lb-buka{display:grid;gap:8px}
+.lb-buka:empty{display:none}
+.lb-buka-baris{display:flex;gap:8px;flex-wrap:wrap;align-items:center;font-size:13.5px;font-weight:600}
+.lb-buka-baris .bn-tombol{display:inline-flex;gap:6px;align-items:center;margin-left:auto}
+.lb-tutup{display:grid;gap:10px;border:2px solid var(--c3);border-radius:12px;padding:12px}
+.lb-tutup[hidden]{display:none}
+.lb-tutup textarea,.lb-tutup input{border:1px solid var(--line);background:var(--card);border-radius:10px;padding:9px 10px;font:inherit;font-size:14px;color:var(--ink);width:100%;min-width:0}
+.lb-sub-judul{margin:0;font-size:13.5px;font-weight:800}
 .lb-aksi{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
 .lb-aksi .bn-tombol{display:inline-flex;gap:6px;align-items:center}
 .lb-draf{color:var(--ink2);font-size:12px;font-weight:600}

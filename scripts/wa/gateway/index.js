@@ -118,6 +118,19 @@ function isiPesan(m) {
 // Nomor pengirim: di grup ambil peserta; Baileys baru memberi nomor asli di senderPn bila JID-nya @lid.
 const pengirim = (k) => normalWa(String(k.senderPn || k.participantPn || k.participant || k.remoteJid || '').split('@')[0].split(':')[0])
 
+// G5 logbook (logbook_wa.mjs): pesan grup BPBD (LOGBOOK_GRUP) diurai jadi draf TAPI tetap mengalir ke jalur bahan laporan (tambahan, bukan pengganti);
+// balasan staf (LOGBOOK_STAF) berbentuk OK/BATAL/KOREKSI/DRAF dicegat penuh (return true). Kosong = fitur mati.
+async function logbookCegat(m) {
+  try {
+    const L = await import('../logbook_wa.mjs'), jid = m.key.remoteJid, { teks } = isiPesan(m), a = L.arah(jid, pengirim(m.key), teks)
+    if (!a) return false
+    L.masuk({ id: m.key.id, jid, dari: pengirim(m.key), teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now() }, { dep: logbookDep || (logbookDep = L.depBawaan(process.env)) })
+      .then((x) => log('[logbook]', x)).catch((e) => log('[logbook] galat', String((e && e.message) || e)))
+    return a === 'staf'
+  } catch (e) { log('[logbook] galat', String((e && e.message) || e)); return false }
+}
+let logbookDep = null
+
 function ukuranOutbox() {
   let n = 0
   for (const f of fs.readdirSync(OUTBOX)) { try { n += fs.statSync(path.join(OUTBOX, f)).size } catch {} }
@@ -284,6 +297,7 @@ async function startSock() {
     for (const m of ev.messages) {
       if (m.key.fromMe || m.key.remoteJid === 'status@broadcast') continue
       const susulan = ev.type === 'append'
+      if (!susulan && await logbookCegat(m)) continue
       const izin = IZIN.has(pengirim(m.key))
       const id = m.key.id
       if (susulan && (!izin || !susulanBaru(m.messageTimestamp) || terlihat.ada(id))) continue

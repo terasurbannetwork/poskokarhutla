@@ -84,7 +84,7 @@ test("Laporan Menonjol: kelompok per provinsi, jumlah otomatis, pilihan manual, 
   const h = D.hariData(e, "2026-10-27");
   assert.equal(h.total, 4); assert.deepEqual(h.daftar.map(v => v.id).sort(), ["a", "b"]);
   const t = D.teksMenonjol(h, false);
-  assert.match(t, /sejumlah 2\b/); assert.match(t, /pukul 07\.00 WIB s\.d\. 28 Oktober 2026/);
+  assert.match(t, /sejumlah 2\b/); assert.match(t, /pukul 07\.00 WIB s\.d\. 28 Okt 2026/);
   assert.match(t, /\*Riau\*\n- Karhutla, Kec\. Bangko, Rokan Hilir: 36 ha terbakar/);
   assert.match(t, /1 meninggal, 210 jiwa \(60 KK\) mengungsi/);
   assert.ok(t.indexOf("*Riau*") < t.indexOf("*Jawa Tengah*"), "urut kode provinsi");
@@ -102,7 +102,7 @@ test("Laporan Shift: kejadian per shift, baru/pengkinian per shift, tuntas dari 
   assert.equal(s.shift[2].tuntas, 1);
   assert.equal(s.shift[2].jam, "21.00 s.d. 07.00 WIB");
   assert.equal(s.shift.reduce((a, x) => a + x.daftar.length, 0), 4, "satu kejadian bisa muncul di beberapa shift");
-  assert.match(D.teksShift(s, false, WIB("2026-10-28", 8, 5)), /Sumber: logbook Pusdalops \(input piket\), diambil pukul 08\.05 WIB, 28 Oktober 2026$/);
+  assert.match(D.teksShift(s, false, WIB("2026-10-28", 8, 5)), /Sumber: logbook Pusdalops \(input piket\), diambil pukul 08\.05 WIB, 28 Okt 2026$/);
   assert.match(D.teksShift(s, false), /\*Shift 3 \(21\.00 s\.d\. 07\.00 WIB\)\*: 2 kejadian \(1 baru, 1 pengkinian\)/);
 });
 
@@ -117,7 +117,7 @@ test("Rekap Mingguan: jendela Kamis-Kamis, per jenis dan provinsi, luas karhutla
   assert.deepEqual(m.luas.map(o => [o.prov, o.kejadian, Math.round(o.ha * 10) / 10, o.tanpaLuas]), [["14", 2, 34.4, 0], ["16", 1, 0, 1]]);
   assert.ok(Math.abs(m.luasTotal - 34.4) < 1e-9); assert.equal(m.adaKib, false);
   const t = D.teksMingguan(m, false);
-  assert.match(t, /Periode 22 Oktober 2026 pukul 18\.00 WIB s\.d\. 29 Oktober 2026 pukul 18\.00 WIB/); assert.match(t, /Riau: 34 ha dari 2 kejadian/); assert.match(t, /Banjir: 1 kejadian/); assert.match(t, /Riau: 2 kejadian/); assert.match(t, /perkiraan dari entri piket/); assert.match(t, /Sumber: logbook Pusdalops/);
+  assert.match(t, /Periode 22 Okt 2026 pukul 18\.00 WIB s\.d\. 29 Okt 2026 pukul 18\.00 WIB/); assert.match(t, /Riau: 34 ha dari 2 kejadian/); assert.match(t, /Banjir: 1 kejadian/); assert.match(t, /Riau: 2 kejadian/); assert.match(t, /perkiraan dari entri piket/); assert.match(t, /Sumber: logbook Pusdalops/);
   assert.equal(D.mingguan([ent("q", WIB("2026-10-25", 9), {kib: "3301-101"})], WIB("2026-10-29", 18)).adaKib, true);
 });
 
@@ -128,5 +128,5 @@ test("format Indonesia dan nomor surat", () => {
   assert.equal(D.nomorSurat("NNN/PTEO/PO.02/BB/2026", ""), "___/PTEO/PO.02/BB/2026");
   assert.equal(D.nomorSurat("tanpa pola", "5"), "tanpa pola");
   const b = D.bast([], "2026-10-27", 3);
-  assert.match(D.teksBast(b, "102/PTEO/PO.02/BB/2026", false), /Nomor 102[\s\S]*27 Oktober 2026: 0 kejadian \(0 baru, 0 pengkinian\), 0 menonjol[\s\S]*Jumlah: 0 kejadian[\s\S]*Sumber: logbook Pusdalops/);
+  assert.match(D.teksBast(b, "102/PTEO/PO.02/BB/2026", false), /Nomor 102[\s\S]*27 Okt 2026: 0 kejadian \(0 baru, 0 pengkinian\), 0 menonjol[\s\S]*Jumlah: 0 kejadian[\s\S]*Sumber: logbook Pusdalops/);
 });

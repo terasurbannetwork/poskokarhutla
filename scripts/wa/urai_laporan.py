@@ -73,6 +73,8 @@ def jenis_resmi(kunci, teks: str):
         kode = "108" if "tsunami" in t and "gempa" not in t else "107"
     elif kunci in (None, "lainnya"):  # nama kejadian resmi yang tak ditangkap pola internal (hujan es, awan panas, wabah, ...)
         kode = next((x["kode"] for x in PANDUAN["jenis"] if any(n in t for n in x["nama_kejadian"])), None)
+    elif kunci in lb.KODE_JENIS:  # gelombang_pasang, tsunami, wabah punya kunci sendiri di pengurai arsip
+        kode = lb.KODE_JENIS[kunci]
     else:
         kode = next((j["kode"] for j in PANDUAN["jenis"] if j["kunci"] == kunci), None)
     return next((j for j in PANDUAN["jenis"] if j["kode"] == kode), None)
@@ -130,6 +132,7 @@ def urai(teks: str, tahun=None) -> dict:
     """teks bebas -> {"isian": {medan kontrak}, "kosong": [medan wajib tak terbaca]}."""
     tahun = str(tahun or datetime.date.today().year)
     t = lb.bersih(teks.replace("\r", "")).replace(" ", " ")
+    t = re.sub(r"^[ \t]*lokasi[ \t]*:[ \t]*", "", t, flags=re.I | re.M)  # "Lokasi: Desa A, Kec. B": penanda pertama kini di awal baris
     t = "\n".join(RE_PECAH.sub("\n", l) for l in t.split("\n"))
     ket = lb.urai_ket(t)
     kepala = ket["catatan"]  # semua sebelum label pertama (Kronologi/Kendala/...)
@@ -176,7 +179,7 @@ def urai(teks: str, tahun=None) -> dict:
                    "rumah_rr": isian["rumah_rr"], "rumah_terdampak": isian["rumah_terendam"], "lahan_ha": isian["luas_ha"]},
         "status_darurat": status,
     }
-    return {"isian": isian, "kosong": [m for m in WAJIB if not isian.get(m)], "resmi": resmi,
+    return {"prov_kode": (lok["prov_kode"] or [None])[0], "isian": isian, "kosong": [m for m in WAJIB if not isian.get(m)], "resmi": resmi,
             "menonjol": menonjol(j, isian, dam["jiwa"]), "masuk_laphar": masuk_laphar(isian, dam["jiwa"], status)}
 
 

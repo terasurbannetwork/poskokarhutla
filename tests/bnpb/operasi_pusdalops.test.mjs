@@ -100,12 +100,24 @@ import {bukaPeramban, cariChrome} from "./_peramban.mjs";
 const PUB = path.join(path.dirname(fileURLToPath(import.meta.url)), "../../public"), CHROME = cariChrome();
 
 test("operasi.html/js: CSP bersih, kepala situs bersama, tanpa innerHTML, titik tengah, em dash, atau nama lama", () => {
-  const html = readFileSync(`${PUB}/bnpb/operasi.html`, "utf8"), js = readFileSync(`${PUB}/bnpb/operasi.js`, "utf8") + readFileSync(`${PUB}/bnpb/operasi_pusdalops.js`, "utf8");
+  const html = readFileSync(`${PUB}/bnpb/operasi.html`, "utf8"), js = readFileSync(`${PUB}/bnpb/operasi.js`, "utf8") + readFileSync(`${PUB}/bnpb/operasi_pusdalops.js`, "utf8") + readFileSync(`${PUB}/bnpb/operasi_g3.js`, "utf8");
   assert.ok(!/<script(?![^>]*\bsrc=)/i.test(html), "skrip inline"); assert.ok(!/<style|\sstyle=|\son[a-z]+=/i.test(html), "gaya/atribut inline");
   assert.match(html, /class="ad-top"/); assert.match(html, /bnpb\.css/);
   assert.ok(!/innerHTML|insertAdjacentHTML|eval\(|\.style\./.test(js), "innerHTML atau gaya inline lewat JS");
   assert.ok(!/ · |—|Pantau Bencana/.test(js + html), "titik tengah, em dash, atau nama lama");
-  assert.ok(!/migrasi|0096/i.test(js), "nomor migrasi bocor ke pesan layar");
+  assert.ok(!/migrasi|0096|0098/i.test(js), "nomor migrasi bocor ke pesan layar");
+  assert.ok(html.indexOf("operasi_g3.js") > 0 && html.indexOf("operasi_g3.js") < html.indexOf("operasi.js"), "operasi_g3.js harus dimuat sebelum operasi.js");
+});
+
+test("Gelombang 3 murni: sisa SK, nada, alasan cek, urut sisa_jam (bukan lift), lift dua desimal, jeda", () => {
+  assert.equal(O.sisaHariTeks(12), "12 hari"); assert.equal(O.sisaHariTeks(0), "berakhir hari ini"); assert.equal(O.sisaHariTeks(-3), "lewat 3 hari"); assert.equal(O.sisaHariTeks(null), "TMT selesai belum diisi");
+  assert.equal(O.skTone({perlu_cek: true, sisa_hari: 30}), "bahaya"); assert.equal(O.skTone({perlu_cek: false, sisa_hari: 5}), "tunggu"); assert.equal(O.skTone({perlu_cek: false, sisa_hari: 30}), "ok"); assert.equal(O.skTone({perlu_cek: false, sisa_hari: null}), "ok");
+  assert.equal(O.alasanCek({perlu_cek: false}), ""); assert.equal(O.alasanCek({perlu_cek: true, kejadian_selesai: true, tanpa_entri_hari: 9}), "Kejadian sudah selesai"); assert.equal(O.alasanCek({perlu_cek: true, kejadian_selesai: false, tanpa_entri_hari: 1234}), "Tanpa entri 1.234 hari");
+  const a = [{kab: "B", susulan: "banjir", sisa_jam: 20, lift: 2.12}, {kab: "A", susulan: "longsor", sisa_jam: 5, lift: 1.38}, {kab: "C", susulan: "banjir", sisa_jam: 40, lift: 1.98}], asal = a.map(x => x.kab).join("");
+  assert.deepEqual(O.urutSisaJam(a).map(x => x.kab), ["A", "B", "C"]); assert.equal(a.map(x => x.kab).join(""), asal, "masukan tak diubah");
+  assert.equal(O.sisaJamTeks(0), "kurang dari 1 jam lagi"); assert.equal(O.sisaJamTeks(20), "20 jam lagi"); assert.equal(O.sisaJamTeks(60), "2 hari lagi");
+  assert.equal(O.liftTeks({lift: 2.12, ci95: [1.97, 2.27], n: 9831}), "lift 2,1 kali, ci95 2 sampai 2,3, n 9.831"); assert.equal(O.liftTeks({lift: 2, ci95: null, n: 5}), "lift 2 kali, ci95 –, n 5");
+  assert.equal(O.menitTeks(null), "–"); assert.equal(O.menitTeks(45), "45 menit"); assert.equal(O.menitTeks(90), "1,5 jam"); assert.equal(O.menitTeks(2880), "2 hari"); assert.equal(O.bulanSingkat("2026-10"), "Okt 2026");
 });
 
 const MIME = {".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".json": "application/json"};
@@ -118,6 +130,14 @@ const RINCI_STUB = () => ({operasi: OP, basi_jam: 24, jumlah_basi: 1, provinsi: 
     {id: "2", prov: "11", kab: "Aceh Utara", waktu_data: Date.now() - 4 * 864e5, basi: true, kebutuhan: null, layanan: {air: {status: "terganggu"}}, catatan: "Dummy basi"}]}]});
 const PEMULIHAN = [{id: hex(1), jenis: "huntara", prov: "11", kab: "Aceh Tamiang", desa: "Kampung Dalam", lat: null, lon: null, target: 120, realisasi: 90, satuan: "unit", pelaksana: "PT Contoh (dummy)", sumber_dana: "APBN", status: "berjalan", dummy: true}];
 const RINGKAS = [{prov: "11", kab: "Aceh Tamiang", jenis: "huntara", satuan: "unit", item: 1, target: 120, realisasi: 90, rencana: 0, berjalan: 1, selesai: 0, terhenti: 0, berkoordinat: 0, persen: 75}];
+const SK = (o) => ({id: "s1", kejadian_id: "ef".repeat(8), jenis: "banjir", prov: "33", kab: "Cilacap", tingkat: "tanggap", wilayah: "kab", nomor: "100/2026", tmt_mulai: "2026-10-20", tmt_selesai: "2026-11-10", perpanjangan_ke: 0, sisa_hari: 8, kejadian_selesai: false, tanpa_entri_hari: 1, perlu_cek: false, dummy: false, ...o});
+const SK_AKTIF = {tanggal: "2026-11-02", terpotong: false, jumlah: 3, perlu_cek: 2, per_tingkat: [{tingkat: "siaga", sk: 1, perlu_cek: 0}, {tingkat: "tanggap", sk: 2, perlu_cek: 2}], per_provinsi: [{prov: "33", sk: 2, perlu_cek: 1}, {prov: "11", sk: 1, perlu_cek: 1}],
+  sk: [SK({id: "s1", nomor: "100/2026", sisa_hari: 8}), SK({id: "s2", nomor: "200/2026", prov: "11", kab: "Aceh Tamiang", sisa_hari: -4, kejadian_selesai: true, perlu_cek: true, dummy: true}), SK({id: "s3", nomor: "300/2026", tingkat: "siaga", wilayah: "prov", kab: null, sisa_hari: null, tmt_selesai: null, tanpa_entri_hari: 12, perlu_cek: true})]};
+const PB = (kab, prov, susulan, pemicu, sisa, lift, ci) => ({prov, kab, susulan, pemicu, kejadian_id: null, mulai: Date.now() - 36e5, berlaku_sampai: Date.now() + sisa * 36e5, sisa_jam: sisa, laju: 0.083, lift, ci95: ci, n: 9831, teks: `Setelah ${pemicu} tercatat di kab ini, ${susulan} tercatat dalam 1-3 hari. Pola deskriptif dari laporan Pusdalops, bukan ramalan.`, dummy: kab === "Agam"});
+const BERANTAI = [PB("Agam", "13", "banjir", "banjir", 40, 1.98, [1.88, 2.1]), PB("Cilacap", "33", "longsor", "cuaca", 5, 1.38, [1.25, 1.52]), PB("Banjarnegara", "33", "longsor", "banjir", 20, 2.12, [1.97, 2.27])];
+const BUTIR = [{id: "1a".repeat(8), sumber: "medsos", tautan: "https://contoh.invalid/p/1", judul: "Video banjir menggenangi jalan raya", prov: "33", kab: "Cilacap", jenis: "banjir", waktu_pantau: Date.now() - 36e5, status: "baru", dummy: true},
+  {id: "2b".repeat(8), sumber: "tv", tautan: "https://contoh.invalid/p/2", judul: "Liputan asap di lahan", prov: "14", kab: null, jenis: null, waktu_pantau: Date.now() - 72e5, status: "baru", dummy: false}];
+const JEDA = {terpotong: false, keseluruhan: {n: 5, median_menit: 45, logbook_lebih_dulu: 1}, per_bulan: [{bulan: "2026-10", n: 3, logbook_lebih_dulu: 1, median_menit: 45}, {bulan: "2026-09", n: 2, logbook_lebih_dulu: 0, median_menit: 130}]};
 let server, base;
 const jalankan = () => new Promise(ok => {
   server = http.createServer(async (req, res) => {
@@ -137,6 +157,12 @@ const jalankan = () => new Promise(ok => {
         per_peserta: [{kategori: "bpbd_prov", prov: "11", kab: null, nama: null, dipanggil: 2, hadir: 2, gangguan: 0, tidak: 0, persen: 100}, {kategori: "bpbd_prov", prov: "12", kab: null, nama: null, dipanggil: 2, hadir: 0, gangguan: 1, tidak: 1, persen: 0}]});
       if (p === "/api/pusdalops/rollcall" && req.method === "GET") return json(200, {bulan: u.searchParams.get("bulan"), sesi: [{id: hex(2), tgl: "2026-11-01", slot: "pagi", dummy: 1, dipanggil: 10, hadir: 8, tidak: 1, gangguan: 1}]});
       if (p === "/api/pusdalops/rollcall") return json(201, {sesi: {}});
+      if (p === "/api/pusdalops/berantai" && req.method === "GET") return S.g3_503 ? json(503, {galat: "tabel belum ada"}) : json(200, {terpotong: false, catatan: "Pola deskriptif dari arsip logbook Pusdalops 2014-2025, bukan ramalan.", peringatan: BERANTAI});
+      if (p === "/api/logbook/sk/aktif") return json(200, SK_AKTIF);
+      if (p === "/api/pusdalops/medsos" && req.method === "GET") return json(200, {status: "baru", terpotong: false, butir: BUTIR});
+      if (p === "/api/pusdalops/medsos/jeda") return json(200, JEDA);
+      if (p === "/api/pusdalops/medsos/verifikasi") return S.verif409 ? json(409, {galat: "butir sudah diverifikasi"}) : json(200, {butir: {}});
+      if (p === "/api/pusdalops/medsos") return json(201, {butir: {}});
       if (/\/dummy$/.test(p)) return json(201, {ok: true});
       if (p === "/api/logbook/buka") return json(200, {kejadian: [{id: "ef".repeat(8), jenis: "banjir", kec: "Kroya", desa: "Pesahangan"}]});
       return json(404, {galat: "tidak ada"});
@@ -158,6 +184,7 @@ else {
     assert.deepEqual(tab.galat().filter(luar), [], l + ": galat konsol");
   };
   const tanpaGulir = async l => { for (const [w, hh] of [[1440, 900], [390, 844]]) { await tab.ukuran(w, hh); const x = await tab.lebihLebar(); assert.ok(x.sw <= x.iw + 1, `${l} ${w}px gulir mendatar ${x.sw}>${x.iw}`); } await tab.ukuran(1440, 900); };
+  const isi_filter = v => tab.eval(`(() => { const e = document.querySelector('select[aria-label="Filter provinsi"]'); e.value = ${JSON.stringify(v)}; e.dispatchEvent(new Event("change", {bubbles: true})); })()`);
   const pilihTab = async k => { await tab.klik(`[data-tab="${k}"]`); await tab.tungguFungsi(`document.querySelector('[data-tab="${k}"]').getAttribute('aria-selected') === 'true' && !document.querySelector('.op-isi').hasAttribute('aria-busy')`, 15000); };
 
   test("tanpa sesi tampil kartu masuk", async () => {
@@ -249,7 +276,7 @@ else {
     await bersih("rollcall sesudah kirim");
   });
 
-  test("dummy: Super Admin melihat dua ikon; isi memakai rute tab yang terbuka, hapus memakai ketiga rute", async () => {
+  test("dummy: Super Admin melihat dua ikon; isi memakai rute tab yang terbuka, hapus memakai keenam rute", async () => {
     S.log.length = 0; tab.kosongkanGalat();
     await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await tab.tunggu("[data-dummy=isi]");
     assert.equal(await tab.eval("document.querySelectorAll('[data-dummy]').length"), 2);
@@ -258,9 +285,97 @@ else {
     await pilihTab("rollcall"); S.log.length = 0; await tab.klik("[data-dummy=isi]"); await new Promise(r => setTimeout(r, 500));
     assert.deepEqual(S.log.filter(x => x.m === "POST").map(x => x.p), ["/api/pusdalops/rollcall/dummy"]);
     await tab.eval("window.confirm = () => true"); S.log.length = 0; await tab.klik("[data-dummy=hapus]"); await new Promise(r => setTimeout(r, 500));
-    assert.deepEqual(S.log.filter(x => x.m === "POST").map(x => x.p).sort(), ["/api/pusdalops/lapsus/dummy", "/api/pusdalops/pemulihan/dummy", "/api/pusdalops/rollcall/dummy"]);
+    assert.deepEqual(S.log.filter(x => x.m === "POST").map(x => x.p).sort(), ["/api/logbook/dummy", "/api/pusdalops/berantai/dummy", "/api/pusdalops/lapsus/dummy", "/api/pusdalops/medsos/dummy", "/api/pusdalops/pemulihan/dummy", "/api/pusdalops/rollcall/dummy"]);
     assert.ok(S.log.filter(x => x.m === "POST").every(x => x.body.aksi === "hapus"));
     await bersih("dummy");
+  });
+
+  test("enam tab: satu baris penuh lebar di 1440, dua baris rata di 390, tanpa meluap, semua berikon", async () => {
+    await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"});
+    assert.deepEqual(await tab.eval("[...document.querySelectorAll('[data-tab]')].map(b => b.dataset.tab)"), ["pemulihan", "lapsus", "rollcall", "sk", "berantai", "medsos"]);
+    assert.equal(await tab.eval("[...document.querySelectorAll('[data-tab]')].every(b => b.querySelector('svg'))"), true, "tiap tab berikon");
+    const ukur = "(() => { const r = [...document.querySelectorAll('[data-tab]')].map(b => b.getBoundingClientRect()), w = document.querySelector('.op-tabs').getBoundingClientRect(); return {tops: new Set(r.map(x => Math.round(x.top))).size, lebar: new Set(r.map(x => Math.round(x.width))).size, kiri: Math.round(r[0].left - w.left), kanan: Math.round(w.right - Math.max(...r.map(x => x.right))), meluap: document.querySelector('.op-tabs').scrollWidth > document.querySelector('.op-tabs').clientWidth + 1}; })()";
+    await tab.ukuran(1440, 900); let u = await tab.eval(ukur); assert.equal(u.tops, 1, "1440: satu baris"); assert.equal(u.lebar, 1, "1440: lebar sama"); assert.ok(Math.abs(u.kanan) <= 2 && Math.abs(u.kiri) <= 2, "1440: penuh lebar"); assert.equal(u.meluap, false);
+    await tab.ukuran(390, 844); u = await tab.eval(ukur); assert.equal(u.tops, 2, "390: dua baris"); assert.equal(u.lebar, 1, "390: lebar sama"); assert.ok(Math.abs(u.kanan) <= 2, "390: penuh lebar"); assert.equal(u.meluap, false);
+    assert.equal(await tab.eval("[...document.querySelectorAll('[data-tab]')].every(b => b.scrollWidth <= b.clientWidth + 1)"), true, "label tab tidak terpotong di 390");
+    await tab.ukuran(1440, 900);
+  });
+
+  test("SK Aktif: papan per tingkat dan provinsi, sisa hari, perlu cek menonjol di atas, tanggal singkat, Sumber", async () => {
+    await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await pilihTab("sk");
+    const t = await tab.teks(); assert.match(t, /Per 2 Nov 2026/); assert.match(t, /3 SK aktif/); assert.match(t, /2 perlu dicek/); assert.match(t, /Siaga darurat/); assert.match(t, /Tanggap darurat/);
+    assert.match(t, /8 hari/); assert.match(t, /lewat 4 hari/); assert.match(t, /TMT selesai belum diisi/); assert.match(t, /Kejadian sudah selesai/); assert.match(t, /Tanpa entri 12 hari/); assert.match(t, /20 Okt 2026/); assert.match(t, /Sumber: SK status darurat.*per 2 Nov 2026/);
+    assert.equal(await tab.eval("document.querySelectorAll('.op-papan .op-kartu').length"), 2);
+    const nomor = await tab.eval("[...document.querySelectorAll('.op-tabel')].pop().querySelectorAll('tbody tr')").then(() => tab.eval("[...[...document.querySelectorAll('.op-tabel')].pop().querySelectorAll('tbody tr')].map(r => r.cells[3].innerText)"));
+    assert.deepEqual(nomor, ["200/2026", "300/2026", "100/2026"], "perlu cek dulu, lalu sisa hari terkecil");
+    assert.equal(await tab.eval("[...document.querySelectorAll('.op-tabel tr.op-basi-baris')].length"), 2);
+    assert.equal(await tab.eval("[...document.querySelectorAll('.op-tabel th')].every(th => getComputedStyle(th).textAlign === 'center')"), true);
+    assert.equal(await tab.eval("!!document.querySelector('.op-tak-cetak [data-dummy=isi]') || !!document.querySelector('[data-dummy=isi]')"), true);
+    await bersih("sk"); await tanpaGulir("sk");
+  });
+
+  test("Berantai: urut sisa_jam bukan lift, jendela 3 hari, lift dan ci95, 'bukan ramalan' terlihat, dummy bertanda", async () => {
+    S.log.length = 0; await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await pilihTab("berantai");
+    assert.deepEqual(await tab.eval("[...document.querySelectorAll('.op-kartu[data-kab]')].map(k => k.dataset.kab)"), ["Cilacap", "Banjarnegara", "Agam"], "urut sisa jam: 5, 20, 40; urut lift akan terbalik");
+    const t = await tab.teks(); assert.match(t, /jendela 3 hari/); assert.match(t, /Pola deskriptif, bukan ramalan\./); assert.match(t, /lift 1,4 kali, ci95 1,3 sampai 1,5, n 9\.831/); assert.match(t, /lift 2,1 kali, ci95 2 sampai 2,3/);
+    assert.match(t, /5 jam lagi/); assert.match(t, /Longsor susulan/); assert.match(t, /bukan menurut besar lift/); assert.match(t, /DATA DUMMY/); assert.match(t, /Sumber: pola susulan.*per \d+ \w+ 2026/); assert.match(t, /Selang tanpa koreksi perbandingan berganda/); assert.equal(await tab.eval("document.querySelector('.op-kaki[title]').title.length > 0"), true);
+    assert.ok(S.log.some(x => x.p === "/api/pusdalops/berantai" && x.q === "?aktif=1"));
+    assert.equal(await tab.eval("(() => { const e = document.querySelector('.op-pola'); const r = e.getBoundingClientRect(); return r.width > 0 && r.height > 0; })()"), true, "teks bukan ramalan terlihat");
+    await isi_filter("13"); await tab.tungguFungsi("!document.querySelector('.op-isi').hasAttribute('aria-busy')");
+    assert.ok(S.log.some(x => x.p === "/api/pusdalops/berantai" && x.q === "?aktif=1&prov=13"), "filter provinsi lewat parameter prov");
+    await bersih("berantai"); await tanpaGulir("berantai");
+  });
+
+  test("Medsos: jeda median per bulan, antrean, tolak/tautkan/buat terkirim sesuai klik, tambah butir, galat server tampil", async () => {
+    await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await pilihTab("medsos"); S.log.length = 0; tab.kosongkanGalat();
+    let t = await tab.teks(); assert.match(t, /Median 45 menit/); assert.match(t, /5 butir ditautkan/); assert.match(t, /1 logbook lebih dulu/); assert.match(t, /Okt 2026/); assert.match(t, /2,2 jam/); assert.match(t, /Video banjir/); assert.match(t, /2 butir menunggu/);
+    assert.equal(await tab.eval("document.querySelector('a[href=\"https://contoh.invalid/p/1\"]').rel"), "noopener noreferrer");
+    /* tolak dari tombol baris */
+    S.log.length = 0; await tab.klik("[data-butir='" + "1a".repeat(8) + "'][data-aksi-v=tolak]");
+    assert.equal(await tab.eval("document.querySelector('[data-form=medsos-verif]').open"), true);
+    await tab.eval("(() => { const e = document.querySelector('[data-form=medsos-verif] input[name=catatan]'); e.value = 'ab'; })()");
+    await tab.klik("[data-form=medsos-verif] button[type=submit]"); await tab.tungguFungsi("/minimal 3/.test(document.body.innerText)");
+    assert.equal(S.log.filter(x => x.p === "/api/pusdalops/medsos/verifikasi").length, 0, "catatan 2 huruf tidak terkirim");
+    await tab.eval("document.querySelector('[data-form=medsos-verif] input[name=catatan]').value = 'Bukan kejadian nyata'");
+    S.verif409 = true; await tab.klik("[data-form=medsos-verif] button[type=submit]"); await tab.tungguFungsi("/butir sudah diverifikasi/.test(document.body.innerText)"); S.verif409 = false; tab.kosongkanGalat();   // 409 tiruan dicatat konsol peramban sebagai galat jaringan, sengaja
+    let v = S.log.filter(x => x.p === "/api/pusdalops/medsos/verifikasi").pop(); assert.deepEqual(v.body, {id: "1a".repeat(8), aksi: "tolak", catatan: "Bukan kejadian nyata"});
+    await tab.klik("[data-form=medsos-verif] button[type=submit]"); await tab.tungguFungsi("!document.querySelector('.op-isi').hasAttribute('aria-busy') && /Butir ditolak/.test(document.body.innerText)");
+    /* tautkan: kejadian terbuka kab itu dari logbook/buka */
+    S.log.length = 0; await tab.klik("[data-butir='" + "1a".repeat(8) + "'][data-aksi-v=tautkan]");
+    await tab.tungguFungsi("document.querySelector('[data-form=medsos-verif] select[name=kejadian_id]').options.length === 2");
+    assert.match(S.log.find(x => x.p === "/api/logbook/buka").q, /kab=33%7CCilacap/);
+    await tab.eval("(() => { const e = document.querySelector('[data-form=medsos-verif] select[name=kejadian_id]'); e.value = e.options[1].value; })()");
+    const nBuka = S.log.filter(x => x.p === "/api/logbook/buka").length; await tab.eval("document.querySelector('[data-form=medsos-verif] select[name=kejadian_id]').dispatchEvent(new Event('change', {bubbles: true}))");
+    assert.equal(await tab.eval("document.querySelector('[data-form=medsos-verif] select[name=kejadian_id]').value"), "ef".repeat(8), "change select tidak mengosongkan pilihan"); assert.equal(S.log.filter(x => x.p === "/api/logbook/buka").length, nBuka, "tidak fetch ulang");
+    await tab.klik("[data-form=medsos-verif] button[type=submit]"); await tab.tungguFungsi("/ditautkan ke kejadian/.test(document.body.innerText)");
+    v = S.log.filter(x => x.p === "/api/pusdalops/medsos/verifikasi").pop(); assert.deepEqual(v.body, {id: "1a".repeat(8), aksi: "tautkan", kejadian_id: "ef".repeat(8)});
+    /* butir hanya provinsi: tautkan menjelaskan, buat meminta jenis */
+    await tab.klik("[data-butir='" + "2b".repeat(8) + "'][data-aksi-v=tautkan]"); await tab.tungguFungsi("/hanya punya provinsi/.test(document.body.innerText)");
+    await tab.klik("[data-butir='" + "2b".repeat(8) + "'][data-aksi-v=buat]"); await tab.klik("[data-form=medsos-verif] button[type=submit]"); await tab.tungguFungsi("/Pilih jenis kejadian/.test(document.body.innerText)");
+    await tab.eval("(() => { const e = document.querySelector('[data-form=medsos-verif] select[name=jenis]'); e.value = 'karhutla'; })()");
+    S.log.length = 0; await tab.klik("[data-form=medsos-verif] button[type=submit]"); await tab.tungguFungsi("/Kejadian dibuat dari butir/.test(document.body.innerText)");
+    v = S.log.filter(x => x.p === "/api/pusdalops/medsos/verifikasi").pop(); assert.deepEqual(v.body, {id: "2b".repeat(8), aksi: "buat", kejadian: {jenis: "karhutla"}});
+    /* tambah butir */
+    await tab.eval(`(() => { const d = [...document.querySelectorAll('details.bn-blok')].find(x => /Tambah butir/.test(x.innerText)); d.open = true; d.dataset.ts = 'ya'; })()`);
+    const ts = "details[data-ts=ya]";
+    await tab.klik(`${ts} button[type=submit]`); await tab.tungguFungsi("/Tautan harus diawali https/.test(document.body.innerText)");
+    await tab.eval(`(() => { const d = document.querySelector('${ts}'); d.querySelector('[name=tautan]').value = 'https://contoh.invalid/p/9'; d.querySelector('[name=judul]').value = 'Unggahan banjir bandang'; const sp = d.querySelector('select[name=prov]'); sp.value = '33'; sp.dispatchEvent(new Event('change', {bubbles: true})); })()`);
+    S.log.length = 0; await tab.klik(`${ts} button[type=submit]`); await tab.tungguFungsi("/Butir masuk antrean/.test(document.body.innerText)");
+    v = S.log.find(x => x.m === "POST" && x.p === "/api/pusdalops/medsos"); assert.deepEqual(v.body, {sumber: "medsos", tautan: "https://contoh.invalid/p/9", judul: "Unggahan banjir bandang", prov: "33"});
+    await bersih("medsos"); await tanpaGulir("medsos");
+  });
+
+  test("tab baru: tabel belum ada (503) memberi pesan umum, bukan layar kosong atau nomor migrasi", async () => {
+    S.g3_503 = true; await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await pilihTab("berantai");
+    assert.match(await tab.teks(), /Data belum tersedia\. Hubungi admin\./); assert.doesNotMatch(await tab.teks(), /migrasi|0098/i); S.g3_503 = false;
+  });
+
+  test("dummy: isi memakai rute sesuai tab SK, Berantai, Medsos", async () => {
+    await tab.buka(base + "/bnpb/operasi.html", {tunggu: ".op-tabel"}); await tab.tunggu("[data-dummy=isi]");
+    for (const [k, rute] of [["sk", "/api/logbook/dummy"], ["berantai", "/api/pusdalops/berantai/dummy"], ["medsos", "/api/pusdalops/medsos/dummy"]]) {
+      await pilihTab(k); S.log.length = 0; await tab.klik("[data-dummy=isi]"); await tab.tungguFungsi("!document.querySelector('.op-isi').hasAttribute('aria-busy')", 15000); await new Promise(r => setTimeout(r, 300));
+      assert.deepEqual(S.log.filter(x => x.m === "POST").map(x => x.p), [rute], k);
+    }
   });
 
   test("klik tab langsung mengecat chrome (INP): aria-selected berubah sebelum data datang", async () => {

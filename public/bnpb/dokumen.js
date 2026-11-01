@@ -1,14 +1,16 @@
-/* Dokumen Pusdalops (/bnpb/dokumen): BAST Piket, Laporan Menonjol, Laporan Shift, Rekap Mingguan dari logbook.
-   Data: GET /api/logbook/hari?tgl= (rute yang ADA); semua hitungan di dokumen_pusdalops.js (murni, diuji). Cetak = window.print() dengan CSS A4; salin teks WA.
+/* Dokumen Pusdalops (/bnpb/dokumen): BAST Piket, Laporan Menonjol, Laporan Shift, Rekap Mingguan, Laporan Harian (laphar), Sitrep per kejadian dari logbook.
+   Data: GET /api/logbook/hari?tgl= (rute yang ADA), GET /api/logbook/kejadian/:id/sk (laphar, sitrep), berkas instansi statis (sitrep gunung api dan gempa);
+   semua hitungan di dokumen_pusdalops.js dan dokumen_laphar.js (murni, diuji). Cetak = window.print() dengan CSS A4; salin teks WA.
    INP: ganti tab/tanggal langsung mengecat chrome (tab aktif, pesan memuat); pengambilan data dan render tabel menyusul sesudah satu frame tercat.
    Tanpa gaya/skrip inline (CSP); teks data lewat textContent. */
 (() => {
   "use strict";
-  const {ikon, h} = window.Wilayah, D = window.DokumenPusdalops, app = document.getElementById("app"), POLA = "dokumen_bast_pola_v1";
+  const {ikon, h} = window.Wilayah, D = window.DokumenPusdalops, L = window.DokumenLaphar, app = document.getElementById("app"), POLA = "dokumen_bast_pola_v1";
   const POLA_BAWAAN = "NNN/PTEO/PO.02/BB/2026";   // pola nomor dari BAST asli (katalog Drive: NNN/PTEO/PO.02/BB/2026); urutnya diisi manual
-  const TAB = [["bast", "BAST Piket", "daftar"], ["menonjol", "Laporan Menonjol", "lainnya"], ["shift", "Laporan Shift", "kalender"], ["mingguan", "Rekap Mingguan", "simpan"]];
+  const TAB = [["bast", "BAST Piket", "daftar"], ["menonjol", "Laporan Menonjol", "lainnya"], ["shift", "Laporan Shift", "kalender"], ["mingguan", "Rekap Mingguan", "simpan"], ["laphar", "Laporan Harian", "peringatan"], ["sitrep", "Sitrep Kejadian", "gunungapi"]];
+  const SITREP_HARI = 10, URL_GUNUNG = "/banjir/data/gunungapi_status.json", URL_GEMPA = "/gempa/data/laporan.json", MAKS_SK = 40;
   const kini = Date.now(), kemarin = D.tglISO(kini - 864e5);
-  const st = {tab: "bast", tgl: kemarin, n: 3, kamis: D.tglISO(D.akhirKamis(kini)), urut: "", pola: POLA_BAWAAN, manual: new Set(), pilihBuka: false};
+  const st = {tab: "bast", tgl: kemarin, n: 3, kamis: D.tglISO(D.akhirKamis(kini)), urut: "", pola: POLA_BAWAAN, manual: new Set(), pilihBuka: false, semua: false, kejadian: "", gunung: ""};
   let nomor = 0, cache = new Map(), teksWA = "", ulangNomor = null, tundaManual = 0;
 
   const bacaLokal = () => { try { return JSON.parse(localStorage.getItem(POLA) || "null"); } catch (e) { return null; } };
@@ -32,6 +34,38 @@
     }
     return {entri: out, galat, terpotong, diambil};
   }
+
+  /* SK status per kejadian (rute baru, bisa 503 sebelum migrasi 0094) dan berkas instansi statis; semuanya gagal dengan tenang, dokumen tetap tersusun tanpa bagian itu */
+  const skCache = new Map(), statikCache = new Map();
+  async function ambilSk(id) {
+    const c = skCache.get(id); if (c && Date.now() - c.t < 3e5) return c;
+    let r; try { const x = await fetch("/api/logbook/kejadian/" + encodeURIComponent(id) + "/sk"); r = {s: x.status, list: x.ok ? ((await x.json().catch(() => ({}))).sk || []) : []}; } catch (e) { r = {s: 0, list: []}; }
+    r.t = Date.now(); if (r.s === 200) skCache.set(id, r); return r;
+  }
+  async function ambilSkBanyak(ids) {
+    const sk = {}; let galat = null;
+    for (let i = 0; i < ids.length && i < MAKS_SK; i += 4) for (const [j, r] of (await Promise.all(ids.slice(i, i + 4).map(async id => [id, await ambilSk(id)])))) { if (r.s === 200) sk[j] = r.list; else galat = galat || r.s; }
+    return {sk, galat, terpotong: ids.length > MAKS_SK};
+  }
+  async function statik(url) {
+    if (statikCache.has(url)) return statikCache.get(url);
+    let j = null; try { const x = await fetch(url); if (x.ok) j = await x.json(); } catch (e) {}
+    if (j) statikCache.set(url, j);   // gagal tidak di-cache supaya percobaan berikut mengulang
+    return j;
+  }
+  const infoSk = r => r.galat === 503 ? "SK status belum aktif di server (menunggu migrasi), bagian Status kosong." : r.galat != null && r.galat !== 404 ? `SK status sebagian gagal dimuat (${r.galat}), bagian Status bisa kurang.` : r.terpotong ? `SK status hanya dimuat untuk ${MAKS_SK} kejadian pertama.` : "";
+  const EKSTRA = {
+    async laphar(entri) {
+      const m = L.laphar(entri, st.tgl, {manual: st.manual, semua: st.semua}), r = await ambilSkBanyak(m.kejadian.map(k => k.id));
+      return {m: L.pasangSk(m, r.sk), info: [infoSk(r)]};
+    },
+    async sitrep(entri) {
+      const c = L.kandidatSitrep(entri, st.tgl), pilih = c.find(x => x.id === st.kejadian) || c[0]; st.kejadian = pilih ? pilih.id : "";
+      if (!pilih) return {kandidat: c};
+      const [r, gd, gl] = await Promise.all([ambilSkBanyak([pilih.id]), pilih.jenis === "gunungapi" ? statik(URL_GUNUNG) : null, pilih.jenis === "gempabumi" || pilih.jenis === "tsunami" ? statik(URL_GEMPA) : null]);
+      const info = [infoSk(r)]; if (pilih.jenis === "gunungapi" && !gd) info.push("Data PVMBG tidak bisa dimuat."); if (gl === null && (pilih.jenis === "gempabumi" || pilih.jenis === "tsunami")) info.push("Katalog gempa tidak bisa dimuat.");
+      return {kandidat: c, pilih, sk: r.sk[pilih.id] || [], gunungData: gd, gempaLap: gl, info};
+    }};
 
   const pil = (teks, ton, ik) => h("span", {class: "bn-pil dk-t-" + ton}, ikon(ik), teks);
   const tabel = (kepala, baris, kelasKolom = []) => h("div", {class: "dk-bungkus"}, h("table", {class: "dk-tabel"}, h("thead", null, h("tr", null, kepala.map(t => h("th", {teks: t})))),
@@ -57,12 +91,13 @@
     h("b", {teks: namaJenis(v.jenis)}), ", " + v.lokasi + (v.dampak ? ": " + v.dampak : ": dampak belum dilaporkan"), v.alasan.length ? h("span", {class: "dk-alasan", teks: " (menonjol: " + v.alasan.join(", ") + ")"}) : null))))) : [kosong("Tidak ada kejadian yang memenuhi ambang menonjol pada periode ini.")];
   const periodeHari = tgl => `${D.tglIndo(tgl)} pukul 07.00 WIB s.d. ${D.tglIndo(D.tambahHari(tgl, 1))} pukul 07.00 WIB`;
 
+  const pilihManual = hr => h("details", {class: "dk-tak-cetak"}, h("summary", {teks: `Pilih manual dari ${F(hr.semua.length)} kejadian periode ini`}),
+    h("div", {class: "dk-pilih"}, hr.semua.map(v => { const otomatis = v.menonjol && !st.manual.has(v.id), c = h("input", {type: "checkbox", "data-id": v.id, checked: v.menonjol, disabled: otomatis});
+      return h("label", null, c, `${namaJenis(v.jenis)}, ${v.lokasi}`); })));
   function buatMenonjol(entri, dummy, diambil) {
     const hr = D.hariData(entri, st.tgl, st.manual);
     // pimpinan boleh memilih manual kejadian di bawah ambang (hanya dalam sesi ini); yang lolos ambang terkunci tercentang
-    const pilih = h("details", {class: "dk-tak-cetak"}, h("summary", {teks: `Pilih manual dari ${F(hr.semua.length)} kejadian periode ini`}),
-      h("div", {class: "dk-pilih"}, hr.semua.map(v => { const otomatis = v.menonjol && !st.manual.has(v.id), c = h("input", {type: "checkbox", "data-id": v.id, checked: v.menonjol, disabled: otomatis});
-        return h("label", null, c, `${namaJenis(v.jenis)}, ${v.lokasi}`); })));
+    const pilih = pilihManual(hr);
     const node = h("div", null, kop("LAPORAN MENONJOL", periodeHari(st.tgl), dummy),
       h("div", {class: "dk-ringkas"}, pil(`${F(hr.daftar.length)} menonjol`, "bahaya", "peringatan"), pil(`${F(hr.total)} kejadian periode ini`, "info", "daftar"), pil(`${F(hr.baru)} baru, ${F(hr.pengkinian)} pengkinian`, "tunggu", "kalender")),
       h("p", {class: "dk-p", teks: `Laporan kejadian bencana sejumlah ${F(hr.daftar.length)}.`}), ...daftarMenonjol(hr.daftar),
@@ -107,12 +142,62 @@
       catatan("Minggu berjalan Kamis 18.00 WIB s.d. Kamis berikutnya 18.00 WIB. Luas karhutla = perkiraan dari entri piket: luas pada entri terakhir tiap kejadian dalam periode, dijumlahkan per provinsi dan dibulatkan ke hektare; bukan hitungan selisih harian metode Sipongi. Rujukan = 6 karakter awal nomor kejadian di logbook" + (ref ? "." : "; kolom KIB tampil bila logbook memuatnya.")));
     return {node, teks: D.teksMingguan(m, dummy, diambil)};
   }
-  const BUAT = {bast: buatBast, menonjol: buatMenonjol, shift: buatShift, mingguan: buatMingguan};
+  /* sel isi satu medan laphar/sitrep: baris pertama paragraf, sisanya butir */
+  const selMedan = baris => h("div", null, baris[0] ? h("p", {class: "dk-isi", teks: baris[0]}) : null, baris.length > 1 ? h("ul", {class: "dk-butir"}, baris.slice(1).map(b => h("li", {teks: b}))) : null);
+  const tautan = u => /^https:\/\//.test(u || "") ? h("a", {class: "dk-url", href: u, target: "_blank", rel: "noopener noreferrer", teks: u}) : (u || "");
+  /* daftar blok panjang: 40 pertama + tombol; cetak membuka semuanya (.dk-lagi) */
+  const daftarBlok = (items, buat, batas = 40) => {
+    if (items.length <= batas) return h("div", {class: "dk-daftar"}, items.map(buat));
+    const w = h("div", {class: "dk-daftar"}), tampil = n => w.replaceChildren(...items.slice(0, n).map(buat), ...(n < items.length ? [h("button", {type: "button", class: "bn-tombol sekunder dk-tak-cetak dk-lagi", teks: `Tampilkan semua (${F(items.length)} kejadian)`})] : []));
+    w.addEventListener("click", e => { if (e.target.closest(".dk-lagi")) tampil(items.length); }); tampil(batas); return w;
+  };
+  function buatLaphar(entri, dummy, diambil, ek) {
+    const m = ek.m, hr = D.hariData(entri, st.tgl, st.manual);
+    const blok = k => h("section", {class: "dk-kej"}, h("h4", {teks: `${k.no}. ${k.judul}`}), tabel(["Medan", "Keterangan"], k.medan.map(([lab, baris]) => [lab, selMedan(baris)]), ["dk-label", ""]));
+    const bersk = m.kejadian.filter(k => k.sk.length);
+    const node = h("div", null, kop("LAPORAN HARIAN", `${L.hariTgl(m.selesai)}, pemantauan ${D.tglIndo(m.tgl)} pukul 07.00 WIB s.d. ${D.tglIndo(m.selesai)} pukul 07.00 WIB`, dummy),
+      h("div", {class: "dk-ringkas"}, pil(`${F(m.kejadian.length)} ${m.semua ? "kejadian" : "menonjol"}`, "bahaya", "peringatan"), pil(`${F(m.total)} kejadian periode ini`, "info", "daftar")),
+      h("h3", {teks: "A. Kejadian Bencana"}), m.kejadian.length ? daftarBlok(m.kejadian, blok) : kosong("Tidak ada kejadian yang memenuhi ambang menonjol pada periode ini."),
+      h("h3", {teks: "B. Rekapitulasi berdasarkan SK Darurat"}),
+      bersk.length ? tabel(["No", "Kejadian", "Status kedaruratan"], bersk.map(k => [String(k.no), k.judul, h("ul", {class: "dk-butir"}, k.sk.map(x => h("li", {teks: L.skTeks(x)})))]), ["n", "", ""]) : kosong("Tidak ada SK status darurat tercatat untuk kejadian pada laporan ini."),
+      catatan("Bentuk mengikuti laphar Koordalops 2022 sampai 2026 dan dapat diurai kembali oleh pengurai laphar. Isi medan dari entri terakhir tiap kejadian dalam periode, kronologis dari semua entri periode itu. Medan yang tidak diisi piket tertulis belum dilaporkan. Tanggal judul = tanggal penutup periode."));
+    return {node, pilih: pilihManual(hr), teks: L.teksLaphar(m, diambil)};
+  }
+  const baris2 = (kepala, rows, kelas) => tabel(kepala, rows, kelas);
+  function buatSitrep(entri, dummy, diambil, ek) {
+    const c = ek.kandidat || [];
+    if (!c.length) return {node: h("div", null, kop("SITUASI TERKINI (SITREP)", "Per kejadian besar", dummy), kosong(`Belum ada kejadian besar (gunung api, gempa, atau menonjol) sampai ${D.tglIndo(st.tgl)}.`)), teks: ""};
+    const grup = D.kelompokKejadian(entri).get(ek.pilih.id);
+    const kg = ek.pilih.jenis === "gunungapi" && ek.gunungData ? L.kandidatGunung(grup, ek.gunungData) : [], gpilih = kg.find(x => x.nama === st.gunung) || kg[0] || null;
+    const gempa = (ek.pilih.jenis === "gempabumi" || ek.pilih.jenis === "tsunami") && ek.gempaLap ? L.kandidatGempa(grup, ek.gempaLap) : null;
+    const s = L.sitrep(entri, ek.pilih.id, st.tgl, ek.sk, {gunung: gpilih, data: ek.gunungData, gempa, gempaPer: L.perGempa(ek.gempaLap)});
+    const selK = h("label", {class: "bn-isian"}, "Kejadian besar", h("select", {name: "kejadian"}, c.map(x => h("option", {value: x.id, selected: x.id === ek.pilih.id, teks: `${x.judul} (${F(x.nEntri)} entri)`}))));
+    const selG = kg.length > 1 ? h("label", {class: "bn-isian"}, "Gunung api (data PVMBG)", h("select", {name: "gunung"}, kg.map(x => h("option", {value: x.nama, selected: gpilih && x.nama === gpilih.nama, teks: `${x.nama}, ${L.LEVEL[x.level] || x.level}`})))) : null;
+    const gn = s.gunung, gb = gn && [["Gunung", `${gn.nama} (${gn.prov})`], ["Status", gn.level], ["Radius bahaya", gn.radius], ["Periode pengamatan", gn.periode || "belum dilaporkan"], ["Penduduk dalam radius", gn.penduduk || "belum dilaporkan"]];
+    const node = h("div", null, kop("SITUASI TERKINI (SITREP)", `${s.judul}. Data dilaporkan sampai ${L.waktuWib(s.sampai)}`, dummy),
+      h("div", {class: "dk-ringkas"}, pil(s.status === "tutup" ? "Ditutup" : "Masih berjalan", s.status === "tutup" ? "ok" : "tunggu", s.status === "tutup" ? "simpan" : "kalender"), pil(`${F(s.nEntri)} entri`, "info", "daftar"), s.kib ? pil("KIB " + s.kib, "info", "lainnya") : null),
+      h("h3", {teks: "A. Ringkasan"}), baris2(["Butir", "Keterangan"], s.ringkas, ["dk-label", ""]),
+      h("h3", {teks: "B. Kronologis"}), tabelBatas(["Waktu", "Perkembangan", "Dampak pada entri"], s.kronologi.map(x => [x.waktu, x.teks, x.dampak || "tidak dilaporkan"]), ["", "", ""]),
+      h("h3", {teks: "C. Dampak terkini"}), baris2(["Butir", "Keterangan"], s.dampak.map(([a, b]) => [a, selMedan(b)]), ["dk-label", ""]),
+      h("h3", {teks: "D. Upaya, kebutuhan, dan kendala"}), baris2(["Butir", "Keterangan"], [["Upaya", selMedan(s.upaya)], ["Kebutuhan", selMedan(s.kebutuhan)], ["Kendala", selMedan(s.kendala)]], ["dk-label", ""]),
+      h("h3", {teks: "E. Status kedaruratan dan posko"}),
+      s.sk.length ? baris2(["Tingkat", "Wilayah", "Nomor SK", "Masa berlaku (TMT)", "Perpanjangan", "Tautan SK"], s.sk.map(r => [r[0], r[1], r[2], r[3], r[4], r[5] ? tautan(r[5]) : "belum dilaporkan"]), ["", "", "", "", "n", ""]) : kosong("Tidak ada SK status tercatat di logbook."),
+      h("p", {class: "dk-p", teks: "Posko: " + s.posko}),
+      ...(gn ? [h("h3", {teks: "F. Data instansi: gunung api"}), baris2(["Butir", "Keterangan"], gb, ["dk-label", ""]), h("p", {class: "dk-p", teks: "Rekomendasi PVMBG: " + (gn.rekomendasi || "belum dilaporkan")}),
+        ...(gn.letusan.length ? [h("ul", {class: "dk-butir"}, gn.letusan.map(t => h("li", {teks: t})))] : []), h("p", {class: "dk-p"}, `Sumber: ${gn.sumber}, per ${gn.tgl}. `, gn.laporan ? tautan(gn.laporan) : "")]
+        : ek.pilih.jenis === "gunungapi" ? [h("h3", {teks: "F. Data instansi: gunung api"}), kosong("Gunung belum cocok dengan data PVMBG. Sebut nama gunung di catatan piket agar data otomatis tertarik.")] : []),
+      ...(gempa ? [h("h3", {teks: "F. Data instansi: gempa"}), gempa.length ? tabel(["Waktu", "Magnitudo", "Kedalaman (km)", "Wilayah"], gempa.map(x => [x.waktu, F(x.magnitudo), F(x.kedalaman), x.wilayah]), ["", "n", "n", ""]) : kosong("Tidak ada gempa M 5 atau lebih di katalog yang menyebut wilayah kejadian ini."),
+        h("p", {class: "dk-p", teks: `Sumber: USGS dan BMKG, arsip Centurisk97 30 hari, per ${s.gempaPer}. Intensitas guncangan (MMI) belum tersedia di berkas instansi.`})] : []),
+      catatan(`Kronologis memuat entri ${SITREP_HARI} hari terakhir sampai hari laporan. Kejadian yang ditawarkan: gunung api, gempa, tsunami, dan kejadian yang melewati ambang menonjol.`));
+    return {node, pilih: h("div", {class: "bn-baris"}, selK, selG), teks: L.teksSitrep(s, diambil)};
+  }
+  const BUAT = {bast: buatBast, menonjol: buatMenonjol, shift: buatShift, mingguan: buatMingguan, laphar: buatLaphar, sitrep: buatSitrep};
 
   /* hari yang harus diambil: periode dokumen + 7 hari mundur (untuk menilai baru vs pengkinian) */
   function hariDiperlukan() {
     const mundur = D.LOOKBACK_HARI;
     if (st.tab === "mingguan") { const a = D.akhirDariTgl(st.kamis), p = D.periodeMinggu(a); return D.hariUntuk(p.dari - mundur * 864e5, p.sampai); }
+    if (st.tab === "sitrep") return D.hariUntuk(D.awalHari(D.tambahHari(st.tgl, -(SITREP_HARI - 1))), D.awalHari(st.tgl) + 864e5);
     const awal = st.tab === "bast" ? D.tambahHari(st.tgl, -(st.n - 1)) : st.tgl;
     return D.hariUntuk(D.awalHari(D.tambahHari(awal, -mundur)), D.awalHari(st.tgl) + 864e5);
   }
@@ -134,7 +219,9 @@
     el.tab.addEventListener("click", e => { const b = e.target.closest("[data-tab]"); if (b && b.dataset.tab !== st.tab) { st.tab = b.dataset.tab; tandaiTab(); gambarKontrol(); segarkan(); } });
     el.cetak.addEventListener("click", cetak);
     el.salin.addEventListener("click", salin);
-    el.pilihan.addEventListener("change", e => { const c = e.target.closest("input[data-id]"); if (!c) return; c.checked ? st.manual.add(c.dataset.id) : st.manual.delete(c.dataset.id); clearTimeout(tundaManual); tundaManual = setTimeout(() => segarkan(true), 300); });
+    el.pilihan.addEventListener("change", e => {
+      const sel = e.target.closest("select[name]"); if (sel) { if (sel.name === "kejadian") { st.kejadian = sel.value; st.gunung = ""; } else st.gunung = sel.value; segarkan(true); return; }
+      const c = e.target.closest("input[data-id]"); if (!c) return; c.checked ? st.manual.add(c.dataset.id) : st.manual.delete(c.dataset.id); clearTimeout(tundaManual); tundaManual = setTimeout(() => segarkan(true), 300); });
     el.pilihan.addEventListener("toggle", e => { if (e.target.tagName === "DETAILS") st.pilihBuka = e.target.open; }, true);
     el.kontrol.addEventListener("change", ubahKontrol);
   }
@@ -143,17 +230,19 @@
   function gambarKontrol() {
     const k = [];
     if (st.tab === "mingguan") k.push(isian("kamis", "Kamis penutup periode (18.00 WIB)", {type: "date", value: st.kamis, max: D.tglISO(kini)}));
-    else k.push(isian("tgl", st.tab === "bast" ? "Hari laporan terakhir" : "Hari laporan (mulai 07.00 WIB)", {type: "date", value: st.tgl, max: D.tglISO(kini)}));
+    else k.push(isian("tgl", st.tab === "bast" ? "Hari laporan terakhir" : st.tab === "sitrep" ? "Data sampai hari laporan (07.00 s.d. 07.00 WIB)" : "Hari laporan (mulai 07.00 WIB)", {type: "date", value: st.tgl, max: D.tglISO(kini)}));
     if (st.tab === "bast") {
       const s = h("select", {name: "n"}, [1, 2, 3, 4, 5, 6, 7].map(x => h("option", {value: String(x), selected: x === st.n, teks: `${x} hari`})));
       k.push(h("label", {class: "bn-isian"}, "Lama periode", s), isian("pola", "Pola nomor surat (N = digit urut)", {value: st.pola, maxlength: "60"}), isian("urut", "Nomor urut (diisi manual)", {value: st.urut, inputmode: "numeric", maxlength: "6", placeholder: "kosong = garis isian"}));
     }
+    if (st.tab === "laphar") k.push(h("label", {class: "bn-isian"}, "Isi laporan", h("select", {name: "isi"}, [["menonjol", "Hanya kejadian menonjol"], ["semua", "Semua kejadian periode ini"]].map(([v, t]) => h("option", {value: v, selected: (v === "semua") === st.semua, teks: t})))));
     el.kontrol.replaceChildren(...k);
   }
   function ubahKontrol(e) {
     const n = e.target.name, v = e.target.value;
     if (n === "tgl" && /^\d{4}-\d\d-\d\d$/.test(v)) st.tgl = v;
     else if (n === "kamis" && /^\d{4}-\d\d-\d\d$/.test(v)) { if (D.akhirDariTgl(v) == null) { st.kamis = D.tglISO(D.akhirKamis(D.awalHari(v) + 12 * 36e5)); e.target.value = st.kamis; } else st.kamis = v; }
+    else if (n === "isi") st.semua = v === "semua";
     else if (n === "n") st.n = Math.min(7, Math.max(1, Number(v) || 3));
     else if (n === "pola" || n === "urut") {
       if (n === "pola") st.pola = v.slice(0, 60); else { st.urut = v.replace(/\D/g, "").slice(0, 6); e.target.value = st.urut; }
@@ -169,17 +258,18 @@
     if (!tanpaMuat) { el.pesan.className = "bn-pesan"; el.pesan.textContent = "Memuat entri logbook…"; el.kertas.setAttribute("aria-busy", "true"); }
     sesudahFrame(async () => {
       const d = await ambilHari(hariDiperlukan()); if (no !== nomor) return;
+      const ek = d.galat == null || d.entri.length ? await (EKSTRA[st.tab] ? EKSTRA[st.tab](d.entri) : {}) : {}; if (no !== nomor) return;
       el.kertas.removeAttribute("aria-busy");
       if (d.galat === 401 || d.galat === 403) return masuk(d.galat);
       if (d.galat === 503) { el.pesan.className = "bn-pesan galat"; el.pesan.textContent = "Data logbook belum tersedia. Hubungi admin."; el.kertas.replaceChildren(); return; }
       if (d.galat != null && !d.entri.length) { el.pesan.className = "bn-pesan galat"; el.pesan.textContent = d.galat === 0 ? "Tidak ada sinyal. Coba lagi." : `Logbook belum bisa dimuat (${d.galat}).`; return; }
-      const dummy = D.adaDummy(d.entri), r = BUAT[st.tab](d.entri, dummy, d.diambil || Date.now());
+      const dummy = D.adaDummy(d.entri), r = BUAT[st.tab](d.entri, dummy, d.diambil || Date.now(), ek);
       r.node.append(h("p", {class: "dk-p", teks: D.sumber(d.diambil || Date.now())}));
       ulangNomor = r.ulang || null; teksWA = r.teks;
       el.kertas.replaceChildren(r.node);
       if (r.pilih) { if (st.pilihBuka) r.pilih.setAttribute("open", ""); el.pilihan.replaceChildren(r.pilih); } else el.pilihan.replaceChildren();
       sesudahFrame(() => { if (no === nomor) el.wa.value = teksWA; });   // teks WA menyusul sesudah kertas tercat
-      const info = []; if (dummy) info.push("Memuat data dummy, ditandai di dokumen."); if (d.terpotong) info.push("Sebagian entri terpotong batas 1.000 per hari, angka bisa kurang."); if (d.galat != null) info.push(`Sebagian hari gagal dimuat (${d.galat}), angka bisa kurang.`);
+      const info = []; if (dummy) info.push("Memuat data dummy, ditandai di dokumen."); if (d.terpotong) info.push("Sebagian entri terpotong batas 1.000 per hari, angka bisa kurang."); if (d.galat != null) info.push(`Sebagian hari gagal dimuat (${d.galat}), angka bisa kurang.`); info.push(...(ek.info || []).filter(Boolean));
       el.pesan.className = "bn-pesan" + (info.length ? " galat" : " ok"); el.pesan.textContent = info.join(" ") || `Pratinjau siap, ${F(d.entri.length)} entri dibaca.`;
     });
   }
@@ -193,7 +283,8 @@
     sesudahFrame(() => { el.kertas.querySelectorAll(".dk-lagi").forEach(b => b.click()); window.print(); el.pesan.textContent = ""; });
   }
   function salin() {
-    if (sibuk() || !teksWA) return;
+    if (sibuk()) return;
+    if (!teksWA) { el.pesan.className = "bn-pesan galat"; el.pesan.textContent = "Belum ada teks untuk disalin."; return; }
     el.pesan.className = "bn-pesan"; el.pesan.textContent = "Menyalin…";
     sesudahFrame(async () => {
       let ok = false;

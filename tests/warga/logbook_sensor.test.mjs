@@ -13,7 +13,7 @@ import {buatPengingat} from "../../src/pengingat.js";
 const uji = test;
 const sha = s => createHash("sha256").update(s).digest("hex");
 const TOK = "c".repeat(64), TOK_LUAR = "d".repeat(64), INDUK = "induk-uji-sensor", FP = "ab".repeat(8);
-const HARI = 864e5;
+const HARI = 864e5, TUTUP = {tgl_tuntas: new Date().toISOString().slice(0, 10), kondisi_akhir: "Air surut, pengungsi kembali"};
 let mf, DB;
 before(async () => {
   mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
@@ -107,11 +107,11 @@ uji("logbook: buka per kab, laporan harian 07.00-07.00 WIB, tutup", async () => 
   assert.equal((await call("GET", "/api/logbook/buka?kab=Temanggung")).status, 400, "tanpa prov ditolak");
   assert.equal((await call("GET", "/api/logbook/buka?kab=Temanggung&prov=33")).j.kejadian.length, 1);
   assert.equal((await call("GET", "/api/logbook/buka?kab=" + encodeURIComponent("33|Wonosobo"))).j.kejadian.length, 0);
-  assert.equal((await call("POST", `/api/logbook/kejadian/${k}/tutup`, STAF, {})).status, 200);
-  assert.equal((await call("POST", `/api/logbook/kejadian/${k}/tutup`, STAF, {})).status, 409);
+  assert.equal((await call("POST", `/api/logbook/kejadian/${k}/tutup`, STAF, TUTUP)).status, 200);
+  assert.equal((await call("POST", `/api/logbook/kejadian/${k}/tutup`, STAF, TUTUP)).status, 409);
   assert.equal((await call("POST", `/api/logbook/kejadian/${k}/entri`, STAF, {md: 1})).status, 409);
   assert.equal((await call("GET", "/api/logbook/buka?kab=" + encodeURIComponent("33|Temanggung"))).j.kejadian.length, 0, "yang ditutup tidak muncul");
-  assert.equal((await call("POST", "/api/logbook/kejadian/ffffffffffffffff/tutup", STAF, {})).status, 404);
+  assert.equal((await call("POST", "/api/logbook/kejadian/ffffffffffffffff/tutup", STAF, TUTUP)).status, 404);
 });
 
 uji("logbook: pengingat 24 dan 72 jam tanpa entri baru, hilang bila entri masuk", async () => {
@@ -126,7 +126,7 @@ uji("logbook: pengingat 24 dan 72 jam tanpa entri baru, hilang bila entri masuk"
   d = await daftar(); assert.equal(d.length, 1); assert.match(d[0].keadaan, /^h3:/); assert.match(d[0].judul, /72 jam/);
   assert.equal((await call("POST", `/api/logbook/kejadian/${k}/entri`, STAF, {md: 3})).status, 201);
   await buatPengingat(env, kini, {hanya: ["logbook_lanjutan"]}); assert.equal((await daftar()).length, 0, "entri baru menghapus pengingat basi");
-  await tua(100); await call("POST", `/api/logbook/kejadian/${k}/tutup`, STAF, {});
+  await tua(100); await call("POST", `/api/logbook/kejadian/${k}/tutup`, STAF, TUTUP);
   await buatPengingat(env, kini, {hanya: ["logbook_lanjutan"]}); assert.equal((await daftar()).length, 0, "kejadian ditutup: tidak diingatkan");
 });
 
@@ -334,7 +334,7 @@ uji("logbook: tulis dibatasi 120 per pelaku per jam, pelaku lain tidak terganggu
   await DB.prepare("DELETE FROM laju_bnpb").run();
   await DB.batch(Array.from({length: 120}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES ('lb:staf:s1s1s1s1s1s1s1s1', 'logbook_tulis', ?)").bind(Date.now())));
   const a = await call("POST", "/api/logbook/kejadian", STAF, baru); assert.equal(a.status, 429);
-  assert.equal((await call("POST", "/api/logbook/kejadian/ffffffffffffffff/tutup", STAF, {})).status, 429);
+  assert.equal((await call("POST", "/api/logbook/kejadian/ffffffffffffffff/tutup", STAF, TUTUP)).status, 429);
   assert.equal((await call("POST", "/api/logbook/kejadian", ADMIN, baru)).status, 201, "pelaku lain tetap boleh");
   await DB.prepare("DELETE FROM laju_bnpb").run();
 });

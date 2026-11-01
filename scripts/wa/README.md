@@ -90,3 +90,10 @@ Hanya dari nomor `PEMILIK` (boleh beberapa, dipisah koma). Pesan perintah (teks 
 sed -e "s#__REPO__#$HOME/Documents/GitHub/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" scripts/wa/launchd/id.centurisk97.wa-cutoff.plist > ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
 ```
+
+## Logbook dari grup WA (G5)
+
+`logbook_wa.mjs`: pesan di `LOGBOOK_GRUP` diurai (`urai_laporan.py`) jadi draf entri, ringkasan dikirim ke `LOGBOOK_STAF`.
+Hanya nomor di `LOGBOOK_STAF` (perorangan, bukan grup) yang boleh membalas. Staf membalas `OK <kode>` (tambah `YAKIN` bila server menolak angka tak wajar), `BATAL <kode>`, `KOREKSI <kode>` + baris `medan=nilai`, atau `DRAF`.
+Baru sesudah OK bot masuk sebagai `LOGBOOK_USER`/`LOGBOOK_SANDI` dan POST ke `/api/logbook/kejadian` (atau `/kejadian/:id/entri` bila ada kejadian terbuka kab + jenis dengan entri terakhir <= 3 hari). Nomor HP, surel, dan nama bergelar disaring sebelum draf disimpan. Pesan di grup BPBD tetap mengalir ke jalur bahan laporan harian seperti biasa; hanya balasan staf yang dicegat penuh.
+Uji: `node --test tests/wa/logbook_wa.test.mjs`.

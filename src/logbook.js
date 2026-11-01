@@ -3,10 +3,11 @@
    Semua rute: stafOK(pusdalops|koordalops|pimpinan) PERTAMA, sebelum body/D1. Wilayah = kunci "prov|nama" (prov 2 angka), sama dengan public/data/logbook_riwayat.json.
    Pengingat lanjutan (24/72 jam tanpa entri baru) dibuat src/pengingat.js lewat pendeteksi `logbookLanjutan` memakai logbook_kejadian.terakhir (indeks status, terakhir). */
 import {json, gagal, acak, bacaBody} from "./worker.js";
-import {stafOK} from "./staf.js";
+import {stafOK, dalamWilayahStaf} from "./staf.js";
 import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 import {PROV} from "./alun.js";
+import {catatBerantai} from "./berantai.js";
 
 const PERAN = ["pusdalops", "koordalops", "pimpinan"], HARI = 864e5, MENIT = 6e4, MAKS_BODY = 8192, MAKS_HARI = 1000;
 export const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"];   // tiga terakhir: panduan resmi Pusdalops (DIBI 103, 108, 201), butuh migrasi 0091
@@ -28,6 +29,7 @@ const waktuMs = (v, kini) => {   // epoch ms atau ISO; null = sekarang
   const t = typeof v === "number" ? v : typeof v === "string" ? Date.parse(v) : NaN;
   return Number.isFinite(t) && t <= kini + 5 * MENIT && t >= kini - 14 * HARI ? Math.round(t) : undefined;
 };
+export const wilayahKejadian = o => wilayah(o);
 function wilayah(o) {   // kab_kode "prov|nama" (bentuk form staf), atau kab/wilayah berkunci "prov|nama", atau prov_kode/prov (2 angka) + kab (nama)
   const k = [o.kab_kode, o.kab, o.wilayah].find(x => typeof x === "string" && x.includes("|"));
   const [prov, kab, ...sisa] = k ? k.split("|") : [o.prov_kode ?? o.prov, o.kab];
@@ -201,16 +203,22 @@ const BASE_KEJ = "k.id, k.jenis, k.prov, k.kab, k.kec, k.desa, k.lat, k.lon, k.m
 const kolKej = () => JK_ADA ? BASE_KEJ + ", b.kib" : BASE_KEJ, dariKej = () => JK_ADA ? "logbook_kejadian k LEFT JOIN logbook_kib b ON b.kejadian_id = k.id" : "logbook_kejadian k";
 const BASE_ENT = [...["id", "kejadian_id", "waktu", ...ANGKA, "kendala", "kebutuhan", "catatan", "sumber_instansi", "dibuat"].map(c => "e." + c)];
 const kolEnt = () => (JK_ADA ? [...BASE_ENT, "j.kib_entri AS kib", ...JK.map(c => "j." + c)] : BASE_ENT).join(", "), dariEnt = () => JK_ADA ? "logbook_entri e LEFT JOIN logbook_entri_juklak j ON j.entri_id = e.id" : "logbook_entri e";
+const luarWilayah = (req, provs) => provs.every(p => dalamWilayahStaf(req, [p])) && dalamWilayahStaf(req, provs) ? null : gagal(403, "provinsi di luar wilayah staf");
 const BATAS_TULIS = [[3600e3, 120]];   // tulis logbook per pelaku per jam
 const lajuTulis = (env, oleh, kini) => laju(env, "lb:" + oleh, "logbook_tulis", BATAS_TULIS, kini);
 const pintu = async (env, req) => { const oleh = await stafOK(env, req, PERAN); return oleh ? String(oleh).slice(0, 64) : null; };
 const baca = async req => { const b = await bacaBody(req, MAKS_BODY); return b.galat ? {r: gagal(b.status || 400, b.galat)} : {o: b.o}; };
 
 async function buat(env, req, kini) {
-  await jkAda(env, kini);
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
   const b = await baca(req); if (b.r) return b.r;
-  const o = b.o, w = wilayah(o);
+  const w = wilayah(b.o); if (w) { const lw = luarWilayah(req, [w.prov]); if (lw) return lw; }
+  return buatKejadian(env, oleh, b.o, kini);
+}
+/* Dipakai juga src/medsos_antre.js (butir pantauan jadi kejadian): validasi dan tulis satu tempat. Pemanggil sudah lolos gerbang staf dan membaca body. */
+export async function buatKejadian(env, oleh, o, kini) {
+  await jkAda(env, kini);
+  const w = wilayah(o);
   if (!JENIS.includes(o.jenis)) return gagal(400, `jenis harus salah satu: ${JENIS.join(", ")}`);
   if (!w) return gagal(400, 'kab harus kunci wilayah "prov|nama" (prov 2 angka dikenal)');
   const kec = teks(o.kec, 60), desa = teks(o.desa, 60);
@@ -232,14 +240,16 @@ async function buat(env, req, kini) {
       if (JENIS_BARU.includes(o.jenis) && /CHECK constraint failed/i.test(String(e?.message || e))) return gagal(503, "jenis ini belum aktif (migrasi 0091_logbook_jenis belum diterapkan)"); throw e;
     }
   }
+  await catatBerantai(env, {jenis: o.jenis, prov: w.prov, kab: w.kab, kejadian: id, kini});
   return json({kejadian: keluarKej(await env.DB.prepare(`SELECT ${kolKej()} FROM ${dariKej()} WHERE k.id = ?`).bind(id).first()), entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.kejadian_id = ?`).bind(id).first()), ...!JK_ADA && adaIsiJk(o, p.e) ? {juklak: MENUNGGU} : {}}, 201);
 }
 async function lanjut(env, req, kini, id) {
   await jkAda(env, kini);
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
   const b = await baca(req); if (b.r) return b.r;
-  const k = await env.DB.prepare(JK_ADA ? "SELECT k.id, k.status, k.jenis, k.prov, k.mulai, b.kib FROM logbook_kejadian k LEFT JOIN logbook_kib b ON b.kejadian_id = k.id WHERE k.id = ?" : "SELECT id, status FROM logbook_kejadian WHERE id = ?").bind(id).first();
+  const k = await env.DB.prepare(JK_ADA ? "SELECT k.id, k.status, k.jenis, k.prov, k.kab, k.mulai, b.kib FROM logbook_kejadian k LEFT JOIN logbook_kib b ON b.kejadian_id = k.id WHERE k.id = ?" : "SELECT id, status, jenis, prov, kab FROM logbook_kejadian WHERE id = ?").bind(id).first();
   if (!k) return gagal(404, "kejadian tidak ada");
+  const lw = luarWilayah(req, [k.prov]); if (lw) return lw;
   if (k.status !== "buka") return gagal(409, "kejadian sudah ditutup");
   const p = periksaEntri(b.o, kini); if (p.galat) return json({galat: p.galat, wajar: p.wajar}, 400);
   const lj = await lajuTulis(env, oleh, kini); if (lj) return lj;
@@ -252,14 +262,32 @@ async function lanjut(env, req, kini, id) {
       env.DB.prepare("UPDATE logbook_kejadian SET terakhir = ?, diubah = ? WHERE id = ?").bind(kini, kini, id)]); break; }
     catch (e) { if (awal && coba < 3 && /UNIQUE constraint failed/i.test(String(e?.message || e))) continue; throw e; }
   }
+  await catatBerantai(env, {jenis: k.jenis, prov: k.prov, kab: k.kab, kejadian: id, kini});
   return json({entri: keluarEntri(await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.id = ?`).bind(eid).first()), ...!JK_ADA && adaIsiJk(b.o, p.e) ? {juklak: MENUNGGU} : {}}, 201);
 }
+/* G1: tutup WAJIB membawa tgl_tuntas dan kondisi_akhir. Detail disimpan di logbook_tutup (migrasi 0098); tanpa tabelnya kejadian tetap ditutup dan balasan memuat tutup_detail.
+   Kejadian lama yang sudah tutup tanpa baris di logbook_tutup tetap sah. */
 async function tutup(env, req, kini, id) {
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
+  const b = await baca(req); if (b.r) return b.r;
+  let tgl, kondisi;
+  try {
+    tgl = b.o.tgl_tuntas; if (!tglSah(tgl)) tolak("tgl_tuntas wajib, YYYY-MM-DD yang sah");
+    if (tgl > new Date(kini + 7 * 36e5).toISOString().slice(0, 10)) tolak("tgl_tuntas tidak boleh di masa depan");
+    kondisi = tekspendek(b.o.kondisi_akhir, "kondisi_akhir", 300, 3);
+  } catch (e) { if (e && typeof e.galat === "string") return gagal(400, e.galat); throw e; }
+  const k = await env.DB.prepare("SELECT status, mulai, prov FROM logbook_kejadian WHERE id = ?").bind(id).first();
+  if (k) { const lw = luarWilayah(req, [k.prov]); if (lw) return lw; }
   const lj = await lajuTulis(env, oleh, kini); if (lj) return lj;
-  const r = await env.DB.prepare("UPDATE logbook_kejadian SET status = 'tutup', diubah = ? WHERE id = ? AND status = 'buka'").bind(kini, id).run();
-  if (r.meta.changes) return json({ok: true, id, status: "tutup"});
-  return (await env.DB.prepare("SELECT 1 x FROM logbook_kejadian WHERE id = ?").bind(id).first()) ? gagal(409, "kejadian sudah ditutup") : gagal(404, "kejadian tidak ada");
+  if (!k) return gagal(404, "kejadian tidak ada");
+  if (k.status !== "buka") return gagal(409, "kejadian sudah ditutup");
+  if (tgl < k.mulai.slice(0, 10)) return gagal(400, "tgl_tuntas tidak boleh sebelum tanggal mulai kejadian (" + k.mulai.slice(0, 10) + ")");
+  const ubah = env.DB.prepare("UPDATE logbook_kejadian SET status = 'tutup', diubah = ? WHERE id = ? AND status = 'buka'").bind(kini, id);
+  let r, extra = {};
+  try { r = (await env.DB.batch([ubah, env.DB.prepare("INSERT INTO logbook_tutup (kejadian_id, tgl_tuntas, kondisi_akhir, oleh, dibuat) SELECT ?, ?, ?, ?, ? WHERE changes() > 0").bind(id, tgl, kondisi, oleh, kini)]))[0]; }
+  catch (e) { if (!/no such table: logbook_tutup/i.test(String(e?.message || e))) throw e; r = await ubah.run(); extra = {tutup_detail: "menunggu migrasi 0098"}; }
+  if (!r.meta.changes) return gagal(409, "kejadian sudah ditutup");
+  return json({ok: true, id, status: "tutup", tgl_tuntas: tgl, kondisi_akhir: kondisi, ...extra});
 }
 /* kejadian buka di kab dalam 14 hari terakhir (mulai ATAU entri terakhir), lengkap dengan entri terkini untuk mengisi form lanjutan */
 async function buka(env, req, url, kini) {
@@ -272,7 +300,7 @@ async function buka(env, req, url, kini) {
   const ent = (await env.DB.prepare(`SELECT ${kolEnt()} FROM ${dariEnt()} WHERE e.kejadian_id IN (SELECT value FROM json_each(?)) AND e.rowid = (SELECT x.rowid FROM logbook_entri x WHERE x.kejadian_id = e.kejadian_id ORDER BY x.waktu DESC, x.rowid DESC LIMIT 1)`)
     .bind(JSON.stringify(kej.map(k => k.id))).all()).results;
   const per = new Map(ent.map(e => [e.kejadian_id, keluarEntri(e)]));
-  return json({kejadian: kej.map(k => ({...keluarKej(k), entri_terkini: per.get(k.id) ?? null}))}, 200, {"cache-control": "no-store"});
+  return json({kejadian: kej.map(k => ({...keluarKej(k), entri_terkini: per.get(k.id) ?? null, perlu_tutup: kini - k.terakhir > 7 * HARI}))}, 200, {"cache-control": "no-store"});
 }
 /* periode 07.00-07.00 WIB yang DIMULAI pada tanggal T: dari T 07.00 WIB (= T 00.00 UTC) sampai T+1 07.00 WIB, kiri-tutup kanan-buka. Entri pukul 00.00-07.00 WIB masuk tanggal sebelumnya;
    periode yang memuat "sekarang" = tanggal WIB dari (sekarang - 7 jam). Laporan harian pagi hari T+1 memakai tgl=T. */
@@ -321,6 +349,27 @@ async function skDaftar(env, req, id) {
   return json({sk: r.results}, 200, {"cache-control": "no-store"});
 }
 
+/* G2: papan SK aktif nasional. SK aktif = tmt_selesai >= hari ini (WIB) atau tanpa tmt_selesai, digabung kejadiannya (PK). Dua cabang UNION ALL (IS NULL; >= hari ini), masing-masing SEARCH di logbook_sk_selesai (0098): OR biasa jadi SCAN indeks yang melewati semua SK kedaluwarsa.
+   perlu_cek = kejadian sudah tutup ATAU tanpa entri baru > 7 hari. */
+const MAKS_SK_AKTIF = 1000;
+async function skAktif(env, req, kini) {
+  const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
+  if (!await jkAda(env, kini)) return gagal(503, "SK status belum aktif (" + MENUNGGU + ")");
+  const lj = await laju(env, "lb:" + oleh, "logbook_baca", [[3600e3, 120]], kini); if (lj) return lj;
+  const tgl = new Date(kini + 7 * 36e5).toISOString().slice(0, 10);
+  const rows = (await env.DB.prepare(`SELECT s.id, s.kejadian_id, s.tingkat, s.wilayah, s.nomor, s.tmt_mulai, s.tmt_selesai, s.perpanjangan_ke, k.jenis, k.prov, k.kab, k.status, k.terakhir, k.dummy
+    FROM (SELECT * FROM logbook_sk WHERE tmt_selesai IS NULL UNION ALL SELECT * FROM logbook_sk WHERE tmt_selesai >= ?) s JOIN logbook_kejadian k ON k.id = s.kejadian_id ORDER BY s.tmt_selesai LIMIT ${MAKS_SK_AKTIF + 1}`).bind(tgl).all()).results;
+  const sk = rows.slice(0, MAKS_SK_AKTIF).map(r => {
+    const selesai = r.status === "tutup", tanpa = Math.max(0, Math.floor((kini - r.terakhir) / HARI));
+    return {id: r.id, kejadian_id: r.kejadian_id, jenis: r.jenis, prov: r.prov, kab: r.kab, tingkat: r.tingkat, wilayah: r.wilayah, nomor: r.nomor, tmt_mulai: r.tmt_mulai, tmt_selesai: r.tmt_selesai, perpanjangan_ke: r.perpanjangan_ke,
+      sisa_hari: r.tmt_selesai ? Math.round((Date.parse(r.tmt_selesai + "T00:00:00Z") - Date.parse(tgl + "T00:00:00Z")) / HARI) : null, kejadian_selesai: selesai, tanpa_entri_hari: tanpa, perlu_cek: selesai || tanpa > 7, dummy: !!r.dummy};
+  });
+  const per = (kunci, init) => { const m = new Map(); for (const x of sk) { const a = m.get(x[kunci]) ?? init(x); a.sk++; if (x.perlu_cek) a.perlu_cek++; m.set(x[kunci], a); } return m; };
+  return json({tanggal: tgl, terpotong: rows.length > MAKS_SK_AKTIF, jumlah: sk.length, perlu_cek: sk.filter(x => x.perlu_cek).length,
+    per_tingkat: TINGKAT_SK.map(t => per("tingkat", () => ({tingkat: t, sk: 0, perlu_cek: 0})).get(t) ?? {tingkat: t, sk: 0, perlu_cek: 0}),
+    per_provinsi: [...per("prov", x => ({prov: x.prov, sk: 0, perlu_cek: 0})).values()].sort((a, b) => a.prov < b.prov ? -1 : 1), sk}, 200, {"cache-control": "no-store"});
+}
+
 /* ---------------- dummy (DUMMY.md): Super Admin saja; baris dummy=1 bertanda jelas, dihapus bersih oleh aksi hapus ---------------- */
 const KAB_BPS = {"33|Banjarnegara": "3304", "33|Cilacap": "3301", "14|Rokan Hilir": "1407", "33|Magelang": "3308"};   // dummy saja: kunci "prov|nama" -> kode BPS untuk KIB
 const SK_CONTOH = [   // di kejadian pertama (longsor Banjarnegara): SK kab ditulis dulu agar uji urutan prov-dulu bermakna
@@ -341,6 +390,7 @@ async function dummyRute(env, req, kini) {
   const b = await baca(req); if (b.r) return b.r;
   await jkAda(env, kini);
   if (b.o.aksi === "hapus") {
+    try { await env.DB.prepare("DELETE FROM logbook_tutup WHERE kejadian_id IN (SELECT id FROM logbook_kejadian WHERE dummy = 1)").run(); } catch (e) { if (!/no such table/i.test(String(e?.message || e))) throw e; }   // migrasi 0098 mungkin belum ada
     const [, , , e, k, p] = !JK_ADA ? [0, 0, 0, ...await env.DB.batch([env.DB.prepare("DELETE FROM logbook_entri WHERE kejadian_id IN (SELECT id FROM logbook_kejadian WHERE dummy = 1)"), env.DB.prepare("DELETE FROM pengingat WHERE jenis = 'logbook_lanjutan' AND sumber_id IN (SELECT id FROM logbook_kejadian WHERE dummy = 1)"), env.DB.prepare("DELETE FROM logbook_kejadian WHERE dummy = 1")]).then(r => [r[0], 0, r[2]])] : await env.DB.batch([env.DB.prepare("DELETE FROM logbook_sk WHERE kejadian_id IN (SELECT id FROM logbook_kejadian WHERE dummy = 1)"),
       env.DB.prepare("DELETE FROM logbook_entri_juklak WHERE entri_id IN (SELECT e.id FROM logbook_entri e JOIN logbook_kejadian k ON k.id = e.kejadian_id WHERE k.dummy = 1)"),
       env.DB.prepare("DELETE FROM logbook_kib WHERE kejadian_id IN (SELECT id FROM logbook_kejadian WHERE dummy = 1)"), env.DB.prepare("DELETE FROM logbook_entri WHERE kejadian_id IN (SELECT id FROM logbook_kejadian WHERE dummy = 1)"),
@@ -383,6 +433,7 @@ export const RUTE_LOGBOOK = {
   "POST /api/logbook/kejadian/:id/tutup": T((env, req, url, kini, ctx, id) => tutup(env, req, kini, id)),
   "POST /api/logbook/kejadian/:id/sk": T((env, req, url, kini, ctx, id) => skTambah(env, req, kini, id)),
   "GET /api/logbook/kejadian/:id/sk": T((env, req, url, kini, ctx, id) => skDaftar(env, req, id)),
+  "GET /api/logbook/sk/aktif": T((env, req, url, kini) => skAktif(env, req, kini)),
   "GET /api/logbook/buka": T((env, req, url, kini) => buka(env, req, url, kini)),
   "GET /api/logbook/hari": T((env, req, url) => hari(env, req, url)),
   "GET /api/logbook/turunan/:nama": (env, req, url, kini, ctx, nama) => turunan(env, req, kini, nama),

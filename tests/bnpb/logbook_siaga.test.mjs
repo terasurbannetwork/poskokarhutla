@@ -48,7 +48,7 @@ for (const hal of ["logbook", "siaga"]) test(`${hal}.html/js: CSP bersih dan kep
 /* ---------- layar ---------- */
 const MIME = {".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".json": "application/json"};
 const CSP = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
-const S = {log: [], masuk: true};
+const S = {log: [], masuk: true, tutup: 200};
 const sel = (n, jeda) => ({n, jeda_hari: {n, median: jeda, p75: jeda + 1}, lama_pantau_hari: {n, median: 0}, sekali_pct: 60.5, entri: n * 2, lengkap_pct: {kecamatan: 90, desa: 80, kondisi: 30, upaya: 99, kebutuhan: 10, kendala: 1}});
 const RAPOR = {min_n: 10, periode: {dasar: ["2014", "2015"], terpisah: ["2024", "2025", "2026"]}, catatan: ["Logbook mencatat waktu MASUK ke Pusdalops, bukan waktu BPBD tahu."], definisi: {jeda_hari: "hari penuh"},
   kab: {"33|Cilacap": {dasar: sel(735, 1), 2025: sel(68, 1)}, "33|Banyumas": {dasar: sel(120, 2)}, "33|Kecil": {dasar: sel(3, 5)}}, prov: {33: {dasar: sel(900, 1)}}, nasional: {dasar: sel(5000, 1)}, nama_prov: {33: "Jawa Tengah"}};
@@ -66,7 +66,8 @@ const jalankan = () => new Promise(ok => {
       if (p === "/api/akademisi/saya") return json(200, {peran: "admin", super: true});
       if (!S.masuk && p.startsWith("/api/logbook")) return json(401, {galat: "belum masuk"});
       if (p === "/api/logbook/hari") return json(200, {entri: [{waktu: new Date().toISOString(), jenis: "banjir", kab: "33|Cilacap", kec: "Kroya", desa: "Pesahangan", md: 2, mengungsi_jiwa: 1500, kendala: ["akses", "sinyal"]}]});
-      if (p === "/api/logbook/buka") return json(200, {kejadian: [{id: "K1", jenis: "longsor", kec: "Kroya", desa: "Pesahangan", mulai: "2026-10-30T01:00:00Z"}]});
+      if (p === "/api/logbook/buka") return json(200, {kejadian: [{id: "K1", jenis: "longsor", kec: "Kroya", desa: "Pesahangan", mulai: "2026-10-30T01:00:00Z", perlu_tutup: true}]});
+      if (/^\/api\/logbook\/kejadian\/[^/]+\/tutup$/.test(p)) return S.tutup === 200 ? json(200, {ok: true, status: "tutup"}) : json(S.tutup, {galat: S.tutup === 409 ? "kejadian sudah ditutup" : "tgl_tuntas wajib, YYYY-MM-DD yang sah"});
       if (p === "/api/logbook/kejadian" || /\/entri$/.test(p)) return json(201, {ok: true, id: "K9"});
       if (p === "/api/logbook/dummy") return json(200, {ok: true});
       if (p === "/api/logbook/turunan/rapor_bpbd") return json(200, RAPOR);
@@ -147,6 +148,41 @@ else {
     await tab.klik("button[type=submit]"); await tab.tungguFungsi("/Entri lanjutan tercatat/.test(document.body.innerText)");
     assert.ok(S.log.some(x => x.p === "/api/logbook/kejadian/K1/entri" && x.body.luka === 7));
     await bersih("lanjutan");
+  });
+
+  test("logbook: Tutup kejadian wajib tgl_tuntas dan kondisi_akhir, penanda perlu ditutup, galat server tampil", async () => {
+    await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
+    await tab.tungguFungsi("!/Memuat daftar wilayah/.test(document.body.innerText)", 20000);
+    await isi("select[name=prov]", "33"); await tab.tungguFungsi("document.querySelector('select[name=kab]').options.length > 20");
+    await isi("select[name=kab]", "3301"); await tab.tungguFungsi("document.querySelectorAll('[data-buka]').length === 1");
+    assert.match(await tab.eval("document.querySelector('[data-buka=K1]').innerText"), /Perlu ditutup/); assert.match(await tab.eval("document.querySelector('select[name=lanjut]').options[1].text"), /\(perlu ditutup\)/);
+    assert.match(await tab.eval("document.querySelector('[data-buka=K1]').innerText"), /mulai 30 Okt 2026/);
+    assert.equal(await tab.eval("getComputedStyle(document.querySelector('[data-buka=K1] .bn-pil')).display !== 'none' && document.querySelector('[data-buka=K1] .lb-t-bahaya') !== null"), true, "pil mencolok");
+    await tab.klik("[data-tutup=K1]");
+    const hari = new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 10);
+    assert.equal(await tab.eval("document.querySelector('input[name=tgl_tuntas]').value"), hari, "bawaan hari ini WIB"); assert.equal(await tab.eval("document.querySelector('input[name=tgl_tuntas]').min"), "2026-10-30"); assert.equal(await tab.eval("document.querySelector('input[name=tgl_tuntas]').max"), hari);
+    S.log.length = 0; const kirimTutup = () => tab.eval("[...document.querySelectorAll('.lb-tutup button')].find(b => /^Tutup kejadian/.test(b.innerText.trim())).click()"), pesan = () => tab.eval("document.querySelector('.lb-tutup .bn-pesan').innerText");
+    const tutupPost = () => S.log.filter(x => /\/tutup$/.test(x.p));
+    await kirimTutup(); assert.match(await pesan(), /Kondisi akhir wajib/); assert.equal(tutupPost().length, 0, "tanpa kondisi tidak terkirim");
+    await isi("textarea[name=kondisi_akhir]", "ab"); await kirimTutup(); assert.match(await pesan(), /minimal 3/);
+    await isi("input[name=tgl_tuntas]", "2026-10-01"); await isi("textarea[name=kondisi_akhir]", "Air surut, warga kembali ke rumah"); await kirimTutup(); assert.match(await pesan(), /sebelum tanggal mulai \(30 Okt 2026\)/); assert.equal(tutupPost().length, 0);
+    await isi("input[name=tgl_tuntas]", hari);
+    S.tutup = 400;   // Enter di kolom tanggal = tombol Tutup (galat tiruan supaya formulir tetap terbuka), bukan kirim formulir catat
+    assert.equal(await tab.eval("(() => { const e = document.querySelector('input[name=tgl_tuntas]'); e.focus(); e.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true})); return true; })()"), true);
+    await tab.tungguFungsi("true"); await new Promise(r => setTimeout(r, 300));
+    assert.equal(S.log.filter(x => x.p === "/api/logbook/kejadian" && x.m === "POST").length, 0, "Enter tidak mengirim formulir catat"); assert.equal(tutupPost().length, 1, "Enter menutup lewat rute tutup");
+    S.tutup = 200; S.log.length = 0; await tab.eval("(() => { const e = document.querySelector('input[name=tgl_tuntas]'); for (let i = 0; i < 3; i++) e.dispatchEvent(new KeyboardEvent('keydown', {key: 'Enter', bubbles: true, cancelable: true})); })()");
+    await tab.tungguFungsi("/Kejadian ditutup/.test(document.body.innerText)"); assert.equal(tutupPost().length, 1, "Enter ganda hanya satu POST");
+    await tab.eval("document.querySelector('select[name=kab]').dispatchEvent(new Event('change', {bubbles: true}))"); await tab.tungguFungsi("document.querySelectorAll('[data-buka]').length === 1"); await tab.klik("[data-tutup=K1]"); S.tutup = 400;
+    await isi("textarea[name=kondisi_akhir]", "Air surut, warga kembali ke rumah");
+    S.log.length = 0; await kirimTutup(); await tab.tungguFungsi("/tgl_tuntas wajib/.test(document.querySelector('.lb-tutup .bn-pesan').innerText)");
+    S.tutup = 409; await kirimTutup(); await tab.tungguFungsi("/kejadian sudah ditutup/.test(document.querySelector('.lb-tutup .bn-pesan').innerText)");
+    assert.equal(await tab.eval("document.querySelector('.lb-tutup').hidden"), false, "formulir tetap terbuka saat galat");
+    S.tutup = 200; S.log.length = 0; await kirimTutup(); await tab.tungguFungsi("/Kejadian ditutup/.test(document.body.innerText)");
+    const p = tutupPost().pop(); assert.equal(p.m, "POST"); assert.equal(p.p, "/api/logbook/kejadian/K1/tutup"); assert.equal(p.h["x-pb"], "1"); assert.deepEqual(p.body, {tgl_tuntas: hari, kondisi_akhir: "Air surut, warga kembali ke rumah"});
+    assert.ok(S.log.some(x => x.p === "/api/logbook/buka"), "daftar terbuka dimuat ulang sesudah tutup");
+    tab.kosongkanGalat(); await tab.tunggu("[data-buka]"); await tab.klik("[data-tutup=K1]"); S.tutup = 200;
+    await bersih("tutup"); await tanpaGulir("tutup");
   });
 
   test("siaga: delapan kartu, kalender berkotak tooltip, ganti bulan, CSV, dummy", async () => {
