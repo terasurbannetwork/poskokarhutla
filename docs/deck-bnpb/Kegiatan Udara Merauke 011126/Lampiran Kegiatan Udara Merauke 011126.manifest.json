@@ -16,7 +16,7 @@
    ],
    "peta": null,
    "struktur": [
-    "Foto: pantauan udara tim BNPB",
+    "Foto: kegiatan udara tim BNPB",
     "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
     "Dipresentasikan oleh",
     "Tim Ahli dan Tim Sus IT BNPB",
@@ -96,13 +96,11 @@
    "judul": null,
    "peta": null,
    "struktur": [
-    "Lampiran Pantauan Udara Karhutla Merauke",
+    "Lampiran Kegiatan Udara Karhutla Merauke",
     "01",
     "3–6",
     "02",
-    "7–10",
-    "03",
-    "11–12",
+    "7–8",
     "2"
    ],
    "warna": [
@@ -161,9 +159,7 @@
     "01",
     "3–6",
     "02",
-    "7–10",
-    "03",
-    "11–12",
+    "7–8",
     "3"
    ],
    "warna": [
@@ -239,7 +235,6 @@
     "4",
     "01  ",
     "02  ",
-    "03  ",
     "Renlap rute udara BNPB, 30 Okt 2026"
    ],
    "warna": [
@@ -326,7 +321,6 @@
     "5",
     "01  ",
     "02  ",
-    "03  ",
     "Renlap rute udara BNPB, 30 Okt 2026"
    ],
    "warna": [
@@ -413,7 +407,6 @@
     "6",
     "01  ",
     "02  ",
-    "03  ",
     "Renlap rute udara BNPB, 30 Okt 2026"
    ],
    "warna": [
@@ -495,9 +488,7 @@
     "01",
     "3–6",
     "02",
-    "7–10",
-    "03",
-    "11–12",
+    "7–8",
     "7"
    ],
    "warna": [
@@ -573,8 +564,7 @@
     "8",
     "01  ",
     "02  ",
-    "03  ",
-    "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
+    "Kegiatan udara tim BNPB, 31 Okt 2026"
    ],
    "warna": [
     [
@@ -610,342 +600,8 @@
      "inti"
     ]
    ],
-   "judul_spek": "Lampiran B1. Renlap darat SIPPA Kalimantan Tengah: lokasi, sumber air terdekat, dan panjang selang",
-   "pesan": "Lampiran B1. Renlap darat SIPPA Kalimantan Tengah: lokasi, sumber air terdekat, dan panjang selang",
-   "jenis_slide": "lampiran",
-   "judul_bentuk": "deskriptif",
-   "seri": null,
-   "visual": [
-    "foto"
-   ],
-   "gambar": [
-    "logo",
-    "ikon",
-    "foto",
-    "ikon"
-   ],
-   "panel": [
-    [
-     43.2,
-     137.0,
-     613.4,
-     363.0,
-     "Lima lokasi urut sumber air"
-    ],
-    [
-     667.4,
-     137.0,
-     249.4,
-     363.0,
-     "Keterangan lampiran"
-    ]
-   ],
-   "naik": 0,
-   "subjudul": null
-  },
-  {
-   "nomor": 9,
-   "jenis": "galeri",
-   "asal": "lampiran-merauke#9",
-   "keluarga": [],
-   "judul": [
-    43.2,
-    21.6,
-    820.3,
-    65,
-    2
-   ],
-   "peta": null,
-   "struktur": [
-    "9",
-    "01  ",
-    "02  ",
-    "03  ",
-    "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-   ],
-   "warna": [
-    [
-     "051C2C",
-     "inti"
-    ],
-    [
-     "1A1A1A",
-     "inti"
-    ],
-    [
-     "4A9BE0",
-     "aksen"
-    ],
-    [
-     "6B7280",
-     "inti"
-    ],
-    [
-     "BFC5CC",
-     "inti"
-    ],
-    [
-     "C9D1E3",
-     "aksen"
-    ],
-    [
-     "D9600B",
-     "pil"
-    ],
-    [
-     "FFFFFF",
-     "inti"
-    ]
-   ],
-   "judul_spek": "Lampiran B2. Contoh Kalimantan Tengah: rencana kunjungan regu darat per tim dan per hari",
-   "pesan": "Lampiran B2. Contoh Kalimantan Tengah: rencana kunjungan regu darat per tim dan per hari",
-   "jenis_slide": "lampiran",
-   "judul_bentuk": "deskriptif",
-   "seri": null,
-   "visual": [
-    "foto"
-   ],
-   "gambar": [
-    "logo",
-    "ikon",
-    "foto",
-    "ikon"
-   ],
-   "panel": [
-    [
-     43.2,
-     137.0,
-     420.3,
-     363.0,
-     "Rencana kunjungan per tim"
-    ],
-    [
-     474.3,
-     137.0,
-     442.5,
-     363.0,
-     "Keterangan lampiran"
-    ]
-   ],
-   "naik": 0,
-   "subjudul": null
-  },
-  {
-   "nomor": 10,
-   "jenis": "galeri",
-   "asal": "lampiran-merauke#10",
-   "keluarga": [],
-   "judul": [
-    43.2,
-    21.6,
-    820.3,
-    65,
-    2
-   ],
-   "peta": null,
-   "struktur": [
-    "10",
-    "01  ",
-    "02  ",
-    "03  ",
-    "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-   ],
-   "warna": [
-    [
-     "051C2C",
-     "inti"
-    ],
-    [
-     "1A1A1A",
-     "inti"
-    ],
-    [
-     "4A9BE0",
-     "aksen"
-    ],
-    [
-     "6B7280",
-     "inti"
-    ],
-    [
-     "BFC5CC",
-     "inti"
-    ],
-    [
-     "C9D1E3",
-     "aksen"
-    ],
-    [
-     "D9600B",
-     "pil"
-    ],
-    [
-     "FFFFFF",
-     "inti"
-    ]
-   ],
-   "judul_spek": "Lampiran B3. Contoh Kalimantan Tengah: cara uji pompa dan keselamatan regu di petak",
-   "pesan": "Lampiran B3. Contoh Kalimantan Tengah: cara uji pompa dan keselamatan regu di petak",
-   "jenis_slide": "lampiran",
-   "judul_bentuk": "deskriptif",
-   "seri": null,
-   "visual": [
-    "foto"
-   ],
-   "gambar": [
-    "logo",
-    "ikon",
-    "foto",
-    "ikon"
-   ],
-   "panel": [
-    [
-     43.2,
-     137.0,
-     613.4,
-     363.0,
-     "Cara uji dan keselamatan"
-    ],
-    [
-     667.4,
-     137.0,
-     249.4,
-     363.0,
-     "Keterangan lampiran"
-    ]
-   ],
-   "naik": 0,
-   "subjudul": null
-  },
-  {
-   "nomor": 11,
-   "jenis": "pembatas-seksi",
-   "asal": "lampiran-merauke#11",
-   "keluarga": [],
-   "judul": null,
-   "peta": null,
-   "struktur": [
-    "03",
-    "01",
-    "3–6",
-    "02",
-    "7–10",
-    "03",
-    "11–12",
-    "11"
-   ],
-   "warna": [
-    [
-     "051C2C",
-     "inti"
-    ],
-    [
-     "1A1A1A",
-     "inti"
-    ],
-    [
-     "2E3440",
-     "inti"
-    ],
-    [
-     "6B7280",
-     "inti"
-    ],
-    [
-     "BFC5CC",
-     "inti"
-    ],
-    [
-     "D9600B",
-     "aksen"
-    ],
-    [
-     "E6EAF0",
-     "permukaan"
-    ],
-    [
-     "F3F5F8",
-     "permukaan"
-    ],
-    [
-     "FDF4EC",
-     "permukaan"
-    ],
-    [
-     "FFFFFF",
-     "inti"
-    ]
-   ],
-   "judul_spek": "",
-   "pesan": null,
-   "jenis_slide": null,
-   "judul_bentuk": null,
-   "seri": null,
-   "visual": [],
-   "gambar": [
-    "foto",
-    "logo"
-   ],
-   "panel": [],
-   "naik": 0,
-   "subjudul": null
-  },
-  {
-   "nomor": 12,
-   "jenis": "galeri",
-   "asal": "lampiran-merauke#12",
-   "keluarga": [],
-   "judul": [
-    43.2,
-    21.6,
-    820.3,
-    65,
-    2
-   ],
-   "peta": null,
-   "struktur": [
-    "12",
-    "01  ",
-    "02  ",
-    "03  ",
-    "Pantauan udara tim BNPB, 31 Okt 2026"
-   ],
-   "warna": [
-    [
-     "051C2C",
-     "inti"
-    ],
-    [
-     "1A1A1A",
-     "inti"
-    ],
-    [
-     "4A9BE0",
-     "aksen"
-    ],
-    [
-     "6B7280",
-     "inti"
-    ],
-    [
-     "BFC5CC",
-     "inti"
-    ],
-    [
-     "C9D1E3",
-     "aksen"
-    ],
-    [
-     "D9600B",
-     "pil"
-    ],
-    [
-     "FFFFFF",
-     "inti"
-    ]
-   ],
-   "judul_spek": "Lampiran C. Foto udara lain dari pantauan 31 Oktober",
-   "pesan": "Lampiran C. Foto udara lain dari pantauan 31 Oktober",
+   "judul_spek": "Lampiran B. Foto udara lain dari kegiatan 31 Oktober",
+   "pesan": "Lampiran B. Foto udara lain dari kegiatan 31 Oktober",
    "jenis_slide": "lampiran",
    "judul_bentuk": "deskriptif",
    "seri": null,
@@ -988,50 +644,6 @@
    "keyakinan": "asumsi-kebijakan",
    "sumber": "Renlap rute udara BNPB, 30 Okt 2026",
    "naskah": "lampiran-merauke#4"
-  },
-  {
-   "kunci": "sp.air.min",
-   "opsi": "|satuan",
-   "tampil": "sekitar 80 m",
-   "nilai": 80,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "estimasi-model",
-   "sumber": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026",
-   "naskah": "lampiran-merauke#8"
-  },
-  {
-   "kunci": "sp.air.maks",
-   "opsi": "|satuan",
-   "tampil": "sekitar 950 m",
-   "nilai": 950,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "estimasi-model",
-   "sumber": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026",
-   "naskah": "lampiran-merauke#8"
-  },
-  {
-   "kunci": "sp.selang.maks",
-   "opsi": "|satuan",
-   "tampil": "sekitar 1.200 m",
-   "nilai": 1198,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "estimasi-model",
-   "sumber": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026",
-   "naskah": "lampiran-merauke#8"
-  },
-  {
-   "kunci": "sp.debit",
-   "opsi": "|satuan",
-   "tampil": "5 liter per detik",
-   "nilai": 5,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "asumsi-kebijakan",
-   "sumber": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026",
-   "naskah": "lampiran-merauke#10"
   }
  ],
  "catatan": [
@@ -1058,21 +670,6 @@
   [
    "lampiran-merauke#8",
    "judul_baris",
-   2
-  ],
-  [
-   "lampiran-merauke#9",
-   "judul_baris",
-   2
-  ],
-  [
-   "lampiran-merauke#10",
-   "judul_baris",
-   2
-  ],
-  [
-   "lampiran-merauke#12",
-   "judul_baris",
    1
   ]
  ],
@@ -1080,9 +677,6 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-bnpb/logo/sumber-bnpb.png": "6de5a478ee154a24e8e6ac891eb535339a1ba69d356f02a0638b1de10d9ec008",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/angka.json": "a6b9d94dccc73424a10de5a309e190187697b07247dff44b0a82c525a3fa08df",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-pilot-01.png": "9dc663a662b7c8b359de3c84be19f7125626ad17cd1f44e3d1795c40214e0e9f",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-pilot-02.png": "c2af7d97038c48cecb7b6b66d18d59e7a72937598ea486b54b645cb984b4ac3c",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-pilot-03.png": "e0b7cd3b94f32be135ecfb516d2de30c27cf911a4f78c87365b0346db9a6a88b",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-udara-01.png": "493d131e1c75f793713790a06f92bb2b3278a2857dba620887fb7a9436ef4472",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-udara-02.png": "2643195d28688fd17daffd1283feac414ed27c32f441c264b7e03a086119732f",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-udara-03.png": "789b6b7e3e2e6473270ee12b2c938b902d8a6f1027da3c7611936fee171cf533",
@@ -1095,8 +689,8 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-27.jpg": "63b723e09a1f5169bc28348b5f0467eeec31a804e1cb549bb1baec3fc756d5b9",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-32.jpg": "fbd69065bdc79413771ad893c41aa1db4bfd1bfe7e0f8f3d25ea844985f98a1e",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/video-asap.jpg": "d50c2595a1da13a25ea75898dda351127cf54548a9d10f2b2618ebe94db05b40",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/lampiran-merauke.json": "d840e91f81e449924d0c918b35fbb02dd2027bd82ad882cf3262024df95a9cfc",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/tema.json": "a20a610e3731be5f3b46d0142bb51cdcd451aeed6fc1a66b74d8d854809530af",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/lampiran-merauke.json": "35b9565ba6b0b2adf1ef87c3a16f7eb3debd73ff074796e204728fcff35f8ee6",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/tema.json": "e4fb0f89ca80c19fb0cf1a13028abc5bdefea4e74baccf51ec8a722b3f49bcbd",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }
 }

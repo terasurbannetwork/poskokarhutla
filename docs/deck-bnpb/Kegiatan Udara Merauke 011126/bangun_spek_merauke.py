@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Hasil pantauan udara karhutla Merauke 31 Okt 2026, untuk Kepala BNPB. Jalankan dari akar proyek-merauke:
+"""Hasil kegiatan udara karhutla Merauke 31 Okt 2026, untuk Kepala BNPB. Jalankan dari akar proyek-merauke:
 python3 spek/peta_merauke.py <h72.json> <waypoint.gpx>; python3 spek/bangun_spek_merauke.py; deck.py spek/pantau-merauke.json --akar ."""
 import json
 from pathlib import Path
@@ -7,7 +7,6 @@ from pathlib import Path
 AKAR = Path(__file__).resolve().parents[1]
 LV = 'pantau-bencana-titik-live-2026-11-01'
 RL = 'bnpb-renlap-udara-merauke-2026-10-30'
-SP = 'bnpb-sippa-renlap-kalteng-2026-11-01'
 S_T = 'NASA FIRMS, diolah BNPB'
 ANGKA = {}
 
@@ -34,11 +33,6 @@ a('mk.cp.lain', 14, 'titik', LV, S_T, catatan='titik terbanyak di check point se
 a('mk.cp.jumlah', 11, 'check point', RL, 'Renlap rute udara BNPB, 30 Okt 2026')
 a('mk.rute.km', 250, 'km', RL, 'Renlap rute udara BNPB, 30 Okt 2026', 'estimasi-model')
 a('mk.rute.mnt', 74, 'menit', RL, 'Renlap rute udara BNPB, 30 Okt 2026', 'estimasi-model')
-a('sp.lokasi', 5, 'lokasi', SP, 'Renlap SIPPA Kalimantan Tengah, 1 Nov 2026')
-a('sp.air.min', 80, 'm', SP, 'Renlap SIPPA Kalimantan Tengah, 1 Nov 2026', 'estimasi-model')
-a('sp.air.maks', 950, 'm', SP, 'Renlap SIPPA Kalimantan Tengah, 1 Nov 2026', 'estimasi-model')
-a('sp.selang.maks', 1198, 'm', SP, 'Renlap SIPPA Kalimantan Tengah, 1 Nov 2026', 'estimasi-model')
-a('sp.debit', 5, 'liter per detik', SP, 'Renlap SIPPA Kalimantan Tengah, 1 Nov 2026', 'asumsi-kebijakan')
 a('mk.radius', 6, 'km', RL, 'Renlap rute udara BNPB, 30 Okt 2026', 'asumsi-kebijakan', 'radius pandang tiap check point')
 a('mk.min.titik', 3, 'titik', RL, 'Renlap rute udara BNPB, 30 Okt 2026', 'asumsi-kebijakan')
 a('mk.min.frp', 5, 'MW', RL, 'Renlap rute udara BNPB, 30 Okt 2026', 'asumsi-kebijakan')
@@ -46,23 +40,21 @@ a('mk.jam', 3, 'jam', LV, S_T, 'asumsi-kebijakan', 'jeda tarik data hotspot')
 a('rl.titik', 158, 'titik', RL, 'Renlap rute udara BNPB, 30 Okt 2026', catatan='hotspot 24 jam di dalam segitiga saat rute disusun, 30 Okt 10.00 WIT')
 a('mk.hari', 7, 'hari', LV, S_T, 'asumsi-kebijakan', 'jangka rencana tindak lanjut')
 
-SUM_T = 'NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; pantauan udara tim BNPB, 31 Okt 2026'
+SUM_T = 'NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; kegiatan udara tim BNPB, 31 Okt 2026'
 PUSTAKA = [
     {'id': LV, 'type': 'dataset', 'author': [{'literal': 'sistem BNPB, olahan NASA FIRMS'}], 'issued': {'date-parts': [[2026, 11, 1]]},
      'title': 'Hotspot NASA FIRMS 29 sampai 31 Okt 2026 (acuan 1 Nov 2026, 10.39 WIT), MODIS dan VIIRS, per kecamatan', 'URL': 'https://centurisk97.id/data/hotspot72.json', 'verifikasi': 'primer'},
     {'id': RL, 'type': 'report', 'author': [{'literal': 'Badan Nasional Penanggulangan Bencana', 'singkatan': 'BNPB'}], 'issued': {'date-parts': [[2026, 10, 30]]},
      'title': 'Renlap rute udara check point karhutla, kunjungan kerja KASAD dan Kepala BNPB, Merauke', 'verifikasi': 'primer'},
-    {'id': SP, 'type': 'report', 'author': [{'literal': 'Badan Nasional Penanggulangan Bencana', 'singkatan': 'BNPB'}], 'issued': {'date-parts': [[2026, 11, 1]]},
-     'title': 'Renlap SIPPA pilot Kalimantan Tengah: 5 lokasi, sumber air terdekat', 'verifikasi': 'primer'},
 ]
 
-SAMPUL = {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subjudul': 0.9, 'foto': 'foto/udara-20.jpg', 'kota': 'Jakarta', 'kredit': 'Foto: pantauan udara tim BNPB',
+SAMPUL = {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subjudul': 0.9, 'foto': 'foto/udara-20.jpg', 'kota': 'Jakarta', 'kredit': 'Foto: kegiatan udara tim BNPB',
           'logo_kanan': 'foto/berakhlak-hd.png', 'kepada': 'Ditujukan khusus untuk Kepala BNPB',
           'subjudul': 'Kabupaten Merauke, Papua Selatan, 31 Oktober 2026',
           'penyaji': {'nama': 'Tim Ahli dan Tim Sus IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}}
 
 RINGKAS = {
-    'jenis': 'galeri', 'jenis_slide': 'navigasi', 'judul_bentuk': 'deskriptif', 'pesan': 'Ringkasan pantauan',
+    'jenis': 'galeri', 'jenis_slide': 'navigasi', 'judul_bentuk': 'deskriptif', 'pesan': 'Ringkasan kegiatan',
     'judul': f'Lahan Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan kemudian; {t("mk.cp5", "|satuan")} di sekitar PT MSJ',
     'cut_off': False,
     'grup': [{'pil': 'Hotspot 31 Oktober', 'nada': 'data', 'ikon': 'karhutla', 'kartu': [
@@ -75,7 +67,7 @@ RINGKAS = {
     'panel': [
         {'judul': 'Tepi lahan PT Merauke Sawit Jaya, 31 Oktober', 'ikon': 'karhutla', 'kolom_foto': 1, 'bobot': 1,
          'foto': [{'berkas': 'foto/udara-04.jpg', 'keterangan': 'Batang pohon menghitam di tepi hutan, ekskavator menumbangkan pohon di lahan terbuka'}]},
-        {'judul': 'Temuan pantauan udara', 'ikon': 'ringkasan', 'bobot': 1, 'temuan': [
+        {'judul': 'Temuan kegiatan udara', 'ikon': 'ringkasan', 'bobot': 1, 'temuan': [
             {'kode': 'Temuan A.1', 'keyakinan': 'terverifikasi', 'ikon': 'karhutla', 'teks': '**Bakar dulu, tebang kemudian.** Semak di bawah pohon tinggi dibakar, lalu pohon yang sudah hangus ditumbangkan ekskavator.'},
             {'kode': 'Temuan A.2', 'keyakinan': 'terverifikasi', 'ikon': 'peringatan', 'teks': '**Api dibiarkan menyebar.** Asap aktif di hutan tepi lahan terbuka sampai dekat permukiman Kurik dan Semangga.'},
             {'kode': 'Temuan A.3', 'keyakinan': 'resmi', 'ikon': 'wilayah', 'teks': f'**Terpusat di lahan PT MSJ.** {t("mk.cp5", "|satuan")} di CP-5 dan {t("mk.cp4", "|satuan")} di CP-4; sembilan check point lain paling banyak {t("mk.cp.lain", "|satuan")}.'},
@@ -99,7 +91,7 @@ MODUS = {
             '**Kenyataan di udara:** batang pohon yang masih tegak menghitam setinggi semak, tanda api lewat di lantai hutan sebelum pohon ditebang.',
             '**Pola pembakaran sengaja.** Menurut pengamatan tim, api mengikuti batas lahan yang sedang dibuka, bersebelahan dengan alat berat yang bekerja.',
             '**Tidak terlihat dijaga.** Dari udara tidak tampak regu atau sekat bakar; api menjalar ke hutan di sekitarnya.']}],
-    'sumber': 'Pantauan udara tim BNPB, 31 Okt 2026',
+    'sumber': 'Kegiatan udara tim BNPB, 31 Okt 2026',
 }
 
 PETA = {
@@ -152,7 +144,7 @@ RUTE = {
         f'**Api lebih besar dari perkiraan.** Saat rute disusun ada {t("rl.titik", "|satuan")} di dalam segitiga; pada hari terbang Merauke mencatat {t("mk.kab31", "|satuan")}.',
         '**Jarak pandang rendah.** Kabut asap menutup horizon, sehingga helikopter tidak aman melintas ke semua check point.',
         f'**Data tepat sasaran.** Cluster yang dilihat tim sama dengan cluster terpadat di data satelit: {t("mk.cp5", "|satuan")} di CP-5.']},
-    'sumber': 'Renlap rute udara BNPB, 30 Okt 2026; pantauan udara tim BNPB, 31 Okt 2026',
+    'sumber': 'Renlap rute udara BNPB, 30 Okt 2026; kegiatan udara tim BNPB, 31 Okt 2026',
 }
 
 METODE = {
@@ -163,20 +155,20 @@ METODE = {
         {'label': 'Langkah ke-1', 'ikon': 'karhutla', 'warna': 'navy', 'judul': 'Deteksi panas', 'sub': 'Satelit, ' + 'otomatis', 'isi': f'Hotspot VIIRS dan MODIS ditarik tiap {t("mk.jam", "|satuan")}, lalu dipetakan sampai kecamatan.'},
         {'label': 'Langkah ke-2', 'ikon': 'wilayah', 'warna': 'navy', 'judul': 'Pilih api nyata', 'sub': 'Check point', 'isi': f'Kelompok paling sedikit {t("mk.min.titik", "|satuan")} atau FRP {t("mk.min.frp", "|satuan")} ke atas dijadikan check point.'},
         {'label': 'Langkah ke-3', 'ikon': 'kapasitas', 'warna': 'navy', 'judul': 'Rute udara', 'sub': 'Flight plan pilot', 'isi': 'Urutan check point, haluan, jarak, waktu, serta berkas GPX dan KML untuk pilot.'},
-        {'label': 'Langkah ke-4', 'ikon': 'air-baku', 'warna': 'oranye', 'judul': 'Sumber air terdekat', 'sub': 'Renlap darat', 'isi': f'Contoh Kalimantan Tengah 1 November: {t("sp.lokasi", "|satuan")}, air {t("sp.air.min", "|satuan")} sampai {t("sp.air.maks", "|satuan")} dari petak.'},
-        {'label': 'Langkah ke-5', 'ikon': 'kapasitas', 'warna': 'oranye', 'judul': 'Pompa dan selang', 'sub': 'Dihitung per lokasi', 'isi': f'Panjang selang sampai {t("sp.selang.maks", "|satuan")}, debit paling sedikit {t("sp.debit", "|satuan")} untuk satu kit.'},
+        {'label': 'Langkah ke-4', 'ikon': 'air-baku', 'warna': 'oranye', 'judul': 'Sumber air terdekat', 'sub': 'Renlap darat', 'isi': 'Untuk tiap lokasi api dicari sumber air terdekat: sungai, kanal, atau parit yang bisa dipompa.'},
+        {'label': 'Langkah ke-5', 'ikon': 'kapasitas', 'warna': 'oranye', 'judul': 'Pompa dan selang', 'sub': 'Dihitung per lokasi', 'isi': 'Panjang selang, jumlah gulung, dan pompa tambahan dihitung dari jarak sumber air ke lokasi api.'},
         {'label': 'Langkah ke-6', 'ikon': 'kalender', 'warna': 'oranye', 'judul': 'Rencana kunjungan', 'sub': 'Per tim dan per hari', 'isi': 'Urutan lokasi, jarak jalan, waktu mobil, titik parkir, dan tautan Google Maps.'},
         {'label': 'Langkah ke-7', 'ikon': 'data', 'warna': 'navy', 'judul': 'Dossier di HP regu', 'sub': 'PDF siap pakai', 'isi': 'Peta, koordinat yang bisa diklik, dan citra tiap lokasi dikirim ke regu dan pilot.'},
         {'label': 'Langkah ke-8', 'ikon': 'peringatan', 'warna': 'navy', 'judul': 'Putuskan sore sebelumnya', 'sub': 'Jalan atau tunda', 'isi': 'Tiap sore sebelum berangkat, rencana dicek ulang dengan hotspot terbaru dan prakiraan asap.'}],
     'arahan': {'label': 'Keunggulan', 'ikon': 'data', 'isi_bawah': True,
                'teks': 'Satu data yang sama menunjuk api nyata, sumber air terdekat, dan jalur regu, sehingga helikopter dan regu darat tidak bergerak sembarang.'},
-    'sumber': 'Renlap rute udara BNPB, 30 Okt 2026; Renlap SIPPA Kalimantan Tengah, 1 Nov 2026',
+    'sumber': 'Renlap rute udara BNPB, 30 Okt 2026',
 }
 
 RTL = {
     'jenis': 'rekomendasi', 'jenis_slide': 'rekomendasi', 'judul_bentuk': 'deskriptif', 'pesan': 'Rencana tindak lanjut',
     'judul': f'Rekomendasi tindak lanjut {t("mk.hari", "|satuan")} ke depan untuk cluster PT Merauke Sawit Jaya',
-    'cut_off': False, 'sumber': 'Rangkuman temuan pantauan udara dan data hotspot',
+    'cut_off': False, 'sumber': 'Rangkuman temuan kegiatan udara dan data hotspot',
     'rekomendasi': [
         {'kode': 'R-1', 'jenis': 'kapasitas', 'langkah': 'Padamkan cluster Jagebob', 'waktu': 'segera', 'rincian': 'Water bombing dan regu darat diarahkan ke CP-4 sampai CP-5, memakai sungai terdekat sebagai titik isi air.', 'lembaga': ['Deputi Penanganan Darurat', 'BPBD Papua Selatan', 'Manggala Agni']},
         {'kode': 'R-2', 'jenis': 'regulasi', 'langkah': 'Hentikan pembakaran PT MSJ', 'waktu': 'segera', 'rincian': 'Perusahaan dipanggil untuk klarifikasi, diminta menghentikan pembakaran dan memadamkan api di areal serta sekitarnya.', 'lembaga': ['Pemkab Merauke', 'Kementerian Pertanian']},
@@ -196,7 +188,7 @@ def hal(judul, berkas, ket):
     return {'judul': judul, 'ikon': 'data', 'kolom_foto': 1, 'foto': [{'berkas': berkas, 'utuh': True, 'keterangan': ket}]}
 
 
-S_RL, S_SP = 'Renlap rute udara BNPB, 30 Okt 2026', 'Renlap SIPPA Kalimantan Tengah, 1 Nov 2026'
+S_RL = 'Renlap rute udara BNPB, 30 Okt 2026'
 def lp(kode, judul, berkas, nama, butir, sumber, tegak=False, sk=None):
     from PIL import Image
     w, h = Image.open(AKAR / berkas).size
@@ -210,7 +202,7 @@ LAMP = [
         'Rute melingkari segitiga Bandara Mopah, lahan PT Merauke Sawit Jaya, dan lahan PT Medcopapua Alam Lestari.',
         'Check point hanya dipasang di kelompok api nyata dari hotspot terbaru, dengan radius pandang {{angka:mk.radius|satuan}}.',
         'Tabel kanan memuat koordinat, jumlah hotspot, jarak tempuh, dan waktu kumulatif tiap check point.',
-        'Seluruh halaman aslinya ada di Lampiran D berkas ini.',
+        'Seluruh halaman aslinya ada di Lampiran C berkas ini.',
         'Rute bisa disusun ulang dalam hitungan menit bila hotspot berubah.'], S_RL),
     lp('AB', 'Lampiran A2. Flight plan untuk pilot: haluan, jarak, dan waktu tiap leg', 'foto/renlap-udara-02.png', 'Flight plan per leg', [
         'Tiap leg memuat koordinat GPS tujuan dalam derajat-menit, tautan Google Maps, haluan sejati, jarak, dan waktu.',
@@ -224,25 +216,7 @@ LAMP = [
         'Daftar hotspot di sekitar check point: jam deteksi, sensor, FRP, dan jarak dari check point.',
         'Renlap memuat halaman serupa untuk semua check point.',
         'Tim di helikopter bisa mencocokkan api yang terlihat dengan hotspot di daftar.'], S_RL),
-    lp('BA', 'Lampiran B1. Renlap darat SIPPA Kalimantan Tengah: lokasi, sumber air terdekat, dan panjang selang', 'foto/renlap-pilot-01.png', 'Lima lokasi urut sumber air', [
-        'Contoh renlap darat yang sama mesinnya dengan renlap udara, dibuat 1 November untuk Kalimantan Tengah.',
-        f'Petak dipilih di hotspot terbaru, lalu dicari sumber air terdekat: {t("sp.air.min", "|satuan")} sampai {t("sp.air.maks", "|satuan")} dari petak.',
-        f'Panjang selang, jumlah gulung, dan pompa tambahan dihitung per lokasi; selang terpanjang {t("sp.selang.maks", "|satuan")}.',
-        'Tiap lokasi punya koordinat petak, pompa, dan titik parkir.',
-        'Lokasi yang sumber airnya terlalu jauh dikeluarkan dari daftar.'], S_SP, True),
-    lp('BB', 'Lampiran B2. Contoh Kalimantan Tengah: rencana kunjungan regu darat per tim dan per hari', 'foto/renlap-pilot-02.png', 'Rencana kunjungan per tim', [
-        'Urutan kunjungan per tim dan per hari, dari titik awal ke tiap lokasi.',
-        'Jarak lurus, jarak jalan, waktu mobil, dan jalan kaki dari titik parkir.',
-        'Tautan Google Maps langsung ke titik parkir tiap lokasi.',
-        'Pola yang sama bisa dipakai untuk regu darat di Merauke; halaman aslinya di Lampiran E.',
-        'Dua tim bisa bergerak bersamaan tanpa saling tumpang tindih.'], S_SP, sk=1.85),
-    lp('BC', 'Lampiran B3. Contoh Kalimantan Tengah: cara uji pompa dan keselamatan regu di petak', 'foto/renlap-pilot-03.png', 'Cara uji dan keselamatan', [
-        'Cara mengukur efektivitas suntikan air ke bara di tiap lokasi.',
-        f'Debit sumber air diukur dulu: paling sedikit {t("sp.debit", "|satuan")} untuk satu kit.',
-        'Aturan keselamatan regu: arah angin, jalur keluar, dan batas kerja.',
-        'Keputusan jalan atau tunda diambil sore sebelumnya dari hotspot terbaru.',
-        'Alat tambahan per regu tercantum: lance, termometer tusuk, dan bor gambut.'], S_SP, sk=1.6),
-    lamp('CA', 'Lampiran C. Foto udara lain dari pantauan 31 Oktober', [
+    lamp('BA', 'Lampiran B. Foto udara lain dari kegiatan 31 Oktober', [
         {'judul': 'Foto udara lain, 31 Oktober', 'ikon': 'karhutla', 'kolom_foto': 4, 'foto': [
             {'berkas': 'foto/udara-12.jpg', 'keterangan': 'Lahan terbuka di tepi hutan'},
             {'berkas': 'foto/udara-09.jpg', 'keterangan': 'Rawa mengering'},
@@ -251,30 +225,29 @@ LAMP = [
             {'berkas': 'foto/udara-02.jpg', 'keterangan': 'Asap di tepi lahan terbuka'},
             {'berkas': 'foto/udara-22.jpg', 'keterangan': 'Kepulan asap di hutan'},
             {'berkas': 'foto/udara-32.jpg', 'keterangan': 'Asap di dekat permukiman'},
-            {'berkas': 'foto/video-asap.jpg', 'keterangan': 'Cuplikan video: banyak kepulan asap'}]}], 'Pantauan udara tim BNPB, 31 Okt 2026'),
+            {'berkas': 'foto/video-asap.jpg', 'keterangan': 'Cuplikan video: banyak kepulan asap'}]}], 'Kegiatan udara tim BNPB, 31 Okt 2026'),
 ]
 
-PENUTUP = {'jenis': 'penutup', 'foto': 'foto/udara-20.jpg', 'logo_kanan': 'foto/berakhlak-hd.png', 'kredit': 'Foto: pantauan udara tim BNPB', 'teks': 'Terima Kasih',
-           'laporan': 'Pantauan udara Kabupaten Merauke, 31 Oktober 2026'}
+PENUTUP = {'jenis': 'penutup', 'foto': 'foto/udara-20.jpg', 'logo_kanan': 'foto/berakhlak-hd.png', 'kredit': 'Foto: kegiatan udara tim BNPB', 'teks': 'Terima Kasih',
+           'laporan': 'Kegiatan udara Kabupaten Merauke, 31 Oktober 2026'}
 
 SPEK = {
-    '_catatan': 'Hasil pantauan udara karhutla Merauke 31 Okt 2026 untuk Kepala BNPB. Dibangun dari spek/bangun_spek_merauke.py.',
+    '_catatan': 'Hasil kegiatan udara karhutla Merauke 31 Okt 2026 untuk Kepala BNPB. Dibangun dari spek/bangun_spek_merauke.py.',
     'pesan_kunci': 'Lahan di Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan sesudahnya; api terpusat di cluster PT Merauke Sawit Jaya.',
-    'judul_dokumen': 'Pantauan Udara Karhutla Merauke',
-    'subjek_dokumen': 'Pantauan udara 31 Oktober 2026',
+    'judul_dokumen': 'Kegiatan Udara Karhutla Merauke',
+    'subjek_dokumen': 'Kegiatan udara 31 Oktober 2026',
     'kajian': 'merauke', 'format': 'kajian', 'tanggal': '2026-11-01', 'cut_off': '31 Okt 2026, 23.59 WIT',
-    'bagian': [{'judul': 'Temuan Pantauan Udara', 'label': 'Temuan lapangan'}, {'judul': 'Metode Renlap', 'label': 'Metode renlap'}],
+    'bagian': [{'judul': 'Temuan Kegiatan Udara', 'label': 'Temuan lapangan'}, {'judul': 'Metode Renlap', 'label': 'Metode renlap'}],
     'slide': [SAMPUL, RINGKAS, {'jenis': 'daftar-isi'}, {'jenis': 'pembatas-seksi', 'bagian': 1}, MODUS, PETA, SEBAR, RUTE, {'jenis': 'pembatas-seksi', 'bagian': 2}, METODE, PENUTUP],
 }
 
 # berkas lampiran terpisah (pemilik 1 Nov: "lampiran jadi file lain")
 SAMPUL_L = dict(SAMPUL, kepada='Lampiran laporan untuk Kepala BNPB')
-SPEK_L = dict(SPEK, _catatan='Lampiran pantauan udara Merauke 31 Okt 2026. Dibangun dari spek/bangun_spek_merauke.py; halaman renlap asli ditempel gabung_lampiran.py.',
-              judul_dokumen='Lampiran Pantauan Udara Karhutla Merauke', kajian='merauke-lampiran',
-              bagian=[{'judul': 'Renlap Rute Udara Merauke', 'label': 'Renlap udara'}, {'judul': 'Contoh Renlap Darat SIPPA', 'label': 'Renlap darat'},
-                      {'judul': 'Foto Udara dan Berkas Asli Renlap', 'label': 'Foto dan berkas asli'}],
+SPEK_L = dict(SPEK, _catatan='Lampiran kegiatan udara Merauke 31 Okt 2026. Dibangun dari spek/bangun_spek_merauke.py; halaman renlap asli ditempel gabung_lampiran.py.',
+              judul_dokumen='Lampiran Kegiatan Udara Karhutla Merauke', kajian='merauke-lampiran',
+              bagian=[{'judul': 'Renlap Rute Udara Merauke', 'label': 'Renlap udara'}, {'judul': 'Foto Udara dan Berkas Asli Renlap', 'label': 'Foto dan berkas asli'}],
               slide=[SAMPUL_L, {'jenis': 'daftar-isi'}, {'jenis': 'pembatas-seksi', 'bagian': 1}] + LAMP[0:3]
-                    + [{'jenis': 'pembatas-seksi', 'bagian': 2}] + LAMP[3:6] + [{'jenis': 'pembatas-seksi', 'bagian': 3}] + LAMP[6:])
+                    + [{'jenis': 'pembatas-seksi', 'bagian': 2}] + LAMP[3:])
 
 if __name__ == '__main__':
     rp = AKAR / 'data/angka.json'
@@ -284,6 +257,6 @@ if __name__ == '__main__':
     pp = AKAR / 'pustaka.json'
     pu = [x for x in json.loads(pp.read_text(encoding='utf-8')) if x['id'] not in {p['id'] for p in PUSTAKA}] + PUSTAKA
     pp.write_text(json.dumps(pu, ensure_ascii=False, indent=1), encoding='utf-8')
-    (AKAR / 'spek/pantau-merauke.json').write_text(json.dumps(SPEK, ensure_ascii=False, indent=2), encoding='utf-8')
+    (AKAR / 'spek/kegiatan-merauke.json').write_text(json.dumps(SPEK, ensure_ascii=False, indent=2), encoding='utf-8')
     (AKAR / 'spek/lampiran-merauke.json').write_text(json.dumps(SPEK_L, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f'{len(ANGKA)} angka, {len(SPEK["slide"])} slide')

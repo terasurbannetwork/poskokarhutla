@@ -1,8 +1,8 @@
 {
-  "_catatan": "Lampiran pantauan udara Merauke 31 Okt 2026. Dibangun dari spek/bangun_spek_merauke.py; halaman renlap asli ditempel gabung_lampiran.py.",
+  "_catatan": "Lampiran kegiatan udara Merauke 31 Okt 2026. Dibangun dari spek/bangun_spek_merauke.py; halaman renlap asli ditempel gabung_lampiran.py.",
   "pesan_kunci": "Lahan di Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan sesudahnya; api terpusat di cluster PT Merauke Sawit Jaya.",
-  "judul_dokumen": "Lampiran Pantauan Udara Karhutla Merauke",
-  "subjek_dokumen": "Pantauan udara 31 Oktober 2026",
+  "judul_dokumen": "Lampiran Kegiatan Udara Karhutla Merauke",
+  "subjek_dokumen": "Kegiatan udara 31 Oktober 2026",
   "kajian": "merauke-lampiran",
   "format": "kajian",
   "tanggal": "2026-11-01",
@@ -11,10 +11,6 @@
     {
       "judul": "Renlap Rute Udara Merauke",
       "label": "Renlap udara"
-    },
-    {
-      "judul": "Contoh Renlap Darat SIPPA",
-      "label": "Renlap darat"
     },
     {
       "judul": "Foto Udara dan Berkas Asli Renlap",
@@ -29,7 +25,7 @@
       "skala_subjudul": 0.9,
       "foto": "foto/udara-20.jpg",
       "kota": "Jakarta",
-      "kredit": "Foto: pantauan udara tim BNPB",
+      "kredit": "Foto: kegiatan udara tim BNPB",
       "logo_kanan": "foto/berakhlak-hd.png",
       "kepada": "Lampiran laporan untuk Kepala BNPB",
       "subjudul": "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
@@ -77,7 +73,7 @@
             "Rute melingkari segitiga Bandara Mopah, lahan PT Merauke Sawit Jaya, dan lahan PT Medcopapua Alam Lestari.",
             "Check point hanya dipasang di kelompok api nyata dari hotspot terbaru, dengan radius pandang {{angka:mk.radius|satuan}}.",
             "Tabel kanan memuat koordinat, jumlah hotspot, jarak tempuh, dan waktu kumulatif tiap check point.",
-            "Seluruh halaman aslinya ada di Lampiran D berkas ini.",
+            "Seluruh halaman aslinya ada di Lampiran C berkas ini.",
             "Rute bisa disusun ulang dalam hitungan menit bila hotspot berubah."
           ]
         }
@@ -170,130 +166,9 @@
       "jenis": "galeri",
       "jenis_slide": "lampiran",
       "judul_bentuk": "deskriptif",
-      "pesan": "Lampiran B1. Renlap darat SIPPA Kalimantan Tengah: lokasi, sumber air terdekat, dan panjang selang",
+      "pesan": "Lampiran B. Foto udara lain dari kegiatan 31 Oktober",
       "kode": "BA",
-      "judul": "Lampiran B1. Renlap darat SIPPA Kalimantan Tengah: lokasi, sumber air terdekat, dan panjang selang",
-      "cut_off": false,
-      "kolom_panel": 2,
-      "panel": [
-        {
-          "judul": "Lima lokasi urut sumber air",
-          "ikon": "data",
-          "kolom_foto": 1,
-          "foto": [
-            {
-              "berkas": "foto/renlap-pilot-01.png",
-              "utuh": true,
-              "keterangan": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-            }
-          ],
-          "bobot": 2.46
-        },
-        {
-          "judul": "Keterangan lampiran",
-          "ikon": "ringkasan",
-          "bobot": 1,
-          "skala_huruf": 1.45,
-          "daftar": [
-            "Contoh renlap darat yang sama mesinnya dengan renlap udara, dibuat 1 November untuk Kalimantan Tengah.",
-            "Petak dipilih di hotspot terbaru, lalu dicari sumber air terdekat: {{angka:sp.air.min|satuan}} sampai {{angka:sp.air.maks|satuan}} dari petak.",
-            "Panjang selang, jumlah gulung, dan pompa tambahan dihitung per lokasi; selang terpanjang {{angka:sp.selang.maks|satuan}}.",
-            "Tiap lokasi punya koordinat petak, pompa, dan titik parkir.",
-            "Lokasi yang sumber airnya terlalu jauh dikeluarkan dari daftar."
-          ]
-        }
-      ],
-      "sumber": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-    },
-    {
-      "jenis": "galeri",
-      "jenis_slide": "lampiran",
-      "judul_bentuk": "deskriptif",
-      "pesan": "Lampiran B2. Contoh Kalimantan Tengah: rencana kunjungan regu darat per tim dan per hari",
-      "kode": "BB",
-      "judul": "Lampiran B2. Contoh Kalimantan Tengah: rencana kunjungan regu darat per tim dan per hari",
-      "cut_off": false,
-      "kolom_panel": 2,
-      "panel": [
-        {
-          "judul": "Rencana kunjungan per tim",
-          "ikon": "data",
-          "kolom_foto": 1,
-          "foto": [
-            {
-              "berkas": "foto/renlap-pilot-02.png",
-              "utuh": true,
-              "keterangan": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-            }
-          ],
-          "bobot": 0.95
-        },
-        {
-          "judul": "Keterangan lampiran",
-          "ikon": "ringkasan",
-          "bobot": 1,
-          "skala_huruf": 1.85,
-          "daftar": [
-            "Urutan kunjungan per tim dan per hari, dari titik awal ke tiap lokasi.",
-            "Jarak lurus, jarak jalan, waktu mobil, dan jalan kaki dari titik parkir.",
-            "Tautan Google Maps langsung ke titik parkir tiap lokasi.",
-            "Pola yang sama bisa dipakai untuk regu darat di Merauke; halaman aslinya di Lampiran E.",
-            "Dua tim bisa bergerak bersamaan tanpa saling tumpang tindih."
-          ]
-        }
-      ],
-      "sumber": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-    },
-    {
-      "jenis": "galeri",
-      "jenis_slide": "lampiran",
-      "judul_bentuk": "deskriptif",
-      "pesan": "Lampiran B3. Contoh Kalimantan Tengah: cara uji pompa dan keselamatan regu di petak",
-      "kode": "BC",
-      "judul": "Lampiran B3. Contoh Kalimantan Tengah: cara uji pompa dan keselamatan regu di petak",
-      "cut_off": false,
-      "kolom_panel": 2,
-      "panel": [
-        {
-          "judul": "Cara uji dan keselamatan",
-          "ikon": "data",
-          "kolom_foto": 1,
-          "foto": [
-            {
-              "berkas": "foto/renlap-pilot-03.png",
-              "utuh": true,
-              "keterangan": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-            }
-          ],
-          "bobot": 2.46
-        },
-        {
-          "judul": "Keterangan lampiran",
-          "ikon": "ringkasan",
-          "bobot": 1,
-          "skala_huruf": 1.6,
-          "daftar": [
-            "Cara mengukur efektivitas suntikan air ke bara di tiap lokasi.",
-            "Debit sumber air diukur dulu: paling sedikit {{angka:sp.debit|satuan}} untuk satu kit.",
-            "Aturan keselamatan regu: arah angin, jalur keluar, dan batas kerja.",
-            "Keputusan jalan atau tunda diambil sore sebelumnya dari hotspot terbaru.",
-            "Alat tambahan per regu tercantum: lance, termometer tusuk, dan bor gambut."
-          ]
-        }
-      ],
-      "sumber": "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
-    },
-    {
-      "jenis": "pembatas-seksi",
-      "bagian": 3
-    },
-    {
-      "jenis": "galeri",
-      "jenis_slide": "lampiran",
-      "judul_bentuk": "deskriptif",
-      "pesan": "Lampiran C. Foto udara lain dari pantauan 31 Oktober",
-      "kode": "CA",
-      "judul": "Lampiran C. Foto udara lain dari pantauan 31 Oktober",
+      "judul": "Lampiran B. Foto udara lain dari kegiatan 31 Oktober",
       "cut_off": false,
       "kolom_panel": 1,
       "panel": [
@@ -337,7 +212,7 @@
           ]
         }
       ],
-      "sumber": "Pantauan udara tim BNPB, 31 Okt 2026"
+      "sumber": "Kegiatan udara tim BNPB, 31 Okt 2026"
     }
   ]
 }

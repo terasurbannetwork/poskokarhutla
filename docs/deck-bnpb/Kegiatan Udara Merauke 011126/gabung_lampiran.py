@@ -11,9 +11,8 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(Path.home() / '.claude/skills/ppt-konsultan/bnpb/scripts'))
 from deck import ke_pdf  # noqa: E402
 
-DECK = HERE / 'Lampiran Pantauan Udara Merauke 011126.pptx'
-LAMP = [('Lampiran D. Berkas asli renlap rute udara Merauke, 30 Oktober 2026', HERE / 'sumber/Renlap Rute Udara Merauke 301026.pdf', 1),
-        ('Lampiran E. Berkas asli renlap darat SIPPA Kalimantan Tengah (contoh), 1 November 2026', HERE / 'sumber/Renlap Darat SIPPA Kalteng 011126.pdf', 2)]
+DECK = HERE / 'Lampiran Kegiatan Udara Merauke 011126.pptx'
+LAMP = [('Lampiran C. Berkas asli renlap rute udara Merauke, 30 Oktober 2026', HERE / 'sumber/Renlap Rute Udara Merauke 301026.pdf', 1)]
 NAVY = RGBColor(0x0B, 0x1F, 0x3A)
 
 prs = Presentation(DECK)

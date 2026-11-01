@@ -1,15 +1,15 @@
 {
-  "_catatan": "Hasil pantauan udara karhutla Merauke 31 Okt 2026 untuk Kepala BNPB. Dibangun dari spek/bangun_spek_merauke.py.",
+  "_catatan": "Hasil kegiatan udara karhutla Merauke 31 Okt 2026 untuk Kepala BNPB. Dibangun dari spek/bangun_spek_merauke.py.",
   "pesan_kunci": "Lahan di Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan sesudahnya; api terpusat di cluster PT Merauke Sawit Jaya.",
-  "judul_dokumen": "Pantauan Udara Karhutla Merauke",
-  "subjek_dokumen": "Pantauan udara 31 Oktober 2026",
+  "judul_dokumen": "Kegiatan Udara Karhutla Merauke",
+  "subjek_dokumen": "Kegiatan udara 31 Oktober 2026",
   "kajian": "merauke",
   "format": "kajian",
   "tanggal": "2026-11-01",
   "cut_off": "31 Okt 2026, 23.59 WIT",
   "bagian": [
     {
-      "judul": "Temuan Pantauan Udara",
+      "judul": "Temuan Kegiatan Udara",
       "label": "Temuan lapangan"
     },
     {
@@ -25,7 +25,7 @@
       "skala_subjudul": 0.9,
       "foto": "foto/udara-20.jpg",
       "kota": "Jakarta",
-      "kredit": "Foto: pantauan udara tim BNPB",
+      "kredit": "Foto: kegiatan udara tim BNPB",
       "logo_kanan": "foto/berakhlak-hd.png",
       "kepada": "Ditujukan khusus untuk Kepala BNPB",
       "subjudul": "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
@@ -38,7 +38,7 @@
       "jenis": "galeri",
       "jenis_slide": "navigasi",
       "judul_bentuk": "deskriptif",
-      "pesan": "Ringkasan pantauan",
+      "pesan": "Ringkasan kegiatan",
       "judul": "Lahan Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan kemudian; {{angka:mk.cp5|satuan}} di sekitar PT MSJ",
       "cut_off": false,
       "grup": [
@@ -96,7 +96,7 @@
           ]
         },
         {
-          "judul": "Temuan pantauan udara",
+          "judul": "Temuan kegiatan udara",
           "ikon": "ringkasan",
           "bobot": 1,
           "temuan": [
@@ -127,7 +127,7 @@
           ]
         }
       ],
-      "sumber": "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; pantauan udara tim BNPB, 31 Okt 2026"
+      "sumber": "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; kegiatan udara tim BNPB, 31 Okt 2026"
     },
     {
       "jenis": "daftar-isi"
@@ -190,7 +190,7 @@
           ]
         }
       ],
-      "sumber": "Pantauan udara tim BNPB, 31 Okt 2026"
+      "sumber": "Kegiatan udara tim BNPB, 31 Okt 2026"
     },
     {
       "jenis": "temuan-peta",
@@ -324,7 +324,7 @@
           ]
         }
       ],
-      "sumber": "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; pantauan udara tim BNPB, 31 Okt 2026"
+      "sumber": "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; kegiatan udara tim BNPB, 31 Okt 2026"
     },
     {
       "jenis": "temuan-peta",
@@ -389,7 +389,7 @@
           "**Data tepat sasaran.** Cluster yang dilihat tim sama dengan cluster terpadat di data satelit: {{angka:mk.cp5|satuan}} di CP-5."
         ]
       },
-      "sumber": "Renlap rute udara BNPB, 30 Okt 2026; pantauan udara tim BNPB, 31 Okt 2026"
+      "sumber": "Renlap rute udara BNPB, 30 Okt 2026; kegiatan udara tim BNPB, 31 Okt 2026"
     },
     {
       "jenis": "pembatas-seksi",
@@ -434,7 +434,7 @@
           "warna": "oranye",
           "judul": "Sumber air terdekat",
           "sub": "Renlap darat",
-          "isi": "Contoh Kalimantan Tengah 1 November: {{angka:sp.lokasi|satuan}}, air {{angka:sp.air.min|satuan}} sampai {{angka:sp.air.maks|satuan}} dari petak."
+          "isi": "Untuk tiap lokasi api dicari sumber air terdekat: sungai, kanal, atau parit yang bisa dipompa."
         },
         {
           "label": "Langkah ke-5",
@@ -442,7 +442,7 @@
           "warna": "oranye",
           "judul": "Pompa dan selang",
           "sub": "Dihitung per lokasi",
-          "isi": "Panjang selang sampai {{angka:sp.selang.maks|satuan}}, debit paling sedikit {{angka:sp.debit|satuan}} untuk satu kit."
+          "isi": "Panjang selang, jumlah gulung, dan pompa tambahan dihitung dari jarak sumber air ke lokasi api."
         },
         {
           "label": "Langkah ke-6",
@@ -475,15 +475,15 @@
         "isi_bawah": true,
         "teks": "Satu data yang sama menunjuk api nyata, sumber air terdekat, dan jalur regu, sehingga helikopter dan regu darat tidak bergerak sembarang."
       },
-      "sumber": "Renlap rute udara BNPB, 30 Okt 2026; Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
+      "sumber": "Renlap rute udara BNPB, 30 Okt 2026"
     },
     {
       "jenis": "penutup",
       "foto": "foto/udara-20.jpg",
       "logo_kanan": "foto/berakhlak-hd.png",
-      "kredit": "Foto: pantauan udara tim BNPB",
+      "kredit": "Foto: kegiatan udara tim BNPB",
       "teks": "Terima Kasih",
-      "laporan": "Pantauan udara Kabupaten Merauke, 31 Oktober 2026"
+      "laporan": "Kegiatan udara Kabupaten Merauke, 31 Oktober 2026"
     }
   ]
 }
