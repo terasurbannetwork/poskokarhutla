@@ -119,10 +119,10 @@ def rekap(rows, berkas):
             if y in penuh:
                 kab[kk]["ada"][r["jenis"]][m - 1].add(y)
                 kab[kk]["bulan_penuh"][r["jenis"]][m - 1] += 1
-    # 2026: episode laporan harian PDF (laphar_riwayat.json), satu episode = satu kejadian kab x jenis; hanya hitungan
+    # cadangan: episode laporan harian PDF (laphar_riwayat.json) untuk tahun yang belum punya logbook; hanya hitungan
     arsip = ", ".join(sorted(hari))
     lp = os.path.join(AKAR, "public/data/laphar_riwayat.json")
-    sumber_lh = ""
+    sumber_lh, catatan_lh = "", ""
     if os.path.exists(lp):
         lh = json.load(open(lp, encoding="utf-8"))
         for e in lh["episode"]:
@@ -134,18 +134,20 @@ def rekap(rows, berkas):
                 kab[e["kab"]]["bulan"][e["jenis"]][m - 1] += 1
                 t = kab[e["kab"]]["tahun"][y]
                 t[e["jenis"]] = t.get(e["jenis"], 0) + 1
-        for y in {e["mulai"][:4] for e in lh["episode"]} - set(hari):
+        pakai = sorted({e["mulai"][:4] for e in lh["episode"]} - set(hari))
+        for y in pakai:
             hari[y] = lh["cakupan"]["hari"]
-        sumber_lh = f"; laporan harian {lh['cakupan']['mulai']} s.d. {lh['cakupan']['sampai']} (episode laphar_riwayat.json)"
+        if pakai:
+            sumber_lh = f"; laporan harian {lh['cakupan']['mulai']} s.d. {lh['cakupan']['sampai']} (episode laphar_riwayat.json)"
+            catatan_lh = (f" {', '.join(pakai)} dari laporan harian PDF, bukan logbook: satu episode kab x jenis dihitung "
+                          "satu kejadian, kejadian lanjutan tahun sebelumnya ikut terhitung pada 1 Januari; "
+                          "jangan dibandingkan langsung dengan tahun logbook.")
     out = {"dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
            "sumber": "Logbook harian Pusdalops BNPB, arsip " + arsip + sumber_lh,
            "catatan": "Hitungan kejadian unik (update digabung). Satu kejadian lintas kab dihitung di tiap kab. "
                       "Tahun tidak lengkap: bandingkan per hari tercatat. Tanpa angka korban (lihat DIBI). "
                       "Kebakaran permukiman 2022 hanya 121 kejadian dalam 272 hari, jauh di bawah 2014-2020; "
-                      "kemungkinan cara pencatatannya berubah (belum dipastikan). "
-                      "2026 dari laporan harian PDF (Pusdalops Jan-Feb, Koordalops mulai Mar), bukan logbook: "
-                      "satu episode kab x jenis dihitung satu kejadian, kejadian lanjutan dari 2025 ikut terhitung "
-                      "pada 1 Januari; jangan dibandingkan langsung dengan tahun logbook.",
+                      "kemungkinan cara pencatatannya berubah (belum dipastikan)." + catatan_lh,
            "hari_tercatat": hari, "tahun_penuh": penuh, "jenis": jenis, "nasional": nas,
            # tahun_ada[jenis][bulan] = berapa tahun penuh (dari tahun_penuh) yang punya >= 1 kejadian di bulan itu
            # bulan = semua tahun 2011-2022; bulan_penuh = hanya tahun_penuh (pakai ini bila label menyebut 2014-2020)
