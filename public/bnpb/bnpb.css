@@ -56,3 +56,6 @@
 /* dipakai bersama halaman risiko, kebutuhan, kebakaran (gerbang-inti: tanpa salinan antarberkas) */
 .kn{fill:color-mix(in srgb,var(--ink) 14%,var(--card));background:color-mix(in srgb,var(--ink) 14%,var(--card))}
 .kb-tabel .ad-tabel th button{all:unset;cursor:pointer;color:#fff;display:inline-flex;gap:4px}
+
+/* dibingkai Ruang Laporan: kelas .sematan ditambah induk (admin.css?v=6 yang di-import bisa basi di cache) */
+.sematan .ad-top{display:none}

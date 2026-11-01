@@ -229,6 +229,7 @@ function gambarDetail() {
   ganti(w, h("div", {class: "lka-detail-kepala"}, h("h3", {teks: K.label}), h("span", {class: "lka-pil st-" + K.status, teks: STATUS_K[K.status]}), K.versi ? h("span", {class: "lka-redup", teks: `versi ${K.versi}`}) : null, K.terkunci ? h("span", {class: "lka-pil", teks: "dikunci"}) : null),
     K.catatan ? h("p", {class: "lka-banner kuning", teks: "Catatan: " + K.catatan}) : null,
     !K.ada ? h("p", {class: "lka-redup", teks: "Belum ada kiriman. Isi di bawah adalah draf otomatis dari data yang ada."}) : null,
+    prov && !HZ ? h("a", {class: "lka-btn", href: `/api/laporan-karhutla/format-khusus?prov=${S.kodeDariSumber(K.sumber)}&tanggal=${T}`, download: "", teks: "Unduh format BNPB (xlsx)"}) : null,
     prov ? (HZ ? ringkasBencana(hasil?.isi ?? K.isi, K.otomatis) : ringkasProv(hasil?.isi ?? K.isi)) : h("div", {id: "lkForm", class: "lka-form-pusat"}, formPusat()),
     h("div", {id: "lkCek"}, isiCek()),
     h("div", {class: "lka-aksi"}, !prov && tulis ? [h("button", {type: "button", class: "lka-btn", "data-a": "simpan-draf", teks: "Simpan draf"}), h("button", {type: "button", class: "lka-btn utama", "data-a": "kirim-kiriman", teks: K.status === "terkirim" || K.status === "disetujui" ? "Kirim ulang" : "Kirim"})] : null),

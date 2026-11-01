@@ -1586,9 +1586,9 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
           <label><input type="checkbox" data-l="kabbelum"> Masih terdeteksi per kabupaten (perkiraan satelit)</label>
-          <label><input type="checkbox" data-l="permukiman"> Kebakaran permukiman per kabupaten (Logbook Pusdalops 2014-2020)</label><!-- kebakaran_permukiman.js; saling eksklusif dengan kabluas/kabbelum -->
-          <label><input type="checkbox" data-l="rd-musim"> Musim berjalan: jenis bencana dominan per bulan (Logbook Pusdalops 2014-2020)</label><!-- riwayat_daerah.js; saling eksklusif dengan lapisan kabupaten lain -->
-          <label><input type="checkbox" data-l="rd-langgan"> Langganan bencana: banjir dan longsor tiap tahun (Logbook Pusdalops 2014-2020)</label>
+          <label><input type="checkbox" data-l="permukiman"> Kebakaran permukiman per kabupaten (Logbook Pusdalops 2014–2020 dan 2024–2025)</label><!-- kebakaran_permukiman.js; saling eksklusif dengan kabluas/kabbelum -->
+          <label><input type="checkbox" data-l="rd-musim"> Musim berjalan: jenis bencana dominan per bulan (Logbook Pusdalops 2014–2020 dan 2024–2025)</label><!-- riwayat_daerah.js; saling eksklusif dengan lapisan kabupaten lain -->
+          <label><input type="checkbox" data-l="rd-langgan"> Langganan bencana: banjir dan longsor tiap tahun (Logbook Pusdalops 2014–2020 dan 2024–2025)</label>
           <label><input type="checkbox" data-l="langganan"> Lokasi langganan api (pencegahan)</label><!-- riwayat_sel.py langganan: jendela ~16 km terbakar >= 1/3 tahun 2012-2025 -->
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label><input type="checkbox" data-l="foto"> Foto lapangan warga</label>
@@ -1804,7 +1804,7 @@ function bukaTab(id, dorong = true) {
 }
 /* 6 tab utama; sisanya di menu Lainnya supaya tidak ada tab yang terpotong */
 /* disembunyikan sementara dari menu atas (permintaan pemilik 13 Okt 2026); halamannya tetap bisa dibuka lewat tautan langsung */
-const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "satelit", "tentang"]); /* metode: kembali di menu (pemilik 29 Okt 2026) */ /* tentang: disembunyikan dari menu (pemilik 29 Okt 2026); /tentang tetap bisa dibuka langsung */ /* satelit: tab Data satelit tersembunyi dari menu (pemilik 28 Okt 2026); pintu masuk = tautan di popover lintasan (satelit_lintas.js), /satelit; pulihkan di menu: hapus "satelit" dari set ini dan dari tab_sembunyi di bencana.json */ /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
+const TAB_SEMBUNYI = new Set(["ringkasan", "posko", "informasi", "kompleks", "satelit", "tentang", "foto"]); /* foto: disembunyikan dari menu (pemilik 1 Nov 2026); /foto tetap bisa dibuka langsung */ /* metode: kembali di menu (pemilik 29 Okt 2026) */ /* tentang: disembunyikan dari menu (pemilik 29 Okt 2026); /tentang tetap bisa dibuka langsung */ /* satelit: tab Data satelit tersembunyi dari menu (pemilik 28 Okt 2026); pintu masuk = tautan di popover lintasan (satelit_lintas.js), /satelit; pulihkan di menu: hapus "satelit" dari set ini dan dari tab_sembunyi di bencana.json */ /* metode disembunyikan dulu (14 Okt 2026) */ /* kompleks: digabung ke Insight (14 Okt 2026) */
 const IK_TAB = {pelaporan: '<path d="M14 3H6a1 1 0 0 0-1 1v16a1 1 0 0 0 1 1h12a1 1 0 0 0 1-1V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>',
   tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', satelit: '<path d="m13 7-3 3 4 4 3-3zM9 11 5 7l2-2 4 4M15 13l4 4-2 2-4-4"/><path d="M4 20a8 8 0 0 0 8-8"/>', kompleks: IKON.api, dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', metode: '<path d="M9 3h6M10 3v6L4 19a1.5 1.5 0 0 0 1.3 2h13.4A1.5 1.5 0 0 0 20 19l-6-10V3"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>',
   monitor: '<path d="M3 12h4l3-8 4 16 3-8h4"/>', posko: IKON.posko, informasi: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>', ringkasan: '<rect x="3" y="3" width="7" height="9" rx="1"/><rect x="14" y="3" width="7" height="5" rx="1"/><rect x="14" y="12" width="7" height="9" rx="1"/><rect x="3" y="16" width="7" height="5" rx="1"/>'};
@@ -2238,7 +2238,7 @@ const Peta = {
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
         const kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
         return new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#c9503a"><div><small>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s]}</small><b>Titik panas</b></div></div>
-          <div class="kg">${kb("Umur deteksi", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
+          <div class="kg">${kb("Umur deteksi", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb('<span title="tertinggi dalam sel 375 m">Keyakinan deteksi</span>', ["Rendah", "Sedang", "Tinggi"][p.c] ?? "–")}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
           ${aksiLokasi(t[0].geometry.coordinates[1], t[0].geometry.coordinates[0], "Titik panas " + ({N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s] || ""))}<div class="kk">Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (window.Risiko7?.klik(e)) return;   /* overlay eksperimental Peluang api 7 hari (hanya akun masuk): klik = popup sel, bukan turun ke wilayah */
@@ -2621,9 +2621,9 @@ function renderKPI() {
   const prior = kl.filter(f => f.properties.level === 3).length, siaga = kl.filter(f => f.properties.level === 2).length;
   const fw = S.jalur[0] ? S.wilayah[S.jalur[0]]?.fwi_maks : Math.max(...Object.keys(S.meta.provinsi).map(k => S.wilayah[k]?.fwi_maks || 0));
   const rh = S.rentangHit || S.rentang, bln = +tglRentang().slice(5, 7) - 1;
-  const nmR = rh === "hari" ? `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)` : `${hariLama(rh) ? tglLain(rh) : tglPendek(tglRentang())} · sehari penuh WIB`;
+  const nmR = rh === "hari" ? `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)` : `${hariLama(rh) ? tglLain(rh) : tglPendek(tglRentang())}, sehari penuh WIB`;
   const kart = [
-    ["Titik panas", fmt(jml(S.hit)), `${nmR} · ${fmt(jml(S.tinggi))} keyakinan tinggi`],
+    ["Titik panas", fmt(jml(S.hit)), `${nmR}, ${fmt(jml(S.tinggi))} titik keyakinan tinggi`],
     ["Cluster", fmt(kl.length), "aktif 72 jam"],
     ["Prioritas pemadaman", fmt(prior), `${fmt(siaga)} lain pemadaman awal`],
     ["FWI maksimum", fmt(fw), fw == null ? "" : FWI_KELAS[kelasFWI(fw)][0] + " hari ini"],
@@ -3991,7 +3991,7 @@ const Insight = {
   st: {harian: "harian", ytd: "rasio", musim: "p_el_nino", cuaca: "fwi", bnpb: "ha", tahun: "jumlah", tahunProv: "", luasTh: "", luasProv: "", kecProv: "", kecN: 10, kecAksi: "", papHari: 0},
   /* ytd, tahun, kec dibuang (sudah ada di Tren); kartu riwayat panjang pindah ke Tren lewat TREN (pemilik, 17 Okt 2026) */
   /* bnpb (Laporan resmi BNPB) dan penanganan disembunyikan (pemilik, 17 Okt 2026); exBnpb/exPenanganan tetap ada, pulihkan dengan menambah id ke EX */
-  EX: ["peluang", "harian", "kumulatif", "nasional", "musim", "cuaca", "paparan"],
+  EX: ["peluang", "harian", "kumulatif", "nasional", "logbook", "musim", "cuaca", "paparan"],
   TREN: ["luasTahun", "luas", "nasional", "dunia"],
   /* penghubung ke inti/kartu.js: mesin kartu pindah ke Kartu; _leg & _bukaMulti dibaca/ditulis kode lama lewat sini */
   ex: (...a) => Kartu.ex(...a),
@@ -4005,13 +4005,13 @@ const Insight = {
   selProvMulti(key, daftar = PRIO) { return Kartu.selProvMulti(key, daftar, namaProv, this.st); },
   selProv(key, semua) { return Kartu.selProv(key, semua, PRIO, namaProv, this.st); },
   /* label kategori di pojok kartu; kartu lebar (banyak panel / tabel) memakai dua kolom */
-  LABEL: {citra: "Citra satelit", harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", luasTahun: "Luas terbakar", penanganan: "Penanganan", nasional: "Riwayat nasional", dunia: "Situasi global", kec: "Kecamatan langganan", peluang: "Peluang bahaya api", kumulatif: "Titik panas kumulatif"},
+  LABEL: {citra: "Citra satelit", harian: "Tren harian", ytd: "Tahun berjalan", musim: "Musim", cuaca: "Cuaca", paparan: "Kesehatan", akses: "Akses regu", bnpb: "Laporan resmi", tahun: "Riwayat 25 tahun", luas: "Luas terbakar", luasTahun: "Luas terbakar", penanganan: "Penanganan", nasional: "Riwayat nasional", logbook: "Logbook Pusdalops", dunia: "Situasi global", kec: "Kecamatan langganan", peluang: "Peluang bahaya api", kumulatif: "Titik panas kumulatif"},
   PENUH: new Set(["harian"]),
   async muat() {
     const D = this.data;
     const [mo, mu, sat, res, asap, kr] = await Promise.all([Tren.cache["data/sejarah_modis.json"] || muatJSON("data/sejarah_modis.json"), Tren.musim || muatJSON("data/musim.json"),
       muatJSON("data/luas_satelit.json").catch(() => null), muatJSON("data/luas_resmi.json").catch(() => null), Lapis.cache.asap || muatJSON("data/asap.json").catch(() => null), muatJSON("img/kredit.json").catch(() => [])]);
-    [D.fs, D.tb] = await Promise.all([muatJSON("data/factsheet_karhutla.json").catch(() => null), muatJSON("data/laporan.json").then(l => l.tahun_berjalan).catch(() => null), S.sejarah || muatJSON("data/sejarah.json").then(j => S.sejarah = j).catch(() => null)]);
+    [D.fs, D.tb, , D.lb] = await Promise.all([muatJSON("data/factsheet_karhutla.json").catch(() => null), muatJSON("data/laporan.json").then(l => l.tahun_berjalan).catch(() => null), S.sejarah || muatJSON("data/sejarah.json").then(j => S.sejarah = j).catch(() => null), (window._logbook ||= muatJSON("data/logbook_riwayat.json").catch(e => { window._logbook = null; throw e; })).catch(() => null)]);
     /* kartu peluang (inti/peluang.js) dan kumulatif: berkas boleh tak ada, kartunya saja yang dibuang */
     [D.pel, D.kum] = await Promise.all([typeof Peluang !== "undefined" ? Peluang.muat("data/peluang.json") : null, muatJSON("data/kumulatif.json").catch(() => null)]);
     Tren.cache["data/sejarah_modis.json"] = mo; Tren.musim = mu; Lapis.cache.asap = asap;
@@ -4233,6 +4233,26 @@ const Insight = {
     const r = riwayatNasional(f, tb, S.sejarah, "Centurisk97");
     this._leg = r.leg;
     return this.ex(r.judul, "", "", r.svg, "Sumber: " + r.sumber); },
+  /* tren kejadian karhutla di Logbook Pusdalops BNPB (data/logbook_riwayat.json, dibaca apa adanya). Tahun di luar tahun_penuh
+     (liputan logbook tidak penuh) dipudarkan dan TIDAK ikut kalimat judul; tooltipnya memberi angka per 100 hari tercatat. Tanpa angka korban. */
+  exLogbook() {
+    const lb = this.data.lb; if (!lb?.nasional) return "";
+    const TP = (lb.tahun_penuh || []).map(Number).sort((a, b) => a - b), yrs = Object.keys(lb.nasional).map(Number).sort((a, b) => a - b);
+    const n = y => lb.nasional[y]?.karhutla || 0, hr = y => lb.hari_tercatat?.[y] || 0;
+    if (TP.length < 2) return "";
+    const puncak = TP.reduce((a, y) => n(y) > n(a) ? y : a), rendah = TP.reduce((a, y) => n(y) < n(a) ? y : a);
+    const r = []; TP.forEach((y, i) => i && y === TP[i - 1] + 1 ? r[r.length - 1][1] = y : r.push([y, y]));
+    const rs = r.map(([a, b]) => a === b ? `${a}` : `${a}–${b}`), rng = rs.length < 3 ? rs.join(" dan ") : rs.slice(0, -1).join(", ") + ", dan " + rs.at(-1);
+    const W = 940, L = 40, B = 250, T = 34, mx = Math.max(1, ...yrs.map(n)), gap = (W - L - 10) / yrs.length, bw = gap * .7, Y = v => B - v / mx * (B - T), BIRU = "#1d4e89";
+    let g = [0, .5, 1].map(f => `<line x1="${L}" x2="${W}" y1="${Y(mx * f)}" y2="${Y(mx * f)}" stroke="currentColor" opacity=".08"/><text x="${L - 6}" y="${Y(mx * f) + 4}" text-anchor="end" font-size="11" opacity=".6">${fmt(Math.round(mx * f))}</text>`).join("");
+    yrs.forEach((y, i) => { const x = L + i * gap + (gap - bw) / 2, v = n(y), pen = TP.includes(y), h = Math.max(1.5, v / mx * (B - T)), per = hr(y) ? Math.round(v / hr(y) * 1000) / 10 : 0;
+      g += `<rect class="gy" style="--i:${i}" x="${x}" y="${B - h}" width="${bw}" height="${h}" rx="3" fill="${y === puncak ? "#c9503a" : BIRU}" opacity="${pen ? 1 : .3}" data-tip="<b>${y}${pen ? "" : " (liputan logbook tidak penuh)"}</b><br>${fmt(v)} kejadian karhutla<br>${fmt(hr(y))} hari tercatat, ${fmt(per)} per 100 hari"/>
+        <text class="gf" style="--i:${i}" x="${x + bw / 2}" y="${B - h - 5}" text-anchor="middle" font-size="10" font-weight="800" opacity="${pen ? .85 : .4}" pointer-events="none">${fmt(v)}</text>
+        <text x="${x + bw / 2}" y="${B + 16}" text-anchor="middle" font-size="11" opacity="${pen ? .8 : .4}">${String(y).slice(2)}</text>`; });
+    this.leg([[BIRU, "tahun dasar (liputan logbook penuh)"], ["#c9503a", "puncak tahun dasar"], ["#b8c0cc", "tahun lain, dipudarkan dan tidak ikut perbandingan"]]);
+    return this.ex(`${this.hl(fmt(n(puncak)) + " kejadian karhutla")} tercatat pada ${this.hl(puncak)}, puncak tahun dasar ${rng}, ${this.hl(fmt(Math.round(n(puncak) / (n(rendah) || 1) * 10) / 10) + " kali")} tahun terendah (${rendah}: ${fmt(n(rendah))})`, "", "",
+      `<svg viewBox="0 0 ${W} ${B + 24}" role="img" aria-label="Kejadian karhutla per tahun menurut logbook Pusdalops BNPB">${g}</svg>`,
+      "Sumber: Logbook harian Pusdalops BNPB. Ini kejadian yang dilaporkan ke logbook, bukan seluruh kejadian sebenarnya, dan cara pencatatan bisa berbeda antartahun; yang dibandingkan hanya tahun dasar karena liputan logbook tahun lain tidak penuh"); },
   exDunia() {
     const f = this.data.fs; if (!f) return "";
     const rows = f.dunia.map(r => ({...r, v: r.ha, tebal: r.n === "Indonesia", lbl: (r.kira ? "±" : r.lebih ? "> " : "") + (r.ha >= 1e6 ? (r.ha / 1e6).toLocaleString("id-ID", {maximumFractionDigits: 2}) + " juta" : fmt(r.ha)) + " ha" + (r.per ? "*" : "")}));
@@ -6301,7 +6321,7 @@ Elips: a = (kepala + belakang)/2,  b = a/LB,  x0 = belakang − a;  laju ke arah
       ["Titik api Himawari-9 (bagian 16)", "JAXA P-Tree, L2 WLF v010 (ftp.ptree.jaxa.jp)", "tidak dicantumkan", "piksel ± 2 km, per 10 menit, grid 0,02°", "tiap 30 menit", "himawari.json (R2)"],
       ["Prakiraan ansambel 7 hari (bagian 18)", "ECMWF IFS 0,25°, 51 anggota, lewat Open-Meteo Ensemble API; cadangan GFS", "tidak dicantumkan", "kotak 1°, dipakai sel 0,5°", "harian", "fwi_ansambel.json, peluang.json"],
       ["Kelembapan tanah (bagian 18)", "ECMWF IFS (prakiraan) dan ERA5-Land (iklim 2015 sampai 2025) lewat Open-Meteo", "tidak dicantumkan", "sel 0,5°", "harian", "tanah.json"],
-      ["Status keadaan darurat (bagian 19)", "BNPB, data.bnpb.go.id (CKAN)", "tidak dicantumkan", "per SK, titik kabupaten", "harian (isi mengikuti unggahan BNPB)", "status_darurat.json"],
+      ["Status keadaan darurat (bagian 19)", "BNPB, data.bnpb.go.id (CKAN), dan arsip SK Pusdalops BNPB", "tidak dicantumkan", "per SK, titik kabupaten", "harian (isi mengikuti unggahan BNPB)", "status_darurat.json"],
       ["Elemen orbit satelit (TLE)", "CelesTrak", "tidak dicantumkan", "per satelit", "harian", "tle.json"],
       ["Cuaca per jam dan prakiraan 4 hari", "Open-Meteo Forecast API", "tidak dicantumkan", "diambil di titik tengah sel 0,5°", "harian", "fwi.json, fwi_state.json"],
       ["Reanalisis ERA5 (pemanasan FWI)", "Open-Meteo Archive API", "tidak dicantumkan", "titik tengah sel 0,5°", "saat sel baru atau keadaannya &gt; 8 hari", "fwi_state.json"],

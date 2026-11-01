@@ -1,0 +1,102 @@
+{
+  "_catatan": "Ringkasan mesin-baca panduan resmi Pusdalops BNPB (draf, ditetapkan 9 Juli 2025). Sumber berkas: data/raw/pusdalops-drive/2025/Draft Panduan Penyusunan {Logbook,Laphar,Lapjol}.pdf. Yang menang bila bertentangan: panduan. Hal 'h' = nomor halaman PDF. Dibaca urai_laporan.py; jangan sunting tanpa membaca ulang panduannya.",
+  "sumber": {
+    "logbook": {"nomor": "01/PO.02/07/2025", "berkas": "Draft Panduan Penyusunan Logbook.pdf"},
+    "laphar": {"nomor": "02/PO.02/07/2025", "berkas": "Draft Panduan Penyusunan Laphar.pdf"},
+    "lapjol": {"nomor": "03/PO.02/07/2025", "berkas": "Draft Panduan Penyusunan Lapjol.pdf"},
+    "juklak_rujukan": "Juklak BNPB No. 7 Tahun 2023 tentang Standar Data Kejadian dan Dampak Bencana (tidak dibaca, hanya dirujuk panduan)"
+  },
+  "jenis": [
+    {"kode": "101", "nama": "Banjir", "kelompok": "alam", "kunci": "banjir", "laphar_urutan": 1,
+     "nama_kejadian": ["banjir rob", "banjir bandang", "banjir dan tanah longsor", "banjir drainase & selokan", "banjir waduk", "banjir genangan", "tanggul jebol"],
+     "menonjol": {"kk": 50, "orang": 200, "korban": "md_hilang", "ha": 10, "hal": "Lapjol h2 G.2.a"}, "hal": "Logbook h2 G.1.c.1.a"},
+    {"kode": "102", "nama": "Tanah longsor", "kelompok": "alam", "kunci": "longsor", "laphar_urutan": 2,
+     "nama_kejadian": ["longsor dan gerakan tanah", "gerakan tanah"],
+     "menonjol": {"kk": 10, "orang": 40, "korban": "md_hilang", "rumah_rusak": 10, "hal": "Lapjol h2 G.2.b"}, "hal": "Logbook h2 G.1.c.1.b"},
+    {"kode": "103", "nama": "Gelombang pasang dan abrasi", "kelompok": "alam", "kunci": "cuaca", "laphar_urutan": 3,
+     "nama_kejadian": ["gelombang pasang", "abrasi pantai"],
+     "menonjol": {"kk": 10, "orang": 40, "korban": "md_hilang", "hal": "Lapjol h2 G.2.c"}, "hal": "Logbook h2 G.1.c.1.c"},
+    {"kode": "104", "nama": "Cuaca ekstrem", "kelompok": "alam", "kunci": "cuaca", "laphar_urutan": 4,
+     "nama_kejadian": ["puting beliung", "angin kencang", "angin topan", "hujan es", "siklon tropis", "suhu udara ekstrem"],
+     "menonjol": {"kk": 10, "orang": 40, "korban": "md_hilang", "rumah_rusak": 10, "hal": "Lapjol h2 G.2.d"}, "hal": "Logbook h2 G.1.c.1.d"},
+    {"kode": "105", "nama": "Kekeringan", "kelompok": "alam", "kunci": "kekeringan", "laphar_urutan": 5,
+     "nama_kejadian": ["kekeringan meteorologis", "kekeringan hidrologis", "kekeringan pertanian"],
+     "menonjol": {"kk": 200, "orang": 800, "korban": "md", "ha": 10, "hal": "Lapjol h2 G.2.e"}, "hal": "Logbook h2 G.1.c.1.e"},
+    {"kode": "106", "nama": "Kebakaran hutan dan lahan", "kelompok": "alam", "kunci": "karhutla", "laphar_urutan": 6,
+     "nama_kejadian": ["kebakaran hutan", "kebakaran lahan", "kebakaran lahan gambut"],
+     "menonjol": {"ha_saja": 2, "hal": "Lapjol h2 G.2.f"}, "hal": "Logbook h2 G.1.c.1.f"},
+    {"kode": "107", "nama": "Gempabumi", "kelompok": "alam", "kunci": "gempabumi", "laphar_urutan": 7,
+     "nama_kejadian": ["gempa tektonik", "gempa vulkanik", "gempabumi", "runtuhan"],
+     "menonjol": {"ada_dampak": true, "hal": "Lapjol h2 G.2.g"}, "hal": "Logbook h2 G.1.c.1.g"},
+    {"kode": "108", "nama": "Tsunami", "kelompok": "alam", "kunci": "gempabumi", "laphar_urutan": 8,
+     "nama_kejadian": ["tsunami seismogenik", "tsunami nonseismik", "tsunami lokal", "tsunami regional", "tsunami jarak jauh", "tsunami meteorologi", "mikrotsunami", "tsunami"],
+     "menonjol": {"ada_dampak": true, "hal": "Lapjol h2 G.2.h"}, "hal": "Logbook h2 G.1.c.1.h"},
+    {"kode": "109", "nama": "Erupsi gunung api", "kelompok": "alam", "kunci": "gunungapi", "laphar_urutan": 9,
+     "nama_kejadian": ["awan panas guguran", "awan panas", "banjir lahar", "lahar", "hujan abu vulkanik", "gas vulkanik beracun"],
+     "menonjol": {"ada_dampak": true, "hal": "Lapjol h2 G.2.i"}, "hal": "Logbook h2 G.1.c.1.i"},
+    {"kode": "201", "nama": "Epidemi dan wabah penyakit", "kelompok": "non_alam", "kunci": null,
+     "nama_kejadian": ["wabah penyakit", "epidemi"], "menonjol": null, "hal": "Logbook h2 G.1.c.2.a"},
+    {"kode": "202", "nama": "Kebakaran gedung dan pemukiman", "kelompok": "non_alam", "kunci": "kebakaran_permukiman",
+     "nama_kejadian": ["kebakaran gedung dan pemukiman"], "menonjol": null, "hal": "Logbook h2 G.1.c.2.b"},
+    {"kode": "203", "nama": "Gagal teknologi", "kelompok": "non_alam", "kunci": "kegagalan_teknologi",
+     "nama_kejadian": ["kegagalan industri", "kecelakaan industri"], "menonjol": null, "hal": "Logbook h2 G.1.c.2.c"},
+    {"kode": "301", "nama": "Konflik sosial", "kelompok": "sosial", "kunci": "konflik_sosial",
+     "nama_kejadian": ["konflik sosial", "teror", "kerusuhan sosial"], "menonjol": null, "hal": "Logbook h2 G.1.c.3.a"}
+  ],
+  "_catatan_menonjol": "Syarat: SATU dari kriteria jenisnya. kk/orang = ambang terdampak ATAU mengungsi (KK atau orang). korban: md_hilang = ada MD atau hilang; md = hanya MD (kekeringan). ada_dampak = ada data akibat manusia atau kerusakan. Jenis tanpa kriteria (menonjol null) tidak pernah menonjol lewat panduan ini, pimpinan tetap boleh memilih manual.",
+  "ambang_laphar": {
+    "hal": "Laphar h2 G.2",
+    "salah_satu": {"md": 1, "orang_terdampak_luka_mengungsi": 50, "unit_rusak_rumah_atau_fasilitas_publik": 5, "ha": 1, "permintaan_bantuan_nasional": true, "penetapan_status_darurat": true}
+  },
+  "status_darurat": {
+    "hal": "Logbook h4 G.4.d; Laphar h5 (templat Status Darurat); Lapjol h2 G.5",
+    "nilai": ["Siaga Darurat", "Tanggap Darurat", "Transisi Darurat ke Pemulihan"],
+    "urutan_tulis": ["Transisi Darurat ke Pemulihan", "Tanggap Darurat", "Siaga Darurat"],
+    "perpanjangan": "boleh didahului kata Perpanjangan (contoh Lapjol h5: 'Perpanjangan kesatu siaga darurat TMT 6/7/2025 s.d. 6/10/2025')",
+    "belum_ada": "-"
+  },
+  "dampak": {
+    "hal": "Logbook h3 G.3; Laphar h5-6; Lapjol h2 G.4",
+    "manusia": [
+      {"kunci": "md", "label": "Meninggal", "satuan": "orang", "singkatan": "MD"},
+      {"kunci": "hilang", "label": "Hilang", "satuan": "orang", "singkatan": "HL"},
+      {"kunci": "luka", "label": "Luka/Sakit", "satuan": "orang", "singkatan": "LB/LS/LR (berat/sedang/ringan di Rekap Harian)"},
+      {"kunci": "mengungsi", "label": "Mengungsi", "satuan": "KK dan orang"},
+      {"kunci": "terdampak", "label": "Menderita/Terdampak", "satuan": "KK dan orang"}
+    ],
+    "rumah": {"label": "Rumah/Pemukiman", "tingkat": ["RB", "RS", "RR", "terdampak"], "satuan": "unit", "catatan": "banjir: terdampak = terdampak + terendam; data terancam wajib ditulis (Logbook h3 G.3.d)"},
+    "kerusakan_kelompok": ["ekonomi (sawah, lahan, kebun, hutan, kolam: ha; kios/toko, pabrik: unit)", "prasarana dan sarana vital", "rumah", "pelayanan dasar (rumah ibadat, fasilitas kesehatan, satuan pendidikan, kantor, pasar: unit)"],
+    "karhutla": "total luas terbakar dalam ha (Lapjol h2 G.4)",
+    "tidak_ada_data": "-",
+    "hal_kelompok": "Laphar h5-6"
+  },
+  "waktu": {
+    "hal": "Logbook h1-2 G.1.a-b; Laphar h4 (templat)",
+    "zona": ["WIB", "WITA", "WIT"],
+    "format_jam": "HH.MM",
+    "jendela_pantau": "07.00 WIB hari H-1 s.d. 07.00 WIB hari H (24 jam)"
+  },
+  "kib": {
+    "hal": "Logbook h3 G.1.d-i",
+    "format": "PPKK KKK YYYYMMDD I (16 digit: 2 provinsi, 2 kab/kota, 3 kode bencana, 8 tanggal, 1 indeks); kejadian baru diberi sufiks -001, pengkinian -002, -003",
+    "tidak_dipakai_bila": "kejadian meliputi beberapa kab/kota satu provinsi: cukup kode bencana"
+  },
+  "lapjol_isi_kejadian": {
+    "hal": "Lapjol h2-3 G.3-8 dan templat h4",
+    "bagian": ["Dampak", "Penetapan status", "Pendampingan BNPB", "Kondisi mutakhir", "Detail (entri nomor laphar)"],
+    "pendampingan_nilai": ["Telah dilakukan pendampingan", "Direncanakan dilakukan pendampingan", "-"],
+    "jenis_laporan": ["Kejadian baru", "Pengkinian kejadian"]
+  },
+  "rekap_harian_kolom": {
+    "hal": "data/raw/pusdalops-drive/2026/Rekap Harian 2026.xlsx, baris judul 11, sheet bulanan",
+    "kolom": ["No", "PROVINSI", "KABUPATEN", "Kecamatan", "DESA/KELURAHAN", "Jum. Kec", "Jum. Des", "TGL/BL/TH/WAKTU (kejadian)", "Kejadian (nama jenis)", "Jenis Bencana", "Istilah", "KODE DIBI", "TGLLAPOR/BLNLAPOR/THLAPOR", "TGL/BLN/TH/WAKTU (update)", "MD", "HL", "LB", "LS", "LR", "LUKA TOTAL", "Pengungsi (Jiwa) H..H14", "TERTINGGI", "Terdampak KK", "Terdampak Jiwa", "Rumah RB/RS/RR/TD/TRC", "Sarana Pendidikan, Peribadatan, Perkantoran, Kesehatan, Fasum (RB/RS/RR/TD/TRC)", "JEMBATAN", "JALAN", "KETERANGAN", "Ha lahan", "SK DARURAT (ADA/TIDAK ADA/PROSES)", "TMT", "(TMA, MMI, Dll)", "No Logbook", "LINK LOGBOOK", "SUMBER (disertai nomor kontak)", "USER"],
+    "catatan": "kolom KODE DIBI terisi kosong di data 2026; kode resmi dipakai dari Logbook h2 (101-109, 201-203, 301)"
+  },
+  "laporan_mingguan_kolom": {
+    "hal": "data/raw/pusdalops-drive/2026/43. LAPORAN MINGGUAN 22 Oktober 2026 - 29 Oktober 2026.xlsx, sheet Rekapitulasi Mingguan",
+    "judul": "REKAPITULASI MINGGUAN BENCANA BERDAMPAK SIGNIFIKAN DI WILAYAH INDONESIA",
+    "periode": "Kamis 18.00 WIB s.d. Kamis berikutnya 18.00 WIB",
+    "kolom": ["No", "Lokasi", "Nama Kejadian Bencana", "Waktu Kejadian", "Kronologis", "Dampak", "Ket", "LOGBOOK"],
+    "dampak_subkolom": ["Korban: Terdampak (KK, Jiwa), Mengungsi (KK, Jiwa), MD, HL, Luka-luka", "Rumah: RB, RS, RR, TRD", "Fasum/Fasos: Rusak, TRD", "Lahan (Ha): Rusak/TRD"]
+  }
+}

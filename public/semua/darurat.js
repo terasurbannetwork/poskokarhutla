@@ -2,7 +2,7 @@
 /* Status darurat bencana di /semua (fase Tanggap Darurat): titik per kabupaten di peta + tabel ringkas.
    Data: /data/status_darurat.json (scripts/umum/status_darurat.py, SK BNPB). Berkas tak ada atau tak ada SK yang berlaku = kalimat jujur, bukan kosong diam-diam.
    Butuh format.js (esc, escUrl, fmt), kartu.js, tabel.js (pasangTabel), nanti.js. */
-import {berlaku, TEKS_LEWAT, SUMBER_PEDOMAN, kalimatRingkas, rapiTanggal, rentang, labelSaran, hitungSaran, judulSaran} from "/inti/status_pedoman.js";
+import {berlaku, teksLewat, labelLewat, hariTeksSK, sumberSK, TEKS_MULAI_PERKIRAAN, SUMBER_PEDOMAN, kalimatRingkas, rapiTanggal, rentang, labelSaran, hitungSaran, judulSaran} from "/inti/status_pedoman.js";
 export {berlaku};
 const BP = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
 export const WARNA = {"Siaga Darurat": "#e3b94e", "Tanggap Darurat": "#c9503a", "Transisi Darurat ke Pemulihan": "#4f8fc4"};
@@ -13,15 +13,16 @@ const beda = (a, b) => Math.round((new Date(a + "T12:00:00Z") - new Date(b + "T1
 const tempat = k => k.skala === "provinsi" || !k.kab ? `Provinsi ${k.prov}` : k.kab;
 const pil = (t, w) => `<span class="pl" style="--w:${w || ABU}">${esc(t)}</span>`;
 export const masa = (k, h) => { const sisa = k.berakhir && berlaku(k, h) ? beda(k.berakhir, h) : null;
-  return `${k.berakhir ? `berlaku ${tglID(k.mulai)} sampai ${tglID(k.berakhir)}` : `berlaku sejak ${tglID(k.mulai)}, belum ada tanggal berakhir`}${sisa != null ? `, sisa ${fmt(sisa)} hari` : ""}`; };
+  return `${k.berakhir ? `berlaku ${tglID(k.mulai)} sampai ${tglID(k.berakhir)}` : `berlaku sejak ${tglID(k.mulai)}, belum ada tanggal berakhir`}${sisa != null ? `, sisa ${fmt(sisa)} hari` : ""}${k.mulai_perkiraan ? `, ${TEKS_MULAI_PERKIRAAN}` : ""}`; };
 const tautan = k => { const u = escUrl(k.tautan); return u === "#" ? "" : `<a href="${u}" target="_blank" rel="noopener noreferrer">Lihat SK</a>`; };
 
 /* hari berlaku dan jeda dari kejadian (kolom baru, bisa belum ada: kosong = tidak ditulis) */
-const hariTeks = k => [k.hari != null ? `berjalan ${fmt(k.hari)} hari` : "", k.jeda_kejadian_hari != null ? `SK terbit ${fmt(k.jeda_kejadian_hari)} hari setelah kejadian` : ""].filter(Boolean).join(", ");
-const lewat = k => k.lewat_batas ? `<span class="pl dr-lewat" style="--w:#c9503a" title="${esc(TEKS_LEWAT)}">Lewat masa pedoman</span>` : "";
+const hariTeks = k => [hariTeksSK(k, fmt), k.jeda_kejadian_hari != null ? `SK terbit ${fmt(k.jeda_kejadian_hari)} hari setelah kejadian` : ""].filter(Boolean).join(", ");
+const lewat = k => k.lewat_batas ? `<span class="pl dr-lewat" style="--w:#c9503a" title="${esc(teksLewat(k))}">${labelLewat(k)}</span>` : "";
+const perpanj = k => k.perpanjangan ? pil("Perpanjangan", "#4f8fc4") : "";
 
 export function popupHTML(k, h) {
-  return `<b translate="no">${esc(tempat(k))}</b><br>${pil(k.status, WARNA[k.status])}<br>${esc(String(k.jenis).replace(/,(?=\S)/g, ", "))}${k.klasifikasi ? `, ${esc(k.klasifikasi)}` : ""}<br>SK ${esc(k.nomor)}<br>${esc(masa(k, h))}${hariTeks(k) ? `<br>${esc(hariTeks(k))}` : ""}${k.lewat_batas ? `<br><b class="dr-lewat-t">${esc(TEKS_LEWAT)}</b>` : ""}${tautan(k) ? `<br>${tautan(k)}` : ""}`;
+  return `<b translate="no">${esc(tempat(k))}</b><br>${pil(k.status, WARNA[k.status])}${k.perpanjangan ? " " + perpanj(k) : ""}<br>${esc(String(k.jenis).replace(/,(?=\S)/g, ", "))}${k.klasifikasi ? `, ${esc(k.klasifikasi)}` : ""}<br>SK ${esc(k.nomor)}<br>${esc(masa(k, h))}${hariTeks(k) ? `<br>${esc(hariTeks(k))}` : ""}${k.lewat_batas ? `<br><b class="dr-lewat-t">${esc(teksLewat(k))}</b>` : ""}${tautan(k) ? `<br>${tautan(k)}` : ""}`;
 }
 
 export async function pasangDarurat(el, peta) {
@@ -50,13 +51,13 @@ export async function pasangDarurat(el, peta) {
     : st.mode === "hari" && !daftar().length ? `Data SK BNPB terakhir mencakup ${tahun}; tidak ada SK yang masih berlaku hari ini (${tglID(h)}). Pilih Semua SK untuk melihat yang sudah berakhir.` : "";
   const ringkas = kalimatRingkas(D?.ringkas, fmt);
   el.innerHTML = Kartu.kartu("Status darurat", judul(), `<p class="kosong" role="status" id="drKet" hidden></p>${ringkas ? `<p class="dr-ringkas" id="drRingkas">${Kartu.hl(esc(ringkas))}</p>` : ""}<div id="drTabel"></div>`,
-    esc(D?.sumber || "SK status darurat BNPB") + (ringkas ? `. Batas masa: ${SUMBER_PEDOMAN} hal. 15` : "") + (D?.dibuat ? `, data ${tglID(D.dibuat)}` : ""),
+    esc(sumberSK(D)) + (ringkas ? `. Batas masa: ${SUMBER_PEDOMAN} hal. 15` : "") + (D?.dibuat ? `, data ${tglID(D.dibuat)}` : ""),
     SK.length ? `<div class="seg" role="group" aria-label="Saring SK"><button type="button" data-m="hari" aria-pressed="true">Berlaku hari ini</button><button type="button" data-m="semua" aria-pressed="false">Semua SK</button></div>` : "",
     SK.length ? Object.entries(WARNA).map(([n, w]) => [w, n]) : null);
   const tabel = SK.length ? pasangTabel(el.querySelector("#drTabel"), {per: 10, satuan: "SK", urut: "berakhir", turun: false, kosong: "",
     kolom: [["kab", "Kabupaten/kota"], ["status", "Status"], ["jenis", "Jenis"], ["berakhir", "Berakhir"], ["hari", "Hari", 1], ["tautan", "SK"]],
     nilai: (k, c) => c === "kab" ? tempat(k) : c === "tautan" ? "" : c === "hari" ? (k.hari ?? -1) : c === "berakhir" ? k.berakhir || "9999" : k[c] || "",
-    sel: (k, c) => c === "kab" ? `<span translate="no">${esc(tempat(k))}</span>` : c === "status" ? pil(k.status, WARNA[k.status]) + (k.lewat_batas ? " " + lewat(k) : "") : c === "hari" ? (k.hari != null ? fmt(k.hari) : "–") : c === "berakhir" ? (k.berakhir ? tglID(k.berakhir) : "belum ada") : c === "tautan" ? (tautan(k) || "–") : esc(String(k.jenis).replace(/,(?=\S)/g, ", "))}) : null;
+    sel: (k, c) => c === "kab" ? `<span translate="no">${esc(tempat(k))}</span>` : c === "status" ? pil(k.status, WARNA[k.status]) + (k.perpanjangan ? " " + perpanj(k) : "") + (k.lewat_batas ? " " + lewat(k) : "") : c === "hari" ? (k.hari != null ? (k.mulai_perkiraan ? "perkiraan " : "") + fmt(k.hari) : "–") : c === "berakhir" ? (k.berakhir ? tglID(k.berakhir) : "belum ada") : c === "tautan" ? (tautan(k) || "–") : esc(String(k.jenis).replace(/,(?=\S)/g, ", "))}) : null;
   const segar = () => { const p = el.querySelector("#drKet"), t = ket(); p.hidden = !t; p.textContent = t;
     el.querySelector("h3").innerHTML = judul(); tabel?.set(daftar()); peta.getSource(SRC)?.setData(fitur()); };
   segar();

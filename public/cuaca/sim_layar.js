@@ -15,7 +15,7 @@
   const wib = ms => new Date(ms + 7 * 36e5); /* getUTC* pada hasil ini = jam dinding WIB */
   const pad = n => String(n).padStart(2, "0");
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-  const teksWaktu = ms => { const d = wib(ms); return `${HARI[d.getUTCDay()]}, ${d.getUTCDate()} ${BLN[d.getUTCMonth()]} · ${pad(d.getUTCHours())}.${pad(d.getUTCMinutes())} WIB`; };
+  const teksWaktu = ms => { const d = wib(ms); return `${HARI[d.getUTCDay()]}, ${d.getUTCDate()} ${BLN[d.getUTCMonth()]}, ${pad(d.getUTCHours())}.${pad(d.getUTCMinutes())} WIB`; };
   const rgb = k => `rgb(${k[1]},${k[2]},${k[3]})`;
 
   const S = {M: null, G: null, K: null, A: null, t: 0, main: false, laju: 3, hidup: new Set(["hujan", "angin", "sel"]), tiga: false, fr: null, jam0: 0, n: 72};
@@ -155,7 +155,7 @@
       if (L.length < 2 || ms < L[0][0] || ms > L[L.length - 1][0]) continue;
       let i = 0; while (i < L.length - 2 && L[i + 1][0] < ms) i++;
       const a = L[i], b = L[i + 1], w = (ms - a[0]) / (b[0] - a[0] || 1), mix = (x, y) => x + (y - x) * w;
-      f.push({type: "Feature", geometry: {type: "Point", coordinates: [mix(a[2], b[2]), mix(a[1], b[1])]}, properties: {lbl: `${nama} · ${f0(mix(a[3], b[3]))} knot`}}); }
+      f.push({type: "Feature", geometry: {type: "Point", coordinates: [mix(a[2], b[2]), mix(a[1], b[1])]}, properties: {lbl: `${nama}, ${f0(mix(a[3], b[3]))} knot`}}); }
     o.setData({type: "FeatureCollection", features: f});
   }
   let gelJam = -1;

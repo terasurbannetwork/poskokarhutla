@@ -37,3 +37,44 @@
 .lb-t-ok{--pil:var(--c4)}.lb-t-tunggu{--pil:var(--c3)}.lb-t-bahaya{--pil:var(--c1)}.lb-t-info{--pil:var(--c5)}
 @media print{.ad-top,.lb-aksi{display:none}}
 .lb-kaki{border-top:1px solid var(--line);padding-top:8px;font-size:12.5px}
+/* turunan: deretan bagian, grafik jam, ringkasan */
+.lb-tab{margin:0 0 14px}
+.lb-turunan{display:grid;gap:12px}
+.lb-turunan .bn-baris{margin:0}
+.lb-isi{display:grid;gap:12px}
+.lb-ringkas{display:flex;gap:8px;flex-wrap:wrap}
+.lb-svg{width:100%;height:auto;display:block}
+.lb-svg text{fill:var(--ink2);font:600 12px var(--font,inherit);text-anchor:middle}
+.lb-svg .dasar{stroke:var(--line);stroke-width:1}
+.lb-svg .bat{fill:color-mix(in srgb,var(--ink) 22%,var(--card))}
+.lb-svg .bat.musim{fill:var(--c1)}
+.lb-svg .tangkap{fill:transparent;cursor:pointer}
+.lb-svg g:hover .bat{opacity:.8}
+.lb-turunan meter,.lb-tabel meter{width:84px;height:10px;vertical-align:middle}
+.lb-turunan details summary{cursor:pointer;font-weight:700}
+@media (max-width:640px){.lb-tab{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lb-turunan,.lb-isi,.lb-isi>*,.lb-turunan>*{min-width:0;max-width:100%}
+/* kejadian serupa, lama penanganan, bencana susulan, perkiraan stok */
+.lb-riwayat{display:grid;gap:10px}
+.lb-kartu{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--card)}
+.lb-chipbaris{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px}
+.lb-sub{margin:4px 0 0;font-size:14px;font-weight:800}
+.lb-svg text.kiri{text-anchor:start;fill:var(--ink)}
+.lb-svg text.kanan{text-anchor:end}
+.lb-svg .bat.musim{fill:var(--c1)}
+.lb-svg .bat:not(.musim){fill:color-mix(in srgb,var(--ink) 22%,var(--card))}
+/* rincian juklak (lipat): sub-bagian, tabel korban terpilah, baris dinamis, daftar SK */
+.lb-juklak>summary{cursor:pointer;font-weight:800;font-size:15px;list-style:none}
+.lb-juklak[open]>summary{margin-bottom:10px}
+.lb-sub{display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--line);margin-top:12px}
+.lb-sub h3{margin:0;font-size:13.5px}
+.lb-korban{display:grid;gap:6px;grid-template-columns:minmax(76px,1.2fr) repeat(6,minmax(0,1fr));align-items:center}
+.lb-kop{font-size:11.5px;font-weight:700;text-align:center;color:var(--ink2)}
+.lb-korban input,.lb-baris input,.lb-baris select{min-width:0;width:100%;text-align:right}
+.lb-baris select{text-align:left}
+.lb-baris-wadah{display:grid;gap:8px}
+.lb-baris{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(110px,1fr)) auto;align-items:center}
+.lb-sub>.bn-tombol{width:100%;display:inline-flex;justify-content:center;gap:6px;align-items:center}
+.lb-sk{margin:0;padding-left:18px;font-size:13px}
+.lb-sk-form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+@media (max-width:640px){.lb-korban{grid-template-columns:minmax(64px,1fr) repeat(6,minmax(0,1fr));gap:4px}}

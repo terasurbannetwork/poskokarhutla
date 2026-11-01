@@ -8,11 +8,11 @@ import "../../src/worker.js";
 const JAM = 3600e3, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, uji = berantai();
 const KEP_V = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
 const tgl = t => new Date(t).toISOString().slice(0, 10), jm = t => new Date(t).toISOString().slice(11, 16).replace(":", "");
-let BARIS = [];   // baris CSV VIIRS_SNPP_NRT putaran berjalan
+let BARIS = [];   // baris CSV VIIRS_NOAA21_NRT putaran berjalan
 const baris = (lat, lon, t) => `${lat},${lon},330,0.4,0.4,${tgl(t)},${jm(t)},N,VIIRS,h,2.0NRT,290,12.3,D`;
 const luar = async req => {
   const u = new URL(req.url); if (u.hostname !== "firms.modaps.eosdis.nasa.gov") return new Response("diblok", {status: 599});
-  return u.pathname.split("/")[5] === "VIIRS_SNPP_NRT" ? new Response([KEP_V, ...BARIS].join("\n")) : new Response("Invalid MAP_KEY.", {status: 400});
+  return u.pathname.split("/")[5] === "VIIRS_NOAA21_NRT" ? new Response([KEP_V, ...BARIS].join("\n")) : new Response("Invalid MAP_KEY.", {status: 400});
 };
 const U = await siapkan("uji-sippa-titik", {r2: true, luar, ikat: {FIRMS_MAP_KEY: "kunci-uji"}}), {mf, DB, api} = U;
 const R2 = await mf.getR2Bucket("MEDIA");

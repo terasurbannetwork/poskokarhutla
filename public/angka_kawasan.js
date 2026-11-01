@@ -17,18 +17,23 @@ const bul = v => Math.floor(v + 0.5);
 const n2x = r => (r[3] === "N20" || r[3] === "N21") && r[5] >= 1;
 
 /* LOKASI UNIK (keputusan pemilik 25 Okt 2026; cermin scripts/data/titik_unik.py, paritas diuji tests/agen/angka-kawasan.test.mjs):
-   satu sel ~375 m dihitung sekali per hari WIB dari M, N, N20, N21 keyakinan >= kmin; yang dihitung = deteksi paling awal (kolom jam).
+   satu sel ~375 m dihitung sekali per hari WIB dari M, N, N20, N21 keyakinan >= kmin; yang dihitung = deteksi paling awal (kolom jam) dengan keyakinan tertinggi di selnya.
    -> Set baris yang dihitung. Baris data harian dan /api/titik digabung di peramban, jadi kolom "hitung" berkas tidak dipakai di sini. */
 const SENSOR_UNIK = new Set(["M", "N", "N20", "N21"]);
 const selUnik = (lat, lon) => Math.round(lat / G) + "," + Math.round(lon * Math.cos(lat * Math.PI / 180) / G);
 function unik(baris, kmin = 0) {   /* kmin 0 = semua keyakinan (titik_unik.KEYAKINAN_MIN, pemilik 28 Okt 2026) */
-  const lihat = new Set(), out = new Set();
+  /* cermin titik_hari.tandai_unik + titik_unik.yakin_maks: yang dihitung = deteksi paling awal, tetapi keyakinannya (r[5]) dinaikkan ke yang
+     TERTINGGI di selnya (2 tinggi > 1 sedang > 0 rendah), supaya hitungan "keyakinan tinggi" tidak terpangkas deteksi pertama yang rendah.
+     Baris diubah di tempat (sama dengan Python); idempoten karena hanya naik. */
+  const awal = new Map(), maks = new Map();
   for (const r of [...baris].sort((a, b) => a[2] - b[2])) {
     if (!SENSOR_UNIK.has(r[3]) || r[5] < kmin) continue;
     const k = r[7] + "|" + selUnik(r[0], r[1]);
-    if (!lihat.has(k)) { lihat.add(k); out.add(r); }
+    if (!awal.has(k)) awal.set(k, r);
+    if (!(maks.get(k) >= r[5])) maks.set(k, r[5]);
   }
-  return out;
+  for (const [k, r] of awal) r[5] = maks.get(k);
+  return new Set(awal.values());
 }
 
 /* baris = hotspot.json "baris" [lat, lon, jam, sensor, frp, keyakinan, wilayah, tgl_wib "MM-DD", ...]; bb = [barat, selatan, timur, utara];

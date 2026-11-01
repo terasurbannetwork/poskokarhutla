@@ -85,7 +85,8 @@ uji("cache tepi: /api/status memakai satu kunci walau kuerinya acak; rute lain t
   const meta = jam => JSON.stringify({dibuat: new Date(Date.now() - jam * 3600e3).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(2000)});
   Object.assign(ASET, Object.fromEntries(["gempa", "cuaca", "udara", "gunungapi", "kekeringan"].map(n => [`/banjir/data/berita_${n}.json`, meta(2)])),
     {"/data/kekeringan_meta.json": meta(2), "/udara/data/prakiraan.json": meta(2), "/banjir/data/gunungapi_status.json": meta(2), "/data/meta.json": meta(2), "/data/presiden/semua.json": meta(2),
-     "/banjir/data/meta.json": meta(20), "/data/berita.json": meta(5), "/data/dampak.json": meta(100), "/banjir/data/cuaca_meta.json": meta(3)});
+     "/banjir/data/meta.json": meta(20), "/data/berita.json": meta(5), "/data/dampak.json": meta(100), "/banjir/data/cuaca_meta.json": meta(3),
+     "/pesisir/data/abrasi.json": meta(2), "/banjir/data/rob.json": meta(2), "/banjir/data/pasut_30h.json": meta(2), "/banjir/data/cuaca_gelombang.json": meta(2)});   // pesisir aktif 1 Nov
   await DB.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES ('autogempa', NULL, '{}', ?)").bind(Date.now() - 360e3).run();
   await DB.prepare("INSERT INTO cuaca_sumber (kunci, isi, dibuat) VALUES ('nowcast', '{}', ?)").bind(Date.now() - 1800e3).run();
   try {

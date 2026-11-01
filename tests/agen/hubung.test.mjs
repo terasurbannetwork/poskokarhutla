@@ -223,3 +223,84 @@ test("perbaikan pemeriksa gelombang 4: tesis berulang dihitung sekali, anak IATI
   const w = S.wilayahDaya({dataset_satudata: {baris: [{prov: "53", kab: "Kabupaten Kupang", judul: "Data pegawai BPBD", sumber_url: "u"}, {prov: "53", kab: "Kabupaten Kupang", judul: "Mitigasi emisi GRK", sumber_url: "u"}]}});
   assert.equal(w.kab.length, 0);
 });
+
+test("direktori gelombang 5: topik ketat, rekan dua arah, GLIDE lalu EM-DAT", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const x = S.pakarEkstra({topik_pakar: {baris: [{pakar_id: "A1", topik: [{nama: "Flood Risk Assessment and Management", karya: 9}, {nama: "Marine and Coastal Ecosystems", karya: 50}, {nama: "Fire effects on ecosystems", karya: 3}, {nama: "Financial Risk and Volatility Modeling", karya: 2}]}]},
+    rekan_pakar: {baris: [{a: "A1", b: "A2", karya: 4, tahun_akhir: 2025, contoh_judul: "J", sumber_url: "u"}, {a: "A1", b: "A9", karya: 9}]}}, {orang: [["A1", "Satu"], ["A2", "Dua"]]});
+  assert.deepEqual(x.A1.topik.map(t => t.nama), ["Flood Risk Assessment and Management", "Fire effects on ecosystems"]);
+  assert.deepEqual([x.A1.rekan.map(r => r.id), x.A2.rekan.map(r => r.id)], [["A2"], ["A1"]], "rekan di luar direktori dibuang, pasangan dua arah");
+  const kej = [{id: "palu", jenis: "gempa", tanggal: "2018-09-28"}, {id: "marapi", jenis: "gunung api", tanggal: "2023-12-03"}, {id: "dua", jenis: "banjir", tanggal: "2020-01-01"}];
+  const em = [{kelompok: "alam", jenis: "Earthquake", glide: "EQ-2018-000156", disno: "2018-0352-IDN", meninggal: 4140, kerugian_ribu_usd_riil: 1859040, mulai: "2018-09-28", tanggal_pasti: true},
+    {kelompok: "alam", jenis: "Volcanic activity", disno: "2023-0820-IDN", mulai: "2023-12-03", tanggal_pasti: true},
+    {kelompok: "alam", jenis: "Flood", disno: "a", mulai: "2020-01-01", tanggal_pasti: true}, {kelompok: "alam", jenis: "Flood", disno: "b", mulai: "2020-01-05", tanggal_pasti: true},
+    {kelompok: "teknologi", jenis: "Road", disno: "c", mulai: "2023-12-03", tanggal_pasti: true}];
+  const k = S.kejadianEkstra({glide_cocok: {baris: [{kejadian_id: "palu", glide: "EQ-2018-000156-IDN"}]}, emdat_idn: {baris: em}}, kej);
+  assert.equal(k.palu.glide, "EQ-2018-000156-IDN"); assert.equal(k.palu.emdat.disno, "2018-0352-IDN"); assert.equal(k.palu.emdat.meninggal, 4140);
+  assert.equal(k.marapi.emdat.disno, "2023-0820-IDN", "tanpa GLIDE: jenis dan tanggal, satu kandidat");
+  assert.equal(k.dua, undefined, "dua kandidat banjir: dilewati");
+  const k2 = S.kejadianEkstra({emdat_idn: {baris: [em[1]]}}, [...kej, {id: "marapi2", jenis: "gunung api", tanggal: "2023-12-05"}]);
+  assert.ok(!!k2.marapi?.emdat !== !!k2.marapi2?.emdat || (!k2.marapi?.emdat && !k2.marapi2?.emdat), "satu catatan EM-DAT tidak dipakai dua kejadian");
+});
+
+test("BPS per kab: Podes dan penduduk rentan masuk wilayah lewat kode kab, tanpa tautan berkunci", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const w = S.wilayahDaya({podes_kesiapan: {baris: [{kode_kab: "1371", nama: "Kota Padang", desa_peringatan_dini: 32, desa_terdampak: {banjir: 51, gempa: 0}, tahun: 2024, var_id: "610", domain: "1300", sumber_url: "https://webapi.bps.go.id/x/key/***/"}, {kode_kab: "13", nama: "Sumbar", desa_peringatan_dini: 1}]},
+    penduduk_rentan: {baris: [{kode_kab: "1371", nama: "Kota Padang", lansia_65plus: 50000, balita_0_4: 60000, penduduk_total: 950000, tahun: 2025}, {kode_kab: "1372", nama: "Kota Solok", lansia_65plus: 1}]}});
+  const p = w.kab.find(k => k.prov === "13" && /padang/i.test(k.kab));
+  assert.equal(p.podes.desa_peringatan_dini, 32); assert.deepEqual(p.podes.terdampak, {banjir: 51}); assert.equal(p.podes.sumber_url, undefined); assert.deepEqual(p.podes.bps, {domain: "1300", tabel: "610"});
+  assert.equal(p.rentan.lansia, 50000); assert.equal(w.kab.length, 1, "kode bukan 4 digit dan baris tanpa total penduduk dibuang");
+});
+
+test("donasi bencana: digabung per pemberi, ganda 7 hari disatukan, ACT dibuang, nilai hanya yang tertulis", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const lb = [{id: "baznas", nama: "BAZNAS"}], kej = [{id: "palu", nama: "Palu"}];
+  const r = S.donasiBencana([
+    {donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["uang"], nilai_rp: 1e9, kejadian_id: "palu", tanggal: "2018-10-01", sumber_url: "a"},
+    {donor_nama: "BAZNAS RI", lembaga_id: "baznas", bentuk: ["uang"], nilai_rp: 1e9, kejadian_id: "palu", tanggal: "2018-10-03", sumber_url: "b"},
+    {donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["peralatan"], barang: "perahu", kejadian_id: "palu", tanggal: "2018-10-20", sumber_url: "c"},
+    {donor_nama: "Aksi Cepat Tanggap", bentuk: ["uang"], nilai_rp: 5e9, tanggal: "2018-10-02", sumber_url: "d"},
+    {donor_nama: "PT Maju", donor_jenis: "perusahaan", bentuk: ["barang", "x"], nilai_rp: -3, prov: "72", tanggal: "2018-10-05", sumber_url: "e"}], lb, kej);
+  assert.deepEqual(r.pemberi.map(p => [p.kunci, p.aksi, p.total_rp]), [["L:baznas", 2, 1e9], ["T:pt maju", 1, 0]]);
+  assert.deepEqual(r.aksi.find(a => a.sumber_url === "a").url_lain, ["b"]);
+  assert.deepEqual(r.pemberi[1].bentuk, {barang: 1}); assert.equal(r.aksi.find(a => a.sumber_url === "e").nilai_rp, null);
+  const r2 = S.donasiBencana([{donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["peralatan"], barang: "perahu", kejadian_id: "palu", tanggal: "2018-10-01", sumber_url: "p"},
+    {donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["barang"], barang: "tenda", kejadian_id: "palu", tanggal: "2018-10-04", sumber_url: "t"},
+    {donor_nama: "Dompet Dhuafa", bentuk: ["uang"], nilai_rp: "2000000", judul: "Dompet Dhuafa bersama Aksi Cepat Tanggap salurkan bantuan", tanggal: "2018-10-04", sumber_url: "u"}], lb, kej);
+  assert.equal(r2.aksi.length, 3, "barang berbeda tanpa nilai tidak disatukan; judul yang menyebut ACT tidak membuang pemberi lain");
+  assert.equal(r2.aksi.find(a => a.sumber_url === "u").nilai_rp, 2000000);
+});
+
+test("usulan tim pakar per kejadian: rumpun atau keahlian wajib, kampus provinsi terdampak dan rekan menambah, peneliti asing dilewati", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const orang = [["A1", "Gempa Palu", "Universitas Tadulako", ["gempa"], 10], ["A2", "Gempa Jauh", "Institut Contoh", ["gempa"], 30], ["A3", "Banjir Saja", "Universitas Tadulako", ["banjir"], 50],
+    ["A4", "Rekan A1", "Institut Contoh", ["geologi"], 5], ["A5", "Asing", "Universitas Tadulako", ["gempa"], 60, 0, 0, "", [], "", "", "", "", "", "", "asing"], ["A6", "Topik Saja", "Institut Contoh", ["pesisir"], 8]];
+  const T = S.timPakar([{id: "palu", jenis: "gempa", prov: ["72"], riset: {works: [{pakar: ["A2"]}]}}], {orang}, {"Universitas Tadulako": {prov: "72"}},
+    {topik_pakar: {baris: [{pakar_id: "A6", topik: [{nama: "Earthquake and Tsunami Effects"}]}]}, rekan_pakar: {baris: [{a: "A1", b: "A4", karya: 2}]}}, 4);
+  const ids = T.palu.map(p => p.id);
+  assert.ok(!ids.includes("A3") && !ids.includes("A5"), "banjir saja dan peneliti asing tidak diusulkan");
+  assert.equal(ids[0], "A2", "pernah meneliti kejadian ini dan h-index tinggi");
+  assert.ok(ids.includes("A6") && T.palu.find(p => p.id === "A1").alasan.includes("kampus di provinsi terdampak"));
+  assert.ok(T.palu.find(p => p.id === "A4").alasan.some(a => /menulis bersama/.test(a)));
+  const R = S.ringkasBantuanProv([{prov: "72", kunci: "a", nilai_rp: 5}, {prov: "72", kunci: "b"}, {prov: "7", kunci: "c"}], {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak"], baris: [["7271", 2020, "gempa", 40, 1, 0, 1000], ["7271", 2015, "gempa", 99, 0, 0, 9]]});
+  assert.deepEqual(R.map(x => [x.prov, x.aksi, x.pemberi, x.kejadian, x.terdampak, x.per100]), [["72", 2, 2, 40, 1000, 5]]);
+});
+
+test("dana resmi: zakat lingkup nasional 2020-2023 tanpa agregat dan nama ragu; IFRC sejak 2004 dan CERF berurut terbaru", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const d = S.danaResmi({zakat_resmi: {baris: [{tahun: 2023, lingkup: "nasional", lembaga_nama: "BAZNAS (Pusat)", nilai_rp: 9}, {tahun: 2023, lingkup: "nasional", lembaga_nama: "Seluruh pengelola zakat nasional (agregat)", nilai_rp: 99},
+      {tahun: 2023, lingkup: "nasional", lembaga_nama: "LAZ X* LAZ Y", nama_tidak_pasti: true, nilai_rp: 5}, {tahun: 2019, lingkup: "nasional", lembaga_nama: "BAZNAS (Pusat)", nilai_rp: 1}, {tahun: 2022, lingkup: "kabkota", lembaga_nama: "BAZNAS Kota Z", nilai_rp: 1}]},
+    ifrc_go: {baris: [{kode: "OLD", tanggal_mulai: "1990-01-01"}, {kode: "MDRID013", tanggal_mulai: "2018-10-01", kejadian_id: "palu", jumlah_diminta_chf: 1}]}, cerf: {baris: [{tanggal: "2018-10-09", nilai_usd: 14, kejadian_id: "palu"}]}}, [{id: "palu", nama: "Palu"}]);
+  assert.deepEqual(d.zakat.map(z => [z.nama, Object.keys(z.tahun)]), [["BAZNAS (Pusat)", ["2023"]]]);
+  assert.deepEqual(d.intl.map(x => [x.sumber, x.kejadian]), [["CERF", "Palu"], ["IFRC", "Palu"]]);
+});
+
+test("logbook Pusdalops: jadi tabel bentuk DIBI dan ringkasan per kab; kategori bukan bencana dibuang", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const csv = ["id_kejadian,jenis,tgl_kejadian,pertama_dicatat,terakhir_dicatat,n_laporan,hari_dilaporkan,prov,prov_kode,kabkota,kab_kode,n_kec,n_desa,rumah,rumah_rb,rumah_rs,rumah_rr,rumah_terendam,ha,subjenis",
+    "a,banjir,2020-01-02,,,,,Jabar,32,Kab. Bandung,,,3,,2,1,0,50,,", "b,kebakaran_permukiman,2021-01-02,,,,,Jabar,32,Kab. Bandung,,,,,9,,,,,", "c,longsor,2014-05-01,,,,,Jabar,32,Kab. Bandung,,,,,1,,,,,",
+    "d,longsor,2022-05-01,,,,,Jabar,32,Kabupaten Bandung,,,,,4,,,,,"].join("\n");
+  const d = S.logbookKeDibi(csv); assert.equal(d.baris.length, 3, "kebakaran permukiman dibuang"); assert.equal(d.baris[0][6], 3, "terendam tidak dijumlah"); assert.equal(d.baris[0][8], 2); assert.equal(d.buang.bukan_alam, 1);
+  const X = Object.values(S.logbookPerKab(csv)); assert.equal(X.length, 1, "Kab. Bandung dan Kabupaten Bandung satu kunci");
+  assert.deepEqual([X[0].per_jenis, X[0].rusak, X[0].terendam, X[0].akhir[0].tanggal], [{banjir: 1, kebakaran_permukiman: 1, longsor: 1}, 16, 50, "2022-05-01"]);
+});

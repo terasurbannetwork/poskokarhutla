@@ -4,7 +4,7 @@
 (() => {
 const WJ = "⁠";   // word joiner: "1.⁠ ⁠" tampil sama di WhatsApp
 const TEMBUSAN = ["Unsur Pengarah BNPB", "Ess I BNPB", "Ess II BNPB", "Tenaga Ahli Ka.BNPB"];
-const JENIS_PANJANG = {karhutla: "Kebakaran Hutan dan Lahan", kekeringan: "Kekeringan", banjir: "Banjir", longsor: "Tanah Longsor", cuaca: "Cuaca Ekstrem", gempabumi: "Gempa Bumi",
+const JENIS_PANJANG = {karhutla: "Kebakaran Hutan dan Lahan", kekeringan: "Kekeringan", banjir: "Banjir", longsor: "Tanah Longsor", cuaca: "Cuaca Ekstrem", gelombang_pasang: "Gelombang Pasang dan Abrasi", tsunami: "Tsunami", wabah: "Epidemi dan Wabah Penyakit", gempabumi: "Gempa Bumi",
   gunungapi: "Erupsi Gunung Api", kebakaran_permukiman: "Kebakaran Permukiman", lainnya: "Kejadian Lainnya"};
 const MACAM_STATUS = {siaga: "Siaga Darurat", tanggap: "Tanggap Darurat", transisi: "Transisi Darurat"};
 const SAT = ["nol", "satu", "dua", "tiga", "empat", "lima", "enam", "tujuh", "delapan", "sembilan", "sepuluh", "sebelas"];

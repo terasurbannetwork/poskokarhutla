@@ -75,7 +75,7 @@ uji("migrasi 0034 idempoten; CHECK dan trigger menahan: semua nol, koordinat tak
   await DB.prepare("UPDATE korban SET dummy = 1").run(); await DB.prepare("DELETE FROM korban").run(); assert.equal(await n("korban"), 0, "baris uji dibersihkan (jejak nyata memang tak bisa dihapus)");
 });
 uji("daftar tetap: JS == CHECK migrasi == klien; tanpa titik tengah; teks data lewat textContent; INP; nama korban hanya di berkas korban", async () => {
-  const sql = teks("migrations/0034_korban_p3k.sql"), ambil = pola => [...sql.match(pola)[1].matchAll(/'(\w+)'/g)].map(m => m[1]);
+  const sql = teks(readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && /bencana TEXT NOT NULL DEFAULT .karhutla. CHECK \(bencana IN/.test(teks("migrations/" + f))).sort().map(f => "migrations/" + f).at(-1)), ambil = pola => [...sql.match(pola)[1].matchAll(/'(\w+)'/g)].map(m => m[1]);
   assert.deepEqual(Object.keys(BENCANA), ambil(/bencana TEXT NOT NULL DEFAULT 'karhutla' CHECK \(bencana IN \(([^)]*)\)/)); assert.deepEqual(Object.keys(KATEGORI), ambil(/kategori IN \(('warga'[^)]*)\)/));
   assert.deepEqual(Object.keys(PENYEBAB), ambil(/penyebab IN \(([^)]*)\)/)); assert.deepEqual(Object.keys(SUMBER), ambil(/sumber IN \(('laporan_langsung'[^)]*)\)/)); assert.deepEqual(STATUS, ambil(/status IN \(('dilaporkan'[^)]*)\)/));
   const bencanaReg = JSON.parse(teks("public/bencana.json")).bencana?.map(b => b.id) ?? JSON.parse(teks("public/bencana.json")).map(b => b.id);

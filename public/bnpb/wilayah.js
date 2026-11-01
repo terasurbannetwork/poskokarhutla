@@ -16,6 +16,9 @@
     kebakaran_permukiman: "M4 20V10l8-6 8 6v10z|M12 11c.700 1.500-.500 2-.500 3a1.500 1.500 0 0 0 3 0c0-1-.500-1.500-1-2",
     gempabumi: "M2 12h4l2-5 3 10 3-8 2 3h6",
     gunungapi: "M3 20l7-13h4l7 13z|M10 7L8 3M14 7l2-4M12 7V2",
+    gelombang_pasang: "M3 15c2 0 2-2 4.500-2S10 15 12 15s2.500-2 4.500-2S19 15 21 15|M3 19c2 0 2-2 4.500-2S10 19 12 19s2.500-2 4.500-2S19 19 21 19|M4 9l4-4 3 3 4-5 5 6",
+    tsunami: "M2 18c3 0 4-1 6-4s4-9 9-9c2 0 3 1 3 3s-2 2-3 2c2 1 3 3 3 5|M2 21h20",
+    wabah: "M12 8a4 4 0 1 0 0 8 4 4 0 0 0 0-8z|M12 2v3M12 19v3M2 12h3M19 12h3M5 5l2 2M17 17l2 2M19 5l-2 2M7 17l-2 2",
     kekeringan: "M12 3v3M5 6l2 2M19 6l-2 2|M8 14a4 4 0 0 1 8 0|M3 20h18M7 17l-2 3M17 17l2 3",
     kecelakaan: "M3 15l2-6h14l2 6v3H3z|M7 18v2M17 18v2M6 12h12",
     kegagalan_teknologi: "M12 3l9 16H3z|M12 10v4M12 17v.5",
@@ -55,6 +58,12 @@
     for (const a of anak.flat()) if (a != null && a !== false) e.append(a); return e; };
   const F = n => (n == null || Number.isNaN(n)) ? "–" : Number(n).toLocaleString("id-ID", {maximumFractionDigits: 1});
   const label = s => { const t = String(s).replace(/_/g, " "); return t[0].toUpperCase() + t.slice(1); };
+  /* urutan resmi Pusdalops: alam hidrometeorologi, geologi, lalu non-alam, sosial, lainnya. Jenis tak dikenal jatuh sebelum "lainnya". */
+  const JENIS_URUT = ["banjir", "longsor", "gelombang_pasang", "cuaca", "kekeringan", "karhutla", "gempabumi", "tsunami", "gunungapi", "wabah", "kebakaran_permukiman", "kecelakaan", "kegagalan_teknologi", "konflik_sosial", "omc", "lainnya"];
+  const NAMA_JENIS = {cuaca: "Cuaca ekstrem", gelombang_pasang: "Gelombang pasang dan abrasi", tsunami: "Tsunami", wabah: "Epidemi dan wabah penyakit", gempabumi: "Gempa bumi", gunungapi: "Gunung api", karhutla: "Karhutla", kebakaran_permukiman: "Kebakaran permukiman", kegagalan_teknologi: "Gagal teknologi", konflik_sosial: "Konflik sosial", omc: "OMC"};
+  const namaJenis = j => NAMA_JENIS[j] || label(j);
+  const rankJ = j => { const i = JENIS_URUT.indexOf(j); return i < 0 ? JENIS_URUT.length - 1.5 : i; };
+  const urutJenis = (a, b) => rankJ(a) - rankJ(b);
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
   const tutup = (s) => (s || "").replace(/^(Kab\.|Kabupaten)\s+/i, "");
 
@@ -66,5 +75,5 @@
     .catch(e => { desaIng.delete(k.berkas); throw e; })).get(k.berkas);
   const kunciKab = k => k.prov + "|" + k.nama;   // kunci logbook: sama dengan public/geo dan logbook_riwayat.json
 
-  window.Wilayah = {PROV, IKON, ikon, h, F, label, BLN, muat, desaKab, kunciKab, tutup};
+  window.Wilayah = {PROV, IKON, ikon, h, F, label, namaJenis, urutJenis, JENIS_URUT, BLN, muat, desaKab, kunciKab, tutup};
 })();

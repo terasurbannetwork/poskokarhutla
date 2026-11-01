@@ -1,14 +1,26 @@
 "use strict";
 /* kebakaran_permukiman.js: lapisan "Kebakaran permukiman" per kabupaten/kota (kotak centang data-l="permukiman").
-   Data: data/logbook_riwayat.json (Logbook Pusdalops BNPB), dibaca apa adanya; hanya tahun 2014-2020 (liputan penuh) yang dihitung.
+   Data: data/logbook_riwayat.json (Logbook Pusdalops BNPB), dibaca apa adanya; hanya tahun_penuh (liputan penuh) yang dihitung.
    Dimuat sesudah peta_kab.js. Skrip klasik: peta, Peta, S, muatJSON, renderLegenda, tampilTip, kartuTip, nanti, toast, $, esc, fmt, namaProv terbaca dari skrip utama. */
 (() => {
-  const TH = [2014, 2015, 2016, 2017, 2018, 2019, 2020], WARNA = "#c9503a", JENIS = "kebakaran_permukiman";
+  let TH = [], RNG = "";
+  const WARNA = "#c9503a", JENIS = "kebakaran_permukiman";
+  /* tahun dasar dari data (tahun_penuh, bisa tidak bersambung); rentang ringkas, mis. 2014–2020 dan 2024–2025 */
+  const rentang = a => { const r = []; a.forEach((y, i) => i && y === a[i - 1] + 1 ? r[r.length - 1][1] = y : r.push([y, y]));
+    const s = r.map(([x, z]) => x === z ? `${x}` : `${x}–${z}`); return s.length < 3 ? s.join(" dan ") : s.slice(0, -1).join(", ") + ", dan " + s.at(-1); };
+  const tahunDasar = j => (j.tahun_penuh || []).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
-  let _h = {}, D = null, janji = null, on = false, gen = 0, hov = null, pop = null, kls = {b: [], w: []}, ev = null;
+  let PV = {}, _h = {}, D = null, janji = null, on = false, gen = 0, hov = null, pop = null, kls = {b: [], w: []}, ev = null;
   const f1 = n => fmt(Math.round(n * 10) / 10);
   const ambil = () => janji ||= (async () => {
-    const j = await muatJSON("data/logbook_riwayat.json"), KB = {};
+    const [j, jam] = await Promise.all([window._logbook ||= muatJSON("data/logbook_riwayat.json").catch(e => { window._logbook = null; throw e; }), muatJSON("data/bnpb/logbook_jam.json").catch(() => null)]), KB = {};
+    /* per provinsi: bulan tersibuk (jumlah bulan_penuh semua kab) dan tiga jam tersering (logbook_jam, jam setempat); data jam boleh tak ada */
+    PV = {};
+    for (const [k, v] of Object.entries(j.kab)) { const b = v.bulan_penuh?.[JENIS]; if (!b) continue; const a = PV[k.split("|")[0]] ||= {b: Array(12).fill(0)}; b.forEach((n, i) => a.b[i] += n); }
+    for (const [pk, a] of Object.entries(PV)) { const mx = Math.max(0, ...a.b); a.bln = mx ? BLN[a.b.indexOf(mx)] : "";
+      const h = jam?.jenis?.[JENIS]?.prov?.[pk], tj = h ? h.reduce((x, y) => x + y, 0) : 0;
+      a.jamAda = tj >= 30; a.jam = tj >= 30 && Math.max(...h) >= 2 * tj / 24 ? h.map((n, i) => [n, i]).sort((x, y) => y[0] - x[0] || x[1] - y[1]).slice(0, 3).sort((x, y) => x[1] - y[1]) : []; if (mx < 5) a.bln = ""; a.mx = mx; }
+    TH = tahunDasar(j); RNG = rentang(TH);
     for (const [k, v] of Object.entries(j.kab)) {
       const t = TH.map(y => v.tahun?.[y]?.[JENIS] || 0), tot = t.reduce((a, b) => a + b, 0); if (!tot) continue;
       const b = v.bulan_penuh?.[JENIS] || [], mx = Math.max(0, ...b);
@@ -42,13 +54,14 @@
     renderLegenda();
   }
   function isi(p) {
-    const x = D.KB[p.kunci]; if (!x) return "";
+    const x = D.KB[p.kunci]; if (!x) return ""; const P = PV[p.prov];
     const mk = Math.max(1, ...x.t), bar = x.t.map((n, i) => `<span style="flex:1;text-align:center" data-tip="<b>${TH[i]}</b>${fmt(n)} kejadian"><i style="display:block;height:${Math.max(2, Math.round(n / mk * 28))}px;background:${WARNA};border-radius:2px 2px 0 0;margin-top:${28 - Math.max(2, Math.round(n / mk * 28))}px"></i><small style="font-size:9px">${String(TH[i]).slice(2)}</small></span>`).join("");
     return kartuTip({judul: esc(p.nama), sub: `<small class="tp-sub">${esc(namaProv(p.prov))}</small>`,
-      stat: [["api", fmt(x.tot), "kejadian 2014-2020", WARNA, false], ["kal", f1(x.rata), "rata-rata per tahun", WARNA, false]],
-      daftar: x.bln ? [[esc(x.bln), "bulan tersibuk"]] : [],
+      stat: [["api", fmt(x.tot), `kejadian ${RNG}`, WARNA, false], ["kal", f1(x.rata), "rata-rata per tahun", WARNA, false]],
+      daftar: [...(x.bln ? [[esc(x.bln), "bulan tersibuk"]] : []), ...(P?.bln ? [[`${esc(P.bln)}, ${fmt(P.mx)} kejadian dalam ${fmt(TH.length)} tahun dasar`, `bulan tersibuk di ${esc(namaProv(p.prov))}`]] : []),
+        ...(P?.jamAda ? [[!P.jam.length ? "tidak ada jam yang menonjol" : P.jam.map(([n, h]) => `${String(h).padStart(2, "0")}.00: ${fmt(n)} kejadian`).join("; "), `jam paling sering dilaporkan di ${esc(namaProv(p.prov))} (waktu setempat)`]] : [])],
       tren: `<div style="display:flex;gap:3px;align-items:flex-end;padding:6px 2px 0">${bar}</div>`,
-      kaki: "Logbook Pusdalops BNPB 2014-2020"});
+      kaki: `Logbook Pusdalops BNPB. Bulan: tahun dasar ${RNG}. Jam: semua tahun arsip; jam bulat (00.00, 12.00) bisa isian bawaan petugas`});
   }
   function ikat() {
     const tip = $("#tip");
@@ -75,7 +88,7 @@
   renderLegenda = function () { _leg(); const box = document.querySelector("#legDet > div"); if (!box || !on || !D || !kls.w.length || !ada()) return;
     const {b, w} = kls, pecah = k => k === 0 ? `≤ ${fmt(b[0])}` : k === b.length ? `> ${fmt(b[k - 1])}` : `${fmt(b[k - 1] + 1)} sampai ${fmt(b[k])}`;
     box.insertAdjacentHTML("beforeend", `<div class="lg-g"><div class="lbl">Kebakaran permukiman (kejadian per tahun)</div><div class="leg">${w.map((c, k) => `<span><i class="sw" style="background:${c}"></i>${pecah(k)}</span>`).join("")}`
-      + `<span class="kab-wkt"><span>Logbook Pusdalops BNPB 2014–2020. Hanya 2014–2020 yang dipakai. 2022 baru 272 hari tercatat dan hanya memuat 121 kejadian, jauh di bawah tahun sebelumnya; kemungkinan cara pencatatannya berubah.</span></span></div></div>`); };
+      + `<span class="kab-wkt"><span>Logbook Pusdalops BNPB. Tahun dasar: ${RNG}, yaitu tahun yang setiap bulannya punya minimal 25 hari logbook tercatat. Tahun lain tidak dipakai karena ada bulan yang tercatat kurang dari 25 hari.</span></span></div></div>`); };
 
   async function terapkan() {
     const id = ++gen;

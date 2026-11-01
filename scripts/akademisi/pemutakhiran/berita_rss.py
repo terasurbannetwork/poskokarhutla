@@ -29,6 +29,9 @@ MEDIA = {"antaranews.com": "ANTARA", "detik.com": "detikcom", "tempo.co": "Tempo
 # kategori yang boleh jadi dateline; dunia-usaha hanya bila judul memuat kata kebencanaan; komunikasi/penerbit/media-* tidak pernah
 KAT_OK = {"pemerintah", "kerelawanan", "donasi", "lsm", "internasional", "mitra-internasional", "riset", "jejaring", "profesi", "kesehatan", "keagamaan", "inovasi"}
 BENCANA = re.compile(r"\b(bencana|banjir|gempa|longsor|karhutla|tsunami|erupsi|kekeringan|darurat|evakuasi|bantuan korban)\b", re.I)
+# tokoh (pejabat, figur publik) hanya dikaitkan bila berita itu memang soal kebencanaan; berita hiburan atau politik tentang tokoh yang sama dibuang
+KONTEKS_BENCANA = re.compile(r"\b(bencana|banjir|rob|gempa|longsor|karhutla|kebakaran|tsunami|erupsi|gunung api|kekeringan|kemarau|darurat|evakuasi|korban|pengungsi|posko|siaga|"
+                             r"mitigasi|tanggap|relawan|bpbd|bnpb|basarnas|bmkg|cuaca|abrasi|puting beliung|angin kencang|rehabilitasi|rekonstruksi|kebencanaan)\b", re.I)
 KORUPSI = re.compile(r"\b(kpk|korupsi|tersangka|ott|suap|gratifikasi)\b", re.I)
 STOP_CS = {"Maxim", "Kadin", "Antam", "Adaro", "Airfast", "Deliveree", "Lalamove", "Waspada", "Pantau", "ANTARA", "Satu Data", "DANA", "Sukabumi", "Fajar", "Madani", "Kemitraan",
            "Partnership", "Persada", "Rare", "Wings", "Giant", "Pusaka", "Combine", "Singgalang", "Pindad", "Kemenkes", "Mongabay", "Liputan6.com", "detikcom", "Vale"}
@@ -109,9 +112,10 @@ def cocokkan(terms, rx, judul, ringkas):
 
 
 def saring(judul, ringkas, ent, kategori):
-    """Saringan ketat -> entitas yang lolos (kosong = buang berita). KPK/korupsi membuang SELURUH berita; dunia usaha butuh kata kebencanaan di judul."""
+    """Saringan ketat -> entitas yang lolos (kosong = buang berita). KPK/korupsi membuang SELURUH berita; dunia usaha butuh kata kebencanaan di judul; tokoh butuh konteks kebencanaan di judul atau ringkasan."""
     if KORUPSI.search(judul + " " + ringkas): return set()
-    return {(j, i) for j, i in ent if j != "lembaga" or kategori.get(i) != "dunia-usaha" or BENCANA.search(judul)}
+    teks = judul + " " + ringkas
+    return {(j, i) for j, i in ent if (j == "tokoh" and KONTEKS_BENCANA.search(teks)) or (j == "lembaga" and (kategori.get(i) != "dunia-usaha" or BENCANA.search(judul))) or j not in ("tokoh", "lembaga")}
 
 
 def foto_arsip(url, tahun_berita):

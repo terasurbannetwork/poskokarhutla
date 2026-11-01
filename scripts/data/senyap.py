@@ -10,7 +10,7 @@ Laporan  : episode kab di public/data/laphar_riwayat.json (Laporan Harian Pusdal
 BATASAN  : laporan WARGA/BPBD yang baru masuk D1 tidak terjangkau dari pipeline GitHub Actions; "tanpa laporan" = tanpa laporan di Laphar
            Pusdalops (terbit lag 1-2 hari). Layar staf boleh menyaring lagi terhadap D1. Himawari (tanpa kab) dan BMKG nowcast (nama kecamatan
            teks) belum dipakai. Hujan per kab harian tidak ada selain status.json.
-Konteks  : "N dari 7 tahun" = logbook_riwayat.json kab.tahun_ada[jenis][bulan sinyal], tahun_penuh 2014-2020.
+Konteks  : "N dari M tahun" = logbook_riwayat.json kab.tahun_ada[jenis][bulan sinyal], M = len(tahun_penuh) data (bukan angka tetap).
 Pakai: python3 scripts/data/senyap.py      python3 scripts/data/senyap.py uji
 """
 import collections, datetime as dt, json, os, sys
@@ -100,6 +100,7 @@ def main():
                          "sejak": sejak, "alasan": f"Prakiraan {LABEL[jenis].lower()} level {'Awas' if lv >= 3 else 'Siaga'} di {nkec} kecamatan, belum ada laporan.",
                          "riwayat": konteks(ri, kab, jenis, bulan)})
     rows.sort(key=lambda r: (r["kekuatan"] != "kuat", -r["nilai"], r["kab"]))
+    tp = ", ".join(ri["tahun_penuh"])
     keluar = {"dibuat": dt.datetime.now(dt.timezone.utc).strftime("%Y-%m-%dT%H:%MZ"), "acuan": akhir.isoformat(),
               "sumber": {"titik_hari": f"sampai {akhir}", "status_banjir": {"hari0": st["hari"][0], "dipakai": pakai},
                          "laphar_sampai": laphar_sampai},
@@ -107,7 +108,7 @@ def main():
                          f"{RENGGANG} hari. Laporan warga/BPBD di D1 tidak terjangkau dari pipeline; layar staf boleh menyaring lagi. "
                          "Himawari dan BMKG nowcast belum dipakai. Daftar tanya, bukan vonis.",
               "ambang": {"titik_3h": AMBANG_TITIK, "titik_3h_kuat": KUAT_TITIK, "level_min": LEVEL_MIN},
-              "riwayat_ket": "riwayat.tahun_ada dari riwayat.dari = berapa tahun penuh (2014-2020) kab itu punya kejadian jenis ini di bulan sinyal",
+              "riwayat_ket": f"riwayat.tahun_ada dari riwayat.dari = berapa tahun penuh ({tp}) kab itu punya kejadian jenis ini di bulan sinyal",
               "baris": rows}
     json.dump(keluar, open(KELUAR + ".tmp", "w"), ensure_ascii=False, separators=(",", ":"))
     os.replace(KELUAR + ".tmp", KELUAR)

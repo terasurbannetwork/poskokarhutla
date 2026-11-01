@@ -29,7 +29,7 @@ after(() => mf?.dispose());
 
 const orig = {origin: "http://logbook.lokal"}, ADMIN = {"x-admin-token": "rahasia-admin", ...orig};
 const STAF = {cookie: "sesi_staf=" + TOK, "x-pb": "1", ...orig}, LUAR = {cookie: "sesi_staf=" + TOK_LUAR, "x-pb": "1", ...orig};
-const call = async (m, j, h = STAF, b) => { const r = await mf.dispatchFetch("http://logbook.lokal" + j, {method: m, headers: {"content-type": "application/json", ...h}, body: b === undefined ? undefined : JSON.stringify(b)}); return {status: r.status, cc: r.headers.get("cache-control"), j: await r.json().catch(() => null)}; };
+const call = async (m, j, h = STAF, b) => { const r = await mf.dispatchFetch("http://logbook.lokal" + j, {method: m, headers: {"content-type": "application/json", ...h}, body: b === undefined ? undefined : JSON.stringify(b)}); return {status: r.status, cc: r.headers.get("cache-control"), vary: r.headers.get("vary"), j: await r.json().catch(() => null)}; };
 const KAB = "33|Banjarnegara", hariIni = () => new Date().toISOString().slice(0, 10);
 const baru = {jenis: "longsor", kab: KAB, kec: "Pandanarum", desa: "Tulis", lat: -7.3, lon: 109.7, mulai: hariIni(), md: 2, hilang: 5, luka: 3, mengungsi_jiwa: 120, mengungsi_kk: 40, rumah_rb: 4, kendala: ["akses", "sinyal"], kebutuhan: ["tenda", "makanan"], catatan: "akses jalan putus", sumber_instansi: "BPBD Banjarnegara"};
 const n = async t => (await DB.prepare(`SELECT count(*) n FROM ${t}`).first()).n;
@@ -60,6 +60,24 @@ uji("logbook: buat kejadian dengan entri pertama, input salah 400 dan tidak ters
   const f = await call("POST", "/api/logbook/kejadian", STAF, {jenis: "banjir", prov: "Jawa Tengah", prov_kode: "33", kab: "Kebumen", kab_kode: "33|Kebumen", kec: null, desa: null, mulai: new Date().toISOString(), lat: null, lon: null, md: 1, kendala: [], kebutuhan: [], catatan: null, sumber_instansi: null, yakin: false});
   assert.equal(f.status, 201, JSON.stringify(f.j)); assert.deepEqual([f.j.kejadian.prov, f.j.kejadian.kab], ["33", "Kebumen"]);
   assert.equal((await call("POST", "/api/logbook/kejadian", STAF, {jenis: "banjir", prov_kode: "33", kab: "Kebumen", mulai: hariIni()})).status, 201, "prov_kode + nama kab tanpa kab_kode");
+});
+
+uji("logbook: tiga jenis panduan resmi (gelombang_pasang, tsunami, wabah) diterima; daftar jenis dikunci di 14; migrasi 0091 mempertahankan isi", async () => {
+  /* DIUBAH SENGAJA 1 Nov 2026: daftar jenis logbook 11 -> 14 mengikuti panduan Pusdalops (DIBI 103, 108, 201) */
+  const {JENIS} = await import("../../src/logbook.js");
+  assert.deepEqual(JENIS.slice(-3), ["gelombang_pasang", "tsunami", "wabah"]); assert.equal(JENIS.length, 14);
+  const sebelum = await n("logbook_kejadian");
+  for (const jenis of ["gelombang_pasang", "tsunami", "wabah"]) { const r = await call("POST", "/api/logbook/kejadian", STAF, {...baru, jenis}); assert.equal(r.status, 201, jenis + " " + JSON.stringify(r.j)); assert.equal(r.j.kejadian.jenis, jenis); }
+  assert.equal(await n("logbook_kejadian"), sebelum + 3);
+  await assert.rejects(DB.prepare("UPDATE logbook_kejadian SET jenis = 'nyasar' WHERE rowid = 1").run(), /CHECK/, "CHECK skema tetap menolak jenis liar");
+  /* ulang 0091 di atas data: isi (kejadian + entri) utuh, jenis baru tetap sah, salinan terbuang */
+  const entri = await n("logbook_entri");
+  const sql = readFileSync(path.join(AKAR, "migrations", "0091_logbook_jenis.sql"), "utf8");
+  await DB.batch(pecah(sql).map(x => DB.prepare(x)));
+  assert.equal(await n("logbook_kejadian"), sebelum + 3); assert.equal(await n("logbook_entri"), entri);
+  assert.equal(await n("sqlite_master WHERE name LIKE 'logbook_%_cad'"), 0);
+  assert.equal(await n("logbook_kejadian WHERE jenis = 'tsunami'"), 1);
+  await DB.batch([DB.prepare("DELETE FROM logbook_entri WHERE kejadian_id IN (SELECT id FROM logbook_kejadian WHERE jenis IN ('gelombang_pasang', 'tsunami', 'wabah'))"), DB.prepare("DELETE FROM logbook_kejadian WHERE jenis IN ('gelombang_pasang', 'tsunami', 'wabah')")]);   // uji berikutnya menghitung kejadian
 });
 
 uji("logbook: entri lanjutan menimpa nilai terkini, batas wajar dan yakin", async () => {
@@ -319,4 +337,20 @@ uji("logbook: tulis dibatasi 120 per pelaku per jam, pelaku lain tidak terganggu
   assert.equal((await call("POST", "/api/logbook/kejadian/ffffffffffffffff/tutup", STAF, {})).status, 429);
   assert.equal((await call("POST", "/api/logbook/kejadian", ADMIN, baru)).status, 201, "pelaku lain tetap boleh");
   await DB.prepare("DELETE FROM laju_bnpb").run();
+});
+
+uji("logbook turunan: tanpa sesi/peran salah 403, nama di luar daftar putih 404, staf sah 200 dari R2", async () => {
+  const kunci = n => `internal/pusdalops-logbook/turunan/${n}.json`;
+  const R2 = await mf.getR2Bucket("MEDIA"); await R2.put(kunci("rapor_bpbd"), JSON.stringify({ok: 1})); await R2.put(kunci("rahasia"), "{}");
+  for (const h of [orig, LUAR]) assert.equal((await call("GET", "/api/logbook/turunan/rapor_bpbd", h)).status, 403);
+  for (const n of ["rahasia", "latih", "..", "rapor_bpbd.json"]) assert.equal((await call("GET", "/api/logbook/turunan/" + n)).status, 404, n);
+  assert.equal((await call("GET", "/api/logbook/turunan/rekomendasi")).status, 404, "daftar putih tapi objek belum ada");
+  for (const n of ["serupa_1", "serupa_abc", "serupa_123", "serupa_", "%2e%2e%2fx", "..%2fx", "serupa_11.json"]) assert.equal((await call("GET", "/api/logbook/turunan/" + n)).status, 404, n);
+  for (const n of ["penanganan", "serupa_33"]) {
+    assert.equal((await call("GET", "/api/logbook/turunan/" + n, orig)).status, 403, n + " tanpa sesi");
+    assert.equal((await call("GET", "/api/logbook/turunan/" + n)).status, 404, n + " sah tapi objek belum ada");
+    await R2.put(kunci(n), JSON.stringify({n}));
+    const x = await call("GET", "/api/logbook/turunan/" + n); assert.equal(x.status, 200, n); assert.deepEqual(x.j, {n}); assert.equal(x.cc, "private, no-store"); assert.match(x.vary, /cookie/i);
+  }
+  const r = await call("GET", "/api/logbook/turunan/rapor_bpbd"); assert.equal(r.status, 200); assert.deepEqual(r.j, {ok: 1}); assert.equal(r.cc, "private, no-store"); assert.match(r.vary, /cookie/i);
 });

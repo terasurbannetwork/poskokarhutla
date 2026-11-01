@@ -270,6 +270,39 @@ uji("migrasi 0020: laporan multi-bahaya, data+anak+induk utuh, indeks/trigger ke
   assert.deepEqual(d.prepare("SELECT name FROM sqlite_master WHERE name LIKE '%\\_cad' ESCAPE '\\'").all(), [], "tabel cadangan harus hilang");
 });
 
+/* 0090 di atas laporan yang sudah berisi beserta anaknya (kontak, suara, laporan_wilayah) dan stat_hari, seperti produksi */
+uji("migrasi 0090: laporan dibangun ulang, laporan_wilayah dicadangkan lalu dipulihkan", () => {
+  const berkas = readdirSync(AKAR + "/migrations").filter(f => f.endsWith(".sql")).sort(), i = berkas.indexOf("0090_pesisir.sql");
+  assert.ok(i > 0, "0090_pesisir.sql tidak ada");
+  const d = new DatabaseSync(":memory:"), baca = f => readFileSync(AKAR + "/migrations/" + f, "utf8");
+  d.exec("PRAGMA foreign_keys = ON;");
+  for (const f of berkas.slice(0, i)) d.exec(baca(f));
+  const ins = (id, o = {}) => { const r = {jenis: "minta", sub: "air", bahaya: "banjir", induk: null, jumlah: 3, ...o};
+    d.prepare(`INSERT INTO laporan (id, jenis, sub, bahaya, lat, lon, teks, detail, jumlah, dibuat, kedaluwarsa, induk, ip_hash, token_hash)
+      VALUES (?, ?, ?, ?, -2.5, 113.9, 'tes', '{}', ?, ?, ?, ?, ?, ?)`).run(id, r.jenis, r.sub, r.bahaya, r.jumlah, T0, T0 + JAM, r.induk, H, H); };
+  ins("lama0001"); ins("lama0002", {jenis: "listrik", sub: "padam", bahaya: "umum", jumlah: null, induk: "lama0001"});
+  d.prepare("INSERT INTO kontak (laporan_id, wa, dibuat) VALUES ('lama0001', '6281234567890', ?)").run(T0);
+  d.prepare("INSERT INTO suara (laporan_id, ip_hash, kelompok, nilai, waktu) VALUES ('lama0001', ?, 'konfirmasi', 'benar', ?)").run("b".repeat(64), T0);
+  d.prepare("INSERT INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES ('lama0001', '31', '3171', 'masuk')").run();
+  d.prepare("INSERT INTO stat_hari (tgl, hal, slot, menit) VALUES ('2026-10-01', 'karhutla', ?, ?)").run(JSON.stringify(Array(144).fill(0)), JSON.stringify(Array(1440).fill(0)));
+  ditolak(() => ins("lama0003", {jenis: "abrasi", sub: "garis", bahaya: "abrasi", jumlah: null}), "sebelum 0090 abrasi ditolak (pembanding)");
+  const foto = () => ({l: d.prepare("SELECT * FROM laporan ORDER BY id").all(), k: d.prepare("SELECT * FROM kontak").all(), s: d.prepare("SELECT * FROM suara ORDER BY ip_hash").all(),
+    w: d.prepare("SELECT * FROM laporan_wilayah").all(), h: d.prepare("SELECT * FROM stat_hari").all()});
+  const sebelum = foto();
+  d.exec(baca(berkas[i]));
+  assert.deepEqual(foto(), sebelum, "laporan, kontak, suara, laporan_wilayah (CASCADE tak boleh menghapus), induk, dan stat_hari harus utuh");
+  assert.deepEqual(d.prepare("SELECT name FROM sqlite_master WHERE name LIKE '%\\_cad' ESCAPE '\\'").all(), [], "tabel cadangan harus hilang");
+  assert.deepEqual(d.prepare("PRAGMA foreign_key_check").all(), []);
+  const isiTrigger = n => d.prepare("SELECT sql FROM sqlite_master WHERE type = 'trigger' AND name = ?").get(n).sql.replace(/\s+/g, " ");
+  assert.equal(isiTrigger("suara_tambah"), baca("0069_suara_bantuan_tetap_tampil.sql").match(/CREATE TRIGGER suara_tambah[\s\S]*?END;/)[0].replace(/\s+/g, " ").replace(/;$/, ""), "suara_tambah = badan 0069");
+  for (const ip of ["x", "y", "z"]) d.prepare("INSERT INTO suara (laporan_id, ip_hash, kelompok, nilai, waktu) VALUES ('lama0001', ?, 'aduan', 'palsu', ?)").run(ip.repeat(64), T0);
+  assert.equal(d.prepare("SELECT disembunyikan FROM laporan WHERE id = 'lama0001'").get().disembunyikan, 0, "3 aduan pada laporan minta tidak menyembunyikan");
+  for (const [b, j, s] of [["abrasi", "abrasi", "garis"], ["abrasi", "abrasi", "bangunan"], ["abrasi", "abrasi", "rusak"], ["gelombang_pasang", "gelombang", "tinggi"], ["gelombang_pasang", "gelombang", "limpas"], ["gelombang_pasang", "gelombang", "kapal"]])
+    ins("baru" + s, {jenis: j, sub: s, bahaya: b, jumlah: null});
+  ditolak(() => ins("salah01", {jenis: "abrasi", sub: "garis", bahaya: "gelombang_pasang", jumlah: null}), "jenis abrasi di bahaya gelombang_pasang");
+  d.prepare("INSERT INTO stat_hari (tgl, hal, slot, menit) VALUES ('2026-10-01', 'pesisir', ?, ?)").run(JSON.stringify(Array(144).fill(0)), JSON.stringify(Array(1440).fill(0)));
+});
+
 uji("CHECK laporan.bahaya di migrasi terakhir yang membangun laporan = BAHAYA (dari registry), dua arah", () => {
   const berkas = readdirSync(AKAR + "/migrations").filter(f => f.endsWith(".sql")).sort().reverse().find(f => /CREATE TABLE laporan \(/.test(readFileSync(AKAR + "/migrations/" + f, "utf8")));
   const m = readFileSync(AKAR + "/migrations/" + berkas, "utf8").match(/bahaya TEXT NOT NULL CHECK \(bahaya IN \(([^)]*)\)\)/);

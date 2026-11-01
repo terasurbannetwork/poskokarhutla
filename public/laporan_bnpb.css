@@ -63,3 +63,6 @@
 .lb-bl-tab td{text-align:center;padding:4px 8px;font-size:12px;font-variant-numeric:tabular-nums}
 .lb-bl-tab td.kiri{text-align:left}
 .lb-bl-tab tr[hidden]{display:none}
+
+/* dibingkai Ruang Laporan (/admin/laporan): kelas .sematan ditambah induk */
+.sematan{--top:0px}.sematan header.top{display:none}

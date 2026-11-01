@@ -18,7 +18,7 @@ sys.path.insert(0, SINI); sys.path.insert(0, os.path.join(SINI, 'penanganan'))
 import satelit, firespot_hari, pil_sendiri, cuaca_riwayat, wa_operasi, bnpb   # noqa: E402
 
 TEMPLAT = os.path.join(SINI, '..', 'satelit-2026-10-21', 'sumber-asli-BNPB-211026.pptx')
-ADA_BARIS = {'62', '16', '63', '15', '61', '93', '72', '64'} | {f[:-4] for f in os.listdir(os.path.join(SINI, 'penanganan', 'logo'))}   # baris templat + logo/<kode>.png
+ADA_BARIS = {'62', '16', '63', '15', '61', '93', '72', '64'} | {f[:-4] for d in (os.path.join(SINI, 'penanganan', 'logo'), os.path.join(SINI, '..', '..', '..', 'public', 'lambang', 'provinsi')) for f in os.listdir(d) if f.endswith('.png')}   # baris templat + logo/<kode>.png + lambang layar (semua provinsi)
 
 
 def jalankan(*cmd, cwd):

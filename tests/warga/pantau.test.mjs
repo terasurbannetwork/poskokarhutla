@@ -387,7 +387,7 @@ uji("dummy: hanya Super Admin; menumbuhkan seluruh rantai (tiap jenis butir teri
 uji("halaman /admin/pantau: kerangka tanpa data dengan CSP ketat; berkas klien ada; tanpa pemisah titik tengah", async () => {
   const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/pantau");
   assert.equal(r.status, 200); const html = await r.text();
-  assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/); assert.equal(r.headers.get("cache-control"), "no-store");
+  assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'self'/); assert.equal(r.headers.get("cache-control"), "no-store");
   assert.ok(html.includes("/admin/pantau.js") && html.includes("/admin/pantau.css") && html.includes("/admin/bersama.js") && html.includes('id="aksiJudul"'));
   assert.ok(!/<script>[^<]/.test(html) && !/ style=/.test(html), "tanpa skrip/gaya inline");
   assert.ok(!html.includes("628") && !html.includes("sandi_sha"));

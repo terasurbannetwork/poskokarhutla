@@ -1,20 +1,28 @@
 "use strict";
 /* riwayat_daerah.js: (1) kartu "Riwayat bencana di daerahmu" saat kabupaten/kota dipilih lewat pencarian atau diklik di peta,
-   (2) lapisan "Musim berjalan" (jenis dominan per kabupaten untuk bulan terpilih), (3) lapisan "Langganan bencana" (banjir/longsor 7 dari 7 tahun).
-   Data: data/logbook_riwayat.json (Logbook Pusdalops BNPB), dibaca apa adanya; hanya 2014-2020 (tahun_penuh). Angka korban logbook TIDAK dipakai.
+   (2) lapisan "Musim berjalan" (jenis dominan per kabupaten untuk bulan terpilih), (3) lapisan "Langganan bencana" (banjir/longsor ada di semua tahun dasar).
+   Data: data/logbook_riwayat.json (Logbook Pusdalops BNPB), dibaca apa adanya; hanya tahun_penuh (bulan lengkap, tahun dasar). Angka korban logbook TIDAK dipakai.
    Pola sama dengan kebakaran_permukiman.js: kontrol urgent, gambar berat lewat nanti(). Dimuat sesudah kebakaran_permukiman.js. */
 (() => {
-  const TH = [2014, 2015, 2016, 2017, 2018, 2019, 2020], N = TH.length;
-  const JN = [["banjir", "Banjir", "#2f6fb0"], ["longsor", "Longsor", "#8a5a2b"], ["cuaca", "Cuaca ekstrem", "#7b5cc0"], ["karhutla", "Karhutla", "#d9600b"], ["kebakaran_permukiman", "Kebakaran permukiman", "#c9503a"]];
+  /* tahun dasar dari data (tahun_penuh, bisa tidak bersambung); rentang ringkas: "2014–2020 dan 2024–2025" */
+  const rentang = a => { const r = []; a.forEach((y, i) => i && y === a[i - 1] + 1 ? r[r.length - 1][1] = y : r.push([y, y]));
+    const s = r.map(([x, z]) => x === z ? `${x}` : `${x}–${z}`); return s.length < 3 ? s.join(" dan ") : s.slice(0, -1).join(", ") + ", dan " + s.at(-1); };
+  const tahunDasar = j => (j.tahun_penuh || []).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
+  let TH = [], N = 0, RNG = "";
+  const JN = [["banjir", "Banjir", "#2f6fb0"], ["longsor", "Longsor", "#8a5a2b"], ["cuaca", "Cuaca ekstrem", "#7b5cc0"], ["gelombang_pasang", "Gelombang pasang dan abrasi", "#1a8a9a"], ["karhutla", "Karhutla", "#d9600b"], ["kebakaran_permukiman", "Kebakaran permukiman", "#c9503a"], ["tsunami", "Tsunami", "#2a3f8f"], ["wabah", "Epidemi dan wabah penyakit", "#4f9a5a"]];  /* urutan resmi DIBI; tiga jenis terakhir dipecah pipeline dari cuaca/lainnya */
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"], SB = BLN.map(b => b.slice(0, 3));
-  const CATATAN = "Logbook mencatat kejadian yang dilaporkan. Papua hanya 0,3–1 kejadian per kab/kota per tahun, jauh di bawah Jawa, karena pelaporan tidak merata.";
+  let CATATAN = "Logbook mencatat kejadian yang dilaporkan.";
+  /* rata-rata kejadian semua jenis di JN per kab/kota per tahun dasar, dihitung dari data saat dimuat */
+  const rataKab = (kab, pf) => { let t = 0, c = 0; for (const [k, v] of Object.entries(kab)) if (pf.includes(+k.split("|")[0])) { c++; for (const y of TH) for (const [j] of JN) t += v.tahun?.[y]?.[j] || 0; } return c && N ? t / (c * N) : null; };
+  const catat = kab => { const p = rataKab(kab, [91, 92, 93, 94, 95, 96, 97]), jw = rataKab(kab, [31, 32, 33, 34, 35, 36]), f = n => n.toLocaleString("id-ID", {maximumFractionDigits: 1});
+    CATATAN = "Logbook mencatat kejadian yang dilaporkan." + (p != null && jw != null ? ` Rata-rata per kab/kota per tahun: Papua ${f(p)} kejadian, Jawa ${f(jw)}; sebabnya belum dipastikan.` : ""); };
   const MODE = {"rd-musim": "musim", "rd-langgan": "langgan"};
   let jData = null, janji = null, J = null, D = null, genBln = 0, mode = null, bulan = new Date().getMonth(), gen = 0, hov = null, ev = null, cache = {}, kartuK = null;
   const ada = (v, j) => TH.filter(y => v.tahun?.[y]?.[j] > 0).length;
   const rgba = (h, a) => `rgba(${parseInt(h.slice(1, 3), 16)},${parseInt(h.slice(3, 5), 16)},${parseInt(h.slice(5, 7), 16)},${a})`;
   const dari = n => `${fmt(n)} dari ${N} tahun`;
 
-  const ambilData = () => jData ||= muatJSON("data/logbook_riwayat.json").then(j => J = j.kab).catch(e => { jData = null; throw e; });
+  const ambilData = () => jData ||= (window._logbook ||= muatJSON("data/logbook_riwayat.json").catch(e => { window._logbook = null; throw e; })).then(j => { TH = tahunDasar(j); N = TH.length; RNG = rentang(TH); catat(j.kab); return J = j.kab; }).catch(e => { jData = null; throw e; });
   const ambil = () => janji ||= (async () => {
     await ambilData(); const kab = J;
     const prov = [...new Set(Object.keys(kab).map(k => k.split("|")[0]))];
@@ -40,7 +48,7 @@
   function bulanTerbanyak(c) {
     const g = new Map(); c.forEach((n, i) => n > 0 && (g.get(n) || g.set(n, []).get(n)).push(BLN[i]));
     const bag = [...g].sort((a, b) => b[0] - a[0]).slice(0, 2).map(([n, m]) => m.length > 1 ? `${gabung(m)} masing-masing ${fmt(n)} kejadian` : `${m[0]} (${fmt(n)} kejadian)`);
-    return bag.length ? `Bulan terbanyak: ${bag.join("; ")}, 2014–2020.` : "";
+    return bag.length ? `Bulan terbanyak: ${bag.join("; ")}. Dihitung dari ${RNG}.` : "";
   }
   function isiKartu(k, nama) {
     const v = J[k], rows = JN.map(([j, lb, w]) => {
@@ -48,14 +56,14 @@
       return {j, lb, w, y, b, top: bulanTerbanyak(v.bulan_penuh?.[j] || [])};
     }).filter(Boolean).sort((a, c) => c.y - a.y);
     const kepala = `<div class="rd-hd"><div><b>${esc(nama)}</b></div><button class="rd-x" aria-label="Tutup">×</button></div>`;
-    const cov = `Menampilkan 5 jenis: banjir, longsor, cuaca ekstrem, karhutla, kebakaran permukiman.`;
-    if (!rows.length) return kepala + `<p>Tidak ada kejadian lima jenis ini yang tercatat di logbook 2014–2020.</p><div class="rd-s">${cov} ${CATATAN}</div>`;
+    const cov = `Menampilkan ${JN.length} jenis: ${JN.map(x => x[1].toLowerCase()).join(", ")}.`;
+    if (!rows.length) return kepala + `<p>Tidak ada kejadian jenis ini yang tercatat di logbook ${RNG}.</p><div class="rd-s">${cov} ${CATATAN}</div>`;
     const t = rows[0];
     return kepala + `<p><b>${t.lb} tercatat di ${dari(t.y)}.</b> Ini jenis yang tercatat di lebih banyak tahun di ${esc(nama)}.</p>`
       + rows.map(r => `<div class="rd-j"><span class="pill" style="background:${r.w}">${r.lb}</span><span class="rd-n">${dari(r.y)}</span>
         <div class="rd-b">${r.b.map((n, i) => `<i data-tip="<b>${BLN[i]}</b>${dari(n)}" style="height:${Math.round(n / N * 38)}px;background:${r.w}"></i>`).join("")}</div>
         <div class="rd-m">${SB.map(b => `<span>${b}</span>`).join("")}</div>${r.top ? `<p>${r.top}</p>` : ""}</div>`).join("")
-      + `<div class="rd-s">Sumber: logbook Pusdalops BNPB 2014–2020, kejadian yang dilaporkan. ${cov} ${CATATAN}</div>`;
+      + `<div class="rd-s">Sumber: logbook Pusdalops BNPB ${RNG}, kejadian yang dilaporkan. ${cov} ${CATATAN}</div>`;
   }
   let kartu = null;
   async function buka(k, nama) {
@@ -78,7 +86,7 @@
     peta.addLayer({id: "rd-line", type: "line", source: "rd", paint: {"line-color": "#8fa0b5", "line-opacity": .85, "line-width": ["case", ["boolean", ["feature-state", "hover"], false], 2.2, .6]}}, bawah);
     ikat();
   }
-  /* jenis dominan bulan ini: tahun_ada terbesar; seri = urutan JN. Langganan: banjir/longsor ada di 7 dari 7 tahun. */
+  /* jenis dominan bulan ini: tahun_ada terbesar; seri = urutan JN. Langganan: banjir/longsor ada di semua N tahun dasar. */
   const dominan = v => { let b = null; for (const [j, lb, w] of JN) { const n = v.tahun_ada?.[j]?.[bulan] || 0; if (n > 0 && (!b || n > b.n)) b = {n, lb: [lb], w}; else if (n > 0 && n === b.n) b.lb.push(lb); } return b; };
   const SERI = "rgba(90,100,120,";
   const langgan = v => JN.slice(0, 2).filter(([j]) => ada(v, j) === N);
@@ -96,9 +104,9 @@
   function isiTip(p) {
     const v = D.kab[p.kunci], sub = "";
     if (mode === "musim") { const d = dominan(v);
-      return kartuTip({judul: esc(p.nama), sub, daftar: d ? [[d.lb.length > 1 ? `${gabung(d.lb)} sama-sama ${dari(d.n)}` : d.lb[0], d.lb.length > 1 ? BLN[bulan] : dari(d.n) + ", " + BLN[bulan]]] : [["Tidak ada kejadian tercatat", BLN[bulan]]], kaki: "Logbook Pusdalops BNPB 2014–2020"}); }
+      return kartuTip({judul: esc(p.nama), sub, daftar: d ? [[d.lb.length > 1 ? `${gabung(d.lb)} sama-sama ${dari(d.n)}` : d.lb[0], d.lb.length > 1 ? BLN[bulan] : dari(d.n) + ", " + BLN[bulan]]] : [["Tidak ada kejadian tercatat", BLN[bulan]]], kaki: `Logbook Pusdalops BNPB ${RNG}`}); }
     const l = langgan(v);
-    return kartuTip({judul: esc(p.nama), sub, daftar: l.map(([, lb]) => [lb, `ada di ${dari(N)}`]), kaki: "Logbook Pusdalops BNPB 2014–2020"});
+    return kartuTip({judul: esc(p.nama), sub, daftar: l.map(([, lb]) => [lb, `ada di ${dari(N)}`]), kaki: `Logbook Pusdalops BNPB ${RNG}`});
   }
   function ikat() {
     const tip = $("#tip"); let ukr = [0, 0];
@@ -122,7 +130,7 @@
 
   const _leg = renderLegenda;
   renderLegenda = function () { _leg(); const box = document.querySelector("#legDet > div"); if (!box || !mode || !D || !lapis()) return;
-    const tengah = `<span class="kab-wkt"><span>${CATATAN} Sumber: logbook Pusdalops BNPB 2014–2020.</span></span>`;
+    const tengah = `<span class="kab-wkt"><span>${CATATAN} Sumber: logbook Pusdalops BNPB ${RNG}.</span></span>`;
     box.insertAdjacentHTML("beforeend", mode === "musim"
       ? `<div class="lg-g"><div class="lbl">Musim berjalan: jenis dominan, <span id="rdBlnLbl">${BLN[bulan]}</span></div><div class="seg" id="rdBln">${SB.map((b, i) => `<button data-b="${i}" title="${BLN[i]}" aria-pressed="${i === bulan}">${b}</button>`).join("")}</div>
         <div class="leg">${JN.map(([, lb, w]) => `<span><i class="sw" style="background:${w}"></i>${lb}</span>`).join("")}<span>Makin pekat warna, makin banyak tahun (dari ${N}) yang mencatat jenis itu di bulan ini.</span><span><i class="sw" style="background:${SERI}.7)"></i>Seri: dua jenis atau lebih sama banyak</span>${tengah}</div></div>`

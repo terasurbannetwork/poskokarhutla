@@ -39,3 +39,11 @@
   .bn-blok{box-shadow:none;break-inside:avoid}
 }
 .sg-sop h3>svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+/* kebutuhan yang biasa diminta */
+.sg-keb{display:flex;gap:8px;align-items:center;font-weight:700}
+.sg-keb svg,.lb-tabel .sg-keb svg{width:16px;height:16px;min-width:16px;max-height:16px;fill:none;stroke:var(--c5);stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.sg-sub{margin:4px 0 0;font-size:13px;font-weight:800}
+.lb-tabel meter{width:84px;height:10px;vertical-align:middle}
+.sg-sorot{background:color-mix(in srgb,var(--c1) 10%,transparent)}
+.lb-tabel th.sg-sorot{background:var(--c1)}
+.lb-pudar{color:var(--ink3)}

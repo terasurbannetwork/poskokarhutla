@@ -270,7 +270,7 @@ uji("sla: masker titik panas tetap: /api/titik membuang sel sumber_statis (bukan
   assert.equal(selTitik(-2.125, 0.375), "-212,38", "pembulatan genap seperti Python round(): -212.5 -> -212, 37.5 -> 38"); assert.equal(selTitik(0.125, 0.5), "12,50");
   const t = new Date(Date.now() - JAM), tgl = t.toISOString().slice(0, 10), jm = t.toISOString().slice(11, 16).replace(":", ""), KEP = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
   const baris = (lat, lon) => `${lat},${lon},330,0.4,0.4,${tgl},${jm},N,VIIRS,h,2.0NRT,290,12.3,D`;
-  CSV = {VIIRS_SNPP_NRT: [KEP, baris(industri.lat, industri.lon), baris(-2.1234, 113.5678), baris(kawah.lat, kawah.lon)].join("\n"), VIIRS_NOAA20_NRT: KEP, VIIRS_NOAA21_NRT: KEP, MODIS_NRT: KEP};
+  CSV = {VIIRS_NOAA21_NRT: [KEP, baris(industri.lat, industri.lon), baris(-2.1234, 113.5678), baris(kawah.lat, kawah.lon)].join("\n"), VIIRS_NOAA20_NRT: KEP, MODIS_NRT: KEP};
   const wil = await import("../../src/titik.js"); assert.ok(wil.selTitik(industri.lat, industri.lon) !== wil.selTitik(-2.1234, 113.5678));
   await cron(Date.UTC(2026, 9, 22, 3, 15));   // menit 15 jam kelipatan 3: perbaruiTitik
   const isi = JSON.parse((await DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first()).isi), pos = isi.baris.map(r => `${r[0]},${r[1]}`);

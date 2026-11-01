@@ -36,6 +36,7 @@
   /* grup "Cuaca & asap": EFFIS (WMS Copernicus, TIME = hari) dan NASA GIBS AOD; tanggal & pilihan hari dibangun di gfw() dan legenda */
   const CUACA = [["cuaca", "Cuaca kebakaran resmi (EFFIS)"], ["gibs_aod", "Asap satelit (NASA)"]];
   SUB.cuaca = {nama: "EFFIS", awal: "effis_fwi", isi: [["effis_fwi", "Indeks cuaca api (FWI)"], ["effis_dc", "Kekeringan gambut (DC)"], ["effis_ba", "Area terbakar 30 hari"]]};
+  const UDARA = `<a href="/udara/" style="display:block;font-size:11px;margin:2px 0 0 22px">Kualitas udara rinci</a>`;
   const LAHAN = [["hutan", "Hutan (status, tutupan lahan, pohon, primer, mangrove)"], ["konsesig", "Konsesi (batas izin, kebun, tambang)"], ["hilang", "Hutan hilang & bekas terbakar"], ["kanal", "Kepadatan kanal & parit"]];
   const KUNCI = new Set([...GRUP.flatMap(g => g[1].map(x => x[0])), ...LAHAN.map(x => x[0]), ...CUACA.map(x => x[0]), ...UBIN.map(x => x[0])]);
   const kotak = ([k, n]) => `<label><input type="checkbox" data-l="${k}"> ${n}</label>` + (SUB[k] ? `<div class="ub-chip" data-g="${k}" hidden><b class="ub-jd">${SUB[k].nama}</b>${SUB[k].isi.map(([s, t, px]) => `<label><input type="checkbox" data-${px ? "px" : "l"}="${s}"><span>${t}</span></label>`).join("")}</div>` : "");
@@ -43,7 +44,7 @@
     const L = $("#lapis"); if (!L || L.querySelector('[data-l="jalan"]')) return;
     const lahan = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Lahan" || d.querySelector("summary")?.textContent.trim() === window.T?.("Lahan"));
     const cuaca = [...L.querySelectorAll("details")].find(d => ["Cuaca & asap", window.T?.("Cuaca & asap")].includes(d.querySelector("summary")?.textContent.trim()));
-    cuaca ? cuaca.insertAdjacentHTML("beforeend", CUACA.map(kotak).join("")) : L.insertAdjacentHTML("beforeend", `<details open><summary>Cuaca & asap</summary>${CUACA.map(kotak).join("")}</details>`);
+    cuaca ? cuaca.insertAdjacentHTML("beforeend", CUACA.map(kotak).join("") + UDARA) : L.insertAdjacentHTML("beforeend", `<details open><summary>Cuaca & asap</summary>${CUACA.map(kotak).join("")}${UDARA}</details>`);
     lahan ? lahan.insertAdjacentHTML("beforeend", LAHAN.map(kotak).join("")) : null;
     /* grup "Akses" digabung ke "Infrastruktur" (permintaan pemilik 13 Okt 2026); grup lain tetap jadi grup sendiri */
     const infra = [...L.querySelectorAll("details")].find(d => d.querySelector("summary")?.textContent.trim() === "Infrastruktur" || d.querySelector("summary")?.textContent.trim() === window.T?.("Infrastruktur"));

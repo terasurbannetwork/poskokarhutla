@@ -200,3 +200,18 @@ uji("kabel worker.js: RUTE_RISIKO7 digabung ke RUTE", () => {
   assert.match(w, /import \{RUTE_RISIKO7\} from "\.\/risiko7\.js"/, "import hilang");
   assert.match(w, /\.\.\.RUTE_RISIKO7/, "spread ke RUTE hilang");
 });
+
+/* uji Setneg 1 Nov 2026: /admin/keluar mencabut cookie sesi di SERVER, jadi salinan cookie (dicuri) ikut mati; cookie karangan tidak ditulis ke D1 */
+uji("keluar admin: salinan cookie sesi ditolak setelah keluar; cookie palsu tidak menulis D1", async () => {
+  const sesi = kuki(await masuk("gerbang@x", "sandi"), "sesi_admin"); assert.ok(sesi);
+  assert.equal((await api("GET", R[0], undefined, {cookie: sesi})).s, 200, "sebelum keluar");
+  const n0 = (await DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE aksi = 'sesi.cabut'").first()).n;
+  const palsu = `sesi_admin=9999999999999.${sha256("rahasia-admin").slice(0, 12)}.${"0".repeat(64)}`;
+  await (await situs("/admin/keluar", {cookie: palsu, origin: "https://centurisk97.id"}, {method: "POST"})).text();
+  assert.equal((await DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE aksi = 'sesi.cabut'").first()).n, n0, "cookie palsu tidak boleh tercatat");
+  const k = await situs("/admin/keluar", {cookie: sesi, origin: "https://centurisk97.id"}, {method: "POST"}); await k.text();
+  assert.equal(k.status, 303);
+  assert.equal((await api("GET", R[0], undefined, {cookie: sesi})).s, 401, "salinan cookie lama harus mati");
+  const baru = kuki(await masuk("gerbang@x", "sandi"), "sesi_admin");
+  assert.equal((await api("GET", R[0], undefined, {cookie: baru})).s, 200, "masuk lagi tetap bisa");
+});

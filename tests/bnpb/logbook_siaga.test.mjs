@@ -21,7 +21,7 @@ test("scripts/bnpb/siaga.py --cek hijau", () => {
 
 test("public/data/bnpb/siaga.json: musim, stok, SOP, desa", () => {
   const d = JSON.parse(readFileSync(`${PUB}/data/bnpb/siaga.json`, "utf8"));
-  assert.equal(d.n_tahun, 7);
+  assert.equal(d.n_tahun, d.tahun_penuh.length); assert.ok(d.n_tahun >= 7);
   for (const j of ["banjir", "longsor", "karhutla"]) {
     assert.ok(d.sop[j].length >= 5); assert.deepEqual(d.sop[j].map(x => x.h), d.sop[j].map(x => x.h).sort((a, b) => a - b));
     for (const s of d.stok[j]) assert.ok(KODE_KEBUTUHAN.includes(s.kode), s.kode);
@@ -38,7 +38,7 @@ test("public/data/bnpb/siaga.json: musim, stok, SOP, desa", () => {
 });
 
 for (const hal of ["logbook", "siaga"]) test(`${hal}.html/js: CSP bersih dan kepala situs bersama`, () => {
-  const html = readFileSync(`${PUB}/bnpb/${hal}.html`, "utf8"), js = readFileSync(`${PUB}/bnpb/${hal}.js`, "utf8");
+  const html = readFileSync(`${PUB}/bnpb/${hal}.html`, "utf8"), js = readFileSync(`${PUB}/bnpb/${hal}.js`, "utf8") + (hal === "logbook" ? readFileSync(`${PUB}/bnpb/logbook_turunan.js`, "utf8") : "");
   assert.ok(!/<script(?![^>]*\bsrc=)/i.test(html), "skrip inline"); assert.ok(!/<style|\sstyle=|\son[a-z]+=/i.test(html), "gaya/atribut inline");
   assert.match(html, /class="ad-top"/); assert.match(html, /bnpb\.css/);
   assert.ok(!/innerHTML|insertAdjacentHTML|eval\(/.test(js), "innerHTML pada data");
@@ -49,6 +49,13 @@ for (const hal of ["logbook", "siaga"]) test(`${hal}.html/js: CSP bersih dan kep
 const MIME = {".html": "text/html; charset=utf-8", ".js": "text/javascript", ".css": "text/css", ".svg": "image/svg+xml", ".json": "application/json"};
 const CSP = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 const S = {log: [], masuk: true};
+const sel = (n, jeda) => ({n, jeda_hari: {n, median: jeda, p75: jeda + 1}, lama_pantau_hari: {n, median: 0}, sekali_pct: 60.5, entri: n * 2, lengkap_pct: {kecamatan: 90, desa: 80, kondisi: 30, upaya: 99, kebutuhan: 10, kendala: 1}});
+const RAPOR = {min_n: 10, periode: {dasar: ["2014", "2015"], terpisah: ["2024", "2025", "2026"]}, catatan: ["Logbook mencatat waktu MASUK ke Pusdalops, bukan waktu BPBD tahu."], definisi: {jeda_hari: "hari penuh"},
+  kab: {"33|Cilacap": {dasar: sel(735, 1), 2025: sel(68, 1)}, "33|Banyumas": {dasar: sel(120, 2)}, "33|Kecil": {dasar: sel(3, 5)}}, prov: {33: {dasar: sel(900, 1)}}, nasional: {dasar: sel(5000, 1)}, nama_prov: {33: "Jawa Tengah"}};
+const rek = (th, n, j) => ({tahun: th, n_kejadian: n, n_per_tahun: {}, jenis: j, berulang: th.length >= 3});
+const REKOM = {berulang_bila_tahun_ge: 3, catatan: ["Topik kata kunci kasar."], topik: {}, kab: {"33|Cilacap": {tanggul: rek(["2016", "2020", "2025"], 4, {banjir: 4}), drainase: rek(["2019"], 1, {banjir: 1}), imbauan_kewaspadaan: rek(["2011", "2012", "2013"], 74, {cuaca: 30})}}, nasional: {tanggul: rek(["2016", "2020", "2025"], 40, {banjir: 40})}};
+const pn = (n, ns, med, lay) => ({n, n_selesai: ns, n_tak_selesai: n - ns, median_dilaporkan: med, p75_dilaporkan: med + 1, tak_selesai_pct: Math.round(1000 * (n - ns) / n) / 10, layak_median: lay});
+const PENANGANAN = {min_n: 5, tahun_dasar: ["2014", "2015"], catatan: [], nasional: {banjir: pn(1000, 400, 1, true), karhutla: pn(500, 200, 1, true)}, prov: {}, kab: {"33|Cilacap": {banjir: pn(80, 40, 2, true)}, "33|Banyumas": {banjir: pn(60, 10, 1, false)}}};
 let server, base;
 const jalankan = () => new Promise(ok => {
   server = http.createServer(async (req, res) => {
@@ -62,6 +69,9 @@ const jalankan = () => new Promise(ok => {
       if (p === "/api/logbook/buka") return json(200, {kejadian: [{id: "K1", jenis: "longsor", kec: "Kroya", desa: "Pesahangan", mulai: "2026-10-30T01:00:00Z"}]});
       if (p === "/api/logbook/kejadian" || /\/entri$/.test(p)) return json(201, {ok: true, id: "K9"});
       if (p === "/api/logbook/dummy") return json(200, {ok: true});
+      if (p === "/api/logbook/turunan/rapor_bpbd") return json(200, RAPOR);
+      if (p === "/api/logbook/turunan/rekomendasi") return json(200, REKOM);
+      if (p === "/api/logbook/turunan/penanganan") return json(200, PENANGANAN);
       return json(404, {galat: "tidak ada"});
     }
     const f = path.join(PUB, decodeURIComponent(p));
@@ -92,7 +102,7 @@ else {
     S.log.length = 0;
     await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
     await tab.tungguFungsi("!/Memuat daftar wilayah/.test(document.body.innerText)", 20000);
-    assert.equal(await tab.eval("document.querySelectorAll('input[name=jenis]').length"), 12);
+    assert.equal(await tab.eval("document.querySelectorAll('input[name=jenis]').length"), 14)   // = JENIS di src/logbook.js;
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kendala]').length"), 14);
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kebutuhan]').length"), 10);
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kendala]')[0].closest('label').querySelector('svg path') !== null"), true);
@@ -139,9 +149,9 @@ else {
     await bersih("lanjutan");
   });
 
-  test("siaga: lima kartu, kalender berkotak tooltip, ganti bulan, CSV, dummy", async () => {
+  test("siaga: delapan kartu, kalender berkotak tooltip, ganti bulan, CSV, dummy", async () => {
     await tab.buka(base + "/bnpb/siaga.html", {tunggu: ".sg-svg"});
-    assert.deepEqual(await tab.eval("[...document.querySelectorAll('.bn-blok h2')].map(h => h.innerText.replace(/\\s+/g, ' ')).filter(t => !/^Siaga/.test(t))").then(a => a.map(t => t.split(' ')[0])), ["Kalender", "Templat", "Saran", "Desa", "Daerah"]);
+    assert.deepEqual(await tab.eval("[...document.querySelectorAll('.bn-blok h2')].map(h => h.innerText.replace(/\\s+/g, ' ')).filter(t => !/^Siaga/.test(t))").then(a => a.map(t => t.split(' ')[0])), ["Kalender", "Templat", "Saran", "Kebutuhan", "Perkiraan", "Bencana", "Desa", "Daerah"]);
     assert.ok(await tab.eval("document.querySelectorAll('.sg-svg g[data-tip]').length >= 24"));
     assert.equal(await tab.eval("document.querySelectorAll('.sg-bulan input').length"), 12);
     await tab.eval("document.querySelectorAll('.sg-bulan input')[10].click()");
@@ -153,5 +163,108 @@ else {
       const csv = await tab.eval("window.__csv.text()"); assert.match(csv, /kabupaten_kota,jenis,awal_musim,bulan_target,tugas/);
     }
     await tab.klik("[data-d=isi]"); await tab.tungguFungsi("localStorage.getItem('siaga_dummy') === '1'");
+  });
+
+  test("siaga: kebutuhan yang biasa diminta memakai data nyata, n tampil, hitungan kab tanpa persen palsu", async () => {
+    const KB = JSON.parse(readFileSync(`${PUB}/data/bnpb/logbook_kebutuhan.json`, "utf8")), SG = JSON.parse(readFileSync(`${PUB}/data/bnpb/siaga.json`, "utf8"));
+    /* kab dengan musim banjir dan kategori kebutuhan >= 5 di berkas */
+    const cari = Object.entries(SG.kab).find(([k, v]) => v.musim.banjir && (KB.jenis.banjir.kab_berisi[`${k.slice(0, 2)}|${v.nama}`]?.n_kejadian_berisi || []).reduce((x, y) => x + y, 0) >= 5);
+    assert.ok(cari, "tak ada kab uji");
+    const [kode, v] = cari, bln = v.musim.banjir.bulan[0];
+    await tab.buka(base + "/bnpb/siaga.html", {tunggu: ".sg-svg"});
+    await tab.eval(`localStorage.setItem('siaga_kab_v1', JSON.stringify(${JSON.stringify(kode)}))`);
+    await tab.buka(base + "/bnpb/siaga.html", {tunggu: ".sg-svg"});
+    await tab.klik(`.sg-bulan input[value="${bln}"]`);
+    await tab.tungguFungsi("[...document.querySelectorAll('.bn-blok h2')].some(h => /^Kebutuhan yang biasa/.test(h.innerText.trim()))");
+    const blok = "[...document.querySelectorAll('.bn-blok')].find(b => /^Kebutuhan yang biasa/.test(b.querySelector('h2')?.innerText.trim()))";
+    const t = await tab.eval(`${blok}.innerText`);
+    assert.match(t, /kejadian berisi di kab\/kota dari|Belum cukup data di kab ini/); assert.match(t, /Nasional, semua bulan|pola nasional/);
+    assert.ok(await tab.eval(`${blok}.querySelectorAll('tbody tr').length >= 1 && ${blok}.querySelectorAll('meter').length >= 1`));
+    assert.equal(await tab.eval(`[...${blok}.querySelectorAll('th')].every(th => getComputedStyle(th).textAlign === 'center')`), true, "header tabel rata tengah");
+    assert.equal(await tab.eval(`[...${blok}.querySelectorAll('.sg-keb svg')].every(s => s.getBoundingClientRect().height <= 24 && s.getBoundingClientRect().height > 0)`), true, "ikon kebutuhan <= 24 px");
+    assert.equal(await tab.eval(`[...${blok}.querySelectorAll('.sg-keb')].every(e => e.getBoundingClientRect().height <= 30)`), true, "ikon sebaris dengan label");
+    assert.doesNotMatch(t, /\d,\d%/, "persen bilangan bulat");
+    await bersih("kebutuhan"); await tanpaGulir("kebutuhan");
+    /* bulan tanpa musim apa pun: teks jujur, bukan tabel kosong */
+    const sepi = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12].find(b => !["banjir", "longsor", "cuaca", "karhutla"].some(j => v.musim[j]?.bulan.includes(b)));
+    if (sepi) { await tab.klik(`.sg-bulan input[value="${sepi}"]`); await tab.tungguFungsi("/Tidak ada jenis yang masuk musim/.test(document.body.innerText)"); }
+  });
+
+  test("logbook: bagian turunan (jam, pihak, desa, rapor, rekomendasi) dengan data nyata dan rute staf tiruan", async () => {
+    S.log.length = 0;
+    await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
+    assert.equal(await tab.eval("document.querySelectorAll('input[name=lbtab]').length"), 8);
+    const buka = async (v, tunggu) => { await tab.klik(`input[name=lbtab][value=${v}]`); await tab.tungguFungsi(tunggu, 20000); };
+    /* jam rawan */
+    await buka("jam", "document.querySelectorAll('.lb-svg g[data-tip]').length === 24");
+    assert.equal(await tab.eval("document.querySelector('.lb-kolom').hidden"), true); assert.match(await tab.teks(), /Puncak jam/);
+    await tab.klik("input[name=lbjenis][value=longsor]"); await tab.tungguFungsi("/Longsor/.test(document.querySelector('.lb-svg')?.getAttribute('aria-label') || '')");
+    await bersih("jam"); await tanpaGulir("jam");
+    /* pihak terlibat: BPBD tidak jadi baris */
+    await buka("terlibat", "document.querySelectorAll('.lb-turunan tbody tr').length > 0");
+    assert.equal(await tab.eval("[...document.querySelectorAll('.lb-turunan tbody td:first-child')].some(td => td.innerText.trim() === 'BPBD')"), false);
+    assert.match(await tab.teks(), /BPBD tidak ditampilkan sebagai temuan/);
+    await isi(".lb-turunan select[aria-label=Provinsi]", "33"); await tab.tungguFungsi("document.querySelector('.lb-turunan select[aria-label=\"Kabupaten/kota\"]').options.length > 20");
+    await bersih("terlibat");
+    /* desa langganan: berkas per provinsi dimuat hanya saat dipilih, ambang bawaan 6 */
+    assert.equal(await tab.eval("performance.getEntriesByType('resource').some(e => /desa_langganan/.test(e.name))"), false, "desa dimuat sebelum dipilih");
+    await buka("desa", "document.querySelectorAll('.lb-turunan tbody tr').length > 0");
+    assert.equal(await tab.eval("document.querySelector('input[name=lbambang]:checked').value"), "6");
+    assert.equal(await tab.eval("performance.getEntriesByType('resource').filter(e => /desa_langganan/.test(e.name)).length"), 1);
+    assert.match(await tab.teks(), /6 tahun atau lebih dari 9/);
+    await tab.klik("input[name=lbambang][value=\"9\"]"); await tab.tungguFungsi("/9 tahun atau lebih dari 9|Tidak ada desa/.test(document.body.innerText)");
+    await bersih("desa"); await tanpaGulir("desa");
+    /* rapor: sel n < 10 disembunyikan, catatan jeda, tanpa peringkat juara */
+    await buka("rapor", "document.querySelectorAll('.lb-turunan tbody tr').length > 0");
+    let t = await tab.teks(); assert.match(t, /Cilacap, Jawa Tengah/); assert.doesNotMatch(t, /Kecil/); assert.match(t, /1 disembunyikan, kejadian kurang dari 10/); assert.match(t, /waktu MASUK ke Pusdalops/);
+    assert.doesNotMatch(t, /juara|terburuk|terbaik|peringkat/i);
+    assert.equal(await tab.eval("[...document.querySelectorAll('.lb-turunan th')].every(th => getComputedStyle(th).textAlign === 'center')"), true);
+    await tab.klik("input[name=lbskala][value=prov]"); await tab.tungguFungsi("/Jawa Tengah/.test(document.querySelector('.lb-turunan tbody')?.innerText || '')");
+    await bersih("rapor"); await tanpaGulir("rapor");
+    /* rekomendasi: imbauan tersembunyi bawaan, bisa dinyalakan */
+    await buka("rekom", "!!document.querySelector('.lb-turunan select[aria-label=Provinsi]')");
+    assert.match(await tab.teks(), /Topik kata kunci kasar/);
+    await isi(".lb-turunan select[aria-label=Provinsi]", "33"); await tab.tungguFungsi("document.querySelector('.lb-turunan select[aria-label=\"Kabupaten/kota\"]').options.length > 20");
+    await isi(".lb-turunan select[aria-label=\"Kabupaten/kota\"]", "33|Cilacap"); await tab.tungguFungsi("/Tanggul dan penahan/.test(document.querySelector('.lb-turunan').innerText)");
+    assert.doesNotMatch(await tab.eval("document.querySelector('.lb-turunan tbody').innerText"), /Imbauan kewaspadaan/);
+    await tab.klik("input[name=lbimb]"); await tab.tungguFungsi("/Imbauan kewaspadaan/.test(document.querySelector('.lb-turunan tbody').innerText)");
+    await bersih("rekom");
+    /* kembali ke Catat: formulir tampil lagi */
+    await tab.klik("input[name=lbtab][value=catat]"); assert.equal(await tab.eval("document.querySelector('.lb-kolom').hidden"), false);
+    assert.equal(S.log.filter(x => /turunan\/rapor_bpbd/.test(x.p)).length, 1, "rapor dimuat sekali");
+  });
+
+  test("siaga: bencana susulan jujur (hari yang sama, tanpa klaim bila selang mencakup 1, tanpa urut lift)", async () => {
+    const SU = JSON.parse(readFileSync(`${PUB}/data/bnpb/logbook_susulan.json`, "utf8"));
+    assert.ok(SU.ci_metode);
+    await tab.buka(base + "/bnpb/siaga.html", {tunggu: ".sg-svg"});
+    const blok = "[...document.querySelectorAll('.bn-blok')].find(b => /^Bencana susulan/.test(b.querySelector('h2')?.innerText.trim()))";
+    const t = await tab.eval(`${blok}.innerText`);
+    assert.match(t, /tercatat 1–3 hari kemudian pada [\d,]+ dari 100 kejadian/);
+    assert.match(t, /Tercatat di hari yang sama: [\d,]+ dari 100 .*sebagian satu laporan gabungan/);
+    assert.match(t, /bootstrap blok kab-tahun/); assert.doesNotMatch(t, /peringkat|tertinggi|terbanyak/i);
+    const nol = Object.values(SU.pasangan).some(p => p.nasional.ci95 && p.nasional.ci95[0] <= 1 && p.nasional.ci95[1] >= 1);
+    if (nol) assert.match(t, /tidak berbeda dari kebetulan/);
+    await bersih("susulan");
+  });
+
+  test("logbook: lama penanganan, median hanya banjir yang layak, karhutla tanpa median", async () => {
+    await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
+    await tab.klik("input[name=lbtab][value=lama]"); await tab.tungguFungsi("/dilaporkan selesai/.test(document.querySelector('.lb-turunan')?.innerText || '')", 20000);
+    let t = await tab.eval("document.querySelector('.lb-turunan').innerText");
+    assert.match(t, /Median 1 hari/); assert.match(t, /median dari kejadian yang dilaporkan selesai/); assert.match(t, /batas bawah yang bias/);
+    assert.match(t, /Cilacap/); assert.doesNotMatch(t, /Banyumas/, "kab tidak layak_median masuk peringkat");
+    await tab.klik("input[name=lblama][value=karhutla]"); await tab.tungguFungsi("/Karhutla: hanya jumlah/.test(document.querySelector('.lb-turunan').innerText)");
+    t = await tab.eval("document.querySelector('.lb-turunan').innerText");
+    assert.match(t, /200 dari 500 dilaporkan selesai/); assert.doesNotMatch(t, /Median \d+ hari di|persentil 75|median dari kejadian/);
+    assert.equal(await tab.eval("document.querySelectorAll('.lb-turunan .lb-svg').length"), 0);
+    await bersih("lama");
+  });
+
+  test("logbook: rapor dan rekomendasi tanpa sesi staf menampilkan pesan akses, bukan layar kosong", async () => {
+    await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
+    S.masuk = false;
+    await tab.klik("input[name=lbtab][value=rapor]"); await tab.tungguFungsi("/hanya untuk staf/.test(document.body.innerText)", 20000);
+    S.masuk = true;
   });
 }

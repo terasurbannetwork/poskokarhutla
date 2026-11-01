@@ -1,0 +1,48 @@
+/* Dokumen Pusdalops (/bnpb/dokumen). Token dan komponen dari bnpb.css/admin.css; tanpa gaya inline (CSP). */
+.dk-seg{display:grid;gap:8px;grid-template-columns:repeat(4,minmax(0,1fr))}
+@media (max-width:640px){.dk-seg{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.dk-tab{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px 8px;font-size:13px;font-weight:700;cursor:pointer;background:var(--card);color:var(--ink);font-family:inherit}
+.dk-tab svg,.bn-tombol svg,.bn-pil svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.dk-tab[aria-selected="true"]{background:color-mix(in srgb,var(--c5) 14%,transparent);border-color:color-mix(in srgb,var(--c5) 55%,transparent)}
+.dk-tab:focus-visible{outline:2px solid var(--c5);outline-offset:1px}
+.dk-aksi{display:grid;gap:8px;grid-template-columns:repeat(2,minmax(0,1fr))}
+.dk-aksi .bn-tombol{display:flex;align-items:center;justify-content:center;gap:6px}
+.dk-wa{width:100%;border:1px solid var(--line);border-radius:10px;padding:10px 12px;font:13px/1.5 ui-monospace,Menlo,monospace;background:var(--card);color:var(--ink);resize:vertical}
+.dk-t-ok{--pil:var(--c4)}.dk-t-tunggu{--pil:var(--c3)}.dk-t-bahaya{--pil:var(--c1)}.dk-t-info{--pil:var(--c5)}
+/* kertas pratinjau */
+.dk-kertas{background:#fff;color:#111;border-radius:12px;box-shadow:var(--bayang);padding:28px 32px;margin:14px 0;display:grid;gap:12px;max-width:210mm;margin-inline:auto;width:100%}
+.dk-kertas[aria-busy="true"]{opacity:.55}
+.dk-kertas h2{font-size:17px;font-weight:800;text-align:center;margin:0}
+.dk-kertas h3{font-size:14px;font-weight:800;margin:6px 0 0}
+.dk-kertas h4{font-size:13px;font-weight:800;margin:6px 0 0}
+.dk-kop{display:grid;gap:4px;text-align:center;border-bottom:2px solid #111;padding-bottom:10px}
+.dk-instansi{margin:0;font-size:11px;font-weight:700;letter-spacing:.02em}
+.dk-sub,.dk-nomor{margin:0;font-size:12.5px;font-weight:600}
+.dk-nomor{text-align:center}
+.dk-dummy{margin:0;font-weight:800;color:var(--c1);border:1px dashed var(--c1);border-radius:8px;padding:4px 8px;font-size:12px}
+.dk-p{margin:0;text-align:justify;hyphens:auto;font-size:12.5px;color:#333}
+.dk-kosong{margin:0;font-size:13px;color:#555;font-weight:600}
+.dk-ringkas{display:flex;gap:8px;flex-wrap:wrap}
+.dk-prov ul{margin:4px 0 0;padding-left:20px;display:grid;gap:4px;font-size:13px}
+.dk-alasan{color:#666;font-size:12px}
+.dk-bungkus{overflow-x:auto}
+.dk-tabel{width:100%;border-collapse:collapse;font-size:12.5px}
+.dk-tabel th{background:var(--navy);color:#fff;text-align:center;font-weight:700;padding:7px 8px}
+.dk-tabel td{padding:6px 8px;border:1px solid #d7dde6;vertical-align:top}
+.dk-tabel td.n{text-align:center;font-variant-numeric:tabular-nums}
+.dk-pilih{display:grid;gap:6px;max-height:260px;overflow:auto;padding:8px 0;font-size:13px}
+.dk-pilih label{display:flex;gap:8px;align-items:center}
+.dk-ttd{display:grid;gap:12px;grid-template-columns:repeat(3,minmax(0,1fr));text-align:center;margin-top:18px;font-size:12.5px;font-weight:700}
+.dk-ttd p{margin:0}
+.dk-garis{display:block;height:64px;border-bottom:1px solid #111}
+.dk-hari,.dk-shift{display:grid;gap:8px;break-inside:avoid}
+@media print{
+  @page{size:A4;margin:14mm}
+  html,body{background:#fff!important}
+  .ad-top,.dk-tak-cetak,.bn-judul,.bn-pesan{display:none!important}
+  .bn-wrap{padding:0;max-width:none}
+  .dk-kertas{box-shadow:none;border-radius:0;padding:0;margin:0;max-width:none}
+  .dk-tabel th,.bn-pil,.dk-dummy{-webkit-print-color-adjust:exact;print-color-adjust:exact}
+  .dk-tabel tr{break-inside:avoid}
+  .dk-ttd{break-inside:avoid}
+}

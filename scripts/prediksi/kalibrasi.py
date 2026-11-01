@@ -6,6 +6,7 @@ Peluang, per (kode, ambang, tenggang), hanya pasangan tahap "final" (HJN sementa
   "dipakai" hanya bila Brier uji turun; kalau tidak "ditolak" dan layar memakai peluang mentah (fail-closed).
 Jumlah & lama hujan (HJN): rasio bias per provinsi sum(amatan)/sum(prakiraan) pada fit, dibatasi 0,5..2;
   "dipakai" hanya bila galat absolut rata-rata uji turun.
+BNJ tidak dikalibrasi di sini: koreksi.py (bulanan, label DIBI >= 45 hari / logbook) yang memilikinya.
 Kriteria terkunci model lain (PRAREG-PROSPEKTIF, KRITERIA_SHA256) tidak disentuh: berkas ini hanya untuk /prediksi.
 
 Pakai:  python3 scripts/prediksi/kalibrasi.py   |   python3 scripts/prediksi/kalibrasi.py uji
@@ -96,7 +97,7 @@ def kal_jumlah(baris, i_f, i_o):
 
 def kalibrasi(pas):
     """pas = isi pasangan.json -> isi kalibrasi.json."""
-    final = [x for x in pas["baris"] if x[3] == "final"]
+    final = [x for x in pas["baris"] if x[3] == "final" and x[0] != "BNJ"]  # BNJ: koreksi.py (bulanan, berlabel matang)
     grup = {}
     for x in final:
         grup.setdefault((x[0], x[1], x[2]), []).append(x)

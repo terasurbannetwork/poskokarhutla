@@ -81,3 +81,12 @@ Hanya dari nomor `PEMILIK` (boleh beberapa, dipisah koma). Pesan perintah (teks 
 - `status [tanggal]`: dari `GET /api/wa/rekap`: "N dari M laporan wajib masuk untuk DD Mon. Belum: ..." plus status kirim harian/penanganan hari ini dari `state.json`.
 - `bantuan`, atau kata awal buat/kirim/status yang tak dikenal: daftar perintah.
 - Tanggal: `hari ini` (bawaan, WIB), `kemarin`, `26 okt`, `26 oktober`, `26/10`, `2026-10-26`.
+
+## Pemicu jam cut-off (`--cutoff`)
+
+`node scripts/wa/otomatis.mjs --cutoff [--kering] [--tanggal D]`: pada jam cut-off bangun dengan bahan yang ada. Penanganan (17.00) dibangun dari data sistem walau BMKG/satgas WA belum masuk (laporan balik memuat `bahanBelumMasuk`, slide tidak diberi catatan). Harian (12.00) wajib Koordalops + BMKG; bila belum ada, PEMILIK dikabari sekali. Bahan masuk kemudian = jalan biasa membangun ulang dan mengirim "Revisi: ". Plist templat `launchd/id.centurisk97.wa-cutoff.plist` (12.05 dan 17.05, sertakan `CHROMIUM_SHELL` karena Playwright headless shell tidak terpasang). Belum dimuat: setelah pemilik setuju,
+
+```bash
+sed -e "s#__REPO__#$HOME/Documents/GitHub/poskokarhutla#" -e "s#__NODE__#$(which node)#" -e "s#__HOME__#$HOME#" scripts/wa/launchd/id.centurisk97.wa-cutoff.plist > ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
+launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
+```

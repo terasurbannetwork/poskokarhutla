@@ -172,7 +172,7 @@
     const n = tampil.length, tot = Math.max(1, Math.ceil(n / HAL)); hal = Math.min(hal, tot - 1);
     let i0 = hal * HAL;
     $("mnDet").innerHTML = n ? tampil.slice(hal * HAL, hal * HAL + HAL).map(d =>
-      `<tr data-i="${i0++}"><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}">${KEY[d.key] || ""}</span></td><td class="mn-koord">${koord(d.lat, d.lon)}</td><td class="mn-aksi"><span class="mn-aks">${aksiDet(d)}</span></td></tr>`).join("")
+      `<tr data-i="${i0++}"><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}" title="tertinggi dalam sel 375 m">${KEY[d.key] || ""}</span></td><td class="mn-koord">${koord(d.lat, d.lon)}</td><td class="mn-aksi"><span class="mn-aks">${aksiDet(d)}</span></td></tr>`).join("")
       : !dimuat ? kosong(9, '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/>', "Data satelit belum masuk", "Halaman mencoba lagi tiap 5 menit.")
       : dets.length ? kosong(9, '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', "Tidak ada deteksi pada saringan ini", "Coba provinsi atau keyakinan lain.")
       : kosong(9, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada deteksi api dalam 24 jam terakhir", "");
@@ -295,6 +295,10 @@
   /* ---------- status keadaan darurat semua BPBD (public/data/status_darurat.json, SK dari data.bnpb.go.id) ---------- */
   const KLS = {"Siaga Darurat": "s", "Tanggap Darurat": "t", "Transisi Darurat ke Pemulihan": "h"};
   let SD = null, judulSt = "Status keadaan darurat";
+  /* penanda SK: sumber_baris "drive_pusdalops" = arsip SK Pusdalops BNPB, selain itu data.bnpb.go.id; mulai_perkiraan = mulai diperkirakan dari tanggal SK */
+  const srcSK = x => x.sumber_baris === "drive_pusdalops" ? "arsip SK Pusdalops BNPB" : "data.bnpb.go.id";
+  const tandaPerp = x => x.perpanjangan ? `<span class="mn-p" title="SK perpanjangan, sumber ${srcSK(x)}">perpanjangan</span>` : "";
+  const tandaMulai = x => x.mulai_perkiraan ? ` <span class="mn-p" title="Mulai diperkirakan dari tanggal SK, sumber ${srcSK(x)}">mulai perkiraan</span>` : "";
   const tglId = t => t ? t.split("-").reverse().join("/") : "";
   const jenisL = x => String(x.jenis || "").split(",").map(t => t.trim()).filter(Boolean);
   const KAT = k => /Kering/.test(k) ? "kk" : /Geologi/.test(k) && !/Basah/.test(k) ? "kg" : /Hidro/.test(k) ? "kb" : "";
@@ -327,9 +331,9 @@
     /* satu grup per provinsi, urutan grup ikut urutan baris pertamanya; SK tingkat provinsi menempati baris grup */
     const G = new Map(); for (const x of L) { if (!G.has(x.prov_kode)) G.set(x.prov_kode, []); G.get(x.prov_kode).push(x); }
     const isi = (x, kab) => `<td>${kab}</td>
-      <td><span class="mn-sti ${KLS[x.status] || ""}${x.berakhir && x.berakhir >= kini ? " on" : ""}" title="${esc(x.status)}${x.berakhir && x.berakhir >= kini ? ", masih berlaku" : ""}" aria-label="${esc(x.status)}">${IK_ST[x.status] || ""}</span></td>
+      <td><span class="mn-sti ${KLS[x.status] || ""}${x.berakhir && x.berakhir >= kini ? " on" : ""}" title="${esc(x.status)}${x.berakhir && x.berakhir >= kini ? ", masih berlaku" : ""}" aria-label="${esc(x.status)}">${IK_ST[x.status] || ""}</span>${tandaPerp(x)}</td>
       <td>${x.klasifikasi ? `<span class="mn-p ${KAT(x.klasifikasi)}">${esc(x.klasifikasi)}</span>` : ""}</td>
-      <td class="mn-jenis">${jenisL(x).map(t => `<span class="mn-p mn-jn">${ikJn(t)}${esc(t)}</span>`).join("")}</td><td>${tglId(x.mulai)}</td><td>${tglId(x.berakhir)}</td>
+      <td class="mn-jenis">${jenisL(x).map(t => `<span class="mn-p mn-jn">${ikJn(t)}${esc(t)}</span>`).join("")}</td><td>${tglId(x.mulai)}${tandaMulai(x)}</td><td>${tglId(x.berakhir)}</td>
       <td>${x.tautan ? `<a class="mn-ikb" href="${esc(x.tautan)}" target="_blank" rel="noopener" title="${esc(x.nomor)}" aria-label="Buka SK ${esc(x.nomor)}">${IK_SK}</a>` : ""}</td>
       <td><a class="mn-ikb mn-ikwa" href="${esc(waSt(x))}" target="_blank" rel="noopener noreferrer" title="${noBpbd(x) ? "WhatsApp Pusdalops BPBD" : "Kirim lewat WhatsApp"}" aria-label="WhatsApp ${esc(x.kab || x.prov)}">${IK_WA}</a></td>`;
     const kosongSel = '<td></td><td></td><td></td><td></td><td></td><td></td><td></td>';
@@ -379,7 +383,7 @@
   const noHp = t => { const d = String(t || "").replace(/\D/g, ""); return /^08\d{8,12}$/.test(d) ? "62" + d.slice(1) : /^628\d{8,12}$/.test(d) ? d : ""; };
   const noBpbd = x => BP.get(x.prov_kode + "|" + (x.skala === "provinsi" ? "provinsi" : nmK(x.kab))) || "";
   const waSt = x => { const n = noBpbd(x), w = x.skala === "provinsi" ? "Provinsi " + x.prov : x.kab + ", " + x.prov;
-    return `https://wa.me/${n}?text=${encodeURIComponent(`Status ${x.status} ${w}, SK ${x.nomor}, berlaku ${tglId(x.mulai)} sampai ${tglId(x.berakhir)}. Mohon pembaruan situasi terkini.`)}`; };
+    return `https://wa.me/${n}?text=${encodeURIComponent(`Status ${x.status} ${w}, SK ${x.nomor}, berlaku ${tglId(x.mulai)}${x.mulai_perkiraan ? " (mulai perkiraan)" : ""} sampai ${tglId(x.berakhir)}. Mohon pembaruan situasi terkini.`)}`; };
   async function muatBpbd() {
     try { const j = await (await fetch("/data/bpbd.json")).json();
       for (const k of j.kantor || []) { const n = noHp(k.pusdalops); if (!n) continue;
@@ -398,7 +402,7 @@
       $("mnSJen").innerHTML = `<option value="">Semua jenis bencana</option>` + hit(jenisL);
       const nP = SD.filter(x => x.skala === "provinsi").length;
       judulSt = `<b>${SD.length.toLocaleString("id-ID")}</b> status keadaan darurat`;
-      e.className = "mn-status ok"; e.innerHTML = `<i></i>${nP} provinsi dan ${SD.length - nP} kab/kota, tahun ${esc((j.tahun || []).join(", "))}, sumber BNPB`;
+      e.className = "mn-status ok"; e.innerHTML = `<i></i>${nP} provinsi dan ${SD.length - nP} kab/kota, tahun ${esc((j.tahun || []).join(", "))}, sumber data.bnpb.go.id dan arsip SK Pusdalops BNPB`;
       atas(); gambarSt();
     } catch (x) { e.className = "mn-status gagal"; e.innerHTML = "<i></i>Status keadaan darurat gagal dimuat"; }
   }

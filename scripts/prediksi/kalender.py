@@ -1,7 +1,7 @@
 """Kalender risiko per kab/kota x bulan x jenis dari logbook Pusdalops (public/data/logbook_riwayat.json, milik pipa-data).
 Keluaran public/prediksi/data/kalender_risiko.json. REFERENSI KEDUA (bukan pengganti klimatologi di nilai.py):
 klimatologi nilai.py = frekuensi harian dari DIBI/FIRMS yang teramati sistem ini (pendek); kalender ini = sisi dampak,
-bagian tahun penuh (2014-2020) yang bulan itu punya >=1 kejadian tercatat: p = tahun_ada / jumlah tahun penuh."""
+bagian tahun penuh (tahun_penuh di logbook_riwayat.json, tiap bulan >=25 hari tercatat) yang bulan itu punya >=1 kejadian tercatat: p = tahun_ada / jumlah tahun penuh."""
 import json, math, os, sys
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dasar as D

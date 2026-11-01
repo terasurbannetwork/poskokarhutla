@@ -98,11 +98,11 @@ def amatan_api(akar, cari, tanggal):
     return out
 
 
-def amatan_dibi(akar, cari, kode):
+def amatan_dibi(akar, cari, kode, margin=MARGIN_DIBI):
     d = D.baca(os.path.join(akar, "public", "data", "dibi_kejadian.json"))
     if not d:
         return {}, None
-    akhir = D.geser(d["sampai"], -MARGIN_DIBI)
+    akhir = D.geser(d["sampai"], -margin)
     out, t = {}, d["dari"]
     while t <= akhir:
         out[t] = {"j": "final", "kab": {}}
@@ -170,7 +170,8 @@ AMBANG_KODE = {"HJN": AMBANG, "API": [1], "BNJ": [1], "LSR": [1]}
 
 
 def pasangan(entri, am, kini=None):
-    """-> daftar pasangan [kode, ambang, tenggang, tahap, sasaran, kab, p, o, pers, klim, ekstra]
+    """-> daftar pasangan [kode, ambang, tenggang, tahap, sasaran, kab, p, o, pers, klim, ekstra, asal]
+    asal = "ps" (peluang ansambel), "lv" (BNJ/LSR tanpa ps: p = level >= 2, bukan peluang), "p" (kode lain).
     ekstra (HJN ambang 1 saja): [mulai_f, mulai_o, lama_f, lama_o, tot_f, tot_o]."""
     out, klim = [], {k: Klim(k, v) for k, v in am.items()}
     for e in entri:
@@ -195,7 +196,8 @@ def pasangan(entri, am, kini=None):
                     ek = None
                     if k == "HJN" and ai == 0:
                         ek = [r[4], v[1], r[5], v[2], r[3], v[0]]
-                    out.append([k, a, n + 1, hari["j"], t, kab, p, kejadian(k, v, a), kejadian(k, vp, a), klim[k](kab, a, t), ek])
+                    asal = ("lv" if r[1] is None else "ps") if k in ("BNJ", "LSR") else "p"
+                    out.append([k, a, n + 1, hari["j"], t, kab, p, kejadian(k, v, a), kejadian(k, vp, a), klim[k](kab, a, t), ek, asal])
     return out
 
 
@@ -293,7 +295,7 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
     pas = pasangan(entri, am, kini)
     d = data or D.DATA
     batas = D.geser(kini, -SIMPAN_HARI)
-    D.simpan(os.path.join(d, "pasangan.json"), {"dibuat": kini, "kol": ["kode", "ambang", "tenggang", "tahap", "sasaran", "kab", "p", "o", "pers", "klim", "ekstra"],
+    D.simpan(os.path.join(d, "pasangan.json"), {"dibuat": kini, "kol": ["kode", "ambang", "tenggang", "tahap", "sasaran", "kab", "p", "o", "pers", "klim", "ekstra", "asal"],
                                                 "baris": [x for x in pas if x[4] >= batas]})
     skor = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "jenis": "prospektif",
             "n_min": N_MIN, "kode": ringkas(pas, n_pra, status),

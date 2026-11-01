@@ -479,10 +479,12 @@ def arsip_main():
     print(f"arsip longsor: {len(kabs)}/{len(sk)} kab, {len(cuaca)} sel, tahun {tahun}", file=sys.stderr)
     lab = ulb.arsip_label(baris, "longsor", lebar_jendela=1)
     lv = ulb.arsip_level("longsor", sk, kabs, cuaca, tahun)
-    blok = ulb.arsip_blok(lv, lab, cakup)
+    laju, hari = ulb.arsip_laju(lab, cakup, kabs)
+    q = ulb.laju_alarm_model(lv, cakup)
+    blok = ulb.arsip_blok(lv, lab, cakup, ulb.arsip_klim(laju, lab, cakup, kabs), ulb.arsip_klim_sama(laju, hari, kabs, q))
     # AUC skor kontinu (maks sel h3*bahaya_longsor) per (kab, tahun): histogram bin, seri = 0,5
     g = BERLAKU["geser"]
-    hist = {n: {} for n in ("h3_x_bahaya", "h3_saja", "bahaya_saja")}
+    hist = {n: {} for n in ("h3_x_bahaya", "h3_saja", "bahaya_saja", "klimatologi_bulan")}
     for kab in kabs:
         for y, ada in cakup.items():
             h = {n: (Counter(), Counter()) for n in hist}
@@ -493,6 +495,7 @@ def arsip_main():
                 h3 = {s: sum(cuaca[s]["p"][e + g:e + g + 3]) for s in sk[kab]}
                 h["h3_x_bahaya"][o][round(max(h3[s] * b[1] for s, b in sk[kab].items()))] += 1
                 h["h3_saja"][o][round(max(h3.values()))] += 1
+                h["klimatologi_bulan"][o][round(1000 * laju[kab].get(d.month, 0))] += 1   # laju label bulan x kab, 2016-2021
                 h["bahaya_saja"][o][round(max(b[1] for b in sk[kab].values()) * 20)] += 1
             if sum(h["h3_saja"][0].values()):
                 for n in hist:
@@ -500,15 +503,31 @@ def arsip_main():
     auc = {}
     for n, hh in hist.items():
         auc[n] = {}
-        for y in [*(str(t) for t in tahun), "gabungan"]:
-            sub = {k: v for k, v in hh.items() if y == "gabungan" or k[1] == int(y)}
+        for y in [*(str(t) for t in tahun), "gabungan", "luar_sampel_2022_2025"]:
+            sub = {k: v for k, v in hh.items() if y == "gabungan" or (y.startswith("luar") and k[1] in ulb.LUAR) or (y.isdigit() and k[1] == int(y))}
             a, c = auc_ci(sub) if sub else (None, None)
             auc[n][y] = {"auc": None if a is None else round(a, 3), "ci95": c}
+    # selisih AUC berpasangan (bootstrap kab-tahun sama) pada luar-sampel: model h3 x bahaya dikurangi pembanding
+    luar = sorted(k for k in hist["h3_x_bahaya"] if k[1] in ulb.LUAR)
+    def auc_lu(nama, ks):
+        p_, n_ = Counter(), Counter()
+        for k in ks:
+            p_.update(hist[nama][k][0]); n_.update(hist[nama][k][1])
+        return auc_bin(p_, n_)
+    rr, auc_selisih = random.Random(9), {}
+    for lawan in ("klimatologi_bulan", "h3_saja"):
+        xs = []
+        for _ in range(300):
+            ks = [rr.choice(luar) for _ in luar]
+            xs.append(auc_lu("h3_x_bahaya", ks) - auc_lu(lawan, ks))
+        xs.sort()
+        auc_selisih["h3_x_bahaya_minus_" + lawan] = {"selisih": round(auc_lu("h3_x_bahaya", luar) - auc_lu(lawan, luar), 3), "ci95": [round(xs[7], 3), round(xs[292], 3)]}
+    print("longsor selisih AUC luar-sampel", auc_selisih, file=sys.stderr)
     hasil = ulb.arsip_ringkas(blok, ulang=ULANG)
     for y, x in hasil.items():
         w, p_ = x["waspada"], x["persisten"]
         print(f"longsor {y:9s} kab={x['kab']:3d} kejadian-hari={x['kejadian_hari']:5d} AUC h3xb {auc['h3_x_bahaya'][y]['auc']} {auc['h3_x_bahaya'][y]['ci95']} "
-              f"h3 {auc['h3_saja'][y]['auc']} | waspada POD {w['pod']} FAR {w['far']} ETS {w['ets']} {w['ci'].get('ets')} | persisten POD {p_['pod']} FAR {p_['far']} ETS {p_['ets']} | acak POD {w['acak']['pod']}")
+              f"h3 {auc['h3_saja'][y]['auc']} | waspada POD {w['pod']} FAR {w['far']} ETS {w['ets']} {w['ci'].get('ets')} | persisten POD {p_['pod']} FAR {p_['far']} ETS {p_['ets']} | klim POD {x['klimatologi']['pod']} FAR {x['klimatologi']['far']} ETS {x['klimatologi']['ets']} | acak POD {w['acak']['pod']}")
     try:
         n_lama = json.load(open(KELUAR_ARSIP)).get("sampel", {}).get("kab_dinilai") or 0
     except (OSError, ValueError):
@@ -522,14 +541,16 @@ def arsip_main():
                "sampel": {"kab_dinilai": len(kabs), "kab_geo_total": len(sk), "sel": len(cuaca),
                           "pemilihan": "kab yang semua selnya ada di cache uji_balik (bias ke kab yang sering berkejadian)"},
                "label": "Pusdalops arsip jenis longsor, positif = tgl_kejadian -1..+1 hari, hanya hari tercakup logbook (kabupaten-hari)",
-               "utama": {"keterangan": "2022 = satu-satunya tahun luar-sampel; vonis mengikuti 2022", "tahun": 2022,
-                         "hasil": hasil.get("2022"), "auc": {n: auc[n].get("2022") for n in auc}},
-               "gabungan_keterangan": "blok 'gabungan' dan 2016-2020 = konsistensi (2016-2020 ikut menyetel ambang), bukan luar-sampel",
+               "utama": {"keterangan": "HEADLINE = gabungan luar-sampel 2022-2025 (BERLAKU dipilih di 2016-2021 tetapi diterima lewat uji 2022-2025 pada label DIBI di uji_balik; label logbook belum dipakai menyetel); per tahun ada di 'per_tahun'", "tahun": list(ulb.LUAR),
+                         "hasil": hasil.get("luar_sampel_2022_2025"), "auc": {n: auc[n].get("luar_sampel_2022_2025") for n in auc},
+                         "auc_selisih_berpasangan": auc_selisih,
+                         "per_tahun": {str(y): {"hasil": hasil.get(str(y)), "auc": {n: auc[n].get(str(y)) for n in auc}} for y in ulb.LUAR}},
+               "gabungan_keterangan": "blok 'gabungan' dan 2016-2021 = dalam-sampel (ikut menyetel ambang), bukan luar-sampel",
                "hasil": hasil, "auc": auc,
-               "catatan": "MODEL KALAH DARI PERSISTEN (ETS persisten ~0,6 vs Waspada 0,01-0,06): jendela +-1 hari membuat 'kemarin berlabel' prediktor kuat. "
-                          "Kab sampel (41) dari cache uji_balik yang dibangun dari kab sering terdampak: POD dan laju dasar TIDAK berlaku nasional. Aturan longsor tidak dipilih di arsip ini, tetapi 2016-2025 sudah dipakai uji_balik untuk memilih K/geser/jenuh pada banjir+longsor "
-                          "(longsor 2024 bolong): bukan luar-sampel murni. 2021 tak ada arsip; 2022 parsial. Kab tanpa laporan bukan pasti tanpa longsor: FAR batas atas. "
-                          "Pembanding: persisten (alarm bila kemarin berlabel), acak (POD = laju alarm, FAR = laju dasar), dan AUC 0,5."},
+               "catatan": "Diperluas 31 Okt 2026: luar-sampel 2022-2025. Pembanding tanpa hujan: persisten (alarm bila kemarin berlabel), klimatologi (bulan dengan laju label 2016-2021 di atas rata-rata kab), acak, AUC 0,5. "
+                          "BIAS: tahun parsial (2021: 343, 2022: 272, 2023: 327 hari tercatat) hanya menilai hari tercakup logbook; 41 kab sampel dari cache uji_balik = kab sering terdampak (seleksi pada hasil), "
+                          "dipilih juga dari kejadian tahun uji 2022-2025 sehingga skor OPTIMISTIS, POD/laju dasar TIDAK nasional, FAR bukan batas atas pasti; persisten tak adil untuk jendela +-1 hari; hujan ERA5 = prakiraan sempurna. "
+                          "Aturan longsor tidak dipilih di arsip ini, tetapi uji_balik memakai 2016-2025 untuk memilih K/geser/jenuh (longsor 2024 bolong) dan menerimanya lewat uji 2022-2025 pada label DIBI: independensi tidak mutlak. AUC 'klimatologi_bulan' = skor laju label bulan x kab 2016-2021 (tanpa hujan); selisih_ets_waspada = CI berpasangan."},
               open(KELUAR_ARSIP, "w"), ensure_ascii=False, indent=1)
     print(os.path.relpath(KELUAR_ARSIP), "ditulis", file=sys.stderr)
 

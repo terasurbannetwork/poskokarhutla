@@ -142,7 +142,7 @@ uji("koreksi: masker titik panas tak terbaca: putaran tetap disimpan dan hasilny
   const {perbaruiTitik} = await import("../../src/titik.js"), tgl = new Date(Date.now() - JAM), KEP = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
   const csv = `${KEP}\n-2.1234,113.5678,330,0.4,0.4,${tgl.toISOString().slice(0, 10)},${tgl.toISOString().slice(11, 16).replace(":", "")},N,VIIRS,h,2.0NRT,290,12.3,D`;
   const asetTanpaMasker = {fetch: async req => new URL(req.url).pathname === "/data/titik_palsu.json" ? new Response("rusak", {status: 500}) : aset(req)}, fetchAsli = globalThis.fetch, galat = console.error; let dicatat = false;
-  globalThis.fetch = async u => new Response(String(u).includes("VIIRS_SNPP_NRT") ? csv : KEP); console.error = (...a) => { if (/masker/.test(a.join(" "))) dicatat = true; };
+  globalThis.fetch = async u => new Response(String(u).includes("VIIRS_NOAA21_NRT") ? csv : KEP); console.error = (...a) => { if (/masker/.test(a.join(" "))) dicatat = true; };
   try {
     const h = await perbaruiTitik({DB, ASSETS: asetTanpaMasker, FIRMS_MAP_KEY: "k"}, Date.now());
     assert.equal(h.masker, "tak terbaca"); assert.equal(h.titik, 1, "putaran tidak dibuang"); assert.ok(dicatat, "dicatat di log");

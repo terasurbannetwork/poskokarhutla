@@ -1,9 +1,9 @@
 #!/usr/bin/env python3
 """Siaga pra-musim per kab/kota -> public/data/bnpb/siaga.json (dibaca public/bnpb/siaga.js).
 
-Sumber: kalender_risiko.json (peluang bulan x jenis dari 7 TAHUN PENUH 2014-2020 logbook Pusdalops),
+Sumber: kalender_risiko.json (peluang bulan x jenis dari tahun penuh logbook (kal.tahun_penuh, n_tahun) Pusdalops),
 desa_cari.json (nama kab), data/pusdalops/desa_terisolir.csv (opsional; dibuat pipa-data, tanpa berkas = daftar kosong).
-Musim = bulan dengan peluang >= 0,5 (minimal 4 dari 7 tahun ada kejadian), runtun melingkar; mulai = bulan pertama runtun.
+Musim = bulan dengan peluang >= 0,5 (minimal ceil(0,5 x n_tahun) tahun ada kejadian), runtun melingkar; mulai = bulan pertama runtun.
 Saran stok memakai kode kebutuhan kontrak L1 (makanan, tenda, ...), TANPA jumlah: logbook arsip tidak memuat kebutuhan,
 jadi jumlah per orang bukan ditebak di sini. Dasar tiap saran = kejadian per tahun di musim itu.
 Jalankan: python3 scripts/bnpb/siaga.py          (tulis JSON)
@@ -114,8 +114,8 @@ def main():
     for k, v in t.items():
         t4.setdefault(kode_dari.get(k, k), []).extend(v)
     kab = bangun(kal, nama, t4)
-    out = {"sumber": "Logbook harian Pusdalops BNPB, tahun penuh " + "-".join([kal["tahun_penuh"][0], kal["tahun_penuh"][-1]]) + " (kalender_risiko.json); desa terisolir: pipa-data",
-           "dibuat": kal["dibuat"], "n_tahun": kal["n_tahun"], "ambang_musim": AMBANG_MUSIM, "ada_terisolir": bool(t),
+    out = {"sumber": "Logbook harian Pusdalops BNPB, tahun penuh " + ", ".join(kal["tahun_penuh"]) + " (kalender_risiko.json); desa terisolir: pipa-data",
+           "dibuat": kal["dibuat"], "n_tahun": kal["n_tahun"], "tahun_penuh": kal["tahun_penuh"], "ambang_musim": AMBANG_MUSIM, "ada_terisolir": bool(t),
            "stok": {j: [{"kode": k, "nama": n} for k, n in v] for j, v in STOK.items()},
            "sop": {j: [{"h": h, "tugas": a, "pj": b} for h, a, b in v] for j, v in SOP.items()}, "kab": kab}
     os.makedirs(os.path.dirname(os.path.join(AKAR, KELUAR)), exist_ok=True)
@@ -137,7 +137,7 @@ def cek():
     kal = {"n_tahun": 7, "kab": {"3301": {"banjir": {"p": [0.9, 0.7] + [0] * 8 + [0.5, 0.8], "ada": [6, 5] + [0] * 8 + [4, 6], "n": [10, 5] + [0] * 8 + [4, 7]}}}}
     k = bangun(kal, {"33.01": "Cilacap"}, {"3301": [{"desa": "X", "kec": "Y", "n": 3, "jenis": ["longsor"], "bulan": [2], "terakhir": 2022}]})["3301"]
     assert k["nama"] == "Cilacap" and k["musim"]["banjir"]["mulai"] == 11 and k["musim"]["banjir"]["bulan"] == [1, 2, 11, 12]
-    assert k["musim"]["banjir"]["kejadian_th"] == round(26 / 7, 1) and k["desa"][0]["desa"] == "X"
+    assert k["musim"]["banjir"]["kejadian_th"] == round(26 / kal["n_tahun"], 1) and k["desa"][0]["desa"] == "X"
     assert baca_terisolir("/tidak/ada.csv") == {}
     import tempfile
     with tempfile.NamedTemporaryFile("w", suffix=".csv", delete=False) as f:

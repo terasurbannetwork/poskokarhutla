@@ -11,18 +11,18 @@ const warnaHujan = v => v >= 150 ? WARNA_LV[3] : v >= 100 ? WARNA_LV[2] : v >= 5
 const warnaAngin = v => v >= 90 ? WARNA_LV[3] : v >= 72 ? WARNA_LV[2] : v >= 54 ? "#c99a1e" : HIJAU;
 const IK = {nowcast: '<path d="M7 18a5 5 0 1 1 1.2-9.9A6 6 0 0 1 19.5 10 4 4 0 0 1 18 18z"/><path d="m12 13-2 5h2.5l-1 4 4-6h-2.5l1.5-3z"/>', gelombang: '<path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2"/>',
   hujan: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>', angin: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>',
-  ansambel: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', peluang: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/><path d="M4 7l4-3 4 3 4-3 4 3"/>', siklon: '<path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 6a6 6 0 0 1 6 6M12 18a6 6 0 0 1-6-6"/>', bukti: '<path d="M5 12l4 4 10-10"/><circle cx="12" cy="12" r="9"/>', status: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sarana: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>', provinsi: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>'};
+  ansambel: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', peluang: '<path d="M3 20h18M6 20v-6M11 20V8M16 20v-9"/><path d="M4 7l4-3 4 3 4-3 4 3"/>', siklon: '<path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 6a6 6 0 0 1 6 6M12 18a6 6 0 0 1-6-6"/>', bukti: '<path d="M5 12l4 4 10-10"/><circle cx="12" cy="12" r="9"/>', status: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sarana: '<path d="M4 20V9l8-5 8 5v11H4Z"/><path d="M10 20v-6h4v6"/>', provinsi: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>'};
 
 IK.buktiBmkg = IK.buktiKita = IK.bukti;
 
 const Insight = {
   /* tabel provinsi: urut menurun menurut hujan, 10 baris per halaman */
-  T: {provinsi: {urut: "hujan", turun: true, hal: 0}},
-  EX: ["status", "siklon", "sarana", "buktiBmkg", "buktiKita", "nowcast", "gelombang", "hujan", "angin", "ansambel", "peluang", "provinsi"],
+  T: {provinsi: {urut: "hujan", turun: true, hal: 0}, kejadian: {urut: "mulai", turun: true, hal: 0}},
+  EX: ["kejadian", "status", "siklon", "sarana", "buktiBmkg", "buktiKita", "nowcast", "gelombang", "hujan", "angin", "ansambel", "peluang", "provinsi"],
   st: {},   /* state kontrol kartu peluang (wilayah, ambang) */
   PL: null,
   ih: 0, lead: "1",   /* hari kartu Status: indeks di kontrak 72 jam */
-  LABEL: {peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", nowcast: "Nowcast BMKG", gelombang: "Gelombang", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
+  LABEL: {kejadian: "Kejadian cuaca", peluang: "Peluang hujan ekstrem", status: "Wilayah Siaga/Awas 72 jam", siklon: "Siklon tropis", sarana: "Pelabuhan dan bandara terancam", buktiBmkg: "Ketepatan peringatan BMKG", buktiKita: "Ketepatan prakiraan Centurisk97", nowcast: "Nowcast BMKG", gelombang: "Gelombang", hujan: "Hujan", angin: "Angin", ansambel: "Ansambel", provinsi: "Provinsi"},
   /* 10b. peluang hujan ekstrem per kab/provinsi (../banjir/data/cuaca_peluang.json, kontrak peluang/1; mesin public/inti/peluang.js). Tanpa berkas = dibuang. */
   exPeluang() { if (typeof Peluang === "undefined" || !this.PL) return ""; this.st.pelW ??= Object.entries(this.PL.wilayah).filter(([, w]) => w.tingkat === "provinsi").map(([k, w]) => [k, Math.max(0, ...w.hari.map(h => h.p?.[0] ?? 0))]).sort((a, b) => b[1] - a[1])[0]?.[0];
     return Peluang.kartu(this.PL, {ey: `<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK.peluang}</svg>${this.LABEL.peluang}`, st: this.st, kejadian: "hujan ekstrem", sumber: "ECMWF IFS 51 anggota via Open-Meteo, dibuat " + jamWIB(this.PL?.dibuat)}); },
@@ -55,6 +55,14 @@ const Insight = {
   /* prakiraan per hari: terbesar dari semua sel */
   maksHari(idx, col) { let m = {v: 0, r: null}; for (const r of S.pr.sel) { const v = r[col][idx]; if (v != null && v > m.v) m = {v, r}; } return m; },
 
+  /* kejadian cuaca (peringatan BMKG dan gugus kecamatan Siaga/Awas, kejadian.js); tanpa berkas atau basi = kartu dibuang; klik baris membuka peta dan laci */
+  exKejadian() {
+    const K = Kejadian.K; if (!K?.length) return ""; const nA = K.filter(k => k.aktif).length;
+    const kol = [{k: "kode", n: "Kode", v: r => r.kode, h: r => `<b translate="no">${esc(r.kode)}</b>`}, {k: "nama", n: "Kejadian", v: r => r.nama, h: r => `<span translate="no">${esc(r.nama)}</span>`},
+      {k: "sumber", n: "Sumber", v: r => Kejadian.sumber(r), h: r => esc(Kejadian.sumber(r))}, {k: "tingkat", n: "Tingkat", v: r => Kejadian.rank(r), h: r => Kejadian.pilTingkat(r)},
+      {k: "kab", n: "Kabupaten/kota", num: 1, v: r => r.n_kab, h: r => fmt(r.n_kab)}, {k: "mulai", n: "Mulai", v: r => Date.parse(r.mulai), h: r => Kejadian.tgl(r.mulai)}, {k: "aktif", n: "Status", v: r => +r.aktif, h: r => Kejadian.status(r)}];
+    return this.ex(`${this.hl(fmt(K.length) + " kejadian")} cuaca ekstrem tercatat, ${this.hl(fmt(nA))} masih aktif`, "", "", this.tabel("kejadian", kol, K, 5, "kejadian", r => `data-kej="${esc(r.kode)}"`),
+      `Sumber: BMKG, Deteksi Centurisk97 dari prakiraan model, diperbarui ${jamWIB(Kejadian.D?.dibuat || Date.now())}`); },
   /* status 72 jam: deteksi Centurisk97 dari prakiraan model; berkas cuaca_kec.json tak ada = kartu dibuang */
   exStatus() {
     if (!S.kec) return ""; const j = Math.min(this.ih, S.kec.hari.length - 1), W = [1, 2, 3];
@@ -83,7 +91,12 @@ const Insight = {
   buktiIsi(o, mulai, nmin, akhir) { const n = o.a + o.b + o.c, tgl = mulai ? ` sejak ${this.tglLengkap(mulai)}${akhir ? " sampai " + this.tglLengkap(akhir) : ""}` : "";
     if (n < nmin) return `Belum bisa dinilai: baru ${this.hl(fmt(n) + " penilaian")}${tgl}`;
     const tg = pct(o.a, o.a + o.c), fa = pct(o.b, o.a + o.b);
-    return `${tg == null ? "" : this.hl(fmt(tg) + "% kejadian") + " tertangkap, "}${fa == null ? "" : this.hl(fmt(fa) + "%") + " alarm palsu "}(${fmt(n)} penilaian${tgl})`; },
+    if (fa == null) return `Tidak ada alarm sehingga alarm palsu tak terhitung (${fmt(n)} penilaian${tgl})`;   /* tertangkap tak pernah tampil tanpa alarm palsunya */
+    return `${tg == null ? "" : this.hl(fmt(tg) + "% kejadian") + " tertangkap, "}${this.hl(fmt(fa) + "%")} alarm palsu (${fmt(n)} penilaian${tgl})`; },
+  /* pembanding jujur (verifikasi.py kita.pembanding): kebiasaan provinsi dan bulan pada jumlah alarm yang sama, dan "ada kejadian kemarin"; tanpa blok = satu kalimat dibuang */
+  pembandingKalimat(P, l, o) { const h = P?.hujan?.[l], k = P?.klimatologi_alarm_sama?.[l]; if (!h || !k) return "";
+    const s = x => x.pod == null || x.far == null ? "" : `menangkap ${this.hl(fmt(Math.round(x.pod * 100)) + "%")} dengan ${this.hl(fmt(Math.round(x.far * 100)) + "%")} alarm palsu`, p = P.persistensi, e = x => x?.ets == null ? "" : ` (skor ETS ${Tambahan.d2(x.ets, 3)})`;
+    return `<p class="fnd">Pembanding pada jumlah alarm yang sama: kebiasaan provinsi dan bulan ${s(k)}${e(k)}, prakiraan kita ${s(h)}${e(h)}${p?.pod != null ? `; menebak "ada kejadian kemarin" ${s(p)}${e(p)}` : ""}. ${h.ets != null && k.ets != null ? (h.ets > k.ets ? "Prakiraan kita lebih tepat daripada kebiasaan." : "Kebiasaan provinsi dan bulan lebih tepat daripada prakiraan kita.") : ""}</p>`; },
   kartuBukti(judul, o, R, ket, sumber, ctl = "") {
     Kartu.leg([["#2b8c86", "Tepat"], ["#e58a45", "Meleset"], ["#c9503a", "Alarm palsu"]]);
     return this.ex(judul, "", "", (o.a + o.b + o.c ? this.tepat(R, this.uk()) : "") + ket, `Sumber: ${sumber}, dibuat ${jamWIB(S.ver.dibuat)}`, ctl); },
@@ -92,12 +105,12 @@ const Insight = {
     const R = [["ID", n], ...Object.entries(B.prov || {}).filter(([, o]) => o.a + o.b + o.c).sort((a, b) => (b[1].a + b[1].b + b[1].c) - (a[1].a + a[1].b + a[1].c)).slice(0, 12)];
     return this.kartuBukti(`Peringatan BMKG: ${this.buktiIsi(n, B.mulai, nmin, B.dinilai_sampai)}`, n, R, "", `arsip nowcast BMKG sejak ${this.tglLengkap(B.mulai)}, ${acuan}`); },
   exBuktiKita() {
-    const K = S.ver?.kita; if (!K?.lead) return ""; const l = this.lead, n = K.lead[l], mulai = K.periode?.[0] || S.ver.bmkg?.mulai, nmin = K.n_min ?? 30; if (!n) return "";
+    const K = S.ver?.kita; if (!K?.lead || !K.pembanding) return ""; const l = this.lead, n = K.lead[l], mulai = K.periode?.[0] || S.ver.bmkg?.mulai, nmin = K.n_min ?? 30; if (!n) return "";
     const ctl = `<div class="seg penuh" role="group">${["1", "2", "3"].filter(x => K.lead[x]).map(x => `<button data-sld="${x}" aria-pressed="${x === l}">${x} hari sebelumnya</button>`).join("")}</div>`;
     /* kita.prov[kode] = {"1": {...}, "2": ..., "3": ...}; bentuk lama (lead dalam .lead, atau satu objek) tetap terbaca */
     const g = o => o?.[l] ?? o?.lead?.[l] ?? (o?.a != null ? o : null);
     const R = [["ID", n], ...Object.entries(K.prov || {}).map(([k, o]) => [k, g(o)]).filter(([, o]) => o && o.a + o.b + o.c).sort((a, b) => (b[1].a + b[1].b + b[1].c) - (a[1].a + a[1].b + a[1].c)).slice(0, 12)];
-    return this.kartuBukti(`Prakiraan ${l} hari sebelumnya: ${this.buktiIsi(n, mulai, nmin, K.periode?.[1])}`, n, R, n.a + n.b + n.c ? `<p class="fnd">Hujan ${fmt(K.ambang_mm)} mm atau lebih dalam sehari.</p>` : "", `Centurisk97, ${esc(K.acuan || "DIBI BNPB")}`, ctl); },
+    return this.kartuBukti(`Prakiraan ${l} hari sebelumnya: ${this.buktiIsi(n, mulai, nmin, K.periode?.[1])}`, n, R, n.a + n.b + n.c ? `<p class="fnd">Hujan ${fmt(K.ambang_mm)} mm atau lebih dalam sehari.</p>${this.pembandingKalimat(K.pembanding, l, n)}` : "", `Centurisk97, ${esc(K.acuan || "DIBI BNPB")}`, ctl); },
   /* pelabuhan dan bandara dengan status Waspada atau lebih pada hari ini (hari pertama kontrak 72 jam) */
   exSarana() {
     if (!S.sar || !S.dmp) return ""; const j = Math.max(0, kIdx()), pel = (S.dmp.pelabuhan || []).filter(r => r[1][j] > 0).sort((a, b) => b[1][j] - a[1][j] || b[2] - a[2]),
@@ -110,9 +123,9 @@ const Insight = {
   exNowcast() {
     const A = [...S.nc].sort((a, b) => b.n - a.n).slice(0, 12); if (!S.per) return "";
     const nProv = new Set(S.nc.flatMap(a => a.prov)).size, nKec = S.nc.reduce((a, x) => a + x.n, 0);
-    Kartu.leg(Object.entries(WARNA_SEV).filter(([k]) => S.nc.some(a => a.severity === k)).map(([k, w]) => [w, k]));
+    Kartu.leg(Object.entries(WARNA_SEV).filter(([k]) => S.nc.some(a => a.severity === k)).map(([k, w]) => [w, SEV_ID[k]]));
     return this.ex(A.length ? `${this.hl(fmt(nKec) + " kecamatan")} di ${this.hl(fmt(nProv) + " provinsi")} dalam peringatan nowcast BMKG yang berlaku` : `Tidak ada peringatan nowcast BMKG yang berlaku`, "", "",
-      A.length ? this.batangH(A.map(a => ({label: innerWidth < 640 ? a.headline.split(" di ").pop() : a.headline, nilai: a.n, warna: sevWarna(a.severity), teks: fmt(a.n), tip: `<b>${esc(a.event)}</b> · ${esc(a.severity)}<br>Kecamatan: ${fmt(a.n)} kecamatan<br>${waktuBerlaku(a.mulai, a.selesai)}`})), this.uk()) : "",
+      A.length ? this.batangH(A.map(a => ({label: hurufJudul(innerWidth < 640 ? a.headline.split(" di ").pop() : a.headline), nilai: a.n, warna: sevWarna(a.severity), teks: fmt(a.n), tip: `<b>${esc(a.event)}</b><br>Tingkat: ${esc(SEV_ID[a.severity] || a.severity)}<br>Kecamatan: ${fmt(a.n)} kecamatan<br>${waktuBerlaku(a.mulai, a.selesai)}`})), this.uk()) : "",
       `Sumber: BMKG, terbit ${jamWIB(S.ncDibuat ?? S.per.dibuat)}`); },
   exGelombang() {
     const A = [...S.gl].sort((a, b) => b.lv - a.lv || b.total - a.total).slice(0, 15); if (!S.per) return "";
@@ -156,15 +169,15 @@ const Insight = {
       ...(S.pr.ens.length ? [{k: "pel", n: "Peluang hujan lebat", num: 1, v: r => r.pel, h: r => pl(Math.round(r.pel * 100) + "%", r.pel >= .5 ? WARNA_LV[3] : r.pel >= .25 ? WARNA_LV[2] : BIRU)}] : []),
       ...(S.nc.length ? [{k: "nc", n: "Nowcast BMKG", num: 1, v: r => r.nc, h: r => r.nc ? pl(fmt(r.nc) + " kecamatan", WARNA_LV[2]) : "–"}] : []),
       ...(S.gl.length ? [{k: "gl", n: "Gelombang", v: r => r.gl, h: r => r.gl ? pilGel(r.gl - 1) : "–"}] : [])];
-    return this.ex(`${this.hl(fmt(sinyal) + " provinsi")} punya hujan lebat, embusan kencang, atau peringatan BMKG dalam ${hari.length} hari`, "", "", this.tabel("provinsi", kol, R, 10, "provinsi"),
+    return this.ex(`${this.hl(fmt(sinyal) + " provinsi")} punya hujan lebat, embusan kencang, atau peringatan BMKG dalam ${hari.length} hari`, "", "", this.tabel("provinsi", kol, R, 10, "provinsi", r => `data-prov="${esc(r.k)}"`),
       `Sumber: Open-Meteo, ECMWF, BMKG, dibuat ${jamWIB(S.meta.dibuat)}`); },
-  tabel(id, kol, baris, per, satuan) {
+  tabel(id, kol, baris, per, satuan, attr) {
     const st = this.T[id], s = st.turun ? -1 : 1, kk = kol.find(c => c.k === st.urut) || kol[1];
     const R = [...baris].sort((a, b) => { const x = kk.v(a), y = kk.v(b); return (typeof x === "string" ? x.localeCompare(y) : x - y) * s; });
     st.hal = Math.min(st.hal, Math.max(0, Math.ceil(R.length / per) - 1));
     const hal = R.slice(st.hal * per, (st.hal + 1) * per);
     return `<div class="tw"><table><thead><tr>${kol.map(c => `<th class="${c.num ? "n" : ""}" aria-sort="${c === kk ? (st.turun ? "descending" : "ascending") : "none"}"><button data-k="${c.k}">${c.n}<i>${c === kk ? (st.turun ? "↓" : "↑") : ""}</i></button></th>`).join("")}</tr></thead>
-      <tbody>${hal.map(r => `<tr class="klik">${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
+      <tbody>${hal.map(r => `<tr class="klik"${attr ? " " + attr(r) : ""}>${kol.map(c => `<td${c.num ? ' class="n"' : ""}>${c.h(r)}</td>`).join("")}</tr>`).join("")}</tbody></table></div>${paginasi(st.hal, R.length, per, satuan)}`; },
 
   /* satu kartu: label pil berikon di kepala; ikon bagikan dipasang mesin Bagikan (public/bagikan.js) */
   gambar(id) { Kartu._leg = null;
@@ -175,6 +188,8 @@ const Insight = {
   ulang(box) { nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); },
   async render() {
     const el = $("#insight");
+    await Kejadian.muatAwal();
+    await Promise.all([Tambahan.muat("lg"), Tambahan.titikKab()]);   /* kartu Langganan; hilang = dibuang */
     if (typeof Peluang !== "undefined") this.PL = await Peluang.muat("../banjir/data/cuaca_peluang.json");
     el.innerHTML = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     Cerita.sisip(el, "cuaca");
@@ -182,6 +197,11 @@ const Insight = {
     el.onclick = e => {
       const ds = e.target.closest("button[data-set]"); if (ds) { this.st[ds.dataset.set] = ds.dataset.v; ds.parentElement.querySelectorAll("[data-set]").forEach(b => b.setAttribute("aria-pressed", b === ds)); this.ulang(ds.closest("[data-ex]")); return; }
       const pg = e.target.closest(".pgn-b[data-h]"); if (pg) { if (!pg.disabled) { const box = pg.closest("[data-ex]"); this.T[box.dataset.ex].hal = +pg.dataset.h; halUrgen(pg, box); this.ulang(box); } return; }
+      const lg = e.target.closest("[data-lg]"); if (lg) { bukaTab("peta"); const i = document.querySelector('#lapis input[data-l="t-lg"]'); if (i) i.checked = true; return nanti(() => Tambahan.fokusKab(lg.dataset.lg)); }
+      const kj = e.target.closest("[data-kej]"); if (kj) return Kejadian.buka(kj.dataset.kej);
+      const pv = e.target.closest("[data-prov]"); if (pv) { const p = pv.dataset.prov; bukaTab("peta");   /* ke peta: laci gelombang, laci Status, atau sekadar terbang ke provinsi */
+        return nanti(() => { if (S.gl.some(o => o.prov === p)) Peta.fokus("gl", p); else if (S.kec?.prov[p]) Status.fokusProv(p);
+          else { const f = S.geo.features.find(x => x.properties.kode === p); if (f && peta) peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); } }); }
       const sl = e.target.closest("button[data-sld]"); if (sl) { this.lead = sl.dataset.sld; sl.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === sl)); this.ulang(sl.closest("[data-ex]")); return; }
       const sh = e.target.closest("button[data-sth]"); if (sh) { const box = sh.closest("[data-ex]"); this.ih = +sh.dataset.sth;
         sh.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === sh)); this.ulang(box); return; }   /* kontrol urgent dulu, kartu menyusul */

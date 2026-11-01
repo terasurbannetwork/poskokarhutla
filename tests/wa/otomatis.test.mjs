@@ -250,3 +250,15 @@ test('laporan banjir: butuh tanpa bahan WA, jalan sesudah 17.00, tidak diunggah 
   await jalankan({ ...o, now: wibKe(19) })
   assert.equal(d.kirim.file.length, 2)
 })
+
+test('--cutoff: penanganan dibangun tanpa bahan WA, harian menunggu dan PEMILIK dikabari sekali', async () => {
+  const d = dunia([])
+  const h = await d.jalan({ cutoff: true })
+  assert.equal(h.find((x) => x.id === 'penanganan').status, 'terkirim')
+  assert.deepEqual(h.find((x) => x.id === 'penanganan').bahanBelumMasuk, ['bmkg_pagi', 'satgas'])
+  assert.ok(!d.kirim.exec.find((a) => a[0] === 'penanganan.py').includes('--bmkg'))
+  assert.equal(h.find((x) => x.id === 'harian').status, 'tunggu')
+  await d.jalan({ cutoff: true })
+  assert.equal(d.kirim.teks.filter((t) => t.t === '6299' && /harian|Harian/.test(t.m)).length, 1)
+  assert.equal(cekSiap(LAPORAN[1], {}, wibKe(18), TGL).siap, false) // tanpa --cutoff tetap menunggu bahan
+})

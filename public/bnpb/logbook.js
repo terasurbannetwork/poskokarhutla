@@ -4,10 +4,10 @@
    Draf formulir disimpan di localStorage supaya isian setengah jadi tidak hilang. Tanpa gaya/skrip inline (CSP); teks data lewat textContent. */
 (() => {
   "use strict";
-  const {PROV, ikon, h, F, label, muat, desaKab, kunciKab, tutup} = window.Wilayah;
+  const {PROV, ikon, h, F, label, namaJenis, urutJenis, muat, desaKab, kunciKab, tutup} = window.Wilayah;
   const app = document.getElementById("app"), DRAF = "logbook_draf_v1";
-  const JENIS = ["banjir", "longsor", "cuaca", "karhutla", "kebakaran_permukiman", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "kegagalan_teknologi", "konflik_sosial", "lainnya"];
-  const JENIS_NAMA = {kebakaran_permukiman: "Kebakaran permukiman", kegagalan_teknologi: "Gagal teknologi", konflik_sosial: "Konflik sosial", gempabumi: "Gempa bumi", gunungapi: "Gunung api", karhutla: "Karhutla"};
+  /* sama persis dengan JENIS di src/logbook.js (daftar putih worker, 14 nilai); urutan resmi dari Wilayah. Tiga jenis baru dijawab 503 sampai migrasi 0091. */
+  const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"].sort(urutJenis);
   const KENDALA = {akses: "Akses putus", logistik: "Logistik/BBM", sinyal: "Sinyal putus", air: "Sumber air", personel: "Personel kurang", alat_berat: "Alat berat", gambut: "Gambut", cuaca: "Cuaca", data: "Data belum ada", dana: "Dana", malam: "Malam hari", sosial: "Sosial", listrik: "Listrik padam", angin: "Angin kencang"};
   const KEBUTUHAN = {makanan: "Makanan", tenda: "Tenda", sandang: "Sandang", air_bersih: "Air bersih", obat: "Obat", perahu: "Perahu", material: "Material", alat_berat: "Alat berat", pompa: "Pompa", dana: "Dana"};
   /* urutan: [kunci, label, satuan]; batas wajar = BATAS_WAJAR di scripts/umum/laphar_arsip.py */
@@ -38,6 +38,112 @@
       h("a", {class: "bn-tombol", href: "/admin/pantau", teks: "Masuk staf"})));
   }
 
+
+  /* ---------- rincian juklak (opsional): Juklak BNPB 7/2023; daftar kode SAMA dengan src/logbook.js (UMUR, RENTAN, PRASARANA, TINGKAT_RUSAK, KELOMPOK_KEBUTUHAN) ---------- */
+  const UMUR = ["0-17", "18-59", "60+"], KORBAN = [["md", "Meninggal"], ["luka", "Luka"], ["mengungsi", "Mengungsi"]];
+  const RENTAN = {bayi: "Bayi", balita: "Balita", ibu_hamil_menyusui: "Ibu hamil/menyusui", lansia: "Lansia", disabilitas: "Disabilitas"};
+  const PRASARANA = {sawah: ["Sawah", "ha"], lahan: ["Lahan", "ha"], kebun: ["Kebun", "ha"], hutan: ["Hutan", "ha"], kolam: ["Kolam", "ha"], kios_toko: ["Kios/toko", "unit"], pabrik: ["Pabrik", "unit"], jaringan_air: ["Jaringan air", "unit"], jaringan_listrik: ["Jaringan listrik", "unit"],
+    jaringan_telekomunikasi: ["Jaringan telekomunikasi", "unit"], irigasi: ["Irigasi", "unit"], jalan: ["Jalan", "km"], jembatan: ["Jembatan", "unit"], transportasi: ["Transportasi", "unit"], spbu: ["SPBU", "unit"], rumah_ibadat: ["Rumah ibadat", "unit"],
+    faskes: ["Fasilitas kesehatan", "unit"], sekolah: ["Sekolah", "unit"], kantor: ["Kantor", "unit"], pasar: ["Pasar", "unit"]};
+  const TINGKAT = {rb: "Rusak berat", rs: "Rusak sedang", rr: "Rusak ringan", terendam: "Terendam"}, KELOMPOK = {dana: "Dana", sdm: "SDM", sarpras: "Sarana-prasarana", logistik: "Logistik", peralatan: "Peralatan"};
+  const SK_TINGKAT = {siaga: "Siaga darurat", tanggap: "Tanggap darurat", transisi: "Transisi darurat ke pemulihan"};
+  const tglId = t => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(t || ""); return m ? `${Number(m[3])} ${window.Wilayah.BLN[Number(m[2]) - 1] || m[2]} ${m[1]}` : ""; };
+  const fIsi = n => Number(n).toLocaleString("id-ID", {maximumFractionDigits: 6});   // pengisian ulang tanpa pembulatan: F() membulatkan 1 desimal dan nilai itu terkirim balik
+  const sel2 = (daftar, kosongTeks, att) => h("select", att, kosongTeks != null ? h("option", {value: "", teks: kosongTeks}) : null, ...Object.entries(daftar).map(([v, t]) => h("option", {value: v, teks: t})));
+  const kolomAngka = (nama, judul, att = {}) => { const i = h("input", {name: nama, inputmode: "decimal", autocomplete: "off", "aria-label": judul, ...att}); el[nama] = i; return h("label", {class: "bn-isian"}, judul, i); };
+  const kolomTeks = (nama, judul, att = {}) => { const i = h("input", {name: nama, autocomplete: "off", "aria-label": judul, ...att}); el[nama] = i; return h("label", {class: "bn-isian"}, judul, i); };
+  const bagian = (judul, ...isi) => h("section", {class: "lb-sub"}, h("h3", {teks: judul}), ...isi);
+  function tambahBaris(wadah, kolom) {
+    const r = h("div", {class: "lb-baris"}, ...kolom, h("button", {type: "button", class: "bn-tombol sekunder", "aria-label": "Hapus baris", title: "Hapus baris"}, ikon("sapu")));
+    r.lastChild.addEventListener("click", () => r.remove()); wadah.append(r); return r;
+  }
+  const barisPras = (w, v = {}) => { const r = tambahBaris(w, [sel2(Object.fromEntries(Object.entries(PRASARANA).map(([k, [t, sat]]) => [k, `${t} (${sat})`])), "Pilih prasarana", {"data-k": "kode", "aria-label": "Prasarana"}),
+    sel2(TINGKAT, "Tanpa tingkat", {"data-k": "tingkat", "aria-label": "Tingkat kerusakan"}), h("input", {"data-k": "jumlah", inputmode: "decimal", autocomplete: "off", "aria-label": "Jumlah", placeholder: "Jumlah"})]);
+    const satuan = () => { const p = PRASARANA[r.querySelector('[data-k="kode"]').value]; r.querySelector('[data-k="jumlah"]').placeholder = p ? `Jumlah (${p[1]})` : "Jumlah"; };
+    r.querySelector('[data-k="kode"]').addEventListener("change", satuan);
+    if (v.kode) { r.querySelector('[data-k="kode"]').value = v.kode; r.querySelector('[data-k="tingkat"]').value = v.tingkat || ""; r.querySelector('[data-k="jumlah"]').value = fIsi(v.jumlah); satuan(); } };
+  const barisKeb = (w, v = {}) => { const r = tambahBaris(w, [sel2(KELOMPOK, "Pilih kelompok", {"data-k": "kelompok", "aria-label": "Kelompok kebutuhan"}), h("input", {"data-k": "barang", maxlength: "60", autocomplete: "off", "aria-label": "Barang", placeholder: "Barang"}),
+    h("input", {"data-k": "jumlah", inputmode: "decimal", autocomplete: "off", "aria-label": "Jumlah", placeholder: "Jumlah"}), h("input", {"data-k": "satuan", maxlength: "20", autocomplete: "off", "aria-label": "Satuan", placeholder: "Satuan"})]);
+    if (v.kelompok) for (const k of ["kelompok", "barang", "satuan"]) r.querySelector(`[data-k="${k}"]`).value = v[k]; if (v.kelompok) r.querySelector('[data-k="jumlah"]').value = fIsi(v.jumlah); };
+  const bacaBaris = (w, kunci) => [...w.children].map(r => Object.fromEntries(kunci.map(k => [k, r.querySelector(`[data-k="${k}"]`).value.trim()])));
+
+  function rincian(f) {
+    el.prasWadah = h("div", {class: "lb-baris-wadah"}); el.kebWadah = h("div", {class: "lb-baris-wadah"});
+    const korban = h("div", {class: "lb-korban"}, h("span"), ...UMUR.flatMap(u => ["L", "P"].map(kel => h("span", {class: "lb-kop", teks: `${u} ${kel}`}))),
+      ...KORBAN.flatMap(([g, t]) => [h("span", {class: "lb-kop", teks: t}), ...UMUR.flatMap(u => ["L", "P"].map(kel => { const i = h("input", {name: `k_${g}_${u}_${kel}`, inputmode: "numeric", autocomplete: "off", "aria-label": `${t} ${u} ${kel === "L" ? "laki-laki" : "perempuan"}`}); el[i.name] = i; return i; }))]));
+    const tbPras = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("daftar"), "Tambah prasarana"), tbKeb = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("daftar"), "Tambah kebutuhan");
+    tbPras.addEventListener("click", () => barisPras(el.prasWadah)); tbKeb.addEventListener("click", () => barisKeb(el.kebWadah));
+    el.posko_ada = sel2({ya: "Ada posko", tidak: "Tidak ada posko"}, "Keposkoan belum diketahui", {name: "posko_ada", "aria-label": "Keposkoan"});
+    el.skInfo = h("p", {class: "lb-p lb-kaki"}); el.skDaftar = h("ul", {class: "lb-sk"}); el.skPesan = h("p", {class: "lb-p lb-kaki", role: "status"});
+    el.sk_tingkat = sel2(SK_TINGKAT, null, {"aria-label": "Tingkat status"}); el.sk_wilayah = sel2({prov: "SK provinsi", kab: "SK kabupaten/kota"}, null, {"aria-label": "Penerbit SK"});
+    const sk = h("div", {class: "lb-sk-form"}, h("label", {class: "bn-isian"}, "Tingkat status", el.sk_tingkat), h("label", {class: "bn-isian"}, "Penerbit", el.sk_wilayah), kolomTeks("sk_nomor", "Nomor SK", {maxlength: "80"}),
+      kolomTeks("sk_tgl", "Tanggal SK", {type: "date"}), kolomTeks("sk_mulai", "TMT mulai", {type: "date"}), kolomTeks("sk_selesai", "TMT selesai", {type: "date"}), kolomAngka("sk_ke", "Perpanjangan ke (0 = SK awal)", {inputmode: "numeric"}), kolomTeks("sk_tautan", "Tautan SK (https)", {maxlength: "300"}));
+    el.skKirim = h("button", {type: "button", class: "bn-tombol"}, ikon("simpan"), "Simpan SK"); el.skKirim.addEventListener("click", simpanSk);
+    sk.addEventListener("keydown", e => { if (e.key === "Enter") { e.preventDefault(); simpanSk(); } });   // Enter di sini tidak boleh mengirim formulir entri
+    f.addEventListener("reset", () => { juklakDari = null; el.prasWadah.replaceChildren(); el.kebWadah.replaceChildren(); });
+    return h("details", {class: "bn-blok lb-juklak"}, h("summary", {class: "lb-judul-blok"}, ikon("daftar"), "Rincian juklak (opsional)"),
+      h("p", {class: "lb-p lb-kaki", teks: "Standar Juklak BNPB 7/2023. Semua boleh kosong. Seperti angka dampak, isian di sini menimpa entri sebelumnya, bukan menambah."}),
+      bagian("Taksiran kerugian", kolomAngka("kerugian_juta", "Kerugian (juta rupiah)", {placeholder: "1.250,5"})),
+      bagian("Korban terpilah menurut umur dan jenis kelamin (jiwa, L/P)", korban, h("p", {class: "lb-p lb-kaki", teks: "Jumlah terpilah tidak boleh melebihi total pada Dampak terkini."})),
+      bagian("Kelompok rentan (jiwa)", h("div", {class: "lb-angka"}, Object.entries(RENTAN).map(([k, t]) => kolomAngka("rentan_" + k, t, {inputmode: "numeric"})))),
+      bagian("Kerusakan prasarana dan layanan dasar", el.prasWadah, tbPras), bagian("Kebutuhan berjumlah (Dana, SDM, Sarana-prasarana, Logistik, Peralatan)", el.kebWadah, tbKeb),
+      bagian("Sumber informasi (instansi saja, tanpa nama orang dan nomor telepon)", h("div", {class: "lb-angka"}, [0, 1, 2].map(i => kolomTeks("pemberi_" + i, "Pemberi informasi " + (i + 1), {maxlength: "80"})))),
+      bagian("Tautan dokumentasi (https)", h("div", {class: "lb-angka"}, [0, 1, 2].map(i => kolomTeks("dok_" + i, "Tautan " + (i + 1), {maxlength: "300", inputmode: "url"})))),
+      bagian("Keposkoan", h("div", {class: "lb-angka"}, h("label", {class: "bn-isian"}, "Posko", el.posko_ada), kolomTeks("posko_sk", "Nomor SK posko", {maxlength: "80"}), kolomTeks("posko_mulai", "Berlaku mulai", {type: "date"}), kolomTeks("posko_sampai", "Berlaku sampai", {type: "date"}))),
+      bagian("SK status darurat kejadian terpilih", el.skInfo, el.skDaftar, sk, el.skKirim, el.skPesan));
+  }
+  /* -> {isi: medan untuk badan permintaan (hanya yang diisi), salah: teks galat atau ""} */
+  function juklak() {
+    const isi = {}; let salah = "";
+    const n = (nama, judul) => { const v = angkaId(el[nama].value); if (v != null && (Number.isNaN(v) || v < 0)) salah ||= `${judul}: isi angka nol atau lebih`; return v; };
+    const kj = n("kerugian_juta", "Kerugian"); if (kj != null) isi.kerugian_juta = kj;
+    const korban = {};
+    for (const [g, t] of KORBAN) for (const u of UMUR) for (const kel of ["L", "P"]) { const v = n(`k_${g}_${u}_${kel}`, `${t} ${u} ${kel}`); if (v != null) ((korban[g] ||= {})[u] ||= {})[kel] = v; }
+    if (Object.keys(korban).length) isi.korban = korban;
+    const rentan = {}; for (const k of Object.keys(RENTAN)) { const v = n("rentan_" + k, RENTAN[k]); if (v != null) rentan[k] = v; }
+    if (Object.keys(rentan).length) isi.rentan = rentan;
+    const pras = bacaBaris(el.prasWadah, ["kode", "tingkat", "jumlah"]).filter(r => r.kode || r.jumlah).map(r => { const v = angkaId(r.jumlah); if (!r.kode || v == null || Number.isNaN(v) || v < 0) salah ||= "Prasarana: pilih jenis dan isi jumlah angka"; return {kode: r.kode, tingkat: r.tingkat || null, jumlah: v}; });
+    if (pras.length) isi.prasarana = pras;
+    const keb = bacaBaris(el.kebWadah, ["kelompok", "barang", "jumlah", "satuan"]).filter(r => r.kelompok || r.barang || r.jumlah).map(r => { const v = angkaId(r.jumlah); if (!r.kelompok || !r.barang || !r.satuan || !(v > 0)) salah ||= "Kebutuhan: isi kelompok, barang, jumlah lebih dari nol, dan satuan"; return {kelompok: r.kelompok, barang: r.barang, jumlah: v, satuan: r.satuan}; });
+    if (keb.length) isi.kebutuhan_rinci = keb;
+    const pem = [0, 1, 2].map(i => el["pemberi_" + i].value.trim()).filter(Boolean), dok = [0, 1, 2].map(i => el["dok_" + i].value.trim()).filter(Boolean);
+    if (pem.length) isi.pemberi = pem; if (dok.length) isi.dokumentasi = dok;
+    if (el.posko_ada.value) { const p = {ada: el.posko_ada.value === "ya"}; for (const [k, e] of [["sk", "posko_sk"], ["berlaku_mulai", "posko_mulai"], ["berlaku_sampai", "posko_sampai"]]) if (el[e].value.trim()) p[k] = el[e].value.trim(); isi.posko = p; }
+    return {isi, salah};
+  }
+  /* t = entri_terkini kejadian terpilih: isi HANYA yang masih kosong (isian yang sudah diketik tidak ditimpa); t null = kembali ke kejadian baru, kosongkan semua. Draf lokal tidak menyimpan rincian juklak. */
+  function isiJuklak(t) {
+    const baru = !t, set = (nama, v) => { if (baru || !el[nama].value.trim()) el[nama].value = v == null ? "" : fIsi(v); };
+    if (baru) { el.prasWadah.replaceChildren(); el.kebWadah.replaceChildren(); }
+    set("kerugian_juta", t?.kerugian_juta);
+    for (const [g] of KORBAN) for (const u of UMUR) for (const kel of ["L", "P"]) set(`k_${g}_${u}_${kel}`, t?.korban?.[g]?.[u]?.[kel]);
+    for (const k of Object.keys(RENTAN)) set("rentan_" + k, t?.rentan?.[k]);
+    if (baru || !el.prasWadah.children.length) for (const v of t?.prasarana || []) barisPras(el.prasWadah, v);
+    if (baru || !el.kebWadah.children.length) for (const v of t?.kebutuhan_rinci || []) barisKeb(el.kebWadah, v);
+    for (let i = 0; i < 3; i++) for (const [n, v] of [["pemberi_", t?.pemberi?.[i]], ["dok_", t?.dokumentasi?.[i]]]) if (baru || !el[n + i].value.trim()) el[n + i].value = v || "";
+    const sel = (n, v) => { if (baru || !el[n].value.trim()) el[n].value = v || ""; };
+    sel("posko_ada", t?.posko ? (t.posko.ada ? "ya" : "tidak") : ""); sel("posko_sk", t?.posko?.sk); sel("posko_mulai", t?.posko?.berlaku_mulai); sel("posko_sampai", t?.posko?.berlaku_sampai);
+  }
+  async function muatSk() {
+    const id = lanjutId; el.skDaftar.replaceChildren(); el.skKirim.disabled = !id; el.skPesan.textContent = "";
+    el.skInfo.textContent = id ? "SK provinsi ditampilkan lebih dulu." : "Pilih kejadian pada Lanjutan dari kejadian untuk mencatat atau melihat SK status.";
+    if (!id) return;
+    const r = await api("GET", `/api/logbook/kejadian/${encodeURIComponent(id)}/sk`); if (id !== lanjutId) return;
+    if (!r.ok) { el.skInfo.textContent = r.s === 503 ? "Tabel SK belum dibuat di server (migrasi 0094 menunggu pemilik)." : "Daftar SK belum bisa dimuat."; return; }
+    el.skDaftar.replaceChildren(...(r.j.sk || []).map(x => h("li", {teks: `${x.wilayah === "prov" ? "Provinsi" : "Kabupaten/kota"}, ${SK_TINGKAT[x.tingkat] || x.tingkat}${x.perpanjangan_ke ? `, perpanjangan ke-${x.perpanjangan_ke}` : ""}, ${x.nomor}, TMT ${tglId(x.tmt_mulai)}${x.tmt_selesai ? " sampai " + tglId(x.tmt_selesai) : ""}`})));
+    if (!(r.j.sk || []).length) el.skInfo.textContent = "Belum ada SK tercatat untuk kejadian ini.";
+  }
+  async function simpanSk() {
+    const id = lanjutId; if (!id) { el.skPesan.textContent = "Pilih kejadian lanjutan dulu."; return; }
+    const ke = angkaId(el.sk_ke.value), b = {tingkat: el.sk_tingkat.value, wilayah: el.sk_wilayah.value, nomor: el.sk_nomor.value.trim(), tgl_sk: el.sk_tgl.value || null, tmt_mulai: el.sk_mulai.value, tmt_selesai: el.sk_selesai.value || null, perpanjangan_ke: ke == null ? 0 : ke, tautan: el.sk_tautan.value.trim() || null};
+    const galat = t => { el.skPesan.textContent = t; };
+    if (!b.nomor || !b.tmt_mulai) return galat("Isi nomor SK dan TMT mulai.");
+    if (ke != null && (!Number.isInteger(ke) || ke < 0)) return galat("Perpanjangan ke harus bilangan bulat nol atau lebih.");
+    el.skKirim.disabled = true; const r = await api("POST", `/api/logbook/kejadian/${encodeURIComponent(id)}/sk`, b); el.skKirim.disabled = !lanjutId;
+    if (!r.ok) return galat(r.j.galat || `SK gagal disimpan (${r.s}).`);
+    for (const n of ["sk_nomor", "sk_tgl", "sk_mulai", "sk_selesai", "sk_ke", "sk_tautan"]) el[n].value = ""; muatSk(); el.skPesan.textContent = "SK tercatat.";   // muatSk membersihkan pesan lebih dulu
+  }
+
   /* ---------- formulir ---------- */
   let kab = [], kecMap = {}, lanjutId = null, buka = [], el = {};
   const radio = (nama, nilai, teks, ik, cek) => h("label", null, h("input", {type: "radio", name: nama, value: nilai, checked: cek}), ikon(ik), teks);
@@ -51,7 +157,7 @@
     const lanj = h("select", {name: "lanjut"}); el.lanjut = lanj;
     el.pesanLanjut = h("p", {class: "lb-p", hidden: true});
     f.append(h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Kejadian"),
-      h("div", {class: "lb-seg", role: "radiogroup", "aria-label": "Jenis kejadian"}, JENIS.map(j => radio("jenis", j, JENIS_NAMA[j] || label(j), j, false))),
+      h("div", {class: "lb-seg", role: "radiogroup", "aria-label": "Jenis kejadian"}, JENIS.map(j => radio("jenis", j, namaJenis(j), j, false))),
       h("div", {class: "bn-baris"}, sel("prov", "Provinsi"), sel("kab", "Kabupaten/kota"), sel("kec", "Kecamatan"), sel("desa", "Desa/kelurahan")),
       h("div", {class: "lb-lanjut"}, h("label", {class: "bn-isian"}, "Lanjutan dari kejadian", lanj), el.pesanLanjut),
       h("div", {class: "bn-baris"}, isi("mulai", "Mulai kejadian (WIB)", {type: "datetime-local", max: wibLokal()}), isi("lat", "Lintang (opsional)", {inputmode: "decimal", placeholder: "-7,25"}), isi("lon", "Bujur (opsional)", {inputmode: "decimal", placeholder: "112,75"}))));
@@ -61,6 +167,7 @@
       h("p", {class: "lb-p lb-kaki", teks: "Isi angka terkini, bukan tambahan. Entri lanjutan menimpa angka sebelumnya. Kosongkan yang belum diketahui. Jiwa, KK, dan unit rumah berupa bilangan bulat."})));
     f.append(h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("akses"), "Kendala"), h("div", {class: "lb-chips lb-kendala"}, Object.entries(KENDALA).map(([k, t]) => cek("kendala", k, t, k)))));
     f.append(h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("logistik"), "Kebutuhan"), h("div", {class: "lb-chips"}, Object.entries(KEBUTUHAN).map(([k, t]) => cek("kebutuhan", k, t, k)))));
+    f.append(rincian(f));
     const ins = h("select", {name: "sumber_instansi"}); el.sumber_instansi = ins; opsi(ins, INSTANSI.map(x => [x, x]), "Pilih sumber laporan");
     el.catatan = h("textarea", {name: "catatan", maxlength: "600", rows: "3"});
     el.pesan = h("p", {class: "bn-pesan", role: "status"});
@@ -93,22 +200,25 @@
   const isiDesa = () => opsi(el.desa, (kecMap[el.kec.value] || []).map(x => [x, x]), "Pilih desa/kelurahan");
 
   async function muatBuka() {
-    lanjutId = null; buka = []; opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)"); el.pesanLanjut.hidden = true;
+    lanjutId = null; buka = []; opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)"); el.pesanLanjut.hidden = true; muatSk();
     const k = dataKab(); if (!k) return;
     const r = await api("GET", "/api/logbook/buka?kab=" + encodeURIComponent(kunciKab(k)));
     if (el.kab.value !== k.kode) return;   // pengguna sudah pindah kab
     if (!r.ok) { el.pesanLanjut.hidden = false; el.pesanLanjut.textContent = r.s === 503 ? "Tabel logbook belum dibuat di server (migrasi menunggu pemilik)." : "Daftar kejadian terbuka belum bisa dimuat."; return; }
     buka = r.j.kejadian || r.j.daftar || (Array.isArray(r.j) ? r.j : []);
-    opsi(el.lanjut, buka.map(e => [e.id, `${label(e.jenis || "kejadian")}, ${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}, mulai ${String(e.mulai || "").slice(0, 10)}`]), buka.length ? "Kejadian baru (bukan lanjutan)" : "Tidak ada kejadian terbuka 14 hari terakhir");
+    opsi(el.lanjut, buka.map(e => [e.id, `${namaJenis(e.jenis || "kejadian")}, ${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}, mulai ${String(e.mulai || "").slice(0, 10)}`]), buka.length ? "Kejadian baru (bukan lanjutan)" : "Tidak ada kejadian terbuka 14 hari terakhir");
   }
+  let juklakDari = null;
   function pilihLanjut() {
     lanjutId = el.lanjut.value || null;
     const e = buka.find(x => x.id === lanjutId); el.pesanLanjut.hidden = !e;
-    if (!e) return;
+    if (!e) { juklakDari = null; muatSk(); isiJuklak(null); return; }
     const r = el.form.querySelector(`input[name="jenis"][value="${CSS.escape(e.jenis || "")}"]`); if (r) r.checked = true;
     el.pesanLanjut.textContent = "Entri ini menambah catatan pada kejadian terpilih. Angka dampak yang kamu isi menimpa angka terakhir, bukan menjumlah.";
-    const last = e.terakhir || e.entri_terakhir || e;
-    for (const [k] of DAMPAK) if (last[k] != null && !el[k].value) el[k].value = F(last[k]);
+    const last = e.entri_terkini || e.entri_terakhir || e;   // GET /api/logbook/buka: entri_terkini (e.terakhir hanyalah waktu)
+    for (const [k] of DAMPAK) if (last[k] != null && !el[k].value) el[k].value = fIsi(last[k]);
+    if (juklakDari && juklakDari !== e.id) isiJuklak(null);   // pindah kejadian: buang rincian kejadian sebelumnya
+    juklakDari = e.id; isiJuklak(e.entri_terkini); muatSk();
     periksaLive();
   }
 
@@ -141,7 +251,8 @@
     for (const [n] of DAMPAK) { const v = angkaId(d.dampak[n]); if (v != null) isi[n] = v; }
     const b = {jenis: d.jenis, prov: PROV[d.prov] || d.prov, prov_kode: d.prov, kab: k ? tutup(k.nama) : "", kab_kode: k ? kunciKab(k) : "", kec: d.kec || null, desa: d.desa || null,
       mulai: d.mulai ? new Date(d.mulai + "+07:00").toISOString() : null, lat: d.lat ? angkaId(d.lat) : null, lon: d.lon ? angkaId(d.lon) : null, ...isi,
-      kendala: d.kendala, kebutuhan: d.kebutuhan, catatan: d.catatan || null, sumber_instansi: d.sumber_instansi || null, yakin: !!document.getElementById("lbYakin")?.checked};
+      kendala: d.kendala, kebutuhan: d.kebutuhan, catatan: d.catatan || null, sumber_instansi: d.sumber_instansi || null, yakin: !!document.getElementById("lbYakin")?.checked,
+      kab_bps: k ? k.kode : undefined, ...juklak().isi};   // kab_bps = kode BPS 4 angka untuk KIB
     return b;
   }
   async function kirim(e) {
@@ -149,6 +260,7 @@
     const d = kumpul();
     const salah = !lanjutId && !d.jenis ? "Pilih jenis kejadian." : !d.kab ? "Pilih kabupaten/kota." : !lanjutId && !d.mulai ? "Isi waktu mulai kejadian." : "";
     if (salah) return pesan(salah, false);
+    const jk = juklak(); if (jk.salah) return pesan(jk.salah, false);
     periksaLive();
     if (lewat.some(x => x.keras)) return pesan("Perbaiki angka yang bertanda merah.", false);
     if (lewat.length && !document.getElementById("lbYakin")?.checked) return pesan("Ada angka melewati batas sistem. Centang \"Saya yakin\" bila memang benar.", false);
@@ -162,7 +274,7 @@
   const pesan = (t, ok) => { el.pesan.textContent = t; el.pesan.className = "bn-pesan " + (ok ? "ok" : "galat"); };
   function bersihkan(tanya = true) {
     if (tanya && !confirm("Kosongkan semua isian formulir dan hapus draf?")) return;
-    el.form.reset(); lanjutId = null; kecMap = {}; hapusLokal(DRAF); el.draf.textContent = ""; el.mulai.value = wibLokal();
+    el.form.reset(); lanjutId = null; muatSk(); kecMap = {}; hapusLokal(DRAF); el.draf.textContent = ""; el.mulai.value = wibLokal();
     isiProv(); opsi(el.kab, [], "Pilih kabupaten/kota"); opsi(el.kec, [], "Pilih kecamatan"); opsi(el.desa, [], "Pilih desa/kelurahan"); opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)"); el.pesanLanjut.hidden = true;
     if (tanya) pesan("", true);
     periksaLive();
@@ -201,7 +313,7 @@
       const wil = [e.desa, e.kec, String(e.kab || "").split("|").pop()].filter(Boolean).join(", ");
       const wk = e.waktu ? new Date(e.waktu).toLocaleTimeString("id-ID", {timeZone: "Asia/Jakarta", hour: "2-digit", minute: "2-digit"}).replace(".", ":") : "";
       const kd = larik(e.kendala);
-      tb.append(h("tr", null, h("td", {teks: wk}), h("td", null, pil(JENIS_NAMA[e.jenis] || label(e.jenis || "lainnya"), "info", e.jenis || "lainnya")), h("td", null, e.status === "tutup" ? pil("Ditutup", "ok", "ok") : pil("Buka", "tunggu", "tunggu")), h("td", {teks: wil}),
+      tb.append(h("tr", null, h("td", {teks: wk}), h("td", null, pil(namaJenis(e.jenis || "lainnya"), "info", e.jenis || "lainnya")), h("td", null, e.status === "tutup" ? pil("Ditutup", "ok", "ok") : pil("Buka", "tunggu", "tunggu")), h("td", {teks: wil}),
         h("td", {teks: ringkasDampak(e)}), h("td", null, h("div", {class: "lb-ikonbaris"}, kd.map(k => h("span", {title: KENDALA[k] || k}, ikon(k)))))));
     }
     boxHari.replaceChildren(h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Jam", "Jenis", "Status", "Wilayah", "Dampak", "Kendala"].map(t => h("th", {teks: t})))), tb)),
@@ -227,11 +339,11 @@
   async function mulai() {
     const cek0 = await api("GET", "/api/logbook/hari?tgl=" + tgl);
     if (cek0.s === 401 || cek0.s === 403) return kartuMasuk(cek0.s);
-    const aksi = h("div", {class: "bn-aksi"}); boxHari = h("div");
+    const aksi = h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/dokumen"}, ikon("daftar"), "Dokumen"), h("a", {class: "bn-tombol sekunder", href: "/bnpb/operasi"}, ikon("tenda"), "Operasi")); boxHari = h("div");
     const tglIn = h("input", {type: "date", value: tgl, max: wibHari(), "aria-label": "Tanggal laporan"});
     tglIn.addEventListener("change", () => { if (tglIn.value) { tgl = tglIn.value; muatHari(); } });
-    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Logbook Pusdalops"}), aksi),
-      h("div", {class: "lb-kolom"}, bentuk(), h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Entri periode laporan", h("span", {class: "lb-kanan"}, tglIn)), boxHari)));
+    const kolom = h("div", {class: "lb-kolom"}, bentuk(), h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Entri periode laporan", h("span", {class: "lb-kanan"}, tglIn)), boxHari));
+    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Logbook Pusdalops"}), aksi), ...window.LogbookTurunan.pasang(kolom), kolom);
     isiProv(); opsi(el.kab, [], "Pilih kabupaten/kota"); opsi(el.kec, [], "Pilih kecamatan"); opsi(el.desa, [], "Pilih desa/kelurahan"); opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)");
     el.form.addEventListener("submit", kirim);
     el.form.addEventListener("input", () => { periksaLive(); simpanDraf(); });

@@ -62,6 +62,7 @@ assert ck("Perum Bulog Nasional awasi beras") == set(), "dunia usaha tanpa kata 
 assert ck("Perum Bulog Nasional kirim beras ke korban banjir") == {("lembaga", "perum-bulog")}
 assert ck("Harian Contoh Daerah menulis soal cuaca") == set(), "media bukan dateline"
 assert ck("Budi Santoso Raharjo resmikan posko") == {("tokoh", "tk")}
+assert ck("Budi Santoso Raharjo minta maaf soal deklarasi", "polemik di Bundaran HI") == set(), "tokoh tanpa konteks kebencanaan dibuang"
 assert ck("Budi Santoso Raharjo jadi tersangka korupsi") == set() and ck("OTT KPK Badan Penanggulangan Bencana Daerah Riau") == set()
 assert RS.foto_arsip("https://img.x.id/2023/05/a.jpg", "2026") and not RS.foto_arsip("https://img.x.id/2025/05/a.jpg", "2026") and not RS.foto_arsip("https://x.id/a.jpg", "2026")
 assert RS.foto_bersih("https://img.x.id/2020/a.jpg", "2026-10-30") is None and RS.foto_bersih("ftp://x/a.jpg", "2026-10-30") is None

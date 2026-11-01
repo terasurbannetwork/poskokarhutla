@@ -351,7 +351,7 @@ export async function bersihkanPantau(env, kini = Date.now()) {
 }
 
 /* ================================================================ halaman /admin/pantau: kerangka tanpa data (data dari /api/pantau yang dijaga sesi); masuk staf ada di halamannya sendiri */
-const halaman = ctx => new Response(halamanBnpb("pantau", ctx), {headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-frame-options": "DENY", "x-content-type-options": "nosniff",
+const halaman = ctx => new Response(halamanBnpb("pantau", ctx), {headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-frame-options": "SAMEORIGIN", "x-content-type-options": "nosniff",
   "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow", "content-security-policy": CSP_ADMIN}});
 export const RUTE_PANTAU = Object.fromEntries(Object.entries({
   "GET /admin/pantau": async (env, req, url, kini) => halaman(await kerangka(env, req, kini)),

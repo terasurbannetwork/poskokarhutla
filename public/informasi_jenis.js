@@ -70,6 +70,11 @@ export const JENIS = {
   rob: {nama: "Genangan rob", bahaya: ["rob"], umur: 24, ikon: "rob",
     sub: {kaki: ["Semata kaki", "sedang"], lutut: ["Selutut", "api"], pinggang: ["Sepinggang atau lebih", "buruk"]}},
 
+  abrasi: {nama: "Abrasi pantai", bahaya: ["abrasi"], umur: 168, ikon: "abrasi",
+    sub: {garis: ["Garis pantai mundur", "sedang"], bangunan: ["Bangunan terancam", "buruk"], rusak: ["Tanggul atau jalan rusak", "tua"]}},
+  gelombang: {nama: "Gelombang pasang", bahaya: ["gelombang_pasang"], umur: 24, ikon: "gelombang",
+    sub: {tinggi: ["Gelombang tinggi", "sedang"], limpas: ["Air laut melimpas", "api"], kapal: ["Kapal atau tambak rusak", "buruk"]}},
+
   /* Bencana lain (registry lapor_bahaya). Tab Informasi belum ditampilkan di halaman bencana baru; API dan katalog sudah siap. */
   guncang: {nama: "Guncangan gempa", bahaya: ["gempa"], umur: 24, ikon: "guncang",
     sub: {ringan: ["Terasa ringan", "sedang"], kuat: ["Kuat, barang jatuh", "api"], hebat: ["Sulit berdiri", "buruk"]}},

@@ -53,6 +53,27 @@ export function wilayahDaya(P) {
   for (const r of larik(P.dataset_satudata).filter(r => r.prov && r.kab && SD_YA.test(r.judul) && !SD_TIDAK.test(r.judul)).sort((a, b) => (b.tahun_terakhir || 0) - (a.tahun_terakhir || 0))) {
     const t = ke(r.prov, r.kab).satudata ||= {n: 0, contoh: []}; t.n++; if (t.contoh.length < 5) t.contoh.push({judul: r.judul, penerbit: r.publisher && !/^(tahunan|bulanan|harian|mingguan|triwulan|semester|insidental)/i.test(r.publisher) ? r.publisher : null, url: r.sumber_url}); }
   /* dokumen perencanaan kebencanaan per kab: rencana kontinjensi (tabel BNPB 2005-2020) dan perda penanggulangan bencana (peraturan.go.id) */
+  /* infrastruktur air per kab dari Kementerian PU (data.pu.go.id dan SIGI SDA): bendungan dan pengaman pantai lengkap, embung dan tanggul batas bawah karena unduhan PU terpotong */
+  for (const r of larik(P.infra_air?.per_kab)) { if (!r.prov_kode || !r.kab) continue; const v = {bendungan: r.bendungan || 0, bendungan_konstruksi: r.bendungan_konstruksi || 0, embung: r.embung || 0, tanggul: r.tanggul_pu || 0,
+      tanggul_km: r.panjang_tanggul_km ?? null, pompa: r.pompa_banjir || 0, sabo: r.sabo_dam || 0}; if (Object.values(v).some(x => x)) ke(String(r.prov_kode), r.kab).infra = v; }
+  /* paparan bangunan (Google Open Buildings v3, keyakinan >= 0,70; batas bawah) dan tutupan lahan 2000 dan 2023 (MapBiomas Indonesia koleksi 3) per kab */
+  for (const r of larik(P.bangunan_kab)) if (r.kode && r.kab && Number.isFinite(r.bangunan_n)) ke(String(r.kode).slice(0, 2), r.kab).bangunan = {n: r.bangunan_n, luas_ha: r.luas_bangunan_ha ?? null};
+  for (const r of larik(P.tutupan_lahan_kab)) if (r.kode && r.kab && r.kelas) ke(String(r.kode).slice(0, 2), r.kab).lahan = {awal: r.tahun_awal, akhir: r.tahun_akhir, kelas: r.kelas, hutan_hilang_ha: r.hutan_hilang_ha ?? null};
+  /* PDRB atas dasar harga berlaku per kab (BPS WebAPI): total, per kapita, dan porsi 17 lapangan usaha bila tabel sektornya lolos cek; tahun berbeda per kab */
+  for (const r of larik(P.pdrb_kab)) { if (!/^\d{4}$/.test(String(r.kode_kab || "")) || !r.nama || !Number.isFinite(r.pdrb_adhb_rp)) continue; const nm = r.jenis === "kota" ? (/^kota /i.test(r.nama) ? r.nama : "Kota " + r.nama) : String(r.nama).replace(/^kota\s+(?=\S)/i, "Kota");   // kabupaten "Kota Baru" = Kotabaru
+    let porsi = null; if (r.sektor && r.sektor_valid !== false) { const e = Object.entries(r.sektor).filter(([, v]) => Number.isFinite(v)); const tot = r.sektor_jenis === "persen" ? 100 : e.reduce((t, [, v]) => t + v, 0); if (tot) porsi = Object.fromEntries(e.map(([k, v]) => [k, Math.round(v / tot * 1000) / 10])); }
+    ke(String(r.kode_kab).slice(0, 2), nm).pdrb = {tahun: r.tahun, adhb_rp: r.pdrb_adhb_rp, per_kapita_rp: r.per_kapita_rp ?? null, porsi, bps: {domain: r.domain || null, tabel: r.var_id ?? null}}; }
+  /* IKD resmi BNPB yang terpanen (sebagian provinsi saja); kab dicocokkan lewat kode provinsi dan nama */
+  for (const r of larik(P.ikd_resmi)) if (r.tingkat === "kab" && /^\d{4}$/.test(String(r.kode)) && Number.isFinite(r.ikd)) { const o = ke(String(r.kode).slice(0, 2), r.nama); if (!o.ikd || r.tahun > o.ikd.tahun) o.ikd = {tahun: r.tahun, nilai: r.ikd, kelas: r.kelas || null, sumber_url: r.sumber_url}; }
+  for (const r of larik(P.lab_riset)) if (/^\d{2}$/.test(String(r.prov || ""))) (pv(r.prov).lab ||= []).push({nama: r.nama_lab, alat: r.alat || null, uji: r.jenis_uji || null, bidang: r.bidang || null, lembaga: r.lembaga, lokasi: [r.kawasan_lokasi, r.kota].filter(Boolean).join(", "), tarif: r.tarif_teks || null, sumber_url: r.sumber_url});
+  /* BPS WebAPI per kab (panen 1 Nov 2026): kesiapan desa dari tabel Potensi Desa (tahun berbeda per kab, cakupan sebagian) dan penduduk lansia/balita; tautan WebAPI butuh kunci, jadi yang disimpan hanya domain dan nomor tabel BPS; tidak masuk skor kesiapan karena cakupannya belum menyeluruh */
+  const PODES = ["desa_peringatan_dini", "desa_peringatan_tsunami", "desa_rambu_jalur_evakuasi", "desa_perlengkapan_keselamatan", "desa_mitigasi_sungai_tanggul", "jumlah_desa"];
+  for (const r of larik(P.podes_kesiapan)) { if (!/^\d{4}$/.test(String(r.kode_kab || "")) || !r.nama) continue; const v = Object.fromEntries(PODES.filter(f => Number.isFinite(r[f])).map(f => [f, r[f]]));
+    const dt = r.desa_terdampak && typeof r.desa_terdampak === "object" ? Object.fromEntries(Object.entries(r.desa_terdampak).filter(([, n]) => Number.isFinite(n) && n > 0)) : null;
+    if (!Object.keys(v).length && !(dt && Object.keys(dt).length)) continue;
+    ke(String(r.kode_kab).slice(0, 2), r.nama).podes = {...v, terdampak: dt && Object.keys(dt).length ? dt : null, tahun: r.tahun || null, tahun_terdampak: r.tahun_terdampak || r.tahun || null, bps: {domain: r.domain || null, tabel: r.var_id ?? null}}; }
+  for (const r of larik(P.penduduk_rentan)) { if (!/^\d{4}$/.test(String(r.kode_kab || "")) || !r.nama || !Number.isFinite(r.penduduk_total)) continue;
+    ke(String(r.kode_kab).slice(0, 2), r.nama).rentan = {lansia: Number.isFinite(r.lansia_65plus) ? r.lansia_65plus : null, balita: Number.isFinite(r.balita_0_4) ? r.balita_0_4 : null, total: r.penduduk_total, tahun: r.tahun || null, ribuan: /ribu/i.test(r.catatan || ""), bps: {domain: r.domain || null, tabel: r.var_id ?? null}}; }
   for (const r of larik(P.dokumen_prb)) if (r.prov && r.kab && r.judul) (ke(r.prov, r.kab).dokumen_prb ||= []).push({jenis: r.jenis, judul: String(r.judul).replace(/\s*\(kolom sumber:.*\)\s*$/, ""), tahun: r.tahun || null, sumber_url: r.sumber_url});
   /* ponytail: sirene tsunami belum disambung: sumbernya campuran rekap 2018, daftar kota 2024, dan rekap kab 2026 tanpa koordinat, dijumlah akan dobel */
   /* jalan, jembatan, SPAB: per provinsi */
@@ -64,10 +85,14 @@ export function wilayahDaya(P) {
   /* baris yang hanya punya fasilitas (kode provinsi lama di sumber, mis. Kepri, Kaltara, Papua) dilebur ke baris APBD dengan kab sama bila unik */
   const perKab = new Map(); for (const [k, o] of Object.entries(kab)) if (o.apbd) { const n = k.split("|")[1]; perKab.set(n, perKab.has(n) ? null : o); }
   for (const [k, o] of Object.entries(kab)) if (!o.apbd) { const t = perKab.get(k.split("|")[1]); if (t) { t.fasilitas ||= o.fasilitas; t.kinerja ||= o.kinerja; delete kab[k]; } }
+  /* Papua: sumber memakai kode provinsi lama (91, 94) atau pemekaran (92, 95-97); kab bernama sama di provinsi 9x disatukan ke entri yang datanya paling banyak, bila tepat satu pasangan */
+  const isi = o => Object.keys(o).length;
+  for (const [k, o] of Object.entries(kab)) { if (!kab[k] || !/^9/.test(o.prov)) continue; const nm = k.split("|")[1], c = Object.entries(kab).filter(([k2, o2]) => k2 !== k && /^9/.test(o2.prov) && k2.split("|")[1] === nm);
+    if (c.length !== 1) continue; const [k2, o2] = c[0], [dari, ke2, kd] = isi(o) > isi(o2) ? [o2, o, k2] : [o, o2, k]; for (const [f, v] of Object.entries(dari)) if (!["prov", "kab"].includes(f) && ke2[f] == null) ke2[f] = v; delete kab[kd]; }
   return {diperbarui: new Date().toISOString().slice(0, 10), prov, kab: Object.values(kab)};
 }
 
-export function lembagaEkstra(P, lembaga) {
+export function lembagaEkstra(P, lembaga, kampus = null, induk = null) {
   const L = {}, ke = id => L[id] ||= {}, ada = new Set(lembaga.map(l => l.id));
   for (const r of larik(P.izin_cocok)) if (ada.has(r.lembaga_id)) { const o = ke(r.lembaga_id); o.izin = [...new Set([...(o.izin || []), ...r.bendera.filter(b => !/badan hukum/.test(b))])]; o.izin_dasar = r.dasar; }
   /* SK izin zakat: dicocokkan ketat ke nama lembaga */
@@ -91,6 +116,11 @@ export function lembagaEkstra(P, lembaga) {
   /* kampus berkunci nama (K:<nama>) */
   const K = {}; for (const r of larik(P.ror_kampus?.cocok)) if (r.entitas_id?.startsWith("K:")) (K[r.entitas_id.slice(2)] ||= {}).ror = r.ror_id;
   for (const r of larik(P.wikidata_lembaga?.lembaga_kampus)) if (r.entitas_id?.startsWith("K:")) (K[r.entitas_id.slice(2)] ||= {}).wikidata = r.qid;
+  /* penulis artikel kebencanaan di jurnal GARUDA per kampus (afiliasi memuat nama kampus, kampus terpanjang menang) yang belum ada di direktori pakar: calon pakar, delapan teratas */
+  if (kampus && P.garuda_penulis) { const kn = Object.keys(kampus).map(k => [k, norm(k)]).filter(([, n]) => n.length >= 8).sort((a, b) => b[1].length - a[1].length), nama = new Set(larik(induk?.orang || induk).map(o => norm(o[1] || "")));
+    for (const g0 of larik(P.garuda_penulis)) { const g = {...g0, nama: /,/.test(g0.nama || "") ? g0.nama.split(",").map(x => x.trim()).reverse().join(" ") : g0.nama}; if (!g.nama || !g.afiliasi || nama.has(norm(g.nama))) continue; const af = norm(g.afiliasi), m = kn.find(([, n]) => af.includes(n)); if (!m) continue;
+      ((K[m[0]] ||= {}).garuda ||= []).push({nama: g.nama, afiliasi: g.afiliasi, artikel: g.jumlah_artikel_kebencanaan || null, contoh: larik(g.judul_contoh)[0] || null}); }
+    for (const v of Object.values(K)) if (v.garuda) v.garuda = v.garuda.sort((a, b) => (b.artikel || 0) - (a.artikel || 0)).slice(0, 8); }
   return {lembaga: L, kampus: K};
 }
 
@@ -100,11 +130,95 @@ export function pakarEkstra(P, induk0) {
   for (const c of larik(P.paten_cocok)) for (const i of c.inventor || []) if (ada.has(i.pakar_id)) { const p = paten.get(c.nomor_permohonan); if (!p) continue;
     (ke(i.pakar_id).paten ||= []).push({judul: p.judul, nomor: p.nomor_paten || p.nomor_permohonan, jenis: p.jenis, status: p.status, tanggal: p.tanggal_diberi || p.tanggal_permohonan, pemegang: (p.pemegang || []).map(x => x.pemegang || x).join(", "), sumber_url: p.sumber_url}); }
   for (const o of larik(P.orcid_pakar?.cocok)) if (ada.has(o.pakar_id)) ke(o.pakar_id).orcid = o.orcid;
+  /* riwayat jabatan dari ORCID (atau OpenAlex bila ORCID tidak ada): hanya pekerjaan sekarang dan lima riwayat terakhir; status asing/diaspora di daftar pakar tetap milik perbarui.py, di sini tidak diubah */
+  for (const r of larik(P.orcid_afiliasi)) if (ada.has(r.pakar_id) && (r.sekarang?.organisasi || larik(r.riwayat).length))
+    ke(r.pakar_id).jabatan = {sekarang: r.sekarang?.organisasi ? {organisasi: r.sekarang.organisasi, negara: r.sekarang.negara || null, mulai: r.sekarang.mulai || null} : null,
+      riwayat: larik(r.riwayat).filter(x => x.organisasi).slice(0, 5).map(x => ({organisasi: x.organisasi, negara: x.negara || null, peran: x.peran || null, mulai: x.mulai || null, selesai: x.selesai || null})), sumber_url: r.sumber_url || null};
+  /* dataset terbuka kebencanaan (Zenodo dan repositori data lain) yang pembuatnya pakar direktori; dicocokkan lewat ORCID saja */
+  const orc = new Map(); for (const o of larik(induk)) if (o[7]) orc.set(String(o[7]).replace(/^https?:\/\/orcid\.org\//, ""), o[0]); for (const [id, v] of Object.entries(X)) if (v.orcid) orc.set(v.orcid, id);
+  for (const d of larik(P.dataset_terbuka)) { const sudah = new Set(); for (const p of larik(d.pembuat)) { const id = p.orcid && orc.get(p.orcid); if (!id || sudah.has(id)) continue; sudah.add(id);
+    (ke(id).dataset ||= []).push({judul: d.judul, repositori: d.repositori || null, tahun: d.tahun || null, url: d.doi ? "https://doi.org/" + d.doi : d.url || null}); } }
   /* penyandang dana karya pakar (OpenAlex grants, berasal dari Crossref Funder Registry; pakar dicocokkan lewat id OpenAlex): enam pemberi teratas per pakar */
   const dn = {}; for (const r of larik(P.pendanaan_pakar)) { if (!ada.has(r.pakar_id) || !r.funder) continue; const m = (dn[r.pakar_id] ||= {}), f = m[r.funder] ||= {nama: r.funder, ror: r.funder_ror || null, karya: new Set(), tahun: 0, contoh: null};
     f.karya.add(r.karya_doi || r.karya_judul); if ((r.tahun || 0) >= f.tahun) { f.tahun = r.tahun || 0; f.contoh = {judul: r.karya_judul, url: r.sumber_url}; } }
+  /* bidang keahlian kebencanaan per pakar (topik OpenAlex): daftar izin ketat, ekologi umum, kesehatan, keuangan, dan pendidikan dibuang; api dan gambut tetap */
+  const TOPIK_YA = /disaster|flood|earthquake|seism|tsunami|landslide|volcan|peat|fire|drought|coastal (and marine dynamics|management)|hydrolog|stormwater|erosion|cyclone|emergency management|climate variability/i,
+    TOPIK_TIDAK = /ecosystem|plant|species|agricultur|health|education|cardiac|financial|portfolio|insurance|supply chain|statistic|mental|tall buildings/i;
+  for (const t of larik(P.topik_pakar)) if (ada.has(t.pakar_id)) { const a = larik(t.topik).filter(x => TOPIK_YA.test(x.nama) && (!TOPIK_TIDAK.test(x.nama) || /fire|peat/i.test(x.nama))).slice(0, 5).map(x => ({nama: x.nama, karya: x.karya ?? null}));
+    if (a.length) ke(t.pakar_id).topik = a; }
+  /* rekan penulis yang juga ada di direktori (karya kebencanaan bersama 2015 ke atas, OpenAlex): delapan teratas per pakar */
+  const rk = {}; for (const r of larik(P.rekan_pakar)) if (r.a !== r.b && ada.has(r.a) && ada.has(r.b)) { (rk[r.a] ||= []).push([r.b, r]); (rk[r.b] ||= []).push([r.a, r]); }
+  for (const [id, a] of Object.entries(rk)) ke(id).rekan = a.sort((x, y) => y[1].karya - x[1].karya || (y[1].tahun_akhir || 0) - (x[1].tahun_akhir || 0)).slice(0, 8)
+    .map(([b, r]) => ({id: b, karya: r.karya, tahun: r.tahun_akhir || null, contoh: r.contoh_judul ? {judul: r.contoh_judul, url: r.sumber_url || null} : null}));
   for (const [id, m] of Object.entries(dn)) ke(id).dana = Object.values(m).map(f => ({nama: f.nama, ror: f.ror, karya: f.karya.size, tahun: f.tahun || null, contoh: f.contoh})).sort((a, b) => b.karya - a.karya || b.tahun - a.tahun).slice(0, 6);
   return X;
+}
+
+const JENIS_EMDAT = {banjir: ["Flood"], "banjir bandang": ["Flood", "Mass movement (wet)"], longsor: ["Mass movement (wet)", "Mass movement (dry)"], gempa: ["Earthquake"], tsunami: ["Earthquake"], "gunung api": ["Volcanic activity"],
+  erupsi: ["Volcanic activity"], karhutla: ["Wildfire"], kekeringan: ["Drought"], "cuaca ekstrem": ["Storm"], siklon: ["Storm"], hidrometeorologi: ["Flood", "Storm", "Mass movement (wet)"]};
+/* usulan tim pakar per kejadian besar: rumpun dan topik OpenAlex sesuai jenis bencana (wajib salah satu), kampus di provinsi terdampak, pernah meneliti kejadian itu, h-index (dibatasi 40);
+   lalu dipilih bertahap, pakar yang pernah menulis bersama anggota terpilih mendapat tambahan. Peneliti asing (indeks 15 bernilai "asing", sama dengan layar) dan tanpa afiliasi dilewati; diaspora Indonesia tetap boleh. Usulan otomatis, bukan penugasan. */
+const JENIS_RUMPUN = {gempa: ["gempa", "geologi"], tsunami: ["tsunami", "gempa", "pesisir"], banjir: ["banjir", "hidrometeorologi"], "banjir bandang": ["banjir", "longsor"], longsor: ["longsor", "geologi"], "gunung api": ["gunung api", "geologi"],
+  karhutla: ["karhutla"], kekeringan: ["kekeringan", "iklim"], hidrometeorologi: ["hidrometeorologi", "banjir", "longsor"], pesisir: ["pesisir"]};
+const JENIS_TOPIK = {gempa: /earthquake|seism/i, tsunami: /tsunami/i, banjir: /flood|stormwater|hydrolog/i, "banjir bandang": /flood|landslide/i, longsor: /landslide/i, "gunung api": /volcan/i, karhutla: /fire|peat/i, kekeringan: /drought/i,
+  hidrometeorologi: /flood|landslide|cyclone|hydrolog/i, pesisir: /coastal|erosion/i};
+export function timPakar(kejadian, induk0, kampus = {}, P = {}, ukuran = 8) {
+  const orang = larik(induk0?.orang || induk0).filter(o => o && o[15] !== "asing" && o[2] && !/belum diketahui/i.test(o[2])), tp = new Map(larik(P.topik_pakar).map(t => [t.pakar_id, larik(t.topik)])), rk = new Map();
+  for (const r of larik(P.rekan_pakar)) { (rk.get(r.a) || rk.set(r.a, new Set()).get(r.a)).add(r.b); (rk.get(r.b) || rk.set(r.b, new Set()).get(r.b)).add(r.a); }
+  const X = {};
+  for (const k of larik(kejadian)) { const jr = JENIS_RUMPUN[k.jenis] || [k.jenis], jt = JENIS_TOPIK[k.jenis], pv = new Set(larik(k.prov).map(String)), tulis = new Set(larik(k.riset?.works).flatMap(w => larik(w.pakar)));
+    const cal = [];
+    for (const o of orang) { const rm = larik(o[3]).filter(r => jr.includes(r)), tpk = jt ? (tp.get(o[0]) || []).filter(t => jt.test(t.nama || "")).map(t => t.nama) : [];
+      if (!rm.length && !tpk.length) continue; let sk = 0; const al = [];
+      if (rm.length) { sk += 3; al.push("rumpun " + rm.join(" dan ")); } if (tpk.length) { sk += 2; al.push("keahlian " + tpk[0]); }
+      if (pv.has(String(kampus[o[2]]?.prov || ""))) { sk += 2; al.push("kampus di provinsi terdampak"); } if (tulis.has(o[0])) { sk += 3; al.push("pernah meneliti kejadian ini"); }
+      sk += Math.min(Number(o[4]) || 0, 40) / 10; cal.push({id: o[0], sk, al}); }
+    const kol = cal.sort((a, b) => b.sk - a.sk).slice(0, 200), pilih = [];
+    while (pilih.length < ukuran && kol.length) { let iB = 0, vB = -1, rB = null;
+      kol.forEach((c, i) => { const r = pilih.find(p => rk.get(c.id)?.has(p.id)), v = c.sk + (r ? 1 : 0); if (v > vB) { vB = v; iB = i; rB = r; } });
+      const c = kol.splice(iB, 1)[0]; pilih.push({id: c.id, skor: Math.round(vB * 10) / 10, alasan: rB ? [...c.al, "pernah menulis bersama anggota usulan lain"] : c.al}); }
+    if (pilih.length) X[k.id] = pilih; }
+  return X;
+}
+/* dana resmi pelengkap tab Donasi: pos Kemanusiaan per lembaga zakat lingkup nasional dari laporan BAZNAS (label asli, BUKAN khusus bencana; definisi berganti 2020) dan dana darurat internasional (IFRC GO sejak 2004, CERF) */
+export function danaResmi(P, kejadian = []) {
+  const kj = new Map(larik(kejadian).map(k => [k.id, k.nama])), zk = larik(P.zakat_resmi).filter(r => r.lingkup === "nasional" && r.lembaga_nama && !r.nama_tidak_pasti && !/agregat|seluruh|^total|\*|^\s*indonesia\s*$/i.test(r.lembaga_nama) && Number.isFinite(r.nilai_rp) && r.tahun >= 2020 && r.tahun <= 2023 && !/aksi cepat tanggap/i.test(r.lembaga_nama));
+  const per = new Map(); for (const r of zk) { const k = norm(String(r.lembaga_nama).replace(/\([^)]*\)/g, " ")).replace(/^((laz|lembaga amil zakat) )+/, "").replace(/(.)\1+/g, "$1").replace(/^.*\bnahd?l?atul ulama\b.*$/, "lazisnu"), e = per.get(k) || per.set(k, {nama: r.lembaga_nama, tahun: {}, sumber_url: r.sumber_url}).get(k); e.tahun[r.tahun] = {pos: r.pos, nilai_rp: r.nilai_rp, total_rp: r.total_penyaluran_rp ?? null}; }
+  const zakat = [...per.values()].map(e => ({...e, terakhir: Math.max(...Object.keys(e.tahun).map(Number))})).sort((a, b) => [2023, 2022, 2021, 2020].reduce((t, th) => t || (b.tahun[th]?.nilai_rp || 0) - (a.tahun[th]?.nilai_rp || 0), 0));
+  const intl = [...larik(P.ifrc_go).filter(r => (r.tanggal_mulai || "") >= "2004").map(r => ({sumber: "IFRC", kode: r.kode, nama: r.nama, jenis: r.jenis, tanggal: r.tanggal_mulai, diminta_chf: r.jumlah_diminta_chf ?? null, terkumpul_chf: r.jumlah_terkumpul_chf ?? null, kejadian_id: r.kejadian_id || null, kejadian: kj.get(r.kejadian_id) || null, url: r.sumber_url})),
+    ...larik(P.cerf).map(r => ({sumber: "CERF", kode: r.kode_aplikasi || null, nama: r.kedaruratan, jenis: r.jendela, tanggal: r.tanggal, nilai_usd: r.nilai_usd ?? null, badan: larik(r.badan_penerima).map(x => x.nama), kejadian_id: r.kejadian_id || null, kejadian: kj.get(r.kejadian_id) || null, url: r.sumber_url}))]
+    .sort((a, b) => String(b.tanggal || "").localeCompare(String(a.tanggal || "")));
+  return {zakat, zakat_catatan: "Pos Kemanusiaan (sejak 2020) dari Laporan Pengelolaan Zakat Nasional BAZNAS; mencakup bantuan sosial di luar bencana", intl};
+}
+/* kesenjangan bantuan per provinsi: aksi bantuan tercatat dibanding kejadian dan terdampak DIBI sejak tahun dari; deskriptif, bias cakupan sumber (lembaga besar dan media nasional) */
+export function ringkasBantuanProv(aksi, dibi, dari = 2019) {
+  const X = {}, kol = c => larik(dibi?.kolom).indexOf(c), ke = p => X[p] ||= {prov: p, aksi: 0, pemberi: new Set(), total_rp: 0, kejadian: 0, terdampak: 0, meninggal: 0};
+  for (const a of larik(aksi)) if (/^\d{2}$/.test(String(a.prov || ""))) { const x = ke(String(a.prov)); x.aksi++; x.pemberi.add(a.kunci); x.total_rp += a.nilai_rp || 0; }
+  for (const r of larik(dibi?.baris)) { const th = r[kol("tahun")]; if (th < dari) continue; const x = ke(String(r[kol("kab")]).slice(0, 2)); x.kejadian += r[kol("kejadian")] || 0; x.terdampak += r[kol("terdampak")] || 0; x.meninggal += r[kol("meninggal_hilang")] || 0; }
+  return Object.values(X).filter(x => x.kejadian || x.aksi).map(x => ({...x, pemberi: x.pemberi.size, per100: x.kejadian ? Math.round(x.aksi / x.kejadian * 1000) / 10 : null})).sort((a, b) => b.terdampak - a.terdampak);
+}
+/* donasi bencana dari berita dan laman lembaga (panen 1 Nov 2026): satu baris per aksi (uang, barang, peralatan, layanan), digabung per pemberi untuk peringkat.
+   Nilai rupiah hanya yang tertulis di sumber; ACT dan kasus KPK dibuang; aksi ganda (pemberi, kejadian atau lokasi, nilai sama dalam 7 hari) disatukan. */
+const DONASI_ACT = /aksi cepat tanggap|^ACT\b/i, DONASI_KORUPSI = /\bkpk\b|korupsi/i;
+export function donasiBencana(rows, lembaga = [], kejadian = []) {
+  const lb = new Map(larik(lembaga).map(x => [x.id, x])), kj = new Set(larik(kejadian).map(k => k.id)), out = [], lihat = new Map();
+  const tgl = t => Date.parse(String(t || "").slice(0, 10)) || 0;
+  for (const r of larik(rows).slice().sort((a, b) => tgl(a.tanggal) - tgl(b.tanggal))) {
+    const nama = String(r.donor_nama || "").trim(), l = r.lembaga_id && lb.get(r.lembaga_id);
+    if (!nama && !l) continue; if (DONASI_ACT.test(nama) || DONASI_KORUPSI.test(r.judul || "")) continue;
+    const kunci = l ? "L:" + l.id : r.kampus ? "K:" + r.kampus : "T:" + norm(nama), sasaran = (r.kejadian_id && kj.has(r.kejadian_id) ? r.kejadian_id : "") || norm(r.kab || r.prov || r.penerima_teks || "");
+    const nv = Number(r.nilai_rp), nilai = r.nilai_rp != null && r.nilai_rp !== "" && Number.isFinite(nv) && nv > 0 ? nv : null, kg = kunci + "|" + sasaran + "|" + (nilai || larik(r.bentuk).slice().sort().join("+") + "|" + norm(r.barang || "")), ganda = lihat.get(kg);
+    if (ganda && Math.abs(tgl(r.tanggal) - tgl(ganda.tanggal)) <= 7 * 864e5) { if (r.sumber_url && r.sumber_url !== ganda.sumber_url) (ganda.url_lain ||= []).push(r.sumber_url); continue; }
+    const x = {kunci, nama: l ? l.nama : r.kampus || nama, lembaga_id: l ? l.id : null, kampus: r.kampus || null, jenis: r.donor_jenis || null, bentuk: larik(r.bentuk).filter(b => /^(uang|barang|peralatan|layanan)$/.test(b)),
+      nilai_rp: nilai, barang: r.barang || null, penerima: r.penerima_teks || null, prov: r.prov || null, kab: r.kab || null, kejadian_id: r.kejadian_id && kj.has(r.kejadian_id) ? r.kejadian_id : null,
+      jenis_bencana: r.jenis_bencana || null, tanggal: r.tanggal ? String(r.tanggal).slice(0, 10) : null, judul: r.judul || null, sumber_url: r.sumber_url || null};
+    lihat.set(kg, x); out.push(x); }
+  const per = new Map();
+  for (const x of out) { const d = per.get(x.kunci) || per.set(x.kunci, {kunci: x.kunci, nama: x.nama, lembaga_id: x.lembaga_id, kampus: x.kampus, jenis: x.jenis, aksi: 0, total_rp: 0, aksi_rp: 0, bentuk: {}, kejadian: new Set(), prov: new Set(), terakhir: null}).get(x.kunci);
+    d.aksi++; if (x.nilai_rp) { d.total_rp += x.nilai_rp; d.aksi_rp++; } x.bentuk.forEach(b => { d.bentuk[b] = (d.bentuk[b] || 0) + 1; }); if (x.kejadian_id) d.kejadian.add(x.kejadian_id); if (x.prov) d.prov.add(String(x.prov));
+    if (!d.terakhir || (x.tanggal || "") > d.terakhir) d.terakhir = x.tanggal; d.jenis ||= x.jenis; }
+  const pemberi = [...per.values()].map(d => ({...d, kejadian: [...d.kejadian], prov: [...d.prov].sort()})).sort((a, b) => b.aksi - a.aksi || b.total_rp - a.total_rp);
+  return {pemberi, aksi: out.sort((a, b) => (b.tanggal || "").localeCompare(a.tanggal || ""))};
 }
 
 export function kejadianEkstra(P, kejadian) {
@@ -116,6 +230,22 @@ export function kejadianEkstra(P, kejadian) {
     ke(r.kejadian_id).reliefweb = {nama: r.nama, laporan: r.jumlah_laporan, pelapor: (r.sumber_pelapor || []).slice(0, 5).map(s => s.nama), url: r.url}; }
   for (const h of larik(P.reliefweb_kejadian?.hdx)) if (ada.has(h.kejadian_id)) (ke(h.kejadian_id).hdx ||= []).push({judul: h.judul, organisasi: h.organisasi, url: h.url});
   for (const g of larik(P.gdacs_kejadian)) if (ada.has(g.kejadian_id) && g.alertlevel) ke(g.kejadian_id).gdacs = {level: g.alertlevel, skor: g.alertscore ?? null, severitas: g.severitas || null, url: g.url};
+  /* proyek pemetaan relawan digital HOT Tasking Manager per kejadian (kecocokan tinggi atau sedang dari panen) */
+  for (const r of larik(P.hot_tm)) if (ada.has(r.kejadian_id)) (ke(r.kejadian_id).hot ||= []).push({id: r.project_id, nama: r.nama, tanggal: r.tanggal_dibuat || null, dipetakan: r.persen_dipetakan ?? null, divalidasi: r.persen_divalidasi ?? null, kontributor: r.kontributor ?? null, organisasi: r.organisasi || null, kecocokan: r.kecocokan || null, url: r.sumber_url});
+  /* seruan Palang Merah (IFRC GO) dan alokasi dana darurat PBB (CERF) yang sudah dicocokkan ke kejadian saat panen */
+  for (const r of larik(P.ifrc_go)) if (ada.has(r.kejadian_id)) (ke(r.kejadian_id).ifrc ||= []).push({kode: r.kode, jenis: r.jenis, diminta_chf: r.jumlah_diminta_chf ?? null, terkumpul_chf: r.jumlah_terkumpul_chf ?? null, url: r.sumber_url});
+  for (const r of larik(P.cerf)) if (ada.has(r.kejadian_id)) (ke(r.kejadian_id).cerf ||= []).push({tanggal: r.tanggal, nilai_usd: r.nilai_usd ?? null, badan: larik(r.badan_penerima).map(x => x.nama).filter(Boolean), url: r.sumber_url});
+  /* nomor GLIDE (glidenumber.net, satu kandidat per kejadian) dan catatan EM-DAT (CRED/UCLouvain): dicocokkan lewat GLIDE, lalu jenis dan tanggal 0 sampai 14 hari bila tepat satu */
+  for (const g of larik(P.glide_cocok)) if (ada.has(g.kejadian_id) && g.glide) { ke(g.kejadian_id).glide = g.glide; glide[g.glide] ??= g.kejadian_id; }
+  for (const k of larik(kejadian)) if (k.glide && !X[k.id]?.glide) { ke(k.id).glide = k.glide; glide[k.glide] ??= k.id; }   // kejadian baru membawa GLIDE sendiri
+  /* GLIDE EM-DAT tanpa akhiran negara (FL-2025-000217), glidenumber.net dengan akhiran (-IDN): kunci disamakan. Satu catatan EM-DAT hanya untuk satu kejadian; jalur GLIDE didahulukan */
+  const gk = g => String(g || "").replace(/-[A-Z]{3}$/, ""), em = larik(P.emdat_idn).filter(r => r.kelompok === "alam"), emG = new Map(em.filter(r => r.glide).map(r => [gk(r.glide), r])), kej = larik(kejadian), dapat = {}, pakai = new Set();
+  for (const k of kej) { const r = X[k.id]?.glide && emG.get(gk(X[k.id].glide)); if (r && !pakai.has(r.disno)) { dapat[k.id] = r; pakai.add(r.disno); } }
+  for (const k of kej) { if (dapat[k.id] || !k.tanggal) continue; const j = JENIS_EMDAT[k.jenis] || [], c = em.filter(e => j.includes(e.jenis) && e.tanggal_pasti && e.mulai && Math.abs(Date.parse(e.mulai) - Date.parse(k.tanggal)) / 864e5 <= 14);
+    if (c.length === 1 && !pakai.has(c[0].disno)) { dapat[k.id] = c[0]; pakai.add(c[0].disno); } }
+  for (const k of kej) { const r = dapat[k.id];
+    if (r) ke(k.id).emdat = {disno: r.disno, meninggal: r.meninggal ?? null, terdampak: r.terdampak ?? null, kerugian_ribu_usd: r.kerugian_ribu_usd ?? null, kerugian_ribu_usd_riil: r.kerugian_ribu_usd_riil ?? null,
+      bantuan_ribu_usd: r.bantuan_ribu_usd ?? null, url: "https://public.emdat.be/"}; }
   for (const f of larik(P.fts_kejadian)) { const id = glide[f.glide_id]; if (!id) continue; const t = f.total_usd || {};
     ke(id).fts = {total_usd: (t.paid || 0) + (t.commitment || 0), donor: (f.donor || []).slice(0, 5).map(d => ({nama: d.nama, usd: d.usd})), url: f.sumber_url}; }
   return X;
@@ -236,6 +366,49 @@ export function ujiKesiapan(baris, dibi, namaKab, dari = 2015, opsi = {}) {
   return {dari, sampai, n: ks.length, ukuran: UK, korelasi, kuadran, lulus, lolos, per_jenis, sumber_url: "https://dibi.bnpb.go.id"};
 }
 
+/* logbook Pusdalops BNPB (data/pusdalops/logbook_kejadian.csv, 2011 sampai kini) diubah ke bentuk tabel DIBI supaya ujiKesiapan bisa dipakai ulang:
+   satu baris per kejadian, hanya jenis bencana alam (daftar putih; karhutla dan kekeringan dibuang seperti uji DIBI). Logbook tidak mencatat korban jiwa,
+   jadi ukurannya rumah: rusak (berat, sedang, ringan) dan rusak berat; rumah terendam tidak dijumlah karena satuannya tidak setara. Baris tanpa kode
+   provinsi tunggal dihitung di "buang". Nama "Aceh Besar; Kota Jantho" dipotong di titik koma. */
+const LB_ALAM = new Set(["banjir", "cuaca", "longsor", "gempabumi", "gelombang_pasang", "gunungapi"]);
+const lbBaris = csv => { const [kep, ...isi] = String(csv).trim().split(/\r?\n/), h = kep.split(","), i = c => h.indexOf(c); return isi.map(ln => ln.split(",")).filter(f => f.length >= h.length).map(f => Object.fromEntries(h.map((c, k) => [c, f[k]]))); };
+export function logbookKeDibi(csv) {
+  const kab = new Map(), baris = [], buang = {tanpa_prov: 0, bukan_alam: 0};
+  for (const r of lbBaris(csv)) { const pv = r.prov_kode, nm = String(r.kabkota || "").split(";")[0].trim(), th = Number(String(r.tgl_kejadian).slice(0, 4)), n = c => Number(r[c]) || 0;
+    if (!/^\d{2}$/.test(pv) || !nm || !th) { buang.tanpa_prov++; continue; } if (!LB_ALAM.has(r.jenis)) { buang.bukan_alam++; continue; }
+    const kk = pv + "|" + nm; if (!kab.has(kk)) kab.set(kk, pv + "L" + kab.size);
+    baris.push([kab.get(kk), th, r.jenis, 1, 0, 0, n("rumah_rb") + n("rumah_rs") + n("rumah_rr"), 0, n("rumah_rb")]); }
+  return {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak", "mengungsi", "rumah_rusak_berat"], baris, buang, namaKab: Object.fromEntries([...kab].map(([kk, kode]) => [kode, kk.split("|")[1]]))};
+}
+/* ringkasan logbook per kab sejak tahun dari: jumlah kejadian per jenis, rumah rusak dan terendam, lima kejadian terakhir; dikunci prov|nama kab seperti wilayahDaya */
+export function logbookPerKab(csv, dari = 2015) {
+  const X = {};
+  for (const r of lbBaris(csv)) { const pv = r.prov_kode, nm = String(r.kabkota || "").split(";")[0].trim(), tg = r.tgl_kejadian, j = r.jenis;
+    if (!/^\d{2}$/.test(pv) || !nm || Number(String(tg).slice(0, 4)) < dari || /lainnya|kecelakaan|^omc$|konflik|wabah|teknologi/.test(j)) continue; const n = c => Number(r[c]) || 0;
+    const e = X[kk(pv, nm)] ||= {prov: pv, kab: nm, per_jenis: {}, rusak: 0, terendam: 0, akhir: []}; e.per_jenis[j] = (e.per_jenis[j] || 0) + 1; e.rusak += n("rumah_rb") + n("rumah_rs") + n("rumah_rr"); e.terendam += n("rumah_terendam");
+    e.akhir.push({tanggal: tg, jenis: j, rusak: n("rumah_rb") + n("rumah_rs") + n("rumah_rr"), terendam: n("rumah_terendam"), desa: n("n_desa") || null}); }
+  for (const e of Object.values(X)) e.akhir = e.akhir.sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 5);
+  return X;
+}
+/* temuan riset dari pembacaan mendalam 2.000 abstrak karya pakar direktori (OpenAlex), disusun per empat pilar: prediksi, penanganan, teknologi, dampak.
+   Ringkasan ditulis ulang (bukan salinan abstrak); angka hanya yang disebut abstrak. Lokasi dipetakan ke provinsi (nama) dan kab (nama), kejadian lewat
+   jenis bencana + provinsi + nama tempat kejadian di judul atau lokasi, tahun karya tidak sebelum tahun kejadian. */
+const PROV_NAMA = {aceh: "11", "sumatera utara": "12", "sumatra utara": "12", "north sumatra": "12", "sumatera barat": "13", "sumatra barat": "13", "west sumatra": "13", riau: "14", jambi: "15", "sumatera selatan": "16", "south sumatra": "16", bengkulu: "17", lampung: "18",
+  "kepulauan bangka belitung": "19", "bangka belitung": "19", "kepulauan riau": "21", "dki jakarta": "31", jakarta: "31", "jawa barat": "32", "west java": "32", "jawa tengah": "33", "central java": "33", "di yogyakarta": "34", "daerah istimewa yogyakarta": "34", yogyakarta: "34", diy: "34",
+  "jawa timur": "35", "east java": "35", banten: "36", bali: "51", "nusa tenggara barat": "52", ntb: "52", "nusa tenggara timur": "53", ntt: "53", "kalimantan barat": "61", "kalimantan tengah": "62", "central kalimantan": "62", "kalimantan selatan": "63", "kalimantan timur": "64", "east kalimantan": "64",
+  "kalimantan utara": "65", "sulawesi utara": "71", "north sulawesi": "71", "sulawesi tengah": "72", "central sulawesi": "72", "sulawesi selatan": "73", "south sulawesi": "73", "sulawesi tenggara": "74", gorontalo: "75", "sulawesi barat": "76", "west sulawesi": "76", maluku: "81", "maluku utara": "82",
+  papua: "91", "papua barat": "92", "papua selatan": "93", "papua tengah": "94", "papua pegunungan": "95", "papua barat daya": "96"};
+export function temuanRiset(rows, kejadian = []) {
+  const ringkas = r => ({id: r.id, doi: r.doi || null, judul: r.judul, tahun: r.tahun || null, temuan: r.temuan || null, pilar: larik(r.pilar), jenis: larik(r.jenis_bencana), angka: larik(r.angka_kunci).slice(0, 4),
+    teknologi: r.teknologi_inovasi || null, rekomendasi: r.rekomendasi || null, modul: r.relevan_prediksi?.modul || null, kualitas: r.kualitas_bukti || null, pakar: larik(r.pakar_ids).slice(0, 6), tempat: larik(r.lokasi).map(l => l.tempat).filter(Boolean).slice(0, 4)});
+  const prov = {}, kab = {}, kej = {}, semua = [], kjT = larik(kejadian).map(k => ({k, tok: [...new Set([k.nama, ...larik(k.kab), ...String(k.id).split("-")].map(x => norm(String(x || ""))).filter(t => t.length >= 4 && !/^(banjir|gempa|longsor|tsunami|karhutla|kekeringan|erupsi|bandang|2\d{3})$/.test(t)))]}));
+  for (const r of larik(rows)) { if (r.relevan_bnpb === false || !r.temuan) continue; const x = ringkas(r); semua.push(x);
+    const pvs = new Set(), teks = norm([r.judul, ...larik(r.lokasi).flatMap(l => [l.tempat, l.kab])].join(" "));
+    for (const l of larik(r.lokasi)) { const p = PROV_NAMA[norm(l.prov || "").replace(/^provinsi /, "")]; if (!p) continue; pvs.add(p); if (l.kab) (kab[p + "|" + String(l.kab).trim()] ||= []).push(x.id); }   // nama asli; layar mencocokkan dengan kkN
+    for (const p of pvs) (prov[p] ||= []).push(x.id);
+    for (const {k, tok} of kjT) if (larik(k.prov).some(p => pvs.has(String(p))) && x.jenis.some(j => j === k.jenis || (k.jenis === "tsunami" && j === "gempa") || (k.jenis === "banjir bandang" && j === "banjir")) && (!x.tahun || !k.tanggal || x.tahun >= Number(String(k.tanggal).slice(0, 4))) && tok.some(t => (" " + teks + " ").includes(" " + t + " "))) (kej[k.id] ||= []).push(x.id); }   // utuh per kata: "palu" tidak cocok dengan "palustrine"
+  return {diperbarui: new Date().toISOString().slice(0, 10), sumber: "Abstrak OpenAlex karya pakar direktori, dibaca dan diringkas ulang; angka hanya yang disebut abstrak", temuan: semua, prov, kab, kejadian: kej};
+}
 /* tesis, disertasi, dan skripsi kebencanaan dari repositori kampus (OAI-PMH): saringan judul ketat, karena kata "kekeringan" atau "banjir" juga muncul
    di judul agronomi dan teknik biasa; nama kampus repositori dicocokkan ke kampus direktori lewat indeks dan alias hubung.mjs */
 const TESIS_YA = /bencana|banjir|longsor|gempa|tsunami|erupsi|gunung ?api|lahar|kebakaran hutan|kebakaran lahan|karhutla|kesiapsiagaan|evakuasi|tanggap darurat|pengungsi|huntara|abrasi|banjir rob|genangan rob|likuefaksi|mitigasi (bencana|banjir|longsor|gempa|tsunami|struktural|non ?struktural)|rawan (bencana|banjir|longsor|gempa|tsunami|kebakaran|erupsi|kekeringan)|zona rawan|kerawanan bencana|disaster|flood|landslide|earthquake|volcan|wildfire|evacuat|tsunami|natural hazard|multi-?hazard|seismic hazard|geohazard|hazard (map|assessment|zon)/i;
@@ -328,7 +501,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
     "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
     "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan",
-    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb"].map(f => [f, baca(dp, f)]));
+    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga", "infra_air", "ifrc_go", "cerf", "zakat_resmi", "hot_tm", "orcid_afiliasi", "bangunan_kab", "tutupan_lahan_kab", "ikd_resmi", "lab_riset", "pdrb_kab", "temuan_riset"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus", "lembaga_3w"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});
@@ -347,12 +520,27 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (sb.length) { P.aktivasi_satelit = [...larik(P.aktivasi_satelit), ...sb]; simpanPanen("aktivasi_satelit", P.aktivasi_satelit); }
   const sa = P.aktivasi_sentinel_asia ? sentinelAsia(P.aktivasi_sentinel_asia, R.kejadian?.kejadian || R.kejadian, P.aktivasi_satelit) : [];
   if (sa.length) { P.aktivasi_satelit = [...larik(P.aktivasi_satelit), ...sa]; simpanPanen("aktivasi_satelit", P.aktivasi_satelit); }
-  const wd = wilayahDaya(P), le = lembagaEkstra(P, lbSemua), pe = pakarEkstra(P, R.induk), ke = kejadianEkstra(P, R.kejadian?.kejadian || R.kejadian);
+  const wd = wilayahDaya(P), le = lembagaEkstra(P, lbSemua, R.kampus, R.induk), pe = pakarEkstra(P, R.induk), ke = kejadianEkstra(P, R.kejadian?.kejadian || R.kejadian);
+  for (const [id, t] of Object.entries(timPakar(R.kejadian?.kejadian || R.kejadian, R.induk, R.kampus || {}, P))) (ke[id] ||= {}).tim = t;
   wd.kesiapan = kesiapanDaerah(wd, JSON.parse(readFileSync(new URL("../../public/banjir/data/risiko_kecamatan.json", import.meta.url), "utf8")), R.induk, R.kampus, lbSemua);
   const hvc = JSON.parse(readFileSync(new URL("../../public/data/bnpb/risiko_hvc.json", import.meta.url), "utf8")).kab;
   wd.kesiapan.uji = ujiKesiapan(wd.kesiapan.baris, JSON.parse(readFileSync(new URL("../../public/data/bnpb/dibi_kab_tahun.json", import.meta.url), "utf8")), Object.fromEntries(Object.entries(hvc).map(([k, v]) => [k, v.nama])));
+  { const lpk = logbookPerKab(readFileSync(new URL("../../data/pusdalops/logbook_kejadian.csv", import.meta.url), "utf8")), peta = new Map(wd.kab.map(k => [kk(k.prov, k.kab), k]));
+    for (const [k, e] of Object.entries(lpk)) { const t = peta.get(k); if (t) t.logbook = {dari: 2015, per_jenis: e.per_jenis, rusak: e.rusak, terendam: e.terendam, akhir: e.akhir}; } }
+  /* uji balik kedua dengan logbook Pusdalops: percobaan kedua setelah uji DIBI gagal dan sumbernya tidak independen dari DIBI, jadi ambangnya diperketat ke t <= -3
+     (setara koreksi untuk 5 uji tingkat atas); per jenis tetap t <= -3. Tanpa korban jiwa: ukuran rumah saja. */
+  { const lbk = logbookKeDibi(readFileSync(new URL("../../data/pusdalops/logbook_kejadian.csv", import.meta.url), "utf8")), u = ujiKesiapan(wd.kesiapan.baris, lbk, lbk.namaKab);
+    for (const o of [u.korelasi.skor, u.korelasi.kesenjangan, ...Object.values(u.per_jenis)]) delete o.mati;
+    u.ukuran = {dampak: "rumah rusak per kejadian", rusak: "rumah rusak berat per kejadian"};
+    u.lolos = ["dampak", "rusak"].filter(k => u.korelasi.skor[k].r <= -0.1 && u.korelasi.skor[k].t <= -3); u.lulus = u.n >= 100 && u.lolos.length > 0;
+    for (const j of Object.values(u.per_jenis)) { j.lolos = ["dampak", "rusak"].filter(k => j[k] && j[k].r <= -0.1 && j[k].t <= -3); j.teruji = j.lolos.length > 0; }
+    wd.kesiapan.uji_logbook = {...u, buang: lbk.buang, ambang_t: -3, sumber_url: "Logbook Pusdalops BNPB"}; }
   tulis("wilayah_daya", wd);
   const ts = P.tesis_kebencanaan ? tesisKampus(P.tesis_kebencanaan, R.kampus) : {}; if (Object.keys(ts).length) tulis("tesis", ts);   /* hasil kosong tidak ditulis, jadi tidak menimpa R2 */ tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
+  if (P.temuan_riset) tulis("temuan_riset", temuanRiset(P.temuan_riset, R.kejadian?.kejadian || R.kejadian));
+  /* donasi kosong tidak ditulis, jadi tidak menimpa R2 */
+  const dibiK = JSON.parse(readFileSync(new URL("../../public/data/bnpb/dibi_kab_tahun.json", import.meta.url), "utf8"));
+  const dn = donasiBencana([...larik(P.donasi_berita), ...larik(P.donasi_lembaga)], lbSemua, R.kejadian?.kejadian || R.kejadian); if (dn.aksi.length) tulis("donasi_bencana", {diperbarui: new Date().toISOString().slice(0, 10), ...dn, prov: ringkasBantuanProv(dn.aksi, dibiK), prov_dari: 2019, ...danaResmi(P, R.kejadian?.kejadian || R.kejadian)});
   console.log(JSON.stringify({lembaga_baru: lbBaru.length, hibah_baru: hb.length, skema_radar: rs.length, wilayah_kab: wd.kab.length, wilayah_prov: Object.keys(wd.prov).length,
     lembaga_ekstra: Object.keys(le.lembaga).length, kampus_ekstra: Object.keys(le.kampus).length, daftar_hitam: Object.values(le.lembaga).filter(x => x.daftar_hitam).length,
     pakar_paten: Object.values(pe).filter(x => x.paten).length, pakar_orcid: Object.values(pe).filter(x => x.orcid).length,

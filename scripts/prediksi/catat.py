@@ -228,6 +228,8 @@ def entri_bnj(t, daftar, akar, cari, kolom):
     ix = [st["hari"].index(h) for h in hari]
     pra = D.baca(os.path.join(akar, "public", "banjir", "data", "prakiraan72.json"), {})
     ada_p = pra.get("anggota") is not None and pra.get("hari") == st["hari"]
+    if not ada_p:
+        log(f"{'BNJ' if kolom == 'b' else 'LSR'}: prakiraan72.json basi atau tanpa ansambel (hari {pra.get('hari')}), ps = None")
     kab = {}
     for kec, v in st["kec"].items():
         i = cari(*kec.split("|")[:2])

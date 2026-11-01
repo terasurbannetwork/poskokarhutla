@@ -61,6 +61,23 @@ const Tren = {
     return this.kartu("Naik turun level", `${Kartu.hl(fmt(naik) + " gunung")} naik level dan ${Kartu.hl(fmt(turun) + " gunung")} turun dalam ${fmt(hari.length)} hari terakhir`,
       this.batang(v, {warna: WARNA_LV[2], warna2: WARNA_LV[4], w2: true, puncak: false}), "MAGMA Indonesia, PVMBG; dicatat Centurisk97 tiap pembaruan", [[WARNA_LV[2], "perubahan level"], [WARNA_LV[4], "naik"]]); },
 
+  /* 8. riwayat level dari surat PVMBG yang diarsipkan Pusdalops BNPB (data/riwayat_level.json, scripts/gunungapi/riwayat_level.py); dibuang bila kosong */
+  kRiwayat() {
+    const R = this.Rw; if (!R?.baris?.length) return "";
+    const tg = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "long", year: "numeric"}), lv = l => `Level ${LEVEL[l][0]} ${LEVEL[l][1]}`;
+    const hari = new Date().toLocaleDateString("en-CA", WIB), t0 = Date.parse(R.baris.reduce((a, r) => r.tanggal < a ? r.tanggal : a, hari)), t1 = Date.parse(hari), M = innerWidth < 640, Wd = M ? 520 : 940, L = M ? 118 : 190, rh = 44, X = t => L + (Date.parse(t) - t0) / Math.max(1, t1 - t0) * (Wd - L - 16);
+    const gn = R.gunung.map(g => ({g, p: R.baris.filter(r => r.gunung === g && r.jenis === "perubahan").sort((a, b) => a.tanggal < b.tanggal ? -1 : 1), e: R.baris.filter(r => r.gunung === g && r.jenis === "evaluasi")}));
+    const svg = gn.map(({g, p, e}, i) => { const y = i * rh + 8;
+      const seg = p.map((r, j) => { const x0 = X(r.tanggal), x1 = X(p[j + 1]?.tanggal || hari), lvl = r.ke;
+        return `<rect class="gx" style="--i:${j}" x="${x0}" y="${y + 6}" width="${Math.max(3, x1 - x0)}" height="20" rx="4" fill="${WARNA_LV[lvl]}" data-tip="<b>${esc(g)}, ${lv(lvl)}</b><br>Sejak: ${tg(r.tanggal)}<br>Sampai: ${p[j + 1] ? tg(p[j + 1].tanggal) : "belum ada surat perubahan berikutnya di arsip"}${r.radius_km ? `<br>Radius rekomendasi: ${fmt(r.radius_km)} km` : ""}"/>`; }).join("");
+      const ev = e.map(r => `<circle cx="${X(r.tanggal)}" cy="${y + 36}" r="4" fill="${WARNA_LV[r.ke]}" data-tip="<b>${esc(g)}, evaluasi ${tg(r.tanggal)}</b><br>Tingkat: ${lv(r.ke)}${r.radius_km ? `<br>Radius rekomendasi: ${fmt(r.radius_km)} km` : ""}${Object.entries(r.gempa || {}).map(([k, v]) => `<br>${k.replace(/_/g, " ")}: ${fmt(v)} kali`).join("")}"/>`).join("");
+      const mk = p.map(r => `<circle cx="${X(r.tanggal)}" cy="${y + 16}" r="6" fill="#fff" stroke="${WARNA_LV[r.ke]}" stroke-width="3" data-tip="<b>${esc(g)}, ${tg(r.tanggal)}</b><br>${r.dari ? lv(r.dari) + " ke " : "Naik ke "}${lv(r.ke)}${r.radius_km ? `<br>Radius rekomendasi: ${fmt(r.radius_km)} km` : ""}<br>Surat: ${esc(r.sumber.nomor || "")}"/>`).join("");
+      return `<g><text x="${L - 8}" y="${y + 21}" text-anchor="end" font-size="${M ? 12 : 12.5}" font-weight="600">${esc(g)}</text>${seg}${ev}${mk}</g>`; }).join("");
+    const n = R.baris.filter(r => r.jenis === "perubahan" && r.dari).length, a = R.baris.filter(r => r.jenis === "perubahan" && r.dari).map(r => r.tanggal).sort();
+    return this.kartu("Riwayat level", `${Kartu.hl(fmt(R.gunung.length) + " gunung")} punya riwayat level dari surat resmi PVMBG, dengan ${Kartu.hl(fmt(n) + " perubahan level")} tercatat sejak ${Kartu.hl(tg(a[0]))}`,
+      `<div class="tw sk"><svg viewBox="0 0 ${Wd} ${gn.length * rh + 12}" role="img" aria-label="Riwayat level gunung api">${svg}</svg></div>`,
+      "surat dan laporan Badan Geologi, PVMBG, arsip Pusdalops BNPB", Object.entries(LEVEL).map(([k, v]) => [WARNA_LV[k], "Level " + v[0] + " " + v[1]])); },
+
   /* baris mendatar: rows [{nama, v, warna, pil: [[teks, bg, fg]], tip, gn?}]; batang sepanjang v, pil berderet sesudahnya (kartu Kartu.pil dari inti) */
   mendatar(rows, akhir) {
     const M = innerWidth < 640, Wd = M ? 520 : 940, L = M ? 118 : 190, rh = 30, fs = M ? 12 : 12.5, mx = Math.max(1, ...rows.map(r => r.v)), X = v => v / mx * (Wd - L - akhir);
@@ -110,7 +127,7 @@ const Tren = {
   async render() {
     const el = $("#tren"); if (!el) return;
     if (this.D === undefined) { el.innerHTML = `<div class="kosong"><div class="spin"></div>Memuat tren gunung api…</div>`; [this.D, this.F, this.Rk] = await Promise.all([Data.dampak(), Data.fs(), Data.risiko()]); }
-    this.abu = await Data.abu();
+    this.abu = await Data.abu(); this.Rw = await sekali("rw", "data/riwayat_level.json");
     if (!el._klik) { el._klik = 1; el.addEventListener("click", e => { const gn = e.target.closest("[data-gn]"); if (!gn) return; const g = S.st.gunung.find(x => x.nama === gn.dataset.gn); if (g) { bukaTab("peta"); nanti(() => { Peta.terbang(g); Detail.buka(g); }); } }); }
-    el.innerHTML = [this.kTahun, this.kTrenJangka, this.kKasus, this.kRisiko, this.kLevel, this.kNaik, this.kErupsi].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
+    el.innerHTML = [this.kTahun, this.kTrenJangka, this.kKasus, this.kRisiko, this.kLevel, this.kNaik, this.kErupsi, this.kRiwayat].map(f => { try { return f.call(this); } catch (e) { console.error(e); return ""; } }).join("") || `<p class="kosong">Belum ada tren.</p>`; },
 };

@@ -854,10 +854,10 @@ def manifest_chirps(akhir):
 
 def sidik_penuh(kand):
     """sha256: kriteria + isi kandidat + konstanta tambalan + isi kode (berkas ini, model_kab, uji_balik, status, label_bersatu, umum, gbdt)
-    + protokol + sampel + basin/sel hulu + label latih + salinan DIBI <= 2025 + manifest ERA5 dan CHIRPS s/d AKHIR_LATIH."""
+    + protokol + sampel + basin/sel hulu + label latih (mengunci tabel label_bersatu dan hari tercakup lewat sha256; logbook mentah tidak disidik, amandemen A1) + salinan DIBI <= 2025 + manifest ERA5 dan CHIRPS s/d AKHIR_LATIH."""
     h = hashlib.sha256(json.dumps({"kriteria": KRITERIA, "kand": {k: kand[k] for k in ISI_KAND}, "tambal": tambal()}, sort_keys=True).encode())
     kode = [os.path.abspath(__file__)] + [os.path.join(AKAR, "scripts/banjir", n) for n in ("model_kab.py", "uji_balik.py", "status.py", "label_bersatu.py", "umum.py", "model_kab_debit.py")]
-    kode += [os.path.join(AKAR, "scripts/sebaran/gbdt.py"), os.path.join(AKAR, "scripts/data/logbook_bersih.py"), os.path.join(AKAR, "data/pusdalops/logbook_kejadian.csv"), PROTOKOL, SAMPEL, BASIN, J("label_latih.json"), J("dibi_le2025.json")]
+    kode += [os.path.join(AKAR, "scripts/sebaran/gbdt.py"), PROTOKOL, SAMPEL, BASIN, J("label_latih.json"), J("dibi_le2025.json")]
     h.update(json.dumps(hash_berkas(*kode)).encode())
     h.update(json.dumps(MK.manifest_era5(kand["sel"])).encode())
     h.update(json.dumps(manifest_chirps(AKHIR_LATIH)).encode())
