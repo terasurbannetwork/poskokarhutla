@@ -96,5 +96,6 @@
   "0092_pesisir_rujukan.sql": "b84eefd0b03defd8bb0e8063088019f9f002f220bcbdf7c05eddff38922fc1c1",
   "0093_korban_pesisir.sql": "1094efc1876d2e5c23faf028d4aaa9f93f41b11e937b07b8b69e459f98808aad",
   "0094_logbook_juklak.sql": "ebd6090d9886f318a49c3840775e8fc3a891f1b98b4f8c74b8aac51cfa1e6a11",
+  "0095_lapangan_orang.sql": "2108e73f390627a97eae02a467a0cd00f2b3f1beb29f2de3fc212f1611525f17",
   "0096_pusdalops_operasi.sql": "b7714fe318d89b7b1b088e8439a0f339b9a56ee1f7402a38eccf8e6003030766"
 }

@@ -13,26 +13,30 @@ bawah CI95 ETS (>= Waspada) > 0,1.
 
 ## Cakupan (jujur)
 
-Kuota jam Open-Meteo habis dua kali (tunggu 20 menit); dari 435 sel yang diminta, 220 sel sempat diunduh. Dinilai 74 dari
-127 kabupaten berlabel (urutan: yang punya kedalaman/durasi dulu, lalu hari label terbanyak) + 18 dari 30 kontrol tanpa laporan.
-Kabupaten berlabel lain belum dinilai; lanjutkan dengan `python3 scripts/banjir/uji_logbook.py ambil` lalu jalankan ulang
-(cache `data/raw/banjir/uji_logbook`, tidak dilacak git).
+Cache hilang (tidak dilacak git), jadi 435 sel diunduh ulang penuh (1 Nov 2026) dan semua terunduh. Dinilai 127 dari 127
+kabupaten berlabel + 30 dari 30 kontrol tanpa laporan. Jalankan ulang bila perlu dengan `python3 scripts/banjir/uji_logbook.py ambil`
+lalu `python3 scripts/banjir/uji_logbook.py` (cache `data/raw/banjir/uji_logbook`, tidak dilacak git). Rentang tetap 1 Jan .. 21 Okt 2026;
+logbook lokal memuat sampai 29 Okt (12 kejadian banjir mulai sesudah 18 Okt) dan TIDAK ikut dinilai: memperpanjang rentang
+berarti mengunduh ulang hujan dan mengubah definisi uji. Hasil sebelumnya (74 kab + 18 kontrol) ada di riwayat git.
 
 ## Hasil banjir, ">= Waspada" (kab berlabel; angka lain di JSON)
 
 | Label | a / b / c / d | POD | FAR | CSI | ETS [CI95] |
 | --- | --- | --- | --- | --- | --- |
-| logbook, hari mulai | 103 / 3448 / 95 / 17962 | 0,52 | 0,971 | 0,028 | 0,019 [0,015-0,024] |
-| logbook, hari aktif | 459 / 3092 / 381 / 17676 | 0,55 | 0,871 | 0,117 | 0,085 [0,063-0,108] |
-| DIBI 2026 | 164 / 3387 / 152 / 17905 | 0,52 | 0,954 | 0,044 | 0,031 [0,023-0,039] |
-| gabungan, hari mulai | 213 / 3338 / 195 / 17862 | 0,52 | 0,940 | 0,057 | 0,040 [0,031-0,050] |
-| gabungan, hari aktif | 519 / 3032 / 440 / 17617 | 0,54 | 0,854 | 0,130 | 0,094 [0,073-0,118] |
+| logbook, hari mulai | 167 / 6889 / 129 / 29899 | 0,56 | 0,976 | 0,023 | 0,016 [0,013-0,018] |
+| logbook, hari aktif | 635 / 6421 / 579 / 29449 | 0,52 | 0,910 | 0,083 | 0,055 [0,043-0,068] |
+| DIBI 2026 | 219 / 6837 / 187 / 29841 | 0,54 | 0,969 | 0,030 | 0,020 [0,015-0,025] |
+| gabungan, hari mulai | 303 / 6753 / 256 / 29772 | 0,54 | 0,957 | 0,041 | 0,027 [0,022-0,033] |
+| gabungan, hari aktif | 711 / 6345 / 663 / 29365 | 0,52 | 0,899 | 0,092 | 0,060 [0,048-0,075] |
 
-- Per KEJADIAN logbook (hari mulai +-1): Waspada tertangkap 66,8%, Siaga 20,1%, Awas 1,0% (199 kejadian).
-- >= Siaga: POD 0,10-0,15, ETS 0,04-0,07. Awas: nyaris tak pernah menyala (0-3 hit dari 240-960 hari kejadian).
+(Sebelumnya, 74 kab: ETS 0,019 / 0,085 / 0,031 / 0,040 / 0,094.)
+
+- Per KEJADIAN logbook (hari mulai +-1): Waspada tertangkap 69,6%, Siaga 21,4%, Awas 3,7% (299 kejadian; sebelumnya 66,8 / 20,1 / 1,0%, 199 kejadian).
+- >= Siaga: POD 0,11-0,15, ETS 0,03-0,05. Awas: POD 0,01-0,02, ETS <= 0,013.
 - Menambah kontrol (kab tanpa laporan) hanya menaikkan FAR sedikit; kontrol tanpa laporan bukan pasti tanpa banjir.
-- Vonis: TIDAK LULUS di kelima label. ETS tertinggi 0,094 (batas bawah 0,073 < 0,1). Aturan hujan menangkap sekitar separuh
-  hari kejadian tetapi menyalakan 85-97% alarm palsu; selaras dengan vonis model_kab TIDAK LULUS (5ddc9c29).
+- Vonis (ditulis sebelum hasil, aturan tidak diubah): TIDAK LULUS di kelima label. ETS tertinggi 0,060 (batas bawah 0,048 < 0,1).
+  Aturan hujan menangkap sekitar separuh hari kejadian tetapi menyalakan 90-98% alarm palsu; selaras dengan model_kab TIDAK LULUS (5ddc9c29).
+  Cakupan penuh menurunkan ETS dibanding 74 kab pertama (yang dipilih berdasar kedalaman/durasi), bukan menaikkannya.
 
 ## Intensitas (kedalaman, durasi, rumah) vs hujan
 
@@ -41,9 +45,9 @@ leave-one-kab-out.
 
 | Target | n (kab) | rho H3 | rho A7 | rho imax | rho sm | skill LOKO |
 | --- | --- | --- | --- | --- | --- | --- |
-| tma_cm maks | 102 (45) | -0,01 [-0,21; 0,19] | 0,15 [-0,01; 0,32] | -0,07 [-0,26; 0,11] | 0,04 [-0,24; 0,24] | -0,04 |
-| durasi_hari | 107 (55) | 0,16 [0,02; 0,32] | 0,10 [-0,07; 0,28] | 0,15 [-0,06; 0,32] | 0,16 [0,02; 0,31] | 0,00 |
-| rumah | 163 (62) | 0,04 [-0,12; 0,20] | 0,04 [-0,10; 0,19] | -0,11 [-0,28; 0,06] | -0,06 [-0,23; 0,13] | -0,02 |
+| tma_cm maks | 140 (73) | -0,00 [-0,17; 0,16] | 0,09 [-0,06; 0,23] | -0,06 [-0,25; 0,11] | 0,15 [-0,06; 0,34] | -0,03 |
+| durasi_hari | 161 (90) | 0,15 [-0,01; 0,30] | 0,17 [0,02; 0,31] | 0,11 [-0,07; 0,26] | 0,11 [-0,03; 0,26] | 0,02 |
+| rumah | 249 (106) | 0,02 [-0,12; 0,15] | 0,07 [-0,05; 0,19] | -0,12 [-0,25; 0,01] | 0,00 [-0,16; 0,16] | -0,01 |
 
 Tidak ada sinyal (kriteria: batas bawah rho > 0,3 DAN skill LOKO > 0,1). Rumus log-linear tidak mengalahkan rata-rata
 latih (skill <= 0). Kedalaman dan durasi yang dilaporkan tidak dapat diprediksi dari hujan ERA5 di titik ini. Dugaan sebab
@@ -57,7 +61,7 @@ hari ini), jadi tidak dibandingkan.
 1. Debit/TMA pos duga sungai (BBWS, SIHKA/PUPR, pos_sungai.json) di kabupaten berlabel, sebagai prediktor aliran, bukan hujan titik.
 2. Hujan hulu DAS terakumulasi (bukan hujan sel kabupaten) dan kelembapan DAS; `hulu.py` sudah ada tetapi belum diuji terhadap label ini.
 3. Label dengan kedalaman terukur (pos duga, kamera), bukan teks Kronologis.
-4. Lengkapi 53 kabupaten berlabel yang belum dinilai; ulangi sebelum mengambil keputusan ambang. Tidak ada ambang diubah di sini.
+4. Cakupan 2026 sudah lengkap (127/127). Perpanjang rentang di atas 21 Okt hanya dengan keputusan pemilik. Tidak ada ambang diubah di sini.
 
 ## Arsip Pusdalops 2016-2025 (`uji_logbook.py --arsip`, diperluas 1 Nov 2026)
 

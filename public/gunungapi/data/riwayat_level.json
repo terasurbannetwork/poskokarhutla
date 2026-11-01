@@ -7,19 +7,27 @@
   "4": "Awas"
  },
  "gunung": [
-  "Anak Krakatau"
+  "Anak Krakatau",
+  "Awu",
+  "Bur Ni Telong",
+  "Ibu",
+  "Ili Lewotolok",
+  "Lewotobi Laki-laki",
+  "Lokon",
+  "Merapi",
+  "Semeru"
  ],
  "baris": [
   {
    "gunung": "Anak Krakatau",
    "jenis": "perubahan",
    "tanggal": "2026-07-02",
-   "dari": null,
+   "dari": 2,
    "ke": 3,
-   "radius_km": null,
+   "radius_km": 3.0,
    "sumber": {
-    "berkas": "1604.Lap Khusus_Penurunan Status_GAK_21092026 (2).pdf",
-    "nomor": "1604.Lap/GL.03/BGL/2026",
+    "berkas": "1154.Lap Khusus_Peningkatan Status_GAK_02072026_rev.pdf",
+    "nomor": null,
     "penerbit": "Badan Geologi, PVMBG (KESDM)",
     "arsip": "Pusdalops BNPB"
    }
@@ -32,7 +40,7 @@
    "ke": 3,
    "radius_km": 3.0,
    "sumber": {
-    "berkas": "1403.Lap evaluasi aktivitas G. Anak Krakatau Level III periode 8 - 15 Agustus 2026.pdf",
+    "berkas": "1403.Lap evaluasi aktivitas G. Anak Krakatau_ dalam tingkat aktivitas Level III (Siaga) periode 8 - 15 Agustus 2026.pdf",
     "nomor": "1403.Lap/GL.03/BGL/2026",
     "penerbit": "Badan Geologi, PVMBG (KESDM)",
     "arsip": "Pusdalops BNPB"
@@ -64,6 +72,627 @@
     "nomor": "1604.Lap/GL.03/BGL/2026",
     "penerbit": "Badan Geologi, PVMBG (KESDM)",
     "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Awu",
+   "jenis": "perubahan",
+   "tanggal": "2025-02-02",
+   "dari": null,
+   "ke": 2,
+   "radius_km": 4.0,
+   "sumber": {
+    "berkas": "912 khusus peningkatan tingkat aktivitas gunung awu siaga 19 mei 2026.pdf",
+    "nomor": "912.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Awu",
+   "jenis": "perubahan",
+   "tanggal": "2026-05-19",
+   "dari": 2,
+   "ke": 3,
+   "radius_km": 4.0,
+   "sumber": {
+    "berkas": "912 khusus peningkatan tingkat aktivitas gunung awu siaga 19 mei 2026.pdf",
+    "nomor": "912.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Awu",
+   "jenis": "perubahan",
+   "tanggal": "2026-07-08",
+   "dari": 3,
+   "ke": 2,
+   "radius_km": 3.0,
+   "sumber": {
+    "berkas": "1229.Lap khusus penurunan tingkat aktivitas gunung awu 8 juli  2026.pdf",
+    "nomor": "1229.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Bur Ni Telong",
+   "jenis": "perubahan",
+   "tanggal": "2025-11-25",
+   "dari": 1,
+   "ke": 2,
+   "radius_km": 3.0,
+   "sumber": {
+    "berkas": "Salinan Lapsus peningkatan kegempaan Gunung Bur ni telong  5 Desember 2025.pdf",
+    "nomor": "172/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Ibu",
+   "jenis": "evaluasi",
+   "tanggal": "2025-01-11",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 4.0,
+   "sumber": {
+    "berkas": "Siaran Pers Perubahan Radius Zona Rekomendasi G. Ibu 11 Januari 2025-1.pdf",
+    "nomor": "006/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "harmonik": 130,
+    "vulkanik_dangkal": 289,
+    "vulkanik_dalam": 221,
+    "tektonik_lokal": 49,
+    "tektonik_jauh": 138
+   }
+  },
+  {
+   "gunung": "Ibu",
+   "jenis": "perubahan",
+   "tanggal": "2025-01-28",
+   "dari": null,
+   "ke": 3,
+   "radius_km": 4.0,
+   "sumber": {
+    "berkas": "301 Evaluasi G. Ibu Level III (Siaga) periode 23-28 Februari 2025.pdf",
+    "nomor": "301.Lap/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Ibu",
+   "jenis": "evaluasi",
+   "tanggal": "2025-03-03",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 4.0,
+   "sumber": {
+    "berkas": "301 Evaluasi G. Ibu Level III (Siaga) periode 23-28 Februari 2025.pdf",
+    "nomor": "301.Lap/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2025-02-23",
+    "2025-02-28"
+   ],
+   "gempa": {
+    "hembusan": 823,
+    "vulkanik_dangkal": 827,
+    "vulkanik_dalam": 100,
+    "tektonik_lokal": 13,
+    "tektonik_jauh": 229
+   }
+  },
+  {
+   "gunung": "Ili Lewotolok",
+   "jenis": "perubahan",
+   "tanggal": "2025-07-02",
+   "dari": 2,
+   "ke": 3,
+   "radius_km": 3.0,
+   "sumber": {
+    "berkas": "Lapsus_Peningkatan Dari Level II (Waspada) Menjadi Level III (Siaga) G Ili Lewotolok_02 Juli 2025 (2).pdf",
+    "nomor": "031/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Ili Lewotolok",
+   "jenis": "perubahan",
+   "tanggal": "2026-02-24",
+   "dari": null,
+   "ke": 2,
+   "radius_km": null,
+   "sumber": {
+    "berkas": "1228.Lap  Khusus Peningkatan Aktivitas Vulkanik G. Ili Lewotolok 08 Juli 2026 (1).pdf",
+    "nomor": null,
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-02-13",
+   "dari": 3,
+   "ke": 4,
+   "radius_km": null,
+   "sumber": {
+    "berkas": "27 Siaran Pers kenaikan G. Lewotobi Laki-laki 13 Februari 2025.pdf",
+    "nomor": "27/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-02-15",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "29 Siaran Pers kenaikan G. Lewotobi Laki-laki 15 Februari 2025.pdf",
+    "nomor": "29/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "hembusan": 10,
+    "harmonik": 4,
+    "tektonik_jauh": 5
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-02-16",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "30 Siaran Pers Aktivitas G. Lewotobi Laki-laki 16 Februari 2025.pdf",
+    "nomor": "30/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "hembusan": 21,
+    "harmonik": 5,
+    "vulkanik_dalam": 3,
+    "tektonik_jauh": 11
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-02-18",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "31 Siaran Pers Aktivitas G. Lewotobi Laki-laki 18 Februari 2025.docx.pdf",
+    "nomor": "31/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "hembusan": 34,
+    "harmonik": 5,
+    "vulkanik_dalam": 2,
+    "tektonik_jauh": 5
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-03-03",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 5.0,
+   "sumber": {
+    "berkas": "300 Evaluasi G. Lewotobi Laki-laki_ Level III (SIAGA) periode 23-28 Februari 2025.pdf",
+    "nomor": "300.Lap/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2025-02-23",
+    "2025-02-28"
+   ],
+   "gempa": {
+    "hembusan": 221,
+    "harmonik": 44,
+    "vulkanik_dalam": 14,
+    "tektonik_lokal": 4,
+    "tektonik_jauh": 36
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-03-15",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 5.0,
+   "sumber": {
+    "berkas": "Siaran Pers Perluasan Erupsi G. Lewotobi Laki-laki 15 Maret 2025.docx.pdf",
+    "nomor": "40/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2025-03-08",
+    "2025-03-15"
+   ],
+   "gempa": {
+    "hembusan": 158,
+    "harmonik": 62,
+    "tremor_menerus": 2,
+    "vulkanik_dalam": 8,
+    "tektonik_lokal": 6,
+    "tektonik_jauh": 36
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-03-20",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 5.0,
+   "sumber": {
+    "berkas": "Siaran Pers Peningkatan Aktivitas G. Lewotobi Laki-laki 20 Maret 2025.pdf",
+    "nomor": "42/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2025-03-13",
+    "2025-03-20"
+   ],
+   "gempa": {
+    "hembusan": 176,
+    "harmonik": 67,
+    "tremor_menerus": 1,
+    "vulkanik_dangkal": 1,
+    "vulkanik_dalam": 83,
+    "tektonik_lokal": 13,
+    "tektonik_jauh": 46
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-03-20",
+   "dari": 3,
+   "ke": 4,
+   "radius_km": 7.0,
+   "sumber": {
+    "berkas": "Siaran Pers Aktivitas G. Lewotobi Laki-laki 21 Maret 2025.pdf",
+    "nomor": "44/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-03-22",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 7.0,
+   "sumber": {
+    "berkas": "Siaran Pers Aktivitas G. Lewotobi Laki-laki 22 Maret 2025.pdf",
+    "nomor": "45/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "hembusan": 54,
+    "harmonik": 18,
+    "vulkanik_dalam": 21,
+    "tektonik_jauh": 1
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-03-23",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 7.0,
+   "sumber": {
+    "berkas": "Siaran Pers Aktivitas G. Lewotobi Laki-laki 23 Maret 2025.pdf",
+    "nomor": "46/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "hembusan": 14,
+    "harmonik": 11,
+    "vulkanik_dalam": 16,
+    "tektonik_lokal": 3,
+    "tektonik_jauh": 1
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-03-24",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 7.0,
+   "sumber": {
+    "berkas": "Siaran Pers Aktivitas G. Lewotobi Laki-laki 24 Maret 2025.pdf",
+    "nomor": "47/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "hembusan": 15,
+    "harmonik": 21,
+    "vulkanik_dalam": 3,
+    "tektonik_lokal": 2,
+    "tektonik_jauh": 8
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-03-30",
+   "dari": 4,
+   "ke": 3,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "Siaran Pers Perubahan Tingkat Aktivitas G. Lewotobi Laki-laki 30 Maret 2025.pdf",
+    "nomor": "55/KM.05/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-05-18",
+   "dari": 3,
+   "ke": 4,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "724 Kenaikan G_Lewotobi Laki-Laki dari SIAGA ke AWAS 19 Mei 2025 (2)-1.pdf",
+    "nomor": "724.Lap/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-06-17",
+   "dari": 3,
+   "ke": 4,
+   "radius_km": 7.0,
+   "sumber": {
+    "berkas": "PERUBAHAN TINGKAT AKTIVITAS G. Lewotobi Laki-laki 17 Juni 2025 AWAS.pdf",
+    "nomor": null,
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-07-10",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "LAPORAN AKTIVITAS G. Lewotobi Laki-laki  10 Juli 2025 (1).pdf",
+    "nomor": "039/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2025-07-09",
+    "2025-07-10"
+   ],
+   "gempa": {
+    "hembusan": 5,
+    "low_frequency": 1,
+    "vulkanik_dalam": 29,
+    "tektonik_lokal": 1,
+    "tektonik_jauh": 7
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-08-10",
+   "dari": 4,
+   "ke": 3,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "Perubahan Tingkat Aktivitas G. Lewotobi Laki-laki  dari Level IV Awas menjadi Level III (Siaga).pdf",
+    "nomor": "079/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-08-16",
+   "dari": 3,
+   "ke": 4,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "Laporan Khusus PERUBAHAN TINGKAT AKTIVITAS G. Lewotobi Laki-laki 16 Agustus 2025 AWAS.pdf",
+    "nomor": "081/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-08-23",
+   "dari": 4,
+   "ke": 3,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "Perubahan Tingkat Aktivitas G. Lewotobi Laki-laki  dari Level IV Awas menjadi Level III (Siaga) 23 Agustus 2025.pdf",
+    "nomor": "89/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-09-06",
+   "dari": 3,
+   "ke": 4,
+   "radius_km": null,
+   "sumber": {
+    "berkas": "LAPORAN KHUSUS Penurunan Tingkat Aktivitas G. Lewotobi Laki-laki  16 September 2025 pukul 06.00 wita.pdf",
+    "nomor": "104/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-09-16",
+   "dari": 4,
+   "ke": 3,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "LAPORAN KHUSUS Penurunan Tingkat Aktivitas G. Lewotobi Laki-laki  16 September 2025 pukul 06.00 wita.pdf",
+    "nomor": "104/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "perubahan",
+   "tanggal": "2025-10-25",
+   "dari": 4,
+   "ke": 3,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "LAPORAN KHUSUS  Perubahan Tingkat Aktivitas Vulkanik  G. Lewotobi Laki-laki 25 Oktober 2025 dari Level IV (AWAS.pdf",
+    "nomor": "137/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2025-11-30",
+   "dari": 4,
+   "ke": 4,
+   "radius_km": 6.0,
+   "sumber": {
+    "berkas": "LAPORAN KHUSUS Aktivitas G. Lewotobi Laki-laki 1 Desember 2025.pdf",
+    "nomor": "166/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "gempa": {
+    "low_frequency": 6,
+    "tremor_non_harmonik": 33,
+    "vulkanik_dalam": 9,
+    "tektonik_lokal": 1,
+    "tektonik_jauh": 7
+   }
+  },
+  {
+   "gunung": "Lewotobi Laki-laki",
+   "jenis": "evaluasi",
+   "tanggal": "2026-08-18",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 5.0,
+   "sumber": {
+    "berkas": "1405.Lap evaluasi aktivitas G. Lewotobi Laki-laki_ dalam tingkat aktivitas Level III (SIAGA) Periode 8-15 Agustus 2026.pdf",
+    "nomor": "1405.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2026-08-08",
+    "2026-08-15"
+   ],
+   "gempa": {
+    "hembusan": 23,
+    "low_frequency": 27,
+    "harmonik": 2,
+    "tremor_non_harmonik": 138,
+    "vulkanik_dalam": 11,
+    "tektonik_lokal": 22,
+    "tektonik_jauh": 375
+   }
+  },
+  {
+   "gunung": "Lokon",
+   "jenis": "perubahan",
+   "tanggal": "2025-09-03",
+   "dari": 2,
+   "ke": 3,
+   "radius_km": 2.5,
+   "sumber": {
+    "berkas": "Laporan Khusus Peningkatan level II ke Level III Lokon 3 September 2025.pdf",
+    "nomor": "94/GL.03/BGL/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Merapi",
+   "jenis": "evaluasi",
+   "tanggal": "2025-02-21",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 3.0,
+   "sumber": {
+    "berkas": "naskah-dinas-1030349_21022025.pdf",
+    "nomor": "B-97/GL.03/BGV.KG1/2025",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Semeru",
+   "jenis": "evaluasi",
+   "tanggal": "2026-08-18",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 5.0,
+   "sumber": {
+    "berkas": "1404.Lap Evaluasi Gunungapi Semeru Dalam Tingkat Aktivitas Level III (Siaga) Periode 8 _ 15 Agustus 2026.pdf",
+    "nomor": "1404.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2026-08-08",
+    "2026-08-15"
+   ],
+   "gempa": {
+    "hembusan": 131,
+    "tektonik_lokal": 1,
+    "tektonik_jauh": 42
    }
   }
  ]

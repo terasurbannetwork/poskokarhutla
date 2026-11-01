@@ -615,6 +615,29 @@
         "sensor/**",
         "tests/sensor/**"
       ]
+    },
+    {
+      "nama": "lapangan",
+      "kelas": "pengerja",
+      "model": "sonnet",
+      "ringkas": "Pengerja modul Pegawai dan Relawan Lapangan (/petugas): layar petugas seluler (persetujuan, daftar wajah lima arah, absen pindai wajah, logbook harian), panel pimpinan, pembungkus pustaka wajah Human di peramban, stempel foto, antrean luring, skrip scripts/lapangan.",
+      "kapan": "public/petugas/**, tests/lapangan/**, scripts/lapangan/**, atau dokumen data/kajian-bnpb/lapangan disentuh atau rusak",
+      "fokus": [
+        "Baca dulu data/kajian-bnpb/lapangan/ urut otoritas AGENTS.md §2.3; ambil satu tiket LP-* di TIKET.md, kerjakan hanya cakupannya",
+        "Konstanta wajah, GPS, dan status hanya dari GET /api/petugas/konst (sumber src/lapangan_konst.js); klien tidak menyimpan angka sendiri",
+        "Kepala situs bersama + token inti/tema.css, kelas .lp-*; kamera langsung, tanpa galeri; stempel dari waktu server",
+        "INP: tombol langsung berubah keadaan, kerja wajah di requestAnimationFrame atau Web Worker; layar 390 px, target sentuh 48 px",
+        "Vektor wajah dikirim sekali ke Worker dan tidak pernah disimpan di localStorage atau ditampilkan"
+      ],
+      "larangan": "Jangan menyentuh src/** dan migrations/** (milik warga-api), scripts/wa/** (milik wa-bot), atau .github/workflows (milik mekanik-mesin). Jangan memakai CDN pihak ketiga untuk model wajah. Jangan deploy, commit, push, atau melonggarkan gerbang.",
+      "bisa": "membangun layar /petugas dan panel pimpinan, pembungkus wajah Human, stempel, antrean luring IndexedDB, Service Worker, dan uji fungsi murni tests/lapangan",
+      "tidak": "worker, D1, migrasi; gateway WA; keputusan di KEPUTUSAN-LAPANGAN.md; memeriksa kerjanya sendiri",
+      "milik": [
+        "public/petugas/**",
+        "tests/lapangan/**",
+        "scripts/lapangan/**",
+        "data/kajian-bnpb/lapangan/**"
+      ]
     }
   ]
 }

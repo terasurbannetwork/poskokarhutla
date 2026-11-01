@@ -19,6 +19,7 @@ import {RUTE_HUKUM} from "./hukum.js";
 import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
+import {RUTE_LAPANGAN, bersihkanLapangan} from "./lapangan.js";
 import {layaniKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
@@ -575,6 +576,7 @@ const RUTE = {
   ...RUTE_HUKUM,   // Pustaka Hukum BNPB (docs/bnpb/HUKUM.md)
   ...RUTE_KONTAK,   // buku kontak pemangku kepentingan, hanya admin (src/kontak.js)
   ...RUTE_RELAWAN,
+  ...RUTE_LAPANGAN,   // modul Pegawai dan Relawan Lapangan: petugas + panel (src/lapangan.js, migrasi 0095)
   ...RUTE_ALUN,
   ...RUTE_RISET,
   ...RUTE_MEJA,
@@ -675,6 +677,8 @@ export const HTML_RUTE = [
   [/^\/monitor\/?$/, "/monitor.html", "/monitor"],   // monitor peringatan api untuk staf BNPB dan BPBD (public/monitor*, src/monitor.js); tetap tertutup di centurisk97.id, tiap API menjaga sesinya
   [/^\/direktori\/?$/, "/akademisi.html", "/direktori"],   // Direktori Kebencanaan (dulu /akademisi, nama diganti pemilik 30 Okt 2026): pakar, lembaga, inovasi, sistem data
   [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // alamat lama, dialihkan 301 ke /direktori di layaniHTML   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
+  [/^\/petugas\/?$/, "/petugas/index.html", "/petugas"],   // modul Pegawai dan Relawan Lapangan: layar petugas berkode (/lapangan milik regu Posko lama)
+  [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
   [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); di balik login, TIDAK di PUBLIK_TANPA_SESI
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
@@ -682,6 +686,7 @@ export const HTML_RUTE = [
 /* Cakupan: gerbang ini menutup CANGKANG HALAMAN (HTML, termasuk berkas .html yang dibuka langsung lewat run_worker_first di wrangler*.jsonc),
    BUKAN /data/*.json, JS, CSS, atau gambar: itu tetap aset statis publik tanpa Worker. */
 export const PUBLIK_TANPA_SESI = new Map([["/lapangan", "regu lapangan masuk dengan KODE tanpa akun (keputusan pemilik 19 Okt 2026); kode dicek di tiap panggilan API"],
+  ["/petugas", "pegawai dan relawan masuk dengan kode pribadi tanpa akun (KEPUTUSAN-LAPANGAN D5); kode dicek di tiap panggilan API"],
   ["/daftar-kontak", "registrasi kontak pemangku kepentingan (kepala daerah, BPBD, TNI, Polri) yang tidak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu, tidak membaca apa pun"],
   ["/renlap", "halaman HP Renlap SIPPA dibuka regu lapangan dengan tautan bertoken di fragmen #t=, tanpa akun (keputusan SIPPA 61, SP-140); data.json hanya terkirim bila token cocok (/api/renlap/data), halaman tanpa token kosong"],
   ["/uji-pilot", "regu uji pilot SIPPA Kalteng membuka dossier dan melapor dengan tautan bertoken, tanpa akun (keputusan pemilik 26 Okt 2026, keputusan SIPPA 59); token dicek di tiap panggilan API, halaman tanpa token kosong"],
@@ -729,8 +734,11 @@ async function layaniHTML(req, env, ctx, url) {
   }}).transform(aset);
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
   if (pmTab || hostTerkunci(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
+  /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
+  if (jalur === "/petugas" || jalur === "/petugas/panel") { keluaran.headers.set("content-security-policy", CSP_PETUGAS); keluaran.headers.set("referrer-policy", "no-referrer"); }
   return keluaran;
 }
+const CSP_PETUGAS = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
 
 /* ================= cache tepi untuk GET publik tanpa data per pengguna (caches.default, per pusat data Cloudflare) =================
    Hanya dipanggil dari rute GET publik di fetch() (/api/warga daftar & konfig, /api/titik, /api/status); admin, POST, dan rute
@@ -937,6 +945,7 @@ async function bersihSemua(env, sekarang) {
     try { await bersihkanBnpb(env, Date.now()); } catch (e) { console.error("bnpb", e?.message); }   // migrasi 0022 belum jalan = cron lain tetap jalan
     try { await segarkanRingkas(env); } catch (e) { console.error("meja ringkas", e?.message); }   // tanda berbasis waktu (logistik >24 jam dst.) di agregat Meja Kerja
     try { await bersihkanArsipSitrep(env, Date.now()); } catch (e) { console.error("arsip sitrep", e?.message); }   // retensi 400 hari
+    try { await bersihkanLapangan(env, Date.now()); } catch (e) { console.error("lapangan", e?.message); }   // wa_antre memuat kode pribadi; migrasi 0095 belum jalan = cron lain tetap jalan
     try { await bersihkanRelawan(env, Date.now()); } catch (e) { console.error("relawan", e?.message); }   // retensi UU PDP: ditolak/nonaktif > 180 hari dianonimkan
     try { await bersihkanGempa(env, Date.now()); } catch (e) { console.error("gempa", e); }
     try { await bersihkanPeringatan(env, Date.now()); } catch (e) { console.error("peringatan", e?.message); }   // migrasi 0009 belum jalan = cron lain tetap jalan

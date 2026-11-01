@@ -972,7 +972,18 @@
     "table lapsus_kejadian": "lapsus: operasi > provinsi > tim > kejadian, entri harian, penanda basi",
     "table lapsus_entri": "lapsus: operasi > provinsi > tim > kejadian, entri harian, penanda basi",
     "table rollcall_sesi": "rollcall: sesi per tanggal dan slot, dobel 409, ringkasan ketaatan bulanan",
-    "table rollcall_peserta": "rollcall: sesi per tanggal dan slot, dobel 409, ringkasan ketaatan bulanan"
+    "table rollcall_peserta": "rollcall: sesi per tanggal dan slot, dobel 409, ringkasan ketaatan bulanan",
+    "GET /api/petugas/konst": "konst: publik, tanpa rahasia",
+    "GET /api/petugas/saya": "saya: tanpa kode 401",
+    "POST /api/petugas/setuju": "setuju: butuh kode dan x-pb",
+    "POST /api/petugas/dummy": "dummy: hanya Super Admin dan x-pb",
+    "POST /api/petugas/panel/impor": "impor: pratinjau melaporkan baru/ditolak dan TIDAK menulis",
+    "GET /api/petugas/panel/orang": "daftar orang: hanya pimpinan/koordalops/moderator",
+    "POST /api/petugas/panel/tautan/:id": "tautan: hanya panel dan x-pb",
+    "table orang": "impor: simpan membuat orang",
+    "table orang_setuju": "setuju: butuh kode dan x-pb",
+    "table orang_wajah": "setuju: butuh kode dan x-pb",
+    "table wa_antre": "tautan: hanya panel dan x-pb"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
