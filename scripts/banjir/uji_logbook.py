@@ -444,7 +444,7 @@ def arsip_label(baris, jenis, lebar_jendela=0, aktif=False):
         if r["jenis"] != jenis:
             continue
         a = tgl_aman(r["tgl_kejadian"]) or tgl_aman(r["pertama_dicatat"])
-        if not a or not 2009 <= a.year <= 2022:
+        if not a or not 2009 <= a.year <= 2025:
             continue
         z = a
         if aktif:
@@ -482,14 +482,69 @@ def arsip_level(jenis, sk, kabs, cuaca, tahun):
     return out
 
 
-def arsip_blok(lv, label, cakup):
-    """-> {(kab, tahun): [[a,b,c,d] untuk waspada, siaga, awas, PERSISTEN]}; hanya hari tercakup logbook.
-    Persisten = alarm di hari d bila hari d-1 berlabel (pembanding tanpa hujan)."""
+LATIH = range(2016, 2022)   # tahun penyetel (BERLAKU dipilih di sini); klimatologi juga hanya belajar dari sini
+LUAR = (2022, 2023, 2024, 2025)
+LEVEL_MIN = min(LEVEL)   # Waspada
+
+
+def arsip_laju(label, cakup, kabs):
+    """-> ({kab: {bulan: laju label}}, {kab: [hari tercakup per bulan]}) dari tahun LATIH saja."""
+    laju, hari = {}, {}
+    for kab in kabs:
+        kej, n, k = label.get(kab, set()), [0] * 13, [0] * 13
+        for y in LATIH:
+            for d in cakup.get(y, ()):
+                n[d.month] += 1
+                k[d.month] += d in kej
+        laju[kab] = {m: k[m] / n[m] for m in range(1, 13) if n[m]}
+        hari[kab] = n
+    return laju, hari
+
+
+def arsip_klim(laju, label, cakup, kabs):
+    """Klimatologi per kab: bulan 'rawan' = laju label bulan itu (LATIH) > laju kab keseluruhan. -> {kab: set(bulan)}"""
+    out = {}
+    for kab in kabs:
+        kej = label.get(kab, set())
+        tot = sum(d in kej for y in LATIH for d in cakup.get(y, ())) / max(sum(len(cakup.get(y, ())) for y in LATIH), 1)
+        out[kab] = {m for m, r in laju[kab].items() if r > tot}
+    return out
+
+
+def arsip_klim_sama(laju, hari, kabs, q):
+    """Klimatologi dengan LAJU ALARM sama dengan model (q = porsi hari-kab Waspada model di LATIH): per kab ambil bulan berlaju
+    tertinggi sampai porsi hari >= q. Hanya memakai laju alarm model, bukan hasilnya di tahun uji. -> {kab: set(bulan)}"""
+    out = {}
+    for kab in kabs:
+        tot, isi, ms = sum(hari[kab]), 0, set()
+        for m in sorted(laju[kab], key=lambda m: -laju[kab][m]):
+            if isi >= q * tot:
+                break
+            ms.add(m)
+            isi += hari[kab][m]
+        out[kab] = ms
+    return out
+
+
+def laju_alarm_model(lv, cakup):
+    """Porsi hari-kab tercakup di LATIH dengan level model >= Waspada (tanpa melihat label)."""
+    n = a = 0
+    for per_hari in lv.values():
+        for d, l in per_hari.items():
+            if d.year in LATIH and d in cakup[d.year]:
+                n += 1
+                a += l >= LEVEL_MIN
+    return a / n
+
+
+def arsip_blok(lv, label, cakup, klim=None, klim2=None):
+    """-> {(kab, tahun): [[a,b,c,d] untuk waspada, siaga, awas, PERSISTEN, KLIMATOLOGI]}; hanya hari tercakup logbook.
+    Persisten = alarm di hari d bila hari d-1 berlabel; klimatologi = alarm bila bulan d rawan menurut arsip_klim (keduanya tanpa hujan)."""
     blok = {}
     for kab, per_hari in lv.items():
         kej = label.get(kab, set())
         for y, ada in cakup.items():
-            t = [[0, 0, 0, 0] for _ in range(len(LEVEL) + 1)]
+            t = [[0, 0, 0, 0] for _ in range(len(LEVEL) + 3)]
             n = 0
             for d, l in per_hari.items():
                 if d.year != y or d not in ada:
@@ -500,9 +555,23 @@ def arsip_blok(lv, label, cakup):
                     t[i][(0 if o else 1) if l >= L else (2 if o else 3)] += 1
                 p = (d - dt.timedelta(1)) in kej
                 t[3][(0 if o else 1) if p else (2 if o else 3)] += 1
+                if klim is not None:
+                    t[4][(0 if o else 1) if d.month in klim[kab] else (2 if o else 3)] += 1
+                    t[5][(0 if o else 1) if d.month in klim2[kab] else (2 if o else 3)] += 1
             if n:
                 blok[(kab, y)] = t
     return blok
+
+
+def ets_pasang(blok, ia, ib, ulang=ULANG, seed=11):
+    """Selisih ETS (indeks tabel ia - ib) + CI95 bootstrap BERPASANGAN (blok kab-tahun sama untuk keduanya)."""
+    e = lambda ks, i: skor(*jumlah(blok, ks, i))["ets"] or 0
+    kunci, r, xs = sorted(blok), random.Random(seed), []
+    for _ in range(ulang):
+        ks = [r.choice(kunci) for _ in kunci]
+        xs.append(e(ks, ia) - e(ks, ib))
+    xs.sort()
+    return {"selisih": round(e(kunci, ia) - e(kunci, ib), 4), "ci95": [round(xs[int(.025 * (ulang - 1))], 4), round(xs[int(.975 * (ulang - 1))], 4)]}
 
 
 def arsip_ringkas(blok, ulang=ULANG):
@@ -518,11 +587,20 @@ def arsip_ringkas(blok, ulang=ULANG):
                              "n": dict(zip("abcd", n)), "acak": {"pod": round((n[0] + n[1]) / sum(n), 3), "far": round((n[0] + n[2]) / sum(n), 4)}}
         s = skor(*jumlah(b, sorted(b), 3))
         out["persisten"] = {m: None if v is None else round(v, 3) for m, v in s.items()}
+        s = skor(*jumlah(b, sorted(b), 4))
+        out["klimatologi"] = {m: None if v is None else round(v, 3) for m, v in s.items()}
+        s = skor(*jumlah(b, sorted(b), 5))
+        out["klimatologi_laju_sama"] = {m: None if v is None else round(v, 3) for m, v in s.items()}
+        out["selisih_ets_waspada"] = {n: ets_pasang(b, 0, i, ulang) for n, i in
+                                      (("vs_persisten", 3), ("vs_klimatologi", 4), ("vs_klimatologi_laju_sama", 5))}
         return out
     out = {}
     for y in sorted({k[1] for k in blok}):
         out[str(y)] = satu({k: v for k, v in blok.items() if k[1] == y})
     out["gabungan"] = satu(blok)
+    luar = {k: v for k, v in blok.items() if k[1] in LUAR}
+    if luar:
+        out["luar_sampel_2022_2025"] = satu(luar)
     return out
 
 
@@ -531,21 +609,26 @@ def arsip_main():
     tahun = sorted(cakup)
     print(f"arsip: {len(kabs)}/{len(sk)} kab dengan hujan lengkap, {len(cuaca)} sel, tahun tercakup {tahun}", file=sys.stderr)
     lv = arsip_level("banjir", sk, kabs, cuaca, tahun)
+    q = laju_alarm_model(lv, cakup)
     hasil = {}
     for nama, kw in (("lb_mulai", {}), ("lb_aktif", {"aktif": True})):
         lab = arsip_label(baris, "banjir", **kw)
-        blok = arsip_blok(lv, lab, cakup)
+        laju, hari = arsip_laju(lab, cakup, kabs)
+        blok = arsip_blok(lv, lab, cakup, arsip_klim(laju, lab, cakup, kabs), arsip_klim_sama(laju, hari, kabs, q))
         berlabel = {k[0] for k, v in blok.items() if v[0][0] + v[0][2] > 0}
         r = {"semua_kab_cache": arsip_ringkas(blok), "hanya_kab_berlabel": arsip_ringkas({k: v for k, v in blok.items() if k[0] in berlabel}),
              "kab_berlabel": len(berlabel)}
+        lat = {k[0] for k, v in blok.items() if k[1] in LATIH and v[0][0] + v[0][2] > 0}   # kab berlabel menurut 2016-2021 saja
+        r["luar_sampel_kab_berlabel_2016_2021"] = {"kab": len(lat), **arsip_ringkas({k: v for k, v in blok.items() if k[0] in lat and k[1] in LUAR}, ulang=300)["luar_sampel_2022_2025"]}
         r["vonis_gabungan"] = vonis({"waspada": r["hanya_kab_berlabel"]["gabungan"]["waspada"]})
+        r["vonis_luar_sampel"] = vonis({"waspada": r["hanya_kab_berlabel"]["luar_sampel_2022_2025"]["waspada"]})
         hasil[nama] = r
         for sub in ("semua_kab_cache", "hanya_kab_berlabel"):
             for y, x in r[sub].items():
                 w = x["waspada"]
                 print(f"{nama:8s} {sub:18s} {y:9s} kab={x['kab']:3d} kejadian-hari={x['kejadian_hari']:5d} waspada POD {w['pod']} FAR {w['far']} ETS {w['ets']} {w['ci'].get('ets')}"
-                      f" | persisten ETS {x['persisten']['ets']} POD {x['persisten']['pod']} FAR {x['persisten']['far']} | acak POD {w['acak']['pod']}")
-        print(f"{nama} VONIS gabungan (kab berlabel, waspada): {r['vonis_gabungan']}")
+                      f" | persisten ETS {x['persisten']['ets']} POD {x['persisten']['pod']} FAR {x['persisten']['far']} | klim ETS {x['klimatologi']['ets']}/{x['klimatologi_laju_sama']['ets']}(laju sama) dETS vs persisten {x['selisih_ets_waspada']['vs_persisten']} vs klim {x['selisih_ets_waspada']['vs_klimatologi']} POD {x['klimatologi']['pod']} FAR {x['klimatologi']['far']} | acak POD {w['acak']['pod']}")
+        print(f"{nama} VONIS luar-sampel 2022-2025 (kab berlabel, waspada): {r['vonis_luar_sampel']}")
     n_kab = len(kabs)
     try:
         n_lama = json.load(open(KELUAR_ARSIP)).get("sampel", {}).get("kab_dinilai") or 0
@@ -558,18 +641,20 @@ def arsip_main():
         "dibuat": dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).isoformat(timespec="minutes"),
         "tahun_dinilai": tahun, "aturan": BERLAKU["banjir"], "kriteria": {"ets_lulus_batas_bawah_ci": ETS_LULUS},
         "sampel": {"kab_dinilai": n_kab, "kab_geo_total": len(sk), "sel": len(cuaca),
-                   "pemilihan": "kab yang semua selnya ada di cache uji_balik (dipilih dulu menurut jumlah hari kejadian DIBI/logbook 2016-2025, jadi bias ke kab yang sering banjir)"},
-        "utama": {"keterangan": "2022 = satu-satunya tahun luar-sampel (BERLAKU dipilih di 2016-2021); vonis mengikuti 2022",
-                  **{n: {"tahun": 2022, "hanya_kab_berlabel": hasil[n]["hanya_kab_berlabel"].get("2022"),
-                         "vonis": vonis({"waspada": hasil[n]["hanya_kab_berlabel"]["2022"]["waspada"]}) if "2022" in hasil[n]["hanya_kab_berlabel"] else None}
+                   "pemilihan": "kab yang semua selnya ada di cache uji_balik (dipilih menurut jumlah hari kejadian DIBI/logbook 2016-2025, TERMASUK tahun uji 2022-2025: seleksi memakai hasil sehingga skor optimistis)"},
+        "utama": {"keterangan": "HEADLINE = gabungan luar-sampel 2022-2025 (BERLAKU dipilih di 2016-2021 tetapi diterima lewat uji 2022-2025 pada label DIBI di uji_balik; label logbook belum pernah dipakai menyetel; klimatologi hanya belajar dari 2016-2021). Per tahun 2022-2025 ada di 'per_tahun'. Vonis mengikuti gabungan luar-sampel.",
+                  **{n: {"tahun": list(LUAR), "hanya_kab_berlabel": hasil[n]["hanya_kab_berlabel"].get("luar_sampel_2022_2025"),
+                         "per_tahun": {str(y): hasil[n]["hanya_kab_berlabel"].get(str(y)) for y in LUAR},
+                         "vonis": hasil[n]["vonis_luar_sampel"]}
                      for n in hasil}},
         "label": hasil,
-        "label_gabungan_keterangan": "blok 'gabungan' dan tahun 2016-2020 = konsistensi (2016-2020 ikut menyetel ambang), BUKAN bukti luar-sampel",
-        "catatan": "MODEL KALAH DARI PERSISTEN pada lb_mulai (ETS persisten > ETS Waspada): label berhari-jamak membuat 'kemarin berlabel' prediktor kuat, hujan tidak menambah. "
-                   "Kab sampel (41) berasal dari cache uji_balik yang dibangun dari kab sering terdampak (seleksi pada hasil): POD dan laju dasar TIDAK berlaku nasional. "
-                   "Uji arsip Pusdalops (tgl_kejadian). 2016-2025 bukan luar-sampel murni: BERLAKU dipilih di 2016-2021 (uji_balik), jadi 2022 ke atas "
-                   "saja yang luar-sampel; 2016-2020 dipakai memilih ambang dan hanya konsistensi. Tahun tanpa arsip (2021) tak dinilai; 2022 parsial (hanya hari tercakup). "
-                   "Hujan ERA5 sebagai prakiraan sempurna. Kab tanpa laporan bukan pasti tanpa banjir: FAR batas atas. Pembanding: persisten (alarm bila kemarin berlabel) dan acak.",
+        "label_gabungan_keterangan": "blok 'gabungan' dan tahun 2016-2021 = dalam-sampel (ikut menyetel ambang), BUKAN bukti luar-sampel; luar-sampel = 'luar_sampel_2022_2025'",
+        "catatan": "Uji arsip Pusdalops (tgl_kejadian), 31 Okt 2026 diperluas: luar-sampel = 2022, 2023, 2024, 2025 (tak dipakai menyetel ambang/model dengan label logbook; lihat butir 5); 2021 kini punya arsip tetapi dalam-sampel. "
+                   "Pembanding tanpa hujan: persisten (alarm bila kemarin berlabel), klimatologi (alarm di bulan yang laju labelnya 2016-2021 di atas rata-rata kab itu) dan acak (laju alarm sama). "
+                   "BIAS: (1) tahun parsial (2021: 343, 2022: 272, 2023: 327 hari tercatat; piket bolong) hanya menilai hari tercakup logbook, hari tanpa laporan di luar itu bukan negatif; "
+                   "(2) 41 kab sampel dari cache uji_balik dipilih dari jumlah hari kejadian 2016-2025 TERMASUK tahun uji (seleksi memakai hasil 2022-2025): skor OPTIMISTIS, POD dan laju dasar TIDAK nasional, FAR bukan batas atas yang pasti; 'luar_sampel_kab_berlabel_2016_2021' memakai kab berlabel menurut 2016-2021 saja sebagai uji kepekaan, tetapi 41 kab awal tetap terseleksi; "
+                   "(3) persisten tak adil untuk label berdurasi (lb_aktif) karena 'kemarin berlabel' hampir sama dengan label hari ini; (4) hujan ERA5 = prakiraan sempurna, prakiraan sungguhan lebih buruk; "
+                   "(5) BERLAKU dipilih di 2016-2021 tetapi DITERIMA lewat uji 2022-2025 pada label DIBI (uji_balik), jadi 2022-2025 bukan sepenuhnya murni; label logbook belum dipakai; selisih_ets_waspada = CI berpasangan model vs persisten/klimatologi (klimatologi_laju_sama: laju alarm = laju model di 2016-2021).",
     })
     print(f"{os.path.relpath(KELUAR_ARSIP)} ditulis", file=sys.stderr)
 

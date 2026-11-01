@@ -230,8 +230,8 @@
     const aksi = h("div", {class: "bn-aksi"}); boxHari = h("div");
     const tglIn = h("input", {type: "date", value: tgl, max: wibHari(), "aria-label": "Tanggal laporan"});
     tglIn.addEventListener("change", () => { if (tglIn.value) { tgl = tglIn.value; muatHari(); } });
-    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Logbook Pusdalops"}), aksi),
-      h("div", {class: "lb-kolom"}, bentuk(), h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Entri periode laporan", h("span", {class: "lb-kanan"}, tglIn)), boxHari)));
+    const kolom = h("div", {class: "lb-kolom"}, bentuk(), h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Entri periode laporan", h("span", {class: "lb-kanan"}, tglIn)), boxHari));
+    app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Logbook Pusdalops"}), aksi), ...window.LogbookTurunan.pasang(kolom), kolom);
     isiProv(); opsi(el.kab, [], "Pilih kabupaten/kota"); opsi(el.kec, [], "Pilih kecamatan"); opsi(el.desa, [], "Pilih desa/kelurahan"); opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)");
     el.form.addEventListener("submit", kirim);
     el.form.addEventListener("input", () => { periksaLive(); simpanDraf(); });

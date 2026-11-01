@@ -192,8 +192,8 @@ export default {
     },
     {
       "id": "banjir",
-      "nama": "Banjir, Longsor & Rob",
-      "nama_en": "Floods, Landslides & Tidal Floods",
+      "nama": "Banjir & Longsor",
+      "nama_en": "Floods & Landslides",
       "ikon": "banjir",
       "warna": "#4f9be0",
       "rute": "/banjir/",
@@ -203,6 +203,7 @@ export default {
       "tab": [
         "peta",
         "insight",
+        "longsor",
         "berita",
         "tren",
         "dampak",
@@ -310,7 +311,7 @@ export default {
       "workflow": "banjir.yml",
       "pengerja": "banjir",
       "bagikan": {
-        "nama": "Centurisk97 · Banjir, Longsor & Rob",
+        "nama": "Centurisk97 Banjir & Longsor",
         "sumber": "Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
         "tagar": [
           "#banjir",
@@ -646,6 +647,7 @@ export default {
       "ikon": "udara",
       "warna": "#4a9d9c",
       "rute": "/udara/",
+      "menu": false,
       "data": "/udara/data/",
       "status": "aktif",
       "warisan": false,

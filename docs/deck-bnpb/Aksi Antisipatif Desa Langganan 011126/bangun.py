@@ -21,7 +21,7 @@ def pus(pid, penulis, judul, tgl, url=None):
                     'title': judul, 'verifikasi': 'sekunder' if url else 'primer', **({'URL': url} if url else {})}
 
 
-pus('aksi-log', 'Badan Nasional Penanggulangan Bencana', 'Logbook harian Pusdalops BNPB 2011–2023 (37.992 kejadian), diolah penyusun', [2026, 11, 1])
+pus('aksi-log', 'Badan Nasional Penanggulangan Bencana', 'Logbook harian Pusdalops BNPB 2011–2026 (56.685 kejadian), diolah penyusun', [2026, 11, 1])
 pus('aksi-insight', 'Badan Nasional Penanggulangan Bencana', 'Insight lintas data: logbook Pusdalops disilangkan dengan hotspot FIRMS, InaRISK, DIBI, SK status darurat, dan korpus riset direktori', [2026, 11, 1])
 pus('aksi-rancangan', 'Badan Nasional Penanggulangan Bencana', 'Rancangan aksi antisipatif desa langganan: strategi tiga lapis dan pilot longsor Jawa Tengah (draf penyusun)', [2026, 11, 1])
 pus('aksi-peta', 'Badan Nasional Penanggulangan Bencana', 'Peta kolaborasi dan permintaan data aksi antisipatif desa langganan (butir terverifikasi saja)', [2026, 11, 1])
@@ -36,7 +36,7 @@ pus('aksi-pfb', 'Bisnis.com', 'Pemerintah bentuk dana abadi penanggulangan benca
     'https://ekonomi.bisnis.com/read/20230302/9/1633394/pemerintah-bentuk-dana-abadi-penanggulangan-bencana-tersedia-rp74-triliun')
 pus('aksi-ugm', 'Universitas Gadjah Mada', 'UGM dan BNPB bekerja sama memitigasi longsor (GAMA-EWS)', [2026, 11, 1], 'https://ugm.ac.id/en/news/10222-ugm-bnpb-cooperate-to-mitigate-landslides/')
 
-S_LOG = 'Logbook Pusdalops BNPB 2011–2023'
+S_LOG = 'Logbook Pusdalops BNPB 2011–2026'
 S_INS = 'Insight lintas data BNPB, 1 Nov 2026'
 S_RAN = 'Rancangan aksi antisipatif, 1 Nov 2026'
 S_PETA = 'Peta kolaborasi BNPB, 1 Nov 2026'
@@ -60,12 +60,24 @@ def tulis(nama, kepala, baris):
 
 
 # ---------------- angka ----------------
-a('log.kejadian', 37992, 'kejadian', 'aksi-log', S_LOG, 'resmi')
+a('log.kejadian', 56685, 'kejadian', 'aksi-log', S_LOG, 'resmi')
 a('log.th0', 2011, '', 'aksi-log', S_LOG, 'resmi')
-a('lang.banjir', 85, 'kab/kota', 'aksi-insight', S_INS)
-a('lang.longsor', 52, 'kab/kota', 'aksi-insight', S_INS)
-a('lang.tahun', 7, 'tahun', 'aksi-insight', S_INS, catatan='7 dari 7 tahun, 2014–2020')
-a('ets', 0.006, '', 'aksi-insight', S_INS, catatan='ETS luar-sampel 2022, banjir dari hujan')
+a('lang.banjir', 78, 'kab/kota', 'aksi-insight', S_INS, catatan='9 dari 9 tahun dasar: 2014–2020, 2024, 2025')
+a('lang.longsor', 49, 'kab/kota', 'aksi-insight', S_INS, catatan='9 dari 9 tahun dasar: 2014–2020, 2024, 2025')
+a('dasar.hari', 25, 'hari', 'aksi-insight', S_INS)
+a('lang.cuaca', 62, 'kab/kota', 'aksi-insight', S_INS, catatan='9 dari 9 tahun dasar: 2014–2020, 2024, 2025')
+a('lang.tahun', 9, 'tahun', 'aksi-insight', S_INS, catatan='9 dari 9 tahun dasar: 2014–2020, 2024, 2025')
+a('lama.banjir', 85, 'kab/kota', 'aksi-insight', S_INS, catatan='basis lama 2014–2020 (7 dari 7 tahun); celah riset belum dihitung ulang')
+a('lama.longsor', 52, 'kab/kota', 'aksi-insight', S_INS, catatan='basis lama 2014–2020 (7 dari 7 tahun); celah riset belum dihitung ulang')
+a('ets', 0.011, '', 'aksi-insight', S_INS, catatan='ETS gabungan empat tahun uji 2022–2025, banjir dari hujan, selang 0,008–0,014')
+a('alarm.per', 100, 'alarm', 'aksi-insight', S_INS)
+a('alarm.salah', 98, 'dari 100 alarm', 'aksi-insight', S_INS)
+a('auc.longsor', 0.65, '', 'aksi-insight', S_INS, catatan='skor longsor hujan 3 hari x bahaya, 2022–2025')
+a('lift.baru', 1.95, '', 'aksi-insight', S_INS, catatan='titik api vs laporan karhutla 2023–2025; 2,23 untuk 2014–2022')
+a('log.2025', 5906, 'kejadian', 'aksi-log', S_LOG, 'resmi')
+a('dibi.banjir25', 2991, 'kejadian', 'aksi-insight', S_INS)
+a('dibi.cuaca25', 2432, 'kejadian', 'aksi-insight', S_INS)
+a('dibi.longsor25', 1171, 'kejadian', 'aksi-insight', S_INS)
 a('jawa.lapor.min', 1, '%', 'aksi-insight', S_INS)
 a('jawa.lapor.max', 5, '%', 'aksi-insight', S_INS)
 a('papua.min', 0.3, 'kejadian per kab per tahun', 'aksi-insight', S_INS)
@@ -76,17 +88,18 @@ a('kor.longsor', 0.10, '', 'aksi-insight', S_INS)
 a('kor.karhutla', 0.09, '', 'aksi-insight', S_INS)
 a('kor.gempa', 0.48, '', 'aksi-insight', S_INS)
 a('longsor.200', 200, 'longsor', 'aksi-insight', S_INS, catatan='sekitar 200-an longsor tercatat di Bogor, Magelang, Cilacap, Kota Semarang')
-a('k.akses', 923, 'entri', 'aksi-log', S_LOG, 'resmi')
-a('k.logistik', 431, 'entri', 'aksi-log', S_LOG, 'resmi')
-a('k.sinyal', 306, 'entri', 'aksi-log', S_LOG, 'resmi')
-a('k.air', 283, 'entri', 'aksi-log', S_LOG, 'resmi')
-a('k.personel', 248, 'entri', 'aksi-log', S_LOG, 'resmi')
-a('k.alat', 206, 'entri', 'aksi-log', S_LOG, 'resmi')
-a('desa.isolir', 259, 'desa', 'aksi-insight', S_INS)
-a('musim.maluku', 58, '%', 'aksi-insight', S_INS)
-a('musim.malut', 56, '%', 'aksi-insight', S_INS)
-a('musim.sultra', 43, '%', 'aksi-insight', S_INS)
-a('musim.sulteng', 40, '%', 'aksi-insight', S_INS)
+a('k.akses', 2000, 'entri', 'aksi-log', S_LOG, 'resmi')
+a('k.logistik', 1377, 'entri', 'aksi-log', S_LOG, 'resmi')
+a('k.sinyal', 963, 'entri', 'aksi-log', S_LOG, 'resmi')
+a('k.air', 1479, 'entri', 'aksi-log', S_LOG, 'resmi')
+a('k.personel', 927, 'entri', 'aksi-log', S_LOG, 'resmi')
+a('k.alat', 495, 'entri', 'aksi-log', S_LOG, 'resmi')
+a('k.gambut', 363, 'entri', 'aksi-log', S_LOG, 'resmi')
+a('desa.isolir', 2151, 'desa', 'aksi-insight', S_INS)
+a('musim.maluku', 56, '%', 'aksi-insight', S_INS)
+a('musim.malut', 46, '%', 'aksi-insight', S_INS)
+a('musim.sultra', 45, '%', 'aksi-insight', S_INS)
+a('musim.sulteng', 34, '%', 'aksi-insight', S_INS)
 a('rantai', 15.8, '%', 'aksi-insight', S_INS, catatan='banjir diikuti longsor di kab yang sama dalam 3 hari')
 a('sk.lewat', 232, 'SK', 'aksi-insight', S_INS)
 a('sk.total', 453, 'SK', 'aksi-insight', S_INS)
@@ -135,9 +148,9 @@ a('lapis', 3, 'lapis', 'aksi-rancangan', S_RAN, 'asumsi-kebijakan')
 a('tutup.hari', 3, 'hari', 'aksi-insight', S_INS)
 
 # ---------------- tabel ----------------
-c_lang = tulis('langganan', ['jenis', 'kab'], [['Banjir', 85], ['Longsor', 52]])
-c_kendala = tulis('kendala', ['kendala', 'entri'], [['Akses putus', 923], ['Logistik', 431], ['Sinyal putus', 306],
-                                                  ['Air', 283], ['Personel', 248], ['Alat berat', 206]])
+c_lang = tulis('langganan', ['jenis', 'kab'], [['Banjir', 78], ['Cuaca ekstrem', 62], ['Longsor', 49]])
+c_kendala = tulis('kendala', ['kendala', 'entri'], [['Akses putus', 2000], ['Air', 1479], ['Logistik', 1377],
+                                                  ['Sinyal putus', 963], ['Personel', 927], ['Alat berat', 495], ['Gambut', 363]])
 c_kor = tulis('korelasi', ['jenis', 'korelasi'], [['Banjir', 0.08], ['Longsor', 0.10], ['Karhutla', 0.09], ['Gempa', 0.48]])
 c_musim = tulis('musim', ['daerah', 'pola', 'implikasi'], [
     ['Maluku, Maluku Utara', 'Banjir dan longsor memuncak Juni–Agustus', 'Siaga justru pertengahan tahun'],
@@ -365,15 +378,16 @@ def kolom_t(*c):
 
 SLIDE = [
     {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subjudul': 0.85,
-     'penyaji': {'nama': 'Alfatehan Septianta', 'jabatan': 'Staf Ahli BNPB'}},
+     'penyaji': {'nama': 'Alfatehan Septianta', 'jabatan': 'Staf Ahli BNPB'},
+     'kepada': 'Ditujukan khusus untuk mitra kerja sama BNPB'},
 
     # ---- Bagian 1: diagnosis ----
     {'jenis': 'galeri', 'jenis_slide': 'navigasi', 'judul_bentuk': 'deskriptif', 'pesan': 'Ringkasan eksekutif',
-     'sumber': 'Logbook Pusdalops BNPB 2011–2023; insight lintas data BNPB, 1 Nov 2026; rancangan aksi antisipatif, 1 Nov 2026',
+     'sumber': 'Logbook Pusdalops BNPB 2011–2026; insight lintas data BNPB, 1 Nov 2026; rancangan aksi antisipatif, 1 Nov 2026',
      'judul': f'Bencana berulang di desa yang sama dan {t("lapis")} lapis aksi antisipatif memerlukan mitra di empat kelompok lembaga',
      'cut_off': False, 'skala_huruf': 1.5,
      'grup': [{'pil': 'Dasar usulan', 'nada': 'data', 'ikon': 'ringkasan', 'kartu': [
-         kt(t('log.kejadian'), f'kejadian logbook Pusdalops {t("log.th0", "|tahun")}–2023', 'peringatan'),
+         kt(t('log.kejadian'), f'kejadian logbook Pusdalops {t("log.th0", "|tahun")}–2026', 'peringatan'),
          kt(t('lang.banjir'), 'kab/kota langganan banjir', 'banjir'),
          kt(t('lang.longsor'), 'kab/kota langganan longsor', 'longsor', 'oranye')]}],
      'panel': [
@@ -392,19 +406,19 @@ SLIDE = [
 
     {'jenis': 'temuan-grafik', 'jenis_slide': 'grafik', 'judul_bentuk': 'temuan', 'rasio': 0.42,
      'pesan': 'Bencana berulang', 'cut_off': False,
-     'judul': f'{t("lang.banjir")} kab/kota terkena banjir dan {t("lang.longsor")} terkena longsor setiap tahun, {t("lang.tahun")} dari {t("lang.tahun")} tahun pada 2014–2020',
-     'grafik': {'judul_panel': 'Kab/kota langganan', 'ikon': 'wilayah', 'judul': '**Kab/kota langganan**, jumlah, 2014–2020',
+     'judul': f'{t("lang.banjir")} kab/kota terkena banjir, {t("lang.cuaca")} cuaca ekstrem, dan {t("lang.longsor")} longsor di setiap tahun dasar ({t("lang.tahun")} dari {t("lang.tahun")} tahun, 2014–2020 dan 2024–2025)',
+     'grafik': {'judul_panel': 'Kab/kota langganan', 'ikon': 'wilayah', 'judul': '**Kab/kota langganan**, jumlah, 2014–2025',
                 'keluarga': 'air', 'ubah': False, 'persen_batang': False, 'pembanding': False, 'seragam': True,
                 'data': {'csv': c_lang, 'kolom': [{'nama': 'jenis', 'kepala': 'Jenis'}, {'nama': 'kab', 'kepala': 'Kab/kota', 'fmt': '0'}],
                          'keyakinan': 'terverifikasi', 'sumber': S_INS}},
      'panel': {'judul': 'Kepastian musim lebih andal', 'ikon': 'ringkasan', 'skala_huruf': 1.28, 'temuan': [
          tm('Temuan A.1', 'kalender', '**Musim sangat pasti.** Daerah yang sama terkena di bulan yang hampir sama, tahun demi tahun.'),
-         tm('Temuan A.2', 'peringatan', f'**Ramalan harian lemah.** Model banjir dari hujan gagal di uji luar-sampel 2022 (ETS {t("ets", "|fmt=3")}) dan kalah dari persisten.'),
+         tm('Temuan A.2', 'peringatan', f'**Ramalan harian lemah.** Model banjir dari hujan gagal di uji 2022–2025 (ETS {t("ets", "|fmt=3")}), kalah dari persisten; sekitar {t("alarm.salah")} dari {t("alarm.per")} alarm Waspada salah.'),
          tm('Temuan A.3', 'banjir', f'**Rantai banjir ke longsor.** {t("rantai", "|persen")} banjir diikuti longsor di kab yang sama dalam {t("tutup.hari")} hari.'),
          tm('Temuan A.4', 'prabencana', '**Dasar tindakan.** Siaga sebulan sebelum musim di desa langganan, tanpa menunggu prakiraan harian.', 'asumsi-kebijakan')]},
      'pita': {'label': 'Catatan', 'nada': 'data', 'skala': 1.5, 'kolom': [
-         {'ikon': 'regulasi', 'judul': 'Yang dihitung', 'isi': 'Langganan berarti minimal satu kejadian per tahun; besar dampak tidak dihitung.'},
-         {'ikon': 'data', 'judul': 'Batas data', 'isi': 'Logbook mencatat yang dilaporkan, dengan bias kuat ke Jawa.'}]}},
+         {'ikon': 'regulasi', 'judul': 'Yang dihitung', 'isi': f'Tahun dasar: tiap bulan tercatat minimal {t("dasar.hari")} hari. Langganan: kejadian di {t("lang.tahun")} dari {t("lang.tahun")} tahun dasar.'},
+         {'ikon': 'data', 'judul': 'Batas data', 'isi': f'Bias kuat ke Jawa. Tahun 2025 melonjak ke {t("log.2025")} kejadian, tertinggi sejak 2011; DIBI juga naik.'}]}},
 
     {'jenis': 'tabel-peringkat', 'jenis_slide': 'tabel', 'judul_bentuk': 'temuan', 'rasio': 0.6,
      'pesan': 'Tak terlapor', 'cut_off': False,
@@ -445,22 +459,22 @@ SLIDE = [
          tm('Temuan A.3', 'data', '**Melengkapi InaRISK.** Lapisan frekuensi nyata masuk perencanaan tahunan.', 'asumsi-kebijakan')]},
      'pita': {'label': 'Cara membaca', 'nada': 'data', 'skala': 1.7, 'kolom': [
          {'ikon': 'data', 'judul': 'Korelasi peringkat', 'isi': 'Nilai mendekati nol berarti dua peringkat nyaris tak berhubungan.'},
-         {'ikon': 'kalender', 'judul': 'Data kejadian', 'isi': 'Logbook Pusdalops, tahun lengkap 2014–2020.'}]}},
+         {'ikon': 'kalender', 'judul': 'Data kejadian', 'isi': 'Logbook Pusdalops, basis perhitungan korelasi 2014–2020.'}]}},
 
     {'jenis': 'temuan-grafik', 'jenis_slide': 'panel', 'judul_bentuk': 'temuan', 'rasio': 0.42,
      'pesan': 'Kendala lapangan', 'cut_off': False,
      'judul': f'Akses jalan terputus tercatat {t("k.akses")} kali, terbanyak di antara kendala lapangan yang berulang dan bisa disiapkan sebelumnya',
-     'grafik': {'judul_panel': 'Kendala lapangan', 'ikon': 'infrastruktur', 'judul': '**Kendala**, entri logbook, 2011–2023',
+     'grafik': {'judul_panel': 'Kendala lapangan', 'ikon': 'infrastruktur', 'judul': '**Kendala**, entri logbook, 2011–2026',
                 'keluarga': 'netral', 'ubah': False, 'persen_batang': False, 'pembanding': False, 'seragam': True,
                 'data': {'csv': c_kendala, 'kolom': [{'nama': 'kendala', 'kepala': 'Kendala'}, {'nama': 'entri', 'kepala': 'Entri', 'fmt': '0'}],
                          'keyakinan': 'resmi', 'sumber': S_LOG}},
      'panel': {'judul': 'Barang tidak di tempat', 'ikon': 'ringkasan', 'skala_huruf': 1.15, 'temuan': [
-         tm('Temuan A.1', 'infrastruktur', f'**Logistik dan BBM** {t("k.logistik")} entri, **sumber air pemadaman** {t("k.air")}, **alat berat** {t("k.alat")}.'),
-         tm('Temuan A.2', 'kapasitas', f'**Personel** {t("k.personel")} entri; kekurangan tenaga ikut tercatat sebagai kendala.'),
+         tm('Temuan A.1', 'infrastruktur', f'**Air** {t("k.air")} entri, **logistik** {t("k.logistik")}, **alat berat** {t("k.alat")}, **gambut** {t("k.gambut")}.'),
+         tm('Temuan A.2', 'kapasitas', f'**Personel** {t("k.personel")} entri; satu entri bisa memuat beberapa kategori kendala.'),
          tm('Temuan A.3', 'prabencana', '**Bisa disiapkan.** Kendala sama muncul tiap musim. Stok dan kontrak siaga bisa diatur lebih dulu.', 'asumsi-kebijakan'),
          tm('Temuan A.4', 'telepon', f'**Sinyal putus** {t("k.sinyal")} entri; desa tanpa sinyal tidak dapat melapor.')]},
      'pita': {'label': 'Dibaca untuk tindakan', 'nada': 'aksi', 'skala': 1.7, 'kolom': [
-         {'ikon': 'infrastruktur', 'judul': 'Akses', 'isi': 'Peta desa terisolir disusun dari catatan jalan putus.'},
+         {'ikon': 'infrastruktur', 'judul': 'Akses', 'isi': f'{t("desa.isolir")} desa terisolir berulang masuk peta jalan putus.'},
          {'ikon': 'telepon', 'judul': 'Sinyal', 'isi': 'Desa tanpa sinyal mendapat radio mesh atau satelit.'},
          {'ikon': 'prabencana', 'judul': 'Barang', 'isi': 'Stok penyangga dan alat berat disiagakan sebelum musim.'}]}},
 
@@ -480,8 +494,8 @@ SLIDE = [
 
     {'jenis': 'tabel-peringkat', 'jenis_slide': 'matriks', 'judul_bentuk': 'temuan', 'rasio': 0.66,
      'pesan': 'Celah riset', 'cut_off': False,
-     'judul': f'Dari {t("makalah")} makalah yang dicocokkan, {t("lang.banjir")} kab langganan banjir dan {t("lang.longsor")} longsor masih menyisakan daerah tanpa satu pun makalah',
-     'tabel': {'judul_panel': 'Daerah langganan dan celah riset', 'ikon': 'sekolah', 'peringkat': False, 'sel_dua_baris': True, 'skala_huruf': 1.4,
+     'judul': f'Dari {t("makalah")} makalah yang dicocokkan, {t("lama.banjir")} kab langganan banjir dan {t("lama.longsor")} longsor (basis 2014–2020) masih menyisakan daerah tanpa satu pun makalah',
+     'tabel': {'judul_panel': 'Daerah langganan dan celah riset, basis 2014–2020', 'ikon': 'sekolah', 'peringkat': False, 'sel_dua_baris': True, 'skala_huruf': 1.4,
                'data': {'csv': c_celah, 'kolom': [{'nama': 'jenis', 'kepala': 'Jenis'},
                                                   {'nama': 'kab', 'kepala': 'Kab langganan', 'fmt': '0'}, {'nama': 'tanpa', 'kepala': 'Tanpa makalah', 'fmt': '0'},
                                                   {'nama': 'celah', 'kepala': 'Celah teratas', 'rata': 'l', 'bobot': 2.4}],
@@ -498,7 +512,7 @@ SLIDE = [
 
     {'jenis': 'tabel-peringkat', 'jenis_slide': 'tabel', 'judul_bentuk': 'temuan', 'rasio': 0.58,
      'pesan': 'Daerah prioritas', 'cut_off': False,
-     'judul': f'{t("prioritas.kab")} kab/kota langganan berkapasitas rendah menjadi kandidat pertama stok penyangga dan pendampingan BPBD, Aceh mendominasi',
+     'judul': f'{t("prioritas.kab")} kab/kota langganan (basis 2014–2020) berkapasitas rendah menjadi kandidat pertama stok penyangga dan pendampingan BPBD, Aceh mendominasi',
      'grup': [{'pil': 'Daftar kerja', 'nada': 'data', 'ikon': 'wilayah', 'kartu': [
          kt(t('prioritas.kab'), 'langganan dan berkapasitas rendah', 'wilayah', 'oranye')]}],
      'tabel': {'judul_panel': 'Dua belas kab/kota teratas', 'ikon': 'wilayah', 'peringkat': True, 'sel_dua_baris': True, 'skala_huruf': 1.4,
@@ -535,7 +549,7 @@ SLIDE = [
              {'label': 'Sepotong', 'kiri': 'Median satu kejadian dilaporkan sekali; korban terhitung ganda.', 'kanan': 'Pengingat lanjutan sehari dan tiga hari sesudahnya dari form logbook baku.'},
              {'label': 'Terputus', 'kiri': f'Akses putus {t("k.akses")} entri; sinyal putus {t("k.sinyal")}.', 'kanan': 'Peta desa terisolir dan radio mesh atau satelit di desa itu.'},
              {'label': 'Tidak di tempat', 'kiri': f'Logistik dan BBM {t("k.logistik")}, air pemadaman {t("k.air")}, alat berat {t("k.alat")}.', 'kanan': 'Stok penyangga dan kontrak siaga alat berat sebelum musim.'},
-             {'label': 'Prakiraan lemah', 'kiri': f'Banjir dari hujan gagal luar-sampel 2022 (ETS {t("ets", "|fmt=3")}).', 'kanan': 'Bertindak pada kepastian musim; prakiraan untuk eskalasi.'},
+             {'label': 'Prakiraan lemah', 'kiri': f'Banjir dari hujan gagal di uji 2022–2025 (ETS gabungan {t("ets", "|fmt=3")}); longsor AUC {t("auc.longsor", "|fmt=2")}.', 'kanan': 'Bertindak pada kepastian musim; prakiraan untuk eskalasi.'},
              {'label': 'Peta tak cukup', 'kiri': f'Korelasi peringkat risiko dan kejadian {t("kor.banjir", "|fmt=2")}–{t("kor.longsor", "|fmt=2")}.', 'kanan': 'Lapisan frekuensi nyata ditambahkan ke perencanaan.'}]}},
      'sumber': S_INS},
 
@@ -649,7 +663,7 @@ SLIDE = [
          tm('Temuan D.1', 'wilayah', '**Banjarnegara, Banyumas, Cilacap, Magelang, Temanggung.**', 'asumsi-kebijakan'),
          tm('Temuan D.2', 'longsor', f'**Alasan.** Cilacap dan Magelang mencatat {t("longsor.200")}-an longsor; Magelang dan Banyumas punya bahan riset.'),
          tm('Temuan D.3', 'regulasi', '**Pemilik sistem** menjalankan migrasi produksi dan penyimpanan kunci alat.', 'asumsi-kebijakan'),
-         tm('Temuan D.4', 'data', '**Data awal.** Logbook 2011–2023 dan stasiun hujan BMKG sebagai bahan kalibrasi.', 'asumsi-kebijakan')]}},
+         tm('Temuan D.4', 'data', '**Data awal.** Logbook 2011–2026 dan stasiun hujan BMKG sebagai bahan kalibrasi.', 'asumsi-kebijakan')]}},
 
     {'jenis': 'temuan-visual', 'jenis_slide': 'grafik', 'judul_bentuk': 'temuan', 'rasio': 0.66,
      'pesan': 'Ukuran keberhasilan', 'cut_off': False,
@@ -745,7 +759,7 @@ if __name__ == '__main__':
     tema['slide']['komponen']['bingkai']['sumber'].update({'awalan_olah': 'Pengolahan data BNPB dari', 'label_olah': 'diolah BNPB'})
     tema['kajian']['aksi'] = {
         'judul': 'Aksi Antisipatif Desa Langganan: usulan kerja sama',
-        'subjudul': 'Usulan Kerja Sama BNPB dengan Empat Kelompok Mitra',
+        'subjudul': 'BNPB bersama Empat Kelompok Mitra Lembaga',
         'judul_pendek': 'Aksi Antisipatif Desa Langganan', 'nama_berkas': 'Aksi Antisipatif Desa Langganan {DDMMYY}',
         'batas_halaman_isi': None, 'lampiran': 'ABCDEFGHIJKL',
         'kata_kunci': ['BNPB', 'aksi antisipatif', 'desa langganan', 'kerja sama', 'logbook Pusdalops'], 'cakupan_sampul': 'Kab/kota langganan banjir, longsor, dan karhutla di Indonesia'}

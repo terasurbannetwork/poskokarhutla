@@ -52,21 +52,34 @@ Per kelas ha (jendela penuh, null B): <5 ha lift 1,16; 5-50 1,17; 50-500 1,12; >
 
 **Vonis (bahasa biasa):** Dari 94 kejadian dari 100 yang dilaporkan BPBD ada titik panas di kabnya, tetapi kalau kejadiannya kita taruh di minggu acak atau di kab acak yang tidak melapor, 77-85 dari 100 tetap "terdeteksi". Jadi sebagian besar angka 94% adalah kemarau, bukan kecerdasan deteksi; nilai tambah nyatanya sekitar 8-17 poin persen (lift 1,1-1,2), nyata secara statistik tetapi jauh lebih kecil dari kesan 94%. Alat ini sah untuk menyatakan "titik panas tidak meleset dari laporan", bukan untuk menyatakan "titik panas menemukan kejadian yang dilaporkan". Pembuktian per api tetap butuh koordinat kejadian. Catatan: kab yang tak punya titik sama sekali di arsip tidak ikut jadi kandidat null B (cenderung menaikkan null sedikit).
 
-## Arsip 2014-2022 (31 Okt 2026)
-`python3 scripts/data/uji_logbook_karhutla.py arsip` -> `public/data/validasi_logbook_karhutla_arsip.json` (2026 tak disentuh). Logbook CSV Pusdalops vs FIRMS lokal/unduhan (MODIS + S-NPP 2014-2018; + NOAA-20 2019+); jendela [mulai-3, terakhir_dicatat]; kab bernol titik tetap dihitung (deteksi 0). 2011-2013 dan 2021 tidak diuji.
+## Arsip 2014-2025, tahap 2014-2022 vs 2023-2025 (1 Nov 2026)
+`python3 scripts/data/uji_logbook_karhutla.py arsip` -> `public/data/validasi_logbook_karhutla_arsip.json` (2026 tak disentuh; tahun penuh saja, 2026 lewat mode utama). Logbook CSV Pusdalops vs FIRMS lokal/unduhan (MODIS + S-NPP 2014-2018; + NOAA-20 2019+; + NOAA-21 2023+); jendela [mulai-3, terakhir_dicatat]; kab bernol titik tetap dihitung (deteksi 0). 2011-2013 tidak diuji. Dua tahap dilaporkan terpisah: 2014-2022 dan 2023-2025. Pemisahan hanya nominal: uji ini tidak menyetel parameter apa pun (definisi jendela dibuat Okt 2026), jadi BUKAN dalam/luar-sampel. Angka gabungan = rata-rata berbobot n dari lift per tahun (bukan lift terpooling, tanpa CI); tidak ada uji selisih antartahap.
 
-| Tahun | n | Deteksi | Null A (kab sama) | Lift A | Null B (kab acak) | Lift B [CI95] |
+| Tahun | Tahap | n | Deteksi | Null A (kab sama) | Lift A | Null B (kab acak) | Lift B [CI95] |
+| --- | --- | --- | --- | --- | --- | --- | --- |
+| 2014 | 2014-2022 | 57 | 68,4% | 41,2% | 1,66 | 73,7% | 0,93 [0,69-1,13] |
+| 2015 | 2014-2022 | 121 | 78,5% | 36,7% | 2,14 | 74,6% | 1,05 [0,92-1,18] |
+| 2016 | 2014-2022 | 52 | 71,2% | 39,4% | 1,80 | 60,1% | 1,18 [0,87-1,52] |
+| 2017 | 2014-2022 | 166 | 80,7% | 26,4% | 3,07 | 70,3% | 1,15 [1,00-1,27] |
+| 2018 | 2014-2022 | 498 | 83,5% | 32,6% | 2,57 | 61,0% | 1,38 [1,27-1,47] |
+| 2019 | 2014-2022 | 749 | 85,0% | 41,8% | 2,04 | 61,6% | 1,38 [1,28-1,46] |
+| 2020 | 2014-2022 | 331 | 84,3% | 38,5% | 2,19 | 56,5% | 1,49 [1,36-1,61] |
+| 2021 | 2014-2022 | 313 | 70,0% | 34,3% | 2,06 | 52,6% | 1,33 [1,17-1,49] |
+| 2022 | 2014-2022 | 156 | 82,1% | 39,7% | 2,07 | 60,8% | 1,35 [1,17-1,50] |
+| 2023 | 2023-2025 | 760 | 89,1% | 50,4% | 1,80 | 69,0% | 1,29 [1,21-1,36] |
+| 2024 | 2023-2025 | 380 | 89,7% | 44,4% | 2,03 | 67,7% | 1,32 [1,24-1,41] |
+| 2025 | 2023-2025 | 355 | 81,1% | 37,6% | 2,17 | 61,2% | 1,33 [1,14-1,51] |
+
+Gabungan berbobot n:
+
+| Tahap | n | Deteksi | Null A | Lift A | Null B | Lift B |
 | --- | --- | --- | --- | --- | --- | --- |
-| 2014 | 57 | 68,4% | 41,2% | 1,66 | 73,5% | 0,93 [0,69-1,14] |
-| 2015 | 121 | 78,5% | 36,7% | 2,14 | 74,6% | 1,05 [0,92-1,17] |
-| 2016 | 52 | 71,2% | 39,4% | 1,81 | 58,2% | 1,22 [0,90-1,58] |
-| 2017 | 166 | 80,7% | 26,4% | 3,07 | 69,6% | 1,16 [1,01-1,28] |
-| 2018 | 498 | 83,5% | 32,6% | 2,57 | 61,3% | 1,38 [1,27-1,46] |
-| 2019 | 749 | 85,0% | 41,8% | 2,04 | 61,6% | 1,38 [1,28-1,46] |
-| 2020 | 331 | 84,3% | 38,5% | 2,19 | 56,7% | 1,49 [1,35-1,61] |
-| 2022 | 156 | 82,1% | 39,7% | 2,07 | 60,7% | 1,35 [1,16-1,50] |
+| Tahap 2014-2022 | 2443 | 81,2% | 37,0% | 2,23 | 61,1% | 1,34 |
+| Tahap 2023-2025 | 1495 | 87,4% | 45,8% | 1,95 | 66,8% | 1,31 |
 
-Baca: waktu (kab sama, hari acak) selalu dikalahkan; terhadap kab acak sewaktu, 2014-2016 TIDAK lebih baik (CI mencakup 1), 2017-2022 lift 1,16-1,49 (2017 tipis). Deteksi mentah bergantung sensor dan musim, bandingkan lift. Tanpa laporan dianggap tanpa api, jadi kedua pembanding konservatif. 2022 hanya 272 hari tercatat. Kab dicocokkan ke poligon sekarang.
+Baca: waktu (kab sama, hari acak) dikalahkan di semua tahun, 2023-2025 pun (lift A 1,80-2,17, CI tidak mencakup 1). Rata-rata lift A tahap 2023-2025 (1,95) lebih rendah dari 2014-2022 (2,23) dan lift B hampir sama (1,31 vs 1,34); selisihnya TIDAK diuji, jadi tidak disimpulkan ada pelemahan atau kestabilan. Penjelas yang masuk akal untuk lift A 2023 (1,80): NOAA-21 sejak Mar 2023 menambah titik unik per kab sehingga null A naik ke 50,4%. CI lift B 2023-2025 semuanya di atas 1. Terhadap kab acak sewaktu, 2014-2016 TIDAK lebih baik (CI mencakup 1), 2017 tipis, 2018-2025 lift 1,29-1,49. Deteksi mentah tahap 2023-2025 (87,4%) lebih tinggi dari 2014-2022 (81,2%) tetapi nullnya juga (A 45,8% vs 37,0%): bandingkan lift, bukan deteksi.
+
+Bias yang diketahui: (1) hari tak tercatat di logbook (2021 343, 2022 272, 2023 327 hari) ikut jadi sampel waktu null sebagai "tanpa api" (konservatif seperti catatan di bawah); 2022 paling lemah. (2) NOAA-21 (sejak Mar 2023) menambah titik unik per kab dan menaikkan peluang "ada titik" di mana pun, jadi null A 2023 naik ke 50,4% (tertinggi) dan lift A turun; deteksi mentah 2023+ tidak sebanding dengan sebelumnya. (3) Tanpa laporan dianggap tanpa api, kedua pembanding konservatif. (4) Kab dicocokkan nama ke poligon sekarang; pemekaran dan poligon tanpa nama dibuang.
 
 ## Silang DIBI x logbook
 `python3 scripts/data/silang_dibi_logbook.py` -> `public/data/silang_dibi_logbook.json`. DIBI harian hanya Okt 2025-Okt 2026 (tak beririsan), jadi jendela +-3 hari tidak mungkin; dipakai DIBI tahunan per kab x jenis 2015-2022, pencocokan sel (kab, tahun, jenis). Logbook ada di DIBI 79,5%, DIBI ada di logbook 88,8%; gempa terendah (38,6% / 75%). DIBI sebagian besar bersumber laporan Pusdalops: ini kesepakatan dua turunan satu sumber, bukan validasi independen. Kejadian DIBI tak terpetakan ke kab (67-157/tahun) tidak ikut dihitung.

@@ -30,7 +30,7 @@ const Bagikan = {
   namaBencana() { return {cuaca: "cuaca ekstrem", udara: "kualitas udara", gunungapi: "gunung api"}[this.hal] || this.hal; },
   _K() {
     const r = this.reg?.[this.hal]?.bagikan, a = this.hal === "banjir"
-      ? {nama: "Centurisk97 · Banjir, Longsor & Rob", pendek: "Centurisk97", tema: "banjir, longsor & rob", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
+      ? {nama: "Centurisk97: Banjir & Longsor", pendek: "Centurisk97", tema: "banjir & longsor", sumber: "Sumber: Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
         tagar: ["#banjir", "#longsor", "#rob", "#cuacaekstrem", "#siagabencana"], akhir: "#Centurisk97"}
       : this.T ? {nama: "Centurisk97", pendek: "Centurisk97", sumber: "", tagar: [], akhir: "#Centurisk97"}
       : {nama: "Centurisk97 · Karhutla", pendek: "Centurisk97", tema: "kebakaran hutan dan lahan", sumber: "Sumber: NASA FIRMS, BMKG/Open-Meteo, BNPB",
@@ -1114,7 +1114,7 @@ const Bagikan = {
     const {jsPDF} = window.jspdf, doc = new jsPDF({unit: "mm", format: "a4", compress: true}), W = 210, M = 15, LW = W - 2 * M;
     const T = s => String(window.T ? window.T(String(s ?? "")) : s ?? "").replace(/≥/g, ">=").replace(/≤/g, "<=").replace(/[–—−]/g, "-").replace(/[‘’]/g, "'").replace(/[“”]/g, '"').replace(/…/g, "...").replace(/→/g, "->").replace(/[^\x00-\xFF]/g, "");
     const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), NAVY = rgb(this.C.navy), NAVY2 = rgb(this.C.navy2), ABU = rgb(this.C.tinta2);
-    const d = this.data(""), tg = this.tglPanjang(), judulLap = this.hal === "banjir" ? "Banjir, longsor & rob" : "Kebakaran hutan dan lahan";
+    const d = this.data(""), tg = this.tglPanjang(), judulLap = this.hal === "banjir" ? "Banjir & longsor" : "Kebakaran hutan dan lahan";
     const kepala = j => { doc.setFillColor(...NAVY); doc.rect(0, 0, W, 17, "F"); doc.setFillColor(229, 138, 69); doc.rect(0, 17, W, .8, "F");
       doc.setTextColor(255); doc.setFont("helvetica", "bold"); doc.setFontSize(12.5); doc.text(T(j), M, 11);
       doc.setFont("helvetica", "normal"); doc.setFontSize(8.5); doc.text(T(`${this.K.nama} · ${tg}`), W - M, 11, {align: "right"}); doc.setTextColor(...NAVY); return 27; };

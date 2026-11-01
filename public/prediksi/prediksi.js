@@ -11,6 +11,13 @@ const persen = p => p == null ? "–" : p < 0.05 ? "<5%" : p > 0.95 ? ">95%" : `
 const mm = v => v == null ? "–" : v < 1 ? "<1 mm" : `±${fmt(Math.round(v))} mm`;
 const jam = h => h == null ? "–" : `±${String(h).padStart(2, "0")}.00`;
 const tgl = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {weekday: "long", day: "numeric", month: "long", timeZone: "Asia/Jakarta"});
+// ["2014",..,"2020","2024","2025"] -> "2014–2020 dan 2024–2025": runtun bersambung digabung
+const rentangTahun = th => {
+  const r = [];
+  for (const y of th.map(Number).sort((a, b) => a - b)) (r.length && r.at(-1)[1] === y - 1) ? r.at(-1)[1] = y : r.push([y, y]);
+  const s = r.map(([a, b]) => a === b ? `${a}` : `${a}–${b}`);
+  return s.length < 3 ? s.join(" dan ") : `${s.slice(0, -1).join(", ")}, dan ${s.at(-1)}`;
+};
 const angka3 = v => v == null ? "–" : fmt(Math.round(v * 1000) / 1000);
 const kol = (kode, r, c) => r ? r[PR.d.kode[kode].kol.indexOf(c)] : null;
 
@@ -134,7 +141,7 @@ function kalenderRapor() {
       `<span class="pr-bar${i === m0 ? " ini" : ""}" tabindex="0" style="height:${Math.round((v || 0) / mx * 100)}%" title="${BULAN[i]}: ${fmt(x.ada[i])} dari ${fmt(kal.n_tahun)} tahun${x.ada[i] ? " ada kejadian" : ""}"></span>`).join("")}</div></div>`;
   }).join("");
   return `<section class="card pad pr-sek" id="kalender"><h2>Kalender risiko dari logbook</h2>
-    <p class="pr-kecil">Referensi kedua, berdampingan dengan klimatologi: klimatologi di atas memakai pengamatan harian yang baru dikumpulkan sistem ini; kalender memakai logbook Pusdalops tahun penuh ${esc(kal.tahun_penuh[0])} sampai ${esc(kal.tahun_penuh.at(-1))} (${fmt(kal.n_tahun)} tahun), sehingga cocok untuk sisi dampak banjir dan longsor. Angka \"N dari ${fmt(kal.n_tahun)} tahun\" = tahun yang bulan itu punya minimal satu kejadian tercatat. Kab/kota dengan kurang dari ${fmt(kal.kecil_di_bawah)} kejadian ditandai sampel kecil. Belum diuji lawan prakiraan.</p>
+    <p class="pr-kecil">Referensi kedua, berdampingan dengan klimatologi: klimatologi di atas memakai pengamatan harian yang baru dikumpulkan sistem ini; kalender memakai logbook Pusdalops tahun penuh ${esc(rentangTahun(kal.tahun_penuh))} (${fmt(kal.n_tahun)} tahun), sehingga cocok untuk sisi dampak banjir dan longsor. Angka \"N dari ${fmt(kal.n_tahun)} tahun\" = tahun yang bulan itu punya minimal satu kejadian tercatat. Kab/kota dengan kurang dari ${fmt(kal.kecil_di_bawah)} kejadian ditandai sampel kecil. Belum diuji lawan prakiraan.</p>
     <label class="pr-kecil">Kab/kota <input id="kalKab" list="dKab" value="${esc(PR.d.kab.find(k => k.id === id).nama)}" autocomplete="off"></label>
     <div id="kalIsi">${baris}</div></section>`;
 }

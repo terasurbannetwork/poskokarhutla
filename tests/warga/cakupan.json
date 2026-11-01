@@ -926,6 +926,7 @@
     "POST /api/logbook/kejadian/:id/tutup": "logbook: buka per kab, laporan harian",
     "GET /api/logbook/buka": "logbook: buka per kab, laporan harian",
     "GET /api/logbook/hari": "logbook: buka per kab, laporan harian",
+    "GET /api/logbook/turunan/:nama": "logbook turunan: tanpa sesi/peran salah 403, nama di luar daftar putih 404, staf sah 200 dari R2",
     "POST /api/sensor/baca": "sensor: tanda tangan benar menyimpan bacaan",
     "GET /api/sensor/status": "sensor: status hanya untuk staf",
     "table sensor_lapor": "sensor: lapor dari gateway tersimpan",

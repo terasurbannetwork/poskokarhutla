@@ -510,6 +510,23 @@ jobs:
           python3 scripts/data/uji_logbook_karhutla.py uji && python3 scripts/data/uji_logbook_karhutla.py || echo "::warning title=uji_logbook_karhutla::gagal"
           python3 scripts/data/belum_lapor.py uji && python3 scripts/data/belum_lapor.py || echo "::warning title=belum_lapor::gagal"
 
+      # Turunan logbook Pusdalops. logbook_bersih.py TIDAK jalan di sini (butuh data/raw internal, tidak di git): logbook_riwayat.json
+      # dan laphar_riwayat.json datang dari repo. Urutan: senyap (butuh titik terbaru + laphar), lalu kalender, lalu siaga (butuh kalender).
+      # Berkas yang beda HANYA di cap "dibuat" dipulihkan ke versi lama, supaya tidak jadi commit harian kosong.
+      - name: Daerah senyap, kalender risiko, siaga pra-musim (boleh gagal)
+        continue-on-error: true
+        run: |
+          stabil() { # stabil <berkas> <perintah...>
+            f=$1; shift; cp "$f" "$f.lama"
+            if "$@"; then
+              python3 -c "import json,sys; g=lambda p:{k:v for k,v in json.load(open(p)).items() if k!='dibuat'}; sys.exit(0 if g(sys.argv[1])==g(sys.argv[2]) else 1)" "$f" "$f.lama" && mv "$f.lama" "$f"
+            else echo "::warning title=$f::gagal; berkas lamanya dibiarkan"; mv "$f.lama" "$f"; fi
+            rm -f "$f.lama"
+          }
+          python3 scripts/data/senyap.py uji && stabil public/data/senyap.json python3 scripts/data/senyap.py || echo "::warning title=senyap::gagal"
+          python3 scripts/prediksi/kalender.py uji && stabil public/prediksi/data/kalender_risiko.json python3 scripts/prediksi/kalender.py || echo "::warning title=kalender::gagal"
+          python3 scripts/bnpb/siaga.py --cek && stabil public/data/bnpb/siaga.json python3 scripts/bnpb/siaga.py || echo "::warning title=siaga::gagal"
+
       # Banjir & longsor vs logbook butuh hujan ERA5 2026 (Open-Meteo archive, berkuota): seminggu sekali (Senin UTC), cache
       # sendiri, tiap minggu menambah kab yang dinilai. Hasil lama dibiarkan bila gagal.
       - name: Hari uji logbook mingguan?
@@ -714,7 +731,7 @@ jobs:
           if [ -n "$CLOUDFLARE_API_TOKEN" ]; then python3 scripts/terbit/jaga_segar.py && python3 scripts/terbit/isi_data.py buat && python3 scripts/terbit/versi.py && npx --yes wrangler@4.42.0 deploy; exit; fi
           git config user.name "poskokarhutla-bot"
           git config user.email "actions@users.noreply.github.com"
-          git add public/data
+          git add public/data public/prediksi/data/kalender_risiko.json
           git diff --cached --quiet && exit 0
           git commit -q -m "data: pembaruan harian $(TZ=Asia/Jakarta date +%F)"
           git pull -q --rebase && git push -q

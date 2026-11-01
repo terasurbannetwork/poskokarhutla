@@ -61,7 +61,7 @@
 <header class="top">
   <div class="mark">
     <button class="iconbtn" id="burger" aria-label="Buka menu" aria-expanded="false" aria-controls="tabs"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16"/></svg></button>
-    <a class="logo" href="../" title="Centurisk97"><img src="../img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="banjir"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><a href="../banjir/" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob</a></div></details>
+    <a class="logo" href="../" title="Centurisk97"><img src="../img/logo.svg?v=2" alt="Centurisk97" width="30" height="30"></a><details class="bencana" data-bencana="banjir"><summary><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir & Longsor</summary><div class="menu"><a href="../"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#f08a3c" d="M12 2.5c1.8 4 6.5 6.4 6.5 11.5a6.5 6.5 0 0 1-13 0c0-2.5 1.2-4.3 2.8-5.8.3 2.1 1.4 3.3 2.7 3.8C10.6 9 11.1 5.8 12 2.5Z"/><path fill="#ffd36b" d="M12 20.5a3.5 3.5 0 0 1-3.5-3.5c0-2 1.7-3.1 3.5-5.8 1.8 2.7 3.5 3.8 3.5 5.8a3.5 3.5 0 0 1-3.5 3.5Z"/></svg>Karhutla</a><a href="../banjir/" aria-current="page"><svg class="bc-ik" viewBox="0 0 24 24" aria-hidden="true"><path fill="#4f9be0" d="M12 2.5s-6 6.7-6 11a6 6 0 0 0 12 0c0-4.3-6-11-6-11Z"/><path fill="none" stroke="#fff" stroke-width="1.6" stroke-linecap="round" d="M9 14.5a3 3 0 0 0 3 3"/></svg>Banjir, Longsor & Rob</a></div></details>
   </div>
   <nav class="tabs" id="tabs" aria-label="Menu utama"></nav>
   <div class="stat">
@@ -132,6 +132,7 @@
   </section>
 
   <section class="page scroll" id="p-insight" aria-label="Insight banjir"><div class="wrap"><div id="pbBerita" hidden></div></div><div class="wrap" id="insight"></div></section>
+  <section class="page scroll" id="p-longsor" aria-label="Longsor"><div class="wrap" id="longsor"></div></section>
   <section class="page" id="p-informasi" aria-label="Lapor Warga"><div id="informasi"></div></section>
   <section class="page scroll" id="p-prakiraan" aria-label="Prakiraan per wilayah"><div class="wrap" id="prakiraan"></div></section>
   <section class="page scroll" id="p-daftar" aria-label="Wilayah siaga"><div class="wrap" id="daftar"></div></section>
@@ -200,14 +201,14 @@ const S = {meta: null, st: null, hujan: null, sungai: null, bahaya: {}, kejadian
 const namaProv = k => S.meta?.provinsi?.[k] ?? k;
 
 /* ================================================================ tabs */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["replay", "Replay"], ["foto", "Foto"], ["tentang", "Tentang"],
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["longsor", "Longsor"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["sim", "Simulasi"], ["replay", "Replay"], ["foto", "Foto"], ["tentang", "Tentang"],
   ["posko", "Posko"], ["informasi", "Informasi"], ["metode", "Metode"], ["prakiraan", "Prakiraan"], ["daftar", "Wilayah siaga"], ["provinsi", "Provinsi"], ["rob", "Rob"], ["sungai", "Sungai"], ["keputusan", "Keputusan"], ["sarana", "Sarana"]];
 /* id lama -> id baru (tautan lama tetap hidup); sama dengan "alias" di public/bencana.json */
 const ALIAS = {simulasi: "sim"};
 /* tidak tampil di nav: Posko/Informasi/Metode ada tapi disembunyikan (A24); Berita/Dampak/Foto menunggu isinya (A18);
    Prakiraan, Wilayah siaga, Provinsi, Rob, Sungai bukan tab lagi, isinya pindah ke Insight/Peta (L6/L7), sementara tetap bisa dibuka lewat tautan */
 const TAB_SEMBUNYI = new Set(["posko", "informasi", "metode", "prakiraan", "daftar", "provinsi", "rob", "sungai", "keputusan", "sarana", "replay", "tentang"]);   /* tentang: disembunyikan (pemilik 29 Okt 2026) */
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
+const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', longsor: '<path d="M3 20 10 6l4 7 3-4 4 11z"/><path d="M12 20l1-3M16 20l1-2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>', sim: '<circle cx="12" cy="12" r="9"/><path d="m10 8 6 4-6 4z"/>', replay: '<path d="M3 12a9 9 0 1 0 3-6.7L3 8"/><path d="M3 3v5h5M12 7v5l3 2"/>',
   foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 const ID_JADI = id => ALIAS[id] || id;
@@ -221,7 +222,7 @@ function bukaTab(id, dorong = true) {
   nanti(() => { if (id === "peta" && peta) peta.resize(); if (id === "informasi") window.Informasi?.render();
     if (id === "replay") { const f = $("#replayBingkai"); if (!f.src) f.src = "/banjir/replay.html?tertanam=1"; }
     if (id === "tentang") { const f = $("#tentangBingkai"); if (!f.src) { f.style.opacity = 0; f.src = "/tentang.html?tertanam=1"; } }
-    const f = {berita: Berita, dampak: Dampak, foto: Foto, insight: Insight, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, keputusan: Keputusan, sim: Simulasi, posko: Posko, sarana: Sarana, metode: Metode}[id]; f && f.render(); });
+    const f = {berita: Berita, dampak: Dampak, foto: Foto, insight: Insight, longsor: Longsor, prakiraan: Prakiraan, daftar: Daftar, provinsi: Provinsi, rob: Rob, sungai: Sungai, tren: Tren, keputusan: Keputusan, sim: Simulasi, posko: Posko, sarana: Sarana, metode: Metode}[id]; f && f.render(); });
 }
 { const tb = ([k, n]) => `<button data-t="${k}" aria-current="${k === "peta" ? "page" : "false"}"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k] || ""}</svg>${n}</button>`;
   $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(tb).join("");
@@ -273,6 +274,7 @@ const selDekat = (lat, lon) => { const s = S.hujan.sel, a = Math.round((lat - s 
 <script src="kejadian.js"></script>
 <script src="tren.js"></script>
 <script src="insight.js"></script>
+<script src="longsor.js"></script>
 <script src="dini.js"></script>
 <script src="metode.js"></script>
 <script src="keputusan.js"></script>

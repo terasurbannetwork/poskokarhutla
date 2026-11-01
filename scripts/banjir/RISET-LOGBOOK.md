@@ -59,21 +59,26 @@ hari ini), jadi tidak dibandingkan.
 3. Label dengan kedalaman terukur (pos duga, kamera), bukan teks Kronologis.
 4. Lengkapi 53 kabupaten berlabel yang belum dinilai; ulangi sebelum mengambil keputusan ambang. Tidak ada ambang diubah di sini.
 
-## Arsip Pusdalops 2016-2022 (`uji_logbook.py --arsip`, 31 Okt 2026)
+## Arsip Pusdalops 2016-2025 (`uji_logbook.py --arsip`, diperluas 1 Nov 2026)
 
-**Hasil utama = 2022 (satu-satunya tahun luar-sampel):** lb_mulai Waspada POD 0,48, FAR 0,98, ETS 0,006 (CI 0,001-0,012; hanya kab berlabel 0,002-0,012). Vonis TIDAK LULUS (batas bawah CI < 0,1). lb_aktif 2022 ETS 0,010 (CI -0,003-0,024), juga TIDAK LULUS. Blok "gabungan" dan 2016-2020 di bawah hanya konsistensi: 2016-2020 ikut menyetel ambang.
+**Headline = gabungan luar-sampel 2022-2025** (40 kab berlabel, level Waspada, aturan BERLAKU tak diubah). Aturan BERLAKU dipilih di 2016-2021, tetapi diterima lewat uji 2022-2025 pada label DIBI (`uji_balik.py` `LATIH, UJI`); label logbook belum dipakai menyetel apa pun. Pembanding tanpa hujan: persisten (alarm bila kemarin berlabel), klimatologi (alarm di bulan yang laju labelnya 2016-2021 di atas rata-rata kab itu), klimatologi berlaju alarm sama dengan model (bulan berlaju tertinggi sampai porsi hari sama dengan model di 2016-2021), acak.
 
-**Model kalah dari persisten:** pada lb_mulai gabungan ETS persisten 0,030 lawan Waspada 0,010 (2022: 0,010 lawan 0,006). Label kejadian berhari-jamak/berdurasi membuat "kemarin berlabel" prediktor kuat, sedangkan hujan ERA5 + aturan BERLAKU tidak menambah daya di atasnya. **Sampel 41 kab** berasal dari cache uji_balik yang dibangun dari kab sering terdampak (seleksi pada hasil): POD dan laju dasar TIDAK berlaku nasional.
+lb_mulai (hari pemicu):
 
-Label: `data/pusdalops/logbook_kejadian.csv`, jenis `banjir`, hari `tgl_kejadian` (`lb_mulai`) dan sampai `terakhir_dicatat` maks 30 hari (`lb_aktif`). Hari dinilai hanya yang tercakup logbook: tahun penuh (2016-2020) semua hari, 2022 hanya hari yang punya berkas (271); 2021 tak ada arsip. Hujan: ERA5 dari cache `uji_balik` (tanpa unduhan, tanpa kuota), jadi hanya 41 kabupaten (104 sel) yang semua selnya ada. 2011-2015 tak dinilai: di luar jendela cache (mulai 22 Des 2015); mengunduhnya (~104 sel x 2 tahun) belum dilakukan. Keluaran: `public/data/validasi_logbook_banjir_arsip.json`.
-
-Hasil gabungan 2016-2020+2022 (39 kab berlabel, level Waspada, aturan BERLAKU tak diubah):
-
-| Label | Hari kejadian | POD | FAR | ETS (CI95) | Persisten ETS |
+| Tahun | POD | FAR | ETS model (CI95) | ETS persisten | ETS klimatologi |
 | --- | --- | --- | --- | --- | --- |
-| lb_mulai | 936 | 0,58 | 0,978 | 0,010 (0,008-0,013) | 0,030 |
-| lb_aktif | 2.986 | 0,51 | 0,938 | 0,025 (0,019-0,030) | 0,563 |
+| 2022 | 0,48 | 0,979 | 0,006 (0,001-0,012) | 0,009 | 0,006 |
+| 2023 | 0,53 | 0,982 | 0,011 (0,005-0,017) | 0,028 | 0,004 |
+| 2024 | 0,62 | 0,977 | 0,011 (0,006-0,017) | 0,016 | 0,006 |
+| 2025 | 0,62 | 0,973 | 0,012 (0,008-0,017) | 0,037 | 0,004 |
+| **Gabungan 2022-2025** (631 hari kejadian) | **0,57** | **0,977** | **0,011 (0,008-0,014)** | **0,024** | **0,005** |
 
-Siaga lb_mulai: POD 0,14, ETS 0,019; Awas: POD 0,04, ETS 0,019. ETS Waspada per tahun (lb_aktif) 0,018 / 0,020 / 0,030 / 0,027 / 0,036 / 0,010 (2016-2020, 2022); semuanya di bawah batas lulus 0,1, vonis TIDAK LULUS, sama arahnya dengan 2026 (ETS 0,078). Alarm Waspada menyala pada ~30% hari-kabupaten, jadi POD 0,58 hanya sedikit di atas acak (0,30).
+Pembanding gabungan: klimatologi POD 0,51 / FAR 0,983; persisten POD 0,06 / FAR 0,94; acak POD 0,30. **Vonis TIDAK LULUS** (batas bawah CI 0,008 < 0,1). lb_aktif gabungan 2022-2025 (2.618 hari): model ETS 0,025 (0,017-0,033), persisten 0,644 (tidak adil untuk label berdurasi), klimatologi 0,019; juga TIDAK LULUS. Dalam-sampel 2016-2021 lb_mulai ETS 0,008-0,016: luar-sampel tidak lebih buruk, juga tidak lebih baik.
 
-Catatan jujur: (1) 2016-2021 ikut memilih ambang di `uji_balik`, jadi hanya 2022 yang luar-sampel; (2) kabupaten cache dipilih menurut jumlah kejadian, bias ke yang sering banjir; (3) pembanding persisten pada `lb_aktif` tidak adil karena label berdurasi (kemarin berlabel hampir pasti hari ini berlabel): hanya `lb_mulai` yang bermakna; (4) hari tanpa laporan dihitung negatif, FAR batas atas. Angka tahun-ke-tahun tidak membaik: arsip menguatkan, bukan membalik, vonis 2026.
+Selisih ETS Waspada lb_mulai gabungan 2022-2025 dengan CI95 berpasangan (bootstrap kab-tahun): model dikurangi persisten -0,013 (-0,027 s.d. -0,001), jadi kalah dari persisten pada gabungan; per tahun CI memuat 0 (2022: -0,003, -0,012 s.d. 0,008; 2023: -0,017; 2024: -0,004; 2025: -0,025), jadi "kalah" tidak pasti di tiap tahun. Model dikurangi klimatologi +0,006 (0,003 s.d. 0,009) dan dikurangi klimatologi berlaju sama +0,008 (0,005 s.d. 0,011): unggul tipis tapi nyata, ETS tetap ~0,01. Uji kepekaan kab berlabel menurut 2016-2021 saja (38 kab): ETS 0,011 (0,008-0,014), POD 0,57, FAR 0,976.
+
+**Bacaan jujur:** model hanya sedikit di atas klimatologi dan acak, kalah dari persisten pada gabungan, dan ~98 dari 100 alarm Waspada keliru. Dengan hujan sempurna pun ini bukan prakiraan kejadian harian yang layak; prakiraan sungguhan lebih buruk. Perluasan ke 2023-2025 tidak mengubah kesimpulan 2022.
+
+Label: `data/pusdalops/logbook_kejadian.csv`, jenis `banjir`, hari `tgl_kejadian` (`lb_mulai`) dan sampai `terakhir_dicatat` maks 30 hari (`lb_aktif`). Hujan: ERA5 cache `uji_balik` (2015-12-22..2026-01-03, nol unduhan), 41 kab / 104 sel; 2011-2015 butuh unduhan. Keluaran: `public/data/validasi_logbook_banjir_arsip.json`.
+
+Enam catatan bias: (1) tahun parsial hanya menilai hari tercatat (2021: 343, 2022: 272, 2023: 327 hari; piket bolong), hari tanpa laporan di luar itu bukan negatif; (2) 41 kab sampel dari cache `uji_balik` dipilih dari jumlah hari kejadian 2016-2025 TERMASUK tahun uji 2022-2025, jadi seleksi memakai hasil: skor OPTIMISTIS, POD dan laju dasar TIDAK berlaku nasional, FAR bukan batas atas yang pasti (uji kepekaan "kab berlabel menurut 2016-2021 saja" ada di JSON, tetapi 41 kab awal tetap terseleksi; memilih ulang kab dari 2016-2021 butuh unduhan ERA5 baru); (3) persisten tidak adil untuk label berdurasi/berjendela; (4) hujan ERA5 = prakiraan sempurna, prakiraan sungguhan hanya lebih buruk; (5) aturan BERLAKU dipilih di 2016-2021 tetapi diterima lewat uji 2022-2025 pada label DIBI (`uji_balik.py` `LATIH, UJI`), jadi 2022-2025 bukan sepenuhnya murni; label logbook belum dipakai menyetel apa pun; (6) klimatologi belajar hanya dari hari tercatat 2016-2021.

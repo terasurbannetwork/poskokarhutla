@@ -16,8 +16,10 @@ import os
 
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 KOLOM = ["id_kejadian", "jenis", "tgl_kejadian", "pertama_dicatat", "terakhir_dicatat", "n_laporan", "hari_dilaporkan",
-         "prov", "prov_kode", "kabkota", "kab_kode", "n_kec", "n_desa", "md", "hilang", "luka", "mengungsi", "kk", "jiwa",
+         "prov", "prov_kode", "kabkota", "kab_kode", "n_kec", "n_desa",
          "rumah", "rumah_rb", "rumah_rs", "rumah_rr", "rumah_terendam", "ha"]
+# kolom korban (md, hilang, luka, mengungsi, kk, jiwa) TIDAK terbit: pengurai bisa menjumlah angka lintas baris dan satu
+# bencana bisa tercatat ganda; korban resmi dari DIBI. Rumah dan ha tetap (dipakai uji_logbook.py dan uji karhutla).
 
 
 def _muat(nama, rel):
@@ -86,6 +88,9 @@ def main():
     rekap(rows, berkas)
 
 
+HARI_BULAN_MIN = 25  # minimal hari tercatat per bulan agar satu tahun masuk tahun dasar kalender
+
+
 def rekap(rows, berkas):
     import collections
     import datetime as dt
@@ -94,9 +99,14 @@ def rekap(rows, berkas):
         hari[os.path.basename(os.path.dirname(f))[:4]] += json.load(open(os.path.join(os.path.dirname(f), "ringkasan.json")))["n_berkas"]
     hari = dict(hari)
     jenis = sorted({r["jenis"] for r in rows})
-    # tahun dasar kalender = runtun penuh 2014-2020; tahun penuh lain (2024) hanya masuk "tahun"/"bulan", supaya label
-    # "N dari 7 tahun, 2014-2020" di layar dan uji balik tetap sah. Menambah tahun dasar = ganti label layar sekaligus.
-    penuh = sorted(y for y, h in hari.items() if h >= 365 and "2014" <= y <= "2020")
+    # tahun dasar kalender = tahun yang TIAP bulannya punya >= 25 hari logbook tercatat (2013 Feb 16 hari, 2021 Des 19 hari,
+    # 2022-2023 celah piket -> tidak masuk). Layar membaca tahun_penuh dari berkas ini, jangan tulis rentang tahun tetap.
+    hari_bulan = collections.defaultdict(lambda: [0] * 12)
+    for f in berkas:
+        for l in open(os.path.join(os.path.dirname(f), "logbook.jsonl"), encoding="utf-8"):
+            t = json.loads(l)["tgl_logbook"]
+            hari_bulan[t[:4]][int(t[5:7]) - 1] += 1
+    penuh = sorted(y for y in hari if y in hari_bulan and min(hari_bulan[y]) >= HARI_BULAN_MIN)
     kab = collections.defaultdict(lambda: {"bulan": collections.defaultdict(lambda: [0] * 12),
                                            "tahun": collections.defaultdict(dict),
                                            "ada": collections.defaultdict(lambda: [set() for _ in range(12)]),
@@ -104,10 +114,17 @@ def rekap(rows, berkas):
     # angka korban TIDAK direkap: satu bencana bisa pecah jadi beberapa kejadian (Lombok 2018 tiga kali) dan ada salah urai
     # (28.390 "hilang" banjir Magelang 2011). Korban resmi tetap dari DIBI; di sini hanya hitungan kejadian.
     nas = collections.defaultdict(lambda: collections.defaultdict(int))
+    koreksi = collections.defaultdict(lambda: collections.Counter())   # per tahun pertama_dicatat: baris yang tgl_kejadian-nya dikoreksi
     for r in rows:
         tgl = r["tgl_kejadian"] or r["pertama_dicatat"]
-        if tgl < r["pertama_dicatat"] and (dt.date.fromisoformat(r["pertama_dicatat"]) - dt.date.fromisoformat(tgl)).days > 300:
-            tgl = r["pertama_dicatat"]  # salah ketik tahun di Januari ("02 Januari 2023" dicatat 2 Jan 2024): pakai tanggal catat
+        try:
+            sel = (dt.date.fromisoformat(r["pertama_dicatat"]) - dt.date.fromisoformat(tgl)).days
+        except ValueError:  # tanggal mustahil (30 Feb dst): dibiarkan seperti semula
+            sel = 0
+        if abs(sel) > 300:
+            # salah ketik tahun: tgl < catat ("02 Januari 2023" dicatat 2 Jan 2024) atau tgl > catat ("2104-01-02"): pakai tanggal catat
+            koreksi[r["pertama_dicatat"][:4]]["tgl_lebih_awal" if sel > 0 else "tgl_lebih_akhir"] += 1
+            tgl = r["pertama_dicatat"]
         y, m = tgl[:4], int(tgl[5:7])
         if y not in hari:  # update atas kejadian tahun sebelumnya: masuk tahun logbook-nya
             y = r["pertama_dicatat"][:4]
@@ -148,7 +165,7 @@ def rekap(rows, berkas):
                       "Tahun tidak lengkap: bandingkan per hari tercatat. Tanpa angka korban (lihat DIBI). "
                       "Kebakaran permukiman 2022 hanya 121 kejadian dalam 272 hari, jauh di bawah 2014-2020; "
                       "kemungkinan cara pencatatannya berubah (belum dipastikan)." + catatan_lh,
-           "hari_tercatat": hari, "tahun_penuh": penuh, "jenis": jenis, "nasional": nas,
+           "hari_tercatat": hari, "hari_bulan": dict(sorted(hari_bulan.items())), "koreksi_tahun": {y: dict(c) for y, c in sorted(koreksi.items())}, "tahun_penuh": penuh, "jenis": jenis, "nasional": nas,
            # tahun_ada[jenis][bulan] = berapa tahun penuh (dari tahun_penuh) yang punya >= 1 kejadian di bulan itu
            # bulan = semua tahun 2011-2022; bulan_penuh = hanya tahun_penuh (pakai ini bila label menyebut 2014-2020)
            "kab": {k: {"bulan": v["bulan"], "bulan_penuh": v["bulan_penuh"], "tahun": v["tahun"],

@@ -320,3 +320,12 @@ uji("logbook: tulis dibatasi 120 per pelaku per jam, pelaku lain tidak terganggu
   assert.equal((await call("POST", "/api/logbook/kejadian", ADMIN, baru)).status, 201, "pelaku lain tetap boleh");
   await DB.prepare("DELETE FROM laju_bnpb").run();
 });
+
+uji("logbook turunan: tanpa sesi/peran salah 403, nama di luar daftar putih 404, staf sah 200 dari R2", async () => {
+  const kunci = n => `internal/pusdalops-logbook/turunan/${n}.json`;
+  const R2 = await mf.getR2Bucket("MEDIA"); await R2.put(kunci("rapor_bpbd"), JSON.stringify({ok: 1})); await R2.put(kunci("rahasia"), "{}");
+  for (const h of [orig, LUAR]) assert.equal((await call("GET", "/api/logbook/turunan/rapor_bpbd", h)).status, 403);
+  for (const n of ["rahasia", "latih", "..", "rapor_bpbd.json"]) assert.equal((await call("GET", "/api/logbook/turunan/" + n)).status, 404, n);
+  assert.equal((await call("GET", "/api/logbook/turunan/rekomendasi")).status, 404, "daftar putih tapi objek belum ada");
+  const r = await call("GET", "/api/logbook/turunan/rapor_bpbd"); assert.equal(r.status, 200); assert.deepEqual(r.j, {ok: 1}); assert.equal(r.cc, "private, max-age=300");
+});

@@ -76,7 +76,7 @@ def og_banjir(nama):
     halaman = {"/banjir/": hb}
     for tb_ in tabs:
         j, d = TAB_BANJIR.get(tb_, (tb_.capitalize(), hb["desk"]))
-        halaman["/banjir/" + tb_] = {"judul": f"{j} · Centurisk97 Banjir, Longsor & Rob", "gambar": "banjir", "desk": f"{tb}: {d}"}
+        halaman["/banjir/" + tb_] = {"judul": f"{j}, Centurisk97 Banjir & Longsor", "gambar": "banjir", "desk": f"{tb}: {d}"}
     return {"gambar": {"banjir": gb}, "halaman": halaman}
 
 

@@ -11,7 +11,7 @@ Kejadian yang jendelanya melewati data FIRMS (CUTOFF) dibuang, bukan dipotong.
 
 Pakai:  python3 scripts/data/uji_logbook_karhutla.py        (jalan sungguhan; cache titik per kab di data/raw/logbook/)
         python3 scripts/data/uji_logbook_karhutla.py uji    (swauji mainan, tanpa berkas)
-        python3 scripts/data/uji_logbook_karhutla.py arsip [tahun..] (mode ARSIP 2014-2022: data/pusdalops/logbook_kejadian.csv vs CSV FIRMS lokal
+        python3 scripts/data/uji_logbook_karhutla.py arsip [tahun..] (mode ARSIP 2014-2025: data/pusdalops/logbook_kejadian.csv vs CSV FIRMS lokal
                                                              -> public/data/validasi_logbook_karhutla_arsip.json; keluaran 2026 tidak disentuh)
 """
 import bisect, collections, csv, datetime as dt, json, math, os, random, statistics, sys
@@ -416,7 +416,8 @@ def lift_riwayat(h):
 
 ARSIP_LOGBOOK = os.path.join(AKAR, "data/pusdalops/logbook_kejadian.csv")
 ARSIP_KELUAR = os.path.join(AKAR, "public/data/validasi_logbook_karhutla_arsip.json")
-ARSIP_TAHUN = (2014, 2015, 2016, 2017, 2018, 2019, 2020, 2022)   # tahun logbook penuh (2011-2013 sebagian, 2021 hilang)
+ARSIP_TAHUN = (2014, 2015, 2016, 2017, 2018, 2019, 2020, 2021, 2022, 2023, 2024, 2025)   # tahun logbook penuh (2011-2013 sebagian; 2026 lewat mode utama)
+TAHAP_2 = (2023, 2024, 2025)   # dilaporkan terpisah dari 2014-2022; BUKAN luar-sampel sungguhan: uji ini tidak menyetel parameter (jendela dibuat Okt 2026)
 
 
 def kejadian_arsip(berkas=ARSIP_LOGBOOK):
@@ -476,10 +477,10 @@ def titik_tahun(y):
     for (d, c), (la, lo) in uniq.items():
         if c not in adm:
             a = w.cari(lo, la)
-            adm[c] = (a[0], norm(a[1])) if a else None
+            adm[c] = (a[0], norm(a[1])) if a and a[1] else None   # a[1] None = poligon tanpa nama kab (2023)
         if adm[c]:
             out[adm[c]][d.isoformat()] += 1
-    hari = {k: dict(v) for k, v in out.items()}
+    hari ={k: dict(v) for k, v in out.items()}
     os.makedirs(os.path.dirname(cache), exist_ok=True)
     json.dump({"hari": {"|".join(k): v for k, v in hari.items()}, "sensor": dict(pakai)}, open(cache, "w"), separators=(",", ":"))
     return hari, dict(pakai)
@@ -517,22 +518,26 @@ def jalan_arsip(tahun=None):
         if r["n"]:
             a = r["penuh"]["null_A"]; b = r["penuh"]["null_B"]
             print(y, "n", r["n"], "deteksi", r["deteksi"]["laju"], "nullA", a["null"], "liftA", a["lift"], "nullB", b["null"], "liftB", b["lift"], "sensor", sensor)
+    def gabung(ok):
+        tot = sum(r["n"] for r in ok)
+        gab = lambda j, n, k: round(sum(r[j][n][k] * r["n"] for r in ok) / tot, 3) if tot else None
+        return {"tahun": [r["tahun"] for r in ok], "n": tot, "deteksi": round(sum(r["deteksi"]["laju"] * r["n"] for r in ok) / tot, 3) if tot else None,
+                "null_A": gab("penuh", "null_A", "null"), "lift_A": gab("penuh", "null_A", "lift"),
+                "null_B": gab("penuh", "null_B", "null"), "lift_B": gab("penuh", "null_B", "lift")}
     ok = [r for r in per if r["n"]]
-    tot = sum(r["n"] for r in ok)
-    gab = lambda j, n, k: round(sum(r[j][n][k] * r["n"] for r in ok) / tot, 3) if tot else None
+    dalam, luar = [r for r in ok if r["tahun"] not in TAHAP_2], [r for r in ok if r["tahun"] in TAHAP_2]
     out = {"dibuat": dt.date.today().isoformat(), "sumber": "logbook Pusdalops arsip (data/pusdalops/logbook_kejadian.csv) vs titik panas lokal (data/raw/firms), definisi titik_unik.py",
            "catatan": ("LAPORAN SAJA. Deteksi = ada >=1 titik unik di kab pada [mulai-3, terakhir_dicatat]. null_A = kab sama, waktu acak jauh dari kejadian; null_B = waktu sama, kab acak sewilayah provinsi; "
-                       "lift = deteksi / null. Sensor berbeda per tahun (2014-2018: MODIS + S-NPP; 2019+: ditambah NOAA-20), jadi bandingkan lift, bukan deteksi mentah. "
-                       "Kab dicocokkan nama ke poligon kab sekarang (pemekaran dan kab tak cocok dibuang). 2022 hanya 272 hari tercatat: hari tak tercatat ikut jadi sampel null (bias konservatif). "
+                       "lift = deteksi / null. Sensor berbeda per tahun (2014-2018: MODIS + S-NPP; 2019-2022: + NOAA-20; 2023+: + NOAA-21), jadi bandingkan lift, bukan deteksi mentah. "
+                       "Kab dicocokkan nama ke poligon kab sekarang (pemekaran dan kab tak cocok dibuang). Hari tak tercatat (2021 343, 2022 272, 2023 327 hari) ikut jadi sampel null (bias konservatif). "
                        "Kab bernol titik sepanjang tahun TETAP dihitung (deteksi 0; angka di 'dibuang' hanya penanda). Tanpa laporan dianggap tanpa api, jadi kedua pembanding konservatif. "
                        "Lift yang selang 95%-nya mencakup 1 = tidak lebih baik dari pembanding (lihat vonis_lift). "
-                       "2011-2013 (5 kejadian) dan 2021 (hilang) tidak diuji. Durasi dan luas tidak diuji (arsip tanpa tanggal surut)."),
+                       "Tahap 2014-2022 vs 2023-2025 dilaporkan terpisah; tidak ada parameter yang disetel (bukan dalam/luar-sampel). Angka gabungan = RATA-RATA BERBOBOT n dari lift per tahun, bukan lift terpooling dan tanpa CI; tidak ada uji selisih antartahap. NOAA-21 (sejak Mar 2023) menaikkan peluang ada titik di mana pun dan menjelaskan null A 2023 yang tinggi. 2011-2013 (sebagian) tidak diuji; 2026 hanya lewat mode utama. "
+                       "Durasi dan luas tidak diuji (arsip tanpa tanggal surut)."),
            "tahun": per,
-           "gabungan_berbobot_n": {"n": tot, "deteksi": round(sum(r["deteksi"]["laju"] * r["n"] for r in ok) / tot, 3) if tot else None,
-                                   "null_A": gab("penuh", "null_A", "null"), "lift_A": gab("penuh", "null_A", "lift"),
-                                   "null_B": gab("penuh", "null_B", "null"), "lift_B": gab("penuh", "null_B", "lift")}}
+           "gabungan_berbobot_n": gabung(ok), "tahap_2014_2022": gabung(dalam), "tahap_2023_2025": gabung(luar)}
     json.dump(out, open(ARSIP_KELUAR, "w"), ensure_ascii=False, indent=1)
-    print("gabungan", out["gabungan_berbobot_n"])
+    print("tahap 2014-2022", out["tahap_2014_2022"]); print("tahap 2023-2025", out["tahap_2023_2025"])
 
 
 def uji():

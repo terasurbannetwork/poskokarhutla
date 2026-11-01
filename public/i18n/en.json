@@ -10220,5 +10220,11 @@
 "^Centurisk97  ·  Laporan Harian Karhutla  ·  (.+)$",
 "Centurisk97  ·  Daily Forest Fire Report  ·  $1"
 ]
-]
+],
+"Banjir & Longsor": "Floods & Landslides",
+"Gelombang Pasang & Abrasi": "Coastal Waves & Abrasion",
+"Centurisk97: Banjir & Longsor": "Centurisk97: Floods & Landslides",
+"Kualitas udara rinci": "Detailed air quality",
+"banjir & longsor": "floods & landslides",
+"Banjir & longsor": "Floods & landslides"
 }

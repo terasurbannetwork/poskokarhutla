@@ -37,3 +37,20 @@
 .lb-t-ok{--pil:var(--c4)}.lb-t-tunggu{--pil:var(--c3)}.lb-t-bahaya{--pil:var(--c1)}.lb-t-info{--pil:var(--c5)}
 @media print{.ad-top,.lb-aksi{display:none}}
 .lb-kaki{border-top:1px solid var(--line);padding-top:8px;font-size:12.5px}
+/* turunan: deretan bagian, grafik jam, ringkasan */
+.lb-tab{margin:0 0 14px}
+.lb-turunan{display:grid;gap:12px}
+.lb-turunan .bn-baris{margin:0}
+.lb-isi{display:grid;gap:12px}
+.lb-ringkas{display:flex;gap:8px;flex-wrap:wrap}
+.lb-svg{width:100%;height:auto;display:block}
+.lb-svg text{fill:var(--ink2);font:600 12px var(--font,inherit);text-anchor:middle}
+.lb-svg .dasar{stroke:var(--line);stroke-width:1}
+.lb-svg .bat{fill:color-mix(in srgb,var(--ink) 22%,var(--card))}
+.lb-svg .bat.musim{fill:var(--c1)}
+.lb-svg .tangkap{fill:transparent;cursor:pointer}
+.lb-svg g:hover .bat{opacity:.8}
+.lb-turunan meter,.lb-tabel meter{width:84px;height:10px;vertical-align:middle}
+.lb-turunan details summary{cursor:pointer;font-weight:700}
+@media (max-width:640px){.lb-tab{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.lb-turunan,.lb-isi,.lb-isi>*,.lb-turunan>*{min-width:0;max-width:100%}

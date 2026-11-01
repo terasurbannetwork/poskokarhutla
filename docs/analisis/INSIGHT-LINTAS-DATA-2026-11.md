@@ -1,15 +1,18 @@
 # Insight lintas data: logbook Pusdalops × sistem Centurisk97
 
-Disusun 1 November 2026. Sumber utama: logbook harian Pusdalops BNPB 2011–2023 (37.992 kejadian; tahun
-lengkap 2014–2020), disilangkan dengan titik api FIRMS, InaRISK (risiko dan indeks ketahanan daerah),
+Disusun 1 November 2026, diperbarui hari yang sama setelah arsip 2021, 2024, 2025, dan 2026 masuk.
+Sumber utama: logbook harian Pusdalops BNPB 2011–2026 (56.685 kejadian; tahun dasar = tahun yang tiap
+bulannya punya minimal 25 hari tercatat: 2014–2020, 2024, 2025, sembilan tahun), disilangkan dengan titik api FIRMS, InaRISK (risiko dan indeks ketahanan daerah),
 DIBI, SK status darurat, dan korpus riset direktori (14.869 makalah bertanda wilayah dan jenis bencana).
 Angka korban dari logbook tidak dipakai, karena satu bencana bisa tercatat beberapa kali.
 
 ## 1. Yang paling penting
 
-1. **Bencana di Indonesia sangat berulang di tempat yang sama.** 85 kab/kota terkena banjir dan 52 terkena
-   longsor setiap tahun 2014–2020, di bulan yang hampir sama. Kepastian musiman ini lebih bisa diandalkan
-   daripada prakiraan harian: model banjir dari hujan gagal di uji luar-sampel 2022 (ETS 0,006).
+1. **Bencana di Indonesia sangat berulang di tempat yang sama.** 78 kab/kota terkena banjir, 62 cuaca
+   ekstrem, dan 49 longsor di setiap tahun dasar (9 dari 9 tahun), di bulan yang hampir sama. Kepastian
+   musiman ini lebih bisa diandalkan daripada prakiraan harian: aturan banjir dari hujan gagal di empat
+   tahun uji 2022–2025 (ETS gabungan 0,011; sekitar 98 dari 100 alarm Waspada salah), bahkan dengan hujan
+   yang diketahui sempurna.
 2. **BNPB tidak tahu sebagian besar kejadian.** Kebakaran lahan di Jawa hanya terlapor pada 1–5% hari
    ada titik api. Situbondo dan Wonogiri punya titik api sama banyak pada 2015 dan 2018, tetapi laporannya
    naik dari 0 menjadi 20-an. Provinsi di Papua mencatat 0,3–1 kejadian per kab per tahun.
@@ -19,16 +22,38 @@ Angka korban dari logbook tidak dipakai, karena satu bencana bisa tercatat beber
    bawah median indeks risiko longsor. Sebagian disebabkan bias pelaporan Jawa dan perbedaan ukuran
    (InaRISK menilai bahaya dan keparahan, logbook menghitung frekuensi), tetapi untuk perencanaan
    kesiapsiagaan tahunan, frekuensi nyata lebih berguna.
-4. **Kendala lapangan berulang dan bisa disiapkan sebelumnya.** Akses jalan terputus (923 entri),
-   logistik/BBM (431), sinyal (306), sumber air pemadaman (283), personel (248), alat berat (206).
-   259 desa tercatat terisolir berulang.
+4. **Kendala lapangan berulang dan bisa disiapkan sebelumnya.** Dari 5.558 entri kendala 2011–2026:
+   akses jalan (2.000 entri), air bersih atau sumber air (1.479), logistik/BBM (1.377), sinyal dan
+   komunikasi (963), personel (927), alat berat (495), gambut (363). Daftar desa terisolir berulang kini
+   2.151 desa (`data/pusdalops/desa_terisolir.csv`).
 5. **Riset belum menyentuh semua daerah langganan, dan arah riset tidak sejalan dengan kejadian.**
+
+## 1a. Tahun 2025 melonjak, dan lonjakannya nyata
+
+Logbook 2025 mencatat 5.906 kejadian, tertinggi sejak 2011 (tahun lain 3.000–4.800). Kenaikan terbesar di
+Jawa Barat (sekitar 590 menjadi 1.074 kejadian; Kab. Bogor 250 menjadi 335) dan Sumatera Utara (sekitar
+150 menjadi 388), tersebar sepanjang tahun, bukan satu kejadian besar. DIBI, yang dicatat terpisah,
+menunjukkan lonjakan yang sama: banjir 1.457 (2024) menjadi 2.991, cuaca ekstrem 756 menjadi 2.432, longsor
+219 menjadi 1.171. Jadi ini bukan sekadar perubahan cara mencatat di logbook, walau DIBI dan logbook
+sebagian bersumber dari laporan BPBD yang sama. Penyebab fisiknya (mis. tahun basah) belum dikaji.
+
+## 1b. Uji model terhadap logbook (2022–2025)
+
+| Model | Hasil | Bacaan |
+| ----- | ----- | ------ |
+| Aturan banjir dari hujan, kab/hari | ETS 0,011 [0,008–0,014], tidak lulus; kalah dari persisten | Belum layak jadi peringatan harian |
+| Skor longsor hujan 3 hari × bahaya | AUC 0,65; ETS tidak mengalahkan klimatologi | Sinyal peringkat lemah, tidak lebih dari musim |
+| Titik api FIRMS vs laporan karhutla | Lift A 2,23 (2014–2022), 1,95 (2023–2025) | Titik api memang menandai hari laporan, sekitar dua kali acak |
+
+Catatan kejujuran: aturan banjir diterima lewat uji 2022–2025 pada label DIBI, dan 41 kab sampel dipilih
+memakai kejadian sampai 2025, jadi skor banjir/longsor optimistis; vonis gagal tetap berlaku. Rincian di
+`scripts/banjir/RISET-LOGBOOK*.md` dan `scripts/data/RISET-LOGBOOK-KARHUTLA.md`.
 
 ## 2. Pola musim per daerah
 
 | Pola | Daerah | Implikasi |
 | ---- | ------ | --------- |
-| Banjir dan longsor memuncak Juni–Agustus | Maluku (58% kejadian di Jun–Agu), Maluku Utara (56%), Sulawesi Tenggara (43%), Sulawesi Tengah (40%) | SOP siaga "musim hujan November–Maret" tidak cocok; siaga di sana justru pertengahan tahun |
+| Banjir dan longsor memuncak Juni–Agustus | Maluku (56% kejadian di Jun–Agu, 9 tahun dasar), Maluku Utara (46%), Sulawesi Tenggara (45%), Sulawesi Tengah (34%) | SOP siaga "musim hujan November–Maret" tidak cocok; siaga di sana justru pertengahan tahun |
 | Karhutla di musim hujan | Aceh (88 dari 226 kejadian di Des–Mar), Riau (56 dari 97) | Siaga karhutla Februari–Maret, kemarau kedua |
 | Kebakaran permukiman Juli–September | Lima kota Jakarta (300–500 kejadian masing-masing 2014–2020), Kota Semarang | Kampanye listrik aman sebelum kemarau |
 | Rantai banjir → longsor | 15,8% banjir diikuti longsor di kab yang sama dalam 3 hari | Banjir memicu siaga longsor otomatis |
@@ -95,6 +120,9 @@ harian terbit dengan jeda 1–2 hari.
 ## Keterbatasan
 
 - Logbook mencatat yang dilaporkan, bukan seluruh kejadian; bias kuat ke Jawa.
-- 2011–2013 tidak lengkap, 2021 tidak ada, 2022–2023 sebagian.
+- 2011–2012 sebagian besar berkas rusak dari sumbernya; Februari 2013 rusak; 2021, 2022, 2023 punya bulan
+  dengan kurang dari 25 hari tercatat; 2026 sampai 1 November.
+- Bagian 3 (kejanggalan), 4 (daerah prioritas), dan 5 (celah riset) masih dihitung dari basis 2014–2020
+  dan belum dihitung ulang dengan sembilan tahun dasar.
 - Pencocokan riset memakai tanda wilayah dan jenis di korpus; makalah tanpa tanda kab tidak terhitung.
 - "Langganan" dihitung dari minimal satu kejadian per tahun, bukan besar dampaknya.
