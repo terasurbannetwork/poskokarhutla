@@ -44,6 +44,22 @@ uji("T1: /admin/instansi untuk staf berperan memakai kerangka staf; peran lain k
   for (const [j, boleh, tolak] of [["/admin/omc", tmc, ver], ["/admin/inventaris", ver, tmc]]) { assert.equal((await api("GET", j, undefined, boleh)).s, 200, j); const sal = await man(j, tolak); assert.equal(sal.s, 303, j); assert.equal(sal.h.get("location"), "/admin/pantau", j + " peran tak cocok"); const an2 = await man(j); assert.equal(an2.s, 303, j); assert.match(an2.h.get("location"), /\/admin\/masuk/, j + " anonim"); }
   assert.equal((await man("/admin/laporan-karhutla", tmc)).s, 200, "laporan karhutla: semua staf"); assert.equal((await man("/admin/laporan-karhutla")).s, 303); assert.equal((await api("GET", "/admin/pantau")).s, 200, "Meja Pantau tetap memuat layar masuk staf");
 });
+uji("Ruang Laporan: /admin/laporan memuat sidebar + iframe; halaman terbingkai boleh dibingkai sesama asal saja", async () => {
+  const tmc = await bikin(["tmc"]), man = async (j, h = {}) => { const r = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h, redirect: "manual"}); await r.text(); return {s: r.status, csp: r.headers.get("content-security-policy") || "", h: r.headers}; };
+  for (const h of [ADMIN, tmc]) {
+    const r = await api("GET", "/admin/laporan", undefined, h); assert.equal(r.s, 200); assert.match(r.t, /<iframe id="rlBingkai"/); assert.match(r.t, /\/admin\/ruang_laporan\.js/); assert.doesNotMatch(r.t, /<script>/);
+    for (const ke of ["/admin/pantau", "/admin/laporan-karhutla", "/admin/omc", "/bnpb/logbook", "/laporan-bnpb", "/udara", "/gunungapi"]) assert.match(r.t, new RegExp(`data-ke="${ke}"`), ke);
+  }
+  assert.equal((await man("/admin/laporan")).s, 303, "anonim ke login admin");
+  assert.deepEqual(HALAMAN_STAF.laporan, null);
+  for (const [j, h] of [["/admin/laporan", ADMIN], ["/admin/omc", tmc], ["/admin/pantau", tmc], ["/admin/laporan-karhutla", tmc], ["/bnpb/logbook", {}]]) {
+    const r = await man(j, h); assert.equal(r.s, 200, j); assert.match(r.csp, /frame-ancestors 'self'/, j); assert.ok(!r.csp.includes("frame-ancestors 'none'") && !/\*/.test(r.csp.match(/frame-ancestors[^;]*/)[0]), j); assert.notEqual(r.h.get("x-frame-options"), "DENY", j);
+  }
+  /* yang tidak perlu dibingkai tetap tertutup: login admin (DENY) dan halaman /bnpb lain */
+  const lg = await U.mf.dispatchFetch("http://bnpb.lokal/admin/masuk", {redirect: "manual"}); await lg.text();
+  assert.equal(lg.headers.get("x-frame-options"), "DENY"); assert.match(lg.headers.get("content-security-policy"), /frame-ancestors 'none'/);
+  for (const j of ["/bnpb", "/meja"]) { const r = await man(j); assert.equal(r.s, 200, j); assert.match(r.csp, /frame-ancestors 'none'/, j); }
+});
 uji("hak halaman staf sama dengan hak API-nya (satu sumber)", () => {
   assert.deepEqual([...HALAMAN_STAF.omc].sort(), [...PERAN_BACA].sort());
   assert.deepEqual([...HALAMAN_STAF.instansi].sort(), [...new Set([...P_VALIDASI, ...P_KONSESI])].sort());

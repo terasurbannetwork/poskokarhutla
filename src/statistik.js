@@ -241,27 +241,29 @@ async function sesiDicabut(env, tanda) {
 /* Lax, bukan Strict: tautan dari WhatsApp/surel ke situs terkunci harus tetap membawa sesi; POST tetap dijaga cek origin di rute() */
 const cookie = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${umur}`;
 const html = (isi, status = 200, h = {}) => new Response(isi, {status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store",
-  "x-frame-options": "DENY", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_ADMIN, ...h}});
+  "x-frame-options": "SAMEORIGIN", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_ADMIN, ...h}});
+/* halaman login tidak perlu dibingkai: tetap DENY walau halaman admin lain boleh dibingkai sesama asal */
+const htmlMasuk = (isi, status = 200, h = {}) => html(isi, status, {"x-frame-options": "DENY", "content-security-policy": CSP_ADMIN.replace("frame-ancestors 'self'", "frame-ancestors 'none'"), ...h});
 const alihkan = (ke, h = {}) => new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store", ...h}});
 
 /* ?ke= tujuan sesudah masuk: hanya jalur di situs sendiri ("/..." tanpa "//" atau "/\\") */
 const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])[^\x00-\x20]*$/.test(k) ? k : ""; };   // tanpa karakter kontrol/spasi: "/<TAB>/evil.com" dibaca peramban sebagai //evil.com
 export async function masuk(env, req, kini, halamanMasuk) {
   const ke = tujuan(req), hal = g => halamanMasuk(g, ke);
-  if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return html(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
-  if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : html(hal(""));
+  if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return htmlMasuk(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
+  if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : htmlMasuk(hal(""));
   const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);
-  if (laju) return html(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
+  if (laju) return htmlMasuk(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)
   /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
   const kunciEmail = email ? (await sha(env.IP_SALT + "|masuk|" + email)).slice(0, 32) : "";   // batas per akun: memutar IP tak menghindarinya
-  if (kunciEmail && await gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini)) return html(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
+  if (kunciEmail && await gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini)) return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
   if (!sah) {
     /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
     const p = email && sandi && await masukPemirsa(env, email, sandi, kini);
-    if (!p) { if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini); return html(hal("Username atau kata sandi salah."), 401); }
+    if (!p) { if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini); return htmlMasuk(hal("Username atau kata sandi salah."), 401); }
     const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : "/" + p.tab[0]), {"set-cookie": cookiePemirsa(p.token, p.umur)});
     r.headers.append("set-cookie", cookie("", 0)); return r;
   }

@@ -550,6 +550,8 @@
     "trigger korban_jejak_tetap_hapus": "migrasi 0034 idempoten",
     "trigger p3k_jejak_tetap_ubah": "migrasi 0034 idempoten",
     "trigger p3k_jejak_tetap_hapus": "migrasi 0034 idempoten",
+    "GET /admin/laporan": "Ruang Laporan: /admin/laporan memuat sidebar + iframe",
+    "GET /bnpb/logbook": "Ruang Laporan: /admin/laporan memuat sidebar + iframe",
     "GET /admin/laporan-karhutla": "503 sopan tanpa migrasi 0032",
     "GET /api/laporan-karhutla/hari": "hak: operator provinsi",
     "GET /api/laporan-karhutla/format-khusus": "format khusus BNPB: kolom resmi",

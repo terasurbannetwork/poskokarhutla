@@ -17,7 +17,7 @@ import {inventarisProvinsi} from "./inventaris.js";
 import {korbanHari} from "./korban.js";
 import {sortieHari} from "./omc.js";
 import {stafSesi, PERAN} from "./staf.js";
-import {halamanLaporanKarhutla, HALAMAN_STAF} from "./admin_halaman.js";
+import {halamanLaporanKarhutla, halamanRuangLaporan, HALAMAN_STAF} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
 import * as S from "../public/laporan_karhutla_spek.js";
 import {teksWA} from "../public/laporan_karhutla_wa.js";
@@ -596,6 +596,7 @@ const bila = (nama, f) => async (env, req, url, kini, ctx, ...sisa) => {
 };
 /* rute digabung ke RUTE di src/worker.js. Hak diperiksa di tiap handler (pelaku): admin/moderator, sesi staf berperan, atau sesi akun instansi pemprov. */
 export const RUTE_LAPORAN_KARHUTLA = Object.fromEntries(Object.entries({
+  "GET /admin/laporan": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanRuangLaporan, Object.keys(PERAN)),   // Ruang Laporan: sidebar + iframe halaman pantau; tiap halaman terbingkai menjaga hak sendiri
   "GET /admin/laporan-karhutla": (env, req, url, kini) => halamanAdmin(env, req, kini, halamanLaporanKarhutla, Object.keys(PERAN)),   // staf tanpa peran untuk halaman ini ke Meja Pantau, anonim ke login admin
   "GET /api/laporan-karhutla/hari": bila("hari", (env, req, url, kini) => bacaHari(env, req, url, kini)),
   "GET /api/laporan-karhutla/format-khusus": formatKhusus,   // karhutla saja; bahaya lain tidak punya format resmi ini
