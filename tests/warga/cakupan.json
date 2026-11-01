@@ -936,7 +936,8 @@
     "GET /api/sensor/status": "sensor: status hanya untuk staf",
     "table sensor_lapor": "sensor: lapor dari gateway tersimpan",
     "POST /api/sensor/lapor": "sensor: lapor dari gateway tersimpan",
-    "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin"
+    "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin",
+    "table korban_cadang": "salinan sementara migrasi 0093, dibuang di akhir; hasilnya diuji korban: daftar tetap JS == CHECK migrasi terbaru == klien"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

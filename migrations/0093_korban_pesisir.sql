@@ -1,8 +1,7 @@
 -- Korban: CHECK bencana diperlebar dengan 'pesisir' (Gelombang pasang dan abrasi, hazard baru di public/bencana.json). SQLite tidak bisa mengubah CHECK, jadi tabel dibangun ulang.
 -- Pola: salin ke korban_cadang, DROP korban (indeks dan trigger ikut hilang; tabel anak korban_jejak tanpa kunci asing, aman), CREATE ulang, isi kembali, buang cadang.
--- Sengaja BUKAN ALTER TABLE RENAME: RENAME memvalidasi ulang semua trigger dan gagal bila instansi_akun belum ada. Tahan diulang: cadang dibuang dulu, data tetap utuh.
+-- Sengaja BUKAN ALTER TABLE RENAME: RENAME memvalidasi ulang semua trigger dan gagal bila instansi_akun belum ada. Satu transaksi (migrasi D1). Ulangan sesudah penerapan sukses aman (cadang sudah dibuang); ulangan sesudah penerapan TERPUTUS gagal keras di CREATE TABLE korban_cadang supaya satu-satunya salinan data tidak terhapus (pola 0090): periksa korban_cadang dengan tangan.
 -- Daftar bencana HARUS sama dengan src/korban.js, public/instansi_korban.js, public/admin/korban.js (dijaga korban.test.mjs, yang membaca CHECK dari migrasi terbaru ini).
-DROP TABLE IF EXISTS korban_cadang;
 CREATE TABLE korban_cadang AS SELECT * FROM korban;
 DROP TABLE korban;
 CREATE TABLE korban (

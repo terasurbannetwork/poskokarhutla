@@ -93,5 +93,6 @@
   "0089_sensor.sql": "ed4d7473f00ee6f8eeeebe82d9fcec7623c05e340a04bd08ee08490157982b49",
   "0090_pesisir.sql": "2c694f8265e969d32a222232ec04fad7e9456a0230a6a025b734b650489dd293",
   "0091_logbook_jenis.sql": "e907882dd41b1b0b663f8a10069d47d0fab79c18241fb31143ea6b300146fc10",
-  "0092_pesisir_rujukan.sql": "b84eefd0b03defd8bb0e8063088019f9f002f220bcbdf7c05eddff38922fc1c1"
+  "0092_pesisir_rujukan.sql": "b84eefd0b03defd8bb0e8063088019f9f002f220bcbdf7c05eddff38922fc1c1",
+  "0093_korban_pesisir.sql": "1094efc1876d2e5c23faf028d4aaa9f93f41b11e937b07b8b69e459f98808aad"
 }

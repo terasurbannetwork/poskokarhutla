@@ -9,6 +9,7 @@ import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import REG from "../../src/bencana.generated.js";
+import {SNPP_BERHENTI} from "../../src/titik.js";
 
 const JAM = 3600e3, KINI = Date.now();
 const TITIK24 = {acuan: new Date(KINI - JAM).toISOString(), laci: ["K0001"], titik: [[-2.0, 113.0, 0], [-2.3, 113.4, -1]]};
@@ -17,7 +18,7 @@ const t1 = KINI - 2 * JAM, t2 = KINI - 5 * JAM, lama = KINI - 50 * JAM;
 const KEP_V = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
 const KEP_M = "latitude,longitude,brightness,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_t31,frp,daynight";
 const CSV = {
-  VIIRS_SNPP_NRT: [KEP_V,
+  VIIRS_NOAA21_NRT: [KEP_V,
     `-2.1234,113.5678,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,h,2.0NRT,290,12.3,D`,
     `-2.1234,113.5678,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,h,2.0NRT,290,12.3,D`,      // kembar persis -> 1
     `-2.1300,113.5700,330,0.4,0.4,${tgl(t2)},${jm(t2)},N,VIIRS,l,2.0NRT,290,1.1,N`,
@@ -35,7 +36,8 @@ const CSV = {
     `-2.16,113.60,320,1,1,${tgl(t1)},${jm(t1)},Terra,MODIS,85,6.1NRT,290,20,D`,
   ].join("\n"),
   VIIRS_NOAA20_NRT: "Invalid MAP_KEY.",          // sensor gagal: sisanya tetap dipakai
-  VIIRS_NOAA21_NRT: KEP_V,
+  // S-NPP pensiun: sesudah SNPP_BERHENTI tidak diminta sama sekali (titik ini tak boleh masuk); sebelumnya masuk sebagai N
+  VIIRS_SNPP_NRT: [KEP_V, `-3.3000,114.2000,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,n,2.0NRT,290,3,D`].join("\n"),
 };
 
 let mf, DB;
@@ -571,17 +573,19 @@ uji("titik panas 3 jam: CSV rusak dibuang, keyakinan dikodekan, kembar dihapus, 
   assert.match(r.h.get("cache-control"), /max-age=600/);
   const B = r.j.baris, kol = r.j.kolom;
   assert.deepEqual(kol, ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"], "kolom harus sama dengan hotspot.json");
-  // sah: 2 VIIRS SNPP (1 kembar dibuang) + 3 MODIS = 5. Rusak/luar kotak/laut/lama tidak masuk.
-  assert.equal(B.length, 5, `jumlah titik ${B.length}, harus 5: ${JSON.stringify(B)}`);
+  // sah: 2 VIIRS NOAA21 (1 kembar dibuang) + 3 MODIS = 5 (+1 S-NPP bila belum pensiun). Rusak/luar kotak/laut/lama tidak masuk.
+  const snpp = Date.now() >= SNPP_BERHENTI ? 0 : 1;
+  assert.equal(B.filter(b => b[0] === -3.3).length, snpp, "S-NPP: titiknya masuk hanya sebelum SNPP_BERHENTI, sesudahnya sensor dilewati");
+  assert.equal(B.length, 5 + snpp, `jumlah titik ${B.length}, harus 5: ${JSON.stringify(B)}`);
   const kc = Object.fromEntries(B.filter(b => b[3] === "M").map(b => [b[0], b[5]]));
   assert.deepEqual(kc, {"-2.14": 0, "-2.15": 1, "-2.16": 2}, "MODIS 25/50/85 harus 0/1/2 (ambang BRIN 30/80)");
-  assert.deepEqual(B.filter(b => b[3] === "N").map(b => b[5]).sort(), [0, 2], "VIIRS l/h harus 0/2");
+  assert.deepEqual(B.filter(b => b[3] === "N21").map(b => b[5]).sort(), [0, 2], "VIIRS l/h harus 0/2");
   assert.ok(B.every(b => r.j.wilayah[b[6]]?.startsWith("62|")), `titik Kalteng harus berwilayah 62|…: ${r.j.wilayah}`);
   assert.ok(!B.some(b => b[0] === -5.5), "titik Laut Jawa harus dibuang");
   assert.equal(Math.max(...B.map(b => b[2])), 0, "titik terbaru harus jam 0 terhadap acuan");
   assert.ok(r.j.galat.some(g => g.includes("VIIRS_NOAA20_NRT")), "galat sensor gagal harus dicatat");
   const m1 = new Date(Math.floor(t1 / 60e3) * 60e3).toISOString();   // jam CSV hanya sampai menit
-  assert.deepEqual(r.j.terakhir_sensor, {M: m1, N: m1}, "terakhir_sensor: hanya sensor yang punya deteksi (N20 galat, N21 kosong tidak ditulis)");
+  assert.deepEqual(r.j.terakhir_sensor, {M: m1, N21: m1, ...snpp ? {N: m1} : {}}, "terakhir_sensor: hanya sensor yang punya deteksi (N20 galat tidak ditulis; N hanya sebelum S-NPP pensiun)");
   for (let i = 0; i < 9; i++) await (await mf.getWorker()).scheduled({cron: "15 */3 * * *"});
   assert.equal((await DB.prepare("SELECT count(*) n FROM titik_terbaru").first()).n, 8, "hanya 8 putaran terakhir disimpan");
 });
