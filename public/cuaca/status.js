@@ -99,10 +99,41 @@ const Status = (() => {
   function tabPanel() { return ada.kec() ? `<button data-m="st" aria-pressed="${panelMode === "st"}">Status <b>${fmt(Object.keys(S.kec.prov).filter(p => S.kec.prov[p].t[k()] > 0).length)}</b> provinsi</button>` : ""; }
   const urutProv = j => Object.entries(S.kec.prov).filter(([, o]) => o.t[j] > 0).sort((a, b) => b[1].t[j] - a[1].t[j] || b[1].n[j][2] - a[1].n[j][2] || b[1].n[j][1] - a[1].n[j][1] || b[1].n[j][0] - a[1].n[j][0]);
   const ringkasN = n => [[n[2], 3], [n[1], 2], [n[0], 1]].filter(x => x[0]).map(([c, t]) => `${fmt(c)} kecamatan ${namaT(t).toLowerCase()}`).join(", ");
-  function barisPanel(q) { const j = k();
-    const R = urutProv(j).filter(([p]) => !q || namaProv(p).toLowerCase().includes(q));
-    return R.map(([p, o]) => barisRw(`data-st="${p}"`, warnaT(o.t[j]), esc(namaProv(p)), `${fmt(o.n[j][0] + o.n[j][1] + o.n[j][2])} kec.`, `<em>${namaT(o.t[j])}</em>${ringkasN(o.n[j])}`)).join("")
-      || `<p class="kosong">${q ? "Tidak ada yang cocok." : `Tidak ada kecamatan di atas ambang Waspada ${kapan3(j)}, menurut deteksi Centurisk97 dari prakiraan model.`}</p>`; }
+  /* ---------- tabel bertingkat provinsi > kab/kota > kecamatan (seperti banjir), hari terpilih ---------- */
+  S.stJalur = [];
+  const GR = "grid-template-columns:18px minmax(0,2.2fr) 64px 66px 44px 58px";
+  /* kab/kota diturunkan dari kunci pusat_kec ("prov|kab|kec"); angka dihitung dari baris kecamatan di atas ambang pada hari j */
+  const agg = j => { const c = S.kecAgg ||= {}; if (c[j]) return c[j]; const P = new Map();
+    for (const r of S.kec.kec) { const t = r[1][j] || 0; if (!t) continue; const n = nmKec(r[0]); const K = P.get(n.p) || P.set(n.p, new Map()).get(n.p);
+      const o = K.get(n.kab) || K.set(n.kab, {t: 0, n: [0, 0, 0], mm: 0, g: 0, kec: []}).get(n.kab);
+      o.t = Math.max(o.t, t); o.n[t - 1]++; o.mm = Math.max(o.mm, r[4][j] ?? 0); o.g = Math.max(o.g, r[5][j] ?? 0); o.kec.push(r); }
+    return c[j] = P; };
+  function barisData(J, j) {
+    const P = agg(j);
+    if (J.length === 0) return urutProv(j).map(([p, o]) => { const K = [...(P.get(p) || new Map()).values()];
+      return {id: p, attr: "data-st", nama: namaProv(p), t: o.t[j], n: o.n[j], mm: K.reduce((m, x) => Math.max(m, x.mm), 0), g: K.reduce((m, x) => Math.max(m, x.g), 0)}; });
+    if (J.length === 1) return [...(P.get(J[0]) || new Map())].map(([kab, o]) => ({id: kab, attr: "data-kb", nama: kab, t: o.t, n: o.n, mm: o.mm, g: o.g}))
+      .sort((a, b) => b.t - a.t || b.n[2] - a.n[2] || b.n[1] - a.n[1] || b.n[0] - a.n[0] || a.nama.localeCompare(b.nama, "id"));
+    return ((P.get(J[0]) || new Map()).get(J[1])?.kec || []).map(r => ({id: r[0], attr: "data-kc", nama: nmKec(r[0]).kec, t: r[1][j], n: null, mm: r[4][j] ?? 0, g: r[5][j] ?? 0}))
+      .sort((a, b) => b.t - a.t || b.mm - a.mm || b.g - a.g || a.nama.localeCompare(b.nama, "id")); }
+  const angka = (v, s) => v ? `${fmt(v)}${s ? " " + s : ""}` : "–";
+  function barisPanel(q) { const j = k(), J = S.stJalur, lv = J.length;
+    const R = barisData(J, j).filter(r => !q || r.nama.toLowerCase().includes(q));
+    const kepala = `<div class="tb kepala" style="${GR}"><span></span><span>${["Provinsi", "Kabupaten / kota", "Kecamatan"][lv]}</span><span>Status</span><span title="Kecamatan di atas ambang Waspada">Kecamatan</span><span title="Hujan harian tertinggi">Hujan<br>mm</span><span title="Embusan tertinggi">Embusan<br>km/jam</span></div>`;
+    const isi = R.map((r, i) => `<button class="tb" ${r.attr}="${esc(String(r.id))}" style="${GR}"><span class="rk">${i + 1}</span><span style="font-weight:600" translate="no">${esc(r.nama)}</span><span>${pilT(r.t)}</span><span>${r.n ? angka(r.n[0] + r.n[1] + r.n[2]) : "–"}</span><span>${angka(Math.round(r.mm))}</span><span>${angka(Math.round(r.g))}</span></button>`).join("");
+    const ringkas = R.length ? `<p class="fnd" style="margin:2px 8px 6px">${fmt(R.length)} ${["provinsi", "kabupaten atau kota", "kecamatan"][lv]} di atas ambang Waspada ${kapan3(j)}${q ? ", sesuai pencarian" : ""}. Deteksi Centurisk97, bukan peringatan resmi BMKG.</p>` : "";
+    return ringkas + (isi ? kepala + isi : `<p class="kosong">${q ? "Tidak ada yang cocok." : `Tidak ada ${["provinsi", "kabupaten atau kota", "kecamatan"][lv]} di atas ambang Waspada ${kapan3(j)}, menurut deteksi Centurisk97 dari prakiraan model.`}</p>`); }
+  /* klik baris: provinsi atau kab/kota turun satu tingkat (peta terbang ke wilayahnya), kecamatan terbang dan buka laci */
+  function klikBaris(b) {   /* jalur dan crumb urgen; peta, laci, dan tabel ditunda (INP) */
+    let kerja;
+    if (b.dataset.st != null) { const p = b.dataset.st; S.stJalur = [p];
+      kerja = () => { const f = S.geo.features.find(x => x.properties.kode === p); f && peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); }; }
+    else if (b.dataset.kb != null) { const p = S.stJalur[0], kb = b.dataset.kb; S.stJalur = [p, kb];
+      kerja = () => { const P = S.kecKunci.flatMap((x, i) => { const [pp, kab] = x.split("|"); return pp === p && kab === kb && S.kecPusat[i] ? [S.kecPusat[i]] : []; });
+        if (P.length) peta.fitBounds([[Math.min(...P.map(x => x[1])), Math.min(...P.map(x => x[0]))], [Math.max(...P.map(x => x[1])), Math.max(...P.map(x => x[0]))]], {padding: kiriPad(), duration: 700, maxZoom: 10}); }; }
+    else { const i = +b.dataset.kc, c = S.kecPusat[i]; S.pilih = null;
+      kerja = () => { if (c) peta.flyTo({center: [c[1], c[0]], zoom: 10, duration: 700}); laciKec(i); }; }
+    renderCrumb(); nanti(() => { kerja(); renderPanel(); }); }
   function fokusProv(p) { const f = S.geo.features.find(x => x.properties.kode === p), o = S.kec.prov[p]; if (!f || !o) return;
     S.pilih = {jenis: "st", k: p}; renderCrumb(); peta.fitBounds(kotak([f]), {padding: kiriPad(), duration: 700, maxZoom: 8}); laciProv(p); }
   function laciProv(p) { const o = S.kec?.prov[p]; if (!o) return;
@@ -156,5 +187,5 @@ const Status = (() => {
     if (lihat("s-sik") && ada.sik()) h += `<div class="lbl">Siklon tropis</div><div class="leg" style="margin:4px 0 8px"><span><i class="sw" style="background:#7a1f2b"></i>Lintasan amatan</span><span><i class="sw" style="background:#fff;border:2px solid #7a1f2b"></i>Prakiraan</span></div>`;
     return h; }
 
-  return {k, ada, pasang, segarkan, kontrol, modeBerubah, tabPanel, barisPanel, fokusProv, laciProv, hover, klik, legenda, urutProv, ringkasN};
+  return {k, ada, pasang, segarkan, kontrol, modeBerubah, tabPanel, barisPanel, klikBaris, fokusProv, laciProv, hover, klik, legenda, urutProv, ringkasN};
 })();

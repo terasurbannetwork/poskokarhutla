@@ -510,6 +510,7 @@ export default {
         "simulasi",
         "foto",
         "tentang",
+        "posko",
         "informasi",
         "metode"
       ],
@@ -518,7 +519,8 @@ export default {
       },
       "tab_sembunyi": [
         "informasi",
-        "metode"
+        "metode",
+        "posko"
       ],
       "sumber_status": [
         [

@@ -17,7 +17,7 @@ import os
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 KOLOM = ["id_kejadian", "jenis", "tgl_kejadian", "pertama_dicatat", "terakhir_dicatat", "n_laporan", "hari_dilaporkan",
          "prov", "prov_kode", "kabkota", "kab_kode", "n_kec", "n_desa",
-         "rumah", "rumah_rb", "rumah_rs", "rumah_rr", "rumah_terendam", "ha"]
+         "rumah", "rumah_rb", "rumah_rs", "rumah_rr", "rumah_terendam", "ha", "subjenis"]
 # kolom korban (md, hilang, luka, mengungsi, kk, jiwa) TIDAK terbit: pengurai bisa menjumlah angka lintas baris dan satu
 # bencana bisa tercatat ganda; korban resmi dari DIBI. Rumah dan ha tetap (dipakai uji_logbook.py dan uji karhutla).
 
@@ -32,6 +32,7 @@ def _muat(nama, rel):
 # pengode wilayah yang sama dengan laphar_riwayat.json (scripts/umum)
 K = _muat("umum_kejadian", "scripts/umum/kejadian.py")
 L = _muat("umum_laphar", "scripts/umum/laphar_arsip.py")
+SC = _muat("subjenis_cuaca", "scripts/data/subjenis_cuaca.py")  # subjenis cuaca dari teks laporan (teksnya sendiri tak terbit)
 
 
 # salah ketik dan nama lama di arsip 2011-2022 -> nama di public/geo/kabupaten
@@ -67,8 +68,8 @@ def kode_kab(k):
 
 
 def baris(k):
-    k = dict(k, kab_kode=kode_kab(k))
-    return {c: ("; ".join(k[c]) if isinstance(k[c], list) else k[c]) for c in KOLOM}
+    k = dict(k, kab_kode=kode_kab(k), subjenis=SC.subjenis(k) if k["jenis"] == "cuaca" else [])
+    return {c: ("; ".join(k[c]) if isinstance(k[c], list) else k.get(c)) for c in KOLOM}   # kode_dibi/jenis_resmi: arsip sebelum 1 Nov 2026 tak punya
 
 
 def main():

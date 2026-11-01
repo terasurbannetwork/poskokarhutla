@@ -54,6 +54,7 @@ const Peta = {
     peta.addLayer({id: "ens", type: "circle", source: "ens", layout: {visibility: S.mode === "ens" ? "visible" : "none"},
       paint: {"circle-radius": ["interpolate", ["linear"], ["zoom"], 3, 4, 8, 14], "circle-color": ["interpolate", ["linear"], ["get", "p"], 0, "#bcd6f0", .25, "#6aa7e3", .5, "#7a4fc4", .8, "#c9503a"],
         "circle-stroke-color": "#fff", "circle-stroke-width": 1, "circle-opacity": .9}});
+    if (S.kec && !this._pm) { this._pm = 1; panelMode = "st"; }   /* tabel bertingkat Status jadi tab awal bila datanya ada */
     Status.pasang(); Rawan.pasang(); Tambahan.pasang(); Kejadian.pasangLapis(); this.sesuaikanMode(); this.interaksi(); renderLegenda(); renderCrumb(); renderPanel(); },
   /* hujan atau embusan digambar 1 piksel per sel di kanvas yang sama; MapLibre menghaluskan antarsel. Sumber kanvas, bukan gambar berurl data:
      (url data: dilaporkan CSP connect-src di konsol). */
@@ -139,11 +140,14 @@ const Laci = {
 };
 /* crumb seperti karhutla/banjir: pil "Indonesia" di luar kartu; peringatan yang dibuka jadi pil kedua dengan tombol Rincian */
 function renderCrumb() {
-  const p = S.pilih, nama = !p ? "" : p.jenis === "nc" ? S.nc[p.k]?.event : namaProv(p.k);
-  $("#crumb").innerHTML = `<button data-n="0">Indonesia</button>` + (nama ? `<button data-n="1" translate="no">${esc(nama)}</button><button class="cr-rinci" data-rinci title="Rincian"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Rincian</button>` : ""); }
-$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const p = S.pilih;
-  if (b.dataset.rinci != null) return p && (p.jenis === "st" ? Status.laciProv(p.k) : p.jenis === "nc" ? Peta.laciBmkg(p.k) : Peta.laciProv(S.gl.find(o => o.prov === p.k)));
-  if (b.dataset.n === "0") { Laci.tutup(); peta?.fitBounds(BB_ID, {padding: kiriPad(), duration: 700}); } });
+  const J = panelMode === "st" ? S.stJalur : [], p = S.pilih, nama = J.length ? "" : !p ? "" : p.jenis === "nc" ? S.nc[p.k]?.event : namaProv(p.k),
+    pil = J.length ? [namaProv(J[0]), ...(J[1] ? [J[1]] : [])] : nama ? [nama] : [];
+  $("#crumb").innerHTML = `<button data-n="0">Indonesia</button>` + pil.map((t, i) => `<button data-n="${i + 1}" translate="no">${esc(t)}</button>`).join("") + (pil.length ? `<button class="cr-rinci" data-rinci title="Rincian"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/></svg>Rincian</button>` : ""); }
+$("#crumb").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const p = S.pilih, J = panelMode === "st" ? S.stJalur : [];
+  if (b.dataset.rinci != null) return J.length ? Status.laciProv(J[0]) : p && (p.jenis === "st" ? Status.laciProv(p.k) : p.jenis === "nc" ? Peta.laciBmkg(p.k) : Peta.laciProv(S.gl.find(o => o.prov === p.k)));
+  const n = +b.dataset.n;
+  if (n === 0) { S.stJalur = []; Laci.tutup(); peta?.fitBounds(BB_ID, {padding: kiriPad(), duration: 700}); nanti(renderPanel); }
+  else if (J.length && n < J.length) { S.stJalur = J.slice(0, n); renderCrumb(); nanti(renderPanel); } });
 function renderPanel() {
   const q = ($("#cari").value || "").trim().toLowerCase(), rows = $("#rows"),
     nc = S.nc.map((a, i) => ({a, i})).filter(({a}) => !q || (a.wilayah + " " + a.headline + " " + a.event).toLowerCase().includes(q)),
@@ -157,9 +161,10 @@ function renderPanel() {
   /* tanpa peringatan berlaku: sebut terbitan BMKG yang dipakai, supaya bukan terbaca "BMKG menyatakan aman" (berkasnya terbit berkala, nowcast hidup 2-3 jam) */
   if (!rows.innerHTML) rows.innerHTML = `<p class="kosong">${q ? "Tidak ada yang cocok." : S.per ? `Tidak ada peringatan ${panelMode === "nc" ? "nowcast" : "gelombang"} yang berlaku pada data BMKG terbit ${jamWIB(panelMode === "nc" ? (S.ncDibuat ?? S.per.dibuat) : S.per.dibuat)}.` : "Data peringatan BMKG tidak terbaca."}</p>`;
 }
-$("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; panelMode = b.dataset.m; $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(renderPanel); });
+$("#panelMode").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; panelMode = b.dataset.m; renderCrumb(); $("#panelMode").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === b)); nanti(renderPanel); });
 { let td; $("#cari").addEventListener("input", () => { clearTimeout(td); td = setTimeout(renderPanel, 150); }); }
-$("#rows").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; const j = b.dataset.nc != null ? "nc" : b.dataset.gl ? "gl" : b.dataset.st ? "st" : null; if (!j) return;
+$("#rows").addEventListener("click", e => { const b = e.target.closest("button"); if (!b) return; if (b.dataset.st != null || b.dataset.kb != null || b.dataset.kc != null) return Status.klikBaris(b);
+  const j = b.dataset.nc != null ? "nc" : b.dataset.gl ? "gl" : b.dataset.st ? "st" : null; if (!j) return;
   S.pilih = {jenis: j, k: j === "nc" ? +b.dataset.nc : b.dataset[j]}; renderCrumb();   /* urgen: breadcrumb; fitBounds dan laci ditunda */
   nanti(() => j === "nc" ? Peta.fokus("nc", +b.dataset.nc) : j === "gl" ? Peta.fokus("gl", b.dataset.gl) : Status.fokusProv(b.dataset.st)); });
 
