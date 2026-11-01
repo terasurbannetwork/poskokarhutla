@@ -256,6 +256,10 @@ def tgl_berkas(nama: str):
     if m and m.group(3):
         return iso(m.group(1), BULAN[m.group(2).lower()], m.group(3))
     # arsip 2011-2020: "15012018 laporan LOG BOOK", "TRC BNPB 050411", "LOGBOOK PUSDALOPS 21052013"
+    # salah ketik 2021: "140202021" = 14 02 2021 dengan 0 berlebih sebelum tahun
+    m = re.search(r"(?<!\d)(\d{2})(\d{2})0(20\d{2})(?!\d)", nama)
+    if m and 1 <= int(m.group(2)) <= 12:
+        return iso(m.group(1), m.group(2), m.group(3))
     m = RE_TGL_ANGKA.search(nama)
     if m and 1 <= int(m.group(3)) <= 12:
         y = m.group(4)
