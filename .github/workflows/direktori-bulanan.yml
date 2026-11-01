@@ -112,6 +112,6 @@ jobs:
           put "akademisi/pemutakhiran/$BULAN.json" "$K/keluar/pemutakhiran/$BULAN.json"
           # data panen publik: cadangan graf lama, lalu hasil sambung, graf baru, dan berkas panen yang dipanen ulang
           for f in "$K"/lama/*.json; do [ "$(basename "$f")" = lembaga.json ] || put "akademisi/cadangan/$TGL/$(basename "$f")" "$f"; done
-          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra tesis donasi_bencana hibah_riset pendanaan; do [ ! -f "$K/sambung_keluar/$f.json" ] || put "akademisi/$f.json" "$K/sambung_keluar/$f.json"; done
+          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra tesis donasi_bencana temuan_riset hibah_riset pendanaan; do [ ! -f "$K/sambung_keluar/$f.json" ] || put "akademisi/$f.json" "$K/sambung_keluar/$f.json"; done
           put "akademisi/graf.json" "$K/graf_keluar/graf.json"; put "akademisi/strategis.json" "$K/graf_keluar/strategis.json"
           for f in "$K"/sambung_keluar/panen/*.json "$K"/panen/daftar_hitam_mentah.json "$K"/panen/cems_idn.json "$K"/panen/tesis_kebencanaan.json "$K"/panen/proyek_internasional.json "$K"/panen/aktivasi_sentinel_asia.json; do [ ! -f "$f" ] || put "akademisi/panen/$(basename "$f")" "$f"; done
