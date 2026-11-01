@@ -1,2 +1,3 @@
 {"jenis": "latih", "sidik": "6f87fd80411d6f38", "sidik_kriteria": "22cf8056d28c4db5", "waktu": "2026-11-01T22:04+07:00"}
 {"jenis": "sidik", "prospektif": ["2026-11-01", "2027-04-30"], "sidik": "6f87fd80411d6f38", "waktu": "2026-11-01T22:05:21"}
+{"jenis": "uji26", "sha256_label_26": "ceb3ca84f01957b15b5e94b4dce0570907a732da14b836769d53d04b440db4f6", "sha256_uji26": "034cf391b18671e5a4282f04be0b44f25a6d41766e8a0ca82b0f0a846c8267d6", "sidik": "6f87fd80411d6f38", "vonis": "TIDAK MEYAKINKAN", "waktu": "2026-11-01T22:06:28"}
