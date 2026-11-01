@@ -352,6 +352,30 @@ export function ujiKesiapan(baris, dibi, namaKab, dari = 2015, opsi = {}) {
   return {dari, sampai, n: ks.length, ukuran: UK, korelasi, kuadran, lulus, lolos, per_jenis, sumber_url: "https://dibi.bnpb.go.id"};
 }
 
+/* logbook Pusdalops BNPB (data/pusdalops/logbook_kejadian.csv, 2011 sampai kini) diubah ke bentuk tabel DIBI supaya ujiKesiapan bisa dipakai ulang:
+   satu baris per kejadian, hanya jenis bencana alam (daftar putih; karhutla dan kekeringan dibuang seperti uji DIBI). Logbook tidak mencatat korban jiwa,
+   jadi ukurannya rumah: rusak (berat, sedang, ringan) dan rusak berat; rumah terendam tidak dijumlah karena satuannya tidak setara. Baris tanpa kode
+   provinsi tunggal dihitung di "buang". Nama "Aceh Besar; Kota Jantho" dipotong di titik koma. */
+const LB_ALAM = new Set(["banjir", "cuaca", "longsor", "gempabumi", "gelombang_pasang", "gunungapi"]);
+const lbBaris = csv => { const [kep, ...isi] = String(csv).trim().split(/\r?\n/), h = kep.split(","), i = c => h.indexOf(c); return isi.map(ln => ln.split(",")).filter(f => f.length >= h.length).map(f => Object.fromEntries(h.map((c, k) => [c, f[k]]))); };
+export function logbookKeDibi(csv) {
+  const kab = new Map(), baris = [], buang = {tanpa_prov: 0, bukan_alam: 0};
+  for (const r of lbBaris(csv)) { const pv = r.prov_kode, nm = String(r.kabkota || "").split(";")[0].trim(), th = Number(String(r.tgl_kejadian).slice(0, 4)), n = c => Number(r[c]) || 0;
+    if (!/^\d{2}$/.test(pv) || !nm || !th) { buang.tanpa_prov++; continue; } if (!LB_ALAM.has(r.jenis)) { buang.bukan_alam++; continue; }
+    const kk = pv + "|" + nm; if (!kab.has(kk)) kab.set(kk, pv + "L" + kab.size);
+    baris.push([kab.get(kk), th, r.jenis, 1, 0, 0, n("rumah_rb") + n("rumah_rs") + n("rumah_rr"), 0, n("rumah_rb")]); }
+  return {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak", "mengungsi", "rumah_rusak_berat"], baris, buang, namaKab: Object.fromEntries([...kab].map(([kk, kode]) => [kode, kk.split("|")[1]]))};
+}
+/* ringkasan logbook per kab sejak tahun dari: jumlah kejadian per jenis, rumah rusak dan terendam, lima kejadian terakhir; dikunci prov|nama kab seperti wilayahDaya */
+export function logbookPerKab(csv, dari = 2015) {
+  const X = {};
+  for (const r of lbBaris(csv)) { const pv = r.prov_kode, nm = String(r.kabkota || "").split(";")[0].trim(), tg = r.tgl_kejadian, j = r.jenis;
+    if (!/^\d{2}$/.test(pv) || !nm || Number(String(tg).slice(0, 4)) < dari || /lainnya|kecelakaan|^omc$|konflik|wabah|teknologi/.test(j)) continue; const n = c => Number(r[c]) || 0;
+    const e = X[kk(pv, nm)] ||= {prov: pv, kab: nm, per_jenis: {}, rusak: 0, terendam: 0, akhir: []}; e.per_jenis[j] = (e.per_jenis[j] || 0) + 1; e.rusak += n("rumah_rb") + n("rumah_rs") + n("rumah_rr"); e.terendam += n("rumah_terendam");
+    e.akhir.push({tanggal: tg, jenis: j, rusak: n("rumah_rb") + n("rumah_rs") + n("rumah_rr"), terendam: n("rumah_terendam"), desa: n("n_desa") || null}); }
+  for (const e of Object.values(X)) e.akhir = e.akhir.sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 5);
+  return X;
+}
 /* tesis, disertasi, dan skripsi kebencanaan dari repositori kampus (OAI-PMH): saringan judul ketat, karena kata "kekeringan" atau "banjir" juga muncul
    di judul agronomi dan teknik biasa; nama kampus repositori dicocokkan ke kampus direktori lewat indeks dan alias hubung.mjs */
 const TESIS_YA = /bencana|banjir|longsor|gempa|tsunami|erupsi|gunung ?api|lahar|kebakaran hutan|kebakaran lahan|karhutla|kesiapsiagaan|evakuasi|tanggap darurat|pengungsi|huntara|abrasi|banjir rob|genangan rob|likuefaksi|mitigasi (bencana|banjir|longsor|gempa|tsunami|struktural|non ?struktural)|rawan (bencana|banjir|longsor|gempa|tsunami|kebakaran|erupsi|kekeringan)|zona rawan|kerawanan bencana|disaster|flood|landslide|earthquake|volcan|wildfire|evacuat|tsunami|natural hazard|multi-?hazard|seismic hazard|geohazard|hazard (map|assessment|zon)/i;
@@ -468,6 +492,16 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   wd.kesiapan = kesiapanDaerah(wd, JSON.parse(readFileSync(new URL("../../public/banjir/data/risiko_kecamatan.json", import.meta.url), "utf8")), R.induk, R.kampus, lbSemua);
   const hvc = JSON.parse(readFileSync(new URL("../../public/data/bnpb/risiko_hvc.json", import.meta.url), "utf8")).kab;
   wd.kesiapan.uji = ujiKesiapan(wd.kesiapan.baris, JSON.parse(readFileSync(new URL("../../public/data/bnpb/dibi_kab_tahun.json", import.meta.url), "utf8")), Object.fromEntries(Object.entries(hvc).map(([k, v]) => [k, v.nama])));
+  { const lpk = logbookPerKab(readFileSync(new URL("../../data/pusdalops/logbook_kejadian.csv", import.meta.url), "utf8")), peta = new Map(wd.kab.map(k => [kk(k.prov, k.kab), k]));
+    for (const [k, e] of Object.entries(lpk)) { const t = peta.get(k); if (t) t.logbook = {dari: 2015, per_jenis: e.per_jenis, rusak: e.rusak, terendam: e.terendam, akhir: e.akhir}; } }
+  /* uji balik kedua dengan logbook Pusdalops: percobaan kedua setelah uji DIBI gagal dan sumbernya tidak independen dari DIBI, jadi ambangnya diperketat ke t <= -3
+     (setara koreksi untuk 5 uji tingkat atas); per jenis tetap t <= -3. Tanpa korban jiwa: ukuran rumah saja. */
+  { const lbk = logbookKeDibi(readFileSync(new URL("../../data/pusdalops/logbook_kejadian.csv", import.meta.url), "utf8")), u = ujiKesiapan(wd.kesiapan.baris, lbk, lbk.namaKab);
+    for (const o of [u.korelasi.skor, u.korelasi.kesenjangan, ...Object.values(u.per_jenis)]) delete o.mati;
+    u.ukuran = {dampak: "rumah rusak per kejadian", rusak: "rumah rusak berat per kejadian"};
+    u.lolos = ["dampak", "rusak"].filter(k => u.korelasi.skor[k].r <= -0.1 && u.korelasi.skor[k].t <= -3); u.lulus = u.n >= 100 && u.lolos.length > 0;
+    for (const j of Object.values(u.per_jenis)) { j.lolos = ["dampak", "rusak"].filter(k => j[k] && j[k].r <= -0.1 && j[k].t <= -3); j.teruji = j.lolos.length > 0; }
+    wd.kesiapan.uji_logbook = {...u, buang: lbk.buang, ambang_t: -3, sumber_url: "Logbook Pusdalops BNPB"}; }
   tulis("wilayah_daya", wd);
   const ts = P.tesis_kebencanaan ? tesisKampus(P.tesis_kebencanaan, R.kampus) : {}; if (Object.keys(ts).length) tulis("tesis", ts);   /* hasil kosong tidak ditulis, jadi tidak menimpa R2 */ tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
   /* donasi kosong tidak ditulis, jadi tidak menimpa R2 */

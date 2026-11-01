@@ -294,3 +294,13 @@ test("dana resmi: zakat lingkup nasional 2020-2023 tanpa agregat dan nama ragu; 
   assert.deepEqual(d.zakat.map(z => [z.nama, Object.keys(z.tahun)]), [["BAZNAS (Pusat)", ["2023"]]]);
   assert.deepEqual(d.intl.map(x => [x.sumber, x.kejadian]), [["CERF", "Palu"], ["IFRC", "Palu"]]);
 });
+
+test("logbook Pusdalops: jadi tabel bentuk DIBI dan ringkasan per kab; kategori bukan bencana dibuang", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const csv = ["id_kejadian,jenis,tgl_kejadian,pertama_dicatat,terakhir_dicatat,n_laporan,hari_dilaporkan,prov,prov_kode,kabkota,kab_kode,n_kec,n_desa,rumah,rumah_rb,rumah_rs,rumah_rr,rumah_terendam,ha,subjenis",
+    "a,banjir,2020-01-02,,,,,Jabar,32,Kab. Bandung,,,3,,2,1,0,50,,", "b,kebakaran_permukiman,2021-01-02,,,,,Jabar,32,Kab. Bandung,,,,,9,,,,,", "c,longsor,2014-05-01,,,,,Jabar,32,Kab. Bandung,,,,,1,,,,,",
+    "d,longsor,2022-05-01,,,,,Jabar,32,Kabupaten Bandung,,,,,4,,,,,"].join("\n");
+  const d = S.logbookKeDibi(csv); assert.equal(d.baris.length, 3, "kebakaran permukiman dibuang"); assert.equal(d.baris[0][6], 3, "terendam tidak dijumlah"); assert.equal(d.baris[0][8], 2); assert.equal(d.buang.bukan_alam, 1);
+  const X = Object.values(S.logbookPerKab(csv)); assert.equal(X.length, 1, "Kab. Bandung dan Kabupaten Bandung satu kunci");
+  assert.deepEqual([X[0].per_jenis, X[0].rusak, X[0].terendam, X[0].akhir[0].tanggal], [{banjir: 1, kebakaran_permukiman: 1, longsor: 1}, 16, 50, "2022-05-01"]);
+});

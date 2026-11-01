@@ -2542,6 +2542,19 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
   const ksNama = r => r.nama_rk || String(r.kab || "").replace(/^Kabupaten\s+/i, "");
   /* hasil uji balik skor lawan dampak DIBI (ujiKesiapan di sambung_panen.mjs); belum lulus = label hipotesis supaya skor tidak dibaca sebagai ukuran pasti */
   const rKs = v => (v < 0 ? "\u2212" : "") + (Math.round(Math.abs(v) * 100) / 100).toLocaleString("id-ID"), dKs = v => v.toLocaleString("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
+  /* uji kedua dengan logbook Pusdalops: ambang t <= -3 (percobaan kedua, sumber tidak independen dari DIBI); "Teruji sebagian" bila lulus tetapi tidak berlaku
+     untuk semua jenis yang diuji; tiap jenis menyebut ukuran yang membuatnya lulus */
+  function ujiLb(u) {
+    if (!u?.korelasi) return "";
+    const ks = u.korelasi.skor, lol = dlist(u.lolos), u0 = lol.sort((a, b) => ks[a].t - ks[b].t)[0];
+    const JN = {banjir: "banjir", longsor: "longsor", cuaca: "cuaca ekstrem", gempabumi: "gempa", gelombang_pasang: "gelombang pasang", gunungapi: "gunung api"};
+    const pj = Object.entries(u.per_jenis || {}), ya = pj.filter(([, v]) => v.teruji), tdk = pj.filter(([, v]) => !v.teruji), lab = u.lulus ? (tdk.length ? ["Teruji sebagian", "#5c940d"] : ["Teruji", "#2b8a3e"]) : ["Hipotesis", "#e0a100"];
+    const isi = `Uji kedua dengan logbook Pusdalops BNPB ${u.dari} sampai ${u.sampai}, ${angka(u.n)} kab/kota, ambang lebih ketat karena ini uji ulang: `
+      + (u.lulus && u0 ? `skor kesiapan yang lebih rendah berkaitan dengan lebih banyak ${u.ukuran?.[u0] || u0} (r ${rKs(ks[u0].r)}, lemah).` : `skor kesiapan belum berkaitan dengan rumah rusak (r ${rKs(ks.dampak.r)}) maupun rusak berat (r ${rKs(ks.rusak.r)}).`)
+      + (ya.length ? ` Berlaku untuk ${ya.map(([j, v]) => `${JN[j] || j} (${u.ukuran?.[v.lolos[0]] || v.lolos[0]}, r ${rKs(v[v.lolos[0]].r)})`).join(", ")}${tdk.length ? `, tidak untuk ${tdk.map(([j]) => JN[j] || j).join(", ")}` : ""}.` : "")
+      + " Logbook tidak mencatat korban jiwa dan berasal dari kejadian yang sama dengan DIBI, jadi bukan bukti terpisah; belum dikoreksi ukuran penduduk; keterkaitan, bukan bukti sebab.";
+    return `<p class="ak-ks-uji"><span class="ak-mp" style="--w0:${lab[1]}">${lab[0]}</span> ${esc(isi)}</p>`;
+  }
   function ujiKs(u) {
     if (!u?.korelasi) return "";
     const ks = u.korelasi.skor, kj = u.korelasi.kesenjangan, q = u.kuadran || {}, lab = u.lulus ? ["Teruji", "#2b8a3e"] : ["Hipotesis", "#e0a100"];
@@ -2560,7 +2573,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     if (kab) { const r = ksBaris(wd, pv, kab); if (!r || r.skor == null) return "";
       const [lq, wq] = KUADRAN[r.kuadran] || ["", "#6b7280"];
       const bar = KOMP_K.map(([k, l, ket]) => r.komp[k] == null ? "" : `<div title="${esc(ket)}"><span>${esc(l)}</span><i><u style="width:${Math.max(3, r.komp[k])}%;background:${r.komp[k] < 34 ? "#c92a2a" : r.komp[k] < 67 ? "#e0a100" : "#2b8a3e"}"></u></i><b>${angka(r.komp[k])}</b></div>`).join("");
-      return bagW("Kesiapan daerah", ujiKs(K.uji) + ubinW([[IK_BAR, wq, `${angka(r.skor)} dari 100`, "Skor kesiapan"], [IK_BAR, "#1c3d78", `${angka(r.peringkat)} dari ${angka(K.jumlah)}`, "Peringkat nasional"],
+      return bagW("Kesiapan daerah", ujiKs(K.uji) + ujiLb(K.uji_logbook) + ubinW([[IK_BAR, wq, `${angka(r.skor)} dari 100`, "Skor kesiapan"], [IK_BAR, "#1c3d78", `${angka(r.peringkat)} dari ${angka(K.jumlah)}`, "Peringkat nasional"],
         [IK_BAR, "#1c3d78", `${angka(r.peringkat_prov)} dari ${angka(r.jumlah_prov)}`, `Peringkat di ${provT(pv)}`], [IK_BAR, wq, r.kesenjangan == null ? null : (r.kesenjangan > 0 ? "+" : "") + angka(r.kesenjangan), lq || "Kesenjangan"]])
         + `<div class="ak-bpk-b ak-ks-b">${bar}</div>` + (r.kebutuhan != null ? `<h4 class="ak-dpgrup ak-katj">${ikon(IK_ORANG, "currentColor")}<b>Kebutuhan warga ${angka(r.kebutuhan)} dari 100</b></h4><div class="ak-bpk-b">${BUTUH_K.filter(([k]) => r.butuh?.[k] != null).map(([k, l]) => `<div><span>${esc(l)}</span><i><u style="width:${Math.max(3, r.butuh[k])}%;background:${r.butuh[k] >= 67 ? "#c92a2a" : r.butuh[k] >= 34 ? "#e0a100" : "#2b8a3e"}"></u></i><b>${angka(r.butuh[k])}</b></div>`).join("")}</div>` : ""), SUMBER + "; komponen dalam persentil 0 sampai 100 terhadap semua kab/kota"); }
     const rows = Object.values(K.baris).filter(r => r.prov === pv && r.skor != null);
@@ -2569,7 +2582,7 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     const peta = geoK?.features?.length ? petaKesenjangan(geoK, wd, pv) : "";
     const leg = Object.entries(KUADRAN).filter(([q]) => rows.some(r => r.kuadran === q)).map(([q, [l, w]]) => `<span class="ak-ks-l"><i style="background:${w}"></i>${esc(l)} <b>${angka(rows.filter(r => r.kuadran === q).length)}</b></span>`).join("");
     const daftar = pr.length ? `<div class="ak-bpt"><table><thead><tr><th>Kab/kota</th><th>Skor kesiapan</th><th>Indeks risiko</th><th>Kebutuhan warga</th><th>Kesenjangan</th></tr></thead><tbody>${pr.slice(0, 12).map(r => `<tr><td><button type="button" class="ak-btn0 ak-ks-k" data-wlbuka="${esc(pv + "|" + ksNama(r))}">${esc(r.kab)}</button></td><td class="ak-n">${angka(r.skor)}</td><td class="ak-n">${String(r.risiko).replace(".", ",")}</td><td class="ak-n">${r.kebutuhan != null ? angka(r.kebutuhan) : "\u2013"}</td><td class="ak-n">+${angka(r.kesenjangan)}</td></tr>`).join("")}</tbody></table></div>` : "";
-    return bagW("Peta kesenjangan kesiapan", `${ujiKs(K.uji)}${peta}<div class="ak-ks-leg">${leg}</div>${daftar}`, SUMBER + "; kuadran memakai median nasional; arahkan kursor ke peta untuk rincian, klik untuk membuka kab/kota", rows.length);
+    return bagW("Peta kesenjangan kesiapan", `${ujiKs(K.uji) + ujiLb(K.uji_logbook)}${peta}<div class="ak-ks-leg">${leg}</div>${daftar}`, SUMBER + "; kuadran memakai median nasional; arahkan kursor ke peta untuk rincian, klik untuk membuka kab/kota", rows.length);
   }
   function petaKesenjangan(geo, wd, pv) {
     const fs = geo.features.filter(f => f.geometry), bb = fs.reduce((a, f) => { const b = bbox(f); return [Math.min(a[0], b[0]), Math.min(a[1], b[1]), Math.max(a[2], b[2]), Math.max(a[3], b[3])]; }, [180, 90, -180, -90]);
@@ -2636,6 +2649,15 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
       [IK_BAR, "#1c7ed6", jp ? pctW((jp.baik_pct || 0) + (jp.sedang_pct || 0)) : null, `Jalan provinsi mantap ${jp?.tahun || ""}`], [IK_GEDUNG, "#e8590c", jb ? angka(jb.jumlah) : null, `Jembatan nasional${jbR ? `, ${angka(jbR)} rusak, kritis, atau putus` : ""}`],
       [IK_GEDUNG, "#7048e8", sp ? pctW(sp.persen) : null, `Sekolah melapor SPAB ${sp?.tahun || ""}, dari ${sp ? angka(sp.total) : ""} satuan`]]);
     if (inf) H.push(bagW(kab ? "Jalan, jembatan, dan sekolah aman di provinsi ini" : "Jalan, jembatan, dan sekolah aman", inf, "kondisi jalan dan jembatan dari Kementerian PU; SPAB dari pelaporan E-Monev SPAB BNPB (yang melapor, bukan yang sudah aman)"));
+    /* riwayat kejadian dari logbook Pusdalops BNPB sejak 2015 (lebih rinci dan lebih baru dari DIBI publik) */
+    const lg = rw.filter(r => r.logbook), pjL = {}; lg.forEach(r => Object.entries(r.logbook.per_jenis || {}).forEach(([j, n]) => { pjL[j] = (pjL[j] || 0) + n; }));
+    if (lg.length) { const JL = {banjir: "Banjir", cuaca: "Cuaca ekstrem", longsor: "Longsor", kebakaran_permukiman: "Kebakaran permukiman", karhutla: "Karhutla", gempabumi: "Gempa", kekeringan: "Kekeringan", gelombang_pasang: "Gelombang pasang", gunungapi: "Gunung api"};
+      const tot = Object.values(pjL).reduce((t, n) => t + n, 0), mxL = Math.max(...Object.values(pjL), 1), rs = lg.reduce((t, r) => t + r.logbook.rusak, 0), tr = lg.reduce((t, r) => t + r.logbook.terendam, 0);
+      const akh = lg.flatMap(r => dlist(r.logbook.akhir).map(a => ({...a, kab: r.kab}))).sort((a, b) => String(b.tanggal).localeCompare(String(a.tanggal))).slice(0, kab ? 5 : 8);
+      H.push(bagW("Riwayat kejadian menurut logbook Pusdalops", `<div class="ak-bars">${Object.entries(pjL).sort((a, b) => b[1] - a[1]).map(([j, n]) => barHtml({warna: "#c92a2a", lebar: n / mxL * 100, nilai: angka(n), persen: persenTxt(n, tot), label: esc(JL[j] || kapital(j.replace(/_/g, " "))), attr: `data-t="${esc(JL[j] || j)}" data-n="${n}"`})).join("")}</div>`
+        + ubinW([[IK_GEDUNG, "#c92a2a", rs ? angka(rs) : null, "Rumah rusak (berat, sedang, ringan)"], [IK_GEDUNG, "#1c7ed6", tr ? angka(tr) : null, "Rumah terendam"]])
+        + (akh.length ? `<ul class="ak-lsumber">${akh.map(a => `<li><b>${esc(tglID(a.tanggal))}</b> ${esc(JL[a.jenis] || a.jenis)}${kab ? "" : `, ${esc(a.kab)}`} <small class="ak-lper">${esc([a.rusak ? angka(a.rusak) + " rumah rusak" : "", a.terendam ? angka(a.terendam) + " rumah terendam" : "", a.desa ? angka(a.desa) + " desa" : ""].filter(Boolean).join(", "))}</small></li>`).join("")}</ul>` : ""),
+        `logbook harian Pusdalops BNPB sejak 2015, ${angka(tot)} kejadian${kab ? "" : ` di ${angka(lg.length)} kab/kota`}; korban jiwa tidak tercatat di logbook, lihat DIBI`, tot)); }
     /* infrastruktur air dan pengendali banjir (Kementerian PU); provinsi = jumlah kab/kota */
     const ia = rw.filter(r => r.infra), sI = k => ia.reduce((t, r) => t + (r.infra[k] || 0), 0), kmT = ia.reduce((t, r) => t + (r.infra.tanggul_km || 0), 0);
     const infra = ia.length ? ubinW([[IK_GEDUNG, "#1c7ed6", sI("bendungan") ? angka(sI("bendungan")) : null, `Bendungan${sI("bendungan_konstruksi") ? `, ${angka(sI("bendungan_konstruksi"))} masih dibangun` : ""}`], [IK_GEDUNG, "#0b7285", sI("embung") ? angka(sI("embung")) : null, "Embung (batas bawah)"],

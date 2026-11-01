@@ -17,12 +17,15 @@ const INDUK = {diperbarui: "2026-10-31", sumber: "uji", rumpun: RUMPUN,
   orang: Array.from({length: 24}, (_, i) => [`A${9000 + i}`, `Pakar Uji ${i + 1}`, i % 2 ? "Universitas Contoh Timur" : "Institut Contoh Barat", [RUMPUN[i % 4]], 10 + i, 50 + i, 900 + i * 10, "", ["Topik uji"], "", "", "", "", "", ""])};
 const KAMPUS = {"Universitas Contoh Timur": {prov: "53"}, "Institut Contoh Barat": {prov: "32"}};
 /* kesiapan satu kab NTT, dengan hasil uji balik belum lulus: layar wajib berlabel Hipotesis */
-const WILAYAH = {diperbarui: "2026-10-31", prov: {}, kab: [{prov: "53", kab: "Kabupaten Kupang", fasilitas: {rs: 2, rs_tt: 150, puskesmas: 20}, podes: {desa_peringatan_dini: 12, jumlah_desa: 177, terdampak: {banjir: 30}, tahun: 2021}, rentan: {lansia: 20000, balita: 35000, total: 400000, tahun: 2025}}],
+const WILAYAH = {diperbarui: "2026-10-31", prov: {}, kab: [{prov: "53", kab: "Kabupaten Kupang", fasilitas: {rs: 2, rs_tt: 150, puskesmas: 20}, podes: {desa_peringatan_dini: 12, jumlah_desa: 177, terdampak: {banjir: 30}, tahun: 2021}, rentan: {lansia: 20000, balita: 35000, total: 400000, tahun: 2025}, logbook: {dari: 2015, per_jenis: {banjir: 40, longsor: 12}, rusak: 300, terendam: 5000, akhir: [{tanggal: "2026-02-03", jenis: "banjir", rusak: 3, terendam: 120, desa: 4}]}}],
   kesiapan: {jumlah: 1, baris: {"53|kupang": {prov: "53", kab: "Kabupaten Kupang", nama_rk: "Kupang", skor: 30, risiko: 40, kesenjangan: 35, kuadran: "prioritas", peringkat: 1, peringkat_prov: 1, jumlah_prov: 1,
     komp: {fiskal: 20, faskes: 30, lembaga: 10, pakar: 60}, kebutuhan: 80, butuh: {miskin: 90, pangan: 70}, nilai: {}}},
     uji: {dari: 2015, sampai: 2025, n: 474, lulus: false, lolos: [], ukuran: {mati: "meninggal", dampak: "terdampak", rusak: "rusak"},
       korelasi: {skor: {mati: {r: -0.017, t: -0.4}, dampak: {r: -0.01, t: -0.2}, rusak: {r: -0.016, t: -0.3}}, kesenjangan: {mati: {r: 0.1, t: 2.2}, dampak: {r: 0.05, t: 1.1}, rusak: {r: 0.147, t: 3.2}}},
-      kuadran: {prioritas: {n: 136, mati: 0.096, rusak: 2.06}, aman: {n: 123, mati: 0.058, rusak: 1.3}}}}};
+      kuadran: {prioritas: {n: 136, mati: 0.096, rusak: 2.06}, aman: {n: 123, mati: 0.058, rusak: 1.3}}},
+    uji_logbook: {dari: 2015, sampai: 2026, n: 491, lulus: true, lolos: ["dampak"], ukuran: {dampak: "rumah rusak per kejadian", rusak: "rumah rusak berat per kejadian"},
+      korelasi: {skor: {dampak: {r: -0.177, t: -4}, rusak: {r: -0.076, t: -1.7}}, kesenjangan: {dampak: {r: 0.08, t: 1.9}, rusak: {r: 0.13, t: 3}}},
+      per_jenis: {cuaca: {n: 368, dampak: {r: -0.325, t: -6.6}, rusak: {r: -0.075, t: -1.4}, lolos: ["dampak"], teruji: true}, banjir: {n: 458, dampak: {r: 0.015, t: 0.3}, rusak: {r: 0.015, t: 0.3}, lolos: [], teruji: false}}}}};
 let data = {wilayah_daya: WILAYAH};
 
 let server, asal, P, T;
@@ -70,11 +73,13 @@ else {
 
   test("Wilayah NTT: kesiapan dan peta kesenjangan berlabel Hipotesis selama uji balik belum lulus", async () => {
     await T.buka(`${asal}/akademisi.html?tampil=wilayah&wilayah=53`, {tunggu: ".ak-ks-uji"});
-    const t = await T.eval(`[...document.querySelectorAll(".ak-ks-uji")].map(e => e.innerText).join(" | ")`);
+    /* tiap kartu kesiapan memuat dua paragraf uji: DIBI (harus Hipotesis selama belum lulus) lalu logbook Pusdalops (labelnya sendiri) */
+    const t = await T.eval(`[...document.querySelectorAll(".ak-ks-uji")].filter(e => !/logbook Pusdalops/.test(e.innerText)).map(e => e.innerText).join(" | ")`);
     assert.match(t, /^Hipotesis\b/); assert.match(t, /474 kab\/kota/); assert.doesNotMatch(t, /Teruji/);
     await T.buka(`${asal}/akademisi.html?tampil=wilayah&wilayah=53&kab=Kabupaten%20Kupang`, {tunggu: ".ak-ks-uji"});
     await T.tungguFungsi(`/Kesiapan desa dan penduduk rentan/i.test(document.body.innerText)`);
     const k = await T.eval(`document.body.innerText`); assert.match(k, /12 desa/); assert.match(k, /20\.000/); assert.match(k, /Banjir 30 desa/);
+    assert.match(k, /Teruji sebagian Uji kedua dengan logbook Pusdalops[\s\S]*cuaca ekstrem \(rumah rusak per kejadian, r \u22120,33\), tidak untuk banjir/); assert.match(k, /Riwayat kejadian menurut logbook Pusdalops/i); assert.match(k, /5\.000/);
     assert.deepEqual(galatJs(), []);
   });
 
