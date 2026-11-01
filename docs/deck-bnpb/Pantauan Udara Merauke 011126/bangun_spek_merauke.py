@@ -208,7 +208,7 @@ LAMP = [
         'Rute melingkari segitiga Bandara Mopah, lahan PT Merauke Sawit Jaya, dan lahan PT Medcopapua Alam Lestari.',
         'Check point hanya dipasang di kelompok api nyata dari hotspot terbaru, dengan radius pandang {{angka:mk.radius|satuan}}.',
         'Tabel kanan memuat koordinat, jumlah hotspot, jarak tempuh, dan waktu kumulatif tiap check point.',
-        'Berkas PDF aslinya terlampir terpisah.',
+        'Seluruh halaman aslinya ada di Lampiran D.',
         'Rute bisa disusun ulang dalam hitungan menit bila hotspot berubah.'], S_RL),
     lp('AB', 'Lampiran A2. Flight plan untuk pilot: haluan, jarak, dan waktu tiap leg', 'foto/renlap-udara-02.png', 'Flight plan per leg', [
         'Tiap leg memuat koordinat GPS tujuan dalam derajat-menit, tautan Google Maps, haluan sejati, jarak, dan waktu.',
@@ -232,7 +232,7 @@ LAMP = [
         'Urutan kunjungan per tim dan per hari, dari titik awal ke tiap lokasi.',
         'Jarak lurus, jarak jalan, waktu mobil, dan jalan kaki dari titik parkir.',
         'Tautan Google Maps langsung ke titik parkir tiap lokasi.',
-        'Pola yang sama bisa dipakai untuk regu darat di Merauke.',
+        'Pola yang sama bisa dipakai untuk regu darat di Merauke; halaman aslinya di Lampiran E.',
         'Dua tim bisa bergerak bersamaan tanpa saling tumpang tindih.'], S_SP, sk=1.85),
     lp('BC', 'Lampiran B3. Contoh Kalimantan Tengah: cara uji pompa dan keselamatan regu di petak', 'foto/renlap-pilot-03.png', 'Cara uji dan keselamatan', [
         'Cara mengukur efektivitas suntikan air ke bara di tiap lokasi.',
