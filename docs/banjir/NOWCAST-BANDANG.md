@@ -18,7 +18,7 @@ Status: kode `scripts/banjir/nowcast_bandang.py` hanya menarik FITUR. Ambang bel
 
 - GSMaP NRT v8 per jam, 0,1 derajat, global. Latensi klaim JAXA sekitar 4 jam; yang nyata diukur: `tarik` mencatat `umur_jam_terbaru` dan `pola` (G = gauge, N = biasa, - = hilang) pada tiap jalan. Nowcast efektif 0-6 jam berarti hujan yang SUDAH jatuh sampai (sekarang - ~4 jam) menjadi dasar peringatan; kemungkinan 0-2 jam pertama praktis sudah lewat. Ini batas bawaan sumber, bukan kekurangan kode.
 - GSMaP Now (produk JAXA latensi lebih pendek): tidak ada di kode dan jalurnya BELUM diketahui; jangan ditebak. Periksa daftar direktori lewat login pada jalan pertama (`gsmap.berkas_tanggal` mencetak susunan folder bila tak cocok).
-- Akses: BELUM terverifikasi dengan login di mesin ini. Jalur `hourly_G`, nama berkas, grid 3600x1200 dan satuan (mm/jam) berasal dari panduan, bukan hasil baca nyata. Gerbang: ringkasan `m1_kumpul` di Actions (maks jam wajar, rata-rata hari basah) harus dicek sebelum angka dipercaya.
+- Akses: SUDAH terverifikasi lewat workflow `m1_prospektif.yml` (baca NRT `/realtime_ver/v8/hourly_G` tiap hari dengan `GSMAP_USER`/`GSMAP_PASS`): run 31 Okt 2026 pola 24 dari 24 jam "G", 2.592 nilai sel DKI, maks 7,1 mm/jam, rata-rata 0,02 mm/jam. Yang belum diukur: latensi jam terbaru (M1 membaca hari kemarin penuh) dan cakupan nasional (M1 hanya DKI).
 - Zona waktu: berkas bernama UTC. Hari kejadian WIB/WITA/WIT dihitung per bujur (`zona_waktu`, pendekatan; batas provinsi tidak lurus). Jangan menjumlah per hari UTC untuk kejadian malam.
 
 ## Unit
@@ -42,6 +42,6 @@ Cara menetapkan dari data, bukan literatur:
 
 ## Langkah pemilik
 
-1. Akun JAXA GSMaP (login FTP) sudah ada untuk `GSMAP_USER`/`GSMAP_PASS`; pastikan juga hak ke `/realtime_ver` dan tanyakan jalur GSMaP Now.
-2. Jalankan `tarik` sekali di Actions (workflow baru, oleh mekanik-mesin) dan baca pola/umur jam terbaru dan maks jam; ini membuktikan akses dan satuan.
+1. Akses GSMaP NRT per jam sudah jalan di `m1_prospektif.yml`; yang masih perlu ditanyakan ke JAXA hanya jalur GSMaP Now (latensi lebih pendek).
+2. Jalankan `tarik` sekali di Actions untuk mengukur latensi jam terbaru dan nilai di luar DKI.
 3. Putuskan unit tahap 2 dan izin mengunduh arsip 2016-2025 (puluhan GB berkas global; ambil hanya sel kecamatan).
