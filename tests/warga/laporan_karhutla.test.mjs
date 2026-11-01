@@ -508,6 +508,40 @@ uji("draf OMC terisi dari catatan sortie TMC di D1 (hari data, bukan sortie diha
   assert.equal(d.hitung.merah, 0);
 });
 
+/* ================================================================ format khusus BNPB (xlsx) */
+const bacaXlsx = buf => {   // ZIP STORE: telusuri header lokal, ambil lembar pertama, kembalikan {sel: nilai} dan daftar gabung
+  let o = 0; while (buf.readUInt32LE(o) === 0x04034b50) {
+    const ukuran = buf.readUInt32LE(o + 18), nl = buf.readUInt16LE(o + 26), el = buf.readUInt16LE(o + 28), nama = buf.toString("utf8", o + 30, o + 30 + nl), isi = buf.toString("utf8", o + 30 + nl + el, o + 30 + nl + el + ukuran);
+    if (nama === "xl/worksheets/sheet1.xml") {
+      const sel = {}; for (const m of isi.matchAll(/<c r="([A-Z]+\d+)"[^>]*>(?:<is><t[^>]*>(.*?)<\/t><\/is>|<v>(.*?)<\/v>)<\/c>/g)) sel[m[1]] = m[2] != null ? m[2].replace(/&amp;/g, "&") : Number(m[3]);
+      return {sel, gabung: [...isi.matchAll(/<mergeCell ref="(.*?)"\/>/g)].map(m => m[1])};
+    }
+    o += 30 + nl + el + ukuran;
+  }
+  assert.fail("lembar tidak ditemukan");
+};
+uji("format khusus BNPB: kolom resmi, kelompok kab, TOTAL, Baru vs Lanjutan, hak per provinsi", async () => {
+  assert.equal((await prio("2026-10-26", ["62"])).s, 200); assert.equal((await prio("2026-10-27", ["62"])).s, 200);
+  const f1 = {kab: "Kapuas", kec: "Selat", lokasi: "Jl. Trans Kalimantan Km 12, Kel. Selat Tengah", target_ha: 10, padam_darat_ha: 4, padam_udara_ha: 1, status: "menyala", kendala: "Sumber air jauh"};
+  const r1 = await kirim(A["62"], "2026-10-26", "prov:62", {fs: [f1, {kab: "Kapuas", kec: "Basarang", target_ha: 2, padam_darat_ha: 2, padam_udara_ha: 0, status: "padam"}, {kab: "Pulang Pisau", kec: "Kahayan Hilir", target_ha: 3, padam_darat_ha: 0, padam_udara_ha: 0, status: "bara"}],
+    personel: {total: 100}, upaya: {pilihan: ["pemadaman_darat"], teks: "Pemadaman pada area terdampak"}}); assert.equal(r1.s, 201, r1.t);
+  const r2 = await kirim(A["62"], "2026-10-27", "prov:62", {fs: [{fs_id: "FS-62-20261025-001", kab: "Kapuas", kec: "Selat", target_ha: 10, padam_darat_ha: 6, padam_udara_ha: 1, status: "menyala"}, {kab: "Kapuas", kec: "Mantangai", target_ha: 1.5, padam_darat_ha: 0, padam_udara_ha: 0, status: "menyala"}], personel: {total: 100}}); assert.equal(r2.s, 201, r2.t);
+  const unduh = async (a, q) => { const r = await mf.dispatchFetch("http://localhost" + via(a, "/api/laporan-karhutla/format-khusus?" + q), {headers: a.h}); return {s: r.status, ct: r.headers.get("content-type"), b: Buffer.from(await r.arrayBuffer())}; };
+  const x = await unduh(AD, "prov=62&tanggal=2026-10-26"); assert.equal(x.s, 200); assert.match(x.ct, /spreadsheetml/); assert.equal(x.b.readUInt32LE(0), 0x04034b50);
+  const {sel, gabung} = bacaXlsx(x.b);
+  assert.equal(sel.B2, "PERKEMBANGAN HARIAN SETIAP TITIK/LOKASI YANG TERBAKAR"); assert.match(sel.H2, /^\d\d\/\d\d\/\d{4} \d\d:\d\d WIB$/);
+  assert.deepEqual(["B", "C", "D", "E", "F", "G", "H", "I"].map(c => sel[c + 4]), ["NO.", "TITIK/LOKASI", "LUAS TERBAKAR", "LUAS DIPADAMKAN", "STATUS", "UPAYA", "KENDALA", "KET"]);
+  assert.equal(sel.B6, "KAPUAS"); assert.equal(sel.C7, "Jl. Trans Kalimantan Km 12, Kel. Selat Tengah, Kec. Selat"); assert.equal(sel.D7, 10); assert.equal(sel.E7, 5); assert.equal(sel.F7, "Belum Padam"); assert.equal(sel.G7, "Pemadaman darat, Pemadaman pada area terdampak"); assert.equal(sel.H7, "Sumber air jauh"); assert.equal(sel.I7, "Baru");
+  assert.equal(sel.C8, "Kec. Basarang"); assert.equal(sel.F8, "Padam"); assert.equal(sel.H8, "-"); assert.equal(sel.B9, "TOTAL"); assert.equal(sel.D9, 12); assert.equal(sel.E9, 7); assert.deepEqual(gabung, ["G7:G8"]);
+  assert.equal(sel.B11, "PULANG PISAU"); assert.equal(sel.B12, 1, "nomor mulai lagi di tiap kelompok"); assert.equal(sel.F12, "Belum Padam", "bara = belum padam");
+  const y = bacaXlsx((await unduh(AD, "prov=62&tanggal=2026-10-27")).b).sel;
+  assert.equal(y.I7, "Lanjutan", "FS yang sudah dilaporkan hari sebelumnya"); assert.equal(y.E7, 7); assert.equal(y.I8, "Baru");
+  assert.equal((await unduh(A["62"], "prov=62&tanggal=2026-10-26")).s, 200, "operator provinsi sendiri lewat alias /api/instansi");
+  assert.equal((await unduh(A["63"], "prov=62&tanggal=2026-10-26")).s, 404, "provinsi lain");
+  assert.equal((await unduh(AD, "prov=99&tanggal=2026-10-26")).s, 400); assert.equal((await unduh(AD, "prov=62&tanggal=besok")).s, 400);
+  const tamu = await api("GET", "/api/laporan-karhutla/format-khusus?prov=62&tanggal=2026-10-26"); assert.ok([401, 403].includes(tamu.s), "tamu: " + tamu.s);
+});
+
 /* ================================================================ 503 tanpa 0032 */
 uji("503 sopan tanpa migrasi 0032: semua rute, cron tetap jalan, Meja Pantau tidak rusak", async () => {
   for (const t of ["lk_snapshot", "lk_versi", "lk_fs", "lk_kiriman", "lk_hari"]) await DB.prepare(`DROP TABLE ${t}`).run();

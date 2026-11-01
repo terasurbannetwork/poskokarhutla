@@ -16,7 +16,7 @@ Satuan: pasangan (provinsi, tanggal). a = tepat, b = alarm palsu, c = meleset; p
 DIBI mencatat hanya kejadian yang dilaporkan: far dan csi adalah batas yang pesimis, pod batas yang optimis terhadap kejadian tanpa laporan.
 Pakai: python3 scripts/cuaca/verifikasi.py   |   python3 scripts/cuaca/verifikasi.py uji
 """
-import datetime as dt, importlib.util, os, sys, urllib.parse
+import datetime as dt, importlib.util, os, sys, urllib.parse, zlib
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dasar import AKAR, KELUAR, MASUKAN, ambil, baca, hari_wib, sekarang, simpan
@@ -35,6 +35,49 @@ N_MIN = 30           # a+b+c di bawah ini = terlalu sedikit; layar menyembunyika
 def skor(a, b, c):
     r = lambda x, y: None if y == 0 else round(x / y, 3)
     return {"a": a, "b": b, "c": c, "n": a + b + c, "pod": r(a, a + c), "far": r(b, a + b), "csi": r(a, a + b + c)}
+
+
+def skor_ets(a, b, c, d):
+    """skor() plus d dan ets; d = benar-tenang. Dipakai blok pembanding saja (skor() polos tetap, layar lama membacanya)."""
+    s = skor(a, b, c)
+    n = a + b + c + d
+    ar = (a + b) * (a + c) / n if n else 0
+    s["d"] = d
+    s["ets"] = round((a - ar) / (a + b + c - ar), 3) if a + b + c - ar else None
+    return s
+
+
+def pembanding(hari, semesta, kejadian_dibi, alarm_lead, ev):
+    """Pembanding jujur untuk uji balik: klimatologi (provinsi x bulan dari DIBI SEBELUM hari[0]) pada jumlah alarm yang sama dengan tiap lead,
+    dan persistensi (ada kejadian DIBI kemarin). hari = tanggal ISO yang dinilai, semesta = provinsi, alarm_lead {L: {(prov, tgl)}}, ev = kejadian (prov, tgl) yang dinilai.
+    Klimatologi: laju hari-kejadian per (prov, bulan) di antara hari DIBI sebelum hari[0], dihaluskan ke laju rata-rata bulan itu; seri diputus acak-deterministik (crc32)."""
+    if not hari:
+        return None
+    awal = dt.date.fromisoformat(hari[0])
+    dulu = {(k["prov"], k["tanggal"]) for k in kejadian_dibi if k["jenis"] in JENIS_KITA and k.get("prov") in semesta and k["tanggal"] < hari[0]}
+    if not dulu:
+        return None
+    d0 = dt.date.fromisoformat(min(t for _, t in dulu))
+    hari_bulan, e_pb, e_b = {}, {}, {}
+    for i in range((awal - d0).days):
+        m = (d0 + dt.timedelta(days=i)).month
+        hari_bulan[m] = hari_bulan.get(m, 0) + 1
+    for p, t in dulu:
+        m = int(t[5:7])
+        e_pb[(p, m)] = e_pb.get((p, m), 0) + 1
+        e_b[m] = e_b.get(m, 0) + 1
+    P = sorted(semesta)
+    laju = lambda p, m: (e_pb.get((p, m), 0) + .1 * e_b.get(m, 0) / (len(P) * max(hari_bulan.get(m, 1), 1))) / (hari_bulan.get(m, 0) + .1)
+    sem = [(p, t) for t in hari for p in P]
+    urut = sorted(sem, key=lambda x: (-laju(x[0], int(x[1][5:7])), zlib.crc32(f"{x[0]}{x[1]}".encode())))
+    N = len(sem)
+    nilai_ = lambda al: skor_ets(*nilai(al, ev), N - len(al | ev))
+    pers = {(p, (dt.date.fromisoformat(t) + dt.timedelta(days=1)).isoformat()) for p, t in dulu | ev} & set(sem)
+    return {"acuan": f"pasangan provinsi-hari yang sama dengan lead; klimatologi dilatih dari DIBI sebelum {hari[0]} ({len(dulu)} hari-provinsi kejadian)",
+            "n_pasangan": N, "n_kejadian": len(ev),
+            "hujan": {L: nilai_(al) for L, al in alarm_lead.items()},
+            "klimatologi_alarm_sama": {L: nilai_(set(urut[:len(al)])) for L, al in alarm_lead.items()},
+            "persistensi": nilai_(pers)}
 
 
 def nilai(alarm, kejadian, semesta=None):
@@ -145,7 +188,8 @@ def uji_balik(seri, semesta, dibi):
         for p in {x[0] for x in al(L) | ev}:
             prov.setdefault(p, {})[L] = skor(*nilai({x for x in al(L) if x[0] == p}, {x for x in ev if x[0] == p}))
     prov = {p: {L: v.get(L, skor(0, 0, 0)) for L in ("1", "2", "3")} for p, v in sorted(prov.items())}
-    return {"periode": [hari[0], hari[-1]] if hari else None, "n_hari": len(hari), "ambang_mm": AMBANG_MM,
+    pemb = pembanding(hari, set(semesta), dibi, {L: al(L) for L in ("1", "2", "3")}, ev)
+    return {"periode": [hari[0], hari[-1]] if hari else None, "n_hari": len(hari), "ambang_mm": AMBANG_MM, "pembanding": pemb,
             "acuan": "DIBI BNPB: " + ", ".join(JENIS_KITA).replace("_", " ") + " (hanya kejadian yang dilaporkan), pasangan provinsi-hari",
             "lead": lead, "prov": prov, "n_kejadian_hari": len(ev), "n_min": N_MIN, "dinilai_sampai": akhir,
             "analisis": {"acuan": "analisis model Open-Meteo hari itu (previous_day0): hujan >= 50 mm di sedikitnya satu titik provinsi; bukan alat ukur", "lead": ana, "n_hari_kejadian": len(a0)},
@@ -298,6 +342,11 @@ def uji():
     assert ub["n_min"] == N_MIN and ub["dinilai_sampai"] == "2026-10-12" and akhir_dibi([]) is None
     assert set(ub["prov"]["11"]) == {"1", "2", "3"} and ub["prov"]["11"]["1"] == skor(1, 0, 0) and ub["prov"]["12"]["2"] == skor(0, 1, 0), ub["prov"]   # prov per lead
     assert bm["n_min"] == N_MIN and "terlalu kecil" in bm["catatan"]
+    assert ub["pembanding"] is None   # DIBI sebelum 2026-10-01 tak ada di fixture: klimatologi tak bisa dilatih = None, bukan angka karangan
+    dd = [{"tanggal": f"2026-0{m}-{d:02d}", "jenis": "banjir", "prov": "11"} for m in (6, 7) for d in range(1, 11)] + [{"tanggal": "2026-10-02", "jenis": "banjir", "prov": "11"}, {"tanggal": "2026-10-26", "jenis": "x", "prov": "11"}]
+    pb = pembanding(["2026-10-01", "2026-10-02", "2026-10-03"], {"11", "12"}, dd, {"1": {("11", "2026-10-02")}}, {("11", "2026-10-02")})
+    assert pb["n_pasangan"] == 6 and pb["n_kejadian"] == 1 and pb["hujan"]["1"]["a"] == 1 and pb["hujan"]["1"]["ets"] == 1.0, pb
+    assert sum(pb["klimatologi_alarm_sama"]["1"][k] for k in "ab") == 1 and pb["persistensi"]["c"] == 1
     e = uji_balik({}, [], [])
     assert e["periode"] is None and e["n_hari"] == 0 and e["lead"]["1"]["pod"] is None
     print("ok verifikasi")

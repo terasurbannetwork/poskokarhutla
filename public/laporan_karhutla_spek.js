@@ -162,6 +162,8 @@ export function normalisasiProvinsi(masuk, konteks, kirim = false) {
     p.target_ha = b.ha(f.target_ha, j + ".target_ha", {wajib: true}); p.padam_darat_ha = b.ha(f.padam_darat_ha, j + ".padam_darat_ha", {wajib: true}); p.padam_udara_ha = b.ha(f.padam_udara_ha, j + ".padam_udara_ha", {wajib: true});
     p.status = b.pilih(f.status, j + ".status", STATUS_FS, {wajib: true}); p.kumulatif = b.bool(f.kumulatif);
     p.alasan = b.teks(f.alasan, j + ".alasan", 300);
+    /* kolom format khusus BNPB (GET /api/laporan-karhutla/format-khusus): jalan dan kelurahan, kendala per titik. Hanya ada bila diisi, supaya isian lama tidak berubah. */
+    const lok = b.teks(f.lokasi, j + ".lokasi", 160), ken = b.teks(f.kendala, j + ".kendala", 200); if (lok) p.lokasi = lok; if (ken) p.kendala = ken;
     const t = p.target_ha ?? 0, pd = (p.padam_darat_ha ?? 0) + (p.padam_udara_ha ?? 0);
     p.sisa_ha = r2(t - pd); p.sisa_isian = b.ha(f.sisa_ha, j + ".sisa_ha");
     p.kemarin = f.kemarin && typeof f.kemarin === "object" ? {target_ha: angkaID(f.kemarin.target_ha) ?? null, padam_ha: angkaID(f.kemarin.padam_ha) ?? null} : null;

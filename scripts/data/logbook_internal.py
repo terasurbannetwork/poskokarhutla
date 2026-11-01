@@ -2,20 +2,23 @@
 
 Kontrak : docs/superpowers/specs/2026-11-01-logbook-turunan.md (produk 2 dan 6)
 Masukan : data/raw/logbook/arsip/20??{,-*}/{kejadian,baris}.jsonl (tidak di-git); kode kab = logbook_bersih.kode_kab
-Keluaran: data/raw/logbook/turunan/{rapor_bpbd,rekomendasi}.json (tidak di-git; sesi induk yang mengunggah ke R2)
+Keluaran: data/raw/logbook/turunan/{rapor_bpbd,rekomendasi,penanganan}.json dan serupa_<kodeprov2>.json (tidak di-git; sesi induk yang mengunggah ke R2)
 Pakai   : python3 scripts/data/logbook_internal.py        (jalan penuh)
           python3 scripts/data/logbook_internal.py uji    (self-check fixture kecil)
-Tanpa nama orang dan tanpa teks bebas di keluaran.
+rapor_bpbd dan rekomendasi: tanpa nama orang dan tanpa teks bebas. serupa_*.json memuat teks pendek (kronologi/upaya/kondisi) yang
+sudah disamarkan (nama orang, nomor telepon) dan HANYA untuk staf. Angka korban dan rumah rusak tidak dipakai di mana pun.
 """
 import collections
 import datetime as dt
 import glob
+import importlib
 import importlib.util
 import json
 import os
 import re
 import sys
 
+sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 AKAR = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__))))
 ARSIP = os.path.join(AKAR, "data/raw/logbook/arsip")
 KELUAR = os.path.join(AKAR, "data/raw/logbook/turunan")
@@ -239,6 +242,190 @@ def bangun(kejadian, baris_iter, kode_kab, tahun_dasar):
     return rapor, rekom
 
 
+# ---- serupa_<prov> dan penanganan: satu catatan per kejadian ----
+SELESAI = re.compile(r"\b(padam|dipadamkan|surut|selesai|tertangani|teratasi|tuntas)\b", re.I)
+SELESAI_NEG = re.compile(r"belum|tidak|masih|berangsur|sebagian|hampir|akan|proses", re.I)
+MIN_N_TANGANI = 5
+MAKS_SERUPA = 40       # kejadian terbaru per kab x jenis
+def selesai_ya(kondisi):
+    """kondisi menyebut padam/surut/selesai/tertangani tanpa penyangkal ('belum', 'masih', 'berangsur'...) tepat sebelumnya."""
+    t = " ".join(str(kondisi or "").split())
+    return any(not SELESAI_NEG.search(t[max(0, m.start() - 14):m.start()]) for m in SELESAI.finditer(t))
+
+
+HONOR = r"Bpk|Bapak|Ibu|Sdr|Sdri|Sdra|Saudara|Saudari|Kakek|Nenek|Mbah|Tn|Ny|Nn|Pak|Bu|Alm|Almh|Almarhum|Almarhumah|An|H|Hj"
+# jabatan/instansi: 'Bpk. Kalaksa BPBD' tetap utuh (bukan nama orang)
+JABATAN = {"sekda", "kalaksa", "kalak", "bupati", "wakil", "wabup", "gubernur", "wagub", "camat", "kades", "lurah", "walikota", "wali", "kapolres", "kapolsek", "kapolda",
+           "dandim", "danramil", "danrem", "kodim", "kabid", "kasi", "kasat", "kabag", "kepala", "kapus", "danki", "dan", "kasubag", "sekcam", "sekdes", "babinsa",
+           "babinkamtibmas", "pj", "plt", "ketua", "direktur", "sekretaris", "kapolsubsektor", "kasie", "kasubid", "danlanud", "dandenma", "komandan", "asisten", "staf", "menteri"}
+BUKAN_NAMA = {"desa", "dusun", "dsn", "kel", "kec", "kecamatan", "kabupaten", "kab", "kota", "jl", "jalan", "ds", "rt", "rw", "kelurahan", "yang", "dan", "di", "pada", "bpbd", "sebagai",
+              "dari", "ke", "untuk", "dengan", "kampung", "kp", "lingkungan", "provinsi", "prov", "pkl", "wib", "wita", "wit", "tgl", "hari", "senin", "selasa", "rabu", "kamis", "jumat", "sabtu", "minggu"}
+TOK = re.compile(r"[A-Z][\w'’-]*")
+P_HONOR = re.compile(r"\b(%s)\b\.?\s*(?=[A-Z])" % HONOR)
+P_PENANDA = re.compile(r"\b(?:a\.\s?n\.?|a/n|atas nama|aas nama|bernama|berinisial|(?:korban|saksi|siswa|siswi|pelaku)\s+bernama)\s*(?=[A-Z])", re.I)
+P_UMUR = re.compile(r"\(\s*[LP]?\s*[,/]?\s*\d{1,3}\s*(?:th|thn|tahun)\s*(?:[,/]\s*[LP]\w*)?\s*\)|\b\d{1,3}\s*(?:th|thn)\b|\b(?:berumur|umur(?:nya)?)\s*:?\s*\d{1,3}(?:\s*(?:th|thn|tahun))?", re.I)
+P_NAMA_UMUR = re.compile(r"((?:[A-Z][\w'’-]*\s+){1,3})(?=\[umur\])")
+P_RTRW = re.compile(r"\bRT\s*[./]?\s*RW\s*[.:]?\s*\d+\s*/\s*\d+|\bRT\s*[./]?\s*\d+\s*[/,]?\s*(?:RW\s*[./]?\s*\d+)?|\bRW\s*[./]?\s*\d+", re.I)
+P_DUSUN = re.compile(r"\b(?:Dusun|Dsn\.?|Dukuh|Dk\.?|Kampung|Kp\.?|Lingkungan|Lingk\.?)\s+(?!(?:Desa|Ds|Kel|Kelurahan|Kec|Kecamatan|Kab|Kabupaten|Kota|RT|RW|Dusun|Dsn)\b)[A-Z][\w'’-]*(?:\s+(?!(?:Desa|Ds|Kel|Kelurahan|Kec|Kecamatan|Kab|Kabupaten|Kota|RT|RW|Dusun|Dsn)\b)[A-Z][\w'’-]*){0,2}")
+P_PANGGIL = re.compile(r"(?<=\[nama\])\s*\((?![^)]*\[)[^)\d]{1,25}\)")
+P_TELP = re.compile(r"(\+?\d[\d\s().-]{7,}\d)|[\w.+-]+@[\w-]+\.[\w.]+")
+
+
+def _nama_setelah(t, m, pakai_jabatan):
+    """(awal, akhir, n): 1-3 kata berhuruf besar sesudah m.end() (bukan kata lokasi; kata jabatan pertama dikecualikan bila pakai_jabatan)."""
+    i = j = m.end()
+    n = 0
+    while n < 3:
+        w = TOK.match(t, j)
+        if not w or w.group(0).lower() in BUKAN_NAMA or (n == 0 and pakai_jabatan and w.group(0).lower() in JABATAN):
+            break
+        i2, n = w.end(), n + 1
+        j = i2 + 1 if t[i2:i2 + 1] == " " else i2
+        if j == i2:
+            break
+    return m.end(), (i2 if n else m.end()), n
+
+
+def samar(teks, maks):
+    """satu baris; nama orang (honorifik/penanda/nama sebelum umur), umur, RT/RW, nomor telepon/surel disamarkan; dusun ikut dibuang bila ada nama/umur; dipotong di maks."""
+    t = " ".join(str(teks or "").split())
+    t = P_TELP.sub("[no]", t)
+    t = P_RTRW.sub("[rt/rw]", t)
+    for pola, jab in ((P_HONOR, True), (P_PENANDA, False)):
+        out, pos = [], 0
+        for m in pola.finditer(t):
+            if m.start() < pos:
+                continue
+            i, j, n = _nama_setelah(t, m, jab)
+            if n:
+                out.append(t[pos:i] + "[nama]")
+                pos = j
+        t = "".join(out) + t[pos:]
+    t = P_UMUR.sub("[umur]", t)
+    t = P_NAMA_UMUR.sub("[nama] ", t)
+    t = re.sub(r"(\[nama\]\s*){2,}", "[nama] ", P_PANGGIL.sub("", t))
+    t = " ".join(t.split())
+    if "[nama]" in t or "[umur]" in t:
+        t = P_DUSUN.sub("[dusun]", t)
+    if len(t) <= maks:
+        return t
+    cut = t[:maks - 1]
+    if t[maks - 1] != " " and " " in cut:    # jangan memotong di tengah kata ('Pak Cam' dari 'Pak Camat')
+        cut = cut.rsplit(" ", 1)[0]
+    return cut.rstrip() + "…"
+
+
+# pemeriksa kebocoran, terpisah dari penyamar (dipakai uji dan main atas keluaran jadi)
+BOCOR = {
+    "umur": re.compile(r"\(\s*\d{1,3}\s*(?:th|thn|tahun)\s*\)|\b\d{1,3}\s*(?:th|thn)\b|\b(?:berumur|umur(?:nya)?)\s*:?\s*\d", re.I),
+    "rt_rw": re.compile(r"\bR[TW]\s*[./]?\s*\d", re.I),
+    "telp": re.compile(r"\+?\d[\d\s().-]{7,}\d|[\w.+-]+@[\w-]+\.[\w.]+"),
+    "penanda": re.compile(r"\b(?:a\.\s?n\.?|a/n|atas nama|aas nama|bernama|berinisial)\s*(?!\[)[A-Z]", re.I),
+}
+BOCOR_HONOR = re.compile(r"\b(?:%s)\b\.?\s*(?!\[)([A-Z][\w'’-]*)" % HONOR)
+
+
+def cek_bocor(teks):
+    """-> daftar (jenis, cuplikan) pola nama/umur/RT-RW/telepon yang lolos; jabatan (JABATAN) dan kata lokasi dibolehkan sesudah honorifik."""
+    hit = [(k, m.group(0)) for k, r in BOCOR.items() for m in r.finditer(teks)]
+    hit += [("honorifik", m.group(0)) for m in BOCOR_HONOR.finditer(teks) if m.group(1).lower() not in JABATAN | BUKAN_NAMA]
+    return hit
+
+
+def mulai_tgl(k):
+    """tanggal mulai kejadian: tgl_kejadian bila sah dan <= MAKS_JEDA hari dari catatan pertama, selain itu pertama_dicatat; None bila tak ada."""
+    sel = hari_antara(k.get("tgl_kejadian"), k.get("pertama_dicatat"))
+    t = k.get("tgl_kejadian") if sel is not None and abs(sel) <= MAKS_JEDA else k.get("pertama_dicatat")
+    return t if hari_antara(t, t) == 0 else None
+
+
+def acara(kejadian, kode_kab):
+    """-> {id: {id, jenis, mulai, kabs, prov, k}} untuk kejadian bertanggal dan ber-kab."""
+    out = {}
+    for k in kejadian:
+        kabs, m = kode_kab(k), mulai_tgl(k)
+        if kabs and m:
+            out[k["id_kejadian"]] = {"id": k["id_kejadian"], "jenis": k["jenis"], "mulai": m, "kabs": kabs,
+                                     "prov": sorted({kb.split("|")[0] for kb in kabs}), "k": k}
+    return out
+
+
+def lengkapi_acara(ev, baris_iter, T):
+    """isi ev[id] dari baris harian: tgl_selesai, hari_selesai, kategori kebutuhan/bantuan/alat/pihak, teks upaya. T = modul logbook_turunan."""
+    ac = {i: {"selesai": None, "keb": set(), "bantu": set(), "alat": set(), "pihak": set(), "upaya": []} for i in ev}
+    for b in baris_iter:
+        a = ac.get(b.get("id_kejadian"))
+        if a is None:
+            continue
+        tgl = b.get("tgl_logbook")
+        if hari_antara(tgl, tgl) == 0 and selesai_ya(b.get("kondisi")) and (a["selesai"] is None or tgl < a["selesai"]):
+            a["selesai"] = tgl
+        a["keb"] |= T.kategori(b.get("kebutuhan"), T.RE_KEB)
+        a["bantu"] |= T.kategori(b.get("upaya"), T.RE_KEB)
+        a["alat"] |= T.kategori(T.potong_alat(b.get("peralatan")), T.RE_ALAT) | T.kategori(b.get("upaya"), T.RE_ALAT)
+        a["pihak"] |= T.kategori(b.get("terlibat"), T.RE_PIHAK)
+        u = " ".join(str(b.get("upaya") or "").split())
+        if u and u not in a["upaya"]:
+            a["upaya"].append(u)
+    for i, e in ev.items():
+        a = ac[i]
+        d = hari_antara(e["mulai"], a["selesai"])
+        e["hari_selesai"] = None if d is None or d > MAKS_JEDA else max(d, 0)
+        e["a"] = a
+    return ev
+
+
+LAYAK_N_SELESAI, LAYAK_TAK_SELESAI = 30, 90
+
+
+def stat_tangani(hari):
+    """hari = daftar hari_selesai (None = tak pernah dilaporkan selesai). median/p75 hanya dari yang dilaporkan selesai: batas bawah yang bias."""
+    ok = [h for h in hari if h is not None]
+    n = len(hari)
+    tak = round(100 * (n - len(ok)) / n, 1)
+    return {"n": n, "n_selesai": len(ok), "n_tak_selesai": n - len(ok), "median_dilaporkan": kuantil(ok, .5), "p75_dilaporkan": kuantil(ok, .75),
+            "tak_selesai_pct": tak, "layak_median": len(ok) >= LAYAK_N_SELESAI and tak <= LAYAK_TAK_SELESAI}
+
+
+def susun_serupa(ev, tahun_dasar):
+    """-> {kode_prov2: {kab: {jenis: {n_total, kejadian[...]}}}}; terbaru dulu, paling banyak MAKS_SERUPA per kab x jenis."""
+    per = collections.defaultdict(lambda: collections.defaultdict(lambda: collections.defaultdict(list)))
+    for e in ev.values():
+        k, a = e["k"], e["a"]
+        kron = k.get("kronologi")
+        rec = {"id": e["id"], "mulai": e["mulai"], "dasar": e["mulai"][:4] in tahun_dasar,
+               "hari_dilaporkan": k.get("hari_dilaporkan"), "hari_selesai": e["hari_selesai"],
+               "kebutuhan": sorted(a["keb"]), "bantuan": sorted(a["bantu"]), "alat": sorted(a["alat"]), "pihak": sorted(a["pihak"]),
+               "kronologi": samar(kron, 240), "upaya": samar(" | ".join(a["upaya"][:3]), 240), "kondisi_terakhir": samar(k.get("kondisi_terakhir"), 160)}
+        for kb in e["kabs"]:
+            per[kb.split("|")[0]][kb][e["jenis"]].append(rec)
+    out = {}
+    for p, kabs in per.items():
+        out[p] = {kb: {j: {"n_total": len(r), "kejadian": sorted(r, key=lambda x: (x["mulai"], x["id"]), reverse=True)[:MAKS_SERUPA]}
+                       for j, r in sorted(js.items())} for kb, js in sorted(kabs.items())}
+    return out
+
+
+def susun_penanganan(ev, tahun_dasar):
+    """lama penanganan (mulai -> entri kondisi pertama yang menyebut selesai), tahun dasar saja; sel n < MIN_N_TANGANI dibuang."""
+    nas, prov, kab = (collections.defaultdict(list) for _ in range(3))
+    for e in ev.values():
+        if e["mulai"][:4] not in tahun_dasar:
+            continue
+        h = e["hari_selesai"]
+        nas[e["jenis"]].append(h)
+        for p in e["prov"]:
+            prov[(p, e["jenis"])].append(h)
+        for kb in e["kabs"]:
+            kab[(kb, e["jenis"])].append(h)
+    res = {"nasional": {}, "prov": {}, "kab": {}}
+    for tk, d in (("nasional", {(None, j): v for j, v in nas.items()}), ("prov", prov), ("kab", kab)):
+        for (kk, j), v in sorted(d.items(), key=lambda x: (str(x[0][0]), x[0][1])):
+            if len(v) >= MIN_N_TANGANI:
+                (res[tk].setdefault(j, stat_tangani(v)) if tk == "nasional" else res[tk].setdefault(kk, {}).__setitem__(j, stat_tangani(v)))
+    return res
+
+
 def uji():
     kode = lambda k: [f"{p}|{n}" for p, n in zip(k["prov_kode"], k["kabkota"])]
     kj = [
@@ -269,6 +456,44 @@ def uji():
     assert not t["tanggul"]["berulang"]
     assert tahun_kejadian(kj[3]) == "2025" and tahun_kejadian(kj[2]) == "2025"
     assert kuantil([1, 2, 3, 4], .75) == 3.25
+    # serupa + penanganan
+    assert selesai_ya("Api sudah padam") and selesai_ya("Banjir telah surut") and not selesai_ya("Api belum padam") and not selesai_ya("banjir berangsur surut")
+    assert not selesai_ya("") and not selesai_ya(None) and selesai_ya("masih hujan. Genangan sudah surut")
+    assert samar("Menurut Bapak Slamet Riyadi, hubungi 0812-3456-7890", 240) == "Menurut Bapak [nama], hubungi [no]"
+    # samar: tiap pola
+    S = lambda x: samar(x, 400)
+    assert S("Bpk. Sekda dan Bpk. Kalaksa BPBD hadir") == "Bpk. Sekda dan Bpk. Kalaksa BPBD hadir"                       # jabatan utuh
+    assert S("Ibu. Suci roboh, Nenek Karyatun dan Asmanah") == "Ibu. [nama] roboh, Nenek [nama] dan Asmanah"
+    assert S("Hj. Amelia Rika anggota DPRD") == "Hj. [nama] anggota DPRD" and S("Tn. Budi, Ny. Sari, Nn. Ani") == "Tn. [nama], Ny. [nama], Nn. [nama]"
+    assert S("a.n. Joko Susilo dibawa; atas nama Dewi; aas nama Rina; bernama Agus Salim Putra Wijaya") == "a.n. [nama] dibawa; atas nama [nama]; aas nama [nama]; bernama [nama] Wijaya", S("a.n. Joko Susilo dibawa; atas nama Dewi; aas nama Rina; bernama Agus Salim Putra Wijaya")
+    assert S("korban bernama Rahmat Hidayat meninggal") == "korban bernama [nama] meninggal" and S("korban Luka-Luka dievakuasi") == "korban Luka-Luka dievakuasi"
+    assert S("Sdr. Budi Santoso (45th) di Desa Maju") == "Sdr. [nama] [umur] di Desa Maju"
+    assert S("Agus Setiawan (45 tahun) dan anak 5 thn, berumur 30 tahun, umurnya 12") == "[nama] [umur] dan anak [umur], [umur], [umur]"
+    assert S("selama 3 tahun terakhir dan 25 tahun lalu") == "selama 3 tahun terakhir dan 25 tahun lalu"                # durasi bukan umur
+    assert S("Pak Joko (Cak Jok) hadir") == "Pak [nama] hadir"
+    assert S("RT.002/RW.004, RT 02 RW 05, RT/02 RW/09, RT/RW 01/02") == "[rt/rw], [rt/rw], [rt/rw], [rt/rw]", S("RT.002/RW.004, RT 02 RW 05, RT/02 RW/09, RT/RW 01/02")
+    assert S("Dusun Kaulon, Desa Maju") == "Dusun Kaulon, Desa Maju" and S("Bapak Slamet di Dusun Kaulon Desa Maju") == "Bapak [nama] di [dusun] Desa Maju"
+    assert not cek_bocor(S("Ibu Siti (60 th) RT 03 RW 02 Dusun Aman, hubungi 081234567890 a.n. Joko")) and cek_bocor("Bapak Slamet (45 th)")
+    assert not cek_bocor("Bpk. Kalaksa BPBD, Bpk Danramil") and any(k == "rt_rw" for k, _ in cek_bocor("RT 02"))
+    assert len(samar("x" * 300, 240)) == 240 and samar("a\n b", 9) == "a b"
+    T = importlib.import_module("logbook_turunan")
+    kj2 = [{"id_kejadian": f"E{i}", "jenis": "banjir", "tgl_kejadian": f"2024-0{i}-01", "pertama_dicatat": f"2024-0{i}-01", "terakhir_dicatat": f"2024-0{i}-05",
+            "n_laporan": 2, "hari_dilaporkan": 2, "prov": ["P"], "prov_kode": ["11"], "kabkota": ["Kab. X"],
+            "kronologi": "Banjir di desa.", "kondisi_terakhir": "ok"} for i in range(1, 7)]
+    br2 = []
+    for i in range(1, 7):                       # E1..E5 selesai pada hari ke-i-1 .. ; E6 tidak pernah
+        br2.append({"id_kejadian": f"E{i}", "tgl_logbook": f"2024-0{i}-01", "kondisi": "masih tergenang", "upaya": "Bagi makanan siap saji", "kebutuhan": "tenda", "peralatan": "perahu karet", "terlibat": "BPBD"})
+        if i < 6:
+            br2.append({"id_kejadian": f"E{i}", "tgl_logbook": f"2024-0{i}-0{i + 1}", "kondisi": "banjir sudah surut", "upaya": "", "kebutuhan": "", "peralatan": "", "terlibat": ""})
+    ev = lengkapi_acara(acara(iter(kj2), kode), iter(br2), T)
+    assert [ev[f"E{i}"]["hari_selesai"] for i in range(1, 7)] == [1, 2, 3, 4, 5, None], ev["E1"]["hari_selesai"]
+    sp = susun_serupa(ev, {"2024"})["11"]["11|Kab. X"]["banjir"]
+    assert sp["n_total"] == 6 and sp["kejadian"][0]["id"] == "E6" and sp["kejadian"][0]["dasar"] and sp["kejadian"][5]["kebutuhan"] == ["tenda_terpal"]
+    assert sp["kejadian"][0]["alat"] == ["perahu"] and sp["kejadian"][0]["bantuan"] == ["makanan"] and sp["kejadian"][0]["pihak"] == ["BPBD"]
+    pn = susun_penanganan(ev, {"2024"})
+    assert pn["nasional"]["banjir"] == {"n": 6, "n_selesai": 5, "n_tak_selesai": 1, "median_dilaporkan": 3.0, "p75_dilaporkan": 4.0, "tak_selesai_pct": 16.7, "layak_median": False}, pn["nasional"]
+    assert pn["kab"]["11|Kab. X"]["banjir"]["n"] == 6 and pn["prov"]["11"]["banjir"]["n"] == 6
+    assert susun_penanganan(ev, {"2030"}) == {"nasional": {}, "prov": {}, "kab": {}}   # di luar tahun dasar
     print("uji logbook_internal: OK")
 
 
@@ -307,11 +532,45 @@ def main():
         ],
         "topik": {k: v for k, v in TOPIK.items()}, **rekom,
     }
-    for nama, d in (("rapor_bpbd", rapor_out), ("rekomendasi", rekom_out)):
+    T = importlib.import_module("logbook_turunan")
+    ev = lengkapi_acara(acara(baca("kejadian"), kode), baca("baris"), T)
+    ser = susun_serupa(ev, dasar)
+    pn = susun_penanganan(ev, dasar)
+    pn_out = {
+        "dibuat": now, "min_n": MIN_N_TANGANI, "tahun_dasar": sorted(dasar),
+        "catatan": [
+            "Rapor lama penanganan, staf saja. Lama = hari dari mulai kejadian sampai entri logbook PERTAMA yang kolom kondisinya menyebut padam/surut/selesai/tertangani/teratasi/tuntas tanpa penyangkal (belum, masih, berangsur, sebagian...).",
+            "Yang terukur adalah kapan Pusdalops MENCATAT selesai, bukan kapan benar-benar selesai. Kejadian yang berhenti dilaporkan sebelum kata itu muncul masuk tak_selesai_pct, jadi persen itu campuran 'belum selesai' dan 'tak dilaporkan lagi'.",
+            "median_dilaporkan dan p75_dilaporkan hanya menghitung kejadian yang dilaporkan surut/padam (n_selesai): batas bawah yang bias, BUKAN lama penanganan sebenarnya; kejadian yang tak pernah dilaporkan selesai tidak ikut dan pasti lebih lama atau tak diketahui.",
+            "layak_median = n_selesai >= %d dan tak_selesai_pct <= %d. Bila false, layar jangan menampilkan median (hanya n, n_tak_selesai, tak_selesai_pct). Kebanyakan jenis dan kab false karena kolom kondisi jarang menyebut selesai." % (LAYAK_N_SELESAI, LAYAK_TAK_SELESAI),
+            "Sel dengan n < min_n tidak dimuat. Tahun dasar saja. Tidak ada angka korban atau rumah rusak.",
+        ],
+        **pn,
+    }
+    ser_catatan = ["Kejadian lampau di kab dan jenis yang sama, terbaru dulu (paling banyak %d per kab x jenis; n_total = semua). dasar=true bila tahun mulai termasuk tahun dasar." % MAKS_SERUPA,
+                   "Teks pendek dipotong dan disamarkan (nama setelah Bapak/Ibu/Sdr, nomor telepon). Hanya untuk staf; jangan diterbitkan.",
+                   "hari_selesai: lihat penanganan.json. kebutuhan/bantuan/alat/pihak = kategori kata kunci logbook_turunan (bantuan = kategori kebutuhan yang disebut di kolom upaya).",
+                   "Tanpa angka korban dan rumah rusak."]
+    os.makedirs(KELUAR, exist_ok=True)
+    for f in glob.glob(os.path.join(KELUAR, "serupa_*.json")):
+        os.remove(f)
+    tulis = [(n, d) for n, d in (("rapor_bpbd", rapor_out), ("rekomendasi", rekom_out), ("penanganan", pn_out))]
+    tulis += [(f"serupa_{p}", {"dibuat": now, "prov": p, "tahun_dasar": sorted(dasar), "catatan": ser_catatan, "kab": kabs}) for p, kabs in sorted(ser.items())]
+    bocor = collections.Counter()
+    for nama, d in tulis:
         p = os.path.join(KELUAR, nama + ".json")
         with open(p, "w", encoding="utf-8") as h:
             json.dump(d, h, ensure_ascii=False, separators=(",", ":"))
+        if nama.startswith("serupa_"):
+            for kabd in d["kab"].values():
+                for jd in kabd.values():
+                    for r in jd["kejadian"]:
+                        for k, c in cek_bocor(" | ".join((r["kronologi"], r["upaya"], r["kondisi_terakhir"]))):
+                            bocor[k] += 1
+                            print("  bocor", k, repr(c))
         print(f"{os.path.relpath(p, AKAR)}: {os.path.getsize(p) / 1024:.0f} KB")
+    print("kebocoran di serupa_*.json (nama/umur/RT-RW/telepon):", dict(bocor) or 0)
+    assert not bocor, f"penyamaran bocor: {dict(bocor)}"
 
 
 if __name__ == "__main__":

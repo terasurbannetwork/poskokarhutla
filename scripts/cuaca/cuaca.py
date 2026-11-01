@@ -23,7 +23,8 @@ Badai guntur (CAPE dan LI) tidak ditampilkan: indeks angkat (LI) tidak ada di su
 
 Pakai:  python3 scripts/cuaca/cuaca.py   |   python3 scripts/cuaca/cuaca.py uji
 Rantai 72 jam (masing-masing gagal sendiri tanpa menjatuhkan yang lain; modul di scripts/cuaca/): sarana (sekali), gelombang, prakiraan_kec,
-dampak_cuaca, medan, siklon, verifikasi (arsip BMKG + skor), laporan_cuaca. Masukan boleh dialihkan: CUACA_MASUKAN=<folder berisi hujan.json dst>.
+dampak_cuaca, medan, siklon (+ silang cek JMA), verifikasi (arsip BMKG + skor + pembanding klimatologi/persistensi), laporan_cuaca, musim,
+prospektif_cuaca (arsip append-only per bulan), langganan (laju dasar logbook kab x bulan), metar (bandara, 0 kuota Open-Meteo). uji_logbook.py hanya jalan lokal (cache ERA5). Masukan boleh dialihkan: CUACA_MASUKAN=<folder berisi hujan.json dst>.
 Kuota Open-Meteo harian (bobot = variabel/10 x hari/14, minimum 1 per lokasi; 10.000/hari dibagi dengan banjir):
   gelombang (Marine, 72 jam, ~320 titik pelabuhan+rob, 50 titik/panggilan)  ~320
   medan (Forecast, kisi 1,5 derajat 13x32 = 416 titik, 4 variabel jam, 3 hari)  ~416
@@ -112,7 +113,8 @@ def riwayat(lama, sel, hari, hari_ini, hitung_hari):
 
 LANGKAH = [("sarana", lambda m, pr, meta: m.main()), ("gelombang", lambda m, pr, meta: m.main()), ("prakiraan_kec", lambda m, pr, meta: m.main()),
            ("dampak_cuaca", lambda m, pr, meta: m.main(pr, meta)), ("medan", lambda m, pr, meta: m.main()), ("siklon", lambda m, pr, meta: m.main()),
-           ("verifikasi", lambda m, pr, meta: m.main()), ("laporan_cuaca", lambda m, pr, meta: m.main()), ("musim", lambda m, pr, meta: m.main())]
+           ("verifikasi", lambda m, pr, meta: m.main()), ("laporan_cuaca", lambda m, pr, meta: m.main()), ("musim", lambda m, pr, meta: m.main()),
+           ("prospektif_cuaca", lambda m, pr, meta: m.main()), ("langganan", lambda m, pr, meta: m.main()), ("metar", lambda m, pr, meta: m.main())]
 
 
 def ringkas(kec, siklon):

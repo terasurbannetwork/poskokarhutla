@@ -22,7 +22,7 @@
   const rgba = (h, a) => `rgba(${parseInt(h.slice(1, 3), 16)},${parseInt(h.slice(3, 5), 16)},${parseInt(h.slice(5, 7), 16)},${a})`;
   const dari = n => `${fmt(n)} dari ${N} tahun`;
 
-  const ambilData = () => jData ||= muatJSON("data/logbook_riwayat.json").then(j => { TH = tahunDasar(j); N = TH.length; RNG = rentang(TH); catat(j.kab); return J = j.kab; }).catch(e => { jData = null; throw e; });
+  const ambilData = () => jData ||= (window._logbook ||= muatJSON("data/logbook_riwayat.json").catch(e => { window._logbook = null; throw e; })).then(j => { TH = tahunDasar(j); N = TH.length; RNG = rentang(TH); catat(j.kab); return J = j.kab; }).catch(e => { jData = null; throw e; });
   const ambil = () => janji ||= (async () => {
     await ambilData(); const kab = J;
     const prov = [...new Set(Object.keys(kab).map(k => k.split("|")[0]))];

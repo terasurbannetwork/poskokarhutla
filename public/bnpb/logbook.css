@@ -54,3 +54,12 @@
 .lb-turunan details summary{cursor:pointer;font-weight:700}
 @media (max-width:640px){.lb-tab{grid-template-columns:repeat(2,minmax(0,1fr))}}
 .lb-turunan,.lb-isi,.lb-isi>*,.lb-turunan>*{min-width:0;max-width:100%}
+/* kejadian serupa, lama penanganan, bencana susulan, perkiraan stok */
+.lb-riwayat{display:grid;gap:10px}
+.lb-kartu{border:1px solid var(--line);border-radius:12px;padding:12px;display:grid;gap:8px;background:var(--card)}
+.lb-chipbaris{display:flex;gap:6px;flex-wrap:wrap;align-items:center;font-size:12.5px}
+.lb-sub{margin:4px 0 0;font-size:14px;font-weight:800}
+.lb-svg text.kiri{text-anchor:start;fill:var(--ink)}
+.lb-svg text.kanan{text-anchor:end}
+.lb-svg .bat.musim{fill:var(--c1)}
+.lb-svg .bat:not(.musim){fill:color-mix(in srgb,var(--ink) 22%,var(--card))}

@@ -52,6 +52,7 @@ const Bagikan = {
     b.innerHTML = `${this.IKON}<span>${lbl}</span>`;
     st.insertBefore(b, document.getElementById("tema"));
     b.onclick = () => this.cepat();
+    b.style.display = "none";   /* disembunyikan dari header (pemilik 1 Nov 2026); pulihkan: hapus baris ini */
     this.pasangCepat();
     /* tombol bagikan di tiap grafik Insight (tab dirender ulang sendiri, jadi diamati) */
     const ins = document.getElementById("insight");

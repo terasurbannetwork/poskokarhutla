@@ -21,13 +21,12 @@ async function gambar(d) {
   if (!r.ok) throw new Error(r.status);
   /* TAMPIL berisi id = hanya itu yang bisa dibuka dari menu, sisanya berlabel "Soon". Kosong = semua bencana berstatus aktif
      terbuka, plus "Semua bencana". Pemilik menutup lagi bencana selain karhutla jadi "Soon" (21 Okt 2026), lalu membuka banjir (27 Okt 2026). */
-  const TAMPIL = new Set(["karhutla", "banjir", "cuaca"]);
+  const TAMPIL = new Set(["karhutla", "banjir", "pesisir", "cuaca"]);
   const reg = (await r.json()).bencana;
-  /* Gelombang Pasang & Abrasi (kategori DIBI "gelombang pasang dan abrasi": rob + abrasi pantai) belum punya halaman: tampil "Soon"
-     sampai /pesisir/ ada, lalu pindah jadi entri bencana.json. Data abrasi sudah ada di public/pesisir/data. */
-  const pesisir = {id: "pesisir", nama: "Gelombang Pasang & Abrasi", ikon: "pesisir", rute: "/pesisir/"};
-  const i = reg.findIndex(b => b.id === "banjir");
-  const lengkap = reg.slice(0, i + 1).concat(pesisir, reg.slice(i + 1)).filter(b => IKON[b.ikon]);
+  /* urutan menu (pemilik, 1 Nov 2026): Karhutla, Banjir, Pesisir, Gempa, Cuaca, Gunung api, Kekeringan; sisanya (udara) di belakang */
+  const URUT = ["karhutla", "banjir", "pesisir", "gempa", "cuaca", "gunungapi", "kekeringan"];
+  const nomor = b => (n => n < 0 ? URUT.length : n)(URUT.indexOf(b.id));
+  const lengkap = reg.slice().sort((x, y) => nomor(x) - nomor(y)).filter(b => IKON[b.ikon]);
   const daftar = lengkap.filter(b => b.menu !== false);   /* menu:false = halaman hidup tapi bukan jenis bencana BNPB (udara) */
   const buka = b => !TAMPIL.size ? b.status === "aktif" : TAMPIL.has(b.id);
   const semua = d.dataset.bencana === "semua";   /* beranda semua bencana: judul ringkasan tetap, tiap bencana hidup jadi tautan */

@@ -1,0 +1,70 @@
+{
+ "sumber": "Surat dan laporan Badan Geologi (PVMBG, KESDM), diarsipkan Pusdalops BNPB",
+ "level": {
+  "1": "Normal",
+  "2": "Waspada",
+  "3": "Siaga",
+  "4": "Awas"
+ },
+ "gunung": [
+  "Anak Krakatau"
+ ],
+ "baris": [
+  {
+   "gunung": "Anak Krakatau",
+   "jenis": "perubahan",
+   "tanggal": "2026-07-02",
+   "dari": null,
+   "ke": 3,
+   "radius_km": null,
+   "sumber": {
+    "berkas": "1604.Lap Khusus_Penurunan Status_GAK_21092026 (2).pdf",
+    "nomor": "1604.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  },
+  {
+   "gunung": "Anak Krakatau",
+   "jenis": "evaluasi",
+   "tanggal": "2026-08-18",
+   "dari": 3,
+   "ke": 3,
+   "radius_km": 3.0,
+   "sumber": {
+    "berkas": "1403.Lap evaluasi aktivitas G. Anak Krakatau Level III periode 8 - 15 Agustus 2026.pdf",
+    "nomor": "1403.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   },
+   "periode": [
+    "2026-08-08",
+    "2026-08-15"
+   ],
+   "gempa": {
+    "letusan": 2,
+    "hembusan": 16,
+    "low_frequency": 14,
+    "harmonik": 75,
+    "hybrid": 33,
+    "tremor_menerus": 24,
+    "vulkanik_dangkal": 1,
+    "tektonik_jauh": 7
+   }
+  },
+  {
+   "gunung": "Anak Krakatau",
+   "jenis": "perubahan",
+   "tanggal": "2026-09-21",
+   "dari": 3,
+   "ke": 2,
+   "radius_km": 2.0,
+   "sumber": {
+    "berkas": "1604.Lap Khusus_Penurunan Status_GAK_21092026 (2).pdf",
+    "nomor": "1604.Lap/GL.03/BGL/2026",
+    "penerbit": "Badan Geologi, PVMBG (KESDM)",
+    "arsip": "Pusdalops BNPB"
+   }
+  }
+ ]
+}

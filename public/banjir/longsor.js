@@ -45,13 +45,7 @@ const Longsor = (() => {
       + vonis + nama + (riw.length ? batang(riw) : "");
     return Kartu.kartu("Nowcast", `${Kartu.hl(fmt(r.tinggi))} kecamatan berbahaya tinggi menurut nowcast longsor`, isi, "Open-Meteo, ERA5, DEM Terrarium, GEM Active Faults, SoilGrids");
   }
-  function riwayat() {
-    const lb = D.lb; if (!lb) return "";
-    const v = Object.keys(lb.hari_tercatat).filter(y => lb.nasional?.[y]?.longsor != null && lb.hari_tercatat[y] >= 60).sort().map(y => {
-      const n = lb.nasional[y].longsor, h = lb.hari_tercatat[y], r = n / h * 100;
-      return {n: y, v: r, txt: f1(r), tip: `<b>${y}</b><br>${fmt(n)} kejadian longsor dalam ${fmt(h)} hari tercatat<br>${f1(r)} per 100 hari${h < 360 ? "<br>Tahun belum penuh tercatat" : ""}`}; });
-    const u = v.at(-1); return Kartu.kartu("Riwayat", u ? `${Kartu.hl(u.txt)} kejadian longsor per 100 hari tercatat pada ${u.n}` : "Kejadian longsor per tahun", batang(v), "Logbook harian Pusdalops BNPB; tahun tidak penuh dibagi hari tercatat");
-  }
+  const riwayat = () => D.lb ? LogbookTren.kartu(D.lb, "longsor", "longsor", W) : "";
   function musim() {
     const kab = D.kal?.kab; if (!kab) return "";
     const s = Array(12).fill(0), n = Array(12).fill(0);

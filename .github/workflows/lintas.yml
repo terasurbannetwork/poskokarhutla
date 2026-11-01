@@ -21,7 +21,7 @@ permissions:
 jobs:
   lintas:
     runs-on: ubuntu-latest
-    # Hangat ±60 menit; dingin (cache mentah kosong) ±110. Jumlah batas langkah 20+25+15+40+60 = 160 menit + pulihkan/terbit. Jangan lebih:
+    # Hangat ±60 menit; dingin (cache mentah kosong) ±110. Jumlah batas langkah 20+25+15+40+60+5 = 165 menit + pulihkan/terbit. Jangan lebih:
     # grup `data` antre tunggal, titik.yml (tiap 3 jam) tertahan selama job ini jalan dan /api/status memberi 503 bila titik > 8 jam.
     timeout-minutes: 180
     steps:
@@ -95,6 +95,23 @@ jobs:
           rm -f uji.log
           exit $gagal
 
+      # arsip prospektif cuaca (append-only, untuk backtest ambang angin 6-12 bulan lagi) di-commit ke main; cache banjir- bisa hilang,
+      # jadi pulihkan dari git. Cache dan git digabung per tanggal terbit (gabungan, entri yang sudah ada tidak ditimpa), supaya
+      # cache basi tidak menghapus hari yang sudah di-commit dan commit gagal kemarin tidak menghapus hari di cache.
+      # `git ls-files` yang meng-glob (pathspec), bukan shell.
+      - name: Pulihkan arsip prospektif cuaca dari repo
+        run: |
+          for f in $(git ls-files 'public/banjir/data/cuaca_prospektif_*.json'); do
+            git show "HEAD:$f" > /tmp/git_arsip.json || { echo "::warning::arsip $f tidak terbaca dari git"; continue; }
+            [ -e "$f" ] || { cp /tmp/git_arsip.json "$f"; continue; }
+            python3 - "$f" /tmp/git_arsip.json <<'PY' || echo "::warning::arsip $f tidak tergabung"
+          import json, sys
+          a, b = (json.load(open(p)) for p in sys.argv[1:3])
+          for k, v in b.get("terbit", {}).items(): a.setdefault("terbit", {}).setdefault(k, v)
+          json.dump(a, open(sys.argv[1], "w"), ensure_ascii=False, separators=(",", ":"))
+          PY
+          done; true
+
       # 8 langkah cuaca.py (sarana sekali, gelombang, prakiraan_kec, dampak_cuaca, medan, siklon, verifikasi, laporan_cuaca) gagal sendiri-sendiri.
       # Kuota Open-Meteo ±1.085/hari (gelombang 320, medan 416, verifikasi 349); butuh hujan.json dan hujan_ansambel.json dari banjir.yml.
       - name: Cuaca ekstrem (boleh gagal)
@@ -103,6 +120,24 @@ jobs:
         run: |
           python3 scripts/cuaca/cuaca.py uji && python3 scripts/cuaca/cuaca.py || echo "::warning title=cuaca::cuaca.py gagal; berkas lamanya dibiarkan"
           python3 scripts/cuaca/peluang_cuaca.py uji && python3 scripts/cuaca/peluang_cuaca.py || echo "::warning title=peluang_cuaca::gagal; berkas lamanya dibiarkan"
+
+      # Commit arsip prospektif cuaca (prospektif_cuaca.py dirantai cuaca.py). Hanya berkas bulanan; tidak ada perubahan = keluar bersih.
+      - name: Commit arsip prospektif cuaca (boleh gagal)
+        continue-on-error: true
+        timeout-minutes: 5
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          B=$(ls public/banjir/data/cuaca_prospektif_*.json 2>/dev/null || true)
+          [ -n "$B" ] || { echo "belum ada arsip prospektif cuaca"; exit 0; }
+          git add -f $B
+          git diff --cached --quiet -- $B && { echo "prospektif cuaca tidak berubah"; exit 0; }
+          git commit -q -m "data: prospektif cuaca $(TZ=Asia/Jakarta date +%F)" -- $B
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::warning title=Push prospektif cuaca gagal::git push ke main gagal 3x"
 
       # magma.py merantai abu.py (angin ECMWF lapisan tekanan, ±beberapa puluh bobot kuota) lalu laporan.py. paparan.py dan citra.py: langkah sesudah peluang abu (+ statis.yml bulanan).
       - name: Gunung api (MAGMA, abu, laporan) (boleh gagal)

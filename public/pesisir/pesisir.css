@@ -1,0 +1,42 @@
+/* Tambahan khusus Gelombang Pasang & Abrasi; selebihnya dari inti/gaya.css, peta.css, tabel.css, insight.css, tren.css, kartu.css */
+.toast{position:fixed;left:50%;bottom:24px;transform:translate(-50%,20px);opacity:0;pointer-events:none;z-index:70;background:var(--brand);color:#fff;padding:9px 16px;border-radius:12px;font-size:13px;font-weight:600;transition:.25s}
+.toast.on{opacity:1;transform:translate(-50%,0)}
+.rw{display:grid;gap:3px;width:100%;text-align:left;border:0;border-bottom:1px solid var(--line);background:none;padding:10px 10px;cursor:pointer;border-radius:10px;color:inherit;font:inherit}
+.rw:hover{background:var(--surface)}
+.rw-hd{display:flex;align-items:center;gap:8px;min-width:0}
+.rw-hd b{font-size:13px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rw-wil{font-size:11.5px;color:var(--ink2);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.rw-jam{font-size:11px;color:var(--ink2);font-variant-numeric:tabular-nums}
+.rows .kosong,.page .kosong{padding:20px 12px;text-align:center;color:var(--ink2);font-size:13px}
+.panel .top{padding:12px 14px}
+.seg button:disabled{opacity:.35;cursor:default}
+.gp-sub{padding:10px 10px 2px}
+/* halaman berisi kartu: Insight, Tren, Tentang berbagi satu kisi */
+.page.scroll{overflow-y:auto;padding:18px 16px 40px}
+.gp-kartu{display:grid;grid-template-columns:minmax(0,1fr);gap:16px;max-width:1180px;margin:0 auto}
+.gp-kartu > *{min-width:0}
+.gp-kartu .ex{margin:0;padding:0;border-radius:18px;overflow:hidden}
+.gp-kartu .ex-hd{padding:18px 22px 14px;background:linear-gradient(180deg,var(--surface),color-mix(in oklch, var(--surface) 40%, var(--card)));border-bottom:1px solid var(--line)}
+.gp-kartu .ex-bd{padding:16px 22px 10px;display:grid;gap:12px}
+.gp-kartu .ex-ft{display:flex;flex-wrap:wrap;gap:6px 18px;align-items:center;justify-content:space-between;padding:10px 22px 14px;border-top:1px solid var(--line);font-size:11.5px;color:var(--ink2)}
+.gp-kartu .ex-ft .ex-leg{flex:1 1 100%;justify-content:center;display:flex;flex-wrap:wrap;gap:6px 14px}
+.gp-kartu .ex-ft .ex-leg span{display:inline-flex;align-items:center;gap:6px}
+.gp-kartu .ex-ft .ex-leg i{width:11px;height:11px;border-radius:3px;display:inline-block}
+#insight .gp-kartu .ex-ey,#tren .gp-kartu .ex-ey,#tentang .gp-kartu .ex-ey{display:inline-flex;align-items:center;gap:5px;font-size:10px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--brand2);background:color-mix(in oklch, var(--brand2) 12%, transparent);padding:3px 9px;border-radius:999px}
+#insight .gp-kartu .ex-ey svg,#tren .gp-kartu .ex-ey svg,#tentang .gp-kartu .ex-ey svg{width:12px;height:12px;flex:none}
+.gp-kartu .tw td{white-space:normal;overflow-wrap:anywhere}.gp-kartu .tw th{white-space:nowrap}
+.gp-kartu h3{font-size:clamp(17px,2.4vw,21px);line-height:1.3;letter-spacing:-.01em;margin:8px 0 0}
+.gp-kartu .tw table{width:100%}
+.gp-kartu td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gp-kartu .tw th{text-align:center}
+.gp-svg{display:block;width:100%;height:auto;overflow:visible}
+.gp-svg text{fill:currentColor}
+.gp-svg [data-tip]{cursor:pointer}
+.gp-cat,.gp-par{margin:0;font-size:12.5px;line-height:1.6;color:var(--ink2);text-align:justify;hyphens:auto}
+.gp-par{font-size:13.5px;color:var(--ink)}
+ul.mt{margin:0;padding-left:18px;display:grid;gap:6px}
+.gp-wr{overflow:hidden;border:0;box-shadow:none;background:none}
+.gp-pk table{width:100%}
+#laci .gp-rows{display:block;max-height:none}
+#laci .bd .lbl{margin-top:4px}
+@media(max-width:640px){.page.scroll{padding:12px 10px 32px}.gp-kartu .ex-hd{padding:14px 14px 10px}.gp-kartu .ex-bd{padding:12px 14px 8px}.gp-kartu .ex-ft{padding:10px 14px 12px}}

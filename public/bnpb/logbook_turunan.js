@@ -17,7 +17,7 @@
   const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const tip = (judul, ...baris) => `<b>${esc(judul)}</b><br>${baris.map(esc).join("<br>")}`;
   const NS = "http://www.w3.org/2000/svg";
-  const JN = {kebakaran_permukiman: "Kebakaran permukiman", gempabumi: "Gempa bumi", gunungapi: "Gunung api", kegagalan_teknologi: "Gagal teknologi", konflik_sosial: "Konflik sosial", karhutla: "Karhutla"};
+  const JN = {kebakaran_permukiman: "Kebakaran permukiman", gempabumi: "Gempa bumi", gunungapi: "Gunung api", kegagalan_teknologi: "Gagal teknologi", konflik_sosial: "Konflik sosial", omc: "OMC", karhutla: "Karhutla"};
   const nJ = j => JN[j] || label(j);
   const TOPIK = {normalisasi_sungai: "Normalisasi sungai", tanggul: "Tanggul dan penahan", relokasi: "Relokasi dan hunian", jalur_evakuasi: "Jalur evakuasi", peringatan_dini: "Peringatan dini", sosialisasi: "Sosialisasi dan edukasi", alat_berat: "Alat berat",
     drainase: "Drainase", imbauan_kewaspadaan: "Imbauan kewaspadaan", logistik: "Logistik", patroli_karhutla: "Patroli karhutla", perbaikan_jalan_jembatan: "Perbaikan jalan dan jembatan", reboisasi_konservasi: "Reboisasi dan konservasi", sekat_kanal_embung: "Sekat kanal dan embung", status_darurat: "Status darurat"};
@@ -197,8 +197,91 @@
     gambar();
   };
 
+
+  /* ---------- kejadian serupa (rute staf serupa_<kodeprov2>) ---------- */
+  const tglId = t => t ? new Date(t + "T00:00:00Z").toLocaleDateString("id-ID", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}) : "–";
+  const chips = (judul, ik, a) => a?.length ? h("div", {class: "lb-chipbaris"}, h("b", {teks: judul}), a.map(x => pil(label(x), "info", ik))) : null;
+  panel.serupa = async (kotak) => {
+    const isi = h("div"), MAKS0 = 10;
+    let w = {prov: "33", kab: ""}, jenis = "banjir", maks = MAKS0, berkas = null, jenisSeg = h("div");
+    const gambar = () => {
+      if (!berkas) return;
+      if (!berkas.ok) return put(isi, berkas.s === 404 ? kosong("pin", `Belum ada berkas kejadian serupa untuk ${PROV[w.prov]}.`) : gagalStaf(berkas.s));
+      if (!w.kab) return put(isi, kosong("pin", "Pilih kabupaten/kota untuk melihat kejadian lampaunya."));
+      const e = berkas.j.kab?.[w.kab]?.[jenis], nm = namaKab(w.kab);
+      if (!e?.kejadian?.length) return put(isi, kosong("tunggu", `Tidak ada kejadian ${nJ(jenis).toLowerCase()} tercatat di ${nm}.`));
+      const rows = e.kejadian, sel = rows.filter(x => x.hari_selesai != null).length, ul = h("div", {class: "lb-riwayat"});
+      for (const x of rows.slice(0, maks)) ul.append(h("article", {class: "lb-kartu"},
+        h("div", {class: "lb-ringkas"}, pil(tglId(x.mulai), "info", "kalender"), pil(`dilaporkan ${F(x.hari_dilaporkan)} hari`, "tunggu", "daftar"),
+          x.hari_selesai != null ? pil(`selesai dicatat hari ke-${F(x.hari_selesai)}`, "ok", "ok") : pil("tidak ada catatan selesai", "tunggu", "senyap"), x.dasar ? null : pil("di luar tahun dasar", "bahaya", "peringatan")),
+        chips("Kebutuhan", "logistik", x.kebutuhan), chips("Bantuan", "ok", x.bantuan), chips("Alat", "alat_berat", x.alat), chips("Pihak", "personel", x.pihak),
+        x.kronologi ? h("p", {class: "lb-p"}, h("b", {teks: "Kronologi: "}), x.kronologi) : null, x.upaya ? h("p", {class: "lb-p"}, h("b", {teks: "Upaya: "}), x.upaya) : null, x.kondisi_terakhir ? h("p", {class: "lb-p"}, h("b", {teks: "Kondisi terakhir: "}), x.kondisi_terakhir) : null));
+      const lagi = rows.length > maks ? h("button", {class: "bn-tombol sekunder", type: "button"}, ikon("tambah"), `Tampilkan ${F(Math.min(MAKS0, rows.length - maks))} lagi`) : null;
+      lagi?.addEventListener("click", () => { maks += MAKS0; gambar(); });
+      put(isi, h("div", {class: "lb-ringkas"}, pil(`${F(e.n_total)} kejadian ${nJ(jenis).toLowerCase()} di ${nm}`, "info", "daftar"), pil(`${F(sel)} dari ${F(rows.length)} yang tampil punya catatan selesai`, "tunggu", "ok")), ul,
+        h("p", {class: "lb-draf", teks: `${F(Math.min(maks, rows.length))} dari ${F(rows.length)} tampil${e.n_total > rows.length ? `, ${F(e.n_total)} tercatat` : ""}`}), lagi,
+        kaki(`Terbaru dulu, paling banyak 40 per kabupaten/kota dan jenis. Teks dipotong dan disamarkan; hanya untuk staf. Kategori dari kata kunci, bisa kurang atau lebih. Tanda "di luar tahun dasar" = kejadian di luar tahun yang dipakai angka rapor. Hari selesai hanya ada bila petugas menulisnya di kolom kondisi. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(berkas.j.tahun_dasar)}.`));
+    };
+    const muatProv = async () => { put(isi, kosong("tunggu", "Memuat kejadian…")); berkas = null; const p = w.prov, b = await ambil(`/api/logbook/turunan/serupa_${p}`); if (p !== w.prov) return; berkas = b;
+      if (b.ok) { const ada = new Set(); for (const o of Object.values(b.j.kab || {})) Object.keys(o).forEach(j => ada.add(j)); const js = ["banjir", "longsor", "cuaca", "karhutla", "kekeringan", ...[...ada].sort()].filter((j, i, a) => ada.has(j) && a.indexOf(j) === i); if (js.length && !js.includes(jenis)) jenis = js[0];
+        jenisSeg.replaceWith(jenisSeg = deretan("lbserupa", "Jenis kejadian", js.map(j => [j, nJ(j), j]), jenis, v => { jenis = v; maks = MAKS0; lanjutNanti(gambar); })); }
+      gambar(); };
+    const wl = await wilayah(v => { const baru = v.prov !== w.prov; w = v; maks = MAKS0; lanjutNanti(baru ? muatProv : gambar); }, {wajibProv: true, awalProv: "33"});
+    put(kotak, wl.node, jenisSeg, isi);
+    muatProv();
+  };
+
+  /* ---------- lama penanganan (rute staf penanganan) ---------- */
+  panel.lama = async (kotak) => {
+    const r = await ambil("/api/logbook/turunan/penanganan");
+    if (!r.ok) return put(kotak, gagalStaf(r.s));
+    const D = r.j, JL = ["banjir", "karhutla"], isi = h("div");
+    let jenis = "banjir", w = {prov: "", kab: ""}, maks = 15;
+    const sel = c => c ? `${F(c.n_selesai)} dari ${F(c.n)}` : "–";
+    const MED = "median dari kejadian yang dilaporkan selesai";
+    const gambar = () => {
+      const bolehMed = x => jenis === "banjir" && x?.layak_median === true;   // karhutla: keputusan pemilik, median 1 hari bukan lama penanganan
+      const nas = D.nasional?.[jenis], pv = w.prov ? D.prov?.[w.prov]?.[jenis] : null, kb = w.kab ? D.kab?.[w.kab]?.[jenis] : null, lingkup0 = w.kab ? namaKab(w.kab) : w.prov ? PROV[w.prov] : "Indonesia";
+      const c = kb || pv || nas, lingkup = kb ? lingkup0 : pv ? PROV[w.prov] : "Indonesia", bar = [["Nasional", nas], w.prov ? [PROV[w.prov], pv] : null, w.kab ? [namaKab(w.kab).split(",")[0], kb] : null].filter(x => x && bolehMed(x[1]));
+      let svg = null;
+      if (bar.length) {
+        const mx = Math.max(...bar.map(([, x]) => x.p75_dilaporkan), 1), H = bar.length * 44 + 8; svg = document.createElementNS(NS, "svg");
+        svg.setAttribute("viewBox", `0 0 1380 ${H}`); svg.setAttribute("class", "lb-svg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", `Lama sampai dilaporkan selesai, ${nJ(jenis)}`);
+        bar.forEach(([nm, x], i) => {
+          const g = document.createElementNS(NS, "g"), y = 6 + i * 44, mk = (cls, x0, w0, yy, hh) => { const e = document.createElementNS(NS, "rect"); e.setAttribute("class", cls); e.setAttribute("x", x0); e.setAttribute("width", Math.max(2, w0)); e.setAttribute("y", yy); e.setAttribute("height", hh); e.setAttribute("rx", 3); return e; };
+          const tx = document.createElementNS(NS, "text"); tx.setAttribute("x", 0); tx.setAttribute("y", y + 22); tx.setAttribute("class", "kiri"); tx.textContent = nm.length > 18 ? nm.slice(0, 17) + "…" : nm;
+          const tn = document.createElementNS(NS, "text"); tn.setAttribute("x", 1376); tn.setAttribute("y", y + 22); tn.setAttribute("class", "kanan"); tn.textContent = `median ${F(x.median_dilaporkan)}, p75 ${F(x.p75_dilaporkan)} hari`;
+          g.setAttribute("data-tip", tip(nm, `Median dilaporkan selesai: ${F(x.median_dilaporkan)} hari, persentil 75: ${F(x.p75_dilaporkan)} hari`, `Dilaporkan selesai: ${sel(x)}`, `Tak dilaporkan selesai: ${F(x.tak_selesai_pct)}%`, "Batas bawah yang bias, bukan lama sebenarnya"));
+          g.append(mk("tangkap", 0, 1380, y, 40), mk("bat", 220, 700 * x.p75_dilaporkan / mx, y + 4, 14), mk("bat musim", 220, 700 * x.median_dilaporkan / mx, y + 4, 14), tx, tn); svg.append(g);
+        });
+      }
+      let rank = null;
+      if (jenis === "banjir" && !w.kab) { // peringkat kab: hanya sel layak_median
+        const rows = Object.entries(D.kab || {}).filter(([k, o]) => (!w.prov || k.startsWith(w.prov + "|")) && bolehMed(o[jenis])).map(([k, o]) => [k, o[jenis]]).sort((a, b) => b[1].median_dilaporkan - a[1].median_dilaporkan || b[1].p75_dilaporkan - a[1].p75_dilaporkan || a[0].localeCompare(b[0], "id"));
+        const tb = h("tbody");
+        for (const [k, x] of rows.slice(0, maks)) tb.append(h("tr", null, h("td", {teks: namaKab(k)}), h("td", {class: "n", teks: F(x.median_dilaporkan)}), h("td", {class: "n", teks: F(x.p75_dilaporkan)}), h("td", {class: "n", teks: sel(x)}), h("td", {class: "n", teks: `${F(x.tak_selesai_pct)}%`}),
+          h("td", {class: "n"}, bolehMed(nas) ? pil(x.median_dilaporkan > nas.median_dilaporkan ? "lebih lama dari nasional" : x.median_dilaporkan < nas.median_dilaporkan ? "lebih cepat dari nasional" : "sama dengan nasional", x.median_dilaporkan > nas.median_dilaporkan ? "tunggu" : "ok", "kalender") : null)));
+        const lagi = rows.length > maks ? h("button", {class: "bn-tombol sekunder", type: "button"}, ikon("tambah"), `Tampilkan ${F(Math.min(15, rows.length - maks))} lagi`) : null;
+        lagi?.addEventListener("click", () => { maks += 15; gambar(); });
+        rank = rows.length ? [h("h3", {class: "lb-sub", teks: `Kab/kota yang cukup datanya, menurut median terlama, ${w.prov ? PROV[w.prov] : "Indonesia"}`}), h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Kab/kota", "Median (hari)", "Persentil 75 (hari)", "Dilaporkan selesai", "Tak dilaporkan selesai", "Dibanding nasional"].map(t => h("th", {teks: t})))), tb)),
+          h("p", {class: "lb-draf", teks: `${F(Math.min(maks, rows.length))} dari ${F(rows.length)} kab/kota`}), lagi] : kosong("tunggu", `Tidak ada kab/kota di ${lingkup} yang cukup datanya untuk median (minimal 30 kejadian dilaporkan selesai). Yang ditampilkan angka ${lingkup}.`);
+      }
+      const ring = !c ? null : bolehMed(c)
+        ? h("div", {class: "lb-ringkas"}, pil(`Median ${F(c.median_dilaporkan)} hari di ${lingkup}`, "bahaya", "kalender"), pil(`persentil 75: ${F(c.p75_dilaporkan)} hari`, "tunggu", "kalender"), pil(`${sel(c)} kejadian dilaporkan selesai`, "info", "daftar"), pil(`${F(c.tak_selesai_pct)}% tak dilaporkan selesai`, "tunggu", "senyap"))
+        : h("div", {class: "lb-ringkas"}, pil(`${F(c.n)} kejadian di ${lingkup}`, "info", "daftar"), pil(`${sel(c)} dilaporkan selesai`, "info", "ok"), pil(`${F(c.tak_selesai_pct)}% tak dilaporkan selesai`, "tunggu", "senyap"));
+      put(isi, ring, c ? svg : kosong("tunggu", `Belum ada ${nJ(jenis).toLowerCase()} dengan 5 kejadian atau lebih di ${lingkup0}. Pilih cakupan lebih luas.`), rank,
+        c && jenis === "banjir" && !bolehMed(c) ? kaki(`Median tidak ditampilkan di ${lingkup}: kejadian yang dilaporkan selesai kurang dari 30 atau lebih dari 90% tidak pernah dilaporkan selesai.`) : null,
+        jenis === "karhutla" ? kaki("Karhutla: hanya jumlah kejadian dan persen yang tak dilaporkan selesai. Median 1 hari dari catatan Pusdalops tidak bisa dibaca sebagai lama penanganan, jadi tidak ditampilkan.") : null,
+        w.kab && !kb ? kaki(`${namaKab(w.kab)} kurang dari 5 kejadian ${nJ(jenis).toLowerCase()}; yang ditampilkan angka ${lingkup}.`) : null,
+        kaki(`Angka ini ${MED}, yaitu kejadian yang catatan kondisinya menyebut padam, surut, atau tertangani tanpa penyangkal. Kejadian yang tak pernah dilaporkan selesai tidak ikut, jadi ini batas bawah yang bias, bukan lama penanganan sebenarnya: lama sebenarnya hampir pasti lebih panjang. Persen tak dilaporkan selesai campuran antara belum selesai dan berhenti dilaporkan. Bar merah = median, bar abu = persentil 75. Median hanya untuk banjir dengan minimal 30 kejadian dilaporkan selesai dan tidak lebih dari 90% tak dilaporkan selesai. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(D.tahun_dasar)}.`));
+    };
+    const wl = await wilayah(v => { w = v; maks = 15; lanjutNanti(gambar); });
+    put(kotak, deretan("lblama", "Jenis kejadian", JL.map(j => [j, nJ(j), j]), jenis, v => { jenis = v; maks = 15; lanjutNanti(gambar); }), wl.node, isi);
+    gambar();
+  };
+
   /* ---------- rangka: deretan bagian + panel; mengembalikan simpul untuk disisipkan di halaman ---------- */
-  const BAGIAN = [["catat", "Catat", "daftar"], ["jam", "Jam rawan", "tunggu"], ["terlibat", "Pihak terlibat", "personel"], ["desa", "Desa langganan", "pin"], ["rapor", "Rapor BPBD", "ok"], ["rekom", "Rekomendasi berulang", "peringatan"]];
+  const BAGIAN = [["catat", "Catat", "daftar"], ["jam", "Jam rawan", "tunggu"], ["terlibat", "Pihak terlibat", "personel"], ["desa", "Desa langganan", "pin"], ["rapor", "Rapor BPBD", "ok"], ["rekom", "Rekomendasi berulang", "peringatan"], ["serupa", "Kejadian serupa", "daftar"], ["lama", "Lama penanganan", "kalender"]];
   function pasang(kolom) {
     const kotak = h("section", {class: "bn-blok lb-turunan", hidden: true}, h("div"));
     const pilih = async (b) => {

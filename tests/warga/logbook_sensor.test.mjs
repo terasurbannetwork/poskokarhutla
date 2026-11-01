@@ -29,7 +29,7 @@ after(() => mf?.dispose());
 
 const orig = {origin: "http://logbook.lokal"}, ADMIN = {"x-admin-token": "rahasia-admin", ...orig};
 const STAF = {cookie: "sesi_staf=" + TOK, "x-pb": "1", ...orig}, LUAR = {cookie: "sesi_staf=" + TOK_LUAR, "x-pb": "1", ...orig};
-const call = async (m, j, h = STAF, b) => { const r = await mf.dispatchFetch("http://logbook.lokal" + j, {method: m, headers: {"content-type": "application/json", ...h}, body: b === undefined ? undefined : JSON.stringify(b)}); return {status: r.status, cc: r.headers.get("cache-control"), j: await r.json().catch(() => null)}; };
+const call = async (m, j, h = STAF, b) => { const r = await mf.dispatchFetch("http://logbook.lokal" + j, {method: m, headers: {"content-type": "application/json", ...h}, body: b === undefined ? undefined : JSON.stringify(b)}); return {status: r.status, cc: r.headers.get("cache-control"), vary: r.headers.get("vary"), j: await r.json().catch(() => null)}; };
 const KAB = "33|Banjarnegara", hariIni = () => new Date().toISOString().slice(0, 10);
 const baru = {jenis: "longsor", kab: KAB, kec: "Pandanarum", desa: "Tulis", lat: -7.3, lon: 109.7, mulai: hariIni(), md: 2, hilang: 5, luka: 3, mengungsi_jiwa: 120, mengungsi_kk: 40, rumah_rb: 4, kendala: ["akses", "sinyal"], kebutuhan: ["tenda", "makanan"], catatan: "akses jalan putus", sumber_instansi: "BPBD Banjarnegara"};
 const n = async t => (await DB.prepare(`SELECT count(*) n FROM ${t}`).first()).n;
@@ -327,5 +327,12 @@ uji("logbook turunan: tanpa sesi/peran salah 403, nama di luar daftar putih 404,
   for (const h of [orig, LUAR]) assert.equal((await call("GET", "/api/logbook/turunan/rapor_bpbd", h)).status, 403);
   for (const n of ["rahasia", "latih", "..", "rapor_bpbd.json"]) assert.equal((await call("GET", "/api/logbook/turunan/" + n)).status, 404, n);
   assert.equal((await call("GET", "/api/logbook/turunan/rekomendasi")).status, 404, "daftar putih tapi objek belum ada");
-  const r = await call("GET", "/api/logbook/turunan/rapor_bpbd"); assert.equal(r.status, 200); assert.deepEqual(r.j, {ok: 1}); assert.equal(r.cc, "private, max-age=300");
+  for (const n of ["serupa_1", "serupa_abc", "serupa_123", "serupa_", "%2e%2e%2fx", "..%2fx", "serupa_11.json"]) assert.equal((await call("GET", "/api/logbook/turunan/" + n)).status, 404, n);
+  for (const n of ["penanganan", "serupa_33"]) {
+    assert.equal((await call("GET", "/api/logbook/turunan/" + n, orig)).status, 403, n + " tanpa sesi");
+    assert.equal((await call("GET", "/api/logbook/turunan/" + n)).status, 404, n + " sah tapi objek belum ada");
+    await R2.put(kunci(n), JSON.stringify({n}));
+    const x = await call("GET", "/api/logbook/turunan/" + n); assert.equal(x.status, 200, n); assert.deepEqual(x.j, {n}); assert.equal(x.cc, "private, no-store"); assert.match(x.vary, /cookie/i);
+  }
+  const r = await call("GET", "/api/logbook/turunan/rapor_bpbd"); assert.equal(r.status, 200); assert.deepEqual(r.j, {ok: 1}); assert.equal(r.cc, "private, no-store"); assert.match(r.vary, /cookie/i);
 });

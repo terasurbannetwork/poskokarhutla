@@ -159,14 +159,14 @@ async function dummyRute(env, req, kini) {
 }
 
 /* Turunan internal (R2 MEDIA, dibuat scripts/data/logbook_internal.py): daftar putih nama -> kunci tetap, masukan mentah tak pernah jadi kunci R2 */
-const TURUNAN = new Set(["rapor_bpbd", "rekomendasi"]);
+const TURUNAN = new Set(["rapor_bpbd", "rekomendasi", "penanganan"]), SERUPA = /^serupa_\d{2}$/;
 async function turunan(env, req, kini, nama) {
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
-  if (!TURUNAN.has(nama)) return gagal(404, "tidak ditemukan");
+  if (!TURUNAN.has(nama) && !SERUPA.test(nama)) return gagal(404, "tidak ditemukan");
   const lj = await laju(env, "lb:" + oleh, "logbook_baca", [[3600e3, 120]], kini); if (lj) return lj;
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersambung");
   const o = await env.MEDIA.get(`internal/pusdalops-logbook/turunan/${nama}.json`); if (!o) return gagal(404, "tidak ditemukan");
-  return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, max-age=300", "x-content-type-options": "nosniff"}});
+  return new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", "vary": "cookie", "x-content-type-options": "nosniff"}});
 }
 
 const T = tabelBelum;

@@ -21,7 +21,7 @@ const Kejadian = {
   rank: k => Kejadian.cap(k) ? Kejadian.SEV.indexOf(k.besaran?.nilai) : (k.besaran?.nilai ?? 0),
   pilTingkat: k => Kejadian.cap(k) ? pilSev(k.besaran?.nilai || "") : pilT(k.besaran?.nilai ?? 0),
   sumber: k => Kejadian.cap(k) ? "BMKG" : "Deteksi Centurisk97",
-  status: k => `<span class="pl" style="--w:${k.aktif ? "#d4572f" : "#7d8794"}">${k.aktif ? "Aktif" : "Selesai"}</span>`,
+  status: k => `<span class="pl" style="--w:var(${k.aktif ? "--bad" : "--ink2"})">${k.aktif ? "Aktif" : "Selesai"}</span>`,
   tgl: t => tglSgk(t),
   /* berkas awal, sekali. Hasil: this.K = daftar kejadian segar, atau [] (tab dibuang). */
   muatAwal() { return this._p ||= muatJSON("../banjir/data/kejadian_cuaca_awal.json").then(d => {
@@ -68,15 +68,15 @@ const Kejadian = {
       this.laci(k); }); },
   laci(k) {
     const cap = this.cap(k), kab = (k.kab || []).map(x => x.split("|")[1] || x), lain = Math.max(0, k.n_kab - kab.length);
-    const kot3 = (cap ? kot("Tingkat", this.pilTingkat(k), "BMKG") : kot("Tingkat", this.pilTingkat(k), "deteksi Centurisk97")) + kot("Wilayah", fmt(k.n_kab), "kabupaten/kota")
-      + (k.jiwa ? kot("Penduduk", rb(k.jiwa) + " jiwa", cap ? "di kabupaten/kota terkait" : "di kecamatan yang terdeteksi") : "");
-    const isi = `<div class="grid g3">${kot3}</div>
+    const kot3 = kvs(kot("Tingkat", this.pilTingkat(k), cap ? "BMKG" : "deteksi Centurisk97"), kot("Wilayah", fmt(k.n_kab), "kabupaten/kota"),
+      k.jiwa && kot("Penduduk", rb(k.jiwa) + " jiwa", cap ? "di kabupaten/kota terkait" : "di kecamatan yang terdeteksi"));
+    const isi = `${kot3}
       <p class="fnd" translate="no"><b>${esc(kab.join(", "))}${lain ? ` dan ${fmt(lain)} lainnya` : ""}</b></p>
       <p class="fnd">Mulai ${this.tgl(k.mulai)}${k.aktif ? "" : `, terakhir terlihat ${this.tgl(k.terakhir)}`}</p>
       <div id="kejKontak"></div>
       <p class="fnd">${cap ? `Sumber: BMKG, peringatan dini diteruskan apa adanya. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.`
         : `Sumber: Deteksi Centurisk97 dari prakiraan model (Open-Meteo), bukan peringatan resmi BMKG. ${AMBANG_PIL()}. Diperbarui ${esc(jamWIB(this.D?.dibuat || Date.now()))}.`}</p>`;
-    this._buka = true; Laci.buka("Peringatan dini cuaca", `<span translate="no">${esc(k.nama)}</span>`, `${this.status(k)} · <span translate="no">${esc(k.kode)}</span>`, isi); this._buka = false;
+    this._buka = true; Laci.buka("Peringatan dini cuaca", `<span translate="no">${esc(k.nama)}</span>`, `${this.status(k)} <span translate="no">${esc(k.kode)}</span>`, isi); this._buka = false;
     const el = $("#laci"); el.dataset.kej = k.kode;
     el.querySelector(".hd-aksi")?.insertAdjacentHTML("afterbegin", `<button class="bagikan ik-btn" aria-label="Bagikan" title="Bagikan"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><path d="m8.6 13.5 6.8 4M15.4 6.5l-6.8 4"/></svg></button>`);
     el.querySelector(".bagikan").onclick = () => this.bagikan(k);

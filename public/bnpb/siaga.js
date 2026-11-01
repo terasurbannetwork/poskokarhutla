@@ -20,7 +20,7 @@
   const blnTh = d => `${BLN[d.getUTCMonth()].slice(0, 3)} ${d.getUTCFullYear()}`;
   const wibKini = () => new Date(Date.now() + 7 * 36e5);
 
-  let D, SEN, KB, kode, bulan, ref, boxIsi, sedangDummy = false;
+  let D, SEN, KB, SU, kode, bulan, ref, boxIsi, sedangDummy = false;
 
   /* ---------- tanggal SOP: awal musim terdekat yang belum berakhir terhadap acuan ---------- */
   /* ponytail: musim bimodal memakai bulan 'mulai' pertama saja; pecah per runtun bila ada kab yang perlu */
@@ -98,7 +98,7 @@
     perlengkapan_mandi: "Perlengkapan mandi", masker: "Masker", karung_pasir: "Karung pasir", material_bangunan: "Material bangunan", perahu: "Perahu", pompa: "Pompa", alat_berat: "Alat berat", mobil_tangki_air: "Mobil tangki air", genset: "Genset",
     gergaji_mesin: "Gergaji mesin", alat_komunikasi: "Alat komunikasi"};
   const IKK = {tenda_terpal: "tenda", obat_kesehatan: "obat", material_bangunan: "material", pakaian: "sandang", selimut_tikar_kasur: "sandang", bayi_anak: "personel", masker: "obat", mobil_tangki_air: "air_bersih", alat_komunikasi: "sinyal"};
-  const MIN_BERISI = 5;   // di bawah ini persentase tidak berarti
+  const MIN_BULAN = 3, MIN_BERISI = 5;   // di bawah ini persentase tidak berarti
   const pct = (a, b) => b ? `${F(Math.round(100 * a / b))}%` : "–";
   const jml = (a, bl) => bl.reduce((x, m) => x + (a?.[m - 1] || 0), 0);
   /* baris: {k, n, den (kab, bisa null), nas, nasDen}; kolom kab hanya bila ada den */
@@ -126,6 +126,68 @@
           : d.alat_berisi >= MIN_BERISI ? [h("h4", {class: "sg-sub", teks: "Peralatan yang dikerahkan, pola nasional"}), tabelKeb("Peralatan", alatRows.map(r => ({...r, den: null})))] : kaki(`Peralatan: hanya ${F(d.alat_berisi)} kejadian yang mengisinya, terlalu sedikit untuk persentase.`));
     }) : [kosong("logistik", `Tidak ada jenis yang masuk musim di ${BLN[bulan - 1]} untuk ${v.nama}. Pilih bulan lain.`)];
     return blok("logistik", judul, ...isi, kaki(`Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(KB.tahun_dasar)}. Persentase = kejadian dengan kategori itu dibagi kejadian yang mengisi kolom kebutuhan (atau peralatan) pada bulan musim jenis tersebut; kolom ini jarang diisi, jadi n selalu ditampilkan. Kategori dari kata kunci. Ini bahan menentukan stok penyangga, bukan jumlah barang.`));
+  }
+
+
+  /* ---------- perkiraan stok per bulan (logbook_kebutuhan.json prov_bulan) ---------- */
+  let jenisStok = "banjir";
+  const pecah = (v, d = 1) => v == null ? "–" : F(Math.round(v * 10 ** d) / 10 ** d);
+  function perkiraanStok() {
+    const kp = kode.slice(0, 2), namaP = PROV[kp] || kp, judul = `Perkiraan stok per bulan ${namaP}`;
+    if (!KB) return blok("logistik", judul, kosong("peringatan", "Data kebutuhan logbook belum terbit."));
+    const js = J4.filter(j => KB.jenis[j]?.prov_bulan?.[kp]);
+    if (!js.length) return blok("logistik", judul, kosong("tunggu", `Belum ada kejadian berkebutuhan tercatat di ${namaP}.`));
+    if (!js.includes(jenisStok)) jenisStok = js[0];
+    const seg = h("div", {class: "lb-seg", role: "radiogroup", "aria-label": "Jenis kejadian"}), kotak = h("div", {class: "lb-isi"});
+    for (const j of js) { const i = h("input", {type: "radio", name: "sgstokj", value: j, checked: j === jenisStok}); i.addEventListener("change", () => { jenisStok = j; requestAnimationFrame(isi); }); seg.append(h("label", null, i, ikon(j), label(j))); }
+    const sorot = new Set([0, 1, 2].map(x => (bulan - 1 + x) % 12));
+    const isi = () => {
+      const d = KB.jenis[jenisStok], pb = d.prov_bulan[kp], n = KB.n_tahun_dasar, nk = pb.n_kejadian;
+      const alat = new Set(Object.keys(d.alat_nasional || {})), rows = [];
+      for (const [k, a] of Object.entries(pb)) { if (!Array.isArray(a) || k.startsWith("n_")) continue;
+        const pen = alat.has(k) ? pb.n_alat_berisi : pb.n_berisi, est = a.map((x, m) => pen[m] * n >= MIN_BULAN ? x / pen[m] * nk[m] : null);
+        if (est.some(x => x)) rows.push({k, est, jml: est.reduce((x, y) => x + (y || 0), 0)}); }
+      rows.sort((a, b) => b.jml - a.jml);
+      const berisiTh = pb.n_berisi.reduce((x, y) => x + y, 0) * n;
+      if (berisiTh < MIN_BERISI) return kotak.replaceChildren(kosong("data", `Belum cukup data di ${namaP}: hanya ${F(Math.round(berisiTh))} kejadian ${label(jenisStok).toLowerCase()} mengisi kolom kebutuhan di tahun dasar, kurang dari ${MIN_BERISI}.`));
+      /* grafik kejadian per bulan, bulan sorotan merah */
+      const W = 960, svg = document.createElementNS("http://www.w3.org/2000/svg", "svg"), mx = Math.max(...nk, 0.1);
+      svg.setAttribute("viewBox", `0 0 ${W} 150`); svg.setAttribute("class", "sg-svg"); svg.setAttribute("role", "img"); svg.setAttribute("aria-label", `Rata-rata kejadian ${jenisStok} per bulan di ${namaP}`);
+      const ln = document.createElementNS(svg.namespaceURI, "line"); ln.setAttribute("class", "dasar"); ln.setAttribute("x1", 0); ln.setAttribute("x2", W); ln.setAttribute("y1", 126); ln.setAttribute("y2", 126); svg.append(ln);
+      nk.forEach((v, i) => { const g = document.createElementNS(svg.namespaceURI, "g"), hh = Math.max(v ? 3 : 0, 110 * v / mx), r = document.createElementNS(svg.namespaceURI, "rect"), t = document.createElementNS(svg.namespaceURI, "text");
+        g.setAttribute("data-tip", tip(`${label(jenisStok)}, ${BLN[i]}`, `Rata-rata ${pecah(v)} kejadian per tahun`, `Mengisi kolom kebutuhan: ${pecah(pb.n_berisi[i], 2)} per tahun`, sorot.has(i) ? "Bulan ini dan dua bulan berikutnya" : ""));
+        r.setAttribute("class", "bat" + (sorot.has(i) ? " musim" : "")); r.setAttribute("x", i * 80 + 8); r.setAttribute("width", 64); r.setAttribute("y", 126 - hh); r.setAttribute("height", hh); r.setAttribute("rx", 3);
+        t.setAttribute("x", i * 80 + 40); t.setAttribute("y", 144); t.textContent = BLN[i].slice(0, 3); g.append(r, t); svg.append(g); });
+      const tb = h("tbody");
+      for (const {k, est} of rows.slice(0, 12)) tb.append(h("tr", null, h("td", null, h("span", {class: "sg-keb"}, ikon(IKK[k] || k), KEB[k] || label(k))), est.map((x, m) => h("td", {class: "n" + (sorot.has(m) ? " sg-sorot" : ""), teks: x == null ? "–" : pecah(x)}))));
+      kotak.replaceChildren(h("div", {class: "lb-ringkas"}, pil(`${pecah(nk.reduce((x, y) => x + y, 0))} kejadian ${label(jenisStok).toLowerCase()} per tahun di ${namaP}`, "info", "daftar"), pil(`${F(Math.round(berisiTh))} kejadian mengisi kolom kebutuhan`, "tunggu", "peringatan"), pil("bukan jumlah barang", "tunggu", "senyap")), svg,
+        h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Kebutuhan, kejadian per tahun", ...BLN.map((b, m) => b.slice(0, 3))].map((t, m) => h("th", {class: m && sorot.has(m - 1) ? "sg-sorot" : "", teks: t})))), tb)),
+        kaki(`Perkiraan kejadian per tahun yang membutuhkan tiap kategori = kejadian berkategori itu dibagi kejadian yang mengisi kolom kebutuhan (atau peralatan), dikali semua kejadian di bulan itu. Ini mengandaikan kejadian yang tidak mengisi kolom sama kebutuhannya dengan yang mengisi, dan belum tentu benar. Rata-rata ${F(n)} tahun dasar (${thRingkas(KB.tahun_dasar)}); kolom merah muda = bulan ini dan dua bulan berikutnya. Tanda – = kurang dari 3 kejadian yang mengisi di bulan itu, terlalu sedikit untuk dijadikan perkiraan. Perkiraan kasar dari laporan Pusdalops, bukan stok yang harus disiapkan. Menampilkan 12 kategori teratas.`));
+    };
+    isi();
+    return blok("logistik", judul, seg, kotak);
+  }
+
+  /* ---------- bencana susulan (logbook_susulan.json), deskriptif ---------- */
+  function susulan() {
+    const v = D.kab[kode], kk = `${kode.slice(0, 2)}|${v.nama}`, judul = `Bencana susulan ${v.nama}`;
+    if (!SU) return blok("peringatan", judul, kosong("peringatan", "Data bencana susulan belum terbit (logbook_susulan.json)."));
+    const NJ = x => x === "gempabumi" ? "gempa bumi" : label(x).toLowerCase(), J = NJ, baris = [];
+    for (const [kunci, p] of Object.entries(SU.pasangan)) {
+      const a = kunci.split(">"), c = p.kab?.[kk], nas = p.nasional, sama = a[0] === a[1];
+      const nol = x => x.ci95 && x.ci95[0] <= 1 && x.ci95[1] >= 1;   // ci95 null = tanpa klaim lift
+      const kal = (x, lingkup) => {
+        const awal = sama ? `Sesudah ${J(a[0])}, ${J(a[0])} berikutnya` : `Sesudah ${J(a[0])}, ${J(a[1])}`, per100 = F(Math.round(x.laju * 1000) / 10), dasar = F(Math.round(x.dasar * 1000) / 10);
+        const t = `${awal} tercatat 1–3 hari kemudian pada ${per100} dari 100 kejadian di ${lingkup} (${F(x.k)} dari ${F(x.n)})`;
+        return !x.ci95 ? `${t}; hari biasa ${dasar} dari 100, selang belum bisa dihitung sehingga tidak ada klaim.` : nol(x) ? `${t}, tidak berbeda dari kebetulan (hari biasa ${dasar} dari 100).` : `${t}, ${F(x.lift)} kali hari biasa (${dasar} dari 100; selang ${F(x.ci95[0])} sampai ${F(x.ci95[1])}).`;
+      };
+      const hari0 = (x, lingkup) => x.hari0 ? `Tercatat di hari yang sama: ${F(Math.round(x.hari0.laju * 1000) / 10)} dari 100 di ${lingkup} (sebagian satu laporan gabungan).` : null;
+      baris.push({kunci, a, c, nas, kal, hari0, nol});
+    }
+    const isi = baris.map(({a, c, nas, kal, hari0, nol}) => h("div", {class: "sg-sop"}, h("h3", null, ikon(a[0]), `${label(a[0]).replace("Gempabumi", "Gempa bumi")}, lalu ${NJ(a[1])}`, c ? pil(`${F(c.n)} kejadian di kab/kota`, "info", "daftar") : pil("kab/kota ini belum cukup kejadian (minimal 10 pemicu, 5 disusul)", "tunggu", "senyap"), c && (!c.ci95 || nol(c)) ? pil(c.ci95 ? "tidak berbeda dari kebetulan" : "tanpa klaim lift", "info", "senyap") : c ? pil(`${F(c.lift)} kali hari biasa`, "bahaya", "peringatan") : null),
+      c ? h("p", {class: "lb-p", teks: kal(c, v.nama)}) : null, c && hari0(c, v.nama) ? h("p", {class: "lb-p lb-pudar", teks: hari0(c, v.nama)}) : null,
+      nas ? h("p", {class: "lb-p lb-pudar", teks: kal(nas, "seluruh Indonesia")}) : null, nas && hari0(nas, "seluruh Indonesia") ? h("p", {class: "lb-p lb-pudar", teks: hari0(nas, "seluruh Indonesia")}) : null));
+    return blok("peringatan", judul, ...isi, kaki(`Menghitung seberapa sering jenis kedua tercatat di kab/kota yang sama setelah jenis pertama, dibanding peluang jendela yang sama di hari acak (kab/kota dan bulan-dalam-tahun sama). Selang yang mencakup 1 = tidak bisa dibedakan dari kebetulan, jadi tidak ada klaim. Deskriptif dari laporan Pusdalops, bukan ramalan; satu kejadian yang dilaporkan sebagai dua jenis ikut terhitung. Kab/kota tampil bila minimal 10 kejadian pemicu dan 5 yang disusul; kab/kota tidak diurutkan menurut kenaikan karena perbandingan berganda membuat sebagian angka tinggi muncul kebetulan. Selang: ${SU.ci_metode || "bootstrap"}. Tahun dasar ${thRingkas(SU.tahun_dasar)}.`));
   }
 
   const DUM_DESA = ["Desa Contoh Hulu", "Desa Contoh Tengah", "Desa Contoh Hilir", "Desa Contoh Seberang"];
@@ -167,14 +229,14 @@
 
   /* ---------- susunan halaman ---------- */
   /* gambar ulang ditunda satu frame: kontrol pilihan (kab, bulan) bereaksi seketika, kartu menyusul; permintaan beruntun digabung */
-  const isiSemua = () => { const T = tugasKab(); boxIsi.replaceChildren(kalender(), sop(T), stok(T), kebutuhanBiasa(), terisolir(), senyap()); };
+  const isiSemua = () => { const T = tugasKab(); boxIsi.replaceChildren(kalender(), sop(T), stok(T), kebutuhanBiasa(), perkiraanStok(), susulan(), terisolir(), senyap()); };
   let rafId = 0;
   const gambarIsi = () => { cancelAnimationFrame(rafId); rafId = requestAnimationFrame(() => { isiSemua(); }); };
   const gambarSekarang = () => { cancelAnimationFrame(rafId); isiSemua(); };
   function ganti(k) { kode = k; lokal(KUNCI, k); gambarIsi(); }
 
   async function mulai() {
-    [D, SEN, KB] = await Promise.all([ambil("/data/bnpb/siaga.json"), ambil("/data/senyap.json"), ambil("/data/bnpb/logbook_kebutuhan.json")]);
+    [D, SEN, KB, SU] = await Promise.all([ambil("/data/bnpb/siaga.json"), ambil("/data/senyap.json"), ambil("/data/bnpb/logbook_kebutuhan.json"), ambil("/data/bnpb/logbook_susulan.json")]);
     if (!D) return app.replaceChildren(kosong("peringatan", "Data siaga belum terbit. Jalankan scripts/bnpb/siaga.py."));
     sedangDummy = lokal(DUMMY) === 1;
     const kini = wibKini(); bulan = kini.getUTCMonth() + 1; ref = new Date(Date.UTC(kini.getUTCFullYear(), kini.getUTCMonth(), kini.getUTCDate()));

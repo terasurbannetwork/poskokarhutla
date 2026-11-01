@@ -86,7 +86,7 @@ const Rawan = (() => {
   function klik(e) { const L = aktif(); if (!L.length) return false; const f = peta.queryRenderedFeatures(e.point, {layers: L})[0]; if (!f) return false;
     const o = baris(f); S.pilih = null; renderCrumb();
     Laci.buka(o.ls ? "Infrastruktur rawan longsor" : "Jaringan peringatan dini", `<span translate="no">${esc(o.nama)}</span>`, `<span class="pl" style="--w:${KEL[o.g][1]}">${esc(o.jenis)}</span>`,
-      `<div class="grid g4">${kot("Jenis", esc(o.jenis), o.ls ? "infrastruktur" : "alat")}${o.ls ? kot("Prakiraan", esc(o.d.bulan_nama), "Badan Geologi") : kot("Pemilik", esc(o.d.jenis[o.r[2]].pemilik), "menurut sumber")}</div>
+      `${kvs(o.ls ? kot("Prakiraan", esc(o.d.bulan_nama), "Badan Geologi") : kot("Pemilik", esc(o.d.jenis[o.r[2]].pemilik), "menurut sumber"))}
       ${o.wil ? `<p class="fnd" translate="no"><b>${esc(o.wil)}</b></p>` : ""}
       <p class="fnd">${o.ls ? `Berada di zona potensi gerakan tanah tinggi pada prakiraan ${esc(o.d.bulan_nama)}. Ini prakiraan zona, bukan kejadian longsor.` : "Lokasi alat menurut data BNPB; status operasi alat tidak tercatat di sumber."}</p>
       <p class="fnd">${SUMBER[o.k]}, diambil ${esc(o.d.diambil)}</p>`);

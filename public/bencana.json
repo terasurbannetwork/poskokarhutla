@@ -38,7 +38,8 @@
         "informasi",
         "kompleks",
         "satelit",
-        "tentang"
+        "tentang",
+        "foto"
       ],
       "sumber_status": [
         [
@@ -355,87 +356,83 @@
       "prioritas": []
     },
     {
-      "id": "gempa",
-      "nama": "Gempa & Tsunami",
-      "nama_en": "Earthquake & Tsunami",
-      "ikon": "gempa",
-      "warna": "#8a6d4e",
-      "rute": "/gempa/",
-      "data": "/gempa/data/",
+      "id": "pesisir",
+      "nama": "Gelombang Pasang & Abrasi",
+      "nama_en": "Coastal Waves & Abrasion",
+      "ikon": "pesisir",
+      "warna": "#2f7fb8",
+      "rute": "/pesisir/",
+      "data": "/pesisir/data/",
       "status": "aktif",
       "warisan": false,
       "tab": [
         "peta",
         "insight",
-        "berita",
         "tren",
-        "kejadian",
-        "dampak",
-        "informasi",
-        "metode",
-        "sim",
-        "foto",
         "tentang"
       ],
-      "tab_sembunyi": [
-        "informasi",
-        "metode"
-      ],
+      "tab_sembunyi": [],
       "sumber_status": [
         [
-          "gempa_terbaru",
-          "/api/gempa/terbaru",
-          0.5
+          "abrasi",
+          "/pesisir/data/abrasi.json",
+          9000
         ],
         [
-          "berita_gempa",
-          "/banjir/data/berita_gempa.json",
+          "rob",
+          "/banjir/data/rob.json",
+          30
+        ],
+        [
+          "pasut",
+          "/banjir/data/pasut_30h.json",
+          48
+        ],
+        [
+          "gelombang",
+          "/banjir/data/cuaca_gelombang.json",
           30
         ]
       ],
       "kejadian": {
-        "awalan": "G",
-        "nama": "Gempa",
-        "nama_jamak": "Gempa"
+        "awalan": "P",
+        "nama": "Kejadian gelombang pasang dan abrasi",
+        "nama_jamak": "Kejadian gelombang pasang dan abrasi"
       },
       "tingkat": [
         {
           "kode": 0,
-          "nama": "Tidak berpotensi tsunami",
+          "nama": "Normal",
           "warna": "#9aa4b2"
         },
         {
           "kode": 1,
-          "nama": "Tsunami Waspada",
+          "nama": "Waspada",
           "warna": "#e0b400"
         },
         {
           "kode": 2,
-          "nama": "Tsunami Siaga",
+          "nama": "Siaga",
           "warna": "#e8743b"
         },
         {
           "kode": 3,
-          "nama": "Tsunami Awas",
+          "nama": "Awas",
           "warna": "#d64545"
         }
       ],
       "foto_kategori": [
         [
-          "guncangan",
-          "Kerusakan bangunan"
+          "abrasi",
+          "Abrasi pantai"
         ],
         [
-          "retakan",
-          "Retakan tanah"
+          "rob",
+          "Rob"
         ],
         [
-          "pengungsian",
-          "Pengungsian"
-        ],
-        [
-          "tsunami",
-          "Genangan tsunami"
+          "gelombang",
+          "Gelombang tinggi"
         ],
         [
           "lainnya",
@@ -443,46 +440,38 @@
         ]
       ],
       "lapor_bahaya": [
-        "gempa",
-        "tsunami"
+        "abrasi",
+        "gelombang_pasang"
       ],
-      "cron_worker": [
-        {
-          "tugas": "gempa_bmkg",
-          "selang_detik": 60
-        },
-        {
-          "tugas": "gempa_usgs",
-          "selang_detik": 300
-        }
-      ],
-      "workflow": "gempa.yml",
-      "pengerja": "gempa",
+      "cron_worker": [],
+      "workflow": "banjir.yml",
+      "pengerja": "pesisir",
       "bagikan": {
-        "nama": "Centurisk97 · Gempa",
-        "sumber": "BMKG, USGS",
+        "nama": "Centurisk97 Gelombang Pasang & Abrasi",
+        "sumber": "BMKG Maritim, Open-Meteo, USGS Landsat, DIBI BNPB",
         "tagar": [
-          "#gempa",
-          "#infogempa",
-          "#tsunami"
+          "#abrasi",
+          "#rob",
+          "#gelombangpasang",
+          "#siagabencana"
         ]
       },
       "og": {
-        "judul": "Gempa bumi hari ini · Centurisk97",
-        "desk_templat": "{tgl}: {n} gempa M ≥ 5, {jiwa} jiwa terpapar guncangan."
+        "judul": "Gelombang pasang dan abrasi hari ini, Centurisk97",
+        "desk_templat": "{tgl}: {n} titik pesisir berstatus rob, gelombang tinggi dan abrasi pantai dipantau."
       },
       "kata": {
-        "unit": "gempa",
-        "kejadian": "gempa utama",
+        "unit": "tinggi muka laut dan gelombang",
+        "kejadian": "titik pesisir berstatus rob",
         "tindakan": [
-          "Pemantauan",
-          "Kaji cepat",
-          "Siaga evakuasi",
-          "Tanggap darurat"
+          "Pantau",
+          "Siaga",
+          "Evakuasi",
+          "Tanggul dan pompa"
         ],
-        "frasa_wilayah": "provinsi yang sering diguncang gempa"
+        "frasa_wilayah": "pesisir langganan rob dan abrasi"
       },
-      "peringatan_relevan": "gempa|tsunami",
+      "peringatan_relevan": "rob|gelombang|pasang|abrasi",
       "lapisan": [
         "penduduk",
         "sekolah",
@@ -491,10 +480,12 @@
       ],
       "berita": {
         "kueri": [
-          "gempa bumi",
-          "tsunami"
+          "abrasi pantai",
+          "gelombang pasang",
+          "rob",
+          "gelombang tinggi"
         ],
-        "leksikon": "scripts/gempa/berita.py"
+        "leksikon": "scripts/berita/pesisir.py"
       },
       "prioritas": []
     },
@@ -636,6 +627,150 @@
           "puting beliung"
         ],
         "leksikon": "scripts/cuaca/berita.py"
+      },
+      "prioritas": []
+    },
+    {
+      "id": "gempa",
+      "nama": "Gempa & Tsunami",
+      "nama_en": "Earthquake & Tsunami",
+      "ikon": "gempa",
+      "warna": "#8a6d4e",
+      "rute": "/gempa/",
+      "data": "/gempa/data/",
+      "status": "aktif",
+      "warisan": false,
+      "tab": [
+        "peta",
+        "insight",
+        "berita",
+        "tren",
+        "kejadian",
+        "dampak",
+        "informasi",
+        "metode",
+        "sim",
+        "foto",
+        "tentang"
+      ],
+      "tab_sembunyi": [
+        "informasi",
+        "metode"
+      ],
+      "sumber_status": [
+        [
+          "gempa_terbaru",
+          "/api/gempa/terbaru",
+          0.5
+        ],
+        [
+          "berita_gempa",
+          "/banjir/data/berita_gempa.json",
+          30
+        ]
+      ],
+      "kejadian": {
+        "awalan": "G",
+        "nama": "Gempa",
+        "nama_jamak": "Gempa"
+      },
+      "tingkat": [
+        {
+          "kode": 0,
+          "nama": "Tidak berpotensi tsunami",
+          "warna": "#9aa4b2"
+        },
+        {
+          "kode": 1,
+          "nama": "Tsunami Waspada",
+          "warna": "#e0b400"
+        },
+        {
+          "kode": 2,
+          "nama": "Tsunami Siaga",
+          "warna": "#e8743b"
+        },
+        {
+          "kode": 3,
+          "nama": "Tsunami Awas",
+          "warna": "#d64545"
+        }
+      ],
+      "foto_kategori": [
+        [
+          "guncangan",
+          "Kerusakan bangunan"
+        ],
+        [
+          "retakan",
+          "Retakan tanah"
+        ],
+        [
+          "pengungsian",
+          "Pengungsian"
+        ],
+        [
+          "tsunami",
+          "Genangan tsunami"
+        ],
+        [
+          "lainnya",
+          "Lainnya"
+        ]
+      ],
+      "lapor_bahaya": [
+        "gempa",
+        "tsunami"
+      ],
+      "cron_worker": [
+        {
+          "tugas": "gempa_bmkg",
+          "selang_detik": 60
+        },
+        {
+          "tugas": "gempa_usgs",
+          "selang_detik": 300
+        }
+      ],
+      "workflow": "gempa.yml",
+      "pengerja": "gempa",
+      "bagikan": {
+        "nama": "Centurisk97 · Gempa",
+        "sumber": "BMKG, USGS",
+        "tagar": [
+          "#gempa",
+          "#infogempa",
+          "#tsunami"
+        ]
+      },
+      "og": {
+        "judul": "Gempa bumi hari ini · Centurisk97",
+        "desk_templat": "{tgl}: {n} gempa M ≥ 5, {jiwa} jiwa terpapar guncangan."
+      },
+      "kata": {
+        "unit": "gempa",
+        "kejadian": "gempa utama",
+        "tindakan": [
+          "Pemantauan",
+          "Kaji cepat",
+          "Siaga evakuasi",
+          "Tanggap darurat"
+        ],
+        "frasa_wilayah": "provinsi yang sering diguncang gempa"
+      },
+      "peringatan_relevan": "gempa|tsunami",
+      "lapisan": [
+        "penduduk",
+        "sekolah",
+        "fasilitas",
+        "jalan"
+      ],
+      "berita": {
+        "kueri": [
+          "gempa bumi",
+          "tsunami"
+        ],
+        "leksikon": "scripts/gempa/berita.py"
       },
       "prioritas": []
     },

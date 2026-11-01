@@ -29,7 +29,7 @@ const WARNA_SEV = {Minor: "#e3b94e", Moderate: "#e58a45", Severe: "#c9503a", Ext
 const GEL = [["tinggi", "Tinggi", "2,5 sampai 4 m", "#3f7fb8"], ["sangat_tinggi", "Sangat tinggi", "4 sampai 6 m", "#5b4fb0"], ["ekstrem", "Ekstrem", "di atas 6 m", "#2a1f6b"]];
 
 /* ================================================================ state */
-const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: [], kec: null, gel: null, sik: null, sar: null, ver: null, dmp: null};
+const S = {pr: null, meta: null, per: null, geo: null, hari: 0, h0: 0, mode: "hujan", nc: [], gl: [], kec: null, gel: null, sik: null, sar: null, ver: null, dmp: null, uji: null};
 /* tingkat Centurisk97 (registry cuaca.tingkat); ganti dari /bencana.json bila terbaca */
 let TINGKAT = [["Normal", "#9aa4b2"], ["Waspada", "#e0b400"], ["Siaga", "#e8743b"], ["Awas", "#d64545"]];
 const warnaT = t => TINGKAT[t]?.[1] || TINGKAT[0][1], namaT = t => TINGKAT[t]?.[0] || "";
@@ -40,21 +40,24 @@ const kapan3 = j => { const h = S.kec?.hari?.[j] ?? S.pr.hari[S.h0 + j], n = Mat
 const kIdx = () => S.kec ? S.kec.hari.indexOf(S.pr.hari[S.hari]) : -1;   /* hari terpilih di kontrak 72 jam; -1 = di luar 3 hari */
 const tglSgk = t => new Date(t + "T12:00:00+07:00").toLocaleDateString("id-ID", {day: "numeric", month: "short"});
 /* prakiraan dibuat bukan pada hari WIB ini: "Hari ini/Besok" diganti tanggal */
+const BASI_TAMPIL = false; /* spanduk "Prakiraan terakhir diperbarui": disembunyikan pemilik di karhutla dan banjir (banjir/mulai.js BASI_TAMPIL); ubah ke true untuk memulihkan */
 const basi = () => !!S.meta && tglWIB(Date.parse(S.meta.dibuat)) !== tglWIB(SEKARANG());
 const pct = (a, b) => b ? Math.round(a / b * 100) : null;
 const namaProv = k => S.meta?.prov?.[k] ?? k;
 const AMB = () => S.meta.ambang;
 /* ambang tingkat kecamatan (hujan, embusan, gelombang, ansambel): lepas dari "hipotesis" hanya bila cuaca_verifikasi.json memuat kita.vonis.layak (uji balik lolos).
    Sampai itu, kartu yang angkanya bergantung pada tingkat diberi pil dan satu kalimat bukti dari uji balik DIBI (prakiraan 1 hari sebelumnya, hujan 50 mm atau lebih). */
-const AMBANG_PIL = () => S.ver?.kita?.vonis?.layak ? "Ambang teruji terhadap kejadian DIBI" : "Ambang masih hipotesis";
+/* uji logbook Pusdalops (cuaca_uji_logbook.json): hujan kalah dari kebiasaan kab dan bulan bila seluruh selang 95% selisih skornya di bawah nol */
+const UJI_GAGAL = () => S.uji?.jenis?.cuaca?.selisih_auc_hujan_klimatologi?.selang95?.[1] < 0;
+const AMBANG_PIL = () => S.ver?.kita?.vonis?.layak ? "Ambang teruji terhadap kejadian DIBI" : "Ambang masih hipotesis" + (UJI_GAGAL() ? ", belum lolos uji logbook" : "");
 const AMBANG_KAKI = () => { const K = S.ver?.kita; if (K?.vonis?.layak) return ""; const l = K?.lead?.["1"], n = l ? l.a + l.c : 0;
-  return `Ambang belum lolos uji balik${K && n >= (K.n_min ?? 30) ? `: dari ${fmt(n)} provinsi-hari ber-kejadian DIBI, prakiraan 1 hari sebelumnya menangkap ${fmt(l.a)} (sekitar ${fmt(Math.round(l.a / n * 100))}%)` : ""}.`; };
+  return `Ambang belum lolos uji balik${K && n >= (K.n_min ?? 30) ? `: dari ${fmt(n)} provinsi-hari ber-kejadian DIBI, prakiraan 1 hari sebelumnya menangkap ${fmt(l.a)} (sekitar ${fmt(Math.round(l.a / n * 100))}%)` : ""}.${UJI_GAGAL() ? " Uji terhadap logbook Pusdalops juga belum lolos: kebiasaan kab dan bulan menebak kejadian lebih baik daripada hujan." : ""}`; };
 const beriAmbang = h => { if (!h || S.ver?.kita?.vonis?.layak) return h; const k = AMBANG_KAKI();
-  return h.replace(/(<span class="ex-ey">.*?<\/span>)/s, `$1<span class="ex-ey" style="margin-left:6px;color:#8a4b00;background:#f6dcb5">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p style="margin:0;padding:2px 22px 14px;font-size:12px;opacity:.75;font-style:italic">${k}</p></article>`); };
+  return h.replace(/(<span class="ex-ey">.*?<\/span>)/s, `$1<span class="pl" style="--w:var(--warn);margin-left:6px">${AMBANG_PIL()}</span>`).replace(/<\/article>/, `<p class="fnd" style="padding:2px 22px 14px">${k}</p></article>`); };
 
 /* ================================================================ tab */
 const TABS = [["peta", "Peta"], ["kejadian", "Kejadian"], ["insight", "Insight"], ["berita", "Berita"], ["tren", "Tren"], ["dampak", "Dampak"], ["simulasi", "Simulasi"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Informasi"], ["metode", "Metode"]];
-const TAB_SEMBUNYI = new Set(["informasi", "metode"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir */
+const TAB_SEMBUNYI = new Set(["informasi", "metode", "tentang"]); /* ada tapi tidak di menu (A24), seperti Metode karhutla dan banjir; tentang disembunyikan pemilik 29 Okt 2026 */
 const IK_TAB = {kejadian: '<path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/>', peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>',
   berita: '<path d="M4 5h13v14H6a2 2 0 0 1-2-2zM17 9h3v8a2 2 0 0 1-2 2M7 9h7M7 13h7M7 16h4"/>', dampak: '<path d="M12 3 2 20h20z"/><path d="M12 10v4M12 17v.5"/>',
   simulasi: '<path d="M8 5v14l11-7z"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
@@ -86,14 +89,14 @@ $("#tema").onclick = () => { const t = gelap() ? "light" : "dark"; document.docu
 /* berkas tambahan boleh hilang: kartu dan lapisan yang datanya tak ada dibuang (A18) */
 const opsi = u => muatJSON(u).catch(() => null);
 async function muatTambahan() {
-  const B = "../banjir/data/", kej = Kejadian.muatAwal(), [kec, gel, sik, sar, ver, dmp, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
+  const B = "../banjir/data/", kej = Kejadian.muatAwal(), [kec, gel, sik, sar, ver, dmp, uji, reg] = await Promise.all(["kec", "gelombang", "siklon", "sarana", "verifikasi", "dampak", "uji_logbook"].map(n => opsi(B + "cuaca_" + n + ".json")).concat(opsi("/bencana.json")));
   const tg = reg?.bencana?.find(b => b.id === "cuaca")?.tingkat; if (tg?.length === 4) TINGKAT = tg.map(x => [x.nama, x.warna]);
   if (kec?.kec?.length) { const pk = await opsi(B + "pusat_kec.json"); if (pk) Object.assign(S, {kec, kecKunci: Object.keys(pk), kecPusat: Object.values(pk)}); }
   if (gel?.titik?.length) S.gel = gel;
   if (sik?.aktif?.length) S.sik = sik;
   if (sar && dmp && (dmp.pelabuhan?.length || dmp.bandara?.length)) S.sar = sar;
   if (ver && (ver.bmkg || ver.kita)) S.ver = ver;
-  S.dmp = dmp;
+  S.dmp = dmp; if (uji?.jenis?.cuaca?.auc) S.uji = uji;
   await kej; isiTab();
 }
 async function muatData() {
@@ -113,6 +116,7 @@ async function muatData() {
   olahPeringatan();
   await tambahan;
   $("#upd").textContent = "Data " + jamWIB(meta.dibuat);
+  if (BASI_TAMPIL && basi()) { const b = $("#basi"); b.hidden = false; b.textContent = `Prakiraan terakhir diperbarui ${Math.round((SEKARANG() - Date.parse(meta.dibuat)) / 36e5)} jam lalu (${jamWIB(meta.dibuat)}).`; }
 }
 /* peringatan yang masih berlaku pada jam sekarang. Nowcast: satu CAP satu baris. Gelombang: satu provinsi satu baris (nama perairan dihitung per kelas);
    baris ringkasan "Indonesia" tanpa kode provinsi dibuang agar tak terhitung dua kali. */
@@ -128,4 +132,11 @@ function olahPeringatan() {
 /* hari-hari yang ditampilkan: hari ini sampai 6 hari ke depan (yang tersedia) */
 const hariTampil = () => { const a = []; for (let i = S.h0; i < Math.min(S.pr.hari.length, S.h0 + 7); i++) a.push(i); return a; };
 const labelHari = i => basi() ? tglSgk(S.pr.hari[i]) : i === S.h0 ? "Hari ini" : i === S.h0 + 1 ? "Besok" : tglPendek(S.pr.hari[i]);
+/* baris daftar panel kiri: provinsi jadi judul, jam di kanan, satu baris keterangan bertitik warna, lalu daftar wilayah (opsional) */
+const barisRw = (attr, w, judul, kanan, ket, wil) => `<button class="rw" ${attr} style="--w:${w}"><span class="rw-hd"><b translate="no">${judul}</b>${kanan ? `<span class="rw-kn">${kanan}</span>` : ""}</span><span class="rw-ket">${ket}</span>${wil ? `<span class="rw-wil" translate="no">${wil}</span>` : ""}</button>`;
+/* "CIAWI, BATIN XXIV" jadi "Ciawi, Batin XXIV": angka Romawi tetap kapital */
+const hurufJudul = t => String(t).toLowerCase().replace(/[\p{L}\d]+/gu, k => /^[ivxl]+$/.test(k) && k.length > 1 ? k.toUpperCase() : k[0].toUpperCase() + k.slice(1));
+/* rentang jam ringkas "17.34 sampai 20.55"; lintas hari ikut tanggal */
+const jamRentang = (a, b) => { const j = x => new Date(x).toLocaleTimeString("id-ID", {...WIB, hour: "2-digit", minute: "2-digit"}), t = x => tglWIB(Date.parse(x));
+  return t(a) === t(b) ? `${j(a)} sampai ${j(b)}` : waktuBerlaku(a, b).replace(" WIB", ""); };
 const waktuBerlaku = (a, b) => { const d = x => new Date(x).toLocaleString("id-ID", {...WIB, day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", ""); return `${d(a)} sampai ${d(b)} WIB`; };

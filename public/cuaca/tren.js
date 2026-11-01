@@ -103,6 +103,30 @@ const Tren = {
         + `<div class="lb-baris" style="display:grid;gap:6px">${top.map(r => `<div data-tip="${esc(`${nm(r.k)}: ${fmt(r.ada)} dari ${fmt(tp)} tahun ada kejadian di ${BLN_PENUH[m]}, total ${fmt(r.n)} kejadian`)}" style="cursor:pointer"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><b translate="no">${esc(nm(r.k))}</b><span style="white-space:nowrap">${fmt(r.ada)} dari ${fmt(tp)} tahun</span></div><div style="height:8px;border-radius:4px;background:rgba(125,140,163,.18)"><div style="height:8px;border-radius:4px;background:#c99a1e;width:${r.ada / top[0].ada * 100}%"></div></div></div>`).join("")}</div>` : ""),
       `Logbook Pusdalops BNPB, tahun dasar ${rng}; kalender risiko ${this.KAL ? "dari berkas yang sama" : "belum tersedia"}; kejadian yang dilaporkan, pelaporan tidak merata antar daerah`); },
 
+  /* kalender per kabupaten/kota: rata-rata kejadian cuaca ekstrem yang dilaporkan per bulan (bulan_penuh / tahun dasar), dibanding rata-rata kab/kota se-Indonesia. Pilihan wilayah di this.st.kp / this.st.kk. */
+  KAB() { const L = this.LB, tp = (L?.tahun_penuh || []).length; if (!tp) return null;
+    const ada = Object.entries(L.kab || {}).filter(([, d]) => d.bulan_penuh?.cuaca?.some(n => n > 0)); if (!ada.length) return null;
+    if (!this._kab) { const nas = Array(12).fill(0); ada.forEach(([, d]) => d.bulan_penuh.cuaca.forEach((n, i) => nas[i] += n)); this._kab = {tp, ada, nas: nas.map(n => n / tp / Object.keys(L.kab).length), jml: Object.keys(L.kab).length}; }
+    return this._kab; },
+  exLogKab() {
+    const K = this.KAB(); if (!K) return ""; const {tp, ada, nas, jml} = K, nm = k => k.split("|")[1];
+    const prov = [...new Set(ada.map(([k]) => k.split("|")[0]))].sort((a, b) => namaProv(a).localeCompare(namaProv(b)));
+    if (!prov.includes(this.st.kp)) this.st.kp = prov[0];
+    const daftar = ada.map(([k]) => k).filter(k => k.startsWith(this.st.kp + "|")).sort((a, b) => nm(a).localeCompare(nm(b)));
+    if (!daftar.includes(this.st.kk)) this.st.kk = daftar[0];
+    const cnt = this.LB.kab[this.st.kk].bulan_penuh.cuaca, tot = cnt.reduce((a, b) => a + b, 0), v = cnt.map(n => n / tp), mx = Math.max(...v, ...nas), pk = cnt.indexOf(Math.max(...cnt)), m = new Date().getMonth(), f1 = n => n.toLocaleString("id-ID", {maximumFractionDigits: 1}), f2 = n => n.toLocaleString("id-ID", {maximumFractionDigits: 2});
+    const sel = (id, ops, cur, lbl) => `<select data-kl="${id}" aria-label="${lbl}" style="width:100%">${ops.map(([x, t]) => `<option value="${esc(x)}"${x === cur ? " selected" : ""}>${esc(t)}</option>`).join("")}</select>`;
+    const sel2 = `<div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px">${sel("kp", prov.map(p => [p, namaProv(p)]), this.st.kp, "Provinsi")}${sel("kk", daftar.map(k => [k, nm(k)]), this.st.kk, "Kabupaten atau kota")}</div>`;
+    const sel_ = (arr, nama, hit) => `<div style="display:grid;grid-template-columns:repeat(12,1fr);gap:4px;margin-bottom:6px">${arr.map((x, i) => `<div data-tip="${esc(`<b>${BLN_PENUH[i]}</b><br>${nama}: ${hit ? `${fmt(hit[i])} kejadian dalam ${fmt(tp)} tahun dasar<br>rata-rata ${f2(x)} per tahun` : `${f2(x)} kejadian per tahun per kabupaten/kota`}`)}" style="cursor:pointer;border-radius:6px;padding:8px 0;text-align:center;font-size:11px;font-weight:700;background:rgba(201,154,30,${(.08 + .92 * x / mx).toFixed(2)});color:${x / mx > .55 ? "#fff" : "inherit"};${i === m ? "outline:2px solid currentColor;outline-offset:-2px" : ""}"><div style="font-size:10px;opacity:.8">${Grafik.BLN[i]}</div>${hit ? fmt(hit[i]) : f2(x)}</div>`).join("")}</div>`;
+    const rasio = nas[pk] > 0 ? v[pk] / nas[pk] : 0, bandingan = tot < 5 ? "" : rasio >= 1.2 ? `, ${f1(rasio)}× rata-rata kabupaten/kota se-Indonesia (${f2(nas[pk])} per tahun, dari ${fmt(jml)} kabupaten/kota)` : rasio >= .8 ? `, setara rata-rata kabupaten/kota se-Indonesia (${f2(nas[pk])} per tahun, dari ${fmt(jml)} kabupaten/kota)` : `, di bawah rata-rata kabupaten/kota se-Indonesia (${f2(nas[pk])} per tahun, dari ${fmt(jml)} kabupaten/kota)`;
+    const kalimat = tot > 0
+      ? (tot < 5 ? `${Kartu.hl(fmt(tot) + " kejadian")} dalam ${fmt(tp)} tahun dasar di ${esc(nm(this.st.kk))}, ${tot === 1 ? "di" : "terbanyak di"} bulan ${BLN_PENUH[pk]}` : `${Kartu.hl(fmt(cnt[pk]) + " kejadian")} dalam ${fmt(tp)} tahun dasar di ${BLN_PENUH[pk]}, bulan terbanyak di ${esc(nm(this.st.kk))}${bandingan}`)
+      : `${Kartu.hl("0 kejadian")} dalam ${fmt(tp)} tahun dasar di ${esc(nm(this.st.kk))}`;
+    const top = ada.map(([k, x]) => [k, x.bulan_penuh.cuaca[m]]).filter(r => r[1] > 0).sort((a, b) => b[1] - a[1]).slice(0, 10);
+    const lst = top.length ? `<p class="kecil" style="margin:12px 0 4px">Terbanyak dilaporkan di bulan ${BLN_PENUH[m]} (jumlah dalam ${fmt(tp)} tahun dasar), klik untuk membuka kalendernya:</p><div style="display:grid;gap:6px">${top.map(([k, n]) => `<button type="button" data-kab="${esc(k)}" data-tip="${esc(`${nm(k)} (${namaProv(k.split("|")[0])}): ${fmt(n)} kejadian di ${BLN_PENUH[m]}`)}" style="all:unset;cursor:pointer;display:block"><div style="display:flex;justify-content:space-between;gap:8px;font-size:13px"><b translate="no">${esc(nm(k))}, ${esc(namaProv(k.split("|")[0]))}</b><span>${fmt(n)}</span></div><div style="height:8px;border-radius:4px;background:rgba(125,140,163,.18)"><div style="height:8px;border-radius:4px;background:#c99a1e;width:${n / top[0][1] * 100}%"></div></div></button>`).join("")}</div>` : "";
+    return this.kartu("Kalender kabupaten", kalimat, sel2 + `<p class="kecil" style="margin:0 0 4px"><b>${esc(nm(this.st.kk))}</b></p>` + sel_(v, esc(nm(this.st.kk)), cnt) + `<p class="kecil" style="margin:8px 0 4px"><b>Rata-rata per tahun, ${fmt(jml)} kabupaten/kota se-Indonesia</b></p>` + sel_(nas, "Rata-rata se-Indonesia") + lst,
+      `Logbook Pusdalops BNPB, rata-rata per tahun dalam ${fmt(tp)} tahun dasar (${this.rentangTh(this.LB.tahun_penuh.map(Number).sort((a, b) => a - b))}); angin kencang, puting beliung, hujan es, dan cuaca ekstrem yang dilaporkan, pelaporan tidak merata antar daerah; kotak bergaris = bulan ini`); },
+
   /* kalender bulanan: kejadian cuaca dan gelombang ekstrem DIBI di satu tahun penuh (cuaca_musim.json, scripts/cuaca/musim.py). Tanpa klaim musim: satu tahun, dan DIBI telat lapor */
   exMusim() {
     const M = this.M?.bulan; if (!M) return "";
@@ -123,18 +147,21 @@ const Tren = {
       `${SUMBER_BNPB} ${th[0]} sampai ${th.at(-1)}; ONI NOAA CPC rata-rata setahun kalender (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang); jumlah tercatat juga naik karena pelaporan makin lengkap`,
       "", FASE.map(([f, w]) => [w, f])); },
 
+  kabUlang(box) { const f = document.activeElement?.parentElement?.querySelector?.("select[data-kl]")?.dataset.kl; box.innerHTML = this.gambar(box.dataset.ex); box.querySelectorAll("select").forEach(x => PilihCantik.hias(x)); if (f) box.querySelector(`select[data-kl="${f}"]`)?.parentElement.querySelector(".pc-btn")?.focus({preventScroll: true}); },
   segRentang() { return this.tampilSeg() ? Kartu.seg("rentang", [["14", "14 hari"], ["30", "30 hari"], ["90", "90 hari"]], this.st) : ""; },
   kartu(ey, judul, isi, sumber, ctl = "", leg = null) { return Kartu.kartu(`<svg viewBox="0 0 24 24" width="12" height="12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[this.IKON[ey]] || ""}</svg>${ey}`, judul, isi, sumber, ctl, leg); },
-  IKON: {"Hujan lebat": "hujan", Angin: "angin", Provinsi: "provinsi", "Per tahun": "ansambel", "Kalender musim": "peluang", ENSO: "siklon", Logbook: "ansambel", "Musim logbook": "peluang"},
-  EX: ["hujan", "angin", "provinsi", "bnpb", "logTahun", "logMusim", "musim", "enso"],
+  IKON: {"Hujan lebat": "hujan", Angin: "angin", Provinsi: "provinsi", "Per tahun": "ansambel", "Kalender musim": "peluang", ENSO: "siklon", Logbook: "ansambel", "Musim logbook": "peluang", "Kalender kabupaten": "peluang"},
+  EX: ["hujan", "angin", "provinsi", "bnpb", "logTahun", "logMusim", "logKab", "musim", "enso"],
   gambar(id) { Kartu._leg = null; try { return this["ex" + id[0].toUpperCase() + id.slice(1)]() || ""; } catch (e) { console.error(e); return ""; } },
   tulis() { const el = $("#tren"), h = this.EX.map(id => `<div data-ex="${id}">${this.gambar(id)}</div>`).join("");
     el.innerHTML = h; Grafik.gulir(el); },
   async render() {
     const el = $("#tren"); if (!el) return;
     if (!el.dataset.siap) { el.dataset.siap = 1;
+      el.addEventListener("change", e => { const s = e.target.closest("select[data-kl]"); if (!s) return; this.st[s.dataset.kl] = s.value; if (s.dataset.kl === "kp") this.st.kk = null; const box = s.closest("[data-ex]"); nanti(() => this.kabUlang(box)); });
       el.addEventListener("click", e => {
         const s = e.target.closest("[data-set]"); if (s) { this.st[s.dataset.set] = s.dataset.v; s.parentElement.querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", x === s)); return nanti(() => this.tulis()); }
+        const kb = e.target.closest("[data-kab]"); if (kb) { kb.setAttribute("aria-current", "true"); kb.style.opacity = .5; const [p] = kb.dataset.kab.split("|"); this.st.kp = p; this.st.kk = kb.dataset.kab; const box = kb.closest("[data-ex]"); return nanti(() => this.kabUlang(box)); }
         const pg = e.target.closest(".pgn-b[data-h]"); if (pg && !pg.disabled) { this.T.provinsi.hal = +pg.dataset.h; const box = pg.closest("[data-ex]"); return nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); }
         const th = e.target.closest("th button[data-k]"); if (th) { const st = this.T.provinsi, k = th.dataset.k; st.turun = st.urut === k ? !st.turun : true; st.urut = k; st.hal = 0; const box = th.closest("[data-ex]"); nanti(() => { box.innerHTML = this.gambar(box.dataset.ex); }); } }); }
     if (!this.R && !this.D && !this.M) {
