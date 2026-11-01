@@ -48,6 +48,9 @@ import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
 import {RUTE_STAF, bersihkanStaf} from "./staf.js";
 import {RUTE_AKADEMISI} from "./akademisi.js";
 import {RUTE_LOGBOOK} from "./logbook.js";
+import {RUTE_PEMULIHAN} from "./pemulihan.js";
+import {RUTE_LAPSUS} from "./lapsus.js";
+import {RUTE_ROLLCALL} from "./rollcall.js";
 import {RUTE_SENSOR} from "./sensor.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
@@ -590,6 +593,9 @@ const RUTE = {
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
   ...RUTE_LOGBOOK,   // logbook Pusdalops: kejadian + entri, laporan harian 07.00-07.00 WIB, staf saja (src/logbook.js)
+  ...RUTE_PEMULIHAN,   // tracker pemulihan huntara/huntap/DTH/jembatan/sumur per kab, staf saja (src/pemulihan.js, migrasi 0096)
+  ...RUTE_LAPSUS,   // Laporan Khusus operasi besar: kebutuhan mendesak + 4 layanan dasar + penanda basi (src/lapsus.js)
+  ...RUTE_ROLLCALL,   // roll call radio harian dan ketaatan bulanan (src/rollcall.js)
   ...RUTE_SENSOR,   // sensor lapangan: ingest HMAC per alat + status staf (src/sensor.js)
   ...RUTE_AKADEMISI,   // direktori pakar kebencanaan, hanya staf BNPB dan admin (src/akademisi.js, data di R2)
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
@@ -625,7 +631,7 @@ export const tolakOrigin = (req, url) => {
 async function rute(env, req, url, ctx) {
   /* /lacak (halaman statis; token di fragmen #<36 hex>, dibaca peramban); API-nya (/api/lacak/*) membawa token di header x-lacak */
   if (url.pathname === "/lacak" || url.pathname === "/lacak/") { const h = await halamanLacak(env, req, url); if (h) return h; }
-  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup)$/), id = tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
+  const jalur = url.pathname.replace(/\/+$/, "") || "/", tgl = jalur.match(/^(\/api\/laporan-karhutla\/snapshot)\/(\d{4}-\d{2}-\d{2})$/), nama = jalur.match(/^(\/api\/sippa\/data)\/([a-z0-9_]{1,40})$/), rl = jalur.match(/^(\/api\/sippa\/renlap)\/([0-9a-f]{16})\/(pdf|selesai)$/), oa = jalur.match(/^(\/api\/akademisi\/karya)\/(A\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/riset)\/(W\d{4,12})$/) || jalur.match(/^(\/api\/akademisi\/sinta)\/(\d{1,9})$/) || jalur.match(/^(\/api\/akademisi\/gambar)\/([^/]{1,100})$/) || jalur.match(/^(\/api\/akademisi\/riwayat)\/(\d{1,12})$/), tn = jalur.match(/^(\/api\/logbook\/turunan)\/([a-z0-9_]{1,20})$/), lb = jalur.match(/^(\/api\/logbook\/kejadian)\/([0-9a-f]{16})\/(entri|tutup|sk)$/), id = tgl ? tgl[2] : tn ? tn[2] : nama ? nama[2] : rl ? rl[2] : lb ? lb[2] : oa ? oa[2] : jalur.match(/\/([0-9a-f]{16})$/)?.[1];   // /api/sippa/data/:nama (DATA_SIPPA, src/sippa.js): nama berkas, bukan id 16 heks; /api/akademisi/karya/:id = id penulis OpenAlex (A + angka), /api/akademisi/sinta/:id = SINTA ID
   const kunci = tgl ? tgl[1] + "/:tanggal" : tn ? tn[1] + "/:nama" : nama ? nama[1] + "/:nama" : oa ? oa[1] + "/:id" : rl ? `${rl[1]}/:id/${rl[3]}` : lb ? `${lb[1]}/:id/${lb[3]}` : id ?jalur.slice(0, -16) + ":id" : jalur, tabel = tabelRute();
   const f = tabel[req.method + " " + kunci];
   if (!f) {   // jalur ada tapi metode lain: 405, bukan jatuh ke aset statis (HEAD/OPTIONS tetap lewat seperti semula)
@@ -645,7 +651,7 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
-  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", pendataan: "/pendataan"};
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", dokumen: "/bnpb/dokumen", operasi: "/bnpb/operasi", pendataan: "/pendataan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
    Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */

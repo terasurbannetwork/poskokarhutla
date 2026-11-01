@@ -63,3 +63,18 @@
 .lb-svg text.kanan{text-anchor:end}
 .lb-svg .bat.musim{fill:var(--c1)}
 .lb-svg .bat:not(.musim){fill:color-mix(in srgb,var(--ink) 22%,var(--card))}
+/* rincian juklak (lipat): sub-bagian, tabel korban terpilah, baris dinamis, daftar SK */
+.lb-juklak>summary{cursor:pointer;font-weight:800;font-size:15px;list-style:none}
+.lb-juklak[open]>summary{margin-bottom:10px}
+.lb-sub{display:grid;gap:8px;padding-top:12px;border-top:1px solid var(--line);margin-top:12px}
+.lb-sub h3{margin:0;font-size:13.5px}
+.lb-korban{display:grid;gap:6px;grid-template-columns:minmax(76px,1.2fr) repeat(6,minmax(0,1fr));align-items:center}
+.lb-kop{font-size:11.5px;font-weight:700;text-align:center;color:var(--ink2)}
+.lb-korban input,.lb-baris input,.lb-baris select{min-width:0;width:100%;text-align:right}
+.lb-baris select{text-align:left}
+.lb-baris-wadah{display:grid;gap:8px}
+.lb-baris{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(110px,1fr)) auto;align-items:center}
+.lb-sub>.bn-tombol{width:100%;display:inline-flex;justify-content:center;gap:6px;align-items:center}
+.lb-sk{margin:0;padding-left:18px;font-size:13px}
+.lb-sk-form{display:grid;gap:10px;grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+@media (max-width:640px){.lb-korban{grid-template-columns:minmax(64px,1fr) repeat(6,minmax(0,1fr));gap:4px}}

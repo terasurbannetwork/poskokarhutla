@@ -53,6 +53,8 @@ export const bersihkanBnpb = (env, kini = Date.now()) => env.DB.prepare("DELETE 
 /* halaman Ruang Koordinasi tanpa modul worker sendiri (datanya JSON statis atau endpoint ringkas modul lain) */
 export const RUTE_BNPB = {
   "GET /bnpb/logbook": (env, req, url) => halamanBnpbPublik(env, url, "logbook", {pribadi: true, bingkai: true}),   // layar staf; dibingkai /admin/laporan (frame-ancestors 'self')
+  "GET /bnpb/operasi": (env, req, url) => halamanBnpbPublik(env, url, "operasi", {pribadi: true}),   // layar staf: pemulihan, Laporan Khusus, roll call (W2)
+  "GET /bnpb/dokumen": (env, req, url) => halamanBnpbPublik(env, url, "dokumen", {pribadi: true}),   // layar staf: BAST, Laporan Menonjol, Shift, Rekap Mingguan dari logbook
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),
   "GET /risiko": (env, req, url) => halamanBnpbPublik(env, url, "risiko"),
   "GET /kinerja-bnpb": (env, req, url) => halamanBnpbPublik(env, url, "kinerja"),
