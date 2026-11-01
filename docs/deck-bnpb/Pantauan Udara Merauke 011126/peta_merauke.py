@@ -23,7 +23,7 @@ img = Image.blend(img, Image.new('RGB', img.size, 'white'), 0.18)
 def P(la, lo):
     x, y = xy(la, lo); return (x - x0) * K, (y - y0) * K
 d = ImageDraw.Draw(img, 'RGBA')
-f = lambda s, b=True: ImageFont.truetype(str(Path('/Users/priyankaalfatehan28/.claude/skills/ppt-konsultan/bnpb/assets/fonts') / f'Roboto-{"Bold" if b else "Medium"}.ttf'), s)
+f = lambda s, b=True: ImageFont.truetype(str((Path.home() / '.claude/skills/ppt-konsultan/bnpb/assets/fonts') / f'Roboto-{"Bold" if b else "Medium"}.ttf'), s)
 h = json.load(open(H72)); W = h['wilayah']
 for r in h['baris']:
     if r[7] == '10-31' and LA0 < r[0] < LA1 and LO0 < r[1] < LO1:
