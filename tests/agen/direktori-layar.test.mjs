@@ -80,6 +80,8 @@ else {
     await T.tungguFungsi(`/Kesiapan desa dan penduduk rentan/i.test(document.body.innerText)`);
     const k = await T.eval(`document.body.innerText`); assert.match(k, /12 desa/); assert.match(k, /20\.000/); assert.match(k, /Banjir 30 desa/);
     assert.match(k, /Teruji sebagian Uji kedua dengan logbook Pusdalops[\s\S]*cuaca ekstrem \(rumah rusak per kejadian, r \u22120,33\), tidak untuk banjir/); assert.match(k, /Riwayat kejadian menurut logbook Pusdalops/i); assert.match(k, /5\.000/);
+    await T.tungguFungsi(`/Temuan riset di provinsi ini/i.test(document.body.innerText)`);
+    assert.match(await T.eval(`document.body.innerText`), /PREDIKSI[\s\S]*ambang hujan 3 hari: 80 mm[\s\S]*TEKNOLOGI DAN INOVASI[\s\S]*Sensor kemiringan/i);
     for (const j of [/Ekonomi daerah/i, /Rp 9 triliun/, /Paparan bangunan dan tutupan lahan/i, /150\.000/, /Indeks Ketahanan Daerah resmi BNPB/i, /Uji geser langsung/]) assert.match(k, j);
     assert.deepEqual(galatJs(), []);
   });

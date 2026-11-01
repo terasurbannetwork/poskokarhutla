@@ -390,6 +390,25 @@ export function logbookPerKab(csv, dari = 2015) {
   for (const e of Object.values(X)) e.akhir = e.akhir.sort((a, b) => b.tanggal.localeCompare(a.tanggal)).slice(0, 5);
   return X;
 }
+/* temuan riset dari pembacaan mendalam 2.000 abstrak karya pakar direktori (OpenAlex), disusun per empat pilar: prediksi, penanganan, teknologi, dampak.
+   Ringkasan ditulis ulang (bukan salinan abstrak); angka hanya yang disebut abstrak. Lokasi dipetakan ke provinsi (nama) dan kab (nama), kejadian lewat
+   jenis bencana + provinsi + nama tempat kejadian di judul atau lokasi, tahun karya tidak sebelum tahun kejadian. */
+const PROV_NAMA = {aceh: "11", "sumatera utara": "12", "sumatra utara": "12", "north sumatra": "12", "sumatera barat": "13", "sumatra barat": "13", "west sumatra": "13", riau: "14", jambi: "15", "sumatera selatan": "16", "south sumatra": "16", bengkulu: "17", lampung: "18",
+  "kepulauan bangka belitung": "19", "bangka belitung": "19", "kepulauan riau": "21", "dki jakarta": "31", jakarta: "31", "jawa barat": "32", "west java": "32", "jawa tengah": "33", "central java": "33", "di yogyakarta": "34", "daerah istimewa yogyakarta": "34", yogyakarta: "34", diy: "34",
+  "jawa timur": "35", "east java": "35", banten: "36", bali: "51", "nusa tenggara barat": "52", ntb: "52", "nusa tenggara timur": "53", ntt: "53", "kalimantan barat": "61", "kalimantan tengah": "62", "central kalimantan": "62", "kalimantan selatan": "63", "kalimantan timur": "64", "east kalimantan": "64",
+  "kalimantan utara": "65", "sulawesi utara": "71", "north sulawesi": "71", "sulawesi tengah": "72", "central sulawesi": "72", "sulawesi selatan": "73", "south sulawesi": "73", "sulawesi tenggara": "74", gorontalo: "75", "sulawesi barat": "76", "west sulawesi": "76", maluku: "81", "maluku utara": "82",
+  papua: "91", "papua barat": "92", "papua selatan": "93", "papua tengah": "94", "papua pegunungan": "95", "papua barat daya": "96"};
+export function temuanRiset(rows, kejadian = []) {
+  const ringkas = r => ({id: r.id, doi: r.doi || null, judul: r.judul, tahun: r.tahun || null, temuan: r.temuan || null, pilar: larik(r.pilar), jenis: larik(r.jenis_bencana), angka: larik(r.angka_kunci).slice(0, 4),
+    teknologi: r.teknologi_inovasi || null, rekomendasi: r.rekomendasi || null, modul: r.relevan_prediksi?.modul || null, kualitas: r.kualitas_bukti || null, pakar: larik(r.pakar_ids).slice(0, 6), tempat: larik(r.lokasi).map(l => l.tempat).filter(Boolean).slice(0, 4)});
+  const prov = {}, kab = {}, kej = {}, semua = [], kjT = larik(kejadian).map(k => ({k, tok: [...new Set([k.nama, ...larik(k.kab), ...String(k.id).split("-")].map(x => norm(String(x || ""))).filter(t => t.length >= 4 && !/^(banjir|gempa|longsor|tsunami|karhutla|kekeringan|erupsi|bandang|2\d{3})$/.test(t)))]}));
+  for (const r of larik(rows)) { if (r.relevan_bnpb === false || !r.temuan) continue; const x = ringkas(r); semua.push(x);
+    const pvs = new Set(), teks = norm([r.judul, ...larik(r.lokasi).flatMap(l => [l.tempat, l.kab])].join(" "));
+    for (const l of larik(r.lokasi)) { const p = PROV_NAMA[norm(l.prov || "").replace(/^provinsi /, "")]; if (!p) continue; pvs.add(p); if (l.kab) (kab[p + "|" + String(l.kab).trim()] ||= []).push(x.id); }   // nama asli; layar mencocokkan dengan kkN
+    for (const p of pvs) (prov[p] ||= []).push(x.id);
+    for (const {k, tok} of kjT) if (larik(k.prov).some(p => pvs.has(String(p))) && x.jenis.some(j => j === k.jenis || (k.jenis === "tsunami" && j === "gempa") || (k.jenis === "banjir bandang" && j === "banjir")) && (!x.tahun || !k.tanggal || x.tahun >= Number(String(k.tanggal).slice(0, 4))) && tok.some(t => (" " + teks + " ").includes(" " + t + " "))) (kej[k.id] ||= []).push(x.id); }   // utuh per kata: "palu" tidak cocok dengan "palustrine"
+  return {diperbarui: new Date().toISOString().slice(0, 10), sumber: "Abstrak OpenAlex karya pakar direktori, dibaca dan diringkas ulang; angka hanya yang disebut abstrak", temuan: semua, prov, kab, kejadian: kej};
+}
 /* tesis, disertasi, dan skripsi kebencanaan dari repositori kampus (OAI-PMH): saringan judul ketat, karena kata "kekeringan" atau "banjir" juga muncul
    di judul agronomi dan teknik biasa; nama kampus repositori dicocokkan ke kampus direktori lewat indeks dan alias hubung.mjs */
 const TESIS_YA = /bencana|banjir|longsor|gempa|tsunami|erupsi|gunung ?api|lahar|kebakaran hutan|kebakaran lahan|karhutla|kesiapsiagaan|evakuasi|tanggap darurat|pengungsi|huntara|abrasi|banjir rob|genangan rob|likuefaksi|mitigasi (bencana|banjir|longsor|gempa|tsunami|struktural|non ?struktural)|rawan (bencana|banjir|longsor|gempa|tsunami|kebakaran|erupsi|kekeringan)|zona rawan|kerawanan bencana|disaster|flood|landslide|earthquake|volcan|wildfire|evacuat|tsunami|natural hazard|multi-?hazard|seismic hazard|geohazard|hazard (map|assessment|zon)/i;
@@ -482,7 +501,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
     "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
     "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan",
-    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga", "infra_air", "ifrc_go", "cerf", "zakat_resmi", "hot_tm", "orcid_afiliasi", "bangunan_kab", "tutupan_lahan_kab", "ikd_resmi", "lab_riset", "pdrb_kab"].map(f => [f, baca(dp, f)]));
+    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga", "infra_air", "ifrc_go", "cerf", "zakat_resmi", "hot_tm", "orcid_afiliasi", "bangunan_kab", "tutupan_lahan_kab", "ikd_resmi", "lab_riset", "pdrb_kab", "temuan_riset"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus", "lembaga_3w"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});
@@ -518,6 +537,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     wd.kesiapan.uji_logbook = {...u, buang: lbk.buang, ambang_t: -3, sumber_url: "Logbook Pusdalops BNPB"}; }
   tulis("wilayah_daya", wd);
   const ts = P.tesis_kebencanaan ? tesisKampus(P.tesis_kebencanaan, R.kampus) : {}; if (Object.keys(ts).length) tulis("tesis", ts);   /* hasil kosong tidak ditulis, jadi tidak menimpa R2 */ tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
+  if (P.temuan_riset) tulis("temuan_riset", temuanRiset(P.temuan_riset, R.kejadian?.kejadian || R.kejadian));
   /* donasi kosong tidak ditulis, jadi tidak menimpa R2 */
   const dibiK = JSON.parse(readFileSync(new URL("../../public/data/bnpb/dibi_kab_tahun.json", import.meta.url), "utf8"));
   const dn = donasiBencana([...larik(P.donasi_berita), ...larik(P.donasi_lembaga)], lbSemua, R.kejadian?.kejadian || R.kejadian); if (dn.aksi.length) tulis("donasi_bencana", {diperbarui: new Date().toISOString().slice(0, 10), ...dn, prov: ringkasBantuanProv(dn.aksi, dibiK), prov_dari: 2019, ...danaResmi(P, R.kejadian?.kejadian || R.kejadian)});

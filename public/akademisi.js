@@ -931,7 +931,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
         + (pk.length ? bagS("Pakar penulis di direktori", `<ol class="ak-sdaftar ak-pkl ak-pkl-2s">${pk.map(p => barisPk(peta.get(p.id))).join("")}</ol>`) : "")
         + (prov.length ? bagS(`Pakar ${esc((rr[0] || k.jenis || "").toLowerCase())} di provinsi ini`, `<ol class="ak-sdaftar ak-pkl ak-pkl-2s">${prov.map(o => barisPk(o)).join("")}</ol>`) : "")
         + (nas.length ? bagS(`Pakar ${esc((rr[0] || k.jenis || "").toLowerCase())} teratas nasional`, `<ol class="ak-sdaftar ak-pkl ak-pkl-2s">${nas.map(o => barisPk(o)).join("")}</ol>`) : "")
-        + (lb.length ? bagS("Lembaga di lokasi", daftarBkr(lb.map(x => barisLb(x)))) : "") + '<div id="akKjTm"></div><div id="akKjRw"></div><div id="akKjIn"></div><div id="akKjDn"></div><div id="akKjSd"></div><div id="akKjBr"></div><div id="akKjDk"></div>';
+        + (lb.length ? bagS("Lembaga di lokasi", daftarBkr(lb.map(x => barisLb(x)))) : "") + '<div id="akKjPl"></div><div id="akKjTm"></div><div id="akKjRw"></div><div id="akKjIn"></div><div id="akKjDn"></div><div id="akKjSd"></div><div id="akKjBr"></div><div id="akKjDk"></div>';
     });
     $("akSheet").dataset.k = ""; const tk = tokenS;
     fetch(`/api/akademisi/riwayat?kejadian_id=${encodeURIComponent(k.id)}`, {credentials: "same-origin"}).then(r => r.ok ? r.json() : null).catch(() => null).then(d => { const a = dlist(d?.riwayat); if (a.length) isiNanti(() => tk === tokenS, "akKjRw", bagS(`Dilibatkan BNPB pada kejadian ini, ${angka(a.length)}`, `<ol class="ak-rw-l">${a.map(r => rwBaris({...r, milik: false}).replace("<b>", `<b>${esc(({pakar: "Pakar", tokoh: "Tokoh", lembaga: "Lembaga"})[r.jenis_target] || "")} ${esc(r.jenis_target === "lembaga" ? (lbMap.get(r.target_id)?.nama || r.target_id) : r.jenis_target === "pakar" ? (peta.get(r.target_id)?.[1] || r.target_id) : r.target_id)}: `)).join("")}</ol>`)); });
@@ -939,6 +939,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       /* usulan tim pakar (sambung_panen timPakar): urutan skor, alasan tertulis; usulan otomatis, bukan penugasan */
       const tm = dlist(d?.[k.id]?.tim).map(t => [t, peta.get(t.id)]).filter(([, o]) => o);
       if (tm.length) isiNanti(() => tk === tokenS, "akKjTm", bagS(`Usulan tim pakar <small class="ak-hit">${angka(tm.length)}</small>`, daftarBkr(tm.map(([t, o]) => barisPk(o, undefined, dlist(t.alasan).join(", ")))) + '<small class="ak-lper">Usulan otomatis dari rumpun, keahlian OpenAlex, kampus di provinsi terdampak, riset tentang kejadian ini, h-index, dan riwayat menulis bersama; periksa ketersediaan sebelum dihubungi</small>')); });
+    ambilData("temuan_riset").then(T => { const h = T ? pilarRiset(T.kejadian?.[k.id], T, "Temuan riset tentang kejadian ini") : ""; if (h) isiNanti(() => tk === tokenS, "akKjPl", h); });
     /* lembaga yang membantu kejadian ini (donasi_bencana, dicocokkan ke kejadian saat panen) */
     ambilData("donasi_bencana").then(d => { const a = dlist(d?.aksi).filter(x => x.kejadian_id === k.id); if (!a.length || tk !== tokenS) return; const per = new Map();
       a.forEach(x => { const e = per.get(x.kunci) || per.set(x.kunci, {nama: x.nama, lembaga_id: x.lembaga_id, n: 0, rp: 0, bentuk: new Set()}).get(x.kunci); e.n++; e.rp += x.nilai_rp || 0; dlist(x.bentuk).forEach(b => e.bentuk.add(b)); });
@@ -2065,19 +2066,21 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       aksi: [{kunci: "L:laz-a", nama: "LAZ Berizin Contoh A", bentuk: ["uang"], nilai_rp: 750000000, penerima: "BPBD Kabupaten Contoh", prov: "32", tanggal: "2026-10-20", judul: "LAZ Contoh A salurkan Rp750 juta untuk korban banjir (contoh)", sumber_url: "https://contoh-laz-a.example.org/berita"},
         {kunci: "L:laz-a", nama: "LAZ Berizin Contoh A", bentuk: ["barang"], barang: "Selimut dan tenda", penerima: "Posko pengungsian Contoh", prov: "32", tanggal: "2026-10-12", judul: "Bantuan selimut dan tenda (contoh)", sumber_url: "https://contoh-laz-a.example.org/b2"},
         {kunci: "T:pt contoh", nama: "PT Contoh Peduli", bentuk: ["peralatan"], barang: "Dua perahu karet dan genset", penerima: "BPBD Provinsi Riau", prov: "14", tanggal: "2026-09-02", judul: "PT Contoh serahkan perahu karet (contoh)", sumber_url: "https://contoh.example.org/c"}]};
-    return {lembaga: L, lembaga_3w: W, aset_riset: S, sensor, inovasi, sistem_data, tokoh, dokumen, berita, pendanaan, donasi_bencana};
+    const temuan_riset = {temuan: [{id: "W1", doi: "https://doi.org/10.0000/contoh", judul: "Ambang hujan longsor contoh (contoh)", tahun: 2024, temuan: "Longsor di daerah contoh dipicu hujan lebih dari 80 mm dalam 3 hari (contoh).", pilar: ["prediksi", "teknologi"], jenis: ["longsor"],
+      angka: [{besaran: "ambang hujan 3 hari", nilai: "80", satuan: "mm", jenis: "ambang"}], teknologi: "Sensor kemiringan lereng murah berbasis LoRa (contoh)", rekomendasi: null, kualitas: "sedang", pakar: []}], prov: {"14": ["W1"], "53": ["W1"]}, kab: {}, kejadian: {}};
+    return {lembaga: L, lembaga_3w: W, aset_riset: S, sensor, inovasi, sistem_data, tokoh, dokumen, berita, pendanaan, donasi_bencana, temuan_riset};
   }
-  const NAMA_DUMMY = {tokoh: ["tokoh", "berita", "lembaga"], berita: ["berita", "lembaga", "tokoh"], pendanaan: ["pendanaan", "lembaga"], pustaka: ["dokumen"], wilayah: ["lembaga", "sensor", "inovasi", "lembaga_3w", "sistem_data", "dokumen", "tokoh", "pendanaan"], sistem_data: ["sistem_data", "lembaga"], inovasi: ["inovasi", "lembaga"], lembaga: ["lembaga", "lembaga_3w", "sensor"], donasi: ["donasi_bencana", "lembaga"], pusat: ["aset_riset"]};
+  const NAMA_DUMMY = {tokoh: ["tokoh", "berita", "lembaga"], berita: ["berita", "lembaga", "tokoh"], pendanaan: ["pendanaan", "lembaga"], pustaka: ["dokumen"], wilayah: ["lembaga", "sensor", "inovasi", "lembaga_3w", "sistem_data", "dokumen", "tokoh", "pendanaan", "temuan_riset"], sistem_data: ["sistem_data", "lembaga"], inovasi: ["inovasi", "lembaga"], lembaga: ["lembaga", "lembaga_3w", "sensor"], donasi: ["donasi_bencana", "lembaga"], pusat: ["aset_riset"]};
   function pesanDummy(t) { $("akDummyPesan").textContent = t; }
   function dummyIsi() {
     const v = tampilSkrg === "pakar" && pkSub === "tokoh" ? "tokoh" : tampilSkrg, ns = NAMA_DUMMY[v]; if (!ns) { pesanDummy("Tab ini belum punya data contoh."); return; }
     if (v === "wilayah" && !WL.kode) WL.kode = "14";
     const D = dataContoh(); ns.forEach(n => { DATA[n] = Promise.resolve(D[n]); });
     if (v === "lembaga") lbSub = "peta"; else if (v === "pusat") psSub = "aset";
-    dummyMuat(v); pesanDummy(`Data contoh terisi: ${ns.map(n => angka(D[n].length ?? D[n].pemberi?.length) + " " + (n === "donasi_bencana" ? "pemberi donasi" : n.replace("_", " "))).join(", ")}`);
+    dummyMuat(v); pesanDummy(`Data contoh terisi: ${ns.map(n => angka(D[n].length ?? D[n].pemberi?.length ?? D[n].temuan?.length) + " " + (n === "donasi_bencana" ? "pemberi donasi" : n === "temuan_riset" ? "temuan riset" : n.replace("_", " "))).join(", ")}`);
   }
   function dummyHapus() {
-    ["lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "donasi_bencana"].forEach(n => delete DATA[n]); psSub = "pusat"; lbSub = "peta"; delete DATA.sensor;
+    ["lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "donasi_bencana", "temuan_riset"].forEach(n => delete DATA[n]); psSub = "pusat"; lbSub = "peta"; delete DATA.sensor;
     Object.keys(MUAT).forEach(k => { delete sudah[k]; }); const v = tampilSkrg === "pakar" && pkSub === "tokoh" ? "tokoh" : tampilSkrg;
     if (NAMA_DUMMY[v]) dummyMuat(v); pesanDummy("Data contoh dihapus");
   }
@@ -2693,6 +2696,9 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
       const th = dlist(L.tahun), mx = Math.max(...a, 1), jml = a.reduce((t, v) => t + (v || 0), 0);
       isiNanti(() => $("akWlKh") && WL.kode && String(WL.kode).slice(0, 2) === String(pv), "akWlKh", bagW(kab ? "Luas indikasi karhutla di provinsi ini" : "Luas indikasi karhutla", `<div class="ak-bars">${th.map((t, i) => barHtml({warna: "#e8590c", lebar: (a[i] || 0) / mx * 100, nilai: angka(Math.round(a[i] || 0)) + " ha", persen: "", label: esc(t + (L.sampai?.[t] ? ` (sampai ${L.sampai[t].slice(5)}/${L.sampai[t].slice(0, 4)})` : "")), attr: `data-t="${esc(t)}" data-n="${Math.round(a[i] || 0)}"`})).join("")}</div>`,
         `SiPongi KLHK, indikasi dari titik panas dan verifikasi, bukan citra; ${angka(Math.round(jml))} ha sejak ${th[0]}`)); });
+    H.push('<div id="akWlRs"></div>');
+    ambilData("temuan_riset").then(T => { if (!T) return; const ids = kab ? Object.entries(T.kab || {}).filter(([q]) => q.startsWith(pv + "|") && kkN(q.slice(3)) === kkN(kab)).flatMap(([, v]) => v).concat(T.prov?.[pv] || []) : T.prov?.[pv];
+      const h = pilarRiset(ids, T, kab ? "Temuan riset untuk daerah ini" : "Temuan riset di provinsi ini"); if (h) isiNanti(() => $("akWlRs") && WL.kode && String(WL.kode).slice(0, 2) === String(pv), "akWlRs", h); });
     /* lembaga yang membantu provinsi ini (donasi_bencana; lokasi aksi umumnya hanya sampai provinsi) */
     H.push('<div id="akWlDn"></div>');
     ambilData("donasi_bencana").then(d => { const a = dlist(d?.aksi).filter(x => String(x.prov || "") === String(pv)); if (!a.length) return; const per = new Map();
@@ -3019,6 +3025,19 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     model: '<rect x="7" y="7" width="10" height="10" rx="2"/><path d="M9.5 3v4M14.5 3v4M9.5 17v4M14.5 17v4M3 9.5h4M3 14.5h4M17 9.5h4M17 14.5h4"/>', drone: '<circle cx="5.5" cy="6" r="2.5"/><circle cx="18.5" cy="6" r="2.5"/><circle cx="5.5" cy="18" r="2.5"/><circle cx="18.5" cy="18" r="2.5"/><rect x="9" y="9" width="6" height="6" rx="1.5"/>', satelit: '<rect x="9" y="9" width="6" height="6" rx="1"/><path d="M3 9l4 4M17 11l4 4M7 3l4 4M13 17l4 4"/>',
     material: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9zM12 12l8-4.5M12 12v9M12 12 4 7.5"/>', alat: '<path d="M14.5 6a4 4 0 0 0-5 5L3 17.5 6.5 21l6.5-6.5a4 4 0 0 0 5-5l-3 3-2.5-.5-.5-2.5z"/>', sistem: IK_DB, lain: KAT.inovasi[1]};
   const ikJenis = j => { j = String(j || "").toLowerCase(); return IKJENIS[/sensor/.test(j) ? "sensor" : /ews|sirene|peringatan/.test(j) ? "ews" : /aplikasi|app/.test(j) ? "aplikasi" : /model|ai\b/.test(j) ? "model" : /drone/.test(j) ? "drone" : /satelit/.test(j) ? "satelit" : /material/.test(j) ? "material" : /alat/.test(j) ? "alat" : /sistem|informasi/.test(j) ? "sistem" : "lain"]; };
+  /* ----- temuan riset per empat pilar (prediksi, penanganan, teknologi, dampak) dari pembacaan mendalam abstrak karya pakar ----- */
+  const PILAR = [["prediksi", "Prediksi", IK_BAR, "#1c7ed6"], ["penanganan", "Penanganan", IK_ORANG, "#2b8a3e"], ["teknologi", "Teknologi dan inovasi", '<path d="M9 18h6M10 21h4M12 3a6 6 0 0 0-3.5 10.9V16h7v-2.1A6 6 0 0 0 12 3z"/>', "#7048e8"], ["dampak", "Dampak", IK_GEDUNG, "#c92a2a"]];
+  function pilarRiset(ids, T, judul) {
+    const m = T._m ||= new Map(dlist(T.temuan).map(x => [x.id, x])), a = [...new Set(dlist(ids))].map(i => m.get(i)).filter(Boolean)
+      .sort((x, y) => ({tinggi: 0, sedang: 1, rendah: 2}[x.kualitas] ?? 3) - ({tinggi: 0, sedang: 1, rendah: 2}[y.kualitas] ?? 3) || (y.tahun || 0) - (x.tahun || 0));
+    if (!a.length) return "";
+    const blok = ([k, l, ik, w]) => { const b = a.filter(x => x.pilar.includes(k)).slice(0, 4); if (!b.length) return "";
+      return `<div class="ak-pilar"><h4 style="--w0:${w}">${ikon(ik, w)}${esc(l)} <small class="ak-hit">${angka(a.filter(x => x.pilar.includes(k)).length)}</small></h4><ul class="ak-lsumber">${b.map(x => {
+        const ang = k === "prediksi" || k === "dampak" ? dlist(x.angka).filter(n => k === "prediksi" ? n.jenis !== "statistik" : n.jenis === "statistik").slice(0, 2) : [];
+        const pk = dlist(x.pakar).map(i => peta.get(i)).filter(Boolean).slice(0, 2);
+        return `<li>${esc(k === "teknologi" && x.teknologi ? x.teknologi : k === "penanganan" && x.rekomendasi ? x.rekomendasi : x.temuan)}${ang.length ? `<br><span class="ak-pil">${ang.map(n => pilMini(ik, `${n.besaran}: ${n.nilai}${n.satuan ? " " + n.satuan : ""}`, w)).join("")}</span>` : ""}<br><small class="ak-lper">${urlOk(x.doi) ? tautanLuar(urlOk(x.doi), esc(x.judul)) : esc(x.judul)}${x.tahun ? `, ${esc(x.tahun)}` : ""}${pk.length ? ", " + pk.map(o => `<button type="button" class="ak-rk-b" data-pk="${esc(o[0])}">${esc(o[1])}</button>`).join(", ") : ""}</small></li>`; }).join("")}</ul></div>`; };
+    return `<section class="ak-dbagian"><div class="ak-disi"><h3>${esc(judul)} <small class="ak-hit">${angka(a.length)}</small></h3><div class="ak-pilar-g">${PILAR.map(blok).join("")}</div><small class="ak-lper">Ringkasan ditulis ulang dari abstrak karya pakar direktori (OpenAlex); angka hanya yang disebut penulis dan belum diuji di sistem ini; klik judul untuk membaca karyanya</small></div></section>`;
+  }
   /* ----- Donasi bencana: peringkat pemberi (uang, barang, peralatan, layanan) dari berita dan laman lembaga; klik pemberi = rincian ke mana dan untuk apa ----- */
   const IK_DONASI = '<path d="M12 20s-8-5-8-11a4 4 0 0 1 8-1 4 4 0 0 1 8 1c0 6-8 11-8 11z"/>';
   const JENIS_DONOR = {perusahaan: ["Perusahaan", "#1c7ed6"], bumn: ["BUMN", "#0b7285"], zakat: ["Zakat", "#2b8a3e"], filantropi: ["Filantropi", "#5c940d"], keagamaan: ["Keagamaan", "#7048e8"], kampus: ["Kampus", "#14284b"],

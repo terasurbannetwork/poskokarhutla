@@ -2470,3 +2470,7 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-dn-rinci .ak-lsumber li{margin-bottom:8px}
 .ak-dnprov tr.ak-dn-kurang td{background:color-mix(in srgb,#e8590c 10%,transparent)}
 .ak-dnprov tr.ak-dn-kurang td:first-child{box-shadow:inset 3px 0 0 #e8590c}
+/* temuan riset per pilar: empat kolom di layar lebar, satu kolom di ponsel */
+.ak-pilar-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.ak-pilar h4{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:13px;color:var(--w0)}
+.ak-pilar .ak-ikon{width:16px;height:16px}
