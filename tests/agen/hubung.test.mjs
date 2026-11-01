@@ -285,3 +285,12 @@ test("usulan tim pakar per kejadian: rumpun atau keahlian wajib, kampus provinsi
   const R = S.ringkasBantuanProv([{prov: "72", kunci: "a", nilai_rp: 5}, {prov: "72", kunci: "b"}, {prov: "7", kunci: "c"}], {kolom: ["kab", "tahun", "jenis", "kejadian", "meninggal_hilang", "luka", "terdampak"], baris: [["7271", 2020, "gempa", 40, 1, 0, 1000], ["7271", 2015, "gempa", 99, 0, 0, 9]]});
   assert.deepEqual(R.map(x => [x.prov, x.aksi, x.pemberi, x.kejadian, x.terdampak, x.per100]), [["72", 2, 2, 40, 1000, 5]]);
 });
+
+test("dana resmi: zakat lingkup nasional 2020-2023 tanpa agregat dan nama ragu; IFRC sejak 2004 dan CERF berurut terbaru", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const d = S.danaResmi({zakat_resmi: {baris: [{tahun: 2023, lingkup: "nasional", lembaga_nama: "BAZNAS (Pusat)", nilai_rp: 9}, {tahun: 2023, lingkup: "nasional", lembaga_nama: "Seluruh pengelola zakat nasional (agregat)", nilai_rp: 99},
+      {tahun: 2023, lingkup: "nasional", lembaga_nama: "LAZ X* LAZ Y", nama_tidak_pasti: true, nilai_rp: 5}, {tahun: 2019, lingkup: "nasional", lembaga_nama: "BAZNAS (Pusat)", nilai_rp: 1}, {tahun: 2022, lingkup: "kabkota", lembaga_nama: "BAZNAS Kota Z", nilai_rp: 1}]},
+    ifrc_go: {baris: [{kode: "OLD", tanggal_mulai: "1990-01-01"}, {kode: "MDRID013", tanggal_mulai: "2018-10-01", kejadian_id: "palu", jumlah_diminta_chf: 1}]}, cerf: {baris: [{tanggal: "2018-10-09", nilai_usd: 14, kejadian_id: "palu"}]}}, [{id: "palu", nama: "Palu"}]);
+  assert.deepEqual(d.zakat.map(z => [z.nama, Object.keys(z.tahun)]), [["BAZNAS (Pusat)", ["2023"]]]);
+  assert.deepEqual(d.intl.map(x => [x.sumber, x.kejadian]), [["CERF", "Palu"], ["IFRC", "Palu"]]);
+});

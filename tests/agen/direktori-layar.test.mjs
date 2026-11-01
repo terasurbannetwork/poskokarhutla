@@ -109,6 +109,8 @@ else {
     assert.match(await T.eval(`document.querySelector('[data-rinci="L:laz-a"]').innerText`), /Rp 750 juta/);
     assert.match(await T.eval(`document.querySelector(".ak-dnprov").innerText`), /Jawa Barat[\s\S]*8\.246\.258/);
     assert.equal(await T.eval(`document.querySelectorAll(".ak-dnprov tr.ak-dn-kurang").length`), 1);
+    const isi = await T.eval(`document.getElementById("akv-donasi").innerText`);
+    assert.match(isi, /CHF 5 juta diminta/); assert.match(isi, /BAZNAS Contoh[\s\S]*Rp 200 miliar/);
     await T.eval(`document.querySelector('#akDnB [data-v="peralatan"]').click()`);
     await T.tungguFungsi(`/^1 pemberi$/.test(document.getElementById("akDnJd").textContent) && /PT Contoh Peduli/.test(document.getElementById("akDnL").innerText)`);
     assert.deepEqual(galatJs(), []);
