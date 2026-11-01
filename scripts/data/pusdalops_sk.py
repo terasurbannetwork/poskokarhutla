@@ -37,7 +37,7 @@ BULAN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustu
 GSHEET = [(2021, "rekap_2021.xlsx", ["SK BENCANA ALAM", "KARHUTLA", "SK COVID"], "xlsx"), (2022, "rekap_2022.csv", None, "csv"),
           (2024, "rekap_2024.xlsx", BULAN, "bulanan")]
 PDFTOTEXT = shutil.which("pdftotext") or "/opt/homebrew/bin/pdftotext"
-SCRATCH = "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/6e485f05-b5fc-45c2-8b26-766e887590b2/scratchpad/sk"
+SCRATCH = os.environ.get("PUSDALOPS_TMP") or os.path.join(tempfile.gettempdir(), "pusdalops_sk")   # salinan PDF sementara, dihapus per berkas
 
 SIAGA, TANGGAP, TRANSISI = "Siaga Darurat", "Tanggap Darurat", "Transisi Darurat ke Pemulihan"
 BLN = {"jan": 1, "feb": 2, "mar": 3, "apr": 4, "mei": 5, "jun": 6, "jul": 7, "agu": 8, "ags": 8, "agt": 8, "sep": 9, "okt": 10, "oct": 10,
