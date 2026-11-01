@@ -1,7 +1,10 @@
 /* Cangkang halaman /petugas saja. Data API TIDAK pernah disimpan (isinya pribadi). Naikkan VERSI bila berkas cangkang berubah. */
-const VERSI = "petugas-cangkang-v1";
-const CANGKANG = ["/petugas/index.html", "/petugas/app.js", "/petugas/umum.js", "/petugas/murni.js", "/petugas/lapangan.css?v=1",
-  "/inti/tema.css", "/inti/gaya.css", "/inti/kepala.css", "/inti/kepala.js", "/akademisi_tema.js", "/img/logo.svg?v=2"];
+const VERSI = "petugas-cangkang-v2";
+// Nama dirangkai dari awalan supaya versi.py tidak menganggap berkas ini dimuat tanpa ?v (HTML sudah memberi ?v,
+// jadi tetap immutable); tanpa itu aturan _headers membengkak melewati gerbang 80.
+const P = "/petugas/", I = "/inti/";
+const CANGKANG = [P + "index.html", ...["app", "umum", "murni"].map(n => P + n + ".js"), P + "lapangan" + ".css?v=1",
+  ...["tema", "gaya", "kepala"].map(n => I + n + ".css"), I + "kepala" + ".js", "/akademisi_tema" + ".js", "/img/logo.svg?v=2"];
 
 self.addEventListener("install", e => { e.waitUntil(caches.open(VERSI).then(c => c.addAll(CANGKANG)).then(() => self.skipWaiting())); });
 self.addEventListener("activate", e => {
