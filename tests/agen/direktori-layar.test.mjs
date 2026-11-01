@@ -75,6 +75,23 @@ else {
     assert.deepEqual(galatJs(), []);
   });
 
+  test("lembar kampus: kotak cari menyaring daftar pakar kampus itu", async () => {
+    await T.buka(asal + "/akademisi.html?tampil=kampus", {tunggu: '[data-kp="Universitas Contoh Timur"]'});
+    await T.klik('[data-kp="Universitas Contoh Timur"]');
+    await T.tungguFungsi(`!!document.getElementById("akKpQ")`);
+    await T.eval(`(() => { const i = document.getElementById("akKpQ"); i.value = "pakar uji 12"; i.dispatchEvent(new Event("input", {bubbles: true})); })()`);
+    await T.tungguFungsi(`document.querySelectorAll("#akTopPk li").length === 1`);
+    assert.match(await T.eval(`document.getElementById("akTopPk").innerText`), /Pakar Uji 12\b/);
+    assert.equal(await T.eval(`document.getElementById("akKpN").textContent`), "1");
+    assert.deepEqual(galatJs(), []);
+  });
+
+  test("kategori lembaga di layar lebar: tepat dua baris", async () => {
+    await T.buka(`${asal}/akademisi.html?tampil=lembaga&sub=daftar`, {tunggu: "#akLC button"});
+    const baris = await T.eval(`new Set([...document.querySelectorAll("#akLC button")].map(b => Math.round(b.getBoundingClientRect().top))).size`);
+    assert.ok(baris <= 2, `kategori lembaga ${baris} baris`);
+  });
+
   test("lebar ponsel 390 px: Pakar dan Wilayah tidak menggulung ke samping", async () => {
     await T.ukuran(390, 844);
     for (const u of ["?tampil=pakar", "?tampil=wilayah&wilayah=53"]) {

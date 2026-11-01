@@ -88,6 +88,8 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-chip button{justify-content:center}
 /* layar sempit: tetap dua baris, digeser ke samping */
 @media (max-width:1100px){.ak-chip{display:grid;grid-template-columns:none;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.ak-chip::-webkit-scrollbar{display:none}}
+/* kategori lembaga: dua baris saja di layar lebar, kolom sama lebar, label panjang dibungkus dua baris */
+@media (min-width:1101px){#akLC{grid-template-columns:none;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}#akLC button{white-space:normal;line-height:1.15;text-align:center;padding:4px 5px 4px 8px}}
 .ak-chip .ak-ikon{width:15px;height:15px}
 .ak-chip button{display:inline-flex;align-items:center;gap:5px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;min-height:36px;padding:0 5px 0 9px;cursor:pointer;white-space:nowrap}
 .ak-chip button[data-r=""]{padding:0 14px}

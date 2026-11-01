@@ -44,7 +44,7 @@
     [6, "Sitasi", "Dikutip peneliti lain", '<path d="M7 7h4v6H5v-2c0-2 1-4 2-4zM15 7h4v6h-6v-2c0-2 1-4 2-4z"/>']];
   const metrik = o => `<div class="ak-metrik">${METRIK.map(([i, l, t, d]) => `<div title="${t}"><span class="ak-mlabel">${ikon(d, "currentColor")}${l}</span><b>${nol(o[i])}</b></div>`).join("")}</div>`;
 
-  const st = {q: "", prov: new Set(), kampus: new Set(), prodi: "", sumber: "s", urut: 4, rumpun: new Set(), bidang: "", hal: 1, kJenis: "k", baru: false};
+  const st = {q: "", prov: new Set(), kampus: new Set(), prodi: "", sumber: "", urut: 4, rumpun: new Set(), bidang: "", hal: 1, kJenis: "k", baru: false};
   let baruSet = new Set();
   let semua = [], hasil = [], perK = {}, tunda = 0;
   /* logo kampus: dari data pakar, lalu field logo di kampus.json (dibaca lewat Proxy supaya semua pemakai logoK ikut) */
@@ -377,8 +377,12 @@
     const pk = pakarSama(x);
     return `<li class="ak-pkb"><button type="button" class="ak-sbuka ak-pkbtn ak-pkbtn-tk" ${attr}><span class="ak-sosok">${fotoTk(x)}</span><span class="ak-pkn"><span class="ak-pkt"><b>${esc(x.nama)}</b>${bintangI(l ? "L:" + l.id : "")}</span><small title="${esc(x.peran || "")}">${esc(x.peran || "")}</small><span class="ak-pkr">${x.peran_kebencanaan ? pilPeranKb(x.peran_kebencanaan) : ""}${x.jenis ? pilMini(IK_ORANG, kapital(x.jenis)) : ""}${afil}</span></span>${pk ? `<span class="ak-pkm">${METRIK.map(([n, lb]) => `<span><small>${lb}</small><b>${nol(pk[n])}</b></span>`).join("")}</span>` : ""}</button></li>`; };
   const URUT_PK = [[4, "h-index", METRIK[0][3]], [5, "Karya", METRIK[1][3]], [6, "Sitasi", METRIK[2][3]]]; let topPk = [];
-  const urutPk = n => `<ol class="ak-sdaftar ak-pkl">${topPk.slice().sort((a, b) => b[n] - a[n] || b[4] - a[4]).slice(0, 10).map(barisPk).join("")}</ol>`;
-  const bagTopPk = ors => { topPk = ors; return `<section class="ak-dbagian"><div class="ak-disi"><div class="ak-bh"><div class="ak-bh-j"><h3>Pakar <small class="ak-hit" id="akKpN">${angka(ors.length)}</small></h3></div><div class="ak-urut" role="group" aria-label="Urutkan">${URUT_PK.map(([n, l, d], j) => `<button type="button" data-urut="${n}" aria-pressed="${j === 0}">${ikon(d, "currentColor")}${l}</button>`).join("")}</div></div><div id="akKpFil"></div><div id="akTopPk">${urutPk(4)}</div></div></section>`; };
+  /* kotak cari di lembar kampus: nama atau prodi; tanpa kata kunci tampil 10 teratas, dengan kata kunci sampai 50 yang cocok */
+  let KPQ = "";
+  const nrmQ = t => String(t || "").toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  const cocokKpq = o => !KPQ || nrmQ(o[1] + " " + (prodiDari(o) || "")).includes(KPQ);
+  const urutPk = n => { const a = topPk.filter(cocokKpq); return a.length ? `<ol class="ak-sdaftar ak-pkl">${a.sort((x, y) => y[n] - x[n] || y[4] - x[4]).slice(0, KPQ ? 50 : 10).map(barisPk).join("")}</ol>` : '<p class="ak-khampa">Tidak ada pakar yang cocok.</p>'; };
+  const bagTopPk = ors => { topPk = ors; KPQ = ""; return `<section class="ak-dbagian"><div class="ak-disi"><div class="ak-bh"><div class="ak-bh-j"><h3>Pakar <small class="ak-hit" id="akKpN">${angka(ors.length)}</small></h3></div><div class="ak-urut" role="group" aria-label="Urutkan">${URUT_PK.map(([n, l, d], j) => `<button type="button" data-urut="${n}" aria-pressed="${j === 0}">${ikon(d, "currentColor")}${l}</button>`).join("")}</div></div><div id="akKpFil"></div>${cariKotak("akKpQ", "Cari pakar di kampus ini")}<div id="akTopPk">${urutPk(4)}</div></div></section>`; };
   const KOLASI = new Intl.Collator("id", {numeric: true});
   document.addEventListener("click", e => { const th = e.target.closest(".ak-bpt th[data-s]"); if (th) { const tb = th.closest("table"), n = th.dataset.s, naik = th.getAttribute("aria-sort") !== "ascending"; tb.querySelectorAll("th").forEach(x => x.setAttribute("aria-sort", "none")); th.setAttribute("aria-sort", naik ? "ascending" : "descending");
       nanti(() => { const tr = [...tb.tBodies[0].rows].sort((a, b) => (naik ? 1 : -1) * KOLASI.compare(a.dataset["k" + n], b.dataset["k" + n])); tb.tBodies[0].append(...tr); }); return; }
@@ -422,9 +426,10 @@ ${(() => { const baris = (o, n) => barisPk(o).replace('<li class="ak-pkb">', `<l
     document.querySelectorAll("#akSheet [data-kpt]").forEach(el => { const a = KPSET.has(el.dataset.kpt); el.setAttribute("aria-pressed", String(a)); el.classList.toggle("ak-bsel", a); el.classList.toggle("ak-bredup", on && !a); });
     topPk = fil; const n = +($("akSheet").querySelector("[data-urut][aria-pressed=true]")?.dataset.urut || 4);
     if ($("akTopPk")) $("akTopPk").innerHTML = fil.length ? urutPk(n) : '<p class="ak-khampa">Tidak ada pakar di rumpun terpilih.</p>';
-    if ($("akKpN")) $("akKpN").textContent = angka(fil.length);
+    if ($("akKpN")) $("akKpN").textContent = angka(KPQ ? fil.filter(cocokKpq).length : fil.length);
     if ($("akKpFil")) $("akKpFil").innerHTML = on ? `<div class="ak-pil ak-mps">${[...KPSET].map(r => `<button type="button" class="ak-mp ak-mp-x" data-kpx="${esc(r)}" title="Hapus saringan">${esc((RUMPUN[r] || [r])[0])} &times;</button>`).join("")}<button type="button" class="ak-mp ak-mp-b ak-mp-sem" data-kpx="semua">Hapus semua</button></div>` : "";
   }
+  let kpqT = 0; document.addEventListener("input", e => { if (e.target.id !== "akKpQ") return; clearTimeout(kpqT); kpqT = setTimeout(() => { KPQ = nrmQ(e.target.value.trim()); segarKp(); }, 150); });
   document.addEventListener("click", e => { const b = e.target.closest("[data-kpt]"), x = e.target.closest("[data-kpx]"); if (!b && !x) return; e.stopPropagation();
     if (b) KPSET.has(b.dataset.kpt) ? KPSET.delete(b.dataset.kpt) : KPSET.add(b.dataset.kpt); else if (x.dataset.kpx === "semua") KPSET.clear(); else KPSET.delete(x.dataset.kpx);
     b?.setAttribute("aria-pressed", String(KPSET.has(b.dataset.kpt))); nanti(segarKp); }, true);
@@ -3518,7 +3523,6 @@ h2.sub{margin:12px 0 5px;font-size:11.5px;color:#0b2545;break-after:avoid}table.
     const pv = qs.get("prov"), rp = qs.get("rumpun"), pk = qs.get("pakar");
     if (pv && !$("akVBox").hidden) { st.prov = new Set(pv.split(",").filter(v => PROV[v] || v === "?")); isiProv(); }   // ?prov=32,33 boleh banyak
     if (rp) { const rr = rp.split(",").filter(r => d.rumpun.includes(r) || RUMPUN[r]); st.bidang = rr.find(r => BIDANG_PK.includes(r)) || ""; st.rumpun = new Set(rr.filter(r => !BIDANG_PK.includes(r))); $("akBd")?._label?.(); }
-    if ((st.prov.size || st.rumpun.size || st.bidang) && !qs.get("sumber")) { st.sumber = ""; $("akS").querySelectorAll("button").forEach(x => x.setAttribute("aria-pressed", String(x.dataset.v === ""))); }
     $("akIsi").hidden = false;
     $("akQ").addEventListener("input", () => { clearTimeout(tunda); tunda = setTimeout(() => { st.q = $("akQ").value.trim(); saring(); }, 200); });
     segmen("akS", "sumber", v => v);
