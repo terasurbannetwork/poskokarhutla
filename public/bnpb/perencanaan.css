@@ -28,7 +28,8 @@ tr.pr-rinci>td{background:var(--soft);padding:12px}
 /* kalender */
 .pr-kal th.b,.pr-kal td.b{padding:4px 2px;min-width:34px;text-align:center}
 .pr-kal td.b{font-weight:800;font-size:12px}
-.pr-kal th:first-child,.pr-kal td:first-child{position:sticky;left:0;background:var(--card);z-index:1;text-align:left}
+.pr-kal th:first-child,.pr-kal td:first-child{position:sticky;left:0;background:var(--card);z-index:1}
+.pr-kal td:first-child{text-align:left}
 .pr-kal th:first-child{background:var(--navy)}
 .pr-s-puncak{background:color-mix(in srgb,var(--c1) 75%,transparent);color:#fff}
 .pr-s-musim{background:color-mix(in srgb,var(--c2) 40%,transparent)}
