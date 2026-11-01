@@ -17,11 +17,12 @@
    "peta": null,
    "struktur": [
     "Foto: pantauan udara tim BNPB",
-    "Pantauan udara Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
+    "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
     "Dipresentasikan oleh",
     "Tim IT BNPB",
     "Badan Nasional Penanggulangan Bencana",
     "Jakarta, 1 November 2026",
+    "Ditujukan khusus untuk Kepala BNPB",
     "© 2026 Badan Nasional Penanggulangan Bencana",
     "Ketangguhan Bangsa dalam Menghadapi Bencana"
    ],
@@ -29,6 +30,10 @@
     [
      "00499D",
      "aksen"
+    ],
+    [
+     "051C2C",
+     "inti"
     ],
     [
      "051C2C",
@@ -71,6 +76,7 @@
    "visual": [],
    "gambar": [
     "foto",
+    "logo",
     "logo"
    ],
    "panel": [],
@@ -79,7 +85,7 @@
     43.2,
     279.84000000000003,
     410.0,
-    39.0
+    19.5
    ]
   },
   {
@@ -1729,6 +1735,7 @@
    "gambar": [
     "foto",
     "logo",
+    "logo",
     "ikon",
     "ikon",
     "ikon",
@@ -2574,6 +2581,7 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/merauke/cp.csv": "8459b1ed02603c4ba77c1395629c0dfe41d31f365b106f040b485660ea8f0d61",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/merauke/peta-rute.json": "1aa91cdd505d10699a7ca4ca964bfb65dec06944b5c571b93693e2fd41635555",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/data/merauke/peta-rute.png": "7fbe883e9e15eb34d8cac4cbf8ea71afdaa9780bf49ffe7f58a8612b35f656d9",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-pilot-01.png": "9dc663a662b7c8b359de3c84be19f7125626ad17cd1f44e3d1795c40214e0e9f",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-pilot-02.png": "c2af7d97038c48cecb7b6b66d18d59e7a72937598ea486b54b645cb984b4ac3c",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/renlap-pilot-03.png": "e0b7cd3b94f32be135ecfb516d2de30c27cf911a4f78c87365b0346db9a6a88b",
@@ -2597,8 +2605,8 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-32.jpg": "fbd69065bdc79413771ad893c41aa1db4bfd1bfe7e0f8f3d25ea844985f98a1e",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-37.jpg": "511d716c2f078ad57f773182408917552f556327302ec56413cdb8a45070d7ae",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/video-asap.jpg": "d50c2595a1da13a25ea75898dda351127cf54548a9d10f2b2618ebe94db05b40",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/pantau-merauke.json": "ded0553498d63df4d2a03402f203ec1caa2ce7d273cbcd9b47c1eb0d45c72cd8",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/tema.json": "72414da0f15e5881d7e8d1a164e9c1f5de222b317fdb08585458145161df7718",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/pantau-merauke.json": "99908b04b06652eb0ef5c4fc23cf0455e9791488163b54115febb5dcc1813b0c",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/tema.json": "318353b57aa553457655710c25477b9ed96398cc857ad1d878bf8bd14c72842e",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }
 }

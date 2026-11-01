@@ -23,10 +23,12 @@
       "layout": "putih",
       "judul_penuh": true,
       "skala_subjudul": 0.9,
-      "foto": "foto/udara-04.jpg",
+      "foto": "foto/udara-20.jpg",
       "kota": "Jakarta",
       "kredit": "Foto: pantauan udara tim BNPB",
-      "subjudul": "Pantauan udara Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kepada": "Ditujukan khusus untuk Kepala BNPB",
+      "subjudul": "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
       "penyaji": {
         "nama": "Tim IT BNPB",
         "jabatan": "Badan Nasional Penanggulangan Bencana"
@@ -837,6 +839,7 @@
     {
       "jenis": "penutup",
       "foto": "foto/udara-20.jpg",
+      "logo_kanan": "foto/berakhlak-hd.png",
       "kredit": "Foto: pantauan udara tim BNPB",
       "teks": "Terima Kasih",
       "laporan": "Pemadaman cluster Jagebob dan Animha, pemanggilan perusahaan, penegakan hukum, rute pagi hari, pompa dekat air, dan perlindungan warga dari asap"

@@ -56,8 +56,9 @@ PUSTAKA = [
      'title': 'Renlap SIPPA pilot Kalimantan Tengah: 5 lokasi, sumber air terdekat', 'verifikasi': 'primer'},
 ]
 
-SAMPUL = {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subjudul': 0.9, 'foto': 'foto/udara-04.jpg', 'kota': 'Jakarta', 'kredit': 'Foto: pantauan udara tim BNPB',
-          'subjudul': 'Pantauan udara Kabupaten Merauke, Papua Selatan, 31 Oktober 2026',
+SAMPUL = {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subjudul': 0.9, 'foto': 'foto/udara-20.jpg', 'kota': 'Jakarta', 'kredit': 'Foto: pantauan udara tim BNPB',
+          'logo_kanan': 'foto/berakhlak-hd.png', 'kepada': 'Ditujukan khusus untuk Kepala BNPB',
+          'subjudul': 'Kabupaten Merauke, Papua Selatan, 31 Oktober 2026',
           'penyaji': {'nama': 'Tim IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}}
 
 RINGKAS = {
@@ -252,7 +253,7 @@ LAMP = [
             {'berkas': 'foto/video-asap.jpg', 'keterangan': 'Cuplikan video: banyak kepulan asap'}]}], 'Pantauan udara tim BNPB, 31 Okt 2026'),
 ]
 
-PENUTUP = {'jenis': 'penutup', 'foto': 'foto/udara-20.jpg', 'kredit': 'Foto: pantauan udara tim BNPB', 'teks': 'Terima Kasih',
+PENUTUP = {'jenis': 'penutup', 'foto': 'foto/udara-20.jpg', 'logo_kanan': 'foto/berakhlak-hd.png', 'kredit': 'Foto: pantauan udara tim BNPB', 'teks': 'Terima Kasih',
            'laporan': 'Pemadaman cluster Jagebob dan Animha, pemanggilan perusahaan, penegakan hukum, rute pagi hari, pompa dekat air, dan perlindungan warga dari asap'}
 
 SPEK = {
