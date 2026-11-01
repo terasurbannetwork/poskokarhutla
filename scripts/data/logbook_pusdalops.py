@@ -204,13 +204,17 @@ def baca_docx(path):
             break
     baris, piket = [], []
     for ti, tbl in enumerate(body.iter(W + "tbl")):
-        rows = [[teks_sel(tc) for tc in tr.findall(W + "tc")] for tr in tbl.findall(W + "tr")]
+        trs = tbl.findall(W + "tr")
+        rows = [[teks_sel(tc) for tc in tr.findall(W + "tc")] for tr in trs]
         if rows and any("PETUGAS PIKET" in c.upper() for c in rows[0]):
             for r in rows[1:]:
                 piket += [c.strip() for c in r[1:] if c.strip() and not re.fullmatch(r"\d+\.?", c.strip())]
             continue
-        for cells in rows:
-            if len(cells) >= 6 and re.fullmatch(r"\d+\.?", cells[0].strip()):
+        for tr, cells in zip(trs, rows):
+            # kolom No berupa angka, atau penomoran otomatis Word (teks kosong, ada w:numPr; sebagian 2024)
+            no_otomatis = not cells[0].strip() and tr.find("./" + W + "tc").find(".//" + W + "numPr") is not None \
+                if cells else False
+            if len(cells) >= 6 and (re.fullmatch(r"\d+\.?", cells[0].strip()) or no_otomatis):
                 baris.append([ti] + cells)
     return kepala, baris, piket
 
@@ -244,7 +248,7 @@ def semua_tgl(t: str, tahun_default=None):
     return [v for _, v in sorted(out)]
 
 
-RE_TGL_ANGKA = re.compile(r"(?<![\d.])(\d{2})\.?(\d{2})\.?(\d{4}|\d{2})(?![\d])")
+RE_TGL_ANGKA = re.compile(r"(?<![\d.-])(\d{2})([.-]?)(\d{2})\2(\d{4}|\d{2})(?![\d])")
 
 
 def tgl_berkas(nama: str):
@@ -253,9 +257,9 @@ def tgl_berkas(nama: str):
         return iso(m.group(1), BULAN[m.group(2).lower()], m.group(3))
     # arsip 2011-2020: "15012018 laporan LOG BOOK", "TRC BNPB 050411", "LOGBOOK PUSDALOPS 21052013"
     m = RE_TGL_ANGKA.search(nama)
-    if m and 1 <= int(m.group(2)) <= 12:
-        y = m.group(3)
-        return iso(m.group(1), m.group(2), y if len(y) == 4 else "20" + y)
+    if m and 1 <= int(m.group(3)) <= 12:
+        y = m.group(4)
+        return iso(m.group(1), m.group(3), y if len(y) == 4 else "20" + y)
     return None
 
 

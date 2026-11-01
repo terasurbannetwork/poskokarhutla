@@ -90,7 +90,9 @@ def rekap(rows, berkas):
     hari = {os.path.basename(os.path.dirname(f)): json.load(open(os.path.join(os.path.dirname(f), "ringkasan.json")))["n_berkas"]
             for f in berkas}
     jenis = sorted({r["jenis"] for r in rows})
-    penuh = sorted(y for y, h in hari.items() if h >= 365)
+    # tahun dasar kalender = runtun penuh 2014-2020; tahun penuh lain (2024) hanya masuk "tahun"/"bulan", supaya label
+    # "N dari 7 tahun, 2014-2020" di layar dan uji balik tetap sah. Menambah tahun dasar = ganti label layar sekaligus.
+    penuh = sorted(y for y, h in hari.items() if h >= 365 and "2014" <= y <= "2020")
     kab = collections.defaultdict(lambda: {"bulan": collections.defaultdict(lambda: [0] * 12),
                                            "tahun": collections.defaultdict(dict),
                                            "ada": collections.defaultdict(lambda: [set() for _ in range(12)]),
@@ -100,6 +102,8 @@ def rekap(rows, berkas):
     nas = collections.defaultdict(lambda: collections.defaultdict(int))
     for r in rows:
         tgl = r["tgl_kejadian"] or r["pertama_dicatat"]
+        if tgl < r["pertama_dicatat"] and (dt.date.fromisoformat(r["pertama_dicatat"]) - dt.date.fromisoformat(tgl)).days > 300:
+            tgl = r["pertama_dicatat"]  # salah ketik tahun di Januari ("02 Januari 2023" dicatat 2 Jan 2024): pakai tanggal catat
         y, m = tgl[:4], int(tgl[5:7])
         if y not in hari:  # update atas kejadian tahun sebelumnya: masuk tahun logbook-nya
             y = r["pertama_dicatat"][:4]
