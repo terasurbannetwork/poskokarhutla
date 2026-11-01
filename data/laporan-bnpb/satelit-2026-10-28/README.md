@@ -22,6 +22,6 @@
   (kerja sama PT LNG Tangguh). Pil ARMADA UDARA bertanggal rekap (28 Okt).
   OMC 3 provinsi: Kalteng 8 sortie (11.200 kg NaCl + 500 kg dry ice, termasuk lintas Kalsel), Sumsel 8 sortie (9.200 kg NaCl + 1.700 kg
   dry ice), Kalsel 2 sortie (2.000 kg NaCl). Hujan 4 provinsi (Kalbar, Kalteng, Kalsel, Sumsel); hujan Jambi bertanggal 26 Okt, tidak dihitung.
-- Excel "Rekap OMC PPK Prastato Tahun 2026" dan daftar wilayah OMC PDW I bahan rekap OMC (../omc-2026-10-28), bukan deck ini.
+- Excel "Rekap OMC PPK Prastato Tahun 2026" dan daftar wilayah OMC PDW I bahan rekap OMC (../omc-rekap), bukan deck ini.
 
 Bangun ulang: `PLAYWRIGHT_MJS=<playwright>/index.mjs python3 jalan.py`, lalu ekspor PDF lewat PowerPoint.
