@@ -59,7 +59,7 @@ PUSTAKA = [
 SAMPUL = {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subjudul': 0.9, 'foto': 'foto/udara-20.jpg', 'kota': 'Jakarta', 'kredit': 'Foto: pantauan udara tim BNPB',
           'logo_kanan': 'foto/berakhlak-hd.png', 'kepada': 'Ditujukan khusus untuk Kepala BNPB',
           'subjudul': 'Kabupaten Merauke, Papua Selatan, 31 Oktober 2026',
-          'penyaji': {'nama': 'Tim Ahli BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}}
+          'penyaji': {'nama': 'Tim Ahli dan Tim Sus IT BNPB', 'jabatan': 'Badan Nasional Penanggulangan Bencana'}}
 
 RINGKAS = {
     'jenis': 'galeri', 'jenis_slide': 'navigasi', 'judul_bentuk': 'deskriptif', 'pesan': 'Ringkasan pantauan',
