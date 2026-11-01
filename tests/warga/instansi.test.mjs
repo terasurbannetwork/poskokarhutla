@@ -926,11 +926,11 @@ uji("instansi: idempotensi klien_id per tugas, PIC terakhir per kabupaten dari s
   assert.deepEqual((await DB.prepare("SELECT DISTINCT aksi FROM instansi_jejak ORDER BY aksi").all()).results.map(x => x.aksi).filter(x => ["buat_massal", "cabut", "ganti_sandi", "reset", "setuju", "terima_usulan", "tolak", "tolak_usulan"].includes(x)), ["buat_massal", "cabut", "ganti_sandi", "reset", "setuju", "terima_usulan", "tolak", "tolak_usulan"], "tiap jenis aksi sudah tercatat oleh uji-uji sebelumnya");
 });
 
-// 0090 dilewati juga: ALTER TABLE ... RENAME memvalidasi ulang semua trigger, termasuk gudang_prov_sah (0031) yang butuh instansi_akun (0029)
+// 0090 dilewati juga: ALTER TABLE ... RENAME memvalidasi ulang semua trigger, termasuk gudang_prov_sah (0031) yang butuh instansi_akun (0029). 0093 dilewati: INSERT ke korban (kunci asing ke tugas_api, 0029) gagal tanpa 0029
 uji("instansi: tanpa migrasi 0029 rute menjawab 503 yang jelas dan cron tidak melempar", async () => {
   const mf0 = bangun("uji-instansi-tanpa-0029", false), D0 = await mf0.getD1Database("DB");
   try {
-    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046", "0050", "0054", "0072", "0090"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
+    const lama = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql") && !["0029", "0043", "0044", "0046", "0050", "0054", "0072", "0090", "0093"].some(n => f.startsWith(n))).sort().map(f => readFileSync(path.join(AKAR, "migrations", f), "utf8")).join("\n");
     await D0.batch(pecah(lama).map(x => D0.prepare(x)));
     const kuki = {cookie: "sesi_instansi=" + "a".repeat(64)};
     for (const [m, j, body, h] of [["POST", "/api/instansi/masuk", {username: "pemkabseruyan", sandi: "x"}, {}], ["GET", "/api/instansi/saya", undefined, kuki], ["GET", "/api/instansi/tugas", undefined, kuki], ["POST", "/api/instansi/gantisandi", {}, kuki],
