@@ -111,12 +111,33 @@ def rekap(rows, berkas):
             if y in penuh:
                 kab[kk]["ada"][r["jenis"]][m - 1].add(y)
                 kab[kk]["bulan_penuh"][r["jenis"]][m - 1] += 1
+    # 2026: episode laporan harian PDF (laphar_riwayat.json), satu episode = satu kejadian kab x jenis; hanya hitungan
+    arsip = ", ".join(sorted(hari))
+    lp = os.path.join(AKAR, "public/data/laphar_riwayat.json")
+    sumber_lh = ""
+    if os.path.exists(lp):
+        lh = json.load(open(lp, encoding="utf-8"))
+        for e in lh["episode"]:
+            y, m = e["mulai"][:4], int(e["mulai"][5:7])
+            if y in hari:  # tahun yang sudah ada di logbook tidak ditimpa
+                continue
+            nas[y][e["jenis"]] += 1
+            if e["tingkat"] == "kab":
+                kab[e["kab"]]["bulan"][e["jenis"]][m - 1] += 1
+                t = kab[e["kab"]]["tahun"][y]
+                t[e["jenis"]] = t.get(e["jenis"], 0) + 1
+        for y in {e["mulai"][:4] for e in lh["episode"]} - set(hari):
+            hari[y] = lh["cakupan"]["hari"]
+        sumber_lh = f"; laporan harian {lh['cakupan']['mulai']} s.d. {lh['cakupan']['sampai']} (episode laphar_riwayat.json)"
     out = {"dibuat": dt.datetime.now(dt.timezone.utc).isoformat(timespec="seconds"),
-           "sumber": "Logbook harian Pusdalops BNPB, arsip " + ", ".join(sorted(hari)),
+           "sumber": "Logbook harian Pusdalops BNPB, arsip " + arsip + sumber_lh,
            "catatan": "Hitungan kejadian unik (update digabung). Satu kejadian lintas kab dihitung di tiap kab. "
                       "Tahun tidak lengkap: bandingkan per hari tercatat. Tanpa angka korban (lihat DIBI). "
                       "Kebakaran permukiman 2022 hanya 121 kejadian dalam 272 hari, jauh di bawah 2014-2020; "
-                      "kemungkinan cara pencatatannya berubah (belum dipastikan).",
+                      "kemungkinan cara pencatatannya berubah (belum dipastikan). "
+                      "2026 dari laporan harian PDF (Pusdalops Jan-Feb, Koordalops mulai Mar), bukan logbook: "
+                      "satu episode kab x jenis dihitung satu kejadian, kejadian lanjutan dari 2025 ikut terhitung "
+                      "pada 1 Januari; jangan dibandingkan langsung dengan tahun logbook.",
            "hari_tercatat": hari, "tahun_penuh": penuh, "jenis": jenis, "nasional": nas,
            # tahun_ada[jenis][bulan] = berapa tahun penuh (dari tahun_penuh) yang punya >= 1 kejadian di bulan itu
            # bulan = semua tahun 2011-2022; bulan_penuh = hanya tahun_penuh (pakai ini bila label menyebut 2014-2020)
