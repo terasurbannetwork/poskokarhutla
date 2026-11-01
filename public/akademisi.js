@@ -117,12 +117,12 @@
       ${metrik(o)}
     </div>`; };
 
-  /* afiliasi kosong = OpenAlex salah tanda Indonesia (banyak peneliti asing): keluar dari daftar, tetap ketemu lewat cari nama */
-  const tanpaAf = o => o[2] === "Afiliasi belum diketahui" && o[15] !== "diaspora";
+  /* kolom 16 "asing" (perbarui.py: karier mayoritas di luar negeri): keluar dari daftar, tetap ketemu lewat cari nama */
+  const asing = o => o[15] === "asing";
   function saring() {
     const q = st.q.toLowerCase();
     hasil = semua.filter(o => cocokProv(o) && (!st.rumpun.size || o[3].some(r => st.rumpun.has(r))) && (!st.bidang || o[3].includes(st.bidang)) && (!st.kampus.size || st.kampus.has(o[2])) && (!st.prodi || prodiDari(o) === st.prodi)
-      && (!st.baru || baruSet.has(o[0])) && (st.sumber === "d" ? o[15] === "diaspora" : (q || st.baru || (st.sumber === "s" ? o[13] === "s" : !tanpaAf(o) && (st.sumber === "" || o[13] !== "x")))) && (!q || o._cari.includes(q)));   // cari nama = semua sumber
+      && (!st.baru || baruSet.has(o[0])) && (st.sumber === "d" ? o[15] === "diaspora" : (q || st.baru || (st.sumber === "s" ? o[13] === "s" : !asing(o) && (st.sumber === "" || o[13] !== "x")))) && (!q || o._cari.includes(q)));   // cari nama = semua sumber
     const u = st.urut;
     hasil.sort(u === 1 ? (a, b) => a[1].localeCompare(b[1], "id") : (a, b) => b[u] - a[u] || b[4] - a[4]);
     st.hal = 1;
@@ -2254,7 +2254,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
   let sbMemo = {k: "", c: {}, tot: null}, saringKotor = false;
   function segarBencana() {
     const v = tampilSkrg; let c = {}, tot = null, a = null;
-    if (v === "pakar") a = pkSub === "tokoh" || pkSub === "diaspora" ? tkView : semua.filter(o => st.sumber === "s" ? o[13] === "s" : !tanpaAf(o) && (st.sumber === "" || o[13] !== "x"));
+    if (v === "pakar") a = pkSub === "tokoh" || pkSub === "diaspora" ? tkView : semua.filter(o => st.sumber === "s" ? o[13] === "s" : !asing(o) && (st.sumber === "" || o[13] !== "x"));
     else a = {lembaga: lbArr, inovasi: inArr, sistem_data: sdArr, pustaka: bkArr.concat(puArr), berita: brArr, pendanaan: pdArr}[v];
     const kk = [v, pkSub, st.sumber, a?.length || 0].join("|");
     if (sbMemo.k === kk) { c = sbMemo.c; tot = sbMemo.tot; } else { if (a && a.length) { tot = a.length; a.forEach(x => (Array.isArray(x) ? x[3] : strs(x.rumpun)).forEach(r => { c[r] = (c[r] || 0) + 1; })); } sbMemo = {k: kk, c, tot}; }

@@ -5,7 +5,7 @@ DATA TIDAK PERNAH MASUK REPO: skrip ini hanya kode. Induk diunduh dari R2, diper
 
 Yang dikerjakan
   (a) Pakar lama: h-index, jumlah karya, sitasi, dan topik disegarkan dari OpenAlex per id (batch 100).
-      Nama, kampus, rumpun, ORCID, kolom SINTA (foto, idSinta, prodi, subjek, status, logo) dan kolom ke-16
+      Nama, kampus, rumpun, ORCID, kolom SINTA (foto, idSinta, prodi, subjek, status, logo) dan "diaspora" di kolom ke-16
       TIDAK disentuh: kolom SINTA dipanen lewat peramban dan tidak bisa diulang di CI.
       Id yang hilang di OpenAlex (digabung/dihapus) TIDAK dibuang: barisnya tetap dan dilaporkan.
   (b) Pakar baru: penulis OpenAlex dengan institusi terakhir berkode negara ID (last_known_institutions.country_code:ID),
@@ -14,6 +14,9 @@ Yang dikerjakan
       Rumpun baru = rumpun mayoritas tiap topik pada induk yang ada (kebetulan data lama adalah satu-satunya
       rujukan pemetaan topik ke rumpun; dokumen RENCANA tidak memuatnya). Topik tak dikenal -> "manajemen bencana".
       Saringan asli (kata kunci judul/abstrak per kabupaten) tidak ada di repo, jadi ini pendekatan terdekat.
+  (c) Kolom ke-16 "asing": dari OpenAlex affiliations.years, lihat asing(). Penanda "institusi terakhir Indonesia" meloloskan peneliti asing dengan satu
+      makalah bersama kampus/CIFOR Indonesia. Pakar SINTA dan diaspora tidak pernah ditandai. Layar menyembunyikan
+      "asing" dari daftar; cari nama tetap menemukannya.
   ponytail: kandidat diurut sitasi, dipindai sampai --maks-kandidat (30000); pakar baru berkutipan sangat rendah di
   luar batas itu tidak terlihat. Naikkan batas bila perlu.
 
@@ -61,7 +64,7 @@ def ambil(path, params, kunci, coba=5):
         except urllib.error.HTTPError as e:
             if e.code not in (429, 500, 502, 503, 504) or i == coba - 1:
                 raise
-        except (urllib.error.URLError, TimeoutError):
+        except OSError:  # URLError, socket.timeout (Python < 3.10 bukan TimeoutError), putus koneksi
             if i == coba - 1:
                 raise
         time.sleep(2 ** i * 2)
@@ -81,15 +84,35 @@ def segarkan(ids, kunci):
     return hasil
 
 
-SEL = "id,display_name,orcid,works_count,cited_by_count,summary_stats,topics,last_known_institutions"
+SEL = "id,display_name,orcid,works_count,cited_by_count,summary_stats,topics,last_known_institutions,affiliations"
 
 
 def ringkas(a):
     inst = (a.get("last_known_institutions") or [{}])
+    th = collections.Counter("id" if (f.get("institution") or {}).get("country_code") == "ID" else "luar"
+                             for f in (a.get("affiliations") or []) for _ in (f.get("years") or []))
     return {"h": (a.get("summary_stats") or {}).get("h_index") or 0, "karya": a.get("works_count") or 0,
             "sitasi": a.get("cited_by_count") or 0, "nama": a.get("display_name") or "",
             "orcid": pendek(a.get("orcid")), "kampus": (inst[0] or {}).get("display_name") or "Afiliasi belum diketahui",
-            "topik": [t["display_name"] for t in (a.get("topics") or [])[:4]]}
+            "topik": [t["display_name"] for t in (a.get("topics") or [])[:4]], "th": [th["id"], th["luar"]]}
+
+
+def asing(idn, luar, ada_af):
+    """Berkampus Indonesia: porsi tahun-afiliasi Indonesia < 25% dari >= 10 tahun (ambang "luar > ID" menyapu dosen
+    lulusan S3 luar negeri; < 10 tahun terlalu sedikit bukti). Tanpa afiliasi: luar > ID dari >= 5 tahun (peneliti asing CIFOR dsb).
+    Tetap ikut tersaring: orang Indonesia yang berkarier di luar negeri."""
+    n = idn + luar
+    return n >= 5 and luar > idn if not ada_af else n >= 10 and idn * 4 < n
+
+
+def tandai(o, s):
+    """Kolom ke-16: "asing" dipasang/dicabut dari s["asing"]; SINTA dan diaspora tidak disentuh."""
+    if o[13] == "s" or (len(o) > 15 and o[15] == "diaspora"):
+        return
+    if asing(*s.get("th", (0, 0)), o[2] != "Afiliasi belum diketahui"):
+        o.extend([""] * (16 - len(o))); o[15] = "asing"
+    elif len(o) > 15 and o[15] == "asing":
+        o[15] = ""
 
 
 def peta_topik(induk):
@@ -150,6 +173,7 @@ def gabung(induk, segar, ditanya, calon, bulan, hari):
         o[4], o[5], o[6] = s["h"], s["karya"], s["sitasi"]
         if s["topik"]:
             o[8] = s["topik"]
+        tandai(o, s)
     baru = []
     for i, s in calon:
         if i in ada:
@@ -157,6 +181,7 @@ def gabung(induk, segar, ditanya, calon, bulan, hari):
         ada.add(i); baru.append(i)
         baru_induk["orang"].append([i, s["nama"], s["kampus"], rumpun_untuk(s["topik"], peta), s["h"], s["karya"], s["sitasi"],
                                     s["orcid"], s["topik"], "", "", "", "", "", ""])
+        tandai(baru_induk["orang"][-1], s)
     naik.sort(key=lambda x: x["h_lama"] - x["h_baru"])
     naik = naik[:50]
     baru_induk["diperbarui"] = hari
