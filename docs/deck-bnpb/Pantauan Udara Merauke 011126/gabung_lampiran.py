@@ -17,6 +17,7 @@ LAMP = [('Lampiran D. Berkas asli renlap rute udara Merauke, 30 Oktober 2026', H
 NAVY = RGBColor(0x0B, 0x1F, 0x3A)
 
 prs = Presentation(DECK)
+n_awal = len(prs.slides)
 W, H = prs.slide_width, prs.slide_height
 kosong = min(prs.slide_layouts, key=lambda l: len(l.placeholders))
 tmp = Path(tempfile.mkdtemp())
@@ -41,6 +42,17 @@ for judul, pdf, per in LAMP:
             w, h = int(iw * sk), int(ih * sk)
             x = int(Pt(24) + j * (lebar_sel + Pt(12)) + (lebar_sel - w) / 2)
             s.shapes.add_picture(str(g), x, int(top + (tinggi - h) / 2), w, h)
+# rentang halaman bagian Lampiran di daftar isi dan pembatas ikut sampai halaman sebelum penutup
+import re
+akhir_lama = n_awal - 1
+for sl in prs.slides:
+    for sh in sl.shapes:
+        if sh.has_text_frame:
+            for par in sh.text_frame.paragraphs:
+                for r in par.runs:
+                    m = re.fullmatch(r'(\d+)–(\d+)', r.text.strip())
+                    if m and int(m[2]) == akhir_lama:
+                        r.text = f'{m[1]}–{len(prs.slides) - 1}'
 # penutup tetap halaman terakhir
 ids = prs.slides._sldIdLst
 penutup = [e for e in ids][len(ids) - 1 - sum(-(-len(sorted(tmp.glob(p.stem[:10] + '-*.jpg'))) // n) for _, p, n in LAMP)]

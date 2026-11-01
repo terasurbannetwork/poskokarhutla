@@ -214,7 +214,9 @@
     "01",
     "4–8",
     "02",
-    "9–18",
+    "9–10",
+    "03",
+    "11–18",
     "3"
    ],
    "warna": [
@@ -273,7 +275,9 @@
     "01",
     "4–8",
     "02",
-    "9–18",
+    "9–10",
+    "03",
+    "11–18",
     "4"
    ],
    "warna": [
@@ -349,6 +353,7 @@
     "5",
     "01  ",
     "02  ",
+    "03  ",
     "Pantauan udara tim BNPB, 31 Okt 2026"
    ],
    "warna": [
@@ -469,6 +474,7 @@
     "6",
     "01  ",
     "02  ",
+    "03  ",
     "Sumber batas: Citra Esri World Imagery; rute renlap BNPB 30 Okt 2026; WGS84; Web Mercator",
     "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB, termasuk keyakinan rendah; Renlap rute udara BNPB, 30 Okt 2026"
    ],
@@ -580,6 +586,7 @@
     "7",
     "01  ",
     "02  ",
+    "03  ",
     "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; pantauan udara tim BNPB, 31 Okt 2026"
    ],
    "warna": [
@@ -689,6 +696,7 @@
     "8",
     "01  ",
     "02  ",
+    "03  ",
     "Sumber batas: Renlap rute udara BNPB 30 Okt 2026; citra Esri World Imagery; WGS84; Web Mercator",
     "Renlap rute udara BNPB, 30 Okt 2026; pantauan udara tim BNPB, 31 Okt 2026"
    ],
@@ -787,7 +795,9 @@
     "01",
     "4–8",
     "02",
-    "9–18",
+    "9–10",
+    "03",
+    "11–18",
     "9"
    ],
    "warna": [
@@ -863,6 +873,7 @@
     "10",
     "01  ",
     "02  ",
+    "03  ",
     "Renlap rute udara BNPB, 30 Okt 2026; Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
    ],
    "warna": [
@@ -934,6 +945,7 @@
     "ikon",
     "ikon",
     "ikon",
+    "ikon",
     "ikon"
    ],
    "panel": [],
@@ -942,22 +954,20 @@
   },
   {
    "nomor": 11,
-   "jenis": "rekomendasi",
+   "jenis": "pembatas-seksi",
    "asal": "pantau-merauke#11",
    "keluarga": [],
-   "judul": [
-    43.2,
-    21.6,
-    820.3,
-    65,
-    2
-   ],
+   "judul": null,
    "peta": null,
    "struktur": [
-    "11",
-    "01  ",
-    "02  ",
-    "Rangkuman temuan pantauan udara dan data hotspot"
+    "03",
+    "01",
+    "4–8",
+    "02",
+    "9–10",
+    "03",
+    "11–18",
+    "11"
    ],
    "warna": [
     [
@@ -965,16 +975,12 @@
      "inti"
     ],
     [
-     "051C2C",
-     "pil"
-    ],
-    [
      "1A1A1A",
      "inti"
     ],
     [
-     "4A9BE0",
-     "aksen"
+     "2E3440",
+     "inti"
     ],
     [
      "6B7280",
@@ -985,73 +991,35 @@
      "inti"
     ],
     [
-     "BFC5CC",
-     "pil"
-    ],
-    [
-     "C9D1E3",
+     "D9600B",
      "aksen"
-    ],
-    [
-     "D9600B",
-     "angka-judul"
-    ],
-    [
-     "D9600B",
-     "pil"
     ],
     [
      "E6EAF0",
      "permukaan"
     ],
     [
-     "E6EAF0",
-     "pil"
+     "F3F5F8",
+     "permukaan"
+    ],
+    [
+     "FDF4EC",
+     "permukaan"
     ],
     [
      "FFFFFF",
      "inti"
-    ],
-    [
-     "FFFFFF",
-     "pil"
     ]
    ],
-   "judul_spek": "Rekomendasi tindak lanjut {{angka:mk.hari|satuan}} ke depan untuk cluster PT Merauke Sawit Jaya",
-   "pesan": "Rencana tindak lanjut",
-   "jenis_slide": "rekomendasi",
-   "judul_bentuk": "deskriptif",
+   "judul_spek": "",
+   "pesan": null,
+   "jenis_slide": null,
+   "judul_bentuk": null,
    "seri": null,
-   "visual": [
-    "tabel"
-   ],
+   "visual": [],
    "gambar": [
-    "logo",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon",
-    "ikon"
+    "foto",
+    "logo"
    ],
    "panel": [],
    "naik": 0,
@@ -1074,6 +1042,7 @@
     "12",
     "01  ",
     "02  ",
+    "03  ",
     "Renlap rute udara BNPB, 30 Okt 2026"
    ],
    "warna": [
@@ -1160,6 +1129,7 @@
     "13",
     "01  ",
     "02  ",
+    "03  ",
     "Renlap rute udara BNPB, 30 Okt 2026"
    ],
    "warna": [
@@ -1246,6 +1216,7 @@
     "14",
     "01  ",
     "02  ",
+    "03  ",
     "Renlap rute udara BNPB, 30 Okt 2026"
    ],
    "warna": [
@@ -1332,6 +1303,7 @@
     "15",
     "01  ",
     "02  ",
+    "03  ",
     "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
    ],
    "warna": [
@@ -1418,6 +1390,7 @@
     "16",
     "01  ",
     "02  ",
+    "03  ",
     "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
    ],
    "warna": [
@@ -1504,6 +1477,7 @@
     "17",
     "01  ",
     "02  ",
+    "03  ",
     "Renlap SIPPA Kalimantan Tengah, 1 Nov 2026"
    ],
    "warna": [
@@ -1590,6 +1564,7 @@
     "18",
     "01  ",
     "02  ",
+    "03  ",
     "Pantauan udara tim BNPB, 31 Okt 2026"
    ],
    "warna": [
@@ -2414,17 +2389,6 @@
    "naskah": "pantau-merauke#10"
   },
   {
-   "kunci": "mk.hari",
-   "opsi": "|satuan",
-   "tampil": "7 hari",
-   "nilai": 7,
-   "rendah": null,
-   "tinggi": null,
-   "keyakinan": "asumsi-kebijakan",
-   "sumber": "NASA FIRMS, diolah BNPB",
-   "naskah": "pantau-merauke#11"
-  },
-  {
    "kunci": "mk.radius",
    "opsi": "|satuan",
    "tampil": "6 km",
@@ -2535,11 +2499,6 @@
    2
   ],
   [
-   "pantau-merauke#11",
-   "judul_baris",
-   1
-  ],
-  [
    "pantau-merauke#12",
    "judul_baris",
    1
@@ -2605,7 +2564,7 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-32.jpg": "fbd69065bdc79413771ad893c41aa1db4bfd1bfe7e0f8f3d25ea844985f98a1e",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-37.jpg": "511d716c2f078ad57f773182408917552f556327302ec56413cdb8a45070d7ae",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/video-asap.jpg": "d50c2595a1da13a25ea75898dda351127cf54548a9d10f2b2618ebe94db05b40",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/pantau-merauke.json": "99908b04b06652eb0ef5c4fc23cf0455e9791488163b54115febb5dcc1813b0c",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/pantau-merauke.json": "95d810547ec9fe4a1ad6406b4b26be8d35b3af4f2fcd6547e59837abe5509982",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/tema.json": "318353b57aa553457655710c25477b9ed96398cc857ad1d878bf8bd14c72842e",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }

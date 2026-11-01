@@ -148,11 +148,10 @@ RUTE = {
         {'nilai': t('mk.rute.km'), 'label': 'km rute melingkar', 'ikon': 'luas', 'warna': 'navy'},
         {'nilai': t('mk.rute.mnt'), 'label': 'menit terbang', 'ikon': 'kalender', 'warna': 'navy'}]}],
     'peta': {'png': 'foto/renlap-udara-01.png', 'legenda': {'judul': 'Renlap 30 Oktober', 'item': [{'warna': 'merah', 'label': 'Hotspot sehari'}, {'warna': 'navy', 'label': 'Rute udara'}]}, 'keyakinan': 'resmi', 'sumber': 'Renlap rute udara BNPB, 30 Okt 2026'},
-    'panel': {'judul': 'Pelajaran dari penerbangan 31 Oktober', 'ikon': 'peringatan', 'skala_huruf': 1.6, 'daftar': [
+    'panel': {'judul': 'Pelajaran dari penerbangan 31 Oktober', 'ikon': 'peringatan', 'skala_huruf': 1.8, 'daftar': [
         f'**Api lebih besar dari perkiraan.** Saat rute disusun ada {t("rl.titik", "|satuan")} di dalam segitiga; pada hari terbang Merauke mencatat {t("mk.kab31", "|satuan")}.',
         '**Jarak pandang rendah.** Kabut asap menutup horizon, sehingga helikopter tidak aman melintas ke semua check point.',
-        f'**Data tepat sasaran.** Cluster yang dilihat tim sama dengan cluster terpadat di data satelit: {t("mk.cp5", "|satuan")} di CP-5.',
-        '**Rute perlu disusun ulang pagi hari.** Rencana diperbarui dengan hotspot terbaru dan prakiraan asap sebelum lepas landas.']},
+        f'**Data tepat sasaran.** Cluster yang dilihat tim sama dengan cluster terpadat di data satelit: {t("mk.cp5", "|satuan")} di CP-5.']},
     'sumber': 'Renlap rute udara BNPB, 30 Okt 2026; pantauan udara tim BNPB, 31 Okt 2026',
 }
 
@@ -169,6 +168,8 @@ METODE = {
         {'label': 'Langkah ke-6', 'ikon': 'kalender', 'warna': 'oranye', 'judul': 'Rencana kunjungan', 'sub': 'Per tim dan per hari', 'isi': 'Urutan lokasi, jarak jalan, waktu mobil, titik parkir, dan tautan Google Maps.'},
         {'label': 'Langkah ke-7', 'ikon': 'data', 'warna': 'navy', 'judul': 'Dossier di HP regu', 'sub': 'PDF siap pakai', 'isi': 'Peta, koordinat yang bisa diklik, dan citra tiap lokasi dikirim ke regu dan pilot.'},
         {'label': 'Langkah ke-8', 'ikon': 'peringatan', 'warna': 'navy', 'judul': 'Putuskan sore sebelumnya', 'sub': 'Jalan atau tunda', 'isi': 'Tiap sore sebelum berangkat, rencana dicek ulang dengan hotspot terbaru dan prakiraan asap.'}],
+    'arahan': {'label': 'Keunggulan', 'ikon': 'data', 'isi_bawah': True,
+               'teks': 'Satu data yang sama menunjuk api nyata, sumber air terdekat, dan jalur regu, sehingga helikopter dan regu darat tidak bergerak sembarang.'},
     'sumber': 'Renlap rute udara BNPB, 30 Okt 2026; Renlap SIPPA Kalimantan Tengah, 1 Nov 2026',
 }
 
@@ -254,7 +255,7 @@ LAMP = [
 ]
 
 PENUTUP = {'jenis': 'penutup', 'foto': 'foto/udara-20.jpg', 'logo_kanan': 'foto/berakhlak-hd.png', 'kredit': 'Foto: pantauan udara tim BNPB', 'teks': 'Terima Kasih',
-           'laporan': 'Pemadaman cluster Jagebob dan Animha, pemanggilan perusahaan, penegakan hukum, rute pagi hari, pompa dekat air, dan perlindungan warga dari asap'}
+           'laporan': 'Pantauan udara Kabupaten Merauke, 31 Oktober 2026'}
 
 SPEK = {
     '_catatan': 'Hasil pantauan udara karhutla Merauke 31 Okt 2026 untuk Kepala BNPB. Dibangun dari spek/bangun_spek_merauke.py.',
@@ -262,8 +263,8 @@ SPEK = {
     'judul_dokumen': 'Pantauan Udara Karhutla Merauke',
     'subjek_dokumen': 'Pantauan udara 31 Oktober 2026',
     'kajian': 'merauke', 'format': 'kajian', 'tanggal': '2026-11-01', 'cut_off': '31 Okt 2026, 23.59 WIT',
-    'bagian': [{'judul': 'Temuan Pantauan Udara', 'label': 'Temuan lapangan'}, {'judul': 'Metode Renlap dan Tindak Lanjut', 'label': 'Metode dan tindak lanjut'}],
-    'slide': [SAMPUL, RINGKAS, {'jenis': 'daftar-isi'}, {'jenis': 'pembatas-seksi', 'bagian': 1}, MODUS, PETA, SEBAR, RUTE, {'jenis': 'pembatas-seksi', 'bagian': 2}, METODE, RTL] + LAMP + [PENUTUP],
+    'bagian': [{'judul': 'Temuan Pantauan Udara', 'label': 'Temuan lapangan'}, {'judul': 'Metode Renlap', 'label': 'Metode renlap'}, {'judul': 'Lampiran', 'label': 'Lampiran'}],
+    'slide': [SAMPUL, RINGKAS, {'jenis': 'daftar-isi'}, {'jenis': 'pembatas-seksi', 'bagian': 1}, MODUS, PETA, SEBAR, RUTE, {'jenis': 'pembatas-seksi', 'bagian': 2}, METODE, {'jenis': 'pembatas-seksi', 'bagian': 3}] + LAMP + [PENUTUP],
 }
 
 if __name__ == '__main__':
