@@ -1,4 +1,4 @@
-"""Satukan berkas renlap asli ke deck: tiap halaman jadi slide gambar sebelum penutup, lalu PDF ulang.
+"""Tempel berkas renlap asli ke berkas Lampiran: tiap halaman jadi slide gambar di akhir, lalu PDF ulang.
 Jalankan dengan venv mesin BNPB tepat sesudah deck.py (sekali saja, karena menambah slide): python gabung_lampiran.py"""
 import subprocess, sys, tempfile
 from pathlib import Path
@@ -11,7 +11,7 @@ HERE = Path(__file__).resolve().parent
 sys.path.insert(0, str(Path.home() / '.claude/skills/ppt-konsultan/bnpb/scripts'))
 from deck import ke_pdf  # noqa: E402
 
-DECK = HERE / 'Pantauan Udara Merauke 011126.pptx'
+DECK = HERE / 'Lampiran Pantauan Udara Merauke 011126.pptx'
 LAMP = [('Lampiran D. Berkas asli renlap rute udara Merauke, 30 Oktober 2026', HERE / 'sumber/Renlap Rute Udara Merauke 301026.pdf', 1),
         ('Lampiran E. Berkas asli renlap darat SIPPA Kalimantan Tengah (contoh), 1 November 2026', HERE / 'sumber/Renlap Darat SIPPA Kalteng 011126.pdf', 2)]
 NAVY = RGBColor(0x0B, 0x1F, 0x3A)
@@ -42,20 +42,15 @@ for judul, pdf, per in LAMP:
             w, h = int(iw * sk), int(ih * sk)
             x = int(Pt(24) + j * (lebar_sel + Pt(12)) + (lebar_sel - w) / 2)
             s.shapes.add_picture(str(g), x, int(top + (tinggi - h) / 2), w, h)
-# rentang halaman bagian Lampiran di daftar isi dan pembatas ikut sampai halaman sebelum penutup
+# rentang bagian terakhir di daftar isi dan pembatas ikut sampai halaman terakhir
 import re
-akhir_lama = n_awal - 1
 for sl in prs.slides:
     for sh in sl.shapes:
         if sh.has_text_frame:
             for par in sh.text_frame.paragraphs:
                 for r in par.runs:
                     m = re.fullmatch(r'(\d+)–(\d+)', r.text.strip())
-                    if m and int(m[2]) == akhir_lama:
-                        r.text = f'{m[1]}–{len(prs.slides) - 1}'
-# penutup tetap halaman terakhir
-ids = prs.slides._sldIdLst
-penutup = [e for e in ids][len(ids) - 1 - sum(-(-len(sorted(tmp.glob(p.stem[:10] + '-*.jpg'))) // n) for _, p, n in LAMP)]
-ids.remove(penutup); ids.append(penutup)
+                    if m and int(m[2]) == n_awal:
+                        r.text = f'{m[1]}–{len(prs.slides)}'
 prs.save(DECK)
 print('slide', len(prs.slides), 'pdf', ke_pdf(DECK))

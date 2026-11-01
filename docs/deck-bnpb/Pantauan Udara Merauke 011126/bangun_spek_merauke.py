@@ -210,7 +210,7 @@ LAMP = [
         'Rute melingkari segitiga Bandara Mopah, lahan PT Merauke Sawit Jaya, dan lahan PT Medcopapua Alam Lestari.',
         'Check point hanya dipasang di kelompok api nyata dari hotspot terbaru, dengan radius pandang {{angka:mk.radius|satuan}}.',
         'Tabel kanan memuat koordinat, jumlah hotspot, jarak tempuh, dan waktu kumulatif tiap check point.',
-        'Seluruh halaman aslinya ada di Lampiran D.',
+        'Seluruh halaman aslinya ada di Lampiran D berkas ini.',
         'Rute bisa disusun ulang dalam hitungan menit bila hotspot berubah.'], S_RL),
     lp('AB', 'Lampiran A2. Flight plan untuk pilot: haluan, jarak, dan waktu tiap leg', 'foto/renlap-udara-02.png', 'Flight plan per leg', [
         'Tiap leg memuat koordinat GPS tujuan dalam derajat-menit, tautan Google Maps, haluan sejati, jarak, dan waktu.',
@@ -263,9 +263,18 @@ SPEK = {
     'judul_dokumen': 'Pantauan Udara Karhutla Merauke',
     'subjek_dokumen': 'Pantauan udara 31 Oktober 2026',
     'kajian': 'merauke', 'format': 'kajian', 'tanggal': '2026-11-01', 'cut_off': '31 Okt 2026, 23.59 WIT',
-    'bagian': [{'judul': 'Temuan Pantauan Udara', 'label': 'Temuan lapangan'}, {'judul': 'Metode Renlap', 'label': 'Metode renlap'}, {'judul': 'Lampiran', 'label': 'Lampiran'}],
-    'slide': [SAMPUL, RINGKAS, {'jenis': 'daftar-isi'}, {'jenis': 'pembatas-seksi', 'bagian': 1}, MODUS, PETA, SEBAR, RUTE, {'jenis': 'pembatas-seksi', 'bagian': 2}, METODE, {'jenis': 'pembatas-seksi', 'bagian': 3}] + LAMP + [PENUTUP],
+    'bagian': [{'judul': 'Temuan Pantauan Udara', 'label': 'Temuan lapangan'}, {'judul': 'Metode Renlap', 'label': 'Metode renlap'}],
+    'slide': [SAMPUL, RINGKAS, {'jenis': 'daftar-isi'}, {'jenis': 'pembatas-seksi', 'bagian': 1}, MODUS, PETA, SEBAR, RUTE, {'jenis': 'pembatas-seksi', 'bagian': 2}, METODE, PENUTUP],
 }
+
+# berkas lampiran terpisah (pemilik 1 Nov: "lampiran jadi file lain")
+SAMPUL_L = dict(SAMPUL, kepada='Lampiran laporan untuk Kepala BNPB')
+SPEK_L = dict(SPEK, _catatan='Lampiran pantauan udara Merauke 31 Okt 2026. Dibangun dari spek/bangun_spek_merauke.py; halaman renlap asli ditempel gabung_lampiran.py.',
+              judul_dokumen='Lampiran Pantauan Udara Karhutla Merauke', kajian='merauke-lampiran',
+              bagian=[{'judul': 'Renlap Rute Udara Merauke', 'label': 'Renlap udara'}, {'judul': 'Contoh Renlap Darat SIPPA', 'label': 'Renlap darat'},
+                      {'judul': 'Foto Udara dan Berkas Asli Renlap', 'label': 'Foto dan berkas asli'}],
+              slide=[SAMPUL_L, {'jenis': 'daftar-isi'}, {'jenis': 'pembatas-seksi', 'bagian': 1}] + LAMP[0:3]
+                    + [{'jenis': 'pembatas-seksi', 'bagian': 2}] + LAMP[3:6] + [{'jenis': 'pembatas-seksi', 'bagian': 3}] + LAMP[6:])
 
 if __name__ == '__main__':
     rp = AKAR / 'data/angka.json'
@@ -276,4 +285,5 @@ if __name__ == '__main__':
     pu = [x for x in json.loads(pp.read_text(encoding='utf-8')) if x['id'] not in {p['id'] for p in PUSTAKA}] + PUSTAKA
     pp.write_text(json.dumps(pu, ensure_ascii=False, indent=1), encoding='utf-8')
     (AKAR / 'spek/pantau-merauke.json').write_text(json.dumps(SPEK, ensure_ascii=False, indent=2), encoding='utf-8')
+    (AKAR / 'spek/lampiran-merauke.json').write_text(json.dumps(SPEK_L, ensure_ascii=False, indent=2), encoding='utf-8')
     print(f'{len(ANGKA)} angka, {len(SPEK["slide"])} slide')
