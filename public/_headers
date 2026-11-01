@@ -4,6 +4,7 @@
 # 'unsafe-inline' wajib selama index.html memuat <script>/<style> inline dan handler onerror=; img-src https: untuk
 # thumbnail berita dan favicon dari domain mana saja.
 /*
+  Strict-Transport-Security: max-age=31536000
   X-Frame-Options: SAMEORIGIN
   X-Content-Type-Options: nosniff
   Referrer-Policy: strict-origin-when-cross-origin

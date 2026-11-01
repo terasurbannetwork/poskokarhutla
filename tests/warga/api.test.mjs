@@ -100,6 +100,35 @@ uji("situs Centurisk97 (*.workers.dev): semua halaman Tentang dialihkan ke peta;
   const r = await buka("https://contoh.workers.dev", "/banjir/peta"); await r.text(); assert.equal(r.status, 200, "peta situs w tetap 200");
 });
 
+/* uji Setneg 1 Nov 2026: alamat workers.dev PRODUKSI (dan pratinjau versinya) sama terkuncinya dengan centurisk97.id; HSTS di tiap respons https */
+uji("workers.dev produksi: halaman internal di balik login, HSTS terpasang", async () => {
+  for (const asal of ["https://centurisk97.terasurbannetwork.workers.dev", "https://abc123-centurisk97.terasurbannetwork.workers.dev", "https://centurisk97.id"]) {
+    for (const j of ["/monitor", "/direktori", "/prediksi"]) {
+      const r = await mf.dispatchFetch(asal + j, {redirect: "manual", headers: {"cf-connecting-ip": ipBaru()}}); await r.text();
+      assert.equal(r.status, 303, `${asal}${j} tamu = ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/);
+      assert.equal(r.headers.get("strict-transport-security"), "max-age=31536000", `${asal}${j} tanpa HSTS`);
+    }
+  }
+  const r = await mf.dispatchFetch("https://centurisk97.terasurbannetwork.workers.dev/monitor", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "x-admin-token": "rahasia-admin"}}); await r.text();
+  assert.equal(r.status, 200, `admin /monitor = ${r.status}`);
+  const a = await mf.dispatchFetch("https://centurisk97.id/api/status"); await a.text();
+  assert.equal(a.headers.get("strict-transport-security"), "max-age=31536000", "API tanpa HSTS");
+  const h = await mf.dispatchFetch("http://warga.lokal/api/status"); await h.text();
+  assert.equal(h.headers.get("strict-transport-security"), null, "http polos tidak boleh diberi HSTS");
+});
+
+uji("tebakan email:sandi lewat header terkunci per akun walau IP diputar; sandi benar pun ditolak selama terkunci", async () => {
+  const m2 = new Miniflare(opsi({ADMIN_TOKEN: "rahasia-admin, bos@x:sandi-benar"}));
+  try {
+    const D = await m2.getD1Database("DB"); await D.batch(pecah(migrasi()).map(s => D.prepare(s)));
+    const coba = async (tok, ip) => { const r = await m2.dispatchFetch("http://warga.lokal/api/warga/admin", {headers: {"cf-connecting-ip": ip, "x-admin-token": tok}}); await r.text(); return r.status; };
+    assert.equal(await coba("bos@x:sandi-benar", "10.7.0.1"), 200, "sandi benar sebelum diserang");
+    for (let i = 0; i < 20; i++) assert.equal(await coba(`BOS@x:tebak${i}`, `10.8.0.${i + 1}`), 403);   // tiap tebakan dari IP lain, email beda huruf besar
+    assert.equal(await coba("bos@x:sandi-benar", "10.7.0.2"), 403, "akun harus terkunci per akun, bukan per IP");
+    assert.equal(await coba("rahasia-admin", "10.7.0.3"), 200, "token acak tanpa email tidak ikut terkunci");
+  } finally { await m2.dispose(); }
+});
+
 uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
   /* merek tidak lagi ditulis ulang per alamat (semua berkas sudah "Centurisk97"), jadi isinya sama persis dengan berkas */
   const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8");

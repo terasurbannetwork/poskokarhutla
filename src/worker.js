@@ -411,7 +411,7 @@ async function selesai(env, req, id, kini) {
 /* ADMIN_TOKEN boleh berisi beberapa token dipisah koma (satu per moderator); yang cocok -> 12 karakter awal hash-nya = moderator.
    Entri berbentuk "email:sandi" adalah akun untuk form /admin/masuk (sandi tanpa koma, tanpa spasi di ujung).
    Diterima lewat header x-admin-token / Authorization: Bearer (skrip), atau cookie sesi dari /admin/masuk (peramban). */
-const MAKS_GAGAL_ADMIN = 300;
+const MAKS_GAGAL_ADMIN = 300, MAKS_GAGAL_EMAIL_HEADER = 20;   // = MAKS_GAGAL_EMAIL di src/statistik.js
 /* kegagalan autentikasi per kunci (hash IP bergaram) di tabel laju_posko (migrasi 0019); aksi: kode_gagal, admin_gagal, foto */
 export async function gagalSudahBanyak(env, kunci, aksi, maks, kini) {
   return (await env.DB.prepare("SELECT count(*) n FROM laju_posko WHERE kunci = ? AND aksi = ? AND waktu > ?").bind(kunci, aksi, kini - JAM).first()).n >= maks;
@@ -434,8 +434,13 @@ export async function adminOK(env, req, kini = Date.now()) {
     if (env.DB && env.IP_SALT && req.headers.get("cf-connecting-ip")) {
       try {
         const k = await ipHash(env, req);
+        /* "email:sandi" lewat header juga kena batas PER AKUN yang sama dengan form /admin/masuk (kunci & batas sama, src/statistik.js),
+           supaya penebak yang memutar IP tidak lolos (uji Setneg 1 Nov 2026). Token acak tanpa ":" hanya dibatasi per IP. */
+        const i = t.indexOf(":"), email = i > 0 ? t.slice(0, i).trim().toLowerCase() : "";
+        const ka = email ? (await sha(env.IP_SALT + "|masuk|" + email)).slice(0, 32) : "";
         if (await gagalSudahBanyak(env, k, "admin_gagal", MAKS_GAGAL_ADMIN, kini)) return null;
-        if (!ok) { await catatGagal(env, k, "admin_gagal", kini); return null; }
+        if (ka && await gagalSudahBanyak(env, ka, "admin_gagal", MAKS_GAGAL_EMAIL_HEADER, kini)) return null;
+        if (!ok) { await catatGagal(env, k, "admin_gagal", kini); if (ka) await catatGagal(env, ka, "admin_gagal", kini); return null; }
       } catch (e) { if (!/no such table/i.test(String(e?.message || e))) console.error("adminOK laju", e?.message); }   // migrasi 0019 belum jalan = tanpa batas; galat lain tetap dicatat
     }
     return ok ? a.slice(0, 12) : null;
@@ -642,6 +647,9 @@ async function rute(env, req, url, ctx) {
 const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
   meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", pendataan: "/pendataan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
+/* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
+   Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */
+export const hostTerkunci = h => HOST_TERKUNCI.has(h) || h.endsWith("centurisk97.terasurbannetwork.workers.dev");
 /* centurisk97.id tampil sama dengan centurisk97.*.workers.dev: data perusahaan, merek Centurisk97 (pemilik, 19 Okt 2026) */
 export const situsCenturisk = h => h.endsWith(".workers.dev") || HOST_TERKUNCI.has(h);
 export const HTML_RUTE = [
@@ -714,7 +722,7 @@ async function layaniHTML(req, env, ctx, url) {
     if (pmTab) el.setAttribute("data-pemirsa-tab", pmTab);
   }}).transform(aset);
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
-  if (pmTab || HOST_TERKUNCI.has(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
+  if (pmTab || hostTerkunci(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   return keluaran;
 }
 
@@ -756,11 +764,21 @@ export async function halamanGalat(env, req, url, kode) {
   return new Response(kode === 404 ? "Tidak ditemukan" : "Galat server", {status: kode});
 }
 
+/* HSTS di tiap respons Worker lewat https (aset statis mendapatkannya dari public/_headers). Tanpa includeSubDomains/preload: subdomain lain belum tentu https. */
+const HSTS = "max-age=31536000";
+function denganHsts(r, url) {
+  if (!r || url.protocol !== "https:" || r.status === 101 || r.headers.has("strict-transport-security")) return r;
+  try { r.headers.set("strict-transport-security", HSTS); return r; }
+  catch { const x = new Response(r.body, r); x.headers.set("strict-transport-security", HSTS); return x; }   // header Response.redirect/ASSETS tak bisa diubah
+}
+
 const W = {
   async fetch(req, env, ctx) {
     const url = new URL(req.url);
-    try { return await W.layani(req, env, ctx, url); }
-    catch (e) { console.error("fetch", url.pathname, e); return mauHalaman(req, url) ? halamanGalat(env, req, url, 500) : gagal(500, "galat server"); }
+    let r;
+    try { r = await W.layani(req, env, ctx, url); }
+    catch (e) { console.error("fetch", url.pathname, e); r = await (mauHalaman(req, url) ? halamanGalat(env, req, url, 500) : gagal(500, "galat server")); }
+    return denganHsts(r, url);
   },
   async layani(req, env, ctx, url) {
     /* API terbuka mitra: di SEMUA host (termasuk centurisk97.id), sebelum gerbang halaman dan pencatatan pemirsa. /api = dokumentasinya (public/api.html). */
@@ -768,7 +786,7 @@ const W = {
     if (url.pathname === "/mcp" || url.pathname === "/mcp/") return layaniMcp(req, env, ctx, url);   // server MCP remote (src/mcp.js), juga di semua host
     if ((url.pathname === "/api" || url.pathname === "/api/") && (req.method === "GET" || req.method === "HEAD")) {
       /* dokumentasi di centurisk97.id hanya untuk yang masuk: admin atau akun pemirsa (pemilik 23 Okt 2026, akun mitra); endpoint /api/v1 dan /mcp tetap terbuka */
-      const kunci = HOST_TERKUNCI.has(url.hostname);
+      const kunci = hostTerkunci(url.hostname);
       if (kunci && !await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=%2Fapi", "cache-control": "no-store"}});
       const d = await env.ASSETS.fetch(new Request(new URL("/api.html", url)));
       return new Response(d.body, {status: d.status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": kunci ? "private, no-store" : "public, max-age=300", "x-content-type-options": "nosniff"}});
@@ -803,7 +821,7 @@ const W = {
       const ke = BNPB_BERSIH[url.pathname.slice(6, -5)];
       return ke ? new Response(null, {status: 301, headers: {location: ke + url.search, "cache-control": "no-store"}}) : new Response("Tidak ditemukan", {status: 404});
     }
-    if (HOST_TERKUNCI.has(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
+    if (hostTerkunci(url.hostname) && url.pathname === "/lapangan.html") return new Response(null, {status: 303, headers: {location: "/lapangan", "cache-control": "no-store"}});   // satu pintu: /lapangan (CSP ketat)
     if (url.pathname === "/instansi.html") return new Response(null, {status: 303, headers: {location: "/instansi", "cache-control": "no-store"}});
     if (url.pathname === "/renlap.html") return new Response(null, {status: 303, headers: {location: "/renlap", "cache-control": "no-store"}});   // satu pintu ber-CSP ketat (fragmen #t= ikut dibawa peramban)   // satu pintu: /instansi (CSP ketat)
     if (url.pathname === "/instansi_uji.html") return new Response(null, {status: 303, headers: {location: "/uji-lapangan", "cache-control": "no-store"}});   // satu pintu: /uji-lapangan
@@ -815,7 +833,7 @@ const W = {
       if (!await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname), "cache-control": "no-store"}});
       ujiOK = true;
     }
-    if (!ujiOK && HOST_TERKUNCI.has(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)) {
+    if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)) {
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
