@@ -156,9 +156,10 @@ def pasang_sp(s, x, y, proto, label):
 
 
 def ganti_operasi(s, op):
-    # judul dan pil tanggal = tanggal laporan WA, bukan hari kegiatan di isinya (pemilik 28 Okt 2026: "bukannya udah ada tanggal 28?");
-    # sama dengan label cut-off luas terbakar (kegiatan 27 Okt dilaporkan 28 Okt)
+    # judul dan pil ARMADA UDARA = tanggal laporan WA (pemilik 28 Okt 2026: "bukannya udah ada tanggal 28?"); pil OMC DAN HUJAN dan SEMAI
+    # OMC = hari kegiatan WB/OMC/hujan di isinya (1 Nov 2026: "Water bombing dan OMC nya kan tanggal 31 Okt kan?")
     D = op.get('tanggal_laporan') or op['tanggal']
+    K = op['tanggal']
     ARMADA = sorted(([n, p, w] for n, (p, w) in op['armada'].items()), key=lambda r: -(r[1] + r[2]))
     s = teks(s, '21', str(D.day)); s = teks(s, ' Oktober ', f' {BULAN[D.month - 1]} ')   # judul templat 211026: data per tanggal D
     # personel (per provinsi dan per instansi) tidak diganti: templat sudah memuat angka WA 21 s.d. 26 Okt; WA tak memuat rincian instansi
@@ -176,7 +177,7 @@ def ganti_operasi(s, op):
     # ---- hujan setelah OMC: 4 baris templat; pil biru (hujan) / abu (belum hujan) dari baris Kalbar / Kalsel templat
     proto = lambda y0: (y0, ''.join(s[a_:z_] for a_, z_ in sp_di(s, 3561885, y0)))
     pil = {'biru': proto(3170682), 'abu': proto(4501134)}   # Kalbar templat = biru (hujan), Kalsel templat = abu (belum hujan)
-    s = teks(s, '19 Okt', bln(D)); s = teks(s, '3 dari 4 provinsi hujan', f'{len(hujan)} dari {len(ada)} provinsi hujan')
+    s = teks(s, '19 Okt', bln(K)); s = teks(s, '3 dari 4 provinsi hujan', f'{len(hujan)} dari {len(ada)} provinsi hujan')
     s = teks(s, 'HUJAN SETELAH OMC', 'OMC DAN HUJAN')   # baris tanpa sortie (Kalbar 26 Okt) tetap memuat hujan yang dilaporkan WA: bukan hasil OMC
     lama_sas = ['Ketapang, Kayong Utara', 'Barito Selatan, Seruyan, Kotawaringin Timur dan Barat', 'Ogan Ilir, OKI, Banyuasin, Palembang', 'Tabalong, Banjar, Barito Kuala']
     lama_has = ['13 kab/kota, termasuk 2 sasaran', 'di 4 kabupaten sasaran', 'Ogan Ilir dan Lahat', 'radar BMKG 24 jam']
@@ -186,16 +187,17 @@ def ganti_operasi(s, op):
         h = o['hujan']
         label = ('HUJAN ' + h['intensitas'].upper().replace(' HINGGA ', '–')).strip() if h else 'BELUM HUJAN'
         s = pasang_sp(s, 3561885, yp, pil['biru' if h else 'abu'], label)
-        s = teks(s, lh, ('di ' + singkat(h['lokasi'], 40)) if h else f'belum ada laporan hujan {bln(D)}')
+        s = teks(s, lh, ('di ' + singkat(h['lokasi'], 40)) if h else f'belum ada laporan hujan {bln(K)}')
         for e, f in sp_di(s, 676656, yd): s = s[:e] + re.sub(r'val="(4A9BE0|C4CAD3)"', f'val="{"4A9BE0" if h else "C4CAD3"}"', s[e:f]) + s[f:]
     s = rapat_omc(s, ada)
     # ---- semai: 2 provinsi berbahan terbanyak (baris templat Kalteng, Sumsel)
     dua = sorted(((n, o) for n, o in omc.items() if o['sortie']), key=lambda kv: -(kv[1]['nacl'] + kv[1]['dryice']))[:2]
     s = teks(s, 'SEMAI DRY ICE', 'SEMAI OMC'); s = teks(s, 'BAHAN SEMAI', 'DRY ICE + NaCl' if any(o['dryice'] for o in op['omc'].values()) else 'NaCl')
     s = teks(s, '20 Okt', bln(D), 2)
-    # pil tanggal ARMADA UDARA (panel kanan, x >= 6164428) = tanggal rekap gelar pesawat, bisa sehari sesudah operasi (28 Okt 2026)
+    # pil tanggal ARMADA UDARA (panel kanan, x >= 6164428) = tanggal rekap gelar pesawat, bisa sehari sesudah operasi (28 Okt 2026);
+    # pil SEMAI OMC (panel kiri) = hari kegiatan
     s = re.sub(rf'(<p:sp>(?:(?!</p:sp>).)*?<a:off x="(\d+)"(?:(?!</p:sp>).)*?<a:t>){bln(D)}(</a:t>)',
-               lambda m: m.group(1) + (bln(op.get('tanggal_armada') or D) if int(m.group(2)) >= 6164428 else bln(D)) + m.group(3), s, flags=re.S)
+               lambda m: m.group(1) + (bln(op.get('tanggal_armada') or D) if int(m.group(2)) >= 6164428 else bln(K)) + m.group(3), s, flags=re.S)
     # lencana = total semua provinsi ber-OMC (subjudul "OMC di N provinsi"), bukan hanya 2 baris yang tampil (Kalsel 1 sortie, 29 Okt 2026)
     tot_s, tot_kg = sum(o['sortie'] for o in omc.values()), sum(o['nacl'] + o['dryice'] for o in omc.values())
     rb = lambda v: f'{v:,.0f}'.replace(',', '.')   # ribuan bertitik

@@ -12,7 +12,12 @@
   (22 patroli/OMC + 30 WB; Lampung tidak ada lagi); OMC Kalteng 8 sortie 8.400 kg NaCl, Sumsel 4 sortie (6.400 kg NaCl + 800 kg dry ice),
   Kalsel 1 sortie 800 kg, lencana 13 sortie 16.400 kg; hujan 5 provinsi. WA tanpa rekap instansi dan armada berubah di beberapa provinsi
   dibanding rekap 28 Okt, jadi baris PEMILIK tidak tampil.
-- Deck dibangun sesi lain 1 Nov 18.07; `wa-satgas.txt` dan README ditambahkan sesudahnya saat pemeriksaan.
+- Tanggal slide 3 (1 Nov 18.53): judul dan pil ARMADA UDARA = tanggal laporan WA (1 Nov); pil OMC DAN HUJAN dan SEMAI OMC = hari
+  kegiatan (31 Okt), karena WB, OMC, dan hujan di WA terjadi 31 Okt ("Water bombing dan OMC nya kan tanggal 31 Okt kan?"). Aturan ini di
+  `generator/penanganan/bnpb.py` (`K = op['tanggal']`), menggantikan aturan 28 Okt yang memberi semua pil tanggal laporan.
+- Deck dibangun sesi lain 1 Nov 18.07; `wa-satgas.txt` dan README ditambahkan sesudahnya saat pemeriksaan. Dibangun ulang 18.53 untuk
+  tanggal pil di atas (angka.json identik); mesin ini tanpa `.env` kunci FIRMS, jadi `jalan.py` dijalankan lewat pembungkus yang memakai
+  cache/raw (hotspot semua hari tetap dari harian30.json website), PDF lewat PowerPoint.
 
 Bangun ulang: `PLAYWRIGHT_MJS=<playwright>/index.mjs python3 jalan.py` (memakai ulang `web/`; `BARU=1` mengunduh ulang), lalu ekspor PDF
 lewat PowerPoint.
