@@ -945,7 +945,7 @@
     "table logbook_kejadian_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
     "table logbook_entri_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
     "table pengingat_cad": "salinan sementara migrasi 0088, dibuang di akhir; hasilnya diuji 'migrasi 0088: pengingat dibangun ulang'",
-    "table korban_cadang": "salinan sementara migrasi 0093, dibuang di akhir; hasilnya diuji korban: daftar tetap JS == CHECK migrasi terbaru == klien"
+    "table korban_cadang": "daftar tetap: JS == CHECK migrasi == klien"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"
