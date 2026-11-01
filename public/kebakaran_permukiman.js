@@ -19,7 +19,7 @@
     for (const [k, v] of Object.entries(j.kab)) { const b = v.bulan_penuh?.[JENIS]; if (!b) continue; const a = PV[k.split("|")[0]] ||= {b: Array(12).fill(0)}; b.forEach((n, i) => a.b[i] += n); }
     for (const [pk, a] of Object.entries(PV)) { const mx = Math.max(0, ...a.b); a.bln = mx ? BLN[a.b.indexOf(mx)] : "";
       const h = jam?.jenis?.[JENIS]?.prov?.[pk], tj = h ? h.reduce((x, y) => x + y, 0) : 0;
-      a.jam = tj >= 30 ? h.map((n, i) => [n, i]).sort((x, y) => y[0] - x[0] || x[1] - y[1]).slice(0, 3).sort((x, y) => x[1] - y[1]) : []; if (mx < 5) a.bln = ""; a.mx = mx; }
+      a.jamAda = tj >= 30; a.jam = tj >= 30 && Math.max(...h) >= 2 * tj / 24 ? h.map((n, i) => [n, i]).sort((x, y) => y[0] - x[0] || x[1] - y[1]).slice(0, 3).sort((x, y) => x[1] - y[1]) : []; if (mx < 5) a.bln = ""; a.mx = mx; }
     TH = tahunDasar(j); RNG = rentang(TH);
     for (const [k, v] of Object.entries(j.kab)) {
       const t = TH.map(y => v.tahun?.[y]?.[JENIS] || 0), tot = t.reduce((a, b) => a + b, 0); if (!tot) continue;
@@ -59,7 +59,7 @@
     return kartuTip({judul: esc(p.nama), sub: `<small class="tp-sub">${esc(namaProv(p.prov))}</small>`,
       stat: [["api", fmt(x.tot), `kejadian ${RNG}`, WARNA, false], ["kal", f1(x.rata), "rata-rata per tahun", WARNA, false]],
       daftar: [...(x.bln ? [[esc(x.bln), "bulan tersibuk"]] : []), ...(P?.bln ? [[`${esc(P.bln)}, ${fmt(P.mx)} kejadian dalam ${fmt(TH.length)} tahun dasar`, `bulan tersibuk di ${esc(namaProv(p.prov))}`]] : []),
-        ...(P?.jam.length ? [[P.jam.map(([n, h]) => `${String(h).padStart(2, "0")}.00: ${fmt(n)} kejadian`).join("; "), `jam paling sering dilaporkan di ${esc(namaProv(p.prov))} (waktu setempat)`]] : [])],
+        ...(P?.jamAda ? [[!P.jam.length ? "tidak ada jam yang menonjol" : P.jam.map(([n, h]) => `${String(h).padStart(2, "0")}.00: ${fmt(n)} kejadian`).join("; "), `jam paling sering dilaporkan di ${esc(namaProv(p.prov))} (waktu setempat)`]] : [])],
       tren: `<div style="display:flex;gap:3px;align-items:flex-end;padding:6px 2px 0">${bar}</div>`,
       kaki: `Logbook Pusdalops BNPB. Bulan: tahun dasar ${RNG}. Jam: semua tahun arsip; jam bulat (00.00, 12.00) bisa isian bawaan petugas`});
   }

@@ -172,7 +172,7 @@
     const n = tampil.length, tot = Math.max(1, Math.ceil(n / HAL)); hal = Math.min(hal, tot - 1);
     let i0 = hal * HAL;
     $("mnDet").innerHTML = n ? tampil.slice(hal * HAL, hal * HAL + HAL).map(d =>
-      `<tr data-i="${i0++}"><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}" title="Keyakinan sel: bisa berasal dari satelit lain di sel ~375 m yang sama">${KEY[d.key] || ""}</span></td><td class="mn-koord">${koord(d.lat, d.lon)}</td><td class="mn-aksi"><span class="mn-aks">${aksiDet(d)}</span></td></tr>`).join("")
+      `<tr data-i="${i0++}"><td>${tglJam(d.ms)}</td><td>${esc(namaProv(d.pk))}</td><td>${esc(d.kab)}</td><td>${esc(d.kec)}</td><td>${esc(SAT[d.sensor] || d.sensor)}</td><td class="k">${d.frp == null ? "" : (+d.frp).toFixed(1)}</td><td><span class="mn-p ${KEL[d.key]}" title="tertinggi dalam sel 375 m">${KEY[d.key] || ""}</span></td><td class="mn-koord">${koord(d.lat, d.lon)}</td><td class="mn-aksi"><span class="mn-aks">${aksiDet(d)}</span></td></tr>`).join("")
       : !dimuat ? kosong(9, '<path d="M4 12a8 8 0 0 1 14-5.3M20 12a8 8 0 0 1-14 5.3M18 3v4h-4M6 21v-4h4"/>', "Data satelit belum masuk", "Halaman mencoba lagi tiap 5 menit.")
       : dets.length ? kosong(9, '<circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/>', "Tidak ada deteksi pada saringan ini", "Coba provinsi atau keyakinan lain.")
       : kosong(9, '<path d="M20 6 9 17l-5-5"/>', "Tidak ada deteksi api dalam 24 jam terakhir", "");

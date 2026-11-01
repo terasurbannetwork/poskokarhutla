@@ -162,7 +162,7 @@
       for (const {k, est} of rows.slice(0, 12)) tb.append(h("tr", null, h("td", null, h("span", {class: "sg-keb"}, ikon(IKK[k] || k), KEB[k] || label(k))), est.map((x, m) => h("td", {class: "n" + (sorot.has(m) ? " sg-sorot" : ""), teks: x == null ? "–" : pecah(x)}))));
       kotak.replaceChildren(h("div", {class: "lb-ringkas"}, pil(`${pecah(nk.reduce((x, y) => x + y, 0))} kejadian ${namaJenis(jenisStok).toLowerCase()} per tahun di ${namaP}`, "info", "daftar"), pil(`${F(Math.round(berisiTh))} kejadian mengisi kolom kebutuhan`, "tunggu", "peringatan"), pil("bukan jumlah barang", "tunggu", "senyap")), svg,
         h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Kebutuhan, kejadian per tahun", ...BLN.map((b, m) => b.slice(0, 3))].map((t, m) => h("th", {class: m && sorot.has(m - 1) ? "sg-sorot" : "", teks: t})))), tb)),
-        kaki(`Perkiraan kejadian per tahun yang membutuhkan tiap kategori = kejadian berkategori itu dibagi kejadian yang mengisi kolom kebutuhan (atau peralatan), dikali semua kejadian di bulan itu. Ini mengandaikan kejadian yang tidak mengisi kolom sama kebutuhannya dengan yang mengisi, dan belum tentu benar. Rata-rata ${F(n)} tahun dasar (${thRingkas(KB.tahun_dasar)}); kolom merah muda = bulan ini dan dua bulan berikutnya. Tanda – = kurang dari 3 kejadian yang mengisi di bulan itu, terlalu sedikit untuk dijadikan perkiraan. Perkiraan kasar dari laporan Pusdalops, bukan stok yang harus disiapkan. Menampilkan 12 kategori teratas.`));
+        kaki(`Perkiraan kejadian per tahun yang membutuhkan tiap kategori = kejadian berkategori itu dibagi kejadian yang mengisi kolom kebutuhan (atau peralatan), dikali semua kejadian di bulan itu. Ini mengandaikan kejadian yang tidak mengisi kolom sama kebutuhannya dengan yang mengisi, dan belum tentu benar. Rata-rata ${F(n)} tahun dasar; kolom merah muda = bulan ini dan dua bulan berikutnya. Tanda – = kurang dari 3 kejadian yang mengisi di bulan itu, terlalu sedikit untuk dijadikan perkiraan. Perkiraan kasar dari laporan Pusdalops, bukan stok yang harus disiapkan. Menampilkan 12 kategori teratas. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(KB.tahun_dasar)}.`));
     };
     isi();
     return blok("logistik", judul, seg, kotak);
@@ -177,11 +177,11 @@
       const a = kunci.split(">"), c = p.kab?.[kk], nas = p.nasional, sama = a[0] === a[1];
       const nol = x => x.ci95 && x.ci95[0] <= 1 && x.ci95[1] >= 1;   // ci95 null = tanpa klaim lift
       const kal = (x, lingkup) => {
-        const awal = sama ? `Sesudah ${J(a[0])}, ${J(a[0])} berikutnya` : `Sesudah ${J(a[0])}, ${J(a[1])}`, per100 = F(Math.round(x.laju * 1000) / 10), dasar = F(Math.round(x.dasar * 1000) / 10);
-        const t = `${awal} tercatat 1–3 hari kemudian pada ${per100} dari 100 kejadian di ${lingkup} (${F(x.k)} dari ${F(x.n)})`;
+        const awal = sama ? `Sesudah ${J(a[0])}, ${J(a[0])} berikutnya` : `Sesudah ${J(a[0])}, ${J(a[1])}`, per100 = F(Math.round(x.laju * 100)), dasar = F(Math.round(x.dasar * 100));
+        const t = `${awal} tercatat 1–${SU.jendela_hari} hari kemudian pada ${per100} dari 100 kejadian di ${lingkup} (${F(x.k)} dari ${F(x.n)})`;
         return !x.ci95 ? `${t}; hari biasa ${dasar} dari 100, selang belum bisa dihitung sehingga tidak ada klaim.` : nol(x) ? `${t}, tidak berbeda dari kebetulan (hari biasa ${dasar} dari 100).` : `${t}, ${F(x.lift)} kali hari biasa (${dasar} dari 100; selang ${F(x.ci95[0])} sampai ${F(x.ci95[1])}).`;
       };
-      const hari0 = (x, lingkup) => x.hari0 ? `Tercatat di hari yang sama: ${F(Math.round(x.hari0.laju * 1000) / 10)} dari 100 di ${lingkup} (sebagian satu laporan gabungan).` : null;
+      const hari0 = (x, lingkup) => x.hari0 ? `Tercatat di hari yang sama: ${F(Math.round(x.hari0.laju * 100))} dari 100 di ${lingkup} (sebagian satu laporan gabungan).` : null;
       baris.push({kunci, a, c, nas, kal, hari0, nol});
     }
     const isi = baris.map(({a, c, nas, kal, hari0, nol}) => h("div", {class: "sg-sop"}, h("h3", null, ikon(a[0]), `${label(a[0]).replace("Gempabumi", "Gempa bumi")}, lalu ${NJ(a[1])}`, c ? pil(`${F(c.n)} kejadian di kab/kota`, "info", "daftar") : pil("kab/kota ini belum cukup kejadian (minimal 10 pemicu, 5 disusul)", "tunggu", "senyap"), c && (!c.ci95 || nol(c)) ? pil(c.ci95 ? "tidak berbeda dari kebetulan" : "tanpa klaim lift", "info", "senyap") : c ? pil(`${F(c.lift)} kali hari biasa`, "bahaya", "peringatan") : null),

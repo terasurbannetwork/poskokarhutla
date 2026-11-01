@@ -1586,9 +1586,9 @@ html[data-pemirsa-tab] .stat a[href="/laporan"],html[data-pemirsa-tab] header .b
           <label><input type="checkbox" data-l="wilayah" checked> Warna wilayah</label>
           <label><input type="checkbox" data-l="kabluas"> Luas terbakar per kabupaten</label><!-- peta_kab.js; kabluas dan kabbelum saling eksklusif -->
           <label><input type="checkbox" data-l="kabbelum"> Masih terdeteksi per kabupaten (perkiraan satelit)</label>
-          <label><input type="checkbox" data-l="permukiman"> Kebakaran permukiman per kabupaten (Logbook Pusdalops 2014-2020)</label><!-- kebakaran_permukiman.js; saling eksklusif dengan kabluas/kabbelum -->
-          <label><input type="checkbox" data-l="rd-musim"> Musim berjalan: jenis bencana dominan per bulan (Logbook Pusdalops 2014-2020)</label><!-- riwayat_daerah.js; saling eksklusif dengan lapisan kabupaten lain -->
-          <label><input type="checkbox" data-l="rd-langgan"> Langganan bencana: banjir dan longsor tiap tahun (Logbook Pusdalops 2014-2020)</label>
+          <label><input type="checkbox" data-l="permukiman"> Kebakaran permukiman per kabupaten (Logbook Pusdalops 2014–2020 dan 2024–2025)</label><!-- kebakaran_permukiman.js; saling eksklusif dengan kabluas/kabbelum -->
+          <label><input type="checkbox" data-l="rd-musim"> Musim berjalan: jenis bencana dominan per bulan (Logbook Pusdalops 2014–2020 dan 2024–2025)</label><!-- riwayat_daerah.js; saling eksklusif dengan lapisan kabupaten lain -->
+          <label><input type="checkbox" data-l="rd-langgan"> Langganan bencana: banjir dan longsor tiap tahun (Logbook Pusdalops 2014–2020 dan 2024–2025)</label>
           <label><input type="checkbox" data-l="langganan"> Lokasi langganan api (pencegahan)</label><!-- riwayat_sel.py langganan: jendela ~16 km terbakar >= 1/3 tahun 2012-2025 -->
           <label><input type="checkbox" data-l="satelit" checked> Citra satelit &amp; titik api Himawari 10 menit</label>
           <label><input type="checkbox" data-l="foto"> Foto lapangan warga</label>
@@ -2238,7 +2238,7 @@ const Peta = {
       if (t.length && peta.getZoom() >= 8) { const p = t[0].properties;
         const kb = (k, v) => `<div class="kb penuh"><span>${k}</span><b>${v}</b></div>`;
         return new maplibregl.Popup({closeButton: false, maxWidth: "300px"}).setLngLat(e.lngLat).setHTML(`<div class="kartu"><div class="kp putih" style="--aksen:#c9503a"><div><small>${{N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s]}</small><b>Titik panas</b></div></div>
-          <div class="kg">${kb("Umur deteksi", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb("Keyakinan sel", ["Rendah", "Sedang", "Tinggi"][p.c])}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
+          <div class="kg">${kb("Umur deteksi", (p.u < 1 ? "< 1" : fmt(p.u)) + " jam")}${kb('<span title="tertinggi dalam sel 375 m">Keyakinan deteksi</span>', ["Rendah", "Sedang", "Tinggi"][p.c] ?? "–")}${kb("Daya api (FRP)", fmt(p.f) + " MW")}</div>
           ${aksiLokasi(t[0].geometry.coordinates[1], t[0].geometry.coordinates[0], "Titik panas " + ({N: "VIIRS S-NPP", N20: "VIIRS NOAA-20", N21: "VIIRS NOAA-21", M: "MODIS"}[p.s] || ""))}<div class="kk">Sumber: NASA FIRMS.</div></div>`).addTo(peta); }
       const ud = ["udara", "udara-r", "metar"].filter(l => peta.getLayer(l)); if (ud.length && peta.queryRenderedFeatures([[e.point.x - 6, e.point.y - 6], [e.point.x + 6, e.point.y + 6]], {layers: ud}).length) return;
       if (window.Risiko7?.klik(e)) return;   /* overlay eksperimental Peluang api 7 hari (hanya akun masuk): klik = popup sel, bukan turun ke wilayah */
@@ -2621,9 +2621,9 @@ function renderKPI() {
   const prior = kl.filter(f => f.properties.level === 3).length, siaga = kl.filter(f => f.properties.level === 2).length;
   const fw = S.jalur[0] ? S.wilayah[S.jalur[0]]?.fwi_maks : Math.max(...Object.keys(S.meta.provinsi).map(k => S.wilayah[k]?.fwi_maks || 0));
   const rh = S.rentangHit || S.rentang, bln = +tglRentang().slice(5, 7) - 1;
-  const nmR = rh === "hari" ? `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)` : `${hariLama(rh) ? tglLain(rh) : tglPendek(tglRentang())} · sehari penuh WIB`;
+  const nmR = rh === "hari" ? `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)` : `${hariLama(rh) ? tglLain(rh) : tglPendek(tglRentang())}, sehari penuh WIB`;
   const kart = [
-    ["Titik panas", fmt(jml(S.hit)), `${nmR}, ${fmt(jml(S.tinggi))} keyakinan tinggi`],
+    ["Titik panas", fmt(jml(S.hit)), `${nmR}, ${fmt(jml(S.tinggi))} titik keyakinan tinggi`],
     ["Cluster", fmt(kl.length), "aktif 72 jam"],
     ["Prioritas pemadaman", fmt(prior), `${fmt(siaga)} lain pemadaman awal`],
     ["FWI maksimum", fmt(fw), fw == null ? "" : FWI_KELAS[kelasFWI(fw)][0] + " hari ini"],

@@ -374,3 +374,5 @@
 {"t":"2026-11-01T19:03:10.483+07:00","berkas":"public/riwayat_daerah.js","blob":"d456ce608af4ad1fefffbd8f9176d0b58ed7a788","aturan":"e7033d8aa3cf","vonis":"dikerjakan","ringkas":"JN +gelombang_pasang, tsunami, wabah","sha":"67b10dbb"}
 {"t":"2026-11-01T19:03:10.541+07:00","berkas":"public/laporan_bnpb_slide.js","blob":"3c053f46ac3f65df4f8ad130d4e97eadef6c1710","aturan":"e7033d8aa3cf","vonis":"dikerjakan","ringkas":"JENIS +3 jenis","sha":"67b10dbb"}
 {"t":"2026-11-01T19:03:10.587+07:00","berkas":"public/bagikan.js","blob":"ffd46f2e66ce0ea1c82cef8f9636ba43177607ed","aturan":"e7033d8aa3cf","vonis":"dikerjakan","ringkas":"buang titik tengah di baris keyakinan tinggi","sha":"67b10dbb"}
+{"t":"2026-11-01T19:10:32.265+07:00","berkas":"public/index.html","blob":"98be65c5e7a6b08e9bdafec452e2e3647a17c007","aturan":"e7033d8aa3cf","vonis":"dikerjakan","ringkas":"label lapisan logbook 2 rentang, Keyakinan deteksi, titik keyakinan tinggi","sha":"f557adfb"}
+{"t":"2026-11-01T19:10:32.386+07:00","berkas":"public/monitor.html","blob":"95c2e232d74b2222409f6248d5451696aaf27d08","aturan":"e7033d8aa3cf","vonis":"dikerjakan","ringkas":"Keyakinan deteksi","sha":"f557adfb"}

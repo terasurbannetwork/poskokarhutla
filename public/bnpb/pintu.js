@@ -48,9 +48,9 @@
     ["kinerja", "Kinerja BNPB", "/kinerja-bnpb", "kinerja", async () => { const r = await ambil("/data/bnpb/iku.json"); const v = r?.kapasitas?.resmi;
       return v ? [v.persen_min_sedang + "%", "daerah berkapasitas minimal sedang, target " + v.target + "%"] : null; }, null, "LAKIP BNPB 2025, Renstra BNPB 2025-2029, NDPBA"],
     ["logbook", "Logbook Pusdalops", "/bnpb/logbook.html", "logbook", async () => { const r = await ambil("/data/logbook_riwayat.json"); const n = Object.values(r?.nasional || {}).reduce((a, y) => a + Object.values(y).reduce((b, v) => b + v, 0), 0);
-      return n ? [F(n), "kejadian dalam arsip logbook 2011 sampai 2023"] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB"],
+      return n ? [F(n), `kejadian dalam arsip logbook ${Object.keys(r.nasional).sort()[0]} sampai ${Object.keys(r.nasional).sort().pop()}`] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB"],
     ["siaga", "Siaga pra-musim", "/bnpb/siaga.html", "siaga", async () => { const r = await ambil("/data/bnpb/siaga.json"); const n = Object.values(r?.kab || {}).filter(k => Object.keys(k.musim).length).length;
-      return n ? [F(n), "kabupaten/kota punya musim bencana berulang"] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB 2014 sampai 2020"],
+      return n ? [F(n), "kabupaten/kota punya musim bencana berulang"] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB 2014–2020 dan 2024–2025"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
   ];
 

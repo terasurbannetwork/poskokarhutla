@@ -11,9 +11,9 @@ const LogbookTren = (() => {
       const n = lb.nasional[y][jenis], h = lb.hari_tercatat[y];
       return {y, n, h, per100: h ? n / h * 100 : null, dasar: dasar.has(y)}; });
   }
-  /* rentang tahun bersambung, sama dengan rentangTh di public/cuaca/tren.js: [2014..2020, 2024, 2025] -> "2014 sampai 2020 dan 2024 sampai 2025" */
+  /* rentang tahun bersambung, sama dengan rentangTh di public/cuaca/tren.js: [2014..2020, 2024, 2025] -> "2014–2020 dan 2024–2025" */
   function rentang(a) { const r = []; a.forEach((y, i) => i && y === a[i - 1] + 1 ? r[r.length - 1][1] = y : r.push([y, y]));
-    const s = r.map(([x, z]) => x === z ? `${x}` : `${x} sampai ${z}`); return s.length < 3 ? s.join(" dan ") : `${s.slice(0, -1).join(", ")}, dan ${s.at(-1)}`; }
+    const s = r.map(([x, z]) => x === z ? `${x}` : `${x}–${z}`); return s.length < 3 ? s.join(" dan ") : `${s.slice(0, -1).join(", ")}, dan ${s.at(-1)}`; }
   /* judul: hanya tahun dasar. Angka kunci (tahun dasar terbaru) di depan, lalu kedudukannya terhadap tahun dasar lain */
   function judul(s, nama, hl) {
     const d = s.filter(x => x.dasar); if (!d.length) return `Kejadian ${nama} per tahun menurut Logbook Pusdalops BNPB`;

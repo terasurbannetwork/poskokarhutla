@@ -121,11 +121,11 @@
       put(isi, h("div", {class: "lb-ringkas"}, pil(`${F(rows.length)} desa dan jenis kejadian di ${PROV[prov]}`, "info", "pin"), pil(`ada kejadian di ${F(ambang)} tahun atau lebih dari ${F(N)}`, "tunggu", "kalender")),
         h("div", {class: "lb-tabel-bungkus"}, h("table", {class: "lb-tabel"}, h("thead", null, h("tr", null, ["Desa/kelurahan", "Kecamatan", "Kab/kota", "Jenis", "Tahun ada kejadian", "Kejadian", "Bulan rawan"].map(t => h("th", {teks: t})))), tb)),
         h("p", {class: "lb-draf", teks: `${F(Math.min(maks, rows.length))} dari ${F(rows.length)}`}), lagi,
-        kaki(`Satuan = kejadian di logbook Pusdalops, bukan semua kejadian: yang tak dilaporkan tidak ada. Ambang bawaan 6 dari 9 tahun dasar karena 9 dari 9 hampir tidak ada. Bulan rawan = bulan yang pernah ada kejadian di tahun dasar. Kecamatan kosong bila nama desa ambigu. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(berkas.j.tahun_dasar)}.`));
+        kaki(`Satuan = kejadian di logbook Pusdalops, bukan semua kejadian: yang tak dilaporkan tidak ada. Ambang bawaan ${F(ambang)} dari ${F(N)} tahun dasar karena ${F(N)} dari ${F(N)} hampir tidak ada. Bulan rawan = bulan yang pernah ada kejadian di tahun dasar. Kecamatan kosong bila nama desa ambigu. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(berkas.j.tahun_dasar)}.`));
     };
     const muatProv = async () => { put(isi, kosong("tunggu", "Memuat desa…")); berkas = null; const p = prov; const b = await ambil(`/data/bnpb/desa_langganan/${p}.json`); if (p !== prov) return; berkas = b; gambar(); };
     const sP = pilihan("Provinsi", Object.entries(PROV).map(([p, t]) => [p, t]), prov, v => { prov = v; maks = 30; lanjutNanti(muatProv); });
-    const ang = deretan("lbambang", "Ambang tahun", [4, 5, 6, 7, 8, 9].map(a => [a, `${a} dari 9 tahun`, "kalender"]), ambang, v => { ambang = +v; maks = 30; lanjutNanti(gambar); });
+    const ang = deretan("lbambang", "Ambang tahun", [4, 5, 6, 7, 8, 9].map(a => [a, `${a} tahun`, "kalender"]), ambang, v => { ambang = +v; maks = 30; lanjutNanti(gambar); });
     const sj = deretan("lbdesajenis", "Jenis kejadian", [["", "Semua jenis", "daftar"], ...["banjir", "longsor", "gelombang_pasang", "cuaca", "kekeringan", "karhutla", "kebakaran_permukiman"].map(j => [j, nJ(j), j])], jenis, v => { jenis = v; maks = 30; lanjutNanti(gambar); });
     put(kotak, bungkus("Provinsi", sP), ang, sj, isi);
     muatProv();
@@ -270,7 +270,7 @@
         : h("div", {class: "lb-ringkas"}, pil(`${F(c.n)} kejadian di ${lingkup}`, "info", "daftar"), pil(`${sel(c)} dilaporkan selesai`, "info", "ok"), pil(`${F(c.tak_selesai_pct)}% tak dilaporkan selesai`, "tunggu", "senyap"));
       put(isi, ring, c ? svg : kosong("tunggu", `Belum ada ${nJ(jenis).toLowerCase()} dengan 5 kejadian atau lebih di ${lingkup0}. Pilih cakupan lebih luas.`), rank,
         c && jenis === "banjir" && !bolehMed(c) ? kaki(`Median tidak ditampilkan di ${lingkup}: kejadian yang dilaporkan selesai kurang dari 30 atau lebih dari 90% tidak pernah dilaporkan selesai.`) : null,
-        jenis === "karhutla" ? kaki("Karhutla: hanya jumlah kejadian dan persen yang tak dilaporkan selesai. Median 1 hari dari catatan Pusdalops tidak bisa dibaca sebagai lama penanganan, jadi tidak ditampilkan.") : null,
+        jenis === "karhutla" ? kaki("Karhutla: hanya jumlah kejadian dan persen yang tak dilaporkan selesai. Lama penanganan tidak ditampilkan karena catatan Pusdalops tidak mencatatnya dengan andal.") : null,
         w.kab && !kb ? kaki(`${namaKab(w.kab)} kurang dari 5 kejadian ${nJ(jenis).toLowerCase()}; yang ditampilkan angka ${lingkup}.`) : null,
         jenis === "banjir" ? kaki(`Angka ini ${MED}, yaitu kejadian yang catatan kondisinya menyebut padam, surut, atau tertangani tanpa penyangkal. Kejadian yang tak pernah dilaporkan selesai tidak ikut, jadi ini batas bawah yang bias, bukan lama penanganan sebenarnya: lama sebenarnya hampir pasti lebih panjang. Persen tak dilaporkan selesai campuran antara belum selesai dan berhenti dilaporkan. Bar merah = median, bar abu = persentil 75. Median hanya untuk banjir dengan minimal 30 kejadian dilaporkan selesai dan tidak lebih dari 90% tak dilaporkan selesai. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(D.tahun_dasar)}.`) : kaki(`Persen tak dilaporkan selesai campuran antara belum selesai dan berhenti dilaporkan. Sumber: logbook Pusdalops BNPB, tahun dasar ${thRingkas(D.tahun_dasar)}.`));
     };

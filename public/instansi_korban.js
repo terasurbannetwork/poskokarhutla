@@ -6,7 +6,7 @@
 (() => {
   "use strict";
   /* daftar tetap: sama dengan src/korban.js dan CHECK di migrations/0034_korban_p3k.sql (dijaga korban.test.mjs); label asli dibaca dari kamus server, ini cadangan urutan */
-  const BENCANA = ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "lainnya"];
+  const BENCANA = ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "pesisir", "lainnya"];
   const KATEGORI = ["warga", "petugas_pemadam", "relawan", "lainnya"], PENYEBAB = ["terbakar", "asap_ispa", "tenggelam", "kecelakaan_tugas", "lainnya"], SUMBER = ["laporan_langsung", "rs", "kepolisian"];
   const STATUS = {dilaporkan: "Menunggu verifikasi", terverifikasi: "Terverifikasi", dikoreksi: "Dikoreksi, menunggu verifikasi ulang"};
   const MAKS_FOTO = 1.4 * 1048576;

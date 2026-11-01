@@ -76,19 +76,19 @@ const Tren = {
     return this.kartu("Per tahun", `${Kartu.hl(fmt(v(pk)) + " " + sat)}${k === "kejadian" ? "" : " " + nm.toLowerCase()} akibat cuaca ekstrem pada ${Kartu.hl(pk)}, tertinggi sejak ${th[0]}${ber ? ` (${akhir} belum penuh)` : ""}`,
       Grafik.kolom({cat: th.map(t => "'" + String(t).slice(2)), seri: [[nm, "#7d8ca3"]], nilai: th.map(t => [v(t)]), aria: nm + " per tahun",
         tip: i => `<b>${th[i]}${ber && th[i] === akhir ? " (berjalan)" : ""}</b><br>${nm}: ${fmt(v(th[i]))} ${sat}`}),
-      `${SUMBER_BNPB}, ${th[0]} sampai ${akhir}; hanya angka yang tercatat`, Kartu.seg("bnpb", ada.map(x => [x, BNPB[x][0]]), this.st)); },
+      `${SUMBER_BNPB}, ${th[0]}–${akhir}; hanya angka yang tercatat`, Kartu.seg("bnpb", ada.map(x => [x, BNPB[x][0]]), this.st)); },
 
   /* Logbook Pusdalops BNPB (public/data/logbook_riwayat.json, kalender_risiko.json): kejadian cuaca ekstrem yang DILAPORKAN. Tahun dasar dibaca dari berkas (tahun_penuh), bukan ditulis tetap.
      Tahun belum penuh dipudarkan; angka korban logbook tidak dipakai (lihat DIBI). */
   LB: undefined, KAL: undefined,
-  rentangTh(a) { const r = []; a.forEach((y, i) => i && y === a[i - 1] + 1 ? r[r.length - 1][1] = y : r.push([y, y])); const s = r.map(([x, z]) => x === z ? `${x}` : `${x} sampai ${z}`); return s.length < 3 ? s.join(" dan ") : `${s.slice(0, -1).join(", ")}, dan ${s.at(-1)}`; },
+  rentangTh(a) { const r = []; a.forEach((y, i) => i && y === a[i - 1] + 1 ? r[r.length - 1][1] = y : r.push([y, y])); const s = r.map(([x, z]) => x === z ? `${x}` : `${x}–${z}`); return s.length < 3 ? s.join(" dan ") : `${s.slice(0, -1).join(", ")}, dan ${s.at(-1)}`; },
   exLogTahun() {
     const L = this.LB, N = L?.nasional, th = N && Object.keys(N).filter(t => N[t].cuaca != null).sort(); if (!th || th.length < 3) return "";
-    const penuh = new Set((L.tahun_penuh || []).map(String)), v = t => N[t].cuaca, pk = th.reduce((a, t) => v(t) > v(a) ? t : a, th[0]), akhir = th.at(-1), hari = L.hari_tercatat || {};
-    return this.kartu("Logbook", `${Kartu.hl(fmt(v(pk)) + " kejadian")} cuaca ekstrem dilaporkan pada ${Kartu.hl(pk)}, tertinggi dari ${th[0]} sampai ${akhir} menurut logbook Pusdalops BNPB`,
+    const penuh = new Set((L.tahun_penuh || []).map(String)), v = t => N[t].cuaca, pk = th.filter(t => penuh.has(t)).reduce((a, t) => v(t) > v(a) ? t : a), akhir = th.at(-1), hari = L.hari_tercatat || {};
+    return this.kartu("Logbook", `${Kartu.hl(fmt(v(pk)) + " kejadian")} cuaca ekstrem dilaporkan pada ${Kartu.hl(pk)}, tertinggi di antara tahun penuh menurut logbook Pusdalops BNPB`,
       Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: [["Cuaca ekstrem", "#c99a1e"]], nilai: th.map(t => [v(t)]), aria: "Kejadian cuaca ekstrem dalam logbook per tahun", pudar: i => !penuh.has(th[i]),
         tip: i => `<b>${th[i]}</b><br>${fmt(v(th[i]))} kejadian dilaporkan${penuh.has(th[i]) ? "" : `<br><small>tahun belum penuh: ${fmt(hari[th[i]] || 0)} hari tercatat</small>`}`}),
-      `Logbook Pusdalops BNPB ${th[0]} sampai ${akhir}; kejadian yang dilaporkan; DIBI tahunan juga mencatat lonjakan 2025 (cuaca 756 kejadian pada 2024 menjadi 2.432 pada 2025); batang pudar = tahun belum penuh`); },
+      `Logbook Pusdalops BNPB ${th[0]}–${akhir}; kejadian yang dilaporkan; batang pudar = tahun belum penuh`); },
   exLogMusim() {
     const L = this.LB, kab = L?.kab && Object.entries(L.kab), tp = (L?.tahun_penuh || []).length; if (!kab || !tp) return "";
     const bln = Array(12).fill(0); kab.forEach(([, d]) => (d.bulan_penuh?.cuaca || []).forEach((n, i) => bln[i] += n)); const N = bln.reduce((a, b) => a + b, 0); if (!N) return "";
@@ -144,7 +144,7 @@ const Tren = {
     return this.kartu("ENSO", `${Kartu.hl(fmt(T[pk].n) + " kejadian")} cuaca dan gelombang ekstrem pada ${Kartu.hl(pk)} (${T[pk].fase}), tertinggi sejak ${th[0]}${K.status && o ? `; ENSO kini ${Kartu.hl(K.status)}, ONI ${f2(o.nilai)} (${MUSIM_ONI[o.musim] || o.musim} ${o.tahun})` : ""}`,
       Grafik.kolom({cat: th.map(t => "'" + t.slice(2)), seri: FASE, nilai: th.map(t => FASE.map(([f]) => T[t].fase === f ? T[t].n : 0)), aria: "Kejadian cuaca ekstrem per tahun menurut fase ENSO",
         tip: i => `<b>${th[i]}</b><br>${fmt(T[th[i]].n)} kejadian<br>Fase ${T[th[i]].fase}, ONI rata-rata ${f2(T[th[i]].oni)}`}),
-      `${SUMBER_BNPB} ${th[0]} sampai ${th.at(-1)}; ONI NOAA CPC rata-rata setahun kalender (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang); jumlah tercatat juga naik karena pelaporan makin lengkap`,
+      `${SUMBER_BNPB} ${th[0]}–${th.at(-1)}; ONI NOAA CPC rata-rata setahun kalender (El Niño +0,5 atau lebih, La Niña -0,5 atau kurang); jumlah tercatat juga naik karena pelaporan makin lengkap`,
       "", FASE.map(([f, w]) => [w, f])); },
 
   kabUlang(box) { const f = document.activeElement?.parentElement?.querySelector?.("select[data-kl]")?.dataset.kl; box.innerHTML = this.gambar(box.dataset.ex); box.querySelectorAll("select").forEach(x => PilihCantik.hias(x)); if (f) box.querySelector(`select[data-kl="${f}"]`)?.parentElement.querySelector(".pc-btn")?.focus({preventScroll: true}); },
