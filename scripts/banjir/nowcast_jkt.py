@@ -8,7 +8,10 @@
   fitur_hujan --t ISO                                      JALUR A: fitur hujan IMERG 42 kecamatan pada t (latensi LAT_IMERG)
   uji                                                      swa-uji luring (pembeda latensi + kausal, korelasi silang, hitung bulanan, musim)
 
-Tidak ada `latih`, `buka`, atau `nilai` di fase 1: tidak ada parameter yang disetel pada label, dan berkas ini tidak membaca lokasi/waktu laporan.
+  sidik | jangkar                                          cetak sidik | SEKALI (sesi induk, sesudah push): tulis nowcast_jkt_sidik.json
+  latih --jalur A | nilai --jalur A                        DITOLAK sebelum kunci sah (muat_label); nilai hanya sekali (penanda nowcast_jkt.buka)
+
+Fase 1: tidak ada parameter yang disetel pada label. Lokasi/waktu laporan hanya dibaca muat_label(), yang menolak sebelum kunci (PRAREG A.5).
 Data yang boleh dipakai pada t: hanya yang tersedia sebelum t menurut latensi nyata (konstanta LAT_* di bawah, dibekukan oleh PRAREG).
 Arsip TMA: data/raw/banjir/arsip_pos/YYYY/MM/*.jsonl.gz (arsip_pos.py; R2 arsip/pos_sungai/). CAP: GET /api/cuaca/arsip (D1 cuaca_arsip, 0021).
 GSMaP NRT jam: data/banjir/genangan/j4_hujan_jam.jsonl (ditulis j4_operasi.py, beku J4: hanya DIBACA).
@@ -40,14 +43,27 @@ POS_RANTAI = dict(HULU, manggarai=["d:122", "ba102072-b9f8-4726-a5ab-652cc3c99c7
 BULAN_TERLARANG = {"2024-08", "2025-04"}      # bulan berjendela uji J3 (PRAREG-J3): dibuang SELURUHNYA dari hitungan dan arsip
 AWAL_J4 = dt.datetime(2026, 10, 28, tzinfo=WIB)
 # ---- JALUR A (hujan saja, arsip memutuskan): PRAREG bagian A
-LAT_IMERG = 5 * 3600                # slot 30 menit berakhir e dipakai bila e + LAT_IMERG <= t (terukur 31 Okt 2026: p50 4,9 jam, maks 4,9 jam dari daftar folder)
+LAT_IMERG = 6 * 3600                # slot 30 menit berakhir e dipakai bila e + LAT_IMERG <= t. Terukur 11-31 Okt 2026 (21 hari, 1.008 slot, 3 akhir pekan): p50 4,45 p99 4,93 maks 6,23 jam -> p99 + 1 jam, dibulatkan ke atas
+IMERG_V07C_MULAI = dt.datetime(2026, 3, 4, tzinfo=dt.timezone.utc)   # daftar folder: 2026/062 V07B, 2026/063 V07C; tak ada hari tumpang
 IMERG_BASE = "https://gpm1.gesdisc.eosdis.nasa.gov"
 IMERG_KOL = "GPM_3IMERGHHE.07"      # Early Run 30 menit: algoritme yang sama dengan operasional (arsip V07B, operasional V07C)
 I_LON, I_LAT = (2865, 2871), (834, 840)   # lon -179,95 + 0,1 i = 106,55..107,15; lat -89,95 + 0,1 j = -6,55..-5,95 (49 sel, memuat 42 pusat kecamatan)
 IMERG_DIR = os.path.join(CACHE, "imerg")
 BULAN_TERLIHAT_A = {"2025-03"}      # kejadian J1/J2 (bersama.KEJADIAN) di musim uji: labelnya pernah dibaca, keluar dari uji jalur A
+PB_MENTAH = os.path.join(AKAR, "data/raw/banjir/genangan/petabencana_laporan.json")   # mentah (tanpa saring) untuk persistensi kausal
+SIDIK_DAFTAR = ["scripts/banjir/PRAREG-NOWCAST-JKT.md", "scripts/banjir/nowcast_jkt.py", "scripts/banjir/genangan/petabencana.py"]
+SIDIK_KUNCI = os.path.join(AYAH, "nowcast_jkt_sidik.json")
+MODEL_BERKAS = os.path.join(AYAH, "nowcast_jkt_model.json")
+BUKA = os.path.join(AYAH, "nowcast_jkt.buka")
+MODEL = ("klim", "persistensi", "hujan")      # hujan = persistensi + hujan IMERG (pembanding a3 = persistensi + klim)
+PERSIST_JAM = 3                     # persistensi: laporan dalam (t-3j, t], sama untuk semua L
+BURST_KAUSAL = 20                   # = petabencana.BURST_MAKS, tetapi dihitung kumulatif sampai t
+PSEUDO, LAMBDA = 20, 1.0
+BOOT_B, B_SLOPE, BENIH, ALFA = 10000, 1000, 20261101, 0.05
+BLOK_HARI, EPISODE_JEDA_HARI, MIN_EPISODE = 5, 2, 20
+SLOPE_RENTANG, HILANG_MAKS = (0.7, 1.4), 0.10
 MUSIM = {"latih": ("2016/17", "2017/18", "2018/19", "2019/20"), "validasi": ("2020/21", "2021/22"),
-         "uji": ("2022/23", "2023/24", "2024/25", "2025/26")}       # Nov-Apr; bulan J3 (2025-04) dan >= jangkar J4 tetap dibuang   # jangkar J4 (j4_sidik.json): arsip berhenti di sini; sesudahnya hanya prospektif
+         "uji": ("2022/23", "2023/24", "2024/25", "2025/26")}       # Nov-Apr; bulan J3 (2025-04) dan >= jangkar J4 (j4_sidik.json, 28 Okt 2026) tetap dibuang
 
 
 def epoch(x):
@@ -276,10 +292,13 @@ def musim(t):
     return f"{y - 1}/{str(y)[2:]}" if m <= 4 else None
 
 
-def peran(t):
-    """'latih'|'validasi'|'uji'|None; None juga untuk bulan J3 dan masa J4."""
-    if f"{t:%Y-%m}" in BULAN_TERLARANG | BULAN_TERLIHAT_A or t >= AWAL_J4:
-        return None
+def peran(t, L=0):
+    """'latih'|'validasi'|'uji'|None untuk unit terbit t dengan jendela label (t, t+L]. None bila t ATAU t+L jatuh di bulan J3/terlihat,
+    di masa J4, di luar Nov-Apr, atau beda musim."""
+    u = t + dt.timedelta(hours=L)
+    for x in (t, u):
+        if f"{x:%Y-%m}" in BULAN_TERLARANG | BULAN_TERLIHAT_A or x >= AWAL_J4 or musim(x) != musim(t):
+            return None
     m = musim(t)
     return next((k for k, v in MUSIM.items() if m in v), None)
 
@@ -366,17 +385,337 @@ def unduh_imerg_bulan(bulan, ambil, maks=None, dirk=IMERG_DIR, ambil_daftar=ambi
             for e, nama, _ in berkas_imerg(ambil_daftar(folder_imerg(d)), d):
                 if epoch(e) in ada or (maks is not None and baru >= maks):
                     continue
+                u = folder_imerg(d).replace("/data/", "/opendap/") + nama + ".ascii?" + urllib.parse.quote(q, safe=":")
                 try:
-                    n = parse(ambil(folder_imerg(d).replace("/data/", "/opendap/") + nama + ".ascii?" + urllib.parse.quote(q, safe=":")))
+                    teks = ambil(u); n = parse(teks)
                 except Exception as x:
                     gagal += 1; print(f"  {nama}: {x}", file=sys.stderr); continue
                 if not n:
-                    gagal += 1; continue
+                    gagal += 1
+                    if gagal <= 2:                                   # diagnosa: balasan apa yang tak terurai
+                        print(f"  {nama}: balasan tak terurai ({len(teks)} karakter) {u}\n  {teks[:400]!r}", file=sys.stderr)
+                    continue
                 v = [n.get((k // nj, k % nj)) for k in range(ni * nj)]
                 out.write(json.dumps({"e": epoch(e), "v": [None if x is None else round(x, 2) for x in v]}, separators=(",", ":")) + "\n"); out.flush()
                 baru += 1
             d += dt.timedelta(days=1)
     return baru, gagal
+
+# ------------------------------------------------------------------ KUNCI (PRAREG bagian 9 dan A.5): satu-satunya penjaga urutan
+def manifes():
+    """sha256 berkas beku + isi fungsi imerg.parse (berkas imerg.py milik cuaca-udara TIDAK di-hash utuh)."""
+    import hashlib, inspect
+    m = {j: (hashlib.sha256(open(os.path.join(AKAR, j), "rb").read()).hexdigest() if os.path.exists(os.path.join(AKAR, j)) else "HILANG") for j in SIDIK_DAFTAR}
+    sys.path.insert(0, os.path.join(AKAR, "scripts/cuaca"))
+    from imerg import parse
+    m["fungsi:scripts/cuaca/imerg.py:parse"] = hashlib.sha256(inspect.getsource(parse).encode()).hexdigest()
+    return m
+
+
+def sidik_sekarang():
+    import hashlib
+    return hashlib.sha256(json.dumps(manifes(), sort_keys=True).encode()).hexdigest()
+
+
+def periksa_kunci(berkas=None, git=None):
+    """-> None bila kunci sah, selain itu pesan. Sah = berkas sidik ada, sidik sama, jangkar_commit leluhur HEAD dan ada di origin/main,
+    dan isi tiap berkas beku sama dengan di commit jangkar (pola kunci_j4.periksa)."""
+    try:
+        S = json.load(open(berkas or SIDIK_KUNCI))
+    except (OSError, ValueError):
+        return "belum dikunci: nowcast_jkt_sidik.json tidak ada (PRAREG A.5 langkah 3)"
+    if S.get("sidik") != sidik_sekarang():
+        return "sidik beda dari kunci: kode/protokol berubah sesudah kunci, hasil tidak sah"
+    if git is None:
+        sys.path.insert(0, os.path.join(AYAH, "genangan"))
+        import kunci_j4 as K
+        git = (K.leluhur, K.di_remote, K.git_show)
+    lel, rem, show = git
+    c = S.get("jangkar_commit", "")
+    if not (c and lel(c) and rem(c)):
+        return "jangkar_commit bukan leluhur HEAD atau tidak ada di origin/main: tolak"
+    for j in SIDIK_DAFTAR:
+        if show(c, j) != open(os.path.join(AKAR, j), "rb").read():
+            return f"{j} beda dari commit jangkar"
+    return None
+
+
+def muat_label(berkas_kunci=None, git=None):
+    """SATU-SATUNYA pembaca lokasi/waktu laporan PetaBencana di berkas ini. Menolak sebelum kunci sah.
+    -> (label: laporan tersaring penuh petabencana.saring, mentah: laporan untuk persistensi kausal), keduanya
+    sudah tanpa jendela J3 (tanpa_j3 segera sesudah baca), tanpa bulan terlarang/terlihat, sebelum jangkar J4, ditempel kec DKI."""
+    salah = periksa_kunci(berkas_kunci, git)
+    if salah:
+        raise RuntimeError("muat_label ditolak: " + salah)
+    sys.path.insert(0, os.path.join(AYAH, "genangan"))
+    from lab_genangan_radar import jendela_j3, tanpa_j3
+    from bersama import KecDKI
+    jw, kec = jendela_j3(), KecDKI()
+    def bersih(lap):
+        out = []
+        for r in tanpa_j3(lap, jw):
+            t = iso_t(r["t"])
+            if f"{t:%Y-%m}" in BULAN_TERLARANG | BULAN_TERLIHAT_A or t >= AWAL_J4:
+                continue
+            k = kec.cari(r["lon"], r["lat"])
+            if k:
+                out.append(dict(r, kec=f"31|{k[0]}|{k[1]}", sel=(round(r["lon"], 3), round(r["lat"], 3))))
+        return out
+    return bersih(json.load(open(PB_BANJIR))), bersih(json.load(open(PB_MENTAH)))
+
+
+# ------------------------------------------------------------------ persistensi kausal (pembeda dengan label: burst kumulatif sampai t)
+def indeks_persistensi(mentah):
+    """{kec: [(epoch, hari, sel)] terurut} hanya tipe flood yang lolos aturan TEKS latihan (kausal per laporan); burst dinilai di persisten()."""
+    sys.path.insert(0, os.path.join(AYAH, "genangan"))
+    from petabencana import latihan
+    ix = {}
+    for r in mentah:
+        if r.get("tipe") == "flood" and not latihan(r):
+            t = iso_t(r["t"])
+            ix.setdefault(r["kec"], []).append((epoch(t), f"{t:%Y-%m-%d}", r["sel"]))
+    for k in ix:
+        ix[k].sort()
+    semua = sorted(x for v in ix.values() for x in v)
+    return ix, semua
+
+
+def persisten(ix, semua, kec, t, jam=PERSIST_JAM, burst=BURST_KAUSAL):
+    """1 bila ada laporan di kec dalam (t-jam, t] yang, pada saat t, belum melewati burst (hitungan (hari, sel) dengan stempel <= t)."""
+    import bisect
+    T = epoch(t); v = ix.get(kec, [])
+    i = bisect.bisect_right(v, (T - jam * 3600, "￿"))
+    for e, hari, sel in v[i:bisect.bisect_right(v, (T, "￿"))]:
+        n = sum(1 for x in semua[:bisect.bisect_right(semua, (T, "￿"))] if x[1] == hari and x[2] == sel)   # ponytail: O(n) per kandidat; indeks (hari, sel) bila lambat
+        if n <= burst:
+            return 1
+    return 0
+
+
+def label_y(lab_ix, kec, t, L):
+    """1 bila ada laporan tersaring penuh di kec dalam (t, t+L]."""
+    import bisect
+    v = lab_ix.get(kec, []); T = epoch(t)
+    return int(bisect.bisect_right(v, T + L * 3600) > bisect.bisect_right(v, T))
+
+
+# ------------------------------------------------------------------ klim, logistik, Platt
+def blok_jam(t):
+    return t.hour // 6
+
+
+def klim(baris, kecuali=None):
+    """{(kec, bulan, blok): p} dari baris {kec, t, y, musim}, susut ke laju DKI per (bulan, blok) dengan PSEUDO; kecuali = musim yang dibuang (luar-lipatan)."""
+    n, s, nd, sd = {}, {}, {}, {}
+    for b in baris:
+        if b["musim"] == kecuali:
+            continue
+        k = (b["kec"], b["t"].month, blok_jam(b["t"])); d = k[1:]
+        n[k] = n.get(k, 0) + 1; s[k] = s.get(k, 0) + b["y"]; nd[d] = nd.get(d, 0) + 1; sd[d] = sd.get(d, 0) + b["y"]
+    dki = {d: (sd[d] + 0.5) / (nd[d] + 1) for d in nd}
+    dki["semua"] = (sum(sd.values()) + 0.5) / (sum(nd.values()) + 1)
+    return {k: (s[k] + PSEUDO * dki[k[1:]]) / (n[k] + PSEUDO) for k in n}, dki
+
+
+def pasang_klim(baris, latih):
+    """latih: klim luar-lipatan (tinggal-satu-musim latih). validasi/uji: klim seluruh musim latih."""
+    penuh = klim(latih)
+    musim_latih = {b["musim"] for b in latih}
+    lipat = {m: klim(latih, kecuali=m) if len(musim_latih) > 1 else penuh for m in musim_latih}   # satu musim saja: tak ada lipatan
+    for b in baris:
+        tab, dki = lipat[b["musim"]] if b.get("peran") == "latih" else penuh
+        k = (b["kec"], b["t"].month, blok_jam(b["t"]))
+        b["klim"] = tab.get(k, dki.get(k[1:], dki.get("semua", penuh[1]["semua"])))   # sel kosong -> laju DKI (bulan, blok) -> laju lipatan -> laju latih
+
+
+def sig(z):
+    return 1 / (1 + math.exp(-max(-35, min(35, z))))
+
+
+def logit(p):
+    p = min(max(p, 1e-6), 1 - 1e-6)
+    return math.log(p / (1 - p))
+
+
+def selesaikan(A, b):
+    n = len(b); M = [r[:] + [b[i]] for i, r in enumerate(A)]
+    for c in range(n):
+        p = max(range(c, n), key=lambda r: abs(M[r][c])); M[c], M[p] = M[p], M[c]
+        if abs(M[c][c]) < 1e-12:
+            raise ValueError("matriks singular")
+        for r in range(n):
+            if r != c:
+                f = M[r][c] / M[c][c]; M[r] = [x - f * y for x, y in zip(M[r], M[c])]
+    return [M[i][n] / M[i][i] for i in range(n)]
+
+
+def logistik(X, y, offset=None, lam=LAMBDA, iter=50, bobot=None):
+    """Newton-Raphson; X tanpa kolom intersep (ditambahkan, tak dipenalti); -> [b0, b1, ...]"""
+    k = len(X[0]) + 1 if X else 1; w = [0.0] * k
+    off = offset or [0.0] * len(y); bb = bobot or [1.0] * len(y)
+    for _ in range(iter):
+        g = [0.0] * k; H = [[0.0] * k for _ in range(k)]
+        for x, yi, o, wi in zip(X, y, off, bb):
+            v = [1.0] + list(x); p = sig(o + sum(a * c for a, c in zip(w, v))); r = wi * (yi - p); q = wi * p * (1 - p)
+            for i in range(k):
+                g[i] += r * v[i]
+                for j in range(k):
+                    H[i][j] += q * v[i] * v[j]
+        for i in range(1, k):
+            g[i] -= lam * w[i]; H[i][i] += lam
+        d = selesaikan(H, g); f = min(1.0, 5.0 / max(abs(c) for c in d))      # langkah dibatasi: terpisah-sempurna tak meledak
+        d = [c * f for c in d]; w = [a + c for a, c in zip(w, d)]
+        if max(abs(c) for c in d) < 1e-8:
+            break
+    return w
+
+
+def fitur_x(b, model):
+    """vektor fitur per model; hujan log1p. Nilai None -> baris hilang (dikeluarkan untuk SEMUA model)."""
+    h = [b.get(c) for c in ("h1", "h3", "h6", "a24")]
+    if model == "klim":
+        return []
+    if model == "persistensi":
+        return [b["persist"]]
+    return [b["persist"]] + [math.log1p(x) for x in h]
+
+
+def latih(baris_latih, baris_val):
+    """-> {model: {w, platt, mu, sd}} untuk klim, persistensi, hujan (= persistensi + hujan). Platt pada validasi."""
+    out = {}
+    for m in MODEL:
+        X = [fitur_x(b, m) for b in baris_latih]
+        mu = [sum(c) / len(X) for c in zip(*X)] if X and X[0] else []
+        sd = [max(1e-9, math.sqrt(sum((v - u) ** 2 for v in c) / len(X))) for c, u in zip(zip(*X), mu)] if mu else []
+        z = lambda x: [(v - u) / s for v, u, s in zip(x, mu, sd)]
+        w = logistik([z(x) for x in X], [b["y"] for b in baris_latih], [logit(b["klim"]) for b in baris_latih]) if m != "klim" else [0.0]
+        mentah = [sig(logit(b["klim"]) + w[0] + sum(a * c for a, c in zip(w[1:], z(fitur_x(b, m))))) for b in baris_val]
+        pl = logistik([[logit(p)] for p in mentah], [b["y"] for b in baris_val], lam=0.0)
+        out[m] = {"w": w, "platt": pl, "mu": mu, "sd": sd}
+    return out
+
+
+def prakira(par, b, m):
+    q = par[m]; x = [(v - u) / s for v, u, s in zip(fitur_x(b, m), q["mu"], q["sd"])]
+    p = sig(logit(b["klim"]) + q["w"][0] + sum(a * c for a, c in zip(q["w"][1:], x)))
+    return sig(q["platt"][0] + q["platt"][1] * logit(p))
+
+
+# ------------------------------------------------------------------ nilai (PRAREG bagian 7 + A.4)
+def episode(hari_pos):
+    """tanggal positif terurut -> jumlah episode (jeda < EPISODE_JEDA_HARI hari digabung)."""
+    h = sorted(set(hari_pos)); n = 0; akhir = None
+    for d in h:
+        if akhir is None or (d - akhir).days >= EPISODE_JEDA_HARI:
+            n += 1
+        akhir = d
+    return n
+
+
+def holm(ps):
+    """p terkoreksi Holm (urutan masukan dipertahankan)."""
+    urut = sorted(range(len(ps)), key=lambda i: ps[i]); out = [0.0] * len(ps); m = len(ps); maks = 0.0
+    for r, i in enumerate(urut):
+        maks = max(maks, min(1.0, (m - r) * ps[i])); out[i] = maks
+    return out
+
+
+def nilai_L(baris, B=BOOT_B, benih=BENIH, pembanding=("klim", "persistensi")):
+    """baris {t, y, p: {model: p|None}, musim}. -> ringkasan satu tenggang. Baris dengan p hilang pada model MANA PUN dikeluarkan dari semua."""
+    import random
+    hilang_pos = sum(1 for b in baris if b["y"] and None in b["p"].values()); n_pos = sum(b["y"] for b in baris)
+    hilang_neg = sum(1 for b in baris if not b["y"] and None in b["p"].values()); n_neg = len(baris) - n_pos
+    sah = [b for b in baris if None not in b["p"].values()]
+    fp, fn = (hilang_pos / n_pos if n_pos else 0), (hilang_neg / n_neg if n_neg else 0)
+    se = math.sqrt(fp * (1 - fp) / max(n_pos, 1) + fn * (1 - fn) / max(n_neg, 1))
+    syarat4 = fp <= HILANG_MAKS and abs(fp - fn) <= 1.96 * se
+    pos_hari = [b["t"].date() for b in sah if b["y"]]
+    n_ep = episode(pos_hari)
+    # agregat per blok 5 hari: jumlah galat kuadrat per model, + bin logit untuk kemiringan kalibrasi
+    nol = min(b["t"].date() for b in sah) if sah else None
+    blok = {}
+    for b in sah:
+        k = (b["t"].date() - nol).days // BLOK_HARI
+        g = blok.setdefault(k, {"n": 0, "se": {}, "bin": {}})
+        g["n"] += 1
+        for m, p in b["p"].items():
+            g["se"][m] = g["se"].get(m, 0.0) + (p - b["y"]) ** 2
+        z = logit(b["p"]["hujan"]); j = max(-40, min(40, round(z * 4)))          # ponytail: bin 0,25 logit; kemiringan dari data bin, bukan baris
+        c = g["bin"].setdefault(j, [0, 0, 0.0]); c[0] += 1; c[1] += b["y"]; c[2] += z
+    K = list(blok)
+    def ringkas(ks):
+        n = sum(blok[k]["n"] for k in ks)
+        bs = {m: sum(blok[k]["se"][m] for k in ks) / n for m in blok[ks[0]]["se"]}
+        return n, bs
+    def kemiringan(ks):
+        agg = {}
+        for k in ks:
+            for j, (n, y, zs) in blok[k]["bin"].items():
+                a = agg.setdefault(j, [0, 0, 0.0]); a[0] += n; a[1] += y; a[2] += zs
+        X, Y, W = [], [], []
+        for n, y, zs in agg.values():
+            X += [[zs / n], [zs / n]]; Y += [1, 0]; W += [y, n - y]
+        try:
+            return logistik(X, Y, lam=1e-6, bobot=W)[1]
+        except (ValueError, OverflowError):
+            return None                                                    # resampel terpisah sempurna: dibuang dan dihitung
+
+    n, bs = ringkas(K)
+    rnd = random.Random(benih); dlt = {m: [] for m in pembanding}; slope = []
+    for i in range(B):
+        ks = [K[rnd.randrange(len(K))] for _ in K]
+        _, b2 = ringkas(ks)
+        for m in pembanding:
+            dlt[m].append(b2[m] - b2["hujan"])
+        if i < B_SLOPE:
+            slope.append(kemiringan(ks))
+    p = {m: (sum(1 for d in dlt[m] if d <= 0) + 1) / (B + 1) for m in pembanding}
+    gagal_slope = sum(x is None for x in slope); slope = sorted(x for x in slope if x is not None)
+    ci = (slope[int(0.025 * len(slope))], slope[int(0.975 * len(slope)) - 1]) if slope else (None, None)
+    rasio = sum(b["p"]["hujan"] for b in sah) / max(1, sum(b["y"] for b in sah))       # dilaporkan saja (PRAREG 7, butir Σp/Σy)
+    per_musim = {}
+    for b in sah:
+        q = per_musim.setdefault(b.get("musim"), [0, 0.0, 0.0]); q[0] += b["y"]; q[1] += (b["p"]["hujan"] - b["y"]) ** 2; q[2] += (b["p"]["klim"] - b["y"]) ** 2
+    cukup = {m: 1 - q[1] / q[2] for m, q in per_musim.items() if q[0] >= 40 and q[2] > 0}
+    stabil = None if len(cukup) < 2 else sum(v > 0 for v in cukup.values()) * 2 >= len(cukup)    # None = tak teruji (bukan gagal)
+    return {"n": n, "n_pos": sum(b["y"] for b in sah), "episode": n_ep, "bs": bs, "bss_klim": 1 - bs["hujan"] / bs["klim"] if bs["klim"] else None,
+            "p": p, "p_gabung": max(p.values()), "kemiringan_ci": ci, "rasio_sum_p_y": rasio, "hilang_pos": fp, "hilang_neg": fn,
+            "slope_gagal": gagal_slope, "bss_per_musim": cukup, "stabil": stabil,
+            "syarat0": n_ep >= MIN_EPISODE, "syarat3": bool(slope) and SLOPE_RENTANG[0] <= ci[0] and ci[1] <= SLOPE_RENTANG[1], "syarat4": syarat4}
+
+
+def vonis(per_L):
+    """per_L {L: ringkasan}. Utama L=UTAMA (alfa tanpa koreksi); kurva: Holm atas semua L pada p_gabung; tenggang andal terpanjang = L terbesar dengan semua L' <= L lulus."""
+    Ls = sorted(per_L); ph = dict(zip(Ls, holm([per_L[L]["p_gabung"] for L in Ls])))
+    lulus = lambda r, p: r["syarat0"] and r["syarat3"] and r["syarat4"] and r.get("stabil") is not False and p <= ALFA
+    utama = per_L.get(UTAMA)
+    out = {"utama": None if utama is None else ("belum cukup data" if not utama["syarat0"] else "LULUS" if lulus(utama, utama["p_gabung"]) else "TIDAK LULUS"),
+           "holm": ph, "andal_sampai": 0}
+    for L in Ls:
+        if not lulus(per_L[L], ph[L]):
+            break
+        out["andal_sampai"] = L
+    return out
+
+
+def susun(perans, L, label, mentah, seri, kec=None):
+    """unit kecamatan x jam terbit untuk peran dalam `perans`: fitur hujan, persistensi kausal, label (t, t+L]."""
+    lab = {}
+    for r in label:
+        lab.setdefault(r["kec"], []).append(epoch(iso_t(r["t"])))
+    for v in lab.values():
+        v.sort()
+    ix, semua = indeks_persistensi(mentah)
+    kec = kec or kecamatan(); out = []
+    t = dt.datetime(2016, 11, 1, tzinfo=WIB)
+    while t < AWAL_J4:
+        pr = peran(t, L)
+        if pr in perans:
+            for k, (la, lo) in sorted(kec.items()):
+                out.append({"kec": k, "t": t, "musim": musim(t), "peran": pr, "y": label_y(lab, k, t, L),
+                            "persist": persisten(ix, semua, k, t), **hujan_imerg(seri, la, lo, t)})
+        t += dt.timedelta(hours=1)
+    return out
 
 # ------------------------------------------------------------------ perintah
 def dirs_arsip(a):
@@ -441,14 +780,17 @@ def cmd_fitur(a):
 
 
 def cmd_imerg_latensi(a):
-    tgl = dt.date.fromisoformat(a.hari) if a.hari else dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=1)
-    b = berkas_imerg(ambil_publik(folder_imerg(tgl)), tgl)
-    L = latensi_imerg(b)
+    """satu hari (--hari) atau rentang (--dari/--sampai, dianjurkan >= 14 hari); keluar 3 bila p99 > LAT_IMERG."""
+    kemarin = dt.datetime.now(dt.timezone.utc).date() - dt.timedelta(days=1)
+    d = dt.date.fromisoformat(a.dari or a.hari or kemarin.isoformat()); akhir = dt.date.fromisoformat(a.sampai or a.hari or d.isoformat())
+    L = []
+    while d <= akhir:
+        L += latensi_imerg(berkas_imerg(ambil_publik(folder_imerg(d)), d)); d += dt.timedelta(days=1)
     if not L:
-        print(f"{tgl}: tak ada berkas/stempel"); return 1
-    n = len(L)
-    print(f"IMERG Early {tgl}: {n} slot, latensi jam p10 {L[n // 10]:.2f} p50 {L[n // 2]:.2f} p90 {L[9 * n // 10]:.2f} maks {L[-1]:.2f}; LAT_IMERG = {LAT_IMERG / 3600:g} jam")
-    return 0 if L[9 * n // 10] <= LAT_IMERG / 3600 else 3
+        print("tak ada berkas/stempel"); return 1
+    L.sort(); n = len(L); q = lambda f: L[min(n - 1, int(f * n))]
+    print(f"IMERG Early: {n} slot, latensi jam p10 {q(.1):.2f} p50 {q(.5):.2f} p90 {q(.9):.2f} p99 {q(.99):.2f} maks {L[-1]:.2f}; LAT_IMERG = {LAT_IMERG / 3600:g} jam")
+    return 0 if q(.99) <= LAT_IMERG / 3600 else 3
 
 
 def cmd_imerg_unduh(a):
@@ -469,7 +811,75 @@ def cmd_fitur_hujan(a):
     return 0
 
 
+def cmd_sidik(_):
+    print(sidik_sekarang()); return 0
+
+
+def cmd_jangkar(_):
+    """SEKALI, oleh sesi induk sesudah berkas beku di-commit dan di-push. Menolak bila sudah ada, berkas kotor, atau HEAD belum di origin/main."""
+    import subprocess
+    if os.path.exists(SIDIK_KUNCI):
+        print("sudah dijangkar", file=sys.stderr); return 2
+    g = lambda *x: subprocess.run(["git", *x], cwd=AKAR, capture_output=True, text=True)
+    if g("status", "--porcelain", "--", *SIDIK_DAFTAR).stdout.strip():
+        print("berkas beku kotor: commit dulu", file=sys.stderr); return 2
+    head = g("rev-parse", "HEAD").stdout.strip()
+    if g("merge-base", "--is-ancestor", head, "origin/main").returncode:
+        print("HEAD belum di origin/main: push dulu", file=sys.stderr); return 2
+    json.dump({"sidik": sidik_sekarang(), "jangkar_commit": head, "jangkar_tanggal": dt.date.today().isoformat(), "manifes": manifes()},
+              open(SIDIK_KUNCI, "w"), indent=1, sort_keys=True)
+    print("tertulis", SIDIK_KUNCI, "(commit dan push berkas ini)"); return 0
+
+
+def baris_jalur_a(perans, L, label, mentah, seri):
+    lat = susun({"latih"}, L, label, mentah, seri)
+    rows = lat if perans == {"latih"} else susun(perans, L, label, mentah, seri)
+    pasang_klim(rows, lat)
+    if rows is not lat:
+        pasang_klim(lat, lat)
+    return lat, rows
+
+
+def cmd_latih(a):
+    label, mentah = muat_label()                      # menolak sebelum kunci
+    if os.path.exists(MODEL_BERKAS):
+        print("model sudah ada (dibekukan); latih ulang = kriteria baru", file=sys.stderr); return 2
+    seri, par = baca_imerg(), {}
+    for L in TENGGANG:
+        lat, val = baris_jalur_a({"validasi"}, L, label, mentah, seri)
+        ok = lambda r: [b for b in r if None not in (b["h1"], b["h3"], b["h6"], b["a24"])]
+        par[str(L)] = latih(ok(lat), ok(val))
+    json.dump({"sidik": sidik_sekarang(), "dibuat": dt.datetime.now(WIB).isoformat(timespec="minutes"), "model": par}, open(MODEL_BERKAS, "w"), indent=1)
+    print("tertulis", MODEL_BERKAS, "(commit + push SEBELUM nilai)"); return 0
+
+
+def cmd_nilai(a):
+    import subprocess
+    label, mentah = muat_label()
+    if os.path.exists(BUKA):
+        print("uji sudah dibuka sekali", file=sys.stderr); return 2
+    M = json.load(open(MODEL_BERKAS))
+    if M["sidik"] != sidik_sekarang():
+        print("model dilatih dengan sidik lain", file=sys.stderr); return 2
+    r = subprocess.run(["git", "show", "origin/main:scripts/banjir/nowcast_jkt_model.json"], cwd=AKAR, capture_output=True)
+    if r.returncode or r.stdout != open(MODEL_BERKAS, "rb").read():
+        print("model belum di origin/main persis: push dulu", file=sys.stderr); return 2
+    open(BUKA, "w").write(dt.datetime.now(WIB).isoformat())
+    seri, hasil = baca_imerg(), {}
+    for L in TENGGANG:
+        _, uji_ = baris_jalur_a({"uji"}, L, label, mentah, seri)
+        for b in uji_:
+            hil = None in (b["h1"], b["h3"], b["h6"], b["a24"])
+            b["p"] = {m: None if hil else prakira(M["model"][str(L)], b, m) for m in MODEL}
+        hasil[L] = nilai_L(uji_)
+    v = vonis(hasil)
+    json.dump({"vonis": v, "per_L": {str(k): x for k, x in hasil.items()}, "catatan": "batas atas, sebelum prospektif 2026/27 (V07B arsip vs V07C operasional, PRAREG A.1)"},
+              open(os.path.join(AYAH, "nowcast_jkt_vonis.json"), "w"), indent=1, default=str)
+    print(json.dumps(v)); return 0
+
+
 def uji():
+    import random
     t = dt.datetime(2026, 11, 20, 15, 0, tzinfo=WIB); T = epoch(t)
     # 1. latensi TMA: bacaan tepat di t-LAT dipakai, 1 detik sesudahnya tidak
     s = [(T - LAT_TMA - 3 * 3600, 100.0), (T - LAT_TMA, 160.0), (T - LAT_TMA + 1, 999.0), (T + 600, 5000.0)]
@@ -499,7 +909,6 @@ def uji():
     # 4. bacaan terakhir terlalu tua = None, bukan nilai basi
     assert naik([(T - LAT_TMA - 5 * 3600, 1.0), (T - LAT_TMA - 4 * 3600, 2.0)], t, 1) is None
     # 5. korelasi silang menemukan jeda sintetis 3 jam
-    import random
     rnd = random.Random(7); h0 = 1_800_000_000 - 1_800_000_000 % 3600
     x = [rnd.gauss(0, 1) for _ in range(300)]
     hu = [(h0 + i * 3600, sum(x[:i + 1])) for i in range(300)]
@@ -512,14 +921,35 @@ def uji():
     lap = [{"t": "2024-08-17T10:00:00+07:00"}, {"t": "2024-08-28T10:00:00+07:00"}, {"t": "2024-09-01T10:00:00+07:00"},
            {"t": "2024-09-02T10:00:00+07:00"}, {"t": "2026-10-29T10:00:00+07:00"}]
     assert hitung_bulanan(lap, jw) == {"2024-09": 2}, hitung_bulanan(lap, jw)
-    # 7. berkas fase 1 tidak punya jalur latih/buka/nilai dan tidak membaca kolom lokasi laporan
-    src = open(os.path.abspath(__file__)).read()
-    assert "add_parser(\"latih" not in src and "add_parser(\"buka" not in src and "add_parser(\"nilai" not in src
-    assert src.count("r[" + '"lon"]') == 0 and src.count("r[" + '"lat"]') == 0   # tak pernah membaca koordinat laporan
+    # 7. konstanta beku (literal), dispatch, dan penjaga label: koordinat laporan hanya dibaca muat_label, yang menolak tanpa kunci
+    import inspect
+    assert LAT_IMERG == 21600 and LAT_TMA == 3600 and TENGGANG == (1, 2, 3, 4, 6) and UTAMA == 3 and PERSIST_JAM == 3
+    assert (BOOT_B, BLOK_HARI, EPISODE_JEDA_HARI, MIN_EPISODE, SLOPE_RENTANG, HILANG_MAKS) == (10000, 5, 2, 20, (0.7, 1.4), 0.10)
+    _, sp = pengurai()
+    assert set(sp.choices) == set(PERINTAH) == {"inventaris", "tempuh", "fitur", "imerg_latensi", "imerg_unduh", "fitur_hujan", "sidik", "jangkar", "latih", "nilai", "uji"}
+    src = open(os.path.abspath(__file__)).read(); kunci_koord = "r[" + '"lon"]'
+    assert src.count(kunci_koord) == inspect.getsource(muat_label).count(kunci_koord) > 0
+    baca_pb = "open(PB_" + "MENTAH)"
+    assert src.count(baca_pb) == inspect.getsource(muat_label).count(baca_pb) == 1           # berkas mentah (berlokasi) hanya dibuka muat_label
+    tmpk = os.path.join(os.environ.get("TMPDIR", "/tmp"), f"nowcast_jkt_sidik_uji_{os.getpid()}.json")
+    try:
+        muat_label(berkas_kunci=tmpk); raise AssertionError("muat_label tanpa kunci harus menolak")
+    except RuntimeError as e:
+        assert "belum dikunci" in str(e)
+    json.dump({"sidik": sidik_sekarang(), "jangkar_commit": "abc"}, open(tmpk, "w"))
+    benar = lambda c, j: open(os.path.join(AKAR, j), "rb").read()
+    assert periksa_kunci(tmpk, (lambda c: True, lambda c: True, benar)) is None
+    assert "origin/main" in periksa_kunci(tmpk, (lambda c: True, lambda c: False, benar))
+    assert "beda dari commit" in periksa_kunci(tmpk, (lambda c: True, lambda c: True, lambda c, j: b"lain"))
+    json.dump({"sidik": "0" * 64, "jangkar_commit": "abc"}, open(tmpk, "w"))
+    assert "sidik beda" in periksa_kunci(tmpk, (lambda c: True, lambda c: True, benar)); os.remove(tmpk)
+    assert "fungsi:scripts/cuaca/imerg.py:parse" in manifes() and "scripts/cuaca/imerg.py" not in manifes()
     # 8. JALUR A: pembagian musim beku, saling lepas, bulan J3 dan masa J4 tanpa peran
     semua = [m for v in MUSIM.values() for m in v]
     assert len(semua) == len(set(semua)) == 10 and musim(dt.datetime(2017, 2, 1, tzinfo=WIB)) == "2016/17" and musim(dt.datetime(2017, 7, 1, tzinfo=WIB)) is None
     assert peran(dt.datetime(2017, 1, 5, tzinfo=WIB)) == "latih" and peran(dt.datetime(2021, 12, 5, tzinfo=WIB)) == "validasi"
+    assert peran(dt.datetime(2025, 2, 28, 23, tzinfo=WIB), 3) is None and peran(dt.datetime(2025, 2, 28, 20, tzinfo=WIB), 3) == "uji"   # (t, t+L] menyentuh 2025-03
+    assert peran(dt.datetime(2026, 4, 30, 22, tzinfo=WIB), 3) is None                                                            # jendela keluar musim
     assert peran(dt.datetime(2024, 12, 5, tzinfo=WIB)) == "uji" and peran(dt.datetime(2025, 4, 23, tzinfo=WIB)) is None and peran(dt.datetime(2025, 3, 9, tzinfo=WIB)) is None and peran(dt.datetime(2026, 11, 5, tzinfo=WIB)) is None
     # 9. fitur hujan IMERG: slot berakhir tepat t - LAT dipakai, sesudahnya tidak; data masa depan tak mengubah fitur; mutasi lat_s=0 mengubahnya
     akhir = T - LAT_IMERG
@@ -555,11 +985,74 @@ def uji():
     sr = baca_imerg(tmp)
     assert len(sr) == 49 and sr[(-6.55, 106.55)] == {epoch(b[0][0]): 0.0} and sr[(-5.95, 107.15)][epoch(b[0][0])] == 6.6, sorted(sr)[:3]
     os.remove(os.path.join(tmp, "2026-10.jsonl.gz")); os.rmdir(tmp)
+    # 11. t tidak berjajar (15.20 WIB): slot/bacaan tetap memakai batas t - latensi
+    t2 = dt.datetime(2026, 11, 20, 15, 20, tzinfo=WIB); T2 = epoch(t2); b2 = T2 - LAT_IMERG; a2 = b2 - b2 % 1800
+    sr2 = {(-6.25, 106.85): {a2 - 1800 * k: 1.0 for k in range(60)}}
+    sr2[(-6.25, 106.85)][a2 + 1800] = 50.0
+    h2 = hujan_imerg(sr2, -6.21, 106.85, t2)
+    assert h2["h1"] == 1.0 and h2["umur"] == round((T2 - a2) / 3600, 2) and a2 <= T2 - LAT_IMERG < a2 + 1800, h2
+    s2 = [(T2 - LAT_TMA - 3 * 3600, 10.0), (T2 - LAT_TMA - 60, 40.0), (T2 - LAT_TMA + 30, 99.0)]
+    assert naik(s2, t2, 3) == 30.0
+    # 12. persistensi kausal vs label penuh: burst yang baru > 20 SESUDAH t terlihat oleh persistensi pada t, dibuang label; laporan sesudah t tak mengubah persistensi
+    k0 = "31|Kota X|A"; sel0 = (106.85, -6.21)
+    lap = [{"t": (t + dt.timedelta(minutes=-30)).isoformat(), "tipe": "flood", "teks": "banjir 30 cm", "kec": k0, "sel": sel0}]
+    lap += [{"t": (t + dt.timedelta(minutes=10 + i)).isoformat(), "tipe": "flood", "teks": "banjir", "kec": k0, "sel": sel0} for i in range(25)]
+    ix, sem = indeks_persistensi(lap)
+    assert persisten(ix, sem, k0, t) == 1                                 # pada t baru 1 laporan di sel itu
+    assert persisten(ix, sem, k0, t + dt.timedelta(hours=1)) == 0       # pada t+1j sel itu sudah 26 > 20: burst
+    ix2, sem2 = indeks_persistensi(lap[:1])
+    assert persisten(ix2, sem2, k0, t) == persisten(ix, sem, k0, t)
+    lat_ = [{"t": lap[0]["t"], "tipe": "flood", "teks": "Duta latihan banjir", "kec": k0, "sel": sel0}]
+    assert persisten(*indeks_persistensi(lat_), k0, t) == 0              # aturan teks latihan berlaku kausal
+    assert label_y({k0: [T + 1800]}, k0, t, 1) == 1 and label_y({k0: [T]}, k0, t, 1) == 0 and label_y({k0: [T + 3601]}, k0, t, 1) == 0
+    # 13. klim luar-lipatan: baris latih musim m tidak memakai label musim m
+    bl = [{"kec": k0, "t": dt.datetime(2017, 1, 5, 3, tzinfo=WIB), "musim": "2016/17", "peran": "latih", "y": 1},
+          {"kec": k0, "t": dt.datetime(2018, 1, 5, 3, tzinfo=WIB), "musim": "2017/18", "peran": "latih", "y": 0}]
+    pasang_klim(bl, bl)
+    bl2 = [dict(bl[0], y=0), dict(bl[1])]; pasang_klim(bl2, bl2)
+    assert bl[0]["klim"] == bl2[0]["klim"] and bl[1]["klim"] != bl2[1]["klim"]
+    # 14. latih/nilai sintetik: positif disuntik dari peluang yang diketahui; Brier dihitung persis; model menang dari klim dan persistensi
+    assert abs(sum((p_ - y_) ** 2 for p_, y_ in [(0.2, 0), (0.7, 1), (0.5, 1)]) / 3 - (0.04 + 0.09 + 0.25) / 3) < 1e-12
+    assert episode([dt.date(2023, 1, 1), dt.date(2023, 1, 2), dt.date(2023, 1, 4), dt.date(2023, 1, 9)]) == 3
+    assert [round(x, 3) for x in holm([0.01, 0.04, 0.03])] == [0.03, 0.06, 0.06]
+    rnd = random.Random(3)
+    def sint(n, musim_, peran_, skill=True):
+        out = []
+        for i in range(n):
+            tt = dt.datetime(int(musim_[:4]) + 1, 1, 1, tzinfo=WIB) + dt.timedelta(hours=i)
+            h = rnd.expovariate(0.5) if rnd.random() < 0.3 else 0.0; ps = int(rnd.random() < 0.05)
+            pt = sig(-4 + (1.5 * math.log1p(h) + 1.5 * ps if skill else 0))
+            out.append({"kec": k0, "t": tt, "musim": musim_, "peran": peran_, "y": int(rnd.random() < pt), "persist": ps,
+                        "h1": h / 3, "h3": h, "h6": h * 1.5, "a24": h * 2, "p_benar": pt})
+        return out
+    la_, va_ = sint(1500, "2016/17", "latih") + sint(1500, "2017/18", "latih"), sint(2000, "2020/21", "validasi")
+    pasang_klim(la_, la_); pasang_klim(va_, la_)
+    par = latih(la_, va_)
+    assert sum(par["hujan"]["w"][2:]) > 0 and par["hujan"]["w"][1] > 0, par["hujan"]["w"]   # efek hujan (jumlah, fitur kolinear) dan persistensi positif
+    te = sint(12000, "2022/23", "uji")
+    pasang_klim(te, la_)
+    for b_ in te:
+        b_["p"] = {m: prakira(par, b_, m) for m in MODEL}
+    r = nilai_L(te, B=300)
+    assert r["bs"]["hujan"] < min(r["bs"]["klim"], r["bs"]["persistensi"]) and r["p_gabung"] < 0.05 and r["syarat3"], r
+    bsb = sum((b_["p_benar"] - b_["y"]) ** 2 for b_ in te) / len(te)
+    assert abs(r["bs"]["hujan"] - bsb) < 0.01, (r["bs"], bsb)              # Brier model dekat Brier peluang benar
+    te0 = sint(4000, "2022/23", "uji", skill=False)
+    pasang_klim(te0, la_)
+    for b_ in te0:
+        b_["p"] = {m: prakira(par, b_, m) for m in MODEL}
+    assert nilai_L(te0, B=300)["p_gabung"] > 0.05                          # tanpa skill: tidak lulus
+    te[0]["p"]["hujan"] = None
+    r2 = nilai_L(te, B=50)
+    assert r2["n"] == len(te) - 1 and (r2["hilang_pos"] > 0 or r2["hilang_neg"] > 0)   # baris hilang keluar untuk SEMUA model
+    v = vonis({1: dict(r, syarat0=True, syarat3=True, syarat4=True, p_gabung=0.001), 3: dict(r, syarat0=True, syarat3=True, syarat4=True, p_gabung=0.01),
+               2: dict(r, syarat0=True, syarat3=True, syarat4=True, p_gabung=0.2)})
+    assert v["utama"] == "LULUS" and v["andal_sampai"] == 1, v
     print("ok")
     return 0
 
 
-def main():
+def pengurai():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     sp = ap.add_subparsers(dest="cmd", required=True)
     for n in ("inventaris", "tempuh", "fitur"):
@@ -571,13 +1064,24 @@ def main():
             p.add_argument("--jaringan", action="store_true", help="unduh arsip CAP publik 2026-10-19..hari ini")
         if n == "fitur":
             p.add_argument("--t", required=True, help="waktu terbit ISO, mis. 2026-10-31T15:00+07:00")
-    p = sp.add_parser("imerg_latensi"); p.add_argument("--hari")
+    p = sp.add_parser("imerg_latensi"); p.add_argument("--hari"); p.add_argument("--dari"); p.add_argument("--sampai")
     p = sp.add_parser("imerg_unduh"); p.add_argument("--bulan", required=True); p.add_argument("--maks", type=int)
     p = sp.add_parser("fitur_hujan"); p.add_argument("--t", required=True)
-    sp.add_parser("uji")
-    a = ap.parse_args()
-    return {"inventaris": cmd_inventaris, "tempuh": cmd_tempuh, "fitur": cmd_fitur, "imerg_latensi": cmd_imerg_latensi,
-            "imerg_unduh": cmd_imerg_unduh, "fitur_hujan": cmd_fitur_hujan, "uji": lambda _: uji()}[a.cmd](a)
+    for n in ("latih", "nilai"):
+        sp.add_parser(n).add_argument("--jalur", choices=["A"], required=True)
+    for n in ("sidik", "jangkar", "uji"):
+        sp.add_parser(n)
+    return ap, sp
+
+
+PERINTAH = {"inventaris": cmd_inventaris, "tempuh": cmd_tempuh, "fitur": cmd_fitur, "imerg_latensi": cmd_imerg_latensi,
+            "imerg_unduh": cmd_imerg_unduh, "fitur_hujan": cmd_fitur_hujan, "sidik": cmd_sidik, "jangkar": cmd_jangkar,
+            "latih": cmd_latih, "nilai": cmd_nilai, "uji": lambda _: uji()}
+
+
+def main():
+    a = pengurai()[0].parse_args()
+    return PERINTAH[a.cmd](a)
 
 
 if __name__ == "__main__":
