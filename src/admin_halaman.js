@@ -155,7 +155,8 @@ export const RUANG_LAPORAN = [
   {kel: "Bahan laporan", item: [["karhutla", "Laporan Karhutla", "/admin/laporan-karhutla", IK('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>')],
     ["omc", "Sortie OMC", "/admin/omc", IK('<path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5z"/><path d="M9 21l1-2M13 21l1-2"/>')],
     ["logbook", "Logbook Pusdalops", "/bnpb/logbook", IK('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/>')]]},
-  {kel: "Keluaran", item: [["koordalops", "Laporan Koordalops", "/laporan-bnpb", IK('<path d="M12 3v12m0 0l-4-4m4 4l4-4M5 20h14"/>')]]},
+  {kel: "Keluaran", item: [["pelaporan", "Laporan dan arsip", "/pelaporan", IK('<path d="M4 4h16v5H4zM5 9v11h14V9M10 13h4"/>')],
+    ["koordalops", "Laporan Koordalops", "/laporan-bnpb", IK('<path d="M12 3v12m0 0l-4-4m4 4l4-4M5 20h14"/>')]]},
   {kel: "Pantauan", item: [["udara", "Kualitas udara", "/udara", IK('<path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h7"/>')],
     ["gunungapi", "Gunung api", "/gunungapi", IK('<path d="M3 20l6-10 3 4 2-3 7 9zM12 3v3M7 5l1.5 2M17 5l-1.5 2"/>')]]}];
 export const halamanRuangLaporan = ctx => `${kepala("Ruang Laporan · Centurisk97")}

@@ -48,7 +48,7 @@ uji("Ruang Laporan: /admin/laporan memuat sidebar + iframe; halaman terbingkai b
   const tmc = await bikin(["tmc"]), man = async (j, h = {}) => { const r = await U.mf.dispatchFetch("http://bnpb.lokal" + j, {headers: h, redirect: "manual"}); await r.text(); return {s: r.status, csp: r.headers.get("content-security-policy") || "", h: r.headers}; };
   for (const h of [ADMIN, tmc]) {
     const r = await api("GET", "/admin/laporan", undefined, h); assert.equal(r.s, 200); assert.match(r.t, /<iframe id="rlBingkai"/); assert.match(r.t, /\/admin\/ruang_laporan\.js/); assert.doesNotMatch(r.t, /<script>/);
-    for (const ke of ["/admin/pantau", "/admin/laporan-karhutla", "/admin/omc", "/bnpb/logbook", "/laporan-bnpb", "/udara", "/gunungapi"]) assert.match(r.t, new RegExp(`data-ke="${ke}"`), ke);
+    for (const ke of ["/admin/pantau", "/admin/laporan-karhutla", "/admin/omc", "/bnpb/logbook", "/pelaporan", "/laporan-bnpb", "/udara", "/gunungapi"]) assert.match(r.t, new RegExp(`data-ke="${ke}"`), ke);
   }
   assert.equal((await man("/admin/laporan")).s, 303, "anonim ke login admin");
   assert.deepEqual(HALAMAN_STAF.laporan, null);
