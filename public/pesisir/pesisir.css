@@ -27,7 +27,7 @@
 .gp-kartu .tw td{white-space:normal;overflow-wrap:anywhere}.gp-kartu .tw th{white-space:nowrap}
 .gp-kartu h3{font-size:clamp(17px,2.4vw,21px);line-height:1.3;letter-spacing:-.01em;margin:8px 0 0}
 .gp-kartu .tw table{width:100%}
-.gp-kartu td.n{text-align:right;font-variant-numeric:tabular-nums}
+.gp-kartu td.n{text-align:center;font-variant-numeric:tabular-nums}
 .gp-kartu .tw th{text-align:center}
 .gp-svg{display:block;width:100%;height:auto;overflow:visible}
 .gp-svg text{fill:currentColor}

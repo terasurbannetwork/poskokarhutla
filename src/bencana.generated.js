@@ -39,7 +39,8 @@ export default {
         "informasi",
         "kompleks",
         "satelit",
-        "tentang"
+        "tentang",
+        "foto"
       ],
       "sumber_status": [
         [
