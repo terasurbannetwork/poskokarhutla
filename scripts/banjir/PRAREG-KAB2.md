@@ -175,3 +175,20 @@ batas persentil), konstanta, berkas ini, `model_kab2.py`, `model_kab.py`, `model
 `uji_balik.py`, `status.py`, `umum.py`, `label_bersatu.py`, `gbdt.py`, sumber fungsi terpakai `uji_logbook.py` dan
 `label_bersatu_v2.py`, `sampel.json`, `label_latih.json` (sha256 CSV v2 + tabel label latih), `dibi_le2025.json`, dan
 manifest cache ERA5 2016-2025. Sidik ditulis ke `model_kab2.sidik` dan di-commit sebelum `uji26`.
+
+## 8. Amandemen
+
+### A1 (1 Nov 2026, saat `latih` pertama berjalan, sebelum `uji26` dan sebelum skor 2026 apa pun dilihat)
+
+Keputusan pemilik: data 2026 ikut melatih model operasional. Urutan yang ditetapkan sekarang, tanpa bergantung pada
+hasil uji 2026:
+
+1. `uji26` dijalankan sekali pada kandidat 2016-2025 sebagaimana §5 (penolak saja).
+2. Bila vonisnya TIDAK LULUS, kandidat berhenti dan tidak ada latih ulang. Bila LULUS atau TIDAK MEYAKINKAN, model
+   operasional KAB2-OPS dilatih ulang dengan resep, fitur, hiperparameter, bobot, dan aturan pembuangan yang sama
+   persis, pada 2016-01-21..2026-10-18. Label 2026 = label resmi (DIBI atau logbook hari mulai, bobot SEDANG 0,5;
+   TINGGI 1 bila resmi + media/warga), karena Groundsource berhenti Januari 2026. Platt LOYO meliputi 2016-2026.
+3. Latih ulang itu memakai berkas kode terpisah (`model_kab2_ops.py`) yang mengimpor fungsi `model_kab2.py` tanpa
+   menyuntingnya; sidik KAB2-OPS di-commit sebelum hari prospektif pertama.
+4. Uji prospektif §4 menilai KAB2-OPS, bukan kandidat 2016-2025, dengan kriteria §5 yang sama, sampai 2027-04-30,
+   dinilai paling cepat 2027-06-01. Data 2026-01-01..2026-10-18 tidak pernah dipakai lagi sebagai data uji.
