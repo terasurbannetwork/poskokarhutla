@@ -135,6 +135,30 @@ export function pakarEkstra(P, induk0) {
 
 const JENIS_EMDAT = {banjir: ["Flood"], "banjir bandang": ["Flood", "Mass movement (wet)"], longsor: ["Mass movement (wet)", "Mass movement (dry)"], gempa: ["Earthquake"], tsunami: ["Earthquake"], "gunung api": ["Volcanic activity"],
   erupsi: ["Volcanic activity"], karhutla: ["Wildfire"], kekeringan: ["Drought"], "cuaca ekstrem": ["Storm"], siklon: ["Storm"], hidrometeorologi: ["Flood", "Storm", "Mass movement (wet)"]};
+/* donasi bencana dari berita dan laman lembaga (panen 1 Nov 2026): satu baris per aksi (uang, barang, peralatan, layanan), digabung per pemberi untuk peringkat.
+   Nilai rupiah hanya yang tertulis di sumber; ACT dan kasus KPK dibuang; aksi ganda (pemberi, kejadian atau lokasi, nilai sama dalam 7 hari) disatukan. */
+const DONASI_ACT = /aksi cepat tanggap|^ACT\b/i, DONASI_KORUPSI = /\bkpk\b|korupsi/i;
+export function donasiBencana(rows, lembaga = [], kejadian = []) {
+  const lb = new Map(larik(lembaga).map(x => [x.id, x])), kj = new Set(larik(kejadian).map(k => k.id)), out = [], lihat = new Map();
+  const tgl = t => Date.parse(String(t || "").slice(0, 10)) || 0;
+  for (const r of larik(rows).slice().sort((a, b) => tgl(a.tanggal) - tgl(b.tanggal))) {
+    const nama = String(r.donor_nama || "").trim(), l = r.lembaga_id && lb.get(r.lembaga_id);
+    if (!nama && !l) continue; if (DONASI_ACT.test(nama) || DONASI_KORUPSI.test(r.judul || "")) continue;
+    const kunci = l ? "L:" + l.id : r.kampus ? "K:" + r.kampus : "T:" + norm(nama), sasaran = (r.kejadian_id && kj.has(r.kejadian_id) ? r.kejadian_id : "") || norm(r.kab || r.prov || r.penerima_teks || "");
+    const nv = Number(r.nilai_rp), nilai = r.nilai_rp != null && r.nilai_rp !== "" && Number.isFinite(nv) && nv > 0 ? nv : null, kg = kunci + "|" + sasaran + "|" + (nilai || larik(r.bentuk).slice().sort().join("+") + "|" + norm(r.barang || "")), ganda = lihat.get(kg);
+    if (ganda && Math.abs(tgl(r.tanggal) - tgl(ganda.tanggal)) <= 7 * 864e5) { if (r.sumber_url && r.sumber_url !== ganda.sumber_url) (ganda.url_lain ||= []).push(r.sumber_url); continue; }
+    const x = {kunci, nama: l ? l.nama : r.kampus || nama, lembaga_id: l ? l.id : null, kampus: r.kampus || null, jenis: r.donor_jenis || null, bentuk: larik(r.bentuk).filter(b => /^(uang|barang|peralatan|layanan)$/.test(b)),
+      nilai_rp: nilai, barang: r.barang || null, penerima: r.penerima_teks || null, prov: r.prov || null, kab: r.kab || null, kejadian_id: r.kejadian_id && kj.has(r.kejadian_id) ? r.kejadian_id : null,
+      jenis_bencana: r.jenis_bencana || null, tanggal: r.tanggal ? String(r.tanggal).slice(0, 10) : null, judul: r.judul || null, sumber_url: r.sumber_url || null};
+    lihat.set(kg, x); out.push(x); }
+  const per = new Map();
+  for (const x of out) { const d = per.get(x.kunci) || per.set(x.kunci, {kunci: x.kunci, nama: x.nama, lembaga_id: x.lembaga_id, kampus: x.kampus, jenis: x.jenis, aksi: 0, total_rp: 0, aksi_rp: 0, bentuk: {}, kejadian: new Set(), prov: new Set(), terakhir: null}).get(x.kunci);
+    d.aksi++; if (x.nilai_rp) { d.total_rp += x.nilai_rp; d.aksi_rp++; } x.bentuk.forEach(b => { d.bentuk[b] = (d.bentuk[b] || 0) + 1; }); if (x.kejadian_id) d.kejadian.add(x.kejadian_id); if (x.prov) d.prov.add(String(x.prov));
+    if (!d.terakhir || (x.tanggal || "") > d.terakhir) d.terakhir = x.tanggal; d.jenis ||= x.jenis; }
+  const pemberi = [...per.values()].map(d => ({...d, kejadian: [...d.kejadian], prov: [...d.prov].sort()})).sort((a, b) => b.aksi - a.aksi || b.total_rp - a.total_rp);
+  return {pemberi, aksi: out.sort((a, b) => (b.tanggal || "").localeCompare(a.tanggal || ""))};
+}
+
 export function kejadianEkstra(P, kejadian) {
   const X = {}, ada = new Set(larik(kejadian).map(k => k.id)), ke = id => X[id] ||= {};
   for (const a of larik(P.aktivasi_satelit)) if (ada.has(a.kejadian_id)) (ke(a.kejadian_id).satelit ||= []).push({mekanisme: a.mekanisme, tanggal: a.tanggal, peminta: a.peminta, url: a.url || a.sumber_url});
@@ -366,7 +390,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
     "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
     "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan",
-    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan"].map(f => [f, baca(dp, f)]));
+    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus", "lembaga_3w"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});
@@ -391,6 +415,8 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   wd.kesiapan.uji = ujiKesiapan(wd.kesiapan.baris, JSON.parse(readFileSync(new URL("../../public/data/bnpb/dibi_kab_tahun.json", import.meta.url), "utf8")), Object.fromEntries(Object.entries(hvc).map(([k, v]) => [k, v.nama])));
   tulis("wilayah_daya", wd);
   const ts = P.tesis_kebencanaan ? tesisKampus(P.tesis_kebencanaan, R.kampus) : {}; if (Object.keys(ts).length) tulis("tesis", ts);   /* hasil kosong tidak ditulis, jadi tidak menimpa R2 */ tulis("lembaga_ekstra", le); tulis("pakar_ekstra", pe); tulis("kejadian_ekstra", ke);
+  /* donasi kosong tidak ditulis, jadi tidak menimpa R2 */
+  const dn = donasiBencana([...larik(P.donasi_berita), ...larik(P.donasi_lembaga)], lbSemua, R.kejadian?.kejadian || R.kejadian); if (dn.aksi.length) tulis("donasi_bencana", {diperbarui: new Date().toISOString().slice(0, 10), ...dn});
   console.log(JSON.stringify({lembaga_baru: lbBaru.length, hibah_baru: hb.length, skema_radar: rs.length, wilayah_kab: wd.kab.length, wilayah_prov: Object.keys(wd.prov).length,
     lembaga_ekstra: Object.keys(le.lembaga).length, kampus_ekstra: Object.keys(le.kampus).length, daftar_hitam: Object.values(le.lembaga).filter(x => x.daftar_hitam).length,
     pakar_paten: Object.values(pe).filter(x => x.paten).length, pakar_orcid: Object.values(pe).filter(x => x.orcid).length,

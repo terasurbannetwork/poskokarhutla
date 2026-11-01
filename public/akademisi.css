@@ -2465,3 +2465,6 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 /* rekan penulis di dialog pakar: nama sebagai tautan yang membuka profil pakar itu */
 .ak-rk-b{font:inherit;font-weight:700;color:var(--brand);background:none;border:0;padding:0;cursor:pointer;text-align:left}
 .ak-rk-b:hover{text-decoration:underline}
+/* donasi: rincian aksi di bawah baris pemberi */
+.ak-dn-rinci{margin:-2px 0 10px;padding:10px 14px;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;background:var(--surface)}
+.ak-dn-rinci .ak-lsumber li{margin-bottom:8px}

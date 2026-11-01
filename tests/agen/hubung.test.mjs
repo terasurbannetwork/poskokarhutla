@@ -251,3 +251,22 @@ test("BPS per kab: Podes dan penduduk rentan masuk wilayah lewat kode kab, tanpa
   assert.equal(p.podes.desa_peringatan_dini, 32); assert.deepEqual(p.podes.terdampak, {banjir: 51}); assert.equal(p.podes.sumber_url, undefined); assert.deepEqual(p.podes.bps, {domain: "1300", tabel: "610"});
   assert.equal(p.rentan.lansia, 50000); assert.equal(w.kab.length, 1, "kode bukan 4 digit dan baris tanpa total penduduk dibuang");
 });
+
+test("donasi bencana: digabung per pemberi, ganda 7 hari disatukan, ACT dibuang, nilai hanya yang tertulis", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const lb = [{id: "baznas", nama: "BAZNAS"}], kej = [{id: "palu", nama: "Palu"}];
+  const r = S.donasiBencana([
+    {donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["uang"], nilai_rp: 1e9, kejadian_id: "palu", tanggal: "2018-10-01", sumber_url: "a"},
+    {donor_nama: "BAZNAS RI", lembaga_id: "baznas", bentuk: ["uang"], nilai_rp: 1e9, kejadian_id: "palu", tanggal: "2018-10-03", sumber_url: "b"},
+    {donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["peralatan"], barang: "perahu", kejadian_id: "palu", tanggal: "2018-10-20", sumber_url: "c"},
+    {donor_nama: "Aksi Cepat Tanggap", bentuk: ["uang"], nilai_rp: 5e9, tanggal: "2018-10-02", sumber_url: "d"},
+    {donor_nama: "PT Maju", donor_jenis: "perusahaan", bentuk: ["barang", "x"], nilai_rp: -3, prov: "72", tanggal: "2018-10-05", sumber_url: "e"}], lb, kej);
+  assert.deepEqual(r.pemberi.map(p => [p.kunci, p.aksi, p.total_rp]), [["L:baznas", 2, 1e9], ["T:pt maju", 1, 0]]);
+  assert.deepEqual(r.aksi.find(a => a.sumber_url === "a").url_lain, ["b"]);
+  assert.deepEqual(r.pemberi[1].bentuk, {barang: 1}); assert.equal(r.aksi.find(a => a.sumber_url === "e").nilai_rp, null);
+  const r2 = S.donasiBencana([{donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["peralatan"], barang: "perahu", kejadian_id: "palu", tanggal: "2018-10-01", sumber_url: "p"},
+    {donor_nama: "BAZNAS", lembaga_id: "baznas", bentuk: ["barang"], barang: "tenda", kejadian_id: "palu", tanggal: "2018-10-04", sumber_url: "t"},
+    {donor_nama: "Dompet Dhuafa", bentuk: ["uang"], nilai_rp: "2000000", judul: "Dompet Dhuafa bersama Aksi Cepat Tanggap salurkan bantuan", tanggal: "2018-10-04", sumber_url: "u"}], lb, kej);
+  assert.equal(r2.aksi.length, 3, "barang berbeda tanpa nilai tidak disatukan; judul yang menyebut ACT tidak membuang pemberi lain");
+  assert.equal(r2.aksi.find(a => a.sumber_url === "u").nilai_rp, 2000000);
+});

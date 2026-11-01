@@ -101,6 +101,17 @@ else {
     assert.deepEqual(galatJs(), []);
   });
 
+  test("tab Donasi: peringkat pemberi, saring bentuk, rincian ke mana dan untuk apa", async () => {
+    await T.buka(`${asal}/akademisi.html?tampil=donasi`, {tunggu: "#akDnL"});
+    await T.tungguFungsi(`/1\\. LAZ Berizin Contoh A/.test(document.getElementById("akDnL").innerText)`);
+    await T.eval(`document.querySelector('#akDnL [data-dn="L:laz-a"]').click()`);
+    await T.tungguFungsi(`!document.querySelector('[data-rinci="L:laz-a"]').hidden`);
+    assert.match(await T.eval(`document.querySelector('[data-rinci="L:laz-a"]').innerText`), /Rp 750 juta/);
+    await T.eval(`document.querySelector('#akDnB [data-v="peralatan"]').click()`);
+    await T.tungguFungsi(`/^1 pemberi$/.test(document.getElementById("akDnJd").textContent) && /PT Contoh Peduli/.test(document.getElementById("akDnL").innerText)`);
+    assert.deepEqual(galatJs(), []);
+  });
+
   test("kategori lembaga di layar lebar: tepat dua baris", async () => {
     await T.buka(`${asal}/akademisi.html?tampil=lembaga&sub=daftar`, {tunggu: "#akLC button"});
     const baris = await T.eval(`new Set([...document.querySelectorAll("#akLC button")].map(b => Math.round(b.getBoundingClientRect().top))).size`);
