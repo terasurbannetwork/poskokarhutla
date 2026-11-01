@@ -11,7 +11,7 @@ import "../../src/worker.js";
 const uji = test;
 const sha = s => createHash("sha256").update(s).digest("hex");
 const TOK = "c".repeat(64), TOK_LUAR = "d".repeat(64);
-const HARI = 864e5;
+const HARI = 864e5, TUTUP = {tgl_tuntas: new Date().toISOString().slice(0, 10), kondisi_akhir: "Air surut, pengungsi kembali"};
 let mf, DB;
 before(async () => {
   mf = new Miniflare({modules: true, scriptPath: path.join(AKAR, "src/worker.js"), modulesRoot: AKAR, modulesRules: [{type: "ESModule", include: ["**/*.js"]}],
@@ -43,7 +43,7 @@ uji("logbook tanpa 0094: buat, lanjut, buka, hari tetap 200 berbentuk lama; meda
   assert.equal((await call("POST", `/api/logbook/kejadian/${id}/entri`, STAF, {md: 5})).j.juklak, undefined);
   const bk = await call("GET", "/api/logbook/buka?kab=" + encodeURIComponent(KAB)); assert.equal(bk.status, 200); assert.equal(bk.j.kejadian[0].entri_terkini.md, 5); assert.equal(bk.j.kejadian[0].dummy, false);
   const h = await call("GET", "/api/logbook/hari?tgl=" + hariIni()); assert.equal(h.status, 200); assert.ok(h.j.entri.length >= 4); assert.ok(h.j.entri[0].kejadian_mulai); assert.equal(h.j.entri[0].kib ?? null, null);
-  assert.equal((await call("POST", `/api/logbook/kejadian/${id}/tutup`, STAF, {})).status, 200);
+  assert.equal((await call("POST", `/api/logbook/kejadian/${id}/tutup`, STAF, TUTUP)).status, 200);
   for (const [m, j, bd] of [["POST", `/api/logbook/kejadian/${id}/sk`, {tingkat: "siaga", wilayah: "prov", nomor: "1", tmt_mulai: "2026-11-01"}], ["GET", `/api/logbook/kejadian/${id}/sk`]]) { const r = await call(m, j, STAF, bd); assert.equal(r.status, 503, j); assert.match(r.j.galat, /0094/); }
   assert.equal((await call("POST", "/api/logbook/dummy", ADMIN, {aksi: "isi"})).status, 201); assert.equal((await call("POST", "/api/logbook/dummy", ADMIN, {aksi: "hapus"})).status, 200);
   assert.equal(await n("logbook_kejadian WHERE dummy = 1"), 0);

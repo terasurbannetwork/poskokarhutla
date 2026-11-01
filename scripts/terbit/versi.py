@@ -16,6 +16,8 @@ import hashlib, os, re, sys
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "public")
 TAG = re.compile(r'(<(?:script|link)\b[^>]*?\b(?:src|href)=")([^"#?:]+\.(?:js|css))(?:\?[^"]*)?(")', re.I)
 LEWATI = {"data", "geo", "lambang", "img", "citra"}
+IMPOR = re.compile(r"""(?:\bfrom|\bimport)\s*\(?\s*["'](\.{1,2}/[^"'?#]+\.js)["']""")
+LIPAT = ("/petugas/",)
 TANDA = "# --- dibuat scripts/terbit/versi.py saat terbit (jangan disunting; tidak di-commit) ---"
 
 
@@ -50,11 +52,17 @@ def jalan(akar=AKAR, maks=100):
         sisa.append(TAG.sub("", baru))
         halaman.append("/" + os.path.relpath(h, akar).replace(os.sep, "/"))
     js = {p: open(p, encoding="utf-8", errors="replace").read() for p in berkas(akar, ".js")}
+    # Impor statis relatif ("from './x.js'") terikat ke jalur persis (relatif ke modulnya), bukan ke semua berkas bernama sama.
+    impor, dimuat = set(), {}
+    for p, t in js.items():
+        for m in IMPOR.finditer(t):
+            impor.add("/" + os.path.relpath(os.path.normpath(os.path.join(os.path.dirname(p), m.group(1))), akar).replace(os.sep, "/"))
+        dimuat[p] = IMPOR.sub('"x"', t)
     abadi = []
     for web in sorted(versi):
         nama = web.rsplit("/", 1)[1]
         pola = re.compile(r"[\"'`/]" + re.escape(nama) + r"[\"'`?#]")   # di dalam string (muatan), bukan sebutan di komentar
-        dinamis = any(pola.search(t) for p, t in js.items() if "/" + os.path.relpath(p, akar).replace(os.sep, "/") != web) \
+        dinamis = web in impor or any(pola.search(t) for p, t in dimuat.items() if "/" + os.path.relpath(p, akar).replace(os.sep, "/") != web) \
             or any(pola.search(t) for t in sisa)
         if not dinamis:
             abadi.append(web)
@@ -106,6 +114,10 @@ def jalan(akar=AKAR, maks=100):
         sisa = set(asing)
         # Folder yang hampir seluruhnya pengecualian: satu "/dir/*.js" lalu tiap berkas immutable di dalamnya dipulihkan
         # (aturan sesudahnya menang: "! Cache-Control" + immutable). Dipakai bila untung > 3 aturan.
+        for dr in LIPAT:   # folder yang sengaja dibalik: modulnya saling impor relatif (tanpa ?v), jadi tak jadi pola nama global
+            if any(w.startswith(dr) for w in sisa):
+                kecuali.append(dr + "*" + ujung)
+                sisa = {w for w in sisa if not w.startswith(dr)}   # tanpa pemulihan: berkas berversi di sini ikut revalidasi
         while True:
             dirs = {w[:k + 1] for w in sisa for k, c in enumerate(w) if c == "/" and k > 0}
             net = {dr: (len([w for w in sisa if w.startswith(dr)]) - 1 - len([w for w in sama if w.startswith(dr) and w in ada])) for dr in dirs}

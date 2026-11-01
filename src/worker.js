@@ -52,6 +52,8 @@ import {RUTE_LOGBOOK} from "./logbook.js";
 import {RUTE_PEMULIHAN} from "./pemulihan.js";
 import {RUTE_LAPSUS} from "./lapsus.js";
 import {RUTE_ROLLCALL} from "./rollcall.js";
+import {RUTE_BERANTAI} from "./berantai.js";
+import {RUTE_MEDSOS} from "./medsos_antre.js";
 import {RUTE_SENSOR} from "./sensor.js";
 import {RUTE_MONITOR} from "./monitor.js";
 import {layaniApiV1, RUTE_KUNCI_API} from "./api_v1.js";
@@ -598,6 +600,8 @@ const RUTE = {
   ...RUTE_PEMULIHAN,   // tracker pemulihan huntara/huntap/DTH/jembatan/sumur per kab, staf saja (src/pemulihan.js, migrasi 0096)
   ...RUTE_LAPSUS,   // Laporan Khusus operasi besar: kebutuhan mendesak + 4 layanan dasar + penanda basi (src/lapsus.js)
   ...RUTE_ROLLCALL,   // roll call radio harian dan ketaatan bulanan (src/rollcall.js)
+  ...RUTE_BERANTAI,   // peringatan berantai banjir/cuaca ke longsor/banjir susulan 3 hari, pola deskriptif (src/berantai.js, migrasi 0098)
+  ...RUTE_MEDSOS,   // antrean verifikasi pantauan medsos/TV ke logbook dan jeda ukur (src/medsos_antre.js, migrasi 0098)
   ...RUTE_SENSOR,   // sensor lapangan: ingest HMAC per alat + status staf (src/sensor.js)
   ...RUTE_AKADEMISI,   // direktori pakar kebencanaan, hanya staf BNPB dan admin (src/akademisi.js, data di R2)
   ...RUTE_MONITOR,   // halaman staf /monitor: tanda baca peringatan, groundcheck, tindak lanjut (src/monitor.js)
@@ -653,7 +657,7 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
-  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", dokumen: "/bnpb/dokumen", operasi: "/bnpb/operasi", pendataan: "/pendataan"};
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", dokumen: "/bnpb/dokumen", operasi: "/bnpb/operasi", perencanaan: "/bnpb/perencanaan", pendataan: "/pendataan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
    Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */

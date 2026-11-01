@@ -33,8 +33,23 @@ test("/api/status memantau umur panel presiden", async () => {
   assert.equal(r.j.sumber.presiden.ambang_jam, 8);
 });
 
+/* Header EFEKTIF sebuah jalur menurut public/_headers: semua aturan yang polanya cocok digabung (Cloudflare). Kontrak diuji
+   lewat header yang benar-benar berlaku, bukan teks satu aturan: aturan /data/presiden/* yang menggandakan /data/* dihapus
+   2 Nov 2026 (batas aturan _headers), tetapi CORS feed tetap wajib dan uji ini merah bila /data/* kehilangan ACAO. */
+const efektif = jalur => {
+  const h = {};
+  let cocok = false;
+  for (const b of teks("public/_headers").split("\n")) {
+    if (b.startsWith("/")) cocok = new RegExp("^" + b.trim().replace(/[.+?^${}()|[\]\\]/g, "\\$&").replace(/\*/g, ".*") + "$").test(jalur);
+    else if (cocok && /^\s+[A-Za-z-]+:/.test(b)) { const i = b.indexOf(":"); h[b.slice(0, i).trim().toLowerCase()] = b.slice(i + 1).trim(); }
+    else if (!b.trim()) cocok = false;
+  }
+  return h;
+};
+
 test("feed /data/presiden: CORS * dan isi sesuai kontrak", () => {
-  assert.match(teks("public/_headers"), /\/data\/presiden\/\*\n\s+Access-Control-Allow-Origin: \*/);
+  for (const f of ["semua.json", "peta.json"]) assert.equal(efektif("/data/presiden/" + f)["access-control-allow-origin"], "*", f);
+  assert.equal(efektif("/presiden")["access-control-allow-origin"], undefined, "pola efektif() tidak boleh mencocokkan semua jalur");
   const mentah = teks("public/data/presiden/semua.json"), s = JSON.parse(mentah);
   assert.equal(s.versi, "presiden/1");
   assert.ok(mentah.length < 150_000, `semua.json ${mentah.length} byte melewati 150 KB`);

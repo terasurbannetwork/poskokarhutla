@@ -7,7 +7,7 @@
 (g => {
   "use strict";
   const JAM = 36e5, HARI = 864e5, WIB = 7 * JAM, LOOKBACK_HARI = 7;
-  const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"];
+  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];   // singkatan, keputusan 2 Nov 2026 (semua tab)
   const NAMA = {banjir: "Banjir", longsor: "Tanah longsor", cuaca: "Cuaca ekstrem", karhutla: "Karhutla", kebakaran_permukiman: "Kebakaran permukiman", gempabumi: "Gempa bumi", gunungapi: "Gunung api",
     kekeringan: "Kekeringan", kecelakaan: "Kecelakaan", konflik_sosial: "Konflik sosial", lainnya: "Lainnya", gelombang_pasang: "Gelombang pasang dan abrasi", tsunami: "Tsunami", wabah: "Epidemi dan wabah penyakit"};
   /* 3 shift piket; katalog Drive (Laporan Shift 2026) menulis Shift 1 06.30-15.00 dan Shift 3 21.00-07.00, Shift 2 tidak tertulis. Di sini 07.00-15.00, 15.00-21.00, 21.00-07.00

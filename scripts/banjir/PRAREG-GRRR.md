@@ -206,4 +206,6 @@ hindcast (§3).
 ## 8. Amandemen
 
 Aturan `latih --ulang` sama dengan PRAREG-TANAH §8 (galat teknis saja, alasan tertulis di jejak, dicatat di sini sebelum `sia`,
-dilaporkan di `buka`). Belum ada amandemen.
+dilaporkan di `buka`).
+
+**A1 (2 Nov 2026, sebelum `sia`, label 2024-2025 belum dibuka).** `sia` gagal dengan `ValueError: deret harian tidak utuh: 3666 hari, harus 3300` karena `HU.data_uji` menambal `ub.AKHIR` ke akhir jendela, sementara jendela GRRR (`AKHIR_SIA` 2025-01-02 dan `AKHIR_BUKA` 2026-01-01) jatuh di bawah `AKHIR_LATIH`. Itu galat teknis tata kode, bukan data dan bukan model. Perbaikan: `pasang()` mengganti `HU.cuaca_sampai` dengan pembaca yang memulihkan `ub.AKHIR` asli saat memuat cache ERA5. Tidak ada ambang, fitur, hiperparameter, label, atau kriteria yang berubah. Karena `model_kab_grrr.py` masuk sidik, dilakukan `latih --ulang "galat teknis: ub.AKHIR tertambal saat muat cuaca di sia/buka (A1)"`. Sidik baru dicatat di jejak, dan sidik lama b4b303dd485542ec dicantumkan di sini sebagai pendahulunya. Keluaran latih ulang dibandingkan dengan log latih pertama (angka validasi AUC/Brier/dBSS harus identik); bila beda, berhenti dan laporkan.

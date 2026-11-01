@@ -1,11 +1,11 @@
-/* Operasi Pusdalops (/bnpb/operasi): tiga tab, Pemulihan, Laporan Khusus, Roll Call. Spek: docs/superpowers/specs/2026-11-01-pusdalops-standar.md (W2).
+/* Operasi Pusdalops (/bnpb/operasi): enam tab, Pemulihan, Laporan Khusus, Roll Call, SK Aktif, Berantai, Medsos (tiga terakhir di operasi_g3.js). Spek: docs/superpowers/specs/2026-11-01-pusdalops-standar.md (W2).
    Data: /api/pusdalops/pemulihan*, /lapsus*, /rollcall* (src/pemulihan.js, lapsus.js, rollcall.js); semua hitungan penyajian di operasi_pusdalops.js (murni, diuji).
    INP: ganti tab/bulan/operasi langsung mengecat chrome (tab aktif, pesan memuat); fetch dan render berat menyusul sesudah dua rAF.
    Tanpa gaya/skrip inline (CSP); teks data lewat textContent saja. */
 (() => {
   "use strict";
   const {ikon, h, PROV, JENIS_URUT, namaJenis, muat, kunciKab} = window.Wilayah, O = window.OperasiPusdalops, F = O.fmt, app = document.getElementById("app");
-  const TAB = [["pemulihan", "Pemulihan", "tenda"], ["lapsus", "Laporan Khusus", "peringatan"], ["rollcall", "Roll Call", "sosial"]];
+  const TAB = [["pemulihan", "Pemulihan", "tenda"], ["lapsus", "Laporan Khusus", "peringatan"], ["rollcall", "Roll Call", "sosial"], ["sk", "SK Aktif", "kalender"], ["berantai", "Berantai", "tunggu"], ["medsos", "Medsos", "uji"]];
   const BELUM = "Data belum tersedia. Hubungi admin.";
   const IKON_PEMULIHAN = {huntara: "tenda", huntap: "material", dana_tunggu_hunian: "dana", jembatan_gantung: "akses", sumur_bor: "pompa", lainnya: "lainnya"};
   const IKON_STATUS = {rencana: "kalender", berjalan: "tunggu", selesai: "ok", terhenti: "peringatan"};
@@ -266,7 +266,8 @@
     const blokSesi = h("section", {class: "bn-blok"}, kepalaBlok("Sesi bulan ini", "kalender"), sesi.length ? tabelBatas(["Tanggal", "Slot", "Dipanggil", "Hadir", "Tidak hadir", "Gangguan", ""], sesi.map(s => [O.tglIndo(s.tgl), O.NAMA_SLOT[s.slot] || s.slot, F(s.dipanggil), F(s.hadir), F(s.tidak), F(s.gangguan), s.dummy ? pilDummy() : ""]), ["", "", "n", "n", "n", "n", "n"]) : kosong("Belum ada sesi pada bulan ini."));
     return {node: [form, blokRingkas, blokSesi, sumberKaki("roll call radio Pusdalops (input staf)", rg.t)], dummy: adaDummy};
   }
-  const MUAT = {pemulihan: muatPemulihan, lapsus: muatLapsus, rollcall: muatRollcall};
+  const G3 = window.OperasiG3({api, h, ikon, pil, pilDummy, tabel, tabelBatas, kosong, sumberKaki, isian, input, opsi, formulir, kepalaBlok, seg, nilaiSeg, pemilih, st, PROV, namaJenis, JENIS: JENIS_LAPSUS, kunciKab, O, segarkan: () => segarkan()});
+  const MUAT = {pemulihan: muatPemulihan, lapsus: muatLapsus, rollcall: muatRollcall, ...G3};
 
   /* ---------- kerangka ---------- */
   const el = {};
@@ -306,11 +307,11 @@
   }
 
   /* ---------- dummy (Super Admin saja): 🧪 isi untuk tab yang terbuka, 🧹 hapus semua ---------- */
-  const RUTE_DUMMY = {pemulihan: "/api/pusdalops/pemulihan/dummy", lapsus: "/api/pusdalops/lapsus/dummy", rollcall: "/api/pusdalops/rollcall/dummy"};
+  const RUTE_DUMMY = {pemulihan: "/api/pusdalops/pemulihan/dummy", lapsus: "/api/pusdalops/lapsus/dummy", rollcall: "/api/pusdalops/rollcall/dummy", sk: "/api/logbook/dummy", berantai: "/api/pusdalops/berantai/dummy", medsos: "/api/pusdalops/medsos/dummy"};
   async function dummy(aksi, tombol) {
-    if (aksi === "hapus" && !confirm("Hapus SEMUA data dummy operasi (pemulihan, laporan khusus, roll call)? Data asli tidak tersentuh.")) return;
-    const semuaTb = [...el.dummy.querySelectorAll("[data-dummy]")], teksAsal = tombol.textContent; semuaTb.forEach(x => { x.disabled = true; }); tombol.textContent = "Mengisi…";   // chrome dulu, jaringan sesudahnya
-    try { await dummyJalan(aksi); } finally { semuaTb.forEach(x => { x.disabled = false; }); tombol.textContent = teksAsal; }
+    if (aksi === "hapus" && !confirm("Hapus SEMUA data dummy operasi (pemulihan, laporan khusus, roll call, SK dan logbook, peringatan berantai, antrean medsos)? Data asli tidak tersentuh.")) return;
+    const semuaTb = [...el.dummy.querySelectorAll("[data-dummy]")]; semuaTb.forEach(x => { x.disabled = true; x.setAttribute("aria-busy", "true"); });   // chrome dulu, jaringan sesudahnya
+    try { await dummyJalan(aksi); } finally { semuaTb.forEach(x => { x.disabled = false; x.removeAttribute("aria-busy"); }); }
   }
   async function dummyJalan(aksi) {
     const rute = aksi === "isi" ? [RUTE_DUMMY[st.tab]] : Object.values(RUTE_DUMMY);

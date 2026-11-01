@@ -129,7 +129,7 @@
     el.skInfo.textContent = id ? "SK provinsi ditampilkan lebih dulu." : "Pilih kejadian pada Lanjutan dari kejadian untuk mencatat atau melihat SK status.";
     if (!id) return;
     const r = await api("GET", `/api/logbook/kejadian/${encodeURIComponent(id)}/sk`); if (id !== lanjutId) return;
-    if (!r.ok) { el.skInfo.textContent = r.s === 503 ? "Tabel SK belum dibuat di server (migrasi 0094 menunggu pemilik)." : "Daftar SK belum bisa dimuat."; return; }
+    if (!r.ok) { el.skInfo.textContent = r.s === 503 ? "Data belum tersedia. Hubungi admin." : "Daftar SK belum bisa dimuat."; return; }
     el.skDaftar.replaceChildren(...(r.j.sk || []).map(x => h("li", {teks: `${x.wilayah === "prov" ? "Provinsi" : "Kabupaten/kota"}, ${SK_TINGKAT[x.tingkat] || x.tingkat}${x.perpanjangan_ke ? `, perpanjangan ke-${x.perpanjangan_ke}` : ""}, ${x.nomor}, TMT ${tglId(x.tmt_mulai)}${x.tmt_selesai ? " sampai " + tglId(x.tmt_selesai) : ""}`})));
     if (!(r.j.sk || []).length) el.skInfo.textContent = "Belum ada SK tercatat untuk kejadian ini.";
   }
@@ -160,6 +160,7 @@
       h("div", {class: "lb-seg", role: "radiogroup", "aria-label": "Jenis kejadian"}, JENIS.map(j => radio("jenis", j, namaJenis(j), j, false))),
       h("div", {class: "bn-baris"}, sel("prov", "Provinsi"), sel("kab", "Kabupaten/kota"), sel("kec", "Kecamatan"), sel("desa", "Desa/kelurahan")),
       h("div", {class: "lb-lanjut"}, h("label", {class: "bn-isian"}, "Lanjutan dari kejadian", lanj), el.pesanLanjut),
+      el.daftarBuka = h("div", {class: "lb-buka"}), el.tutupWadah = h("div", {class: "lb-tutup", hidden: true}),
       h("div", {class: "bn-baris"}, isi("mulai", "Mulai kejadian (WIB)", {type: "datetime-local", max: wibLokal()}), isi("lat", "Lintang (opsional)", {inputmode: "decimal", placeholder: "-7,25"}), isi("lon", "Bujur (opsional)", {inputmode: "decimal", placeholder: "112,75"}))));
     f.append(h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("peringatan"), "Dampak terkini"),
       h("div", {class: "lb-angka"}, DAMPAK.map(([k, t, sat]) => { const i = h("input", {name: k, inputmode: k === "luas_ha" ? "decimal" : "numeric", autocomplete: "off", "aria-label": `${t} (${sat})`}); el[k] = i; return h("label", {class: "bn-isian", "data-d": k}, `${t} (${sat})`, i); })),
@@ -200,13 +201,50 @@
   const isiDesa = () => opsi(el.desa, (kecMap[el.kec.value] || []).map(x => [x, x]), "Pilih desa/kelurahan");
 
   async function muatBuka() {
-    lanjutId = null; buka = []; opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)"); el.pesanLanjut.hidden = true; muatSk();
+    lanjutId = null; buka = []; opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)"); el.pesanLanjut.hidden = true; muatSk(); gambarBuka();
     const k = dataKab(); if (!k) return;
     const r = await api("GET", "/api/logbook/buka?kab=" + encodeURIComponent(kunciKab(k)));
     if (el.kab.value !== k.kode) return;   // pengguna sudah pindah kab
-    if (!r.ok) { el.pesanLanjut.hidden = false; el.pesanLanjut.textContent = r.s === 503 ? "Tabel logbook belum dibuat di server (migrasi menunggu pemilik)." : "Daftar kejadian terbuka belum bisa dimuat."; return; }
+    if (!r.ok) { el.pesanLanjut.hidden = false; el.pesanLanjut.textContent = r.s === 503 ? "Data belum tersedia. Hubungi admin." : "Daftar kejadian terbuka belum bisa dimuat."; return; }
     buka = r.j.kejadian || r.j.daftar || (Array.isArray(r.j) ? r.j : []);
-    opsi(el.lanjut, buka.map(e => [e.id, `${namaJenis(e.jenis || "kejadian")}, ${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}, mulai ${String(e.mulai || "").slice(0, 10)}`]), buka.length ? "Kejadian baru (bukan lanjutan)" : "Tidak ada kejadian terbuka 14 hari terakhir");
+    opsi(el.lanjut, buka.map(e => [e.id, `${namaJenis(e.jenis || "kejadian")}, ${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}, mulai ${tglPendek(e.mulai)}${e.perlu_tutup ? " (perlu ditutup)" : ""}`]), buka.length ? "Kejadian baru (bukan lanjutan)" : "Tidak ada kejadian terbuka 14 hari terakhir");
+    gambarBuka();
+  }
+  /* ---------- tutup kejadian: tgl_tuntas dan kondisi_akhir WAJIB (POST /api/logbook/kejadian/:id/tutup) ---------- */
+  const BLN_P = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
+  const tglPendek = t => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(t || ""); return m ? `${Number(m[3])} ${BLN_P[Number(m[2]) - 1]} ${m[1]}` : ""; };
+  /* -> teks galat atau "" (tanggal tidak sebelum mulai dan tidak di masa depan, kondisi 3-300 karakter); sama dengan aturan server */
+  const periksaTutup = (tgl, kondisi, mulai, hariIni) => !/^\d{4}-\d\d-\d\d$/.test(tgl || "") ? "Isi tanggal tuntas." : tgl > hariIni ? "Tanggal tuntas tidak boleh di masa depan." : mulai && tgl < String(mulai).slice(0, 10) ? `Tanggal tuntas tidak boleh sebelum tanggal mulai (${tglPendek(mulai)}).`
+    : String(kondisi || "").trim().length < 3 ? "Kondisi akhir wajib diisi, minimal 3 karakter." : String(kondisi).trim().length > 300 ? "Kondisi akhir maksimal 300 karakter." : "";
+  function gambarBuka() {
+    el.daftarBuka.replaceChildren(); el.tutupWadah.replaceChildren(); el.tutupWadah.hidden = true;
+    if (!buka.length) return;
+    el.daftarBuka.append(h("h3", {class: "lb-sub-judul", teks: "Kejadian terbuka di kabupaten/kota ini"}), ...buka.map(e => {
+      const b = h("button", {type: "button", class: "bn-tombol sekunder", "data-tutup": e.id}, ikon("ok"), "Tutup kejadian"); b.addEventListener("click", () => formTutup(e));
+      return h("div", {class: "lb-buka-baris", "data-buka": e.id}, pil(namaJenis(e.jenis || "lainnya"), "info", e.jenis || "lainnya"), h("span", {teks: `${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}, mulai ${tglPendek(e.mulai)}`}),
+        e.perlu_tutup ? pil("Perlu ditutup", "bahaya", "peringatan") : null, b); }));
+  }
+  function formTutup(e) {
+    const hari = wibHari(), min = String(e.mulai || "").slice(0, 10);
+    const tgl = h("input", {type: "date", name: "tgl_tuntas", value: min > hari ? min : hari, max: hari, ...min ? {min} : {}, "aria-label": "Tanggal tuntas"});
+    const kond = h("textarea", {name: "kondisi_akhir", rows: "3", maxlength: "300", "aria-label": "Kondisi akhir", placeholder: "Kondisi akhir wilayah, 3 sampai 300 karakter"});
+    const pes = h("p", {class: "bn-pesan", role: "status"}), kirimTb = h("button", {type: "button", class: "bn-tombol"}, ikon("simpan"), "Tutup kejadian"), batalTb = h("button", {type: "button", class: "bn-tombol sekunder"}, ikon("sapu"), "Batal");
+    const w = el.tutupWadah;
+    const kirimTutup = async () => {
+      if (kirimTb.disabled) return;   // Enter ganda tidak boleh POST ganda
+      const g = periksaTutup(tgl.value, kond.value, e.mulai, wibHari()); if (g) { pes.textContent = g; pes.className = "bn-pesan galat"; return; }
+      kirimTb.disabled = true; pes.textContent = "Menutup…"; pes.className = "bn-pesan";
+      const r = await api("POST", `/api/logbook/kejadian/${encodeURIComponent(e.id)}/tutup`, {tgl_tuntas: tgl.value, kondisi_akhir: kond.value.trim()}); kirimTb.disabled = false;
+      if (!r.ok) { pes.textContent = r.s === 503 ? "Data belum tersedia. Hubungi admin." : r.j.galat || `Gagal menutup (${r.s}).`; pes.className = "bn-pesan galat"; return; }
+      await muatBuka(); pesan("Kejadian ditutup.", true); muatHari();
+    };
+    kirimTb.addEventListener("click", kirimTutup); batalTb.addEventListener("click", () => { w.replaceChildren(); w.hidden = true; });
+    /* di dalam formulir catat: Enter dan ketikan di sini tidak boleh mengirim atau menyimpan draf formulir induk */
+    w.onkeydown = ev => { if (ev.key === "Enter" && ev.target.tagName !== "TEXTAREA") { ev.preventDefault(); kirimTutup(); } };
+    w.oninput = w.onchange = ev => ev.stopPropagation();
+    w.replaceChildren(h("h3", {class: "lb-sub-judul", teks: `Tutup ${namaJenis(e.jenis || "lainnya")}, ${[e.desa, e.kec].filter(Boolean).join(", ") || "tanpa desa"}`}),
+      h("div", {class: "bn-baris"}, h("label", {class: "bn-isian"}, "Tanggal tuntas", tgl), h("label", {class: "bn-isian"}, "Kondisi akhir (wajib)", kond)), h("div", {class: "lb-aksi"}, kirimTb, batalTb), pes);
+    w.hidden = false; kond.focus();
   }
   let juklakDari = null;
   function pilihLanjut() {
@@ -267,14 +305,14 @@
     el.kirim.disabled = true; pesan("Menyimpan…", true);
     const b = badan(), r = lanjutId ? await api("POST", `/api/logbook/kejadian/${encodeURIComponent(lanjutId)}/entri`, b) : await api("POST", "/api/logbook/kejadian", b);
     el.kirim.disabled = false;
-    if (!r.ok) return pesan(r.j.galat || (r.s === 503 ? "Tabel logbook belum dibuat di server (migrasi menunggu pemilik)." : `Gagal menyimpan (${r.s}). Isianmu masih ada.`), false);
+    if (!r.ok) return pesan(r.j.galat || (r.s === 503 ? "Data belum tersedia. Hubungi admin." : `Gagal menyimpan (${r.s}). Isianmu masih ada.`), false);
     pesan(lanjutId ? "Entri lanjutan tercatat." : "Kejadian tercatat.", true);
     hapusLokal(DRAF); bersihkan(false); muatHari();
   }
   const pesan = (t, ok) => { el.pesan.textContent = t; el.pesan.className = "bn-pesan " + (ok ? "ok" : "galat"); };
   function bersihkan(tanya = true) {
     if (tanya && !confirm("Kosongkan semua isian formulir dan hapus draf?")) return;
-    el.form.reset(); lanjutId = null; muatSk(); kecMap = {}; hapusLokal(DRAF); el.draf.textContent = ""; el.mulai.value = wibLokal();
+    el.form.reset(); lanjutId = null; buka = []; gambarBuka(); muatSk(); kecMap = {}; hapusLokal(DRAF); el.draf.textContent = ""; el.mulai.value = wibLokal();
     isiProv(); opsi(el.kab, [], "Pilih kabupaten/kota"); opsi(el.kec, [], "Pilih kecamatan"); opsi(el.desa, [], "Pilih desa/kelurahan"); opsi(el.lanjut, [], "Kejadian baru (bukan lanjutan)"); el.pesanLanjut.hidden = true;
     if (tanya) pesan("", true);
     periksaLive();
@@ -339,7 +377,7 @@
   async function mulai() {
     const cek0 = await api("GET", "/api/logbook/hari?tgl=" + tgl);
     if (cek0.s === 401 || cek0.s === 403) return kartuMasuk(cek0.s);
-    const aksi = h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/dokumen"}, ikon("daftar"), "Dokumen"), h("a", {class: "bn-tombol sekunder", href: "/bnpb/operasi"}, ikon("tenda"), "Operasi")); boxHari = h("div");
+    const aksi = h("div", {class: "bn-aksi"}, h("a", {class: "bn-tombol sekunder", href: "/bnpb/dokumen"}, ikon("daftar"), "Dokumen"), h("a", {class: "bn-tombol sekunder", href: "/bnpb/perencanaan"}, ikon("kalender"), "Perencanaan"), h("a", {class: "bn-tombol sekunder", href: "/bnpb/operasi"}, ikon("tenda"), "Operasi")); boxHari = h("div");
     const tglIn = h("input", {type: "date", value: tgl, max: wibHari(), "aria-label": "Tanggal laporan"});
     tglIn.addEventListener("change", () => { if (tglIn.value) { tgl = tglIn.value; muatHari(); } });
     const kolom = h("div", {class: "lb-kolom"}, bentuk(), h("section", {class: "bn-blok"}, h("h2", {class: "lb-judul-blok"}, ikon("daftar"), "Entri periode laporan", h("span", {class: "lb-kanan"}, tglIn)), boxHari));

@@ -9,7 +9,7 @@
 
 import { test } from 'node:test'
 import assert from 'node:assert/strict'
-import { cpSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs'
+import { cpSync, existsSync, mkdtempSync, mkdirSync, readFileSync, readdirSync, rmSync, writeFileSync, appendFileSync } from 'node:fs'
 import { execFileSync } from 'node:child_process'
 import { tmpdir } from 'node:os'
 import { dirname, join, relative, sep } from 'node:path'
@@ -124,5 +124,36 @@ test('gerbang _headers bisa merah: aturan >80, baris panjang, no-cache hilang, C
     writeFileSync(join(akar, 'banjir/data/x.json'), '{}')
     writeFileSync(hp, asli + '\n/banjir/*\n  Cache-Control: public, max-age=31536000, immutable\n')
     assert.ok(periksa(akar).some((s) => /banjir\/data\/x\.json kena Cache-Control bentrok/.test(s)), 'bentrok harus terdeteksi')
+  } finally { rmSync(akar, { recursive: true, force: true }) }
+})
+
+// Kelas bug (2 Nov 2026): berkas ber-Cache-Control immutable (setahun) yang masih dimuat TANPA ?v dari tempat lain
+// (impor relatif "./x.js", string "/x.js", HTML tanpa ?v) -> pengguna terjebak versi lama setahun.
+// Menghitung jalur persis tiap rujukan .js/.css di public/ (kecuali data/geo/img/citra/lambang) pada hasil terbit.
+test('berkas immutable tak pernah dimuat tanpa ?v', () => {
+  const akar = terbit()
+  try {
+    const aturan = urai(readFileSync(join(akar, '_headers'), 'utf8'))
+    const abadi = (w) => efektif(aturan, w).some((v) => /immutable/.test(v))
+    const lewati = new Set(['data', 'geo', 'img', 'citra', 'lambang'])
+    const kode = (d) => readdirSync(d, { withFileTypes: true }).flatMap((e) =>
+      e.isDirectory() ? (lewati.has(e.name) ? [] : kode(join(d, e.name))) : /\.(js|mjs|html)$/.test(e.name) ? [join(d, e.name)] : [])
+    const ref = /["'`]((?:\.{0,2}\/)?[\w./-]*?[\w-]+\.(?:js|css))([?#][^"'`]*)?["'`]/g
+    const salah = []
+    for (const p of kode(akar)) {
+      const teks = readFileSync(p, 'utf8'), folder = dirname(web(akar, p))
+      for (const m of teks.matchAll(ref)) {
+        if (m[2]?.startsWith('?')) continue
+        const r = m[1]
+        if (!/^\.{0,2}\//.test(r)) continue   // specifier telanjang ("three/...", "gif.js") bukan jalur berkas
+        const w = r.startsWith('/') ? r : join('/', folder, r).split(sep).join('/')
+        if (w === web(akar, p) || !existsSync(join(akar, w))) continue   // rujukan ke diri sendiri / jalur yang tak ada
+        if (abadi(w)) salah.push(`${web(akar, p)}: memuat ${w} tanpa ?v (${m[0]})`)
+      }
+    }
+    assert.deepEqual(salah, [],
+      'SEBAB: berkas ini immutable (max-age setahun) tetapi dimuat tanpa ?v. AKIBAT: setelah diubah, pengguna tetap memakai versi lama ' +
+      'sampai setahun. PERBAIKAN: tambahkan ?v ke rujukannya, atau ubah scripts/terbit/versi.py agar berkas itu tak jadi immutable ' +
+      '(impor statis relatif terikat ke jalur persis; lipatan folder ada di LIPAT).')
   } finally { rmSync(akar, { recursive: true, force: true }) }
 })

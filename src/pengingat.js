@@ -127,10 +127,10 @@ async function logbookLanjutan(env, kini, dummy) {
   const rows = (await env.DB.prepare(`SELECT id, jenis, prov, kab, kec, desa, terakhir FROM logbook_kejadian WHERE status = 'buka' AND terakhir <= ? AND dummy = ? ORDER BY terakhir LIMIT ${BATAS_BACA}`).bind(kini - HARI, dummy).all()).results;
   if (rows.length >= BATAS_BACA) return null;
   return rows.map(k => {
-    const jam = Math.floor((kini - k.terakhir) / JAM), h3 = jam >= 72, tempat = [k.desa, k.kec, k.kab].filter(Boolean).join(", ");
-    return {jenis: "logbook_lanjutan", sumber_id: k.id, keadaan: `${h3 ? "h3" : "h1"}:${wib(k.terakhir)}`,
-      judul: `Logbook ${k.jenis.replace(/_/g, " ")} ${k.kab}: belum ada pembaruan ${h3 ? "72" : "24"} jam`.slice(0, 160),
-      rincian: `${tempat}; entri terakhir ${wib(k.terakhir)}, ${jam} jam lalu. Tambahkan entri lanjutan atau tutup kejadian.`.slice(0, 300), prov: k.prov, kab: k.kab};
+    const jam = Math.floor((kini - k.terakhir) / JAM), h7 = jam >= 168, h3 = jam >= 72, tempat = [k.desa, k.kec, k.kab].filter(Boolean).join(", ");
+    return {jenis: "logbook_lanjutan", sumber_id: k.id, keadaan: `${h7 ? "h7" : h3 ? "h3" : "h1"}:${wib(k.terakhir)}`,
+      judul: `Logbook ${k.jenis.replace(/_/g, " ")} ${k.kab}: belum ada pembaruan ${h7 ? "7 hari" : h3 ? "72 jam" : "24 jam"}`.slice(0, 160),
+      rincian: `${tempat}; entri terakhir ${wib(k.terakhir)}, ${jam} jam lalu. ${h7 ? "Wajib ditutup: isi tanggal tuntas dan kondisi akhir, atau tambahkan entri lanjutan." : "Tambahkan entri lanjutan atau tutup kejadian."}`.slice(0, 300), prov: k.prov, kab: k.kab};
   });
 }
 const TIAP = [[["mou_relawan", "pks_riset"], perjanjian], [["logistik_lambat", "dsp_spj", "renkon", "rehab_macet", "stok_rendah"], meja], [["bantuan_terbuka"], bantuan], [["prioritas_dampak"], prioritas], [["logbook_lanjutan"], logbookLanjutan]];
