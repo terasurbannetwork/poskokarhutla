@@ -90,13 +90,12 @@
    "judul": [
     43.2,
     21.6,
-    644,
+    820.3,
     65,
     2
    ],
    "peta": null,
    "struktur": [
-    "31 Okt 2026, 23.59 WIT",
     "2",
     "NASA FIRMS (VIIRS dan MODIS), diolah BNPB, 31 Okt 2026 WIB; pantauan udara tim BNPB, 31 Okt 2026"
    ],
@@ -120,10 +119,6 @@
     [
      "4A9BE0",
      "aksen"
-    ],
-    [
-     "A9B4C2",
-     "inti"
     ],
     [
      "BFC5CC",
@@ -443,7 +438,7 @@
    "judul": [
     43.2,
     21.6,
-    644,
+    820.3,
     65,
     2
    ],
@@ -465,7 +460,6 @@
     "ukuran_label_pt": 9.2
    },
    "struktur": [
-    "31 Okt 2026, 23.59 WIT",
     "6",
     "01  ",
     "02  ",
@@ -495,10 +489,6 @@
     ],
     [
      "6B7280",
-     "inti"
-    ],
-    [
-     "A9B4C2",
      "inti"
     ],
     [
@@ -575,13 +565,12 @@
    "judul": [
     43.2,
     21.6,
-    644,
+    820.3,
     65,
     2
    ],
    "peta": null,
    "struktur": [
-    "31 Okt 2026, 23.59 WIT",
     "7",
     "01  ",
     "02  ",
@@ -593,10 +582,6 @@
      "inti"
     ],
     [
-     "051C2C",
-     "pil"
-    ],
-    [
      "1A1A1A",
      "inti"
     ],
@@ -606,10 +591,6 @@
     ],
     [
      "6B7280",
-     "inti"
-    ],
-    [
-     "A9B4C2",
      "inti"
     ],
     [
@@ -2616,7 +2597,7 @@
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-32.jpg": "fbd69065bdc79413771ad893c41aa1db4bfd1bfe7e0f8f3d25ea844985f98a1e",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/udara-37.jpg": "511d716c2f078ad57f773182408917552f556327302ec56413cdb8a45070d7ae",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/foto/video-asap.jpg": "d50c2595a1da13a25ea75898dda351127cf54548a9d10f2b2618ebe94db05b40",
-  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/pantau-merauke.json": "569176a9178d077e61f17c2c93535d4d4532ad835254bdd1fe1b376a40240a61",
+  "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/spek/pantau-merauke.json": "e6708750385ef05a7072dd6d9d0a0450b5f2067a7c9c9635daa5ba049b70546d",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/proyek-merauke/tema.json": "72414da0f15e5881d7e8d1a164e9c1f5de222b317fdb08585458145161df7718",
   "../../../../../../.claude/skills/ppt-konsultan/bnpb/assets/templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262"
  }

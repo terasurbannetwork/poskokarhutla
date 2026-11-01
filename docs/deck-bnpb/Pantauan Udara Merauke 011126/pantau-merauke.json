@@ -38,7 +38,7 @@
       "judul_bentuk": "deskriptif",
       "pesan": "Ringkasan pantauan",
       "judul": "Lahan Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan kemudian; {{angka:mk.cp5|satuan}} di sekitar PT MSJ",
-      "cut_off": true,
+      "cut_off": false,
       "grup": [
         {
           "pil": "Hotspot 31 Oktober",
@@ -197,7 +197,7 @@
       "rasio": 0.5,
       "pesan": "Sebaran titik per check point",
       "judul": "Hotspot 31 Oktober menumpuk di PT MSJ: {{angka:mk.cp5|satuan}} di CP-5 dan {{angka:mk.cp4|satuan}} di CP-4; sembilan check point lain paling banyak {{angka:mk.cp.lain}}",
-      "cut_off": true,
+      "cut_off": false,
       "grup": [
         {
           "pil": "Hari terbang",
@@ -280,7 +280,7 @@
       "judul_bentuk": "temuan",
       "pesan": "Api menyebar",
       "judul": "Api dibiarkan menjalar ke hutan dan dekat permukiman; Merauke mencatat {{angka:mk.kab31|satuan}} pada hari terbang",
-      "cut_off": true,
+      "cut_off": false,
       "kolom_panel": 2,
       "panel": [
         {

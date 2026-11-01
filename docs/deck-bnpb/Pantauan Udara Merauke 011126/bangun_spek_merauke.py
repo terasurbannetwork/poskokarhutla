@@ -63,7 +63,7 @@ SAMPUL = {'jenis': 'sampul', 'layout': 'putih', 'judul_penuh': True, 'skala_subj
 RINGKAS = {
     'jenis': 'galeri', 'jenis_slide': 'navigasi', 'judul_bentuk': 'deskriptif', 'pesan': 'Ringkasan pantauan',
     'judul': f'Lahan Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan kemudian; {t("mk.cp5", "|satuan")} di sekitar PT MSJ',
-    'cut_off': True,
+    'cut_off': False,
     'grup': [{'pil': 'Hotspot 31 Oktober', 'nada': 'data', 'ikon': 'karhutla', 'kartu': [
         {'nilai': t('mk.kab31'), 'label': 'hotspot Kabupaten Merauke', 'ikon': 'karhutla', 'warna': 'navy'},
         {'nilai': t('mk.jagebob31'), 'label': 'hotspot Kecamatan Jagebob', 'ikon': 'wilayah', 'warna': 'navy'}]},
@@ -104,7 +104,7 @@ MODUS = {
 PETA = {
     'jenis': 'temuan-peta', 'jenis_slide': 'peta', 'judul_bentuk': 'temuan', 'rasio': 0.5, 'pesan': 'Sebaran titik per check point',
     'judul': f'Hotspot 31 Oktober menumpuk di PT MSJ: {t("mk.cp5", "|satuan")} di CP-5 dan {t("mk.cp4", "|satuan")} di CP-4; sembilan check point lain paling banyak {t("mk.cp.lain")}',
-    'cut_off': True,
+    'cut_off': False,
     'grup': [{'pil': 'Hari terbang', 'nada': 'data', 'ikon': 'karhutla', 'kartu': [
         {'nilai': t('mk.jagebob31'), 'label': 'hotspot Kecamatan Jagebob', 'ikon': 'wilayah', 'warna': 'merah'},
         {'nilai': t('mk.frp'), 'label': 'MW, FRP tertinggi', 'ikon': 'naik', 'warna': 'navy'}]}],
@@ -121,7 +121,7 @@ PETA = {
 SEBAR = {
     'jenis': 'galeri', 'jenis_slide': 'panel', 'judul_bentuk': 'temuan', 'pesan': 'Api menyebar',
     'judul': f'Api dibiarkan menjalar ke hutan dan dekat permukiman; Merauke mencatat {t("mk.kab31", "|satuan")} pada hari terbang',
-    'cut_off': True, 'kolom_panel': 2,
+    'cut_off': False, 'kolom_panel': 2,
     'panel': [
         {'judul': 'Hutan di sekitar lahan terbuka', 'ikon': 'karhutla', 'kolom_foto': 2, 'bobot': 3, 'foto': [
             {'berkas': 'foto/udara-20.jpg', 'keterangan': 'Kepulan asap di hutan, banyak pohon mati'},
