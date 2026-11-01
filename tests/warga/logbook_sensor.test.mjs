@@ -62,6 +62,24 @@ uji("logbook: buat kejadian dengan entri pertama, input salah 400 dan tidak ters
   assert.equal((await call("POST", "/api/logbook/kejadian", STAF, {jenis: "banjir", prov_kode: "33", kab: "Kebumen", mulai: hariIni()})).status, 201, "prov_kode + nama kab tanpa kab_kode");
 });
 
+uji("logbook: tiga jenis panduan resmi (gelombang_pasang, tsunami, wabah) diterima; daftar jenis dikunci di 14; migrasi 0091 mempertahankan isi", async () => {
+  /* DIUBAH SENGAJA 1 Nov 2026: daftar jenis logbook 11 -> 14 mengikuti panduan Pusdalops (DIBI 103, 108, 201) */
+  const {JENIS} = await import("../../src/logbook.js");
+  assert.deepEqual(JENIS.slice(-3), ["gelombang_pasang", "tsunami", "wabah"]); assert.equal(JENIS.length, 14);
+  const sebelum = await n("logbook_kejadian");
+  for (const jenis of ["gelombang_pasang", "tsunami", "wabah"]) { const r = await call("POST", "/api/logbook/kejadian", STAF, {...baru, jenis}); assert.equal(r.status, 201, jenis + " " + JSON.stringify(r.j)); assert.equal(r.j.kejadian.jenis, jenis); }
+  assert.equal(await n("logbook_kejadian"), sebelum + 3);
+  await assert.rejects(DB.prepare("UPDATE logbook_kejadian SET jenis = 'nyasar' WHERE rowid = 1").run(), /CHECK/, "CHECK skema tetap menolak jenis liar");
+  /* ulang 0091 di atas data: isi (kejadian + entri) utuh, jenis baru tetap sah, salinan terbuang */
+  const entri = await n("logbook_entri");
+  const sql = readFileSync(path.join(AKAR, "migrations", "0091_logbook_jenis.sql"), "utf8");
+  await DB.batch(pecah(sql).map(x => DB.prepare(x)));
+  assert.equal(await n("logbook_kejadian"), sebelum + 3); assert.equal(await n("logbook_entri"), entri);
+  assert.equal(await n("sqlite_master WHERE name LIKE 'logbook_%_cad'"), 0);
+  assert.equal(await n("logbook_kejadian WHERE jenis = 'tsunami'"), 1);
+  await DB.batch([DB.prepare("DELETE FROM logbook_entri WHERE kejadian_id IN (SELECT id FROM logbook_kejadian WHERE jenis IN ('gelombang_pasang', 'tsunami', 'wabah'))"), DB.prepare("DELETE FROM logbook_kejadian WHERE jenis IN ('gelombang_pasang', 'tsunami', 'wabah')")]);   // uji berikutnya menghitung kejadian
+});
+
 uji("logbook: entri lanjutan menimpa nilai terkini, batas wajar dan yakin", async () => {
   const k = (await call("POST", "/api/logbook/kejadian", STAF, {...baru, kab: "33|Magelang"})).j.kejadian.id;
   const e2 = await call("POST", `/api/logbook/kejadian/${k}/entri`, STAF, {md: 5, hilang: 2, luka: 9, mengungsi_jiwa: 300, kendala: ["logistik"], kebutuhan: [], catatan: "pembaruan"});

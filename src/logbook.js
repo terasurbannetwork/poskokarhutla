@@ -9,7 +9,8 @@ import {laju} from "./bnpb.js";
 import {PROV} from "./alun.js";
 
 const PERAN = ["pusdalops", "koordalops", "pimpinan"], HARI = 864e5, MENIT = 6e4, MAKS_BODY = 8192, MAKS_HARI = 1000;
-export const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya"];
+export const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"];   // tiga terakhir: panduan resmi Pusdalops (DIBI 103, 108, 201), butuh migrasi 0091
+const JENIS_BARU = ["gelombang_pasang", "tsunami", "wabah"];
 export const KENDALA = ["akses", "logistik", "sinyal", "air", "personel", "alat_berat", "gambut", "cuaca", "data", "dana", "malam", "sosial", "listrik", "angin"];
 export const KEBUTUHAN = ["makanan", "tenda", "sandang", "air_bersih", "obat", "perahu", "material", "alat_berat", "pompa", "dana"];
 /* batas wajar seperti BATAS_WAJAR di scripts/umum/laphar_arsip.py; di atasnya ditolak kecuali yakin:true. KERAS = batas mutlak, yakin pun tak menolong. */
@@ -83,8 +84,9 @@ async function buat(env, req, kini) {
   const p = periksaEntri(typeof o.entri === "object" && o.entri && !Array.isArray(o.entri) ? {yakin: o.yakin, ...o.entri} : o, kini); if (p.galat) return json({galat: p.galat, wajar: p.wajar}, 400);
   const lj = await lajuTulis(env, oleh, kini); if (lj) return lj;
   const id = acak(8);
-  await env.DB.batch([env.DB.prepare(`INSERT INTO logbook_kejadian (id, jenis, prov, kab, kec, desa, lat, lon, mulai, status, terakhir, dibuat, diubah, dibuat_oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'buka', ?, ?, ?, ?)`)
-    .bind(id, o.jenis, w.prov, w.kab, kec, desa, ada ? o.lat : null, ada ? o.lon : null, new Date(mt).toISOString(), kini, kini, kini, oleh), stmtEntri(env, id, p.e, oleh, kini)]);
+  try { await env.DB.batch([env.DB.prepare(`INSERT INTO logbook_kejadian (id, jenis, prov, kab, kec, desa, lat, lon, mulai, status, terakhir, dibuat, diubah, dibuat_oleh) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'buka', ?, ?, ?, ?)`)
+    .bind(id, o.jenis, w.prov, w.kab, kec, desa, ada ? o.lat : null, ada ? o.lon : null, new Date(mt).toISOString(), kini, kini, kini, oleh), stmtEntri(env, id, p.e, oleh, kini)]); }
+  catch (e) { if (JENIS_BARU.includes(o.jenis) && /CHECK constraint failed/i.test(String(e?.message || e))) return gagal(503, "jenis ini belum aktif (migrasi 0091_logbook_jenis belum diterapkan)"); throw e; }
   return json({kejadian: keluarKej(await env.DB.prepare(`SELECT ${KOL_KEJ} FROM logbook_kejadian WHERE id = ?`).bind(id).first()), entri: keluarEntri(await env.DB.prepare(`SELECT ${KOL_ENT} FROM logbook_entri WHERE kejadian_id = ?`).bind(id).first())}, 201);
 }
 async function lanjut(env, req, kini, id) {

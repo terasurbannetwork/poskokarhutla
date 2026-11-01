@@ -9,10 +9,10 @@
     const s = r.map(([x, z]) => x === z ? `${x}` : `${x}–${z}`); return s.length < 3 ? s.join(" dan ") : s.slice(0, -1).join(", ") + ", dan " + s.at(-1); };
   const tahunDasar = j => (j.tahun_penuh || []).map(Number).filter(Number.isFinite).sort((a, b) => a - b);
   let TH = [], N = 0, RNG = "";
-  const JN = [["banjir", "Banjir", "#2f6fb0"], ["longsor", "Longsor", "#8a5a2b"], ["cuaca", "Cuaca ekstrem", "#7b5cc0"], ["karhutla", "Karhutla", "#d9600b"], ["kebakaran_permukiman", "Kebakaran permukiman", "#c9503a"]];
+  const JN = [["banjir", "Banjir", "#2f6fb0"], ["longsor", "Longsor", "#8a5a2b"], ["cuaca", "Cuaca ekstrem", "#7b5cc0"], ["gelombang_pasang", "Gelombang pasang dan abrasi", "#1a8a9a"], ["karhutla", "Karhutla", "#d9600b"], ["kebakaran_permukiman", "Kebakaran permukiman", "#c9503a"], ["tsunami", "Tsunami", "#2a3f8f"], ["wabah", "Epidemi dan wabah penyakit", "#4f9a5a"]];  /* urutan resmi DIBI; tiga jenis terakhir dipecah pipeline dari cuaca/lainnya */
   const BLN = ["Januari", "Februari", "Maret", "April", "Mei", "Juni", "Juli", "Agustus", "September", "Oktober", "November", "Desember"], SB = BLN.map(b => b.slice(0, 3));
   let CATATAN = "Logbook mencatat kejadian yang dilaporkan.";
-  /* rata-rata kejadian lima jenis per kab/kota per tahun dasar, dihitung dari data saat dimuat */
+  /* rata-rata kejadian semua jenis di JN per kab/kota per tahun dasar, dihitung dari data saat dimuat */
   const rataKab = (kab, pf) => { let t = 0, c = 0; for (const [k, v] of Object.entries(kab)) if (pf.includes(+k.split("|")[0])) { c++; for (const y of TH) for (const [j] of JN) t += v.tahun?.[y]?.[j] || 0; } return c && N ? t / (c * N) : null; };
   const catat = kab => { const p = rataKab(kab, [91, 92, 93, 94, 95, 96, 97]), jw = rataKab(kab, [31, 32, 33, 34, 35, 36]), f = n => n.toLocaleString("id-ID", {maximumFractionDigits: 1});
     CATATAN = "Logbook mencatat kejadian yang dilaporkan." + (p != null && jw != null ? ` Rata-rata per kab/kota per tahun: Papua ${f(p)} kejadian, Jawa ${f(jw)}; sebabnya belum dipastikan.` : ""); };
@@ -56,8 +56,8 @@
       return {j, lb, w, y, b, top: bulanTerbanyak(v.bulan_penuh?.[j] || [])};
     }).filter(Boolean).sort((a, c) => c.y - a.y);
     const kepala = `<div class="rd-hd"><div><b>${esc(nama)}</b></div><button class="rd-x" aria-label="Tutup">×</button></div>`;
-    const cov = `Menampilkan 5 jenis: banjir, longsor, cuaca ekstrem, karhutla, kebakaran permukiman.`;
-    if (!rows.length) return kepala + `<p>Tidak ada kejadian lima jenis ini yang tercatat di logbook ${RNG}.</p><div class="rd-s">${cov} ${CATATAN}</div>`;
+    const cov = `Menampilkan ${JN.length} jenis: ${JN.map(x => x[1].toLowerCase()).join(", ")}.`;
+    if (!rows.length) return kepala + `<p>Tidak ada kejadian jenis ini yang tercatat di logbook ${RNG}.</p><div class="rd-s">${cov} ${CATATAN}</div>`;
     const t = rows[0];
     return kepala + `<p><b>${t.lb} tercatat di ${dari(t.y)}.</b> Ini jenis yang tercatat di lebih banyak tahun di ${esc(nama)}.</p>`
       + rows.map(r => `<div class="rd-j"><span class="pill" style="background:${r.w}">${r.lb}</span><span class="rd-n">${dari(r.y)}</span>

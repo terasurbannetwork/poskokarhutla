@@ -2,7 +2,9 @@
 
     python pdf.py "Laporan Kejadian Bencana Harian 291026.pptx"      # PDF di folder yang sama
 """
-import os, shutil, subprocess, sys
+import os, shutil, subprocess, sys, tempfile
+
+FONT = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'font')   # Roboto statis (Apache 2.0)
 
 
 def soffice():
@@ -16,11 +18,20 @@ def ke_pdf(pptx, outdir=None):
     pdf = os.path.join(outdir, os.path.splitext(os.path.basename(pptx))[0] + '.pdf')
     so = soffice()
     if so:
-        subprocess.run([so, '--headless', '--convert-to', 'pdf', '--outdir', outdir, pptx], check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL)
+        # Profil LibreOffice terpisah berisi Roboto statis: Roboto variabel sistem tidak dikenali soffice (jatuh ke serif),
+        # dan profil sendiri tidak bentrok dengan LibreOffice yang sedang terbuka.
+        profil = os.path.join(tempfile.gettempdir(), 'laporan-profil-lo')
+        os.makedirs(os.path.join(profil, 'user', 'fonts'), exist_ok=True)
+        for f in os.listdir(FONT):
+            if f.endswith('.ttf') and not os.path.exists(os.path.join(profil, 'user', 'fonts', f)):
+                shutil.copy(os.path.join(FONT, f), os.path.join(profil, 'user', 'fonts', f))
+        if os.path.exists(pdf): os.remove(pdf)   # PDF lama tidak boleh lolos sebagai hasil konversi gagal
+        subprocess.run([so, f'-env:UserInstallation=file://{profil}', '--headless', '--convert-to', 'pdf', '--outdir', outdir, pptx],
+                       check=True, stdout=subprocess.DEVNULL, stderr=subprocess.DEVNULL, timeout=300)
     elif os.name == 'nt':
         # 32 = ppSaveAsPDF; WithWindow=0 supaya PowerPoint tidak muncul. Path lewat env, bukan disisipkan ke skrip.
         # Simpan ke berkas sementara dulu: PDF lama yang sedang terbuka di penampil membuat SaveAs gagal (30 Okt).
-        import tempfile, time
+        import time
         sem = os.path.join(tempfile.gettempdir(), f'laporan-{os.getpid()}.pdf')
         ps = ("$ErrorActionPreference='Stop'; $a=New-Object -ComObject PowerPoint.Application; "
               "try { $p=$a.Presentations.Open($env:PPTX_IN, $true, $false, $false); $p.SaveAs($env:PDF_OUT, 32); $p.Close() } "

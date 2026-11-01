@@ -102,7 +102,7 @@ else {
     S.log.length = 0;
     await tab.buka(base + "/bnpb/logbook.html", {tunggu: "select[name=prov]"});
     await tab.tungguFungsi("!/Memuat daftar wilayah/.test(document.body.innerText)", 20000);
-    assert.equal(await tab.eval("document.querySelectorAll('input[name=jenis]').length"), 12);
+    assert.equal(await tab.eval("document.querySelectorAll('input[name=jenis]').length"), 14)   // = JENIS di src/logbook.js;
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kendala]').length"), 14);
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kebutuhan]').length"), 10);
     assert.equal(await tab.eval("document.querySelectorAll('input[name=kendala]')[0].closest('label').querySelector('svg path') !== null"), true);

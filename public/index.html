@@ -2623,7 +2623,7 @@ function renderKPI() {
   const rh = S.rentangHit || S.rentang, bln = +tglRentang().slice(5, 7) - 1;
   const nmR = rh === "hari" ? `${tglPendek(S.meta.hari_wib)} s.d. ${jamWIB(S.meta.dibuat)} (belum sehari penuh)` : `${hariLama(rh) ? tglLain(rh) : tglPendek(tglRentang())} · sehari penuh WIB`;
   const kart = [
-    ["Titik panas", fmt(jml(S.hit)), `${nmR} · ${fmt(jml(S.tinggi))} keyakinan tinggi`],
+    ["Titik panas", fmt(jml(S.hit)), `${nmR}, ${fmt(jml(S.tinggi))} keyakinan tinggi`],
     ["Cluster", fmt(kl.length), "aktif 72 jam"],
     ["Prioritas pemadaman", fmt(prior), `${fmt(siaga)} lain pemadaman awal`],
     ["FWI maksimum", fmt(fw), fw == null ? "" : FWI_KELAS[kelasFWI(fw)][0] + " hari ini"],

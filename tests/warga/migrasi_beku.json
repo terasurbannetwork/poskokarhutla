@@ -91,5 +91,6 @@
   "0087_akademisi_riwayat.sql": "0d8c2fd3ad581d617d983ab17a731dfd24950af2489855338079b9f52cde611f",
   "0088_logbook.sql": "e7690247518431a2d20c36c56982f9303720a00f293cf1b92e0207263f59c4ab",
   "0089_sensor.sql": "ed4d7473f00ee6f8eeeebe82d9fcec7623c05e340a04bd08ee08490157982b49",
-  "0090_pesisir.sql": "270509d2aa2bed85b5ea6c2daa2bb3f98d79c8c483e5a96a885eefd3bf9e5a62"
+  "0090_pesisir.sql": "270509d2aa2bed85b5ea6c2daa2bb3f98d79c8c483e5a96a885eefd3bf9e5a62",
+  "0092_pesisir_rujukan.sql": "b84eefd0b03defd8bb0e8063088019f9f002f220bcbdf7c05eddff38922fc1c1"
 }

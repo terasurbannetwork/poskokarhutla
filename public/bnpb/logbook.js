@@ -6,8 +6,8 @@
   "use strict";
   const {PROV, ikon, h, F, label, namaJenis, urutJenis, muat, desaKab, kunciKab, tutup} = window.Wilayah;
   const app = document.getElementById("app"), DRAF = "logbook_draf_v1";
-  /* sama dengan JENIS di src/logbook.js (daftar putih worker); urutan resmi dari Wilayah. Jenis baru (gelombang_pasang dst) menunggu worker menerimanya. */
-  const JENIS = ["banjir", "longsor", "cuaca", "karhutla", "kebakaran_permukiman", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "kegagalan_teknologi", "konflik_sosial", "lainnya"].sort(urutJenis);
+  /* sama persis dengan JENIS di src/logbook.js (daftar putih worker, 14 nilai); urutan resmi dari Wilayah. Tiga jenis baru dijawab 503 sampai migrasi 0091. */
+  const JENIS = ["banjir", "cuaca", "kebakaran_permukiman", "karhutla", "longsor", "gempabumi", "gunungapi", "kekeringan", "kecelakaan", "konflik_sosial", "lainnya", "gelombang_pasang", "tsunami", "wabah"].sort(urutJenis);
   const KENDALA = {akses: "Akses putus", logistik: "Logistik/BBM", sinyal: "Sinyal putus", air: "Sumber air", personel: "Personel kurang", alat_berat: "Alat berat", gambut: "Gambut", cuaca: "Cuaca", data: "Data belum ada", dana: "Dana", malam: "Malam hari", sosial: "Sosial", listrik: "Listrik padam", angin: "Angin kencang"};
   const KEBUTUHAN = {makanan: "Makanan", tenda: "Tenda", sandang: "Sandang", air_bersih: "Air bersih", obat: "Obat", perahu: "Perahu", material: "Material", alat_berat: "Alat berat", pompa: "Pompa", dana: "Dana"};
   /* urutan: [kunci, label, satuan]; batas wajar = BATAS_WAJAR di scripts/umum/laphar_arsip.py */

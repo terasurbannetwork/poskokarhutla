@@ -202,6 +202,7 @@
     "table laporan_cad": "migrasi 0020: laporan multi-bahaya",
     "table kontak_cad": "migrasi 0020: laporan multi-bahaya",
     "table suara_cad": "migrasi 0020: laporan multi-bahaya",
+    "table wilayah_cad": "migrasi 0090: laporan dibangun ulang, laporan_wilayah dicadangkan lalu dipulihkan",
     "table stat_hari_baru": "migrasi 0006: stat_hari dibangun ulang",
     "GET /api/foto": "foto: admin setujui lalu tayang",
     "POST /api/foto": "foto: masukan salah DITOLAK",
@@ -941,6 +942,8 @@
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
     "GET /admin/foto": "kerangka HTML statis; gerbang sesinya sama persis dengan /admin/statistik (St.halamanAdmin) yang sudah diuji di statistik.test.mjs",
     "GET /pendataan": "halaman statis responden lewat halamanBnpbPublik; layarnya diuji tests/bnpb/pendataan.test.mjs",
+    "table logbook_kejadian_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
+    "table logbook_entri_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
     "table pengingat_cad": "salinan sementara migrasi 0088, dibuang di akhir; hasilnya diuji 'migrasi 0088: pengingat dibangun ulang'"
   },
   "antre": {

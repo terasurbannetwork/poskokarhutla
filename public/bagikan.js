@@ -441,8 +441,8 @@ const Bagikan = {
     const fw = k ? S.wilayah[k]?.fwi_maks : Math.max(0, ...Object.keys(S.meta.provinsi).map(p => S.wilayah[p]?.fwi_maks || 0)), kf = fw == null ? 0 : kelasFWI(fw);
     const n = k ? h.per[k] || 0 : h.tot, lv = Math.max(0, ...kl.map(f => f.properties.level)), mdr = h.mdr;
     const kpi = [
-      mdr ? {l: `Titik panas ${mdr.tgl}`, s: `Titik ${mdr.pdk}`, v: fmt(n), ket: `data terakhir s.d. ${mdr.jam} WIB${k ? "" : ` · ${fmt(h.tinggi)} keyakinan tinggi`}`, ks: `s.d. ${mdr.jam} WIB`, w: this.LV[3], ik: "api"}
-      : {l: "Titik panas hari ini", s: "Titik panas", v: fmt(n), ket: k ? "hari ini (WIB)" : `hari ini (WIB) · ${fmt(h.tinggi)} keyakinan tinggi`, ks: "hari ini (WIB)", w: this.LV[3], ik: "api"},
+      mdr ? {l: `Titik panas ${mdr.tgl}`, s: `Titik ${mdr.pdk}`, v: fmt(n), ket: `data terakhir s.d. ${mdr.jam} WIB${k ? "" : `, ${fmt(h.tinggi)} keyakinan tinggi`}`, ks: `s.d. ${mdr.jam} WIB`, w: this.LV[3], ik: "api"}
+      : {l: "Titik panas hari ini", s: "Titik panas", v: fmt(n), ket: k ? "hari ini (WIB)" : `hari ini (WIB), ${fmt(h.tinggi)} keyakinan tinggi`, ks: "hari ini (WIB)", w: this.LV[3], ik: "api"},
       {l: "Cluster aktif", s: "Cluster", v: fmt(kl.length), ket: "aktif 72 jam terakhir", ks: "aktif 72 jam", w: this.LV[2], ik: "lapis"},
       {l: "Prioritas pemadaman", s: "Prioritas", v: fmt(lvN[3]), ket: `${fmt(lvN[2])} lain siaga pemadaman`, ks: `+${fmt(lvN[2])} siaga`, w: this.LV[3], ik: "awas"},
       {l: "FWI maksimum", s: "FWI maks", v: fmt(fw), ket: fw == null ? "–" : "bahaya cuaca " + FWI_KELAS[kf][0].toLowerCase(), ks: fw == null ? "–" : FWI_KELAS[kf][0].toLowerCase(), w: this.LV[kf], ik: "cuaca"},
