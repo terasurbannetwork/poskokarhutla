@@ -67,7 +67,7 @@ export function wilayahDaya(P) {
   return {diperbarui: new Date().toISOString().slice(0, 10), prov, kab: Object.values(kab)};
 }
 
-export function lembagaEkstra(P, lembaga) {
+export function lembagaEkstra(P, lembaga, kampus = null, induk = null) {
   const L = {}, ke = id => L[id] ||= {}, ada = new Set(lembaga.map(l => l.id));
   for (const r of larik(P.izin_cocok)) if (ada.has(r.lembaga_id)) { const o = ke(r.lembaga_id); o.izin = [...new Set([...(o.izin || []), ...r.bendera.filter(b => !/badan hukum/.test(b))])]; o.izin_dasar = r.dasar; }
   /* SK izin zakat: dicocokkan ketat ke nama lembaga */
@@ -91,6 +91,11 @@ export function lembagaEkstra(P, lembaga) {
   /* kampus berkunci nama (K:<nama>) */
   const K = {}; for (const r of larik(P.ror_kampus?.cocok)) if (r.entitas_id?.startsWith("K:")) (K[r.entitas_id.slice(2)] ||= {}).ror = r.ror_id;
   for (const r of larik(P.wikidata_lembaga?.lembaga_kampus)) if (r.entitas_id?.startsWith("K:")) (K[r.entitas_id.slice(2)] ||= {}).wikidata = r.qid;
+  /* penulis artikel kebencanaan di jurnal GARUDA per kampus (afiliasi memuat nama kampus, kampus terpanjang menang) yang belum ada di direktori pakar: calon pakar, delapan teratas */
+  if (kampus && P.garuda_penulis) { const kn = Object.keys(kampus).map(k => [k, norm(k)]).filter(([, n]) => n.length >= 8).sort((a, b) => b[1].length - a[1].length), nama = new Set(larik(induk?.orang || induk).map(o => norm(o[1] || "")));
+    for (const g0 of larik(P.garuda_penulis)) { const g = {...g0, nama: /,/.test(g0.nama || "") ? g0.nama.split(",").map(x => x.trim()).reverse().join(" ") : g0.nama}; if (!g.nama || !g.afiliasi || nama.has(norm(g.nama))) continue; const af = norm(g.afiliasi), m = kn.find(([, n]) => af.includes(n)); if (!m) continue;
+      ((K[m[0]] ||= {}).garuda ||= []).push({nama: g.nama, afiliasi: g.afiliasi, artikel: g.jumlah_artikel_kebencanaan || null, contoh: larik(g.judul_contoh)[0] || null}); }
+    for (const v of Object.values(K)) if (v.garuda) v.garuda = v.garuda.sort((a, b) => (b.artikel || 0) - (a.artikel || 0)).slice(0, 8); }
   return {lembaga: L, kampus: K};
 }
 
@@ -100,13 +105,28 @@ export function pakarEkstra(P, induk0) {
   for (const c of larik(P.paten_cocok)) for (const i of c.inventor || []) if (ada.has(i.pakar_id)) { const p = paten.get(c.nomor_permohonan); if (!p) continue;
     (ke(i.pakar_id).paten ||= []).push({judul: p.judul, nomor: p.nomor_paten || p.nomor_permohonan, jenis: p.jenis, status: p.status, tanggal: p.tanggal_diberi || p.tanggal_permohonan, pemegang: (p.pemegang || []).map(x => x.pemegang || x).join(", "), sumber_url: p.sumber_url}); }
   for (const o of larik(P.orcid_pakar?.cocok)) if (ada.has(o.pakar_id)) ke(o.pakar_id).orcid = o.orcid;
+  /* dataset terbuka kebencanaan (Zenodo dan repositori data lain) yang pembuatnya pakar direktori; dicocokkan lewat ORCID saja */
+  const orc = new Map(); for (const o of larik(induk)) if (o[7]) orc.set(String(o[7]).replace(/^https?:\/\/orcid\.org\//, ""), o[0]); for (const [id, v] of Object.entries(X)) if (v.orcid) orc.set(v.orcid, id);
+  for (const d of larik(P.dataset_terbuka)) { const sudah = new Set(); for (const p of larik(d.pembuat)) { const id = p.orcid && orc.get(p.orcid); if (!id || sudah.has(id)) continue; sudah.add(id);
+    (ke(id).dataset ||= []).push({judul: d.judul, repositori: d.repositori || null, tahun: d.tahun || null, url: d.doi ? "https://doi.org/" + d.doi : d.url || null}); } }
   /* penyandang dana karya pakar (OpenAlex grants, berasal dari Crossref Funder Registry; pakar dicocokkan lewat id OpenAlex): enam pemberi teratas per pakar */
   const dn = {}; for (const r of larik(P.pendanaan_pakar)) { if (!ada.has(r.pakar_id) || !r.funder) continue; const m = (dn[r.pakar_id] ||= {}), f = m[r.funder] ||= {nama: r.funder, ror: r.funder_ror || null, karya: new Set(), tahun: 0, contoh: null};
     f.karya.add(r.karya_doi || r.karya_judul); if ((r.tahun || 0) >= f.tahun) { f.tahun = r.tahun || 0; f.contoh = {judul: r.karya_judul, url: r.sumber_url}; } }
+  /* bidang keahlian kebencanaan per pakar (topik OpenAlex): daftar izin ketat, ekologi umum, kesehatan, keuangan, dan pendidikan dibuang; api dan gambut tetap */
+  const TOPIK_YA = /disaster|flood|earthquake|seism|tsunami|landslide|volcan|peat|fire|drought|coastal (and marine dynamics|management)|hydrolog|stormwater|erosion|cyclone|emergency management|climate variability/i,
+    TOPIK_TIDAK = /ecosystem|plant|species|agricultur|health|education|cardiac|financial|portfolio|insurance|supply chain|statistic|mental|tall buildings/i;
+  for (const t of larik(P.topik_pakar)) if (ada.has(t.pakar_id)) { const a = larik(t.topik).filter(x => TOPIK_YA.test(x.nama) && (!TOPIK_TIDAK.test(x.nama) || /fire|peat/i.test(x.nama))).slice(0, 5).map(x => ({nama: x.nama, karya: x.karya ?? null}));
+    if (a.length) ke(t.pakar_id).topik = a; }
+  /* rekan penulis yang juga ada di direktori (karya kebencanaan bersama 2015 ke atas, OpenAlex): delapan teratas per pakar */
+  const rk = {}; for (const r of larik(P.rekan_pakar)) if (r.a !== r.b && ada.has(r.a) && ada.has(r.b)) { (rk[r.a] ||= []).push([r.b, r]); (rk[r.b] ||= []).push([r.a, r]); }
+  for (const [id, a] of Object.entries(rk)) ke(id).rekan = a.sort((x, y) => y[1].karya - x[1].karya || (y[1].tahun_akhir || 0) - (x[1].tahun_akhir || 0)).slice(0, 8)
+    .map(([b, r]) => ({id: b, karya: r.karya, tahun: r.tahun_akhir || null, contoh: r.contoh_judul ? {judul: r.contoh_judul, url: r.sumber_url || null} : null}));
   for (const [id, m] of Object.entries(dn)) ke(id).dana = Object.values(m).map(f => ({nama: f.nama, ror: f.ror, karya: f.karya.size, tahun: f.tahun || null, contoh: f.contoh})).sort((a, b) => b.karya - a.karya || b.tahun - a.tahun).slice(0, 6);
   return X;
 }
 
+const JENIS_EMDAT = {banjir: ["Flood"], "banjir bandang": ["Flood", "Mass movement (wet)"], longsor: ["Mass movement (wet)", "Mass movement (dry)"], gempa: ["Earthquake"], tsunami: ["Earthquake"], "gunung api": ["Volcanic activity"],
+  erupsi: ["Volcanic activity"], karhutla: ["Wildfire"], kekeringan: ["Drought"], "cuaca ekstrem": ["Storm"], siklon: ["Storm"], hidrometeorologi: ["Flood", "Storm", "Mass movement (wet)"]};
 export function kejadianEkstra(P, kejadian) {
   const X = {}, ada = new Set(larik(kejadian).map(k => k.id)), ke = id => X[id] ||= {};
   for (const a of larik(P.aktivasi_satelit)) if (ada.has(a.kejadian_id)) (ke(a.kejadian_id).satelit ||= []).push({mekanisme: a.mekanisme, tanggal: a.tanggal, peminta: a.peminta, url: a.url || a.sumber_url});
@@ -116,6 +136,16 @@ export function kejadianEkstra(P, kejadian) {
     ke(r.kejadian_id).reliefweb = {nama: r.nama, laporan: r.jumlah_laporan, pelapor: (r.sumber_pelapor || []).slice(0, 5).map(s => s.nama), url: r.url}; }
   for (const h of larik(P.reliefweb_kejadian?.hdx)) if (ada.has(h.kejadian_id)) (ke(h.kejadian_id).hdx ||= []).push({judul: h.judul, organisasi: h.organisasi, url: h.url});
   for (const g of larik(P.gdacs_kejadian)) if (ada.has(g.kejadian_id) && g.alertlevel) ke(g.kejadian_id).gdacs = {level: g.alertlevel, skor: g.alertscore ?? null, severitas: g.severitas || null, url: g.url};
+  /* nomor GLIDE (glidenumber.net, satu kandidat per kejadian) dan catatan EM-DAT (CRED/UCLouvain): dicocokkan lewat GLIDE, lalu jenis dan tanggal 0 sampai 14 hari bila tepat satu */
+  for (const g of larik(P.glide_cocok)) if (ada.has(g.kejadian_id) && g.glide) { ke(g.kejadian_id).glide = g.glide; glide[g.glide] ??= g.kejadian_id; }
+  /* GLIDE EM-DAT tanpa akhiran negara (FL-2025-000217), glidenumber.net dengan akhiran (-IDN): kunci disamakan. Satu catatan EM-DAT hanya untuk satu kejadian; jalur GLIDE didahulukan */
+  const gk = g => String(g || "").replace(/-[A-Z]{3}$/, ""), em = larik(P.emdat_idn).filter(r => r.kelompok === "alam"), emG = new Map(em.filter(r => r.glide).map(r => [gk(r.glide), r])), kej = larik(kejadian), dapat = {}, pakai = new Set();
+  for (const k of kej) { const r = X[k.id]?.glide && emG.get(gk(X[k.id].glide)); if (r && !pakai.has(r.disno)) { dapat[k.id] = r; pakai.add(r.disno); } }
+  for (const k of kej) { if (dapat[k.id] || !k.tanggal) continue; const j = JENIS_EMDAT[k.jenis] || [], c = em.filter(e => j.includes(e.jenis) && e.tanggal_pasti && e.mulai && Math.abs(Date.parse(e.mulai) - Date.parse(k.tanggal)) / 864e5 <= 14);
+    if (c.length === 1 && !pakai.has(c[0].disno)) { dapat[k.id] = c[0]; pakai.add(c[0].disno); } }
+  for (const k of kej) { const r = dapat[k.id];
+    if (r) ke(k.id).emdat = {disno: r.disno, meninggal: r.meninggal ?? null, terdampak: r.terdampak ?? null, kerugian_ribu_usd: r.kerugian_ribu_usd ?? null, kerugian_ribu_usd_riil: r.kerugian_ribu_usd_riil ?? null,
+      bantuan_ribu_usd: r.bantuan_ribu_usd ?? null, url: "https://public.emdat.be/"}; }
   for (const f of larik(P.fts_kejadian)) { const id = glide[f.glide_id]; if (!id) continue; const t = f.total_usd || {};
     ke(id).fts = {total_usd: (t.paid || 0) + (t.commitment || 0), donor: (f.donor || []).slice(0, 5).map(d => ({nama: d.nama, usd: d.usd})), url: f.sumber_url}; }
   return X;
@@ -328,7 +358,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
     "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
     "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan",
-    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb"].map(f => [f, baca(dp, f)]));
+    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus", "lembaga_3w"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});
@@ -347,7 +377,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
   if (sb.length) { P.aktivasi_satelit = [...larik(P.aktivasi_satelit), ...sb]; simpanPanen("aktivasi_satelit", P.aktivasi_satelit); }
   const sa = P.aktivasi_sentinel_asia ? sentinelAsia(P.aktivasi_sentinel_asia, R.kejadian?.kejadian || R.kejadian, P.aktivasi_satelit) : [];
   if (sa.length) { P.aktivasi_satelit = [...larik(P.aktivasi_satelit), ...sa]; simpanPanen("aktivasi_satelit", P.aktivasi_satelit); }
-  const wd = wilayahDaya(P), le = lembagaEkstra(P, lbSemua), pe = pakarEkstra(P, R.induk), ke = kejadianEkstra(P, R.kejadian?.kejadian || R.kejadian);
+  const wd = wilayahDaya(P), le = lembagaEkstra(P, lbSemua, R.kampus, R.induk), pe = pakarEkstra(P, R.induk), ke = kejadianEkstra(P, R.kejadian?.kejadian || R.kejadian);
   wd.kesiapan = kesiapanDaerah(wd, JSON.parse(readFileSync(new URL("../../public/banjir/data/risiko_kecamatan.json", import.meta.url), "utf8")), R.induk, R.kampus, lbSemua);
   const hvc = JSON.parse(readFileSync(new URL("../../public/data/bnpb/risiko_hvc.json", import.meta.url), "utf8")).kab;
   wd.kesiapan.uji = ujiKesiapan(wd.kesiapan.baris, JSON.parse(readFileSync(new URL("../../public/data/bnpb/dibi_kab_tahun.json", import.meta.url), "utf8")), Object.fromEntries(Object.entries(hvc).map(([k, v]) => [k, v.nama])));

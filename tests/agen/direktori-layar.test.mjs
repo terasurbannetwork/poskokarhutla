@@ -76,6 +76,7 @@ else {
   });
 
   test("lembar kampus: kotak cari menyaring daftar pakar kampus itu", async () => {
+    data.lembaga_ekstra = {...(data.lembaga_ekstra || {}), kampus: {"Universitas Contoh Timur": {ror: "https://ror.org/0abc", garuda: [{nama: "Calon Garuda Satu", artikel: 4, contoh: "Mitigasi banjir"}]}}};
     await T.buka(asal + "/akademisi.html?tampil=kampus", {tunggu: '[data-kp="Universitas Contoh Timur"]'});
     await T.klik('[data-kp="Universitas Contoh Timur"]');
     await T.tungguFungsi(`!!document.getElementById("akKpQ")`);
@@ -83,6 +84,17 @@ else {
     await T.tungguFungsi(`document.querySelectorAll("#akTopPk li").length === 1`);
     assert.match(await T.eval(`document.getElementById("akTopPk").innerText`), /Pakar Uji 12\b/);
     assert.equal(await T.eval(`document.getElementById("akKpN").textContent`), "1");
+    await T.tungguFungsi(`/Calon Garuda Satu/.test(document.getElementById("akSheet").innerText)`);
+    await T.tungguFungsi(`/Identitas kampus[\\s\\S]*ROR/i.test(document.getElementById("akSheet").innerText)`);
+    assert.deepEqual(galatJs(), []);
+  });
+
+  test("dialog pakar: bidang keahlian dan rekan penulis tampil, nama rekan membuka profilnya", async () => {
+    data.pakar_ekstra = {A9000: {topik: [{nama: "Flood Risk Assessment and Management", karya: 7}], rekan: [{id: "A9001", karya: 3, tahun: 2025}]}};
+    await T.buka(asal + "/akademisi.html?pakar=A9000", {tunggu: ".ak-rekan-p"});
+    assert.match(await T.eval(`document.querySelector(".ak-topik-p").innerText`), /Flood Risk Assessment/);
+    await T.eval(`document.querySelector('.ak-rekan-p [data-buka="A9001"]').click()`);
+    await T.tungguFungsi(`/Pakar Uji 2\\b/.test(document.getElementById("akLembar").innerText)`);
     assert.deepEqual(galatJs(), []);
   });
 

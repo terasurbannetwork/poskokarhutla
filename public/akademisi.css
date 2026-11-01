@@ -2462,3 +2462,6 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-in-f:has(> div > :nth-child(4)){grid-column:1/-1}
 .ak-ks-uji{margin:4px 0 10px;font-size:12.5px;line-height:1.5;color:var(--ink2);text-align:justify}
 .ak-ks-uji .ak-mp{margin-right:4px;vertical-align:1px}
+/* rekan penulis di dialog pakar: nama sebagai tautan yang membuka profil pakar itu */
+.ak-rk-b{font:inherit;font-weight:700;color:var(--brand);background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.ak-rk-b:hover{text-decoration:underline}

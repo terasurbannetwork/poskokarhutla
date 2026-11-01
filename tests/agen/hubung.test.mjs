@@ -223,3 +223,22 @@ test("perbaikan pemeriksa gelombang 4: tesis berulang dihitung sekali, anak IATI
   const w = S.wilayahDaya({dataset_satudata: {baris: [{prov: "53", kab: "Kabupaten Kupang", judul: "Data pegawai BPBD", sumber_url: "u"}, {prov: "53", kab: "Kabupaten Kupang", judul: "Mitigasi emisi GRK", sumber_url: "u"}]}});
   assert.equal(w.kab.length, 0);
 });
+
+test("direktori gelombang 5: topik ketat, rekan dua arah, GLIDE lalu EM-DAT", async () => {
+  const S = await import("../../scripts/akademisi/sambung_panen.mjs");
+  const x = S.pakarEkstra({topik_pakar: {baris: [{pakar_id: "A1", topik: [{nama: "Flood Risk Assessment and Management", karya: 9}, {nama: "Marine and Coastal Ecosystems", karya: 50}, {nama: "Fire effects on ecosystems", karya: 3}, {nama: "Financial Risk and Volatility Modeling", karya: 2}]}]},
+    rekan_pakar: {baris: [{a: "A1", b: "A2", karya: 4, tahun_akhir: 2025, contoh_judul: "J", sumber_url: "u"}, {a: "A1", b: "A9", karya: 9}]}}, {orang: [["A1", "Satu"], ["A2", "Dua"]]});
+  assert.deepEqual(x.A1.topik.map(t => t.nama), ["Flood Risk Assessment and Management", "Fire effects on ecosystems"]);
+  assert.deepEqual([x.A1.rekan.map(r => r.id), x.A2.rekan.map(r => r.id)], [["A2"], ["A1"]], "rekan di luar direktori dibuang, pasangan dua arah");
+  const kej = [{id: "palu", jenis: "gempa", tanggal: "2018-09-28"}, {id: "marapi", jenis: "gunung api", tanggal: "2023-12-03"}, {id: "dua", jenis: "banjir", tanggal: "2020-01-01"}];
+  const em = [{kelompok: "alam", jenis: "Earthquake", glide: "EQ-2018-000156", disno: "2018-0352-IDN", meninggal: 4140, kerugian_ribu_usd_riil: 1859040, mulai: "2018-09-28", tanggal_pasti: true},
+    {kelompok: "alam", jenis: "Volcanic activity", disno: "2023-0820-IDN", mulai: "2023-12-03", tanggal_pasti: true},
+    {kelompok: "alam", jenis: "Flood", disno: "a", mulai: "2020-01-01", tanggal_pasti: true}, {kelompok: "alam", jenis: "Flood", disno: "b", mulai: "2020-01-05", tanggal_pasti: true},
+    {kelompok: "teknologi", jenis: "Road", disno: "c", mulai: "2023-12-03", tanggal_pasti: true}];
+  const k = S.kejadianEkstra({glide_cocok: {baris: [{kejadian_id: "palu", glide: "EQ-2018-000156-IDN"}]}, emdat_idn: {baris: em}}, kej);
+  assert.equal(k.palu.glide, "EQ-2018-000156-IDN"); assert.equal(k.palu.emdat.disno, "2018-0352-IDN"); assert.equal(k.palu.emdat.meninggal, 4140);
+  assert.equal(k.marapi.emdat.disno, "2023-0820-IDN", "tanpa GLIDE: jenis dan tanggal, satu kandidat");
+  assert.equal(k.dua, undefined, "dua kandidat banjir: dilewati");
+  const k2 = S.kejadianEkstra({emdat_idn: {baris: [em[1]]}}, [...kej, {id: "marapi2", jenis: "gunung api", tanggal: "2023-12-05"}]);
+  assert.ok(!!k2.marapi?.emdat !== !!k2.marapi2?.emdat || (!k2.marapi?.emdat && !k2.marapi2?.emdat), "satu catatan EM-DAT tidak dipakai dua kejadian");
+});
