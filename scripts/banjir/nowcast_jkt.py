@@ -12,7 +12,7 @@
   latih --jalur A | nilai --jalur A                        DITOLAK sebelum kunci sah (muat_label); nilai hanya sekali (penanda nowcast_jkt.buka)
   daya [--ulang N] [--B N]                                 sintetik daya syarat 3 (kemiringan kalibrasi), tanpa label
 
-Fase 1: tidak ada parameter yang disetel pada label. Lokasi/waktu laporan hanya dibaca muat_label(), yang menolak sebelum kunci (PRAREG A.5).
+Fase 1: tidak ada parameter yang disetel pada label. Lokasi/waktu laporan hanya dibaca muat_label(perans), yang menolak sebelum kunci (PRAREG A.5); latih tak pernah memuat musim uji.
 Data yang boleh dipakai pada t: hanya yang tersedia sebelum t menurut latensi nyata (konstanta LAT_* di bawah, dibekukan oleh PRAREG).
 Arsip TMA: data/raw/banjir/arsip_pos/YYYY/MM/*.jsonl.gz (arsip_pos.py; R2 arsip/pos_sungai/). CAP: GET /api/cuaca/arsip (D1 cuaca_arsip, 0021).
 GSMaP NRT jam: data/banjir/genangan/j4_hujan_jam.jsonl (ditulis j4_operasi.py, beku J4: hanya DIBACA).
@@ -449,14 +449,22 @@ def periksa_kunci(berkas=None, git=None):
     return None
 
 
-def muat_label():
-    """Pembaca label publik: tanpa parameter, selalu memeriksa kunci asli (PRAREG A.5). -> lihat _muat_label."""
-    return _muat_label(None, None)
+def muat_label(perans):
+    """Pembaca label publik: hanya parameter peran musim, selalu memeriksa kunci asli (PRAREG A.5). -> lihat _muat_label."""
+    return _muat_label(None, None, perans)
 
 
-def _muat_label(berkas_kunci, git, dari_cache=None, label_berkas=None):
+def peran_musim(t):
+    """peran musim laporan pada waktu t (tanpa L): 'latih'|'validasi'|'uji'|None."""
+    m = musim(t)
+    return next((k for k, v in MUSIM.items() if m in v), None)
+
+
+def _muat_label(berkas_kunci, git, perans, dari_cache=None, label_berkas=None):
     """SATU-SATUNYA pembaca lokasi/waktu laporan PetaBencana di berkas ini; menolak sebelum kunci sah. Ini KUNCI URUTAN, bukan pagar teknis:
     berkasnya tetap bisa dibuka di luar kode ini (PRAREG A.5).
+    Hanya laporan yang musimnya berperan dalam `perans` yang disimpan (dibuang SEGERA sesudah baca, sebelum ditempel kecamatan atau di-hash):
+    `latih` memanggil {latih, validasi}; hanya `nilai` yang memuat 'uji'.
     -> {label: tersaring penuh (petabencana_banjir.json), mentah: cache mentah ringkas (petabencana.dari_cache, punya tipe/teks) untuk persistensi kausal,
         tanpa_saring: mentah tipe flood + dedup (sensitivitas), sha: sha256 ketiganya}. Semua: tanpa_j3 segera sesudah baca, tanpa bulan terlarang/terlihat,
     sebelum jangkar J4, ditempel kec DKI. petabencana_laporan.json TIDAK dipakai: skemanya tanpa tipe/teks (skor_j4.py)."""
@@ -470,11 +478,14 @@ def _muat_label(berkas_kunci, git, dari_cache=None, label_berkas=None):
     if dari_cache is None:
         from petabencana import dari_cache
     jw, kec = jendela_j3(), KecDKI()
+    perans = set(perans)
+    if not perans or not perans <= set(MUSIM):
+        raise ValueError(f"perans tidak sah: {perans}")
     def bersih(lap):
         out = []
         for r in tanpa_j3(lap, jw):
             t = iso_t(r["t"])
-            if f"{t:%Y-%m}" in BULAN_TERLARANG | BULAN_TERLIHAT_A or t >= AWAL_J4:
+            if f"{t:%Y-%m}" in BULAN_TERLARANG | BULAN_TERLIHAT_A or t >= AWAL_J4 or peran_musim(t) not in perans:
                 continue
             k = kec.cari(r["lon"], r["lat"])
             if k:
@@ -489,8 +500,9 @@ def _muat_label(berkas_kunci, git, dari_cache=None, label_berkas=None):
         k = (r["t"], r["lon"], r["lat"], r.get("kedalaman_cm"))
         if r.get("tipe") == "flood" and k not in lihat:
             lihat.add(k); tanpa.append(r)
-    sha = hashlib.sha256(json.dumps([[(r["id"], r["t"], r["kec"]) for r in x] for x in (label, mentah, tanpa)], default=str).encode()).hexdigest()
-    return {"label": label, "mentah": mentah, "tanpa_saring": tanpa, "sha": sha}
+    sha = {k: hashlib.sha256(json.dumps([[(r["id"], r["t"], r["kec"]) for r in x if peran_musim(iso_t(r["t"])) == k] for x in (label, mentah, tanpa)],
+                                         default=str).encode()).hexdigest() for k in sorted(perans)}
+    return {"label": label, "mentah": mentah, "tanpa_saring": tanpa, "sha": sha}       # sha per peran: latih mencatat latih+validasi, nilai mencatat uji
 
 
 # ------------------------------------------------------------------ persistensi kausal (pembeda dengan label: burst kumulatif sampai t)
@@ -884,12 +896,18 @@ def cmd_jangkar(a):
     print("tertulis", SIDIK_KUNCI, "(commit dan push berkas ini)"); return 0
 
 
+def sel_imerg():
+    """49 sel kotak Jakarta dengan kunci yang sama dengan baca_imerg."""
+    return [(round(-89.95 + 0.1 * j, 2), round(-179.95 + 0.1 * i, 2)) for i in range(I_LON[0], I_LON[1] + 1) for j in range(I_LAT[0], I_LAT[1] + 1)]
+
+
 def imerg_lengkap(seri, perans=("latih", "validasi"), min_porsi=0.95):
-    """-> [bulan kurang] : tiap bulan Nov-Apr musim `perans` harus punya >= min_porsi slot 30 menit (sel mana pun). Diperiksa SEBELUM label dibaca."""
+    """-> [bulan kurang]: tiap bulan Nov-Apr musim `perans`, SETIAP sel dari 49 harus punya >= min_porsi slot 30 menit bernilai
+    (sel tanpa data = 0). Diperiksa SEBELUM label dibaca."""
     ada = {}
-    for c in seri.values():
-        for e in c:
-            b = dt.datetime.fromtimestamp(e - 1, dt.timezone.utc).strftime("%Y-%m"); ada.setdefault(b, set()).add(e)
+    for c in sel_imerg():
+        for e in seri.get(c, {}):
+            b = dt.datetime.fromtimestamp(e - 1, dt.timezone.utc).strftime("%Y-%m"); ada[(c, b)] = ada.get((c, b), 0) + 1
     kurang = []
     for m in (x for k in perans for x in MUSIM[k]):
         y = int(m[:4])
@@ -898,7 +916,7 @@ def imerg_lengkap(seri, perans=("latih", "validasi"), min_porsi=0.95):
             if b in BULAN_TERLARANG | BULAN_TERLIHAT_A:
                 continue
             hari = (dt.date(yy + mm // 12, mm % 12 + 1, 1) - dt.date(yy, mm, 1)).days
-            if len(ada.get(b, ())) < min_porsi * 48 * hari:
+            if any(ada.get((c, b), 0) < min_porsi * 48 * hari for c in sel_imerg()):
                 kurang.append(b)
     return kurang
 
@@ -919,7 +937,7 @@ def cmd_latih(a):
     kurang = imerg_lengkap(seri)                     # hujan lengkap dulu; label tak dibaca bila hujan belum ada (A1)
     if kurang:
         print(f"IMERG belum lengkap untuk {len(kurang)} bulan latih/validasi (mis. {kurang[:3]}): label tidak dibaca", file=sys.stderr); return 2
-    D = muat_label()                                 # menolak sebelum kunci
+    D = muat_label(("latih", "validasi"))            # menolak sebelum kunci; label musim uji tidak dimuat
     for L in TENGGANG:
         lat, val = baris_jalur_a({"validasi"}, L, D["label"], D["mentah"], seri)
         ok = lambda r: [b for b in r if None not in (b["h1"], b["h3"], b["h6"], b["a24"])]
@@ -946,9 +964,9 @@ def cmd_nilai(a):
     r = subprocess.run(["git", "show", "origin/main:scripts/banjir/nowcast_jkt_model.json"], cwd=AKAR, capture_output=True)
     if r.returncode or r.stdout != open(MODEL_BERKAS, "rb").read():
         print("model belum di origin/main persis: push dulu", file=sys.stderr); return 2
-    D = muat_label()
-    if D["sha"] != M.get("sha_label"):
-        print("berkas label berubah sejak latih (sha beda): tolak", file=sys.stderr); return 2
+    D = muat_label(("latih", "validasi", "uji"))     # satu-satunya pemanggil yang memuat peran uji
+    if {k: D["sha"][k] for k in ("latih", "validasi")} != M.get("sha_label"):
+        print("label latih/validasi berubah sejak latih (sha beda): tolak", file=sys.stderr); return 2
     open(BUKA, "w").write(dt.datetime.now(WIB).isoformat())
     seri, hasil, v07c, sens = baca_imerg(), {}, {}, {}
     for L in TENGGANG:
@@ -961,7 +979,7 @@ def cmd_nilai(a):
             if x:
                 print(f"L={L} {nama}: episode {x['episode']}, positif {x['n_pos']}, BSS {x['bss_klim']}, p {x['p_gabung']:.4f}, kemiringan CI95 {x['kemiringan_ci']}")
     v, vs = vonis(hasil), vonis(sens)
-    json.dump({"vonis": v, "vonis_tanpa_saring": vs, "arah_beda": v["utama"] != vs["utama"], "per_L": hasil, "v07c": v07c, "tanpa_saring": sens,
+    json.dump({"vonis": v, "vonis_tanpa_saring": vs, "sha_label_uji": D["sha"]["uji"], "arah_beda": v["utama"] != vs["utama"], "per_L": hasil, "v07c": v07c, "tanpa_saring": sens,
                "catatan": "batas atas, sebelum prospektif 2026/27 (V07B arsip vs V07C operasional, PRAREG A.1)"},
               open(os.path.join(AYAH, "nowcast_jkt_vonis.json"), "w"), indent=1, default=str)
     print(json.dumps(v)); return 0
@@ -1057,10 +1075,12 @@ def uji():
     nama = lambda x: {n for n, f in fungsi.items() if re.search(r"\b" + x + r"\b", f)}
     assert nama("PB_BANJIR") == {"_muat_label", "cmd_inventaris"}, nama("PB_BANJIR")        # inventaris: hitungan per bulan saja
     assert nama("dari_cache") == {"_muat_label"} and nama("PB_MENTAH") == set()
-    assert re.search(r"def muat_label\(\):", src)                                            # API publik tanpa parameter
+    assert re.search(r"def muat_label\(perans\):", src)                                      # API publik: hanya peran, tanpa kunci/git
+    assert 'muat_label(("latih", "validasi"))' in fungsi["cmd_latih"] and '"uji"' not in fungsi["cmd_latih"]
+    assert [n for n, f in fungsi.items() if re.search(r"muat_label\([^)]*uji", f)] == ["cmd_nilai"]
     tmpk = os.path.join(os.environ.get("TMPDIR", "/tmp"), f"nowcast_jkt_sidik_uji_{os.getpid()}.json")
     try:
-        _muat_label(tmpk, None); raise AssertionError("muat_label tanpa kunci harus menolak")
+        _muat_label(tmpk, None, ("latih",)); raise AssertionError("muat_label tanpa kunci harus menolak")
     except RuntimeError as e:
         assert "belum dikunci" in str(e)
     json.dump({"sidik": sidik_sekarang(), "jangkar_commit": "abc"}, open(tmpk, "w"))
@@ -1079,15 +1099,25 @@ def uji():
           "tags": {"district_id": "x", "local_area_id": "y"}, "source": "grasp", "status": "confirmed", "disaster_type": tipe, "text": teks},
           "geometry": {"coordinates": [lon, lat]}}
     palsu = [ringkas(fit(1, "2023-01-05T03:00:00Z", "banjir di gang")), ringkas(fit(2, "2023-01-05T03:10:00Z", "Duta latihan")),
-             ringkas(fit(3, "2024-08-17T03:00:00Z", "banjir")), ringkas(fit(4, "2023-01-05T04:00:00Z", "angin", tipe="wind"))]
-    tmpl = tmpk + ".label.json"; json.dump(palsu[:1], open(tmpl, "w"))
+             ringkas(fit(3, "2024-08-17T03:00:00Z", "banjir")), ringkas(fit(4, "2023-01-05T04:00:00Z", "angin", tipe="wind")),
+             ringkas(fit(5, "2017-01-05T03:00:00Z", "banjir latih")), ringkas(fit(6, "2021-01-05T03:00:00Z", "banjir validasi"))]
+    tmpl = tmpk + ".label.json"; json.dump([palsu[0], palsu[4], palsu[5]], open(tmpl, "w"))
     json.dump({"sidik": sidik_sekarang(), "jangkar_commit": "abc"}, open(tmpk, "w"))
-    D = _muat_label(tmpk, (lambda c: True, lambda c: True, benar), dari_cache=lambda: palsu, label_berkas=tmpl)
+    gitok = (lambda c: True, lambda c: True, benar)
+    D = _muat_label(tmpk, gitok, ("uji",), dari_cache=lambda: palsu, label_berkas=tmpl)
     assert [r["id"] for r in D["mentah"]] == ["1", "2", "4"] and [r["id"] for r in D["tanpa_saring"]] == ["1", "2"] and D["label"][0]["kec"].startswith("31|")
+    DL = _muat_label(tmpk, gitok, ("latih", "validasi"), dari_cache=lambda: palsu, label_berkas=tmpl)   # musim uji tak pernah dimuat untuk latih
+    assert {r["id"] for r in DL["label"]} == {"5", "6"} and {r["id"] for r in DL["mentah"]} == {"5", "6"} and set(DL["sha"]) == {"latih", "validasi"}
+    DS = _muat_label(tmpk, gitok, ("latih", "validasi", "uji"), dari_cache=lambda: palsu, label_berkas=tmpl)
+    assert {k: DS["sha"][k] for k in ("latih", "validasi")} == DL["sha"] and "uji" in DS["sha"]                # sha latih+validasi sama saat nilai
+    try:
+        _muat_label(tmpk, gitok, ("semua",)); raise AssertionError("peran tak sah harus ditolak")
+    except ValueError:
+        pass
     ixp = indeks_persistensi(D["mentah"]); kk = D["mentah"][0]["kec"]
     assert persisten(*ixp, kk, dt.datetime(2023, 1, 5, 10, 30, tzinfo=WIB)) == 1      # skema ringkas asli: tipe/teks terbaca, persist bisa 1
     try:
-        _muat_label(tmpk, (lambda c: True, lambda c: True, benar), dari_cache=lambda: [dict(r, tipe=None) for r in palsu], label_berkas=tmpl)
+        _muat_label(tmpk, gitok, ("uji",), dari_cache=lambda: [dict(r, tipe=None) for r in palsu], label_berkas=tmpl)
         raise AssertionError("tanpa tipe flood harus galat keras")
     except RuntimeError as e:
         assert "tipe flood" in str(e)
@@ -1112,7 +1142,17 @@ def uji():
     assert J["amandemen"] == "A2: lagi" and [r.get("amandemen") for r in J["riwayat"]] == [None, "A1: parse"] and all("riwayat" not in r for r in J["riwayat"])
     os.remove(sk); os.rmdir(d0)
     # 7d. latih menolak sebelum membaca label bila hujan IMERG belum lengkap
-    assert len(imerg_lengkap({})) == 6 * 6 and imerg_lengkap({(0, 0): {epoch(dt.datetime(2017, 1, 1, tzinfo=dt.timezone.utc)) + 1800 * k: 0.0 for k in range(48 * 31)}}).count("2017-01") == 0
+    assert len(imerg_lengkap({})) == 6 * 6
+    j0 = epoch(dt.datetime(2017, 1, 1, tzinfo=dt.timezone.utc)) + 1800                                        # slot pertama Jan berakhir 00.30
+    perlu = math.ceil(0.95 * 48 * 31)                                                                         # 1414 slot
+    penuh = {c: {j0 + 1800 * k: 0.0 for k in range(48 * 31)} for c in sel_imerg()}
+    assert "2017-01" not in imerg_lengkap(penuh)
+    pas = dict(penuh); pas[sel_imerg()[7]] = {j0 + 1800 * k: 0.0 for k in range(perlu)}
+    assert "2017-01" not in imerg_lengkap(pas)                                                                 # tepat di ambang: lengkap
+    kurang1 = dict(penuh); kurang1[sel_imerg()[7]] = {j0 + 1800 * k: 0.0 for k in range(perlu - 1)}
+    assert "2017-01" in imerg_lengkap(kurang1)                                                                 # satu sel satu slot di bawah: kurang
+    tanpa = {c: v for c, v in penuh.items() if c != sel_imerg()[0]}
+    assert "2017-01" in imerg_lengkap(tanpa)                                                                   # sel hilang total: kurang
     # 7b. syarat 4: positif hilang > 10% gagal; z dua-proporsi terpoolkan
     rh = [{"t": dt.datetime(2023, 1, 1, tzinfo=WIB) + dt.timedelta(hours=i), "y": int(i % 10 == 0), "musim": "x",
            "p": {"hujan": None if i % 10 == 0 and i < 300 else 0.1, "klim": 0.1, "persistensi": 0.1}} for i in range(2000)]

@@ -129,12 +129,12 @@ Arsip label sudah ada di disk. Karena itu, satu-satunya yang mencegah penyetelan
 2. `fitur_hujan`, tanpa label.
 3. Sesi induk meng-commit dan push PRAREG + `nowcast_jkt.py`, lalu menjalankan `nowcast_jkt.py jangkar` SEKALI. Perintah itu menolak bila berkas kotor atau HEAD belum di `origin/main`. Hasilnya `nowcast_jkt_sidik.json`, yang lalu di-commit dan di-push.
 4. `latih --jalur A`. Perintah ini memeriksa dulu bahwa model belum ada, baru memanggil `muat_label()`.
-   - `muat_label()` tidak berparameter; versi privat `_muat_label` hanya untuk uji.
+   - `muat_label(perans)` hanya menerima peran musim; versi privat `_muat_label` (kunci/git palsu) hanya untuk uji. `latih` memanggil `muat_label(("latih", "validasi"))`: laporan musim uji dibuang segera sesudah dibaca, tidak ditempel kecamatan, dan tidak di-hash. Hanya `cmd_nilai` yang memuat peran `uji` (diuji lewat AST).
    - Ia satu-satunya fungsi tingkat atas yang membuka berkas laporan berlokasi. Ini diuji lewat AST: akses kunci `lon`/`lat` dengan dua gaya kutip dan `.get` hanya ada di `_muat_label` dan dua fungsi berdata non-laporan (`fitur`: pos TMA dan kecamatan; `baca_gsmap`: sel GSMaP). Nama `PB_BANJIR` hanya ada di `_muat_label` dan `cmd_inventaris` (hitungan per bulan), dan `dari_cache` hanya ada di `_muat_label`.
    - Ia **menolak** bila kunci tidak sah: berkas sidik tidak ada, sidik beda, jangkar bukan leluhur HEAD atau tidak di `origin/main`, atau berkas beku berbeda dari commit jangkar.
-   - `latih` mencatat `sha_label` (sha256 id, waktu, dan kecamatan label, mentah, dan tanpa-saring).
+   - `sha_label` dihitung **per peran** (sha256 id, waktu, dan kecamatan label, mentah, dan tanpa-saring). `latih` mencatat sha latih dan validasi.
 5. Commit dan push `nowcast_jkt_model.json`.
-6. `nilai --jalur A`, sekali. Perintah ini memeriksa dulu: penanda `nowcast_jkt.buka`, sidik model, dan model persis ada di `origin/main`. Baru sesudah itu ia memanggil `muat_label()` dan menolak bila `sha_label` beda dari saat latih. Ia menulis penanda lebih dulu, baru `nowcast_jkt_vonis.json`.
+6. `nilai --jalur A`, sekali. Perintah ini memeriksa dulu: penanda `nowcast_jkt.buka`, sidik model, dan model persis ada di `origin/main`. Baru sesudah itu ia memanggil `muat_label(("latih", "validasi", "uji"))`, menolak bila sha latih/validasi beda dari saat latih, dan mencatat sha uji terpisah (`sha_label_uji`). Ia menulis penanda lebih dulu, baru `nowcast_jkt_vonis.json`.
 
 Kode `latih/nilai` dan uji sintetiknya (positif disuntik dari peluang yang diketahui, Brier dekat Brier peluang benar, model nol tidak lulus) **sudah ditulis sebelum kunci pertama**, sehingga ikut sidik.
 
@@ -354,6 +354,7 @@ Akibatnya:
 1. `scripts/cuaca/imerg.py` `parse` (perbaikan `cuaca-udara`): nama variabel di depan indeks kini opsional, dengan fixture live 7 x 7 di ujinya. Hash `getsource(parse)` di sidik berubah, sehingga kunci harus diperbarui.
 2. `nowcast_jkt.py`, prosedural saja:
    - `jangkar --amandemen "A<n>: alasan"`: menolak bila alasan kosong, bila belum pernah dijangkar, atau bila model/penanda buka sudah ada; rekaman jangkar lama disimpan di `riwayat`;
-   - `latih` memeriksa kelengkapan IMERG (>= 95% slot 30 menit tiap bulan Nov-Apr musim latih dan validasi, `imerg_lengkap`) **sebelum** memanggil `muat_label`, supaya label tidak lagi dibaca ketika hujan belum ada.
+   - `latih` memeriksa kelengkapan IMERG **sebelum** memanggil `muat_label`, supaya label tidak lagi dibaca ketika hujan belum ada. Syaratnya: >= 95% slot 30 menit **per sel** (tiap dari 49 sel, sel tanpa data = 0) di tiap bulan Nov-Apr musim latih dan validasi (`imerg_lengkap`; diuji tepat di ambang dan satu slot di bawahnya);
+   - `muat_label(perans)` memuat hanya musim yang diminta. `latih` memuat latih dan validasi saja, sehingga label musim uji tidak pernah dimuat lagi dan tidak masuk `sha_label`. `sha_label` per peran: `latih` mencatat latih dan validasi, `nilai` memeriksa keduanya lalu mencatat sha uji terpisah. Ini menutup kejadian A1, ketika label uji sempat termuat ke memori.
 
 Fitur, latensi, model, kalibrasi, pembagian musim, pembanding, dan kriteria lulus **tidak berubah**. Uji belum pernah dibuka. Sidik baru ditulis oleh `jangkar --amandemen` sesudah ketiga berkas di-commit dan di-push.
