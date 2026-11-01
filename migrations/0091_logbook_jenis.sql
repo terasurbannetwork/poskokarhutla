@@ -1,9 +1,9 @@
 -- Logbook Pusdalops mengikuti panduan resmi: jenis kejadian bertambah tiga (gelombang_pasang DIBI 103, tsunami 108, wabah 201).
 -- CHECK SQLite tidak bisa di-ALTER, jadi logbook_kejadian dan anaknya logbook_entri dibangun ulang lewat salinan tabel (pola 0070; ALTER ... RENAME memeriksa seluruh skema).
--- Urutan: salin kedua tabel, buang anak lalu induk, buat ulang, isi dari salinan, buang salinan. DROP IF EXISTS di awal membuat ulangan setelah penerapan sukses aman; isi tidak berubah.
--- Bila penerapan terputus di tengah, salinan logbook_*_cad TETAP ada: JANGAN jalankan ulang sebelum memeriksanya.
-DROP TABLE IF EXISTS logbook_entri_cad;
-DROP TABLE IF EXISTS logbook_kejadian_cad;
+-- Urutan: salin kedua tabel, buang anak lalu induk, buat ulang, isi dari salinan, buang salinan.
+-- TIDAK idempoten di bagian ini, dan sengaja: ulangan SETELAH penerapan sukses aman (salinan sudah terbuang, isi dibangun ulang sama persis).
+-- Ulangan setelah penerapan TERPUTUS gagal keras di CREATE TABLE ..._cad karena salinan masih ada; itu disengaja supaya satu-satunya salinan data tidak terhapus.
+-- Bila itu terjadi, periksa logbook_kejadian_cad dan logbook_entri_cad dengan tangan sebelum melanjutkan.
 CREATE TABLE logbook_kejadian_cad AS SELECT * FROM logbook_kejadian;
 CREATE TABLE logbook_entri_cad AS SELECT * FROM logbook_entri;
 DROP TABLE logbook_entri;
