@@ -252,7 +252,7 @@ LAMP = [
             {'berkas': 'foto/video-asap.jpg', 'keterangan': 'Cuplikan video: banyak kepulan asap'}]}], 'Pantauan udara tim BNPB, 31 Okt 2026'),
 ]
 
-PENUTUP = {'jenis': 'penutup', 'foto': 'foto/udara-20.jpg', 'kredit': 'Foto: pantauan udara tim BNPB', 'teks': 'Hentikan pembakaran',
+PENUTUP = {'jenis': 'penutup', 'foto': 'foto/udara-20.jpg', 'kredit': 'Foto: pantauan udara tim BNPB', 'teks': 'Terima Kasih',
            'laporan': 'Pemadaman cluster Jagebob dan Animha, pemanggilan perusahaan, penegakan hukum, rute pagi hari, pompa dekat air, dan perlindungan warga dari asap'}
 
 SPEK = {
