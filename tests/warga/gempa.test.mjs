@@ -103,7 +103,7 @@ const baris = async (sql, ...b) => (await DB.prepare(sql).bind(...b).all()).resu
 const api = async j => { const r = await mf.dispatchFetch("http://gempa.lokal" + j); const teks = await r.text(); let x = null; try { x = JSON.parse(teks); } catch (e) {} return {status: r.status, j: x, teks}; };
 
 uji("migrasi 0009 idempoten: dijalankan dua kali tidak galat", async () => {
-  const sql = pecah(migrasi()).filter(s => /gempa/.test(s) && !/laporan|stat_hari/.test(s));   // 0020/0090 menyebut gempa di CHECK laporan.bahaya, 0017/0090 di CHECK stat_hari.hal (bukan tabel gempa)
+  const sql = pecah(migrasi()).filter(s => /gempa/.test(s) && !/laporan|stat_hari|logbook/.test(s));   // 0091 (logbook, jenis gempabumi); 0020/0090 menyebut gempa di CHECK laporan.bahaya, 0017/0090 di CHECK stat_hari.hal (bukan tabel gempa)
   assert.ok(sql.length >= 6);
   await DB.batch(sql.map(s => DB.prepare(s)));
 });

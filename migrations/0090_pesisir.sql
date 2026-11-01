@@ -1,16 +1,13 @@
 -- Bencana ke-8 `pesisir` (Gelombang Pasang & Abrasi, public/bencana.json): laporan.bahaya diperlebar dengan 'abrasi' dan 'gelombang_pasang'
 -- (lapor_bahaya registry), dan stat_hari.hal dengan 'pesisir' (jejak.js halaman /pesisir). Tanpa itu INSERT laporan ditolak CHECK dan jejak ditelan diam-diam.
 -- Pola 0020 persis (laporan dibangun ulang, anak kontak/suara DICADANGKAN dulu karena DROP mengalirkan CASCADE) ditambah laporan_wilayah (0027, juga anak CASCADE).
--- Katalog jenis:sub TIDAK berubah di sini: jenis khusus pesisir menyusul di public/informasi_jenis.js + migrasi sendiri.
--- Satu transaksi (migrasi D1): gagal di tengah = tidak berubah. Idempoten: sisa cadangan/tabel baru dibuang dulu. Data lama utuh (disalin lalu diverifikasi uji).
+-- Katalog jenis:sub bertambah enam (abrasi:garis/bangunan/rusak, gelombang:tinggi/limpas/kapal) dan jenis:bahaya dua (abrasi:abrasi, gelombang:gelombang_pasang); HARUS sama dengan public/informasi_jenis.js (tests/warga/skema.test.mjs).
+-- Satu transaksi (migrasi D1): gagal di tengah = tidak berubah. TIDAK idempoten di bagian laporan, dan sengaja (pola 0070/0088): ulangan sesudah penerapan sukses aman (cadangan sudah terbuang),
+-- ulangan sesudah penerapan TERPUTUS gagal keras di CREATE TABLE ..._cad supaya satu-satunya salinan data tidak terhapus; periksa laporan_cad/kontak_cad/suara_cad/wilayah_cad dengan tangan. Bagian stat_hari idempoten (DROP IF EXISTS stat_hari_baru).
 DROP TRIGGER IF EXISTS kontak_hanya_bantuan;
 DROP TRIGGER IF EXISTS suara_tambah;
 DROP TRIGGER IF EXISTS suara_ubah;
 DROP TRIGGER IF EXISTS suara_hapus;
-DROP TABLE IF EXISTS laporan_cad;
-DROP TABLE IF EXISTS kontak_cad;
-DROP TABLE IF EXISTS suara_cad;
-DROP TABLE IF EXISTS wilayah_cad;
 CREATE TABLE laporan_cad AS SELECT id, jenis, sub, bahaya, lat, lon, teks, detail, jumlah, dibuat, kedaluwarsa, selesai, disembunyikan, benar, salah, aduan, dekat_titik_panas, laci, induk, durasi_buruk, ip_hash, token_hash FROM laporan;
 CREATE TABLE kontak_cad AS SELECT * FROM kontak;
 CREATE TABLE suara_cad AS SELECT * FROM suara;
@@ -63,7 +60,8 @@ CREATE TABLE laporan (
     'sesak_napas:sesak', 'sesak_napas:berat', 'jarak_pandang:p500', 'jarak_pandang:p1000', 'jarak_pandang:p3000',
     'sumur_kering:surut', 'sumur_kering:kering', 'gagal_panen:sebagian', 'gagal_panen:seluruh', 'antre_air:antre',
     'antre_air:tangki', 'antre_air:habis', 'akses:truk', 'akses:motor', 'akses:tergenang',
-    'akses:asap', 'akses:tertimbun', 'akses:putus', 'evakuasi:mengungsi', 'evakuasi:perlu')),
+    'akses:asap', 'akses:tertimbun', 'akses:putus', 'evakuasi:mengungsi', 'evakuasi:perlu',
+    'abrasi:garis', 'abrasi:bangunan', 'abrasi:rusak', 'gelombang:tinggi', 'gelombang:limpas', 'gelombang:kapal')),
   -- jenis umum boleh di bahaya apa pun; jenis khusus hanya di bahayanya
   CHECK (jenis IN ('listrik', 'sinyal', 'bbm', 'elpiji', 'minta', 'tawar', 'info', 'akses', 'evakuasi')
     OR jenis || ':' || bahaya IN (
@@ -73,7 +71,8 @@ CREATE TABLE laporan (
     'rusak_gedung:gempa', 'tsunami_tanda:gempa', 'tsunami_tanda:tsunami', 'abu:gunungapi',
     'lahar:gunungapi', 'gemuruh:gunungapi', 'pohon_tumbang:cuaca', 'atap_rusak:cuaca',
     'puting_beliung:cuaca', 'hujan_es:cuaca', 'asap_tebal:udara', 'sesak_napas:udara',
-    'jarak_pandang:udara', 'sumur_kering:kekeringan', 'gagal_panen:kekeringan', 'antre_air:kekeringan')),
+    'jarak_pandang:udara', 'sumur_kering:kekeringan', 'gagal_panen:kekeringan', 'antre_air:kekeringan',
+    'abrasi:abrasi', 'gelombang:gelombang_pasang')),
   CHECK (jumlah IS NULL OR jenis IN ('minta', 'tawar', 'sehat', 'ruang', 'padam', 'evakuasi')),
   CHECK (kedaluwarsa > dibuat AND kedaluwarsa <= dibuat + 604800000),
   CHECK (jenis <> 'air_padam' OR coalesce(json_extract(detail, '$.status'), '') IN ('ada', 'dangkal', 'kering')),
@@ -103,7 +102,8 @@ CREATE TRIGGER suara_tambah AFTER INSERT ON suara BEGIN
     benar = (SELECT count(*) FROM suara WHERE laporan_id = NEW.laporan_id AND nilai = 'benar'),
     salah = (SELECT count(*) FROM suara WHERE laporan_id = NEW.laporan_id AND nilai = 'salah'),
     aduan = (SELECT count(*) FROM suara WHERE laporan_id = NEW.laporan_id AND kelompok = 'aduan'),
-    disembunyikan = CASE WHEN (SELECT count(*) FROM suara WHERE laporan_id = NEW.laporan_id AND kelompok = 'aduan') >= 3 THEN 1 ELSE disembunyikan END
+    disembunyikan = CASE WHEN jenis NOT IN ('minta', 'tawar', 'sehat', 'padam', 'evakuasi')
+      AND (SELECT count(*) FROM suara WHERE laporan_id = NEW.laporan_id AND kelompok = 'aduan') >= 3 THEN 1 ELSE disembunyikan END
   WHERE id = NEW.laporan_id;
 END;
 CREATE TRIGGER suara_ubah AFTER UPDATE ON suara BEGIN

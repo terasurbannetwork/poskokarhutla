@@ -281,8 +281,7 @@ Hanya yang bersumber dari ketidakcocokan definisi di sisi kita.
 
 ## 6. Cara mengulang
 
-Skrip hitung ada di folder scratch sesi ini, belum dimasukkan ke repo:
-`/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/22e461bb-1c77-49a1-92ed-71fdab572dd9/scratchpad/`
+Skrip hitung ada di folder sementara sesi analisis (di luar repo), belum dimasukkan ke repo
 (`hs18.py` titik 18 Okt, `hs7.py` tren tujuh hari, `rekap.py` dan `grafik.py` baca Pusdalops, `banding.py` dan
 `banding2.py` banding harian, `harian.py` dan `harian2.py` Rekap Harian). Bila pemilik setuju seri BMKG dijadikan
 bagian pipeline, pindahkan `hs18.py` ke `scripts/data/` sebagai uji definisi dengan faktsheet sebagai fixture.

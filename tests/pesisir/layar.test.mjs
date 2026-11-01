@@ -83,7 +83,7 @@ test("halaman: tiap tab TABS punya <section id=p-...>, tanpa titik tengah dan ta
   for (const t of tabs) assert.match(html, new RegExp(`<section[^>]*id="p-${t}"`), t);
   for (const f of ["index.html", "pesisir.js", "peta.js", "insight.js", "tren.js", "tentang.js", "hitung.js", "grafik.js", "pesisir.css"]) {
     const s = teks(f); assert.ok(!s.includes("·"), f + " memuat titik tengah"); assert.ok(!/Pantau Bencana/i.test(s), f + " menyebut Pantau Bencana"); }
-  for (const m of html.matchAll(/<script[^>]*src="(?!https?:)([^"]+)"/g)) assert.ok(fs.existsSync(new URL(m[1].replace(/^\.\.\//, "../../public/").replace(/^(?!\.\.)/, "../../public/pesisir/"), import.meta.url)), m[1] + " tidak ada");
+  for (const m of html.matchAll(/<script[^>]*src="(?!https?:)([^"]+)"/g)) assert.ok(fs.existsSync(new URL(m[1].replace(/^\//, "../../public/").replace(/^\.\.\/(?!\.\.)/, "../../public/").replace(/^(?!\.\.)/, "../../public/pesisir/"), import.meta.url)), m[1] + " tidak ada");
 });
 
 test("Tren: arah per situs dari cacah transek, judul tanpa angka meter, rentang antarkuartil berurutan", () => {
