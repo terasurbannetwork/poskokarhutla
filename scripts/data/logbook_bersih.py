@@ -70,7 +70,9 @@ def baris(k):
 
 
 def main():
-    berkas = sorted(glob.glob(os.path.join(AKAR, "data/raw/logbook/arsip/20??/kejadian.jsonl")))
+    # 20??-*/ = tambahan bulan untuk tahun yang sudah diurai (mis. 2013-tambahan dari RTF), ikut tahun 4 angka depannya
+    berkas = sorted(glob.glob(os.path.join(AKAR, "data/raw/logbook/arsip/20??/kejadian.jsonl"))
+                    + glob.glob(os.path.join(AKAR, "data/raw/logbook/arsip/20??-*/kejadian.jsonl")))
     rows = [baris(json.loads(l)) for f in berkas for l in open(f, encoding="utf-8")]
     ids = [r["id_kejadian"] for r in rows]
     assert len(ids) == len(set(ids)), "id_kejadian bentrok antar tahun"
@@ -80,15 +82,17 @@ def main():
         w = csv.DictWriter(o, KOLOM)
         w.writeheader()
         w.writerows(rows)
-    print(f"{len(rows)} kejadian dari {len(berkas)} tahun -> {os.path.relpath(out, AKAR)}")
+    print(f"{len(rows)} kejadian dari {len(berkas)} folder arsip -> {os.path.relpath(out, AKAR)}")
     rekap(rows, berkas)
 
 
 def rekap(rows, berkas):
     import collections
     import datetime as dt
-    hari = {os.path.basename(os.path.dirname(f)): json.load(open(os.path.join(os.path.dirname(f), "ringkasan.json")))["n_berkas"]
-            for f in berkas}
+    hari = collections.Counter()
+    for f in berkas:
+        hari[os.path.basename(os.path.dirname(f))[:4]] += json.load(open(os.path.join(os.path.dirname(f), "ringkasan.json")))["n_berkas"]
+    hari = dict(hari)
     jenis = sorted({r["jenis"] for r in rows})
     # tahun dasar kalender = runtun penuh 2014-2020; tahun penuh lain (2024) hanya masuk "tahun"/"bulan", supaya label
     # "N dari 7 tahun, 2014-2020" di layar dan uji balik tetap sah. Menambah tahun dasar = ganti label layar sekaligus.

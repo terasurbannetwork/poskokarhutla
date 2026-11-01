@@ -286,8 +286,10 @@ def urai_waktu(t: str, tahun):
         l = RE_TGL_GARIS.sub("", RE_TGL.sub("", l))
         l = re.sub(r"^(" + "|".join(k for k in BULAN if len(k) > 3) + r")\b\.?\s*\d{0,4}$", "", l, flags=re.I)
         l = RE_JAM.sub("", l)
-        l = re.sub(r"\b(pukul|pkl)\b\.?|\b(WIB|WITA|WIT)\b|^\d{4}$", "", l, flags=re.I).strip(" ,.:-()")
-        if l and not re.fullmatch(r"\d{4}|s\.?d\.?|sd|-", l, re.I):
+        l = re.sub(r"\b(pukul|pkl)\b\.?|\b(WIB|WITA|WIT)\b|^\d{4}$", "", l, flags=re.I).strip(" ,.:-–—()/")
+        # jam/hari rentang 2013: "Pkl. 07.44 – 09.00 WIB", "13.18 s/d 13.30", "Sabtu – Minggu" -> sisa penghubung dibuang
+        l = RE_HARI.sub("", re.sub(r"^(s\s*[./]?\s*d\.?|sampai)\s+", "", l, flags=re.I)).strip(" ,.:-–—()/")
+        if l and not re.fullmatch(r"\d{1,4}|s\s*[./]?\s*d\.?|sd|[-–—/]", l, re.I):
             jenis_baris.append(l)
     upd_tgl = semua_tgl(akhir, tahun)
     upd_jam = RE_JAM.findall(akhir)
@@ -626,7 +628,7 @@ def entri_kosong(c):
     return len(lok) < 3 and not semua_tgl(c[1]) and len(isi) < 40
 
 
-def proses(sumber: str, keluaran: str):
+def proses(sumber: str, keluaran: str, awalan: str | None = None):
     os.makedirs(keluaran, exist_ok=True)
     berkas = sorted(glob.glob(os.path.join(sumber, "**", "*.docx"), recursive=True))
     per_tgl = {}
@@ -763,7 +765,8 @@ def proses(sumber: str, keluaran: str):
             buka[(r["jenis"], prov)].append(len(grup) - 1)
     kejadian = []
     # awalan = tahun logbook paling awal dalam satu kali jalan, supaya arsip 2011-2026 per tahun tidak bentrok
-    th = min((r["tgl_logbook"] for g in grup for r in g), default="2026")[2:4]
+    # --awalan: tambahan bulan untuk tahun yang sudah diurai (mis. "13b"), supaya id tidak bentrok dengan arsip tahun itu
+    th = awalan or min((r["tgl_logbook"] for g in grup for r in g), default="2026")[2:4]
     for i, rs in enumerate(grup, 1):
         akhir = rs[-1]
         kid = f"LB{th}-{i:05d}"
@@ -830,8 +833,9 @@ def main(argv=None):
     ap = argparse.ArgumentParser(description=__doc__.split("\n")[0])
     ap.add_argument("--sumber", required=True, help="folder LOGBOOK 2026")
     ap.add_argument("--keluaran", default=os.path.join(AKAR, "data", "raw", "logbook"))
+    ap.add_argument("--awalan", help="awalan id kejadian, mis. 13b untuk tambahan 2013 (default: 2 angka tahun)")
     a = ap.parse_args(argv)
-    r = proses(a.sumber, a.keluaran)
+    r = proses(a.sumber, a.keluaran, a.awalan)
     print(json.dumps({k: r[k] for k in ("rentang", "n_berkas", "n_baris", "n_kejadian", "n_baris_update", "mutu")}, ensure_ascii=False))
     print("dilewati:", [x["berkas"] for x in r["berkas_dilewati"]])
 
