@@ -936,8 +936,7 @@
     "GET /api/sensor/status": "sensor: status hanya untuk staf",
     "table sensor_lapor": "sensor: lapor dari gateway tersimpan",
     "POST /api/sensor/lapor": "sensor: lapor dari gateway tersimpan",
-    "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin",
-    "table korban_cadang": "salinan sementara migrasi 0093, dibuang di akhir; hasilnya diuji korban: daftar tetap JS == CHECK migrasi terbaru == klien"
+    "POST /api/logbook/dummy": "logbook: dummy hanya Super Admin"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
@@ -945,7 +944,8 @@
     "GET /pendataan": "halaman statis responden lewat halamanBnpbPublik; layarnya diuji tests/bnpb/pendataan.test.mjs",
     "table logbook_kejadian_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
     "table logbook_entri_cad": "salinan sementara migrasi 0091, dibuang di akhir; hasilnya diuji logbook: tiga jenis panduan resmi",
-    "table pengingat_cad": "salinan sementara migrasi 0088, dibuang di akhir; hasilnya diuji 'migrasi 0088: pengingat dibangun ulang'"
+    "table pengingat_cad": "salinan sementara migrasi 0088, dibuang di akhir; hasilnya diuji 'migrasi 0088: pengingat dibangun ulang'",
+    "table korban_cadang": "salinan sementara migrasi 0093, dibuang di akhir; hasilnya diuji korban: daftar tetap JS == CHECK migrasi terbaru == klien"
   },
   "antre": {
     "batas global 600 laporan/jam": "butuh 600 baris jejak; tambahkan uji yang menyemai jejak langsung"
