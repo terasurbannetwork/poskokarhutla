@@ -19,8 +19,7 @@ Bagian 1, 2, 6 (skor), 7 (kriteria), 8.1, dan 9 berlaku untuk kedua jalur. Bagia
 
 - **Utama: kecamatan daratan DKI (42) x jam terbit t** (tiap jam pas WIB), satu prakiraan per tenggang L ∈ {1, 2, 3, 4, 6} jam. Kecamatan mengikuti permintaan pemilik dan poligon label yang sudah ada (`KecDKI`, `public/geo/kecamatan/31.json`).
 - Jendela tiap jam saling tumpang tindih. Ketergantungan itu ditangani bootstrap blok 5 hari (bagian 6), bukan dengan menjarangkan jam terbit.
-- **Pendamping (dilaporkan saja): kota administrasi (5) x jam terbit.** Unit ini lebih kasar, tetapi lebih tahan terhadap bias lokasi pelapor dan kekurangan label. Ia tidak menentukan lulus.
-- **Subset awal kejadian (dilaporkan saja)**: unit yang tidak punya laporan dalam (t-6j, t]. Subset ini menjawab "akan mulai banjir", bukan "masih banjir".
+- Unit pendamping (kota administrasi) dan subset awal kejadian: **ditunda ke amandemen, bukan syarat** (bagian 9b).
 
 ## 2. Label
 
@@ -31,12 +30,14 @@ Positif(kec, t, L) = paling sedikit satu laporan PetaBencana ID-JK yang memenuhi
 - titiknya di dalam poligon kecamatan;
 - dedup (t, lon, lat, kedalaman).
 
-Label dikumpulkan paling cepat 7 hari sesudah akhir jendela, supaya laporan susulan ikut, dan hanya untuk baris prakiraan yang sudah ada di `origin/main` (pola J4). **Sensitivitas wajib**: vonis juga dihitung tanpa saringan latihan (hanya tipe flood dan dedup), lalu dilaporkan berdampingan. Bila arahnya berbeda, perbedaan itu ditulis, dan vonis utama tidak diganti.
+Label dikumpulkan paling cepat 7 hari sesudah akhir jendela, supaya laporan susulan ikut, dan hanya untuk baris prakiraan yang sudah ada di `origin/main` (pola J4). **Sensitivitas (dikerjakan `nilai`)**: vonis juga dihitung tanpa saringan latihan, yaitu cache mentah `petabencana.dari_cache()`, tipe flood, dedup (t, lon, lat, kedalaman). Hasilnya ditulis berdampingan (`vonis_tanpa_saring`, `arah_beda`). Bila arahnya berbeda, perbedaan itu dicatat, dan vonis utama tidak diganti. Model dan Platt TIDAK dilatih ulang pada label tanpa saringan; hanya offset klim yang dihitung ulang dari label itu, sehingga offset prakiraan tidak sama dengan offset latih. Karena itu `vonis_tanpa_saring` dan `arah_beda` dibaca deskriptif saja, dan kegagalan syarat 3 pada sensitivitas ini bukan bukti apa pun.
 
 Periode terlarang untuk membaca label:
 - J3 (jendela uji 2024-08-16 dan 2025-04-22, masing-masing 96 jam): dibuang dengan `tanpa_j3(jendela_j3())` segera sesudah dibaca. Selain itu, **bulan 2024-08 dan 2025-04 dibuang utuh**.
 - Sejak jangkar J4 (28 Okt 2026): tidak ada label yang dibaca sebelum sidik pilot ini. Sesudah sidik, label hanya dibaca oleh `nowcast_jkt.py latih/nilai` dengan aturan di atas. Pilot ini tidak menulis apa pun ke berkas J4/M1, dan J4/M1 tidak membaca keluarannya.
 - **Jendela label (t, t+L] juga tidak boleh menyentuh bulan terlarang.** Unit yang t-nya sah tetapi t+L masuk bulan terlarang, masuk masa J4, atau keluar musim tidak punya peran (`nowcast_jkt.peran(t, L)`, diuji).
+
+**Sumber laporan.** Label = `petabencana_banjir.json` (keluaran `petabencana.saring`). Persistensi dan sensitivitas = `petabencana.dari_cache()` (skema `ringkas`, punya `tipe` dan `teks`). `petabencana_laporan.json` TIDAK dipakai, karena skemanya tanpa `tipe`/`teks` (lihat `skor_j4.py`); memakainya membuat persistensi selalu 0. `muat_label` gagal keras bila cache mentah tidak memuat satu pun tipe flood.
 
 **Saringan label vs saringan persistensi (pembeda).** Label memakai `petabencana.saring` penuh: tipe flood, aturan teks latihan, lalu burst > 20 laporan per (hari WIB, sel 0,001 derajat) dihitung atas **seluruh hari**. Burst itu tidak kausal, karena memakai laporan sesudah t pada hari yang sama. Fitur persistensi (bagian A.2) memakai saringan kausal: tipe flood dan aturan teks latihan per laporan (keduanya kausal), dengan burst dihitung **kumulatif sampai t** (`nowcast_jkt.persisten`). Akibatnya, laporan yang kemudian menjadi bagian dari burst latihan tetap terhitung persisten pada jam sebelum burst itu terlihat, persis seperti yang dialami operasional. Pembeda ini diuji (`uji` butir 12).
 
@@ -115,21 +116,25 @@ Hari puncak per tahun di `gsmap.py PUNCAK` sudah terlihat. Yang terlihat hanya t
 - **Pembanding** (latih dan Platt yang sama, baris yang sama):
   - (a1) `klim`;
   - (a2 = a3) persistensi + `klim`. Model sendiri berisi persistensi + hujan, jadi ΔBS(a2 - model) mengukur **tambahan informasi hujan** di atas persistensi;
-  - (c) "hujan sempurna", dilaporkan saja, untuk menunjukkan plafon informasi hujan: IMERG dalam (t, t+L] tanpa latensi, ditambah ERA5 dalam jendela yang sama.
+  - "Hujan sempurna" (plafon informasi hujan): **ditunda ke amandemen, bukan syarat** (bagian 9b).
   - Pembanding BMKG tidak ada, karena arsip CAP baru mulai 19 Okt 2026.
 - **Kriteria**: bagian 7 apa adanya, tanpa syarat BMKG pada syarat 2, ditambah syarat kestabilan A.3. Vonis utama L = 3; kurva 1/2/3/4/6 dengan Holm. Σp/Σy hanya dilaporkan (bagian 7).
 - **Validasi tidak boleh mengubah fitur** setelah melihat hasil. Bila model kalah dari persistensi di validasi, hasil itu dicatat, dan uji tetap dibuka sekali dengan model yang sama. Ini supaya tidak ada iterasi pada data yang dipakai menilai.
 
 ### A.5 Urutan kerja Jalur A (SATU-SATUNYA penjaga; jangkar commit)
 
-Arsip label sudah ada di disk. Karena itu, satu-satunya yang mencegah penyetelan pada label adalah urutan ini, ditegakkan kode:
+Arsip label sudah ada di disk. Karena itu, satu-satunya yang mencegah penyetelan pada label adalah urutan ini. Ini **kunci urutan, bukan pagar teknis**: siapa pun bisa membuka berkas label di luar `nowcast_jkt.py`. Kode hanya menjamin bahwa jalur `latih`/`nilai` tidak berjalan di luar urutan, dan jejak git menunjukkan kapan kunci dibuat.
 
 1. Unduh IMERG (A.6), tanpa label.
 2. `fitur_hujan`, tanpa label.
 3. Sesi induk meng-commit dan push PRAREG + `nowcast_jkt.py`, lalu menjalankan `nowcast_jkt.py jangkar` SEKALI. Perintah itu menolak bila berkas kotor atau HEAD belum di `origin/main`. Hasilnya `nowcast_jkt_sidik.json`, yang lalu di-commit dan di-push.
-4. `latih --jalur A`. `muat_label()` adalah satu-satunya fungsi yang membuka berkas laporan berlokasi (diuji: tidak ada fungsi lain yang membaca koordinat atau `petabencana_laporan.json`). Fungsi itu **menolak** bila kunci tidak sah: berkas sidik tidak ada, sidik beda, jangkar bukan leluhur HEAD atau tidak di `origin/main`, atau berkas beku berbeda dari commit jangkar.
+4. `latih --jalur A`. Perintah ini memeriksa dulu bahwa model belum ada, baru memanggil `muat_label()`.
+   - `muat_label()` tidak berparameter; versi privat `_muat_label` hanya untuk uji.
+   - Ia satu-satunya fungsi tingkat atas yang membuka berkas laporan berlokasi. Ini diuji lewat AST: akses kunci `lon`/`lat` dengan dua gaya kutip dan `.get` hanya ada di `_muat_label` dan dua fungsi berdata non-laporan (`fitur`: pos TMA dan kecamatan; `baca_gsmap`: sel GSMaP). Nama `PB_BANJIR` hanya ada di `_muat_label` dan `cmd_inventaris` (hitungan per bulan), dan `dari_cache` hanya ada di `_muat_label`.
+   - Ia **menolak** bila kunci tidak sah: berkas sidik tidak ada, sidik beda, jangkar bukan leluhur HEAD atau tidak di `origin/main`, atau berkas beku berbeda dari commit jangkar.
+   - `latih` mencatat `sha_label` (sha256 id, waktu, dan kecamatan label, mentah, dan tanpa-saring).
 5. Commit dan push `nowcast_jkt_model.json`.
-6. `nilai --jalur A`, sekali. Perintah ini menolak bila penanda `nowcast_jkt.buka` sudah ada, sidik model beda, atau model belum persis ada di `origin/main`. Ia menulis penanda lebih dulu, baru `nowcast_jkt_vonis.json`.
+6. `nilai --jalur A`, sekali. Perintah ini memeriksa dulu: penanda `nowcast_jkt.buka`, sidik model, dan model persis ada di `origin/main`. Baru sesudah itu ia memanggil `muat_label()` dan menolak bila `sha_label` beda dari saat latih. Ia menulis penanda lebih dulu, baru `nowcast_jkt_vonis.json`.
 
 Kode `latih/nilai` dan uji sintetiknya (positif disuntik dari peluang yang diketahui, Brier dekat Brier peluang benar, model nol tidak lulus) **sudah ditulis sebelum kunci pertama**, sehingga ikut sidik.
 
@@ -199,15 +204,20 @@ Nilai hilang diisi 0 dan diberi indikator. Standardisasi memakai rerata dan simp
 
 - **Jalur A**: pembagian dan vonis di bagian A.3-A.4.
 - **Jalur B**: TMA dan CAP tidak punya arsip musim hujan, jadi tidak diuji di arsip. Prospektif yang memutuskan: mulai jam terbit pertama sesudah commit sidik di-push, Nov-Apr, sampai 30 Apr 2027 (label ditutup 8 Mei 2027). Bila belum cukup data, berlanjut ke musim 2027/28 dengan kriteria yang sama. Hujan di Jalur B memakai IMERG Early dengan `LAT_IMERG` yang sama. GSMaP NRT (`gsmap3`, `LAT_GSMAP` 4 jam) hanya dipakai bila p95 latensi terukurnya <= 5 jam sebelum sidik, dan bila Jalur A tidak menolak hujan sama sekali.
-- **Skor per tenggang L** (semua dilaporkan sebagai kurva vs L):
-  - Brier Score dan BSS terhadap klim;
+- **Skor per tenggang L yang dikerjakan `nilai_L`** (dilaporkan sebagai kurva vs L):
+  - Brier Score per model dan BSS terhadap klim;
   - ΔBS terhadap persistensi, dan terhadap BMKG (Jalur B saja);
-  - reliabilitas: 5 bin kuantil dan bin tetap {0-0,1, 0,1-0,3, 0,3-0,5, >0,5}, dengan frekuensi teramati dan selang Wilson; kemiringan dan intersep kalibrasi; rasio Σp/Σy;
-  - ETS, POD, dan FAR pada ambang peringatan tetap p >= 0,3 (makna "30%" pemilik, ditetapkan sekarang);
-  - **POD pada FAR tetap 0,5 dan 0,7**: ambang dipilih pada data uji. Ini deskriptif, tidak menentukan lulus.
+  - p bootstrap per pembanding, p_L, dan p Holm;
+  - **CI95 kemiringan kalibrasi sebagai angka** (dicetak per L);
+  - rasio Σp/Σy;
+  - BSS per musim;
+  - jumlah episode dan positif;
+  - proporsi hilang positif/negatif.
+- Untuk Jalur A, ringkasan yang sama dihitung juga pada **bagian uji ber-V07C** (t >= 2026-03-04, `IMERG_V07C_MULAI`, deskriptif) dan pada **label tanpa saringan** (sensitivitas).
+- Reliabilitas per bin + Wilson, ETS/POD/FAR pada p >= 0,3, dan POD pada FAR tetap: **ditunda ke amandemen, bukan syarat** (bagian 9b).
 - **Bootstrap**: blok **5 hari kalender** berpasangan (semua kecamatan dan jam di blok itu ikut bersama). Blok tidak ditentukan dari label, jadi resampel tidak bergantung pada hasil. B = 10.000, benih 20261101. Model dan pembanding memakai resampel yang sama.
 - **p-nilai**: p = (jumlah ulangan dengan ΔBS* <= 0 + 1)/(B + 1), dihitung per pembanding. Per tenggang, syarat 1 dan 2 digabung sebagai p_L = maks p (uji irisan-gabungan).
-- **Kemiringan kalibrasi**: regresi logistik y ~ a + b logit(p) pada data ber-bin 0,25 logit, dengan CI dari 1.000 resampel blok yang sama. Resampel yang terpisah sempurna dibuang dan jumlahnya dilaporkan.
+- **Kemiringan kalibrasi**: regresi logistik y ~ a + b logit(p) pada data ber-bin 0,25 logit, dengan CI dari 1.000 resampel blok yang sama. Resampel yang terpisah sempurna dibuang dan jumlahnya dilaporkan. **Lebih dari 5% resampel gagal = syarat 3 gagal.**
 - **Satuan**: skor, jumlah positif, dan syarat hilang semuanya memakai unit yang sama (kecamatan x jam terbit, tiap jam). n efektif = jumlah episode.
 
 ## 7. Kriteria lulus (sama untuk tiap L)
@@ -218,8 +228,21 @@ Tenggang L LULUS bila kelima syarat berikut terpenuhi:
    Alasan memilih 20 episode, bukan 100 positif: positif di dalam satu badai saling bergantung (puluhan kecamatan x jam dari satu hujan), sehingga 100 positif bisa berasal dari 2-3 badai. Episode adalah satuan yang mendekati independen dan sama dengan n efektif bootstrap.
 1. BSS terhadap klim: p (ΔBS klim - model) dari bootstrap.
 2. ΔBS (persistensi - model), dan untuk Jalur B juga ΔBS (BMKG - model). Syarat 1 dan 2 lulus bersama bila p_L = maks p <= 0,05 (utama L = 3) atau p Holm <= 0,05 (kurva).
-3. Kalibrasi: **seluruh CI95 kemiringan berada di dalam [0,7; 1,4]**. Uji sintetik menunjukkan syarat ini butuh ratusan positif: model benar dengan 166 positif (36 episode) memberi CI 0,64-1,20 dan gagal; dengan 546 positif (105 episode) CI 0,94-1,21 dan lulus. Jadi syarat ini berat dan bisa menjadi penyebab TIDAK LULUS walau skill ada. Ini dicatat sekarang, bukan dilonggarkan nanti.
-4. Data hilang: proporsi unit **positif** yang hilang <= 10%, dan selisih proporsi hilang positif vs negatif berada di dalam ±1,96 galat bakunya. Baris yang hilang untuk model mana pun dikeluarkan untuk **semua** model dan pembanding.
+3. Kalibrasi: **seluruh CI95 kemiringan berada di dalam [0,7; 1,4]**, dan paling banyak 5% resampel gagal. Batas ini dipertahankan.
+   Daya dari `nowcast_jkt.py daya --ulang 8` (sintetik, 700 hari x 40 unit, kemiringan benar γ, sebaran logit unit `sd_unit` 0,8 atau 0,3). Kolomnya: lulus dari 8, lalu lebar CI rata-rata:
+
+   | positif | γ = 0,85 | γ = 1,0 | γ = 1,2 |
+   | --- | --- | --- | --- |
+   | ~170-190 (sd 0,8 / 0,3) | 4/8, 0,27 / 3/8, 0,36 | 8/8, 0,27 / 7/8, 0,37 | 5/8, 0,28 / 4/8, 0,38 |
+   | ~335 | 4/8, 0,20 / 5/8, 0,26 | 8/8, 0,20 / 8/8, 0,25 | 8/8, 0,20 / 7/8, 0,27 |
+   | ~785 | 8/8, 0,13 / 8/8, 0,17 | 8/8, 0,14 / 8/8, 0,17 | 8/8, 0,14 / 8/8, 0,18 |
+
+   Model yang kemiringannya benar (γ = 1) hampir selalu lulus mulai ~165 positif. Model yang terlalu yakin atau terlalu ragu (γ 0,85 atau 1,2) baru lulus andal pada ratusan positif. Itu memang maksud syaratnya.
+   Batas tabel ini: simulasi menyebar positif ke 700 hari sehingga menghasilkan 122-193 episode, padahal 1.290 laporan uji kemungkinan jatuh pada puluhan episode. Bootstrap blok 5 hari memakai episode sebagai satuan efektif, jadi CI kemiringan nyata bisa sampai dua kali lebih lebar dari tabel dan daya untuk γ 0,85 atau 1,2 lebih rendah. Perkiraan kasar positif L = 3 (tanpa membaca lokasi atau waktu): batas atas 1.290 x 3 ≈ 3.900 kecamatan-jam, dikali 0,3-0,5 karena laporan menggumpal, sekitar 600-1.500 sebelum unit hilang. Ini perkiraan, bukan hasil hitung.
+4. Data hilang (beku):
+   - proporsi unit **positif** yang hilang <= 10%;
+   - |proporsi hilang positif - proporsi hilang negatif| <= 1,96 x galat baku **dua-proporsi terpoolkan**, sqrt(p̄(1-p̄)(1/n_pos + 1/n_neg));
+   - baris yang hilang untuk model mana pun dikeluarkan untuk **semua** model dan pembanding.
 
 **Σp/Σy (kalibrasi rata-rata)**: untuk Jalur A dilaporkan saja, tidak menjadi faktor lulus. Untuk Jalur B, syarat Σp/Σy dalam [0,7; 1,43] tetap menjadi faktor lulus.
 - Alasan untuk Jalur A: laju laporan runtuh (2.937 pada 2016/17, 52 pada 2025/26), jadi tingkat dasar musim uji jauh di bawah latih/validasi. Pilihan lain, klim dan Platt bergulir kausal, menambah dua kenop (panjang jendela, laju pembaruan) yang harus dipilih tanpa data. Dengan 1.290 laporan uji, estimasi bergulirnya juga sangat bising.
@@ -244,14 +267,14 @@ Arti LULUS, ditulis jujur: peluang model lebih tepat (Brier) daripada klimatolog
 ## 8.1 Ancaman validitas
 
 1. **Bias pelapor**: PetaBencana berasal dari warga yang punya ponsel dan mau melapor. Kepadatan laporan mengikuti penduduk dan kampanye, bukan kedalaman air. Klim per kecamatan menyerap sebagian bias tetap, tetapi tidak menyerap bias waktu.
-2. **Laju laporan runtuh**: 2.937 laporan pada 2016/17, 52 pada 2025/26. Pergeseran laju antar musim membuat klim 2017-2024 terlalu tinggi untuk 2026/27. Syarat reliabilitas akan menangkapnya (Σp/Σy tinggi). Klim tidak disetel ulang pada data uji.
-3. **Latihan/drill** (`DIAGNOSIS-J3.md`: 98-99,6% label uji J3 adalah latihan): saringan mengurangi masalah ini tetapi tidak membuktikannya hilang, jadi sensitivitas tanpa saringan wajib. Latihan pada hari kering tidak berkorelasi dengan TMA/hujan dan akan menurunkan skor, bukan menaikkannya.
+2. **Laju laporan runtuh**: 2.937 laporan pada 2016/17, 52 pada 2025/26. Pergeseran laju antar musim membuat klim latih terlalu tinggi untuk musim uji dan 2026/27. Σp/Σy menunjukkannya (dilaporkan; faktor lulus hanya di Jalur B). Klim tidak disetel ulang pada data uji.
+3. **Latihan/drill** (`DIAGNOSIS-J3.md`: 98-99,6% label uji J3 adalah latihan): saringan mengurangi masalah ini tetapi tidak membuktikannya hilang, jadi `nilai` juga menghitung sensitivitas tanpa saringan. Latihan pada hari kering tidak berkorelasi dengan TMA/hujan dan akan menurunkan skor, bukan menaikkannya.
 4. **Cakupan malam**: laporan malam/subuh lebih sedikit karena orang tidur. Banjir pukul 02.00 tercatat pukul 06.00, jadi tenggang semu 4 jam. Blok jam di klim menyerap rata-ratanya. Kurva vs L harus dibaca dengan ini: L panjang tampak lebih baik karena laporan terlambat.
 5. **Latensi TMA tidak terbukti**: arsip tidak menyimpan waktu diterima. Bacaan SIHKA yang tiba terlambat (raw 6 jam) bisa masuk fitur dalam putar ulang, padahal saat t belum ada. Dampaknya optimistis, dan karena itu `LAT_TMA` konservatif dipakai sampai kolom waktu diterima tersedia.
 6. **Pos TMA dekat laut** (Cengkareng Drain, Pasar Ikan, Marina Ancol): dipengaruhi pasang-surut. Rasio Siaga 3 bisa > 1 di hari kering (Cengkareng Drain 1,38 pada 31 Okt 2026). Ini fitur apa adanya, tidak dikoreksi.
 7. **Satu kota, satu musim**: hasil tidak berlaku di luar Jakarta.
 8. **Jalur A, label arsip pernah disentuh**: tanggal hari puncak per tahun (`gsmap.py PUNCAK`) dan hitungan per bulan sudah terlihat. Lokasi laporan musim uji belum dibaca untuk pilot ini. Bulan kejadian J1/J2 di musim uji (2025-03) dikeluarkan.
-9. **Jalur B: kemungkinan besar "belum cukup data"**: 52 laporan pada 2025/26. Bila 2026/27 serupa, syarat 0 (40 positif, 8 hari) tidak tercapai. Vonis itu bukan kegagalan model, dan pengumpulan berlanjut. Tidak ada label tambahan (keputusan pemilik "pakai yang ada").
+9. **Jalur B: kemungkinan besar "belum cukup data"**: 52 laporan pada 2025/26. Bila 2026/27 serupa, syarat 0 (20 episode) kemungkinan tidak tercapai. Vonis itu bukan kegagalan model, dan pengumpulan berlanjut. Tidak ada label tambahan (keputusan pemilik "pakai yang ada").
 10. **IMERG di kota**: sel 0,1 derajat (~11 km) dan hujan konvektif Jakarta yang berumur kurang dari 1 jam. Early Run cenderung meremehkan puncak. Ini menurunkan skor dan tidak membuatnya optimistis.
 11. **Persistensi kausal vs label penuh**: label memakai burst seharian (tidak kausal), persistensi memakai burst sampai t. Laporan latihan massal yang belum terlihat sebagai burst pada t masuk persistensi. Ini benar untuk operasional, tetapi membuat persistensi sedikit lebih buruk daripada persistensi berlabel bersih.
 
@@ -259,13 +282,24 @@ Arti LULUS, ditulis jujur: peluang model lebih tepat (Brier) daripada klimatolog
 
 Sidik (`nowcast_jkt.manifes`) = sha256 atas:
 - PRAREG ini;
-- `nowcast_jkt.py`, termasuk `latih/nilai` dan uji sintetiknya;
-- `genangan/petabencana.py` (saringan; milik banjir, beku J4);
-- **isi fungsi `parse`** dari `scripts/cuaca/imerg.py` (`inspect.getsource`).
+- `nowcast_jkt.py`, termasuk `latih/nilai`, `daya`, dan uji sintetiknya;
+- semua yang membentuk label, jendela J3, kecamatan, dan cek git: `genangan/petabencana.py`, `lab_genangan_radar.py`, `genangan/bersama.py`, `genangan/mesin.mjs` (tabel KEJADIAN_J3), `genangan/kunci_j4.py` (fungsi git), `wilayah.py`, `umum.py`, `public/geo/kecamatan/31.json`, `public/banjir/data/pusat_kec.json`;
+- **hasil** `jendela_j3()`;
+- dari `scripts/cuaca/imerg.py`, **isi fungsi `parse`** (`inspect.getsource`) dan konstanta `HILANG`.
 
 Berkas `imerg.py` milik `cuaca-udara` sengaja tidak di-hash utuh, supaya perubahan lain di sana tidak membatalkan kunci. Perubahan pada `parse` tetap membatalkannya.
 
 Tabel `klim` dihitung ulang dari label oleh kode yang sudah tersidik, jadi tidak perlu di-hash terpisah. Jalur A dikunci dua kali: protokol sebelum label latih dibaca (`jangkar`), lalu model sebelum uji dibuka (`nowcast_jkt_model.json` di `origin/main`). Penguncinya dengan pola `kunci_j4.py` (berkas `nowcast_jkt_sidik.json`, jangkar = commit yang sudah di-push). Kunci dibuat pada fase 2, sebelum jam terbit pertama yang dinilai. Mengubah apa pun sesudah jangkar = kriteria baru dan jam penilaian mulai dari nol.
+
+## 9b. Ditunda ke amandemen, bukan syarat
+
+Butir berikut pernah ditulis di draf, tetapi kode belum mengerjakannya. Karena itu butir ini tidak menjadi syarat dan tidak boleh dikutip sebagai hasil. Masing-masing hanya boleh masuk lewat amandemen tertulis **sebelum** uji dibuka:
+- pembanding "hujan sempurna" (IMERG atau ERA5 dalam (t, t+L] tanpa latensi);
+- unit pendamping kota administrasi (5);
+- subset awal kejadian (tanpa laporan dalam (t-6j, t]);
+- reliabilitas per bin (kuantil dan tetap) dengan selang Wilson;
+- ETS/POD/FAR pada p >= 0,3;
+- POD pada FAR tetap 0,5 dan 0,7.
 
 ## 10. Catatan perubahan sebelum kunci
 
@@ -284,4 +318,12 @@ Tabel `klim` dihitung ulang dari label oleh kode yang sudah tersidik, jadi tidak
   - latih/nilai + uji sintetik sebelum kunci;
   - jendela label tidak menyentuh bulan terlarang;
   - penjaga `muat_label`.
+- 1 Nov 2026: pemeriksaan ulang `validasi-model`:
+  - persistensi dan sensitivitas dari `dari_cache()` (PB_MENTAH lama tanpa tipe/teks, persist selalu 0), dengan penjaga flood > 0;
+  - skor V07C dan sensitivitas dikerjakan; janji yang belum ada di kode dipindah ke bagian 9b;
+  - sidik diperluas;
+  - `muat_label` tanpa parameter, ditambah `sha_label` dan urutan cek;
+  - syarat 4 memakai z terpoolkan;
+  - gerbang 5% resampel kemiringan gagal;
+  - angka daya dari `daya`.
 - 1 Nov 2026: keputusan pemilik "pakai yang ada". Draf dipecah jadi Jalur A (IMERG Early, arsip memutuskan, pembagian musim beku, 2025-03 dikeluarkan) dan Jalur B (prospektif). Uji arsip A0 "hanya menolak" diganti Jalur A. `klim` Jalur B dibatasi ke musim 2016/17-2021/22.
