@@ -192,8 +192,35 @@ Lulus berarti kelompok itu boleh dipasang sebagai pelengkap berlabel. Status res
   tanpa jaringan). Keluaran di `data/raw/banjir/model_kab_hulu/`, bukan public/.
 - `latih` membekukan: sha256 berkas ini, sampel, basin dan sel hulu, daftar sel nodata, manifest cache ERA5 dan CHIRPS,
   salinan tabel label latih (kab, hari, y) beserta sha256-nya, dan sha256 `model_kab.py`, `uji_balik.py`, `status.py`,
-  `label_bersatu.py`, `scripts/data/logbook_bersih.py`, `data/pusdalops/logbook_kejadian.csv`, serta baris <= 2025
+  `label_bersatu.py`, `label_latih.json` (memuat sha256 tabel `label_bersatu` dan hari tercakup logbook; logbook mentah dan `logbook_bersih.py` tidak disidik, amandemen A1), serta baris <= 2025
   `data/raw/banjir/dibi_tanggal.json`. Bila cache ERA5 2026 DEBIT belum beku saat `latih`, ERA5 2026 diunduh ke
   `model_kab_hulu`; hasil HULU tidak pernah dibandingkan angka demi angka dengan DEBIT. Sidik ditulis ke `scripts/banjir/model_kab_hulu.sidik`
   dan di-commit. `sia` dan `buka` menolak bila sidik berubah, dan masing-masing hanya bisa jalan sekali (penanda ditulis
   sebelum menilai).
+
+## 8. Amandemen
+
+### A1 (1 Nov 2026, sebelum `sia` dan sebelum Uji A/B dibuka)
+
+Kejadian: `latih` pertama (sidik `08aef5bbab265d33`, 1 Nov 2026 03.58 WIB, commit 480fc866) ikut menghash seluruh
+`data/pusdalops/logbook_kejadian.csv` dan `scripts/data/logbook_bersih.py`. Sesudahnya sesi lain terus menambah arsip
+logbook ke berkas itu (commit e5d3a66b, 15d49953 arsip 2024, 593c2d9e dan 21206f67 arsip 2013, c9947df3 arsip 2021,
+569a9482 arsip 2026, 4ffbb815 arsip 2025) dan menyunting `logbook_bersih.py` (rekap tahun dasar). Baris lama ikut
+berubah (LB13 bertambah, LB21 dan LB24 baru). Sidik patah.
+
+Mengapa model tidak terpengaruh: label latih tidak dibaca dari logbook mentah, melainkan dari tabel `label_bersatu`
+(`kab_hari.csv.gz`) dan `logbook_hari_tercakup.json` yang dibangun 1 Nov 01.05-01.06 WIB, sebelum `latih` pertama, dan
+tidak dibangun ulang. Sha256 keduanya tercatat di `label_latih.json` (`sha256_label_bersatu_csv` `b673cbac…`,
+`sha256_hari_tercakup` `a55eeb03…`), dan berkas itu disidik. Jadi hash logbook mentah tidak pernah menjadi penjaga label;
+penjaga sebenarnya `label_latih.json`.
+
+Perubahan, satu-satunya: `logbook_kejadian.csv` dan `logbook_bersih.py` dikeluarkan dari sidik. Tabel label tetap
+terkunci lewat `label_latih.json`. Bila tabel `label_bersatu` dibangun ulang, `label_latih.json` di `latih` berikutnya
+berubah dan sidik patah, sebagaimana mestinya.
+
+Sesudah perubahan, `latih --ulang` dijalankan dengan data, kode model, dan kriteria lain yang sama. Hasil percobaan
+antara (sidik `f3d0a69820440932`, menghash prefiks LB11..LB24) dibatalkan karena prefiks itu pun sudah berubah sejak
+`latih` pertama; baris jejaknya tetap tercatat. Kandidat dan angka validasi tiap `latih --ulang` identik dengan `latih`
+pertama kecuali sidik dan waktu. Kejujuran: angka validasi 2024-2025 sudah terlihat sebelum amandemen ini; amandemen
+tidak menyentuh fitur, label, hiperparameter, kriteria, atau periode uji; Uji A/B belum pernah dibuka. Sidik baru
+di-commit sebelum 15 Nov 2026.
