@@ -223,7 +223,7 @@ besaran KK dan rumah LULUS dengan skill kecil (0,03-0,04). Tahap ini menambah ke
 | 2 Hujan satelit | CHIRPS (pengganti IMERG) dibekukan bersama Tahap 1; IMERG menunggu token Earthdata |
 | 3a GloFAS | protokol beku, menunggu 2027-06-01 |
 | 3b Arsip pos | ekspor harian ke R2 (`arsip_pos.py`, langkah `banjir.yml`), diuji nyata 19-20 Okt; sisanya disusul workflow 7 hari per jalan |
-| 3c Flood Hub | pengambil `floodhub.py` siap; langkah `banjir.yml` aktif begitu secret `GOOGLE_FLOOD_API_KEY` ada |
+| 3c Flood Hub | pengambil `floodhub.py` siap: status sungai per kabupaten (tingkat Peringatan, Bahaya, Ekstrem; titik terverifikasi dipisah), banjir bandang 24 jam, ambang dan prakiraan titik naik, arsip harian ke R2 tanpa timpa. Protokol `PRAREG-FLOODHUB.md` dan penilai `floodhub_nilai.py` ditulis 1 Nov 2026 dan ditinjau dua ronde; sidik dibekukan sesudah satu uji asap dengan kunci asli (hanya membetulkan pembaca), hari prospektif pertama sesudah commit sidik, buka paling cepat 15 Jun 2027. Aktif begitu secret `GOOGLE_FLOOD_API_KEY` ada. Arsip Zenodo paper Nearing 2024 tidak dipakai: hanya 8 pos Indonesia, debit berakhir 2009 |
 | 4 Ganti satuan | menunggu 0-3 |
 | 5 Label tajam | belum mulai |
 | 6 Perluasan dampak | model dasar LULUS lemah; fitur paparan menunggu kunci HAND |
