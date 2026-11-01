@@ -56,6 +56,16 @@ export function wilayahDaya(P) {
   /* infrastruktur air per kab dari Kementerian PU (data.pu.go.id dan SIGI SDA): bendungan dan pengaman pantai lengkap, embung dan tanggul batas bawah karena unduhan PU terpotong */
   for (const r of larik(P.infra_air?.per_kab)) { if (!r.prov_kode || !r.kab) continue; const v = {bendungan: r.bendungan || 0, bendungan_konstruksi: r.bendungan_konstruksi || 0, embung: r.embung || 0, tanggul: r.tanggul_pu || 0,
       tanggul_km: r.panjang_tanggul_km ?? null, pompa: r.pompa_banjir || 0, sabo: r.sabo_dam || 0}; if (Object.values(v).some(x => x)) ke(String(r.prov_kode), r.kab).infra = v; }
+  /* paparan bangunan (Google Open Buildings v3, keyakinan >= 0,70; batas bawah) dan tutupan lahan 2000 dan 2023 (MapBiomas Indonesia koleksi 3) per kab */
+  for (const r of larik(P.bangunan_kab)) if (r.kode && r.kab && Number.isFinite(r.bangunan_n)) ke(String(r.kode).slice(0, 2), r.kab).bangunan = {n: r.bangunan_n, luas_ha: r.luas_bangunan_ha ?? null};
+  for (const r of larik(P.tutupan_lahan_kab)) if (r.kode && r.kab && r.kelas) ke(String(r.kode).slice(0, 2), r.kab).lahan = {awal: r.tahun_awal, akhir: r.tahun_akhir, kelas: r.kelas, hutan_hilang_ha: r.hutan_hilang_ha ?? null};
+  /* PDRB atas dasar harga berlaku per kab (BPS WebAPI): total, per kapita, dan porsi 17 lapangan usaha bila tabel sektornya lolos cek; tahun berbeda per kab */
+  for (const r of larik(P.pdrb_kab)) { if (!/^\d{4}$/.test(String(r.kode_kab || "")) || !r.nama || !Number.isFinite(r.pdrb_adhb_rp)) continue; const nm = r.jenis === "kota" ? (/^kota /i.test(r.nama) ? r.nama : "Kota " + r.nama) : String(r.nama).replace(/^kota\s+(?=\S)/i, "Kota");   // kabupaten "Kota Baru" = Kotabaru
+    let porsi = null; if (r.sektor && r.sektor_valid !== false) { const e = Object.entries(r.sektor).filter(([, v]) => Number.isFinite(v)); const tot = r.sektor_jenis === "persen" ? 100 : e.reduce((t, [, v]) => t + v, 0); if (tot) porsi = Object.fromEntries(e.map(([k, v]) => [k, Math.round(v / tot * 1000) / 10])); }
+    ke(String(r.kode_kab).slice(0, 2), nm).pdrb = {tahun: r.tahun, adhb_rp: r.pdrb_adhb_rp, per_kapita_rp: r.per_kapita_rp ?? null, porsi, bps: {domain: r.domain || null, tabel: r.var_id ?? null}}; }
+  /* IKD resmi BNPB yang terpanen (sebagian provinsi saja); kab dicocokkan lewat kode provinsi dan nama */
+  for (const r of larik(P.ikd_resmi)) if (r.tingkat === "kab" && /^\d{4}$/.test(String(r.kode)) && Number.isFinite(r.ikd)) { const o = ke(String(r.kode).slice(0, 2), r.nama); if (!o.ikd || r.tahun > o.ikd.tahun) o.ikd = {tahun: r.tahun, nilai: r.ikd, kelas: r.kelas || null, sumber_url: r.sumber_url}; }
+  for (const r of larik(P.lab_riset)) if (/^\d{2}$/.test(String(r.prov || ""))) (pv(r.prov).lab ||= []).push({nama: r.nama_lab, alat: r.alat || null, uji: r.jenis_uji || null, bidang: r.bidang || null, lembaga: r.lembaga, lokasi: [r.kawasan_lokasi, r.kota].filter(Boolean).join(", "), tarif: r.tarif_teks || null, sumber_url: r.sumber_url});
   /* BPS WebAPI per kab (panen 1 Nov 2026): kesiapan desa dari tabel Potensi Desa (tahun berbeda per kab, cakupan sebagian) dan penduduk lansia/balita; tautan WebAPI butuh kunci, jadi yang disimpan hanya domain dan nomor tabel BPS; tidak masuk skor kesiapan karena cakupannya belum menyeluruh */
   const PODES = ["desa_peringatan_dini", "desa_peringatan_tsunami", "desa_rambu_jalur_evakuasi", "desa_perlengkapan_keselamatan", "desa_mitigasi_sungai_tanggul", "jumlah_desa"];
   for (const r of larik(P.podes_kesiapan)) { if (!/^\d{4}$/.test(String(r.kode_kab || "")) || !r.nama) continue; const v = Object.fromEntries(PODES.filter(f => Number.isFinite(r[f])).map(f => [f, r[f]]));
@@ -75,6 +85,10 @@ export function wilayahDaya(P) {
   /* baris yang hanya punya fasilitas (kode provinsi lama di sumber, mis. Kepri, Kaltara, Papua) dilebur ke baris APBD dengan kab sama bila unik */
   const perKab = new Map(); for (const [k, o] of Object.entries(kab)) if (o.apbd) { const n = k.split("|")[1]; perKab.set(n, perKab.has(n) ? null : o); }
   for (const [k, o] of Object.entries(kab)) if (!o.apbd) { const t = perKab.get(k.split("|")[1]); if (t) { t.fasilitas ||= o.fasilitas; t.kinerja ||= o.kinerja; delete kab[k]; } }
+  /* Papua: sumber memakai kode provinsi lama (91, 94) atau pemekaran (92, 95-97); kab bernama sama di provinsi 9x disatukan ke entri yang datanya paling banyak, bila tepat satu pasangan */
+  const isi = o => Object.keys(o).length;
+  for (const [k, o] of Object.entries(kab)) { if (!kab[k] || !/^9/.test(o.prov)) continue; const nm = k.split("|")[1], c = Object.entries(kab).filter(([k2, o2]) => k2 !== k && /^9/.test(o2.prov) && k2.split("|")[1] === nm);
+    if (c.length !== 1) continue; const [k2, o2] = c[0], [dari, ke2, kd] = isi(o) > isi(o2) ? [o2, o, k2] : [o, o2, k]; for (const [f, v] of Object.entries(dari)) if (!["prov", "kab"].includes(f) && ke2[f] == null) ke2[f] = v; delete kab[kd]; }
   return {diperbarui: new Date().toISOString().slice(0, 10), prov, kab: Object.values(kab)};
 }
 
@@ -468,7 +482,7 @@ if (process.argv[1] === fileURLToPath(import.meta.url)) {
     "pos_sar", "pmi_kab", "lpbi_nu", "forum_prb_baru", "tim_respons", "katalog_penyedia", "hibah_riset_baru", "radar_dana", "daftar_hitam_mentah", "cems_idn",
     "inarisk_bahaya", "gdacs_kejadian", "psc119", "damkar", "komunikasi_darurat", "logistik_usaha", "armada_sar", "dana_filantropi",
     "ikp", "rumah_ibadah", "kerentanan_bps", "osm_darurat", "tesis_kebencanaan",
-    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga", "infra_air", "ifrc_go", "cerf", "zakat_resmi", "hot_tm", "orcid_afiliasi"].map(f => [f, baca(dp, f)]));
+    "indeks_desa", "spm_bencana", "dataset_satudata", "aktivasi_sentinel_asia", "mitra_riset_luar", "proyek_internasional", "pendanaan_pakar", "dokumen_prb", "topik_pakar", "rekan_pakar", "glide_cocok", "emdat_idn", "garuda_penulis", "dataset_terbuka", "podes_kesiapan", "penduduk_rentan", "donasi_berita", "donasi_lembaga", "infra_air", "ifrc_go", "cerf", "zakat_resmi", "hot_tm", "orcid_afiliasi", "bangunan_kab", "tutupan_lahan_kab", "ikd_resmi", "lab_riset", "pdrb_kab"].map(f => [f, baca(dp, f)]));
   P.geo_provinsi = JSON.parse(readFileSync(new URL("../../public/geo/provinsi.json", import.meta.url), "utf8"));
   const R = Object.fromEntries(["lembaga", "induk", "kejadian", "hibah_riset", "pendanaan", "kampus", "lembaga_3w"].map(f => [f, baca(dr, f)]));
   mkdirSync(out, {recursive: true});

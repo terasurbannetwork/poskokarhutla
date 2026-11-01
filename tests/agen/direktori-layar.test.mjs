@@ -17,7 +17,7 @@ const INDUK = {diperbarui: "2026-10-31", sumber: "uji", rumpun: RUMPUN,
   orang: Array.from({length: 24}, (_, i) => [`A${9000 + i}`, `Pakar Uji ${i + 1}`, i % 2 ? "Universitas Contoh Timur" : "Institut Contoh Barat", [RUMPUN[i % 4]], 10 + i, 50 + i, 900 + i * 10, "", ["Topik uji"], "", "", "", "", "", ""])};
 const KAMPUS = {"Universitas Contoh Timur": {prov: "53"}, "Institut Contoh Barat": {prov: "32"}};
 /* kesiapan satu kab NTT, dengan hasil uji balik belum lulus: layar wajib berlabel Hipotesis */
-const WILAYAH = {diperbarui: "2026-10-31", prov: {}, kab: [{prov: "53", kab: "Kabupaten Kupang", fasilitas: {rs: 2, rs_tt: 150, puskesmas: 20}, podes: {desa_peringatan_dini: 12, jumlah_desa: 177, terdampak: {banjir: 30}, tahun: 2021}, rentan: {lansia: 20000, balita: 35000, total: 400000, tahun: 2025}, logbook: {dari: 2015, per_jenis: {banjir: 40, longsor: 12}, rusak: 300, terendam: 5000, akhir: [{tanggal: "2026-02-03", jenis: "banjir", rusak: 3, terendam: 120, desa: 4}]}}],
+const WILAYAH = {diperbarui: "2026-10-31", prov: {"53": {lab: [{nama: "Lab Uji Tanah", uji: "Uji geser langsung", bidang: "tanah", lokasi: "Kupang", sumber_url: "https://elsa.brin.go.id/x"}]}}, kab: [{prov: "53", kab: "Kabupaten Kupang", fasilitas: {rs: 2, rs_tt: 150, puskesmas: 20}, podes: {desa_peringatan_dini: 12, jumlah_desa: 177, terdampak: {banjir: 30}, tahun: 2021}, rentan: {lansia: 20000, balita: 35000, total: 400000, tahun: 2025}, pdrb: {tahun: 2024, adhb_rp: 9e12, per_kapita_rp: 2.5e7, porsi: {A: 30, F: 15, G: 20}}, bangunan: {n: 150000, luas_ha: 900}, lahan: {awal: 2000, akhir: 2023, kelas: {hutan_alam: {awal_ha: 2000, akhir_ha: 1500}, sawah: {awal_ha: 100, akhir_ha: 120}}}, ikd: {tahun: 2025, nilai: 0.55, kelas: "sedang"}, logbook: {dari: 2015, per_jenis: {banjir: 40, longsor: 12}, rusak: 300, terendam: 5000, akhir: [{tanggal: "2026-02-03", jenis: "banjir", rusak: 3, terendam: 120, desa: 4}]}}],
   kesiapan: {jumlah: 1, baris: {"53|kupang": {prov: "53", kab: "Kabupaten Kupang", nama_rk: "Kupang", skor: 30, risiko: 40, kesenjangan: 35, kuadran: "prioritas", peringkat: 1, peringkat_prov: 1, jumlah_prov: 1,
     komp: {fiskal: 20, faskes: 30, lembaga: 10, pakar: 60}, kebutuhan: 80, butuh: {miskin: 90, pangan: 70}, nilai: {}}},
     uji: {dari: 2015, sampai: 2025, n: 474, lulus: false, lolos: [], ukuran: {mati: "meninggal", dampak: "terdampak", rusak: "rusak"},
@@ -80,6 +80,7 @@ else {
     await T.tungguFungsi(`/Kesiapan desa dan penduduk rentan/i.test(document.body.innerText)`);
     const k = await T.eval(`document.body.innerText`); assert.match(k, /12 desa/); assert.match(k, /20\.000/); assert.match(k, /Banjir 30 desa/);
     assert.match(k, /Teruji sebagian Uji kedua dengan logbook Pusdalops[\s\S]*cuaca ekstrem \(rumah rusak per kejadian, r \u22120,33\), tidak untuk banjir/); assert.match(k, /Riwayat kejadian menurut logbook Pusdalops/i); assert.match(k, /5\.000/);
+    for (const j of [/Ekonomi daerah/i, /Rp 9 triliun/, /Paparan bangunan dan tutupan lahan/i, /150\.000/, /Indeks Ketahanan Daerah resmi BNPB/i, /Uji geser langsung/]) assert.match(k, j);
     assert.deepEqual(galatJs(), []);
   });
 
