@@ -7,7 +7,7 @@ sehingga bangun() selalu membangun semuanya lalu menyaring --kab). Geometri murn
 Aturan: tiap blok dict {..., sumber, tanggal, yakin}; data hilang = null (bukan 0); tanpa angka karangan;
 sumber hilang -> blok null + catatan di sumber[] (D7); keluaran deterministik (tanggal = tanggal sumber).
 BPBD: email TIDAK ditulis (gerbang D5 melarang email di public/data/kemitraan/**).
-Pakai: python3 -I scripts/kemitraan/profil_daerah.py [--cek] [--kab 6211] [--akar DIR] [--keluar DIR]"""
+Pakai: python3 -I scripts/kemitraan/profil_daerah.py [--cek|--jaga] [--kab 6211] [--akar DIR] [--keluar DIR]"""
 import collections, glob, json, math, os, re, shutil, sys, tempfile
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
@@ -1250,6 +1250,60 @@ def tulis_agregat(prof, keluar, akar=AKAR):
     return len(r["baris"]), len(pv)
 
 
+# ---------------------------------------------------------------- jaga (DT 7.1: dijalankan sesudah bangun penuh, sebelum commit)
+def _tgl_berkas(t):
+    """{kunci: tanggal} dari isi satu berkas JSON: 'dibangun'/'tanggal' tingkat atas + tanggal tiap sumber[] (kunci = nama)."""
+    o = json.loads(t)
+    d = {"_berkas": o.get("dibangun") or o.get("tanggal")}
+    if isinstance(o.get("sumber"), list):
+        d.update({"sumber:" + e["nama"]: e.get("tanggal") for e in o["sumber"] if isinstance(e, dict) and "nama" in e})
+    return d
+
+
+def jaga(baru, lama, n_kab, maks=None):
+    """Murni. baru/lama = {jalur relatif: isi teks}; lama tanpa jalur = berkas baru (dilewati). -> daftar masalah (kosong = aman).
+    Tolak: berkas daerah != n_kab, ringkas.json/prov hilang, ukuran > maks, tanggal MUNDUR (lebih lama dari versi lama;
+    tanggal lama ada tapi baru null juga mundur). Sama atau maju lolos."""
+    m = []
+    dae = [j for j in baru if j.startswith("daerah/")]
+    if len(dae) != n_kab:
+        m.append(f"berkas daerah {len(dae)} != {n_kab}")
+    if "ringkas.json" not in baru:
+        m.append("ringkas.json hilang")
+    pv = [j for j in baru if j.startswith("prov/")]
+    if len(pv) != 38:
+        m.append(f"berkas prov {len(pv)} != 38")
+    for j in sorted(baru):
+        n = len(baru[j].encode("utf-8"))
+        mk = maks or (MAKS_RINGKAS if j == "ringkas.json" else MAKS_PROV if j.startswith("prov/") else MAKS_BYTE)
+        if n > mk:
+            m.append(f"{j}: {n} byte > {mk}")
+        if j in lama:
+            tl, tb = _tgl_berkas(lama[j]), _tgl_berkas(baru[j])
+            for k, tgl in tl.items():
+                if tgl and (tb.get(k) or "") < tgl:
+                    m.append(f"{j}: tanggal mundur di {k}: {tgl} -> {tb.get(k)}")
+    return m
+
+
+def jaga_git(akar=AKAR):
+    import subprocess
+    d = os.path.join(akar, "public", "data", "kemitraan")
+    rel = [os.path.relpath(f, d) for f in glob.glob(os.path.join(d, "daerah", "*.json")) + glob.glob(os.path.join(d, "prov", "*.json"))]
+    if os.path.exists(os.path.join(d, "ringkas.json")):
+        rel.append("ringkas.json")
+    baru = {j: open(os.path.join(d, j), encoding="utf-8").read() for j in rel}
+    lama = {}
+    for j in baru:
+        r = subprocess.run(["git", "-C", akar, "show", "HEAD:public/data/kemitraan/" + j], capture_output=True, text=True, encoding="utf-8")
+        if r.returncode == 0:  # tak ada di HEAD = berkas baru, dilewati
+            lama[j] = r.stdout
+    m = jaga(baru, lama, len(Konteks(akar).kode))
+    if m:
+        sys.exit("JAGA TOLAK (%d masalah):\n  " % len(m) + "\n  ".join(m[:20]))
+    print(f"JAGA OK: {len(baru)} berkas, {len(lama)} dibandingkan dengan HEAD, tanggal tidak mundur, maks {max(len(t.encode()) for t in baru.values())} byte")
+
+
 # ---------------------------------------------------------------- cek
 FIX = os.path.join(AKAR, "tests", "kemitraan", "fixtures", "profil_mini")
 
@@ -1571,6 +1625,20 @@ def cek():
     tolak(lambda x: validasi_agregat(*x, a, kode), "tanpa entri", u2(lambda rr, qq: qq["62"]["_arti"].pop("irbi.tinggi_n")))
     tolak(lambda x: validasi_agregat(*x, a, kode), "tanpa entri", u2(lambda rr, qq: rr["_satuan"].pop("j")))
     assert all(isinstance(v, int) and v >= 0 or v is None for r_ in r["baris"] for v in (r_["j"],)), "j bukan hitung kejadian"
+    # ---- KM-B05 jaga: murni, tanpa git
+    def _b(tg, nm="Z"): return json.dumps({"dibangun": tg, "sumber": [{"nama": nm, "tanggal": tg}]})
+    ok_b = {**{f"daerah/{i:04d}.json": _b("2026-11-02") for i in range(3)}, "ringkas.json": json.dumps({"tanggal": "2026-11-02"}),
+            **{f"prov/{i:02d}.json": json.dumps({"tanggal": "2026-11-02"}) for i in range(38)}}
+    ok_l = {j: (_b("2026-10-01") if j.startswith("daerah") else json.dumps({"tanggal": "2026-10-01"})) for j in ok_b}
+    assert jaga(ok_b, ok_l, 3) == [] and jaga(ok_b, ok_b, 3) == [] and jaga(ok_b, {}, 3) == [], "sama/maju/baru harus lolos"
+    assert any("daerah 3 != 514" in x for x in jaga(ok_b, ok_l, 514)), "berkas kurang harus ditolak"
+    assert any("prov 37" in x for x in jaga({j: t for j, t in ok_b.items() if j != "prov/00.json"}, ok_l, 3))
+    assert any("ringkas.json hilang" in x for x in jaga({j: t for j, t in ok_b.items() if j != "ringkas.json"}, ok_l, 3))
+    mundur = dict(ok_b, **{"daerah/0001.json": _b("2026-09-01")})
+    assert any("daerah/0001.json: tanggal mundur" in x for x in jaga(mundur, ok_l, 3)), "tanggal mundur harus ditolak"
+    assert any("mundur" in x for x in jaga(dict(ok_b, **{"ringkas.json": json.dumps({"tanggal": "2026-09-01"})}), ok_l, 3)), "tanggal ringkas mundur"
+    assert any("mundur" in x for x in jaga(dict(ok_b, **{"daerah/0001.json": json.dumps({"dibangun": "2026-11-02", "sumber": [{"nama": "Z", "tanggal": None}]})}), ok_l, 3)), "tanggal sumber hilang = mundur"
+    assert any("byte >" in x for x in jaga(ok_b, ok_l, 3, maks=10)), "ukuran > maks harus ditolak"
     mx = max(len(t.encode()) for t in ta.values())
     nul = {b: sum(1 for p in a.values() if p[b] is None) for b in BLOK_DICT + ("riwayat_luar",)}
     print(f"OK profil_daerah.py: {len(a)} kab, maks {mx} byte, deterministik, fixture 3 kab; null per blok {nul}")
@@ -1580,11 +1648,14 @@ if __name__ == "__main__":
     import argparse
     ap = argparse.ArgumentParser(description=__doc__.split("Pakai:")[0].strip())
     ap.add_argument("--cek", action="store_true", help="self-check D1-D5, D7 + penolakan input salah; tidak menulis")
+    ap.add_argument("--jaga", action="store_true", help="sesudah bangun penuh, sebelum commit: tolak (keluar 1) bila < 514 berkas, ringkas/prov hilang, tanggal mundur vs HEAD, atau > MAKS_BYTE; tidak menulis")
     ap.add_argument("--kab", help="cetak satu kab (kode IRBI 4 digit) ke stdout, tanpa menulis")
     ap.add_argument("--akar", default=AKAR, help="akar repo sumber (default: repo ini)")
     ap.add_argument("--keluar", default=AKAR, help="akar keluaran (default: repo ini)")
     ag = ap.parse_args()  # argumen tak dikenal -> keluar 2 sebelum menulis apa pun
-    if ag.cek:
+    if ag.jaga:
+        jaga_git(ag.akar)
+    elif ag.cek:
         cek()
     else:
         prof = bangun(ag.akar, ag.kab)

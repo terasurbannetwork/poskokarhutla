@@ -1,0 +1,58 @@
+name: Perbarui data Kemitraan Kampus
+
+# Harian 02.30 UTC (09.30 WIB), SESUDAH lintas.yml (02.10 UTC, bisa >60 menit: grup `data` antre) dan sebelum data.yml (14.20 UTC).
+# Keluaran hanya public/data/kemitraan, di-commit ke main (tanpa deploy; terbit.yml/data.yml membawanya ke situs).
+# Tanpa secret untuk saat ini. DT §7.1: data/kajian-bnpb/kampus/DESAIN-TEKNIS.md.
+on:
+  schedule:
+    - cron: "30 2 * * *"
+  workflow_dispatch:
+
+concurrency:
+  group: data
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  kemitraan:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Kode wilayah
+        run: python3 -I scripts/kemitraan/kode.py --cek && python3 -I scripts/kemitraan/kode.py
+
+      - name: Uji mandiri geo dan masalah
+        run: python3 -I scripts/kemitraan/geo.py --cek && python3 -I scripts/kemitraan/masalah.py --cek
+
+      - name: Profil daerah
+        run: python3 -I scripts/kemitraan/profil_daerah.py --cek && python3 -I scripts/kemitraan/profil_daerah.py
+
+      # KM-C02: tambahkan di sini `python3 -I scripts/kemitraan/pertanyaan.py --cek` (salin pertanyaan.json + kamus.json ke public/data/kemitraan).
+
+      # < 514 berkas atau tanggal mundur = keluar 1, langkah merah, TIDAK ada commit.
+      - name: Jaga keutuhan keluaran
+        run: python3 -I scripts/kemitraan/profil_daerah.py --jaga
+
+      # KM-C07: tambahkan di sini `python3 -I scripts/kemitraan/cocok_baru.py` (masalah antre -> R2 + POST ekspor/cocok).
+      # Butuh secret CLOUDFLARE_API_TOKEN, CLOUDFLARE_ACCOUNT_ID, KM_PIPA_TOKEN: tambahkan blok env: di langkah itu, jangan di berkas ini sekarang.
+
+      - name: Commit data kemitraan
+        run: |
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/data/kemitraan
+          git diff --cached --quiet -- public/data/kemitraan && { echo "data kemitraan tidak berubah"; exit 0; }
+          git commit -q -m "data: kemitraan kampus $(TZ=Asia/Jakarta date +%F)" -- public/data/kemitraan
+          for i in 1 2 3; do
+            git pull -q --rebase --autostash && git push -q && exit 0
+            echo "push bentrok, ulang $i"; sleep $((i * 10))
+          done
+          echo "::error title=Push kemitraan gagal::git push ke main gagal 3x"
+          exit 1
