@@ -9625,13 +9625,16 @@
 "Sumber: OpenAQ dan penyedia asalnya, CAMS lewat Open-Meteo, NASA GMAO GEOS-CF; uji Centurisk97": "Source: OpenAQ and its original providers, CAMS via Open-Meteo, NASA GMAO GEOS-CF; Centurisk97 testing",
 "Sinyal komunikasi": "Communication signal",
 "Sinyal komunikasi (menara, padam internet)": "Communication signal (towers, internet outages)",
-"Proksi akses komunikasi saat bencana. Menara: sel seluler yang tercatat OpenCelliD (hasil patungan pengguna), terbanyak per provinsi:": "Proxy for communications access during disasters. Towers: cell sites recorded in OpenCelliD (crowdsourced), highest per province:",
+"Proksi akses komunikasi saat bencana. Menara: sel seluler yang tercatat OpenCelliD (hasil patungan pengguna), terbanyak per provinsi (dibulatkan):": "Proxy for communications access during disasters. Towers: cell sites recorded in OpenCelliD (crowdsourced), highest per province (rounded):",
 "sel tercatat": "cells recorded",
 "Lama (jam)": "Duration (hours)",
-"Blok /24 turun hingga": "/24 blocks down by up to",
+"Turun hingga (%)": "Down by up to (%)",
 "Data sinyal komunikasi belum bisa dimuat.": "Communication signal data could not be loaded.",
 "TIDAK TERBUKTI": "NOT PROVEN",
 "tidak terbukti": "not proven",
+"NTB": "West Nusa Tenggara",
+"ada hubungan": "association found",
+"Uji model menunggu data menara.": "Model test is waiting for tower data.",
 ": sinyalnya lemah, jangan dibaca sebagai prediksi andal": ": the signal is weak, do not read it as a reliable prediction"
 },
 "pola": [
@@ -9644,16 +9647,24 @@
 "Internet outages: $1 events since $2. Latest:"
 ],
 [
-"^Menambahkan kepadatan menara ke model bahaya padam internet ((?:LOLOS|TIDAK LOLOS|TAK TERUJI|GAGAL)) uji \\(AUC ([\\d.,]+); pembanding iklim ([\\d.,]+)\\)((?:: sinyalnya lemah, jangan dibaca sebagai prediksi andal)?)\\.$",
+"^Menambahkan kepadatan menara ke model bahaya padam internet ((?:LOLOS|TIDAK LOLOS|TAK TERUJI|GAGAL)) uji \\(AUC ([\\d.,]+|–); pembanding iklim ([\\d.,]+|–)\\)((?:: sinyalnya lemah, jangan dibaca sebagai prediksi andal)?)\\.$",
 "Adding tower density to the internet-outage hazard model: verdict $1 (AUC $2; climatology baseline $3)$4."
 ],
 [
-"^Hubungan antara bahaya karhutla dan padam internet: (.+?) \\(p = ([\\d.,]+)\\)\\.$",
-"Relationship between wildfire hazard and internet outages: $1 (p = $2)."
+"^Hubungan antara bahaya karhutla dan padam internet: (.+?) \\(p (=|<) ([\\d.,]+)\\)\\.$",
+"Relationship between wildfire hazard and internet outages: $1 (p $2 $3)."
 ],
 [
-"^(Menambahkan .+?\\)(?:: [^.]*)?\\.)?\\s?(Hubungan antara .+?\\)\\.)?\\s?Jumlah sel mengukur kepadatan pengamatan, bukan jumlah menara sebenarnya \\(Aceh dan NTT nyaris kosong di data\\)\\. Padam = blok jaringan /24 yang tak menjawab ping, bukan bukti listrik atau seluler mati\\. Sumber: OpenCelliD \\(CC-BY-SA 4\\.0\\), unduhan (\\d{1,2} \\p{L}{3,4} \\d{4}|–); IODA, Georgia Tech, data s\\.d\\. (\\d{1,2} \\p{L}{3,4} \\d{4}|–)\\.$",
-"$1 $2 Cell counts measure observation density, not the actual number of towers (Aceh and NTT are almost empty in the data). Outage = a /24 network block that does not answer ping, not proof that power or mobile service is down. Source: OpenCelliD (CC-BY-SA 4.0), downloaded $3; IODA, Georgia Tech, data up to $4."
+"^Uji model bahaya padam internet dengan menara: (TAK TERUJI|GAGAL|LOLOS|TIDAK LOLOS) \\(padam latih kurang dari (\\d+)\\)\\.$",
+"Test of the internet-outage hazard model with towers: $1 (fewer than $2 outages in training)."
+],
+[
+"^(\\d+) provinsi punya kurang dari 20 sel tercatat\\.$",
+"$1 provinces have fewer than 20 recorded cells."
+],
+[
+"^((?:Menambahkan .+?\\)(?:: [^.]*)?|Uji model [^.]*)\\.)?\\s?(Hubungan antara .+?\\)\\.)?\\s?Jumlah sel mengukur kepadatan pengamatan, bukan jumlah menara sebenarnya\\.(?: (\\d+ provinsi punya kurang dari 20 sel tercatat\\.))? Padam = blok jaringan /24 yang tak menjawab ping, bukan bukti listrik atau seluler mati\\. Sumber: OpenCelliD \\(CC-BY-SA 4\\.0\\), unduhan (\\d{1,2} \\p{L}{3,4} \\d{4}|–); IODA, Georgia Tech, data s\\.d\\. (\\d{1,2} \\p{L}{3,4} \\d{4}|–)\\.$",
+"$1 $2 Cell counts measure observation density, not the actual number of towers. $3 Outage = a /24 network block that does not answer ping, not proof that power or mobile service is down. Source: OpenCelliD (CC-BY-SA 4.0), downloaded $4; IODA, Georgia Tech, data up to $5."
 ],
 [
 "^sawit (\\S+), HTI (\\S+), HPH (\\S+), tambang (\\S+)$",

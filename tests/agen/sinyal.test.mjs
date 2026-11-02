@@ -54,3 +54,25 @@ test('index.html: modul dimuat sesudah tebang.js; data tidak di-fetch saat muat 
   assert.ok(!h.includes('menara.json') && !h.includes('internet_padam.json'))
   assert.ok(/ambil = \(\) => janji \|\|=/.test(js) && /nanti\(\(\) => nyala\(on\)\)/.test(js))
 })
+
+test('model: vonis teks (bukan objek) tak mencetak undefined/env var; p kecil; lemah dari pembanding < 0,5', () => {
+  const dgn = b => ({ ...M, model: { ...M.model, bahaya_menara: b } })
+  const tunggu = S.modelTeks(dgn('MENUNGGU KUNCI (OPENCELLID_KEY)'))
+  assert.ok(tunggu.includes('menunggu data menara') && !/OPENCELLID|undefined/.test(tunggu))
+  const tak = S.modelTeks(dgn('TAK TERUJI (padam latih < 5)'))
+  assert.ok(tak.includes('TAK TERUJI') && !tak.includes('<') && !/undefined/.test(tak))
+  assert.ok(!/OPENCELLID|undefined/.test(S.kartu(dgn('MENUNGGU KUNCI (OPENCELLID_KEY)'), P)))
+  const hub = v => S.hubTeks({ hubungan_bahaya_padam: { vonis: 'ADA HUBUNGAN', p_geser: v } })
+  assert.ok(hub(0.001).includes('&lt; 0,01') && !hub(0.001).includes('0,00'))
+  assert.ok(hub(0.2).includes('= 0,20'))
+  const lemah = (auc, pb) => /sinyalnya lemah/.test(S.modelTeks({ model: { auc_pembanding_klimatologi: pb, bahaya_menara: { vonis: 'LOLOS', auc_uji: auc } } }))
+  assert.equal(lemah(0.9, 0.45), true)
+  assert.equal(lemah(0.9, 0.55), false)
+})
+
+test('kartu: sel dibulatkan dinyatakan; jumlah provinsi sepi dihitung dari data, bukan diketik', () => {
+  const h = S.kartu(M, P), n = Object.values(M.menara_per_provinsi).filter(v => v < 20).length
+  assert.ok(h.includes('(dibulatkan)') && h.includes('Turun hingga (%)') && !h.includes('Aceh dan NTT nyaris'))
+  assert.equal(S.sepi(M), n)
+  assert.ok(n === 0 || h.includes(`${n} provinsi punya kurang dari 20 sel tercatat`))
+})

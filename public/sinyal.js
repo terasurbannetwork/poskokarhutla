@@ -20,20 +20,24 @@
   /* peristiwa padam terbaru dulu */
   const terbaru = (p, n = 8) => [...(p.peristiwa || [])].sort((a, b) => b.mulai - a.mulai).slice(0, n);
   /* pernyataan model dari JSON, tak diketik tangan */
+  /* bahaya_menara bisa berupa teks vonis (menara.py: "MENUNGGU KUNCI ...", "TAK TERUJI (...)"), bukan objek; kartu() yang meng-escape */
   const modelTeks = m => { const b = m.model?.bahaya_menara, pb = m.model?.auc_pembanding_klimatologi; if (!b) return "";
-    const lemah = /^LOLOS/.test(b.vonis) && b.auc_uji - .5 < .05;
+    if (typeof b !== "object") return /^MENUNGGU/.test(b) ? "Uji model menunggu data menara." : `Uji model bahaya padam internet dengan menara: ${String(b).replace(/<\s*/g, "kurang dari ")}.`;
+    /* lemah = lolos uji tetapi pembanding klimatologi sendiri di bawah acak (AUC < 0,5), per catatan JSON */
+    const lemah = /^LOLOS/.test(b.vonis) && pb < .5;
     return `Menambahkan kepadatan menara ke model bahaya padam internet ${b.vonis} uji (AUC ${m2(b.auc_uji)}; pembanding iklim ${m2(pb)})${lemah ? ": sinyalnya lemah, jangan dibaca sebagai prediksi andal" : ""}.`; };
   const hubTeks = p => { const h = p.hubungan_bahaya_padam; if (!h) return "";
-    return `Hubungan antara bahaya karhutla dan padam internet: ${esc(String(h.vonis).toLowerCase())} (p = ${m2(h.p_geser)}).`; };
+    return `Hubungan antara bahaya karhutla dan padam internet: ${esc(String(h.vonis).toLowerCase())} (p ${h.p_geser < .01 ? "&lt; 0,01" : "= " + m2(h.p_geser)}).`; };
+  const sepi = m => Object.values(m.menara_per_provinsi || {}).filter(v => v < 20).length;
   const kartu = (m, p) => { const tm = topMenara(m), ev = terbaru(p), tot = (p.peristiwa || []).length;
     return `<details open class="sy-det"><summary><b>Sinyal komunikasi</b> <small>menara s.d. ${tgl(m.dibuat)}, padam s.d. ${tgl(p.sampai)}</small></summary>
-      <div class="sy-isi"><p class="sy-ket">Proksi akses komunikasi saat bencana. Menara: sel seluler yang tercatat OpenCelliD (hasil patungan pengguna), terbanyak per provinsi:</p>
+      <div class="sy-isi"><p class="sy-ket">Proksi akses komunikasi saat bencana. Menara: sel seluler yang tercatat OpenCelliD (hasil patungan pengguna), terbanyak per provinsi (dibulatkan):</p>
       <table class="sy-tbl"><thead><tr><th>Provinsi</th><th>sel tercatat</th></tr></thead><tbody>${tm.map(r => `<tr><td>${esc(r.nama)}</td><td>${n0(bulat(r.v))}</td></tr>`).join("")}</tbody></table>
       <p class="sy-ket">Padam internet: ${n0(tot)} peristiwa sejak ${tgl(p.dari)}. Terbaru:</p>
-      <table class="sy-tbl"><thead><tr><th>Provinsi</th><th>Tanggal</th><th>Lama (jam)</th><th>Blok /24 turun hingga</th></tr></thead><tbody>${ev.map(e =>
-        `<tr><td>${esc(nama(e.prov))}</td><td>${tgl(e.tanggal)}</td><td>${n0(e.jam)}</td><td>${Number.isFinite(e.turun_maks) ? Math.round(e.turun_maks * 100) + "%" : "–"}</td></tr>`).join("")}</tbody></table>
-      <p class="sy-cat">${esc(modelTeks(m))} ${hubTeks(p)} Jumlah sel mengukur kepadatan pengamatan, bukan jumlah menara sebenarnya (Aceh dan NTT nyaris kosong di data). Padam = blok jaringan /24 yang tak menjawab ping, bukan bukti listrik atau seluler mati. Sumber: OpenCelliD (CC-BY-SA 4.0), unduhan ${tgl(m.akses_menara?.match(/\d{4}-\d\d-\d\d/)?.[0])}; IODA, Georgia Tech, data s.d. ${tgl(p.sampai)}.</p></div></details>`; };
-  window.SinyalKomunikasi = {n0, tgl, nama, bulat, topMenara, terbaru, modelTeks, hubTeks, kartu};
+      <table class="sy-tbl"><thead><tr><th>Provinsi</th><th>Tanggal</th><th>Lama (jam)</th><th>Turun hingga (%)</th></tr></thead><tbody>${ev.map(e =>
+        `<tr><td>${esc(nama(e.prov))}</td><td>${tgl(e.tanggal)}</td><td>${n0(e.jam)}</td><td>${Number.isFinite(e.turun_maks) ? Math.round(e.turun_maks * 100) : "–"}</td></tr>`).join("")}</tbody></table>
+      <p class="sy-cat">${esc(modelTeks(m))} ${hubTeks(p)} Jumlah sel mengukur kepadatan pengamatan, bukan jumlah menara sebenarnya.${sepi(m) ? ` ${sepi(m)} provinsi punya kurang dari 20 sel tercatat.` : ""} Padam = blok jaringan /24 yang tak menjawab ping, bukan bukti listrik atau seluler mati. Sumber: OpenCelliD (CC-BY-SA 4.0), unduhan ${tgl(m.akses_menara?.match(/\d{4}-\d\d-\d\d/)?.[0])}; IODA, Georgia Tech, data s.d. ${tgl(p.sampai)}.</p></div></details>`; };
+  window.SinyalKomunikasi = {n0, tgl, nama, bulat, topMenara, terbaru, modelTeks, hubTeks, sepi, kartu};
   if (typeof document === "undefined" || typeof peta === "undefined") return;
 
   let janji = null, gen = 0;
