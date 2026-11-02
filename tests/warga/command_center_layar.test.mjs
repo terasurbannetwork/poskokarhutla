@@ -11,6 +11,8 @@ import {after} from "node:test";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import {sha256, berantai} from "./_bnpb.mjs";
 import {cariChrome, bukaPeramban} from "../bnpb/_peramban.mjs";
+/* kata yang dihapus dari konsep command center (keputusan pemilik 2 Nov 2026); dirakit supaya berkas ini sendiri bersih dari kata itu */
+const LAMA = "shi" + "ft", TANPA_LAMA = (teks, ket) => assert.ok(!new RegExp(LAMA, "i").test(teks), "tidak boleh memuat kata lama: " + ket);
 
 const uji = berantai(), CHROME = cariChrome(), MENIT = 6e4, JAM = 36e5;
 if (!CHROME) uji("cc layar DILEWATI: Chrome tidak ditemukan", async () => {});
@@ -132,7 +134,7 @@ else {
     assert.match(await q(tab, "q('.cc-spanduk').innerText"), /Sudah diubah oleh Citra Dewi pukul \d\d\.\d\d menjadi "Ada api"/); assert.equal((await DB.prepare("SELECT count(*) n FROM cc_jejak WHERE tugas_id = ?").bind(T3).first()).n, jejakT3, "kalah balapan: tanpa jejak");
     /* log */
     await tab.klikTeks(".cc-tab", "^Log$"); await tab.tungguFungsi("document.querySelectorAll('.cc-log-isi .cc-tabel').length === 2");
-    const log = await q(tab, "({baris: qa('.cc-log-isi .cc-tabel')[1].querySelectorAll('tbody tr').length, ring: qa('.cc-log-isi .cc-tabel')[0].innerText, csv: q('.cc-saring a').getAttribute('href'), ops: qa('.cc-saring select')[1].innerText})");
+    const log = await q(tab, "({baris: qa('.cc-log-isi .cc-tabel')[1].querySelectorAll('tbody tr').length, ring: qa('.cc-log-isi .cc-tabel')[0].innerText, csv: q('.cc-saring a').getAttribute('href'), ops: qa('.cc-saring select')[0].innerText})");
     assert.equal(log.baris, 3, "dua ambil + satu keputusan"); assert.match(log.ring, /Budi Santoso/); assert.match(log.csv, /^\/api\/cc\/log\?.*format=csv/); assert.match(log.ops, /Budi Santoso/);
     assert.deepEqual(bersih(tab), [], "tidak ada galat konsol atau pelanggaran CSP");
     await tab.tutup();
@@ -286,17 +288,17 @@ else {
     await tab.buka(base + "/command-center/dinding", {tunggu: ".dd-item"});
     await tab.tungguFungsi("document.querySelectorAll('.dd-sumber.basi').length >= 1 && /diperbarui/.test(document.querySelectorAll('.dd-sumber')[1].innerText)", 20000);
     const gambar = () => q(tab, `({gulirY: document.documentElement.scrollHeight - innerHeight, gulirX: document.documentElement.scrollWidth - innerWidth, bodyY: document.body.scrollHeight - innerHeight, font: parseFloat(getComputedStyle(document.documentElement).fontSize),
-      daftarLuap: q('.dd-daftar').scrollHeight - q('.dd-daftar').clientHeight, jam: q('.dd-jam-angka').textContent, shift: q('.dd-shift-nama').textContent, hadir: q('.dd-hadir').textContent, item: qa('.dd-item').length,
+      daftarLuap: q('.dd-daftar').scrollHeight - q('.dd-daftar').clientHeight, jam: q('.dd-jam-angka').textContent, hadir: q('.dd-hadir').textContent, item: qa('.dd-item').length,
       ubin: qa('.dd-ubin').map(u => [u.querySelector('.dd-angka-label').textContent, u.querySelector('.dd-angka-nilai').textContent, u.querySelector('.dd-angka-satuan').textContent]), sub: qa('.dd-ubin .dd-angka-sub').map(e => e.textContent),
       sumber: qa('.dd-sumber').map(e => [e.querySelector('b').textContent, e.innerText, e.classList.contains('basi')]), aksi: qa('button[data-ke], input, textarea, select, a[href^="tel:"], .al, [role=dialog]:not(.cc-gerbang)').length,
       skrip: qa('script[src]').map(s => s.getAttribute('src')), judulItem: qa('.dd-item-atas b').map(b => b.textContent), pil: qa('.dd-item .cc-pil').map(p => p.textContent),
       petaAda: !!q('.dd-peta canvas'), petaGagal: q('.dd-peta-gagal').hidden ? '' : q('.dd-peta-gagal').textContent, kunci: q('.dd-kunci').textContent, teks: document.body.innerText})`);
     let g = await gambar();
     assert.ok(g.gulirY <= 0 && g.gulirX <= 0 && g.bodyY <= 0, `tanpa gulir di 1920: ${g.gulirY}/${g.gulirX}/${g.bodyY}`); assert.ok(Math.abs(g.font - 17.4) < 0.3, "rem ~17,4 px di 1920x1080: " + g.font); assert.ok(g.daftarLuap <= 1);
-    assert.match(g.jam, /^\d\d\.\d\d$/); assert.match(g.shift, /^Shift (Pagi|Siang|Malam) \d\d\.\d\d–\d\d\.\d\d$/); assert.match(g.hadir, /Belum ada operator hadir|Operator hadir:/);
+    assert.match(g.jam, /^\d\d\.\d\d$/); TANPA_LAMA(g.teks, "layar dinding"); assert.match(g.hadir, /Belum ada operator hadir|Operator hadir:/);
     assert.equal(g.item, 3); assert.deepEqual(g.pil, ["Baru", "Baru", "Dalam konfirmasi"]); assert.deepEqual(g.judulItem, ["Kota Banda Aceh", "Aceh Besar", "Aceh Tamiang"]);
-    assert.equal(g.ubin.length, 6); assert.deepEqual(g.ubin.map(u => u[0]), ["Titik panas 24 jam", "Alert hari ini", "Median respons shift ini", "Lewat 6 jam, BPBD belum konfirmasi", "Peringatan aktif, semua bencana", "OMC hari ini"]);
-    assert.deepEqual(g.ubin[0].slice(1), ["3", "lokasi"], "3 lokasi unik: duplikat satelit lain dan titik lebih tua dari 24 jam tidak dihitung"); assert.deepEqual(g.ubin[2].slice(1), ["–", ""], "belum ada alert yang dipegang pada shift ini (D1 diisi langsung)");
+    assert.equal(g.ubin.length, 6); assert.deepEqual(g.ubin.map(u => u[0]), ["Titik panas 24 jam", "Alert hari ini", "Median respons hari ini", "Lewat 6 jam, BPBD belum konfirmasi", "Peringatan aktif, semua bencana", "OMC hari ini"]);
+    assert.deepEqual(g.ubin[0].slice(1), ["3", "lokasi"], "3 lokasi unik: duplikat satelit lain dan titik lebih tua dari 24 jam tidak dihitung"); assert.deepEqual(g.ubin[2].slice(1), ["–", ""], "belum ada alert yang dipegang hari ini (D1 diisi langsung)");
     assert.deepEqual(g.ubin[4].slice(1), ["0", "peringatan"]); assert.deepEqual(g.ubin[5].slice(1), ["0", "sortie"]);
     /* cakupan tertulis di tiap tile: rincian "alert hari ini" satu populasi dengan angkanya (dibuat sejak 00.00 WIB); "lewat 6 jam" menyebut semua level sejak dibuat */
     assert.equal(g.sub[0], "lokasi unik (sel 375 m, semua satelit)", "375 m = ukuran sel, bukan galat: tanpa ±"); assert.doesNotMatch(g.sub[0], /±/);
@@ -392,8 +394,9 @@ else {
     await q(tab, "(window.__tahan = 0)"); await tab.tungguFungsi("window.__panggil.log.length === 2 && !/Memuat/.test(document.querySelector('.cc-log-isi').innerText)"); await tidur(600);
     const log2 = await q(tab, "window.__panggil.log"); assert.equal(log2.length, 2); assert.match(log2[0], /tgl=2026-10-11\b/); assert.match(log2[1], /tgl=2026-10-12\b/);
     assert.match(await q(tab, "q('.cc-log-isi').innerText"), /12 Oktober 2026/); assert.doesNotMatch(await q(tab, "q('.cc-log-isi').innerText"), /11 Oktober 2026/, "jawaban usang tidak tampil");
-    /* shift dan operator: pilihan sekali klik, memuat segera tanpa tunda */
-    await q(tab, "(window.__panggil.log.length = 0)"); await tab.pilih(".cc-saring select", "pagi"); await tab.tungguFungsi("window.__panggil.log.length === 1", 300);
+    /* tanpa saringan lain selain tanggal dan operator: satu kotak pilih (Operator), tak ada pilihan kelompok waktu, dan permintaan log hanya membawa tgl (+ operator) */
+    assert.deepEqual(await q(tab, "qa('.cc-saring select').map(e => e.getAttribute('aria-label'))"), ["Operator"]); TANPA_LAMA(await q(tab, "document.body.innerText"), "tab Log");
+    assert.ok(log2.every(u => !new RegExp(LAMA, "i").test(u)), "permintaan log tidak membawa parameter lama");
     assert.deepEqual(bersih(tab), []); await tab.tutup();
   });
 
@@ -470,7 +473,7 @@ else {
     } finally { await tab.tutup(); await DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM cc_status")]); }
   });
 
-  uji("cc layar meja (Chrome): tab Log dibuka sebelum antrean (tanggal shift dari server) tiba: 'Pilih tanggal' + Unduh CSV nonaktif, bukan kotak kosong; begitu antrean tiba tanggal dibenihkan dan log dimuat", async () => {
+  uji("cc layar meja (Chrome): tab Log dibuka sebelum antrean (tanggal dari server) tiba: 'Pilih tanggal' + Unduh CSV nonaktif, bukan kotak kosong; begitu antrean tiba tanggal dibenihkan dan log dimuat", async () => {
     await DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM cc_status")]);
     await tugas(0x5301, {kab: "Kab Log Dini"});
     const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", op.tok); await tab.kirim("Page.addScriptToEvaluateOnNewDocument", {source: PANTAU});
@@ -496,7 +499,7 @@ else {
       await q(tab, "(window.__antrean = 0, (() => { const f = window.fetch; window.fetch = (u, o) => { if (String(u).includes('/api/cc/antrean')) window.__antrean++; return f.call(window, u, o); }; })())");
       await tab.klikTeks(".cc-tab", "^Log$"); await tab.tungguFungsi("document.querySelector('.cc-log-isi h3') && !/Memuat/.test(document.querySelector('.cc-log-isi').innerText)");
       const keadaan = () => q(tab, `({tgl: q('.cc-saring input[type=date]').value, href: q('.cc-saring a').getAttribute('href'), mati: q('.cc-saring a').getAttribute('aria-disabled'), judul: q('.cc-saring a').title, isi: q('.cc-log-isi').innerText, tabel: qa('.cc-log-isi .cc-tabel').length, log: window.__panggil.log.length})`);
-      let k = await keadaan(); assert.match(k.tgl, /^\d{4}-\d\d-\d\d$/, "dibenihkan dari tanggal shift server"); assert.match(k.href, /tgl=\d{4}-\d\d-\d\d/); assert.equal(k.mati, null); assert.ok(k.tabel >= 1);
+      let k = await keadaan(); assert.match(k.tgl, /^\d{4}-\d\d-\d\d$/, "dibenihkan dari tanggal WIB server"); assert.match(k.href, /tgl=\d{4}-\d\d-\d\d/); assert.equal(k.mati, null); assert.ok(k.tabel >= 1);
       /* operator mengosongkan tanggal */
       await q(tab, "(window.__panggil.log.length = 0)"); await tab.pilih(".cc-saring input[type=date]", "");
       k = await keadaan(); assert.equal(k.tgl, ""); assert.equal(k.tabel, 0, "tabel dan ringkasan lama dikosongkan"); assert.match(k.isi, /Pilih tanggal/); assert.doesNotMatch(k.isi, /Ringkasan per operator|Jejak \(/);
@@ -504,7 +507,7 @@ else {
       /* jajak antrean (30 dtk) dan aksi memuat ulang antrean berkali-kali: ketikan tidak ditimpa tanggal bawaan */
       for (let i = 1; i <= 2; i++) { await jajakUlang(tab); await tab.tungguFungsi(`window.__antrean >= ${i}`, 10000); await tidur(500); }
       await q(tab, "document.querySelector('.cc-btn.ke-dalam_konfirmasi').click()"); await tab.tungguFungsi("window.__antrean >= 3", 10000); await tidur(500);   // aksi -> muat() ulang
-      k = await keadaan(); assert.equal(k.tgl, "", "tanggal tetap kosong sesudah jajak dan aksi (dulu: ditimpa tanggal shift tiap muat)"); assert.match(k.isi, /Pilih tanggal/); assert.equal(k.mati, "true"); assert.equal(k.log, 0);
+      k = await keadaan(); assert.equal(k.tgl, "", "tanggal tetap kosong sesudah jajak dan aksi (dulu: ditimpa tanggal bawaan tiap muat)"); assert.match(k.isi, /Pilih tanggal/); assert.equal(k.mati, "true"); assert.equal(k.log, 0);
       /* memilih tanggal lagi: tabel, tautan CSV hidup kembali */
       await tab.pilih(".cc-saring input[type=date]", "2026-10-05"); await tab.tungguFungsi("window.__panggil.log.length >= 1 && !/Memuat/.test(document.querySelector('.cc-log-isi').innerText) && document.querySelector('.cc-log-isi h3')", 10000);
       k = await keadaan(); assert.equal(k.tgl, "2026-10-05"); assert.match(k.href, /tgl=2026-10-05/); assert.equal(k.mati, null); assert.equal(k.judul, "");

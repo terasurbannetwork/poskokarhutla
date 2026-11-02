@@ -1007,7 +1007,7 @@
     "GET /api/cc/dinding": "cc dinding: ringkasan, antrean ringkas",
     "GET /api/cc/status": "cc status: pop-up alarm menemukan alert",
     "POST /api/cc/aksi/:id": "cc aksi: semua pasangan transisi",
-    "GET /api/cc/log": "cc log: jendela shift",
+    "GET /api/cc/log": "cc log: jendela tanggal WIB",
     "GET /api/cc/kontak": "cc kontak: hanya nomor kantor",
     "GET /command-center": "cc halaman meja: /command-center terbuka",
     "GET /command-center/dinding": "cc halaman dinding: /command-center/dinding bagi",

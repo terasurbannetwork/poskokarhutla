@@ -1,5 +1,5 @@
 /* Command center karhutla (keputusan pemilik 1 Nov 2026). Skema: migrations/0099_command_center.sql (cc_status, cc_jejak, cc_hadir). Klien: public/admin/command_*.js|css.
-   Ruangan punya LAYAR DINDING (baca saja, menyala terus) dan MEJA OPERATOR (per orang, bergiliran shift). Operator menindaklanjuti alert api level 3:
+   Ruangan punya LAYAR DINDING (baca saja, menyala terus) dan MEJA OPERATOR (per orang). Operator menindaklanjuti alert api level 3:
    lihat alert -> telepon BPBD (di luar sistem) -> "Dalam konfirmasi" -> kabar BPBD -> "Ada api" / "Tidak ada api". Tiap klik dilog (operator, waktu, durasi).
    - Alert = tugas karhutla (FILTER_BENCANA.karhutla, src/monitor.js) level = 3, dibuat <= 7 hari. Tanpa baris cc_status = 'baru'. TANPA FK ke tugas_api; modul ini TIDAK menulis tugas_api, tugas_isian,
      atau alur konfirmasi BPBD (monitor/instansi tidak disentuh).
@@ -8,7 +8,7 @@
    - Penulisan status = compare-and-set: UPDATE ... WHERE status = dari, jejak ditulis INSERT..SELECT..WHERE changes() > 0 dalam SATU batch, jadi klik yang kalah (409) tidak meninggalkan jejak palsu.
    - Pelaku ke klien: staf = 'staf:<id>' + nama; moderator = 'moderator' + 'Moderator'. Hash token moderator (oleh di cc_status/cc_jejak, 12 heks awal sha256 entri ADMIN_TOKEN) TIDAK PERNAH keluar (log, CSV, ringkasan).
    - POST aksi dibatasi BATAS_AKSI_JAM per pelaku per jam (laju(), 429 + Retry-After); GET log (JSON dan CSV) BATAS_LOG_JAM per pelaku per jam, penghitung 'cc.log' sendiri. GET antrean/dinding (jajak 30 dtk) TIDAK
-     dibatasi: itu rute baca ringan yang di-memo. Daftar yang dibaca (alert terbuka, keputusan akhir, jejak shift) dipotong di BATAS_DAFTAR; pemotongan dikirim sebagai
+     dibatasi: itu rute baca ringan yang di-memo. Daftar yang dibaca (alert terbuka, keputusan akhir, jejak respons hari ini) dipotong di BATAS_DAFTAR; pemotongan dikirim sebagai
      antrean_terpotong / final_terpotong / median_respons_terpotong (hitungan dari daftar terpotong = batas bawah) dan penampil WAJIB menandainya.
      Log (GET /api/cc/log) dipotong di BATAS_LOG baris PERTAMA: JSON memuat terpotong + batas; CSV-nya tidak lengkap, jadi diberi baris CATATAN terakhir, header x-terpotong, dan akhiran -terpotong pada nama berkas.
    - Layar dinding TANPA catatan bebas, nomor telepon, atau id tugas; koordinat dibulatkan 0,01; pemegang hanya nama depan. Nomor BPBD (GET /api/cc/kontak) hanya untuk meja TULIS, tidak pernah ke dinding/pemirsa;
@@ -36,25 +36,18 @@ const UMUR_ALERT = 7 * HARI, FINAL_TAMPIL = 12 * JAM, HADIR_LIHAT = 10 * MENIT, 
 export const STATUS = ["baru", "dalam_konfirmasi", "ada_api", "tidak_ada_api"], FINAL = ["ada_api", "tidak_ada_api"];
 /* satu-satunya tabel transisi (diuji semua pasangan): baru -> dalam_konfirmasi -> ada_api | tidak_ada_api; final -> dalam_konfirmasi hanya sebagai koreksi (catatan wajib) */
 export const TRANSISI = {baru: ["dalam_konfirmasi"], dalam_konfirmasi: ["ada_api", "tidak_ada_api"], ada_api: ["dalam_konfirmasi"], tidak_ada_api: ["dalam_konfirmasi"]};
-/* satu konstanta shift: [jam mulai, jam akhir) WIB sejak 00.00 tanggal MULAI shift. Malam melewati tengah malam (23.00 -> 07.00 hari berikutnya) dan milik tanggal mulainya. */
-export const SHIFT = {pagi: [7, 15], siang: [15, 23], malam: [23, 31]};
-const NAMA_SHIFT = [...Object.keys(SHIFT), "semua"];
-export const BATAS_DAFTAR = 500;   // baris per daftar yang dibaca muat() (alert terbuka, keputusan akhir, jejak shift); dibaca BATAS_DAFTAR + 1 supaya terpotong terdeteksi tepat; terpotong = angkanya batas bawah
+export const BATAS_DAFTAR = 500;   // baris per daftar yang dibaca muat() (alert terbuka, keputusan akhir, jejak respons hari ini); dibaca BATAS_DAFTAR + 1 supaya terpotong terdeteksi tepat; terpotong = angkanya batas bawah
 export const BATAS_AKSI_JAM = 120, BATAS_LOG_JAM = 120, MAKS_LOKASI = 20;   // POST /api/cc/aksi dan GET /api/cc/log per pelaku per jam (penghitung terpisah: jajak antrean/dinding tidak ikut); pasangan prov/kab per panggilan GET /api/cc/kontak
 export const BATAS_LOG = 5000;   // baris jejak yang dibaca GET /api/cc/log (dibaca BATAS_LOG + 1 supaya terpotong terdeteksi tepat); terpotong = JSON/CSV/ringkasan hanya memuat BATAS_LOG baris PERTAMA (terlama) dan hitungannya batas bawah
 export const BATAS_TENGGAT = 3000;   // tugas 'buka' tanpa konfirmasi yang dibaca untuk tile "lewat 6 jam"; tercapai = angkanya batas bawah (lewat_tenggat_terpotong)
 
 /* ================================================================ fungsi murni (diuji) */
-/* ms epoch -> {tgl: YYYY-MM-DD WIB tanggal mulai shift, shift}. 02.00 WIB tgl 2 = malam tgl 1. */
-export function shiftDari(ms) {
-  const w = ms + WIB, hari = Math.floor(w / HARI), sisa = w - hari * HARI, awal = SHIFT.pagi[0] * JAM;
-  const [tgl, t] = sisa < awal ? [hari - 1, sisa + HARI] : [hari, sisa];
-  return {tgl: new Date(tgl * HARI).toISOString().slice(0, 10), shift: Object.keys(SHIFT).find(k => t >= SHIFT[k][0] * JAM && t < SHIFT[k][1] * JAM)};
-}
-/* tanggal + shift ('semua' = sehari kerja 07.00 -> 07.00 berikutnya) -> {mulai, akhir} ms, akhir eksklusif */
-export function rentangShift(tgl, shift) {
-  const dasar = Date.parse(tgl + "T00:00:00Z") - WIB, [a, b] = shift === "semua" ? [SHIFT.pagi[0], SHIFT.malam[1]] : SHIFT[shift];
-  return {mulai: dasar + a * JAM, akhir: dasar + b * JAM};
+/* ms epoch -> tanggal WIB YYYY-MM-DD (hari 00.00-24.00 WIB). 00.00 WIB = 17.00 UTC hari sebelumnya. */
+export function tglWib(ms) { return new Date(Math.floor((ms + WIB) / HARI) * HARI).toISOString().slice(0, 10); }
+/* tanggal WIB -> {mulai, akhir} ms, akhir eksklusif (00.00 WIB tanggal itu sampai 00.00 WIB hari berikutnya) */
+export function rentangHari(tgl) {
+  const mulai = Date.parse(tgl + "T00:00:00Z") - WIB;
+  return {mulai, akhir: mulai + HARI};
 }
 /* median larik angka (genap: rata-rata dua tengah, dibulatkan ms); null bila kosong */
 export function median(a) {
@@ -125,10 +118,10 @@ function saring(a, awal = []) {
 async function denganBencana(fn) { try { return await fn(FILTER_BENCANA.karhutla); } catch (e) { if (!tanpaBencana(e)) throw e; return fn(""); } }
 
 const KOLOM_ALERT = "t.id, t.prov, t.kab, t.kec, t.lat, t.lon, t.n24, t.luas_ha, t.dibuat, t.konfirmasi_pada, t.dummy, c.status cstatus, c.oleh coleh, c.sejak csejak";
-/* satu batch: alert terbuka (cc baru/dalam_konfirmasi, tugas 'buka'), keputusan akhir sejak `sejak`, dan bila `penuh` (layar dinding) hitungan hari ini, tenggat konfirmasi lapangan, respons shift berjalan, operator hadir.
-   Pindai 'buka' lewat indeks status (tugas_api_wilayah); keputusan akhir lewat indeks cc_status_sejak; jejak shift lewat indeks cc_jejak_waktu. */
+/* satu batch: alert terbuka (cc baru/dalam_konfirmasi, tugas 'buka'), keputusan akhir sejak `sejak`, dan bila `penuh` (layar dinding) hitungan hari ini, tenggat konfirmasi lapangan, respons hari ini, operator hadir.
+   Pindai 'buka' lewat indeks status (tugas_api_wilayah); keputusan akhir lewat indeks cc_status_sejak; jejak respons lewat indeks cc_jejak_waktu. */
 async function muat(env, a, kini, penuh) {
-  const mulaiHari = awalHari(kini), batasFinal = Math.min(kini - FINAL_TAMPIL, mulaiHari), batasAlert = kini - UMUR_ALERT, sh = shiftDari(kini), rg = rentangShift(sh.tgl, sh.shift);
+  const mulaiHari = awalHari(kini), batasFinal = Math.min(kini - FINAL_TAMPIL, mulaiHari), batasAlert = kini - UMUR_ALERT, rg = rentangHari(tglWib(kini));
   const hasil = await denganBencana(async kecuali => {
     const S1 = saring(a, [batasAlert]), S2 = saring(a, [batasFinal, batasAlert]), S3 = saring(a), S4 = saring(a, [mulaiHari]), S5 = saring(a, [rg.mulai, rg.akhir]);
     const st = [
@@ -149,7 +142,7 @@ async function muat(env, a, kini, penuh) {
   const ids = [...new Set([...buka, ...akhir].map(r => r.coleh).filter(o => o?.startsWith("staf:")).map(o => o.slice(5)))];
   const nama = new Map(ids.length ? (await env.DB.prepare("SELECT id, nama FROM staf WHERE id IN (SELECT value FROM json_each(?))").bind(JSON.stringify(ids)).all()).results.map(r => [r.id, r.nama]) : []);
   const alert = [...buka.map(r => ({...r, cstatus: r.cstatus ?? "baru"})), ...akhir.filter(r => r.csejak >= kini - FINAL_TAMPIL)];
-  const out = {t: kini, shift: {...sh, ...rg}, alert, nama, finalHari: akhir.filter(r => r.csejak >= mulaiHari).length, bukaTerpotong: bukaT, akhirTerpotong: akhirT};
+  const out = {t: kini, hari: {tgl: tglWib(kini), ...rg}, alert, nama, finalHari: akhir.filter(r => r.csejak >= mulaiHari).length, bukaTerpotong: bukaT, akhirTerpotong: akhirT};
   if (penuh) {
     out.lewatTenggat = hasil[2].results.filter(t => { const d = tenggat(t, kini); return d.terlambat && d.langkah === "konfirmasi"; }).length;
     out.lewatTerpotong = hasil[2].results.length >= BATAS_TENGGAT;
@@ -192,7 +185,7 @@ async function antrean(env, req, kini) {
   const a = await pelaku(env, req, kini); if (a instanceof Response) return a;
   if (a.operator) await tandaiHadir(env, a, kini);
   const m = await memo(env, "r", a, kini, 5e3, () => muat(env, a, kini, false));
-  return json({kini, shift: m.shift, saya: {nama: a.nama, tulis: a.tulis}, alert: [...m.alert].sort(urut).map(r => bentukAlert(r, a, m.nama)),
+  return json({kini, hari: m.hari, saya: {nama: a.nama, tulis: a.tulis}, alert: [...m.alert].sort(urut).map(r => bentukAlert(r, a, m.nama)),
     antrean_terpotong: m.bukaTerpotong, final_terpotong: m.akhirTerpotong});
 }
 
@@ -204,7 +197,7 @@ async function dinding(env, req, kini) {
     const m = await muat(env, a, kini, true), alert = [...m.alert].sort(urut);
     /* ringkasan.baru / dalam_konfirmasi = ANTREAN terbuka (sampai 7 hari); ringkasan.hari_ini = alert yang dibuat sejak 00.00 WIB (populasi angka "alert hari ini"); antrean_total = seluruh
        antrean sebelum dipotong 60 baris, supaya "+N alert lagi" di layar jujur; bila antrean_terpotong / final_terpotong, antrean_total dan hitungan baru/dalam_konfirmasi adalah batas bawah */
-    return {data_pada: m.t, shift: m.shift,
+    return {data_pada: m.t, hari: m.hari,
       ringkasan: {alert_hari_ini: m.alertHari, hari_ini: m.hariIni, baru: alert.filter(r => r.cstatus === "baru").length, dalam_konfirmasi: alert.filter(r => r.cstatus === "dalam_konfirmasi").length, final_hari_ini: m.finalHari,
         median_respons_ms: median(m.responsMs), lewat_tenggat_konfirmasi: m.lewatTenggat, lewat_tenggat_terpotong: m.lewatTerpotong,
         antrean_terpotong: m.bukaTerpotong, final_terpotong: m.akhirTerpotong, median_respons_terpotong: m.responsTerpotong},
@@ -301,19 +294,18 @@ async function aksi(env, req, id, kini) {
   return json({id, status: ke, oleh_nama: a.nama, sejak: kini, aksi: aksiBoleh(ke, true)});
 }
 
-/* ================================================================ GET /api/cc/log?tgl=&shift=&operator=&format=csv */
+/* ================================================================ GET /api/cc/log?tgl=&operator=&format=csv */
 /* kunci operator di log: staf:<id>, atau 'moderator' (SEMUA moderator; hash token mereka tidak pernah keluar, lihat kunciOleh) */
 const RE_OPERATOR = /^(?:staf:[0-9A-Za-z]{1,32}|moderator)$/;
 async function log(env, req, url, kini) {
   const a = await pelaku(env, req, kini); if (a instanceof Response) return a;
-  const q = url.searchParams, tgl = q.get("tgl") ?? shiftDari(kini).tgl, shift = q.get("shift") ?? "semua", op = q.get("operator"), format = q.get("format") ?? "json";
+  const q = url.searchParams, tgl = q.get("tgl") ?? tglWib(kini), op = q.get("operator"), format = q.get("format") ?? "json";
   if (!tglSah(tgl)) return gagal(400, "tgl harus YYYY-MM-DD yang sah");
-  if (!NAMA_SHIFT.includes(shift)) return gagal(400, `shift harus ${NAMA_SHIFT.join("/")}`);
   if (op != null && !RE_OPERATOR.test(op)) return gagal(400, "operator harus staf:<id> atau moderator");
   if (!["json", "csv"].includes(format)) return gagal(400, "format harus json atau csv");
   /* batas laju per pelaku SESUDAH validasi bentuk (salah ketik tidak menghabiskan jatah) dan SEBELUM membaca jejak (kueri terberat modul ini: sampai BATAS_LOG baris + durasi); JSON dan CSV berbagi jatah */
   const lim = await laju(env, a.oleh, "cc.log", [[JAM, BATAS_LOG_JAM]], kini); if (lim) return lim;
-  const modOp = op === KUNCI_MOD, rg = rentangShift(tgl, shift), S = saring(a, op && !modOp ? [rg.mulai, rg.akhir, op] : [rg.mulai, rg.akhir]);
+  const modOp = op === KUNCI_MOD, rg = rentangHari(tgl), S = saring(a, op && !modOp ? [rg.mulai, rg.akhir, op] : [rg.mulai, rg.akhir]);
   /* LEFT JOIN: tugas yang sudah dibuang retensi 180 hari tetap terlihat di log (kab/prov kosong); staf berwilayah hanya melihat baris yang tugasnya ada di wilayahnya */
   const baris = (await env.DB.prepare(`SELECT j.id, j.waktu, j.tugas_id, j.oleh, j.dari, j.ke, j.catatan, t.kab, t.prov, t.dibuat FROM cc_jejak j LEFT JOIN tugas_api t ON t.id = j.tugas_id
     WHERE j.waktu >= ?1 AND j.waktu < ?2 ${modOp ? "AND j.oleh NOT LIKE 'staf:%'" : op ? "AND j.oleh = ?3" : ""} ${a.dummy ? "" : "AND j.dummy = 0"} ${a.wil.length ? `AND t.prov IN (SELECT value FROM json_each(?${S.ikat.length}))` : ""} ORDER BY j.waktu, j.id LIMIT ${BATAS_LOG + 1}`).bind(...S.ikat).all()).results;
@@ -333,9 +325,9 @@ async function log(env, req, url, kini) {
     const kepala = ["waktu_wib", "operator", "kab", "provinsi", "dari", "ke", "catatan", "durasi_ms"];
     const isi = jejak.map(j => [selCsv(wibTeks(j.waktu)), selCsv(j.operator_nama), selCsv(j.kab), selCsv(j.prov_nama), selCsv(j.dari), selCsv(j.ke), selCsv(j.catatan), j.durasi_ms ?? ""].join(","));
     /* log terpotong: berkas TIDAK lengkap, jadi diberi tiga penanda yang tak bisa terlewat: baris catatan terakhir, akhiran -terpotong pada nama berkas, dan header x-terpotong */
-    if (terpotong) isi.push([selCsv(`CATATAN: log terpotong, berkas ini hanya memuat ${String(BATAS_LOG).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} baris pertama; persempit tanggal, shift, atau operator untuk mendapat sisanya`), ...Array(kepala.length - 1).fill("")].join(","));
+    if (terpotong) isi.push([selCsv(`CATATAN: log terpotong, berkas ini hanya memuat ${String(BATAS_LOG).replace(/\B(?=(\d{3})+(?!\d))/g, ".")} baris pertama; persempit operator atau pilih tanggal lain untuk mendapat sisanya`), ...Array(kepala.length - 1).fill("")].join(","));
     return new Response("﻿" + [kepala.join(","), ...isi].join("\r\n") + "\r\n", {headers: {"content-type": "text/csv; charset=utf-8", "cache-control": "no-store", "x-content-type-options": "nosniff",
-      "content-disposition": `attachment; filename="cc-log-${tgl}-${shift}${terpotong ? "-terpotong" : ""}.csv"`, ...(terpotong ? {"x-terpotong": "1"} : {})}});
+      "content-disposition": `attachment; filename="cc-log-${tgl}${terpotong ? "-terpotong" : ""}.csv"`, ...(terpotong ? {"x-terpotong": "1"} : {})}});
   }
   const per = new Map();
   for (const j of jejak) {
@@ -343,7 +335,7 @@ async function log(env, req, url, kini) {
     o.aksi++; if (FINAL.includes(j.ke)) o.selesai++;
     if (j.durasi_jenis === "respons") o.respons.push(j.durasi_ms); else if (j.durasi_jenis === "konfirmasi") o.konfirmasi.push(j.durasi_ms);
   }
-  return json({tgl, shift, ...rg, jejak, terpotong, batas: BATAS_LOG, ringkasan: [...per.values()].map(({respons, konfirmasi, ...o}) => ({...o, median_respons_ms: median(respons), median_konfirmasi_ms: median(konfirmasi)}))});
+  return json({tgl, ...rg, jejak, terpotong, batas: BATAS_LOG, ringkasan: [...per.values()].map(({respons, konfirmasi, ...o}) => ({...o, median_respons_ms: median(respons), median_konfirmasi_ms: median(konfirmasi)}))});
 }
 
 /* ================================================================ GET /api/cc/kontak?prov=&kab= ATAU ?lokasi=<prov>|<kab> (berulang, maks 20) (hanya meja TULIS) */

@@ -15,8 +15,7 @@ body.dd{margin:0;height:100vh;overflow:hidden;background:#071629;color:#fff;font
 .dd-atas{display:grid;grid-template-columns:minmax(0,1fr) auto auto;align-items:center;gap:1.6rem}
 .dd-judul h1{margin:0;font-size:2.1rem;line-height:1.1;letter-spacing:.02em;text-transform:uppercase}
 .dd-judul p{margin:.2rem 0 0;font-size:1rem;color:#9cc3ff}
-.dd-shift{display:grid;gap:.15rem;text-align:right}
-.dd-shift-nama{font-size:1.6rem;text-transform:uppercase;letter-spacing:.03em}
+.dd-hadir-kotak{display:grid;gap:.15rem;text-align:right}
 .dd-hadir{font-size:1.05rem;color:#c8d3e3}
 .dd-jam{display:grid;justify-items:end;gap:.1rem}
 .dd-jam-baris{display:flex;align-items:baseline;gap:.5rem}

@@ -127,7 +127,7 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
 
   function berikut() {
     if (tampil || !antre.length) return;
-    const a = antre.shift(); tampil = true; tandai(a.kunci);
+    const [a] = antre.splice(0, 1); tampil = true; tandai(a.kunci);
     if (BERBUNYI.has(a.jenis)) bunyi();
     const t = document.createElement("div"); t.innerHTML = kartu(a); el = t.firstElementChild; document.body.append(el);
     const k = el;

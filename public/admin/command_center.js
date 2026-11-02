@@ -6,16 +6,15 @@
    Antrean digambar KUNCI-PER-KARTU: kartu yang datanya tidak berubah dipakai ulang DAN tidak dipindah (alert baru hanya diselipkan; replaceChildren melepas semua kartu dan memutus fokus ketikan), dan
    fokus (beserta posisi kursor) dipulihkan ke kartu yang dibangun ulang, jadi alasan koreksi yang sedang diketik tidak terputus oleh alert baru di jajak 30 dtk. Luas satelit dibulatkan (resolusi kasar, ~4 ha per titik). */
 (() => {
-  const {h, jam, jamTgl, tgl, pendek, durasi, lokasi, teksShift, ambil, kirim, waktu, jajak, perbaruiUmur, suara, NAMA_STATUS, NAMA_SHIFT} = window.Cc;
+  const {h, jam, jamTgl, tgl, pendek, durasi, lokasi, ambil, kirim, waktu, jajak, perbaruiUmur, suara, NAMA_STATUS} = window.Cc;
   const app = document.getElementById("app"), FINAL = ["ada_api", "tidak_ada_api"];
   const NAMA_AKSI = {dalam_konfirmasi: "Dalam konfirmasi", ada_api: "Ada api", tidak_ada_api: "Tidak ada api"};
-  const SHIFT_JAM = {pagi: "07.00–15.00", siang: "15.00–23.00", malam: "23.00–07.00"};   // tampilan saja; sumber SHIFT di src/command_center.js (dijaga tests/warga/command_center.test.mjs)
   const JENIS_DURASI = {respons: "respons", konfirmasi: "konfirmasi"};
   const KONTAK_SEGAR = 30 * 6e4, KONTAK_ULANG = 10 * 6e4, TUNDA_LOG = 400;
   /* pembaca saja = staf tanpa operator_cc (koordalops, pimpinan); moderator menulis. Pembaca boleh melewati gerbang suara, operator tidak. */
   const PEMBACA = Admin.staf && !Admin.peran.includes("operator_cc");
   const S = {tab: "antrean", data: null, gagalSejak: null, sesiHabis: false, pesan: null, kontak: new Map(), draft: new Map(), sibuk: new Set(),
-    log: {tgl: "", shift: "semua", operator: "", daftar: new Map(), hasil: null, galat: "", muat: false, urut: 0, sudah: false, tunda: 0, batal: null, benih: false}};
+    log: {tgl: "", operator: "", daftar: new Map(), hasil: null, galat: "", muat: false, urut: 0, sudah: false, tunda: 0, batal: null, benih: false}};
   const el = {};
 
   /* ---------------------------------------------------------------- kerangka */
@@ -69,9 +68,9 @@
 
   function gambar() {
     const d = S.data, a = d.alert, hit = s => a.filter(x => x.status === s).length, final = a.filter(x => FINAL.includes(x.status)).length;
-    /* tanggal bawaan = tanggal shift berjalan menurut server, diisi SEKALI (bukan tiap jajak/aksi): tanggal yang dikosongkan operator tidak ditimpa lagi, dan pilihannya sendiri (benih = true lewat ubah()) menang */
-    if (!S.log.benih) { S.log.benih = true; if (!S.log.tgl) { S.log.tgl = d.shift.tgl; if (el.lTgl) { el.lTgl.value = S.log.tgl; if (S.tab === "log") muatLog(); } } }
-    el.info.replaceChildren(h("b", {teks: `Shift ${teksShift(d.shift)}`}), ` · ${tgl(d.shift.mulai)} · `, d.saya.nama, d.saya.tulis ? " (operator)" : " (hanya melihat)");
+    /* tanggal bawaan = tanggal WIB hari ini menurut server, diisi SEKALI (bukan tiap jajak/aksi): tanggal yang dikosongkan operator tidak ditimpa lagi, dan pilihannya sendiri (benih = true lewat ubah()) menang */
+    if (!S.log.benih) { S.log.benih = true; if (!S.log.tgl) { S.log.tgl = d.hari.tgl; if (el.lTgl) { el.lTgl.value = S.log.tgl; if (S.tab === "log") muatLog(); } } }
+    el.info.replaceChildren(h("b", {teks: `Hari ini · ${tgl(d.hari.mulai)}`}), " · ", d.saya.nama, d.saya.tulis ? " (operator)" : " (hanya melihat)");
     /* hitungan dari daftar yang dipotong server (antrean_terpotong / final_terpotong) = batas bawah: ditandai "+" */
     const tanda = potong => potong ? "+" : "";
     el.chip.replaceChildren(
@@ -198,29 +197,28 @@
   /* ---------------------------------------------------------------- log */
   function bangunLog() {
     const L = S.log; L.sudah = true;
-    el.lTgl = h("input", {type: "date", value: L.tgl, "aria-label": "Tanggal mulai shift"});
-    el.lShift = h("select", {"aria-label": "Shift"}, ...["semua", "pagi", "siang", "malam"].map(k => h("option", {value: k, selected: k === L.shift, teks: k === "semua" ? "Semua shift (07.00–07.00)" : `${NAMA_SHIFT[k]} ${SHIFT_JAM[k]}`})));
+    el.lTgl = h("input", {type: "date", value: L.tgl, "aria-label": "Tanggal (WIB)"});
     el.lOp = h("select", {"aria-label": "Operator"}, h("option", {value: "", teks: "Semua operator"}));
     el.lCsv = h("a", {class: "cc-btn", href: "#", download: "", teks: "Unduh CSV"});
     el.lIsi = h("div", {class: "cc-log-isi"});
     /* tanggal diketik/diputar tombolnya = banyak "change" beruntun: tunggu TUNDA_LOG ms sesudah yang terakhir, baru memuat. Sementara itu permintaan yang sedang jalan sudah usang (filter berubah): diputus
-       dan jawabannya tak akan menimpa layar. Shift dan operator (pilihan sekali klik) memuat segera. */
+       dan jawabannya tak akan menimpa layar. Operator (pilihan sekali klik) memuat segera. */
     const ubah = (hapusOp, tunda = 0) => {
-      L.benih = true; L.tgl = el.lTgl.value; L.shift = el.lShift.value; if (hapusOp) L.operator = ""; else L.operator = el.lOp.value;
+      L.benih = true; L.tgl = el.lTgl.value; if (hapusOp) L.operator = ""; else L.operator = el.lOp.value;
       clearTimeout(L.tunda); L.urut++; L.batal?.abort();
       if (!L.tgl) { L.muat = false; L.hasil = null; L.galat = ""; gambarLog(); return; }   // tanggal dikosongkan: tabel/ringkasan lama dibuang (bukan tanggal lain yang tampak berlaku), tautan CSV mati
       if (!tunda) { muatLog(); return; }
       L.muat = true; L.galat = ""; gambarLog();
       L.tunda = setTimeout(muatLog, tunda);
     };
-    el.lTgl.addEventListener("change", () => ubah(true, TUNDA_LOG)); el.lShift.addEventListener("change", () => ubah(true)); el.lOp.addEventListener("change", () => ubah(false));
-    el.pL.replaceChildren(h("div", {class: "cc-saring"}, h("label", null, "Tanggal ", el.lTgl), h("label", null, "Shift ", el.lShift), h("label", null, "Operator ", el.lOp), el.lCsv),
-      h("p", {class: "cc-redup", teks: "Tanggal = tanggal MULAI shift (shift malam 23.00–07.00 milik tanggal mulainya). Durasi respons = dari alert dibuat sampai dipegang pertama kali; durasi konfirmasi = dari dipegang sampai diputuskan."}), el.lIsi);
+    el.lTgl.addEventListener("change", () => ubah(true, TUNDA_LOG)); el.lOp.addEventListener("change", () => ubah(false));
+    el.pL.replaceChildren(h("div", {class: "cc-saring"}, h("label", null, "Tanggal ", el.lTgl), h("label", null, "Operator ", el.lOp), el.lCsv),
+      h("p", {class: "cc-redup", teks: "Tanggal = hari WIB, 00.00–24.00. Durasi respons = dari alert dibuat sampai dipegang pertama kali; durasi konfirmasi = dari dipegang sampai diputuskan."}), el.lIsi);
   }
-  function queryLog(csv) { const q = new URLSearchParams({tgl: S.log.tgl, shift: S.log.shift}); if (S.log.operator) q.set("operator", S.log.operator); if (csv) q.set("format", "csv"); return q.toString(); }
+  function queryLog(csv) { const q = new URLSearchParams({tgl: S.log.tgl}); if (S.log.operator) q.set("operator", S.log.operator); if (csv) q.set("format", "csv"); return q.toString(); }
   async function muatLog() {
     const L = S.log, n = ++L.urut; clearTimeout(L.tunda); L.batal?.abort();
-    if (!L.tgl) { L.muat = false; L.hasil = null; L.galat = ""; gambarLog(); return; }   // tanpa tanggal (tab dibuka sebelum tanggal shift dari server tiba): "Pilih tanggal" + CSV mati, bukan kotak kosong dengan tautan CSV hidup
+    if (!L.tgl) { L.muat = false; L.hasil = null; L.galat = ""; gambarLog(); return; }   // tanpa tanggal (tab dibuka sebelum tanggal dari server tiba): "Pilih tanggal" + CSV mati, bukan kotak kosong dengan tautan CSV hidup
     const batal = L.batal = new AbortController();
     L.muat = true; L.galat = ""; gambarLog();
     const r = await ambil("/api/cc/log?" + queryLog(false), {batal: batal.signal});
@@ -253,10 +251,10 @@
         h("td", {teks: x.kab ? `${x.kab}, ${x.prov_nama ?? ""}`.replace(/, $/, "") : "(tugas sudah dibuang)"}),
         h("td", null, h("span", {class: "cc-pil", "data-s": x.dari, teks: NAMA_STATUS[x.dari]}), " → ", h("span", {class: "cc-pil", "data-s": x.ke, teks: NAMA_STATUS[x.ke]})),
         h("td", {class: "ang", teks: x.durasi_ms == null ? "–" : `${durasi(x.durasi_ms)} (${JENIS_DURASI[x.durasi_jenis] ?? ""})`}), h("td", {class: "cc-cat", teks: x.catatan ?? ""})))));
-    el.lIsi.replaceChildren(h("h3", {teks: `Ringkasan per operator · ${tgl(j.mulai)} · ${NAMA_SHIFT[j.shift] ?? j.shift}`}),
+    el.lIsi.replaceChildren(h("h3", {teks: `Ringkasan per operator · ${tgl(j.mulai)}`}),
       j.ringkasan.length ? ring : h("p", {class: "cc-redup", teks: "Belum ada tindakan operator pada rentang ini."}),
       h("h3", {teks: `Jejak (${fmt(j.jejak.length)}${plus} baris)`}), j.jejak.length ? tabel : null,
-      j.terpotong ? h("p", {class: "cc-spanduk galat", role: "status", teks: `Log melebihi ${fmt(j.batas)} baris dan dipotong pada ${fmt(j.batas)} baris pertama: angka bertanda + adalah batas bawah, median hanya dari baris yang terbaca, dan CSV juga hanya memuat baris ini. Persempit tanggal, shift, atau operator.`}) : null);
+      j.terpotong ? h("p", {class: "cc-spanduk galat", role: "status", teks: `Log melebihi ${fmt(j.batas)} baris dan dipotong pada ${fmt(j.batas)} baris pertama: angka bertanda + adalah batas bawah, median hanya dari baris yang terbaca, dan CSV juga hanya memuat baris ini. Persempit operator atau pilih tanggal lain.`}) : null);
   }
 
   /* ---------------------------------------------------------------- jalan */

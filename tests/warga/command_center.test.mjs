@@ -1,7 +1,7 @@
 /* Command center karhutla (src/command_center.js, migrations/0099_command_center.sql, peran staf operator_cc, tab pemirsa dinding) di workerd (Miniflare) dengan D1 lokal sungguhan,
    migrasi apa adanya (TEST.md: tanpa mock klien DB). Dibuktikan: matriks akses tiap rute (tamu 401, akun gerbang 403, operator, koordalops/pimpinan baca saja, pemirsa dinding hanya /api/cc/dinding),
    gerbang halaman centurisk97.id, hak baca baru (monitor/omc/inventaris/sla/pantau) dan penolakan tulis/korban/tagih, semua transisi + CAS 409 tanpa jejak palsu, trigger append-only, wilayah, dummy,
-   status by kunci (kunci sama dengan feed peringatan), log + CSV tahan injeksi rumus, shiftDari lintas tengah malam, durasi, kontak tanpa nomor pribadi.
+   status by kunci (kunci sama dengan feed peringatan), log + CSV tahan injeksi rumus, tglWib lintas tengah malam WIB, durasi, kontak tanpa nomor pribadi.
    Halaman (bagian E): gerbang /command-center (meja) dan /command-center/dinding per jenis akun, CSP, kerangka dinding tanpa alarm.js/sapa/asisten, menu admin, node --check berkas klien, pengendali
    bunyi dan pemformat jam/durasi klien di node:vm. Uji di peramban nyata ada di command_center_layar.test.mjs.
    Jalankan: node --test tests/warga/command_center.test.mjs */
@@ -13,13 +13,15 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, GERBANG_ORANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
-import {shiftDari, rentangShift, median, durasiJejak, selCsv, nomorDari, aksiBoleh, TRANSISI, STATUS, FINAL, SHIFT, BATAS_TENGGAT, BATAS_DAFTAR, BATAS_LOG, BATAS_AKSI_JAM, BATAS_LOG_JAM, MAKS_LOKASI, bersihkanCc} from "../../src/command_center.js";
+import {tglWib, rentangHari, median, durasiJejak, selCsv, nomorDari, aksiBoleh, TRANSISI, STATUS, FINAL, BATAS_TENGGAT, BATAS_DAFTAR, BATAS_LOG, BATAS_AKSI_JAM, BATAS_LOG_JAM, MAKS_LOKASI, bersihkanCc} from "../../src/command_center.js";
 import {kunciPublikKarhutla, periksaPeringatan} from "../../src/peringatan.js";
 import {TERTUTUP_OPERATOR, JENIS, JENIS_CC, bolehBuka} from "../../src/pantau.js";
 import {PERAN} from "../../src/staf.js";
 import {P_SIPPA_BACA} from "../../src/sippa.js";
 import {HALAMAN_STAF, SEMUA_PERAN, CSP_ADMIN, CSP_DINDING} from "../../src/admin_halaman.js";
 
+/* kata yang dihapus dari konsep command center (keputusan pemilik 2 Nov 2026); dirakit supaya berkas ini sendiri bersih dari kata itu */
+const LAMA = "shi" + "ft", TANPA_LAMA = (teks, ket) => assert.ok(!new RegExp(LAMA, "i").test(teks), "tidak boleh memuat kata lama: " + ket);
 const MENIT = 6e4, JAM = 36e5, HARI = 24 * JAM, WIB = 7 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"};
 const uji = berantai();
 const teks = (...p) => readFileSync(path.join(AKAR, ...p), "utf8");
@@ -180,7 +182,7 @@ uji("cc antrean: hanya alert karhutla level 3 dalam 7 hari yang terbuka; terlama
   assert.deepEqual(Object.keys(a).sort(), ["aksi", "dibuat", "id", "kab", "kec", "konfirmasi_lapangan", "luas_ha", "n24", "oleh_nama", "prov", "prov_nama", "sejak", "status"]);
   assert.deepEqual([a.status, a.kab, a.kec, a.prov, a.n24, a.luas_ha, a.oleh_nama, a.sejak, a.konfirmasi_lapangan, a.aksi], ["baru", "Kotawaringin Timur", "Mentaya Hilir", "62", 12, 45.5, null, null, true, ["dalam_konfirmasi"]]);
   assert.equal(r.j.alert.find(x => x.id === A.tua).konfirmasi_lapangan, false);
-  assert.deepEqual(r.j.saya, {nama: "Budi Santoso", tulis: true}); assert.deepEqual(r.j.shift, {...shiftDari(r.j.kini), ...rentangShift(shiftDari(r.j.kini).tgl, shiftDari(r.j.kini).shift)});
+  assert.deepEqual(r.j.saya, {nama: "Budi Santoso", tulis: true}); assert.deepEqual(r.j.hari, {tgl: tglWib(r.j.kini), ...rentangHari(tglWib(r.j.kini))}); TANPA_LAMA(r.t, "GET /api/cc/antrean");
   assert.ok(!Object.keys(a).some(k => ["lat", "lon", "catatan", "wa", "nip", "dummy", "ip_hash"].includes(k)), "koordinat mentah dan data pribadi tidak ikut");
   /* pembaca: sama daftarnya, tanpa aksi */
   const k = await ambil("/api/cc/antrean", koord.h); assert.deepEqual(k.j.alert.map(x => x.id), ids); assert.ok(k.j.alert.every(x => x.aksi.length === 0)); assert.equal(k.j.saya.tulis, false);
@@ -456,38 +458,39 @@ async function semaiLog() {
   return t;
 }
 const mnt = n => n * MENIT;
-uji("cc log: jendela shift (07-15, 15-23, 23-07 milik tanggal mulai), batas tepat, operator, durasi lintas jendela, ringkasan per operator", async () => {
+uji("cc log: jendela tanggal WIB (00.00-24.00), batas tepat, operator, durasi lintas jendela, ringkasan per operator; parameter lama diabaikan", async () => {
   const t = await semaiLog(), L = async q => { const r = await ambil("/api/cc/log?" + q, koord.h); assert.equal(r.s, 200, r.t); return r.j; };
   const ket = j => j.jejak.map(x => `${x.operator_nama[0]}:${x.dari}>${x.ke}`);
-  const pagi = await L(`tgl=${TGL}&shift=pagi`); assert.deepEqual(pagi.jejak.map(x => x.waktu), [w(7, 0), w(7, 6), w(14, 58), w(10, 0)].sort((a, b) => a - b), "07.00 masuk, 06.59.59,999 tidak, 15.00 tidak");
-  assert.deepEqual([pagi.mulai, pagi.akhir], [w(7), w(15)]);
-  const siang = await L(`tgl=${TGL}&shift=siang`); assert.deepEqual(siang.jejak.map(x => x.waktu), [w(15, 3), w(22, 59, 59, 999)], "15.00 masuk, 22.59.59,999 masih siang, 23.00 tidak");
-  const malam = await L(`tgl=${TGL}&shift=malam`); assert.deepEqual(malam.jejak.map(x => x.waktu), [w(23, 0), w(26, 0), w(30, 59, 59, 999)], "malam tanggal 20: 23.00 -> 06.59.59,999 tanggal 21; 07.00 tanggal 21 tidak");
-  assert.deepEqual([malam.mulai, malam.akhir], [w(23), w(31)]);
-  const semua = await L(`tgl=${TGL}`); assert.equal(semua.shift, "semua"); assert.equal(semua.jejak.length, 4 + 2 + 3 + 0 - 0, "semua = sehari kerja 07.00-07.00: W (06.59.59,999) dan Z-final (07.00 hari berikut) di luar");
-  const sebelum = await L("tgl=2026-10-19&shift=malam"); assert.deepEqual(sebelum.jejak.map(x => x.waktu), [w(6, 59, 59, 999)], "06.59.59,999 tanggal 20 = malam tanggal 19");
-  assert.equal(sebelum.jejak[0].durasi_ms, mnt(59) + 59999, "respons = jejak - dibuat tugas (06.00 -> 06.59.59,999)");
+  const hari = await L(`tgl=${TGL}`), semua = hari;
+  assert.deepEqual(hari.jejak.map(x => x.waktu), [w(6, 59, 59, 999), w(7, 0), w(7, 6), w(10, 0), w(14, 58), w(15, 3), w(22, 59, 59, 999), w(23, 0)], "tanggal 20 = 00.00-24.00 WIB: 06.59.59,999 dan 23.00 ikut; 02.00 tanggal 21 tidak");
+  assert.deepEqual([hari.tgl, hari.mulai, hari.akhir], [TGL, w(0), w(24)]); assert.equal(hari.mulai, Date.UTC(2026, 9, 19, 17, 0), "00.00 WIB = 17.00 UTC hari sebelumnya"); TANPA_LAMA(JSON.stringify(hari), "JSON log");
+  const esok = await L("tgl=2026-10-21"); assert.deepEqual(esok.jejak.map(x => x.waktu), [w(26, 0), w(30, 59, 59, 999), w(31, 0)], "tanggal 21: 02.00, 06.59.59,999, 07.00");
+  assert.deepEqual([esok.mulai, esok.akhir], [w(24), w(48)]);
+  assert.deepEqual((await L("tgl=2026-10-19")).jejak, [], "tanggal 19 sepi");
+  /* parameter lama diabaikan (bukan 400), hasilnya sama dengan tanpa parameter; layar lama yang masih terbuka tidak rusak */
+  for (const sh of ["pagi", "siang", "malam", "semua", "dini"]) assert.deepEqual((await L(`tgl=${TGL}&${LAMA}=${sh}`)).jejak, hari.jejak, LAMA + "=" + sh + " diabaikan");
   /* durasi memakai riwayat penuh, juga yang di luar jendela */
-  const kf = siang.jejak.find(x => x.ke === "ada_api"); assert.deepEqual([kf.durasi_ms, kf.durasi_jenis], [mnt(5), "konfirmasi"], "14.58 (pagi) -> 15.03 (siang)");
-  const dl = pagi.jejak.find(x => x.waktu === w(14, 58)); assert.deepEqual([dl.durasi_ms, dl.durasi_jenis], [mnt(28), "respons"]);
-  const zf = malam.jejak.find(x => x.ke === "ada_api"); assert.deepEqual([zf.durasi_ms, zf.durasi_jenis], [mnt(180), "konfirmasi"]);
-  assert.deepEqual([malam.jejak.at(-1).durasi_ms, malam.jejak.at(-1).durasi_jenis], [null, null], "koreksi tanpa durasi");
+  const kf = hari.jejak.find(x => x.ke === "ada_api"); assert.deepEqual([kf.durasi_ms, kf.durasi_jenis], [mnt(5), "konfirmasi"], "14.58 -> 15.03");
+  const dl = hari.jejak.find(x => x.waktu === w(14, 58)); assert.deepEqual([dl.durasi_ms, dl.durasi_jenis], [mnt(28), "respons"]);
+  const zf = esok.jejak.find(x => x.ke === "ada_api"); assert.deepEqual([zf.durasi_ms, zf.durasi_jenis], [mnt(180), "konfirmasi"], "23.00 tanggal 20 (di luar jendela) -> 02.00 tanggal 21");
+  assert.deepEqual([esok.jejak.find(x => x.ke === "dalam_konfirmasi").durasi_ms, esok.jejak.find(x => x.ke === "dalam_konfirmasi").durasi_jenis], [null, null], "koreksi tanpa durasi");
   /* bidang baris */
-  assert.deepEqual(Object.keys(pagi.jejak[0]).sort(), ["catatan", "dari", "durasi_jenis", "durasi_ms", "kab", "ke", "operator", "operator_nama", "prov", "prov_nama", "waktu"]);
-  assert.deepEqual([malam.jejak[0].operator_nama, malam.jejak[0].kab, malam.jejak[0].prov, malam.jejak[0].prov_nama], ["Operator B", "Pontianak", "61", "Kalimantan Barat"]);
-  assert.ok(!JSON.stringify(semua).includes(t.X), "id tugas tidak keluar di log");
+  assert.deepEqual(Object.keys(hari.jejak[0]).sort(), ["catatan", "dari", "durasi_jenis", "durasi_ms", "kab", "ke", "operator", "operator_nama", "prov", "prov_nama", "waktu"]);
+  assert.deepEqual([esok.jejak[0].operator_nama, esok.jejak[0].kab, esok.jejak[0].prov, esok.jejak[0].prov_nama], ["Operator B", "Pontianak", "61", "Kalimantan Barat"]);
+  assert.ok(!JSON.stringify(hari).includes(t.X), "id tugas tidak keluar di log");
   /* filter operator + ringkasan */
-  const a = await L(`tgl=${TGL}&operator=${encodeURIComponent(A.oleh)}`); assert.deepEqual(a.jejak.map(x => x.operator), Array(4).fill(A.oleh));
-  assert.deepEqual(a.ringkasan, [{operator: A.oleh, nama: "Operator A", aksi: 4, selesai: 2, median_respons_ms: mnt(19), median_konfirmasi_ms: mnt(5) + 30000}], "respons 28 dan 10 menit -> 19; konfirmasi 5 dan 6 menit -> 5,5");
-  const b = await L(`tgl=${TGL}&operator=${encodeURIComponent(B.oleh)}`); assert.deepEqual(b.ringkasan, [{operator: B.oleh, nama: "Operator B", aksi: 4, selesai: 1, median_respons_ms: mnt(50), median_konfirmasi_ms: mnt(180)}], "respons 60 dan 40 menit -> 50");
-  assert.deepEqual(semua.ringkasan.map(r => [r.nama, r.aksi]).sort(), [["=cmd|' /C calc'!A0", 1], ["Operator A", 4], ["Operator B", 4]].sort(), "semua operator, WIB 07-07: A 4 (W di luar), B 4 (jejak 07.00 hari berikut di luar)");
+  const a = await L(`tgl=${TGL}&operator=${encodeURIComponent(A.oleh)}`); assert.deepEqual(a.jejak.map(x => x.operator), Array(5).fill(A.oleh));
+  assert.deepEqual(a.ringkasan, [{operator: A.oleh, nama: "Operator A", aksi: 5, selesai: 2, median_respons_ms: mnt(28), median_konfirmasi_ms: mnt(5) + 30000}], "respons 59:59,999 / 10 / 28 menit -> 28; konfirmasi 5 dan 6 menit -> 5,5");
+  const b = await L(`tgl=${TGL}&operator=${encodeURIComponent(B.oleh)}`); assert.deepEqual(b.ringkasan, [{operator: B.oleh, nama: "Operator B", aksi: 2, selesai: 0, median_respons_ms: mnt(50), median_konfirmasi_ms: null}], "respons 60 dan 40 menit -> 50; keputusan B jatuh di tanggal 21");
+  assert.deepEqual(esok.ringkasan.map(r => [r.nama, r.aksi, r.selesai]), [["Operator B", 3, 2]]);
+  assert.deepEqual(semua.ringkasan.map(r => [r.nama, r.aksi]).sort(), [["=cmd|' /C calc'!A0", 1], ["Operator A", 5], ["Operator B", 2]].sort(), "semua operator pada tanggal 20 WIB");
   assert.deepEqual((await L(`tgl=${TGL}&operator=staf:tidakada`)).jejak, []);
-  /* tanpa tgl = hari kerja berjalan (200); tanggal tanpa jejak kosong */
+  /* tanpa tgl = tanggal WIB berjalan (200); tanggal tanpa jejak kosong */
   assert.equal((await ambil("/api/cc/log", pim.h)).s, 200); assert.deepEqual((await L("tgl=2026-01-01")).ringkasan, []);
   /* validasi (400) setelah auth */
-  for (const q of ["tgl=2026-02-30", "tgl=20-10-2026", "tgl=2026-10-20x", "tgl=", `tgl=${TGL}&shift=dini`, `tgl=${TGL}&operator=bukan`, `tgl=${TGL}&operator=staf:${"a".repeat(33)}`, `tgl=${TGL}&operator=`, `tgl=${TGL}&format=xml`]) assert.equal((await ambil("/api/cc/log?" + q, koord.h)).s, 400, q);
+  for (const q of ["tgl=2026-02-30", "tgl=20-10-2026", "tgl=2026-10-20x", "tgl=", `tgl=${TGL}&operator=bukan`, `tgl=${TGL}&operator=staf:${"a".repeat(33)}`, `tgl=${TGL}&operator=`, `tgl=${TGL}&format=xml`]) assert.equal((await ambil("/api/cc/log?" + q, koord.h)).s, 400, q);
   assert.equal((await ambil("/api/cc/log?tgl=2026-02-30")).s, 401, "auth lebih dulu daripada validasi");
-  assert.deepEqual(ket(a).length, 4);
+  assert.deepEqual(ket(a).length, 5);
 });
 
 /* penguraian CSV minimal: kutip, kutip ganda, koma dan baris baru di dalam sel */
@@ -502,17 +505,20 @@ function urai(csv) {
 }
 uji("cc log csv: unduhan sah; kutip digandakan; awalan = + - @ TAB CR diberi apostrof (injeksi rumus), juga pada nama operator", async () => {
   const r = await mf.dispatchFetch(`http://bnpb.lokal/api/cc/log?tgl=${TGL}&format=csv`, {headers: koord.h}), buf = new Uint8Array(await r.arrayBuffer());
-  assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /^text\/csv; charset=utf-8/); assert.match(r.headers.get("content-disposition"), /^attachment; filename="cc-log-2026-10-20-semua\.csv"$/); assert.equal(r.headers.get("cache-control"), "no-store");
+  assert.equal(r.status, 200); assert.match(r.headers.get("content-type"), /^text\/csv; charset=utf-8/); assert.match(r.headers.get("content-disposition"), /^attachment; filename="cc-log-2026-10-20\.csv"$/); assert.equal(r.headers.get("cache-control"), "no-store");
   assert.deepEqual([...buf.slice(0, 3)], [0xEF, 0xBB, 0xBF], "BOM UTF-8 supaya Excel membaca huruf");
+  TANPA_LAMA(new TextDecoder().decode(buf) + r.headers.get("content-disposition"), "CSV log");
   const rows = urai(new TextDecoder().decode(buf).replace(/^\uFEFF/, ""));
-  assert.deepEqual(rows[0], ["waktu_wib", "operator", "kab", "provinsi", "dari", "ke", "catatan", "durasi_ms"]); assert.equal(rows.length, 1 + 4 + 2 + 3 + 0 - 0 + 0, "judul + 9 baris (sehari kerja)");
+  /* tanggal 21 menyumbang baris HYPERLINK (06.59.59,999 tanggal 21) */
+  rows.push(...urai((await (await mf.dispatchFetch(`http://bnpb.lokal/api/cc/log?tgl=2026-10-21&format=csv`, {headers: koord.h})).text()).replace(/^\uFEFF/, "")).slice(1));
+  assert.deepEqual(rows[0], ["waktu_wib", "operator", "kab", "provinsi", "dari", "ke", "catatan", "durasi_ms"]); assert.equal(rows.length, 1 + 8 + 3, "judul + 8 baris tanggal 20 + 3 baris tanggal 21");
   for (const row of rows.slice(1)) { assert.equal(row.length, 8); for (const sel of row.slice(0, 7)) assert.ok(!/^[=+\-@\t\r]/.test(sel), "sel berbahaya tanpa apostrof: " + JSON.stringify(sel)); assert.match(row[7], /^\d*$/, "durasi angka polos"); assert.match(row[0], /^2026-10-2[01] \d\d:\d\d:\d\d$/); }
   const sel = rows.flat();
   for (const harap of ["'=HYPERLINK(\"http://x\")", "'+1+1", "'-2+3", "'@SUM(1)", "'\tTAB awal", "'\rCR awal", "'=cmd|' /C calc'!A0", "Kotawaringin Timur", "Kalimantan Barat"])
     assert.ok(sel.includes(harap), "sel ada: " + JSON.stringify(harap));
-  /* kutip dan koma di dalam sel: satu sel utuh sesudah diurai ulang (malam 19 Okt memuat jejak 06.59.59,999 tanggal 20) */
-  const malam19 = urai(await (await mf.dispatchFetch(`http://bnpb.lokal/api/cc/log?tgl=2026-10-19&shift=malam&format=csv`, {headers: koord.h})).text());
-  assert.equal(malam19.length, 2); assert.equal(malam19[1][6], 'Bilang "ok", lalu koma'); assert.equal(malam19[1].length, 8);
+  /* kutip dan koma di dalam sel: satu sel utuh sesudah diurai ulang (tanggal 20 Okt memuat jejak 06.59.59,999) */
+  const csv20 = urai(await (await mf.dispatchFetch(`http://bnpb.lokal/api/cc/log?tgl=2026-10-20&format=csv`, {headers: koord.h})).text());
+  assert.equal(csv20.length, 1 + 8); assert.ok(csv20.some(x => x[6] === 'Bilang "ok", lalu koma' && x.length === 8));
   assert.equal(rows.find(x => x[0] === "2026-10-20 14:58:00")[7], String(mnt(28)));
   assert.deepEqual(["=1+1", "+1", "-1", "@a", "\tx", "\ry", "aman", 'a"b', null, 5].map(selCsv), ["\"'=1+1\"", "\"'+1\"", "\"'-1\"", "\"'@a\"", "\"'\tx\"", "\"'\ry\"", '"aman"', '"a""b"', "", '"5"']);
   assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&format=csv`, pDinding.h)).s, 403); assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&format=csv`)).s, 401);
@@ -534,13 +540,13 @@ uji("cc log terpotong: tepat BATAS_LOG utuh; satu lebih = JSON bertanda (terpoto
   assert.equal(j.ringkasan[0].aksi, BATAS_LOG, "hitungan ringkasan dari baris yang terbaca = batas bawah; klien menandainya dengan +");
   assert.equal(j.jejak.at(-1).waktu, mulai + BATAS_LOG * 1000, "yang tersisih = yang terbaru (urutan waktu naik)");
   c = await csv();
-  assert.equal(c.r.headers.get("x-terpotong"), "1"); assert.match(c.r.headers.get("content-disposition"), /^attachment; filename="cc-log-2026-10-20-semua-terpotong\.csv"$/); assert.equal(c.r.headers.get("cache-control"), "no-store");
+  assert.equal(c.r.headers.get("x-terpotong"), "1"); assert.match(c.r.headers.get("content-disposition"), /^attachment; filename="cc-log-2026-10-20-terpotong\.csv"$/); assert.equal(c.r.headers.get("cache-control"), "no-store");
   assert.equal(c.baris.length, 1 + BATAS_LOG + 1, "judul + batas baris + satu baris catatan");
   const cat = urai(c.baris.at(-1))[0]; assert.equal(cat.length, 8, "baris catatan selebar judul"); assert.match(cat[0], /^CATATAN: log terpotong, berkas ini hanya memuat 5\.000 baris pertama/); assert.ok(cat.slice(1).every(x => x === ""));
   assert.ok(!c.baris.slice(0, -1).some(b => b.includes("CATATAN")), "catatan hanya sekali, di ujung");
   /* saringan operator memotong pada batas yang sama (batas per permintaan, bukan per hari) */
   assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&operator=${encodeURIComponent(od.oleh)}`, kd.h, L.api)).j.terpotong, true);
-  assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&shift=malam`, kd.h, L.api)).j.terpotong, false, "shift lain di tanggal itu sepi: tidak terpotong");
+  assert.equal((await ambil(`/api/cc/log?tgl=2026-10-21`, kd.h, L.api)).j.terpotong, false, "tanggal lain sepi: tidak terpotong");
 });
 
 uji("cc log: hash token moderator TIDAK PERNAH keluar (JSON, CSV, ringkasan); moderator tampil 'Moderator' berkunci 'moderator'; staf tetap staf:<id> + nama; filter generik; bentuk hash ditolak", async () => {
@@ -549,7 +555,7 @@ uji("cc log: hash token moderator TIDAK PERNAH keluar (JSON, CSV, ringkasan); mo
   for (const [id, h] of [[m1, ADMIN], [m2, MOD2]]) assert.equal((await aksi(id, {dari: "baru", ke: "dalam_konfirmasi"}, h)).s, 200);
   assert.equal((await aksi(s1, {dari: "baru", ke: "dalam_konfirmasi"}, op1.h)).s, 200);
   assert.deepEqual((await DB.prepare("SELECT oleh FROM cc_jejak WHERE tugas_id IN (?, ?) ORDER BY id").bind(m1, m2).all()).results.map(r => r.oleh), [hashA, hashB], "yang DISIMPAN di D1 memang hash token (itu yang tidak boleh keluar)");
-  const tgl = shiftDari(Date.now()).tgl, q = o => "/api/cc/log?" + new URLSearchParams({tgl, ...o});
+  const tgl = tglWib(Date.now()), q = o => "/api/cc/log?" + new URLSearchParams({tgl, ...o});
   const L = await ambil(q({}), koord.h); assert.equal(L.s, 200, L.t);
   for (const hash of [hashA, hashB]) assert.ok(!L.t.includes(hash), "hash tidak ada di JSON log: " + hash);
   const mod = L.j.jejak.filter(x => x.kab?.startsWith("Kab Moderator")), staf = L.j.jejak.find(x => x.kab === "Kab Staf Satu");
@@ -578,10 +584,10 @@ uji("cc log: hash token moderator TIDAK PERNAH keluar (JSON, CSV, ringkasan); mo
 uji("cc log: batas laju 120 per pelaku per jam (JSON dan CSV satu jatah, 429 + Retry-After, tanpa kueri jejak); salah bentuk dan ditolak auth tidak memakai jatah; pelaku lain dan jendela lain tidak ikut; jajak antrean/dinding tidak terhambat", async () => {
   assert.equal(BATAS_LOG_JAM, 120);
   const lg = await staf(DB, "Laju Log", ["koordalops"]), laju = kunci => DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = 'cc.log'").bind(kunci).first().then(r => r.n);
-  const tgl = shiftDari(Date.now()).tgl, q = o => "/api/cc/log?" + new URLSearchParams({tgl, ...o});
+  const tgl = tglWib(Date.now()), q = o => "/api/cc/log?" + new URLSearchParams({tgl, ...o});
   /* auth dan bentuk lebih dulu: tamu 401, peran tanpa hak 403, salah bentuk 400 = jatah utuh */
   assert.equal((await ambil(q({}), {})).s, 401); assert.equal((await ambil(q({}), pPeta.h)).s, 403); assert.equal((await ambil(q({}), tmc.h)).s, 403);
-  for (const o of [{tgl: "2026-02-30"}, {shift: "subuh"}, {operator: "xyz"}, {format: "xml"}]) assert.equal((await ambil(q(o), lg.h)).s, 400, JSON.stringify(o));
+  for (const o of [{tgl: "2026-02-30"}, {operator: "xyz"}, {format: "xml"}]) assert.equal((await ambil(q(o), lg.h)).s, 400, JSON.stringify(o));
   assert.equal(await laju(lg.oleh), 0, "ditolak sebelum laju: jatah utuh");
   /* 118 di jendela dan 5 di luar jendela (> 1 jam): hanya yang di jendela dihitung */
   await DB.batch([...Array.from({length: 118}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'cc.log', ?)").bind(lg.oleh, Date.now() - 10 * MENIT)),
@@ -609,23 +615,17 @@ uji("cc log: batas laju 120 per pelaku per jam (JSON dan CSV satu jatah, 429 + R
 });
 
 /* ================================================================ fungsi murni */
-uji("cc shiftDari: pagi 07-15, siang 15-23, malam 23-07 WIB; malam milik tanggal mulainya; lintas tengah malam, bulan, tahun", () => {
-  const s = (tgl, jam, menit = 0, detik = 0, ms = 0) => shiftDari(wibMs(tgl, jam, menit, detik, ms));
-  assert.deepEqual(s("2026-11-02", 2), {tgl: "2026-11-01", shift: "malam"}, "02.00 tgl 2 = malam tgl 1");
-  assert.deepEqual(s("2026-11-02", 0), {tgl: "2026-11-01", shift: "malam"}); assert.deepEqual(s("2026-11-02", 6, 59, 59, 999), {tgl: "2026-11-01", shift: "malam"});
-  assert.deepEqual(s("2026-11-02", 7), {tgl: "2026-11-02", shift: "pagi"}); assert.deepEqual(s("2026-11-02", 14, 59, 59, 999), {tgl: "2026-11-02", shift: "pagi"});
-  assert.deepEqual(s("2026-11-02", 15), {tgl: "2026-11-02", shift: "siang"}); assert.deepEqual(s("2026-11-02", 22, 59, 59, 999), {tgl: "2026-11-02", shift: "siang"});
-  assert.deepEqual(s("2026-11-02", 23), {tgl: "2026-11-02", shift: "malam"}); assert.deepEqual(s("2026-11-02", 23, 59, 59, 999), {tgl: "2026-11-02", shift: "malam"});
-  assert.deepEqual(s("2026-12-01", 3), {tgl: "2026-11-30", shift: "malam"}, "lintas bulan"); assert.deepEqual(s("2027-01-01", 3), {tgl: "2026-12-31", shift: "malam"}, "lintas tahun");
-  assert.deepEqual(s("2028-03-01", 1), {tgl: "2028-02-29", shift: "malam"}, "tahun kabisat");
-  /* UTC bukan WIB: 20.00 UTC tgl 1 = 03.00 WIB tgl 2 = malam tgl 1 */
-  assert.deepEqual(shiftDari(Date.UTC(2026, 10, 1, 20, 0)), {tgl: "2026-11-01", shift: "malam"}); assert.deepEqual(shiftDari(Date.UTC(2026, 10, 1, 0, 0)), {tgl: "2026-11-01", shift: "pagi"});
-  /* satu konstanta, berurutan tanpa celah dan tumpang tindih, 8 jam masing-masing, tepat 24 jam */
-  assert.deepEqual(Object.keys(SHIFT), ["pagi", "siang", "malam"]); assert.ok(Object.values(SHIFT).every(([a, b]) => b - a === 8)); assert.equal(SHIFT.siang[0], SHIFT.pagi[1]); assert.equal(SHIFT.malam[0], SHIFT.siang[1]); assert.equal(SHIFT.malam[1] - SHIFT.pagi[0], 24);
-  assert.deepEqual(rentangShift("2026-11-01", "pagi"), {mulai: wibMs("2026-11-01", 7), akhir: wibMs("2026-11-01", 15)}); assert.deepEqual(rentangShift("2026-11-01", "malam"), {mulai: wibMs("2026-11-01", 23), akhir: wibMs("2026-11-02", 7)});
-  assert.deepEqual(rentangShift("2026-11-01", "semua"), {mulai: wibMs("2026-11-01", 7), akhir: wibMs("2026-11-02", 7)});
-  /* bulat penuh: tiap menit selama tiga hari jatuh di rentang shift yang dikembalikan shiftDari */
-  for (let t = wibMs("2026-10-30", 0); t < wibMs("2026-11-02", 0); t += 17 * MENIT) { const {tgl, shift} = shiftDari(t), r = rentangShift(tgl, shift); assert.ok(t >= r.mulai && t < r.akhir, `${new Date(t).toISOString()} -> ${tgl} ${shift}`); }
+uji("cc tglWib: hari WIB 00.00-24.00 (00.00 WIB = 17.00 UTC hari sebelumnya); lintas bulan, tahun, kabisat; rentangHari tepat 24 jam", () => {
+  const s = (tgl, jam, menit = 0, detik = 0, ms = 0) => tglWib(wibMs(tgl, jam, menit, detik, ms));
+  assert.equal(s("2026-11-02", 0), "2026-11-02"); assert.equal(s("2026-11-02", 0, 0, 0, -1), "2026-11-01", "1 ms sebelum 00.00 WIB = kemarin");
+  assert.equal(s("2026-11-02", 2), "2026-11-02", "02.00 WIB tanggal 2 tetap tanggal 2 (tidak ada lagi 'malam tanggal 1')"); assert.equal(s("2026-11-02", 6, 59, 59, 999), "2026-11-02"); assert.equal(s("2026-11-02", 7), "2026-11-02");
+  assert.equal(s("2026-11-02", 23, 59, 59, 999), "2026-11-02"); assert.equal(s("2026-11-03", 0), "2026-11-03");
+  assert.equal(s("2026-12-01", 0, 0, 0, -1), "2026-11-30", "lintas bulan"); assert.equal(s("2027-01-01", 0, 0, 0, -1), "2026-12-31", "lintas tahun"); assert.equal(s("2028-03-01", 0, 0, 0, -1), "2028-02-29", "tahun kabisat");
+  /* UTC bukan WIB: 17.00 UTC tgl 1 = 00.00 WIB tgl 2; 16.59.59,999 UTC = masih tgl 1 */
+  assert.equal(tglWib(Date.UTC(2026, 10, 1, 17, 0)), "2026-11-02"); assert.equal(tglWib(Date.UTC(2026, 10, 1, 16, 59, 59, 999)), "2026-11-01"); assert.equal(tglWib(Date.UTC(2026, 10, 1, 0, 0)), "2026-11-01");
+  assert.deepEqual(rentangHari("2026-11-01"), {mulai: wibMs("2026-11-01", 0), akhir: wibMs("2026-11-02", 0)}); assert.equal(rentangHari("2026-11-01").mulai, Date.UTC(2026, 9, 31, 17, 0)); assert.equal(rentangHari("2026-11-01").akhir - rentangHari("2026-11-01").mulai, 24 * JAM);
+  /* bulat penuh: tiap menit selama tiga hari jatuh tepat di rentang tanggal yang dikembalikan tglWib */
+  for (let t = wibMs("2026-10-30", 0); t < wibMs("2026-11-02", 0); t += 17 * MENIT) { const tgl = tglWib(t), r = rentangHari(tgl); assert.ok(t >= r.mulai && t < r.akhir, `${new Date(t).toISOString()} -> ${tgl}`); }
 });
 
 uji("cc durasi: respons = baru->dalam_konfirmasi PERTAMA - dibuat; konfirmasi = ke final - dalam_konfirmasi TERAKHIR sebelumnya; median", () => {
@@ -641,7 +641,7 @@ uji("cc durasi: respons = baru->dalam_konfirmasi PERTAMA - dibuat; konfirmasi = 
 });
 
 /* ================================================================ layar dinding */
-uji("cc dinding: ringkasan, antrean ringkas, shift, operator hadir; tanpa id, catatan, nomor, nama lengkap; koordinat 0,01; dummy dan bahaya lain tak ikut", async () => {
+uji("cc dinding: ringkasan, antrean ringkas, hari WIB, operator hadir; tanpa id, catatan, nomor, nama lengkap; koordinat 0,01; dummy dan bahaya lain tak ikut", async () => {
   const D = await siapkan("uji-cc-dinding", {ikat: {CC_MEMO_DETIK: "0"}}), now = Date.now(), hari0 = awalHari(now);
   const b = await staf(D.DB, "Budi Santoso", ["operator_cc"]), c = await staf(D.DB, "Citra Dewi", ["operator_cc"]), dd = await staf(D.DB, "Dimas Dummy", ["operator_cc"], {dummy: 1}), pm = await pemirsa(D.DB, "Dinding", ["dinding"]);
   const T = {};
@@ -651,14 +651,14 @@ uji("cc dinding: ringkasan, antrean ringkas, shift, operator hadir; tanpa id, ca
   T.kabar = await tugas(D.DB, {level: 2, dibuat: now - 8 * JAM, konfirmasi_pada: now - 7 * JAM}); T.padam = await tugas(D.DB, {dibuat: now - 7 * JAM, status: "padam"});
   const st = (id, status, sejak, oleh) => sisip(D.DB, "cc_status", {tugas_id: id, status, oleh, sejak});
   await st(T.dalam, "dalam_konfirmasi", now - 5 * MENIT, c.oleh); await st(T.final, "ada_api", now - JAM, b.oleh); await st(T.finalLama, "tidak_ada_api", now - 13 * JAM, b.oleh);
-  /* respons shift berjalan: dua jejak baru->dalam_konfirmasi di shift ini (tugas level 1 supaya bukan alert): 10 dan 20 menit -> 15 menit */
-  const sh = shiftDari(now), rg = rentangShift(sh.tgl, sh.shift), wk = Math.max(rg.mulai, now - 60e3);
+  /* respons hari ini: dua jejak baru->dalam_konfirmasi hari ini (tugas level 1 supaya bukan alert): 10 dan 20 menit -> 15 menit */
+  const rg = rentangHari(tglWib(now)), wk = Math.max(rg.mulai, now - 60e3);
   for (const lama of [mnt(10), mnt(20)]) { const r = await tugas(D.DB, {level: 1, dibuat: wk - lama}); await sisip(D.DB, "cc_jejak", {waktu: wk, tugas_id: r, oleh: b.oleh, dari: "baru", ke: "dalam_konfirmasi", catatan: "SECRET-CATATAN 08123456789"}); }
-  await sisip(D.DB, "cc_jejak", {waktu: rg.mulai - 1, tugas_id: T.final, oleh: b.oleh, dari: "baru", ke: "dalam_konfirmasi"});   // 1 ms sebelum shift mulai: tidak ikut median (dulu wk - 7 jam - 1, yang jatuh DI DALAM shift pagi sesudah pukul 14.00 WIB sehingga uji merah tiap sore)
+  await sisip(D.DB, "cc_jejak", {waktu: rg.mulai - 1, tugas_id: T.final, oleh: b.oleh, dari: "baru", ke: "dalam_konfirmasi"});   // 1 ms sebelum 00.00 WIB: kemarin, tidak ikut median
   await sisip(D.DB, "cc_hadir", {staf_id: b.id, terakhir: now - 3 * MENIT}); await sisip(D.DB, "cc_hadir", {staf_id: c.id, terakhir: now - 11 * MENIT}); await sisip(D.DB, "cc_hadir", {staf_id: dd.id, terakhir: now, dummy: 1});
   const r = await D.api("GET", "/api/cc/dinding", undefined, pm.h); assert.equal(r.s, 200, r.t);
-  assert.deepEqual(Object.keys(r.j), ["kini", "data_pada", "shift", "ringkasan", "operator_hadir", "antrean_total", "antrean"]); assert.equal(r.j.antrean_total, 5, "antrean_total = seluruh antrean sebelum dipotong 60 baris"); assert.ok(Math.abs(r.j.kini - now) < 30e3);
-  assert.deepEqual(r.j.shift, {...sh, ...rg});
+  assert.deepEqual(Object.keys(r.j), ["kini", "data_pada", "hari", "ringkasan", "operator_hadir", "antrean_total", "antrean"]); assert.equal(r.j.antrean_total, 5, "antrean_total = seluruh antrean sebelum dipotong 60 baris"); assert.ok(Math.abs(r.j.kini - now) < 30e3);
+  assert.deepEqual(r.j.hari, {tgl: tglWib(now), ...rg}); assert.ok(!/shi.?ft/i.test(r.t), "dinding tanpa kata lama");
   const dibuatDari = async id => (await D.DB.prepare("SELECT dibuat FROM tugas_api WHERE id = ?").bind(id).first()).dibuat;
   /* alert hari ini = tugas karhutla level 3 non-dummy yang DIBUAT sejak 00.00 WIB, termasuk yang sudah tutup (padam) */
   const alertHari = (await Promise.all([T.baru1, T.baru6, T.baru7, T.dalam, T.final, T.finalLama, T.padam].map(dibuatDari))).filter(d => d >= hari0).length;
@@ -713,7 +713,7 @@ uji("cc dinding: antrean_total jujur di atas 60 baris; rincian hari_ini hanya al
   assert.ok(t.j.ringkasan.lewat_tenggat_konfirmasi <= BATAS_TENGGAT && t.j.ringkasan.lewat_tenggat_konfirmasi >= BATAS_TENGGAT - 1, "paling banyak sebanyak yang dibaca (satu baris hari-ini bisa belum lewat bila tes jalan dini hari)");
 });
 
-uji("cc terpotong: alert terbuka, keputusan akhir, dan jejak shift dibaca sampai BATAS_DAFTAR; tepat batas = utuh, satu lebih = terpotong ditandai di antrean dan dinding; yang belum dipegang tak tersisih", async () => {
+uji("cc terpotong: alert terbuka, keputusan akhir, dan jejak respons hari ini dibaca sampai BATAS_DAFTAR; tepat batas = utuh, satu lebih = terpotong ditandai di antrean dan dinding; yang belum dipegang tak tersisih", async () => {
   assert.equal(BATAS_DAFTAR, 500); assert.equal(BATAS_AKSI_JAM, 120); assert.equal(MAKS_LOKASI, 20);
   const D = await siapkan("uji-cc-potong", {ikat: {CC_MEMO_DETIK: "0"}}), now = Date.now(), pm = await pemirsa(D.DB, "Dinding", ["dinding"]), o = await staf(D.DB, "Budi Santoso", ["operator_cc"]);
   const id = n => n.toString(16).padStart(16, "0");
@@ -741,9 +741,9 @@ uji("cc terpotong: alert terbuka, keputusan akhir, dan jejak shift dibaca sampai
   await buka(BATAS_DAFTAR + 1, BATAS_DAFTAR + 1, 0x9000000, now - 2 * JAM); await sisip(D.DB, "cc_status", {tugas_id: id(0x9000000 + BATAS_DAFTAR + 1), status: "tidak_ada_api", oleh: o.oleh, sejak: now - MENIT});
   ({d, a} = await baca()); assert.deepEqual([a.alert.length, a.antrean_terpotong, a.final_terpotong, d.ringkasan.final_terpotong, d.ringkasan.antrean_terpotong], [BATAS_DAFTAR, false, true, true, false]);
   assert.ok(a.alert.some(x => x.status === "tidak_ada_api"), "keputusan terbaru dibaca duluan; yang terlama yang tersisih");
-  /* (3) jejak shift untuk median respons (cc_jejak hanya menambah, jadi instansi tersendiri) */
+  /* (3) jejak respons hari ini untuk median respons (cc_jejak hanya menambah, jadi instansi tersendiri) */
   const J = await siapkan("uji-cc-potong-jejak", {ikat: {CC_MEMO_DETIK: "0"}}), pj = await pemirsa(J.DB, "Dinding", ["dinding"]), oj = await staf(J.DB, "Budi Santoso", ["operator_cc"]);
-  const sh = shiftDari(now), rg = rentangShift(sh.tgl, sh.shift), wk = Math.max(rg.mulai, now - 60e3), median10 = () => J.api("GET", "/api/cc/dinding", undefined, pj.h).then(r => r.j.ringkasan);
+  const rg = rentangHari(tglWib(now)), wk = Math.max(rg.mulai, now - 60e3), median10 = () => J.api("GET", "/api/cc/dinding", undefined, pj.h).then(r => r.j.ringkasan);
   await J.DB.prepare(`WITH RECURSIVE s(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM s WHERE n < ?1) INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy)
     SELECT printf('%016x', 0xa000000 + n), '62', 'Kab Jejak', 'Kec', -2.5, 113.3, 1, 1, 1, ?2 - 600000, ?2, 'buka', NULL, 0 FROM s`).bind(BATAS_DAFTAR, wk).run();
   await J.DB.prepare("INSERT INTO cc_jejak (waktu, tugas_id, oleh, dari, ke, dummy) SELECT ?1, id, ?2, 'baru', 'dalam_konfirmasi', 0 FROM tugas_api").bind(wk, oj.oleh).run();
@@ -1059,7 +1059,7 @@ uji("cc halaman dinding: /command-center/dinding bagi pemirsa tab dinding, opera
       ["pemirsa peta", pPeta.h, 403], ["akun gerbang situs", GERBANG, 403], ["pusdalops", {cookie: pusd.cookie}, 403], ["tmc", {cookie: tmc.cookie}, 403], ["kemitraan", {cookie: kampus.cookie}, 403], ["operator sandi awal", {cookie: tertahan.cookie}, 303]];
     for (const [nama, h, s] of kasus) { const r = await man("/command-center/dinding", h, host); assert.equal(r.s, s, `${host} ${nama}: ${r.s}`); }
   }
-  const r = await man("/command-center/dinding", pDinding.h), h = r.h;
+  const r = await man("/command-center/dinding", pDinding.h), h = r.h; TANPA_LAMA(r.t, "HTML dinding"); TANPA_LAMA((await man("/command-center", ADMIN)).t, "HTML meja");
   assert.equal(h.get("content-security-policy"), CSP_DINDING); assert.match(h.get("cache-control"), /private, no-store/); assert.equal(h.get("x-frame-options"), "DENY"); assert.match(h.get("vary"), /cookie/i);
   assert.doesNotMatch(CSP_DINDING, /unsafe-inline|unsafe-eval|googleapis|gstatic/); assert.match(CSP_DINDING, /script-src 'self';/); assert.match(CSP_DINDING, /style-src 'self';/);
   assert.match(CSP_DINDING, /img-src [^;]*https:\/\/\*\.openfreemap\.org/); assert.match(CSP_DINDING, /connect-src [^;]*https:\/\/\*\.openfreemap\.org/); assert.match(CSP_DINDING, /worker-src 'self' blob:/);
@@ -1150,12 +1150,11 @@ uji("cc klien berkas: sintaks lolos node --check; tanpa innerHTML/eval/gaya seba
   assert.ok(existsSync(path.join(AKAR, "public/suara/alarm-api.mp3")) && teks("public/admin/command_bersama.js").includes('"/suara/alarm-api.mp3"'));
   /* tidak ada pemformat durasi lokal (SATU formatter: fmt.durasi) dan baris 403 + /admin/masuk?ke= (pantulan) */
   for (const f of KLIEN_JS) { assert.doesNotMatch(teks(f), /const (?:jamTeks|durasiTeks|lama) = ms =>/, f); teks(f).split("\n").forEach((b, i) => assert.ok(!(/403/.test(b) && /\/admin\/masuk\?ke=/.test(b)), `${f}:${i + 1}`)); }
-  /* SHIFT_JAM di meja (tampilan) sama dengan SHIFT server */
-  const sj = Object.fromEntries([...mj.match(/const SHIFT_JAM = (\{[^}]+\})/)[1].matchAll(/(\w+): "([^"]+)"/g)].map(m => [m[1], m[2]]));
-  assert.deepEqual(sj, Object.fromEntries(Object.entries(SHIFT).map(([k, [a, b]]) => [k, `${String(a % 24).padStart(2, "0")}.00–${String(b % 24).padStart(2, "0")}.00`])));
+  /* konsep lama sudah hilang dari seluruh berkas klien (JS dan CSS) */
+  for (const f of [...KLIEN_JS, ...KLIEN_CSS]) TANPA_LAMA(teks(f), f);
 });
 
-uji("cc klien format: jam WIB 07.42, durasi 18 menit / 1 jam 5 menit, ribuan bertitik, nama shift, lokasi", () => {
+uji("cc klien format: jam WIB 07.42, durasi 18 menit / 1 jam 5 menit, ribuan bertitik, lokasi", () => {
   const B = muatBersama(), C = B.Cc;
   assert.equal(C.jam(Date.UTC(2026, 10, 1, 0, 42)), "07.42"); assert.equal(C.jam(Date.UTC(2026, 10, 1, 16, 5)), "23.05"); assert.equal(C.jam(Date.UTC(2026, 10, 1, 17, 0)), "00.00", "tengah malam = 00.00, bukan 24.00"); assert.equal(C.jam(null), "–");
   assert.equal(C.durasi(18 * MENIT), "18 menit"); assert.equal(C.durasi(65 * MENIT), "1 jam 5 menit"); assert.equal(C.durasi(30e3), "kurang dari 1 menit"); assert.equal(C.durasi(NaN), "–");
@@ -1165,8 +1164,7 @@ uji("cc klien format: jam WIB 07.42, durasi 18 menit / 1 jam 5 menit, ribuan ber
   assert.equal(pecah(30e3), '["< 1","menit"]'); assert.equal(pecah(0), '["< 1","menit"]'); assert.equal(pecah(59999), '["< 1","menit"]'); assert.equal(pecah(-20e3), '["< 1","menit"]'); assert.equal(pecah(60e3), '["1","menit"]'); assert.equal(pecah(89e3), '["1","menit"]'); assert.equal(pecah(90e3), '["2","menit"]');
   assert.equal(C.durasi(59999), "kurang dari 1 menit"); assert.equal(C.durasi(60e3), "1 menit", "durasi() dan durasiPecah() sepakat di batas semenit");
   assert.equal(B.ctx.fmt(12345), "12.345", "ribuan bertitik"); assert.equal(B.ctx.fmt(45.5), "45,5");
-  const w = (jamMulai, jamAkhir) => ({mulai: wibMs("2026-11-01", jamMulai), akhir: wibMs("2026-11-01", jamAkhir)});
-  assert.equal(C.teksShift({shift: "siang", ...w(15, 23)}), "Siang 15.00–23.00"); assert.equal(C.teksShift({shift: "malam", ...w(23, 31)}), "Malam 23.00–07.00"); assert.equal(C.teksShift({shift: "pagi", ...w(7, 15)}), "Pagi 07.00–15.00");
+  assert.equal(C["teks" + "Shi" + "ft"], undefined); assert.equal(C["NAMA_SHI" + "FT"], undefined);
   assert.equal(C.lokasi({kec: "Mentaya Hilir", kab: "Kotawaringin Timur", prov_nama: "Kalimantan Tengah"}), "Mentaya Hilir, Kotawaringin Timur"); assert.equal(C.lokasi({kab: "Kapuas", prov_nama: "Kalimantan Tengah"}), "Kapuas"); assert.equal(C.lokasi({prov_nama: "Riau"}), "Riau");
   assert.equal(C.lokasi({}), "Lokasi belum diketahui");
   assert.deepEqual(Object.keys(C.NAMA_STATUS), STATUS);

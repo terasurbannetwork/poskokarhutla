@@ -8,7 +8,6 @@
 (() => {
   const WIB = "Asia/Jakarta", SUARA = "/suara/alarm-api.mp3", ULANG_SUARA = 60e3;
   const NAMA_STATUS = {baru: "Baru", dalam_konfirmasi: "Dalam konfirmasi", ada_api: "Ada api", tidak_ada_api: "Tidak ada api"};
-  const NAMA_SHIFT = {pagi: "Pagi", siang: "Siang", malam: "Malam", semua: "Semua shift"};
   const fJam = new Intl.DateTimeFormat("id-ID", {timeZone: WIB, hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
   const fTgl = new Intl.DateTimeFormat("id-ID", {timeZone: WIB, weekday: "long", day: "numeric", month: "long", year: "numeric"});
   const fPendek = new Intl.DateTimeFormat("id-ID", {timeZone: WIB, day: "numeric", month: "short"});
@@ -31,8 +30,6 @@
     return [fmt.durasi(ms), ""];
   }
   const lokasi = a => [a.kec, a.kab].filter(Boolean).join(", ") || a.prov_nama || "Lokasi belum diketahui";
-  /* nama shift berjalan dari objek {shift, mulai, akhir} /api/cc/*: "Siang 15.00–23.00" */
-  const teksShift = s => s ? `${NAMA_SHIFT[s.shift] ?? s.shift} ${jam(s.mulai)}–${jam(s.akhir)}` : "–";
 
   /* ---------- DOM tanpa innerHTML ---------- */
   const h = (tag, att, ...anak) => {
@@ -128,5 +125,5 @@
     return {perbarui, gerbang, lencana, get status() { return status; }, aktif: () => status === "hidup"};
   }
 
-  window.Cc = {NAMA_STATUS, NAMA_SHIFT, jam, jamTgl, tgl, pendek, durasi, durasiPecah, lokasi, teksShift, h, ambil, kirim, waktu, jajak, perbaruiUmur, suara: buatSuara()};
+  window.Cc = {NAMA_STATUS, jam, jamTgl, tgl, pendek, durasi, durasiPecah, lokasi, h, ambil, kirim, waktu, jajak, perbaruiUmur, suara: buatSuara()};
 })();

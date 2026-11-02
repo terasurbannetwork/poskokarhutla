@@ -9,7 +9,7 @@
    Hemat kerja untuk layar yang menyala 24 jam: lapisan titik panas (puluhan ribu fitur) dibangun SEKALI per muat titik (5 menit) dan dipasang hanya saat itu; lapisan alert (<= 60) dipasang ulang hanya bila isinya
    berubah; pemotongan antrean mengukur tata letak SATU kali (bukan per baris) dan ukuran ulang saat jendela ditarik ditunda (debounce). */
 (() => {
-  const {h, jam, jamTgl, tgl, durasi, durasiPecah, teksShift, ambil, waktu, jajak, perbaruiUmur, suara, NAMA_STATUS} = window.Cc;
+  const {h, jam, jamTgl, tgl, durasi, durasiPecah, ambil, waktu, jajak, perbaruiUmur, suara, NAMA_STATUS} = window.Cc;
   const ROOT = document.getElementById("dd"), BODY = document.body.dataset;
   const MENIT = 6e4, JAM = 36e5, HARI = 24 * JAM, WIB = 7 * JAM, GERAK = !matchMedia("(prefers-reduced-motion: reduce)").matches;
   const BASI = {cc: 2 * MENIT, titik: 4 * JAM, peringatan: 15 * MENIT, omc: 15 * MENIT};
@@ -32,7 +32,7 @@
   const angka = (u, teks, satuan = u.s.textContent) => { u.n.textContent = teks; u.n.classList.toggle("pj", String(teks).length > 6); u.s.textContent = satuan; };
   function bangun() {
     el.spanduk = h("div", {class: "dd-spanduk", role: "alert", hidden: true}, h("b", {teks: "Sesi habis — masuk ulang"}), " ", h("a", {href: BODY.masuk, teks: "Masuk ulang"}));
-    el.shift = h("b", {class: "dd-shift-nama", teks: "Shift"}); el.hadir = h("span", {class: "dd-hadir"});
+    el.hadir = h("span", {class: "dd-hadir"});
     el.jam = h("span", {class: "dd-jam-angka", teks: "--.--"}); el.tgl = h("span", {class: "dd-tgl"});
     el.peta = h("div", {class: "dd-peta"}); el.petaGagal = h("p", {class: "dd-peta-gagal", hidden: true});
     el.daftar = h("ol", {class: "dd-daftar"}); el.lagi = h("p", {class: "dd-lagi", hidden: true}); el.kosong = h("p", {class: "dd-kosong", hidden: true, teks: "Tidak ada alert level 3 yang menunggu."});
@@ -42,13 +42,13 @@
     ROOT.replaceChildren(el.spanduk,
       h("header", {class: "dd-atas"},
         h("div", {class: "dd-judul"}, h("h1", {teks: "Command center karhutla"}), h("p", {teks: "BNPB · Pusdalops · layar dinding"})),
-        h("div", {class: "dd-shift"}, el.shift, el.hadir),
+        h("div", {class: "dd-hadir-kotak"}, el.hadir),
         h("div", {class: "dd-jam"}, suara.lencana(), h("div", {class: "dd-jam-baris"}, el.jam, h("small", {teks: "WIB"})), el.tgl)),
       h("main", {class: "dd-tengah"},
         h("section", {class: "dd-petabox", "aria-label": "Peta titik panas dan alert"}, el.peta, legenda, el.petaGagal),
         h("aside", {class: "dd-antrean", "aria-label": "Antrean alert level 3"}, h("h2", {teks: "Antrean alert level 3"}), h("div", {class: "dd-daftar-kotak"}, el.daftar, el.kosong), el.lagi)),
       h("section", {class: "dd-angka", "aria-label": "Angka ringkas"},
-        ubin("titik", "Titik panas 24 jam", "lokasi"), ubin("alert", "Alert hari ini", "alert"), ubin("median", "Median respons shift ini", "menit"),
+        ubin("titik", "Titik panas 24 jam", "lokasi"), ubin("alert", "Alert hari ini", "alert"), ubin("median", "Median respons hari ini", "menit"),
         ubin("lewat", "Lewat 6 jam, BPBD belum konfirmasi", "tugas"), ubin("peringatan", "Peringatan aktif, semua bencana", "peringatan"), ubin("omc", "OMC hari ini", "sortie")),
       h("footer", {class: "dd-umur", "aria-label": "Umur data"}, h("b", {teks: "Umur data"}), ...Object.values(el.umur), el.kunci));
     document.body.append(suara.gerbang(false));
@@ -85,7 +85,6 @@
   const kunciAlert = x => `${x.prov}|${x.kab}|${x.lat}|${x.lon}|${x.sejak}`;
   function gambarCc() {
     const d = S.D, r = d.ringkasan;
-    el.shift.textContent = "Shift " + teksShift(d.shift);
     el.hadir.textContent = d.operator_hadir.length ? "Operator hadir: " + d.operator_hadir.join(", ") : "Belum ada operator hadir";
     /* satu populasi: alert yang DIBUAT sejak 00.00 WIB (angka besar dan rinciannya); antrean terbuka sampai 7 hari ada di panel kanan, bukan di sini */
     const hi = r.hari_ini ?? {baru: 0, dalam_konfirmasi: 0, diputuskan: 0};
@@ -93,7 +92,7 @@
     const tutup = Math.max(0, (r.alert_hari_ini ?? 0) - hi.baru - hi.dalam_konfirmasi - hi.diputuskan);
     angka(U.alert, fmt(r.alert_hari_ini)); U.alert.sub.textContent = `dibuat sejak 00.00 WIB: ${fmt(hi.baru)} baru · ${fmt(hi.dalam_konfirmasi)} dalam konfirmasi · ${fmt(hi.diputuskan)} diputuskan${tutup ? ` · ${fmt(tutup)} sudah tutup` : ""}`;
     const [nilai, satuan] = durasiPecah(r.median_respons_ms);
-    angka(U.median, nilai, satuan); U.median.sub.textContent = r.median_respons_ms == null ? "belum ada alert dipegang pada shift ini" : "dari alert dibuat sampai dipegang" + (r.median_respons_terpotong ? " · dari sebagian (batas baca)" : "");
+    angka(U.median, nilai, satuan); U.median.sub.textContent = r.median_respons_ms == null ? "belum ada alert dipegang hari ini" : "dari alert dibuat sampai dipegang" + (r.median_respons_terpotong ? " · dari sebagian (batas baca)" : "");
     /* cakupan eksplisit: SEMUA tugas karhutla yang masih terbuka tanpa konfirmasi lapangan, semua level, dihitung sejak dibuat; bukan antrean level 3 di panel kanan. Terpotong = angka batas bawah. */
     angka(U.lewat, fmt(r.lewat_tenggat_konfirmasi) + (r.lewat_tenggat_terpotong ? "+" : "")); U.lewat.el.classList.toggle("merah", r.lewat_tenggat_konfirmasi > 0);
     U.lewat.sub.textContent = r.lewat_tenggat_terpotong ? "semua level, sejak dibuat · baru sebagian dihitung (batas baca), angka sebenarnya lebih besar" : "semua tugas karhutla terbuka, semua level, sejak dibuat";
