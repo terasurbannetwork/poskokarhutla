@@ -55,7 +55,7 @@ Singkatan: KP, PRD, AL (ALUR), ALG, PD, DS, DT, KM, RU. Versi 1.0, 30 Okt 2026.
 | KM-B01 | Profil daerah: blok umum | kampus | P | L | selesai |
 | KM-B02 | Profil daerah: blok per bahaya + model | kampus | P | L | selesai |
 | KM-B03 | Masalah otomatis `masalah.py` | kampus | P | M | selesai |
-| KM-B04 | Ringkas + profil provinsi | kampus | P | S | belum |
+| KM-B04 | Ringkas + profil provinsi | kampus | P | S | selesai |
 | KM-B05 | Workflow `kemitraan.yml` | mekanik-mesin | I | S | belum |
 | KM-B06 | Tampilan Daerah + lembar profil | kampus | L | L | belum |
 | KM-B07 | Komponen peta SVG `.km-peta-wil` | kampus | L | M | belum |
