@@ -12,8 +12,8 @@ Konvensi diambil dari `riset/R3-KODE-REPO.md`.
 | `src/lapangan_konst.js` | semua konstanta ALGORITMA + fungsi murni (kosinus, haversine, putus status) | `warga-api` |
 | `src/lapangan_wa.js` | antrean kirim WA (tarik oleh gateway), balasan SIAP/TIDAK | `warga-api` |
 | `migrations/0095_lapangan_orang.sql` | `orang`, `orang_wajah`, `orang_setuju`, `wa_antre` | `warga-api` |
-| `migrations/0096_lapangan_tugas.sql` | `lp_tugas`, `lp_anggota`, `lp_nonce` | `warga-api` |
-| `migrations/0097_lapangan_absen.sql` | `lp_absen`, `lp_logbook`, `lp_logbook_foto`, `lapangan_label` | `warga-api` |
+| `migrations/0097_lapangan_absen.sql` | `lp_tugas`, `lp_anggota`, `lp_nonce` (bersama absen dan logbook) | `warga-api` |
+| `migrations/0097_lapangan_absen.sql` (lanjutan) | `lp_absen`, `lp_logbook`, `lp_logbook_foto`, `lapangan_label` | `warga-api` |
 | `migrations/0098_lapangan_panggil.sql` | `lp_panggil`, `lp_panggil_penerima` | `warga-api` |
 | `public/petugas/index.html`, `app.js`, `lapangan.css` | layar petugas L1 sampai L6 | `lapangan` |
 | `public/petugas/wajah.js` | pembungkus Human: muat model, sudut, mutu, tantangan, vektor | `lapangan` |
@@ -112,6 +112,7 @@ Super Admin). Semua melalui `bersihMedia`; ukuran ≤ `ATURAN_MEDIA` foto. Vekto
 
 - `scripts/lapangan/ekspor_label.py` dijalankan di `data.yml` harian: membaca `GET /api/petugas/label.json` (admin
   token), menulis `public/data/lapangan/label.json`. Model karhutla dan banjir membaca berkas itu.
+  **Ekspor hanya memuat `lapangan_label.terverifikasi = 1`** (ALGORITMA §7); label tak terverifikasi tidak keluar.
 - Tidak menambah cron Worker. Pembersihan nonce kedaluwarsa dan antrean WA lama ikut dispatcher yang ada (menit 17).
 
 ## 7. Kuota dan beban

@@ -31,6 +31,24 @@ uji("konst: publik, tanpa rahasia, ambang dan versi persetujuan sesuai ALGORITMA
   assert.ok(!/secret|token|salt|kode_sha/i.test(r.t));
 });
 
+uji("konst: enum logbook (kegiatan, kendala, kebutuhan) sama dengan kunci klien public/petugas/logbook_murni.js", async () => {
+  const K2 = await import("../../public/petugas/logbook_murni.js"), r = await U.api("GET", "/api/petugas/konst");
+  const kunci = d => d.map(x => x.k);
+  /* klien kini hanya menyimpan LABEL; kunci datang dari konst. Tiap kunci server punya label, dan tabel label tidak memuat kunci yang tidak ada di server. */
+  assert.deepEqual(r.j.kegiatan, kunci(K2.LABEL_KEGIATAN)); assert.deepEqual(r.j.kendala, kunci(K2.LABEL_KENDALA)); assert.deepEqual(r.j.kebutuhan, kunci(K2.LABEL_KEBUTUHAN));
+  assert.deepEqual(K2.KEGIATAN(r.j).map(x => x.k), r.j.kegiatan);
+});
+
+uji("header halaman petugas: permissions-policy kamera boleh; panel saja dapat peta (worker blob, openfreemap); /petugas tidak dilonggarkan; berkas statis dialihkan", async () => {
+  const ambil = j => U.mf.dispatchFetch("http://bnpb.lokal" + j, {redirect: "manual"});
+  const p = await ambil("/petugas"), pn = await ambil("/petugas/panel");
+  for (const r of [p, pn]) { assert.equal(r.status, 200); assert.equal(r.headers.get("permissions-policy"), "camera=(self), geolocation=(self), microphone=()"); assert.equal(r.headers.get("referrer-policy"), "no-referrer"); await r.arrayBuffer(); }
+  const cp = p.headers.get("content-security-policy"), cn = pn.headers.get("content-security-policy");
+  assert.ok(!/openfreemap|blob:.*worker|worker-src/.test(cp), "/petugas tanpa izin peta"); assert.match(cp, /connect-src 'self';/); assert.match(cp, /script-src 'self' 'wasm-unsafe-eval';/, "WASM MiniFASNet (onnxruntime-web)"); assert.ok(!/unsafe-eval'[^;]*;.*unsafe-eval/.test(cp) && !/(?<!wasm-)unsafe-eval/.test(cp), "bukan unsafe-eval penuh");
+  assert.match(cn, /connect-src 'self' https:\/\/tiles\.openfreemap\.org;/); assert.match(cn, /worker-src blob:/); assert.match(cn, /child-src blob:/); assert.match(cn, /script-src 'self';/); assert.ok(!/wasm-unsafe-eval/.test(cn), "panel tanpa WASM");
+  for (const [dari, ke] of [["/petugas/index.html", "/petugas"], ["/petugas/panel.html", "/petugas/panel"]]) { const r = await ambil(dari); assert.equal(r.status, 301, dari); assert.equal(new URL(r.headers.get("location"), "http://x").pathname, ke); }
+});
+
 uji("impor: tanpa Super Admin ditolak (tamu, moderator, gerbang, staf pimpinan), tanpa x-pb ditolak", async () => {
   const c = CSV(["Budi Santoso,198501012010011002,Pusdalops,Analis,081234567801,budi@bnpb.go.id,31,Jakarta"]);
   for (const h of [{}, MOD2, GERBANG, PIMPINAN, VERIF]) assert.equal((await impor("simpan", c, h)).s, 403, JSON.stringify(h));
@@ -159,7 +177,7 @@ uji("halaman /petugas dan /petugas/panel: CSP ketat dan no-referrer", async () =
     const r = await U.api("GET", j, undefined, ADMIN);
     assert.equal(r.s, 200, j); assert.equal(r.h.get("referrer-policy"), "no-referrer");
     const c = r.h.get("content-security-policy");
-    assert.match(c, /default-src 'self'; script-src 'self'; style-src 'self' https:\/\/fonts\.googleapis\.com;/); assert.match(c, /frame-ancestors 'none'/); assert.ok(!/unsafe-inline/.test(c));
+    assert.match(c, j === "/petugas" ? /default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src/ : /default-src 'self'; script-src 'self'; style-src 'self' https:\/\/fonts\.googleapis\.com;/); assert.match(c, /frame-ancestors 'none'/); assert.ok(!/unsafe-inline/.test(c));
   }
 });
 

@@ -105,6 +105,23 @@ app.post('/send-file', (req, res) => layani(req, res, (b) => {
     },
   }
 }))
+// LP-021: antrean WA modul /petugas ditarik tiap 60 dtk, dikirim lewat limiter yang sama. Mati bila WA_KUNCI kosong.
+let lapanganJalan = false
+function mulaiLapangan() {
+  if (lapanganJalan || !KUNCI) return
+  lapanganJalan = true
+  import('../lapangan_tarik.mjs').then((L) => L.mulai({
+    worker: WORKER, kunci: KUNCI, log,
+    kirim: async (target, message) => {
+      if (!connected || !sock) return { tunda: true }
+      const t = await jidDari(target).catch((e) => ({ error: String(e?.message || e), code: 502 }))
+      if (t.error) return t.code >= 500 ? { tunda: true } : { ok: false, galat: t.error }
+      const r = await sendPaced(t.jid, { text: message }, t.isGroup).catch((e) => ({ ok: false, code: 502, error: String(e?.message || e) }))
+      if (r.ok) return { ok: true }
+      return r.code === 429 || r.code >= 500 ? { tunda: true } : { ok: false, galat: r.error }
+    },
+  })).catch((e) => { lapanganJalan = false; log('[lapangan] gagal muat', String(e?.message || e)) })
+}
 app.listen(PORT, '127.0.0.1', () => log('API lokal di 127.0.0.1:' + PORT))
 
 // ── MASUK ───────────────────────────────────────────────────────────────
@@ -316,7 +333,7 @@ async function startSock() {
       if (process.stdout.isTTY) { console.log('\n=== Scan QR ini di WhatsApp > Perangkat Tertaut ===\n'); qrcode.generate(qr, { small: true }) }
       else log('Butuh scan QR: hentikan layanan dan jalankan node gateway/index.js di terminal.')
     }
-    if (connection === 'open') { connected = true; log('WA terhubung'); flushOutbox().catch(() => {}) }
+    if (connection === 'open') { connected = true; log('WA terhubung'); flushOutbox().catch(() => {}); mulaiLapangan() }
     if (connection === 'close') {
       connected = false
       const code = lastDisconnect?.error?.output?.statusCode

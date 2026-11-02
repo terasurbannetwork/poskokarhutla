@@ -715,6 +715,9 @@ function catatHTML(env, req, jalur, ctx) {
 }
 async function layaniHTML(req, env, ctx, url) {
   if (req.method !== "GET" && req.method !== "HEAD") return null;
+  /* berkas statis layar petugas tidak membawa CSP/permissions-policy modul: arahkan ke alamat bersih */
+  const langsung = url.pathname.match(/^\/petugas\/(index|panel)\.html$/);
+  if (langsung) return new Response(null, {status: 301, headers: {location: (langsung[1] === "panel" ? "/petugas/panel" : "/petugas") + url.search, "cache-control": "no-store"}});
   const cocok = HTML_RUTE.find(([re]) => re.test(url.pathname)); if (!cocok) return null;
   const jalur = cocok[2] || url.pathname.replace(/\/+$/, "");
   /* situs Centurisk97 tanpa halaman Tentang di bencana mana pun (pemilik, 19 Okt 2026): /tentang, /tentang-halaman, /<bencana>/tentang -> peta */
@@ -744,10 +747,16 @@ async function layaniHTML(req, env, ctx, url) {
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
   if (pmTab || hostTerkunci(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
-  if (jalur === "/petugas" || jalur === "/petugas/panel") { keluaran.headers.set("content-security-policy", CSP_PETUGAS); keluaran.headers.set("referrer-policy", "no-referrer"); }
+  if (jalur === "/petugas" || jalur === "/petugas/panel") {
+    keluaran.headers.set("content-security-policy", jalur === "/petugas" ? CSP_PETUGAS : CSP_PETUGAS_PANEL); keluaran.headers.set("referrer-policy", "no-referrer");
+    keluaran.headers.set("permissions-policy", "camera=(self), geolocation=(self), microphone=()");   // menimpa camera=() dari public/_headers (memblokir getUserMedia untuk absen wajah)
+  }
   return keluaran;
 }
-const CSP_PETUGAS = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+/* panel: peta MapLibre (worker-src/child-src blob: untuk worker petanya) + gaya, ubin, glyph, sprite dari tiles.openfreemap.org (gaya positron/dark dimuat dari host yang sama; panel_ops.js GAYA) */
+const CSP_PETUGAS_PANEL_TAMBAHAN = "; worker-src blob:; child-src blob:";
+const CSP_PETUGAS = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+const CSP_PETUGAS_PANEL = CSP_PETUGAS.replace(" 'wasm-unsafe-eval'", "").replace("connect-src 'self'", "connect-src 'self' https://tiles.openfreemap.org") + CSP_PETUGAS_PANEL_TAMBAHAN;
 
 /* ================= cache tepi untuk GET publik tanpa data per pengguna (caches.default, per pusat data Cloudflare) =================
    Hanya dipanggil dari rute GET publik di fetch() (/api/warga daftar & konfig, /api/titik, /api/status); admin, POST, dan rute

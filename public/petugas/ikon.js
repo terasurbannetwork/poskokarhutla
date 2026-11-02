@@ -1,0 +1,27 @@
+/* Ikon garis seragam (24 px, stroke 2). Tanpa emoji. ik(nama) -> string SVG; nama tak dikenal = lingkaran kosong. */
+const P = {
+  pin: '<path d="M12 21s7-6.2 7-11.5a7 7 0 0 0-14 0C5 14.8 12 21 12 21Z"/><circle cx="12" cy="9.5" r="2.5"/>',
+  api: '<path d="M12 3c1.5 3.5 6 5.5 6 10a6 6 0 0 1-12 0c0-2.2 1-3.8 2.5-5 .3 1.8 1.2 2.8 2.3 3.3C10.5 9 11 6 12 3Z"/>',
+  bara: '<circle cx="12" cy="12" r="3"/><path d="M12 3v3M12 18v3M3 12h3M18 12h3M5.6 5.6l2.1 2.1M16.3 16.3l2.1 2.1M18.4 5.6l-2.1 2.1M7.7 16.3l-2.1 2.1"/>',
+  air: '<path d="M12 3s6 6.3 6 11a6 6 0 0 1-12 0c0-4.7 6-11 6-11Z"/>',
+  mata: '<path d="M2 12s3.5-6.5 10-6.5S22 12 22 12s-3.5 6.5-10 6.5S2 12 2 12Z"/><circle cx="12" cy="12" r="3"/>',
+  orang: '<circle cx="12" cy="8" r="4"/><path d="M4 21c0-4.4 3.6-7 8-7s8 2.6 8 7"/>',
+  kotak: '<path d="M3 7.5 12 3l9 4.5v9L12 21l-9-4.5v-9Z"/><path d="M3 7.5 12 12l9-4.5M12 12v9"/>',
+  bicara: '<path d="M4 5h16v11H9l-5 4V5Z"/>',
+  tambah: '<path d="M12 5v14M5 12h14"/>',
+  jalan: '<path d="M8 3 5 21M16 3l3 18M12 4v3M12 11v3M12 18v3"/>',
+  awan: '<path d="M7 18a4.5 4.5 0 0 1-.5-9A6 6 0 0 1 18 10a4 4 0 0 1-1 8H7Z"/>',
+  hujan: '<path d="M7 14a4.5 4.5 0 0 1-.5-9A6 6 0 0 1 18 6a4 4 0 0 1-1 8H7ZM8 18v3M12 18v3M16 18v3"/>',
+  matahari: '<circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M2 12h2M20 12h2M5 5l1.5 1.5M17.5 17.5 19 19M19 5l-1.5 1.5M6.5 17.5 5 19"/>',
+  alat: '<path d="M14.5 6.5a4 4 0 0 0 4.8 4.8L21 13l-8 8-3-3 5.5-5.5A4 4 0 0 0 14.5 6.5ZM4 20l5-5"/>',
+  sinyal: '<path d="M4 20v-3M9 20v-7M14 20V9M19 20V4"/>',
+  tanda: '<path d="M12 3 2 20h20L12 3ZM12 10v4M12 17v.5"/>',
+  centang: '<path d="m5 12.5 4.5 4.5L19 7.5"/>',
+  silang: '<path d="M6 6l12 12M18 6 6 18"/>',
+  kamera: '<path d="M4 8h3l2-3h6l2 3h3v12H4V8Z"/><circle cx="12" cy="13.5" r="3.5"/>',
+  panah: '<path d="M4 12h15M13 6l6 6-6 6"/>',
+  buku: '<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3V4ZM5 17a3 3 0 0 1 3-3h11"/>',
+  hapus: '<path d="M4 7h16M10 11v6M14 11v6M6 7l1 13h10l1-13M9 7V4h6v3"/>',
+  cek: '<circle cx="12" cy="12" r="9"/><path d="m8 12.5 3 3 5-6"/>',
+};
+export const ik = (nama, ukuran = 20) => `<svg class="lp-ik" width="${ukuran}" height="${ukuran}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${Object.hasOwn(P, nama) ? P[nama] : '<circle cx="12" cy="12" r="8"/>'}</svg>`;
