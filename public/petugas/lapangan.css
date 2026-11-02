@@ -149,10 +149,10 @@ button[aria-pressed="true"].lp-tbl{background:color-mix(in oklch,var(--brand2) 1
 .lp-tinjau-daftar{display:grid;gap:14px}
 .lp-tinjau{display:grid;gap:12px;border:1px solid var(--line);border-radius:14px;padding:12px;background:var(--card);min-width:0}
 .lp-banding{display:grid;grid-template-columns:1fr 1fr;gap:10px}
-.lp-banding figure{margin:0;display:grid;gap:4px}
-.lp-banding img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
-.lp-banding figcaption{font-size:12.5px;color:var(--ink2);text-align:center}
-.lp-banding .kosong{display:grid;place-items:center;aspect-ratio:4/3;border:1px dashed var(--line);border-radius:10px;color:var(--ink2);font-size:13px;text-align:center}
+.lp-banding figure,.lp-tinjau>figure{margin:0;display:grid;gap:4px}
+.lp-banding img,.lp-tinjau>figure img{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;border:1px solid var(--line);background:var(--surface)}
+.lp-banding figcaption,.lp-tinjau>figure figcaption{font-size:12.5px;color:var(--ink2);text-align:center}
+.lp-banding .kosong,.lp-tinjau>.kosong{display:grid;place-items:center;aspect-ratio:4/3;border:1px dashed var(--line);border-radius:10px;color:var(--ink2);font-size:13px;text-align:center}
 .lp-tinjau-info{display:grid;gap:8px;align-content:start;min-width:0}
 .lp-tbl.tolak{border-color:var(--bad);color:var(--bad)}
 @media (min-width:900px){.lp-tugas-form{grid-template-columns:1fr 1fr}.lp-tinjau{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}.lp-tinjau-info .lp-dua{grid-template-columns:1fr 1fr}}

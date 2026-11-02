@@ -1,6 +1,7 @@
 """Ekspor label lapangan terverifikasi ke public/data/lapangan/label.json (LP-023, DESAIN-TEKNIS §6).
 
-Menarik GET /api/petugas/label.json (hanya terverifikasi = 1, dijamin server; di sini disaring lagi).
+Menarik GET /api/petugas/label.json (hanya terverifikasi = 1, dijamin server; di sini disaring lagi). Koordinat dibulatkan 2 desimal (~1 km) karena berkas ini publik.
+Token harus Super Admin (rute server memakai superOK).
 Token admin dari env LAPANGAN_TOKEN (cadangan PIPA_TOKEN), alamat dari LAPANGAN_URL. Tanpa token atau gagal tarik:
 berkas lama dibiarkan, keluar 0 (langkah harian tidak boleh merah karena modul ini belum aktif).
 Uji: python3 scripts/lapangan/ekspor_label.py --uji
@@ -28,7 +29,7 @@ def rapikan(label):
             continue
         if not (-90 <= lat <= 90 and -180 <= lon <= 180) or not x.get("id") or not x.get("jenis") or "nilai" not in x:
             continue
-        hasil.append({"id": str(x["id"]), "jenis": str(x["jenis"]), "nilai": x["nilai"], "lat": lat, "lon": lon, "waktu": waktu})
+        hasil.append({"id": str(x["id"]), "jenis": str(x["jenis"]), "nilai": x["nilai"], "lat": round(lat, 2), "lon": round(lon, 2), "waktu": waktu})   # ~1 km: berkas ini publik, titik presisi hanya di API
     return sorted(hasil, key=lambda b: (b["waktu"], b["id"]))
 
 
@@ -81,6 +82,9 @@ def uji():
     ]
     r = rapikan(mentah)
     assert [b["id"] for b in r] == ["a", "b"], r
+    assert [(b["lat"], b["lon"]) for b in r] == [(-6.2, 106.8), (-0.05, 116.4)], r
+    r2 = rapikan([{"id": "p", "jenis": "titik_api", "nilai": 1, "lat": -2.123456, "lon": 112.987654, "waktu": 1}])
+    assert (r2[0]["lat"], r2[0]["lon"]) == (-2.12, 112.99), r2   # presisi tinggi dibulatkan
     assert rapikan(None) == [] and rapikan({}) == []
     with tempfile.TemporaryDirectory() as d:
         j = tulis(r, os.path.join(d, "dalam", "label.json"))

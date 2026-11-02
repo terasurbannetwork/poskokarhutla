@@ -4,7 +4,7 @@ import {$, esc, angka, api, nanti} from "./umum.js";
 import {pesanGalat, teksAlasan, keMs} from "./murni.js";
 import {teksJam, tanggalLokal} from "./stempel.js";
 import {kartuTinjau} from "./tinjau_kartu.js";
-import {BENCANA, ringkasAnggota, STATUS_PETA, titikGeo, jejakGeo, tepiPeta, angkaStrip, fotoAman, putusanTinjau, rapikanTugas, bacaKoordinat, teksKoordinat, labelStatusPeta} from "./panel_murni.js";
+import {BENCANA, ringkasAnggota, STATUS_PETA, titikGeo, jejakGeo, tepiPeta, angkaStrip, fotoAman, putusanTinjau, rapikanTugas, teksKondisi, bacaKoordinat, teksKoordinat, labelStatusPeta} from "./panel_murni.js";
 import {muatMapLibre} from "/inti/maplibre.js";
 import {ik} from "./ikon.js";
 import {urlEkspor} from "./panggil_murni.js";
@@ -39,7 +39,8 @@ export const opsKerangka = () => `
   </form>
   <div id="lpTugas">${kerangkaMuat}</div>
 </section>
-<section class="lp-kartu"><h2>Antrean tinjauan</h2><div id="lpTinjau">${kerangkaMuat}</div></section>`;
+<section class="lp-kartu"><h2>Antrean tinjauan</h2><div id="lpTinjau">${kerangkaMuat}</div></section>
+<section class="lp-kartu"><h2>Kondisi lapangan menunggu tanda</h2><p class="lp-kecil">Kondisi dari logbook baru dipakai model setelah peninjau menandainya. Peninjau tidak boleh menandai logbooknya sendiri.</p><div id="lpLabel">${kerangkaMuat}</div></section>`;
 
 /* ---------- strip + peta ---------- */
 let peta = null, petaSiap = false, ringkas = null, saring = null, pilihTitik = false, penanda = null, popup = null, popupId = "";
@@ -157,6 +158,35 @@ async function muatTinjau() {
   kotak.innerHTML = baris.length ? `<div class="lp-tinjau-daftar">${baris.map(x => kartuTinjau(x)).join("")}</div>` : `<p class="lp-kecil lp-tengah">Tidak ada absen yang menunggu tinjauan.</p>`;
 }
 
+/* ---------- kondisi lapangan menunggu tanda (GET /api/petugas/panel/label, POST .../label/:id) ---------- */
+const kosongLabel = `<p class="lp-kecil lp-tengah">Tidak ada kondisi lapangan yang menunggu tanda.</p>`;
+const kartuLabel = x => { const f = fotoAman(x.foto_url), w = keMs(x.waktu), k = teksKondisi(x.nilai);
+  return `<article class="lp-tinjau" data-label="${esc(x.id)}">${f ? `<figure><img src="${esc(f)}" alt="Foto logbook" loading="lazy" decoding="async"><figcaption>Foto logbook</figcaption></figure>` : `<figure class="kosong"><span>Foto tidak tersedia</span></figure>`}
+    <div class="lp-tinjau-info"><b>${esc(x.nama || "Petugas")}</b><span class="lp-kecil">${esc(x.tugas || "")}${Number.isFinite(w) ? `, ${esc(tanggalLokal(w, off()))} ${esc(teksJam(w, off()))}` : ""}</span>
+      <div class="lp-baris">${k.map(t => `<span class="lp-pil kuning">${esc(t)}</span>`).join("") || `<span class="lp-pil">Kondisi tidak terbaca</span>`}</div>
+      <button class="lp-tbl utama" type="button" data-tandai="${esc(x.id)}">${ik("centang", 18)}Tandai terverifikasi</button><p class="lp-galat" role="alert" hidden></p></div></article>`; };
+async function muatLabel() {
+  const kotak = $("lpLabel"); kotak.innerHTML = kerangkaMuat;
+  const r = await api("/api/petugas/panel/label", {cookie: true});
+  if (!r.ok) { kotak.innerHTML = galatKotak(r, "label"); return; }
+  const baris = r.data.baris || [];
+  kotak.innerHTML = baris.length ? `<div class="lp-tinjau-daftar">${baris.map(kartuLabel).join("")}</div>` : kosongLabel;
+}
+const galatTandai = (h) => h.status === 403 ? (h.data?.galat || "Kamu tidak boleh menandai label logbookmu sendiri atau tidak punya izin. Minta peninjau lain.") : h.status === 409 ? (h.data?.galat || "Label ini sudah ditandai atau hanya contoh.") : (h.data?.galat || pesanGalat(h.status));
+function pasangLabel() {
+  $("lpLabel").addEventListener("click", e => {
+    const u = e.target.closest("[data-ulang]"); if (u) return muatLabel();
+    const b = e.target.closest("[data-tandai]"); if (!b || b.disabled) return;
+    const kartu = b.closest(".lp-tinjau"), g = kartu.querySelector(".lp-galat"), teks = b.textContent; b.disabled = true; b.textContent = "Menyimpan..."; g.hidden = true;
+    nanti(async () => {
+      const h = await api(`/api/petugas/panel/label/${encodeURIComponent(b.dataset.tandai)}`, {metode: "POST", cookie: true, badan: {}});
+      if (!kartu.isConnected) return;
+      if (h.ok || h.status === 409) { kartu.remove(); if (!$("lpLabel").querySelector(".lp-tinjau")) $("lpLabel").innerHTML = kosongLabel; return; }   // 409 sudah ditandai: baris memang harus hilang
+      b.disabled = false; b.textContent = teks; g.textContent = galatTandai(h); g.hidden = false;
+    });
+  });
+}
+
 function pasangTinjau() {
   $("lpTinjau").addEventListener("click", e => {
     const u = e.target.closest("[data-ulang]"); if (u) return muatTinjau();
@@ -185,7 +215,7 @@ export function pasangOps() {
   });
   $("lpJejak").addEventListener("change", () => peta && petaSiap && peta.setLayoutProperty("jejak-garis", "visibility", $("lpJejak").checked ? "visible" : "none"));
   $("lpTugas").addEventListener("click", e => { if (e.target.closest("[data-ulang]")) muatTugas(); });
-  pasangTugas(); pasangTinjau();
+  pasangTugas(); pasangTinjau(); pasangLabel();
   mulaiPeta().then(muatRingkas);
-  muatTugas(); muatTinjau();
+  muatTugas(); muatTinjau(); muatLabel();
 }

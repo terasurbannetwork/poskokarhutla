@@ -13,7 +13,7 @@ import {jaringanHosting} from "./publik.js";
 import {jenisBerkas, ATURAN_MEDIA, jarakM} from "./foto.js";
 import {bersihMedia} from "./media_bersih.js";
 import {KONST_PUBLIK, VERSI_SETUJU, TEKS_SETUJU, ARAH, TANTANGAN, NONCE, LURING, BATAS_JAM_HP_DETIK, AMBANG_DAFTAR, KONDISI, KEGIATAN, KENDALA, KEBUTUHAN, KONDISI_API, KONDISI_BANJIR, BATAS_FOTO_LOGBOOK, DIM_VEKTOR_MAKS, DIM_VEKTOR_MIN, JENDELA_TUGAS_MS,
-  kosinus, vektorDari, haversineM, dalamRadius, lompatanMustahil, putusStatus, tanggalWIB, awalHariWIB, LURING_LAMA_MS, JARINGAN_JENDELA_MS, WAJAH_BARU_ABSEN, SAMPEL_TINJAU, LABEL_TAMBAH_M} from "./lapangan_konst.js";
+  kosinus, vektorDari, haversineM, dalamRadius, lompatanMustahil, putusStatus, tanggalWIB, awalHariWIB, LURING_LAMA_MS, JARINGAN_JENDELA_MS, WAJAH_BARU_ABSEN, SAMPEL_TINJAU} from "./lapangan_konst.js";
 import {RUTE_LAPANGAN_PANEL, jaga, pb, penjaga, jamRelawan, kirimJpeg} from "./lapangan_panel.js";
 export {bersihkanLapangan} from "./lapangan_panel.js";
 
@@ -35,6 +35,12 @@ export async function hapusOrang(env, relawanId) {
     if (!results.length) return;
     /* absen, logbook, dan nonce ikut terhapus (FK CASCADE 0097); berkas R2-nya dibuang dulu selagi barisnya masih ada */
     await hapusBerkasOrang(env, results.map(x => x.id));
+    /* tahap C (0101): kit logbook orang ini dan baris penerima panggilan relawannya; terpisah supaya tanpa 0101 sisanya tetap jalan */
+    try {
+      await env.DB.batch([env.DB.prepare("DELETE FROM lp_logbook_kit WHERE logbook_id IN (SELECT id FROM lp_logbook WHERE orang_id IN (SELECT id FROM orang WHERE relawan_id = ?1))").bind(relawanId),
+        env.DB.prepare("DELETE FROM lp_panggil_penerima WHERE relawan_id = ?1").bind(relawanId),
+        env.DB.prepare("DELETE FROM wa_antre WHERE jenis IN ('panggil', 'panggil_info') AND rujukan LIKE '%.' || ?1").bind(relawanId)]);   // rujukan '<panggil>.<relawan_id>': memuat kode balas dan nomor WA
+    } catch (e) { if (!/no such table/i.test(e?.message || "")) throw e; }
     /* baris tahap B dihapus eksplisit (tidak bergantung CASCADE) dan terpisah: tanpa 0097 batch ini gagal, penghapusan tahap A di bawah tetap jalan */
     try {
       await env.DB.batch(results.flatMap(({id}) => ["DELETE FROM lapangan_label WHERE sumber_id IN (SELECT id FROM lp_logbook WHERE orang_id = ?1)", "DELETE FROM lp_logbook_foto WHERE logbook_id IN (SELECT id FROM lp_logbook WHERE orang_id = ?1)",
@@ -76,8 +82,11 @@ async function orangDariRegu(env, req, kini) {
   if (r instanceof Response) return r.status === 403 ? gagal(401, "kode regu tidak berlaku (salah atau sudah dicabut); minta tautan baru dari posko") : r;
   await env.DB.prepare(`INSERT OR IGNORE INTO orang (id, jenis, nama, prov, kab, status, wajah_status, dibuat, diubah, dummy) VALUES (?1, 'pegawai', ?2, ?3, ?4, 'aktif', 'belum', ?5, ?5, ?6)`)
     .bind(r.id, r.nama, r.prov, r.kab, kini, r.dummy ? 1 : 0).run();
-  return (await env.DB.prepare("SELECT * FROM orang WHERE id = ? AND jenis = 'pegawai' AND kode_sha IS NULL AND status = 'aktif'").bind(r.id).first()) ?? gagal(401, "akun regu ini dinonaktifkan");
+  const o = await env.DB.prepare("SELECT * FROM orang WHERE id = ? AND jenis = 'pegawai' AND kode_sha IS NULL AND status = 'aktif'").bind(r.id).first();
+  return o ? {...o, regu: true} : gagal(401, "akun regu ini dinonaktifkan");
 }
+/* kode regu dibagi satu regu, jadi bukan bukti per orang: orang hasil regu hanya boleh logbook dan baca profil (KEAMANAN-PRIVASI). Wajah dan absen = 403. */
+export const tolakRegu = o => o.regu ? gagal(403, "kode regu tidak bisa untuk wajah dan absen: kode itu dibagi satu regu, bukan bukti per orang. Pakai tautan pribadi dari admin.") : null;
 
 const setujuTerakhir = (env, orangId) => env.DB.prepare("SELECT versi_teks, setuju FROM orang_setuju WHERE orang_id = ? ORDER BY waktu DESC, rowid DESC LIMIT 1").bind(orangId).first();
 
@@ -131,6 +140,7 @@ async function tugasHariIni(env, orangId, kini) {
 
 async function setuju(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
+  { const r = tolakRegu(o); if (r) return r; }
   const lj = await laju(env, o.id, "lapangan.setuju", [[JAM, 20]], kini); if (lj) return lj;
   const b = await bacaBody(req, 1024); if (b.galat) return gagal(b.status || 400, b.galat);
   if (b.o.versi !== VERSI_SETUJU) return gagal(400, "versi teks persetujuan sudah berganti; muat ulang layar");
@@ -179,6 +189,7 @@ const vektorSah = v => {
 /* ---------------------------------------------------------------- wajah (LP-011) */
 async function wajahDaftar(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
+  { const r = tolakRegu(o); if (r) return r; }
   if (!env.MEDIA) return gagal(503, "penyimpanan foto belum aktif (R2 MEDIA)");
   const s = await setujuTerakhir(env, o.id);
   if (!s?.setuju || s.versi_teks !== VERSI_SETUJU) return gagal(403, "persetujuan wajah wajib: setujui teks terbaru lebih dulu");
@@ -208,6 +219,7 @@ async function wajahDaftar(env, req, kini) {
 }
 async function wajahHapus(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
+  { const r = tolakRegu(o); if (r) return r; }
   await env.DB.batch([env.DB.prepare("DELETE FROM orang_wajah WHERE orang_id = ?").bind(o.id),
     env.DB.prepare("UPDATE orang SET wajah_status = 'dihapus', wajah_versi = NULL, diubah = ? WHERE id = ? AND wajah_status = 'terdaftar'").bind(kini, o.id)]);
   await env.MEDIA?.delete(`lapangan/acuan/${o.id}.jpg`).catch(() => {});
@@ -217,6 +229,7 @@ async function wajahHapus(env, req, kini) {
 /* ---------------------------------------------------------------- nonce (LP-013) */
 async function nonceBaru(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
+  { const r = tolakRegu(o); if (r) return r; }
   const lj = await laju(env, o.id, "lapangan.nonce", [[JAM, 30]], kini); if (lj) return lj;
   const b = await bacaBody(req, 256); if (b.galat) return gagal(b.status || 400, b.galat);
   const jumlah = b.o.jumlah ?? 1, luring = b.o.luring === true || jumlah === NONCE.luringJumlah;   // simpanan luring: {jumlah: 1..6, luring: true}; jumlah 6 tanpa tanda tetap luring (klien lama)
@@ -230,6 +243,7 @@ async function nonceBaru(env, req, kini) {
 /* ---------------------------------------------------------------- absen (LP-013, LP-032) */
 async function absen(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
+  { const r = tolakRegu(o); if (r) return r; }
   if (!env.MEDIA) return gagal(503, "penyimpanan foto belum aktif (R2 MEDIA)");
   const lj = await laju(env, o.id, "lapangan.absen", [[JAM, 10]], kini); if (lj) return lj;
   const f = await bacaForm(req, M_FOTO + 64 * 1024); if (f.r) return f.r;
@@ -386,9 +400,9 @@ async function logbook(env, req, kini) {
     fotos.push({...b, id: acak(8), lat, lon, ak, w, exifJarak});
   }
   /* label (ALGORITMA §7): satu per jenis, lokasi = foto pertama atau titik tugas; api ditautkan ke tugas api terdekat <= 1 km */
-  /* terverifikasi: foto bergeotag <= radius tugas + 200 m dari titik tugas, EXIF cocok (ada dan <= 5 km, sudah dijamin di atas), tanggal dalam jadwal (dijamin 409 di atas). Ekspor label hanya memakai terverifikasi = 1. */
-  const fv = fotos.find(fo => fo.exifJarak != null && haversineM(fo.lat, fo.lon, t.lat, t.lon) <= t.radius_m + LABEL_TAMBAH_M), terverif = fv ? 1 : 0;
-  const x = kn.x, f0 = fv ?? fotos[0], titik = f0 ? {lat: f0.lat, lon: f0.lon} : {lat: t.lat, lon: t.lon}, label = [];
+  /* terverifikasi SELALU 0 saat unggah: lat/lon/exif_* di foto_meta adalah klaim klien, dan bersihMedia membuang EXIF dari byte sehingga server tidak pernah bisa membandingkannya (foto kanvas klien juga tanpa EXIF).
+     Label baru ikut label.json setelah peninjau menandai lewat POST /api/petugas/panel/label/:id (src/lapangan_panel.js); kirim ulang logbook menghapus label lama, jadi tandanya ikut reset. */
+  const x = kn.x, f0 = fotos[0], titik = f0 ? {lat: f0.lat, lon: f0.lon} : {lat: t.lat, lon: t.lon}, label = [];
   const sub = pilih => Object.fromEntries(pilih.filter(k => k in x).map(k => [k, x[k]]));
   if (KONDISI_API.some(k => k in x)) {
     const nilai = sub(KONDISI_API), ta = "kondisi_api" in x ? await tugasApiTerdekat(env, titik.lat, titik.lon) : null;
@@ -406,8 +420,8 @@ async function logbook(env, req, kini) {
       ...fotos.map(fo => env.DB.prepare(`INSERT INTO lp_logbook_foto (id, logbook_id, foto_key, sha256, lat, lon, akurasi, waktu, exif_jarak, dummy) SELECT ?, id, ?, ?, ?, ?, ?, ?, ?, ? ${dariLb}`)
         .bind(fo.id, `lapangan/logbook/${fo.id}.jpg`, fo.sha, fo.lat, fo.lon, fo.ak, Math.round(fo.w), fo.exifJarak, o.dummy ? 1 : 0, ...kunciLb)),
       env.DB.prepare(`DELETE FROM lapangan_label WHERE sumber_id = (SELECT id ${dariLb})`).bind(...kunciLb),
-      ...label.map(([jenis, nilai]) => env.DB.prepare(`INSERT INTO lapangan_label (id, sumber_id, jenis, nilai, lat, lon, waktu, dummy, terverifikasi) SELECT ?, id, ?, ?, ?, ?, ?, ?, ? ${dariLb}`)
-        .bind(acak(8), jenis, JSON.stringify(nilai), titik.lat, titik.lon, kini, o.dummy ? 1 : 0, terverif, ...kunciLb)),
+      ...label.map(([jenis, nilai]) => env.DB.prepare(`INSERT INTO lapangan_label (id, sumber_id, jenis, nilai, lat, lon, waktu, dummy, terverifikasi) SELECT ?, id, ?, ?, ?, ?, ?, ?, 0 ${dariLb}`)
+        .bind(acak(8), jenis, JSON.stringify(nilai), titik.lat, titik.lon, kini, o.dummy ? 1 : 0, ...kunciLb)),
     ]);
   } catch (e) {
     await env.MEDIA?.delete(fotos.map(fo => `lapangan/logbook/${fo.id}.jpg`)).catch(() => {});
@@ -418,10 +432,7 @@ async function logbook(env, req, kini) {
   /* kait tahap C, sesudah logbook tersimpan; tabelnya belum ada (migrasi 0101) = dilewati, logbook tetap sah */
   if (kt.x) await tanpaTabel(() => env.DB.batch([env.DB.prepare("DELETE FROM lp_logbook_kit WHERE logbook_id = ?").bind(hasilLb.id),
     ...kt.x.map(([kid, jml]) => env.DB.prepare("INSERT INTO lp_logbook_kit (logbook_id, kit_id, jumlah) VALUES (?, ?, ?)").bind(hasilLb.id, kid, jml))]), null);
-  /* LP-045: tinggi genangan yang TERVERIFIKASI (foto bergeotag di radius tugas) jadi konfirmasi /prediksi untuk kab orang ini (BNJ, terjadi bila > 0 cm).
-     Skema 0079 hanya mengenal sumber 'regu'/'warga': dicatat 'regu' dengan kode_regu "lp:<orang>" (satu baris per orang, kab, tanggal; kirim ulang menimpa). */
-  if (terverif && x.tinggi_genangan_cm != null && o.kab && o.kab.length >= 2) await tanpaTabel(() => env.DB.prepare(`INSERT INTO prediksi_konfirmasi (kab, tanggal, kode, terjadi, nilai, catatan, sumber, kode_regu, dibuat) VALUES (?, ?, 'BNJ', ?, ?, NULL, 'regu', ?, ?)
-    ON CONFLICT (kab, tanggal, kode, kode_regu) DO UPDATE SET terjadi = excluded.terjadi, nilai = excluded.nilai, dibuat = excluded.dibuat`).bind(o.kab, d.tanggal, x.tinggi_genangan_cm > 0 ? 1 : 0, x.tinggi_genangan_cm, "lp:" + o.id, new Date(kini).toISOString()).run(), null);
+  /* LP-045: genangan ke prediksi_konfirmasi dikerjakan saat peninjau menandai label (konfirmasiGenangan di src/lapangan_panel.js), bukan saat unggah. */
   return json({ok: true, id: hasilLb.id, tanggal: d.tanggal, terkunci: false, foto: (ada?.n ?? 0) + fotos.length, label: label.map(l => l[0]), tugas_api_id: label.find(l => l[0] === "api")?.[1].tugas_api_id ?? null, ...(kt.x ? {kit: kt.x.length} : {})}, ada ? 200 : 201);
 }
 
@@ -444,7 +455,7 @@ async function fotoBaca(env, req, url, kini, ctx, id) {
     SELECT f.foto_key, l.orang_id, l.tugas_id, p.prov FROM lp_logbook_foto f JOIN lp_logbook l ON l.id = f.logbook_id JOIN orang p ON p.id = l.orang_id WHERE f.id = ?1`).bind(id).first();
   /* pemilik, peninjau panel, atau ketua regu tugas itu (peran 'ketua' di lp_anggota): ketua meninjau absen anggotanya dari antrean tinjauan */
   const ketua = r && o && r.orang_id !== o.id && !!await env.DB.prepare("SELECT 1 FROM lp_anggota WHERE tugas_id = ? AND orang_id = ? AND peran = 'ketua'").bind(r.tugas_id, o.id).first();
-  if (!r || (o ? r.orang_id !== o.id && !ketua : !dalamWilayahStaf(req, [r.prov]))) return gagal(404, "foto tidak ada");
+  if (!r || r.k === "dihapus" || (o ? r.orang_id !== o.id && !ketua : !dalamWilayahStaf(req, [r.prov]))) return gagal(404, "foto tidak ada");
   const berkas = await env.MEDIA.get(r.k);
   return berkas ? kirimJpeg(berkas) : gagal(404, "foto tidak ada");
 }

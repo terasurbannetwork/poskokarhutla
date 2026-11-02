@@ -7,7 +7,7 @@
 import {gagal, json, acak, bacaBody, normalWA, adminOK, sha} from "./worker.js";
 import {superOK, modOK, tx, num, RE_EMAIL, uraiCsvKontak} from "./posko.js";
 import {modAtauStaf, dalamWilayahStaf, wilayahStaf} from "./staf.js";
-import {laju, kodeBaru} from "./bnpb.js";
+import {laju, lajuIP, kodeBaru} from "./bnpb.js";
 import {JENIS_ORANG, RADIUS_BAWAAN_M, RETENSI_FOTO_MS, tanggalWIB, awalHariWIB} from "./lapangan_konst.js";
 import {RUTE_GATEWAY_WA, panggilBuat, panggilDaftar, antrePenugasan, tugasTerlihat} from "./lapangan_wa.js";
 import {petugas} from "./lapangan.js";   // impor melingkar aman: hanya dipanggil saat permintaan, bukan saat modul dimuat
@@ -149,6 +149,7 @@ async function tautan(env, req, url, kini, ctx, id) {
   const o = await env.DB.prepare("SELECT id, nama, wa, status, relawan_id, prov FROM orang WHERE id = ?").bind(id).first();
   if (!o || !dalamWilayahStaf(req, [o.prov])) return gagal(404, "orang tidak ditemukan");
   if (o.status !== "aktif") return gagal(409, "orang ini nonaktif");
+  if (await env.DB.prepare("SELECT 1 FROM regu WHERE id = ?").bind(o.id).first()) return gagal(409, "orang ini berasal dari kode regu Posko; tautan pribadi tidak berlaku, kelola kodenya di /api/posko");
   /* kode hanya dilihat admin (modOK): staf pimpinan/koordalops cukup mengantrekan ke WA orangnya, jadi tak pernah memegang kode pribadi orang lain */
   const admin = !!await modOK(env, req);
   if (!admin && !o.wa) return gagal(409, "WA kosong; minta admin menyalin tautan");
@@ -242,6 +243,15 @@ async function tinjauDaftar(env, req, url, kini) {
       FROM lp_absen x JOIN orang o ON o.id = x.orang_id JOIN lp_tugas t ON t.id = x.tugas_id WHERE x.status = 'tinjau'${w.sql} ORDER BY x.waktu, x.id LIMIT ${HALAMAN} OFFSET ${(hal - 1) * HALAMAN}`).bind(...w.p)]);
   return json({total: n.results[0].n, halaman: hal, ukuran_halaman: HALAMAN, baris: h.results.map(x => ({id: x.id, nama: x.nama, tugas: x.tugas, jenis: x.jenis, waktu: x.waktu, skor_wajah: x.skor_wajah, alasan: JSON.parse(x.alasan), jarak_m: x.jarak_m,
     gps_ket: x.gps_ket, luring: !!x.luring, lat: x.lat, lon: x.lon, foto_url: `/api/petugas/foto/${x.id}`, acuan_url: x.wajah_status === "terdaftar" ? `/api/petugas/panel/acuan/${x.orang_id}` : null}))});
+}
+/* antrean label menunggu tanda peninjau (pasangan labelVerifikasi); label milik peninjau sendiri tetap tampil (POST menolaknya 403). Tanpa vektor, kode, WA. */
+async function labelDaftar(env, req, url, kini) {
+  const l = await lingkup(env, req, kini); if (l instanceof Response) return l;
+  const hal = Math.min(Math.max(parseInt(url.searchParams.get("halaman"), 10) || 1, 1), 10000), w = sqlBatas(l, req, "o.prov", "b.tugas_id", 1);
+  const dari = `FROM lapangan_label x JOIN lp_logbook b ON b.id = x.sumber_id JOIN orang o ON o.id = b.orang_id JOIN lp_tugas t ON t.id = b.tugas_id WHERE x.terverifikasi = 0 AND x.dummy = 0 AND o.dummy = 0${w.sql}`;
+  const [n, h] = await env.DB.batch([env.DB.prepare(`SELECT count(*) n ${dari}`).bind(...w.p),
+    env.DB.prepare(`SELECT x.id, x.jenis, x.nilai, x.waktu, o.nama, t.judul tugas, (SELECT f.id FROM lp_logbook_foto f WHERE f.logbook_id = b.id ORDER BY f.rowid LIMIT 1) foto ${dari} ORDER BY x.waktu DESC, x.id LIMIT ${HALAMAN} OFFSET ${(hal - 1) * HALAMAN}`).bind(...w.p)]);
+  return json({ok: true, total: n.results[0].n, baris: h.results.map(x => ({id: x.id, jenis: x.jenis, nilai: JSON.parse(x.nilai), waktu: x.waktu, nama: x.nama, tugas: x.tugas, foto_url: x.foto ? `/api/petugas/foto/${x.foto}` : null}))});
 }
 async function tinjauPutus(env, req, url, kini, ctx, id) {
   const mod = await penjaga(env, req); if (!mod) return tolakPanel();
@@ -369,8 +379,10 @@ async function keahlianTulis(env, req, kini, hapus) {
   const bukti = tx(b.o.bukti, 200); if (bukti === undefined) return gagal(400, "bukti maksimal 200 karakter");
   if (!await env.DB.prepare("SELECT 1 FROM orang WHERE id = ?").bind(b.o.orang_id).first()) return gagal(404, "orang tidak ditemukan");
   if (hapus) { await env.DB.prepare("DELETE FROM orang_keahlian WHERE orang_id = ? AND keahlian = ?").bind(b.o.orang_id, b.o.keahlian).run(); return json({ok: true}); }
-  if ((await env.DB.prepare("SELECT count(*) n FROM orang_keahlian WHERE orang_id = ? AND keahlian <> ?").bind(b.o.orang_id, b.o.keahlian).first()).n >= 10) return gagal(409, "satu orang maksimal 10 penanda keahlian");
-  await env.DB.prepare("INSERT INTO orang_keahlian (orang_id, keahlian, bukti, dibuat) VALUES (?, ?, ?, ?) ON CONFLICT (orang_id, keahlian) DO UPDATE SET bukti = excluded.bukti").bind(b.o.orang_id, b.o.keahlian, bukti, kini).run();
+  /* batas 10 atomik: hitung dan tulis dalam satu pernyataan, jadi dua permintaan serentak tidak sama-sama lolos hitungan */
+  const w = await env.DB.prepare(`INSERT INTO orang_keahlian (orang_id, keahlian, bukti, dibuat) SELECT ?1, ?2, ?3, ?4
+    WHERE (SELECT count(*) FROM orang_keahlian WHERE orang_id = ?1 AND keahlian <> ?2) < 10 ON CONFLICT (orang_id, keahlian) DO UPDATE SET bukti = excluded.bukti`).bind(b.o.orang_id, b.o.keahlian, bukti, kini).run();
+  if (!w.meta.changes) return gagal(409, "satu orang maksimal 10 penanda keahlian");
   console.log("lapangan.keahlian", JSON.stringify({oleh: String(mod).slice(0, 64), orang: b.o.orang_id, keahlian: b.o.keahlian, waktu: kini}));
   return json({ok: true});
 }
@@ -396,16 +408,43 @@ async function ekspor(env, req, url, kini) {
   return new Response("\uFEFF" + baris.map(r => r.map(sel).join(",")).join("\r\n") + "\r\n", {headers: {"content-type": "text/csv; charset=utf-8", "content-disposition": `attachment; filename="rekap-tugas-${tid}.csv"`, "cache-control": "private, no-store", "x-content-type-options": "nosniff"}});
 }
 
-/* LP-023: label kondisi lapangan untuk model; HANYA yang terverifikasi, bukan contoh (dummy). Pembaca: token admin (mesin ekspor harian). */
+/* LP-023: label kondisi lapangan untuk model; HANYA yang ditandai peninjau, bukan contoh (dummy). Pembaca: Super Admin (token mesin ekspor harian), 60 per jam per IP.
+   Koordinat di sini presisi; scripts/lapangan/ekspor_label.py membulatkannya sebelum menulis ke public/. */
 async function label(env, req, url, kini) {
-  if (!await adminOK(env, req, kini)) return gagal(403, "perlu token admin");
+  if (!await superOK(env, req)) return gagal(403, "perlu token Super Admin");
+  const lj = await lajuIP(env, req, "lapangan.label", [[JAM, 60]], kini); if (lj) return lj;
   const sejak = url.searchParams.has("sejak") ? num(url.searchParams.get("sejak"), 0, 4e12, true) : 0;
   if (sejak == null || Number.isNaN(sejak)) return gagal(400, "sejak harus ms epoch bilangan bulat");
   const {results} = await env.DB.prepare("SELECT id, jenis, nilai, lat, lon, waktu FROM lapangan_label WHERE terverifikasi = 1 AND dummy = 0 AND waktu >= ? ORDER BY waktu, id LIMIT 5000").bind(sejak).all();
   return json({ok: true, label: results.map(x => ({...x, nilai: JSON.parse(x.nilai)}))});
 }
 
+/* tanda peninjau (pimpinan/koordalops/moderator) bahwa label logbook benar: satu-satunya jalan terverifikasi = 1. Peninjau tidak menandai label logbooknya sendiri.
+   Tinggi genangan label banjir yang ditandai jadi konfirmasi /prediksi (LP-045) untuk kab TUGAS: kab profil orang hanya dipakai bila wilayah_teks tugas menyebutnya; tugas tanpa kab yang jelas dan label contoh dilewati. */
+async function labelVerifikasi(env, req, url, kini, ctx, id) {
+  const mod = await penjaga(env, req); if (!mod) return tolakPanel();
+  const lj = await laju(env, mod, "lapangan.label_tanda", [[JAM, 600]], kini); if (lj) return lj;
+  const l = await env.DB.prepare(`SELECT l.id, l.jenis, l.nilai, l.dummy, b.tanggal, o.id orang_id, o.staf_id, o.kab, o.prov, o.dummy odummy, t.wilayah_teks
+    FROM lapangan_label l JOIN lp_logbook b ON b.id = l.sumber_id JOIN orang o ON o.id = b.orang_id JOIN lp_tugas t ON t.id = b.tugas_id WHERE l.id = ?`).bind(id).first();
+  if (!l || !dalamWilayahStaf(req, [l.prov])) return gagal(404, "label tidak ditemukan");
+  if (l.dummy || l.odummy) return gagal(409, "label contoh tidak diverifikasi");
+  if (l.staf_id && mod === "staf:" + l.staf_id) return gagal(403, "peninjau tidak boleh menandai label logbooknya sendiri; minta peninjau lain");
+  const x = await env.DB.prepare("UPDATE lapangan_label SET terverifikasi = 1 WHERE id = ? AND terverifikasi = 0").bind(id).run();
+  if (!x.meta.changes) return gagal(409, "label ini sudah ditandai");
+  const cm = JSON.parse(l.nilai).tinggi_genangan_cm, kab = l.kab?.trim();
+  const kabTugas = kab && kab.length >= 2 && String(l.wilayah_teks ?? "").toLowerCase().includes(kab.toLowerCase()) ? kab : null;
+  let konfirmasi = false;
+  if (l.jenis === "banjir" && Number.isFinite(cm) && kabTugas) {
+    await env.DB.prepare(`INSERT INTO prediksi_konfirmasi (kab, tanggal, kode, terjadi, nilai, catatan, sumber, kode_regu, dibuat) VALUES (?, ?, 'BNJ', ?, ?, NULL, 'regu', ?, ?)
+      ON CONFLICT (kab, tanggal, kode, kode_regu) DO UPDATE SET terjadi = excluded.terjadi, nilai = excluded.nilai, dibuat = excluded.dibuat`).bind(kabTugas, l.tanggal, cm > 0 ? 1 : 0, cm, "lp:" + l.orang_id, new Date(kini).toISOString()).run();
+    konfirmasi = true;
+  }
+  console.log("lapangan.label_tanda", JSON.stringify({oleh: String(mod).slice(0, 64), label: id, konfirmasi, waktu: kini}));
+  return json({ok: true, id, terverifikasi: true, konfirmasi});
+}
+
 export const RUTE_LAPANGAN_PANEL = jaga({
+  "POST /api/petugas/panel/label/:id": (env, req, url, kini, ctx, id) => pb(req) ?? labelVerifikasi(env, req, url, kini, ctx, id),
   "POST /api/petugas/panel/impor": (env, req, url, kini) => pb(req) ?? impor(env, req, kini),
   "GET /api/petugas/panel/orang": (env, req, url) => url.searchParams.has("keahlian") ? orangKeahlian(env, req, url) : daftarOrang(env, req, url),
   "POST /api/petugas/panel/panggil": (env, req, url, kini) => pb(req) ?? panggilPanel(env, req, kini),
@@ -418,6 +457,7 @@ export const RUTE_LAPANGAN_PANEL = jaga({
   "POST /api/petugas/panel/tautan/:id": (env, req, url, kini, ctx, id) => pb(req) ?? tautan(env, req, url, kini, ctx, id),
   "GET /api/petugas/panel/ringkas": ringkas,
   "GET /api/petugas/panel/tinjau": tinjauDaftar,
+  "GET /api/petugas/panel/label": labelDaftar,
   "POST /api/petugas/panel/tinjau/:id": (env, req, url, kini, ctx, id) => pb(req) ?? tinjauPutus(env, req, url, kini, ctx, id),
   "POST /api/petugas/panel/tugas": (env, req, url, kini) => pb(req) ?? tugasSimpan(env, req, url, kini),
   "GET /api/petugas/panel/tugas": tugasDaftar,
@@ -428,6 +468,9 @@ export const RUTE_LAPANGAN_PANEL = jaga({
 export const bersihkanLapangan = async (env, kini = Date.now()) => {
   /* tahap B (0097): nonce habis > 1 hari dibuang, logbook hari lampau dikunci; migrasi belum jalan = dilewati tanpa mengganggu pembersihan wa_antre */
   try { await env.DB.batch([env.DB.prepare("DELETE FROM lp_nonce WHERE kedaluwarsa < ?").bind(kini - HARI), env.DB.prepare("UPDATE lp_logbook SET terkunci = 1 WHERE terkunci = 0 AND tanggal < ?").bind(tanggalWIB(kini))]); }
+  catch (e) { if (!/no such table/i.test(e?.message || "")) throw e; }
+  /* LP-020: baris penerima panggilan (kode balas, status jawaban per relawan) dibuang 30 hari sesudah batas panggilannya */
+  try { await env.DB.prepare("DELETE FROM lp_panggil_penerima WHERE panggil_id IN (SELECT id FROM lp_panggil WHERE batas < ?)").bind(kini - 30 * 24 * JAM).run(); }
   catch (e) { if (!/no such table/i.test(e?.message || "")) throw e; }
   await bersihWa(env, kini);
   await hapusFotoLama(env, kini);

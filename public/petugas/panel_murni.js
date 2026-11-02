@@ -106,3 +106,12 @@ export function ringkasAnggota(anggota, batas = 4) {
   const nama = urut.slice(0, batas).map(a => a.peran === "ketua" ? `${a.nama} (ketua)` : String(a.nama)).join(", ") + (urut.length > batas ? `, +${urut.length - batas}` : "");
   return {jumlah: anggota.length, nama};
 }
+
+/* kondisi lapangan dari nilai label logbook ({kondisi_api} atau {tinggi_genangan_cm}) -> teks pil. Kunci asing diabaikan. */
+const NAMA_API = {menyala: "Menyala", bara: "Bara", padam: "Padam", bukan_api: "Bukan api"};
+export function teksKondisi(nilai) {
+  const n = nilai && typeof nilai === "object" ? nilai : {}, t = [];
+  if (typeof n.kondisi_api === "string" && Object.hasOwn(NAMA_API, n.kondisi_api)) t.push(`Kondisi api: ${NAMA_API[n.kondisi_api].toLowerCase()}`);
+  const cm = Number(n.tinggi_genangan_cm); if (n.tinggi_genangan_cm != null && Number.isFinite(cm)) t.push(`Genangan ${Math.round(cm)} cm`);
+  return t;
+}

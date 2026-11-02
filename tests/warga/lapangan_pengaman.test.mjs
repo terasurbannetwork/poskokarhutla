@@ -93,15 +93,37 @@ uji("kunci prototipe: kondisi {constructor} dan {__proto__} = 400, bukan 500", a
   }
 });
 
-uji("label terverifikasi: foto di luar radius + 200 m atau tanpa EXIF = 0; dekat + EXIF = 1; tanggal di luar jadwal tugas 409", async () => {
+uji("label terverifikasi: unggah SELALU 0 (klaim klien, EXIF dibuang server); hanya tanda peninjau yang mengubah; contoh, tanda ganda, diri sendiri, wilayah lain ditolak; tanggal di luar jadwal tugas 409", async () => {
   const g = await orang("Gita", "7"), tid = await tugas([g], {radius: 300}), kini = Date.now(), hari = new Date(kini + 7 * JAM).toISOString().slice(0, 10);
   const L = (meta, kondisi = {kondisi_api: "bara"}, u = {}) => kirim("/api/petugas/logbook", {tugas_id: tid, tanggal: hari, kegiatan: "patroli", kondisi, foto_meta: [meta], ...u}, jpeg(), g.kode);
   const m = (lat, lon, exif = true) => ({lat, lon, akurasi: 10, waktu: kini - 60e3, ...(exif ? {exif_lat: lat, exif_lon: lon} : {})});
-  const ver = async () => (await baris("SELECT terverifikasi FROM lapangan_label"))[0].terverifikasi;
-  assert.equal((await L(m(TITIK.lat + 0.02, TITIK.lon))).s, 201); assert.equal(await ver(), 0, "2,2 km dari titik, radius 300");
-  assert.equal((await L(m(TITIK.lat + 0.0005, TITIK.lon, false))).s, 200); assert.equal(await ver(), 0, "dekat tetapi tanpa EXIF");
-  assert.equal((await L(m(TITIK.lat + 0.0005, TITIK.lon))).s, 200); assert.equal(await ver(), 1, "dekat + EXIF cocok");
-  assert.equal((await L(m(TITIK.lat + 0.0005, TITIK.lon), {kondisi_api: "bara"}, {kondisi: {kondisi_api: "bara"}})).s, 200);
+  const lab = async () => (await baris("SELECT id, terverifikasi FROM lapangan_label"))[0];
+  /* foto dekat titik tugas dengan klaim EXIF cocok: dulu 1, sekarang tetap 0 sampai peninjau menandai */
+  assert.equal((await L(m(TITIK.lat + 0.0005, TITIK.lon))).s, 201); assert.equal((await lab()).terverifikasi, 0, "klaim klien bukan bukti");
+  assert.equal((await L(m(TITIK.lat + 0.02, TITIK.lon))).s, 200); assert.equal((await lab()).terverifikasi, 0);
+  assert.equal(await U.n("lapangan_label", "terverifikasi = 1"), 0);
+  const tanda = (id, h = ADMIN) => api("POST", `/api/petugas/panel/label/${id}`, {}, h);
+  assert.equal((await tanda((await lab()).id, K(g.kode))).s, 403, "petugas tidak bisa menandai");
+  assert.equal((await tanda((await lab()).id, {})).s, 403, "tanpa penjaga");
+  /* label contoh tidak ditandai */
+  await DB.prepare("UPDATE lapangan_label SET dummy = 1").run(); assert.equal((await tanda((await lab()).id)).s, 409); await DB.prepare("UPDATE lapangan_label SET dummy = 0").run();
+  /* peninjau tidak menandai label logbooknya sendiri; peninjau wilayah lain 404 */
+  await STAF("1".repeat(64), "9a9a9a9a9a9a9a9a", "5100510051005", '["62"]'); await STAF("2".repeat(64), "8a8a8a8a8a8a8a8a", "5200520052005", '["99"]');
+  await DB.prepare("UPDATE orang SET staf_id = '9a9a9a9a9a9a9a9a' WHERE id = ?").bind(g.id).run();
+  assert.equal((await tanda((await lab()).id, sesi("1".repeat(64)))).s, 403, "diri sendiri");
+  assert.equal((await tanda((await lab()).id, sesi("2".repeat(64)))).s, 404, "wilayah lain");
+  assert.equal((await lab()).terverifikasi, 0, "semua penolakan tidak mengubah apa pun");
+  /* antrean label: hanya penjaga, wilayah dihormati, label sendiri tetap tampil, dummy dan terverifikasi tidak */
+  const ant = h => api("GET", "/api/petugas/panel/label", undefined, h);
+  assert.equal((await ant(K(g.kode))).s, 403, "petugas biasa"); assert.equal((await ant({})).s, 403, "tanpa penjaga");
+  const a1 = await ant(sesi("1".repeat(64))); assert.equal(a1.s, 200, a1.t); assert.equal(a1.j.total, 1, "milik peninjau sendiri tetap tampil");
+  assert.deepEqual(Object.keys(a1.j.baris[0]).sort(), ["foto_url", "id", "jenis", "nama", "nilai", "tugas", "waktu"]); assert.equal(a1.j.baris[0].nama, "Gita"); assert.match(a1.j.baris[0].foto_url, /^\/api\/petugas\/foto\//);
+  assert.equal((await ant(sesi("2".repeat(64)))).j.total, 0, "wilayah lain tidak melihat");
+  await DB.prepare("UPDATE lapangan_label SET dummy = 1").run(); assert.equal((await ant(ADMIN)).j.total, 0, "dummy tidak muncul"); await DB.prepare("UPDATE lapangan_label SET dummy = 0").run();
+  const ok = await tanda((await lab()).id); assert.equal(ok.s, 200, ok.t); assert.equal((await lab()).terverifikasi, 1);
+  assert.equal((await ant(ADMIN)).j.total, 0, "terverifikasi tidak muncul");
+  /* kirim ulang logbook mereset tanda (label baru) */
+  assert.equal((await L(m(TITIK.lat + 0.0005, TITIK.lon))).s, 200); assert.equal((await lab()).terverifikasi, 0, "kirim ulang mereset");
   await DB.prepare("UPDATE lp_tugas SET mulai = ?, selesai = ? WHERE id = ?").bind(kini + 3 * HARI, kini + 5 * HARI, tid).run();
   const luar = await L(m(TITIK.lat, TITIK.lon)); assert.equal(luar.s, 409, luar.t);
   /* label ikut hilang bersama logbook (trigger) */
@@ -133,7 +155,7 @@ uji("wilayah staf pakai every(): staf Kalbar + anggota Riau = 403; ubah tugas de
 });
 
 uji("peninjau tidak memutus absennya sendiri (403); ketua regu membuka foto anggotanya, anggota lain tidak; acuan hanya untuk absen tinjau", async () => {
-  await STAF("9".repeat(64), "a9a9a9a9a9a9a9a9", "4200420042004", "[]"); const P = sesi("9".repeat(64));
+  await STAF("d".repeat(64), "a9a9a9a9a9a9a9a9", "4200420042004", "[]"); const P = sesi("d".repeat(64));
   const saya = await orang("Peninjau Orang", "1", {staf_id: "a9a9a9a9a9a9a9a9"}), ketua = await orang("Ketua Regu", "2"), agt = await orang("Anggota Regu", "3"), lain = await orang("Anggota Lain", "4");
   const tid = await tugas([saya, ketua, agt], {ketua: ketua.id}), tl = await tugas([lain]);
   const as = await absen(saya, tid); assert.equal(as.j.status, "tinjau"); const aa = await absen(agt, tid); assert.equal(aa.j.status, "tinjau");

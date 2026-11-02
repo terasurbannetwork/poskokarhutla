@@ -55,7 +55,7 @@ const HALAMAN = [
     aksi: async t => { await t.klikTeks("button", "^Periksa sekarang$"); await t.tungguFungsi("/Diperiksa:/.test(document.querySelector('#pgPesan').innerText)"); }, harus: "document.querySelector('#pgPesan').className.includes('ok') && document.querySelectorAll('tbody tr[data-id]').length >= 1"},
   {nama: "/riset/mitra (kode mitra)", url: d => "/riset/mitra#k=" + d.kode.mitra, isi: "document.querySelectorAll('.mt-blok').length >= 1 && document.querySelector('#app').innerText.length > 80",
     aksi: async t => { await t.eval("document.querySelector('.mt-blok').scrollIntoView()"); }, harus: "document.querySelectorAll('.mt-blok').length >= 1 && !/Kode tidak berlaku/.test(document.body.innerText)"},
-  {nama: "/sitrep (arsip)", url: d => "/sitrep?tgl=" + d.tglArsip, isi: "document.querySelectorAll('#lap tr').length >= 3 && /Arsip/.test(document.querySelector('#lap').innerText)",
+  {nama: "/sitrep (arsip)", url: d => "/sitrep?tgl=" + d.tglArsip, isi: "document.querySelectorAll('#lap tr').length >= 3 && /Arsip/.test(document.querySelector('#lap').innerText) && /Logbook petugas lapangan/.test(document.querySelector('#lap').innerText)",
     aksi: async t => { await t.pilih("#prov", "64"); }, harus: "document.querySelector('#prov').value === '64'"},
   {nama: "/admin/gakkum", admin: true, url: d => "/admin/gakkum", isi: "document.querySelectorAll('table tr').length >= 5",
     aksi: async t => { await t.klikTeks("button", "^Sawit$"); }, harus: "document.querySelectorAll('table tr').length >= 2"},
