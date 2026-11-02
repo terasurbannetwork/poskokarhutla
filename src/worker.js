@@ -689,7 +689,7 @@ export const HTML_RUTE = [
   [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // alamat lama, dialihkan 301 ke /direktori di layaniHTML   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
   [/^\/petugas\/?$/, "/petugas/index.html", "/petugas"],   // modul Pegawai dan Relawan Lapangan: layar petugas berkode (/lapangan milik regu Posko lama)
   [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
-  [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); di balik login, TIDAK di PUBLIK_TANPA_SESI
+  [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); login hanya di hostTerkunci (seperti /monitor), TIDAK di PUBLIK_TANPA_SESI; data JSON statis publik
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */

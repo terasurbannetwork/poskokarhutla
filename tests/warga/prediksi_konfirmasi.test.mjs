@@ -1,7 +1,7 @@
 /* /prediksi fase 2: konfirmasi lapangan. worker.js utuh di workerd + D1 lokal dengan migrasi apa adanya (TEST.md: tanpa mock). */
 import {test} from "node:test";
 import assert from "node:assert/strict";
-import {siapkan, berantai, ADMIN} from "./_bnpb.mjs";
+import {siapkan, berantai, ADMIN, MOD2} from "./_bnpb.mjs";
 
 const uji = berantai();
 const U = await siapkan("uji-prediksi", {ikat: {PIPA_TOKEN: "token-pipa-uji"}});
@@ -25,7 +25,7 @@ uji("POST: kode regu sah tersimpan, kirim ulang menimpa (satu baris)", async () 
 });
 uji("POST: sesi staf (admin) juga boleh", async () => {
   assert.equal((await post(sah({kode: "HJN"}), ADMIN)).s, 200);
-  assert.equal(await U.n("prediksi_konfirmasi", "kode_regu = 'admin'"), 1);
+  assert.equal(await U.n("prediksi_konfirmasi", "kode_regu LIKE 'admin:%'"), 1);
 });
 uji("POST: tanpa regu/sesi atau kode regu salah ditolak", async () => {
   assert.equal((await post(sah())).s, 403);
@@ -46,6 +46,8 @@ uji("GET /api/prediksi/konfirmasi: tanpa token 401; token sah memuat baris regu 
   assert.equal((await get("", {authorization: "Bearer salah"})).s, 401);
   assert.equal((await get("?sejak=bukan", PIPA)).s, 400);
   const H = "a".repeat(64), ms = KINI - 864e5;
+  await U.DB.prepare(`INSERT INTO laporan (id, jenis, sub, bahaya, lat, lon, dibuat, kedaluwarsa, ip_hash, token_hash) VALUES ('warga00a', 'info', 'umum', 'banjir', -2.5, 113.9, ?, ?, ?, ?)`).bind(ms, ms + 36e5, H, H).run();
+  await U.DB.prepare("INSERT INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES ('warga00a', '62', 'Katingan', 'masuk')").run();   // warga positif butuh >= 2 laporan
   await U.DB.prepare(`INSERT INTO laporan (id, jenis, sub, bahaya, lat, lon, dibuat, kedaluwarsa, ip_hash, token_hash) VALUES ('warga001', 'info', 'umum', 'banjir', -2.5, 113.9, ?, ?, ?, ?)`).bind(ms, ms + 36e5, H, H).run();
   await U.DB.prepare("INSERT INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES ('warga001', '62', 'Katingan', 'masuk')").run();
   await U.DB.prepare("INSERT INTO prediksi_konfirmasi (kab, tanggal, kode, terjadi, sumber, kode_regu, dibuat) VALUES ('Kapuas', ?, 'API', 0, 'regu', 'r1', 'x')").bind(HARI_INI).run();
@@ -55,6 +57,7 @@ uji("GET /api/prediksi/konfirmasi: tanpa token 401; token sah memuat baris regu 
   assert.ok(k.some(x => x.kab === "Kapuas" && x.kode === "API" && x.terjadi === 0 && x.sumber === "regu"), r.t);
   const w = k.find(x => x.sumber === "warga"); assert.ok(w && w.kode === "BNJ" && w.terjadi === 1 && w.kab === "Katingan" && w.tanggal === wib(ms), r.t);
   assert.ok(k.every(x => x.sumber !== "warga" || x.terjadi === 1), "warga positif saja");
+  assert.equal(r.j.terpotong, undefined, "terpotong tidak muncul bila jauh di bawah LIMIT");
   assert.ok(!r.t.includes("kode_regu") && !r.t.includes(H), "tanpa identitas pelapor");
 });
 
@@ -101,6 +104,42 @@ uji("GET: groundcheck karhutla = API terjadi 1 per kab-tanggal WIB kunjungan; ha
   assert.ok(!r.j.konfirmasi.some(x => x.sumber === "warga" && x.kab === "Pulang Pisau"), "warga lemah tidak ditambahkan di kab-tanggal yang sudah ada groundcheck");
   for (const rahasia of ["Rahasia", "6281299998888", "klien-", akun, akunContoh, "198001012005011001", "budi@uji.go.id", "628123456789", "113.9", "-2.2", ...idTugas])
     assert.ok(!r.t.includes(rahasia), `tanpa identitas, kontak, koordinat, atau id: ${rahasia}`);
+});
+
+uji("POST: kab dinormalkan huruf kecil (satu baris); dua staf berbeda tidak saling menimpa", async () => {
+  const h = {"x-kode-regu": kode}, b = {tanggal: HARI_INI, kode: "LSR"};
+  assert.equal((await post(sah({...b, kab: "Kapuas"}), h)).s, 200);
+  assert.equal((await post(sah({...b, kab: "kapuas", terjadi: 0}), h)).s, 200);
+  const rows = (await U.DB.prepare("SELECT kab, terjadi FROM prediksi_konfirmasi WHERE kode = 'LSR'").all()).results;
+  assert.deepEqual(rows.map(x => [x.kab, x.terjadi]), [["kapuas", 0]], JSON.stringify(rows));
+  const st = {kab: "Barito", tanggal: HARI_INI, kode: "ASP"};
+  assert.equal((await post(sah(st), ADMIN)).s, 200); assert.equal((await post(sah({...st, terjadi: 0}), MOD2)).s, 200);
+  const ids = (await U.DB.prepare("SELECT kode_regu FROM prediksi_konfirmasi WHERE kode = 'ASP'").all()).results.map(x => x.kode_regu);
+  assert.equal(new Set(ids).size, 2, ids.join());
+  assert.ok(ids.every(i => /^admin:[0-9a-f]{12}$/.test(i)), ids.join());
+});
+uji("POST: catatan dibersihkan (nomor HP dibuang), kata kasar ditolak; body > 4 KB 413", async () => {
+  const h = {"x-kode-regu": kode};
+  assert.equal((await post(sah({kab: "Pontianak", catatan: "hubungi 081234567890 segera"}), h)).s, 200);
+  const c = (await U.DB.prepare("SELECT catatan FROM prediksi_konfirmasi WHERE kab = 'pontianak'").first()).catatan;
+  assert.ok(!c.includes("0812345") && c.includes("[nomor dihapus]"), c);
+  assert.equal((await post(sah({kab: "Pontianak", catatan: "aaaaaaaaaa"}), h)).s, 400);   // karakter berulang = spam
+  assert.equal((await post({...sah(), x: "y".repeat(5000)}, h)).s, 413);
+});
+uji("GET: sejak > 60 hari 400; warga satu laporan tidak masuk, dua laporan masuk; PIPA_TOKEN kosong 503; PUT 405", async () => {
+  const get = (j, h) => U.api("GET", "/api/prediksi/konfirmasi" + j, undefined, h);
+  assert.equal((await get(`?sejak=${wib(KINI - 61 * 864e5)}`, PIPA)).s, 400);
+  assert.equal((await get(`?sejak=${wib(KINI - 59 * 864e5)}`, PIPA)).s, 200);
+  const H = "c".repeat(64), ms = KINI - 864e5, lap = async (id, kab) => {
+    await U.DB.prepare(`INSERT INTO laporan (id, jenis, sub, bahaya, lat, lon, dibuat, kedaluwarsa, ip_hash, token_hash) VALUES (?, 'info', 'umum', 'longsor', -2.5, 113.9, ?, ?, ?, ?)`).bind(id, ms, ms + 36e5, H, H).run();
+    await U.DB.prepare("INSERT INTO laporan_wilayah (laporan_id, prov, kab, sumber) VALUES (?, '62', ?, 'masuk')").bind(id, kab).run();
+  };
+  await lap("satu0001", "Satu Laporan"); await lap("dua00001", "Dua Laporan"); await lap("dua00002", "Dua Laporan");
+  const k = (await get(`?sejak=${wib(KINI - 3 * 864e5)}`, PIPA)).j.konfirmasi.filter(x => x.sumber === "warga" && x.kode === "LSR");
+  assert.deepEqual(k.map(x => x.kab), ["Dua Laporan"], JSON.stringify(k));
+  assert.equal((await U.api("PUT", "/api/prediksi/konfirmasi", sah(), ADMIN)).s, 405);
+  const V = await siapkan("uji-prediksi-tanpa-token", {ikat: {PIPA_TOKEN: ""}});
+  assert.equal((await V.api("GET", "/api/prediksi/konfirmasi", undefined, PIPA)).s, 503);
 });
 
 uji("POST: batas laju 120 per jam per IP -> 429", async () => {
