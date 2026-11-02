@@ -19,15 +19,17 @@
   const konsesi = k => KON.map(([j, n]) => `${n} ${pct(k.konsesi?.[j])}`).join(", ");
   /* pernyataan model dari JSON, tak diketik tangan */
   const modelTeks = d => { const m = d.model?.semua_kotak, v = d.model?.vonis; if (!m || !v) return "";
-    const ci = m.selisih_ci95, nol = Array.isArray(ci) && ci[0] <= 0 && ci[1] >= 0 ? " mencakup nol" : " tidak mencakup nol";
-    return `Model prediksi dari alert ini ${esc(v)} uji (AUC ${m2(m.auc_penuh)} vs ${m2(m.auc_dasar)} pembanding; selisih ${m2(m.selisih)}, interval 95% ${m2(m.selisih_ci95?.[0])} s.d. ${m2(ci?.[1])}${nol}), jadi ini data pantauan, bukan prediksi.`; };
+    const ci = m.selisih_ci95, adaCi = Array.isArray(ci) && ci.length === 2 && ci.every(Number.isFinite),
+      selang = adaCi ? `, interval 95% ${m2(ci[0])} s.d. ${m2(ci[1])} ${ci[0] <= 0 && ci[1] >= 0 ? "mencakup" : "tidak mencakup"} nol` : "",
+      lolos = /^LOLOS/.test(v);
+    return `Model prediksi dari alert ini ${esc(v)} uji (AUC ${m2(m.auc_penuh)} vs ${m2(m.auc_dasar)} pembanding; selisih ${m2(m.selisih)}${selang}; selisih = AUC model dikurangi pembanding, negatif = model di bawah pembanding)${lolos ? "." : ", jadi ini data pantauan, bukan prediksi."}`; };
   const kartu = (d, n = 10) => { const top = [...d.kabupaten].sort((a, b) => b.ha90 - a.ha90).slice(0, n), t = d.jendela.tinggi_hari, s = d.jendela.semua_hari;
     return `<details open class="tb-det"><summary><b>Alert pembukaan tajuk</b> <small>pantauan s.d. ${tgl(d.gfw?.sampai)}</small></summary>
       <div class="tb-isi"><p class="tb-ket">Nasional ${ha(d.nasional.ha90)} ha dalam ${t} hari (keyakinan tinggi), ${ha(d.nasional.ha30)} ha dalam ${s} hari (semua keyakinan). Kabupaten terbesar:</p>
       <table class="tb-tbl"><thead><tr><th>Kabupaten</th><th>ha ${t} hari (keyakinan tinggi)</th><th>ha ${s} hari (semua keyakinan)</th><th>Gambut</th><th>Dalam konsesi</th></tr></thead><tbody>${top.map(k =>
         `<tr><td>${esc(k.kab)}</td><td>${ha(k.ha90)}</td><td>${ha(k.ha30)}</td><td>${pct(k.gambut)}</td><td>${konsesi(k)}</td></tr>`).join("")}</tbody></table>
       <p class="tb-leg">${WARNA.map((w, i) => `<span><i style="background:${w}"></i>${i ? ha(BATAS[i - 1]) + "+" : "&lt; " + ha(BATAS[0])}</span>`).join("")} ha per ubin 1°</p>
-      <p class="tb-cat">${esc(modelTeks(d))} Alert menandai pembukaan tajuk, bukan api. Pangsa gambut dan konsesi dari ${t} hari terakhir, bisa tumpang tindih. Gambut dari PRIMS 1:250.000, Kaltim belum lengkap. Sumber: Global Forest Watch (${esc(d.sumber || "alert terintegrasi")}), data s.d. ${tgl(d.gfw?.sampai)}.</p></div></details>`; };
+      <p class="tb-cat">${esc(modelTeks(d))} Alert menandai pembukaan tajuk, bukan api. Pangsa gambut dan konsesi dari ${t} hari terakhir, bisa tumpang tindih. Gambut dari PRIMS 1:250.000, Kaltim belum lengkap. Sumber: Global Forest Watch, alert terintegrasi UMD GLAD-L/S2 dan WUR RADD; gambut PRIMS/BBSDLP; konsesi peta sawit, HTI, HPH, tambang 2014-2026; data s.d. ${tgl(d.gfw?.sampai)}.</p></div></details>`; };
   window.AlertTebang = {ha, pct, tgl, kelas, poligon, kartu, modelTeks};
   if (typeof document === "undefined" || typeof peta === "undefined") return;
 

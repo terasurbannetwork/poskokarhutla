@@ -30,7 +30,7 @@ const Satelit = {
     return PI.kartuTip({judul: "Kolom CO satelit", sub: `<small>pengamatan ${tglS(K.hari)}</small>`, stat: [["satelit", dec(co, 2) + " mol/m²", "kolom CO", "#c0392b"], ...(ai == null ? [] : [["satelit", dec(ai, 1), "indeks aerosol (di atas 1 = asap)", "#7d8ca3"]])]}); },
   legenda() { const K = this._k; if (!K) return "";
     return `<div class="lbl">Kolom CO satelit <span style="text-transform:none">(mol/m²)</span></div><div class="leg" style="margin:4px 0 8px">${this.WARNA.map(([v, w]) => `<span><i class="sw" style="background:${w}"></i>${dec(v, 2)}${v === this.WARNA.at(-1)[0] ? " ke atas" : ""}</span>`).join("")}</div>
-      <div class="fnd" style="margin:0 0 8px">Pengamatan ${tglS(K.hari)}, bukan prakiraan. ${SUMBER_TROPOMI}. Model ${esc(this._s?.model?.status || "TAK TERUJI")}.</div>`; },
+      <div class="fnd" style="margin:0 0 8px">Pengamatan ${tglS(K.hari)}, bukan prakiraan. ${SUMBER_TROPOMI}. ${this._s?.model?.status ? `Model ${esc(this._s.model.status)}.` : ""}</div>`; },
   /* ---------- kartu seri per provinsi ---------- */
   async muatKartu() { const [S5, U, O] = await Promise.all([this.muatBerkas("tropomi_seri"), this.muatBerkas("uji_panen_pm25"), this.muatBerkas("openaq_mos")]);
     this._s = S5; this._u = U; this._o = O; },
@@ -54,8 +54,8 @@ const Satelit = {
       <g transform="translate(0,${h + 14})"><text x="0" y="30" font-size="12" font-weight="600">Aerosol</text><line x1="${Lk}" x2="${W - 10}" y1="40" y2="40" stroke="currentColor" opacity=".25"/>${ai}</g>
       <g transform="translate(0,${h + 104})">${tg}</g></svg>`;
     return Kartu.ex(`${Kartu.hl(dec(L.co, 2) + " mol/m²")} kolom CO terbaca satelit di ${esc(namaProv(pilih))} pada ${tglS(L.t)}${L.an != null ? `, ${Kartu.hl(dec(L.an, 1) + " simpangan")} dari provinsi bersih` : ""}`, "", "",
-      `<div style="margin:0 0 6px"><span class="kt" style="--c:#6b7280;--f:#fff;text-transform:none;letter-spacing:0">pengamatan satelit, bukan prakiraan</span> <span class="kt" style="--c:#b5651d;--f:#fff;text-transform:none;letter-spacing:0" title="${esc(S5.model?.alasan || "")}">model ${esc(S5.model?.status || "TAK TERUJI")}</span></div>` + svg
-      + `<p class="fnd">Hanya ${fmt(barisCO.length)} hari terbaca${S5.model?.alasan ? `; ${esc(S5.model.alasan)}` : ""}, jadi tidak ada ramalan${(S5.model?.status || "TAK TERUJI") === "LOLOS" ? "" : " dan belum bisa dipakai menilai tren"}. Hari tanpa cukup piksel (kurang dari ${fmt(this.mn())}) dibuang. Data ${jamWIB(S5.dibuat)}.</p>`,
+      `<div style="margin:0 0 6px"><span class="kt" style="--c:#6b7280;--f:#fff;text-transform:none;letter-spacing:0">pengamatan satelit, bukan prakiraan</span> <span class="kt" style="--c:#b5651d;--f:#fff;text-transform:none;letter-spacing:0" title="${esc(S5.model?.alasan || "")}">model ${esc(S5.model?.status || "–")}</span></div>` + svg
+      + `<p class="fnd">Hanya ${fmt(barisCO.length)} hari terbaca${S5.model?.alasan ? `; ${esc(S5.model.alasan)}` : ""}, jadi tidak ada ramalan${S5.model?.status === "LOLOS" ? "" : " dan belum bisa dipakai menilai tren"}. Hari tanpa cukup piksel (kurang dari ${fmt(this.mn())}) dibuang. Data ${jamWIB(S5.dibuat)}.</p>`,
       `Sumber: ${SUMBER_TROPOMI}, kontrol Centurisk97`, Kartu.selProv("tropoK", "Provinsi", kode.sort((a, b) => namaProv(a).localeCompare(namaProv(b), "id")), namaProv, {tropoK: pilih})).replace('<span class="ex-ey"></span>', `<span class="ex-ey">${Insight.eyIk("jarak", "Satelit CO")}</span>`); },
   /* ---------- rapor model PM2,5 ---------- */
   exRapor() {
@@ -65,7 +65,7 @@ const Satelit = {
     const bar = (mae, nama, sorot) => { const r = Object.entries(mae).filter(([k]) => nama[k]).sort((a, b) => a[1] - b[1]), mx = Math.max(...r.map(x => x[1])), M = innerWidth < 640, W = M ? 520 : 940, L = M ? 160 : 230, rh = 28, X = v => v / mx * (W - L - 100);
       return `<svg viewBox="0 0 ${W} ${r.length * rh + 6}" role="img" aria-label="Galat rata-rata mutlak (MAE, µg/m³) per metode">${r.map(([k, v], i) => { const y = i * rh, w = sorot.includes(k) ? "#c9503a" : "#8a94a6";
         return `<text x="${L - 10}" y="${y + 19}" text-anchor="end" font-size="${M ? 12 : 13}" font-weight="${sorot.includes(k) ? 700 : 500}">${nama[k]}</text><rect class="gx" style="--i:${i}" x="${L}" y="${y + 5}" width="${Math.max(3, X(v))}" height="${rh - 10}" fill="${w}" data-tip="<b>${nama[k]}</b><br>Galat rata-rata ${dec(v, 1)} µg/m³"/><g class="gf" style="--i:${i}">${Kartu.pil(L + Math.max(3, X(v)) + 8, y + 5, dec(v, 1), w, "#fff")[0]}</g>`; }).join("")}</svg>`; };
-    const a = m.mae_uji, kalah = Object.keys(NAMA).filter(k => k !== "mos" && a[k] != null && a[k] < a.mos).map(k => NAMA[k].toLowerCase());
+    const a = m.mae_uji, kalah = Object.keys(NAMA).filter(k => k !== "mos" && a[k] != null && a[k] < a.mos).map(k => k === "persistensi_24j" ? "tebakan sama seperti 24 jam lalu" : NAMA[k].toLowerCase());
     const pilVonis = v => `<span class="kt" style="--c:${v === "LOLOS" ? "#2b8c86" : "#c9503a"};--f:#fff;text-transform:none;letter-spacing:0">${esc(v)}</span>`;
     const lokal = (U.stasiun || []).filter(s => (s.lat > -6.9 && s.lat < -5.9 && s.lon > 106.5 && s.lon < 107.2) || (s.lat > -9 && s.lat < -8 && s.lon > 114.9 && s.lon < 115.8)).length, nst = (U.stasiun || []).length || m.n_stasiun;
     const O = this._o?.mos, ci = m.selisih_mae_mos_vs_mentah_ci95;
