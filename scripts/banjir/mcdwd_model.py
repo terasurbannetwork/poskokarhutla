@@ -264,7 +264,7 @@ def bangun_dataset():
             c = (c[0], c[1])
             if os.path.exists(jalur_glo(*c)) and os.path.exists(jalur_era5(*c)) and c not in era:
                 try:
-                    era[c] = ub.deret(json.load(gzip.open(jalur_era5(*c))))["p"]
+                    era[c] = ub.deret(json.load(gzip.open(jalur_era5(*c))))   # dict penuh: level_harian butuh p/im/sm
                 except Exception as e:   # cache ERA5 rusak/terputus: sel dilewati, dicetak
                     print(f"sel {c} dilewati: {e}", file=sys.stderr)
                     continue
@@ -284,7 +284,7 @@ def bangun_dataset():
             # (hari berawan = tak terdeteksi). Tutupan d+1 hanya disimpan (tut1) untuk diagnosis, bukan untuk memilih baris.
             f1, tut1 = mcdwd.banjir_valid(arsip[tg1][ik[kab]])
             i = tgl_ke_i(tg)
-            x = max_fitur([fitur_hari(era[c], glo[c], i) for c in cs])
+            x = max_fitur([fitur_hari(era[c]["p"], glo[c], i) for c in cs])
             if x is None:
                 continue
             f0, tut0 = mcdwd.banjir_valid(arsip[tg][ik[kab]])
