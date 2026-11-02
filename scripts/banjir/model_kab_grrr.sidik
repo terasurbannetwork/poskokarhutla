@@ -2,3 +2,4 @@
 {"jenis": "amandemen", "nama": "A2", "sha256_label_A": "bdddf8389cd95bb348e6ca75b443ae6146b773ad564edcafe068064da58cc4dc", "sia_gagal": "2026-11-02T03:10:26", "waktu": "2026-11-02T08:07:29"}
 {"alasan": "galat teknis: ub.AKHIR tertambal saat muat cuaca di sia/buka (A1); sia.mulai sia gagal diarsipkan (A2)", "jenis": "latih", "sidik": "f15902e992611792", "sidik_kriteria": "73236b50a6204fb2", "ulang": true, "waktu": "2026-11-02T18:06+07:00"}
 {"jenis": "sia", "sha256_label_A": "bdddf8389cd95bb348e6ca75b443ae6146b773ad564edcafe068064da58cc4dc", "sha256_sia": "3abeb11f8e388926e2de192fb061cb035ba51ebb6a69be7d2fe58a5f371763d9", "waktu": "2026-11-02T18:07:49"}
+{"jenis": "buka", "sha256_buka": "2703fad9d76231cd50622ab6bced5442f7c347ad432fa12b4d5b703e92aaced7", "sha256_label_A": "bdddf8389cd95bb348e6ca75b443ae6146b773ad564edcafe068064da58cc4dc", "sha256_label_B": "b2e4d07ce9d5d89a9e113ca0b68c77c6170974c712defebe299fd76daeb95952", "waktu": "2026-11-02T18:10:30"}
