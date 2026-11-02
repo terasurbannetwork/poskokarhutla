@@ -169,6 +169,12 @@ dipakai bersama. Fan-out yang membaca aman di tree yang sama; fan-out yang
 menulis pakai `isolation: "worktree"`. Commit dengan path spesifik
 (`git commit -- <berkas>`), jangan `git add -A`.
 
+Pemilik tidak mau branch menumpuk (2 Nov 2026). Branch dan worktree cuma
+tempat kerja sementara: begitu kerjanya selesai, merge ke `main` lalu hapus
+branch + worktree-nya di sesi yang sama. Jangan bikin branch "patok"
+(`panen/*`, `integrasi-*`) yang dibiarkan hidup. Sapuan aman (hanya branch yang
+sudah masuk `main`, worktree tanpa `--force`): `bash scripts/agents/sapu-branch.sh`.
+
 ### 3.4 Aturan pemilik masuk gerbang, bukan memory
 
 Tiap kali pemilik bilang "catat" atau mengulang koreksi, tanya dulu apakah
