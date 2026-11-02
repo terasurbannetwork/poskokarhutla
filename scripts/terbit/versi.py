@@ -16,8 +16,9 @@ import hashlib, os, re, sys
 AKAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", "..", "public")
 TAG = re.compile(r'(<(?:script|link)\b[^>]*?\b(?:src|href)=")([^"#?:]+\.(?:js|css))(?:\?[^"]*)?(")', re.I)
 LEWATI = {"data", "geo", "lambang", "img", "citra"}
-IMPOR = re.compile(r"""(?:\bfrom|\bimport)\s*\(?\s*["'](\.{1,2}/[^"'?#]+\.js)["']""")
-LIPAT = ("/petugas/",)
+IMPOR = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(["'])""")
+IMPOR_V = re.compile(r"""((?:\bfrom|\bimport)\s*\(?\s*["'])(\.{1,2}/[^"'?#]+\.js|/(?!/)[^"'?#]+\.js)(?:\?v=[0-9a-f]{10})?(["'])""")
+LIPAT = ("/petugas/", "/pipa/")   # 2 Nov 2026: tanpa /pipa/ 81 aturan, dengan 64 (batas dini gerbang 80)
 TANDA = "# --- dibuat scripts/terbit/versi.py saat terbit (jangan disunting; tidak di-commit) ---"
 
 
@@ -33,11 +34,68 @@ def sidik(p):
     return hashlib.sha256(open(p, "rb").read()).hexdigest()[:10]
 
 
+def sasaran(akar, p, ref):
+    return os.path.normpath(os.path.join(akar, ref.lstrip("/")) if ref.startswith("/") else os.path.join(os.path.dirname(p), ref))
+
+
+def impor_berversi(akar, sisa_html, web_):
+    """Impor ES lokal ("from './x.js'", "import('/y.js')") diberi ?v=<hash isi AKHIR target>, ditulis ke disk sebelum HTML.
+    Peramban memuat modul per URL utuh: modul yang dimuat dengan dua URL berbeda (dengan dan tanpa ?v) jadi dua instans.
+    Jadi target hanya diberi versi bila SEMUA jalannya lewat impor (namanya tak muncul sebagai string di JS lain atau di HTML di
+    luar tag berversi) dan tak ikut siklus impor (hash tak bisa saling bergantung). Hash = isi sesudah impornya sendiri diberi
+    versi, jadi perubahan modul daun ikut mengubah URL semua pengimpornya. Kembali: {jalur web: hash} target yang diberi versi."""
+    js = {os.path.normpath(p): open(p, encoding="utf-8", errors="replace").read() for p in berkas(akar, ".js")}
+    sisi = {p: [q for q in (sasaran(akar, p, m.group(2)) for m in IMPOR_V.finditer(t)) if q in js] for p, t in js.items()}
+    bersih = {p: IMPOR_V.sub('"x"', t) for p, t in js.items()}
+    siklus, warna = set(), {}
+    def dfs(p, jalur):
+        warna[p] = 1; jalur.append(p)
+        for q in sisi[p]:
+            if warna.get(q) == 1:
+                siklus.update(jalur[jalur.index(q):])
+            elif not warna.get(q):
+                dfs(q, jalur)
+        jalur.pop(); warna[p] = 2
+    sys.setrecursionlimit(10000)
+    for p in js:
+        if not warna.get(p):
+            dfs(p, [])
+    # Nama berkas dirakit dari template (`./layar_${c.layar}.js` di pipa/app.js) selalu dimuat tanpa ?v: nama yang cocok tak aman.
+    rakit = [re.compile("^" + ".*".join(re.escape(b) for b in re.split(r"\$\{[^}]*\}", m.group(1).rsplit("/", 1)[-1])) + "$")
+             for t in list(js.values()) + list(sisa_html) for m in re.finditer(r"`([^`]*\$\{[^`]*\.js)[?#`]", t)]
+    def aman(q):
+        if q in siklus or any(r.match(os.path.basename(q)) for r in rakit):
+            return False
+        pola = re.compile(r"[\"'`/]" + re.escape(os.path.basename(q)) + r"[\"'`?#]")
+        return not any(pola.search(t) for p, t in bersih.items() if p != q) and not any(pola.search(t) for t in sisa_html)
+    boleh = {q for qs in sisi.values() for q in qs if aman(q)}
+    akhir = {}
+    def hash_(p):
+        if p not in akhir:
+            d = os.path.dirname(p)
+            def ganti(m):
+                q = sasaran(akar, p, m.group(2))
+                return m.group(0) if q not in boleh else f"{m.group(1)}{m.group(2)}?v={hash_(q)}{m.group(3)}"
+            baru = IMPOR_V.sub(ganti, js[p])
+            if baru != js[p]:
+                open(p, "w", encoding="utf-8").write(baru)
+            akhir[p] = hashlib.sha256(baru.encode("utf-8")).hexdigest()[:10]
+        return akhir[p]
+    for p in js:
+        hash_(p)
+    return {web_(q): akhir[q] for q in boleh}
+
+
 def jalan(akar=AKAR, maks=100):
     akar = os.path.abspath(akar)
     halaman, versi, sisa = [], {}, []   # versi: jalur web -> hash; sisa: teks HTML di luar tag yang diberi versi
-    for h in berkas(akar, ".html"):
-        teks, d = open(h, encoding="utf-8").read(), os.path.dirname(h)
+    web_ = lambda p: "/" + os.path.relpath(p, akar).replace(os.sep, "/")
+    html = {h: open(h, encoding="utf-8").read() for h in berkas(akar, ".html")}
+    sisa = [TAG.sub("", t) for t in html.values()]
+    versi.update(impor_berversi(akar, sisa, web_))
+    sisa = []
+    for h, teks in html.items():
+        d = os.path.dirname(h)
         def ganti(m):
             ref = m.group(2)
             p = os.path.normpath(os.path.join(akar, ref.lstrip("/")) if ref.startswith("/") else os.path.join(d, ref))
@@ -52,12 +110,12 @@ def jalan(akar=AKAR, maks=100):
         sisa.append(TAG.sub("", baru))
         halaman.append("/" + os.path.relpath(h, akar).replace(os.sep, "/"))
     js = {p: open(p, encoding="utf-8", errors="replace").read() for p in berkas(akar, ".js")}
-    # Impor statis relatif ("from './x.js'") terikat ke jalur persis (relatif ke modulnya), bukan ke semua berkas bernama sama.
+    # Impor yang tersisa tanpa ?v (target tak aman diberi versi, lihat impor_berversi) terikat ke jalur persis, bukan ke nama.
     impor, dimuat = set(), {}
     for p, t in js.items():
         for m in IMPOR.finditer(t):
-            impor.add("/" + os.path.relpath(os.path.normpath(os.path.join(os.path.dirname(p), m.group(1))), akar).replace(os.sep, "/"))
-        dimuat[p] = IMPOR.sub('"x"', t)
+            impor.add(web_(sasaran(akar, p, m.group(2))))
+        dimuat[p] = IMPOR_V.sub('"x"', t)   # impor yang sudah diberi ?v juga bukan muatan tanpa versi
     abadi = []
     for web in sorted(versi):
         nama = web.rsplit("/", 1)[1]
@@ -169,6 +227,23 @@ def uji():
         w("d.js", "y=1"); w("e.html", '<script src="d.js"></script><script>"d.js"</script>')   # d.js juga dimuat tanpa ?v
         jalan(t); h = open(os.path.join(t, "_headers")).read()
         assert "/*.js\n  Cache-Control: public, max-age=31536000, immutable" in h and "/d.js\n  ! Cache-Control" in h and "/a" not in h.split(TANDA)[1], h  # d.js jadi pengecualian
+        # Impor ES: daun -> tengah -> m.js diberi ?v berantai; s.js juga dimuat sebagai string -> tanpa ?v; x/y saling impor -> tanpa ?v.
+        os.makedirs(os.path.join(t, "m"))
+        w("m/daun.js", "export const a=1"); w("m/tengah.js", 'export * from "./daun.js"'); w("m/s.js", "export const s=1")
+        w("m/x.js", 'import "./y.js"'); w("m/y.js", 'import "./x.js"'); w("m/lain.js", 'new Worker("s.js")')
+        w("m/layar_a.js", "export const b=1"); w("m/rute.js", 'import "./layar_a.js"; const m = await import(`./layar_${n}.js`)')
+        w("m/m.js", 'import {a} from "./tengah.js"; import {s} from "/m/s.js"; import "./x.js"; const d = import("../m/daun.js")')
+        w("m.html", '<script type="module" src="m/m.js"></script>')
+        v3, abadi3 = jalan(t)
+        m, tg = open(os.path.join(t, "m/m.js")).read(), open(os.path.join(t, "m/tengah.js")).read()
+        assert f'"./daun.js?v={v3["/m/daun.js"]}"' in tg and f'"./tengah.js?v={v3["/m/tengah.js"]}"' in m, (m, tg)
+        assert f'import("../m/daun.js?v={v3["/m/daun.js"]}")' in m, m      # dinamis dan jalur lain ke berkas sama: hash sama
+        assert '"/m/s.js"' in m and '"./x.js"' in m and '"./x.js"' in open(os.path.join(t, "m/y.js")).read(), m
+        assert v3["/m/m.js"] == sidik(os.path.join(t, "m/m.js")) and "/m/tengah.js" in abadi3 and "/m/s.js" not in abadi3
+        assert '"./layar_a.js"' in open(os.path.join(t, "m/rute.js")).read(), "nama hasil template tidak boleh diberi ?v"
+        jalan(t); assert open(os.path.join(t, "m/m.js")).read().count("?v=") == 2, "idempoten: ?v impor tidak menumpuk"
+        w("m/daun.js", "export const a=2"); v4, _ = jalan(t)
+        assert v4["/m/tengah.js"] != v3["/m/tengah.js"] and v4["/m/m.js"] != v3["/m/m.js"], "daun berubah, pengimpor ikut berubah URL"
         try:
             jalan(t, maks=2); raise AssertionError("harus gagal bila aturan > maks")
         except SystemExit:
