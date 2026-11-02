@@ -8,7 +8,7 @@ Desa wakil: scripts/cuaca/data/desa_wakil_kab.json (dibangun `bangun` dari publi
 Arsip: public/banjir/data/cuaca_bmkg_arsip_<YYYY-MM>.json {"terbit": {tgl: {"hari":[3], "kab": {kode_kab: [[mm, kmj] x3]}}}}; entri tak pernah diubah.
 Pakai: python3 scripts/cuaca/bmkg_prakiraan.py | ... bangun | ... uji
 """
-import collections, datetime as dt, json, os, sys, time, urllib.request
+import collections, datetime as dt, difflib, json, os, re, sys, time, urllib.request
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 from dasar import AKAR, KELUAR, WIB, baca, simpan
@@ -17,6 +17,10 @@ URL = "https://api.bmkg.go.id/publik/prakiraan-cuaca?adm4="
 UA = "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"
 DAFTAR = os.path.join(os.path.dirname(os.path.abspath(__file__)), "data", "desa_wakil_kab.json")
 MAKS_PER_MENIT, ANGGARAN_DETIK, HARI = 55, 15 * 60, 3
+# BMKG menomori Papua Barat Daya beda dari Kepmendagri 2025 (sapuan curl 2 Nov 2026): kode Kepmendagri 96.02/96.03 404,
+# 96.04 dijawab sebagai Sorong Selatan. Tambrauw dan Maybrat hanya ada di kode lama 92.09/92.10 dengan cuaca kosong (tetap gagal, jujur).
+KODE_BMKG = {"96.01": ("96.01.01.1001", "Makbon"), "96.02": ("96.04.11.2003", "Klaogin"), "96.03": ("96.05.01.2001", "Waigama"),
+             "96.04": ("92.09.01.2001", "Fef"), "96.05": ("92.10.01.2001", "Kumurkek")}
 
 
 def bangun():
@@ -38,6 +42,17 @@ def bangun():
         out[kab] = {"adm4": kd, "kab": kn, "desa": nama[kd]}
     simpan(DAFTAR, {"sumber": "public/geo/desa + desa_cari.json (Kepmendagri 300.2.2-2430/2025); kode BMKG bisa berbeda, desa gagal dihitung n_gagal", "kab": out})
     print(f"desa wakil: {len(out)} kab", file=sys.stderr)
+
+
+def _nama(s):
+    s = re.sub(r"^(kabupaten|kab\.?|kota administrasi|kota adm\.?|kota)\s+", "", (s or "").lower().strip())
+    return re.sub(r"[^a-z]", "", s)
+
+
+def sama_kab(bmkg, kita):
+    """Nama kab/kota dari BMKG cocok dengan nama kita (ejaan dekat lolos, mis. Padang Sidempuan vs Padangsidimpuan)."""
+    a, b = _nama(bmkg), _nama(kita)
+    return a == b or difflib.SequenceMatcher(None, a, b).ratio() >= 0.85
 
 
 def cek(d):
@@ -90,6 +105,9 @@ def main():
         raise RuntimeError("desa_wakil_kab.json tidak ada: jalankan `bangun`")
     hari_ini = dt.datetime.now(WIB).strftime("%Y-%m-%d")
     mulai, hasil, gagal, skema = time.time(), {}, 0, False
+    for kab, (kd, ds) in KODE_BMKG.items():
+        if kab in daftar["kab"]:
+            daftar["kab"][kab].update(adm4=kd, desa=ds)
     for i, (kab, v) in enumerate(daftar["kab"].items()):
         if time.time() - mulai > ANGGARAN_DETIK:
             print(f"::warning title=bmkg_prakiraan::anggaran waktu habis di {i}/{len(daftar['kab'])}", file=sys.stderr)
@@ -99,6 +117,9 @@ def main():
         for coba in range(3):
             try:
                 d = ambil(v["adm4"])
+                kk = (d.get("lokasi") or {}).get("kotkab")
+                if not sama_kab(kk, v["kab"]):
+                    raise ValueError(f"BMKG menjawab kab '{kk}', bukan '{v['kab']}'")
                 e = olah(d, hari_ini)
                 if not skema:
                     print(f"skema BMKG ok: lokasi={sorted(d['lokasi'])[:8]} item={sorted(cek(d)[0])}", file=sys.stderr)
@@ -149,6 +170,9 @@ def uji():
         assert "kunci" in str(x)
     isi = {"terbit": {}}
     assert tambah(isi, "a", {"x": 1})[1] and not tambah(isi, "a", {"x": 2})[1] and isi["terbit"]["a"] == {"x": 1}
+    assert sama_kab("Kota Padang Sidempuan", "Kota Padangsidimpuan") and sama_kab("Kab. Sorong", "Sorong")
+    assert not sama_kab("Sorong Selatan", "Tambrauw") and not sama_kab(None, "Maybrat")
+    assert KODE_BMKG["96.02"][0] == "96.04.11.2003" and KODE_BMKG["96.03"][0] == "96.05.01.2001"
     dw = baca(DAFTAR)
     assert dw is None or all(len(v["adm4"].split(".")) == 4 for v in dw["kab"].values())
     print("ok bmkg_prakiraan", f"({len(dw['kab'])} kab)" if dw else "(tanpa daftar)")

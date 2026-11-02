@@ -118,7 +118,8 @@ jobs:
         continue-on-error: true
         env:
           EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}   # hujan satelit IMERG (scripts/cuaca/imerg.py); tanpa token dilewati
-        timeout-minutes: 20
+        # 2 Nov: cuaca.py ±5 mnt + BMKG 513 desa ±15 mnt + IMERG 3 hari; 20 mnt memotong IMERG dan peluang_cuaca.
+        timeout-minutes: 40
         run: |
           python3 scripts/cuaca/cuaca.py uji && python3 scripts/cuaca/cuaca.py || echo "::warning title=cuaca::cuaca.py gagal; berkas lamanya dibiarkan"
           python3 scripts/cuaca/peluang_cuaca.py uji && python3 scripts/cuaca/peluang_cuaca.py || echo "::warning title=peluang_cuaca::gagal; berkas lamanya dibiarkan"
