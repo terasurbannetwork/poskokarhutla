@@ -6,8 +6,8 @@
   const nf = new Intl.NumberFormat("id-ID", {maximumFractionDigits: 0}), nf2 = new Intl.NumberFormat("id-ID", {minimumFractionDigits: 2, maximumFractionDigits: 2});
   const esc = s => String(s).replace(/[&<>"']/g, c => ({"&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;"}[c]));
   const n0 = v => Number.isFinite(v) ? nf.format(v) : "–", m2 = v => Number.isFinite(v) ? nf2.format(v) : "–";
-  const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
-  const tgl = s => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s || ""); return m ? `${+m[3]} ${BLN[+m[2] - 1]} ${m[1]}` : "–"; };
+  /* lewat toLocaleDateString("id-ID"): i18n.js menambalnya jadi en-GB saat EN, jadi bulan ikut bahasa */
+  const tgl = s => { const m = /^(\d{4})-(\d\d)-(\d\d)/.exec(s || ""); return m ? new Date(Date.UTC(+m[1], +m[2] - 1, +m[3])).toLocaleDateString("id-ID", {timeZone: "UTC", day: "numeric", month: "short", year: "numeric"}) : "–"; };
   /* kode BPS -> nama; pemekaran Papua digabung IODA/OpenCelliD ke kode lama (lihat catatan JSON) */
   const PROV = {"11": "Aceh", "12": "Sumatera Utara", "13": "Sumatera Barat", "14": "Riau", "15": "Jambi", "16": "Sumatera Selatan", "17": "Bengkulu", "18": "Lampung", "19": "Bangka Belitung", "21": "Kepulauan Riau",
     "31": "DKI Jakarta", "32": "Jawa Barat", "33": "Jawa Tengah", "34": "DI Yogyakarta", "35": "Jawa Timur", "36": "Banten", "51": "Bali", "52": "NTB", "53": "NTT", "61": "Kalimantan Barat", "62": "Kalimantan Tengah",

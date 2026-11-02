@@ -259,3 +259,24 @@ Siaga sebagai TINGKAT selalu Watch; "siaga" sebagai status hukum (siaga darurat)
 | Riwayat sedang disiapkan / Memuat data satelit… | History is being prepared / Loading satellite data… | keadaan kosong bila data/satelit/riwayat.json belum ada atau tidak sah, dan placeholder saat modul dimuat; tanpa galat |
 | potongan sumber di kaki kartu (digabung "; ") | source pieces joined with "; " | tiap potongan satu kunci kamus ("orbit CelesTrak (SGP4)" = CelesTrak orbit (SGP4); "jeda median = median dari median harian riwayat kedatangan (MODIS: Terra dan Aqua bersama)" = median lag = median of the daily medians in the arrival history (MODIS: Terra and Aqua combined)) |
 | (semua tingkat keyakinan) / (keyakinan sedang dan tinggi) / (keyakinan tinggi); NASA FIRMS (arsip dan NRT), <tingkat> | (all confidence levels) / (medium and high confidence) / (high confidence); NASA FIRMS (archive and NRT), <level> | kepala halaman dan kaki kartu Data satelit mengikuti ambang keyakinan aplikasi (S.kmin: 0 = semua, 1 = sedang dan tinggi, >= 2 = tinggi), sama dengan "Deteksi = baris FIRMS ..." di popover; riwayat.json menyimpan jumlah per tingkat [rendah, sedang, tinggi] |
+
+## Alert tajuk, TROPOMI, rapor model PM2,5, termal MIROVA (2 Nov 2026)
+
+| Indonesia | English | Catatan |
+|---|---|---|
+| alert pembukaan tajuk | canopy-clearing alerts | GFW integrated alerts; pantauan, bukan prediksi = monitoring data, not a prediction |
+| keyakinan tinggi / semua keyakinan | high confidence / all confidence levels | |
+| ubin 1° | 1° tile | |
+| LOLOS | PASSED | vonis uji; kata ini jujur, jangan dilunakkan |
+| TIDAK LOLOS | FAILED test | |
+| GAGAL | FAILED | |
+| TAK TERUJI | UNTESTED | model belum bisa diuji (data kurang), bukan lolos |
+| kolom CO satelit (TROPOMI) | satellite CO column (TROPOMI) | satuan mol/m²; "pengamatan satelit, bukan prakiraan" = satellite observation, not a forecast |
+| indeks aerosol (di atas 1 = asap) | aerosol index (above 1 = smoke) | |
+| simpangan (dari provinsi bersih) | standard deviations (from clean provinces) | |
+| rapor model | model report | |
+| koreksi MOS | MOS correction | MOS = Model Output Statistics; "CAMS mentah" = raw CAMS |
+| galat rata-rata mutlak (MAE) | mean absolute error (MAE) | "Sama seperti 24 jam lalu" = Same as 24 hours ago (persistence) |
+| gabungan (CAMS + GEOS-CF) | ensemble | "koreksi bias" = bias correction |
+| anomali termal satelit (VRP) | satellite thermal anomaly (VRP) | VRP = volcanic radiative power, MW; MIROVA tetap |
+| naik di atas latar sendiri | above its own baseline | "riwayat belum cukup" = not enough history |
