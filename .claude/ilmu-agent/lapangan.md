@@ -41,3 +41,5 @@ modul relawan `src/relawan.js`, `public/bnpb/relawan*`.
 
 ## Kasus
 - 2026-11-01 · uji murni menangkap STATUS['__proto__'] lolos ||; pakai Object.hasOwn untuk peta dari data luar. Cek: tests/lapangan/murni.test.mjs
+- 2026-11-02 · Permissions-Policy camera=() di public/_headers memblokir getUserMedia di /petugas; CSP_PETUGAS tanpa worker-src blob: dan tiles.openfreemap.org mematikan peta panel. Cek: buka /petugas di HP nyata.
+- 2026-11-02 · 2026-11-02 · anti-palsu = MiniFASNet 2.7 + 4.0 via onnxruntime-web WASM tanpa threads (11 MB wasm, 3,5 MB model); butuh CSP script-src 'wasm-unsafe-eval' di src/worker.js. Galat muat/jalan model = skor_hidup 0 (tinjau), bukan absen gagal. Distribusi skor beda dari model Human lama: antispoofMin server perlu dikalibrasi ulang di HP nyata. Cek: tests/lapangan/antispoof.test.mjs, vendor/LISENSI.txt.

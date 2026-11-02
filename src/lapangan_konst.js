@@ -12,7 +12,20 @@ export const STATUS_WA_ANTRE = ["antre", "dikirim", "gagal"];
 export const ARAH = ["depan", "kiri", "kanan", "atas", "bawah"];
 export const STATUS_ABSEN = ["lolos", "tinjau", "sah", "tolak"];
 export const TANTANGAN = ["kedip", "toleh_kiri", "toleh_kanan"];
-export const ALASAN_TINJAU = ["wajah_belum_daftar", "wajah_rendah", "wajah_berbeda", "tantangan_gagal", "hidup_rendah", "gps_curiga", "luar_radius", "jam_hp", "luring"];
+export const ALASAN_TINJAU = ["wajah_belum_daftar", "wajah_rendah", "wajah_berbeda", "tantangan_gagal", "hidup_rendah", "gps_curiga", "luar_radius", "jam_hp", "luring", "luring_lama", "sampel_acak", "jaringan_beda", "wajah_baru"];
+export const JENIS_ABSEN = ["masuk", "pulang"];
+export const PERAN_ANGGOTA = ["ketua", "anggota"];
+export const JENIS_LABEL = ["api", "banjir"];
+/* isian kondisi lapangan logbook (ALGORITMA §7): enum + rentang bilangan bulat; dijaga validasi di src/lapangan.js */
+export const KONDISI = {
+  enum: {kondisi_api: ["menyala", "bara", "padam", "bukan_api"], akses: ["mobil", "motor", "jalan_kaki", "perahu"], hujan_lokal: ["tidak", "ringan", "lebat"]},
+  angka: {tebal_gambut_cm: [0, 1500], jarak_air_m: [0, 10000], tinggi_genangan_cm: [0, 500]},
+};
+export const KONDISI_API = ["kondisi_api", "tebal_gambut_cm", "jarak_air_m", "akses"], KONDISI_BANJIR = ["tinggi_genangan_cm", "hujan_lokal"];
+/* pilihan logbook: kunci = sumber kebenaran klien (public/petugas/logbook_murni.js); server menolak kunci di luar daftar */
+export const KEGIATAN = ["patroli", "pemadaman", "pendinginan", "pemantauan", "evakuasi", "logistik", "koordinasi", "lainnya"];
+export const KENDALA = ["akses_sulit", "air_jauh", "cuaca", "alat_rusak", "komunikasi", "keamanan", "lainnya"];
+export const KEBUTUHAN = ["bbm", "selang_pompa", "makanan_air", "personel", "kesehatan", "transport", "lainnya"];
 export const ALASAN_TOLAK = ["foto_ganda", "nonce_tidak_sah", "gps_ditolak"];
 
 /* sudut kepala (derajat) per arah pendaftaran: [min, maks] untuk yaw dan pitch SETELAH dikali tanda perangkat */
@@ -31,6 +44,7 @@ export const MUTU = {skorDeteksiMin: 0.80, lebarMin: 0.30, lebarMaks: 0.75, taja
 export const TANTANGAN_BATAS_DETIK = 8, TANTANGAN_FRAME_DEPAN = 3;
 
 /* ambang wajah (kalibrasi, U1) */
+/* AMBANG_HIDUP (kalibrasi): skor_hidup = softmax MiniFASNet 0..1; nilai 0.50 sementara. Di bawahnya HANYA mengirim ke tinjau (hidup_rendah), tidak pernah menolak. Dikalibrasi ulang dari data HP nyata + uji foto cetak/layar (U-20). */
 export const AMBANG_LOLOS = 0.60, AMBANG_TINJAU = 0.45, AMBANG_HIDUP = 0.50, AMBANG_DAFTAR = 0.45;
 
 export const GPS = {sampel: 3, jedaMs: 1000};
@@ -40,6 +54,17 @@ export const BATAS_JAM_HP_DETIK = 300;
 export const LURING = {mundurMs: 24 * JAM, majuMs: 5 * MENIT};
 export const KECEPATAN_MUSTAHIL_KMJ = 900;
 export const NONCE = {umurMs: 5 * MENIT, luringJumlah: 6, luringUmurMs: 36 * JAM};
+/* absen luring yang diklaim lebih dari ini sebelum jam server masuk tinjauan (luring_lama); jaringan_beda = kode sama dari ip_hash lain dalam jendela ini; wajah_baru = jumlah absen berikutnya sesudah daftar ulang wajah */
+export const LURING_LAMA_MS = 2 * JAM, JARINGAN_JENDELA_MS = 12 * JAM, WAJAH_BARU_ABSEN = 3;
+/* sampel acak: sekian bagian absen yang lolos dipindah ke tinjauan supaya skor yang dihitung di HP tak bisa dipalsukan tanpa risiko. Hanya di server (tidak masuk KONST_PUBLIK);
+   env.SAMPEL_TINJAU (0..1) menimpa untuk uji. */
+export const SAMPEL_TINJAU = 0.10;
+export const LABEL_TAMBAH_M = 200;   // label terverifikasi: foto <= radius tugas + ini
+
+/* tanggal WIB (UTC+7) YYYY-MM-DD dari ms epoch, dan ms epoch awal hari WIB itu; logbook terkunci begitu tanggal WIB berganti (23.59 WIB) */
+export const tanggalWIB = ms => new Date(ms + 7 * JAM).toISOString().slice(0, 10);
+export const awalHariWIB = tgl => Date.parse(tgl + "T00:00:00Z") - 7 * JAM;
+export const BATAS_FOTO_LOGBOOK = 6, DIM_VEKTOR_MAKS = 2048, DIM_VEKTOR_MIN = 16, JENDELA_TUGAS_MS = 12 * JAM;
 
 /* persetujuan wajah: ganti VERSI bila teks berubah (orang yang sudah setuju diminta setuju lagi) */
 export const VERSI_SETUJU = "2026-11-01";
@@ -57,14 +82,15 @@ const {antispoofMin: _a, ...MUTU_PUBLIK} = MUTU;
 export const KONST_PUBLIK = {
   versi_setuju: VERSI_SETUJU, arah: ARAH, syarat_sudut: SYARAT_SUDUT, tanda_yaw: TANDA_YAW, tanda_pitch: TANDA_PITCH, mutu: MUTU_PUBLIK,
   tantangan: TANTANGAN, tantangan_batas_detik: TANTANGAN_BATAS_DETIK, tantangan_frame_depan: TANTANGAN_FRAME_DEPAN,
-  gps: GPS,
+  gps: GPS, kegiatan: KEGIATAN, kendala: KENDALA, kebutuhan: KEBUTUHAN, kondisi: KONDISI,
 };
 
 /* ================================================================ fungsi murni */
 
 /* sudut kepala cocok dengan syarat arah? yaw/pitch derajat mentah dari perangkat (dikali tanda perangkat di sini) */
 export function sudutCocok(arah, yaw, pitch) {
-  const s = SYARAT_SUDUT[arah]; if (!s) return false;
+  if (!Object.hasOwn(SYARAT_SUDUT, arah)) return false;
+  const s = SYARAT_SUDUT[arah];
   const y = yaw * TANDA_YAW, p = pitch * TANDA_PITCH;
   return y >= s.yaw[0] && y <= s.yaw[1] && p >= s.pitch[0] && p <= s.pitch[1];
 }
@@ -105,7 +131,7 @@ export function lompatanMustahil(p, k) {
 }
 
 /* Keputusan status absen (ALGORITMA §5). Masukan:
-   {fotoSudahDipakai, nonceSah, gpsDitolak, wajahTerdaftar, skorWajah, tantanganLolos, skorHidup, gpsCuriga, dalamRadius, jamHp, luring}
+   {fotoSudahDipakai, nonceSah, gpsDitolak, wajahTerdaftar, skorWajah, tantanganLolos, skorHidup, gpsCuriga, dalamRadius, jamHp, luring, luringLama, jaringanBeda, wajahBaru, sampelAcak}
    -> {status: 'tolak'|'lolos'|'tinjau', alasan: []}. tolak hanya untuk pelanggaran keras (ALASAN_TOLAK); skor rendah TIDAK PERNAH menolak (D3).
    Tanpa wajah terdaftar, skor/tantangan/hidup tidak bermakna dan dilewati. `luring` sendiri tidak memaksa tinjau (nonce luring yang tak sah sudah jatuh ke nonceSah=false). */
 export function putusStatus(i) {
@@ -124,6 +150,10 @@ export function putusStatus(i) {
   if (i.gpsCuriga) a.push("gps_curiga");
   if (!i.dalamRadius) a.push("luar_radius");
   if (i.jamHp) a.push("jam_hp");
+  if (i.luringLama) a.push("luring_lama");
+  if (i.jaringanBeda) a.push("jaringan_beda");
+  if (i.wajahBaru) a.push("wajah_baru");
+  if (!a.length && i.sampelAcak) a.push("sampel_acak");   // hanya yang selainnya lolos: sampel acak tidak menggandakan alasan
   if (!a.length) return {status: "lolos", alasan: []};
   if (i.luring) a.push("luring");
   return {status: "tinjau", alasan: a};

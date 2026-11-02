@@ -42,3 +42,25 @@ membahasnya.
 | Tebak kode | 26 hex + `lajuIP` |
 | Kebocoran vektor | tidak pernah keluar dari Worker |
 | Banjir pesan WA | limiter gateway (3/menit, 60/jam, 300/hari, 8 per tujuan per hari) |
+| Nonce kedaluwarsa dihidupkan lagi lewat `waktu_hp` mundur | nonce harus dibuat sebelum waktu klaim (+5 menit); klaim luring hanya sah dengan nonce luring (umur 36 jam); absen luring yang diklaim > 2 jam sebelum jam server masuk tinjau (`luring_lama`) |
+| Foto absen/logbook dibuka sembarang orang | pemilik, peninjau panel di wilayahnya, atau ketua regu tugas itu; selain itu 404 |
+| Peninjau menyahkan absennya sendiri | 403; peninjau lain yang memutus |
+| Foto acuan wajah dibuka tanpa alasan | hanya untuk orang yang punya absen menunggu tinjauan; tiap akses dicatat di log (oleh, orang) |
+| Pencuri kode mengganti wajah lalu absen mulus | daftar ulang wajah: 3 absen berikutnya wajib tinjau (`wajah_baru`) |
+
+### Batas klien: yang dihitung di HP hanya menahan pemakaian jujur
+
+Skor kemiripan wajah, tantangan (kedip/toleh), skor hidup (anti-palsu), dan vektor wajah dihitung di HP lalu dikirim ke
+Worker. Worker tidak melihat video atau frame, jadi **tidak bisa memeriksa ulang** angka itu. Penyerang yang menulis skrip
+(bukan memakai aplikasi) dapat mengirim skor sempurna dan vektor wajah korban yang bocor dari tempat lain. Karena itu
+ketiganya adalah penahan penggunaan jujur dan pemalas, bukan penjaga terhadap skrip. Yang dilakukan server untuk menutup
+selisihnya, semuanya di server dan tidak dibuka ke klien (`KONST_PUBLIK` tidak memuatnya):
+
+1. **Sampel acak**: 10% absen yang seharusnya `lolos` dialihkan ke `tinjau` dengan alasan `sampel_acak` (konstanta
+   `SAMPEL_TINJAU`). Skrip yang selalu "lolos" tetap kena tinjauan foto oleh manusia pada sebagian absennya.
+2. **Jaringan berbeda**: kode yang sama dipakai dari `ip_hash` yang berbeda dari absen sebelumnya dalam 12 jam
+   masuk `tinjau` (`jaringan_beda`). Berpindah Wi-Fi dan seluler ikut tertandai; itu harga yang sengaja diambil.
+3. **Wajah baru**: tiga absen sesudah daftar ulang wajah ditinjau (`wajah_baru`).
+4. **Foto absen** selalu tersimpan untuk peninjau (tertutup R2, ketua regu boleh membuka foto anggotanya).
+5. Tahap lanjut (U2, aplikasi native) dapat memindahkan penilaian wajah ke sisi yang tidak dikendalikan penyerang;
+   sampai itu ada, tinjauan manusia adalah penjaga terakhir.

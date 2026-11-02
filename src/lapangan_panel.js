@@ -5,10 +5,11 @@
    Daftar orang TIDAK memuat wa/email mentah, dan vektor wajah tidak pernah keluar dari Worker.
    ponytail: satu impor memuat paling banyak 5000 baris dan kueri dikelompokkan per batch D1; di Workers Free (CPU 10 ms) impor sebesar itu butuh paket berbayar, pecah per unit bila terpotong. */
 import {gagal, json, acak, bacaBody, normalWA} from "./worker.js";
-import {superOK, modOK, tx, RE_EMAIL, uraiCsvKontak} from "./posko.js";
+import {superOK, modOK, tx, num, RE_EMAIL, uraiCsvKontak} from "./posko.js";
 import {modAtauStaf, dalamWilayahStaf, wilayahStaf} from "./staf.js";
 import {laju, kodeBaru} from "./bnpb.js";
-import {JENIS_ORANG} from "./lapangan_konst.js";
+import {JENIS_ORANG, RADIUS_BAWAAN_M, tanggalWIB, awalHariWIB} from "./lapangan_konst.js";
+import {petugas} from "./lapangan.js";   // impor melingkar aman: hanya dipanggil saat permintaan, bukan saat modul dimuat
 
 const JAM = 3600e3;
 export const PERAN_PANEL = ["pimpinan", "koordalops"];
@@ -16,14 +17,25 @@ export const TAUTAN_DASAR = "https://centurisk97.id/petugas#k=";
 const MAKS_BARIS = 5000, MAKS_CSV = 1_500_000, HALAMAN = 50;
 const KOLOM_CSV = ["nama", "nip", "unit", "jabatan", "wa", "email", "prov", "kab"];
 
+/* wilayah staf mencakup SEMUA provinsi yang disebut (dalamWilayahStaf lama cukup satu: tidak cukup untuk tulis lintas orang). Staf nasional/admin: selalu boleh. */
+const semuaDalamWilayah = (req, provs) => { const w = wilayahStaf(req); return !w.length || provs.every(p => w.includes(p)); };
+
 /* semua rute tulis modul: header x-pb: 1 (anti-CSRF, pola src/instansi.js); tabel 0095 belum ada = 503 yang jelas */
 export const pb = req => req.headers.get("x-pb") === "1" ? null : gagal(403, "kiriman wajib membawa header x-pb: 1 (dikirim otomatis oleh halaman)");
 export const jaga = rute => Object.fromEntries(Object.entries(rute).map(([k, f]) => [k, async (...a) => {
   try { return await f(...a); }
-  catch (e) { if (/no such table/i.test(e?.message || "")) return gagal(503, "modul lapangan belum aktif (migrasi 0095 belum diterapkan)"); throw e; }
+  catch (e) { if (/no such table/i.test(e?.message || "")) return gagal(503, "modul lapangan belum aktif (migrasi 0095 atau 0097 belum diterapkan)"); throw e; }
 }]));
-const tolakPanel = () => gagal(403, "akses ditolak: hanya pimpinan, koordinator Pusdalops, atau moderator");
-const penjaga = (env, req) => modAtauStaf(env, req, PERAN_PANEL);
+export const tolakPanel = () => gagal(403, "akses ditolak: hanya pimpinan, koordinator Pusdalops, atau moderator");
+export const penjaga = (env, req) => modAtauStaf(env, req, PERAN_PANEL);
+/* lingkup baca tinjauan/ringkasan: staf/moderator = {staf: true}; ketua regu (x-kode, peran 'ketua' di lp_anggota) = {tugas: [id]} terbatas pada tugasnya; selain itu Response 401/403 */
+async function lingkup(env, req, kini) {
+  if (await penjaga(env, req)) return {staf: true};
+  if (!req.headers.get("x-kode")) return tolakPanel();
+  const o = await petugas(env, req, kini); if (o instanceof Response) return o;
+  const {results} = await env.DB.prepare("SELECT tugas_id FROM lp_anggota WHERE orang_id = ? AND peran = 'ketua'").bind(o.id).all();
+  return results.length ? {tugas: results.map(x => x.tugas_id)} : tolakPanel();
+}
 
 /* ================================================================ impor CSV induk */
 const RUMUS = /^[\t\r]|^\s*[=+\-@]/;   // sel CSV yang diawali ini dibaca Excel sebagai rumus saat berkas diekspor ulang
@@ -154,14 +166,197 @@ async function tautan(env, req, url, kini, ctx, id) {
   return json(admin ? {ok: true, antre, tautan: url_} : {ok: true, antre});
 }
 
+
+/* ================================================================ tahap B: jam relawan, ringkasan, tinjauan, tugas, acuan */
+const MENIT = 60e3, HARI = 24 * JAM, MAKS_SESI_MENIT = 960, RE_ID = /^[0-9a-f]{16}$/;
+const tanda = n => Array.from({length: n}, (_, i) => "?" + (i + 1));
+/* saringan wilayah staf pada kolom prov; kembalian {sql, p} dengan parameter bernomor mulai dari `dari` */
+/* batas data per lingkup: staf = provinsi wilayahnya; ketua = tugasnya (kolomTugas, atau semua anggota tugasnya bila kolomTugas null). Parameter ketua memakai SATU nomor ?dari. */
+const sqlBatas = (l, req, kolom, kolomTugas, dari) => !l.tugas ? sqlProv(req, kolom, dari)
+  : {sql: ` AND ${kolomTugas ?? "o.id"} IN (SELECT ${kolomTugas ? "value" : "orang_id FROM lp_anggota WHERE tugas_id IN (SELECT value"} FROM json_each(?${dari})${kolomTugas ? "" : ")"})`, p: [JSON.stringify(l.tugas)]};
+const sqlProv = (req, kolom, dari) => { const w = wilayahStaf(req); return w.length ? {sql: ` AND ${kolom} IN (${w.map((_, i) => "?" + (dari + i)).join(",")})`, p: w} : {sql: "", p: []}; };
+
+/* Absen relawan yang lolos/sah membuka (masuk) atau menutup (pulang) sesi relawan_jam (U-12): memakai tabel dan batas relawan.js (satu sesi terbuka, maks 960 menit).
+   Penugasan relawan_penugasan berstatus diterima/bertugas diperlukan (relawan_jam.penugasan_id wajib); tanpa itu tidak ada sesi jam dan absen tetap tercatat.
+   Kembalian 'dibuka' | 'ditutup' | null. Galat tabel/UNIQUE ditelan: absen sudah tercatat dan tidak boleh gagal karenanya. */
+export async function jamRelawan(env, o, a) {
+  if (!o.relawan_id) return null;
+  try {
+    if (a.jenis === "masuk") {
+      const g = await env.DB.prepare("SELECT id FROM relawan_penugasan WHERE relawan_id = ? AND status IN ('diterima', 'bertugas') ORDER BY diubah DESC LIMIT 1").bind(o.relawan_id).first();
+      if (!g) return null;
+      const [x] = await env.DB.batch([
+        env.DB.prepare("INSERT OR IGNORE INTO relawan_jam (id, relawan_id, penugasan_id, masuk, lat, lon, sah, oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, 1, 'lapangan', ?)").bind(acak(8), o.relawan_id, g.id, a.waktu, a.lat, a.lon, o.dummy ? 1 : 0),
+        env.DB.prepare("UPDATE relawan_penugasan SET status = 'bertugas', diubah = ? WHERE id = ? AND status = 'diterima'").bind(a.waktu, g.id),
+        env.DB.prepare("UPDATE relawan SET status = 'bertugas', diubah = ? WHERE id = ? AND status IN ('ditugaskan', 'bertugas')").bind(a.waktu, o.relawan_id)]);
+      return x.meta.changes ? "dibuka" : null;
+    }
+    const x = await env.DB.prepare("UPDATE relawan_jam SET keluar = max(masuk, ?1), menit = min(?3, max(0, (max(masuk, ?1) - masuk) / 60000)) WHERE relawan_id = ?2 AND keluar IS NULL").bind(a.waktu, o.relawan_id, MAKS_SESI_MENIT).run();
+    return x.meta.changes ? "ditutup" : null;
+  } catch (e) { if (/no such table|UNIQUE/i.test(e?.message || "")) return null; throw e; }
+}
+
+/* ---------------------------------------------------------------- ringkasan hari ini (kartu angka + peta personel) */
+async function ringkas(env, req, url, kini) {
+  const l = await lingkup(env, req, kini); if (l instanceof Response) return l;
+  const hari = tanggalWIB(kini), a0 = awalHariWIB(hari), a1 = a0 + HARI;
+  const w = sqlBatas(l, req, "o.prov", "a.tugas_id", 4), wp = w.p;
+  const [ang, tin, tit] = await env.DB.batch([
+    env.DB.prepare(`SELECT count(*) total,
+        coalesce(sum(EXISTS (SELECT 1 FROM lp_absen x WHERE x.orang_id = a.orang_id AND x.tugas_id = a.tugas_id AND x.tanggal = ?3 AND x.jenis = 'masuk' AND x.status IN ('lolos', 'sah'))), 0) hadir,
+        coalesce(sum(NOT EXISTS (SELECT 1 FROM lp_absen x WHERE x.orang_id = a.orang_id AND x.tugas_id = a.tugas_id AND x.tanggal = ?3 AND x.jenis = 'masuk' AND x.status <> 'tolak')), 0) belum_absen,
+        coalesce(sum(NOT EXISTS (SELECT 1 FROM lp_logbook l WHERE l.orang_id = a.orang_id AND l.tugas_id = a.tugas_id AND l.tanggal = ?3)), 0) belum_logbook
+      FROM lp_anggota a JOIN lp_tugas t ON t.id = a.tugas_id JOIN orang o ON o.id = a.orang_id
+      WHERE t.mulai < ?2 AND t.selesai >= ?1 AND o.status = 'aktif'${w.sql}`).bind(a0, a1, hari, ...wp),
+    env.DB.prepare(`SELECT count(*) n FROM lp_absen x JOIN orang o ON o.id = x.orang_id WHERE x.status = 'tinjau'${sqlBatas(l, req, "o.prov", "x.tugas_id", 1).sql}`).bind(...wp),
+    env.DB.prepare(`SELECT x.orang_id orang, o.nama, t.judul tugas, x.lat, x.lon, x.status, x.waktu FROM lp_absen x JOIN orang o ON o.id = x.orang_id JOIN lp_tugas t ON t.id = x.tugas_id
+      WHERE x.tanggal = ?1 AND x.status <> 'tolak' AND x.waktu = (SELECT max(y.waktu) FROM lp_absen y WHERE y.orang_id = x.orang_id AND y.tugas_id = x.tugas_id AND y.tanggal = x.tanggal AND y.status <> 'tolak')${sqlBatas(l, req, "o.prov", "x.tugas_id", 2).sql}
+      ORDER BY x.waktu DESC LIMIT 500`).bind(hari, ...wp)]);
+  const r = ang.results[0];
+  return json({tanggal: hari, hadir: r.hadir, belum_absen: r.belum_absen, belum_logbook: r.belum_logbook, tinjau: tin.results[0].n, titik: tit.results, jejak: await jejakPosisi(env, req, a0, a1, l)});
+}
+/* LP-031: jejak GPS tautan /lacak (penugasan_posisi) milik petugas yang WA-nya sama dengan WA orang di modul ini; hanya hari ini, 20 titik terakhir per orang, 50 orang.
+   Tanpa tabel penugasan (migrasi 0035 belum jalan) = larik kosong. Nomor WA tidak pernah keluar, hanya nama dan titik.
+   Ditautkan HANYA bila WA itu milik tepat satu orang (WA ganda = salah orang) dan orangnya sedang menyetujui (persetujuan terakhir setuju = 1); selain itu jejak tidak ditautkan. */
+async function jejakPosisi(env, req, a0, a1, l) {
+  try {
+    const w = sqlBatas(l, req, "o.prov", null, 3);
+    const {results: orang} = await env.DB.prepare(`SELECT o.id orang, o.nama, p.id pid FROM penugasan p JOIN orang o ON o.wa = p.wa
+      WHERE p.status IN ('aktif', 'selesai') AND o.status = 'aktif'${w.sql}
+        AND (SELECT count(*) FROM orang o2 WHERE o2.wa = o.wa) = 1
+        AND (SELECT s.setuju FROM orang_setuju s WHERE s.orang_id = o.id ORDER BY s.waktu DESC, s.rowid DESC LIMIT 1) = 1 AND EXISTS (SELECT 1 FROM penugasan_posisi s WHERE s.penugasan_id = p.id AND s.pada >= ?1 AND s.pada < ?2) GROUP BY o.id LIMIT 50`).bind(a0, a1, ...w.p).all();
+    if (!orang.length) return [];
+    const rs = await env.DB.batch(orang.map(x => env.DB.prepare("SELECT lat, lon, akurasi, pada FROM penugasan_posisi WHERE penugasan_id = ?1 AND pada >= ?2 AND pada < ?3 ORDER BY pada DESC LIMIT 20").bind(x.pid, a0, a1)));
+    return orang.map((x, i) => ({orang: x.orang, nama: x.nama, titik: rs[i].results.reverse().map(t => [t.lat, t.lon])}));
+  } catch (e) { if (/no such table/i.test(e?.message || "")) return []; throw e; }
+}
+
+/* ---------------------------------------------------------------- antrean tinjauan */
+async function tinjauDaftar(env, req, url, kini) {
+  const l = await lingkup(env, req, kini); if (l instanceof Response) return l;
+  const hal = Math.min(Math.max(parseInt(url.searchParams.get("halaman"), 10) || 1, 1), 10000), w = sqlBatas(l, req, "o.prov", "x.tugas_id", 1);
+  const [n, h] = await env.DB.batch([
+    env.DB.prepare(`SELECT count(*) n FROM lp_absen x JOIN orang o ON o.id = x.orang_id WHERE x.status = 'tinjau'${w.sql}`).bind(...w.p),
+    env.DB.prepare(`SELECT x.id, x.orang_id, o.nama, t.judul tugas, x.jenis, x.waktu, x.skor_wajah, x.alasan, x.jarak_m, x.gps_ket, x.luring, x.lat, x.lon, o.wajah_status
+      FROM lp_absen x JOIN orang o ON o.id = x.orang_id JOIN lp_tugas t ON t.id = x.tugas_id WHERE x.status = 'tinjau'${w.sql} ORDER BY x.waktu, x.id LIMIT ${HALAMAN} OFFSET ${(hal - 1) * HALAMAN}`).bind(...w.p)]);
+  return json({total: n.results[0].n, halaman: hal, ukuran_halaman: HALAMAN, baris: h.results.map(x => ({id: x.id, nama: x.nama, tugas: x.tugas, jenis: x.jenis, waktu: x.waktu, skor_wajah: x.skor_wajah, alasan: JSON.parse(x.alasan), jarak_m: x.jarak_m,
+    gps_ket: x.gps_ket, luring: !!x.luring, lat: x.lat, lon: x.lon, foto_url: `/api/petugas/foto/${x.id}`, acuan_url: x.wajah_status === "terdaftar" ? `/api/petugas/panel/acuan/${x.orang_id}` : null}))});
+}
+async function tinjauPutus(env, req, url, kini, ctx, id) {
+  const mod = await penjaga(env, req); if (!mod) return tolakPanel();
+  const lj = await laju(env, mod, "lapangan.tinjau", [[JAM, 600]], kini); if (lj) return lj;
+  const b = await bacaBody(req, 2048); if (b.galat) return gagal(b.status || 400, b.galat);
+  if (b.o.putus !== "sah" && b.o.putus !== "tolak") return gagal(400, "putus harus sah atau tolak");
+  const catatan = tx(b.o.catatan, 300);
+  if (catatan === undefined) return gagal(400, "catatan maksimal 300 karakter");
+  if (b.o.putus === "tolak" && (!catatan || catatan.length < 3)) return gagal(400, "menolak wajib disertai catatan (minimal 3 karakter)");
+  const a = await env.DB.prepare("SELECT x.id, x.jenis, x.waktu, x.lat, x.lon, x.status, o.id orang_id, o.relawan_id, o.staf_id, o.prov, o.dummy FROM lp_absen x JOIN orang o ON o.id = x.orang_id WHERE x.id = ?").bind(id).first();
+  if (!a || !dalamWilayahStaf(req, [a.prov])) return gagal(404, "absen tidak ditemukan");
+  if (a.staf_id && mod === "staf:" + a.staf_id) return gagal(403, "peninjau tidak boleh memutus absennya sendiri; minta peninjau lain");
+  const x = await env.DB.prepare("UPDATE lp_absen SET status = ?, peninjau = ?, waktu_tinjau = ?, catatan = ? WHERE id = ? AND status = 'tinjau'").bind(b.o.putus, String(mod).slice(0, 64), kini, catatan, id).run();
+  if (!x.meta.changes) return gagal(409, `absen ini berstatus ${a.status}; hanya yang menunggu tinjauan yang bisa diputus`);
+  const jam = b.o.putus === "sah" ? await jamRelawan(env, a, a) : null;
+  console.log("lapangan.tinjau", JSON.stringify({oleh: String(mod).slice(0, 64), absen: id, putus: b.o.putus, waktu: kini}));
+  return json({ok: true, id, status: b.o.putus, jam});
+}
+
+/* ---------------------------------------------------------------- foto acuan wajah: peninjau saja (KEPUTUSAN U3), selalu private */
+async function acuan(env, req, url, kini, ctx, id) {
+  const mod = await penjaga(env, req); if (!mod) return tolakPanel();
+  if (!env.MEDIA) return gagal(503, "penyimpanan foto belum aktif (R2 MEDIA)");
+  /* hanya untuk orang yang sedang punya absen menunggu tinjauan: foto acuan bukan galeri yang bisa dibuka sembarang waktu */
+  const o = await env.DB.prepare("SELECT id, prov FROM orang WHERE id = ? AND wajah_status = 'terdaftar' AND EXISTS (SELECT 1 FROM lp_absen WHERE orang_id = orang.id AND status = 'tinjau')").bind(id).first();
+  if (!o || !dalamWilayahStaf(req, [o.prov])) return gagal(404, "foto acuan tidak ada");
+  console.log("lapangan.acuan", JSON.stringify({oleh: String(mod).slice(0, 64), orang: o.id, waktu: kini}));   // jejak audit akses foto acuan
+  const f = await env.MEDIA.get(`lapangan/acuan/${o.id}.jpg`);
+  if (!f) return gagal(404, "foto acuan tidak ada");
+  return kirimJpeg(f);
+}
+export const kirimJpeg = f => new Response(f.body, {headers: {"content-type": "image/jpeg", "cache-control": "private, no-store", "x-content-type-options": "nosniff", "content-security-policy": "default-src 'none'; sandbox", "content-disposition": "inline"}});
+
+/* ---------------------------------------------------------------- tugas lapangan */
+const tulisTugas = (b, req, kini) => {
+  const judul = tx(b.judul, 120); if (!judul || judul.length < 2) return {galat: "judul wajib, 2 sampai 120 karakter"};
+  if (typeof b.bencana !== "string" || !/^[a-z_]{2,30}$/.test(b.bencana)) return {galat: "bencana wajib (huruf kecil, mis. karhutla atau banjir)"};
+  const lat = num(b.lat, -11.5, 6.5), lon = num(b.lon, 94.5, 141.5), radius = b.radius_m == null || b.radius_m === "" ? RADIUS_BAWAAN_M.lapangan : num(b.radius_m, 50, 50000, true);
+  if (lat == null || lon == null || [lat, lon].some(Number.isNaN)) return {galat: "titik tugas wajib di dalam Indonesia (lat -11,5..6,5 dan lon 94,5..141,5)"};
+  if (radius == null || Number.isNaN(radius)) return {galat: "radius_m bilangan bulat 50 sampai 50000"};
+  const wil = tx(b.wilayah_teks, 120); if (wil === undefined) return {galat: "wilayah_teks maksimal 120 karakter"};
+  let renlap = tx(b.renlap_url, 300);
+  if (renlap === undefined) return {galat: "renlap_url maksimal 300 karakter"};
+  if (renlap) { try { const u = new URL(renlap); if (u.protocol !== "https:" || u.username || u.password) throw 0; renlap = u.href; } catch (e) { return {galat: "renlap_url harus tautan https yang sah"}; } }
+  const mulai = num(b.mulai, 1e12, 4e12, true), selesai = num(b.selesai, 1e12, 4e12, true);
+  if (mulai == null || selesai == null || Number.isNaN(mulai) || Number.isNaN(selesai)) return {galat: "mulai dan selesai wajib (ms epoch)"};
+  if (selesai <= mulai || selesai - mulai > 90 * HARI) return {galat: "selesai harus sesudah mulai dan rentangnya maksimal 90 hari"};
+  const anggota = b.anggota;
+  if (!Array.isArray(anggota) || anggota.length > 100 || anggota.some(x => typeof x !== "string" || !RE_ID.test(x)) || new Set(anggota).size !== anggota.length) return {galat: "anggota harus larik id orang tanpa duplikat (maksimal 100)"};
+  const ketua = b.ketua_id ?? null;
+  if (ketua !== null && (typeof ketua !== "string" || !anggota.includes(ketua))) return {galat: "ketua_id harus salah satu anggota"};
+  if (b.id != null && (typeof b.id !== "string" || !RE_ID.test(b.id))) return {galat: "id tugas tidak sah"};
+  return {v: {judul, bencana: b.bencana, lat, lon, radius, wil, renlap, mulai, selesai, anggota, ketua, id: b.id ?? null}};
+};
+async function tugasSimpan(env, req, url, kini) {
+  const mod = await penjaga(env, req); if (!mod) return tolakPanel();
+  const lj = await laju(env, mod, "lapangan.tugas", [[JAM, 120]], kini); if (lj) return lj;
+  const b = await bacaBody(req, 8192); if (b.galat) return gagal(b.status || 400, b.galat);
+  const c = tulisTugas(b.o, req, kini); if (c.galat) return gagal(400, c.galat);
+  const v = c.v, ids = JSON.stringify(v.anggota);
+  const {results: ada} = await env.DB.prepare("SELECT id, prov, dummy FROM orang WHERE status = 'aktif' AND id IN (SELECT value FROM json_each(?))").bind(ids).all();
+  if (ada.length !== v.anggota.length) return gagal(400, "ada anggota yang tidak ditemukan atau nonaktif");
+  if (!semuaDalamWilayah(req, ada.map(x => x.prov))) return gagal(403, "anggota di luar wilayah staf ini");
+  let id = v.id;
+  if (id) {
+    const lama = await env.DB.prepare("SELECT t.id, t.dummy, (SELECT json_group_array(o.prov) FROM lp_anggota a JOIN orang o ON o.id = a.orang_id WHERE a.tugas_id = t.id) provs FROM lp_tugas t WHERE t.id = ?").bind(id).first();
+    if (!lama) return gagal(404, "tugas tidak ditemukan");
+    const provs = JSON.parse(lama.provs || "[]");
+    if (wilayahStaf(req).length && !provs.length) return gagal(404, "tugas tidak ditemukan");
+    if (!semuaDalamWilayah(req, provs)) return gagal(403, "tugas ini punya anggota di luar wilayah staf ini");   // sunting tugas lintas wilayah bukan hak staf berwilayah
+    if (lama.dummy && ada.some(x => !x.dummy)) return gagal(400, "tugas contoh (dummy) tidak bisa diisi anggota nyata");
+  } else id = acak(8);
+  await env.DB.batch([
+    id === v.id
+      ? env.DB.prepare("UPDATE lp_tugas SET judul = ?, bencana = ?, lat = ?, lon = ?, radius_m = ?, wilayah_teks = ?, renlap_url = ?, mulai = ?, selesai = ?, ketua_id = ? WHERE id = ?").bind(v.judul, v.bencana, v.lat, v.lon, v.radius, v.wil, v.renlap, v.mulai, v.selesai, v.ketua, id)
+      : env.DB.prepare("INSERT INTO lp_tugas (id, judul, bencana, lat, lon, radius_m, wilayah_teks, renlap_url, mulai, selesai, ketua_id, dibuat_oleh, dibuat, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 0)").bind(id, v.judul, v.bencana, v.lat, v.lon, v.radius, v.wil, v.renlap, v.mulai, v.selesai, v.ketua, String(mod).slice(0, 64), kini),
+    env.DB.prepare("DELETE FROM lp_anggota WHERE tugas_id = ?").bind(id),
+    env.DB.prepare("INSERT INTO lp_anggota (tugas_id, orang_id, peran) SELECT ?1, value, CASE WHEN value = ?3 THEN 'ketua' ELSE 'anggota' END FROM json_each(?2)").bind(id, ids, v.ketua ?? ""),
+  ]);
+  console.log("lapangan.tugas", JSON.stringify({oleh: String(mod).slice(0, 64), tugas: id, anggota: v.anggota.length, waktu: kini}));
+  return json({ok: true, id}, v.id ? 200 : 201);
+}
+async function tugasDaftar(env, req, url, kini) {
+  if (!await penjaga(env, req)) return tolakPanel();
+  const w = wilayahStaf(req), aktif = url.searchParams.get("aktif") === "1", hari = tanggalWIB(kini);
+  /* hadir = orang berbeda yang absen masuk lolos/sah hari ini; logbook = logbook hari ini; temuan = hasil logbook terbaru tugas itu */
+  const {results} = await env.DB.prepare(`SELECT t.id, t.judul, t.bencana, t.lat, t.lon, t.radius_m, t.wilayah_teks, t.renlap_url, t.mulai, t.selesai, t.ketua_id,
+      (SELECT json_group_array(json_object('id', a.orang_id, 'nama', o.nama, 'peran', a.peran)) FROM lp_anggota a JOIN orang o ON o.id = a.orang_id WHERE a.tugas_id = t.id AND (?1 = '[]' OR o.prov IN (SELECT value FROM json_each(?1)))) anggota,
+      (SELECT count(DISTINCT x.orang_id) FROM lp_absen x WHERE x.tugas_id = t.id AND x.tanggal = ?3 AND x.jenis = 'masuk' AND x.status IN ('lolos', 'sah')) hadir,
+      (SELECT count(*) FROM lp_logbook l WHERE l.tugas_id = t.id AND l.tanggal = ?3) logbook,
+      (SELECT substr(l.hasil, 1, 160) FROM lp_logbook l WHERE l.tugas_id = t.id AND l.hasil <> '' ORDER BY l.tanggal DESC, l.waktu DESC LIMIT 1) temuan
+    FROM lp_tugas t WHERE (?1 = '[]' OR EXISTS (SELECT 1 FROM lp_anggota a JOIN orang o ON o.id = a.orang_id WHERE a.tugas_id = t.id AND o.prov IN (SELECT value FROM json_each(?1))))
+      AND (?2 = 0 OR t.selesai >= ?4) ORDER BY t.mulai DESC, t.id LIMIT 100`).bind(JSON.stringify(w), aktif ? 1 : 0, hari, kini).all();
+  return json({baris: results.map(x => ({...x, anggota: JSON.parse(x.anggota || "[]"), temuan: x.temuan ?? null})).map(x => ({...x, ketua_id: x.anggota.some(a => a.id === x.ketua_id) ? x.ketua_id : null}))});   // ketua di luar wilayah ikut disembunyikan
+}
+
 export const RUTE_LAPANGAN_PANEL = jaga({
   "POST /api/petugas/panel/impor": (env, req, url, kini) => pb(req) ?? impor(env, req, kini),
   "GET /api/petugas/panel/orang": (env, req, url) => daftarOrang(env, req, url),
   "POST /api/petugas/panel/tautan/:id": (env, req, url, kini, ctx, id) => pb(req) ?? tautan(env, req, url, kini, ctx, id),
+  "GET /api/petugas/panel/ringkas": ringkas,
+  "GET /api/petugas/panel/tinjau": tinjauDaftar,
+  "POST /api/petugas/panel/tinjau/:id": (env, req, url, kini, ctx, id) => pb(req) ?? tinjauPutus(env, req, url, kini, ctx, id),
+  "POST /api/petugas/panel/tugas": (env, req, url, kini) => pb(req) ?? tugasSimpan(env, req, url, kini),
+  "GET /api/petugas/panel/tugas": tugasDaftar,
+  "GET /api/petugas/panel/acuan/:id": acuan,
 });
 
 /* cron menit 17: antrean WA memuat kode pribadi, jadi tidak disimpan lama. Terkirim/gagal > 24 jam dan antre > 72 jam dibuang. */
-export const bersihkanLapangan = (env, kini = Date.now()) => env.DB.batch([
+export const bersihkanLapangan = async (env, kini = Date.now()) => {
+  /* tahap B (0097): nonce habis > 1 hari dibuang, logbook hari lampau dikunci; migrasi belum jalan = dilewati tanpa mengganggu pembersihan wa_antre */
+  try { await env.DB.batch([env.DB.prepare("DELETE FROM lp_nonce WHERE kedaluwarsa < ?").bind(kini - HARI), env.DB.prepare("UPDATE lp_logbook SET terkunci = 1 WHERE terkunci = 0 AND tanggal < ?").bind(tanggalWIB(kini))]); }
+  catch (e) { if (!/no such table/i.test(e?.message || "")) throw e; }
+  await bersihWa(env, kini);
+};
+const bersihWa = (env, kini) => env.DB.batch([
   env.DB.prepare("DELETE FROM wa_antre WHERE status IN ('dikirim', 'gagal') AND coalesce(dikirim, dibuat) < ?").bind(kini - 24 * JAM),
   env.DB.prepare("DELETE FROM wa_antre WHERE status = 'antre' AND dibuat < ?").bind(kini - 72 * JAM),
 ]);

@@ -40,6 +40,26 @@ export async function api(url, {metode = "GET", badan, kode, cookie = false} = {
   } catch (e) { return {ok: false, status: 0, data: {}}; }
 }
 
+/* kiriman multipart (foto): FormData dibangun pemanggil; content-type diisi peramban (batas bagian). Kode pribadi di x-kode. */
+export async function kirimForm(url, form, {kode, cookie = false} = {}) {
+  const h = {"x-pb": "1"};
+  if (kode) h["x-kode"] = kode;
+  try {
+    const r = await fetch(url, {method: "POST", headers: h, body: form, credentials: cookie ? "same-origin" : "omit"});
+    const data = await r.json().catch(() => ({}));
+    return {ok: r.ok, status: r.status, data};
+  } catch (e) { return {ok: false, status: 0, data: {}}; }
+}
+
+/* konstanta publik (sudut, mutu, tantangan, GPS) dibaca sekali dari server; klien tidak menyimpan angka sendiri */
+let _konst = null;
+export async function ambilKonst() {
+  if (_konst) return _konst;
+  const r = await api("/api/petugas/konst");
+  if (!r.ok || !r.data?.syarat_sudut) throw new Error("konstanta tidak termuat");
+  return _konst = r.data;
+}
+
 /* satu rAF + timeout cadangan: klik berubah keadaan dulu, kerja berat sesudahnya (INP) */
 export const nanti = f => { let s = 0; const go = () => { if (!s++) f(); }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 
