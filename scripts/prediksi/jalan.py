@@ -8,8 +8,10 @@ terbesar dihitung. Satu way dilaporkan sekali dengan terisolir terbesarnya. `jem
 berbeda dari "jembatan graf". Kotak persegi memotong jaringan di tepi, jadi ruas di tepi kab bisa tampak tunggal padahal tersambung
 ke luar kotak (batas atas); jaringan jalan OSM tidak lengkap di daerah terpencil.
 Pakai: python3 scripts/prediksi/jalan.py <id kab> [<id kab> ...]   (id Kepmendagri 4 digit; hasil digabung ke jalan.json)
+       python3 scripts/prediksi/jalan.py giliran [--maks N]   (N kab, bawaan 15, yang belum ada / `dihitung`-nya paling lama; gagal diulang
+         di giliran berikut; exit 1 hanya bila ada yang dicoba dan nol berhasil)
        python3 scripts/prediksi/jalan.py uji     (tanpa jaringan)
-Lari penuh 514 kab = pekerjaan workflow terjadwal (belum dipasang), jeda 5 detik per kueri.
+Lari penuh 514 kab = giliran berputar oleh workflow terjadwal, jeda 5 detik per kueri.
 """
 import json, math, os, sys, time, urllib.parse, urllib.request
 
@@ -159,7 +161,14 @@ def overpass(kid, b):
     return None
 
 
+def pilih(ids, kab_d, maks):
+    """Giliran: kab yang belum ada dulu, lalu `dihitung` paling lama; seri diurut id (deterministik)."""
+    return sorted(ids, key=lambda i: ((kab_d.get(i) or {}).get("dihitung", ""), i))[:maks]
+
+
 def jalankan(ids):
+    """-> (jumlah berhasil, jumlah dicoba). Disimpan setiap kab berhasil, jadi lari yang terpotong tidak kehilangan hasil."""
+    ok = 0
     kabs = {k["id"]: k for k in D.kab()}
     d = D.baca(KELUAR, None) or {"label": LABEL, "sumber": "OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap), highway " + KELAS, "kab": {}}
     d["dibuat"] = D.hari_ini()
@@ -173,12 +182,25 @@ def jalankan(ids):
         if j is None:
             print(f"jalan: {i} {k['nama']}: Overpass menyerah; dilewati", file=sys.stderr)
             continue
-        d["kab"][i] = ringkas(baca_ways(j), b)
+        d["kab"][i] = {**ringkas(baca_ways(j), b), "dihitung": d["dibuat"]}
+        ok += 1
+        D.simpan(KELUAR, d)
         print(f"jalan: {i} {k['nama']}: {d['kab'][i]['way']} way, {d['kab'][i]['ruas_tunggal']} ruas tunggal")
     D.simpan(KELUAR, d)
+    return ok, len(ids)
+
+
+def giliran(maks=15):
+    ids = pilih([k["id"] for k in D.kab()], (D.baca(KELUAR, None) or {}).get("kab", {}), maks)
+    ok, n = jalankan(ids)
+    print(f"jalan: giliran {ok}/{n} kab berhasil")
+    return 1 if n and not ok else 0
 
 
 def uji():
+    kd = {"1101": {"dihitung": "2026-10-01"}, "1102": {"dihitung": "2026-09-01"}, "1104": {}}
+    assert pilih(["1101", "1102", "1103", "1104", "1105"], kd, 3) == ["1103", "1104", "1105"], "yang belum ada / tanpa tanggal dulu, urut id"
+    assert pilih(["1101", "1102", "1103"], kd, 2) == ["1103", "1102"] and pilih(["1101", "1102"], kd, 15) == ["1102", "1101"], "terlama dulu"
     def W(i, ns, **tag):
         return {"id": i, "tags": tag, "nodes": ns, "geom": [(0.0, n * 0.01) for n in ns]}
     # lingkaran 1-2-3-4-1 (tanpa jembatan) + ekor 4-5-6 (way 20, dua ruas jembatan graf) + jembatan fisik 1-7 (way 30), 7 buntu
@@ -207,6 +229,8 @@ if __name__ == "__main__":
     a = sys.argv[1:]
     if a == ["uji"]:
         uji()
+    elif a[:1] == ["giliran"]:
+        sys.exit(giliran(int(a[a.index("--maks") + 1]) if "--maks" in a else 15))
     elif a:
         jalankan(a)
     else:
