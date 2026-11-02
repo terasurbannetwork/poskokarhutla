@@ -73,7 +73,7 @@ test("INP statis: animasi berhenti saat tab tersembunyi, reduced-motion, dan lap
 test("peta.js memasang sakelar, klik pos, dan pemuatan malas", () => {
   const p = fs.readFileSync("public/banjir/peta.js", "utf8"), h = fs.readFileSync("public/banjir/index.html", "utf8");
   assert.match(p, /PosUkur\.hit\(e\.point\)/); assert.match(p, /nanti\(\(\) => PosUkur\.mulai\(\)\)/); assert.match(p, /if \(k === "pos"\) PosUkur\.tampil\(i\.checked\)/);
-  assert.match(h, /data-l="pos" checked/); for (const k of ["sungai", "rob", "kejadian"]) assert.match(h, new RegExp(`data-l="${k}" checked`), `${k} menyala bawaan`); assert.match(h, /<script src="pos_air\.js">/);
+  assert.match(h, /data-l="pos" checked/); for (const k of ["sungai", "kejadian"]) assert.match(h, new RegExp(`data-l="${k}" checked`), `${k} menyala bawaan`); assert.match(h, /<script src="pos_air\.js">/);
 });
 
 test("warna pin: status resmi menang atas persentil, data lama tetap abu, tanpa ambang jatuh ke persentil", () => {

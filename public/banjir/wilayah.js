@@ -112,7 +112,7 @@
     kal: '<rect x="3" y="5" width="18" height="16" rx="2"/><path d="M3 10h18M8 3v4M16 3v4"/>'};
   const svg = k => `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK[k]}</svg>`;
   const chip = (k, w, s, l, t) => `<span class="lg-c" style="--w:${w}" title="${t}">${svg(k)}<b>${s}</b>${l}</span>`;   // label pendek; arti lengkap di title
-  const G = "grid-template-columns:20px minmax(0,1.5fr) 64px 34px 34px 42px 72px";
+  const G = "grid-template-columns:20px minmax(0,1.5fr) 64px 34px 42px 72px";
   const akhir = () => W.pilih || W.file?.hari;
   const pilSt = s => s == null ? "–" : `<span class="pill l${s}">${s ? LEVEL[s] : "Aman"}</span>`;
   const n = v => v == null ? "–" : fmt(v);
@@ -175,12 +175,12 @@
       baris = p?.kab || []; kunciDari = r => String(r.kode).includes("|") ? r.kode : `${j[0]}|${r.nama}`;
     } else { baris = D.provinsi || []; kunciDari = r => r.kode; }
     const urut = [...baris].sort(urutBaris), T = D.total || {};
-    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "WS", "Wilayah Siaga", "Wilayah Siaga (prakiraan model), jumlah gugus")}${chip("rob", "#2b8c86", "RB", "Rob", "Titik rob berstatus Waspada atau lebih")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari", "Hujan 3 hari terbesar, mm")}${chip("tr", "#c9503a", "TR", "Tren", `${j.length ? "Naik atau turun tingkat status" : "Bertambah atau berkurangnya kab/kota Siaga atau Awas"}, ${trJudul}`)}</div>`;
-    const kepala = `<div class="tb kepala" style="${G}" title="Sumber: BMKG (prakiraan dan peringatan), Open-Meteo (hujan), GloFAS (sungai), InaRISK (bahaya), WorldPop (penduduk)"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:right">Status</span><span class="n" title="Wilayah Siaga (prakiraan), gugus">WS</span><span class="n" title="Rob, titik Waspada+">RB</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="${j.length ? "Selisih tingkat status" : "Selisih kab/kota Siaga atau Awas"}, ${trJudul}">Tren</span></div>`;
-    const total = j.length ? "" : `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${n(T.kejadian_aktif)}</span><span class="n">${n(T.rob)}</span><span class="n">–</span>${trSel(TR?._total)}</div>`;
+    const legenda = `<div class="lg-hs">${chip("kej", "#1d4e89", "WS", "Wilayah Siaga", "Wilayah Siaga (prakiraan model), jumlah gugus")}${chip("h3", "#4f8fc4", "H3", "Hujan 3 hari", "Hujan 3 hari terbesar, mm")}${chip("tr", "#c9503a", "TR", "Tren", `${j.length ? "Naik atau turun tingkat status" : "Bertambah atau berkurangnya kab/kota Siaga atau Awas"}, ${trJudul}`)}</div>`;
+    const kepala = `<div class="tb kepala" style="${G}" title="Sumber: BMKG (prakiraan dan peringatan), Open-Meteo (hujan), GloFAS (sungai), InaRISK (bahaya), WorldPop (penduduk)"><span></span><span>${j.length ? "Kabupaten / kota" : "Provinsi"}</span><span style="text-align:right">Status</span><span class="n" title="Wilayah Siaga (prakiraan), gugus">WS</span><span class="n" title="Hujan 3 hari, mm">H3 mm</span><span class="n" title="${j.length ? "Selisih tingkat status" : "Selisih kab/kota Siaga atau Awas"}, ${trJudul}">Tren</span></div>`;
+    const total = j.length ? "" : `<div class="tb tb-total" style="${G}"><span></span><span>Grand total</span><span></span><span class="n">${n(T.kejadian_aktif)}</span><span class="n">–</span>${trSel(TR?._total)}</div>`;
     return kep + legenda + kepala + total + (urut.length ? urut.map((r, i) => `<button class="tb${(st(r.status) ?? 0) >= 2 ? " hl" + st(r.status) : ""}" style="${G}" role="listitem" data-k="${esc(kunciDari(r))}">
       <span class="rk">${i + 1}</span><span style="font-weight:600">${esc(r.nama)}</span><span style="text-align:right" data-sort="${st(r.status) ?? -1}">${pilSt(st(r.status))}</span>
-      <span class="n" data-sort="${r.kejadian_aktif ?? -1}">${n(r.kejadian_aktif)}</span><span class="n" data-sort="${r.rob ?? -1}">${n(r.rob)}</span>
+      <span class="n" data-sort="${r.kejadian_aktif ?? -1}">${n(r.kejadian_aktif)}</span>
       <span class="n" data-sort="${r.hujan3_mm ?? -1}">${r.hujan3_mm == null ? "–" : fmt(Math.round(r.hujan3_mm))}</span>${trSel(TR?.[j.length ? kunciDari(r) : r.kode])}</button>`).join("") : `<div class="kosong">Tidak ada wilayah di tingkat ini.</div>`);
   }
 

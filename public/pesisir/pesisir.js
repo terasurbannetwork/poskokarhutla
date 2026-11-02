@@ -32,15 +32,16 @@ const namaProv = k => S.meta?.prov?.[k] ?? k;
 const hariTampil = () => [0, 1, 2, 3].map(n => Pesisir.hariKe(HARI_INI(), n));
 
 /* ================================================================ tab */
-const TABS = [["peta", "Peta"], ["insight", "Insight"], ["tren", "Tren"], ["tentang", "Tentang"]];
-const TAB_SEMBUNYI = new Set([]);
-const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
+const TABS = [["peta", "Peta"], ["insight", "Insight"], ["tren", "Tren"], ["foto", "Foto"], ["tentang", "Tentang"], ["informasi", "Lapor Warga"]];
+/* informasi: tidak di menu tapi bisa dibuka lewat /pesisir/informasi (A24) */
+const TAB_SEMBUNYI = new Set(["informasi"]);
+const IK_TAB = {peta: '<path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/><path d="M9 3v15M15 6v15"/>', insight: '<path d="M4 20V10M10 20V4M16 20v-7M22 20H2"/>', tren: '<path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/>', foto: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>', tentang: '<circle cx="12" cy="12" r="9"/><path d="M12 11v6M12 7.5v.5"/>'};
 function bukaTab(id, dorong = true) {
   document.querySelectorAll("#tabs button").forEach(b => b.setAttribute("aria-current", b.dataset.t === id ? "page" : "false"));
   document.querySelectorAll(".page").forEach(p => p.classList.toggle("on", p.id === "p-" + id));
   if (dorong) history.replaceState(null, "", "/pesisir/" + (id === "peta" ? "" : id) + location.search);
   nanti(() => { if (id === "peta" && typeof peta !== "undefined" && peta) peta.resize();
-    ({insight: Insight, tren: Tren, tentang: Tentang})[id]?.render(); });
+    ({insight: Insight, tren: Tren, foto: window.Foto, tentang: Tentang, informasi: window.Informasi})[id]?.render(); });
 }
 $("#tabs").innerHTML = TABS.filter(t => !TAB_SEMBUNYI.has(t[0])).map(([k, n]) => `<button data-t="${k}" aria-current="false"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${IK_TAB[k]}</svg>${n}</button>`).join("");
 { const hd = $("header.top"), bg = $("#burger"), atur = v => { hd.classList.toggle("buka", v); bg.setAttribute("aria-expanded", v); };
@@ -80,7 +81,7 @@ const titikTrans = t => { const lj = t.laju, ci = t.ci95, k = ABR[t.kelas || "ti
     ${kot("Periode", `${t.periode?.[0] ?? "–"} sampai ${t.periode?.[1] ?? "–"}`, `${fmt(t.n)} tahun terbaca`)}${kot("Perubahan total", t.perubahan_m == null ? "–" : (t.perubahan_m > 0 ? "+" : "") + fmt(t.perubahan_m) + " m", "garis awal ke akhir")}</div>
     <div class="lbl">Jarak garis pantai ke laut dari garis dasar (m)</div><div class="tw sk gp-wr">${GrafikP.garis(seri, {lebar: lebarLaci(), tinggi: 190, nol: false, tip: x => { const p = t.jarak.find(j => j[0] === x); return `<b>${esc(t.desa || t.id)}, ${x}</b><br>Jarak ke laut: ${p ? fmt(p[1]) + " m" : "–"}`; }})}</div>
     ${t.laju_10th?.kelas ? `<p class="gp-cat">Sepuluh tahun terakhir: ${m1(t.laju_10th.laju)} m/th (${ABR[t.laju_10th.kelas]?.[0].toLowerCase() || t.laju_10th.kelas}, keyakinan ${t.laju_10th.keyakinan}).</p>` : ""}
-    ${(S.abr.situs.find(x => x.id === t.situs)?.tinjau || []).includes(t.id) ? `<p class="gp-cat">Bertanda tinjau: garis melompat lebih dari 300 m di dua tahun terakhir (tanggul, reklamasi, atau tahun berawan) dan belum diperiksa tangan.</p>` : ""}
+    ${(S.abr.situs.find(x => x.id === t.situs)?.tinjau || []).includes(t.id) ? `<p class="gp-cat">${esc(Pesisir.ketLompatan(t))}</p>` : ""}
     <p class="gp-cat">Perkiraan dari citra Landsat, belum dikoreksi pasang surut dan belum dicek lapangan.</p>`; };
 const Rinci = {
   trans(i) { const t = S.abr.transek[i], s = S.abr.situs.find(x => x.id === t.situs);
