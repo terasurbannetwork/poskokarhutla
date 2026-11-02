@@ -105,5 +105,6 @@
   "0101_lapangan_panggil.sql": "5c471b5c9377720b7cf60ba7cab587a47a2d2f54685e1666ab51e22bb49b8b96",
   "0103_operasi_lapangan.sql": "8980a69ac88106560c78dc1792df5d6a0ce643d134e96ce093f51c14470b04ad",
   "0102_staf_peran_direktori.sql": "6f4fb66d596fbde2e9c4b179d7bb3a915b6511b96ce6840e88490904cdd76961",
-  "0104_staf_peran_lengkap.sql": "1d62ba3188df16f8ea9fca35d633afac4bee40766cead05ce5d848d5ad06ed0b"
+  "0104_staf_peran_lengkap.sql": "1d62ba3188df16f8ea9fca35d633afac4bee40766cead05ce5d848d5ad06ed0b",
+  "0105_pengingat_lapangan.sql": "d3c876f16eeaf883c40ac915be6840aa6ef16191963434f3a9b33e061461667f"
 }
