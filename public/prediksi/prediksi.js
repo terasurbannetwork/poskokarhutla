@@ -20,6 +20,7 @@ const rentangTahun = th => {
   return s.length < 3 ? s.join(" dan ") : `${s.slice(0, -1).join(", ")}, dan ${s.at(-1)}`;
 };
 const angka3 = v => v == null ? "–" : fmt(Math.round(v * 1000) / 1000);
+const angka4 = v => v == null ? "–" : fmt(Math.round(v * 10000) / 10000);
 const kol = (kode, r, c) => r ? r[PR.d.kode[kode].kol.indexOf(c)] : null;
 
 function pil(v) {
@@ -119,10 +120,26 @@ function tabelSkor(kode, g) {
     <th class="n">Galat jam mulai</th><th class="n">Galat lama</th><th>Vonis</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
 
+/* Model bayangan (lab adu model 2 Nov 2026): berdampingan dengan model lama dan baseline, pasangan kab-hari yang sama. Tidak mengganti apa pun. */
+const pilAp = (v, n) => `<span class="pr-pil abu">${v === "belum teruji" ? "belum teruji" : v.startsWith("peringkat lebih") ? `AP unggul di ${fmt(n)} pasangan prospektif` : `AP belum unggul di ${fmt(n)} pasangan prospektif`}</span>`;
+function bayanganRapor(b) {
+  if (!b) return "";
+  const nama = kd => b.model[kd]?.nama || kd;
+  const rows = b.banding.map(x => `<tr><td>${esc(nama(x.kode))}</td><td class="n">+${x.tenggang}</td><td class="n">${fmt(x.n_banding)}</td>
+    <td class="n">${angka4(x.brier_bayangan)}</td><td class="n">${x.lama ? angka4(x.brier_lama) : "tidak ada"}</td><td class="n">${angka4(x.brier_persistensi)}</td><td class="n">${angka4(x.brier_klimatologi)}</td>
+    <td class="n">${angka3(x.ap_bayangan)}</td><td class="n">${x.lama ? angka3(x.ap_lama) : "tidak ada"}</td><td class="n">${angka3(x.ap_persistensi)}</td><td class="n">${angka3(x.ap_klimatologi)}</td>
+    <td>${pil([x.vonis, x.n_banding])}</td><td>${pilAp(x.vonis_peringkat, x.n_banding)}</td></tr>`).join("");
+  const info = Object.entries(b.model).map(([kd, m]) => `<li><b>${esc(m.nama)}</b> (${fmt(m.prakiraan)} prakiraan tercatat): ${esc(m.metode)}. Di lab: ${esc(m.uji_lab)}.</li>`).join("");
+  return `<section class="card pad pr-sek"><h2>Model bayangan, diuji berdampingan</h2><p class="pr-kecil">${esc(b.catatan)} Brier lebih kecil dan AP (ketepatan peringkat) lebih besar = lebih baik. Vonis kiri memakai aturan yang sama dengan model lama (Brier lebih kecil dari persistensi dan klimatologi, n ≥ 30); vonis kanan memakai AP. Peluang bayangan belum dikalibrasi, jadi Brier dapat kalah oleh pergeseran laju kejadian sementara peringkatnya menang.</p>
+    <ul class="pr-kecil">${info}</ul>${rows ? `<div class="tw"><table><thead><tr><th>Model</th><th class="n">Tenggang</th><th class="n">n pasangan</th><th class="n">Brier bayangan</th><th class="n">Brier model lama</th><th class="n">Brier persistensi</th><th class="n">Brier klimatologi</th>
+    <th class="n">AP bayangan</th><th class="n">AP model lama</th><th class="n">AP persistensi</th><th class="n">AP klimatologi</th><th>Vonis (Brier)</th><th>Vonis (AP)</th></tr></thead><tbody>${rows}</tbody></table></div>` : '<p class="pr-kecil">Belum ada pasangan yang matang. Banjir dan longsor menunggu label DIBI 14 hari, karhutla dan cuaca ekstrem sesudah data harian terkumpul.</p>'}</section>`;
+}
+
 function gambarRapor() {
   const s = PR.skor, u = PR.uji, k = PR.kal;
   let h = `<div class="head"><div><h2>Rapor ketepatan</h2><p class="pr-kecil">Brier lebih kecil = lebih baik. Prakiraan harus lebih baik dari persistensi (besok = hari terakhir lengkap) dan klimatologi (frekuensi bulan yang sama). Vonis butuh ≥30 pasangan.</p></div></div>`;
-  h += `<section class="card pad pr-sek"><h2>Prospektif</h2><p class="pr-kecil">${esc(s?.catatan || "skor.json belum ada")}</p>${s ? Object.entries(s.kode).map(([kd, g]) => tabelSkor(kd, g)).join("") : ""}</section>`;
+  h += `<section class="card pad pr-sek"><h2>Prospektif</h2><p class="pr-kecil">${esc(s?.catatan || "skor.json belum ada")}</p>${s ? Object.entries(s.kode).filter(([kd]) => !kd.endsWith("_B")).map(([kd, g]) => tabelSkor(kd, g)).join("") : ""}</section>`;
+  h += bayanganRapor(s?.bayangan);
   h += `<section class="card pad pr-sek"><h2>Uji balik retrospektif</h2>${u ? `<p class="pr-kecil">${esc(u.catatan)} Periode ${esc(u.periode.join(" s.d. "))}, ${fmt(u.n_terbit)} hari terbit.</p>${tabelSkor("HJN", u.kode.HJN)}` : '<p class="pr-kecil">Belum dijalankan.</p>'}</section>`;
   h += kalenderRapor();
   const ka = PR.aktif;

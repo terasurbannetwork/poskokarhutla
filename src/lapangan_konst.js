@@ -16,6 +16,10 @@ export const ALASAN_TINJAU = ["wajah_belum_daftar", "wajah_rendah", "wajah_berbe
 export const JENIS_ABSEN = ["masuk", "pulang"];
 export const PERAN_ANGGOTA = ["ketua", "anggota"];
 export const JENIS_LABEL = ["api", "banjir"];
+/* tahap C (0099): panggilan relawan lewat WA */
+export const STATUS_PANGGIL = ["buka", "penuh", "tutup"];
+export const STATUS_PENERIMA = ["antre", "terkirim", "gagal", "siap", "tidak", "penuh"];
+export const RETENSI_FOTO_MS = 730 * 24 * JAM;   // LP-049: foto absen/logbook dihapus sesudah 2 tahun
 /* isian kondisi lapangan logbook (ALGORITMA §7): enum + rentang bilangan bulat; dijaga validasi di src/lapangan.js */
 export const KONDISI = {
   enum: {kondisi_api: ["menyala", "bara", "padam", "bukan_api"], akses: ["mobil", "motor", "jalan_kaki", "perahu"], hujan_lokal: ["tidak", "ringan", "lebat"]},

@@ -18,6 +18,39 @@ for (const s of ['catat', 'nilai', 'kalibrasi', 'terbit', 'kalender', 'koreksi']
   })
 }
 
+test('bayangan/model.py uji: fitur cocok dengan skrip lab, 514 kab terpetakan, 6 pasang senama tidak tertukar', () => {
+  const out = execFileSync('python3', [join(ROOT, 'scripts/prediksi/bayangan/model.py'), 'uji'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
+  assert.match(out, /uji lulus/)
+})
+
+test('arsip bayangan: kode _B berkolom p 0..1 dan tidak ikut kartu Besok', () => {
+  const dir = join(DATA, 'arsip')
+  if (!existsSync(dir)) return
+  for (const f of readdirSync(dir).filter((f) => f.endsWith('.jsonl'))) {
+    for (const b of readFileSync(join(dir, f), 'utf8').split('\n').filter(Boolean)) {
+      const e = JSON.parse(b)
+      if (!e.k.endsWith('_B')) continue
+      assert.ok(['BNJ_B', 'LSR_B', 'CEX_B', 'KRH_B'].includes(e.k), e.k)
+      assert.equal(e.kol[0], 'p')
+      for (const r of Object.values(e.kab)) for (const x of r) if (x) assert.ok(x[0] >= 0 && x[0] <= 1, `${e.k} p ${x[0]}`)
+    }
+  }
+  const p = join(DATA, 'prediksi.json')
+  if (existsSync(p)) for (const k of Object.keys(JSON.parse(readFileSync(p, 'utf8')).kode)) assert.ok(!k.endsWith('_B'), `${k} bocor ke kartu Besok`)
+})
+
+test('skor.json bayangan: tiap baris banding punya vonis dan n_banding', () => {
+  const p = join(DATA, 'skor.json')
+  if (!existsSync(p)) return
+  const b = JSON.parse(readFileSync(p, 'utf8')).bayangan
+  if (!b) return
+  assert.ok(b.catatan.includes('Sumber hujan beda'))
+  for (const x of b.banding) {
+    assert.ok(['belum teruji', 'mengalahkan baseline', 'belum mengalahkan baseline'].includes(x.vonis))
+    if (x.n_banding < 30) assert.equal(x.vonis, 'belum teruji')
+  }
+})
+
 test('arsip: tiap baris sah, hari = t+1..t+3, (t, kode) unik', () => {
   const dir = join(DATA, 'arsip')
   if (!existsSync(dir)) return

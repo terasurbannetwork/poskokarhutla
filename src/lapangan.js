@@ -5,7 +5,7 @@
    Relawan masuk ke `orang` lewat salinOrang(): dipanggil saat diverifikasi (src/relawan.js) dan, bila terlewat, saat kodenya dipakai pertama kali.
    Kode salah dijawab 401 (dihitung per IP oleh pemegangKode, 60 gagal per jam = 429). */
 import {gagal, json, acak, bacaBody, ipHash, cacheTepi, shaBytes, sha} from "./worker.js";
-import {superOK, num, tx} from "./posko.js";
+import {superOK, num, tx, reguDari} from "./posko.js";
 import {dalamWilayahStaf} from "./staf.js";
 import {pemegangKode, laju, kodeBaru} from "./bnpb.js";
 import {nilaiGps, jaringanRelay} from "./gps.js";
@@ -64,9 +64,19 @@ const cariOrang = (env, kini) => async kodeSha => {
 };
 /* baris orang atau Response: tanpa kode 401, kode salah/dicabut 401 (bukan 403 pemegangKode), terlalu banyak tebakan 429 */
 export async function petugas(env, req, kini) {
-  if (!req.headers.get("x-kode")) return gagal(401, "kode tidak diberikan; buka tautan pribadimu");
+  if (!req.headers.get("x-kode")) return req.headers.get("x-kode-regu") ? orangDariRegu(env, req, kini) : gagal(401, "kode tidak diberikan; buka tautan pribadimu");
   const r = await pemegangKode(env, req, "lapangan", cariOrang(env, kini), kini, 60);
   return r instanceof Response && r.status === 403 ? gagal(401, "kode tidak berlaku (salah atau sudah diganti); minta tautan baru dari admin") : r;
+}
+
+/* LP-030: kode regu Posko lama (x-kode-regu, dicek TIAP panggilan oleh reguDari) diterima sebagai orang pegawai; id orang = id regu (16 hex, tanpa kolom baru), tanpa kode_sha
+   sehingga hanya bisa masuk lewat kode regunya. Regu dicabut = reguDari menolak; baris orang dinonaktifkan admin = 401. Perilaku /api/posko* tidak berubah. */
+async function orangDariRegu(env, req, kini) {
+  const r = await reguDari(env, req, kini);
+  if (r instanceof Response) return r.status === 403 ? gagal(401, "kode regu tidak berlaku (salah atau sudah dicabut); minta tautan baru dari posko") : r;
+  await env.DB.prepare(`INSERT OR IGNORE INTO orang (id, jenis, nama, prov, kab, status, wajah_status, dibuat, diubah, dummy) VALUES (?1, 'pegawai', ?2, ?3, ?4, 'aktif', 'belum', ?5, ?5, ?6)`)
+    .bind(r.id, r.nama, r.prov, r.kab, kini, r.dummy ? 1 : 0).run();
+  return (await env.DB.prepare("SELECT * FROM orang WHERE id = ? AND jenis = 'pegawai' AND kode_sha IS NULL AND status = 'aktif'").bind(r.id).first()) ?? gagal(401, "akun regu ini dinonaktifkan");
 }
 
 const setujuTerakhir = (env, orangId) => env.DB.prepare("SELECT versi_teks, setuju FROM orang_setuju WHERE orang_id = ? ORDER BY waktu DESC, rowid DESC LIMIT 1").bind(orangId).first();
@@ -75,11 +85,35 @@ async function saya(env, req, kini) {
   const o = await petugas(env, req, kini); if (o instanceof Response) return o;
   const s = await setujuTerakhir(env, o.id);
   const {tugas, hari_ini} = await tugasHariIni(env, o.id, kini);
+  const [pelatihan, keahlian, kit_tugas] = await Promise.all([pelatihanRelawan(env, o), keahlianOrang(env, o.id), kitTugas(env, o, kini)]);
   return json({
     orang: {id: o.id, nama: o.nama, jenis: o.jenis, unit: o.unit, jabatan: o.jabatan, prov: o.prov, kab: o.kab, wajah_status: o.wajah_status, setuju_versi: s?.setuju ? s.versi_teks : null},
     setuju: {versi: VERSI_SETUJU, teks: TEKS_SETUJU},
-    tugas, hari_ini,
+    tugas, hari_ini, pelatihan, keahlian, kit_tugas,
   });
+}
+/* tabel belum ada (migrasi tahap C belum jalan) = kosong, bukan galat */
+const tanpaTabel = async (f, kosong = []) => { try { return await f(); } catch (e) { if (/no such table/i.test(e?.message || "")) return kosong; throw e; } };
+/* LP-042: riwayat pelatihan relawan (relawan_pelatihan) di profil; pegawai tidak punya */
+const pelatihanRelawan = (env, o) => !o.relawan_id ? [] : tanpaTabel(async () => (await env.DB.prepare("SELECT nama, tgl tanggal FROM relawan_pelatihan WHERE relawan_id = ? ORDER BY tgl DESC LIMIT 50").bind(o.relawan_id).all()).results);
+const keahlianOrang = (env, orangId) => tanpaTabel(async () => (await env.DB.prepare("SELECT keahlian FROM orang_keahlian WHERE orang_id = ? ORDER BY keahlian LIMIT 50").bind(orangId).all()).results.map(x => x.keahlian));
+/* LP-043: kit SIPPA yang sedang ditugaskan (sippa_tugas aktif, tidak dicabut) di provinsi orang ini dan sejenis dummy-nya; hanya ini yang boleh dilampirkan ke logbook */
+const kitTugas = (env, o, kini) => !o.prov ? [] : tanpaTabel(async () => (await env.DB.prepare(`SELECT DISTINCT k.id, k.kode nama FROM sippa_tugas s JOIN sippa_kit k ON k.id = s.kit_id
+  WHERE s.prov = ?1 AND s.dicabut IS NULL AND s.mulai <= ?2 AND s.berakhir > ?2 AND s.dummy = ?3 ORDER BY k.kode LIMIT 50`).bind(o.prov, kini, o.dummy ? 1 : 0).all()).results);
+/* kit di logbook: [{kit_id | nama (kode kit), jumlah 1..99}] maks 20; kit di luar kit_tugas = 403. undefined = tidak diubah */
+async function bacaKit(env, o, kit, kini) {
+  if (kit === undefined) return {x: null};
+  if (!Array.isArray(kit) || kit.length > 20) return {g: "kit harus daftar maksimal 20 butir", s: 400};
+  const boleh = kit.length ? await kitTugas(env, o, kini) : [], x = new Map();
+  for (const [i, b] of kit.entries()) {
+    const jumlah = b?.jumlah === undefined ? 1 : b?.jumlah;
+    if (!b || typeof b !== "object" || !Number.isInteger(jumlah) || jumlah < 1 || jumlah > 99) return {g: `kit ${i + 1}: jumlah harus bilangan bulat 1 sampai 99`, s: 400};
+    if (typeof b.kit_id !== "string" && typeof b.nama !== "string") return {g: `kit ${i + 1}: kit_id atau nama wajib`, s: 400};
+    const k = boleh.find(z => typeof b.kit_id === "string" ? z.id === b.kit_id : z.nama.toLowerCase() === b.nama.trim().toLowerCase());
+    if (!k) return {g: `kit ${i + 1} bukan kit yang ditugaskan kepadamu`, s: 403};
+    x.set(k.id, jumlah);
+  }
+  return {x: [...x]};
 }
 /* tugas yang jendelanya menyentuh hari ini (WIB) + status absen/logbook hari ini; migrasi 0097 belum jalan = kosong seperti tahap A */
 async function tugasHariIni(env, orangId, kini) {
@@ -321,6 +355,7 @@ async function logbook(env, req, kini) {
   if (uraian === undefined || hasil === undefined) return gagal(400, "uraian maksimal 2000 karakter dan hasil maksimal 1000");
   const kd = daftarTeks(d.kendala, "kendala", KENDALA), kb = daftarTeks(d.kebutuhan, "kebutuhan", KEBUTUHAN), kn = bacaKondisi(d.kondisi);
   for (const x of [kd, kb, kn]) if (x.g) return gagal(400, x.g);
+  const kt = await bacaKit(env, o, d.kit, kini); if (kt.g) return gagal(kt.s, kt.g);
   if (berkas.length > BATAS_FOTO_LOGBOOK) return gagal(400, `foto maksimal ${BATAS_FOTO_LOGBOOK}`);
   const meta = d.foto_meta ?? [];
   if (!Array.isArray(meta) || meta.length !== berkas.length) return gagal(400, "foto_meta harus berisi satu entri per foto");
@@ -380,7 +415,14 @@ async function logbook(env, req, kini) {
     throw e;
   }
   const hasilLb = await env.DB.prepare(`SELECT id ${dariLb}`).bind(...kunciLb).first();
-  return json({ok: true, id: hasilLb.id, tanggal: d.tanggal, terkunci: false, foto: (ada?.n ?? 0) + fotos.length, label: label.map(l => l[0]), tugas_api_id: label.find(l => l[0] === "api")?.[1].tugas_api_id ?? null}, ada ? 200 : 201);
+  /* kait tahap C, sesudah logbook tersimpan; tabelnya belum ada (migrasi 0099) = dilewati, logbook tetap sah */
+  if (kt.x) await tanpaTabel(() => env.DB.batch([env.DB.prepare("DELETE FROM lp_logbook_kit WHERE logbook_id = ?").bind(hasilLb.id),
+    ...kt.x.map(([kid, jml]) => env.DB.prepare("INSERT INTO lp_logbook_kit (logbook_id, kit_id, jumlah) VALUES (?, ?, ?)").bind(hasilLb.id, kid, jml))]), null);
+  /* LP-045: tinggi genangan yang TERVERIFIKASI (foto bergeotag di radius tugas) jadi konfirmasi /prediksi untuk kab orang ini (BNJ, terjadi bila > 0 cm).
+     Skema 0079 hanya mengenal sumber 'regu'/'warga': dicatat 'regu' dengan kode_regu "lp:<orang>" (satu baris per orang, kab, tanggal; kirim ulang menimpa). */
+  if (terverif && x.tinggi_genangan_cm != null && o.kab && o.kab.length >= 2) await tanpaTabel(() => env.DB.prepare(`INSERT INTO prediksi_konfirmasi (kab, tanggal, kode, terjadi, nilai, catatan, sumber, kode_regu, dibuat) VALUES (?, ?, 'BNJ', ?, ?, NULL, 'regu', ?, ?)
+    ON CONFLICT (kab, tanggal, kode, kode_regu) DO UPDATE SET terjadi = excluded.terjadi, nilai = excluded.nilai, dibuat = excluded.dibuat`).bind(o.kab, d.tanggal, x.tinggi_genangan_cm > 0 ? 1 : 0, x.tinggi_genangan_cm, "lp:" + o.id, new Date(kini).toISOString()).run(), null);
+  return json({ok: true, id: hasilLb.id, tanggal: d.tanggal, terkunci: false, foto: (ada?.n ?? 0) + fotos.length, label: label.map(l => l[0]), tugas_api_id: label.find(l => l[0] === "api")?.[1].tugas_api_id ?? null, ...(kt.x ? {kit: kt.x.length} : {})}, ada ? 200 : 201);
 }
 
 /* ---------------------------------------------------------------- riwayat 14 hari dan foto */

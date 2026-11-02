@@ -558,9 +558,22 @@ def hash_jendela(D, awal, akhir):
     return HU.hash_jendela(D, awal, akhir)        # GRRR terkunci lewat sidik (fitur.json.gz)
 
 
+# A2 (PRAREG-GRRR §8): label 2024 yang dibekukan sia gagal 2 Nov wajib dipakai apa adanya
+LABEL_A_A2 = {"sha256_berkas": "bdddf8389cd95bb348e6ca75b443ae6146b773ad564edcafe068064da58cc4dc",
+              "sha256": "5425247046beb3dffa31c58654f21f6f2c811cf4d7c0f9a0b9dccbf2eb1009f8", "n": 2608}
+
+
+def cek_label_a2():
+    j = HU.J("label_A.json")
+    if not os.path.exists(j) or HU.sha_berkas_j(j) != LABEL_A_A2["sha256_berkas"]:
+        sys.exit("A2: label_A.json hilang atau beda dari salinan beku 2 Nov: ditolak")
+
+
 def sia():
     terpasang()
     kand = HU.gerbang("sia")
+    if HU.KELUAR == KELUAR:
+        cek_label_a2()
     label = HU.bekukan_label("A", JENDELA_A, baris=label_asli())
     B, D = data_uji(kand, [JENDELA_A], AKHIR_SIA, label)
     P, pk, Pk = prediksi_uji(kand, B)

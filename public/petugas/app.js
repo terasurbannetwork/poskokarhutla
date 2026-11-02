@@ -6,6 +6,7 @@ import {teksJam} from "./stempel.js";
 import {hitungAntre, kirimTertunda, isiNonceLuring} from "./luring.js";
 import {satuTitik} from "./gps.js";
 import {ik} from "./ikon.js";
+import {ringkasProfil} from "./panggil_murni.js";
 
 const isi = $("lpIsi");
 let kode = ambilKode(), ketua = null, saya = null, layar = "beranda", info = "", bersih = null, tugasId = null;
@@ -26,6 +27,14 @@ const labelStatus = s => s === "lolos" || s === "sah" ? "hijau" : s === "tolak" 
 const teksStatus = (a, off) => a ? `${teksJam(keMs(a.waktu), off)}${a.status === "tinjau" ? ", menunggu tinjauan" : a.status === "tolak" ? ", ditolak" : ""}` : "belum";
 
 let praMuat = false;
+/* kartu Pelatihan dan keahlian (LP-042/046); tanpa data, kartu tidak muncul */
+function profilHtml(s) {
+  const p = ringkasProfil(s); if (!p.ada) return "";
+  return `<section class="lp-kartu"><h2>Pelatihan dan keahlian</h2>
+    ${p.keahlian.length ? `<div class="lp-baris">${p.keahlian.map(k => `<span class="lp-pil hijau">${ik(k.ikon, 16)}${esc(k.label)}</span>`).join("")}</div>` : ""}
+    ${p.pelatihan.length ? `<ul class="lp-riwayat">${p.pelatihan.map(x => `<li><div><b>${esc(x.nama)}</b>${x.tanggal ? `<span class="lp-kecil">${esc(x.tanggal)}</span>` : ""}</div></li>`).join("")}</ul>` : ""}</section>`;
+}
+
 function beranda() {
   const o = saya.orang, w = statusWajah(o.wajah_status), tugas = saya.tugas || [], t = pilihTugas(tugas, tugasId), hi = saya.hari_ini || {}, off = offsetMenit();
   const langkah = langkahAbsen(hi), lb = hi.logbook, aktif = w.daftar && !!t;
@@ -36,6 +45,7 @@ function beranda() {
     <div class="lp-baris"><span class="lp-pil">${esc(labelJenis(o.jenis))}</span><span class="lp-pil ${w.kelas}">Wajah: ${esc(w.label)}</span></div>
     ${w.daftar ? `<button class="lp-tautan" id="lpDaftar" type="button">Daftar ulang wajah</button>` : `<button class="lp-tbl utama" id="lpDaftar" type="button">${ik("orang")}Daftar wajah</button>`}
   </section>
+  ${profilHtml(saya)}
   <section class="lp-kartu"><h2>Tugas hari ini</h2>
     ${tugas.length > 1 ? `<div class="lp-chips" role="radiogroup" aria-label="Pilih tugas" data-n="${tugas.length}">${tugas.map(x => `<label class="lp-chip"><input type="radio" name="tugas" value="${esc(x.id)}" ${x.id === t.id ? "checked" : ""}><span>${esc(x.judul || "Tugas")}</span></label>`).join("")}</div>` : ""}
     ${t ? `<div class="lp-tugas"><b>${esc(t.judul || "Tugas")}</b><span class="lp-kecil">${ik("pin", 16)}${esc(t.wilayah_teks || "Wilayah belum diisi")}</span>

@@ -1017,7 +1017,19 @@
     "table orang": "impor: simpan membuat orang",
     "table orang_setuju": "setuju: butuh kode dan x-pb",
     "table orang_wajah": "setuju: butuh kode dan x-pb",
-    "table wa_antre": "tautan: hanya panel dan x-pb"
+    "table wa_antre": "tautan: hanya panel dan x-pb",
+    "GET /api/petugas/wa/antre": "gerbang WA: antre dan hasil ditolak tanpa kunci",
+    "POST /api/petugas/wa/hasil": "gerbang WA: antre dan hasil ditolak tanpa kunci",
+    "POST /api/petugas/panel/panggil": "panggilan: ditolak tanpa penjaga, tanpa x-pb",
+    "GET /api/petugas/panel/panggil": "daftar panggilan: hanya penjaga, wilayah",
+    "GET /api/petugas/panel/ekspor.csv": "ekspor CSV (LP-024): ditolak tanpa penjaga",
+    "POST /api/petugas/panel/keahlian": "daftar orang menurut keahlian (LP-046) dan penanda keahlian",
+    "DELETE /api/petugas/panel/keahlian": "daftar orang menurut keahlian (LP-046) dan penanda keahlian",
+    "GET /api/petugas/label.json": "label.json (LP-023): hanya token admin",
+    "table lp_panggil": "balasan SIAP/TIDAK (U-14)",
+    "table lp_panggil_penerima": "balasan SIAP/TIDAK (U-14)",
+    "table orang_keahlian": "daftar orang menurut keahlian (LP-046) dan penanda keahlian",
+    "table lp_logbook_kit": "tahap C: batas isian panggilan, penerima"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",

@@ -157,3 +157,16 @@ button[aria-pressed="true"].lp-tbl{background:color-mix(in oklch,var(--brand2) 1
 .lp-tbl.tolak{border-color:var(--bad);color:var(--bad)}
 @media (min-width:900px){.lp-tugas-form{grid-template-columns:1fr 1fr}.lp-tinjau{grid-template-columns:minmax(0,1.2fr) minmax(0,1fr)}.lp-tinjau-info .lp-dua{grid-template-columns:1fr 1fr}}
 @media (max-width:699px){.lp-strip{grid-template-columns:1fr 1fr}.lp-peta{height:340px}}
+
+/* tahap C: panggil relawan, saringan keahlian, kit logbook */
+.lp-form textarea.lp-teks{min-height:96px;font-family:inherit;font-size:15px}
+.lp-saring{margin:0}
+.lp-kit{border:0;margin:0;padding:0;min-width:0;display:grid;gap:8px}
+.lp-kit legend{font-weight:700;font-size:14px;padding:0 0 2px}
+.lp-kit-baris{display:grid;grid-template-columns:minmax(0,1fr) 88px;gap:8px;align-items:stretch}
+.lp-kit-baris>.lp-chip:last-of-type:nth-of-type(odd){grid-column:auto}
+.lp-kit-baris .lp-chip span{justify-content:flex-start}
+.lp-form .lp-kit-jumlah{text-align:center;padding:10px 6px}
+.lp-kit-jumlah:disabled{opacity:.5}
+.lp-pil .lp-ik{margin-right:4px}
+.lp-kartu>*{min-width:0}   /* anak langsung boleh menyusut; tabel lebar menggulir di .lp-gulir, bukan melebarkan halaman */

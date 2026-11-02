@@ -2,6 +2,7 @@
    Foto dari kanvas tidak membawa EXIF, jadi metadata lokasi/waktu dikirim terpisah di foto_meta (bacaExif tidak dipakai). */
 import {$, esc, api, kirimForm, nanti, ambilKonst} from "./umum.js";
 import {pesanGalat, teksAlasan, barisRiwayat} from "./murni.js";
+import {kitTugas, rapikanKit} from "./panggil_murni.js";
 import {KEGIATAN, KENDALA, KEBUTUHAN, kondisiUntuk, BATAS, rapikanLogbook, sudahTerkunci, metaFoto} from "./logbook_murni.js";
 import {pilihTugas} from "./murni.js";
 import {bukaKamera, salinFoto} from "./wajah.js";
@@ -28,7 +29,7 @@ export async function layarLogbook(ctx) {
     tampil(`${ctx.infoHtml()}<section class="lp-kartu lp-kosong"><h2>Logbook hari ini terkunci</h2><p>Logbook hanya bisa disunting sampai 23.59 di hari yang sama.</p><button class="lp-tbl utama" id="lpKembali" type="button">Kembali ke beranda</button></section>`);
     $("lpKembali").addEventListener("click", () => ctx.pindah("beranda")); return;
   }
-  const WIB = 420, tanggal = tanggalLokal(Date.now() + await selisihTerakhir(), WIB), konst = await ambilKonst(), kondisi = kondisiUntuk(tugas.bencana, konst);
+  const WIB = 420, tanggal = tanggalLokal(Date.now() + await selisihTerakhir(), WIB), konst = await ambilKonst(), kondisi = kondisiUntuk(tugas.bencana, konst), kit = kitTugas(saya);
   tampil(`${ctx.infoHtml()}<form class="lp-kartu lp-form" id="lpForm" novalidate>
     <h2>Logbook ${esc(tugas.judul || "")}</h2>
     <p class="lp-kecil">${esc(teksWaktu(Date.now(), offsetMenit()).slice(0, 16))}. ${hi ? "Logbook hari ini sudah ada. Mengirim lagi memperbaruinya, isi ulang semua bagian." : "Bisa disunting sampai 23.59 hari ini."}</p>
@@ -39,6 +40,7 @@ export async function layarLogbook(ctx) {
     <textarea id="lpHasil" maxlength="${BATAS.hasilMaks}" rows="3" placeholder="Hasil yang dicapai hari ini"></textarea>
     ${deret("kendala", "Kendala", KENDALA(konst), "checkbox")}
     ${deret("kebutuhan", "Kebutuhan", KEBUTUHAN(konst), "checkbox")}
+    ${kit.length ? `<fieldset class="lp-kit" data-nama="kit"><legend>Alat yang dibawa regu</legend>${kit.map(k => `<div class="lp-kit-baris"><label class="lp-chip"><input type="checkbox" name="kit" value="${esc(k.id)}"><span>${ik("alat", 20)}${esc(k.nama)}</span></label><input class="lp-kit-jumlah" data-kit-jumlah="${esc(k.id)}" inputmode="numeric" autocomplete="off" value="1" aria-label="Jumlah ${esc(k.nama)}" disabled></div>`).join("")}<p class="lp-galat" data-galat="kit" role="alert" hidden></p></fieldset>` : ""}
     ${kondisi.length ? `<h3>Kondisi lapangan</h3>${kondisi.map(f => f.jenis === "pilih" ? deret(f.k, f.label, f.opsi, "radio", !!f.wajib)
       : `<label class="lp-bidang" for="lpK_${f.k}">${esc(f.label)}${f.wajib ? ` <span class="lp-wajib">wajib</span>` : ""}</label><input id="lpK_${f.k}" data-kondisi="${f.k}" inputmode="numeric" autocomplete="off" placeholder="${f.min} sampai ${f.maks}"><p class="lp-galat" data-galat="${f.k}" role="alert" hidden></p>`).join("")}` : ""}
     <h3>Foto berstempel <span class="lp-wajib">${BATAS.fotoMin} sampai ${BATAS.fotoMaks}</span></h3>
@@ -47,6 +49,7 @@ export async function layarLogbook(ctx) {
     <button class="lp-tbl utama besar" id="lpSimpan" type="submit">Simpan logbook</button>
   </form>`);
   const form = $("lpForm");
+  form.addEventListener("change", e => { const c = e.target.closest('input[name="kit"]'); if (c) form.querySelector(`[data-kit-jumlah="${CSS.escape(c.value)}"]`).disabled = !c.checked; });
 
   /* ---------- foto ---------- */
   const gambarFoto = () => {
@@ -116,11 +119,14 @@ export async function layarLogbook(ctx) {
       form.querySelector("[data-galat]:not([hidden])")?.scrollIntoView({block: "center"});
       return;
     }
+    const isiKit = {}; for (const c of form.querySelectorAll('input[name="kit"]:checked')) isiKit[c.value] = form.querySelector(`[data-kit-jumlah="${CSS.escape(c.value)}"]`).value;
+    const rk = rapikanKit(isiKit, saya);
+    if (!rk.ok) { tampilGalat("kit", rk.galat.kit); form.querySelector('[data-galat="kit"]').scrollIntoView({block: "center"}); return; }
     b.disabled = true; b.classList.add("kerja"); b.textContent = "Menyimpan...";
     nanti(async () => {
       tutupKamera();
       const fd = new FormData();
-      fd.append("data", JSON.stringify({...r.data, foto_meta: fotos.map(f => f.meta)}));
+      fd.append("data", JSON.stringify({...r.data, ...(kit.length ? {kit: rk.kit} : {}), foto_meta: fotos.map(f => f.meta)}));
       fotos.forEach((f, i) => fd.append("foto", f.blob, `logbook${i + 1}.jpg`));
       const hasil = await kirimForm("/api/petugas/logbook", fd, {kode: ctx.kode});
       if (mati) return;

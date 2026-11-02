@@ -166,3 +166,45 @@ test("migrasi 0097 idempoten: dua kali tidak gagal dan tidak mengubah data; hany
   assert.ok(!/ALTER TABLE|DROP /i.test(sql));
   for (const s of pecah(sql)) assert.match(s, /IF NOT EXISTS/, s.slice(0, 60));
 });
+
+/* ================================================================ tahap C (migrations/0099_lapangan_panggil.sql) */
+const TUGAS_C = id16(), PANGGIL = id16();
+Object.assign(DASAR, {
+  lp_panggil: () => ({id: id16(), tugas_id: TUGAS_C, keahlian: '["pemadaman"]', prov: "62", kuota: 3, batas: T + 3600e3, status: "buka", dibuat: T, dummy: 0}),
+  lp_panggil_penerima: () => ({panggil_id: PANGGIL, relawan_id: id16(), kode_balas: "ABCDEF", status: "antre", waktu: T}),
+  orang_keahlian: () => ({orang_id: ORANG, keahlian: "drone", dibuat: T}),
+  lp_logbook_kit: () => ({logbook_id: LB_ID, kit_id: "pompa", jumlah: 1}),
+});
+masuk("lp_tugas", {id: TUGAS_C}); masuk("lp_panggil", {id: PANGGIL});
+
+test("tahap C: enum CHECK panggilan sama persis dengan konstanta JS; nilai liar ditolak, nilai enum lolos", () => {
+  assert.deepEqual(enumKolom("lp_panggil", "status"), K.STATUS_PANGGIL); assert.deepEqual(enumKolom("lp_panggil_penerima", "status"), K.STATUS_PENERIMA);
+  for (const [t, kol, daftar] of [["lp_panggil", "status", K.STATUS_PANGGIL], ["lp_panggil_penerima", "status", K.STATUS_PENERIMA]]) {
+    tolak(t, {[kol]: "liar"}); tolak(t, {[kol]: null}); for (const v of daftar) lolos(t, {[kol]: v, ...(t === "lp_panggil_penerima" ? {kode_balas: "ZZZZZZ"} : {})});
+  }
+});
+
+test("tahap C: batas isian panggilan, penerima (kode 6 huruf besar unik), keahlian orang, kit logbook", () => {
+  tolak("lp_panggil", {kuota: 0}); tolak("lp_panggil", {kuota: 101}); tolak("lp_panggil", {keahlian: "[]"}); tolak("lp_panggil", {keahlian: "bukan json"}); tolak("lp_panggil", {prov: "6"}); tolak("lp_panggil", {tugas_id: "f".repeat(16)}, /FOREIGN KEY/);
+  masuk("lp_panggil_penerima"); tolak("lp_panggil_penerima", {}, /UNIQUE/);
+  for (const k of ["abcdef", "ABCDE", "ABCDEFG", "ABC1EF"]) tolak("lp_panggil_penerima", {kode_balas: k});
+  tolak("lp_panggil_penerima", {panggil_id: "f".repeat(16), kode_balas: "QQQQQQ"}, /FOREIGN KEY/);
+  masuk("orang_keahlian"); tolak("orang_keahlian", {}, /UNIQUE/); tolak("orang_keahlian", {keahlian: "Drone"}); tolak("orang_keahlian", {keahlian: "x"}); tolak("orang_keahlian", {orang_id: "f".repeat(16), keahlian: "pompa"}, /FOREIGN KEY/); lolos("orang_keahlian", {keahlian: "pompa"});
+  masuk("lp_logbook_kit"); tolak("lp_logbook_kit", {}, /UNIQUE/); tolak("lp_logbook_kit", {kit_id: "tandu", jumlah: 0}); tolak("lp_logbook_kit", {kit_id: ""}); tolak("lp_logbook_kit", {logbook_id: "f".repeat(16), kit_id: "tandu"}, /FOREIGN KEY/);
+});
+
+test("tahap C: hapus tugas menghapus panggilan dan penerimanya; hapus orang/logbook menghapus keahlian/kit (cascade)", () => {
+  sp(() => { db.prepare("DELETE FROM lp_tugas WHERE id = ?").run(TUGAS_C); assert.equal(db.prepare("SELECT count(*) n FROM lp_panggil WHERE tugas_id = ?").get(TUGAS_C).n, 0); });
+  const o = masuk("orang").id; masuk("orang_keahlian", {orang_id: o});
+  sp(() => { db.prepare("DELETE FROM orang WHERE id = ?").run(o); assert.equal(db.prepare("SELECT count(*) n FROM orang_keahlian WHERE orang_id = ?").get(o).n, 0); });
+  sp(() => { masuk("lp_logbook_kit", {kit_id: "selang"}); db.prepare("DELETE FROM lp_logbook WHERE id = ?").run(LB_ID); assert.equal(db.prepare("SELECT count(*) n FROM lp_logbook_kit WHERE logbook_id = ?").get(LB_ID).n, 0); });
+});
+
+test("migrasi 0099 idempoten: dua kali tidak gagal dan tidak mengubah data; hanya CREATE ... IF NOT EXISTS", () => {
+  const sql = readFileSync(path.join(AKAR, "migrations/0099_lapangan_panggil.sql"), "utf8");
+  const n = () => ({...db.prepare("SELECT (SELECT count(*) FROM lp_panggil) a, (SELECT count(*) FROM orang_keahlian) b").get()}), sebelum = n();
+  assert.doesNotThrow(() => { for (const s of pecah(sql)) db.exec(s); });
+  assert.deepEqual(n(), sebelum);
+  assert.ok(!/ALTER TABLE|DROP /i.test(sql));
+  for (const s of pecah(sql)) assert.match(s, /IF NOT EXISTS/, s.slice(0, 60));
+});

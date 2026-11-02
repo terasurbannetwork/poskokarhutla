@@ -7,6 +7,7 @@ import {kartuTinjau} from "./tinjau_kartu.js";
 import {BENCANA, ringkasAnggota, STATUS_PETA, titikGeo, jejakGeo, tepiPeta, angkaStrip, fotoAman, putusanTinjau, rapikanTugas, bacaKoordinat, teksKoordinat, labelStatusPeta} from "./panel_murni.js";
 import {muatMapLibre} from "/inti/maplibre.js";
 import {ik} from "./ikon.js";
+import {urlEkspor} from "./panggil_murni.js";
 
 const off = () => -new Date().getTimezoneOffset();
 const kerangkaMuat = `<div class="lp-rangka" aria-busy="true"><i></i><i></i><i></i></div>`;
@@ -104,9 +105,9 @@ async function muatTugas() {
   const kotak = $("lpTugas"); kotak.innerHTML = kerangkaMuat;
   const r = await api("/api/petugas/panel/tugas", {cookie: true});
   if (!r.ok) { kotak.innerHTML = galatKotak(r, "tugas"); return; }
-  const baris = r.data.baris || r.data.tugas || [], d = x => (x == null || x === "" ? "-" : esc(x));
-  kotak.innerHTML = baris.length ? `<div class="lp-gulir"><table class="lp-tabel"><thead><tr><th>Tugas</th><th>Bencana</th><th>Wilayah</th><th>Anggota</th><th>Hadir</th><th>Logbook terisi</th><th>Temuan terbaru</th></tr></thead><tbody>
-    ${baris.map(t => `<tr><td><b>${d(t.judul)}</b></td><td>${esc(BENCANA.find(b => b.k === t.bencana)?.label || t.bencana || "-")}</td><td>${d(t.wilayah_teks)}</td><td>${anggotaSel(t.anggota)}</td><td class="num lp-tengah">${d(t.hadir)}</td><td class="num lp-tengah">${d(t.logbook)}</td><td>${d(t.temuan)}</td></tr>`).join("")}</tbody></table></div>`
+  const baris = r.data.baris || r.data.tugas || []; document.dispatchEvent(new CustomEvent("lp:tugas", {detail: baris})); const d = x => (x == null || x === "" ? "-" : esc(x));
+  kotak.innerHTML = baris.length ? `<div class="lp-gulir"><table class="lp-tabel"><thead><tr><th>Tugas</th><th>Bencana</th><th>Wilayah</th><th>Anggota</th><th>Hadir</th><th>Logbook terisi</th><th>Temuan terbaru</th><th>Rekap</th></tr></thead><tbody>
+    ${baris.map(t => `<tr><td><b>${d(t.judul)}</b></td><td>${esc(BENCANA.find(b => b.k === t.bencana)?.label || t.bencana || "-")}</td><td>${d(t.wilayah_teks)}</td><td>${anggotaSel(t.anggota)}</td><td class="num lp-tengah">${d(t.hadir)}</td><td class="num lp-tengah">${d(t.logbook)}</td><td>${d(t.temuan)}</td><td>${urlEkspor(t.id) ? `<a class="lp-tbl" href="${esc(urlEkspor(t.id))}" download="rekap-tugas.csv">${ik("buku", 18)}Unduh CSV</a>` : "-"}</td></tr>`).join("")}</tbody></table></div>`
     : `<p class="lp-kecil lp-tengah">Belum ada tugas. Isi formulir di atas untuk membuat tugas pertama.</p>`;
 }
 

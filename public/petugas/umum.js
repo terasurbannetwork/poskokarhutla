@@ -63,6 +63,10 @@ export async function ambilKonst() {
 /* satu rAF + timeout cadangan: klik berubah keadaan dulu, kerja berat sesudahnya (INP) */
 export const nanti = f => { let s = 0; const go = () => { if (!s++) f(); }; requestAnimationFrame(() => requestAnimationFrame(go)); setTimeout(go, 120); };
 
+/* Super Admin = probe daftar staf (hanya Super Admin yang boleh 200); satu kali per muat halaman */
+let _super = null;
+export const adalahSuper = () => _super ??= api("/api/staf/admin/daftar", {cookie: true}).then(r => r.ok);
+
 /* tombol dummy dua ikon, Super Admin saja. Super Admin = probe daftar staf (hanya Super Admin yang boleh 200). */
 export async function pasangDummy(bukaKode = false) {
   const kotak = $("lpDummy"); if (!kotak) return;

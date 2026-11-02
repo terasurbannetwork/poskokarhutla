@@ -1,9 +1,9 @@
 /* Cangkang halaman /petugas saja. Data API TIDAK pernah disimpan (isinya pribadi). Naikkan VERSI bila berkas cangkang berubah. */
-const VERSI = "petugas-cangkang-v3";
+const VERSI = "petugas-cangkang-v4";
 // Nama dirangkai dari awalan supaya versi.py tidak menganggap berkas ini dimuat tanpa ?v (mereka diberi ?v oleh HTML,
 // jadi tetap immutable); tanpa itu aturan _headers membengkak melewati gerbang 80.
 const P = "/petugas/", I = "/inti/";
-const CANGKANG = [P + "index.html", ...["app", "umum", "murni", "layar_kamera", "layar_logbook", "layar_regu", "tinjau_kartu", "panel_murni", "wajah", "wajah_murni", "antispoof", "antispoof_murni", "stempel", "antre", "luring", "gps", "ikon", "logbook_murni"].map(n => P + n + ".js"), P + "lapangan" + ".css?v=1",
+const CANGKANG = [P + "index.html", ...["app", "umum", "murni", "layar_kamera", "layar_logbook", "layar_regu", "tinjau_kartu", "panel_murni", "wajah", "wajah_murni", "antispoof", "antispoof_murni", "stempel", "antre", "luring", "gps", "ikon", "logbook_murni", "panggil_murni"].map(n => P + n + ".js"), P + "lapangan" + ".css?v=1",
   ...["tema", "gaya", "kepala"].map(n => I + n + ".css"), I + "kepala" + ".js", "/akademisi_tema" + ".js", "/img/logo.svg?v=2"];
 
 /* model wajah (sekitar 10 MB) dan pustaka Human: cache-first sekali per HP. Nama berkas model tetap; ganti MODEL saat versi Human/model berubah. */
