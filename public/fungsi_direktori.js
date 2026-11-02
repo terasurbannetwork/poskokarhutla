@@ -56,3 +56,80 @@
   }
   akar.cocokKejadian = cocokKejadian; akar.tokenTempat = tokenTempat;
 })(typeof window !== "undefined" ? window : globalThis);
+
+/* Analisa keahlian pakar dari histori karyanya (judul + topik + kata kunci OpenAlex): jenis bencana, fase, klaster PB nasional, wilayah kajian, tren.
+   Aturan kata kunci, bukan model: tiap label membawa id karya buktinya supaya bisa diperiksa. Murni fungsi; diuji di tests/agen/analisa-keahlian.test.mjs.
+   ponytail: wilayah hanya tingkat provinsi + kota/pulau besar; kab/kota menyusul bila pemilik minta. */
+(function (akar) {
+  const norm = t => String(t || "").toLowerCase().normalize("NFD").replace(/[̀-ͯ]/g, "");
+  const K = (...w) => new RegExp("\\b(" + w.join("|") + ")", "i");
+  const JENIS = {
+    gempa: K("earthquake", "seismi", "quake", "gempa", "liquefaction", "likuifaksi", "fault rupture"),
+    tsunami: K("tsunami"),
+    "gunung api": K("volcan", "erupt", "lahar", "pyroclastic", "erupsi", "letusan", "gunung ?api", "merapi", "sinabung", "semeru", "kelud", "agung volcano"),
+    banjir: K("flood", "banjir", "inundat", "genangan", "flash flood"),
+    longsor: K("landslide", "longsor", "mass movement", "slope (failure|stability)", "debris flow", "gerakan tanah"),
+    karhutla: K("wildfire", "forest fire", "peat ?fire", "peatland fire", "land fire", "haze", "hotspot", "burned area", "burnt area", "fire (risk|danger|weather|occurrence|regime)", "kebakaran hutan", "karhutla", "titik panas"),
+    kekeringan: K("drought", "kekeringan", "el ni[nñ]o", "water scarcity", "dry spell"),
+    "cuaca ekstrem": K("extreme (weather|rain|precipitation)", "cyclone", "tornado", "storm", "typhoon", "puting beliung", "cuaca ekstrem", "hujan ekstrem"),
+    pesisir: K("coastal", "shoreline", "abrasi", "abrasion", "sea level", "land subsidence", "penurunan (muka )?tanah", "tidal flood", "rob\\b", "storm surge"),
+    iklim: K("climate change", "perubahan iklim", "global warming", "adaptation", "adaptasi iklim"),
+    wabah: K("epidemi", "pandemi", "outbreak", "covid", "sars-cov", "dengue", "malaria", "cholera", "wabah", "infectious disease", "penyakit menular"),
+  };
+  const FASE = {
+    pra: [K("risk", "hazard", "vulnerab", "susceptib", "mitigat", "early warning", "forecast", "predict", "preparedness", "zonation", "zonasi", "mapping", "resilien", "risiko", "bahaya", "kerentanan", "kerawanan", "mitigasi", "peringatan dini", "kesiapsiagaan", "prakiraan", "pemetaan"), "Pra-bencana"],
+    tanggap: [K("emergency response", "evacuat", "search and rescue", "rescue", "relief", "humanitarian", "triage", "rapid assessment", "damage assessment", "tanggap darurat", "evakuasi", "pengungsi", "kaji cepat", "posko"), "Tanggap darurat"],
+    pasca: [K("recover", "reconstruct", "rehabilitat", "post-?disaster", "aftermath", "trauma", "ptsd", "livelihood", "pemulihan", "rehabilitasi", "rekonstruksi", "pasca ?bencana", "huntara", "hunian tetap"), "Pascabencana"],
+  };
+  /* 8 klaster PB nasional (Keputusan Kepala BNPB 173/2014) */
+  const KLASTER = {
+    kesehatan: [K("health", "hospital", "medical", "disease", "nutrition", "mental", "psycholog", "kesehatan", "rumah sakit", "puskesmas", "gizi", "epidemi", "pandemi", "covid", "dengue", "malaria"), "Kesehatan"],
+    sar: [K("search and rescue", "rescue", "pencarian dan pertolongan", "penyelamatan", "basarnas"), "Pencarian dan penyelamatan"],
+    logistik: [K("logistic", "supply chain", "distribution", "stockpil", "logistik", "rantai pasok"), "Logistik"],
+    pengungsian: [K("shelter", "displace", "refugee", "evacuat", "gender", "child protection", "disabilit", "pengungsi", "evakuasi", "perlindungan", "kelompok rentan"), "Pengungsian dan perlindungan"],
+    pendidikan: [K("school", "education", "student", "teacher", "curricul", "sekolah", "pendidikan", "siswa", "guru", "kurikulum"), "Pendidikan"],
+    sarpras: [K("infrastructur", "(?<!capacity )buildings?\\b", "bridges?\\b", "roads?\\b", "structural", "retrofit", "construction", "dam\\b", "levee", "bangunan", "jembatan", "jalan", "struktur", "bendungan", "tanggul", "konstruksi"), "Sarana dan prasarana"],
+    ekonomi: [K("econom", "livelihood", "poverty", "insurance", "disaster financ", "risk financ", "economic loss", "ekonomi", "mata pencaharian", "kemiskinan", "asuransi", "pembiayaan", "kerugian"), "Ekonomi"],
+    pemulihan: [K("recover", "reconstruct", "rehabilitat", "build back better", "pemulihan", "rehabilitasi", "rekonstruksi"), "Pemulihan dini"],
+  };
+  const PROV = {
+    "Aceh": ["aceh", "banda aceh", "simeulue"], "Sumatera Utara": ["sumatera utara", "north sumatra", "medan", "nias", "toba", "sinabung", "karo"], "Sumatera Barat": ["sumatera barat", "west sumatra", "padang", "mentawai", "bukittinggi"],
+    "Kepulauan Riau": ["kepulauan riau", "riau islands", "batam"], "Riau": ["riau", "pekanbaru"], "Jambi": ["jambi"], "Sumatera Selatan": ["sumatera selatan", "south sumatra", "palembang"],
+    "Bengkulu": ["bengkulu"], "Lampung": ["lampung"], "Kepulauan Bangka Belitung": ["bangka", "belitung"], "DKI Jakarta": ["jakarta"], "Banten": ["banten", "serang", "tangerang"],
+    "Jawa Barat": ["jawa barat", "west java", "bandung", "bogor", "cianjur", "garut", "sukabumi", "citarum", "pangandaran"], "Jawa Tengah": ["jawa tengah", "central java", "semarang", "banjarnegara", "solo", "surakarta", "demak"],
+    "DI Yogyakarta": ["yogyakarta", "jogja", "bantul", "sleman", "merapi"], "Jawa Timur": ["jawa timur", "east java", "surabaya", "malang", "semeru", "kelud", "sidoarjo", "lusi"],
+    "Bali": ["bali"], "Nusa Tenggara Barat": ["nusa tenggara barat", "west nusa tenggara", "lombok", "sumbawa", "bima"], "Nusa Tenggara Timur": ["nusa tenggara timur", "east nusa tenggara", "kupang", "flores", "sumba", "timor"],
+    "Kalimantan Barat": ["kalimantan barat", "west kalimantan", "pontianak"], "Kalimantan Tengah": ["kalimantan tengah", "central kalimantan", "palangka ?raya"], "Kalimantan Selatan": ["kalimantan selatan", "south kalimantan", "banjarmasin"],
+    "Kalimantan Timur": ["kalimantan timur", "east kalimantan", "samarinda", "balikpapan"], "Kalimantan Utara": ["kalimantan utara", "north kalimantan"],
+    "Sulawesi Utara": ["sulawesi utara", "north sulawesi", "manado"], "Gorontalo": ["gorontalo"], "Sulawesi Tengah": ["sulawesi tengah", "central sulawesi", "palu", "donggala", "sigi"],
+    "Sulawesi Barat": ["sulawesi barat", "west sulawesi", "mamuju", "majene"], "Sulawesi Selatan": ["sulawesi selatan", "south sulawesi", "makassar"], "Sulawesi Tenggara": ["sulawesi tenggara", "southeast sulawesi", "kendari"],
+    "Maluku Utara": ["maluku utara", "north maluku", "ternate"], "Maluku": ["maluku", "ambon"], "Papua": ["papua", "jayapura"],
+  };
+  /* Kepulauan Riau dan Maluku Utara didaftar sebelum Riau dan Maluku; teks yang sudah cocok dihapus supaya tidak terhitung dua kali */
+  const PROV_RE = Object.entries(PROV).map(([p, ws]) => [p, new RegExp("\\b(" + ws.join("|") + ")\\b", "g")]);
+  const teksKarya = k => norm([k.judul, ...(k.topik || []), ...(k.kunci || [])].join(" | "));
+  function tambah(peta, kunci, label, k) { const e = peta.get(kunci) || {kunci, label, n: 0, bukti: []}; e.n++; e.bukti.push(k); peta.set(kunci, e); }
+  /* bukti: karya terbaru dulu, paling banyak 3 */
+  const urut = peta => [...peta.values()].sort((a, b) => b.n - a.n || a.label.localeCompare(b.label, "id")).map(e => ({kunci: e.kunci, label: e.label, n: e.n, bukti: e.bukti.sort((a, b) => (+b.tahun || 0) - (+a.tahun || 0)).slice(0, 3).map(k => ({id: k.id, judul: k.judul, tahun: k.tahun}))}));
+  function analisaKeahlian(karya, opsi) {
+    const min = (opsi && opsi.min) || 2, L = Array.isArray(karya) ? karya.filter(k => k && k.judul) : [];
+    const jenis = new Map(), fase = new Map(), klaster = new Map(), wilayah = new Map();
+    for (const k of L) {
+      const t = teksKarya(k), j = norm(k.judul);
+      for (const [kunci, re] of Object.entries(JENIS)) if (re.test(t)) tambah(jenis, kunci, kunci, k);
+      for (const [kunci, [re, label]] of Object.entries(FASE)) if (re.test(t)) tambah(fase, kunci, label, k);
+      for (const [kunci, [re, label]] of Object.entries(KLASTER)) if (re.test(t)) tambah(klaster, kunci, label, k);
+      /* wilayah dari judul saja: topik OpenAlex tidak memuat nama tempat */
+      let sisa = j; for (const [p, re] of PROV_RE) { const b = sisa.replace(re, " "); if (b !== sisa) { tambah(wilayah, p, p, k); sisa = b; } }
+    }
+    const saring = arr => arr.filter(e => e.n >= min);
+    /* tren: jenis bencana teratas pada separuh karya lama vs 5 tahun terakhir */
+    const bertahun = L.filter(k => +k.tahun).sort((a, b) => a.tahun - b.tahun), akhir = bertahun.length ? +bertahun[bertahun.length - 1].tahun : 0;
+    const puncak = arr => { const m = new Map(); for (const k of arr) { const t = teksKarya(k); for (const [kunci, re] of Object.entries(JENIS)) if (re.test(t)) m.set(kunci, (m.get(kunci) || 0) + 1); }
+      return [...m].sort((a, b) => b[1] - a[1] || a[0].localeCompare(b[0])).slice(0, 2).map(([kunci, n]) => ({kunci, n})); };
+    const kini = bertahun.filter(k => +k.tahun > akhir - 5), dulu = bertahun.filter(k => +k.tahun <= akhir - 5);
+    const tren = dulu.length >= 3 && kini.length >= 3 ? {dulu: {dari: +dulu[0].tahun, sampai: +dulu[dulu.length - 1].tahun, jenis: puncak(dulu)}, kini: {dari: akhir - 4, sampai: akhir, jenis: puncak(kini)}} : null;
+    return {karya: L.length, jenis: saring(urut(jenis)), fase: saring(urut(fase)), klaster: saring(urut(klaster)), wilayah: saring(urut(wilayah)), tren};
+  }
+  akar.analisaKeahlian = analisaKeahlian;
+})(typeof window !== "undefined" ? window : globalThis);
