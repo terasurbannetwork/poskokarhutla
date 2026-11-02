@@ -30,8 +30,8 @@ const Satelit = {
     return `<div class="lbl">Kolom CO satelit <span style="text-transform:none">(mol/m²)</span></div><div class="leg" style="margin:4px 0 8px">${this.WARNA.map(([v, w]) => `<span><i class="sw" style="background:${w}"></i>${dec(v, 2)}${v === this.WARNA.at(-1)[0] ? " ke atas" : ""}</span>`).join("")}</div>
       <div class="fnd" style="margin:0 0 8px">Pengamatan ${tglS(K.hari)}, bukan prakiraan. ${SUMBER_TROPOMI}. Model TAK TERUJI.</div>`; },
   /* ---------- kartu seri per provinsi ---------- */
-  async muatKartu() { const [S5, K, U, O] = await Promise.all([this.muatBerkas("tropomi_seri"), this.muatBerkas("tropomi_kisi"), this.muatBerkas("uji_panen_pm25"), this.muatBerkas("openaq_mos")]);
-    this._k = K; this._s = S5; this._u = U; this._o = O; this._p.tropomi_kisi = K; },
+  async muatKartu() { const [S5, U, O] = await Promise.all([this.muatBerkas("tropomi_seri"), this.muatBerkas("uji_panen_pm25"), this.muatBerkas("openaq_mos")]);
+    this._s = S5; this._u = U; this._o = O; },
   deret(k) { const S5 = this._s, ko = S5.kolom, i = n => ko.indexOf(n), mn = S5.min_piksel || 10;
     return Object.entries(S5.prov[k] || {}).sort((a, b) => a[0].localeCompare(b[0])).map(([t, r]) => ({t, co: r[i("n_co")] >= mn ? r[i("co")] * K_CO : null, ai: r[i("n_ai")] >= mn ? r[i("ai")] : null, an: r[i("anom")]})); },
   exTropo() {
