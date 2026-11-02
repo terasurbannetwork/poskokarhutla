@@ -120,7 +120,12 @@ def bmkg_ambil():
     n = dt.datetime.now(dt.timezone.utc)
     f = lambda d: d.strftime("%Y-%m-%dT%H:%M")
     isi = urllib.parse.urlencode({"_token": tok.group(1), "stasiun": "WA% WI%", "from": f(n - dt.timedelta(hours=JAM)), "to": f(n + dt.timedelta(hours=1)), "metar": "SA", "speci": "SP"}).encode()
-    return bmkg_baris(op.open(urllib.request.Request(BMKG, data=isi), timeout=90).read().decode("utf-8", "replace"))
+    for coba in (1, 2):   # BMKG sesekali lambat sekali (jalan 2 Nov: satu timeout, sisanya < 2 dtk)
+        try:
+            return bmkg_baris(op.open(urllib.request.Request(BMKG, data=isi), timeout=60).read().decode("utf-8", "replace"))
+        except OSError:
+            if coba == 2:
+                raise
 
 
 def bmkg_baris(h):

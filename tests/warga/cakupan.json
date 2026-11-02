@@ -1044,7 +1044,7 @@
     "table lp_panggil": "balasan SIAP/TIDAK (U-14)",
     "table lp_panggil_penerima": "balasan SIAP/TIDAK (U-14)",
     "table orang_keahlian": "daftar orang menurut keahlian (LP-046) dan penanda keahlian",
-    "table lp_logbook_kit": "tahap C: batas isian panggilan, penerima",
+    "table lp_logbook_kit": "logbook: kit (LP-043)",
     "GET /api/operasi/peta": "GET /api/operasi/peta: tamu, akun gerbang",
     "POST /api/operasi/dummy": "dummy: hanya Super Admin",
     "table op_base": "migrasi 0103 idempoten",

@@ -96,8 +96,13 @@ def tgl_wib(t):
 def baca_json(sumber):
     if str(sumber).startswith("http"):
         req = urllib.request.Request(sumber, headers={"User-Agent": "centurisk97-renlap/1"})
-        with urllib.request.urlopen(req, timeout=60) as r:
-            return json.load(r)
+        for percobaan in (1, 2, 3):  # /api/titik kadang lambat; tiga kali lalu galat apa adanya
+            try:
+                with urllib.request.urlopen(req, timeout=60) as r:
+                    return json.load(r)
+            except OSError:
+                if percobaan == 3:
+                    raise
     with open(sumber, encoding="utf-8") as f:
         return json.load(f)
 

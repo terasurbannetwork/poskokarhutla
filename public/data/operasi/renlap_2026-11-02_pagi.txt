@@ -46,21 +46,7 @@ TARGET PATROLI (berurut dari base)
    Udara pagi (06-10 WIB): tidak tersedia
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-1. Desa Air Putih, Kec. Kubu, Kab. Kubu Raya
-   S 00° 27' 03"  E 109° 22' 06"
-   R 181 D 22 Nm Fr VOR PNK
-   Alasan: temuan berasap_tipis oleh H-3217, laporan menyebut Kubu; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
-2. Desa Bengkarek, Kec. Sungai Ambawang, Kab. Kubu Raya
-   S 00° 09' 34"  E 109° 33' 03"
-   R 114 D 12 Nm Fr VOR PNK
-   Alasan: temuan berasap_tipis oleh H-3217, laporan menyebut Sungai Ambawang; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
-3. Desa Bengkarek, Kec. Sungai Ambawang, Kab. Kubu Raya
-   S 00° 08' 24"  E 109° 33' 07"
-   R 109 D 11 Nm Fr VOR PNK
-   Alasan: temuan berasap_tipis oleh H-3217, laporan menyebut Pasak Piang; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
+  tidak ada usulan
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-02T06:33:00.000Z, 3696 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -120,21 +106,7 @@ TARGET PATROLI (berurut dari base)
    Udara pagi (06-10 WIB): tidak tersedia
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-1. Kec. Kendawangan, Kab. Ketapang
-   S 02° 50' 34"  E 110° 40' 09"
-   R 145 D 75 Nm Fr KTG (base, VOR tidak diseed)
-   Alasan: temuan fs oleh VN-8416, laporan menyebut Air Hitam Besar; klaim 8.0 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
-2. Desa Air Putih, Kec. Kubu, Kab. Kubu Raya
-   S 00° 27' 03"  E 109° 22' 06"
-   R 336 D 89 Nm Fr KTG (base, VOR tidak diseed)
-   Alasan: temuan berasap_tipis oleh H-3217, laporan menyebut Kubu; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
-3. Desa Bengkarek, Kec. Sungai Ambawang, Kab. Kubu Raya
-   S 00° 09' 34"  E 109° 33' 03"
-   R 346 D 103 Nm Fr KTG (base, VOR tidak diseed)
-   Alasan: temuan berasap_tipis oleh H-3217, laporan menyebut Sungai Ambawang; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
+  tidak ada usulan
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-02T06:33:00.000Z, 3696 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -194,16 +166,7 @@ TARGET PATROLI (berurut dari base)
    Udara pagi (06-10 WIB): tidak tersedia
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-1. Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala
-   S 03° 17' 47"  E 114° 29' 41"
-   R 152 D 71 Nm Fr VOR PKY
-   Alasan: temuan fs oleh PK-RTQ, laporan menyebut Tinggiran Tengah Batola; klaim 1.0 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
-2. Desa Sungai Batang Ilir, Kec. Martapura Barat, Kab. Banjar
-   S 03° 20' 09"  E 114° 50' 00"
-   R 141 D 84 Nm Fr VOR PKY
-   Alasan: temuan fs oleh PK-RTQ, laporan menyebut Sungai Batang Banjar; klaim 0.2 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
+  tidak ada usulan
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-02T06:33:00.000Z, 3696 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -216,11 +179,7 @@ TARGET PATROLI (berurut dari base)
   tidak ada usulan
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-1. Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala
-   S 03° 17' 47"  E 114° 29' 41"
-   R 117 D 103 Nm Fr SMQ (base, VOR tidak diseed)
-   Alasan: temuan fs oleh PK-RTQ, laporan menyebut Tinggiran Tengah Batola; klaim 1.0 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
+  tidak ada usulan
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-02T06:33:00.000Z, 3696 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -233,16 +192,7 @@ TARGET PATROLI (berurut dari base)
   tidak ada usulan
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-1. Kec. Kendawangan, Kab. Ketapang
-   S 02° 50' 34"  E 110° 40' 09"
-   R 285 D 116 Nm Fr KLP (base, VOR tidak diseed)
-   Alasan: temuan fs oleh VN-8416, laporan menyebut Air Hitam Besar; klaim 8.0 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
-2. Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala
-   S 03° 17' 47"  E 114° 29' 41"
-   R 087 D 117 Nm Fr KLP (base, VOR tidak diseed)
-   Alasan: temuan fs oleh PK-RTQ, laporan menyebut Tinggiran Tengah Batola; klaim 1.0 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
+  tidak ada usulan
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-02T06:33:00.000Z, 3696 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 
@@ -302,16 +252,7 @@ TARGET PATROLI (berurut dari base)
    Udara pagi (06-10 WIB): tidak tersedia
 
 TARGET WATER BOMBING (FS terkonfirmasi)
-1. Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala
-   S 03° 17' 47"  E 114° 29' 41"
-   R 300 D 16 Nm Fr VOR BDM
-   Alasan: temuan fs oleh PK-RTQ, laporan menyebut Tinggiran Tengah Batola; klaim 1.0 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
-2. Desa Sungai Batang Ilir, Kec. Martapura Barat, Kab. Banjar
-   S 03° 20' 09"  E 114° 50' 00"
-   R 045 D 9 Nm Fr VOR BDM
-   Alasan: temuan fs oleh PK-RTQ, laporan menyebut Sungai Batang Banjar; klaim 0.2 ha; jarak sumber air: tidak tersedia
-   Udara pagi (06-10 WIB): tidak tersedia
+  tidak ada usulan
 
 Kaki: radial = baringan benar dikurangi deklinasi timur 0.5 derajat (PERKIRAAN tetap, bukan WMM); jelajah 120 Nm. Titik panas: hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-02T06:33:00.000Z, 3696 titik sedang/tinggi 72 jam). FFMC: fwi.json hari_ini 2026-10-12. Skor hipotesis.
 

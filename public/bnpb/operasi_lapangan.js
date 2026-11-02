@@ -26,10 +26,10 @@
     el.tgl = h("input", {type: "date", class: "ol-tgl", value: st.tanggal, "aria-label": "Tanggal operasi"});
     el.seg = h("div", {class: "ol-pilih ol-seg", role: "radiogroup", "aria-label": "Waktu"}, O.SEGMEN.map(([v, t, ik]) => h("label", null, h("input", {type: "radio", name: "segmen", value: v, ...(v === st.segmen ? {checked: ""} : {})}), ikon(ik), t)));
     el.pesan = h("p", {class: "bn-pesan", role: "status"}); el.dummy = h("div", {class: "ol-aksi"}); el.bandera = h("p", {class: "ol-dummy", hidden: "", teks: "DATA DUMMY ditampilkan, bukan laporan nyata."});
-    el.kartu = h("div", {class: "bn-grid bn-ringkas"}); el.peta = h("div", {class: "ol-peta", role: "application", "aria-label": "Peta operasi udara"}); el.panel = h("div", {class: "ol-panel"}); el.kaki = h("p", {class: "ol-sumber"});
+    el.kartu = h("div", {class: "bn-grid ol-ringkas"}); el.peta = h("div", {class: "ol-peta", role: "application", "aria-label": "Peta operasi udara"}); el.panel = h("div", {class: "ol-panel"}); el.kaki = h("p", {class: "ol-sumber"});
     app.replaceChildren(h("div", {class: "bn-judul"}, h("h1", {teks: "Operasi"}), h("div", {class: "bn-aksi"}, el.dummy)),
       h("section", {class: "bn-blok"}, h("div", {class: "ol-baris"}, el.tgl, el.seg), el.pesan), el.bandera, el.kartu,
-      h("div", {class: "ol-tengah"}, el.peta, el.panel), el.kaki);
+      el.tengah = h("div", {class: "ol-tengah"}, el.peta, el.panel), el.kaki);
     el.seg.addEventListener("change", e => { if (e.target.name === "segmen") { st.segmen = e.target.value; render(); } });   // radio sudah dicat peramban; render berat sesudah frame
     el.tgl.addEventListener("change", () => { if (/^\d{4}-\d{2}-\d{2}$/.test(el.tgl.value)) { st.tanggal = el.tgl.value; st.base = null; muat(); } });
   }
@@ -43,8 +43,8 @@
     const n = ++nomor; tampil("Memuat…"); el.tgl.value = st.tanggal;
     sesudahFrame(async () => { try {
       const r = await api("GET", "/api/operasi/peta?tanggal=" + encodeURIComponent(st.tanggal)); if (n !== nomor) return;
-      if (!r.ok) { if (r.s === 401 || r.s === 403) return masuk(r.s); st.data = null; el.bandera.hidden = true; el.kartu.replaceChildren(); el.panel.replaceChildren(kosong(galatTeks(r))); el.kaki.textContent = ""; return tampil(galatTeks(r), false); }
-      tampil(""); st.data = r.j; render();
+      if (!r.ok) { if (r.s === 401 || r.s === 403) return masuk(r.s); st.data = null; el.bandera.hidden = true; el.kartu.replaceChildren(); el.tengah.hidden = true; el.kaki.textContent = ""; return tampil(galatTeks(r), false); }
+      tampil(""); el.tengah.hidden = false; st.data = r.j; render();
     } finally { selesai(); } });
   });
 
