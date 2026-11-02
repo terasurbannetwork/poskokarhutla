@@ -1,0 +1,22 @@
+/* Kemitraan Kampus: hanya komponen baru DS §5, prefiks .km-. Rupa dasar dari inti/tema.css, gaya.css, kepala.css, akademisi.css (ditautkan). */
+/* Variabel warna per elemen (pengganti atribut gaya inline, CSP): satu kelas per rumpun/bahaya, dijaga gerbang agar sama dengan KM.RUMPUN. */
+.km-w-gempa{--w:#e8590c;--w0:#e8590c;--gw:#e8590c}
+.km-w-tsunami{--w:#0b7285;--w0:#0b7285;--gw:#0b7285}
+.km-w-gunung-api{--w:#c92a2a;--w0:#c92a2a;--gw:#c92a2a}
+.km-w-banjir{--w:#1c7ed6;--w0:#1c7ed6;--gw:#1c7ed6}
+.km-w-longsor{--w:#8d5524;--w0:#8d5524;--gw:#8d5524}
+.km-w-karhutla{--w:#f76707;--w0:#f76707;--gw:#f76707}
+.km-w-hidrometeorologi{--w:#4263eb;--w0:#4263eb;--gw:#4263eb}
+.km-w-iklim{--w:#e03131;--w0:#e03131;--gw:#e03131}
+.km-w-kekeringan{--w:#b8860b;--w0:#b8860b;--gw:#b8860b}
+.km-w-pesisir{--w:#1098ad;--w0:#1098ad;--gw:#1098ad}
+.km-w-geologi{--w:#5f3dc4;--w0:#5f3dc4;--gw:#5f3dc4}
+.km-w-manajemen-bencana{--w:#2b8a3e;--w0:#2b8a3e;--gw:#2b8a3e}
+.km-w-kesehatan-bencana{--w:#d6336c;--w0:#d6336c;--gw:#d6336c}
+.km-w-wabah{--w:#7048e8;--w0:#7048e8;--gw:#7048e8}
+.km-w-penginderaan-jauh{--w:#495057;--w0:#495057;--gw:#495057}
+.km-w-udara{--w:#9c36b5;--w0:#9c36b5;--gw:#9c36b5}
+.km-w-multi{--w:#2b8a3e;--w0:#2b8a3e;--gw:#2b8a3e}
+.km-w-p1{--w:var(--bad);--w0:var(--bad);--gw:var(--bad)}
+.km-w-p2{--w:var(--warn);--w0:var(--warn);--gw:var(--warn)}
+.km-w-p3{--w:var(--info);--w0:var(--info);--gw:var(--info)}

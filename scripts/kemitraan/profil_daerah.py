@@ -1,22 +1,27 @@
 #!/usr/bin/env python3
-"""Profil daerah Kemitraan Kampus, blok umum (PROFIL-DAERAH.md §1-§2, KM-B01).
+"""Profil daerah Kemitraan Kampus (PROFIL-DAERAH.md §1-§2, KM-B01 + KM-B02).
 514 berkas public/data/kemitraan/daerah/<kode IRBI 4 digit>.json. Blok: wilayah, penduduk, sosek, irbi,
-inarisk_kec, kejadian, fasilitas, kapasitas, riwayat_luar, sumber. Blok per bahaya + model + masalah = KM-B02/B03.
+inarisk_kec, kejadian (+ tren Theil-Sen), fasilitas, kapasitas, riwayat_luar, sumber (B01); gempa, karhutla, kekeringan,
+gunungapi, pesisir, udara, neraca_air, model, siluet (B02). Blok masalah = KM-B03. Geometri murni ada di geo.py.
 Aturan: tiap blok dict {..., sumber, tanggal, yakin}; data hilang = null (bukan 0); tanpa angka karangan;
 sumber hilang -> blok null + catatan di sumber[] (D7); keluaran deterministik (tanggal = tanggal sumber).
 BPBD: email TIDAK ditulis (gerbang D5 melarang email di public/data/kemitraan/**).
 Pakai: python3 -I scripts/kemitraan/profil_daerah.py [--cek] [--kab 6211] [--akar DIR] [--keluar DIR]"""
-import collections, glob, json, os, re, shutil, sys, tempfile
+import collections, glob, json, math, os, re, shutil, sys, tempfile
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "..", ".."))
 sys.path.insert(0, os.path.join(AKAR, "scripts", "umum"))  # -I tidak menambah direktori skrip
 sys.path.insert(0, os.path.join(AKAR, "scripts", "kemitraan"))
 from kode import kunci  # noqa: E402  (kab dan kota senama tidak tertukar; hanya impor nama_wilayah)
 from konst import KONST  # noqa: E402
+from geo import Peta, dalam_poligon, haversine_km, jarak_titik_poligon_km, poligon, siluet  # noqa: E402,F401
 
 MAKS_BYTE = 60_000
 YAKIN = ("resmi", "terverifikasi", "estimasi-model", "asumsi-kebijakan")
-BLOK_DICT = ("wilayah", "penduduk", "sosek", "irbi", "inarisk_kec", "kejadian", "fasilitas", "kapasitas")
+BLOK_DICT = ("wilayah", "penduduk", "sosek", "irbi", "inarisk_kec", "kejadian", "fasilitas", "kapasitas",
+             "gempa", "karhutla", "kekeringan", "gunungapi", "pesisir", "udara", "neraca_air", "model")
+RADIUS_GUNUNG_KM = 50  # PD §2: jarak titik gunung ke poligon kab <= 50 km
+LEVEL_KERING = ("Normal", "Waspada", "Siaga", "Awas")  # public/kekeringan/app.js LEVEL
 RE_TGL = re.compile(r"^\d{4}-\d{2}-\d{2}$")
 RE_BOCOR = re.compile(r"[\w.+-]+@[\w-]+\.[\w.-]+|(?<!\d)62\d{8,}|\bA[0-9]{6,}")  # D5: email, nomor 62..., id OpenAlex
 
@@ -33,7 +38,32 @@ SUMBER = {
     "fasilitas": ("public/data/fasilitas.json", "Fasilitas kesehatan (faskes, RS), hanya 9 provinsi", None),
     "geo": ("public/geo/kabupaten/NN.json", "Poligon kabupaten (batas disederhanakan, bukan SK batas)", None),
     "kode": ("public/data/kemitraan/kode.json", "Crosswalk kode wilayah modul Kemitraan (kode.py)", None),
+    "gempa_risiko": ("public/gempa/data/risiko.json", "Indeks risiko gempa per kabupaten (USGS M>=5 radius 100 km, 2000-2025)", "USGS domain publik"),
+    "gempa_m5": ("public/gempa/data/riwayat_m5.json", "Katalog gempa M>=5 USGS (FDSN) sejak 1900", "USGS domain publik"),
+    "karhutla": ("public/data/riwayat_wilayah/kab.json", "NASA FIRMS titik panas MODIS 2003- dan VIIRS 2012- per kabupaten", None),
+    "gambut": ("public/data/lahan/gambut.geojson", "Sel gambut BBSDLP 1:250.000 lewat PRIMS (BRGM)", None),
+    "khg": ("public/data/lahan/khg.geojson", "Kesatuan Hidrologis Gambut (BRGM PRIMS, prims.brgm.go.id)", "BRGM PRIMS: nonkomersial dengan tautan ke wali data"),
+    "kek_wilayah": ("public/data/kekeringan_wilayah.json", "Status kekeringan SPI-3 per kabupaten (Deteksi Centurisk97)", None),
+    "kek_riwayat": ("public/data/kekeringan_riwayat.json", "Riwayat kekeringan 1991-2025 per kabupaten (NASA POWER, ONI NOAA, DIBI)", None),
+    "kek_meta": ("public/data/kekeringan_meta.json", "Tanggal data kekeringan", None),
+    "gunung": ("public/gunungapi/data/gunung.json", "Titik puncak 69 gunung api", None),
+    "paparan": ("public/gunungapi/data/paparan.json", "Paparan penduduk per zona KRB gunung api (PVMBG 2018, WorldPop)", None),
+    "gunung_risiko": ("public/gunungapi/data/risiko.json", "Indeks risiko gunung api (Smithsonian GVP letusan 1900-2025)", None),
+    "abrasi": ("public/pesisir/data/abrasi.json", "Laju abrasi/akresi transek pantai (Landsat via Planetary Computer; garis dasar OSM)", "Landsat domain publik; garis dasar OSM ODbL"),
+    "udara": ("public/udara/data/riwayat.json", "PM2,5 harian per provinsi (jendela 37 hari)", None),
+    "neraca": ("public/data/neraca_air/kab.json", "Neraca air kabupaten Jawa (CHIRPS, NASA POWER; estimasi model)", None),
+    "risiko_kec": ("public/banjir/data/risiko_kecamatan.json", "Indeks risiko komposit kecamatan platform (belum diuji balik)", None),
+    "gerbang": ("public/data/gerbang_model.json", "Gerbang model karhutla (uji balik 123 kasus)", None),
+    "uji_banjir": ("public/banjir/data/risiko_ujibalik.json", "Uji balik indeks risiko banjir/longsor dan gempa", None),
+    "uji_kering": ("public/data/kekeringan_ujibalik.json", "Uji balik kekeringan (SPI-3 terhadap DIBI)", None),
 }
+# blok -> sumber yang menyumbang (dicatat di sumber[] bila blok terisi atau sumbernya hilang, D7)
+BLOK_SUMBER = {"gempa": ("gempa_risiko", "gempa_m5", "inarisk_gempa", "geo"),
+               "karhutla": ("karhutla", "gambut", "khg", "geo"),
+               "kekeringan": ("kek_wilayah", "kek_riwayat", "kek_meta"),
+               "gunungapi": ("gunung", "paparan", "gunung_risiko", "geo"),
+               "pesisir": ("abrasi", "geo"), "udara": ("udara",), "neraca_air": ("neraca",),
+               "model": ("risiko_kec", "gerbang", "uji_banjir", "uji_kering")}
 LABEL_JENIS = {"wf": "kebakaran hutan", "fl": "banjir", "eq": "gempa bumi", "earthquake": "gempa bumi", "vo": "erupsi gunung api",
                "dr": "kekeringan", "tc": "siklon tropis"}  # kode GDACS; selain ini ditulis apa adanya
 # Satuan per kunci (angka di berkas = mentah; format Indonesia urusan layar)
@@ -53,38 +83,34 @@ SATUAN = {
                  "dampak_12bln.rr_ringan": "unit rumah rusak ringan", "besar.meninggal": "jiwa"},
     "fasilitas": {"sekolah": "satuan pendidikan", "siswa": "siswa", "faskes": "unit", "rs": "unit", "gudang_bnpb_km": "km"},
     "kapasitas": {"dokumen_n": "dokumen regulasi"},
+    "gempa": {"n_m5_1900": "gempa M>=5 (poligon kab, 1900-akhir katalog)", "m_maks": "magnitudo", "terakhir": "tanggal UTC",
+              "risiko_lv": "kelas 0-3 (0 Rendah, 3 Sangat tinggi)", "risiko.skor": "indeks 0-100",
+              "risiko.kekerapan": "indeks 0-1 (bobot 50 persen skor)", "risiko.besaran": "indeks 0-100 (bobot 30 persen skor)", "risiko.tren": "indeks 0-1 (bobot 20 persen skor)",
+              "risiko.m_maks_100km": "magnitudo, semua gempa M>=5 radius 100 km termasuk susulan", "risiko.n_2000_2025_100km": "gempa utama M>=5 radius 100 km (tanpa susulan)",
+              "indeks_inarisk.maks": "indeks bahaya 0-1 kecamatan tertinggi", "indeks_inarisk.n_kec": "kecamatan bernilai > 0"},
+    "karhutla": {"titik_tahun": "[[tahun, titik VIIRS S-NPP]]", "titik_tahun_modis": "[[tahun, titik MODIS]]", "rasio_elnino": "rasio rerata titik tahun El Nino terhadap tahun lain",
+                 "rasio_elnino_prov": "rasio rasio_elnino kab terhadap provinsi", "tren_rasio": "rasio rerata 10 tahun terakhir terhadap 10 tahun pertama MODIS",
+                 "gambut_ha": "hektare, dibulatkan ke ribuan (jumlah luas sel gambut yang titik tengahnya di poligon kab)", "gambut_pct": "persen luas kab",
+                 "khg.n": "KHG yang tepinya menyentuh kab", "khg.teratas.ha": "hektare KHG utuh (bukan potongan kab)", "puncak_tahun": "[tahun, titik MODIS]",
+                 "rerata_modis_th": "titik MODIS per tahun penuh, bilangan bulat", "peringkat_modis": "[peringkat di provinsi (1 = terbanyak), jumlah kab berperingkat di sumber, termasuk yang rerata ~0]",
+                 "titik_tahun_parsial": "tahun (VIIRS sebagian, tahun terakhir belum lengkap)"},
+    "kekeringan": {"level_kini": "0 Normal, 1 Waspada, 2 Siaga, 3 Awas (tingkat tertinggi yang dialami >= 30% penduduk kab)", "spi3": "indeks SPI-3 (tanpa satuan)", "mm3": "mm curah hujan 3 bulan",
+                   "penduduk_status": "jiwa (penduduk kecamatan berstatus tersebut, bukan korban)",
+                   "riwayat.risiko": "indeks 0-100", "riwayat.tahun_siaga": "tahun dari n_tahun", "riwayat.n_tahun": "tahun",
+                   "riwayat.bulan_siaga": "persen bulan Siaga+ 1991-2025", "riwayat.tren": "selisih paruh akhir terhadap paruh awal (indeks)", "riwayat.dibi": "kejadian DIBI kering"},
+    "gunungapi": {"jarak_km": "km, titik puncak ke tepi poligon kab (0 = di dalam)", "radius_km": "km", "tinggi_m": "m dpl",
+                  "krb3_jiwa_gunung": "jiwa zona KRB III seluruh gunung (bukan hanya kab ini)", "risiko_skor": "indeks 0-100"},
+    "pesisir": {"abrasi_m_th": "m per tahun, median transek nyata (negatif = garis pantai mundur)", "transek_n": "transek", "nyata_n": "transek abrasi atau akresi nyata",
+                "abrasi_n": "transek", "akresi_n": "transek", "tidak_nyata_n": "transek", "periode": "[tahun awal, tahun akhir]"},
+    "udara": {"pm25_rerata": "\u00b5g/m\u00b3, rerata harian provinsi di jendela", "pm25_maks_harian": "\u00b5g/m\u00b3", "hari_rerata_di_atas_55_4": "hari",
+              "jiwa_maks_di_atas_55_4": "jiwa provinsi, hari terburuk di jendela", "n_hari": "hari"},
+    "neraca_air": {"defisit_2030": "juta m3 per tahun (jumlah bulan bersaldo negatif, harga mutlak)", "defisit_2025": "juta m3 per tahun",
+                   "bulan_defisit_2030": "nomor bulan 1-12"},
+    "model": {"risiko_kec.risiko_maks": "indeks 0-100", "risiko_kec.n_kec": "kecamatan", "risiko_kec.per_kelas": "jumlah kecamatan per kelas",
+              "risiko_kec.kec_sangat_tinggi": "nama kecamatan"},
 }
 JENIS_TAHUNAN =("banjir", "bandang", "cuaca", "gelombang", "kering", "longsor", "rob", "semua")
 DAMPAK = ("meninggal", "mengungsi", "rr_berat", "rr_sedang", "rr_ringan")
-
-
-# ---------------------------------------------------------------- geometri (stdlib)
-def dalam_cincin(x, y, r):
-    """Ray casting: titik (x=lon, y=lat) di dalam cincin r [[lon,lat],...]."""
-    di, n, j = False, len(r), len(r) - 1
-    for i in range(n):
-        xi, yi, xj, yj = r[i][0], r[i][1], r[j][0], r[j][1]
-        if (yi > y) != (yj > y) and x < (xj - xi) * (y - yi) / (yj - yi) + xi:
-            di = not di
-        j = i
-    return di
-
-
-def poligon(geom):
-    """GeoJSON Polygon/MultiPolygon -> [(bbox, [cincin luar, lubang...])]"""
-    ps = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
-    out = []
-    for p in ps:
-        xs = [c[0] for c in p[0]]; ys = [c[1] for c in p[0]]
-        out.append(((min(xs), min(ys), max(xs), max(ys)), p))
-    return out
-
-
-def dalam_poligon(x, y, polis):
-    for (x0, y0, x1, y1), p in polis:
-        if x0 <= x <= x1 and y0 <= y <= y1 and dalam_cincin(x, y, p[0]) and not any(dalam_cincin(x, y, h) for h in p[1:]):
-            return True
-    return False
 
 
 INTI_DIBI = ("meninggal", "hilang", "luka", "mengungsi")
@@ -165,8 +191,10 @@ class Konteks:
             d = self.baca("kejadian")
             if d is None:
                 return None
-            tah = {}
+            tah, tj = {}, collections.defaultdict(set)
             for key, v in d["kab"].items():
+                for j, sr in v.items():
+                    tj[j].update(int(y) for y in sr)
                 p, n = key.split("|", 1)
                 k = self.kab_dari_nama(p, n)
                 if k:
@@ -179,7 +207,7 @@ class Konteks:
                 if k:
                     mus[k][r["jenis"]][int(r["tanggal"][5:7]) - 1] += 1
             awal = min((r["tanggal"] for r in d["kejadian_dibi"]), default="")
-            return tah, mus, awal, akhir
+            return tah, mus, awal, akhir, {j: sorted(y) for j, y in tj.items()}  # [4] = tahun yang ada di sumber per jenis (semua kab)
         return self._memo("kejadian", f)
 
     def dibi_idx(self):
@@ -286,6 +314,199 @@ class Konteks:
         ts = [t for t in ts if t]
         return max(ts) if ts else None
 
+    # --- B02: indeks sumber per bahaya (dibangun sekali per Konteks)
+    def kab_poli(self):
+        def f():
+            out = []
+            for prov in sorted({v["prov"] for v in self.kode.values()}):
+                po = self.poli(prov)
+                if po:
+                    out += sorted(po.items())
+            return out
+        return self._memo("kab_poli", f)
+
+    def peta(self):
+        return self._memo("peta", lambda: Peta(self.kab_poli()))
+
+    def per_kab(self, sid, atas="kab"):
+        """{kab IRBI: nilai} dari berkas berkunci 'NN|Nama' (kunci yang tak cocok satu kab dilewati)."""
+        def f():
+            d = self.baca(sid)
+            if d is None:
+                return None
+            out = {}
+            for key in sorted(d[atas]):
+                p, n = key.split("|", 1)
+                k = self.kab_dari_nama(p, n)
+                if k:
+                    out.setdefault(k, d[atas][key])
+            return out
+        return self._memo("per_kab_" + sid, f)
+
+    def gempa_idx(self):
+        """({kab: [n, m_maks, tgl_terakhir]}, tgl_katalog_terakhir)"""
+        def f():
+            d = self.baca("gempa_m5")
+            if d is None or not self.kab_poli():
+                return None
+            pm, ag, akhir = self.peta(), {}, ""
+            for t, lat, lon, _dalam, m, _prov in d["baris"]:
+                akhir = max(akhir, t[:10])
+                k = pm.cari(lon, lat)
+                if k:
+                    a = ag.setdefault(k, [0, m, t[:10]])
+                    a[0] += 1; a[1] = max(a[1], m); a[2] = max(a[2], t[:10])
+            return ag, akhir
+        return self._memo("gempa", f)
+
+    def gambut_idx(self):
+        """({kab: ha}, {prov tercakup}); ha = jumlah luas sel (bbox sel, bidang lokal) yang titik tengahnya di poligon kab."""
+        def f():
+            g = self.baca("gambut")
+            if g is None or not self.kab_poli():
+                return None
+            pm, ha, prov = self.peta(), collections.Counter(), set()
+            for ft in g["features"]:
+                r = ft["geometry"]["coordinates"][0]
+                while isinstance(r[0][0], list):  # MultiPolygon: ambil cincin luar bagian pertama
+                    r = r[0]
+                x0, x1, y0, y1 = min(c[0] for c in r), max(c[0] for c in r), min(c[1] for c in r), max(c[1] for c in r)
+                lat = (y0 + y1) / 2
+                prov.add(ft["properties"]["prov"])
+                k = pm.cari((x0 + x1) / 2, lat)
+                if k:
+                    ha[k] += (x1 - x0) * 111.32 * math.cos(math.radians(lat)) * (y1 - y0) * 110.574 * 100  # km2 -> ha
+            return ha, prov
+        return self._memo("gambut", f)
+
+    def khg_idx(self):
+        """({kab: [(ha, kode, nama)]}, {prov tercakup}); KHG menyentuh kab bila >= 1 dari <= 40 titik sampel tepinya jatuh di kab."""
+        def f():
+            d = self.baca("khg")
+            if d is None or not self.kab_poli():
+                return None
+            pm, out, prov = self.peta(), collections.defaultdict(list), set()
+            for ft in d["features"]:
+                pr = ft["properties"]; prov.add(pr["kode"].split(".")[1])
+                geom = ft["geometry"]
+                bagian = geom["coordinates"] if geom["type"] == "MultiPolygon" else [geom["coordinates"]]
+                ks = set()
+                for part in bagian:
+                    r = part[0]
+                    for c in r[::max(1, len(r) // 40)]:
+                        k = pm.cari(c[0], c[1])
+                        if k:
+                            ks.add(k)
+                for k in ks:
+                    out[k].append((pr["ha"], pr["kode"], pr["nama"]))
+            return out, prov
+        return self._memo("khg", f)
+
+    def gunung_idx(self):
+        """{kab: [(jarak_km, nama)]} gunung dalam RADIUS_GUNUNG_KM dari poligon kab."""
+        def f():
+            g = self.baca("gunung")
+            if g is None or not self.kab_poli():
+                return None
+            out = collections.defaultdict(list)
+            for nama in sorted(g):
+                for k, polis in self.kab_poli():
+                    j = jarak_titik_poligon_km(g[nama]["lat"], g[nama]["lon"], polis, batas_km=RADIUS_GUNUNG_KM)
+                    if j is not None and j <= RADIUS_GUNUNG_KM:
+                        out[k].append((j, nama))
+            return out
+        return self._memo("gunung", f)
+
+    def pesisir_idx(self):
+        def f():
+            d = self.baca("abrasi")
+            if d is None or not self.kab_poli():
+                return None
+            pm, out = self.peta(), collections.defaultdict(list)
+            for t in d["transek"]:
+                k = pm.cari(t["lon"], t["lat"])
+                if k:
+                    out[k].append(t)
+            return out
+        return self._memo("pesisir", f)
+
+    def risiko_idx(self):
+        """({kab: [(risiko, kelas, kec)]}, nama kelas, hari)"""
+        def f():
+            d = self.baca("risiko_kec")
+            if d is None:
+                return None
+            ag = collections.defaultdict(list)
+            for r in d["kec"]:
+                k = self.kab_dari_nama(r[0], r[1])
+                if k and r[3] is not None and r[4] is not None:
+                    ag[k].append((r[3], r[4], r[2]))
+            return ag, d["kelas"], d["hari"]
+        return self._memo("risiko_kec", f)
+
+    def uji(self):
+        """({model: 'lolos'|'gagal'|'belum'}, {sumber: tanggal}). Berkas uji hilang/rusak -> 'belum' (gagal-tertutup)."""
+        def f():
+            u, tgl = {}, {}
+            g = self.baca("gerbang")
+            for nama, kk in (("karhutla_sebaran_sel", "model_sel"), ("karhutla_sebaran_luas", "mesin_fisika"),
+                             ("karhutla_jejak_api", "jejak_api"), ("karhutla_peluang", "lolos")):
+                e = (g or {}).get(kk) or {}
+                if e.get("boleh_tampil") is True:
+                    u[nama] = "lolos"
+                elif e.get("selisih") is not None and e["selisih"] <= 0:
+                    u[nama] = "gagal"
+                else:
+                    u[nama] = "belum"  # mis. selisih > 0 tetapi belum ada selang / belum cukup data prospektif
+            if g:
+                tgl["gerbang"] = g["dibuat"][:10]
+            ub = self.baca("uji_banjir")
+            pk = ((ub or {}).get("vonis") or {}).get("per_kelompok") or {}
+            for nama in ("banjir_longsor", "gempa"):
+                lulus = (pk.get(nama) or {}).get("lulus")
+                u[nama] = "lolos" if lulus is True else "gagal" if lulus is False else "belum"
+            if ub:
+                tgl["uji_banjir"] = ub["dibuat"][:10]
+            uk = self.baca("uji_kering")
+            ar = ((((uk or {}).get("kejadian") or {}).get("aturan") or {}).get("waspada") or {}).get("semua")
+            kr = ((uk or {}).get("kejadian") or {}).get("kriteria_layak")
+            if ar and kr:  # kriteria layak sumber: POD >= pod_min, FAR <= far_maks, CSI >= lipat x CSI acak
+                ok = ar["pod"] >= kr["pod_min"] and ar["far"] <= kr["far_maks"] and ar["csi"] >= kr["csi_lipat_acak"] * ar["csi_acak"]
+                u["kekeringan"] = "lolos" if ok else "gagal"
+            else:
+                u["kekeringan"] = "belum"
+            if uk:
+                tgl["uji_kering"] = uk["dibuat"][:10]
+            u["longsor"] = "belum"  # tak ada keluaran longsor di repo (public/longsor/data tidak ada)
+            return dict(sorted(u.items())), tgl
+        return self._memo("uji", f)
+
+    def tgl_arti(self, sid):
+        """(tanggal, arti) sumber: tanggal TERBIT/cakupan dari isi berkas bila ada; selain itu snapshot repo."""
+        d = self.baca(sid) if "NN" not in SUMBER[sid][0] else None
+        try:
+            if sid == "gempa_m5" and d:
+                return (self.gempa_idx() or (0, None))[1] or self.tgl_snapshot(), "akhir-cakupan"
+            if sid == "gempa_risiko" and d:
+                return "%d-12-31" % d["tahun"][1], "akhir-tahun-data"
+            if sid == "karhutla" and d:
+                return d["sd"], "akhir-cakupan"
+            if sid == "kek_meta" and d:
+                return d["hari_ini"], "hari-data"
+            if sid == "kek_riwayat" and d:
+                return d["hari"], "hari-data"
+            if sid in ("paparan", "abrasi") and d:
+                return d["dibuat"][:10], "terbit"
+            if sid in ("gunung_risiko", "uji_banjir", "uji_kering", "gerbang") and d:
+                return d["dibuat"][:10], "terbit"
+            if sid == "risiko_kec" and d:
+                return d["hari"], "terbit"
+            if sid == "udara" and d:
+                return max(d["tgl"]), "akhir-cakupan"
+        except (KeyError, TypeError, ValueError):
+            pass
+        return self.tgl_snapshot(), "snapshot-repo"
+
 
 # ---------------------------------------------------------------- blok
 def blok(isi, tanggal, yakin, sumber, arti="snapshot-repo"):
@@ -368,8 +589,7 @@ def b_kejadian(cx, kab, w):
     tahunan = total = None
     if tah:
         tahunan = {j: [[int(y), n] for y, n in sorted(tah[j].items())] for j in JENIS_TAHUNAN if tah.get(j)}
-        total = {j: sum(n for y, n in v if 2015 <= y <= 2025) for j, v in tahunan.items()
-                 if any(2015 <= y <= 2025 for y, _ in v)} or None
+        total = {j: sum(n for y, n in tahun_tren(v, j)) for j, v in tahunan.items() if tahun_tren(v, j)} or None
     musim = {j: v for j, v in sorted(mus.items())} if mus else None
     dampak = besar = None
     rows = (di[0].get(kab) if di else None) or []
@@ -385,8 +605,18 @@ def b_kejadian(cx, kab, w):
     isi = {"tahunan": tahunan, "total_2015_2025": total, "musim": musim, "dampak_12bln": dampak, "besar": besar,
            "musim_arti": "jumlah kejadian per bulan kalender (indeks 0 = Januari), jendela %s s.d. %s" % (ki[2], ki[3]) if ki else None,
            "dampak_arti": "meninggal/mengungsi/rr_* = jumlah 12 bulan; null = tak ada kejadian DIBI kab ini di jendela; kunci kosong di baris DIBI dihitung 0",
-           "tahunan_arti": "bandang dan rob hanya DIBI (2018-); banjir bisa memuat bandang; tahun tiap jenis hanya yang tercatat sumber (tak ada = tidak ada data, bukan 0)",
-           "parsial": None}
+           "total_arti": "jumlah tahun 2015-2025; jenis DIBI (semua kecuali 'semua') TANPA 2024 karena DIBI 2024 tak lengkap (nol di sumber bukan bukti tidak ada kejadian), jadi batas bawah; jenis 'semua' (CKAN) memakai 2024",
+           "tahunan_arti": "tahun 2024 jenis DIBI di tahunan = nilai mentah sumber, sering 0 buatan, jangan dibaca sebagai nol kejadian ('semua' 2024 lengkap); bandang dan rob hanya DIBI (2018-); banjir bisa memuat bandang; tahun tiap jenis di tahunan hanya yang tercatat sumber untuk kab ini (tak ada = tidak tercatat); untuk tren, tahun yang ada di sumber tanpa baris kab ini dihitung 0 (lihat tren_arti)",
+           "parsial": None, "tren": None, "tren_lereng": None,
+           "tren_rentang": None,
+           "tren_arti": "Theil-Sen per jenis atas 2015-2025 (rentang aktual di tren_rentang: tahun terkecil dan terbesar yang dipakai); tahun yang ada di sumber untuk jenis itu tetapi tanpa baris kab ini dihitung 0 kejadian; tahun yang tak ada sama sekali di sumber tidak diisi; 2024 dikecualikan untuk jenis DIBI (tak lengkap), tidak untuk 'semua' (CKAN, lengkap); jenis tanpa satu pun baris kab ini tidak ditren; null bila < 5 tahun dipakai; jarang = kurang dari 3 tahun berkejadian dalam rentang (lereng null, bukan stabil); datar bila |lereng| < 5% rerata per tahun (kejadian per tahun); catatan: 2025 mencatat lonjakan nasional (banjir, cuaca), sebagian vonis naik ditopang tahun itu"}
+    if tahunan:
+        ts = {j: ((ki[4].get(j) if ki else None) or ()) for j in tahunan}
+        tk = {j: tren_kata(v, j, ts[j]) for j, v in tahunan.items()}
+        isi["tren"] = {j: t[0] for j, t in tk.items()}
+        isi["tren_lereng"] = {j: t[1] for j, t in tk.items()}
+        isi["tren_rentang"] = {j: ([min(p[0] for p in tahun_tren(v, j, ts[j])), max(p[0] for p in tahun_tren(v, j, ts[j]))] if tk[j][0] else None)
+                               for j, v in tahunan.items()}
     # tahun terakhir parsial dihitung dari data: kejadian terakhir di sumber sebelum 31 Des tahun itu
     if tahunan and ki and ki[3] and ki[3][5:] != "12-31" and any(y == int(ki[3][:4]) for v in tahunan.values() for y, _ in v):
         isi["parsial"] = {"tahun": int(ki[3][:4]), "sampai": ki[3]}
@@ -438,6 +668,248 @@ def b_riwayat_luar(cx, kab, w):
              "sumber": nama[r[0]], "tautan": r[6]} for r in rw[:25]]
 
 
+def theil_sen(seri):
+    """Kemiringan Theil-Sen: median kemiringan semua pasangan titik [[x, y], ...] dengan x berbeda. None bila tak ada pasangan."""
+    s = sorted((b[1] - a[1]) / (b[0] - a[0]) for i, a in enumerate(seri) for b in seri[i + 1:] if b[0] != a[0])
+    if not s:
+        return None
+    m = len(s) // 2
+    return s[m] if len(s) % 2 else (s[m - 1] + s[m]) / 2
+
+
+TAHUN_TAK_LENGKAP = (2024,)  # jenis DIBI: kejadian.json 2024 tak lengkap, banyak kab-jenis berisi 0 buatan (bukan "tidak ada kejadian"). 'semua' (CKAN) 2024 lengkap.
+
+
+def tak_lengkap(jenis):
+    return () if jenis == "semua" else TAHUN_TAK_LENGKAP
+
+
+def bulat(x):
+    """Pembulatan setengah ke atas (round() Python membulatkan ke genap: 1266,5 jadi 1266)."""
+    return int(math.floor(x + 0.5))
+
+
+def tahun_tren(seri, jenis, tahun_sumber=None):
+    """Titik seri [[tahun, n]] yang dipakai tren/total: 2015-2025 tanpa tahun tak lengkap jenis itu. tahun_sumber: tahun yang ADA di sumber
+    untuk jenis itu (kab lain punya baris); kab tanpa baris di tahun itu = 0 kejadian. Tahun yang tak ada sama sekali di sumber tidak diisi."""
+    pts = {y: n for y, n in seri}
+    for y in tahun_sumber or ():
+        pts.setdefault(y, 0)
+    return [[y, pts[y]] for y in sorted(pts) if 2015 <= y <= 2025 and y not in tak_lengkap(jenis)]
+
+
+def tren_kata(seri, jenis, tahun_sumber=None):
+    """(kata, lereng) untuk seri tahunan 2015-2025; (None, None) bila < TREN_MIN_TAHUN tahun dipakai; ("jarang", None) bila
+    tahun berkejadian (> 0) < TREN_MIN_TAHUN_ADA.
+    datar bila |lereng| < TREN_DATAR_REL x rerata per tahun (ambang asumsi-kebijakan di konst.py)."""
+    s = tahun_tren(seri, jenis, tahun_sumber)
+    if len(s) < KONST["MASALAH"]["TREN_MIN_TAHUN"]:
+        return None, None
+    if sum(1 for p in s if p[1] > 0) < KONST["MASALAH"]["TREN_MIN_TAHUN_ADA"]:
+        return "jarang", None  # deret hampir semua nol: bukan naik/datar/turun
+    ls = theil_sen(s)
+    rr = sum(p[1] for p in s) / len(s)
+    rel = ls / rr if rr else (0 if ls == 0 else math.copysign(1, ls))
+    return ("datar" if abs(rel) < KONST["MASALAH"]["TREN_DATAR_REL"] else "naik" if ls > 0 else "turun"), round(ls, 3)
+
+
+def blokt(isi, ta, yakin, sumber):
+    return blok(isi, ta[0], yakin, sumber, ta[1])
+
+
+def _wil(cx, kab):
+    """kab punya poligon (tanpa poligon, hitungan titik-ke-kab tak sah: null, bukan 0)."""
+    return kab in cx._memo("kab_set", lambda: {k for k, _ in cx.kab_poli()})
+
+
+def b_gempa(cx, kab, w):
+    gi, rk = cx.gempa_idx(), (cx.per_kab("gempa_risiko") or {}).get(kab)
+    if gi is None and rk is None:
+        return None
+    ada = _wil(cx, kab) if gi else False
+    a = gi[0].get(kab) if ada else None
+    isi = {"n_m5_1900": (a[0] if a else 0) if ada else None, "m_maks": a[1] if a else None, "terakhir": a[2] if a else None}
+    r = cx.baca("gempa_risiko")
+    if rk:
+        isi["risiko_lv"] = rk[6]
+        isi["risiko_kelas"] = r["kelas"][rk[6]]
+        isi["risiko"] = {"skor": rk[0], "kekerapan": rk[1], "besaran": rk[2], "tren": rk[3], "m_maks_100km": rk[4] or None,
+                         "n_2000_2025_100km": rk[5], "yakin": "estimasi-model"}
+    else:
+        isi.update(risiko_lv=None, risiko_kelas=None, risiko=None)
+    ik = [v for v, _ in (cx.bahaya_idx() or {}).get(kab, {}).get("gempa", [])]
+    isi["indeks_inarisk"] = {"maks": round(max(ik), 2), "n_kec": len(ik)} if ik else None
+    isi["arti"] = ("n_m5_1900/m_maks/terakhir = katalog USGS M>=5 sejak 1900 di dalam poligon kab (n 0 = tidak ada gempa M>=5 di poligon; m_maks/terakhir null = tidak ada gempa M>=5 di poligon kab; n null = poligon kab tak ada); "
+                   "risiko = indeks USGS radius 100 km 2000-2025 (estimasi model); risiko.m_maks_100km = magnitudo maks SEMUA gempa M>=5 radius 100 km termasuk susulan "
+                   "(null = tidak ada), sedangkan n_2000_2025_100km hanya gempa utama (tanpa susulan), jadi M maks bisa ada walau n 0")
+    isi["yakin_bagian"] = {"katalog": "terverifikasi", "risiko": "estimasi-model" if rk else None}
+    return blokt(isi, cx.tgl_arti("gempa_m5" if gi else "gempa_risiko"), "estimasi-model" if rk else "terverifikasi", "Katalog USGS M>=5 (domain publik); indeks risiko = estimasi model")
+
+
+def b_karhutla(cx, kab, w):
+    kd, gm, kh = (cx.per_kab("karhutla") or {}).get(kab), cx.gambut_idx(), cx.khg_idx()
+    prov = cx.kode[kab]["prov"]
+    ada = _wil(cx, kab)
+    gambut_ha = gambut_pct = None
+    if gm and ada and prov in gm[1]:
+        gambut_ha = gm[0].get(kab, 0.0)
+        luas = ((cx.baca("wilayah", prov) or {}).get(kab, {}).get("md") or {}).get("ld")
+        gambut_pct = round(gambut_ha / luas * 100, 1) if luas else None  # ld = ha
+        gambut_ha = max(1000, bulat(gambut_ha / 1000) * 1000) if gambut_ha >= 1 else 0  # estimasi grid: ribuan ha (minimal 1.000 bila ada sel)
+    khg = None
+    if kh and ada and prov in kh[1]:
+        lst = sorted(kh[0].get(kab, []), key=lambda x: (-x[0], x[1]))
+        khg = {"n": len(lst), "teratas": [{"kode": c, "nama": n, "ha": h} for h, c, n in lst[:3]]}
+    if kd is None and gambut_ha is None and khg is None:
+        return None
+    d = cx.baca("karhutla")
+    isi = {"titik_tahun": [[d["definisi"]["th0"] + i, v] for i, v in enumerate(kd["y"])] if kd else None,
+           "titik_tahun_modis": [[d["definisi"]["thm0"] + i, v] for i, v in enumerate(kd["ym"])] if kd else None,
+           "rasio_elnino": kd.get("el") if kd else None, "rasio_elnino_prov": kd.get("er") if kd else None,
+           "tren": kd.get("tr") if kd else None, "tren_rasio": kd.get("rt") if kd else None,
+           "puncak_tahun": kd.get("pk") if kd else None, "puncak_bulan": None,
+           "rerata_modis_th": bulat(kd["m"]) if kd and kd.get("m") is not None else None,
+           "peringkat_modis": kd.get("rk") if kd and kd.get("m") is not None and bulat(kd["m"]) > 0 else None,  # rerata tampil 0: peringkat tak bermakna
+           "titik_tahun_parsial": {"viirs_tahun_sebagian": d["definisi"]["th0"], "tahun_belum_lengkap": int(d["sd"][:4])} if kd and d["sd"][5:] != "12-31" else None,
+           "gambut_null_arti": None if gambut_ha is not None else "provinsi ini tidak punya sel gambut di sumber (hanya 8 provinsi tercakup) atau kab tanpa poligon; bukan berarti tanpa gambut",
+           "khg_null_arti": None if khg is not None else "provinsi ini tidak ada di sumber KHG atau kab tanpa poligon; bukan berarti tanpa KHG",
+           "yakin_bagian": {"titik_panas": "terverifikasi" if kd else None, "gambut": "estimasi-model" if gambut_ha is not None else None, "khg": "estimasi-model" if khg is not None else None},
+           "gambut_ha": gambut_ha, "gambut_pct": gambut_pct, "gambut_yakin": "estimasi-model" if gambut_ha is not None else None, "khg": khg,
+           "arti": ("titik_tahun = VIIRS S-NPP (2012 sebagian, tahun terakhir belum lengkap); tren = 10 tahun penuh terakhir dibanding 10 tahun pertama MODIS; "
+                    "peringkat_modis = [peringkat di provinsi, jumlah kab berperingkat di sumber termasuk yang rerata ~0]; puncak_bulan null (sumber tak memuat bulan per kab); "
+                    "gambut_ha = jumlah luas sel gambut (BBSDLP 1:250.000) bertitik tengah di poligon kab, dibulatkan ke ribuan ha (minimal 1.000 bila ada sel), hanya provinsi bersel gambut, selain itu null; "
+                    "titik_tahun_parsial = tahun VIIRS sebagian (sensor mulai Jan 2012) dan tahun terakhir yang belum lengkap; "
+                    "khg = KHG yang tepinya menyentuh kab (perkiraan dari titik sampel tepi), ha = luas KHG utuh")}
+    return blokt(isi, cx.tgl_arti("karhutla" if kd else "gambut"), "estimasi-model" if (gambut_ha is not None or khg is not None) else "terverifikasi",
+                  "NASA FIRMS (MODIS, VIIRS) per kab; gambut BBSDLP via PRIMS dan KHG BRGM = estimasi")
+
+
+def b_kekeringan(cx, kab, w):
+    ry = cx.baca("kek_riwayat")
+    NT = (ry["tahun"][1] - ry["tahun"][0] + 1) if ry else 0  # tahun seri riwayat (1991-2025 = 35)
+    wl, rw = (cx.per_kab("kek_wilayah") or {}).get(kab), (cx.per_kab("kek_riwayat") or {}).get(kab)
+    if wl is None and rw is None:
+        return None
+    isi = {"level_kini": wl["lv"] if wl else None, "level_label": LEVEL_KERING[wl["lv"]] if wl else None,
+           "spi3": wl["spi3"] if wl else None, "mm3": wl["mm3"] if wl else None,
+           "penduduk_status": {"waspada_atau_lebih": wl["jiwa"][0], "siaga_atau_lebih": wl["jiwa"][1], "awas": wl["jiwa"][2], "total_penduduk": wl["total"]} if wl else None,
+           "riwayat": ({"risiko": rw["risiko"], "tahun_siaga": round(rw["kekerapan"] * NT), "n_tahun": NT, "bulan_siaga": rw["bulan_siaga"], "tren": rw["tren"], "dibi": rw["dibi"]}
+                       if rw else None),
+           "null_arti": None if wl and rw else "kab ini tidak ada di sumber %s; bukan berarti tanpa kekeringan" % ("status SPI-3 (376 kab)" if not wl else "riwayat"),
+           "arti": "level_kini = tingkat tertinggi yang dialami >= 30% penduduk kab pada hari data (BATAS_WIL 0,30 di scripts/kekeringan/status.py), BUKAN tingkat tertinggi kecamatan: kab bisa Normal walau sebagian kecil penduduknya berstatus Awas; penduduk_status = penduduk kecamatan berstatus Waspada atau lebih / Siaga atau lebih / Awas (bukan jumlah korban atau terdampak); riwayat.tahun_siaga = jumlah tahun bersiaga dari n_tahun (1991-2025); riwayat null bila kab tak ada di sumber"}
+    tgl, art = cx.tgl_arti("kek_meta" if cx.baca("kek_meta") else "kek_riwayat")
+    return blok(isi, tgl, "estimasi-model", "Deteksi Centurisk97: SPI-3 dari curah hujan reanalisis (NASA POWER); DIBI BNPB sebagai pembanding", art)
+
+
+def b_gunungapi(cx, kab, w):
+    gi, g = cx.gunung_idx(), cx.baca("gunung")
+    if gi is None or g is None or not _wil(cx, kab):
+        return None
+    pa = {x["nama"]: x for x in (cx.baca("paparan") or {}).get("gunung", [])}
+    ri = (cx.baca("gunung_risiko") or {}).get("gunung", {})
+    kl = (cx.baca("gunung_risiko") or {}).get("kelas", [])
+    lst = []
+    for j, n in sorted(gi.get(kab, [])):
+        r = ri.get(n)
+        lst.append({"gunung": n, "jarak_km": round(j, 1), "tinggi_m": g[n]["tinggi"],
+                    "krb3_jiwa_gunung": pa[n]["zona"]["III"]["penduduk"] if n in pa else None,
+                    "risiko_skor": r[0] if r else None, "risiko_kelas": kl[r[1]] if r else None, "status_kini": None})
+    isi = {"daftar": lst, "radius_km": RADIUS_GUNUNG_KM,
+           "arti": "daftar = gunung api yang titik puncaknya <= 50 km dari tepi poligon kab (batas disederhanakan; daftar kosong = tidak ada gunung dalam radius); "
+                   "status_kini null: repo tak memuat level aktivitas"}
+    return blokt(isi, cx.tgl_arti("paparan" if pa else "gunung"), "terverifikasi", "PVMBG/Badan Geologi KRB 2018 (paparan), Smithsonian GVP (risiko); jarak = hitungan geometri")
+
+
+def b_pesisir(cx, kab, w):
+    px = cx.pesisir_idx()
+    ts = (px or {}).get(kab)
+    if not ts:
+        return None  # di luar 5 situs: null, bukan 0
+    kls = collections.Counter(t.get("kelas") for t in ts)
+    lj = sorted(t["laju"] for t in ts if t.get("laju") is not None and t.get("kelas") in ("abrasi", "akresi"))  # hanya transek nyata
+    m = len(lj) // 2
+    med = (lj[m] if len(lj) % 2 else (lj[m - 1] + lj[m]) / 2) if len(lj) >= 2 else None
+    d = cx.baca("abrasi")
+    isi = {"abrasi_m_th": round(med, 1) if med is not None else None, "transek_n": len(ts), "nyata_n": len(lj), "abrasi_n": kls["abrasi"], "akresi_n": kls["akresi"],
+           "tidak_nyata_n": kls["tidak nyata"], "periode": d["metode"]["tahun"],
+           "situs": sorted({t["situs"] for t in ts}),
+           "arti": "median laju regresi transek NYATA (abrasi atau akresi) di dalam poligon kab (negatif = garis pantai mundur); null bila < 2 transek nyata; belum dikoreksi pasang surut; hanya 5 situs pantura Jawa, kab lain null"}
+    return blokt(isi, cx.tgl_arti("abrasi"), "estimasi-model", "Landsat 1988-2025 (MNDWI) via Planetary Computer; garis dasar OSM")
+
+
+def b_udara(cx, kab, w):
+    d = cx.baca("udara")
+    pv = ((d or {}).get("prov") or {}).get(cx.kode[kab]["prov"])
+    if not pv:
+        return None
+    hari = sorted(pv)
+    rr = [pv[h][1] for h in hari if pv[h][1] is not None]
+    if not rr:
+        return None
+    isi = {"pm25_rerata": round(sum(rr) / len(rr), 1), "pm25_maks_harian": max(rr),
+           "hari_rerata_di_atas_55_4": sum(1 for v in rr if v > 55.4),
+           "jiwa_maks_di_atas_55_4": max(pv[h][0] for h in hari if pv[h][0] is not None) if any(pv[h][0] is not None for h in hari) else None,
+           "n_hari": len(rr), "dari": hari[0], "sampai": hari[-1],
+           "arti": "jendela %d hari terakhir, bukan klimatologi tahunan; rerata berbobot jiwa dari analisis model CAMS, tingkat PROVINSI (bukan kab); ambang 55,4 \u00b5g/m\u00b3 = batas atas kategori Sedang ISPU/AQI" % len(rr)}
+    return blokt(isi, cx.tgl_arti("udara"), "estimasi-model", "Model PM2,5 harian per provinsi (level provinsi)")
+
+
+def b_neraca(cx, kab, w):
+    d = cx.baca("neraca")
+    e = ((d or {}).get("kab") or {}).get(kab)
+    if not e:
+        return None  # Jawa saja
+    k = e["skenario"]["klim"]
+    def neg(v):
+        return round(-sum(x for x in v if x < 0), 1)
+    isi = {"defisit_2030": neg(k["N2030"]), "defisit_2025": neg(k["N"]),
+           "bulan_defisit_2030": [i + 1 for i, x in enumerate(k["N2030"]) if x < 0],
+           "versi": d["meta"]["versi"],
+           "arti": "skenario iklim rerata 1991-2025; defisit = jumlah saldo bulanan negatif (juta m3) disajikan sebagai bilangan positif; 0 = tak ada bulan defisit; berkas tak bertanggal; parameter model taw_mm, alpha, k_bulan = asumsi-kebijakan, belum dikalibrasi (kalibrasi GloFAS NA-06)"}
+    return blokt(isi, cx.tgl_arti("neraca"), "estimasi-model", "Neraca air kab (CHIRPS, NASA POWER; estimasi model v1)")
+
+
+def b_model(cx, kab, w):
+    ri = cx.risiko_idx()
+    if ri is None and not cx.baca("gerbang") and not cx.baca("uji_banjir") and not cx.baca("uji_kering"):
+        return None
+    rk = None
+    if ri and ri[0].get(kab):
+        baris = ri[0][kab]
+        sk = collections.Counter(b[1] for b in baris)
+        dom = max(sk, key=lambda i: (sk[i], i))
+        sangat = sorted((b for b in baris if b[1] == len(ri[1]) - 1), key=lambda b: (-b[0], b[2]))[:10]
+        rk = {"kelas_dominan": ri[1][dom], "n_kec": len(baris), "per_kelas": {ri[1][i]: sk[i] for i in sorted(sk)},
+              "risiko_maks": max(b[0] for b in baris), "kec_sangat_tinggi": [b[2] for b in sangat]}
+    uji, tg = cx.uji()
+    ub = (((cx.baca("uji_banjir") or {}).get("vonis") or {}).get("per_kelompok") or {}).get("banjir_longsor") or {}
+    isi = {"risiko_kec": rk, "longsor_nowcast": None, "banjir_status": ub.get("label"), "uji": uji, "uji_tanggal": tg,
+           "arti": "uji = vonis GLOBAL (sama untuk semua kab, bukan hasil uji per kab); risiko_kec = indeks komposit platform per kecamatan, BELUM diuji balik; uji = vonis gerbang model (lolos|gagal|belum); longsor_nowcast null: tak ada keluaran longsor di repo"}
+    return blokt(isi, cx.tgl_arti("risiko_kec" if ri else "gerbang"), "estimasi-model", "Indeks risiko komposit platform (belum diuji) dan vonis uji balik")
+
+
+def b_siluet(cx, kab):
+    po = (cx.poli(cx.kode[kab]["prov"]) or {}).get(kab)
+    return siluet(po) if po else None
+
+
+NULL_ARTI = {
+    "gempa": "sumber gempa tidak tersedia",
+    "karhutla": "kab tidak ada di riwayat titik panas dan provinsinya tidak bersel gambut/KHG di sumber",
+    "kekeringan": "kab tidak ada di sumber kekeringan (status SPI-3 376 kab, riwayat 508 kab); bukan berarti tanpa kekeringan",
+    "gunungapi": "poligon kab atau titik gunung api tidak tersedia",
+    "pesisir": "di luar 5 situs studi abrasi pantura Jawa (Sayung, Pekalongan, Indramayu, Subang, Muara Gembong); bukan berarti pantainya aman",
+    "udara": "provinsi tidak ada di sumber PM2,5",
+    "neraca_air": "di luar cakupan model neraca air (hanya 119 kab di Jawa); bukan berarti tanpa defisit air",
+    "model": "indeks risiko kecamatan dan berkas uji tidak tersedia",
+    "fasilitas": "di luar cakupan data sekolah dan faskes (hanya 9 provinsi) atau kab tanpa poligon; bukan berarti tanpa fasilitas",
+    "siluet": "poligon kab tidak tersedia",
+}
+
+
+BARU = {i for ids in BLOK_SUMBER.values() for i in ids} - {"inarisk_gempa", "geo"}  # sumber B02 (tanggal dari isi berkas)
+
+
 def bangun_kab(cx, kab, hilang):
     prov = cx.kode[kab]["prov"]
     w = (cx.baca("wilayah", prov) or {}).get(kab)
@@ -446,6 +918,11 @@ def bangun_kab(cx, kab, hilang):
                   ("inarisk_kec", b_inarisk), ("kejadian", b_kejadian), ("fasilitas", b_fasilitas),
                   ("kapasitas", b_kapasitas), ("riwayat_luar", b_riwayat_luar)):
         p[n] = fn(cx, kab, w)
+    for n, fn in (("gempa", b_gempa), ("karhutla", b_karhutla), ("kekeringan", b_kekeringan), ("gunungapi", b_gunungapi),
+                  ("pesisir", b_pesisir), ("udara", b_udara), ("neraca_air", b_neraca), ("model", b_model)):
+        p[n] = fn(cx, kab, w)
+    p["siluet"] = b_siluet(cx, kab)
+    p["_null_arti"] = {b: t for b, t in NULL_ARTI.items() if p.get(b) is None}  # buku menulis ini, bukan "Tidak ada data" polos
     for n, s in SATUAN.items():
         if p[n] is not None:
             p[n]["_satuan"] = s
@@ -457,6 +934,11 @@ def bangun_kab(cx, kab, hilang):
                      ("kejadian", ("kejadian", "dibi")), ("fasilitas", ("sekolah", "fasilitas", "geo"))):
         if p[blk] is not None or any(i in hilang for i in ids):
             pakai.update(ids)
+    for blk, ids in BLOK_SUMBER.items():
+        if p[blk] is not None or any(i in hilang for i in ids):
+            pakai.update(ids)
+    if p["siluet"] is not None or "geo" in hilang:
+        pakai.add("geo")
     if (p["wilayah"] is not None) or "wilayah" in hilang:
         pakai.add("wilayah")
     tgl = {"wilayah": cx.tgl_snapshot(), "desa_cari": (cx.baca("desa_cari") or {}).get("dibuat", "")[:10] or None,
@@ -467,8 +949,11 @@ def bangun_kab(cx, kab, hilang):
         if i in hilang:
             e.update(tanggal=None, hilang=True)
         else:
-            e.update(tanggal=tgl.get(i) or cx.tgl_snapshot())
-            e["tanggal_arti"] = {"desa_cari": "terbit", "dibi": "terbit", "kejadian": "akhir-cakupan"}.get(i, "snapshot-repo")
+            if i in BARU:
+                e["tanggal"], e["tanggal_arti"] = cx.tgl_arti(i)
+            else:
+                e.update(tanggal=tgl.get(i) or cx.tgl_snapshot())
+                e["tanggal_arti"] = {"desa_cari": "terbit", "dibi": "terbit", "kejadian": "akhir-cakupan"}.get(i, "snapshot-repo")
             if i == "dibi" and cx.dibi_idx():
                 e["kembar_dibuang"] = cx.dibi_idx()[3].get(kab, 0)  # baris DIBI kembar (tanggal+jenis+kab+dampak inti sama) dihitung sekali
         p["sumber"].append(e)
@@ -507,6 +992,9 @@ def validasi(p):
         assert v.get("sumber"), f"{k}.{b}: sumber kosong"
         assert RE_TGL.match(v.get("tanggal") or ""), f"{k}.{b}: tanggal '{v.get('tanggal')}' bukan YYYY-MM-DD"
         assert v.get("yakin") in YAKIN, f"{k}.{b}: yakin '{v.get('yakin')}' di luar {YAKIN}"
+    sl = p.get("siluet")
+    assert sl is None or (isinstance(sl, str) and re.fullmatch(r"M[\d ]+Z(M[\d ]+Z)*", sl) and len(sl.encode()) <= 1000), \
+        f"{k}.siluet bukan path 'M..Z' bilangan bulat <= 1000 byte ({len(sl.encode()) if isinstance(sl, str) else sl!r})"
     for r in p.get("riwayat_luar") or []:
         assert r.get("sumber") in ("GDACS", "CEMS") and RE_TGL.match(r.get("tgl") or ""), f"{k}.riwayat_luar: butir tanpa sumber/tgl {r}"
     assert p.get("sumber") and all("nama" in e and "berkas" in e and "tanggal" in e for e in p["sumber"]), f"{k}: sumber[] kosong/bocor"
@@ -592,6 +1080,146 @@ def cek():
         assert f is None or isinstance(f["cakupan"]["sekolah_siswa_prov"], list)
     assert a["6211"]["riwayat_luar"][0]["jenis_label"] == "kebakaran hutan"
     assert a["6211"]["kejadian"]["parsial"] == {"tahun": 2026, "sampai": "2026-10-12"}, a["6211"]["kejadian"]["parsial"]
+    # ---- KM-B02
+    assert (a["6211"]["karhutla"]["gambut_ha"] or 0) > 0, f"D6: 6211 gambut_ha {a['6211']['karhutla']['gambut_ha']!r} harus > 0"
+    # gunung <= 50 km: kab sekitar Merapi terdeteksi, Jakarta Barat tidak punya gunung dalam radius
+    for k in ("3404", "3308", "3310", "3309"):
+        mj = [x["jarak_km"] for x in a[k]["gunungapi"]["daftar"] if x["gunung"] == "Merapi"]
+        assert mj and mj[0] <= RADIUS_GUNUNG_KM, f"{k}: Merapi tidak terdeteksi dalam 50 km ({mj})"
+    assert all(x["jarak_km"] <= RADIUS_GUNUNG_KM for p in a.values() for x in (p["gunungapi"] or {"daftar": []})["daftar"]), "gunung > 50 km lolos"
+    assert a["3173"]["gunungapi"]["daftar"] == [], "Jakarta Barat: tak ada gunung dalam 50 km (daftar kosong, bukan null)"
+    # pesisir: hanya kab di 5 situs; non-pesisir null
+    ps = sorted(k for k, p in a.items() if p["pesisir"])
+    assert ps and all(k[:2] in ("32", "33") for k in ps) and len(ps) <= 10, f"pesisir non-null di luar situs pantura Jawa: {ps}"
+    assert a["3404"]["pesisir"] is None and a["6211"]["pesisir"] is None and a["3321"]["pesisir"]["abrasi_m_th"] < 0, "pesisir: Sleman/Pulang Pisau harus null, Demak abrasi (negatif)"
+    # neraca: Jawa saja, defisit tidak negatif
+    assert a["6211"]["neraca_air"] is None and a["3404"]["neraca_air"]["defisit_2030"] >= 0, "neraca_air: 6211 null, 3404 berisi"
+    # siluet: ada untuk semua kab berpoligon, <= 1 KB
+    assert sum(1 for p in a.values() if p["siluet"] is None) < 10, "terlalu banyak kab tanpa siluet"
+    # model.uji: nilai sah, longsor belum, identik antar kab (vonis global)
+    uj = {json.dumps(p["model"]["uji"], sort_keys=True) for p in a.values()}
+    assert len(uj) == 1, "model.uji berbeda antar kab"
+    u0 = a["6211"]["model"]["uji"]
+    assert set(u0.values()) <= {"lolos", "gagal", "belum"} and u0["longsor"] == "belum", u0
+    assert a["6211"]["model"]["longsor_nowcast"] is None and a["6211"]["model"]["risiko_kec"]["n_kec"] > 0
+    # udara level provinsi: kab satu provinsi sama nilainya; estimasi-model
+    assert a["3321"]["udara"]["pm25_rerata"] == a["3326"]["udara"]["pm25_rerata"] and a["3321"]["udara"]["yakin"] == "estimasi-model"
+    # tren Theil-Sen
+    assert theil_sen([[0, 0], [1, 1], [2, 2], [3, 3], [4, 100]]) == 1, "Theil-Sen harus kebal pencilan"
+    assert theil_sen([[0, 5]]) is None
+    assert tren_kata([[2015 + i, 10 + 5 * i] for i in range(6)], "banjir")[0] == "naik"
+    assert tren_kata([[2015 + i, 40 - 5 * i] for i in range(6)], "banjir")[0] == "turun"
+    assert tren_kata([[2015 + i, 10] for i in range(6)], "banjir")[0] == "datar"
+    assert tren_kata([[2015 + i, 10 + i] for i in range(4)], "banjir") == (None, None), "< 5 tahun harus null"
+    assert tren_kata([[2010 + i, i] for i in range(5)], "banjir") == (None, None), "tahun di luar 2015-2025 tak dihitung"
+    # B1: 2024 hanya dikecualikan untuk jenis DIBI; 'semua' (CKAN) memakainya
+    s24 = [[2015 + i, 5] for i in range(4)] + [[2024, 5]]
+    assert tren_kata(s24, "cuaca") == (None, None) and tren_kata(s24, "semua")[0] == "datar", "2024: DIBI dikecualikan, 'semua' dipakai"
+    # B2: tahun ada di sumber tanpa baris kab = 0; tahun tak ada di sumber tidak diisi
+    assert tahun_tren([[2016, 3], [2018, 3]], "banjir", [2015, 2016, 2017, 2018, 2024, 2030]) == [[2015, 0], [2016, 3], [2017, 0], [2018, 3]], "isi 0 hanya tahun sumber dalam rentang, tanpa 2024"
+    assert tahun_tren([[2016, 3], [2018, 3]], "banjir") == [[2016, 3], [2018, 3]], "tanpa tahun_sumber tak ada pengisian"
+    assert tren_kata([[2019, 6], [2020, 6], [2021, 7]], "banjir", [2017, 2018, 2019, 2020, 2021])[0] == "naik", "nol terisi sebelum 2019 membuat naik"
+    assert tren_kata([[2020, 6], [2021, 6]], "banjir", [2017, 2018, 2019, 2020, 2021]) == ("jarang", None), "2 tahun berkejadian = jarang"
+    assert tren_kata([[2015 + i, 0] for i in range(8)], "banjir") == ("jarang", None), "deret nol = jarang, bukan datar"
+    assert tren_kata([[2015, 4], [2016, 0], [2017, 4], [2018, 4], [2019, 0]], "banjir")[0] in ("naik", "datar", "turun"), "3 tahun berkejadian: dinilai biasa"
+    assert tren_kata([[2015, 4], [2016, 0], [2017, 4], [2018, 0], [2019, 0]], "banjir") == ("jarang", None), "2 tahun berkejadian dari 5: jarang"
+    assert tren_kata([[2020, 6], [2021, 6]], "banjir") == (None, None)
+    # half-up
+    assert (bulat(1266.5), bulat(0.5), bulat(0.4), bulat(2.5), bulat(0)) == (1267, 1, 0, 3, 0), "pembulatan setengah ke atas"
+    # V1: 2024 tak lengkap (nol buatan) dikeluarkan dari tren dan total
+    naik_nol24 = [[2015 + i, 10 + 2 * i] for i in range(9)] + [[2024, 0]]
+    assert tren_kata(naik_nol24, "cuaca")[0] == "naik", "nol buatan 2024 tak boleh membalik tren"
+    assert tren_kata([[2015 + i, 10 + 2 * i] for i in range(4)] + [[2024, 0]], "cuaca") == (None, None), "4 tahun + 2024 = < 5 tahun dipakai"
+    kix = cx.kejadian_idx()
+    n_ts = n_tren = 0
+    for k, p in a.items():  # SEMUA kab: total/tren dihitung ulang dari sumber mentah secara terpisah dari tahun_tren()
+        kj = p["kejadian"] or {}
+        for j, v in (kj.get("tahunan") or {}).items():
+            tl = () if j == "semua" else (2024,)
+            tt = sum(n for y, n in v if 2015 <= y <= 2025 and y not in tl)
+            assert (kj["total_2015_2025"] or {}).get(j, tt) == tt, f"{k}.{j}: total salah (2024 hanya dikecualikan untuk jenis DIBI)"
+            rg = (kj["tren_rentang"] or {}).get(j)
+            assert rg is None or (2015 <= rg[0] <= rg[1] <= 2025 and (j == "semua" or rg[1] != 2024)), f"{k}.{j}: tren_rentang {rg}"
+            mentah = dict(kix[0][k][j])
+            pts = {int(y): n for y, n in mentah.items()}
+            for y in kix[4][j]:
+                pts.setdefault(y, 0)  # tahun ada di sumber, kab tanpa baris = 0
+            dipakai = sorted((y, n) for y, n in pts.items() if 2015 <= y <= 2025 and y not in tl)
+            if len(dipakai) < KONST["MASALAH"]["TREN_MIN_TAHUN"]:
+                assert kj["tren"][j] is None and rg is None, f"{k}.{j}: < 5 tahun tapi tren {kj['tren'][j]}"
+            else:
+                ada_ = sum(1 for _, n in dipakai if n > 0)
+                assert (kj["tren"][j] == "jarang") == (ada_ < KONST["MASALAH"]["TREN_MIN_TAHUN_ADA"]), f"{k}.{j}: tren {kj['tren'][j]} dengan {ada_} tahun berkejadian"
+                assert kj["tren"][j] in ("naik", "datar", "turun", "jarang") and not (kj["tren"][j] == "datar" and ada_ < 3), f"{k}.{j}: datar dengan {ada_} tahun berkejadian"
+                assert kj["tren_lereng"][j] == (None if ada_ < 3 else round(theil_sen([list(t) for t in dipakai]), 3)), f"{k}.{j}: lereng {kj['tren_lereng'][j]} != hitung ulang dari sumber"
+                assert rg == [dipakai[0][0], dipakai[-1][0]], f"{k}.{j}: rentang {rg} != {dipakai[0][0]}-{dipakai[-1][0]}"
+                n_tren += 1
+            n_ts += any(y not in dict(v) for y, _ in dipakai)
+    assert n_ts > 0 and n_tren > 1000, f"pengisian 0 tak pernah terjadi ({n_ts}) / vonis tren terlalu sedikit ({n_tren})"
+    assert a["2171"]["kejadian"]["tren"]["longsor"] == "naik" and a["1209"]["kejadian"]["tren"]["cuaca"] == "datar", \
+        (a["1209"]["kejadian"]["tren"], a["2171"]["kejadian"]["tren"])  # 1209 cuaca "naik" hanya sebelum tahun tanpa baris dihitung 0
+    assert a["1209"]["kejadian"]["tren_rentang"]["semua"][1] == 2024, "'semua' (CKAN) 2024 lengkap: dipakai"
+    assert a["1107"]["kekeringan"]["level_kini"] == 0 and a["1107"]["kekeringan"]["penduduk_status"]["awas"] > 0, "1107: Normal walau ada penduduk Awas (< 30%)"
+    # V3: pesisir hanya transek nyata, null bila < 2
+    for k in ps:
+        pe = a[k]["pesisir"]
+        assert (pe["abrasi_m_th"] is None) == (pe["nyata_n"] < 2) and pe["nyata_n"] <= pe["transek_n"], f"{k}: {pe}"
+    assert a["3327"]["pesisir"]["abrasi_m_th"] is None, a["3327"]["pesisir"]
+    # V4-V6, S1-S14
+    assert "bukan musim" not in a["3321"]["udara"]["arti"] and "klimatologi tahunan" in a["3321"]["udara"]["arti"] and "ISPU" in a["3321"]["udara"]["arti"]
+    assert a["6211"]["karhutla"]["titik_tahun_parsial"] == {"viirs_tahun_sebagian": 2012, "tahun_belum_lengkap": 2026}
+    assert "taw_mm" in a["3404"]["neraca_air"]["arti"] and "asumsi-kebijakan" in a["3404"]["neraca_air"]["arti"]
+    assert "GLOBAL" in a["6211"]["model"]["arti"]
+    assert "30%" in a["6211"]["kekeringan"]["arti"] and "BUKAN tingkat tertinggi kecamatan" in a["6211"]["kekeringan"]["arti"]
+    assert "poligon kab tak ada" in a["6211"]["gempa"]["arti"] and "null = tak ada gempa" not in a["6211"]["gempa"]["arti"]
+    assert a["6211"]["gempa"]["risiko"]["m_maks_100km"] is None, "tak ada gempa radius 100 km: null bukan 0,0"
+    assert a["6211"]["gempa"]["yakin"] == "estimasi-model" and a["6211"]["karhutla"]["yakin"] == "estimasi-model", "yakin blok = terlemah sub-blok"
+    for k, p in a.items():
+        kk = p["kekeringan"]
+        if kk:
+            assert "jiwa_terdampak" not in kk and ("penduduk_status" in kk) and kk["tanggal_arti"] == "hari-data", k
+            r = kk["riwayat"]
+            assert r is None or (isinstance(r["tahun_siaga"], int) and 0 <= r["tahun_siaga"] <= r["n_tahun"] == 35 and "kekerapan" not in r), f"{k}: {r}"
+        if kk and kk["penduduk_status"]:  # level_kini = lv_wilayah: tingkat tertinggi yang dialami >= 30% penduduk
+            ps_ = kk["penduduk_status"]; tot_ = ps_["total_penduduk"]
+            frak = {1: ps_["waspada_atau_lebih"], 2: ps_["siaga_atau_lebih"], 3: ps_["awas"]}
+            harap = next((L for L in (3, 2, 1) if tot_ and frak[L] / tot_ >= 0.30), 0)
+            assert kk["level_kini"] == harap, f"{k}: level_kini {kk['level_kini']} != tingkat tertinggi yang dialami >= 30% penduduk ({harap}; {frak} dari {tot_})"
+        kh = p["karhutla"]
+        if kh:
+            m_ = ((cx.per_kab("karhutla") or {}).get(k) or {}).get("m")
+            assert kh["rerata_modis_th"] == (None if m_ is None else bulat(m_)), f"{k}: rerata_modis_th {kh['rerata_modis_th']} != setengah-ke-atas({m_})"
+            assert (kh["rerata_modis_th"] == 0) <= (kh["peringkat_modis"] is None), f"{k}: rerata tampil 0 tetapi peringkat {kh['peringkat_modis']}"
+            gh = (cx.gambut_idx() or ({}, set()))[0].get(k)
+            if kh["gambut_ha"]:
+                assert kh["gambut_ha"] == max(1000, bulat(gh / 1000) * 1000), f"{k}: gambut_ha {kh['gambut_ha']} bukan setengah-ke-atas ribuan dari {gh}"
+            assert kh["rerata_modis_th"] is None or isinstance(kh["rerata_modis_th"], int), f"{k}: rerata_modis_th {kh['rerata_modis_th']!r}"
+            assert kh["gambut_ha"] is None or isinstance(kh["gambut_ha"], int), f"{k}: gambut_ha bukan int"
+            assert kh["gambut_ha"] is None or kh["gambut_ha"] == 0 or kh["gambut_ha"] % 1000 == 0, f"{k}: gambut_ha {kh['gambut_ha']} bukan ribuan"
+            assert not (kh["rerata_modis_th"] == 0 and kh["peringkat_modis"]), f"{k}: peringkat dengan rerata 0"
+        na = p["neraca_air"]
+        if na:
+            assert na["defisit_2030"] == round(na["defisit_2030"], 1) and na["defisit_2025"] == round(na["defisit_2025"], 1), k
+        for x in (p["gunungapi"] or {"daftar": []})["daftar"]:
+            assert "krb3_jiwa_gunung" in x and "krb3_jiwa" not in x
+        assert set(p["_null_arti"]) == {b for b in NULL_ARTI if p.get(b) is None}, f"{k}: _null_arti tak sesuai blok null"
+    assert "Jawa" in a["6211"]["_null_arti"]["neraca_air"] and "5 situs" in a["6211"]["_null_arti"]["pesisir"]
+    assert a["3404"]["karhutla"] is None or a["3404"]["karhutla"]["gambut_null_arti"], "gambut null di luar cakupan wajib berketerangan"
+    assert "\u00b5g/m\u00b3" in a["3321"]["udara"]["_satuan"]["pm25_rerata"]
+    def angka(o, pre=""):  # kunci angka (bukan bool) sampai kedalaman 2, tanpa isi list
+        for kk, v in (o or {}).items():
+            if kk.startswith("_") or kk in ("sumber", "tanggal"):
+                continue
+            if isinstance(v, dict) and not pre and kk not in ("uji", "uji_tanggal", "per_kelas"):
+                yield from angka(v, kk + ".")
+            elif isinstance(v, (int, float)) and not isinstance(v, bool):
+                yield pre + kk
+    for k in ("3321", "6211", "3404", "3327"):  # S12: tiap angka B02 punya satuan (kunci sendiri atau awalannya)
+        for b in ("gempa", "karhutla", "kekeringan", "gunungapi", "pesisir", "neraca_air", "model", "udara"):
+            if a[k][b]:
+                sat = a[k][b]["_satuan"]
+                for kunci_ in angka(a[k][b]):
+                    assert kunci_ in sat or kunci_.split(".")[0] in sat, f"{k}.{b}.{kunci_}: tanpa _satuan"
     # fixture mini (3 kab): golden + D3 + D7 + penolakan
     prof = bangun(FIX)
     assert sorted(prof) == ["3171", "6201", "6211"], sorted(prof)
@@ -605,6 +1233,16 @@ def cek():
     assert prof["3171"]["fasilitas"] is None, "luar cakupan 9 provinsi harus null"
     assert prof["6211"]["fasilitas"]["sekolah"] == 2 and prof["6211"]["fasilitas"]["siswa"] == 30, prof["6211"]["fasilitas"]
     assert "@" not in teks(prof["6211"]), "email BPBD bocor"
+    # B02 pada fixture: gambut = 1 sel (titik tengah di poligon) ~246 ha, sel di luar poligon tak dihitung; gempa 2 dari 3 titik
+    f6 = prof["6211"]
+    assert f6["karhutla"]["gambut_ha"] == 1000 and f6["karhutla"]["titik_tahun"] == [[2012, 4], [2013, 5]], f6["karhutla"]
+    assert f6["karhutla"]["khg"] is None and f6["karhutla"]["gambut_pct"] == 0.0, "KHG tanpa sumber harus null; 246 ha dari 959.680 ha = 0,03% dibulatkan 0,0"
+    assert (f6["gempa"]["n_m5_1900"], f6["gempa"]["m_maks"], f6["gempa"]["terakhir"], f6["gempa"]["risiko_kelas"]) == (2, 6.1, "2021-05-06", "Rendah"), f6["gempa"]
+    assert prof["6201"]["gempa"]["n_m5_1900"] == 0 and prof["6201"]["gempa"]["risiko"] is None and prof["6201"]["karhutla"]["gambut_ha"] == 0
+    assert prof["3171"]["karhutla"] is None, "provinsi tanpa sel gambut dan tanpa riwayat: null"
+    assert f6["gunungapi"] is None and f6["pesisir"] is None and f6["neraca_air"] is None and f6["udara"] is None and f6["kekeringan"] is None
+    assert f6["model"] is None, "tanpa satu pun sumber model: null"
+    assert f6["siluet"] and f6["siluet"].startswith("M") and any(e.get("hilang") and e["berkas"].endswith("gunung.json") for e in f6["sumber"])
     with tempfile.TemporaryDirectory() as t:  # D7: satu sumber hilang -> blok null + catatan, tanpa galat
         sal = os.path.join(t, "m"); shutil.copytree(FIX, sal, ignore=shutil.ignore_patterns("harapan"))
         os.remove(os.path.join(sal, "public", "banjir", "data", "kejadian.json"))
@@ -613,6 +1251,11 @@ def cek():
         assert r["kejadian"]["tahunan"] is None and r["kejadian"]["musim"] is None, "sumber hilang tapi blok masih berisi"
         assert r["kejadian"]["dampak_12bln"] is not None, "sumber lain ikut hilang"
         assert any(e.get("hilang") and e["berkas"].endswith("kejadian.json") for e in r["sumber"]), "sumber hilang tak dicatat di sumber[]"
+        os.remove(os.path.join(sal, "public", "gempa", "data", "riwayat_m5.json"))  # B02: katalog hilang -> hitungan null (bukan 0), indeks risiko tetap
+        g = bangun(sal)["6211"]
+        validasi(g)
+        assert g["gempa"]["n_m5_1900"] is None and g["gempa"]["risiko_lv"] == 0, g["gempa"]
+        assert any(e.get("hilang") and e["berkas"].endswith("riwayat_m5.json") for e in g["sumber"])
     # input salah DITOLAK
     import copy
     p = a["6211"]
@@ -628,6 +1271,10 @@ def cek():
     tolak(validasi, "bocor", ubah(lambda q: q["wilayah"].update(oa="A5012345678")))
     tolak(validasi, "harus null", ubah(lambda q: q["kejadian"].update(dampak_12bln={"meninggal": 0, "n_kejadian": 0})))
     tolak(validasi, "tak ada", ubah(lambda q: q.pop("fasilitas")))
+    tolak(validasi, "siluet", ubah(lambda q: q.update(siluet="M0 0 L1 1Z")))
+    tolak(validasi, "siluet", ubah(lambda q: q.update(siluet="M" + "1 2 " * 400 + "Z")))
+    tolak(validasi, "tak ada", ubah(lambda q: q.pop("gempa")))
+    tolak(validasi, "yakin", ubah(lambda q: q["karhutla"].update(yakin="pasti")))
     mx = max(len(t.encode()) for t in ta.values())
     nul = {b: sum(1 for p in a.values() if p[b] is None) for b in BLOK_DICT + ("riwayat_luar",)}
     print(f"OK profil_daerah.py: {len(a)} kab, maks {mx} byte, deterministik, fixture 3 kab; null per blok {nul}")
