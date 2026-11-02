@@ -36,7 +36,7 @@ def tarik(kini, env=None, buka=urllib.request.urlopen):
         with buka(urllib.request.Request(url, headers={"Authorization": "Bearer " + token}), timeout=30) as r:
             j = json.load(r)
         if j.get("terpotong"):
-            log("respons terpotong (batas 5000 baris); sisanya menyusul di jalan berikut")
+            log("respons terpotong (batas 5000 baris, urut tanggal naik): baris terbaru hilang, perkecil jendela sejak")
         return j["konfirmasi"]
     except Exception as x:   # HTTPError 401/503, jaringan, JSON rusak: semuanya "lewati"
         log("dilewati:", getattr(x, "code", None) or type(x).__name__, x)
