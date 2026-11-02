@@ -1,9 +1,10 @@
-/* Command center karhutla (src/command_center.js, migrations/0099_command_center.sql, peran staf operator_cc, tab pemirsa dinding) di workerd (Miniflare) dengan D1 lokal sungguhan,
-   migrasi apa adanya (TEST.md: tanpa mock klien DB). Dibuktikan: matriks akses tiap rute (tamu 401, akun gerbang 403, operator, koordalops/pimpinan baca saja, pemirsa dinding hanya /api/cc/dinding),
-   gerbang halaman centurisk97.id, hak baca baru (monitor/omc/inventaris/sla/pantau) dan penolakan tulis/korban/tagih, semua transisi + CAS 409 tanpa jejak palsu, trigger append-only, wilayah, dummy,
-   status by kunci (kunci sama dengan feed peringatan), log + CSV tahan injeksi rumus, tglWib lintas tengah malam WIB, durasi, kontak tanpa nomor pribadi.
-   Halaman (bagian E): gerbang /command-center (meja) dan /command-center/dinding per jenis akun, CSP, kerangka dinding tanpa alarm.js/sapa/asisten, menu admin, node --check berkas klien, pengendali
-   bunyi dan pemformat jam/durasi klien di node:vm. Uji di peramban nyata ada di command_center_layar.test.mjs.
+/* Command center karhutla (src/command_center.js, migrations/0099_command_center.sql + 0100_cc_tanpa_dinding.sql, peran staf operator_cc) di workerd (Miniflare) dengan D1 lokal sungguhan,
+   migrasi apa adanya (TEST.md: tanpa mock klien DB). Dibuktikan: matriks akses tiap rute (tamu 401, akun gerbang 403, operator, koordalops/pimpinan baca saja, pemirsa tidak membuka apa pun),
+   layar dinding DIBUANG (rute /command-center/dinding dan /api/cc/dinding tidak ada, tab pemirsa 'dinding' ditolak trigger 0100), gerbang halaman centurisk97.id, hak baca baru (monitor/omc/inventaris/sla/pantau)
+   dan penolakan tulis/korban/tagih, semua transisi + CAS 409 tanpa jejak palsu, trigger append-only, wilayah, dummy, status by kunci (kunci sama dengan feed peringatan), log + CSV tahan injeksi rumus,
+   tglWib lintas tengah malam WIB, durasi, kontak tanpa nomor pribadi.
+   Halaman (bagian E): gerbang /command-center (meja) per jenis akun, CSP, HTML/JS/CSS meja SENYAP TOTAL (tanpa Audio/.mp3/suara), menu admin, node --check berkas klien, pemformat jam/durasi klien di node:vm.
+   Uji di peramban nyata ada di command_center_layar.test.mjs.
    Jalankan: node --test tests/warga/command_center.test.mjs */
 import assert from "node:assert/strict";
 import {readFileSync, existsSync} from "node:fs";
@@ -13,12 +14,12 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG, GERBANG_ORANG, sha256} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus), urutan yang sama dengan produksi
-import {tglWib, rentangHari, median, durasiJejak, selCsv, nomorDari, aksiBoleh, TRANSISI, STATUS, FINAL, BATAS_TENGGAT, BATAS_DAFTAR, BATAS_LOG, BATAS_AKSI_JAM, BATAS_LOG_JAM, MAKS_LOKASI, bersihkanCc} from "../../src/command_center.js";
+import {tglWib, rentangHari, median, durasiJejak, selCsv, nomorDari, aksiBoleh, TRANSISI, STATUS, FINAL, BATAS_DAFTAR, BATAS_LOG, BATAS_AKSI_JAM, BATAS_LOG_JAM, MAKS_LOKASI, bersihkanCc} from "../../src/command_center.js";
 import {kunciPublikKarhutla, periksaPeringatan} from "../../src/peringatan.js";
 import {TERTUTUP_OPERATOR, JENIS, JENIS_CC, bolehBuka} from "../../src/pantau.js";
 import {PERAN} from "../../src/staf.js";
 import {P_SIPPA_BACA} from "../../src/sippa.js";
-import {HALAMAN_STAF, SEMUA_PERAN, CSP_ADMIN, CSP_DINDING} from "../../src/admin_halaman.js";
+import {HALAMAN_STAF, SEMUA_PERAN, CSP_ADMIN} from "../../src/admin_halaman.js";
 
 /* kata yang dihapus dari konsep command center (keputusan pemilik 2 Nov 2026); dirakit supaya berkas ini sendiri bersih dari kata itu */
 const LAMA = "shi" + "ft", TANPA_LAMA = (teks, ket) => assert.ok(!new RegExp(LAMA, "i").test(teks), "tidak boleh memuat kata lama: " + ket);
@@ -62,12 +63,13 @@ const awalHari = t => Math.floor((t + WIB) / HARI) * HARI - WIB;
 const op1 = await staf(DB, "Budi Santoso", ["operator_cc"]), op2 = await staf(DB, "Citra Dewi", ["operator_cc"]), opWil = await staf(DB, "Dewi Wilayah", ["operator_cc"], {wilayah: ["62"]});
 const koord = await staf(DB, "Koordinator Uji", ["koordalops"]), pim = await staf(DB, "Pimpinan Uji", ["pimpinan"]), tmc = await staf(DB, "Staf TMC", ["tmc"]), pusd = await staf(DB, "Pusdalops Uji", ["pusdalops"]);
 const kampus = await staf(DB, "Staf Kampus", ["kemitraan"]), tertahan = await staf(DB, "Staf Tertahan", ["operator_cc"], {wajibGanti: 1});
-const pDinding = await pemirsa(DB, "Layar Dinding", ["dinding"]), pPeta = await pemirsa(DB, "Pemirsa Peta", ["peta"]);
+const pPeta = await pemirsa(DB, "Pemirsa Peta", ["peta"]);
 
 /* ================================================================ skema */
-uji("cc skema: migrasi 0099 idempoten; CHECK tabel, cc_jejak hanya menambah (hapus hanya dummy atau > 2 tahun), peran operator_cc dan tab dinding sah", async () => {
+uji("cc skema: migrasi 0099 + 0100 idempoten; CHECK tabel, cc_jejak hanya menambah (hapus hanya dummy atau > 2 tahun), peran operator_cc sah, tab dinding tidak sah lagi (0100)", async () => {
   const sql = teks("migrations", "0099_command_center.sql");
-  for (let i = 0; i < 2; i++) await DB.batch(pecah(sql).map(s => DB.prepare(s)));   // dijalankan ulang di atas skema yang sudah ada
+  const sql0100 = teks("migrations", "0100_cc_tanpa_dinding.sql");
+  for (let i = 0; i < 2; i++) { await DB.batch(pecah(sql).map(s => DB.prepare(s))); await DB.batch(pecah(sql0100).map(s => DB.prepare(s))); }   // berurutan, dijalankan ulang di atas skema yang sudah ada (0099 membuat trigger dengan 'dinding', 0100 mencabutnya)
   const t = hex16(0x9001), s = o => sisip(DB, "cc_status", {tugas_id: t, status: "ada_api", oleh: "staf:abc", sejak: 1, ...o});
   await assert.rejects(() => s({status: "baru"}), /CHECK/);   // 'baru' = tanpa baris
   await assert.rejects(() => s({status: "selesai"}), /CHECK/); await assert.rejects(() => s({tugas_id: "pendek"}), /CHECK/);
@@ -100,8 +102,9 @@ uji("cc skema: migrasi 0099 idempoten; CHECK tabel, cc_jejak hanya menambah (hap
   await assert.rejects(() => DB.prepare("UPDATE staf SET peran = '[\"raja\"]' WHERE id = ?").bind(x.id).run(), /tidak sah/);
   await assert.rejects(() => DB.prepare("UPDATE staf SET peran = '[\"operator_cc\",\"operator_cc\"]' WHERE id = ?").bind(x.id).run(), /tidak sah/);
   await DB.prepare("UPDATE staf SET peran = '[\"operator_cc\"]' WHERE id = ?").bind(x.id).run();
-  await pemirsa(DB, "Dinding Ganda", ["dinding", "monitor"]);
-  await assert.rejects(() => pemirsa(DB, "Tab Liar", ["dinding", "admin"]), /tab pemirsa tidak sah/);
+  await pemirsa(DB, "Monitor Ganda", ["peta", "monitor"]);
+  await assert.rejects(() => pemirsa(DB, "Tab Liar", ["peta", "admin"]), /tab pemirsa tidak sah/);
+  await assert.rejects(() => pemirsa(DB, "Dinding Lama", ["dinding"]), /tab pemirsa tidak sah/);   // 0100: layar dinding dibuang, tab 'dinding' tidak sah lagi
   assert.ok("operator_cc" in PERAN && SEMUA_PERAN.includes("operator_cc"));
 });
 
@@ -126,27 +129,28 @@ uji("cc retensi: bersihkanCc membuang jejak/status > 2 tahun dan kehadiran > 30 
 });
 
 /* ================================================================ akses */
-uji("cc akses: matriks tiap rute (tamu 401, akun gerbang 403, operator, koordalops/pimpinan baca saja, pemirsa dinding hanya dinding, peran lain 403, moderator)", async () => {
+uji("cc akses: matriks tiap rute (tamu 401, akun gerbang 403, operator, koordalops/pimpinan baca saja, pemirsa tidak membuka apa pun, dinding sudah tidak ada, peran lain 403, moderator)", async () => {
   const idA = await tugas(DB, {dibuat: Date.now() - 2 * MENIT}), kunci = "karhutla:" + await kunciPublikKarhutla(idA) + ":siaga";
   const rutes = {
-    antrean: ["GET", "/api/cc/antrean", undefined], dinding: ["GET", "/api/cc/dinding", undefined], status: ["GET", "/api/cc/status?kunci=" + kunci, undefined],
+    antrean: ["GET", "/api/cc/antrean", undefined], status: ["GET", "/api/cc/status?kunci=" + kunci, undefined],
     log: ["GET", "/api/cc/log", undefined], kontak: ["GET", "/api/cc/kontak?prov=12", undefined],
     aksi: ["POST", `/api/cc/aksi/${hex16(0x7777)}`, {}]};   // badan SENGAJA salah: auth harus menang atas validasi
-  const aktor = {tamu: {}, gerbang: GERBANG, gerbangOrang: GERBANG_ORANG, tmc: tmc.h, pusdalops: pusd.h, kampus: kampus.h, pemirsaDinding: pDinding.h, pemirsaPeta: pPeta.h, koord: koord.h, pim: pim.h, op: op1.h, mod: ADMIN, mod2: MOD2};
+  const aktor = {tamu: {}, gerbang: GERBANG, gerbangOrang: GERBANG_ORANG, tmc: tmc.h, pusdalops: pusd.h, kampus: kampus.h, pemirsaPeta: pPeta.h, koord: koord.h, pim: pim.h, op: op1.h, mod: ADMIN, mod2: MOD2};
   /* [rute][aktor] -> status. Sel kosong tidak diuji. "ok" = bukan 401/403 */
   const T = {
-    antrean: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaDinding: 403, pemirsaPeta: 403, koord: 200, pim: 200, op: 200, mod: 200, mod2: 200},
-    dinding: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaDinding: 200, pemirsaPeta: 403, koord: 200, pim: 200, op: 200, mod: 200, mod2: 200},
-    status: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaDinding: 401, pemirsaPeta: 401, koord: 200, pim: 200, op: 200, mod: 200, mod2: 200},
-    log: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaDinding: 403, pemirsaPeta: 403, koord: 200, pim: 200, op: 200, mod: 200, mod2: 200},
-    kontak: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaDinding: 403, pemirsaPeta: 403, koord: 403, pim: 403, op: 200, mod: 200, mod2: 200},
-    aksi: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaDinding: 403, pemirsaPeta: 403, koord: 403, pim: 403, op: 400, mod: 400, mod2: 400}};   // 400 = lolos auth, badan salah
+    antrean: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaPeta: 403, koord: 200, pim: 200, op: 200, mod: 200, mod2: 200},
+    status: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaPeta: 401, koord: 200, pim: 200, op: 200, mod: 200, mod2: 200},
+    log: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaPeta: 403, koord: 200, pim: 200, op: 200, mod: 200, mod2: 200},
+    kontak: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaPeta: 403, koord: 403, pim: 403, op: 200, mod: 200, mod2: 200},
+    aksi: {tamu: 401, gerbang: 403, gerbangOrang: 403, tmc: 403, pusdalops: 403, kampus: 403, pemirsaPeta: 403, koord: 403, pim: 403, op: 400, mod: 400, mod2: 400}};   // 400 = lolos auth, badan salah
   for (const [r, [m, j, b]] of Object.entries(rutes)) for (const [a, h] of Object.entries(aktor)) {
     const x = await api(m, j, b, h); assert.equal(x.s, T[r][a], `${r} oleh ${a}: ${x.s} ${x.t.slice(0, 120)}`);
     if (x.s === 401 || x.s === 403) assert.ok(x.j?.galat && !/id|nama|nomor/i.test(JSON.stringify(Object.keys(x.j))), `${r} ${a}: galat berbentuk JSON tanpa data`);
   }
-  /* pemirsa ber-tab dinding: tidak ada rute lain yang terbuka, juga lewat metode lain */
-  assert.equal((await api("POST", "/api/cc/antrean", {}, pDinding.h)).s, 405);
+  /* pemirsa: tidak ada rute lain yang terbuka, juga lewat metode lain */
+  assert.equal((await api("POST", "/api/cc/antrean", {}, pPeta.h)).s, 405);
+  /* layar dinding dibuang (2 Nov 2026): /api/cc/dinding tidak ada untuk siapa pun, termasuk moderator dan operator */
+  for (const [nama, h] of Object.entries({tamu: {}, op: op1.h, mod: ADMIN, pemirsa: pPeta.h})) { const x = await api("GET", "/api/cc/dinding", undefined, h); assert.equal(x.s, 404, `dinding ${nama}: ${x.s}`); }
   /* sandi awal belum diganti: sesi sah tetapi ditahan, 401 dengan penanda wajib_ganti (layar menawarkan sandi baru) */
   const th = await api("GET", "/api/cc/antrean", undefined, tertahan.h); assert.equal(th.s, 401); assert.ok(th.j.wajib_ganti);
   /* kiriman staf tanpa header x-pb: 1 ditolak (SameSite=Lax saja tidak menahan POST lintas situs) */
@@ -302,13 +306,11 @@ uji("cc wilayah: staf berwilayah hanya melihat dan menindak provinsinya; di luar
   await sisip(DB, "cc_jejak", {waktu: w, tugas_id: a62, oleh: op1.oleh, dari: "baru", ke: "dalam_konfirmasi"}); await sisip(DB, "cc_jejak", {waktu: w + 1, tugas_id: a61, oleh: op1.oleh, dari: "baru", ke: "dalam_konfirmasi"});
   const l1 = await ambil(`/api/cc/log?tgl=${tgl}`, op1.h), l2 = await ambil(`/api/cc/log?tgl=${tgl}`, opWil.h);
   assert.deepEqual(l1.j.jejak.map(j => j.prov), ["62", "61"]); assert.deepEqual(l2.j.jejak.map(j => j.prov), ["62"]);
-  /* dinding juga tersaring */
-  const d1 = await ambil("/api/cc/dinding", opWil.h); assert.ok(d1.j.antrean.every(x => x.prov === "62"));
 });
 
 uji("cc dummy: baris dummy hanya untuk moderator dan staf dummy; pelaku nyata tidak melihat dan tidak menyentuhnya; jejak dummy ikut tugasnya", async () => {
   const dum = await tugas(DB, {dummy: 1}), nyata = await tugas(DB), opDum = await staf(DB, "Operator Dummy", ["operator_cc"], {dummy: 1});
-  for (const h of [op1.h, koord.h, pDinding.h]) { const j = (await ambil(h === pDinding.h ? "/api/cc/dinding" : "/api/cc/antrean", h)).j; assert.ok(!(j.alert ?? j.antrean).some(a => a.id === dum), "dummy tak terlihat"); }
+  for (const h of [op1.h, koord.h]) { const j = (await ambil("/api/cc/antrean", h)).j; assert.ok(!(j.alert ?? j.antrean).some(a => a.id === dum), "dummy tak terlihat"); }
   assert.equal((await aksi(dum, {dari: "baru", ke: "dalam_konfirmasi"}, op1.h)).s, 404);
   assert.equal((await ambil("/api/cc/status?kunci=karhutla:" + await kunciPublikKarhutla(dum) + ":siaga", op1.h)).s, 404);
   /* moderator dan staf dummy: boleh; baris ber-tanda dummy sesuai tugasnya */
@@ -322,12 +324,10 @@ uji("cc dummy: baris dummy hanya untuk moderator dan staf dummy; pelaku nyata ti
   const tgl = "2026-10-17", w = wibMs(tgl, 10);
   await sisip(DB, "cc_jejak", {waktu: w, tugas_id: dum, oleh: opDum.oleh, dari: "baru", ke: "dalam_konfirmasi", dummy: 1}); await sisip(DB, "cc_jejak", {waktu: w + 1, tugas_id: nyata, oleh: op1.oleh, dari: "baru", ke: "dalam_konfirmasi"});
   assert.equal((await ambil(`/api/cc/log?tgl=${tgl}`, op1.h)).j.jejak.length, 1); assert.equal((await ambil(`/api/cc/log?tgl=${tgl}`, ADMIN)).j.jejak.length, 2); assert.equal((await ambil(`/api/cc/log?tgl=${tgl}`, opDum.h)).j.jejak.length, 2);
-  /* kehadiran dummy tidak tampil di dinding nyata */
+  /* kehadiran dummy ditandai dummy (layar dinding yang menampilkannya sudah dibuang; barisnya tetap ditulis) */
   await ambil("/api/cc/antrean", opDum.h); await ambil("/api/cc/antrean", op2.h);
-  const d = (await ambil("/api/cc/dinding", pDinding.h)).j.operator_hadir;
   assert.equal((await DB.prepare("SELECT dummy FROM cc_hadir WHERE staf_id = ?").bind(opDum.id).first()).dummy, 1, "baris hadir staf dummy ditandai dummy");
-  assert.ok(d.includes("Citra") && !d.includes("Operator"), "dinding nyata: operator nyata saja: " + d);
-  assert.ok((await ambil("/api/cc/dinding", ADMIN)).j.operator_hadir.includes("Operator"), "moderator melihat yang dummy");
+  assert.equal((await DB.prepare("SELECT dummy FROM cc_hadir WHERE staf_id = ?").bind(op2.id).first()).dummy, 0, "operator nyata: bukan dummy");
 });
 
 /* ================================================================ status by kunci */
@@ -349,7 +349,7 @@ uji("cc status: pop-up alarm menemukan alert lewat kunci publik yang SAMA dengan
     assert.equal((await ambil("/api/cc/status?kunci=" + encodeURIComponent(k), op1.h)).s, kode, k);
   assert.equal((await api("GET", "/api/cc/status", undefined, op1.h)).s, 400, "tanpa kunci");
   assert.equal((await ambil("/api/cc/status?kunci=" + encodeURIComponent(kunci))).s, 401); assert.equal((await ambil("/api/cc/status?kunci=" + encodeURIComponent(kunci), tmc.h)).s, 403);
-  assert.equal((await ambil("/api/cc/status?kunci=" + encodeURIComponent(kunci), pDinding.h)).s, 401, "cookie pemirsa tidak dihitung");
+  assert.equal((await ambil("/api/cc/status?kunci=" + encodeURIComponent(kunci), pPeta.h)).s, 401, "cookie pemirsa tidak dihitung");
   /* tugas lewat 7 hari tidak ditemukan walau kuncinya benar */
   const tua = await tugas(DB, {dibuat: Date.now() - 8 * HARI}); assert.equal((await ambil("/api/cc/status?kunci=karhutla:" + await kunciPublikKarhutla(tua) + ":siaga", op1.h)).s, 404);
 });
@@ -366,7 +366,7 @@ uji("cc hadir: panggilan operator memperbarui cc_hadir paling sering sekali per 
   await DB.prepare("UPDATE cc_hadir SET terakhir = ? WHERE staf_id = ?").bind(Date.now() - 4 * MENIT, o.id).run(); const c0 = (await baris()).terakhir;
   await ambil("/api/cc/antrean", o.h); assert.equal((await baris()).terakhir, c0, "4 menit: belum");
   const n0 = (await DB.prepare("SELECT count(*) n FROM cc_hadir").first()).n;
-  for (const h of [ADMIN, koord.h, pim.h]) await ambil("/api/cc/antrean", h); await ambil("/api/cc/dinding", pDinding.h);
+  for (const h of [ADMIN, koord.h, pim.h]) await ambil("/api/cc/antrean", h);
   assert.equal((await DB.prepare("SELECT count(*) n FROM cc_hadir").first()).n, n0);
 });
 
@@ -405,7 +405,7 @@ uji("cc kontak: hanya nomor kantor/Pusdalops BPBD; nomor pribadi, ajudan, e-mail
   assert.deepEqual((await ambil("/api/cc/kontak?prov=62", ADMIN)).j.kontak.map(k => k.tingkat), []);
   /* validasi dan hak */
   for (const j of ["/api/cc/kontak", "/api/cc/kontak?prov=99", "/api/cc/kontak?prov=1", "/api/cc/kontak?prov=12&kab=a", "/api/cc/kontak?prov=12&kab=" + "x".repeat(61)]) assert.equal((await ambil(j, op1.h)).s, 400, j);
-  for (const [h, kode] of [[pDinding.h, 403], [koord.h, 403], [pim.h, 403], [GERBANG, 403], [{}, 401]]) assert.equal((await ambil("/api/cc/kontak?prov=12", h)).s, kode);
+  for (const [h, kode] of [[pPeta.h, 403], [koord.h, 403], [pim.h, 403], [GERBANG, 403], [{}, 401]]) assert.equal((await ambil("/api/cc/kontak?prov=12", h)).s, kode);
   /* batas laju per operator: 120 per jam */
   const lj = await staf(DB, "Laju Uji", ["operator_cc"]);
   await DB.batch(Array.from({length: 120}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'cc.kontak', ?)").bind(lj.oleh, Date.now())));
@@ -434,7 +434,7 @@ uji("cc kontak: beberapa lokasi sekali panggil (maks 20, satu hitungan laju per 
   assert.equal((await ambil("/api/cc/kontak?lokasi=12&prov=12", ujiLaju.h)).s, 400, "lokasi dan prov/kab jangan dicampur"); assert.equal((await ambil("/api/cc/kontak?lokasi=12&kab=Kota%20Medan", ujiLaju.h)).s, 400);
   assert.equal(await nLaju(), 2, "semua yang ditolak: jatah utuh");
   /* hak: sama dengan panggilan tunggal (auth lebih dulu daripada validasi) */
-  for (const [h, kode] of [[pDinding.h, 403], [koord.h, 403], [pim.h, 403], [GERBANG, 403], [{}, 401]]) assert.equal((await ambil("/api/cc/kontak?lokasi=99", h)).s, kode);
+  for (const [h, kode] of [[pPeta.h, 403], [koord.h, 403], [pim.h, 403], [GERBANG, 403], [{}, 401]]) assert.equal((await ambil("/api/cc/kontak?lokasi=99", h)).s, kode);
   /* wilayah: setiap provinsi diperiksa; staf berwilayah 62 ditolak seluruhnya bila ada provinsi lain */
   assert.equal((await ambil("/api/cc/kontak?" + qs(["62|Kapuas", "62"]), opWil.h)).s, 200); assert.equal((await ambil("/api/cc/kontak?" + qs(["62|Kapuas", "12|Kota Medan"]), opWil.h)).s, 403, "satu provinsi di luar wilayah");
   /* batas laju tetap per panggilan: 120 per jam */
@@ -521,7 +521,7 @@ uji("cc log csv: unduhan sah; kutip digandakan; awalan = + - @ TAB CR diberi apo
   assert.equal(csv20.length, 1 + 8); assert.ok(csv20.some(x => x[6] === 'Bilang "ok", lalu koma' && x.length === 8));
   assert.equal(rows.find(x => x[0] === "2026-10-20 14:58:00")[7], String(mnt(28)));
   assert.deepEqual(["=1+1", "+1", "-1", "@a", "\tx", "\ry", "aman", 'a"b', null, 5].map(selCsv), ["\"'=1+1\"", "\"'+1\"", "\"'-1\"", "\"'@a\"", "\"'\tx\"", "\"'\ry\"", '"aman"', '"a""b"', "", '"5"']);
-  assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&format=csv`, pDinding.h)).s, 403); assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&format=csv`)).s, 401);
+  assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&format=csv`, pPeta.h)).s, 403); assert.equal((await ambil(`/api/cc/log?tgl=${TGL}&format=csv`)).s, 401);
 });
 
 uji("cc log terpotong: tepat BATAS_LOG utuh; satu lebih = JSON bertanda (terpotong, batas), ringkasan batas bawah, CSV bercatatan + header x-terpotong + nama berkas -terpotong, baris terlama dibaca duluan", async () => {
@@ -576,12 +576,12 @@ uji("cc log: hash token moderator TIDAK PERNAH keluar (JSON, CSV, ringkasan); mo
   assert.ok(!tk.includes(hashA) && !tk.includes(hashB), "hash tidak ada di CSV"); assert.ok(tk.split("\r\n").some(b => b.includes("Kab Moderator Satu") && b.includes('"Moderator"')), "moderator tampil sebagai Moderator di CSV");
   /* moderator sendiri membaca log: tidak melihat hash dirinya */
   const sendiri = await ambil(q({}), ADMIN); assert.equal(sendiri.s, 200); assert.ok(!sendiri.t.includes(hashA) && !sendiri.t.includes(hashB));
-  /* dan tidak di tempat lain: antrean, status, dinding, 409 */
-  const a1 = await ambil("/api/cc/antrean", ADMIN), d1 = await ambil("/api/cc/dinding", ADMIN); for (const r of [a1, d1]) { assert.equal(r.s, 200); assert.ok(!r.t.includes(hashA) && !r.t.includes(hashB), "hash tak ada di " + r.s); }
+  /* dan tidak di tempat lain: antrean, status, 409 */
+  const a1 = await ambil("/api/cc/antrean", ADMIN); for (const r of [a1]) { assert.equal(r.s, 200); assert.ok(!r.t.includes(hashA) && !r.t.includes(hashB), "hash tak ada di " + r.s); }
   const k409 = await aksi(m1, {dari: "baru", ke: "dalam_konfirmasi"}, op2.h); assert.equal(k409.s, 409); assert.equal(k409.j.oleh_nama, "Moderator"); assert.ok(!k409.t.includes(hashA));
 });
 
-uji("cc log: batas laju 120 per pelaku per jam (JSON dan CSV satu jatah, 429 + Retry-After, tanpa kueri jejak); salah bentuk dan ditolak auth tidak memakai jatah; pelaku lain dan jendela lain tidak ikut; jajak antrean/dinding tidak terhambat", async () => {
+uji("cc log: batas laju 120 per pelaku per jam (JSON dan CSV satu jatah, 429 + Retry-After, tanpa kueri jejak); salah bentuk dan ditolak auth tidak memakai jatah; pelaku lain dan jendela lain tidak ikut; jajak antrean tidak terhambat", async () => {
   assert.equal(BATAS_LOG_JAM, 120);
   const lg = await staf(DB, "Laju Log", ["koordalops"]), laju = kunci => DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = 'cc.log'").bind(kunci).first().then(r => r.n);
   const tgl = tglWib(Date.now()), q = o => "/api/cc/log?" + new URLSearchParams({tgl, ...o});
@@ -597,10 +597,9 @@ uji("cc log: batas laju 120 per pelaku per jam (JSON dan CSV satu jatah, 429 + R
   const tolak = await ambil(q({}), lg.h); assert.equal(tolak.s, 429, tolak.t); assert.equal(tolak.h.get("retry-after"), "3600"); assert.match(tolak.j.galat, /cc\.log.*120/); assert.equal(Object.keys(tolak.j).join(), "galat", "tanpa data log");
   const tolakCsv = await mf.dispatchFetch("http://bnpb.lokal" + q({format: "csv"}), {headers: lg.h}); assert.equal(tolakCsv.status, 429, "CSV berbagi jatah dengan JSON"); assert.equal(tolakCsv.headers.get("retry-after"), "3600"); assert.ok(!(tolakCsv.headers.get("content-type") || "").includes("csv")); await tolakCsv.text();
   assert.equal(await laju(lg.oleh), 118 + 5 + 2, "yang ditolak tidak menambah catatan laju");
-  /* jajak antrean/dinding (30 dtk) dan POST aksi tidak ikut terhambat oleh jatah log yang habis */
-  for (const [r, h] of [["/api/cc/antrean", lg.h], ["/api/cc/dinding", lg.h]]) assert.equal((await ambil(r, h)).s, 200, r + " tetap terbuka");
-  assert.equal((await ambil("/api/cc/dinding", pDinding.h)).s, 200);
-  assert.equal(await DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi IN ('cc.antrean', 'cc.dinding')").bind(lg.oleh).first().then(r => r.n), 0, "antrean dan dinding tidak punya penghitung laju");
+  /* jajak antrean (30 dtk) dan POST aksi tidak ikut terhambat oleh jatah log yang habis */
+  for (const [r, h] of [["/api/cc/antrean", lg.h]]) assert.equal((await ambil(r, h)).s, 200, r + " tetap terbuka");
+  assert.equal(await DB.prepare("SELECT count(*) n FROM laju_bnpb WHERE kunci = ? AND aksi = 'cc.antrean'").bind(lg.oleh).first().then(r => r.n), 0, "antrean tidak punya penghitung laju");
   /* pelaku lain tidak ikut */
   assert.equal((await ambil(q({}), pim.h)).s, 200, "pimpinan lain jatahnya sendiri"); assert.equal((await ambil(q({}), koord.h)).s, 200);
   /* jendela bergeser: catatan > 1 jam tidak dihitung */
@@ -610,7 +609,7 @@ uji("cc log: batas laju 120 per pelaku per jam (JSON dan CSV satu jatah, 429 + R
   const mod = sha256("rahasia-admin").slice(0, 12);
   await DB.batch(Array.from({length: 120}, () => DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, 'cc.log', ?)").bind(mod, Date.now())));
   const m = await ambil(q({}), ADMIN); assert.equal(m.s, 429); assert.equal(m.h.get("retry-after"), "3600"); assert.ok(!m.t.includes(mod));
-  assert.equal((await ambil(q({}), MOD2)).s, 200, "moderator lain (token lain) tidak ikut"); assert.equal((await ambil("/api/cc/dinding", ADMIN)).s, 200, "moderator yang jatah log-nya habis tetap bisa jajak dinding");
+  assert.equal((await ambil(q({}), MOD2)).s, 200, "moderator lain (token lain) tidak ikut"); assert.equal((await ambil("/api/cc/antrean", ADMIN)).s, 200, "moderator yang jatah log-nya habis tetap bisa jajak antrean");
   await DB.prepare("DELETE FROM laju_bnpb WHERE kunci = ? AND aksi = 'cc.log'").bind(mod).run();   // supaya uji berikutnya yang memakai ADMIN tidak terhalang
 });
 
@@ -640,138 +639,52 @@ uji("cc durasi: respons = baru->dalam_konfirmasi PERTAMA - dibuat; konfirmasi = 
   assert.deepEqual(FINAL, ["ada_api", "tidak_ada_api"]); assert.deepEqual(Object.keys(TRANSISI), STATUS);
 });
 
-/* ================================================================ layar dinding */
-uji("cc dinding: ringkasan, antrean ringkas, hari WIB, operator hadir; tanpa id, catatan, nomor, nama lengkap; koordinat 0,01; dummy dan bahaya lain tak ikut", async () => {
-  const D = await siapkan("uji-cc-dinding", {ikat: {CC_MEMO_DETIK: "0"}}), now = Date.now(), hari0 = awalHari(now);
-  const b = await staf(D.DB, "Budi Santoso", ["operator_cc"]), c = await staf(D.DB, "Citra Dewi", ["operator_cc"]), dd = await staf(D.DB, "Dimas Dummy", ["operator_cc"], {dummy: 1}), pm = await pemirsa(D.DB, "Dinding", ["dinding"]);
-  const T = {};
-  T.baru1 = await tugas(D.DB, {dibuat: now - 50 * MENIT}); T.baru6 = await tugas(D.DB, {dibuat: now - 7 * JAM}); T.baru7 = await tugas(D.DB, {dibuat: now - JAM});
-  T.dalam = await tugas(D.DB, {dibuat: now - 2 * JAM, kab: "Kapuas"}); T.final = await tugas(D.DB, {dibuat: now - 3 * JAM, konfirmasi_pada: now - 2.5 * JAM}); T.finalLama = await tugas(D.DB, {dibuat: now - 20 * JAM, konfirmasi_pada: now - 19 * JAM});
-  T.l1 = await tugas(D.DB, {level: 1, dibuat: now - 7 * JAM}); T.banjir = await tugas(D.DB, {banjir: true, dibuat: now - 7 * JAM}); T.dum = await tugas(D.DB, {dummy: 1, dibuat: now - 7 * JAM});
-  T.kabar = await tugas(D.DB, {level: 2, dibuat: now - 8 * JAM, konfirmasi_pada: now - 7 * JAM}); T.padam = await tugas(D.DB, {dibuat: now - 7 * JAM, status: "padam"});
-  const st = (id, status, sejak, oleh) => sisip(D.DB, "cc_status", {tugas_id: id, status, oleh, sejak});
-  await st(T.dalam, "dalam_konfirmasi", now - 5 * MENIT, c.oleh); await st(T.final, "ada_api", now - JAM, b.oleh); await st(T.finalLama, "tidak_ada_api", now - 13 * JAM, b.oleh);
-  /* respons hari ini: dua jejak baru->dalam_konfirmasi hari ini (tugas level 1 supaya bukan alert): 10 dan 20 menit -> 15 menit */
-  const rg = rentangHari(tglWib(now)), wk = Math.max(rg.mulai, now - 60e3);
-  for (const lama of [mnt(10), mnt(20)]) { const r = await tugas(D.DB, {level: 1, dibuat: wk - lama}); await sisip(D.DB, "cc_jejak", {waktu: wk, tugas_id: r, oleh: b.oleh, dari: "baru", ke: "dalam_konfirmasi", catatan: "SECRET-CATATAN 08123456789"}); }
-  await sisip(D.DB, "cc_jejak", {waktu: rg.mulai - 1, tugas_id: T.final, oleh: b.oleh, dari: "baru", ke: "dalam_konfirmasi"});   // 1 ms sebelum 00.00 WIB: kemarin, tidak ikut median
-  await sisip(D.DB, "cc_hadir", {staf_id: b.id, terakhir: now - 3 * MENIT}); await sisip(D.DB, "cc_hadir", {staf_id: c.id, terakhir: now - 11 * MENIT}); await sisip(D.DB, "cc_hadir", {staf_id: dd.id, terakhir: now, dummy: 1});
-  const r = await D.api("GET", "/api/cc/dinding", undefined, pm.h); assert.equal(r.s, 200, r.t);
-  assert.deepEqual(Object.keys(r.j), ["kini", "data_pada", "hari", "ringkasan", "operator_hadir", "antrean_total", "antrean"]); assert.equal(r.j.antrean_total, 5, "antrean_total = seluruh antrean sebelum dipotong 60 baris"); assert.ok(Math.abs(r.j.kini - now) < 30e3);
-  assert.deepEqual(r.j.hari, {tgl: tglWib(now), ...rg}); assert.ok(!/shi.?ft/i.test(r.t), "dinding tanpa kata lama");
-  const dibuatDari = async id => (await D.DB.prepare("SELECT dibuat FROM tugas_api WHERE id = ?").bind(id).first()).dibuat;
-  /* alert hari ini = tugas karhutla level 3 non-dummy yang DIBUAT sejak 00.00 WIB, termasuk yang sudah tutup (padam) */
-  const alertHari = (await Promise.all([T.baru1, T.baru6, T.baru7, T.dalam, T.final, T.finalLama, T.padam].map(dibuatDari))).filter(d => d >= hari0).length;
-  /* rincian "hari ini" = populasi yang SAMA dengan alert_hari_ini (dibuat sejak 00.00 WIB), bukan antrean 7 hari: baru6 (dibuat 7 jam lalu) hanya ikut bila 7 jam lalu masih hari ini */
-  const hariIni = {baru: [T.baru1, T.baru6, T.baru7].length - (await Promise.all([T.baru1, T.baru6, T.baru7].map(dibuatDari))).filter(d => d < hari0).length,
-    dalam_konfirmasi: (await dibuatDari(T.dalam)) >= hari0 ? 1 : 0, diputuskan: (await Promise.all([T.final, T.finalLama].map(dibuatDari))).filter(d => d >= hari0).length};
-  assert.deepEqual(r.j.ringkasan, {alert_hari_ini: alertHari, hari_ini: hariIni, baru: 3, dalam_konfirmasi: 1, final_hari_ini: [now - JAM, now - 13 * JAM].filter(s => s >= hari0).length, median_respons_ms: mnt(15), lewat_tenggat_konfirmasi: 2, lewat_tenggat_terpotong: false,
-    antrean_terpotong: false, final_terpotong: false, median_respons_terpotong: false},
-    "lewat tenggat: baru6 dan l1 (> 6 jam tanpa konfirmasi lapangan); bahaya lain, dummy, tugas tutup, dan yang sudah dikonfirmasi tidak dihitung");
-  assert.deepEqual(r.j.operator_hadir, ["Budi"], "hanya <= 10 menit, nama depan, dummy tak ikut");
-  assert.deepEqual(r.j.antrean.map(a => a.status), ["baru", "baru", "baru", "dalam_konfirmasi", "ada_api"], "final > 12 jam tak tampil");
-  assert.deepEqual(r.j.antrean.map(a => a.pemegang), [null, null, null, "Citra", "Budi"]); assert.equal(r.j.antrean[3].kab, "Kapuas");
-  assert.deepEqual(Object.keys(r.j.antrean[0]).sort(), ["kab", "lat", "lon", "pemegang", "prov", "prov_nama", "sejak", "status", "umur"]);
-  assert.deepEqual([r.j.antrean[0].lat, r.j.antrean[0].lon, r.j.antrean[0].prov_nama], [-2.51, 113.3, "Kalimantan Tengah"]);
-  assert.ok(r.j.antrean[0].umur >= 7 * JAM && r.j.antrean[0].umur < 7 * JAM + 2 * MENIT); assert.equal(r.j.antrean[3].sejak > now - 10 * MENIT, true);
-  /* tidak ada data yang tak boleh ke dinding */
-  const mentah = JSON.stringify(r.j);
-  for (const rahasia of [...Object.values(T), "Santoso", "Dewi", "Dimas", "SECRET", "08123456789", "62812", "Unit Uji", "catatan", "telepon", "nip", "2.51237", "113.29876", b.id, c.id]) assert.ok(!mentah.includes(rahasia), "tidak boleh ke dinding: " + rahasia);
-  /* pembaca meja (staf nyata) melihat angka yang sama; moderator juga dummy */
-  const sama = await D.api("GET", "/api/cc/dinding", undefined, b.h); assert.deepEqual(sama.j.ringkasan, r.j.ringkasan); const tanpaUmur = l => l.map(({umur, ...x}) => x); assert.deepEqual(tanpaUmur(sama.j.antrean), tanpaUmur(r.j.antrean));
-  const m = await D.api("GET", "/api/cc/dinding", undefined, ADMIN); assert.equal(m.j.ringkasan.baru, 4, "moderator: alert dummy (level 3) ikut dihitung"); assert.equal(m.j.ringkasan.lewat_tenggat_konfirmasi, 3); assert.deepEqual(m.j.operator_hadir, ["Budi", "Dimas"]);
-  /* migrasi: tabel kosong tidak memecahkan layar */
-  const kosong = await siapkan("uji-cc-dinding-kosong", {ikat: {CC_MEMO_DETIK: "0"}}), pk = await pemirsa(kosong.DB, "Dinding", ["dinding"]), k = await kosong.api("GET", "/api/cc/dinding", undefined, pk.h);
-  assert.equal(k.s, 200); assert.deepEqual([k.j.antrean, k.j.operator_hadir, k.j.ringkasan], [[], [], {alert_hari_ini: 0, hari_ini: {baru: 0, dalam_konfirmasi: 0, diputuskan: 0}, baru: 0, dalam_konfirmasi: 0, final_hari_ini: 0, median_respons_ms: null, lewat_tenggat_konfirmasi: 0, lewat_tenggat_terpotong: false,
-    antrean_terpotong: false, final_terpotong: false, median_respons_terpotong: false}]);
-  assert.equal(k.j.antrean_total, 0);
-});
-
-uji("cc dinding: antrean_total jujur di atas 60 baris; rincian hari_ini hanya alert yang DIBUAT hari ini (antrean 7 hari terpisah); lewat_tenggat_terpotong menandai batas baca tercapai", async () => {
-  const D = await siapkan("uji-cc-dinding-lingkup", {ikat: {CC_MEMO_DETIK: "0"}}), now = Date.now(), hari0 = awalHari(now), pm = await pemirsa(D.DB, "Dinding", ["dinding"]), o = await staf(D.DB, "Budi Santoso", ["operator_cc"]);
-  const hariIniMs = hari0 + Math.floor((now - hari0) / 2), kemarin = now - 3 * HARI;   // tengah antara 00.00 dan sekarang selalu hari ini dan sudah lewat; 3 hari lalu selalu bukan hari ini
-  /* 62 alert baru dibuat HARI INI + 3 alert baru dari 3 hari lalu (masih dalam antrean 7 hari) + 1 alert hari ini yang sudah diputuskan + 1 dipegang dari 3 hari lalu */
-  await D.DB.batch(Array.from({length: 62}, (_, i) => D.DB.prepare("INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy) VALUES (?, '62', ?, 'Kec', -2.5, 113.3, 3, 5, 10, ?, ?, 'buka', ?, 0)")
-    .bind(hex16(0x5000 + i), "Kab " + i, hariIniMs, hariIniMs, hariIniMs)));
-  const lama = [await tugas(D.DB, {dibuat: kemarin}), await tugas(D.DB, {dibuat: kemarin}), await tugas(D.DB, {dibuat: kemarin}), await tugas(D.DB, {dibuat: kemarin})];
-  const putus = await tugas(D.DB, {dibuat: hariIniMs}), pegangLama = lama[3];
-  const tutupHariIni = await tugas(D.DB, {dibuat: hariIniMs, status: "padam"});   // dibuat hari ini lalu ditutup (padam) tanpa keputusan operator: masuk total, bukan tiga bagian (layar menamainya "sudah tutup")
-  await sisip(D.DB, "cc_status", {tugas_id: putus, status: "ada_api", oleh: o.oleh, sejak: now - MENIT}); await sisip(D.DB, "cc_status", {tugas_id: pegangLama, status: "dalam_konfirmasi", oleh: o.oleh, sejak: now - 2 * MENIT});
-  const r = await D.api("GET", "/api/cc/dinding", undefined, pm.h); assert.equal(r.s, 200, r.t);
-  assert.equal(r.j.antrean.length, 60, "layar menerima paling banyak 60 baris"); assert.equal(r.j.antrean_total, 62 + 3 + 1 + 1, "tetapi jumlah seluruh antrean dikirim: '+N alert lagi' = total - baris yang muat, bukan 60 - baris yang muat");
-  assert.deepEqual(r.j.ringkasan.hari_ini, {baru: 62, dalam_konfirmasi: 0, diputuskan: 1}, "rincian hari ini TIDAK memuat 3 alert baru dan 1 yang dipegang dari 3 hari lalu"); assert.equal(r.j.ringkasan.alert_hari_ini, 64);
-  const h = r.j.ringkasan.hari_ini; assert.equal(r.j.ringkasan.alert_hari_ini - h.baru - h.dalam_konfirmasi - h.diputuskan, 1, "selisih total dan tiga bagian = alert hari ini yang tugasnya sudah tutup (tutupHariIni); layar menampilkannya sebagai bagian 'sudah tutup' supaya sub-teks menjumlah ke angka besar");
-  assert.ok(!r.t.includes(tutupHariIni), "id tugas tak pernah ke dinding");
-  assert.equal(r.j.ringkasan.baru, 62 + 3, "antrean terbuka 7 hari tetap terpisah: lebih besar dari rincian hari ini, dan itulah yang dilabeli 'antrean' di layar"); assert.equal(r.j.ringkasan.dalam_konfirmasi, 1);
-  assert.ok(r.j.ringkasan.hari_ini.baru + r.j.ringkasan.hari_ini.dalam_konfirmasi + r.j.ringkasan.hari_ini.diputuskan <= r.j.ringkasan.alert_hari_ini, "rincian tak pernah melebihi total satu populasi");
-  assert.equal(r.j.ringkasan.lewat_tenggat_terpotong, false);
-  /* batas baca tile "lewat 6 jam" tercapai: angkanya batas bawah dan ditandai. 3000 tugas 'buka' level 1 (bukan alert) dibuat 7 jam lalu tanpa konfirmasi lapangan. */
-  await D.DB.prepare(`WITH RECURSIVE s(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM s WHERE n < ${BATAS_TENGGAT}) INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy)
-    SELECT printf('%016x', 0x7000000 + n), '62', 'Kab Massal', 'Kec', -2.5, 113.3, 1, 1, 1, ?1, ?1, 'buka', NULL, 0 FROM s`).bind(now - 7 * JAM).run();
-  const t = await D.api("GET", "/api/cc/dinding", undefined, pm.h);
-  assert.equal(t.j.ringkasan.lewat_tenggat_terpotong, true, "dibaca sampai batas: angka adalah batas bawah"); 
-  assert.ok(t.j.ringkasan.lewat_tenggat_konfirmasi <= BATAS_TENGGAT && t.j.ringkasan.lewat_tenggat_konfirmasi >= BATAS_TENGGAT - 1, "paling banyak sebanyak yang dibaca (satu baris hari-ini bisa belum lewat bila tes jalan dini hari)");
-});
-
-uji("cc terpotong: alert terbuka, keputusan akhir, dan jejak respons hari ini dibaca sampai BATAS_DAFTAR; tepat batas = utuh, satu lebih = terpotong ditandai di antrean dan dinding; yang belum dipegang tak tersisih", async () => {
+uji("cc terpotong: alert terbuka dan keputusan akhir dibaca sampai BATAS_DAFTAR; tepat batas = utuh, satu lebih = terpotong ditandai di antrean; yang belum dipegang tak tersisih", async () => {
   assert.equal(BATAS_DAFTAR, 500); assert.equal(BATAS_AKSI_JAM, 120); assert.equal(MAKS_LOKASI, 20);
-  const D = await siapkan("uji-cc-potong", {ikat: {CC_MEMO_DETIK: "0"}}), now = Date.now(), pm = await pemirsa(D.DB, "Dinding", ["dinding"]), o = await staf(D.DB, "Budi Santoso", ["operator_cc"]);
+  const D = await siapkan("uji-cc-potong", {ikat: {CC_MEMO_DETIK: "0"}}), now = Date.now(), o = await staf(D.DB, "Budi Santoso", ["operator_cc"]);
   const id = n => n.toString(16).padStart(16, "0");
   /* tugas level 3 berurut n = dari..sampai, id = tanda + n */
   const buka = (dari, sampai, tanda, dibuat, level = 3) => D.DB.prepare(`WITH RECURSIVE s(n) AS (SELECT ?1 UNION ALL SELECT n + 1 FROM s WHERE n < ?2) INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy)
     SELECT printf('%016x', ?3 + n), '62', 'Kab Massal', 'Kec', -2.5, 113.3, ?5, 4, 10, ?4, ?4, 'buka', NULL, 0 FROM s`).bind(dari, sampai, tanda, dibuat, level).run();
-  const baca = async () => { const [d, a] = await Promise.all([D.api("GET", "/api/cc/dinding", undefined, pm.h), D.api("GET", "/api/cc/antrean", undefined, o.h)]); assert.equal(d.s, 200, d.t); assert.equal(a.s, 200, a.t); return {d: d.j, a: a.j}; };
+  const baca = async () => { const a = await D.api("GET", "/api/cc/antrean", undefined, o.h); assert.equal(a.s, 200, a.t); return {a: a.j}; };
   /* (1) alert terbuka: tepat BATAS_DAFTAR belum terpotong */
   await buka(1, BATAS_DAFTAR, 0x8000000, now - 30 * MENIT);
-  let {d, a} = await baca(); assert.equal(a.alert.length, BATAS_DAFTAR); assert.deepEqual([a.antrean_terpotong, a.final_terpotong, d.ringkasan.antrean_terpotong, d.ringkasan.final_terpotong], [false, false, false, false]); assert.equal(d.antrean_total, BATAS_DAFTAR);
+  let {a} = await baca(); assert.equal(a.alert.length, BATAS_DAFTAR); assert.deepEqual([a.antrean_terpotong, a.final_terpotong], [false, false]);
   /* satu lagi, BARU dibuat: terpotong; yang tersisih adalah yang terbaru (urutan tampil: terlama dulu) */
   await buka(BATAS_DAFTAR + 1, BATAS_DAFTAR + 1, 0x8000000, now - 5 * MENIT);
-  ({d, a} = await baca()); assert.equal(a.antrean_terpotong, true); assert.equal(a.final_terpotong, false); assert.equal(a.alert.length, BATAS_DAFTAR, "dipotong pada batas, bukan BATAS + 1");
-  assert.deepEqual([d.ringkasan.antrean_terpotong, d.ringkasan.final_terpotong, d.ringkasan.baru, d.antrean_total], [true, false, BATAS_DAFTAR, BATAS_DAFTAR], "hitungan dari daftar terpotong = batas bawah, dan ditandai");
+  ({a} = await baca()); assert.equal(a.antrean_terpotong, true); assert.equal(a.final_terpotong, false); assert.equal(a.alert.length, BATAS_DAFTAR, "dipotong pada batas, bukan BATAS + 1");
   assert.ok(a.alert.every(x => x.dibuat < now - 20 * MENIT), "yang tersisih = yang terbaru");
   /* yang sudah dipegang tidak menggusur yang belum dipegang: 500 'baru' (499 lama + 1 terbaru) lebih didahulukan daripada satu yang dipegang walau paling lama */
   await sisip(D.DB, "cc_status", {tugas_id: id(0x8000000 + 1), status: "dalam_konfirmasi", oleh: o.oleh, sejak: now - MENIT});
-  ({d, a} = await baca()); assert.equal(a.antrean_terpotong, true); assert.equal(a.alert.filter(x => x.status === "baru").length, BATAS_DAFTAR, "semua kursi untuk yang belum dipegang"); assert.equal(a.alert.some(x => x.status === "dalam_konfirmasi"), false);
-  assert.ok(a.alert.some(x => x.dibuat > now - 10 * MENIT), "alert terbaru yang belum dipegang tampil (alarm tidak boleh melewatkannya)"); assert.equal(d.ringkasan.antrean_terpotong, true);
+  ({a} = await baca()); assert.equal(a.antrean_terpotong, true); assert.equal(a.alert.filter(x => x.status === "baru").length, BATAS_DAFTAR, "semua kursi untuk yang belum dipegang"); assert.equal(a.alert.some(x => x.status === "dalam_konfirmasi"), false);
+  assert.ok(a.alert.some(x => x.dibuat > now - 10 * MENIT), "alert terbaru yang belum dipegang tampil (alarm tidak boleh melewatkannya)");
   /* (2) keputusan akhir: tepat BATAS_DAFTAR utuh; satu lebih = terpotong, yang terlama sejak tersisih */
   await D.DB.batch([D.DB.prepare("DELETE FROM tugas_api"), D.DB.prepare("DELETE FROM cc_status")]);
   await buka(1, BATAS_DAFTAR, 0x9000000, now - 2 * JAM);
   await D.DB.prepare("INSERT INTO cc_status (tugas_id, status, oleh, sejak, dummy) SELECT id, 'ada_api', ?1, ?2, 0 FROM tugas_api").bind(o.oleh, now - 10 * MENIT).run();
-  ({d, a} = await baca()); assert.deepEqual([a.alert.length, a.antrean_terpotong, a.final_terpotong, d.ringkasan.final_terpotong], [BATAS_DAFTAR, false, false, false]);
+  ({a} = await baca()); assert.deepEqual([a.alert.length, a.antrean_terpotong, a.final_terpotong], [BATAS_DAFTAR, false, false]);
   await buka(BATAS_DAFTAR + 1, BATAS_DAFTAR + 1, 0x9000000, now - 2 * JAM); await sisip(D.DB, "cc_status", {tugas_id: id(0x9000000 + BATAS_DAFTAR + 1), status: "tidak_ada_api", oleh: o.oleh, sejak: now - MENIT});
-  ({d, a} = await baca()); assert.deepEqual([a.alert.length, a.antrean_terpotong, a.final_terpotong, d.ringkasan.final_terpotong, d.ringkasan.antrean_terpotong], [BATAS_DAFTAR, false, true, true, false]);
+  ({a} = await baca()); assert.deepEqual([a.alert.length, a.antrean_terpotong, a.final_terpotong], [BATAS_DAFTAR, false, true]);
   assert.ok(a.alert.some(x => x.status === "tidak_ada_api"), "keputusan terbaru dibaca duluan; yang terlama yang tersisih");
-  /* (3) jejak respons hari ini untuk median respons (cc_jejak hanya menambah, jadi instansi tersendiri) */
-  const J = await siapkan("uji-cc-potong-jejak", {ikat: {CC_MEMO_DETIK: "0"}}), pj = await pemirsa(J.DB, "Dinding", ["dinding"]), oj = await staf(J.DB, "Budi Santoso", ["operator_cc"]);
-  const rg = rentangHari(tglWib(now)), wk = Math.max(rg.mulai, now - 60e3), median10 = () => J.api("GET", "/api/cc/dinding", undefined, pj.h).then(r => r.j.ringkasan);
-  await J.DB.prepare(`WITH RECURSIVE s(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM s WHERE n < ?1) INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy)
-    SELECT printf('%016x', 0xa000000 + n), '62', 'Kab Jejak', 'Kec', -2.5, 113.3, 1, 1, 1, ?2 - 600000, ?2, 'buka', NULL, 0 FROM s`).bind(BATAS_DAFTAR, wk).run();
-  await J.DB.prepare("INSERT INTO cc_jejak (waktu, tugas_id, oleh, dari, ke, dummy) SELECT ?1, id, ?2, 'baru', 'dalam_konfirmasi', 0 FROM tugas_api").bind(wk, oj.oleh).run();
-  let r = await median10(); assert.deepEqual([r.median_respons_ms, r.median_respons_terpotong], [mnt(10), false], "tepat batas: utuh");
-  await tugas(J.DB, {level: 1, dibuat: wk - mnt(10)}).then(tid => sisip(J.DB, "cc_jejak", {waktu: wk, tugas_id: tid, oleh: oj.oleh, dari: "baru", ke: "dalam_konfirmasi"}));
-  r = await median10(); assert.deepEqual([r.median_respons_ms, r.median_respons_terpotong], [mnt(10), true], "satu lebih: median dari 500 jejak pertama, ditandai");
 });
 
-uji("cc memo: dinding dan antrean di-memo per kombinasi dummy+wilayah; aksi di isolat yang sama menyegarkan; TTL mengikuti CC_MEMO_DETIK", async () => {
-  const M = await siapkan("uji-cc-memo", {ikat: {CC_MEMO_DETIK: "60"}}), pm = await pemirsa(M.DB, "Dinding", ["dinding"]), o = await staf(M.DB, "Memo Uji", ["operator_cc"]);
+uji("cc memo: antrean di-memo per kombinasi dummy+wilayah; aksi di isolat yang sama menyegarkan; TTL mengikuti CC_MEMO_DETIK", async () => {
+  const M = await siapkan("uji-cc-memo", {ikat: {CC_MEMO_DETIK: "60"}}), o = await staf(M.DB, "Memo Uji", ["operator_cc"]);
   const a1 = await tugas(M.DB, {dibuat: Date.now() - 20 * MENIT});
-  const d1 = await M.api("GET", "/api/cc/dinding", undefined, pm.h); assert.equal(d1.j.ringkasan.baru, 1);
+  const d1 = await M.api("GET", "/api/cc/antrean", undefined, o.h); assert.equal(d1.j.alert.length, 1);
   await tugas(M.DB, {dibuat: Date.now() - 10 * MENIT});
-  const d2 = await M.api("GET", "/api/cc/dinding", undefined, pm.h); assert.equal(d2.j.ringkasan.baru, 1, "memo: alert baru belum terlihat"); assert.equal(d2.j.data_pada, d1.j.data_pada); assert.ok(d2.j.kini >= d1.j.kini);
-  assert.equal((await M.api("GET", "/api/cc/antrean", undefined, o.h)).j.alert.length, 2, "antrean memo-nya sendiri (5 dtk bawaan, di sini 60): dibangun baru, tidak memakai memo dinding");
+  const d2 = await M.api("GET", "/api/cc/antrean", undefined, o.h); assert.equal(d2.j.alert.length, 1, "memo: alert baru belum terlihat"); assert.ok(d2.j.kini >= d1.j.kini);
   assert.equal((await aksi(a1, {dari: "baru", ke: "dalam_konfirmasi"}, o.h, M.api)).s, 200);
-  const d3 = await M.api("GET", "/api/cc/dinding", undefined, pm.h); assert.deepEqual([d3.j.ringkasan.baru, d3.j.ringkasan.dalam_konfirmasi], [1, 1], "aksi membuang memo isolat ini");
-  assert.notEqual(d3.j.data_pada, d1.j.data_pada);
+  const d3 = await M.api("GET", "/api/cc/antrean", undefined, o.h); assert.deepEqual([d3.j.alert.length, d3.j.alert.filter(x => x.status === "dalam_konfirmasi").length], [2, 1], "aksi membuang memo isolat ini");
 });
 
 uji("cc tanpa migrasi pendukung: tugas_bencana (0047) belum ada = semua tugas karhutla; tabel cc_* belum ada = 503 sopan tanpa nomor migrasi", async () => {
-  const N = await siapkan("uji-cc-tanpa-0047", {ikat: {CC_MEMO_DETIK: "0"}}), o = await staf(N.DB, "Operator Lama", ["operator_cc"]), pm = await pemirsa(N.DB, "Dinding", ["dinding"]);
+  const N = await siapkan("uji-cc-tanpa-0047", {ikat: {CC_MEMO_DETIK: "0"}}), o = await staf(N.DB, "Operator Lama", ["operator_cc"]);
   await N.DB.exec("DROP TABLE tugas_bencana");
   const id = await tugas(N.DB), kunci = "karhutla:" + await kunciPublikKarhutla(id) + ":siaga";
   assert.ok((await N.api("GET", "/api/cc/antrean", undefined, o.h)).j.alert.some(a => a.id === id));
   assert.equal((await aksi(id, {dari: "baru", ke: "dalam_konfirmasi"}, o.h, N.api)).s, 200);
   assert.equal((await N.api("GET", "/api/cc/status?kunci=" + kunci, undefined, o.h)).j.status, "dalam_konfirmasi");
-  assert.equal((await N.api("GET", "/api/cc/dinding", undefined, pm.h)).j.ringkasan.dalam_konfirmasi, 1);
   /* Meja Pantau tanpa tugas_bencana: kartu api tetap alert (semua tugas karhutla) */
   const lamaN = await tugas(N.DB, {dibuat: Date.now() - 8 * JAM}), pn = (await N.api("GET", "/api/pantau", undefined, o.h)).j.butir.find(b => b.id === "api-konf:" + lamaN);
   assert.deepEqual([pn.cc.alert, pn.cc.status, pn.cc.aksi], [true, "baru", ["dalam_konfirmasi"]]);
@@ -987,11 +900,10 @@ uji("cc gerbang: sesi staf operator_cc melihat halaman terkunci centurisk97.id (
   const situs = (j, h = {}, metode = "GET") => mf.dispatchFetch("https://centurisk97.id" + j, {method: metode, redirect: "manual", headers: h});
   const o = await situs("/monitor", {cookie: op1.cookie}); assert.equal(o.status, 200, "operator masuk"); assert.match(o.headers.get("cache-control"), /no-store/); assert.match(await o.text(), /<html/i);
   assert.equal((await situs("/monitor", {cookie: op1.cookie}, "HEAD")).status, 200); assert.equal((await situs("/laporan", {cookie: op2.cookie})).status, 200); assert.equal((await situs("/direktori", {cookie: opWil.cookie})).status, 200, "operator berwilayah juga");
-  for (const [nama, h] of [["pusdalops", pusd.cookie], ["koordalops", koord.cookie], ["pimpinan", pim.cookie], ["tmc", tmc.cookie], ["kemitraan", kampus.cookie], ["operator dengan sandi awal belum diganti", tertahan.cookie], ["tamu", ""], ["sesi palsu", "sesi_staf=" + "c".repeat(64)], ["pemirsa dinding", pDinding.h.cookie]]) {
-    const r = await situs("/monitor", h ? {cookie: h} : {}); assert.equal(r.status, 303, nama); assert.ok(/^\/admin\/masuk\?ke=|^\/(command-center\/dinding|berita|peta)/.test(r.headers.get("location")), `${nama}: ${r.headers.get("location")}`);
-    if (nama !== "pemirsa dinding") assert.match(r.headers.get("location"), /^\/admin\/masuk\?ke=%2Fmonitor/, nama);
+  for (const [nama, h] of [["pusdalops", pusd.cookie], ["koordalops", koord.cookie], ["pimpinan", pim.cookie], ["tmc", tmc.cookie], ["kemitraan", kampus.cookie], ["operator dengan sandi awal belum diganti", tertahan.cookie], ["tamu", ""], ["sesi palsu", "sesi_staf=" + "c".repeat(64)], ["pemirsa peta", pPeta.h.cookie]]) {
+    const r = await situs("/monitor", h ? {cookie: h} : {}); assert.equal(r.status, 303, nama); assert.ok(/^\/admin\/masuk\?ke=|^\/(berita|peta)/.test(r.headers.get("location")), `${nama}: ${r.headers.get("location")}`);
+    if (nama !== "pemirsa peta") assert.match(r.headers.get("location"), /^\/admin\/masuk\?ke=%2Fmonitor/, nama);
   }
-  assert.equal((await situs("/monitor", {cookie: pDinding.h.cookie})).headers.get("location"), "/command-center/dinding", "pemirsa dinding diarahkan ke halaman dinding, bukan /dinding");
   assert.equal((await situs("/monitor", {cookie: pPeta.h.cookie})).headers.get("location"), "/peta");
   /* sesi staf yang dicabut atau kedaluwarsa tidak lagi lolos */
   await DB.prepare("UPDATE staf_sesi SET kedaluwarsa = 2 WHERE staf_id = ?").bind(op2.id).run(); assert.equal((await situs("/monitor", {cookie: op2.cookie})).status, 303);
@@ -1002,7 +914,7 @@ uji("cc gerbang: sesi staf operator_cc melihat halaman terkunci centurisk97.id (
 });
 
 /* ================================================================ peran dan akun */
-uji("cc peran: Super Admin memberi peran operator_cc dan tab dinding lewat API; peran liar tetap ditolak; operator_cc muncul di /api/staf/saya dan daftar akses", async () => {
+uji("cc peran: Super Admin memberi peran operator_cc lewat API; tab pemirsa 'dinding' ditolak; peran liar tetap ditolak; operator_cc muncul di /api/staf/saya dan daftar akses", async () => {
   const buat = (peran) => api("POST", "/api/staf/admin/buat", {nama: "Operator Via API", nip: `1979${++sn}0012005`, unit: "Command Center", email: `o${sn}@bnpb.go.id`, wa: "081234567890", peran, wilayah: ["62"]}, ADMIN);
   assert.equal((await buat(["operator_cc", "raja"])).s, 400); const r = await buat(["operator_cc"]); assert.equal(r.s, 201, r.t); assert.deepEqual(r.j.staf.peran, ["operator_cc"]);
   const daftar = await api("GET", "/api/staf/admin/daftar", undefined, ADMIN); assert.equal(daftar.j.peran.operator_cc, "Operator command center");
@@ -1011,20 +923,20 @@ uji("cc peran: Super Admin memberi peran operator_cc dan tab dinding lewat API; 
   assert.equal((await api("POST", "/api/staf/gantisandi", {}, {cookie, ...PB})).s, 200);
   const s = await api("GET", "/api/staf/saya", undefined, {cookie}); assert.equal(s.s, 200); assert.deepEqual(s.j.staf.peran, ["operator_cc"]);
   assert.equal((await api("GET", "/api/cc/antrean", undefined, {cookie})).s, 200, "operator dari alur akun sungguhan masuk ke meja");
-  assert.equal((await api("POST", "/api/pemirsa/admin/buat", {nama: "Layar Dinding Ruang", tab: ["dinding"]}, ADMIN)).s, 201); assert.equal((await api("POST", "/api/pemirsa/admin/buat", {nama: "Tab Liar", tab: ["dinding", "x"]}, ADMIN)).s, 400);
-  const pm = (await api("GET", "/api/pemirsa/admin/daftar", undefined, ADMIN)).j; assert.equal(pm.tab.dinding, "Layar dinding"); assert.deepEqual(pm.pemirsa.find(p => p.nama === "Layar Dinding Ruang").tab, ["dinding"]);
+  assert.equal((await api("POST", "/api/pemirsa/admin/buat", {nama: "Layar Dinding Ruang", tab: ["dinding"]}, ADMIN)).s, 400, "tab dinding dibuang: cekTab menolak"); assert.equal((await api("POST", "/api/pemirsa/admin/buat", {nama: "Tab Liar", tab: ["peta", "x"]}, ADMIN)).s, 400);
+  const pm = (await api("GET", "/api/pemirsa/admin/daftar", undefined, ADMIN)).j; assert.ok(!("dinding" in pm.tab) && !JSON.stringify(pm).includes("Layar dinding"), "daftar tab tanpa dinding");
 });
 
 
-/* ================================================================ halaman: meja operator (/command-center) dan layar dinding (/command-center/dinding) */
+/* ================================================================ halaman: meja operator (/command-center); layar dinding dibuang */
 const man = async (j, h = {}, host = "http://bnpb.lokal", metode = "GET") => { const r = await mf.dispatchFetch(host + j, {method: metode, redirect: "manual", headers: h}); return {s: r.status, h: r.headers, t: await r.text()}; };
-const SITUS = "https://centurisk97.id", KE_MEJA = "/admin/pantau?ke=%2Fcommand-center", KE_DINDING = "/admin/masuk?ke=%2Fcommand-center%2Fdinding";
+const SITUS = "https://centurisk97.id", KE_MEJA = "/admin/pantau?ke=%2Fcommand-center";
 const berkasKlien = t => [...t.matchAll(/(?:src|href)="(\/[^"]+\.(?:js|css))(?:\?v=\d+)?"/g)].map(m => m[1]);
 
 uji("cc halaman meja: /command-center terbuka bagi operator, koordalops, pimpinan, moderator; tamu ke Meja Pantau; sesi tanpa hak 403 polos; CSP_ADMIN tanpa sebaris", async () => {
   const tamu = await man("/command-center"); assert.equal(tamu.s, 303); assert.equal(tamu.h.get("location"), KE_MEJA); assert.match(tamu.h.get("cache-control"), /no-store/);
   const kasus = [["moderator", ADMIN, 200], ["operator", op1.h, 200], ["operator berwilayah", opWil.h, 200], ["koordalops", koord.h, 200], ["pimpinan", pim.h, 200],
-    ["akun gerbang situs", GERBANG, 403], ["pusdalops", pusd.h, 403], ["tmc", tmc.h, 403], ["kemitraan", kampus.h, 403], ["pemirsa dinding", pDinding.h, 403], ["pemirsa peta", pPeta.h, 403], ["operator sandi awal belum diganti", tertahan.h, 303]];
+    ["akun gerbang situs", GERBANG, 403], ["pusdalops", pusd.h, 403], ["tmc", tmc.h, 403], ["kemitraan", kampus.h, 403], ["pemirsa peta", pPeta.h, 403], ["operator sandi awal belum diganti", tertahan.h, 303]];
   for (const [nama, h, s] of kasus) { const r = await man("/command-center", h); assert.equal(r.s, s, `${nama}: ${r.s} ${r.t.slice(0, 80)}`); if (s === 403) { assert.match(r.t, /tidak punya akses/); assert.doesNotMatch(r.t, /command_center\.js/, nama + ": 403 polos tanpa skrip"); } }
   assert.equal((await man("/command-center", tertahan.h)).h.get("location"), KE_MEJA, "sandi awal belum diganti: ke layar masuk staf untuk menggantinya");
   /* header dan isi */
@@ -1042,7 +954,7 @@ uji("cc halaman meja: /command-center terbuka bagi operator, koordalops, pimpina
   /* host terkunci centurisk97.id: halaman menjaga dirinya sendiri (tamu ke Meja Pantau, bukan /admin/masuk); operator tidak perlu akun gerbang; peran lain 403 polos */
   const s0 = await man("/command-center", {}, SITUS); assert.equal(s0.s, 303); assert.equal(s0.h.get("location"), KE_MEJA);
   assert.equal((await man("/command-center", {cookie: op1.cookie}, SITUS)).s, 200); assert.equal((await man("/command-center", {cookie: koord.cookie}, SITUS)).s, 200);
-  assert.equal((await man("/command-center", {cookie: pusd.cookie}, SITUS)).s, 403); assert.equal((await man("/command-center", pDinding.h, SITUS)).s, 403);
+  assert.equal((await man("/command-center", {cookie: pusd.cookie}, SITUS)).s, 403); assert.equal((await man("/command-center", pPeta.h, SITUS)).s, 403);
   assert.equal((await man("/command-center/", {cookie: op1.cookie}, SITUS)).s, 200, "garis miring penutup sama saja");
   assert.equal((await man("/command-center", {cookie: "sesi_staf=" + "c".repeat(64)}, SITUS)).s, 303, "sesi palsu = tamu");
   /* sesi dicabut atau kedaluwarsa: tidak lagi masuk */
@@ -1052,47 +964,20 @@ uji("cc halaman meja: /command-center terbuka bagi operator, koordalops, pimpina
   assert.equal((await man("/command-center", op1.h, "http://bnpb.lokal", "POST")).s, 405);
 });
 
-uji("cc halaman dinding: /command-center/dinding bagi pemirsa tab dinding, operator, koordalops, pimpinan, moderator; tamu ke /admin/masuk; CSP_DINDING; kerangka tanpa alarm.js/sapa/asisten", async () => {
-  for (const host of ["http://bnpb.lokal", SITUS]) {
-    const tamu = await man("/command-center/dinding", {}, host); assert.equal(tamu.s, 303, host); assert.equal(tamu.h.get("location"), KE_DINDING, "tamu ke form tempat pemirsa masuk");
-    const kasus = [["pemirsa dinding", pDinding.h, 200], ["moderator", ADMIN, 200], ["operator", {cookie: op1.cookie}, 200], ["koordalops", {cookie: koord.cookie}, 200], ["pimpinan", {cookie: pim.cookie}, 200],
-      ["pemirsa peta", pPeta.h, 403], ["akun gerbang situs", GERBANG, 403], ["pusdalops", {cookie: pusd.cookie}, 403], ["tmc", {cookie: tmc.cookie}, 403], ["kemitraan", {cookie: kampus.cookie}, 403], ["operator sandi awal", {cookie: tertahan.cookie}, 303]];
-    for (const [nama, h, s] of kasus) { const r = await man("/command-center/dinding", h, host); assert.equal(r.s, s, `${host} ${nama}: ${r.s}`); }
+uji("cc layar dinding DIBUANG: /command-center/dinding dan /api/cc/dinding tidak ada lagi (404) untuk semua akun di dua host; tombol dan kerangkanya hilang; HTML, JS, CSS meja SENYAP total", async () => {
+  for (const host of ["http://bnpb.lokal", SITUS]) for (const [nama, h] of Object.entries({tamu: {}, op: {cookie: op1.cookie}, mod: ADMIN, koord: {cookie: koord.cookie}, pemirsa: {cookie: pPeta.h.cookie}})) {
+    for (const j of ["/command-center/dinding", "/command-center/dinding/", "/api/cc/dinding"]) { const r = await mf.dispatchFetch(host + j, {redirect: "manual", headers: h}); assert.ok([404, 303].includes(r.status) && !(await r.text()).includes("dd-memuat"), `${host}${j} ${nama}: ${r.status}`); }
+    assert.notEqual((await mf.dispatchFetch(host + "/api/cc/dinding", {redirect: "manual", headers: h})).status, 200, "tidak pernah 200");
   }
-  const r = await man("/command-center/dinding", pDinding.h), h = r.h; TANPA_LAMA(r.t, "HTML dinding"); TANPA_LAMA((await man("/command-center", ADMIN)).t, "HTML meja");
-  assert.equal(h.get("content-security-policy"), CSP_DINDING); assert.match(h.get("cache-control"), /private, no-store/); assert.equal(h.get("x-frame-options"), "DENY"); assert.match(h.get("vary"), /cookie/i);
-  assert.doesNotMatch(CSP_DINDING, /unsafe-inline|unsafe-eval|googleapis|gstatic/); assert.match(CSP_DINDING, /script-src 'self';/); assert.match(CSP_DINDING, /style-src 'self';/);
-  assert.match(CSP_DINDING, /img-src [^;]*https:\/\/\*\.openfreemap\.org/); assert.match(CSP_DINDING, /connect-src [^;]*https:\/\/\*\.openfreemap\.org/); assert.match(CSP_DINDING, /worker-src 'self' blob:/);
-  assert.doesNotMatch(r.t, /\sstyle=|<style|\son[a-z]+=|<script(?![^>]*\ssrc=)/i, "tanpa gaya dan skrip sebaris");
-  /* tanpa pop-up alarm, sapaan, asisten, persetujuan, statistik: layar dinding tidak boleh membuka modal */
-  const skrip = [...r.t.matchAll(/<script src="([^"]+)"/g)].map(m => m[1].replace(/\?v=\d+$/, ""));
-  assert.deepEqual(skrip, ["/inti/format.js", "/angka_kawasan.js", "/admin/command_bersama.js", "/admin/command_dinding.js"]);
-  assert.doesNotMatch(r.t, /alarm\.js|sapa\.js|asisten|persetujuan|jejak\.js|i18n\.js|tema\.css/);
-  for (const f of berkasKlien(r.t)) assert.ok(existsSync(path.join(AKAR, "public", f)), "berkas klien ada: " + f);
-  assert.match(r.t, /class="dd-html"/); assert.match(r.t, /<meta name="color-scheme" content="dark">/);
-  /* tautan masuk ulang menurut jenis akun: pemirsa dan moderator di /admin/masuk, staf di Meja Pantau */
-  assert.match(r.t, new RegExp(`data-akun="pemirsa" data-masuk="${KE_DINDING.replace(/[?]/g, "\\?")}"`));
-  assert.match((await man("/command-center/dinding", {cookie: op1.cookie})).t, /data-akun="staf" data-masuk="\/admin\/pantau\?ke=%2Fcommand-center%2Fdinding"/);
-  assert.match((await man("/command-center/dinding", ADMIN)).t, /data-akun="mod" data-masuk="\/admin\/masuk\?ke=/);
-  assert.equal((await man("/command-center/dinding", pDinding.h, "http://bnpb.lokal", "POST")).s, 405);
-});
-
-uji("cc halaman login: pemirsa tab dinding masuk lewat /admin/masuk dan diarahkan ke layar dinding (bukan /dinding); pemirsa multi-tab tetap ke tab pertamanya", async () => {
-  const cp = (nama, tab) => api("POST", "/api/pemirsa/admin/buat", {nama, tab}, ADMIN);
-  const masuk = (user, sandi, ke = "", ip = "198.51.100.201") => mf.dispatchFetch(SITUS + "/admin/masuk" + (ke ? "?ke=" + encodeURIComponent(ke) : ""), {method: "POST", redirect: "manual",
-    headers: {"content-type": "application/x-www-form-urlencoded", origin: SITUS, "cf-connecting-ip": ip}, body: new URLSearchParams({email: user, sandi}).toString()});
-  const a = await cp("Layar Dinding Login", ["dinding"]); assert.equal(a.s, 201, a.t);
-  const r1 = await masuk(a.j.username, a.j.sandi, "/command-center/dinding"); assert.equal(r1.status, 303); assert.equal(r1.headers.get("location"), "/command-center/dinding");
-  const kuki = r1.headers.getSetCookie().find(c => c.startsWith("sesi_pemirsa=")).split(";")[0]; assert.ok(kuki);
-  const r2 = await masuk(a.j.username, a.j.sandi, "", "198.51.100.202"); assert.equal(r2.headers.get("location"), "/command-center/dinding", "tanpa ?ke=: ke tab pertamanya yang mandiri");
-  const r3 = await masuk(a.j.username, a.j.sandi, "/monitor", "198.51.100.203"); assert.equal(r3.headers.get("location"), "/command-center/dinding", "?ke= di luar tabnya diabaikan");
-  assert.equal((await man("/command-center/dinding", {cookie: kuki}, SITUS)).s, 200, "sesi pemirsa baru membuka layar dinding");
-  assert.equal((await man("/command-center", {cookie: kuki}, SITUS)).s, 403, "tetapi bukan meja");
-  assert.equal((await mf.dispatchFetch(SITUS + "/api/cc/antrean", {headers: {cookie: kuki}})).status, 403, "dan bukan API meja");
-  assert.equal((await mf.dispatchFetch(SITUS + "/api/cc/dinding", {headers: {cookie: kuki}})).status, 200);
-  const b = await cp("Peta dan Dinding", ["peta", "dinding"]); assert.equal(b.s, 201, b.t);
-  assert.equal((await masuk(b.j.username, b.j.sandi, "", "198.51.100.204")).headers.get("location"), "/peta", "tab pertama biasa tetap /peta");
-  assert.equal((await masuk(b.j.username, b.j.sandi, "/command-center/dinding", "198.51.100.205")).headers.get("location"), "/command-center/dinding");
+  assert.equal((await man("/api/cc/dinding", ADMIN)).s, 404); assert.equal((await man("/command-center/dinding", op1.h)).s === 200, false);
+  const src = ["src/command_center.js", "src/admin_halaman.js", "src/pemirsa.js", "src/worker.js"].map(f => teks(f).replace(/\/\*[\s\S]*?\*\//g, "")).join("\n");
+  assert.doesNotMatch(src, /halamanDinding|CSP_DINDING|api\/cc\/dinding|command-center\/dinding|MANDIRI/, "tidak ada sisa kode dinding di sisi Worker");
+  /* HTML meja (operator, koordalops, pimpinan, moderator): tidak ada Audio/.mp3/suara/dinding/pemuat bunyi */
+  for (const [nama, h] of [["operator", op1.h], ["koordalops", koord.h], ["pimpinan", pim.h], ["moderator", ADMIN]]) {
+    const r = await man("/command-center", h); assert.equal(r.s, 200, nama);
+    assert.doesNotMatch(r.t, /\bAudio\b|\.mp3|suara|senyap|dinding|alarm\.js|command_dinding/i, `HTML meja ${nama}: tanpa bunyi dan tanpa dinding`);
+    for (const f of berkasKlien(r.t)) if (/command_/.test(f)) assert.doesNotMatch(teks("public" + f), /\bAudio\b|\.mp3|suara|senyap|userActivation|dinding/i, `${nama}: ${f} senyap total`);
+  }
 });
 
 uji("cc halaman menu: entri Command center di menu admin untuk operator_cc, koordalops, pimpinan dan moderator; /admin/command-center meneruskan; ?ke= diikuti sesudah masuk staf", async () => {
@@ -1103,53 +988,45 @@ uji("cc halaman menu: entri Command center di menu admin untuk operator_cc, koor
   for (const h of [tmc.h, pusd.h, kampus.h]) assert.doesNotMatch(await nav(h), /href="\/admin\/command-center"/, "peran lain tidak melihat menunya");
   assert.match((await man("/admin/statistik", ADMIN)).t, /href="\/admin\/command-center"/);
   const src = teks("public/admin/pantau.js"), m = src.match(/const KE_PIPA = (\/\^[^\n;]+\/);/); assert.ok(m); const re = eval(m[1]);
-  for (const ok of ["/command-center", "/command-center/dinding", "/command-center?x=1", "/pipa/peta", "/admin/drone"]) assert.ok(re.test(ok), ok);
+  for (const ok of ["/command-center", "/command-center?x=1", "/pipa/peta", "/admin/drone"]) assert.ok(re.test(ok), ok);
+  /* masuk staf: operator_cc SAJA (peran tunggal) ke "/", sesudah ?ke= sah; perilaku di peramban ada di command_center_layar.test.mjs */
+  assert.match(src, /pergiPipa\(\) \|\| pergiPeta\(r\.j\.staf\?\.peran\) \|\| muat\(\)/); assert.match(src, /peran\.length !== 1 \|\| peran\[0\] !== "operator_cc"\) return false; location\.href = "\/"/);
   for (const salah of ["/command-centerX", "//command-center", "https://x.id/command-center", "/x/command-center", "/\\command-center", "command-center"]) assert.ok(!re.test(salah), salah);
 });
 
-/* ================================================================ klien: sintaks, larangan, pemformat, pengendali bunyi */
-const KLIEN_JS = ["command_bersama", "command_center", "command_dinding"].map(n => `public/admin/${n}.js`), KLIEN_CSS = ["command_bersama", "command_center", "command_dinding"].map(n => `public/admin/${n}.css`);
-function muatBersama({aktif = true, tolak = false, ambil = async () => { throw new Error("tanpa jaringan"); }} = {}) {
-  const log = [], tik = [], jam = {t: Date.UTC(2026, 10, 1, 0, 0)};
-  class AudioPalsu { constructor(src) { log.push("baru " + src); } play() { log.push("play"); return tolak ? Promise.reject(new Error("NotAllowedError")) : Promise.resolve(); } pause() { log.push("pause"); } set currentTime(v) {} get currentTime() { return 0; } }
+/* ================================================================ klien: sintaks, larangan, pemformat, senyap total */
+const KLIEN_JS = ["command_bersama", "command_center"].map(n => `public/admin/${n}.js`), KLIEN_CSS = ["command_bersama", "command_center"].map(n => `public/admin/${n}.css`);
+function muatBersama({ambil = async () => { throw new Error("tanpa jaringan"); }, aktif = true} = {}) {
+  const log = [], jam = {t: Date.UTC(2026, 10, 1, 0, 0)};
+  class AudioPalsu { constructor(src) { log.push("baru " + src); } play() { log.push("play"); return Promise.resolve(); } pause() { log.push("pause"); } }   // tak boleh tersentuh: command center senyap total
   class Dt extends Date { static now() { return jam.t; } }
-  const ctx = vm.createContext({window: {}, document: {addEventListener() {}, createElement() { throw new Error("DOM tidak dipakai di uji ini"); }}, navigator: {userActivation: {hasBeenActive: aktif}}, Audio: AudioPalsu,
-    setInterval: f => { tik.push(f); return tik.length; }, Intl, Date: Dt, console, setTimeout, clearTimeout, AbortController, fetch: ambil});
+  const ctx = vm.createContext({window: {}, document: {addEventListener() { log.push("addEventListener"); }, createElement() { throw new Error("DOM tidak dipakai di uji ini"); }}, navigator: {userActivation: {hasBeenActive: aktif}}, Audio: AudioPalsu,
+    setInterval: () => { log.push("setInterval"); return 1; }, Intl, Date: Dt, console, setTimeout, clearTimeout, AbortController, fetch: ambil});
   vm.runInContext(teks("public/inti/format.js").replace(/const \$ = .*\n/, "") + "\nthis.fmt = fmt;", ctx);
   vm.runInContext(teks("public/admin/command_bersama.js"), ctx);
-  return {Cc: ctx.window.Cc, log, tik, jam, ctx, mundur: ms => { jam.t += ms; tik.forEach(f => f()); }, plays: () => log.filter(x => x === "play").length};
+  return {Cc: ctx.window.Cc, log, jam, ctx};
 }
-uji("cc klien berkas: sintaks lolos node --check; tanpa innerHTML/eval/gaya sebaris; dinding tanpa aksi; CSS tanpa zoom dan hormati prefers-reduced-motion; alarm-api.mp3 ada", () => {
+uji("cc klien berkas: sintaks lolos node --check; tanpa innerHTML/eval/gaya sebaris; CSS tanpa zoom dan hormati prefers-reduced-motion; SENYAP total (tanpa Audio, .mp3, suara)", () => {
   for (const f of [...KLIEN_JS, "public/admin/pantau.js"]) execFileSync(process.execPath, ["--check", path.join(AKAR, f)], {stdio: "pipe"});
   for (const f of KLIEN_JS) assert.doesNotMatch(teks(f), /\.(?:innerHTML|outerHTML)\b|insertAdjacentHTML|document\.write|\beval\(|new Function|setAttribute\(\s*["']style|\bstyle\s*=|\.style\./, f + ": teks API tidak boleh lewat innerHTML; CSP tanpa gaya sebaris");
   const css = f => teks(f).replace(/\/\*[\s\S]*?\*\//g, "");
   for (const f of KLIEN_CSS) assert.doesNotMatch(css(f), /(?:^|[;{\s])zoom\s*:|@import|url\(\s*["']?https?:|googleapis/, f);
-  assert.match(css("public/admin/command_dinding.css"), /prefers-reduced-motion:\s*reduce/); assert.match(css("public/admin/command_bersama.css"), /prefers-reduced-motion:\s*reduce/);
-  assert.match(css("public/admin/command_dinding.css"), /html\.dd-html\{font-size:clamp\([^}]*vw[^}]*vh/, "skala huruf dari vw dan vh (1920 dan 3840), bukan zoom");
-  assert.match(css("public/admin/command_dinding.css"), /grid-template-rows:auto minmax\(0,1fr\) auto auto/); assert.match(css("public/admin/command_dinding.css"), /body\.dd\{[^}]*height:100vh;overflow:hidden/, "satu layar penuh tanpa gulir");
-  assert.match(css("public/admin/command_bersama.css"), /\[hidden\]\{display:none/);
-  const din = teks("public/admin/command_dinding.js");
-  assert.doesNotMatch(din, /\bkirim\b|\/api\/cc\/aksi|method: "POST"|\/api\/cc\/kontak|alarm\.js|sapa\.js|new Notification|\balert\(|\bconfirm\(|\bprompt\(/, "layar dinding: baca saja, tanpa tombol aksi, nomor telepon, atau modal");
-  assert.doesNotMatch(din, /\b(?:catatan_bebas|nomor_telepon|nama_regu|tugas_id)\b/, "layar dinding tidak membaca bidang pribadi atau id tugas mentah");
-  for (const k of ["navigator.wakeLock", "visibilitychange", 'matchMedia("(prefers-reduced-motion: reduce)")', "location.reload()", "/api/cc/dinding", "/api/titik", "/api/peringatan/aktif", "/api/omc/sortie", "Sesi habis — masuk ulang",
-    "Gagal menyegarkan sejak", "AngkaKawasan.selUnik", "https://tiles.openfreemap.org/styles/dark", "POLOS", "jajak(muatCc, 30e3)", "jajak(muatTitik, 5 * MENIT)", "jajak(muatPeringatan, 5 * MENIT)", "jajak(muatOmc, 5 * MENIT)", "interactive: false"])
-    assert.ok(din.includes(k), "dinding memuat " + k);
-  assert.match(din, /cc: 2 \* MENIT, titik: 4 \* JAM/, "ambang basi: cc 2 menit, titik 4 jam");
-  /* hemat kerja layar yang menyala 24 jam (perilaku diukur di command_center_layar.test.mjs): titik dan alert dipasang terpisah, tak ada pengukuran tata letak di dalam putaran hapus */
-  assert.match(din, /function isiTitik\(\)/); assert.match(din, /function isiAlert\(\)/); assert.doesNotMatch(din, /function isiPeta|isiPeta\(/, "isiPeta lama memasang ulang SEMUA titik panas tiap jajak antrean");
-  assert.doesNotMatch(din.replace(/\/\*[\s\S]*?\*\//g, ""), /while \([^)]*scrollHeight/, "potong() tidak boleh membaca tata letak di dalam putaran hapus (layout thrashing)");
-  assert.match(din, /clearTimeout\(S\.tundaUkur\)/, "event resize ditunda (debounce)");
-  assert.doesNotMatch(din, /±/, "375 m = ukuran sel, bukan galat: tanpa ±"); assert.ok(din.includes("lokasi unik (sel 375 m, semua satelit)"));
-  assert.ok(din.includes("r.antrean_terpotong || r.final_terpotong") && din.includes("median_respons_terpotong"), "dinding menandai daftar yang dipotong server");
+  assert.match(css("public/admin/command_bersama.css"), /prefers-reduced-motion:\s*reduce/); assert.match(css("public/admin/command_bersama.css"), /\[hidden\]\{display:none/);
+  /* layar dinding dibuang (2 Nov 2026): berkasnya hilang */
+  for (const f of ["public/admin/command_dinding.js", "public/admin/command_dinding.css"]) assert.ok(!existsSync(path.join(AKAR, f)), f + " sudah dibuang");
+  /* senyap total: tidak ada objek Audio, .mp3, kata suara/senyap, userActivation, play()/pause(), atau play()/pause() di JS dan CSS meja */
+  for (const f of [...KLIEN_JS, ...KLIEN_CSS]) assert.doesNotMatch(teks(f), /\bAudio\b|\.mp3|suara|userActivation|senyap|\.play\(|\.pause\(|dinding/i, f + ": command center senyap total, tanpa layar dinding");
   const mj = teks("public/admin/command_center.js");
   assert.doesNotMatch(mj, /String\(hit\(|String\(final\)/, "chip hitungan lewat fmt (pemisah ribuan), bukan String()"); assert.ok(mj.includes('fmt(hit("baru"))') && mj.includes("d.antrean_terpotong") && mj.includes("d.final_terpotong"));
   assert.match(mj, /const TUNDA_LOG|TUNDA_LOG = 400/); assert.ok(mj.includes('"change", () => ubah(true, TUNDA_LOG)') && mj.includes("L.batal?.abort()") && mj.includes("{batal: batal.signal}"), "filter tanggal log didebounce dan jawaban usang dibatalkan");
   assert.ok(mj.includes("/api/cc/kontak?") && mj.includes("MAKS_KONTAK = 20") && mj.includes('["lokasi"'), "nomor BPBD dimuat bersama (maks 20 lokasi per panggilan)"); assert.doesNotMatch(mj, /\/api\/cc\/kontak\?prov=/, "tak ada lagi satu panggilan per lokasi");
   assert.doesNotMatch(mj, /replaceChildren\(\.\.\.baru\)/, "daftar kartu tidak boleh melepas SEMUA kartu (memutus fokus ketikan)"); assert.ok(mj.includes("catatFokus") && mj.includes("pulihkanFokus") && mj.includes("Math.round(a.luas_ha)"));
-  for (const k of ["jajak(muat, 30e3)", "/api/cc/antrean", "/api/cc/kontak", "/api/cc/aksi/", "/api/cc/log?", "tel:", "r.status === 409", "Koreksi wajib bercatatan", "suara.gerbang(PEMBACA)", "suara.perbarui("]) assert.ok(mj.includes(k), "meja memuat " + k);
-  assert.ok(existsSync(path.join(AKAR, "public/suara/alarm-api.mp3")) && teks("public/admin/command_bersama.js").includes('"/suara/alarm-api.mp3"'));
+  for (const k of ["jajak(muat, 30e3)", "/api/cc/antrean", "/api/cc/kontak", "/api/cc/aksi/", "/api/cc/log?", "tel:", "r.status === 409", "Koreksi wajib bercatatan"]) assert.ok(mj.includes(k), "meja memuat " + k);
+  assert.ok(existsSync(path.join(AKAR, "public/suara/alarm-api.mp3")), "berkas bunyi tetap ada: dipakai halaman lain, hanya command center yang senyap");
   /* tidak ada pemformat durasi lokal (SATU formatter: fmt.durasi) dan baris 403 + /admin/masuk?ke= (pantulan) */
   for (const f of KLIEN_JS) { assert.doesNotMatch(teks(f), /const (?:jamTeks|durasiTeks|lama) = ms =>/, f); teks(f).split("\n").forEach((b, i) => assert.ok(!(/403/.test(b) && /\/admin\/masuk\?ke=/.test(b)), `${f}:${i + 1}`)); }
+  /* dimuat dengan navigator.userActivation.hasBeenActive = true (pemicu keluhan): tidak ada Audio, play(), pendengar atau interval bunyi, dan Cc tidak punya pengendali suara */
+  const B = muatBersama({aktif: true}); assert.deepEqual(B.log, [], "memuat command_bersama.js tidak menyentuh Audio/setInterval/addEventListener"); assert.equal(B.Cc.suara, undefined, "tidak ada pengendali suara"); assert.ok(!Object.keys(B.Cc).some(k => /suara|bunyi|senyap|gerbang/i.test(k)));
   /* konsep lama sudah hilang dari seluruh berkas klien (JS dan CSS) */
   for (const f of [...KLIEN_JS, ...KLIEN_CSS]) TANPA_LAMA(teks(f), f);
 });
@@ -1197,50 +1074,4 @@ uji("cc klien ambil: permintaan usang bisa dibatalkan lewat signal pemanggil (st
   assert.deepEqual([ok.ok, ok.j], [true, {a: 1}]); assert.deepEqual([pasang, lepas], [1, 1]);
   const lama = await muatBersama({ambil: gantung}).Cc.ambil("/x", {batas: 30}); assert.deepEqual([lama.ok, lama.status], [false, 0]);
   assert.ok(awal >= 1);
-});
-
-/* uraiTitik dinding: jumlah lokasi unik tak bergantung urutan, jadi urut waktu (.sort) dibuang; dibuktikan terhadap versi lama (dengan sort) pada semua permutasi */
-function muatUraiTitik() {
-  const kode = teks("public/admin/command_dinding.js"), mulai = kode.indexOf("  function uraiTitik(j, kini) {"), akhir = kode.indexOf("  async function muatTitik()");
-  assert.ok(mulai > 0 && akhir > mulai, "uraiTitik ditemukan di command_dinding.js");
-  const ctx = vm.createContext({window: {}, Number, Date, Set, Math});
-  vm.runInContext(teks("public/angka_kawasan.js") + "\nthis.AngkaKawasan = window.AngkaKawasan; var JAM = 36e5, JENDELA_TITIK = 24 * JAM;", ctx);
-  vm.runInContext(kode.slice(mulai, akhir) + "\nthis.uraiTitik = uraiTitik;", ctx);
-  return {uraiTitik: ctx.uraiTitik, selUnik: ctx.AngkaKawasan.selUnik, sumber: kode.slice(mulai, akhir)};
-}
-uji("cc klien dinding: uraiTitik tanpa .sort tetap benar: lokasi unik sama untuk SEMUA permutasi masukan dan sama dengan versi lama yang diurutkan; lebih tua dari 24 jam dan bukan angka dibuang", () => {
-  const {uraiTitik, selUnik, sumber} = muatUraiTitik(), kini = Date.UTC(2026, 10, 1, 5, 0), acuan = new Date(kini).toISOString();
-  assert.doesNotMatch(sumber.replace(/\/\*[\s\S]*?\*\//g, ""), /\.sort\(/, "tanpa urut waktu");
-  /* tiga lokasi unik: (5.55,95.32) tiga kali (dua satelit + 1 jam kemudian), (4.30,98.00) dua kali, (-2.50,113.30) sekali; satu lebih tua 24 jam; satu bukan angka; satu sel tetangga ~800 m */
-  const baris = [[5.55, 95.32, -1], [5.5501, 95.3201, -0.5], [5.55, 95.32, -3], [4.3, 98.0, -2], [4.3001, 98.0001, -26], [-2.5, 113.3, -3], [-3.1, 114.1, -30], ["x", 1, -1], [5.56, 95.33, -2]];
-  const lama = (j, k) => { const t0 = Date.parse(j.acuan), lihat = new Set(), titik = [];   // salinan versi lama: dengan .sort
-    for (const b of (j.baris || []).map(b => ({lat: b[0], lon: b[1], ms: t0 + Math.round(b[2] * 36e5)})).filter(b => Number.isFinite(b.lat) && Number.isFinite(b.lon) && b.ms >= k - 24 * 36e5).sort((a, c) => a.ms - c.ms)) { const key = selUnik(b.lat, b.lon); if (!lihat.has(key)) { lihat.add(key); titik.push(b); } }
-    return titik; };
-  const kunci = t => Array.from(t, b => selUnik(b.lat, b.lon)).sort(), acuanKunci = kunci(lama({acuan, baris}, kini));
-  assert.equal(acuanKunci.length, 4, "(5.55,95.32), (4.30,98.00), (-2.50,113.30), (5.56,95.33); duplikat sel, >24 jam, dan non-angka tidak dihitung");
-  const permutasi = a => a.length <= 1 ? [a] : a.flatMap((x, i) => permutasi([...a.slice(0, i), ...a.slice(i + 1)]).map(p => [x, ...p]));
-  const semua = permutasi(baris.slice(0, 6)); let n = 0;   // enam baris pertama diacak semua urutannya (720); tiga sisanya (lebih tua dari 24 jam, bukan angka, sel tetangga) tetap di ekor
-  for (const p of semua) { const j = {acuan, baris: [...p, ...baris.slice(6)]}, baru = uraiTitik(j, kini); n++; assert.deepEqual(kunci(baru), kunci(lama(j, kini)), "sama dengan versi lama untuk permutasi " + n); assert.equal(baru.length, kunci(lama(j, kini)).length); assert.equal(new Set(Array.from(baru, b => selUnik(b.lat, b.lon))).size, baru.length, "tidak ada lokasi ganda"); }
-  assert.equal(n, 720); assert.deepEqual(kunci(uraiTitik({acuan, baris}, kini)), acuanKunci); assert.equal(uraiTitik({acuan, baris: []}, kini).length, 0); assert.equal(uraiTitik({acuan}, kini).length, 0);
-  /* titik wakil sel tetap berada di sel yang sama (selisih < satu sel) walau bukan yang paling awal */
-  for (const b of uraiTitik({acuan, baris}, kini)) assert.ok(acuanKunci.includes(selUnik(b.lat, b.lon)));
-});
-
-uji("cc klien bunyi: segera untuk alert baru, diulang tiap 60 dtk selama ada alert baru, berhenti begitu semua dipegang; ditolak peramban = SENYAP; sebelum diketuk tidak berbunyi", async () => {
-  const B = muatBersama(), s = B.Cc.suara; assert.equal(s.status, "hidup", "halaman yang sudah pernah diketuk tidak butuh gerbang");
-  s.perbarui([]); assert.equal(B.plays(), 0, "tanpa alert baru: senyap");
-  s.perbarui(["a"]); assert.equal(B.plays(), 1, "segera untuk alert baru");
-  B.mundur(30e3); assert.equal(B.plays(), 1, "belum semenit"); B.mundur(31e3); assert.equal(B.plays(), 2, "diulang sesudah 60 dtk");
-  s.perbarui(["a"]); assert.equal(B.plays(), 2, "alert yang sama tidak membunyikan lagi di luar jadwal");
-  s.perbarui(["a", "b"]); assert.equal(B.plays(), 3, "alert baru lain: segera");
-  B.mundur(59e3); assert.equal(B.plays(), 3); B.mundur(2e3); assert.equal(B.plays(), 4, "jadwal 60 dtk dihitung dari bunyi terakhir");
-  s.perbarui([]); assert.ok(B.log.at(-1) === "pause", "semua sudah dipegang: berhenti"); B.mundur(180e3); assert.equal(B.plays(), 4, "dan tidak berbunyi lagi");
-  s.perbarui(["c"]); assert.equal(B.plays(), 5, "alert baru sesudah hening berbunyi lagi (keadaan dari server, bukan ingatan peramban)");
-  /* halaman baru dibuka (belum pernah diketuk): menunggu ketukan, tidak mencoba berbunyi */
-  const M = muatBersama({aktif: false}); assert.equal(M.Cc.suara.status, "menunggu"); M.Cc.suara.perbarui(["a"]); M.mundur(120e3); assert.equal(M.log.length, 0, "tanpa elemen Audio dan tanpa play() sebelum ketukan");
-  /* peramban menolak play(): SENYAP, tetap mencoba lagi tiap 60 dtk */
-  const T = muatBersama({tolak: true}); T.Cc.suara.perbarui(["a"]); await Promise.resolve(); await Promise.resolve(); assert.equal(T.Cc.suara.status, "senyap");
-  assert.equal(T.plays(), 1); T.mundur(61e3); assert.equal(T.plays(), 2, "senyap bukan berhenti: mencoba lagi bila peramban mengizinkan");
-  assert.match(teks("public/admin/command_bersama.js"), /for \(const ev of \["pointerdown", "keydown"\]\) document\.addEventListener\(ev, \(\) => \{ if \(status === "senyap"\) nyalakan\(\); \}\)/, "ketukan di mana pun mencoba menyalakan lagi saat senyap");
-  assert.doesNotMatch(teks("public/admin/command_bersama.js").replace(/\/\*[\s\S]*?\*\//g, ""), /localStorage|sessionStorage/, "keadaan bunyi dari server, bukan penyimpanan peramban");
 });

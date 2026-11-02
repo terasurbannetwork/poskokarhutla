@@ -1,12 +1,9 @@
 "use strict";
-/* Pembantu bersama command center karhutla: MEJA OPERATOR (public/admin/command_center.js) dan LAYAR DINDING (public/admin/command_dinding.js).
+/* Pembantu bersama command center karhutla: MEJA OPERATOR (public/admin/command_center.js).
    Dimuat sesudah /inti/format.js (fmt.durasi = SATU formatter durasi semua layar). Datanya dari /api/cc/* (src/command_center.js).
-   Aturan: teks dari API TIDAK PERNAH lewat innerHTML (h() memakai textContent); tanpa gaya sebaris (CSP: style-src 'self'); jam dan tanggal format Indonesia zona WIB ("07.42").
-   Bunyi alarm: SATU pengendali untuk kedua layar. Keadaannya dari server (daftar kunci alert berstatus "baru" tiap jajak), bukan localStorage: bunyi segera untuk alert baru,
-   diulang tiap 60 detik selama masih ada alert baru, berhenti sendiri begitu semuanya sudah dipegang. Peramban baru mau berbunyi sesudah satu ketukan (aturan autoplay): layar gerbang
-   "Ketuk untuk menyalakan suara"; bila play() ditolak, lencana SENYAP mencolok tampil dan ketukan di mana pun mencoba lagi. */
+   Aturan: teks dari API TIDAK PERNAH lewat innerHTML (h() memakai textContent); tanpa gaya sebaris (CSP: style-src 'self'); jam dan tanggal format Indonesia zona WIB ("07.42"). */
 (() => {
-  const WIB = "Asia/Jakarta", SUARA = "/suara/alarm-api.mp3", ULANG_SUARA = 60e3;
+  const WIB = "Asia/Jakarta";
   const NAMA_STATUS = {baru: "Baru", dalam_konfirmasi: "Dalam konfirmasi", ada_api: "Ada api", tidak_ada_api: "Tidak ada api"};
   const fJam = new Intl.DateTimeFormat("id-ID", {timeZone: WIB, hour: "2-digit", minute: "2-digit", hourCycle: "h23"});
   const fTgl = new Intl.DateTimeFormat("id-ID", {timeZone: WIB, weekday: "long", day: "numeric", month: "long", year: "numeric"});
@@ -81,49 +78,5 @@
   /* semua [data-dari="<ms>"] di bawah induk menampilkan umur sejak ms itu */
   const perbaruiUmur = (induk = document) => { const n = waktu.kini(); for (const e of induk.querySelectorAll("[data-dari]")) e.textContent = durasi(n - Number(e.dataset.dari)); };
 
-  /* ---------- bunyi alarm ---------- */
-  function buatSuara() {
-    let audio = null, status = "menunggu", kunci = [], dikenal = new Set(), terakhir = 0;
-    const pendengar = new Set();
-    const ubah = s => { if (s !== status) { status = s; pendengar.forEach(f => f(s)); } };
-    const putar = () => {
-      if (!audio) return;
-      terakhir = Date.now();
-      try { audio.currentTime = 0; } catch (e) { /* belum siap */ }
-      audio.play().then(() => ubah("hidup"), () => ubah("senyap"));
-    };
-    const henti = () => { terakhir = 0; if (audio) { audio.pause(); try { audio.currentTime = 0; } catch (e) { /* belum siap */ } } };
-    /* HARUS dipanggil dari ketukan/tombol: peramban baru membuka bunyi sesudah gerakan pengguna. Satu elemen Audio dipakai ulang untuk semua bunyi berikutnya. */
-    const nyalakan = () => { audio ||= new Audio(SUARA); return audio.play().then(() => { ubah("hidup"); if (kunci.length) { terakhir = Date.now(); dikenal = new Set(kunci); } else henti(); }, () => ubah("senyap")); };
-    /* k = kunci semua alert berstatus "baru" menurut server pada jajak terakhir */
-    const perbarui = k => {
-      kunci = k;
-      if (!k.length) { dikenal = new Set(); henti(); return; }
-      const baru = k.some(x => !dikenal.has(x)); dikenal = new Set(k);
-      if (baru && (status === "hidup" || status === "senyap")) putar();
-    };
-    setInterval(() => { if (kunci.length && (status === "hidup" || status === "senyap") && Date.now() - terakhir >= ULANG_SUARA) putar(); }, 1e3);
-    for (const ev of ["pointerdown", "keydown"]) document.addEventListener(ev, () => { if (status === "senyap") nyalakan(); });
-    if (navigator.userActivation?.hasBeenActive) { audio = new Audio(SUARA); ubah("hidup"); }   // halaman sudah pernah diketuk (mis. kembali dari tab lain): tak perlu gerbang
-    /* lapisan penuh layar: boleh = bisa dilewati (pembaca saja); operator wajib menyalakan suara */
-    const gerbang = boleh => {
-      const tombol = h("button", {class: "cc-gerbang-tombol", type: "button"}, h("span", {class: "cc-gerbang-ikon", "aria-hidden": "true", teks: "🔔"}), h("b", {teks: "Ketuk untuk menyalakan suara"}),
-        h("small", {teks: "Peramban baru berbunyi sesudah layar diketuk. Alarm berulang tiap menit selama ada alert baru."}));
-      const lewat = boleh ? h("button", {class: "cc-gerbang-lewat", type: "button", teks: "Lanjut tanpa suara"}) : null;
-      const el = h("div", {class: "cc-gerbang", role: "dialog", "aria-modal": "true", "aria-label": "Nyalakan suara"}, tombol, lewat);
-      tombol.addEventListener("click", () => nyalakan()); lewat?.addEventListener("click", () => ubah("hening"));
-      const sinkron = s => { el.hidden = s !== "menunggu"; }; pendengar.add(sinkron); sinkron(status);
-      return el;
-    };
-    const TEKS = {menunggu: "SENYAP · ketuk untuk menyalakan suara", senyap: "SENYAP · peramban menolak bunyi, ketuk untuk menyalakan", hening: "Tanpa suara", hidup: "Suara menyala"};
-    const lencana = () => {
-      const el = h("button", {class: "cc-senyap", type: "button"});
-      const sinkron = s => { el.textContent = (s === "hidup" ? "🔔 " : s === "hening" ? "🔕 " : "🔇 ") + TEKS[s]; el.dataset.s = s; }; pendengar.add(sinkron); sinkron(status);
-      el.addEventListener("click", () => { if (status !== "hidup") nyalakan(); });
-      return el;
-    };
-    return {perbarui, gerbang, lencana, get status() { return status; }, aktif: () => status === "hidup"};
-  }
-
-  window.Cc = {NAMA_STATUS, jam, jamTgl, tgl, pendek, durasi, durasiPecah, lokasi, h, ambil, kirim, waktu, jajak, perbaruiUmur, suara: buatSuara()};
+  window.Cc = {NAMA_STATUS, jam, jamTgl, tgl, pendek, durasi, durasiPecah, lokasi, h, ambil, kirim, waktu, jajak, perbaruiUmur};
 })();

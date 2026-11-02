@@ -393,7 +393,7 @@ uji("halaman /admin/pantau: kerangka tanpa data dengan CSP ketat; berkas klien a
   assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'self'/); assert.equal(r.headers.get("cache-control"), "no-store");
   assert.ok(html.includes("/admin/pantau.js") && html.includes("/admin/pantau.css") && html.includes("/admin/bersama.js") && html.includes('id="aksiJudul"'));
   assert.ok(!/<script>[^<]/.test(html) && !/ style=/.test(html), "tanpa skrip/gaya inline");
-  assert.ok(!/command_(bersama|center|dinding)\./.test(html) && !teks("public/admin/pantau.js").includes("window.Cc"), "blok tindak lanjut command center di kartu api memakai gaya Meja Pantau sendiri: command_*.css/js tidak dimuat di sini");
+  assert.ok(!/command_(bersama|center)\./.test(html) && !teks("public/admin/pantau.js").includes("window.Cc"), "blok tindak lanjut command center di kartu api memakai gaya Meja Pantau sendiri: command_*.css/js tidak dimuat di sini");
   assert.ok(!html.includes("628") && !html.includes("sandi_sha"));
   for (const f of ["public/admin/pantau.js", "public/admin/pantau.css", "src/pantau.js", "src/staf.js"]) { assert.ok(existsSync(path.join(AKAR, f)), f); assert.ok(!teks(f).includes(" · "), `${f}: tanpa pemisah titik tengah`); }
   const js = teks("public/admin/pantau.js");

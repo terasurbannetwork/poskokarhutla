@@ -1,13 +1,14 @@
 /* Pop-up alarm peringatan dini (PERINGATAN-DINI.md §3), dipasang di semua halaman bencana dan /semua.
    Sumber: GET /api/peringatan/aktif (src/peringatan.js). Jajak tiap 60 dtk hanya saat tab terlihat; tiap alarm tampil sekali per
-   perangkat (localStorage "pb_alarm"). Rupa meniru pop-up Situasi (public/inti/sapa.js): kepala navy, pil tingkat, tombol bulat.
+   perangkat (localStorage "pb_alarm"); KECUALI operator command center: alert karhutla yang belum final muncul lagi tiap pemuatan halaman sampai diputuskan. Rupa meniru pop-up Situasi (public/inti/sapa.js): kepala navy, pil tingkat, tombol bulat.
    Kartu tidak modal (pojok kanan bawah) supaya tidak menghalangi peta; teks dari API selalu di-escape. Banjir ikut berbunyi (BERBUNYI).
    Kartu karhutla: SATU GET /api/cc/status?kunci= (src/command_center.js). Hanya 200 (operator/staf command center yang sedang masuk) menambah bagian
-   tindak lanjut (status, pemegang, tombol 'aksi' -> POST /api/cc/aksi/:id) dan membunyikan SUARA. 401/403/404/jaringan putus/bentuk asing = kartu publik
+   tindak lanjut (status, pemegang, tombol 'aksi' -> POST /api/cc/aksi/:id).
+   BUNYI hanya untuk alert yang BARU masuk setelah jajak pertama (tidak pernah saat halaman dibuka/dimuat ulang, tidak berulang). 401/403/404/jaringan putus/bentuk asing = kartu publik
    apa adanya, tanpa pesan, supaya pengunjung biasa tidak melihat bedanya. Bagian operator memakai DOM kecil + delegasi klik yang sama dengan tombol tutup. */
 (() => {
   const JEDA = 60e3, KUNCI = "pb_alarm", MAKS_INGAT = 300;
-  /* jenis yang berbunyi saat kartunya muncul (bunyi sama dengan /monitor). Peramban menolak bunyi sebelum pengunjung mengetuk halaman: gagal diam, kartu tetap tampil. */
+  /* jenis yang berbunyi saat kartunya muncul (bunyi sama dengan /monitor), HANYA bila alert-nya baru masuk sesudah jajak pertama. Peramban menolak bunyi sebelum pengunjung mengetuk halaman: gagal diam, kartu tetap tampil. */
   const BERBUNYI = new Set(["banjir"]), SUARA = "/suara/alarm-api.mp3";
   const RUTE = {karhutla: "/", banjir: "/banjir/", gempa: "/gempa/", tsunami: "/gempa/", cuaca: "/cuaca/"};
   const WARNA = {Waspada: "#e3b94e", Siaga: "#e58a45", Awas: "#c9503a"};
@@ -32,6 +33,10 @@
   const jamTgl = ms => !Number.isFinite(ms) ? "" : hariIni(ms) ? jamWib(ms) : `${fTglWib.format(ms)} ${jamWib(ms)}`;
   const bunyi = () => { try { new Audio(SUARA).play().catch(() => {}); } catch (e) {} };
   let antre = [], tampil = false, sejak = Date.now() - 24 * 36e5, el = null;
+  /* per tampilan halaman: opr = null (belum tahu) | true (operator berhak tulis) | false (publik); lihat = kunci yang sudah ditampilkan/ditutup di halaman ini; usai = kunci yang diketahui final;
+     dikenal = kunci yang sudah pernah ada di jajak mana pun; pertama = jajak pertama belum selesai (isinya tidak berbunyi) */
+  let opr = null, pertama = true, sibuk = false;
+  const lihat = new Set(), usai = new Set(), dikenal = new Set();
 
   document.head.insertAdjacentHTML("beforeend", `<style>
 .al{position:fixed;right:16px;bottom:16px;z-index:60;width:min(420px,calc(100vw - 32px));border-radius:18px;overflow:hidden;background:var(--card,#fff);color:var(--ink,#0b2545);box-shadow:0 12px 40px rgb(0 0 0 / .25);font:14px/1.45 var(--font,system-ui)}
@@ -101,12 +106,16 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
   const gambar = (w, teks) => { w.op.innerHTML = isiOp(w.s); if (teks) pesan(w, teks); };
   /* GET status: 200 yang bentuknya utuh = pelaku command center -> pasang bagian operator + SUARA. Selain itu: tidak melakukan apa pun (kartu publik apa adanya). */
   async function operatorCc(a, k) {
-    const r = await cc(urlStatus(a.kunci));
+    const r = a._s ? {s: 200, j: a._s} : await cc(urlStatus(a.kunci));
+    if (r.s === 200 && penuh(r.j)) opr = true; else if (r.s === 401 || r.s === 403) opr = false;
+    /* ditandai 'sudah dilihat' HANYA bila bukan operator, operator tanpa hak tulis, atau statusnya sudah final; operator + belum final = muncul lagi di pemuatan berikutnya */
+    const tetap = r.s === 200 && penuh(r.j) && r.j.aksi.length > 0 && !FINAL_CC.includes(r.j.status);
+    if (!tetap) { tandai(a.kunci); if (r.s === 200) usai.add(a.kunci); }
     if (r.s !== 200 || !penuh(r.j) || !k.isConnected) return;
     const op = document.createElement("div"); op.className = "al-op"; op.setAttribute("data-op", "");
     k.classList.add("al-ada"); k.querySelector(".al-isi")?.after(op);
     const w = {kunci: a.kunci, s: r.j, op, sibuk: false}; OP.set(k, w); gambar(w);
-    bunyi();
+    if (a._bunyi) bunyi();
   }
   async function aksiCc(k, ke) {
     const w = OP.get(k); if (!w || w.sibuk || !Object.hasOwn(AKSI_CC, ke)) return;
@@ -115,11 +124,12 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
     pesan(w, ""); sibukkan(w, true);
     const r = await cc(`/api/cc/aksi/${encodeURIComponent(s.id)}`, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify({dari: s.status, ke, ...(catatan ? {catatan} : {})})});
     if (!k.isConnected) return;
-    if (r.s === 200 && penuh(r.j)) { w.s = {...s, ...r.j}; gambar(w, `Status: ${STATUS_CC[w.s.status][0]}.`); sibukkan(w, false); return; }
+    if (r.s === 200 && penuh(r.j)) { w.s = {...s, ...r.j}; if (FINAL_CC.includes(w.s.status)) { tandai(w.kunci); usai.add(w.kunci); } gambar(w, `Status: ${STATUS_CC[w.s.status][0]}.`); sibukkan(w, false); return; }
     if (r.s === 409) {   // kalah balapan: muat ulang status dari server (bentuk 409 tanpa 'aksi', jadi tombol dikosongkan bila muat ulang gagal)
       const b = await cc(urlStatus(w.kunci));
       if (!k.isConnected) return;
       w.s = b.s === 200 && penuh(b.j) ? b.j : {...s, ...(sah(r.j) ? {status: r.j.status, oleh_nama: r.j.oleh_nama, sejak: r.j.sejak} : {}), aksi: []};
+      if (FINAL_CC.includes(w.s.status)) { tandai(w.kunci); usai.add(w.kunci); }
       gambar(w, `Sudah diubah oleh ${w.s.oleh_nama || "operator lain"} menjadi "${STATUS_CC[w.s.status][0]}"; status dimuat ulang.`); sibukkan(w, false); return;
     }
     sibukkan(w, false); pesan(w, typeof r.j?.galat === "string" && r.j.galat ? r.j.galat.slice(0, 140) : "Aksi gagal; coba lagi.");
@@ -127,8 +137,9 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
 
   function berikut() {
     if (tampil || !antre.length) return;
-    const [a] = antre.splice(0, 1); tampil = true; tandai(a.kunci);
-    if (BERBUNYI.has(a.jenis)) bunyi();
+    const [a] = antre.splice(0, 1); tampil = true; lihat.add(a.kunci);
+    if (a.jenis !== "karhutla" || opr === false) tandai(a.kunci);   // karhutla: operatorCc yang menentukan (operator belum final tidak ditandai)
+    if (BERBUNYI.has(a.jenis) && a._bunyi) bunyi();
     const t = document.createElement("div"); t.innerHTML = kartu(a); el = t.firstElementChild; document.body.append(el);
     const k = el;
     k.addEventListener("click", e => {
@@ -136,19 +147,38 @@ ${aksi.length ? `<div class="al-op-b">${aksi.map(k => `<button type="button" cla
       const b = e.target.closest("[data-ke]"); if (b && !b.disabled) aksiCc(k, b.dataset.ke);
     });
     k.addEventListener("keydown", e => { if (e.key === "Enter" && e.target.matches?.("[data-cat]")) k.querySelector("[data-ke]:not(:disabled)")?.click(); });
-    if (a.jenis === "karhutla") operatorCc(a, k);
+    if (a.jenis === "karhutla" && opr !== false) operatorCc(a, k);
+  }
+
+  /* operator: alert karhutla yang sudah ditandai tapi BELUM final di server dimunculkan lagi (maks 20 GET per jajak; berhenti begitu terbukti publik) */
+  async function ulangOperator(daftar, sudah, ada) {
+    let n = 0;
+    for (const a of daftar) {
+      if (opr === false || n >= 20) break;
+      if (a?.jenis !== "karhutla" || !a.kunci || !sudah.has(a.kunci) || ada.has(a.kunci) || lihat.has(a.kunci) || usai.has(a.kunci)) continue;
+      n++; const r = await cc(urlStatus(a.kunci));
+      if (r.s === 401 || r.s === 403) { opr = false; break; }
+      if (r.s !== 200 || !penuh(r.j)) continue;
+      opr = true;
+      if (FINAL_CC.includes(r.j.status) || !r.j.aksi.length) usai.add(a.kunci); else { antre.push({...a, _s: r.j}); ada.add(a.kunci); }
+    }
   }
 
   async function jajak() {
-    if (document.visibilityState !== "visible") return;
+    if (document.visibilityState !== "visible" || sibuk) return;
+    sibuk = true;
     try {
       const r = await fetch(`/api/peringatan/aktif?sejak=${sejak}`, {cache: "no-store"}); if (!r.ok) return;
-      const j = await r.json(), sudah = new Set(baca()), ada = new Set(antre.map(x => x.kunci));
-      for (const a of (j.peringatan || [])) if (a?.kunci && !sudah.has(a.kunci) && !ada.has(a.kunci)) antre.push(a);
+      const j = await r.json(), sudah = new Set(baca()), ada = new Set(antre.map(x => x.kunci)), daftar = j.peringatan || [];
+      for (const a of daftar) if (a?.kunci && !sudah.has(a.kunci) && !ada.has(a.kunci) && !lihat.has(a.kunci)) { antre.push({...a, _bunyi: !pertama && !dikenal.has(a.kunci)}); ada.add(a.kunci); }
+      await ulangOperator(daftar, sudah, ada);
+      for (const a of daftar) if (a?.kunci) dikenal.add(a.kunci);
+      pertama = false;
       // Tingkat tertinggi tampil dulu (Awas > Siaga > Waspada), lalu yang terbaru.
       antre.sort((x, y) => (PRIORITAS[y.tingkat] || 0) - (PRIORITAS[x.tingkat] || 0) || String(y.dibuat).localeCompare(String(x.dibuat)));
       (window.requestIdleCallback || setTimeout)(berikut);
     } catch (e) {}
+    finally { sibuk = false; }
   }
 
   setTimeout(jajak, 3000);

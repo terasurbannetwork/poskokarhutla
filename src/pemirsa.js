@@ -9,10 +9,8 @@ import {tx, superOK} from "./posko.js";
 import {sandiBaru} from "./staf.js";
 
 const HARI = 24 * 3600e3, SESI_UMUR = 30 * HARI, COOKIE = "sesi_pemirsa";
-/* daftar tetap: sama dengan trigger pemirsa_tab_sah (0036, dibuat ulang 0077 dan 0099) dan tab menu atas public/index.html (dijaga pemirsa.test.mjs), kecuali tab MANDIRI di bawah */
-export const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", sim: "Simulasi", monitor: "Monitor", foto: "Foto", dinding: "Layar dinding"};
-/* tab yang halamannya berdiri sendiri, bukan tab index.html: dinding = layar dinding command center (baca saja, menyala terus; datanya GET /api/cc/dinding, src/command_center.js) */
-export const MANDIRI = {dinding: "/command-center/dinding"};
+/* daftar tetap: sama dengan trigger pemirsa_tab_sah (0036, dibuat ulang 0077, 0099, 0100) dan tab menu atas public/index.html (dijaga pemirsa.test.mjs) */
+export const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", sim: "Simulasi", monitor: "Monitor", foto: "Foto"};
 const SESI = new WeakMap();   // permintaan -> baris pemirsa (gerbang dan layaniHTML membaca sekali)
 
 const tabelBelum = e => /no such table: pemirsa/i.test(String(e?.message || e));
@@ -38,12 +36,8 @@ export async function pemirsaSesi(env, req, kini = Date.now()) {
 export function arahPemirsa(p, pathname) {
   const s = pathname.split("/"), banjir = s[1] === "banjir";
   const seg = (banjir ? s[2] || "peta" : s[1]) || "", tab = seg === "kompleks" ? "insight" : seg;
-  /* Monitor tidak punya tab di /banjir/: pemirsa ber-tab monitor melihat banjir lewat /monitor?bencana=banjir (migrasi 0077). Tab MANDIRI (dinding) tidak punya tab di /banjir/ maupun di index.html:
-     alamatnya halamannya sendiri. Tab pertama mandiri = ke halaman itu; /command-center/dinding hanya untuk yang bertab dinding. */
-  const pb = banjir ? p.tab.find(x => x !== "monitor" && !Object.hasOwn(MANDIRI, x)) : p.tab[0];
-  const ke = pb ? (Object.hasOwn(MANDIRI, pb) ? MANDIRI[pb] : (banjir ? "/banjir/" : "/") + pb) : p.tab.includes("monitor") ? "/monitor?bencana=banjir" : MANDIRI[p.tab[0]] ?? "/";
-  const mandiri = Object.keys(MANDIRI).find(k => pathname === MANDIRI[k] || pathname.startsWith(MANDIRI[k] + "/"));
-  if (mandiri) return p.tab.includes(mandiri) ? null : ke;
+  /* Monitor tidak punya tab di /banjir/: pemirsa ber-tab monitor melihat banjir lewat /monitor?bencana=banjir (migrasi 0077) */
+  const pb = banjir ? p.tab.find(x => x !== "monitor") : p.tab[0], ke = pb ? (banjir ? "/banjir/" : "/") + pb : "/monitor?bencana=banjir";
   if (banjir && tab === "monitor") return p.tab.includes("monitor") ? "/monitor?bencana=banjir" : ke;
   return p.tab.includes(tab) ? null : ke;
 }

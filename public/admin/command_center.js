@@ -1,18 +1,16 @@
 "use strict";
 /* Meja operator command center karhutla (/command-center, kerangka src/admin_halaman.js halamanCc). Data: GET /api/cc/antrean (jajak 30 dtk), GET /api/cc/kontak,
-   POST /api/cc/aksi/:id, GET /api/cc/log (src/command_center.js). Pembantu bersama (jam WIB, bunyi alarm, jajak) di command_bersama.js.
+   POST /api/cc/aksi/:id, GET /api/cc/log (src/command_center.js). Pembantu bersama (jam WIB, jajak) di command_bersama.js.
    Alur operator: lihat alert level 3 -> telepon BPBD di luar sistem (nomor kantor/Pusdalops dari Buku kontak, tombol tel:) -> "Dalam konfirmasi" -> kabar BPBD -> "Ada api" / "Tidak ada api".
    Koreksi keputusan (final -> dalam konfirmasi) wajib bercatatan. Tombol hanya yang diizinkan server (field `aksi`); koordalops/pimpinan hanya melihat.
    Antrean digambar KUNCI-PER-KARTU: kartu yang datanya tidak berubah dipakai ulang DAN tidak dipindah (alert baru hanya diselipkan; replaceChildren melepas semua kartu dan memutus fokus ketikan), dan
    fokus (beserta posisi kursor) dipulihkan ke kartu yang dibangun ulang, jadi alasan koreksi yang sedang diketik tidak terputus oleh alert baru di jajak 30 dtk. Luas satelit dibulatkan (resolusi kasar, ~4 ha per titik). */
 (() => {
-  const {h, jam, jamTgl, tgl, pendek, durasi, lokasi, ambil, kirim, waktu, jajak, perbaruiUmur, suara, NAMA_STATUS} = window.Cc;
+  const {h, jam, jamTgl, tgl, pendek, durasi, lokasi, ambil, kirim, waktu, jajak, perbaruiUmur, NAMA_STATUS} = window.Cc;
   const app = document.getElementById("app"), FINAL = ["ada_api", "tidak_ada_api"];
   const NAMA_AKSI = {dalam_konfirmasi: "Dalam konfirmasi", ada_api: "Ada api", tidak_ada_api: "Tidak ada api"};
   const JENIS_DURASI = {respons: "respons", konfirmasi: "konfirmasi"};
   const KONTAK_SEGAR = 30 * 6e4, KONTAK_ULANG = 10 * 6e4, TUNDA_LOG = 400;
-  /* pembaca saja = staf tanpa operator_cc (koordalops, pimpinan); moderator menulis. Pembaca boleh melewati gerbang suara, operator tidak. */
-  const PEMBACA = Admin.staf && !Admin.peran.includes("operator_cc");
   const S = {tab: "antrean", data: null, gagalSejak: null, sesiHabis: false, pesan: null, kontak: new Map(), draft: new Map(), sibuk: new Set(),
     log: {tgl: "", operator: "", daftar: new Map(), hasil: null, galat: "", muat: false, urut: 0, sudah: false, tunda: 0, batal: null, benih: false}};
   const el = {};
@@ -35,9 +33,6 @@
     el.tabA.addEventListener("click", () => pilihTab("antrean")); el.tabL.addEventListener("click", () => pilihTab("log"));
     el.daftar.addEventListener("click", e => { const b = e.target.closest("button[data-ke]"); if (b) lakukan(b.dataset.id, b.dataset.ke); });
     el.daftar.addEventListener("input", e => { const i = e.target.closest("input[data-catatan]"); if (i) S.draft.set(i.dataset.catatan, i.value); });
-    const slot = document.getElementById("aksiJudul");
-    slot?.replaceChildren(suara.lencana(), h("a", {class: "cc-btn", href: "/command-center/dinding", target: "_blank", rel: "noopener", teks: "Buka layar dinding"}));
-    document.body.append(suara.gerbang(PEMBACA));
   }
   function pilihTab(t) {
     S.tab = t;
@@ -63,7 +58,6 @@
     if (!r.ok) { S.gagalSejak ??= waktu.kini(); if (r.status === 503) pesan(r.j.galat || "Command center belum diaktifkan.", false); gambarSpanduk(); return; }
     S.gagalSejak = null; gambarSpanduk(); waktu.sinkron(r.j.kini); S.data = r.j;
     gambar();
-    suara.perbarui(r.j.alert.filter(a => a.status === "baru").map(a => a.id));   // keadaan dari server: berhenti sendiri begitu semua sudah dipegang
   }
 
   function gambar() {

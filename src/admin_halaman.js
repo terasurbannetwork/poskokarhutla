@@ -244,36 +244,14 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <script type="module" src="/pipa/lapangan.js?v=5"></script>
 </body></html>`;
 
-/* Command center karhutla (src/command_center.js): MEJA OPERATOR /command-center (kerangka admin/staf bersama; ctx undefined = moderator) dan LAYAR DINDING /command-center/dinding (kerangka sendiri).
-   Isi layar di public/admin/command_*.js (kode dan teks, tanpa data; datanya dari /api/cc/*). Meja memakai CSP_ADMIN apa adanya; dinding butuh peta (openfreemap, worker blob) tetapi TIDAK huruf luar:
-   huruf sistem, supaya layar yang menyala terus tidak bergantung Google Fonts. Keduanya tanpa skrip dan gaya sebaris. */
+/* Command center karhutla (src/command_center.js): MEJA OPERATOR /command-center (kerangka admin/staf bersama; ctx undefined = moderator). Layar dinding dibuang 2 Nov 2026.
+   Isi layar di public/admin/command_*.js (kode dan teks, tanpa data; datanya dari /api/cc/*). Meja memakai CSP_ADMIN apa adanya, tanpa skrip dan gaya sebaris, SENYAP (tanpa suara). */
 export const halamanCc = ctx => halaman("command-center", "Memuat command center…", `<link href="/admin/command_bersama.css?v=1" rel="stylesheet">
 <link href="/admin/command_center.css?v=1" rel="stylesheet">
 <script src="/inti/format.js"></script>
 <script src="/admin/bersama.js?v=4"></script>
 <script src="/admin/command_bersama.js?v=1"></script>
 <script src="/admin/command_center.js?v=1"></script>`, ctx);
-export const CSP_DINDING = "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src 'self' blob:; child-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
-/* akun = mod | staf | pemirsa (menentukan tautan "masuk ulang" saat sesi habis); masuk = alamat layar masuk akun itu, sudah di-encode */
-export const halamanDinding = (akun, masuk) => `<!doctype html>
-<html lang="id" class="dd-html">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1">
-<meta name="robots" content="noindex,nofollow">
-<meta name="color-scheme" content="dark">
-<title>Layar dinding · Command center karhutla · Centurisk97</title>
-<link href="/admin/command_bersama.css?v=1" rel="stylesheet">
-<link href="/admin/command_dinding.css?v=1" rel="stylesheet">
-</head>
-<body class="dd" data-akun="${esc(akun)}" data-masuk="${esc(masuk)}">
-<div id="dd"><p class="dd-memuat">Memuat layar dinding…</p></div>
-<noscript><p class="dd-memuat">Layar dinding butuh JavaScript aktif.</p></noscript>
-<script src="/inti/format.js"></script>
-<script src="/angka_kawasan.js"></script>
-<script src="/admin/command_bersama.js?v=1"></script>
-<script src="/admin/command_dinding.js?v=1"></script>
-</body></html>`;
 
 /* halaman publik /statistik (tanpa login). Data dari /api/publik. */
 export const halamanPublik = () => new Response(`<!doctype html>

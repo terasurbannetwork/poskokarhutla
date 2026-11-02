@@ -35,6 +35,8 @@
   const keAsal = new URLSearchParams(location.search).get("ke") || "";
   const ke = KE_PIPA.test(keAsal) ? keAsal : null;
   const pergiPipa = () => { if (ke == null) return false; location.href = ke; return true; };
+  /* staf yang perannya HANYA operator_cc (command center) masuk ke peta utama "/", bukan Meja Pantau; ?ke= yang sah (pergiPipa) menang, peran lain tidak berubah */
+  const pergiPeta = peran => { if (!Array.isArray(peran) || peran.length !== 1 || peran[0] !== "operator_cc") return false; location.href = "/"; return true; };
   /* kiriman lewat sesi staf wajib x-pb: 1 (rute menolak tanpa itu); balasan non-JSON tidak melempar */
   const kirim = async (url, body) => { try { const r = await fetch(url, {method: "POST", headers: {"content-type": "application/json", "x-pb": "1"}, body: JSON.stringify(body || {})}); return {ok: r.ok, status: r.status, j: await r.json().catch(() => ({}))}; }
     catch (e) { return {ok: false, status: 0, j: {galat: "jaringan putus; coba lagi"}}; } };
@@ -56,7 +58,7 @@
     const f = h("form", {class: "pt-form"}, h("label", {for: "ptUser", teks: "Username staf"}), u, h("label", {for: "ptSandi", teks: "Kata sandi"}), p,
       h("p", {id: "ptGalat", class: "pt-pesan galat", role: "alert", teks: galat || ""}), tombol("Masuk", {type: "submit"}, "utama"));
     f.addEventListener("submit", async e => { e.preventDefault(); const r = await kirim("/api/staf/masuk", {username: u.value, sandi: p.value});
-      if (r.ok) return pergiPipa() || muat(); document.getElementById("ptGalat").textContent = r.j.galat || `Gagal (${r.status})`; });
+      if (r.ok) return pergiPipa() || pergiPeta(r.j.staf?.peran) || muat(); document.getElementById("ptGalat").textContent = r.j.galat || `Gagal (${r.status})`; });
     kartuMasuk(h("h2", {teks: "Masuk staf BNPB"}), h("p", {class: "pt-redup", teks: "Akun staf dibuat Super Admin. Admin yang sudah punya akun admin masuk lewat halaman admin."}), f,
       h("a", {class: "pt-btn", href: "/admin/masuk?ke=" + encodeURIComponent(ke ?? "/admin/pantau"), teks: "Masuk sebagai admin"}));
   }

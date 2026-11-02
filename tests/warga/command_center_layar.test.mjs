@@ -1,7 +1,7 @@
-/* Command center karhutla di PERAMBAN NYATA (Chrome headless lewat CDP) melawan worker utuh di workerd (Miniflare) dengan D1 lokal: meja operator (/command-center) dan layar dinding
-   (/command-center/dinding). Dibuktikan di DOM sungguhan: gerbang suara dan lencana SENYAP, kartu antrean, tel:, transisi lewat klik, 409, log, layar dinding 16:9 tanpa gulir di 1920 dan 3840,
-   skala huruf, umur data merah, "Gagal menyegarkan sejak", spanduk sesi habis, tanpa pop-up, dan nol pelanggaran CSP. play()/pause() audio dipalsukan lewat skrip awal CDP (hasil deterministik,
-   bunyi tidak keluar); ubin peta openfreemap diblokir (peramban di CI tak punya internet) sehingga jalur cadangan latar polos ikut teruji.
+/* Command center karhutla di PERAMBAN NYATA (Chrome headless lewat CDP) melawan worker utuh di workerd (Miniflare) dengan D1 lokal: meja operator (/command-center).
+   Dibuktikan di DOM sungguhan: kartu antrean, tel:, transisi lewat klik, 409, log, SENYAP TOTAL (tidak ada play() maupun objek Audio walau navigator.userActivation sudah aktif, tidak ada
+   gerbang/lencana suara), operator yang masuk lewat form staf diarahkan ke peta utama, dan nol pelanggaran CSP. play()/pause() dan Audio dipalsukan lewat skrip awal CDP (hitung panggilan);
+   ubin peta openfreemap diblokir (peramban di CI tak punya internet).
    Dilewati dengan pesan jelas bila Chrome tidak ada. Jalankan: node --test tests/warga/command_center_layar.test.mjs */
 import assert from "node:assert/strict";
 import path from "node:path";
@@ -39,19 +39,13 @@ else {
       DB.prepare("INSERT INTO staf_sesi (token_sha, staf_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(tok), id, Date.now() + 5 * JAM)]);
     return {id, tok};
   };
-  const pemirsa = async tab => {
-    const i = ++n, id = "7" + i.toString(16).padStart(3, "0") + "e".repeat(12), tok = sha256("pm-" + id);
-    await DB.batch([DB.prepare("INSERT INTO pemirsa (id, username, nama, tab, garam, sandi_sha, dibuat) VALUES (?, ?, 'Layar Ruang', ?, ?, ?, 1)").bind(id, "layardinding" + i, JSON.stringify(tab), "g".repeat(32), "0".repeat(64)),
-      DB.prepare("INSERT INTO pemirsa_sesi (token_sha, pemirsa_id, dibuat, kedaluwarsa) VALUES (?, ?, 1, ?)").bind(sha256(tok), id, Date.now() + 5 * JAM)]);
-    return {id, tok};
-  };
   const tugas = async (urut, o) => {
     const id = urut.toString(16).padStart(4, "0").padEnd(16, "c"), t = Date.now(), r = {prov: "11", kab: "Kota Banda Aceh", kec: "Kuta Alam", lat: 5.55123, lon: 95.32456, n24: 12, luas_ha: 45.5, dibuat: t - 10 * MENIT, konfirmasi_pada: null, ...o};
     await DB.prepare("INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy) VALUES (?, ?, ?, ?, ?, ?, 3, ?, ?, ?, ?, 'buka', ?, 0)")
       .bind(id, r.prov, r.kab, r.kec, r.lat, r.lon, r.n24, r.luas_ha, r.dibuat, r.dibuat, r.konfirmasi_pada).run();
     return id;
   };
-  const op = await staf("Budi Santoso", ["operator_cc"]), koord = await staf("Koordinator Uji", ["koordalops"]), rekan = await staf("Citra Dewi", ["operator_cc"]), pm = await pemirsa(["dinding"]);
+  const op = await staf("Budi Santoso", ["operator_cc"]), koord = await staf("Koordinator Uji", ["koordalops"]), rekan = await staf("Citra Dewi", ["operator_cc"]);
   const T1 = await tugas(0x3001, {dibuat: Date.now() - 20 * MENIT}), T2 = await tugas(0x3002, {kab: "Aceh Besar", kec: "Darul Imarah", lat: 5.4, lon: 95.5, dibuat: Date.now() - 12 * MENIT, konfirmasi_pada: Date.now() - 5 * MENIT});
   const T3 = await tugas(0x3003, {kab: "Aceh Tamiang", kec: "Karang Baru", lat: 4.3, lon: 98.0, dibuat: Date.now() - 40 * MENIT});
   await DB.prepare("INSERT INTO cc_status (tugas_id, status, oleh, sejak, dummy) VALUES (?, 'dalam_konfirmasi', ?, ?, 0)").bind(T3, "staf:" + rekan.id, Date.now() - 8 * MENIT).run();
@@ -60,7 +54,10 @@ else {
   await DB.prepare("INSERT INTO titik_terbaru (dibuat, isi) VALUES (?, ?)").bind(acuan - 5 * JAM, JSON.stringify({kolom: [], acuan: new Date(acuan).toISOString(), dibuat: new Date(acuan - 5 * JAM).toISOString(), wilayah: ["11|Kota Banda Aceh|Kuta Alam"], baris})).run();
 
   /* ---------------- peramban ---------------- */
-  const STUB = `window.__bunyi = {play: 0, pause: 0}; HTMLMediaElement.prototype.play = function () { window.__bunyi.play++; return Promise.resolve(); }; HTMLMediaElement.prototype.pause = function () { window.__bunyi.pause++; };`;
+  /* hitung SEMUA upaya bunyi: play(), pause(), konstruktor Audio; dan paksa navigator.userActivation.hasBeenActive = true (pemicu keluhan: alarm langsung berbunyi saat halaman dibuka) */
+  const STUB = `window.__bunyi = {play: 0, pause: 0, audio: 0}; HTMLMediaElement.prototype.play = function () { window.__bunyi.play++; return Promise.resolve(); }; HTMLMediaElement.prototype.pause = function () { window.__bunyi.pause++; };
+    const AudioAsli = window.Audio; window.Audio = function (...a) { window.__bunyi.audio++; return new AudioAsli(...a); };
+    Object.defineProperty(Navigator.prototype, "userActivation", {get: () => ({hasBeenActive: true, isActive: true}), configurable: true});`;
   const br = await bukaPeramban(CHROME);
   after(() => br.tutup());
   const BLOKIR = ["*openfreemap.org*", "*fonts.googleapis.com*", "*fonts.gstatic.com*"];
@@ -77,16 +74,16 @@ else {
   const sampai = async (tab, js, ms = 20000) => { const t0 = Date.now(); for (;;) { if (await tab.eval(js)) return; if (Date.now() - t0 > ms) throw new Error(`kondisi tidak terpenuhi dalam ${ms} ms: ${js.slice(0, 120)}`); await jajakUlang(tab); await tidur(700); } };
   const q = (tab, js) => tab.eval(`(() => { const q = s => document.querySelector(s), qa = s => [...document.querySelectorAll(s)]; return (${js}); })()`);
 
-  uji("cc layar meja (Chrome): gerbang suara, kartu antrean, tel:, transisi lewat klik, catatan koreksi wajib, 409, bunyi berhenti begitu semua dipegang, log, nol pelanggaran CSP", async () => {
+  uji("cc layar meja (Chrome): kartu antrean, tel:, transisi lewat klik, catatan koreksi wajib, 409, log, SENYAP total (nol play()/Audio walau userActivation aktif), nol pelanggaran CSP", async () => {
     const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", op.tok);
     await tab.buka(base + "/command-center", {tunggu: ".cc-kartu"});
-    /* gerbang: operator wajib menyalakan suara (tanpa "lewati"); lencana SENYAP mencolok sebelum diketuk */
-    assert.equal(await q(tab, "!q('.cc-gerbang').hidden"), true, "gerbang terlihat sebelum diketuk"); assert.match(await q(tab, "q('.cc-gerbang').innerText"), /Ketuk untuk menyalakan suara/);
-    assert.equal(await q(tab, "qa('.cc-gerbang-lewat').length"), 0, "operator tidak boleh melewati gerbang"); assert.match(await q(tab, "q('.cc-senyap').innerText"), /SENYAP/); assert.equal(await q(tab, "q('.cc-senyap').dataset.s"), "menunggu");
-    assert.equal(await q(tab, "window.__bunyi.play"), 0, "belum diketuk: tidak ada upaya berbunyi");
-    await tab.klik(".cc-gerbang-tombol");
-    await tab.tungguFungsi("document.querySelector('.cc-senyap').dataset.s === 'hidup'"); assert.equal(await q(tab, "q('.cc-gerbang').hidden"), true);
-    assert.ok(await q(tab, "window.__bunyi.play") >= 1, "ada alert baru: berbunyi segera setelah diketuk");
+    /* senyap total: userActivation sudah aktif (stub), alert baru ada, tetapi tidak ada gerbang, lencana, play() maupun Audio */
+    assert.equal(await q(tab, "navigator.userActivation.hasBeenActive"), true, "prasyarat: halaman dianggap sudah pernah diketuk");
+    assert.equal(await q(tab, "qa('.cc-gerbang, .cc-gerbang-tombol, .cc-gerbang-lewat, .cc-senyap').length"), 0, "tanpa gerbang atau lencana suara");
+    assert.deepEqual(await q(tab, "window.__bunyi"), {play: 0, pause: 0, audio: 0}, "meja dibuka: tidak ada play(), pause(), atau Audio");
+    assert.equal(await q(tab, "qa('a[href*=\"dinding\"]').length"), 0, "tidak ada tombol layar dinding");
+    const tanpaSuara = await q(tab, "document.documentElement.outerHTML");
+    assert.doesNotMatch(tanpaSuara, /\.mp3|\bAudio\b|SENYAP|Ketuk untuk menyalakan|layar dinding/i, "DOM meja tidak memuat bunyi");
     /* kartu: urutan baru (terlama dulu), dalam konfirmasi menyusul; badge konfirmasi lapangan; pemegang; nomor BPBD bertombol tel: */
     const kartu = await q(tab, "qa('.cc-kartu').map(k => ({s: k.dataset.status, judul: k.querySelector('h3').textContent, lap: !!k.querySelector('.cc-lap'), btn: [...k.querySelectorAll('button[data-ke]')].map(b => b.dataset.ke), teks: k.innerText}))");
     assert.deepEqual(kartu.map(k => k.s), ["baru", "baru", "dalam_konfirmasi"]); assert.match(kartu[0].judul, /Kuta Alam, Kota Banda Aceh/); assert.match(kartu[1].judul, /Darul Imarah, Aceh Besar/);
@@ -113,10 +110,9 @@ else {
     await tab.klik('.cc-kartu[data-status="baru"] button[data-ke="dalam_konfirmasi"]');
     await tab.tungguFungsi("document.querySelectorAll('.cc-kartu[data-status=\"dalam_konfirmasi\"]').length === 2");
     assert.equal((await DB.prepare("SELECT status, oleh FROM cc_status WHERE tugas_id = ?").bind(T1).first()).oleh, "staf:" + op.id); assert.match(await q(tab, "document.querySelector('.cc-spanduk').innerText"), /Kuta Alam, Kota Banda Aceh: Dalam konfirmasi/);
-    const pause0 = await q(tab, "window.__bunyi.pause"); assert.equal(pause0, 0, "masih ada satu alert baru: bunyi belum berhenti");
     await tab.klik('.cc-kartu[data-status="baru"] button[data-ke="dalam_konfirmasi"]');
     await tab.tungguFungsi("document.querySelectorAll('.cc-kartu[data-status=\"baru\"]').length === 0");
-    assert.ok(await q(tab, "window.__bunyi.pause") >= 1, "semua sudah dipegang: bunyi berhenti sendiri (keadaan dari server)");
+    assert.deepEqual(await q(tab, "window.__bunyi"), {play: 0, pause: 0, audio: 0}, "sesudah klik dan jajak: tetap senyap");
     /* keputusan akhir dengan catatan; koreksi tanpa catatan ditolak di klien tanpa menulis jejak */
     await q(tab, `(() => { const k = q('.cc-kartu[data-id="${T1}"]'), i = k.querySelector('input.cc-catatan'); i.value = 'Kalak BPBD: api sudah padam'; i.dispatchEvent(new Event('input', {bubbles: true})); })()`);
     await tab.klik(`.cc-kartu[data-id="${T1}"] button[data-ke="tidak_ada_api"]`);
@@ -140,12 +136,33 @@ else {
     await tab.tutup();
   });
 
-  uji("cc layar meja (Chrome): koordalops hanya melihat (tanpa tombol aksi, tanpa nomor BPBD), boleh lewati gerbang suara", async () => {
+  /* masuk lewat form staf (/admin/pantau): operator_cc SAJA ke peta utama "/", ?ke= yang sah menang, peran lain tetap di Meja Pantau */
+  const stafLogin = async (nama, peran) => {
+    const i = ++n, id = "6" + i.toString(16).padStart(3, "0") + "f".repeat(12), garam = "h".repeat(32), sandi = "sandi-uji-" + i;
+    await DB.prepare("INSERT INTO staf (id, username, nama, nip, unit, email, wa, peran, wilayah, garam, sandi_sha, wajib_ganti, dibuat, dibuat_oleh, dummy) VALUES (?, ?, ?, ?, 'Unit Uji', ?, ?, ?, '[]', ?, ?, 0, 1, 'tes', 0)")
+      .bind(id, "masukstaf" + i + "xx", nama, "8000" + i + "000", `m${i}@b.id`, "62813000" + String(i).padStart(4, "0"), JSON.stringify(peran), garam, sha256(garam + sandi)).run();
+    return {username: "masukstaf" + i + "xx", sandi};
+  };
+  uji("cc layar masuk staf (Chrome): operator_cc saja diarahkan ke peta utama '/'; ?ke= sah menang; operator + peran lain dan koordalops tetap ke Meja Pantau", async () => {
+    const masuk = async (akun, ke = "", tungguSel = ".pt-masuk") => {
+      const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", null);
+      await tab.buka(base + "/admin/pantau" + (ke ? "?ke=" + encodeURIComponent(ke) : ""), {tunggu: "#ptUser"});
+      await tab.eval(`(() => { document.getElementById("ptUser").value = ${JSON.stringify(akun.username)}; document.getElementById("ptSandi").value = ${JSON.stringify(akun.sandi)}; document.querySelector(".pt-form button[type=submit]").click(); })()`);
+      return tab;
+    };
+    const op1 = await stafLogin("Operator Saja", ["operator_cc"]);
+    let tab = await masuk(op1); await tab.tungguFungsi(`location.pathname === "/"`, 15000); await tab.tutup();
+    tab = await masuk(op1, "/command-center"); await tab.tungguFungsi(`location.pathname === "/command-center"`, 15000); await tab.tutup();
+    tab = await masuk(op1, "https://jahat.example/x"); await tab.tungguFungsi(`location.pathname === "/"`, 15000); assert.equal(await q(tab, "location.origin"), base, "?ke= berupa URL penuh diabaikan"); await tab.tutup();
+    const campur = await stafLogin("Operator Campur", ["operator_cc", "pusdalops"]), koordP = await stafLogin("Koord Masuk", ["koordalops"]);
+    for (const akun of [campur, koordP]) { tab = await masuk(akun); await tab.tungguFungsi(`document.querySelector(".pt-judul, h1, .pt-butir, .pt-kosong, .pt-bar") && location.pathname === "/admin/pantau" && !document.getElementById("ptUser")`, 15000); await tab.tutup(); }
+  });
+
+  uji("cc layar meja (Chrome): koordalops hanya melihat (tanpa tombol aksi, tanpa nomor BPBD), tanpa gerbang suara", async () => {
     const tab = await tabBaru(1440, 900); await cookie(tab, "sesi_staf", koord.tok);
     await tab.buka(base + "/command-center", {tunggu: ".cc-kartu"});
     assert.equal(await q(tab, "qa('button[data-ke], input.cc-catatan, .cc-kontak').length"), 0); assert.match(await q(tab, "q('.cc-info').innerText"), /Koordinator Uji \(hanya melihat\)/);
-    assert.equal(await q(tab, "qa('.cc-gerbang-lewat').length"), 1, "pembaca boleh lewati gerbang"); await tab.klik(".cc-gerbang-lewat");
-    assert.equal(await q(tab, "q('.cc-senyap').dataset.s"), "hening"); assert.equal(await q(tab, "window.__bunyi.play"), 0, "pembaca yang melewati gerbang tidak mendengar alarm");
+    assert.equal(await q(tab, "qa('.cc-gerbang, .cc-senyap').length"), 0); assert.equal(await q(tab, "window.__bunyi.play + window.__bunyi.audio"), 0, "pembaca juga senyap");
     assert.deepEqual(bersih(tab), []); await tab.tutup();
   });
 
@@ -278,85 +295,6 @@ else {
     assert.deepEqual(bersih(tab), []); await tab.tutup();
   });
 
-  uji("cc layar dinding (Chrome): 16:9 tanpa gulir di 1920 dan 3840, skala huruf, baca saja, tanpa pop-up, titik panas unik, umur data merah bila basi, gagal menyegarkan, sesi habis = spanduk", async () => {
-    /* mulai dari antrean bersih: tiga alert segar (dua baru, satu sudah dipegang rekan) */
-    await DB.prepare("DELETE FROM tugas_api").run();
-    const D1 = await tugas(0x4001, {dibuat: Date.now() - 20 * MENIT}); await tugas(0x4002, {kab: "Aceh Besar", kec: "Darul Imarah", lat: 5.4, lon: 95.5, dibuat: Date.now() - 12 * MENIT, konfirmasi_pada: Date.now() - 5 * MENIT});
-    const D3 = await tugas(0x4003, {kab: "Aceh Tamiang", kec: "Karang Baru", lat: 4.3, lon: 98.0, dibuat: Date.now() - 40 * MENIT});
-    await DB.prepare("INSERT INTO cc_status (tugas_id, status, oleh, sejak, dummy) VALUES (?, 'dalam_konfirmasi', ?, ?, 0)").bind(D3, "staf:" + rekan.id, Date.now() - 8 * MENIT).run();
-    const tab = await tabBaru(1920, 1080); await cookie(tab, "sesi_pemirsa", pm.tok);
-    await tab.buka(base + "/command-center/dinding", {tunggu: ".dd-item"});
-    await tab.tungguFungsi("document.querySelectorAll('.dd-sumber.basi').length >= 1 && /diperbarui/.test(document.querySelectorAll('.dd-sumber')[1].innerText)", 20000);
-    const gambar = () => q(tab, `({gulirY: document.documentElement.scrollHeight - innerHeight, gulirX: document.documentElement.scrollWidth - innerWidth, bodyY: document.body.scrollHeight - innerHeight, font: parseFloat(getComputedStyle(document.documentElement).fontSize),
-      daftarLuap: q('.dd-daftar').scrollHeight - q('.dd-daftar').clientHeight, jam: q('.dd-jam-angka').textContent, hadir: q('.dd-hadir').textContent, item: qa('.dd-item').length,
-      ubin: qa('.dd-ubin').map(u => [u.querySelector('.dd-angka-label').textContent, u.querySelector('.dd-angka-nilai').textContent, u.querySelector('.dd-angka-satuan').textContent]), sub: qa('.dd-ubin .dd-angka-sub').map(e => e.textContent),
-      sumber: qa('.dd-sumber').map(e => [e.querySelector('b').textContent, e.innerText, e.classList.contains('basi')]), aksi: qa('button[data-ke], input, textarea, select, a[href^="tel:"], .al, [role=dialog]:not(.cc-gerbang)').length,
-      skrip: qa('script[src]').map(s => s.getAttribute('src')), judulItem: qa('.dd-item-atas b').map(b => b.textContent), pil: qa('.dd-item .cc-pil').map(p => p.textContent),
-      petaAda: !!q('.dd-peta canvas'), petaGagal: q('.dd-peta-gagal').hidden ? '' : q('.dd-peta-gagal').textContent, kunci: q('.dd-kunci').textContent, teks: document.body.innerText})`);
-    let g = await gambar();
-    assert.ok(g.gulirY <= 0 && g.gulirX <= 0 && g.bodyY <= 0, `tanpa gulir di 1920: ${g.gulirY}/${g.gulirX}/${g.bodyY}`); assert.ok(Math.abs(g.font - 17.4) < 0.3, "rem ~17,4 px di 1920x1080: " + g.font); assert.ok(g.daftarLuap <= 1);
-    assert.match(g.jam, /^\d\d\.\d\d$/); TANPA_LAMA(g.teks, "layar dinding"); assert.match(g.hadir, /Belum ada operator hadir|Operator hadir:/);
-    assert.equal(g.item, 3); assert.deepEqual(g.pil, ["Baru", "Baru", "Dalam konfirmasi"]); assert.deepEqual(g.judulItem, ["Kota Banda Aceh", "Aceh Besar", "Aceh Tamiang"]);
-    assert.equal(g.ubin.length, 6); assert.deepEqual(g.ubin.map(u => u[0]), ["Titik panas 24 jam", "Alert hari ini", "Median respons hari ini", "Lewat 6 jam, BPBD belum konfirmasi", "Peringatan aktif, semua bencana", "OMC hari ini"]);
-    assert.deepEqual(g.ubin[0].slice(1), ["3", "lokasi"], "3 lokasi unik: duplikat satelit lain dan titik lebih tua dari 24 jam tidak dihitung"); assert.deepEqual(g.ubin[2].slice(1), ["–", ""], "belum ada alert yang dipegang hari ini (D1 diisi langsung)");
-    assert.deepEqual(g.ubin[4].slice(1), ["0", "peringatan"]); assert.deepEqual(g.ubin[5].slice(1), ["0", "sortie"]);
-    /* cakupan tertulis di tiap tile: rincian "alert hari ini" satu populasi dengan angkanya (dibuat sejak 00.00 WIB); "lewat 6 jam" menyebut semua level sejak dibuat */
-    assert.equal(g.sub[0], "lokasi unik (sel 375 m, semua satelit)", "375 m = ukuran sel, bukan galat: tanpa ±"); assert.doesNotMatch(g.sub[0], /±/);
-    assert.match(g.sub[1], /^dibuat sejak 00\.00 WIB: \d+ baru · \d+ dalam konfirmasi · \d+ diputuskan$/); assert.equal(g.sub[3], "semua tugas karhutla terbuka, semua level, sejak dibuat");
-    assert.deepEqual(g.sumber.map(s => s[0]), ["Command center", "Titik panas", "Peringatan", "OMC"]);
-    const sm = Object.fromEntries(g.sumber.map(s => [s[0], s])); assert.equal(sm["Command center"][2], false); assert.equal(sm["Titik panas"][2], true, "putaran titik 5 jam: MERAH (batas 4 jam)"); assert.match(sm["Titik panas"][1], /diperbarui 5 jam( \d+ menit)? lalu/, "putaran dibuat 5 jam sebelum uji mulai; uji yang lambat membacanya 5 jam 1 menit");
-    assert.equal(sm["Peringatan"][2], false); assert.equal(sm["OMC"][2], false); assert.match(sm["Command center"][1], /diperbarui (kurang dari 1 menit|\d+ menit) lalu/);
-    assert.equal(g.aksi, 0, "baca saja: tanpa tombol aksi, isian, nomor telepon, pop-up"); assert.deepEqual(g.skrip.filter(s => !s.startsWith("/vendor/maplibre/")).map(s => s.replace(/\?v=\d+$/, "")), ["/inti/format.js", "/angka_kawasan.js", "/admin/command_bersama.js", "/admin/command_dinding.js"]);
-    assert.ok(!/alarm\.js|sapa\.js|asisten/.test(g.skrip.join(" "))); assert.doesNotMatch(g.teks, /\+?62\d{8,}|0\d{3}-\d{6,}|Kalak|Dipegang/, "tanpa nomor telepon dan catatan"); assert.match(g.kunci, /Layar tetap menyala/);
-    await tab.tungguFungsi("document.querySelector('.dd-peta canvas') || !document.querySelector('.dd-peta-gagal').hidden", 20000);
-    g = await gambar(); assert.ok(g.petaAda || g.petaGagal, "peta tergambar, atau jalur cadangan menjelaskan"); if (!g.petaAda) assert.match(g.petaGagal, /Peta/);
-    /* gerbang suara: ketuk menyalakan; alarm berbunyi karena ada alert baru */
-    assert.equal(await q(tab, "!q('.cc-gerbang').hidden"), true); await tab.klik(".cc-gerbang-tombol"); await tab.tungguFungsi("document.querySelector('.cc-senyap').dataset.s === 'hidup'");
-    assert.ok(await q(tab, "window.__bunyi.play") >= 1); assert.equal(await q(tab, "qa('.cc-gerbang-lewat').length"), 0);
-    assert.deepEqual(bersih(tab), [], "nol galat konsol dan nol pelanggaran CSP (termasuk peta)");
-    /* 3840x2160: skala huruf dua kali lipat, tetap tanpa gulir */
-    await tab.ukuran(3840, 2160); await tidur(600); g = await gambar();
-    assert.ok(Math.abs(g.font - 34.8) < 0.5, "rem ~34,8 px di 3840x2160: " + g.font); assert.ok(g.gulirY <= 0 && g.gulirX <= 0 && g.bodyY <= 0, `tanpa gulir di 3840: ${g.gulirY}/${g.gulirX}/${g.bodyY}`); assert.ok(g.daftarLuap <= 1);
-    await tab.ukuran(1366, 768); await tidur(600); g = await gambar(); assert.ok(g.gulirY <= 0 && g.gulirX <= 0 && g.bodyY <= 0, `tanpa gulir di 1366: ${g.gulirY}/${g.gulirX}/${g.bodyY}`);
-    /* antrean panjang (65 alert; server hanya mengirim 60 baris): baris yang tidak muat dibuang, diganti "+N alert lagi" dengan N = SELURUH antrean - baris yang tampil (bukan 60 - baris yang tampil) */
-    await DB.batch(Array.from({length: 62}, (_, i) => DB.prepare("INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy) VALUES (?, '11', ?, 'Kec', 5.5, 95.3, 3, 4, 12, ?, ?, 'buka', NULL, 0)")
-      .bind((0x3100 + i).toString(16).padStart(4, "0").padEnd(16, "c"), "Kab Contoh " + i, Date.now() - (2 + i) * MENIT, Date.now() - (2 + i) * MENIT)));
-    await sampai(tab, "!document.querySelector('.dd-lagi').hidden && document.querySelectorAll('.dd-item').length < 40");
-    g = await gambar(); assert.ok(g.daftarLuap <= 1 && g.gulirY <= 0 && g.item < 60, `daftar dipotong tanpa gulir: ${g.item} baris, luap ${g.daftarLuap}`); assert.match(await q(tab, "q('.dd-lagi').textContent"), /^\+\d+ alert lagi$/);
-    assert.equal(Number((await q(tab, "q('.dd-lagi').textContent")).match(/\d+/)[0]) + g.item, 65, "sisa dihitung dari seluruh antrean (65), bukan dari 60 baris yang dikirim server");
-    /* hemat kerja layar yang menyala 24 jam: jajak antrean 30 dtk TIDAK memasang ulang titik panas (puluhan ribu fitur), alert dipasang ulang hanya bila isinya berubah, pemotongan antrean mengukur
-       tata letak sekali (bukan per baris). Peta dihitung lewat pembungkus setData; /api/titik diblokir supaya hanya jajak antrean yang jalan. */
-    if (g.petaAda && !/WebGL|tidak bisa dimuat/.test(g.petaGagal)) {   // peta hanya hidup bila WebGL tersedia (Chrome tanpa GPU/SwiftShader tak bisa); angka dan antrean tetap diuji di atas
-      await tab.kirim("Performance.enable"); await tab.kirim("Network.setBlockedURLs", {urls: [...BLOKIR, "*/api/titik*"]});
-      await tab.eval(`(() => { window.__sd = {titik: 0, alert: 0}; window.__cc = 0; const g = maplibregl.Map.prototype.getSource; maplibregl.Map.prototype.getSource = function (id) { const s = g.call(this, id);
-        if (s && s.setData && !s.__w) { s.__w = 1; const sd = s.setData.bind(s); s.setData = d => { window.__sd[id] = (window.__sd[id] || 0) + 1; return sd(d); }; } return s; };
-        const f = window.fetch; window.fetch = (u, o) => { if (String(u).includes("/api/cc/dinding")) window.__cc++; return f.call(window, u, o); }; })()`);
-      const layout = async () => (await tab.kirim("Performance.getMetrics")).metrics.find(m => m.name === "LayoutCount").value;
-      const putaran = async n => { await sampai(tab, `window.__cc >= ${n}`); await tidur(500); };
-      let l0 = await layout(); await putaran(1); const dl = (await layout()) - l0;
-      for (let i = 2; i <= 3; i++) await putaran(i);
-      const sd = await q(tab, "window.__sd"); assert.deepEqual(sd, {titik: 0, alert: 0}, "tiga jajak antrean tanpa perubahan: tidak ada setData sama sekali (dulu: seluruh titik dipasang ulang tiap jajak)");
-      assert.ok(dl <= 12, `satu jajak antrean 60 baris = beberapa tata letak saja (potong() lama: satu per baris yang dibuang, 55 terukur; kini 2): ${dl}`);
-      await tugas(0x3300, {kab: "Kab Alert Baru", lat: 3.5, lon: 97.5, dibuat: Date.now() - JAM}); await putaran(4);
-      assert.deepEqual(await q(tab, "window.__sd"), {titik: 0, alert: 1}, "alert berubah: lapisan alert (<= 60 fitur) dipasang ulang SEKALI, titik panas tidak");
-      await tab.kirim("Network.setBlockedURLs", {urls: BLOKIR}); await sampai(tab, "window.__sd.titik >= 1");
-      assert.ok((await q(tab, "window.__sd")).titik >= 1, "titik panas dipasang saat datanya baru dimuat (muatTitik)");
-    }
-    await DB.prepare("DELETE FROM cc_status WHERE tugas_id IN (SELECT id FROM tugas_api WHERE kab LIKE 'Kab Contoh %')").run(); await DB.prepare("DELETE FROM tugas_api WHERE kab LIKE 'Kab Contoh %'").run();
-    /* jajak gagal: "Gagal menyegarkan sejak HH.MM" MERAH; pulih saat jaringan kembali */
-    await tab.kirim("Network.setBlockedURLs", {urls: [...BLOKIR, "*/api/cc/dinding*"]}); 
-    await sampai(tab, "/Gagal menyegarkan sejak \\d\\d\\.\\d\\d/.test(document.querySelectorAll('.dd-sumber')[0].innerText)"); assert.equal(await q(tab, "qa('.dd-sumber')[0].classList.contains('basi')"), true);
-    await tab.kirim("Network.setBlockedURLs", {urls: BLOKIR});
-    await sampai(tab, "!/Gagal menyegarkan/.test(document.querySelectorAll('.dd-sumber')[0].innerText)"); assert.equal(await q(tab, "qa('.dd-sumber')[0].classList.contains('basi')"), false);
-    /* sesi habis: spanduk besar dengan tautan masuk ulang, halaman TIDAK dialihkan diam-diam */
-    assert.equal(await q(tab, "q('.dd-spanduk').hidden"), true);
-    await DB.prepare("DELETE FROM pemirsa_sesi WHERE pemirsa_id = ?").bind(pm.id).run();
-    await sampai(tab, "!document.querySelector('.dd-spanduk').hidden");
-    assert.equal(await q(tab, "q('.dd-spanduk').innerText.replace(/\\s+/g, ' ')"), "Sesi habis — masuk ulang Masuk ulang"); assert.equal(await q(tab, "q('.dd-spanduk a').getAttribute('href')"), "/admin/masuk?ke=%2Fcommand-center%2Fdinding");
-    assert.equal(await q(tab, "location.pathname"), "/command-center/dinding"); assert.ok(await q(tab, "parseFloat(getComputedStyle(q('.dd-spanduk')).fontSize) / parseFloat(getComputedStyle(document.documentElement).fontSize)") >= 2.9, "spanduk besar (3 rem)");
-    await tab.tutup();
-  });
-
   /* pembungkus fetch di halaman: hitung panggilan /api/cc/kontak dan /api/cc/log (bukan CSV); __tahan > 0 menahan jawaban log sekian ms dan menghormati signal (seperti fetch sungguhan) */
   const PANTAU = `(() => { const f = window.fetch.bind(window); window.__panggil = {kontak: [], log: [], batal: 0}; window.__tahan = 0;
     window.fetch = (u, o) => { const s = String(u);
@@ -398,60 +336,6 @@ else {
     assert.deepEqual(await q(tab, "qa('.cc-saring select').map(e => e.getAttribute('aria-label'))"), ["Operator"]); TANPA_LAMA(await q(tab, "document.body.innerText"), "tab Log");
     assert.ok(log2.every(u => !new RegExp(LAMA, "i").test(u)), "permintaan log tidak membawa parameter lama");
     assert.deepEqual(bersih(tab), []); await tab.tutup();
-  });
-
-  /* ---------------- peta palsu: MapLibre pengganti yang merekam lapisan dan cat (deterministik, tanpa WebGL/ubin). Zoom = zoom "fit bounds" sungguhan dari ukuran kotak peta (Mercator) ---------------- */
-  const PETA_PALSU = `(() => { const nilai = {lapisan: [], cat: {}, sumber: {}};
-    class Peta { constructor(o) { this.o = o; this.h = {}; window.__peta = this; setTimeout(() => (this.h["style.load"] || []).forEach(f => f()), 0); }
-      on(e, f) { (this.h[e] ||= []).push(f); return this; } addSource(id) { nilai.sumber[id] = {setData() {}}; } getSource(id) { return nilai.sumber[id]; }
-      addLayer(l) { nilai.lapisan.push(l.id); nilai.cat[l.id] = JSON.parse(JSON.stringify(l.paint)); } getLayer(id) { return nilai.lapisan.includes(id) ? {} : undefined; }
-      setPaintProperty(id, k, v) { nilai.cat[id][k] = v; } resize() {} setStyle() {}
-      getZoom() { const k = this.o.container, [[w0, s0], [w1, s1]] = this.o.bounds, m = lat => Math.log(Math.tan(Math.PI / 4 + lat * Math.PI / 360)) / (2 * Math.PI), pad = this.o.fitBoundsOptions.padding * 2;
-        return Math.min(Math.log2((k.clientWidth - pad) / (512 * (w1 - w0) / 360)), Math.log2((k.clientHeight - pad) / (512 * (m(s1) - m(s0))))); } }
-    window.__peta_nilai = nilai; window.maplibregl = {Map: Peta}; })();`;
-  /* jari-jari (px) sebuah ekspresi ["interpolate", ["linear"], ["zoom"], z0, r0, z1, r1, ...] di zoom tertentu */
-  const JARI = `(e, z) => { const t = e.slice(3); if (z <= t[0]) return t[1]; for (let i = 0; i + 3 < t.length; i += 2) if (z <= t[i + 2]) return t[i + 1] + (t[i + 3] - t[i + 1]) * (z - t[i]) / (t[i + 2] - t[i]); return t[t.length - 1]; }`;
-
-  uji("cc layar dinding (Chrome): titik panas terbaca dari jauh (oranye terang, garis gelap, ~0,25-0,35 rem, membesar di 4K) dan di bawah lingkaran alert; sub-teks 'Alert hari ini' menjumlah ke angka besar", async () => {
-    await DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM cc_status")]);
-    const hari0 = Math.floor((Date.now() + 7 * JAM) / (24 * JAM)) * 24 * JAM - 7 * JAM, dibuat = hari0 + Math.floor((Date.now() - hari0) / 2);   // tengah antara 00.00 WIB dan sekarang: selalu hari ini
-    await tugas(0x5001, {dibuat}); await tugas(0x5002, {kab: "Aceh Besar", lat: 5.4, lon: 95.5, dibuat});
-    const c = await tugas(0x5003, {kab: "Aceh Tamiang", lat: 4.3, lon: 98.0, dibuat}), d = await tugas(0x5004, {kab: "Aceh Utara", lat: 5.1, lon: 97.1, dibuat}), tutup = await tugas(0x5005, {kab: "Aceh Barat", lat: 4.4, lon: 96.1, dibuat});
-    await DB.batch([DB.prepare("INSERT INTO cc_status (tugas_id, status, oleh, sejak, dummy) VALUES (?, 'dalam_konfirmasi', ?, ?, 0)").bind(c, "staf:" + rekan.id, Date.now() - 8 * MENIT),
-      DB.prepare("INSERT INTO cc_status (tugas_id, status, oleh, sejak, dummy) VALUES (?, 'ada_api', ?, ?, 0)").bind(d, "staf:" + rekan.id, Date.now() - 4 * MENIT),
-      DB.prepare("UPDATE tugas_api SET status = 'padam' WHERE id = ?").bind(tutup)]);   // ditutup (padam) hari ini tanpa keputusan operator
-    const pm4 = await pemirsa(["dinding"]), tab = await tabBaru(1920, 1080); await cookie(tab, "sesi_pemirsa", pm4.tok); await tab.kirim("Page.addScriptToEvaluateOnNewDocument", {source: PETA_PALSU});
-    try {
-      await tab.buka(base + "/command-center/dinding", {tunggu: ".dd-item"});
-      const ubinAlert = "[...document.querySelectorAll('.dd-ubin')].find(u => /Alert hari ini/.test(u.querySelector('.dd-angka-label').textContent))";
-      const tile = () => q(tab, `(() => { const u = ${ubinAlert}; return {n: u.querySelector('.dd-angka-nilai').textContent, sub: u.querySelector('.dd-angka-sub').textContent, tinggi: u.scrollHeight - u.clientHeight, gulir: document.documentElement.scrollHeight - innerHeight}; })()`);
-      const jumlah = t => [...t.sub.matchAll(/(\d+) (?:baru|dalam konfirmasi|diputuskan|sudah tutup)/g)].reduce((x, m) => x + Number(m[1]), 0);
-      await tab.tungguFungsi(`(() => { const u = ${ubinAlert}; return u && u.querySelector('.dd-angka-nilai').textContent === '5'; })()`, 20000);
-      let t = await tile();
-      assert.equal(t.sub, "dibuat sejak 00.00 WIB: 2 baru · 1 dalam konfirmasi · 1 diputuskan · 1 sudah tutup", "dua baru (a, b), satu dalam konfirmasi (c), satu diputuskan (d), satu sudah tutup (padam)");
-      assert.equal(jumlah(t), Number(t.n), "bagian-bagian sub-teks menjumlah ke angka besar"); assert.ok(t.tinggi <= 1 && t.gulir <= 0, `tile dan layar tidak meluap di 1920: ${t.tinggi}/${t.gulir}`);
-      await tab.ukuran(1366, 768); await tidur(500); t = await tile(); assert.ok(t.tinggi <= 1 && t.gulir <= 0, `tile dan layar tidak meluap di 1366: ${t.tinggi}/${t.gulir}`); await tab.ukuran(1920, 1080); await tidur(400);
-      /* tak ada yang ditutup: bentuk lama persis, dan tetap menjumlah */
-      await DB.prepare("UPDATE tugas_api SET status = 'buka' WHERE id = ?").bind(tutup).run();
-      await sampai(tab, `!/sudah tutup/.test(${ubinAlert}.querySelector('.dd-angka-sub').textContent)`); t = await tile();
-      assert.match(t.sub, /^dibuat sejak 00\.00 WIB: \d+ baru · \d+ dalam konfirmasi · \d+ diputuskan$/); assert.equal(jumlah(t), Number(t.n), "tanpa tugas tutup: tiga bagian saja, tetap menjumlah"); assert.equal(t.n, "5");
-      /* titik panas di peta: lapisan paling bawah, jari-jari ikut rem, terang, bergaris gelap */
-      assert.deepEqual(await q(tab, "window.__peta_nilai.lapisan"), ["titik", "alert-halo", "alert"], "titik panas dipasang lebih dulu = di bawah lingkaran alert");
-      const peta = () => q(tab, `(() => { const J = ${JARI}, n = window.__peta_nilai, z = window.__peta.getZoom(), rem = parseFloat(getComputedStyle(document.documentElement).fontSize), t = n.cat.titik, al = n.cat.alert;
-        return {z, rem, titik: J(t["circle-radius"], z), alert: J(al["circle-radius"], z), warna: t["circle-color"], garis: t["circle-stroke-color"], garisLebar: t["circle-stroke-width"], opasitas: t["circle-opacity"], garisOpasitas: t["circle-stroke-opacity"],
-          legenda: getComputedStyle(q('.dd-legenda li[data-s=titik]'), '::before').backgroundColor}; })()`);
-      const p1 = await peta(), rem1 = p1.titik / p1.rem;
-      assert.ok(p1.z > 3.5 && p1.z < 6, "zoom awal 1920x1080 masuk akal: " + p1.z); assert.ok(rem1 >= 0.22 && rem1 <= 0.4, `jari-jari titik ~0,25-0,35 rem di 1920 (dulu 0,1 rem = bintik 2 px): ${rem1.toFixed(3)} rem = ${p1.titik.toFixed(1)} px`);
-      assert.ok(p1.titik < p1.alert, "titik lebih kecil dari lingkaran alert");
-      const rgb = h => [1, 3, 5].map(i => parseInt(h.slice(i, i + 2), 16)), terang = ([r, g, bl]) => 0.2126 * r + 0.7152 * g + 0.0722 * bl;
-      assert.match(p1.warna, /^#[0-9a-f]{6}$/i); assert.ok(terang(rgb(p1.warna)) > terang(rgb("#ff9a3c")), "lebih terang dari oranye lama #ff9a3c"); assert.ok(terang(rgb(p1.garis)) < 40, "garis gelap"); assert.ok(p1.garisLebar >= 0.7 && p1.garisLebar <= 2);
-      assert.ok(p1.opasitas > 0.8 && p1.garisOpasitas >= 0.5, "lebih pekat dari 0,8 lama");
-      assert.equal(p1.legenda, `rgb(${rgb(p1.warna).join(", ")})`, "swatch legenda sama dengan warna titik");
-      /* 4K: rem dua kali lipat, jari-jari px ikut membesar; terhadap huruf tetap ~0,25-0,35 rem */
-      await tab.ukuran(3840, 2160); await tidur(900); const p2 = await peta(), rem2 = p2.titik / p2.rem;
-      assert.ok(Math.abs(p2.rem - 34.8) < 0.5); assert.ok(p2.titik > p1.titik * 1.6, `titik membesar di 3840: ${p1.titik.toFixed(1)} -> ${p2.titik.toFixed(1)} px`); assert.ok(rem2 >= 0.22 && rem2 <= 0.4, `~0,25-0,35 rem di 3840: ${rem2.toFixed(3)}`); assert.ok(p2.garisLebar > p1.garisLebar, "garis ikut skala");
-      assert.deepEqual(bersih(tab), []);
-    } finally { await tab.tutup(); await DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM cc_status")]); }
   });
 
   uji("cc layar meja (Chrome): galat tak terduga saat memuat nomor BPBD tidak menguncinya selamanya: kartu keluar dari 'Memuat nomor kantor', alert berikutnya tetap dimuat nomornya", async () => {
@@ -519,7 +403,7 @@ else {
     } finally { await tab.tutup(); await DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM cc_status")]); }
   });
 
-  uji("cc layar meja dan dinding (Chrome): daftar yang dipotong server ditandai: chip '500+', catatan di meja, 'N+ alert lagi' di dinding", async () => {
+  uji("cc layar meja (Chrome): daftar yang dipotong server ditandai: chip '500+' dan catatan di meja", async () => {
     await DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM cc_status")]);
     await DB.prepare(`WITH RECURSIVE s(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM s WHERE n < 501) INSERT INTO tugas_api (id, prov, kab, kec, lat, lon, level, n24, luas_ha, dibuat, terakhir_terdeteksi, status, konfirmasi_pada, dummy)
       SELECT printf('%016x', 0xb000000 + n), '11', 'Kota Banda Aceh', 'Kuta Alam', 5.5, 95.3, 3, 4, 12, ?1 - n * 1000, ?1, 'buka', NULL, 0 FROM s`).bind(Date.now() - 10 * MENIT).run();
@@ -528,12 +412,6 @@ else {
     assert.deepEqual(await q(tab, "qa('.cc-chip b').map(b => b.textContent)"), ["500+", "0+", "0"], "Baru dan Dalam konfirmasi datang dari satu daftar terpotong (yang belum dipegang dibaca duluan, jadi 'dalam konfirmasi' bisa lebih banyak dari 0): keduanya batas bawah, ditandai +; keputusan akhir tidak terpotong");
     assert.equal(await q(tab, "!q('.cc-panel .cc-spanduk.galat').hidden"), true); assert.match(await q(tab, "q('.cc-panel .cc-spanduk.galat').innerText"), /melebihi batas baca server dan dipotong.*batas bawah/);
     assert.deepEqual(bersih(tab), []); await tab.tutup();
-    const pm2 = await pemirsa(["dinding"]), dd = await tabBaru(1920, 1080); await cookie(dd, "sesi_pemirsa", pm2.tok);   // sesi pm sudah dihapus uji dinding di atas
-    await dd.buka(base + "/command-center/dinding", {tunggu: ".dd-item"});
-    await dd.tungguFungsi("!document.querySelector('.dd-lagi').hidden && document.querySelectorAll('.dd-item').length < 60 && /^\\d+\\+ alert lagi$/.test(document.querySelector('.dd-lagi').textContent)");
-    const lagi = await q(dd, "({teks: q('.dd-lagi').textContent, item: qa('.dd-item').length})"); assert.match(lagi.teks, /^\d+\+ alert lagi$/, "terpotong: akhiran + seperti chip lain, bukan '+N+'"); assert.doesNotMatch(lagi.teks, /^\+/);
-    assert.equal(Number(lagi.teks.match(/\d+/)[0]) + lagi.item, 500, "N = 500 (yang dibaca) - baris tampil; '+' di belakang = masih ada yang tak terbaca");
-    assert.deepEqual(bersih(dd), []); await dd.tutup();
     await DB.batch([DB.prepare("DELETE FROM tugas_api"), DB.prepare("DELETE FROM cc_status")]);
   });
 
@@ -556,20 +434,4 @@ else {
     assert.deepEqual(bersih(tab), []); await tab.tutup();
   });
 
-  uji("cc layar dinding (Chrome): tile peringatan memakai hitungan sebenarnya (60), bukan panjang daftar 50; Awas lama tetap menyalakan bendera merah", async () => {
-    const kini = Date.now();
-    await DB.batch([DB.prepare("DELETE FROM peringatan"),
-      DB.prepare("INSERT INTO peringatan (kunci, jenis, tingkat, judul, sumber, dibuat, berlaku_hingga) VALUES ('gempa:LS0:awas', 'gempa', 'Awas', 'uji awas lama', 'BMKG', ?1, ?2)").bind(kini - 5 * JAM, kini + JAM),
-      DB.prepare(`WITH RECURSIVE s(n) AS (SELECT 1 UNION ALL SELECT n + 1 FROM s WHERE n < 59) INSERT INTO peringatan (kunci, jenis, tingkat, judul, sumber, dibuat, berlaku_hingga)
-        SELECT 'gempa:LS' || n || ':x', 'gempa', CASE WHEN n <= 40 THEN 'Siaga' ELSE 'Waspada' END, 'uji ' || n, 'BMKG', ?1 - n * 1000, ?2 FROM s`).bind(kini, kini + JAM)]);
-    const pm3 = await pemirsa(["dinding"]), dd = await tabBaru(1920, 1080); await cookie(dd, "sesi_pemirsa", pm3.tok);
-    try {
-      await dd.buka(base + "/command-center/dinding", {tunggu: ".dd-ubin"});
-      const tile = "[...document.querySelectorAll('.dd-ubin')].find(u => /Peringatan aktif/.test(u.querySelector('.dd-angka-label').textContent))";
-      await dd.tungguFungsi(`(() => { const u = ${tile}; return u && u.querySelector('.dd-angka-nilai').textContent === '60'; })()`, 20000);
-      const t = await q(dd, `({n: ${tile}.querySelector('.dd-angka-nilai').textContent, sub: ${tile}.querySelector('.dd-angka-sub').textContent, merah: ${tile}.classList.contains('merah')})`);
-      assert.deepEqual(t, {n: "60", sub: "1 Awas · 40 Siaga · 19 Waspada", merah: true}, "daftar server hanya 50 terbaru (tanpa Awas lama); tile dari total dan per_tingkat");
-      assert.deepEqual(bersih(dd), []);
-    } finally { await dd.tutup(); await DB.prepare("DELETE FROM peringatan").run(); }
-  });
 }

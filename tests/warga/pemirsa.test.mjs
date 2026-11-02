@@ -6,7 +6,7 @@ import path from "node:path";
 import {siapkan, berantai, ADMIN, MOD2} from "./_bnpb.mjs";
 import {AKAR, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";
-import {TAB, MANDIRI, arahPemirsa, cekTab} from "../../src/pemirsa.js";
+import {TAB, arahPemirsa, cekTab} from "../../src/pemirsa.js";
 
 const uji = berantai();
 const U = await siapkan("uji-pemirsa");
@@ -31,21 +31,18 @@ uji("pemirsa: migrasi 0036 idempoten dan trigger menolak tab asing atau berulang
   await assert.rejects(sisip('["berita","admin"]'), /tab pemirsa tidak sah/);
   await assert.rejects(sisip('["berita","berita"]'), /tab pemirsa tidak sah/);
   await sisip('["monitor"]'); await DB.prepare("DELETE FROM pemirsa WHERE username = 'lihatuji'").run();   // 'monitor' sah sejak 0077
-  await sisip('["dinding"]'); await DB.prepare("DELETE FROM pemirsa WHERE username = 'lihatuji'").run();   // 'dinding' sah sejak 0099 (layar dinding command center)
+  await assert.rejects(sisip('["dinding"]'), /tab pemirsa tidak sah/);   // 'dinding' sah sejak 0099, dicabut 0100 (layar dinding dibuang 2 Nov 2026)
+  await sisip('["foto"]'); await DB.prepare("UPDATE pemirsa SET tab = '[\"peta\"]' WHERE username = 'lihatuji'").run(); await assert.rejects(DB.prepare("UPDATE pemirsa SET tab = '[\"dinding\"]' WHERE username = 'lihatuji'").run(), /tab pemirsa tidak sah/); await DB.prepare("DELETE FROM pemirsa WHERE username = 'lihatuji'").run();
   assert.equal(await n("pemirsa"), 0);
 });
 
-uji("pemirsa: daftar tab sama dengan trigger 0077 dan tab menu public/index.html", () => {
+uji("pemirsa: daftar tab sama dengan trigger terakhir (0100) dan tab menu public/index.html", () => {
   const diTrigger = TRIGGER_TAB.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
   assert.deepEqual(diTrigger, Object.keys(TAB));
   const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8"), tabs = idx.match(/const TABS = (\[.+\]);/)[1];
-  /* tab MANDIRI (dinding) punya halaman sendiri, bukan tab index.html: tidak boleh ada di menu atas, wajib ada alamatnya */
-  for (const k of Object.keys(TAB)) if (Object.hasOwn(MANDIRI, k)) { assert.ok(!tabs.includes(`["${k}"`), `tab mandiri ${k} tidak ada di index.html`); assert.match(MANDIRI[k], /^\/command-center\/\w+$/); }
-    else assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
-  assert.equal(arahPemirsa({tab: ["dinding"]}, "/command-center/dinding"), null); assert.equal(arahPemirsa({tab: ["dinding"]}, "/command-center/dinding/"), null);
-  assert.equal(arahPemirsa({tab: ["dinding"]}, "/"), "/command-center/dinding", "pemirsa dinding diarahkan ke halaman dinding, bukan /dinding"); assert.equal(arahPemirsa({tab: ["dinding"]}, "/command-center"), "/command-center/dinding", "meja operator tertutup bagi pemirsa");
-  assert.equal(arahPemirsa({tab: ["dinding"]}, "/banjir/"), "/command-center/dinding"); assert.equal(arahPemirsa({tab: ["dinding", "peta"]}, "/banjir/"), null); assert.equal(arahPemirsa({tab: ["dinding", "peta"]}, "/banjir/berita"), "/banjir/peta", "tab mandiri bukan tab /banjir/"); assert.equal(arahPemirsa({tab: ["peta", "dinding"]}, "/command-center/dinding"), null);
-  assert.equal(arahPemirsa({tab: ["berita"]}, "/command-center/dinding"), "/berita", "tab lain tidak membuka dinding"); assert.equal(arahPemirsa({tab: ["peta", "dinding"]}, "/"), "/peta");
+  for (const k of Object.keys(TAB)) assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
+  assert.ok(!("dinding" in TAB) && cekTab(["dinding"]) === null && cekTab(["peta", "dinding"]) === null, "tab dinding dibuang");
+  assert.equal(arahPemirsa({tab: ["peta"]}, "/command-center/dinding"), "/peta", "bukan halaman khusus lagi: diperlakukan seperti halaman lain di luar tabnya");
   assert.equal(cekTab(["berita", "berita"]), null); assert.equal(cekTab([]), null); assert.deepEqual(cekTab(["foto"]), ["foto"]);
   assert.equal(arahPemirsa({tab: ["insight"]}, "/kompleks"), null); assert.equal(arahPemirsa({tab: ["sim"]}, "/sim/K0001"), null); assert.equal(arahPemirsa({tab: ["berita"]}, "/"), "/berita");
   assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/"), null); assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/peta"), null);

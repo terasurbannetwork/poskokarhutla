@@ -239,7 +239,7 @@ test("bentukCap: elemen wajib CAP 1.2, escaping XML, pengirim jujur (Deteksi buk
   assert.match(bentukCap([], kini), /<alert [^>]+>[\s\S]*<\/alert>/, "daftar kosong tetap alert sah");
 });
 
-/* instance ketiga: lebih dari BATAS_AKTIF peringatan aktif. Daftar dipotong 50 TERBARU, tetapi hitungan (total, per_tingkat) tidak: layar dinding command center memakai hitungan, bukan panjang daftar */
+/* instance ketiga: lebih dari BATAS_AKTIF peringatan aktif. Daftar dipotong 50 TERBARU, tetapi hitungan (total, per_tingkat) tidak: pemakai hitungan (mis. pop-up alarm) membaca hitungan, bukan panjang daftar */
 uji("/aktif lebih dari 50: daftar 50 terbaru, total dan per_tingkat sebenarnya (Awas lama tidak lolos dari hitungan); dicabut dan kedaluwarsa tak dihitung; tepat 50 tidak terpotong; CAP/GeoJSON tetap 50", async () => {
   assert.equal(BATAS_AKTIF, 50);
   const mf3 = buatMf("uji-peringatan-banyak", false);

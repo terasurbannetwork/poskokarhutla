@@ -1,22 +1,8 @@
-/* Gaya bersama command center: gerbang suara, lencana SENYAP, pil status (meja operator dan layar dinding). Dimuat sebelum command_center.css / command_dinding.css.
+/* Gaya bersama command center: pil status (meja operator). Dimuat sebelum command_center.css.
    Warna status satu sumber di sini: baru merah, dalam konfirmasi kuning, ada api oranye, tidak ada api abu. */
 :root{--cc-baru:#e5484d;--cc-konf:#f5c518;--cc-api:#f76b15;--cc-aman:#8b98ab;--cc-titik:#ffb04d}
 [hidden]{display:none !important}
 
-/* gerbang: lapisan penuh sampai layar diketuk (aturan autoplay) */
-.cc-gerbang{position:fixed;inset:0;z-index:100;display:grid;place-items:center;align-content:center;gap:18px;background:rgb(7 22 41 / .94);padding:24px;text-align:center}
-.cc-gerbang-tombol{display:grid;gap:10px;justify-items:center;max-width:34em;padding:36px 44px;border:2px solid #9cc3ff;border-radius:28px;background:#0f2747;color:#fff;font:inherit;cursor:pointer}
-.cc-gerbang-tombol b{font-size:clamp(22px,3vw,40px);line-height:1.2}
-.cc-gerbang-tombol small{font-size:clamp(13px,1.3vw,18px);color:#c8d3e3;line-height:1.45}
-.cc-gerbang-ikon{font-size:clamp(40px,6vw,84px);line-height:1}
-.cc-gerbang-tombol:focus-visible,.cc-gerbang-lewat:focus-visible{outline:3px solid #ffd23f;outline-offset:3px}
-.cc-gerbang-lewat{border:0;background:none;color:#c8d3e3;text-decoration:underline;font:inherit;font-size:15px;cursor:pointer;padding:10px}
-
-/* lencana bunyi: hijau kecil bila menyala, merah mencolok bila senyap */
-.cc-senyap{border:0;border-radius:999px;padding:6px 14px;font-family:inherit;font-weight:800;font-size:13px;line-height:1.2;letter-spacing:.02em;cursor:pointer;white-space:nowrap}
-.cc-senyap[data-s=hidup]{background:rgb(48 164 108 / .18);color:#30a46c;cursor:default}
-.cc-senyap[data-s=hening]{background:rgb(139 152 171 / .2);color:var(--cc-aman);cursor:pointer}
-.cc-senyap[data-s=menunggu],.cc-senyap[data-s=senyap]{background:var(--cc-baru);color:#fff;font-size:15px;padding:9px 18px;box-shadow:0 0 0 3px rgb(229 72 77 / .35)}
 
 /* pil status */
 .cc-pil{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 11px;font-size:12px;font-weight:800;white-space:nowrap;color:#fff;background:var(--cc-aman)}

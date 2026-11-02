@@ -597,7 +597,7 @@ const RUTE = {
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
-  ...RUTE_CC,   // command center karhutla: antrean alert level 3, tindak lanjut operator, layar dinding, log, kontak BPBD (src/command_center.js)
+  ...RUTE_CC,   // command center karhutla: antrean alert level 3, tindak lanjut operator, log, kontak BPBD (src/command_center.js)
   ...RUTE_LOGBOOK,   // logbook Pusdalops: kejadian + entri, laporan harian 07.00-07.00 WIB, staf saja (src/logbook.js)
   ...RUTE_PEMULIHAN,   // tracker pemulihan huntara/huntap/DTH/jembatan/sumur per kab, staf saja (src/pemulihan.js, migrasi 0096)
   ...RUTE_LAPSUS,   // Laporan Khusus operasi besar: kebutuhan mendesak + 4 layanan dasar + penanda basi (src/lapsus.js)
@@ -705,7 +705,7 @@ function halamanTerkunci(url) {
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
-  if (/^\/command-center(\/|$)/.test(jalur)) return false;   // meja dan layar dinding menjaga dirinya sendiri (src/command_center.js): tamu meja 303 ke /admin/pantau?ke=, tamu dinding 303 ke /admin/masuk?ke= (tempat pemirsa masuk)
+  if (/^\/command-center(\/|$)/.test(jalur)) return false;   // meja menjaga dirinya sendiri (src/command_center.js): tamu 303 ke /admin/pantau?ke=
   return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/pantau?ke=, bukan ke /admin/masuk
 }
 function catatHTML(env, req, jalur, ctx) {
