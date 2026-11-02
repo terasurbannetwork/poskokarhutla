@@ -2,11 +2,14 @@
 
   nowcast_bandang.py uji     self-check sintetis, tanpa jaringan/kunci
   nowcast_bandang.py tarik   30 jam NRT terakhir -> data/raw/banjir/nowcast_bandang/fitur_<UTC>.json (BUKAN public, BUKAN workflow)
-Tanpa GSMAP_USER/GSMAP_PASS atau akses gagal: log + keluar 0. AMBANG BELUM DITETAPKAN: keluaran hanya fitur, `status` selalu null.
+  nowcast_bandang.py sidik   tulis nowcast_bandang.sidik (sekali; HANYA sesudah pemilik membekukan PRAREG-BANDANG.md)
+  nowcast_bandang.py periksa bandingkan keadaan sekarang dengan .sidik -> daftar beda (kosong = utuh)
+Tanpa GSMAP_USER/GSMAP_PASS atau akses gagal: log + keluar 0. `status` = level 0-3 menurut AMBANG (PRAREG-BANDANG.md §4),
+BELUM TERUJI, TIDAK TAYANG; None bila >= HILANG_MAKS jam jendela hilang.
 Pengambil dipakai ulang dari genangan/gsmap.py (login, biner) dan genangan/m1_kumpul.py (cari_jam, NRT); arsip m1_hujan.jsonl tidak disentuh.
 Jam berkas GSMaP = UTC (rata-rata laju jam itu, mm/jam = mm). Satuan NRT jam BELUM terverifikasi dengan login (m1_kumpul menolak > MAKS_MM_JAM).
 """
-import datetime as dt, ftplib, gzip, json, os, struct, sys
+import datetime as dt, ftplib, gzip, hashlib, json, os, struct, sys
 D = os.path.dirname(os.path.abspath(__file__))
 sys.path[:0] = [D, os.path.join(D, "genangan")]
 from bersama import AKAR, WIB
@@ -14,8 +17,15 @@ from bersama import AKAR, WIB
 KELUAR = os.path.join(AKAR, "data/raw/banjir/nowcast_bandang")
 PUSAT = os.path.join(AKAR, "public/banjir/data/pusat_kec.json")      # {"kk|kab|kec": [lat, lon]}
 BAHAYA = os.path.join(AKAR, "public/banjir/data/bahaya.json")        # kec[kunci]["bandang"] 0..1 (InaRISK)
-B_MIN = 0.33        # SEMENTARA: zona bahaya = indeks InaRISK bandang >= ini (sama dengan B status.py); bukan ambang hujan
+B_MIN = 0.33        # zona bahaya = indeks InaRISK bandang >= ini (sama dengan B status.py); bukan ambang hujan; BEKU oleh PRAREG-BANDANG sidik
 ANTE, JEND, RIWAYAT = 24, 6, 30   # jam anteseden, jam jendela, jam yang ditarik (ANTE + JEND)
+SIDIK = os.path.join(D, "nowcast_bandang.sidik")
+PRAREG = os.path.join(D, "PRAREG-BANDANG.md")
+# Ambang PRAREG-BANDANG.md §4: level = yang tertinggi di antara (fitur >= batas). Urut Awas, Siaga, Waspada. mm (h1: mm/jam). BELUM TERUJI.
+AMBANG = ((3, "Awas", {"h1": 50, "h3": 75, "h6": 100}),
+          (2, "Siaga", {"h1": 30, "h3": 50, "h6": 75}),
+          (1, "Waspada", {"h1": 20, "h3": 30, "h6": 50}))
+HILANG_MAKS = 3     # >= ini jam jendela (dari JEND) hilang -> status None (tak dinilai), bukan 0
 LATENSI_JAM = 4     # klaim JAXA untuk NRT; nyata dicatat di keluaran (umur jam terbaru)
 
 
@@ -33,10 +43,47 @@ def fitur(seri):
     assert len(seri) >= JEND, "kurang dari jendela"
     w, v = seri[-JEND:], [m or 0 for _, m in seri]
     j, ante = v[-JEND:], seri[-(JEND + ANTE):-JEND]
-    return {"jam_terbaru_utc": f"{seri[-1][0]:%Y-%m-%dT%H}Z", "h1": round(max(j), 1),
+    return {"hilang_jend": sum(m is None for _, m in w), "jam_terbaru_utc": f"{seri[-1][0]:%Y-%m-%dT%H}Z", "h1": round(max(j), 1),
             "h3": round(max(sum(j[i:i + 3]) for i in range(JEND - 2)), 1), "h6": round(sum(j), 1),
             "a24": round(sum(v[-(JEND + ANTE):-JEND]), 1), "hilang": sum(m is None for _, m in w + ante),
             "ante_jam": len(ante)}
+
+
+def level(f):
+    """Level 0 Normal, 1 Waspada, 2 Siaga, 3 Awas dari fitur() menurut AMBANG (batas inklusif, salah satu fitur cukup); None bila jendela terlalu bolong."""
+    if f["hilang_jend"] >= HILANG_MAKS:
+        return None
+    return next((n for n, _, b in AMBANG if any(round(f[k], 1) >= v for k, v in b.items())), 0)
+
+
+MASUKAN = ("public/banjir/data/bahaya.json", "public/banjir/data/pusat_kec.json", "scripts/banjir/genangan/gsmap.py",
+           "scripts/banjir/genangan/m1_kumpul.py", "scripts/banjir/genangan/bersama.py")   # daftar unit, pengambil, WIB
+
+
+def hitung_sidik():
+    """sha256 PRAREG-BANDANG.md, nowcast_bandang.py (seluruh berkas), tiap MASUKAN (galat bila hilang), dan daftar unit terurai. Tidak menulis."""
+    h = lambda b: hashlib.sha256(b).hexdigest()
+    r = {n: h(open(p, "rb").read()) for n, p in (("prareg", PRAREG), ("kode", os.path.abspath(__file__)))}
+    r["masukan"] = {p: h(open(os.path.join(AKAR, p), "rb").read()) for p in MASUKAN}
+    u = unit(json.load(open(PUSAT)), json.load(open(BAHAYA))["kec"])
+    r["unit"] = {"n": len(u), "sha": h("\n".join(sorted(u)).encode())}
+    return r
+
+
+def periksa(sidik_path=SIDIK):
+    lama, baru = json.load(open(sidik_path)), hitung_sidik()
+    return [k for k in baru if lama.get(k) != baru[k]]
+
+
+def sidik():
+    """Tulis nowcast_bandang.sidik SEKALI. awal_prospektif = hari WIB sesudah tanggal sidik (jalan arsip sebelum itu tidak dinilai)."""
+    if os.path.exists(SIDIK):
+        sys.exit("nowcast_bandang.sidik sudah ada: protokol sudah dibekukan, tidak ditimpa")
+    h = hitung_sidik()
+    hari = (dt.datetime.now(dt.timezone.utc) + dt.timedelta(hours=7)).date()
+    h["tanggal_sidik"], h["awal_prospektif"] = hari.isoformat(), (hari + dt.timedelta(days=1)).isoformat()
+    json.dump(h, open(SIDIK, "w", encoding="utf-8"), ensure_ascii=False, indent=1, sort_keys=True)
+    print("sidik ditulis", SIDIK, "awal prospektif", h["awal_prospektif"])
 
 
 def unit(pusat, bahaya, b_min=B_MIN):
@@ -84,10 +131,11 @@ def tarik(sekarang=None):
         # ponytail: celah di tengah ditolak oleh fitur() (assert); isi/skip celah setelah latensi nyata terukur
         out = {}
         for k in u:
-            out[k] = {**fitur([(t, per_jam[t][1][k]) for t in jam]), "tz": zona_waktu(u[k][1])[0], "status": None}
+            out[k] = {**fitur([(t, per_jam[t][1][k]) for t in jam]), "tz": zona_waktu(u[k][1])[0]}
+            out[k]["status"] = level(out[k])
         r = {"dibuat_utc": now.isoformat(), "umur_jam_terbaru": round((now - jam[-1]).total_seconds() / 3600 - 1, 1),
              "latensi_klaim_jam": LATENSI_JAM, "pola": "".join(per_jam[t][0] for t in jam), "n_unit": len(out),
-             "ambang": "belum ditetapkan", "kec": out}
+             "ambang": "PRAREG-BANDANG.md, belum teruji, tidak tayang", "tayang": False, "kec": out}
         os.makedirs(KELUAR, exist_ok=True)
         json.dump(r, open(os.path.join(KELUAR, f"fitur_{now:%Y%m%dT%H}Z.json"), "w"), ensure_ascii=False, separators=(",", ":"))
         print(f"nowcast_bandang: {len(out)} unit, jam terbaru {jam[-1]:%Y-%m-%d %HZ}, umur {r['umur_jam_terbaru']} jam, pola {r['pola']}")
@@ -114,6 +162,18 @@ def uji():
         raise SystemExit("celah jam harus ditolak")
     except AssertionError:
         pass
+    # batas level: tiap fitur tepat di batas naik, satu desimal di bawahnya tidak (fitur lain nol)
+    z = {"h1": 0, "h3": 0, "h6": 0, "hilang_jend": 0}
+    assert level(z) == 0
+    for n, _, b in AMBANG:
+        for k, v in b.items():
+            assert level({**z, k: v}) >= n and level({**z, k: v - 0.1}) < n, (n, k, v)
+    assert level({**z, "h1": 20}) == 1 and level({**z, "h3": 50}) == 2 and level({**z, "h6": 100}) == 3
+    assert level({**z, "h3": 29.9, "h6": 49.9, "h1": 19.9}) == 0 and level({**z, "h1": 49.9}) == 2
+    assert level({**z, "h1": 99, "hilang_jend": 2}) == 3 and level({**z, "h1": 99, "hilang_jend": 3}) is None
+    assert level(f) == 2 and level(f2) == 0 and f["hilang_jend"] == 0 and f2["hilang_jend"] == 1   # f: h1 40, h3 51, h6 57
+    s0 = hitung_sidik()
+    assert set(s0) == {"prareg", "kode", "masukan", "unit"} and len(s0["masukan"]) == len(MASUKAN) and s0["unit"]["n"] > 0 and len(s0["kode"]) == 64
     p = {"a": [-6.2, 106.8], "b": [-6.3, 106.9], "c": [1.0, 100.0]}
     h = {"a": {"bandang": 0.5}, "b": {"bandang": 0.1}}
     assert unit(p, h) == {"a": (-6.2, 106.8)}      # b di bawah B_MIN, c tanpa nilai bahaya
@@ -131,4 +191,5 @@ def uji():
 
 if __name__ == "__main__":
     a = sys.argv[1:]
-    sys.exit(uji() if a == ["uji"] else tarik() if a == ["tarik"] else sys.exit(__doc__))
+    sys.exit(uji() if a == ["uji"] else tarik() if a == ["tarik"] else sidik() if a == ["sidik"]
+             else print(periksa() or "utuh") if a == ["periksa"] else sys.exit(__doc__))

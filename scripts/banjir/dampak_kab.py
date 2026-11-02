@@ -5,8 +5,7 @@ Tanpa jaringan. Dua keluaran di public/banjir/data/:
       anggapan merata). zona(kec) = penduduk kec (public/data/penduduk.json, WorldPop 2026) x porsi luas kec yang berkelas bahaya banjir
       (public/banjir/data/bahaya_kelas.json, % luas rendah/sedang/tinggi InaRISK). Dua angka: tinggi, dan sedang+tinggi.
       Rumah setara = jiwa / 3,5 (jiwa per KK, asumsi PRAREG-DAMPAK; satu KK dianggap satu rumah); rumah tidak tercatat di sumber mana pun.
-      Angka ini BERBEDA dari "jiwa terpapar" /prediksi (scripts/prediksi/terbit.py: seluruh penduduk kecamatan berbahaya tinggi >= 0,666);
-      penyatuan keduanya = tindak lanjut.
+      /prediksi membaca jiwa_zona_tinggi dari paparan_kab.json sebagai "jiwa terpapar" banjir (aturan.json jiwa_dari): satu sumber.
   terpapar_hujan_kab.json  HARIAN. Label: "Penduduk di zona bahaya banjir pada kabupaten dengan peluang hujan lebat (bukan perkiraan korban)".
       Peluang dari public/banjir/data/peluang.json (ECMWF 51 anggota; p[0] = P(hujan harian >= 50 mm), p[1] = P(>= 100 mm)): peluang HUJAN,
       bukan peluang banjir, belum terkalibrasi. Hari masuk bila p50 >= AMBANG_P = minimal 10 dari 51 anggota ansambel (10/51 = 0,196).
