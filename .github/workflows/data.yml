@@ -752,3 +752,39 @@ jobs:
           done
           echo "::error title=Data basi::/api/status HTTP $kode $(cat status.json 2>/dev/null)"
           exit 1
+
+  # Mingguan (Minggu, dari jadwal harian di atas): alert tebang GFW per kab/prov, ± 35 mnt. Job terpisah supaya
+  # timeout 90 mnt job harian tidak terdesak, dan gagal tidak pernah merusak run harian. Hanya berkas JSON-nya
+  # yang di-commit. alert_tebang_model.py TIDAK dijalankan di sini (butuh arsip FIRMS lokal).
+  alert_tebang:
+    needs: perbarui
+    if: ${{ always() && github.event_name == 'schedule' }}
+    runs-on: ubuntu-latest
+    timeout-minutes: 60
+    continue-on-error: true
+    steps:
+      - name: Hanya hari Minggu
+        id: hari
+        run: echo "jalan=$([ "$(date -u +%u)" = 7 ] && echo 1 || echo 0)" >> "$GITHUB_OUTPUT"
+
+      - uses: actions/checkout@v4
+        if: steps.hari.outputs.jalan == '1'
+
+      - uses: actions/setup-python@v5
+        if: steps.hari.outputs.jalan == '1'
+        with:
+          python-version: "3.12"
+
+      - name: Alert tebang GFW (boleh gagal)
+        if: steps.hari.outputs.jalan == '1'
+        continue-on-error: true
+        run: |
+          python3 scripts/data/alert_tebang.py --uji
+          python3 scripts/data/alert_tebang.py
+          git config user.name "poskokarhutla-bot"
+          git config user.email "actions@users.noreply.github.com"
+          git add public/data/alert_tebang.json
+          git diff --cached --quiet && exit 0
+          git commit -q -m "data: alert tebang mingguan $(TZ=Asia/Jakarta date +%F)"
+          for i in 1 2 3; do git pull -q --rebase && git push -q && exit 0; sleep 20; done
+          exit 1
