@@ -11,7 +11,7 @@ import { fileURLToPath } from 'node:url'
 const ROOT = join(dirname(fileURLToPath(import.meta.url)), '../..')
 const DATA = join(ROOT, 'public/prediksi/data')
 
-for (const s of ['catat', 'nilai', 'kalibrasi', 'terbit', 'kalender', 'koreksi']) {
+for (const s of ['catat', 'nilai', 'kalibrasi', 'terbit', 'kalender', 'koreksi', 'dampak', 'jalan']) {
   test(`${s}.py uji`, () => {
     const out = execFileSync('python3', [join(ROOT, 'scripts/prediksi', s + '.py'), 'uji'], { cwd: ROOT, encoding: 'utf8', stdio: ['ignore', 'pipe', 'pipe'] })
     assert.match(out, /uji lulus/)
@@ -89,7 +89,7 @@ test('prediksi.json: 514 kab, peluang 0..1 dan menurun menurut ambang', () => {
 test('halaman memuat inti, bukan salinan', () => {
   const html = readFileSync(join(ROOT, 'public/prediksi/index.html'), 'utf8')
   for (const f of ['../inti/tema.css', '../inti/gaya.css', '../inti/format.js']) assert.ok(html.includes(f), `index.html tidak memuat ${f}`)
-  for (const id of ['p-besok', 'p-rapor', 'p-konfirmasi']) assert.ok(html.includes(`id="${id}"`), `tab ${id} hilang`)
+  for (const id of ['p-besok', 'p-rapor', 'p-dampak', 'p-konfirmasi']) assert.ok(html.includes(`id="${id}"`), `tab ${id} hilang`)
   const js = readFileSync(join(ROOT, 'public/prediksi/prediksi.js'), 'utf8')
   assert.match(js, /x-kode-regu/)
   assert.match(js, /\/api\/prediksi\/konfirmasi/)
@@ -121,4 +121,35 @@ test('koreksi bulanan: riwayat append-only, versi aktif konsisten', () => {
   }
   const a = JSON.parse(readFileSync(join(DATA, 'kalibrasi_aktif.json'), 'utf8'))
   assert.equal(a.versi, new Set(baris.filter((b) => b.status === 'dipakai').map((b) => b.bulan)).size)
+})
+
+test('tab Dampak: dimuat malas, data lewat esc(), tanpa sisa interpolasi mentah yang dulu bocor', () => {
+  const js = readFileSync(join(ROOT, 'public/prediksi/prediksi.js'), 'utf8')
+  const mulai = js.slice(js.indexOf('async function mulai()'), js.indexOf('let tunda'))
+  assert.ok(!/dampak\.json|jalan\.json/.test(mulai), 'dampak.json/jalan.json tidak boleh ditarik saat halaman dibuka')
+  assert.match(js, /if \(t === "dampak"\) muatDampak\(\)/)
+  assert.ok(!js.includes('${jam(mulai)}'), 'jam() tanpa esc')
+  assert.ok(!js.includes('<td>${x.ambang}</td>') && !js.includes('+${x.tenggang}</td>'), 'ambang/tenggang tanpa esc')
+  const g = js.slice(js.indexOf('function gambarDampak'), js.indexOf('async function muatDampak'))
+  for (const f of ['o.nama', 'o.kelas', 'o.way', 'g.kelas', 'tgl(f.acuan', 'k.nama']) assert.ok(g.includes(`esc(${f}`), `${f} tanpa esc di tab Dampak`)
+})
+
+test('dampak.json: 514 kab, berlabel skenario/paparan, bidang null bila sumber tak memuat', () => {
+  const p = join(DATA, 'dampak.json')
+  if (!existsSync(p)) return
+  const d = JSON.parse(readFileSync(p, 'utf8'))
+  assert.match(d.label, /bukan prakiraan/)
+  assert.equal(Object.keys(d.kab).length, 514)
+  for (const v of Object.values(d.kab)) assert.deepEqual(Object.keys(v).sort(), ['gempa', 'genangan', 'terisolir'])
+})
+
+test('jalan.json: ruas tunggal <= jumlah way, top terurut menurun', () => {
+  const p = join(DATA, 'jalan.json')
+  if (!existsSync(p)) return
+  const d = JSON.parse(readFileSync(p, 'utf8'))
+  assert.match(d.label, /Bukan peluang/)
+  for (const [id, k] of Object.entries(d.kab)) {
+    assert.ok(k.way_tunggal <= k.way && k.ruas_tunggal >= k.way_tunggal, id)
+    k.top.slice(1).forEach((o, i) => assert.ok(o.km_terisolir <= k.top[i].km_terisolir, `${id} top tak terurut`))
+  }
 })

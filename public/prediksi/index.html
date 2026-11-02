@@ -29,6 +29,7 @@
   <nav class="tabs" id="tabs" aria-label="Menu prediksi">
     <button type="button" data-tab="besok" aria-current="page">Besok</button>
     <button type="button" data-tab="rapor">Rapor</button>
+    <button type="button" data-tab="dampak">Dampak</button>
     <button type="button" data-tab="konfirmasi">Konfirmasi</button>
   </nav>
   <div class="stat"><span class="upd" id="upd">Memuat data…</span></div>
@@ -57,6 +58,18 @@
 
   <section class="page scroll" id="p-rapor" aria-label="Rapor ketepatan">
     <div class="wrap pr-wrap" id="rapor"><p class="kosong">Memuat rapor…</p></div>
+  </section>
+
+  <section class="page scroll" id="p-dampak" aria-label="Paparan dampak">
+    <div class="wrap pr-wrap">
+      <div class="card pad">
+        <h2>Paparan dampak per kab/kota</h2>
+        <p class="pr-kecil" id="dampakLabel"></p>
+        <label class="pr-kecil">Kab/kota <input id="dKabIn" list="dKab" autocomplete="off" placeholder="Ketik nama kab/kota"></label>
+      </div>
+      <div id="dampakIsi"></div>
+      <p class="pr-kecil" id="dampakSumber"></p>
+    </div>
   </section>
 
   <section class="page scroll" id="p-konfirmasi" aria-label="Konfirmasi lapangan">
