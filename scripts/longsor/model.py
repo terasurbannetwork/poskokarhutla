@@ -119,6 +119,7 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None, varian="v1", hanya_p
     skor = {"model": ([], []), "hujan": ([], []), "S": ([], []), "klim": ([], []), "pvmbg": ([], [])}   # (positif, negatif)
     kelas = ([], [])   # (kelas model pos, kelas model neg)
     n_hari = 0
+    baris = []   # (blok tahun-bulan, z, skor model, hujan, klim, S, pvmbg) untuk bootstrap blok
     for kab, daftar in kab_kec.items():
         ki = kab_i.get(kab)
         for th in UJI_TAHUN:
@@ -139,6 +140,7 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None, varian="v1", hanya_p
                     skor["pvmbg"][z].append(max((zv or 0.0) for _, _, _, zv in tt))
                     skor["klim"][z].append(cl)
                     kelas[z].append(kl)
+                    baris.append((d.year * 12 + d.month, z, sk, rs, cl, skor["S"][z][-1], skor["pvmbg"][z][-1]))
                     n_hari += 1
                 d += dt.timedelta(days=1)
     n_pos, n_neg = len(kelas[1]), len(kelas[0])
@@ -176,7 +178,63 @@ def uji_balik(kej=None, kecs=None, kerent=None, hujan=None, varian="v1", hanya_p
             "pembagian_waktu": f"P95 hujan dari {LATIH[0]}..{LATIH[1]}; uji tahun {list(UJI_TAHUN)} (2024 dibuang: DIBI tidak lengkap). Tanpa parameter dilatih pada label.",
             "cakupan": {"kabupaten": len(kab_kec), "kab_hari": n_hari, "positif": n_pos, "negatif": n_neg, "laju_dasar": round(n_pos / max(1, n_pos + n_neg), 5),
                         "sel_hujan": len(r7)},
-            "auc": auc, "kelas": hasil, "glc_kec": glc}
+            "auc": auc, "ci_bootstrap_blok": boot_auc(baris), "kelas": hasil, "glc_kec": glc}
+
+
+def auc_hist(pos, neg):
+    """AUC dari histogram skor terurut naik (pos/neg = hitungan per bin); seri dihitung 0,5."""
+    np_, nn, kum, a = sum(pos), sum(neg), 0, 0.0
+    for p, n in zip(pos, neg):
+        a += p * (kum + n / 2)
+        kum += n
+    return a / (np_ * nn) if np_ and nn else None
+
+
+def boot_auc(baris, B=300, bin_maks=2000, benih=20261102):
+    """CI 95% persentil AUC (model, pembanding terbaik, selisih) lewat bootstrap BLOK bulan-kalender (tahun-bulan):
+    bulan utuh diambil ulang dengan pengembalian, jadi korelasi antar-kabupaten sehari-dua tidak dianggap independen.
+    Skor didiskretkan ke <= bin_maks kuantil (seri tetap seri); AUC titik sama dengan auc() hingga galat diskretisasi."""
+    import random
+    kol = {"model": 2, "hujan": 3, "klim": 4, "S": 5, "pvmbg": 6}
+    blok = sorted({r[0] for r in baris})
+    if len(blok) < 3 or not baris:
+        return None
+    ids, per = {}, {}
+    for nama, c in kol.items():
+        nilai = sorted({r[c] for r in baris})
+        langkah = max(1, len(nilai) // bin_maks)
+        ids[nama] = {v: i // langkah for i, v in enumerate(nilai)}
+        nb = ids[nama][nilai[-1]] + 1
+        per[nama] = {b: ([0] * nb, [0] * nb) for b in blok}   # blok -> (neg, pos)
+    for r in baris:
+        for nama, c in kol.items():
+            per[nama][r[0]][r[1]][ids[nama][r[c]]] += 1
+    def hitung(pilih, nama):
+        nb = len(per[nama][blok[0]][0])
+        neg, pos = [0] * nb, [0] * nb
+        for b in pilih:
+            n_, p_ = per[nama][b]
+            for i in range(nb):
+                neg[i] += n_[i]
+                pos[i] += p_[i]
+        return auc_hist(pos, neg)
+    rnd = random.Random(benih)
+    lawan = [k for k in kol if k != "model"]
+    # pembanding terbaik ditetapkan dari AUC titik data uji (sama dengan aturan vonis), bukan per resampel
+    titik = {k: hitung(blok, k) for k in kol}
+    terbaik = max(lawan, key=lambda k: titik[k] or 0)
+    am, ab, sel = [], [], []
+    for _ in range(B):
+        pilih = [rnd.choice(blok) for _ in blok]
+        a, b = hitung(pilih, "model"), hitung(pilih, terbaik)
+        if a is not None and b is not None:
+            am.append(a); ab.append(b); sel.append(a - b)
+    def ci(x):
+        x = sorted(x)
+        return [round(x[int(.025 * (len(x) - 1))], 4), round(x[int(.975 * (len(x) - 1))], 4)]
+    return {"blok": "tahun-bulan", "n_blok": len(blok), "B": B, "pembanding_terbaik": terbaik,
+            "auc_titik": {k: round(v, 4) for k, v in titik.items() if v is not None},
+            "model_ci95": ci(am), "pembanding_ci95": ci(ab), "selisih_model_minus_pembanding_ci95": ci(sel)}
 
 
 def uji_glc(kej, kecs, kerent, sel, awal, p95, r7, S):
@@ -293,6 +351,9 @@ def diri():
     kej = {"kab": ["a|K1", "a|K2"], "dibi": dib, "glc": []}
     out = uji_balik(kej, kecs, kerent, (awal, sel))
     assert out["auc"]["model"] > 0.7 and out["auc"]["klim"] is not None and out["cakupan"]["positif"] == len(dib), out
+    c = out["ci_bootstrap_blok"]
+    assert c and c["n_blok"] >= 12 and c["model_ci95"][0] <= out["auc"]["model"] <= c["model_ci95"][1] + 0.01, c
+    assert auc_hist([0, 1], [1, 0]) == 1.0 and auc_hist([1], [1]) == 0.5
     print("model longsor: uji lolos")
 
 
