@@ -1057,6 +1057,150 @@ def tulis(prof, keluar):
     return d
 
 
+# ---------------------------------------------------------------- KM-B04: ringkas.json + prov/<NN>.json (turunan murni dari 514 profil)
+MAKS_RINGKAS = 120_000
+MAKS_PROV = 60_000
+KELAS_M = ("P1", "P2", "P3")
+
+
+def _irbi25(p):
+    """(skor, kelas) IRBI titik terakhir seri, atau (None, None). Skala 2025 (ambang 176)."""
+    s = ((p.get("irbi") or {}).get("seri") or [None])[-1]
+    return (s[1], s[2]) if s else (None, None)
+
+
+def _top3(p):
+    """3 bahaya skor tertinggi dari masalah_skor; skor null tidak ikut. Seri: nama bahaya menaik. Tanpa skor sama sekali -> None (bukan karangan)."""
+    ada = sorted(((e["skor"], b) for b, e in (p.get("masalah_skor") or {}).items() if e.get("skor") is not None), key=lambda x: (-x[0], x[1]))
+    return [[b, sk] for sk, b in ada[:3]] or None
+
+
+def _n_masalah(p):
+    """[n P1, n P2, n P3] jumlah masalah otomatis; None bila tak ada bahaya berskor (tak dinilai, bukan 0)."""
+    if _top3(p) is None:
+        return None
+    c = collections.Counter(m["kelas"] for m in p["masalah"])
+    return [c[k] for k in KELAS_M]
+
+
+def _kap_n(p):
+    return masalah._kap(p)  # 0-5 (perda PB, perda BPBD, RPB, renkon, BPBD terbentuk); None bila ada yang tak diketahui
+
+
+def _tgl_agregat(prof):
+    return max((p["dibangun"] for p in prof.values() if p.get("dibangun")), default=None)
+
+
+def ringkas(prof):
+    """514 baris untuk daftar tampilan Daerah. Kejadian = total 'semua' (CKAN, 2024 lengkap): dipilih karena jenis DIBI tanpa 2024 hanya batas bawah."""
+    baris = []
+    for k in sorted(prof):
+        p = prof[k]
+        sk, kl = _irbi25(p)
+        kj = ((p.get("kejadian") or {}).get("total_2015_2025") or {}).get("semua")
+        baris.append({"k": k, "n": p["nama"], "p": p["prov"], "i": kl, "b": _top3(p), "m": _n_masalah(p), "j": kj, "c": _kap_n(p)})
+    return {"v": 1, "tanggal": _tgl_agregat(prof), "tanggal_arti": "tanggal data terbaru di 514 profil daerah",
+            "sumber": "Turunan 514 profil daerah (daerah/<kab4>.json): IRBI, masalah_skor, kejadian CKAN, regulasi",
+            "_arti": {"k": "kode IRBI 4 digit", "n": "nama kab/kota", "p": "kode provinsi 2 digit",
+                      "i": "kelas IRBI 2025: 1 = Tinggi, 0 = Sedang, null = tak ada data",
+                      "b": "hingga 3 bahaya skor masalah tertinggi [[bahaya, skor 0-1]]; urut skor menurun, seri nama bahaya menaik; bahaya berskor null tidak ikut; null = tak ada bahaya berskor (bukan karangan)",
+                      "m": "[n P1, n P2, n P3] masalah otomatis; null = tak ada bahaya berskor (tak dinilai), bukan 0",
+                      "j": "jumlah kejadian 2015-2025 jenis 'semua' (CKAN, 2024 lengkap); null = tak tercatat",
+                      "c": "kapasitas tercatat 0-5 dari 5 (perda PB, perda BPBD, RPB, renkon, BPBD terbentuk); false = tak tercatat di basis regulasi; null = ada yang tak diketahui"},
+            "_satuan": {"j": "kejadian", "m": "masalah", "c": "dari 5 butir", "b": "skor persentil nasional 0-1"},
+            "baris": baris}
+
+
+def prov(prof, nama_prov=None):
+    """{NN: profil provinsi}. Agregat tak menjumlah null sebagai 0: n_ikut menyebut berapa kab yang punya angkanya."""
+    nama_prov = nama_prov or {}
+    per = collections.defaultdict(list)
+    for k in sorted(prof):
+        per[prof[k]["prov"]].append(k)
+    keluar = {}
+    for nn, ks in sorted(per.items()):
+        kab, pend, tw, tp, mn = [], [], 0.0, 0, [0, 0, 0]
+        for k in ks:
+            p = prof[k]
+            sk, kl = _irbi25(p)
+            pd = (p.get("penduduk") or {}).get("total")
+            if pd is not None:
+                pend.append(pd)
+            if sk is not None and pd:
+                tw += sk * pd; tp += pd
+            m = _n_masalah(p)
+            if m:
+                mn = [a + b for a, b in zip(mn, m)]
+            kab.append({"k": k, "n": p["nama"], "i": sk, "c": kl, "pd": pd, "m": m,
+                        "p1": [{"id": x["auto_id"], "j": x["judul"], "s": x["skor"]} for x in p["masalah"] if x["kelas"] == "P1"]})
+        kab.sort(key=lambda r: (r["i"] is None, -(r["i"] or 0), r["k"]))
+        n_i = sum(1 for r in kab if r["i"] is not None and r["pd"])
+        keluar[nn] = {"v": 1, "prov": nn, "nama": nama_prov.get(nn), "tanggal": _tgl_agregat({k: prof[k] for k in ks}),
+                      "tanggal_arti": "tanggal data terbaru di profil kab provinsi ini",
+                      "sumber": "Turunan profil daerah kab/kota provinsi ini (IRBI, penduduk IRBI paparan, masalah otomatis)",
+                      "n_kab": len(ks),
+                      "penduduk": {"total": sum(pend) if pend else None, "n_ikut": len(pend)},
+                      "irbi": {"rerata_tertimbang": bulat(tw / tp * 10) / 10 if tp else None, "n_ikut": n_i,
+                               "tinggi_n": sum(1 for r in kab if r["c"] == 1), "sedang_n": sum(1 for r in kab if r["c"] == 0),
+                               "tanpa_data_n": sum(1 for r in kab if r["c"] is None)},
+                      "masalah_n": dict(zip(KELAS_M, mn)),
+                      "_arti": {"kab": "urut skor IRBI 2025 menurun (null terakhir), seri kode; k kode, n nama, i skor IRBI 2025, c kelas IRBI (1 Tinggi, 0 Sedang, null tak ada data; dipakai warna peta), pd penduduk, m [n P1,P2,P3] (null = tak dinilai), p1 masalah P1 {id, j judul, s skor}",
+                                "irbi.rerata_tertimbang": "rerata skor IRBI 2025 tertimbang penduduk, hanya kab yang punya skor dan penduduk (n_ikut); skor 2025 beberapa kab = nilai provinsi (lihat catatan_2025 di profil kab)",
+                                "penduduk.total": "jumlah penduduk kab yang punya angkanya (n_ikut dari n_kab); null kab tidak dihitung 0",
+                                "masalah_n": "jumlah masalah otomatis per kelas, hanya kab yang dinilai"},
+                      "_satuan": {"penduduk.total": "jiwa", "irbi.rerata_tertimbang": "skor IRBI 2025 (ambang kelas Tinggi 176)", "masalah_n": "masalah", "kab.pd": "jiwa", "kab.i": "skor IRBI 2025"},
+                      "kab": kab}
+    return keluar
+
+
+def validasi_agregat(r, pv, prof, kode):
+    """Tolak ringkas/prov yang melanggar spek KM-B04. Pesan menyebut angka dan sebab."""
+    n = len(teks(r).encode("utf-8"))
+    assert n <= MAKS_RINGKAS, f"ringkas.json {n} byte > {MAKS_RINGKAS}"
+    assert [b["k"] for b in r["baris"]] == sorted(prof), f"ringkas {len(r['baris'])} baris != {len(prof)} profil"
+    for b in r["baris"]:
+        p = prof[b["k"]]
+        assert "siluet" not in b and set(b) == {"k", "n", "p", "i", "b", "m", "j", "c"}, f"{b['k']}: kunci ringkas {sorted(b)} bocor/kurang"
+        ada = {x: e["skor"] for x, e in p["masalah_skor"].items() if e.get("skor") is not None}
+        if not ada:
+            assert b["b"] is None and b["m"] is None, f"{b['k']}: tanpa bahaya berskor tapi b={b['b']} m={b['m']} (karangan)"
+        else:
+            assert b["b"] and len(b["b"]) == min(3, len(ada)) and all(ada.get(x) == s for x, s in b["b"]), f"{b['k']}: bahaya teratas {b['b']} tak cocok masalah_skor {ada}"
+            sk = [s for _, s in b["b"]]
+            assert sk == sorted(sk, reverse=True) and len({x for x, _ in b["b"]}) == len(b["b"]), f"{b['k']}: b tak urut/ganda {b['b']}"
+            assert min(sk) >= max([s for x, s in ada.items() if x not in {y for y, _ in b["b"]}] or [0]), f"{b['k']}: bahaya skor lebih tinggi terlewat dari {b['b']}"
+            assert sum(b["m"]) == len(p["masalah"]), f"{b['k']}: m {b['m']} != {len(p['masalah'])} masalah"
+        assert b["i"] in (0, 1, None) and (b["c"] is None or 0 <= b["c"] <= 5), f"{b['k']}: i={b['i']} c={b['c']} di luar rentang"
+    per = collections.Counter(v["prov"] for v in kode.values())
+    assert sorted(pv) == sorted(per), f"prov {sorted(pv)} != kode.json {sorted(per)}"
+    for nn, q in pv.items():
+        assert len(q["kab"]) == q["n_kab"] == per[nn], f"prov {nn}: {len(q['kab'])} kab, n_kab {q['n_kab']}, kode.json {per[nn]}"
+        assert {r_["k"] for r_ in q["kab"]} == {k for k, v in kode.items() if v["prov"] == nn}, f"prov {nn}: daftar kab tak sama dengan kode.json"
+        ni = [r_["i"] for r_ in q["kab"] if r_["i"] is not None]
+        assert ni == sorted(ni, reverse=True) and all(r_["i"] is not None for r_ in q["kab"][:len(ni)]), f"prov {nn}: kab tak urut IRBI menurun / null tak di akhir"
+        assert q["irbi"]["tinggi_n"] + q["irbi"]["sedang_n"] + q["irbi"]["tanpa_data_n"] == q["n_kab"], f"prov {nn}: kelas IRBI tak berjumlah n_kab"
+        assert q["penduduk"]["n_ikut"] <= q["n_kab"] and (q["penduduk"]["total"] is None) == (q["penduduk"]["n_ikut"] == 0), f"prov {nn}: penduduk null/n_ikut tak konsisten"
+        assert len(teks(q).encode("utf-8")) <= MAKS_PROV, f"prov {nn}: {len(teks(q).encode('utf-8'))} byte > {MAKS_PROV}"
+        for r_ in q["kab"]:
+            assert all(m_["id"].startswith("auto-" + r_["k"]) for m_ in r_["p1"]) and len(r_["p1"]) == (r_["m"] or [0])[0], f"{r_['k']}: p1 {len(r_['p1'])} != m {r_['m']}"
+
+
+def nama_provinsi(akar):
+    d = os.path.join(akar, "public", "data", "meta.json")
+    return (json.load(open(d, encoding="utf-8")).get("provinsi") if os.path.exists(d) else None) or {}
+
+
+def tulis_agregat(prof, keluar, akar=AKAR):
+    d = os.path.join(keluar, "public", "data", "kemitraan")
+    r, pv = ringkas(prof), prov(prof, nama_provinsi(akar))
+    validasi_agregat(r, pv, prof, Konteks(akar).kode)
+    os.makedirs(os.path.join(d, "prov"), exist_ok=True)
+    open(os.path.join(d, "ringkas.json"), "w", encoding="utf-8").write(teks(r))
+    for nn, q in pv.items():
+        open(os.path.join(d, "prov", nn + ".json"), "w", encoding="utf-8").write(teks(q))
+    return len(r["baris"]), len(pv)
+
+
 # ---------------------------------------------------------------- cek
 FIX = os.path.join(AKAR, "tests", "kemitraan", "fixtures", "profil_mini")
 
@@ -1339,6 +1483,41 @@ def cek():
     tolak(validasi, "yakin", ubah(lambda q: q["karhutla"].update(yakin="pasti")))
     tolak(validasi, "memuat angka", ubah(lambda q: q["masalah"][0].update(judul="Banjir 5 kali berulang")))  # B03: validasi memanggil masalah.periksa
     tolak(validasi, "masalah/masalah_skor tak ada", ubah(lambda q: q.pop("masalah")))
+    # KM-B04: ringkas + prov, atas SEMUA kab/prov
+    kode = Konteks(AKAR).kode
+    r, pv = ringkas(a), prov(a, nama_provinsi(AKAR))
+    validasi_agregat(r, pv, a, kode)
+    dk = os.path.join(AKAR, "public", "data", "kemitraan")
+    assert open(os.path.join(dk, "ringkas.json"), encoding="utf-8").read() == teks(r), "ringkas.json di disk beda dari hasil bangun; jalankan tanpa --cek"
+    adaprov = sorted(os.path.basename(f)[:-5] for f in glob.glob(os.path.join(dk, "prov", "[0-9][0-9].json")))
+    assert adaprov == sorted(pv), f"prov di disk {len(adaprov)} != {len(pv)}"
+    for nn, q in pv.items():
+        assert open(os.path.join(dk, "prov", nn + ".json"), encoding="utf-8").read() == teks(q), f"prov/{nn}.json di disk beda dari hasil bangun"
+    assert ringkas(a) == r and prov(a, nama_provinsi(AKAR)) == pv, "ringkas/prov tak deterministik"
+    q62 = pv["62"]
+    assert q62["n_kab"] == sum(1 for v in kode.values() if v["prov"] == "62"), q62["n_kab"]
+    # agregat tak menjumlah null sebagai 0
+    b2 = copy.deepcopy(a)
+    for k in [k for k in b2 if b2[k]["prov"] == "62"][:2]:
+        b2[k]["penduduk"]["total"] = None
+    q2 = prov(b2, {})["62"]
+    assert q2["penduduk"]["n_ikut"] == q62["penduduk"]["n_ikut"] - 2 and q2["penduduk"]["total"] < q62["penduduk"]["total"], "null penduduk dijumlah sebagai 0 / n_ikut tak turun"
+    # tanpa skor -> tanpa bahaya teratas karangan
+    b3 = copy.deepcopy(a)
+    for e in b3["6211"]["masalah_skor"].values():
+        e["skor"] = None
+    assert ringkas(b3)["baris"][[x["k"] for x in r["baris"]].index("6211")]["b"] is None, "kab tanpa skor punya bahaya teratas"
+    # input salah DITOLAK
+    def u2(f):
+        rr, qq = copy.deepcopy(r), copy.deepcopy(pv); f(rr, qq); return rr, qq
+    tolak(lambda x: validasi_agregat(*x, a, kode), "byte >", u2(lambda rr, qq: rr.update(x="a" * 130000)))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "baris", u2(lambda rr, qq: rr["baris"].pop()))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "kunci ringkas", u2(lambda rr, qq: rr["baris"][0].update(siluet="M0 0Z")))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "tak cocok masalah_skor", u2(lambda rr, qq: rr["baris"][0].update(b=[["banjir", 0.99]])))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "n_kab", u2(lambda rr, qq: qq["62"].update(n_kab=qq["62"]["n_kab"] + 1)))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "n_kab", u2(lambda rr, qq: qq["62"]["kab"].pop()))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "prov", u2(lambda rr, qq: qq.pop("62")))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "tak urut", u2(lambda rr, qq: qq["62"]["kab"].reverse()))
     mx = max(len(t.encode()) for t in ta.values())
     nul = {b: sum(1 for p in a.values() if p[b] is None) for b in BLOK_DICT + ("riwayat_luar",)}
     print(f"OK profil_daerah.py: {len(a)} kab, maks {mx} byte, deterministik, fixture 3 kab; null per blok {nul}")
@@ -1362,3 +1541,4 @@ if __name__ == "__main__":
             validasi(prof[ag.kab]); print(teks(prof[ag.kab]), end="")
         else:
             print("tulis", len(prof), "berkas ->", tulis(prof, ag.keluar))
+            print("tulis ringkas %d baris + %d prov" % tulis_agregat(prof, ag.keluar, ag.akar))
