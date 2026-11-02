@@ -74,6 +74,7 @@
    "gambar": [
     "foto",
     "logo",
+    "logo",
     "logo"
    ],
    "panel": [],
@@ -324,6 +325,10 @@
      "impor"
     ],
     [
+     "2E3440",
+     "impor"
+    ],
+    [
      "2F86D1",
      "impor"
     ],
@@ -417,6 +422,7 @@
    "seri": null,
    "visual": [],
    "gambar": [
+    "ikon",
     "ikon",
     "ikon",
     "ikon",
@@ -918,6 +924,7 @@
     "foto",
     "logo",
     "logo",
+    "logo",
     "ikon",
     "ikon",
     "ikon",
@@ -1405,7 +1412,16 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor128.0",
+   "kunci": "turunan:spek#2#impor125.0",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#2",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 Nov 2026 07.00 s.d. 2 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 1 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#2#impor129.0",
    "tampil": "93",
    "nilai": null,
    "naskah": "spek#2",
@@ -1414,7 +1430,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor131.0",
+   "kunci": "turunan:spek#2#impor132.0",
    "tampil": "17.707",
    "nilai": null,
    "naskah": "spek#2",
@@ -1423,7 +1439,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor135.18",
+   "kunci": "turunan:spek#2#impor136.18",
    "tampil": "608",
    "nilai": null,
    "naskah": "spek#2",
@@ -1432,7 +1448,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor135.42",
+   "kunci": "turunan:spek#2#impor136.42",
    "tampil": "351",
    "nilai": null,
    "naskah": "spek#2",
@@ -1441,7 +1457,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor141.12",
+   "kunci": "turunan:spek#2#impor142.12",
    "tampil": "3.086.400",
    "nilai": null,
    "naskah": "spek#2",
@@ -1450,7 +1466,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor141.35",
+   "kunci": "turunan:spek#2#impor142.35",
    "tampil": "30.124",
    "nilai": null,
    "naskah": "spek#2",
@@ -1459,7 +1475,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor143.2",
+   "kunci": "turunan:spek#2#impor144.2",
    "tampil": "2026",
    "nilai": null,
    "naskah": "spek#2",
@@ -1468,7 +1484,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#2#impor144.0",
+   "kunci": "turunan:spek#2#impor145.0",
    "tampil": "2",
    "nilai": null,
    "naskah": "spek#2",
@@ -1657,7 +1673,16 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#3#impor45.2",
+   "kunci": "turunan:spek#3#impor42.1",
+   "tampil": "24",
+   "nilai": null,
+   "naskah": "spek#3",
+   "keyakinan": "resmi",
+   "sumber": "Pengolahan data sistem BNPB dari Laporan Harian Dit. Koordalops BNPB, 1 Nov 2026 07.00 s.d. 2 Nov 2026 07.00 WIB; Pengolahan data sistem BNPB dari GIS BNPB, 1 Nov 2026",
+   "dari": []
+  },
+  {
+   "kunci": "turunan:spek#3#impor47.2",
    "tampil": "2026",
    "nilai": null,
    "naskah": "spek#3",
@@ -1666,7 +1691,7 @@
    "dari": []
   },
   {
-   "kunci": "turunan:spek#3#impor46.0",
+   "kunci": "turunan:spek#3#impor48.0",
    "tampil": "3",
    "nilai": null,
    "naskah": "spek#3",
@@ -2652,6 +2677,7 @@
  "keputusan": [],
  "peringatan": [],
  "masukan": {
+  "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\logo-bersama\\kris.png": "d0c25d345951e4c4a3e4444be49d0a41bf58ce3ad1d2be1cc78608ad51ab0c25",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\data\\angka.json": "a3e0a29bfa06bed81f08cb2f7392225674766400874d53cd81468d74cc1b95fd",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\foto\\berakhlak-hd.png": "5c28e8ef6c0b71f02486173d71b3a052369c1e6658c2e40d7cee331b0d1f2eb9",
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\proyek-bnpb\\logo\\sumber-bnpb.png": "40625fac249ac73b97d4b25bcd29b48961037a80bf49ae2a789877db29bacb64",
@@ -2659,7 +2685,7 @@
   "..\\..\\..\\..\\.claude\\skills\\ppt-konsultan\\bnpb\\assets\\templat-bnpb.pptx": "acf66a00eb40f6c1e49e9baed26e2b7837924ab78d56061c797f2da8bba94262",
   "foto0_0.png": "3c8688d68006235d198d9efb572787e5aee08d3ecece28af93e8978e9d4916c0",
   "foto5_0.png": "3c8688d68006235d198d9efb572787e5aee08d3ecece28af93e8978e9d4916c0",
-  "isi.pptx": "3cad9057b9fa6c2d38a05d471d545b17f67b030d6b5c7006eae2a4271ee26008",
-  "spek.json": "d8e13c307e1447c86e912ace1e8940c8a97924f5b3dcb96fc3d3e1098e0a61cb"
+  "isi.pptx": "3bf8d82a666335684a1778a59f96af5f1e077576f10ec3c826978e71e534c4db",
+  "spek.json": "0be4ebdcea684482d76e5b9163bbb93a54a691cb120088448ed9b13b5d7aa2a0"
  }
 }

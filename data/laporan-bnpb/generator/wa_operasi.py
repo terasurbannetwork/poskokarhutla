@@ -123,7 +123,8 @@ def operasi(teks):
     omc = {}
     for m in re.finditer(r'\*\d+\. ([^*\n]+)\*\n((?:>.*\n?)+)', _bagian(teks, r'Operasi Modifikasi Cuaca\*', r'\*\*3\.')):
         nama, isi = m.group(1).strip(), m.group(2)
-        nacl, dry = (_total([_angka(x) for x in re.findall(rf'([\d.]+) kg {b}', isi)]) for b in ('NaCl', 'dry ice'))
+        harian = re.sub(r'^>\s*Realisasi\b.*$', '', isi, flags=re.M | re.I)   # realisasi kumulatif "19 Oktober - 1 November" bukan muatan hari itu (2 Nov)
+        nacl, dry = (_total([_angka(x) for x in re.findall(rf'([\d.]+) kg {b}', harian)]) for b in ('NaCl', 'dry ice'))
         so = re.search(r'\*(\d+) sortie', isi)
         sas = list(dict.fromkeys(k.strip() for x in re.findall(r'(?:menyasar|wilayah sasaran|kg (?:NaCl|dry ice)\* di) \*([^*]+)\*', isi.split('Hujan')[0])   # "di *X*" hanya sesudah muatan ("1.000 kg NaCl* di *Muara Enim*", Sumsel 29 Okt), bukan "PK-SNP diperbantukan di *Lampung*" (Riau 28 Okt)
                                  for k in re.split(r',\s*(?:dan\s+)?|\s+dan\s+', x.replace('sekitar ', '')) if k.strip()))   # kab yang disasar beberapa pesawat sekali saja
@@ -139,6 +140,9 @@ def operasi(teks):
                      'tanggal': dt.date(tanggal.year, BULAN[h.group(4).lower()], int(h.group(3))) if h.group(3) else tanggal}
         elif h3:   # "Hujan dilaporkan di sebagian besar wilayah X pada dini hari" (27 Okt): lokasi tanpa cetak tebal
             hujan = {'intensitas': '', 'lokasi': h3.group(1), 'tanggal': tanggal}
+        elif h4 := re.search(r'^>\s*Hujan\s+([a-z]+(?:\s*[–-]\s*[a-z]+|\s+hingga\s+[a-z]+)?)\s+di ([^.\n]+?)(?:,? serta [^.\n]*)?\.', isi, re.M):
+            # "Hujan ringan–sedang di Muaro Jambi, ..., dan Kota Jambi, serta ringan pada pagi hari di X." (Jambi 2 Nov): tanpa "dilaporkan"
+            hujan = {'intensitas': h4.group(1).replace('–', ' hingga ').replace('-', ' hingga ').replace('  ', ' '), 'lokasi': h4.group(2), 'tanggal': tanggal}
         tg = h and not h2 and re.search(r'tanggal \*?(\d{1,2}) (\w+)', isi[isi.rfind('\n', 0, h.start()) + 1:h.end()])   # "Hujan ... dilaporkan tanggal 26 Oktober 2026 di *X*" (Jambi 28 Okt)
         if hujan and tg:
             hujan['tanggal'] = dt.date(tanggal.year, BULAN[tg.group(2).lower()], int(tg.group(1)))

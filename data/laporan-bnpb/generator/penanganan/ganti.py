@@ -303,6 +303,18 @@ else:
     GES = 235639  # geser ikon+teks LUAS TERBAKAR agar rata tengah di kotaknya (slide2 saja; kepala slide1 sudah rata dari kepala_tabel)
     s2 = rep(s2, '<a:off x="7111898" y="1554480"/>', f'<a:off x="{7111898 + GES}" y="1554480"/>')
     s2 = rep(s2, '<a:off x="7386218" y="1463040"/>', f'<a:off x="{7386218 + GES}" y="1463040"/>')
+def judul_satu_baris(s, lebar=10454335):
+    """2 Nov 2026: judul 26 pt "Penanganan dan Pengendalian Karhutla per Tanggal 2 November 2026" turun ke baris 2 dan menabrak penanda
+    bagian deck.py di atas slide. Aturan format-ringkas: judul 1 baris, kalau tidak muat huruf dikecilkan (turun 1 pt sampai muat)."""
+    for b in re.findall(r'<p:sp>.*?</p:sp>', s, flags=re.S):
+        if 'sz="2600"' not in b or '<a:off x="548640" y="274320"/>' not in b: continue
+        teks = ''.join(re.findall(r'<a:t>([^<]*)</a:t>', b)); sz = 2600
+        while sz > 2000 and lebar_teks([(teks, sz, True)]) > lebar: sz -= 100
+        if sz < 2600: s = s.replace(b, b.replace('sz="2600"', f'sz="{sz}"'), 1)
+    return s
+
+
+s1 = judul_satu_baris(s1)
 zi = zipfile.ZipFile(SRC); zo = zipfile.ZipFile(OUT, 'w', zipfile.ZIP_DEFLATED)
 for it in zi.infolist():
     d = zi.read(it.filename)

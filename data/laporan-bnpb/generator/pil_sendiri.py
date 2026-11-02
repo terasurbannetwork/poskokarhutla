@@ -52,22 +52,37 @@ def bahan(hari, cuaca):
     per = {}
     for s in cuaca.values():
         per.setdefault(s['prov'], []).append(s)
-    hujan, lebat, angin = set(), set(), set()
+    hujan, lebat, angin, mm = set(), set(), set(), {}
     for k, sel in per.items():
         hj = [s['hujan'] for s in sel if s['hujan'] is not None]
         rata = sum(hj) / len(hj) if hj else 0.0
         ws = sum(s['ws'] for s in sel) / len(sel)
+        mm[k] = rata
+        # 2 Nov 2026 (klarifikasi pemilik): dulu semua hujan >= 1 mm ditulis "HUJAN SEDANG" (35 dari 36 pil 27 Okt-1 Nov). Kini kelas
+        # BMKG per provinsi lewat kelas_hujan(mm); set hujan/lebat tetap ada untuk pemanggil lama.
         if rata >= HUJAN_BMKG[1]:
             lebat.add(k)
-        elif rata >= 1.0:
+        elif rata >= HUJAN_MIN:
             hujan.add(k)
         if ws >= ANGIN_KENCANG:
             angin.add(k)
     hb = lambda s: (lambda d: f'{d.day} {BULAN[d.month - 1][:3]}')(dt.date.fromisoformat(s))
+    kemarin = (dt.date.fromisoformat(str(hari)) - dt.timedelta(days=1)).isoformat()
     return {'pm': {k: (v, kategori(v), None) for k, v in pm.items()},
             'pm_ke10': nilai[9] if len(nilai) >= 10 else (nilai[-1] if nilai else 0.0),
-            'hujan': hujan, 'lebat': lebat, 'angin': angin,
+            'hujan': hujan, 'lebat': lebat, 'angin': angin, 'mm': mm,
+            # cuaca_riwayat (harian.siang): hujan 24 jam 13.00 kemarin s.d. 12.00 hari laporan waktu setempat, keluaran model, bukan prakiraan
+            'periode_hujan': f's.d. {hb(str(hari))} 12.00',   # = {hb(kemarin)} 13.00 s.d. hari laporan 12.00; legenda satu baris
             'pm_tgl': hb(pm_tgl), 'periode': hb(hari)}
+
+
+HUJAN_MIN = 0.5   # mm/hari: di bawahnya BMKG tidak menghitung hari hujan (berawan)
+
+
+def kelas_hujan(v):
+    """Kelas intensitas hujan harian BMKG: ringan 0,5-20, sedang 20-50, lebat 50-100, sangat lebat 100-150, ekstrem > 150 mm/hari."""
+    return ('' if v < HUJAN_MIN else 'ringan' if v < HUJAN_BMKG[0] else 'sedang' if v < HUJAN_BMKG[1]
+            else 'lebat' if v < HUJAN_BMKG[2] else 'sangat lebat' if v < 150 else 'ekstrem')
 
 
 def uji():
@@ -75,6 +90,9 @@ def uji():
     assert [kategori(v) for v in (0, 15.5, 15.6, 55.4, 55.5, 150.4, 150.5, 250.4, 250.5)] == \
         ['baik', 'baik', 'sedang', 'sedang', 'tidak sehat', 'tidak sehat', 'sangat tidak sehat', 'sangat tidak sehat', 'berbahaya'], \
         'titik potong P.14/2020 bergeser'
+    # klarifikasi pemilik 2 Nov 2026: pil hujan wajib kelas BMKG, bukan "HUJAN SEDANG" untuk semua hujan >= 1 mm
+    assert [kelas_hujan(v) for v in (0, 0.4, 0.5, 19.9, 20, 49.9, 50, 99.9, 100, 150)] == \
+        ['', '', 'ringan', 'ringan', 'sedang', 'sedang', 'lebat', 'lebat', 'sangat lebat', 'ekstrem'], 'kelas hujan BMKG bergeser'
     R = json.load(open(RIWAYAT))
     h = sorted({t for v in R['prov'].values() for t in v})[-2]
     p = pm25(h)
