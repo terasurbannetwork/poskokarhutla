@@ -940,6 +940,7 @@
     "GET /bnpb/dokumen": "GET /bnpb/dokumen: kerangka publik tanpa cache",
     "GET /bnpb/perencanaan": "GET /bnpb/perencanaan: kerangka publik tanpa cache",
     "GET /bnpb/operasi": "GET /bnpb/operasi: kerangka publik tanpa cache",
+    "GET /bnpb/operasi-lapangan": "GET /bnpb/operasi-lapangan: kerangka staf tanpa cache",
     "table logbook_kib": "juklak: KIB 16 digit terbentuk",
     "table logbook_entri_juklak": "juklak: medan baru tersimpan dan terbaca",
     "table logbook_sk": "juklak: SK status per kejadian",

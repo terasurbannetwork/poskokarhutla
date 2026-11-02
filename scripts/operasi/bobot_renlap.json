@@ -1,0 +1,35 @@
+{
+  "_label": "HIPOTESIS. Bobot aturan tangan belum di-backtest; tala ulang dari metrik M1 (ketepatan target) setelah 14 hari data (spek operasi-lapangan 6.2, K7).",
+  "_ponytail": "skor aturan tangan, ganti kalibrasi bila M1 dua minggu tidak naik.",
+  "bobot": {
+    "baru_per_titik": 2.0,
+    "baru_maks_titik": 5,
+    "menahun_per_hari": 1.5,
+    "menahun_maks_hari": 6,
+    "gambut": 3.0,
+    "ffmc_maks": 2.0,
+    "ffmc_dari": 80,
+    "ffmc_rentang": 15,
+    "permukiman": 2.0,
+    "belum_ditangani": 1.5,
+    "clear_dengan_titik_baru": -2.0
+  },
+  "ambang": {
+    "jendela_baru_jam": 6,
+    "jendela_hotspot_jam": 72,
+    "sel_derajat": 0.02,
+    "radius_clear_km": 1.0,
+    "gabung_km": 3.0,
+    "radius_permukiman_km": 2.0,
+    "radius_desa_nama_km": 5.0,
+    "jam_clear_jam": 48,
+    "ffmc_basi_hari": 3,
+    "pm_radius_km": 120,
+    "skor_minimum": 0.1
+  },
+  "batas": { "patroli_maks": 8, "wb_maks": 3, "jelajah_nm_bawaan": 120 },
+  "deklinasi_timur_derajat": {
+    "_label": "PERKIRAAN tetap per base (Indonesia 0 sampai 1 derajat timur), bukan WMM. ponytail: ganti WMM bila selisih 1 derajat terasa di lapangan.",
+    "bawaan": 0.5
+  }
+}

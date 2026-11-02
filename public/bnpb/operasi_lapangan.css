@@ -1,0 +1,43 @@
+/* Operasi (/bnpb/operasi-lapangan): peta operasi udara harian. Token dari bnpb.css/admin.css; tanpa gaya inline (CSP). Warna status ada di sini, bukan di JS. */
+.ol-pilih{display:grid;gap:8px;grid-template-columns:repeat(4,minmax(0,1fr))}
+.ol-baris{display:grid;gap:10px;grid-template-columns:minmax(150px,200px) minmax(0,1fr);align-items:stretch}
+@media (max-width:640px){.ol-baris{grid-template-columns:1fr}}
+.ol-tgl{border:1px solid var(--line);border-radius:12px;padding:9px 12px;font:600 13.5px var(--font);background:var(--card);color:var(--ink);min-width:0;width:100%}
+.ol-seg label{display:flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);border-radius:12px;padding:10px 6px;font-size:13px;font-weight:700;cursor:pointer;background:var(--card);text-align:center;min-width:0}
+.ol-seg input{position:absolute;opacity:0;pointer-events:none}
+.ol-seg svg,.ol-pil svg,.ol-kosong svg,.ol-judul svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.ol-seg label:has(input:checked){background:color-mix(in srgb,var(--c5) 14%,transparent);border-color:color-mix(in srgb,var(--c5) 55%,transparent)}
+.ol-seg label:has(input:focus-visible){outline:2px solid var(--c5);outline-offset:1px}
+@media (max-width:520px){.ol-seg label{flex-direction:column;gap:3px;font-size:12px}}
+.ol-aksi{display:flex;gap:8px}
+.ol-kartu .bn-angka{margin:2px 0 6px}
+.ol-pils{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:6px}
+.ol-sumber{margin:0;font-size:12px;color:var(--ink2)}
+.ol-tengah{display:grid;gap:14px;grid-template-columns:minmax(0,1fr) 360px}
+@media (max-width:1000px){.ol-tengah{grid-template-columns:minmax(0,1fr)}}
+.ol-peta{height:64vh;min-height:380px;border-radius:16px;overflow:hidden;box-shadow:var(--bayang);background:var(--soft);position:relative}
+@media (max-width:640px){.ol-peta{height:52vh}}
+.ol-panel{display:grid;gap:10px;align-content:start;min-width:0}
+.ol-judul{display:flex;align-items:center;gap:8px;margin:0;font-size:15px;font-weight:800}
+.ol-tabel{width:100%;border-collapse:collapse;font-size:12.5px}
+.ol-tabel th{background:var(--navy);color:#fff;text-align:center;font-weight:700;padding:7px 8px}
+.ol-tabel td{padding:6px 8px;border-bottom:1px solid var(--line);vertical-align:top}
+.ol-gulir{overflow-x:auto;min-width:0}
+.ol-kosong{display:flex;align-items:center;gap:8px;margin:0;font-weight:600;color:var(--ink2);font-size:13.5px}
+.ol-pil{display:inline-flex;align-items:center;gap:5px;padding:3px 10px;border-radius:999px;font-size:12px;font-weight:700;white-space:nowrap;background:color-mix(in srgb,var(--w) 14%,transparent);color:color-mix(in srgb,var(--w) 80%,var(--ink))}
+.ol-pil i{width:9px;height:9px;border-radius:50%;background:var(--w);display:inline-block}
+.ol-s-siap{--w:var(--c4)}.ol-s-operasi{--w:var(--c5)}.ol-s-siaga{--w:var(--c3)}.ol-s-tidak{--w:var(--c1)}.ol-s-belum{--w:var(--ink3)}
+.ol-t-api{--w:var(--c1)}.ol-t-tipis{--w:var(--c2,var(--c3))}.ol-t-clear{--w:var(--c4)}.ol-wb{--w:var(--c5)}
+.ol-dummy{margin:0;font-weight:800;color:var(--c1);border:1px dashed var(--c1);border-radius:8px;padding:6px 10px;font-size:12.5px;text-align:center}
+/* penanda peta (elemen DOM maplibre) */
+.ol-m{cursor:pointer;line-height:0}
+.ol-m svg{width:22px;height:22px;filter:drop-shadow(0 1px 2px rgb(0 0 0 / .45))}
+.ol-m .isi{fill:var(--w);stroke:#fff;stroke-width:1.6;stroke-linejoin:round}
+.ol-base{display:flex;flex-direction:column;align-items:center;gap:2px}
+.ol-base svg{width:28px;height:28px}
+.ol-base .tanah{fill:var(--navy);stroke:#fff;stroke-width:1.2}
+.ol-base .garis{fill:none;stroke:#fff;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.ol-base.pilih svg{outline:3px solid var(--c5);outline-offset:2px;border-radius:50%}
+.ol-titik{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:60px}
+.ol-titik b{width:9px;height:9px;border-radius:50%;background:var(--w);border:1.5px solid #fff;box-shadow:0 0 0 1px rgb(0 0 0 / .3)}
+.ol-pop .maplibregl-popup-content{padding:8px 10px;font:600 12.5px/1.4 var(--font);border-radius:10px;max-width:260px}
