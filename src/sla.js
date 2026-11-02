@@ -42,9 +42,10 @@ export async function catatRiwayatStatus(env, hasil, kini = Date.now()) {
   /* jeda_sensor = {M|N|N20|N21: {terakhir, umur_jam}} (bersarang): satu baris per sensor bernama jeda_sensor_<kode>; sensor tanpa umur (hilang, atau N sesudah berhenti 1 Nov 2026) tidak ditulis, seperti jeda_satelit yang tak ada */
   const masuk = Object.entries(hasil.sumber || {}).flatMap(([nama, s]) => nama === "jeda_sensor"
     ? Object.entries(s || {}).filter(([, v]) => v?.umur_jam != null).map(([k, v]) => [`jeda_sensor_${k}`, v]) : [[nama, s]]);
+  /* umur negatif (dibuat berkas pipeline sedikit di depan jam Worker) dijepit 0 = "baru": CHECK 0042 menolak umur_menit < 0 dan DB.batch atomik, jadi SATU sumber negatif membuang riwayat SEMUA sumber jam itu */
   const slot = Math.floor(kini / JAM), st = masuk.map(([nama, s]) =>
     env.DB.prepare("INSERT OR REPLACE INTO status_riwayat (slot, sumber, umur_menit, batas_menit, segar) VALUES (?, ?, ?, ?, ?)")
-      .bind(slot, nama.slice(0, 40), s.umur_jam == null ? null : Math.round(s.umur_jam * 60), s.ambang_jam == null ? null : Math.round(s.ambang_jam * 60), (hasil.basi || []).includes(nama) ? 0 : 1));   // periksaStatus membuang `basi` per sumber; daftarnya di hasil.basi
+      .bind(slot, nama.slice(0, 40), s.umur_jam == null ? null : Math.max(0, Math.round(s.umur_jam * 60)), s.ambang_jam == null ? null : Math.round(s.ambang_jam * 60), (hasil.basi || []).includes(nama) ? 0 : 1));   // periksaStatus membuang `basi` per sumber; daftarnya di hasil.basi
   if (!st.length) return {lewat: "tanpa sumber"};
   try { await env.DB.batch([...st, env.DB.prepare("DELETE FROM status_riwayat WHERE slot < ?").bind(slot - 90 * 24)]); return {sumber: st.length}; }
   catch (e) { if (tanpaTabel(e)) return {lewat: "migrasi 0042 belum diterapkan"}; throw e; }

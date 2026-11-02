@@ -376,7 +376,7 @@ const KAB_BPS = {"33|Banjarnegara": "3304", "33|Cilacap": "3301", "14|Rokan Hili
 const SK_CONTOH = [   // di kejadian pertama (longsor Banjarnegara): SK kab ditulis dulu agar uji urutan prov-dulu bermakna
   {tingkat: "tanggap", wilayah: "kab", nomor: "360/101/2026", tgl_sk: "2026-10-30", tmt_mulai: "2026-10-30", tmt_selesai: "2026-11-05", perpanjangan_ke: 0, tautan: "https://contoh.invalid/sk/kab-360-101"},
   {tingkat: "tanggap", wilayah: "prov", nomor: "188/445/2026", tgl_sk: "2026-10-31", tmt_mulai: "2026-10-31", tmt_selesai: "2026-11-14", perpanjangan_ke: 1, tautan: "https://contoh.invalid/sk/prov-188-445"}];
-const CONTOH = [   // [jenis, kab, kec, desa, status, [[menit lalu, dampak...]]] — angka dari rantai nyata: entri lanjutan menimpa, mengungsi_kk <= mengungsi_jiwa
+export const CONTOH = [   // [jenis, kab, kec, desa, status, [[menit lalu, dampak...]]] — angka dari rantai nyata: entri lanjutan menimpa, mengungsi_kk <= mengungsi_jiwa
   ["longsor", "33|Banjarnegara", "Pandanarum", "Tulis", "buka", [[300, {md: 1, hilang: 4, luka: 3, mengungsi_jiwa: 120, mengungsi_kk: 38, rumah_rb: 3, rumah_rs: 2, rumah_rr: 5, kendala: ["akses", "sinyal"], kebutuhan: ["tenda", "makanan"]}],
     [60, {md: 2, hilang: 2, luka: 6, mengungsi_jiwa: 210, mengungsi_kk: 66, rumah_rb: 5, rumah_rs: 4, rumah_rr: 9, kendala: ["akses", "alat_berat"], kebutuhan: ["tenda", "makanan", "alat_berat"],
       jk: {kerugian_juta: 4500.5, korban: {md: {"0-17": {L: 0, P: 1}, "18-59": {L: 1, P: 0}, "60+": {L: 0, P: 0}}, luka: {"18-59": {L: 3, P: 2}, "60+": {L: 1, P: 0}}, mengungsi: {"0-17": {L: 40, P: 38}, "18-59": {L: 60, P: 52}, "60+": {L: 12, P: 8}}},
@@ -386,6 +386,13 @@ const CONTOH = [   // [jenis, kab, kec, desa, status, [[menit lalu, dampak...]]]
   ["banjir", "33|Cilacap", "Kroya", "Pucung Kidul", "buka", [[30 * 60, {mengungsi_jiwa: 800, mengungsi_kk: 250, rumah_terendam: 310, rumah_rr: 12, kendala: ["listrik", "logistik"], kebutuhan: ["perahu", "air_bersih", "obat"]}]]],
   ["karhutla", "14|Rokan Hilir", "Bangko", "Bagan Batu", "buka", [[200, {luas_ha: 35.5, kendala: ["gambut", "air", "angin"], kebutuhan: ["pompa", "air_bersih"]}], [45, {luas_ha: 48.2, kendala: ["gambut", "air", "malam"], kebutuhan: ["pompa"]}]]],
   ["kebakaran_permukiman", "33|Magelang", "Mertoyudan", "Danurejo", "tutup", [[500, {md: 0, luka: 2, mengungsi_jiwa: 40, mengungsi_kk: 12, rumah_rb: 4, rumah_rs: 1, kendala: ["sosial"], kebutuhan: ["sandang", "makanan"]}], [90, {md: 0, luka: 2, mengungsi_jiwa: 40, mengungsi_kk: 12, rumah_rb: 4, rumah_rs: 1, kendala: [], kebutuhan: ["sandang"]}]]]];
+/* Periode laporan 07.00-07.00 WIB yang memuat `kini` mulai 00.00 UTC hari itu (lihat hari()). */
+export const awalPeriode = kini => Math.floor(kini / HARI) * HARI;
+/* Waktu entri dummy = kini - menit. Dummy ada "untuk menilai layar", jadi entri TERBARU seluruh set tidak boleh jatuh ke periode kemarin: pukul 00.00-00.45 UTC (07.00-07.45 WIB)
+   "45 menit lalu" mendahului awal periode, dan GET /hari periode berjalan kosong. Entri terbaru itu dijepit ke awal periode; entri lain tetap alami (umur 30 jam
+   dipakai uji pengingat 24 jam). Jepitan hanya memajukan waktu, jadi urutan dalam kejadian dan batas mulai tidak rusak. */
+const MENIT_TERBARU = Math.min(...CONTOH.flatMap(c => c[5].map(e => e[0])));
+export const waktuDummy = (kini, menit) => menit === MENIT_TERBARU ? Math.max(kini - menit * MENIT, awalPeriode(kini)) : kini - menit * MENIT;
 async function dummyRute(env, req, kini) {
   if (!await superOK(env, req)) return gagal(403, "dummy hanya untuk Super Admin (secret SUPER_ADMIN berisi awalan akun)");
   const b = await baca(req); if (b.r) return b.r;
@@ -404,10 +411,10 @@ async function dummyRute(env, req, kini) {
   for (const [jenis, kunci, kec, desa, status, entri] of CONTOH) {
     const [prov, kab] = kunci.split("|"), id = acak(8), awal = kini - entri[0][0] * 6e4;
     st.push(env.DB.prepare(`INSERT INTO logbook_kejadian (id, jenis, prov, kab, kec, desa, mulai, status, terakhir, dibuat, diubah, dibuat_oleh, dummy) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'dummy', 1)`)
-      .bind(id, jenis, prov, kab, kec, desa, new Date(awal).toISOString(), status, kini - entri.at(-1)[0] * 6e4, awal, kini));
+      .bind(id, jenis, prov, kab, kec, desa, new Date(awal).toISOString(), status, waktuDummy(kini, entri.at(-1)[0]), awal, kini));
     const pre = JK_ADA ? kibAwal(prov, KAB_BPS[kunci], jenis, awal) : null, kib = pre ? await kibBerikut(env, pre) : null;
     if (kib) st.push(env.DB.prepare("INSERT INTO logbook_kib (kejadian_id, kib, urut) VALUES (?, ?, 0)").bind(id, kib));
-    for (const [menit, d] of entri) st.push(...stmtEntriJk(env, id, {...Object.fromEntries(ANGKA.map(k => [k, d[k] ?? null])), kendala: d.kendala, kebutuhan: d.kebutuhan, catatan: "Data dummy untuk menilai layar", sumber_instansi: "Dummy", waktu: kini - menit * 6e4,
+    for (const [menit, d] of entri) st.push(...stmtEntriJk(env, id, {...Object.fromEntries(ANGKA.map(k => [k, d[k] ?? null])), kendala: d.kendala, kebutuhan: d.kebutuhan, catatan: "Data dummy untuk menilai layar", sumber_instansi: "Dummy", waktu: waktuDummy(kini, menit),
       jk: {...(periksaJuklak({yakin: true, ...d.jk, md: d.md, luka: d.luka, mengungsi_jiwa: d.mengungsi_jiwa}).j ?? {})}}, "dummy", kini));
     if (JK_ADA && jenis === "longsor") for (const x of SK_CONTOH) st.push(env.DB.prepare("INSERT INTO logbook_sk (id, kejadian_id, tingkat, wilayah, nomor, tgl_sk, tmt_mulai, tmt_selesai, perpanjangan_ke, tautan, oleh, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'dummy', ?)")
       .bind(acak(8), id, x.tingkat, x.wilayah, x.nomor, x.tgl_sk, x.tmt_mulai, x.tmt_selesai, x.perpanjangan_ke, x.tautan, kini));

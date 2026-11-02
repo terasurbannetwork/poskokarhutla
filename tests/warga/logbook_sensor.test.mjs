@@ -9,6 +9,7 @@ import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";
 import {buatPengingat} from "../../src/pengingat.js";
+import {RUTE_LOGBOOK, CONTOH, waktuDummy, awalPeriode} from "../../src/logbook.js";   // sesudah worker.js: urutan impor modul rute
 
 const uji = test;
 const sha = s => createHash("sha256").update(s).digest("hex");
@@ -315,9 +316,9 @@ uji("logbook: dummy hanya Super Admin, isi lengkap semua kolom dan ember, 409 bi
   for (const kol of ["md", "hilang", "luka", "mengungsi_jiwa", "mengungsi_kk", "rumah_rb", "rumah_rs", "rumah_rr", "rumah_terendam", "luas_ha"]) assert.ok(ent.some(e => e[kol] > 0), kol + " berangka di minimal satu entri dummy");
   assert.ok(ent.every(e => e.mengungsi_kk == null || e.mengungsi_kk <= e.mengungsi_jiwa));
   assert.ok(ent.some(e => JSON.parse(e.kendala).length) && ent.some(e => JSON.parse(e.kebutuhan).length));
-  const sekarang = Date.now(), tgl = new Date(sekarang - 7 * 3600e3).toISOString().slice(0, 10);
-  const h = await call("GET", "/api/logbook/hari?tgl=" + new Date(sekarang).toISOString().slice(0, 10)); assert.ok(h.j.entri.some(e => e.dummy === true), "entri dummy muncul di periode berjalan");
-  assert.ok(tgl);
+  const kini = (await DB.prepare("SELECT max(diubah) d FROM logbook_kejadian WHERE dummy = 1").first()).d;   // jam yang dipakai Worker saat mengisi (kolom diubah = kini): uji tidak membaca jam dinding sendiri, jadi tidak balapan dengan pergantian periode 00.00 UTC
+  const h = await call("GET", "/api/logbook/hari?tgl=" + new Date(kini).toISOString().slice(0, 10)); assert.ok(h.j.entri.some(e => e.dummy === true), "entri dummy muncul di periode berjalan");
+  assert.ok(h.j.dari <= kini && kini < h.j.sampai, "periode yang diminta memuat jam Worker saat mengisi");
   const env = {DB, ASSETS: {fetch: async () => new Response("", {status: 404})}};
   await buatPengingat(env, Date.now(), {hanya: ["logbook_lanjutan"]});
   assert.equal((await DB.prepare("SELECT count(*) n FROM pengingat WHERE jenis = 'logbook_lanjutan' AND dummy = 0 AND sumber_id IN (SELECT id FROM logbook_kejadian WHERE dummy = 1)").first()).n, 0, "pengingat nyata tidak memuat kejadian dummy");
@@ -328,6 +329,48 @@ uji("logbook: dummy hanya Super Admin, isi lengkap semua kolom dan ember, 409 bi
   assert.equal((await DB.prepare("SELECT count(*) n FROM pengingat WHERE jenis = 'logbook_lanjutan' AND sumber_id NOT IN (SELECT id FROM logbook_kejadian)").first()).n, 1 - 1 + (await DB.prepare("SELECT count(*) n FROM pengingat WHERE jenis = 'logbook_lanjutan' AND dummy = 1").first()).n, "pengingat dummy tersisa hanya yang dibuat tombol pengingat");
   assert.equal((await dum(ADMIN, "isi")).status, 201, "isi lagi sesudah hapus");
   await dum(ADMIN, "hapus");
+});
+
+/* Jam buatan: handler dipanggil langsung (kini = argumen) pada D1 Miniflare yang sama, jadi hasilnya tidak bergantung jam dinding. Periode 07.00-07.00 WIB dimulai 00.00 UTC. */
+uji("logbook: dummy selalu punya entri di periode berjalan pada jam berapa pun (00.00:30, 00.10, 00.44, 00.45, 06.59, 23.59 UTC)", async () => {
+  const env = {DB, ADMIN_TOKEN: "rahasia-admin", SUPER_ADMIN: sha("rahasia-admin").slice(0, 12), IP_SALT: "garam-uji"}, TGL = "2026-11-02", AWAL = Date.parse(TGL + "T00:00:00Z");
+  const panggil = async (rute, m, j, kini, b) => { const url = new URL("http://logbook.lokal" + j); return RUTE_LOGBOOK[rute](env, new Request(url, {method: m, headers: {"content-type": "application/json", ...ADMIN}, body: b === undefined ? undefined : JSON.stringify(b)}), url, kini, {}); };
+  const asli = await n("logbook_kejadian");
+  for (const [jam, mnt, dtk] of [[0, 0, 30], [0, 10, 0], [0, 44, 59], [0, 45, 0], [6, 59, 0], [23, 59, 59]]) {
+    const kini = Date.UTC(2026, 10, 2, jam, mnt, dtk), ket = `kini ${jam}.${String(mnt).padStart(2, "0")}:${String(dtk).padStart(2, "0")} UTC`;
+    const a = await panggil("POST /api/logbook/dummy", "POST", "/api/logbook/dummy", kini, {aksi: "isi"}); assert.equal(a.status, 201, ket);
+    const h = await (await panggil("GET /api/logbook/hari", "GET", "/api/logbook/hari?tgl=" + TGL, kini)).json();
+    assert.deepEqual([h.dari, h.sampai], [AWAL, AWAL + HARI], "periode berjalan = 00.00 UTC sampai 00.00 UTC berikutnya");
+    assert.ok(h.entri.some(e => e.dummy === true), "entri dummy muncul di periode berjalan, " + ket);
+    const w = (await DB.prepare("SELECT e.waktu, k.jenis FROM logbook_entri e JOIN logbook_kejadian k ON k.id = e.kejadian_id WHERE k.dummy = 1").all()).results;
+    assert.ok(w.every(x => x.waktu <= kini), "tidak ada entri dummy di masa depan, " + ket);
+    assert.equal(kini - Math.min(...w.filter(x => x.jenis === "banjir").map(x => x.waktu)), 30 * 3600e3, "entri banjir 30 jam tetap 30 jam (dasar pengingat 24 jam), " + ket);
+    assert.equal((await panggil("POST /api/logbook/dummy", "POST", "/api/logbook/dummy", kini, {aksi: "hapus"})).status, 200, ket);
+  }
+  assert.equal(await n("logbook_kejadian"), asli, "hapus bersih");
+});
+
+uji("logbook: waktu entri dummy (fungsi murni) selalu menyisakan entri di periode berjalan, tanpa jam dinding", () => {
+  const dalam = (w, kini) => w >= awalPeriode(kini) && w < awalPeriode(kini) + HARI;
+  const terbaru = Math.min(...CONTOH.flatMap(c => c[5].map(e => e[0])));
+  const naif = kini => CONTOH.flatMap(c => c[5].map(e => kini - e[0] * 6e4));   // rumus lama
+  const sah = [Date.UTC(2026, 10, 2, 0, 0, 0), Date.UTC(2026, 10, 2, 0, 0, 30), Date.UTC(2026, 10, 2, 0, 10), Date.UTC(2026, 10, 2, 6, 59), Date.UTC(2026, 10, 2, 23, 59), Date.UTC(2026, 10, 2, 23, 59, 59, 999)];
+  for (let m = 0; m < 2 * 1440; m += 1) sah.push(Date.UTC(2026, 10, 2, 0, 0, 7) + m * 6e4);   // sapuan dua hari penuh tiap menit
+  for (const kini of sah) {
+    const ket = new Date(kini).toISOString();
+    assert.ok(kini - awalPeriode(kini) >= 0 && kini - awalPeriode(kini) < HARI, "awalPeriode memuat kini, " + ket);
+    const semua = CONTOH.flatMap(c => c[5].map(e => waktuDummy(kini, e[0])));
+    assert.ok(semua.some(w => dalam(w, kini)), "ada entri dummy di periode berjalan, " + ket);
+    assert.ok(semua.every(w => w <= kini), "tidak ada entri dummy di masa depan, " + ket);
+    for (const c of CONTOH) {
+      const ws = c[5].map(e => waktuDummy(kini, e[0]));
+      assert.ok(ws.every((w, i) => i === 0 || w >= ws[i - 1]), "entri satu kejadian tetap berurutan, " + ket);
+      assert.ok(ws[0] >= kini - c[5][0][0] * 6e4, "entri pertama tidak mendahului mulai kejadian, " + ket);
+    }
+    for (const c of CONTOH) for (const [m] of c[5]) if (m !== terbaru) assert.equal(waktuDummy(kini, m), kini - m * 6e4, `entri ${m} menit tetap alami (hanya yang terbaru dijepit), ${ket}`);
+  }
+  assert.ok(!naif(Date.UTC(2026, 10, 2, 0, 10)).some(w => dalam(w, Date.UTC(2026, 10, 2, 0, 10))), "kontrol: tanpa jepitan, pukul 00.10 UTC semua entri dummy jatuh ke periode kemarin");
+  assert.ok(naif(Date.UTC(2026, 10, 2, 6, 59)).some(w => dalam(w, Date.UTC(2026, 10, 2, 6, 59))), "kontrol: pukul 06.59 UTC rumus lama memang lolos");
 });
 
 uji("logbook: tulis dibatasi 120 per pelaku per jam, pelaku lain tidak terganggu", async () => {

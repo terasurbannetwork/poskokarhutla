@@ -9,7 +9,7 @@ import {AKAR} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import {RAPOR} from "../../src/meja_spek.js";
-import {persen} from "../../src/sla.js";
+import {persen, catatRiwayatStatus} from "../../src/sla.js";
 import {selTitik} from "../../src/titik.js";
 
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, SUPER = {"x-admin-token": "rahasia-admin"};
@@ -134,6 +134,23 @@ uji("sla: cron bersih-bersih menulis status_riwayat per jam; himawari basi terca
   await R2.put("data/himawari.json", JSON.stringify({acuan: new Date(Date.now() - 40 * MENIT).toISOString(), jam: 3, kolom: [], baris: []}));
   const st2 = await api("GET", "/api/status"); assert.ok(!st2.j.basi.includes("himawari")); assert.ok(st2.j.sumber.himawari.umur_jam < 1);
   await DB.prepare("DELETE FROM status_riwayat").run();
+});
+
+uji("sla: umur sumber negatif (dibuat berkas lebih baru dari jam Worker) dijepit 0: satu sumber tidak menggagalkan seluruh batch riwayat jam itu", async () => {
+  /* CHECK status_riwayat menolak umur_menit < 0 dan D1 batch atomik: tanpa jepit, SATU berkas pipeline yang bertanda sedikit di depan jam Worker (selisih jam > 3 menit
+     sudah cukup: umur_jam dibulatkan 0,1) membuang baris SEMUA sumber jam itu, dan cron hanya console.error. Jam tetap: hasil tak bergantung jam dinding. */
+  const kini = Date.UTC(2026, 10, 1, 12, 59), slot = Math.floor(kini / JAM), ada = f => ({dibuat: "2026-11-01T12:00Z", ...f});
+  const hasil = {ok: false, basi: ["berita"], kini: new Date(kini).toISOString(), sumber: {
+    titik: ada({umur_jam: 1.5, ambang_jam: 8}), kualitas: ada({umur_jam: -6.5, ambang_jam: 18}), berita: ada({umur_jam: 40, ambang_jam: 30}), dampak: ada({umur_jam: -0.1, ambang_jam: null}),
+    jeda_sensor: {M: {terakhir: "2026-11-01T12:10Z", umur_jam: -0.2}, N20: {terakhir: "2026-11-01T10:00Z", umur_jam: 3}, N21: {terakhir: null, umur_jam: null}}}};
+  const r = await catatRiwayatStatus({DB}, hasil, kini);
+  assert.deepEqual(r, {sumber: 6}, "enam baris: sensor tanpa umur (N21) tetap tidak ditulis");
+  const baris = (await DB.prepare("SELECT sumber, umur_menit, batas_menit, segar FROM status_riwayat WHERE slot = ? ORDER BY sumber").bind(slot).all()).results;
+  assert.deepEqual(baris, [
+    {sumber: "berita", umur_menit: 2400, batas_menit: 1800, segar: 0}, {sumber: "dampak", umur_menit: 0, batas_menit: null, segar: 1},
+    {sumber: "jeda_sensor_M", umur_menit: 0, batas_menit: null, segar: 1}, {sumber: "jeda_sensor_N20", umur_menit: 180, batas_menit: null, segar: 1},
+    {sumber: "kualitas", umur_menit: 0, batas_menit: 1080, segar: 1}, {sumber: "titik", umur_menit: 90, batas_menit: 480, segar: 1}], "negatif = 0 (baru), yang normal tak berubah");
+  await DB.prepare("DELETE FROM status_riwayat WHERE slot = ?").bind(slot).run();
 });
 
 uji("sla: tanpa R2 (MEDIA) himawari tidak dinilai: tidak pernah membuat /api/status 503", async () => {
