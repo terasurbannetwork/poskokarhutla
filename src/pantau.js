@@ -3,7 +3,10 @@
      hilang sendiri. Tabel pantau_tugas hanya menyimpan penugasan dan status (baru/dikerjakan/selesai/abaikan); pantau_jejak menyimpan siapa melakukan apa dan kapan.
    - butir.id = jenis + sumber + keadaan sumber, jadi hal yang kambuh sesudah selesai berid baru dan muncul lagi.
    - Disaring peran (jenis butir) dan wilayah (kode provinsi) staf. koordalops dan pimpinan melihat semua jenis; admin (ADMIN_TOKEN/AKUN_SITUS) melihat semuanya.
-     pimpinan baca saja. Tautan tagih (nomor WA) hanya untuk moderator ke atas dan staf verifikator/pusdalops (sama dengan /admin/instansi).
+     pimpinan dan operator_cc baca saja (operator_cc tanpa jenis di TERTUTUP_OPERATOR). Tautan tagih (nomor WA) hanya untuk moderator ke atas dan staf verifikator/pusdalops (sama dengan /admin/instansi).
+   - Tautan kerja (butir.tautan) dikirim HANYA bila pemanggil boleh membuka halaman tujuannya (HALAMAN_STAF di src/admin_halaman.js; admin/moderator selalu boleh), selain itu null: tombol buntu (dilempar balik ke Meja Pantau) tidak pernah digambar.
+   - Butir api (JENIS_CC) membawa `cc` bagi pemanggil berhak BACA command center (hakCc, src/command_center.js): {alert: true, tugas, status, oleh_nama, sejak, aksi} bila tugasnya alert cc (karhutla, level 3, <= 7 hari), {alert: false, sebab: "level" | "umur" | "bencana"} bila bukan (sebab dari server, sebabBukanAlert: klien tidak menebak kalimat keterangannya).
+     Riwayat butir itu ikut memuat cc_jejak tugasnya (hanya nama pelaku, tidak pernah hash token moderator). Aksinya sendiri lewat POST /api/cc/aksi/:id, bukan rute Meja Pantau.
    - Tidak ada kiriman otomatis dan tidak ada cron untuk butir; cron hanya membuang baris penugasan lama (bersihkanPantau).
    ponytail: butir dihitung ulang tiap GET dan tiap aksi (empat SELECT berbatas); bila lambat, cache tepi 30 detik per peran. Penugasan baca-lalu-tulis (dua koordinator serentak: yang terakhir menang, kedua-duanya tercatat di jejak).
    ponytail: "api di konsesi" = antrean panggilan Posko (cron sudah mencocokkan titik FIRMS dengan konsesi); tugas_api tidak dicocokkan poligon konsesi sendiri (poligon 2,5 MB per provinsi, di luar anggaran CPU baca). */
@@ -18,7 +21,8 @@ import {butirInventarisLama, butirP3k} from "./inventaris.js";
 import {butirKorban} from "./korban.js";
 import {butirOmcTanpaHasil} from "./omc.js";
 import {butirLaporanKarhutla} from "./laporan_karhutla.js";
-import {CSP_ADMIN, halamanBnpb} from "./admin_halaman.js";
+import {CSP_ADMIN, halamanBnpb, bolehStaf} from "./admin_halaman.js";
+import {hakCc, alertUntukPantau, sebabBukanAlert, jejakUntukPantau} from "./command_center.js";
 import {kerangka} from "./statistik.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, MAKS_BACA = 5000, BATAS_RESPONS = 2 * JAM, TENGGAT_AKUN = 24 * JAM, TENGGAT_USULAN = 48 * JAM, UMUR_PANGGILAN = 14 * HARI, RETENSI = 120 * HARI;
@@ -52,7 +56,10 @@ export const JENIS = {
   sippa_mingguan: {label: "Laporan mingguan SIPPA belum dibuat", peran: ["pusdalops"], tautan: "/pipa/laporan"},   // SP-045, ADR-11: terhitung dari sippa_kit dan sippa_laporan, tanpa tabel dan cron baru   // src/sippa.js: sippa_alarm terbuka (DT §6.3.1); tanpa push baru
 };
 const LUAS = ["koordalops", "pimpinan"];
-const tolakTulis = () => gagal(403, "peran pimpinan hanya membaca; penugasan dan perubahan status tidak diizinkan");
+/* operator_cc (command center, 1 Nov 2026) membaca semua jenis KECUALI yang memuat nama/posisi orang regu atau berkas akun: keselamatan regu (darurat, regu_sunyi, angin_ke_regu, regu_rotasi: nama regu + posisi),
+   akun_menunggu (dokumen akun instansi), dan SOS/gelar selesai SIPPA (nama regu + koordinat). Detektor lain sudah diperiksa: judulnya hanya wilayah, PT, gudang, hitungan, atau koordinat gugus satelit. */
+export const TERTUTUP_OPERATOR = ["darurat", "regu_sunyi", "angin_ke_regu", "regu_rotasi", "akun_menunggu", "sippa_sos", "sippa_selesai"];
+const tolakTulis = () => gagal(403, "peran pimpinan hanya membaca; penugasan dan perubahan status tidak diizinkan (juga untuk operator command center)");
 
 /* ================================================================ pelaku */
 /* admin (ADMIN_TOKEN/AKUN_SITUS/sesi admin) ATAU sesi staf aktif; selain itu null */
@@ -68,10 +75,16 @@ const tolakAktor = async (env, req) => {
   const t = await stafTertahan(env, req);   // sandi awal belum diganti: layar langsung menawarkan sandi baru
   return json({galat: "belum masuk sebagai staf atau admin; masuk lagi", ...(t ? {wajib_ganti: t} : {})}, 401);
 };
-const jenisBoleh = a => Object.keys(JENIS).filter(j => a.admin || a.peran.some(p => LUAS.includes(p) || JENIS[j].peran.includes(p)));
+const jenisBoleh = a => Object.keys(JENIS).filter(j => a.admin || a.peran.some(p => LUAS.includes(p) || JENIS[j].peran.includes(p) || (p === "operator_cc" && !TERTUTUP_OPERATOR.includes(j))));
 const koordinator = a => a.admin || a.peran.includes("koordalops");
-const bisaTulis = a => a.admin || a.peran.some(p => p !== "pimpinan");
+const bisaTulis = a => a.admin || a.peran.some(p => p !== "pimpinan" && p !== "operator_cc");   // pimpinan dan operator_cc baca saja
 const bolehTagih = a => a.admin ? a.mod : a.peran.some(p => P_VALIDASI.includes(p));   // admin: seperti /admin/instansi (modOK; akun gerbang situs tidak)
+/* tautan kerja -> kunci HALAMAN_STAF: /admin/<k> -> k, /pipa/* -> pipa (SIPPA). Di luar itu null = tidak dikenal, jadi tidak dibuka bagi staf (uji menjaga: semua JENIS dikenal dan perannya sendiri berhak) */
+const halamanTautan = t => { const p = String(t ?? "").split(/[?#]/)[0]; return /^\/pipa(\/|$)/.test(p) ? "pipa" : /^\/admin\/([\w-]+)$/.exec(p)?.[1] ?? null; };
+export const bolehBuka = (a, tautan) => !!tautan && (a.admin || bolehStaf(halamanTautan(tautan), a.peran));
+/* butir api yang tugasnya bisa jadi alert command center, dan id tugasnya (id butir = jenis:tugas[:keadaan], lihat tugasApi dan butirApiMunculLagi) */
+export const JENIS_CC = ["api_konfirmasi", "api_kabar", "api_muncul_lagi"];
+const tugasDari = b => b.id.split(":")[1];
 
 /* ================================================================ pendeteksi: tiap fungsi -> [butir mentah]. Mentah = {id, jenis, judul, rincian, provs, kab, dibuat, tenggat, prioritas, dummy, tugas?} */
 /* durasi dari ./instansi.js (jam): sama dengan layar, "6 jam 3 menit", bukan desimal jam */
@@ -220,7 +233,7 @@ async function butirUntuk(env, kini, a, asal) {
   const tagih = bolehTagih(a) ? await tautanTagih(env, mentah.filter(b => b.tugas).map(b => b.tugas), kini, asal) : new Map();
   const butir = mentah.sort(urut).map(({tugas: t, provs, ...b}) => {
     const p = tugas.get(b.id), prov = provs[0] ?? null;
-    return {...b, label: JENIS[b.jenis].label, tautan: b.tautan ?? JENIS[b.jenis].tautan, prov, provs, prov_nama: prov ? PROV[prov]?.[1] ?? prov : "Nasional", umur: kini - b.dibuat, terlambat: b.tenggat != null && kini > b.tenggat,
+    return {...b, label: JENIS[b.jenis].label, tautan: bolehBuka(a, b.tautan ?? JENIS[b.jenis].tautan) ? b.tautan ?? JENIS[b.jenis].tautan : null, prov, provs, prov_nama: prov ? PROV[prov]?.[1] ?? prov : "Nasional", umur: kini - b.dibuat, terlambat: b.tenggat != null && kini > b.tenggat,
       status: p?.status ?? "baru", ditugaskan_ke: p?.ditugaskan_ke ? {id: p.ditugaskan_ke, nama: nama.get(p.ditugaskan_ke) ?? "staf"} : null, catatan: p?.catatan ?? null, alasan: p?.alasan ?? null, diubah: p?.diubah ?? null,
       tagih: t ? tagih.get(t.id) ?? [] : undefined};
   });
@@ -230,7 +243,17 @@ async function butirUntuk(env, kini, a, asal) {
 /* ================================================================ rute baca */
 async function baca(env, req, url, kini) {
   const a = await aktor(env, req); if (!a) return tolakAktor(env, req);
-  const {butir} = await butirUntuk(env, kini, a, url.origin), aktif = butir.filter(b => b.status === "baru" || b.status === "dikerjakan"), saya = a.staf?.id;
+  const {butir, nama} = await butirUntuk(env, kini, a, url.origin), aktif = butir.filter(b => b.status === "baru" || b.status === "dikerjakan"), saya = a.staf?.id;
+  /* tindak lanjut command center pada kartu api: satu kueri untuk semua tugas, hanya bagi pemanggil berhak baca cc; tabel cc belum ada = kartu tanpa blok cc */
+  const hak = hakCc(a.peran, a.mod), api = hak.baca ? butir.filter(b => JENIS_CC.includes(b.jenis)) : [];
+  if (api.length) {
+    const peta = await alertUntukPantau(env, {wil: a.wilayah, dummy: a.dummy, tulis: hak.tulis}, kini, [...new Set(api.map(tugasDari))], nama);
+    if (peta) {
+      /* sebab bukan alert (level | umur | bencana) dari server, supaya klien tidak menebak: bencana dari detektor, level/umur dari tugas_api (satu kueri, hanya untuk karhutla yang bukan alert) */
+      const bukan = [...new Set(api.filter(b => !peta.has(tugasDari(b)) && !b.bencana).map(tugasDari))], sebab = await sebabBukanAlert(env, {wil: a.wilayah, dummy: a.dummy}, kini, bukan);
+      for (const b of api) { const t = tugasDari(b), s = b.bencana ? "bencana" : sebab.get(t); b.cc = peta.has(t) ? {alert: true, tugas: t, ...peta.get(t)} : {alert: false, ...(s && {sebab: s})}; }
+    }
+  }
   const per_jenis = Object.fromEntries(jenisBoleh(a).map(j => [j, aktif.filter(b => b.jenis === j).length]));
   return json({kini, saya: {id: saya ?? null, nama: a.staf?.nama ?? "Admin", peran: a.peran, wilayah: a.wilayah, admin: a.admin, super: a.super, koordinator: koordinator(a), baca_saja: !bisaTulis(a), dummy: a.dummy},
     jenis: Object.fromEntries(jenisBoleh(a).map(j => [j, JENIS[j].label])), peran: PERAN,
@@ -284,13 +307,20 @@ async function ubahButir(env, req, url, kini) {
 }
 async function jejakButir(env, req, url) {
   const a = await aktor(env, req); if (!a) return tolakAktor(env, req);
-  const id = url.searchParams.get("id") || "";
+  const id = url.searchParams.get("id") || "", kini = Date.now();
   if (id.length < 5 || id.length > 120) return gagal(400, "id butir wajib");
-  const {butir} = await butirUntuk(env, Date.now(), a, url.origin);   // hanya butir yang terlihat oleh pelaku
-  if (!butir.some(b => b.id === id)) return gagal(404, "butir tidak ada atau di luar peran dan wilayah Anda");
-  const nama = new Map((await env.DB.prepare("SELECT id, nama FROM staf").all()).results.map(r => [r.id, r.nama]));
-  return json({jejak: (await env.DB.prepare("SELECT waktu, oleh, aksi, ke, catatan FROM pantau_jejak WHERE obyek = ? ORDER BY id DESC LIMIT 100").bind("butir:" + id).all()).results
-    .map(r => ({...r, oleh_nama: r.oleh.startsWith("staf:") ? nama.get(r.oleh.slice(5)) ?? "staf" : "Admin", ke_nama: r.ke ? nama.get(r.ke) ?? "staf" : null}))});
+  const {butir, nama} = await butirUntuk(env, kini, a, url.origin), x = butir.find(b => b.id === id);   // hanya butir yang terlihat oleh pelaku
+  if (!x) return gagal(404, "butir tidak ada atau di luar peran dan wilayah Anda");
+  /* `oleh` mentah (untuk moderator: hash token) tidak dikirim; layar hanya memakai nama */
+  let jejak = (await env.DB.prepare("SELECT waktu, oleh, aksi, ke, catatan FROM pantau_jejak WHERE obyek = ? ORDER BY id DESC LIMIT 100").bind("butir:" + id).all()).results
+    .map(({oleh, ...r}) => ({...r, oleh_nama: oleh.startsWith("staf:") ? nama.get(oleh.slice(5)) ?? "staf" : "Admin", ke_nama: r.ke ? nama.get(r.ke) ?? "staf" : null}));
+  /* kartu api yang tugasnya alert cc: log tindak lanjut cc digabung urut waktu (terbaru dulu); hanya bagi pemanggil berhak baca cc, wilayah dan dummy menurut aturan cc */
+  const hak = hakCc(a.peran, a.mod);
+  if (hak.baca && JENIS_CC.includes(x.jenis)) {
+    const cc = await jejakUntukPantau(env, {wil: a.wilayah, dummy: a.dummy, tulis: hak.tulis}, kini, tugasDari(x), nama);
+    jejak = [...jejak, ...cc.map(j => ({waktu: j.waktu, aksi: "tindak lanjut", ke: null, catatan: j.catatan, oleh_nama: j.oleh_nama, ke_nama: null, cc: {dari: j.dari, ke: j.ke}}))].sort((p, q) => q.waktu - p.waktu);
+  }
+  return json({jejak});
 }
 
 /* ================================================================ dummy (DUMMY.md): satu halaman = seluruh rantai hulu ke hilir.
@@ -351,7 +381,7 @@ export async function bersihkanPantau(env, kini = Date.now()) {
 }
 
 /* ================================================================ halaman /admin/pantau: kerangka tanpa data (data dari /api/pantau yang dijaga sesi); masuk staf ada di halamannya sendiri */
-const halaman = ctx => new Response(halamanBnpb("pantau", ctx), {headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-frame-options": "DENY", "x-content-type-options": "nosniff",
+const halaman = ctx => new Response(halamanBnpb("pantau", ctx), {headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store", "x-frame-options": "SAMEORIGIN", "x-content-type-options": "nosniff",
   "referrer-policy": "no-referrer", "x-robots-tag": "noindex, nofollow", "content-security-policy": CSP_ADMIN}});
 export const RUTE_PANTAU = Object.fromEntries(Object.entries({
   "GET /admin/pantau": async (env, req, url, kini) => halaman(await kerangka(env, req, kini)),

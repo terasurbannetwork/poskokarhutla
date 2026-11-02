@@ -1,0 +1,20 @@
+/* Ruang Laporan (/admin/laporan): rel kiri gaya SIPPA (.sp-rel) + bingkai penuh tinggi. Token dari admin.css. Tanpa gaya inline (CSP admin). */
+body.rl-badan{display:flex;flex-direction:column;height:100vh;height:100dvh;overflow:hidden}
+.rl-tubuh{flex:1;min-height:0;display:grid;grid-template-columns:232px minmax(0,1fr);gap:12px;padding:12px}
+.rl-rel{align-self:start;max-height:100%;overflow-y:auto;display:grid;gap:4px;padding:8px 8px 12px;background:var(--card);border:1px solid var(--line,rgb(11 37 69 / .1));border-radius:16px}
+.rl-rel ul{list-style:none;margin:0;padding:0;display:grid;gap:2px}
+.rl-kel{margin:12px 8px 2px}
+.rl-rel a{display:flex;align-items:center;gap:8px;min-height:36px;padding:0 12px;border-radius:12px;color:var(--ink2);font-size:13px;font-weight:600;text-decoration:none;transition:background .15s,color .15s}
+.rl-ikon{width:18px;height:18px;flex:none;opacity:.8}
+.rl-rel a[aria-current="page"]{background:color-mix(in srgb,var(--navy2) 10%,var(--card));color:var(--navy);font-weight:800}
+.rl-rel a[aria-current="page"] .rl-ikon{opacity:1}
+@media (hover:hover) and (pointer:fine){.rl-rel a:not([aria-current]):hover{background:var(--surface)}}
+.rl-bingkai{width:100%;height:100%;min-height:0;border:0;border-radius:16px;background:var(--card);box-shadow:var(--bayang)}
+.rl-bingkai.rl-muat{visibility:hidden}
+@media (max-width:767px){
+  .rl-tubuh{grid-template-columns:minmax(0,1fr);grid-template-rows:auto minmax(0,1fr);padding:8px;gap:8px}
+  .rl-rel{display:flex;align-items:center;overflow-x:auto;overflow-y:hidden;padding:6px;gap:2px;scrollbar-width:none}
+  .rl-rel ul{display:flex;gap:2px}
+  .rl-kel{display:none}
+  .rl-rel a{white-space:nowrap;min-height:34px}
+}

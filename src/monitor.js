@@ -1,6 +1,6 @@
 /* Halaman staf /monitor: per tugas api, apakah peringatan sudah DIBACA Dit. Dalops dan BPBD, groundcheck (tugas_isian 'konfirmasi') dan tindak lanjut ('tindakan') berfoto.
    Skema baca: migrations/0062_monitor_baca.sql; isian dan foto dibaca dari tabel instansi yang sudah ada (tidak disalin).
-   Pelaku: admin/moderator dan staf berperan dalops (pusdalops, koordalops, pimpinan, verifikator) -> pihak 'dalops'; akun instansi aktif pemprov/pemkab/pemkot -> pihak 'bpbd'. */
+   Pelaku: admin/moderator dan staf berperan dalops (pusdalops, koordalops, pimpinan, verifikator, operator_cc) -> pihak 'dalops' (operator_cc ikut menandai baca, command center 1 Nov 2026); akun instansi aktif pemprov/pemkab/pemkot -> pihak 'bpbd'. */
 import {json, gagal, bacaBody, cacheTepi, normalWA} from "./worker.js";
 import {pemirsaSesi} from "./pemirsa.js";
 import {modOK} from "./posko.js";
@@ -9,9 +9,9 @@ import {akunAktif, lingkupSql, dalamLingkup, KECUALI_LAIN, tanpaBencana, tanpaTa
 import {laju} from "./bnpb.js";
 
 const JAM = 36e5, RE_ID = /^[0-9A-Za-z]{16}$/;
-const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan", "verifikator"], JENIS_BPBD = ["pemprov", "pemkab", "pemkot"];
+const PERAN_DALOPS = ["pusdalops", "koordalops", "pimpinan", "verifikator", "operator_cc"], JENIS_BPBD = ["pemprov", "pemkab", "pemkot"];
 const tabelBaca = e => /no such table: (main\.)?monitor_baca/i.test(String(e?.message || e));
-const FILTER_BENCANA = {karhutla: KECUALI_LAIN, banjir: "AND EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana = 'banjir')"};
+export const FILTER_BENCANA = {karhutla: KECUALI_LAIN, banjir: "AND EXISTS (SELECT 1 FROM tugas_bencana bb WHERE bb.tugas_id = t.id AND bb.bencana = 'banjir')"};
 const DARI_IDS = "IN (SELECT value FROM json_each(?))";   // json_each, bukan ?,?,?: batas 100 parameter D1
 
 /* {pihak, pembaca, nama, unit, dummy, sql: [klausa, bind], boleh(t)} atau Response galat. Tanpa sesi apa pun: 401 dari akunAktif. */
@@ -22,7 +22,9 @@ async function pelaku(env, req, kini) {
   if (s) {
     if (!PERAN_DALOPS.some(p => s.peran.includes(p))) return gagal(403, "peran staf ini tidak membuka halaman monitor");
     const luas = s.wilayah.length === 0;   // wilayah kosong = nasional; sama dengan dalamWilayahStaf, tapi di SQL supaya LIMIT 300 jatuh pada tugas yang boleh dilihat
-    return {pihak: "dalops", pembaca: "staf:" + s.id, nama: s.nama, unit: s.unit, dummy: !!s.dummy,
+    /* operator_cc saja (tanpa peran dalops lain): nama PIC dan koordinat foto lapangan tertutup, sama dengan aturan command center (nama/posisi orang regu tidak terlihat) */
+    const tutup = !PERAN_DALOPS.some(p => p !== "operator_cc" && s.peran.includes(p));
+    return {pihak: "dalops", pembaca: "staf:" + s.id, nama: s.nama, unit: s.unit, dummy: !!s.dummy, tutup,
       sql: [`${luas ? "1" : "t.prov IN (SELECT value FROM json_each(?))"} AND ${s.dummy ? "1" : "t.dummy = 0"}`, luas ? [] : [JSON.stringify(s.wilayah)]],
       boleh: t => (luas || s.wilayah.includes(t.prov)) && (s.dummy || !t.dummy)};
   }
@@ -38,7 +40,7 @@ async function pelaku(env, req, kini) {
   const [w, p] = lingkupSql(a);
   return {pihak: "bpbd", pembaca: "akun:" + a.id, nama: a.nama || a.username, unit: a.unit || a.wilayah, dummy: !!a.dummy, sql: [w, p], boleh: t => dalamLingkup(a, t)};
 }
-const bentukMedia = (m, t) => ({id: m.id, jenis: m.jenis, waktu_ambil: m.waktu_ambil, sumber_waktu: m.sumber_waktu, lat: m.lat, lon: m.lon, kec: t.kec, kab: t.kab, prov: t.prov,
+const bentukMedia = (m, t, tutup) => ({id: m.id, jenis: m.jenis, waktu_ambil: m.waktu_ambil, sumber_waktu: m.sumber_waktu, lat: tutup ? null : m.lat, lon: tutup ? null : m.lon, kec: t.kec, kab: t.kab, prov: t.prov,
   thumb: `/api/monitor/thumb/${m.id}`, url: `/api/monitor/media/${m.id}`});
 
 async function daftar(env, req, url, kini) {
@@ -60,10 +62,10 @@ async function daftar(env, req, url, kini) {
       FROM instansi_media WHERE tugas_id ${DARI_IDS} AND isian_id IS NOT NULL ORDER BY waktu_ambil`).bind(ids).all()).results) per(M, m.isian_id, m);
   }
   const tugas = T.map(t => {
-    const isian = I.get(t.id) || [], gc = isian.findLast(i => i.langkah === "konfirmasi"), tn = isian.filter(i => i.langkah === "tindakan"), tk = tn.at(-1), med = i => (M.get(i.id) || []).map(m => bentukMedia(m, t));
+    const isian = I.get(t.id) || [], gc = isian.findLast(i => i.langkah === "konfirmasi"), tn = isian.filter(i => i.langkah === "tindakan"), tk = tn.at(-1), med = i => (M.get(i.id) || []).map(m => bentukMedia(m, t, p.tutup));
     return {id: t.id, prov: t.prov, prov_nama: PROV[t.prov]?.[1] ?? t.prov, kab: t.kab, kec: t.kec, lat: t.lat, lon: t.lon, level: t.level, status: t.status, dibuat: t.dibuat, terakhir_terdeteksi: t.terakhir_terdeteksi, padam_verif: t.padam_verif,
       baca: {dalops: B.get(t.id + "|dalops") || [], bpbd: B.get(t.id + "|bpbd") || []},
-      groundcheck: gc ? {waktu: gc.dibuat, hasil: gc.hasil, oleh: gc.oleh, pic_nama: gc.pic_nama, jarak_km: gc.jarak_km, gps_curiga: gc.gps_curiga, media: med(gc)} : null,
+      groundcheck: gc ? {waktu: gc.dibuat, hasil: gc.hasil, oleh: gc.oleh, pic_nama: p.tutup ? null : gc.pic_nama, jarak_km: gc.jarak_km, gps_curiga: gc.gps_curiga, media: med(gc)} : null,
       tindak: tk ? {waktu: tk.dibuat, tindakan: tk.tindakan, status_api: tk.status_api, kendala: jsonAman(tk.kendala) ?? [], oleh: tk.oleh, media: med(tk)} : null, n_tindakan: tn.length};
   });
   return json({kini, bencana, pihak: p.pihak, saya: {nama: p.nama, unit: p.unit}, tugas});

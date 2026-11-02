@@ -29,6 +29,9 @@ import hvc_stat as S
 import terpapar as T
 
 TAHUN_MULAI, TRAIN_AKHIR = 2015, 2021
+CATATAN_RUMUS = ("Rumus kita H x V / C (Perka BNPB 2/2012) berbeda dari rumus Buku RBI R = (H x V x (1-C))^(1/3) (Buku RBI hal. 53) "
+                 "dan dari IRB resmi BNPB (deret LAKIP 2025, baseline 147,95). Skor ini peringkat relatif antarkabupaten, "
+                 "bukan nilai IRB resmi, dan tidak boleh disebut IRB.")
 C_MIN = 0.05
 JENIS_H = ["banjir", "longsor", "kekeringan", "abrasi", "gempa", "karhutla", "cuaca"]
 PETA_JENIS = {
@@ -291,6 +294,7 @@ def jalan():
     D.simpan_plafon("risiko_hvc.json", {
         "sumber": "InaRISK BNPB (H), kerentanan.json (V), ikd.json (C), DIBI BNPB (label)", "atribusi": "BNPB (InaRISK, DIBI); Dukcapil; Meta RWI (CC BY-NC 4.0)",
         "rumus": "R_j = H01_j x Phi(V_z) / max(C, 0,05); R_kab = Sum_j R_j (Perka BNPB 2/2012: R = H x V / C)",
+        "catatan_rumus": CATATAN_RUMUS,
         "label": f"INDEKS peringkat, BUKAN prediksi korban; yang diuji adalah model jumlah korban jiwa (lihat uji), vonis {uji['vonis']}",
         "fiskal_djpk": {"status": "OK" if anggaran else "MENUNGGU DATA", "kab_dengan_data": len(anggaran), "catatan": "djpk.kemenkeu.go.id tidak terjangkau dari lingkungan kerja (TLS timeout); C hanya kapasitas InaRISK"},
         "uji": uji, "uji_peringkat_kab": sp, "baris_dibi": {"dipakai": len(rows) - tanpa_fit, "tanpa_fitur": tanpa_fit, "jenis_dibuang": dibuang},

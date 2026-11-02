@@ -48,7 +48,7 @@ test('cek: skema registry sah (python3 scripts/umum/bencana.py cek hijau)', () =
 
 // Tahap buka bertahap (keputusan pemilik 16 Okt 2026): halaman jadi = 'uji' (menu: Segera),
 // terverifikasi = 'aktif'. Tabel ini dibalik SENGAJA saat satu modul naik tahap; jangan dilonggarkan.
-const TAHAP = { karhutla: 'aktif', banjir: 'aktif', gempa: 'aktif', cuaca: 'aktif', udara: 'aktif', gunungapi: 'aktif', kekeringan: 'aktif' }
+const TAHAP = { karhutla: 'aktif', banjir: 'aktif', gempa: 'aktif', cuaca: 'aktif', udara: 'aktif', gunungapi: 'aktif', kekeringan: 'aktif', pesisir: 'aktif' }
 
 test('registry mengikuti tabel tahap per bencana', () => {
   const o = Object.fromEntries(reg().bencana.map((b) => [b.id, b]))
@@ -80,9 +80,10 @@ test('gerbang bisa merah: salinan sementara yang dirusak ditolak', () => {
   assert.ok(idGanda(a).length, 'idGanda tidak melihat id ganda')
   assert.ok(skema(a).some((s) => s.includes('ganda')), 'skema meloloskan id ganda')
   const b = reg()
-  b.bencana[2].status = 'beta'
-  b.bencana[2].rute = '/gempa'
-  b.bencana[3].kejadian.awalan = 'G'
+  const gp = b.bencana.find((x) => x.id === 'gempa')
+  gp.status = 'beta'
+  gp.rute = '/gempa'
+  b.bencana.find((x) => x.id === 'cuaca').kejadian.awalan = 'G' // G = awalan gempa
   const g = skema(b).join('\n')
   for (const kata of ['status', 'diawali dan diakhiri', 'awalan']) assert.ok(g.includes(kata), `skema meloloskan: ${kata}`)
 

@@ -2,7 +2,7 @@
 
 koordalops(teks) -> {'mulai': 'YYYY-MM-DD HH.MM', 'sampai': ..., 'laporan': int, 'menonjol': int, 'kejadian': [...]}
     kejadian: {'jenis', 'prov', 'lokasi', 'status', 'perhatian', 'angka': {...}, 'teks': {'dampak', 'status_darurat', 'kondisi'}}
-    jenis: karhutla | kekeringan | gempabumi | banjir | angin | cuaca (cuaca ekstrem) | lainnya (kebakaran TPA); status: belum | berjalan | selesai (aturan di status_dari()).
+    jenis: karhutla | kekeringan | gempabumi | banjir | longsor | angin | cuaca (cuaca ekstrem) | lainnya (kebakaran TPA); status: belum | berjalan | selesai (aturan di status_dari()).
     Pakai laporan 07.00 s.d. 07.00 (bukan laporan 19.00 yang hanya setengah hari).
 bmkg(teks) -> {'jam': 'Sabtu, 24 Oktober 2026 pukul 06.00 WIB', 'pm': [(kota, nilai, kategori)], 'hujan': [prov], 'angin': [prov], 'periode': '23 – 25 Oktober 2026'}
 Uji: python3 wa_harian.py --uji  (teks 24 Okt di contoh/ harus sama dengan isian ../harian-2026-10-24.json)"""
@@ -76,9 +76,10 @@ def _angka_kejadian(jenis, dampak, kondisi, status_darurat):
         rusak = [angka(m) for m in re.findall(r'(\d[\d.]*)\s*unit\s*rumah\s*R[BSR]\b', dampak)]
         a.update(kk=cari(r'([\d.]+)\s*KK'), kios=cari(r'(\d[\d.]*)\s*unit\s*kios'),
                  rumah=sum(rusak) if rusak else cari(r'(\d[\d.]*)\s*unit\s*rumah(?!\s*terdampak)'), rumah_dampak=cari(r'(\d[\d.]*)\s*unit\s*rumah\s*terdampak'))
-    elif jenis in ('gempabumi', 'banjir'):
+    elif jenis in ('gempabumi', 'banjir', 'longsor'):
         # 29 Okt Langkat: "± 691 KK berpotensi terdampak" bukan KK terdampak; disimpan terpisah sebagai potensi_kk
-        a.update(meninggal=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?jiwa\s*MD'), kk=cari(r'([\d.]+)\s*KK(?!\s*berpotensi)'), potensi_kk=cari(r'([\d.]+)\s*KK\s*berpotensi'), mengungsi=cari(r'([\d.]+)\s*jiwa\s*mengungsi'),
+        # 1 Nov Langkat: "694 jiwa mengungsi (sudah kembali ke rumah masing-masing)" bukan pengungsi
+        a.update(meninggal=cari(r'(\d[\d.]*)\s*(?:\([^)]*\)\s*)?jiwa\s*MD'), kk=cari(r'([\d.]+)\s*KK(?!\s*berpotensi)'), potensi_kk=cari(r'([\d.]+)\s*KK\s*berpotensi'), mengungsi=cari(r'([\d.]+)\s*jiwa\s*mengungsi(?!\s*\(?sudah kembali)'),
                  huntara=cari(r'(\d[\d.]*)\s*unit\s*huntara'))
         # rumah rusak = RB + RS + RR (Solok 26 Okt: 19 + 9 + 33); tanpa rincian kerusakan, angka "rumah terdampak" (Tapanuli Tengah) dipisah
         rusak = [angka(m) for m in re.findall(r'(\d[\d.]*)\s*unit\s*rumah\s*R[BSR]\b', dampak)]

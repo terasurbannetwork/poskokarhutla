@@ -36,3 +36,18 @@
 @media (max-width:640px){.kj-baris{grid-template-columns:1fr}.kj-kontrol .bn-isian{min-width:0}}
 .kj-lebar .kj-svg{max-width:760px;margin:0 auto}
 .kj-lebar .kj-svg text{font-size:12px}
+
+/* kontribusi ke Renstra */
+.kj-st-ya{--pil:var(--c4)}.kj-st-sb{--pil:var(--c3)}.kj-st-no{--pil:#8a94a3}
+.kj-kontribusi{width:100%}
+.kj-kontribusi th{text-align:center}
+.kj-kontribusi th button{all:unset;cursor:pointer;font-weight:800;display:inline-flex;gap:4px;align-items:center}
+.kj-kontribusi th button:focus-visible{outline:2px solid var(--c5);outline-offset:2px}
+.kj-kontribusi th button i{font-style:normal;min-width:1ch}
+.kj-kontribusi td{vertical-align:top;font-size:13px}
+.kj-kontribusi td:nth-child(2){min-width:280px}.kj-kontribusi td:nth-child(5){min-width:300px}
+.kj-kontribusi td>div+div{margin-top:4px}
+.kj-hal{color:var(--ink2);font-weight:600}
+.kj-batas{margin-top:6px;color:var(--ink2);font-size:12.5px}
+.kj-isi{text-align:left;flex:1;min-width:0}
+@media (max-width:640px){.kj-kontribusi td:nth-child(2),.kj-kontribusi td:nth-child(5){min-width:0}}

@@ -28,6 +28,7 @@ const BERKAS = {
   udara: ['public/udara/app.js'],
   gunungapi: ['public/gunungapi/app.js'],
   kekeringan: ['public/kekeringan/app.js'],
+  pesisir: ['public/pesisir/pesisir.js'],
 }
 
 function halaman(b) {

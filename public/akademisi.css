@@ -88,6 +88,8 @@ body{padding-top:var(--top);overflow-x:hidden}
 .ak-chip button{justify-content:center}
 /* layar sempit: tetap dua baris, digeser ke samping */
 @media (max-width:1100px){.ak-chip{display:grid;grid-template-columns:none;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:max-content;overflow-x:auto;scrollbar-width:none;padding-bottom:2px}.ak-chip::-webkit-scrollbar{display:none}}
+/* kategori lembaga: dua baris saja di layar lebar, kolom sama lebar, label panjang dibungkus dua baris */
+@media (min-width:1101px){#akLC{grid-template-columns:none;grid-template-rows:repeat(2,auto);grid-auto-flow:column;grid-auto-columns:minmax(0,1fr)}#akLC button{white-space:normal;line-height:1.15;text-align:center;padding:4px 5px 4px 8px}}
 .ak-chip .ak-ikon{width:15px;height:15px}
 .ak-chip button{display:inline-flex;align-items:center;gap:5px;font:inherit;font-size:13px;font-weight:600;color:var(--ink);background:var(--card);border:1px solid var(--line);border-radius:999px;min-height:36px;padding:0 5px 0 9px;cursor:pointer;white-space:nowrap}
 .ak-chip button[data-r=""]{padding:0 14px}
@@ -2458,3 +2460,17 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 @media (max-width:700px){.ak-ptaisi>#akPtCari{top:62px;right:12px;width:calc(100vw - 24px)}}
 /* Fakta: isian berchip banyak (Bencana terkait, Afiliasi) memakai satu baris penuh, tidak menumpuk di kolom 210px */
 .ak-in-f:has(> div > :nth-child(4)){grid-column:1/-1}
+.ak-ks-uji{margin:4px 0 10px;font-size:12.5px;line-height:1.5;color:var(--ink2);text-align:justify}
+.ak-ks-uji .ak-mp{margin-right:4px;vertical-align:1px}
+/* rekan penulis di dialog pakar: nama sebagai tautan yang membuka profil pakar itu */
+.ak-rk-b{font:inherit;font-weight:700;color:var(--brand);background:none;border:0;padding:0;cursor:pointer;text-align:left}
+.ak-rk-b:hover{text-decoration:underline}
+/* donasi: rincian aksi di bawah baris pemberi */
+.ak-dn-rinci{margin:-2px 0 10px;padding:10px 14px;border:1px solid var(--line);border-top:0;border-radius:0 0 12px 12px;background:var(--surface)}
+.ak-dn-rinci .ak-lsumber li{margin-bottom:8px}
+.ak-dnprov tr.ak-dn-kurang td{background:color-mix(in srgb,#e8590c 10%,transparent)}
+.ak-dnprov tr.ak-dn-kurang td:first-child{box-shadow:inset 3px 0 0 #e8590c}
+/* temuan riset per pilar: empat kolom di layar lebar, satu kolom di ponsel */
+.ak-pilar-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
+.ak-pilar h4{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:13px;color:var(--w0)}
+.ak-pilar .ak-ikon{width:16px;height:16px}

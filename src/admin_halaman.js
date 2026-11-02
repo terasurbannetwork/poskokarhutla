@@ -13,24 +13,25 @@ const kepala = judul => `<!doctype html>
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap" rel="stylesheet">
-<link href="/admin/admin.css?v=7" rel="stylesheet">
+<link href="/admin/admin.css?v=8" rel="stylesheet">
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
-const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "kinerja", "pendataan"];
+const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
 /* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
 const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
 /* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),
    omc = PERAN_BACA (src/omc.js), posko = P_KONSESI. Dijaga tests/warga/staf_halaman.test.mjs. */
 /* semua peran staf (sama dengan Object.keys(PERAN) di src/staf.js; dijaga tests/warga/sla.test.mjs): hak baca Kinerja pemantauan = adminOK ATAU sesi staf dengan peran apa pun, dipakai halaman /admin/kinerja DAN GET /api/sla */
-export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan"];   // sengaja TANPA kemitraan: peran modul Kemitraan Kampus tidak membuka /admin/kinerja dan /api/sla
-export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, omc: ["tmc", "koordalops", "pimpinan"], posko: ["analis_konsesi"],
-  pipa: ["pusdalops", "koordalops", "pimpinan"]};   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
+export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan", "operator_cc"];   // sengaja TANPA kemitraan: peran modul Kemitraan Kampus tidak membuka /admin/kinerja dan /api/sla; operator_cc ikut (melihat semuanya, baca saja)
+export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops", "operator_cc"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, laporan: null, omc: ["tmc", "koordalops", "pimpinan", "operator_cc"], posko: ["analis_konsesi"],
+  pipa: ["pusdalops", "koordalops", "pimpinan"],   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
+  "command-center": ["operator_cc", "koordalops", "pimpinan"]};   // meja operator = pelaku() src/command_center.js (dijaga tests/warga/command_center.test.mjs); GET /admin/command-center hanya 303 ke /command-center
 /* halaman yang dibuka sekumpulan peran staf: [{k, ikon, label}] (layar /admin/akun menampilkannya sebagai "Akses") */
 export const aksesStaf = peran => Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, peran)).map(k => ({k, ikon: HAL[k][0], label: HAL[k][1]}));
-const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null || peran.some(p => HALAMAN_STAF[k].includes(p)));
+export const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null || peran.some(p => HALAMAN_STAF[k].includes(p)));
 const subNav = (aktif, ctx) => SUB.includes(aktif) && !ctx ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${SUB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
 const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep staf">Staf</span>
@@ -147,6 +148,29 @@ export const halamanOmc = ctx => halaman("omc", "Memuat sortie OMC…", `<link h
 <script src="/admin/bersama.js?v=4"></script>
 <script src="/admin/omc.js?v=2"></script>`, ctx);
 
+/* Ruang Laporan (/admin/laporan): sidebar kiri + halaman pantau yang sudah ada dalam iframe sesama asal (CSP_ADMIN: frame-ancestors 'self', default-src 'self' sudah mencakup frame-src).
+   Tanpa judul besar supaya bingkai memakai sisa tinggi layar. Perilaku (hash, sinkron aktif, kelas .sematan di dokumen bingkai) di public/admin/ruang_laporan.js. */
+const IK = d => `<svg class="rl-ikon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${d}</svg>`;
+export const RUANG_LAPORAN = [
+  {item: [["pantau", "Meja Pantau", "/admin/pantau", IK('<rect x="3" y="4" width="18" height="16" rx="2"/><path d="M3 9h18M8 14h3"/>')]]},
+  {kel: "Bahan laporan", item: [["karhutla", "Laporan Karhutla", "/admin/laporan-karhutla", IK('<path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z"/><path d="M14 3v5h5M9 13h6M9 17h4"/>')],
+    ["omc", "Sortie OMC", "/admin/omc", IK('<path d="M7 18a4 4 0 0 1-.5-7.97A5.5 5.5 0 0 1 17 8.5a4.5 4.5 0 0 1 0 9.5z"/><path d="M9 21l1-2M13 21l1-2"/>')],
+    ["logbook", "Logbook Pusdalops", "/bnpb/logbook", IK('<path d="M5 4h11a3 3 0 0 1 3 3v13H8a3 3 0 0 1-3-3z"/><path d="M5 17a3 3 0 0 1 3-3h11M9 8h6"/>')]]},
+  {kel: "Keluaran", item: [["pelaporan", "Laporan dan arsip", "/pelaporan", IK('<path d="M4 4h16v5H4zM5 9v11h14V9M10 13h4"/>')],
+    ["koordalops", "Laporan Koordalops", "/laporan-bnpb", IK('<path d="M12 3v12m0 0l-4-4m4 4l4-4M5 20h14"/>')]]},
+  {kel: "Pantauan", item: [["udara", "Kualitas udara", "/udara", IK('<path d="M3 9h11a3 3 0 1 0-3-3M3 15h15a3 3 0 1 1-3 3M3 12h7"/>')],
+    ["gunungapi", "Gunung api", "/gunungapi", IK('<path d="M3 20l6-10 3 4 2-3 7 9zM12 3v3M7 5l1.5 2M17 5l-1.5 2"/>')]]}];
+export const halamanRuangLaporan = ctx => `${kepala("Ruang Laporan · Centurisk97")}
+<body class="rl-badan" data-staf="${ctx ? "1" : "0"}"${ctx ? ` data-peran="${esc(ctx.peran.join(","))}"${ctx.nama ? ' data-masuk="1"' : ""}` : ""}>
+${atas("laporan", ctx)}
+<link href="/admin/ruang_laporan.css?v=1" rel="stylesheet">
+<div class="rl-tubuh">
+  <nav class="rl-rel" aria-label="Menu Ruang Laporan">${RUANG_LAPORAN.map((g, i) => `${g.kel ? `<h2 class="ad-ey rl-kel" id="rl-kel-${i}">${g.kel}</h2>` : ""}<ul${g.kel ? ` aria-labelledby="rl-kel-${i}"` : ""}>${g.item.map(([k, l, ke, ik]) => `<li><a href="#${k}" data-ke="${ke}">${ik}<span>${l}</span></a></li>`).join("")}</ul>`).join("")}</nav>
+  <iframe id="rlBingkai" class="rl-bingkai rl-muat" title="Isi Ruang Laporan" src="about:blank"></iframe>
+</div>
+<script src="/admin/ruang_laporan.js?v=1"></script>
+</body></html>`;
+
 /* Akun (/admin/akun): buat akun staf, daftar semua akun dan halaman yang dibukanya. Data dari /api/staf/admin/daftar (Super Admin). */
 export const halamanAkun = () => halaman("akun", "Memuat daftar akun…", `<link href="/admin/akun.css?v=3" rel="stylesheet">
 <script src="/instansi_wilayah.js?v=1"></script>
@@ -170,9 +194,9 @@ export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<li
 ${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
 ` : ""}<script src="/admin/bersama.js?v=4"></script>
-<script src="/admin/${k}.js?v=${k === "pantau" ? 3 : 1}"></script>`, ctx);
+<script src="/admin/${k}.js?v=${k === "pantau" ? 4 : 1}"></script>`, ctx);
 
-export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'self'";
 
 /* SIPPA (/pipa): cangkang staf dibangkitkan worker dari string, bukan berkas .html di public/ (ADR-12): .html di public/ bisa dibuka langsung dan di host publik tanpa CSP halaman.
    Isi layar di public/pipa/*.js (kode dan teks, tanpa data). CSP_SIPPA = CSP_ADMIN dengan tiga penggantian: peta openfreemap, rute OSRM untuk /pipa/kunjungan (keputusan 64, izin pemilik 30 Okt 2026), dan worker blob (DESAIN-TEKNIS SIPPA §4.2). */
@@ -219,6 +243,15 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <noscript><p>Form lapangan butuh JavaScript aktif.</p></noscript>
 <script type="module" src="/pipa/lapangan.js?v=5"></script>
 </body></html>`;
+
+/* Command center karhutla (src/command_center.js): MEJA OPERATOR /command-center (kerangka admin/staf bersama; ctx undefined = moderator). Layar dinding dibuang 2 Nov 2026.
+   Isi layar di public/admin/command_*.js (kode dan teks, tanpa data; datanya dari /api/cc/*). Meja memakai CSP_ADMIN apa adanya, tanpa skrip dan gaya sebaris, SENYAP (tanpa suara). */
+export const halamanCc = ctx => halaman("command-center", "Memuat command center…", `<link href="/admin/command_bersama.css?v=1" rel="stylesheet">
+<link href="/admin/command_center.css?v=1" rel="stylesheet">
+<script src="/inti/format.js"></script>
+<script src="/admin/bersama.js?v=4"></script>
+<script src="/admin/command_bersama.js?v=1"></script>
+<script src="/admin/command_center.js?v=1"></script>`, ctx);
 
 /* halaman publik /statistik (tanpa login). Data dari /api/publik. */
 export const halamanPublik = () => new Response(`<!doctype html>

@@ -2,6 +2,15 @@
    Tanpa DOM, tanpa fetch: uji di tests/agen/status-pedoman.test.mjs. */
 export const SUMBER_PEDOMAN = "Pedoman Penetapan Status Keadaan Darurat Bencana BNPB 2016";
 export const TEKS_LEWAT = "Lewat masa pedoman (maks 14 hari kab, 1 bulan prov), perlu SK perpanjangan";
+export const TEKS_MULAI_PERKIRAAN = "mulai diperkirakan dari tanggal penetapan";
+export const TEKS_LEWAT_PERKIRAAN = "Perkiraan lewat masa pedoman (tanggal mulai SK tidak tertulis, dihitung dari tanggal penetapan)";
+/* lewat batas dari mulai yang diperkirakan = perkiraan, bukan fakta */
+export const teksLewat = k => k.mulai_perkiraan ? TEKS_LEWAT_PERKIRAAN : TEKS_LEWAT;
+export const labelLewat = k => k.mulai_perkiraan ? "Perkiraan lewat masa pedoman" : "Lewat masa pedoman";
+export const hariTeksSK = (k, fmt) => k.hari == null ? "" : `${k.mulai_perkiraan ? "perkiraan berjalan" : "berjalan"} ${fmt(k.hari)} hari`;
+/* sumber: nama dari berkas, ditambah arsip SK Pusdalops bila ada baris dari Drive */
+export const sumberSK = D => { const s = D?.sumber || "SK status darurat BNPB";
+  return Array.isArray(D?.sk) && D.sk.some(k => k.sumber_baris === "drive_pusdalops") && !/pusdalops/i.test(s) ? `${s} dan arsip SK Pusdalops BNPB` : s; };
 export const berlaku = (k, h) => !!k.mulai && k.mulai <= h && (!k.berakhir || k.berakhir >= h);
 /* "11.12" atau "1112" -> "1112" */
 export const kode4 = s => String(s ?? "").replace(/\D/g, "");

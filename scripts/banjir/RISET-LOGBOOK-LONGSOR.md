@@ -56,3 +56,27 @@ Tingkat Siaga/Awas tidak menangkap kejadian (POD <= 0,2). Tidak ada yang dilolos
 
 Hujan per jam dari gauge/radar (bukan ERA5) untuk waktu pemicu; peta kerentanan lereng/tanah per kecamatan yang membedakan di dalam kelas "tinggi";
 logbook beberapa tahun supaya tahun latih dan uji terpisah; catatan hari tanpa kejadian (negatif sungguhan) dari BPBD; koordinat kejadian, bukan nama kecamatan.
+
+## Arsip Pusdalops 2016-2025 (`uji_logbook_longsor.py --arsip`, diperluas 1 Nov 2026)
+
+**Headline = gabungan luar-sampel 2022-2025** (41 kab, level Waspada, 2.001 hari kejadian). Aturan BERLAKU dipilih di 2016-2021, tetapi diterima lewat uji 2022-2025 pada label DIBI (`uji_balik.py` `LATIH, UJI`); label logbook belum dipakai menyetel apa pun. Positif = `tgl_kejadian` -1..+1. AUC memakai skor h3 x bahaya longsor. Pembanding: persisten, klimatologi (bulan dengan laju label 2016-2021 di atas rata-rata kab), acak.
+
+| Tahun | AUC h3 x bahaya (CI95) | POD | FAR | ETS model | ETS persisten | ETS klimatologi |
+| --- | --- | --- | --- | --- | --- | --- |
+| 2022 | 0,661 (0,519-0,748) | 0,54 | 0,952 | 0,013 | 0,631 | 0,021 |
+| 2023 | 0,681 (0,495-0,756) | 0,42 | 0,962 | 0,014 | 0,589 | 0,024 |
+| 2024 | 0,643 (0,484-0,758) | 0,61 | 0,931 | 0,030 | 0,583 | 0,038 |
+| 2025 | 0,646 (0,524-0,744) | 0,59 | 0,926 | 0,026 | 0,594 | 0,035 |
+| **Gabungan 2022-2025** | **0,651 (0,587-0,705)** | **0,56** | **0,940** | **0,023** | **0,598** | **0,030** |
+
+Pembanding gabungan: klimatologi POD 0,60 / FAR 0,933; persisten POD 0,76 / FAR 0,245; acak POD 0,34. Skrip tidak memuat vonis lulus/tidak untuk longsor.
+
+**AUC skor klimatologi kontinu** (laju label bulan x kab 2016-2021, tanpa hujan): **0,807** (CI 0,762-0,839) pada luar-sampel 2022-2025, per tahun 0,778 / 0,782 / 0,833 / 0,810. Selisih AUC berpasangan h3 x bahaya dikurangi klimatologi **-0,155** (CI -0,212 s.d. -0,083): model hujan LEBIH BURUK daripada musiman kab sederhana. Hujan 3 hari saja 0,661 lebih tinggi daripada h3 x bahaya 0,651 (selisih -0,010, CI -0,067 s.d. 0,028: setara), jadi pengali bahaya longsor tidak menambah daya pada label logbook; bahaya saja 0,573. Catatan: skor klimatologi sebagian menangkap perbedaan laju antar-kabupaten (AUC dipool seluruh kab-hari), yang juga tidak ditangkap rapi oleh h3.
+
+Selisih ETS Waspada dengan CI berpasangan, gabungan 2022-2025: model - persisten -0,575 (-0,602 s.d. -0,543), kalah jelas (persisten tidak adil untuk jendela +-1 hari); model - klimatologi -0,008 (-0,018 s.d. 0,002), setara; model - klimatologi berlaju alarm sama +0,011 (0,000 s.d. 0,021), unggul sangat tipis. Per tahun CI selisih vs klimatologi memuat 0 di keempat tahun.
+
+**Bacaan jujur:** AUC 0,65 sebelumnya tampak "lebih baik dari acak", tetapi musiman kab saja mencapai 0,81, jadi hujan 3 hari + bahaya belum menambah informasi di atas pola musim dan lokasi. Dengan hujan sempurna pun belum layak sebagai prakiraan harian. Dalam-sampel 2016-2021 AUC 0,58-0,76 (menurun dari 2016 ke 2021).
+
+Label: csv arsip jenis `longsor`; hanya hari tercakup logbook. Hujan ERA5 cache `uji_balik`: 41 kab, 104 sel, tanpa unduhan; 2011-2015 tak dinilai. Keluaran: `public/data/validasi_logbook_longsor_arsip.json`.
+
+Enam catatan bias: (1) tahun parsial hanya menilai hari tercatat (2021: 343, 2022: 272, 2023: 327 hari; piket bolong), hari tanpa laporan di luar itu bukan negatif; (2) 41 kab sampel dari cache `uji_balik` dipilih dari jumlah hari kejadian 2016-2025 TERMASUK tahun uji 2022-2025, jadi seleksi memakai hasil: skor OPTIMISTIS, POD dan laju dasar TIDAK berlaku nasional, FAR bukan batas atas yang pasti (memilih ulang kab dari 2016-2021 butuh unduhan ERA5 baru; longsor memakai semua 41 kab); (3) persisten tidak adil untuk label berdurasi/berjendela; (4) hujan ERA5 = prakiraan sempurna, prakiraan sungguhan hanya lebih buruk; (5) aturan BERLAKU dipilih di 2016-2021 tetapi diterima lewat uji 2022-2025 pada label DIBI (`uji_balik.py` `LATIH, UJI`), jadi 2022-2025 bukan sepenuhnya murni; label logbook belum dipakai menyetel apa pun; (6) klimatologi belajar hanya dari hari tercatat 2016-2021.

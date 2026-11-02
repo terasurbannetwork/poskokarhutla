@@ -283,7 +283,7 @@ class Deck:
         b2 = [muat('•  Masker dan layanan ISPA: ', kota)] if kota else ['•  Pemantauan kualitas udara di wilayah terdampak asap']
         ungsi = []
         for x in s.KJ:
-            m = re.search(r'([\d.]+)\s*jiwa\s*mengungsi', x.get('teks', {}).get('dampak', ''))
+            m = re.search(r'([\d.]+)\s*jiwa\s*mengungsi(?!\s*\(?sudah kembali)', x.get('teks', {}).get('dampak', ''))   # 1 Nov Langkat: sudah kembali = bukan pengungsi
             if m: ungsi.append((angka_id(m[1]), f"{JENIS_SINGKAT.get(x['jenis'], x['jenis'])} {PENDEK(x['prov']).replace('Kep. ', '')}"))
         if ungsi: b2.append('•  Pengungsi: ' + ', '.join(f"{t} ±{f0(n)}" for n, t in sorted(ungsi, reverse=True)[:2]) + ' jiwa')
         else: b2.append('•  PM2.5 tingkat Berbahaya (BMKG)' if kota else '•  Siaga evakuasi warga rentan di sekitar api')
@@ -302,7 +302,7 @@ class Deck:
 
     def detail(s, x):
         a = x['angka']
-        if x['jenis'] in ('gempabumi', 'banjir'):
+        if x['jenis'] in ('gempabumi', 'banjir', 'longsor'):
             pil = []
             if a.get('transisi_sd'):
                 d = dt.date.fromisoformat(a['transisi_sd']); pil.append((f'Transisi s.d. {d.day} {BULAN[d.month - 1][:3]}', T_ORG, ORG, 'kalender_oranye'))

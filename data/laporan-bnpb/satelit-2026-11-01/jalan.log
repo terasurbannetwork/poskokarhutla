@@ -1,0 +1,8 @@
+website: harian30 2026-11-01T17:18+07:00 | peta_karhutla 2026-11-01T17:19+07:00 s.d. 2026-10-31 | hotspot.json titik terakhir 2026-11-01T07:35:00+00:00 | belum_kini 2026-11-01T17:19+07:00
+uji luas 2026-10-31: sendiri 6923 ha vs website 6925 ha; beda > 5 ha: tidak ada
+VERSI per sekarang | 2026-11-01 s.d. data terakhir: luas 4842 ha, padam 5310 ha belum padam 1244 ha
+6 provinsi tabel (hotspot 2026-11-01 ): ['62', '93', '74', '53', '19', '61'] [391, 379, 347, 199, 175, 167]
+selisih hotspot sendiri vs website (hari, prov, sendiri, website): tidak ada 
+firespot website 2026-11-01 nasional 941
+sel ok 72 beda 0 | jumlah cocok
+PDF: soffice tidak ada (pasang LibreOffice) dan ini bukan Windows dengan PowerPoint

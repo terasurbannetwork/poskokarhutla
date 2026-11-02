@@ -19,7 +19,7 @@ import {halamanAdmin} from "./statistik.js";
 const JAM = 36e5, HARI = 24 * JAM, TENGGAT_HASIL = HARI, MAKS_POLIGON_BYTE = 20480, MAKS_TITIK = 500;
 /* daftar tetap: sama dengan CHECK di 0033 dan public/admin/omc.js (dijaga omc.test.mjs) */
 export const BAHAN = {nacl: "NaCl", dry_ice: "Dry ice"};
-export const PERAN_TULIS = ["tmc"], PERAN_BACA = ["tmc", "koordalops", "pimpinan"];
+export const PERAN_TULIS = ["tmc"], PERAN_BACA = ["tmc", "koordalops", "pimpinan", "operator_cc"];   // operator_cc: baca saja (command center, 1 Nov 2026)
 const BBOX = {lat: [-11.5, 6.5], lon: [94.5, 141.5]};   // sama dengan koordinat gudang inventaris: seluruh Indonesia
 const RE_ID = /^[0-9a-f]{16}$/, RE_KAB = /^\d{2}\|[^|]{2,60}$/, RE_JAM = /^([01]\d|2[0-3]):[0-5]\d$/;
 const ada = (o, k) => Object.hasOwn(o, k);

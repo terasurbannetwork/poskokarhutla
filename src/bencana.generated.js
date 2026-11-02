@@ -39,7 +39,8 @@ export default {
         "informasi",
         "kompleks",
         "satelit",
-        "tentang"
+        "tentang",
+        "foto"
       ],
       "sumber_status": [
         [
@@ -192,8 +193,8 @@ export default {
     },
     {
       "id": "banjir",
-      "nama": "Banjir, Longsor & Rob",
-      "nama_en": "Floods, Landslides & Tidal Floods",
+      "nama": "Banjir & Longsor",
+      "nama_en": "Floods & Landslides",
       "ikon": "banjir",
       "warna": "#4f9be0",
       "rute": "/banjir/",
@@ -203,6 +204,7 @@ export default {
       "tab": [
         "peta",
         "insight",
+        "longsor",
         "berita",
         "tren",
         "dampak",
@@ -310,7 +312,7 @@ export default {
       "workflow": "banjir.yml",
       "pengerja": "banjir",
       "bagikan": {
-        "nama": "Centurisk97 · Banjir, Longsor & Rob",
+        "nama": "Centurisk97 Banjir & Longsor",
         "sumber": "Open-Meteo, Copernicus GloFAS, BMKG Maritim, BNPB",
         "tagar": [
           "#banjir",
@@ -351,6 +353,283 @@ export default {
           "rob"
         ],
         "leksikon": "scripts/berita/banjir.py"
+      },
+      "prioritas": []
+    },
+    {
+      "id": "pesisir",
+      "nama": "Gelombang Pasang & Abrasi",
+      "nama_en": "Coastal Waves & Abrasion",
+      "ikon": "pesisir",
+      "warna": "#2f7fb8",
+      "rute": "/pesisir/",
+      "data": "/pesisir/data/",
+      "status": "aktif",
+      "warisan": false,
+      "tab": [
+        "peta",
+        "insight",
+        "tren",
+        "tentang"
+      ],
+      "tab_sembunyi": [],
+      "sumber_status": [
+        [
+          "abrasi",
+          "/pesisir/data/abrasi.json",
+          9000
+        ],
+        [
+          "rob",
+          "/banjir/data/rob.json",
+          30
+        ],
+        [
+          "pasut",
+          "/banjir/data/pasut_30h.json",
+          48
+        ],
+        [
+          "gelombang",
+          "/banjir/data/cuaca_gelombang.json",
+          30
+        ]
+      ],
+      "kejadian": {
+        "awalan": "P",
+        "nama": "Kejadian gelombang pasang dan abrasi",
+        "nama_jamak": "Kejadian gelombang pasang dan abrasi"
+      },
+      "tingkat": [
+        {
+          "kode": 0,
+          "nama": "Normal",
+          "warna": "#9aa4b2"
+        },
+        {
+          "kode": 1,
+          "nama": "Waspada",
+          "warna": "#e0b400"
+        },
+        {
+          "kode": 2,
+          "nama": "Siaga",
+          "warna": "#e8743b"
+        },
+        {
+          "kode": 3,
+          "nama": "Awas",
+          "warna": "#d64545"
+        }
+      ],
+      "foto_kategori": [
+        [
+          "abrasi",
+          "Abrasi pantai"
+        ],
+        [
+          "rob",
+          "Rob"
+        ],
+        [
+          "gelombang",
+          "Gelombang tinggi"
+        ],
+        [
+          "lainnya",
+          "Lainnya"
+        ]
+      ],
+      "lapor_bahaya": [
+        "abrasi",
+        "gelombang_pasang"
+      ],
+      "cron_worker": [],
+      "workflow": "banjir.yml",
+      "pengerja": "pesisir",
+      "bagikan": {
+        "nama": "Centurisk97 Gelombang Pasang & Abrasi",
+        "sumber": "BMKG Maritim, Open-Meteo, USGS Landsat, DIBI BNPB",
+        "tagar": [
+          "#abrasi",
+          "#rob",
+          "#gelombangpasang",
+          "#siagabencana"
+        ]
+      },
+      "og": {
+        "judul": "Gelombang pasang dan abrasi hari ini, Centurisk97",
+        "desk_templat": "{tgl}: {n} titik pesisir berstatus rob, gelombang tinggi dan abrasi pantai dipantau."
+      },
+      "kata": {
+        "unit": "tinggi muka laut dan gelombang",
+        "kejadian": "titik pesisir berstatus rob",
+        "tindakan": [
+          "Pantau",
+          "Siaga",
+          "Evakuasi",
+          "Tanggul dan pompa"
+        ],
+        "frasa_wilayah": "pesisir langganan rob dan abrasi"
+      },
+      "peringatan_relevan": "rob|gelombang|pasang|abrasi",
+      "lapisan": [
+        "penduduk",
+        "sekolah",
+        "fasilitas",
+        "jalan"
+      ],
+      "berita": {
+        "kueri": [
+          "abrasi pantai",
+          "gelombang pasang",
+          "rob",
+          "gelombang tinggi"
+        ],
+        "leksikon": "scripts/berita/pesisir.py"
+      },
+      "prioritas": []
+    },
+    {
+      "id": "cuaca",
+      "nama": "Cuaca Ekstrem",
+      "nama_en": "Extreme Weather",
+      "ikon": "cuaca",
+      "warna": "#7d8ca3",
+      "rute": "/cuaca/",
+      "data": "/cuaca/data/",
+      "status": "aktif",
+      "warisan": false,
+      "tab": [
+        "peta",
+        "insight",
+        "berita",
+        "tren",
+        "kejadian",
+        "dampak",
+        "simulasi",
+        "foto",
+        "tentang",
+        "posko",
+        "informasi",
+        "metode"
+      ],
+      "halaman": {
+        "simulasi": "simulasi.html"
+      },
+      "tab_sembunyi": [
+        "informasi",
+        "metode",
+        "posko"
+      ],
+      "sumber_status": [
+        [
+          "cuaca",
+          "/banjir/data/cuaca_meta.json",
+          30
+        ],
+        [
+          "cuaca_nowcast",
+          "/api/cuaca/nowcast",
+          2
+        ],
+        [
+          "berita_cuaca",
+          "/banjir/data/berita_cuaca.json",
+          30
+        ]
+      ],
+      "kejadian": {
+        "awalan": "C",
+        "nama": "Peringatan dini cuaca",
+        "nama_jamak": "Peringatan dini cuaca"
+      },
+      "tingkat": [
+        {
+          "kode": 0,
+          "nama": "Normal",
+          "warna": "#9aa4b2"
+        },
+        {
+          "kode": 1,
+          "nama": "Waspada",
+          "warna": "#e0b400"
+        },
+        {
+          "kode": 2,
+          "nama": "Siaga",
+          "warna": "#e8743b"
+        },
+        {
+          "kode": 3,
+          "nama": "Awas",
+          "warna": "#d64545"
+        }
+      ],
+      "foto_kategori": [
+        [
+          "pohon",
+          "Pohon tumbang"
+        ],
+        [
+          "genangan",
+          "Genangan"
+        ],
+        [
+          "atap",
+          "Atap rusak"
+        ],
+        [
+          "lainnya",
+          "Lainnya"
+        ]
+      ],
+      "lapor_bahaya": [
+        "cuaca"
+      ],
+      "cron_worker": [
+        {
+          "tugas": "nowcast",
+          "selang_detik": 600
+        }
+      ],
+      "workflow": "lintas.yml",
+      "pengerja": "cuaca-udara",
+      "bagikan": {
+        "nama": "Centurisk97 · Cuaca Ekstrem",
+        "sumber": "BMKG, Open-Meteo, ECMWF",
+        "tagar": [
+          "#cuacaekstrem",
+          "#peringatandini"
+        ]
+      },
+      "og": {
+        "judul": "Cuaca ekstrem hari ini · Centurisk97",
+        "desk_templat": "{tgl}: {n} wilayah berstatus peringatan dini, {jiwa} jiwa terdampak."
+      },
+      "kata": {
+        "unit": "peringatan dini cuaca",
+        "kejadian": "wilayah peringatan",
+        "tindakan": [
+          "Pantau",
+          "Siaga",
+          "Evakuasi"
+        ],
+        "frasa_wilayah": "provinsi yang sering dilanda cuaca ekstrem"
+      },
+      "peringatan_relevan": "cuaca|hujan|angin|petir|gelombang",
+      "lapisan": [
+        "penduduk",
+        "sekolah",
+        "fasilitas",
+        "jalan"
+      ],
+      "berita": {
+        "kueri": [
+          "cuaca ekstrem",
+          "puting beliung"
+        ],
+        "leksikon": "scripts/cuaca/berita.py"
       },
       "prioritas": []
     },
@@ -499,153 +778,13 @@ export default {
       "prioritas": []
     },
     {
-      "id": "cuaca",
-      "nama": "Cuaca Ekstrem",
-      "nama_en": "Extreme Weather",
-      "ikon": "cuaca",
-      "warna": "#7d8ca3",
-      "rute": "/cuaca/",
-      "data": "/cuaca/data/",
-      "status": "aktif",
-      "warisan": false,
-      "tab": [
-        "peta",
-        "insight",
-        "berita",
-        "tren",
-        "kejadian",
-        "dampak",
-        "simulasi",
-        "foto",
-        "tentang",
-        "informasi",
-        "metode"
-      ],
-      "halaman": {
-        "simulasi": "simulasi.html"
-      },
-      "tab_sembunyi": [
-        "informasi",
-        "metode"
-      ],
-      "sumber_status": [
-        [
-          "cuaca",
-          "/banjir/data/cuaca_meta.json",
-          30
-        ],
-        [
-          "cuaca_nowcast",
-          "/api/cuaca/nowcast",
-          2
-        ],
-        [
-          "berita_cuaca",
-          "/banjir/data/berita_cuaca.json",
-          30
-        ]
-      ],
-      "kejadian": {
-        "awalan": "C",
-        "nama": "Peringatan dini cuaca",
-        "nama_jamak": "Peringatan dini cuaca"
-      },
-      "tingkat": [
-        {
-          "kode": 0,
-          "nama": "Normal",
-          "warna": "#9aa4b2"
-        },
-        {
-          "kode": 1,
-          "nama": "Waspada",
-          "warna": "#e0b400"
-        },
-        {
-          "kode": 2,
-          "nama": "Siaga",
-          "warna": "#e8743b"
-        },
-        {
-          "kode": 3,
-          "nama": "Awas",
-          "warna": "#d64545"
-        }
-      ],
-      "foto_kategori": [
-        [
-          "pohon",
-          "Pohon tumbang"
-        ],
-        [
-          "genangan",
-          "Genangan"
-        ],
-        [
-          "atap",
-          "Atap rusak"
-        ],
-        [
-          "lainnya",
-          "Lainnya"
-        ]
-      ],
-      "lapor_bahaya": [
-        "cuaca"
-      ],
-      "cron_worker": [
-        {
-          "tugas": "nowcast",
-          "selang_detik": 600
-        }
-      ],
-      "workflow": "lintas.yml",
-      "pengerja": "cuaca-udara",
-      "bagikan": {
-        "nama": "Centurisk97 · Cuaca Ekstrem",
-        "sumber": "BMKG, Open-Meteo, ECMWF",
-        "tagar": [
-          "#cuacaekstrem",
-          "#peringatandini"
-        ]
-      },
-      "og": {
-        "judul": "Cuaca ekstrem hari ini · Centurisk97",
-        "desk_templat": "{tgl}: {n} wilayah berstatus peringatan dini, {jiwa} jiwa terdampak."
-      },
-      "kata": {
-        "unit": "peringatan dini cuaca",
-        "kejadian": "wilayah peringatan",
-        "tindakan": [
-          "Pantau",
-          "Siaga",
-          "Evakuasi"
-        ],
-        "frasa_wilayah": "provinsi yang sering dilanda cuaca ekstrem"
-      },
-      "peringatan_relevan": "cuaca|hujan|angin|petir|gelombang",
-      "lapisan": [
-        "penduduk",
-        "sekolah",
-        "fasilitas",
-        "jalan"
-      ],
-      "berita": {
-        "kueri": [
-          "cuaca ekstrem",
-          "puting beliung"
-        ],
-        "leksikon": "scripts/cuaca/berita.py"
-      },
-      "prioritas": []
-    },
-    {
       "id": "udara",
       "nama": "Kualitas Udara",
       "nama_en": "Air Quality",
       "ikon": "udara",
       "warna": "#4a9d9c",
       "rute": "/udara/",
+      "menu": false,
       "data": "/udara/data/",
       "status": "aktif",
       "warisan": false,

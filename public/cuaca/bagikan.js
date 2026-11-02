@@ -23,7 +23,7 @@
       const h = Insight.maksHari(S.h0, 3), a = Insight.maksHari(S.h0, 4), P = hari().sort((x, y) => y.hujan - x.hujan).slice(0, 5);
       const nKec = S.nc.reduce((s, x) => s + x.n, 0), top = S.nc.reduce((m, x) => Math.max(m, ["Minor", "Moderate", "Severe", "Extreme"].indexOf(x.severity)), -1);
       return {tpl: "ringkas", prov: "", lv: 0, label: "Ringkasan harian", judul: "Cuaca ekstrem hari ini",
-        sub: `Indonesia · ${fmt(S.nc.length)} peringatan nowcast · hujan hingga ${fmt(Math.round(h.v))} mm`,
+        sub: `Indonesia, ${fmt(S.nc.length)} peringatan nowcast, hujan hingga ${fmt(Math.round(h.v))} mm`,
         kpi: [
           {l: "Hujan terlebat", s: "Hujan terlebat", v: fmt(Math.round(h.v)) + " mm", ket: h.r ? "di " + nm(h.r[2]) : "–", ks: h.r ? nm(h.r[2]) : "–", w: warnaHujan(h.v)},
           {l: "Embusan angin terkuat", s: "Embusan", v: fmt(Math.round(a.v)) + " km/jam", ket: a.r ? "di " + nm(a.r[2]) : "–", ks: a.r ? nm(a.r[2]) : "–", w: warnaAngin(a.v)},

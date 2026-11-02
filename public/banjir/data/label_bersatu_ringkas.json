@@ -1,0 +1,532 @@
+{
+ "dibuat": "2026-11-01",
+ "satuan": "kabupaten-hari; kunci 'pp|Nama' dicocokkan lewat nama, bukan kode",
+ "baris_tabel": 122607,
+ "sumber": {
+  "lb": "logbook Pusdalops 2011-2023, jenis banjir (jenis bandang tidak ada: 0)",
+  "dibi": "DIBI banjir+bandang, tanggal laporan, kejadian>=1",
+  "gs": "Google Groundsource 2016-2025 (+poligon 2026 bila ada), poligon -> kecamatan -> kabupaten",
+  "gfm": "Copernicus GFM: hanya lintasan yang sudah diproses (pilot, bukan nasional)",
+  "mcdwd": "MODIS MCDWD, hanya 90 hari terakhir di mcdwd.json; arsip harian 2021-2026 belum diunduh"
+ },
+ "logbook": {
+  "rentang_arsip": "2011-2023 (2021 tidak ada; 2022 dan 2023 parsial; tahun penuh hanya 2014-2020)",
+  "n_pasangan": 8894,
+  "n_kab_hari_unik": 8768,
+  "tanpa_kab": 393,
+  "tanggal_tak_wajar": 4,
+  "tanggal_curiga_dibuang": 49,
+  "tanggal_dari_catat": 53,
+  "hari_tercakup_per_tahun": {
+   "2011": 50,
+   "2012": 76,
+   "2013": 175,
+   "2014": 365,
+   "2015": 364,
+   "2016": 366,
+   "2017": 365,
+   "2018": 365,
+   "2019": 365,
+   "2020": 366,
+   "2022": 272,
+   "2023": 327
+  },
+  "hari_tercakup_berkas": "data/raw/banjir/label_bersatu/logbook_hari_tercakup.json (tak dilacak git)"
+ },
+ "layak_label": {
+  "lb_mulai": {
+   "layak_label": true,
+   "catatan": "hanya pada hari tercakup arsip; tanpa catatan BUKAN negatif"
+  },
+  "dibi": {
+   "layak_label": true,
+   "catatan": "tanggal laporan, terisi susulan; 2026 belum lengkap"
+  },
+  "gs": {
+   "layak_label": true,
+   "catatan": "bias media: tumbuh sekitar 5 kali 2016-2025, ke kota dan wilayah ber-media; tanpa label BUKAN negatif"
+  },
+  "gfm": {
+   "layak_label": false,
+   "catatan": "pilot, hanya 34 kab-hari"
+  },
+  "mcdwd": {
+   "layak_label": false,
+   "catatan": "tanpa arsip harian dan tanpa ambang (air menetap ikut)"
+  }
+ },
+ "silang_tahun_padat": {
+  "lb_mulai": [
+   2014,
+   2015,
+   2016,
+   2017,
+   2018,
+   2019,
+   2020
+  ],
+  "dibi": [
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "gs": [
+   2016,
+   2017,
+   2018,
+   2019,
+   2020,
+   2021,
+   2022,
+   2023,
+   2024,
+   2025
+  ],
+  "gfm": [],
+  "mcdwd": [
+   2026
+  ]
+ },
+ "cakupan_per_tahun": {
+  "lb_mulai": {
+   "2011": {
+    "kab_hari": 39,
+    "kab_unik": 30
+   },
+   "2012": {
+    "kab_hari": 74,
+    "kab_unik": 67
+   },
+   "2013": {
+    "kab_hari": 329,
+    "kab_unik": 182
+   },
+   "2014": {
+    "kab_hari": 630,
+    "kab_unik": 243
+   },
+   "2015": {
+    "kab_hari": 597,
+    "kab_unik": 219
+   },
+   "2016": {
+    "kab_hari": 1068,
+    "kab_unik": 291
+   },
+   "2017": {
+    "kab_hari": 1074,
+    "kab_unik": 306
+   },
+   "2018": {
+    "kab_hari": 829,
+    "kab_unik": 282
+   },
+   "2019": {
+    "kab_hari": 799,
+    "kab_unik": 297
+   },
+   "2020": {
+    "kab_hari": 1337,
+    "kab_unik": 323
+   },
+   "2021": {
+    "kab_hari": 7,
+    "kab_unik": 7
+   },
+   "2022": {
+    "kab_hari": 1221,
+    "kab_unik": 347
+   },
+   "2023": {
+    "kab_hari": 764,
+    "kab_unik": 305
+   }
+  },
+  "lb_aktif": {
+   "2011": {
+    "kab_hari": 362,
+    "kab_unik": 30
+   },
+   "2012": {
+    "kab_hari": 418,
+    "kab_unik": 68
+   },
+   "2013": {
+    "kab_hari": 1744,
+    "kab_unik": 189
+   },
+   "2014": {
+    "kab_hari": 2175,
+    "kab_unik": 246
+   },
+   "2015": {
+    "kab_hari": 1916,
+    "kab_unik": 220
+   },
+   "2016": {
+    "kab_hari": 3527,
+    "kab_unik": 292
+   },
+   "2017": {
+    "kab_hari": 3780,
+    "kab_unik": 306
+   },
+   "2018": {
+    "kab_hari": 2970,
+    "kab_unik": 282
+   },
+   "2019": {
+    "kab_hari": 2938,
+    "kab_unik": 297
+   },
+   "2020": {
+    "kab_hari": 4658,
+    "kab_unik": 324
+   },
+   "2021": {
+    "kab_hari": 62,
+    "kab_unik": 7
+   },
+   "2022": {
+    "kab_hari": 5111,
+    "kab_unik": 348
+   },
+   "2023": {
+    "kab_hari": 3074,
+    "kab_unik": 306
+   }
+  },
+  "dibi": {
+   "2008": {
+    "kab_hari": 417,
+    "kab_unik": 227
+   },
+   "2009": {
+    "kab_hari": 485,
+    "kab_unik": 229
+   },
+   "2010": {
+    "kab_hari": 1019,
+    "kab_unik": 273
+   },
+   "2011": {
+    "kab_hari": 570,
+    "kab_unik": 214
+   },
+   "2012": {
+    "kab_hari": 578,
+    "kab_unik": 254
+   },
+   "2013": {
+    "kab_hari": 709,
+    "kab_unik": 319
+   },
+   "2014": {
+    "kab_hari": 579,
+    "kab_unik": 237
+   },
+   "2015": {
+    "kab_hari": 505,
+    "kab_unik": 224
+   },
+   "2016": {
+    "kab_hari": 820,
+    "kab_unik": 279
+   },
+   "2017": {
+    "kab_hari": 961,
+    "kab_unik": 304
+   },
+   "2018": {
+    "kab_hari": 865,
+    "kab_unik": 295
+   },
+   "2019": {
+    "kab_hari": 745,
+    "kab_unik": 287
+   },
+   "2020": {
+    "kab_hari": 1411,
+    "kab_unik": 337
+   },
+   "2021": {
+    "kab_hari": 1635,
+    "kab_unik": 390
+   },
+   "2022": {
+    "kab_hari": 1413,
+    "kab_unik": 363
+   },
+   "2023": {
+    "kab_hari": 1190,
+    "kab_unik": 352
+   },
+   "2024": {
+    "kab_hari": 1411,
+    "kab_unik": 381
+   },
+   "2025": {
+    "kab_hari": 2572,
+    "kab_unik": 438
+   },
+   "2026": {
+    "kab_hari": 679,
+    "kab_unik": 257
+   }
+  },
+  "gs": {
+   "2016": {
+    "kab_hari": 4031,
+    "kab_unik": 416
+   },
+   "2017": {
+    "kab_hari": 4266,
+    "kab_unik": 437
+   },
+   "2018": {
+    "kab_hari": 4090,
+    "kab_unik": 420
+   },
+   "2019": {
+    "kab_hari": 4335,
+    "kab_unik": 448
+   },
+   "2020": {
+    "kab_hari": 8591,
+    "kab_unik": 459
+   },
+   "2021": {
+    "kab_hari": 9435,
+    "kab_unik": 496
+   },
+   "2022": {
+    "kab_hari": 10624,
+    "kab_unik": 488
+   },
+   "2023": {
+    "kab_hari": 7974,
+    "kab_unik": 477
+   },
+   "2024": {
+    "kab_hari": 13420,
+    "kab_unik": 504
+   },
+   "2025": {
+    "kab_hari": 17430,
+    "kab_unik": 509
+   },
+   "2026": {
+    "kab_hari": 2699,
+    "kab_unik": 380
+   }
+  },
+  "gfm": {
+   "2021": {
+    "kab_hari": 7,
+    "kab_unik": 7
+   },
+   "2022": {
+    "kab_hari": 1,
+    "kab_unik": 1
+   },
+   "2024": {
+    "kab_hari": 6,
+    "kab_unik": 6
+   },
+   "2025": {
+    "kab_hari": 2,
+    "kab_unik": 2
+   },
+   "2026": {
+    "kab_hari": 7,
+    "kab_unik": 7
+   }
+  },
+  "mcdwd": {
+   "2026": {
+    "kab_hari": 4676,
+    "kab_unik": 359
+   }
+  },
+  "gfm_lintas": {
+   "2021": {
+    "kab_hari": 9,
+    "kab_unik": 9
+   },
+   "2022": {
+    "kab_hari": 1,
+    "kab_unik": 1
+   },
+   "2024": {
+    "kab_hari": 9,
+    "kab_unik": 9
+   },
+   "2025": {
+    "kab_hari": 2,
+    "kab_unik": 2
+   },
+   "2026": {
+    "kab_hari": 13,
+    "kab_unik": 11
+   }
+  }
+ },
+ "gs_poligon_per_tahun": {
+  "2016": 13224,
+  "2017": 14650,
+  "2018": 13798,
+  "2019": 16086,
+  "2020": 31343,
+  "2021": 35199,
+  "2022": 39535,
+  "2023": 28514,
+  "2024": 46274,
+  "2025": 64706,
+  "2026": 11665
+ },
+ "silang_persen_toleransi_1_hari": {
+  "lb_mulai>dibi": {
+   "n_a": 5107,
+   "n_ada_b": 3737,
+   "persen": 73.2
+  },
+  "lb_mulai>gs": {
+   "n_a": 5107,
+   "n_ada_b": 3478,
+   "persen": 68.1
+  },
+  "lb_mulai>gfm": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "lb_mulai>mcdwd": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "dibi>lb_mulai": {
+   "n_a": 4802,
+   "n_ada_b": 3731,
+   "persen": 77.7
+  },
+  "dibi>gs": {
+   "n_a": 13023,
+   "n_ada_b": 9728,
+   "persen": 74.7
+  },
+  "dibi>gfm": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "dibi>mcdwd": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "gs>lb_mulai": {
+   "n_a": 25313,
+   "n_ada_b": 5304,
+   "persen": 21.0
+  },
+  "gs>dibi": {
+   "n_a": 84196,
+   "n_ada_b": 15609,
+   "persen": 18.5
+  },
+  "gs>gfm": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "gs>mcdwd": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "gfm>lb_mulai": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "gfm>dibi": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "gfm>gs": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "gfm>mcdwd": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "mcdwd>lb_mulai": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "mcdwd>dibi": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "mcdwd>gs": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  },
+  "mcdwd>gfm": {
+   "n_a": 0,
+   "n_ada_b": 0,
+   "persen": null
+  }
+ },
+ "kab_tak_cocok": {
+  "logbook": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0,
+   "contoh": []
+  },
+  "dibi": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0,
+   "contoh": []
+  },
+  "gs": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0,
+   "contoh": []
+  },
+  "gfm": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0,
+   "contoh": []
+  },
+  "mcdwd": {
+   "jumlah_baris": 0,
+   "kunci_unik": 0,
+   "contoh": []
+  }
+ },
+ "catatan_bias": [
+  "Groundsource tumbuh sekitar 5 kali dari 2016 ke 2025 dan berhenti 29 Jan 2026: beda laju antartahun sebagian artefak berita. Tanpa label BUKAN negatif.",
+  "Logbook 2011-2023: 2011-2013 tipis, 2021 tak ada berkas, 2022 dan 2023 parsial; tanpa catatan BUKAN negatif.",
+  "Silang hanya di tahun padat kedua sumber (lihat silang_tahun_padat). gs>lb_mulai rendah karena logbook tipis/tak ada di luar 2014-2020; mcdwd>dibi 0% karena DIBI 2026 belum terisi susulan, bukan karena MODIS salah.",
+  "DIBI terisi susulan dan tanggalnya tanggal laporan.",
+  "GFM di sini pilot (sedikit kab-hari); gfm_lintas membedakan 'tak ada banjir' dari 'tak teramati'.",
+  "MCDWD tanpa arsip harian: hanya 2026; positif = piksel f > 0 TANPA ambang, kelas Recurring flood (air menetap) ikut sehingga kab-hari positifnya membengkak; butuh ambang sebelum dipakai, tutupan awan tak dinilai di kolom ini.",
+  "Silang A>B = persen kab-hari positif A (di jendela tanggal B) yang punya B positif dalam +-1 hari; bukan presisi dan bukan recall terhadap kebenaran."
+ ]
+}

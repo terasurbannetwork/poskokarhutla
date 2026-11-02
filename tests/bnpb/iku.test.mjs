@@ -28,3 +28,23 @@ test('public/data/bnpb/iku.json: invarian', () => {
   assert.match(d.peringatan.sistem_kita.jangkauan_penerima, /belum terukur/)
   for (const c of d.irb.capaian_turun_persen) if (c.tahun < 2025) assert.equal(c.target, null)
 })
+
+test('iku.json kontribusi: tiap baris punya indikator berhalaman, status sah, berkas bukti ada', async () => {
+  const { existsSync } = await import('node:fs')
+  const K = JSON.parse(readFileSync(`${akar}public/data/bnpb/iku.json`, 'utf8')).kontribusi
+  assert.ok(K.length >= 9)
+  assert.equal(new Set(K.map(x => x.id)).size, K.length)
+  for (const x of K) {
+    assert.ok(['berjalan', 'sebagian', 'belum'].includes(x.status), x.id)
+    assert.ok(x.indikator.length >= 1, x.id)
+    for (const i of x.indikator) assert.match(i.hal, /^\d+(-\d+)?$/, `${x.id}: halaman`)
+    for (const i of x.indikator) assert.ok(i.nama && i.dokumen, x.id)
+    assert.ok(x.bukti && x.batas && x.bentuk, x.id)
+    // berjalan/sebagian wajib punya halaman dan berkas nyata; belum tanpa halaman
+    assert.equal(x.url === null, x.status === 'belum', x.id)
+    if (x.status !== 'belum') assert.ok(x.berkas.length && x.berkas.every(b => existsSync(akar + b)), `${x.id}: berkas`)
+    assert.doesNotMatch(JSON.stringify(x), /·|—|\d{4}-\d\d-\d\d|Pantau Bencana/, x.id)
+  }
+  const teks = JSON.stringify(K)
+  for (const k of ['IKU 1.1', 'IKU 1.2', 'kerugian ekonomi', 'peringatan dini', 'sirene', 'Tangguh', 'logistik', 'darurat', 'Satu Data']) assert.ok(teks.toLowerCase().includes(k.toLowerCase()), k)
+})

@@ -1,0 +1,7 @@
+# Rahasia dan hasil bangun: tidak pernah masuk git. Yang dilacak hanya *.example.*
+config.h
+kunci*.json
+gateway.json
+antrean/
+.pio/
+__pycache__/

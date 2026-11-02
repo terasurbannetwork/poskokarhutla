@@ -41,6 +41,9 @@ jobs:
       - name: Uji logika dan penggabung
         run: |
           python3 -I scripts/akademisi/pemutakhiran/uji_inti.py
+          python3 -I scripts/akademisi/pemutakhiran/panen_tesis.py --cek
+          python3 -I scripts/akademisi/pemutakhiran/panen_proyek.py --cek
+          python3 -I scripts/akademisi/pemutakhiran/panen_sentinel.py --cek
           node --test tests/agen/lembaga-gabung.test.mjs tests/agen/pemutakhiran-direktori.test.mjs tests/agen/hubung.test.mjs
 
       - name: Unduh berkas R2 saat ini
@@ -70,7 +73,7 @@ jobs:
           K="$RUNNER_TEMP/kerja"; PN="$K/panen"; SB="$K/sambung"; mkdir -p "$PN" "$SB" "$K/keluar"
           # tiga kali coba; tetap gagal = berkas dihapus, lalu daftar WAJIB di bawah menghentikan job sebelum apa pun diunggah
           get() { for i in 1 2 3; do npx --yes wrangler@4.42.0 r2 object get "poskokarhutla-foto/akademisi/$1.json" --file "$2/$(basename "$1").json" --remote >/dev/null && return 0; sleep 5; done; rm -f "$2/$(basename "$1").json"; }
-          for f in anggaran_pemda dana_desa_bencana kinerja_pemda fasilitas_kritis jalan_kondisi jembatan spab izin_cocok izin_zakat badan_hukum izin_pub daftar_hitam_cocok ror_kampus wikidata_lembaga paten paten_cocok orcid_pakar aktivasi_satelit dokumen_pascabencana reliefweb_kejadian fts_kejadian pos_sar pmi_kab lpbi_nu forum_prb_baru tim_respons katalog_penyedia hibah_riset_baru radar_dana daftar_hitam_mentah cems_idn logo_org inarisk_bahaya gdacs_kejadian psc119 damkar komunikasi_darurat logistik_usaha armada_sar dana_filantropi ikp rumah_ibadah kerentanan_bps osm_darurat tesis_kebencanaan; do get "panen/$f" "$PN"; done
+          for f in anggaran_pemda dana_desa_bencana kinerja_pemda fasilitas_kritis jalan_kondisi jembatan spab izin_cocok izin_zakat badan_hukum izin_pub daftar_hitam_cocok ror_kampus wikidata_lembaga paten paten_cocok orcid_pakar aktivasi_satelit dokumen_pascabencana reliefweb_kejadian fts_kejadian pos_sar pmi_kab lpbi_nu forum_prb_baru tim_respons katalog_penyedia hibah_riset_baru radar_dana daftar_hitam_mentah cems_idn logo_org inarisk_bahaya gdacs_kejadian psc119 damkar komunikasi_darurat logistik_usaha armada_sar dana_filantropi ikp rumah_ibadah kerentanan_bps osm_darurat tesis_kebencanaan indeks_desa spm_bencana dataset_satudata aktivasi_sentinel_asia mitra_riset_luar proyek_internasional pendanaan_pakar dokumen_prb topik_pakar rekan_pakar glide_cocok emdat_idn garuda_penulis dataset_terbuka podes_kesiapan penduduk_rentan donasi_berita donasi_lembaga infra_air ifrc_go cerf zakat_resmi hot_tm orcid_afiliasi bangunan_kab tutupan_lahan_kab ikd_resmi lab_riset pdrb_kab temuan_riset; do get "panen/$f" "$PN"; done
           for f in kampus induk afiliasi kalaksa sistem_data pendanaan lembaga_3w jurnal redaksi buku peneliti_muda hibah_riset penghargaan csr donatur_kejadian aset_riset dokumen diaspora kejadian; do get "$f" "$SB"; done
           cp "$PN/logo_org.json" "$SB/" 2>/dev/null || true
           # lembaga, berita, tokoh, inovasi: versi yang baru dimutakhirkan langkah sebelumnya
@@ -79,8 +82,14 @@ jobs:
           for f in lembaga kampus induk kejadian hibah_riset pendanaan; do [ -s "$SB/$f.json" ] || { echo "WAJIB tidak terunduh: $f"; exit 1; }; done
           # versi kini untuk penjaga susut dan cadangan
           mkdir -p "$K/lama"; cp "$SB"/{lembaga,hibah_riset,pendanaan}.json "$K/lama/"
-          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra tesis graf strategis; do get "$f" "$K/lama"; done
+          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra tesis donasi_bencana graf strategis; do get "$f" "$K/lama"; done
           python3 -I scripts/akademisi/pemutakhiran/panen_publik.py --panen "$PN" --menit 45
+          python3 -I scripts/akademisi/pemutakhiran/panen_tesis.py --panen "$PN" --menit 15 || true
+          python3 -I scripts/akademisi/pemutakhiran/panen_proyek.py --panen "$PN" --menit 20 || true
+          python3 -I scripts/akademisi/pemutakhiran/panen_sentinel.py --panen "$PN" --menit 5 || true
+          # panen manual (hanya lewat browser, tidak bisa dari runner): APBD DJPK, izin LAZ SIMZAT, paten PDKI. Data APBD tanpa tahun lalu
+          # atau tiap Februari = anotasi peringatan di halaman run, supaya panen ulang tahunan tidak terlupa
+          node -e 'const a=require(process.argv[1]),y=new Date().getUTCFullYear(),t=Math.max(...a.map(r=>r.tahun||0));if(t<y-1)console.log(`::warning::APBD DJPK di direktori baru sampai ${t}; panen ulang manual (anggaran_pemda, dana_desa_bencana)`);if(new Date().getUTCMonth()===1)console.log("::warning::Panen ulang tahunan direktori: APBD DJPK, izin LAZ SIMZAT, paten PDKI (manual lewat browser, lalu sambung_panen.mjs dan hubung.mjs)")' "$PN/anggaran_pemda.json" || true
           node scripts/akademisi/sambung_panen.mjs "$PN" "$SB" "$K/sambung_keluar"
           cp "$K/sambung_keluar"/{lembaga,pakar_ekstra,hibah_riset,pendanaan}.json "$SB/"
           node scripts/akademisi/hubung.mjs "$SB" "$K/graf_keluar"
@@ -103,6 +112,6 @@ jobs:
           put "akademisi/pemutakhiran/$BULAN.json" "$K/keluar/pemutakhiran/$BULAN.json"
           # data panen publik: cadangan graf lama, lalu hasil sambung, graf baru, dan berkas panen yang dipanen ulang
           for f in "$K"/lama/*.json; do [ "$(basename "$f")" = lembaga.json ] || put "akademisi/cadangan/$TGL/$(basename "$f")" "$f"; done
-          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra tesis hibah_riset pendanaan; do [ ! -f "$K/sambung_keluar/$f.json" ] || put "akademisi/$f.json" "$K/sambung_keluar/$f.json"; done
+          for f in wilayah_daya lembaga_ekstra pakar_ekstra kejadian_ekstra tesis donasi_bencana temuan_riset hibah_riset pendanaan; do [ ! -f "$K/sambung_keluar/$f.json" ] || put "akademisi/$f.json" "$K/sambung_keluar/$f.json"; done
           put "akademisi/graf.json" "$K/graf_keluar/graf.json"; put "akademisi/strategis.json" "$K/graf_keluar/strategis.json"
-          for f in "$K"/sambung_keluar/panen/*.json "$K"/panen/daftar_hitam_mentah.json "$K"/panen/cems_idn.json; do [ ! -f "$f" ] || put "akademisi/panen/$(basename "$f")" "$f"; done
+          for f in "$K"/sambung_keluar/panen/*.json "$K"/panen/daftar_hitam_mentah.json "$K"/panen/cems_idn.json "$K"/panen/tesis_kebencanaan.json "$K"/panen/proyek_internasional.json "$K"/panen/aktivasi_sentinel_asia.json; do [ ! -f "$f" ] || put "akademisi/panen/$(basename "$f")" "$f"; done

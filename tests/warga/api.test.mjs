@@ -9,6 +9,7 @@ import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
 import REG from "../../src/bencana.generated.js";
+import {SNPP_BERHENTI} from "../../src/titik.js";
 
 const JAM = 3600e3, KINI = Date.now();
 const TITIK24 = {acuan: new Date(KINI - JAM).toISOString(), laci: ["K0001"], titik: [[-2.0, 113.0, 0], [-2.3, 113.4, -1]]};
@@ -17,7 +18,7 @@ const t1 = KINI - 2 * JAM, t2 = KINI - 5 * JAM, lama = KINI - 50 * JAM;
 const KEP_V = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
 const KEP_M = "latitude,longitude,brightness,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_t31,frp,daynight";
 const CSV = {
-  VIIRS_SNPP_NRT: [KEP_V,
+  VIIRS_NOAA21_NRT: [KEP_V,
     `-2.1234,113.5678,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,h,2.0NRT,290,12.3,D`,
     `-2.1234,113.5678,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,h,2.0NRT,290,12.3,D`,      // kembar persis -> 1
     `-2.1300,113.5700,330,0.4,0.4,${tgl(t2)},${jm(t2)},N,VIIRS,l,2.0NRT,290,1.1,N`,
@@ -35,7 +36,8 @@ const CSV = {
     `-2.16,113.60,320,1,1,${tgl(t1)},${jm(t1)},Terra,MODIS,85,6.1NRT,290,20,D`,
   ].join("\n"),
   VIIRS_NOAA20_NRT: "Invalid MAP_KEY.",          // sensor gagal: sisanya tetap dipakai
-  VIIRS_NOAA21_NRT: KEP_V,
+  // S-NPP pensiun: sesudah SNPP_BERHENTI tidak diminta sama sekali (titik ini tak boleh masuk); sebelumnya masuk sebagai N
+  VIIRS_SNPP_NRT: [KEP_V, `-3.3000,114.2000,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,n,2.0NRT,290,3,D`].join("\n"),
 };
 
 let mf, DB;
@@ -98,6 +100,35 @@ uji("situs Centurisk97 (*.workers.dev): semua halaman Tentang dialihkan ke peta;
   }
   for (const j of ["/tentang", "/banjir/tentang"]) { const r = await buka("http://warga.lokal", j); await r.text(); assert.equal(r.status, 200, `situs lain GET ${j} = ${r.status}`); }
   const r = await buka("https://contoh.workers.dev", "/banjir/peta"); await r.text(); assert.equal(r.status, 200, "peta situs w tetap 200");
+});
+
+/* uji Setneg 1 Nov 2026: alamat workers.dev PRODUKSI (dan pratinjau versinya) sama terkuncinya dengan centurisk97.id; HSTS di tiap respons https */
+uji("workers.dev produksi: halaman internal di balik login, HSTS terpasang", async () => {
+  for (const asal of ["https://centurisk97.terasurbannetwork.workers.dev", "https://abc123-centurisk97.terasurbannetwork.workers.dev", "https://centurisk97.id"]) {
+    for (const j of ["/monitor", "/direktori", "/prediksi"]) {
+      const r = await mf.dispatchFetch(asal + j, {redirect: "manual", headers: {"cf-connecting-ip": ipBaru()}}); await r.text();
+      assert.equal(r.status, 303, `${asal}${j} tamu = ${r.status}`); assert.match(r.headers.get("location"), /^\/admin\/masuk/);
+      assert.equal(r.headers.get("strict-transport-security"), "max-age=31536000", `${asal}${j} tanpa HSTS`);
+    }
+  }
+  const r = await mf.dispatchFetch("https://centurisk97.terasurbannetwork.workers.dev/monitor", {redirect: "manual", headers: {"cf-connecting-ip": ipBaru(), "x-admin-token": "rahasia-admin"}}); await r.text();
+  assert.equal(r.status, 200, `admin /monitor = ${r.status}`);
+  const a = await mf.dispatchFetch("https://centurisk97.id/api/status"); await a.text();
+  assert.equal(a.headers.get("strict-transport-security"), "max-age=31536000", "API tanpa HSTS");
+  const h = await mf.dispatchFetch("http://warga.lokal/api/status"); await h.text();
+  assert.equal(h.headers.get("strict-transport-security"), null, "http polos tidak boleh diberi HSTS");
+});
+
+uji("tebakan email:sandi lewat header terkunci per akun walau IP diputar; sandi benar pun ditolak selama terkunci", async () => {
+  const m2 = new Miniflare(opsi({ADMIN_TOKEN: "rahasia-admin, bos@x:sandi-benar"}));
+  try {
+    const D = await m2.getD1Database("DB"); await D.batch(pecah(migrasi()).map(s => D.prepare(s)));
+    const coba = async (tok, ip) => { const r = await m2.dispatchFetch("http://warga.lokal/api/warga/admin", {headers: {"cf-connecting-ip": ip, "x-admin-token": tok}}); await r.text(); return r.status; };
+    assert.equal(await coba("bos@x:sandi-benar", "10.7.0.1"), 200, "sandi benar sebelum diserang");
+    for (let i = 0; i < 20; i++) assert.equal(await coba(`BOS@x:tebak${i}`, `10.8.0.${i + 1}`), 403);   // tiap tebakan dari IP lain, email beda huruf besar
+    assert.equal(await coba("bos@x:sandi-benar", "10.7.0.2"), 403, "akun harus terkunci per akun, bukan per IP");
+    assert.equal(await coba("rahasia-admin", "10.7.0.3"), 200, "token acak tanpa email tidak ikut terkunci");
+  } finally { await m2.dispose(); }
 });
 
 uji("tautan bersih (/peta, /k/K0001, /sim/K0001) disajikan index.html; path lain tidak ikut", async () => {
@@ -403,7 +434,7 @@ const cuacaSumber = (jam, DBx = DB) => DBx.prepare("INSERT INTO cuaca_sumber (ku
 const beritaSegar = () => Object.fromEntries(["gempa", "cuaca", "udara", "gunungapi", "kekeringan"].map(n => [`/banjir/data/berita_${n}.json`, metaUji(2)]));
 const metaUji = jam => JSON.stringify({dibuat: new Date(KINI - jam * JAM).toISOString().slice(0, 16) + "+00:00", isi: "x".repeat(5000)});
 uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hilang", async () => {
-  Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
+  Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3), "/banjir/data/rob.json": metaUji(2), "/banjir/data/pasut_30h.json": metaUji(2), "/banjir/data/cuaca_gelombang.json": metaUji(2)});   /* pesisir aktif 1 Nov: rob, pasut, gelombang */
   await gempaSumber(0.1); await cuacaSumber(0.5);
   try {
     let r = await panggil("GET", "/api/status");
@@ -459,7 +490,7 @@ uji("status: 200 bila semua sumber segar, 503 menyebut sumber yang basi atau hil
 });
 
 uji("status: hanya sumber bencana aktif menentukan 503 (semua bencana kini aktif, `uji` kosong)", async () => {
-  Object.assign(ASET_UJI, {...beritaSegar(), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3)});
+  Object.assign(ASET_UJI, {...beritaSegar(), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/cuaca_meta.json": metaUji(3), "/banjir/data/rob.json": metaUji(2), "/banjir/data/pasut_30h.json": metaUji(2), "/banjir/data/cuaca_gelombang.json": metaUji(2)});
   await gempaSumber(0.1); await cuacaSumber(0.5);
   try {
     const r = await panggil("GET", "/api/status");
@@ -500,7 +531,7 @@ uji("status: sumber tahap uji (registry salinan dengan cuaca `uji`) basi/hilang 
   try {
     const D2 = await mf2.getD1Database("DB"); await D2.batch(pecah(migrasi()).map(s => D2.prepare(s)));
     const st = async () => { const r = await mf2.dispatchFetch("http://warga.lokal/api/status"); return {status: r.status, j: await r.json()}; };
-    Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100)});
+    Object.assign(ASET_UJI, {...beritaSegar(), "/data/kekeringan_meta.json": metaUji(2), "/udara/data/prakiraan.json": metaUji(2), "/banjir/data/gunungapi_status.json": metaUji(2), "/data/meta.json": metaUji(2), "/data/presiden/semua.json": metaUji(2), "/banjir/data/meta.json": metaUji(20), "/data/berita.json": metaUji(5), "/data/dampak.json": metaUji(100), "/banjir/data/rob.json": metaUji(2), "/banjir/data/pasut_30h.json": metaUji(2), "/banjir/data/cuaca_gelombang.json": metaUji(2)});
     await D2.prepare("INSERT INTO gempa_sumber (kunci, etag, isi, dibuat) VALUES ('autogempa', NULL, '{}', ?)").bind(KINI - 0.1 * JAM).run();
     let r = await st();   // tabel cuaca_sumber kosong = cuaca_nowcast (uji) hilang
     assert.equal(r.status, 200, `uji hilang harus tetap 200: ${JSON.stringify(r.j)}`); assert.equal(r.j.ok, true); assert.deepEqual(r.j.basi, []);
@@ -542,17 +573,19 @@ uji("titik panas 3 jam: CSV rusak dibuang, keyakinan dikodekan, kembar dihapus, 
   assert.match(r.h.get("cache-control"), /max-age=600/);
   const B = r.j.baris, kol = r.j.kolom;
   assert.deepEqual(kol, ["lat", "lon", "jam", "sensor", "frp", "keyakinan", "wilayah", "tgl_wib"], "kolom harus sama dengan hotspot.json");
-  // sah: 2 VIIRS SNPP (1 kembar dibuang) + 3 MODIS = 5. Rusak/luar kotak/laut/lama tidak masuk.
-  assert.equal(B.length, 5, `jumlah titik ${B.length}, harus 5: ${JSON.stringify(B)}`);
+  // sah: 2 VIIRS NOAA21 (1 kembar dibuang) + 3 MODIS = 5 (+1 S-NPP bila belum pensiun). Rusak/luar kotak/laut/lama tidak masuk.
+  const snpp = Date.now() >= SNPP_BERHENTI ? 0 : 1;
+  assert.equal(B.filter(b => b[0] === -3.3).length, snpp, "S-NPP: titiknya masuk hanya sebelum SNPP_BERHENTI, sesudahnya sensor dilewati");
+  assert.equal(B.length, 5 + snpp, `jumlah titik ${B.length}, harus 5: ${JSON.stringify(B)}`);
   const kc = Object.fromEntries(B.filter(b => b[3] === "M").map(b => [b[0], b[5]]));
   assert.deepEqual(kc, {"-2.14": 0, "-2.15": 1, "-2.16": 2}, "MODIS 25/50/85 harus 0/1/2 (ambang BRIN 30/80)");
-  assert.deepEqual(B.filter(b => b[3] === "N").map(b => b[5]).sort(), [0, 2], "VIIRS l/h harus 0/2");
+  assert.deepEqual(B.filter(b => b[3] === "N21").map(b => b[5]).sort(), [0, 2], "VIIRS l/h harus 0/2");
   assert.ok(B.every(b => r.j.wilayah[b[6]]?.startsWith("62|")), `titik Kalteng harus berwilayah 62|…: ${r.j.wilayah}`);
   assert.ok(!B.some(b => b[0] === -5.5), "titik Laut Jawa harus dibuang");
   assert.equal(Math.max(...B.map(b => b[2])), 0, "titik terbaru harus jam 0 terhadap acuan");
   assert.ok(r.j.galat.some(g => g.includes("VIIRS_NOAA20_NRT")), "galat sensor gagal harus dicatat");
   const m1 = new Date(Math.floor(t1 / 60e3) * 60e3).toISOString();   // jam CSV hanya sampai menit
-  assert.deepEqual(r.j.terakhir_sensor, {M: m1, N: m1}, "terakhir_sensor: hanya sensor yang punya deteksi (N20 galat, N21 kosong tidak ditulis)");
+  assert.deepEqual(r.j.terakhir_sensor, {M: m1, N21: m1, ...snpp ? {N: m1} : {}}, "terakhir_sensor: hanya sensor yang punya deteksi (N20 galat tidak ditulis; N hanya sebelum S-NPP pensiun)");
   for (let i = 0; i < 9; i++) await (await mf.getWorker()).scheduled({cron: "15 */3 * * *"});
   assert.equal((await DB.prepare("SELECT count(*) n FROM titik_terbaru").first()).n, 8, "hanya 8 putaran terakhir disimpan");
 });

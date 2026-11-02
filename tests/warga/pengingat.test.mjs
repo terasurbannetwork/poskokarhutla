@@ -6,7 +6,7 @@ import path from "node:path";
 import {AKAR, pecah} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
 import "../../src/worker.js";   // worker dulu: modul BNPB saling impor (siklus), urutan yang sama dengan produksi
-import {DAFTAR_JENIS, STATUS, JENIS, susunEmail, kelompokPrioritas} from "../../src/pengingat.js";
+import {DAFTAR_JENIS, TANPA_DUMMY, STATUS, JENIS, susunEmail, kelompokPrioritas} from "../../src/pengingat.js";
 import {sisipInstitusi, sisipPerjanjian} from "../../src/relawan.js";
 
 const JAM = 3600e3, HARI = 24 * JAM, MENIT = 60e3;
@@ -194,17 +194,17 @@ uji("kirim: email hanya saat admin menekan; satu email gabungan ke EMAIL_TO; tan
 uji("dummy: lahir dari rantai sumber dummy modul lain, tiap jenis terisi, tidak ikut angka publik/asli, tidak pernah dikirim, hapus bersih", async () => {
   const W = await siapkan("uji-pengingat-dummy", {ikat: EMAIL, luar, asetKu: asetDengan(kW)});
   assert.equal((await W.adm("POST", "/api/pengingat/dummy", {aksi: "isi"})).s, 409, "sumber dummy belum ada: jujur, tidak mengarang");
-  for (const m of ["relawan", "riset", "meja", "alun"]) { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "isi"}); assert.ok(r.s === 200 || r.s === 201, `${m}: ${r.t}`); }
+  for (const m of ["relawan", "riset", "meja", "alun", "logbook"]) { const r = await W.adm("POST", `/api/${m}/dummy`, {aksi: "isi"}); assert.ok(r.s === 200 || r.s === 201, `${m}: ${r.t}`); }
   const a = await W.api("POST", "/api/alun", {jenis: "butuh_bantuan", judul: "Perahu karet asli", teks: "Kami butuh perahu karet.", bencana: "banjir", prov: "33", kab: "Kabupaten Demak"}, {"cf-connecting-ip": "10.7.2.1"});
   await W.DB.prepare("UPDATE alun_utas SET dibuat = ? WHERE id = ?").bind(Date.now() - 30 * JAM, a.j.id).run();
   assert.equal((await W.adm("POST", "/api/pengingat/admin/periksa", {})).j.dibuat, 1, "satu pengingat asli");
   luarLog = []; kW.prio = readFileSync(path.join(AKAR, "public/banjir/data/risiko_prioritas.json"), "utf8");   // JSON nyata baru tersedia saat dummy diisi
   const isi = await W.adm("POST", "/api/pengingat/dummy", {aksi: "isi"});
-  assert.equal(isi.s, 201, isi.t); assert.deepEqual(isi.j.kosong, [], "tiap jenis terisi"); for (const j of DAFTAR_JENIS) assert.ok(isi.j.per_jenis[j] > 0, j);
+  assert.equal(isi.s, 201, isi.t); assert.deepEqual(isi.j.kosong, [], "tiap jenis terisi"); for (const j of DAFTAR_JENIS.filter(x => !TANPA_DUMMY.includes(x))) assert.ok(isi.j.per_jenis[j] > 0, j);
   assert.equal((await W.adm("POST", "/api/pengingat/dummy", {aksi: "isi"})).s, 409, "sudah ada");
   const publik = await W.adm("GET", "/api/pengingat/admin"), semua = await W.adm("GET", "/api/pengingat/admin?dummy=1");
   assert.equal(publik.j.pengingat.length, 1, "tanpa ?dummy=1 hanya data asli"); assert.equal(semua.j.pengingat.length, 1 + isi.j.pengingat);
-  for (const j of DAFTAR_JENIS) assert.ok(semua.j.per_jenis[j] > 0, `per_jenis ${j}`);
+  for (const j of DAFTAR_JENIS.filter(x => !TANPA_DUMMY.includes(x))) assert.ok(semua.j.per_jenis[j] > 0, `per_jenis ${j}`);
   const ids = semua.j.pengingat.filter(x => x.dummy).slice(0, 3).map(x => x.id);
   const kirim = await W.adm("POST", "/api/pengingat/admin/kirim", {ids}); assert.equal(kirim.s, 409, kirim.t); assert.deepEqual(luarLog, [], "data dummy tidak pernah dikirim");
   kW.prio = null;   /* periksa asli tidak menyentuh dummy dan sebaliknya */

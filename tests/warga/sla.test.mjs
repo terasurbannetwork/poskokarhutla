@@ -9,7 +9,7 @@ import {AKAR} from "./_bantu.mjs";
 import "../../src/worker.js";   // worker dulu: modul saling impor (siklus)
 import {siapkan, berantai, ADMIN, sha256} from "./_bnpb.mjs";
 import {RAPOR} from "../../src/meja_spek.js";
-import {persen} from "../../src/sla.js";
+import {persen, catatRiwayatStatus} from "../../src/sla.js";
 import {selTitik} from "../../src/titik.js";
 
 const MENIT = 60e3, JAM = 3600e3, HARI = 24 * JAM, PB = {"x-pb": "1", origin: "http://bnpb.lokal"}, SUPER = {"x-admin-token": "rahasia-admin"};
@@ -136,6 +136,23 @@ uji("sla: cron bersih-bersih menulis status_riwayat per jam; himawari basi terca
   await DB.prepare("DELETE FROM status_riwayat").run();
 });
 
+uji("sla: umur sumber negatif (dibuat berkas lebih baru dari jam Worker) dijepit 0: satu sumber tidak menggagalkan seluruh batch riwayat jam itu", async () => {
+  /* CHECK status_riwayat menolak umur_menit < 0 dan D1 batch atomik: tanpa jepit, SATU berkas pipeline yang bertanda sedikit di depan jam Worker (selisih jam > 3 menit
+     sudah cukup: umur_jam dibulatkan 0,1) membuang baris SEMUA sumber jam itu, dan cron hanya console.error. Jam tetap: hasil tak bergantung jam dinding. */
+  const kini = Date.UTC(2026, 10, 1, 12, 59), slot = Math.floor(kini / JAM), ada = f => ({dibuat: "2026-11-01T12:00Z", ...f});
+  const hasil = {ok: false, basi: ["berita"], kini: new Date(kini).toISOString(), sumber: {
+    titik: ada({umur_jam: 1.5, ambang_jam: 8}), kualitas: ada({umur_jam: -6.5, ambang_jam: 18}), berita: ada({umur_jam: 40, ambang_jam: 30}), dampak: ada({umur_jam: -0.1, ambang_jam: null}),
+    jeda_sensor: {M: {terakhir: "2026-11-01T12:10Z", umur_jam: -0.2}, N20: {terakhir: "2026-11-01T10:00Z", umur_jam: 3}, N21: {terakhir: null, umur_jam: null}}}};
+  const r = await catatRiwayatStatus({DB}, hasil, kini);
+  assert.deepEqual(r, {sumber: 6}, "enam baris: sensor tanpa umur (N21) tetap tidak ditulis");
+  const baris = (await DB.prepare("SELECT sumber, umur_menit, batas_menit, segar FROM status_riwayat WHERE slot = ? ORDER BY sumber").bind(slot).all()).results;
+  assert.deepEqual(baris, [
+    {sumber: "berita", umur_menit: 2400, batas_menit: 1800, segar: 0}, {sumber: "dampak", umur_menit: 0, batas_menit: null, segar: 1},
+    {sumber: "jeda_sensor_M", umur_menit: 0, batas_menit: null, segar: 1}, {sumber: "jeda_sensor_N20", umur_menit: 180, batas_menit: null, segar: 1},
+    {sumber: "kualitas", umur_menit: 0, batas_menit: 1080, segar: 1}, {sumber: "titik", umur_menit: 90, batas_menit: 480, segar: 1}], "negatif = 0 (baru), yang normal tak berubah");
+  await DB.prepare("DELETE FROM status_riwayat WHERE slot = ?").bind(slot).run();
+});
+
 uji("sla: tanpa R2 (MEDIA) himawari tidak dinilai: tidak pernah membuat /api/status 503", async () => {
   const S = await siapkan("uji-sla-tanpa-r2", {luar, asetKu: aset}), r = await S.api("GET", "/api/status");
   assert.ok(!r.j.basi.includes("himawari")); assert.equal(r.j.sumber.himawari.umur_jam, null);
@@ -243,7 +260,7 @@ uji("sla: halaman /admin/kinerja dan GET /api/sla: hak SAMA (adminOK atau staf b
   const anon = await hal({}); assert.equal(anon.status, 303); assert.match(anon.headers.get("location"), /\/admin\/masuk/);
   const palsu = await hal({cookie: "sesi_staf=" + "a".repeat(64)}); assert.equal(palsu.status, 303, "sesi staf palsu = bukan staf"); assert.equal((await api("GET", "/api/sla", undefined, {cookie: "sesi_staf=" + "a".repeat(64)})).s, 403);
   for (const [nama, h] of [["admin", ADMIN], ["akun gerbang AKUN_SITUS", GERBANG]]) { assert.equal((await hal(h)).status, 200, nama + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, h)).s, 200, nama + " API"); }
-  for (const peran of ["tmc", "pimpinan", "verifikator"]) { const s = await staf([peran]); assert.equal((await hal(s)).status, 200, peran + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, s)).s, 200, peran + " API"); }
+  for (const peran of ["tmc", "pimpinan", "verifikator", "operator_cc"]) { const s = await staf([peran]); assert.equal((await hal(s)).status, 200, peran + " halaman"); assert.equal((await api("GET", "/api/sla", undefined, s)).s, 200, peran + " API"); }
   const { SEMUA_PERAN } = await import("../../src/admin_halaman.js"), { PERAN } = await import("../../src/staf.js"); const luar = Object.keys(PERAN).filter(p => !SEMUA_PERAN.includes(p)); assert.ok(SEMUA_PERAN.every(p => p in PERAN), "SEMUA_PERAN harus subhimpunan PERAN"); assert.deepEqual(luar, ["kemitraan"], "satu-satunya peran di luar SEMUA_PERAN: kemitraan (sengaja, tidak membuka kinerja/SLA)");
 });
 
@@ -270,7 +287,7 @@ uji("sla: masker titik panas tetap: /api/titik membuang sel sumber_statis (bukan
   assert.equal(selTitik(-2.125, 0.375), "-212,38", "pembulatan genap seperti Python round(): -212.5 -> -212, 37.5 -> 38"); assert.equal(selTitik(0.125, 0.5), "12,50");
   const t = new Date(Date.now() - JAM), tgl = t.toISOString().slice(0, 10), jm = t.toISOString().slice(11, 16).replace(":", ""), KEP = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_ti5,frp,daynight";
   const baris = (lat, lon) => `${lat},${lon},330,0.4,0.4,${tgl},${jm},N,VIIRS,h,2.0NRT,290,12.3,D`;
-  CSV = {VIIRS_SNPP_NRT: [KEP, baris(industri.lat, industri.lon), baris(-2.1234, 113.5678), baris(kawah.lat, kawah.lon)].join("\n"), VIIRS_NOAA20_NRT: KEP, VIIRS_NOAA21_NRT: KEP, MODIS_NRT: KEP};
+  CSV = {VIIRS_NOAA21_NRT: [KEP, baris(industri.lat, industri.lon), baris(-2.1234, 113.5678), baris(kawah.lat, kawah.lon)].join("\n"), VIIRS_NOAA20_NRT: KEP, MODIS_NRT: KEP};
   const wil = await import("../../src/titik.js"); assert.ok(wil.selTitik(industri.lat, industri.lon) !== wil.selTitik(-2.1234, 113.5678));
   await cron(Date.UTC(2026, 9, 22, 3, 15));   // menit 15 jam kelipatan 3: perbaruiTitik
   const isi = JSON.parse((await DB.prepare("SELECT isi FROM titik_terbaru ORDER BY id DESC LIMIT 1").first()).isi), pos = isi.baris.map(r => `${r[0]},${r[1]}`);

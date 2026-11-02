@@ -20,8 +20,8 @@ import {halamanKorban, HALAMAN_STAF} from "./admin_halaman.js";
 import {halamanAdmin} from "./statistik.js";
 
 const JAM = 36e5, HARI = 24 * JAM, MAKS_FOTO = 2 * 1048576, JENDELA_LAPOR = 60 * HARI, RE_KLIEN = /^[0-9A-Za-z_-]{8,64}$/;
-/* daftar tetap: sama dengan CHECK di 0034 dan public/instansi_korban.js, public/admin/korban.js (dijaga korban.test.mjs) */
-export const BENCANA = {karhutla: "Karhutla", banjir: "Banjir, longsor, dan rob", gempa: "Gempa dan tsunami", cuaca: "Cuaca ekstrem", udara: "Kualitas udara", gunungapi: "Letusan gunung api", kekeringan: "Kekeringan", lainnya: "Lainnya"};
+/* daftar tetap: sama dengan CHECK di 0034 (diperlebar 0093) dan public/instansi_korban.js, public/admin/korban.js (dijaga korban.test.mjs) */
+export const BENCANA = {karhutla: "Karhutla", banjir: "Banjir, longsor, dan rob", gempa: "Gempa dan tsunami", cuaca: "Cuaca ekstrem", udara: "Kualitas udara", gunungapi: "Letusan gunung api", kekeringan: "Kekeringan", pesisir: "Gelombang pasang dan abrasi", lainnya: "Lainnya"};
 export const KATEGORI = {warga: "Warga", petugas_pemadam: "Petugas pemadam", relawan: "Relawan", lainnya: "Lainnya"};
 export const PENYEBAB = {terbakar: "Terbakar", asap_ispa: "Asap atau ISPA", tenggelam: "Tenggelam", kecelakaan_tugas: "Kecelakaan saat bertugas", lainnya: "Lainnya"};
 export const SUMBER = {laporan_langsung: "Laporan langsung", rs: "Rumah sakit", kepolisian: "Kepolisian"};

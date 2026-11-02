@@ -68,3 +68,76 @@ mengalahkan pembanding penduduk, bukan hanya mengalahkan InaRISK.
    ditampilkan dengan pita ketidakpastian, dan "data kosong" ditandai, bukan diisi nol.
 6. **Uji pemahaman petugas**: tugas sepadan "peta saja" lawan "peta + penjelasan" (ketepatan, waktu, mengenali
    keterbatasan), dijalankan di /uji-pilot.
+
+## 5. Hasil model bahaya kecamatan (dijalankan 1 Nov 2026)
+
+Satu kali jalan `model_bahaya.py` sesuai pra-registrasi (commit 628f2454 dan amandemen 194e80da, c6eb2715, 7fea98eb,
+d64eb0c1), tanpa mengubah fitur, label, ambang, atau lambda sesudah melihat hasil. Elevasi `faktor_kec.json` terisi
+7.268 dari 7.270 kecamatan (99,97%); tidak ada fitur yang dibuang karena null. Label uji: kuartil atas jumlah kejadian
+Groundsource 2022-2025 (ambang 18 kejadian, laju dasar 26%); label latih: kuartil atas 2016-2021 (ambang 12).
+Selang 95% bootstrap 1.000 ulangan atas provinsi, format titik [bawah, atas].
+
+**Vonis: gagal. Label "Hipotesis, belum lolos uji".** `model_bahaya.json` tidak di-commit dan tidak tampil.
+
+| Skor | AUC | Selang 95% |
+| --- | --- | --- |
+| Model (logistik L2, 9 fitur) | 0,728 | 0,680 sampai 0,784 |
+| InaRISK % zona sedang+tinggi | 0,688 | 0,636 sampai 0,739 |
+| Kepadatan penduduk (log) | 0,678 | 0,618 sampai 0,741 |
+| Riwayat kejadian 2016-2021 (tanpa vonis) | 0,909 | 0,893 sampai 0,926 |
+
+| Selisih | Titik | Selang 95% | Vonis |
+| --- | --- | --- | --- |
+| Model lawan InaRISK (L1) | +0,040 | -0,003 sampai +0,091 | tidak lolos (batas bawah < 0) |
+| Model lawan kepadatan (L2) | +0,051 | -0,024 sampai +0,121 | tidak lolos (batas bawah < 0) |
+| Terkalibrasi (L1 dan L2) | | | tidak lolos |
+
+Presisi pada 25% skor teratas (tanpa vonis): model 51,6%, kepadatan 47,0%, InaRISK 44,5% (recall 49,7%, 45,3%,
+42,9%).
+
+### Per pulau (AUC, tanpa selang, tanpa vonis)
+
+| Pulau | Kecamatan | Model | InaRISK | Kepadatan |
+| --- | --- | --- | --- | --- |
+| Sumatra | 1.963 | 0,708 | 0,600 | 0,592 |
+| Jawa | 2.148 | 0,676 | 0,686 | 0,695 |
+| Bali dan Nusa Tenggara | 489 | 0,725 | 0,703 | 0,729 |
+| Kalimantan | 628 | 0,631 | 0,579 | 0,630 |
+| Sulawesi | 1.024 | 0,730 | 0,662 | 0,670 |
+| Maluku | 237 | 0,825 | 0,426 | 0,787 |
+| Papua | 781 | 0,960 | 0,747 | 0,967 |
+
+Di Jawa, tempat sebagian besar label berada, model kalah dari kepadatan dan InaRISK. Keunggulan muncul di Sumatra
+dan Sulawesi. AUC Papua tinggi pada ketiga skor karena label hampir hanya di kecamatan kota.
+
+### Kepekaan label tunggal (poligon kecil di satu kecamatan, tanpa vonis)
+
+AUC model 0,737 (0,700 sampai 0,781), InaRISK 0,674 (0,627 sampai 0,715), kepadatan 0,687 (0,643 sampai 0,733),
+riwayat 0,884 (0,865 sampai 0,905). Selisih model lawan InaRISK +0,063 (+0,029 sampai +0,105), lawan kepadatan +0,050
+(+0,006 sampai +0,094). Dengan label ini kedua syarat lolos, tetapi pra-registrasi menetapkan label ini sebagai uji
+kepekaan tanpa vonis, jadi vonis tetap gagal. Ini petunjuk bahwa label n_th yang dihitung di titik berat poligon lebar
+mengaburkan sinyal faktor; perbaikan label harus dipra-registrasi ulang sebelum diuji lagi.
+
+### Bobot fitur (model tampilan, dilatih pada semua kecamatan dengan label 2016-2021, fitur terstandar)
+
+| Fitur | Bobot |
+| --- | --- |
+| Kepadatan (log) | +1,033 |
+| Riwayat DIBI kabupaten 2008-2021 | +0,556 |
+| Elevasi tengah (log) | -0,385 |
+| InaRISK zona sedang+tinggi | +0,308 |
+| Jarak titik sungai (log) | -0,282 |
+| Beda tinggi | +0,195 |
+| Dataran rendah lokal | -0,188 |
+| InaRISK zona tinggi | +0,095 |
+| Pesisir | +0,017 |
+
+Bobot terbesar kepadatan, sesuai label berita yang condong ke kota. Bobot negatif "dataran rendah lokal" berlawanan
+dengan dugaan fisik dan kemungkinan kolinear dengan elevasi; bobot menjelaskan model, bukan sebab di lapangan.
+
+### Akibatnya
+
+- Skor model tidak ditampilkan sebagai ramalan. Faktor per kecamatan tetap boleh tampil di kartu "Kenapa rawan
+  banjir" sebagai deskripsi (persentil nasional dan sumber), tanpa skor model.
+- Riwayat kejadian kecamatan 2016-2021 (AUC 0,909) jauh lebih tepat dari semua skor faktor. Pembanding yang jujur
+  untuk model berikutnya adalah persistensi, bukan hanya InaRISK dan kepadatan.

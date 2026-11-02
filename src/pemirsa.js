@@ -9,7 +9,7 @@ import {tx, superOK} from "./posko.js";
 import {sandiBaru} from "./staf.js";
 
 const HARI = 24 * 3600e3, SESI_UMUR = 30 * HARI, COOKIE = "sesi_pemirsa";
-/* daftar tetap: sama dengan trigger pemirsa_tab_sah di 0036 dan tab menu atas public/index.html (dijaga pemirsa.test.mjs) */
+/* daftar tetap: sama dengan trigger pemirsa_tab_sah (0036, dibuat ulang 0077, 0099, 0100) dan tab menu atas public/index.html (dijaga pemirsa.test.mjs) */
 export const TAB = {peta: "Peta", insight: "Insight", berita: "Berita", tren: "Tren", dampak: "Dampak", sim: "Simulasi", monitor: "Monitor", foto: "Foto"};
 const SESI = new WeakMap();   // permintaan -> baris pemirsa (gerbang dan layaniHTML membaca sekali)
 

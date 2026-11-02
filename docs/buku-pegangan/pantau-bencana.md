@@ -22,6 +22,8 @@ Buku ini sekitar 320 KB, kira-kira 90 ribu token. Jangan dibaca utuh, oleh manus
 | Bawa fitur karhutla ke bencana lain | Katalog modul dan design system, Rencana multi-bencana | `inti-layar` / `pipa-umum` | matriks paritas diperbarui |
 | Deck PPT, laporan DOCX/PDF | Selera presentasi (PPT), Selera laporan | skill `ppt-konsultan` | gerbang QA skill |
 | SIPPA `/pipa` | `data/kajian-bnpb/pipa/KEPUTUSAN-SIPPA.md` dulu, baru buku ini | `sippa` | `npm run uji:sippa` |
+| Fitur atau modul baru | Keputusan "Fitur baru dimulai dari paket dokumen" di bab Keputusan pemilik; contoh `data/kajian-bnpb/kampus/` | sesi induk merancang, pengerja pemilik menulis kode | paket lengkap di `data/kajian-bnpb/<modul>/`, `npm run uji:agen` (gerbang paket modul) |
+| Pegawai dan relawan lapangan (absen wajah, logbook, Sayap BNPB) | `data/kajian-bnpb/lapangan/KEPUTUSAN-LAPANGAN.md` dulu, baru buku ini | `lapangan` | `npm run uji:agen`, `npm run uji:warga` |
 | Terbit ke produksi | Terbit dan definisi selesai, Insiden & pelajaran | sesi induk saja | `terbit.yml` hijau, aset live dan `/api/status` dicek |
 | Hemat token | Hemat token, `docs/buku-pegangan/HEMAT-TOKEN.md` | | |
 
@@ -56,6 +58,9 @@ Terbaru di atas
 
 Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik saat menegur atau memutus.
 
+1. 1 Nov 2026
+   - **Logo BNPB berkotak putih di sampul Paparan Kepala BNPB ditolak.** Berkas logo bersama di mesin deck ternyata berlatar putih; dibuat transparan dan mesin kini menolak logo berpojok putih.
+   - **Fitur baru dimulai dari paket dokumen**: SIPPA dan Kemitraan Kampus dibangun dari paket KEPUTUSAN sampai TIKET; mulai sekarang agent menawarkan paket itu sendiri tiap ada fitur baru, dimulai dari modul pegawai dan relawan lapangan (`data/kajian-bnpb/lapangan/`). Diperiksa gerbang paket modul dan diingatkan hook saat prompt menyebut fitur, modul, atau sistem baru.
 1. 31 Okt 2026
    - **Semua halaman deck terang, termasuk penutup dan pembatas Lampiran** (*"Jadikan terang"*, meneguhkan *"Semua terang"* 26 Okt). Mesin `ppt-konsultan`: `gelap_untuk` dikosongkan di 12 tema proyek, warna pembatas jadi navy dan teks di putih, 10 spek lama dibersihkan dari sampul gelap, `deck.py` menolak halaman berlatar navy, dan `tema.py` punya uji negatifnya. Navy tetap untuk bidang kecil (pil tanggal, kepala tabel, baris total).
    - **Dua sistem desain**: Centurisk97 untuk web (dari `public/inti/`) dan BNPB untuk deck dan laporan (dari tema mesin deck dan Elemen Grafis BNPB), terpisah tetapi saling merujuk untuk aturan bahasa, angka, dan sumber data.
@@ -250,6 +255,11 @@ Vonis dan perubahan selera per tanggal. Kutipan miring adalah kata-kata pemilik 
 
 | Keputusan | Tanggal | Bunyinya |
 | --- | --- | --- |
+| Isi kartu deck selalu justify | 1 Nov 2026 | Isi kartu rata kanan-kiri tanpa kecuali (*"kenapa ada yang ga justify"*); `deck.py` tidak lagi menebak jumlah baris |
+| Butir di bawah tabel diganti kartu | 1 Nov 2026 | Daftar butir berlabel tebal di bawah tabel diganti pita kartu atau baris tabel (*"either lu buat dalam card atau dalam tabel"*) |
+| Istilah lapangan | 1 Nov 2026 | "Tenaga Ahli dan Tim Khusus"; "Relawan BNPB"; absen dengan pindai wajah, bukan swafoto; logbook Dirdalops cukup dipantau, tanpa laporan terpisah |
+| Logo BNPB selalu PNG transparan | 1 Nov 2026 | Logo di atas foto atau gradien tidak boleh berkotak putih (*"kenapa ini lu ga png ya ... jangan keulang lagi"*). Berkas logo semua proyek deck sudah transparan; `deck.py` `cek_logo_transparan()` menolak logo berpojok putih, uji tolaknya di `scripts/periksa.py` skill `ppt-konsultan` |
+| Fitur baru dimulai dari paket dokumen | 1 Nov 2026 | Tiap fitur atau modul baru, agent langsung merekomendasikan dan menyusun paket dokumen di `data/kajian-bnpb/<modul>/` sebelum kode: KEPUTUSAN, RISET (GitHub yang bisa ditiru, praktik lazim, kode yang sudah ada di repo), PRD, ALUR, ALGORITMA (bila ada rumus atau ambang), DESIGN-SYSTEM (bila ada layar), DESAIN-TEKNIS, KEAMANAN-PRIVASI (bila ada data pribadi), RENCANA-UJI, TIKET, GLOSARIUM; ditambah baris "baca dulu, baru bangun" di `AGENTS.md` dan agent pengerja bila berkasnya belum berpemilik (*"tiap mau bikin fitur baru ada gini-gininya lu langsung rekomendasikan"*). Gerbang `tests/agen/gerbang-paket-modul.test.mjs`, pengingat hook `scripts/agents/pengingat-paket.mjs` |
 | Header tabel deck polos rata tengah | 26 Okt 2026 | Teks kapital rata tengah di atas kolomnya, tidak berbentuk pil; kolom label rata kiri, kolom lain rata tengah (*"Catat agar semua header rata tengah"*). Di deck mitra Malaysia kolom teks rata kiri |
 | Tanpa pil keyakinan dan kode temuan di slide | 26 Okt 2026 | Pil Resmi, Terverifikasi, Estimasi model tidak tampil; tanpa "Finding A.1" dan awalan "A1." di judul. Kode boleh tetap di spek |
 | Deck kiriman pemilik disunting di berkasnya | 26 Okt 2026 | Data diganti dan slide baru ditambah dalam gaya yang sama; tidak dibangun ulang di mesin lain |

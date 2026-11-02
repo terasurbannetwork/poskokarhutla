@@ -33,11 +33,11 @@ const KEP = "latitude,longitude,bright_ti4,scan,track,acq_date,acq_time,satellit
 const KEP_M = "latitude,longitude,brightness,scan,track,acq_date,acq_time,satellite,instrument,confidence,version,bright_t31,frp,daynight";
 let CSV;
 const csvAwal = () => ({
-  VIIRS_SNPP_NRT: [KEP, `-2.1234,113.5678,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,h,2.0NRT,290,12.3,D`,           // dalam A, di LUBANG B
+  VIIRS_NOAA21_NRT: [KEP, `-2.1234,113.5678,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,h,2.0NRT,290,12.3,D`,           // dalam A, di LUBANG B
     `-2.1300,113.5700,330,0.4,0.4,${tgl(t1)},${jm(t1)},N,VIIRS,l,2.0NRT,290,1.1,N`].join("\n"),                     // keyakinan rendah: tidak diantre
   MODIS_NRT: [KEP_M, `-2.15,113.59,320,1,1,${tgl(t1)},${jm(t1)},Terra,MODIS,50,6.1NRT,290,20,D`,
     `-2.16,113.60,320,1,1,${tgl(t1)},${jm(t1)},Terra,MODIS,85,6.1NRT,290,20,D`].join("\n"),
-  VIIRS_NOAA20_NRT: KEP, VIIRS_NOAA21_NRT: KEP});
+  VIIRS_NOAA20_NRT: KEP});
 let luarLog = [], resend = {status: 200};
 const luar = async req => {
   const u = new URL(req.url); luarLog.push(u.hostname);
@@ -374,7 +374,7 @@ uji("antrean: cron menit 16 mencocokkan titik FIRMS ke konsesi; satu baris per p
   /* putaran berikutnya: satu titik hilang dari jendela (hitungan turun) tapi titik_n tidak turun; titik baru menaikkan; baris tidak menggandakan */
   await adm("POST", `/api/posko/panggilan/${baris[1].id}`, {aksi: "catat", catatan: "dicatat admin"});
   CSV.MODIS_NRT = [KEP_M, `-2.15,113.59,320,1,1,${tgl(t1)},${jm(t1)},Terra,MODIS,50,6.1NRT,290,20,D`].join("\n");
-  CSV.VIIRS_SNPP_NRT = [KEP, `-2.2000,113.6500,330,0.4,0.4,${tgl(t1 + 20 * MENIT)},${jm(t1 + 20 * MENIT)},N,VIIRS,h,2.0NRT,290,12.3,D`].join("\n");
+  CSV.VIIRS_NOAA21_NRT = [KEP, `-2.2000,113.6500,330,0.4,0.4,${tgl(t1 + 20 * MENIT)},${jm(t1 + 20 * MENIT)},N,VIIRS,h,2.0NRT,290,12.3,D`].join("\n");
   await w.scheduled({cron: "* * * * *", scheduledTime: jam(3, 15)});
   await w.scheduled({cron: "* * * * *", scheduledTime: jam(3, 16)});
   const lagi = (await DB.prepare("SELECT * FROM panggilan ORDER BY perusahaan_id").all()).results;
@@ -642,7 +642,7 @@ uji("centurisk97.id: /lapangan terbuka tanpa sesi lewat daftar putih bernama; se
   /* /daftar-kontak: registrasi kontak pemangku kepentingan yang tak punya akun situs (permintaan pemilik 23 Okt 2026); hanya menulis baris menunggu */
   /* /pendataan: staf direktorat BNPB membuat akun pendataan sendiri (keputusan pemilik 26 Okt 2026); akun menunggu persetujuan Super Admin */
   /* /uji-pilot: regu uji pilot SIPPA membuka dossier dan melapor lewat tautan bertoken (keputusan SIPPA 59); token dicek di tiap API */
-  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/daftar-kontak", "/renlap", "/uji-pilot", "/presiden", "/instansi", "/pendataan"], "daftar putih persis tujuh halaman (renlap: keputusan SIPPA 61, SP-140), masing-masing bersama alasan");
+  assert.deepEqual([...PUBLIK_TANPA_SESI.keys()], ["/lapangan", "/petugas", "/daftar-kontak", "/renlap", "/uji-pilot", "/presiden", "/instansi", "/pendataan"], "daftar putih persis delapan halaman (petugas: modul Pegawai dan Relawan Lapangan, kode pribadi dicek di tiap API; renlap: keputusan SIPPA 61, SP-140), masing-masing bersama alasan");
   assert.ok([...PUBLIK_TANPA_SESI.values()].every(a => a.length > 20));
   const buka = j => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: {"cf-connecting-ip": "198.51.100.9"}}).then(async r => { await r.text(); return r; });
   assert.equal((await buka("/lapangan")).status, 200);

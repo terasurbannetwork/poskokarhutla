@@ -401,6 +401,12 @@ def lompatan(jarak, ambang=300):
             and abs(d - statistics.median(x for _, x in jarak[i - 5:i])) > ambang]
 
 
+def lompatan_mana_pun(jarak, ambang=300):
+    """tahun yang melompat > ambang m dari tahun sebelumnya (selisih <= 2 tahun) di MANA PUN dalam deret: tangga klasifikasi
+    tambak/mangrove menyala-mati atau awan, bukan gerak pantai"""
+    return [y for (y0, d0), (y, d) in zip(jarak, jarak[1:]) if y - y0 <= 2 and abs(d - d0) > ambang]
+
+
 def nilai_transek(t, tahun_akhir):
     """statistik transek dari deret `jarak` saja (tanpa citra): bisa dihitung ulang dari keluaran lama"""
     for k in ("laju", "ci95", "r2", "r2_penuh", "ar1", "n", "pencilan", "keyakinan", "kelas", "laju_10th", "perubahan_m",
@@ -410,8 +416,8 @@ def nilai_transek(t, tahun_akhir):
     if t["id"] in GANGGUAN:   # tahun bangunan tidak ikut regresi; deretnya tetap utuh di `jarak`
         t["gangguan"], mulai = GANGGUAN[t["id"]]
         jarak = [p for p in jarak if p[0] < mulai]
-    elif lompatan(jarak):
-        t["tinjau"] = lompatan(jarak)
+    elif lompatan(jarak) or lompatan_mana_pun(jarak):
+        t["tinjau"] = sorted(set(lompatan(jarak)) | set(lompatan_mana_pun(jarak)))
     semua = laju(jarak)
     if not semua:
         return t
@@ -475,7 +481,7 @@ def olah_situs(s, transek, tahun_akhir):
 
 def ringkas_situs(s, ts, info):
     ada = [t for t in ts if t.get("laju") is not None]
-    yakin = [t for t in ada if t["keyakinan"] != "rendah" and not t.get("gangguan")]
+    yakin = [t for t in ada if t["keyakinan"] != "rendah" and not t.get("gangguan") and not t.get("tinjau")]   # tinjau = tangga/lompatan, bukan gerak pantai
     ab = [t for t in yakin if t["kelas"] == "abrasi"]
     return dict(s, transek=len(ts), terbaca=len(ada), tahun=sorted(info["ambang"]), ambang=info["ambang"], adegan=info["adegan"],
                 laju_median=round(statistics.median(t["laju"] for t in ada), 1) if ada else None,
@@ -504,8 +510,9 @@ CATATAN = [
     "autokorelasi; tetap saja itu perkiraan statistik, bukan ukuran lapangan. Belum ada satu pun pengukuran lapangan.",
     "Ambang air/darat dipilih sesudah melihat data Sayung (ambang 0 membalik banyak hasil karena tambak). Sayung karena itu "
     "bukan uji bebas untuk ambang; empat situs lain yang menjadi pembanding.",
-    "Transek bertanda tinjau melompat lebih dari 300 m di dua tahun terakhir (tanggul, reklamasi, atau tahun berawan) dan "
-    "belum diperiksa tangan.",
+    "Transek bertanda tinjau punya lompatan lebih dari 300 m dalam satu tahun di mana pun dalam deret (klasifikasi tambak atau "
+    "mangrove menyala-mati, tanggul, reklamasi, atau tahun berawan) dan belum diperiksa tangan; lajunya tidak dipakai untuk "
+    "judul atau peringkat.",
 ]
 
 
@@ -690,6 +697,10 @@ def uji():
     assert lompatan(j) == [2024, 2025] and lompatan(j[:-2]) == []
     t = nilai_transek({"id": "sayung-05", "lat": -6.9, "lon": 110.5, "arah": 0., "jarak": j}, 2025)
     assert t["gangguan"] and t["periode"] == [2000, 2023] and "tinjau" not in t and t["laju"] == -10.0, t
+    k = [[y, -100 - 5 * (y - 2000)] for y in range(2000, 2020)]
+    k[8][1] += 800; k[9][1] += 800
+    assert lompatan_mana_pun(k) == [2008, 2010] and lompatan(k) == [] and nilai_transek({"id": "x-1", "lat": -6.9, "lon": 110.5, "arah": 0., "jarak": k}, 2025)["tinjau"] == [2008, 2010]
+    assert lompatan_mana_pun(j[:-2]) == []
     assert laju([]) is None and laju([[2000, 1], [2000, 2], [2000, 3]]) is None and tkrit(11) == 2.23 and tkrit(500) == 2.00
     print("abrasi.py uji: lolos")
 

@@ -1,0 +1,218 @@
+{
+  "_catatan": "Lampiran kegiatan udara Merauke 31 Okt 2026. Dibangun dari spek/bangun_spek_merauke.py; halaman renlap asli ditempel gabung_lampiran.py.",
+  "pesan_kunci": "Lahan di Merauke dibuka dengan api: semak dibakar dulu, pohon ditumbangkan sesudahnya; api terpusat di cluster PT Merauke Sawit Jaya.",
+  "judul_dokumen": "Lampiran Kegiatan Udara Karhutla Merauke",
+  "subjek_dokumen": "Kegiatan udara 31 Oktober 2026",
+  "kajian": "merauke-lampiran",
+  "format": "kajian",
+  "tanggal": "2026-11-01",
+  "cut_off": "31 Okt 2026, 23.59 WIT",
+  "bagian": [
+    {
+      "judul": "Renlap Rute Udara Merauke",
+      "label": "Renlap udara"
+    },
+    {
+      "judul": "Foto Udara dan Berkas Asli Renlap",
+      "label": "Foto dan berkas asli"
+    }
+  ],
+  "slide": [
+    {
+      "jenis": "sampul",
+      "layout": "putih",
+      "judul_penuh": true,
+      "skala_subjudul": 0.9,
+      "foto": "foto/udara-20.jpg",
+      "kota": "Jakarta",
+      "kredit": "Foto: kegiatan udara tim BNPB",
+      "logo_kanan": "foto/berakhlak-hd.png",
+      "kepada": "Lampiran laporan untuk Kepala BNPB",
+      "subjudul": "Kabupaten Merauke, Papua Selatan, 31 Oktober 2026",
+      "penyaji": {
+        "nama": "Tim Ahli dan Tim Sus IT BNPB",
+        "jabatan": "Badan Nasional Penanggulangan Bencana"
+      }
+    },
+    {
+      "jenis": "daftar-isi"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 1
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "lampiran",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Lampiran A1. Renlap rute udara 30 Oktober: peta check point dan urutan terbang",
+      "kode": "AA",
+      "judul": "Lampiran A1. Renlap rute udara 30 Oktober: peta check point dan urutan terbang",
+      "cut_off": false,
+      "kolom_panel": 2,
+      "panel": [
+        {
+          "judul": "Rute dan urutan check point",
+          "ikon": "data",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/renlap-udara-01.png",
+              "utuh": true,
+              "keterangan": "Renlap rute udara BNPB, 30 Okt 2026"
+            }
+          ],
+          "bobot": 1.05
+        },
+        {
+          "judul": "Keterangan lampiran",
+          "ikon": "ringkasan",
+          "bobot": 1,
+          "skala_huruf": 1.9,
+          "daftar": [
+            "Rute melingkari segitiga Bandara Mopah, lahan PT Merauke Sawit Jaya, dan lahan PT Medcopapua Alam Lestari.",
+            "Check point hanya dipasang di kelompok api nyata dari hotspot terbaru, dengan radius pandang {{angka:mk.radius|satuan}}.",
+            "Tabel kanan memuat koordinat, jumlah hotspot, jarak tempuh, dan waktu kumulatif tiap check point.",
+            "Seluruh halaman aslinya ada di Lampiran C berkas ini.",
+            "Rute bisa disusun ulang dalam hitungan menit bila hotspot berubah."
+          ]
+        }
+      ],
+      "sumber": "Renlap rute udara BNPB, 30 Okt 2026"
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "lampiran",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Lampiran A2. Flight plan untuk pilot: haluan, jarak, dan waktu tiap leg",
+      "kode": "AB",
+      "judul": "Lampiran A2. Flight plan untuk pilot: haluan, jarak, dan waktu tiap leg",
+      "cut_off": false,
+      "kolom_panel": 2,
+      "panel": [
+        {
+          "judul": "Flight plan per leg",
+          "ikon": "data",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/renlap-udara-02.png",
+              "utuh": true,
+              "keterangan": "Renlap rute udara BNPB, 30 Okt 2026"
+            }
+          ],
+          "bobot": 2.46
+        },
+        {
+          "judul": "Keterangan lampiran",
+          "ikon": "ringkasan",
+          "bobot": 1,
+          "skala_huruf": 1.6,
+          "daftar": [
+            "Tiap leg memuat koordinat GPS tujuan dalam derajat-menit, tautan Google Maps, haluan sejati, jarak, dan waktu.",
+            "Jarak ditulis dalam kilometer dan mil laut, siap dibaca pilot.",
+            "Kolom kanan menjelaskan cara membaca rute dan hal yang perlu diputuskan sebelum lepas landas.",
+            "Berkas GPX dan KML ikut dikirim untuk perangkat navigasi.",
+            "Leg yang tertutup asap bisa dilewati tanpa menyusun ulang seluruh rute."
+          ]
+        }
+      ],
+      "sumber": "Renlap rute udara BNPB, 30 Okt 2026"
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "lampiran",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Lampiran A3. Halaman rinci tiap check point: citra dan daftar hotspot",
+      "kode": "AC",
+      "judul": "Lampiran A3. Halaman rinci tiap check point: citra dan daftar hotspot",
+      "cut_off": false,
+      "kolom_panel": 2,
+      "panel": [
+        {
+          "judul": "CP-1 Semangga",
+          "ikon": "data",
+          "kolom_foto": 1,
+          "foto": [
+            {
+              "berkas": "foto/renlap-udara-03.png",
+              "utuh": true,
+              "keterangan": "Renlap rute udara BNPB, 30 Okt 2026"
+            }
+          ],
+          "bobot": 1.05
+        },
+        {
+          "judul": "Keterangan lampiran",
+          "ikon": "ringkasan",
+          "bobot": 1,
+          "skala_huruf": 1.9,
+          "daftar": [
+            "Satu halaman untuk tiap check point: citra satelit dengan lingkaran radius pandang dan arah datang pesawat.",
+            "Koordinat dalam dua format dan tombol Google Maps.",
+            "Daftar hotspot di sekitar check point: jam deteksi, sensor, FRP, dan jarak dari check point.",
+            "Renlap memuat halaman serupa untuk semua check point.",
+            "Tim di helikopter bisa mencocokkan api yang terlihat dengan hotspot di daftar."
+          ]
+        }
+      ],
+      "sumber": "Renlap rute udara BNPB, 30 Okt 2026"
+    },
+    {
+      "jenis": "pembatas-seksi",
+      "bagian": 2
+    },
+    {
+      "jenis": "galeri",
+      "jenis_slide": "lampiran",
+      "judul_bentuk": "deskriptif",
+      "pesan": "Lampiran B. Foto udara lain dari kegiatan 31 Oktober",
+      "kode": "BA",
+      "judul": "Lampiran B. Foto udara lain dari kegiatan 31 Oktober",
+      "cut_off": false,
+      "kolom_panel": 1,
+      "panel": [
+        {
+          "judul": "Foto udara lain, 31 Oktober",
+          "ikon": "karhutla",
+          "kolom_foto": 4,
+          "foto": [
+            {
+              "berkas": "foto/udara-12.jpg",
+              "keterangan": "Lahan terbuka di tepi hutan"
+            },
+            {
+              "berkas": "foto/udara-09.jpg",
+              "keterangan": "Rawa mengering"
+            },
+            {
+              "berkas": "foto/udara-27.jpg",
+              "keterangan": "Petak bergaris hitam bekas api"
+            },
+            {
+              "berkas": "foto/udara-16.jpg",
+              "keterangan": "Sungai di bawah kabut asap"
+            },
+            {
+              "berkas": "foto/udara-02.jpg",
+              "keterangan": "Asap di tepi lahan terbuka"
+            },
+            {
+              "berkas": "foto/udara-22.jpg",
+              "keterangan": "Kepulan asap di hutan"
+            },
+            {
+              "berkas": "foto/udara-32.jpg",
+              "keterangan": "Asap di dekat permukiman"
+            },
+            {
+              "berkas": "foto/video-asap.jpg",
+              "keterangan": "Cuplikan video: banyak kepulan asap"
+            }
+          ]
+        }
+      ],
+      "sumber": "Kegiatan udara tim BNPB, 31 Okt 2026"
+    }
+  ]
+}

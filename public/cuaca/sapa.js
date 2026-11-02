@@ -3,7 +3,7 @@
    Sekali per hari WIB per peramban (kunci pb_sapa_cuaca), muncul di /cuaca dan /cuaca/peta. Angka dari S (prakiraan, nowcast, gelombang) yang sudah dimuat halaman.
    Skrip klasik, dimuat SESUDAH peta.js dan mulai.js. Global: S, Insight, Peta, bukaTab, esc, fmt, namaProv, warnaHujan, warnaAngin, sevWarna, GEL, KELAS_HUJAN, tingkat, AMB. */
 (() => {
-  Sapa.daftar("cuaca", {
+  const O = {
     ikon: {hujan: '<path d="M7 14a4 4 0 0 1-.5-8A6 6 0 0 1 18 5a4 4 0 0 1-1 9"/><path d="M8 17v3M12 16v4M16 17v3"/>', angin: '<path d="M3 8h11a3 3 0 1 0-3-3M3 12h16a3 3 0 1 1-3 3M3 16h8"/>',
       siklon: '<path d="M12 12m-2 0a2 2 0 1 0 4 0a2 2 0 1 0-4 0M12 3a9 9 0 0 1 9 9M12 21a9 9 0 0 1-9-9M12 6a6 6 0 0 1 6 6M12 18a6 6 0 0 1-6-6"/>',
       ombak: '<path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2"/>'},
@@ -26,14 +26,21 @@
       return Sapa.rangka({ikon: "hujan", eyebrow: basi() ? "Prakiraan cuaca ekstrem " + tglSgk(S.pr.hari[S.h0]) : "Situasi cuaca ekstrem hari ini",
         judul: h.h.v >= AMB().hujan[0] ? `Hujan ${KELAS_HUJAN[tingkat(h.h.v, AMB().hujan)]} <b>${mm(h.h.v)} mm</b> diprakirakan di <span translate="no">${esc(prov(h.h.r[2]))}</span> ${ini}`
           : `Hujan terlebat ${ini} <b>${mm(h.h.v)} mm</b> <span translate="no">(${esc(prov(h.h.r[2]))})</span>, belum mencapai kelas lebat`,
-        chips: [["angin", `embusan terkuat ${mm(h.a.v)} km/jam`], S.nc.length && ["awas", `${fmt(S.nc.length)} peringatan nowcast · ${fmt(kec)} kecamatan`]],
+        chips: [["angin", `embusan terkuat ${mm(h.a.v)} km/jam`], S.nc.length && ["awas", `${fmt(S.nc.length)} peringatan nowcast di ${fmt(kec)} kecamatan`]],
         bagian: [
           h.prov.length && ["Provinsi perlu perhatian", "ps", h.prov.map(p => Sapa.provBaris(esc(prov(p.k)), [Sapa.pil(`${mm(p.hujan)} mm`, p.hujan >= 100 ? "merah" : p.hujan >= 50 ? "oranye" : "prov", "hujan"),
             Sapa.pil(`${mm(p.angin)} km/jam`, p.angin >= 72 ? "oranye" : "prov", "angin"), ...(p.nc ? [Sapa.pil(`${fmt(p.nc)} kecamatan nowcast`, "oranye")] : [])])).join("")],
-          h.nc.length && ["Peringatan nowcast terluas", "ks", h.nc.map((x, i) => Sapa.item(x.i, i + 1, esc(x.event), esc((x.headline || "").replace(/^.* di /, "")), `<em class="sp-p ${x.severity === "Severe" || x.severity === "Extreme" ? "merah" : "oranye"}" translate="no">${esc(x.severity)}</em>`, `<em class="sp-p prov">${fmt(x.n)} kecamatan</em>`)).join("")],
+          h.nc.length && ["Peringatan nowcast terluas", "ks", h.nc.map((x, i) => Sapa.item(x.i, i + 1, esc(x.event), esc((x.headline || "").replace(/^.* di /, "")), `<em class="sp-p ${x.severity === "Severe" || x.severity === "Extreme" ? "merah" : "oranye"}" translate="no">${esc(SEV_ID[x.severity] || x.severity)}</em>`, `<em class="sp-p prov">${fmt(x.n)} kecamatan</em>`)).join("")],
           perhatian && ["Perlu perhatian", "cs", perhatian]],
         sumber: "Open-Meteo, ECMWF, BMKG"});
     },
     saatKlik(e, d) { const b = e.target.closest("[data-k]"); if (!b) return; d.close(); bukaTab("peta"); nanti(() => Peta.fokus("nc", +b.dataset.k)); return true; },
-  });
+  };
+  Sapa.daftar("cuaca", O);
+  /* tombol kepala: buka ulang pop-up kapan saja (sama dengan banjir) */
+  let muat = 0;
+  document.getElementById("sapaBuka")?.addEventListener("click", async e => { if (muat || document.querySelector("dialog.sp[open]")) return; muat = 1;
+    const b = e.currentTarget; b.setAttribute("aria-busy", "true"); b.style.opacity = ".6";   /* umpan balik sinkron; kerja berat ditunda */
+    try { if (!(await O.siap())) return; await new Promise(r => nanti(r)); const h = await O.hitung(); if (h) nanti(() => { SapaInti.css(); SapaInti.dialog(O.html(h), O.saatKlik, "pb_sapa_cuaca"); }); }
+    finally { muat = 0; b.removeAttribute("aria-busy"); b.style.opacity = ""; } });
 })();

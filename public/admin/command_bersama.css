@@ -1,0 +1,14 @@
+/* Gaya bersama command center: pil status (meja operator). Dimuat sebelum command_center.css.
+   Warna status satu sumber di sini: baru merah, dalam konfirmasi kuning, ada api oranye, tidak ada api abu. */
+:root{--cc-baru:#e5484d;--cc-konf:#f5c518;--cc-api:#f76b15;--cc-aman:#8b98ab;--cc-titik:#ffb04d}
+[hidden]{display:none !important}
+
+
+/* pil status */
+.cc-pil{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:3px 11px;font-size:12px;font-weight:800;white-space:nowrap;color:#fff;background:var(--cc-aman)}
+.cc-pil[data-s=baru]{background:var(--cc-baru)}
+.cc-pil[data-s=dalam_konfirmasi]{background:var(--cc-konf);color:#3b2f00}
+.cc-pil[data-s=ada_api]{background:var(--cc-api)}
+.cc-pil[data-s=tidak_ada_api]{background:var(--cc-aman)}
+
+@media (prefers-reduced-motion:reduce){*{animation:none !important;transition:none !important}}

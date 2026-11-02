@@ -11,6 +11,10 @@ const mTulis = m => "M " + Number(m).toLocaleString("id-ID", {minimumFractionDig
 /* kelas kekuatan: warna pil (A3) dan batas; teks pil memakai warna tegas supaya terbaca di latar putih */
 const KELAS_M = [[7, "#c9503a"], [6, "#d4702a"], [5, "#a8780c"], [0, "#3f6fa8"]];
 const warnaM = m => (KELAS_M.find(k => m >= k[0]) || KELAS_M[3])[1];
+/* USGS PAGER: korban jiwa dari paparan per MMI (pager.js). Dua angka signifikan; kelas PAGER berwarna */
+const PAGER_WARNA = {hijau: "#3f9a5b", kuning: "#c9961a", oranye: "#e0792f", merah: "#c9402f"};
+const duaAngka = v => v < 1 ? "kurang dari 1" : fmt(GempaPager.bulat2(v));
+const pilPager = `<span class="pill pm" style="--w:#6b7280">perkiraan, USGS PAGER</span>`;
 /* pil abu "perkiraan model" (pola inti/adapter.js) untuk angka hasil model, bukan pengukuran */
 const pilModel = `<span class="pill pm" style="--w:#6b7280">perkiraan model</span>`;
 const pilM = m => `<span class="pill pm" style="--w:${warnaM(m)}">${mTulis(m)}</span>`;

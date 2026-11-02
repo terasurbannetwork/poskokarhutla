@@ -4,7 +4,8 @@
 (() => {
   const el = id => document.getElementById(id);
   const IKON = {resmi: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M9 12l2 2 4-4", hitung: "M5 4h14v16H5z|M8 8h8|M8 12h2|M14 12h2|M8 16h2|M14 16h2",
-    raster: "M3 3h18v18H3z|M3 9h18|M3 15h18|M9 3v18|M15 3v18", batas: "M12 3l9 16H3z|M12 10v4|M12 17v.5", waktu: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M12 7v5l3 2"};
+    raster: "M3 3h18v18H3z|M3 9h18|M3 15h18|M9 3v18|M15 3v18", batas: "M12 3l9 16H3z|M12 10v4|M12 17v.5", waktu: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M12 7v5l3 2",
+    berjalan: "M5 13l4 4L19 7", sebagian: "M12 3a9 9 0 1 0 0 18 9 9 0 0 0 0-18z|M12 3v18|M12 7h4|M12 12h4", belum: "M5 12h14"};
   const svgIkon = k => `<svg viewBox="0 0 24 24" aria-hidden="true" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${IKON[k].split("|").map(d => `<path d="${d}"/>`).join("")}</svg>`;
   const pil = (teks, k, kls = "") => `<span class="bn-pil ${kls}">${svgIkon(k)}${esc(teks)}</span>`;
   const BLN = ["Jan", "Feb", "Mar", "Apr", "Mei", "Jun", "Jul", "Agu", "Sep", "Okt", "Nov", "Des"];
@@ -120,15 +121,15 @@
              {kls: "kj-s1", pts: lama.nilai.map(t => ({x: t.tahun, y: t.v, tip: tip("Capaian " + t.tahun, "IRB (metode lama): " + n(t.v, 2)), aria: `Capaian ${t.tahun}: ${t.v}`}))}]});
     const gKrb = garis({aria: "IRB bahaya dan kerentanan KRB 2021, 2024 dan 2025", yMin: 160, yMax: 180, langkah: 10, yFmt: v => n(v),
       seri: [{kls: "kj-s1", pts: krb.nilai.map(t => ({x: t.tahun, y: t.v, tip: tip("IRB " + t.tahun, "Deret KRB 2021: " + n(t.v, 2), t.tahun === 2025 ? "Turun " + pct(krb.turun_persen, 2) + " dari 2024" : "Tahun pembanding"), aria: `${t.tahun}: ${t.v}`}))}]});
-    const gSeb = garis({aria: "Baseline IRB 147,95 pada 2025 dan lintasan target turun 1,2 persen per tahun sampai 2029", yMin: 135, yMax: 150, langkah: 5, yFmt: v => n(v),
+    const gSeb = garis({aria: "Baseline IRB 147,95 pada 2025 dan lintasan hitungan kita turun 1,2 persen per tahun sampai 2029", yMin: 135, yMax: 150, langkah: 5, yFmt: v => n(v),
       seri: [{kls: "kj-s0", putus: true, pts: [{x: 2025, y: T.baseline, tip: tip("Baseline 2025", "IRB (SEB): " + n(T.baseline, 2), "Dasar lintasan 2026 sampai 2029"), aria: `Baseline 2025: ${T.baseline}`}, ...T.lintasan.map(t => ({x: t.tahun, y: t.v, tip: tip("Target " + t.tahun, "IRB: " + n(t.v, 2), "Turun " + n(T.turun_persen_per_tahun, 1) + "% per tahun dari baseline", "Hitungan kita, bukan angka dokumen"), aria: `Target ${t.tahun}: ${t.v}`}))]}]});
-    const kartuIrb = (ket, judul, graf, legenda, p, sumber) => kartu([pil("Angka resmi", "resmi", "kj-pil-resmi"), pil(ket, "batas", "kj-pil-batas")], judul, graf + legenda + `<p class="kj-p">${esc(p)}</p>`, sumber);
+    const kartuIrb = (ket, judul, graf, legenda, p, sumber, hitung) => kartu([hitung ? pil("Hitungan kita", "hitung", "kj-pil-hitung") : pil("Angka resmi", "resmi", "kj-pil-resmi"), pil(ket, "batas", "kj-pil-batas")], judul, graf + legenda + `<p class="kj-p">${esc(p)}</p>`, sumber);
     const A = kartuIrb("Deret 1 dari 3", `Metode lama: IRB turun dari ${n(lama.nilai[0].v, 2)} pada 2019 ke ${n(lama.nilai[5].v, 2)} pada 2024, turun ${pct(lama.turun_persen, 2)}`, gLama, leg([["lt", "Target"], ["lc", "Capaian"]]),
       "Target lama (turun 10 persen) tercapai pada 2023 dan 2024, belum pada 2020 sampai 2022. Deret ini berhenti di 2024.", lama.sumber);
     const B = kartuIrb("Deret 2 dari 3", `Bahaya dan kerentanan KRB 2021: IRB ${n(krb.nilai[0].v, 2)} ke ${n(krb.nilai[1].v, 2)}, turun ${pct(krb.turun_persen, 2)}, di bawah target 1,2% (hitungan LAKIP memakai 170,19)`, gKrb, "",
       krb.catatan, krb.sumber);
     const C = kartuIrb("Deret 3 dari 3", `Baseline baru ${n(T.baseline, 2)} pada 2025; lintasan turun ${n(T.turun_persen_per_tahun, 1)}% per tahun menjadi ${n(T.lintasan[T.lintasan.length - 1].v, 2)} pada 2029 (hitungan kita, bukan angka dokumen)`, gSeb, leg([["lt", "Baseline dan lintasan (hitungan kita, bukan angka dokumen)"]]),
-      T.rumus + ".", T.sumber);
+      T.rumus + ".", T.sumber, true);
     const cp = I.capaian_turun_persen;
     const lamaCp = cp.filter(c => c.tahun < 2025), c25 = cp.find(c => c.tahun === 2025);
     const gLamaCp = batang({yMax: 3.5, langkah: 1, yFmt: v => n(v, 1), aria: "Penurunan IRB per tahun 2021 sampai 2024, metode lama, dibaca dari grafik LAKIP",
@@ -177,6 +178,38 @@
     return bab("Peringatan dini") + `<div class="kj-baris">${A}${B}</div>` + C;
   }
 
+  /* ---------- (e) kontribusi modul ke Renstra: tabel tulisan tangan dari iku.json (kunci "kontribusi"), kolom bisa diurut ---------- */
+  const ST = {berjalan: ["Berjalan", "kj-st-ya"], sebagian: ["Sebagian", "kj-st-sb"], belum: ["Belum ada", "kj-st-no"]}, URUT_ST = {berjalan: 0, sebagian: 1, belum: 2};
+  const KOL = [["modul", "Modul"], ["indikator", "Yang dibantu"], ["bentuk", "Bentuk"], ["status", "Status"], ["bukti", "Bukti dan batas"]];
+  const nilaiK = (r, k) => k === "status" ? URUT_ST[r.status] : k === "indikator" ? r.indikator[0].nama : r[k];
+  function bagianKontribusi(d) {
+    const K = d.kontribusi, nInd = new Set(K.flatMap(r => r.indikator.map(i => i.dokumen + "|" + i.hal + "|" + i.nama))).size, c = x => K.filter(r => r.status === x).length;
+    return bab("Kontribusi Centurisk97 ke Renstra") + `<article class="bn-kartu kj-kartu"><div class="kj-pilpil">${pil("Peta tulisan tangan", "hitung", "kj-pil-hitung")}${pil("Berjalan " + c("berjalan"), "berjalan", "kj-st-ya")}${pil("Sebagian " + c("sebagian"), "sebagian", "kj-st-sb")}${pil("Belum ada " + c("belum"), "belum", "kj-st-no")}</div>
+      <h3>${n(K.length)} modul dipetakan ke ${n(nInd)} indikator Renstra: ${n(c("berjalan"))} berjalan, ${n(c("sebagian"))} sebagian, ${n(c("belum"))} belum ada</h3>
+      <p class="kj-p">Berjalan berarti fiturnya ada dan membaca data nyata. Sebagian berarti fiturnya ada tetapi cakupan, data, atau ujinya terbatas. Belum ada berarti tidak ada fitur kita untuk butir itu. Kolom terakhir menyebut apa yang tidak dilakukan modulnya: membantu memantau atau menyiapkan data bukan berarti angka indikator naik.</p>
+      <div class="kj-tabel"><div class="ad-tabel-wadah"><table class="ad-tabel kj-kontribusi"><thead><tr>${KOL.map(([k, t]) => `<th aria-sort="none"><button type="button" data-k="${k}">${esc(t)}<i></i></button></th>`).join("")}</tr></thead><tbody id="isiKontribusi"></tbody></table></div></div>
+      <div class="kj-sumber">Sumber: ${esc(REN)} dan ${esc(LAK)} pada kolom Yang dibantu; status dan bukti dari pemeriksaan fitur di sistem Centurisk97</div></article>`;
+  }
+  const REN = "Renstra BNPB 2025-2029", LAK = "LAKIP BNPB 2025";
+  function tabelKontribusi(d) {
+    const st = {k: "status", turun: false}, host = el("isiKontribusi"), kepala = host.closest("table").tHead;
+    const gambar = () => {
+      const b = [...d.kontribusi].sort((x, y) => { const a = nilaiK(x, st.k), z = nilaiK(y, st.k); return (a < z ? -1 : a > z ? 1 : 0) * (st.turun ? -1 : 1) || URUT_ST[x.status] - URUT_ST[y.status]; });
+      host.innerHTML = b.map(r => { const [t, kls] = ST[r.status];
+        return `<tr><td data-label="Modul"><b>${r.url ? `<a href="${esc(r.url)}">${esc(r.modul)}</a>` : esc(r.modul)}</b></td>
+          <td data-label="Yang dibantu"><div class="kj-isi">${r.indikator.map(i => `<div>${esc(i.nama)} <span class="kj-hal">(${esc(i.dokumen)} hal. ${esc(i.hal)})</span></div>`).join("")}</div></td>
+          <td data-label="Bentuk">${esc(r.bentuk)}</td><td data-label="Status">${pil(t, r.status, kls)}</td>
+          <td data-label="Bukti dan batas"><div class="kj-isi">${esc(r.bukti)}<div class="kj-batas">${esc(r.batas)}</div></div></td></tr>`; }).join("");
+    };
+    /* chrome urgent (panah dan aria-sort seketika), isi tabel menyusul sesudah frame tercat */
+    kepala.addEventListener("click", e => { const b = e.target.closest("button[data-k]"); if (!b) return;
+      st.turun = st.k === b.dataset.k ? !st.turun : false; st.k = b.dataset.k;
+      kepala.querySelectorAll("th").forEach(th => { const a = th.querySelector("button") === b; th.setAttribute("aria-sort", a ? (st.turun ? "descending" : "ascending") : "none"); th.querySelector("i").textContent = a ? (st.turun ? "↓" : "↑") : ""; });
+      window.nanti(gambar); });
+    const awal = kepala.querySelector('button[data-k="status"]');   /* urutan awal: berjalan, sebagian, belum */
+    awal.parentElement.setAttribute("aria-sort", "ascending"); awal.querySelector("i").textContent = "↑"; gambar();
+  }
+
   async function mulai() {
     try {
       const r = await fetch("/data/bnpb/iku.json"); if (!r.ok) throw new Error(r.status);
@@ -188,6 +221,7 @@
       el("pdb").innerHTML = bagianPDB(d);
       el("peringatan").innerHTML = bagianPeringatan(d);
       daftarKerja(d);
+      el("kontribusi").innerHTML = bagianKontribusi(d); tabelKontribusi(d);
       el("pesan").hidden = true; el("isi").hidden = false;
       pasangTip();
     } catch (e) {

@@ -103,7 +103,7 @@ masing-masing (urutan HOTSPOT, FIRESPOT, LUAS TERBAKAR, BELUM PADAM, sama dengan
   dengan kelas BMKG; uji `python3 pil_sendiri.py`). Dengan `--bmkg`: `wa_operasi.py` (uji `python3 wa_operasi.py`).
 - Skrip deck di `penanganan/`: `kisi.py` (geometri kolom, dipakai bersama), `ganti.py` (tabel, baca param.json),
   `tambah_peta.py`, `peta.mjs`, `bnpb.py` (pil, slide operasi), `ikon.mjs` (ikon Pemda; ikon FIRESPOT disalin dari deck 25 Okt), `cek6.py` (gerbang: tiap sel tabel harus cocok angka.json).
-- Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) butuh `penanganan/logo/<kode>.png`; tanpa itu generator berhenti dengan pesan jelas.
+- Provinsi 6 teratas tanpa baris di templat (selain 62,16,63,15,61,93,72,64) memakai `penanganan/logo/<kode>.png` bila ada, kalau tidak lambang layar `public/lambang/provinsi/<kode>.png` (semua 38 provinsi tersedia); baris disalin dari baris Kaltim.
 
 ## Penanganan banjir, longsor dan rob
 

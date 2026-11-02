@@ -10,7 +10,7 @@
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const sv = (tag, att, ...anak) => { const e = document.createElementNS(NS, tag); for (const [k, v] of Object.entries(att || {})) e.setAttribute(k, v); for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   /* daftar tetap sama dengan src/korban.js (label asli dari D.kamus; ini hanya urutan tombol) */
-  const BENCANA = ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "lainnya"], KATEGORI = ["warga", "petugas_pemadam", "relawan", "lainnya"], PENYEBAB = ["terbakar", "asap_ispa", "tenggelam", "kecelakaan_tugas", "lainnya"], SUMBER = ["laporan_langsung", "rs", "kepolisian"];
+  const BENCANA = ["karhutla", "banjir", "gempa", "cuaca", "udara", "gunungapi", "kekeringan", "pesisir", "lainnya"], KATEGORI = ["warga", "petugas_pemadam", "relawan", "lainnya"], PENYEBAB = ["terbakar", "asap_ispa", "tenggelam", "kecelakaan_tugas", "lainnya"], SUMBER = ["laporan_langsung", "rs", "kepolisian"];
   const STATUS = {dilaporkan: "Dilaporkan", terverifikasi: "Terverifikasi", dikoreksi: "Dikoreksi"}, POTONG = 15, MAKS_FOTO = 1.4 * 1048576;
   const waktu = t => new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB";
   const nowWib = () => new Date(Date.now() + 7 * 36e5).toISOString().slice(0, 16);

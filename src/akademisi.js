@@ -2,14 +2,17 @@
    Data pribadi ribuan dosen TIDAK boleh di public/ (aset statis) maupun di repo (repo publik): satu berkas JSON di R2 MEDIA,
    kunci akademisi/induk.json, diunggah dari mesin pemilik (scripts tidak ikut repo). Rute ini hanya meneruskan berkas itu setelah sesi lolos. */
 import {gagal, json, cacheTepi, bacaBody, adminOK} from "./worker.js";
-import {stafOK, stafSesi, stafPeran, PERAN} from "./staf.js";
+import {stafOK, stafSesi, stafPeran} from "./staf.js";
 import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 
 const KUNCI = "akademisi/induk.json";
+/* peran staf yang boleh membuka direktori (baca DAN tulis): daftar EKSPLISIT, bukan Object.keys(PERAN). operator_cc (command center, hanya baca halaman centurisk97.id; buku kontak penuh TETAP TERTUTUP,
+   src/staf.js) sengaja tidak ada; peran staf baru tertutup di sini sampai pemilik memasukkannya. Dijaga tests/warga/akademisi_peran.test.mjs. */
+export const P_AKADEMISI = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan", "kemitraan"];
 
 async function induk(env, req) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get(KUNCI);
   if (!o) return gagal(503, "data akademisi belum diunggah ke R2");
@@ -23,7 +26,7 @@ const ID_OA = /^A\d{4,12}$/, MAKS_KARYA = 8, MAKS_HAL = 50;
 /* saringan dari layar, divalidasi di sini: ?hal=1..50, ?urut=sitasi|terbaru, ?jenis=jurnal|prosiding|buku, ?cari=<= 80 huruf (tanpa , | : yang memecah sintaks filter OpenAlex) */
 const URUT = {sitasi: "cited_by_count:desc", terbaru: "publication_date:desc"}, JENIS_OA = {jurnal: "journal", prosiding: "conference", buku: "book series"};
 async function karya(env, req, ctx, id, url) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!ID_OA.test(id)) return gagal(404, "pakar tidak dikenal");
   const q = url.searchParams, hal = Math.min(MAKS_HAL, Math.max(1, parseInt(q.get("hal"), 10) || 1)), urut = URUT[q.get("urut")] ? q.get("urut") : "sitasi",
     jenis = JENIS_OA[q.get("jenis")] ? q.get("jenis") : "", cari = (q.get("cari") || "").replace(/[,|:]/g, " ").replace(/\s+/g, " ").trim().slice(0, 80),
@@ -72,7 +75,7 @@ export function rakitAbstrak(idx) {
 const uraiJsonAI = r => { let x = r?.response ?? r; if (x && typeof x === "object") return x; if (typeof x !== "string") return null;
   const a = x.indexOf("{"), b = x.lastIndexOf("}"); try { return a >= 0 && b > a ? JSON.parse(x.slice(a, b + 1)) : null; } catch (e) { return null; } };
 async function riset(env, req, ctx, id) {
-  const oleh = await stafOK(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const oleh = await stafOK(env, req, P_AKADEMISI); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!ID_W.test(id)) return gagal(404, "karya tidak dikenal");
   return cacheTepi(new Request("https://akademisi.riset/" + id), ctx, 30 * 86400, async () => {
     const u = new URL("https://api.openalex.org/works/" + id);
@@ -108,7 +111,7 @@ async function riset(env, req, ctx, id) {
    berkas kecil. Staf saja; tidak ada rincian = 404 dan layar diam. */
 const ID_SINTA = /^\d{1,9}$/, PECAHAN = 64;
 async function sinta(env, req, id) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!ID_SINTA.test(id)) return gagal(404, "pakar tidak dikenal");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get(`akademisi/sinta/${Number(id) % PECAHAN}.json`);
@@ -120,7 +123,7 @@ async function sinta(env, req, id) {
    Staf saja (dimuat <img> same-origin, cookie ikut). SVG dilayani dengan CSP ketat + nosniff supaya skrip di dalamnya mati. */
 const KUNCI_GAMBAR = /^[a-f0-9]{16,64}\.(png|jpg|jpeg|gif|webp|ico|svg)$/, TIPE_GAMBAR = {png: "image/png", jpg: "image/jpeg", jpeg: "image/jpeg", gif: "image/gif", webp: "image/webp", ico: "image/x-icon", svg: "image/svg+xml"};
 async function gambar(env, req, kunci) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const m = KUNCI_GAMBAR.exec(kunci); if (!m) return gagal(404, "gambar tidak dikenal");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get(`akademisi/gambar/${kunci}`); if (!o) return gagal(404, "gambar tidak ada");
@@ -146,7 +149,7 @@ export function ringkasOrcid(r) {
 /* GET /api/akademisi/kampus dan /kontak: berkas pendamping induk.json (koordinat kampus, email ORCID), staf saja, 503 bila belum diunggah. */
 const polos = o => new Response(o.body, {headers: {"content-type": "application/json; charset=utf-8", "cache-control": "private, no-store", "x-content-type-options": "nosniff", "x-diperbarui": o.uploaded.toISOString()}});
 async function berkas(env, req, kunci) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   const o = await env.MEDIA.get(kunci);
   return o ? polos(o) : gagal(503, `${kunci} belum diunggah ke R2`);
@@ -167,7 +170,7 @@ async function muat(env) {
 const rad = x => x * Math.PI / 180;
 const jarak = (a, b, c, d) => 12742 * Math.asin(Math.sqrt(Math.sin(rad(c - a) / 2) ** 2 + Math.cos(rad(a)) * Math.cos(rad(c)) * Math.sin(rad(d - b) / 2) ** 2));
 async function terdekat(env, req, url) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const q = url.searchParams, rumpun = q.get("rumpun") || "", lat = Number(q.get("lat")), lon = Number(q.get("lon")), prov = q.get("prov"), nn = q.get("n");
   const n = nn === null ? 6 : Number(nn);
   if (!RUMPUN_SAH.has(rumpun)) return gagal(400, "rumpun tidak dikenal");
@@ -197,9 +200,9 @@ async function terdekat(env, req, url) {
 
 /* GET /api/akademisi/data/<nama>: berkas R2 akademisi/<nama>.json, nama dari daftar tetap. Satu kunci rute per nama (worker.js tidak diubah);
    nama lain tidak punya rute, jatuh ke aset statis = 404 tanpa menyentuh R2. "baru" = akademisi/baru/YYYY-MM.json terbaru (list prefix, urut leksikal). */
-export const DATA_AKADEMISI = ["riset", "logo_pemilik", "bpbd_kapasitas", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran", "donatur_kejadian", "csr", "ahli_asing", "redaksi", "strategis", "alumni", "kalaksa", "hibah_riset", "penghargaan", "diaspora", "peneliti_muda", "prodi_beasiswa", "foto_pakar", "wilayah_daya", "lembaga_ekstra", "pakar_ekstra", "kejadian_ekstra", "tesis"];
+export const DATA_AKADEMISI = ["riset", "logo_pemilik", "bpbd_kapasitas", "kejadian", "kolaborasi", "jurnal", "pusat_studi", "pengadaan", "baru", "lembaga", "lembaga_3w", "aset_riset", "sensor", "inovasi", "sistem_data", "tokoh", "dokumen", "berita", "pendanaan", "negara_donor", "afiliasi", "buku", "penyedia", "kalender", "pelatih", "respons_internasional", "media", "graf", "pemutakhiran", "donatur_kejadian", "csr", "ahli_asing", "redaksi", "strategis", "alumni", "kalaksa", "hibah_riset", "penghargaan", "diaspora", "peneliti_muda", "prodi_beasiswa", "foto_pakar", "wilayah_daya", "lembaga_ekstra", "pakar_ekstra", "kejadian_ekstra", "tesis", "donasi_bencana", "temuan_riset"];
 async function dataBaca(env, req, nama) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   if (!env.MEDIA) return gagal(503, "penyimpanan belum tersedia");
   let kunci = `akademisi/${nama}.json`;
   if (nama === "baru") {
@@ -223,7 +226,7 @@ async function muatLembaga(env) {
 }
 const webAman = w => { try { const u = new URL(w); return /^https?:$/.test(u.protocol) && !/["<>]/.test(w) ? w : null; } catch (e) { return null; } };
 async function lembagaTerdekat(env, req, url) {
-  if (!(await stafOK(env, req, Object.keys(PERAN)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const q = url.searchParams, lat = Number(q.get("lat")), lon = Number(q.get("lon")), kategori = q.get("kategori") || "", sub = (q.get("sub") || "").trim(), nn = q.get("n"), n = nn === null ? 6 : Number(nn);
   if (!q.get("lat") || !q.get("lon") || !(lat >= -12 && lat <= 7) || !(lon >= 94 && lon <= 142)) return gagal(400, "lat harus -12..7 dan lon 94..142");
   if (kategori && !KATEGORI_LEMBAGA.has(kategori)) return gagal(400, "kategori tidak dikenal");
@@ -249,7 +252,7 @@ const TTL_RINGKAS = 30 * 86400e3, TOP_RISET = 30;
 const SKEMA_RINGKAS = {type: "object", properties: {temuan: {type: "array", items: {type: "object", properties: {teks: {type: "string"}, karya: {type: "array", items: {type: "string"}}}, required: ["teks", "karya"]}},
   implikasi: {type: "array", items: {type: "string"}}}, required: ["temuan", "implikasi"]};
 async function ringkasan(env, req) {
-  const oleh = await stafOK(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const oleh = await stafOK(env, req, P_AKADEMISI); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const bb = await bacaBody(req, 512); if (bb.galat) return gagal(bb.status || 400, bb.galat);
   const rumpun = bb.o.rumpun, prov = bb.o.prov ?? "";
   if (!RUMPUN_SAH.has(rumpun)) return gagal(400, "rumpun tidak dikenal");
@@ -295,7 +298,7 @@ async function ringkasan(env, req) {
 async function saya(env, req) {
   const adm = !!(await adminOK(env, req));
   const s = await stafSesi(env, req);   // satu baca D1; sesi staf (bila bukan token admin)
-  if (!adm && !(s && Object.keys(PERAN).some(p => s.peran.includes(p)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  if (!adm && !(s && P_AKADEMISI.some(p => s.peran.includes(p)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   return json({peran: adm ? ["admin"] : s.peran, super: adm && !!(await superOK(env, req))}, 200, {"cache-control": "private, no-store"});
 }
 
@@ -305,7 +308,7 @@ async function saya(env, req) {
 const JENIS_KOREKSI = new Set(["pakar", "lembaga", "inovasi", "sistem_data", "tokoh", "dokumen"]);
 const teks = (v, maks) => typeof v === "string" ? v.replace(/[<>\u0000-\u0008\u000b\u000c\u000e-\u001f]/g, " ").trim() : null;
 async function koreksiBuat(env, req) {
-  const oleh = await stafOK(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const oleh = await stafOK(env, req, P_AKADEMISI); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const bb = await bacaBody(req, 2048); if (bb.galat) return gagal(bb.status || 400, bb.galat);
   const {jenis, id, butir, sumber_url} = bb.o, isi = teks(bb.o.isi);
   if (!JENIS_KOREKSI.has(jenis)) return gagal(400, "jenis tidak dikenal");
@@ -349,7 +352,7 @@ function cekRiwayat(o) {
   return {v: {jenis: o.jenis, tanggal: o.tanggal, tanggal_selesai: sel, judul, kejadian_id: kej, catatan, penilaian: nilai}};
 }
 async function riwayatDaftar(env, req, url) {
-  const oleh = await stafOK(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const oleh = await stafOK(env, req, P_AKADEMISI); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const jt = url.searchParams.get("jenis_target"), tid = url.searchParams.get("target_id"), kej = url.searchParams.get("kejadian_id");
   let q;
   if (jt != null || tid != null) {
@@ -360,7 +363,7 @@ async function riwayatDaftar(env, req, url) {
   return json({riwayat: (await q.all()).results.map(({oleh: o, ...r}) => ({...r, milik: !String(oleh).startsWith("staf:") || o === oleh}))   /* oleh mentah (hash token admin) tidak dikirim ke layar */}, 200, {"cache-control": "private, no-store"});
 }
 async function riwayatBuat(env, req) {
-  const oleh = await stafOK(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const oleh = await stafOK(env, req, P_AKADEMISI); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const bb = await bacaBody(req, 4096); if (bb.galat) return gagal(bb.status || 400, bb.galat);
   const {jenis_target: jt, target_id: tid} = bb.o;
   if (!JENIS_TARGET.has(jt)) return gagal(400, "jenis_target tidak dikenal");
@@ -374,7 +377,7 @@ async function riwayatBuat(env, req) {
 }
 /* PATCH dan DELETE: baris dimuat, lalu hanya penulis atau admin lolos */
 async function riwayatUbahHapus(env, req, id) {
-  const adm = await adminOK(env, req), oleh = adm || await stafPeran(env, req, Object.keys(PERAN)); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
+  const adm = await adminOK(env, req), oleh = adm || await stafPeran(env, req, P_AKADEMISI); if (!oleh) return gagal(401, "masuk sebagai staf BNPB atau admin");
   const lama = await env.DB.prepare(`SELECT ${KOLOM_RIWAYAT} FROM akademisi_riwayat WHERE id = ?`).bind(Number(id)).first();
   if (!lama) return gagal(404, "riwayat tidak ada");
   if (!adm && lama.oleh !== oleh) return gagal(403, "hanya penulis atau admin");

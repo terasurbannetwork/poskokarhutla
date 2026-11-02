@@ -3,7 +3,7 @@
    sesuai kondisi sumbernya; wilayah dan peran menyaring; penugasan, jejak, abaikan wajib alasan; dummy hanya Super Admin dan menumbuhkan rantai hulu-hilir; 503 tanpa migrasi.
    Jalankan: node --test tests/warga/pantau.test.mjs */
 import assert from "node:assert/strict";
-import {readFileSync, existsSync} from "node:fs";
+import {readFileSync, existsSync, readdirSync} from "node:fs";
 import path from "node:path";
 import {AKAR} from "./_bantu.mjs";
 import {siapkan, berantai, ADMIN, MOD2, GERBANG} from "./_bnpb.mjs";
@@ -75,7 +75,10 @@ uji("migrasi 0030 idempoten; CHECK dan trigger menahan peran/wilayah liar, NIP g
   await DB.prepare("DELETE FROM staf WHERE username = 'stafcek01'").run();
 });
 uji("daftar peran dan jenis: JS == trigger migrasi == klien (tidak menyimpang)", async () => {
-  const sql = teks("migrations/0085_staf_peran_kemitraan.sql"), dariSql = [...sql.match(/value NOT IN \(([^)]*)\)/)[1].matchAll(/'(\w+)'/g)].map(m => m[1]);
+  /* trigger dibaca dari migrasi TERAKHIR yang mendefinisikannya (0030 -> 0085 -> 0099 ...): peran baru = migrasi baru yang membuang dan membuat ulang trigger */
+  const berkas = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql")).sort().filter(f => /CREATE TRIGGER (?:IF NOT EXISTS )?staf_larik_sah\b/.test(teks("migrations", f))).at(-1);
+  const sql = teks("migrations", berkas).match(/CREATE TRIGGER (?:IF NOT EXISTS )?staf_larik_sah\b[\s\S]*?BEGIN/)[0], dariSql = [...sql.match(/value NOT IN \(([^)]*)\)/)[1].matchAll(/'(\w+)'/g)].map(m => m[1]);
+  assert.ok(Number(berkas.slice(0, 4)) >= 90 && dariSql.includes("operator_cc"), "migrasi terakhir yang mendefinisikan trigger peran memuat operator_cc: " + berkas);
   assert.deepEqual(Object.keys(PERAN).sort(), dariSql.sort());
   const klien = teks("public/admin/pantau.js");
   for (const p of Object.keys(PERAN)) assert.ok(klien.includes(`${p}:`), "klien tak mengenal peran " + p);
@@ -387,9 +390,10 @@ uji("dummy: hanya Super Admin; menumbuhkan seluruh rantai (tiap jenis butir teri
 uji("halaman /admin/pantau: kerangka tanpa data dengan CSP ketat; berkas klien ada; tanpa pemisah titik tengah", async () => {
   const r = await U.mf.dispatchFetch("http://bnpb.lokal/admin/pantau");
   assert.equal(r.status, 200); const html = await r.text();
-  assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/); assert.equal(r.headers.get("cache-control"), "no-store");
+  assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'self'/); assert.equal(r.headers.get("cache-control"), "no-store");
   assert.ok(html.includes("/admin/pantau.js") && html.includes("/admin/pantau.css") && html.includes("/admin/bersama.js") && html.includes('id="aksiJudul"'));
   assert.ok(!/<script>[^<]/.test(html) && !/ style=/.test(html), "tanpa skrip/gaya inline");
+  assert.ok(!/command_(bersama|center)\./.test(html) && !teks("public/admin/pantau.js").includes("window.Cc"), "blok tindak lanjut command center di kartu api memakai gaya Meja Pantau sendiri: command_*.css/js tidak dimuat di sini");
   assert.ok(!html.includes("628") && !html.includes("sandi_sha"));
   for (const f of ["public/admin/pantau.js", "public/admin/pantau.css", "src/pantau.js", "src/staf.js"]) { assert.ok(existsSync(path.join(AKAR, f)), f); assert.ok(!teks(f).includes(" · "), `${f}: tanpa pemisah titik tengah`); }
   const js = teks("public/admin/pantau.js");

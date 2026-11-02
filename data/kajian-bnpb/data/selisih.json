@@ -1,0 +1,153 @@
+{
+ "dibuat": "2026-10-31",
+ "grup": [
+  {
+   "kunci": [
+    "bnpb.bd24.jabar.kejadian_2024_gambar",
+    "bnpb.bd24.jabar.kejadian_2024_teks_l2"
+   ],
+   "nilai": [
+    457,
+    461
+   ],
+   "sumber": [
+    "bnpb-2025-buku-data-2024, hlm. 9",
+    "bnpb-2025-buku-data-2024, hlm. 7, 110"
+   ],
+   "selisih_persen": 0.8677,
+   "status": "selisih",
+   "catatan": "Jawa Barat di Gambar 1.11; teks dan L2 menulis 461 (pemeriksa konsistensi, rekomendasi 100)"
+  },
+  {
+   "kunci": [
+    "bnpb.bd24.kejadian.2024",
+    "bnpb.bd24.kejadian.2024_tabel_l2",
+    "dibi.nasional.kejadian.2024",
+    "dibi.nasional.kejadian_ckan.2024"
+   ],
+   "nilai": [
+    3472,
+    3475,
+    3548.0,
+    3472
+   ],
+   "sumber": [
+    "bnpb-2025-buku-data-2024, hlm. 3, 6",
+    "bnpb-2025-buku-data-2024, hlm. 110-111",
+    "dibi/rekap_nasional_tahunan.csv",
+    "bnpb-2025-ckan"
+   ],
+   "selisih_persen": 2.1421,
+   "status": "selisih",
+   "catatan": "terendah dalam lima tahun; DIBI tarik 23 Okt 2026 memberi 3.548 (dibi.nasional.kejadian.2024), tanggal data berbeda; jumlah kolom L2 per provinsi 3.475"
+  },
+  {
+   "kunci": [
+    "bnpb.bd24.kekeringan.2024_tabel",
+    "bnpb.bd24.kekeringan.2024_teks_bab13"
+   ],
+   "nilai": [
+    89,
+    54
+   ],
+   "sumber": [
+    "bnpb-2025-buku-data-2024, hlm. 110",
+    "bnpb-2025-buku-data-2024, hlm. 90-91"
+   ],
+   "selisih_persen": 39.3258,
+   "status": "selisih",
+   "catatan": "angka Tabel 1.1, L1, dan L12 (rekap resmi); teks bab 13 menulis 54 (pemeriksa konsistensi, rekomendasi 100)"
+  },
+  {
+   "kunci": [
+    "bnpb.bd24.longsor.2024_tabel",
+    "bnpb.bd24.longsor.2024_teks",
+    "dibi.nasional.longsor.kejadian.2024"
+   ],
+   "nilai": [
+    207,
+    201,
+    207.0
+   ],
+   "sumber": [
+    "bnpb-2025-buku-data-2024, hlm. 110",
+    "bnpb-2025-buku-data-2024, hlm. 6",
+    "dibi/rekap_nasional_tahunan.csv"
+   ],
+   "selisih_persen": 2.8986,
+   "status": "selisih",
+   "catatan": "angka Tabel 1.1 dan L1; teks hal. 6 menulis 201 (pemeriksa konsistensi, rekomendasi 100)"
+  },
+  {
+   "kunci": [
+    "bnpb.bd24.sumsel.kejadian_2024_tabel",
+    "bnpb.bd24.sumsel.kejadian_2024_teks"
+   ],
+   "nilai": [
+    271,
+    272
+   ],
+   "sumber": [
+    "bnpb-2025-buku-data-2024, hlm. 9, 110",
+    "bnpb-2025-buku-data-2024, hlm. 7"
+   ],
+   "selisih_persen": 0.3676,
+   "status": "selisih",
+   "catatan": "Sumatera Selatan di Tabel L2 dan Gambar 1.11; teks hal. 7 menulis 272 (pemeriksa konsistensi, rekomendasi 100)"
+  },
+  {
+   "kunci": [
+    "bnpb.lkip2025.dukman.pagu_tabel",
+    "bnpb.lkip2025.dukman.pagu_teks"
+   ],
+   "nilai": [
+    309100981000,
+    309068219000
+   ],
+   "sumber": [
+    "bnpb-2026-lkip2025, hlm. 99, 101",
+    "bnpb-2026-lkip2025, hlm. 17"
+   ],
+   "selisih_persen": 0.0106,
+   "status": "selisih",
+   "catatan": "pagu Dukungan Manajemen di Tabel 3.19/3.23; teks dan Lampiran 10 menulis Rp309.068.219.000 (pemeriksa konsistensi, rekomendasi 100)"
+  },
+  {
+   "kunci": [
+    "bnpb.lkip2025.irb.nasional_2025_kerentanan2021",
+    "bnpb.lkip2025.irb.nasional_2025_rumus"
+   ],
+   "nilai": [
+    170.17,
+    170.19
+   ],
+   "sumber": [
+    "bnpb-2026-lkip2025, hlm. 19",
+    "bnpb-2026-lkip2025, hlm. 19"
+   ],
+   "selisih_persen": 0.0118,
+   "status": "selisih",
+   "catatan": "IRB 2025 dihitung ulang dengan kerentanan 2021 agar sebanding dengan IRB 2024 versi LKIP; tidak boleh dibandingkan dengan deret lain (LAKIP 2025 hal. 18)"
+  },
+  {
+   "kunci": [
+    "bnpb.lkip2025.rb.target_2025_pk_awal",
+    "bnpb.lkip2025.rb.target_2025_teks",
+    "bnpb.renstra.rb.target_2025"
+   ],
+   "nilai": [
+    75.01,
+    75.05,
+    77.18
+   ],
+   "sumber": [
+    "bnpb-2026-lkip2025, Tabel 2.3",
+    "bnpb-2026-lkip2025, hlm. 72",
+    "bnpb-2025-renstra, hlm. 86"
+   ],
+   "selisih_persen": 2.8116,
+   "status": "selisih",
+   "catatan": "target Indeks RB 2025 di PK awal (10 Jan 2025); Renstra 77,18 dan teks hal. 72 75,05 (pemeriksa konsistensi, rekomendasi 100)"
+  }
+ ]
+}

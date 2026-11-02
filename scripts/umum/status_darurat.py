@@ -11,12 +11,21 @@ Skala provinsi: titik = pusat kotak public/geo/provinsi.json.
 Masa berlaku (Pedoman Penetapan Status Keadaan Darurat BNPB 2016 hal. 15): kab/kota 7-14 hari, provinsi 14 hari-1 bulan, nasional 1-3 bulan; lebih dari itu butuh SK perpanjangan.
 status dinormalkan ke Siaga Darurat | Tanggap Darurat | Transisi Darurat ke Pemulihan.
 
+Tiap baris membawa sumber_baris: "ckan" | "drive_pusdalops". Baris Drive (SK 2026 dan penambal celah, dipanen LOKAL dari folder "FILE SK"
+Pusdalops) dibaca dari cache data/raw/pusdalops-drive/sk/sk_drive.json bila ada; tanpa berkas itu keluaran sama persis seperti sebelumnya
+(CI tak terpengaruh). Dedupe nomor+wilayah, CKAN menang. SK pindaian (tanpa teks) dicatat butuh_ocr, belum di-OCR.
+
 Pakai:  python3 scripts/umum/status_darurat.py   |   ... uji   |   ... ulang (tanpa jaringan: hitung ulang kolom masa/jeda)
+        python3 scripts/umum/status_darurat.py drive [folder-pdf]   (lokal: pdftotext semua PDF -> sk_drive.json, lalu jalankan 'ulang gabung')
+        python3 scripts/umum/status_darurat.py ulang   (juga menggabung sk_drive.json bila ada)
 """
-import datetime as dt, importlib.util, json, os, re, statistics, sys, urllib.parse
+import datetime as dt, difflib, functools, importlib.util, json, os, re, statistics, sys, urllib.parse
 
 AKAR = os.path.normpath(os.path.join(os.path.dirname(os.path.abspath(__file__)), "../.."))
 KELUAR = os.path.join(AKAR, "public/data/status_darurat.json")
+DRIVE_DIR = os.path.join(AKAR, "data/raw/pusdalops-drive/sk")
+DRIVE_JSON = os.path.join(DRIVE_DIR, "sk_drive.json")
+DRIVE_PUBLIK = os.path.join(AKAR, "public/data/sk_drive.json")   # turunan kecil yang di-commit; dipakai CI yang tak punya data/raw
 API = "https://data.bnpb.go.id/api/3/action/"
 POLA_PAKET = re.compile(r"^kompilasi-data-status-keadaan-darurat-bencana.*-tahun-(\d{4})$")
 
@@ -57,7 +66,7 @@ def ubah(r, titik_kab, titik_prov):
     prov = str(r.get("id_prov") or "").strip()
     prov = prov[:2] if prov else (kab[:2] if kab else "")
     p = titik_kab.get(kab) if kab else titik_prov.get(prov)
-    return {"nomor": str(r.get("nomor_sk_status_keadaan_darurat") or "").strip(), "prov_kode": prov,
+    return {"sumber_baris": "ckan", "nomor": str(r.get("nomor_sk_status_keadaan_darurat") or "").strip(), "prov_kode": prov,
             "prov": str(r.get("provinsi") or "").strip(), "kab_kode": kab, "kab": str(r.get("kabupaten") or "").strip(),
             "skala": "kabupaten" if kab else "provinsi", "jenis": str(r.get("jenis_bencana") or "").strip(),
             "klasifikasi": str(r.get("klasifikasi_bencana") or "").strip(), "status": st, "mulai": mulai,
@@ -124,7 +133,7 @@ def perkaya(sk, dibi):
     j = [o["jeda_kejadian_hari"] for o in sk if o["jeda_kejadian_hari"] is not None]
     return {"kab_lewat_batas": sum(o["lewat_batas"] for o in kab), "kab_total": len(kab), "prov_lewat_batas": sum(o["lewat_batas"] for o in prov),
             "prov_total": len(prov), "jeda_median_hari": statistics.median(j) if j else None, "jeda_n": len(j),
-            "tanggal_janggal": sum(o["tanggal_janggal"] for o in sk)}
+            "tanggal_janggal": sum(o["tanggal_janggal"] for o in sk), "sk_terakhir_mulai": max((o["mulai"] for o in sk), default=None)}
 
 
 def catatan_masa(dibi, ringkas, n_jeda):
@@ -137,6 +146,268 @@ def catatan_masa(dibi, ringkas, n_jeda):
     else:
         c += "jeda_kejadian_hari null semua: public/data/dibi_kejadian.json tidak terbaca."
     return c
+
+
+def tahun_berjalan(tahun, sekarang=None):
+    """Peringatan paket tahun berjalan (WIB): (tahun_berjalan, ada, kalimat catatan atau '')."""
+    n = sekarang or dt.datetime.now(dt.timezone(dt.timedelta(hours=7)))
+    ada = n.year in tahun
+    return n.year, ada, "" if ada else (f" Peringatan: Paket SK tahun {n.year} belum terbit di data.bnpb.go.id per {n.date().isoformat()}; "
+                                       "SK yang berlaku tahun ini belum terbaca.")
+
+
+def pasang_tahun(d, tahun):
+    """Isi tahun_berjalan/tahun_berjalan_ada + kalimat peringatan di catatan (idempoten); cetak ::warning:: di GitHub Actions."""
+    th, ada, w = tahun_berjalan(tahun)
+    d["catatan"] = d["catatan"].split(" Peringatan:")[0] + w
+    d["tahun_berjalan"], d["tahun_berjalan_ada"] = th, ada
+    if w and os.environ.get("GITHUB_ACTIONS"):
+        print("::warning::" + w.replace(" Peringatan: ", "", 1), flush=True)
+
+
+# ---- Sumber Drive Pusdalops (lokal) ----
+BULAN = {b: i + 1 for i, b in enumerate("januari februari maret april mei juni juli agustus september oktober november desember".split())}
+BULAN.update({"nopember": 11, "pebruari": 2, "agustus": 8, "juni": 6})
+PROV = {"aceh": "11", "sumatera utara": "12", "sumatera barat": "13", "riau": "14", "jambi": "15", "sumatera selatan": "16", "bengkulu": "17",
+        "lampung": "18", "kepulauan bangka belitung": "19", "bangka belitung": "19", "kepulauan riau": "21", "dki jakarta": "31", "jawa barat": "32",
+        "jawa tengah": "33", "di yogyakarta": "34", "daerah istimewa yogyakarta": "34", "yogyakarta": "34", "jawa timur": "35", "banten": "36",
+        "bali": "51", "nusa tenggara barat": "52", "nusa tenggara timur": "53", "kalimantan barat": "61", "kalimantan tengah": "62",
+        "kalimantan selatan": "63", "kalimantan timur": "64", "kalimantan utara": "65", "sulawesi utara": "71", "sulawesi tengah": "72",
+        "sulawesi selatan": "73", "sulawesi tenggara": "74", "gorontalo": "75", "sulawesi barat": "76", "maluku utara": "82", "maluku": "81",
+        "papua barat daya": "96", "papua barat": "92", "papua": "91", "papua selatan": "93", "papua tengah": "94", "papua pegunungan": "95"}
+PROV_BERSIH = PROV
+# nama baku per kode (untuk kolom prov); alias pendek di atas hanya untuk pencarian teks
+PROV_NAMA = {"11": "Aceh", "12": "Sumatera Utara", "13": "Sumatera Barat", "14": "Riau", "15": "Jambi", "16": "Sumatera Selatan", "17": "Bengkulu",
+             "18": "Lampung", "19": "Kepulauan Bangka Belitung", "21": "Kepulauan Riau", "31": "DKI Jakarta", "32": "Jawa Barat", "33": "Jawa Tengah",
+             "34": "DI Yogyakarta", "35": "Jawa Timur", "36": "Banten", "51": "Bali", "52": "Nusa Tenggara Barat", "53": "Nusa Tenggara Timur",
+             "61": "Kalimantan Barat", "62": "Kalimantan Tengah", "63": "Kalimantan Selatan", "64": "Kalimantan Timur", "65": "Kalimantan Utara",
+             "71": "Sulawesi Utara", "72": "Sulawesi Tengah", "73": "Sulawesi Selatan", "74": "Sulawesi Tenggara", "75": "Gorontalo",
+             "76": "Sulawesi Barat", "81": "Maluku", "82": "Maluku Utara", "91": "Papua", "92": "Papua Barat", "94": "Papua Tengah", "95": "Papua Pegunungan",
+             "96": "Papua Barat Daya", "93": "Papua Selatan"}
+
+
+def _norm(t):
+    return re.sub(r"\s+", " ", re.sub(r"[^a-z0-9. ]", " ", str(t or "").lower())).strip()
+
+
+def tgl_id(t):
+    """'1 Januari 2026' -> '2026-01-01' (bulan Indonesia), atau None."""
+    m = re.search(r"(\d{1,2})\s+([a-z]+?)\s*(\d{4})", str(t or "").lower())
+    if not m:
+        return None
+    bl = m.group(2) if m.group(2) in BULAN else next(iter(difflib.get_close_matches(m.group(2), BULAN, 1, 0.75)), None)   # OCR: 'Sepremnber'
+    if not bl:
+        return None
+    try:
+        return dt.date(int(m.group(3)), BULAN[bl], int(m.group(1))).isoformat()
+    except ValueError:
+        return None
+
+
+_NK = []
+
+
+def _kunci_nama(n):
+    if not _NK:
+        _NK.append(functools.lru_cache(maxsize=None)(_muat("umum_nama_wilayah", "scripts/umum/nama_wilayah.py").nk))
+    return _NK[0](n)[1]
+
+
+def _jalur(jalur):
+    """'.../Prov. Aceh/Kab. Aceh Tamiang/x.pdf' -> (teks provinsi, 'Kab'|'Kota'|None, nama kab) dari folder Drive (cadangan bila kepala SK rusak)."""
+    pv = kb = aw = None
+    for bag in str(jalur or "").split("/"):
+        m = re.match(r"\s*(Prov\.?|Provinsi)\s+(.+)", bag, re.I)
+        if m:
+            pv = m.group(2)
+        m = re.match(r"\s*(Kab\.?|Kabupaten|Kota)\s+(.+)", bag, re.I)
+        if m:
+            aw, kb = ("Kota" if m.group(1).lower() == "kota" else "Kab"), m.group(2)
+    return pv, aw, kb
+
+
+def _prov_dari(teks):
+    t = _norm(teks)
+    for n, c in sorted(PROV_BERSIH.items(), key=lambda x: -len(x[0])):
+        if re.search(r"\b" + re.escape(n) + r"\b", t):
+            return c
+    return None
+
+
+def peta_wilayah(teks, kode=None, jalur=""):
+    """Teks SK -> (prov_kode, prov, kab_kode|None, kab, titik) atau None bila penetap tak terpeta.
+    Kepala SK (KEPUTUSAN BUPATI/WALIKOTA/GUBERNUR X) menang; folder Drive jadi cadangan dan penentu provinsi bila nama kab ada di >1 provinsi."""
+    kode = kode if kode is not None else json.load(open(os.path.join(AKAR, "public/data/kemitraan/kode.json"), encoding="utf-8"))
+    pf, awf, kbf = _jalur(jalur)
+    pvf = _prov_dari(pf) if pf else None
+    t = _norm(teks)
+    m = re.search(r"\b(bupati|wali ?kota|walikota|gubernur)\s+((?:[a-z.]+\s*){1,6})", t)
+    jenis, kata = (m.group(1), m.group(2).split()) if m else (None, [])
+    nama = None
+    if jenis == "gubernur":
+        nama = " ".join(kata)
+    elif jenis:
+        awal = "Kota" if "kota" in jenis else "Kab."
+        for n in range(len(kata), 0, -1):    # awalan terpanjang yang cocok nama kab ("kulon progo" sebelum "daerah istimewa ...")
+            k = _kunci_nama(" ".join(kata[:n]))
+            cocok = [v for v in kode.values() if v["nama"].startswith(awal) and _kunci_nama(v["nama"]) == k]
+            if cocok:
+                break
+        if not cocok and kbf:
+            k = _kunci_nama(kbf)
+            cocok = [v for v in kode.values() if v["nama"].startswith("Kota" if awf == "Kota" else "Kab.") and _kunci_nama(v["nama"]) == k]
+        if len(cocok) > 1:
+            pv = _prov_dari(teks[:1500]) or pvf
+            cocok = [v for v in cocok if v["prov"] == pv] or cocok
+        if len(cocok) == 1:
+            v = cocok[0]
+            return v["prov"], PROV_NAMA.get(v["prov"], ""), v["kemendagri"], re.sub(r"^(Kab\.|Kota)\s+", "", v["nama"]), v["pusat"]
+        return None
+    if jenis is None and kbf:
+        k = _kunci_nama(kbf)
+        cocok = [v for v in kode.values() if v["nama"].startswith("Kota" if awf == "Kota" else "Kab.") and _kunci_nama(v["nama"]) == k and (not pvf or v["prov"] == pvf)]
+        if len(cocok) == 1:
+            v = cocok[0]
+            return v["prov"], PROV_NAMA.get(v["prov"], ""), v["kemendagri"], re.sub(r"^(Kab\.|Kota)\s+", "", v["nama"]), v["pusat"]
+    if jenis is None and pvf is None:
+        return None
+    pv = (_prov_dari(nama) if nama else None) or pvf
+    return (pv, PROV_NAMA[pv], None, "", None) if pv else None
+
+
+def _rentang(t, terakhir=False):
+    """Teks bagian diktum -> (mulai, berakhir) ISO; berakhir None bila hanya 'selama N hari' tanpa akhir tak terhitung. Tanggal bersama bulan/tahun ('7 s.d. 20 Januari 2026') dipahami."""
+    sep = r"(?:s\.?\s*/?\s*d\.?|sampai(?:\s+dengan)?|hingga|-|\u2013)"
+    ada = []
+    for m in re.finditer(r"(\d{1,2})\s*([A-Za-z]{3,9})?\s*(\d{4})?\s*" + sep + r"\s*(?:tanggal\s+)?(\d{1,2})\s+([A-Za-z]{3,9})\s*(\d{4})", t):
+        d1, b1, y1, d2, b2, y2 = m.groups()
+        b1, y1 = (b1 or b2), (y1 or y2)
+        a, z = tgl_id(f"{d1} {b1} {y1}"), tgl_id(f"{d2} {b2} {y2}")
+        if a and z and z >= a:
+            ada.append((a, z))
+    if ada:
+        return ada[-1] if terakhir else ada[0]   # 'perubahan masa': rentang baru adalah yang terakhir
+    a = re.search(r"(?:sejak|terhitung(?:\s+(?:mulai|sejak|dari))?|mulai|dari)\s+(?:tanggal\s+)?(\d{1,2}\s+[A-Za-z]{3,9}\s*\d{4})", t, re.I)
+    mulai = tgl_id(a.group(1)) if a else None
+    if not mulai:
+        return None, None
+    h = re.search(r"selama\s+(\d{1,3})\s*(?:\([^)]*\)\s*)?hari", t, re.I)
+    return mulai, (dt.date.fromisoformat(mulai) + dt.timedelta(days=int(h.group(1)) - 1)).isoformat() if h else None
+
+
+NON_STATUS = re.compile(r"komando|pembentukan|tim |posko|pos komando|penunjukan|satuan tugas|satgas|sekretariat|rehabilitasi|rekonstruksi|pencabutan|pembebanan|dana ", re.I)
+
+
+def urai_teks(teks, berkas="", kode=None, jalur=""):
+    """Teks pdftotext/OCR satu SK -> (baris keluaran seperti ubah(), None) atau (None, alasan). Alasan: butuh_ocr | bukan_status | tak_terpeta | tanpa_tanggal.
+    Baris membawa perpanjangan (bool) dan berkas."""
+    t = re.sub(r"\s+", " ", re.sub(r"=== halaman \d+ ===", " ", str(teks or "")[:200000])).strip()
+    if len(t) < 200:
+        return None, "butuh_ocr"
+    if re.search(r"surat\s+pernyataan|pernyataan\s+(?:tanggap|terjadinya)", t[:400], re.I):
+        return None, "bukan_status"   # pernyataan bupati, bukan SK penetapan
+    i = re.search(r"\bTENTANG\b", t[:4000])
+    judul = t[i.end():i.end() + 450] if i else t[:600]
+    m = re.search(r"status\s+(?:keadaan\s+)?(siaga|tanggap|transisi)", judul, re.I) or re.search(r"\b(siaga|tanggap|transisi)\s+darurat", judul, re.I)
+    if not m or (not re.search(r"status", judul, re.I) and NON_STATUS.search(judul[:m.start() + 20])) or re.search(r"^\W*(pembentukan|penunjukan|masa aktif|pos komando|tim )", judul, re.I):
+        return None, "bukan_status"
+    st = status(m.group(1))
+    w = peta_wilayah(t[:1500], kode, jalur)
+    if not w:
+        return None, "tak_terpeta"
+    n = re.search(r"\bNOMOR\s*:?\s*(.{3,60}?)\s+TENTANG\b", t[:2500], re.I)
+    nomor = re.sub(r"\s*/\s*", "/", n.group(1)).strip(" :.") if n else ""
+    nomor = nomor if re.search(r"\d", re.sub(r"tahun\s*\d{4}", "", nomor, flags=re.I)) else ""   # 'NOMOR TAHUN 2025' (angka hilang di pindaian)
+    sec = t[t.upper().rfind("MEMUTUSKAN"):] if "MEMUTUSKAN" in t.upper() else t   # rfind: penanda 'MEMUTUSKAN...' di ujung halaman diulang di halaman berikut
+    mulai, berakhir = _rentang(sec[:3000], bool(re.search(r'perubahan', judul[:80], re.I)))
+    if not mulai and sec is not t:
+        mulai, berakhir = _rentang(t)
+    perkiraan = False
+    if mulai and not ("2023" <= mulai[:4] <= "2027" and (berakhir is None or mulai <= berakhir <= (dt.date.fromisoformat(mulai) + dt.timedelta(days=400)).isoformat())):
+        mulai = berakhir = None    # salah baca pindaian (tahun 0206, rentang > 400 hari)
+    pen = re.search(r"ditetapkan\s+di\s+[A-Za-z .]{2,30}?\s+pada\s+tanggal[ ,:]*(\d{1,2})\s+([A-Za-z]{3,9})\b.{0,60}?\b(20\d\d)\b", t, re.I)
+    if mulai and pen and tgl_id(f"{pen.group(1)} {pen.group(2)} {pen.group(3)}") and mulai > (dt.date.fromisoformat(tgl_id(f"{pen.group(1)} {pen.group(2)} {pen.group(3)}")) + dt.timedelta(days=45)).isoformat():
+        mulai = berakhir = None    # mulai > 45 hari sesudah tanggal penetapan: salah baca bulan
+    if not mulai:   # hanya "sampai dengan tanggal X": mulai = tanggal ditetapkan (SK berlaku sejak ditetapkan), ditandai mulai_perkiraan
+        e = re.search(r"(?:sampai(?:\s+dengan)?|s\.?\s*/?\s*d\.?|hingga)\s+(?:dengan\s+)?(?:tanggal\s+)?(\d{1,2}\s+[A-Za-z]{3,9}\s*\d{4})", sec, re.I)
+        d = re.search(r"ditetapkan\s+di\s+[A-Za-z .]{2,30}?\s+pada\s+tanggal[ ,:]*(\d{1,2})\s+([A-Za-z]{3,9})\b.{0,60}?\b(20\d\d)\b", t, re.I)
+        bl = difflib.get_close_matches(d.group(2).lower(), BULAN, 1, 0.7) if d else []   # OCR: 'Februan'
+        berakhir, mulai = (tgl_id(e.group(1)) if e else None), (tgl_id(f"{d.group(1)} {bl[0]} {d.group(3)}") if bl else None)
+        h = re.search(r"selama\s+(\d{1,3})\s*(?:\([^)]*\)\s*)?hari", sec, re.I)
+        if mulai and not berakhir and h:
+            berakhir = (dt.date.fromisoformat(mulai) + dt.timedelta(days=int(h.group(1)) - 1)).isoformat()
+        if not (mulai and berakhir and berakhir >= mulai):
+            return None, "tanpa_tanggal"
+        perkiraan = True
+        if not "2023" <= mulai[:4] <= "2027":
+            return None, "tanpa_tanggal"
+    j = re.search(r"bencana\s+(?:alam\s+|non\s+alam\s+)?(.{3,120}?)(?:\s+di\s+(?:wilayah|kabupaten|kota|provinsi|kecamatan|daerah)|\s+tahun\s+\d{4}|$)", judul, re.I)
+    jenis = j.group(1).strip(" ,.").title() if j else ""
+    return {"sumber_baris": "drive_pusdalops", "nomor": nomor, "prov_kode": w[0], "prov": w[1], "kab_kode": w[2], "kab": w[3],
+            "skala": "kabupaten" if w[2] else "provinsi", "jenis": jenis, "klasifikasi": "Hidrometeorologi" if re.search(r"hidrometeorologi|hidrometerologi", judul, re.I) else "",
+            "status": st, "mulai": mulai, "berakhir": berakhir, "tautan": "", "lat": w[4][0] if w[4] else None, "lon": w[4][1] if w[4] else None,
+            "perpanjangan": bool(re.search(r"perpanjangan|perpanjang", judul[:120], re.I)), "berkas": berkas,
+            **({"mulai_perkiraan": True} if perkiraan else {})}, None
+
+
+def kunci_sk(o):
+    n = re.sub(r"[^a-z0-9]", "", str(o.get("nomor") or "").lower())
+    return (n or f"{o.get('status')}{o.get('mulai')}", o.get("kab_kode") or o.get("prov_kode") or "")
+
+
+def gabung(ckan, drive):
+    """CKAN + Drive -> daftar tunggal. Dedupe nomor+wilayah (nomor kosong tidak didedupe), CKAN menang. Kembalikan (daftar, n_drive_dipakai)."""
+    ada = {kunci_sk(o) for o in ckan}
+    out, n = list(ckan), 0
+    for o in drive:
+        k = kunci_sk(o)
+        if k in ada:
+            continue
+        ada.add(k)
+        out.append({k: v for k, v in o.items() if k != "berkas"} | {"sumber_baris": "drive_pusdalops"})   # jalur berkas cukup di cache lokal
+        n += 1
+    return out, n
+
+
+def baca_drive(cache=None, publik=None):
+    """Baris Drive: cache lokal (data/raw) bila ada, kalau tidak turunan publik public/data/sk_drive.json (CI), kalau tidak kosong."""
+    for f in (cache or DRIVE_JSON, publik or DRIVE_PUBLIK):
+        try:
+            return json.load(open(f, encoding="utf-8")).get("sk", [])
+        except (OSError, ValueError):
+            pass
+    return []
+
+
+def panen_drive(folder=None):
+    """LOKAL: tiap PDF/doc/docx di folder (rekursif) -> teks (saudara '<berkas>.txt' bila ada, kalau tidak pdftotext) -> urai_teks;
+    tulis sk_drive.json (+ daftar yang tak terurai per alasan; butuh_ocr = tanpa teks yang layak)."""
+    import subprocess
+    folder = folder or DRIVE_DIR
+    sk, lain = [], {}
+    for akar, _, fs in sorted(os.walk(folder)):
+        for f in sorted(fs):
+            if not f.lower().endswith((".pdf", ".doc", ".docx")):
+                continue
+            pth = os.path.join(akar, f)
+            teks = ""
+            if os.path.exists(pth + ".txt"):
+                teks = open(pth + ".txt", encoding="utf-8", errors="replace").read()
+            if len(teks.strip()) < 200 and f.lower().endswith(".pdf"):
+                teks = subprocess.run(["pdftotext", "-layout", pth, "-"], capture_output=True, text=True).stdout
+            rel = os.path.relpath(pth, folder)
+            o, why = urai_teks(teks, rel, jalur=rel)
+            if o:
+                sk.append(o)
+            else:
+                lain.setdefault(why, []).append(rel)
+    os.makedirs(DRIVE_DIR, exist_ok=True)
+    json.dump({"sk": sk, "tidak_terurai": lain}, open(DRIVE_JSON, "w", encoding="utf-8"), ensure_ascii=False, indent=1)
+    # turunan publik: hanya baris SK (tanpa jalur berkas / daftar gagal); mulai_perkiraan menandai tanggal mulai yang ditebak dari tanggal penetapan
+    _muat("umum_kejadian", "scripts/umum/kejadian.py").simpan(DRIVE_PUBLIK, {
+        "sumber": "Drive Pusdalops BNPB, folder FILE SK (SK kepala daerah, dokumen publik), diurai lokal dari teks/OCR; mulai_perkiraan true = mulai diambil dari tanggal penetapan",
+        "sk": [{k: v for k, v in o.items() if k != "berkas"} for o in sk]})
+    print(f"status_darurat drive: {len(sk)} terurai, " + ", ".join(f"{k} {len(v)}" for k, v in lain.items()))
 
 
 def baca_dibi():
@@ -185,26 +456,38 @@ def jalan():
                         sk.append(o)
                     else:
                         buang += 1
+    sk, n_drive = gabung(sk, baca_drive())
     sk.sort(key=lambda x: (x["mulai"], x["nomor"]), reverse=True)
     tanpa_titik = sum(1 for x in sk if x["lat"] is None)
     dibi = baca_dibi()
     ringkas = perkaya(sk, dibi)
-    simpan(KELUAR, {
-        "sumber": "data.bnpb.go.id (CKAN) kompilasi data status keadaan darurat bencana seluruh Indonesia", "tahun": sorted(paket),
+    d = {
+        "sumber": "data.bnpb.go.id (CKAN) kompilasi data status keadaan darurat bencana seluruh Indonesia" + (" + Drive Pusdalops" if n_drive else ""),
+        "tahun": sorted(set(paket) | {int(x["mulai"][:4]) for x in sk if x["sumber_baris"] != "ckan"}),
         "catatan": f"{buang} baris dibuang (tanpa tanggal mulai atau status tak dikenal). berakhir null = tanggal berakhir kosong di sumber. "
                    f"Titik kabupaten dari resource 'Kabupaten yang Menetapkan'; skala provinsi memakai pusat kotak provinsi; "
-                   f"{tanpa_titik} SK tanpa titik. Data tahun berjalan menyusul dari BNPB." + catatan_masa(dibi, ringkas, sum(1 for x in sk if x["jeda_kejadian_hari"] is not None)),
-        "ringkas": ringkas, "sk": sk})
+                   f"{tanpa_titik} SK tanpa titik. Data tahun berjalan menyusul dari BNPB. {n_drive} SK dari Drive Pusdalops (sumber_baris drive_pusdalops; CKAN menang bila nomor+wilayah sama)." + catatan_masa(dibi, ringkas, sum(1 for x in sk if x["jeda_kejadian_hari"] is not None)),
+        "ringkas": ringkas, "sk": sk}
+    pasang_tahun(d, d["tahun"])
+    simpan(KELUAR, d)
     print(f"status_darurat: tahun {sorted(paket)}, {len(sk)} SK, {buang} dibuang, {tanpa_titik} tanpa titik, ringkas {ringkas}")
 
 
 def ulang():
     """Tanpa jaringan: hitung ulang kolom masa/jeda pada berkas keluaran yang ada."""
     d = json.load(open(KELUAR, encoding="utf-8"))
+    for o in d["sk"]:
+        o.setdefault("sumber_baris", "ckan")
+    d["sk"] = [o for o in d["sk"] if o["sumber_baris"] == "ckan"]   # baris Drive lama dibuang; cache terbaru yang dipakai
+    d["sk"], n = gabung(d["sk"], baca_drive())
+    if n:
+        d["sk"].sort(key=lambda x: (x["mulai"], x["nomor"]), reverse=True)
+        d["tahun"] = sorted({y for y in d["tahun"] if y >= 2023} | {int(x["mulai"][:4]) for x in d["sk"] if x["sumber_baris"] != "ckan"})
     dibi = baca_dibi()
     ringkas = perkaya(d["sk"], dibi)
     d["catatan"] = d["catatan"].split(" Masa berlaku:")[0] + catatan_masa(dibi, ringkas, sum(1 for x in d["sk"] if x["jeda_kejadian_hari"] is not None))
     d["ringkas"] = ringkas
+    pasang_tahun(d, d["tahun"])
     _muat("umum_kejadian", "scripts/umum/kejadian.py").simpan(KELUAR, d)
     print(f"status_darurat ulang: {ringkas}")
 
@@ -249,8 +532,65 @@ def uji():
     rg = perkaya([dict(sk), dict(sk, mulai="2025-01-01", berakhir="2025-01-20"), dict(sk, skala="provinsi", mulai="2025-01-01", berakhir="2025-02-05")], dibi)
     assert (rg["kab_lewat_batas"], rg["kab_total"], rg["prov_lewat_batas"], rg["prov_total"], rg["jeda_median_hari"]) == (1, 2, 1, 1, 2)
     assert rg["jeda_n"] == 1 and rg["tanggal_janggal"] == 0
+    assert rg["sk_terakhir_mulai"] == "2025-03-10" and perkaya([], dibi)["sk_terakhir_mulai"] is None
+    W = dt.timezone(dt.timedelta(hours=7))
+    assert tahun_berjalan([2025], dt.datetime(2026, 1, 1, 6, 0, tzinfo=W))[:2] == (2026, False)   # 31 Des 23:00 UTC = 1 Jan WIB
+    assert tahun_berjalan([2025], dt.datetime(2026, 1, 1, 6, 0, tzinfo=W))[2].endswith("2026-01-01; SK yang berlaku tahun ini belum terbaca.")
+    assert tahun_berjalan([2025, 2026], dt.datetime(2026, 5, 1, tzinfo=W)) == (2026, True, "")
+    # Drive Pusdalops: parser teks SK, penggabungan, tahun berjalan
+    assert tgl_id("1 Januari 2026") == "2026-01-01" and tgl_id("31 Februari 2026") is None and tgl_id("x") is None
+    KD = {"3514": {"nama": "Kab. Pasuruan", "prov": "35", "kemendagri": "35.14", "pusat": [-7.6, 112.9]},
+          "3575": {"nama": "Kota Pasuruan", "prov": "35", "kemendagri": "35.75", "pusat": [-7.64, 112.9]},
+          "1801": {"nama": "Kab. Lampung Barat", "prov": "18", "kemendagri": "18.01", "pusat": [-5.0, 104.0]}}
+    # tiga fixture dari teks SK nyata (OCR/pdftotext), dipangkas ke judul + diktum, tanpa nama penanda tangan
+    SK1 = ("BUPATI ACEH TAMIANG PROVINSI ACEH KEPUTUSAN BUPATI ACEH TAMIANG NOMOR 100.3.3.2/ 3 /2026 TENTANG PERPANJANGAN STATUS TANGGAP DARURAT BENCANA ALAM "
+           "HIDROMETEOROLOGI (BANJIR, POHON TUMBANG, DAN TANAH LONGSOR) DI KABUPATEN ACEH TAMIANG BUPATI ACEH TAMIANG, Menimbang : a. bahwa status tanggap darurat berakhir "
+           "pada tanggal 6 Januari 2026; MEMUTUSKAN: Menetapkan : KEPUTUSAN BUPATI TENTANG PERPANJANGAN STATUS TANGGAP DARURAT. KESATU : Perpanjangan Status Tanggap Darurat. "
+           "KEDUA : berlaku selama 14 (empat belas) hari terhitung sejak tanggal 7 Januari 2026 sampai dengan 20 Januari 2026. KETIGA : dapat diperpanjang. "
+           "Ditetapkan di Karang Baru pada tanggal, 6 Januari 2026")
+    SK2 = ("=== halaman 1 === BUPATI MELAWI KEPUTUSAN BUPATI MELAWI NOMOR 300.2/67 TAHUN 2026 TENTANG STATUS SIAGA DARURAT PENANGANAN BENCANA ASAP AKIBAT KEBAKARAN HUTAN DAN LAHAN "
+           "DI KABUPATEN MELAWI BUPATI MELAWI, : a. bahwa berdasarkan informasi BMKG ... MEMUTUSKAN... === halaman 3 === MEMUTUSKAN: Menetapkan KESATU KEDUA : Status Siaga Darurat "
+           "Penanganan Bencana Asap Akibat Kebakaran Hutan dan Lahan di Kabupaten Melawi. Masa berlakunya Status Siaga Darurat terhitung mulai tanggal ditetapkan sampai dengan tanggal "
+           "31 Desember 2026. Ditetapkan di Nanga Pinoh pada tanggal 2 Februan 2026 M")
+    SK3 = ("GUBERNUR GORONTALO KEPUTUSAN GUBERNUR GORONTALO NOMOR 373 / 31 / IX / 2026 TENTANG PENETAPAN STATUS TANGGAP DARURAT BENCANA KEKERINGAN, KEBAKARAN HUTAN DAN LAHAN "
+           "DI PROVINSI GORONTALO TAHUN 2026 MEMUTUSKAN: Menetapkan : KESATU : Menetapkan Status Tanggap Darurat. KEDUA : berlaku selama 30 hari, terhitung mulai tanggal "
+           "1 September 2026 sampai dengan tanggal 30 September 2026.")
+    KD = {"1101": {"nama": "Kab. Aceh Selatan", "prov": "11", "kemendagri": "11.01", "pusat": [3.1, 97.4]}, "1109": {"nama": "Kab. Aceh Tamiang", "prov": "11", "kemendagri": "11.12", "pusat": [4.2, 98.0]},
+          "6111": {"nama": "Kab. Melawi", "prov": "61", "kemendagri": "61.11", "pusat": [-0.6, 112.4]}, "3514": {"nama": "Kab. Pasuruan", "prov": "35", "kemendagri": "35.14", "pusat": [-7.6, 112.9]},
+          "3575": {"nama": "Kota Pasuruan", "prov": "35", "kemendagri": "35.75", "pusat": [-7.64, 112.9]}}
+    o, why = urai_teks(SK1, "a.pdf", KD)
+    assert why is None and o["kab_kode"] == "11.12" and o["status"] == "Tanggap Darurat" and (o["mulai"], o["berakhir"]) == ("2026-01-07", "2026-01-20"), (o, why)
+    assert o["sumber_baris"] == "drive_pusdalops" and o["nomor"] == "100.3.3.2/3/2026" and o["perpanjangan"] is True and o["skala"] == "kabupaten" and "mulai_perkiraan" not in o
+    m, why = urai_teks(SK2, "b.pdf", KD)   # 'sampai dengan' saja: mulai = tanggal ditetapkan (OCR 'Februan'), ditandai perkiraan
+    assert why is None and m["kab_kode"] == "61.11" and (m["mulai"], m["berakhir"], m["mulai_perkiraan"]) == ("2026-02-02", "2026-12-31", True), (m, why)
+    g, why = urai_teks(SK3, "g.pdf", KD)
+    assert why is None and g["skala"] == "provinsi" and g["prov_kode"] == "75" and g["perpanjangan"] is False and (g["mulai"], g["berakhir"]) == ("2026-09-01", "2026-09-30"), (g, why)
+    assert urai_teks("", "scan.pdf", KD) == (None, "butuh_ocr") and urai_teks("x" * 300, "y.pdf", KD)[1] == "bukan_status"
+    assert urai_teks(SK1.replace("PERPANJANGAN STATUS TANGGAP DARURAT BENCANA ALAM", "PEMBENTUKAN POS KOMANDO TANGGAP DARURAT BENCANA ALAM", 1), "p", KD)[1] == "bukan_status"
+    assert urai_teks(SK1.replace("tanggal 7 Januari 2026 sampai dengan 20 Januari 2026", "").replace("2026", ""), "t", KD)[1] == "tanpa_tanggal"
+    assert tgl_id("17 Sepremnber 2026") == "2026-09-17" and tgl_id("29 Nopember 2024") == "2024-11-29"
+    assert _rentang("tanggal 7 s.d. 20 Januari 2026") == ("2026-01-07", "2026-01-20")
+    assert peta_wilayah("WALIKOTA PASURUAN NOMOR 1 TENTANG", KD)[2] == "35.75" and peta_wilayah("BUPATI PASURUAN", KD)[2] == "35.14"
+    ck = [dict(ubah(r, {}, {}), nomor="100.3.3.2/3/2026", kab_kode="11.12")]
+    gb, nd = gabung(ck, [o, dict(o, nomor="Z-9")])
+    assert nd == 1 and len(gb) == 2 and gb[0]["sumber_baris"] == "ckan" and gb[1]["nomor"] == "Z-9"   # CKAN menang atas nomor+wilayah sama
+    assert gabung(ck, [])[0] == ck
+    d26 = {"catatan": "x", "tahun": [2025, 2026]}
+    pasang_tahun(d26, d26["tahun"])
+    assert d26["tahun_berjalan_ada"] == (dt.datetime.now(dt.timezone(dt.timedelta(hours=7))).year in (2025, 2026))
+    # CI tanpa data/raw: cache lokal tak ada -> turunan publik dipakai; keduanya tak ada -> kosong (perilaku lama)
+    import tempfile
+    with tempfile.TemporaryDirectory() as td:
+        pub = os.path.join(td, "sk_drive.json")
+        json.dump({"sk": [o]}, open(pub, "w"))
+        assert baca_drive(os.path.join(td, "tak_ada.json"), pub) == [o]
+        assert baca_drive(os.path.join(td, "tak_ada.json"), os.path.join(td, "tak_ada2.json")) == []
+        loc = os.path.join(td, "lokal.json")
+        json.dump({"sk": []}, open(loc, "w"))
+        assert baca_drive(loc, pub) == []   # cache lokal menang walau kosong
     print("uji status_darurat: ok")
 
 
 if __name__ == "__main__":
-    uji() if sys.argv[1:] == ["uji"] else ulang() if sys.argv[1:] == ["ulang"] else jalan()
+    a = sys.argv[1:]
+    uji() if a == ["uji"] else ulang() if a == ["ulang"] else panen_drive(*a[1:2]) if a[:1] == ["drive"] else jalan()

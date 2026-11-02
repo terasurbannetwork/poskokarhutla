@@ -215,45 +215,67 @@ export async function buatSesi(env, mod, kini) {
   const isi = `${kini + SESI_UMUR}.${mod}`;
   return isi + "." + hex(await crypto.subtle.sign("HMAC", await kunciHMAC(env), new TextEncoder().encode(isi)));
 }
-/* sah bila tanda HMAC cocok (perbandingan waktu-tetap oleh subtle.verify), belum kedaluwarsa, dan token moderatornya masih ada di ADMIN_TOKEN */
-export async function sesiOK(env, req, kini, modSah) {
+/* cookie sesi yang tanda HMAC-nya sah dan belum kedaluwarsa -> [_, exp, moderator, tanda] (perbandingan waktu-tetap oleh subtle.verify), selain itu null */
+async function sesiSah(env, req, kini) {
   if (!env.SESI_KUNCI) return null;
   const m = (req.headers.get("cookie") || "").match(new RegExp(`(?:^|;\\s*)${COOKIE}=(\\d+)\\.([0-9a-f]{12})\\.([0-9a-f]{64})`));
-  if (!m || Number(m[1]) <= kini || !modSah.includes(m[2])) return null;
+  if (!m || Number(m[1]) <= kini) return null;
   const tanda = new Uint8Array(m[3].match(/../g).map(h => parseInt(h, 16)));
-  return await crypto.subtle.verify("HMAC", await kunciHMAC(env), tanda, new TextEncoder().encode(`${m[1]}.${m[2]}`)) ? m[2] : null;
+  return await crypto.subtle.verify("HMAC", await kunciHMAC(env), tanda, new TextEncoder().encode(`${m[1]}.${m[2]}`)) ? m : null;
+}
+/* sah bila tanda cocok, belum kedaluwarsa, token moderatornya masih ada di ADMIN_TOKEN, dan belum dicabut lewat /admin/keluar */
+export async function sesiOK(env, req, kini, modSah) {
+  const m = await sesiSah(env, req, kini);
+  if (!m || !modSah.includes(m[2])) return null;
+  return await sesiDicabut(env, m[3]) ? null : m[2];
+}
+/* Keluar mencabut cookie di SERVER, bukan cuma di peramban (uji Setneg 1 Nov 2026): tanda HMAC-nya dicatat di laju_bnpb (0022, dibersihkan
+   cron setelah 2 hari > umur sesi 12 jam). Dibaca hanya sesudah tanda sah, satu lookup indeks. Tabel belum ada/galat D1 = tidak dicabut (gagal-terbuka,
+   sama seperti sebelum fitur ini), supaya admin tidak terkunci massal saat D1 bermasalah. */
+const AKSI_CABUT = "sesi.cabut";
+async function sesiDicabut(env, tanda) {
+  if (!env.DB) return false;
+  try { return !!await env.DB.prepare("SELECT 1 FROM laju_bnpb WHERE kunci = ? AND aksi = ? LIMIT 1").bind(tanda, AKSI_CABUT).first(); }
+  catch (e) { console.error("sesi cabut baca", e?.message); return false; }
 }
 /* Lax, bukan Strict: tautan dari WhatsApp/surel ke situs terkunci harus tetap membawa sesi; POST tetap dijaga cek origin di rute() */
 const cookie = (nilai, umur) => `${COOKIE}=${nilai}; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=${umur}`;
 const html = (isi, status = 200, h = {}) => new Response(isi, {status, headers: {"content-type": "text/html; charset=utf-8", "cache-control": "no-store",
-  "x-frame-options": "DENY", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_ADMIN, ...h}});
+  "x-frame-options": "SAMEORIGIN", "x-content-type-options": "nosniff", "referrer-policy": "no-referrer", "content-security-policy": CSP_ADMIN, ...h}});
+/* halaman login tidak perlu dibingkai: tetap DENY walau halaman admin lain boleh dibingkai sesama asal */
+const htmlMasuk = (isi, status = 200, h = {}) => html(isi, status, {"x-frame-options": "DENY", "content-security-policy": CSP_ADMIN.replace("frame-ancestors 'self'", "frame-ancestors 'none'"), ...h});
 const alihkan = (ke, h = {}) => new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store", ...h}});
 
 /* ?ke= tujuan sesudah masuk: hanya jalur di situs sendiri ("/..." tanpa "//" atau "/\\") */
 const tujuan = req => { const k = new URL(req.url).searchParams.get("ke") || ""; return /^\/(?![\/\\])[^\x00-\x20]*$/.test(k) ? k : ""; };   // tanpa karakter kontrol/spasi: "/<TAB>/evil.com" dibaca peramban sebagai //evil.com
 export async function masuk(env, req, kini, halamanMasuk) {
   const ke = tujuan(req), hal = g => halamanMasuk(g, ke);
-  if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return html(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
-  if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : html(hal(""));
+  if (!env.SESI_KUNCI || !env.ADMIN_TOKEN) return htmlMasuk(hal("Server belum dikonfigurasi (SESI_KUNCI / ADMIN_TOKEN)."), 503);
+  if (req.method === "GET") return (await adminOK(env, req, kini)) ? alihkan(ke || "/admin/statistik") : htmlMasuk(hal(""));
   const laju = await cekLaju(env, await ipHash(env, req), "masuk", kini);
-  if (laju) return html(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
+  if (laju) return htmlMasuk(hal("Terlalu banyak percobaan. Coba lagi nanti."), 429, {"retry-after": laju.headers.get("retry-after") || "900"});
   const u = await bacaBytes(req, 2048), t = u.b ? new TextDecoder().decode(u.b) : "";   // body dibaca per byte; lebih dari 2 KB = dianggap kosong (401)
   /* akun = entri "email:sandi" (atau "username:sandi") di ADMIN_TOKEN/AKUN_SITUS, huruf kecil; tetap lewat adminOK supaya sesi & pencabutan sama dengan token */
   const f = new URLSearchParams(t.length <= 2048 ? t : ""), email = (f.get("email") || "").trim().toLowerCase(), sandi = f.get("sandi") || "";
   const kunciEmail = email ? (await sha(env.IP_SALT + "|masuk|" + email)).slice(0, 32) : "";   // batas per akun: memutar IP tak menghindarinya
-  if (kunciEmail && await gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini)) return html(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
+  if (kunciEmail && await gagalSudahBanyak(env, kunciEmail, "admin_gagal", MAKS_GAGAL_EMAIL, kini)) return htmlMasuk(hal("Terlalu banyak percobaan untuk akun ini. Coba lagi nanti."), 429, {"retry-after": "3600"});
   const sah = email && sandi && await adminOK(env, new Request("http://x/", {headers: {"x-admin-token": `${email}:${sandi}`}}), kini);
   if (!sah) {
     /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
     const p = email && sandi && await masukPemirsa(env, email, sandi, kini);
-    if (!p) { if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini); return html(hal("Username atau kata sandi salah."), 401); }
-    const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : "/" + p.tab[0]), {"set-cookie": cookiePemirsa(p.token, p.umur)});
+    if (!p) { if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini); return htmlMasuk(hal("Username atau kata sandi salah."), 401); }
+    const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : arahPemirsa(p, "/") ?? "/"), {"set-cookie": cookiePemirsa(p.token, p.umur)});
     r.headers.append("set-cookie", cookie("", 0)); return r;
   }
   const r = alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});
   r.headers.append("set-cookie", cookiePemirsa("", 0)); return r;
 }
-export const keluar = () => alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
+export async function keluar(env, req, kini = Date.now()) {
+  const m = await sesiSah(env, req, kini);   // hanya cookie sah yang dicatat: cookie karangan tidak bisa membanjiri D1 lewat /admin/keluar
+  if (m && env.DB) try { await env.DB.prepare("INSERT INTO laju_bnpb (kunci, aksi, waktu) VALUES (?, ?, ?)").bind(m[3], AKSI_CABUT, kini).run(); }
+    catch (e) { console.error("sesi cabut tulis", e?.message); }
+  return alihkan("/admin/masuk", {"set-cookie": cookie("", 0)});
+}
 /* Kerangka halaman admin: undefined = admin penuh (token, akun gerbang, atau sesi admin); {nama, peran} = sesi staf; staf tak masuk = {nama: null, peran: []} (layar masuk staf ada di halaman Meja Pantau). */
 export async function kerangka(env, req, kini = Date.now()) {
   if (await adminOK(env, req, kini)) return undefined;
