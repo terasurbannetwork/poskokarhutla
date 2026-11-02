@@ -104,3 +104,13 @@ Sumber: paparan "Grand Design Kemitraan BNPB dan Perguruan Tinggi 2027–2029"
 | T-E | BPBD masuk lewat apa? | Kode pribadi per kab (pola Meja Kerja), diterbitkan staf | Bila akun instansi (0029), ganti gerbang |
 | T-F | Nama menu | "Kemitraan Kampus", rute `/kemitraan` | Ganti teks + rute |
 | T-G | Surat dukungan BNPB untuk proposal | Platform hanya membuat draf + nomor registri; tanda tangan di luar sistem | – |
+
+## I. Perubahan sesudah rilis awal
+
+25. **Vonis model gagal uji TIDAK memunculkan masalah (2 Nov 2026).** Model platform yang
+    gagal uji balik tidak lagi menjadi pembentuk masalah otomatis (baris terakhir tabel ALG §3.3
+    dicabut). Vonis itu hanya menjadi **bukti tambahan** pada masalah pertama pasangan (kab,
+    bahaya) yang SUDAH lolos aturan lain, berlabel "Vonis NASIONAL ... bukan hasil uji per
+    kabupaten" (vonis gerbang model berlaku untuk seluruh negeri). Vonis "gagal" hanya bila SEMUA
+    sub-uji bahaya itu gagal; longsor hanya sub-uji `longsor` (bukan `banjir_longsor`). Menang atas
+    kalimat "model yang gagal uji" di butir 2 bila dibaca sebagai sumber masalah otomatis.

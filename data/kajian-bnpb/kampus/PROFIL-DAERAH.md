@@ -38,8 +38,10 @@ ada nol pengganti kosong. Format Indonesia (ribuan titik, desimal koma).
                "kampus_pendamping": [...], "desa_binaan_n"},   // dua kunci ini dari GET ekspor/kapasitas (DT §5.3); null bila gagal
  "siluet": "<path d SVG ≤ 1 KB, Douglas-Peucker>",  // ir.b dipetakan: gempabumi→gempa, karlahut→karhutla, abrasi→abrasi_rob
  "riwayat_luar": [{"tgl","jenis","sumber":"GDACS|CEMS","tautan"}...≤25],
- "masalah":   [{"id":"auto-6211-banjir-A2", "B","A","judul","skor","kelas","bukti":[{"teks","nilai","sumber","tanggal"}],
-                "komponen_n"}],
+ "masalah":   [{"auto_id":"auto-6211-banjir-A2", "B","A","judul","skor","kelas","komponen_n","yakin",
+                "bukti":[{"teks","nilai","sumber","tanggal","yakin"}]}],   // KM-B03; kunci HANYA auto_id (tanpa id ganda); [] bila tak ada
+ "masalah_skor": {"<bahaya>": {"skor","kelas","komponen_n","H","F","T","D","P","K"}},  // 9 bahaya; persentil nasional 0-1; null = tak tersedia (bukan 0);
+                                                                                     // skor/kelas null bila < 4 komponen; vonis model = bukti tambahan, bukan masalah
  "pertanyaan_ringkas": {"n_templat", "arah": {...}},
  "sumber": [{"nama","berkas","tanggal","lisensi"}]}
 ```
