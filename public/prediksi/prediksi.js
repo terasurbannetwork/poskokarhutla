@@ -199,28 +199,29 @@ async function kirim(e) {
 /* Tab Dampak: paparan statis per kab (dampak.json, jalan.json), dimuat sekali saat tab pertama dibuka. SKENARIO/PAPARAN, bukan prakiraan. */
 const kelasPil = {Rendah: "ok", Sedang: "abu", Tinggi: "buruk", "Sangat tinggi": "buruk"};
 function gambarDampak() {
-  const q = $("#dKabIn").value, id = idKab(q) || PR.d.kab[0].id, k = PR.d.kab.find(x => x.id === id);
+  const q = $("#dKabIn").value, id = q ? idKab(q) : PR.d.kab[0].id, k = PR.d.kab.find(x => x.id === id);
+  if (!k) { $("#dampakIsi").innerHTML = '<p class="kosong">Kab/kota tidak ditemukan.</p>'; return; }
   const dp = PR.dampak?.kab[id], jl = PR.jalan?.kab[id];
   const g = dp?.gempa, f = dp?.genangan, t = dp?.terisolir;
   const baris = [];
-  baris.push(g ? `<div class="pr-b"><b>Gempa bumi</b> bahaya ${g.kelas ? `<span class="pr-pil ${kelasPil[g.kelas] || "abu"}">${esc(g.kelas)}</span>` : ""} skor ${fmt(g.skor)} dari 100${g.m_maks != null ? `, magnitudo tertinggi tercatat ${fmt(g.m_maks)}, ${fmt(g.n_m5)} gempa M5+ sejak 2000` : ""}${g.kec_inarisk ? `; InaRISK: ${fmt(g.kec_tinggi)} dari ${fmt(g.kec_inarisk)} kecamatan berindeks tinggi (indeks tertinggi ${angka3(g.inarisk_maks)})` : ""}</div>`
+  baris.push(g ? `<div class="pr-b"><b>Gempa bumi</b> bahaya ${g.kelas ? `<span class="pr-pil ${kelasPil[g.kelas] || "abu"}">${esc(g.kelas)}</span>` : ""} skor ${fmt(g.skor)} dari 100${g.m_maks != null ? `, magnitudo tertinggi tercatat ${fmt(g.m_maks)}, ${fmt(g.n_m5)} gempa M5+` : ""}${g.kec_inarisk != null ? `; InaRISK: ${fmt(g.kec_tinggi)} dari ${fmt(g.kec_inarisk)} kecamatan berindeks tinggi (indeks tertinggi ${angka3(g.inarisk_maks)})` : ""}</div>`
     : '<div class="pr-b"><b>Gempa bumi</b> tidak ada di sumber.</div>');
-  baris.push(f ? `<div class="pr-b"><b>Genangan banjir</b> kejadian terekam terbesar ±${fmt(Math.round(f.tergenang_ha))} ha pada ${esc(tgl(f.acuan))} (cakupan radar ${fmt(f.cakupan_pct)}%). Jumlah bangunan terendam belum ditampilkan sampai koreksi permukiman selesai.</div>`
+  baris.push(f ? `<div class="pr-b"><b>Genangan banjir</b> kejadian terekam terbesar ${fmt(Math.round(f.tergenang_ha))} ha pada ${esc(tgl(f.acuan))} (cakupan radar ${fmt(f.cakupan_pct)}%). Jumlah bangunan terendam belum ditampilkan sampai koreksi permukiman selesai.</div>`
     : '<div class="pr-b"><b>Genangan banjir</b> tidak ada citra radar yang terekam untuk kab/kota ini.</div>');
   baris.push(t ? `<div class="pr-b"><b>Desa langganan terisolir</b> ${fmt(t.desa)} desa, ${fmt(t.kejadian)} kejadian di logbook (batas atas, layak dicek)</div>` : '<div class="pr-b"><b>Desa langganan terisolir</b> tidak tercatat di logbook.</div>');
-  baris.push(jl ? `<div class="pr-b"><b>Titik rawan putus jalan</b> ${fmt(jl.ruas_tunggal)} ruas tunggal dari ${fmt(jl.way)} ruas jalan utama (${fmt(Math.round(jl.km_jaringan))} km), ${fmt(jl.jembatan_tunggal)} di antaranya jembatan.
-    <ol class="pr-kecil">${jl.top.map(o => `<li>${esc(o.nama || "tanpa nama")} (${esc(o.kelas)}${o.jembatan ? ", jembatan" : ""}): bila terputus, ±${fmt(Math.round(o.km_terisolir * 10) / 10)} km jalan terpisah <a href="https://www.openstreetmap.org/way/${esc(o.way)}" target="_blank" rel="noopener">OSM ${esc(o.way)}</a></li>`).join("")}</ol></div>`
+  baris.push(jl ? `<div class="pr-b"><b>Titik rawan putus jalan</b> ${fmt(jl.ruas_tunggal)} ruas tunggal pada ${fmt(jl.way)} way OSM jalan utama (${fmt(Math.round(jl.km_jaringan))} km), ${fmt(jl.jembatan_tunggal)} di antaranya jembatan.
+    <ol class="pr-kecil">${jl.top.map(o => `<li>${esc(o.nama || "tanpa nama")} (${esc(o.kelas)}${o.jembatan ? ", jembatan" : ""}): bila terputus, ${fmt(Math.round(o.km_terisolir * 10) / 10)} km jalan terpisah <a href="https://www.openstreetmap.org/way/${esc(o.way)}" target="_blank" rel="noopener">OSM ${esc(o.way)}</a></li>`).join("")}</ol></div>`
     : '<div class="pr-b"><b>Titik rawan putus jalan</b> belum dihitung untuk kab/kota ini.</div>');
   baris.push('<div class="pr-b"><b>Tsunami dan kerusakan bangunan gempa</b> tidak ditampilkan per kab: sumber terbukanya tidak tersedia sebagai tabel statis.</div>');
-  $("#dampakIsi").innerHTML = `<article class="card pr-k"><h3>${esc(k.nama)}</h3><p class="pr-kecil">${esc(k.pn)}, ${ribu(k.jiwa)} jiwa</p>${baris.join("")}</article>`;
+  $("#dampakIsi").innerHTML = `<article class="card pr-k"><h3>${esc(k.nama)}</h3><p class="pr-kecil">${esc(k.pn)}</p>${baris.join("")}</article>`;
 }
 async function muatDampak() {
   if (PR.dampak === null) {
     $("#dampakIsi").innerHTML = '<p class="kosong">Memuat…</p>';
-    [PR.dampak, PR.jalan] = await Promise.all(["dampak.json", "jalan.json"].map(ambil));
+    [PR.dampak, PR.jalan] = await (PR.memDampak ||= Promise.all(["dampak.json", "jalan.json"].map(ambil)));
     PR.dampak ||= false;
-    $("#dampakLabel").textContent = PR.dampak ? PR.dampak.label : "";
-    $("#dampakSumber").innerHTML = PR.dampak ? Object.values(PR.dampak.sumber).map(esc).join("<br>") + (PR.jalan ? "<br>" + esc(PR.jalan.sumber) : "") : "";
+    $("#dampakLabel").textContent = PR.dampak ? PR.dampak.label + (PR.jalan ? " " + PR.jalan.label : "") : "";
+    $("#dampakSumber").innerHTML = PR.dampak ? Object.values(PR.dampak.sumber).map(esc).join("<br>") + `<br>Data: ${esc(PR.dampak.dibuat)}` + (PR.jalan ? "<br>" + esc(PR.jalan.sumber) + `<br>Data jalan: ${esc(PR.jalan.dibuat)}` : "") : "";
   }
   if (!PR.dampak) { $("#dampakIsi").innerHTML = '<p class="kosong">Data dampak belum tersedia.</p>'; return; }
   gambarDampak();
