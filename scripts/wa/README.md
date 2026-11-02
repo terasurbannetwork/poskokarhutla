@@ -102,3 +102,12 @@ Uji: `node --test tests/wa/logbook_wa.test.mjs`.
 
 `lapangan_tarik.mjs` jalan di dalam proses gateway (dimulai saat WA terhubung, bila `WA_KUNCI` terisi): tiap 60 detik `GET /api/petugas/wa/antre` (header `x-wa-kunci`), tiap pesan dikirim satu per satu lewat `sendPaced` (limiter yang sama dengan `/send`), lalu `POST /api/petugas/wa/hasil` berkelompok. Nomor tidak sah atau tidak terdaftar dilapor `ok:false`; limiter penuh atau WA putus = ditunda tanpa lapor (server menarik ulang setelah 10 menit). 401/503/jaringan putus hanya dicatat. Id yang sudah dilapor atau menunggu lapor tidak dikirim ulang. Berlaku setelah gateway dimulai ulang (belum dilakukan).
 Uji: `node --test tests/wa/lapangan_tarik.test.mjs`.
+
+## Grup satgas udara (`OPERASI_GRUP`)
+
+Grup WA satgas udara dan operator pesawat dibaca penuh tanpa perlu forward. Isi `OPERASI_GRUP` di `.env` dengan JID grup (`...@g.us`, pisah koma), lalu minta admin grup memasukkan nomor bot.
+- Semua anggota grup boleh, bukan hanya `WA_IZIN`. Bot **tidak pernah membalas** di grup (perintah dan `cari` diabaikan).
+- Hanya teks yang diteruskan; lampiran dari grup tidak diunduh dan tidak disalin ke Drive.
+- Worker hanya menyimpan pesan yang dikenali pengurai operasi (`src/operasi_wa.js`: temuan patroli, keberangkatan, kembali ke base) atau jenis laporan (`src/wa_jenis.js`). Obrolan dibuang.
+- Pengirim disimpan sebagai id grup dan nama tampilan dikosongkan: nomor HP dan nama pilot/operator tidak masuk D1.
+- Hanya pesan sesudah bot masuk grup; riwayat lama tidak ditarik. JID grup terlihat di log gateway (`[pesan] asing ...`) setelah bot masuk.

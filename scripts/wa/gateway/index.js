@@ -24,6 +24,9 @@ const TOKEN = process.env.GATEWAY_TOKEN || ''
 const WORKER = (process.env.WORKER_URL || 'https://centurisk97.id').replace(/\/$/, '')
 const KUNCI = process.env.WA_KUNCI || ''
 const IZIN = new Set(daftar(process.env.WA_IZIN).map(normalWa).filter(Boolean))
+// Grup satgas udara (OPERASI_GRUP, JID ...@g.us pisah koma): semua anggota boleh, teks saja, bot TIDAK PERNAH membalas di grup.
+// Worker hanya menyimpan pesan yang dikenali (pengurai operasi / jenis laporan) dan mengganti pengirim dengan id grup; tanpa salinan Drive.
+const GRUP_OPS = new Set(daftar(process.env.OPERASI_GRUP).filter((j) => /@g\.us$/.test(j)))
 const PEMILIK = normalWa(daftar(process.env.PEMILIK)[0])
 const AUTH_DIR = rumah(process.env.WA_AUTH_DIR) || path.join(RUMAH, 'auth')
 const OUTBOX = path.join(RUMAH, 'outbox')
@@ -159,23 +162,24 @@ async function simpanKeOutbox(m) {
   const k = m.key
   const { teks, media, adaDok } = isiPesan(m)
   const dari = pengirim(k)
-  if (!dari || !IZIN.has(dari)) return
-  if (!teks.trim() && !media) return
-  if (!media) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
+  const grupOps = !!dari && !IZIN.has(dari) && GRUP_OPS.has(k.remoteJid)
+  if (!dari || (!IZIN.has(dari) && !grupOps)) return
+  if (!teks.trim() && (!media || grupOps)) return // grup operasi: lampiran tanpa teks tidak diteruskan
+  if (!media && !grupOps) { // perintah tetap (perintah.mjs): hanya dari PEMILIK, tidak jadi bahan, balasan hanya ke pengirim
     const P = await import('../perintah.mjs')
     const cmd = P.cegat({ dari, teks, pemilik: process.env.PEMILIK })
     if (cmd) { jalankanPerintah(P, cmd, dari).catch((e) => log('[perintah] galat', String((e && e.message) || e))); return }
   }
-  if (/^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
+  if (!grupOps && /^cari\s/i.test(teks)) { await balasCari(m, teks); return } // perintah Drive, bukan bahan laporan
   if (ukuranOutbox() > BATAS_OUTBOX) {
     if (!kabarPenuh) { kabarPenuh = true; await kabarPemilik('Outbox bot WA lebih dari 500 MB, pesan baru tidak disimpan.') }
     return
   }
   kabarPenuh = false
   const id = `${Date.now()}-${idAman(k.id)}`
-  const e = { id, dari, nama: m.pushName || '', teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now() }
+  const e = { id, dari, nama: grupOps ? '' : (m.pushName || ''), teks, waktu: Number(m.messageTimestamp) * 1000 || Date.now(), ...(grupOps ? { grup: k.remoteJid } : {}) }
   let lampiran = null
-  if (media) {
+  if (media && !grupOps) {
     const tipe = media.mimetype || 'application/octet-stream'
     if (!mimeBoleh(tipe)) {
       await kabarPemilik(`Lampiran dari ${dari} (${tipe}) jenisnya tidak diizinkan, hanya teks yang diteruskan.`)
@@ -191,7 +195,7 @@ async function simpanKeOutbox(m) {
     }
   }
   tulis(path.join(OUTBOX, id + '.json'), JSON.stringify(e))
-  drive.salin(e, lampiran)
+  if (!grupOps) drive.salin(e, lampiran)
 }
 
 async function jalankanPerintah(P, cmd, dari) {
@@ -232,6 +236,7 @@ setTimeout(tickDrive, 30000)
 async function kirimSatu(e) {
   const f = new FormData()
   f.set('dari', e.dari); f.set('nama', e.nama); f.set('teks', e.teks); f.set('waktu', String(e.waktu))
+  if (e.grup) f.set('grup', e.grup)
   if (e.berkas) {
     const buf = fs.readFileSync(path.join(OUTBOX, e.id + '.bin'))
     f.set('berkas', new Blob([buf], { type: e.berkas.tipe }), e.berkas.nama)
@@ -320,7 +325,7 @@ async function startSock() {
       if (susulan && (!izin || !susulanBaru(m.messageTimestamp) || terlihat.ada(id))) continue
       const { c, teks, media } = isiPesan(m)
       const jenis = c.documentMessage ? 'dokumen' : c.imageMessage ? 'gambar' : teks ? 'teks' : 'lain:' + (Object.keys(c)[0] || 'kosong')
-      log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : 'asing', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
+      log(susulan ? '[susulan]' : '[pesan]', izin ? 'izin' : GRUP_OPS.has(m.key.remoteJid) ? 'grup-ops' : 'asing', m.key.remoteJid.endsWith('@g.us') ? m.key.remoteJid : '-', jenis, media ? (media.mimetype || '?') : '-', media ? (media.fileLength?.toString?.() ?? '?') + 'B' : teks.length + ' huruf')
       try { await simpanKeOutbox(m); if (izin && id) terlihat.catat(id) } catch (e) { log('[masuk] galat', String((e && e.message) || e)) }
     }
     flushOutbox().catch(() => {})

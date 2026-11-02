@@ -1043,7 +1043,16 @@
     "table lp_panggil": "balasan SIAP/TIDAK (U-14)",
     "table lp_panggil_penerima": "balasan SIAP/TIDAK (U-14)",
     "table orang_keahlian": "daftar orang menurut keahlian (LP-046) dan penanda keahlian",
-    "table lp_logbook_kit": "tahap C: batas isian panggilan, penerima"
+    "table lp_logbook_kit": "tahap C: batas isian panggilan, penerima",
+    "GET /api/operasi/peta": "GET /api/operasi/peta: tamu, akun gerbang",
+    "POST /api/operasi/dummy": "dummy: hanya Super Admin",
+    "table op_base": "migrasi 0103 idempoten",
+    "table op_armada": "migrasi 0103 idempoten",
+    "table op_armada_status": "migrasi 0103 idempoten",
+    "table op_renlap": "migrasi 0103 idempoten",
+    "table op_target": "migrasi 0103 idempoten",
+    "table op_gerak": "migrasi 0103 idempoten",
+    "table op_temuan": "migrasi 0103 idempoten"
   },
   "dikecualikan": {
     "/konfig": "hanya memantulkan TURNSTILE_SITEKEY dan konstanta BATAS; tidak ada logika",
