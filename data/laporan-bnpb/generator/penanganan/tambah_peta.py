@@ -96,9 +96,10 @@ if BANJIR:
 for j, key, col, muda, rid, t, sat in KOL:
     bx, bw = cx[j] + 27432, CW[j] - 27432
     out.append(kotak(bx, top_isi, bw, hh, fill=col, geomp='roundRect', adj=13636))
-    tw = lebar_teks([(t, 450, True), (' ' + sat, 450, False)]); x0 = bx + (bw - 100584 - 18288 - tw) // 2   # ikon + tulisan rata tengah
+    # 2 Nov 2026: huruf 6 pt (batas bawah deck.py/Buku Pegangan; dulu 4,5 pt menahan deck ini lewat mesin ppt-konsultan), satuan di baris kedua
+    tw = max(lebar_teks([(t, 600, True)]), lebar_teks([(sat, 600, False)])); x0 = bx + (bw - 100584 - 18288 - tw) // 2   # ikon + tulisan rata tengah
     out.append(gambar(rid, x0, top_isi + (hh - 100584) // 2, 100584, 100584, 'Ikon ' + t))
-    out.append(kotak(x0 + 118872, top_isi, tw + 45720, hh, [[(t, 450, True, 'FFFFFF'), (' ' + sat, 450, False, muda)]], anchor='ctr', wrap='none'))
+    out.append(kotak(x0 + 118872, top_isi, tw + 45720, hh, [[(t, 600, True, 'FFFFFF')], [(sat, 600, False, muda)]], anchor='ctr', wrap='none'))
 TOP = rows[:10]
 MX = {key: max(nol(A[k][key][I]) for k in TOP) or 1 for _, key, *_ in KOL}
 ry = top_isi + hh + 45720; rh = (dasar - ry) // 10
