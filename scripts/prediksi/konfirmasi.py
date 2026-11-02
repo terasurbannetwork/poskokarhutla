@@ -33,7 +33,7 @@ def tarik(kini, env=None, buka=urllib.request.urlopen):
         return None
     url = f"{(env.get('PIPA_URL') or URL_BAWAAN).rstrip('/')}/api/prediksi/konfirmasi?sejak={D.geser(kini, -60)}"
     try:
-        with buka(urllib.request.Request(url, headers={"Authorization": "Bearer " + token}), timeout=30) as r:
+        with buka(urllib.request.Request(url, headers={"Authorization": "Bearer " + token, "User-Agent": "pantau-bencana-pipeline", "Accept": "application/json"}), timeout=30) as r:
             j = json.load(r)
         if j.get("terpotong"):
             log("respons terpotong (batas 5000 baris, urut tanggal naik): baris terbaru hilang, perkecil jendela sejak")

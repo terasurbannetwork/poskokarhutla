@@ -144,9 +144,9 @@ def overpass(kid, b):
         return json.load(open(berkas))
     q = f'[out:json][timeout:180];way["highway"~"^({KELAS})$"]({b[0]:.4f},{b[1]:.4f},{b[2]:.4f},{b[3]:.4f});out geom;'
     data = urllib.parse.urlencode({"data": q}).encode()
-    for coba in range(6):
+    for coba in range(int(os.environ.get("JALAN_COBA", 6))):
         try:
-            req = urllib.request.Request(SERVER[coba % 2], data, headers={"User-Agent": "poskokarhutla/1.0 (peta paparan jalan; kontak timitbnpb@gmail.com)"})
+            req = urllib.request.Request(SERVER[coba % 2], data, headers={"User-Agent": "poskokarhutla/1.0 (peta paparan jalan; github.com/terasurbannetwork/poskokarhutla)"})
             raw = urllib.request.urlopen(req, timeout=240).read()
             j = json.loads(raw)
             if "remark" in j and "error" in j["remark"]:
@@ -172,7 +172,13 @@ def jalankan(ids):
     kabs = {k["id"]: k for k in D.kab()}
     d = D.baca(KELUAR, None) or {"label": LABEL, "sumber": "OpenStreetMap via Overpass (ODbL, (c) kontributor OpenStreetMap), highway " + KELAS, "kab": {}}
     d["dibuat"] = D.hari_ini()
+    batas = time.time() + float(os.environ["JALAN_DETIK"]) if os.environ.get("JALAN_DETIK") else None   # anggaran waktu lari CI
+    dicoba = 0
     for i in ids:
+        if batas and time.time() > batas:
+            print(f"jalan: anggaran waktu habis, {len(ids) - dicoba} kab menunggu giliran berikut", file=sys.stderr)
+            break
+        dicoba += 1
         k = kabs.get(i)
         b = k and kotak(k["geo"])
         if not b:
@@ -187,7 +193,7 @@ def jalankan(ids):
         D.simpan(KELUAR, d)
         print(f"jalan: {i} {k['nama']}: {d['kab'][i]['way']} way, {d['kab'][i]['ruas_tunggal']} ruas tunggal")
     D.simpan(KELUAR, d)
-    return ok, len(ids)
+    return ok, dicoba
 
 
 def giliran(maks=15):
