@@ -54,6 +54,7 @@ export const bersihkanBnpb = (env, kini = Date.now()) => env.DB.prepare("DELETE 
 export const RUTE_BNPB = {
   "GET /bnpb/logbook": (env, req, url) => halamanBnpbPublik(env, url, "logbook", {pribadi: true, bingkai: true}),   // layar staf; dibingkai /admin/laporan (frame-ancestors 'self')
   "GET /bnpb/operasi": (env, req, url) => halamanBnpbPublik(env, url, "operasi", {pribadi: true}),   // layar staf: pemulihan, Laporan Khusus, roll call (W2)
+  "GET /bnpb/operasi-lapangan": (env, req, url) => halamanBnpbPublik(env, url, "operasi_lapangan", {pribadi: true}),   // layar staf: peta operasi udara harian (OP-3), data dari /api/operasi/peta
   "GET /bnpb/dokumen": (env, req, url) => halamanBnpbPublik(env, url, "dokumen", {pribadi: true}),   // layar staf: BAST, Laporan Menonjol, Shift, Rekap Mingguan dari logbook
   "GET /bnpb/perencanaan": (env, req, url) => halamanBnpbPublik(env, url, "perencanaan", {pribadi: true}),   // layar staf: kab prioritas (beban laporan), kalender operasi, stok pra-musim
   "GET /bnpb": (env, req, url) => halamanBnpbPublik(env, url, "index"),

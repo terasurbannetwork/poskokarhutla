@@ -8,6 +8,9 @@
    Jenis: tagar #karhutla / #bencana, selain itu kata kunci karhutla di teks atau nama berkas, selain itu bencana. */
 import {json, gagal, adminOK, sha, bacaBytes} from "./worker.js";
 import {KONTROL, tglSah} from "./posko.js";
+import {balas as balasPanggilan} from "./lapangan_wa.js";
+import {catatOperasi} from "./operasi_udara.js";
+import {urai} from "./operasi_wa.js";
 import {JENIS_LAPORAN, kenali, tanggalIsi, tanggalNamaBerkas} from "./wa_jenis.js";
 
 export const MAKS_BERKAS = 20 * 1024 * 1024;
@@ -44,11 +47,19 @@ async function gerbang(env, req, kini) {
   if (!/^multipart\/form-data/i.test(ct)) return gagal(400, "kiriman harus multipart/form-data");
   const bytes = await bacaBytes(req, MAKS_FORM); if (bytes.galat) return gagal(bytes.status, bytes.galat);   // dibatasi juga tanpa content-length (chunked)
   let f; try { f = await new Response(bytes.b, {headers: {"content-type": ct}}).formData(); } catch { return gagal(400, "kiriman tidak terbaca"); }
-  const izin = new Set(String(env.WA_IZIN || "").split(",").map(normalNo).filter(Boolean)), dari = normalNo(f.get("dari"));
-  if (!izin.has(dari)) return json({ok: true, disimpan: false});   // bukan pengirim terdaftar: diam, tidak disimpan
+  /* LP-020 (modul /petugas): "SIAP xxxxxx" / "TIDAK xxxxxx" dari relawan yang dipanggil. Pengirim TIDAK harus di WA_IZIN: yang menjaga kode balas acak milik nomor itu (lapangan_wa.balas) */
+  const balasan = await balasPanggilan(env, req, normalNo(f.get("dari")), bersih(f.get("teks"), 200), kini); if (balasan) return balasan;
+  const izin = new Set(String(env.WA_IZIN || "").split(",").map(normalNo).filter(Boolean));
+  /* Grup operasi (OPERASI_GRUP di .env gateway): gateway yang berkunci WA_KUNCI menandai pesan grup satgas dengan `grup`, apa pun pengirimnya.
+     Dari grup hanya pesan yang DIKENALI (pengurai operasi atau jenis laporan) yang disimpan; obrolan dan lampiran dibuang.
+     `dari` diganti id grup: nomor HP anggota grup (pilot, operator) tidak masuk D1. ponytail: foto bergeotag grup dibuang dulu, ambil saat OCR stempel ada. */
+  const grup = /^[\d-]{5,40}@g\.us$/.test(String(f.get("grup") || "")) ? String(f.get("grup")) : null, nomor = normalNo(f.get("dari"));
+  if (!izin.has(nomor) && !grup) return json({ok: true, disimpan: false});   // bukan pengirim terdaftar: diam, tidak disimpan
   const w = Number(f.get("waktu")), diterima = Number.isFinite(w) && w >= kini - 7 * 864e5 && w <= kini + 5 * 60e3 ? Math.trunc(w) : kini;
-  const teks = bersih(f.get("teks"), MAKS_TEKS) || null, nama = bersih(f.get("nama"), 100) || null;
-  let b = f.get("berkas"); if (typeof b === "string" || !b?.size) b = null;
+  const teks = bersih(f.get("teks"), MAKS_TEKS) || null, namaKirim = bersih(f.get("nama"), 100) || null;
+  const dariGrup = grup && !izin.has(nomor), dari = dariGrup ? grup : nomor, nama = dariGrup ? null : namaKirim;   // nama tampilan anggota grup juga tidak disimpan
+  if (dariGrup && !(teks && (urai(teks, {tanggal: hariWib(diterima)}).dikenali || kenali(teks, null)))) return json({ok: true, disimpan: false});
+  let b = dariGrup ? null : f.get("berkas"); if (typeof b === "string" || !b?.size) b = null;
   if (b && (b.size > MAKS_BERKAS || !(TIPE_TERIMA.test(b.type || "") || (!b.type || b.type === "application/octet-stream") && EKS_TERIMA.test(b.name || "")))) b = null;   // tipe dikenal, atau tipe kosong/umum dengan ekstensi dikenal
   const namaBerkas = b ? bersih(b.name || "berkas", 200).replace(/[\\/]/g, "_") : null;
   if (!teks && !b) return json({ok: true, disimpan: false});
@@ -69,7 +80,9 @@ async function gerbang(env, req, kini) {
   const tanggal = isi && Date.parse(isi) >= hariIni - 14 * 864e5 && Date.parse(isi) <= hariIni + 864e5 ? isi : tanggalDari(teks, diterima), jenis = jenisDari(teks || "", namaBerkas || "");
   const r = await env.DB.prepare("INSERT INTO wa_masuk (diterima, tanggal, jenis, dari, nama, teks, berkas, nama_berkas, tipe) VALUES (?1, ?2, ?3, ?4, ?5, ?6, ?7, ?8, ?9)")
     .bind(diterima, tanggal, jenis, dari, nama, teks, kunci, namaBerkas, tipe).run();
-  return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis});
+  /* OP-2: pesan satgas udara -> tabel operasi; galat apa pun (termasuk migrasi 0103 belum ada) tidak menggagalkan pesan yang sudah tersimpan */
+  let operasi = null; if (teks) try { operasi = await catatOperasi(env, {id: r.meta.last_row_id, teks, tanggal, diterima}); } catch (e) { console.error("operasi_wa", String(e?.message || e)); }
+  return json({ok: true, disimpan: true, id: r.meta.last_row_id, tanggal, jenis, ...(operasi ? {operasi} : {})});
 }
 
 /* pembaca: admin ATAU mesin (Authorization: Bearer WA_MESIN, banding konstan lewat sha; WA_MESIN kosong = hanya admin) */

@@ -108,7 +108,8 @@ uji("/kemitraan tanpa sesi = layar masuk 200 di host centurisk97.id; halaman ter
     assert.equal(r.status, 200, `${j}: tamu harus 200 (bukan 303 ke /admin/masuk), dapat ${r.status}`);
     assert.match(r.headers.get("content-type"), /text\/html/); assert.match(t, /Kemitraan/);
     assert.match(r.headers.get("content-security-policy"), /script-src 'self'/); assert.match(r.headers.get("cache-control"), /no-store/);
-    assert.doesNotMatch(t, /<script|style=|onclick=/i, `${j}: cangkang tanpa skrip/gaya inline`);
+    assert.doesNotMatch(t, /<script(?![^>]*\bsrc=)|<style|\sstyle=|\son[a-z]+=/i, `${j}: cangkang tanpa skrip/gaya inline`);
+    for (const m of t.matchAll(/<script[^>]*\bsrc="([^"]*)"/gi)) assert.match(m[1], /^\/[^/]/, `${j}: skrip hanya dari asal sendiri, dapat ${m[1]}`);
   }
   const kontrol = await situs("/prediksi"); await kontrol.text();
   assert.equal(kontrol.status, 303, "kontrol: halaman terkunci lain di host yang sama tetap dialihkan ke masuk");

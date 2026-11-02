@@ -2,14 +2,14 @@
    Data pribadi ribuan dosen TIDAK boleh di public/ (aset statis) maupun di repo (repo publik): satu berkas JSON di R2 MEDIA,
    kunci akademisi/induk.json, diunggah dari mesin pemilik (scripts tidak ikut repo). Rute ini hanya meneruskan berkas itu setelah sesi lolos. */
 import {gagal, json, cacheTepi, bacaBody, adminOK} from "./worker.js";
-import {stafOK, stafSesi, stafPeran} from "./staf.js";
+import {stafOK, stafSesiSemua, stafPeran} from "./staf.js";
 import {superOK} from "./posko.js";
 import {laju} from "./bnpb.js";
 
 const KUNCI = "akademisi/induk.json";
 /* peran staf yang boleh membuka direktori (baca DAN tulis): daftar EKSPLISIT, bukan Object.keys(PERAN). operator_cc (command center, hanya baca halaman centurisk97.id; buku kontak penuh TETAP TERTUTUP,
    src/staf.js) sengaja tidak ada; peran staf baru tertutup di sini sampai pemilik memasukkannya. Dijaga tests/warga/akademisi_peran.test.mjs. */
-export const P_AKADEMISI = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan", "kemitraan"];
+export const P_AKADEMISI = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan", "kemitraan", "direktori"];   // direktori: peran yang HANYA membuka Direktori (2 Nov 2026)
 
 async function induk(env, req) {
   if (!(await stafOK(env, req, P_AKADEMISI))) return gagal(401, "masuk sebagai staf BNPB atau admin");
@@ -297,7 +297,7 @@ async function ringkasan(env, req) {
    Staf bersesi: peran = daftar peran stafnya, super false. */
 async function saya(env, req) {
   const adm = !!(await adminOK(env, req));
-  const s = await stafSesi(env, req);   // satu baca D1; sesi staf (bila bukan token admin)
+  const s = await stafSesiSemua(env, req);   // satu baca D1; sesi staf (bila bukan token admin)
   if (!adm && !(s && P_AKADEMISI.some(p => s.peran.includes(p)))) return gagal(401, "masuk sebagai staf BNPB atau admin");
   return json({peran: adm ? ["admin"] : s.peran, super: adm && !!(await superOK(env, req))}, 200, {"cache-control": "private, no-store"});
 }
@@ -370,7 +370,7 @@ async function riwayatBuat(env, req) {
   if (typeof tid !== "string" || !RE_KUNCI.test(tid)) return gagal(400, "target_id tidak sah");
   const c = cekRiwayat(bb.o); if (c.galat) return gagal(400, c.galat);
   const x429 = await laju(env, String(oleh), "riwayat_akademisi", [[3600e3, 60]]); if (x429) return x429;
-  const v = c.v, kini = new Date().toISOString(), nama = String(oleh).startsWith("staf:") ? ((await stafSesi(env, req))?.nama || "Staf").slice(0, 120) : "Admin";   // nama disimpan sekali saat tulis: GET tanpa join
+  const v = c.v, kini = new Date().toISOString(), nama = String(oleh).startsWith("staf:") ? ((await stafSesiSemua(env, req))?.nama || "Staf").slice(0, 120) : "Admin";   // nama disimpan sekali saat tulis: GET tanpa join
   const r = await env.DB.prepare("INSERT INTO akademisi_riwayat (jenis_target, target_id, jenis, tanggal, tanggal_selesai, judul, kejadian_id, catatan, penilaian, oleh, oleh_nama, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)")
     .bind(jt, tid, v.jenis, v.tanggal, v.tanggal_selesai, v.judul, v.kejadian_id, v.catatan, v.penilaian, String(oleh), nama, kini).run();
   return json({riwayat: {id: r.meta.last_row_id, jenis_target: jt, target_id: tid, ...v, oleh_nama: nama, dibuat: kini, diubah: null, milik: true}}, 201, {"cache-control": "no-store"});

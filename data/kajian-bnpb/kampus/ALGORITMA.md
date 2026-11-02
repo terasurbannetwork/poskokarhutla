@@ -98,14 +98,31 @@ Kelas: P1 bila S ≥ 0.70 atau (H ≥ 0.80 dan K ≥ 0.60); P2 bila S ≥ 0.50; 
 Untuk tiap (k,b) dengan S_auto ≥ 0.40, buat masalah per aturan yang terpenuhi:
 | Aturan | Aspek | Judul baku |
 | --- | --- | --- |
-| H ≥ 0.6 dan tidak ada RPB/renkon | A5 | "{Bahaya} berisiko tinggi tanpa dokumen rencana" |
+| H ≥ 0.6 dan tidak ada RPB/renkon | A5 | "{Bahaya} berisiko tinggi, belum tercatat dokumen rencana" (RPB/renkon false = tidak tercatat di basis regulasi, bukan bukti tidak ada) |
 | F ≥ 0.6 dan T ≥ 0.6 | A1 | "Kejadian {bahaya} meningkat, penyebab lokal belum dipetakan" |
 | b ∈ {banjir, longsor, cuaca_ekstrem, karhutla} dan F ≥ 0.6 | A2 | "{Bahaya} berulang, peringatan dini lokal belum teruji" |
 | D ≥ 0.7 | A9 | "Dampak {bahaya} besar dalam 12 bulan, pemulihan perlu dikawal" |
 | P ≥ 0.7 dan H ≥ 0.5 | A7 | "Kelompok rentan banyak di wilayah {bahaya}" |
 | b = karhutla dan gambut > 10% luas | A3 | "Karhutla di lahan gambut, pembasahan belum efektif" |
 | b ∈ {gempa, tsunami} dan H ≥ 0.7 | A3 | "Bangunan di zona {bahaya} perlu dinilai ketahanannya" |
-| model gagal uji untuk b (gerbang_model/uji balik) | A1 | "Model {bahaya} platform belum lolos uji di wilayah ini" |
+| ~~model gagal uji untuk b~~ DICABUT 2 Nov 2026 (KEPUTUSAN butir 25) | – | Bukan masalah. Vonis NASIONAL gagal (semua sub-uji bahaya itu gagal) menjadi satu bukti tambahan pada masalah pertama pasangan (kab,b) yang sudah lolos aturan lain: "Vonis NASIONAL uji balik model {bahaya}: gagal (...); bukan hasil uji per kabupaten" |
+
+Definisi implementasi (`scripts/kemitraan/masalah.py`, KM-B03; mengikat):
+- Persentil nasional: per (komponen, bahaya) atas semua kab yang nilainya non-null; peringkat-min (nilai
+  kembar mendapat peringkat terendah) `bisect_left/(n-1)`, n < 2 → null, 4 desimal setengah ke atas. P dan K tak bergantung bahaya.
+- Komponen tak informatif: komponen yang nilai mentahnya SAMA untuk semua kab (≥ 2 nilai non-null, varians nol) pada bahaya itu (K: di semua kab)
+  tidak membedakan kab, jadi dikeluarkan dari skor dan `komponen_n` (nilainya null di `masalah_skor`, namanya dicatat di `tak_informatif`). Berlaku untuk semua komponen dan
+  bahaya (contoh nyata: D tsunami = 0 di semua kab). Tanpa ambang. Bahaya yang semua kab-nya hanya punya sedikit komponen informatif otomatis tanpa skor (< 4).
+- H = `irbi.bahaya[b]`. F per 100 rb penduduk: banjir/longsor/cuaca_ekstrem/kekeringan = `total_2015_2025` jenis banjir/longsor/cuaca/kering
+  (tanpa 2024, DIBI tak lengkap, jadi batas bawah); abrasi_rob = rob+gelombang; karhutla = titik VIIRS 2015–2025; gempa = `risiko.n_2000_2025_100km`
+  (radius 100 km); tsunami dan gunungapi: F null. Tanpa rekaman jenis itu → null.
+- T = lereng Theil–Sen (`tren_lereng`); karhutla dari titik VIIRS (`karhutla.tren_viirs_lereng`); tren 'jarang' atau null → T null; abrasi_rob/gempa/tsunami/gunungapi: T null.
+- D = meninggal×10 + mengungsi/100 + rr_berat per bahaya (`kejadian.dampak_12bln_bahaya`, DT §5.4). D = 0 (ikut persentil) bila DIBI memuat bahaya itu
+  (ada baris kab mana pun di jendela); null hanya bila sumber DIBI hilang, DIBI tak memuat bahaya itu, atau blok kejadian null.
+- P = rerata persentil (balita+lansia) dan persentil bangunan; salah satu null → P null. K = 1 − tercatat/5 langsung dari perda_pb, perda_bpbd, rpb, renkon,
+  BPBD berstatus "Terbentuk"; bendera tak diketahui (null) → K null; false = tidak tercatat.
+- Kelas dari skor yang sudah terbulat 4 desimal. A1 juga butuh tren "naik"; A5 butuh RPB dan renkon sama-sama tak tercatat (false); A3 karhutla butuh `gambut_pct` > 10.
+- Judul memakai teks baku tanpa angka (kecuali frasa baku "12 bulan" di A9). `auto_id` unik; bukti masing-masing punya sumber, tanggal, nilai asli, yakin; yakin masalah = terlemah bukti.
 
 Bukti tiap masalah = daftar angka asli (bukan persentil) + sumber + tanggal. Judul tidak
 pernah memuat angka (gaya rumah); angka di baris bukti.

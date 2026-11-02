@@ -105,7 +105,7 @@ test("kolom Tren menggantikan PD jiwa; nol tampil 0 dan null tampil strip; tab s
   const w = fs.readFileSync("public/banjir/wilayah.js", "utf8"), h = fs.readFileSync("public/banjir/index.html", "utf8");
   assert.match(w, /\">Tren<\/span>/); assert.match(w, /\"TR\", \"Tren\"/); assert.ok(!/>PD jiwa<\/span>|>TP<\/span>|Terpapar, jiwa/.test(w));
   assert.match(w, /const n = v => v == null \? "–" : fmt\(v\)/);
-  for (const m of ["status", "hujan", "sungai", "rob", "riwayat"]) assert.match(h, new RegExp(`data-mp="${m}" aria-pressed="[a-z]+"><svg`), m);
+  for (const m of ["status", "hujan", "sungai", "riwayat"]) assert.match(h, new RegExp(`data-mp="${m}" aria-pressed="[a-z]+"><svg`), m);
   for (const b of ["b", "l"]) assert.match(h, new RegExp(`data-b="${b}" aria-pressed="[a-z]+"><svg`), b);
 });
 
@@ -114,7 +114,7 @@ test("kepala sidebar kiri: cari paling atas, segmen utama berikon, baris indikat
   const top = h.slice(h.indexOf('<div class="top">'));
   assert.ok(top.indexOf('id="cari"') < top.indexOf('id="utamaSeg"') && top.indexOf('id="utamaSeg"') < top.indexOf('id="indikatorSeg"'), "urutan cari, utama, indikator");
   for (const t of ["Real Time", "Riwayat", "Wilayah Siaga"]) assert.match(top, new RegExp(`<svg[^>]*>.*?</svg>${t}</button>`), t);
-  for (const t of ["Banjir", "Rob", "Longsor", "Hujan", "Sungai"]) assert.match(top.slice(top.indexOf('id="indikatorSeg"')), new RegExp(`<svg[^>]*>.*?</svg>${t}</button>`), t);
+  for (const t of ["Banjir", "Longsor", "Hujan", "Sungai"]) assert.match(top.slice(top.indexOf('id="indikatorSeg"')), new RegExp(`<svg[^>]*>.*?</svg>${t}</button>`), t);
   assert.match(h, /id="modePeta" hidden/); assert.match(h, /id="bahayaSeg" hidden/); assert.match(h, /<script src="subtab\.js">/);
   assert.equal(spawnSync("node", ["--check", "public/banjir/subtab.js"], {encoding: "utf8"}).status, 0); assert.ok(!/·|—/.test(j));
   assert.match(fs.readFileSync("public/banjir/hujan_kini.js", "utf8"), /<div class="lg-g"><div class="lbl" title="Area hujan/);

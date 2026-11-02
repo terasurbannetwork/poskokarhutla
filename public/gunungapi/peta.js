@@ -247,8 +247,18 @@ const Detail = {
     return li.length ? lipat("Kontak resmi", `<ul class="ev">${li.join("")}</ul><p class="rek-sumber">Sumber: teks rekomendasi PVMBG di MAGMA Indonesia</p>`) : ""; },
   /* bagian yang bergantung pada berkas turunan diisi sesudah dialog tampil (klik tidak menunggu jaringan); bagian tanpa data dibuang */
   async lanjut(g) {
-    const id = idGn(g.nama), [abu, pg] = await Promise.all([Data.abu(), Data.pg(id)]), d = $("#dlg"), el = d.querySelector("#dlgLanjut"); if (!el || d._g !== g) return;
-    nanti(() => { if (d._g === g) el.innerHTML = [this.sAbu(abu?.gunung?.find(x => x.id === id)), this.sPaparan(pg), this.sEvak(pg), this.sCitra(pg)].join(""); }); },
+    const id = idGn(g.nama), [abu, pg, mv] = await Promise.all([Data.abu(), Data.pg(id), Data.mirova()]), d = $("#dlg"), el = d.querySelector("#dlgLanjut"); if (!el || d._g !== g) return;
+    nanti(() => { if (d._g === g) el.innerHTML = [this.sAbu(abu?.gunung?.find(x => x.id === id)), this.sTermal(mv, g.nama), this.sPaparan(pg), this.sEvak(pg), this.sCitra(pg)].join(""); }); },
+  /* anomali termal satelit MIROVA (VRP, MW): pengamatan panas permukaan, BUKAN prakiraan letusan. Tanda "naik" hanya bila berkas menyatakan riwayat >= 14 hari (di_atas_latar bukan null). Gunung tanpa data dibuang (A18). */
+  sTermal(mv, nama) {
+    const m = mv && Object.values(mv.gunung || {}).find(x => x.gunung === nama); if (!m) return "";
+    const v = m.vrp_mw, vt = v > 0 && v < .1 ? "kurang dari 0,1 MW" : v == null ? "–" : fmt(v) + " MW", ks = Object.keys(m.seri || {}).sort(), n = ks.length;
+    const t0 = Date.parse(ks[0]), span = Math.max(1, (Date.parse(ks[n - 1]) - t0) / 864e5), rm = Math.max(...ks.map(k => m.seri[k])), mx = Math.max(1, rm);
+    const pts = ks.map(k => `${((Date.parse(k) - t0) / 864e5 / span * 200).toFixed(1)},${(30 - m.seri[k] / mx * 28).toFixed(1)}`).join(" ");
+    const spark = n >= 2 ? `<svg viewBox="0 0 200 32" width="100%" height="40" preserveAspectRatio="none" role="img" aria-label="VRP harian maksimum ${n} hari terakhir, puncak ${fmt(rm)} MW"><polyline points="${pts}" fill="none" stroke="#b5523b" stroke-width="1.5" vector-effect="non-scaling-stroke"/></svg><p class="rek-sumber">Maksimum harian, ${fmt(n)} hari terkumpul (rentang vertikal 0 sampai ${fmt(mx)} MW)</p>` : "";
+    const bendera = m.di_atas_latar === true ? `<span class="pl" style="--w:#b5523b">naik di atas latar sendiri</span> VRP 2 hari terakhir melewati kebiasaan gunung ini.` : m.di_atas_latar === false ? "Tidak naik di atas latar sendiri." : `<span class="pl" style="--w:#5b6575">riwayat belum cukup</span> Tanda naik butuh minimal 14 hari data.`;
+    return lipat("Anomali termal satelit", `<div class="kv gn-kv"><div><b>${vt}</b><span>VRP terbaru, ${tglJam(m.waktu)}</span></div></div>${spark}<p class="dl-kal">${bendera}</p>
+      <p class="rek-sumber">Pengamatan panas permukaan oleh satelit, bukan prakiraan letusan; tutupan awan membuat nilai 0 belum tentu tanpa panas. Sumber: <a href="https://www.mirovaweb.it/NRT/latest.php" target="_blank" rel="noopener noreferrer">MIROVA</a> (Univ. Turin), MODIS/VIIRS NASA, pengamatan ${m.waktu ? new Date(m.waktu).toLocaleDateString("id-ID", {...WIB, day: "numeric", month: "short", year: "numeric"}) : "–"}</p>`); },
   /* satu kalimat berangka; jejak kosong = di bawah ambang penerbangan, bukan tanpa abu */
   sAbu(ga) {
     if (!ga?.jejak) return "";

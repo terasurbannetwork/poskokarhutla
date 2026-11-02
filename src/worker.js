@@ -20,6 +20,7 @@ import {RUTE_KONTAK} from "./kontak.js";
 import {RUTE_SITREP, arsipkanSitrep, bersihkanArsipSitrep} from "./sitrep.js";
 import {RUTE_RELAWAN, bersihkanRelawan} from "./relawan.js";
 import {RUTE_LAPANGAN, bersihkanLapangan} from "./lapangan.js";
+import {tanyaKondisi} from "./lapangan_wa.js";
 import {layaniKm} from "./kemitraan.js";
 import {RUTE_LAPORAN_BNPB} from "./laporan_bnpb.js";
 import {RUTE_RUMAH_RUSAK} from "./rumah_rusak.js";
@@ -48,7 +49,7 @@ import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
 import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
 import {RUTE_STAF, bersihkanStaf, stafPeran} from "./staf.js";
 import {RUTE_CC, bersihkanCc} from "./command_center.js";
-import {RUTE_AKADEMISI} from "./akademisi.js";
+import {RUTE_AKADEMISI, P_AKADEMISI} from "./akademisi.js";
 import {RUTE_DALOPS} from "./dalops.js";
 import {RUTE_LOGBOOK} from "./logbook.js";
 import {RUTE_PEMULIHAN} from "./pemulihan.js";
@@ -65,6 +66,8 @@ import {RUTE_PANTAU, bersihkanPantau} from "./pantau.js";
 import {RUTE_INVENTARIS} from "./inventaris.js";
 import {RUTE_KORBAN} from "./korban.js";
 import {RUTE_OMC} from "./omc.js";
+import {RUTE_OPERASI} from "./operasi_udara.js";
+import {RUTE_JARAK_PANDANG} from "./jarak_pandang.js";
 import {RUTE_LAPORAN_KARHUTLA, buatDrafLaporanKarhutla} from "./laporan_karhutla.js";
 import {perbaruiGempa, bersihkanGempa, layaniGempa, gempaDibuat} from "./gempa.js";
 import {perbaruiNowcast, layaniNowcast, nowcastDibuat} from "./nowcast.js";
@@ -613,6 +616,8 @@ const RUTE = {
   ...RUTE_INVENTARIS,   // inventaris peralatan pemadam per pihak dan gudang (src/inventaris.js)
   ...RUTE_KORBAN,   // laporan korban jiwa: instansi dan Pusdalops melapor, verifikasi, butir Meja Pantau (src/korban.js)
   ...RUTE_OMC,   // catatan sortie OMC: staf TMC mengisi, GET /api/omc/sortie publik untuk pipeline (src/omc.js)
+  ...RUTE_JARAK_PANDANG,   // jarak pandang BMKG dari bot Mac mini -> R2, GET publik (src/jarak_pandang.js)
+  ...RUTE_OPERASI,   // peta operasi lapangan khusus staf (src/operasi_udara.js)
   ...RUTE_LAPORAN_KARHUTLA,   // Laporan Karhutla otomatis: draf, kirim, verifikasi, kunci, ralat, snapshot (src/laporan_karhutla.js)
   ...RUTE_PANTAU,   // Meja Pantau: antrean kerja harian staf (src/pantau.js)
   ...RUTE_OPS,   // operasi pemadaman lapangan (src/operasi_lapangan.js)
@@ -661,7 +666,7 @@ async function rute(env, req, url, ctx) {
    Syarat: wrangler.jsonc assets.html_handling = "none", supaya "/" dan "/banjir/" tidak dijawab aset otomatis.
    [pola jalur, berkas aset, kunci jalur untuk statistik (null = pakai jalur yang dinormalkan)] */
 const BNPB_BERSIH = {index: "/bnpb", relawan: "/relawan", "relawan-saya": "/relawan/saya", kampus: "/kampus", "alun-alun": "/alun-alun", riset: "/riset", mitra: "/riset/mitra",
-  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", dokumen: "/bnpb/dokumen", operasi: "/bnpb/operasi", perencanaan: "/bnpb/perencanaan", dalops: "/bnpb/dalops", pendataan: "/pendataan"};
+  meja: "/meja", risiko: "/risiko", sitrep: "/sitrep", kebutuhan: "/kebutuhan", kebakaran: "/risiko-kebakaran", hukum: "/bnpb/hukum", logbook: "/bnpb/logbook", dokumen: "/bnpb/dokumen", operasi: "/bnpb/operasi", operasi_lapangan: "/bnpb/operasi-lapangan", perencanaan: "/bnpb/perencanaan", dalops: "/bnpb/dalops", pendataan: "/pendataan"};
 export const HOST_TERKUNCI = new Set(["centurisk97.id", "www.centurisk97.id"]);
 /* host yang halamannya di balik login: domain + alamat workers.dev PRODUKSI (dan pratinjau versinya "<hash>-centurisk97...").
    Uji Setneg 1 Nov 2026: /monitor, /direktori dll. terbuka tanpa login lewat workers.dev. Host *.workers.dev lain (uji lokal) tetap terbuka. */
@@ -687,7 +692,7 @@ export const HTML_RUTE = [
   [/^\/akademisi\/?$/, "/akademisi.html", "/akademisi"],   // alamat lama, dialihkan 301 ke /direktori di layaniHTML   // direktori pakar kebencanaan (public/akademisi*, src/akademisi.js); halaman tertutup di centurisk97.id, datanya hanya lewat /api/akademisi bersesi staf
   [/^\/petugas\/?$/, "/petugas/index.html", "/petugas"],   // modul Pegawai dan Relawan Lapangan: layar petugas berkode (/lapangan milik regu Posko lama)
   [/^\/petugas\/panel\/?$/, "/petugas/panel.html", "/petugas/panel"],   // panel pimpinan modul Lapangan; tertutup di centurisk97.id (sesi staf), API menjaga hak
-  [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); di balik login, TIDAK di PUBLIK_TANPA_SESI
+  [/^\/prediksi\/?$/, "/prediksi/index.html", "/prediksi"],   // prediksi bencana per kab (public/prediksi/, src/prediksi.js); login hanya di hostTerkunci (seperti /monitor), TIDAK di PUBLIK_TANPA_SESI; data JSON statis publik
 ];
 /* Gerbang centurisk97.id: DEFAULT TERTUTUP. Halaman = /f/, HTML_RUTE, dan tiap rute GET di tabel RUTE yang bukan /api/, /admin (menjaga diri sendiri
    dan /admin/masuk harus terbuka), /ews/ (tautan surel konfirmasi/berhenti) atau /ubin/. Halaman baru otomatis ikut terkunci; yang boleh terbuka HARUS tercatat di sini. */
@@ -715,6 +720,9 @@ function catatHTML(env, req, jalur, ctx) {
 }
 async function layaniHTML(req, env, ctx, url) {
   if (req.method !== "GET" && req.method !== "HEAD") return null;
+  /* berkas statis layar petugas tidak membawa CSP/permissions-policy modul: arahkan ke alamat bersih */
+  const langsung = url.pathname.match(/^\/petugas\/(index|panel)\.html$/);
+  if (langsung) return new Response(null, {status: 301, headers: {location: (langsung[1] === "panel" ? "/petugas/panel" : "/petugas") + url.search, "cache-control": "no-store"}});
   const cocok = HTML_RUTE.find(([re]) => re.test(url.pathname)); if (!cocok) return null;
   const jalur = cocok[2] || url.pathname.replace(/\/+$/, "");
   /* situs Centurisk97 tanpa halaman Tentang di bencana mana pun (pemilik, 19 Okt 2026): /tentang, /tentang-halaman, /<bencana>/tentang -> peta */
@@ -744,10 +752,16 @@ async function layaniHTML(req, env, ctx, url) {
   /* HTML per orang (pemirsa) dan di balik login (host terkunci): jangan disimpan cache bersama */
   if (pmTab || hostTerkunci(url.hostname) || jalur === "/uji-lapangan") { keluaran.headers.set("cache-control", "private, no-store"); keluaran.headers.append("vary", "cookie"); }
   /* /petugas dan /petugas/panel memuat data pribadi: CSP ketat (tanpa skrip/gaya inline; aset sendiri + Google Fonts) dan tanpa referrer; kode pribadi ada di fragmen #k= */
-  if (jalur === "/petugas" || jalur === "/petugas/panel") { keluaran.headers.set("content-security-policy", CSP_PETUGAS); keluaran.headers.set("referrer-policy", "no-referrer"); }
+  if (jalur === "/petugas" || jalur === "/petugas/panel") {
+    keluaran.headers.set("content-security-policy", jalur === "/petugas" ? CSP_PETUGAS : CSP_PETUGAS_PANEL); keluaran.headers.set("referrer-policy", "no-referrer");
+    keluaran.headers.set("permissions-policy", "camera=(self), geolocation=(self), microphone=()");   // menimpa camera=() dari public/_headers (memblokir getUserMedia untuk absen wajah)
+  }
   return keluaran;
 }
-const CSP_PETUGAS = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+/* panel: peta MapLibre (worker-src/child-src blob: untuk worker petanya) + gaya, ubin, glyph, sprite dari tiles.openfreemap.org (gaya positron/dark dimuat dari host yang sama; panel_ops.js GAYA) */
+const CSP_PETUGAS_PANEL_TAMBAHAN = "; worker-src blob:; child-src blob:";
+const CSP_PETUGAS = "default-src 'self'; script-src 'self' 'wasm-unsafe-eval'; style-src 'self' https://fonts.googleapis.com; font-src 'self' https://fonts.gstatic.com; img-src 'self' data: blob:; connect-src 'self'; frame-ancestors 'none'; base-uri 'none'; form-action 'self'";
+const CSP_PETUGAS_PANEL = CSP_PETUGAS.replace(" 'wasm-unsafe-eval'", "").replace("connect-src 'self'", "connect-src 'self' https://tiles.openfreemap.org") + CSP_PETUGAS_PANEL_TAMBAHAN;
 
 /* ================= cache tepi untuk GET publik tanpa data per pengguna (caches.default, per pusat data Cloudflare) =================
    Hanya dipanggil dari rute GET publik di fetch() (/api/warga daftar & konfig, /api/titik, /api/status); admin, POST, dan rute
@@ -857,7 +871,7 @@ const W = {
       ujiOK = true;
     }
     if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
-      && !await stafPeran(env, req, ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; peran staf lain tidak
+      && !await stafPeran(env, req, /^\/direktori\/?$/.test(url.pathname) ? ["operator_cc", ...P_AKADEMISI] : ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; staf berperan Direktori (P_AKADEMISI) membuka /direktori saja
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
@@ -908,6 +922,8 @@ const W = {
       if (w.getUTCHours() === 0 && (m === 5 || m === 35)) try { console.log("sitrep", JSON.stringify(await arsipkanSitrep(env, sekarang, m === 35))); } catch (e) { console.error("sitrep", e?.message); }   // arsip sitrep 07 WIB (menit 35 = ulang bila gagal)
       if (w.getUTCHours() === 0 && (m === 1 || m === 31)) try { console.log("laporan karhutla", JSON.stringify(await buatDrafLaporanKarhutla(env, sekarang))); } catch (e) { console.error("laporan karhutla", e?.message); }   // draf harian 07.01 WIB (menit 31 = ulang bila gagal; idempoten)
       if (w.getUTCHours() === 0 && m === 40) try { console.log("pengingat", JSON.stringify(await buatPengingat(env, sekarang))); } catch (e) { console.error("pengingat", e?.message); }   // antrean pengingat 07.40 WIB (idempoten)
+      if (m === 40 && (w.getUTCHours() === 3 || w.getUTCHours() === 13)) try { console.log("pengingat lapangan", JSON.stringify(await buatPengingat(env, sekarang, {hanya: ["lapangan_absen", "lapangan_logbook"]}))); } catch (e) { console.error("pengingat lapangan", e?.message); }   // petugas belum absen (10.40 WIB) / belum isi logbook (20.40 WIB)
+      if (w.getUTCHours() === 9 && (m === 5 || m === 35)) try { console.log("tanya kondisi", JSON.stringify(await tanyaKondisi(env, sekarang))); } catch (e) { if (!/no such table/i.test(e?.message || "")) console.error("tanya kondisi", e?.message); }   // LP-022: 16.05 WIB (menit 35 = ulang bila gagal; idempoten per orang per hari)
       if (m === 55 && w.getUTCHours() % 6 === 0) try { console.log("pengingat prioritas", JSON.stringify(await buatPengingatPrioritas(env, sekarang))); } catch (e) { console.error("pengingat prioritas", e?.message); }   // F2 jam 00/06/12/18 UTC menit 55, sesudah titik.yml menerbitkan risiko_prioritas.json (idempoten)
       if (m === 19) try { const h = await ringkasGranul(env, sekarang); if (!h.lewat) console.log("satelit ringkas", JSON.stringify(h)); } catch (e) { console.error("satelit ringkas", e?.message); }   // ringkasan jeda satelit 30 hari: jam 13 UTC, atau bila belum ada / > 25 jam (src/satelit.js); invokasi sendiri, tabel 0075 belum ada = dilewati
       if (m === 20) try { console.log("uji lapangan", JSON.stringify(await jalankanUji(env, sekarang))); } catch (e) { console.error("uji lapangan", e?.message); }   // sampel kontrol mingguan, kedaluwarsa kontrol, penilaian api terlewat (Q2); tiap jam, murah bila tak ada pekerjaan

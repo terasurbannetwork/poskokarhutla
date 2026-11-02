@@ -24,6 +24,8 @@ permintaan sesudahnya.
 | K8 | Riset dulu dari GitHub dan **reverse engineer** yang sudah ada, bukan mengarang | *"Lu cek github nya udah ada atau nggak dan reverse engineer dari situ"* |
 | K9 | Dibangun lengkap: riset, desain sistem, tiket, kode | *"Lu buat tiketnya, lu buat design sistemnya, lu buat semuanya"* |
 | K10 | Paket dokumen lengkap seperti SIPPA, bukan hanya tiket | *"waktu bangun sippa kayanya ga hanya tiket deh ... biar semuanya bagus"* |
+| K11 | Fitur yang sudah ada di sistem digabung ke modul ini (usulan 1 sampai 12, 2 Nov 2026): regu Posko `/lapangan`, pelacakan `/lacak`, lapor foto bergeotag (Uji Pilot, Ruang Instansi), tugas api dan konfirmasi padam, Renlap Generator, permintaan dan penugasan relawan, pelatihan relawan, kit SIPPA, pengingat, konfirmasi lapangan `/prediksi` dan uji lapangan banjir, drone gambut, sitrep dan logbook Dirdalops | *"1 2 3 4 gas, 5 gas, 5 6 7 8 9 10 11 12, yes gas"* |
+| K12 | Satu sistem desain: semua layar gabungan memakai desain `/petugas` (kepala situs bersama, token Centurisk97); logika dan data lama dipakai ulang, halaman lama dialihkan sesudah penggantinya siap | *"Sistem desainnya semua udah sama kan?"* (jawaban: belum; disamakan lewat modul ini) |
 
 ## B. Diputus perancang (sesi induk), boleh dibatalkan pemilik
 
@@ -51,3 +53,15 @@ permintaan sesudahnya.
 | U6 | Nama resmi program relawan | Sayap BNPB, Korps Relawan Gerak Cepat |
 | U7 | Data induk pegawai dari Biro SDM | impor CSV sekali, lalu dijaga di sistem |
 | U8 | Migrasi D1 produksi | diterapkan pemilik (memori ruang-bnpb) |
+
+## D. LP-048 hasil cek setara (2 Nov 2026)
+
+Aturan K12: halaman lama dialihkan (301) HANYA bila fitur `/petugas` sudah setara. Hasil pemeriksaan kode (`src/penugasan.js`, `src/posko.js`, `src/relawan.js`, `public/**`):
+
+| Halaman lama | Dilayani | Setara di `/petugas`? | Yang kurang | Tindakan |
+|---|---|---|---|---|
+| `/relawan/saya` (relawan-saya, kode pribadi) | status siap/istirahat, terima/tolak penugasan, check-in/out jam layanan (antre luring, GPS opsional), jam tervalidasi, pelatihan, ketersediaan (hari/minggu, luar provinsi), hapus data (UU PDP) | Tidak | `/petugas` hanya absen wajah, logbook, pantau regu; belum ada ketersediaan, siap tugas, terima/tolak, jam layanan, hapus data | Dibiarkan |
+| `/lacak#<token>` (petugas tugas api) | pelacakan GPS terus-menerus tiap 45 dtk, navigasi, peringatan angin, tiba/selesai, lapor foto dari lokasi (`/api/lacak/*`, `x-lacak`) | Tidak | pelacakan posisi, navigasi, angin, alur tiba/selesai tugas api; token berbeda dari kode pribadi | Dibiarkan |
+| `/lapangan#k=<kode regu>` (regu Posko) | laporan regu bergeotag + foto, draf luring `klien_id`, tugas regu (`/api/lapangan/*`, `x-kode-regu`) | Tidak | `/petugas` menulis `lp_logbook`, bukan `posko_laporan`; laporan regu tidak tampil di Posko pusat; tautan regu lama dibagikan lewat WA | Dibiarkan; `/api/posko` tidak diubah |
+
+Hasil: tidak satu pun dialihkan, jadi `src/worker.js` tidak diubah untuk LP-048. Uji `tests/warga/lapangan_kondisi.test.mjs` ("halaman lama belum dialihkan") menjaga ini: bila seseorang menambah 301 sebelum tabel di atas berubah, uji gagal. Alihkan satu per satu setelah kolom "yang kurang" terpenuhi dan tabel ini diperbarui.

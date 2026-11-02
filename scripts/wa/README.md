@@ -91,9 +91,31 @@ sed -e "s#__REPO__#$HOME/Documents/GitHub/poskokarhutla#" -e "s#__NODE__#$(which
 launchctl bootstrap gui/$(id -u) ~/Library/LaunchAgents/id.centurisk97.wa-cutoff.plist
 ```
 
+## Renlap Operasi Lapangan (`renlap_jam.mjs`)
+
+Mati bawaan; hidup hanya bila `RENLAP=1` di `.env`. Dipanggil `otomatis.mjs` (tick launchd 10 menit yang sama, tanpa plist baru): versi malam sekali sehari sesudah 20.00 WIB, versi pagi sekali sehari sesudah 05.30 WIB (hanya sampai 12.00; lewat itu dilewati). Menjalankan `python3 scripts/operasi/renlap.py buat --versi malam|pagi --kirim-api` (Python venv `~/.wa-bot/py/bin`, env `WORKER` dari `WORKER_URL`, `WA_MESIN`); Worker menyimpan draf yang tampil di layar. TIDAK mengirim apa pun ke grup WA (keputusan K2). Idempoten lewat `state.renlap["TANGGAL:versi"]` di `~/.wa-bot/state.json`. Gagal = log + kabar `PEMILIK` sekali per versi per hari, dicoba lagi tick berikut tanpa kabar ulang. Jendela 06.00-23.00 tetap untuk laporan lain: proses launchd tetap hidup tiap 10 menit, jadi tick 05.30-05.59 hanya menjalankan renlap.
+
+## Jarak pandang BMKG (`jarak_pandang_jam.mjs`)
+
+Mati bawaan; nyalakan dengan `JARAK_PANDANG=1` di `.env`. Tick launchd yang sama: sekali per jam WIB (05.00-18.59), menjalankan `scripts/cuaca/metar.py` (Python `~/.wa-bot/py`), membaca `public/udara/data/jarak_pandang.json` dan POST ke `${WORKER_URL}/api/jarak-pandang` (Bearer `WA_MESIN`, timeout 60 dtk). Dikirim hanya bila `sumber` memuat "BMKG" (cadangan NOAA tidak menimpa data Worker). Berkas keluaran metar.py dikembalikan lewat `git checkout`. Idempoten lewat `state.jarak_pandang["YYYY-MM-DDTHH"]`. Gagal = log + kabar `PEMILIK` sekali per hari, tidak pernah ke penerima; laporan dan renlap tidak tertahan.
+
 ## Logbook dari grup WA (G5)
 
 `logbook_wa.mjs`: pesan di `LOGBOOK_GRUP` diurai (`urai_laporan.py`) jadi draf entri, ringkasan dikirim ke `LOGBOOK_STAF`.
 Hanya nomor di `LOGBOOK_STAF` (perorangan, bukan grup) yang boleh membalas. Staf membalas `OK <kode>` (tambah `YAKIN` bila server menolak angka tak wajar), `BATAL <kode>`, `KOREKSI <kode>` + baris `medan=nilai`, atau `DRAF`.
 Baru sesudah OK bot masuk sebagai `LOGBOOK_USER`/`LOGBOOK_SANDI` dan POST ke `/api/logbook/kejadian` (atau `/kejadian/:id/entri` bila ada kejadian terbuka kab + jenis dengan entri terakhir <= 3 hari). Nomor HP, surel, dan nama bergelar disaring sebelum draf disimpan. Pesan di grup BPBD tetap mengalir ke jalur bahan laporan harian seperti biasa; hanya balasan staf yang dicegat penuh.
 Uji: `node --test tests/wa/logbook_wa.test.mjs`.
+
+## Antrean WA modul /petugas (LP-021)
+
+`lapangan_tarik.mjs` jalan di dalam proses gateway (dimulai saat WA terhubung, bila `WA_KUNCI` terisi): tiap 60 detik `GET /api/petugas/wa/antre` (header `x-wa-kunci`), tiap pesan dikirim satu per satu lewat `sendPaced` (limiter yang sama dengan `/send`), lalu `POST /api/petugas/wa/hasil` berkelompok. Nomor tidak sah atau tidak terdaftar dilapor `ok:false`; limiter penuh atau WA putus = ditunda tanpa lapor (server menarik ulang setelah 10 menit). 401/503/jaringan putus hanya dicatat. Id yang sudah dilapor atau menunggu lapor tidak dikirim ulang. Berlaku setelah gateway dimulai ulang (belum dilakukan).
+Uji: `node --test tests/wa/lapangan_tarik.test.mjs`.
+
+## Grup satgas udara (`OPERASI_GRUP`)
+
+Grup WA satgas udara dan operator pesawat dibaca penuh tanpa perlu forward. Isi `OPERASI_GRUP` di `.env` dengan JID grup (`...@g.us`, pisah koma), lalu minta admin grup memasukkan nomor bot.
+- Semua anggota grup boleh, bukan hanya `WA_IZIN`. Bot **tidak pernah membalas** di grup (perintah dan `cari` diabaikan).
+- Hanya teks yang diteruskan; lampiran dari grup tidak diunduh dan tidak disalin ke Drive.
+- Worker hanya menyimpan pesan yang dikenali pengurai operasi (`src/operasi_wa.js`: temuan patroli, keberangkatan, kembali ke base) atau jenis laporan (`src/wa_jenis.js`). Obrolan dibuang.
+- Pengirim disimpan sebagai id grup dan nama tampilan dikosongkan: nomor HP dan nama pilot/operator tidak masuk D1.
+- Hanya pesan sesudah bot masuk grup; riwayat lama tidak ditarik. JID grup terlihat di log gateway (`[pesan] asing ...`) setelah bot masuk.

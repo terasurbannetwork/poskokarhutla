@@ -104,14 +104,19 @@ pengungsian historis DIBI), standar Sphere 2018: air 15 L/orang/hari, hunian
     (tiap regu, groundcheck). Warga tidak ditambahkan di kab-tanggal-kode yang
     sudah dijawab regu atau groundcheck.
 
-## Fase 3: dampak lanjutan (IBF), belum dibangun
+## Fase 3: dampak lanjutan (IBF), dibangun sebagian
 
-| Usulan | Data terbuka | Catatan |
+Semua keluaran fase ini adalah **skenario/paparan statis, bukan prakiraan**. Tab **Dampak** di layar membacanya malas
+(`dampak.json`, `jalan.json` baru ditarik saat tab dibuka).
+
+| Usulan | Status | Yang dibangun / alasan dicoret |
 |---|---|---|
-| Kerusakan bangunan gempa (kurva fragilitas HAZUS) | GMPE yang ada + Open Buildings | Uji ulang Palu 2018, Cianjur 2022 |
-| Titik rawan putus jalan/jembatan per kec | OSM, algoritma graf klasik | Peta paparan, bukan peluang putus |
-| Kedalaman genangan nasional | Model tangki M1 baru Jakarta | Perluas setelah M1 lolos |
-| Run-up tsunami & waktu evakuasi | Skenario statis literatur/InaRISK | Bukan prakiraan |
+| Kerusakan bangunan gempa (HAZUS) | Per kab dicoret | `kerusakan.js` butuh skenario guncangan (magnitudo, jarak); tak ada keluaran statis per kab dan tidak diimplementasi ulang di Python. Yang ada per kab: bahaya gempa (`risiko.json`, USGS) dan indeks InaRISK per kecamatan diringkas jadi maks/rerata/jumlah kecamatan tinggi. Uji ulang Palu/Cianjur tetap di `kalibrasi_kerusakan.mjs` (modul gempa) |
+| Titik rawan putus jalan/jembatan | Dibangun (`jalan.py`) | OSM trunk/primary/secondary/tertiary via Overpass per kotak kab; jembatan graf (Tarjan iteratif) = ruas tunggal yang bila hilang memisahkan jaringan, dengan km terisolir dan penanda tag `bridge`. Lari penuh 514 kab = pekerjaan workflow (belum dipasang). Peta paparan, bukan peluang putus; OSM tak lengkap di daerah terpencil |
+| Kedalaman/luas genangan nasional | Dibangun sebagian (`dampak.py`) | Luas genangan radar GFM terbesar per kab dari `genangan_nasional.json` (hanya kab yang punya citra). Jumlah bangunan terendam **tidak** ditampilkan: `boleh_tampil.bangunan = false` (Demak 2024 5-12x di bawah DIBI). Kedalaman FwDET belum jadi keluaran per kab |
+| Run-up tsunami & waktu evakuasi | Dicoret | `tsunami.js` menghitung waktu tiba per skenario dari batimetri di peramban; tak ada tabel statis literatur/InaRISK per kab di repo, dan tidak dikarang |
+| Desa langganan terisolir | Ditambah | `data/pusdalops/desa_terisolir.csv` dihitung per kab (batas atas dari pola teks logbook) |
+| Jembatan rusak DIBI | Dicoret per kab | `sippa/jembatan.py` hanya tingkat provinsi |
 
 Dicoret karena data tidak terbuka (keputusan 5): kekurangan tempat tidur RS,
 peluang jembatan putus per jam, kerugian ekonomi PDRB/lahan produktif.

@@ -41,7 +41,7 @@ export function nilaiGps({negara, hosting, relay, zona, prov, lat, lon, waktuGps
   }
   const zg = zonaProv(prov || "");
   if (zg && typeof zona === "string" && zona) {
-    const zp = ZONA_IANA[zona];
+    const zp = Object.hasOwn(ZONA_IANA, zona) ? ZONA_IANA[zona] : undefined;   // hasOwn: 'constructor' dari klien bukan zona
     if (!zp) curiga.push(`jam perangkat memakai zona ${zona.slice(0, 40)}, bukan zona Indonesia (GPS di ${zg})`);
     else if (zp !== zg) curiga.push(`jam perangkat ${zp}, padahal GPS di wilayah ${zg} (aplikasi lokasi palsu tidak memindah jam)`);
   }

@@ -59,7 +59,21 @@ area["ISO3166-2"="ID-{ISO[kode]}"]->.a;
 out center tags;"""
 
 
-JENIS = {"jalan": q_jalan, "sungai": q_sungai, "fasilitas": q_fasilitas, "air": q_air}
+def q_vital(kode):
+    """Prasarana vital nasional (osm_nasional.py): polisi, damkar, titik kumpul/hunian darurat, kantor pemerintahan,
+    jembatan jalan arteri/kolektor, rumah ibadah (calon tempat mengungsi, dihitung saja)."""
+    return f"""[out:json][timeout:600];
+area["ISO3166-2"="ID-{ISO[kode]}"]->.a;
+(
+  nwr[amenity~"^(police|fire_station|townhall|shelter|place_of_worship)$"](area.a);
+  nwr[emergency~"^(assembly_point|evacuation_centre|evacuation_center)$"](area.a);
+  nwr[office=government](area.a);
+  way[bridge][highway~"^(trunk|primary|secondary)$"](area.a);
+);
+out center tags;"""
+
+
+JENIS = {"jalan": q_jalan, "sungai": q_sungai, "fasilitas": q_fasilitas, "air": q_air, "vital": q_vital}
 
 
 def ubin(kode):
@@ -93,7 +107,7 @@ if __name__ == "__main__":
     # cakupan bawaan (tanpa kode): fasilitas 9 provinsi prioritas, jalan 38 provinsi, sungai/kanal prioritas + bergambut
     from wilayah import PROVINSI
     from kanal import GAMBUT_LAIN
-    bawaan = {"fasilitas": PRIORITAS, "jalan": list(PROVINSI), "sungai": PRIORITAS + GAMBUT_LAIN, "air": PRIORITAS + GAMBUT_LAIN}
+    bawaan = {"fasilitas": PRIORITAS, "jalan": list(PROVINSI), "sungai": PRIORITAS + GAMBUT_LAIN, "air": PRIORITAS + GAMBUT_LAIN, "vital": list(PROVINSI)}
     for j in jenis:
         for kode in kodes or bawaan[j]:
             n = sum(1 for _ in semua(kode, j))

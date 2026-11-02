@@ -1,0 +1,32 @@
+name: Nowcast bandang (uji tarik GSMaP, manual)
+
+# Satu tarikan GSMaP NRT per jam lewat scripts/banjir/nowcast_bandang.py untuk mengukur latensi nyata
+# (umur jam terbaru) sebelum PRAREG-BANDANG dibekukan. Akun FTP JAXA hanya ada sebagai secret.
+# Tidak meng-commit apa pun: fitur diunggah sebagai artifact 7 hari, latensi dibaca dari log.
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  tarik:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+      - run: python3 scripts/banjir/nowcast_bandang.py uji
+      - name: Tarik 30 jam NRT
+        env:
+          GSMAP_USER: ${{ secrets.GSMAP_USER }}
+          GSMAP_PASS: ${{ secrets.GSMAP_PASS }}
+        run: python3 scripts/banjir/nowcast_bandang.py tarik
+      - uses: actions/upload-artifact@v4
+        with:
+          name: fitur-nowcast-bandang
+          path: data/raw/banjir/nowcast_bandang/
+          retention-days: 7
+          if-no-files-found: warn

@@ -14,7 +14,7 @@ import {json, gagal, acak, bacaBody, adminOK} from "./worker.js";
 import {modOK, superOK, tx, wib, RUTE_POSKO} from "./posko.js";
 import {tenggat, tautanTagih, PROV, RUTE_INSTANSI, durasi as jam, ciriTugas, butirApiMunculLagi, butirCekUlang, bencanaPer} from "./instansi.js";
 import {labelBencana} from "./tugas_bencana.js";
-import {PERAN, P_VALIDASI, stafSesi, stafTertahan, stmtStaf, jejakStmt, sandiBaru, bungkusStaf, tanpaTabelStaf} from "./staf.js";
+import {PERAN, P_VALIDASI, stafSesi, stafSesiSemua, hanyaDirektori, stafTertahan, stmtStaf, jejakStmt, sandiBaru, bungkusStaf, tanpaTabelStaf} from "./staf.js";
 import {P_SIPPA_TULIS} from "./sippa.js";
 import {alarmKeselamatan} from "./penugasan.js";
 import {butirInventarisLama, butirP3k} from "./inventaris.js";
@@ -73,6 +73,7 @@ async function aktor(env, req) {
 const tolakAktor = async (env, req) => {
   if (await adminOK(env, req)) return gagal(403, "akun gerbang situs bukan moderator; masuk sebagai moderator atau staf untuk membuka Meja Pantau");
   const t = await stafTertahan(env, req);   // sandi awal belum diganti: layar langsung menawarkan sandi baru
+  if (!t && hanyaDirektori((await stafSesiSemua(env, req))?.peran)) return json({galat: "akun ini hanya membuka Direktori", ke: "/direktori"}, 401);   // layar pindah ke /direktori
   return json({galat: "belum masuk sebagai staf atau admin; masuk lagi", ...(t ? {wajib_ganti: t} : {})}, 401);
 };
 const jenisBoleh = a => Object.keys(JENIS).filter(j => a.admin || a.peran.some(p => LUAS.includes(p) || JENIS[j].peran.includes(p) || (p === "operator_cc" && !TERTUTUP_OPERATOR.includes(j))));

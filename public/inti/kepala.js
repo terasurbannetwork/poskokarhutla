@@ -45,7 +45,8 @@ async function gambar(d) {
   /* Prediksi bukan jenis bencana: tombol sendiri di kepala, tepat sesudah menu bencana (tautan polos, tanpa JS klik). */
   if (!d.nextElementSibling?.classList.contains("bc-pred"))
     d.insertAdjacentHTML("afterend", `<a class="bc-pred" href="/prediksi"${location.pathname.startsWith("/prediksi") ? ' aria-current="page"' : ""}>${svg('<path d="M3 17l5-6 4 3 8-9M15 5h5v5"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}<span>Prediksi</span></a>`);
-  d.querySelector(".menu").innerHTML = butir;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
+  const kemitraan = `<hr><a href="/kemitraan"${location.pathname.startsWith("/kemitraan") ? ' aria-current="page"' : ""}>${svg('<path d="M3 10l9-5 9 5-9 5zM7 12v4c0 1.5 2.2 3 5 3s5-1.5 5-3v-4"/>', ' fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"')}Kemitraan</a>`;
+  d.querySelector(".menu").innerHTML = butir + kemitraan;  /* "Tentang kami" dicabut dari menu (pemilik, 20 Okt 2026); /tentang tetap bisa dibuka lewat URL */
   d.classList.toggle("ada-segera", (!tanpaSegera || TAMPIL.size > 0) && daftar.some(b => !buka(b)));
 }
 

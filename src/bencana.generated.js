@@ -370,9 +370,13 @@ export default {
         "peta",
         "insight",
         "tren",
-        "tentang"
+        "foto",
+        "tentang",
+        "informasi"
       ],
-      "tab_sembunyi": [],
+      "tab_sembunyi": [
+        "informasi"
+      ],
       "sumber_status": [
         [
           "abrasi",

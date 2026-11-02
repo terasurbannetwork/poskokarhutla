@@ -167,6 +167,8 @@ const KM_KONST = {
     "KOMP_MIN": 4,
     "KOMP_TOTAL": 6,
     "TREN_MIN_TAHUN": 5,
+    "TREN_DATAR_REL": 0.05,
+    "TREN_MIN_TAHUN_ADA": 3,
     "S_AUTO_NETRAL": 0.5,
     "UJ_PAKAR_MIN": 3,
     "UJ_PAKAR_SKOR": 0.5,

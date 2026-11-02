@@ -45,7 +45,7 @@ KONST = {
     # ---- ambang ----
     "KELAS": {"P1_S": 0.70, "P1_H": 0.80, "P1_K": 0.60, "P2_S": 0.50},                         # ALG §3.2
     "MASALAH": {"S_MIN": 0.40, "KOMP_MIN": 4, "KOMP_TOTAL": 6, "TREN_MIN_TAHUN": 5,
-                "S_AUTO_NETRAL": 0.5, "UJ_PAKAR_MIN": 3, "UJ_PAKAR_SKOR": 0.5, "JACCARD": 0.5},  # ALG §3.1, §3.4, §3.5
+                "TREN_DATAR_REL": 0.05, "TREN_MIN_TAHUN_ADA": 3, "S_AUTO_NETRAL": 0.5, "UJ_PAKAR_MIN": 3, "UJ_PAKAR_SKOR": 0.5, "JACCARD": 0.5},  # ALG §3.1, §3.4, §3.5
     "ATURAN": {"H_DOK": 0.6, "F": 0.6, "T": 0.6, "D": 0.7, "P": 0.7, "H_P": 0.5,
                "GAMBUT_PCT": 10, "H_GEMPA": 0.7},                                              # ALG §3.3
     "BM25": {"k1": 1.2, "b": 0.75, "BOBOT_JUDUL": 2, "TOP_KARYA": 3},                          # ALG §4.3

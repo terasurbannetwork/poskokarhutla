@@ -1,0 +1,57 @@
+Pihak ketiga yang disajikan dari aset statis kita sendiri (tanpa CDN saat runtime). Dicatat 2 Nov 2026 (LP-010).
+
+PUSTAKA
+  @vladmandic/human 3.3.6, berkas dist/human.esm.js (bundel ESM, TensorFlow.js ikut di dalam, tanpa peta sumber).
+  Diambil dari registry npm: npm pack @vladmandic/human@3.3.6. Lisensi MIT, Copyright (c) Vladimir Mandic.
+  Teks lisensi MIT ada di bawah. Versi dipatok; menaikkannya berarti mengganti berkas ini, model, dan
+  VERSI_PUSTAKA di public/petugas/wajah.js (vektor beda versi tidak dibandingkan, orang diminta daftar ulang).
+
+MODEL WAJAH (public/petugas/model/, bobot dari paket npm yang sama, dikuantisasi 16-bit oleh Human)
+  Lisensi bobot mengikuti sumber aslinya (wiki Human: "included under license inherited from the original model source").
+  blazeface   MediaPipe BlazeFace (Back)        Apache-2.0 (Google)         jelas
+  facemesh    MediaPipe FaceMesh                Apache-2.0 (Google)         jelas
+  faceres     HSE-FaceRes (HSE_FaceRec_tf)      Apache-2.0 (HSE, Rusia)     jelas
+  Model antispoof dan liveness bawaan Human DILEPAS 2 Nov 2026 (lisensi tidak jelas); diganti MiniFASNet di bawah.
+
+MODEL ANTI-PALSU (public/petugas/model/*.onnx) Apache-2.0, Copyright Minivision (minivision-ai/Silent-Face-Anti-Spoofing)
+  Sumber bobot: berkas resmi resources/anti_spoof_models/*.pth di repo itu (cabang master, diunduh 2 Nov 2026), teks lisensi Apache-2.0 di LICENSE repo itu.
+  Konversi sendiri (tidak ada ekspor ONNX berasal-usul jelas yang dipakai): scripts/lapangan/konversi_minifasnet.py, torch 2.8.0 (CPU), onnx 1.19.1,
+  opset 13, masukan "input" [1,3,80,80] float BGR 0..255 tanpa normalisasi, keluaran "logit" [1,3] (softmax di klien, kelas 1 = asli).
+  Diperiksa: logit onnxruntime (Python) dan onnxruntime-web (WASM, Node) sama dengan torch, selisih < 2e-6.
+  Kelas MiniFASNet diambil dari src/model_lib/MiniFASNet.py repo yang sama (sha256 e498c4ec5e1ddfaba62b941a126c19d65aa564999f3309661fe43ee8bf38acd7).
+    2.7_80x80_MiniFASNetV2.pth           sha256 a5eb02e1843f19b5386b953cc4c9f011c3f985d0ee2bb9819eea9a142099bec0   (skala potong 2,7)
+    -> 2.7_80x80_MiniFASNetV2.onnx       sha256 f11829b2f126452ded4a525d68bb6e4d41b4be89e1cb2cebd844e9091434112f   1.743.492 byte
+    4_0_0_80x80_MiniFASNetV1SE.pth       sha256 84ee1d37d96894d5e82de5a57df044ef80a58be2b218b5ed7cdfd875ec2f5990   (skala potong 4,0)
+    -> 4_0_0_80x80_MiniFASNetV1SE.onnx   sha256 259a9c789ae3ed280269b5609eb24809f9fadccd8cb2e013578035cc00c42624   1.742.660 byte
+  Skor hidup = rata-rata softmax kelas asli kedua model, lalu rata-rata 3 frame terbaik (meniru test.py resmi: jumlah softmax dibagi jumlah model).
+
+PUSTAKA INFERENSI (public/petugas/vendor/)
+  onnxruntime-web 1.22.0 (MIT, Copyright (c) Microsoft Corporation), npm pack onnxruntime-web@1.22.0, folder dist/, build WASM tanpa threads:
+    ort.wasm.min.mjs                     sha256 6ef726f355b791129f7ddf3f62e7877a16b9b777abe87004b8ab306e6b9cf265   48.259 byte
+    ort-wasm-simd-threaded.mjs           sha256 30dd851d9c00622940500f71ddd2ff8820c5cb65270816080175b958705385a8   20.856 byte
+    ort-wasm-simd-threaded.wasm          sha256 71aef04959c5c1b6de461b6538e2058e306610034a85aad2742d0c7fd4533fe4   11.210.254 byte
+  Dijalankan dengan numThreads = 1 (tanpa SharedArrayBuffer, tidak butuh COOP/COEP). Butuh CSP script-src 'wasm-unsafe-eval'.
+  Lisensi MIT sama dengan teks MIT di bawah (pemegang hak cipta: Microsoft Corporation).
+
+LISENSI MIT (@vladmandic/human)
+  MIT License
+
+  Copyright (c) Vladimir Mandic
+
+  Permission is hereby granted, free of charge, to any person obtaining a copy
+  of this software and associated documentation files (the "Software"), to deal
+  in the Software without restriction, including without limitation the rights
+  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+  copies of the Software, and to permit persons to whom the Software is
+  furnished to do so, subject to the following conditions:
+
+  The above copyright notice and this permission notice shall be included in all
+  copies or substantial portions of the Software.
+
+  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+  SOFTWARE.

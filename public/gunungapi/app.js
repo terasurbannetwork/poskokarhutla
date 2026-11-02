@@ -27,7 +27,7 @@ const idGn = nama => String(nama).toLowerCase().replace(/[^\p{L}\p{N} -]/gu, "")
 const DATA = {};
 const sekali = (k, u) => DATA[k] ||= muatJSON(u).catch(() => { delete DATA[k]; return null; });
 const Data = {abu: () => sekali("abu", "../banjir/data/abu_gunungapi.json"), pap: () => sekali("pap", "data/paparan.json"), geo: () => sekali("geo", "data/paparan_geo.json"), bandara: () => sekali("bandara", "data/bandara.json"),
-  fs: () => sekali("fs", "data/factsheet_gunungapi.json"), risiko: () => sekali("risiko", "data/risiko.json"), dampak: () => sekali("dampak", "../banjir/data/dampak_gunungapi.json"),
+  fs: () => sekali("fs", "data/factsheet_gunungapi.json"), mirova: () => sekali("mirova", "data/mirova.json"), risiko: () => sekali("risiko", "data/risiko.json"), dampak: () => sekali("dampak", "../banjir/data/dampak_gunungapi.json"),
   /* paparan per id gunung */
   async pg(id) { const p = await this.pap(); return p?.gunung?.find(x => x.id === id) || null; }};
 /* dibagikan ke sim.js (tab Simulasi memakai status dan loader yang sama, tanpa unduh ulang) */

@@ -86,6 +86,14 @@ uji("GET /bnpb/operasi: kerangka publik tanpa cache, tak boleh dibingkai, .html 
   const c = await man("https://centurisk97.id", "/bnpb/operasi"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/admin\/masuk/);
 });
 
+uji("GET /bnpb/operasi-lapangan: kerangka staf tanpa cache, .html dialihkan; di centurisk97.id anonim ke login", async () => {
+  const man = async (asal, j) => { const r = await U.mf.dispatchFetch(asal + j, {redirect: "manual"}); await r.text(); return r; };
+  const r = await man("http://bnpb.lokal", "/bnpb/operasi-lapangan"); assert.equal(r.status, 200);
+  assert.match(r.headers.get("cache-control"), /no-store/); assert.match(r.headers.get("x-robots-tag"), /noindex/); assert.match(r.headers.get("content-security-policy"), /frame-ancestors 'none'/);
+  const h = await man("http://bnpb.lokal", "/bnpb/operasi_lapangan.html"); assert.equal(h.status, 301); assert.equal(new URL(h.headers.get("location"), "http://bnpb.lokal").pathname, "/bnpb/operasi-lapangan");
+  const c = await man("https://centurisk97.id", "/bnpb/operasi-lapangan"); assert.equal(c.status, 303); assert.match(c.headers.get("location"), /\/admin\/masuk/);
+});
+
 uji("hak halaman staf sama dengan hak API-nya (satu sumber)", () => {
   assert.deepEqual([...HALAMAN_STAF.omc].sort(), [...PERAN_BACA].sort());
   assert.deepEqual([...HALAMAN_STAF.instansi].sort(), [...new Set([...P_VALIDASI, ...P_KONSESI])].sort());

@@ -9,6 +9,7 @@
     banjir: {genangan: ["Genangan", "#3f7fb8"], arus: ["Arus", "#2b8c86"], longsor: ["Longsor", "#9a7448"], rob: ["Rob", "#5f6fb0"], evakuasi: ["Evakuasi", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]},
     gunungapi: {hujan_abu: ["Hujan abu", "#7d8795"], lahar: ["Lahar", "#9a7448"], pengungsian: ["Pengungsian", "#e58a45"], lainnya: ["Lainnya", "#3d9461"]},
     kekeringan: {sumur: ["Sumur kering", "#c9a24b"], sawah: ["Sawah puso", "#8a6d4e"], antre: ["Antre air", "#4f8fc4"], lainnya: ["Lainnya", "#3d9461"]},
+    pesisir: {abrasi: ["Abrasi pantai", "#9a7448"], rob: ["Rob", "#5f6fb0"], gelombang: ["Gelombang tinggi", "#2b8c86"], lainnya: ["Lainnya", "#3d9461"]},
     gempa: {guncangan: ["Kerusakan bangunan", "#c9503a"], retakan: ["Retakan tanah", "#9a7448"], pengungsian: ["Pengungsian", "#e58a45"], tsunami: ["Genangan tsunami", "#3f7fb8"], lainnya: ["Lainnya", "#3d9461"]}};
   /* bencana tanpa entri di atas: kategori dari registry (diisi saat bencana.json termuat), warna dari palet ini; ikon jatuh ke "lainnya" */
   const PALET = ["#c9503a", "#3f7fb8", "#e58a45", "#9a7448", "#2b8c86", "#5f6fb0"];
@@ -82,7 +83,7 @@
     return `<button type="button" class="fg-k" data-fid="${f.id}" aria-label="${esc(`${k} di ${f.kec}, ${f.kab}`)}"><span class="fg-g"><img loading="lazy" decoding="async" alt="" src="${API}/thumb/${f.id}" onerror="this.style.visibility='hidden'">
       ${f.jenis === "video" ? `<span class="fl-vid">${IK.main}${durasi(f.durasi)}</span>` : ""}${f.contoh ? '<span class="fl-contoh">contoh</span>' : ""}
       <span class="fg-kat" style="--k:${w}">${ikat(f.kategori)}${k}</span>
-      <span class="fg-bawah"><span class="fg-t"><b>Kec. ${esc(f.kec)}</b><small>${esc(f.kab)} · ${esc(namaProv(f.prov))} · ${lalu(f.diambil || f.dibuat)}</small></span>
+      <span class="fg-bawah"><span class="fg-t"><b>Kec. ${esc(f.kec)}</b><small>${esc(f.kab)}, ${esc(namaProv(f.prov))}, ${lalu(f.diambil || f.dibuat)}</small></span>
       <span class="fg-st">${stat(IK.naik, f.suka)}${stat(IK.kom, f.komentar)}${stat(IKS.mata, f.dilihat)}</span></span></span></button>`; };
   /* DUMMY.md: 🧪 mengisi foto dummy untuk bencana halaman ini (BEN), 🧹 menghapus SEMUA dummy; muat ulang penuh sesudahnya */
   async function dummy(btn) {
@@ -190,7 +191,7 @@
       const f = await r.json(); this.f = f; d.innerHTML = this.html(f);
       if (f.contoh) fetch(`/img/dummy/${BEN === "karhutla" ? "" : BEN + "/"}kredit.json`).then(x => x.json()).then(ks => {   // lisensi BY/BY-SA: foto contoh Commons tampil dengan kreditnya
         const k = ks[parseInt(f.id.slice(-2), 16) % ks.length], info = d.querySelector(".fl-info"); if (!k || !info) return;
-        info.insertAdjacentHTML("beforeend", `<div><dt>${IK.galeri}Foto contoh</dt><dd><a href="${esc(k.sumber)}" target="_blank" rel="noopener">${esc(k.judul.replace(/^File:/, ""))}</a> · ${esc(k.penulis || k.pembuat || "")} · ${esc(k.lisensi)}</dd></div>`); }).catch(() => {});
+        info.insertAdjacentHTML("beforeend", `<div><dt>${IK.galeri}Foto contoh</dt><dd><a href="${esc(k.sumber)}" target="_blank" rel="noopener">${esc(k.judul.replace(/^File:/, ""))}</a>, ${esc(k.penulis || k.pembuat || "")}, ${esc(k.lisensi)}</dd></div>`); }).catch(() => {});
     },
     html(f) {
       const [k, w] = KAT[f.kategori] || KAT.lainnya;
@@ -373,7 +374,7 @@
     galat(t) { const p = this.d.querySelector(".fl-galat"); if (!p) return; p.hidden = !t; p.textContent = t || ""; },
     async gps() {
       const el = this.d.querySelector("[data-lok]");
-      try { this.loc = await ambilGPS(); el.textContent = `±${Math.round(this.loc.akurasi)} m · ${this.loc.lat.toFixed(4)}, ${this.loc.lon.toFixed(4)}`;
+      try { this.loc = await ambilGPS(); el.textContent = `±${Math.round(this.loc.akurasi)} m, ${this.loc.lat.toFixed(4)}, ${this.loc.lon.toFixed(4)}`;
         if (this.loc.akurasi > (this.k.batas?.akurasi || 1000)) { el.textContent += " (terlalu lemah)"; this.galat("Sinyal GPS lemah. Pindah ke tempat terbuka lalu ketuk Lokasi untuk mencoba lagi."); } else this.galat(""); }
       catch (e) { el.textContent = "Ketuk untuk coba lagi"; this.galat(e.message); }
       this.siap();
@@ -412,7 +413,7 @@
         ${this.daftar.length < MAKS_N ? `<label class="fl-th fl-tambah" aria-label="Tambah foto atau video">+<small>Tambah</small><input type="file" name="galeri" ${GAL} hidden></label>` : ""}<span class="fl-strip-n">${this.daftar.length} dari ${MAKS_N}</span></div>`);
       d.querySelector("[data-wkt]").textContent = x.exif?.waktu ? jamWIB(x.exif.waktu) : "Saat dikirim";
       const jadi = x.media.size;
-      d.querySelector("[data-uk]").textContent = (this.daftar.length > 1 ? `${this.daftar.length} berkas · ` : "") + (x.jenis === "video" ? `Video ${durasi(x.durasi)} · ${(jadi / 1048576).toFixed(1).replace(".", ",")} MB` : `${Math.round(jadi / 1024)} KB${x.asli > jadi * 1.2 ? ` (dari ${(x.asli / 1048576).toFixed(1).replace(".", ",")} MB)` : ""}`);
+      d.querySelector("[data-uk]").textContent = (this.daftar.length > 1 ? `${this.daftar.length} berkas, ` : "") + (x.jenis === "video" ? `Video ${durasi(x.durasi)}, ${(jadi / 1048576).toFixed(1).replace(".", ",")} MB` : `${Math.round(jadi / 1024)} KB${x.asli > jadi * 1.2 ? ` (dari ${(x.asli / 1048576).toFixed(1).replace(".", ",")} MB)` : ""}`);
       this.salahHapus("berkas");
     },
     klik(e, d) {

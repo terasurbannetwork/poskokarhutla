@@ -19,8 +19,9 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..')
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const DIR = path.join(ROOT, '.claude/agents')
 const ILMU = path.join(ROOT, '.claude/ilmu-agent')
 const roster = JSON.parse(fs.readFileSync(path.join(ROOT, 'scripts/agents/roster.json'), 'utf8'))
@@ -274,7 +275,9 @@ Cara memakai katalog ini:
 
 function tulis(f, isi, label) {
   const lama = fs.existsSync(f) ? fs.readFileSync(f, 'utf8') : null
-  if (lama === isi) return
+  // Banding tanpa beda akhir baris: checkout Windows (autocrlf) menulis CRLF.
+  const lf = (s) => s.replace(/\r\n/g, '\n')
+  if (lama !== null && lf(lama) === lf(isi)) return
   if (cekSaja) {
     masalah.push(label)
     return

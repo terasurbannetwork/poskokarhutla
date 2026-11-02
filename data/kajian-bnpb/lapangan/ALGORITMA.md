@@ -51,6 +51,8 @@ Pemeriksaan server saat simpan: kemiripan kosinus tiap vektor arah ke vektor dep
 | `AMBANG_TINJAU` | 0,45 | di antara: tinjau; di bawah: tinjau dengan tanda "wajah berbeda" |
 | `AMBANG_HIDUP` | 0,50 | antispoof dan liveness minimum |
 
+`skor_hidup` kini softmax asli MiniFASNet (onnxruntime-web WASM tanpa threads) 0..1, distribusinya beda dari model lama. `AMBANG_HIDUP` 0,50 adalah nilai sementara (kalibrasi); skor di bawahnya hanya mengirim absen ke tinjau (`hidup_rendah`), tidak pernah menolak. Ambang dikalibrasi ulang dari data HP nyata dan uji foto cetak/layar (U-20).
+
 Kalibrasi: sesudah 200 pasang absen yang sudah disahkan peninjau, hitung sebaran skor pasangan sah dan pasangan berbeda
 orang; `AMBANG_LOLOS` dipilih agar salah terima ≤ 0,1% dengan salah tolak sekecil mungkin. Hasil masuk KEPUTUSAN.
 
@@ -65,6 +67,10 @@ orang; `AMBANG_LOLOS` dipilih agar salah terima ≤ 0,1% dengan salah tolak seke
   tanda `jam_hp`. Luring: waktu HP diterima bila ≤ 24 jam ke belakang dan ≤ 5 menit ke depan (aturan `relawan_jam`).
 - Nonce: daring 1 nonce berumur 5 menit. Untuk luring, saat daring HP menyimpan 6 nonce berumur 36 jam. Tiap nonce
   sekali pakai dan terikat ke orang.
+- Penilaian waktu: daring memakai jam server untuk kedaluwarsa nonce dan kebasian sampel GPS. Luring memakai jam klaim HP,
+  dengan tiga penjaga: nonce harus dibuat sebelum waktu klaim (+5 menit), nonce harus berumur luring (> 5 menit), dan
+  klaim lebih dari 2 jam sebelum jam server masuk tinjau (`luring_lama`). Absen `luring_lama` tidak membuka sesi jam relawan
+  otomatis; sesi dibuka hanya bila peninjau mengesahkannya, dengan waktu absen itu.
 
 ## 5. Keputusan status absen
 
@@ -73,8 +79,20 @@ tolak       bila  sha256 foto sudah pernah dipakai  ATAU  nonce tidak sah/terpak
 lolos       bila  wajah terdaftar  DAN skor_wajah ≥ AMBANG_LOLOS  DAN tantangan lolos  DAN hidup ≥ AMBANG_HIDUP
                   DAN tidak gps_curiga  DAN dalam_radius  DAN tidak jam_hp
 tinjau      selain itu, dengan daftar alasan (wajah_belum_daftar, wajah_rendah, wajah_berbeda, tantangan_gagal,
-                  hidup_rendah, gps_curiga, luar_radius, jam_hp, luring)
+                  hidup_rendah, gps_curiga, luar_radius, jam_hp, luring, luring_lama, jaringan_beda, wajah_baru, sampel_acak)
 ```
+
+Alasan tambahan (semua dinilai di server):
+
+- `luring_lama`: absen luring yang diklaim lebih dari 2 jam sebelum jam server (kini − waktu klaim > 2 jam).
+- `jaringan_beda`: `ip_hash` berbeda dari absen orang itu sebelumnya dalam 12 jam.
+- `wajah_baru`: salah satu dari 3 absen pertama sesudah daftar ulang wajah (tabel `lp_wajah_baru`).
+- `sampel_acak`: 10% dari absen yang selainnya `lolos` (`SAMPEL_TINJAU`, hanya di server; `env.SAMPEL_TINJAU` menimpa untuk uji).
+  Dipasang hanya bila tidak ada alasan lain, supaya statistik alasan tidak berlipat.
+
+**Batas klien (jujur):** skor wajah, tantangan, dan skor hidup (anti-palsu) dihitung di HP (§3). Worker hanya menerima angkanya
+dan tidak bisa memeriksa ulang, sehingga ketiganya menahan penggunaan jujur, **bukan skrip**. Penjaga sungguhan adalah sisi
+server: sampel acak, `jaringan_beda`, `wajah_baru`, GPS/waktu (§4), dan tinjauan foto oleh manusia. Lihat KEAMANAN-PRIVASI §3.
 
 `luring` sendiri tidak memaksa tinjau bila semua syarat lain lolos dan nonce luring sah. Peninjau mengubah `tinjau` ke
 `sah` atau `tolak`; `lolos` dan `sah` sama-sama dihitung hadir.
@@ -84,7 +102,7 @@ tinjau      selain itu, dengan daftar alasan (wajah_belum_daftar, wajah_rendah, 
 Dicetak di klien pada foto JPEG (kualitas 0,82, sisi panjang 1.280 px) sebelum dikirim, pita gelap di bawah:
 
 ```
-Sab, 01 Nov 2026 09:25:06 WIB      (waktu server + selisih jam yang diukur saat nonce diambil)
+Min, 01 Nov 2026 09:25:06 WIB      (waktu server + selisih jam yang diukur saat nonce diambil)
 -0,05793 116,42250  ±8 m
 Kec. Kenohan, Kab. Kutai Kartanegara (nama wilayah dari tugas atau pencarian titik di server)
 Nama Petugas, Tugas Karhutla Kenohan
@@ -103,6 +121,10 @@ membuang metadata sebelum masuk R2.
 | akses | mobil, motor, jalan_kaki, perahu | rute Renlap |
 | tinggi_genangan_cm | 0 sampai 500 | label banjir kab-hari dan kecamatan |
 | hujan_lokal | tidak, ringan, lebat | pembanding prakiraan hujan |
+
+Kolom `terverifikasi` (0/1): 1 bila titik foto bergeotag ≤ radius tugas + 200 m dari titik tugas, tanggal logbook dalam jadwal
+tugas (di luar jadwal ditolak 409), dan EXIF foto cocok dengan posisi tercatat. **Ekspor label untuk model hanya memakai
+`terverifikasi = 1`**; label tanpa itu tetap tersimpan sebagai catatan tetapi tidak melatih model.
 
 Label disimpan di tabel `lapangan_label` dengan lokasi dan waktu server; pipeline model membacanya lewat ekspor JSON
 harian (DESAIN-TEKNIS §6), bukan membaca D1 langsung.

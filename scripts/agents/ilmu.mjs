@@ -27,6 +27,7 @@
 
 import fs from 'node:fs'
 import path from 'node:path'
+import { fileURLToPath } from 'node:url'
 import crypto from 'node:crypto'
 import { execFileSync } from 'node:child_process'
 
@@ -34,7 +35,7 @@ import { execFileSync } from 'node:child_process'
 const stempelWib = () => new Date(Date.now() + 7 * 3600_000).toISOString().replace('Z', '+07:00')
 const hariIniWib = () => stempelWib().slice(0, 10)
 
-const ROOT = path.resolve(path.dirname(new URL(import.meta.url).pathname), '../..')
+const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '../..')
 const DIR = process.env.ILMU_DIR
   ? path.resolve(process.env.ILMU_DIR)
   : path.join(ROOT, '.claude/ilmu-agent')
@@ -67,7 +68,9 @@ const berkasJejak = (nama) => path.join(DIR, 'jejak', `${nama}.jsonl`)
 function hashAturan(nama) {
   const f = path.join(AGEN, `${nama}.md`)
   if (!fs.existsSync(f)) return 'orkestrator'
-  return crypto.createHash('sha1').update(fs.readFileSync(f)).digest('hex').slice(0, 12)
+  // CRLF (checkout Windows) disamakan ke LF supaya hash sama di semua mesin.
+  const isi = fs.readFileSync(f, 'utf8').replace(/\r\n/g, '\n')
+  return crypto.createHash('sha1').update(isi).digest('hex').slice(0, 12)
 }
 
 function blob(berkas) {
@@ -400,7 +403,7 @@ function cmdPrompt(pola) {
 const [cmd, ...arg] = process.argv.slice(2)
 const langsung =
   process.argv[1] &&
-  path.resolve(process.argv[1]) === path.resolve(new URL(import.meta.url).pathname)
+  path.resolve(process.argv[1]) === path.resolve(fileURLToPath(import.meta.url))
 if (langsung) {
   if (cmd === 'baca') {
     cmdBaca(arg[0])

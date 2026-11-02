@@ -21,6 +21,7 @@ import datetime as dt, json, os, re, sys
 
 sys.path.insert(0, os.path.dirname(os.path.abspath(__file__)))
 import dasar as D
+import konfirmasi as K
 from bayangan import model as B
 from catat import AMBANG, PER_PANGGIL, peluang_hujan, per_hari, ringkas_hujan, titik_harian, titik_hotspot
 
@@ -172,10 +173,28 @@ def peluang_prakiraan(kode, kol, r, a_i):
 AMBANG_KODE = {"HJN": AMBANG, "API": [1], "BNJ": [1], "LSR": [1], "BNJ_B": [1], "LSR_B": [1], "CEX_B": [1], "KRH_B": [5]}
 
 
-def pasangan(entri, am, kini=None):
+def label_regu(rows):
+    """Konfirmasi snapshot -> ({(kode, tanggal, kab): 0/1} dari regu untuk BNJ/LSR, {...: 1} warga positif lemah).
+    Regu: positif mengalahkan nol. Warga tak pernah nol. Groundcheck TIDAK masuk (bukan label; RANCANGAN.md fase 2)."""
+    regu, warga = {}, {}
+    for kab, t, kd, sumber, terjadi, _ in rows:
+        if kd not in ("BNJ", "LSR"):
+            continue
+        if sumber == "regu":
+            regu[(kd, t, kab)] = max(terjadi, regu.get((kd, t, kab), 0))
+        elif sumber == "warga" and terjadi == 1:
+            warga[(kd, t, kab)] = 1
+    return regu, warga
+
+
+def pasangan(entri, am, kini=None, regu=None):
     """-> daftar pasangan [kode, ambang, tenggang, tahap, sasaran, kab, p, o, pers, klim, ekstra, asal]
     asal = "ps" (peluang ansambel), "lv" (BNJ/LSR tanpa ps: p = level >= 2, bukan peluang), "p" (kode lain).
-    ekstra (HJN ambang 1 saja): [mulai_f, mulai_o, lama_f, lama_o, tot_f, tot_o]."""
+    ekstra (HJN ambang 1 saja): [mulai_f, mulai_o, lama_f, lama_o, tot_f, tot_o].
+    regu {(kode, tanggal, kab): 0/1} = label lapangan BNJ/LSR: HANYA mengisi sel yang DIBI belum label (tahap "regu"; 0 dan 1 sah).
+    Sel DIBI tidak pernah diubah: baseline (persistensi, klimatologi) hanya melihat DIBI, jadi menaikkan label di sana menggelembungkan
+    skill. warga tidak dipakai sebagai label (positif-saja, dan bisa membalik nol regu); hanya dihitung di ringkas_konfirmasi."""
+    regu = regu or {}
     out, klim = [], {k: Klim(k, v) for k, v in am.items()}
     for e in entri:
         k = e["k"]
@@ -185,11 +204,14 @@ def pasangan(entri, am, kini=None):
         hk = am[ak].get(D.geser(e["t"], -1))
         for n, t in enumerate(e["hari"]):
             hari = am[ak].get(t)
-            if hari is None or (kini and t >= kini):
+            if (hari is None and not regu) or (kini and t >= kini):
                 continue
             for kab, rs in e["kab"].items():
                 r = rs[n]
-                v = nilai_amatan(ak, hari, kab)
+                v, th = nilai_amatan(ak, hari, kab), hari and hari["j"]
+                c = regu.get((ak, t, kab))
+                if c is not None and v is None:
+                    v, th = c, "regu"
                 if r is None or v is None:
                     continue
                 vp = nilai_amatan(ak, hk, kab)
@@ -201,7 +223,7 @@ def pasangan(entri, am, kini=None):
                     if k == "HJN" and ai == 0:
                         ek = [r[4], v[1], r[5], v[2], r[3], v[0]]
                     asal = ("lv" if r[1] is None else "ps") if k in ("BNJ", "LSR") else "p"
-                    out.append([k, a, n + 1, hari["j"], t, kab, p, kejadian(ak, v, a), kejadian(ak, vp, a), klim[ak](kab, a, t), ek, asal])
+                    out.append([k, a, n + 1, th, t, kab, p, kejadian(ak, v, a), kejadian(ak, vp, a), klim[ak](kab, a, t), ek, asal])
     return out
 
 
@@ -259,13 +281,17 @@ def skor_grup(ps):
     return out
 
 
+# sel regu hanya ada di lokasi kunjungan (kunjungan dipicu peringatan): frekuensinya bukan frekuensi kab, Brier-nya tak sebanding dengan DIBI
+REGU = {"vonis": "tidak dibandingkan", "catatan": "sel hanya di lokasi kunjungan regu (bias seleksi); tidak sebanding dengan DIBI"}
+
+
 def ringkas(pas, n_prakiraan, status=None):
     grup = {}
     for x in pas:
         grup.setdefault((x[0], x[1], x[2], x[3]), []).append(x)
     kode = {}
     for k in D.KODE + D.KODE_B:
-        g = [{"ambang": a, "tenggang": n, "tahap": th, **skor_grup(v)} for (kk, a, n, th), v in sorted(grup.items()) if kk == k]
+        g = [{"ambang": a, "tenggang": n, "tahap": th, **skor_grup(v), **(REGU if th == "regu" else {})} for (kk, a, n, th), v in sorted(grup.items()) if kk == k]
         if g:
             kode[k] = {"status": "dinilai", "prakiraan": n_prakiraan.get(k, 0), "grup": g}
         else:
@@ -328,6 +354,25 @@ def bayangan(pas, n_prakiraan):
     return {"catatan": B.CATATAN, "model": {k: {**B.INFO[k], "prakiraan": n_prakiraan.get(k, 0)} for k in D.KODE_B}, "banding": banding}
 
 
+def ringkas_konfirmasi(rows, am_api=None):
+    """Hitungan per kode dan sumber. dipakai: regu BNJ/LSR = label skor; warga BNJ/LSR = positif lemah; groundcheck = audit saja.
+    audit_firms: dari baris groundcheck (kab-hari, bukan tugas), berapa yang amatan API (FIRMS) nol; bersyarat pada tugas yang ada."""
+    out = {}
+    for kab, t, kd, sumber, terjadi, _ in rows:
+        x = out.setdefault(kd, {}).setdefault(sumber, {"n": 0, "positif": 0, "nol": 0})
+        x["n"] += 1
+        x["positif" if terjadi else "nol"] += 1
+    for kd, per in out.items():
+        for sumber, x in per.items():
+            x["dipakai"] = {"regu": "label skor" if kd in ("BNJ", "LSR") else "belum dipakai",
+                            "warga": "dihitung saja", "groundcheck": "audit saja"}[sumber]
+    if am_api is not None and "groundcheck" in out.get("API", {}):
+        gc = [(t, kab) for kab, t, kd, s, o, _ in rows if kd == "API" and s == "groundcheck" and o == 1 and t in am_api]
+        out["API"]["groundcheck"]["audit_firms"] = {"n_kabhari": len(gc), "firms_nol": sum(1 for t, kab in gc if not am_api[t]["kab"].get(kab)),
+                                                    "catatan": "bersyarat pada tugas yang ada; bukan label Brier"}
+    return out
+
+
 def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
     kini = kini or D.hari_ini()
     entri = D.semua_arsip(folder)
@@ -352,13 +397,15 @@ def nilai(kini=None, akar=D.AKAR, folder=None, data=None, unduh=unduh_hujan):
         if k in dasar:
             am[k], akhir = amatan_dibi(akar, cari, k)
             status[k] = f"menunggu label DIBI: sasaran <= {akhir} yang dinilai (DIBI terisi susulan {MARGIN_DIBI} hari)" if akhir else "dibi_kejadian.json tidak ada"
-    pas = pasangan(entri, am, kini)
+    kf = K.muat(data)["rows"]
+    pas = pasangan(entri, am, kini, label_regu(kf)[0])
     d = data or D.DATA
     batas = D.geser(kini, -SIMPAN_HARI)
     D.simpan(os.path.join(d, "pasangan.json"), {"dibuat": kini, "kol": ["kode", "ambang", "tenggang", "tahap", "sasaran", "kab", "p", "o", "pers", "klim", "ekstra", "asal"],
                                                 "baris": [x for x in pas if x[4] >= batas and x[0] in D.KODE]})   # bayangan tak ikut kalibrasi.py (ukuran)
     skor = {"versi": 1, "dibuat": dt.datetime.now(D.WIB).replace(microsecond=0).isoformat(), "jenis": "prospektif",
             "n_min": N_MIN, "kode": ringkas(pas, n_pra, status), "bayangan": bayangan(pas, n_pra),
+            "konfirmasi": ringkas_konfirmasi(kf, am.get("API")),
             "catatan": "Prospektif: prakiraan dibekukan sebelum kejadian (arsip append-only). HJN tahap 'sementara' dinilai "
                        "terhadap analisis model, bukan observasi; 'final' terhadap ERA5."}
     D.simpan(os.path.join(d, "skor.json"), skor)
@@ -509,6 +556,32 @@ def uji():
     assert r1["ap_bayangan"] == 1.0 and r1["vonis_peringkat"] == "peringkat lebih baik dari baseline", r1
     assert not any(x["kode"] == "CEX_B" for x in pb["banding"]), "CEX_B tanpa amatan CEX: tidak dinilai, tidak dikarang"
     assert D.DASAR["KRH_B"] == "KRH" and AMBANG_KODE["KRH_B"] == [5]
+    # konfirmasi lapangan: regu 0 = negatif sah, warga tak pernah negatif, groundcheck bukan label, sel tak terbaca tak ditebak
+    rows = [["1101", "2026-10-31", "BNJ", "regu", 0, None], ["1102", "2026-10-31", "BNJ", "regu", 1, None], ["1101", "2026-10-31", "LSR", "warga", 1, None],
+            ["1101", "2026-10-31", "API", "groundcheck", 1, None], ["1103", "2026-10-31", "BNJ", "warga", 1, None]]
+    regu, warga = label_regu(rows)
+    assert regu == {("BNJ", "2026-10-31", "1101"): 0, ("BNJ", "2026-10-31", "1102"): 1} and warga == {("LSR", "2026-10-31", "1101"): 1, ("BNJ", "2026-10-31", "1103"): 1}, (regu, warga)
+    assert label_regu(rows + [["1101", "2026-10-31", "BNJ", "regu", 1, None]])[0][("BNJ", "2026-10-31", "1101")] == 1
+    t0 = "2026-10-31"     # di luar jangkauan DIBI (am BNJ berhenti 2026-10-20): hanya sel regu yang dinilai
+    amk = {"BNJ": {"2026-10-20": {"j": "final", "kab": {}}}, "LSR": {"2026-10-20": {"j": "final", "kab": {}}}}
+    en = [{"t": "2026-10-30", "k": "BNJ", "hari": [t0, "2026-11-01", "2026-11-02"], "kol": ["lv", "ps"], "kab": {k: [[2, 0.6]] * 3 for k in ("1101", "1102", "1103")}},
+          {"t": "2026-10-30", "k": "LSR", "hari": [t0, "2026-11-01", "2026-11-02"], "kol": ["lv", "ps"], "kab": {"1101": [[2, 0.6]] * 3}}]
+    ps = {(x[0], x[5]): x for x in pasangan(en, amk, "2026-11-05", regu) if x[2] == 1}
+    assert ps[("BNJ", "1101")][7] == 0 and ps[("BNJ", "1102")][7] == 1 and ps[("BNJ", "1101")][3] == "regu", ps
+    assert ("BNJ", "1103") not in ps and ("LSR", "1101") not in ps, "warga di sel tanpa label tidak membuat sel (positif-saja)"
+    amd = {"BNJ": {t0: {"j": "final", "kab": {}}}}
+    pd = pasangan(en[:1], amd, "2026-11-05", {("BNJ", t0, "1101"): 1})
+    assert all(x[7] == 0 and x[3] == "final" for x in pd if x[2] == 1), "regu tidak pernah mengubah sel DIBI (baseline hanya lihat DIBI)"
+    assert pasangan(en[:1], amd, "2026-11-05", regu) == pasangan(en[:1], amd, "2026-11-05"), "sel DIBI identik dengan/tanpa regu"
+    rr = ringkas([x for x in pasangan(en, amk, "2026-11-05", regu)], {})
+    assert all(g["vonis"] == "tidak dibandingkan" and "bias seleksi" in g["catatan"] for g in rr["BNJ"]["grup"] if g["tahap"] == "regu"), rr
+    rk = ringkas_konfirmasi(rows, {t0: {"j": "final", "kab": {}}})
+    assert rk["BNJ"]["regu"] == {"n": 2, "positif": 1, "nol": 1, "dipakai": "label skor"} and rk["BNJ"]["warga"]["dipakai"] == "dihitung saja", rk
+    assert rk["API"]["groundcheck"]["dipakai"] == "audit saja" and rk["API"]["groundcheck"]["audit_firms"]["firms_nol"] == 1, rk
+    # groundcheck tak masuk Brier API: pasangan API identik dengan atau tanpa baris groundcheck
+    ea = [{"t": "2026-10-30", "k": "API", "hari": [t0, "2026-11-01", "2026-11-02"], "kol": ["p"], "kab": {"1101": [[0.9]] * 3}}]
+    aa = {"API": {"2026-10-30": {"j": "final", "kab": {}}, t0: {"j": "final", "kab": {}}}}
+    assert pasangan(ea, aa, "2026-11-05", label_regu(rows)[0]) == pasangan(ea, aa, "2026-11-05")
     print("nilai.py: uji lulus")
 
 
@@ -519,6 +592,7 @@ if __name__ == "__main__":
         o = ujibalik(int(sys.argv[2]) if len(sys.argv) > 2 else 30)
         print("ujibalik:", o["periode"], o["n_terbit"], "terbit;", [(g["ambang"], g["tenggang"], g["n"], g["vonis"]) for g in o["kode"]["HJN"].get("grup", [])])
     elif len(sys.argv) == 1:
+        K.perbarui(D.hari_ini())     # tanpa PIPA_TOKEN / gagal: dilewati, tak menggagalkan
         s = nilai()
         print("nilai:", {k: (v["status"], sum(g["n"] for g in v.get("grup", []))) for k, v in s["kode"].items()})
     else:

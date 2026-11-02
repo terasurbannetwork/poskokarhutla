@@ -6,7 +6,7 @@ Aturan yang diuji: `status.py` BERLAKU (k=0,8, geser -1; ambang H3 40/80/120 mm,
 
 ## Cara
 
-Satuan kabupaten-hari 1 Jan .. ~18 Okt 2026, hujan ERA5 (prakiraan sempurna, jadi skill nyata lebih rendah), metrik dan
+Satuan kabupaten-hari 1 Jan .. 19 Okt 2026, hujan ERA5 (prakiraan sempurna, jadi skill nyata lebih rendah), metrik dan
 bootstrap blok kabupaten sama dengan `uji_balik.py`. Label: `lb_mulai` (hanya hari mulai di logbook), `lb_aktif` (mulai..surut,
 maks 30 hari), `dibi` (DIBI 2026 banjir, bukan rob), `gab_*` (gabungan). Vonis ditulis sebelum melihat hasil: LULUS bila batas
 bawah CI95 ETS (>= Waspada) > 0,1.
@@ -15,7 +15,7 @@ bawah CI95 ETS (>= Waspada) > 0,1.
 
 Cache hilang (tidak dilacak git), jadi 435 sel diunduh ulang penuh (1 Nov 2026) dan semua terunduh. Dinilai 127 dari 127
 kabupaten berlabel + 30 dari 30 kontrol tanpa laporan. Jalankan ulang bila perlu dengan `python3 scripts/banjir/uji_logbook.py ambil`
-lalu `python3 scripts/banjir/uji_logbook.py` (cache `data/raw/banjir/uji_logbook`, tidak dilacak git). Rentang tetap 1 Jan .. 21 Okt 2026;
+lalu `python3 scripts/banjir/uji_logbook.py` (cache `data/raw/banjir/uji_logbook`, tidak dilacak git). Rentang tetap 1 Jan .. 19 Okt 2026 (label hari mulai dipotong 21 Okt, kisi cuaca berakhir 19 Okt);
 logbook lokal memuat sampai 29 Okt (12 kejadian banjir mulai sesudah 18 Okt) dan TIDAK ikut dinilai: memperpanjang rentang
 berarti mengunduh ulang hujan dan mengubah definisi uji. Hasil sebelumnya (74 kab + 18 kontrol) ada di riwayat git.
 

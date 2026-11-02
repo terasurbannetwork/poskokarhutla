@@ -1,6 +1,6 @@
 # Nowcast banjir bandang 0-6 jam (rancangan, belum aktif)
 
-Status: kode `scripts/banjir/nowcast_bandang.py` hanya menarik FITUR. Ambang belum ditetapkan, tidak ada di workflow, tidak terbit ke layar.
+Status: kode `scripts/banjir/nowcast_bandang.py` menarik FITUR dan memberi `status` level 0-3 menurut ambang pra-registrasi. Protokol, ambang, label, pembanding, dan kriteria: **`scripts/banjir/PRAREG-BANDANG.md`** (draf, belum dibeku). Level BELUM TERUJI, tidak ada di workflow, tidak terbit ke layar (`tayang: false`).
 
 ## Yang sudah ada (dipakai ulang, tidak diduplikasi)
 
@@ -30,9 +30,11 @@ Tahap 2 (belum): sub-DAS kecil. Berkas HydroBASINS level 09 ada di `data/raw/ban
 
 `h1` maks 1 jam, `h3` maks 3 jam berurutan, `h6` jumlah 6 jam terakhir (semua di jendela 6 jam yang berakhir pada jam terbaru tersedia); `a24` jumlah 24 jam SEBELUM jendela (anteseden); `hilang` jumlah jam kosong (dihitung 0 dan dilaporkan). Jam harus berurutan, celah ditolak. Lereng: belum dipakai di kode; calon dari DEM yang sudah ada di pipeline (belum dipetakan per kecamatan), baru dimasukkan bila terbukti menambah skill.
 
-## Ambang: belum ditetapkan
+## Ambang: lihat PRAREG-BANDANG.md §4
 
-Tidak ada sumber terverifikasi yang saya pegang untuk ambang intensitas-durasi banjir bandang tropis di Indonesia, jadi tidak ada angka. Bahan yang boleh dibaca sebagai pembanding SESUDAH diverifikasi teksnya (belum diperiksa di sini): kerangka FFG/FLASH (Gourley dkk., 2013) dan ambang intensitas-durasi longsor (Caine 1980; Guzzetti dkk. 2008) yang sering dipakai untuk bandang berlongsor. Tidak satu pun dipasang sebagai ambang.
+Diperbarui 2 Nov 2026: ambang kini ada sebagai hipotesis dari kategori BMKG, aturan `status.py` (30 mm/jam), dan kurva intensitas-durasi Caine 1980; asal tiap angka dan mutunya di PRAREG-BANDANG.md §4. Paragraf di bawah adalah catatan awal (cara data-driven) yang belum dijalankan karena belum ada arsip GSMaP jam-jaman bandang.
+
+Tidak ada sumber terverifikasi yang saya pegang untuk ambang intensitas-durasi banjir bandang tropis di Indonesia, jadi tidak ada angka. Bahan yang boleh dibaca sebagai pembanding SESUDAH diverifikasi teksnya (belum diperiksa di sini): kerangka FFG/FLASH (Gourley dkk., 2013) dan ambang intensitas-durasi longsor (Caine 1980; Guzzetti dkk. 2008) yang sering dipakai untuk bandang berlongsor. Tidak satu pun dipasang sebagai bukti ambang bandang; Caine hanya analogi longsor yang mengilhami h3/h6 di PRAREG-BANDANG.md §4 (ambang awal heuristik).
 
 Cara menetapkan dari data, bukan literatur:
 1. Label: kejadian jenis banjir bandang dari logbook Pusdalops (jenis `banjir_bandang`, `uji_logbook.py`) dan DIBI `bandang`. DIBI bandang sejak 2016 hanya sekitar 300 kabupaten-hari (DIBI 2024 tidak lengkap) dan logbook baru mulai 2026; jumlah ini kecil, jadi unit evaluasi = kecamatan-hari, dan pembagian uji ditentukan dulu.

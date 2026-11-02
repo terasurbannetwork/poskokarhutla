@@ -17,7 +17,7 @@ const JAM = 3600e3, HARI = 24 * JAM, SESI_UMUR = 30 * HARI, COOKIE = "sesi_staf"
 /* daftar tetap: sama dengan trigger staf_larik_sah (0030, dibuat ulang 0085 dan 0099) dan public/admin/pantau.js (dijaga pantau.test.mjs).
    operator_cc = operator meja command center karhutla (src/command_center.js): tulis tindak lanjut alert level 3 di /api/cc/*, MELIHAT semua halaman centurisk97.id (GET) dan hak BACA monitor, SLA, OMC,
    inventaris, serta Meja Pantau tanpa jenis regu/akun. TETAP TERTUTUP: nama dan dokumen korban, dokumen dan WA akun instansi, NIP/WA staf, nama/posisi regu, buku kontak penuh, SIPPA, semua rute tulis modul lain. */
-export const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan", kemitraan: "Kemitraan kampus", operator_cc: "Operator command center"};
+export const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan", kemitraan: "Kemitraan kampus", operator_cc: "Operator command center", direktori: "Direktori saja"};
 export const P_VALIDASI = ["verifikator", "pusdalops"], P_KONSESI = ["analis_konsesi"];
 const RE_NIP = /^[0-9A-Za-z .\/-]{5,30}$/;
 const SESI = new WeakMap();   // permintaan -> baris staf yang lolos stafSesi (dibaca dalamWilayahStaf tanpa query ulang)
@@ -36,7 +36,15 @@ async function muatSesi(env, req, kini) {
     .bind(await sha(t), kini).first());
 }
 /* sesi staf yang boleh dipakai rute kerja: aktif, sandi awal sudah diganti, dan (untuk kiriman) header x-pb. Tanpa cookie: tanpa query. Tabel 0030 belum ada: null (rute lama tak terganggu). */
+/* Peran 'direktori' (2 Nov 2026, Ka Biro Hukum Organisasi dan Kelembagaan): HANYA membuka Direktori (src/akademisi.js). Staf yang perannya cuma ini
+   tidak dianggap bersesi oleh stafSesi, jadi semua rute kerja lain (Meja Pantau, laporan, SIPPA, drone, korban, kemitraan, command center) menolaknya tanpa disunting satu per satu. */
+export const hanyaDirektori = peran => !!peran?.length && peran.every(p => p === "direktori");
 export async function stafSesi(env, req, kini = Date.now()) {
+  const s = await stafSesiSemua(env, req, kini);
+  return s && !hanyaDirektori(s.peran) ? s : null;
+}
+/* sama dengan stafSesi tetapi termasuk staf berperan 'direktori' saja: dipakai stafPeran (yang memeriksa peran eksplisit) dan Direktori */
+export async function stafSesiSemua(env, req, kini = Date.now()) {
   if (!tokenDari(req)) return null;
   if (req.method !== "GET" && req.method !== "HEAD" && req.headers.get("x-pb") !== "1") return null;
   let s; try { s = await muatSesi(env, req, kini); } catch (e) { if (tabelBelum(e)) return null; throw e; }
@@ -50,7 +58,7 @@ export async function stafTertahan(env, req, kini = Date.now()) {
   try { const s = await muatSesi(env, req, kini); return s?.wajib_ganti ? {nama: s.nama} : null; } catch (e) { if (tabelBelum(e)) return null; throw e; }
 }
 export async function stafPeran(env, req, peran) {
-  const s = await stafSesi(env, req);
+  const s = await stafSesiSemua(env, req);
   return s && peran.some(p => s.peran.includes(p)) ? "staf:" + s.id : null;
 }
 export async function stafOK(env, req, peran) { return (await adminOK(env, req)) || stafPeran(env, req, peran); }

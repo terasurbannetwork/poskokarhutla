@@ -158,7 +158,7 @@ uji("matriks peran x rute: tiap peran hanya rute sahnya; rute lama tidak melongg
   await akunMenunggu({username: "akunmatriks1"}); const aid = await akunId("akunmatriks1"), uid = await usulan(aid);
   const pg = await panggilan({status: "baru"});
   const MAT = [   // [metode, jalur, body, peran yang BOLEH (200..299 atau 4xx non-izin selain 401/403), nama]
-    ["GET", "/api/pantau", undefined, Object.keys(PERAN)],
+    ["GET", "/api/pantau", undefined, Object.keys(PERAN).filter(p => p !== "direktori")],   // peran 'direktori' hanya membuka Direktori (src/staf.js hanyaDirektori)
     ["GET", "/api/instansi/admin/antrean", undefined, ["verifikator", "pusdalops"]],
     ["GET", "/api/instansi/admin/akun/" + aid, undefined, ["verifikator", "pusdalops"]],
     ["GET", "/api/instansi/admin/surat/" + aid, undefined, ["verifikator", "pusdalops"]],
@@ -176,8 +176,21 @@ uji("matriks peran x rute: tiap peran hanya rute sahnya; rute lama tidak melongg
   for (const [m, j, b, boleh] of MAT) for (const p of Object.keys(PERAN)) {
     const r = await dari(P[p], m, j, b), izin = boleh.includes(p);
     if (izin) assert.ok(![401, 403].includes(r.s), `${p} ${m} ${j} harus lolos, dapat ${r.s} ${r.t.slice(0, 80)}`);
+    else if (p === "direktori") assert.ok([401, 403].includes(r.s), `${p} ${m} ${j} harus ditolak, dapat ${r.s}`);   // sesi Direktori-saja tidak dianggap sesi kerja: 401
     else assert.equal(r.s, 403, `${p} ${m} ${j} harus 403, dapat ${r.s}`);
   }
+  /* peran 'direktori' (2 Nov 2026): Direktori terbuka, Meja Pantau mengarahkan layar ke /direktori; peran kerja tetap membuka Direktori */
+  { const d = await dari(P.direktori, "GET", "/api/akademisi/saya");
+    assert.equal(d.s, 200, `direktori GET /api/akademisi/saya harus 200, dapat ${d.s} ${d.t.slice(0, 80)}`); assert.deepEqual(JSON.parse(d.t).peran, ["direktori"]);
+    const pt = await dari(P.direktori, "GET", "/api/pantau"); assert.equal(pt.s, 401); assert.equal(JSON.parse(pt.t).ke, "/direktori");
+    assert.equal((await dari(P.pusdalops, "GET", "/api/akademisi/saya")).s, 200, "peran kerja tetap membuka Direktori");
+    /* gerbang halaman centurisk97.id: halaman /direktori terbuka untuk staf P_AKADEMISI (2 Nov 2026: akun Direktori-saja dipantulkan ke /admin/masuk) */
+    const situs = (j, s) => U.mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", headers: s ? {cookie: s.cookie} : {}});
+    assert.equal((await situs("/direktori", P.direktori)).status, 200, "staf Direktori saja membuka halaman /direktori");
+    assert.equal((await situs("/direktori", P.pusdalops)).status, 200, "staf pusdalops membuka halaman /direktori");
+    assert.equal((await situs("/monitor", P.direktori)).status, 303, "staf Direktori saja tidak membuka /monitor");
+    assert.equal((await situs("/monitor", P.pusdalops)).status, 303, "staf non-operator tidak membuka /monitor");
+    const tamu = await situs("/direktori"); assert.equal(tamu.status, 303); assert.match(tamu.headers.get("location"), /^\/admin\/masuk\?ke=/, "tamu tetap dialihkan"); }
   /* wilayah: staf Kalteng membuka tugas Kalteng (200) tetapi tugas Kalbar 404 */
   { const kt = await bikin("Ver Kalteng", ["verifikator"], ["62"]), tK = await tugas({prov: "62"}), tB = await tugas({prov: "61", kab: "Kubu Raya"});
     assert.equal((await dari(kt, "GET", "/api/instansi/admin/tugas/" + tK)).s, 200); assert.equal((await dari(kt, "GET", "/api/instansi/admin/tugas/" + tB)).s, 404, "tugas provinsi lain: 404");

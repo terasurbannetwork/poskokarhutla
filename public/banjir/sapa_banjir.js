@@ -31,7 +31,7 @@
     const sdh = (a, b) => b.l - a.l || b.h3 - a.h3;
     const lg = [0, 0, 0, 0]; for (const v of Object.values(S.st.kec)) lg[v.l?.[0] || 0]++;
     const provTop = [...prov.values()].sort((a, b) => b.n[3] - a.n[3] || b.n[2] - a.n[2] || b.n[1] - a.n[1]).slice(0, 5);
-    const sungai = S.sungai.titik.filter(t => t.kelas >= 2), j = S.rob ? S.rob.hari.indexOf(S.st.hari[0]) : -1, rob = j < 0 ? [] : S.rob.titik.filter(t => (t.lv[j] || 0) >= 2);
+    const sungai = S.sungai.titik.filter(t => t.kelas >= 2), rob = [];
     const bmkg = (per?.nowcast || []).filter(x => x.selesai && new Date(x.selesai) > Date.now() && R_BMKG.test(x.event + " " + (x.headline || "")));
     const total = n[0][1] + n[0][2] + n[0][3], ky = kemarin(S.st.hari[0]), rk = seri?.hari?.length >= 2 ? seri.nas?.[ky] : null;
     const dasar = rk ? rk[0] + rk[1] + rk[2] : null, selisih = rk ? total - dasar : null;                  // null = kemarin tak tercatat: sembunyikan
@@ -52,16 +52,15 @@
     const awas = [
       h.ev.length && kartu("tetes", "#1d4e89", "Wilayah Siaga (prakiraan)", `<b>${fmt(h.ev.length)}</b> gugus kecamatan berstatus siaga atau lebih${h.baru.length ? `, <b>${fmt(h.baru.length)}</b> baru sejak ${tgl(kemarin(t0))}` : ""}`),
       h.sungai.length && kartu("sungai", "#1d4e89", "Debit sungai tinggi", `<b>${fmt(h.sungai.length)}</b> titik sungai melewati debit banjir 5 tahunan atau lebih`),
-      h.rob.length && kartu("hujan", "#2b8c86", "Pasang laut tinggi", `<b>${fmt(h.rob.length)}</b> titik rob Siaga, di atas persentil 99 muka laut`),
       ...h.bmkg.slice(0, 2).map(x => kartu("awas", "#1d4e89", "Peringatan BMKG", esc(x.headline || x.event)))].filter(Boolean).join("");
     return `<div class="sp-hd"><div style="flex:1;min-width:0"><span class="sp-eyh">${ik("tetes")}${basi ? `Situasi banjir, data <span translate="no">${tgl(t0)}</span>` : "Situasi banjir hari ini"}</span>
         <h3 id="spJudul"><b>${fmt(h.total)}</b> kecamatan berstatus banjir${arah}</h3>
-        <div class="sp-chips"><span class="sp-p putih">${ik("awas")}${fmt(h.n[0][3])} kecamatan awas</span><span class="sp-p putih">${fmt(h.n[0][2])} kecamatan siaga</span><span class="sp-p putih">${fmt(h.n[0][1])} kecamatan waspada</span><span class="sp-p putih">${ik("hujan")}${fmt(h.lg[1] + h.lg[2] + h.lg[3])} kecamatan berstatus longsor</span>${h.ev.length ? `<span class="sp-p putih">${ik("tetes")}${fmt(h.baru.length)} kejadian baru sejak ${tgl(kemarin(t0))}</span>` : ""}${h.sungai.length ? `<span class="sp-p putih">${ik("sungai")}${fmt(h.sungai.length)} titik sungai tinggi</span>` : ""}${h.rob.length ? `<span class="sp-p putih">${ik("hujan")}${fmt(h.rob.length)} titik rob</span>` : ""}</div>
+        <div class="sp-chips"><span class="sp-p putih">${ik("awas")}${fmt(h.n[0][3])} kecamatan awas</span><span class="sp-p putih">${fmt(h.n[0][2])} kecamatan siaga</span><span class="sp-p putih">${fmt(h.n[0][1])} kecamatan waspada</span><span class="sp-p putih">${ik("hujan")}${fmt(h.lg[1] + h.lg[2] + h.lg[3])} kecamatan berstatus longsor</span>${h.ev.length ? `<span class="sp-p putih">${ik("tetes")}${fmt(h.baru.length)} kejadian baru sejak ${tgl(kemarin(t0))}</span>` : ""}${h.sungai.length ? `<span class="sp-p putih">${ik("sungai")}${fmt(h.sungai.length)} titik sungai tinggi</span>` : ""}</div>
 </div>
         <button class="sp-x" data-tutup aria-label="Tutup">×</button></div>
       <div class="sp-isi">
       ${h.provTop.length ? sek("Provinsi perlu perhatian", `<div class="sp-ps sp-panel">${h.provTop.map(o =>
-        `<div class="sp-pv"><b>${esc(namaProv(o.k))}</b><div class="sp-chips">${o.n[3] ? `<em class="sp-p merah">${ik("awas")}${fmt(o.n[3])} kecamatan awas</em>` : ""}${o.n[2] ? `<em class="sp-p oranye">${fmt(o.n[2])} kecamatan siaga</em>` : ""}<em class="sp-p prov">${fmt(o.n[1])} kecamatan waspada</em>${o.d != null ? arahD(o.d, o.dasar) : ""}${o.sungai ? `<em class="sp-p prov">${ik("sungai")}${fmt(o.sungai)} titik sungai tinggi</em>` : ""}${o.rob ? `<em class="sp-p prov">${ik("tetes")}${fmt(o.rob)} titik rob</em>` : ""}<em class="sp-p prov">${ik("hujan")}hujan 3 hari hingga ${fmt(Math.round(o.h3))} mm</em></div></div>`).join("")}</div>`) : ""}
+        `<div class="sp-pv"><b>${esc(namaProv(o.k))}</b><div class="sp-chips">${o.n[3] ? `<em class="sp-p merah">${ik("awas")}${fmt(o.n[3])} kecamatan awas</em>` : ""}${o.n[2] ? `<em class="sp-p oranye">${fmt(o.n[2])} kecamatan siaga</em>` : ""}<em class="sp-p prov">${fmt(o.n[1])} kecamatan waspada</em>${o.d != null ? arahD(o.d, o.dasar) : ""}${o.sungai ? `<em class="sp-p prov">${ik("sungai")}${fmt(o.sungai)} titik sungai tinggi</em>` : ""}<em class="sp-p prov">${ik("hujan")}hujan 3 hari hingga ${fmt(Math.round(o.h3))} mm</em></div></div>`).join("")}</div>`) : ""}
       ${h.kec.length ? sek("Kecamatan status tertinggi", `<div class="sp-ks sp-panel">${h.kec.slice(0, 4).map(baris).join("")}</div>`) : ""}
       ${pr.length ? sek(basi ? `Prakiraan dari data ${tgl(t0)}` : "Prakiraan 3 hari", `<div class="sp-ps sp-panel">${pr.map(x => `<div class="sp-pv"><b translate="no">${tgl(x.t)}</b><div class="sp-chips">${x.a ? `<em class="sp-p merah">${ik("awas")}${fmt(x.a)} kecamatan awas</em>` : ""}<em class="sp-p oranye">${fmt(x.s)} kecamatan siaga</em><em class="sp-p prov">${fmt(x.w)} kecamatan waspada</em></div></div>`).join("")}</div>`) : ""}
       ${awas ? sek("Perlu perhatian", `<div class="sp-cs sp-panel">${awas}</div>`) : ""}

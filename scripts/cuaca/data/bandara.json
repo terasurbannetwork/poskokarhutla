@@ -1,0 +1,821 @@
+{
+"sumber": "OurAirports (domain publik) ident/gps_code, dipetakan ke kode ICAO yang dipakai BMKG; prov = titik-dalam-poligon public/geo/provinsi.json; dibuat 2 Nov 2026 untuk 136 stasiun W[AI]** yang melapor di web-aviation.bmkg.go.id. Tambah stasiun baru = tambah baris.",
+"bandara": {
+"WAAA": [
+"Sultan Hasanuddin, Makassar",
+-5.076,
+119.554,
+"73"
+],
+"WABB": [
+"Frans Kaisiepo, Biak",
+-1.19,
+136.108,
+"91"
+],
+"WABF": [
+"Kornasoren, Nomfor",
+-0.936,
+134.872,
+"91"
+],
+"WABI": [
+"Douw Aturure, Nabire",
+-3.398,
+135.393,
+"94"
+],
+"WABO": [
+"Stevanus Rumbewas, Serui",
+-1.828,
+136.062,
+"91"
+],
+"WADB": [
+"Sultan Muhammad Salahuddin, Bima",
+-8.537,
+118.685,
+"52"
+],
+"WADD": [
+"Denpasar I Gusti Ngurah Rai, Kuta, Badung",
+-8.748,
+115.167,
+"51"
+],
+"WADL": [
+"Lombok, Mataram (Pujut, Lombok Tengah)",
+-8.76,
+116.278,
+"52"
+],
+"WADS": [
+"Sultan Muhammad Kaharuddin III, Sumbawa Besar",
+-8.489,
+117.412,
+"52"
+],
+"WADY": [
+"Banyuwangi, Rogojampi, Banyuwangi",
+-8.31,
+114.34,
+"35"
+],
+"WAEE": [
+"Sultan Babullah, Ternate",
+0.831,
+127.382,
+"82"
+],
+"WAEG": [
+"Gamarmalamo, Galela",
+1.838,
+127.786,
+"82"
+],
+"WAEH": [
+"Weda Bay",
+0.468,
+127.948,
+"82"
+],
+"WAEL": [
+"Oesman Sadik, Labuha-Halmahera Island",
+-0.634,
+127.505,
+"82"
+],
+"WAES": [
+"Emalamo, Sanana",
+-2.1,
+125.966,
+"82"
+],
+"WAEW": [
+"Pitu, Gotalalamo-Morotai Island",
+2.046,
+128.325,
+"82"
+],
+"WAFB": [
+"Toraja",
+-3.184,
+119.919,
+"73"
+],
+"WAFF": [
+"Mutiara - SIS Al-Jufrie, Palu",
+-0.916,
+119.909,
+"72"
+],
+"WAFJ": [
+"Tampa Padang, Mamuju",
+-2.59,
+119.025,
+"76"
+],
+"WAFL": [
+"Sultan Bantilan, Toli Toli-Celebes Island",
+1.123,
+120.794,
+"72"
+],
+"WAFM": [
+"Andi Jemma, Masamba",
+-2.558,
+120.324,
+"73"
+],
+"WAFP": [
+"Kasiguncu, Poso-Celebes Island",
+-1.414,
+120.659,
+"72"
+],
+"WAFW": [
+"Syukuran Aminuddin Amir, Luwok",
+-1.036,
+122.774,
+"72"
+],
+"WAGB": [
+"Haji Muhammad Sidik, Muara Teweh",
+-1.026,
+114.929,
+"62"
+],
+"WAGF": [
+"Seruyan Kuala Pembuang",
+-3.376,
+112.537,
+"62"
+],
+"WAGG": [
+"Tjilik Riwut, Palangkaraya",
+-2.227,
+113.943,
+"62"
+],
+"WAGI": [
+"Iskandar, Pangkalanbun",
+-2.705,
+111.673,
+"62"
+],
+"WAGM": [
+"Sanggu, Buntok",
+-1.67,
+114.899,
+"62"
+],
+"WAGS": [
+"Sampit (H.Asan)",
+-2.499,
+112.975,
+"62"
+],
+"WAHH": [
+"Adisutjipto, Yogyakarta",
+-7.788,
+110.432,
+"34"
+],
+"WAHI": [
+"Yogyakarta",
+-7.905,
+110.057,
+"34"
+],
+"WAHL": [
+"Tunggul Wulung, Cilacap",
+-7.645,
+109.034,
+"33"
+],
+"WAHQ": [
+"Adisoemarmo, Surakarta",
+-7.516,
+110.757,
+"33"
+],
+"WAHS": [
+"Jenderal Ahmad Yani, Semarang",
+-6.971,
+110.373,
+"33"
+],
+"WAJI": [
+"Mararena Sarmi",
+-1.873,
+138.753,
+"91"
+],
+"WAJJ": [
+"Dortheys Hiyo Eluay, Sentani",
+-2.58,
+140.52,
+"91"
+],
+"WAKK": [
+"Mopah, Merauke",
+-8.524,
+140.42,
+"93"
+],
+"WAKT": [
+"Tanah Merah",
+-6.097,
+140.304,
+"93"
+],
+"WALE": [
+"Melalan, Melak",
+-0.204,
+115.76,
+"64"
+],
+"WALL": [
+"Sultan Aji Muhammad Sulaiman Sepinggan, Balikpapan",
+-1.268,
+116.895,
+"64"
+],
+"WALS": [
+"Aji Pangeran Tumenggung Pranoto, Samarinda",
+-0.374,
+117.25,
+"64"
+],
+"WAMG": [
+"Jalaluddin, Gorontalo",
+0.637,
+122.85,
+"75"
+],
+"WAMH": [
+"Naha, Tabukan Utara, Sangihe Islands",
+3.685,
+125.527,
+"71"
+],
+"WAMM": [
+"Sam Ratulangi, Manado",
+1.549,
+124.926,
+"71"
+],
+"WAOC": [
+"Bersujud, Batu Licin",
+-3.412,
+115.995,
+"63"
+],
+"WAOK": [
+"Gusti Syamsir Alam, Stagen",
+-3.295,
+116.164,
+"63"
+],
+"WAON": [
+"Warukin, Tanta-Tabalong",
+-2.217,
+115.436,
+"63"
+],
+"WAOO": [
+"Syamsudin Noor, Banjarbaru",
+-3.44,
+114.761,
+"63"
+],
+"WAPA": [
+"Amahai",
+-3.348,
+128.927,
+"81"
+],
+"WAPC": [
+"Bandanaira",
+-4.521,
+129.905,
+"81"
+],
+"WAPF": [
+"Karel Sadsuitubun, Langgur",
+-5.76,
+132.759,
+"81"
+],
+"WAPN": [
+"Namniwel",
+-3.143,
+126.976,
+"81"
+],
+"WAPP": [
+"Pattimura, Ambon",
+-3.71,
+128.089,
+"81"
+],
+"WAPS": [
+"Mathilda Batlayeri, Saumlaki-Yamdena Island",
+-7.848,
+131.337,
+"81"
+],
+"WAPU": [
+"Kufar",
+-3.463,
+130.791,
+"81"
+],
+"WAQA": [
+"Nunukan, Nunukan-Nunukan Island",
+4.134,
+117.67,
+"65"
+],
+"WAQD": [
+"Tanjung Harapan, Tanjung Selor",
+2.838,
+117.375,
+"65"
+],
+"WAQJ": [
+"Yuvai Semaring, Long Bawan",
+3.9,
+115.69,
+"65"
+],
+"WAQL": [
+"Long Apung",
+1.707,
+114.97,
+"65"
+],
+"WAQM": [
+"Robert Atty Bessing, Malinau",
+3.575,
+116.62,
+"65"
+],
+"WAQQ": [
+"Juwata, Tarakan",
+3.325,
+117.564,
+"65"
+],
+"WAQT": [
+"Kalimarau, Tanjung Redeb - Borneo Island",
+2.148,
+117.431,
+"64"
+],
+"WARA": [
+"Abdul Rachman Saleh, Malang",
+-7.929,
+112.714,
+"35"
+],
+"WARD": [
+"Dhoho, Kediri",
+-7.75,
+111.947,
+"35"
+],
+"WARE": [
+"Notohadinegoro, Jember",
+-8.242,
+113.693,
+"35"
+],
+"WARI": [
+"Iswahjudi, Magetan",
+-7.616,
+111.434,
+"35"
+],
+"WARR": [
+"Juanda, Surabaya",
+-7.38,
+112.787,
+"35"
+],
+"WART": [
+"Trunojoyo, Sumenep",
+-7.022,
+113.888,
+"35"
+],
+"WARW": [
+"Harun Thohir, Bawean",
+-5.724,
+112.679,
+"35"
+],
+"WASF": [
+"Fakfak",
+-2.921,
+132.267,
+"92"
+],
+"WASK": [
+"Utarom, Kaimana",
+-3.645,
+133.695,
+"92"
+],
+"WASS": [
+"Domine Eduard Osok, Sorong",
+-0.894,
+131.287,
+"96"
+],
+"WATA": [
+"AA Bere Tallo (Haliwen), Atambua",
+-9.075,
+124.903,
+"53"
+],
+"WATC": [
+"Frans Xavier Seda, Waioti",
+-8.64,
+122.238,
+"53"
+],
+"WATE": [
+"H. Hasan Aroeboesman (Ende)",
+-8.849,
+121.661,
+"53"
+],
+"WATG": [
+"Frans Sales Lega, Satar Tacik, Manggarai",
+-8.596,
+120.478,
+"53"
+],
+"WATK": [
+"Tambolaka, Radamata",
+-9.409,
+119.243,
+"53"
+],
+"WATL": [
+"Larantuka Gewayentana, Tiwatobi",
+-8.274,
+123.002,
+"53"
+],
+"WATM": [
+"Alor Island - Mali, Kabola",
+-8.132,
+124.597,
+"53"
+],
+"WATO": [
+"Komodo, Labuan Bajo, Manggarai Barat",
+-8.481,
+119.888,
+"53"
+],
+"WATR": [
+"David Constantijn Saudale, Ba'a - Rote Island",
+-10.766,
+123.076,
+"53"
+],
+"WATS": [
+"Sabu-Tardanu, Sabu-Sawu Island",
+-10.492,
+121.848,
+"53"
+],
+"WATT": [
+"El Tari, Kupang",
+-10.172,
+123.671,
+"53"
+],
+"WATU": [
+"Umbu Mehang Kunda, Waingapu-Sumba Island",
+-9.669,
+120.302,
+"53"
+],
+"WAUU": [
+"Rendani, Manokwari",
+-0.892,
+134.049,
+"92"
+],
+"WAVV": [
+"Wamena",
+-4.097,
+138.952,
+"95"
+],
+"WAWB": [
+"Betoambari, Bau Bau",
+-5.486,
+122.57,
+"74"
+],
+"WAWP": [
+"Sangia Nibandera, Kolaka",
+-4.338,
+121.524,
+"74"
+],
+"WAWW": [
+"Haluoleo, Kendari",
+-4.082,
+122.418,
+"74"
+],
+"WAYE": [
+"Enarotali",
+-3.926,
+136.379,
+"94"
+],
+"WAYY": [
+"Mozes Kilangin, Timika",
+-4.53,
+136.887,
+"94"
+],
+"WIBB": [
+"Sultan Syarif Kasim II, Pekanbaru",
+0.459,
+101.444,
+"14"
+],
+"WIBJ": [
+"Japura, Rengat Island",
+-0.353,
+102.335,
+"14"
+],
+"WICA": [
+"Kertajati",
+-6.647,
+108.166,
+"32"
+],
+"WICC": [
+"Husein Sastranegara, Bandung",
+-6.901,
+107.576,
+"32"
+],
+"WICD": [
+"Cakrabhuwana, Cirebon-Java Island",
+-6.757,
+108.539,
+"32"
+],
+"WICM": [
+"Wiriadinata, Cibeureum, Tasikmalaya-Java Island",
+-7.348,
+108.247,
+"32"
+],
+"WICN": [
+"Nusawiru, Cijulang",
+-7.72,
+108.489,
+"32"
+],
+"WIDD": [
+"Hang Nadim, Batam",
+1.121,
+104.119,
+"21"
+],
+"WIDM": [
+"Matak, Palmatak",
+3.348,
+106.258,
+"21"
+],
+"WIDN": [
+"Raja Haji Fisabilillah, Tanjung Pinang-Bintan Island",
+0.924,
+104.533,
+"21"
+],
+"WIDO": [
+"Ranai, Ranai-Natuna Besar Island",
+3.909,
+108.388,
+"21"
+],
+"WIDS": [
+"Dabo, Pasirkuning-Singkep Island",
+-0.48,
+104.579,
+"21"
+],
+"WIDT": [
+"Raja Haji Abdullah, Tanjung Balai-Karinmunbesar Island",
+1.053,
+103.392,
+"21"
+],
+"WIEE": [
+"Minangkabau, Padang (Katapiang)",
+-0.786,
+100.28,
+"13"
+],
+"WIGG": [
+"Fatmawati Soekarno, Bengkulu",
+-3.864,
+102.339,
+"17"
+],
+"WIHH": [
+"Halim Perdanakusuma, Jakarta",
+-6.267,
+106.89,
+"31"
+],
+"WIHJ": [
+"Atang Senjaya, Bogor",
+-6.539,
+106.755,
+"32"
+],
+"WIII": [
+"Soekarno-Hatta, Jakarta",
+-6.126,
+106.656,
+"36"
+],
+"WIJI": [
+"Departi Parbo, Sungai Penuh",
+-2.094,
+101.47,
+"15"
+],
+"WIJJ": [
+"Sultan Thaha, Jambi",
+-1.639,
+103.645,
+"15"
+],
+"WIKK": [
+"Depati Amir, Pangkal Pinang",
+-2.162,
+106.139,
+"19"
+],
+"WIKT": [
+"H A S Hanandjoeddin, Tanjung Pandan",
+-2.744,
+107.755,
+"19"
+],
+"WILL": [
+"Radin Inten II, Bandar Lampung",
+-5.247,
+105.183,
+"18"
+],
+"WILM": [
+"Astra Ksetra, Menggala",
+-4.612,
+105.232,
+"18"
+],
+"WIMA": [
+"Malikus Saleh, Lhok Seumawe Island",
+5.227,
+96.95,
+"11"
+],
+"WIMB": [
+"Binaka, Gunungsitoli",
+1.166,
+97.705,
+"12"
+],
+"WIME": [
+"Aek Godang, Padang Sidempuan",
+1.4,
+99.43,
+"12"
+],
+"WIMM": [
+"Kualanamu, Beringin",
+3.638,
+98.871,
+"12"
+],
+"WIMN": [
+"Silangit, Siborong-Borong",
+2.26,
+98.992,
+"12"
+],
+"WIMS": [
+"Dr. Ferdinand Lumban Tobing, Sibolga (Pinangsori)",
+1.557,
+98.887,
+"12"
+],
+"WIOD": [
+"Singkawang",
+0.79,
+108.96,
+"61"
+],
+"WIOG": [
+"Nanga Pinoh",
+-0.349,
+111.746,
+"61"
+],
+"WIOH": [
+"Liku, Paloh",
+1.737,
+109.324,
+"61"
+],
+"WIOK": [
+"Rahadi Osman, Ketapang",
+-1.817,
+109.963,
+"61"
+],
+"WIOO": [
+"Supadio, Pontianak",
+-0.152,
+109.404,
+"61"
+],
+"WIOP": [
+"Pangsuma, Putussibau",
+0.835,
+112.94,
+"61"
+],
+"WIOS": [
+"Tebelian, Sintang",
+-0.045,
+111.458,
+"61"
+],
+"WIPB": [
+"Silampari, Lubuk Linggau",
+-3.288,
+102.914,
+"16"
+],
+"WIPO": [
+"Gatot Subrato, Batu Raja Island",
+-4.392,
+104.401,
+"18"
+],
+"WIPP": [
+"Sultan Mahmud Badaruddin II, Palembang",
+-2.898,
+104.698,
+"16"
+],
+"WIPY": [
+"Atung Bungsu, Bentayan",
+-4.022,
+103.379,
+"16"
+],
+"WIRR": [
+"Budiarto, Tangerang-Java Island",
+-6.293,
+106.57,
+"36"
+],
+"WITC": [
+"Cut Nyak Dhien, Kuala Pesisir",
+4.041,
+96.253,
+"11"
+],
+"WITN": [
+"Maimun Saleh, Sabang",
+5.875,
+95.34,
+"11"
+],
+"WITT": [
+"Sultan Iskandar Muda, Banda Aceh",
+5.525,
+95.42,
+"11"
+]
+}
+}

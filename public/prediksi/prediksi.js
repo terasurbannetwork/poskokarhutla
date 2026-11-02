@@ -1,8 +1,8 @@
 "use strict";
-/* /prediksi: tab Besok (kartu per kab), Rapor (skor vs baseline), Konfirmasi (POST /api/prediksi/konfirmasi).
+/* /prediksi: tab Besok (kartu per kab), Rapor (skor vs baseline), Dampak (paparan statis), Konfirmasi (POST /api/prediksi/konfirmasi).
    Data: data/prediksi.json, skor.json, ujibalik.json, kalibrasi.json, lalu.json (scripts/prediksi/*.py).
    $, fmt, esc, rb dari ../inti/format.js. Angka: format id-ID, peluang dibulatkan ke 5% (tidak ada presisi palsu). */
-const PR = {d: null, skor: null, uji: null, kal: null, lalu: null, kalender: null, n: 60, tab: "besok"};
+const PR = {dampak: null, jalan: null, d: null, skor: null, uji: null, kal: null, lalu: null, kalender: null, n: 60, tab: "besok"};
 const LEVEL = ["Normal", "Waspada", "Siaga", "Awas"];
 const ISPU = ["Baik/Sedang", "Tidak sehat", "Sangat tidak sehat", "Berbahaya"];
 const KODE_NAMA = {HJN: "Hujan", API: "Titik panas", BNJ: "Banjir", LSR: "Longsor", ASP: "Asap PM2,5", ROB: "Rob"};
@@ -59,7 +59,7 @@ function kartu(k, n) {
   const h = k.HJN?.[n - 1];
   if (h) {
     const [p1, p20, p50, tot, mulai, lama, , m] = ["p1", "p20", "p50", "tot", "mulai", "lama", "puncak", "m"].map(c => kol("HJN", h, c));
-    const kapan = mulai == null ? "tidak ada jam hujan ≥0,5 mm" : `mulai ${jam(mulai)} WIB, lama ±${fmt(lama)} jam, total ${mm(tot)}`;
+    const kapan = mulai == null ? "tidak ada jam hujan ≥0,5 mm" : `mulai ${esc(jam(mulai))} WIB, lama ±${fmt(lama)} jam, total ${mm(tot)}`;
     baris.push(`<div class="pr-b"><b>Hujan</b> ${kapan}<br>peluang ≥1 mm ${persen(p1)}, ≥20 mm ${persen(p20)}, ≥50 mm ${persen(p50)}
       ${m ? "" : '<span class="pr-pil abu" title="Tanpa ansambel: skor kasar dari jumlah hujan deterministik">skor kasar</span>'} ${pil(v("HJN", "p20"))}</div>`);
   }
@@ -110,7 +110,7 @@ function gambarBesok() {
 
 function tabelSkor(kode, g) {
   if (g.status !== "dinilai") return `<p class="pr-kecil">${esc(KODE_NAMA[kode])}: menunggu (${fmt(g.prakiraan || 0)} prakiraan tercatat). ${esc(g.alasan || "")}</p>`;
-  const rows = g.grup.map(x => `<tr><td>${x.ambang}</td><td class="n">+${x.tenggang}</td><td>${esc(x.tahap)}</td><td class="n">${fmt(x.n)}</td>
+  const rows = g.grup.map(x => `<tr><td>${esc(x.ambang)}</td><td class="n">+${esc(x.tenggang)}</td><td>${esc(x.tahap)}</td><td class="n">${fmt(x.n)}</td>
     <td class="n">${angka3(x.brier_banding)}</td><td class="n">${angka3(x.brier_persistensi)}</td><td class="n">${angka3(x.brier_klimatologi)}</td>
     <td class="n">${x.pod == null ? "–" : persen(x.pod)}</td><td class="n">${x.far == null ? "–" : persen(x.far)}</td>
     <td class="n">${x.mae_mulai == null ? "–" : `±${fmt(Math.round(x.mae_mulai))} jam`}</td><td class="n">${x.mae_lama == null ? "–" : `±${fmt(Math.round(x.mae_lama))} jam`}</td>
@@ -125,7 +125,7 @@ const pilAp = (v, n) => `<span class="pr-pil abu">${v === "belum teruji" ? "belu
 function bayanganRapor(b) {
   if (!b) return "";
   const nama = kd => b.model[kd]?.nama || kd;
-  const rows = b.banding.map(x => `<tr><td>${esc(nama(x.kode))}</td><td class="n">+${x.tenggang}</td><td class="n">${fmt(x.n_banding)}</td>
+  const rows = b.banding.map(x => `<tr><td>${esc(nama(x.kode))}</td><td class="n">+${esc(x.tenggang)}</td><td class="n">${fmt(x.n_banding)}</td>
     <td class="n">${angka4(x.brier_bayangan)}</td><td class="n">${x.lama ? angka4(x.brier_lama) : "tidak ada"}</td><td class="n">${angka4(x.brier_persistensi)}</td><td class="n">${angka4(x.brier_klimatologi)}</td>
     <td class="n">${angka3(x.ap_bayangan)}</td><td class="n">${x.lama ? angka3(x.ap_lama) : "tidak ada"}</td><td class="n">${angka3(x.ap_persistensi)}</td><td class="n">${angka3(x.ap_klimatologi)}</td>
     <td>${pil([x.vonis, x.n_banding])}</td><td>${pilAp(x.vonis_peringkat, x.n_banding)}</td></tr>`).join("");
@@ -147,7 +147,7 @@ function gambarRapor() {
   const kp = (k?.peluang || []).concat(k?.jumlah || []);
   h += `<section class="card pad pr-sek"><h2>Kalibrasi otomatis</h2><p class="pr-kecil">${esc(k?.aturan?.metode || "kalibrasi.json belum ada")}. Dipakai ${fmt(k?.ringkas?.dipakai || 0)}, ditolak ${fmt(k?.ringkas?.ditolak || 0)}, menunggu ${fmt(k?.ringkas?.menunggu || 0)}.</p>
     ${kp.length ? `<div class="tw"><table><thead><tr><th>Grup</th><th>Status</th><th class="n">n fit / uji</th><th>Alasan</th></tr></thead><tbody>${kp.map(x =>
-      `<tr><td>${esc(x.kode || x.besaran)} ${esc(x.ambang ?? x.prov)} +${x.tenggang}</td><td>${esc(x.status)}</td><td class="n">${fmt(x.n_fit)} / ${fmt(x.n_uji)}</td><td>${esc(x.alasan)}</td></tr>`).join("")}</tbody></table></div>` : ""}</section>`;
+      `<tr><td>${esc(x.kode || x.besaran)} ${esc(x.ambang ?? x.prov)} +${esc(x.tenggang)}</td><td>${esc(x.status)}</td><td class="n">${fmt(x.n_fit)} / ${fmt(x.n_uji)}</td><td>${esc(x.alasan)}</td></tr>`).join("")}</tbody></table></div>` : ""}</section>`;
   $("#rapor").innerHTML = h;
 }
 
@@ -196,11 +196,43 @@ async function kirim(e) {
   } catch (x) { $("#kHasil").textContent = "Gagal mengirim: periksa sambungan."; }
 }
 
+/* Tab Dampak: paparan statis per kab (dampak.json, jalan.json), dimuat sekali saat tab pertama dibuka. SKENARIO/PAPARAN, bukan prakiraan. */
+const kelasPil = {Rendah: "ok", Sedang: "abu", Tinggi: "buruk", "Sangat tinggi": "buruk"};
+function gambarDampak() {
+  const q = $("#dKabIn").value, id = q ? idKab(q) : PR.d.kab[0].id, k = PR.d.kab.find(x => x.id === id);
+  if (!k) { $("#dampakIsi").innerHTML = '<p class="kosong">Kab/kota tidak ditemukan.</p>'; return; }
+  const dp = PR.dampak?.kab[id], jl = PR.jalan?.kab[id];
+  const g = dp?.gempa, f = dp?.genangan, t = dp?.terisolir;
+  const baris = [];
+  baris.push(g ? `<div class="pr-b"><b>Gempa bumi</b> bahaya ${g.kelas ? `<span class="pr-pil ${kelasPil[g.kelas] || "abu"}">${esc(g.kelas)}</span>` : ""} skor ${fmt(g.skor)} dari 100${g.m_maks != null ? `, magnitudo tertinggi tercatat ${fmt(g.m_maks)}, ${fmt(g.n_m5)} gempa M5+` : ""}${g.kec_inarisk != null ? `; InaRISK: ${fmt(g.kec_tinggi)} dari ${fmt(g.kec_inarisk)} kecamatan berindeks tinggi (indeks tertinggi ${angka3(g.inarisk_maks)})` : ""}</div>`
+    : '<div class="pr-b"><b>Gempa bumi</b> tidak ada di sumber.</div>');
+  baris.push(f ? `<div class="pr-b"><b>Genangan banjir</b> kejadian terekam terbesar ${fmt(Math.round(f.tergenang_ha))} ha pada ${esc(tgl(f.acuan))} (cakupan radar ${fmt(f.cakupan_pct)}%). Jumlah bangunan terendam belum ditampilkan sampai koreksi permukiman selesai.</div>`
+    : '<div class="pr-b"><b>Genangan banjir</b> tidak ada citra radar yang terekam untuk kab/kota ini.</div>');
+  baris.push(t ? `<div class="pr-b"><b>Desa langganan terisolir</b> ${fmt(t.desa)} desa, ${fmt(t.kejadian)} kejadian di logbook (batas atas, layak dicek)</div>` : '<div class="pr-b"><b>Desa langganan terisolir</b> tidak tercatat di logbook.</div>');
+  baris.push(jl ? `<div class="pr-b"><b>Titik rawan putus jalan</b> ${jl.way_rawan != null ? `${fmt(jl.way_rawan)} ruas (way OSM) yang bila putus memisahkan ≥${fmt(jl.km_rawan)} km jalan lain,` : "angka ruas rawan dihitung ulang di giliran berikut;"} dari ${fmt(jl.way)} way OSM jalan utama (${fmt(Math.round(jl.km_jaringan))} km), ${fmt(jl.jembatan_tunggal)} di antaranya jembatan.
+    <ol class="pr-kecil">${jl.top.map(o => `<li>${esc(o.nama || "tanpa nama")} (${esc(o.kelas)}${o.jembatan ? ", jembatan" : ""}): bila terputus, ${fmt(Math.round(o.km_terisolir * 10) / 10)} km jalan terpisah <a href="https://www.openstreetmap.org/way/${esc(o.way)}" target="_blank" rel="noopener">OSM ${esc(o.way)}</a></li>`).join("")}</ol></div>`
+    : '<div class="pr-b"><b>Titik rawan putus jalan</b> belum dihitung untuk kab/kota ini.</div>');
+  baris.push('<div class="pr-b"><b>Tsunami dan kerusakan bangunan gempa</b> tidak ditampilkan per kab: sumber terbukanya tidak tersedia sebagai tabel statis.</div>');
+  $("#dampakIsi").innerHTML = `<article class="card pr-k"><h3>${esc(k.nama)}</h3><p class="pr-kecil">${esc(k.pn)}</p>${baris.join("")}</article>`;
+}
+async function muatDampak() {
+  if (PR.dampak === null) {
+    $("#dampakIsi").innerHTML = '<p class="kosong">Memuat…</p>';
+    [PR.dampak, PR.jalan] = await (PR.memDampak ||= Promise.all(["dampak.json", "jalan.json"].map(ambil)));
+    PR.dampak ||= false;
+    $("#dampakLabel").textContent = PR.dampak ? PR.dampak.label + (PR.jalan ? " " + PR.jalan.label : "") : "";
+    $("#dampakSumber").innerHTML = PR.dampak ? Object.values(PR.dampak.sumber).map(esc).join("<br>") + `<br>Data: ${esc(PR.dampak.dibuat)}` + (PR.jalan ? "<br>" + esc(PR.jalan.sumber) + `<br>Data jalan: ${esc(PR.jalan.dibuat)}` : "") : "";
+  }
+  if (!PR.dampak) { $("#dampakIsi").innerHTML = '<p class="kosong">Data dampak belum tersedia.</p>'; return; }
+  gambarDampak();
+}
+
 function pilihTab(t) {
   PR.tab = t;
   document.querySelectorAll("#tabs button").forEach(b => b.dataset.tab === t ? b.setAttribute("aria-current", "page") : b.removeAttribute("aria-current"));
   document.querySelectorAll("main .page").forEach(s => s.classList.toggle("on", s.id === "p-" + t));
   if (t === "rapor" && !$("#rapor table, #rapor section")) gambarRapor();
+  if (t === "dampak") muatDampak();
   history.replaceState(null, "", t === "besok" ? "./" : "#" + t);
 }
 
@@ -221,7 +253,7 @@ async function mulai() {
   try { $("#kRegu").value = localStorage.getItem("prediksi.regu") || ""; } catch {}
   gambarBesok();
   const tab = location.hash.slice(1);
-  if (["rapor", "konfirmasi"].includes(tab)) pilihTab(tab);
+  if (["rapor", "dampak", "konfirmasi"].includes(tab)) pilihTab(tab);
 }
 
 let tunda;
@@ -237,6 +269,7 @@ $("#tabs").addEventListener("click", e => {
 });
 $("#burger").addEventListener("click", () => $("#burger").setAttribute("aria-expanded", $("header.top").classList.toggle("buka")));
 $("#fk").addEventListener("submit", kirim);
+$("#dKabIn").addEventListener("change", gambarDampak);
 $("#kKab").addEventListener("change", laluKab);
 $("#kTgl").addEventListener("change", laluKab);
 mulai();

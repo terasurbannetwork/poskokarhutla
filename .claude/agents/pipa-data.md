@@ -50,6 +50,9 @@ Berkas milikmu (glob paling spesifik menang):
 - `scripts/statistik/**`
 - `scripts/*.py`
 - `scripts/pasang-kunci.sh`
+- `scripts/operasi/**`
+- `tests/operasi/**`
+- `public/data/operasi/**`
 - `data/**`
 - `data/sippa/**`
 - `public/data/harga_komoditas.json`

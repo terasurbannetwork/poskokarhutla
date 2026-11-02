@@ -434,6 +434,19 @@ per rumus, termasuk tepi: null, seri, nol). Uji paritas menjalankan ketiganya.
 | `urut_panggil(…)` | §9 | – | ✓ | – |
 | `status_perjanjian(berakhir, kini)` | – | – | ✓ | ✓ |
 
+### 5.1b Masalah otomatis (KM-B03)
+`masalah.py` murni atas 514 profil: `persentil`, `skor_auto`, `kelas_dari`, `aturan_aspek`, `hitung`, `periksa`
+(dipanggil `profil_daerah.validasi`). Karena persentil nasional, `bangun()` selalu membangun semua kab lalu
+menyaring `--kab`. Kasus acuan: `acuan.json` `persentil`, `skor_auto`, `kelas`, `aspek`.
+
+**Dampak per bahaya** (`kejadian.dampak_12bln_bahaya`, dari baris DIBI hasil dedup): peta `JENIS_DIBI_BAHAYA` di
+`profil_daerah.py` (jenis DIBI → 1–2 bahaya) dan `JENIS_DIBI_BUKAN_BAHAYA` (6 jenis: kebakaran gedung dan permukiman, lainnya, konflik sosial,
+gagal teknologi, kecelakaan industri, epidemi: 219 dari 4.404 baris, 217 meninggal, 6.403 mengungsi di snapshot 28 Okt 2026; tetap ada di
+`dampak_12bln` total). Jenis DIBI baru tanpa entri di salah satu daftar = galat (bangun berhenti). **Dampak ganda**: "Banjir dan Tanah Longsor" dan
+"Gempa Bumi dan Tsunami" dihitung di KEDUA bahaya, jadi jumlah antar bahaya boleh melebihi `dampak_12bln`; "Banjir Rob" dan gelombang pasang/abrasi → `abrasi_rob`,
+"Banjir Lahar" → `gunungapi`, angin kencang/topan/puting beliung → `cuaca_ekstrem`.
+Blok `karhutla` juga memuat `tren_viirs` dan `tren_viirs_lereng` (Theil–Sen titik VIIRS 2015–2025; sensor 2024 dianggap lengkap).
+
 ### 5.2 Pakar untuk masalah BPBD (worker)
 1. Muat `kemitraan/cocok/<kab4>.json` (R2). Bila masalah otomatis dengan (B,A) sama
    ada, pakai daftarnya (peringkat ulang hanya bila teks berbeda Jaccard < 0.5).

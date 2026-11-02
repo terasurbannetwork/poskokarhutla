@@ -1,0 +1,96 @@
+{
+  "_catatan": "Pesan WA grup satgas udara 2 Nov 2026, disalin dari bahan pemilik. Baris nama kru (PIC, SIC, FE, HLO, Operator, Spec, GE, Crew) SENGAJA dibuang: nama kru tidak boleh masuk repo atau D1. 'harap' = keluaran pengurai yang diharapkan; koordinat desimal dibulatkan 5 angka. Spek: docs/superpowers/specs/2026-11-02-operasi-lapangan.md bagian 8.",
+  "pesan": [
+    {
+      "id": "h3217_pelaksanaan",
+      "teks": "*Assalamual'alaikum Wr.Wb*\n\nMohon izin melaporkan pelaksanaan penerbangan  *H-3217/Cougar17*\nSenin, 2 November 2026\n\n*PATROLI UDARA*\nRute : *SPO-SAS-SPO*\n\n*Target Area :*\n*1. Rasau, Kubu Raya.*\nS 00° 16' 15.7\" \nE 109° 21' 41.5\" \nR 183° \nD 11 Nm Fr Vor PNK\n*Target Clear*\n\n*2. Kubu, Kubu Raya*\nS 00° 27' 02.8\" \nE 109° 22' 06.5\" \nR 180°\nD 22 Nm Fr Vor PNK\n*Target berasap tipis*\n\n*3. Sungai Asam, Kubu Raya.*\nS 00° 20' 42.1\" \nE 109° 32' 51.4\" \nR 146° \nD 19 Nm Fr Vor PNK\n*Target Clear*\n\n*4. Sungai Raya, Kubu Raya*\nS 00° 19' 32.0\" \nE 109° 37' 20.0\" \nR 134°\nD 21 Nm Fr Vor PNK\n*Target Clear*\n\n*5. Sungai Bulan, Kubu Raya*\nS 00° 15' 43.0\" \nE 109° 35' 50.0\" \nR 128°\nD 17 Nm Fr Vor PNK\n*Target Clear*\n\n*6. Sungai Ambawang, Kubu Raya*\nS 00° 09' 34.0\" \nE 109° 33' 03.0\" \nR 114°\nD 11 Nm Fr Vor PNK\n*Target berasap tipis*\n\n*7. Pasak Piang, Kubu Raya*\nS 00° 08' 24.4\" \nE 109° 33' 06.9\" \nR 108°\nD 11 Nm Fr Vor PNK\n*Target berasap tipis*\n\nDemikian kami laporkan, \nTerima kasih.\n\nRegards,\n\n_*Skadron Udara 6 - TNI AU*_",
+      "harap": {"temuan": [
+        {"registrasi": "H-3217", "lokasi": "Rasau, Kubu Raya", "lat": -0.27103, "lon": 109.36153, "status": "clear"},
+        {"registrasi": "H-3217", "lokasi": "Kubu, Kubu Raya", "lat": -0.45078, "lon": 109.36847, "status": "berasap_tipis"},
+        {"registrasi": "H-3217", "lokasi": "Sungai Asam, Kubu Raya", "lat": -0.34503, "lon": 109.54761, "status": "clear"},
+        {"registrasi": "H-3217", "lokasi": "Sungai Raya, Kubu Raya", "lat": -0.32556, "lon": 109.62222, "status": "clear"},
+        {"registrasi": "H-3217", "lokasi": "Sungai Bulan, Kubu Raya", "lat": -0.26194, "lon": 109.59722, "status": "clear"},
+        {"registrasi": "H-3217", "lokasi": "Sungai Ambawang, Kubu Raya", "lat": -0.15944, "lon": 109.55083, "status": "berasap_tipis"},
+        {"registrasi": "H-3217", "lokasi": "Pasak Piang, Kubu Raya", "lat": -0.14011, "lon": 109.55192, "status": "berasap_tipis"}
+      ], "gerak": []}
+    },
+    {
+      "id": "skadron_satu_titik",
+      "teks": "*6. Sungai Ambawang, Kubu Raya*\nS 00° 09' 34.0\" \nE 109° 33' 03.0\" \nR 114°\nD 11 Nm Fr Vor PNK\n*Target berasap tipis*\n\n_*Skadron Udara 6 - TNI AU*_",
+      "harap": {"temuan": [{"registrasi": "H-3217", "lokasi": "Sungai Ambawang, Kubu Raya", "lat": -0.15944, "lon": 109.55083, "status": "berasap_tipis"}], "gerak": [],
+        "_catatan": "Skadron Udara 6 tanpa registrasi di teks: hari ini satu-satunya pesawat Skadud 6 di Supadio adalah H-3217 (peta tanda tangan ke registrasi). Titik ini sama dengan pesan pelaksanaan, jadi UNIQUE menahan duplikat."}
+    },
+    {
+      "id": "rtq_fs1",
+      "teks": "*DITEMUKAN FS 1 BY PK-RTQ*\n*1. SUNGAI BATANG*\nKEC. MARTAPURA BARAT\nKAB. BANJAR\nS 03°20′09″ \nE 114°50′00″ \nR 042\nD 8 Nm From BDM\n\nRemark\nFS BERASAP\nLUASAN LAHAN ±0.2 HA\n\nRegards,\n*PT.APD/OPS-BDJ FIRE PATROL/PK-RTQ*",
+      "harap": {"temuan": [{"registrasi": "PK-RTQ", "lokasi": "Sungai Batang, Kec. Martapura Barat, Kab. Banjar", "lat": -3.33583, "lon": 114.83333, "status": "fs", "luas_klaim_ha": 0.2}], "gerak": []}
+    },
+    {
+      "id": "rtq_clear",
+      "teks": "*2. PENGGALAMAN*\nKEC. MARTAPURA BARAT \nKAB. BANJAR\nS 03°20′20″ \nE 114°46′25″ \nR 021\nD 6 Nm From BDM\n\nRemark\nHS CLEAR\n\nRegards,\n*PT.APD/OPS-BDJ FIRE PATROL/PK-RTQ*",
+      "harap": {"temuan": [{"registrasi": "PK-RTQ", "lokasi": "Penggalaman, Kec. Martapura Barat, Kab. Banjar", "lat": -3.33889, "lon": 114.77361, "status": "clear"}], "gerak": []}
+    },
+    {
+      "id": "fpa_clear",
+      "teks": "*2. Kumpang Tengah, Sebangki, Landak*\n00°10'05.00\" N\n109°41'36.00\" E\nR 052°\nD 24 Nm Fr Vor PNK \n*Target Clear*\n\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)*",
+      "harap": {"temuan": [{"registrasi": "PK-FPA", "lokasi": "Kumpang Tengah, Sebangki, Landak", "lat": 0.16806, "lon": 109.69333, "status": "clear"}], "gerak": []}
+    },
+    {
+      "id": "fpa_koordinat_rusak",
+      "teks": "*3. Sejowet, Kuala Behe, Landak*\n00°42'25'45\" N\n109°49'17.33\" E\nR 029°\nD 54 Nm Fr Vor PNK \n*Target Clear*\n\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)*",
+      "harap": {"temuan": [], "gerak": [], "tertahan": [{"alasan": "koordinat", "lokasi": "Sejowet, Kuala Behe, Landak"}],
+        "_catatan": "Lintang 00°42'25'45\" salah ketik: ditahan dan dilaporkan, TIDAK ditebak."}
+    },
+    {
+      "id": "fpa_tempel_ganda",
+      "teks": "*5. Maya Sopa, Singkawang Timur, Singkawang*\n00°58'39.25\" N\n109°06'08.78\" E\nR 354°\nD 65 Nm Fr Vor PNK\n*Target Clear*\n\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)**5. Maya Sopa, Singkawang Timur, Singkawang*\n00°58'39.25\" N\n109°06'08.78\" E\nR 354°\nD 65 Nm Fr Vor PNK\n*Target Clear*\n\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)**6. Sungai Jaga A, Sungai Raya, Bengkayang*\n00°36'14.87\" N\n108°58'26.58\" E\nR 329°\nD 47 Nm Fr Vor PNK\n*Target Clear*\n\nRegards,\n*PT.FPU/Ops Fire Patrol PNK (PK-FPA)*",
+      "harap": {"temuan": [
+        {"registrasi": "PK-FPA", "lokasi": "Maya Sopa, Singkawang Timur, Singkawang", "lat": 0.97757, "lon": 109.10244, "status": "clear"},
+        {"registrasi": "PK-FPA", "lokasi": "Sungai Jaga A, Sungai Raya, Bengkayang", "lat": 0.60413, "lon": 108.97405, "status": "clear"}
+      ], "gerak": [], "_catatan": "Blok yang tertempel dua kali dalam satu pesan dihitung sekali."}
+    },
+    {
+      "id": "byson_tanda_panggil",
+      "teks": "*DITEMUKAN FS 6 BY BYSON234*\n*HANDIL BABIRIK*\nKEC. TAMBANG ULANG\nKAB. TANAH LAUT \nS 03°39′57.00″\nE 114°42′40.00″\nR 185\nD 14 Nm From BDM\n\n\nRemark:\nFS BERASAP\nLUASAN LAHAN -+ 3 Ha\n\nRegards,\n*PENERBAD/BYSON234*",
+      "harap": {"temuan": [{"registrasi": "HA-5234", "lokasi": "Handil Babirik, Kec. Tambang Ulang, Kab. Tanah Laut", "lat": -3.66583, "lon": 114.71111, "status": "fs", "luas_klaim_ha": 3}], "gerak": []}
+    },
+    {
+      "id": "fpu_enroute",
+      "teks": "PK-FPU FS Enroute\nRakumpit,Kota Palangkaraya\n\nS 01°52′18.00″\nE 113°36′07.00″\nR 316°\nD 31 Nm From PKY\nRMKS\n•⁠  ⁠HS berasap tebal\n•⁠  ⁠luas area terbakar ±3 Ha",
+      "harap": {"temuan": [{"registrasi": "PK-FPU", "lokasi": "Rakumpit, Kota Palangkaraya", "lat": -1.87167, "lon": 113.60194, "status": "berasap", "luas_klaim_ha": 3}], "gerak": []}
+    },
+    {
+      "id": "tanpa_registrasi",
+      "teks": "10.Danau Sembuluh,Kab.Seruyan\nS 02°50′21.54″\nE 112°08′46.17″\n\nR 251°\n‎D 114 Nm From PKY\n‎‎(Data Source by Sipongi & Fine Fuel Moisture Code)\nRMKS\n- HS berasap tebal\n- Luas area terbakar ±5 Ha",
+      "harap": {"temuan": [], "gerak": [], "tertahan": [{"alasan": "registrasi", "lokasi": "Danau Sembuluh, Kab. Seruyan", "lat": -2.83932, "lon": 112.14616, "status": "berasap", "luas_klaim_ha": 5}],
+        "_catatan": "Teks tanpa registrasi dan tanpa tanda tangan operator: ditahan untuk dikonfirmasi staf, tidak ditebak dari pesan lain."}
+    },
+    {
+      "id": "vn8416_departure",
+      "teks": "*Assalamualaikum warahmatullahi wabarakatuh*\n\nSelamat Pagi\n\nDear All,\n*DEPARTURE MOVEMENT*\n\n*Sortie 1*\n\n*Senin, 2 November 2026*\nReg.  : *VN-8416*\nType : *MI-17-IV*\n\nEng ON     :  01:22 Z /  08:22 LT\nATD KTG   :  01:28 Z /  08:28 LT\nETA  KTG   :  05:30 Z / 12:30 LT\n\n=====================\n\n*TARGET FIRE SPOT 🔥*\n*Air Hitam Besar, Kec. Kendawangan, Kab. Ketapang*\n‎S : 02° 50′ 34\" \n‎E : 110° 40′ 09”\n‎R : 145\n‎D : 74 Nm from VOR KTG.\n\nEndurance  : *04:30 Hrs*\nEET              : *04:15 Hrs*\nFC No          : *SJ25042*\nFuel Uplift   : *2520 Ltr*\n\nRegards,\n*PT. Buana Multi Techindo/OPSKTG/VN-8416*",
+      "harap": {"temuan": [], "gerak": [{"registrasi": "VN-8416", "jenis": "berangkat", "jam_utc": "2026-11-02T01:28Z", "misi": "wb", "target": {"lokasi": "Air Hitam Besar, Kec. Kendawangan, Kab. Ketapang", "lat": -2.84278, "lon": 110.66917}}]}
+    },
+    {
+      "id": "vhl6t_departure",
+      "teks": "Assalamualaikum Wr Wb\n\nMovement Departure \n*MVT DEPARTURE*\n\n*Sortie 1*\n\nSenin, 2 November 2026\n‎IL No : B-901/KA BNPB/PD.01.04/08/2026\n‎FSC : SJ 25053\n\n*Aircraft : Sikorsky UH60L* \n*Reg       : VH-L6T*\n\n*Water Bombing Mission for BNPB*\n\nDetail Route : \n*SPO- SAS -SPO*\n\n*Target Area : 1*\nPasak, Sungai Ambawang, Kubu Raya\nS : 00 06’ 04”\nE : 109 35’ 34”\nR : 095 From PNK VOR\nD : 13 Nm\n\nRemarks: \n- *Mendapatkan Perintah Dari Grup Satgas & Hasil Patroli Helikopter PK-FPA*\n\nEng On          : 09.00 LT / 02.00 Z\nATD SPO       : 09.05 LT / 02.05 Z\nETA SPO\t    : 13.30 LT / 06.30 Z\n\nTerimakasih,\nSalam Hormat \n*EDC-OPS/SatgasKarhutla2026/BNPB/Kalbar/Waterbombing/VH-L6T*",
+      "harap": {"temuan": [], "gerak": [{"registrasi": "VH-L6T", "jenis": "berangkat", "jam_utc": "2026-11-02T02:05Z", "misi": "wb", "rujukan": "PK-FPA", "target": {"lokasi": "Pasak, Sungai Ambawang, Kubu Raya", "lat": -0.10111, "lon": 109.59278}}]}
+    },
+    {
+      "id": "ur_csn_rtb",
+      "teks": "*After 17x WB*\n_*FS Masih Berasap*_\n*UR-CSN Back To Base Due To Problem Fuel Pump ETA 11.32 WIB*\n\nREG : UR-CSN *(Sortie 1)*\nLOC : Mentawa Baru Ketapang, Kab. Kotawaringin Timur\nLuas lahan terbakar -+4ha\nLuas lahan yg dipadam -+2ha\n\n*PT. Rajawali Pratama Internasional*\n*Ops.SMQ / UR-CSN*",
+      "harap": {"temuan": [], "gerak": [{"registrasi": "UR-CSN", "jenis": "kembali", "jam_utc": "2026-11-02T04:32Z", "misi": "wb", "alasan": "Problem Fuel Pump"}],
+        "status": [{"registrasi": "UR-CSN", "status": "tidak_siap", "alasan": "Problem Fuel Pump"}],
+        "_catatan": "Lokasi tanpa koordinat: tidak menjadi temuan (op_temuan wajib berkoordinat). Foto bergeotag yang menyertainya diurus tiket lain."}
+    },
+    {
+      "id": "n814ar_before_wb",
+      "teks": "BEFORE WB\n\nREG : N814AR (Sortie 1)\nLOC : Mantangai Kapuas\nREF : Hasil Patroli PK-FPU\n\nPT. Aviasindo Global Trans Ops.PKY / N 814 AR",
+      "harap": {"temuan": [], "gerak": [], "dikenali": "bukti_wb", "_catatan": "Bukti WB tanpa koordinat dikenali tetapi tidak menulis apa pun di OP-2. N814AR = N-814AR di seed (normalisasi tanda hubung)."}
+    },
+    {
+      "id": "bukan_operasi",
+      "teks": "*Yth. Kepala BNPB*\nCc.\n1.  Deputi-3/Penanganan Darurat\n\nMohon izin melaporkan Kegiatan Pendampingan Tim BNPB Dalam Rangka Dukungan Penanganan Darurat Bencana Kebakaran Hutan dan Lahan di Provinsi Jambi, Minggu 01 November 2026",
+      "harap": {"temuan": [], "gerak": [], "dikenali": null}
+    }
+  ]
+}

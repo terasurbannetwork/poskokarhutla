@@ -98,7 +98,13 @@
   "0094_logbook_juklak.sql": "ebd6090d9886f318a49c3840775e8fc3a891f1b98b4f8c74b8aac51cfa1e6a11",
   "0095_lapangan_orang.sql": "2108e73f390627a97eae02a467a0cd00f2b3f1beb29f2de3fc212f1611525f17",
   "0096_pusdalops_operasi.sql": "b7714fe318d89b7b1b088e8439a0f339b9a56ee1f7402a38eccf8e6003030766",
+  "0097_lapangan_absen.sql": "7d361eb7322a25f4d49dea5ad6994203eed6747bcde9c11517e4cf5d4b4e60fa",
   "0098_pusdalops_gelombang3.sql": "17a44c3b4b6fce0df8b715f48ed6d64a810a40cc5bc27891559dbf42eaae1cc5",
   "0099_command_center.sql": "8a8b224fd26d04a264a20cac6a76474f73c8972cb184a6ba50c354517b5b9cb2",
-  "0100_cc_tanpa_dinding.sql": "a3a0f0f6f0ccc2251288880c1c88f816a448cfabe64c4efffdd70daad65cdd73"
+  "0100_cc_tanpa_dinding.sql": "a3a0f0f6f0ccc2251288880c1c88f816a448cfabe64c4efffdd70daad65cdd73",
+  "0101_lapangan_panggil.sql": "5c471b5c9377720b7cf60ba7cab587a47a2d2f54685e1666ab51e22bb49b8b96",
+  "0103_operasi_lapangan.sql": "8980a69ac88106560c78dc1792df5d6a0ce643d134e96ce093f51c14470b04ad",
+  "0102_staf_peran_direktori.sql": "6f4fb66d596fbde2e9c4b179d7bb3a915b6511b96ce6840e88490904cdd76961",
+  "0104_staf_peran_lengkap.sql": "1d62ba3188df16f8ea9fca35d633afac4bee40766cead05ce5d848d5ad06ed0b",
+  "0105_pengingat_lapangan.sql": "d3c876f16eeaf883c40ac915be6840aa6ef16191963434f3a9b33e061461667f"
 }

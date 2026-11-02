@@ -232,6 +232,8 @@ jobs:
               python3 $p uji && { timeout 900 python3 $p || echo "::warning title=$m-$s::$p gagal; berkas lamanya dibiarkan"; } || echo "::warning title=$m-$s::uji $p gagal"
             done
           done
+          # Berita pesisir (rob, gelombang pasang, abrasi) untuk /pesisir; keluarannya public/banjir/data/berita_pesisir.json.
+          python3 scripts/berita/pesisir.py uji && { timeout 900 python3 scripts/berita/pesisir.py || echo "::warning title=berita-pesisir::gagal; berkas lamanya dibiarkan"; } || echo "::warning title=berita-pesisir::uji gagal"
 
       # Berita tujuh bencana (termasuk karhutla public/data/berita.json dari cache data-) -> peringatan & kejadian terstruktur,
       # public/banjir/data/peringatan_berita.json (ikut cache banjir-). SESUDAH langkah berita di atas.
