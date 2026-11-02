@@ -98,3 +98,11 @@ test("jejakGeo: bentuk ringkas server titik [[lat,lon],...] menjadi GeoJSON [lon
   assert.deepEqual(g.features[0].geometry.coordinates, [[116.4, -0.05], [116.5, -0.06], [116.6, -0.07]]);
   assert.equal(g.features[0].properties.orang, "o1");
 });
+
+test("teksKondisi: api dan genangan; kunci asing dan __proto__ diabaikan", async () => {
+  const {teksKondisi} = await import("../../public/petugas/panel_murni.js");
+  assert.deepEqual(teksKondisi({kondisi_api: "menyala"}), ["Kondisi api: menyala"]);
+  assert.deepEqual(teksKondisi({tinggi_genangan_cm: 40}), ["Genangan 40 cm"]);
+  assert.deepEqual(teksKondisi({kondisi_api: "__proto__"}), []);
+  assert.deepEqual(teksKondisi(null), []);
+});

@@ -2,7 +2,8 @@
 """Profil daerah Kemitraan Kampus (PROFIL-DAERAH.md §1-§2, KM-B01 + KM-B02).
 514 berkas public/data/kemitraan/daerah/<kode IRBI 4 digit>.json. Blok: wilayah, penduduk, sosek, irbi,
 inarisk_kec, kejadian (+ tren Theil-Sen), fasilitas, kapasitas, riwayat_luar, sumber (B01); gempa, karhutla, kekeringan,
-gunungapi, pesisir, udara, neraca_air, model, siluet (B02). Blok masalah = KM-B03. Geometri murni ada di geo.py.
+gunungapi, pesisir, udara, neraca_air, model, siluet (B02); masalah + masalah_skor (B03, masalah.py, persentil nasional atas 514 kab
+sehingga bangun() selalu membangun semuanya lalu menyaring --kab). Geometri murni ada di geo.py.
 Aturan: tiap blok dict {..., sumber, tanggal, yakin}; data hilang = null (bukan 0); tanpa angka karangan;
 sumber hilang -> blok null + catatan di sumber[] (D7); keluaran deterministik (tanggal = tanggal sumber).
 BPBD: email TIDAK ditulis (gerbang D5 melarang email di public/data/kemitraan/**).
@@ -14,6 +15,7 @@ sys.path.insert(0, os.path.join(AKAR, "scripts", "umum"))  # -I tidak menambah d
 sys.path.insert(0, os.path.join(AKAR, "scripts", "kemitraan"))
 from kode import kunci  # noqa: E402  (kab dan kota senama tidak tertukar; hanya impor nama_wilayah)
 from konst import KONST  # noqa: E402
+import masalah  # noqa: E402  (KM-B03: komponen, skor, aspek; murni atas profil)
 from geo import Peta, dalam_poligon, haversine_km, jarak_titik_poligon_km, poligon, siluet  # noqa: E402,F401
 
 MAKS_BYTE = 60_000
@@ -80,7 +82,8 @@ SATUAN = {
     "kejadian": {"tahunan": "[[tahun, jumlah kejadian]]", "total_2015_2025": "jumlah kejadian", "musim": "jumlah kejadian per bulan (indeks 0 = Januari)",
                  "dampak_12bln.meninggal": "jiwa", "dampak_12bln.mengungsi": "jiwa", "dampak_12bln.n_kejadian": "kejadian",
                  "dampak_12bln.rr_berat": "unit rumah rusak berat", "dampak_12bln.rr_sedang": "unit rumah rusak sedang",
-                 "dampak_12bln.rr_ringan": "unit rumah rusak ringan", "besar.meninggal": "jiwa"},
+                 "dampak_12bln.rr_ringan": "unit rumah rusak ringan", "besar.meninggal": "jiwa",
+                 "dampak_12bln_bahaya": "{bahaya: {meninggal: jiwa, mengungsi: jiwa, rr_berat: unit rumah rusak berat, n_kejadian: kejadian}}, 12 bulan"},
     "fasilitas": {"sekolah": "satuan pendidikan", "siswa": "siswa", "faskes": "unit", "rs": "unit", "gudang_bnpb_km": "km"},
     "kapasitas": {"dokumen_n": "dokumen regulasi"},
     "gempa": {"n_m5_1900": "gempa M>=5 (poligon kab, 1900-akhir katalog)", "m_maks": "magnitudo", "terakhir": "tanggal UTC",
@@ -93,7 +96,8 @@ SATUAN = {
                  "gambut_ha": "hektare, dibulatkan ke ribuan (jumlah luas sel gambut yang titik tengahnya di poligon kab)", "gambut_pct": "persen luas kab",
                  "khg.n": "KHG yang tepinya menyentuh kab", "khg.teratas.ha": "hektare KHG utuh (bukan potongan kab)", "puncak_tahun": "[tahun, titik MODIS]",
                  "rerata_modis_th": "titik MODIS per tahun penuh, bilangan bulat", "peringkat_modis": "[peringkat di provinsi (1 = terbanyak), jumlah kab berperingkat di sumber, termasuk yang rerata ~0]",
-                 "titik_tahun_parsial": "tahun (VIIRS sebagian, tahun terakhir belum lengkap)"},
+                 "titik_tahun_parsial": "tahun (VIIRS sebagian, tahun terakhir belum lengkap)",
+                 "tren_viirs_lereng": "titik per tahun (kemiringan Theil-Sen titik VIIRS 2015-2025)"},
     "kekeringan": {"level_kini": "0 Normal, 1 Waspada, 2 Siaga, 3 Awas (tingkat tertinggi yang dialami >= 30% penduduk kab)", "spi3": "indeks SPI-3 (tanpa satuan)", "mm3": "mm curah hujan 3 bulan",
                    "penduduk_status": "jiwa (penduduk kecamatan berstatus tersebut, bukan korban)",
                    "riwayat.risiko": "indeks 0-100", "riwayat.tahun_siaga": "tahun dari n_tahun", "riwayat.n_tahun": "tahun",
@@ -114,6 +118,28 @@ DAMPAK = ("meninggal", "mengungsi", "rr_berat", "rr_sedang", "rr_ringan")
 
 
 INTI_DIBI = ("meninggal", "hilang", "luka", "mengungsi")
+
+# Jenis DIBI -> bahaya platform (D di masalah.py). Satu jenis boleh ke dua bahaya ("Banjir dan Tanah Longsor": dampaknya DIHITUNG GANDA
+# di banjir dan longsor, jadi jumlah antar bahaya > total dampak_12bln). Jenis baru di DIBI tanpa entri = galat (bangun berhenti), bukan nol diam-diam.
+JENIS_DIBI_BAHAYA = {
+    "Banjir": ("banjir",), "Banjir Bandang": ("banjir",), "Banjir Genangan": ("banjir",), "Banjir dan Tanah Longsor": ("banjir", "longsor"),
+    "Banjir Rob": ("abrasi_rob",), "Banjir Lahar (Lahar)": ("gunungapi",),
+    "Tanah Longsor": ("longsor",), "Gerakan Tanah": ("longsor",),
+    "Cuaca Ekstrem": ("cuaca_ekstrem",), "Angin Kencang": ("cuaca_ekstrem",), "Angin Topan": ("cuaca_ekstrem",), "Puting Beliung": ("cuaca_ekstrem",),
+    "Kekeringan": ("kekeringan",), "Kekeringan Pertanian": ("kekeringan",),
+    "Kebakaran Hutan dan Lahan": ("karhutla",), "Kebakaran Lahan": ("karhutla",), "Kebakaran Hutan": ("karhutla",), "Kebakaran Lahan Gambut": ("karhutla",),
+    "Gempabumi": ("gempa",), "Gempabumi Reruntuhan": ("gempa",), "Gempa Bumi dan Tsunami": ("gempa", "tsunami"),
+    "Gelombang Pasang / Abrasi": ("abrasi_rob",), "Abrasi Pantai": ("abrasi_rob",), "Gelombang Pasang": ("abrasi_rob",),
+    "Erupsi Gunung Api": ("gunungapi",),
+}
+JENIS_DIBI_BUKAN_BAHAYA = ("Kebakaran Gedung dan Permukiman", "Lainnya", "Konflik Sosial", "Gagal Teknologi", "Kecelakaan Industri",
+                           "Epidemi dan Wabah Penyakit")  # bukan satu pun dari 9 bahaya platform: tak masuk D (tetap di dampak_12bln total)
+
+
+def cek_jenis_dibi(jenis):
+    tak = sorted(set(jenis) - set(JENIS_DIBI_BAHAYA) - set(JENIS_DIBI_BUKAN_BAHAYA))
+    assert not tak, f"jenis DIBI {tak} belum dipetakan ke bahaya (JENIS_DIBI_BAHAYA) atau dikecualikan (JENIS_DIBI_BUKAN_BAHAYA)"
+    assert not set(JENIS_DIBI_BAHAYA) & set(JENIS_DIBI_BUKAN_BAHAYA), "jenis DIBI di kedua daftar"
 
 
 def _isi(r):
@@ -215,6 +241,7 @@ class Konteks:
             d = self.baca("dibi")
             if d is None:
                 return None
+            cek_jenis_dibi({r["jenis"] for r in d["kejadian"]})
             ba = collections.defaultdict(list)
             for r in d["kejadian"]:
                 k = self.kab_dari_nama(r["prov_kode"], r["kab"] or "")
@@ -591,9 +618,16 @@ def b_kejadian(cx, kab, w):
         tahunan = {j: [[int(y), n] for y, n in sorted(tah[j].items())] for j in JENIS_TAHUNAN if tah.get(j)}
         total = {j: sum(n for y, n in tahun_tren(v, j)) for j, v in tahunan.items() if tahun_tren(v, j)} or None
     musim = {j: v for j, v in sorted(mus.items())} if mus else None
-    dampak = besar = None
+    dampak = besar = dbb = None
     rows = (di[0].get(kab) if di else None) or []
     if rows:
+        dbb = {}
+        for r in rows:  # per bahaya platform; jenis bukan bahaya tak masuk (JENIS_DIBI_BUKAN_BAHAYA)
+            for b in JENIS_DIBI_BAHAYA.get(r["jenis"], ()):
+                e = dbb.setdefault(b, {"meninggal": 0, "mengungsi": 0, "rr_berat": 0, "n_kejadian": 0})
+                e["meninggal"] += r.get("meninggal", 0); e["mengungsi"] += r.get("mengungsi", 0)
+                e["rr_berat"] += r.get("rr_berat", 0); e["n_kejadian"] += r["kejadian"]
+        dbb = dict(sorted(dbb.items()))
         dampak = {k: sum(r.get(k, 0) for r in rows) for k in DAMPAK}  # DIBI: kunci tak ada = 0 pada baris yang ada
         dampak.update(n_kejadian=sum(r["kejadian"] for r in rows), dari=di[1], sampai=di[2])
         mati = sorted((r for r in rows if r.get("meninggal", 0) > 0),
@@ -602,9 +636,10 @@ def b_kejadian(cx, kab, w):
     if not (tahunan or musim or dampak):
         return None
     tgl = max([t for t in ((ki[3] if ki else None), (di[2] if di else None)) if t] or [None]) if (ki or di) else None
-    isi = {"tahunan": tahunan, "total_2015_2025": total, "musim": musim, "dampak_12bln": dampak, "besar": besar,
+    isi = {"tahunan": tahunan, "total_2015_2025": total, "musim": musim, "dampak_12bln": dampak, "dampak_12bln_bahaya": dbb, "besar": besar,
            "musim_arti": "jumlah kejadian per bulan kalender (indeks 0 = Januari), jendela %s s.d. %s" % (ki[2], ki[3]) if ki else None,
            "dampak_arti": "meninggal/mengungsi/rr_* = jumlah 12 bulan; null = tak ada kejadian DIBI kab ini di jendela; kunci kosong di baris DIBI dihitung 0",
+           "dampak_bahaya_arti": "dampak_12bln dipecah per bahaya platform lewat JENIS_DIBI_BAHAYA (profil_daerah.py); 'Banjir dan Tanah Longsor' dihitung di banjir DAN longsor (ganda), jadi jumlah antar bahaya bisa melebihi dampak_12bln; jenis bukan bahaya (kebakaran gedung dst) tak masuk; bahaya tanpa baris kab ini tak ada kuncinya (0 kejadian di jendela, hanya bila DIBI mencakup bahaya itu di kab lain); null = tak ada baris DIBI kab ini",
            "total_arti": "jumlah tahun 2015-2025; jenis DIBI (semua kecuali 'semua') TANPA 2024 karena DIBI 2024 tak lengkap (nol di sumber bukan bukti tidak ada kejadian), jadi batas bawah; jenis 'semua' (CKAN) memakai 2024",
            "tahunan_arti": "tahun 2024 jenis DIBI di tahunan = nilai mentah sumber, sering 0 buatan, jangan dibaca sebagai nol kejadian ('semua' 2024 lengkap); bandang dan rob hanya DIBI (2018-); banjir bisa memuat bandang; tahun tiap jenis di tahunan hanya yang tercatat sumber untuk kab ini (tak ada = tidak tercatat); untuk tren, tahun yang ada di sumber tanpa baris kab ini dihitung 0 (lihat tren_arti)",
            "parsial": None, "tren": None, "tren_lereng": None,
@@ -771,6 +806,7 @@ def b_karhutla(cx, kab, w):
            "rerata_modis_th": bulat(kd["m"]) if kd and kd.get("m") is not None else None,
            "peringkat_modis": kd.get("rk") if kd and kd.get("m") is not None and bulat(kd["m"]) > 0 else None,  # rerata tampil 0: peringkat tak bermakna
            "titik_tahun_parsial": {"viirs_tahun_sebagian": d["definisi"]["th0"], "tahun_belum_lengkap": int(d["sd"][:4])} if kd and d["sd"][5:] != "12-31" else None,
+           "tren_viirs": None, "tren_viirs_lereng": None,
            "gambut_null_arti": None if gambut_ha is not None else "provinsi ini tidak punya sel gambut di sumber (hanya 8 provinsi tercakup) atau kab tanpa poligon; bukan berarti tanpa gambut",
            "khg_null_arti": None if khg is not None else "provinsi ini tidak ada di sumber KHG atau kab tanpa poligon; bukan berarti tanpa KHG",
            "yakin_bagian": {"titik_panas": "terverifikasi" if kd else None, "gambut": "estimasi-model" if gambut_ha is not None else None, "khg": "estimasi-model" if khg is not None else None},
@@ -778,8 +814,11 @@ def b_karhutla(cx, kab, w):
            "arti": ("titik_tahun = VIIRS S-NPP (2012 sebagian, tahun terakhir belum lengkap); tren = 10 tahun penuh terakhir dibanding 10 tahun pertama MODIS; "
                     "peringkat_modis = [peringkat di provinsi, jumlah kab berperingkat di sumber termasuk yang rerata ~0]; puncak_bulan null (sumber tak memuat bulan per kab); "
                     "gambut_ha = jumlah luas sel gambut (BBSDLP 1:250.000) bertitik tengah di poligon kab, dibulatkan ke ribuan ha (minimal 1.000 bila ada sel), hanya provinsi bersel gambut, selain itu null; "
+                    "tren_viirs = kata tren titik VIIRS 2015-2025 per tahun (Theil-Sen; null bila < 5 tahun; jarang bila < 3 tahun bertitik), tren_viirs_lereng titik per tahun; "
                     "titik_tahun_parsial = tahun VIIRS sebagian (sensor mulai Jan 2012) dan tahun terakhir yang belum lengkap; "
                     "khg = KHG yang tepinya menyentuh kab (perkiraan dari titik sampel tepi), ha = luas KHG utuh")}
+    if kd:  # tren titik VIIRS 2015-2025 (Theil-Sen, kata 'jarang' bila < 3 tahun berkejadian); VIIRS 2024 lengkap -> jenis 'semua'
+        isi["tren_viirs"], isi["tren_viirs_lereng"] = tren_kata(isi["titik_tahun"], "semua")
     return blokt(isi, cx.tgl_arti("karhutla" if kd else "gambut"), "estimasi-model" if (gambut_ha is not None or khg is not None) else "terverifikasi",
                   "NASA FIRMS (MODIS, VIIRS) per kab; gambut BBSDLP via PRIMS dan KHG BRGM = estimasi")
 
@@ -971,7 +1010,9 @@ def bangun(akar=AKAR, hanya=None):
                 hilang.add(sid)
         elif cx.baca(sid) is None:
             hilang.add(sid)
-    return {k: bangun_kab(cx, k, hilang) for k in sorted(cx.kode) if hanya is None or k == hanya}
+    prof = {k: bangun_kab(cx, k, hilang) for k in sorted(cx.kode)}  # persentil nasional: selalu semua kab, baru disaring
+    masalah.pasang(prof)
+    return {k: p for k, p in prof.items() if hanya is None or k == hanya}
 
 
 def teks(o):
@@ -998,6 +1039,7 @@ def validasi(p):
     for r in p.get("riwayat_luar") or []:
         assert r.get("sumber") in ("GDACS", "CEMS") and RE_TGL.match(r.get("tgl") or ""), f"{k}.riwayat_luar: butir tanpa sumber/tgl {r}"
     assert p.get("sumber") and all("nama" in e and "berkas" in e and "tanggal" in e for e in p["sumber"]), f"{k}: sumber[] kosong/bocor"
+    masalah.periksa(p)
     s = teks(p)
     assert len(s.encode("utf-8")) <= MAKS_BYTE, f"{k}: {len(s.encode('utf-8'))} byte > {MAKS_BYTE}"
     m = RE_BOCOR.search(s)
@@ -1013,6 +1055,150 @@ def tulis(prof, keluar):
         validasi(p)
         open(os.path.join(d, k + ".json"), "w", encoding="utf-8").write(teks(p))
     return d
+
+
+# ---------------------------------------------------------------- KM-B04: ringkas.json + prov/<NN>.json (turunan murni dari 514 profil)
+MAKS_RINGKAS = 120_000
+MAKS_PROV = 60_000
+KELAS_M = ("P1", "P2", "P3")
+
+
+def _irbi25(p):
+    """(skor, kelas) IRBI titik terakhir seri, atau (None, None). Skala 2025 (ambang 176)."""
+    s = ((p.get("irbi") or {}).get("seri") or [None])[-1]
+    return (s[1], s[2]) if s else (None, None)
+
+
+def _top3(p):
+    """3 bahaya skor tertinggi dari masalah_skor; skor null tidak ikut. Seri: nama bahaya menaik. Tanpa skor sama sekali -> None (bukan karangan)."""
+    ada = sorted(((e["skor"], b) for b, e in (p.get("masalah_skor") or {}).items() if e.get("skor") is not None), key=lambda x: (-x[0], x[1]))
+    return [[b, sk] for sk, b in ada[:3]] or None
+
+
+def _n_masalah(p):
+    """[n P1, n P2, n P3] jumlah masalah otomatis; None bila tak ada bahaya berskor (tak dinilai, bukan 0)."""
+    if _top3(p) is None:
+        return None
+    c = collections.Counter(m["kelas"] for m in p["masalah"])
+    return [c[k] for k in KELAS_M]
+
+
+def _kap_n(p):
+    return masalah._kap(p)  # 0-5 (perda PB, perda BPBD, RPB, renkon, BPBD terbentuk); None bila ada yang tak diketahui
+
+
+def _tgl_agregat(prof):
+    return max((p["dibangun"] for p in prof.values() if p.get("dibangun")), default=None)
+
+
+def ringkas(prof):
+    """514 baris untuk daftar tampilan Daerah. Kejadian = total 'semua' (CKAN, 2024 lengkap): dipilih karena jenis DIBI tanpa 2024 hanya batas bawah."""
+    baris = []
+    for k in sorted(prof):
+        p = prof[k]
+        sk, kl = _irbi25(p)
+        kj = ((p.get("kejadian") or {}).get("total_2015_2025") or {}).get("semua")
+        baris.append({"k": k, "n": p["nama"], "p": p["prov"], "i": kl, "b": _top3(p), "m": _n_masalah(p), "j": kj, "c": _kap_n(p)})
+    return {"v": 1, "tanggal": _tgl_agregat(prof), "tanggal_arti": "tanggal data terbaru di 514 profil daerah",
+            "sumber": "Turunan 514 profil daerah (daerah/<kab4>.json): IRBI, masalah_skor, kejadian CKAN, regulasi",
+            "_arti": {"k": "kode IRBI 4 digit", "n": "nama kab/kota", "p": "kode provinsi 2 digit",
+                      "i": "kelas IRBI 2025: 1 = Tinggi, 0 = Sedang, null = tak ada data",
+                      "b": "hingga 3 bahaya skor masalah tertinggi [[bahaya, skor 0-1]]; urut skor menurun, seri nama bahaya menaik; bahaya berskor null tidak ikut; null = tak ada bahaya berskor (bukan karangan)",
+                      "m": "[n P1, n P2, n P3] masalah otomatis; null = tak ada bahaya berskor (tak dinilai), bukan 0",
+                      "j": "jumlah kejadian 2015-2025 jenis 'semua' (CKAN, 2024 lengkap); null = tak tercatat",
+                      "c": "kapasitas tercatat 0-5 dari 5 (perda PB, perda BPBD, RPB, renkon, BPBD terbentuk); false = tak tercatat di basis regulasi; null = ada yang tak diketahui"},
+            "_satuan": {"j": "kejadian", "m": "masalah", "c": "dari 5 butir", "b": "skor persentil nasional 0-1"},
+            "baris": baris}
+
+
+def prov(prof, nama_prov=None):
+    """{NN: profil provinsi}. Agregat tak menjumlah null sebagai 0: n_ikut menyebut berapa kab yang punya angkanya."""
+    nama_prov = nama_prov or {}
+    per = collections.defaultdict(list)
+    for k in sorted(prof):
+        per[prof[k]["prov"]].append(k)
+    keluar = {}
+    for nn, ks in sorted(per.items()):
+        kab, pend, tw, tp, mn = [], [], 0.0, 0, [0, 0, 0]
+        for k in ks:
+            p = prof[k]
+            sk, kl = _irbi25(p)
+            pd = (p.get("penduduk") or {}).get("total")
+            if pd is not None:
+                pend.append(pd)
+            if sk is not None and pd:
+                tw += sk * pd; tp += pd
+            m = _n_masalah(p)
+            if m:
+                mn = [a + b for a, b in zip(mn, m)]
+            kab.append({"k": k, "n": p["nama"], "i": sk, "c": kl, "pd": pd, "m": m,
+                        "p1": [{"id": x["auto_id"], "j": x["judul"], "s": x["skor"]} for x in p["masalah"] if x["kelas"] == "P1"]})
+        kab.sort(key=lambda r: (r["i"] is None, -(r["i"] or 0), r["k"]))
+        n_i = sum(1 for r in kab if r["i"] is not None and r["pd"])
+        keluar[nn] = {"v": 1, "prov": nn, "nama": nama_prov.get(nn), "tanggal": _tgl_agregat({k: prof[k] for k in ks}),
+                      "tanggal_arti": "tanggal data terbaru di profil kab provinsi ini",
+                      "sumber": "Turunan profil daerah kab/kota provinsi ini (IRBI, penduduk IRBI paparan, masalah otomatis)",
+                      "n_kab": len(ks),
+                      "penduduk": {"total": sum(pend) if pend else None, "n_ikut": len(pend)},
+                      "irbi": {"rerata_tertimbang": bulat(tw / tp * 10) / 10 if tp else None, "n_ikut": n_i,
+                               "tinggi_n": sum(1 for r in kab if r["c"] == 1), "sedang_n": sum(1 for r in kab if r["c"] == 0),
+                               "tanpa_data_n": sum(1 for r in kab if r["c"] is None)},
+                      "masalah_n": dict(zip(KELAS_M, mn)),
+                      "_arti": {"kab": "urut skor IRBI 2025 menurun (null terakhir), seri kode; k kode, n nama, i skor IRBI 2025, c kelas IRBI (1 Tinggi, 0 Sedang, null tak ada data; dipakai warna peta), pd penduduk, m [n P1,P2,P3] (null = tak dinilai), p1 masalah P1 {id, j judul, s skor}",
+                                "irbi.rerata_tertimbang": "rerata skor IRBI 2025 tertimbang penduduk, hanya kab yang punya skor dan penduduk (n_ikut); skor 2025 beberapa kab = nilai provinsi (lihat catatan_2025 di profil kab)",
+                                "penduduk.total": "jumlah penduduk kab yang punya angkanya (n_ikut dari n_kab); null kab tidak dihitung 0",
+                                "masalah_n": "jumlah masalah otomatis per kelas, hanya kab yang dinilai"},
+                      "_satuan": {"penduduk.total": "jiwa", "irbi.rerata_tertimbang": "skor IRBI 2025 (ambang kelas Tinggi 176)", "masalah_n": "masalah", "kab.pd": "jiwa", "kab.i": "skor IRBI 2025"},
+                      "kab": kab}
+    return keluar
+
+
+def validasi_agregat(r, pv, prof, kode):
+    """Tolak ringkas/prov yang melanggar spek KM-B04. Pesan menyebut angka dan sebab."""
+    n = len(teks(r).encode("utf-8"))
+    assert n <= MAKS_RINGKAS, f"ringkas.json {n} byte > {MAKS_RINGKAS}"
+    assert [b["k"] for b in r["baris"]] == sorted(prof), f"ringkas {len(r['baris'])} baris != {len(prof)} profil"
+    for b in r["baris"]:
+        p = prof[b["k"]]
+        assert "siluet" not in b and set(b) == {"k", "n", "p", "i", "b", "m", "j", "c"}, f"{b['k']}: kunci ringkas {sorted(b)} bocor/kurang"
+        ada = {x: e["skor"] for x, e in p["masalah_skor"].items() if e.get("skor") is not None}
+        if not ada:
+            assert b["b"] is None and b["m"] is None, f"{b['k']}: tanpa bahaya berskor tapi b={b['b']} m={b['m']} (karangan)"
+        else:
+            assert b["b"] and len(b["b"]) == min(3, len(ada)) and all(ada.get(x) == s for x, s in b["b"]), f"{b['k']}: bahaya teratas {b['b']} tak cocok masalah_skor {ada}"
+            sk = [s for _, s in b["b"]]
+            assert sk == sorted(sk, reverse=True) and len({x for x, _ in b["b"]}) == len(b["b"]), f"{b['k']}: b tak urut/ganda {b['b']}"
+            assert min(sk) >= max([s for x, s in ada.items() if x not in {y for y, _ in b["b"]}] or [0]), f"{b['k']}: bahaya skor lebih tinggi terlewat dari {b['b']}"
+            assert sum(b["m"]) == len(p["masalah"]), f"{b['k']}: m {b['m']} != {len(p['masalah'])} masalah"
+        assert b["i"] in (0, 1, None) and (b["c"] is None or 0 <= b["c"] <= 5), f"{b['k']}: i={b['i']} c={b['c']} di luar rentang"
+    per = collections.Counter(v["prov"] for v in kode.values())
+    assert sorted(pv) == sorted(per), f"prov {sorted(pv)} != kode.json {sorted(per)}"
+    for nn, q in pv.items():
+        assert len(q["kab"]) == q["n_kab"] == per[nn], f"prov {nn}: {len(q['kab'])} kab, n_kab {q['n_kab']}, kode.json {per[nn]}"
+        assert {r_["k"] for r_ in q["kab"]} == {k for k, v in kode.items() if v["prov"] == nn}, f"prov {nn}: daftar kab tak sama dengan kode.json"
+        ni = [r_["i"] for r_ in q["kab"] if r_["i"] is not None]
+        assert ni == sorted(ni, reverse=True) and all(r_["i"] is not None for r_ in q["kab"][:len(ni)]), f"prov {nn}: kab tak urut IRBI menurun / null tak di akhir"
+        assert q["irbi"]["tinggi_n"] + q["irbi"]["sedang_n"] + q["irbi"]["tanpa_data_n"] == q["n_kab"], f"prov {nn}: kelas IRBI tak berjumlah n_kab"
+        assert q["penduduk"]["n_ikut"] <= q["n_kab"] and (q["penduduk"]["total"] is None) == (q["penduduk"]["n_ikut"] == 0), f"prov {nn}: penduduk null/n_ikut tak konsisten"
+        assert len(teks(q).encode("utf-8")) <= MAKS_PROV, f"prov {nn}: {len(teks(q).encode('utf-8'))} byte > {MAKS_PROV}"
+        for r_ in q["kab"]:
+            assert all(m_["id"].startswith("auto-" + r_["k"]) for m_ in r_["p1"]) and len(r_["p1"]) == (r_["m"] or [0])[0], f"{r_['k']}: p1 {len(r_['p1'])} != m {r_['m']}"
+
+
+def nama_provinsi(akar):
+    d = os.path.join(akar, "public", "data", "meta.json")
+    return (json.load(open(d, encoding="utf-8")).get("provinsi") if os.path.exists(d) else None) or {}
+
+
+def tulis_agregat(prof, keluar, akar=AKAR):
+    d = os.path.join(keluar, "public", "data", "kemitraan")
+    r, pv = ringkas(prof), prov(prof, nama_provinsi(akar))
+    validasi_agregat(r, pv, prof, Konteks(akar).kode)
+    os.makedirs(os.path.join(d, "prov"), exist_ok=True)
+    open(os.path.join(d, "ringkas.json"), "w", encoding="utf-8").write(teks(r))
+    for nn, q in pv.items():
+        open(os.path.join(d, "prov", nn + ".json"), "w", encoding="utf-8").write(teks(q))
+    return len(r["baris"]), len(pv)
 
 
 # ---------------------------------------------------------------- cek
@@ -1082,6 +1268,26 @@ def cek():
     assert a["6211"]["kejadian"]["parsial"] == {"tahun": 2026, "sampai": "2026-10-12"}, a["6211"]["kejadian"]["parsial"]
     # ---- KM-B02
     assert (a["6211"]["karhutla"]["gambut_ha"] or 0) > 0, f"D6: 6211 gambut_ha {a['6211']['karhutla']['gambut_ha']!r} harus > 0"
+    # ---- KM-B03
+    assert any(m["B"] == "karhutla" for m in a["6211"]["masalah"]), f"D6: 6211 tanpa masalah karhutla ({[m['auto_id'] for m in a['6211']['masalah']]})"
+    # tiap jenis DIBI terpetakan atau dikecualikan; yang dikecualikan = 219 baris (217 meninggal, 6.403 mengungsi) di snapshot ini
+    dm = cx.baca("dibi")["kejadian"]
+    cek_jenis_dibi({r["jenis"] for r in dm})
+    bk_ = [r for r in dm if r["jenis"] in JENIS_DIBI_BUKAN_BAHAYA]
+    assert (len(bk_), sum(r.get("meninggal", 0) for r in bk_), sum(r.get("mengungsi", 0) for r in bk_)) == (219, 217, 6403), \
+        f"jenis bukan-bahaya: {(len(bk_), sum(r.get('meninggal', 0) for r in bk_), sum(r.get('mengungsi', 0) for r in bk_))} != (219, 217, 6403): periksa JENIS_DIBI_BUKAN_BAHAYA"
+    tolak(cek_jenis_dibi, "belum dipetakan", {"Banjir", "Jenis Baru DIBI"})
+    for k, p in a.items():  # dampak per bahaya dihitung ulang dari baris DIBI (dedup) tanpa JENIS_DIBI_BAHAYA.get
+        dbb = (p["kejadian"] or {}).get("dampak_12bln_bahaya")
+        rows = ba.get(k) or []
+        assert (dbb is None) == (not rows), f"{k}: dampak_12bln_bahaya null != tanpa baris DIBI"
+        for b in {b for r in rows for b in JENIS_DIBI_BAHAYA.get(r["jenis"], ())}:
+            m_ = sum(r.get("meninggal", 0) for r in rows if b in JENIS_DIBI_BAHAYA.get(r["jenis"], ()))
+            assert dbb[b]["meninggal"] == m_, f"{k}.{b}: meninggal {dbb[b]['meninggal']} != {m_}"
+        for r in rows:
+            if r["jenis"] == "Banjir dan Tanah Longsor":
+                assert "banjir" in dbb and "longsor" in dbb, f"{k}: 'Banjir dan Tanah Longsor' harus dihitung di banjir DAN longsor (ganda)"
+    assert sum(1 for p in a.values() if (p["kejadian"] or {}).get("dampak_12bln_bahaya")) > 100, "dampak_12bln_bahaya hampir kosong"
     # gunung <= 50 km: kab sekitar Merapi terdeteksi, Jakarta Barat tidak punya gunung dalam radius
     for k in ("3404", "3308", "3310", "3309"):
         mj = [x["jarak_km"] for x in a[k]["gunungapi"]["daftar"] if x["gunung"] == "Merapi"]
@@ -1275,6 +1481,43 @@ def cek():
     tolak(validasi, "siluet", ubah(lambda q: q.update(siluet="M" + "1 2 " * 400 + "Z")))
     tolak(validasi, "tak ada", ubah(lambda q: q.pop("gempa")))
     tolak(validasi, "yakin", ubah(lambda q: q["karhutla"].update(yakin="pasti")))
+    tolak(validasi, "memuat angka", ubah(lambda q: q["masalah"][0].update(judul="Banjir 5 kali berulang")))  # B03: validasi memanggil masalah.periksa
+    tolak(validasi, "masalah/masalah_skor tak ada", ubah(lambda q: q.pop("masalah")))
+    # KM-B04: ringkas + prov, atas SEMUA kab/prov
+    kode = Konteks(AKAR).kode
+    r, pv = ringkas(a), prov(a, nama_provinsi(AKAR))
+    validasi_agregat(r, pv, a, kode)
+    dk = os.path.join(AKAR, "public", "data", "kemitraan")
+    assert open(os.path.join(dk, "ringkas.json"), encoding="utf-8").read() == teks(r), "ringkas.json di disk beda dari hasil bangun; jalankan tanpa --cek"
+    adaprov = sorted(os.path.basename(f)[:-5] for f in glob.glob(os.path.join(dk, "prov", "[0-9][0-9].json")))
+    assert adaprov == sorted(pv), f"prov di disk {len(adaprov)} != {len(pv)}"
+    for nn, q in pv.items():
+        assert open(os.path.join(dk, "prov", nn + ".json"), encoding="utf-8").read() == teks(q), f"prov/{nn}.json di disk beda dari hasil bangun"
+    assert ringkas(a) == r and prov(a, nama_provinsi(AKAR)) == pv, "ringkas/prov tak deterministik"
+    q62 = pv["62"]
+    assert q62["n_kab"] == sum(1 for v in kode.values() if v["prov"] == "62"), q62["n_kab"]
+    # agregat tak menjumlah null sebagai 0
+    b2 = copy.deepcopy(a)
+    for k in [k for k in b2 if b2[k]["prov"] == "62"][:2]:
+        b2[k]["penduduk"]["total"] = None
+    q2 = prov(b2, {})["62"]
+    assert q2["penduduk"]["n_ikut"] == q62["penduduk"]["n_ikut"] - 2 and q2["penduduk"]["total"] < q62["penduduk"]["total"], "null penduduk dijumlah sebagai 0 / n_ikut tak turun"
+    # tanpa skor -> tanpa bahaya teratas karangan
+    b3 = copy.deepcopy(a)
+    for e in b3["6211"]["masalah_skor"].values():
+        e["skor"] = None
+    assert ringkas(b3)["baris"][[x["k"] for x in r["baris"]].index("6211")]["b"] is None, "kab tanpa skor punya bahaya teratas"
+    # input salah DITOLAK
+    def u2(f):
+        rr, qq = copy.deepcopy(r), copy.deepcopy(pv); f(rr, qq); return rr, qq
+    tolak(lambda x: validasi_agregat(*x, a, kode), "byte >", u2(lambda rr, qq: rr.update(x="a" * 130000)))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "baris", u2(lambda rr, qq: rr["baris"].pop()))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "kunci ringkas", u2(lambda rr, qq: rr["baris"][0].update(siluet="M0 0Z")))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "tak cocok masalah_skor", u2(lambda rr, qq: rr["baris"][0].update(b=[["banjir", 0.99]])))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "n_kab", u2(lambda rr, qq: qq["62"].update(n_kab=qq["62"]["n_kab"] + 1)))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "n_kab", u2(lambda rr, qq: qq["62"]["kab"].pop()))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "prov", u2(lambda rr, qq: qq.pop("62")))
+    tolak(lambda x: validasi_agregat(*x, a, kode), "tak urut", u2(lambda rr, qq: qq["62"]["kab"].reverse()))
     mx = max(len(t.encode()) for t in ta.values())
     nul = {b: sum(1 for p in a.values() if p[b] is None) for b in BLOK_DICT + ("riwayat_luar",)}
     print(f"OK profil_daerah.py: {len(a)} kab, maks {mx} byte, deterministik, fixture 3 kab; null per blok {nul}")
@@ -1298,3 +1541,4 @@ if __name__ == "__main__":
             validasi(prof[ag.kab]); print(teks(prof[ag.kab]), end="")
         else:
             print("tulis", len(prof), "berkas ->", tulis(prof, ag.keluar))
+            print("tulis ringkas %d baris + %d prov" % tulis_agregat(prof, ag.keluar, ag.akar))

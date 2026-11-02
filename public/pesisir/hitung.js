@@ -11,6 +11,11 @@
 
   /* tinjau = lompatan > 300 m dalam satu tahun di mana pun dalam deret (tangga klasifikasi tambak/mangrove, tanggul, awan); gangguan = bangunan (tanggul tol, Patimban) */
   const tinjau = (a, t) => !!(t.tinjau?.length) || (a.situs.find(s => s.id === t.situs)?.tinjau || []).includes(t.id);
+  /* jenis lompatan (abrasi.py jenis_lompatan): bolak-balik = artefak citra, searah = bertahan, belum pasti = terlalu dekat dengan tahun terakhir */
+  const ketLompatan = t => { const th = (t.lompatan || []).map(x => x[0]).join(", ");
+    return t.lompatan_jenis === "searah" ? `Lompatan permanen (${th}): garis bergeser lebih dari 300 m dan tidak kembali. Kemungkinan reklamasi, bangunan pantai, atau erosi besar; perlu cek citra.`
+      : t.lompatan_jenis === "bolak-balik" ? `Lompatan bolak-balik (${th}): garis melompat lebih dari 300 m lalu kembali dalam satu sampai dua tahun. Hampir pasti salah baca citra (awan, pasang, ambang air), bukan gerak pantai; tahun itu dibuang dari laju.`
+      : `Lompatan lebih dari 300 m (${th}) terlalu dekat dengan tahun terakhir untuk dibedakan antara salah baca citra dan perubahan permanen; belum diperiksa tangan.`; };
   const bersih = (a, t) => t.laju != null && !t.gangguan && !tinjau(a, t);
   /* transek abrasi nyata (keyakinan sedang atau tinggi) yang lolos saringan lompatan dan gangguan, urut mundur tercepat */
   const abrasiBersih = a => a.transek.filter(t => t.kelas === "abrasi" && t.keyakinan !== "rendah" && bersih(a, t)).sort((x, y) => x.laju - y.laju);
@@ -73,5 +78,5 @@
       KEYS.forEach((k, i) => { o.kelas[i] += g[k].length; o.perairan[i].push(...g[k]); }); if (g.sampai > o.sampai) o.sampai = g.sampai; }
     return Object.values(P).map(o => ({...o, lv: o.kelas.reduce((a, n, i) => n ? i + 1 : a, 0), total: o.kelas.reduce((a, b) => a + b, 0)})).filter(o => o.lv).sort((a, b) => b.lv - a.lv || b.total - a.total); }
 
-  g.Pesisir = {med, KELAS_GEL, kelasGel, tglWIB, hariKe, abrasiTercepat, abrasiBersih, abrasiSitus, tinjau, bersih, BASE, perSitus, seriSitus, robHari, robSeri, robBmkg, robTahun, pasutPekan, hsHari, gelHari, gelBmkg, idxHari};
+  g.Pesisir = {ketLompatan, med, KELAS_GEL, kelasGel, tglWIB, hariKe, abrasiTercepat, abrasiBersih, abrasiSitus, tinjau, bersih, BASE, perSitus, seriSitus, robHari, robSeri, robBmkg, robTahun, pasutPekan, hsHari, gelHari, gelBmkg, idxHari};
 })(typeof globalThis !== "undefined" ? globalThis : window);

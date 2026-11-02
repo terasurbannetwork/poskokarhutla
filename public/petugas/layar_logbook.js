@@ -41,7 +41,7 @@ export async function layarLogbook(ctx) {
     ${deret("kendala", "Kendala", KENDALA(konst), "checkbox")}
     ${deret("kebutuhan", "Kebutuhan", KEBUTUHAN(konst), "checkbox")}
     ${kit.length ? `<fieldset class="lp-kit" data-nama="kit"><legend>Alat yang dibawa regu</legend>${kit.map(k => `<div class="lp-kit-baris"><label class="lp-chip"><input type="checkbox" name="kit" value="${esc(k.id)}"><span>${ik("alat", 20)}${esc(k.nama)}</span></label><input class="lp-kit-jumlah" data-kit-jumlah="${esc(k.id)}" inputmode="numeric" autocomplete="off" value="1" aria-label="Jumlah ${esc(k.nama)}" disabled></div>`).join("")}<p class="lp-galat" data-galat="kit" role="alert" hidden></p></fieldset>` : ""}
-    ${kondisi.length ? `<h3>Kondisi lapangan</h3>${kondisi.map(f => f.jenis === "pilih" ? deret(f.k, f.label, f.opsi, "radio", !!f.wajib)
+    ${kondisi.length ? `<h3>Kondisi lapangan</h3><p class="lp-kecil">Kondisi ini menunggu ditandai peninjau sebelum dipakai model.</p>${kondisi.map(f => f.jenis === "pilih" ? deret(f.k, f.label, f.opsi, "radio", !!f.wajib)
       : `<label class="lp-bidang" for="lpK_${f.k}">${esc(f.label)}${f.wajib ? ` <span class="lp-wajib">wajib</span>` : ""}</label><input id="lpK_${f.k}" data-kondisi="${f.k}" inputmode="numeric" autocomplete="off" placeholder="${f.min} sampai ${f.maks}"><p class="lp-galat" data-galat="${f.k}" role="alert" hidden></p>`).join("")}` : ""}
     <h3>Foto berstempel <span class="lp-wajib">${BATAS.fotoMin} sampai ${BATAS.fotoMaks}</span></h3>
     <div id="lpFotoKotak"></div>

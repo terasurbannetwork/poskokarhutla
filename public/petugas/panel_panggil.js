@@ -27,6 +27,7 @@ export const panggilKerangka = () => `
   <div id="lpPDaftar" aria-live="polite"><p class="lp-kecil lp-tengah">Pilih tugas untuk melihat panggilannya.</p></div>
 </section>`;
 
+let tandaTugas = null;
 function pilihanTugas(baris) {
   const s = $("lpPTugas"), lama = s.value;
   s.innerHTML = baris.length ? `<option value="">Pilih tugas</option>${baris.map(t => `<option value="${esc(t.id)}">${esc(t.judul || "Tugas")}</option>`).join("")}` : `<option value="">Belum ada tugas</option>`;
@@ -50,7 +51,11 @@ const tampilGalat = (form, g) => form.querySelectorAll("[data-g]").forEach(el =>
 
 export function pasangPanggil() {
   const form = $("lpPForm");
-  document.addEventListener("lp:tugas", e => { pilihanTugas(e.detail || []); muatDaftar(); });
+  document.addEventListener("lp:tugas", e => {
+    const d = e.detail || [], tanda = JSON.stringify(d.map(t => [t.id, t.judul]));
+    if (tanda === tandaTugas) return;   // daftar sama: jangan bangun ulang select / daftar panggilan
+    tandaTugas = tanda; pilihanTugas(d); muatDaftar();
+  });
   $("lpPTugas").addEventListener("change", muatDaftar);
   $("lpPDaftar").addEventListener("click", e => { if (e.target.closest("[data-ulang-panggil]")) muatDaftar(); });
   form.addEventListener("submit", e => {
@@ -73,13 +78,13 @@ export function pasangPanggil() {
 
 /* ---------- kelola keahlian (Super Admin), dipakai panel.js di baris tabel orang ---------- */
 export const kelolaBaris = (o, punya) => `<tr class="lp-tautan-baris"><td colspan="8"><fieldset class="lp-chips" data-orang="${esc(o.id)}"><legend>Keahlian ${esc(o.nama)}</legend>${daftarKeahlian(punya).map(d => `<label class="lp-chip"><input type="checkbox" name="kk" value="${esc(d.k)}" ${punya.includes(d.k) ? "checked" : ""}><span>${ik(d.ikon, 20)}${esc(d.label)}</span></label>`).join("")}</fieldset>
-  <label class="lp-bidang lp-atas" for="lpBukti">Bukti untuk keahlian yang baru dicentang (opsional)</label><input id="lpBukti" maxlength="200" autocomplete="off" placeholder="Nomor sertifikat atau sumber">
+  <label class="lp-bidang lp-atas" for="lpBukti-${esc(o.id)}">Bukti untuk keahlian yang baru dicentang (opsional)</label><input id="lpBukti-${esc(o.id)}" data-bukti maxlength="200" autocomplete="off" placeholder="Nomor sertifikat atau sumber">
   <p class="lp-kecil" role="status" data-kelola-info></p></td></tr>`;
 
 /* satu centang = satu panggilan API; gagal -> centang dikembalikan. Mengembalikan fungsi pembaruan label baris (opsional). */
 export function ubahKeahlian(input, tr, sesudah) {
   const fs = input.closest("[data-orang]"), info = tr.querySelector("[data-kelola-info]"), pasang = input.checked;
-  const badan = badanKeahlian(fs.dataset.orang, input.value, pasang ? tr.querySelector("#lpBukti").value : "");
+  const badan = badanKeahlian(fs.dataset.orang, input.value, pasang ? tr.querySelector("[data-bukti]").value : "");
   if (!badan) { input.checked = !pasang; return; }
   input.disabled = true; info.textContent = `${pasang ? "Menambah" : "Mencabut"} ${keahlianItem(input.value).label}...`;
   nanti(async () => {

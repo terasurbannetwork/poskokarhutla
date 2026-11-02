@@ -9,7 +9,7 @@
     for (const [k, v] of Object.entries(att || {})) { if (v == null || v === false) continue; if (k === "class") e.className = v; else if (k === "teks") e.textContent = v; else e.setAttribute(k, v === true ? "" : v); }
     for (const a of anak.flat()) if (a != null) e.append(a); return e; };
   const JAM = 36e5, HARI = 24 * JAM, POTONG = 12;
-  const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan", kemitraan: "Kemitraan kampus", operator_cc: "Operator command center"};
+  const PERAN = {verifikator: "Verifikator akun instansi", pusdalops: "Pusdalops", analis_konsesi: "Analis konsesi", udara: "Operasi udara", tmc: "TMC/OMC", koordalops: "Koordinator Pusdalops", pimpinan: "Pimpinan", kemitraan: "Kemitraan kampus", operator_cc: "Operator command center", direktori: "Direktori saja"};
   const STATUS = {baru: "Baru", dikerjakan: "Dikerjakan", selesai: "Selesai", abaikan: "Diabaikan"}, PRIO = {0: "Tertinggi", 1: "Segera", 2: "Penting", 3: "Biasa"};
   const angka = n => Number(n ?? 0).toLocaleString("id-ID");
   const lama = fmt.durasi;   // SATU formatter durasi semua layar (/inti/format.js): "12 menit", "6 jam 24 menit", "2 hari 3 jam"
@@ -31,7 +31,7 @@
   const waktuKata = ms => !Number.isFinite(ms) ? "" : hariWib(ms) === hariWib(Date.now()) ? "pukul " + jamWib(ms) : "pada " + jamTgl(ms);
   const waktu = t => t ? new Date(t).toLocaleString("id-ID", {timeZone: "Asia/Jakarta", day: "numeric", month: "short", hour: "2-digit", minute: "2-digit"}).replace(",", "") + " WIB" : "";
   /* ?ke= dari halaman SIPPA (/pipa*, ADR-05), Atur drone gambut (/admin/drone, src/drone.js), atau command center (/command-center*, src/command_center.js): sesudah masuk staf, hanya jalur yang cocok diikuti (alamat sama asal; URL penuh atau jalur lain diabaikan) */
-  const KE_PIPA = /^\/(pipa|admin\/drone|command-center)(\/|$|\?)/;
+  const KE_PIPA = /^\/(pipa|admin\/drone|command-center|direktori)(\/|$|\?)/;
   const keAsal = new URLSearchParams(location.search).get("ke") || "";
   const ke = KE_PIPA.test(keAsal) ? keAsal : null;
   const pergiPipa = () => { if (ke == null) return false; location.href = ke; return true; };
@@ -168,7 +168,7 @@
   async function muat() {
     const r = await fetch("/api/pantau").catch(() => null);
     if (!r) { app.replaceChildren(h("p", {class: "pt-kosong", teks: "Jaringan putus. Muat ulang halaman."})); return; }
-    if (r.status === 401) return layarMasuk("", (await r.json().catch(() => ({}))).wajib_ganti);
+    if (r.status === 401) { const j = await r.json().catch(() => ({})); if (j.ke === "/direktori") { location.href = j.ke; return; } return layarMasuk("", j.wajib_ganti); }   // akun berperan Direktori saja
     if (r.status === 503) { app.replaceChildren(h("p", {class: "pt-kosong", teks: "Meja Pantau belum diaktifkan (migrasi D1 0030_staf belum diterapkan)."})); return; }
     if (!r.ok) { app.addEventListener("click", e => { if (e.target.closest("[data-ulang]")) location.reload(); }, {once: true}); app.replaceChildren(h("div", {class: "pt-galat"}, h("p", {teks: `Galat ${r.status}. Data belum bisa dimuat.`}), tombol("Coba lagi", {"data-ulang": "1"}, "utama"))); return; }
     D = await r.json(); if (formKoreksi && !FINAL_CC.includes(D.butir.find(b => b.id === formKoreksi)?.cc?.status)) tutupKoreksi(); gambarKontrol(); pasangDummy();

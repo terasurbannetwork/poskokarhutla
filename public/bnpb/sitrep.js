@@ -35,13 +35,14 @@
   const STATUS_MEJA = {dilaporkan: "Dilaporkan", diverifikasi: "Diverifikasi", masuk_jitupasna: "Masuk JITUPASNA", diminta: "Diminta", disetujui: "Disetujui", dikirim: "Dikirim", diterima: "Diterima"};
   const JENIS_WARGA = s => { const t = String(s || "lainnya").replace(/_/g, " "); return t.charAt(0).toUpperCase() + t.slice(1); };
 
-  const D = {laporan: {}, neraca: {}};
+  const D = {laporan: {}, neraca: {}, logbook: null};
   let prov = "";
 
   async function muatAwal() {
     const [reg, meta, gunung, warga, relawan, meja, alun] = await Promise.all([ambil("/bencana.json"), ambil("/data/meta.json"), ambil(KONFIG.gunungapi.u),
       ambil("/api/warga?jam=24"), ambil("/api/relawan/ringkas"), ambil("/api/meja/ringkas"), ambil("/api/alun?jenis=butuh_bantuan")]);
-    Object.assign(D, {reg, meta, gunung, warga, relawan, meja, alun});
+    /* logbook petugas hanya ada di arsip (kunci dari src/sitrep.js logbookPetugas); belum ada rute langsung, jadi hari berjalan tidak meminta jaringan */
+    Object.assign(D, {reg, meta, gunung, warga, relawan, meja, alun, logbook: ARSIP ? await ambil("/api/petugas/logbook-ringkas") : null});
     const ids = (reg?.bencana || []).map(b => b.id).filter(id => KONFIG[id] && KONFIG[id].t !== "gunung");
     await Promise.all(ids.map(async id => { D.laporan[id] = await ambil(KONFIG[id].u); }));
   }
@@ -169,6 +170,19 @@
     return kartu("Alun-alun: butuh bantuan", "pesan", isi, "Alun-alun");
   }
 
+  const hitungPil = (o, ikon, warna) => { const e = Object.entries(o || {}).sort((a, b) => b[1] - a[1]); return e.length ? h("span", {class: "sr-pils"}, ...e.map(([k, n]) => pil(`${String(k).replace(/_/g, " ")} ${F(n)}`, ikon, warna))) : "–"; };
+  function sLogbook(L) {
+    const SUMBER = "logbook petugas lapangan /petugas (agregat, tanpa nama)";
+    if (!L || !Array.isArray(L.tugas)) return kartu("Logbook petugas lapangan", "alat", belum(ARSIP ? "Arsip hari itu tidak memuat logbook petugas." : "Logbook petugas tampil pada arsip sitrep harian pukul 07.00 WIB."), SUMBER);
+    const bagian = (tgl, nama) => {
+      const t = L.tugas.filter(x => x.tanggal === tgl);
+      return [h("p", {class: "bn-label", teks: nama + ", " + tglPendek(tgl)}),
+        t.length ? tabel(["Tugas", "Terisi dari anggota", "Kegiatan", "Kendala"], t.map(x => [x.judul, {t: `${F(x.terisi)} dari ${F(x.anggota)}`, n: 1}, hitungPil(x.kegiatan, null, "var(--c5)"), hitungPil(x.kendala, "segitiga", "var(--c2)")]))
+          : h("p", {class: "sr-belum", teks: "Belum ada logbook terisi."})];
+    };
+    return kartu("Logbook petugas lapangan", "alat", h("div", {class: "sr-isi"}, ...bagian(L.hari, "Hari ini"), ...bagian(L.kemarin, "Kemarin")), SUMBER);
+  }
+
   /* ---- teks WhatsApp dari model yang sama ---- */
   function teksWA(m) {
     const L = [`*LAPORAN SITUASI ${namaWil().toUpperCase()}*`, `${wib(m.kini, {weekday: "long", day: "numeric", month: "long", year: "numeric"})}, ${wib(m.kini, {hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":")} WIB`, ""];
@@ -189,15 +203,15 @@
   async function render() {
     const id = ++gen, lap = $("lap");
     const N = await muatNeraca(); if (id !== gen) return;
-    model = {kini: ARSIP ? ARSIP.dibuat : Date.now(), kej: kejadian(), naik: wilayahNaik(), neraca: N, warga: wargaHitung(), relawan: relawanHitung(), meja: mejaHitung(), alun: alunHitung()};
+    model = {kini: ARSIP ? ARSIP.dibuat : Date.now(), kej: kejadian(), naik: wilayahNaik(), neraca: N, warga: wargaHitung(), relawan: relawanHitung(), meja: mejaHitung(), alun: alunHitung(), logbook: D.logbook};
     const dataTgl = model.kej.map(r => r.dibuat).filter(Boolean).sort().pop();
     const kop = h("header", {class: "sr-kop"}, h("img", {src: "/img/logo.svg?v=2", alt: "", width: 40, height: 40}),
-      h("div", null, h("h2", {class: "sr-judul", teks: "Laporan situasi harian"}), h("p", {class: "bn-label", teks: "Centurisk97 · Ruang Koordinasi"})),
+      h("div", null, h("h2", {class: "sr-judul", teks: "Laporan situasi harian"}), h("p", {class: "bn-label", teks: "Centurisk97, Ruang Koordinasi"})),
       h("div", {class: "sr-pils"}, pil(namaWil(), "peta", "var(--navy2)"), ARSIP ? pil("Arsip " + tglPendek(ARSIP.tgl) + ", 07.00 WIB", "kotak", "var(--c2)") : pil(wib(model.kini, {day: "numeric", month: "short", year: "numeric", hour: "2-digit", minute: "2-digit", hour12: false}).replace(".", ":") + " WIB", null, "var(--c7)"),
         dataTgl ? pil("Data terbaru " + jamWIB(dataTgl), null, "var(--c5)") : null));
-    const grid = h("div", {class: "sr-grid"}, sNeraca(N), sWarga(model.warga), sRelawan(model.relawan), sMeja(model.meja), sAlun(model.alun));
+    const grid = h("div", {class: "sr-grid"}, sNeraca(N), sWarga(model.warga), sRelawan(model.relawan), sMeja(model.meja), sAlun(model.alun), sLogbook(model.logbook));
     lap.replaceChildren(kop, sKejadian(model.kej), sNaik(model.naik), grid);
-    document.title = `Laporan situasi ${namaWil()} · Centurisk97`;
+    document.title = `Laporan situasi ${namaWil()}, Centurisk97`;
   }
 
   function pesan(t, ok) { const e = $("pesan"); e.textContent = t; e.className = "bn-pesan " + (ok ? "ok" : "galat"); clearTimeout(pesan.t); pesan.t = setTimeout(() => { e.textContent = ""; }, 4000); }

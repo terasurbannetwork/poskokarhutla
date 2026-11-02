@@ -79,9 +79,9 @@ test("gelombang BMKG: kelas sedang bukan peringatan, yang lewat masa berlaku dib
 test("halaman: tiap tab TABS punya <section id=p-...>, tanpa titik tengah dan tanpa nama lama", () => {
   const html = teks("index.html"), js = teks("pesisir.js");
   const tabs = [...js.match(/const TABS\s*=\s*\[([\s\S]*?)\];/)[1].matchAll(/\[\s*"([a-z_]+)"\s*,/g)].map(m => m[1]);
-  assert.deepEqual(tabs, ["peta", "insight", "tren", "tentang"]);
+  assert.deepEqual(tabs, ["peta", "insight", "tren", "foto", "tentang", "informasi"]);
   for (const t of tabs) assert.match(html, new RegExp(`<section[^>]*id="p-${t}"`), t);
-  for (const f of ["index.html", "pesisir.js", "peta.js", "insight.js", "tren.js", "tentang.js", "hitung.js", "grafik.js", "pesisir.css"]) {
+  for (const f of ["index.html", "pesisir.js", "peta.js", "insight.js", "tren.js", "tentang.js", "hitung.js", "grafik.js", "pesisir.css", "foto.js", "foto.css"]) {
     const s = teks(f); assert.ok(!s.includes("·"), f + " memuat titik tengah"); assert.ok(!/Pantau Bencana/i.test(s), f + " menyebut Pantau Bencana"); }
   for (const m of html.matchAll(/<script[^>]*src="(?!https?:)([^"]+)"/g)) assert.ok(fs.existsSync(new URL(m[1].replace(/^\//, "../../public/").replace(/^\.\.\/(?!\.\.)/, "../../public/").replace(/^(?!\.\.)/, "../../public/pesisir/"), import.meta.url)), m[1] + " tidak ada");
 });

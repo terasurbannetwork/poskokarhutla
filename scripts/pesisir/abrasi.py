@@ -407,17 +407,54 @@ def lompatan_mana_pun(jarak, ambang=300):
     return [y for (y0, d0), (y, d) in zip(jarak, jarak[1:]) if y - y0 <= 2 and abs(d - d0) > ambang]
 
 
+BALIK = 0.4   # pulih >= 60% lompatan (sisa <= 40%) dalam 2 tahun berikutnya = bolak-balik; DEA/literatur: artefak awan, pasang, Otsu
+
+
+def jenis_lompatan(jarak, ambang=300, balik=BALIK):
+    """tiap lompatan > ambang m antartahun (selisih <= 2 th) diberi jenis:
+    bolak-balik = dalam 1-2 tahun berikutnya posisi kembali ke dalam `balik` x lompatan dari posisi sebelum lompat (artefak citra);
+    searah = bertahan bergeser selama >= 2 tahun pengamatan sesudahnya (bisa nyata: reklamasi, bangunan pantai, abrasi besar);
+    belum pasti = kurang dari 2 pengamatan sesudahnya, belum bisa dibedakan.
+    -> [{"tahun", "jenis", "artefak": [tahun posisi bergeser sementara]}]"""
+    hasil, pulang = [], set()   # pulang = tahun lompatan balik: ikut berjenis bolak-balik, bukan lompatan baru
+    for i in range(1, len(jarak)):
+        (y0, d0), (y, d) = jarak[i - 1], jarak[i]
+        if y in pulang or y - y0 > 2 or abs(d - d0) <= ambang:
+            continue
+        nanti = [p for p in jarak[i + 1:i + 3] if p[0] - y <= 2]
+        kembali = next((p for p in nanti if abs(p[1] - d0) <= balik * abs(d - d0)), None)
+        if kembali:
+            pulang.add(kembali[0])
+            hasil.append({"tahun": y, "jenis": "bolak-balik", "artefak": [q[0] for q in jarak[i:] if q[0] < kembali[0]]})
+            hasil.append({"tahun": kembali[0], "jenis": "bolak-balik", "artefak": []})
+        else:
+            hasil.append({"tahun": y, "jenis": "searah" if len(nanti) >= 2 else "belum pasti", "artefak": []})
+    return hasil
+
+
 def nilai_transek(t, tahun_akhir):
     """statistik transek dari deret `jarak` saja (tanpa citra): bisa dihitung ulang dari keluaran lama"""
     for k in ("laju", "ci95", "r2", "r2_penuh", "ar1", "n", "pencilan", "keyakinan", "kelas", "laju_10th", "perubahan_m",
-              "periode", "garis_terakhir", "gangguan", "tinjau"):
+              "periode", "garis_terakhir", "gangguan", "tinjau", "lompatan_jenis", "lompatan", "artefak"):
         t.pop(k, None)
     jarak = t["jarak"]
     if t["id"] in GANGGUAN:   # tahun bangunan tidak ikut regresi; deretnya tetap utuh di `jarak`
         t["gangguan"], mulai = GANGGUAN[t["id"]]
         jarak = [p for p in jarak if p[0] < mulai]
     elif lompatan(jarak) or lompatan_mana_pun(jarak):
-        t["tinjau"] = sorted(set(lompatan(jarak)) | set(lompatan_mana_pun(jarak)))
+        t["tinjau"] = sorted(set(lompatan(jarak)) | set(lompatan_mana_pun(jarak)))   # tetap menyaring judul/peringkat, apa pun jenisnya
+        L = jenis_lompatan(jarak)
+        t["lompatan"] = [[x["tahun"], x["jenis"]] for x in L]   # tahun lompatan dan, bila bolak-balik, tahun lompatan baliknya
+        for y in t["tinjau"]:   # lompatan terhadap median 5 tahun (dua tahun terakhir) tanpa lompatan antartahun: belum bisa dinilai
+            if y not in [x["tahun"] for x in L]:
+                t["lompatan"].append([y, "belum pasti"])
+        t["lompatan"].sort()
+        jenis = {j for _, j in t["lompatan"]}
+        t["lompatan_jenis"] = "searah" if "searah" in jenis else "belum pasti" if "belum pasti" in jenis else "bolak-balik"
+        art = sorted({y for x in L for y in x["artefak"]})
+        if art:   # posisi sementara tidak ikut regresi; deret `jarak` tetap utuh
+            t["artefak"] = art
+            jarak = [p for p in jarak if p[0] not in art]
     semua = laju(jarak)
     if not semua:
         return t
@@ -513,6 +550,10 @@ CATATAN = [
     "Transek bertanda tinjau punya lompatan lebih dari 300 m dalam satu tahun di mana pun dalam deret (klasifikasi tambak atau "
     "mangrove menyala-mati, tanggul, reklamasi, atau tahun berawan) dan belum diperiksa tangan; lajunya tidak dipakai untuk "
     "judul atau peringkat.",
+    "Lompatan dibedakan dua jenis. Bolak-balik: dalam 1-2 tahun berikutnya garis kembali ke dalam 40% lompatan dari posisi semula "
+    "(awan, pasang, ambang air); tahun sementara itu dibuang dari laju. Searah: garis tetap bergeser sesudahnya (reklamasi, "
+    "bangunan pantai, muara bergeser, atau erosi besar); tetap dipakai tetapi perlu cek citra. Lompatan di dua tahun terakhir "
+    "belum bisa dibedakan. Ambang 300 m dan 40% adalah pilihan kasar, bukan hasil kalibrasi.",
 ]
 
 
@@ -701,6 +742,19 @@ def uji():
     k[8][1] += 800; k[9][1] += 800
     assert lompatan_mana_pun(k) == [2008, 2010] and lompatan(k) == [] and nilai_transek({"id": "x-1", "lat": -6.9, "lon": 110.5, "arah": 0., "jarak": k}, 2025)["tinjau"] == [2008, 2010]
     assert lompatan_mana_pun(j[:-2]) == []
+    # bolak-balik: +400 lalu kembali ke garis; posisi sementara menjadi artefak dan tak ikut regresi
+    bb = [[y, -100 - 5 * (y - 2000)] for y in range(2000, 2020)]
+    bb[8][1] += 400
+    assert [x["jenis"] for x in jenis_lompatan(bb)] == ["bolak-balik", "bolak-balik"] and jenis_lompatan(bb)[0]["artefak"] == [2008]
+    tb = nilai_transek({"id": "x-2", "lat": -6.9, "lon": 110.5, "arah": 0., "jarak": bb}, 2019)
+    assert tb["lompatan_jenis"] == "bolak-balik" and tb["artefak"] == [2008] and tb["laju"] == -5.0 and tb["n"] == 19, tb
+    # searah: tangga +500 m yang bertahan
+    sr = [[y, -100 - 5 * (y - 2000) + (500 if y >= 2008 else 0)] for y in range(2000, 2020)]
+    assert [x["jenis"] for x in jenis_lompatan(sr)] == ["searah"]
+    ts = nilai_transek({"id": "x-3", "lat": -6.9, "lon": 110.5, "arah": 0., "jarak": sr}, 2019)
+    assert ts["lompatan_jenis"] == "searah" and "artefak" not in ts and ts["tinjau"] == [2008], ts
+    # lompatan di tahun terakhir: belum cukup pengamatan sesudahnya
+    assert [x["jenis"] for x in jenis_lompatan(sr[:9])] == ["belum pasti"]
     assert laju([]) is None and laju([[2000, 1], [2000, 2], [2000, 3]]) is None and tkrit(11) == 2.23 and tkrit(500) == 2.00
     print("abrasi.py uji: lolos")
 

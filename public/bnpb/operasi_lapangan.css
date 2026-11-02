@@ -41,3 +41,9 @@
 .ol-titik{display:flex;gap:2px;flex-wrap:wrap;justify-content:center;max-width:60px}
 .ol-titik b{width:9px;height:9px;border-radius:50%;background:var(--w);border:1.5px solid #fff;box-shadow:0 0 0 1px rgb(0 0 0 / .3)}
 .ol-pop .maplibregl-popup-content{padding:8px 10px;font:600 12.5px/1.4 var(--font);border-radius:10px;max-width:260px}
+.ol-base{z-index:2}
+.ol-kartu h2 svg{width:16px;height:16px;fill:none;stroke:currentColor;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round;flex:none}
+.bn-grid.ol-ringkas{grid-template-columns:repeat(3,minmax(0,1fr))}
+@media (max-width:640px){.bn-grid.ol-ringkas{grid-template-columns:minmax(0,1fr)}}
+#app{display:grid;gap:14px;align-content:start}
+.ol-tengah[hidden]{display:none}

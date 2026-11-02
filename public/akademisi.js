@@ -302,6 +302,33 @@
       <span class="ak-klabel">${k.q ? `<em class="q q${k.q}">${ikon(IKL.kuartil, "#fff")}Q${k.q}</em>` : ""}${k.jenis ? `<em class="j">${ikon(IKL.jenis, "#fff")}${esc(k.jenis)}</em>` : ""}${k.terbitan ? `<em class="t" title="${esc(rapiJurnal(k.terbitan))}">${ikon(IKJ, "currentColor")}<span>${esc(rapiJurnal(k.terbitan))}</span></em>` : ""}${k.urutan ? `<em>${ikon(IKL.orang, "currentColor")}Penulis ke-${k.urutan} dari ${k.jumlah_penulis}</em>` : ""}${k.tahun ? `<em>${ikon(IKL.tahun, "currentColor")}${k.tahun}</em>` : ""}</span></span>
       <span class="ak-kangka"><b>${angka(k.sitasi ?? 0)}</b><small>kutipan</small></span></a></li>`;
   const kst = {hal: 1, urut: "sitasi", jenis: "", cari: ""};
+  /* analisa keahlian (permintaan pemilik 2 Nov 2026): sampai 200 karya terbaru dari OpenAlex, disimpulkan analisaKeahlian() (fungsi_direktori.js, aturan kata kunci).
+     Tiap label bisa diklik untuk melihat karya buktinya; label otomatis, bukan penilaian. */
+  const KH_BARIS = [["jenis", "Jenis bencana"], ["fase", "Fase"], ["klaster", "Klaster penanggulangan bencana nasional"], ["wilayah", "Wilayah kajian"]];
+  let khData = null;
+  async function keahlian(o) {
+    khData = null;
+    let j; try { const r = await fetch(`https://api.openalex.org/works?filter=author.id:${encodeURIComponent(o[0])}&select=id,title,type,publication_year,topics,keywords&sort=publication_year:desc&per-page=200`); if (!r.ok) return; j = await r.json(); } catch (e) { return; }
+    const sek = $("akKeahlian"); if (karyaId !== o[0] || !sek) return;
+    const ks = dlist(j.results).filter(w => !/^(dataset|paratext|erratum|retraction|peer-review)$/.test(w.type || "")).map(w => ({id: String(w.id || "").split("/").pop(), judul: w.title, tahun: w.publication_year, topik: dlist(w.topics).map(t => t.display_name), kunci: dlist(w.keywords).map(k => k.display_name)}));
+    const h = window.analisaKeahlian(ks); if (!KH_BARIS.some(([k]) => h[k].length)) return;
+    khData = h;
+    const pil = (k, e) => k === "jenis" && RUMPUN[e.kunci] ? pilRumpun(e.kunci).replace("<span", `<button type="button" data-kh="${k}|${esc(e.kunci)}" aria-pressed="false"`).replace(/<\/span>$/, ` <small>${angka(e.n)}</small></button>`)
+      : `<button type="button" class="ak-r" data-kh="${k}|${esc(e.kunci)}" aria-pressed="false">${esc(kapital(e.label))} <small>${angka(e.n)}</small></button>`;
+    const nmJ = k => (RUMPUN[k] || [kapital(k)])[0], tren = h.tren && h.tren.dulu.jenis.length && h.tren.kini.jenis.length
+      ? `<div class="ak-kh-baris"><span class="ak-kh-lbl">Tren</span><p class="ak-kh-tren">${(() => { const d = h.tren.dulu.jenis.map(x => nmJ(x.kunci)).join(", "), k = h.tren.kini.jenis.map(x => nmJ(x.kunci)).join(", ");
+        return d === k ? `Tetap di <b>${esc(k)}</b> pada ${h.tren.dulu.dari}–${h.tren.kini.sampai}` : `${h.tren.dulu.dari}–${h.tren.dulu.sampai}: <b>${esc(d)}</b><br>${h.tren.kini.dari}–${h.tren.kini.sampai}: <b>${esc(k)}</b>`; })()}</p></div>` : "";
+    sek.querySelector(".ak-disi").innerHTML = `${KH_BARIS.filter(([k]) => h[k].length).map(([k, l]) => `<div class="ak-kh-baris"><span class="ak-kh-lbl">${l}</span><div class="ak-pil">${h[k].slice(0, 8).map(e => pil(k, e)).join("")}</div></div>`).join("")}${tren}
+      <ol class="ak-karya ak-kh-bukti" hidden></ol>
+      <small class="ak-lper">Label otomatis dari judul, topik, dan kata kunci ${angka(h.karya)} karya terbaru di OpenAlex; angka = jumlah karya yang cocok dengan label. Klik label untuk melihat karya buktinya.</small>`;
+    sek.hidden = false;
+    sek.querySelector(".ak-disi").onclick = e => { const b = e.target.closest("button[data-kh]"); if (!b) return;
+      const [k, kunci] = b.dataset.kh.split("|"), on = b.getAttribute("aria-pressed") !== "true", ol = sek.querySelector(".ak-kh-bukti");
+      sek.querySelectorAll("button[data-kh]").forEach(x => x.setAttribute("aria-pressed", String(x === b && on)));
+      const e2 = on && khData[k].find(x => x.kunci === kunci);
+      ol.innerHTML = e2 ? e2.bukti.map(x => `<li><a href="https://openalex.org/${esc(x.id)}" ${LUAR}><span class="ak-kisi"><b>${esc(rapiJudul(x.judul))}</b></span><span class="ak-kangka"><b>${esc(String(x.tahun || ""))}</b></span></a></li>`).join("") : "";
+      ol.hidden = !e2; };
+  }
   let karyaTunda = 0;
   /* ORCID publik: tautan muncul, riwayat pendidikan dan pekerjaan sebagai lini masa, biografi apa adanya (berlabel sumbernya) */
   function orcid(x, id) {
@@ -644,6 +671,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
       <div class="ak-dtubuh">${barisPakar(o)}${kiprahHtml(tk)}
         ${o[12] ? `<section class="ak-dbagian"><h3>Bidang menurut SINTA</h3><p>${esc(o[12])}</p></section>` : ""}
         <section class="ak-dbagian"><h3>Topik riset utama</h3><div class="ak-topik">${o[8].map(t => `<span>${ikon('<circle cx="11" cy="11" r="6"/><path d="m20 20-4.5-4.5"/>', "currentColor")}${esc(t)}</span>`).join("")}</div></section>
+        <section class="ak-dbagian" id="akKeahlian" hidden><h3>Analisa keahlian dari karya</h3><div></div></section>
         <section class="ak-dbagian" id="akOrcid" hidden><h3>Pendidikan dan riwayat jabatan</h3></section>
         <section class="ak-dbagian" id="akRingkas" hidden><h3>Ringkasan</h3><p></p></section>
         <section class="ak-dbagian" id="akMetrik" hidden><h3>Metrik publikasi menurut SINTA</h3><div></div></section>
@@ -670,7 +698,7 @@ h4{margin:0 0 2px;font-size:8px;letter-spacing:.08em;text-transform:uppercase;co
     }
     $("akLembar").hidden = false;
     document.body.style.overflow = "hidden";
-    karya(o);
+    karya(o); keahlian(o);
     if (o[10]) rinciSinta(o);
     extraPakar(o); terhubungDi("P:" + o[0]);
     $("akLembar").querySelector(".ak-dlg").scrollTop = 0;

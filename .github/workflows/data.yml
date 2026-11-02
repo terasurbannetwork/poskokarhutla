@@ -91,6 +91,15 @@ jobs:
           PIPA_URL: ${{ vars.PIPA_URL }}
         run: python3 scripts/data/kalibrasi.py uji && python3 scripts/data/kalibrasi.py
 
+      # label lapangan terverifikasi -> public/data/lapangan/label.json (ikut `git add public/data` / deploy). Secret LAPANGAN_TOKEN
+      # boleh belum ada: skrip keluar 0 dan membiarkan berkas lama.
+      - name: Ekspor label lapangan (boleh gagal)
+        continue-on-error: true
+        env:
+          LAPANGAN_TOKEN: ${{ secrets.LAPANGAN_TOKEN }}
+          LAPANGAN_URL: ${{ vars.LAPANGAN_URL }}
+        run: python3 scripts/lapangan/ekspor_label.py
+
       # FIRMS kadang tak terjangkau dari runner (20 & 22 Okt 2026): jangan jatuhkan seluruh jalan harian (berita, cuaca, udara, dll).
       # Langkah sesudahnya memakai titik/kompleks terakhir dari cache (titik.yml memperbaruinya tiap 3 jam). Deploy tetap dijaga
       # scripts/terbit/jaga_segar.py: data basi atau lebih tua dari yang tayang tidak pernah terbit.

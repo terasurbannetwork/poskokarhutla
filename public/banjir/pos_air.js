@@ -511,11 +511,9 @@ const PosUkur = {
       ${s.di_atas_biasa ? `<span class="pill pa-pil" style="justify-self:start;background:#e58a45;color:#fff">${PosAir.ikonPil("Siaga 2")}Pasang tinggi di atas biasa${s.p90_harian_cm != null ? `, p90 harian ${PosAir.cmMinus(s.p90_harian_cm)} cm` : ""}</span>` : ""}
       ${kurva}
       <table class="tb3 pa-pk"><thead><tr><th>Jenis</th><th>Hari</th><th>Jam</th><th>Tinggi</th></tr></thead><tbody>${pk.map(x => `<tr><td>${pil(x.jenis)}</td><td style="text-align:center">${x.hari}</td><td style="text-align:center;font-variant-numeric:tabular-nums">${x.jam} WIB</td><td class="n"><span class="pa-v">${PosAir.cmMinus(x.cm)}</span><span class="pa-u">cm</span></td></tr>`).join("")}</tbody></table>
-      <div id="paKalRob"></div>
       <p class="fnd">Sumber: BMKG Maritim, prediksi pasang surut${this.PS.dibuat ? ", dibuat " + PosAir.tglJamWib(Date.parse(this.PS.dibuat) / 1000) : ""}.</p>`;
     Analisa.buka(isi, `<span class="pa-ikbulat"><svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2 12c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M2 18c2.5-4 5-4 7.5 0s5 4 7.5 0 3-2.5 5-2M7 6c1.5-2 3-2 4.5 0"/></svg></span><div><h3 id="dlgJudul">${esc(s.nama)}</h3><p>Pasang surut</p></div>`);
-    /* kalender rob 30 hari (kalender_rob.js) menyusul; profil pantura = pesisir utara Jawa, Banten sampai Jatim */
-    if (typeof KalenderRob !== "undefined") nanti(() => KalenderRob.muat().then(pa => { const e = $("#paKalRob"); if (e && pa) e.innerHTML = KalenderRob.html({pa, hujan: S.hujan, lat: s.lat, lon: s.lon, profil: s.lon >= 105.8 && s.lon <= 114.6 && s.lat >= -7.3 && s.lat <= -5.8 ? "pantura" : "lain"}); })); },
+    },
   /* jumlah, batang status berlegenda, kalimat, daftar perlu dipantau: dipakai panel nasional dan laci provinsi */
   ringkasHtml(pos) {
     const R = PosAir.ringkas(pos), K = PosAir.WARNA_KELAS, bt = [["Normal", "Normal"], ["Siaga 3", "Siaga 3"], ["Siaga 2", "Siaga 2"], ["Siaga 1", "Siaga 1"], ["mati", "Mati"]], pantau = PosAir.perluPantau(pos).slice(0, 20), n = PosAir.angkaId;

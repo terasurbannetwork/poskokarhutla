@@ -85,3 +85,4 @@ Semua keluaran ke `public/data/*.json` (kontrak dengan layar). Perantara di `dat
 ## Kasus
 
 - 2026-11-02 · Kasus s.d. 2 Nov 2026 sudah digabung ke Aturan & Ranjau di atas (teks asli: `git log -p`, commit 987a011a). Belum ada kasus tanpa kelas; tambahkan kasus baru di bawah ini.
+- 2026-11-02 · renlap.py (OP-4, 2 Nov): public/data/hotspot72.json di checkout bisa basi (acuan 12 Okt); sumber segar tanpa penarik baru = GET centurisk97.id/api/titik (8 putaran ~24 jam, format sama: jam relatif acuan). Deklinasi: magnet = benar MINUS deklinasi timur (spek menulis plus; R095 pesan nyata cocok keduanya). Sel 0,02 derajat membelah titik dekat: uji pakai titik yang tak melintasi batas sel. python3 lokal 3.9: pakai sintaks kompatibel. Cek: python3 scripts/operasi/renlap.py uji

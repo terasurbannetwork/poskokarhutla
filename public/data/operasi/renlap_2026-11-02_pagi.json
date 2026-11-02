@@ -1,11 +1,11 @@
 {
  "tanggal": "2026-11-02",
  "versi": "pagi",
- "dibuat": "2026-11-02T10:47:40.510175+00:00",
+ "dibuat": "2026-11-02T10:49:06.733650+00:00",
  "status": "draf",
  "sumber": {
   "titik_panas": "hotspot72.json basi (acuan 2026-10-12T12:27), pakai https://centurisk97.id/api/titik (acuan 2026-11-02T06:33:00.000Z, 3696 titik sedang/tinggi 72 jam)",
-  "temuan": "/private/tmp/claude-501/-Users-priyankaalfatehan28-Documents-GitHub-poskokarhutla/a2eaaea1-752e-4dd4-b9ac-f7e58e4df959/scratchpad/temuan_2nov.json (14 temuan 48 jam)",
+  "temuan": "TIDAK ADA (tanpa --temuan dan tanpa env OPERASI_COOKIE): titik clear tidak dikeluarkan, WB kosong",
   "ffmc": "fwi.json hari_ini 2026-10-12",
   "pm25": "prakiraan.json dibuat 2026-11-02T08:11Z",
   "gambut": "public/data/lahan/gambut.geojson (BBSDLP 1:250.000)",
@@ -228,74 +228,7 @@
      "urut": 7
     }
    ],
-   "wb": [
-    {
-     "lat": -0.45078,
-     "lon": 109.36847,
-     "skor": 1.0,
-     "alasan": {
-      "temuan": "berasap_tipis",
-      "oleh": "H-3217",
-      "lokasi_laporan": "Kubu",
-      "luas_klaim_ha": null,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 00° 27' 03\"  E 109° 22' 06\"",
-     "radial": 181,
-     "jarak_vor_nm": 22,
-     "rujukan": "VOR PNK",
-     "rd": "R 181 D 22 Nm Fr VOR PNK",
-     "dari_base_nm": 18,
-     "tempat": "Desa Air Putih, Kec. Kubu, Kab. Kubu Raya",
-     "udara": "tidak tersedia",
-     "urut": 1
-    },
-    {
-     "lat": -0.15944,
-     "lon": 109.55083,
-     "skor": 1.0,
-     "alasan": {
-      "temuan": "berasap_tipis",
-      "oleh": "H-3217",
-      "lokasi_laporan": "Sungai Ambawang",
-      "luas_klaim_ha": null,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 00° 09' 34\"  E 109° 33' 03\"",
-     "radial": 114,
-     "jarak_vor_nm": 12,
-     "rujukan": "VOR PNK",
-     "rd": "R 114 D 12 Nm Fr VOR PNK",
-     "dari_base_nm": 9,
-     "tempat": "Desa Bengkarek, Kec. Sungai Ambawang, Kab. Kubu Raya",
-     "udara": "tidak tersedia",
-     "urut": 2
-    },
-    {
-     "lat": -0.14011,
-     "lon": 109.55192,
-     "skor": 1.0,
-     "alasan": {
-      "temuan": "berasap_tipis",
-      "oleh": "H-3217",
-      "lokasi_laporan": "Pasak Piang",
-      "luas_klaim_ha": null,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 00° 08' 24\"  E 109° 33' 07\"",
-     "radial": 109,
-     "jarak_vor_nm": 11,
-     "rujukan": "VOR PNK",
-     "rd": "R 109 D 11 Nm Fr VOR PNK",
-     "dari_base_nm": 9,
-     "tempat": "Desa Bengkarek, Kec. Sungai Ambawang, Kab. Kubu Raya",
-     "udara": "tidak tersedia",
-     "urut": 3
-    }
-   ],
+   "wb": [],
    "kandidat_dalam_radius": 8
   },
   {
@@ -536,74 +469,7 @@
      "urut": 8
     }
    ],
-   "wb": [
-    {
-     "lat": -2.84278,
-     "lon": 110.66917,
-     "skor": 4.6,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "VN-8416",
-      "lokasi_laporan": "Air Hitam Besar",
-      "luas_klaim_ha": 8.0,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 02° 50' 34\"  E 110° 40' 09\"",
-     "radial": 145,
-     "jarak_vor_nm": 75,
-     "rujukan": "KTG (base, VOR tidak diseed)",
-     "rd": "R 145 D 75 Nm Fr KTG (base, VOR tidak diseed)",
-     "dari_base_nm": 75,
-     "tempat": "Kec. Kendawangan, Kab. Ketapang",
-     "udara": "tidak tersedia",
-     "urut": 1
-    },
-    {
-     "lat": -0.45078,
-     "lon": 109.36847,
-     "skor": 1.0,
-     "alasan": {
-      "temuan": "berasap_tipis",
-      "oleh": "H-3217",
-      "lokasi_laporan": "Kubu",
-      "luas_klaim_ha": null,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 00° 27' 03\"  E 109° 22' 06\"",
-     "radial": 336,
-     "jarak_vor_nm": 89,
-     "rujukan": "KTG (base, VOR tidak diseed)",
-     "rd": "R 336 D 89 Nm Fr KTG (base, VOR tidak diseed)",
-     "dari_base_nm": 89,
-     "tempat": "Desa Air Putih, Kec. Kubu, Kab. Kubu Raya",
-     "udara": "tidak tersedia",
-     "urut": 2
-    },
-    {
-     "lat": -0.15944,
-     "lon": 109.55083,
-     "skor": 1.0,
-     "alasan": {
-      "temuan": "berasap_tipis",
-      "oleh": "H-3217",
-      "lokasi_laporan": "Sungai Ambawang",
-      "luas_klaim_ha": null,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 00° 09' 34\"  E 109° 33' 03\"",
-     "radial": 346,
-     "jarak_vor_nm": 103,
-     "rujukan": "KTG (base, VOR tidak diseed)",
-     "rd": "R 346 D 103 Nm Fr KTG (base, VOR tidak diseed)",
-     "dari_base_nm": 103,
-     "tempat": "Desa Bengkarek, Kec. Sungai Ambawang, Kab. Kubu Raya",
-     "udara": "tidak tersedia",
-     "urut": 3
-    }
-   ],
+   "wb": [],
    "kandidat_dalam_radius": 41
   },
   {
@@ -851,52 +717,7 @@
      "urut": 8
     }
    ],
-   "wb": [
-    {
-     "lat": -3.29639,
-     "lon": 114.49472,
-     "skor": 3.2,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "PK-RTQ",
-      "lokasi_laporan": "Tinggiran Tengah Batola",
-      "luas_klaim_ha": 1.0,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 03° 17' 47\"  E 114° 29' 41\"",
-     "radial": 152,
-     "jarak_vor_nm": 71,
-     "rujukan": "VOR PKY",
-     "rd": "R 152 D 71 Nm Fr VOR PKY",
-     "dari_base_nm": 72,
-     "tempat": "Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala",
-     "udara": "tidak tersedia",
-     "urut": 1
-    },
-    {
-     "lat": -3.33583,
-     "lon": 114.83333,
-     "skor": 3.04,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "PK-RTQ",
-      "lokasi_laporan": "Sungai Batang Banjar",
-      "luas_klaim_ha": 0.2,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 03° 20' 09\"  E 114° 50' 00\"",
-     "radial": 141,
-     "jarak_vor_nm": 84,
-     "rujukan": "VOR PKY",
-     "rd": "R 141 D 84 Nm Fr VOR PKY",
-     "dari_base_nm": 85,
-     "tempat": "Desa Sungai Batang Ilir, Kec. Martapura Barat, Kab. Banjar",
-     "udara": "tidak tersedia",
-     "urut": 2
-    }
-   ],
+   "wb": [],
    "kandidat_dalam_radius": 300
   },
   {
@@ -913,30 +734,7 @@
     "UR-CSN"
    ],
    "patroli": [],
-   "wb": [
-    {
-     "lat": -3.29639,
-     "lon": 114.49472,
-     "skor": 3.2,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "PK-RTQ",
-      "lokasi_laporan": "Tinggiran Tengah Batola",
-      "luas_klaim_ha": 1.0,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 03° 17' 47\"  E 114° 29' 41\"",
-     "radial": 117,
-     "jarak_vor_nm": 103,
-     "rujukan": "SMQ (base, VOR tidak diseed)",
-     "rd": "R 117 D 103 Nm Fr SMQ (base, VOR tidak diseed)",
-     "dari_base_nm": 103,
-     "tempat": "Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala",
-     "udara": "tidak tersedia",
-     "urut": 1
-    }
-   ],
+   "wb": [],
    "kandidat_dalam_radius": 210
   },
   {
@@ -956,52 +754,7 @@
     "HA-5235"
    ],
    "patroli": [],
-   "wb": [
-    {
-     "lat": -2.84278,
-     "lon": 110.66917,
-     "skor": 4.6,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "VN-8416",
-      "lokasi_laporan": "Air Hitam Besar",
-      "luas_klaim_ha": 8.0,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 02° 50' 34\"  E 110° 40' 09\"",
-     "radial": 285,
-     "jarak_vor_nm": 116,
-     "rujukan": "KLP (base, VOR tidak diseed)",
-     "rd": "R 285 D 116 Nm Fr KLP (base, VOR tidak diseed)",
-     "dari_base_nm": 116,
-     "tempat": "Kec. Kendawangan, Kab. Ketapang",
-     "udara": "tidak tersedia",
-     "urut": 1
-    },
-    {
-     "lat": -3.29639,
-     "lon": 114.49472,
-     "skor": 3.2,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "PK-RTQ",
-      "lokasi_laporan": "Tinggiran Tengah Batola",
-      "luas_klaim_ha": 1.0,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 03° 17' 47\"  E 114° 29' 41\"",
-     "radial": 87,
-     "jarak_vor_nm": 117,
-     "rujukan": "KLP (base, VOR tidak diseed)",
-     "rd": "R 087 D 117 Nm Fr KLP (base, VOR tidak diseed)",
-     "dari_base_nm": 117,
-     "tempat": "Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala",
-     "udara": "tidak tersedia",
-     "urut": 2
-    }
-   ],
+   "wb": [],
    "kandidat_dalam_radius": 115
   },
   {
@@ -1259,52 +1012,7 @@
      "urut": 8
     }
    ],
-   "wb": [
-    {
-     "lat": -3.29639,
-     "lon": 114.49472,
-     "skor": 3.2,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "PK-RTQ",
-      "lokasi_laporan": "Tinggiran Tengah Batola",
-      "luas_klaim_ha": 1.0,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 03° 17' 47\"  E 114° 29' 41\"",
-     "radial": 300,
-     "jarak_vor_nm": 16,
-     "rujukan": "VOR BDM",
-     "rd": "R 300 D 16 Nm Fr VOR BDM",
-     "dari_base_nm": 18,
-     "tempat": "Desa Tinggiran Tengah, Kec. Mekarsari, Kab. Barito Kuala",
-     "udara": "tidak tersedia",
-     "urut": 1
-    },
-    {
-     "lat": -3.33583,
-     "lon": 114.83333,
-     "skor": 3.04,
-     "alasan": {
-      "temuan": "fs",
-      "oleh": "PK-RTQ",
-      "lokasi_laporan": "Sungai Batang Banjar",
-      "luas_klaim_ha": 0.2,
-      "jarak_sumber_air": "tidak tersedia (data air hanya Kalsel, public/data/osm/63.json)"
-     },
-     "jenis": "wb",
-     "dms": "S 03° 20' 09\"  E 114° 50' 00\"",
-     "radial": 45,
-     "jarak_vor_nm": 9,
-     "rujukan": "VOR BDM",
-     "rd": "R 045 D 9 Nm Fr VOR BDM",
-     "dari_base_nm": 8,
-     "tempat": "Desa Sungai Batang Ilir, Kec. Martapura Barat, Kab. Banjar",
-     "udara": "tidak tersedia",
-     "urut": 2
-    }
-   ],
+   "wb": [],
    "kandidat_dalam_radius": 137
   },
   {

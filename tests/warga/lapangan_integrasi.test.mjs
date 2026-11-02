@@ -3,7 +3,7 @@
    Tabel migrasi 0101 (orang_keahlian, lp_logbook_kit) dan pelebaran CHECK pengingat dibuat sementara di sini BILA belum ada di migrations/. Tiap kelas penolakan punya kasusnya. */
 import assert from "node:assert/strict";
 import "../../src/worker.js";
-import {siapkan, berantai, sha256} from "./_bnpb.mjs";
+import {siapkan, berantai, sha256, ADMIN} from "./_bnpb.mjs";
 import {badanPanjang} from "./_bantu.mjs";
 import {buatPengingat} from "../../src/pengingat.js";
 import {arsipkanSitrep} from "../../src/sitrep.js";
@@ -17,10 +17,6 @@ const TITIK = {lat: -2.55, lon: 112.9};
 const ada = async (nama, pola) => { const r = await DB.prepare("SELECT sql FROM sqlite_master WHERE name = ?").bind(nama).first(); return !!r && (!pola || r.sql.includes(pola)); };
 if (!await ada("orang_keahlian")) await DB.exec("CREATE TABLE orang_keahlian (orang_id TEXT NOT NULL REFERENCES orang (id) ON DELETE CASCADE, keahlian TEXT NOT NULL, bukti TEXT, dibuat INTEGER NOT NULL, PRIMARY KEY (orang_id, keahlian))");
 if (!await ada("lp_logbook_kit")) await DB.exec("CREATE TABLE lp_logbook_kit (logbook_id TEXT NOT NULL REFERENCES lp_logbook (id) ON DELETE CASCADE, kit_id TEXT NOT NULL, jumlah INTEGER NOT NULL DEFAULT 1, PRIMARY KEY (logbook_id, kit_id))");
-if (!await ada("pengingat", "lapangan_absen")) {   // pola 0088: CHECK tak bisa di-ALTER
-  const def = (await DB.prepare("SELECT sql FROM sqlite_master WHERE name = 'pengingat'").first()).sql.replace("'sensor_lapor')", "'sensor_lapor', 'lapangan_absen', 'lapangan_logbook')");
-  await DB.exec("CREATE TABLE pengingat_cad AS SELECT * FROM pengingat; DROP TABLE pengingat; " + def.replace(/\n/g, " ") + "; INSERT INTO pengingat SELECT * FROM pengingat_cad; DROP TABLE pengingat_cad");
-}
 
 let nId = 0;
 const id16 = () => (0xb000000000000000n + BigInt(++nId)).toString(16);
@@ -112,11 +108,30 @@ uji("logbook: kit (LP-043) dan genangan ke prediksi (LP-045); kit tugas lain, ju
   assert.equal(await U.n("lp_logbook"), 0, "penolakan tidak menulis"); assert.equal(await U.n("lp_logbook_kit"), 0); assert.equal(await U.n("prediksi_konfirmasi", "kode_regu LIKE 'lp:%'"), 0);
   const ok = await logbook(BUDI.kode, D({kit: [{kit_id: KIT_A, jumlah: 2}, {nama: "sippa-001", jumlah: 3}]}), [jpeg()]); assert.equal(ok.s, 201, ok.t); assert.equal(ok.j.kit, 1, "kit_id dan nama yang sama = satu butir");
   assert.deepEqual((await baris("lp_logbook_kit", `logbook_id = '${ok.j.id}'`)).map(x => [x.kit_id, x.jumlah]), [[KIT_A, 3]]);
+  /* terverifikasi tidak pernah diberikan saat unggah (klaim klien); prediksi baru terisi sesudah peninjau menandai label */
+  const labelId = async lb => (await baris("lapangan_label", `sumber_id = '${lb}' AND jenis = 'banjir'`))[0];
+  const tanda = (id, h = ADMIN) => api("POST", `/api/petugas/panel/label/${id}`, {}, h);
+  let lbl = await labelId(ok.j.id); assert.equal(lbl.terverifikasi, 0, "foto bergeotag + EXIF klaim klien tetap belum terverifikasi");
+  assert.equal(await U.n("prediksi_konfirmasi", "kode_regu LIKE 'lp:%'"), 0, "unggah saja tidak menulis prediksi");
+  assert.equal((await U.api("POST", `/api/petugas/panel/label/${lbl.id}`, {}, ADMIN)).s, 403, "tanpa x-pb");
+  assert.equal((await tanda(lbl.id, K(BUDI.kode))).s, 403, "petugas tidak menandai labelnya sendiri");
+  assert.equal((await tanda("f".repeat(16))).s, 404);
+  /* tugas tanpa kab yang bisa ditentukan (wilayah_teks kosong): ditandai, tetapi prediksi dilewati */
+  let t1 = await tanda(lbl.id); assert.equal(t1.s, 200, t1.t); assert.equal(t1.j.konfirmasi, false);
+  assert.equal((await labelId(ok.j.id)).terverifikasi, 1); assert.equal(await U.n("prediksi_konfirmasi", "kode_regu LIKE 'lp:%'"), 0, "kab tugas tak bisa ditentukan = lewati");
+  assert.equal((await tanda(lbl.id)).s, 409, "tanda ulang");
+  /* wilayah_teks tugas menyebut kab orang: kirim ulang (label direset) lalu tandai */
+  await DB.prepare("UPDATE lp_tugas SET wilayah_teks = 'Kab. Seruyan, Kalimantan Tengah' WHERE id = ?").bind(TUGAS).run();
+  const ulang = await logbook(BUDI.kode, D(), [jpeg()]); assert.equal(ulang.s, 200, ulang.t);
+  lbl = await labelId(ok.j.id); assert.equal(lbl.terverifikasi, 0, "kirim ulang mereset tanda");
+  t1 = await tanda(lbl.id); assert.equal(t1.j.konfirmasi, true, t1.t);
   let [p] = await baris("prediksi_konfirmasi", "kode_regu LIKE 'lp:%'");
   assert.deepEqual([p.kab, p.tanggal, p.kode, p.terjadi, p.nilai, p.sumber, p.kode_regu], ["Seruyan", hari(), "BNJ", 1, 45, "regu", "lp:" + BUDI.id]);
-  /* ubah di hari yang sama: kit diganti, prediksi ditimpa (bukan baris kedua); tanpa field kit = kit tidak berubah */
+  /* ubah di hari yang sama: kit diganti, prediksi ditimpa (bukan baris kedua) sesudah tanda baru; tanpa field kit = kit tidak berubah */
   const u1 = await logbook(BUDI.kode, D({kondisi: {tinggi_genangan_cm: 0}}), [jpeg()]); assert.equal(u1.s, 200, u1.t); assert.equal(u1.j.kit, undefined);
   assert.equal(await U.n("lp_logbook_kit"), 1, "tanpa kit = tidak diubah");
+  [p] = await baris("prediksi_konfirmasi", "kode_regu LIKE 'lp:%'"); assert.deepEqual([p.terjadi, p.nilai], [1, 45], "belum ditandai: prediksi lama utuh");
+  assert.equal((await tanda((await labelId(ok.j.id)).id)).s, 200);
   [p] = await baris("prediksi_konfirmasi", "kode_regu LIKE 'lp:%'"); assert.deepEqual([p.terjadi, p.nilai], [0, 0]); assert.equal(await U.n("prediksi_konfirmasi", "kode_regu LIKE 'lp:%'"), 1);
   const u2 = await logbook(BUDI.kode, D({kit: [], kondisi: {}, foto_meta: []})); assert.equal(u2.s, 200); assert.equal(await U.n("lp_logbook_kit"), 0, "kit: [] mengosongkan");
   /* tanpa foto bergeotag di radius = tidak terverifikasi = tidak masuk prediksi */
@@ -127,6 +142,17 @@ uji("logbook: kit (LP-043) dan genangan ke prediksi (LP-045); kit tugas lain, ju
   const rg = await logbook(null, D({foto_meta: []}), [], {"x-kode-regu": REGU.kode}); assert.equal(rg.s, 404, "regu bukan anggota tugas");
   await DB.prepare("INSERT INTO lp_anggota (tugas_id, orang_id, peran) VALUES (?, ?, 'anggota')").bind(TUGAS, REGU.id).run();
   const rg2 = await logbook(null, D({foto_meta: []}), [], {"x-kode-regu": REGU.kode}); assert.equal(rg2.s, 201, rg2.t);
+});
+
+uji("x-kode-regu hanya untuk logbook (temuan pengulas): daftar wajah, hapus wajah, persetujuan, nonce, dan absen 403; tautan pribadi untuk orang regu 409", async () => {
+  const R = {"x-kode-regu": REGU.kode};
+  for (const [m, j, b] of [["POST", "/api/petugas/setuju", {versi: "x", setuju: true}], ["POST", "/api/petugas/wajah", {}], ["DELETE", "/api/petugas/wajah", undefined], ["POST", "/api/petugas/nonce", {jumlah: 1}], ["POST", "/api/petugas/absen", {}]]) {
+    const r = await api(m, j, b, R); assert.equal(r.s, 403, `${m} ${j}: ${r.t}`); assert.match(r.j.galat, /kode regu/);
+  }
+  assert.equal(await U.n("orang_wajah", `orang_id = '${REGU.id}'`), 0); assert.equal(await U.n("lp_absen", `orang_id = '${REGU.id}'`), 0); assert.equal(await U.n("orang_setuju", `orang_id = '${REGU.id}'`), 0);
+  assert.equal((await api("GET", "/api/petugas/saya", undefined, R)).s, 200, "profil tetap bisa dibaca");
+  const t = await api("POST", `/api/petugas/panel/tautan/${REGU.id}`, {}, ADMIN); assert.equal(t.s, 409, t.t); assert.match(t.j.galat, /regu/);
+  assert.equal(await U.n("orang", `id = '${REGU.id}' AND kode_sha IS NULL`), 1, "kode pribadi tidak terpasang pada orang regu");
 });
 
 uji("pengingat (LP-044): absen sesudah 10.00 WIB, logbook sesudah 20.00 WIB, satu baris per tugas per hari, hilang bila sudah terisi", async () => {

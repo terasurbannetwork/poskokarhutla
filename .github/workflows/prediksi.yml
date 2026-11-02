@@ -29,7 +29,7 @@ jobs:
 
       - name: Uji mandiri
         run: |
-          for s in catat nilai kalibrasi koreksi terbit; do python3 scripts/prediksi/$s.py uji; done
+          for s in catat konfirmasi nilai kalibrasi koreksi terbit dampak jalan; do python3 scripts/prediksi/$s.py uji; done
 
       # Masukan segar dari situs live: banjir.yml/titik.yml/udara.yml menerbitkan data ini tanpa meng-commit,
       # jadi salinan di git basi. Hanya ditimpa di runner; commit di bawah cuma public/prediksi/data.
@@ -43,13 +43,23 @@ jobs:
               || echo "::warning::$f gagal ditarik, pakai salinan git"
           done
 
+      # PIPA_TOKEN kosong/401/503 = konfirmasi lapangan dilewati dengan log (nilai.py tidak gagal)
       - name: Catat, nilai, kalibrasi, terbit
+        env:
+          PIPA_TOKEN: ${{ secrets.PIPA_TOKEN }}
         run: |
           python3 scripts/prediksi/catat.py
           python3 scripts/prediksi/nilai.py
           python3 scripts/prediksi/kalibrasi.py
           python3 scripts/prediksi/koreksi.py
           python3 scripts/prediksi/terbit.py
+          python3 scripts/prediksi/dampak.py
+
+      # Ruas jalan tunggal OSM, 15 kab per hari bergilir (yang belum/terlama dulu); Overpass publik sering 502/504, gagal = dicoba lagi besok
+      - name: Giliran ruas jalan tunggal
+        continue-on-error: true
+        timeout-minutes: 15
+        run: python3 scripts/prediksi/jalan.py giliran --maks 15
 
       - name: Commit data prediksi
         run: |

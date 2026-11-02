@@ -29,3 +29,4 @@
 .pr-bar{flex:1;min-height:2px;background:var(--ink2);opacity:.55;border-radius:2px 2px 0 0}
 .pr-bar.ini{background:var(--accent,var(--ink));opacity:1}
 .pr-bar:hover,.pr-bar:focus{opacity:1;outline:1px solid var(--ink)}
+.pr-k ol{margin:.3rem 0 0;padding-left:1.2rem}

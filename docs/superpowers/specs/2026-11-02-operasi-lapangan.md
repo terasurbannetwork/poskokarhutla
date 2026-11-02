@@ -116,7 +116,7 @@ dikurangi `clear terkonfirmasi`. Bobot di satu berkas JSON berlabel **hipotesis*
 - Maksimal 8 target patroli berurut tetangga terdekat dari base, dalam radius jelajah (bawaan 120 Nm, diatur per tipe).
 - Maksimal 3 target WB (FS terkonfirmasi berasap) dengan jarak ke sumber air.
 - Tiap target ditulis dalam **format yang sudah mereka pakai**: nama desa/kec/kab, `S 00° 06' 04"  E 109° 35' 34"`, `R 095 D 13 Nm Fr VOR PNK`.
-  Radial memakai arah sebenarnya plus deklinasi magnetik WMM pada tanggal itu (Indonesia sekitar 0–1°), dicatat di kaki renlap.
+  Radial magnetik = baringan benar dikurangi deklinasi timur (Indonesia sekitar 0–1°, sementara tetap 0,5° per base, berlabel perkiraan), dicatat di kaki renlap.
 - Catatan per target: prakiraan jarak pandang pagi, hotspot terakhir (jam, satelit), status 48 jam terakhir.
 - Disusun 20.00 WIB, diperbarui 05.30 WIB setelah lintasan malam (VIIRS/NOAA-20). Versi pagi menggantikan versi malam, keduanya disimpan.
 

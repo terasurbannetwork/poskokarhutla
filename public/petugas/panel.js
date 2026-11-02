@@ -68,7 +68,7 @@ async function muatOrang() {
   if (!baris.length) { kotak.innerHTML = `<p class="lp-kecil lp-tengah">${total || q || jenis || keahlianPilih ? "Tidak ada yang cocok dengan pencarianmu." : "Belum ada data induk. Impor CSV pegawai di atas."}</p>`; return; }
   const maju = hal * ukuran < total;
   kotak.innerHTML = `<div class="lp-gulir"><table class="lp-tabel"><thead><tr><th>Nama</th><th>NIP</th><th>Unit</th><th>Jabatan</th><th>Jenis</th><th>Keahlian</th><th>Status wajah</th><th>Aksi</th></tr></thead><tbody>
-    ${baris.map(o => { const w = statusWajah(o.wajah_status); return `<tr data-id="${esc(o.id)}"><td><b>${esc(o.nama)}</b></td><td class="num">${esc(o.nip || "-")}</td><td>${esc(o.unit || "-")}</td><td>${esc(o.jabatan || "-")}</td><td>${esc(labelJenis(o.jenis))}</td><td>${keahlianOrang(o).map(k => `<span class="lp-pil" data-k="${esc(k)}">${esc(keahlianItem(k).label)}</span>`).join(" ") || "-"}</td><td class="lp-tengah"><span class="lp-pil ${w.kelas}">${esc(w.label)}</span></td><td><div class="lp-baris"><button class="lp-tbl" type="button" data-kirim="${esc(o.id)}">Kirim tautan</button>${punyaSuper ? `<button class="lp-tbl" type="button" data-kelola="${esc(o.id)}" aria-expanded="false">Kelola keahlian</button>` : ""}</div></td></tr>`; }).join("")}
+    ${baris.map(o => { const w = statusWajah(o.wajah_status); return `<tr data-id="${esc(o.id)}"><td><b>${esc(o.nama)}</b></td><td class="num">${esc(o.nip || "-")}</td><td>${esc(o.unit || "-")}</td><td>${esc(o.jabatan || "-")}</td><td>${esc(labelJenis(o.jenis))}</td><td data-keahlian>${keahlianOrang(o).map(k => `<span class="lp-pil" data-k="${esc(k)}">${esc(keahlianItem(k).label)}</span>`).join(" ") || "-"}</td><td class="lp-tengah"><span class="lp-pil ${w.kelas}">${esc(w.label)}</span></td><td><div class="lp-baris"><button class="lp-tbl" type="button" data-kirim="${esc(o.id)}">Kirim tautan</button>${punyaSuper ? `<button class="lp-tbl" type="button" data-kelola="${esc(o.id)}" aria-expanded="false">Kelola keahlian</button>` : ""}</div></td></tr>`; }).join("")}
   </tbody></table></div>
   <div class="lp-halaman"><button class="lp-tbl" id="lpMundur" type="button" ${hal > 1 ? "" : "disabled"}>Sebelumnya</button><span class="lp-kecil num">${angka(total)} orang, halaman ${angka(hal)}</span><button class="lp-tbl" id="lpMaju" type="button" ${maju ? "" : "disabled"}>Berikutnya</button></div>`;
   $("lpMundur").addEventListener("click", () => { hal--; muatOrang(); });
@@ -94,13 +94,13 @@ const punyaOrang = new Map();   // id -> keahlian[] terkini
 function bukaKelola(b) {
   const tr = b.closest("tr"), id = b.dataset.kelola, lama = tr.nextElementSibling?.querySelector("[data-orang]") ? tr.nextElementSibling : null;
   if (lama) { lama.remove(); b.setAttribute("aria-expanded", "false"); return; }
-  const punya = punyaOrang.get(id) ?? [...tr.children[5].querySelectorAll(".lp-pil")].map(x => x.dataset.k).filter(Boolean);
+  const punya = punyaOrang.get(id) ?? [...tr.querySelector("[data-keahlian]").querySelectorAll(".lp-pil")].map(x => x.dataset.k).filter(Boolean);
   punyaOrang.set(id, punya);
   tr.insertAdjacentHTML("afterend", kelolaBaris({id, nama: tr.querySelector("b").textContent}, punya)); b.setAttribute("aria-expanded", "true");
 }
 function cacahKeahlian(tr, id, k, ada) {
   const s = new Set(punyaOrang.get(id) ?? []); ada ? s.add(k) : s.delete(k); punyaOrang.set(id, [...s]);
-  tr.children[5].innerHTML = [...s].map(x => `<span class="lp-pil" data-k="${esc(x)}">${esc(keahlianItem(x).label)}</span>`).join(" ") || "-";
+  tr.querySelector("[data-keahlian]").innerHTML = [...s].map(x => `<span class="lp-pil" data-k="${esc(x)}">${esc(keahlianItem(x).label)}</span>`).join(" ") || "-";
 }
 
 /* ---------- mulai ---------- */

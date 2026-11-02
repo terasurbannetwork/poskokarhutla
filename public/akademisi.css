@@ -2474,3 +2474,14 @@ button.ak-pnl{cursor:pointer}button.ak-pnl:hover{border-color:var(--brand2)}
 .ak-pilar-g{display:grid;grid-template-columns:repeat(auto-fit,minmax(260px,1fr));gap:14px}
 .ak-pilar h4{display:flex;align-items:center;gap:6px;margin:0 0 6px;font-size:13px;color:var(--w0)}
 .ak-pilar .ak-ikon{width:16px;height:16px}
+
+/* analisa keahlian di profil pakar: label kiri, pil kanan; pil bisa diklik untuk karya bukti */
+.ak-kh-baris{display:grid;grid-template-columns:150px 1fr;gap:10px;align-items:start;padding:8px 0;border-bottom:1px solid var(--line)}
+.ak-kh-baris:last-of-type{border-bottom:0}
+.ak-kh-lbl{font-size:12px;font-weight:700;color:var(--ink2);padding-top:5px}
+.ak-kh-tren{margin:0;font-size:13px;line-height:1.6;color:var(--ink)}
+button.ak-r[data-kh]{border:1px solid transparent;cursor:pointer;font:inherit;font-size:12px;font-weight:600}
+button.ak-r[data-kh] small{font-weight:800;color:var(--ink2)}
+button.ak-r[data-kh][aria-pressed="true"]{border-color:var(--w0,var(--brand2));box-shadow:0 0 0 2px color-mix(in oklab,var(--w0,var(--brand2)) 25%,transparent)}
+.ak-kh-bukti{margin-top:8px}
+@media (max-width:640px){.ak-kh-baris{grid-template-columns:1fr;gap:4px}}
