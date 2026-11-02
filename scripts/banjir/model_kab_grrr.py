@@ -9,6 +9,8 @@ Pakai:  python3 scripts/banjir/model_kab_grrr.py fitur     fitur GRRR per kab-ha
         python3 scripts/banjir/model_kab_grrr.py uji       swauji tanpa jaringan
         python3 scripts/banjir/model_kab_grrr.py latih [--ulang "<alasan galat teknis>"]   JANGAN sebelum PRAREG-GRRR ditinjau
         python3 scripts/banjir/model_kab_grrr.py sia | buka   Uji A (2024) / Uji A+B (2024-2025), SEKALI
+        python3 scripts/banjir/model_kab_grrr.py bergulir  uji bergulir per tahun 2020-2025 (deskriptif) -> bergulir.json (sesudah buka)
+        python3 scripts/banjir/model_kab_grrr.py final     M3G final 2016-2025 + kalibrasi luar-lipat -> final.json (sesudah buka)
 """
 import ast, datetime as dt, gzip, hashlib, json, math, os, random, struct, sys, time, zipfile
 from array import array
@@ -625,6 +627,140 @@ def buka():
                      "sha256_label_A": HU.sha_berkas_j(HU.J("label_A.json")), "sha256_label_B": HU.sha_berkas_j(HU.J("label_B.json"))})
 
 
+# ---------------------------------------------------------------- bergulir dan final (SESUDAH vonis; deskriptif, bukan gerbang)
+# Tidak menyentuh gerbang sia/buka, jejak .sidik, kandidat/sia/buka.json. Hanya membaca kandidat.json (resep, hiperparameter, kelompok).
+J_BERGULIR, J_FINAL = os.path.join(KELUAR, "bergulir.json"), os.path.join(KELUAR, "final.json")
+LIPAT_FINAL = [(a, a + 1) for a in range(2016, 2026, 2)]      # 5 lipat per dua tahun penuh
+
+
+def desil(p, y, k=10):
+    """Tabel kalibrasi: k kelompok berisi sama banyak (urut p). -> [{n, kej, p_rata, frekuensi, p_min, p_maks}]."""
+    urut = sorted(range(len(p)), key=lambda i: p[i])
+    out = []
+    for j in range(k):
+        ix = urut[j * len(p) // k:(j + 1) * len(p) // k]
+        if ix:
+            out.append({"n": len(ix), "kej": sum(y[i] for i in ix), "p_rata": round(sum(p[i] for i in ix) / len(ix), 5),
+                        "frekuensi": round(sum(y[i] for i in ix) / len(ix), 5), "p_min": round(p[ix[0]], 5), "p_maks": round(p[ix[-1]], 5)})
+    return out
+
+
+def data_semua():
+    """Semua bahan baris untuk bergulir/final (label penuh DIBI 2016-2025 + logbook latih). Tidak menulis berkas."""
+    kabs, sel, sk = HU.muat_sampel_h()
+    basin_kab = json.load(open(HU.BASIN))["kab"]
+    baris = json.load(open(DIBI_ASLI))
+    baris = [r for r in baris if r[3] <= "2025-12-31"]
+    ev = ub.peristiwa(baris)
+    cuaca = MK.muat_cuaca(sel)
+    ch, _ = HU.muat_chirps(HU.sel_dibutuhkan(), HU.AKHIR_LATIH)
+    info = HU.info_kab(sk, basin_kab, HU.sel_valid(ch))
+    lb, tercakup = HU.baca_label_bersatu()
+    ev_l, _ = HU.label_latih(ev, set(kabs), lb, tercakup)
+    return {"kabs": kabs, "sel": sel, "sk": sk, "baris": baris, "ev": ev, "ev_l": ev_l, "cuaca": cuaca, "ch": ch, "info": info, "F": muat_fitur(),
+            "awal": MK.laju_awal(baris, kabs)}
+
+
+def siap_latih(D, latih_th):
+    """Atur MK.LATIH = latih_th lalu hitung bahan yang bergantung pada tahun latih (frekuensi, persentil, klimatologi). Mengubah MK.LATIH di proses ini."""
+    MK.LATIH = latih_th
+    D["penuh"], D["eks"] = MK.frekuensi(D["ev"], D["kabs"], D["awal"])
+    D["pers"] = MK.persentil_batas(D["cuaca"])
+    D["batas"] = HU.batas_chirps(D["ch"], MK.hari_tahun(MK.LATIH))
+    D["klim"] = MK.klimatologi(D["ev"], D["kabs"], D["penuh"])
+
+
+def bangun_th(D, tahun, ev):
+    return bangun_g(D, tahun, ev)[0]
+
+
+def latih_pohon(TR, aktif_, hiper, biji):
+    return G.latih_gbdt(TR["X"], TR["y"], [1.0] * len(TR["y"]), pohon=hiper["pohon"], dalam=hiper["dalam"], lr=hiper["lr"], fitur_aktif=aktif_,
+                        **{**MK.HIPER_TETAP, "seed": biji})
+
+
+def bergulir():
+    """Uji bergulir DESKRIPTIF (bukan konfirmasi): tiap tahun T di 2020..2025, pohon dilatih 2016..T-2 (label gabungan seperti kandidat), Platt 5 biji pada
+    tahun T-1 saja (satu tahun validasi, kandidat memakai dua), dinilai di T. Resep (kelompok, fitur aktif, hiperparameter per model) = kandidat.json."""
+    terpasang()
+    kand = json.load(open(HU.J("kandidat.json")))
+    assert kand["jenis"] == "gbdt", "bergulir hanya untuk resep GBDT"
+    D = data_semua()
+    lat0, hasil, t0 = MK.LATIH, {}, time.time()
+    try:
+        for T in range(2020, 2026):
+            siap_latih(D, range(2016, T - 1))
+            TR, VA, TE = bangun_th(D, MK.LATIH, D["ev_l"]), bangun_th(D, [T - 1], D["ev"]), bangun_th(D, [T], D["ev"])
+            assert max(TR["tahun"]) == T - 2 and set(VA["tahun"]) == {T - 1} and set(TE["tahun"]) == {T}, "bergulir: tahun latih/Platt/uji bocor"
+            pk = MK.platt([MK.logit(D["klim"][f"{k}|{m}"]) for k, m in zip(VA["kab"], VA["bulan"])], VA["y"])
+            ref = HU.p_klim_dari(TE, D["klim"], pk)
+            P = {}
+            for n in ("M3", "M3G"):
+                h, ak = kand[n]["hiper"], kand[n]["aktif"]
+                ang = []
+                for b in HU.BIJI_MODEL:
+                    m = latih_pohon(TR, ak, h, b)
+                    ang.append({"bias": m["bias"], "pohon": m["pohon"], "platt": MK.platt(MK.skor_gbdt(m, VA["X"]), VA["y"])})
+                P[n] = HU.prediksi_h({"jenis": "gbdt", "aktif": ak, "hiper": h, "anggota": ang}, TE["X"])
+            y, ns = TE["y"], HU.n_alarm(TE)
+            br = {n: G.brier(p, y) for n, p in list(P.items()) + [("ref", ref)]}
+            ets = {n: HU.ets_t(MK.kontingensi(MK.alarm_sebanyak(P[n], ns["waspada"]), y, range(len(y)))) for n in P}
+            hasil[str(T)] = {"latih_tahun": [MK.LATIH[0], MK.LATIH[-1]], "platt_tahun": T - 1, "n_latih": len(TR["y"]), "kej_latih": sum(TR["y"]),
+                             "n": len(y), "kej": sum(y), "kab": len(set(TE["kab"])), "auc": {n: G.auc(p, y) for n, p in P.items()}, "brier": br,
+                             "dbss_M3G_M3": (br["M3"] - br["M3G"]) / br["ref"], "dets_waspada_M3G_M3": ets["M3G"] - ets["M3"], "ets_waspada": ets}
+            print(f"bergulir {T}: {json.dumps(hasil[str(T)])} ({time.time() - t0:.0f} dtk)", flush=True)
+    finally:
+        MK.LATIH = lat0
+    json.dump({"dibuat": dt.datetime.now().isoformat(timespec="minutes"), "sidik_kandidat": kand["sidik"],
+               "catatan": "DESKRIPTIF, bukan uji konfirmasi; Q2 GRRR tetap dari <= 2021 (fitur.json.gz, tanpa label) untuk semua T; satu tahun Platt (T-1)",
+               "per_tahun": hasil}, open(J_BERGULIR, "w"), indent=1)
+    print("bergulir.json ditulis")
+
+
+def final():
+    """Model akhir M3G (resep kandidat) pada 2016-2025: pohon 5 biji pada seluruh baris (label gabungan), Platt tiap biji pada logit LUAR-LIPAT
+    (5 lipat per dua tahun, label DIBI seperti Platt kandidat). Tabel kalibrasi dari peluang luar-lipat."""
+    terpasang()
+    kand = json.load(open(HU.J("kandidat.json")))
+    assert kand["jenis"] == "gbdt"
+    D = data_semua()
+    lat0, t0 = MK.LATIH, time.time()
+    try:
+        siap_latih(D, range(2016, 2026))
+        L, Dd = bangun_th(D, MK.LATIH, D["ev_l"]), bangun_th(D, MK.LATIH, D["ev"])
+        assert L["kab"] == Dd["kab"] and L["e"] == Dd["e"]
+        h, ak, y = kand["M3G"]["hiper"], kand["M3G"]["aktif"], Dd["y"]
+        oof = {b: [0.0] * len(y) for b in HU.BIJI_MODEL}
+        for a, z in LIPAT_FINAL:
+            tr = [i for i, t in enumerate(L["tahun"]) if t not in (a, z)]
+            te = [i for i, t in enumerate(L["tahun"]) if t in (a, z)]
+            TRk, TEk = sub(L, tr), sub(L, te)
+            for b in HU.BIJI_MODEL:
+                for i, v in zip(te, MK.skor_gbdt(latih_pohon(TRk, ak, h, b), TEk["X"])):
+                    oof[b][i] = v
+            print(f"final lipat {a}-{z} selesai ({time.time() - t0:.0f} dtk)", flush=True)
+        ang, po = [], []
+        for b in HU.BIJI_MODEL:
+            pl = MK.platt(oof[b], y)
+            m = latih_pohon(L, ak, h, b)
+            ang.append({"bias": m["bias"], "pohon": m["pohon"], "platt": pl})
+            po.append(MK.pakai_platt(pl, oof[b]))
+        p = [sum(c) / len(c) for c in zip(*po)]
+        pk = [D["klim"][f"{k}|{m}"] for k, m in zip(Dd["kab"], Dd["bulan"])]
+        out = {"dibuat": dt.datetime.now().isoformat(timespec="minutes"), "versi": "model-kab-grrr-final-1", "sidik_kandidat": kand["sidik"],
+               "status": "MODEL REANALISIS (prakiraan sempurna), BELUM operasional; bukan pengganti status.py",
+               "latih": [2016, 2025], "n": len(y), "kej": sum(y), "kej_label_latih": sum(L["y"]), "kab": sorted(set(Dd["kab"])),
+               "model": {"jenis": "gbdt", "aktif": ak, "hiper": h, "anggota": ang}, "fitur": FITUR, "frek": D["penuh"],
+               "kalibrasi_luar_lipat": {"lipat": LIPAT_FINAL, "catatan": "Platt tiap biji dipasang pada logit luar-lipat seluruh baris (2 parameter); peluang = rerata 5 biji; label = DIBI",
+                                        "auc": G.auc(p, y), "brier": G.brier(p, y), "logloss": G.logloss(p, y), "brier_klimatologi_mentah": G.brier(pk, y), "desil": desil(p, y)}}
+        json.dump(out, open(J_FINAL, "w"), separators=(",", ":"))
+        print(f"final: n={len(y)} kej={sum(y)} AUC {out['kalibrasi_luar_lipat']['auc']:.4f} Brier {out['kalibrasi_luar_lipat']['brier']:.5f} ({time.time() - t0:.0f} dtk)")
+        for r in out["kalibrasi_luar_lipat"]["desil"]:
+            print("  ", r)
+    finally:
+        MK.LATIH = lat0
+
+
 # ---------------------------------------------------------------- uji (tanpa jaringan)
 def _npy(descr, shape, data):
     h = repr({"descr": descr, "fortran_order": False, "shape": shape}).encode()
@@ -820,6 +956,9 @@ def uji():
             (data_uji, prediksi_uji, hash_jendela, sekunder, DIBI_ASLI, HU.KELUAR, HU.SIDIK_JEJAK, HU.JEJAK_REPO, HU.sidik_penuh, HU.cek_kelengkapan,
              HU.SIA_DARI, HU.BUKA_DARI) = simpan
     assert HU.SIA_DARI == HU.BUKA_DARI == DARI and HU.KELUAR == KELUAR and HU.SAMPEL.startswith(HULU_DIR) and HU.J("x") == os.path.join(KELUAR, "x") and HU.DIBI_TGL == DIBI_ASLI
+    d = desil([i / 100 for i in range(100)], [1 if i >= 90 else 0 for i in range(100)])      # bergulir/final: tabel kalibrasi
+    assert len(d) == 10 and sum(r["n"] for r in d) == 100 and d[-1]["kej"] == 10 and d[0]["kej"] == 0 and d[3]["p_min"] < d[3]["p_maks"] < d[4]["p_min"]
+    assert sorted(t for lp in LIPAT_FINAL for t in lp) == list(range(2016, 2026))
     print("uji grrr: OK")
 
 
@@ -830,6 +969,8 @@ if __name__ == "__main__":
         uji()
     elif m == "fitur":
         fitur()
+    elif m in ("bergulir", "final"):
+        {"bergulir": bergulir, "final": final}[m]()
     elif m in ("latih", "sia", "buka"):
         ul = "--ulang" in sys.argv
         alasan = sys.argv[sys.argv.index("--ulang") + 1] if ul and len(sys.argv) > sys.argv.index("--ulang") + 1 else None
