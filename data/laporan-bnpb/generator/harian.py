@@ -28,7 +28,7 @@ AKRONIM = {'Kal. Barat': 'Kalbar', 'Kal. Tengah': 'Kalteng', 'Kal. Selatan': 'Ka
            'Sul. Selatan': 'Sulsel', 'Sul. Tenggara': 'Sultra', 'Sul. Barat': 'Sulbar', 'Papua Selatan': 'Papsel', 'Papua Barat': 'Pabar'}
 SINGKAT = {'Kep. Bangka Belitung': 'Kep. Babel', 'Nusa Tenggara Timur': 'NTT', 'Nusa Tenggara Barat': 'NTB', 'Papua Barat Daya': 'Papua Barat Daya',
            'Jawa Barat': 'Jabar', 'Jawa Tengah': 'Jateng', 'Jawa Timur': 'Jatim', 'DI Yogyakarta': 'DIY'}   # 27 Okt: lima provinsi Jawa berdesakan di peta
-JENIS_SINGKAT = {'gempabumi': 'gempa', 'karhutla': 'karhutla', 'banjir': 'banjir', 'angin': 'angin', 'cuaca': 'cuaca ekstrem', 'kekeringan': 'kekeringan', 'lainnya': 'kebakaran'}
+JENIS_SINGKAT = {'gempabumi': 'gempa', 'karhutla': 'karhutla', 'banjir': 'banjir', 'angin': 'angin', 'longsor': 'longsor', 'cuaca': 'cuaca ekstrem', 'kekeringan': 'kekeringan', 'lainnya': 'kebakaran'}
 angka_id = lambda t: float(t.replace('.', '').replace(',', '.'))
 PENDEK = lambda k: SINGKAT.get(NAMA[k]) or re.sub(r'^(Kalimantan|Sumatera|Sulawesi) ', lambda m: m.group(1)[:3] + '. ', NAMA[k])
 # kawasan yang dilaporkan BPBD tanpa nama kabupaten: kecamatan pembentuknya (sama dengan kotak kawasan paparan Jatim 231026)
@@ -38,7 +38,7 @@ KAWASAN = {'Gunung Argopuro': ['35|Probolinggo|Krucil', '35|Probolinggo|Tiris', 
            'Gunung Arjuno': ['35|Pasuruan|Prigen', '35|Pasuruan|Purwosari', '35|Malang|Singosari', '35|Malang|Lawang', '35|Malang|Karangploso',
                              '35|Kota Batu|Bumiaji', '35|Mojokerto|Gondang', '35|Mojokerto|Pacet', '35|Mojokerto|Trawas', '35|Mojokerto|Jatirejo']}
 JENIS_LAIN = {'gempabumi': ('Gempa bumi', 'gempa', SLATE, T_SLATE), 'lainnya': ('Kebakaran TPA', 'api', 'A23B2A', 'F5E1DD'), 'banjir': ('Banjir', 'banjir', '2F6FB5', 'DCE7F5'), 'angin': ('Angin kencang', 'angin', '0E7490', 'D5EEF2'),
-             'cuaca': ('Cuaca ekstrem', 'angin', '0E7490', 'D5EEF2')}   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
+             'cuaca': ('Cuaca ekstrem', 'angin', '0E7490', 'D5EEF2'), 'longsor': ('Tanah longsor', 'gunung', '8B5E34', 'F1E6DA')}   # 1 Nov: Simalungun   # 30 Okt: "Bencana Alam Cuaca Ekstrem" (Jombang, Tapin)
 WEB = ('peta_karhutla.json', 'peta_karhutla_kab.json', 'peta_karhutla_wil.json', 'harian30.json', 'kluster_awal.json')
 
 
@@ -281,7 +281,7 @@ class Deck:
         b2 = [muat('•  Masker dan layanan ISPA: ', kota)] if kota else ['•  Pemantauan kualitas udara di wilayah terdampak asap']
         ungsi = []
         for x in s.KJ:
-            m = re.search(r'([\d.]+)\s*jiwa\s*mengungsi', x.get('teks', {}).get('dampak', ''))
+            m = re.search(r'([\d.]+)\s*jiwa\s*mengungsi(?!\s*\(?sudah kembali)', x.get('teks', {}).get('dampak', ''))   # 1 Nov Langkat: sudah kembali = bukan pengungsi
             if m: ungsi.append((angka_id(m[1]), f"{JENIS_SINGKAT.get(x['jenis'], x['jenis'])} {PENDEK(x['prov']).replace('Kep. ', '')}"))
         if ungsi: b2.append('•  Pengungsi: ' + ', '.join(f"{t} ±{f0(n)}" for n, t in sorted(ungsi, reverse=True)[:2]) + ' jiwa')
         else: b2.append('•  PM2.5 tingkat Berbahaya (BMKG)' if kota else '•  Siaga evakuasi warga rentan di sekitar api')
@@ -300,7 +300,7 @@ class Deck:
 
     def detail(s, x):
         a = x['angka']
-        if x['jenis'] in ('gempabumi', 'banjir'):
+        if x['jenis'] in ('gempabumi', 'banjir', 'longsor'):
             pil = []
             if a.get('transisi_sd'):
                 d = dt.date.fromisoformat(a['transisi_sd']); pil.append((f'Transisi s.d. {d.day} {BULAN[d.month - 1][:3]}', T_ORG, ORG, 'kalender_oranye'))
@@ -559,7 +559,7 @@ class Deck:
                 continue
             if yy: yy += 54864
             lain += f'@{yy}@' + s.kotak(XL, 0, XR - XL, 182880, 'F3F5F8', 'roundRect', adj=30000) + s.kotak(XL + 45720, 18288, 146304, 146304, warna, 'ellipse') + s.gambar(XL + 73152, 45720, 91440, 91440, f'{ikon}_putih')
-            p_, _ = s.pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, {'gempa': 'gempa_slate', 'api': 'api_merah', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'daun': 'daun_k'}[ikon], sz=580, h=128016)
+            p_, _ = s.pil(XL + 300000 + len(nama) * 64000, 27432, f'{len(xs)} kejadian', tint, warna, {'gempa': 'gempa_slate', 'api': 'api_merah', 'banjir': 'banjir_navy', 'angin': 'angin_slate', 'gunung': 'gunung_kering', 'daun': 'daun_k'}[ikon], sz=580, h=128016)
             lain += s.tx(XL + 237744, 0, 1600000, 182880, [nama], sz=820, b=True, an='ctr', wrap='none') + p_ + '@@'
             yy += 182880 + 18288
             for x in xs:
