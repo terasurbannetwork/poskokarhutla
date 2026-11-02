@@ -15,6 +15,7 @@
     kebakaran: "M12 3c1 3-1 4-1 6 0 1.5 1 2 2 2 0-1 1-2 1-2 2 1.5 3 3.5 3 6a5 5 0 0 1-10 0c0-3 3-5 5-12z",
     logbook: "M6 3h12v18H6z|M9 8h6|M9 12h6|M9 16h3",
     siaga: "M12 3l8 3v6c0 5-3.5 8-8 9-4.5-1-8-4-8-9V6z|M9 12l2 2 4-4",
+    banjir: "M3 17c2 0 2-2 4.5-2S10 17 12 17s2.5-2 4.5-2S19 17 21 17|M3 21c2 0 2-2 4.5-2S10 21 12 21s2.5-2 4.5-2S19 21 21 21|M12 3c3 4 5 6.5 5 9a5 5 0 0 1-10 0c0-2.5 2-5 5-9z",
     panah: "M5 12h14|M13 6l6 6-6 6",
   };
   const svg = n => { const s = document.createElementNS(NS, "svg"); s.setAttribute("viewBox", "0 0 24 24"); s.setAttribute("aria-hidden", "true");
@@ -49,6 +50,8 @@
       return v ? [v.persen_min_sedang + "%", "daerah berkapasitas minimal sedang, target " + v.target + "%"] : null; }, null, "LAKIP BNPB 2025, Renstra BNPB 2025-2029, NDPBA"],
     ["logbook", "Logbook Pusdalops", "/bnpb/logbook.html", "logbook", async () => { const r = await ambil("/data/logbook_riwayat.json"); const n = Object.values(r?.nasional || {}).reduce((a, y) => a + Object.values(y).reduce((b, v) => b + v, 0), 0);
       return n ? [F(n), `kejadian dalam arsip logbook ${Object.keys(r.nasional).sort()[0]} sampai ${Object.keys(r.nasional).sort().pop()}`] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB"],
+    ["dalops", "Pantau Banjir Dalops", "/bnpb/dalops", "banjir", async () => { const r = await ambil("/api/dalops/banjir"); if (!r?.hari || !Array.isArray(r.kejadian)) return null;   // staf saja: tamu dapat 401 -> "belum ada data"
+      const awal = new Date(Date.parse(r.hari) - 6 * 864e5).toISOString().slice(0, 10); return [F(r.kejadian.filter(k => k.terakhir >= awal).length), "laporan banjir sepekan sampai logbook " + r.hari.split("-").reverse().join("/")]; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB, status banjir Centurisk97"],
     ["siaga", "Siaga pra-musim", "/bnpb/siaga.html", "siaga", async () => { const r = await ambil("/data/bnpb/siaga.json"); const n = Object.values(r?.kab || {}).filter(k => Object.keys(k.musim).length).length;
       return n ? [F(n), "kabupaten/kota punya musim bencana berulang"] : null; }, "untuk staf Pusdalops", "Logbook harian Pusdalops BNPB 2014–2020 dan 2024–2025"],
     ["meja", "Meja kerja", "/meja", "meja", async () => { const r = await ambil("/api/meja/ringkas"); return r?.meja ? [F(jumlah(r.meja)), "catatan lapangan"] : null; }, "untuk petugas BPBD"],
