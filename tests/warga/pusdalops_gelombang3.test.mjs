@@ -197,6 +197,16 @@ uji("wilayah: staf berwilayah 33 ditolak 403 di tutup/buat/lanjut kejadian provi
   assert.equal((await call("POST", "/api/pusdalops/medsos", STAF, {sumber: "medsos", tautan: "https://contoh.invalid/u/status/1234567890123456789?s=20", judul: "Id panjang di path sah", prov: "33"})).status, 201);
 });
 
+uji("wilayah: SK status darurat ditolak 403 untuk staf berwilayah 33 di kejadian provinsi 13, tanpa baris SK; kejadian 33 dan staf nasional tetap 201", async () => {
+  const k13 = await kejadian("13|Agam", "lainnya"), k33 = await kejadian("33|Batang", "lainnya"), sk = nomor => ({tingkat: "siaga", wilayah: "kab", nomor, tmt_mulai: hariIni()});
+  const nSk = () => n("logbook_sk"), sebelum = await nSk();
+  const luar = await call("POST", `/api/logbook/kejadian/${k13}/sk`, WIL, sk("WIL/13/1")); assert.equal(luar.status, 403, JSON.stringify(luar.j)); assert.match(luar.j.galat, /di luar wilayah/);
+  assert.equal(await nSk(), sebelum, "403 tidak menulis SK");
+  assert.equal((await call("POST", `/api/logbook/kejadian/${k33}/sk`, WIL, sk("WIL/33/1"))).status, 201, "kejadian dalam wilayah");
+  assert.equal((await call("POST", `/api/logbook/kejadian/${k13}/sk`, STAF, sk("NAS/13/1"))).status, 201, "staf nasional");
+  assert.equal(await nSk(), sebelum + 2);
+});
+
 uji("gelombang 3: batas laju tulis per pelaku (120/jam) dan 429", async () => {
   let kode = 0;
   for (let i = 0; i < 125 && kode !== 429; i++) kode = (await call("POST", "/api/pusdalops/medsos", LAJU, {sumber: "medsos", tautan: "https://contoh.invalid/laju/" + i, judul: "Butir laju " + i, prov: "11"})).status;

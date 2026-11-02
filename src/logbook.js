@@ -321,7 +321,8 @@ async function skTambah(env, req, kini, id) {
   const oleh = await pintu(env, req); if (!oleh) return gagal(403, "hanya staf Pusdalops, Koordalops, atau Pimpinan");
   if (!await jkAda(env, kini)) return gagal(503, "SK status belum aktif (" + MENUNGGU + ")");
   const b = await baca(req); if (b.r) return b.r;
-  if (!await env.DB.prepare("SELECT 1 x FROM logbook_kejadian WHERE id = ?").bind(id).first()) return gagal(404, "kejadian tidak ada");
+  const kej = await env.DB.prepare("SELECT prov FROM logbook_kejadian WHERE id = ?").bind(id).first(); if (!kej) return gagal(404, "kejadian tidak ada");
+  const lw = luarWilayah(req, [kej.prov]); if (lw) return lw;
   const o = b.o; let v;
   try {
     if (!TINGKAT_SK.includes(o.tingkat)) tolak(`tingkat harus salah satu: ${TINGKAT_SK.join(", ")}`);
