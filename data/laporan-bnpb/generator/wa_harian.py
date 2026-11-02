@@ -11,7 +11,7 @@ import json, os, re
 DI = os.path.dirname(os.path.abspath(__file__))
 AKAR = os.path.abspath(os.path.join(DI, '..', '..', '..'))
 _PROV = {v['nama'].lower(): k for k, v in json.load(open(os.path.join(AKAR, 'public', 'data', 'laporan.json')))['prov'].items()}
-KOREKSI = {'Supit Urung': 'Supit Urang'}   # salah ketik nama di WA yang berulang
+KOREKSI = {'Supit Urung': 'Supit Urang', 'Kota Parepare': 'Kota Pare Pare'}   # salah ketik nama di WA yang berulang; 2 Nov: data website mengeja "Kota Pare Pare"
 
 
 def kode_prov(nama):
@@ -45,7 +45,7 @@ def status_dari(kondisi, prov_level):
 def _jenis_lokasi(judul):
     j = judul.lower()
     jenis = ('angin' if 'angin kencang' in j or 'puting beliung' in j else 'cuaca' if 'cuaca ekstrem' in j else 'lainnya' if 'tpa' in j else 'karhutla' if 'hutan dan lahan' in j or 'karhutla' in j else 'kekeringan' if 'kekeringan' in j
-             else 'gempabumi' if 'gempa' in j else 'banjir' if 'banjir' in j else 'lainnya')
+             else 'gempabumi' if 'gempa' in j else 'banjir' if 'banjir' in j else 'longsor' if 'longsor' in j else 'lainnya')   # 1 Nov: tanah longsor Simalungun sempat jadi 'Kebakaran TPA'
     di = re.split(r'\s+di\s+', judul, maxsplit=1)[1] if ' di ' in judul else ''
     if not di.startswith(('Prov.', 'Provinsi')): di = re.sub(r',?\s+Prov(?:\.|insi)\s.*$', '', di)   # WA 28 Okt: "di Kota Subulussalam, Prov. Aceh"; 29 Okt tanpa koma: "Kab. Klaten Prov. Jawa Tengah"
     tn = re.search(r'\(Taman Nasional\s+([^)]+)\)', judul)   # WA 30 Okt: "Karhutla (Taman Nasional Way Kambas) di Kab. Lampung Timur"
