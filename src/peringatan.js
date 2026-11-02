@@ -24,6 +24,7 @@ const KOLOM = ["kunci", "jenis", "tingkat", "prov", "kab", "lat", "lon", "judul"
 
 const potong = (s, n) => String(s ?? "").slice(0, n);
 const koma = x => String(x).replace(".", ",");
+const ribuan = n => Math.round(n).toLocaleString("id-ID");   // pemisah ribuan titik, seperti fmt() di layar ("1.234")
 const MASUK = "INSERT OR IGNORE INTO peringatan (" + KOLOM + ") VALUES (" + KOLOM.map(() => "?") + ")";
 
 /* satu baris per pernyataan: baris yang melanggar CHECK dilewati, alarm sah lain tetap tertulis (batch akan membatalkan semuanya) */
@@ -114,16 +115,18 @@ async function aturanBanjir(env, kini) {
 
 /* ---------------- karhutla: tugas api level 3 baru ---------------- */
 const BARU_KARHUTLA = 6 * JAM, BERLAKU_KARHUTLA = 12 * JAM;
+/* kunci publik tugas api di feed peringatan ("karhutla:<ini>:siaga"): id tugas tidak keluar. SATU definisi, dipakai aturanKarhutla DAN GET /api/cc/status (src/command_center.js), supaya pop-up alarm menemukan tugasnya. */
+export const kunciPublikKarhutla = async id => (await sha("pk|" + id)).slice(0, 12);
 async function aturanKarhutla(env, kini) {
   let rows;
   try { rows = (await env.DB.prepare("SELECT id, prov, kab, kec, lat, lon, n24, luas_ha, dibuat FROM tugas_api WHERE level = 3 AND status = 'buka' AND dummy = 0 AND dibuat >= ? ORDER BY dibuat DESC LIMIT 50").bind(kini - BARU_KARHUTLA).all()).results; }
   catch (e) { if (/no such (table|column)/i.test(String(e?.message))) return 0; throw e; }   // migrasi 0029 belum diterapkan: aturan ini diam
   const nama = r => [r.kec, r.kab, PROV[r.prov]?.[1]].filter(Boolean).join(", ");
-  const kunci = await Promise.all(rows.map(async r => (await sha("pk|" + r.id)).slice(0, 12)));   // id tugas tidak keluar di feed publik
+  const kunci = await Promise.all(rows.map(r => kunciPublikKarhutla(r.id)));   // id tugas tidak keluar di feed publik
   return tulis(rows.map((r, i) => {
     const lat = Math.round(r.lat * 100) / 100, lon = Math.round(r.lon * 100) / 100, ok = lat >= -11.5 && lat <= 6.5 && lon >= 94 && lon <= 142;   // 0,01 derajat (~1 km): bukan titik tepat
     return env.DB.prepare(MASUK).bind(`karhutla:${kunci[i]}:siaga`, "karhutla", "Siaga", r.prov, potong(r.kab, 80), ok ? lat : null, ok ? lon : null, potong(`Api level 3 baru di ${nama(r)}`, 200),
-      potong(`Cluster titik api level 3 (${r.n24} titik panas 24 jam${r.luas_ha ? `, perkiraan ${Math.round(r.luas_ha)} ha` : ""}) terdeteksi satelit di ${nama(r)}. Perlu konfirmasi lapangan; lokasi dibulatkan 0,01 derajat.`, TEKS_MAKS),
+      potong(`Cluster titik api level 3 (${ribuan(r.n24)} titik panas 24 jam${r.luas_ha ? `, perkiraan ${ribuan(r.luas_ha)} ha` : ""}) terdeteksi satelit di ${nama(r)}. Perlu konfirmasi lapangan; lokasi dibulatkan 0,01 derajat.`, TEKS_MAKS),
       DETEKSI_D1, null, kini, r.dibuat + BERLAKU_KARHUTLA);
   }));
 }
@@ -148,14 +151,25 @@ const iso = t => new Date(t).toISOString();
 const bentuk = r => ({kunci: r.kunci, jenis: r.jenis, tingkat: r.tingkat, prov: r.prov, kab: r.kab, lat: r.lat, lon: r.lon, judul: r.judul, teks: r.teks,
   sumber: r.sumber === DETEKSI_D1 ? DETEKSI : r.sumber, sumber_url: r.sumber_url, dibuat: iso(r.dibuat), berlaku_hingga: iso(r.berlaku_hingga)});
 
-async function muatAktif(env, sejak) {
-  const kini = Date.now();
+export const BATAS_AKTIF = 50;   // baris daftar /api/peringatan/aktif (terbaru dulu); hitungan sebenarnya ada di `total` / `per_tingkat`, yang tidak dipotong
+const AKTIF_SAH = "berlaku_hingga > ? AND dicabut IS NULL AND dibuat >= ?";
+const TINGKAT_HITUNG = ["Awas", "Siaga", "Waspada"];
+/* hitung = true: tambah hitungan SEBENARNYA (COUNT per tingkat, tanpa LIMIT) dalam batch yang sama dengan daftarnya, jadi satu potret. Dipakai JSON saja; CAP dan GeoJSON tidak butuh. */
+async function muatAktif(env, sejak, hitung = false) {
+  const kini = Date.now(), kosong = {kini, daftar: [], per_tingkat: Object.fromEntries(TINGKAT_HITUNG.map(k => [k, 0])), total: 0};
   try {
-    const rows = (await env.DB.prepare("SELECT * FROM peringatan WHERE berlaku_hingga > ? AND dicabut IS NULL AND dibuat >= ? ORDER BY dibuat DESC LIMIT 50").bind(kini, sejak).all()).results;
-    return {kini, daftar: rows.map(bentuk)};
-  } catch (e) { console.error("peringatan api", e?.message); return {kini, daftar: []}; }   // migrasi belum jalan / D1 galat: daftar kosong, bukan 5xx
+    const st = [env.DB.prepare(`SELECT * FROM peringatan WHERE ${AKTIF_SAH} ORDER BY dibuat DESC LIMIT ${BATAS_AKTIF}`).bind(kini, sejak)];
+    if (hitung) st.push(env.DB.prepare(`SELECT tingkat, count(*) n FROM peringatan WHERE ${AKTIF_SAH} GROUP BY tingkat`).bind(kini, sejak));
+    const [rows, cnt] = await env.DB.batch(st), daftar = rows.results.map(bentuk);
+    const per = {...kosong.per_tingkat}; for (const r of cnt?.results ?? []) if (r.tingkat in per) per[r.tingkat] = r.n;
+    return {kini, daftar, per_tingkat: per, total: hitung ? TINGKAT_HITUNG.reduce((a, k) => a + per[k], 0) : daftar.length};
+  } catch (e) { console.error("peringatan api", e?.message); return kosong; }   // migrasi belum jalan / D1 galat: daftar kosong, bukan 5xx
 }
-const aktif = async (env, sejak) => { const {kini, daftar} = await muatAktif(env, sejak); return json({kini: iso(kini), n: daftar.length, peringatan: daftar}); };
+/* n = panjang daftar (maks BATAS_AKTIF); total + per_tingkat = hitungan sebenarnya semua peringatan aktif; terpotong = daftar lebih pendek dari total (penampil angka WAJIB memakai total/per_tingkat, bukan n) */
+const aktif = async (env, sejak) => {
+  const {kini, daftar, per_tingkat, total} = await muatAktif(env, sejak, true);
+  return json({kini: iso(kini), n: daftar.length, total, per_tingkat, terpotong: total > daftar.length, peringatan: daftar});
+};
 
 /* GeoJSON: satu Feature per peringatan (Point bila ada koordinat, geometry null bila tidak); properties = bentuk() persis */
 const aktifGeo = async (env, sejak) => {

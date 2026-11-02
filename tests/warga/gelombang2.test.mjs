@@ -133,6 +133,21 @@ uji("gel2/W6: aturan karhutla: tugas level 3 baru -> Siaga satu kali; level 2, l
   await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM tugas_api").run();
 });
 
+uji("gel2/W6: teks pop-up karhutla memakai pemisah ribuan Indonesia (titik) untuk titik panas dan luas; di bawah 1.000 tanpa pemisah; kunci dan bentuk lain tak berubah", async () => {
+  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM tugas_api").run();
+  const kini = Date.now(), besar = await tugas({n24: 1234, luas_ha: 12345.6, lat: -2.31, dibuat: kini - 30 * MENIT}), pas = await tugas({n24: 1000, luas_ha: 999.4, lat: -2.32, dibuat: kini - 30 * MENIT}), jutaan = await tugas({n24: 1234567, luas_ha: 1234567.5, lat: -2.33, dibuat: kini - 30 * MENIT});
+  const kecil = await tugas({n24: 999, luas_ha: 120, lat: -2.34, dibuat: kini - 30 * MENIT}), tanpaLuas = await tugas({n24: 5, luas_ha: null, lat: -2.35, dibuat: kini - 30 * MENIT});
+  await cron(kini);
+  const per = Object.fromEntries((await DB.prepare("SELECT kunci, teks, judul FROM peringatan").all()).results.map(r => [r.kunci, r])), kunci = id => `karhutla:${createHash("sha256").update("pk|" + id).digest("hex").slice(0, 12)}:siaga`;
+  assert.equal(Object.keys(per).length, 5);
+  const ambil = id => per[kunci(id)].teks;
+  assert.match(ambil(besar), /^Cluster titik api level 3 \(1\.234 titik panas 24 jam, perkiraan 12\.346 ha\) terdeteksi satelit di /); assert.match(ambil(pas), /\(1\.000 titik panas 24 jam, perkiraan 999 ha\)/);
+  assert.match(ambil(jutaan), /\(1\.234\.567 titik panas 24 jam, perkiraan 1\.234\.568 ha\)/); assert.match(ambil(kecil), /\(999 titik panas 24 jam, perkiraan 120 ha\)/); assert.match(ambil(tanpaLuas), /\(5 titik panas 24 jam\) terdeteksi/);
+  for (const id of [besar, pas, jutaan]) assert.doesNotMatch(ambil(id), /\d{4,}/, "tidak ada bilangan 4 angka tanpa pemisah"); 
+  assert.match(ambil(besar), /Perlu konfirmasi lapangan; lokasi dibulatkan 0,01 derajat\.$/, "sisa teks tidak berubah");
+  await DB.prepare("DELETE FROM peringatan").run(); await DB.prepare("DELETE FROM tugas_api").run();
+});
+
 uji("gel2/W6: karhutla tanpa migrasi 0029 (tabel tugas_api tidak ada) dilewati: cron tidak melempar dan gempa tetap diproses", async () => {
   const T = await siapkan("uji-gel2-tanpa-0029", {asetKu: aset}); await T.DB.prepare("ALTER TABLE tugas_api RENAME TO tugas_api_hilang").run();
   await assert.rejects(() => T.DB.prepare("SELECT 1 FROM tugas_api").first(), /no such table: tugas_api/);

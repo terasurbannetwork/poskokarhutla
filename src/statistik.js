@@ -264,7 +264,7 @@ export async function masuk(env, req, kini, halamanMasuk) {
     /* akun pemirsa (src/pemirsa.js): hanya tab tertentu; sesi admin di peramban ini dihapus supaya batasnya benar-benar berlaku */
     const p = email && sandi && await masukPemirsa(env, email, sandi, kini);
     if (!p) { if (kunciEmail) await catatGagal(env, kunciEmail, "admin_gagal", kini); return htmlMasuk(hal("Username atau kata sandi salah."), 401); }
-    const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : "/" + p.tab[0]), {"set-cookie": cookiePemirsa(p.token, p.umur)});
+    const r = alihkan((ke && !arahPemirsa(p, ke.split("?")[0]) ? ke : arahPemirsa(p, "/") ?? "/"), {"set-cookie": cookiePemirsa(p.token, p.umur)});
     r.headers.append("set-cookie", cookie("", 0)); return r;
   }
   const r = alihkan(ke || "/admin/statistik", {"set-cookie": cookie(await buatSesi(env, sah, kini), SESI_UMUR / 1000)});

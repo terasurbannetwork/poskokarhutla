@@ -46,7 +46,8 @@ import {alarmHimawari, bersihkanAlarm} from "./alarm_himawari.js";
 import {bersihkanKabar, ulangiKabar} from "./kabar.js";
 import {RUTE_UJI, jalankanUji} from "./uji_lapangan.js";
 import {RUTE_UJI_BANJIR, bersihkanUjiBanjir} from "./uji_banjir.js";
-import {RUTE_STAF, bersihkanStaf} from "./staf.js";
+import {RUTE_STAF, bersihkanStaf, stafPeran} from "./staf.js";
+import {RUTE_CC, bersihkanCc} from "./command_center.js";
 import {RUTE_AKADEMISI} from "./akademisi.js";
 import {RUTE_LOGBOOK} from "./logbook.js";
 import {RUTE_PEMULIHAN} from "./pemulihan.js";
@@ -596,6 +597,7 @@ const RUTE = {
   ...RUTE_UJI_PILOT,   // uji pilot SIPPA Kalteng tanpa login, token di fragmen #t= dan header x-uji (src/uji_pilot.js, keputusan SIPPA 59)
   ...RUTE_PENUGASAN,   // penugasan orang ke tugas api dan pelacak GPS lewat tautan /lacak/<token> (src/penugasan.js)
   ...RUTE_STAF,   // akun staf BNPB per orang dan peran (src/staf.js)
+  ...RUTE_CC,   // command center karhutla: antrean alert level 3, tindak lanjut operator, layar dinding, log, kontak BPBD (src/command_center.js)
   ...RUTE_LOGBOOK,   // logbook Pusdalops: kejadian + entri, laporan harian 07.00-07.00 WIB, staf saja (src/logbook.js)
   ...RUTE_PEMULIHAN,   // tracker pemulihan huntara/huntap/DTH/jembatan/sumur per kab, staf saja (src/pemulihan.js, migrasi 0096)
   ...RUTE_LAPSUS,   // Laporan Khusus operasi besar: kebutuhan mendesak + 4 layanan dasar + penanda basi (src/lapsus.js)
@@ -703,6 +705,7 @@ function halamanTerkunci(url) {
   if (PUBLIK_TANPA_SESI.has(jalur)) return false;
   if (url.pathname.startsWith("/f/") || HTML_RUTE.some(([re]) => re.test(url.pathname))) return true;
   const kunci = /\/[0-9a-f]{16}$/.test(jalur) ? jalur.slice(0, -16) + ":id" : jalur;
+  if (/^\/command-center(\/|$)/.test(jalur)) return false;   // meja dan layar dinding menjaga dirinya sendiri (src/command_center.js): tamu meja 303 ke /admin/pantau?ke=, tamu dinding 303 ke /admin/masuk?ke= (tempat pemirsa masuk)
   return !!tabelRute()["GET " + kunci] && !/^\/(api|admin|ews|ubin|pipa)(\/|$)/.test(jalur);   // /pipa* menjaga dirinya sendiri (src/sippa.js, DESAIN-TEKNIS SIPPA §1.4): tamu 303 ke /admin/pantau?ke=, bukan ke /admin/masuk
 }
 function catatHTML(env, req, jalur, ctx) {
@@ -851,7 +854,8 @@ const W = {
       if (!await adminOK(env, req) && !await pemirsaSesi(env, req)) return new Response(null, {status: 303, headers: {location: "/admin/masuk?ke=" + encodeURIComponent(url.pathname), "cache-control": "no-store"}});
       ujiOK = true;
     }
-    if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)) {
+    if (!ujiOK && hostTerkunci(url.hostname) && (req.method === "GET" || req.method === "HEAD") && halamanTerkunci(url) && !await adminOK(env, req)
+      && !await stafPeran(env, req, ["operator_cc"])) {   // operator command center (sesi staf) melihat semua halaman terkunci, GET/HEAD saja; peran staf lain tidak
       /* akun pemirsa (src/pemirsa.js): hanya tab miliknya; halaman lain dialihkan ke tab pertamanya */
       const p = await pemirsaSesi(env, req), ke = p ? arahPemirsa(p, url.pathname) : "/admin/masuk?ke=" + encodeURIComponent(url.pathname + url.search);
       if (ke) return new Response(null, {status: 303, headers: {location: ke, "cache-control": "no-store"}});
@@ -939,6 +943,7 @@ async function bersihSemua(env, sekarang) {
     try { console.log("foto", JSON.stringify(await bersihkanFoto(env))); } catch (e) { console.error("foto", e); }
     try { await bersihkanStaf(env, Date.now()); await bersihkanPantau(env, Date.now()); } catch (e) { console.error("pantau", e?.message); }   // migrasi 0030 belum jalan = cron lain tetap jalan
     try { await bersihkanPemirsa(env, Date.now()); } catch (e) { console.error("pemirsa", e?.message); }
+    try { await bersihkanCc(env, sekarang); } catch (e) { console.error("command center", e?.message); }   // migrasi 0099 belum jalan = cron lain tetap jalan; sekali sehari (jam 04 UTC): jejak/status > 2 tahun, kehadiran > 30 hari
     try { await bersihkanInstansi(env, Date.now()); } catch (e) { console.error("instansi", e?.message); }   // migrasi 0029 belum jalan = cron lain tetap jalan
     try { await bersihkanPosko(env, Date.now()); } catch (e) { console.error("posko", e?.message); }   // migrasi 0018 belum jalan = cron lain tetap jalan
     try { await isiWilayahLaporan(env, Date.now()); } catch (e) { console.error("wilayah laporan", e?.message); }   // migrasi 0027 belum jalan = cron lain tetap jalan

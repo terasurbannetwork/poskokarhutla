@@ -1,18 +1,20 @@
 /* Akun pemirsa (src/pemirsa.js, migrations/0036_pemirsa.sql): hanya melihat tab tertentu situs Centurisk97. Worker utuh di workerd + D1 sungguhan (TEST.md: tanpa mock).
    Jalankan: node --test tests/warga/pemirsa.test.mjs */
 import assert from "node:assert/strict";
-import {readFileSync} from "node:fs";
+import {readFileSync, readdirSync} from "node:fs";
 import path from "node:path";
 import {siapkan, berantai, ADMIN, MOD2} from "./_bnpb.mjs";
 import {AKAR, pecah} from "./_bantu.mjs";
 import "../../src/worker.js";
-import {TAB, arahPemirsa, cekTab} from "../../src/pemirsa.js";
+import {TAB, MANDIRI, arahPemirsa, cekTab} from "../../src/pemirsa.js";
 
 const uji = berantai();
 const U = await siapkan("uji-pemirsa");
 const {DB, api, n, mf} = U;
 const SQL = readFileSync(path.join(AKAR, "migrations/0036_pemirsa.sql"), "utf8");
-const SQL_DAFTAR = readFileSync(path.join(AKAR, "migrations/0077_pemirsa_monitor.sql"), "utf8");   // migrasi terbaru yang mendefinisikan daftar tab di trigger
+/* migrasi TERAKHIR yang mendefinisikan trigger daftar tab (0036 -> 0077 -> 0099 ...): seluruh berkasnya dijalankan ulang di uji idempoten, potongan trigger-nya dibaca untuk daftar tab */
+const BERKAS_DAFTAR = readdirSync(path.join(AKAR, "migrations")).filter(f => f.endsWith(".sql")).sort().filter(f => /CREATE TRIGGER (?:IF NOT EXISTS )?pemirsa_tab_sah\b/.test(readFileSync(path.join(AKAR, "migrations", f), "utf8"))).at(-1);
+const SQL_DAFTAR = readFileSync(path.join(AKAR, "migrations", BERKAS_DAFTAR), "utf8"), TRIGGER_TAB = SQL_DAFTAR.match(/CREATE TRIGGER (?:IF NOT EXISTS )?pemirsa_tab_sah\b[\s\S]*?BEGIN/)[0];
 let ipN = 0;
 /* permintaan ke alamat terkunci centurisk97.id, tanpa mengikuti pengalihan */
 const situs = (j, h = {}, init = {}) => mf.dispatchFetch("https://centurisk97.id" + j, {redirect: "manual", ...init, headers: {"cf-connecting-ip": `198.51.100.${++ipN % 250}`, ...h}});
@@ -23,20 +25,27 @@ let A = null, cookie = null;
 
 uji("pemirsa: migrasi 0036 idempoten dan trigger menolak tab asing atau berulang", async () => {
   await DB.batch(pecah(SQL).map(s => DB.prepare(s)));   // dijalankan kedua kalinya
-  await DB.batch(pecah(SQL_DAFTAR).map(s => DB.prepare(s)));   // 0077 juga idempoten
+  await DB.batch(pecah(SQL_DAFTAR).map(s => DB.prepare(s)));   // migrasi daftar tab terakhir juga idempoten
   const sisip = tab => DB.prepare("INSERT INTO pemirsa (id, username, nama, tab, garam, sandi_sha, dibuat) VALUES (?, ?, ?, ?, ?, ?, ?)")
     .bind("f".repeat(16), "lihatuji", "Uji", tab, "a".repeat(32), "0".repeat(64), Date.now()).run();
   await assert.rejects(sisip('["berita","admin"]'), /tab pemirsa tidak sah/);
   await assert.rejects(sisip('["berita","berita"]'), /tab pemirsa tidak sah/);
   await sisip('["monitor"]'); await DB.prepare("DELETE FROM pemirsa WHERE username = 'lihatuji'").run();   // 'monitor' sah sejak 0077
+  await sisip('["dinding"]'); await DB.prepare("DELETE FROM pemirsa WHERE username = 'lihatuji'").run();   // 'dinding' sah sejak 0099 (layar dinding command center)
   assert.equal(await n("pemirsa"), 0);
 });
 
 uji("pemirsa: daftar tab sama dengan trigger 0077 dan tab menu public/index.html", () => {
-  const diTrigger = SQL_DAFTAR.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
+  const diTrigger = TRIGGER_TAB.match(/NOT IN \(([^)]+)\)/)[1].split(",").map(x => x.trim().replace(/'/g, ""));
   assert.deepEqual(diTrigger, Object.keys(TAB));
   const idx = readFileSync(path.join(AKAR, "public/index.html"), "utf8"), tabs = idx.match(/const TABS = (\[.+\]);/)[1];
-  for (const k of Object.keys(TAB)) assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
+  /* tab MANDIRI (dinding) punya halaman sendiri, bukan tab index.html: tidak boleh ada di menu atas, wajib ada alamatnya */
+  for (const k of Object.keys(TAB)) if (Object.hasOwn(MANDIRI, k)) { assert.ok(!tabs.includes(`["${k}"`), `tab mandiri ${k} tidak ada di index.html`); assert.match(MANDIRI[k], /^\/command-center\/\w+$/); }
+    else assert.ok(tabs.includes(`["${k}", "${TAB[k]}"]`), `tab ${k} ada di index.html dengan label ${TAB[k]}`);
+  assert.equal(arahPemirsa({tab: ["dinding"]}, "/command-center/dinding"), null); assert.equal(arahPemirsa({tab: ["dinding"]}, "/command-center/dinding/"), null);
+  assert.equal(arahPemirsa({tab: ["dinding"]}, "/"), "/command-center/dinding", "pemirsa dinding diarahkan ke halaman dinding, bukan /dinding"); assert.equal(arahPemirsa({tab: ["dinding"]}, "/command-center"), "/command-center/dinding", "meja operator tertutup bagi pemirsa");
+  assert.equal(arahPemirsa({tab: ["dinding"]}, "/banjir/"), "/command-center/dinding"); assert.equal(arahPemirsa({tab: ["dinding", "peta"]}, "/banjir/"), null); assert.equal(arahPemirsa({tab: ["dinding", "peta"]}, "/banjir/berita"), "/banjir/peta", "tab mandiri bukan tab /banjir/"); assert.equal(arahPemirsa({tab: ["peta", "dinding"]}, "/command-center/dinding"), null);
+  assert.equal(arahPemirsa({tab: ["berita"]}, "/command-center/dinding"), "/berita", "tab lain tidak membuka dinding"); assert.equal(arahPemirsa({tab: ["peta", "dinding"]}, "/"), "/peta");
   assert.equal(cekTab(["berita", "berita"]), null); assert.equal(cekTab([]), null); assert.deepEqual(cekTab(["foto"]), ["foto"]);
   assert.equal(arahPemirsa({tab: ["insight"]}, "/kompleks"), null); assert.equal(arahPemirsa({tab: ["sim"]}, "/sim/K0001"), null); assert.equal(arahPemirsa({tab: ["berita"]}, "/"), "/berita");
   assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/"), null); assert.equal(arahPemirsa({tab: ["peta"]}, "/banjir/peta"), null);

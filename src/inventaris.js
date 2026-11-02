@@ -35,7 +35,7 @@ const tanpaP3k = e => /no such table: p3k/i.test(String(e?.message || e));
 export const KELAS_POMPA = ["tekanan_tinggi", "debit_besar", "jinjing_ringan", "portabel_besar"];   // selaras POMPA di scripts/data/taktik.py
 export const KONDISI = ["baik", "rusak_ringan", "rusak_berat"];
 export const STATUS = ["siap", "dikerahkan", "servis"];
-const PERAN_LIHAT = ["pusdalops", "verifikator", "pimpinan", "koordalops"];
+const PERAN_LIHAT = ["pusdalops", "verifikator", "pimpinan", "koordalops", "operator_cc"];   // operator_cc: lihat saja (command center); bukan bolehPic, jadi pic_wa tertutup
 const NAMA_JENIS_AKUN = {pemprov: "Pemprov", pemkab: "Pemkab", pemkot: "Pemkot", polda: "Polda", polres: "Polres", kodam: "Kodam", kodim: "Kodim"};
 const RE_ID = /^[0-9a-f]{16}$/;
 const ada = (o, k) => Object.hasOwn(o, k);

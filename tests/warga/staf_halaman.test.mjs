@@ -93,6 +93,11 @@ uji("hak halaman staf sama dengan hak API-nya (satu sumber)", () => {
   assert.deepEqual(HALAMAN_STAF.pipa, P_SIPPA_BACA, "SIPPA: hak halaman = hak baca API (src/sippa.js)");
   const kl = teks("public/admin/instansi.js"); assert.match(kl, /TAB_PERAN = \{validasi: \["verifikator", "pusdalops"\], akun: \[\], pantau: \["pusdalops"\], kontak: \["analis_konsesi"\]\}/);
 });
+uji("hak halaman operator_cc (command center): baca saja di inventaris, OMC, kinerja; SIPPA, instansi, korban, posko tetap tertutup", () => {
+  for (const k of ["kinerja", "inventaris", "omc"]) assert.ok(HALAMAN_STAF[k].includes("operator_cc"), k);
+  for (const k of ["instansi", "korban", "posko", "pipa"]) assert.ok(!HALAMAN_STAF[k].includes("operator_cc"), k);
+  assert.ok(!P_SIPPA_BACA.includes("operator_cc") && !P_VALIDASI.includes("operator_cc") && !P_KONSESI.includes("operator_cc"));
+});
 uji("S3 dan R9: fmt.durasi = durasi Worker; PROV klien = server; ejaan resmi Palangka Raya", () => {
   const ctx = vm.createContext({document: {querySelector() {}, getElementById() {}}});
   vm.runInContext(teks("public/inti/format.js").replace(/const \$ = .*\n/, "") + "\nthis.fmt = fmt;", ctx);

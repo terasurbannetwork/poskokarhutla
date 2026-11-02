@@ -6,7 +6,7 @@ import {readFileSync, existsSync} from "node:fs";
 import path from "node:path";
 import {Miniflare} from "miniflare";
 import {AKAR, migrasi, pecah} from "./_bantu.mjs";
-import {tingkatGempa, bentukCap} from "../../src/peringatan.js";
+import {tingkatGempa, bentukCap, BATAS_AKTIF} from "../../src/peringatan.js";
 
 const JAM = 3600e3;
 const T10 = Math.floor(Date.now() / 600e3) * 600e3;   // menit kelipatan 10: gempaterkini + aturan cuaca ikut jalan
@@ -111,6 +111,7 @@ uji("cuaca BMKG: Severe = Siaga, Extreme = Awas, Moderate dan sudah selesai tida
 uji("GET /api/peringatan/aktif: bentuk JSON tanpa kolom internal; sejak menyaring; kedaluwarsa dan tak sah tidak ikut", async () => {
   const r = await api("/api/peringatan/aktif");
   assert.equal(r.status, 200); assert.equal(r.j.n, r.j.peringatan.length); assert.equal(r.j.n, 6);
+  assert.equal(r.j.total, 6); assert.equal(r.j.terpotong, false); assert.deepEqual(r.j.per_tingkat, Object.fromEntries(["Awas", "Siaga", "Waspada"].map(k => [k, r.j.peringatan.filter(x => x.tingkat === k).length])), "per_tingkat = hitungan daftar bila tidak terpotong");
   assert.deepEqual(Object.keys(r.j.peringatan[0]).sort(), ["berlaku_hingga", "dibuat", "jenis", "kab", "kunci", "lat", "lon", "judul", "prov", "sumber", "sumber_url", "teks", "tingkat"].sort());
   assert.ok(!r.teks.includes("dicabut"));
   const urut = r.j.peringatan.map(x => x.dibuat); assert.deepEqual(urut, [...urut].sort().reverse());
@@ -190,6 +191,7 @@ uji("galat D1 (tabel hilang): /aktif tetap 200 daftar kosong, cron diam tanpa me
   await DB.prepare("ALTER TABLE peringatan RENAME TO peringatan_x").run();
   try {
     const r = await api("/api/peringatan/aktif"); assert.equal(r.status, 200); assert.equal(r.j.n, 0); assert.deepEqual(r.j.peringatan, []);
+    assert.deepEqual([r.j.total, r.j.terpotong, r.j.per_tingkat], [0, false, {Awas: 0, Siaga: 0, Waspada: 0}], "galat D1: hitungan nol, bukan 5xx");
     await tik(T10 + 4800e3);   // tidak melempar
   } finally { await DB.prepare("ALTER TABLE peringatan_x RENAME TO peringatan").run(); }
   assert.ok((await api("/api/peringatan/aktif")).j.n >= 3);
@@ -235,4 +237,29 @@ test("bentukCap: elemen wajib CAP 1.2, escaping XML, pengirim jujur (Deteksi buk
   assert.match(tsunami, /<senderName>Centurisk97, meneruskan InaTEWS<\/senderName>/);
   assert.match(tsunami, /<severity>Extreme<\/severity>/);
   assert.match(bentukCap([], kini), /<alert [^>]+>[\s\S]*<\/alert>/, "daftar kosong tetap alert sah");
+});
+
+/* instance ketiga: lebih dari BATAS_AKTIF peringatan aktif. Daftar dipotong 50 TERBARU, tetapi hitungan (total, per_tingkat) tidak: layar dinding command center memakai hitungan, bukan panjang daftar */
+uji("/aktif lebih dari 50: daftar 50 terbaru, total dan per_tingkat sebenarnya (Awas lama tidak lolos dari hitungan); dicabut dan kedaluwarsa tak dihitung; tepat 50 tidak terpotong; CAP/GeoJSON tetap 50", async () => {
+  assert.equal(BATAS_AKTIF, 50);
+  const mf3 = buatMf("uji-peringatan-banyak", false);
+  try {
+    const D3 = await mf3.getD1Database("DB"); await D3.batch(pecah(migrasi()).map(s => D3.prepare(s)));
+    const kini = Date.now(), ins = (k, tingkat, dibuat, {hingga = kini + JAM, dicabut = null} = {}) => D3.prepare("INSERT INTO peringatan (kunci,jenis,tingkat,judul,sumber,dibuat,berlaku_hingga,dicabut) VALUES (?,?,?,?,?,?,?,?)").bind(k, "gempa", tingkat, "uji " + k, "BMKG", dibuat, hingga, dicabut).run();
+    const get = async j => { const r = await mf3.dispatchFetch("http://peringatan.lokal" + j); return {status: r.status, j: await r.json(), h: r.headers}; };
+    /* 1 Awas paling LAMA (tersisih dari 50 terbaru), 40 Siaga dan 19 Waspada lebih baru = 60 aktif; satu Awas dicabut dan satu Awas kedaluwarsa tidak dihitung */
+    await ins("gempa:G0000:awas", "Awas", kini - 5 * JAM);
+    for (let i = 1; i <= 59; i++) await ins(`gempa:G${String(i).padStart(4, "0")}:x`, i <= 40 ? "Siaga" : "Waspada", kini - i * 1000);
+    await ins("gempa:GC001:awas", "Awas", kini - 2 * JAM, {dicabut: kini - 1000}); await ins("gempa:GK001:awas", "Awas", kini - 3 * JAM, {hingga: kini - 1000});
+    const r = await get("/api/peringatan/aktif");
+    assert.equal(r.status, 200); assert.deepEqual([r.j.n, r.j.peringatan.length, r.j.total, r.j.terpotong], [50, 50, 60, true]);
+    assert.deepEqual(r.j.per_tingkat, {Awas: 1, Siaga: 40, Waspada: 19});
+    assert.equal(r.j.peringatan.some(x => x.tingkat === "Awas"), false, "Awas tertua memang tidak ada di 50 terbaru: itu sebabnya bendera Awas harus dari per_tingkat");
+    assert.deepEqual(Object.keys(r.j).sort(), ["kini", "n", "per_tingkat", "peringatan", "terpotong", "total"]);
+    const geo = await get("/api/peringatan/aktif.geojson"); assert.equal(geo.j.features.length, 50, "GeoJSON tetap daftar 50 terbaru");
+    /* tepat BATAS_AKTIF: utuh */
+    await D3.prepare("DELETE FROM peringatan WHERE kunci IN (SELECT kunci FROM peringatan WHERE tingkat = 'Waspada' ORDER BY kunci LIMIT 10)").run();
+    const p = await get("/api/peringatan/aktif?sejak=" + (Math.floor(kini / 60e3) * 60e3 - 60e3 * 60 * 6)); assert.deepEqual([p.j.n, p.j.total, p.j.terpotong], [50, 50, false], "sejak menyaring daftar dan hitungan dengan syarat yang sama");
+    assert.deepEqual(p.j.per_tingkat, {Awas: 1, Siaga: 40, Waspada: 9});
+  } finally { await mf3.dispose(); }
 });

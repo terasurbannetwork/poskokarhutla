@@ -17,7 +17,7 @@ const kepala = judul => `<!doctype html>
 </head>`;
 /* Tiga halaman admin: emoji = kunci pindai di nav & judul (selera-pinka #43). */
 const HAL = {statistik: ["📊", "Statistik"], pesan: ["📨", "Kotak pesan"], foto: ["📸", "Foto lapangan"], labelfoto: ["🏷️", "Label kerusakan"], sosmed: ["📱", "Media sosial"], posko: ["🧯", "Ruang Posko"],
-  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"]};
+  relawan: ["🙋", "Relawan"], alun: ["🏛️", "Alun-alun"], riset: ["🎓", "Riset"], meja: ["🗂️", "Meja Kerja"], gakkum: ["⚖️", "Berkas Gakkum"], pimpinan: ["🧭", "Layar Pimpinan"], pengingat: ["⏰", "Pengingat"], pantau: ["📋", "Meja Pantau"], instansi: ["🏢", "Akun Instansi"], inventaris: ["📦", "Inventaris alat"], korban: ["🕯️", "Korban jiwa"], "laporan-karhutla": ["📑", "Laporan Karhutla"], omc: ["🌧️", "Sortie OMC"], laporan: ["📋", "Ruang Laporan"], kinerja: ["📈", "Kinerja pemantauan"], akun: ["👥", "Akun & Akses"], "kunci-api": ["🔑", "Kunci API"], kontak: ["📇", "Buku kontak"], pipa: ["💧", "SIPPA"], pendataan: ["🗃️", "Pendataan"], "command-center": ["🎛️", "Command center"]};
 /* halaman Ruang Koordinasi BNPB: SATU entri di nav atas, lalu sub-nav di bawahnya (nav atas tetap muat di 1440) */
 const BNPB = ["pimpinan", "relawan", "alun", "riset", "meja", "pengingat", "gakkum", "pantau", "inventaris", "korban", "laporan-karhutla", "omc", "laporan", "kinerja", "pendataan"];
 /* sub-nav yang sama juga tampil di Akun Instansi (kerja harian staf: Laporan Karhutla, OMC, Inventaris, Meja Pantau) */
@@ -25,12 +25,13 @@ const SUB = BNPB.flatMap(k => k === "pantau" ? [k, "instansi"] : [k]);
 /* Halaman yang boleh dibuka SESI STAF per peran (null = semua staf). Sama dengan hak API-nya: instansi = P_VALIDASI + P_KONSESI (src/staf.js), inventaris = PERAN_LIHAT (src/inventaris.js),
    omc = PERAN_BACA (src/omc.js), posko = P_KONSESI. Dijaga tests/warga/staf_halaman.test.mjs. */
 /* semua peran staf (sama dengan Object.keys(PERAN) di src/staf.js; dijaga tests/warga/sla.test.mjs): hak baca Kinerja pemantauan = adminOK ATAU sesi staf dengan peran apa pun, dipakai halaman /admin/kinerja DAN GET /api/sla */
-export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan"];   // sengaja TANPA kemitraan: peran modul Kemitraan Kampus tidak membuka /admin/kinerja dan /api/sla
-export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, laporan: null, omc: ["tmc", "koordalops", "pimpinan"], posko: ["analis_konsesi"],
-  pipa: ["pusdalops", "koordalops", "pimpinan"]};   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
+export const SEMUA_PERAN = ["verifikator", "pusdalops", "analis_konsesi", "udara", "tmc", "koordalops", "pimpinan", "operator_cc"];   // sengaja TANPA kemitraan: peran modul Kemitraan Kampus tidak membuka /admin/kinerja dan /api/sla; operator_cc ikut (melihat semuanya, baca saja)
+export const HALAMAN_STAF = {pantau: null, kinerja: SEMUA_PERAN, instansi: ["verifikator", "pusdalops", "analis_konsesi"], inventaris: ["pusdalops", "verifikator", "pimpinan", "koordalops", "operator_cc"], korban: ["pusdalops", "verifikator", "pimpinan", "koordalops"], "laporan-karhutla": null, laporan: null, omc: ["tmc", "koordalops", "pimpinan", "operator_cc"], posko: ["analis_konsesi"],
+  pipa: ["pusdalops", "koordalops", "pimpinan"],   // SIPPA = P_SIPPA_BACA (src/sippa.js; dijaga tests/warga/staf_halaman.test.mjs); GET /admin/pipa hanya 303 ke /pipa
+  "command-center": ["operator_cc", "koordalops", "pimpinan"]};   // meja operator = pelaku() src/command_center.js (dijaga tests/warga/command_center.test.mjs); GET /admin/command-center hanya 303 ke /command-center
 /* halaman yang dibuka sekumpulan peran staf: [{k, ikon, label}] (layar /admin/akun menampilkannya sebagai "Akses") */
 export const aksesStaf = peran => Object.keys(HALAMAN_STAF).filter(k => bolehStaf(k, peran)).map(k => ({k, ikon: HAL[k][0], label: HAL[k][1]}));
-const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null || peran.some(p => HALAMAN_STAF[k].includes(p)));
+export const bolehStaf = (k, peran) => Object.hasOwn(HALAMAN_STAF, k) && (HALAMAN_STAF[k] === null || peran.some(p => HALAMAN_STAF[k].includes(p)));
 const subNav = (aktif, ctx) => SUB.includes(aktif) && !ctx ? `<nav class="ad-sub" aria-label="Ruang Koordinasi">${SUB.map(k => `<a href="/admin/${k}" ${aktif === k ? 'aria-current="page"' : ""}>${HAL[k][0]} ${HAL[k][1]}</a>`).join("")}</nav>` : "";
 const atas = (aktif, ctx) => ctx ? `<header class="ad-top">
   <a class="ad-logo" href="/"><img src="/img/logo.svg?v=2" alt="" width="30" height="30">Centurisk97</a><span class="ad-sep staf">Staf</span>
@@ -193,7 +194,7 @@ export const halamanBnpb = (k, ctx) => halaman(k, `Memuat ${HAL[k][1]}…`, `<li
 ${k === "pantau" ? `<script src="/inti/format.js"></script>\n<script src="/instansi_wilayah.js?v=1"></script>
 ` : k === "kinerja" ? `<script src="/inti/nanti.js"></script>
 ` : ""}<script src="/admin/bersama.js?v=4"></script>
-<script src="/admin/${k}.js?v=${k === "pantau" ? 3 : 1}"></script>`, ctx);
+<script src="/admin/${k}.js?v=${k === "pantau" ? 4 : 1}"></script>`, ctx);
 
 export const CSP_ADMIN = "default-src 'self'; script-src 'self'; style-src 'self' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; frame-ancestors 'self'; base-uri 'none'; form-action 'self'";
 
@@ -241,6 +242,37 @@ export const halamanSippaLapangan = () => `<!doctype html>
 <div id="app"><p>Memuat form lapangan…</p></div>
 <noscript><p>Form lapangan butuh JavaScript aktif.</p></noscript>
 <script type="module" src="/pipa/lapangan.js?v=5"></script>
+</body></html>`;
+
+/* Command center karhutla (src/command_center.js): MEJA OPERATOR /command-center (kerangka admin/staf bersama; ctx undefined = moderator) dan LAYAR DINDING /command-center/dinding (kerangka sendiri).
+   Isi layar di public/admin/command_*.js (kode dan teks, tanpa data; datanya dari /api/cc/*). Meja memakai CSP_ADMIN apa adanya; dinding butuh peta (openfreemap, worker blob) tetapi TIDAK huruf luar:
+   huruf sistem, supaya layar yang menyala terus tidak bergantung Google Fonts. Keduanya tanpa skrip dan gaya sebaris. */
+export const halamanCc = ctx => halaman("command-center", "Memuat command center…", `<link href="/admin/command_bersama.css?v=1" rel="stylesheet">
+<link href="/admin/command_center.css?v=1" rel="stylesheet">
+<script src="/inti/format.js"></script>
+<script src="/admin/bersama.js?v=4"></script>
+<script src="/admin/command_bersama.js?v=1"></script>
+<script src="/admin/command_center.js?v=1"></script>`, ctx);
+export const CSP_DINDING = "default-src 'self'; script-src 'self'; style-src 'self'; font-src 'self'; img-src 'self' data: blob: https://*.openfreemap.org; connect-src 'self' https://*.openfreemap.org; worker-src 'self' blob:; child-src blob:; frame-ancestors 'none'; base-uri 'none'; form-action 'none'";
+/* akun = mod | staf | pemirsa (menentukan tautan "masuk ulang" saat sesi habis); masuk = alamat layar masuk akun itu, sudah di-encode */
+export const halamanDinding = (akun, masuk) => `<!doctype html>
+<html lang="id" class="dd-html">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<meta name="color-scheme" content="dark">
+<title>Layar dinding · Command center karhutla · Centurisk97</title>
+<link href="/admin/command_bersama.css?v=1" rel="stylesheet">
+<link href="/admin/command_dinding.css?v=1" rel="stylesheet">
+</head>
+<body class="dd" data-akun="${esc(akun)}" data-masuk="${esc(masuk)}">
+<div id="dd"><p class="dd-memuat">Memuat layar dinding…</p></div>
+<noscript><p class="dd-memuat">Layar dinding butuh JavaScript aktif.</p></noscript>
+<script src="/inti/format.js"></script>
+<script src="/angka_kawasan.js"></script>
+<script src="/admin/command_bersama.js?v=1"></script>
+<script src="/admin/command_dinding.js?v=1"></script>
 </body></html>`;
 
 /* halaman publik /statistik (tanpa login). Data dari /api/publik. */
