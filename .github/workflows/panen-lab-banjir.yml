@@ -1,0 +1,172 @@
+name: Panen data lab banjir (IMERG per kabupaten, GloFAS)
+
+# Hanya dispatch manual + cron GloFAS yang berhenti sendiri. Skrip: scripts/banjir/panen_lab.py.
+# Keluaran HANYA ke R2 poskokarhutla-foto/arsip/lab_banjir/{imerg/<YYYY-MM>.json.gz, glofas/<KODE>.json}; tidak ada commit data, tidak menerbitkan.
+# Sengaja DI LUAR grup concurrency `data` (pola nowcast-jkt-imerg.yml): panen berjam-jam tidak boleh menahan titik.yml/data.yml.
+# GloFAS: cron tiap 4 jam memanggil `jenis=glofas`; kuota Open-Meteo harian (keluar 75) = selesai bersih untuk run itu.
+# Berhenti sendiri: bila semua kab sudah ada di R2, penanda glofas/_LENGKAP ditulis dan run berikutnya keluar dalam detik.
+on:
+  workflow_dispatch:
+    inputs:
+      jenis:
+        description: "imerg atau glofas"
+        default: "imerg"
+      bulan_awal:
+        description: "imerg: bulan awal YYYY-MM"
+        default: "2015-01"
+      bulan_akhir:
+        description: "imerg: bulan akhir YYYY-MM"
+        default: "2026-10"
+      maks_paralel:
+        description: "imerg: job paralel (sopan ke GES DISC)"
+        default: "4"
+      jumlah_kab:
+        description: "glofas: jumlah kab per run"
+        default: "60"
+  schedule:
+    - cron: "17 */4 * * *"
+
+concurrency:
+  group: panen-lab-banjir-${{ inputs.jenis || 'glofas' }}
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+env:
+  JENIS: ${{ inputs.jenis || 'glofas' }}
+  R2: poskokarhutla-foto/arsip/lab_banjir
+  WR: npx --yes wrangler@4.42.0
+  CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+  CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}
+
+jobs:
+  siapkan:
+    if: inputs.jenis == 'imerg'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    outputs:
+      matriks: ${{ steps.m.outputs.matriks }}
+    steps:
+      - id: m
+        env:
+          AWAL: ${{ inputs.bulan_awal }}
+          AKHIR: ${{ inputs.bulan_akhir }}
+        run: |
+          python3 - <<'PY' >> "$GITHUB_OUTPUT"
+          import json, os, re
+          a, z = os.environ["AWAL"], os.environ["AKHIR"]
+          assert re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", a) and re.fullmatch(r"\d{4}-(0[1-9]|1[0-2])", z), "format YYYY-MM"
+          b = [f"{y}-{m:02d}" for y in range(int(a[:4]), int(z[:4]) + 1) for m in range(1, 13) if a <= f"{y}-{m:02d}" <= z]
+          assert b, "tidak ada bulan"
+          print("matriks=" + json.dumps({"bulan": b}))
+          PY
+
+  imerg:
+    needs: siapkan
+    runs-on: ubuntu-latest
+    timeout-minutes: 50
+    strategy:
+      fail-fast: false
+      max-parallel: ${{ fromJSON(inputs.maks_paralel || '4') }}
+      matrix: ${{ fromJSON(needs.siapkan.outputs.matriks) }}
+    env:
+      BULAN: ${{ matrix.bulan }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Pulihkan berkas bulan dari R2 (boleh gagal)
+        continue-on-error: true
+        run: |
+          mkdir -p keluar
+          $WR r2 object get "$R2/imerg/$BULAN.json.gz" --file "keluar/imerg_kab_$BULAN.json.gz" --remote \
+            || { rm -f "keluar/imerg_kab_$BULAN.json.gz"; echo "belum ada di R2, mulai dari nol"; }
+
+      - name: Uji mandiri
+        run: python3 scripts/banjir/panen_lab.py uji
+
+      # timeout shell supaya unggah tetap jalan dengan kemajuan yang sudah didapat. 124 = habis waktu (dispatch ulang melanjutkan).
+      - name: Panen IMERG bulan ini
+        env:
+          EARTHDATA_TOKEN: ${{ secrets.EARTHDATA_TOKEN }}
+        run: |
+          set +e
+          timeout 2600 python3 scripts/banjir/panen_lab.py imerg --bulan "$BULAN" --keluar keluar
+          rc=$?
+          echo "rc=$rc" >> "$GITHUB_ENV"
+          [ "$rc" = 124 ] && echo "::warning title=imerg $BULAN::habis waktu, sebagian terpanen; dispatch ulang untuk melanjutkan"
+          exit 0
+
+      # Unggah hanya bila lokal tidak lebih kecil dari objek R2 (jangan menimpa yang lebih lengkap).
+      - name: Unggah ke R2 bila lebih lengkap
+        run: |
+          set -e
+          F="keluar/imerg_kab_$BULAN.json.gz"
+          [ -f "$F" ] || { echo "::warning title=imerg $BULAN::tidak ada berkas"; [ "${rc:-0}" = 1 ] && exit 1; exit 0; }
+          LOKAL=$(wc -c < "$F")
+          R2UKURAN=0
+          if $WR r2 object get "$R2/imerg/$BULAN.json.gz" --file /tmp/r2.gz --remote > /tmp/r2.log 2>&1; then R2UKURAN=$(wc -c < /tmp/r2.gz); fi
+          echo "$BULAN: lokal $LOKAL byte, R2 $R2UKURAN byte"
+          if [ "$LOKAL" -ge "$R2UKURAN" ]; then
+            $WR r2 object put "$R2/imerg/$BULAN.json.gz" --file "$F" --content-type application/gzip --remote
+          else
+            echo "R2 lebih lengkap, tidak ditimpa"
+          fi
+          [ "${rc:-0}" = 1 ] && { echo "::error title=imerg $BULAN::panen_lab keluar 1"; exit 1; }
+          exit 0
+
+  glofas:
+    if: (github.event_name == 'schedule' || inputs.jenis == 'glofas')
+    runs-on: ubuntu-latest
+    timeout-minutes: 120
+    env:
+      JUMLAH: ${{ inputs.jumlah_kab || '60' }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Cek penanda lengkap
+        id: lengkap
+        run: |
+          if $WR r2 object get "$R2/glofas/_LENGKAP" --file /tmp/lengkap --remote > /dev/null 2>&1; then
+            echo "Semua kab sudah ada di R2 (penanda _LENGKAP). Selesai."; echo "ya=1" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Uji mandiri
+        if: steps.lengkap.outputs.ya != '1'
+        run: python3 scripts/banjir/panen_lab.py uji
+
+      - name: Panen GloFAS kab yang belum ada di R2
+        if: steps.lengkap.outputs.ya != '1'
+        run: |
+          mkdir -p keluar
+          sisa=0; pilih=""; n=0
+          for k in $(python3 scripts/banjir/panen_lab.py daftar_kab); do
+            if $WR r2 object get "$R2/glofas/$k.json" --file /tmp/ada.json --remote > /dev/null 2>&1; then continue; fi
+            sisa=$((sisa + 1))
+            if [ "$n" -lt "$JUMLAH" ]; then pilih="$pilih,$k"; n=$((n + 1)); fi
+          done
+          echo "belum ada di R2: $sisa kab; run ini: $n"
+          if [ "$n" = 0 ]; then
+            echo ok > /tmp/lengkap
+            $WR r2 object put "$R2/glofas/_LENGKAP" --file /tmp/lengkap --content-type text/plain --remote
+            echo "Lengkap; penanda ditulis, cron berikutnya keluar cepat."; exit 0
+          fi
+          set +e
+          python3 scripts/banjir/panen_lab.py glofas --kab "${pilih#,}" --keluar keluar
+          rc=$?
+          set -e
+          # 75 = kuota Open-Meteo habis: selesai bersih, simpan yang sudah didapat
+          [ "$rc" = 75 ] && echo "::notice title=glofas::kuota Open-Meteo habis, lanjut di run berikutnya"
+          if [ "$rc" != 0 ] && [ "$rc" != 75 ]; then echo "::error title=glofas::panen_lab keluar $rc"; fi
+          for f in keluar/glofas_*.json; do
+            [ -f "$f" ] || continue
+            k=${f#keluar/glofas_}; k=${k%.json}
+            $WR r2 object put "$R2/glofas/$k.json" --file "$f" --content-type application/json --remote
+          done
+          [ "$rc" = 0 ] || [ "$rc" = 75 ]
