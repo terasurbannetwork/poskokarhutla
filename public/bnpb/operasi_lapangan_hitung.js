@@ -54,6 +54,64 @@
   const klaimTeks = t => t.luas_klaim_ha != null ? `klaim pilot ±${fmt(t.luas_klaim_ha)} ha` : "";
   const SEGMEN = [["renlap", "Renlap malam", "malam"], ["pagi", "Pagi", "cuaca"], ["siang", "Siang", "kekeringan"], ["nilai", "Nilai", "ok"]];
 
+  /* ---------- segmen Nilai: penyajian GET /api/operasi/nilai (src/operasi_nilai.js); tidak menghitung ulang angka ---------- */
+  const KODE_NILAI = ["M1", "M2", "M3", "M4", "M5", "M6", "M7", "M8", "M9", "M10", "M11"];
+  /* baik: arah yang bagus untuk sorotan tabel; pembilang: kata benda "13 dari 22 ..."; pendek: judul kolom tabel */
+  const METRIK = {M1: {nama: "Ketepatan target", pendek: "Tepat target", ikon: "pin", baik: "tinggi", pembilang: "temuan"},
+    M2: {nama: "Kepatuhan renlap", pendek: "Patuh renlap", ikon: "malam", baik: "tinggi", pembilang: "target renlap"},
+    M3: {nama: "Temuan di luar renlap", pendek: "Temuan baru", ikon: "peringatan", baik: "rendah", pembilang: "temuan"},
+    M4: {nama: "Padam bertahan", pendek: "Padam bertahan", ikon: "ok", baik: "tinggi", pembilang: "temuan clear"},
+    M5: {nama: "Efisiensi water bombing", pendek: "Efisiensi WB", ikon: "lanjut", baik: null, pembilang: "sortie"},
+    M6: {nama: "Utilisasi armada", pendek: "Utilisasi", ikon: "personel", baik: "tinggi", pembilang: "pesawat-hari"},
+    M7: {nama: "Waktu respons", pendek: "Respons", ikon: "lanjut", baik: "rendah", pembilang: "temuan berasap"},
+    M8: {nama: "Mutu laporan", pendek: "Mutu laporan", ikon: "ok", baik: null, pembilang: "laporan"},
+    M9: {nama: "Hambatan cuaca", pendek: "Hambatan cuaca", ikon: "cuaca", baik: null, pembilang: "sortie"},
+    M10: {nama: "Jarak sumber air", pendek: "Jarak air", ikon: "pin", baik: null, pembilang: "sortie"},
+    M11: {nama: "Heli siaga tanpa tugas", pendek: "Heli menganggur", ikon: "senyap", baik: "rendah", pembilang: "armada-hari"}};
+  const KODE_TABEL = KODE_NILAI.filter(k => METRIK[k].baik);   // kolom tabel hanya metrik yang punya arah baik/buruk
+  const persen = f => fmt(Number(f) * 100) + "%";
+  const awalBesar = t => t ? t[0].toUpperCase() + t.slice(1) : t;
+  /* satu metrik -> {kosong, angka?, pesan?, rincian}. Null tidak pernah tampil sebagai 0; n dan pembilang selalu ikut bila ada. */
+  const tampilMetrik = (kode, m) => {
+    const meta = METRIK[kode] || {pembilang: ""};
+    if (!m) return {kosong: true, pesan: "Data belum tersedia", rincian: ""};
+    const n = Number(m.n) || 0, jum = Number(m.jumlah) || 0, ekor = [];
+    if (kode === "M7" && m.tanpa_respons) ekor.push(`${fmt(m.tanpa_respons)} tanpa respons`);
+    if (m.tak_dinilai) ekor.push(`${fmt(m.tak_dinilai)} belum bisa dinilai`);
+    if (m.nilai == null) {
+      const pesan = m.alasan ? awalBesar(m.alasan) : m.catatan === "data kurang" ? `Data kurang (n=${fmt(n)})` : "Data belum tersedia";
+      return {kosong: true, pesan, rincian: ekor.join(", ")};
+    }
+    if (kode === "M7") return {kosong: false, angka: `${fmt(m.nilai)} menit`, rincian: [`median dari ${fmt(n)} ${meta.pembilang}`, ...ekor].join(", ")};
+    return {kosong: false, angka: persen(m.nilai), rincian: [`${fmt(jum)} dari ${fmt(n)} ${meta.pembilang}`, ...ekor].join(", ")};
+  };
+  /* kunci diurutkan: paling banyak data (jumlah n semua metrik) dulu, lalu abjad */
+  const urutKunci = peta => { const bobot = k => Object.values(peta[k] || {}).reduce((a, m) => a + (Number(m && m.n) || 0), 0);
+    return Object.keys(peta || {}).sort((a, b) => bobot(b) - bobot(a) || a.localeCompare(b)); };
+  /* sorotan sel per kolom: terbaik/terburuk hanya bila >= 2 sel bernilai dan nilainya berbeda */
+  const sorotKolom = (kode, peta, kunci) => {
+    const arah = METRIK[kode] && METRIK[kode].baik, isi = kunci.filter(k => peta[k] && peta[k][kode] && peta[k][kode].nilai != null).map(k => [k, peta[k][kode].nilai]), out = {};
+    if (!arah || isi.length < 2) return out;
+    const lo = Math.min(...isi.map(x => x[1])), hi = Math.max(...isi.map(x => x[1])); if (lo === hi) return out;
+    for (const [k, v] of isi) { if (v === hi) out[k] = arah === "tinggi" ? "baik" : "buruk"; else if (v === lo) out[k] = arah === "tinggi" ? "buruk" : "baik"; }
+    return out;
+  };
+  const tabelNilai = (peta, kunci) => { const sorot = Object.fromEntries(KODE_TABEL.map(k => [k, sorotKolom(k, peta, kunci)]));
+    return kunci.map(k => ({kunci: k, sel: KODE_TABEL.map(kode => { const t = tampilMetrik(kode, peta[k] && peta[k][kode]);
+      return {kode, teks: t.kosong ? "–" : t.angka, n: peta[k] && peta[k][kode] ? Number(peta[k][kode].n) || 0 : 0, rincian: t.kosong ? t.pesan : t.rincian, sorot: sorot[kode][k] || null}; })})); };
+  /* pesawat yang masuk filter base (armada hari peta memuat base_id); tanpa filter semua */
+  const registrasiBase = (armada, baseId) => !baseId ? null : new Set((armada || []).filter(a => a.base_id === baseId).map(a => a.registrasi));
+  const saringPeta = (peta, set) => !set ? peta : Object.fromEntries(Object.entries(peta || {}).filter(([k]) => set.has(k)));
+  const tglPlus = (t, hari) => new Date(Date.parse(t + "T00:00:00Z") + hari * 24 * JAM).toISOString().slice(0, 10);
+  const MAKS_HARI = 31;
+  const rentangBawaan = kini => { const sampai = hariIniWIB(kini); return {dari: tglPlus(sampai, -6), sampai}; };
+  /* ubah = "dari" | "sampai": bagian yang digeser pengguna; yang lain mengikuti agar rentang sah dan <= 31 hari */
+  const klampRentang = (dari, sampai, ubah) => { const sel = (a, b) => Math.round((Date.parse(b) - Date.parse(a)) / (24 * JAM));
+    if (ubah === "dari") { if (sel(dari, sampai) < 0) sampai = dari; else if (sel(dari, sampai) > MAKS_HARI - 1) sampai = tglPlus(dari, MAKS_HARI - 1); }
+    else { if (sel(dari, sampai) < 0) dari = sampai; else if (sel(dari, sampai) > MAKS_HARI - 1) dari = tglPlus(sampai, -(MAKS_HARI - 1)); }
+    return {dari, sampai}; };
+
   g.OperasiLapangan = {fmt, tanggalIndo, hariIniWIB, jamWIB, STATUS_TEMUAN, URUT_TEMUAN, STATUS_ARMADA, kelasTemuan, kelasArmada, namaArmada, kelompokTemuan,
+    KODE_NILAI, KODE_TABEL, METRIK, persen, tampilMetrik, urutKunci, sorotKolom, tabelNilai, registrasiBase, saringPeta, rentangBawaan, klampRentang, tglPlus,
     segmenJam, saringSegmen, ringkas, sumberTeks, dataBase, garisRujukan, cincin, klaimTeks, SEGMEN};
 })(typeof window !== "undefined" ? window : globalThis);
