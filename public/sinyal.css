@@ -1,0 +1,9 @@
+.sy-box{padding:6px 14px 8px}
+.sy-det summary{cursor:pointer;list-style:none;text-align:center}
+.sy-tbl{width:100%;border-collapse:collapse;font-size:11px;margin:4px 0}
+.sy-tbl th,.sy-tbl td{padding:2px 6px;text-align:center;white-space:nowrap}
+.sy-tbl td:first-child,.sy-tbl td:last-child{text-align:left}
+.sy-tbl thead th{font-weight:600;border-bottom:1px solid #d8d2c8}
+.sy-ket,.sy-cat{font-size:11px;margin:4px 0}.sy-cat{opacity:.8}
+.sy-leg{display:flex;gap:8px;flex-wrap:wrap;font-size:11px;margin:4px 0}
+.sy-leg i{display:inline-block;width:11px;height:11px;margin-right:3px;vertical-align:-1px;border-radius:2px}
